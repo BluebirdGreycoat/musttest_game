@@ -1,0 +1,7 @@
+default
+farming
+dye
+utility
+bucket?
+fire?
+tnt?

@@ -1,0 +1,3 @@
+name = "Assassin",
+author = "jmf",
+sex = "male",

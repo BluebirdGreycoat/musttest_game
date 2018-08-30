@@ -1,0 +1,3 @@
+name = "Worker",
+author = "Krock",
+sex = "male",

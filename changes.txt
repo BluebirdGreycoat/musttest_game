@@ -1,0 +1,896 @@
+[2018/8/29] Added some new slabs to the saw, 3 from a recent version of moreblocks, + 1 custom.
+[2018/8/29] Made some upgrades to the xban2 mod on this server.
+[2018/8/29] Fixed crash issue where the gauges mod would try to give a gauge to a player outside the world bounds.
+[2018/8/29] Added safety controls to admin TNT, to prevent blasting unintended targets.
+[2018/8/28] Added 5 new circular saw slopes, upgraded the circular saw formspec. Dig and place your saws to see the update.
+[2018/8/28] Updated bone placement code in the bones mod.
+[2018/8/28] Added admin TNT, to help me clean up stuff and remove cheated builds made by item-dup hackers >:|
+[2018/8/27] Fixed coding mistake in the chests core, which made iron and silver locked chests unusable.
+[2018/8/27] Updated anticurse chat-filter with a new stop word. (Can't believe I missed that one!)
+[2018/8/26] Swapped sharing functionality between iron and silver locked chests. Existing iron locked chests with shares are grandfathered.
+[2018/8/26] Reduced size of woodchest inventory from 8*4 to 8*3 slots. Existing wooden chests are grandfathered.
+[2018/8/26] Optimized inventory-handling code for when a player dies. Should be much less laggy!
+[2018/8/26] Slightly adjusted bone-placement when a player dies.
+[2018/8/26] Improved circlestone texture (it needed some depth), added desert circlestone and recipe.
+[2018/8/26] Updated chat filter GUI. There are now options to ignore shouts and players that PM you.
+[2018/8/26] Firefruit now protects against damage when digging fire nodes.
+[2018/8/26] Added buffs & nerfs to player walk/run speed, based on current HP. Keep those hearts full for maximum benefit!
+[2018/8/25] Added HUD element showing the current land owner.
+[2018/8/25] The protector mod was updated to comply with the latest security issues. Some minor features were added.
+[2018/8/25] Disabled tool-drop on protection violation, it is too easy to exploit using lag.
+[2018/8/25] Players who have a PoC, but remain AFK while dead, will now be kicked. Press that respawn button!
+[2018/8/24] Added in-game documentation for the chat-filter interface, accessed through the PoC.
+[2018/8/24] Updated formatting & color for private messages, for a more consistent look.
+[2018/8/24] Minor update to the ingame email GUI.
+[2018/8/23] Restored ability to cook rat, which broke during mob API update.
+[2018/8/22] Tinderbox now craftable using kalite dust. (Made this update with my phone, lol!)
+[2018/8/22] Player now gets damaged if they gorge themselves with food.
+[2018/8/21] Added furnace fuels: unlit coal/kalite torches.
+[2018/8/21] Stamina comes back if satiation >= 10, instead of 20.
+[2018/8/21] Xdecor painting nodes are no longer walkable.
+[2018/8/21] Fixed a minor bug in chat colorization for the /me chat-command.
+[2018/8/21] Wrote and installed a new custom mod, tinderbox. Allows to relight torches more efficiently.
+[2018/8/21] Added extra description to torch items letting players know they can be relit.
+[2018/8/21] Fixed unknown item in craft recipe for castle embrasures.
+[2018/8/20] Added a tweak to the generated kill/murder server messages.
+[2018/8/19] Added the immovable property to bedrock.
+[2018/8/19] Torch no longer used to test protection -- this interfered with expected behavior re: igniting things. Use a stick instead.
+[2018/8/19] Roughened the surface of the bedrock layer below the nether.
+[2018/8/19] Iron torches no longer placable on ground or ceiling. This looked ugly.
+[2018/8/19] Added a new /r command for quickly replying to PMs.
+[2018/8/19] Swimming/climming now exhausts the player and increases hunger.
+[2018/8/19] The bones that mobs sometimes leave are no longer protected or protectable.
+[2018/8/19] Added whitestone block.
+[2018/8/19] Added missing edged-block variants of the various nether materials: netherack, blackrack, bluerack, & rackstone.
+[2018/8/19] Fixed a bug in the mob API that could potentially allow a mob to break protected stuff.
+[2018/8/19] Added pillars, half-walls, and other castle nodes from the castles modpack.
+[2018/8/18] Added stonebrick and desert stonebrick walls. Added sandstone brick walls.
+[2018/8/17] Reduced yield of pumpkin slice recipe from 9 to 3, so that 1 pumpkin makes slightly more than enough for 1 loaf of pumpkin bread.
+[2018/8/17] Added server message when player is killed by a mob.
+[2018/8/17] Restored mob behavior, where mobs would ignore dead players.
+[2018/8/17] Updated torch descriptions with a bit of useful information.
+[2018/8/17] Decreased yeild of iron-torch recipe from 5 to 1, for balance relative to stick torches. Iron torches stay lit, and must cost more.
+[2018/8/17] Restored lighting in jail and bone-retrieval areas.
+[2018/8/17] Added unlit kalite torches, with kalite torch nodetimers. Kalite torches last 5 - 6 times longer than regular torches.
+[2018/8/16] Cave torches now go out after 6 - 7 hours. You can relight them. Will extend this to kalite torches too, soon.
+[2018/8/16] Updated chat colorization system. Playernames in regular chat are now colored differently.
+[2018/8/16] Fixed bug in AC mod that permitted foul-named players to join if they had 3 numbers after it.
+[2018/8/16] Tweaked toolranks mod to better integrate with varying tool wear. Tools may now level up to rank 7.
+[2018/8/16] Fixed issues with multiline weapon descriptions in server kill messages.
+[2018/8/13] Tweaked mob pathfinding routines.
+[2018/8/12] Added toolranks mod, with compatibility integration updates.
+[2018/8/12] Added lapis mod.
+[2018/8/12] Fixed longtime bug(s) that prevented sheep from appearing.
+[2018/8/12] Enabled mob custom nametag feature.
+[2018/8/12] Fixed some bugs in the iceman mob (sounds were not playing), improved despawning behavior.
+[2018/8/12] Enabled mob pathfinding and building/digging, with compatibility integration.
+[2018/8/12] Upgraded to most recent mobs redo API.
+[2018/8/11] Added flower to the nether.
+[2018/8/11] Added a nasty and very rare nether trap.
+[2018/8/11] Added forbidden nether grass.
+[2018/8/11] Added nether grit & tile.
+[2018/8/11] Players get hungrier faster when moving through bad terrain.
+[2018/8/11] Fixed bug in xdecor mod that was preventing stairs from being registered for xdecor nodes.
+[2018/8/10] Added zentamine fragments. Harvesting mese crystals gives zentamine instead of mese crystals. You can smelt zentamine into mese crystal fragments. This adds an additional smelting stage to harvests from mese crystal farms.
+[2018/8/9] Reduced range of player-owned nyancat teleports to 7770 meters to address issues of overpoweredness.
+[2018/8/8] Greatly reduced chance of basalt/pumice to fall when generated during lavacooling. This reduces the number of active falling nodes.
+[2018/8/8] Increased lavacooling ABM speed 4x. The previous cooling speed of the last few months was agonizingly slow.
+[2018/6/22] Fixed bug in craftguide search function which could cause server to crash.
+[2018/6/10] Cactus won't grow in dense plantings; now requires >= 2 air nodes nearby to grow.
+[2018/6/10] Woodworking hammer from Xdecor modpack can now be used to repair tools.
+[2018/6/10] Mese & uranium in stone will now react badly to being melted by lava.
+[2018/6/10] Enabled slow mese crystal grow in places away from the brimstone ocean.
+[2018/6/10] Re-enabled lava explosion/reflow routines with much lower chance to trigger.
+[2018/6/9] Bugfix: LV solar panels now correctly connect to the rest of the power network.
+[2018/6/5] Update: After forming from lava/water interaction, pumice, basalt & obsidian temporarily become falling nodes.
+[2018/6/5] Feature: Melted cobble sometimes transforms into lava after falling.
+[2018/5/20] Updated cityblocks to take land ownership into consideration when deciding who to put in jail.
+[2018/5/19] Added system for group PMs. Use /channel and /x commands.
+[2018/5/18] Booby-trapped pressure plates no longer activate if their placer walks on them.
+[2018/5/17] Added booby-trap pressure plate which causes the block underneath to collapse.
+[2018/5/17] Added explosive pressure plate, for those who want/need to booby-trap their bases.
+[2018/5/12] Fixed problem with server spamming chat with physics messages when nothing actually collapsed.
+[2018/4/28] Really fixed the protection issue with anvils. This time. I hope.
+[2018/4/28] Fixed exploit allowing the possibility to obtain raw water/lava nodes in player inventory.
+[2018/4/25] Added xdecor.
+[2018/4/22] Performance improvements to the player health gauges code.
+[2018/4/22] Shears now dig firetree leaves as quickly as any other tree leaves.
+[2018/4/21] Rewrote lava cooling/melting ABMs for less server load. Lava activity runs slower to avoid Lua lags.
+[2018/4/20] Optimized Lua globalstep code responsible for skycolor changes and player-walking node callbacks.
+[2018/4/20] Reduced number of particles sent to clients when digging/punching/placing nodes.
+[2018/4/18] Converted the map database to PostgreSQL away from SQLite. Performance improved slightly, scalability improved a LOT.
+[2018/4/18] Server now logs player's inventory contents to debug.txt on death. Should help with item recovery if bones are unaccountably destroyed.
+[2018/4/17] Removed ABM responsible for changing cobble to mossycobble due to its unexpectedly large performance impact.
+[2018/4/17] Replaced farming soil ABM with nodetimer logic. Should improve Lua performance a bit.
+[2018/4/3] Readded /spawn and /recall commands, so new players can use them to get out of traps and pits when they first join.
+[2018/4/3] Player's corpses (boneboxes) can no longer be blocked off and "locked" using protection. If you want to place a protection, remove any corpses first.
+[2018/4/2] Customized /days and /time chat commands.
+[2018/4/2] Added /players command, removed list of connected players from the /status message.
+[2018/4/2] Increased the range of sound for opening and closing chests. 10 meters seemed too short.
+[2018/3/29] Fixed an exploit in the protection code that was caused by a combination of buildable_to nodes and protection override meta.
+[2018/3/29] Fixed some bugged error reporting in the preload teleport code.
+[2018/3/26] Added upgrade slots to the MV and HV generators, chargers, tool repair shops, and gem cutting machines.
+[2018/3/26] Steel bottles with compressed air can no longer be stolen from protected areas.
+[2018/3/25] Added a restart countdown to warn players of the scheduled pending restart.
+[2018/3/24] Wooden armor, including shields, now usable as furnace fuel.
+[2018/3/24] Added unstable stone.
+[2018/3/24] Increased the amount of lava created when the HV reactor explodes.
+[2018/3/23] Added a respawn status notification when player unsuccessfully tries to sleep in a bed.
+[2018/3/23] Added modified versions of new titanium tool textures, by J1.
+[2018/3/23] Fixed foot-prints-in-snow not making an actual indentation sometimes.
+[2018/3/23] Improvements to the anticurse mod.
+[2018/3/23] Dirt with grass now turns back to dirt once it falls.
+[2018/3/23] Straw from the default farming mod is now a falling node.
+[2018/3/23] Straw bales from the darkage mod are now diggable by hand.
+[2018/3/22] Fixed another bug in the craft-guide.
+[2018/3/22] Dead obsidian and default obsidian give a speed boost.
+[2018/3/22] Updated the craft-guide search function. Searches are now case-insensitive.
+[2018/3/22] Made mycena and caverealm fungus farmable.
+[2018/3/21] Fixed a crash in the mailbox code.
+[2018/3/21] Fixed a rare bug in the anticurse code, revealed when player typed "hello" twice.
+[2018/3/20] Fixed a position rounding error in the code for falling nodes. Slight performance improvement.
+[2018/3/20] Added scuba diving equipment. Tweaked node placement code to mitigate airpockets underwater.
+[2018/3/19] Added node inspection tool.
+[2018/3/19] Added sanitizer to the jail lava pits, to prevent bone buildup and eventual clogging.
+[2018/3/19] Rewrote memorandum mod formspec handling to support private metadata.
+[2018/3/18] Transferred in-game email storage system to SQLite3 database.
+[2018/3/18] Only registered players count toward the number of players required in order to skip night.
+[2018/3/18] Players may make a bed public (available to all for sleeping) by holding 'E' when placing the bed.
+[2018/3/18] Added basic help text to bed descriptions.
+[2018/3/18] Rotating a bed with a screwdriver no longer destroys its metadata.
+[2018/3/18] Added wooden tile nodes from the moreblocks mod.
+[2018/3/17] Tar blocks now give a speed boost similar to other road materials.
+[2018/3/17] PoC stack_max changed to 1.
+[2018/3/17] Updated the curse chat-filter. It's a complicated peice of code, hopefully I did not break it. :)
+[2018/3/17] Corrected an oversight in playername parsing.
+[2018/3/17] Fixed possible security issue in sign formspecs.
+[2018/3/16] Falling nodes received a performance update.
+[2018/3/16] Player may now drop full blocks directly by holding 'E' when placing them.
+[2018/3/16] Desert stone, dark basaltic rock, and sandstone now give a speed boost.
+[2018/3/16] Added basic diagnostic messages to the windcatcher to help builders.
+[2018/3/16] Added public announcement extention to the email system.
+[2018/3/15] Rewrote, tested, and re-enabled auth & account cleaning scripts.
+[2018/3/14] Increased the complexity of farming by adding some buff/debuff logic. Ice detracts, minerals enhance.
+[2018/3/14] Corrected a useability problem with dropping single items using the shift key.
+[2018/3/14] Corrected mistakes in the season/calendar code. The seasons should now be more evenly spaced within a 34 day period.
+[2018/3/14] Replaced snow/ice-melt ABMs with nodetimer logic. The melting behavior will change as a consequence.
+[2018/3/14] Waterlilies are now quite unlikely to spawn in water if there is ice nearby.
+[2018/3/13] Performance enhancement. Fewer ABMs, more nodetimers.
+[2018/3/13] Fixed a bug in which the reactor could not discharge its buffered EUs due to itemstack overflow.
+[2018/3/13] Switched waterlilies from ABM to nodetimer, added detailed farming logic.
+[2018/3/13] Switched all flora from ABM to nodetimer, added more detailed farming logic.
+[2018/3/12] Added prospector tool.
+[2018/3/11] Added electric screwdriver.
+[2018/3/11] Removed incorrect groups from darkage-reinforced blocks.
+[2018/3/11] Upgraded craft-guide UI, added search blank.
+[2018/3/11] The tool repair anvil now respects protection.
+[2018/3/11] Chalk powder is now compressible back to chalk blocks.
+[2018/3/11] Added the final two darkage rock types to the mapgen, in mountains at around +90.
+[2018/3/11] Mushrooms now grow on dauthsand, too. You can grow mushrooms in the nether.
+[2018/3/11] Bonemeal will now speed the rate of mushroom growth. (Mushrooms still only grow in dim places.)
+[2018/3/10] You can now use bonemeal to spread dirt with grass faster. You’ll need dirt with grass already present in order to spread it.
+[2018/3/9] Salt water is now placeable above ground, in places where regular water is discouraged. This is because the sources do not spread and multiply, so it is difficult to create a liquid grief with them. Players can use salt water as a water-substitute for most things.
+[2018/3/9] As a byproduct of fission reactor operation, water in the shielding chamber gradually changes to salt water.
+[2018/3/9] Fixed an issue where the website could not display the chatlog due to some players’ chat containing invalid UTF-8 sequences.
+[2018/3/9] The reactor shielding requirement now allows the operator to use stainless steel in place of lead; whichever the operator prefers.
+[2018/3/9] The reactor machine infotext now informs the operator if the reactor shielding is insufficient.
+[2018/3/9] The windcatcher’s minimum operation height is now 10 meters instead of 20.
+[2018/3/9] Punching a cactus without the correct tool hurts the player. Wield an axe to chop cactus safely.
+[2018/3/9] Increased the length of the Season of Stone from 2 days to 4 days, so that it is more noticable.
+[2018/3/9] Silt and mud now generate at sea bottoms. Determined players should build scuba-diving bases in order to safely mine it.
+[2018/3/9] Wrote new mapgen to generate darkage rocks in mountains and below surface level. Darkage rocks are finally accessible in-game!
+[2018/3/7] Added a message to the tide generator infotext informing its user if it does not have enough water to operate.
+[2018/3/5] Significantly simplified the uranium fuel rod recipe tree complexity, for balance.
+[2018/3/5] Golden carrot now refreshes stamina (in addition to health).
+[2018/1/13] Somewhat increased repair rate of the workshop.
+[2018/1/13] The anvil no longer repairs bows; use the workshop for this instead.
+[2018/1/12] Players can sweep up drops they dropped themselves by holding shift in addition to clicking on the drop.
+[2018/1/12] Slopes cut from full nodes now inherit partial light source values from the parent.
+[2018/1/12] Added crushing/grinding recipes to change netherack to dauthsand.
+[2018/1/11] Added bouncy and cushion nodes to finally complement the sprint ability.
+[2018/1/7] Revamped website source and optimized a bunch of images.
+[2017/12/30] Removed limiting of names per IP in order to reduce lag on player login.
+[2017/12/30] Removed fire sounds mod to reduce lag. Fire will be silent for awhile until a better way to play fire sounds can be found.
+[2017/12/30] Respawning players, new players, and players using the PoC to teleport are positioned a little more randomly to prevent player bunching.
+[2017/12/30] Increased cURL timeout value to try and prevent the server from dropping out of the master server listing. It still disappears sometimes, dunno why.
+[2017/12/27] All trunk nodes can now be cut with the circular saw.
+[2017/12/27] Added missing walls registration for whitestone cobble.
+[2017/12/26] Added more xpanes registrations for darkage and gloopores glass nodes.
+[2017/12/25] Switched auth system to use 'sauth' mod in order to tame auth-related lag. Everybody's information should have been migrated successfully.
+[2017/12/25] Fixed a bug in the rewrite of the ambiance mod. Updated craft recipes for wrought iron lattice and wrought iron pane.
+[2017/12/25] Mossy cobble can now be directly crafted into stairs & slabs.
+[2017/12/25] Extended the number of wood-reinforced nodes from Darkage.
+[2017/12/25] Fixed bugs in the stairs mod related to accidentally modifying function arguments.
+[2017/12/25] All stairs, slabs & microblocks inherit reduced light source values from their parent nodes.
+[2017/12/25] Added nearly all blocks from Darkage mod (with ore & stone generation still to come). Fixed CG bugs. 
+[2017/12/24] Fixed hot cobble bugs to hopefully fix issues with lava griefing on the surface.
+[2017/12/17] Updated the website’s main page to correct old information regarding hosting, etc.
+[2017/12/17] Restored the server to its normal nightly restart time. Changing hosts messed it up for a few days.
+[2017/12/17] Hopefully fixed issue with unknown items appearing in loot chests that spawn in dungeons.
+[2017/12/15] Increased shop ad time from 14 days to 30.
+[2017/12/15] Increased range at which players’ nametags are visible to other players.
+[2017/12/14] Slightly increased blast radius of TNT arrows.
+[2017/12/9] Reduced range for damage from lava and fire by 1 node.
+[2017/12/9] Removed uranium blocks and aliased them to stone. This removes the need to compute radiation on top of the regular heat damage. If you have lost uranium due to this change, just let me know and I'll give you raw ore to replace it.
+[2017/12/9] Removed all corium from the game and aliased it to lava. This reduces the complexity somewhat.
+[2017/12/9] Added helpful tooltip hints to the descriptions of several machines.
+[2017/12/9] Increased fall-damage for landing on spikes. Decreased fall damage for landing on wool, sand and snowblocks.
+[2017/12/9] The change to torches allowing them to be taken from protected areas has been reverted. Torches follow the standard protection rules.
+[2017/12/9] Spark and smoke particles removed from torches in order to lighten the processing load. Fire nodes still throw particles, but at a lower rate.
+[2017/12/8] Walking on rock/moonstone/salt spikes hurts now.
+[2017/12/8] Rock/moonstone/salt spikes can be rotated with the screwdriver. They get a random rotation when placed.
+[2017/12/8] Disabled using the screwdriver on torches.
+[2017/12/7] Rockdrill and chainsaw now properly obtain drops from nodes.
+[2017/12/7] Fixed problem of the rockdrill being able to mine air nodes.
+[2017/12/6] Rewrote the server's control scripts for robustness and ease of use.
+[2017/12/5] Adjusted the server's configuration to take advantage of high bandwidth.
+[2017/12/4] The server is now hosted remotely for better performance and bandwidth. After 1 year, my laptop is no longer a slave. Yay!
+[2017/12/3] Recalculated cost in mese for protector craft recipes.
+[2017/11/28] Fix for falling snow damaging the player.
+[2017/11/28] Added LV repair shop for tools. Can repair tools the anvil cannot, making it a worthwhile upgrade, if you don't mind waiting for the repairs to complete.
+[2017/11/27] Added rock drill. Use the charging machine to charge it.
+[2017/11/27] Added chainsaw and charging machine.
+[2017/11/26] Gas is now highly flammable. Careful with those torches!
+[2017/11/25] Gas tends to drift downward. Any gas released extinguishes nearby torches.
+[2017/11/25] Height of cactus or papyrus growth is now randomized every time the plant grows after being harvested.
+[2017/11/25] Cactus & papyrus growth switched over to nodetimer-based system. Original growing ABMs are disabled.
+[2017/11/25] Ladders are now self-supporting.
+[2017/11/25] Papyrus is now a self-supporting plant. Less fragile when harvesting.
+[2017/11/25] New players do not get gold on first join. Prevents gold inflation.
+[2017/11/25] Tree trunks are mostly flat, so walking speed on them is normalized instead of slowed down.
+[2017/11/25] Added transparency to many leaves textures (like those in moretrees) which were previously solid-colored.
+[2017/11/24] Hopefully fixed a freeze & CPU hog in PvP code. Removed line-of-sight check, as this caused it.
+[2017/11/24] Craft guide updated to show accurate input requirements for non-standard recipes. Also, recipes with 2 outputs now show both outputs. Should remove confusion.
+[2017/11/23] Bones regenerate if prematurely destroyed. Last-ditch effort to fix that darn problem with missing bones and lost items!
+[2017/11/23] CLUs now useable as machine upgrades.
+[2017/11/23] Changed CLU `stack_max' to 1.
+[2017/11/22] Restored ability to use RE Batteries as upgrades in Technic machines.
+[2017/11/22] Snow on trees now less annoying. Does not spawn icemen. Easy to dig. Does not drop onto ground below. Should not be obtainable.
+[2017/11/22] Fixed some issues with multiline descriptions not being handled correctly.
+[2017/11/22] Snow with footprints now always diggable, just like fresh snow.
+[2017/11/22] Torches no longer allowed to replace `buildable_to' nodes within areas protected by someone other than the torch placer.
+[2017/11/21] Nixed exploit allowing node inventories (all chests, etc.) to be accessed at long range.
+[2017/11/20] PoC cannot be trashed using the inventory trash slot.
+[2017/11/20] Added carbon steel armor & shield.
+[2017/11/20] PvP blocked if combatants are too far apart or there is wall between. Nixes some PvP exploits.
+[2017/11/20] Pass through rightclicks while player is wielding snow.
+[2017/11/20] Server preemptively teleports player to a respawn point if they join the game while dead. Nixes a potential PvP exploit.
+[2017/11/19] Coal & kalite torches can be stolen if outside an area marked as part of the city. Iron torches are always safe.
+[2017/11/19] Added building over spawn to hide the 0,0,0 point. Stray inert entities sometimes appear here. The problem is not actually fixable except in the engine.
+[2017/11/19] Updated multiple item descriptions; added hints to some of them (saplings in particular).
+[2017/11/19] Increased firetree fruit protection time from 3 to 6 seconds per fruit. Note that eating multiple fruit will stack the time.
+[2017/11/18] Fixed a bug in the bones code which the previous change introduced.
+[2017/11/17] Updated bones code, improved bone messages. Removed a few loopholes.
+[2017/11/15] Oerkki drop more leather when killed.
+[2017/11/13] Invisible (fully melted) snow no longer has footstep sounds.
+[2017/11/13] If player dies while holding a chest open, the chest is closed.
+[2017/11/12] Snow with footsteps turns back to snow after falling. Also: footsteps are now randomly rotated, to break up the visual pattern.
+[2017/11/12] Removed `Unbreakable Stone Brick' from taking up space in the CG.
+[2017/11/12] Added mailbox option to reject starting items. Improved the look.
+[2017/11/12] Protector display entities (the 'grid' that shows when you punch a protector) are now immune to TNT blasts.
+[2017/11/12] Upgraded sign text input formspec.
+[2017/11/12] Tin wall signs added.
+[2017/11/12] Updated sled movement code and hopefully improved it again. Fixed a temporary hopping problem.
+[2017/11/11] Mese crystals switched over to use nodetimers. They also now have random rotation, for variety.
+[2017/11/11] Waterlilies no longer arbitrarily rotateable.
+[2017/11/10] Bugfix for snow footsteps, including properly configured transparency.
+[2017/11/9] Fixed unknown items being required in protector recipe.
+[2017/11/8] Digging a bed no longer unsets your home position unless that bed was the one you slept in last.
+[2017/11/7] Advanced protector no longer needs bronze in craft recipe.
+[2017/11/6] Two-way travel between Surface City and Nether City now possible.
+[2017/11/6] Using 8 nyancat rainbows to surround a diamond-teleporter now gives it 31K of range. Such a teleport costs 0 mossycobble or lilies to use.
+[2017/11/5] New snow footstep sounds.
+[2017/11/5] Mapping kit now craftable from any wood, not just regular planks.
+[2017/11/4] Added mapping kit from Minetest Game, and tweaked mod to allow map to be placed as node.
+[2017/11/4] Liquids (such as lava) now placable in same liquid, this allows lava sources to be placed in flowing lava. Thanks to sorcerykid.
+[2017/11/3] Footprints in snow are sunken slightly to simulate packing down the snow. Makes the footprints easier to see.
+[2017/11/3] Server is now speedier to generate footprints in snow under players.
+[2017/11/3] Found and fixed yet another possible way that explosions could destroy protected blocks and bones.
+[2017/11/3] Fixed bug where an item a player dropped would go right back into their inventory. Sorry about this! Thanks to sorcerykid.
+[2017/11/1] Fixed problem with sled jumping on snow.
+[2017/11/1] Added snowblock stairs & slabs.
+[2017/10/30] Added footstep trails in snow.
+[2017/10/30] Added stairs and slabs for caverealm crystal nodes.
+[2017/10/30] Fixed bug in water counting for the tidal EU generator.
+[2017/10/30] Dug items now added directly to player inventory (instead of dropped) if close enough.
+[2017/10/30] Added sled.
+[2017/10/29] Grown mese crystals hurt when you walk on them. Nakilashiva is to blame for the concept.
+[2017/10/29] Returned meselamp recipe to default. Takes 3 mese crystals.
+[2017/10/29] Added meselamp slabs & stairs.
+[2017/10/29] Last-login in the formspec on join actually shows the real last-login time.
+[2017/10/29] Switched HUD clock to use AM/PM time.
+[2017/10/28] Added forgotten stairs registrations for basalt and pumice.
+[2017/10/28] Fixed slow-walk on slabs & lattices even when placed in 'flat' position.
+[2017/10/28] Tin ingot can be used to craft screwdriver and empty bucket.
+[2017/10/28] Fixed problem with deep snow spawning on trees.
+[2017/10/28] Fixed dependency problem that broke the oregen and HUD clock for a day.
+[2017/10/27] Updated calendar to count first year as 1 instead of 0.
+[2017/10/27] Added calendar, updated server's epoch, and sychronized clocks.
+[2017/10/27] Updated the main page to reflect game-changing changes.
+[2017/10/27] Added snowmelt and snowfall (basic seasons). Snowmelt and snowfall run on a 34 day cycle, in realtime.
+[2017/10/27] Added an automatic restart script for the server. The server restarts at 12:00 AM every night, CST.
+[2017/10/26] Dry grass now hangable from ceilings.
+[2017/10/26] Fixed problem with silent placing sound for grass.
+[2017/10/26] Climbing speed on ropes fixed.
+[2017/10/26] Protector blocks don't mysteriously slow players down anymore.
+[2017/10/25] Grass can now be hung from ceilings.
+[2017/10/25] Hopefully managed to fix problem with items burning up in lava if they fell on partial nodes over lava, like slabs.
+[2017/10/24] Black-hearted griefers drop bones again.
+[2017/10/24] Fixed some previously undiscovered crashes caused by copy-pasta errors in the Technic code.
+[2017/10/24] Fixed some bugs related to killing players while they are in bed.
+[2017/10/24] Players now lose their home position (set with bed) if killed by another player. Added an extra warning to Survival Challenge rules so players aren't caught by surprise.
+[2017/10/24] Updated rules text for the Survival Challenge.
+[2017/10/24] Survival Challenge updated. You can now sleep in a bed to avoid losing the Challenge if you die.
+[2017/10/24] Reduced respawn count for beds from 16 to 8. This makes sleeping frequently a bit more important.
+[2017/10/20] Fixed an exploit with bandages that people discovered, that allowed a player to 'resurrect' themselves after dying.
+[2017/10/12] Changed Mineral XP rewards to operate over a gradiant, controling the chance of getting more ore.
+[2017/10/12] Hopefully managed to squash bug where Flying Obsidian could violate protection.
+[2017/9/28] Anvil hammer finally has break sound when broken on anvil.
+[2017/9/27] Increased inventory size of player bones, so nothing becomes an entity on death. Bags and bag contents are put in bones on death.
+[2017/9/27] Added bags mod; tweaked compatibility. Added leather to allow bag crafting.
+[2017/9/26] Fixed one or two bugs.
+[2017/9/26] Updated and upgraded protector code. biggest change: 7x7x7 protectors added; craft recipes changed.
+[2017/9/25] Added server messages when players murder each other.
+[2017/9/25] Increased size of mithril chest's inventory. The mithril chest now auto-sorts its inventory contents.
+[2017/9/24] Added ability to sort chest contents to the scaffolding wrench; updated wrench description. Stacks with metadata are sorted safely.
+[2017/9/24] Fixed various uninteresting bugs.
+[2017/9/23] Put 3D armor strength back to 0.5, where it used to be. Full strength armor caused mobs to be unable to damage players, and rebalancing that is too difficult to be worth the trouble.
+[2017/9/22] Fixed another bug in the market formspec.
+[2017/9/22] Restored 3D armor to 'default' strength (1.0, instead of 0.5) because players were finding it too weak to be worth it.
+[2017/9/22] Fixed annoying bug in the market formspec that caused players to get stuck unable to close the formspec if they had an older client.
+[2017/9/21] Changed XP cap back to 1000. 2K seems too hard to reach to make attempting to reach it worth it.
+[2017/9/21] Upgraded road network (again).
+[2017/9/21] Rewrote movement speed & sprint system. Restored player's basic movement speed to something close to default on other servers.
+[2017/9/20] Fixed appletree blossoms not decaying when tree dug.
+[2017/9/20] Fixed apples being able to regrow on the ground after falling from appletrees.
+[2017/9/20] AFK players will no longer be kicked if they have a PoC.
+[2017/9/20] Players can't register shop ads anymore unless they have a PoC.
+[2017/9/20] Added a system allowing players to advertise their shops to each other across the city. The shop list can be viewed from any market booth. New players can view the shop list immediately on join.
+[2017/9/18] Replaced welcome-mat chat messages (which were hacky and easily missed) with a formspec shown on new-player join. A different formspec is shown to returning players.
+[2017/9/18] Server now sends chat to players by default, since newer clients that don't do chat-prediction are becomming more common.
+[2017/9/17] Tweaked tool balance. Copper tools dig fast but wear out quickly. Mese and iron tools last longer. Titanium now lasts longer than gem tools.
+[2017/9/17] Renamed bronze tools to copper tools, and adjusted tool recipes accordingly. Bronze tools were too hard to make and did not give enough value.
+[2017/9/17] Voltage Transformers carry 1,000 EU per/sec now instead of 100 EU per/sec.
+[2017/9/17] Tweaked mesefuel balance to restore it being worthwhile to use mese as fuel.
+[2017/9/17] Added facedir param to several brick-type nodes.
+[2017/9/17] Restored original craft recipes for mese/crystals/fragments. The grinding recipes had made the game too hard.
+[2017/9/16] Chests (all types) now allowed to enter a falling state.
+[2017/9/16] The /msg command now has some protection against the most common type of chat accident.
+[2017/9/16] Tweaked falling node movement code.
+[2017/9/16] Upgraded city road network; subdivided the major city quarters in smaller blocks.
+[2017/9/16] Fixed bug allowing players to farm XP by repeatedly digging certain blocks.
+[2017/9/16] Fixed bug allowed players to get 2000 XP by punching bones while their inventory was full.
+[2017/9/16] Fixed bug in XP code preventing players from getting their reward.
+[2017/9/15] Bugfixed the voltage converter which could sometimes cause a Lua crash.
+[2017/9/14] Server maps now rendered in greyscale, except for the big map which is still in full color.
+[2017/9/14] Fixed a bug in the drop calculation code for extra ores gained by full XP.
+[2017/9/14] Circular saw wasn't paying attention to custom stack max. Fixed.
+[2017/9/14] Mobs spawn much less frequently in the city, up to a range of 300 meters from the center.
+[2017/9/14] Brawling no longer allowed in nether jail.
+[2017/9/14] Added stone sounds to cityblock.
+[2017/9/14] Apparently a certain mob was still capable of destroying bones. That is now fixed.
+[2017/9/14] Upgraded nether jail with escape hatches.
+[2017/9/14] Committing a crime in the nether will send the culprit to the nether jail, not the surface jail.
+[2017/9/14] Players may commit self-arrest.
+[2017/9/14] Players that die in the nether respawn in the Nether City, not the Surface Colony.
+[2017/9/14] Nether City recall locations (including jail) now operational.
+[2017/9/14] Gold now found anywhere below -256, but most commonly in gold regions.
+[2017/9/14] Initial stuff given to new players now includes 6 gold ingots.
+[2017/9/14] Changed to use monthy rotating spawnpoint instead of randomly scattering players. On Saturdays players (re)spawn in Central Square.
+[2017/9/14] Dig XP cap changed to 2000.
+[2017/9/14] Added digging XP display below HUD clock.
+[2017/9/14] Picking bones now gives the picking player the XP stored in bones.
+[2017/9/14] Dying halves player's current digging XP. This makes suiciding just to refresh health/hunger no longer a viable option for most people.
+[2017/9/14] Added digging XP. XP is capped at 1000 per player; upon reaching max XP player gets 1 extra lump when digging ores.
+[2017/9/14] Reformatted infotext for deadplayer bones; added time of death, etc.
+[2017/9/14] Reformatted PoC description text.
+[2017/9/12] Fixed a bug in the fruit-regrowing code that allowed fallen fruit to regrow infinitely.
+[2017/9/12] Fixed battery arrays not being craftable due to wrong item name in recipe.
+[2017/9/12] Bows now show name of loaded arrow in description of loaded bow.
+[2017/9/12] Fixed protection bug allowing players to take stuff out of protected engraving benches.
+[2017/9/11] Added HV mineral outsalting machine. Requires an outsalting pool to function & a lot of HV power.
+[2017/9/10] River water renamed to salt water.
+[2017/9/10] Added uranium fissile grades. Thus the steps to make reactor fuel rods are similar to the steps in vanilla Technic.
+[2017/9/9] Added yet another way to get killed while spelunking.
+[2017/9/9] Fixed bug in previously added feature.
+[2017/9/9] Added option to disable all server-sent particles from the PoC.
+[2017/9/8] Added basalt & pumice, with adjustments to lava-cooling to allow basalt & pumice to be obtained.
+[2017/9/8] Added another glow ore to the nether.
+[2017/9/7] Fixed ore spawning bugs: glowstone ore (both types) now generate like they should.
+[2017/9/7] Fixed a long-standing bug preventing the generation of sulfur deposits.
+[2017/9/7] Increased size of underground marble/granite deposits.
+[2017/9/6] Added a machine for transfering energy from one power-network to another, owned by different players.
+[2017/9/5] Added ability to grow grass, coarse grass, and junglegrass by using bonemeal.
+[2017/9/5] Smarter placement for all microblocks/slopes/panels. Less screwdrivering. Easy to use.
+[2017/9/4] Added another way to have an accident in the mines.
+[2017/9/4] Leaves no longer give infinite sticks.
+[2017/9/4] Fixed inoperative alloying recipe for desert cobblestone.
+[2017/9/4] Added blackrack and bluerack walls.
+[2017/9/4] Added smoke particles for torches and fires.
+[2017/9/4] Renamed 'Netherwhite ...' nodes to 'Bleached ...' nodes.
+[2017/9/4] Walking on solar panels now has a chance to electrocute the player.
+[2017/9/4] Cable box nodes now have their chain limit specified in their description.
+[2017/9/4] Network 'hop limit' now depends on network tier, instead of being a fixed value.
+[2017/9/4] TNT code wrapped in pcall() since it is a source of unexplained Lua exceptions.
+[2017/9/4] Fixed typo in geothermal generator and watermill code.
+[2017/9/4] Updated power-network implementation for better performance.
+[2017/9/1] All EU-producing machines now provide power to the network directly, removing the necessity of having a battery. You still need a battery to store a large amount of EUs, however.
+[2017/9/1] LV, MV, & HV fuel-fired generators produce more EUs than before.
+[2017/8/30] Fixed mesefuel bug. Mesefuel is no longer insanely overpowered.
+[2017/8/30] Technic machines (version 2) now obtainable in-game. Please tell me about any bugs! Balancing still needed, most likely.
+[2017/8/31] Fixed a crash in the solar code.
+[2017/8/30] Added player death groan.
+[2017/8/30] Redstone cobble now made with alloying recipe instead of crafting recipe.
+[2017/8/30] Begin making V2 Technic machines accessible. V1 Technic machines are being removed from the craft-guide.
+[2017/8/30] Slowed down the fuel-fired alloy furnace to match the default furnace speed. Using an electric alloy furnace is faster.
+[2017/8/30] Fixed a problematic bug in Technic (version 2) network caching code.
+[2017/8/29] Tweaked HUD and increased max sprinting stamina for all players.
+[2017/8/27] The trespass restraining order token can be used on players in boats or carts. Bullies hiding in boats or carts are no longer safe from justice. >:)
+[2017/8/27] It is no longer possible to move directly from a boat to a cart or bed, and vice-versa. This was buggy and cannot be allowed.
+[2017/8/27] Dry grass now obtainable. Grow it by using bonemeal on dirt-with-dry-grass.
+[2017/8/27] Starfissure chests close automatically if player leaves game or times out. This was already true for all other chests.
+[2017/8/27] Nether vines can be farmed for a renewable source of fuel. Growing conditions are similar to that needed for bluegrass.
+[2017/8/27] Added bonemeal. Note that bonemeal does not work instantly, but it does work.
+[2017/8/27] Nether skeletons drop more bones.
+[2017/8/27] Added cobble to the list of road surfaces that allow faster movement.
+[2017/8/27] Health gauges should be less buggy now. But as with anything regarding entity attachments, there is always the occasional glitch. >:|
+[2017/8/27] Fixed a minor, but very noticable, bug in road surface code.
+[2017/8/26] You now move faster on surfaces suitable for roads (mainly stone, rackstone). Sprinting on these surfaces is also a little faster.
+[2017/8/26] The climbing pick can now be used on rackstone and netherack.
+[2017/8/26] Reverted an un-considered change that made it way too hard to craft protection blocks. Sorry!
+[2017/8/26] Players may now respawn in their bed up to 16 times before they must sleep again to avoid losing their respawn position.
+[2017/8/26] Nether swine drop more meat. They dropped meat too rarely, before, to make it worth hunting them.
+[2017/8/26] You can sleep anytime in a bed, if in the nether. There is no day/night cycle there.
+[2017/8/26] Locked chests in the OPEN visual state will be accessible to ALL, as long as they are visually open. Close them to lock them. Don't open them in the presence of thieves.
+[2017/8/26] Added brick nodes for rackstone and bluerack. Including stair and slab variants.
+[2017/8/26] Fixed bug in lava-cooling code.
+[2017/8/26] Light-level needed to grow firetrees reduced by 1. This means you can use torches.
+[2017/8/25] Inventory item stacking limited to 64. This was a long-planned change. 64 was chosen because there is already an obvious precedent.
+[2017/8/25] Items burn up in lava much quicker, with particle effects.
+[2017/8/25] Player-rename algorithm works on itemframes & pedestals too.
+[2017/8/25] Conversion between the 3 forms of mese now requires a compressor and grinder.
+[2017/8/25] Added particles when eating.
+[2017/8/25] Added swimming and scuba particles for players in water.
+[2017/8/25] Added particles for torches and fire.
+[2017/8/25] Barter table reset timeout increased to 20 minutes.
+[2017/8/24] Guest names generated by certain mobile clients no longer banned. If the server experiences problems though, I'll be forced to re-ban them.
+[2017/8/24] Added BlockMen's dungeon loot mod.
+[2017/8/24] Cactus damages you if you get too close.
+[2017/8/24] Holes made by climbing pick now have footstep sounds.
+[2017/8/24] Tree trunk nodes converted to nodeboxes for added detail. They are now only *mostly* cubic.
+[2017/8/24] Sleeping in a bed refreshes player stamina.
+[2017/8/24] Convert cactus to non-cubic nodebox.
+[2017/8/24] Nodes which have fallen can be dug by anyone, even in protected zones. Thus, fallen nodes no longer become 'stuck' in the protected zones of players who rarely logon.
+[2017/8/24] Added engraving bench and nameplates. Tools and other items may now be given names.
+[2017/8/23] Additional particles spawned when a block falls.
+[2017/8/23] Sound played when someone is punched is now audible to other players close by.
+[2017/8/23] Global punchnode callbacks weren't being called for nodes that overrode the on_punch callback. Fixed.
+[2017/8/23] Block mining and placement spawns additional particles visible to others.
+[2017/8/23] Added a particle effect for lava.
+[2017/8/23] Added HUD clock. Code from 'aftermath'.
+[2017/8/22] Nodes drop as items when dug, unless next to the player, in which case they go swiftly into the player's inventory.
+[2017/8/22] Hoed soil converted to nodebox for added detail.
+[2017/8/22] Added gauges mod which displays health bar above player.
+[2017/8/22] All leaves drop sticks in addition to previous drops.
+[2017/8/22] Fixed item-duplication bug in anvil, itemframe, and pedestal.
+[2017/8/14] Added itemframes.
+[2017/8/12] Chernobylite is now a falling node.
+[2017/8/12] Changed Coconut Milk & Raspberry Smoothies into Energy Drinks. This replenishes stamina for sprinting.
+[2017/8/11] Updated anticurse database to remove some false positives.
+[2017/8/11] Fixed problem with extremely slow water movement.
+[2017/8/10] Increased sprint speed a little more.
+[2017/8/10] Added wind catcher frame node.
+[2017/8/10] Exposure to heat or radiation now drains your running stamina.
+[2017/8/10] Fixed missing texture with corium liquid rendering.
+[2017/8/7] Max sprinting stamina now capped to not be greater than current player health.
+[2017/8/7] Fixed minor bug in handholds mod that prevented liquids from flowing normally.
+[2017/8/6] Finished final tweaks on a high-performance nearest-neighbors (floodfill) algorithm. Useful!
+[2017/8/6] Tweaked sprinting mod. Stamina is restored a little bit faster, and you can run slightly faster than I initially allowed.
+[2017/8/6] Added a sound effect for respawning players.
+[2017/8/6] The 'error' sound effect now plays for a bunch of additional error conditions. (Used to be heard only with vending machines.)
+[2017/8/6] Added sound effect for teleporting. Shamelessly copied from Xanadu.
+[2017/8/5] Added sprinting mod, tweaked to include a few gotchas & integrate better with existing hunger & stamina.
+[2017/8/5] Reduced the default 'run' speed a bit, because a sprinting mod will be added. Sprinting will let you move a little faster than the default 'run' speed.
+[2017/8/5] Added climbing pick (handholds mod). No, you won't find it in the modlist.
+[2017/8/4] Anticurse messages sent to offenders now appear in public chat, so others can enjoy reading them. :-) New messages added.
+[2017/8/3] Modifying a chest inventory now automatically updates attached vending machines.
+[2017/7/16] Reduced cost of the TNT and shell arrow recipes. Uses copper instead of bronze.
+[2017/7/12] Fixed a bug in the code for managing `crushing` recipes.
+[2017/7/12] Fixed bug in books mod.
+[2017/7/12] Added landscaping to all 5 city squares.
+[2017/7/12] New algorithm for converting dirt with grass to just dirt if it's covered. Removed perf-hog ABM.
+[2017/7/11] Removed ABM converting dirt and grass to snow if there was snow on top. Dirt with snow may be crafted.
+[2017/7/11] Added a new grass type, `Coarse Grass`, to go with regular grass and junglegrass.
+[2017/7/11] Fixed a bug in the default flora spread algorithm. Param2 is now respected.
+[2017/7/11] Modified drawspec for junglegrass slightly.
+[2017/7/11] Added crushing recipes. The crushing machine is slow, and cannot perform fine grinding work.
+[2017/7/11] Added crushing machine, by player request. Essential design from JT2.
+[2017/7/11] Removed craft recipe for dry leaves and added a cooking recipe, which makes more sense.
+[2017/7/11] Added more wall types from various default metal blocks, including tin. Idea credit goes to sorcerykid of JT2, where I first saw this.
+[2017/7/10] Added tin ore to the nether. This gives copper (which is already there) a use in bronze.
+[2017/7/8] Apples, firetree fruit, and cones slowly regrow after being picked.
+[2017/7/7] Fixed an exploit making it possible to grief with hot cobble.
+[2017/7/7] Added brick, block & stair variants for glowing obsidian.
+[2017/7/7] Glowing obsidian may now be crafted with regular obsidian and glowdust.
+[2017/7/7] Coal dust blocks now craftable from sand and coal dust.
+[2017/7/6] Added waving property to a bunch of leaf types that lacked it.
+[2017/7/6] Dry leaves now made from craft instead of ABM. Performance!
+[2017/7/6] All tree models now significantly more randomized.
+[2017/7/6] Fixed problem with players being able to grab their bones while dead.
+[2017/7/5] Pinetrees now use L-system code. Other trees will follow in time.
+[2017/7/5] Updated rules.
+[2017/7/5] Public chatlog now keeps times down to the second, UTC.
+[2017/7/4] Collecting bones containing items now alerts other players.
+[2017/7/4] Fewer mobs spawn inside the Surface Colony. They were killing too many new players!
+[2017/7/3] The server’s player-rename functionality has been bugfixed. Renaming now takes place based on a weekly cycle.
+[2017/7/2] Corrected some spelling mistakes on the server pages & added a nice background image of Central Square spawn.
+[2017/7/1] Moved the server changelog out-of-world to this page.
+[2017/7/1] Created a webpage for this server using stuff from the original forum topic.
+[2017/7/1] The server now has a domain name: http://arklegacy.duckdns.org/.
+[2017/6/30] Updated ‘books’ code, fixed some bugs.
+[2017/5/15] The Survival Challenge can now be played cooperatively.
+[2017/5/15] Added ability to cancel a Survival Challenge.
+[2017/5/15] Removed an exploit when starting a Survival Challenge.
+[2017/5/15] Tweaked auto-pickup logic.
+[2017/5/14] Recompiled server, patched WorldEdit to fix a security problem.
+[2017/5/12] Fixed dating problem in the changelog.
+[2017/5/12] Flying obsidian blocks no longer able to destroy players’ bones.
+[2017/5/12] Mobs no longer destroy stuff above lava, if they die in lava.
+[2017/4/26] Added rockmelt. Watch out for the lava!
+[2017/4/26] Lava converts flammable stuff directly to fire.
+[2017/4/26] Torches drown promptly when placed in water or lava.
+[2017/4/26] Lava converts stone and cobble to rockmelt.
+[2017/4/25] Armor made from ingots can be melted down to get the ingots.
+[2017/4/25] Oerkki drop papyrus sometimes.
+[2017/4/24] Players may rename themselves. Server takes care of it.
+[2017/4/22] Wielditems are reset whenever a player teleports.
+[2017/4/21] Falling liquid nodes no longer cause damage.
+[2017/4/21] Fixed bug where liquid nodes would fall in wrong situations.
+[2017/4/21] Added the ability for players to rename themselves.
+[2017/4/20] Server preloads map before teleporting players.
+[2017/4/20] Cityblocks prevent TNT placement within 50 meters of them.
+[2017/4/20] Big TNT performance increase when no protections are present.
+[2017/4/20] TNT drops *everything*. No more lost goods. :)
+[2017/4/20] TNT explosion routines vastly bugfixed & improved.
+[2017/4/20] Kalite dust can be crafted to red dye.
+[2017/4/20] Kalite can be ground into dust by hand.
+[2017/4/19] Sleeping in a bed heals 4 HP and increased hunger by 6.
+[2017/4/19] Fixed a bunch of bugs in node instability mod.
+[2017/4/19] Anyone can put/take biofuel from teleporters.
+[2017/4/19] Various tweaks to the chat system.
+[2017/4/19] Bluerack can now be found in the nether cavern ceiling.
+[2017/4/18] Unsupported nodes fall, if they are not protectors.
+[2017/4/18] You can now claim victory in the Nether City.
+[2017/4/18] Players are now always fully healed and fed before starting a Survival Challenge. It is no longer necessary to do this first, manually.
+[2017/4/18] Protector nodes can no longer become unstable and fall.
+[2017/4/18] Regular doors (and locked versions) can be crafted with firetree planks. This makes it possible to craft wooden doors in the Survival Challenge mini-game.
+[2017/4/18] Craftguide is loaded at init-time instead of when players first open the craftguide formspec. This removes the appearance of lag when opening the craftguide the first time in exchange for a longer server start-up time.
+[2017/4/18] Griefer mobs drop dry shrubs and bones a bit more often.
+[2017/4/17] Added rankings to the Survival Challenge mini-game.
+[2017/4/17] Freshwater can now be found in caverealms.
+[2017/4/17] Added hotbar reward to the Iceworld challenge.
+[2017/4/16] Added Survival Challenge mini-game. Alpha version.
+[2017/4/16] New players start with 6 torches instead of 3.
+[2017/4/16] Torches may be crafted back to sticks. This makes getting a start in the world a little easier. It is not, however, easy to discover.
+[2017/4/15] Added new, cheaper snowbrick recipe.
+[2017/4/15] Increased Starfissure Box inventory size.
+[2017/4/15] Improved burntime for mese fuels.
+[2017/4/14] Chests/doors can be opened while wielding shears.
+[2017/4/14] Improved durability of shears and digging speed.
+[2017/4/14] Anvil repairs faster (fewer clicks with the mouse needed).
+[2017/4/14] Firetree fruit protects from heat damage when bucketing lava.
+[2017/4/14] Firetree fruit gives 3 seconds heat immunity instead of 2.
+[2017/4/13] Use hoes to get back resources from mese crystal farms.
+[2017/4/13] Blacksmithing hammer should have a break sound now.
+[2017/4/13] Cooking Bluegrass yeilds 3 edible items instead of 1.
+[2017/4/13] Harvesting Bluegrass can yeild a bit more.
+[2017/4/13] Crystaline Bell no longer repaired by anvil (it’s glass, not metal!).
+[2017/4/13] Anvil becomes a falling node. Have fun dropping them on mobs (and others).
+[2017/4/12] Slightly increased cost of blacksmithing hammer recipe.
+[2017/4/12] Updated anvil model, added a texture.
+[2017/4/12] Fixed item-duplication exploit with the anvil.
+[2017/4/12] Erasers cannot be repaired by anvil.
+[2017/4/12] Recompiled server.
+[2017/4/10] Added anvil mod. Hammers cannot be repaired.
+[2017/3/31] Keys now show owner, object & location in their description. Do note that you need a very recent client (> 0.4.15) in order to view custom description tooltips.
+[2017/3/31] Fixed waterlily Z-fighting issues.
+[2017/3/31] Recompiled server. There were some minor fixes.
+[2017/3/31] Kalite torches can now be used to ignite TNT.
+[2017/3/31] Gunpowder recipe makes 6 gunpowder instead of 5.
+[2017/3/20] Added rotation parameter to empty rubber tree trunk nodes.
+[2017/3/20] Added tool break sounds. Somehow they were missing?
+[2017/3/20] Fixed crash in treetap tool.
+[2017/3/20] Added boats.
+[2017/3/19] Fixed crash when opening chest with mese crystal seed.
+[2017/3/19] Recompiled server.
+[2017/3/16] Improved consistency for showing/hiding player nametags.
+[2017/3/16] /status command gives more useful performance information.
+[2017/3/16] Updated server description and MoTD text.
+[2017/3/16] Updated /privs command. The admin felt it was too snoopy. :-)
+[2017/3/16] Recompiled server to stay up-to-date with latest Git head.
+[2017/3/15] Bugs where the wrong sound was sent to nearby players when someone punches a nearby node have been fixed.
+[2017/3/15] Fuel can now be removed from teleports, respecting protection.
+[2017/3/14] Golden carrot now heals hearts and hunger instantly.
+[2017/3/14] Shroom stems can now be crafted into sticks.
+[2017/3/14] Wormroot vines can now be used as emergency fuel.
+[2017/3/14] Dauthsand now drops flint, sometimes.
+[2017/3/14] Dauthsand can now be smelted into glass.
+[2017/3/14] Regular furnaces can now be crafted from blackrack.
+[2017/3/13] Fixed bug where gem shovels could not dig up bushes.
+[2017/3/13] Bandage update: new sound effect; new combat rules.
+[2017/3/12] Machine network tracing can now extend into unloaded areas.
+[2017/3/12] Added farmable plants: tomato, carrot, blueberries, raspberries.
+[2017/3/12] Darkwood chests may now be used in switching station recipe.
+[2017/3/12] Waterlilies may now be used as fuel in teleports.
+[2017/3/11] Players entering the nether should be sure to bring with them enough supplies to build a return portal in the nether, if they have not already done so.
+[2017/3/11] Jailing a target requires the area to be marked with a city block.
+[2017/3/11] It is no longer possible to jail self on own property.
+[2017/3/11] A flameportal built in the nether will return to the player’s last-used surface portal when activated and used. You need to have used a surface portal at least once for this to work.
+[2017/3/11] It is now necessary to strike the flameportal with flint & steel while standing on the portal void in order to initiate a transport. The old code that constantly checked to see if a player was standing in the portal void has been removed.
+[2017/3/11] Flameportals now drop player into nether from greater height.
+[2017/3/11] Flameportal void is no longer a liquid. You stand on it now.
+[2017/3/9] Tweaked some descriptions of machines.
+[2017/3/9] Machine message hop limit reduced to 8. Build clever networks!
+[2017/3/9] Cables of different tiers have different max lengths.
+[2017/3/9] Added supply converter.
+[2017/3/9] The geothermal generator only powers LV networks.
+[2017/3/9] The fuel generator can power both LV and MV networks.
+[2017/3/9] All EU-consuming machines now require MV connections.
+[2017/3/8] Added new way to get starpearls.
+[2017/3/8] Split batteries into tiers.
+[2017/3/7] Split switching stations & cables into tiers.
+[2017/3/5] Added bluegrass -- a nether crop.
+[2017/3/5] Pumpkin seeds can now be found in-world. Travel far to find them!
+[2017/3/5] Now possible to open doors/chests while wielding saplings.
+[2017/3/5] Pumpkin nodes & farming added (not yet obtainable).
+[2017/3/5] Iron, copper & coal can now be frequently found in the nether.
+[2017/3/5] Ghost stone has new inventory & wield image.
+[2017/3/5] Lava bucket/can duplication exploit fixed.
+[2017/3/5] Fast leafdecay added to firetree leaves.
+[2017/3/3] New textures for switching stations.
+[2017/3/3] Split cables into tiers. Note: all tiers are currently equivalent!
+[2017/3/3] Split switching stations into tiers.
+[2017/3/3] New ores (chromium, zinc, lead, akalin, alatro, arol, talinite) may now be used in teleports.
+[2017/3/3] Major update to machines. Note, they are still in development!
+[2017/3/2] Removed ownership checks for machines -- not needed anymore.
+[2017/3/2] Removed all wireless connections. Machines use cables!
+[2017/3/2] Centrifuge machine has new ‘active’ animation.
+[2017/3/2] Added geothermal generator.
+[2017/2/27] All machines use buffering to reduce power-network traversing.
+[2017/2/26] Generators can now burn mesefuel as well as regular fuels.
+[2017/2/26] Crash bug in bookshelf mod fixed.
+[2017/2/26] Torches now emit less light. Use meselamps to grow things.
+[2017/2/26] Gem cutter now runs on mesefuel. Compatible with P-networks.
+[2017/2/26] Rebalanced reinforced gemtools.
+[2017/2/26] Updated craft recipes for all reinforced gemtools.
+[2017/2/26] Removed reinforced tool handles. Players get steel ingots back.
+[2017/2/26] Improved gemtool textures.
+[2017/2/26] Improved mineral textures for ores from default and moreores.
+[2017/2/25] Boom sound added to fire arrow so that it isn’t silent anymore.
+[2017/2/25] Fire arrow won’t bypass protection anymore.
+[2017/2/25] New high-speed, low-lag, discriminating leafdecay functions.
+[2017/2/22] All machine networks now have owners.
+[2017/2/22] Fixed bug where one can’t get active generator’s configuration.
+[2017/2/22] Two new recipes for the centrifuge.
+[2017/2/22] Many machines can be upgraded with batteries to reduce drain.
+[2017/2/22] Machines no longer drain batteries uselessly during brownout.
+[2017/2/22] ‘SERVER’ is now a reserved name, used by the server.
+[2017/2/22] Mailboxes can now be upgraded with Control Logic Units. If you upgrade a mailbox with a CLU, it will send its owner email whenever someone deposits items.
+[2017/2/22] Updated GUI for mailboxes. New GUI inclues a ‘Get Mail’ button.
+[2017/2/22] Battery boxes now display their charge level graphically.
+[2017/2/22] Centrifuge textures are now less pixelated.
+[2017/2/22] Added centrigue machine with 4 recipes. Try separating wheat!
+[2017/2/22] Added code to support `separating` recipes; updated craftguide.
+[2017/2/20] Carts properly pass through clicks to nodes like doors, etc.
+[2017/2/20] Chests properly close if player who opened them times out.
+[2017/2/18] Memorandum properly pass through clicks to doors, chests, etc.
+[2017/2/17] Added network control device (just the node, logic comes later).
+[2017/2/17] Updated several machine recipes to use new craftitems.
+[2017/2/17] Electric furnace now obtainable.
+[2017/2/17] Electric alloy furnace now obtainable.
+[2017/2/17] Added some logging code to the teleports mod to catch a crash.
+[2017/2/17] Added energy distributer.
+[2017/2/17] Added battery array box.
+[2017/2/16] Added battery craftitem.
+[2017/2/16] Imported acacia textures from VE’s HDX texturepack.
+[2017/2/16] Added more grinder recipes.
+[2017/2/16] Added more extractor recipes.
+[2017/2/16] Added sawdust/tree-grindings stuff.
+[2017/2/16] Dye crafts updated. Use extractor to get the most dyes.
+[2017/2/16] Added tree tap. Raw latex is now obtainable.
+[2017/2/16] Added lava and water cans (water can not yet obtainable).
+[2017/2/16] Added concrete & blast resistant concrete.
+[2017/2/16] Added electric alloy furnace (not yet obtainable).
+[2017/2/16] Made proof of citizenship easier to obtain.
+[2017/2/16] Bows are crafted with stainless steel instead of wrought iron.
+[2017/2/16] Coal alloy furnace now obtainable. Alloy recipes reachable.
+[2017/2/16] Removed default crafts for sandstone. Compressor comes soon.
+[2017/2/16] Added another pile of Technic craftitems. Few uses right now.
+[2017/2/16] Added fine wire (copper, silver, gold) from Technic, with recipes.
+[2017/2/16] Added latex & rubber, with alloying recipe.
+[2017/2/16] Added silicon and alloying recipes.
+[2017/2/15] Added a few compressing recipes from Technic.
+[2017/2/15] Added a bunch of alloying recipes from Technic.
+[2017/2/15] Added fuel-fired alloy furnace (not yet obtainable).
+[2017/2/15] Added compressor (not yet obtainable).
+[2017/2/15] Added electric smelter (not yet obtainable).
+[2017/2/15] Updated grinder textures.
+[2017/2/15] Added some code to work around an engine bug.
+[2017/2/15] Added bronze dust, for completeness.
+[2017/2/14] Stainless steel added (not yet obtainable).
+[2017/2/14] Carbon steel added (but not yet obtainable).
+[2017/2/14] Iron chest recipe now uses cast iron instead of regular iron.
+[2017/2/14] Added cast iron.
+[2017/2/14] Brass block, dust & ingot added (not yet obtainable).
+[2017/2/14] Wheat seeds can now be ground into flour.
+[2017/2/14] Desert sand now obtainable by grinding desert stone.
+[2017/2/14] Gunpowder now uses sulfur dust in the craft recipe.
+[2017/2/14] Added sulfur. Sulfur can be found in quantity in lava chambers.
+[2017/2/14] Added uranium.
+[2017/2/14] Added lead.
+[2017/2/14] Fixed issues with wool dyeing recipes.
+[2017/2/14] Added zinc.
+[2017/2/14] Added chromium.
+[2017/2/14] Renamed all ‘steel’ items to ‘iron’ or ‘wrought iron’ items.
+[2017/2/13] Various important fixes to explosion code (used everywhere).
+[2017/2/12] Build instability mod added. Affects 1x1 towers and bridges.
+[2017/2/11] Mese from mese crystals no longer wasted if player has full inv.
+[2017/2/11] Improved anticheat detection precision.
+[2017/2/11] All arrows can now fly through a much wider variety of nodes.
+[2017/2/11] Added Ghost Stone. For secret passages & traps.
+[2017/2/10] Amethyst, ruby, & mese stalactites added to caverealm mapgen.
+[2017/2/10] Updated Mese Lamp recipe so it is not so expensive.
+[2017/2/10] Added Mese Post Light (from Minetest Game).
+[2017/2/9] Recipe for teleport arrows now yields 8 instead of 1.
+[2017/2/9] TNT arrow added! The crash-bug keeping it off the server is fixed.
+[2017/2/9] The launching sound for firework arrows now plays like it should.
+[2017/2/9] Another tool rebalance. Round #5!
+[2017/2/9] Icicles can now be farmed. Glowing icicles can also be farmed, which is the only way to obtain them.
+[2017/2/9] Farming mese crystals now has a small chance to yeild intact mese crystals instead of mese crystal fragments.
+[2017/2/9] The C++ cavegen is now permitted to carve caves in portions of the nether above the brimstone ocean. Note that this is distinct from the caves already generated by the Valleys mapgen.
+[2017/2/8] Players can now save copies of their emails before sending.
+[2017/2/8] Copies of inbox mails can now be obtained. You need paper.
+[2017/2/8] Number of torches needed to melt thin ice reduced to 2.
+[2017/2/8] Re-added toggle for chat echoing. Toggle in passport formspec.
+[2017/2/8] Tip: an email can be sent to multiple players at once by seperating player names with commas in the "Send To" field.
+[2017/2/8] Tip: try double-clicking an entry in the inbox header list.
+[2017/2/8] Added the ability to delete a single email, instead of deleting all.
+[2017/2/7] Complete overhaul of player email system. New interface!
+[2017/2/7] Star-Fissure chests get opened/closed variants.
+[2017/2/6] Teleports now lose signal strength with depth due to rock density. The old code which simply clamped teleports to 250 meters range when in the nether has been removed. Ranges now smoothly decrease with depth.
+[2017/2/6] Ironside chests are now shareable between players.
+[2017/2/6] Using the correct key on a chest opens it like it should.
+[2017/2/6] All metal chests can be given labels.
+[2017/2/6] Mithril and gold chests get capacity increase.
+[2017/2/6] All metalic chests upgraded to hinged versions.
+[2017/2/5] Fixed bug in which shell arrows can destroy bones/nodes.
+[2017/2/5] Successfully upgraded darkwood chests to hinged versions.
+[2017/2/5] Fixed bug with chest open/close sounds being heard everywhere.
+[2017/2/5] Fixed a bug with the conversion of unlocked chests.
+[2017/2/5] Fixed a bug in which stone axes could not chop trees.
+[2017/2/5] Upgrade of default chests to hinged versions! (Tested, duh.)
+[2017/2/5] Updated all dye recipes.
+[2017/2/5] Updated sandstone recipe.
+[2017/2/5] Wheat has new drawtype! (Thanks, Minetest devs.)
+[2017/2/5] Moss will now grow on cobble walls.
+[2017/2/5] Cart handbrake is now stronger.
+[2017/2/5] Papyrus and cactus now need light for growth.
+[2017/2/5] Added new ‘snappy dig’ sound for leave-like nodes.
+[2017/2/5] Arrows now harm players like they should.
+[2017/2/5] Depreciated chat echoing mod; it is no longer needed (I hope).
+[2017/2/5] Anticurse mod no longer kicks players who have passports. Players with passports will be notified but not kicked. Players without passports will still be kicked.
+[2017/2/5] Reworked chat mod to account for server upgrade.
+[2017/2/5] Recompiled server to latest GIT head.
+[2017/2/4] Fixed a crash in the throwing mod.
+[2017/2/4] Mobs can now spawn on caverealm surfaces.
+[2017/2/4] Throwing mod added, with some simple integration tweaks.
+[2017/2/4] Falling nodes now make sounds as they fall.
+[2017/2/3] Fixed some default wood nodes not being useable in circular saw.
+[2017/2/3] Coalblocks and coal ore are now flammable.
+[2017/2/3] Added sapphire & emerald spikes to cave populator.
+[2017/2/3] Fixed bug in protector mod.
+[2017/2/2] Added mapfix command to passport item.
+[2017/2/2] Newplayer welcome chat messages are no longer shown to players who already have a passport token.
+[2017/2/2] Black rackstone now appears everywhere in nether.
+[2017/2/2] Boosted nether mapgen performance.
+[2017/2/2] Hopefully managed to fix nether mapgen discontinuity bug.
+[2017/2/2] Flameportals are now a bit quicker to teleport players.
+[2017/2/2] Added Dead Obsidian Brick/Block nodes.
+[2017/2/2] Updated flameportals. Jumping is no longer necessary.
+[2017/2/2] Updated obsidian textures. VE’s 16px textures are now used.
+[2017/2/1] Obsidian is now blast-resistant.
+[2017/2/1] Fixed bug where wood picks dug faster than steel ones.
+[2017/2/1] Added level 4 nodes.
+[2017/2/1] Added stairs, slabs, etc. for chiseled quartz.
+[2017/2/1] Caverealm mapgen has fade-in/fade-out behavior with depth.
+[2017/2/1] Wrote custom caverealm mapgen to make use of huge caves.
+[2017/1/31] Added most nodes from caverealm mod.
+[2017/1/31] Auto-pickup range increased slightly.
+[2017/1/31] More tool balance tweaks. Round #3.
+[2017/1/31] Emerald and amethyst picks are no longer slow.
+[2017/1/31] Rebalanced all tools. Round #2.
+[2017/1/31] Updated node levels and node groupcaps.
+[2017/1/29] Circular saw costs less to use.
+[2017/1/29] Player always lands on platform when teleporting to nether.
+[2017/1/27] Fixed a rare crash in HUD mod.
+[2017/1/27] Added black rackstone brick, stairs & crafting recipe.
+[2017/1/27] Tool rebalance for picks, shovels, swords, axes. Attempt #1.
+[2017/1/27] Use of the Crystaline Bell makes sound.
+[2017/1/27] Crystaline Bell now lasts 4x longer.
+[2017/1/27] Random teleport activation now a bit slower than before.
+[2017/1/27] Spurious teleports use less fuel than requested teleports.
+[2017/1/26] Added blast-resistance to nether ocean lava.
+[2017/1/26] Brimstone ocean lava is now distinct from ordinary lava.
+[2017/1/26] Spurious teleports now use fuel just like requested teleports.
+[2017/1/26] Teleports now use 1 unit of fuel per 300 meters traveled.
+[2017/1/26] Fixed bug with armor not getting stored in bones sometimes.
+[2017/1/25] Circular saw now checks protection.
+[2017/1/25] Added circular saw with new slab, stair, panel & slope nodes.
+[2017/1/25] Increased yield of the recipe for mese crystal seeds.
+[2017/1/25] Finally customized status message that is shown on player join.
+[2017/1/25] Recompiled server.
+[2017/1/25] Added hotfix chatcommand to toggle echoing chat.
+[2017/1/25] Updated mese crystal seed recipe to use crystal fragments.
+[2017/1/25] Changed charcoal recipe from planks to treetrunks.
+[2017/1/25] Improved textures for gem blocks.
+[2017/1/25] Eating sound now audible to nearby players.
+[2017/1/24] Code for clearing teleport pads updated for position accuracy.
+[2017/1/24] Added charcoal as an alternative to coal for making torches.
+[2017/1/24] Players dying from high drops no longer leave floating bones.
+[2017/1/24] Fixed wieldhand bug when player dies while placing something.
+[2017/1/24] Destroying a bed now removes the spawnpoint for that player.
+[2017/1/24] Updated description for mese crystal seeds.
+[2017/1/24] Tweaked a few recipes.
+[2017/1/24] Beds now have a respawn limit before they must be reset.
+[2017/1/24] Implemented bed ownership. No more bed thieves!
+[2017/1/24] Netherack now reacts badly to daylight.
+[2017/1/24] Added extractor & extracting recipes.
+[2017/1/24] Reduced damage from bucketing lava by half.
+[2017/1/24] Added behavior for evil netherack.
+[2017/1/24] Added rare surprises when digging netherack.
+[2017/1/24] Updated recipe for mese seeds.
+[2017/1/23] Removed unused labels from armor formspec screen.
+[2017/1/23] Updated mese grinder machine recipe.
+[2017/1/23] Added & tweaked mod for growing mese crystals.
+[2017/1/23] Gems mod added. Includes 4 gems and gem-cutter machine.
+[2017/1/21] Firetree fruit now gives immunity to heat damage.
+[2017/1/21] New players (re)spawn at 1 of 5 random city spawn locations.
+[2017/1/21] Updated server configuration.
+[2017/1/21] Teleports no longer delete player bones left on teleport pad.
+[2017/1/21] New jungletree planks added to dark chest recipes.
+[2017/1/21] Raw firetree planks can be crafted into dark chests.
+[2017/1/21] Baked firetree planks can be crafted into light chests.
+[2017/1/20] Fixed firetree growing times.
+[2017/1/20] INAUGURATION!
+[2017/1/19] Increased chance to get surprise after digging a void chest.
+[2017/1/19] Doubled chance to get star pearls from dead warthogs.
+[2017/1/19] Lengthened TNT ignition timer 1 second.
+[2017/1/3] Added server info to the passport formspec.
+[2017/1/3] Hopefully fixed a bug in the HUD with the armor gauge.
+[2017/1/3] Tweaked mithril armor. Upgraded server to latest dev version.
+[2017/1/3] Added 3D armor! Slightly improved GUI consistency.
+[2016/12/25] Jungletree growing code improved. No 2 trees alike!
+[2016/12/24] TNT explosion power increased 10%.
+[2016/12/20] Posted official forum topic about this server.
+[2016/12/20] Migration to Solid State Drives (x2) complete!
+[2016/12/18] Optimized world backup scripts.
+[2016/12/17] Removed beds from roof over spawn plaza.
+[2016/12/17] Recompiled server to solve library compatibility problem.
+[2016/12/14] OS Upgrade.
+[2016/12/11] 4 new doors added. Unlocked variant of steel door also added.
+[2016/12/8] Added titanium ore & tools.
+[2016/12/7] New SSDs! Router trouble. >:( But fixed now. Mostly.
+[2016/12/6] New router!
+[2016/12/5] Shears can now be crafted using any type of wood.
+[2016/12/5] Lux ore now drops 4 lux crystals instead of 1.
+[2016/12/5] Added acorns with acorn muffin recipe.
+[2016/12/5] Added coconut with recipes.
+[2016/12/5] Added fir, pine, cedar, & spruce: cones & nuts with cooking recipes.
+[2016/12/5] Apple trees now grow a random number of apples.
+[2016/12/5] Tweaked behavior of falling nodes (sand, gravel, etc.).
+[2016/12/4] Lua panic (OOM) error in ropebox code fixed.
+[2016/12/4] Shears can be crafted from tin ingots (in addition to steel ingots).
+[2016/12/4] Shears can now be used to dig leaves efficiently. Rightclick to dig rope.
+[2016/12/4] Descriptions of ocher stone blocks changed to red stone blocks.
+[2016/12/4] Metal chests (copper, iron, gold, silver, mithril) added.
+[2016/12/4] This changelog was created.

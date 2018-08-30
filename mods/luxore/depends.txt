@@ -1,0 +1,3 @@
+default
+oregen
+mapgen

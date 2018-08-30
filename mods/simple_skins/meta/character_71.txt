@@ -1,0 +1,3 @@
+name = "Son Goku",
+author = "Esteban",
+sex = "male",

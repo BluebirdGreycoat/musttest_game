@@ -1,0 +1,3 @@
+name = "Steampunk Miner",
+author = "Unknown",
+sex = "male",

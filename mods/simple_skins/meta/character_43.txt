@@ -1,0 +1,3 @@
+name = "Hobo/Homeless person",
+author = "Minetestian",
+sex = "male",

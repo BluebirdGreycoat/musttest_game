@@ -1,0 +1,3 @@
+name = "Native American Girl",
+author = "Melina1818",
+sex = "female",

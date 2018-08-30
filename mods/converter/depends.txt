@@ -1,0 +1,5 @@
+reload
+guicolors
+utility
+coresounds
+craft_register

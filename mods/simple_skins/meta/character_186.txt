@@ -1,0 +1,3 @@
+name = "Blonde Girl",
+author = "Rin",
+sex = "female",

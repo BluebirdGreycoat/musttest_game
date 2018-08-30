@@ -1,0 +1,3 @@
+name = "Smooth Sam",
+author = "Jordach",
+sex = "male",

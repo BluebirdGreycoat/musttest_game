@@ -1,0 +1,3 @@
+name = "Lush",
+author = "Aledo",
+sex = "female",

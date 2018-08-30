@@ -1,0 +1,33 @@
+
+-- Aliases for mapgen output.
+local ra = minetest.register_alias_force
+ra("mapgen_stone",                  "default:stone")
+ra("mapgen_dirt",                   "default:dirt")
+ra("mapgen_dirt_with_grass",        "default:dirt_with_grass")
+ra("mapgen_sand",                   "default:sand")
+ra("mapgen_water_source",           "default:water_source")
+ra("mapgen_river_water_source",     "air") -- Suppress rivers created by Valleys mapgen. By MustTest
+ra("mapgen_lava_source",            "default:lava_source")
+ra("mapgen_gravel",                 "default:gravel")
+ra("mapgen_desert_stone",           "default:desert_stone")
+ra("mapgen_desert_sand",            "default:desert_sand")
+ra("mapgen_dirt_with_snow",         "default:dirt_with_snow")
+ra("mapgen_snowblock",              "default:snowblock")
+ra("mapgen_snow",                   "default:snow")
+ra("mapgen_ice",                    "default:ice")
+ra("mapgen_sandstone",              "default:sandstone")
+ra("mapgen_tree",                   "default:tree")
+ra("mapgen_leaves",                 "default:leaves")
+ra("mapgen_apple",                  "basictrees:tree_apple")
+ra("mapgen_jungletree",             "default:jungletree")
+ra("mapgen_jungleleaves",           "default:jungleleaves")
+ra("mapgen_junglegrass",            "default:junglegrass")
+ra("mapgen_pine_tree",              "default:pine_tree")
+ra("mapgen_pine_needles",           "default:pine_needles")
+ra("mapgen_cobble",                 "default:cobble")
+ra("mapgen_stair_cobble",           "stairs:stair_cobble")
+ra("mapgen_mossycobble",            "default:mossycobble")
+ra("mapgen_stair_desert_stone",     "stairs:stair_desert_stone")
+ra("mapgen_stair_sandstone_block",  "stairs:stair_sandstone_block")
+ra("mapgen_stair_sandstonebrick",   "stairs:stair_sandstonebrick")
+ra = nil -- Prevent name polution.

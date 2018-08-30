@@ -1,0 +1,48 @@
+Upon burial, drops may escape to one of the 26 surrounding nodes if any are non-obstructing ('walkable'==false).
+Spaces closest to the nearest player are preferred.
+
+If no such spaces are found, the drop is "entombed," and remains subject to lift physics until free of obstructing nodes.
+Lift physics holds a drop for one second before moving it upwards by one node every step, and does not seek other escape routes.
+
+Droplift does not distinguish between differently shaped node boxes, only what their 'walkable' setting is.
+This makes it easy to manually entomb drops using simple node types like slabs and glass panes.
+
+Entombed/free status is preserved across game reloads rather than retested. For example, a drop resting on a slab will remain at rest, althoguh technically inside an obstructing node.
+
+ALL drop velocities are zeroed on reload. This prevents resting-buried drops from burrowing below their current floor as they do in the default game. This only affects mods, as it's not possible to manually produce this condition under droplift.
+
+	-------
+	* API *
+	-------
+
+In general, drops are expected to spawn in non-obstructing nodes, like 'air.'
+Therefore droplift ignores newly spawned drops, and only checks them upon burial.
+
+----
+If you want droplift to handle drops spawned inside obstructing nodes, use:
+
+
+	droplift.invoke(dropObject, sync)
+
+
+sync in [ false | 0 | seconds ]:
+
+* false: As for burial above. If however the drop is already entombed, a failed escape will not alter the existing process.
+
+* 0: As for false, but skipping the escape phase.
+
+* seconds (float): This is the time since calling invoke that the next lift will schedule its subsequent lift. If the drop is not already entombed, it proceeds as for 0 above.
+
+I.e. a lift must occur AFTER the call and BEFORE the target time so it can schedule its NEXT lift to occur at that time, otherwise the sync request is ignored. The initial standing period before the first lift cannot be modified.
+
+Drops remain "entombed" while there is an outstanding sync time, regardless of whether they are actually buried, but will only receive calls while buried. Lift will always exit on unburied drops, and a scheduled lift cannot be delayed by additional sync setting.
+
+Sync info is not preserved across reloads. Timing is approximate and variable.
+
+Remember: Sync is primarily aesthetic, to ensure mod interactions display their activity nicely. Don't expect trickier uses to work perfectly.
+
+----
+To disable lift physics on a drop, use:
+
+	dropEntity.is_entombed = nil
+

@@ -1,0 +1,3 @@
+name = "Pinocchio",
+author = "Leostereo",
+sex = "male",

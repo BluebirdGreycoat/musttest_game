@@ -1,0 +1,4 @@
+craft_register
+coresounds
+oregen
+mapgen

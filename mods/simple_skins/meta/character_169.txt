@@ -1,0 +1,3 @@
+name = "Julie",
+author = "nelly",
+sex = "female",

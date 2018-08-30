@@ -1,0 +1,3 @@
+name = "The Golden Samurai",
+author = "Ghanastripes1",
+sex = "male",

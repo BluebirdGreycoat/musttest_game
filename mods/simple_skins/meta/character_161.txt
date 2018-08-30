@@ -1,0 +1,3 @@
+name = "Animal Hunter",
+author = "predator 427",
+sex = "male",

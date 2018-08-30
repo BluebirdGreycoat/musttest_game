@@ -1,0 +1,2 @@
+craft_register
+coresounds

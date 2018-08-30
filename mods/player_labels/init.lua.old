@@ -1,0 +1,200 @@
+
+player_labels = player_labels or {}
+player_labels.modpath = minetest.get_modpath("player_labels")
+player_labels.mark_timeout = 10
+player_labels.chat_timeout = 6
+player_labels.anim_timeout = 3
+player_labels.players = player_labels.players or {}
+player_labels.marks = player_labels.marks or {}
+player_labels.active_tags = player_labels.active_tags or {}
+
+
+
+-- Support for reloading.
+if minetest.get_modpath("reload") then
+    local c = "player_labels:core"
+    local f = player_labels.modpath .. "/init.lua"
+    if not reload.file_registered(c) then
+        reload.register_file(c, f, false)
+    end
+end
+
+
+
+local nametag_show = function(obj)
+    if obj and obj:is_player() then
+        local col = {a=255, r=0, g=255, b=255}
+        local txt = obj:get_player_name()
+        obj:set_nametag_attributes({color=col, text=txt})
+    end
+end
+
+
+
+local nametag_hide = function(obj)
+    if obj and obj:is_player() then
+        local col = {a=0, r=0, g=0, b=0}
+        local txt = "!"
+        obj:set_nametag_attributes({color=col, text=txt})
+    end
+end
+
+
+
+player_labels.on_joinplayer = function(player)
+    -- Player names are shown by default, when they first connect during this server session.
+    if player_labels.active_tags[player:get_player_name()] == nil then
+        nametag_show(player)
+        player_labels.active_tags[player:get_player_name()] = true
+    end
+end
+
+
+
+player_labels.calc_nametag_display = function(name)
+    -- Ensure an entry for this name exists; this makes the rest of this function easier.
+    if not player_labels.players[name] then
+        player_labels.players[name] = 0
+    end
+    
+    local object = minetest.get_player_by_name(name)
+    if object and object:is_player() then
+        local count = player_labels.players[name]
+        
+        if player_labels.marks[name] then
+            count = 1
+        end
+        
+        if count <= 0 then
+            local col = {a=0, r=0, g=0, b=0}
+            local txt = "!"
+            object:set_nametag_attributes({color=col, text=txt})
+        else -- Count is >= 1.
+            local col = {a=255, r=0, g=255, b=255}
+            local txt = name
+            object:set_nametag_attributes({color=col, text=txt})
+        end
+    end
+end
+
+
+
+-- This function operates on the principle of reference-counting.
+player_labels.update_nametag_refcount = function(name, incdec)
+    -- Ensure an entry for this name exists; this makes the rest of this function easier.
+    if not player_labels.players[name] then
+        player_labels.players[name] = 0
+    end
+
+    if incdec then
+        -- Increment tag count.
+        local count = player_labels.players[name]
+        count = count + 1
+        player_labels.players[name] = count
+    else
+        -- Decrement tag count.
+        local count = player_labels.players[name]
+        count = count - 1
+        player_labels.players[name] = count
+    end
+
+    player_labels.calc_nametag_display(name)
+end
+
+
+
+player_labels.toggle_nametag_broadcast = function(name)
+    if not player_labels.marks[name] then
+        player_labels.marks[name] = true
+        minetest.chat_send_player(name, "# Server: Avatar ID broadcast is ON.")
+    else
+        player_labels.marks[name] = nil
+        minetest.chat_send_player(name, "# Server: Avatar ID broadcast is OFF.")
+    end
+    
+    player_labels.calc_nametag_display(name)
+end
+
+
+
+player_labels.on_tag_timeout = function(name)
+    local object = minetest.get_player_by_name(name)
+    if object and object:is_player() and player_labels.players[name] then
+        player_labels.update_nametag(name, false)
+    end
+end
+
+
+
+player_labels.on_anim_timeout = function(name)
+    local object = minetest.get_player_by_name(name)
+    if object and object:is_player() then
+        object:set_animation({x=0, y=79}, 30, 0, true)
+    end
+end
+
+
+
+player_labels.on_token_use = function(itemstack, user, pointed_thing)
+    if not user then return end
+    if not user:is_player() then return end
+
+    if pointed_thing.type == "object" then
+        local object = pointed_thing.ref
+        if object:is_player() then
+            minetest.chat_send_player(user:get_player_name(), "# Server: Player's name is <" .. object:get_player_name() .. ">.")
+            minetest.chat_send_player(object:get_player_name(), "# Server: Player <" .. user:get_player_name() .. "> identified you.")
+            
+            player_labels.update_nametag_refcount(object:get_player_name(), true)
+            minetest.after(player_labels.mark_timeout, player_labels.on_tag_timeout, object:get_player_name())
+            
+            return itemstack
+        end
+    end
+    
+    player_labels.toggle_nametag_broadcast(user:get_player_name())
+    return itemstack
+end
+
+
+
+player_labels.on_chat_message = function(name, message)
+    local object = minetest.get_player_by_name(name)
+    if object and object:is_player() then
+        object:set_animation({x=189, y=198}, 30, 0, true)
+        minetest.after(player_labels.anim_timeout, player_labels.on_anim_timeout, name)
+        
+        player_labels.update_nametag_refcount(name, true)
+        minetest.after(player_labels.chat_timeout, player_labels.on_tag_timeout, name)
+    end
+end
+
+
+
+-- First-time execution only.
+if not player_labels.registered then
+    minetest.register_on_joinplayer(function(...) return player_labels.on_joinplayer(...) end)
+    
+    minetest.register_craftitem("player_labels:show", {
+        description = "ID Marker [Use this to see someone's name, if suspicious of impersonation.]",
+        inventory_image = "default_copper_block.png",
+        --range = 10, -- Disabled because this allows players to access formspecs from long range.
+        on_use = function(...) return player_labels.on_token_use(...) end,
+        
+        -- Disabled because these attempts to disable right-click functionality do not appear to work.
+        --on_rightclick = function(...) end,
+        --on_secondary_use = function(...) end,
+        --on_place = function(...) end,
+    })
+
+    minetest.register_craft({
+        output = 'player_labels:show',
+        recipe = {
+            {"",                        "default:copper_ingot",     ""                    },
+            {"default:copper_ingot",    "",                         "default:copper_ingot"},
+            {"",                        "default:copper_ingot",     ""                    },
+        },
+    })
+
+    player_labels.registered = true
+end

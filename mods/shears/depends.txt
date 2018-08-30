@@ -1,0 +1,2 @@
+reload
+craft_register

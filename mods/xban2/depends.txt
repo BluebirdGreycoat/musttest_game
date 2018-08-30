@@ -1,0 +1,3 @@
+guicolors
+default
+reload

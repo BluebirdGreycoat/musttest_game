@@ -1,0 +1,4 @@
+default
+dye
+extractor
+craft_register

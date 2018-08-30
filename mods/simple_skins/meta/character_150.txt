@@ -1,0 +1,3 @@
+name = "Ragnar (Rune Protagonist)",
+author = "Einszone",
+sex = "male",

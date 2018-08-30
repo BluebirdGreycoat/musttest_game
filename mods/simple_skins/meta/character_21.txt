@@ -1,0 +1,3 @@
+name = "Battlefield 3 Soldier",
+author = "Jordach",
+sex = "male",

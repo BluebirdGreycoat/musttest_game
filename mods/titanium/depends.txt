@@ -1,0 +1,5 @@
+coresounds
+default
+oregen
+mapgen
+tooldata

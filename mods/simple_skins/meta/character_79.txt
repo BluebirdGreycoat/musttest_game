@@ -1,0 +1,3 @@
+name = "Safety Miner",
+author = "SgtPotatoes",
+sex = "male",

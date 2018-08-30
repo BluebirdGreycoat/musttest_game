@@ -1,0 +1,3 @@
+name = "Elven Girl",
+author = "Allykaty",
+sex = "female",

@@ -1,0 +1,3 @@
+name = "InuYasha",
+author = "unknown",
+sex = "male",

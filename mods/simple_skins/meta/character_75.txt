@@ -1,0 +1,3 @@
+name = "Nickli",
+author = "sazonov.pavlik73-nickli",
+sex = "male",

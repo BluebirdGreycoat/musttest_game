@@ -1,0 +1,3 @@
+name = "Realistic Miner",
+author = "juirox",
+sex = "male",

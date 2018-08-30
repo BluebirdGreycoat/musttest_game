@@ -1,0 +1,52 @@
++* akalin:ore
++* alatro:ore
++* arol:ore
++* chromium:ore
+ * gems:ruby_ore
+ * gems:emerald_ore
+ * gems:sapphire_ore
+ * gems:amethyst_ore
++* kalite:ore
++* lead:ore
+ * default:clay
+ * default:sand
+ * default:dirt
+ * default:gravel
++* default:stone_with_coal
++* default:stone_with_iron
++* default:stone_with_copper
++* default:stone_with_gold
+ * default:stone_with_mese
++* default:stone_with_diamond
+ * default:mese
+ * mese_crystals:mese_crystal_ore1
+ * mese_crystals:mese_crystal_ore2
+ * mese_crystals:mese_crystal_ore3
+ * mese_crystals:mese_crystal_ore4
++* moreores:mineral_tin
++* moreores:mineral_silver
++* moreores:mineral_mithril
++* glowstone:glowstone
+ * default:lava_source
+ * fire:nether_flame
+ * rackstone:dauthsand
+ * rackstone:blackrack
+ * rackstone:bluerack
++* rackstone:redrack_with_coal
++* rackstone:redrack_with_iron
++* rackstone:redrack_with_copper
++* rackstone:redrack_with_tin
+ * quartz:quartz_ore
++* talinite:ore
+ * titanium:ore
++* uranium:ore
++* zinc:ore
+ * morerocks:marble
+ * morerocks:marble_pink
+ * morerocks:marble_white
+ * morerocks:granite
+ * morerocks:serpentine
++* glowstone:minerals
++* sulfur:ore
++* glowstone:luxore
+ * luxore:luxore

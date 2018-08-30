@@ -1,0 +1,3 @@
+name = "Rainbow Cutie",
+author = "Lovelyrose",
+sex = "female",

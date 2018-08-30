@@ -1,0 +1,3 @@
+name = "Private Richard Sharpe",
+author = "Prf",
+sex = "male",

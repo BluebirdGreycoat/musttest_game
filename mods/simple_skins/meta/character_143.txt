@@ -1,0 +1,3 @@
+name = "Gai Daigoji (Martian Successor Nadesico)",
+author = "Esteban",
+sex = "male",

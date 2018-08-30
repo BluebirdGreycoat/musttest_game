@@ -1,0 +1,3 @@
+name = "Badass",
+author = "Ginsu23",
+sex = "male",

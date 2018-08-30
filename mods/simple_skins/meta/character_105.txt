@@ -1,0 +1,3 @@
+name = "Adventurer",
+author = "XSuperSaintX",
+sex = "male",

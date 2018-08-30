@@ -1,0 +1,3 @@
+name = "Pink Girl",
+author = "Unknown",
+sex = "female",

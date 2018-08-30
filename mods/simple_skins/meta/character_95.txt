@@ -1,0 +1,3 @@
+name = "Cheapie",
+author = "lovehart",
+sex = "male",

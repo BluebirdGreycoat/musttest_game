@@ -1,0 +1,3 @@
+name = "TheWillyRex",
+author = "edwar masterchieft",
+sex = "male",

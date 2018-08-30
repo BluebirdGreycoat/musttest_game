@@ -1,0 +1,3 @@
+name = "Female Adventurer",
+author = "FennecFox",
+sex = "female",

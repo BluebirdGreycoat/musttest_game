@@ -1,0 +1,2 @@
+coresounds
+guicolors

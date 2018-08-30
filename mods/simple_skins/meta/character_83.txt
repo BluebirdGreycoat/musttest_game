@@ -1,0 +1,3 @@
+name = "Dwarf From LottMob",
+author = "lovehart",
+sex = "male",

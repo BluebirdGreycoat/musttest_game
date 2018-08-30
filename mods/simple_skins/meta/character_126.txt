@@ -1,0 +1,3 @@
+name = "Bond - Sam Bond",
+author = "Misty",
+sex = "male",

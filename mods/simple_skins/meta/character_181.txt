@@ -1,0 +1,3 @@
+name = "Fée Rose",
+author = "loupicate",
+sex = "female",

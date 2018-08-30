@@ -1,0 +1,3 @@
+name = "Summer",
+author = "Oceanelle",
+sex = "female",

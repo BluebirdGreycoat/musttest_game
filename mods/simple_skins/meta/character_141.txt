@@ -1,0 +1,3 @@
+name = "Nose Comos E Llama XD",
+author = "rexyGYM",
+sex = "male",

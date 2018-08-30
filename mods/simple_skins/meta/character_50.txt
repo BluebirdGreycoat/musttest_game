@@ -1,0 +1,3 @@
+name = "Lady Violet Kitty",
+author = "lordphoenixmh",
+sex = "female",

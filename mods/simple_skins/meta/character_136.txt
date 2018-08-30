@@ -1,0 +1,3 @@
+name = "King Sam",
+author = "Gabo",
+sex = "male",

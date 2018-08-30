@@ -1,0 +1,5 @@
+default
+stairs
+oregen
+moreblocks?
+mapgen

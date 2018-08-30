@@ -1,0 +1,3 @@
+name = "Winter Coat",
+author = "Foxx",
+sex = "male",

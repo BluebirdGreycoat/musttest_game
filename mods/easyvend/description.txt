@@ -1,0 +1,1 @@
+Adds vending and depositing machines which allow to buy and sell items from other players.

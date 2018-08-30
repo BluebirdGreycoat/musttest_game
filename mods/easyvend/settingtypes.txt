@@ -1,0 +1,18 @@
+# Specify the item (as an itemstring) which is used as currency for vending
+# and depositing machines. Vending machines take this item as payment and
+# depositing machines give this item in return for items.
+# Default: Gold Ingot.
+easyvend_currency (Currency item for vending and depositing machines) string default:gold_ingot
+
+[Experimental settings]
+# This setting is EXPERIMENTAL!
+# Enable this option if you want to switch a world from using Bad_Command_'s
+# Vending Machines [vendor] mod to using the Easy Vending Machines [easyvend]
+# mod.
+# When you load the world the next time, this will replace all vending and
+# depositing machines from [vendor] with the [easyvend] machines while keeping
+# their configuration.
+# Since this option is experimental, it is recommended that you backup your
+# world before converting it.
+easyvend_convert_vendor (Convert machines from Vending Machines mod) bool false
+

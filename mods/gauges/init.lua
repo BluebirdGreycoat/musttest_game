@@ -1,7 +1,6 @@
 -- Adds health bars above players.
 -- Code by 4aiman, textures by Calinou. Licensed under CC0.
 -- Note: code is called from wield3d to update, etc.
--- Note: gauges do NOT work with invisibility, so admin must be exempt.
 gauges = {}
 local player_wielding = {}
 
@@ -59,7 +58,7 @@ function gauges.on_global_step()
 	-- Add gauges to players without them.
 	for _, player in ipairs(minetest.get_connected_players()) do
 		local name = player:get_player_name()
-		if name ~= "MustTest" then
+		if not gdac_invis.is_invisible(name) then
 			local wield = player_wielding[name]
 			if not wield then
 				add_gauge(player)
@@ -70,7 +69,7 @@ function gauges.on_global_step()
 
 	-- Remove expired player entries.
 	for name, wield in pairs(player_wielding) do
-		if not active_players[name] then
+		if not active_players[name] or gdac_invis.is_invisible(name) then
 			if wield.object then
 				wield.object:remove()
 			end

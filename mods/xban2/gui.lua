@@ -114,7 +114,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 	if not minetest.check_player_privs(name, { ban=true }) then
 		minetest.log("warning",
 				"[xban2] Received fields from unauthorized user: "..name)
-		return
+		return true
 	end
 	local state = get_state(name)
 	if fields.player then
@@ -123,7 +123,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 			state.player_index = t.index
 			minetest.show_formspec(name, FORMNAME, make_fs(name))
 		end
-		return
+		return true
 	end
 	if fields.entry then
 		local t = minetest.explode_textlist_event(fields.entry)
@@ -131,7 +131,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 			state.entry_index = t.index
 			minetest.show_formspec(name, FORMNAME, make_fs(name))
 		end
-		return
+		return true
 	end
 	if fields.search then
 		local filter = fields.filter or ""
@@ -139,6 +139,8 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		state.list = make_list(filter)
 		minetest.show_formspec(name, FORMNAME, make_fs(name))
 	end
+
+	return true
 end
 
 function xban.gui.chatcommand(name, params)

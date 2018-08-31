@@ -165,6 +165,26 @@ local stairs_defs = {
 		},
 		light=3/8,
 	},
+	["_half_1"] = {
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, -0.5, -0.5, -7/16, 0, 0.5},
+				{-0.5, 0, 0, -7/16, 0.5, 0.5},
+			},
+		},
+		light=1/8,
+	},
+	["_right_half_1" ]= {
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{7/16, -0.5, -0.5, 0.5, 0, 0.5},
+				{7/16, 0, 0, 0.5, 0.5, 0.5},
+			},
+		},
+		light=1/8,
+	},
 	["_inner"] = {
 		node_box = {
 			type = "fixed",

@@ -25,8 +25,11 @@ circular_saw.cost_in_microblocks = {
 	-- Cost for extra custom slopes/microblocks. In same order as custom blocks in the `names' list.
 	2, 6, 4, 4, 1,
 
-	-- New slabs,
+	-- New slabs.
 	1, 2, 2, 3, 3, 1, 3,
+
+	-- New stairs.
+	1, 1,
 }
 
 circular_saw.names = {
@@ -104,6 +107,8 @@ circular_saw.names = {
 	{"slab", "_hole"},
 	{"slab", "_two_opposite"},
 	{"slab", "_pit"},
+  {"stair", "_half_1"},
+  {"stair", "_right_half_1"},
 }
 
 function circular_saw:get_cost(inv, stackname)

@@ -142,6 +142,20 @@ local xslope_slope = {
 		{-0.5, -0.5, 0.5, 0.5, 0, 0},
 	}
 }
+local xslope_peak = {
+	type = "fixed",
+	fixed = {
+		{-0.5, -0.5, -0.5, 0.5, 0, 0.5},
+		{-0.5, 0, -0.25, 0.5, 0.5, 0.25},
+	}
+}
+local xslope_peak_half = {
+	type = "fixed",
+	fixed = {
+		{-0.5, -0.5, -0.5, 0.5, -0.25, 0.5},
+		{-0.5, -0.25, -0.25, 0.5, 0, 0.25},
+	}
+}
 
 -- Node will be called <modname>:slope_<subname>
 
@@ -287,6 +301,18 @@ local slopes_defs = {
 		selection_box = xslope_slope,
 		light=1/4,
 	},
+	["_xslope_peak"] = {
+		mesh = "xslopes_peak.obj",
+		collision_box = xslope_peak,
+		selection_box = xslope_peak,
+		light=2/4,
+	},
+	["_xslope_peak_half"] = {
+		mesh = "xslopes_peak_half.obj",
+		collision_box = xslope_peak_half,
+		selection_box = xslope_peak_half,
+		light=1/4,
+	},
 }
 
 function stairs.register_slopes(subname, recipeitem, groups, images, description, sounds)
@@ -321,7 +347,7 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
 			def.sounds = sounds
 			def.description = description
 			def.tiles = stair_images
-			def.light_source = math.ceil(ndef.light_source*def.light)
+			def.light_source = math.ceil(ndef.light_source*(def.light or 0))
 			def.light = nil
 			
 			minetest.register_node(":stairs:slope_" ..subname..alternate, def)

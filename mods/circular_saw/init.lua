@@ -30,6 +30,9 @@ circular_saw.cost_in_microblocks = {
 
 	-- New stairs.
 	1, 1,
+
+	-- More slopes.
+	4, 2,
 }
 
 circular_saw.names = {
@@ -109,6 +112,8 @@ circular_saw.names = {
 	{"slab", "_pit"},
   {"stair", "_half_1"},
   {"stair", "_right_half_1"},
+  {"slope", "_xslope_peak"},
+  {"slope", "_xslope_peak_half"},
 }
 
 function circular_saw:get_cost(inv, stackname)

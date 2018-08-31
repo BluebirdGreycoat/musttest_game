@@ -86,7 +86,8 @@ minetest.register_node( "castle_lighting:chandelier_chain", {
 })
 
 minetest.register_craft({
-	output = "castle_lighting:chandelier_chain 4",
+	-- Keep output amount consistent with other chains.
+	output = "castle_lighting:chandelier_chain 2",
 	recipe = {
 		{"", "default:steel_ingot", ""},
 		{"", "", ""},

@@ -204,7 +204,7 @@ function xban.on_prejoinplayer(name, ip)
 	if not e then return end
 	if e.banned then
 		local date = (e.expires and os.date("%c", e.expires) or "The End of Time")
-		return ("Banned: Expires: %s, Reason: %s"):format(date, e.reason)
+		return ("\nBanned!\nExpires: %s\nReason: %s"):format(date, e.reason)
 	end
 end
 

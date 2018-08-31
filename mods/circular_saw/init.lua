@@ -35,7 +35,7 @@ circular_saw.cost_in_microblocks = {
 	4, 2,
 
 	-- Half-size slopes.
-	2, 1, 3,
+	2, 1, 3, 1, 2, 1,
 }
 
 circular_saw.names = {
@@ -122,6 +122,9 @@ circular_saw.names = {
   {"slope", "_lh"},
   {"slope", "_half_lh"},
   {"slope", "_half_raised_lh"},
+	{"slope", "_xslope_slope_lh"},
+  {"slope", "_xslope_peak_lh"},
+  {"slope", "_xslope_peak_half_lh"},
 }
 
 function circular_saw:get_cost(inv, stackname)

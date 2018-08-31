@@ -186,6 +186,26 @@ local xslope_peak_half = {
 		{-0.5, -0.25, -0.25, 0.5, 0, 0.25},
 	}
 }
+local xslope_slope_lh = {
+	type = "fixed",
+	fixed = {
+		{-0.5, -0.5, 0.5, 0, 0, 0},
+	}
+}
+local xslope_peak_lh = {
+	type = "fixed",
+	fixed = {
+		{-0.5, -0.5, -0.5, 0, 0, 0.5},
+		{-0.5, 0, -0.25, 0, 0.5, 0.25},
+	}
+}
+local xslope_peak_half_lh = {
+	type = "fixed",
+	fixed = {
+		{-0.5, -0.5, -0.5, 0, -0.25, 0.5},
+		{-0.5, -0.25, -0.25, 0, 0, 0.25},
+	}
+}
 
 -- Node will be called <modname>:slope_<subname>
 
@@ -361,6 +381,25 @@ local slopes_defs = {
 		collision_box = box_slope_half_raised_lh,
 		selection_box = box_slope_half_raised_lh,
 		light=3/8,
+	},
+
+	["_xslope_slope_lh"] = {
+		mesh = "xslopes_slope_lh.obj",
+		collision_box = xslope_slope_lh,
+		selection_box = xslope_slope_lh,
+		light=1/8,
+	},
+	["_xslope_peak_lh"] = {
+		mesh = "xslopes_peak_lh.obj",
+		collision_box = xslope_peak_lh,
+		selection_box = xslope_peak_lh,
+		light=2/8,
+	},
+	["_xslope_peak_half_lh"] = {
+		mesh = "xslopes_peak_half_lh.obj",
+		collision_box = xslope_peak_half_lh,
+		selection_box = xslope_peak_half_lh,
+		light=1/8,
 	},
 }
 

@@ -1,8 +1,3 @@
---minetest.register_alias("darkage:lamp",        "castle_lighting:light") -- Don't clobber the darkage lamp.
-minetest.register_alias("castle:street_light", "castle_lighting:light")
-minetest.register_alias("castle:light",        "castle_lighting:light")
-minetest.register_alias("castle:chandelier",   "castle_lighting:chandelier")
-minetest.register_alias("castle:chandelier_chain",   "castle_lighting:chandelier_chain")
 
 -- internationalization boilerplate
 local MP = minetest.get_modpath(minetest.get_current_modname())

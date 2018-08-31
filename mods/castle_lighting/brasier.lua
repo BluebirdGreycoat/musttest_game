@@ -1,4 +1,3 @@
-if not minetest.get_modpath("fire") then return end
 
 -- internationalization boilerplate
 local MP = minetest.get_modpath(minetest.get_current_modname())
@@ -116,6 +115,8 @@ minetest.register_node("castle_lighting:brasier_floor", {
 		"castle_steel.png",
 		},
 	drawtype = "nodebox",
+	paramtype2 = "facedir",
+	on_rotate = screwdriver.rotate_simple,
 	groups = {cracky=2},
 	paramtype = "light",
 	node_box = brasier_nodebox,
@@ -149,12 +150,10 @@ end
 ------------------------------------------------------------------------------------------------------
 -- Masonry brasiers
 
-local materials
-if minetest.get_modpath("castle_masonry") then
-	materials = castle_masonry.materials
-else
-	materials = {{name="stonebrick", desc=S("Stonebrick"), tile="default_stone_brick.png", craft_material="default:stonebrick"}}
-end
+local materials = {
+	{name="stonebrick", desc=S("Stonebrick"), tile="default_stone_brick.png", craft_material="default:stonebrick"}
+}
+
 
 local get_material_properties = function(material)
 	local composition_def
@@ -231,6 +230,7 @@ castle_lighting.register_pillar_brasier = function(material)
 		tiles = tile,
 		paramtype = "light",
 		paramtype2 = "facedir",
+		on_rotate = screwdriver.rotate_simple,
 		groups = crossbrace_connectable_groups,
 		sounds = composition_def.sounds,
 		
@@ -246,20 +246,12 @@ castle_lighting.register_pillar_brasier = function(material)
 	})
 
 	minetest.register_craft({
-	output = mod_name..":"..material.name.."_pillar_brasier 5",
+	output = mod_name..":"..material.name.."_pillar_brasier",
 	recipe = {
 		{material.craft_material,"default:torch",material.craft_material},
 		{material.craft_material,material.craft_material,material.craft_material},
 		},
 	})
-	
-	if minetest.get_modpath("hopper") and hopper ~= nil and hopper.add_container ~= nil then
-		hopper:add_container({
-			{"top", mod_name..":"..material.name.."_pillar_brasier", "fuel"},
-			{"bottom", mod_name..":"..material.name.."_pillar_brasier", "fuel"},
-			{"side", mod_name..":"..material.name.."_pillar_brasier", "fuel"},
-		})
-	end
 end
 
 for _, material in pairs(materials) do

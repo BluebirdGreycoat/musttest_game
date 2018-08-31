@@ -7,6 +7,8 @@ anticurse.foul = {
 		"house", "example", "exchange", "please", "excuse", "course", "extend",
 	}},
 
+	"h+y+m+e+n+",
+
 	"s+%d+x+",
   
   {word="b+i*t+c+h+", white={"cheap"}},

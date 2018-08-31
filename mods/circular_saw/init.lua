@@ -103,6 +103,7 @@ circular_saw.names = {
 	{"slab", "_four_sides"},
 	{"slab", "_hole"},
 	{"slab", "_two_opposite"},
+	{"slab", "_pit"},
 }
 
 function circular_saw:get_cost(inv, stackname)

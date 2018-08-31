@@ -92,9 +92,9 @@ local function make_fs(name)
 					ESC("Source: "..(rec.source or "<none>")
 						.."\nDate: "..os.date("%c", rec.time)
 						.."\n"..(rec.expires and os.date("Expires: %c", rec.expires) or "")
-						.."\n"..(banned and "Status: Banned!" or "Player is not banned."),
+						.."\n"..(banned and "Status: Banned!" or "Player is not banned.")),
 
-					pli)
+					pli) -- End format.
 			end
 		else
 			fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,8;err;"..ESC(e)..";0]"

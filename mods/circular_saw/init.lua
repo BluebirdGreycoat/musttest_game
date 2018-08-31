@@ -26,7 +26,7 @@ circular_saw.cost_in_microblocks = {
 	2, 6, 4, 4, 1,
 
 	-- New slabs,
-	1, 2, 2, 3, 3, 1,
+	1, 2, 2, 3, 3, 1, 3,
 }
 
 circular_saw.names = {

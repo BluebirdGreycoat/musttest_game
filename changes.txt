@@ -1,3 +1,4 @@
+[2018/8/31] Brasiers emit a small amount of light even when unlit (they have coals).
 [2018/8/31] Added extra brasier types.
 [2018/8/31] Added castle lighting mod, with adjustments for compatibility.
 [2018/8/30] Added a bunch more nodes to the circular saw.

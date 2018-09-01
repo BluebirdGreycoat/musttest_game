@@ -122,6 +122,9 @@ minetest.register_node("castle_lighting:brasier_floor", {
 	node_box = brasier_nodebox,
 	selection_box = brasier_selection_box,
 	
+	-- Unlit brasier should still emit a small amount of light, since it has coals.
+	light_source = 4,
+
 	on_construct = brasier_on_construct,
 	on_destruct = brasier_on_destruct,
 	can_dig = brasier_can_dig,
@@ -236,6 +239,9 @@ castle_lighting.register_pillar_brasier = function(material)
 		on_rotate = screwdriver.rotate_simple,
 		groups = crossbrace_connectable_groups,
 		sounds = composition_def.sounds,
+
+		-- Unlit brasier should still emit a small amount of light, since it has coals.
+		light_source = 4,
 		
 		node_box = pillar_brasier_nodebox,
 		selection_box = pillar_brasier_selection_box,

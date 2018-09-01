@@ -151,7 +151,10 @@ end
 -- Masonry brasiers
 
 local materials = {
-	{name="stonebrick", desc=S("Stonebrick"), tile="default_stone_brick.png", craft_material="default:stonebrick"}
+	{name="stonebrick", desc=S("Stone Brick"), tile="default_stone_brick.png", craft_material="default:stonebrick"},
+	{name="desert_stonebrick", desc=S("Redstone Brick"), tile="default_desert_stone_brick.png", craft_material="default:desert_stonebrick"},
+	{name="rackstone_brick", desc=S("Rackstone Brick"), tile="rackstone_rackstone_brick.png", craft_material="rackstone:rackstone_brick2"},
+	{name="obsidian_brick", desc=S("Obsidian Brick"), tile="default_obsidian_brick.png", craft_material="default:obsidianbrick"},
 }
 
 

@@ -11,19 +11,26 @@ local ESC = minetest.formspec_escape
 
 -- Get records of all registered players.
 local function make_list(filter)
-	filter = filter or ""
-	local list, n, dropped = { }, 0, false
-	for index, data in ipairs(xban.db) do
-		for name, _ in pairs(data.names) do
-			if strfind(name, filter, 1, true) then
-				if n >= MAXLISTSIZE then
-					dropped = true
-					break
+	filter = filter and filter:split(",") or {}
+	local list, dropped = { }, false
+
+	for _, fname in ipairs(filter) do
+		for _, data in ipairs(xban.db) do
+			for name, _ in pairs(data.names) do
+				-- Plaintext search.
+				if strfind(name, fname, 1, true) then
+					if #list > MAXLISTSIZE then
+						dropped = true
+						goto done
+					end
+					list[#list+1] = name
 				end
-				n=n+1 list[n] = name
 			end
 		end
 	end
+
+	::done::
+
 	table.sort(list)
 	return list, dropped
 end

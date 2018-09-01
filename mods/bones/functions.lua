@@ -101,6 +101,8 @@ local find_ground = function(pos)
   return p
 end
 
+
+
 local function find_suitable_bone_location(pos, player)
 	local sp = {x=pos.x, y=pos.y, z=pos.z}
 	local air
@@ -146,24 +148,27 @@ local function find_suitable_bone_location(pos, player)
 	end
 
 	-- If we found air, try to make sure we found air directly above ground.
-	air = find_ground(air)
+	if air then
+		air = find_ground(air)
+	end
 
 	-- By now, we have either found air or nothing.
 	return air -- May be nil.
 end
 
-bones.on_dieplayer = function(player)
-	--local t1 = os.clock()
 
+
+bones.on_dieplayer = function(player)
 	local bones_mode = "bones"
 	local player_inv = player:get_inventory()
   local pname = player:get_player_name()
+
+	-- If player died while attached to cart/boat/etc, they must be detached.
 	default.detach_player_if_attached(player)
 
 	-- Record position of player on death.
 	-- This is needed because this information is lost on respawn.
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
-	--minetest.chat_send_all("died at " .. minetest.pos_to_string(bones.last_known_death_locations[pname]))
 
 	-- Don't make bones if player doesn't have anything.
 	if player_inventory_empty(player_inv, "main") and
@@ -187,7 +192,7 @@ bones.on_dieplayer = function(player)
 	-- Check if it's possible to place bones, if not find space near player.
 	if bones_mode == "bones" and not may_replace(pos, player) then
 		local boneloc = find_suitable_bone_location(pos, player)
-		-- Place bones even when spot is protected (MustTest).
+		-- Place bones even when spot is protected.
 		-- We do not want players to lose their items.
 		if boneloc then
 			pos = boneloc
@@ -375,8 +380,6 @@ bones.on_dieplayer = function(player)
 			minetest.log("action", "Got " .. name .. " @ " .. minetest.pos_to_string(pos) .. " after 1 second bone check!")
 		end
 	end)
-
-	--minetest.log("action", string.format("[perf] bones on_dieplayer(): elapsed time: %.2f\n", os.clock() - t1))
 end
 
 

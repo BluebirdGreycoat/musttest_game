@@ -3,7 +3,7 @@ xban.gui = xban.gui or {}
 xban.gui.states = xban.gui.states or {}
 
 local FORMNAME = "xban2:main"
-local MAXLISTSIZE = 100
+local MAXLISTSIZE = 1000
 
 local strfind, format = string.find, string.format
 
@@ -14,17 +14,35 @@ local function make_list(filter)
 	filter = filter and filter:split(",") or {}
 	local list, dropped = { }, false
 
-	for _, fname in ipairs(filter) do
+	-- Trim whitespace from filters.
+	for k, v in ipairs(filter) do
+		filter[k] = v:trim()
+	end
+
+	-- If a filter is chosen, only return filtered items.
+	if #filter > 0 then
 		for _, data in ipairs(xban.db) do
 			for name, _ in pairs(data.names) do
-				-- Plaintext search.
-				if strfind(name, fname, 1, true) then
-					if #list > MAXLISTSIZE then
-						dropped = true
-						goto done
+				for _, fname in ipairs(filter) do
+					-- Plaintext search.
+					if strfind(name, fname, 1, true) then
+						if #list > MAXLISTSIZE then
+							dropped = true
+							goto done
+						end
+						list[#list+1] = name
 					end
-					list[#list+1] = name
 				end
+			end
+		end
+	else
+		for _, data in ipairs(xban.db) do
+			for name, _ in pairs(data.names) do
+				if #list > MAXLISTSIZE then
+					dropped = true
+					goto done
+				end
+				list[#list+1] = name
 			end
 		end
 	end

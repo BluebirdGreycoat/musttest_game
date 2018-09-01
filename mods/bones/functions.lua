@@ -8,8 +8,6 @@ local get_public_time = function()
   return os.date("!%Y/%m/%d, %H:%M:%S UTC")
 end
 
-    
-
 local share_bones_time = tonumber(minetest.setting_get("share_bones_time")) or 1200
 local share_bones_time_early = tonumber(minetest.setting_get("share_bones_time_early")) or share_bones_time / 4
 
@@ -18,10 +16,10 @@ local share_bones_time_early = tonumber(minetest.setting_get("share_bones_time_e
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
     
-    -- Don't let dead players pick bones.
-    local player = minetest.get_player_by_name(name)
-    if not player or not player:is_player() then return false end
-    if player:get_hp() <= 0 then return false end
+	-- Don't let dead players pick bones.
+	local player = minetest.get_player_by_name(name)
+	if not player or not player:is_player() then return false end
+	if player:get_hp() <= 0 then return false end
     
 	if owner == "" or owner == name or minetest.check_player_privs(name, "protection_bypass") then
 		return true
@@ -74,17 +72,17 @@ end
 
 
 local player_inventory_empty = function(inv, name)
-    local preserve_name = "passport:passport"
-    local count = 0
-    for i = 1, inv:get_size(name) do
-        local stack = inv:get_stack(name, i)
-        if stack:get_name() ~= preserve_name then
-            if stack:get_count() > 0 then
-                count = count + stack:get_count()
-            end
-        end
-    end
-    return (count == 0)
+	local preserve_name = "passport:passport"
+	local count = 0
+	for i = 1, inv:get_size(name) do
+		local stack = inv:get_stack(name, i)
+		if stack:get_name() ~= preserve_name then
+			if stack:get_count() > 0 then
+					count = count + stack:get_count()
+			end
+		end
+	end
+	return (count == 0)
 end
 
 

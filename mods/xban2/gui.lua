@@ -23,15 +23,17 @@ local function make_list(filter)
 	if #filter > 0 then
 		for _, data in ipairs(xban.db) do
 			for name, _ in pairs(data.names) do
-				for _, fname in ipairs(filter) do
-					-- Plaintext search.
-					if fname ~= "" then -- Don't search empty filters.
-						if strfind(name, fname, 1, true) then
-							if #list > MAXLISTSIZE then
-								dropped = true
-								goto done
+				if not name:find("%.") then -- No IP addresses.
+					for _, fname in ipairs(filter) do
+						-- Plaintext search.
+						if fname ~= "" then -- Don't search empty filters.
+							if strfind(name, fname, 1, true) then
+								if #list > MAXLISTSIZE then
+									dropped = true
+									goto done
+								end
+								list[#list+1] = name
 							end
-							list[#list+1] = name
 						end
 					end
 				end
@@ -40,11 +42,13 @@ local function make_list(filter)
 	else
 		for _, data in ipairs(xban.db) do
 			for name, _ in pairs(data.names) do
-				if #list > MAXLISTSIZE then
-					dropped = true
-					goto done
+				if not name:find("%.") then -- No IP addresses.
+					if #list > MAXLISTSIZE then
+						dropped = true
+						goto done
+					end
+					list[#list+1] = name
 				end
-				list[#list+1] = name
 			end
 		end
 	end
@@ -118,9 +122,11 @@ local function make_fs(name)
 			for i, r in ipairs(record) do
 				record[i] = ESC(r)
 			end
+
 			fsn=fsn+1 fs[fsn] = format(
 					"textlist[4.2,1.8;11.6,8;entry;%s;%d;0]",
 					table.concat(record, ","), ei)
+
 			local rec = e[ei]
 			if rec then
 				fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",

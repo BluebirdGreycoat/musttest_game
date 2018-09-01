@@ -281,7 +281,8 @@ minetest.register_entity(":__builtin:falling_node", {
 				if not protected and n2.name ~= "air" and (not nd or nd.liquidtype == "none") then
 					remove_node(np)
 					if nd.buildable_to == false then
-						-- Add dropped items
+						-- Add dropped items.
+						-- Pass node name, because passing a node table gives wrong results.
 						local drops = get_node_drops(n2.name, "")
 						for _, dropped_item in pairs(drops) do
 							add_item(np, dropped_item)

@@ -1177,7 +1177,7 @@ local function try_break_block(self, s)
 			minetest.check_for_falling(s)
 
 			-- This function takes both nodetables and nodenames.
-			-- Pass nodenames, because passing a nodetable gives wrong results.
+			-- Pass node names, because passing a node table gives wrong results.
 			local drops = minetest.get_node_drops(oldnode.name, "")
 			--minetest.chat_send_player("MustTest", dump(drops))
 			for _, item in pairs(drops) do

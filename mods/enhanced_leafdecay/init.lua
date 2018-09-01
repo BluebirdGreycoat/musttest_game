@@ -37,8 +37,9 @@ function(args)
       return true
     end
     
-    -- Drop stuff
+    -- Drop stuff.
     local node = minetest.get_node(pos)
+		-- Pass node name, because passing a node table gives wrong results.
     local stacks = minetest.get_node_drops(node.name)
     for k, v in ipairs(stacks) do
       if v ~= node.name or minetest.get_item_group(node.name, "leafdecay_drop") ~= 0 then

@@ -66,7 +66,8 @@ core.check_single_for_falling = function(p)
 		local n2 = get_node_or_nil(p2)
 		if n2 and n2.name == "air" then
 			remove_node(p)
-			for _, item in pairs(get_node_drops(n, "")) do
+			-- Pass node name, because passing a node table gives wrong results.
+			for _, item in pairs(get_node_drops(n.name, "")) do
 				local pos = {
 						x = p.x + math.random()/2 - 0.25,
 						y = p.y + math.random()/2 - 0.25,

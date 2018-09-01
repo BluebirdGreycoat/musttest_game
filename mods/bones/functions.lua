@@ -108,7 +108,12 @@ local find_ground = function(pos, player)
 		cr2 = may_replace({x=p.x, y=p.y-1, z=p.z}, player)
   end
 
-  return p
+	-- Return position, if we can replace to it, but not to the node under it.
+	if cr1 and not cr2 then
+		return p
+	end
+
+  return pos
 end
 
 

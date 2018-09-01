@@ -22,7 +22,7 @@ local nodes = {
 	-- Nodes available modified by MustTest.
 	["wood_tile"] = {
 		description = S("Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^moreblocks_wood_tile.png",
 		"default_wood.png^moreblocks_wood_tile.png",
 		"default_wood.png^moreblocks_wood_tile.png",
@@ -36,7 +36,7 @@ local nodes = {
 	--[[
 	["wood_tile_flipped"] = {
 		description = S("Vertical Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 3},
+		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 3},
 		tiles = {"default_wood.png^moreblocks_wood_tile.png^[transformR90",
 		"default_wood.png^moreblocks_wood_tile.png^[transformR90",
 		"default_wood.png^moreblocks_wood_tile.png^[transformR90",
@@ -48,20 +48,20 @@ local nodes = {
 	--]]
 	["wood_tile_center"] = {
 		description = S("Centered Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^moreblocks_wood_tile_center.png"},
 		sounds = sound_wood,
 		no_stairs = true,
 	},
 	["wood_tile_full"] = {
 		description = S("Full Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = tile_tiles("wood_tile_full"),
 		sounds = sound_wood,
 	},
 	["wood_tile_up"] = {
 		description = S("Upwards Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^moreblocks_wood_tile_up.png"},
 		sounds = sound_wood,
 		no_stairs = true,
@@ -69,7 +69,7 @@ local nodes = {
 	},
 	["wood_tile_down"] = {
 		description = S("Downwards Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^[transformR180^moreblocks_wood_tile_up.png^[transformR180"},
 		sounds = sound_wood,
 		no_stairs = true,
@@ -77,7 +77,7 @@ local nodes = {
 	},
 	["wood_tile_left"] = {
 		description = S("Rightwards Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^[transformR270^moreblocks_wood_tile_up.png^[transformR270"},
 		sounds = sound_wood,
 		no_stairs = true,
@@ -85,7 +85,7 @@ local nodes = {
 	},
 	["wood_tile_right"] = {
 		description = S("Leftwards Wooden Tile"),
-		groups = {snappy = 1, choppy = 2, flammable = 3},
+		groups = {choppy = 2, flammable = 3},
 		tiles = {"default_wood.png^[transformR90^moreblocks_wood_tile_up.png^[transformR90"},
 		sounds = sound_wood,
 		no_stairs = true,
@@ -176,7 +176,7 @@ local nodes = {
 		tiles = {"moreblocks_iron_glass.png"},
 		paramtype = "light",
 		sunlight_propagates = true,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 	},
 	["coal_glass"] = {
@@ -186,7 +186,7 @@ local nodes = {
 		tiles = {"moreblocks_coal_glass.png"},
 		paramtype = "light",
 		sunlight_propagates = true,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 	},
 	--]]
@@ -198,7 +198,7 @@ local nodes = {
 		tiles = {"moreblocks_clean_glass.png"},
 		paramtype = "light",
 		sunlight_propagates = true,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 		no_stairs = true,
 	},
@@ -259,7 +259,7 @@ local nodes = {
 		paramtype = "light",
 		sunlight_propagates = true,
 		walkable = false,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 		no_stairs = true,
 	},
@@ -268,14 +268,14 @@ local nodes = {
 	["all_faces_tree"] = {
 		description = S("All-faces Tree"),
 		tiles = {"default_tree_top.png"},
-		groups = {tree = 1,snappy = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+		groups = {tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
 		sounds = sound_wood,
 		furnace_burntime = 30,
 	},
 	["all_faces_jungle_tree"] = {
 		description = S("All-faces Jungle Tree"),
 		tiles = {"default_jungletree_top.png"},
-		groups = {tree = 1,snappy = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+		groups = {tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
 		sounds = sound_wood,
 		furnace_burntime = 30,
 	},
@@ -289,7 +289,7 @@ local nodes = {
 		paramtype = "light",
 		sunlight_propagates = true,
 		light_source = 11,
-		groups = {level = 1, snappy = 2, cracky = 3},
+		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
 	},
 
@@ -303,7 +303,7 @@ local nodes = {
 		sunlight_propagates = true,
 		light_source = 11,
 		walkable = false,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 		no_stairs = true,
 	},
@@ -317,7 +317,7 @@ local nodes = {
 		paramtype = "light",
 		sunlight_propagates = true,
 		light_source = 14,
-		groups = {level = 1, snappy = 2, cracky = 3},
+		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
 	},
 
@@ -331,7 +331,7 @@ local nodes = {
 		sunlight_propagates = true,
 		light_source = 14,
 		walkable = false,
-		groups = {snappy = 2, cracky = 3, oddly_breakable_by_hand = 3},
+		groups = {cracky = 3, oddly_breakable_by_hand = 3},
 		sounds = sound_glass,
 		no_stairs = true,
 	},

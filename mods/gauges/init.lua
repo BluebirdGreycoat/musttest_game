@@ -5,7 +5,7 @@ gauges = {}
 local player_wielding = {}
 
 local function add_gauge(player)
-	local name = player:get_player_name()
+	local pname = player:get_player_name()
 	local pos = player:get_pos()
 
 	-- Bounds check to avoid an engine bug.
@@ -34,8 +34,8 @@ local function add_gauge(player)
 		data.cbreath = player:get_breath()
 		ent:set_properties({textures = {"health_" .. tostring(data.chp) .. ".png^breath_" .. tostring(data.cbreath) .. ".png"}})
 
-		player_wielding[name] = {}
-		player_wielding[name].object = ent
+		player_wielding[pname] = {}
+		player_wielding[pname].object = ent
 	end
 end
 

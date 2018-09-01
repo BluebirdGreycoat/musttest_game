@@ -91,9 +91,16 @@ function throwing_arrow_punch_entity (obj, self, damage)
   end
 end
 
-function throwing_reload (itemstack, player, pos, is_cross, loaded)
-	local playerName = player:get_player_name()
-	players[playerName]['reloading'] = false
+function throwing_reload (itemstack, pname, pos, is_cross, loaded)
+	local player = minetest.get_player_by_name(pname)
+
+	-- Check for nil. Can happen if player leaves game right after reloading.
+	if not player or not players[pname] then
+		return
+	end
+
+	players[pname].reloading = false
+
 	if itemstack:get_name() == player:get_wielded_item():get_name() then
 		if (pos.x == player:getpos().x and pos.y == player:getpos().y and pos.z == player:getpos().z) or not is_cross then
 			local wear = itemstack:get_wear()
@@ -128,11 +135,11 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
     stack_max = 1,
 		groups = {not_repaired_by_anvil=1},
 		on_use = function(itemstack, user, pointed_thing)
-			local pos = user:getpos()
-			local playerName = user:get_player_name()
-			if not players[playerName]['reloading'] then
-				players[playerName]['reloading'] = true
-				minetest.after(reload_time, throwing_reload, itemstack, user, pos, is_cross, "throwing:" .. name .. "_loaded")
+			local pos = user:get_pos()
+			local pname = user:get_player_name()
+			if not players[pname].reloading then
+				players[pname].reloading = true
+				minetest.after(reload_time, throwing_reload, itemstack, pname, pos, is_cross, "throwing:" .. name .. "_loaded")
 			end
 			return itemstack
 		end,

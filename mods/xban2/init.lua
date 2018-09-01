@@ -236,7 +236,7 @@ function xban.chatcommand_ban(name, params)
 		return false
 	end
 	reason = reason:trim()
-	local ok, e = xban.ban_player(plname, name, nil, reason)
+	local ok, e = xban.ban_player(plname, rename.gpn(name), nil, reason)
 	local msg = ("# Server: Banned <%s>."):format(rename.gpn(plname))
 	if not ok then
 		msg = "# Server: " .. e
@@ -258,7 +258,7 @@ function xban.chatcommand_tempban(name, params)
 	end
 	reason = reason:trim()
 	local expires = os.time() + time
-	local ok, e = xban.ban_player(plname, name, expires, reason)
+	local ok, e = xban.ban_player(plname, rename.gpn(name), expires, reason)
 	local msg = ("# Server: Banned <%s> until %s."):format(rename.gpn(plname), os.date("%c", expires))
 	if not ok then
 		msg = "# Server: " .. e
@@ -273,7 +273,7 @@ function xban.chatcommand_xunban(name, params)
 		minetest.chat_send_player(name, "# Server: Usage: '/xunban <player>|<ip>'.")
 		return
 	end
-	local ok, e = xban.unban_player(plname, name)
+	local ok, e = xban.unban_player(plname, rename.gpn(name))
 	local msg = ("# Server: Unbanned <%s>."):format(rename.gpn(plname))
 	if not ok then
 		msg = "# Server: " .. e
@@ -315,7 +315,7 @@ function xban.chatcommand_wl(name, params)
 		return false
 	end
 	if cmd == "add" then
-		xban.add_whitelist(plname, name)
+		xban.add_whitelist(plname, rename.gpn(name))
 		ACTION("%s adds %s to whitelist", name, plname)
 		minetest.chat_send_player(name, "# Server: Added <"..rename.gpn(plname).."> to whitelist!")
 		return true

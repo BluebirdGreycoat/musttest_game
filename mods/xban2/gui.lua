@@ -90,6 +90,7 @@ local function make_fs(name)
 	if pli > #list then
 		pli = #list
 	end
+
 	local fs = {
 		"size[16,12]",
 		default.gui_bg,
@@ -100,8 +101,16 @@ local function make_fs(name)
 		"button[14,0;2,1;search;Search]",
 	}
 	local fsn = #fs
+
+	-- Translate internal player names to display names.
+	local nlist = {}
+	for k, v in ipairs(list) do
+		nlist[k] = rename.gpn(v)
+	end
+
 	fsn=fsn+1 fs[fsn] = format("textlist[0,1.8;4,8;player;%s;%d;0]",
-			table.concat(list, ","), pli)
+			table.concat(nlist, ","), pli)
+
 	local record_name = list[pli]
 	if record_name then
 		local record, e, banned = get_record_simple(record_name)

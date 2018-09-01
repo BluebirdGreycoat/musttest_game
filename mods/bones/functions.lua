@@ -1,6 +1,9 @@
 -- This file is reloadable.
 bones = bones or {}
 
+-- This item shall remain in player inventory after death.
+local PASSPORT = "passport:passport"
+
 -- Contains the positions of last known player deaths, indexed by player name.
 bones.last_known_death_locations = bones.last_known_death_locations or {}
 
@@ -72,14 +75,13 @@ end
 
 
 local player_inventory_empty = function(inv, name)
-	local preserve_name = "passport:passport"
 	local count = 0
 	local list = inv:get_list(name)
 	for i = 1, #list do
 		local stack = list[i]
 		local stack_count = stack:get_count()
 		if stack_count > 0 then
-			if stack:get_name() ~= preserve_name then
+			if stack:get_name() ~= PASSPORT then
 					count = count + stack_count
 			end
 		end
@@ -89,48 +91,66 @@ end
 
 
 
-local find_ground = function(pos)
+local find_ground = function(pos, player)
 	local p = {x=pos.x, y=pos.y, z=pos.z}
   local count = 0
-  while minetest.get_node({x=p.x, y=p.y, z=p.z}).name == "air" and
-		minetest.get_node({x=p.x, y=p.y-1, z=p.z}).name == "air" do
+
+	local cr1 = may_replace({x=p.x, y=p.y, z=p.z}, player)
+	local cr2 = may_replace({x=p.x, y=p.y-1, z=p.z}, player)
+
+  while (not (cr1 and not cr2)) or (cr1 and cr2) do
     p.y = p.y - 1
+
     count = count + 1
-    if count > 10 then return p end
+    if count > 10 then return pos end
+
+		cr1 = may_replace({x=p.x, y=p.y, z=p.z}, player)
+		cr2 = may_replace({x=p.x, y=p.y-1, z=p.z}, player)
   end
+
   return p
 end
 
 
 
 local function find_suitable_bone_location(pos, player)
-	local sp = {x=pos.x, y=pos.y, z=pos.z}
-	local air
+	-- Locate position directly above ground level.
+  local air = find_ground(pos, player)
 
-	-- Try to located an air node on a horizontal plane from the actual death location.
-	local sidepos = {
-		{x=pos.x, y=pos.y, z=pos.z},
-		{x=pos.x+1, y=pos.y, z=pos.z},
-		{x=pos.x-1, y=pos.y, z=pos.z},
-		{x=pos.x, y=pos.y, z=pos.z+1},
-		{x=pos.x, y=pos.y, z=pos.z-1},
-	}
-	for k, v in ipairs(sidepos) do
-		if may_replace(v, player) then
-			return v
+	-- Check whether the initial location is suitable.
+	if not may_replace(air, player) then
+		air = nil
+	end
+
+	-- Is the initial location not suitable? Try to locate a suitable location on
+	-- a horizontal plane from the actual death location.
+	if not air then
+		local sidepos = {
+			{x=pos.x, y=pos.y, z=pos.z},
+			{x=pos.x+1, y=pos.y, z=pos.z},
+			{x=pos.x-1, y=pos.y, z=pos.z},
+			{x=pos.x, y=pos.y, z=pos.z+1},
+			{x=pos.x, y=pos.y, z=pos.z-1},
+		}
+		for k, v in ipairs(sidepos) do
+			if may_replace(v, player) then
+				air = v
+				break
+			end
 		end
 	end
 
-	-- Didn't find air that way, try a short-range search.
+	-- Didn't find a replaceable node that way, try a short-range search for air.
 	if not air then
-		air = minetest.find_node_near(sp, 2, {"air"})
+		air = minetest.find_node_near(pos, 2, {"air"})
 	end
 
-	-- Still didn't find air? Try a longer range search, and include liquid/fire/etc nodes that player can die in.
+	-- Still didn't find air? Try a longer range search,
+	-- and include liquid/fire/etc nodes that player can die in.
 	if not air then
-		-- If we couldn't find air, fallback to finding a
-		-- location in these substances.
-		air = minetest.find_node_near(sp, 3, { -- Search 1 meter farther than at first.
+		-- If we couldn't find air, fallback to finding a location in these
+		-- substances. Search 1 meter farther than at first.
+		air = minetest.find_node_near(pos, 3, {
 			"air",
 			"default:water_source",
 			"default:water_flowing",
@@ -147,9 +167,10 @@ local function find_suitable_bone_location(pos, player)
 		})
 	end
 
-	-- If we found air, try to make sure we found air directly above ground.
+	-- If we found air, try to make sure we found a replaceable node directly
+	-- above ground.
 	if air then
-		air = find_ground(air)
+		air = find_ground(air, player)
 	end
 
 	-- By now, we have either found air or nothing.
@@ -185,15 +206,11 @@ bones.on_dieplayer = function(player)
 		return
 	end
 
-	local pos = vector.round(utility.get_foot_pos(player:get_pos()))
-  pos = find_ground(pos)
-	local preserve_name = "passport:passport"
+	local pos = vector.round(utility.get_middle_pos(player:get_pos()))
 
 	-- Check if it's possible to place bones, if not find space near player.
-	if bones_mode == "bones" and not may_replace(pos, player) then
+	if bones_mode == "bones" then
 		local boneloc = find_suitable_bone_location(pos, player)
-		-- Place bones even when spot is protected.
-		-- We do not want players to lose their items.
 		if boneloc then
 			pos = boneloc
 		else
@@ -263,7 +280,7 @@ bones.on_dieplayer = function(player)
 		local list = player_inv:get_list("main") or {}
 		for i = 1, #list do
 			local stack = list[i]
-			if stack:get_name() ~= preserve_name then
+			if stack:get_name() ~= PASSPORT then
 				if stack:get_count() > 0 and inv:room_for_item("main", stack) then
 					inv:add_item("main", stack)
 					minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")

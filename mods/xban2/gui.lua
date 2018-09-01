@@ -25,12 +25,14 @@ local function make_list(filter)
 			for name, _ in pairs(data.names) do
 				for _, fname in ipairs(filter) do
 					-- Plaintext search.
-					if strfind(name, fname, 1, true) then
-						if #list > MAXLISTSIZE then
-							dropped = true
-							goto done
+					if fname ~= "" then -- Don't search empty filters.
+						if strfind(name, fname, 1, true) then
+							if #list > MAXLISTSIZE then
+								dropped = true
+								goto done
+							end
+							list[#list+1] = name
 						end
-						list[#list+1] = name
 					end
 				end
 			end

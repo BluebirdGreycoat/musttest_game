@@ -74,11 +74,13 @@ end
 local player_inventory_empty = function(inv, name)
 	local preserve_name = "passport:passport"
 	local count = 0
-	for i = 1, inv:get_size(name) do
-		local stack = inv:get_stack(name, i)
-		if stack:get_name() ~= preserve_name then
-			if stack:get_count() > 0 then
-					count = count + stack:get_count()
+	local list = inv:get_list(name)
+	for i = 1, #list do
+		local stack = list[i]
+		local stack_count = stack:get_count()
+		if stack_count > 0 then
+			if stack:get_name() ~= preserve_name then
+					count = count + stack_count
 			end
 		end
 	end

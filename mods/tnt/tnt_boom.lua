@@ -168,27 +168,35 @@ end
 local function entity_physics(pos, radius, drops, boomdef)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	for _, obj in pairs(objs) do
-		local obj_pos = obj:getpos()
+		local obj_pos = obj:get_pos()
 		local dist = math.max(1, vector.distance(pos, obj_pos))
 
+		-- Calculate damage to be applied to player or mob.
 		local damage = (8 / dist) * radius
+
 		if obj:is_player() then
 			-- Admin is exempt from TNT blasts.
 			if not gdac.player_is_admin(obj) then
-				-- currently the engine has no method to set
-				-- player velocity. See #2960
-				-- instead, we knock the player back 1.0 node, and slightly upwards
-				local dir = vector.normalize(vector.subtract(obj_pos, pos))
-				local moveoff = vector.multiply(dir, dist + 1.0)
-				local newpos = vector.add(pos, moveoff)
-				newpos = vector.add(newpos, {x = 0, y = 0.2, z = 0})
-				obj:setpos(newpos)
-
+				-- Damage player. For reasons having to do with bone placement, this
+				-- needs to happen before any knockback effects. And knockback effects
+				-- should only be applied if the player does not actually die.
 				if obj:get_hp() > 0 then
 					obj:set_hp(obj:get_hp() - damage)
 					if obj:get_hp() <= 0 then
 						minetest.chat_send_all("# Server: <" .. rename.gpn(obj:get_player_name()) .. "> exploded.")
 					end
+				end
+
+				-- Do knockback only if player didn't die.
+				if obj:get_hp() > 0 then
+					-- Currently the engine has no method to set player velocity.
+					-- See #2960. Instead, we knock the player back 1.0 node, and slightly
+					-- upwards.
+					local dir = vector.normalize(vector.subtract(obj_pos, pos))
+					local moveoff = vector.multiply(dir, dist + 1.0)
+					local newpos = vector.add(pos, moveoff)
+					newpos = vector.add(newpos, {x = 0, y = 0.2, z = 0})
+					obj:set_pos(newpos)
 				end
 			end
 		else

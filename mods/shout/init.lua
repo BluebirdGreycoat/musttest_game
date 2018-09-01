@@ -20,7 +20,7 @@ shout.HINTS = {
 	"Use the /players command when part of a group PM channel to see others on your channel.",
 	"The ID Marker item hides your name, and obfuscates the public bones report when you die or pick bones.",
 	"Most plants grow poorly near ice. Some plants won't grow at all.",
-	"You can test protection without risking damage by punching nodes with a stick.",
+	"You can test protection without harming yourself by punching nodes with a stick.",
 	"Falling nodes dropped above farms and gardens will do no damage to protected plants.",
 	"Use teleports, gateways, and flameportals to get around quickly.",
 	"Place city marker blocks to mark your land as part of the city, to help suppress unwanted PvP.",

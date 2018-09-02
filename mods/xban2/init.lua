@@ -55,6 +55,8 @@ function xban.find_entry(player, create) --> entry, index
 			names = { [player]=true },
 			banned = false,
 			record = { },
+			last_pos = { },
+			last_seen = { },
 		}
 		table.insert(xban.db, e)
 		return e, #xban.db
@@ -425,6 +427,14 @@ function xban.load_db()
 		end
 		if type(v.last_pos) ~= "nil" and is_vector(v.last_pos) then
 			v.last_pos = nil
+		end
+
+		-- Add empty tables for missing elements.
+		if not v.last_pos then
+			v.last_pos = {}
+		end
+		if not v.last_seen then
+			v.last_seen = {}
 		end
 	end
 

@@ -229,6 +229,14 @@ function xban.on_joinplayer(player)
 	e.last_seen = os.time()
 end
 
+function xban.on_leaveplayer(player, timeout)
+	local pname = player:get_player_name()
+	local e = xban.find_entry(pname)
+	if e then
+		e.last_pos = player:get_pos()
+	end
+end
+
 function xban.chatcommand_ban(name, params)
 	local plname, reason = params:match("^(%S+)%s+(.+)$")
 	if not (plname and reason) then
@@ -406,6 +414,10 @@ if not xban.registered then
 
 	minetest.register_on_prejoinplayer(function(...)
 		return xban.on_prejoinplayer(...)
+	end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return xban.on_leaveplayer(...)
 	end)
 
 	minetest.register_chatcommand("xban_wl", {

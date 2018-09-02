@@ -59,7 +59,7 @@ end
 
 
 teleports.save = function()
-    local datastring = minetest.serialize(teleports.teleports)
+    local datastring = xban.serialize(teleports.teleports)
     if not datastring then
         return
     end

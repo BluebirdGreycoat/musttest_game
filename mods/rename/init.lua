@@ -169,6 +169,11 @@ end
 -- This function has a shortname for ease of use.
 -- Note: this function may be called in contexts where the player is not online.
 function rename.get_player_name(pname)
+	-- nil check.
+	if not pname or pname == "" then
+		return ""
+	end
+
 	local dname = rename.modstorage:get_string(pname .. ":org")
 	if not dname or dname == "" then
 		return pname

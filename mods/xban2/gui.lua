@@ -23,7 +23,7 @@ local function make_list(filter)
 	if #filter > 0 then
 		for _, data in ipairs(xban.db) do
 			for name, _ in pairs(data.names) do
-				if not name:find("%.") then -- No IP addresses.
+				if not name:find("[%.%:]") then -- No IP addresses.
 					for _, fname in ipairs(filter) do
 						-- Plaintext search.
 						if fname ~= "" then -- Don't search empty filters.
@@ -42,7 +42,7 @@ local function make_list(filter)
 	else
 		for _, data in ipairs(xban.db) do
 			for name, _ in pairs(data.names) do
-				if not name:find("%.") then -- No IP addresses.
+				if not name:find("[%.%:]") then -- No IP addresses.
 					if #list > MAXLISTSIZE then
 						dropped = true
 						goto done
@@ -75,9 +75,9 @@ local function get_record_simple(name)
 	local e = xban.find_entry(name)
 
 	if not e then
-		return nil, ("No entry found for <%s>."):format(rename.gpn(name))
+		return nil, {("No entry found for <%s>."):format(rename.gpn(name))}, false
 	elseif (not e.record) or (#e.record == 0) then
-		return nil, ("Player <%s> has no ban records."):format(rename.gpn(name))
+		return e, {("Player <%s> has no ban records."):format(rename.gpn(name))}, false
 	end
 
 	local strings = {}
@@ -89,7 +89,7 @@ local function get_record_simple(name)
 		table.insert(strings, msg)
 	end
 
-	return strings, e
+	return e, strings, true
 end
 
 local function make_fs(name)
@@ -122,38 +122,58 @@ local function make_fs(name)
 
 	local record_name = list[pli]
 	if record_name then
-		-- Second return value is a ban record if first is non-nil, otherwise it is
-		-- a message string.
-		local strings, e = get_record_simple(record_name)
-		if strings then
-			for i, r in ipairs(strings) do
-				strings[i] = ESC(r)
-			end
+		local e, strings, gotten = get_record_simple(record_name)
 
-			fsn=fsn+1 fs[fsn] = format(
-					"textlist[4.2,1.8;11.6,8;entry;%s;%d;0]",
-					table.concat(strings, ","), ei)
-
-			-- `e' is a ban record, if we reach this point.
-			local rec = e.record[ei]
-			if rec then
-				fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
-
-					ESC("Source: "..(rec.source or "<none>")
-						.."\nDate: "..os.date("%c", rec.time)
-						.."\n"..(rec.expires and os.date("Expires: %c", rec.expires) or "")
-						.."\n"..(e.banned and "Status: Banned!" or "Player is not banned.")),
-
-					pli) -- End format.
-			end
-
-		else
-			fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,8;err;"..ESC(e)..";0]"
-			fsn=fsn+1 fs[fsn] = "label[0,10.3;"..ESC(e).."]"
+		for i, r in ipairs(strings) do
+			strings[i] = ESC(r)
 		end
+
+		-- Element field name changes based on whether we got a real set of ban records.
+		fsn=fsn+1 fs[fsn] = format(
+				"textlist[4.2,1.8;11.6,6;" .. (gotten and "entry" or "err") .. ";%s;%d;0]",
+				table.concat(strings, ","), ei)
+
+		local rec = e.record[ei]
+		if #e.record > 0 then
+			-- Ensure a valid record is selected.
+			if not rec then
+				rec = e.record[1]
+				state.entry_index = 1
+				ei = 1
+			end	
+
+			fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
+
+				ESC("Source: "..(rec.source or "<none>")
+					.."\nDate: "..os.date("%c", rec.time)
+					.."\n"..(rec.expires and os.date("Expires: %c", rec.expires) or "")
+					.."\n"..(e.banned and "Status: Banned!" or "Player is not banned.")),
+
+				pli) -- End format.
+		else
+			-- No ban records?
+			fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
+					ESC("Player <" .. rename.gpn(record_name) .. "> has no ban records.")
+				) -- End format.
+		end
+
+		-- Obtain all alternate names/IPs for this record.
+		local names = {}
+		for k, v in pairs(e.names) do
+			names[#names+1] = rename.gpn(k)
+		end
+		
+		local infomsg = {}
+		infomsg[#infomsg+1] = "Other names: {"..table.concat(names, ", ").."}"
+
+		for k, v in ipairs(infomsg) do
+			infomsg[k] = ESC(v)
+		end
+		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;names;"..table.concat(infomsg, ",")..";0]"
 	else
 		local e = "No entry matches the query."
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,8;err;"..ESC(e)..";0]"
+		fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,6;err;"..ESC(e)..";0]"
+		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;names;;0]"
 		fsn=fsn+1 fs[fsn] = "label[0,10.3;"..ESC(e).."]"
 	end
 	return table.concat(fs)

@@ -176,6 +176,10 @@ local function make_fs(name)
 			infomsg[#infomsg+1] = "User was last seen at " ..
 				minetest.pos_to_string(vector.round(e.last_pos)) .. "."
 		end
+		if e.last_seen then
+			infomsg[#infomsg+1] = "Last login: " ..
+				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen) .. "."
+		end
 
 		for k, v in ipairs(infomsg) do
 			infomsg[k] = ESC(v)

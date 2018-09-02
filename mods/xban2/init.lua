@@ -224,7 +224,7 @@ function xban.on_joinplayer(player)
 	if ip then
 		e.names[ip] = true
 	end
-	e.last_seen = os.time()
+	e.last_seen[name] = os.time()
 end
 
 function xban.on_leaveplayer(player, timeout)

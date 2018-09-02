@@ -83,16 +83,22 @@ local trashInv = minetest.create_detached_inventory(
 		end,
 
 		on_put = function(inv, toList, toIndex, stack, player)
+			local stack = inv:get_stack(toList, toIndex)
+
 			inv:set_stack(toList, toIndex, ItemStack(nil))
 
 			if player and player:is_player() then
-				local pos = player:getpos()
+				local pos = player:get_pos()
 				-- Play a trash sound. Let other players hear it.
 				minetest.sound_play("inventory_plus_trash", {
 					gain=1.0,
 					pos=pos,
 					max_hear_distance=10,
 				})
+
+				minetest.log("action", player:get_player_name() .. " trashes " ..
+					stack:get_name() .. " " .. stack:get_count() ..
+					" using inventory trash slot.")
 			end
 		end,
 	})

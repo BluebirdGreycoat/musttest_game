@@ -159,12 +159,18 @@ local function make_fs(name)
 
 		-- Obtain all alternate names/IPs for this record.
 		local names = {}
+		local ips = {}
 		for k, v in pairs(e.names) do
-			names[#names+1] = rename.gpn(k)
+			if not k:find("[%.%:]") then
+				names[#names+1] = rename.gpn(k)
+			else
+				ips[#ips+1] = k -- Is an IP address.
+			end
 		end
 		
 		local infomsg = {}
 		infomsg[#infomsg+1] = "Other names: {"..table.concat(names, ", ").."}"
+		infomsg[#infomsg+1] = "IPs used: ["..table.concat(ips, " | ").."]"
 
 		for k, v in ipairs(infomsg) do
 			infomsg[k] = ESC(v)

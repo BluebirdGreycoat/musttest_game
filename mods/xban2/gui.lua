@@ -73,18 +73,23 @@ end
 
 local function get_record_simple(name)
 	local e = xban.find_entry(name)
+
 	if not e then
-		return nil, ("No entry found for <%s>."):format(rename.gpn(name)), nil
+		return nil, ("No entry found for <%s>."):format(rename.gpn(name))
 	elseif (not e.record) or (#e.record == 0) then
-		return nil, ("Player <%s> has no ban records."):format(rename.gpn(name)), nil
+		return nil, ("Player <%s> has no ban records."):format(rename.gpn(name))
 	end
-	local record = { }
+
+	local strings = {}
+
+	-- Assemble ban record strings.
 	for _, rec in ipairs(e.record) do
 		local msg = (os.date("%Y-%m-%d %H:%M:%S", rec.time).." | "
-				..(rec.reason or "No reason given."))
-		table.insert(record, msg)
+			..(rec.reason or "No reason given."))
+		table.insert(strings, msg)
 	end
-	return record, e.record, e.banned
+
+	return strings, e
 end
 
 local function make_fs(name)
@@ -117,24 +122,26 @@ local function make_fs(name)
 
 	local record_name = list[pli]
 	if record_name then
-		local record, e, banned = get_record_simple(record_name)
-		if record then
-			for i, r in ipairs(record) do
-				record[i] = ESC(r)
+		-- Second return value is a ban record if first is non-nil, otherwise it is
+		-- a message string.
+		local strings, e = get_record_simple(record_name)
+		if strings then
+			for i, r in ipairs(strings) do
+				strings[i] = ESC(r)
 			end
 
 			fsn=fsn+1 fs[fsn] = format(
 					"textlist[4.2,1.8;11.6,8;entry;%s;%d;0]",
-					table.concat(record, ","), ei)
+					table.concat(strings, ","), ei)
 
-			local rec = e[ei]
+			local rec = e.record[ei]
 			if rec then
 				fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
 
 					ESC("Source: "..(rec.source or "<none>")
 						.."\nDate: "..os.date("%c", rec.time)
 						.."\n"..(rec.expires and os.date("Expires: %c", rec.expires) or "")
-						.."\n"..(banned and "Status: Banned!" or "Player is not banned.")),
+						.."\n"..(e.banned and "Status: Banned!" or "Player is not banned.")),
 
 					pli) -- End format.
 			end

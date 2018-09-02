@@ -172,6 +172,10 @@ local function make_fs(name)
 		infomsg[#infomsg+1] = "Other names: {"..table.concat(names, ", ").."}"
 		infomsg[#infomsg+1] = "IPs used: ["..table.concat(ips, " | ").."]"
 
+		if e.last_pos then
+			infomsg[#infomsg+1] = "User was last seen at " .. minetest.pos_to_string(e.last_pos) .. "."
+		end
+
 		for k, v in ipairs(infomsg) do
 			infomsg[k] = ESC(v)
 		end

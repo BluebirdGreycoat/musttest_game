@@ -7,10 +7,6 @@ xban.MP = minetest.get_modpath("xban2")
 -- Reloadable.
 dofile(xban.MP.."/serialize.lua")
 
--- Localize
-local db = xban.db
-local tempbans = xban.tempbans
-
 local DEF_SAVE_INTERVAL = 300 -- 5 minutes
 local DEF_DB_FILENAME = minetest.get_worldpath().."/xban.db"
 
@@ -46,7 +42,7 @@ local function parse_time(t) --> secs
 end
 
 function xban.find_entry(player, create) --> entry, index
-	for index, e in ipairs(db) do
+	for index, e in ipairs(xban.db) do
 		for name in pairs(e.names) do
 			if name == player then
 				return e, index
@@ -60,8 +56,8 @@ function xban.find_entry(player, create) --> entry, index
 			banned = false,
 			record = { },
 		}
-		table.insert(db, e)
-		return e, #db
+		table.insert(xban.db, e)
+		return e, #xban.db
 	end
 	return nil
 end
@@ -99,7 +95,7 @@ function xban.ban_player(player, source, expires, reason) --> bool, err
 		if ip then
 			e.names[ip] = true
 		end
-		e.last_pos = pl:get_pos()
+		e.last_pos[player] = pl:get_pos()
 	end
 	e.reason = reason
 	e.time = rec.time
@@ -109,7 +105,7 @@ function xban.ban_player(player, source, expires, reason) --> bool, err
 	local date = (expires and os.date("%c", expires)
 	  or "The End of Time")
 	if expires then
-		table.insert(tempbans, e)
+		table.insert(xban.tempbans, e)
 		msg = ("Banned: Expires: %s, Reason: %s"):format(date, reason)
 	else
 		msg = ("Banned: Reason: %s"):format(reason)
@@ -147,20 +143,20 @@ function xban.unban_player(player, source) --> bool, err
 end
 
 function xban.get_whitelist(name_or_ip)
-	return db.whitelist and db.whitelist[name_or_ip]
+	return xban.db.whitelist and xban.db.whitelist[name_or_ip]
 end
 
 function xban.remove_whitelist(name_or_ip)
-	if db.whitelist then
-		db.whitelist[name_or_ip] = nil
+	if xban.db.whitelist then
+		xban.db.whitelist[name_or_ip] = nil
 	end
 end
 
 function xban.add_whitelist(name_or_ip, source)
-	local wl = db.whitelist
+	local wl = xban.db.whitelist
 	if not wl then
 		wl = { }
-		db.whitelist = wl
+		xban.db.whitelist = wl
 	end
 	wl[name_or_ip] = {
 		source=source,
@@ -187,9 +183,9 @@ function xban.get_record(player)
 		table.insert(record, ("[%s]: %s."):format(os.date("%c", e.time), msg))
 	end
 	local last_pos
-	if e.last_pos then
+	if e.last_pos and e.last_pos[player] then
 		last_pos = ("User was last seen at %s."):format(
-		  minetest.pos_to_string(vector.round(e.last_pos)))
+		  minetest.pos_to_string(vector.round(e.last_pos[player])))
 	end
 	return record, last_pos
 end
@@ -198,7 +194,7 @@ function xban.on_prejoinplayer(name, ip)
 	if minetest.check_player_privs(name, {server=true}) then
 		return
 	end
-	local wl = db.whitelist or { }
+	local wl = xban.db.whitelist or { }
 	if wl[name] or wl[ip] then return end
 	local e = xban.find_entry(name) or xban.find_entry(ip)
 	if not e then return end
@@ -239,7 +235,7 @@ function xban.on_leaveplayer(player, timeout)
 
 	local e = xban.find_entry(pname)
 	if e then
-		e.last_pos = player:get_pos()
+		e.last_pos[pname] = player:get_pos()
 	end
 end
 
@@ -354,7 +350,7 @@ function xban.check_temp_bans()
 	minetest.after(60, function() xban.check_temp_bans() end)
 	local to_rm = { }
 	local now = os.time()
-	for i, e in ipairs(tempbans) do
+	for i, e in ipairs(xban.tempbans) do
 		if e.expires and (e.expires <= now) then
 			table.insert(to_rm, i)
 			e.banned = false
@@ -364,16 +360,16 @@ function xban.check_temp_bans()
 		end
 	end
 	for _, i in ipairs(to_rm) do
-		table.remove(tempbans, i)
+		table.remove(xban.tempbans, i)
 	end
 end
 
 function xban.save_db()
 	minetest.after(SAVE_INTERVAL, function() xban.save_db() end)
 	local f, e = io.open(DB_FILENAME, "wt")
-	db.timestamp = os.time()
+	xban.db.timestamp = os.time()
 	if f then
-		local ok, err = f:write(xban.serialize(db))
+		local ok, err = f:write(xban.serialize(xban.db))
 		if not ok then
 			WARNING("Unable to save database: %s", err)
 		end
@@ -401,16 +397,45 @@ function xban.load_db()
 		  "Deserialization failed: "..(e2 or "unknown error"))
 		return
 	end
-	db = t
-	tempbans = { }
-	for _, entry in ipairs(db) do
-		if entry.banned and entry.expires then
-			table.insert(tempbans, entry)
+
+	local function is_vector(data)
+		local count = 0
+		if type(data) == "table" then
+			for k, v in pairs(data) do
+				count = count + 1
+			end
+		end
+		if count ~= 3 then
+			return false
+		end
+		if type(data) == "table"
+			and type(data.x) == "number"
+			and type(data.y) == "number"
+			and type(data.z) == "number"
+			and count == 3 then
+			return true
+		end
+		return false
+	end
+
+	-- Update DB format. Remove entries that are in an old, invalid format.
+	for k, v in ipairs(t) do
+		if type(v.last_seen) ~= "nil" and type(v.last_seen) ~= "table" then
+			v.last_seen = nil
+		end
+		if type(v.last_pos) ~= "nil" and is_vector(v.last_pos) then
+			v.last_pos = nil
 		end
 	end
 
-	xban.db = db
-	xban.tempbans = tempbans
+	xban.db = t
+	xban.tempbans = {}
+
+	for _, entry in ipairs(xban.db) do
+		if entry.banned and entry.expires then
+			table.insert(xban.tempbans, entry)
+		end
+	end
 end
 
 if not xban.registered then

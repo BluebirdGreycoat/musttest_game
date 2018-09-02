@@ -172,13 +172,14 @@ local function make_fs(name)
 		infomsg[#infomsg+1] = "Other names: {"..table.concat(names, ", ").."}"
 		infomsg[#infomsg+1] = "IPs used: ["..table.concat(ips, " | ").."]"
 
-		if e.last_pos then
+		-- last_pos and last_seen are per name, not per record-entry.
+		if type(e.last_pos) == "table" and e.last_pos[record_name] then
 			infomsg[#infomsg+1] = "User was last seen at " ..
-				minetest.pos_to_string(vector.round(e.last_pos)) .. "."
+				minetest.pos_to_string(vector.round(e.last_pos[record_name])) .. "."
 		end
-		if e.last_seen then
+		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
-				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen) .. "."
+				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
 		end
 
 		for k, v in ipairs(infomsg) do

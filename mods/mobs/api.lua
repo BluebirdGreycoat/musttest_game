@@ -277,7 +277,7 @@ local function line_of_sight(self, pos1, pos2, stepsize)
 	-- It continues to advance in the line of sight in search of a real
 	-- obstruction which counts as 'normal' nodebox.
 	local registered = minetest.reg_ns_nodes
-	local ndef = registered[nn] or minetest.registered_nodes
+	local ndef = registered[nn] or minetest.registered_nodes[nn]
 
 	while ndef
 		and (ndef.walkable == false

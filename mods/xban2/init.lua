@@ -231,6 +231,12 @@ end
 
 function xban.on_leaveplayer(player, timeout)
 	local pname = player:get_player_name()
+
+	-- Don't record last_pos for temporary accounts.
+	if not passport.player_registered(pname) then
+		return
+	end
+
 	local e = xban.find_entry(pname)
 	if e then
 		e.last_pos = player:get_pos()

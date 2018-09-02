@@ -97,7 +97,7 @@ local trashInv = minetest.create_detached_inventory(
 				})
 
 				minetest.log("action", player:get_player_name() .. " trashes " ..
-					stack:get_name() .. " " .. stack:get_count() ..
+					"\"" .. stack:get_name() .. " " .. stack:get_count() .. "\"" ..
 					" using inventory trash slot.")
 			end
 		end,

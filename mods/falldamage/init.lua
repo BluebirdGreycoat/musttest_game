@@ -1,4 +1,7 @@
 
+-- Use whenever you would use `minetest.registered_nodes' but don't need stairs.
+minetest.reg_ns_nodes = {}
+
 falldamage = falldamage or {}
 falldamage.modpath = minetest.get_modpath("falldamage")
 dofile(falldamage.modpath .. "/tilesheet.lua")
@@ -150,5 +153,17 @@ local function register_node(name, def2)
 	falldamage.apply_range_checks(def)
 	falldamage.apply_liquid_interaction_mod(name, def)
 	old_register_node(name, def)
+
+	-- Populate table of all non-stair nodes.
+	if not name:find("^%:?stairs:") then
+		local first, second = name:match("^%:?([%w_]+)%:([%w_]+)$")
+		local n = first .. ":" .. second
+		local def = minetest.registered_nodes[n]
+		minetest.reg_ns_nodes[n] = def
+	end
 end
 minetest.register_node = register_node
+
+-- Make sure our custom node tables contain entries for air and ignore.
+minetest.reg_ns_nodes["air"] = minetest.registered_nodes["air"]
+minetest.reg_ns_nodes["ignore"] = minetest.registered_nodes["ignore"]

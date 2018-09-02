@@ -503,7 +503,7 @@ if not flowers.reg3 then
 		on_place = function(itemstack, placer, pointed_thing)
 			local pos = pointed_thing.above
 			local node = minetest.get_node(pointed_thing.under).name
-			local def = minetest.registered_nodes[node]
+			local def = minetest.reg_ns_nodes[node]
 			local player_name = placer:get_player_name()
 
 			-- Lilies are placeable in any water.

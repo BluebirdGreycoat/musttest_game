@@ -14,7 +14,7 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
   local nn = minetest.get_node(pt.under).name
 
 	-- If node has `on_ignite' defined, use that instead.
-	local ndef = minetest.registered_nodes[nn]
+	local ndef = minetest.reg_ns_nodes[nn]
 	if ndef and ndef.on_ignite then
 		ndef.on_ignite(pt.under)
 	else

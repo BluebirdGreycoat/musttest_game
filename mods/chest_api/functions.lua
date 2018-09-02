@@ -261,7 +261,7 @@ end
 chest_api.get_share_formspec = function(pos, meta)
   local node = minetest.get_node(pos)
   local nn = node.name
-  local desc = minetest.registered_nodes[nn].description
+  local desc = minetest.reg_ns_nodes[nn].description
   local cname = meta:get_string("chest_name") or ""
   
   local formspec
@@ -350,7 +350,7 @@ end
 
 local function chest_lid_obstructed(pos)
 	local above = { x = pos.x, y = pos.y + 1, z = pos.z }
-	local def = minetest.registered_nodes[minetest.get_node(above).name]
+	local def = minetest.reg_ns_nodes[minetest.get_node(above).name]
 	if not def then
 		return true
 	end
@@ -510,7 +510,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)\nLabel: <" .. cname .. ">")
         end
 
-        local desc = minetest.registered_nodes[nn].description
+        local desc = minetest.reg_ns_nodes[nn].description
         minetest.show_formspec(pn, "default:chest", chest_api.get_chest_formspec(nn, desc, pos))
       else
         minetest.chat_send_player(pn, "# Server: You cannot relabel this chest.")
@@ -674,7 +674,7 @@ end
 
 function chest_api.protected_on_rightclick(pos, node, clicker)
 	local meta = minetest.get_meta(pos)
-	local def = minetest.registered_nodes[minetest.get_node(pos).name]
+	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
 	local name = def._chest_basename
 	if not has_locked_chest_privilege(pos, name, meta, clicker) then
 		ambiance.sound_play("default_chest_locked", pos, 1.0, 20)
@@ -715,7 +715,7 @@ end
 
 function chest_api.protected_on_key_use(pos, player)
 	local node = minetest.get_node(pos)
-	local def = minetest.registered_nodes[node.name]
+	local def = minetest.reg_ns_nodes[node.name]
 	local name = def._chest_basename
 
 	-- Failsafe.
@@ -839,7 +839,7 @@ end
 
 function chest_api.public_on_rightclick(pos, node, clicker)
 	local meta = minetest.get_meta(pos)
-	local def = minetest.registered_nodes[minetest.get_node(pos).name]
+	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
 	local name = def._chest_basename
 	meta:set_string("infotext", "Unlocked Chest")
 	meta:set_string("formspec", nil)
@@ -914,7 +914,7 @@ function chest_api.on_metadata_inventory_take(pos, listname, index, stack, playe
 end
 
 function chest_api.on_blast(pos)
-	local def = minetest.registered_nodes[minetest.get_node(pos).name]
+	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
 	local name = def._chest_basename
 	local drops = {}
 	default.get_inventory_drops(pos, "main", drops)

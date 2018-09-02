@@ -234,7 +234,7 @@ minetest.register_tool("handholds:climbing_pick", {
 		end
 
 		local node_def = 
-			minetest.registered_nodes[minetest.get_node(pointed_thing.above).name]
+			minetest.reg_ns_nodes[minetest.get_node(pointed_thing.above).name]
 		if not node_def or not node_def.buildable_to then
 			return
 		end

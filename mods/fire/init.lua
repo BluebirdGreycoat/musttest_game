@@ -245,7 +245,8 @@ minetest.register_abm({
 				return
 			end
 			local p
-			local def = minetest.registered_nodes[node.name]
+			local def = minetest.reg_ns_nodes[node.name]
+				or minetest.registered_nodes[node.name]
 			if def and def.buildable_to then
 				-- Flame replaces flammable node itself if node is buildable to.
 				p = pos
@@ -278,7 +279,8 @@ minetest.register_abm({
 				end
 				-- remove flammable nodes around flame
 				local flammable_node = minetest.get_node(p)
-				local def = minetest.registered_nodes[flammable_node.name]
+				local def = minetest.reg_ns_nodes[flammable_node.name]
+					or minetest.registered_nodes[flammable_node.name]
 				if def.on_burn then
 					def.on_burn(p)
 				else

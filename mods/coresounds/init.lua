@@ -4,7 +4,7 @@ coresounds = coresounds or {}
 coresounds.modpath = minetest.get_modpath("coresounds")
 
 function coresounds.play_sound_node_place(pos, nn)
-	local def = minetest.registered_nodes[nn]
+	local def = minetest.reg_ns_nodes[nn] or minetest.registered_nodes[nn]
 	if not def then return end
 
 	if def and def.sounds and def.sounds.place then
@@ -15,7 +15,7 @@ function coresounds.play_sound_node_place(pos, nn)
 end
 
 function coresounds.play_sound_node_dug(pos, nn)
-	local def = minetest.registered_nodes[nn]
+	local def = minetest.reg_ns_nodes[nn] or minetest.registered_nodes[nn]
 	if not def then return end
 
 	if def and def.sounds and def.sounds.dug then
@@ -152,7 +152,8 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
     if not digger then return end
     if not digger:is_player() then return end
 
-    local n = minetest.registered_nodes[oldnode.name]
+    local n = minetest.reg_ns_nodes[oldnode.name] or
+			minetest.registered_nodes[oldnode.name]
     if not n then return end
     
     if n.sounds then
@@ -185,7 +186,8 @@ minetest.register_on_placenode(function(pos, oldnode, digger)
   if not digger then return end
   if not digger:is_player() then return end
 
-  local n = minetest.registered_nodes[oldnode.name]
+  local n = minetest.reg_ns_nodes[oldnode.name] or
+		minetest.registered_nodes[oldnode.name]
   if not n then return end
   
   if n.sounds then

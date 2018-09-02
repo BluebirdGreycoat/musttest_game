@@ -27,7 +27,7 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 	local under = pt.under
 	local above = pt.above
 	local node = minetest.get_node(under)
-	local ndef = minetest.registered_nodes[node.name]
+	local ndef = minetest.reg_ns_nodes[node.name]
 
 	-- Call on_rightclick if target node defines it.
 	if ndef and ndef.on_rightclick and
@@ -35,7 +35,7 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 		return ndef.on_rightclick(under, node, placer, itemstack, pt) or itemstack
 	end
 
-	local def = minetest.registered_nodes[itemstack:get_name()]
+	local def = minetest.reg_ns_nodes[itemstack:get_name()]
 	local good = false
 	if def then
 		if def._torches_node_ceiling and def._torches_node_floor and def._torches_node_wall then
@@ -48,7 +48,7 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 
 	-- If node under is buildable_to, place into it instead (eg. snow)
 	local place_to = above
-	if ndef.buildable_to then
+	if ndef and ndef.buildable_to then
 		place_to = under
 	end
 	local place_in_non_air = (minetest.get_node(place_to).name ~= "air")

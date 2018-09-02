@@ -232,7 +232,7 @@ end
 -- Called whenever soil is notified to update via timer.
 -- This was originally an ABM function.
 function farming.on_update_soil(pos, node)
-	local n_def = minetest.registered_nodes[node.name] or nil
+	local n_def = minetest.reg_ns_nodes[node.name] or nil
 	local wet = n_def.soil.wet or nil
 	local base = n_def.soil.base or nil
 	local dry = n_def.soil.dry or nil
@@ -245,10 +245,10 @@ function farming.on_update_soil(pos, node)
 	if not nn or not nn.name then
 		return
 	end
-	local nn_def = minetest.registered_nodes[nn.name] or nil
+	local nn_def = minetest.reg_ns_nodes[nn.name] or nil
 	pos.y = pos.y - 1
 
-	if nn_def and nn_def.walkable and minetest.get_item_group(nn.name, "plant") == 0 then
+	if not nn_def or (nn_def.walkable and minetest.get_item_group(nn.name, "plant") == 0) then
 		minetest.set_node(pos, {name = base})
 		return
 	end

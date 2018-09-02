@@ -15,7 +15,7 @@ shears.on_place = function(itemstack, user, pointed_thing)
     
     -- Pass through interactions to nodes that define them (like chests).
     do
-      local pdef = minetest.registered_nodes[node.name]
+      local pdef = minetest.reg_ns_nodes[node.name]
       if pdef and pdef.on_rightclick and not user:get_player_control().sneak then
         return pdef.on_rightclick(pos, node, user, itemstack, pointed_thing)
       end

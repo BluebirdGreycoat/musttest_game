@@ -23,7 +23,12 @@ local open_chests = {}
 
 local function chest_lid_obstructed(pos)
   local above = {x=pos.x, y=pos.y+1, z=pos.z}
-  local def = minetest.registered_nodes[minetest.get_node(above).name]
+  local def = minetest.reg_ns_nodes[minetest.get_node(above).name]
+
+	-- Unknown node obstructs.
+	if not def then
+		return true
+	end
   
   -- Allow ladders, signs, wallmounted things and torches to not obstruct.
   if def.drawtype == "airlike" or

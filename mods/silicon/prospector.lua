@@ -49,10 +49,13 @@ local function update_description(toolstack)
 	local depth = m.look_depth
 
 	local target = "Unknown Block"
-	if minetest.registered_nodes[m.target] then
-		local d = minetest.registered_nodes[m.target].description or ""
+	local ndef = minetest.reg_ns_nodes[m.target]
+	if ndef then
+		local d = ndef.description or ""
 		if d ~= "" then
 			target = utility.get_short_desc(d)
+		else
+			target = "UNKNOWN NODE"
 		end
 	end
 
@@ -136,19 +139,6 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 		end
 	end
 
-	local desc = "Unknown Block"
-	if minetest.registered_nodes[toolmeta.target] then
-		local d = minetest.registered_nodes[toolmeta.target].description or ""
-		if d ~= "" then
-			desc = utility.get_short_desc(d)
-		end
-	end
-
-	-- Don't really need this since sound is played?
-	--minetest.chat_send_player(user:get_player_name(),
-	--	"# Server: " .. desc .. " is " .. (found and "present" or "absent") ..
-	--	" in the tested region.")
-
 	local sound = "technic_prospector_" .. (found and "hit" or "miss")
 	ambiance.sound_play(sound, pointed_thing.under, 1.0, 20)
 
@@ -165,7 +155,7 @@ function prospector.do_place(toolstack, user, pointed_thing)
 	local pointed
 	if pointed_thing.type == "node" then
 		local pname = minetest.get_node(pointed_thing.under).name
-		local pdef = minetest.registered_nodes[pname]
+		local pdef = minetest.reg_ns_nodes[pname]
 		-- Don't allow pointing to unknown stuff.
 		if pdef and pname ~= toolmeta.target then
 			pointed = pname
@@ -173,17 +163,17 @@ function prospector.do_place(toolstack, user, pointed_thing)
 	end
 	local look_diameter = toolmeta.look_radius * 2 + 1
 
-	local desc = "Unknown Block"
-	if minetest.registered_nodes[toolmeta.target] then
-		local d = minetest.registered_nodes[toolmeta.target].description or ""
+	local desc = "UNKNOWN BLOCK"
+	if minetest.reg_ns_nodes[toolmeta.target] then
+		local d = minetest.reg_ns_nodes[toolmeta.target].description or ""
 		if d ~= "" then
 			desc = utility.get_short_desc(d)
 		end
 	end
 
-	local pdesc = "Unknown Block"
-	if pointed and minetest.registered_nodes[pointed] then
-		local d = minetest.registered_nodes[pointed].description or ""
+	local pdesc = "UNKNOWN BLOCK"
+	if pointed and minetest.reg_ns_nodes[pointed] then
+		local d = minetest.reg_ns_nodes[pointed].description or ""
 		if d ~= "" then
 			pdesc = utility.get_short_desc(d)
 		end
@@ -313,22 +303,6 @@ if not prospector.run_once then
 		on_place = function(...)
 			return prospector.on_configure(...)
 		end,
-
-		-- Minetest does not support this for tool type items?
-		--[[
-		on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-			local under = pointed_thing.under
-			local node = minetest.get_node(under)
-			local udef = minetest.registered_nodes[node.name]
-			if udef and udef.on_rightclick and
-					not (clicker and clicker:get_player_control().sneak) then
-				return udef.on_rightclick(under, node, clicker, itemstack,
-					pointed_thing) or itemstack
-			end
-
-			return prospector.on_configure(itemstack, clicker, pointed_thing)
-		end
-		--]]
 	})
 
 	minetest.register_on_player_receive_fields(function(...)

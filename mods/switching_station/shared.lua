@@ -136,43 +136,6 @@ for k, v in ipairs({
   function(pos)
   end
 
-  --functable.get_adjacent_machines =
-  --function(pos)
-  --  -- Return list of discovered adjacent machines.
-  --  local hubs = {}
-  --  -- List of valid adjacent locations.
-  --  local targets = {
-  --    {x=pos.x+1, y=pos.y, z=pos.z},
-  --    {x=pos.x-1, y=pos.y, z=pos.z},
-  --    {x=pos.x, y=pos.y, z=pos.z+1},
-  --    {x=pos.x, y=pos.y, z=pos.z-1},
-  --    {x=pos.x, y=pos.y-1, z=pos.z},
-  --    {x=pos.x, y=pos.y+1, z=pos.z},
-  --  }
-  --  -- Get all adjacent nodes once.
-  --  local nodes = {}
-  --  for k, v in ipairs(targets) do
-  --    local node = minetest.get_node(v)
-  --    nodes[#nodes+1] = {node=node, pos=v}
-  --  end
-  --  -- Scan through adjacent nodes and find valid ones.
-  --  for h, g in ipairs(nodes) do
-  --    local nn = g.node.name
-  --    local def = minetest.registered_items[nn]
-  --    if def and def.on_machine_execute then
-  --      local key = "tier_" .. v.tier
-  --      if minetest.get_item_group(nn, key) > 0 then
-  --        -- Switching stations are NOT machines in the context of this function.
-  --        -- This function cannot return switching stations because that would make a recursion mess.
-  --        if not string.find(nn, "^switching_station:") then
-  --          hubs[#hubs+1] = g.pos
-  --        end
-  --      end
-  --    end
-  --  end
-  --  return hubs
-  --end
-
   -- Handle & process incomming power-network events.
   functable.on_machine_execute = 
   function(pos, table_in, table_out, traversal)
@@ -199,21 +162,12 @@ for k, v in ipairs({
     --local adjacent_machines = functable.get_adjacent_machines(pos)
     local adjacent_machines = networks.get_adjacent_machines(pos, v.tier)
     for j, g in ipairs(adjacent_machines) do
-      --local node = minetest.get_node(v)
-      --local def = minetest.registered_nodes[node.name]
-      
-      --if def and def.on_machine_execute then
-        -- Machines do not count toward recursion level.
-        -- This is because machines cannot form a chain.
-        --table_out.recursion = recursion
-        --def.on_machine_execute(v, table_in, table_out, traversal)
-      --end
       table_out.recursion = recursion
       g.on_machine_execute(g.pos, table_in, table_out, traversal)
     end
     
     local station_name = "switching_station:" .. v.tier
-    local ndef = minetest.registered_nodes[station_name]
+    local ndef = minetest.reg_ns_nodes[station_name]
     if not ndef or not ndef.on_machine_execute then return end 
     
     -- Find all connected switching stations. Distribute events down the chain.

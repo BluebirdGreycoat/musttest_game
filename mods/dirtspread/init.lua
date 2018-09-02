@@ -84,7 +84,7 @@ function dirtspread.dirt_covered_check(pos)
     -- Shortcut avoids the expensive table lookup for most common cases.
     if name == "air" then return end
 
-		local nodedef = minetest.registered_nodes[name]
+		local nodedef = minetest.reg_ns_nodes[name]
 		if name ~= "ignore" and nodedef and not ((nodedef.sunlight_propagates or
 				nodedef.paramtype == "light") and
 				nodedef.liquidtype == "none") then

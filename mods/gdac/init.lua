@@ -107,7 +107,11 @@ gdac.check_mined_invisible = function(pos, nodename, digger)
     -- Block dug is surrounded on all sides by non-air nodes. But check if any of
     -- these nodes are actually not full blocks.
     for k, v in pairs(nodes) do
-      local vt = minetest.registered_nodes[v]
+      local vt = minetest.reg_ns_nodes[v]
+			if not vt then
+				-- Either a stairs node, or unknown/ignore.
+				return true
+			end
       if vt then
         if not vt.walkable or vt.climbable then
           return true -- Could be ladder, torch, etc.

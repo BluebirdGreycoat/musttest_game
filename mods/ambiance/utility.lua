@@ -5,12 +5,14 @@
 
 -- Checks if the given position would place the player underwater, swimming, or not-in-water.
 ambiance.check_underwater = function(pos)
+	local registered = minetest.reg_ns_nodes
+
 	local n2 = minetest.get_node({x=pos.x, y=pos.y+0.2, z=pos.z}).name
-	local nf = minetest.registered_nodes[n2]
+	local nf = registered[n2]
 	
 	if nf and nf.groups and nf.groups.water then
 		local n1 = minetest.get_node({x=pos.x, y=pos.y+1.4, z=pos.z}).name
-		local nh = minetest.registered_nodes[n1]
+		local nh = registered[n1]
 		
 		if nh and nh.groups and nh.groups.water then
 			return 2 -- Feet and head submerged.

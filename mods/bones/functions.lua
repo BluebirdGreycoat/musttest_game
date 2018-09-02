@@ -34,7 +34,7 @@ end
 
 local function may_replace(pos, player)
 	local nn = minetest.get_node(pos).name
-	local ndef = minetest.registered_nodes[nn]
+	local ndef = minetest.reg_ns_nodes[nn]
 
 	-- If the node is unknown, we return false.
 	if not ndef then

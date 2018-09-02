@@ -179,7 +179,8 @@ function boat.on_step(self, dtime)
 	local new_velo
 	local new_acce = {x = 0, y = 0, z = 0}
 	if not is_water(p) then
-		local nodedef = minetest.registered_nodes[minetest.get_node(p).name]
+		local nodedef = minetest.reg_ns_nodes[
+			minetest.get_node(p).name]
 		if (not nodedef) or nodedef.walkable then
 			self.v = 0
 			new_acce = {x = 0, y = 1, z = 0}
@@ -235,7 +236,7 @@ minetest.register_craftitem("boats:boat", {
 	on_place = function(itemstack, placer, pointed_thing)
 		local under = pointed_thing.under
 		local node = minetest.get_node(under)
-		local udef = minetest.registered_nodes[node.name]
+		local udef = minetest.reg_ns_nodes[node.name]
 		if udef and udef.on_rightclick and
 				not (placer and placer:get_player_control().sneak) then
 			return udef.on_rightclick(under, node, placer, itemstack,

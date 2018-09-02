@@ -230,7 +230,7 @@ for k, v in ipairs({
     if hubs then
       for k, v in ipairs(hubs) do
         local node = minetest.get_node(v)
-        local def = minetest.registered_nodes[node.name]
+        local def = minetest.reg_ns_nodes[node.name]
         if def and def.on_machine_execute then
           def.on_machine_execute(v, table_in, table_out, traversal)
         end

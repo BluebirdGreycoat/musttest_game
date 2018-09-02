@@ -124,7 +124,7 @@ local transform = {
 function _doors.door_toggle(pos, node, clicker)
 	local meta = minetest.get_meta(pos)
 	node = node or minetest.get_node(pos)
-	local def = minetest.registered_nodes[node.name]
+	local def = minetest.reg_ns_nodes[node.name]
 	local name = def.door.name
 
 	local state = meta:get_string("state")
@@ -246,7 +246,7 @@ function doors.register(name, def)
 
       -- Pass through interactions to nodes that define them (like chests).
       local node = minetest.get_node(pointed_thing.under)
-      local pdef = minetest.registered_nodes[node.name]
+      local pdef = minetest.reg_ns_nodes[node.name]
       if pdef and pdef.on_rightclick and not placer:get_player_control().sneak then
         return pdef.on_rightclick(pointed_thing.under, node, placer, itemstack, pointed_thing)
       end
@@ -256,7 +256,7 @@ function doors.register(name, def)
 			else
 				pos = pointed_thing.above
 				node = minetest.get_node(pos)
-				pdef = minetest.registered_nodes[node.name]
+				pdef = minetest.reg_ns_nodes[node.name]
 				if not pdef or not pdef.buildable_to then
 					return itemstack
 				end
@@ -264,7 +264,7 @@ function doors.register(name, def)
 
 			local above = {x = pos.x, y = pos.y + 1, z = pos.z}
 			local top_node = minetest.get_node_or_nil(above)
-			local topdef = top_node and minetest.registered_nodes[top_node.name]
+			local topdef = top_node and minetest.reg_ns_nodes[top_node.name]
 
 			if not topdef or not topdef.buildable_to then
 				return itemstack
@@ -769,7 +769,7 @@ function _doors.trapdoor_toggle(pos, node, clicker)
     end
   end
 
-	local def = minetest.registered_nodes[node.name]
+	local def = minetest.reg_ns_nodes[node.name]
 
 	if string.sub(node.name, -5) == "_open" then
 		minetest.sound_play(def.sound_close,
@@ -1039,7 +1039,7 @@ function doors.register_fencegate(name, def)
 		groups = def.groups,
 		sounds = def.sounds,
 		on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-			local node_def = minetest.registered_nodes[node.name]
+			local node_def = minetest.reg_ns_nodes[node.name]
 			minetest.swap_node(pos, {name = node_def.gate, param2 = node.param2})
 			minetest.sound_play(node_def.sound, {pos = pos, gain = 0.3,
 				max_hear_distance = 8})

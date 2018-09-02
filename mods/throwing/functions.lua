@@ -199,7 +199,7 @@ function throwing_node_should_block_arrow (nn)
     return false
   end
   
-  local def = minetest.registered_nodes[nn]
+  local def = minetest.reg_ns_nodes[nn]
   if def then
     local dt = def.drawtype
     local pt2 = def.paramtype2

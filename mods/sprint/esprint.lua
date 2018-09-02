@@ -181,7 +181,7 @@ function sprint.globalstep(dtime)
 			-- Player moving in water? Increase hunger and exhaustion.
 			if do_hunger and (control.jump or control.left or control.right or control.up or control.down) then
 				local node_inside = sky.get_last_walked_nodeabove(playerName)
-				local ndef = minetest.registered_nodes[node_inside]
+				local ndef = minetest.reg_ns_nodes[node_inside]
 				if ndef and ndef.groups and ndef.groups.liquid then
 					hunger.increase_hunger(player, 1)
 					hunger.increase_exhaustion(player, 10)

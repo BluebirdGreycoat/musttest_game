@@ -57,10 +57,10 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	local above = minetest.get_node(p)
 
 	-- return if any of the nodes is not registered
-	if not minetest.registered_nodes[under.name] then
+	if not minetest.reg_ns_nodes[under.name] then
 		return
 	end
-	if not minetest.registered_nodes[above.name] then
+	if not minetest.reg_ns_nodes[above.name] then
 		return
 	end
 
@@ -75,8 +75,8 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	end
 
 	-- check if (wet) soil defined
-	local regN = minetest.registered_nodes
-	if regN[under.name].soil == nil or regN[under.name].soil.wet == nil or regN[under.name].soil.dry == nil then
+	local ndef = minetest.reg_ns_nodes[under.name]
+	if ndef.soil == nil or ndef.soil.wet == nil or ndef.soil.dry == nil then
 		return
 	end
 
@@ -90,7 +90,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	end
 
 	-- turn the node into soil and play sound
-	minetest.set_node(pt.under, {name = regN[under.name].soil.dry})
+	minetest.set_node(pt.under, {name = ndef.soil.dry})
 	minetest.sound_play("default_dig_crumbly", {
 		pos = pt.under,
 		gain = 0.5,
@@ -223,7 +223,7 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
   
   -- Pass through interactions to nodes that define them (like chests).
   do
-    local pdef = minetest.registered_nodes[under.name]
+    local pdef = minetest.reg_ns_nodes[under.name]
     if pdef and pdef.on_rightclick and not placer:get_player_control().sneak then
       return pdef.on_rightclick(pt.under, under, placer, itemstack, pt)
     end
@@ -241,10 +241,10 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	end
 
 	-- return if any of the nodes is not registered
-	if not minetest.registered_nodes[under.name] then
+	if not minetest.reg_ns_nodes[under.name] then
 		return itemstack
 	end
-	if not minetest.registered_nodes[above.name] then
+	if not minetest.reg_ns_nodes[above.name] then
 		return itemstack
 	end
 
@@ -254,7 +254,8 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	end
 
 	-- check if you can replace the node above the pointed node
-	if not minetest.registered_nodes[above.name].buildable_to then
+	local ndef = minetest.reg_ns_nodes[above.name]
+	if not ndef or not ndef.buildable_to then
 		return itemstack
 	end
 
@@ -274,7 +275,7 @@ end
 farming.grow_plant = function(pos, elapsed)
 	local node = minetest.get_node(pos)
 	local name = node.name
-	local def = minetest.registered_nodes[name]
+	local def = minetest.reg_ns_nodes[name]
   
 	if not def.next_plant then
 		-- disable timer for fully grown plant
@@ -296,7 +297,7 @@ farming.grow_plant = function(pos, elapsed)
 					placenode.param2 = def.place_param2
 				end
 				minetest.swap_node(pos, placenode)
-				if minetest.registered_nodes[def.next_plant].next_plant then
+				if minetest.reg_ns_nodes[def.next_plant].next_plant then
 					tick(pos)
 					return
 				end
@@ -328,7 +329,7 @@ farming.grow_plant = function(pos, elapsed)
 	minetest.swap_node(pos, placenode)
   
 	-- new timer needed?
-	if minetest.registered_nodes[def.next_plant].next_plant then
+	if minetest.reg_ns_nodes[def.next_plant].next_plant then
 		tick(pos)
 	end
   
@@ -390,7 +391,7 @@ farming.register_plant = function(name, def)
 		on_place = function(itemstack, placer, pointed_thing)
       local under = pointed_thing.under
 			local node = minetest.get_node(under)
-			local udef = minetest.registered_nodes[node.name]
+			local udef = minetest.reg_ns_nodes[node.name]
 			if udef and udef.on_rightclick and
 					not (placer and placer:get_player_control().sneak) then
 				return udef.on_rightclick(under, node, placer, itemstack,

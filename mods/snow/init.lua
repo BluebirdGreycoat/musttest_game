@@ -25,7 +25,7 @@ end
 function snow.on_place(itemstack, placer, pt)
 	if pt.above and pt.under then
 		local node = minetest.get_node(pt.under)
-		local udef = minetest.registered_nodes[node.name]
+		local udef = minetest.reg_ns_nodes[node.name]
 		if udef and udef.on_rightclick and not (placer and placer:get_player_control().sneak) then
 			return udef.on_rightclick(pt.under, node, placer, itemstack, pt) or itemstack
 		end
@@ -38,7 +38,7 @@ function snow.on_place(itemstack, placer, pt)
 			end
 
 			-- Don't allow placement on non-walkable nodes. Prevents griefing of non-walkable things like grass, flowers.
-			local def = minetest.registered_nodes[nunder]
+			local def = minetest.reg_ns_nodes[nunder]
 			if not def or not def.walkable then
 				return itemstack
 			end

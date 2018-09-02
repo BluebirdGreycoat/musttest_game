@@ -9,11 +9,12 @@ local function connects_dir(pos, name, dir)
 		return true
 	end
 
-	local connects_to = minetest.registered_nodes[name].connects_to
-	if not connects_to then
+	local ndef = minetest.reg_ns_nodes[name]
+	if not ndef or not ndef.connects_to then
 		return false
 	end
-	local list = minetest.find_nodes_in_area(aside, aside, connects_to)
+
+	local list = minetest.find_nodes_in_area(aside, aside, ndef.connects_to)
 
 	if #list > 0 then
 		return true

@@ -68,7 +68,8 @@ local attempt_spawn_mob = function(pos, moblimit, mobrange, daynight, miny, maxy
 	-- Are we spawning inside solid nodes?
     for i = 1, spawn_height, 1 do
         local p = {x=pos.x, y=(pos.y+i)-1, z=pos.z}
-        if minetest.registered_nodes[node_ok(p).name].walkable == true then return end
+				local ndef = minetest.reg_ns_nodes[node_ok(p).name]
+        if not ndef or ndef.walkable == true then return end
     end
 
 	-- Spawn mob half block higher than ground.

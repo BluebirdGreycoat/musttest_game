@@ -13,7 +13,8 @@ local find_floor = function(x, ybot, ytop, z)
         local n2 = minetest.get_node(p2).name
         
         if n1 == "air" and n2 ~= "air" and n2 ~= "ignore" then
-            local node = minetest.registered_nodes[n2]
+            local node = minetest.reg_ns_nodes[n2]
+						if not node then break end
             if not node.walkable then break end -- Don't dump snow on non-walkable things.
             
             local good = false

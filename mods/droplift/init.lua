@@ -23,7 +23,9 @@ droplift = {
 
 local function obstructed(p)
 	local n = minetest.get_node_or_nil(p)
-	return n and minetest.registered_nodes[n.name].walkable
+	if not n then return false end
+	local ndef = minetest.reg_ns_nodes[n.name]
+	return ndef and ndef.walkable
 end
 
 

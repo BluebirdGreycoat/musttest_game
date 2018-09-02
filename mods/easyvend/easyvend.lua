@@ -108,7 +108,7 @@ easyvend.set_formspec = function(pos, player)
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
 
-	local description = utility.get_short_desc(minetest.registered_nodes[node.name].description);
+	local description = utility.get_short_desc(minetest.reg_ns_nodes[node.name].description);
 	local number = meta:get_int("number")
 	local cost = meta:get_int("cost")
 	local itemname = meta:get_string("itemname")

@@ -87,7 +87,7 @@ function rockdrill.is_blastable(name)
 		return
 	end
 	-- Check node def.
-	local def = minetest.registered_nodes[name]
+	local def = minetest.reg_ns_nodes[name] or minetest.registered_nodes[name]
 	if def and def.groups then
 		local lg = (def.groups.immovable or 0)
 		local pg = (def.groups.protector or 0)

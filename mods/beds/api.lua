@@ -71,7 +71,7 @@ function beds.register_bed(name, def)
 
 			local under = pointed_thing.under
       local node = minetest.get_node(under)
-			local udef = minetest.registered_nodes[node.name]
+			local udef = minetest.reg_ns_nodes[node.name]
 			if udef and udef.on_rightclick and
 					not (placer and placer:get_player_control().sneak) then
 				return udef.on_rightclick(under, node, placer, itemstack,
@@ -90,7 +90,8 @@ function beds.register_bed(name, def)
 				return itemstack
 			end
 
-			local node_def = minetest.registered_nodes[minetest.get_node(pos).name]
+			local node_def = minetest.reg_ns_nodes[
+				minetest.get_node(pos).name]
 			if not node_def or not node_def.buildable_to then
 				return itemstack
 			end
@@ -103,7 +104,8 @@ function beds.register_bed(name, def)
 				return itemstack
 			end
 
-			local botdef = minetest.registered_nodes[minetest.get_node(botpos).name]
+			local botdef = minetest.reg_ns_nodes[
+				minetest.get_node(botpos).name]
 			if not botdef or not botdef.buildable_to then
 				return itemstack
 			end
@@ -157,7 +159,7 @@ function beds.register_bed(name, def)
 			end
 			local newp = vector.add(pos, minetest.facedir_to_dir(new_param2))
 			local node3 = minetest.get_node_or_nil(newp)
-			local node_def = node3 and minetest.registered_nodes[node3.name]
+			local node_def = node3 and minetest.reg_ns_nodes[node3.name]
 			if not node_def or not node_def.buildable_to then
 				return false
 			end

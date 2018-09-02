@@ -9,7 +9,7 @@ function hb4.fruitregrow.on_timer(pos, elapsed)
 	local node = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z})
 	if node.name == meta:get_string("leafname") then
 		local fruit = meta:get_string("fruitname")
-		if fruit ~= "" and minetest.registered_nodes[fruit] then
+		if fruit ~= "" and minetest.reg_ns_nodes[fruit] then
 			-- param2 is 0, so fruit can regrow if picked again.
 			minetest.set_node(pos, {name=fruit})
 			return

@@ -123,7 +123,7 @@ commandtools.hoe_on_use = function(itemstack, user, pointed_thing)
 			node.name == "protector:protect2" or
 			node.name == "protector:protect3" or
 			node.name == "protector:protect4" then
-			local def = minetest.registered_nodes[node.name]
+			local def = minetest.reg_ns_nodes[node.name]
 			if def and def.on_punch then
 				def.on_punch(pos, node, user)
 			end
@@ -243,7 +243,7 @@ local function place_schem(pos, dir, slope, placer)
 
 	if data.prot then
 		local p = vector.add(pos, data.prot)
-		local def = minetest.registered_nodes["protector:protect3"]
+		local def = minetest.reg_ns_nodes["protector:protect3"]
 		if def and def.after_place_node then
 			minetest.set_node(p, {name="protector:protect3"})
 			def.after_place_node(p, placer)

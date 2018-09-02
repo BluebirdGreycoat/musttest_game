@@ -70,12 +70,16 @@ function cans.register_can(d)
     end,
     
     on_place = function(itemstack, user, pointed_thing)
+			if not user or not user:is_player() then
+				return
+			end
+
       if pointed_thing.type ~= "node" then return end
       local pos = pointed_thing.under
 			local node = minetest.get_node(pos)
 
-      local def = minetest.registered_nodes[node.name] or {}
-      if def.on_rightclick and user and not user:get_player_control().sneak then
+      local def = minetest.reg_ns_nodes[node.name] or {}
+      if def.on_rightclick and not user:get_player_control().sneak then
         return def.on_rightclick(pos, node, user, itemstack, pointed_thing)
       end
 
@@ -84,7 +88,7 @@ function cans.register_can(d)
       elseif not def.buildable_to then
         pos = pointed_thing.above
 				local node = minetest.get_node(pos)
-        def = minetest.registered_nodes[node.name] or {}
+        def = minetest.reg_ns_nodes[node.name] or {}
         if not def.buildable_to then return end
       end
 

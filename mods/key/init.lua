@@ -21,7 +21,12 @@ minetest.register_tool("key:skeleton", {
 			return itemstack
 		end
 
-		local on_skeleton_key_use = minetest.registered_nodes[node.name].on_skeleton_key_use
+		local ndef = minetest.reg_ns_nodes[node.name]
+		if not ndef then
+			return itemstack
+		end
+
+		local on_skeleton_key_use = ndef.on_skeleton_key_use
 		if on_skeleton_key_use then
 			-- make a new key secret in case the node callback needs it
 			local random = math.random
@@ -39,7 +44,7 @@ minetest.register_tool("key:skeleton", {
 				local meta = itemstack:get_meta()
         meta:set_string("secret", secret)
         meta:set_string("description", "Key to <"..rename.gpn(user:get_player_name())..">'s "
-          ..minetest.registered_nodes[node.name].description .. " @ " ..
+          .. utility.get_short_desc(ndef.description) .. " @ " ..
           minetest.pos_to_string(vector.round(pos)))
 				return itemstack
 			end
@@ -59,7 +64,7 @@ minetest.register_tool("key:key", {
 	on_place = function(itemstack, placer, pointed_thing)
 		local under = pointed_thing.under
 		local node = minetest.get_node(under)
-		local def = minetest.registered_nodes[node.name]
+		local def = minetest.reg_ns_nodes[node.name]
 		if def and def.on_rightclick and
 				not (placer and placer:get_player_control().sneak) then
 			return def.on_rightclick(under, node, placer, itemstack,
@@ -76,7 +81,7 @@ minetest.register_tool("key:key", {
 			return itemstack
 		end
 
-		local ndef = minetest.registered_nodes[node.name]
+		local ndef = minetest.reg_ns_nodes[node.name]
 		if not ndef then
 			return itemstack
 		end

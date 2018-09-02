@@ -258,7 +258,8 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
     
 	-- Bedrock is always protected.
 	local node = minetest.get_node(pos)
-	local ndef = minetest.registered_nodes[node.name]
+	local ndef = minetest.reg_ns_nodes[node.name] or
+		minetest.registered_nodes[node.name]
 	if not ndef then
 		return false
 	end
@@ -289,7 +290,8 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 		
 		-- The falling block code is responsible for ensuring that a `buildable_to'
 		-- node can never be dropped into a protected zone.
-		local def = minetest.registered_nodes[node.name]
+		local def = minetest.reg_ns_nodes[node.name] or
+			minetest.registered_nodes[node.name]
 		if def and not def.buildable_to then
 			local meta2 = minetest.get_meta(pos)
 			-- This is generally only set on nodes which have fallen.

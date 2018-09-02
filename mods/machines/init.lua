@@ -40,7 +40,7 @@ machines.get_energy =
 function(from, to, wanted_charge)
   local meta = minetest.get_meta(from)
   local node = minetest.get_node(to)
-  local def = minetest.registered_nodes[node.name]
+  local def = minetest.reg_ns_nodes[node.name]
   
   -- Make sure energy can actually be extracted from the node.
   if def and def.on_machine_execute then
@@ -429,7 +429,7 @@ end
 machines.deliver_charge_to_network =
 function(from, to, charge)
   local node = minetest.get_node(to)
-  local def = minetest.registered_nodes[node.name]
+  local def = minetest.reg_ns_nodes[node.name]
   
   if def and def.on_machine_execute then
     local table_in = {

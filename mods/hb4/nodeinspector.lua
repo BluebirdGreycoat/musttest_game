@@ -18,8 +18,8 @@ function nodeinspector.inspect(pname, under, above)
 	local nodeunder = minetest.get_node(under)
 	local nodeabove = minetest.get_node(above)
 
-	local defunder = minetest.registered_nodes[nodeunder.name]
-	local defabove = minetest.registered_nodes[nodeabove.name]
+	local defunder = minetest.reg_ns_nodes[nodeunder.name]
+	local defabove = minetest.reg_ns_nodes[nodeabove.name]
 
 	if not defunder or not defabove then
 		return

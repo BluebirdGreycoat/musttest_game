@@ -185,7 +185,7 @@ function anvil.on_rightclick(pos, node, clicker, itemstack)
 		end
 	end
 
-	local this_def = minetest.registered_nodes[node.name]
+	local this_def = minetest.reg_ns_nodes[node.name]
 	if this_def.allow_metadata_inventory_put(pos, "input", 1, itemstack:peek_item(), clicker) > 0 then
 		local s = itemstack:take_item()
 		local meta = minetest.env:get_meta(pos)

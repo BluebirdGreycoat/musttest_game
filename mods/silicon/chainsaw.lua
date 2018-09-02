@@ -85,7 +85,7 @@ function chainsaw.find_timber(sp, wear)
 end
 
 function chainsaw.is_timber(name)
-	local def = minetest.registered_nodes[name]
+	local def = minetest.reg_ns_nodes[name]
 	if def and def.groups then
 		local lg = (def.groups.leaves or 0)
 		if lg > 0 then

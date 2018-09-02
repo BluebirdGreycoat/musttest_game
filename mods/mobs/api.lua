@@ -276,11 +276,13 @@ local function line_of_sight(self, pos1, pos2, stepsize)
 
 	-- It continues to advance in the line of sight in search of a real
 	-- obstruction which counts as 'normal' nodebox.
-	local registered = minetest.registered_nodes
-	while registered[nn]
-	and (registered[nn].walkable == false
-	or registered[nn].drawtype == "nodebox"
-	or registered[nn].drawtype:find("glasslike")) do
+	local registered = minetest.reg_ns_nodes
+	local ndef = registered[nn] or minetest.registered_nodes
+
+	while ndef
+		and (ndef.walkable == false
+		or ndef.drawtype == "nodebox"
+		or ndef.drawtype:find("glasslike")) do
 
 		npos1 = vector.add(npos1, stepv)
 
@@ -293,6 +295,7 @@ local function line_of_sight(self, pos1, pos2, stepsize)
 
 		-- New Nodename found
 		nn = minetest.get_node(pos).name
+		ndef = registered[nn] or minetest.registered_nodes[nn]
 	end
 
 	return false
@@ -309,9 +312,7 @@ end
 
 -- are we flying in what we are suppose to? (taikedz)
 local function flight_check(self, pos_w)
-
-	local def = minetest.registered_nodes[self.standing_in]
-
+	local def = minetest.reg_ns_nodes[self.standing_in]
 	if not def then return false end -- nil check
 
 	if type(self.fly_in) == "string"
@@ -596,11 +597,11 @@ local function node_ok(pos, fallback)
 
 	local node = minetest.get_node_or_nil(pos)
 
-	if node and minetest.registered_nodes[node.name] then
+	if node and minetest.reg_ns_nodes[node.name] then
 		return node
 	end
 
-	return minetest.registered_nodes[fallback]
+	return minetest.reg_ns_nodes[fallback]
 end
 
 
@@ -681,8 +682,13 @@ local function do_env_damage(self)
 		self.object:set_velocity({x = 0, y = 0, z = 0})
 	end
 
-	local nodef = minetest.registered_nodes[self.standing_in]
-	local nodef2 = minetest.registered_nodes[self.standing_on]
+	local nodef = minetest.reg_ns_nodes[self.standing_in]
+	local nodef2 = minetest.reg_ns_nodes[self.standing_on]
+
+	-- Stairs nodes don't do env damage.
+	if not nodef or not nodef2 then
+		return
+	end
 
 	pos.y = pos.y + 1 -- for particle effect position
 
@@ -2092,10 +2098,9 @@ local function do_states(self, dtime)
 		if lp then
 
 			-- if mob in water or lava then look for land
-			if (self.lava_damage
-				and minetest.registered_nodes[self.standing_in].groups.lava)
-			or (self.water_damage
-				and minetest.registered_nodes[self.standing_in].groups.water) then
+			local ndef = minetest.reg_ns_nodes[self.standing_in]
+			if (self.lava_damage and ndef and ndef.groups.lava)
+				or (self.water_damage and ndef and ndef.groups.water) then
 
 				lp = minetest.find_node_near(s, 5, {"group:soil", "group:stone",
 					"group:sand", node_ice, node_snowblock})
@@ -2579,7 +2584,8 @@ local function falling(self, pos)
 	end
 
 	-- in water then float up
-	if minetest.registered_nodes[self.standing_in].groups.water then
+	local ndef = minetest.reg_ns_nodes[self.standing_in]
+	if ndef and ndef.groups.water then
 
 		if self.floats == 1 then
 
@@ -3505,7 +3511,8 @@ local function arrow_step(self, dtime, def)
 
 		local node = node_ok(pos).name
 
-		if minetest.registered_nodes[node].walkable then
+		local ndef = minetest.reg_ns_nodes[node]
+		if not ndef or ndef.walkable then
 
 			self.hit_node(self, pos, node)
 
@@ -3626,7 +3633,7 @@ if not mobs.registered then
 
 				-- am I clicking on something with existing on_rightclick function?
 				local under = minetest.get_node(pointed_thing.under)
-				local def = minetest.registered_nodes[under.name]
+				local def = minetest.reg_ns_nodes[under.name]
 				if def and def.on_rightclick then
 					return def.on_rightclick(pointed_thing.under, under, placer, itemstack)
 				end

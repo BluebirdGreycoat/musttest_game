@@ -39,7 +39,7 @@ bluegrass.place_seed = function(itemstack, placer, pointed_thing, plantname)
   
   -- Pass through interactions to nodes that define them (like chests).
   do
-    local pdef = minetest.registered_nodes[under.name]
+    local pdef = minetest.reg_ns_nodes[under.name]
     if pdef and pdef.on_rightclick and not placer:get_player_control().sneak then
       return pdef.on_rightclick(pt.under, under, placer, itemstack, pt)
     end
@@ -57,10 +57,10 @@ bluegrass.place_seed = function(itemstack, placer, pointed_thing, plantname)
   end
 
   -- return if any of the nodes is not registered
-  if not minetest.registered_nodes[under.name] then
+  if not minetest.reg_ns_nodes[under.name] then
     return itemstack
   end
-  if not minetest.registered_nodes[above.name] then
+  if not minetest.reg_ns_nodes[above.name] then
     return itemstack
   end
 
@@ -70,7 +70,8 @@ bluegrass.place_seed = function(itemstack, placer, pointed_thing, plantname)
   end
 
   -- check if you can replace the node above the pointed node
-  if not minetest.registered_nodes[above.name].buildable_to then
+	local ndef_above = minetest.reg_ns_nodes[above.name]
+  if not ndef_above or not ndef_above.buildable_to then
     return itemstack
   end
 
@@ -91,8 +92,8 @@ end
 bluegrass.grow_plant = function(pos, elapsed)
   local node = minetest.get_node(pos)
   local name = node.name
-  local def = minetest.registered_nodes[name]
-  
+  local def = minetest.reg_ns_nodes[name]
+
   if not def.next_plant then
     -- disable timer for fully grown plant
     return
@@ -113,7 +114,7 @@ bluegrass.grow_plant = function(pos, elapsed)
           placenode.param2 = def.place_param2
         end
         minetest.swap_node(pos, placenode)
-        if minetest.registered_nodes[def.next_plant].next_plant then
+        if minetest.reg_ns_nodes[def.next_plant].next_plant then
           tick(pos)
           return
         end
@@ -165,7 +166,7 @@ bluegrass.grow_plant = function(pos, elapsed)
   minetest.swap_node(pos, placenode)
   
   -- new timer needed?
-  if minetest.registered_nodes[def.next_plant].next_plant then
+  if minetest.reg_ns_nodes[def.next_plant].next_plant then
     tick(pos, tick_data)
   end
   

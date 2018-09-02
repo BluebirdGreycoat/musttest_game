@@ -134,6 +134,7 @@ local function make_fs(name)
 					"textlist[4.2,1.8;11.6,8;entry;%s;%d;0]",
 					table.concat(strings, ","), ei)
 
+			-- `e' is a ban record, if we reach this point.
 			local rec = e.record[ei]
 			if rec then
 				fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
@@ -145,6 +146,7 @@ local function make_fs(name)
 
 					pli) -- End format.
 			end
+
 		else
 			fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,8;err;"..ESC(e)..";0]"
 			fsn=fsn+1 fs[fsn] = "label[0,10.3;"..ESC(e).."]"

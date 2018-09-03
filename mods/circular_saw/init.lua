@@ -447,7 +447,7 @@ function circular_saw.on_construct(pos)
   local fancy_inv = default.gui_bg..default.gui_bg_img..default.gui_slots
 
 	-- Modify formspec size and inventory size in order to make room for more blocks.
-  meta:set_string("formspec", "size[15,10]"..fancy_inv..
+  meta:set_string("formspec", "size[16,10]"..fancy_inv..
       "label[0,0;" ..S("Input\nMaterial").. "]" ..
       "list[context;input;1.5,0;1,1;]" ..
       "label[0,1;" ..S("Left-Over").. "]" ..
@@ -456,7 +456,7 @@ function circular_saw.on_construct(pos)
       "list[context;recycle;1.5,2;1,1;]" ..
       "field[0.3,4.0;1,1;max_offered;" ..S("Max").. ":;${max_offered}]" ..
       "button[1,3.7;1,1;Set;" ..S("Set").. "]" ..
-      "list[context;output;2.8,0;12,6;]" ..
+      "list[context;output;2.8,0;13,6;]" ..
       "list[current_player;main;2.8,6.25;8,4;]" ..
       "label[0,5;Mese Fuel\nStorage]" ..
       "list[context;fuel;1.5,5;1,1;]"
@@ -470,7 +470,7 @@ function circular_saw.on_construct(pos)
   inv:set_size("input", 1)    -- Input slot for full blocks of material x.
   inv:set_size("micro", 1)    -- Storage for 1-7 surplus microblocks.
   inv:set_size("recycle", 1)  -- Surplus partial blocks can be placed here.
-  inv:set_size("output", 6*12) -- 6x11 versions of stair-parts of material x.
+  inv:set_size("output", 6*13) -- 6x13 versions of stair-parts of material x.
   inv:set_size("fuel", 1)
 
   circular_saw:reset(pos)

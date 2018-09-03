@@ -121,7 +121,7 @@ minetest.register_craft({
 	output = "xdecor:lever_off",
 	recipe = {
 		{"group:stick"},
-		{"group:stone"}
+		{"default:steel_ingot"}
 	}
 })
 

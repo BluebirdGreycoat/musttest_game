@@ -829,9 +829,7 @@ local function do_jump(self)
 
 			-- when in air move forward
 			minetest.after(0.3, function(self, v)
-
 				if self.object:get_luaentity() then
-
 					self.object:set_acceleration({
 						x = v.x * 2,--1.5,
 						y = 0,

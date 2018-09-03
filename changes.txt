@@ -1,3 +1,4 @@
+[2018/9/3] Gems in stone are now MUCH rarer. They were previously far too common.
 [2018/9/2] Added right-hand versions of several of the new slopes in the circular saw.
 [2018/9/2] Various bugfixes.
 [2018/8/31] Walking on the coals in brasiers will now damage the player.

@@ -2050,8 +2050,8 @@ local function do_states(self, dtime)
 		set_animation(self, "stand")
 
 		-- npc's ordered to stand stay standing
-		if self.type ~= "npc"
-		or self.order ~= "stand" then
+		--if self.type ~= "npc"
+		if self.order ~= "stand" then
 
 			if self.walk_chance ~= 0
 			and self.facing_fence ~= true
@@ -2581,12 +2581,10 @@ local function falling(self, pos)
 		self.object:set_acceleration({x = 0, y = 0, z = 0})
 	end
 
-	-- in water then float up
-	local ndef = minetest.reg_ns_nodes[self.standing_in]
+	-- If in water then float up. Nil check.
+	local ndef = self.standing_in and minetest.reg_ns_nodes[self.standing_in]
 	if ndef and ndef.groups.water then
-
 		if self.floats == 1 then
-
 			self.object:set_acceleration({
 				x = 0,
 				y = -self.fall_speed / (max(1, v.y) ^ 8), -- 8 was 2
@@ -2983,15 +2981,15 @@ local function mob_activate(self, staticdata, def, dtime)
 		end
 	end
 
-	-- select random texture, set model and size
+	-- Do select random texture, set model and size.
 	if not self.base_texture then
 
-		-- compatiblity with old simple mobs textures
-		if type(def.textures[1]) == "string" then
+		-- Do compatiblity with old simple mobs textures.
+		if def.textures and type(def.textures[1]) == "string" then
 			def.textures = {def.textures}
 		end
 
-		self.base_texture = def.textures[random(1, #def.textures)]
+		self.base_texture = def.textures and def.textures[random(1, #def.textures)]
 		self.base_mesh = def.mesh
 		self.base_size = self.visual_size
 		self.base_colbox = self.collisionbox

@@ -8,6 +8,7 @@ sky.players = sky.players or {}
 -- Localize for speed.
 local get_node = minetest.get_node
 local all_nodes = minetest.registered_nodes
+local ns_nodes = minetest.reg_ns_nodes
 local vector_distance = vector.distance
 local vector_round = vector.round
 local vector_equals = vector.equals
@@ -119,7 +120,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 		-- Don't modify movement or call walk-over callbacks if node is air.
 		-- This prevents players from getting better movement speed by hopping constantly.
 		if sname ~= "air" and sname ~= "ignore" then
-			local sdef = all_nodes[sname] or {}
+			local sdef = ns_nodes[sname] or all_nodes[sname] or {}
 
 			-- Get node player is walking IN, not ON.
 			-- Plants shall slow players down!
@@ -139,7 +140,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 					end
 					if is_flat then
 						-- If slab is flat and has a parent type, use the parent type.
-						local def2 = all_nodes[sdef.movement_speed_depends] or {}
+						local def2 = ns_nodes[sdef.movement_speed_depends] or {}
 						if def2 then sdef = def2 end
 					end
 				end
@@ -150,7 +151,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 				sprint.set_jump_multiplier(pname, jmult)
 
 				if wname ~= "air" then
-					local wdef = all_nodes[wname] or {}
+					local wdef = ns_nodes[wname] or all_nodes[wname] or {}
 					local smult2 = wdef.movement_speed_multiplier or default.NORM_SPEED
 					local jmult2 = wdef.movement_jump_multiplier or default.NORM_JUMP
 					sprint.set_speed_multiplier(pname, smult2)

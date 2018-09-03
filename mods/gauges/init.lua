@@ -5,23 +5,10 @@ gauges = {}
 local player_wielding = {}
 
 local function add_gauge(player)
+	rc.check_position(player) -- Check position before calling `add_entity'.
 	local pname = player:get_player_name()
+
 	local pos = player:get_pos()
-
-	-- Bounds check to avoid an engine bug.
-	if pos.x < -30913 or pos.x > 30928 or
-		 pos.y < -30913 or pos.y > 30928 or
-		 pos.z < -30913 or pos.z > 30928 then
-		-- Some old clients, it seems, can cause this problem.
-		minetest.chat_send_all(
-			"# Server: Player <" .. rename.gpn(pname) ..
-			"> was caught outside the world boundaries! Resetting to last known good position.")
-
-		wield3d.on_teleport()
-		player:set_pos(itempickup.players[pname])
-		return -- Out of bounds -- abort!
-	end
-
 	local ent = minetest.add_entity(pos, "gauges:hp_bar")
 
 	if ent then

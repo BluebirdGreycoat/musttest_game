@@ -1,7 +1,6 @@
 
 itempickup = itempickup or {}
 itempickup.modpath = minetest.get_modpath("itempickup")
-itempickup.players = itempickup.players or {}
 
 
 
@@ -23,32 +22,10 @@ itempickup.update = function(dtime)
 
   local players = minetest.get_connected_players()
   for k, v in ipairs(players) do
+		rc.check_position(v) -- Check position before calling `get_objects_inside_radius'.
+
 		local pname = v:get_player_name()
     if v:is_player() and v:get_hp() > 0 and not gdac_invis.is_invisible(pname) then
-      local pos = utility.get_middle_pos(v:get_pos())
-      
-      -- Bounds check to avoid an engine bug.
-      if pos.x < -30913 or pos.x > 30928 or
-         pos.y < -30913 or pos.y > 30928 or
-         pos.z < -30913 or pos.z > 30928 then
-				-- Some old clients, it seems, can cause this problem.
-        minetest.chat_send_all(
-					"# Server: Player <" .. rename.gpn(pname) ..
-					"> was caught outside the world boundaries! Resetting to last known good position.")
-
-				wield3d.on_teleport()
-        v:set_pos(itempickup.players[pname])
-        return -- Out of bounds -- abort!
-      end
-
-			-- Record last known good position.
-			do
-				local ps = itempickup.players[pname]
-				ps.x = pos.x
-				ps.y = pos.y
-				ps.z = pos.z
-			end
-
 			-- Basic range, when player is standing still.
 			local range = 0.5
 			local sneak = false
@@ -74,9 +51,14 @@ itempickup.update = function(dtime)
 				range = 1.5
 			end
       
+      local pos = utility.get_middle_pos(v:get_pos())
       local items = minetest.get_objects_inside_radius(pos, range)
+
       local inv
-      if #items > 0 then inv = v:get_inventory() end
+      if #items > 0 then
+				inv = v:get_inventory()
+			end
+
       for m, n in ipairs(items) do
         -- Ensure object found is an item-drop.
 				local luaent = n:get_luaentity()
@@ -213,7 +195,10 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 		if digger and digger:is_player() then
 			local stackname = ItemStack(ss):get_name()
-			if drop_xp_list[stackname] and minetest.registered_items[stackname] then
+			local ndef = minetest.reg_ns_nodes[stackname] or
+				minetest.registered_nodes[stackname]
+
+			if drop_xp_list[stackname] and ndef then
 				local value = drop_xp_list[stackname]
 				local pname = digger:get_player_name()
 				--minetest.chat_send_player(
@@ -254,18 +239,6 @@ end
 if not itempickup.run_once then
   minetest.register_globalstep(function(...) itempickup.update(...) end)
 
-	minetest.register_on_joinplayer(function(player)
-		local pname = player:get_player_name()
-		if not itempickup.players[pname] then
-			itempickup.players[pname] = {x=0, y=0, z=0}
-		end
-	end)
-
-	minetest.register_on_leaveplayer(function(player, timeout)
-		local pname = player:get_player_name()
-		itempickup.players[pname] = nil
-	end)
-  
   local name = "itempickup:core"
   local file = itempickup.modpath .. "/init.lua"
   reload.register_file(name, file, false)

@@ -15,14 +15,22 @@ function rc.check_position(player)
 	local p = player:get_pos()
 	local n = player:get_player_name()
 
-	-- Bounds check to avoid an engine bug.
-	if p.x < -30913 or p.x > 30928 or
-			p.y < -30913 or p.y > 30928 or
-			p.z < -30913 or p.z > 30928 then
-		-- Some old clients, it seems, can cause this problem.
+	local reset = false -- Flag set if player out-of-bounds.
+
+	-- Bounds check to avoid an engine bug. These coordinates should be the last
+	-- row of nodes at the map edge. This way, we never teleport the player to a
+	-- location that is strictly outside the world boundaries, if they trigger it.
+	if p.x < -30912 or p.x > 30927 or
+			p.y < -30912 or p.y > 30927 or
+			p.z < -30912 or p.z > 30927 then
+		-- Some old clients, it seems, can randomly cause this problem.
 		-- Or someone is deliberately triggering it.
-		minetest.chat_send_all(
-			"# Server: Player <" .. rename.gpn(n) ..
+		reset = true
+	end
+
+	if reset then
+		-- Player is out-of-bounds. Reset to last known good position.
+		minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
 			"> was caught outside dimension boundaries!")
 
 		-- Notify wield3d we'll adjusting the player position.
@@ -35,6 +43,16 @@ function rc.check_position(player)
 			-- Return to central spawn.
 			player:set_pos({x=0, y=-7, z=0})
 		end
+
+		-- Damage player. Prevents them triggering this indefinitely.
+		if player:get_hp() > 0 then
+			player:set_hp(player:get_hp() - 2)
+			if player:get_hp() <= 0 then
+				minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
+					"> found death in the Void.")
+			end
+		end
+
 		return
 	end
 

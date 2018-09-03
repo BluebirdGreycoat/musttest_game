@@ -67,6 +67,36 @@ local box_slope_half_raised_lh = {
 	}
 }
 
+local box_slope_rh = {
+	type = "fixed",
+	fixed = {
+		{0,  -0.5,  -0.5, 0.5, -0.25, 0.5},
+		{0, -0.25, -0.25, 0.5,     0, 0.5},
+		{0,     0,     0, 0.5,  0.25, 0.5},
+		{0,  0.25,  0.25, 0.5,   0.5, 0.5}
+	}
+}
+
+local box_slope_half_rh = {
+	type = "fixed",
+	fixed = {
+		{0, -0.5,   -0.5,  0.5, -0.375, 0.5},
+		{0, -0.375, -0.25, 0.5, -0.25,  0.5},
+		{0, -0.25,  0,     0.5, -0.125, 0.5},
+		{0, -0.125, 0.25,  0.5,  0,     0.5},
+	}
+}
+
+local box_slope_half_raised_rh = {
+	type = "fixed",
+	fixed = {
+		{0, -0.5,   -0.5,  0.5, 0.125, 0.5},
+		{0, 0.125, -0.25,  0.5, 0.25,  0.5},
+		{0, 0.25,  0,      0.5, 0.375, 0.5},
+		{0, 0.375, 0.25,   0.5,  0.5,     0.5},
+	}
+}
+
 --==============================================================
 
 local box_slope_inner = {
@@ -190,6 +220,12 @@ local xslope_slope_lh = {
 	type = "fixed",
 	fixed = {
 		{-0.5, -0.5, 0.5, 0, 0, 0},
+	}
+}
+local xslope_slope_rh = {
+	type = "fixed",
+	fixed = {
+		{0, -0.5, 0.5, 0.5, 0, 0},
 	}
 }
 local xslope_peak_lh = {
@@ -399,6 +435,32 @@ local slopes_defs = {
 		mesh = "xslopes_peak_half_lh.obj",
 		collision_box = xslope_peak_half_lh,
 		selection_box = xslope_peak_half_lh,
+		light=1/8,
+	},
+
+	["_rh"] = {
+		mesh = "moreblocks_slope_rh.obj",
+		collision_box = box_slope_rh,
+		selection_box = box_slope_rh,
+		light=1/4,
+	},
+	["_half_rh"] = {
+		mesh = "moreblocks_slope_half_rh.obj",
+		collision_box = box_slope_half_rh,
+		selection_box = box_slope_half_rh,
+		light=1/8,
+	},
+	["_half_raised_rh"] = {
+		mesh = "moreblocks_slope_half_raised_rh.obj",
+		collision_box = box_slope_half_raised_rh,
+		selection_box = box_slope_half_raised_rh,
+		light=3/8,
+	},
+
+	["_xslope_slope_rh"] = {
+		mesh = "xslopes_slope_rh.obj",
+		collision_box = xslope_slope_rh,
+		selection_box = xslope_slope_rh,
 		light=1/8,
 	},
 }

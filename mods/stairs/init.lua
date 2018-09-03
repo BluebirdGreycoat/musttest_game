@@ -82,6 +82,14 @@ local slabs_defs = {
 			{ -7/16, 0.5, -7/16, 0.5, 7/16, 7/16 },
 		}
 	},
+	["_hole_half"] = {
+		nodebox = {
+			{-0.5, -0.5, -0.5,  0.5,   0, -7/16},
+			{-0.5, -0.5, 0.5,   0.5,   0, 7/16},
+			{-0.5, -0.5, -7/16, -7/16, 0, 7/16},
+			{0.5, -0.5, -7/16,  7/16,  0, 7/16},
+		}
+	},
 }
 
 function stairs.register_extra_slabs(subname, recipeitem, groups, images, description, sounds)

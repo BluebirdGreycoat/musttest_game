@@ -7,6 +7,15 @@ rc.modpath = minetest.get_modpath("rc")
 
 rc.players = rc.players or {}
 
+-- Known realms. Min/max area positions should not overlap!
+rc.realms = {
+	{
+		name = "", -- Default/overworld realm.
+		minp = {x=-30912, y=-30912, z=-30912},
+		maxp = {x=30927, y=500, z=30927},
+	},
+}
+
 -- API function.
 -- Check player position and current realm. If not valid, reset player to last
 -- valid location. If last valid location not found, reset them to 0,0,0.
@@ -26,6 +35,20 @@ function rc.check_position(player)
 		-- Some old clients, it seems, can randomly cause this problem.
 		-- Or someone is deliberately triggering it.
 		reset = true
+	end
+
+	-- Do bounds checks for individual realms.
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is player within realm boundaries?
+		if p.x < minp.x or p.x > maxp.x or
+				p.y < minp.y or p.y > maxp.y or
+				p.z < minp.z or p.z > maxp.z then
+			reset = true
+			break
+		end
 	end
 
 	if reset then

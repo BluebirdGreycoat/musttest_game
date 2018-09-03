@@ -80,6 +80,11 @@ end
 local player_inventory_empty = function(inv, name)
 	local count = 0
 	local list = inv:get_list(name)
+	-- Nil check.
+	if not list then
+		-- Could not get list, assume not empty.
+		return false
+	end
 	for i = 1, #list do
 		local stack = list[i]
 		local stack_count = stack:get_count()
@@ -282,43 +287,47 @@ bones.on_dieplayer = function(player)
 	local location = minetest.pos_to_string(pos)
 	local num_stacks = 0
 
-	-- Note: must clear player inventory slot-by-slot to avoid clobbering PoC items.
-	-- Empty the player's main inventory. Note, we must take care not to clobber any passports.
+	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC items.
+	-- Empty the player's main inv. We must not to clobber any passports.
 	do
-		local list = player_inv:get_list("main") or {}
-		for i = 1, #list do
-			local stack = list[i]
-			if stack:get_name() ~= PASSPORT then
-				if stack:get_count() > 0 and inv:room_for_item("main", stack) then
-					inv:add_item("main", stack)
-					minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
-					num_stacks = num_stacks + 1
+		local list = player_inv:get_list("main")
+		if list then -- Nil check necessary.
+			for i = 1, #list do
+				local stack = list[i]
+				if stack:get_name() ~= PASSPORT then
+					if stack:get_count() > 0 and inv:room_for_item("main", stack) then
+						inv:add_item("main", stack)
+						minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
+						num_stacks = num_stacks + 1
 
-					-- Stack was added to bones inventory, remove it from list.
-					list[i]:set_count(0)
-					list[i]:set_name("")
-				else
-					drop(pos, stack)
+						-- Stack was added to bones inventory, remove it from list.
+						list[i]:set_count(0)
+						list[i]:set_name("")
+					else
+						drop(pos, stack)
+					end
 				end
 			end
+			player_inv:set_list("main", list)
 		end
-		player_inv:set_list("main", list)
 	end
 
 	-- Empty the player's craft-grid. Passports are not preserved, here.
 	do
-		local list = player_inv:get_list("craft") or {}
-		for i = 1, #list do
-			local stack = list[i]
-			if stack:get_count() > 0 and inv:room_for_item("main", stack) then
-				inv:add_item("main", stack)
-				minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
-				num_stacks = num_stacks + 1
-			else
-				drop(pos, stack)
+		local list = player_inv:get_list("craft")
+		if list then -- Nil check necessary.
+			for i = 1, #list do
+				local stack = list[i]
+				if stack:get_count() > 0 and inv:room_for_item("main", stack) then
+					inv:add_item("main", stack)
+					minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
+					num_stacks = num_stacks + 1
+				else
+					drop(pos, stack)
+				end
 			end
+			player_inv:set_list("craft", {})
 		end
-		player_inv:set_list("craft", {})
 	end
 
 	-- Armor goes into bones after main and crafting grid items.
@@ -327,35 +336,39 @@ bones.on_dieplayer = function(player)
 	-- Empty the bag slots. Passports are not preserved, here. (It should not be possible to store a passport in here, anyway.)
 	for j = 1, 4, 1 do
 		local bag = "bag" .. j
-		local list = player_inv:get_list(bag) or {}
-		for i = 1, #list do
-			local stack = list[i]
-			if stack:get_count() > 0 and inv:room_for_item("main", stack) then
-				inv:add_item("main", stack)
-				minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
-				num_stacks = num_stacks + 1
-			else
-				drop(pos, stack)
+		local list = player_inv:get_list(bag)
+		if list then -- Nil check necessary.
+			for i = 1, #list do
+				local stack = list[i]
+				if stack:get_count() > 0 and inv:room_for_item("main", stack) then
+					inv:add_item("main", stack)
+					minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
+					num_stacks = num_stacks + 1
+				else
+					drop(pos, stack)
+				end
 			end
+			player_inv:set_list(bag, {})
 		end
-		player_inv:set_list(bag, {})
 	end
 
 	-- Empty the bag inventories. Passports are not preserved, here.
 	for j = 1, 4, 1 do
 		local bag = "bag" .. j .. "contents"
-		local list = player_inv:get_list(bag) or {}
-		for i = 1, #list do
-			local stack = list[i]
-			if stack:get_count() > 0 and inv:room_for_item("main", stack) then
-				inv:add_item("main", stack)
-				minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
-				num_stacks = num_stacks + 1
-			else
-				drop(pos, stack)
+		local list = player_inv:get_list(bag)
+		if list then -- Nil check necessary.
+			for i = 1, #list do
+				local stack = list[i]
+				if stack:get_count() > 0 and inv:room_for_item("main", stack) then
+					inv:add_item("main", stack)
+					minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")
+					num_stacks = num_stacks + 1
+				else
+					drop(pos, stack)
+				end
 			end
+			player_inv:set_list(bag, {})
 		end
-		player_inv:set_list(bag, {})
 	end
 
 	-- We use on_rightclick instead.

@@ -24,12 +24,12 @@ end
 dofile(minetest.get_modpath("stairs") .. "/slopes.lua")
 
 local slabs_defs = {
-	["_quarter"] =				{num=4,		light=0.25},
-	["_three_quarter"] =	{num=12,	light=0.75},
-	["_1"] =							{num=1,		light=1/16},
-	["_2"] =							{num=2,		light=2/16},
-	["_14"] =							{num=14,	light=14/16},
-	["_15"] =							{num=15,	light=15/16},
+	["_quarter"] =				{num=4,		light=0.25, is_flat=true},
+	["_three_quarter"] =	{num=12,	light=0.75, is_flat=true},
+	["_1"] =							{num=1,		light=1/16, is_flat=true},
+	["_2"] =							{num=2,		light=2/16, is_flat=true},
+	["_14"] =							{num=14,	light=14/16, is_flat=true},
+	["_15"] =							{num=15,	light=15/16, is_flat=true},
 
 	["_two_sides"] = {
 		nodebox = {
@@ -141,8 +141,12 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
     def.sounds = sounds
     def.description = description
     def.tiles = stair_images
-		def.movement_speed_depends = recipeitem
 		def.light_source = math.ceil(ndef.light_source*(num.light or 0))
+
+		-- Only for flat slabs.
+		if num.is_flat then
+			def.movement_speed_depends = recipeitem
+		end
     
 		minetest.register_node(":stairs:slab_" .. subname .. alternate, def)
 	end

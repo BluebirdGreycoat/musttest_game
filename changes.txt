@@ -1,3 +1,5 @@
+[2018/9/2] Added right-hand versions of several of the new slopes in the circular saw.
+[2018/9/2] Various bugfixes.
 [2018/8/31] Walking on the coals in brasiers will now damage the player.
 [2018/8/31] Brasiers emit a small amount of light even when unlit (they have coals).
 [2018/8/31] Added extra brasier types.

@@ -599,6 +599,9 @@ minetest.register_node("cavestuff:mycena", {
   },
   sounds = default.node_sound_leaves_defaults(),
 
+	drop = "",
+	shears_drop = true,
+
 	on_use = function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end
     minetest.after(1, mushroom_poison, user:get_player_name(), 3)
@@ -640,6 +643,9 @@ minetest.register_node("cavestuff:fungus", {
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
   },
   sounds = default.node_sound_leaves_defaults(),
+
+	drop = "",
+	shears_drop = true,
 
 	on_use = function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end

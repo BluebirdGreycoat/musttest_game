@@ -185,11 +185,11 @@ local function make_fs(name)
 		for k, v in ipairs(infomsg) do
 			infomsg[k] = ESC(v)
 		end
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;names;"..table.concat(infomsg, ",")..";0]"
+		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;info;"..table.concat(infomsg, ",")..";0]"
 	else
 		local e = "No entry matches the query."
 		fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,6;err;"..ESC(e)..";0]"
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;names;;0]"
+		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;info;;0]"
 		fsn=fsn+1 fs[fsn] = "label[0,10.3;"..ESC(e).."]"
 	end
 	return table.concat(fs)

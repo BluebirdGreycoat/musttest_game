@@ -20,7 +20,7 @@ tooldata["pick_mese"] =            {full_punch_interval=0.9, max_drop_level=3, g
 tooldata["pick_diamond"] =         {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=40,  maxlevel=3}}, damage_groups={fleshy=5}}
 
 tooldata["pick_titanium"] =        {full_punch_interval=1.0, max_drop_level=3, groupcaps={cracky ={times={[1]=2.4 },    uses=200, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_silver"] =          {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=1.5 },    uses=20,  maxlevel=3}}, damage_groups={fleshy=5}}
+tooldata["pick_silver"] =          {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=6.0 },    uses=20,  maxlevel=3}}, damage_groups={fleshy=5}}
 tooldata["pick_mithril"] =         {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=60,  maxlevel=4}}, damage_groups={fleshy=5}}
 
 tooldata["pick_ruby"] =            {full_punch_interval=0.8, max_drop_level=3, groupcaps={cracky ={times={[1]=1.2 },    uses=125, maxlevel=4}}, damage_groups={fleshy=5}}

@@ -951,6 +951,15 @@ minetest.register_node("default:dry_shrub", {
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 	},
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	-- Drop 1 or 2 sticks.
+	shears_drop = {
+		max_items = 1,
+		items = {
+			{items = {'default:stick 2'}},
+			{items = {'default:stick'}}
+		}
+	},
 })
 
 minetest.register_node("default:junglegrass", {

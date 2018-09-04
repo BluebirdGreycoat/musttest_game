@@ -167,7 +167,10 @@ xdecor.register("cobweb", {
 	walkable = false,
 	selection_box = {type = "regular"},
 	groups = {snappy=3, liquid=3, flammable=3},
-	sounds = default.node_sound_leaves_defaults()
+	sounds = default.node_sound_leaves_defaults(),
+
+	drop = "farming:cotton 5",
+	shears_drop = true,
 })
 
 -- Only permit colors the Minetest client understands.

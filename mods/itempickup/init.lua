@@ -180,9 +180,9 @@ function itempickup.drop_an_item(pos, stack, digger)
 		-- Make the drop fly a bit.
 		if obj then
 			obj:set_velocity({
-				x=math.random(-10, 10) / 10,
-				y=0.5,
-				z=math.random(-10, 10) / 10,
+				x=math.random(-10, 10) / 5,
+				y=3,
+				z=math.random(-10, 10) / 5,
 			})
 		end
 	end

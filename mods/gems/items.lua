@@ -14,6 +14,7 @@ minetest.register_node("gems:ruby_ore", {
 	  groups = {level=3, cracky=1},
 	  sounds = default.node_sound_stone_defaults(),
 	  drop = 'craft "gems:raw_ruby" 1',
+		silverpick_drop = true,
 })
 
 minetest.register_node("gems:emerald_ore", {
@@ -23,6 +24,7 @@ minetest.register_node("gems:emerald_ore", {
 	  groups = {level=3, cracky=1},
 	  sounds = default.node_sound_stone_defaults(),
 	  drop = 'craft "gems:raw_emerald" 1',
+		silverpick_drop = true,
 })
 
 minetest.register_node("gems:sapphire_ore", {
@@ -32,6 +34,7 @@ minetest.register_node("gems:sapphire_ore", {
 	  groups = {level=3, cracky=1},
 	  sounds = default.node_sound_stone_defaults(),
 	  drop = 'craft "gems:raw_sapphire" 1',
+		silverpick_drop = true,
 })
 
 minetest.register_node("gems:amethyst_ore", {
@@ -41,6 +44,7 @@ minetest.register_node("gems:amethyst_ore", {
 	  groups = {level=3, cracky=1},
 	  sounds = default.node_sound_stone_defaults(),
 	  drop = 'craft "gems:raw_amethyst" 1',
+		silverpick_drop = true,
 })
 
 --

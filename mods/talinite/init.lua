@@ -4,6 +4,7 @@ minetest.register_node("talinite:ore", {
   tiles = {"default_stone.png^gloopores_mineral_talinite.png"},
   groups = {level = 1, cracky = 3},
   drop = "talinite:lump",
+	silverpick_drop = true,
   --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
   sounds = default.node_sound_stone_defaults(),
 })

@@ -4,6 +4,7 @@ minetest.register_node("alatro:ore", {
   tiles = {"default_stone.png^gloopores_mineral_alatro.png"},
   groups = {level = 1, cracky = 3},
   drop = "alatro:lump",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
 })
 

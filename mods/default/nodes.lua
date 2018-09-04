@@ -602,6 +602,7 @@ minetest.register_node("default:stone_with_coal", {
   -- all coal with flame instead of dropping it).
 	groups = {level = 1, cracky = 3},
 	drop = 'default:coal_lump',
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 
 	-- Digging coal ore has a chance to release poison gas.
@@ -628,6 +629,7 @@ minetest.register_node("default:stone_with_iron", {
 	tiles = {"default_stone.png^default_mineral_iron.png"},
 	groups = {level = 1, cracky = 2},
 	drop = 'default:iron_lump',
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -645,6 +647,7 @@ minetest.register_node("default:stone_with_copper", {
 	tiles = {"default_stone.png^default_mineral_copper.png"},
 	groups = {level = 1, cracky = 2},
 	drop = 'default:copper_lump',
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -670,6 +673,7 @@ minetest.register_node("default:stone_with_mese", {
 	tiles = {"default_stone.png^default_mineral_mese.png"},
 	groups = {level = 2, cracky = 2, melts = 1},
 	drop = "default:mese_crystal",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	
 	-- Mese in stone reacts badly to lava.
@@ -715,6 +719,7 @@ minetest.register_node("default:stone_with_gold", {
 	tiles = {"default_stone.png^default_mineral_gold.png"},
 	groups = {level = 1, cracky = 2},
 	drop = "default:gold_lump",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -730,8 +735,10 @@ minetest.register_node("default:goldblock", {
 minetest.register_node("default:stone_with_diamond", {
 	description = "Diamond Ore",
 	tiles = {"default_stone.png^default_mineral_diamond.png"},
-	groups = {level = 2, cracky = 1},
+	-- Player has to get mese pick or similar before they can get diamond.
+	groups = {level = 3, cracky = 1},
 	drop = "default:diamond",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -829,7 +836,7 @@ end
 
 --[[
 
---= Tests of Tools Againts Default Groups =--
+--= Tests of Tools Against Default Groups =--
 result_of {snappy = 1, choppy = 3} + tool=default:axe_stone      : digsound=success
 result_of {snappy = 1, choppy = 3} + tool=default:axe_diamond    : digsound=success
 result_of {snappy = 1, choppy = 3} + tool=default:axe_steel      : digsound=success

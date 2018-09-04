@@ -97,6 +97,7 @@ minetest.register_node( "lapis:pyrite_ore",  {
    paramtype = "light",
    is_ground_content = true,
    drop= 'lapis:pyrite_lump 2',
+	 silverpick_drop = true,
    groups = {cracky = 2},
    sounds = default.node_sound_stone_defaults() ,
 })

@@ -4,6 +4,7 @@ minetest.register_node("akalin:ore", {
   tiles = {"default_stone.png^gloopores_mineral_akalin.png"},
   groups = {level = 1, cracky = 3},
   drop = "akalin:lump",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
 })
 

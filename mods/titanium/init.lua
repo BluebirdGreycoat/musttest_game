@@ -16,6 +16,7 @@ minetest.register_node("titanium:ore", {
 	groups = {level=3, cracky=2},
 	sounds = default.node_sound_stone_defaults(),
 	drop = "titanium:titanium",
+	silverpick_drop = true,
 })
 
 

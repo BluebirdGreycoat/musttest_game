@@ -74,7 +74,8 @@ local function add_ore(modname, description, mineral_name, oredef)
 			tiles = {"default_stone.png^" .. modname .. "_mineral_" .. mineral_name .. ".png"},
 			groups = {level = 2, cracky = 3},
 			sounds = default_stone_sounds,
-			drop = lump_item
+			drop = lump_item,
+			silverpick_drop = true,
 		})
 	end
 

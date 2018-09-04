@@ -191,42 +191,72 @@ end
 
 
 function itempickup.handle_node_drops(pos, drops, digger)
+	-- Nil check.
+	if not digger or not digger:is_player() then
+		return
+	end
+
+	-- Node hasn't been removed yet, we can make use of it.
+	local node = minetest.get_node(pos) -- Node to be dug.
+	local tool = digger:get_wielded_item()
+	local xp_drop_enabled = true
+
+	-- Node definition.
+	local ndef = minetest.reg_ns_nodes[node.name] or
+		minetest.registered_nodes[node.name]
+
+	-- Nil check.
+	if not ndef then
+		return
+	end
+
+	-- If node has a drop string/table for silver picks, override drop table.
+	if ndef.silverpick_drop then
+		local newdrop = ndef.silverpick_drop
+		if type(newdrop) == "table" then
+			drops = newdrop
+		elseif type(newdrop) == "string" then
+			drops = {newdrop}
+		elseif type(newdrop) == "boolean" and newdrop == true then
+			drops = {node.name}
+		end
+	end
+
 	for _, item in pairs(drops) do
 		local stack = ItemStack(item) -- Itemstring to itemstack.
 		local sname = stack:get_name()
 
-		-- I assume the engine handles the possibility of unknown stacks gracefully.
+		-- Give drop to player, or drop on ground.
 		itempickup.drop_an_item(pos, stack, digger)
 
-		if digger and digger:is_player() then
-			if drop_xp_list[sname] then
-				local value = drop_xp_list[sname]
-				local pname = digger:get_player_name()
-				local digxp = xp.get_xp(pname, "digxp")
+		if xp_drop_enabled and drop_xp_list[sname] then
+			local value = drop_xp_list[sname]
+			local pname = digger:get_player_name()
+			local digxp = xp.get_xp(pname, "digxp")
 
-				-- Reward player more when Mineral XP is higher.
-				do
-					-- Both X's should be in range [0, 1].
-					local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
-					local x2 = math.random(0, 10000)/10000
-					if x1*x1 >= x2 then
-						if drop_extra_item_list[sname] then
-							itempickup.drop_an_item(pos, stack, digger)
-						end
+			-- Reward player more when Mineral XP is higher.
+			do
+				-- Both X's should be in range [0, 1].
+				local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
+				local x2 = math.random(0, 10000)/10000
+				if x1*x1 >= x2 then
+					if drop_extra_item_list[sname] then
+						-- Give drop to player, or drop on ground.
+						itempickup.drop_an_item(pos, stack, digger)
 					end
-				end
-
-				-- Increase player's XP if not at max yet.
-				if digxp < xp.digxp_max then
-					digxp = digxp + value
-					if digxp > xp.digxp_max then
-						digxp = xp.digxp_max
-					end
-					xp.set_xp(pname, "digxp", digxp)
-					hud_clock.update_xp(pname)
 				end
 			end
-		end
+
+			-- Increase player's XP if not at max yet.
+			if digxp < xp.digxp_max then
+				digxp = digxp + value
+				if digxp > xp.digxp_max then
+					digxp = xp.digxp_max
+				end
+				xp.set_xp(pname, "digxp", digxp)
+				hud_clock.update_xp(pname)
+			end
+		end -- If item in drop_xp list.
 	end
 end
 

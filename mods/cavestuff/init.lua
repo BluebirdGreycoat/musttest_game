@@ -352,6 +352,10 @@ minetest.register_node("cavestuff:glow_worm", {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
   climbable = true,
+
+	drop = "",
+	shears_drop = true,
+
   -- Selection box interferes with hanging node group?
   -- Making the selection box smaller seems to prevent the
   -- hanging node group from working properly.

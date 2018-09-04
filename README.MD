@@ -15,7 +15,7 @@ This repository contains the complete Lua code and media for the server running 
 
 This is a very difficult game based on the PvP/PvE survival concept. However, it is not wholly survival themed.
 
-History has it that long ago, colonists from another place landed in this inhospitable world and built the first city. With a foothold on this world now firmly established, trenchant pioneers are spreading out to claim land and even some bit of independence from the old colonial government. Can you tame the wild? Or will some future adventurer find your bones in some long-abandoned structure, in the midst of a vast white wilderness?
+History has it that long ago, colonists from another place landed in this inhospitable world and built the first city. With a foothold on this world now firmly established, trenchant pioneers are spreading out to claim land and even some bit of independence from the old colonial government. Can you tame the wild? Or will a future adventurer find your bones in a frozen, long-abandoned structure, in the midst of a vast white wilderness?
 
 From the server's home page:
 

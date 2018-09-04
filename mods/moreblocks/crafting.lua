@@ -72,22 +72,6 @@ minetest.register_craft({
 
 minetest.register_craft({
 	output = "default:stick 4",
-	recipe = {
-		{"default:dry_shrub"},
-		{"default:dry_shrub"},
-		{"default:dry_shrub"},
-	}
-})
-
-minetest.register_craft({
-	output = "default:stick 4",
-	recipe = {
-		{"default:dry_shrub", "default:dry_shrub", "default:dry_shrub"},
-	}
-})
-
-minetest.register_craft({
-	output = "default:stick 4",
 	recipe = {{"basictrees:tree_sapling"},}
 })
 

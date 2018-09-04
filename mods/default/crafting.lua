@@ -24,7 +24,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:stick 2',
+	output = 'default:stick 3',
 	recipe = {
 		{'group:leaves'},
 		{'group:leaves'},

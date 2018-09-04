@@ -18,6 +18,7 @@ minetest.register_node("glowstone:luxore", {
 	light_source = 14,
 	groups = {level = 2, cracky = 2},
 	drop = "glowstone:glowing_dust 2",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -30,6 +31,7 @@ minetest.register_node("glowstone:minerals", {
 	light_source = 14,
 	groups = {level=1, cracky=3, dig_immediate=2},
 	drop = "glowstone:glowing_dust 2",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -42,7 +44,20 @@ minetest.register_node("glowstone:glowstone", {
 	light_source = 14,
 	groups = {level=2, cracky=2},
 	drop = "glowstone:glowing_dust 2",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Poison players who come into direct contact.
+	on_player_walk_over = function(pos, player)
+		local pname = player:get_player_name()
+		hb4.delayed_harm({
+			name = pname,
+			step = 15,
+			min = 1,
+			max = 2,
+			msg = "# Server: <" .. rename.gpn(pname) .. "> was killed by contact with glowstone.",
+		})
+	end,
 })
 
 

@@ -11,7 +11,7 @@ minetest.register_node("cavestuff:cobble_with_moss", {
   description = "Cave Stone With Moss",
   tiles = {"default_cobble.png^caverealms_moss.png", "default_cobble.png", "default_cobble.png^caverealms_moss_side.png"},
   groups = {
-		level=1, crumbly=1, cracky=3, falling_node=1,
+		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
 	},
@@ -21,13 +21,16 @@ minetest.register_node("cavestuff:cobble_with_moss", {
   }),
   light_source = 1,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	drop = "default:cobble",
+	silverpick_drop = true,
 })
 
 minetest.register_node("cavestuff:cobble_with_lichen", {
   description = "Cave Stone With Lichen",
   tiles = {"default_cobble.png^caverealms_lichen.png", "default_cobble.png", "default_cobble.png^caverealms_lichen_side.png"},
   groups = {
-		level=1, crumbly=1, cracky=3, falling_node=1,
+		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
 	},
@@ -37,13 +40,16 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
   }),
   light_source = 1,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	drop = "default:cobble",
+	silverpick_drop = true,
 })
 
 minetest.register_node("cavestuff:cobble_with_algae", {
   description = "Cave Stone With Algae",
   tiles = {"default_cobble.png^caverealms_algae.png", "default_cobble.png", "default_cobble.png^caverealms_algae_side.png"},
   groups = {
-		level=1, crumbly=1, cracky=3, falling_node=1,
+		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
 	},
@@ -53,19 +59,25 @@ minetest.register_node("cavestuff:cobble_with_algae", {
   }),
   light_source = 1,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	drop = "default:cobble",
+	silverpick_drop = true,
 })
 
 minetest.register_node("cavestuff:cobble_with_salt", {
   description = "Cave Stone With Salt",
   tiles = {"default_cobble.png^caverealms_salty.png", "default_cobble.png", "default_cobble.png^caverealms_salty_side.png"},
   groups = {
-		level=1, crumbly=2, cracky=2, falling_node=1,
+		level = 1, crumbly = 2, cracky = 2, falling_node = 1,
 		melts = 1,
 	},
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults(),
   light_source = 1,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	drop = "default:cobble",
+	silverpick_drop = true,
 })
 
 minetest.register_node("cavestuff:cobble_with_rockmelt", {

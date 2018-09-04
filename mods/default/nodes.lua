@@ -977,6 +977,9 @@ minetest.register_node("default:junglegrass", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
+
+	-- Drops are defined in farming mod.
+
 	groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, grass = 1, junglegrass = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
@@ -1016,6 +1019,10 @@ minetest.register_node("default:coarsegrass", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
+
+	drop = "default:stick",
+	shears_drop = true,
+
 	groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, grass = 1, junglegrass = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
@@ -1100,7 +1107,9 @@ for i = 1, 5 do
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		drop = "default:grass_dummy",
+
+		-- Drops are defined in farming mod.
+
 		groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
@@ -1142,7 +1151,9 @@ for i = 1, 5 do
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		drop = "default:grass_dummy",
+
+		-- Drops are defined in farming mod.
+
 		groups = {level = 1, snappy = 3, hanging_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
@@ -1210,7 +1221,10 @@ for i = 1, 5 do
 		buildable_to = true,
 		groups = {level = 1, snappy = 3, flammable = 3, flora = 1, attached_node = 1,
 			not_in_creative_inventory=1, dry_grass = 1},
-		drop = "default:dry_grass_dummy",
+
+		drop = "",
+		shears_drop = "default:dry_grass_dummy",
+
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
 			type = "fixed",
@@ -1254,7 +1268,10 @@ for i = 1, 5 do
 		-- Not in flora group, since it does not need to spread.
 		groups = {level = 1, snappy = 3, flammable = 3, hanging_node = 1,
 			not_in_creative_inventory=1, dry_grass = 1},
-		drop = "default:dry_grass_dummy",
+
+		drop = "",
+		shears_drop = "default:dry_grass_dummy",
+
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
 			type = "fixed",

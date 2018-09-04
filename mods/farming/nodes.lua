@@ -287,30 +287,37 @@ end
 
 
 for i = 1, 5 do
-	minetest.override_item("default:grass_"..i, {drop = {
-		max_items = 1,
-		items = {
-			{items = {'farming:seed_wheat'},rarity = 5},
-			{items = {'default:grass_dummy'}},
-		}
-	}})
+	minetest.override_item("default:grass_"..i, {
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {'farming:seed_wheat'}, rarity = 5},
+			},
+		},
+		shears_drop = "default:grass_dummy",
+	})
 end
 
 for i = 1, 5 do
-	minetest.override_item("default:grass_"..i.."_hanging", {drop = {
-		max_items = 1,
-		items = {
-			{items = {'farming:seed_wheat'},rarity = 5},
-			{items = {'default:grass_dummy'}},
-		}
-	}})
+	minetest.override_item("default:grass_"..i.."_hanging", {
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {'farming:seed_wheat'}, rarity = 5},
+			},
+		},
+		shears_drop = "default:grass_dummy",
+	})
 end
 
-minetest.override_item("default:junglegrass", {drop = {
-	max_items = 1,
-	items = {
-		{items = {'farming:seed_cotton'},rarity = 8},
-		{items = {'default:junglegrass'}},
-	}
-}})
+minetest.override_item("default:junglegrass", {
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {'farming:seed_cotton'}, rarity = 8},
+			{items = {'default:stick'}},
+		},
+	},
+	shears_drop = "default:junglegrass",
+})
 

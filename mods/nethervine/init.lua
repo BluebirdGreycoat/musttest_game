@@ -104,6 +104,9 @@ if not nethervine.registered then
 		climbable = true,
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
+		drop = "",
+		shears_drop = true,
+
 		-- Nethervines shall not be flammable. They often generate next to lava.
 		groups = {
 			level=1,
@@ -240,6 +243,9 @@ if not nethervine.registered then
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 		groups = {level = 1, snappy = 3, attached_node = 1, not_in_creative_inventory = 1, flammable = 3},
 		light_source = 10,
+
+		drop = "",
+		shears_drop = true,
 
 		selection_box = {
 			type = "fixed",

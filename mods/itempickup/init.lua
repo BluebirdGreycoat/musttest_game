@@ -163,71 +163,67 @@ local drop_extra_item_list = {
 }
 
 
-function itempickup.drop_an_item(pos, iname, digger)
+function itempickup.drop_an_item(pos, stack, digger)
 	local pp = utility.get_middle_pos(digger:get_pos())
+
+	-- Stack goes directly into inventory if player close enough.
 	if vector.distance(pp, pos) < 3.5 then
 		local inv = digger:get_inventory()
-		local left = inv:add_item("main", iname)
-		iname = left
+		if inv then
+			stack = inv:add_item("main", stack)
+		end
 	end
-	local obj = minetest.add_item(pos, iname)
-	if obj then
-		obj:set_velocity({
-			x=math.random(-10, 10) / 10,
-			y=0.5,
-			z=math.random(-10, 10) / 10,
-		})
+
+	if not stack:is_empty() then
+		local obj = minetest.add_item(pos, stack)
+
+		-- Make the drop fly a bit.
+		if obj then
+			obj:set_velocity({
+				x=math.random(-10, 10) / 10,
+				y=0.5,
+				z=math.random(-10, 10) / 10,
+			})
+		end
 	end
 end
 
 
 
 function itempickup.handle_node_drops(pos, drops, digger)
-	for k, item in ipairs(drops) do
-		local ss = ""
-		if type(item) == "string" then
-			ss = item
-		else
-			ss = item:to_string()
-		end
+	for _, item in pairs(drops) do
+		local stack = ItemStack(item) -- Itemstring to itemstack.
+		local sname = stack:get_name()
 
-		local stackname = ItemStack(ss):get_name()
-		local ndef = minetest.registered_items[stackname]
+		-- I assume the engine handles the possibility of unknown stacks gracefully.
+		itempickup.drop_an_item(pos, stack, digger)
 
-		if ndef then
-			itempickup.drop_an_item(pos, ss, digger)
+		if digger and digger:is_player() then
+			if drop_xp_list[sname] then
+				local value = drop_xp_list[sname]
+				local pname = digger:get_player_name()
+				local digxp = xp.get_xp(pname, "digxp")
 
-			if digger and digger:is_player() then
-				if drop_xp_list[stackname] then
-					local value = drop_xp_list[stackname]
-					local pname = digger:get_player_name()
-					--minetest.chat_send_player(
-					--	"MustTest", "# Server: <" .. pname .. "> got drop '" .. stackname ..
-					--	"' at " .. minetest.pos_to_string(pos) .. " with XP " .. value .. "!")
-
-					local digxp = xp.get_xp(pname, "digxp")
-
-					-- Reward player more when Mineral XP is higher.
-					do
-						-- Both X's should be in range [0, 1].
-						local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
-						local x2 = math.random(0, 10000)/10000
-						if x1*x1 >= x2 then
-							if drop_extra_item_list[stackname] then
-								itempickup.drop_an_item(pos, stackname, digger)
-							end
+				-- Reward player more when Mineral XP is higher.
+				do
+					-- Both X's should be in range [0, 1].
+					local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
+					local x2 = math.random(0, 10000)/10000
+					if x1*x1 >= x2 then
+						if drop_extra_item_list[sname] then
+							itempickup.drop_an_item(pos, stack, digger)
 						end
 					end
+				end
 
-					-- Increase player's XP if not at max yet.
-					if digxp < xp.digxp_max then
-						digxp = digxp + value
-						if digxp > xp.digxp_max then
-							digxp = xp.digxp_max
-						end
-						xp.set_xp(pname, "digxp", digxp)
-						hud_clock.update_xp(pname)
+				-- Increase player's XP if not at max yet.
+				if digxp < xp.digxp_max then
+					digxp = digxp + value
+					if digxp > xp.digxp_max then
+						digxp = xp.digxp_max
 					end
+					xp.set_xp(pname, "digxp", digxp)
+					hud_clock.update_xp(pname)
 				end
 			end
 		end

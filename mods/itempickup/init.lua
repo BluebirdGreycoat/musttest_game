@@ -224,6 +224,17 @@ function itempickup.handle_node_drops(pos, drops, digger)
 				drops = {node.name}
 			end
 		end
+	elseif toolname:find("shears") then
+		if ndef.shears_drop then
+			local newdrop = ndef.shears_drop
+			if type(newdrop) == "table" then
+				drops = newdrop
+			elseif type(newdrop) == "string" then
+				drops = {newdrop}
+			elseif type(newdrop) == "boolean" and newdrop == true then
+				drops = {node.name}
+			end
+		end
 	end
 
 	for _, item in pairs(drops) do

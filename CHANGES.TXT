@@ -6,6 +6,7 @@
 [2018/8/31] Added extra brasier types.
 [2018/8/31] Added castle lighting mod, with adjustments for compatibility.
 [2018/8/30] Added a bunch more nodes to the circular saw.
+[2018/8/30] All Lua code and media files are now under GIT control. Repository is currently private.
 [2018/8/29] Added some new slabs to the saw, 3 from a recent version of moreblocks, + 1 custom.
 [2018/8/29] Made some upgrades to the xban2 mod on this server.
 [2018/8/29] Fixed crash issue where the gauges mod would try to give a gauge to a player outside the world bounds.

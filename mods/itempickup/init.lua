@@ -199,6 +199,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	-- Node hasn't been removed yet, we can make use of it.
 	local node = minetest.get_node(pos) -- Node to be dug.
 	local tool = digger:get_wielded_item()
+	local toolname = tool:get_name()
 	local xp_drop_enabled = true
 
 	-- Node definition.
@@ -211,14 +212,17 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	end
 
 	-- If node has a drop string/table for silver picks, override drop table.
-	if ndef.silverpick_drop then
-		local newdrop = ndef.silverpick_drop
-		if type(newdrop) == "table" then
-			drops = newdrop
-		elseif type(newdrop) == "string" then
-			drops = {newdrop}
-		elseif type(newdrop) == "boolean" and newdrop == true then
-			drops = {node.name}
+	-- Player doesn't get XP for nodes dug this way, but that's ok.
+	if toolname:find("pick") and toolname:find("silver") then
+		if ndef.silverpick_drop then
+			local newdrop = ndef.silverpick_drop
+			if type(newdrop) == "table" then
+				drops = newdrop
+			elseif type(newdrop) == "string" then
+				drops = {newdrop}
+			elseif type(newdrop) == "boolean" and newdrop == true then
+				drops = {node.name}
+			end
 		end
 	end
 

@@ -9,7 +9,11 @@ dofile(cavestuff.modpath .. "/functions.lua")
 
 minetest.register_node("cavestuff:cobble_with_moss", {
   description = "Cave Stone With Moss",
-  tiles = {"default_cobble.png^caverealms_moss.png", "default_cobble.png", "default_cobble.png^caverealms_moss_side.png"},
+  tiles = {
+		"default_cobble.png^caverealms_moss.png",
+		"default_cobble.png",
+		"default_cobble.png^caverealms_moss_side.png",
+	},
   groups = {
 		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
@@ -28,7 +32,11 @@ minetest.register_node("cavestuff:cobble_with_moss", {
 
 minetest.register_node("cavestuff:cobble_with_lichen", {
   description = "Cave Stone With Lichen",
-  tiles = {"default_cobble.png^caverealms_lichen.png", "default_cobble.png", "default_cobble.png^caverealms_lichen_side.png"},
+  tiles = {
+		"default_cobble.png^caverealms_lichen.png",
+		"default_cobble.png",
+		"default_cobble.png^caverealms_lichen_side.png",
+	},
   groups = {
 		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
@@ -47,7 +55,11 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
 
 minetest.register_node("cavestuff:cobble_with_algae", {
   description = "Cave Stone With Algae",
-  tiles = {"default_cobble.png^caverealms_algae.png", "default_cobble.png", "default_cobble.png^caverealms_algae_side.png"},
+  tiles = {
+		"default_cobble.png^caverealms_algae.png",
+		"default_cobble.png",
+		"default_cobble.png^caverealms_algae_side.png",
+	},
   groups = {
 		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
 		melts = 1,
@@ -66,7 +78,11 @@ minetest.register_node("cavestuff:cobble_with_algae", {
 
 minetest.register_node("cavestuff:cobble_with_salt", {
   description = "Cave Stone With Salt",
-  tiles = {"default_cobble.png^caverealms_salty.png", "default_cobble.png", "default_cobble.png^caverealms_salty_side.png"},
+  tiles = {
+		"default_cobble.png^caverealms_salty.png",
+		"default_cobble.png",
+		"default_cobble.png^caverealms_salty_side.png",
+	},
   groups = {
 		level = 1, crumbly = 2, cracky = 2, falling_node = 1,
 		melts = 1,
@@ -357,7 +373,10 @@ minetest.register_node("cavestuff:glow_worm", {
   tiles = {"caverealms_glow_worm.png"},
   inventory_image = "caverealms_glow_worm.png",
   wield_image = "caverealms_glow_worm.png",
-  groups = {level=1, snappy=3, choppy=3, oddly_breakable_by_hand=3, hanging_node=1, flammable=3},
+  groups = {
+		level = 1, snappy = 3, choppy = 3, oddly_breakable_by_hand = 3,
+		hanging_node = 1, flammable = 3,
+	},
   light_source = 5,
   paramtype = "light",
   drawtype = "plantlike",
@@ -382,7 +401,7 @@ minetest.register_node("cavestuff:glow_obsidian", {
   tiles = {"caverealms_glow_obsidian.png"},
   groups = {
     cracky = 1, level = 3,
-    immovable=1,
+    immovable = 1,
   },
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
@@ -406,7 +425,7 @@ minetest.register_node("cavestuff:glow_obsidian_brick", {
   tiles = {"caverealms_glow_obsidian_brick.png"},
   groups = {
     cracky = 1, level = 3,
-    immovable=1,
+    immovable = 1,
   },
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
@@ -420,18 +439,20 @@ minetest.register_craft({
 	},
 })
 
-stairs.register_stair_and_slab("glow_obsidian_brick", "cavestuff:glow_obsidian_brick",
-		{level=3, cracky=1},
-		{"caverealms_glow_obsidian_brick.png"},
-		"Luminescent Obsidian Brick",
-		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab(
+	"glow_obsidian_brick",
+	"cavestuff:glow_obsidian_brick",
+	{level = 3, cracky = 1},
+	{"caverealms_glow_obsidian_brick.png"},
+	"Luminescent Obsidian Brick",
+	default.node_sound_stone_defaults())
 
 minetest.register_node("cavestuff:glow_obsidian_block", {
   description = "Luminescent Obsidian Block",
   tiles = {"caverealms_glow_obsidian_block.png"},
   groups = {
     cracky = 1, level = 3,
-    immovable=1,
+    immovable = 1,
   },
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
@@ -446,57 +467,65 @@ minetest.register_craft({
 	},
 })
 
-stairs.register_stair_and_slab("glow_obsidian_block", "cavestuff:glow_obsidian_block",
-		{level=3, cracky=1},
-		{"caverealms_glow_obsidian_block.png"},
-		"Luminescent Obsidian Block",
-		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab(
+	"glow_obsidian_block",
+	"cavestuff:glow_obsidian_block",
+	{level = 3, cracky = 1},
+	{"caverealms_glow_obsidian_block.png"},
+	"Luminescent Obsidian Block",
+	default.node_sound_stone_defaults())
 
 minetest.register_node("cavestuff:dark_obsidian", {
   description = "Dead Obsidian",
   tiles = {"technic_obsidian.png"},
   groups = {
-    level=4, cracky=1,
-    immovable=1,
+    level = 4, cracky = 1,
+    immovable = 1,
   },
   sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
   on_blast = function(...) end, -- Blast resistant.
 })
 
-stairs.register_stair_and_slab("dark_obsidian", "cavestuff:dark_obsidian",
-		{level=3, cracky=1},
-		{"technic_obsidian.png"},
-		"Dead Obsidian",
-		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab(
+	"dark_obsidian",
+	"cavestuff:dark_obsidian",
+	{level=3, cracky=1},
+	{"technic_obsidian.png"},
+	"Dead Obsidian",
+	default.node_sound_stone_defaults())
 
 minetest.register_node("cavestuff:dark_obsidian_brick", {
   description = "Dead Obsidian Brick",
   tiles = {"technic_obsidian_brick.png"},
-  groups = {level=3, cracky=1},
+  groups = {level = 3, cracky = 1},
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 })
 
-stairs.register_stair_and_slab("dark_obsidian_brick", "cavestuff:dark_obsidian_brick",
-		{level=3, cracky=2},
-		{"technic_obsidian_brick.png"},
-		"Dead Obsidian Brick",
-		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab(
+	"dark_obsidian_brick",
+	"cavestuff:dark_obsidian_brick",
+	{level = 3, cracky = 2},
+	{"technic_obsidian_brick.png"},
+	"Dead Obsidian Brick",
+	default.node_sound_stone_defaults())
 
 minetest.register_node("cavestuff:dark_obsidian_block", {
   description = "Dead Obsidian Block",
   tiles = {"technic_obsidian_block.png"},
-  groups = {level=3, cracky=1},
+  groups = {level = 3, cracky = 1},
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 })
 
-stairs.register_stair_and_slab("dark_obsidian_block", "cavestuff:dark_obsidian_block",
-		{level=3, cracky=2},
-		{"technic_obsidian_block.png"},
-		"Dead Obsidian Block",
-		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab(
+	"dark_obsidian_block",
+	"cavestuff:dark_obsidian_block",
+	{level = 3, cracky = 2},
+	{"technic_obsidian_block.png"},
+	"Dead Obsidian Block",
+	default.node_sound_stone_defaults())
 
 minetest.register_craft({
   output = "cavestuff:dark_obsidian_brick 4",
@@ -518,7 +547,7 @@ minetest.register_craft({
 minetest.register_node("cavestuff:coal_dust", {
   description = "Coal Dust Block",
   tiles = {"caverealms_coal_dust.png"},
-  groups = {level=1, crumbly=3, falling_node=1},
+  groups = {level = 1, crumbly = 3, falling_node = 1},
   sounds = default.node_sound_gravel_defaults(),
   --drop = "dusts:coal 9",
 	movement_speed_multiplier = default.SLOW_SPEED,
@@ -536,7 +565,7 @@ minetest.register_craft({
 minetest.register_node("cavestuff:salt_crystal", {
   description = "Salt Crystal",
   tiles = {"caverealms_salt_crystal.png"},
-  groups = {level=1, crumbly=2, cracky=3},
+  groups = {level = 1, crumbly = 2, cracky = 3},
   sounds = default.node_sound_gravel_defaults(),
   light_source = 1,
   paramtype = "light",
@@ -556,7 +585,7 @@ minetest.register_node("cavestuff:mycena", {
   tiles = {"caverealms_mycena.png"},
   inventory_image = "caverealms_mycena.png",
   wield_image = "caverealms_mycena.png",
-  groups = {level=1, dig_immediate=2, attached_node=1, flammable=3},
+  groups = {level = 1, dig_immediate = 2, attached_node = 1, flammable = 3},
   light_source = 3,
   paramtype = "light",
   drawtype = "plantlike",
@@ -598,7 +627,7 @@ minetest.register_node("cavestuff:fungus", {
   tiles = {"caverealms_fungi.png"},
   inventory_image = "caverealms_fungi.png",
   wield_image = "caverealms_fungi.png",
-  groups = {level=1, dig_immediate=2, attached_node=1, flammable=3},
+  groups = {level = 1, dig_immediate = 2, attached_node = 1, flammable = 3},
   light_source = 3,
   paramtype = "light",
   drawtype = "firelike",
@@ -642,7 +671,7 @@ minetest.register_node("cavestuff:icicle_up", {
   inventory_image = "caverealms_icicle_up.png",
   wield_image = "caverealms_icicle_up.png",
   groups = {
-		level=1, cracky=3, oddly_breakable_by_hand=1, attached_node=1,
+		level = 1, cracky = 3, oddly_breakable_by_hand = 1, attached_node = 1,
 		melts = 1,
 	},
   sounds = default.node_sound_glass_defaults(),
@@ -662,12 +691,12 @@ minetest.register_node("cavestuff:icicle_up", {
 })
 
 minetest.register_node("cavestuff:icicle_up_glowing", {
-  description = "Icicle with Glowing Minerals",
+  description = "Icicle With Glowing Minerals",
   tiles = {"caverealms_icicle_up.png"},
   inventory_image = "caverealms_icicle_up.png",
   wield_image = "caverealms_icicle_up.png",
   groups = {
-		level=1, cracky=3, oddly_breakable_by_hand=1, attached_node=1,
+		level = 1, cracky = 3, oddly_breakable_by_hand = 1, attached_node = 1,
 		melts = 1,
 	},
   sounds = default.node_sound_glass_defaults(),
@@ -693,7 +722,7 @@ minetest.register_node("cavestuff:icicle_down", {
   inventory_image = "caverealms_icicle_down.png",
   wield_image = "caverealms_icicle_down.png",
   groups = {
-		level=1, cracky=3, oddly_breakable_by_hand=1, hanging_node=1,
+		level = 1, cracky = 3, oddly_breakable_by_hand = 1, hanging_node = 1,
 		melts = 1,
 	},
   sounds = default.node_sound_glass_defaults(),
@@ -713,12 +742,12 @@ minetest.register_node("cavestuff:icicle_down", {
 })
 
 minetest.register_node("cavestuff:icicle_down_glowing", {
-  description = "Icicle with Glowing Minerals",
+  description = "Icicle With Glowing Minerals",
   tiles = {"caverealms_icicle_down.png"},
   inventory_image = "caverealms_icicle_down.png",
   wield_image = "caverealms_icicle_down.png",
   groups = {
-		level=1, cracky=3, oddly_breakable_by_hand=1, hanging_node=1,
+		level = 1, cracky = 3, oddly_breakable_by_hand = 1, hanging_node = 1,
 		melts = 1,
 	},
   sounds = default.node_sound_glass_defaults(),
@@ -748,7 +777,9 @@ for i=1, 4, 1 do
     paramtype = "light",
 		paramtype2 = "facedir",
     drawtype = "mesh",
-    groups = {level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100},
+    groups = {
+			level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100,
+		},
     use_texture_alpha = true,
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
@@ -782,7 +813,10 @@ for i=1, 4, 1 do
     paramtype = "light",
 		paramtype2 = "facedir",
     drawtype = "mesh",
-    groups = {level = 1, dig_immediate = 2, attached_node = 1, fall_damage_add_percent = 100},
+    groups = {
+			level = 1, dig_immediate = 2, attached_node = 1,
+			fall_damage_add_percent = 100,
+		},
     use_texture_alpha = true,
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
@@ -815,7 +849,9 @@ for i=1, 4, 1 do
     drawtype = "mesh",
     paramtype = "light",
 		paramtype2 = "facedir",
-    groups = {level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100},
+    groups = {
+			level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100,
+		},
     sounds = default.node_sound_stone_defaults(),
     selection_box = {
       type = "fixed",

@@ -22,3 +22,7 @@ see armor.conf.example for all available options.
 
 Note: worldpath config settings override any settings made in the mod's directory.
 
+License Textures: 2017 - 2018 daviddoesminetest aka davidthecreator - CC BY-SA 3.0
+
+License Source Code: 2013 - 2018 stujones11 aka stu - LGPL v2.1
+

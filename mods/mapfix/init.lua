@@ -36,6 +36,9 @@ end
 -- Handles minimum timeout and required privileges.
 -- Called by PoC.
 mapfix.command = function(pname, param)
+	-- Profile function execution time.
+	local t1 = os.clock()
+
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
 		return
@@ -106,10 +109,14 @@ mapfix.command = function(pname, param)
 
 	minp, maxp = work(minp, maxp)
 
+	-- Calculate elapsed time.
+	local t2 = os.clock()
+	local totalms = math.ceil((t2 - t1) * 1000)
+
 	minetest.chat_send_player(pname,
 		"# Server: Liquid & light recalculation finished! Extents: " ..
 		minetest.pos_to_string(minp) .. " to " .. minetest.pos_to_string(maxp) ..
-		". Radius: " .. radius .. ".")
+		". Radius: " .. radius .. ". Took " .. totalms .. " milliseconds.")
 end
 
 if not mapfix.registered then

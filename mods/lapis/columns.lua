@@ -5,13 +5,13 @@
 --Licensed under GPLv3 or later, see http://www.gnu.org/licenses/gpl-3.0.html
 
 function lapis.register_column(modname, item, groups, images, description)
-  local recipeitem = modname..":"..item
-  local itemname = modname..":column_"..item
+	local recipeitem = modname..":"..item
+	local itemname = modname..":column_"..item
+
 	minetest.register_node(itemname, {
-		description = description.." Column",
+		description = description .. " Column",
 		drawtype = "nodebox",
 		tiles = images,
-		--inventory_image = "lapis_column.png^lapis_"..item..".png^lapis_column.png^[makealpha:255,126,126",
 		paramtype = "light",
 		paramtype2 = "facedir",
 		is_ground_content = false,
@@ -37,20 +37,19 @@ function lapis.register_column(modname, item, groups, images, description)
 
 	minetest.register_craft({
 		output = itemname .. ' 6',
-	recipe = {
-	   { "", recipeitem, ""},
-    { "", recipeitem, ""},
-    { "", recipeitem, ""},
+		recipe = {
+			{ "", recipeitem, ""},
+			{ "", recipeitem, ""},
+			{ "", recipeitem, ""},
 		},
 	})
 
-  itemname=modname..":base_" .. item
+	itemname=modname..":base_" .. item
 
 	minetest.register_node(itemname, {
-		description = description.." Column Base",
+		description = description .. " Column Base",
 		drawtype = "nodebox",
 		tiles = images,
-		--inventory_image = "lapis_base.png^lapis_"..item..".png^lapis_base.png^[makealpha:255,126,126",
 		paramtype = "light",
 		paramtype2 = "facedir",
 		is_ground_content = false,
@@ -82,7 +81,7 @@ function lapis.register_column(modname, item, groups, images, description)
 	minetest.register_craft({
 		output = itemname .. ' 2',
 		recipe = {
-   {recipeitem},
+			{recipeitem},
 			{recipeitem},
 		},
 	})
@@ -93,31 +92,31 @@ end
 ----------
 
 lapis.register_column("lapis", "lapis_block",
-   {cracky=3},
-   {"lapis_block.png"},
-   "Lapis"
+	{cracky=3},
+	{"lapis_block.png"},
+	"Lapis"
 )
 
 lapis.register_column("lapis", "lapis_brick",
-   {cracky=3},
-   {"lapis_brick.png"},
-   "Lapis Brick"
+	{cracky=3},
+	{"lapis_brick.png"},
+	"Lapis Brick"
 )
 
 lapis.register_column("lapis", "lapis_cobble",
-		{cracky=3},
-		{"lapis_cobble.png"},
-		"Lapis Cobble"
-		)
+	{cracky=3},
+	{"lapis_cobble.png"},
+	"Lapis Cobble"
+)
 
 lapis.register_column("lapis", "lazurite_block",
-   {cracky= 3},
-   {"lapis_lazurite_block.png"},
-   "Lazurite"
+	{cracky= 3},
+	{"lapis_lazurite_block.png"},
+	"Lazurite"
 )
 
 lapis.register_column("lapis",  "lazurite_brick",
-   {cracky=3},
-   {"lapis_lazurite_brick.png"},
-   "Lazurite Brick"
+	{cracky=3},
+	{"lapis_lazurite_brick.png"},
+	"Lazurite Brick"
 )

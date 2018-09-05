@@ -47,11 +47,6 @@ chat_colorize.send_player = function(name, message)
   local color = ""
   if string.sub(message, 1, 1) == "#" then
     color = chat_colorize.COLOR_OLIVE
-  elseif string.sub(message, 1, 14) == "WorldEdit -!- " then
-    color = chat_colorize.COLOR_YELLOW
-    message = "# Server [WE]: " .. string.sub(message, 15)
-  --elseif string.sub(message, 1, 1) == "*" then
-  --  color = chat_colorize.COLOR_ORANGE
   elseif string.find(message, "^%-!%- Invalid command") then
     message = "# Server: Invalid command. See '/help all' for a list of valid commands."
 		easyvend.sound_error(name)

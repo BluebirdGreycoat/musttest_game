@@ -300,3 +300,11 @@ function utility.can_interact_with_node(player, pos)
 
 	return false
 end
+
+-- Called from bones mod to ensure the map is loaded before placing bones.
+-- Dunno if this has any real effect on the problem of bones disappearing.
+function utility.ensure_map_loaded(minp, maxp)
+	local vm = minetest.get_voxel_manip()
+	vm:read_from_map(minp, maxp)
+	return vm:get_emerged_area() -- Return area actually loaded.
+end

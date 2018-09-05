@@ -273,7 +273,7 @@ bones.on_dieplayer = function(player)
 	-- Preload map just in case.
 	local minp = vector.add(pos, -16)
 	local maxp = vector.add(pos, 16)
-	worldedit.keep_loaded(minp, maxp)
+	utility.ensure_map_loaded(minp, maxp)
     
 	local param2 = minetest.dir_to_facedir(player:get_look_dir())
 	minetest.set_node(pos, {name = "bones:bones", param2 = param2})

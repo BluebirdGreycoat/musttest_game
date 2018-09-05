@@ -37,7 +37,7 @@ shout.HINTS = {
 	"A hurt player will usually heal slowly, up to the last two hearts. Use bandages to speed this up.",
 	"Travel speed is affected by the surfaces you travel on. Prefer using roads and avoid deep snow.",
 	"Flowers, plants, and saplings can be found in the deep wastes far from the city.",
-	"Use the /mapfix command to correct issues with lighting or liquid flow.",
+	"Use the /mapfix command to correct issues with lighting or liquid flow. See /help mapfix.",
 	"Lava does not respect protection and is very dangerous; however lava cannot exist above sea level.",
 	"You can place water for farms above sea level by melting ice with torches or fire.",
 	"You can travel over flat snow or ice quickly using a sled.",

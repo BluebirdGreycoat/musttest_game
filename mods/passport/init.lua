@@ -115,7 +115,7 @@ passport.on_receive_fields = function(player, formname, fields)
   local pname = player:get_player_name()
   
   if fields.mapfix then
-    mapfix.do_command(pname, "")
+    mapfix.command(pname, "")
     return true
   end
   

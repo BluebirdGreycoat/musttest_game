@@ -50,7 +50,7 @@ This preamble is not lawyer-speak. Basically, you agree not to sue me. This is a
 game for the Minetest engine, and nothing more.
 
 ================================================================================
-License of Must Test Survival Game (musttest_game) Follows:
+License of Must Test Survival Game Follows:
 ================================================================================
 
 License of Source Code
@@ -127,7 +127,7 @@ http://creativecommons.org/licenses/by-sa/3.0/
 
 
 ================================================================================
-License of Minetest Game (minetest_game) Follows:
+License of Minetest Game Follows:
 ================================================================================
 
 License of Media (textures and sounds)

@@ -1,6 +1,4 @@
 default
-inventory_plus?
-unified_inventory?
-fire?
-ethereal?
+inventory_plus
+fire
 bakedclay?

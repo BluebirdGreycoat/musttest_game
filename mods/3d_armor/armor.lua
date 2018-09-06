@@ -386,9 +386,6 @@ minetest.register_on_joinplayer(function(player)
 			return count
 		end,
 	}, name)
-	if inv_mod == "inventory_plus" then
-		inventory_plus.register_button(player,"armor", "Armor")
-	end
 	armor_inv:set_size("armor", 6)
 	player_inv:set_size("armor", 6)
 	for i=1, 6 do
@@ -562,3 +559,7 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 	return hp_change
 end, true)
 
+-- Register button once.
+if inv_mod and inv_mod == "inventory_plus" then
+	inventory_plus.register_button("armor", "Armor")
+end

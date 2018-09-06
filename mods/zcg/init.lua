@@ -446,9 +446,8 @@ if not zcg.registered then
 		table.sort(zcg.itemlist)
 	end)
 
-	minetest.register_on_joinplayer(function(player)
-		inventory_plus.register_button(player, "zcg", "Craft Guide")
-	end)
+	-- Register button once.
+	inventory_plus.register_button("zcg", "Craft Guide")
 
 	minetest.register_on_player_receive_fields(function(...)
 		return zcg.on_receive_fields(...)

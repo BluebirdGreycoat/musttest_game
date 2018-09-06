@@ -159,10 +159,6 @@ minetest.register_on_joinplayer(function(player)
 	end
 
 	skins.update_player_skin(player)
-
-	if skins.inv then
-		inventory_plus.register_button(player,"skins", "Avatar")
-	end
 end)
 
 -- formspec control
@@ -190,7 +186,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 		skins.update_player_skin(player)
-
 	end
 end)
 
@@ -249,5 +244,7 @@ function skins.get_gender_strings(pname)
 	return data
 end
 
-
-
+-- Register button once.
+if skins.inv then
+	inventory_plus.register_button("skins", "Avatar")
+end

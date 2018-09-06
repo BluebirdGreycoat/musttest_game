@@ -86,7 +86,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	inventory_plus.register_button(player, "bags", "Bags")
 
 	local player_inv = player:get_inventory()
 	local bags_inv = minetest.create_detached_inventory(player:get_player_name().."_bags",{
@@ -192,3 +191,5 @@ minetest.register_craft({
 	},
 })
 
+-- Register button once.
+inventory_plus.register_button("bags", "Bags")

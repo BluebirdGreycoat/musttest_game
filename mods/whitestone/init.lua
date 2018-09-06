@@ -55,12 +55,6 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	type = "shapeless",
-	output = "whitestone:stone 9",
-	recipe = {"whitestone:block"},
-})
-
-minetest.register_craft({
 	type = "cooking",
 	output = "whitestone:stone",
 	recipe = "whitestone:cobble",

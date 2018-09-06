@@ -1,4 +1,0 @@
-chat_logging?
-reload?
-anticurse?
-player_labels?

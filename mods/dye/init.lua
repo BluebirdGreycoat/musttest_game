@@ -1,12 +1,40 @@
 -- Other mods can use these for looping through available colors
 
 dye = {}
-dye.basecolors = {"white", "grey", "black", "red", "yellow", "green", "cyan", "blue", "magenta"}
-dye.excolors = {"white", "lightgrey", "grey", "darkgrey", "black", "red", "orange", "yellow",
-	"lime", "green", "aqua", "cyan", "sky_blue", "blue", "violet", "magenta", "red_violet"}
 
--- Make dye names and descriptions available globally
+dye.basecolors = {
+	"white"   ,
+	"grey"    ,
+	"black"   ,
+	"red"     ,
+	"yellow"  ,
+	"green"   ,
+	"cyan"    ,
+	"blue"    ,
+	"magenta" ,
+}
 
+dye.excolors = {
+	"white"      ,
+	"lightgrey"  ,
+	"grey"       ,
+	"darkgrey"   ,
+	"black"      ,
+	"red"        ,
+	"orange"     ,
+	"yellow"     ,
+	"lime"       ,
+	"green"      ,
+	"aqua"       ,
+	"cyan"       ,
+	"sky_blue"   ,
+	"blue"       ,
+	"violet"     ,
+	"magenta"    ,
+	"red_violet" ,
+}
+
+-- Make dye names and descriptions available globally.
 -- Note: there is another color list in the bakedclay mod which must be same as this.
 dye.dyes = {
 	{"white",      "White"},
@@ -26,8 +54,7 @@ dye.dyes = {
 	{"pink",       "Pink"},
 }
 
--- This collection of colors is partly a historic thing, partly something else
-
+-- This collection of colors is partly a historic thing, partly something else.
 local dyes = {
 	{"white",      "White Dye",      {dye=1, basecolor_white=1,   excolor_white=1,      unicolor_white=1}},
 	{"grey",       "Grey Dye",       {dye=1, basecolor_grey=1,    excolor_grey=1,       unicolor_grey=1}},
@@ -46,19 +73,21 @@ local dyes = {
 	{"pink",       "Pink Dye",       {dye=1, basecolor_red=1,     excolor_red=1,        unicolor_light_red=1}},
 }
 
--- Define items
-
+-- Define items.
 for _, row in ipairs(dyes) do
 	local name = row[1]
 	local description = row[2]
 	local groups = row[3]
+
 	local item_name = "dye:" .. name
 	local item_image = "dye_" .. name .. ".png"
+
 	minetest.register_craftitem(item_name, {
 		inventory_image = item_image,
 		description = description,
-		groups = groups
+		groups = groups,
 	})
+
 	minetest.register_craft({
 		type = "shapeless",
 		output = item_name .. " 1",
@@ -66,8 +95,7 @@ for _, row in ipairs(dyes) do
 	})
 end
 
--- Manually add coal->black dye
-
+-- Manually add coal --> black dye.
 minetest.register_craft({
   type = "shapeless",
   output = "dye:black",
@@ -80,38 +108,38 @@ minetest.register_craft({
   recipe = {"default:cactus"},
 })
   
--- Mix recipes
+-- Mix recipes.
 local dye_recipes = {
-	-- src1, src2, dst
-	-- RYB mixes
-	{"red", "blue", "violet"}, -- "purple"
-	{"yellow", "red", "orange"},
-	{"yellow", "blue", "green"},
-	-- RYB complementary mixes
-	{"red", "green", "dark_grey"},
-	{"yellow", "violet", "dark_grey"},
-	{"blue", "orange", "dark_grey"},
-	-- CMY mixes - approximation
-	{"cyan", "yellow", "green"},
-	{"cyan", "magenta", "blue"},
-	{"yellow", "magenta", "red"},
-	-- other mixes that result in a color we have
-	{"red", "green", "brown"},
-	{"magenta", "blue", "violet"},
-	{"green", "blue", "cyan"},
-	{"pink", "violet", "magenta"},
-	-- mixes with black
-	{"white", "black", "grey"},
-	{"grey", "black", "dark_grey"},
-	{"green", "black", "dark_green"},
-	{"orange", "black", "brown"},
-	-- mixes with white
-	{"white", "red", "pink"},
-	{"white", "dark_grey", "grey"},
-	{"white", "dark_green", "green"},
+	-- Table params: color1, color2, result.
+
+	-- Basic RYB mixes.
+	{"red",     "blue",       "violet"    }, -- "purple"
+	{"yellow",  "red",        "orange"    },
+	{"yellow",  "blue",       "green"     },
+	-- RYB complementary mixes.
+	{"yellow",  "violet",     "dark_grey" },
+	{"blue",    "orange",     "dark_grey" },
+	-- CMY mixes - approximation.
+	{"cyan",    "yellow",     "green"     },
+	{"cyan",    "magenta",    "blue"      },
+	{"yellow",  "magenta",    "red"       },
+	-- Other mixes that result in a color we have.
+	{"red",     "green",      "brown"     },
+	{"magenta", "blue",       "violet"    },
+	{"green",   "blue",       "cyan"      },
+	{"pink",    "violet",     "magenta"   },
+	-- Mixes with black.
+	{"white",   "black",      "grey"      },
+	{"grey",    "black",      "dark_grey" },
+	{"green",   "black",      "dark_green"},
+	{"orange",  "black",      "brown"     },
+	-- Mixes with white.
+	{"white",   "red",        "pink"      },
+	{"white",   "dark_grey",  "grey"      },
+	{"white",   "dark_green", "green"     },
 }
 
-for _, mix in pairs(dye_recipes) do
+for _, mix in ipairs(dye_recipes) do
 	minetest.register_craft({
 		type = "shapeless",
 		output = 'dye:' .. mix[3] .. ' 2',

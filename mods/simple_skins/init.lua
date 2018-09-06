@@ -161,7 +161,7 @@ minetest.register_on_joinplayer(function(player)
 	skins.update_player_skin(player)
 
 	if skins.inv then
-		inventory_plus.register_button(player,"skins", "Skin")
+		inventory_plus.register_button(player,"skins", "Avatar")
 	end
 end)
 

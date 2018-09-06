@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- Core Chat System for Must Test Survival
+-- Author: GoldFireUn
+-- License: MIT
+--------------------------------------------------------------------------------
 
 chat_core = chat_core or {}
 chat_core.modpath = minetest.get_modpath("chat_core")

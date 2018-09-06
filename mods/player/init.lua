@@ -106,9 +106,10 @@ minetest.register_on_joinplayer(function(player)
 	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
 	
 	-- set GUI
-	if not minetest.setting_getbool("creative_mode") then
-		player:set_inventory_formspec(default.formspec.get_default_form())
-	end
+	-- This is managed by the inventory mod.
+	--if not minetest.setting_getbool("creative_mode") then
+	--	player:set_inventory_formspec(default.formspec.get_default_form())
+	--end
 	
   if minetest.check_player_privs(player, {big_hotbar=true}) then
     player:hud_set_hotbar_image("gui_hotbar2.png")

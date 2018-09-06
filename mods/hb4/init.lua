@@ -2,12 +2,6 @@
 hb4 = hb4 or {}
 hb4.modpath = minetest.get_modpath("hb4")
 
--- Can only be loaded once.
-if not hb4.ltool_registered then
-	dofile(hb4.modpath .. "/ltool.lua")
-	hb4.ltool_registered = true
-end
-
 dofile(hb4.modpath .. "/leafscatter.lua")
 dofile(hb4.modpath .. "/fruitregrow.lua")
 dofile(hb4.modpath .. "/floodfill.lua")

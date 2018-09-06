@@ -76,31 +76,31 @@ function shout.shout(name, param)
 		return
 	end
 
-  if command_tokens.mute.player_muted(name) then
-    minetest.chat_send_player(name, "# Server: You cannot shout while gagged!")
+	if command_tokens.mute.player_muted(name) then
+		minetest.chat_send_player(name, "# Server: You cannot shout while gagged!")
 		easyvend.sound_error(name)
-    return
-  end
-  
-  -- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-  if chat_core.check_language(name, param) then return end
-  
-  local mk = ""
-  if command_tokens.mark.player_marked(name) then
-    local pos = minetest.get_player_by_name(name):getpos()
-    mk = " [" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
-  end
+		return
+	end
+
+	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
+	if chat_core.check_language(name, param) then return end
+
+	local mk = ""
+	if command_tokens.mark.player_marked(name) then
+		local pos = minetest.get_player_by_name(name):getpos()
+		mk = " [" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
+	end
 
 	local dname = rename.gpn(name)
 	local players = minetest.get_connected_players()
 	for _, player in ipairs(players) do
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then
-		  minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
+			minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
 		end
 	end
 
-  chat_logging.log_public_shout(name, param, mk)
+	chat_logging.log_public_shout(name, param, mk)
 end
 
 
@@ -152,7 +152,7 @@ function shout.channel(name, param)
 		minetest.chat_send_player(name, "# Server: You are already on channel '" .. param .. "'.")
 		return
 	end
-	
+
 	-- Require channel names to match specific format.
 	if not string.find(param, "^[_%w]+$") then
 		minetest.chat_send_player(name, "# Server: Invalid channel name! Use only alphanumeric characters and underscores.")
@@ -185,20 +185,20 @@ function shout.x(name, param)
 		return
 	end
 
-  if command_tokens.mute.player_muted(name) then
-    minetest.chat_send_player(name, "# Server: You cannot talk while gagged!")
+	if command_tokens.mute.player_muted(name) then
+		minetest.chat_send_player(name, "# Server: You cannot talk while gagged!")
 		easyvend.sound_error(name)
-    return
-  end
-  
-  -- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-  if chat_core.check_language(name, param) then return end
-  
-  local mk = ""
-  if command_tokens.mark.player_marked(name) then
-    local pos = minetest.get_player_by_name(name):getpos()
-    mk = " [" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
-  end
+		return
+	end
+
+	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
+	if chat_core.check_language(name, param) then return end
+
+	local mk = ""
+	if command_tokens.mark.player_marked(name) then
+		local pos = minetest.get_player_by_name(name):getpos()
+		mk = " [" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
+	end
 
 	local dname = rename.gpn(name)
 	local channel = shout.players[name]
@@ -210,11 +210,11 @@ function shout.x(name, param)
 		local n = v:get_player_name()
 		if shout.players[n] and shout.players[n] == channel then
 			local ignored = false
-      
+
 			-- Don't send teamchat if player is ignored.
-      if chat_controls.player_ignored(n, name) then
-        ignored = true
-      end
+			if chat_controls.player_ignored(n, name) then
+				ignored = true
+			end
 
 			if not ignored then
 				minetest.chat_send_player(n, "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
@@ -222,8 +222,8 @@ function shout.x(name, param)
 		end
 	end
 
-  --minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)
-  --chat_logging.log_public_shout(name, param, mk)
+	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)
+	--chat_logging.log_public_shout(name, param, mk)
 
 	chat_logging.log_team_chat(name, param, channel)
 	afk_removal.reset_timeout(name)
@@ -236,43 +236,43 @@ if not shout.run_once then
 		minetest.chat_send_all("# Server: Startup complete.")
 	end)
 
-  minetest.register_chatcommand("shout", {
-    params = "<message>",
-    description = "Yell a message to everyone on the server. You can also prepend your chat with '!'.",
-    privs = {shout=true},
-    func = function(name, param)
-      shout.shout(name, param)
-      return true
-    end,
-  })
+	minetest.register_chatcommand("shout", {
+		params = "<message>",
+		description = "Yell a message to everyone on the server. You can also prepend your chat with '!'.",
+		privs = {shout=true},
+		func = function(name, param)
+			shout.shout(name, param)
+			return true
+		end,
+	})
 
-  minetest.register_chatcommand("channel", {
-    params = "<id>",
-    description = "Set channel name.",
-    privs = {shout=true},
-    func = function(name, param)
-      shout.channel(name, param)
-      return true
-    end,
-  })
+	minetest.register_chatcommand("channel", {
+		params = "<id>",
+		description = "Set channel name.",
+		privs = {shout=true},
+		func = function(name, param)
+			shout.channel(name, param)
+			return true
+		end,
+	})
 
-  minetest.register_chatcommand("x", {
-    params = "<message>",
-    description = "Speak on current channel.",
-    privs = {shout=true},
-    func = function(name, param)
-      shout.x(name, param)
-      return true
-    end,
-  })
+	minetest.register_chatcommand("x", {
+		params = "<message>",
+		description = "Speak on current channel.",
+		privs = {shout=true},
+		func = function(name, param)
+			shout.x(name, param)
+			return true
+		end,
+	})
 
 	-- Start hints. A hint is written into public chat every so often.
 	-- But not too often, or it becomes annoying.
 	minetest.after(math.random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
 
-  local c = "shout:core"
-  local f = shout.modpath .. "/init.lua"
-  reload.register_file(c, f, false)
-  
-  shout.run_once = true
+	local c = "shout:core"
+	local f = shout.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	shout.run_once = true
 end

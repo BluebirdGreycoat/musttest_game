@@ -1,0 +1,4 @@
+reload
+anticurse
+player_labels
+chat_logging

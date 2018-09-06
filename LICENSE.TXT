@@ -10,7 +10,19 @@ This license file is designed to cover the various parts of this game. Due to
 its nature in being sourced from multiple authors, different parts have
 different licenses. This concatenated license attempts to unify the differing
 licenses AS MUCH AS IS ALLOWED by the individual licenses, which are located in
-the mod sub-directories.
+most cases in the mod sub-directories.
+
+The licensing goal of this project is to be as permissive as possible. Ideally,
+attribution should be enough if code from this project is used elsewhere.
+
+Certain licenses cannot be used here, and I cannot accept any contributions or
+mods for inclusion that disregard the goal: such licenses (for example) include
+the GPL (all versions) and especially the AGPL. The main issue with these
+licenses is that they are "viral" and as such cannot coexist peacefully with
+software written by authors who may have different and varied ideas of what user
+and software freedom imply. It should be possible for others to extract the bits
+of the code that they find useful for use in their own projects, without forcing
+them to use a viral license.
 
 Rules For Determining Licensing
 -------------------------------

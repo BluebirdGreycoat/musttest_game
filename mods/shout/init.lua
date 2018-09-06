@@ -83,7 +83,7 @@ function shout.shout(name, param)
   end
   
   -- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-  if chatplus.check_language(name, param) then return end
+  if chat_core.check_language(name, param) then return end
   
   local mk = ""
   if command_tokens.mark.player_marked(name) then
@@ -96,7 +96,7 @@ function shout.shout(name, param)
 	for _, player in ipairs(players) do
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then
-		  minetest.chat_send_player(target_name, "<!" .. chatplus.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
+		  minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
 		end
 	end
 
@@ -192,7 +192,7 @@ function shout.x(name, param)
   end
   
   -- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-  if chatplus.check_language(name, param) then return end
+  if chat_core.check_language(name, param) then return end
   
   local mk = ""
   if command_tokens.mark.player_marked(name) then
@@ -217,7 +217,7 @@ function shout.x(name, param)
       end
 
 			if not ignored then
-				minetest.chat_send_player(n, "<!" .. chatplus.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
+				minetest.chat_send_player(n, "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
 			end
 		end
 	end

@@ -431,12 +431,6 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
-		type = "shapeless",
-    output = "rackstone:redrack 9",
-    recipe = {"rackstone:redrack_block"},
-})
-
 -- Blue Rackstone Crafts
 minetest.register_craft({
     output = "rackstone:bluerack_brick 4",
@@ -453,12 +447,6 @@ minetest.register_craft({
         {"rackstone:bluerack", "rackstone:bluerack", "rackstone:bluerack"},
         {"rackstone:bluerack", "rackstone:bluerack", "rackstone:bluerack"},
     }
-})
-
-minetest.register_craft({
-		type = "shapeless",
-    output = "rackstone:bluerack 9",
-    recipe = {"rackstone:bluerack_block"},
 })
 
 -- Black Rackstone Crafts
@@ -479,12 +467,6 @@ minetest.register_craft({
     }
 })
 
-minetest.register_craft({
-		type = "shapeless",
-    output = "rackstone:blackrack 9",
-    recipe = {"rackstone:blackrack_block"},
-})
-
 -- Rackstone Crafts
 minetest.register_craft({
     output = "rackstone:rackstone_brick2 4",
@@ -501,12 +483,6 @@ minetest.register_craft({
         {"rackstone:rackstone", "rackstone:rackstone", "rackstone:rackstone"},
         {"rackstone:rackstone", "rackstone:rackstone", "rackstone:rackstone"},
     }
-})
-
-minetest.register_craft({
-		type = "shapeless",
-    output = "rackstone:rackstone 9",
-    recipe = {"rackstone:rackstone_block"},
 })
 
 minetest.register_craft({

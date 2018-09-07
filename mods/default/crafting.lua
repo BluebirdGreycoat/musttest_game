@@ -276,11 +276,11 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:lightbox 2',
+	output = 'default:lightbox',
 	recipe = {
-		{'',              'default:glass',   ''},
-		{'default:glass', 'group:torch_craftitem',   'default:glass'},
-		{'',              'default:glass',   ''},
+		{'group:stick', 'group:stick', 'group:stick'},
+		{'default:glass', 'xdecor:lantern', 'default:glass'},
+		{'group:stick', 'group:stick', 'group:stick'},
 	}
 })
 

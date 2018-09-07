@@ -19,8 +19,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:candle",
 	recipe = {
-		{"default:torch"}
-	}
+		{"torches:cave_torch_floor"},
+		{"default:paper"},
+	},
 })
 
 minetest.register_craft({
@@ -126,9 +127,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:iron_lightbox",
 	recipe = {
-		{"xpanes:bar_flat", "default:torch", "xpanes:bar_flat"},
 		{"xpanes:bar_flat", "default:glass", "xpanes:bar_flat"},
-		{"xpanes:bar_flat", "default:torch", "xpanes:bar_flat"}
+		{"xpanes:bar_flat", "xdecor:lantern", "xpanes:bar_flat"},
+		{"xpanes:bar_flat", "default:glass", "xpanes:bar_flat"}
 	}
 })
 
@@ -262,9 +263,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:wooden_lightbox",
 	recipe = {
-		{"group:stick", "default:torch", "group:stick"},
 		{"group:stick", "default:glass", "group:stick"},
-		{"group:stick", "default:torch", "group:stick"}
+		{"basictrees:tree_wood", "xdecor:lantern", "basictrees:tree_wood"},
+		{"group:stick", "default:glass", "group:stick"}
 	}
 })
 

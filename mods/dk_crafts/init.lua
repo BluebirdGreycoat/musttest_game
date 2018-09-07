@@ -415,9 +415,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "darkage:lamp",
 	recipe = {
-		{"group:stick", "group:stick", "group:stick"},
-		{"basictrees:tree_wood", "group:torch_craftitem", "basictrees:tree_wood"},
-		{"group:stick", "group:stick", "group:stick"},
+		{"group:stick", "default:paper", "group:stick"},
+		{"default:paper", "xdecor:lantern", "default:paper"},
+		{"group:stick", "default:paper", "group:stick"},
 	}
 })
 

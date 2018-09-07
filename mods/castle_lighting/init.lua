@@ -22,7 +22,7 @@ minetest.register_craft({
 	output = "castle_lighting:light",
 	recipe = {
 		{"default:stick", "default:glass", "default:stick"},
-		{"default:glass", "default:torch", "default:glass"},
+		{"default:glass", "xdecor:lantern", "default:glass"},
 		{"default:stick", "default:glass", "default:stick"},
 	}
 })
@@ -62,7 +62,7 @@ minetest.register_craft({
 	recipe = {
 		{"", "", ""},
 		{"", "default:steel_ingot", ""},
-		{"default:torch","default:torch","default:torch"},
+		{"xdecor:candle","xdecor:candle","xdecor:candle"},
 	}
 })
 

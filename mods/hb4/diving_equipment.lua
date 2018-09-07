@@ -92,6 +92,18 @@ function diving_equipment.on_use(itemstack, user, pt)
 end
 
 function diving_equipment.on_place(itemstack, placer, pt)
+	-- Pass through interactions to nodes that define them (like chests).
+	-- This also fixes a bug where player can get unlimited steel bottles (and
+	-- thus steel ingots) by putting compressed air into item frames.
+	if pt.type == "node" then
+		local under = minetest.get_node(pt.under)
+		local nn = under.name
+		local def = minetest.reg_ns_nodes[nn] or minetest.registered_nodes[nn]
+    if def and def.on_rightclick then
+      return def.on_rightclick(pt.under, under, placer, itemstack, pt)
+    end
+  end
+
 	local fakestack = ItemStack("vessels:steel_bottle")
 	local retstack, success, position = minetest.item_place(fakestack, placer, pt)
 

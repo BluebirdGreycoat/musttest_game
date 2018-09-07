@@ -17,8 +17,8 @@ crusher.get_active_formspec = function(fuel_percent, item_percent)
     "list[context;src;2.75,0.5;1,1;]"..
     "list[context;fuel;2.75,2.5;1,1;]"..
 
-    "image[2.75,1.5;1,1;gems_progress_bg.png^[lowpart:" ..
-    (100-fuel_percent) .. ":gems_progress_fg.png]" ..
+    "image[2.75,1.5;1,1;machine_progress_bg.png^[lowpart:" ..
+    (100-fuel_percent) .. ":machine_progress_fg.png]" ..
 
     "image[3.75,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
     (item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..

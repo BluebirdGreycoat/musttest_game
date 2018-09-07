@@ -1,3 +1,9 @@
+--------------------------------------------------------------------------------
+-- Gem Cutter Mod for Must Test Survival
+-- Author: GoldFireUn
+-- License of Source Code: MIT
+-- License of Media: CC BY-SA 3.0
+--------------------------------------------------------------------------------
 
 gem_cutter = gem_cutter or {}
 gem_cutter.modpath = minetest.get_modpath("gem_cutter")
@@ -22,8 +28,8 @@ function(fuel_percent, item_percent)
     "label[3.5,0;Fuel & Input]" ..
     "list[context;src;3.5,0.5;1,1;]" ..
     "list[context;fuel;3.5,2.5;1,1;]" ..
-    "image[3.5,1.5;1,1;gems_progress_bg.png^[lowpart:" ..
-    (100-fuel_percent) .. ":gems_progress_fg.png]" ..
+    "image[3.5,1.5;1,1;machine_progress_bg.png^[lowpart:" ..
+    (100-fuel_percent) .. ":machine_progress_fg.png]" ..
     
     "image[4.5,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:" ..
     (item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]" ..
@@ -186,21 +192,20 @@ end
 
 if not gem_cutter.run_once then
   for k, v in ipairs({
-    {name="inactive", light=0, tile="gem_fabricator_front.png"},
-    {name="active", light=8, tile="gem_fabricator_front_active.png"},
+    {name="inactive", light=0, tile="gem_cutter_lv_front.png"},
+    {name="active", light=8, tile="gem_cutter_lv_front_active.png"},
   }) do
     minetest.register_node("gem_cutter:" .. v.name, {
       description = "Gem Cutter",
       tiles = {
-        "gem_fabricator_top.png", "gem_fabricator_bottom.png",
-        "gem_fabricator_side.png", "gem_fabricator_side.png",
-        "gem_fabricator_side.png", v.tile,
+        "gem_cutter_lv_top.png", "gem_cutter_lv_bottom.png",
+        "gem_cutter_lv_side.png", "gem_cutter_lv_side.png",
+        "gem_cutter_lv_side.png", v.tile,
       },
 
       paramtype2 = "facedir",
       groups = {
         level=1, cracky=3,
-        tubedevice = 1, tubedevice_receiver = 1,
         immovable = 1,
         tier_mv = 1,
       },
@@ -257,8 +262,8 @@ if not gem_cutter.run_once then
 
 
   minetest.register_craftitem("gem_cutter:blade", {
-    description = "Diamond Cutting Wheel",
-    inventory_image = "diamond_cutting_wheel.png",
+    description = "Diamond Grinding Wheel",
+    inventory_image = "gem_cutter_cutting_wheel.png",
   })
   minetest.register_alias("gems:diamond_cutting_wheel", "gem_cutter:blade")
 

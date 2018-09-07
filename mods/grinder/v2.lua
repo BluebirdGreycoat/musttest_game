@@ -54,8 +54,8 @@ for j, t in ipairs({
 			"label[" .. x1 .. ",0;Fuel & Input]" ..
 			"list[context;src;" .. x1 .. ",0.5;1,1;]" ..
 			"list[context;fuel;" .. x1 .. ",2.5;1,1;]" ..
-			"image[" .. x1 .. ",1.5;1,1;gems_progress_bg.png^[lowpart:" ..
-			(fuel_percent) .. ":gems_progress_fg.png]" ..
+			"image[" .. x1 .. ",1.5;1,1;machine_progress_bg.png^[lowpart:" ..
+			(fuel_percent) .. ":machine_progress_fg.png]" ..
 
 			"image[" .. x2 .. ",1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:" ..
 			(item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]" ..

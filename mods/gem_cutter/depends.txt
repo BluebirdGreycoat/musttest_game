@@ -1,6 +1,5 @@
 default
 coresounds
-gems
 craft_register
 reload
 machines

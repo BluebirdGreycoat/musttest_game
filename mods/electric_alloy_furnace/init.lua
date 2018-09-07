@@ -16,8 +16,8 @@ electric_alloy_furnace.get_active_formspec = function(fuel_percent, item_percent
     "list[context;src;3,0.5;2,1;]"..
     "list[context;fuel;3.51,2.5;1,1;]"..
     
-    "image[3.5,1.5;1,1;gems_progress_bg.png^[lowpart:" ..
-    (100-fuel_percent) .. ":gems_progress_fg.png]" ..
+    "image[3.5,1.5;1,1;machine_progress_bg.png^[lowpart:" ..
+    (100-fuel_percent) .. ":machine_progress_fg.png]" ..
     
     "image[5,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
     (item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..

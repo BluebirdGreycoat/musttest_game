@@ -224,7 +224,7 @@ if not toolranks.registered then
 		override_item("titanium:pick")
 	end
 
-	if minetest.get_modpath("gems") then
+	if minetest.get_modpath("gem_tools") then
 		override_item("gems:sword_emerald")
 		override_item("gems:axe_emerald")
 		override_item("gems:shovel_emerald")
@@ -242,22 +242,22 @@ if not toolranks.registered then
 		override_item("gems:shovel_sapphire")
 		override_item("gems:pick_sapphire")
 
-		override_item("gems:stone_sword_emerald")
-		override_item("gems:stone_axe_emerald")
-		override_item("gems:stone_shovel_emerald")
-		override_item("gems:stone_pick_emerald")
-		override_item("gems:stone_sword_ruby")
-		override_item("gems:stone_axe_ruby")
-		override_item("gems:stone_shovel_ruby")
-		override_item("gems:stone_pick_ruby")
-		override_item("gems:stone_sword_amethyst")
-		override_item("gems:stone_axe_amethyst")
-		override_item("gems:stone_shovel_amethyst")
-		override_item("gems:stone_pick_amethyst")
-		override_item("gems:stone_sword_sapphire")
-		override_item("gems:stone_axe_sapphire")
-		override_item("gems:stone_shovel_sapphire")
-		override_item("gems:stone_pick_sapphire")
+		override_item("gems:rf_sword_emerald")
+		override_item("gems:rf_axe_emerald")
+		override_item("gems:rf_shovel_emerald")
+		override_item("gems:rf_pick_emerald")
+		override_item("gems:rf_sword_ruby")
+		override_item("gems:rf_axe_ruby")
+		override_item("gems:rf_shovel_ruby")
+		override_item("gems:rf_pick_ruby")
+		override_item("gems:rf_sword_amethyst")
+		override_item("gems:rf_axe_amethyst")
+		override_item("gems:rf_shovel_amethyst")
+		override_item("gems:rf_pick_amethyst")
+		override_item("gems:rf_sword_sapphire")
+		override_item("gems:rf_axe_sapphire")
+		override_item("gems:rf_shovel_sapphire")
+		override_item("gems:rf_pick_sapphire")
 	end
 
 	local c = "toolranks:core"

@@ -45,7 +45,7 @@ shout.HINTS = {
 	"You can place a public bed (not ownable by anyone) by holding 'E' when you place it.",
 	"You can place nearly any block as a falling node by holding 'E' when you place it, with air below.",
 	"The brimstone ocean contains a few resources not found anywhere else; however the entire underworld is very dangerous.",
-	"The server treats locked chests as unlocked and public while the chest lid is shown visually open.",
+	"Locked chests are unlocked (and items may be stolen) if the chest lid is open.",
 	"When you die, sometimes your bones are placed in odd places. Look around very carefully before giving up.",
 	"Starvation will drain your health down to half a heart, but will not kill you.",
 	"You can sleep in a bed to set your respawn position on death.",

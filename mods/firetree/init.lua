@@ -116,7 +116,7 @@ minetest.register_node("firetree:fruit", {
 		type = "fixed",
 		fixed = {-0.2, -0.5, -0.2, 0.2, 0, 0.2}
 	},
-	groups = {level=1, fleshy=3, dig_immediate=2, flammable=2, leafdecay=3, leafdecay_drop=1, foodrot=1},
+	groups = {level=1, fleshy=3, dig_immediate=3, flammable=2, leafdecay=3, leafdecay_drop=1, foodrot=1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 

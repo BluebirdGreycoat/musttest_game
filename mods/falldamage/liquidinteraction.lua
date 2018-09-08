@@ -1,3 +1,4 @@
+-- File is individually reloadable.
 
 -- List of all nodes which have special liquid interaction override code.
 falldamage.liquid_interact_nodes = falldamage.liquid_interact_nodes or {}
@@ -180,15 +181,26 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 		return itemstack, false, nil
 	end
 
-	local olddef_under = core.registered_nodes[oldnode_under.name]
+	local oldnode_uname = oldnode_under.name
+	local oldnode_aname = oldnode_above.name
+
+	-- Get node definitions, or fallback to default.
+	local olddef_under = core.reg_ns_nodes[oldnode_uname] or
+		core.registered_nodes[oldnode_uname]
 	olddef_under = olddef_under or core.nodedef_default
-	local olddef_above = core.registered_nodes[oldnode_above.name]
+	local olddef_above = core.reg_ns_nodes[oldnode_aname] or
+		core.registered_nodes[oldnode_aname]
 	olddef_above = olddef_above or core.nodedef_default
 
 	if not olddef_above.buildable_to and not olddef_under.buildable_to then
 		log("info", playername .. " tried to place"
 			.. " node in invalid position " .. core.pos_to_string(above)
-			.. ", replacing " .. oldnode_above.name)
+			.. ", replacing " .. oldnode_aname)
+		return itemstack, false, nil
+	end
+
+	-- Don't permit building against some nodes.
+	if olddef_under.not_buildable_against then
 		return itemstack, false, nil
 	end
 

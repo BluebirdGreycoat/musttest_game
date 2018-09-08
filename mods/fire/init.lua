@@ -24,7 +24,8 @@ minetest.register_node("fire:basic_flame", {
 	paramtype = "light",
 	light_source = 13,
 	walkable = false,
-	--buildable_to = true, -- Player must remove fire before building.
+	buildable_to = false, -- Player must remove fire before building.
+	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
 	drop = "",
@@ -109,7 +110,8 @@ minetest.register_node("fire:permanent_flame", {
 	paramtype = "light",
 	light_source = 13,
 	walkable = false,
-	--buildable_to = true, -- Player must remove fire before building.
+	buildable_to = false, -- Player must remove fire before building.
+	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
 	groups = {igniter = 2, dig_immediate = 2, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1},
@@ -161,6 +163,7 @@ minetest.register_node("fire:nether_flame", {
 	light_source = 14,
 	walkable = false,
 	buildable_to = false,
+	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
 	groups = {level = 1, igniter = 2, oddly_breakable_by_hand = 3, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1},

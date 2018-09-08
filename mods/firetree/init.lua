@@ -37,10 +37,12 @@ minetest.register_node("firetree:leaves", {
 	drop = {
 		max_items = 1,
 		items = {
-			{items = {'firetree:sapling'}, rarity = 16},
-			{items = {"default:stick"}, rarity = 10},
 			{items = {'firetree:leaves'}},
-			{items = {'basictrees:tree_apple'}, rarity = 30},
+			{items = {'firetree:sapling'}, rarity = 18},
+			{items = {"default:stick"}, rarity = 10},
+
+			-- You sometimes get a real apple.
+			{items = {'basictrees:tree_apple'}, rarity = 22},
 		}
 	},
 	sounds = default.node_sound_leaves_defaults(),

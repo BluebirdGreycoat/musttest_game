@@ -321,12 +321,16 @@ if not passport.registered then
     end,
   })
 
+	minetest.register_on_leaveplayer(function(...)
+		return passport.on_leaveplayer(...)
+	end)
+
   passport.registered = true
 end
 
 
 
--- This function might get called serveral times on player-login, or at other times.
+-- This function may be called serveral times on player-login and other times.
 -- We cache the result on first call.
 passport.player_registered = function(pname)
 	-- Read cache if available.
@@ -345,6 +349,15 @@ passport.player_registered = function(pname)
   end
 	passport.registered_players[pname] = false -- Cache for next time.
   return false
+end
+
+
+
+function passport.on_leaveplayer(player, timeout)
+	local pname = player:get_player_name()
+
+	-- Remove cache of player registration.
+	passport.registered_players[pname] = nil
 end
 
 

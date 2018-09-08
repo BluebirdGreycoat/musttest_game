@@ -24,14 +24,23 @@ minetest.register_node("firetree:leaves", {
 	visual_scale = 1.3,
 	tiles = {"firetree_leaves.png"},
 	paramtype = "light",
-	groups = {level=1, choppy=2, snappy=3, oddly_breakable_by_hand=1, leafdecay=3, flammable=2, leaves=1},
+	groups = {
+		level = 1,
+		choppy = 2,
+		snappy = 3,
+		oddly_breakable_by_hand = 1,
+		leafdecay = 3,
+		flammable = 2,
+		leaves = 1,
+	},
   
 	drop = {
 		max_items = 1,
 		items = {
-			{items = {'firetree:sapling'}, rarity = 20},
-			{items={"default:stick"}, rarity=10},
+			{items = {'firetree:sapling'}, rarity = 16},
+			{items = {"default:stick"}, rarity = 10},
 			{items = {'firetree:leaves'}},
+			{items = {'basictrees:tree_apple'}, rarity = 30},
 		}
 	},
 	sounds = default.node_sound_leaves_defaults(),

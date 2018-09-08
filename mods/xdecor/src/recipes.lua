@@ -19,7 +19,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:candle",
 	recipe = {
-		{"torches:cave_torch_floor"},
+		{"torches:torch_floor"},
 		{"default:paper"},
 	},
 })

@@ -78,7 +78,6 @@ end
 
 
 local player_inventory_empty = function(inv, name)
-	local count = 0
 	local list = inv:get_list(name)
 	-- Nil check.
 	if not list then
@@ -87,14 +86,13 @@ local player_inventory_empty = function(inv, name)
 	end
 	for i = 1, #list do
 		local stack = list[i]
-		local stack_count = stack:get_count()
-		if stack_count > 0 then
+		if not stack:is_empty() then
 			if stack:get_name() ~= PASSPORT then
-					count = count + stack_count
+				return false -- Not empty.
 			end
 		end
 	end
-	return (count == 0)
+	return true -- Inventory list is empty.
 end
 
 

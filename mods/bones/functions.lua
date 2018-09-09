@@ -81,8 +81,9 @@ local player_inventory_empty = function(inv, name)
 	local list = inv:get_list(name)
 	-- Nil check.
 	if not list then
-		-- Could not get list, assume not empty.
-		return false
+		-- Could not get list, list does not exist.
+		-- This is true in the case of bags.
+		return true -- Inventory list doesn't exist.
 	end
 	for i = 1, #list do
 		local stack = list[i]

@@ -448,7 +448,10 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 				local p = {x=x, y=y, z=z}
 				local d = vector.distance(pos, p)
 				if d < radius+2 and d > radius-2 then
+					-- Check for nodes with 'falling_node' in groups.
 					minetest.check_single_for_falling(p)
+
+					-- Now check using additional falling node logic.
 					instability.check_unsupported_single(p)
 				end
 			end

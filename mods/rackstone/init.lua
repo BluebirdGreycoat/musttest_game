@@ -192,6 +192,7 @@ minetest.register_node("rackstone:redrack_with_iron", {
   groups = {cracky=3, level=1, rackstone=1, netherack=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
+	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
@@ -205,6 +206,7 @@ minetest.register_node("rackstone:redrack_with_copper", {
   groups = {cracky=3, level=1, rackstone=1, netherack=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
+	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
@@ -218,6 +220,7 @@ minetest.register_node("rackstone:redrack_with_coal", {
   groups = {cracky=3, level=1, rackstone=1, netherack=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:coal_lump",
+	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
@@ -231,6 +234,7 @@ minetest.register_node("rackstone:redrack_with_tin", {
   groups = {cracky=3, level=1, rackstone=1, netherack=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",
+	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 
   after_destruct = function(...)

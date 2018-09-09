@@ -372,18 +372,8 @@ function protector.punish_player(pos, pname)
 	-- flip player when protection violated
 	if protector.flip then
 
-		-- yaw + 180°
-		local yaw = player:get_look_horizontal() + math.random(0.0, math.pi * 2)
-
-		while yaw > 2 * math.pi do
-			yaw = yaw - 2 * math.pi
-		end
-
-		-- randomly invert direction of spin
-		if math.random(0, 1) == 0 then
-			yaw = -yaw
-		end
-
+		-- yaw +/- 180°
+		local yaw = player:get_look_horizontal() + math.random(-math.pi, math.pi)
 		player:set_look_horizontal(yaw)
 
 		-- Invert pitch.

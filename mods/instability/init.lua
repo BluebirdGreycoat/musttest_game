@@ -364,6 +364,7 @@ end
 
 
 
+-- Called everytime a node is dug.
 function instability.check_unsupported_around(p)
   local target_nodes = {
     {x=p.x, y=p.y+1, z=p.z},

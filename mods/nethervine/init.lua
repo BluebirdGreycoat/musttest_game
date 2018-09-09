@@ -109,10 +109,10 @@ if not nethervine.registered then
 
 		-- Nethervines shall not be flammable. They often generate next to lava.
 		groups = {
-			level=1,
-			choppy=2,
-			snappy=3,
-			hanging_node=1,
+			level = 1,
+			choppy = 2,
+			snappy = 3,
+			hanging_node = 1,
 		},
 
 		sounds = default.node_sound_leaves_defaults(),

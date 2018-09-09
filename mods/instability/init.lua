@@ -399,7 +399,7 @@ function instability.check_unsupported_single(p)
       local n = getn(supporting_positions[i])
       if node_considered_supporting(n.name, nn) then
         solid = true
-        break
+        break -- No need for further checks.
       end
     end
     -- No supporting nodes!

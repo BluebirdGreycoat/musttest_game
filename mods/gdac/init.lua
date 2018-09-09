@@ -439,8 +439,11 @@ if not gdac.registered then
     --if gdac.detect_long_range_interact then
     --  gdac.check_long_range_interact(pos, oldnode, digger, "dug")
     --end
-    
+
+		-- Check advanced falling node logic.
     instability.check_unsupported_around(pos)
+
+		-- Only *sometimes* create dig particles for other players.
 		if random(1, 5) == 1 then
 			ambiance.particles_on_dig(pos, oldnode)
 		end

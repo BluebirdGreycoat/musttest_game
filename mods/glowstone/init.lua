@@ -37,6 +37,30 @@ minetest.register_node("glowstone:minerals", {
 
 
 
+local function walk_glowstone(player)
+	local pname = player:get_player_name()
+	hb4.delayed_harm({
+		name = pname,
+		step = 10,
+		min = 1,
+		max = 2,
+		msg = "# Server: <" .. rename.gpn(pname) .. "> was killed by contact with glowstone.",
+	})
+end
+
+local function punch_glowstone(player)
+	local pname = player:get_player_name()
+	hb4.delayed_harm({
+		name = pname,
+		step = 3,
+		min = 1,
+		max = 2,
+		msg = "# Server: <" .. rename.gpn(pname) .. "> was killed by contact with glowstone.",
+	})
+end
+
+
+
 minetest.register_node("glowstone:glowstone", {
 	description = "Glowstone",
 	tiles = {"glowstone_glowstone.png"},
@@ -49,14 +73,17 @@ minetest.register_node("glowstone:glowstone", {
 
 	-- Poison players who come into direct contact.
 	on_player_walk_over = function(pos, player)
-		local pname = player:get_player_name()
-		hb4.delayed_harm({
-			name = pname,
-			step = 15,
-			min = 1,
-			max = 2,
-			msg = "# Server: <" .. rename.gpn(pname) .. "> was killed by contact with glowstone.",
-		})
+		if not player or not player:is_player() then
+			return
+		end
+		return walk_glowstone(player)
+	end,
+
+	on_punch = function(pos, node, puncher, pt)
+		if not puncher or not puncher:is_player() then
+			return
+		end
+		return punch_glowstone(puncher)
 	end,
 })
 

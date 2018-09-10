@@ -47,8 +47,8 @@ randspawn.get_respawn_pos = get_respawn_position
 -- Respawning is no longer random. Instead we chose position based on month.
 -- Note: this is also called from the /spawn chatcommand.
 randspawn.reposition_player = function(pname, death_pos)
-  local player = minetest.get_player_by_name(pname)
-  if player then
+	local player = minetest.get_player_by_name(pname)
+	if player then
 		-- Ensure teleport is forced, to prevent a cheat.
 		local pos = get_respawn_position(death_pos)
 		pos = vector.add(pos, {x=math.random(-2, 2), y=0, z=math.random(-2, 2)})
@@ -56,21 +56,21 @@ randspawn.reposition_player = function(pname, death_pos)
 			function()
 				ambiance.sound_play("respawn", pos, 1.0, 10)
 			end, nil, true)
-  end
+	end
 end
 
 minetest.register_on_newplayer(function(player)
-  local name = player:get_player_name()
-  minetest.after(0.1, function() randspawn.reposition_player(name, {x=0, y=0, z=0}) end)
+	local name = player:get_player_name()
+	minetest.after(0.1, function() randspawn.reposition_player(name, {x=0, y=0, z=0}) end)
 end)
 
 
 
 if not randspawn.run_once then
-    -- Reloadable.
-    local file = randspawn.modpath .. "/init.lua"
-    local name = "randspawn:core"
-    reload.register_file(name, file, false)
-    
-    randspawn.run_once = true
+	-- Reloadable.
+	local file = randspawn.modpath .. "/init.lua"
+	local name = "randspawn:core"
+	reload.register_file(name, file, false)
+
+	randspawn.run_once = true
 end

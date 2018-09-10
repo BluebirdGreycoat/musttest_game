@@ -60,8 +60,11 @@ randspawn.reposition_player = function(pname, death_pos)
 end
 
 minetest.register_on_newplayer(function(player)
-	local name = player:get_player_name()
-	minetest.after(0.1, function() randspawn.reposition_player(name, {x=0, y=0, z=0}) end)
+	local pname = player:get_player_name()
+	local fake_dpos = {x=0, y=0, z=0}
+	minetest.after(0.1, function()
+		randspawn.reposition_player(pname, fake_dpos)
+	end)
 end)
 
 

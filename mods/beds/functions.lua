@@ -391,7 +391,7 @@ function beds.on_respawnplayer(player)
 		end
 		--minetest.chat_send_all("death at " .. minetest.pos_to_string(death_pos))
 		randspawn.reposition_player(name, death_pos)
-		return true
+		return true -- Disable regular player placement.
 	end
 end
 

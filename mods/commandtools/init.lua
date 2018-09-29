@@ -118,6 +118,9 @@ commandtools.hoe_on_use = function(itemstack, user, pointed_thing)
 		if not pos then return end
 		pos = vector.round(pos)
 
+		--sfn.update_node(pos)
+		--do return end
+
 		local node = minetest.get_node(pos)
 		if node.name == "protector:protect" or
 			node.name == "protector:protect2" or

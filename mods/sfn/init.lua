@@ -44,12 +44,32 @@ end
 function sfn.update_node(pos)
 	pos = vector.round(pos)
 	local node = minetest.get_node(pos)
+	if node.name == "glowstone:glowstone" then
+		local positions = {
+			{x=pos.x, y=pos.y+1, z=pos.z},
+			{x=pos.x+1, y=pos.y+1, z=pos.z},
+			{x=pos.x-1, y=pos.y+1, z=pos.z},
+			{x=pos.x, y=pos.y+1, z=pos.z+1},
+			{x=pos.x, y=pos.y+1, z=pos.z-1},
+		}
+		for k, v in ipairs(positions) do
+			local n = minetest.get_node(v)
+			if n.name == "air" then
+				minetest.set_node(v, {name="stairs:slab_default_glass_1", param2=math.random(0, 3)})
+			end
+		end
+	end
+
+	--[[
+	pos = vector.round(pos)
+	local node = minetest.get_node(pos)
 	if node.name == "rackstone:brick" then
 		if math.random(1, 6) == 1 then
 			node.name = "rackstone:redrack_block"
 			minetest.swap_node(pos, node)
 		end
 	end
+	--]]
 
 	--[[
 	pos = vector.round(pos)

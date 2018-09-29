@@ -27,12 +27,13 @@ local function make_list(filter)
 					for _, fname in ipairs(filter) do
 						-- Plaintext search.
 						if fname ~= "" then -- Don't search empty filters.
-							if strfind(name, fname, 1, true) then
+							-- Match real name or alias.
+							if strfind(name, fname, 1, true) or strfind(rename.gpn(name), fname, 1, true) then
 								if #list > MAXLISTSIZE then
 									dropped = true
 									goto done
 								end
-								list[#list+1] = name
+								list[#list+1] = name -- Insert real name.
 							end
 						end
 					end
@@ -54,6 +55,18 @@ local function make_list(filter)
 	end
 
 	::done::
+
+	-- If filter has more than one entry, remove duplicates in the list.
+	if #filter > 1 then
+		local klist = {}
+		for k, v in ipairs(list) do
+			klist[v] = true
+		end
+		list = {}
+		for k, v in pairs(klist) do
+			list[#list+1] = k
+		end
+	end
 
 	table.sort(list)
 	return list, dropped
@@ -114,7 +127,13 @@ local function make_fs(name)
 	-- Translate internal player names to display names.
 	local nlist = {}
 	for k, v in ipairs(list) do
-		nlist[k] = rename.gpn(v)
+		local dn = rename.gpn(v)
+		local rn = rename.grn(v)
+		if dn ~= rn then
+			nlist[k] = minetest.formspec_escape(dn .. " [" .. rn .. "]")
+		else
+			nlist[k] = minetest.formspec_escape(rn)
+		end
 	end
 
 	fsn=fsn+1 fs[fsn] = format("textlist[0,1.8;4,8;player;%s;%d;0]",
@@ -169,8 +188,8 @@ local function make_fs(name)
 		end
 		
 		local infomsg = {}
-		infomsg[#infomsg+1] = "Other names: {"..table.concat(names, ", ").."}"
-		infomsg[#infomsg+1] = "IPs used: ["..table.concat(ips, " | ").."]"
+		infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
+		infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
 
 		-- last_pos and last_seen are per name, not per record-entry.
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then

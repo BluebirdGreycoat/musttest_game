@@ -94,13 +94,15 @@ moretrees.leaves_groups = {
 
 moretrees.get_leafdrop_table = function(chance, sapling, leaves)
     local drop = {
-		max_items = 1,
-		items = {
-			{items={sapling}, rarity=chance},
-			{items={"default:stick"}, rarity=10},
-			{items={leaves}},
+			max_items = 1,
+			items = {
+				{items={sapling}, rarity=chance},
+				{items={"default:stick"}, rarity=10},
+
+				-- Player will get leaves only if he gets nothing else; this is because 'max_items' is 1.
+				{items={leaves}},
+			}
 		}
-	}
     return drop
 end
 

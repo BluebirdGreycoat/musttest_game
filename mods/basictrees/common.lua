@@ -98,6 +98,8 @@ basictrees.get_leafdrop_table = function(chance, sapling, leaves)
 		items = {
 			{items={sapling}, rarity=chance},
 			{items={"default:stick"}, rarity=10},
+	
+			-- Player will get leaves only if he gets nothing else; this is because 'max_items' is 1.
 			{items={leaves}},
 		}
 	}

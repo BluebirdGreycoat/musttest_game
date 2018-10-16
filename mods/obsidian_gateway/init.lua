@@ -179,7 +179,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
 	local first_time_init = false
 	-- Initialize gateway for the first time.
-	if not target then
+	if not target or meta:get_string("obsidian_gateway_success") ~= "yes" then
 		-- Algorithm for locating the destination. Must not be changed!
 		local prx = PcgRandom(origin.x + seedplus)
 		local pry = PcgRandom(origin.y + seedplus)
@@ -298,6 +298,16 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
 				end
+			end
+			-- Mark the initial gate as success.
+			-- If this is not done, then gate will assume it is not initialized
+			-- the next time it is used. This fixes a bug where the return gate is
+			-- not properly constructed if the player moves during transport
+			-- (because this callback function doesn't get called).
+			do
+				local meta = minetest.get_meta(origin)
+				meta:set_string("obsidian_gateway_success", "yes")
+				meta:mark_as_private("obsidian_gateway_success")
 			end
 		end,
 		function()

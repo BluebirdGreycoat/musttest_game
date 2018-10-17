@@ -177,9 +177,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't
 	-- stomp on each other's data.
 	target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
+
+	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
+	local isowner = (meta:get_string("obsidian_gateway_owner_" .. ns_key) == pname)
+
 	local first_time_init = false
+
 	-- Initialize gateway for the first time.
-	if not target or meta:get_string("obsidian_gateway_success") ~= "yes" then
+	if not target or (meta:get_string("obsidian_gateway_success") ~= "yes" and not isreturngate) then
 		-- Algorithm for locating the destination. Must not be changed!
 		local prx = PcgRandom(origin.x + seedplus)
 		local pry = PcgRandom(origin.y + seedplus)
@@ -224,9 +229,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 		first_time_init = true
 	end
-
-	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
-	local isowner = (meta:get_string("obsidian_gateway_owner_" .. ns_key) == pname)
 
 	if gdac.player_is_admin(pname) then
 		isowner = true

@@ -1,3 +1,4 @@
+[2018/10/17] Fixed a bug introduced by the previous attempt to fix a bug.
 [2018/10/16] Fixed portal bug where the return gate would not be constructed if the player moved during transport.
 [2018/9/3] Gems in stone are now MUCH rarer. They were previously far too common.
 [2018/9/2] Added right-hand versions of several of the new slopes in the circular saw.

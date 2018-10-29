@@ -219,8 +219,12 @@ for k, v in ipairs({
 			for y=minp.y, maxp.y do
 			for z=minp.z, maxp.z do
 				local p = {x=x, y=y, z=z}
-				minetest.set_node(p, {name="default:lava_source"})
-				minetest.transforming_liquid_add(p)
+				if p.y < -14 then
+					minetest.set_node(p, {name="default:lava_source"})
+					minetest.transforming_liquid_add(p)
+				else
+					minetest.set_node(p, {name="fire:basic_flame"})
+				end
 			end
 			end
 			end

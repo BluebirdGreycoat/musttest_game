@@ -184,7 +184,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	local first_time_init = false
 
 	-- Initialize gateway for the first time.
-	if not target or (meta:get_string("obsidian_gateway_success") ~= "yes" and not isreturngate) then
+	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
 		-- Algorithm for locating the destination. Must not be changed!
 		local prx = PcgRandom(origin.x + seedplus)
 		local pry = PcgRandom(origin.y + seedplus)
@@ -308,8 +308,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 			-- (because this callback function doesn't get called).
 			do
 				local meta = minetest.get_meta(origin)
-				meta:set_string("obsidian_gateway_success", "yes")
-				meta:mark_as_private("obsidian_gateway_success")
+				meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
+				meta:mark_as_private("obsidian_gateway_success_" .. ns_key)
 			end
 		end,
 		function()

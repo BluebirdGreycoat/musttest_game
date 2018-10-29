@@ -228,6 +228,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 
 		first_time_init = true
+		isowner = true
 	end
 
 	if gdac.player_is_admin(pname) then

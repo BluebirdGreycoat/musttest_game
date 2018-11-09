@@ -48,7 +48,7 @@ minetest.register_craftitem("carrot:gold", {
     if not user or not user:is_player() then return end
     --ambiance.sound_play("hunger_eat", user:getpos(), 0.7, 10)
     user:set_hp(20)
-		sprint.set_stamina(player, SPRINT_STAMINA)
+		sprint.set_stamina(user, SPRINT_STAMINA)
     return eat_function(itemstack, user, pointed_thing)
   end,
 })

@@ -340,16 +340,21 @@ minetest.register_node("rackstone:blackrack", {
   
   -- Digging nodes placed by mapgen shall sometimes produce starpearls.
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
-    if digger then
+    if digger and oldnode.param2 == 0 then
       -- Only drop them rarely.
-      if math.random(1, 80) == 1 then
-        -- Only drop if blackrack was placed by mapgen.
-        -- This prevents place-harvest-place-harvest exploit.
-        if oldnode.param2 == 0 then
-          local inv = digger:get_inventory()
-          local leftover = inv:add_item("main", ItemStack('starpearl:pearl'))
-          minetest.add_item(pos, leftover)
-        end
+      -- Only drop if blackrack was placed by mapgen.
+      -- This prevents place-harvest-place-harvest exploit.
+      local chance = 80
+      local tool = digger:get_wielded_item():get_name()
+
+      if tool:find("pick") and tool:find("silver") then
+        chance = 40
+      end
+
+      if math.random(1, chance) == 1 then
+        local inv = digger:get_inventory()
+        local leftover = inv:add_item("main", ItemStack('starpearl:pearl'))
+        minetest.add_item(pos, leftover)
       end
     end
   end,

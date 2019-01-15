@@ -348,7 +348,7 @@ minetest.register_node("rackstone:blackrack", {
       local tool = digger:get_wielded_item():get_name()
 
       if tool:find("pick") and tool:find("silver") then
-        chance = 40
+        chance = 20
       end
 
       if math.random(1, chance) == 1 then

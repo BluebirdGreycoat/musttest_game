@@ -193,10 +193,6 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "listring[current_player;main]" ..
       "label[0,0;" .. desc .. "]" ..
       default.get_hotbar_bg(0, 5.85)
-
-			-- Trash icon.
-			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
-			"image[8,1.3;1,1;" .. itrash .. "]"
     
     -- Locked copper or iron chest.
     -- (If chest was locked silver, then another if-statement already handled it.)
@@ -206,6 +202,15 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
         "field[4.25,0.45;2,0.75;name;;]" ..
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+
+				-- Trash icon.
+				.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
+				"image[8,1.3;1,1;" .. itrash .. "]"
+		else
+			-- Trash icon.
+			formspec = formspec
+				.. "list[" .. ltrash .. ";" .. mtrash .. ";7,0.3;1,1;]" ..
+				"image[7,0.3;1,1;" .. itrash .. "]"
     end
 
 	-- Default chest or woodchest (old version). We MUST preserve the formspec for the old chest version!

@@ -17,7 +17,14 @@ function protector.update_nearby_players(pos)
 	end
 end
 
+local gs_timer = 0.0
+local gs_timestep = 1.5
+
 minetest.register_globalstep(function(dtime)
+	gs_timer = gs_timer + dtime
+	if gs_timer < gs_timestep then return end
+	gs_timer = 0.0
+
 	local allplayers = minetest.get_connected_players()
 	for _, player in ipairs(allplayers) do
 		local control = player:get_player_control()
@@ -43,7 +50,7 @@ minetest.register_globalstep(function(dtime)
 			hud.players[pname].moved = true
 		else
 			if hud.players[pname].moved then
-				timer = timer + dtime
+				timer = timer + gs_timestep
 				hud_text = "..." --"Searching claim database . . ."
 			end
 		end

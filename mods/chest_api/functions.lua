@@ -182,6 +182,10 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
       "button[8,2.2;2,1;unshare;Unshare]"
+
+			-- Trash icon.
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,5.85;1,1;]" ..
+			"image[8,5.85;1,1;" .. itrash .. "]"
     
     --formspec = formspec .. "textlist[8,1.26;1.70,3;sharelist;Item ##1,Item ##2,Item ##3]"
     
@@ -219,7 +223,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 				.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
 				"image[8,1.3;1,1;" .. itrash .. "]"
 		else
-			-- Trash icon.
+			-- Trash icon. This also applies to the unlocked silver chest!
 			formspec = formspec
 				.. "list[" .. ltrash .. ";" .. mtrash .. ";7,0;1,1;]" ..
 				"image[7,0;1,1;" .. itrash .. "]"

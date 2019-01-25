@@ -16,7 +16,7 @@ local function get_chest_formspec()
     "list[current_player;main;2,6.08;8,3;8]" ..
     "listring[current_player;voidchest:voidchest]" ..
     "listring[current_player;main]" ..
-    default.get_hotbar_bg(3, 4.85)
+    default.get_hotbar_bg(2, 4.85)
 
 		-- Trash icon.
 		.. "list[" .. ltrash .. ";" .. mtrash .. ";11,4.85;1,1;]" ..

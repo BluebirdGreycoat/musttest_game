@@ -222,11 +222,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "list[current_player;main;0,5.08;8,3;8]" ..
       "listring[nodemeta:" .. spos .. ";main]" ..
       "listring[current_player;main]" ..
-      default.get_hotbar_bg(0, 3.85) ..
+      default.get_hotbar_bg(0, 3.85)
 
 			-- Trash icon.
-			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,0.3;1,1;]"
-			.. "image[8,0.3;1,1;" .. itrash .. "]"
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,0.3;1,1;]" ..
+			"image[8,0.3;1,1;" .. itrash .. "]"
   end
   
   return formspec

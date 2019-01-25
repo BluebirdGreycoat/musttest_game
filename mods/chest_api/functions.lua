@@ -184,8 +184,8 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "button[8,2.2;2,1;unshare;Unshare]"
 
 			-- Trash icon.
-			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,5.85;1,1;]" ..
-			"image[8,5.85;1,1;" .. itrash .. "]"
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";9,5.85;1,1;]" ..
+			"image[9,5.85;1,1;" .. itrash .. "]"
     
     --formspec = formspec .. "textlist[8,1.26;1.70,3;sharelist;Item ##1,Item ##2,Item ##3]"
     

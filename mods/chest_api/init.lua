@@ -126,7 +126,7 @@ if not chest_api.run_once then
 		def_opened.selection_box = {
 			type = "fixed",
 			fixed = { -1/2, -1/2, -1/2, 1/2, 3/16, 1/2 },
-			}
+		}
 
 		-- Chests are not diggable while opened.
 		def_opened.can_dig = function()

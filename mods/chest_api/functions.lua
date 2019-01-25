@@ -120,6 +120,10 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 	-- Permit grandfathering of old shared ironside chests.
 	local shares, sharecount = get_share_names(meta)
   
+	-- Obtain hooks into the trash mod's trash slot inventory.
+	local ltrash, mtrash = trash.get_listname()
+	local itrash = trash.get_iconname()
+
   -- Locked or unlocked gold chest.
   if string.find(name, "gold") then
     formspec = "size[12,10]" .. defgui ..
@@ -212,13 +216,17 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     
   -- Locked/unlocked non-metalic chest (new version). Should have 8*3 size inventory.
   else 
-    formspec = "size[8,8]" .. defgui ..
+    formspec = "size[9,8]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,0.3;8,3;]" ..
       "list[current_player;main;0,3.85;8,1;]" ..
       "list[current_player;main;0,5.08;8,3;8]" ..
       "listring[nodemeta:" .. spos .. ";main]" ..
       "listring[current_player;main]" ..
       default.get_hotbar_bg(0, 3.85)
+
+			-- Trash icon.
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,0.3;1,1;]" ..
+			"image[8,0.3;1,1;" .. itrash .. "]"
   end
   
   return formspec

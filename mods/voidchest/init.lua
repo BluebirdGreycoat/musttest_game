@@ -3,16 +3,24 @@ voidchest = voidchest or {}
 voidchest.modpath = minetest.get_modpath("voidchest")
 
 local function get_chest_formspec()
+	-- Obtain hooks into the trash mod's trash slot inventory.
+	local ltrash, mtrash = trash.get_listname()
+	local itrash = trash.get_iconname()
+
   local formspec = "size[14,9]" ..
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
     "list[current_player;voidchest:voidchest;0,0.3;14,4;]" ..
-    "list[current_player;main;3,4.85;8,1;]" ..
-    "list[current_player;main;3,6.08;8,3;8]" ..
+    "list[current_player;main;2,4.85;8,1;]" ..
+    "list[current_player;main;2,6.08;8,3;8]" ..
     "listring[current_player;voidchest:voidchest]" ..
     "listring[current_player;main]" ..
     default.get_hotbar_bg(3, 4.85)
+
+		-- Trash icon.
+		.. "list[" .. ltrash .. ";" .. mtrash .. ";11,4.85;1,1;]" ..
+		"image[11,4.85;1,1;" .. itrash .. "]"
   
   return formspec
 end

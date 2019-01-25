@@ -188,9 +188,9 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 		local locked = string.find(name, "locked")
 
 		if locked then
-			formspec = formspec .. "size[9,10]"
+			formspec = "size[9,10]"
 		else
-			formspec = formspec .. "size[8,10]"
+			formspec = "size[8,10]"
 		end
 
 		formspec = formspec .. defgui ..

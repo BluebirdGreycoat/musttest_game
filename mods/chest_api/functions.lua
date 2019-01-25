@@ -185,7 +185,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
   elseif string.find(name, "iron") or
          string.find(name, "copper") or
          string.find(name, "silver") then 
-    formspec = "size[8,10]" .. defgui ..
+    formspec = "size[9,10]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,1.3;8,4;]" ..
       "list[current_player;main;0,5.85;8,1;]" ..
       "list[current_player;main;0,7.08;8,3;8]" ..
@@ -193,6 +193,10 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "listring[current_player;main]" ..
       "label[0,0;" .. desc .. "]" ..
       default.get_hotbar_bg(0, 5.85)
+
+			-- Trash icon.
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
+			"image[8,1.3;1,1;" .. itrash .. "]"
     
     -- Locked copper or iron chest.
     -- (If chest was locked silver, then another if-statement already handled it.)

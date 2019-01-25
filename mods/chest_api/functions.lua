@@ -185,7 +185,15 @@ chest_api.get_chest_formspec = function(name, desc, pos)
   elseif string.find(name, "iron") or
          string.find(name, "copper") or
          string.find(name, "silver") then 
-    formspec = "size[9,10]" .. defgui ..
+		local locked = string.find(name, "locked")
+
+		if locked then
+			formspec = formspec .. "size[9,10]"
+		else
+			formspec = formspec .. "size[8,10]"
+		end
+
+		formspec = formspec .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,1.3;8,4;]" ..
       "list[current_player;main;0,5.85;8,1;]" ..
       "list[current_player;main;0,7.08;8,3;8]" ..
@@ -197,7 +205,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     -- Locked copper or iron chest.
     -- (If chest was locked silver, then another if-statement already handled it.)
 		-- Iron locked chests with existing shares are grandfathered in.
-    if string.find(name, "locked") then 
+    if locked then
       local chest_name = meta:get_string("chest_name") or ""
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
         "field[4.25,0.45;2,0.75;name;;]" ..
@@ -209,8 +217,8 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 		else
 			-- Trash icon.
 			formspec = formspec
-				.. "list[" .. ltrash .. ";" .. mtrash .. ";7,0.3;1,1;]" ..
-				"image[7,0.3;1,1;" .. itrash .. "]"
+				.. "list[" .. ltrash .. ";" .. mtrash .. ";7,0;1,1;]" ..
+				"image[7,0;1,1;" .. itrash .. "]"
     end
 
 	-- Default chest or woodchest (old version). We MUST preserve the formspec for the old chest version!

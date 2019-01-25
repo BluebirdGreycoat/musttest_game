@@ -151,12 +151,16 @@ chest_api.get_chest_formspec = function(name, desc, pos)
   elseif string.find(name, "mithril") then
     formspec = "size[14,11]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,1.3;14,5;]" ..
-      "list[current_player;main;3,6.85;8,1;]" ..
-      "list[current_player;main;3,8.08;8,3;8]" ..
+      "list[current_player;main;2,6.85;8,1;]" ..
+      "list[current_player;main;2,8.08;8,3;8]" ..
       "listring[nodemeta:" .. spos .. ";main]" ..
       "listring[current_player;main]" ..
       "label[0,0;" .. desc .. "]" ..
-      default.get_hotbar_bg(3, 6.85)
+      default.get_hotbar_bg(2, 6.85)
+
+			-- Trash icon.
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";11,6.85;1,1;]" ..
+			"image[11,6.85;1,1;" .. itrash .. "]"
 
     -- Locked mithril chest.
     if string.find(name, "locked") then

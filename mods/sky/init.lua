@@ -151,11 +151,14 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 				sprint.set_jump_multiplier(pname, jmult)
 
 				if wname ~= "air" then
-					local wdef = ns_nodes[wname] or all_nodes[wname] or {}
-					local smult2 = wdef.movement_speed_multiplier or default.NORM_SPEED
-					local jmult2 = wdef.movement_jump_multiplier or default.NORM_JUMP
-					sprint.set_speed_multiplier(pname, smult2)
-					sprint.set_jump_multiplier(pname, jmult2)
+					-- But ignore doors.
+					if not string.find(wname, "^doors:") then
+						local wdef = ns_nodes[wname] or all_nodes[wname] or {}
+						local smult2 = wdef.movement_speed_multiplier or default.NORM_SPEED
+						local jmult2 = wdef.movement_jump_multiplier or default.NORM_JUMP
+						sprint.set_speed_multiplier(pname, smult2)
+						sprint.set_jump_multiplier(pname, jmult2)
+					end
 				end
 
 				-- Record the name of the last walked node.

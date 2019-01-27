@@ -215,6 +215,10 @@ function sprint.globalstep(dtime)
 						-- If moving, stamina comes back more slowly.
 						div = 6
 					end
+					-- If player is in good health, they regain stamina more quickly.
+					if player:get_hp() >= 20 then
+						div = div - 1
+					end
 					playerInfo["stamina"] = playerInfo["stamina"] + (dtime / div)
 				end
 			end
@@ -248,6 +252,8 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 	local hp_mult = 1
 	if hp <= 4 then
 		hp_mult = 0.8
+	elseif hp <= 10 then
+		hp_mult = 0.9
 	elseif hp >= 20 then
 		hp_mult = 1.1
 	end

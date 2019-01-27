@@ -142,11 +142,12 @@ end
 
 
 function hunger.increase_exhaustion(player, amount)
-	if hunger.players[player] then
-		if not hunger.players[player].exhaus then
-			hunger.players[player].exhaus = 0
+	local pname = player:get_player_name()
+	if hunger.players[pname] then
+		if not hunger.players[pname].exhaus then
+			hunger.players[pname].exhaus = 0
 		end
-		hunger.players[player].exhaus = hunger.players[player].exhaus + amount
+		hunger.players[pname].exhaus = hunger.players[pname].exhaus + amount
 	end
 end
 

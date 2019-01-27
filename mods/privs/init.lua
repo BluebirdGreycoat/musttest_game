@@ -8,7 +8,7 @@ privs.print_privs = function(user, param)
   assert(type(user) == "string")
   assert(type(param) == "string")
 
-  local name = param
+  local name = param:trim()
   if name == "" then
     name = user
   end
@@ -28,11 +28,15 @@ privs.print_privs = function(user, param)
       string = "server"
     end
 
-    minetest.chat_send_player(user, "# Server: Privilege of <" .. rename.gpn(name) .. "> is: " .. string .. ".")
+		if user ~= name then
+			minetest.chat_send_player(user, "# Server: Privilege rank of <" .. rename.gpn(name) .. "> is: " .. string .. ".")
+		else
+			minetest.chat_send_player(user, "# Server: Your privileges are: " .. core.privs_to_string(privs) .. ".")
+		end
     return true
   end
   
-  minetest.chat_send_player(user, "# Server: Could not obtain privilege of player <" .. rename.gpn(name) .. ">!")
+  minetest.chat_send_player(user, "# Server: Could not obtain privileges of player <" .. rename.gpn(name) .. ">!")
 	easyvend.sound_error(user)
   return true
 end

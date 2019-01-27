@@ -124,6 +124,10 @@ if not command_tokens.mute.registered then
 	minetest.register_on_player_receive_fields(function(...)
 		return command_tokens.mute_on_receive_fields(...)
 	end)
+	minetest.register_privilege("nomute", {
+		description = "Player is immune to being muted.",
+		give_to_singleplayer = false,
+	})
 	command_tokens.mute.registered = true
 end
 

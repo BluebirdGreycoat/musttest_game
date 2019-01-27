@@ -31,7 +31,7 @@ privs.print_privs = function(user, param)
 		if user ~= name then
 			minetest.chat_send_player(user, "# Server: Privilege rank of <" .. rename.gpn(name) .. "> is: " .. string .. ".")
 		else
-			minetest.chat_send_player(user, "# Server: Your privileges are: " .. core.privs_to_string(privs) .. ".")
+			minetest.chat_send_player(user, "# Server: Your privileges are: " .. core.privs_to_string(privs):gsub(",", ", ") .. ".")
 		end
     return true
   end

@@ -62,7 +62,8 @@ end
 
 local function is_valid_target(target)
 	if minetest.get_player_by_name(target) then
-		if not minetest.check_player_privs(target, {server=true}) then
+		if not minetest.check_player_privs(target, {server=true}) and
+				not minetest.check_player_privs(target, {nomute=true}) then
 			return true
 		end
 	end

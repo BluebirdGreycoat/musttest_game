@@ -109,6 +109,10 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 		end
 	end
 
+	-- Player doesn't get exhausted as quickly if fit and in good health.
+	if player:get_hp() >= 18 then
+		new = math.floor(new / 3.0)
+	end
 	exhaus = exhaus + new
 
 	if exhaus > HUNGER_EXHAUST_LVL then
@@ -146,6 +150,10 @@ function hunger.increase_exhaustion(player, amount)
 	if hunger.players[pname] then
 		if not hunger.players[pname].exhaus then
 			hunger.players[pname].exhaus = 0
+		end
+		-- Player doesn't get exhausted as quickly if fit and in good health.
+		if player:get_hp() >= 18 then
+			amount = math.floor(amount / 3.0)
 		end
 		hunger.players[pname].exhaus = hunger.players[pname].exhaus + amount
 	end

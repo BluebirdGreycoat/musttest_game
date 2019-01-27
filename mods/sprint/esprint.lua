@@ -217,6 +217,8 @@ function sprint.globalstep(dtime)
 					end
 					-- If player is in good health, they regain stamina more quickly.
 					if player:get_hp() >= 20 then
+						div = div - 2
+					elseif player:get_hp() >= 18 then
 						div = div - 1
 					end
 					playerInfo["stamina"] = playerInfo["stamina"] + (dtime / div)

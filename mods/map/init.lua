@@ -23,6 +23,23 @@ function map.update_hud_flags(player)
 	})
 end
 
+function map.has_mapping_kit(pname)
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return
+	end
+	local has_kit = player:get_inventory():contains_item("main", "map:mapping_kit")
+	return has_kit
+end
+
+function map.query(pname)
+	if map.has_mapping_kit(pname) then
+		minetest.chat_send_player("MustTest", "# Server: Player <" .. rename.gpn(pname) .. "> has a mapping kit!")
+	else
+		minetest.chat_send_player("MustTest", "# Server: Player <" .. rename.gpn(pname) .. "> does not have a mapping kit.")
+	end
+end
+
 
 
 function map.cyclic_update()

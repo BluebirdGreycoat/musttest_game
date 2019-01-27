@@ -30,7 +30,7 @@ privs.print_privs = function(user, param)
 
 		if user == name --[[or minetest.check_player_privs(user, {privs=true})]] then
 			-- If player is querying privs of self, or player is admin, then print full privs list.
-			minetest.chat_send_player(user, "# Server: Privileges of <" .. rename.gpn(name) .. ">: " .. core.privs_to_string(table.sort(privs)):gsub(",", ", ") .. ".")
+			minetest.chat_send_player(user, "# Server: Privileges of <" .. rename.gpn(name) .. ">: " .. core.privs_to_string(privs, ", ") .. ".")
 		else
 			-- Otherwise just print the generic privs rank.
 			minetest.chat_send_player(user, "# Server: Privilege rank of <" .. rename.gpn(name) .. ">: " .. string .. ".")

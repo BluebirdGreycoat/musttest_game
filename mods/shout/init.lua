@@ -49,6 +49,12 @@ shout.HINTS = {
 	"When you die, sometimes your bones are placed in odd places. Look around very carefully before giving up.",
 	"Starvation will drain your health down to half a heart, but will not kill you.",
 	"You can sleep in a bed to set your respawn position on death.",
+	"Use bandages to keep your health full. Stamina and hunger will benefit.",
+	"Being hurt reduces your ability to sprint and jump.",
+	"Prefer traveling by road or teleport when possible for faster transit times.",
+	"This server's chatlog is published live on channel 40,000. Please do not swear.",
+	"Sometimes dying is fun.",
+	"Lag is a nuisance.",
 }
 
 local HINT_DELAY_MIN = 60*30

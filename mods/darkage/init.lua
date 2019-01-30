@@ -26,7 +26,7 @@ if not darkage.run_once then
 	})
 
 	minetest.register_craftitem("darkage:iron_stick", {
-		description = "Wrought Iron Rod",
+		description = "Wrought Iron Rod\n\nCan be used to test protection.\nAlso updates infotext names.",
 		inventory_image = "darkage_iron_stick.png",
 		on_use = default.strike_protection,
 	})

@@ -17,10 +17,17 @@ function default.strike_protection(itemstack, user, pt)
 	else
 		ambiance.sound_play("default_wood_footstep", pt.under, 1.0, 20)
 	end
+
+	-- Update names in infotext.
+	local node = minetest.get_node(pt.under)
+	local ndef = minetest.reg_ns_nodes[node.name]
+	if ndef and ndef._on_rename_check then
+		ndef._on_rename_check(pt.under)
+	end
 end
 
 minetest.register_craftitem("default:stick", {
-	description = "Stick\n\nCan be used to test protection.",
+	description = "Stick\n\nCan be used to test protection.\nAlso updates infotext names.",
 	inventory_image = "default_stick.png",
 	groups = {stick = 1, flammable = 2},
 	on_use = default.strike_protection,

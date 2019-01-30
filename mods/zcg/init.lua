@@ -438,7 +438,7 @@ if not zcg.registered then
 	-- the groups of the recipe output items, which may not be known by the engine
 	-- until after recipes for the items are registered.
 	minetest.after(0, function()
-		for name, item in pairs(minetest.registered_items) do
+		for name, item in pairs(minetest.reg_ns_nodes) do
 			if name and name ~= "" then
 				zcg.load_crafts(name)
 			end

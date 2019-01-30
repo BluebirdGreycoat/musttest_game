@@ -53,6 +53,15 @@ minetest.register_craftitem("carrot:gold", {
   end,
 })
 
+minetest.register_craft({
+  output = "carrot:gold",
+  recipe = {
+		{"", "default:gold_lump", ""},
+		{"", "carrot:regular", ""},
+		{"", "default:gold_lump", ""},
+	},
+})
+
 
 
 local crop_def = {

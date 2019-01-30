@@ -36,7 +36,7 @@ function(pname, harm)
     if player and player:is_player() then
       player:set_hp(player:get_hp() - harm)
 			if player:get_hp() == 0 then
-				minetest.chat_send_all("# Server: <" .. pname .. "> died while bucketing something hot!")
+				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> died while bucketing something hot!")
 			end
     end
   end)

@@ -240,6 +240,42 @@ function beds.report_respawn_status(name)
 	end
 end
 
+local function node_blocks_bed(nn)
+  if nn == "air" then return false end
+
+  if string.find(nn, "ladder") then
+    return false
+  end
+
+  local def = minetest.reg_ns_nodes[nn]
+  if def then
+    local dt = def.drawtype
+    local pt2 = def.paramtype2
+    if dt == "airlike" or
+       dt == "signlike" or
+       dt == "torchlike" or
+       dt == "raillike" or
+       dt == "plantlike" or
+       (dt == "nodebox" and pt2 == "wallmounted") then
+      return false
+    end
+  end
+
+	-- All stairs nodes block bed respawning.
+  return true
+end
+
+function beds.is_valid_bed_spawn(pos)
+	local n1 = minetest.get_node(vector.add(pos, {x=0, y=1, z=0}))
+	local n2 = minetest.get_node(vector.add(pos, {x=0, y=2, z=0}))
+
+	if node_blocks_bed(n1.name) or node_blocks_bed(n2.name) then
+		return false
+	end
+
+	return true
+end
+
 
 
 function beds.on_rightclick(pos, player)
@@ -282,6 +318,12 @@ function beds.on_rightclick(pos, player)
 
 	if beds.monsters_nearby(pos, player) then
 		minetest.chat_send_player(name, "# Server: You cannot sleep now, there are monsters nearby!")
+		beds.report_respawn_status(name)
+		return
+	end
+
+	if not beds.is_valid_bed_spawn(pos) then
+		minetest.chat_send_player(name, "# Server: You cannot use this bed, there is not enough space above it to respawn!")
 		beds.report_respawn_status(name)
 		return
 	end

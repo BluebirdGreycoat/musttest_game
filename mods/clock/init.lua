@@ -128,6 +128,10 @@ function hud_clock.get_date_string()
 	return hud_clock.get_datetime(days)
 end
 
+function hud_clock.get_calendar_infotext()
+	return hud_clock.get_date_string() .. "\nCurrent Spawn: " .. randspawn.get_spawn_name()
+end
+
 minetest.register_node("clock:calendar", {
 	description = "Snowmelt Calendar",
 	tiles = {"calendar.png"},
@@ -150,27 +154,23 @@ minetest.register_node("clock:calendar", {
 
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		local time = os.time()
-		local epoch = os.time({year=2016, month=10, day=1})
-		time = time - epoch
-		local days = math.floor(((time/60)/60)/24)
-		meta:set_string("infotext", hud_clock.get_datetime(days))
+		meta:set_string("infotext", hud_clock.get_calendar_infotext())
 		minetest.get_node_timer(pos):start(60*60)
 	end,
 
 	on_timer = function(pos, elapsed)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_date_string())
+		meta:set_string("infotext", hud_clock.get_calendar_infotext())
 		minetest.get_node_timer(pos):start(60*60)
 	end,
 
-	--on_punch = function(pos, node, puncher, pt)
-	--	if not puncher or not puncher:is_player() then
-	--		return
-	--	end
-	--	local pname = puncher:get_player_name()
-	--	minetest.chat_send_player(pname, "# Server: The date is " .. snow.get_day() .. ".")
-	--end,
+	on_punch = function(pos, node, puncher, pt)
+		if not puncher or not puncher:is_player() then
+			return
+		end
+		local meta = minetest.get_meta(pos)
+		meta:set_string("infotext", hud_clock.get_calendar_infotext())
+	end,
 })
 
 minetest.register_craft({

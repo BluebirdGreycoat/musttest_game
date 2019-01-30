@@ -5,11 +5,11 @@ randspawn.modpath = minetest.get_modpath("randspawn")
 local fallback_pos = {x=0, y=-7, z=0}
 
 local ab = {
-	{x=0, y=-7, z=0}, -- Central.
-	{x=0, y=-7, z=198}, -- North.
-	{x=198, y=-7, z=0}, -- East.
-	{x=0, y=-7, z=-198}, -- South.
-	{x=-198, y=-7, z=0}, -- West.
+	{pos = {x=0, y=-7, z=0}, name="Central Plaza"}, -- Central.
+	{pos = {x=0, y=-7, z=198}, name="North Quarter"}, -- North.
+	{pos = {x=198, y=-7, z=0}, name="East Quarter"}, -- East.
+	{pos = {x=0, y=-7, z=-198}, name="South Quarter"}, -- South.
+	{pos = {x=-198, y=-7, z=0}, name="West Quarter"}, -- West.
 }
 
 local positions = {
@@ -31,7 +31,7 @@ local function get_respawn_position(death_pos)
 	local tb = os.date("*t")
 	local m = tb.month
 	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
-		local pos = vector.new(positions[m])
+		local pos = vector.new(positions[m].pos)
 		-- If player dies in the nether they respawn in the Nether City.
 		if death_pos.y < -25000 then
 			pos.y = -30793
@@ -59,13 +59,23 @@ randspawn.reposition_player = function(pname, death_pos)
 	end
 end
 
-minetest.register_on_newplayer(function(player)
+function randspawn.on_newplayer(player)
 	local pname = player:get_player_name()
 	local fake_dpos = {x=0, y=0, z=0}
 	minetest.after(0.1, function()
 		randspawn.reposition_player(pname, fake_dpos)
 	end)
-end)
+end
+
+function randspawn.get_spawn_name()
+	local tb = os.date("*t")
+	local m = tb.month
+	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
+		return positions[m].name
+	else
+		return "Central Plaza"
+	end
+end
 
 
 
@@ -74,6 +84,10 @@ if not randspawn.run_once then
 	local file = randspawn.modpath .. "/init.lua"
 	local name = "randspawn:core"
 	reload.register_file(name, file, false)
+
+	minetest.register_on_newplayer(function(...)
+		return randspawn.on_newplayer(...)
+	end)
 
 	randspawn.run_once = true
 end

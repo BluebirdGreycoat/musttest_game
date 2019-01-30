@@ -55,6 +55,7 @@ shout.HINTS = {
 	"This server's chatlog is published live on channel 40,000. Please do not swear.",
 	"Sometimes dying is fun.",
 	"Lag is a nuisance.",
+	"A diving helmet and canisters of compressed air will allow you to stay underwater longer.",
 }
 
 local HINT_DELAY_MIN = 60*30

@@ -56,9 +56,9 @@ minetest.register_craftitem("carrot:gold", {
 minetest.register_craft({
   output = "carrot:gold",
   recipe = {
-		{"", "default:gold_lump", ""},
-		{"", "carrot:regular", ""},
-		{"", "default:gold_lump", ""},
+		{"", "default:gold_ingot", ""},
+		{"default:gold_ingot", "carrot:regular", "default:gold_ingot"},
+		{"", "default:gold_ingot", ""},
 	},
 })
 

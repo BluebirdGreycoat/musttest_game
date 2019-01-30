@@ -262,6 +262,12 @@ coal_alloy_furnace.on_metadata_inventory_put = function(pos)
   timer:start(1.0)
 end
 
+coal_alloy_furnace.burn_feet = function(pos, player)
+	if not heatdamage.is_immune(player:get_player_name()) then
+		player:set_hp(player:get_hp() - 1)
+	end
+end
+
 
 
 minetest.register_node("coal_alloy_furnace:inactive", {
@@ -343,6 +349,9 @@ minetest.register_node("coal_alloy_furnace:active", {
     return coal_alloy_furnace.allow_metadata_inventory_move(...) end,
   allow_metadata_inventory_take = function(...)
     return coal_alloy_furnace.allow_metadata_inventory_take(...) end,
+
+	on_player_walk_over = function(...)
+		return coal_alloy_furnace.burn_feet(...) end,
 })
 
 

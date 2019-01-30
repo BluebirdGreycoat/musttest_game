@@ -452,6 +452,12 @@ for k, v in ipairs({
 	func.on_metadata_inventory_take =
 	function(pos, listname, index, stack, player)
 	end
+
+	func.burn_feet = function(pos, player)
+		if not heatdamage.is_immune(player:get_player_name()) then
+			player:set_hp(player:get_hp() - 1)
+		end
+	end
 end
 
 
@@ -470,6 +476,13 @@ if not generator.gen2_loaded then
 		}) do
 			-- Which function table are we operating on?
 			local func = _G["gen2_" .. n.tier]
+
+			local feet_burning_func = nil
+			if v.name == "active" then
+				feet_burning_func = function(...)
+					return func.burn_feet(...)
+				end
+			end
 
 			minetest.register_node(":gen2:" .. n.tier .. "_" .. v.name, {
 				description = n.up .. " Fuel-Activated Generator\n\nCan burn coal, kalite or mese and convert it to energy.",
@@ -519,6 +532,7 @@ if not generator.gen2_loaded then
 					return func.allow_metadata_inventory_move(...) end,
 				allow_metadata_inventory_take = function(...)
 					return func.allow_metadata_inventory_take(...) end,
+				on_player_walk_over = feet_burning_func,
 			})
 		end
 	end

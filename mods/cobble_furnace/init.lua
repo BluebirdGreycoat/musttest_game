@@ -263,6 +263,12 @@ cobble_furnace.on_metadata_inventory_put = function(pos)
   timer:start(1.0)
 end
 
+cobble_furnace.burn_feet = function(pos, player)
+	if not heatdamage.is_immune(player:get_player_name()) then
+		player:set_hp(player:get_hp() - 1)
+	end
+end
+
 
 
 if not cobble_furnace.run_once then
@@ -354,6 +360,9 @@ if not cobble_furnace.run_once then
       return cobble_furnace.allow_metadata_inventory_move(...) end,
     allow_metadata_inventory_take = function(...)
       return cobble_furnace.allow_metadata_inventory_take(...) end,
+
+		on_player_walk_over = function(...)
+			return cobble_furnace.burn_feet(...) end,
   })
 
 

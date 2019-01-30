@@ -531,6 +531,12 @@ for j, t in ipairs({
 		minetest.remove_node(pos)
 		return drops
 	end
+
+	func.burn_feet = function(pos, player)
+		if not heatdamage.is_immune(player:get_player_name()) then
+			player:set_hp(player:get_hp() - 1)
+		end
+	end
 end
 
 
@@ -548,6 +554,13 @@ if not ecfurn2.run_once then
 			{name="inactive", light=0, tile="electric_furnace_" .. t.tier .. "_front.png"},
 			{name="active", light=8, tile="electric_furnace_front_" .. t.tier .. "_active.png"},
 		}) do
+			local feet_burning_func = nil
+			if v.name == "active" then
+				feet_burning_func = function(...)
+					return func.burn_feet(...)
+				end
+			end
+
 			minetest.register_node(":ecfurn2:" .. t.tier .. "_" .. v.name, {
 				description = t.up .. " " .. MACHINE_NAME .. "\n\n" .. MACHINE_DESC,
 				tiles = {
@@ -592,6 +605,7 @@ if not ecfurn2.run_once then
 					return func.allow_metadata_inventory_move(...) end,
 				allow_metadata_inventory_take = function(...)
 					return func.allow_metadata_inventory_take(...) end,
+				on_player_walk_over = feet_burning_func,
 			})
 		end
 	end

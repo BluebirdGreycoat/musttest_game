@@ -167,8 +167,15 @@ if not bonemeal.run_once then
 
 	-- bonemeal recipe
 	minetest.register_craft({
-		output = 'bonemeal:meal 5',
+		output = 'bonemeal:meal 4',
 		recipe = {{'bonemeal:bone'}},
+	})
+
+	minetest.register_craft({
+		type = "grinding",
+		output = 'bonemeal:meal 6',
+		recipe = 'bonemeal:bone',
+		time = 4,
 	})
 
 	-- bonemeal item

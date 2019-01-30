@@ -438,12 +438,20 @@ if not zcg.registered then
 	-- the groups of the recipe output items, which may not be known by the engine
 	-- until after recipes for the items are registered.
 	minetest.after(0, function()
+		local t1 = os.clock()
+		-- Must search through ALL registered items! Cannot use shortcut tables.
 		for name, item in pairs(minetest.registered_items) do
 			if name and name ~= "" then
-				zcg.load_crafts(name)
+				-- Ignore stairs nodes. They do have generic/standard recipes, but we
+				-- wouldn't show them anway -- WAY too much CG spam.
+				if not name:find("^%:?stairs:") then
+					zcg.load_crafts(name)
+				end
 			end
 		end
 		table.sort(zcg.itemlist)
+		local t2 = os.clock()
+		minetest.log("action", "Loading craft recipes took " .. (t2 - t1) .. " seconds.")
 	end)
 
 	-- Register button once.

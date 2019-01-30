@@ -19,6 +19,9 @@ dofile(protector.modpath .. "/hud.lua")
 -- Temporary pos store.
 local player_pos = protector.players
 
+local get_public_time = function()
+  return os.date("!%Y/%m/%d UTC")
+end
 
 
 -- Use this function ONLY when calling a Minetest API in
@@ -538,12 +541,14 @@ minetest.register_node("protector:protect", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
+		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -587,6 +592,7 @@ minetest.register_node("protector:protect", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
+		local placedate = meta:get_string("placedate")
 		-- Nobody placed this block.
 		if owner == "" then
 			return
@@ -596,7 +602,7 @@ minetest.register_node("protector:protect", {
 		-- Check if the owner's current alias has changed.
 		if cname ~= dname then
 			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		end
 	end,
 
@@ -636,12 +642,14 @@ minetest.register_node("protector:protect3", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
+		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -677,6 +685,7 @@ minetest.register_node("protector:protect3", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
+		local placedate = meta:get_string("placedate")
 		-- Nobody placed this block.
 		if owner == "" then
 			return
@@ -686,7 +695,7 @@ minetest.register_node("protector:protect3", {
 		-- Check if the owner's current alias has changed.
 		if cname ~= dname then
 			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		end
 	end,
 
@@ -734,12 +743,14 @@ minetest.register_node("protector:protect2", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
+		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -783,6 +794,7 @@ minetest.register_node("protector:protect2", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
+		local placedate = meta:get_string("placedate")
 		-- Nobody placed this block.
 		if owner == "" then
 			return
@@ -792,7 +804,7 @@ minetest.register_node("protector:protect2", {
 		-- Check if the owner's current alias has changed.
 		if cname ~= dname then
 			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		end
 	end,
 
@@ -837,12 +849,14 @@ minetest.register_node("protector:protect4", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
+		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -878,6 +892,7 @@ minetest.register_node("protector:protect4", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
+		local placedate = meta:get_string("placedate")
 		-- Nobody placed this block.
 		if owner == "" then
 			return
@@ -887,7 +902,7 @@ minetest.register_node("protector:protect4", {
 		-- Check if the owner's current alias has changed.
 		if cname ~= dname then
 			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)")
+			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		end
 	end,
 

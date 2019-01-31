@@ -160,17 +160,21 @@ cw.generate_realm = function(minp, maxp, seed)
 			-- First pass through column.
 			for y = y0, y1 do
 				local vp = area:index(x, y, z)
-
 				if y >= nstart and y <= nfinish then
-					-- Place bedrock layer.
-					if y <= bedrock_adjust then
-						data[vp] = c_bedrock
-					elseif y < ground_depth then
-						data[vp] = c_dirt
-					elseif y == ground_depth then
-						data[vp] = c_silt
-					elseif y <= ocean_depth then
-						data[vp] = c_water
+					-- Get what's already here.
+					local cid = data[vp]
+
+					if cid == c_air or cid == c_ignore then
+						-- Place bedrock layer.
+						if y <= bedrock_adjust then
+							data[vp] = c_bedrock
+						elseif y < ground_depth then
+							data[vp] = c_dirt
+						elseif y == ground_depth then
+							data[vp] = c_silt
+						elseif y <= ocean_depth then
+							data[vp] = c_water
+						end
 					end
 				end
 

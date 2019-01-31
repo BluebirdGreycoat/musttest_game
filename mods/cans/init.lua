@@ -27,6 +27,19 @@ local function set_can_level(itemstack, charge)
   itemstack:set_metadata(tostring(charge))
 end
 
+local function node_in_group(name, list)
+	if type(list) == "string" then
+		return (name == list)
+	elseif type(list) == "table" then
+		for k, v in ipairs(list) do
+			if name == v then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 
 
 function cans.register_can(d)
@@ -43,7 +56,7 @@ function cans.register_can(d)
     on_use = function(itemstack, user, pointed_thing)
       if pointed_thing.type ~= "node" then return end
       local node = minetest.get_node(pointed_thing.under)
-      if node.name ~= data.liquid_source_name then return end
+      if not node_in_group(node.name, data.liquid_source_name) then return end
       local charge = get_can_level(itemstack)
       if charge == data.can_capacity then return end
       if minetest.is_protected(pointed_thing.under, user:get_player_name()) then
@@ -83,7 +96,7 @@ function cans.register_can(d)
         return def.on_rightclick(pos, node, user, itemstack, pointed_thing)
       end
 
-			if node.name == data.liquid_source_name or node.name == data.liquid_flowing_name then
+			if node_in_group(node.name, data.liquid_source_name) or node_in_group(node.name, data.liquid_flowing_name) then
 				-- Do nothing, `pos' already set.
       elseif not def.buildable_to then
         pos = pointed_thing.above
@@ -94,13 +107,21 @@ function cans.register_can(d)
 
       local charge = get_can_level(itemstack)
       if charge == 0 then return end
-      if pos.y > -9 then
+
+			-- Check against local ground level.
+			local success, ground_level = rc.get_ground_level_at_pos(pos)
+			if not success then
+				minetest.chat_send_player(user:get_player_name(), "# Server: That position is in the Void!")
+				return
+			end
+
+      if pos.y > ground_level then
         minetest.chat_send_player(user:get_player_name(), "# Server: Don't do that above ground!")
 				easyvend.sound_error(user:get_player_name())
         return
       end
       if minetest.is_protected(pos, user:get_player_name()) then
-        minetest.log("action", user:get_player_name().." tried to place "..data.liquid_source_name.." at protected position "..minetest.pos_to_string(pos).." with a "..data.can_name)
+        minetest.log("action", user:get_player_name().." tried to place "..data.place_name.." at protected position "..minetest.pos_to_string(pos).." with a "..data.can_name)
         minetest.chat_send_player(user:get_player_name(), "# Server: Not on somebody else's land!")
         return
       end
@@ -111,7 +132,7 @@ function cans.register_can(d)
 				return
 			end
 
-      minetest.set_node(pos, {name=data.liquid_source_name})
+      minetest.set_node(pos, {name=data.place_name})
       charge = charge - 1
       set_can_level(itemstack, charge)
       set_can_wear(itemstack, charge, data.can_capacity)
@@ -127,8 +148,9 @@ cans.register_can({
   can_description = "Water Can",
   can_inventory_image = "technic_water_can.png",
   can_capacity = 16,
-  liquid_source_name = "default:water_source",
-  liquid_flowing_name = "default:water_flowing",
+  liquid_source_name = {"default:water_source", "cw:water_source"},
+  liquid_flowing_name = {"default:water_flowing", "cw:water_flowing"},
+	place_name = "default:water_source",
 })
 
 minetest.register_craft({
@@ -149,6 +171,7 @@ cans.register_can({
   can_capacity = 8,
   liquid_source_name = "default:lava_source",
   liquid_flowing_name = "default:lava_flowing",
+	place_name = "default:lava_source",
 })
 
 minetest.register_craft({

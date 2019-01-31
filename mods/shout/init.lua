@@ -56,6 +56,10 @@ shout.HINTS = {
 	"Sometimes dying is fun.",
 	"Lag is a nuisance.",
 	"A diving helmet and canisters of compressed air will allow you to stay underwater longer.",
+	"Lava is hot.",
+	"Water is wet.",
+	"Mobs are dangerous.",
+	"This is a useless message.",
 }
 
 local HINT_DELAY_MIN = 60*30

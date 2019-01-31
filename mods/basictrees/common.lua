@@ -39,6 +39,12 @@ basictrees.tree_groups = {
     flammable = 2,
 }
 
+basictrees.cw_tree_groups = {
+    tree = 1,
+    level = 1,
+    choppy = 1,
+}
+
 
 
 basictrees.get_wood_groups = function(extra)
@@ -63,6 +69,17 @@ basictrees.leaves_groups = {
     
     leafdecay = 3,
     flammable = 2,
+    leaves = 1,
+    green_leaves = 1,
+}
+
+basictrees.cw_leaves_groups = {
+    level = 1,
+    snappy = 3,
+    choppy = 2,
+    oddly_breakable_by_hand = 3,
+
+    leafdecay = 3,
     leaves = 1,
     green_leaves = 1,
 }

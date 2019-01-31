@@ -37,7 +37,7 @@ minetest.register_node("basictrees:jungletree_cube", {
 	description = "Jungle Tree",
 	tiles = {"default_jungletree_top.png", "default_jungletree_top.png", "default_jungletree.png"},
 	paramtype2 = "facedir",
-	groups = basictrees.tree_groups,
+	groups = basictrees.cw_tree_groups,
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node,
 	movement_speed_multiplier = default.NORM_SPEED,
@@ -46,6 +46,7 @@ minetest.register_node("basictrees:jungletree_cube", {
   on_destruct = enhanced_leafdecay.make_tree_destructor({
     leaves = {
       "basictrees:jungletree_leaves",
+			"basictrees:jungletree_leaves2",
       "group:dry_leaves",
     },
   }),
@@ -79,6 +80,21 @@ minetest.register_node("basictrees:jungletree_leaves", {
   
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
   on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:jungletree_trunk"}),
+})
+
+minetest.register_node("basictrees:jungletree_leaves2", {
+	description = "Jungle Tree Leaves",
+	drawtype = "allfaces_optional",
+	tiles = {"default_jungleleaves.png"},
+	--special_tiles = {"default_jungleleaves_simple.png"},
+	paramtype = "light",
+	groups = basictrees.cw_leaves_groups,
+	drop = basictrees.get_leafdrop_table(SAPLING_CHANCE, "basictrees:jungletree_sapling", "basictrees:jungletree_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED,
+
+  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:jungletree_cube"}),
 })
 
 

@@ -29,8 +29,8 @@ end
 cw.REALM_START = 3050
 cw.BEDROCK_DEPTH = 8
 cw.OCEAN_DEPTH = 16
-cw.GROUND_DEPTH = 12
-cw.GROUND_HEIGHT_VARIATION = 3
+cw.GROUND_DEPTH = 11
+cw.GROUND_HEIGHT_VARIATION = 4
 
 -- Controls land height.
 cw.noise1param2d = {
@@ -149,7 +149,7 @@ cw.generate_realm = function(minp, maxp, seed)
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			elseif water_depth == 4 then
-				if pr:next(1, 100) == 1 then
+				if pr:next(1, 300) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			end
@@ -186,7 +186,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 	for k, v in ipairs(tree_positions1) do
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", {["default:jungletree"] = "basictrees:jungletree_cube"}, false)
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", {["default:jungletree"] = "basictrees:jungletree_cube"}, true)
 	end
 end
 

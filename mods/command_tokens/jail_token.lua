@@ -124,7 +124,7 @@ command_tokens.jail.execute = function(player, target)
 					minetest.chat_send_all("# Server: Player <" .. rename.gpn(target) .. "> sent to jail for trespassing on <" .. rename.gpn(player) .. ">'s land.")
 				end
 			end
-			--ent:setpos({x=0, y=-50, z=0})
+			--ent:set_pos({x=0, y=-50, z=0})
 			--local jpos = {x=0, y=-50, z=0}
 			--preload_tp.preload_and_teleport(target, jpos, 32, nil, bcb, nil, true)
 			jail.go_to_jail(minetest.get_player_by_name(target), bcb)

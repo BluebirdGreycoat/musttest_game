@@ -55,7 +55,7 @@ local function escape(ent,pos)
 			end
 		end
 	end
-	if ep then ent.object:setpos(ep) end
+	if ep then ent.object:set_pos(ep) end
 	return ep
 end
 
@@ -79,7 +79,7 @@ local function lift(obj)
 			end
 -- Space
 			p = {x = p.x, y = math.floor(p.y - 0.5) + 1.800001, z = p.z}
-			obj:setpos(p)
+			obj:set_pos(p)
 			if s1 or obstructed(p) then
 				minetest.after(t, lift, obj)
 				return
@@ -116,7 +116,7 @@ local function async(obj, usync)
 			end
 -- Space.
 			if hash == ent.hash then
-				obj:setpos({x = p.x, y = math.floor(p.y - 0.5) + 0.800001, z = p.z})
+				obj:set_pos({x = p.x, y = math.floor(p.y - 0.5) + 0.800001, z = p.z})
 				if not ent.is_entombed then
 					ent.is_entombed = true
 					minetest.after(1, lift, obj)

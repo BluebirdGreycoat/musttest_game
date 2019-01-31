@@ -55,7 +55,7 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 				if obj:get_luaentity().name ~= "throwing:arrow_teleport_entity" and obj:get_luaentity().name ~= "__builtin:item" then
 					self.object:remove()
 					if self.player ~= "" then
-						self.player:setpos(pos)
+						self.player:set_pos(pos)
 						self.player:get_inventory():add_item("main", ItemStack("default:stick 2"))
 					end
 				end
@@ -67,7 +67,7 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		if throwing_node_should_block_arrow(node.name) then
 			self.object:remove()
 			if self.player ~= "" then
-				self.player:setpos(self.lastpos)
+				self.player:set_pos(self.lastpos)
 				self.player:get_inventory():add_item("main", ItemStack("default:stick 2"))
 			end
 		end

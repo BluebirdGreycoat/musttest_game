@@ -14,12 +14,21 @@ rc.realms = {
 		maxp = {x=30927, y=500, z=30927},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 	},
+	{
+		name = "channelwood", -- Forest realm.
+		minp = {x=-30912, y=3050, z=-30912},
+		maxp = {x=30927, y=3550, z=30927},
+		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+	},
 }
 
 -- API function. Get string name of the current realm the player is in.
 function rc.current_realm(player)
-	local p = player:get_pos()
+	local p = vector.round(player:get_pos())
+	return rc.current_realm_at_pos(p)
+end
 
+function rc.current_realm_at_pos(p)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
 		local maxp = v.maxp
@@ -41,7 +50,7 @@ end
 -- valid location. If last valid location not found, reset them to 0,0,0.
 -- This function should be called from a global-step callback somewhere.
 function rc.check_position(player)
-	local p = player:get_pos()
+	local p = vector.round(player:get_pos())
 	local n = player:get_player_name()
 
 	local reset -- Table set if player out-of-bounds.
@@ -87,10 +96,15 @@ function rc.check_position(player)
 		wield3d.on_teleport()
 
 		if player:get_hp() > 0 and rc.players[n] then
+			-- Return player to last known good position.
 			player:set_pos(rc.players[n].pos)
 		else
 			-- Return to realm's origin point.
 			player:set_pos(reset.spawn)
+
+			-- Update which realm the player is supposed to be in.
+			-- (We might have crossed realms depending on what happened above.)
+			rc.notify_realm_update(player, reset.spawn)
 		end
 
 		-- Damage player. Prevents them triggering this indefinitely.
@@ -128,6 +142,21 @@ end
 function rc.on_leaveplayer(player, timeout)
 	local n = player:get_player_name()
 	rc.players[n] = nil
+end
+
+-- API function. Call this whenever a player teleports,
+-- or lawfully changes realm. You can pass a player object or a name.
+function rc.notify_realm_update(player, pos)
+	local p = vector.round(pos)
+	local n = ""
+	if type(player) == "string" then
+		n = player
+	else
+		n = player:get_player_name()
+	end
+	local tb = rc.players[n]
+	tb.pos = p
+	tb.realm = rc.current_realm_at_pos(p)
 end
 
 if not rc.registered then

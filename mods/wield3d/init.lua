@@ -94,6 +94,11 @@ if cmdteleport then
 				end
 				minetest.chat_send_player(name, "# Server: " .. str .. ".")
 			end
+
+			-- If teleport was successful then update realm paramters.
+			if result then
+				rc.notify_realm_update(name, minetest.get_player_by_name(name):get_pos())
+			end
 		end
 		minetest.override_chatcommand("teleport", {
 			func = newfunc,

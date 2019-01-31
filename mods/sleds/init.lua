@@ -65,7 +65,7 @@ function sleds.on_rightclick(self, clicker)
 		default.player_set_animation(clicker, "stand" , 30)
 		local pos = clicker:getpos()
 		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
-		minetest.after(0.1, function() clicker:setpos(pos) end)
+		minetest.after(0.1, function() clicker:set_pos(pos) end)
 	elseif not self.driver then
 		-- Not while attached to something else!
 		if default.player_attached[name] then

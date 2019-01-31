@@ -86,7 +86,7 @@ function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, 
 		-- Pick up cart: Drop all attachments
 		if self.driver then
 			if self.old_pos then
-				self.object:setpos(self.old_pos)
+				self.object:set_pos(self.old_pos)
 			end
 			local player = minetest.get_player_by_name(self.driver)
 			carts:manage_attachment(player, nil)
@@ -347,7 +347,7 @@ local function rail_on_step(self, dtime)
 
 	self.object:setvelocity(vel)
 	if update.pos then
-		self.object:setpos(pos)
+		self.object:set_pos(pos)
 	end
 
 	-- call event handler

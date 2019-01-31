@@ -64,7 +64,7 @@ function boat.on_rightclick(self, clicker)
 		local pos = clicker:getpos()
 		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
 		minetest.after(0.1, function()
-			clicker:setpos(pos)
+			clicker:set_pos(pos)
 		end)
 	elseif not self.driver then
 		-- Not while attached to something else!
@@ -160,7 +160,7 @@ function boat.on_step(self, dtime)
 	end
 	local velo = self.object:getvelocity()
 	if self.v == 0 and velo.x == 0 and velo.y == 0 and velo.z == 0 then
-		self.object:setpos(self.object:getpos())
+		self.object:set_pos(self.object:getpos())
 		return
 	end
 	local s = get_sign(self.v)
@@ -189,7 +189,7 @@ function boat.on_step(self, dtime)
 		end
 		new_velo = get_velocity(self.v, self.object:getyaw(),
 			self.object:getvelocity().y)
-		self.object:setpos(self.object:getpos())
+		self.object:set_pos(self.object:getpos())
 	else
 		p.y = p.y + 1
 		if is_water(p) then
@@ -202,18 +202,18 @@ function boat.on_step(self, dtime)
 				new_acce = {x = 0, y = 5, z = 0}
 			end
 			new_velo = get_velocity(self.v, self.object:getyaw(), y)
-			self.object:setpos(self.object:getpos())
+			self.object:set_pos(self.object:getpos())
 		else
 			new_acce = {x = 0, y = 0, z = 0}
 			if math.abs(self.object:getvelocity().y) < 1 then
 				local pos = self.object:getpos()
 				pos.y = math.floor(pos.y) + 0.5
-				self.object:setpos(pos)
+				self.object:set_pos(pos)
 				new_velo = get_velocity(self.v, self.object:getyaw(), 0)
 			else
 				new_velo = get_velocity(self.v, self.object:getyaw(),
 					self.object:getvelocity().y)
-				self.object:setpos(self.object:getpos())
+				self.object:set_pos(self.object:getpos())
 			end
 		end
 	end

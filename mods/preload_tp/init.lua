@@ -71,9 +71,9 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 		end
 
 		-- Teleport player only if they didn't move (or teleporting is forced).
-		player:set_pos(tp)
 		wield3d.on_teleport()
 		rc.notify_realm_update(player, tp)
+		player:set_pos(tp)
 
 		-- Execute the callback function, if everything else succeeded.
 		if post_cb then

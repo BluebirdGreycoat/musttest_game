@@ -71,6 +71,11 @@ function rc.check_position(player)
 	local p = vector.round(player:get_pos())
 	local n = player:get_player_name()
 
+	-- Data not initialized yet.
+	if not rc.players[n] then
+		return
+	end
+
 	local reset -- Table set if player out-of-bounds.
 
 	-- Bounds check to avoid an engine bug. These coordinates should be the last

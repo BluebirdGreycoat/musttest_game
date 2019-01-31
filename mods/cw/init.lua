@@ -67,6 +67,8 @@ local data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 
+local JUNGLETREE_RELPOSITION = {x=-2, y=0, z=-2}
+
 cw.generate_realm = function(minp, maxp, seed)
 	local nstart = cw.REALM_START
 
@@ -113,6 +115,8 @@ cw.generate_realm = function(minp, maxp, seed)
 	local gd = cw.GROUND_DEPTH
 	local ghv = cw.GROUND_HEIGHT_VARIATION
 
+	local tree_positions1 = {}
+
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -134,6 +138,12 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			-- Ground height.
 			local ground_depth = (nstart + gd + floor(abs(n1 * ghv)))
+
+			if ground_depth == ocean_depth - 3 then
+				if pr:next(1, 12) == 1 then
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+				end
+			end
 
 			-- First pass through column.
 			for y = y0, y1 do
@@ -164,6 +174,11 @@ cw.generate_realm = function(minp, maxp, seed)
 	vm:calc_lighting()
 	vm:update_liquids()
 	vm:write_to_map()
+
+	for k, v in ipairs(tree_positions1) do
+		local path = basictrees.modpath .. "/schematics/jungle_tree.mts"
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", nil, false)
+	end
 end
 
 

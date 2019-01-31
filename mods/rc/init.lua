@@ -22,6 +22,24 @@ rc.realms = {
 	},
 }
 
+function rc.is_valid_realm_pos(pos)
+	local p = vector.round(pos)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			return true
+		end
+	end
+
+	-- Not in any realm?
+	return false
+end
+
 -- API function. Get string name of the current realm the player is in.
 function rc.current_realm(player)
 	local p = vector.round(player:get_pos())

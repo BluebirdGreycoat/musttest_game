@@ -177,7 +177,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 	for k, v in ipairs(tree_positions1) do
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", nil, false)
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", {["default:jungletree"] = "basictrees:jungletree_cube"}, false)
 	end
 end
 

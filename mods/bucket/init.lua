@@ -79,12 +79,40 @@ end
 --    groups = (optional) groups of the bucket item, for example {water_bucket = 1}
 -- This function can be called from any mod (that depends on bucket).
 function bucket.register_liquid(source, flowing, itemname, placename, inventory_image, name, groups)
-	bucket.liquids[source] = {
-		source = source,
-		flowing = flowing,
-		itemname = itemname,
-	}
-	bucket.liquids[flowing] = bucket.liquids[source]
+	if type(source) == "string" then
+		bucket.liquids[source] = {
+			source = source,
+			flowing = flowing,
+			itemname = itemname,
+		}
+	else
+		assert(type(source) == "table")
+		for k, v in ipairs(source) do
+			assert(type(v) == "string")
+			bucket.liquids[v] = {
+				source = source,
+				flowing = flowing,
+				itemname = itemname,
+			}
+		end
+	end
+	if type(flowing) == "string" then
+		bucket.liquids[flowing] = {
+			source = source,
+			flowing = flowing,
+			itemname = itemname,
+		}
+	else
+		assert(type(flowing) == "table")
+		for k, v in ipairs(flowing) do
+			assert(type(v) == "string")
+			bucket.liquids[v] = {
+				source = source,
+				flowing = flowing,
+				itemname = itemname,
+			}
+		end
+	end
 
 	if itemname ~= nil then
 		minetest.register_craftitem(itemname, {
@@ -115,12 +143,25 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 
 				local lpos
 
+				local function node_in_group(name, list)
+					if type(list) == "string" then
+						return (name == list)
+					elseif type(list) == "table" then
+						for k, v in ipairs(list) do
+							if name == v then
+								return true
+							end
+						end
+					end
+					return false
+				end
+
 				-- Check if pointing to a buildable node
 				if ndef and ndef.buildable_to then
 					-- buildable; replace the node
 					lpos = pointed_thing.under
-				elseif node.name == flowing or node.name == source then
-					-- flowing version of bucket contents, replace the node.
+				elseif node_in_group(node.name, flowing) or node_in_group(node.name, source) then
+					-- flow version of bucket contents, replace the node.
 					lpos = pointed_thing.under
 				else
 					-- not buildable to; place the liquid above
@@ -144,7 +185,7 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 					return itemstack
 				end
 
-				if check_protection(lpos, user:get_player_name(), "place "..source) then
+				if check_protection(lpos, user:get_player_name(), "place "..placename) then
 					return
 				end
 
@@ -218,8 +259,8 @@ minetest.register_craftitem("bucket:bucket_empty", {
 })
 
 bucket.register_liquid(
-	"default:water_source",
-	"default:water_flowing",
+	{"default:water_source", "cw:water_source"},
+	{"default:water_flowing", "cw:water_flowing"},
 	"bucket:bucket_water",
 	"default:water_source",
 	"bucket_water.png",

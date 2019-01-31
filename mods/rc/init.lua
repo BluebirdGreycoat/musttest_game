@@ -13,12 +13,14 @@ rc.realms = {
 		minp = {x=-30912, y=-30912, z=-30912},
 		maxp = {x=30927, y=500, z=30927},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		ground = -9,
 	},
 	{
 		name = "channelwood", -- Forest realm. 250 meters high.
 		minp = {x=-30912, y=3050, z=-30912},
 		maxp = {x=30927, y=3300, z=30927},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		ground = 3066,
 	},
 }
 
@@ -38,6 +40,24 @@ function rc.is_valid_realm_pos(pos)
 
 	-- Not in any realm?
 	return false
+end
+
+function rc.get_ground_level_at_pos(pos)
+	local p = vector.round(pos)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			return true, v.ground
+		end
+	end
+
+	-- Not in any realm?
+	return false, nil
 end
 
 -- API function. Get string name of the current realm the player is in.

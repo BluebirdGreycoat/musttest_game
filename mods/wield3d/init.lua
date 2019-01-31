@@ -75,10 +75,130 @@ function wield3d.on_teleport()
 	gauges.on_teleport()
 end
 
+
+local function do_teleport(name, param)
+	-- Returns (pos, true) if found, otherwise (pos, false)
+	local function find_free_position_near(pos)
+		local tries = {
+			{x=1,y=0,z=0},
+			{x=-1,y=0,z=0},
+			{x=0,y=0,z=1},
+			{x=0,y=0,z=-1},
+		}
+		for _, d in ipairs(tries) do
+			local p = {x = pos.x+d.x, y = pos.y+d.y, z = pos.z+d.z}
+			local n = core.get_node_or_nil(p)
+			if n and n.name then
+				local def = core.registered_nodes[n.name]
+				if def and not def.walkable then
+					if rc.is_valid_realm_pos(p) then
+						return p, true
+					end
+				end
+			end
+		end
+		return pos, false
+	end
+
+	local teleportee = nil
+	local p = {}
+	p.x, p.y, p.z = string.match(param, "^([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
+	p.x = tonumber(p.x)
+	p.y = tonumber(p.y)
+	p.z = tonumber(p.z)
+	if p.x and p.y and p.z then
+		local lm = 31000
+		if p.x < -lm or p.x > lm or p.y < -lm or p.y > lm or p.z < -lm or p.z > lm then
+			return false, "Cannot teleport out of map bounds"
+		end
+		if not rc.is_valid_realm_pos(p) then
+			return false, "Cannot teleport outside of any realm"
+		end
+		teleportee = core.get_player_by_name(name)
+		if teleportee then
+			teleportee:set_pos(p)
+			return true, "Teleporting to "..core.pos_to_string(p)
+		end
+	end
+
+	local teleportee = nil
+	local p = nil
+	local target_name = nil
+	target_name = param:match("^([^ ]+)$")
+	teleportee = core.get_player_by_name(name)
+	if target_name then
+		local target = core.get_player_by_name(target_name)
+		if target then
+			p = target:get_pos()
+		end
+	end
+	if teleportee and p then
+		p = find_free_position_near(p)
+		if not rc.is_valid_realm_pos(p) then
+			return false, "Cannot teleport outside of any realm"
+		end
+		teleportee:set_pos(p)
+		return true, "Teleporting to " .. target_name
+				.. " at "..core.pos_to_string(p)
+	end
+
+	if not core.check_player_privs(name, {bring=true}) then
+		return false, "You don't have permission to teleport other players (missing bring privilege)"
+	end
+
+	local teleportee = nil
+	local p = {}
+	local teleportee_name = nil
+	teleportee_name, p.x, p.y, p.z = param:match(
+			"^([^ ]+) +([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
+	p.x, p.y, p.z = tonumber(p.x), tonumber(p.y), tonumber(p.z)
+	if teleportee_name then
+		teleportee = core.get_player_by_name(teleportee_name)
+	end
+	if teleportee and p.x and p.y and p.z then
+		if not rc.is_valid_realm_pos(p) then
+			return false, "Cannot teleport players outside realm boundaries"
+		end
+		teleportee:set_pos(p)
+		return true, "Teleporting " .. teleportee_name
+				.. " to " .. core.pos_to_string(p)
+	end
+
+	local teleportee = nil
+	local p = nil
+	local teleportee_name = nil
+	local target_name = nil
+	teleportee_name, target_name = string.match(param, "^([^ ]+) +([^ ]+)$")
+	if teleportee_name then
+		teleportee = core.get_player_by_name(teleportee_name)
+	end
+	if target_name then
+		local target = core.get_player_by_name(target_name)
+		if target then
+			p = target:get_pos()
+		end
+	end
+	if teleportee and p then
+		if not rc.is_valid_realm_pos(p) then
+			return false, "Cannot teleport players outside realm boundaries"
+		end
+		p = find_free_position_near(p)
+		teleportee:set_pos(p)
+		return true, "Teleporting " .. teleportee_name
+				.. " to " .. target_name
+				.. " at " .. core.pos_to_string(p)
+	end
+
+	return false, 'Invalid parameters ("' .. param
+			.. '") or player not found (see /help teleport)'
+end
+
+
+
 -- Override /teleport command so that wield3d can reset the wieldentities.
 local cmdteleport = minetest.registered_chatcommands["teleport"]
 if cmdteleport then
-	local func = cmdteleport.func
+	local func = do_teleport
 	if func and type(func) == "function" then
 		local newfunc = function(name, param)
 			wield3d.on_teleport()

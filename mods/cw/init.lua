@@ -144,15 +144,15 @@ cw.generate_realm = function(minp, maxp, seed)
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			elseif ground_depth == ocean_depth - 3 then
-				if pr:next(1, 26) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
-				end
-			elseif ground_depth == ocean_depth - 4 then
 				if pr:next(1, 40) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
-			elseif ground_depth == ocean_depth - 5 then
+			elseif ground_depth == ocean_depth - 4 then
 				if pr:next(1, 70) == 1 then
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+				end
+			elseif ground_depth == ocean_depth - 5 then
+				if pr:next(1, 100) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			elseif ground_depth == ocean_depth - 6 then

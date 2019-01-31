@@ -68,8 +68,8 @@ local noisemap1 = {}
 local noisemap2 = {}
 
 local JUNGLETREE_RELPOSITION1 = {x=-2, y=0, z=-2}
-local JUNGLETREE_RELPOSITION2 = {x=-2, y=15, z=-2}
-local JUNGLETREE_RELPOSITION3 = {x=-2, y=30, z=-2}
+local JUNGLETREE_RELPOSITION2 = {x=-2, y=13, z=-2}
+local JUNGLETREE_RELPOSITION3 = {x=-2, y=26, z=-2}
 local JUNGLETREE_REPLACEMENTS = {["default:jungletree"] = "basictrees:jungletree_cube"}
 
 cw.generate_realm = function(minp, maxp, seed)

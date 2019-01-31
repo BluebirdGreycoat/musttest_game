@@ -67,7 +67,10 @@ local data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 
-local JUNGLETREE_RELPOSITION = {x=-2, y=0, z=-2}
+local JUNGLETREE_RELPOSITION1 = {x=-2, y=0, z=-2}
+local JUNGLETREE_RELPOSITION2 = {x=-2, y=12, z=-2}
+local JUNGLETREE_RELPOSITION3 = {x=-2, y=24, z=-2}
+local JUNGLETREE_REPLACEMENTS = {["default:jungletree"] = "basictrees:jungletree_cube"}
 
 cw.generate_realm = function(minp, maxp, seed)
 	local nstart = cw.REALM_START
@@ -186,7 +189,9 @@ cw.generate_realm = function(minp, maxp, seed)
 
 	for k, v in ipairs(tree_positions1) do
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", {["default:jungletree"] = "basictrees:jungletree_cube"}, true)
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION1), path, "random", JUNGLETREE_REPLACEMENTS, true)
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION2), path, "random", JUNGLETREE_REPLACEMENTS, true)
+		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION3), path, "random", JUNGLETREE_REPLACEMENTS, true)
 	end
 end
 

@@ -6,6 +6,18 @@ cw.modpath = minetest.get_modpath("cw")
 -- trees growing out of the ocean. Trees are huge and extremely tall. Water is
 -- dangerious, filled with flesh-eating fish! Trees do not burn (too wet).
 
+-- Register deadly water.
+if not cw.registered then
+	local sdef = table.copy(minetest.registered_nodes["default:water_source"])
+	local fdef = table.copy(minetest.registered_nodes["default:water_flowing"])
+
+	sdef.damage_per_second = 2
+	fdef.damage_per_second = 2
+
+	minetest.register_node("cw:water_source", sdef)
+	minetest.register_node("cw:water_flowing", fdef)
+end
+
 cw.REALM_START = 3050
 cw.BEDROCK_DEPTH = 8
 cw.OCEAN_DEPTH = 16
@@ -38,7 +50,7 @@ local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
 local c_stone           = minetest.get_content_id("default:stone")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
-local c_water           = minetest.get_content_id("default:water_source")
+local c_water           = minetest.get_content_id("cw:water_source")
 local c_dirt            = minetest.get_content_id("darkage:darkdirt")
 local c_silt            = minetest.get_content_id("darkage:silt")
 

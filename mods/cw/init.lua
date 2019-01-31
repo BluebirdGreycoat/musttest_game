@@ -97,8 +97,8 @@ cw.generate_realm = function(minp, maxp, seed)
       local n2 = noisemap2[ni2]
 
 			-- Randomize height of the bedrock a bit.
-			local bedrock_adjust = (cw.BEDROCK_DEPTH + pr:next(0, pr:next(1, 2)))
-			local ocean_depth = (cw.BEDROCK_DEPTH + cw.OCEAN_DEPTH)
+			local bedrock_adjust = (nstart + cw.BEDROCK_DEPTH + pr:next(0, pr:next(1, 2)))
+			local ocean_depth = (nstart + cw.BEDROCK_DEPTH + cw.OCEAN_DEPTH)
 
       -- First pass through column.
       for y = y0, y1 do
@@ -106,7 +106,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
         if y >= nstart and y <= nfinish then
 					-- Place bedrock layer.
-					if y <= (nstart + bedrock_adjust) then
+					if y <= bedrock_adjust then
 						data[vp] = c_bedrock
 					elseif y <= ocean_depth then
 						data[vp] = c_water

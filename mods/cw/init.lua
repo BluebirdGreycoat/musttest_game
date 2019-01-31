@@ -123,10 +123,10 @@ cw.generate_realm = function(minp, maxp, seed)
 					-- Place bedrock layer.
 					if y <= bedrock_adjust then
 						data[vp] = c_bedrock
-					elseif y == ground_depth then
-						data[vp] = c_silt
 					elseif y < ground_depth then
 						data[vp] = c_dirt
+					elseif y == ground_depth then
+						data[vp] = c_silt
 					elseif y <= ocean_depth then
 						data[vp] = c_water
 					end

@@ -213,15 +213,33 @@ function obsidian_gateway.attempt_activation(pos, player)
 			if vector.distance(target, origin) < 500 then
 				return true
 			end
+			if not rc.is_valid_realm_pos(target) then
+				return true
+			end
 		end
 
 		-- Keep trying until the target is within bounds.
+		local num_tries = 0
 		while bad(target, origin) do
 			target = {
 				x = prx:next(-5000, 5000) + origin.x,
 				y = pry:next(-5000, 5000) + origin.y,
 				z = prz:next(-5000, 5000) + origin.z,
 			}
+			num_tries = num_tries + 1
+			if num_tries >= 5 then
+				minetest.after(0, function()
+					-- Detonate some TNT!
+					tnt.boom(ppos, {
+						radius = 3,
+						ignore_protection = false,
+						ignore_on_blast = false,
+						damage_radius = 3,
+						disable_drops = true,
+					})
+				end)
+				return
+			end
 		end
 
 		meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))

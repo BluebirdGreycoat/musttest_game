@@ -33,6 +33,24 @@ minetest.register_node("basictrees:jungletree_trunk", {
   }),
 })
 
+minetest.register_node("basictrees:jungletree_cube", {
+	description = "Jungle Tree",
+	tiles = {"default_jungletree_top.png", "default_jungletree_top.png", "default_jungletree.png"},
+	paramtype2 = "facedir",
+	groups = basictrees.tree_groups,
+	sounds = default.node_sound_wood_defaults(),
+	on_place = minetest.rotate_node,
+	movement_speed_multiplier = default.NORM_SPEED,
+	drop = "basictrees:jungletree_trunk",
+
+  on_destruct = enhanced_leafdecay.make_tree_destructor({
+    leaves = {
+      "basictrees:jungletree_leaves",
+      "group:dry_leaves",
+    },
+  }),
+})
+
 
 
 minetest.register_node("basictrees:jungletree_wood", {

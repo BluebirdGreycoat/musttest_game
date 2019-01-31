@@ -140,7 +140,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ground_depth = (nstart + gd + floor(abs(n1 * ghv)))
 
 			if ground_depth == ocean_depth - 3 then
-				if pr:next(1, 12) == 1 then
+				if pr:next(1, 20) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			end
@@ -176,7 +176,7 @@ cw.generate_realm = function(minp, maxp, seed)
 	vm:write_to_map()
 
 	for k, v in ipairs(tree_positions1) do
-		local path = basictrees.modpath .. "/schematics/jungle_tree.mts"
+		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
 		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION), path, "random", nil, false)
 	end
 end

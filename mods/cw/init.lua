@@ -9,6 +9,7 @@ cw.modpath = minetest.get_modpath("cw")
 -- Register deadly water.
 if not cw.registered then
 	-- Basically just a copy of regular water, with damage_per_second.
+	-- Since it's a copy and not the same, it isn't bucketable.
 	local sdef = table.copy(minetest.registered_nodes["default:water_source"])
 	local fdef = table.copy(minetest.registered_nodes["default:water_flowing"])
 

@@ -414,6 +414,10 @@ function beds.on_respawnplayer(player)
 		wield3d.on_teleport()
 		player:set_pos(pos)
 
+		-- If player dies in a realm and their bed is in another, then they may
+		-- change realms that way.
+		rc.notify_realm_update(player, pos)
+
 		local spawncount = beds.storage:get_int(name .. ":count")
 		if spawncount <= 1 then
 			beds.spawn[name] = nil

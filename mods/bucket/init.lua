@@ -78,7 +78,7 @@ end
 --    name = text description of the bucket item
 --    groups = (optional) groups of the bucket item, for example {water_bucket = 1}
 -- This function can be called from any mod (that depends on bucket).
-function bucket.register_liquid(source, flowing, itemname, inventory_image, name, groups)
+function bucket.register_liquid(source, flowing, itemname, placename, inventory_image, name, groups)
 	bucket.liquids[source] = {
 		source = source,
 		flowing = flowing,
@@ -149,8 +149,8 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image, name
 				end
 
 				-- this causes a bug with placing water in protection.
-				--minetest.place_node(lpos, {name = source})
-				minetest.set_node(lpos, {name = source})
+				--minetest.place_node(lpos, {name = placename})
+				minetest.set_node(lpos, {name = placename})
 				minetest.check_for_falling(lpos)
 				return ItemStack("bucket:bucket_empty")
 			end
@@ -221,6 +221,7 @@ bucket.register_liquid(
 	"default:water_source",
 	"default:water_flowing",
 	"bucket:bucket_water",
+	"default:water_source",
 	"bucket_water.png",
 	"Water Bucket",
 	{water_bucket = 1}
@@ -230,6 +231,7 @@ bucket.register_liquid(
 	"default:river_water_source",
 	"default:river_water_flowing",
 	"bucket:bucket_river_water",
+	"default:river_water_source",
 	"bucket_river_water.png",
 	"Salt Water Bucket",
 	{water_bucket = 1}
@@ -239,6 +241,7 @@ bucket.register_liquid(
 	"default:lava_source",
 	"default:lava_flowing",
 	"bucket:bucket_lava",
+	"default:lava_source",
 	"bucket_lava.png",
 	"Lava Bucket"
 )

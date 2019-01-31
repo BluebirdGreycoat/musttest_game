@@ -1337,7 +1337,12 @@ minetest.register_node("default:water_source", {
 			minetest.swap_node(pos, {name="cw:water_source"})
 			return
 		end
-		if pos.y > -25000 then return end
+		if pos.y > -25000 then
+			if rc.current_realm_at_pos(pos) ~= "channelwood" then
+				minetest.swap_node(pos, {name="default:water_source"})
+			end
+			return
+		end
 		minetest.set_node(pos, {name="fire:basic_flame"})
 	end,
 

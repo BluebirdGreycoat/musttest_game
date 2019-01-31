@@ -45,10 +45,16 @@ end
 
 
 local function check_protection(pos, name, text)
+	local success, gl = rc.get_ground_level_at_pos(pos)
+	if not success then
+		minetest.chat_send_player(name, "# Server: That position is in the Void!")
+		return true
+	end
+
 	-- Don't let players make huge liquid griefs. By MustTest.
 	-- But we allow river water to be placed above ground, because it does not spread.
 	if not string.find(text, "river_water_source") then
-		if pos.y > rc.get_ground_level_at_pos(pos) and string.find(text, "place") then
+		if pos.y > gl and string.find(text, "place") then
 			minetest.chat_send_player(name, "# Server: Don't do that above ground!")
 			easyvend.sound_error(name)
 			return true

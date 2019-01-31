@@ -52,8 +52,9 @@ cw.generate_realm = function(minp, maxp, seed)
 	end
 
   -- Grab the voxel manipulator.
-	-- Note: we do not need to read current map data. Nothing there but air.
+	-- Read current map data.
   local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+  vm:get_data(data)
   local area = VoxelArea:new {MinEdge=minp, MaxEdge=maxp}
 
   local pr = PseudoRandom(seed + 381)

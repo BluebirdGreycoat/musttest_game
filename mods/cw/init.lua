@@ -15,11 +15,11 @@ if not cw.registered then
 	sdef.damage_per_second = 1
 	fdef.damage_per_second = 1
 
-	sdef.liquid_alternative_flowing = "cw:water_flowing",
-	sdef.liquid_alternative_source = "cw:water_source",
+	sdef.liquid_alternative_flowing = "cw:water_flowing"
+	sdef.liquid_alternative_source = "cw:water_source"
 
-	fdef.liquid_alternative_flowing = "cw:water_flowing",
-	fdef.liquid_alternative_source = "cw:water_source",
+	fdef.liquid_alternative_flowing = "cw:water_flowing"
+	fdef.liquid_alternative_source = "cw:water_source"
 
 	minetest.register_node("cw:water_source", sdef)
 	minetest.register_node("cw:water_flowing", fdef)

@@ -139,7 +139,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			-- Ground height.
 			local ground_depth = (nstart + gd + floor(abs(n1 * ghv)))
 
-			if ground_depth <= ocean_depth - 2 then
+			if ground_depth >= ocean_depth - 2 then
 				if pr:next(1, 16) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
@@ -153,6 +153,10 @@ cw.generate_realm = function(minp, maxp, seed)
 				end
 			elseif ground_depth == ocean_depth - 5 then
 				if pr:next(1, 70) == 1 then
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+				end
+			elseif ground_depth == ocean_depth - 6 then
+				if pr:next(1, 200) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
 			end

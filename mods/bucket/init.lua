@@ -69,6 +69,19 @@ local function check_protection(pos, name, text)
 end
 
 
+local function node_in_group(name, list)
+	if type(list) == "string" then
+		return (name == list)
+	elseif type(list) == "table" then
+		for k, v in ipairs(list) do
+			if name == v then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 
 -- Register a new liquid
 --    source = name of the source node
@@ -143,19 +156,6 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 
 				local lpos
 
-				local function node_in_group(name, list)
-					if type(list) == "string" then
-						return (name == list)
-					elseif type(list) == "table" then
-						for k, v in ipairs(list) do
-							if name == v then
-								return true
-							end
-						end
-					end
-					return false
-				end
-
 				-- Check if pointing to a buildable node
 				if ndef and ndef.buildable_to then
 					-- buildable; replace the node
@@ -216,7 +216,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 		local liquiddef = bucket.liquids[node.name]
 		local item_count = user:get_wielded_item():get_count()
 
-		if liquiddef ~= nil and liquiddef.itemname ~= nil and node.name == liquiddef.source then
+		if liquiddef ~= nil and liquiddef.itemname ~= nil and node_in_group(node.name, liquiddef.source) then
 			if check_protection(pointed_thing.under, user:get_player_name(), "take ".. node.name) then
 				return
 			end

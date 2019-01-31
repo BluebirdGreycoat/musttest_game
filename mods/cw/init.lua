@@ -55,7 +55,7 @@ cw.generate_realm = function(minp, maxp, seed)
 	-- Read current map data.
   local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
   vm:get_data(data)
-  local area = VoxelArea:new {MinEdge=minp, MaxEdge=maxp}
+  local area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
 
   local pr = PseudoRandom(seed + 381)
 

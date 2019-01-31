@@ -230,6 +230,10 @@ bones.on_dieplayer = function(player)
 		end
 	end
 
+	if not rc.is_valid_realm_pos(pos) then
+		bones_mode = "drop"
+	end
+
 	if bones_mode ~= "bones" then
 		-- Cannot create bones, therefore we don't modify player inventories.
 		minetest.log("action", "Player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos) .. ", but cannot create bones!")

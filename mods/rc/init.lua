@@ -15,9 +15,9 @@ rc.realms = {
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 	},
 	{
-		name = "channelwood", -- Forest realm.
+		name = "channelwood", -- Forest realm. 250 meters high.
 		minp = {x=-30912, y=3050, z=-30912},
-		maxp = {x=30927, y=3550, z=30927},
+		maxp = {x=30927, y=3300, z=30927},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 	},
 }

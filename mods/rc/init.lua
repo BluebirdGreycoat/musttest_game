@@ -85,6 +85,14 @@ function rc.check_position(player)
 		reset.spawn = {x=0, y=-7, z=0}
 	end
 
+	-- Check if player is currently in the void.
+	if not reset then
+		if rc.players[n].realm == "" then
+			reset = {}
+			reset.spawn = {x=0, y=-7, z=0}
+		end
+	end
+
 	-- Do bounds checks for individual realms.
 	if not reset then
 		for k, v in ipairs(rc.realms) do

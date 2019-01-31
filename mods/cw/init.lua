@@ -152,14 +152,6 @@ cw.generate_realm = function(minp, maxp, seed)
 				if pr:next(1, 100) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
 				end
-			elseif water_depth == 5 then
-				if pr:next(1, 200) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
-				end
-			elseif water_depth == 6 then
-				if pr:next(1, 400) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
-				end
 			end
 
 			-- First pass through column.

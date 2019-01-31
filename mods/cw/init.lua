@@ -9,7 +9,7 @@ cw.modpath = minetest.get_modpath("cw")
 cw.REALM_START = 3050
 cw.BEDROCK_DEPTH = 8
 cw.OCEAN_DEPTH = 16
-cw.GROUND_DEPTH = 13
+cw.GROUND_DEPTH = 12
 cw.GROUND_HEIGHT_VARIATION = 3
 
 -- Controls land height.
@@ -18,7 +18,7 @@ cw.noise1param2d = {
 	scale = 1,
 	spread = {x=128, y=128, z=128},
 	seed = 3717,
-	octaves = 2,
+	octaves = 5,
 	persist = 0.5,
 	lacunarity = 2,
 }
@@ -40,6 +40,7 @@ local c_stone           = minetest.get_content_id("default:stone")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_water           = minetest.get_content_id("default:water_source")
 local c_dirt            = minetest.get_content_id("darkage:darkdirt")
+local c_silt            = minetest.get_content_id("darkage:silt")
 
 -- Externally located tables for performance.
 local data = {}
@@ -112,7 +113,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_depth = (nstart + od)
 
 			-- Ground height.
-			local ground_depth = (nstart + gd + abs(n1 * ghv))
+			local ground_depth = (nstart + gd + floor(abs(n1 * ghv)))
 
 			-- First pass through column.
 			for y = y0, y1 do
@@ -122,7 +123,9 @@ cw.generate_realm = function(minp, maxp, seed)
 					-- Place bedrock layer.
 					if y <= bedrock_adjust then
 						data[vp] = c_bedrock
-					elseif y <= ground_depth then
+					elseif y == ground_depth then
+						data[vp] = c_silt
+					elseif y < ground_depth then
 						data[vp] = c_dirt
 					elseif y <= ocean_depth then
 						data[vp] = c_water

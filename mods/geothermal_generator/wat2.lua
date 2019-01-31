@@ -112,7 +112,8 @@ function(pos, meta)
     for k, v in ipairs(targets) do
       local node = minetest.get_node(v)
       if node.name == "default:water_flowing" or
-					node.name == "default:river_water_flowing" then
+					node.name == "default:river_water_flowing" or
+					node.name == "cw:water_flowing" then
         cw = cw + 1
       end
     end

@@ -203,9 +203,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 				return true
 			end
 			-- Or too far.
-			if vector.distance(target, origin) > 7000 then
-				return true
-			end
+			-- This causes too many failures.
+			--if vector.distance(target, origin) > 7000 then
+			--	return true
+			--end
 			if not rc.is_valid_gateway_region(target) then
 				return true
 			end

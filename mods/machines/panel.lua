@@ -87,18 +87,21 @@ function(pos, meta)
 		local light = minetest.get_node_light(above, nil) or 0
 		local tod = minetest.get_timeofday()
 
-		if light >= 15 and tod >= 0.24 and tod <= 0.76 and pos.y >= -10 then
-			goodenv = true
-			local h = pos.y
-			if h > 50 then h = 50 end
-			if h < -10 then h = -10 end
-			-- Normalize.
-			h = h + 10
-			h = h / 60
-			-- Add scaling to power output.
-			eu_rate = math.floor(POWER_OUTPUT * h)
-			-- Clamp.
-			if eu_rate < 1 then eu_rate = 1 end
+		local success, groundlevel = rc.get_ground_level_at_pos(pos)
+
+		if success then
+			if light >= 15 and tod >= 0.24 and tod <= 0.76 and pos.y >= -10 then
+				goodenv = true
+				local h = (pos.y - groundlevel)
+				if h > 60 then h = 60 end
+				if h < 0 then h = 0 end
+				-- Normalize.
+				h = h / 60
+				-- Add scaling to power output.
+				eu_rate = math.floor(POWER_OUTPUT * h)
+				-- Clamp.
+				if eu_rate < 1 then eu_rate = 1 end
+			end
 		end
 
 		if goodenv then

@@ -177,9 +177,14 @@ function(pos, meta)
       meta:set_int("chktmr", 0)
       meta:set_int("active", 0)
       meta:set_int("eups", 0)
-			if numnodes < 10 then
+
+			local success, windlevel = rc.get_wind_level_at_pos(pos)
+
+			if not success then
+				meta:set_string("error", "Invalid realm!")
+			elseif numnodes < 10 then
 				meta:set_string("error", "Not enough wind catcher frames!")
-			elseif pos.y < 10 then
+			elseif pos.y < windlevel then
 				meta:set_string("error", "Not enough altitude!")
 			elseif aircount == 0 then
 				meta:set_string("error", "Machine is obstructed!")

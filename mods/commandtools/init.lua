@@ -349,6 +349,8 @@ end
 commandtools.gateinfo = {
 	target_pos = {x=0, y=0, z=0},
 	origin_pos = {x=0, y=0, z=0},
+	target_dest = {x=0, y=0, z=0},
+	origin_dest = {x=0, y=0, z=0},
 	target_owner = "",
 	origin_owner = "",
 	direction = ""
@@ -478,7 +480,8 @@ function commandtools.gatecopy_origin(pname, pos)
 
 	if target and owner and owner ~= "" then
 		minetest.chat_send_player(pname, "# Server: Copied ORIGIN gateway information!")
-		commandtools.gateinfo.origin_pos = vector.round(target)
+		commandtools.gateinfo.origin_pos = vector.round(origin)
+		commandtools.gateinfo.origin_dest = vector.round(target)
 		commandtools.gateinfo.origin_owner = owner
 		commandtools.gateinfo.direction = ns_key
 	else
@@ -520,7 +523,8 @@ function commandtools.gatecopy_target(pname, pos)
 
 	if target and owner and owner ~= "" then
 		minetest.chat_send_player(pname, "# Server: Copied TARGET gateway information!")
-		commandtools.gateinfo.target_pos = vector.round(target)
+		commandtools.gateinfo.target_pos = vector.round(origin)
+		commandtools.gateinfo.target_dest = vector.round(target)
 		commandtools.gateinfo.target_owner = owner
 		commandtools.gateinfo.direction = ns_key
 	else

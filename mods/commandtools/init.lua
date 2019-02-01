@@ -395,7 +395,7 @@ function commandtools.gaterepair_origin(pname, pos)
 	target = vector.round(target)
 
 	if ns_key == "ns" then
-		playerorigin = vector.add(target, {x=0, y=1, z=1})
+		playerorigin = vector.add(origin, {x=1, y=1, z=0})
 	elseif ns_key == "ew" then
 		playerorigin = vector.add(target, {x=0, y=1, z=1})
 	else
@@ -450,7 +450,7 @@ function commandtools.gaterepair_target(pname, pos)
 	target = vector.round(target)
 
 	if ns_key == "ns" then
-		playerorigin = vector.add(target, {x=0, y=1, z=1})
+		playerorigin = vector.add(origin, {x=1, y=1, z=0})
 	elseif ns_key == "ew" then
 		playerorigin = vector.add(target, {x=0, y=1, z=1})
 	else

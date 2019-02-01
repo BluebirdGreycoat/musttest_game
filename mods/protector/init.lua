@@ -602,11 +602,9 @@ minetest.register_node("protector:protect", {
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
-		end
+
+		meta:set_string("rename", dname)
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 	end,
 
 	on_destruct = function(pos)
@@ -698,11 +696,9 @@ minetest.register_node("protector:protect3", {
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
-		end
+
+		meta:set_string("rename", dname)
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 	end,
 
 	on_destruct = function(pos)
@@ -810,11 +806,9 @@ minetest.register_node("protector:protect2", {
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
-		end
+
+		meta:set_string("rename", dname)
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 	end,
 
 	on_destruct = function(pos)
@@ -911,11 +905,9 @@ minetest.register_node("protector:protect4", {
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
-			meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
-		end
+
+		meta:set_string("rename", dname)
+		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 	end,
 
 	on_destruct = function(pos)

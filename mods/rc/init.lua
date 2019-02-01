@@ -82,7 +82,8 @@ function rc.get_random_realm_gate_position(origin)
 	assert(realm)
 
 	-- Player is in the Overworld or Nether. Use old Gateway behavior!
-	-- Not more than 5000 meters in any direction.
+	-- Not more than 5000 meters in any direction, and MUST stay in the Overworld
+	-- (or the Nether).
 	local pos = {
 		x = math.random(-5000, 5000) + origin.x,
 		y = math.random(-5000, 5000) + origin.y,

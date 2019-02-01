@@ -218,6 +218,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			num_tries = num_tries + 1
 
 			if num_tries >= 25 then
+				--[[
 				minetest.after(0, function()
 					-- Detonate some TNT!
 					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {
@@ -228,6 +229,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 						disable_drops = true,
 					})
 				end)
+				--]]
 				return
 			end
 		end
@@ -285,7 +287,15 @@ function obsidian_gateway.attempt_activation(pos, player)
 				if first_time_init then
 					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection @ " .. minetest.pos_to_string(target) .. ".")
 				end
-				return
+
+				-- Clear data for the initial gate.
+				local meta = minetest.get_meta(origin)
+				meta:set_string("obsidian_gateway_success_" .. ns_key, "")
+				meta:set_string("obsidian_gateway_destination_" .. ns_key, "")
+				meta:set_string("obsidian_gateway_owner_" .. ns_key, "")
+
+				-- Cancel transport.
+				return true
 			end
 			-- Build return portal (only if not already using a return portal).
 			-- Also, only build return portal on first use of the initial portal.

@@ -177,6 +177,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't
 	-- stomp on each other's data.
 	target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
+	if not target then
+		minetest.chat_send_player(pname, "# Server: Gateway has no destination! Aborting.")
+		return
+	end
 
 	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
 	local isowner = (meta:get_string("obsidian_gateway_owner_" .. ns_key) == pname)

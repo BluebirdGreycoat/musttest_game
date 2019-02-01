@@ -346,7 +346,15 @@ end
 
 
 
-function commandtools.gaterepair(pname, pos)
+commandtools.gateinfo = {
+	target_pos = {x=0, y=0, z=0},
+	origin_pos = {x=0, y=0, z=0},
+	target_owner = "",
+	origin_owner = "",
+	direction = ""
+}
+
+function commandtools.gaterepair_origin(pname, pos)
 	local result
 	local points
 	local counts
@@ -374,13 +382,150 @@ function commandtools.gaterepair(pname, pos)
 		return
 	end
 
-	local target = {x=0, y=0, z=0}
+	if commandtools.gateinfo.direction ~= ns_key then
+		minetest.chat_send_player(pname, "# Server: Gateway orientations do NOT match!")
+		return
+	end
+
+	local target = table.copy(commandtools.gateinfo.target_pos)
 	target = vector.round(target)
 
 	local meta = minetest.get_meta(origin)
 	meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
 	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
-	meta:set_string("obsidian_gateway_owner_" .. ns_key, "GoldFireUn")
+	meta:set_string("obsidian_gateway_owner_" .. ns_key, commandtools.gateinfo.target_owner)
+	meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 0) -- Not used by origin gates.
+
+	minetest.chat_send_player(pname, "# Server: Pasted gateway information (linked ORIGIN to TARGET)!")
+end
+
+function commandtools.gaterepair_target(pname, pos)
+	local result
+	local points
+	local counts
+	local origin
+
+	local northsouth
+	local ns_key
+	local playerorigin
+
+	-- Find the gateway (threshold under player)!
+	result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ns_data)
+	northsouth = true
+	ns_key = "ns"
+
+	if not result then
+		-- Couldn't find northsouth gateway, so try to find eastwest.
+		result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ew_data)
+		northsouth = false
+		ns_key = "ew"
+	end
+
+	-- Debugging.
+	if not result then
+		minetest.chat_send_player(pname, "# Server: Bad gateway.")
+		return
+	end
+
+	if commandtools.gateinfo.direction ~= ns_key then
+		minetest.chat_send_player(pname, "# Server: Gateway orientations do NOT match!")
+		return
+	end
+
+	local target = table.copy(commandtools.gateinfo.origin_pos)
+	target = vector.round(target)
+
+	local meta = minetest.get_meta(origin)
+	meta:set_string("obsidian_gateway_success_" .. ns_key, "") -- Not used by return gates.
+	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
+	meta:set_string("obsidian_gateway_owner_" .. ns_key, commandtools.gateinfo.origin_owner)
+	meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
+
+	minetest.chat_send_player(pname, "# Server: Pasted gateway information (linked TARGET to ORIGIN)!")
+end
+
+function commandtools.gatecopy_origin(pname, pos)
+	local result
+	local points
+	local counts
+	local origin
+
+	local northsouth
+	local ns_key
+	local playerorigin
+
+	-- Find the gateway (threshold under player)!
+	result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ns_data)
+	northsouth = true
+	ns_key = "ns"
+
+	if not result then
+		-- Couldn't find northsouth gateway, so try to find eastwest.
+		result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ew_data)
+		northsouth = false
+		ns_key = "ew"
+	end
+
+	-- Debugging.
+	if not result then
+		minetest.chat_send_player(pname, "# Server: Bad gateway.")
+		return
+	end
+
+	local meta = minetest.get_meta(origin)
+	local target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
+	local owner = meta:get_string("obsidian_gateway_owner_" .. ns_key)
+
+	if target and owner and owner ~= "" then
+		minetest.chat_send_player(pname, "# Server: Copied ORIGIN gateway information!")
+		commandtools.gateinfo.origin_pos = vector.round(target)
+		commandtools.gateinfo.origin_owner = owner
+		commandtools.gateinfo.direction = ns_key
+	else
+		minetest.chat_send_player(pname, "# Server: Invalid gateway metadata. Cannot copy!")
+	end
+end
+
+function commandtools.gatecopy_target(pname, pos)
+	local result
+	local points
+	local counts
+	local origin
+
+	local northsouth
+	local ns_key
+	local playerorigin
+
+	-- Find the gateway (threshold under player)!
+	result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ns_data)
+	northsouth = true
+	ns_key = "ns"
+
+	if not result then
+		-- Couldn't find northsouth gateway, so try to find eastwest.
+		result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ew_data)
+		northsouth = false
+		ns_key = "ew"
+	end
+
+	-- Debugging.
+	if not result then
+		minetest.chat_send_player(pname, "# Server: Bad gateway.")
+		return
+	end
+
+	local meta = minetest.get_meta(origin)
+	local target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
+	local owner = meta:get_string("obsidian_gateway_owner_" .. ns_key)
+
+	if target and owner and owner ~= "" then
+		minetest.chat_send_player(pname, "# Server: Copied TARGET gateway information!")
+		commandtools.gateinfo.target_pos = vector.round(target)
+		commandtools.gateinfo.target_owner = owner
+		commandtools.gateinfo.direction = ns_key
+	else
+		minetest.chat_send_player(pname, "# Server: Invalid gateway metadata. Cannot copy!")
+	end
 end
 
 
@@ -397,7 +542,33 @@ function commandtools.shovel_on_use(itemstack, user, pt)
 		return itemstack
 	end
 
-	commandtools.gaterepair(pname, pt.under)
+	local control = user:get_player_control()
+	local good
+	local err
+
+	if control.aux1 then
+		if control.sneak then
+			-- Use + sneak: copy origin gate info.
+			good, err = pcall(function() commandtools.gatecopy_origin(pname, pt.under) end)
+		else
+			-- Use - sneak: copy target gate info.
+			good, err = pcall(function() commandtools.gatecopy_target(pname, pt.under) end)
+		end
+	else
+		if control.sneak then
+			-- Sneak (no use): paste target information onto origin gate.
+			good, err = pcall(function() commandtools.gaterepair_origin(pname, pt.under) end)
+		else
+			-- Regular tool use: paste origin information onto target gate.
+			good, err = pcall(function() commandtools.gaterepair_target(pname, pt.under) end)
+		end
+	end
+
+	if not good then
+		minetest.chat_send_player(pname, "# Server: Error running code! " .. err)
+	else
+		minetest.chat_send_player(pname, "# Server: Success.")
+	end
 
 	--[[
 

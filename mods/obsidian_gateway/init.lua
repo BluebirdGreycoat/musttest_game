@@ -360,6 +360,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 					preload_tp.preload_and_teleport(friend:get_player_name(), pdest, 16, nil, nil, nil, true)
 				end
 			end
+
+			-- Update liquids around.
+			minetest.after(2, function()
+				mapfix.execute(origin, 10)
+			end)
 		end, nil, false, "nether_portal_usual")
 end
 

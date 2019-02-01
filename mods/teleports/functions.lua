@@ -110,7 +110,7 @@ end
 
 
 
-teleports.teleport_player = function(player, teleport_pos, target)
+teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	if not player or not player:is_player() then
 		return
 	end
@@ -142,6 +142,14 @@ teleports.teleport_player = function(player, teleport_pos, target)
 	end
 
 	local pos = vector.round(target)
+
+	local start_realm = rc.current_realm_at_pos(origin_pos)
+	local target_realm = rc.current_realm_at_pos(pos)
+	if target_realm == "" or start_realm == "" or start_realm ~= target_realm then
+		minetest.chat_send_player(pname, "# Server: Target location is in a different realm! Aborting.")
+		return
+	end
+
 	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
 
 	-- Teleport player to chosen location.
@@ -488,22 +496,31 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
             local tppos = minetest.string_to_pos(tpname)
             if tppos then
                 if vector.distance(tppos, pos) <= teleports.calculate_range(pos) then
-                    local exists = false
-                    for i = 1, #teleports.teleports, 1 do
-                        local tp = teleports.teleports[i]
-                        if vector.equals(tp.pos, tppos) then
-                            exists = true
-                            break
-                        end
-                    end
-                    
-                    if exists then
-                      have_target = true
-                      target_pos = tppos
-                    else
-                        minetest.chat_send_player(playername, "# Server: Transport control error: target no longer exists.")
-												easyvend.sound_error(playername)
-                    end
+										-- Do not permit teleporting from one realm to another.
+										-- Doing so requires a different kind of teleport device.
+										local start_realm = rc.current_realm_at_pos(pos)
+										local target_realm = rc.current_realm_at_pos(tppos)
+										if start_realm ~= "" and start_realm == target_realm then
+											local exists = false
+											for i = 1, #teleports.teleports, 1 do
+													local tp = teleports.teleports[i]
+													if vector.equals(tp.pos, tppos) then
+															exists = true
+															break
+													end
+											end
+
+											if exists then
+												have_target = true
+												target_pos = tppos
+											else
+													minetest.chat_send_player(playername, "# Server: Transport control error: target no longer exists.")
+													easyvend.sound_error(playername)
+											end
+										else
+											minetest.chat_send_player(playername, "# Server: Cannot teleport between realm boundaries!")
+											easyvend.sound_error(playername)
+										end
                 else
                     minetest.chat_send_player(playername, "# Server: Transport control error: target out of range!")
 										easyvend.sound_error(playername)
@@ -550,7 +567,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
           if have_biofuel or admin or isnyan or infinite_fuel then
             local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
             local spawn_pos = {x=teleport_pos.x-1+math.random(0, 2), y=teleport_pos.y+1, z=teleport_pos.z-1+math.random(0, 2)}
-            teleports.teleport_player(player, teleport_pos, spawn_pos)
+            teleports.teleport_player(player, pos, teleport_pos, spawn_pos)
           end
         end
     end

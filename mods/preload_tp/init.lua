@@ -17,6 +17,8 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local tp = table.copy(tpos)
 	local pp = player:get_pos()
 
+	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
+
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}
 	local cb = function(blockpos, action, calls_remaining, param)
@@ -74,6 +76,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 		wield3d.on_teleport()
 		rc.notify_realm_update(player, tp)
 		player:set_pos(tp)
+		minetest.log("action", pname .. " actually teleports to " .. minetest.pos_to_string(tp))
 
 		-- Execute the callback function, if everything else succeeded.
 		if post_cb then

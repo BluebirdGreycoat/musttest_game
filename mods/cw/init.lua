@@ -327,6 +327,11 @@ cw.generate_realm = function(minp, maxp, seed)
 
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
 		local path2 = cw.worldpath .. "/cw_jungletree.mts"
+
+		if h > 10 then
+			path2 = path
+		end
+
 		minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
 
 		if pr:next(1, 5) <= 4 then
@@ -335,7 +340,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			if pr:next(1, 3) <= 2 then
 				v.y = v.y + h
-				minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
+				minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, true)
 			end
 		end
 	end

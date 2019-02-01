@@ -67,7 +67,7 @@ local gate_eastwest = {
 -- Quickly check for protection in an area.
 local function check_protection(pos, radius)
 	-- How much beyond the radius to check for protections.
-	local e = 5
+	local e = 3
 
 	local minp = vector.new(pos.x-(radius+e), pos.y-(radius+e), pos.z-(radius+e))
 	local maxp = vector.new(pos.x+(radius+e), pos.y+(radius+e), pos.z+(radius+e))

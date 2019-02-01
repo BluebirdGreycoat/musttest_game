@@ -280,9 +280,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 				end
 			end
 			-- Don't build return portal on top of someone's protected stuff.
-			if check_protection(target, 5) then
+			if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
 				if first_time_init then
-					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection @ " .. minetest.pos_to_string(target) .. ".")
+					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection near " .. minetest.pos_to_string(target) .. ".")
 				end
 
 				-- Clear data for the initial gate.

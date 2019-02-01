@@ -265,7 +265,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- Create a gateway at the player's destination.
 	-- This gateway links back to the first.
 	-- If it is destroyed, the player is stuck!
-	preload_tp.preload_and_teleport(pname, pdest, 64,
+	preload_tp.preload_and_teleport(pname, pdest, 32,
 		function()
 			if not isowner then
 				-- Grief portal if used by someone other than owner.

@@ -161,8 +161,10 @@ function rc.check_position(player)
 
 	if reset then
 		-- Player is out-of-bounds. Reset to last known good position.
-		minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
-			"> was caught in the inter-dimensional plane!")
+		if not gdac_invis.is_invisible(n) then
+			minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
+				"> was caught in the inter-dimensional plane!")
+		end
 
 		-- Notify wield3d we're adjusting the player position.
 		-- Wielded item entities don't like sudden movement.

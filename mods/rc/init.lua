@@ -22,7 +22,7 @@ rc.realms = {
 		minp = {x=-30912, y=3050, z=-30912},
 		maxp = {x=30927, y=3300, z=30927},
 		gate_minp = {x=-30000, y=3060, z=-30000},
-		gate_maxp = {x=30000, y=3080, z=30000},
+		gate_maxp = {x=30000, y=3100, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3066,
 	},

@@ -292,10 +292,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_success_" .. ns_key, "")
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, "")
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, "")
-				end
 
-				-- Cancel transport.
-				return true
+					-- Cancel transport.
+					return true
+				end
 			end
 			-- Build return portal (only if not already using a return portal).
 			-- Also, only build return portal on first use of the initial portal.

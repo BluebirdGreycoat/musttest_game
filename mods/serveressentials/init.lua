@@ -52,7 +52,7 @@ function serveressentials.whereis(pname, param)
 	local wielding = "wielding " .. wieldname
 
 	minetest.chat_send_player(pname,
-		"# Server: Player <" .. rename.gpn(target) .. "> is located at " .. minetest.pos_to_string(pos) .. ", " ..
+		"# Server: Player <" .. rename.gpn(target) .. "> is located in the " .. rc.realm_description_at_pos(pos) .. " Realm at " .. minetest.pos_to_string(pos) .. ", " ..
 		HP .. ", " .. wielding .. ", " .. area .. ". " .. "Nearby players: " .. nearby .. ".")
 end
 

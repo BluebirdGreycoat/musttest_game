@@ -10,6 +10,7 @@ rc.modpath = minetest.get_modpath("rc")
 rc.realms = {
 	{
 		name = "overworld", -- Default/overworld realm.
+		description = "Overworld",
 		minp = {x=-30912, y=-30912, z=-30912},
 		maxp = {x=30927, y=500, z=30927},
 		gate_minp = {x=-30000, y=-30800, z=-30000},
@@ -19,6 +20,7 @@ rc.realms = {
 	},
 	{
 		name = "channelwood", -- Forest realm. 250 meters high.
+		description = "Channelwood",
 		minp = {x=-30912, y=3050, z=-30912},
 		maxp = {x=30927, y=3300, z=30927},
 		gate_minp = {x=-30000, y=3065, z=-30000},
@@ -115,6 +117,23 @@ function rc.current_realm_at_pos(p)
 
 	-- Not in any realm?
 	return ""
+end
+
+function rc.realm_description_at_pos(p)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is player within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			return v.description
+		end
+	end
+
+	-- Not in any realm?
+	return "Void"
 end
 
 -- API function.

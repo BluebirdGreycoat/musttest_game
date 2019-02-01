@@ -189,10 +189,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 		-- Is target outside bounds?
 		local bad = function(target, origin)
-			if target.x < -30000 or target.x > 30000 or
-				target.z < -30000 or target.z > 30000 then
-				return true
-			end
 			-- Don't allow exit points near the colonies.
 			if vector.distance(target, {x=0, y=0, z=0}) < 2000 or
 				vector.distance(target, {x=0, y=-30790, z=0}) < 2000 then

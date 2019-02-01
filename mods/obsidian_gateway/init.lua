@@ -183,16 +183,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- Initialize gateway for the first time.
 	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
 		-- Algorithm for locating the destination.
-		local prx = PcgRandom(math.random(-1000, 1000))
-		local pry = PcgRandom(math.random(-1000, 1000))
-		local prz = PcgRandom(math.random(-1000, 1000))
 
-		-- Extents for possible exit locations.
-		target = {
-			x = prx:next(-10000, 10000) + origin.x,
-			y = pry:next(-5000, 5000) + origin.y,
-			z = prz:next(-10000, 10000) + origin.z,
-		}
+		-- Get a potential gate location.
+		target = rc.get_random_realm_gate_position()
 
 		-- Is target outside bounds?
 		local bad = function(target, origin)
@@ -209,6 +202,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 			if vector.distance(target, origin) < 500 then
 				return true
 			end
+			-- Or too far.
+			if vector.distance(target, origin) > 5000 then
+				return true
+			end
 			if not rc.is_valid_gateway_region(target) then
 				return true
 			end
@@ -217,13 +214,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 		-- Keep trying until the target is within bounds.
 		local num_tries = 0
 		while bad(target, origin) do
-			target = {
-				x = prx:next(-10000, 10000) + origin.x,
-				y = pry:next(-5000, 5000) + origin.y,
-				z = prz:next(-10000, 10000) + origin.z,
-			}
+			target = rc.get_random_realm_gate_position()
 			num_tries = num_tries + 1
-			if num_tries >= 15 then
+
+			if num_tries >= 5 then
 				minetest.after(0, function()
 					-- Detonate some TNT!
 					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {

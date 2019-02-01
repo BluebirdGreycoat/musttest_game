@@ -22,11 +22,23 @@ rc.realms = {
 		minp = {x=-30912, y=3050, z=-30912},
 		maxp = {x=30927, y=3300, z=30927},
 		gate_minp = {x=-30000, y=3060, z=-30000},
-		gate_maxp = {x=30000, y=3100, z=30000},
+		gate_maxp = {x=30000, y=3080, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3066,
 	},
 }
+
+function rc.get_random_realm_gate_position()
+	local realm = rc.realms[math.random(1, #rc.realms)]
+
+	local pos = {
+		x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
+		y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
+		z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+	}
+
+	return pos
+end
 
 function rc.is_valid_gateway_region(pos)
 	local p = vector.round(pos)

@@ -382,6 +382,8 @@ function commandtools.gaterepair_origin(pname, pos)
 	if not result then
 		minetest.chat_send_player(pname, "# Server: Bad gateway.")
 		return
+	else
+		minetest.chat_send_player(pname, "# Server: Found gateway @ " .. minetest.pos_to_string(origin) .. ".")
 	end
 
 	if commandtools.gateinfo.direction ~= ns_key then
@@ -427,6 +429,8 @@ function commandtools.gaterepair_target(pname, pos)
 	if not result then
 		minetest.chat_send_player(pname, "# Server: Bad gateway.")
 		return
+	else
+		minetest.chat_send_player(pname, "# Server: Found gateway @ " .. minetest.pos_to_string(origin) .. ".")
 	end
 
 	if commandtools.gateinfo.direction ~= ns_key then
@@ -472,6 +476,8 @@ function commandtools.gatecopy_origin(pname, pos)
 	if not result then
 		minetest.chat_send_player(pname, "# Server: Bad gateway.")
 		return
+	else
+		minetest.chat_send_player(pname, "# Server: Found gateway @ " .. minetest.pos_to_string(origin) .. ".")
 	end
 
 	local meta = minetest.get_meta(origin)
@@ -515,6 +521,8 @@ function commandtools.gatecopy_target(pname, pos)
 	if not result then
 		minetest.chat_send_player(pname, "# Server: Bad gateway.")
 		return
+	else
+		minetest.chat_send_player(pname, "# Server: Found gateway @ " .. minetest.pos_to_string(origin) .. ".")
 	end
 
 	local meta = minetest.get_meta(origin)

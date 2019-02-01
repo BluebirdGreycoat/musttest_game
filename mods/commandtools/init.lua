@@ -394,9 +394,17 @@ function commandtools.gaterepair_origin(pname, pos)
 	local target = table.copy(commandtools.gateinfo.target_pos)
 	target = vector.round(target)
 
+	if ns_key == "ns" then
+		playerorigin = vector.add(target, {x=0, y=1, z=1})
+	elseif ns_key == "ew" then
+		playerorigin = vector.add(target, {x=0, y=1, z=1})
+	else
+		playerorigin = table.copy(target)
+	end
+
 	local meta = minetest.get_meta(origin)
 	meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
-	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
+	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 	meta:set_string("obsidian_gateway_owner_" .. ns_key, commandtools.gateinfo.target_owner)
 	meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 0) -- Not used by origin gates.
 
@@ -441,9 +449,17 @@ function commandtools.gaterepair_target(pname, pos)
 	local target = table.copy(commandtools.gateinfo.origin_pos)
 	target = vector.round(target)
 
+	if ns_key == "ns" then
+		playerorigin = vector.add(target, {x=0, y=1, z=1})
+	elseif ns_key == "ew" then
+		playerorigin = vector.add(target, {x=0, y=1, z=1})
+	else
+		playerorigin = table.copy(target)
+	end
+
 	local meta = minetest.get_meta(origin)
 	meta:set_string("obsidian_gateway_success_" .. ns_key, "") -- Not used by return gates.
-	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
+	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 	meta:set_string("obsidian_gateway_owner_" .. ns_key, commandtools.gateinfo.origin_owner)
 	meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
 

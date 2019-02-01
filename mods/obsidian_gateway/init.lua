@@ -67,7 +67,7 @@ local gate_eastwest = {
 -- Quickly check for protection in an area.
 local function check_protection(pos, radius)
 	-- How much beyond the radius to check for protections.
-	local e = 10
+	local e = 5
 
 	local minp = vector.new(pos.x-(radius+e), pos.y-(radius+e), pos.z-(radius+e))
 	local maxp = vector.new(pos.x+(radius+e), pos.y+(radius+e), pos.z+(radius+e))
@@ -203,7 +203,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				return true
 			end
 			-- Or too far.
-			if vector.distance(target, origin) > 5000 then
+			if vector.distance(target, origin) > 7000 then
 				return true
 			end
 			if not rc.is_valid_gateway_region(target) then
@@ -281,7 +281,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				end
 			end
 			-- Don't build return portal on top of someone's protected stuff.
-			if check_protection(target, 10) then
+			if check_protection(target, 5) then
 				if first_time_init then
 					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection @ " .. minetest.pos_to_string(target) .. ".")
 				end

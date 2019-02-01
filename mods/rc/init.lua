@@ -186,8 +186,10 @@ function rc.check_position(player)
 		if player:get_hp() > 0 then
 			player:set_hp(player:get_hp() - 2)
 			if player:get_hp() <= 0 then
-				minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
-					"> found death in the Void.")
+				if not gdac_invis.is_invisible(n) then
+					minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
+						"> found death in the Void.")
+				end
 			end
 		end
 

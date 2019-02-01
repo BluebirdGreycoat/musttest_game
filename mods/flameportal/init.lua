@@ -247,13 +247,16 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
   
   if spos == "" then
     -- If metadata target hasn't been initialized yet.
-    -- People have portals that rely on this algorithm when they get relit
-    -- sometimes. So this can never be changed.
     local pos = vector.round(voidpos)
-    local pr = PcgRandom(pos.x+pos.y+pos.z)
+    --local pr = PcgRandom(pos.x+pos.y+pos.z)
     target = {x=0, y=-30790, z=0}
-    target.x = pr:next(-30000, 30000)
-    target.z = pr:next(-30000, 30000)
+    --target.x = pr:next(-30000, 30000)
+    --target.z = pr:next(-30000, 30000)
+
+		-- Chose a wholy random location.
+		target.x = math.random(-30000, 30000)
+		target.z = math.random(-30000, 30000)
+
     meta:set_string("target", minetest.pos_to_string(target))
   else
     -- Target location already set, use it.

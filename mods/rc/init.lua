@@ -31,8 +31,8 @@ rc.realms = {
 function rc.is_valid_gateway_region(pos)
 	local p = vector.round(pos)
 	for k, v in ipairs(rc.realms) do
-		local minp = v.gate_minp
-		local maxp = v.gate_maxp
+		local gate_minp = v.gate_minp
+		local gate_maxp = v.gate_maxp
 
 		-- Is position within realm boundaries suitable for a gateway?
 		if p.x >= gate_minp.x and p.x <= gate_maxp.x and

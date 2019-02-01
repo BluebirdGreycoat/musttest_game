@@ -296,6 +296,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 					-- Cancel transport.
 					return true
 				end
+				return
 			end
 			-- Build return portal (only if not already using a return portal).
 			-- Also, only build return portal on first use of the initial portal.

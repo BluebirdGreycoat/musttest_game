@@ -1,6 +1,7 @@
 
 cw = cw or {}
 cw.modpath = minetest.get_modpath("cw")
+cw.worldpath = minetest.get_worldpath()
 
 if not cw.jungletree_registered then
 	local _ = {name = "air", prob = 0}
@@ -115,7 +116,7 @@ if not cw.jungletree_registered then
 	}
 
 	local data = minetest.serialize_schematic(jungletree_data, "mts", {})
-	local file = io.open(cw.modpath .. "/cw_jungletree.mts", "w")
+	local file = io.open(cw.worldpath .. "/cw_jungletree.mts", "w")
 	file:write(data)
 	file:close()
 
@@ -325,7 +326,7 @@ cw.generate_realm = function(minp, maxp, seed)
 		v.z = v.z - 2
 
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		local path2 = cw.modpath .. "/cw_jungletree.mts"
+		local path2 = cw.worldpath .. "/cw_jungletree.mts"
 		minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
 
 		if pr:next(1, 5) <= 4 then

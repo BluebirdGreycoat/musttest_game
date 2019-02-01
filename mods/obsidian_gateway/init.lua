@@ -283,13 +283,13 @@ function obsidian_gateway.attempt_activation(pos, player)
 			if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
 				if first_time_init then
 					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection near " .. minetest.pos_to_string(target) .. ".")
-				end
 
-				-- Clear data for the initial gate.
-				local meta = minetest.get_meta(origin)
-				meta:set_string("obsidian_gateway_success_" .. ns_key, "")
-				meta:set_string("obsidian_gateway_destination_" .. ns_key, "")
-				meta:set_string("obsidian_gateway_owner_" .. ns_key, "")
+					-- Clear data for the initial gate. This will permit the player to retry without tearing everything down and building it again.
+					local meta = minetest.get_meta(origin)
+					meta:set_string("obsidian_gateway_success_" .. ns_key, "")
+					meta:set_string("obsidian_gateway_destination_" .. ns_key, "")
+					meta:set_string("obsidian_gateway_owner_" .. ns_key, "")
+				end
 
 				-- Cancel transport.
 				return true

@@ -374,7 +374,13 @@ function commandtools.gaterepair(pname, pos)
 		return
 	end
 
+	local target = {x=0, y=0, z=0}
+	target = vector.round(target)
+
 	local meta = minetest.get_meta(origin)
+	meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
+	meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
+	meta:set_string("obsidian_gateway_owner_" .. ns_key, "GoldFireUn")
 end
 
 

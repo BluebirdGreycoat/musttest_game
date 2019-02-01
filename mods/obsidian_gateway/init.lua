@@ -182,10 +182,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 	--	return
 	--end
 
-	if pname ~= "MustTest" then
-		minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
-		return
-	end
+	-- Enable this if any serious problems occur.
+	--if pname ~= "MustTest" then
+	--	minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
+	--	return
+	--end
 
 	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
 	local isowner = (meta:get_string("obsidian_gateway_owner_" .. ns_key) == pname)
@@ -198,6 +199,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		if target and not isreturngate and meta:get_string("obsidian_gateway_success_" .. ns_key) == "" then
 			minetest.chat_send_player(pname, "# Server: It looks like this could possibly be an OLD gate! Aborting for safety reasons.")
 			minetest.chat_send_player(pname, "# Server: If this Gateway was previously functioning normally, please mail the admin with the coordinates.")
+			minetest.chat_send_player(pname, "# Server: If this is a Gate that you have just constructed, you can safely ignore this message.")
 			minetest.chat_send_player(pname, "# Server: The Gateway's EXIT location is @ " .. minetest.pos_to_string(target) .. ".")
 			minetest.after(1.5, function() easyvend.sound_error(pname) end)
 			return 

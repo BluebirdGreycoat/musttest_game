@@ -601,61 +601,6 @@ end
 
 
 
--- When called on a teleport, checks if there is a player standing above it.
--- If there's a player above, then teleport them to a random other teleport.
--- This is not used anywhere anymore.
---[[
-teleports.teleport_player_above = function(pos)
-    local meta = minetest.get_meta(pos)
-    local inv = meta:get_inventory();
-    local objectsnear = minetest.get_objects_inside_radius({x=pos.x,y=pos.y+0.5,z=pos.z}, 0.52);
-    local network = meta:get_string("network") or ""
-    local yespublic = meta:get_string("yespublic") or 'true'
-    
-    if #objectsnear <= 0 then return end
-    local player = objectsnear[1];
-    if not player:is_player() then return end
-    if player:get_hp() <= 0 then return end -- Don't teleport dead players.
-    local positions = teleports.find_nearby(pos, 20, network, yespublic)
-    if #positions <= 0 then return end
-    
-    local key = math.random(1, #positions)
-    local pos2 = positions[key].pos
-    
-    local admin = minetest.check_player_privs(player:get_player_name(), {server=true})
-    local have_biofuel = false
-    
-    if admin == false then -- Don't do fuel calculation if admin is using teleport.
-      -- Cost is 1 item of fuel per 300 meters.
-      -- This means players save on fuel when using long range teleports,
-      -- instead of using a chain of short-range teleports.
-      -- However, long range teleports cost more to make.
-      local rcost = math.floor(vector.distance(pos, pos2) / 300)
-      rcost = rcost / 2.0 -- Fuel cost is half that of a directed teleport.
-      if rcost < 1 then rcost = 1 end
-      
-      local price1 = {name="default:mossycobble", count=rcost, wear=0, metadata=""}
-      local price2 = {name="flowers:waterlily", count=rcost, wear=0, metadata=""}
-      if not inv:is_empty("price") then
-        if inv:contains_item("price", price1) then
-          inv:remove_item("price", price1)
-          have_biofuel = true
-        elseif inv:contains_item("price", price2) then
-          inv:remove_item("price", price2)
-          have_biofuel = true
-        end
-      end
-    end
-
-    if have_biofuel == true or admin == true then
-      local target = {x=pos2.x-1+math.random(0, 2), y=pos2.y+1, z=pos2.z-1+math.random(0, 2)}
-      teleports.teleport_player(player, pos2, target)
-    end
-end
---]]
-
-
-
 teleports.after_place_node = function(pos, placer)
 	if placer and placer:is_player() then
 		local meta = minetest.get_meta(pos)

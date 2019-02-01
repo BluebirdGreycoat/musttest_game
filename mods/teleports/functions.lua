@@ -175,24 +175,29 @@ end
 
 
 teleports.find_nearby = function(pos, count, network, yespublic)
-    local nearby = {}
-    local trange, isnyan = teleports.calculate_range(pos)
-    
-    for i = #teleports.teleports, 1, -1 do
-        local tp = teleports.teleports[i]
-        if not vector.equals(tp.pos, pos) and vector.distance(tp.pos, pos) <= trange then
-            local othernet = tp.channel or ""
-            
-            if othernet == network or (othernet == "" and yespublic == 'true') then
-                table.insert(nearby, tp)
-                if #nearby >= count then
-                    break
-                end
-            end
-        end
-    end
-    
-    return nearby
+	local nearby = {}
+	local trange, isnyan = teleports.calculate_range(pos)
+	local start_realm = rc.current_realm_at_pos(pos)
+
+	for i = #teleports.teleports, 1, -1 do
+		local tp = teleports.teleports[i]
+		if not vector.equals(tp.pos, pos) and vector.distance(tp.pos, pos) <= trange then
+			local target_realm = rc.current_realm_at_pos(tp.pos)
+			-- Only find teleports in the same dimension.
+			if start_realm ~= "" and start_realm == target_realm then
+				local othernet = tp.channel or ""
+
+				if othernet == network or (othernet == "" and yespublic == 'true') then
+					table.insert(nearby, tp)
+					if #nearby >= count then
+						break
+					end
+				end
+			end
+		end
+	end
+
+	return nearby
 end
 
 

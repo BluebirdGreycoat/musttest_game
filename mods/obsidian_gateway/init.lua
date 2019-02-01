@@ -62,6 +62,9 @@ local gate_eastwest = {
 	maxp = {x=0, y=4, z=3},
 }
 
+obsidian_gateway.gate_ns_data = gate_northsouth
+obsidian_gateway.gate_ew_data = gate_eastwest
+
 
 
 -- Quickly check for protection in an area.

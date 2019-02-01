@@ -346,6 +346,39 @@ end
 
 
 
+function commandtools.gaterepair(pname, pos)
+	local result
+	local points
+	local counts
+	local origin
+
+	local northsouth
+	local ns_key
+	local playerorigin
+
+	-- Find the gateway (threshold under player)!
+	result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ns_data)
+	northsouth = true
+	ns_key = "ns"
+
+	if not result then
+		-- Couldn't find northsouth gateway, so try to find eastwest.
+		result, points, counts, origin = schematic_find.detect_schematic(pos, obsidian_gateway.gate_ew_data)
+		northsouth = false
+		ns_key = "ew"
+	end
+
+	-- Debugging.
+	if not result then
+		minetest.chat_send_player(pname, "# Server: Bad gateway.")
+		return
+	end
+
+	local meta = minetest.get_meta(origin)
+end
+
+
+
 function commandtools.shovel_on_use(itemstack, user, pt)
 	if not user then return end
 	if not user:is_player() then return end
@@ -357,6 +390,10 @@ function commandtools.shovel_on_use(itemstack, user, pt)
 		itemstack:take_item()
 		return itemstack
 	end
+
+	commandtools.gaterepair(pname, pt.under)
+
+	--[[
 
 	if pt.type ~= "node" then
 		return
@@ -396,6 +433,7 @@ function commandtools.shovel_on_use(itemstack, user, pt)
 	end
 
 	fix_param2(start)
+	--]]
 end
 
 

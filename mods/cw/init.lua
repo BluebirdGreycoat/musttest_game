@@ -2,6 +2,126 @@
 cw = cw or {}
 cw.modpath = minetest.get_modpath("cw")
 
+if not cw.jungletree_registered then
+	local _ = {name = "air", prob = 0}
+	local L = {name = "default:jungleleaves", prob = 255}
+	local N = {name = "default:jungleleaves", prob = 223}
+	local M = {name = "default:jungleleaves", prob = 191}
+	local B = {name = "default:jungletree", prob = 255, force_place = true}
+	local Y = {name = "default:jungletree", prob = 191, force_place = true}
+	local U = {name = "default:jungletree", prob = 127, force_place = true}
+	local I = {name = "default:jungletree", prob = 255}
+
+	local jungletree_data = {
+		size = {x = 5, y = 17, z = 5},
+		data = {
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, L, N, _, _,
+			_, _, N, L, N,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			L, B, L, _, _,
+			_, _, L, B, L,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, L, N,
+			N, L, B, _, _,
+			N, L, B, _, _,
+			_, _, B, L, N,
+			_, _, B, L, N,
+			_, _, B, _, _,
+			N, L, L, L, N,
+			N, L, L, L, N,
+			_, N, L, N, _,
+
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, U, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, L, B, L,
+			L, B, L, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, L, B, L,
+			_, _, _, _, _,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, N, L, N,
+			N, L, N, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, N, L, N,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+		},
+		yslice_prob = {
+			{ypos=6, prob=191},
+			{ypos=7, prob=191},
+			{ypos=8, prob=191},
+			{ypos=9, prob=191},
+			{ypos=10, prob=191},
+		},
+	}
+
+	local data = minetest.serialize_schematic(jungletree_data, "mts", {})
+	local file = io.open(cw.modpath .. "/cw_jungletree.mts", "w")
+	file:write(data)
+	file:close()
+
+	cw.jungletree_registered = true
+end
+
 -- A Channelwood-like realm. Endless, shallow water in all directions, with
 -- trees growing out of the ocean. Trees are huge and extremely tall. Water is
 -- dangerious, filled with flesh-eating fish! Trees do not burn (too wet).
@@ -205,11 +325,12 @@ cw.generate_realm = function(minp, maxp, seed)
 		v.z = v.z - 2
 
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
+		local path2 = cw.modpath .. "/cw_jungletree.mts"
 		minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
 
 		if pr:next(1, 5) <= 4 then
 			v.y = v.y + h
-			minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
+			minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, true)
 
 			if pr:next(1, 3) <= 2 then
 				v.y = v.y + h

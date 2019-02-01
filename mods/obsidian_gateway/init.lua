@@ -177,8 +177,13 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't
 	-- stomp on each other's data.
 	target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
-	if not target then
-		minetest.chat_send_player(pname, "# Server: Gateway has no destination! Aborting.")
+	--if not target then
+	--	minetest.chat_send_player(pname, "# Server: Gateway has no destination! Aborting.")
+	--	return
+	--end
+
+	if pname ~= "MustTest" then
+		minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
 		return
 	end
 
@@ -189,6 +194,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 	-- Initialize gateway for the first time.
 	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
+		-- Target is valid then this could be an OLD gate with old metadata.
+		if target and not isreturngate and meta:get_string("obsidian_gateway_success_" .. ns_key) == "" then
+			minetest.chat_send_player(pname, "# Server: It looks like this could possibly be an OLD gate! Aborting for safety reasons.")
+			minetest.chat_send_player(pname, "# Server: If this Gateway was previously functioning normally, please mail the admin with the coordinates.")
+			minetest.chat_send_player(pname, "# Server: The Gateway's EXIT location is @ " .. minetest.pos_to_string(target) .. ".")
+			minetest.after(1.5, function() easyvend.sound_error(pname) end)
+			return 
+		end
 		-- Algorithm for locating the destination.
 
 		-- Get a potential gate location.
@@ -245,6 +258,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 		isowner = true
 	end
 
+		--minetest.chat_send_player(pname, "# Server: Safety ABORT #2.")
+		--do return end
+
 	if gdac.player_is_admin(pname) then
 		isowner = true
 	end
@@ -287,8 +303,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 				end
 			end
 			-- Don't build return portal on top of someone's protected stuff.
-			if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
-				if first_time_init then
+			if first_time_init then
+				if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
 					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection near " .. minetest.pos_to_string(target) .. ".")
 
 					-- Clear data for the initial gate. This will permit the player to retry without tearing everything down and building it again.
@@ -300,7 +316,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 					-- Cancel transport.
 					return true
 				end
-				return
 			end
 			-- Build return portal (only if not already using a return portal).
 			-- Also, only build return portal on first use of the initial portal.
@@ -330,7 +345,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			-- the next time it is used. This fixes a bug where the return gate is
 			-- not properly constructed if the player moves during transport
 			-- (because this callback function doesn't get called).
-			do
+			if not isreturngate and first_time_init then
 				local meta = minetest.get_meta(origin)
 				meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
 				meta:mark_as_private("obsidian_gateway_success_" .. ns_key)

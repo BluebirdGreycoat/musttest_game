@@ -217,7 +217,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			target = rc.get_random_realm_gate_position()
 			num_tries = num_tries + 1
 
-			if num_tries >= 5 then
+			if num_tries >= 25 then
 				minetest.after(0, function()
 					-- Detonate some TNT!
 					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {

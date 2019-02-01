@@ -597,6 +597,9 @@ minetest.register_node("protector:protect", {
 		if owner == "" then
 			return
 		end
+		if placedate == "" then
+			placedate = "an unknown date!"
+		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
 		-- Check if the owner's current alias has changed.
@@ -689,6 +692,9 @@ minetest.register_node("protector:protect3", {
 		-- Nobody placed this block.
 		if owner == "" then
 			return
+		end
+		if placedate == "" then
+			placedate = "an unknown date!"
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
@@ -799,6 +805,9 @@ minetest.register_node("protector:protect2", {
 		if owner == "" then
 			return
 		end
+		if placedate == "" then
+			placedate = "an unknown date!"
+		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
 		-- Check if the owner's current alias has changed.
@@ -896,6 +905,9 @@ minetest.register_node("protector:protect4", {
 		-- Nobody placed this block.
 		if owner == "" then
 			return
+		end
+		if placedate == "" then
+			placedate = "an unknown date!"
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)

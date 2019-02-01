@@ -258,7 +258,7 @@ function rc.check_position(player)
 		-- Player is out-of-bounds. Reset to last known good position.
 		if not gdac_invis.is_invisible(n) then
 			minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
-				"> was caught in the inter-dimensional plane!")
+				"> was caught in the inter-dimensional void!")
 		end
 
 		-- Notify wield3d we're adjusting the player position.
@@ -283,7 +283,7 @@ function rc.check_position(player)
 			if player:get_hp() <= 0 then
 				if not gdac_invis.is_invisible(n) then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
-						"> found death in the Void.")
+						"> found death in the void.")
 				end
 			end
 		end

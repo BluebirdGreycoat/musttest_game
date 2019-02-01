@@ -67,9 +67,6 @@ local data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 
-local JUNGLETREE_RELPOSITION1 = {x=-2, y=0, z=-2}
-local JUNGLETREE_RELPOSITION2 = {x=-2, y=13, z=-2}
-local JUNGLETREE_RELPOSITION3 = {x=-2, y=26, z=-2}
 local JUNGLETREE_REPLACEMENTS = {
 	["default:jungletree"] = "basictrees:jungletree_cube",
 	["default:jungleleaves"] = "basictrees:jungletree_leaves2",
@@ -143,20 +140,21 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_depth = (nstart + od)
 
 			-- Ground height.
-			local ground_depth = (nstart + gd + floor(abs(n1 * ghv)))
+			local an1 = abs(n1)
+			local ground_depth = (nstart + gd + floor(an1 * ghv))
 			local water_depth = (ocean_depth - ground_depth)
 
 			if water_depth <= 2 then
 				if pr:next(1, 16) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
 			elseif water_depth == 3 then
 				if pr:next(1, 40) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
 			elseif water_depth == 4 then
 				if pr:next(1, 300) == 1 then
-					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z}
+					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
 			end
 
@@ -195,10 +193,29 @@ cw.generate_realm = function(minp, maxp, seed)
 	vm:write_to_map()
 
 	for k, v in ipairs(tree_positions1) do
+		local w = v.w
+		if w > 1.0 then
+			w = 1.0
+		end
+		local h = 13 * w
+		v.w = nil
+
+		-- Schematic horizontal offset.
+		v.x = v.x - 2
+		v.z = v.z - 2
+
 		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION1), path, "random", JUNGLETREE_REPLACEMENTS, true)
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION2), path, "random", JUNGLETREE_REPLACEMENTS, true)
-		minetest.place_schematic(vector.add(v, JUNGLETREE_RELPOSITION3), path, "random", JUNGLETREE_REPLACEMENTS, true)
+		minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
+
+		if pr:next(1, 5) <= 4 then
+			v.y = v.y + h
+			minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
+
+			if pr:next(1, 3) <= 2 then
+				v.y = v.y + h
+				minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, true)
+			end
+		end
 	end
 end
 

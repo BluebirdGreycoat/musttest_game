@@ -117,7 +117,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 	local northsouth
 	local ns_key
-	local seedplus
 	local playerorigin
 
 	-- Find the gateway (threshold under player)!
@@ -125,7 +124,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 		schematic_find.detect_schematic(inside, gate_northsouth)
 	northsouth = true
 	ns_key = "ns"
-	seedplus = 7
 	if result then
 		playerorigin = vector.add(origin, {x=1, y=1, z=0})
 	end
@@ -135,7 +133,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 			schematic_find.detect_schematic(inside, gate_eastwest)
 		northsouth = false
 		ns_key = "ew"
-		seedplus = 5
 		if result then
 			playerorigin = vector.add(origin, {x=0, y=1, z=1})
 		end
@@ -185,23 +182,22 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 	-- Initialize gateway for the first time.
 	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
-		-- Algorithm for locating the destination. Must not be changed!
-		local prx = PcgRandom(origin.x + seedplus)
-		local pry = PcgRandom(origin.y + seedplus)
-		local prz = PcgRandom(origin.z + seedplus)
+		-- Algorithm for locating the destination.
+		local prx = PcgRandom(math.random(-1000, 1000))
+		local pry = PcgRandom(math.random(-1000, 1000))
+		local prz = PcgRandom(math.random(-1000, 1000))
 
 		-- Extents for possible exit locations.
 		target = {
-			x = prx:next(-5000, 5000) + origin.x,
+			x = prx:next(-10000, 10000) + origin.x,
 			y = pry:next(-5000, 5000) + origin.y,
-			z = prz:next(-5000, 5000) + origin.z,
+			z = prz:next(-10000, 10000) + origin.z,
 		}
 
 		-- Is target outside bounds?
 		local bad = function(target, origin)
 			if target.x < -30000 or target.x > 30000 or
-					target.y < -30890 or target.y > -10 or
-					target.z < -30000 or target.z > 30000 then
+				target.z < -30000 or target.z > 30000 then
 				return true
 			end
 			-- Don't allow exit points near the colonies.
@@ -213,7 +209,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			if vector.distance(target, origin) < 500 then
 				return true
 			end
-			if not rc.is_valid_realm_pos(target) then
+			if not rc.is_valid_gateway_region(target) then
 				return true
 			end
 		end
@@ -222,15 +218,15 @@ function obsidian_gateway.attempt_activation(pos, player)
 		local num_tries = 0
 		while bad(target, origin) do
 			target = {
-				x = prx:next(-5000, 5000) + origin.x,
+				x = prx:next(-10000, 10000) + origin.x,
 				y = pry:next(-5000, 5000) + origin.y,
-				z = prz:next(-5000, 5000) + origin.z,
+				z = prz:next(-10000, 10000) + origin.z,
 			}
 			num_tries = num_tries + 1
-			if num_tries >= 5 then
+			if num_tries >= 15 then
 				minetest.after(0, function()
 					-- Detonate some TNT!
-					tnt.boom(ppos, {
+					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {
 						radius = 3,
 						ignore_protection = false,
 						ignore_on_blast = false,

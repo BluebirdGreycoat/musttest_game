@@ -12,6 +12,8 @@ rc.realms = {
 		name = "overworld", -- Default/overworld realm.
 		minp = {x=-30912, y=-30912, z=-30912},
 		maxp = {x=30927, y=500, z=30927},
+		gate_minp = {x=-30000, y=-30800, z=-30000},
+		gate_maxp = {x=30000, y=-10, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = -9,
 	},
@@ -19,10 +21,30 @@ rc.realms = {
 		name = "channelwood", -- Forest realm. 250 meters high.
 		minp = {x=-30912, y=3050, z=-30912},
 		maxp = {x=30927, y=3300, z=30927},
+		gate_minp = {x=-30000, y=3060, z=-30000},
+		gate_maxp = {x=30000, y=3080, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3066,
 	},
 }
+
+function rc.is_valid_gateway_region(pos)
+	local p = vector.round(pos)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries suitable for a gateway?
+		if p.x >= gate_minp.x and p.x <= gate_maxp.x and
+				p.y >= gate_minp.y and p.y <= gate_maxp.y and
+				p.z >= gate_minp.z and p.z <= gate_maxp.z then
+			return true
+		end
+	end
+
+	-- Not in any realm?
+	return false
+end
 
 function rc.is_valid_realm_pos(pos)
 	local p = vector.round(pos)

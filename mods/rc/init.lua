@@ -18,6 +18,7 @@ rc.realms = {
 		gate_maxp = {x=30000, y=-10, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = -9,
+		sealevel = 0,
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.
@@ -29,6 +30,7 @@ rc.realms = {
 		gate_maxp = {x=30000, y=3067, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3066,
+		sealevel = 3066,
 	},
 }
 
@@ -148,6 +150,24 @@ function rc.get_ground_level_at_pos(pos)
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
 			return true, v.ground
+		end
+	end
+
+	-- Not in any realm?
+	return false, nil
+end
+
+function rc.get_sea_level_at_pos(pos)
+	local p = vector.round(pos)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			return true, v.sealevel
 		end
 	end
 

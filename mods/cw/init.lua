@@ -148,7 +148,7 @@ if not cw.registered then
 end
 
 cw.REALM_START = 3050
-cw.BEDROCK_DEPTH = 8
+cw.BEDROCK_DEPTH = 4
 cw.OCEAN_DEPTH = 16
 cw.GROUND_DEPTH = 11
 cw.GROUND_HEIGHT_VARIATION = 4

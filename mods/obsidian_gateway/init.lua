@@ -207,7 +207,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		-- Algorithm for locating the destination.
 
 		-- Get a potential gate location.
-		target = rc.get_random_realm_gate_position()
+		target = rc.get_random_realm_gate_position(origin)
 
 		-- Is target outside bounds?
 		local bad = function(target, origin)
@@ -233,7 +233,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		-- Keep trying until the target is within bounds.
 		local num_tries = 0
 		while bad(target, origin) do
-			target = rc.get_random_realm_gate_position()
+			target = rc.get_random_realm_gate_position(origin)
 			num_tries = num_tries + 1
 
 			if num_tries >= 25 then

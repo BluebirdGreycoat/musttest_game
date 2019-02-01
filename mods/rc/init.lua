@@ -9,6 +9,7 @@ rc.modpath = minetest.get_modpath("rc")
 -- Known realms. Min/max area positions should not overlap!
 rc.realms = {
 	{
+		id = 1, -- REALM ID. Code relies on this.
 		name = "overworld", -- Default/overworld realm.
 		description = "Overworld",
 		minp = {x=-30912, y=-30912, z=-30912},
@@ -19,6 +20,7 @@ rc.realms = {
 		ground = -9,
 	},
 	{
+		id = 2, -- REALM ID. Code relies on this.
 		name = "channelwood", -- Forest realm. 250 meters high.
 		description = "Channelwood",
 		minp = {x=-30912, y=3050, z=-30912},
@@ -30,14 +32,70 @@ rc.realms = {
 	},
 }
 
-function rc.get_random_realm_gate_position()
-	local realm = rc.realms[math.random(1, #rc.realms)]
+function rc.get_realm_data(name)
+	for k, v in ipairs(rc.realms) do
+		if v.name == name then
+			return v
+		end
+	end
+	return nil
+end
 
+function rc.get_random_realm_gate_position(origin)
+	if rc.is_valid_realm_pos(origin) then
+		if origin.y >= 80 and origin.y <= 1000 then
+			-- If gateway is positioned in the Overworld mountains,
+			-- permit easy realm hopping.
+			local realm = rc.realms[math.random(1, #rc.realms)]
+			assert(realm)
+
+			local pos = {
+				x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
+				y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
+				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+			}
+
+			return pos
+		elseif origin.y > 1000 then
+			-- The gateway is positioned in a realm somewhere.
+			-- 9/10 times the exit point stays in the same realm.
+			-- Sometimes a realm hop is possible.
+			local realm
+			if math.random(1, 10) == 1 then
+				realm = rc.realms[math.random(1, #rc.realms)]
+			else
+				realm = rc.get_realm_data(rc.current_realm_at_pos(origin))
+			end
+			assert(realm)
+
+			local pos = {
+				x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
+				y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
+				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+			}
+
+			return pos
+		end
+	end
+
+	local realm = rc.get_realm_data("overworld")
+	assert(realm)
+
+	-- Player is in the Overworld or Nether. Use old Gateway behavior!
+	-- Not more than 5000 meters in any direction.
 	local pos = {
-		x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
-		y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
-		z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+		x = math.random(-5000, 5000) + origin.x,
+		y = math.random(-5000, 5000) + origin.y,
+		z = math.random(-5000, 5000) + origin.z,
 	}
+
+	local min = math.min
+	local max = math.max
+
+	-- Clamp position.
+	pos.x = max(realm.gate_minp.x, min(pos.x, realm.gate_maxp.x))
+	pos.y = max(realm.gate_minp.y, min(pos.y, realm.gate_maxp.y))
+	pos.z = max(realm.gate_minp.z, min(pos.z, realm.gate_maxp.z))
 
 	return pos
 end

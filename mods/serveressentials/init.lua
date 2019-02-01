@@ -2,6 +2,17 @@
 serveressentials = serveressentials or {}
 serveressentials.modpath = minetest.get_modpath("serveressentials")
 
+function serveressentials.get_short_stack_desc(stack)
+	local def = minetest.registered_items[stack:get_name()]
+	local meta = stack:get_meta()
+	local description = meta:get_string("description")
+	if description ~= "" then
+		return utility.get_short_desc(description):trim()
+	elseif def and def.description then
+		return utility.get_short_desc(def.description):trim()
+	end
+end
+
 function serveressentials.whereis(pname, param)
 	local target
 	if param and param ~= "" then
@@ -43,7 +54,7 @@ function serveressentials.whereis(pname, param)
 
 	nearby = "{" .. table.concat(plist, ", ") .. "}"
 	local HP = "with HP=" .. player:get_hp()
-	local wieldname = player:get_wielded_item():get_name()
+	local wieldname = serveressentials.get_short_stack_desc(player:get_wielded_item())
 	if not wieldname or wieldname == "" then
 		wieldname = "nothing"
 	else

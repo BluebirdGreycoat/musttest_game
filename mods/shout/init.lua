@@ -60,6 +60,7 @@ shout.HINTS = {
 	"Water is wet.",
 	"Mobs are dangerous.",
 	"This is a useless message.",
+	"Obsidian Gateways and Flameportals are fragile methods of transportation. Protect them!",
 }
 
 local HINT_DELAY_MIN = 60*30

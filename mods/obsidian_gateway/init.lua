@@ -172,6 +172,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 		return
 	end
 
+	minetest.log("action", pname .. " activated gateway @ " .. minetest.pos_to_string(pos))
+
 	local target
 	local meta = minetest.get_meta(origin)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't

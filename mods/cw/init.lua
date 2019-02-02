@@ -182,6 +182,7 @@ local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_water           = minetest.get_content_id("cw:water_source")
 local c_dirt            = minetest.get_content_id("darkage:darkdirt")
 local c_silt            = minetest.get_content_id("darkage:silt")
+local c_mud             = minetest.get_content_id("darkage:mud")
 
 -- Externally located tables for performance.
 local data = {}
@@ -305,7 +306,12 @@ cw.generate_realm = function(minp, maxp, seed)
 						elseif y < ground_depth then
 							data[vp] = c_dirt
 						elseif y == ground_depth then
-							data[vp] = c_silt
+							-- Mud appears when silt rises to water surface and above.
+							if gd >= od then
+								data[vp] = c_mud
+							else
+								data[vp] = c_silt
+							end
 						elseif y <= ocean_depth then
 							data[vp] = c_water
 						end

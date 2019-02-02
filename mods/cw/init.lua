@@ -183,6 +183,7 @@ local c_water           = minetest.get_content_id("cw:water_source")
 local c_dirt            = minetest.get_content_id("darkage:darkdirt")
 local c_silt            = minetest.get_content_id("darkage:silt")
 local c_mud             = minetest.get_content_id("darkage:mud")
+local c_clay            = minetest.get_content_id("default:clay")
 
 -- Externally located tables for performance.
 local data = {}
@@ -269,6 +270,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			-- Randomize height of the bedrock a bit.
 			local bedrock_adjust = (nstart + bd + pr:next(0, pr:next(1, 2)))
+			local clay_depth = (nstart + bd + pr:next(1, 2))
 
 			-- Fixed ocean height.
 			local ocean_depth = (nstart + od)
@@ -303,6 +305,8 @@ cw.generate_realm = function(minp, maxp, seed)
 						-- Place bedrock layer.
 						if y <= bedrock_adjust then
 							data[vp] = c_bedrock
+						elseif y <= clay_depth and water_depth >= 5 then
+							data[vp] = c_clay
 						elseif y < ground_depth then
 							data[vp] = c_dirt
 						elseif y == ground_depth then

@@ -307,7 +307,7 @@ cw.generate_realm = function(minp, maxp, seed)
 							data[vp] = c_dirt
 						elseif y == ground_depth then
 							-- Mud appears when silt rises to water surface and above.
-							if gd >= od then
+							if gd >= (ocean_depth - 1) then
 								data[vp] = c_mud
 							else
 								data[vp] = c_silt

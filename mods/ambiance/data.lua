@@ -24,9 +24,9 @@ ambiance.allsounds = {
 	{name="desertwind",     gain=1.0, miny=-15,    maxy=32000,  time="night",   indoors=false, mintime=20, maxtime=50, },
 
 	-- Various animal sounds.
-	{name="wolves",         gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, },
-	{name="coyote",         gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, },
-	{name="craw",           gain=1.0, miny=-10,    maxy=32000,  time="day"  ,   indoors=false, },
+	{name="wolves",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false, },
+	{name="coyote",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false, },
+	{name="craw",           gain=1.0, miny=-10,    maxy=1000,   time="day"  ,   indoors=false, },
 	{name="hornedowl",      gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, },
 
 	-- Continuous lava rumble in the nether.

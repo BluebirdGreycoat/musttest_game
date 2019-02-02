@@ -231,6 +231,8 @@ function rc.realm_description_at_pos(p)
 	-- Special realm name.
 	if p.y < -25000 then
 		return "Netherworld"
+	elseif p.y < -5000 then
+		return "Caverns"
 	end
 
 	for k, v in ipairs(rc.realms) do

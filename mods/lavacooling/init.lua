@@ -31,6 +31,8 @@ local water_group = {
 	"default:water_flowing",
 	"default:river_water_source",
 	"default:river_water_flowing",
+	"cw:water_source",
+	"cw:water_flowing",
 }
 local lava_group = {
 	"default:lava_source",

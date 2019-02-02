@@ -117,6 +117,7 @@ local function do_teleport(name, param)
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
 			teleportee:set_pos(p)
+			rc.notify_realm_update(teleportee:get_player_name(), p)
 			return true, "Teleporting to "..core.pos_to_string(p)
 		end
 	end
@@ -138,6 +139,7 @@ local function do_teleport(name, param)
 			return false, "Cannot teleport outside of any realm"
 		end
 		teleportee:set_pos(p)
+		rc.notify_realm_update(teleportee:get_player_name(), p)
 		return true, "Teleporting to " .. target_name
 				.. " at "..core.pos_to_string(p)
 	end
@@ -160,6 +162,7 @@ local function do_teleport(name, param)
 			return false, "Cannot teleport players outside realm boundaries"
 		end
 		teleportee:set_pos(p)
+		rc.notify_realm_update(teleportee:get_player_name(), p)
 		return true, "Teleporting " .. teleportee_name
 				.. " to " .. core.pos_to_string(p)
 	end
@@ -184,6 +187,7 @@ local function do_teleport(name, param)
 		end
 		p = find_free_position_near(p)
 		teleportee:set_pos(p)
+		rc.notify_realm_update(teleportee:get_player_name(), p)
 		return true, "Teleporting " .. teleportee_name
 				.. " to " .. target_name
 				.. " at " .. core.pos_to_string(p)
@@ -216,9 +220,9 @@ if cmdteleport then
 			end
 
 			-- If teleport was successful then update realm paramters.
-			if result then
-				rc.notify_realm_update(name, minetest.get_player_by_name(name):get_pos())
-			end
+			--if result then
+			--	rc.notify_realm_update(name, minetest.get_player_by_name(name):get_pos())
+			--end
 		end
 		minetest.override_chatcommand("teleport", {
 			func = newfunc,

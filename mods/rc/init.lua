@@ -72,11 +72,20 @@ function rc.get_random_realm_gate_position(origin)
 			end
 			assert(realm)
 
+			-- Not more than 5000 meters away from origin!
 			local pos = {
-				x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
-				y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
-				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+				x = math.random(-5000, 5000) + origin.x,
+				y = math.random(-5000, 5000) + origin.y,
+				z = math.random(-5000, 5000) + origin.z,
 			}
+
+			local min = math.min
+			local max = math.max
+
+			-- Clamp position to ensure we remain within realm boundaries.
+			pos.x = max(realm.gate_minp.x, min(pos.x, realm.gate_maxp.x))
+			pos.y = max(realm.gate_minp.y, min(pos.y, realm.gate_maxp.y))
+			pos.z = max(realm.gate_minp.z, min(pos.z, realm.gate_maxp.z))
 
 			return pos
 		end

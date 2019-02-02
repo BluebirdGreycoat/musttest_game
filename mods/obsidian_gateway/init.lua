@@ -363,7 +363,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 			-- Update liquids around.
 			minetest.after(2, function()
-				mapfix.execute(origin, 10)
+				mapfix.execute(target, 10)
 			end)
 		end, nil, false, "nether_portal_usual")
 end

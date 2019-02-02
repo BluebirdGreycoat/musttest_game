@@ -61,6 +61,9 @@ shout.HINTS = {
 	"Mobs are dangerous.",
 	"This is a useless message.",
 	"Obsidian Gateways and Flameportals are fragile methods of transportation. Protect them!",
+	"This is a confused message.",
+	"This message doesn't have any meaning.",
+	"Pay no attention to the man behind the curtain.",
 }
 
 local HINT_DELAY_MIN = 60*30

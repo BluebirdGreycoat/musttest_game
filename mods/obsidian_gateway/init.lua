@@ -361,10 +361,12 @@ function obsidian_gateway.attempt_activation(pos, player)
 				end
 			end
 
-			-- Update liquids around.
-			minetest.after(2, function()
-				mapfix.execute(target, 10)
-			end)
+			-- Update liquids around on first init.
+			if first_time_init then
+				minetest.after(2, function()
+					mapfix.execute(target, 10)
+				end)
+			end
 		end, nil, false, "nether_portal_usual")
 end
 

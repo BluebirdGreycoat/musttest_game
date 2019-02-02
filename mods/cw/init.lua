@@ -198,6 +198,11 @@ local RANDPOS = {
 	{x=-1, y=0, z=0},
 	{x=0, y=0, z=1},
 	{x=0, y=0, z=-1},
+
+	-- 3 times to increase probability.
+	{x=0, y=0, z=0},
+	{x=0, y=0, z=0},
+	{x=0, y=0, z=0},
 }
 
 cw.generate_realm = function(minp, maxp, seed)
@@ -353,7 +358,11 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			if pr:next(1, 3) <= 2 then
 				v.y = v.y + h
-				minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				if h > 10 then
+					minetest.place_schematic(vector.add(v, RANDPOS[math.random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				else
+					minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				end
 
 				if h >= 8 and pr:next(1, 3) == 1 then
 					v.y = v.y + 13

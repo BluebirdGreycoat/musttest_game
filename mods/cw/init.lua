@@ -368,6 +368,11 @@ cw.generate_realm = function(minp, maxp, seed)
 					if pr:next(1, 2) == 1 then
 						v.y = v.y + 13
 						minetest.place_schematic(v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+
+						if h > 10 and pr:next(1, 3) == 1 then
+							v.y = v.y + 13
+							minetest.place_schematic(v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+						end
 					end
 				elseif h >= 8 then
 					if pr:next(1, 3) == 1 then

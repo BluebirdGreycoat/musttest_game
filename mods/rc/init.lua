@@ -17,7 +17,7 @@ rc.realms = {
 		gate_minp = {x=-30000, y=-30800, z=-30000},
 		gate_maxp = {x=30000, y=-10, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
-		ground = -9,
+		ground = -10,
 		sealevel = 0,
 		windlevel = 20,
 	},

@@ -58,7 +58,7 @@ function joinspec.generate_formspec(pname, returningplayer)
 		local pauth = core.get_auth_handler().get_auth(pname)
 		if pauth and pauth.last_login then
 			local days = math.floor((os.time() - pauth.last_login) / (60 * 60 * 24))
-			logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M:%S UTC", pauth.last_login) .. " "
+			logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M UTC", pauth.last_login) .. " "
 
 			if days <= 0 then
 				logintime = logintime .. "(yesterday)"

@@ -5,7 +5,7 @@ hud_clock = hud_clock or {}
 local player_hud = {}
 
 local timer = 0
-local positionx = 0.97
+local positionx = 0.0
 local positiony = 0.9 --0.02
 
 --local positionx = 0.30;   --horz
@@ -81,7 +81,7 @@ minetest.register_on_joinplayer(function(player)
 		hud_elem_type = "text",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=-1},
-		offset = {x=0, y=0},
+		offset = {x=-16, y=0},
 		text = hud_clock.get_time(),
 		number = 0xFFFFFF,
 	})
@@ -89,14 +89,14 @@ minetest.register_on_joinplayer(function(player)
 		hud_elem_type = "image",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=-1},
-		offset = {x=-95, y=0},
+		offset = {x=-108, y=0},
 		scale = {x=1, y=1},
 		text = "mthudclock.png",
 	})
 	local x = player:hud_add({
 		hud_elem_type = "text",
 		position = {x=positionx, y=positiony},
-		offset = {x=0, y=18},
+		offset = {x=-16, y=18},
 		alignment = {x=-1, y=-1},
 		text = ("Mineral XP: " .. get_digxp(pname)),
 		number = 0xFFFFFF,

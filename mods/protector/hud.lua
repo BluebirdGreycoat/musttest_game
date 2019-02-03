@@ -80,7 +80,6 @@ minetest.register_globalstep(function(dtime)
 					position = {x=0, y=0.9},
 					offset = {x=16, y=0},
 					text = hud_text,
-					scale = {x=200, y=60},
 					alignment = {x=1, y=-1},
 				})
 			else

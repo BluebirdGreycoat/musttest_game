@@ -322,6 +322,8 @@ chat_core.handle_command_msg = function(name, param)
 	end
 
 	if type(to)=="string" and type(newmsg)=="string" and string.len(newmsg) > 0 and string.len(to) > 0 then
+		to = rename.grn(to)
+
 		if gdac_invis.is_invisible(to) and to ~= name then -- If target is invisible, and player sending is not same as target ...
 			if chat_core.players[name] and (chat_core.players[name].last_pm_from or "") ~= to then -- Do not permit, if player did not receive a PM from this target.
 				if to == "MustTest" then

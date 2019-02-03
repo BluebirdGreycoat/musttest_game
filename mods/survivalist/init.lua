@@ -396,6 +396,13 @@ function survivalist.start_game(pname, gamemode)
     return
   end
 
+	local pp = player:get_pos()
+	if pp.y < -100 or pp.y > 1000 then
+		minetest.chat_send_player(pname, "# Server: You need to be on the surface of the Overworld to start a challenge.")
+		easyvend.sound_error(pname)
+		return
+	end
+
   -- Validate the gamemode.
   if type(gamemode) ~= "string" then
     minetest.chat_send_player(pname, "# Server: No starting option selected!")

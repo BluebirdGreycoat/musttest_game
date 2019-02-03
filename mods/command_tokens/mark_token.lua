@@ -68,8 +68,8 @@ command_tokens.mark.execute = function(player, target)
 	local dname = rename.gpn(target)
 
 	if is_valid_target(player, target) then
-		local p1 = minetest.get_player_by_name(player)
-		local p2 = minetest.get_player_by_name(target)
+		local p1 = minetest.get_player_by_name(player):get_pos()
+		local p2 = minetest.get_player_by_name(target):get_pos()
 
 		if rc.same_realm(p1, p2) then
 			-- Mark player if they wern't marked, unmark them if they were.

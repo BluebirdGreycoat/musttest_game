@@ -36,6 +36,20 @@ rc.realms = {
 	},
 }
 
+function rc.pos_to_string(pos)
+	local success, level = rc.get_ground_level_at_pos(pos)
+	if success then
+		local y = pos.y
+		pos.y = pos.y - level
+		local s = minetest.pos_to_string(pos)
+		pos.y = y
+		return s
+	end
+
+	-- Use absolute coordinates.
+	return minetest.pos_to_string(pos)
+end
+
 function rc.get_realm_data(name)
 	for k, v in ipairs(rc.realms) do
 		if v.name == name then

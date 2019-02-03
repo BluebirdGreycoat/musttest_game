@@ -196,9 +196,13 @@ local generate_coord_string = function(name)
 	if command_tokens.mark.player_marked(name) then
 		local entity = minetest.get_player_by_name(name)
 		local pos = entity:get_pos()
+
+		local pstr = rc.pos_to_string(vector.round(pos))
+		pstr = string.gsub(pstr, "[%(%)]", "")
+
 		-- remember to include leading space!
-		coord_string = " [" .. rc.realm_description_at_pos(pos) .. ": " .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
-		minetest.chat_send_player(name, "# Server: You are marked (" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. ")!")
+		coord_string = " [" .. rc.realm_description_at_pos(pos) .. ": " .. pstr .. "]"
+		minetest.chat_send_player(name, "# Server: You are marked (" .. pstr .. ")!")
 	end
 	return coord_string
 end

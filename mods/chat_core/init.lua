@@ -348,7 +348,7 @@ chat_core.handle_command_msg = function(name, param)
 					chat_core.players[to].last_pm_from = name
 				end
 			end)
-			minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. ">: " .. newmsg)
+			minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. coord_string .. ">: " .. newmsg)
 
 			chat_logging.log_private_message(name, to, newmsg)
 			afk_removal.reset_timeout(name)

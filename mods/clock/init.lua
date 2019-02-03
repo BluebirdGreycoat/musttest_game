@@ -80,14 +80,15 @@ minetest.register_on_joinplayer(function(player)
 	local h = player:hud_add({
 		hud_elem_type = "text",
 		position = {x=positionx, y=positiony},
-		alignment = {x=-1, y=0},
+		alignment = {x=-1, y=-1},
+		offset = {x=0, y=0},
 		text = hud_clock.get_time(),
 		number = 0xFFFFFF,
 	})
 	local c = player:hud_add({
 		hud_elem_type = "image",
 		position = {x=positionx, y=positiony},
-		alignment = {x=-1, y=0},
+		alignment = {x=-1, y=-1},
 		offset = {x=-95, y=0},
 		scale = {x=1, y=1},
 		text = "mthudclock.png",
@@ -96,7 +97,7 @@ minetest.register_on_joinplayer(function(player)
 		hud_elem_type = "text",
 		position = {x=positionx, y=positiony},
 		offset = {x=0, y=18},
-		alignment = {x=-1, y=0},
+		alignment = {x=-1, y=-1},
 		text = ("Mineral XP: " .. get_digxp(pname)),
 		number = 0xFFFFFF,
 	})

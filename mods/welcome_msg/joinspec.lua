@@ -61,11 +61,11 @@ function joinspec.generate_formspec(pname, returningplayer)
 			logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M UTC", pauth.last_login) .. " "
 
 			if days <= 0 then
-				logintime = logintime .. "(yesterday)"
+				logintime = logintime .. "(Yesterday)"
 			elseif days == 1 then
-				logintime = logintime .. "(today)"
+				logintime = logintime .. "(Today)"
 			else
-				logintime = logintime .. "(" .. days .. " days ago)"
+				logintime = logintime .. "(" .. days .. " Days Ago)"
 			end
 		end
 		logintime = minetest.formspec_escape(logintime)

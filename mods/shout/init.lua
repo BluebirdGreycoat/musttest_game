@@ -64,6 +64,7 @@ shout.HINTS = {
 	"This is a confused message.",
 	"This message doesn't have any meaning.",
 	"Pay no attention to the man behind the curtain.",
+	"Shears and silver picks can sometimes be used to obtain materials or resources that other tools cannot.",
 }
 
 local HINT_DELAY_MIN = 60*30

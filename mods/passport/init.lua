@@ -182,6 +182,12 @@ passport.attempt_teleport = function(player, data)
   local pp = player:get_pos()
   local nn = player:get_player_name()
   local tg = data.position(player)
+
+	if rc.current_realm_at_pos(tg) ~= rc.current_realm_at_pos(pp) then
+		minetest.chat_send_player(nn, "# Server: Beacon signal is in another dimension!")
+		-- Wrong realm.
+		return
+	end
   
   for k, v in pairs(passport.recalls) do
     if v.suppress then

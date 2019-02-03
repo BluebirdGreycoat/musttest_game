@@ -46,12 +46,12 @@ minetest.register_globalstep(function(dtime)
 		-- Advance clock if player is not moving.
 		if moving then
 			timer = 0
-			owner_str = "Pending."
+			owner_str = "Pending"
 			hud.players[pname].moved = true
 		else
 			if hud.players[pname].moved then
 				timer = timer + gs_timestep
-				owner_str = "Checking."
+				owner_str = "Checking"
 			end
 		end
 
@@ -60,9 +60,9 @@ minetest.register_globalstep(function(dtime)
 			local owner = protector.get_node_owner(pos)
 
 			if owner and owner ~= "" then
-				owner_str = "<" .. rename.gpn(owner) .. ">!"
+				owner_str = "<" .. rename.gpn(owner) .. ">"
 			else
-				owner_str = "Nobody."
+				owner_str = "Nobody"
 			end
 
 			timer = 0

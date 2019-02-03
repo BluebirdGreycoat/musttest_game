@@ -41,17 +41,17 @@ minetest.register_globalstep(function(dtime)
 		end
 		hud.players[pname].pos = pos
 			
-		local hud_text = "Pos: " .. rc.pos_to_namestr(pos) .. "\n"
+		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos) .. "\n"
 
 		-- Advance clock if player is not moving.
 		if moving then
 			timer = 0
-			hud_text = "..." --"Scanning . . ."
+			hud_text = hud_text .. "Owner: ..." --"Scanning . . ."
 			hud.players[pname].moved = true
 		else
 			if hud.players[pname].moved then
 				timer = timer + gs_timestep
-				hud_text = "..." --"Searching claim database . . ."
+				hud_text = hud_text .. "Owner: ..." --"Searching claim database . . ."
 			end
 		end
 
@@ -60,9 +60,9 @@ minetest.register_globalstep(function(dtime)
 			local owner = protector.get_node_owner(pos)
 
 			if owner and owner ~= "" then
-				hud_text = "Land claimed by <" .. rename.gpn(owner) .. ">!"
+				hud_text = hud_text .. "Owner: Land claimed by <" .. rename.gpn(owner) .. ">!"
 			else
-				hud_text = "No recorded claims."
+				hud_text = hud_text .. "Owner: No recorded claims."
 			end
 
 			timer = 0
@@ -75,7 +75,7 @@ minetest.register_globalstep(function(dtime)
 					hud_elem_type = "text",
 					name = "Protector Area",
 					number = 0xFFFF22,
-					position = {x=0, y=0.9},
+					position = {x=0, y=0.8},
 					offset = {x=16, y=-8},
 					text = hud_text,
 					scale = {x=200, y=60},

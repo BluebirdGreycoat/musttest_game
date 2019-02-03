@@ -77,8 +77,8 @@ minetest.register_globalstep(function(dtime)
 					hud_elem_type = "text",
 					name = "Protector Area",
 					number = 0xFFFFFF, --0xFFFF22,
-					position = {x=0, y=0.8},
-					offset = {x=16, y=0},
+					position = {x=0, y=1},
+					offset = {x=16, y=-130},
 					text = hud_text,
 					alignment = {x=1, y=1},
 				})

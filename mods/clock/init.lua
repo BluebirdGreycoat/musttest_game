@@ -6,7 +6,7 @@ local player_hud = {}
 
 local timer = 0
 local positionx = 0.97
-local positiony = 0.9 --0.02
+local positiony = 0.8 --0.02
 
 --local positionx = 0.30;   --horz
 --local positiony = 0.90;  --vert
@@ -89,7 +89,7 @@ minetest.register_on_joinplayer(function(player)
 		hud_elem_type = "image",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=1},
-		offset = {x=-95, y=-2},
+		offset = {x=-95, y=0},
 		scale = {x=1, y=1},
 		text = "mthudclock.png",
 	})

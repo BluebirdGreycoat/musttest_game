@@ -189,11 +189,12 @@ sauth.auth_handler = {
 		-- Check and load db record if reqd
 		if r == nil then
 			r = get_record(name)
-	  	else
-		  	return auth_table[name]	-- cached copy			
-	  	end
+		else
+			return r	-- cached copy
+		end
 		-- Return nil on missing entry
 		if not r then return nil end
+
 		-- Figure out what privileges the player should have.
 		-- Take a copy of the players privilege table
 		local privileges, admin = {}
@@ -223,7 +224,7 @@ sauth.auth_handler = {
 			password = r.password,
 			privileges = privileges,
 			last_login = tonumber(r.last_login)
-			}
+		}
 		if not auth_table[name] and add_to_cache then auth_table[name] = record end -- Cache if reqd
 		return record
 	end,

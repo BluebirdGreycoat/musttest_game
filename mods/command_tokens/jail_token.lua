@@ -58,7 +58,15 @@ command_tokens.jail.execute = function(player, target)
     minetest.chat_send_player(player, "# Server: Law-enforcement couldn't find player <" .. rename.gpn(target) .. ">.")
     return
   end
-  
+
+	local p1 = minetest.get_player_by_name(player):get_pos()
+	local p2 = minetest.get_player_by_name(target):get_pos()
+
+	if not rc.same_realm(p1, p2) then
+		minetest.chat_send_player(player, "# Server: Target is in another dimension!")
+		return
+	end
+
 	local self_arrest = false
   if player == target then
     --minetest.chat_send_player(player, "# Server: Law-enforcement does not arrest self-trespassers.")

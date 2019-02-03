@@ -104,7 +104,7 @@ function shout.shout(name, param)
 	local mk = ""
 	if command_tokens.mark.player_marked(name) then
 		local pos = minetest.get_player_by_name(name):getpos()
-		mk = " [" .. rc.realm_description_at_pos(pos) .. ":" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
+		mk = " [" .. rc.realm_description_at_pos(pos) .. ": " .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
 	end
 
 	local dname = rename.gpn(name)

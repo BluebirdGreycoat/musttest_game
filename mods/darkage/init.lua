@@ -204,7 +204,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:darkdirt", {
 		description = "Dark Dirt",
 		tiles = {"darkage_darkdirt.png"},
-		groups = {crumbly=2, falling_node=1},
+		groups = {crumbly=2, falling_node=1, soil=1},
 		sounds = default.node_sound_dirt_defaults(),
 	})
 

@@ -191,7 +191,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 	--end
 
 	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
-	local isowner = (meta:get_string("obsidian_gateway_owner_" .. ns_key) == pname)
+	local actual_owner = meta:get_string("obsidian_gateway_owner_" .. ns_key)
+	local isowner = (actual_owner == pname)
 
 	local first_time_init = false
 
@@ -266,6 +267,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 		--do return end
 
 	if gdac.player_is_admin(pname) then
+		isowner = true
+	end
+
+	-- Let everyone use gates owned by the admin.
+	if actual_owner == "MustTest" then
 		isowner = true
 	end
 

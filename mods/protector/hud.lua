@@ -98,23 +98,23 @@ minetest.register_globalstep(function(dtime)
 			yaw = yaw - 360
 		end
 		if yaw < div*1 then
-			dir = "N"
+			dir = "N [+Z]"
 		elseif yaw < div*2 then
-			dir = "NW"
+			dir = "NW [-X +Z]"
 		elseif yaw < div*3 then
-			dir = "W"
+			dir = "W [-X]"
 		elseif yaw < div*4 then
-			dir = "SW"
+			dir = "SW [-X -Z]"
 		elseif yaw < div*5 then
-			dir = "S"
+			dir = "S [-Z]"
 		elseif yaw < div*6 then
-			dir = "SE"
+			dir = "SE [+X -Z]"
 		elseif yaw < div*7 then
-			dir = "E"
+			dir = "E [+X]"
 		elseif yaw < div*8 then
-			dir = "NE"
+			dir = "NE [+X +Z]"
 		elseif yaw < div*9 then
-			dir = "N"
+			dir = "N [+Z]"
 		end
 
 		local dir_text = "Facing: " .. dir

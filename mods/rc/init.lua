@@ -40,7 +40,7 @@ function rc.pos_to_namestr(pos)
 	local name = rc.pos_to_name(pos)
 	local str = rc.pos_to_string(pos)
 
-	str = string.gsub("[%(%)]", "")
+	str = string.gsub(str, "[%(%)]", "")
 
 	return "(" .. name .. ": " .. str .. ")"
 end

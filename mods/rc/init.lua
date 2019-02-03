@@ -254,6 +254,10 @@ function rc.current_realm_at_pos(p)
 	return ""
 end
 
+function rc.same_realm(p1, p2)
+	return (rc.current_realm_at_pos(p1) == rc.current_realm_at_pos(p2))
+end
+
 function rc.realm_description_at_pos(p)
 	-- Special realm name.
 	if p.y < -25000 then

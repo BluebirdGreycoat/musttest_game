@@ -71,7 +71,7 @@ command_tokens.mark.execute = function(player, target)
 		local p1 = minetest.get_player_by_name(player)
 		local p2 = minetest.get_player_by_name(target)
 
-		if rc.current_realm_at_pos(p1) == rc.current_realm_at_pos(p2) then
+		if rc.same_realm(p1, p2) then
 			-- Mark player if they wern't marked, unmark them if they were.
 			if not command_tokens.mark.players[target] then
 				command_tokens.mark.players[target] = true

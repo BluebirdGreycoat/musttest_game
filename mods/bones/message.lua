@@ -8,43 +8,46 @@ bones.players = bones.players or {}
 
 
 local release_player = function(player)
-    if bones.players[player] then
-        bones.players[player] = nil
-    end
+	if bones.players[player] then
+		bones.players[player] = nil
+	end
 end
 bones.release_player = release_player
 
 
 
 local send_chat_world = function(pos, player)
-    -- Don't spam the message console.
-    if bones.players[player] then return end
-    
-    local show_everyone = true
-    if player_labels.query_nametag_onoff(player) == false then
-      show_everyone = false
-    end
+	-- Don't spam the message console.
+	if bones.players[player] then return end
 
-    if show_everyone then
-			local dname = rename.gpn(player)
-			minetest.chat_send_all("# Server: Blackbox signal detected. Player <" .. dname .. "> died at (" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ").")
-    else
-			minetest.chat_send_all("# Server: Blackbox signal detected. ID and location unknown.")
-			minetest.chat_send_player(player, "# Server: You died at (" .. pos.x .. "," .. pos.y .. "," .. pos.z .. "). Your blackbox locator signal is SUPPRESSED.")
-    end
-    
-    minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your blackbox at the above coordinates.")
+	local show_everyone = true
+	if player_labels.query_nametag_onoff(player) == false then
+		show_everyone = false
+	end
 
-    -- The player can't trigger any more chat messages until released.
-    bones.players[player] = true
-    minetest.after(60, release_player, player)
+	if show_everyone then
+		local dname = rename.gpn(player)
+		minetest.chat_send_all("# Server: Blackbox detected. Player <" .. dname .. "> perished in the " ..
+			rc.realm_description_at_pos(pos) .. " Realm at " .. minetest.pos_to_string(pos) .. ".")
+	else
+		minetest.chat_send_all("# Server: Blackbox detected. ID and location unknown.")
+		minetest.chat_send_player(player, "# Server: You died in the " ..
+			rc.realm_description_at_pos(pos) .. " Realm at " .. minetest.pos_to_string(pos) ..
+			". Your blackbox locator signal is SUPPRESSED.")
+	end
+
+	minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your blackbox at the above coordinates.")
+
+	-- The player can't trigger any more chat messages until released.
+	bones.players[player] = true
+	minetest.after(60, release_player, player)
 end
 
 
 
 bones.do_messages = function(pos, player, num_stacks)
-    send_chat_world(pos, player)
-    minetest.log("action", "Player <" .. player .. "> died at (" .. pos.x .. "," .. pos.y .. "," .. pos.z .. "): stackcount=" .. num_stacks)
+	send_chat_world(pos, player)
+	minetest.log("action", "Player <" .. player .. "> died at (" .. pos.x .. "," .. pos.y .. "," .. pos.z .. "): stackcount=" .. num_stacks)
 end
 
 

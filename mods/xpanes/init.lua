@@ -105,6 +105,7 @@ function xpanes.register_pane(name, def)
 		groups = flatgroups,
 		drop = "xpanes:" .. name .. "_flat",
 		sounds = def.sounds,
+		light_source = def.light_source,
 		node_box = {
 			type = "fixed",
 			fixed = {{-1/2, -1/2, -1/32, 1/2, 1/2, 1/32}},
@@ -129,6 +130,7 @@ function xpanes.register_pane(name, def)
 		groups = groups,
 		drop = "xpanes:" .. name .. "_flat",
 		sounds = def.sounds,
+		light_source = def.light_source,
 		node_box = {
 			type = "connected",
 			fixed = {{-1/32, -1/2, -1/32, 1/32, 1/2, 1/32}},
@@ -257,6 +259,7 @@ xpanes.register_pane("talinite", {
 	wield_image = "glooptest_talinite_crystal_glass.png",
 	sounds = default.node_sound_glass_defaults(),
 	groups = {level=1, cracky=3},
+	light_source = 10,
 	recipe = {
 		{"talinite:glass", "talinite:glass", "talinite:glass"},
 		{"talinite:glass", "talinite:glass", "talinite:glass"}

@@ -187,7 +187,7 @@ function xban.get_record(player)
 	local last_pos
 	if e.last_pos and e.last_pos[player] then
 		last_pos = ("User was last seen at %s."):format(
-		  minetest.pos_to_string(vector.round(e.last_pos[player])))
+		  rc.pos_to_namestr(vector.round(e.last_pos[player])))
 	end
 	return record, last_pos
 end

@@ -202,7 +202,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			minetest.chat_send_player(pname, "# Server: It looks like this could possibly be an OLD gate! Aborting for safety reasons.")
 			minetest.chat_send_player(pname, "# Server: If this Gateway was previously functioning normally, please mail the admin with the coordinates.")
 			minetest.chat_send_player(pname, "# Server: If this is a Gate that you have just constructed, you can safely ignore this message.")
-			minetest.chat_send_player(pname, "# Server: The Gateway's EXIT location is @ " .. minetest.pos_to_string(target) .. ".")
+			minetest.chat_send_player(pname, "# Server: The Gateway's EXIT location is @ " .. rc.pos_to_namestr(target) .. ".")
 			minetest.after(1.5, function() easyvend.sound_error(pname) end)
 			return 
 		end
@@ -309,7 +309,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			-- Don't build return portal on top of someone's protected stuff.
 			if first_time_init then
 				if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
-					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection near " .. minetest.pos_to_string(target) .. ".")
+					minetest.chat_send_player(pname, "# Server: Return-gate construction FAILED due to protection near " .. rc.pos_to_namestr(target) .. ".")
 
 					-- Clear data for the initial gate. This will permit the player to retry without tearing everything down and building it again.
 					local meta = minetest.get_meta(origin)

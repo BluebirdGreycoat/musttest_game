@@ -115,7 +115,7 @@ mapfix.command = function(pname, param)
 
 	minetest.chat_send_player(pname,
 		"# Server: Liquid & light recalculation finished! Extents: " ..
-		minetest.pos_to_string(minp) .. " to " .. minetest.pos_to_string(maxp) ..
+		rc.pos_to_namestr(minp) .. " to " .. rc.pos_to_namestr(maxp) ..
 		". Radius: " .. radius .. ". Took " .. totalms .. " milliseconds.")
 end
 

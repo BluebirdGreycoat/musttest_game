@@ -317,7 +317,7 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 					minetest.chat_send_player(digger, "# Server: This area is protected by <" .. rename.gpn(owner) .. ">!")
 				elseif infolevel == 2 then
 					minetest.chat_send_player(digger, "# Server: This area is protected by <" .. rename.gpn(owner) .. ">.")
-					minetest.chat_send_player(digger, "# Server: Protection located at: " .. minetest.pos_to_string(positions[n]))
+					minetest.chat_send_player(digger, "# Server: Protection located at: " .. rc.pos_to_namestr(positions[n]))
 
 					if members ~= "" then
 						minetest.chat_send_player(digger, "# Server: Members: [" .. members .. "].")
@@ -329,7 +329,7 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 
 		if infolevel == 2 then
 			minetest.chat_send_player(digger, "# Server: This area is protected by <" .. rename.gpn(owner) .. ">.")
-			minetest.chat_send_player(digger, "# Server: Protection located at: " .. minetest.pos_to_string(positions[n]))
+			minetest.chat_send_player(digger, "# Server: Protection located at: " .. rc.pos_to_namestr(positions[n]))
 
 			if members ~= "" then
 				minetest.chat_send_player(digger, "# Server: Members: [" .. members .. "].")

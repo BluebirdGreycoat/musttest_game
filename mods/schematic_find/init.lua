@@ -140,7 +140,7 @@ function schematic_find.test_tool_on_use(itemstack, user, pointed_thing)
 		for k, v in pairs(counts) do
 			minetest.chat_send_player(pname, "# Server: Found " .. v .. " '" .. k .. "'!")
 		end
-		minetest.chat_send_player(pname, "# Server: Origin @ " .. minetest.pos_to_string(origin) .. "!")
+		minetest.chat_send_player(pname, "# Server: Origin @ " .. rc.pos_to_namestr(origin) .. "!")
 	end
 end
 

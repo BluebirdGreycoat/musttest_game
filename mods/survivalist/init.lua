@@ -236,7 +236,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   
   -- Inform player the game has begun.
 	local dname = rename.gpn(pname)
-  minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. minetest.pos_to_string(vector.round(pos)) .. "!")
+  minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_string(vector.round(pos)) .. "!")
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")
   

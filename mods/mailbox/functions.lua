@@ -266,7 +266,7 @@ function(pos, listname, index, stack, player)
         local message = "Player <" .. rename.gpn(pname) .. "> put " ..
           stack:get_count() ..
           " '" .. desc .. "' in your mailbox @ " ..
-          minetest.pos_to_string(pos) .. "!"
+          rc.pos_to_namestr(pos) .. "!"
         email.send_mail_single(from, to, subject, message)
       end
       return -1

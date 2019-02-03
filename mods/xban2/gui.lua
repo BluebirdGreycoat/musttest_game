@@ -194,7 +194,7 @@ local function make_fs(name)
 		-- last_pos and last_seen are per name, not per record-entry.
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then
 			infomsg[#infomsg+1] = "User was last seen at " ..
-				minetest.pos_to_string(vector.round(e.last_pos[record_name])) .. "."
+				rc.pos_to_namestr(vector.round(e.last_pos[record_name])) .. "."
 		end
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..

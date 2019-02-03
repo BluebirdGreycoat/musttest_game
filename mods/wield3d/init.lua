@@ -213,7 +213,7 @@ if cmdteleport then
 				local pos = minetest.string_to_pos(string.match(str, match))
 				if pos then
 					pos = vector.round(pos)
-					pos = minetest.pos_to_string(pos)
+					pos = rc.pos_to_namestr(pos)
 					str = string.gsub(str, match, pos)
 				end
 				minetest.chat_send_player(name, "# Server: " .. str .. ".")

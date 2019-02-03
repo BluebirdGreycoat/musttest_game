@@ -36,6 +36,19 @@ rc.realms = {
 	},
 }
 
+function rc.pos_to_namestr(pos)
+	local name = rc.pos_to_name(pos)
+	local str = rc.pos_to_string(pos)
+
+	str = string.gsub("[%(%)]", "")
+
+	return "(" .. name .. ": " .. str .. ")"
+end
+
+function rc.pos_to_name(pos)
+	return rc.realm_description_at_pos(pos)
+end
+
 function rc.pos_to_string(pos)
 	local success, level = rc.get_ground_level_at_pos(pos)
 	if success then

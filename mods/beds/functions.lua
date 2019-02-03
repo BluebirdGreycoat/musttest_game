@@ -230,8 +230,8 @@ function beds.report_respawn_status(name)
 		local spawncount = beds.storage:get_int(name .. ":count")
     if spawncount > 0 then
 			minetest.chat_send_player(name,
-				"# Server: Your home position currently set @ " ..
-				minetest.pos_to_string(pos) .. " has " .. spawncount .. " respawn(s) left.")
+				"# Server: Your home position currently set in the " .. rc.realm_description_at_pos(pos) .. " @ " ..
+				rc.pos_to_string(pos) .. " has " .. spawncount .. " respawn(s) left.")
 			good = true
 		end
 	end
@@ -359,9 +359,8 @@ function beds.on_rightclick(pos, player)
 			beds.storage:set_int(name .. ":count", spawncount)
 
 			minetest.chat_send_player(
-				name, "# Server: You will respawn in bed at " ..
-				minetest.pos_to_string(pos) .. " up to " .. spawncount ..
-				" times.")
+				name, "# Server: You will respawn in your bed in the " .. rc.pos_to_name(pos) .. " at " ..
+				rc.pos_to_string(pos) .. " up to " .. spawncount .. " times.")
 			minetest.chat_send_player(name, "# Server: Afterward you will need to sleep again to refresh your respawn position.")
 			minetest.chat_send_player(name, "# Server: You may safely dig your previous bed, if you had one set.")
 			if survivalist.game_in_progress(name) then

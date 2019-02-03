@@ -15,7 +15,7 @@ local SINGLEPLAYER = minetest.is_singleplayer()
 machines.log_update =
 function(pos, name)
   if SINGLEPLAYER == true and NEED_LOG == true then
-    minetest.chat_send_all("# Server: " .. name .. " updates @ " .. minetest.pos_to_string(pos) .. ".")
+    minetest.chat_send_all("# Server: " .. name .. " updates @ " .. rc.pos_to_namestr(pos) .. ".")
   end
 end
 

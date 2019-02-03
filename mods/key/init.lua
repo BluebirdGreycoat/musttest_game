@@ -45,7 +45,7 @@ minetest.register_tool("key:skeleton", {
         meta:set_string("secret", secret)
         meta:set_string("description", "Key to <"..rename.gpn(user:get_player_name())..">'s "
           .. utility.get_short_desc(ndef.description) .. " @ " ..
-          minetest.pos_to_string(vector.round(pos)))
+          rc.pos_to_namestr(vector.round(pos)))
 				return itemstack
 			end
 		end

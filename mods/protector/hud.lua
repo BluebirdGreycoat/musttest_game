@@ -41,7 +41,7 @@ minetest.register_globalstep(function(dtime)
 		end
 		hud.players[pname].pos = pos
 			
-		local hud_text = ""
+		local hud_text = "Pos: " .. rc.pos_to_namestr(pos) .. "\n"
 
 		-- Advance clock if player is not moving.
 		if moving then

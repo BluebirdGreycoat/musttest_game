@@ -123,10 +123,10 @@ minetest.register_globalstep(function(dtime)
 				hud.players[pname].id2 = player:hud_add({
 					hud_elem_type = "text",
 					number = 0xFFFFFF,
-					position = {x=0.5, y=0},
-					offset = {x=0, y=5},
+					position = {x=1, y=1},
+					offset = {x=-16, y=-130 + 18*2},
 					text = dir_text,
-					alignment = {x=0, y=1},
+					alignment = {x=-1, y=1},
 				})
 			else
 				player:hud_change(hud.players[pname].id2, "text", dir_text)

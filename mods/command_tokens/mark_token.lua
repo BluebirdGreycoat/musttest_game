@@ -68,23 +68,30 @@ command_tokens.mark.execute = function(player, target)
 	local dname = rename.gpn(target)
 
 	if is_valid_target(player, target) then
-		-- Mark player if they wern't marked, unmark them if they were.
-		if not command_tokens.mark.players[target] then
-			command_tokens.mark.players[target] = true
-			minetest.chat_send_all("# Server: Player <" .. dname .. "> has been marked!")
-		else
-			command_tokens.mark.players[target] = nil
-			minetest.chat_send_all("# Server: Player <" .. dname .. "> was unmarked.")
-		end
-        
-		-- Consume token.
-		minetest.after(0, function() -- Necessary because this code will not operate during the on_use callback.
-			local ref = minetest.get_player_by_name(player)
-			if ref and ref:is_player() then
-				local inv = ref:get_inventory()
-				inv:remove_item("main", "command_tokens:mark_player")
+		local p1 = minetest.get_player_by_name(player)
+		local p2 = minetest.get_player_by_name(target)
+
+		if rc.current_realm_at_pos(p1) == rc.current_realm_at_pos(p2) then
+			-- Mark player if they wern't marked, unmark them if they were.
+			if not command_tokens.mark.players[target] then
+				command_tokens.mark.players[target] = true
+				minetest.chat_send_all("# Server: Player <" .. dname .. "> has been marked!")
+			else
+				command_tokens.mark.players[target] = nil
+				minetest.chat_send_all("# Server: Player <" .. dname .. "> was unmarked.")
 			end
-		end)
+
+			-- Consume token.
+			minetest.after(0, function() -- Necessary because this code will not operate during the on_use callback.
+				local ref = minetest.get_player_by_name(player)
+				if ref and ref:is_player() then
+					local inv = ref:get_inventory()
+					inv:remove_item("main", "command_tokens:mark_player")
+				end
+			end)
+		else
+			minetest.chat_send_player(player, "# Server: Target is in another dimension!")
+		end
 	else
 		minetest.chat_send_player(player, "# Server: Player <" .. dname .. "> cannot be marked.")
 	end

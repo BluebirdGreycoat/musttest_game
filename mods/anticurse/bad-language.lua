@@ -61,6 +61,8 @@ anticurse.foul = {
 	"s+u+x+",
 	"d+i+x+",
 	{word="h+o+m+o+", white={"homogeneous"}},
+	{word="t+i+t+s+", white={"petits"}},
+	{word="b+oo+b+", white={"booby"}},
 
   "a+ss+e*h+o+l+e+",
   "a+h+o+l+e+s+",

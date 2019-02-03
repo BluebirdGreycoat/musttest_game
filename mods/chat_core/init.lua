@@ -202,6 +202,7 @@ local generate_coord_string = function(name)
 	end
 	return coord_string
 end
+chat_core.generate_coord_string = generate_coord_string
 
 
 

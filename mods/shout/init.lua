@@ -101,14 +101,10 @@ function shout.shout(name, param)
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
 	if chat_core.check_language(name, param) then return end
 
-	local mk = ""
-	if command_tokens.mark.player_marked(name) then
-		local pos = minetest.get_player_by_name(name):getpos()
-		mk = " [" .. rc.realm_description_at_pos(pos) .. ": " .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
-	end
-
+	local mk = chat_core.generate_coord_string(name)
 	local dname = rename.gpn(name)
 	local players = minetest.get_connected_players()
+
 	for _, player in ipairs(players) do
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then

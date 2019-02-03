@@ -46,12 +46,12 @@ minetest.register_globalstep(function(dtime)
 		-- Advance clock if player is not moving.
 		if moving then
 			timer = 0
-			owner_str = "N/A"
+			owner_str = "Pending."
 			hud.players[pname].moved = true
 		else
 			if hud.players[pname].moved then
 				timer = timer + gs_timestep
-				owner_str = "N/A"
+				owner_str = "Checking."
 			end
 		end
 

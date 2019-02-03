@@ -41,17 +41,17 @@ minetest.register_globalstep(function(dtime)
 		end
 		hud.players[pname].pos = pos
 			
-		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos) .. "\n"
+		local owner_str = hud.players[pname].owner
 
 		-- Advance clock if player is not moving.
 		if moving then
 			timer = 0
-			hud_text = hud_text .. "Owner: ..." --"Scanning . . ."
+			owner_str = "N/A"
 			hud.players[pname].moved = true
 		else
 			if hud.players[pname].moved then
 				timer = timer + gs_timestep
-				hud_text = hud_text .. "Owner: ..." --"Searching claim database . . ."
+				owner_str = "N/A"
 			end
 		end
 
@@ -60,21 +60,23 @@ minetest.register_globalstep(function(dtime)
 			local owner = protector.get_node_owner(pos)
 
 			if owner and owner ~= "" then
-				hud_text = hud_text .. "Owner: Land claimed by <" .. rename.gpn(owner) .. ">!"
+				owner_str = "<" .. rename.gpn(owner) .. ">!"
 			else
-				hud_text = hud_text .. "Owner: No recorded claims."
+				owner_str = "Nobody."
 			end
 
 			timer = 0
 			hud.players[pname].moved = false
 		end
 
-		if hud_text ~= "" and hud_text ~= hud.players[pname].text then
+		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos) .. "\nOwner: " .. owner_str
+
+		if hud_text ~= hud.players[pname].text then
 			if not hud.players[pname].id then
 				hud.players[pname].id = player:hud_add({
 					hud_elem_type = "text",
 					name = "Protector Area",
-					number = 0xFFFF22,
+					number = 0xFFFFFF, --0xFFFF22,
 					position = {x=0, y=0.9},
 					offset = {x=16, y=-8},
 					text = hud_text,
@@ -85,6 +87,7 @@ minetest.register_globalstep(function(dtime)
 				player:hud_change(hud.players[pname].id, "text", hud_text)
 			end
 			hud.players[pname].text = hud_text
+			hud.players[pname].owner = owner_str
 		end
 
 		-- Store timer.
@@ -97,6 +100,7 @@ minetest.register_on_joinplayer(function(player)
 	hud.players[pname] = {
 		timer = 0,
 		text = "", -- Keep track of last displayed text.
+		owner = "",
 		moved = true,
 		pos = {x=0, y=0, z=0},
 	}

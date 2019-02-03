@@ -64,7 +64,8 @@ function serveressentials.whereis(pname, param)
 
 	minetest.chat_send_player(pname,
 		"# Server: Player <" .. rename.gpn(target) .. "> is located in the " .. rc.realm_description_at_pos(pos) .. " Realm at " .. minetest.pos_to_string(pos) .. ", " ..
-		HP .. ", " .. wielding .. ", " .. area .. ". " .. "Nearby players: " .. nearby .. ".")
+		HP .. ", " .. wielding .. ", " .. area .. ".")
+	minetest.chat_send_player(pname, "# Server: Nearby players: " .. nearby .. ".")
 end
 
 if not serveressentials.registered then

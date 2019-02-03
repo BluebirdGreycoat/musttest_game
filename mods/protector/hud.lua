@@ -80,7 +80,7 @@ minetest.register_globalstep(function(dtime)
 					position = {x=0, y=0.8},
 					offset = {x=16, y=0},
 					text = hud_text,
-					alignment = {x=1, y=-1},
+					alignment = {x=1, y=1},
 				})
 			else
 				player:hud_change(hud.players[pname].id, "text", hud_text)

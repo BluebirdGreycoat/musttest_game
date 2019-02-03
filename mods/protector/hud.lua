@@ -89,6 +89,51 @@ minetest.register_globalstep(function(dtime)
 			hud.players[pname].owner = owner_str
 		end
 
+		local yaw = (player:get_look_horizontal() * 180.0) / math.pi
+
+		local div = 360 / 8
+		local dir = "N/A"
+		yaw = yaw + (360 / 16)
+		if yaw > 360 then
+			yaw = yaw - 360
+		end
+		if yaw < div*1 then
+			dir = "N"
+		elseif yaw < div*2 then
+			dir = "NW"
+		elseif yaw < div*3 then
+			dir = "W"
+		elseif yaw < div*4 then
+			dir = "SW"
+		elseif yaw < div*5 then
+			dir = "S"
+		elseif yaw < div*6 then
+			dir = "SE"
+		elseif yaw < div*7 then
+			dir = "E"
+		elseif yaw < div*8 then
+			dir = "NE"
+		elseif yaw < div*9 then
+			dir = "N"
+		end
+
+		local dir_text = "Facing: " .. dir
+		if dir_text ~= hud.players[pname].dir then
+			if not hud.players[pname].id2 then
+				hud.players[pname].id2 = player:hud_add({
+					hud_elem_type = "text",
+					number = 0xFFFFFF,
+					position = {x=0.5, y=0},
+					offset = {x=0, y=5},
+					text = dir_text,
+					alignment = {x=0, y=1},
+				})
+			else
+				player:hud_change(hud.players[pname].id2, "text", dir_text)
+			end
+			hud.players[pname].dir = dir_text
+		end
+
 		-- Store timer.
 		hud.players[pname].timer = timer
 	end
@@ -100,6 +145,7 @@ minetest.register_on_joinplayer(function(player)
 		timer = 0,
 		text = "", -- Keep track of last displayed text.
 		owner = "",
+		dir = "",
 		moved = true,
 		pos = {x=0, y=0, z=0},
 	}

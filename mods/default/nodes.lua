@@ -627,7 +627,7 @@ minetest.register_node("default:coalblock", {
 minetest.register_node("default:stone_with_iron", {
 	description = "Iron Ore",
 	tiles = {"default_stone.png^default_mineral_iron.png"},
-	groups = {level = 1, cracky = 2},
+	groups = {level = 1, cracky = 2, ore = 1},
 	drop = 'default:iron_lump',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
@@ -645,7 +645,7 @@ minetest.register_node("default:steelblock", {
 minetest.register_node("default:stone_with_copper", {
 	description = "Copper Ore",
 	tiles = {"default_stone.png^default_mineral_copper.png"},
-	groups = {level = 1, cracky = 2},
+	groups = {level = 1, cracky = 2, ore = 1},
 	drop = 'default:copper_lump',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
@@ -717,7 +717,7 @@ minetest.register_node("default:mese", {
 minetest.register_node("default:stone_with_gold", {
 	description = "Gold Ore",
 	tiles = {"default_stone.png^default_mineral_gold.png"},
-	groups = {level = 1, cracky = 2},
+	groups = {level = 1, cracky = 2, ore = 1},
 	drop = "default:gold_lump",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),

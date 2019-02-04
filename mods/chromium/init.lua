@@ -2,7 +2,7 @@
 minetest.register_node("chromium:ore", {
   description = "Chromium Ore",
   tiles = {"default_stone.png^technic_chromium_mineral.png"},
-  groups = {level = 1, cracky = 1},
+  groups = {level = 1, cracky = 1, ore = 1},
   drop = "chromium:lump",
   sounds = default.node_sound_stone_defaults(),
 })

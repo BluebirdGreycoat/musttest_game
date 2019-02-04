@@ -2,7 +2,7 @@
 minetest.register_node("zinc:ore", {
   description = "Zinc Ore",
   tiles = {"default_stone.png^technic_zinc_mineral.png"},
-  groups = {level = 1, cracky = 1},
+  groups = {level = 1, cracky = 1, ore = 1},
   drop = "zinc:lump",
   sounds = default.node_sound_stone_defaults(),
 })

@@ -189,7 +189,7 @@ minetest.register_node("rackstone:void", {
 minetest.register_node("rackstone:redrack_with_iron", {
   description = "Netherack With Iron",
   tiles = {"rackstone_redrack.png^default_mineral_iron.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1},
+  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore = 1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
 	silverpick_drop = true,
@@ -203,7 +203,7 @@ minetest.register_node("rackstone:redrack_with_iron", {
 minetest.register_node("rackstone:redrack_with_copper", {
   description = "Netherack With Copper",
   tiles = {"rackstone_redrack.png^default_mineral_copper.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1},
+  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
 	silverpick_drop = true,
@@ -231,7 +231,7 @@ minetest.register_node("rackstone:redrack_with_coal", {
 minetest.register_node("rackstone:redrack_with_tin", {
   description = "Netherack With Tin",
   tiles = {"rackstone_redrack.png^moreores_mineral_tin.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1},
+  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",
 	silverpick_drop = true,

@@ -211,7 +211,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee:set_pos(p)
 		rc.notify_realm_update(teleportee:get_player_name(), p)
-		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
+		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> to " .. rc.pos_to_namestr(p) .. "."
 	end
 
 	local teleportee = nil

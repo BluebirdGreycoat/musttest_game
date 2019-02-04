@@ -14,14 +14,10 @@ local function on_rename_check(pos, nodename)
 	if owner == "" then
 		return
 	end
-	local cname = meta:get_string("rename")
 	local dname = rename.gpn(owner)
 
-	-- Check if the owner's current alias has changed.
-	if cname ~= dname then
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", nodename .. " (Owned by <" .. dname .. ">!)")
-	end
+	meta:set_string("rename", dname)
+	meta:set_string("infotext", nodename .. " (Owned by <" .. dname .. ">!)")
 end
 
 minetest.register_entity("itemframes:item",{

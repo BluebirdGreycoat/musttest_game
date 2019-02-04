@@ -572,15 +572,12 @@ minetest.register_node("circular_saw:circular_saw",  {
 		if owner == "" then
 			return
 		end
-		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
 
-			-- Update circular saw.
-			circular_saw:update_inventory(pos, 0)
-		end
+		meta:set_string("rename", dname)
+
+		-- Update circular saw.
+		circular_saw:update_inventory(pos, 0)
 	end,
 })
 

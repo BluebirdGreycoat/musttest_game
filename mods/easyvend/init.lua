@@ -95,13 +95,10 @@ local machine_template = {
 		if owner == "" then
 			return
 		end
-		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)
-		-- Check if the owner's current alias has changed.
-		if cname ~= dname then
-			meta:set_string("rename", dname)
-			easyvend.machine_check(pos, minetest.get_node(pos))
-		end
+
+		meta:set_string("rename", dname)
+		easyvend.machine_check(pos, minetest.get_node(pos))
 	end,
 }
 

@@ -399,13 +399,10 @@ function doors.register(name, def)
 			if owner == "" then
 				return
 			end
-			local cname = meta:get_string("rename")
 			local dname = rename.gpn(owner)
-			-- Check if the owner's current alias has changed.
-			if cname ~= dname then
-				meta:set_string("rename", dname)
-				meta:set_string("infotext", "Locked Door (Owned by <" .. dname .. ">!)")
-			end
+
+			meta:set_string("rename", dname)
+			meta:set_string("infotext", "Locked Door (Owned by <" .. dname .. ">!)")
 		end
 
 		-- Disable client dig prediction.
@@ -853,13 +850,10 @@ function doors.register_trapdoor(name, def)
 			if owner == "" then
 				return
 			end
-			local cname = meta:get_string("rename")
 			local dname = rename.gpn(owner)
-			-- Check if the owner's current alias has changed.
-			if cname ~= dname then
-				meta:set_string("rename", dname)
-				meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
-			end
+
+			meta:set_string("rename", dname)
+			meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
 		end
 
 		-- Disable client dig prediction.

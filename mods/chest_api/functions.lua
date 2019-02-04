@@ -843,11 +843,11 @@ function chest_api.protected_on_rename_check(pos)
 	if cname ~= dname then
 		meta:set_string("rename", dname)
 
-		local cname = meta:get_string("chest_name") or ""
-		if cname == "" then
+		local label = meta:get_string("chest_name") or ""
+		if label == "" then
 			meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)")
 		else
-			meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)\nLabel: <" .. cname .. ">")
+			meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)\nLabel: <" .. label .. ">")
 		end
 	end
 end

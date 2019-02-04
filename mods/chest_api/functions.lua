@@ -536,7 +536,9 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         string.find(nn, "mithril")) and string.find(nn, "locked") then
       if owner == pn or gdac.player_is_admin(pn) then
         minetest.chat_send_player(pn, "# Server: Chest name updated.")
-        meta:set_string("chest_name", fields.name or "")
+				local new_name = (fields.name or "")
+				new_name = new_name:trim()
+        meta:set_string("chest_name", new_name)
 
         local owner = meta:get_string("owner") or ""
 				local dname = rename.gpn(owner)

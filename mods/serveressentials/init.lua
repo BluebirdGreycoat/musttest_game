@@ -70,6 +70,9 @@ end
 
 
 function serveressentials.do_teleport(name, param)
+	name = name:trim()
+	param = param:trim()
+
 	-- Returns (pos, true) if found, otherwise (pos, false)
 	local function find_free_position_near(pos)
 		pos = vector.round(pos)
@@ -120,11 +123,12 @@ function serveressentials.do_teleport(name, param)
 	local teleportee = nil
 	local p = {}
 	local realm = nil
-	minetest.chat_send_player(name, param)
+	--minetest.chat_send_player(name, param)
 	realm, p.x, p.y, p.z = string.match(param, "^([^ ]+) *: *([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
 	p.x = tonumber(p.x)
 	p.y = tonumber(p.y)
 	p.z = tonumber(p.z)
+	--minetest.chat_send_player(name, "Got: " .. realm .. ":" .. p.x .. "," .. p.y .. "," .. p.z)
 	if realm and p.x and p.y and p.z then
 		p = rc.realmpos_to_pos(realm, p)
 		if not p then

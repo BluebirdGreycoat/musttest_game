@@ -1333,6 +1333,10 @@ minetest.register_node("default:water_source", {
 	-- Note: this is not called if water-source is created by the engine due to liquid-flow mechanic.
 	on_construct = function(pos)
 		farming.notify_soil(pos)
+		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+			return
+		end
 		if rc.current_realm_at_pos(pos) == "channelwood" then
 			minetest.swap_node(pos, {name="cw:water_source"})
 			return

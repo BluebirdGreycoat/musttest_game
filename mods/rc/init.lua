@@ -84,9 +84,9 @@ function rc.get_realm_data(name)
 	return nil
 end
 
-function rc.get_random_realm_gate_position(origin)
+function rc.get_random_realm_gate_position(pname, origin)
 	if rc.is_valid_realm_pos(origin) then
-		if origin.y >= 80 and origin.y <= 1000 then
+		if origin.y >= 128 and origin.y <= 1000 then
 			-- If gateway is positioned in the Overworld mountains,
 			-- permit easy realm hopping.
 			local realm = rc.realms[math.random(1, #rc.realms)]
@@ -98,7 +98,29 @@ function rc.get_random_realm_gate_position(origin)
 				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
 			}
 
-			return pos
+			--if pname == "MustTest" then
+				local below = vector.add(origin, {x=0, y=-16, z=0})
+				local minp = vector.add(below, {x=-16, y=-16, z=-16})
+				local maxp = vector.add(below, {x=16, y=16, z=16})
+
+				-- Should find 30K stone.
+				local positions, counts = minetest.find_nodes_in_area(minp, maxp, {
+						"default:stone",
+					})
+
+				--for k, v in pairs(counts) do
+				--	minetest.chat_send_player(pname, "# Server: " .. k .. " = " .. v .. "!")
+				--end
+
+				if counts["default:stone"] > math.random(10000, 30000) then
+					--minetest.chat_send_player("MustTest", "# Server: Success!")
+					return pos
+					--return nil
+				end
+				return nil
+			--end
+
+			--return pos
 		elseif origin.y > 1000 then
 			-- The gateway is positioned in a realm somewhere.
 			-- 9/10 times the exit point stays in the same realm.

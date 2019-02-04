@@ -210,10 +210,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 		-- Algorithm for locating the destination.
 
 		-- Get a potential gate location.
-		target = rc.get_random_realm_gate_position(origin)
+		target = rc.get_random_realm_gate_position(pname, origin)
 
 		-- Is target outside bounds?
 		local bad = function(target, origin)
+			-- Handle nil.
+			if not target then
+				return true
+			end
 			-- Don't allow exit points near the colonies.
 			if vector.distance(target, {x=0, y=0, z=0}) < 2000 or
 				vector.distance(target, {x=0, y=-30790, z=0}) < 2000 then
@@ -225,6 +229,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			end
 			-- Or too far.
 			-- This causes too many failures.
+			-- Note: this is now handled by the 'rc' mod.
 			--if vector.distance(target, origin) > 7000 then
 			--	return true
 			--end
@@ -236,10 +241,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 		-- Keep trying until the target is within bounds.
 		local num_tries = 0
 		while bad(target, origin) do
-			target = rc.get_random_realm_gate_position(origin)
+			target = rc.get_random_realm_gate_position(pname, origin)
 			num_tries = num_tries + 1
 
-			if num_tries >= 25 then
+			-- Max 3 tries.
+			if num_tries >= 2 then
 				--[[
 				minetest.after(0, function()
 					-- Detonate some TNT!
@@ -247,7 +253,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 						radius = 3,
 						ignore_protection = false,
 						ignore_on_blast = false,
-						damage_radius = 3,
+						damage_radius = 5,
 						disable_drops = true,
 					})
 				end)

@@ -144,6 +144,7 @@ minetest.register_node("itemframes:frame",{
 	end,
 	_on_rename_check = function(pos)
 		on_rename_check(pos, "Item Frame")
+		update_item(pos, minetest.get_node(pos))
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end
@@ -215,6 +216,7 @@ minetest.register_node("itemframes:pedestal",{
 	end,
 	_on_rename_check = function(pos)
 		on_rename_check(pos, "Pedestal")
+		update_item(pos, minetest.get_node(pos))
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end

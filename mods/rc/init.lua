@@ -75,6 +75,11 @@ function rc.get_realm_data(name)
 		if v.name == name then
 			return v
 		end
+		if v.name == "overworld" then
+			if name == "netherworld" or name == "nether" or name == "caverns" or name == "caves" then
+				return v
+			end
+		end
 	end
 	return nil
 end

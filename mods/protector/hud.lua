@@ -69,7 +69,7 @@ minetest.register_globalstep(function(dtime)
 			hud.players[pname].moved = false
 		end
 
-		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos) .. "\nOwner: " .. owner_str
+		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos):gsub(",", ", ") .. "\nOwner: " .. owner_str
 
 		if hud_text ~= hud.players[pname].text then
 			if not hud.players[pname].id then

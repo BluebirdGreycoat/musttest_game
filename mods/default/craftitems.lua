@@ -20,7 +20,7 @@ function default.strike_protection(itemstack, user, pt)
 
 	-- Update names in infotext.
 	local node = minetest.get_node(pt.under)
-	local ndef = minetest.reg_ns_nodes[node.name]
+	local ndef = minetest.registered_items[node.name]
 	if ndef and ndef._on_rename_check then
 		ndef._on_rename_check(pt.under)
 	end

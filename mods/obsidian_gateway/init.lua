@@ -246,7 +246,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 			-- Max 3 tries.
 			if num_tries >= 2 then
-				--[[
+				---[[
 				minetest.after(0, function()
 					-- Detonate some TNT!
 					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {

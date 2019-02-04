@@ -66,10 +66,12 @@ shout.HINTS = {
 	"Pay no attention to the man behind the curtain.",
 	"Shears and silver picks can sometimes be used to obtain materials or resources that other tools cannot.",
 	"Walk softly and carry a big stick.",
+	"Punching an itemframe or pedestal with a stick will restore missing item entities.",
+	"Items placed in itemframes or pedestals may occasionally become invisible. Punch with a stick to restore them.",
 }
 
-local HINT_DELAY_MIN = 60*30
-local HINT_DELAY_MAX = 60*60
+local HINT_DELAY_MIN = 60*15
+local HINT_DELAY_MAX = 60*30
 
 function shout.print_hint()
 	local HINTS = shout.HINTS

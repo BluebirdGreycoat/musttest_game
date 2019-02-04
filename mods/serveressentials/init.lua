@@ -72,6 +72,7 @@ end
 function serveressentials.do_teleport(name, param)
 	-- Returns (pos, true) if found, otherwise (pos, false)
 	local function find_free_position_near(pos)
+		pos = vector.round(pos)
 		local tries = {
 			{x=1,y=0,z=0},
 			{x=-1,y=0,z=0},
@@ -100,6 +101,7 @@ function serveressentials.do_teleport(name, param)
 	p.y = tonumber(p.y)
 	p.z = tonumber(p.z)
 	if p.x and p.y and p.z then
+		p = vector.round(p)
 		local lm = 31000
 		if p.x < -lm or p.x > lm or p.y < -lm or p.y > lm or p.z < -lm or p.z > lm then
 			return false, "Cannot teleport out of map bounds."
@@ -123,7 +125,7 @@ function serveressentials.do_teleport(name, param)
 	if target_name then
 		local target = core.get_player_by_name(target_name)
 		if target then
-			p = target:get_pos()
+			p = vector.round(target:get_pos())
 		end
 	end
 	if teleportee and p then
@@ -149,6 +151,7 @@ function serveressentials.do_teleport(name, param)
 		teleportee = core.get_player_by_name(teleportee_name)
 	end
 	if teleportee and p.x and p.y and p.z then
+		p = vector.round(p)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
@@ -172,6 +175,7 @@ function serveressentials.do_teleport(name, param)
 		end
 	end
 	if teleportee and p then
+		p = vector.round(p)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end

@@ -120,7 +120,7 @@ function serveressentials.do_teleport(name, param)
 	local teleportee = nil
 	local p = {}
 	local realm = nil
-	realm, p.x, p.y, p.z = string.match(param, "^([^ ]+) *: *([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
+	realm, p.x, p.y, p.z = string.match(param, "^([^ ]+) *%: *([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
 	p.x = tonumber(p.x)
 	p.y = tonumber(p.y)
 	p.z = tonumber(p.z)

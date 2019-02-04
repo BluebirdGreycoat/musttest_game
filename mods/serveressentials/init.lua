@@ -118,6 +118,33 @@ function serveressentials.do_teleport(name, param)
 	end
 
 	local teleportee = nil
+	local p = {}
+	local realm = nil
+	realm, p.x, p.y, p.z = string.match(param, "^([^ ]+): *([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
+	p.x = tonumber(p.x)
+	p.y = tonumber(p.y)
+	p.z = tonumber(p.z)
+	if realm and p.x and p.y and p.z then
+		p = rc.realmpos_to_pos(realm, p)
+		if not p then
+			return false, "Cannot interpret realm coordinates."
+		end
+		local lm = 31000
+		if p.x < -lm or p.x > lm or p.y < -lm or p.y > lm or p.z < -lm or p.z > lm then
+			return false, "Cannot teleport out of map bounds."
+		end
+		if not rc.is_valid_realm_pos(p) then
+			return false, "Cannot teleport outside of any realm."
+		end
+		teleportee = core.get_player_by_name(name)
+		if teleportee then
+			teleportee:set_pos(p)
+			rc.notify_realm_update(teleportee:get_player_name(), p)
+			return true, "Teleporting to " .. rc.pos_to_namestr(p) .. "."
+		end
+	end
+
+	local teleportee = nil
 	local p = nil
 	local target_name = nil
 	target_name = param:match("^([^ ]+)$")

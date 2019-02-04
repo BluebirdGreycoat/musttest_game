@@ -36,6 +36,13 @@ rc.realms = {
 	},
 }
 
+function rc.realmpos_to_pos(realm, pos)
+	local data = rc.get_realm_data(realm:lower())
+	if data and data.ground then
+		return {x=pos.x, y=pos.y + data.ground, z=pos.z}
+	end
+end
+
 function rc.pos_to_namestr(pos)
 	local name = rc.pos_to_name(pos)
 	local str = rc.pos_to_string(pos)

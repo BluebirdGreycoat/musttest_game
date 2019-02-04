@@ -723,6 +723,7 @@ function chest_api.protected_on_rightclick(pos, node, clicker)
 	local owner = meta:get_string("owner") or ""
 	local dname = rename.gpn(owner)
 	local cname = meta:get_string("chest_name") or ""
+
 	if cname == "" then
 		meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)")
 	else
@@ -837,18 +838,14 @@ function chest_api.protected_on_rename_check(pos)
 	if owner == "" then
 		return
 	end
-	local cname = meta:get_string("rename")
 	local dname = rename.gpn(owner)
-	-- Check if the owner's current alias has changed.
-	if cname ~= dname then
-		meta:set_string("rename", dname)
+	meta:set_string("rename", dname)
 
-		local label = meta:get_string("chest_name") or ""
-		if label == "" then
-			meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)")
-		else
-			meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)\nLabel: <" .. label .. ">")
-		end
+	local label = meta:get_string("chest_name") or ""
+	if label == "" then
+		meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)")
+	else
+		meta:set_string("infotext", "Locked Chest (Owned by <" .. dname .. ">!)\nLabel: <" .. label .. ">")
 	end
 end
 

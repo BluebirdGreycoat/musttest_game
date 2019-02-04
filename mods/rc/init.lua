@@ -98,29 +98,34 @@ function rc.get_random_realm_gate_position(pname, origin)
 				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
 			}
 
-			--if pname == "MustTest" then
-				local below = vector.add(origin, {x=0, y=-16, z=0})
-				local minp = vector.add(below, {x=-16, y=-16, z=-16})
-				local maxp = vector.add(below, {x=16, y=16, z=16})
+			local below = vector.add(origin, {x=0, y=-16, z=0})
+			local minp = vector.add(below, {x=-16, y=-16, z=-16})
+			local maxp = vector.add(below, {x=16, y=16, z=16})
 
-				-- Should find 30K stone.
-				local positions, counts = minetest.find_nodes_in_area(minp, maxp, {
-						"default:stone",
-					})
+			-- Should find 30K stone.
+			local positions, counts = minetest.find_nodes_in_area(minp, maxp, {"default:stone"})
+
+			--for k, v in pairs(counts) do
+			--	minetest.chat_send_player(pname, "# Server: " .. k .. " = " .. v .. "!")
+			--end
+
+			if counts["default:stone"] > math.random(10000, 30000) then
+				-- Search again, even deeper. The stone amount should be MUCH higher.
+				below = vector.add(below, {x=0, y=-32, z=0})
+				minp = vector.add(below, {x=-16, y=-16, z=-16})
+				maxp = vector.add(below, {x=16, y=16, z=16})
+				positions, counts = minetest.find_nodes_in_area(minp, maxp, {"default:stone"})
 
 				--for k, v in pairs(counts) do
 				--	minetest.chat_send_player(pname, "# Server: " .. k .. " = " .. v .. "!")
 				--end
 
-				if counts["default:stone"] > math.random(10000, 30000) then
-					--minetest.chat_send_player("MustTest", "# Server: Success!")
+				if counts["default:stone"] > math.random(20000, 40000) then
+					--minetest.chat_send_player("MustTest", "# Server: Success! " .. counts["default:stone"])
 					return pos
-					--return nil
 				end
-				return nil
-			--end
-
-			--return pos
+			end
+			return nil
 		elseif origin.y > 1000 then
 			-- The gateway is positioned in a realm somewhere.
 			-- 9/10 times the exit point stays in the same realm.

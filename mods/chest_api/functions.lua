@@ -534,7 +534,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         string.find(nn, "silver") or
         string.find(nn, "gold") or
         string.find(nn, "mithril")) and string.find(nn, "locked") then
-      if owner == pn then
+      if owner == pn or gdac.player_is_admin(pn) then
         minetest.chat_send_player(pn, "# Server: Chest name updated.")
         meta:set_string("chest_name", fields.name or "")
 

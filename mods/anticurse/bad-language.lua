@@ -65,7 +65,7 @@ anticurse.foul = {
 	{word="b+oo+b+", white={"booby"}},
 
   "a+ss+e*h+o+l+e+",
-  "a+h+o+l+e+s+",
+  {word="a+h+o+l+e+s+", white={"sur", "inahole"}},
 
   {word="s+p+e*r+m+", white={
 		"permanent", "permit", "was", "minute", "his", "permis+ion", "plants", "mese",

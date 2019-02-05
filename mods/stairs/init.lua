@@ -10,6 +10,7 @@ stairs = {}
 circular_saw = circular_saw or {}
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
+-- Also used by walls.
 function stairs.setup_nodedef_callbacks(subname, def)
 	if string.find(subname, "ice") or string.find(subname, "snow") then
 		assert(not def.on_construct)

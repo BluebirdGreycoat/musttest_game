@@ -1,8 +1,14 @@
 walls = {}
 
 walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
+	local register_node = function(name, def)
+		local ndef = table.copy(def)
+		stairs.setup_nodedef_callbacks(name, ndef)
+		minetest.register_node(name, ndef)
+	end
+
 	-- inventory node, and pole-type wall start item
-	minetest.register_node(":walls:" .. wall_name, {
+	register_node(":walls:" .. wall_name, {
 		description = wall_desc .. " Wall",
 		drawtype = "nodebox",
 		node_box = {
@@ -23,7 +29,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		sounds = wall_sounds,
 	})
 
-	minetest.register_node(":walls:" .. wall_name .. "_half", {
+	register_node(":walls:" .. wall_name .. "_half", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Half Wall",
 		tiles = { wall_texture },
@@ -62,7 +68,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 	})
 
 	-- pillars
-	minetest.register_node(":pillars:" .. wall_name .. "_bottom", {
+	register_node(":pillars:" .. wall_name .. "_bottom", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Pillar Base",
 		tiles = { wall_texture },
@@ -80,7 +86,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_node(":pillars:" .. wall_name .. "_bottom_half", {
+	register_node(":pillars:" .. wall_name .. "_bottom_half", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Half Pillar Base",
 		tiles = { wall_texture },
@@ -98,7 +104,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 	
-	minetest.register_node(":pillars:" .. wall_name .. "_top", {
+	register_node(":pillars:" .. wall_name .. "_top", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Pillar Top",
 		tiles = { wall_texture },
@@ -116,7 +122,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_node(":pillars:" .. wall_name .. "_top_half", {
+	register_node(":pillars:" .. wall_name .. "_top_half", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Half Pillar Top",
 		tiles = { wall_texture },
@@ -176,7 +182,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 	})
 
 	
-	minetest.register_node(":murderhole:"..wall_name, {
+	register_node(":murderhole:"..wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Murder Hole",
 		tiles = { wall_texture },
@@ -195,7 +201,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 	
-	minetest.register_node(":machicolation:"..wall_name, {
+	register_node(":machicolation:"..wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Machicolation",
 		tiles = { wall_texture },
@@ -236,7 +242,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 
 	
 	-- arrow slits
-	minetest.register_node(":arrowslit:"..wall_name, {
+	register_node(":arrowslit:"..wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Arrowslit",
 		tiles = { wall_texture },
@@ -257,7 +263,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_node(":arrowslit:"..wall_name.."_cross", {
+	register_node(":arrowslit:"..wall_name.."_cross", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Arrowslit With Cross",
 		tiles = { wall_texture },
@@ -282,7 +288,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_node(":arrowslit:"..wall_name.."_hole", {
+	register_node(":arrowslit:"..wall_name.."_hole", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Arrowslit With Hole",
 		tiles = { wall_texture },
@@ -305,7 +311,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_node(":arrowslit:"..wall_name.."_embrasure", {
+	register_node(":arrowslit:"..wall_name.."_embrasure", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Embrasure",
 		tiles = { wall_texture },

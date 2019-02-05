@@ -38,6 +38,7 @@ anticurse.foul = {
 	"f+a+c*k+u",
 	"f+a+c*k+y",
 	"f+%d+c+k+",
+	"n+i+g+e+r+",
   
   "b+l+o*w+j+o*b+",
 

@@ -1,6 +1,6 @@
 default
 moreblocks?
-stairs?
+stairs
 building_blocks?
 asphalt?
 streets?

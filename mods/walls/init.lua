@@ -426,6 +426,12 @@ walls.register("whitestone_brick", "Bleached Brick", "whitestone_brick.png",
 walls.register("ice", "Ice", "default_ice.png",
 		"default:ice", default.node_sound_glass_defaults())
 
+walls.register("snow_brick", "Snow Brick", "snow_bricks_snow_brick.png",
+		"snow_bricks:snow_brick", default.node_sound_glass_defaults())
+
+walls.register("ice_brick", "Ice Brick", "snow_bricks_ice_brick.png",
+		"snow_bricks:ice_brick", default.node_sound_glass_defaults())
+
 walls.register("lapis_cobble", "Cobbled Lapis", "lapis_cobble.png",
 		"lapis:lapis_cobble", default.node_sound_stone_defaults())
 

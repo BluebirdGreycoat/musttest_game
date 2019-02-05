@@ -87,7 +87,13 @@ basictrees.cw_leaves_groups = {
 
 
 basictrees.can_grow = function(pos)
-	if pos.y < -30 then
+	-- Reduced chance to grow if cold/ice nearby.
+	local cold = minetest.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1), "group:cold")
+	if #cold > math.random(0, 18) then
+		return false
+	end
+
+	if pos.y < math.random(-64, 0) then
 		return false
 	end
 

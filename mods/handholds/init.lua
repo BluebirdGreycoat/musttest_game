@@ -84,6 +84,13 @@ minetest.register_node("handholds:climbable_air", {
 	on_flood = function(pos)
 		remove_handholds(pos)
 	end,
+	-- Player should not be able to obtain node.
+	on_finish_collapse = function(pos, node)
+		minetest.remove_node(pos)
+	end,
+	on_collapse_to_entity = function(pos, node)
+		-- Do nothing.
+	end,
 })
 
 
@@ -169,6 +176,18 @@ minetest.register_node("handholds:ice", {
 		remove_air(pos, oldnode)
 	end,
 	_handholds_original = "default:ice",
+
+	on_construct = function(pos)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+		end
+	end,
+
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.set_node(pos, {name="default:water_flowing"})
+		end
+	end,
 })
 
 minetest.register_node("handholds:rackstone", {

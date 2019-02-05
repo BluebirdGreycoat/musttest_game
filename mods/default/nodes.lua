@@ -539,6 +539,7 @@ minetest.register_node("default:snowblock", {
 
 		-- Currently used to notify ice nodes.
 		notify_construct = 1,
+		want_notify = 1,
 	},
 	movement_speed_multiplier = default.SLOW_SPEED,
 
@@ -548,6 +549,23 @@ minetest.register_node("default:snowblock", {
 	post_effect_color = {a=255, r=255, g=255, b=255},
     
 	sounds = default.node_sound_snow_defaults(),
+
+	-- Hack to notify self.
+	on_construct = function(pos)
+		minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+	end,
+
+	on_notify = function(...)
+		return ice.on_ice_notify(...)
+	end,
+
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.set_node(pos, {name="default:water_flowing"})
+			return
+		end
+		return ice.on_ice_timer(pos, elapsed)
+	end,
 })
 
 minetest.register_node("default:ice", {
@@ -581,8 +599,12 @@ minetest.register_node("default:ice", {
 		return ice.on_ice_notify(...)
 	end,
 
-	on_timer = function(...)
-		return ice.on_ice_timer(...)
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.set_node(pos, {name="default:water_flowing"})
+			return
+		end
+		return ice.on_ice_timer(pos, elapsed)
 	end,
 })
 

@@ -36,6 +36,13 @@ rc.realms = {
 	},
 }
 
+-- Used by ice/ice-brick/snow nodes to determine if they should melt away.
+function rc.ice_melts_at_pos(pos)
+	if pos.y < -26000 or pos.y > 1000 then
+		return true
+	end
+end
+
 function rc.realmpos_to_pos(realm, pos)
 	local data = rc.get_realm_data(realm:lower())
 	if data and data.ground then

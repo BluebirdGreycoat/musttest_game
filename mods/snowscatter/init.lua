@@ -54,8 +54,10 @@ snowscatter.dump_snowdust = function(minp_, maxp_, chance, avoidXZ)
             if random(1, chance) == 1 and cando == true then
                 local p1, p2 = find_floor(x, minp.y, maxp.y, z)
                 if p1 then
+									if not rc.ice_melts_at_pos(p1) then
                     minetest.set_node(p1, {name="snow:tree"})
                     core.check_for_falling(p1)
+									end
                 end
             end
         end

@@ -17,6 +17,19 @@ minetest.register_node("snow_bricks:snow_brick", {
 	sounds = default.node_sound_stone_defaults({
 		footstep = {name = "default_snow_footstep", gain = 0.15}
 	}),
+
+	on_construct = function(pos)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+		end
+	end,
+
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			-- If in nether, then water's constructor will convert again to fire.
+			minetest.set_node(pos, {name="default:water_flowing"})
+		end
+	end,
 })
 
 
@@ -34,6 +47,19 @@ minetest.register_node("snow_bricks:ice_brick", {
 	sounds = default.node_sound_stone_defaults({
 		footstep = {name = "default_glass_footstep", gain = 0.35}
 	}),
+
+	on_construct = function(pos)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+		end
+	end,
+
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			-- If in nether, then water's constructor will convert again to fire.
+			minetest.set_node(pos, {name="default:water_flowing"})
+		end
+	end,
 })
 
 

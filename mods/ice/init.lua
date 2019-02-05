@@ -10,6 +10,7 @@ if minetest.get_modpath("reload") then
 	end
 end
 
+-- May be used as argument to math.random().
 function ice.minmax_time()
 	return ice.min_time, ice.max_time
 end

@@ -10,6 +10,24 @@ stairs = {}
 circular_saw = circular_saw or {}
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
+function stairs.setup_nodedef_callbacks(subname, def)
+	if string.find(subname, "ice") or string.find(subname, "snow") then
+		assert(not def.on_construct)
+		def.on_construct = function(pos)
+			if rc.ice_melts_at_pos(pos) then
+				minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+			end
+		end
+
+		assert(not def.on_timer)
+		def.on_timer = function(pos, elapsed)
+			if rc.ice_melts_at_pos(pos) then
+				minetest.set_node(pos, {name="default:water_flowing"})
+			end
+		end
+	end
+end
+
 function stairs.rotate_and_place(itemstack, placer, pt)
 	if pt.type == "node" then
 		local node = minetest.get_node(pt.under)
@@ -148,6 +166,8 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 			def.movement_speed_depends = recipeitem
 		end
     
+		stairs.setup_nodedef_callbacks(subname, def)
+
 		minetest.register_node(":stairs:slab_" .. subname .. alternate, def)
 	end
 
@@ -294,6 +314,8 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
     
+		stairs.setup_nodedef_callbacks(subname, def)
+
 		minetest.register_node(":stairs:stair_" ..subname..alternate, def)
 	end
 	minetest.register_alias("stairs:stair_" ..subname.. "_bottom", "stairs:stair_" ..subname)
@@ -396,6 +418,8 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
     
+		stairs.setup_nodedef_callbacks(subname, def)
+
 		minetest.register_node(":stairs:panel_" ..subname..alternate, def)
 	end
 	minetest.register_alias("stairs:panel_" ..subname.. "_bottom", "stairs:panel_" ..subname)
@@ -498,6 +522,8 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
 		
+		stairs.setup_nodedef_callbacks(subname, def)
+
 		minetest.register_node(":stairs:micro_" .. subname .. alternate, def)
 	end
   minetest.register_alias("stairs:micro_" ..subname.. "_bottom", "stairs:micro_" ..subname)
@@ -539,7 +565,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
 
-	minetest.register_node(":stairs:stair_" .. subname, {
+	local stair_def = {
 		description = description,
 		drawtype = "mesh",
 		mesh = "stairs_stair.obj",
@@ -594,7 +620,11 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 
 			return minetest.item_place(itemstack, placer, pointed_thing, param2)
 		end,
-	})
+	}
+
+	stairs.setup_nodedef_callbacks(subname, stair_def)
+
+	minetest.register_node(":stairs:stair_" .. subname, stair_def)
 
 	if recipeitem then
     assert(type(recipeitem) == "string")
@@ -639,7 +669,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
 
-	minetest.register_node(":stairs:slab_" .. subname, {
+	local slab_def = {
 		description = description,
 		drawtype = "nodebox",
 		tiles = images,
@@ -711,7 +741,11 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 				return minetest.item_place(itemstack, placer, pointed_thing, rot)
 			end
 		end,
-	})
+	}
+
+	stairs.setup_nodedef_callbacks(subname, slab_def)
+
+	minetest.register_node(":stairs:slab_" .. subname, slab_def)
 
 	if recipeitem then
 		-- Use 2 slabs to craft a full block again (1:1)

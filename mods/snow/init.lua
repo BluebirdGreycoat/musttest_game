@@ -112,6 +112,15 @@ local origsnowdef = {
 	-- Sound info.
 	sounds = default.node_sound_snow_defaults(),
 
+	on_construct = function(pos)
+	end,
+
+	on_timer = function(pos, elapsed)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.remove_node(pos)
+		end
+	end,
+
 	on_dig = function(...)
 		return snow.on_dig(...)
 	end,
@@ -325,6 +334,10 @@ function snow.get_snowfootdef()
 	def.on_place = nil
 
 	def.on_construct = function(pos)
+		if rc.ice_melts_at_pos(pos) then
+			minetest.remove_node(pos)
+			return
+		end
 		local time = 60*60*24*7
 		local rand = math.random(60*60*1, 60*60*24)
 		minetest.get_node_timer(pos):start(time+rand)

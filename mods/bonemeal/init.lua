@@ -33,6 +33,8 @@ function bonemeal.on_use(itemstack, user, pt)
 		local node = minetest.get_node(pos)
 		local def = minetest.registered_items[node.name]
 
+		local take = false
+
 		if def then
 			if def.next_plant and def.on_timer then
 				local timer = minetest.get_node_timer(pos)
@@ -46,10 +48,12 @@ function bonemeal.on_use(itemstack, user, pt)
 						timer:set(newtime, elapsed)
 					end
 				end
+				take = true
 			elseif def.groups and def.groups.flora and def.groups.flora > 0 then
 				if math.random(1, 3) == 1 then
 					flowers.flower_spread(pos, node)
 				end
+				take = true
 			elseif node.name == "flowers:mushroom_brown" or
 				node.name == "flowers:mushroom_red" or
 				node.name == "cavestuff:mycena" or
@@ -57,14 +61,17 @@ function bonemeal.on_use(itemstack, user, pt)
 				if math.random(1, 3) == 1 then
 					flowers.mushroom_spread(pos, node)
 				end
+				take = true
 			elseif node.name == "default:cactus" then
 				if math.random(1, 3) == 1 then
 					cactus.grow(pos, node)
 				end
+				take = true
 			elseif node.name == "default:papyrus" then
 				if math.random(1, 3) == 1 then
 					papyrus.grow(pos, node)
 				end
+				take = true
 			elseif def.groups and def.groups.sapling and def.groups.sapling > 0 and def.on_timer then
 				local timer = minetest.get_node_timer(pos)
 				if timer:is_started() then
@@ -76,14 +83,17 @@ function bonemeal.on_use(itemstack, user, pt)
 						timer:set(newtime, elapsed)
 					end
 				end
+				take = true
 			elseif node.name == "nethervine:vine" then
 				if math.random(1, 3) == 1 then
 					nethervine.grow(pos, node)
 				end
+				take = true
 			elseif node.name == "default:dirt" then
 				if math.random(1, 3) == 1 then
 					bonemeal.do_dirtspread(pos)
 				end
+				take = true
 			elseif node.name == "default:dirt_with_dry_grass" then
 				if math.random(1, 2) == 1 then
 					local above = {x=pos.x, y=pos.y+1, z=pos.z}
@@ -98,6 +108,7 @@ function bonemeal.on_use(itemstack, user, pt)
 						end
 					end
 				end
+				take = true
 			elseif node.name == "default:dirt_with_grass" then
 				if math.random(1, 2) == 1 then
 					local above = {x=pos.x, y=pos.y+1, z=pos.z}
@@ -112,6 +123,7 @@ function bonemeal.on_use(itemstack, user, pt)
 						end
 					end
 				end
+				take = true
 			elseif node.name == "moregrass:darkgrass" then
 				if math.random(1, 2) == 1 then
 					local above = {x=pos.x, y=pos.y+1, z=pos.z}
@@ -126,16 +138,20 @@ function bonemeal.on_use(itemstack, user, pt)
 						end
 					end
 				end
+				take = true
 			elseif string.find(node.name, "^nether:grass_%d$") then
 				if math.random(1, 2) == 1 then
 					if not minetest.is_protected(pos, user:get_player_name()) then
 						nethervine.flora_spread(pos, minetest.get_node(pos))
 					end
 				end
+				take = true
 			end
 		end
 
-		itemstack:take_item()
+		if take then
+			itemstack:take_item()
+		end
 		return itemstack
 	end
 end

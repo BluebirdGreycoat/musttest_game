@@ -68,6 +68,8 @@ shout.HINTS = {
 	"Walk softly and carry a big stick.",
 	"Punching an itemframe or pedestal with a stick will restore missing item entities.",
 	"Items placed in itemframes or pedestals may occasionally become invisible. Punch with a stick to restore them.",
+	"Dry shrubs and torches (lit or not) may be crafted into sticks.",
+	"Short on fuel? You can burn wooden armor in stone furnaces.",
 }
 
 local HINT_DELAY_MIN = 60*15

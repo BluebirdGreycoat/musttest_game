@@ -1363,13 +1363,9 @@ minetest.register_node("default:water_source", {
 			minetest.swap_node(pos, {name="cw:water_source"})
 			return
 		end
-		if pos.y > -25000 then
-			if rc.current_realm_at_pos(pos) ~= "channelwood" then
-				minetest.swap_node(pos, {name="default:water_source"})
-			end
-			return
+		if pos.y < -25000 then
+			minetest.set_node(pos, {name="fire:basic_flame"})
 		end
-		minetest.set_node(pos, {name="fire:basic_flame"})
 	end,
 
 	on_destruct = function(pos)
@@ -1428,6 +1424,20 @@ minetest.register_node("default:water_flowing", {
   on_collapse_to_entity = function(pos, node)
     -- Do not allow player to obtain the node itself.
   end,
+
+	on_construct = function(pos)
+		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+			return
+		end
+		if rc.current_realm_at_pos(pos) == "channelwood" then
+			minetest.swap_node(pos, {name="cw:water_flowing"})
+			return
+		end
+		if pos.y < -25000 then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+		end
+	end,
 })
 
 
@@ -1481,9 +1491,14 @@ minetest.register_node("default:river_water_source", {
 	-- Note: this is not called if water-source is created by the engine due to liquid-flow mechanic.
 	on_construct = function(pos)
 		farming.notify_soil(pos)
+		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+			return
+		end
 
-		if pos.y > -25000 then return end
-		minetest.set_node(pos, {name="fire:basic_flame"})
+		if pos.y < -25000 then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+		end
 	end,
 
 	on_destruct = function(pos)
@@ -1545,6 +1560,16 @@ minetest.register_node("default:river_water_flowing", {
   on_collapse_to_entity = function(pos, node)
     -- Do not allow player to obtain the node itself.
   end,
+
+	on_construct = function(pos)
+		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+			return
+		end
+		if pos.y < -25000 then
+			minetest.set_node(pos, {name="fire:basic_flame"})
+		end
+	end,
 })
 
 

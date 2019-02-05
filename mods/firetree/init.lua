@@ -162,12 +162,13 @@ local can_grow = function(pos)
 	end
 
 	-- Reduced chance to grow if cold/ice nearby.
-	local cold = minetest.find_nodes_in_area(vector.subtract(pos, 3), vector.add(pos, 3), "group:cold")
+	local below = {x=pos.x, y=pos.y-1, z=pos.z}
+	local cold = minetest.find_nodes_in_area(vector.subtract(below, 3), vector.add(below, 3), "group:cold")
 	if #cold > math.random(0, 196) then
 		return false
 	end
 
-	local node_under = minetest.get_node_or_nil({x = pos.x, y = pos.y - 1, z = pos.z})
+	local node_under = minetest.get_node_or_nil(below)
 	if not node_under then
 		return false
 	end

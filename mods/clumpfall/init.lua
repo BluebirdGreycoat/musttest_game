@@ -41,6 +41,7 @@ function clumpfall.update_nodedef(name, def)
 		get_group("attached_node") == 0 and --Same thing for nodes in this group, which fall when no longer attached to another node
 		get_group("liquid") == 0 and --Same thing for nodes in this group, which do technically fall and spread around
 		get_group("immovable") == 0 and
+		get_group("leaves") == 0 and
 		get_group("unbreakable") == 0 then --Lastly, if a block is invulnerable to begin with, it shouldn't fall down like a typical node
 		def.groups.clump_fall_node = 1
 	else
@@ -73,7 +74,9 @@ function clumpfall.update_nodedef(name, def)
 		end
 
 		if pos.y > 1000 then
-			do_clump_fall(pos)
+			minetest.after(math.random(1, 10), function()
+				do_clump_fall(pos)
+			end)
 		end
 		return r
 	end

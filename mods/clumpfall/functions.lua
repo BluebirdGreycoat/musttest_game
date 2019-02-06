@@ -184,7 +184,7 @@ function clumpfall.functions.do_clump_fall(...)
 	if found_no_fallable_nodes == false then
 		--This will be used with the new min and max position that have been found.
 		--These are used instead of the old ones so that the range of cascading can't expand indefinitely and cause crashes
-		minetest.after(1, clumpfall.functions.do_clump_fall, {new_min_pos, new_max_pos})
+		minetest.after(math.random(1, 10), clumpfall.functions.do_clump_fall, {new_min_pos, new_max_pos})
 	end
 end
 

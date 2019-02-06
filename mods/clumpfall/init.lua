@@ -99,6 +99,23 @@ function clumpfall.update_nodedef(name, def)
 		return r
 	end
 	--]]
+
+	local old_on_place = def.on_place
+	function def.on_place(itemstack, placer, pt)
+		local a, b, c
+		if old_on_place ~= nil then
+			a, b, c = old_on_place(itemstack, placer, pt)
+		else
+			a, b, c = core.item_place(itemstack, placer, pt)
+		end
+
+		if pos.y > 1000 and b and c then
+			minetest.after(math.random(1, 10), function()
+				do_clump_fall(c)
+			end)
+		end
+		return a, b, c
+	end
 end
 
 

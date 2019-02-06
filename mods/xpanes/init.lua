@@ -85,12 +85,16 @@ minetest.register_on_dignode(function(pos)
 end)
 
 xpanes = {}
+function xpanes.check_update_pane_at(pos)
+	update_pane(pos)
+end
+
 function xpanes.register_pane(name, def)
 	for i = 1, 15 do
 		minetest.register_alias("xpanes:" .. name .. "_" .. i, "xpanes:" .. name .. "_flat")
 	end
 
-	local flatgroups = table.copy(def.groups)
+	local flatgroups = table.copy(def.groups or {})
 	flatgroups.pane = 1
 	minetest.register_node(":xpanes:" .. name .. "_flat", {
 		description = def.description,
@@ -117,7 +121,7 @@ function xpanes.register_pane(name, def)
 		connect_sides = { "left", "right" },
 	})
 
-	local groups = table.copy(def.groups)
+	local groups = table.copy(def.groups or {})
 	groups.pane = 1
 	groups.not_in_creative_inventory = 1
 	minetest.register_node(":xpanes:" .. name, {

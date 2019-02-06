@@ -150,8 +150,7 @@ function clumpfall.functions.do_clump_fall(...)
 		--Make one more check in case the node at the current postion already fell or has otherwise been replaced
 		if minetest.get_item_group(node_fall.name, "clump_fall_node") ~= 0 then
 			--Finally, a falling_node is placed at the current position just as the node that used to be here is removed
-			minetest.remove_node(pos_fall)
-			clumpfall.functions.spawn_falling_node(pos_fall, node_fall)
+			clumpfall.functions.spawn_falling_node(pos_fall)
 
 			--Update nearby nodes to stop blocks in the falling_node and attached_node groups from floating
 			clumpfall.functions.update_nearby_nonclump(pos_fall)
@@ -197,25 +196,8 @@ Parameters:
 Returns:
     Nothing
 --]]
-function clumpfall.functions.spawn_falling_node(pos, node)
-	--Gets the metadata of the node at the current position
-	local meta = minetest.get_meta(pos)
-	--Will be used to store any metadata in a table
-	local metatable = {}
-
-	--If there is any metadata, then
-	if meta ~= nil then
-		--Convert that metadata to a table and store it in metatable
-		metatable = meta:to_table()
-	end
-
-	--Create a __builtin:falling_node entity and add it to minetest
-	local entity_fall = minetest.add_entity(pos, "__builtin:falling_node")
-	--If successful, then
-	if entity_fall then
-		--Set its nodetype and metadata to the given arguments node and meta, respectively
-		entity_fall:get_luaentity():set_node(node, metatable)
-	end
+function clumpfall.functions.spawn_falling_node(pos)
+	sfn.drop_node(pos)
 end
 
 --[[

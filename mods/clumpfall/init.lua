@@ -49,18 +49,21 @@ function clumpfall.update_nodedef(name, def)
 
 	local do_clump_fall = clumpfall.functions.do_clump_fall
 
+	---[[
 	local old_on_dig = def.on_dig
 	function def.on_dig(pos, node, digger)
-		local r
 		if old_on_dig ~= nil then
-			r = old_on_dig(pos, node, digger)
+			old_on_dig(pos, node, digger)
+		else
+			-- Execute MT default function.
+			core.node_dig(pos, node, digger)
 		end
 
-		if r and pos.y > 1000 then
+		if pos.y > 1000 then
 			do_clump_fall(pos)
 		end
-		return r
 	end
+	--]]
 
 	local old_after_place_node = def.after_place_node
 	function def.after_place_node(pos, placer, itemstack, pt)
@@ -75,11 +78,14 @@ function clumpfall.update_nodedef(name, def)
 		return r
 	end
 
+	---[[
 	local old_on_punch = def.on_punch
 	function def.on_punch(pos, node, puncher, pt)
 		local r
 		if old_on_punch ~= nil then
 			r = old_on_punch(pos, node, puncher, pt)
+		else
+			r = core.node_punch(pos, node, puncher, pt)
 		end
 
 		if pos.y > 1000 then
@@ -87,6 +93,7 @@ function clumpfall.update_nodedef(name, def)
 		end
 		return r
 	end
+	--]]
 end
 
 

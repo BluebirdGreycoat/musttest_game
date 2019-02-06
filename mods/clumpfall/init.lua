@@ -43,6 +43,7 @@ function clumpfall.update_nodedef(name, def)
 		get_group("immovable") == 0 and
 		get_group("leaves") == 0 and
 		get_group("always_stable") == 0 and
+		get_group("disable_clumpfall") == 0 and
 		get_group("unbreakable") == 0 then --Lastly, if a block is invulnerable to begin with, it shouldn't fall down like a typical node
 		def.groups.clump_fall_node = 1
 	else

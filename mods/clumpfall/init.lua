@@ -102,15 +102,21 @@ function clumpfall.update_nodedef(name, def)
 
 	local old_on_place = def.on_place
 	function def.on_place(itemstack, placer, pt)
+		minetest.chat_send_player("MustTest", "Test1")
 		local a, b, c
 		if old_on_place ~= nil then
+			minetest.chat_send_player("MustTest", "Test2")
 			a, b, c = old_on_place(itemstack, placer, pt)
 		else
+			minetest.chat_send_player("MustTest", "Test3")
 			a, b, c = core.item_place(itemstack, placer, pt)
 		end
 
+		minetest.chat_send_player("MustTest", "Test4")
 		if b and c and c.y > 1000 then
+			minetest.chat_send_player("MustTest", "Test5")
 			minetest.after(math.random(1, 10), function()
+				minetest.chat_send_player("MustTest", "Test6")
 				do_clump_fall(c)
 			end)
 		end

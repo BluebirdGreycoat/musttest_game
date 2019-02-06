@@ -150,6 +150,8 @@ local function register_node(name, def2)
 		end
 	end
 
+	clumpfall.update_nodedef(name, def)
+
 	falldamage.apply_range_checks(def)
 	falldamage.apply_liquid_interaction_mod(name, def)
 	old_register_node(name, def)

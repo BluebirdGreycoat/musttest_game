@@ -71,7 +71,7 @@ shout.HINTS = {
 	"Dry shrubs and torches (lit or not) may be crafted into sticks.",
 	"New player short on fuel? You can burn wooden armor in stone furnaces.",
 	"Don't go near a Waitabit Tree. They grab you.",
-	"Most trees are sensitive to cold conditions and may refuse to grow. The Firetree is particularly bad.",
+	"Most trees are sensitive to cold conditions and may refuse to grow. The Firetree is particularly ornery.",
 }
 
 local HINT_DELAY_MIN = 60*15

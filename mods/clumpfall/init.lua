@@ -56,7 +56,7 @@ function clumpfall.update_nodedef(name, def)
 			r = old_on_dig(pos, node, digger)
 		end
 
-		if pos.y > 1000 then
+		if r and pos.y > 1000 then
 			do_clump_fall(pos)
 		end
 		return r

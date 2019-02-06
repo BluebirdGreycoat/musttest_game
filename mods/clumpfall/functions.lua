@@ -108,13 +108,13 @@ function clumpfall.functions.do_clump_fall(...)
 	--Variable that assumes that no nodes needed to fall
 	local found_no_fallable_nodes = true
 	--Stores the largest x, y, and z values out of the 3D vertices given by the arguments
-	local max_pos = {x, y, z}
+	local max_pos = {}
 	--Stores the smallest x, y, and z values out of the 3D vertices given by the arguments
-	local min_pos = {x, y, z}
+	local min_pos = {}
 	--To be used later in this function, this stores the largest x, y, and z values of nodes that were actually found to need falling.
-	local new_max_pos = {x, y, z}
+	local new_max_pos = {}
 	--To be used later in this function, this stores the smallest x, y, and z values of nodes that were actually found to need falling.
-	local new_min_pos = {x, y, z}
+	local new_min_pos = {}
 
 	--Compares max_pos and min_pos to the list of arguments, and individually sets the x, y, and z values of each to, respectively, the largest/smallest x/y/z values
 	for v, pos_find_minmax in pairs(node_pos_to_check) do

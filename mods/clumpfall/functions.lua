@@ -68,7 +68,7 @@ function clumpfall.functions.check_individual_for_fall(check_pos)
 		local supports = minetest.find_nodes_in_area(vector.add(check_pos, {x=-1, y=-1, z=-1}), vector.add(check_pos, {x=1, y=-1, z=1}), "group:clump_fall_node")
 		if #supports > 0 then
 			has_bottom_support = true
-		elseif sfn.check_clump_fall_special(check_pos, node) then
+		elseif sfn.check_clump_fall_special(check_pos, nn) then
 			has_bottom_support = true
 		end
 

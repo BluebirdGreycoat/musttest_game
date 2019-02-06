@@ -28,7 +28,8 @@ local function swap(pos, node, name, param2)
 		return
 	end
 
-	minetest.set_node(pos, {name = name, param2 = param2})
+	-- Use swap_node to avoid infinite callbacks.
+	minetest.swap_node(pos, {name = name, param2 = param2})
 end
 
 local function update_pane(pos)
@@ -67,6 +68,7 @@ local function update_pane(pos)
 	end
 end
 
+--[[
 minetest.register_on_placenode(function(pos, node)
 	if minetest.get_item_group(node, "pane") then
 		update_pane(pos)
@@ -83,11 +85,27 @@ minetest.register_on_dignode(function(pos)
 		update_pane(vector.add(pos, dir))
 	end
 end)
+--]]
 
 xpanes = {}
 function xpanes.register_pane(name, def)
 	for i = 1, 15 do
 		minetest.register_alias("xpanes:" .. name .. "_" .. i, "xpanes:" .. name .. "_flat")
+	end
+
+	local on_construct = function(pos)
+		update_pane(pos)
+		for i = 0, 3 do
+			local dir = minetest.facedir_to_dir(i)
+			update_pane(vector.add(pos, dir))
+		end
+	end
+
+	local after_destruct = function(pos)
+		for i = 0, 3 do
+			local dir = minetest.facedir_to_dir(i)
+			update_pane(vector.add(pos, dir))
+		end
 	end
 
 	local flatgroups = table.copy(def.groups or {})
@@ -115,6 +133,9 @@ function xpanes.register_pane(name, def)
 			fixed = {{-1/2, -1/2, -1/32, 1/2, 1/2, 1/32}},
 		},
 		connect_sides = { "left", "right" },
+
+		on_construct = on_construct,
+		after_destruct = after_destruct,
 	})
 
 	local groups = table.copy(def.groups or {})
@@ -140,6 +161,9 @@ function xpanes.register_pane(name, def)
 			connect_right = {{1/32, -1/2, -1/32, 1/2, 1/2, 1/32}},
 		},
 		connects_to = {"group:pane", "group:stone", "group:glass", "group:wood", "group:tree"},
+
+		on_construct = on_construct,
+		after_destruct = after_destruct,
 	})
 
 	minetest.register_craft({

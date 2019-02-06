@@ -109,7 +109,7 @@ function clumpfall.update_nodedef(name, def)
 			a, b, c = core.item_place(itemstack, placer, pt)
 		end
 
-		if pos.y > 1000 and b and c then
+		if b and c and c.y > 1000 then
 			minetest.after(math.random(1, 10), function()
 				do_clump_fall(c)
 			end)

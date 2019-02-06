@@ -57,7 +57,9 @@ Returns:
 --]]
 function clumpfall.functions.check_individual_for_fall(check_pos)
 	--If the position currently being checked belongs to the clump_fall_node group, then
-	if minetest.get_item_group(minetest.get_node(check_pos).name, "clump_fall_node") ~= 0 then
+	local node = minetest.get_node(check_pos)
+	local nn = node.name
+	if minetest.get_item_group(nn, "clump_fall_node") ~= 0 then
 		--First create a variable that assumes that there are no clump_fall_nodes underneath the current position
 		local has_bottom_support = false
 		local walkable_node_underneath = false
@@ -66,11 +68,8 @@ function clumpfall.functions.check_individual_for_fall(check_pos)
 		local supports = minetest.find_nodes_in_area(vector.add(check_pos, {x=-1, y=-1, z=-1}), vector.add(check_pos, {x=1, y=-1, z=1}), "group:clump_fall_node")
 		if #supports > 0 then
 			has_bottom_support = true
-		else
-			supports = minetest.find_nodes_in_area(vector.add(check_pos, {x=-1, y=-1, z=-1}), vector.add(check_pos, {x=1, y=-1, z=1}), "group:clump_fall_support")
-			if #supports > 0 then
-				has_bottom_support = true
-			end
+		elseif sfn.check_clump_fall_special(check_pos, node) then
+			has_bottom_support = true
 		end
 
 		--If no registered node underneath the node being checked is walkable, then set walkable_node_underneath to true

@@ -484,6 +484,7 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
   local groups = table.copy(groups)
 	groups.stairs_slope = 1
   groups.not_in_craft_guide = 1
+	groups.stairs_node = 1
 
   local ndef = minetest.registered_items[recipeitem]
   assert(ndef)

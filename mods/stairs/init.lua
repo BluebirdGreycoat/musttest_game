@@ -130,6 +130,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
 	groups.stairs_slab = 1
+	groups.stairs_node = 1
   
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -301,6 +302,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
 	groups.stairs_stair = 1
+	groups.stairs_node = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -406,6 +408,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
 	groups.stairs_panel = 1
+	groups.stairs_node = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -511,6 +514,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
 	groups.stairs_microblock = 1
+	groups.stairs_node = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -567,6 +571,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 	groups.stair = 1
 	groups.stairs_stair = 1
 	groups.not_in_craft_guide = 1
+	groups.stairs_node = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -672,6 +677,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	groups.slab = 1
 	groups.stairs_slab = 1
 	groups.not_in_craft_guide = 1
+	groups.stairs_node = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)

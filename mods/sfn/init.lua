@@ -29,6 +29,53 @@ sfn.drop_node = function(pos)
 end
 
 
+-- Return TRUE if the node is supported in some special, custom fashion.
+function sfn.check_clump_fall_special(pos, node)
+	local nodename = node.name
+	local ndef = minetest.registered_nodes[nodename]
+	if not ndef then return end
+
+	local groups = ndef.groups or {}
+
+	-- Stairs, slabs, microblocks, etc. supported if at least one full block is next to them.
+	local stair = groups.stair_node or 0
+	if stair ~= 0 then
+		local p = {
+			{x=pos.x+1, y=pos.y, z=pos.z},
+			{x=pos.x-1, y=pos.y, z=pos.z},
+			{x=pos.x, y=pos.y, z=pos.z+1},
+			{x=pos.x, y=pos.y, z=pos.z-1},
+		}
+		for k, v in ipairs(p) do
+			local def2 = minetest.registered_nodes[minetest.get_node(v).name]
+			if def2 then
+				if def2.drawtype == "normal" then
+					return true
+				end
+			end
+		end
+	end
+
+	-- Tree trunks are supported if there is an adjacent connecting trunk.
+	local tree = groups.tree or 0
+	if tree ~= 0 and ndef.paramtype2 == "facedir" then
+		local dir = minetest.facedir_to_dir(node.param2)
+
+		-- Back node.
+		local node2 = minetest.get_node(vector.add(pos, dir))
+		if node2.name == nodename and node2.param2 == node.param2 then
+			return true
+		end
+
+		-- Front node.
+		node2 = minetest.get_node(vector.subtract(pos, dir))
+		if node2.name == nodename and node2.param2 == node.param2 then
+			return true
+		end
+	end
+end
+
+
 
 if not sfn.run_once then
 	local c = "sfn:core"

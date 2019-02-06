@@ -129,6 +129,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
+	groups.stairs_slab = 1
   
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -299,6 +300,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
+	groups.stairs_stair = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -403,6 +405,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
+	groups.stairs_panel = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -507,6 +510,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
+	groups.stairs_microblock = 1
 
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
@@ -561,6 +565,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 	-- Do not modify function argument.
 	groups = table.copy(groups)
 	groups.stair = 1
+	groups.stairs_stair = 1
 	groups.not_in_craft_guide = 1
 
 	local ndef = minetest.registered_items[recipeitem]
@@ -665,6 +670,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	-- Do not modify function argument.
 	groups = table.copy(groups)
 	groups.slab = 1
+	groups.stairs_slab = 1
 	groups.not_in_craft_guide = 1
 
 	local ndef = minetest.registered_items[recipeitem]

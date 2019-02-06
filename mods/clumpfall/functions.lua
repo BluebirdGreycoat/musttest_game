@@ -63,13 +63,13 @@ function clumpfall.functions.check_individual_for_fall(check_pos)
 		local walkable_node_underneath = false
 
 		--This then checks each node under the current position within a 3x3 area for blocks within the clump_fall_node group
-		for b = check_pos.z - 1, check_pos.z + 1 do
-			for a = check_pos.x - 1, check_pos.x + 1 do
-				local bottom_pos = {x=a, y=check_pos.y-1, z=b}
-				--As long as at least a single node belongs to the clump_fall_node group, has_bottom_support will be set to true.
-				if minetest.get_item_group(minetest.get_node(bottom_pos).name, "clump_fall_node") ~= 0 then
-					has_bottom_support = true
-				end
+		local supports = minetest.find_nodes_in_area(vector.add(check_pos, {x=-1, y=-1, z=-1}), vector.add(check_pos, {x=1, y=-1, z=1}), "group:clump_fall_node")
+		if #supports > 0 then
+			has_bottom_support = true
+		else
+			supports = minetest.find_nodes_in_area(vector.add(check_pos, {x=-1, y=-1, z=-1}), vector.add(check_pos, {x=1, y=-1, z=1}), "group:clump_fall_support")
+			if #supports > 0 then
+				has_bottom_support = true
 			end
 		end
 

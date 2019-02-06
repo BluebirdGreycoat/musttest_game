@@ -85,10 +85,6 @@ minetest.register_on_dignode(function(pos)
 end)
 
 xpanes = {}
-function xpanes.check_update_pane_at(pos)
-	update_pane(pos)
-end
-
 function xpanes.register_pane(name, def)
 	for i = 1, 15 do
 		minetest.register_alias("xpanes:" .. name .. "_" .. i, "xpanes:" .. name .. "_flat")

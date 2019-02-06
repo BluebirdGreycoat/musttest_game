@@ -42,6 +42,7 @@ function clumpfall.update_nodedef(name, def)
 		get_group("liquid") == 0 and --Same thing for nodes in this group, which do technically fall and spread around
 		get_group("immovable") == 0 and
 		get_group("leaves") == 0 and
+		get_group("always_stable") == 0 and
 		get_group("unbreakable") == 0 then --Lastly, if a block is invulnerable to begin with, it shouldn't fall down like a typical node
 		def.groups.clump_fall_node = 1
 	else

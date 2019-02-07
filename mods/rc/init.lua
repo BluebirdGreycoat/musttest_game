@@ -34,7 +34,7 @@ rc.realms = {
 		ground = 3066,
 		sealevel = 3066,
 		windlevel = 3100,
-		realm_origin = {x=0, y=3066, z=0},
+		realm_origin = {x=2019, y=3066, z=-1992},
 	},
 }
 
@@ -47,8 +47,8 @@ end
 
 function rc.realmpos_to_pos(realm, pos)
 	local data = rc.get_realm_data(realm:lower())
-	if data and data.ground then
-		return {x=pos.x, y=pos.y + data.ground, z=pos.z}
+	if data and data.realm_origin then
+		return {x=pos.x + data.realm_origin.x, y=pos.y + data.realm_origin.y, z=pos.z + realm_origin.z}
 	end
 end
 

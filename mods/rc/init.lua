@@ -48,7 +48,7 @@ end
 function rc.realmpos_to_pos(realm, pos)
 	local data = rc.get_realm_data(realm:lower())
 	if data and data.realm_origin then
-		return {x=data.realm_origin.x + pos.x, y=data.realm_origin.y + pos.y, z=data.realm_origin.z + pos.z}
+		return {x=pos.x - data.realm_origin.x, y=pos.y - data.realm_origin.y, z=pos.z - data.realm_origin.z}
 	end
 end
 

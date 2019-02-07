@@ -48,7 +48,11 @@ end
 function rc.realmpos_to_pos(realm, pos)
 	local data = rc.get_realm_data(realm:lower())
 	if data and data.realm_origin then
-		return {x=pos.x - data.realm_origin.x, y=pos.y - data.realm_origin.y, z=pos.z - data.realm_origin.z}
+		return {
+			x=data.realm_origin.x + pos.x,
+			y=data.realm_origin.y + pos.y,
+			z=data.realm_origin.z + pos.z,
+		}
 	end
 end
 
@@ -91,9 +95,9 @@ function rc.pos_to_string(pos)
 		local x = pos.x
 		local y = pos.y
 		local z = pos.z
-		pos.x = pos.x + origin.x
-		pos.y = pos.y + origin.y
-		pos.z = pos.z + origin.z
+		pos.x = origin.x - pos.x
+		pos.y = origin.y - pos.y
+		pos.z = origin.z - pos.z
 		local s = minetest.pos_to_string(pos)
 		pos.x = x
 		pos.y = y

@@ -91,9 +91,9 @@ function rc.pos_to_string(pos)
 		local x = pos.x
 		local y = pos.y
 		local z = pos.z
-		pos.x = pos.x - origin.x
-		pos.y = pos.y - origin.y
-		pos.z = pos.z - origin.z
+		pos.x = pos.x + origin.x
+		pos.y = pos.y + origin.y
+		pos.z = pos.z + origin.z
 		local s = minetest.pos_to_string(pos)
 		pos.x = x
 		pos.y = y

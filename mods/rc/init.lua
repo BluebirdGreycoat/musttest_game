@@ -20,6 +20,7 @@ rc.realms = {
 		ground = -10,
 		sealevel = 0,
 		windlevel = 20,
+		realm_origin = {x=0, y=-10, z=0},
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.
@@ -33,6 +34,7 @@ rc.realms = {
 		ground = 3066,
 		sealevel = 3066,
 		windlevel = 3100,
+		realm_origin = {x=0, y=3066, z=0},
 	},
 }
 
@@ -63,18 +65,44 @@ function rc.pos_to_name(pos)
 	return rc.realm_description_at_pos(pos)
 end
 
+function rc.get_realm_origin_at_pos(pos)
+	local p = vector.round(pos)
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			local o = table.copy(v.realm_origin)
+			return true, o
+		end
+	end
+
+	-- Not in any realm?
+	return false, nil
+end
+
+-- Obtain a string in the format "(x,y,z)".
 function rc.pos_to_string(pos)
-	local success, level = rc.get_ground_level_at_pos(pos)
+	local success, origin = rc.get_realm_origin_at_pos(pos)
 	if success then
+		local x = pos.x
 		local y = pos.y
-		pos.y = pos.y - level
+		local z = pos.z
+		pos.x = pos.x - origin.x
+		pos.y = pos.y - origin.y
+		pos.z = pos.z - origin.z
 		local s = minetest.pos_to_string(pos)
+		pos.x = x
 		pos.y = y
+		pos.z = z
 		return s
 	end
 
-	-- Use absolute coordinates.
-	return minetest.pos_to_string(pos)
+	-- Indicate failure.
+	return "(Nan,Nan,Nan)"
 end
 
 function rc.get_realm_data(name)

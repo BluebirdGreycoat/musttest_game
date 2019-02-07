@@ -20,7 +20,7 @@ rc.realms = {
 		ground = -10,
 		sealevel = 0,
 		windlevel = 20,
-		realm_origin = {x=0, y=-10, z=0},
+		realm_origin = {x=-1067, y=-10, z=8930},
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.

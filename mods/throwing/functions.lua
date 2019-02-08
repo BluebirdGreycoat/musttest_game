@@ -79,7 +79,7 @@ function throwing_unload (itemstack, player, unloaded, wear)
 		local imeta = newstack:get_meta()
 
 		local ometa = itemstack:get_meta()
-		imeta:set_string("ar_desc", ometa:get_string("ar_desc"))
+		imeta:set_string("en_desc", ometa:get_string("en_desc"))
 
 		toolranks.apply_description(imeta, newstack:get_definition())
 		player:set_wielded_item(newstack)

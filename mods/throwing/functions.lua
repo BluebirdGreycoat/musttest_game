@@ -64,7 +64,8 @@ function throwing_unload (itemstack, player, unloaded, wear)
 			end
 			if arw ~= "" then
 				if arw == arrow[2] then
-					player:get_inventory():add_item("main", arrow[1])
+					local leftover = player:get_inventory():add_item("main", arrow[1])
+					minetest.item_drop(leftover, player, player:get_pos())
 				end
 			end
 		end

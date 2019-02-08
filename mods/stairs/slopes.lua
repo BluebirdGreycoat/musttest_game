@@ -243,6 +243,35 @@ local xslope_peak_half_lh = {
 	}
 }
 
+local astair_1 = {
+	type = "fixed",
+	fixed = {
+		-- Big angle.
+		{-0.5, -0.5,   -0.5,  0, -0.375, 0.5},
+		{-0.5, -0.375, -0.25, 0, -0.25,  0.5},
+		{-0.5, -0.25,  0,     0, -0.125, 0.5},
+		{-0.5, -0.125, 0.25,  0,  0,     0.5},
+
+		-- Corner angle.
+		{-0.5, -0.25,  0,     0, -0.125, 0.5},
+		{-0.5, -0.125, 0.25,  0,  0,     0.5},
+	}
+}
+
+local astair_2 = {
+	type = "fixed",
+	fixed = {
+		-- Box.
+		{-0.5, -0.5, -0.5, 0.5, 0, 0.5},
+
+		-- Angle.
+		{-0.5, -0.5,   -0.5,  0, -0.375, 0.5},
+		{-0.5, -0.375, -0.25, 0, -0.25,  0.5},
+		{-0.5, -0.25,  0,     0, -0.125, 0.5},
+		{-0.5, -0.125, 0.25,  0,  0,     0.5},
+	}
+}
+
 -- Node will be called <modname>:slope_<subname>
 
 local slopes_defs = {
@@ -466,15 +495,15 @@ local slopes_defs = {
 
 	["_astair_1"] = {
 		mesh = "astair_1.obj",
-		collision_box = xslope_slope_rh,
-		selection_box = xslope_slope_rh,
+		collision_box = astair_1,
+		selection_box = astair_1,
 		light=1/3,
 	},
 
 	["_astair_2"] = {
 		mesh = "astair_2.obj",
-		collision_box = xslope_slope_rh,
-		selection_box = xslope_slope_rh,
+		collision_box = astair_2,
+		selection_box = astair_2,
 		light=1/3,
 	},
 }

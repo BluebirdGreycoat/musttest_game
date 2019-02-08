@@ -34,6 +34,7 @@ end
 function toolranks.apply_description(itemmeta, def)
 	local desc1 = itemmeta:get_string("en_desc") or ""
 	local desc2 = itemmeta:get_string("tr_desc") or ""
+	local desc3 = itemmeta:get_string("ar_desc") or ""
 
 	if desc1 == "" then
 		-- No custom description set by engraver, etc.?
@@ -44,12 +45,19 @@ function toolranks.apply_description(itemmeta, def)
 		-- Nothing assigned by TR yet? Use default TR desc, if any.
 		desc2 = def.original_tr_description or ""
 	end
+	if desc3 ~= "" then
+		desc3 = "Loaded: " .. desc3
+	end
+
 	if desc2 ~= "" then
 		-- Have toolranks description? Seperate with newlines.
 		desc1 = desc1 .. "\n\n"
 	end
+	if desc3 ~= "" then
+		desc2 = desc2 .. "\n\n"
+	end
 
-	itemmeta:set_string("description", desc1 .. desc2)
+	itemmeta:set_string("description", desc1 .. desc2 .. desc3)
 end
 
 function toolranks.create_description(name, uses, level)

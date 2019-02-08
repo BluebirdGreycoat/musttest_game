@@ -28,7 +28,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
   
 	itemstack:set_metadata("")
 	imeta:set_string("arrow", nil)
-	imeta:set_string("description", nil)
+	imeta:set_string("ar_desc", nil)
+	toolranks.apply_description(imeta, itemstack:get_definition())
+
 	player:set_wielded_item(itemstack)
 	local playerpos = player:getpos()
 	local obj = minetest.add_entity({x=playerpos.x,y=playerpos.y+1.5,z=playerpos.z}, arrow)
@@ -104,20 +106,22 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 	if itemstack:get_name() == player:get_wielded_item():get_name() then
 		if (pos.x == player:getpos().x and pos.y == player:getpos().y and pos.z == player:getpos().z) or not is_cross then
 			local wear = itemstack:get_wear()
-			local bowname = minetest.registered_items[itemstack:get_name()].description
+			local bowdef = minetest.registered_items[itemstack:get_name()]
+			local bowname = bowdef.description
 			for _,arrow in ipairs(throwing_arrows) do
 				if player:get_inventory():get_stack("main", player:get_wield_index()+1):get_name() == arrow[1] then
 					if not minetest.setting_getbool("creative_mode") then
 						player:get_inventory():remove_item("main", arrow[1])
 					end
 					local name = arrow[1]
-					local arrowdesc = minetest.registered_items[name].description
+					local arrowdesc = utility.get_short_desc(minetest.registered_items[name].description or "")
 					local entity = arrow[2]
 					local newstack = ItemStack(loaded)
 					newstack:set_wear(wear)
 					local imeta = newstack:get_meta()
 					imeta:set_string("arrow", entity)
-					imeta:set_string("description", bowname .. " (Loaded: " .. arrowdesc .. ")")
+					imeta:set_string("ar_desc", arrowdesc)
+					toolranks.apply_description(imeta, bowdef)
 					player:set_wielded_item(newstack)
 				end
 			end

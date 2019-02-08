@@ -40,6 +40,9 @@ function toolranks.apply_description(itemmeta, def)
 		-- No custom description set by engraver, etc.?
 		-- Use original description.
 		desc1 = def.original_description or ""
+		if desc1 == "" then
+			desc1 = def.description or ""
+		end
 	end
 	if desc2 == "" then
 		-- Nothing assigned by TR yet? Use default TR desc, if any.

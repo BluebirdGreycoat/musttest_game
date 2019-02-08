@@ -226,7 +226,7 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			local newstack = throwing_unload(itemstack, dropper, unloaded, wear)
 
 			if newstack then
-				minetest.chat_send_player("MustTest", "TEST1")
+				minetest.chat_send_player("MustTest", "TEST1: " .. newstack:get_name() .. ", " .. newstack:get_count())
 				return newstack
 			end
 			minetest.chat_send_player("MustTest", "TEST0")

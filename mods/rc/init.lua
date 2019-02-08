@@ -45,15 +45,35 @@ function rc.ice_melts_at_pos(pos)
 	end
 end
 
+-- Convert realm position to absolute coordinate. May return NIL if not valid!
 function rc.realmpos_to_pos(realm, pos)
 	local data = rc.get_realm_data(realm:lower())
-	if data and data.realm_origin then
+	if data then
+		local origin = data.realm_origin
 		return {
-			x=data.realm_origin.x + pos.x,
-			y=data.realm_origin.y + pos.y,
-			z=data.realm_origin.z + pos.z,
+			x = origin.x + pos.x,
+			y = origin.y + pos.y,
+			z = origin.z + pos.z,
 		}
 	end
+
+	-- Indicate failure.
+	return nil
+end
+
+-- Convert absolute coordinate to realm position. May return NIL if not valid!
+function rc.pos_to_realmpos(pos)
+	local origin = rc.get_realm_origin_at_pos(pos)
+	if origin then
+		return {
+			x = pos.x - origin.x,
+			y = pos.y - origin.y,
+			z = pos.z - origin.z,
+		}
+	end
+
+	-- Indicate failure.
+	return nil
 end
 
 function rc.pos_to_namestr(pos)
@@ -69,8 +89,7 @@ function rc.pos_to_name(pos)
 	return rc.realm_description_at_pos(pos)
 end
 
-function rc.get_realm_origin_at_pos(pos)
-	local p = vector.round(pos)
+function rc.get_realm_origin_at_pos(p)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
 		local maxp = v.maxp
@@ -80,29 +99,19 @@ function rc.get_realm_origin_at_pos(pos)
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
 			local o = table.copy(v.realm_origin)
-			return true, o
+			return o
 		end
 	end
 
 	-- Not in any realm?
-	return false, nil
+	return nil
 end
 
 -- Obtain a string in the format "(x,y,z)".
 function rc.pos_to_string(pos)
-	local success, origin = rc.get_realm_origin_at_pos(pos)
-	if success then
-		local x = pos.x
-		local y = pos.y
-		local z = pos.z
-		pos.x = origin.x - pos.x
-		pos.y = origin.y - pos.y
-		pos.z = origin.z - pos.z
-		local s = minetest.pos_to_string(pos)
-		pos.x = x
-		pos.y = y
-		pos.z = z
-		return s
+	local realpos = rc.pos_to_realmpos(pos)
+	if realpos then
+		return minetest.pos_to_string(realpos)
 	end
 
 	-- Indicate failure.

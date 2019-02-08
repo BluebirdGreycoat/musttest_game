@@ -110,12 +110,14 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 			local bowname = bowdef.description
 			for _,arrow in ipairs(throwing_arrows) do
 				if player:get_inventory():get_stack("main", player:get_wield_index()+1):get_name() == arrow[1] then
-					if not minetest.setting_getbool("creative_mode") then
-						player:get_inventory():remove_item("main", arrow[1])
-					end
+					-- Remove arrow from beside bow.
+					player:get_inventory():remove_item("main", arrow[1])
+
 					local name = arrow[1]
 					local arrowdesc = utility.get_short_desc(minetest.registered_items[name].description or "")
 					local entity = arrow[2]
+
+					-- Replace with loaded bow item.
 					local newstack = ItemStack(loaded)
 					newstack:set_wear(wear)
 					local imeta = newstack:get_meta()
@@ -123,6 +125,9 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 					imeta:set_string("ar_desc", arrowdesc)
 					toolranks.apply_description(imeta, bowdef)
 					player:set_wielded_item(newstack)
+
+					-- Don't need to iterate through remaining arrow types.
+					break
 				end
 			end
 		end

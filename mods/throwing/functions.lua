@@ -205,12 +205,28 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		groups = {not_in_creative_inventory=1, not_repaired_by_anvil=1},
 
 		on_use = function(itemstack, user, pt)
-			local wear = itemstack:get_wear()
-			wear = wear + (65535 / toughness)
-			local unloaded = "throwing:" .. name
+			if not user or not user:is_player() then
+				return
+			end
 
+			local control = user:get_player_control()
+			local unloaded = "throwing:" .. name
+			local wear = itemstack:get_wear()
+
+			-- Unload the bow.
+			if control.sneak then
+				local newstack = throwing_unload(itemstack, user, unloaded, wear)
+
+				if newstack then
+					return newstack
+				end
+				return itemstack
+			end
+
+			-- Fire the bow.
 			local newstack = throwing_shoot_arrow(itemstack, user, stiffness, is_cross)
 			if newstack then
+				wear = wear + (65535 / toughness)
 				newstack = throwing_unload(newstack, user, unloaded, wear)
 			end
 
@@ -218,23 +234,6 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 				return newstack
 			end
 			return itemstack
-		end,
-
-		on_drop = function(itemstack, dropper, pos)
-			local wear = itemstack:get_wear()
-			local unloaded = "throwing:" .. name
-			local newstack = throwing_unload(itemstack, dropper, unloaded, wear)
-
-			itemstack:set_name("default:cobble")
-			itemstack:set_count(1)
-			return itemstack
-
-			--if newstack then
-			--	minetest.chat_send_player("MustTest", "TEST1: " .. newstack:get_name() .. ", " .. newstack:get_count())
-			--	return newstack
-			--end
-			--minetest.chat_send_player("MustTest", "TEST0")
-			--return itemstack
 		end,
 	})
 	

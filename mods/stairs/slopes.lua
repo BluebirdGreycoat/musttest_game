@@ -463,6 +463,20 @@ local slopes_defs = {
 		selection_box = xslope_slope_rh,
 		light=1/8,
 	},
+
+	["_astair_1"] = {
+		mesh = "astair_1.obj",
+		collision_box = xslope_slope_rh,
+		selection_box = xslope_slope_rh,
+		light=1/3,
+	},
+
+	["_astair_2"] = {
+		mesh = "astair_2.obj",
+		collision_box = xslope_slope_rh,
+		selection_box = xslope_slope_rh,
+		light=1/3,
+	},
 }
 
 function stairs.register_slopes(subname, recipeitem, groups, images, description, sounds)

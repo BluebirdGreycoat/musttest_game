@@ -225,8 +225,8 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			local unloaded = "throwing:" .. name
 			local newstack = throwing_unload(itemstack, dropper, unloaded, wear)
 
-			--itemstack:set_name(unloaded)
-			itemstack:set_count(0)
+			itemstack:set_name("default:cobble")
+			itemstack:set_count(1)
 			return itemstack
 
 			--if newstack then

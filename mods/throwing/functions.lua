@@ -71,8 +71,7 @@ function throwing_unload (itemstack, player, unloaded, wear)
 	end
 	if wear >= 65535 then
 		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
-		itemstack:set_count(0)
-		itemstack:set_name("")
+		itemstack:take_item(itemstack:get_count())
 		return itemstack
 	else
 		local newstack = ItemStack(unloaded)
@@ -221,14 +220,16 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			return itemstack
 		end,
 
-		on_drop = function(itemstack, dropper, pt)
+		on_drop = function(itemstack, dropper, pos)
 			local wear = itemstack:get_wear()
 			local unloaded = "throwing:" .. name
 			local newstack = throwing_unload(itemstack, dropper, unloaded, wear)
 
 			if newstack then
+				minetest.chat_send_player("MustTest", "TEST1")
 				return newstack
 			end
+			minetest.chat_send_player("MustTest", "TEST0")
 			return itemstack
 		end,
 	})

@@ -336,14 +336,15 @@ teleports.update = function(pos)
 
 	for i, v in ipairs(nearby) do
 			local tp = v.pos
-			local label = tp.x .. "," .. tp.y .. "," .. tp.z
-			meta:set_string("loc" .. (i), label)
+			local data = tp.x .. "," .. tp.y .. "," .. tp.z
+			local real_label = rc.pos_to_string(tp)
+			meta:set_string("loc" .. (i), data)
 			if v.name ~= nil then
 					if v.name ~= "" then
-							label = v.name
+							real_label = v.name
 					end
 			end
-			buttons = buttons .. "button_exit[5," .. (i) .. ";3,0.5;tp" .. i .. ";" .. label .. "]";
+			buttons = buttons .. "button_exit[5," .. (i) .. ";3,0.5;tp" .. i .. ";" .. minetest.formspec_escape(real_label) .. "]";
 	end
 
 	local public = meta:get_int("public") or 1

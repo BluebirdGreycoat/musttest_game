@@ -70,10 +70,10 @@ function throwing_unload (itemstack, player, unloaded, wear)
 		end
 	end
 	if wear >= 65535 then
+		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 		itemstack:set_count(0)
 		itemstack:set_name("")
 		return itemstack
-		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 	else
 		local newstack = ItemStack(unloaded)
 		newstack:set_wear(wear)

@@ -26,17 +26,16 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	end
   if arrow == "" then return end
   
+	local playerpos = utility.get_foot_pos(player:get_pos())
+	local obj = minetest.add_entity({x=playerpos.x, y=playerpos.y+1.5, z=playerpos.z}, arrow)
+  if not obj then return end
+  if not obj:get_luaentity() then return end
+
 	itemstack:set_metadata("")
 	imeta:set_string("arrow", nil)
 	imeta:set_string("ar_desc", nil)
 	toolranks.apply_description(imeta, itemstack:get_definition())
-	player:set_wielded_item(itemstack)
 
-	local playerpos = player:getpos()
-	local obj = minetest.add_entity({x=playerpos.x,y=playerpos.y+1.5,z=playerpos.z}, arrow)
-  if not obj then return end
-  if not obj:get_luaentity() then return end
-  
 	local dir = player:get_look_dir()
 	obj:setvelocity({x=dir.x*stiffness, y=dir.y*stiffness, z=dir.z*stiffness})
 	obj:setacceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
@@ -50,7 +49,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
   obj:get_luaentity().player_name = player:get_player_name()
 	obj:get_luaentity().inventory = player:get_inventory()
 	obj:get_luaentity().stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
-	return true
+
+	-- Return the modified itemstack.
+	return itemstack
 end
 
 function throwing_unload (itemstack, player, unloaded, wear)
@@ -69,11 +70,11 @@ function throwing_unload (itemstack, player, unloaded, wear)
 		end
 	end
 	if wear >= 65535 then
-		player:set_wielded_item({})
+		itemstack:set_count(0)
+		itemstack:set_name("")
+		return itemstack
 		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 	else
-		--player:set_wielded_item({name=unloaded, wear=wear})
-
 		local newstack = ItemStack(unloaded)
 		newstack:set_wear(wear)
 		local imeta = newstack:get_meta()
@@ -82,7 +83,7 @@ function throwing_unload (itemstack, player, unloaded, wear)
 		imeta:set_string("en_desc", ometa:get_string("en_desc"))
 
 		toolranks.apply_description(imeta, newstack:get_definition())
-		player:set_wielded_item(newstack)
+		return newstack
 	end
 end
 
@@ -104,7 +105,8 @@ function throwing_arrow_punch_entity (obj, self, damage)
   end
 end
 
-function throwing_reload (itemstack, pname, pos, is_cross, loaded)
+function throwing_reload (index, indexname, pname, pos, is_cross, loaded)
+	-- This function is called after some delay.
 	local player = minetest.get_player_by_name(pname)
 
 	-- Check for nil. Can happen if player leaves game right after reloading.
@@ -113,16 +115,33 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 	end
 
 	players[pname].reloading = false
+	local playerinv = player:get_inventory()
+	local itemstack = playerinv:get_stack("main", index)
+	if not itemstack or itemstack:get_count() ~= 1 then
+		return
+	end
 
-	if itemstack:get_name() == player:get_wielded_item():get_name() then
+	-- Check if the player is still wielding the same object.
+	-- This check isn't very secure, but we don't care too much.
+	local same_selected = false
+	if index == player:get_wield_index() then
+		if indexname == itemstack:get_name() then
+			same_selected = true
+		end
+	end
+
+	if same_selected then
 		if (pos.x == player:getpos().x and pos.y == player:getpos().y and pos.z == player:getpos().z) or not is_cross then
 			local wear = itemstack:get_wear()
 			local bowdef = minetest.registered_items[itemstack:get_name()]
 			local bowname = bowdef.description
-			for _,arrow in ipairs(throwing_arrows) do
-				if player:get_inventory():get_stack("main", player:get_wield_index()+1):get_name() == arrow[1] then
+			local arrow_stack = playerinv:get_stack("main", index + 1)
+
+			for _, arrow in ipairs(throwing_arrows) do
+				if arrow_stack:get_name() == arrow[1] then
 					-- Remove arrow from beside bow.
-					player:get_inventory():remove_item("main", arrow[1])
+					arrow_stack:take_item()
+					playerinv:set_stack("main", index + 1, arrow_stack)
 
 					local name = arrow[1]
 					local arrowdesc = utility.get_short_desc(minetest.registered_items[name].description or "")
@@ -140,10 +159,10 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 					imeta:set_string("arrow", entity)
 					imeta:set_string("ar_desc", arrowdesc)
 					toolranks.apply_description(imeta, bowdef)
-					player:set_wielded_item(newstack)
 
 					-- Don't need to iterate through remaining arrow types.
-					break
+					playerinv:set_stack("main", index, newstack)
+					return
 				end
 			end
 		end
@@ -159,14 +178,23 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		wield_scale = scale,
     stack_max = 1,
 		groups = {not_repaired_by_anvil=1},
-		on_use = function(itemstack, user, pointed_thing)
+
+		on_use = function(itemstack, user, pt)
 			local pos = user:get_pos()
 			local pname = user:get_player_name()
+			local index = user:get_wield_index()
+			local inv = user:get_inventory()
+			local stack = inv:get_stack("main", index)
+			local indexname = ""
+			if stack and stack:get_count() == 1 then
+				indexname = stack:get_name()
+			end
+
+			-- Reload bow after some delay.
 			if not players[pname].reloading then
 				players[pname].reloading = true
-				minetest.after(reload_time, throwing_reload, itemstack, pname, pos, is_cross, "throwing:" .. name .. "_loaded")
+				minetest.after(reload_time, throwing_reload, index, indexname, pname, pos, is_cross, "throwing:" .. name .. "_loaded")
 			end
-			return itemstack
 		end,
 	})
 	
@@ -174,23 +202,35 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		description = desc,
 		inventory_image = "throwing_" .. name .. "_loaded.png",
 		wield_scale = scale,
-	    stack_max = 1,
-		on_use = function(itemstack, user, pointed_thing)
+		stack_max = 1,
+		groups = {not_in_creative_inventory=1, not_repaired_by_anvil=1},
+
+		on_use = function(itemstack, user, pt)
 			local wear = itemstack:get_wear()
-			--if not minetest.setting_getbool("creative_mode") then
-				wear = wear + (65535/toughness)
-			--end
+			wear = wear + (65535 / toughness)
 			local unloaded = "throwing:" .. name
-			throwing_shoot_arrow(itemstack, user, stiffness, is_cross)
-			minetest.after(0, throwing_unload, itemstack, user, unloaded, wear)				
+
+			local newstack = throwing_shoot_arrow(itemstack, user, stiffness, is_cross)
+			if newstack then
+				newstack = throwing_unload(newstack, user, unloaded, wear)
+			end
+
+			if newstack then
+				return newstack
+			end
 			return itemstack
 		end,
-		on_drop = function(itemstack, dropper, pointed_thing)
+
+		on_drop = function(itemstack, dropper, pt)
 			local wear = itemstack:get_wear()
 			local unloaded = "throwing:" .. name
-			minetest.after(0, throwing_unload, itemstack, dropper, unloaded, wear)
+			local newstack = throwing_unload(itemstack, dropper, unloaded, wear)
+
+			if newstack then
+				return newstack
+			end
+			return itemstack
 		end,
-		groups = {not_in_creative_inventory=1, not_repaired_by_anvil=1},
 	})
 	
 	minetest.register_craft({

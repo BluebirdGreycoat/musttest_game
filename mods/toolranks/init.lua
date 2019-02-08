@@ -176,6 +176,10 @@ function toolranks.rebuild_tool()
 	meta:set_string("tr_dug", "58194")
 	meta:set_string("tr_lastlevel", "7")
 	meta:set_string("en_desc", "Trusted")
+
+  local newdesc = toolranks.create_description(item:get_definition().original_description, 58194, 7)
+	meta:set_string("tr_desc", newdesc)
+
 	toolranks.apply_description(meta, item:get_definition())
 	inv:set_stack("main", 1, item)
 end

@@ -179,6 +179,10 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		groups = {not_repaired_by_anvil=1},
 
 		on_use = function(itemstack, user, pt)
+			if not user or not user:is_player() then
+				return
+			end
+
 			local pos = user:get_pos()
 			local pname = user:get_player_name()
 			local index = user:get_wield_index()

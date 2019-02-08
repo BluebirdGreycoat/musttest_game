@@ -30,8 +30,8 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	imeta:set_string("arrow", nil)
 	imeta:set_string("ar_desc", nil)
 	toolranks.apply_description(imeta, itemstack:get_definition())
-
 	player:set_wielded_item(itemstack)
+
 	local playerpos = player:getpos()
 	local obj = minetest.add_entity({x=playerpos.x,y=playerpos.y+1.5,z=playerpos.z}, arrow)
   if not obj then return end
@@ -70,8 +70,19 @@ function throwing_unload (itemstack, player, unloaded, wear)
 	end
 	if wear >= 65535 then
 		player:set_wielded_item({})
+		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 	else
-		player:set_wielded_item({name=unloaded, wear=wear})
+		--player:set_wielded_item({name=unloaded, wear=wear})
+
+		local newstack = ItemStack(unloaded)
+		newstack:set_wear(wear)
+		local imeta = newstack:get_meta()
+
+		local ometa = itemstack:get_meta()
+		imeta:set_string("ar_desc", ometa:get_string("ar_desc"))
+
+		toolranks.apply_description(imeta, newstack:get_definition())
+		player:set_wielded_item(newstack)
 	end
 end
 
@@ -121,6 +132,11 @@ function throwing_reload (itemstack, pname, pos, is_cross, loaded)
 					local newstack = ItemStack(loaded)
 					newstack:set_wear(wear)
 					local imeta = newstack:get_meta()
+
+					-- Preserve name of bow (if named).
+					local ometa = itemstack:get_meta()
+					imeta:set_string("en_desc", ometa:get_string("en_desc"))
+
 					imeta:set_string("arrow", entity)
 					imeta:set_string("ar_desc", arrowdesc)
 					toolranks.apply_description(imeta, bowdef)

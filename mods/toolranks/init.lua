@@ -168,6 +168,18 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   return itemstack
 end
 
+function toolranks.rebuild_tool()
+	local player = minetest.get_player_by_name("MustTest")
+	local inv = player:get_inventory()
+	local item = inv:get_stack("main", 1)
+	local meta = item:get_meta()
+	meta:set_string("tr_dug", "58194")
+	meta:set_string("tr_lastlevel", "7")
+	meta:set_string("en_desc", "Trusted")
+	toolranks.apply_description(meta, item:get_definition())
+	inv:set_stack("main", 1, item)
+end
+
 
 
 if not toolranks.registered then

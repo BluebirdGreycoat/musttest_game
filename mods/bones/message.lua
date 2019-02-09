@@ -27,13 +27,10 @@ local send_chat_world = function(pos, player)
 
 	if show_everyone then
 		local dname = rename.gpn(player)
-		minetest.chat_send_all("# Server: Blackbox detected. Player <" .. dname .. "> perished in the " ..
-			rc.pos_to_name(pos) .. " at " .. rc.pos_to_string(pos) .. ".")
+		minetest.chat_send_all("# Server: Blackbox detected. Player <" .. dname .. "> perished at " .. rc.pos_to_namestr(pos) .. ".")
 	else
 		minetest.chat_send_all("# Server: Blackbox detected. ID and location unknown.")
-		minetest.chat_send_player(player, "# Server: You died in the " ..
-			rc.pos_to_name(pos) .. " at " .. rc.pos_to_string(pos) ..
-			". Your blackbox locator signal is SUPPRESSED.")
+		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ". Your blackbox locator signal is SUPPRESSED.")
 	end
 
 	minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your blackbox at the above coordinates.")

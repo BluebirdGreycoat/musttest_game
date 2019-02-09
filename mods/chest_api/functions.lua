@@ -818,10 +818,12 @@ function chest_api.protected_on_skeleton_key_use(pos, player, newsecret)
 	local pname = player:get_player_name()
 
 	-- verify placer is owner of lockable chest
-	if owner ~= pname then
-		minetest.record_protection_violation(pos, pname)
-		minetest.chat_send_player(pname, "# Server: You do not own this chest.")
-		return nil
+	if not gdac.player_is_admin(pname) then
+		if owner ~= pname then
+			minetest.record_protection_violation(pos, pname)
+			minetest.chat_send_player(pname, "# Server: You do not own this chest.")
+			return nil
+		end
 	end
 
 	local secret = meta:get_string("key_lock_secret")

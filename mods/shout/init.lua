@@ -73,6 +73,7 @@ shout.HINTS = {
 	"Don't go near a Waitabit Tree. They grab you.",
 	"Most trees are sensitive to cold conditions and may refuse to grow. The Firetree is particularly ornery.",
 	"All positions given in server messages are in realm-coordinates. Absolute (F5) coordinates are not used.",
+	"Found a bug? You can send in-game email to MustTest to report it.",
 }
 
 local HINT_DELAY_MIN = 60*15

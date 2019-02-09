@@ -35,17 +35,17 @@ minetest.register_tool("key:skeleton", {
 				random(2^16) - 1, random(2^16) - 1,
 				random(2^16) - 1, random(2^16) - 1)
 
-			local secret, _, _ = on_skeleton_key_use(pos, user, newsecret)
+			local secret, _, owner = on_skeleton_key_use(pos, user, newsecret)
 
-			if secret then
+			if secret and owner then
 				-- finish and return the new key
 				itemstack:take_item()
 				itemstack:add_item("key:key")
 				local meta = itemstack:get_meta()
         meta:set_string("secret", secret)
-        meta:set_string("description", "Key to <"..rename.gpn(user:get_player_name())..">'s "
-          .. utility.get_short_desc(ndef.description) .. " @ " ..
-          rc.pos_to_namestr(vector.round(pos)))
+        meta:set_string("description", "Key to <" .. rename.gpn(owner) .. ">'s " ..
+					utility.get_short_desc(ndef.description) .. " @ " ..
+					rc.pos_to_namestr(vector.round(pos)))
 				return itemstack
 			end
 		end

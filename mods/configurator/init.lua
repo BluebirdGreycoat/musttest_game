@@ -14,13 +14,13 @@ function(stack)
 	local p3 = minetest.string_to_pos(meta:get_string("p3"))
 	local s1, s2, s3 = "N/A", "N/A", "N/A"
 	if p1 then
-		s1 = rc.pos_to_name(p1) .. " - " .. rc.pos_to_string(p1)
+		s1 = rc.pos_to_namestr(p1)
 	end
 	if p2 then
-		s2 = rc.pos_to_name(p2) .. " - " .. rc.pos_to_string(p2)
+		s2 = rc.pos_to_namestr(p2)
 	end
 	if p3 then
-		s3 = rc.pos_to_name(p3) .. " - " .. rc.pos_to_string(p3)
+		s3 = rc.pos_to_namestr(p3)
 	end
 	local desc = "WR Config Device\n\nPrimary: " .. s1 .. "\nSecondary: " .. s2 .. "\nTertiary: " .. s3 .. ""
 	meta:set_string("description", desc)

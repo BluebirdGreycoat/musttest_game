@@ -70,10 +70,11 @@ shout.HINTS = {
 	"Items placed in itemframes or pedestals may occasionally become invisible. Punch with a stick to restore them.",
 	"Dry shrubs and torches (lit or not) may be crafted into sticks.",
 	"New player short on fuel? You can burn wooden armor in stone furnaces.",
-	"Don't go near a Waitabit Tree. They grab you.",
+	"That's a Waitabit Tree. Don't go near a Waitabit Tree. They grab you.",
 	"Most trees are sensitive to cold conditions and may refuse to grow. The Firetree is particularly ornery.",
 	"All positions given in server messages are in realm-coordinates. Absolute (F5) coordinates are not used.",
 	"Found a bug? You can send in-game email to MustTest to report it.",
+	"This sentence is false.",
 }
 
 local HINT_DELAY_MIN = 60*15

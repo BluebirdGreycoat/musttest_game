@@ -599,8 +599,8 @@ bones.do_grab_bones_message = function(pname, pos, meta)
 			minetest.chat_send_all(
 				"# Server: Player <" ..
 				rename.gpn(pname) ..
-				"> claimed " .. ownerstring .. " " .. agestring .. " bones in the " .. rc.pos_to_name(pos) .. " @ " ..
-				rc.pos_to_string(vector.round(pos)) ..
+				"> claimed " .. ownerstring .. " " .. agestring .. " bones @ " ..
+				rc.pos_to_namestr(vector.round(pos)) ..
 				" with " .. numstacks .. " " .. stacks .. ".")
 		else
 			minetest.chat_send_all(

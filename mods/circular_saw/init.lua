@@ -256,7 +256,7 @@ function circular_saw:update_inventory(pos, amount)
 	local material_desc = node_name
 	local def = minetest.registered_items[node_name]
 	if def and def.description then
-		material_desc = def.description
+		material_desc = utility.get_short_desc(def.description)
 	end
 
 	local owner = meta:get_string("owner")

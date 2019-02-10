@@ -168,6 +168,15 @@ stairs.register_stair_and_slab("lazurite_brick", "lapis:lazurite_brick",
 "Lazurite Brick",
 default.node_sound_stone_defaults())
 
+stairs.register_stair_and_slab("pyrite_block", "lapis:pyrite_block",
+{cracky = 2},
+{"lapis_pyrite_sacred.png", "lapis_pyrite_sacred.png", "lapis_pyrite_block.png"},
+"Pyrite Block",
+default.node_sound_stone_defaults({
+	footstep = {name = "default_hard_footstep", gain = 0.5},
+	place = {name = "default_place_node_hard", gain = 1.0},
+}))
+
 ---------------
 -- Crafts Items
 ---------------

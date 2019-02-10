@@ -24,8 +24,8 @@ local allnodes = minetest.registered_nodes
 -- Nodename groups.
 local lava_sources = {"default:lava_source", "lbrim:lava_source"}
 local flowing_lava = {"default:lava_flowing", "lbrim:lava_flowing"}
-local water_sources = {"default:water_source", "default:river_water_source"}
-local flowing_water = {"default:water_flowing", "default:river_water_flowing"}
+local water_sources = {"default:water_source", "default:river_water_source", "cw:water_source"}
+local flowing_water = {"default:water_flowing", "default:river_water_flowing", "cw:water_flowing"}
 local water_group = {
 	"default:water_source",
 	"default:water_flowing",

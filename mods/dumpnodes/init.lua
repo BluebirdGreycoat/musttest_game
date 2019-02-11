@@ -6,7 +6,11 @@ dumpnodes.modpath = minetest.get_modpath("dumpnodes")
 
 local function nd_get_tiles(nd)
 	if nd.dumpnodes_tile then
-		return nd.dumpnodes_tile
+		if type(nd.dumpnodes_tile) == "string" then
+			return {nd.dumpnodes_tile}
+		else
+			return nd.dumpnodes_tile
+		end
 	elseif nd.tiles then
 		return nd.tiles
 	elseif nd.tile_images then

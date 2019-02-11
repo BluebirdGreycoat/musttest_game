@@ -9,7 +9,7 @@ preload_tp.modpath = minetest.get_modpath("preload_tp")
 -- teleport, execute the callback function if it's not nil.
 function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, cb_param, force, tpsound)
 	local player = minetest.get_player_by_name(pname)
-	if not player then
+	if not player or not player:is_player() then
 		return
 	end
 
@@ -36,8 +36,9 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 
 		-- Find the player.
 		local player = minetest.get_player_by_name(pname)
-		if not player then
+		if not player or not player:is_player() then
 			-- The player left, or something. Do not teleport them.
+			minetest.log("action", pname .. " left the game while a teleport callback was in progress")
 			return
 		end
 
@@ -71,6 +72,8 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 				return
 			end
 		end
+
+		minetest.log("action", "executing teleport callback for " .. pname .. "!")
 
 		-- Teleport player only if they didn't move (or teleporting is forced).
 		wield3d.on_teleport()

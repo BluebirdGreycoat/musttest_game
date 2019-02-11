@@ -496,6 +496,10 @@ function rc.notify_realm_update(player, pos)
 		n = player:get_player_name()
 	end
 	local tb = rc.players[n]
+	if not tb then
+		minetest.log("action", "could not find data for player " .. n .. " when updating realm info")
+		return
+	end
 	tb.pos = p
 	tb.realm = rc.current_realm_at_pos(p)
 end

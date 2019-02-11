@@ -528,7 +528,7 @@ minetest.register_node("circular_saw:circular_saw",  {
     },
   },
 
-	dumpnodes_tile = "default_wood.png",
+	dumpnodes_tile = {"default_wood.png"},
   tiles = {
     "moreblocks_circular_saw_top.png",
     "moreblocks_circular_saw_bottom.png",

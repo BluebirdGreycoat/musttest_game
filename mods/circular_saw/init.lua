@@ -527,6 +527,8 @@ minetest.register_node("circular_saw:circular_saw",  {
       {-0.25, -0.0625, -0.25, 0.25, 0.25, 0.25}, -- Motor case
     },
   },
+
+	dumpnodes_tile = "moreblocks_circular_saw_top.png",
   tiles = {
     "moreblocks_circular_saw_top.png",
     "moreblocks_circular_saw_bottom.png",

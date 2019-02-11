@@ -302,6 +302,7 @@ function snow.get_snowfootdef()
 	def.paramtype2 = "facedir"
 	def.on_rotate = false -- It would be silly if screwdriver could rotate this.
 
+	def.dumpnodes_tile = "default_snow.png"
 	def.tiles = {
 		"(default_snow.png^snow_footstep.png)",
 		"default_snow.png",

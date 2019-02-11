@@ -5,7 +5,9 @@ dumpnodes.modpath = minetest.get_modpath("dumpnodes")
 
 
 local function nd_get_tiles(nd)
-	if nd.tiles then
+	if nd.dumpnodes_tile then
+		return nd.dumpnodes_tile
+	elseif nd.tiles then
 		return nd.tiles
 	elseif nd.tile_images then
 		return nd.tile_images

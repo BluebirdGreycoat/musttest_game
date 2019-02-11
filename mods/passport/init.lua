@@ -348,7 +348,7 @@ passport.player_registered = function(pname)
   local player = minetest.get_player_by_name(pname)
   if player and player:is_player() then
     local inv = player:get_inventory()
-    if inv:contains_item("main", "passport:passport") then
+    if inv and inv:contains_item("main", "passport:passport") then
 			passport.registered_players[pname] = true -- Cache for next time.
       return true
     end

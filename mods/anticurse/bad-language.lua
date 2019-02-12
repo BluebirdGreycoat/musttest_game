@@ -62,8 +62,8 @@ anticurse.foul = {
 	"s+u+x+",
 	"d+i+x+",
 	{word="h+o+m+o+", white={"homogeneous"}},
-	{word="t+i+t+s+", white={"petits"}},
-	{word="b+oo+b+", white={"booby"}},
+	{word="t+i+t+s+", white={"wait", "got", "petits", "itsa", "itsnext", "itsnot"}},
+	{word="b+oo+b+", white={"booby", "boo+boo+"}},
 
   "a+ss+e*h+o+l+e+",
   {word="a+h+o+l+e+s+", white={"sur", "inahole"}},
@@ -85,9 +85,9 @@ anticurse.foul = {
 		"happen", "sharpen", "dampen", "aspen", "shapen", "open", "pigpen",
 	}},
 
-  "b+r+e+a*s+t+",
+  {word="b+r+e+a*s+t+", white={"brea*stplate"}},
   {word="d+i*c+k+", white={"dickens"}},
-	{word="d+i+k+", white={"and", "know", "should", "kill", "would", "keep"}},
+	{word="d+i+k+", white={"and", "know", "should", "kill", "would", "keep", "medikit"}},
   
   --"p+e+r+v+e+r+t+",
   

@@ -75,6 +75,7 @@ shout.HINTS = {
 	"All positions given in server messages are in realm-coordinates. Absolute (F5) coordinates are not used.",
 	"Found a bug? You can send in-game email to MustTest to report it.",
 	"This sentence is false.",
+	"You can send game-balance suggestions to MustTest using the in-game email system.",
 }
 
 local HINT_DELAY_MIN = 60*15

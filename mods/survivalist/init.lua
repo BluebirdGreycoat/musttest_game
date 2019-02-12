@@ -182,17 +182,19 @@ function survivalist.fill_loot_chest(inv, gamemode)
       {item="beds:fancy_bed_bottom", min=1, max=3},
     }
   end
-  
-  for k, v in ipairs(loot) do
-		-- Divide min/max by 3, then apply logic 3 times. This splits stacks up.
+
+	local loot_tries = #loot * 3
+	for i=1, loot_tries, 1 do
+		-- Randomize the order in which loot is applied.
+		local v = loot[math.random(1, loot_tries)]
+
+		-- Divide min/max by 3 (logic is applied 3 times). This splits stacks up.
     local min = math.floor(v.min / 3.0)
     local max = math.ceil(v.max / 3.0)
 		if max > min then
-			for i = 1, 3, 1 do
-				local count = math.floor(math.random(min, max))
-				if count > 0 then
-					inv:set_stack("main", math.random(1, 12*4), ItemStack(v.item .. " " .. count))
-				end
+			local count = math.floor(math.random(min, max))
+			if count > 0 then
+				inv:set_stack("main", math.random(1, 12*4), ItemStack(v.item .. " " .. count))
 			end
 		end
   end

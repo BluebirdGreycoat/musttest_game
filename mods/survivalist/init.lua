@@ -122,18 +122,21 @@ end
 
 
 function survivalist.fill_loot_chest(inv, gamemode)
+	if not inv then
+		return
+	end
   local loot = {}
   
   if gamemode == "surface" then
-    -- The main problem with the `surface` challenge is keeping from being too easy.
+    -- The main problem with the `surface` challenge is keeping it from being too easy.
     -- This is especially due to travel being very swift, and too much food can go a long way.
     loot = {
-      {item="default:stick", min=10, max=20},
-      {item="farming:bread", min=4, max=10},
-      {item="basictrees:tree_apple", min=6, max=20},
-      {item="pumpkin:bread", min=5, max=10},
-      {item="default:steel_ingot", min=10, max=50},
-      {item="default:diamond", min=3, max=8},
+      {item="default:stick", min=1, max=20},
+      {item="farming:bread", min=1, max=10},
+      {item="basictrees:tree_apple", min=1, max=20},
+      {item="pumpkin:bread", min=1, max=10},
+      {item="default:steel_ingot", min=3, max=15},
+      {item="default:diamond", min=1, max=8},
       {item="bones:bones_type2", min=1, max=25},
       {item="torches:torch_floor", min=10, max=30},
     }
@@ -146,7 +149,7 @@ function survivalist.fill_loot_chest(inv, gamemode)
       {item="farming:bread", min=10, max=20},
       {item="basictrees:tree_apple", min=10, max=20},
       {item="pumpkin:bread", min=10, max=20},
-      {item="default:steel_ingot", min=30, max=99},
+      {item="default:steel_ingot", min=30, max=64},
       {item="bones:bones_type2", min=10, max=40},
       {item="default:dirt", min=3, max=6},
       {item="torches:torch_floor", min=10, max=30},
@@ -161,11 +164,11 @@ function survivalist.fill_loot_chest(inv, gamemode)
   elseif gamemode == "nether" then
     -- Like `cave` mode, in this gamemode building a farm and finding sources of iron and coal are critical.
     loot = {
-      {item="default:stick", min=10, max=30},
+      {item="default:stick", min=1, max=30},
       {item="farming:bread", min=10, max=30},
       {item="basictrees:tree_apple", min=10, max=20},
-      {item="default:steel_ingot", min=30, max=99},
-      {item="default:coal_lump", min=30, max=99},
+      {item="default:steel_ingot", min=30, max=64},
+      {item="default:coal_lump", min=30, max=64},
       {item="gems:ruby_gem", min=3, max=13},
       {item="torches:kalite_torch_floor", min=10, max=25},
       {item="moreblocks:super_glow_glass", min=3, max=10},
@@ -173,15 +176,25 @@ function survivalist.fill_loot_chest(inv, gamemode)
       {item="firetree:sapling", min=1, max=2},
       {item="default:flint", min=5, max=16},
       {item="bluegrass:seed", min=3, max=16},
+      {item="griefer:grieferstone", min=1, max=4},
+      {item="titanium:crystal", min=1, max=8},
+      {item="default:cobble", min=1, max=64},
+      {item="beds:fancy_bed_bottom", min=1, max=3},
     }
   end
   
   for k, v in ipairs(loot) do
-    local min = v.min
-    local max = math.ceil(v.max / 2)
-    for i = 1, 2, 1 do
-      inv:set_stack("main", math.random(1, 12*4), ItemStack(v.item .. " " .. math.random(min, max)))
-    end
+		-- Divide min/max by 3, then apply logic 3 times. This splits stacks up.
+    local min = math.floor(v.min / 3.0)
+    local max = math.ceil(v.max / 3.0)
+		if max > min then
+			for i = 1, 3, 1 do
+				local count = math.floor(math.random(min, max))
+				if count > 0 then
+					inv:set_stack("main", math.random(1, 12*4), ItemStack(v.item .. " " .. count))
+				end
+			end
+		end
   end
 end
 
@@ -235,8 +248,12 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   end
   
   -- Inform player the game has begun.
-	local dname = rename.gpn(pname)
-  minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector.round(pos)) .. "!")
+	if not gdac.player_is_admin(pname) then
+		local dname = rename.gpn(pname)
+		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector.round(pos)) .. "!")
+	else
+		minetest.chat_send_player(pname, "# Server: You have begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector.round(pos)) .. "!")
+	end
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")
   
@@ -355,17 +372,19 @@ function survivalist.shout_player_stats(pname)
   local wins_bstreak =  pname .. ":wins_bstreak"
   local wins_tokens =   pname .. ":wins_tokens"
   
-	local dname = rename.gpn(pname)
-  minetest.chat_send_all("# Server: Survivalist stats for <" ..
-    dname .. ">: Victories: " .. ms:get_int(wins_total) ..
-    ". Deaths: " .. ms:get_int(wins_fail) ..
-    ". Iceworld: " .. ms:get_int(wins_surface) ..
-    ". Underearth: " .. ms:get_int(wins_cave) ..
-    ". Netherealm: " .. ms:get_int(wins_nether) ..
-    ". C-Streak: " .. ms:get_int(wins_streak) ..
-    ". B-Streak: " .. ms:get_int(wins_bstreak) ..
-    ". Marks: " .. ms:get_int(wins_tokens) ..
-    ".")
+	if not gdac.player_is_admin(pname) then
+		local dname = rename.gpn(pname)
+		minetest.chat_send_all("# Server: Survivalist stats for <" ..
+			dname .. ">: Victories: " .. ms:get_int(wins_total) ..
+			". Deaths: " .. ms:get_int(wins_fail) ..
+			". Iceworld: " .. ms:get_int(wins_surface) ..
+			". Underearth: " .. ms:get_int(wins_cave) ..
+			". Netherealm: " .. ms:get_int(wins_nether) ..
+			". C-Streak: " .. ms:get_int(wins_streak) ..
+			". B-Streak: " .. ms:get_int(wins_bstreak) ..
+			". Marks: " .. ms:get_int(wins_tokens) ..
+			".")
+	end
 end
 
 
@@ -566,16 +585,22 @@ function survivalist.attempt_claim(pname)
   end
   
 	local dname = rename.gpn(pname)
-  minetest.chat_send_all("# Server: Player <" .. dname .. "> has claimed victory in the " .. cityname .. "!")
-  minetest.chat_send_all("# Server: Player <" .. dname .. ">'s skill has been tested in a Survival Challenge and proved worthy.")
-  minetest.chat_send_all("# Server: Player <" .. dname .. "> has earned " .. tokencount .. " " .. upperank .. " Skill Mark(s).")
+	if not gdac.player_is_admin(pname) then
+		minetest.chat_send_all("# Server: Player <" .. dname .. "> has claimed victory in the " .. cityname .. "!")
+		minetest.chat_send_all("# Server: Player <" .. dname .. ">'s skill has been tested in a Survival Challenge and proved worthy.")
+		minetest.chat_send_all("# Server: Player <" .. dname .. "> has earned " .. tokencount .. " " .. upperank .. " Skill Mark(s).")
+	else
+		minetest.chat_send_player(pname, "# Server: You have won the Survival Challenge!")
+	end
   local inv = player:get_inventory()
   local leftover = inv:add_item("main", ItemStack("survivalist:" .. rank .. "_skill_token " .. tokencount))
   
   -- No room in inventory? Drop 'em.
   if leftover:get_count() > 0 then
     minetest.item_drop(leftover, player, pos)
-    minetest.chat_send_all("# Server: Player <" .. dname .. ">'s Skill Mark was dropped on the ground!")
+		if not gdac.player_is_admin(pname) then
+			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s Skill Mark was dropped on the ground!")
+		end
   end
   minetest.chat_send_player(pname, "# Server: You should have received a skill mark in your inventory. If your inventory was full, check near your feet!")
   
@@ -638,7 +663,9 @@ function survivalist.on_joinplayer(player)
     local gamemode = survivalist.modstorage:get_string(pname .. ":mode")
     if gamemode == "surface" or gamemode == "cave" or gamemode == "nether" then
 			local dname = rename.gpn(pname)
-      minetest.chat_send_all("# Server: Player <" .. dname .. "> is engaged in a Survival Challenge.")
+			if not gdac.player_is_admin(pname) then
+				minetest.chat_send_all("# Server: Player <" .. dname .. "> is engaged in a Survival Challenge.")
+			end
       minetest.chat_send_player(pname, "# Server: You are in a Survival Challenge. Avoid death by sleeping!")
       minetest.chat_send_player(pname, "# Server: Find the Surface Colony or the Nether City and claim victory in the Central Square to beat the Challenge.")
     end
@@ -663,8 +690,10 @@ function survivalist.on_dieplayer(player)
   if gamemode == "surface" or gamemode == "cave" or gamemode == "nether" then
     -- Delay the chat messages slightly.
     minetest.after(1, function()
-			local dname = rename.gpn(pname)
-      minetest.chat_send_all("# Server: Player <" .. dname .. ">'s survival skill was tested and found wanting!")
+			if not gdac.player_is_admin(pname) then
+				local dname = rename.gpn(pname)
+				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s survival skill was tested and found wanting!")
+			end
       survivalist.shout_player_stats(pname)
       minetest.chat_send_player(pname, "# Server: You failed the Survivalist Challenge. No goodies for you!")
     end)
@@ -727,8 +756,12 @@ function survivalist.abort_game(pname)
 			flameportal.clear_return_location(pname)
 			beds.clear_player_spawn(pname)
 
-			local dname = rename.gpn(pname)
-			minetest.chat_send_all("# Server: Player <" .. dname .. "> canceled a Survival Challenge and went home.")
+			if not gdac.player_is_admin(pname) then
+				local dname = rename.gpn(pname)
+				minetest.chat_send_all("# Server: Player <" .. dname .. "> canceled a Survival Challenge and went home.")
+			else
+				minetest.chat_send_player(pname, "# Server: You canceled a Survival Challenge and went home.")
+			end
 		end
 
 		-- Teleport is forced.

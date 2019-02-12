@@ -186,7 +186,7 @@ function survivalist.fill_loot_chest(inv, gamemode)
 	local loot_tries = #loot * 3
 	for i=1, loot_tries, 1 do
 		-- Randomize the order in which loot is applied.
-		local v = loot[math.random(1, loot_tries)]
+		local v = loot[math.random(1, #loot)]
 
 		-- Divide min/max by 3 (logic is applied 3 times). This splits stacks up.
     local min = math.floor(v.min / 3.0)

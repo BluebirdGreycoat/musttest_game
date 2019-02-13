@@ -40,7 +40,7 @@ minetest.register_craftitem("carrot:regular", {
 
 
 -- Edible!
-local eat_function = minetest.item_eat(10)
+local eat_function = minetest.item_eat(6)
 minetest.register_craftitem("carrot:gold", {
   description = "Golden Carrot",
   inventory_image = "carrot_gold.png",
@@ -56,9 +56,9 @@ minetest.register_craftitem("carrot:gold", {
 minetest.register_craft({
   output = "carrot:gold",
   recipe = {
-		{"", "default:gold_ingot", ""},
-		{"default:gold_ingot", "carrot:regular", "default:gold_ingot"},
-		{"", "default:gold_ingot", ""},
+		{"", "default:gold_lump", ""},
+		{"default:gold_lump", "carrot:regular", "default:gold_lump"},
+		{"", "default:gold_lump", ""},
 	},
 })
 

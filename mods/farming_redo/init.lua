@@ -244,6 +244,7 @@ minetest.register_node(":farming:salt", {
 		type = "fixed",
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 	},
+	walkable = false,
 })
 
 minetest.register_craft({
@@ -252,4 +253,22 @@ minetest.register_craft({
 	output = "farming:salt",
 	recipe = "bucket:bucket_water",
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
+})
+
+minetest.register_craftitem(":farming:carrot_juice", {
+	description = "Carrot Juice",
+	inventory_image = "farming_carrot_juice.png",
+	on_use = minetest.item_eat(4, "vessels:drinking_glass"),
+	groups = {vessel = 1},
+})
+
+minetest.register_craft({
+	output = "farming:carrot_juice",
+	type = "shapeless",
+	recipe = {
+		"vessels:drinking_glass", "carrot:regular", "farming:juicer"
+	},
+	replacements = {
+		{"farming:juicer", "farming:juicer"},
+	},
 })

@@ -200,3 +200,56 @@ minetest.register_craft( {
 		"farming:mixing_bowl",
 	},
 })
+
+minetest.register_craftitem(":farming:sugar", {
+	description = "Sugar",
+	inventory_image = "farming_sugar.png",
+	groups = {food_sugar = 1, flammable = 3},
+})
+
+minetest.register_craft({
+	type = "cooking",
+	cooktime = 3,
+	output = "farming:sugar 2",
+	recipe = "default:papyrus",
+})
+
+minetest.register_craftitem(":farming:blueberry_pie", {
+	description = "Blueberry Pie",
+	inventory_image = "farming_blueberry_pie.png",
+	on_use = minetest.item_eat(6),
+})
+
+minetest.register_craft({
+	output = "farming:blueberry_pie",
+	type = "shapeless",
+	recipe = {
+		"farming:flour", "farming:sugar",
+		"blueberries:fruit", "farming:baking_tray"
+	},
+	replacements = {{"farming:baking_tray", "farming:baking_tray"}}
+})
+
+minetest.register_node(":farming:salt", {
+	description = "Salt",
+	inventory_image = "farming_salt.png",
+	wield_image = "farming_salt.png",
+	drawtype = "plantlike",
+	visual_scale = 0.8,
+	paramtype = "light",
+	tiles = {"farming_salt.png"},
+	groups = {food_salt = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+	sounds = default.node_sound_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+	},
+})
+
+minetest.register_craft({
+	type = "cooking",
+	cooktime = 15,
+	output = "farming:salt",
+	recipe = "bucket:bucket_water",
+	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
+})

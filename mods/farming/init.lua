@@ -56,7 +56,8 @@ farming.register_plant("farming:cotton", {
     groups = {flammable = 4},
 })
 
-minetest.register_alias("farming:string", "farming:cotton")
+-- alias no longer used -- we have an actual string item that is craftable from cotton
+--minetest.register_alias("farming:string", "farming:cotton")
 
 minetest.register_craft({
 	output = "wool:white",

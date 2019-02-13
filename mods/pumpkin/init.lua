@@ -1,4 +1,8 @@
 
+--[[
+	Big thanks to PainterlyPack.net for allowing me to use these textures
+]]
+
 -- Pumpkin Seed
 minetest.register_node("pumpkin:seed", {
   description = "Pumpkin Seed",
@@ -64,6 +68,13 @@ minetest.register_craft({
   type = "shapeless",
   output = "pumpkin:slice 3",
   recipe = {"pumpkin:pumpkin"},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "pumpkin:slice 4", -- use a cutting board to get slightly more
+	recipe = {"pumpkin:pumpkin", "farming:cutting_board"},
+	replacements = {{"farming:cutting_board", "farming:cutting_board"}},
 })
 
 
@@ -155,7 +166,7 @@ minetest.register_craft({
   type = "cooking",
   output = "pumpkin:bread",
   recipe = "pumpkin:dough",
-  cooktime = 4,
+  cooktime = 10,
 })
 
 

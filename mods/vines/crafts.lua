@@ -3,9 +3,9 @@
 minetest.register_craft({
 	output =  'vines:ropesegment',
 	recipe = {
-		{'farming:cotton',},
-		{'farming:cotton',},
-		{'farming:cotton'}
+		{'farming:string',},
+		{'farming:string',},
+		{'farming:string'}
 	}
 })
 

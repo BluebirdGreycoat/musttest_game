@@ -272,3 +272,74 @@ minetest.register_craft({
 		{"farming:juicer", "farming:juicer"},
 	},
 })
+
+minetest.register_node(":farming:rose_water", {
+	description = "Rose Water",
+	inventory_image = "farming_rose_water.png",
+	wield_image = "farming_rose_water.png",
+	drawtype = "plantlike",
+	visual_scale = 0.8,
+	paramtype = "light",
+	tiles = {"farming_rose_water.png"},
+	groups = {food_rose_water = 1, vessel = 1, dig_immediate = 3,
+			attached_node = 1},
+	sounds = default.node_sound_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+	},
+	walkable = false,
+})
+
+minetest.register_craft({
+	output = "farming:rose_water",
+	recipe = {
+		{"flowers:rose", "flowers:rose", "flowers:rose"},
+		{"flowers:rose", "flowers:rose", "flowers:rose"},
+		{"bucket:bucket_water", "farming:pot", "vessels:glass_bottle"},
+	},
+	replacements = {
+		{"bucket:bucket_water", "bucket:bucket_empty"},
+		{"farming:pot", "farming:pot"},
+	}
+})
+
+minetest.register_node(":farming:scarecrow_bottom", {
+	paramtype = "light",
+	sunlight_propagates = true,
+	paramtype2 = "facedir",
+	tiles = {"default_wood.png"},
+	drawtype = "nodebox",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-1/16, -8/16, -1/16, 1/16, 8/16, 1/16},
+			{-12/16, 4/16, -1/16, 12/16, 2/16, 1/16},
+		},
+	},
+	groups = {snappy = 3, flammable = 2},
+})
+
+minetest.register_craft({
+	output = "farming:scarecrow_bottom",
+	recipe = {
+		{"", "group:stick", "",},
+		{"group:stick", "group:stick", "group:stick",},
+		{"", "group:stick", "",}
+	}
+})
+
+minetest.register_craftitem(":farming:string", {
+	description = "String",
+	inventory_image = "farming_string.png",
+	groups = {flammable = 2},
+})
+
+minetest.register_craft({
+	output = "farming:string",
+	recipe = {
+		{"farming:cotton"},
+		{"farming:cotton"},
+		{"farming:cotton"},
+	}
+})

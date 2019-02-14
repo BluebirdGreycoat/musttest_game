@@ -37,7 +37,7 @@ minetest.register_node("cucumber:seed", {
   on_timer = farming.grow_plant,
   minlight = 13,
   maxlight = default.LIGHT_MAX,
-  next_plant = "cucumber:plant_1",
+  next_plant = "cucumber:cucumber_1",
   fertility = {"grassland"},
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},

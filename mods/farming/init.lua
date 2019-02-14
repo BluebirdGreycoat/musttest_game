@@ -2,6 +2,11 @@
 farming = {}
 farming.path = minetest.get_modpath("farming")
 
+farming.select = {
+	type = "fixed",
+	fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+}
+
 -- Load files
 dofile(farming.path .. "/api.lua")
 dofile(farming.path .. "/nodes.lua")

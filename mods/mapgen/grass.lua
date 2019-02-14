@@ -20,6 +20,7 @@ end
 local plants = {
   "default:junglegrass",
 	"default:coarsegrass",
+	"default:dry_grass_5",
   "default:grass_5",
   "pumpkin:plant_8",
   "tomato:plant_7",
@@ -27,6 +28,7 @@ local plants = {
   "blueberries:plant_4",
   "raspberries:plant_4",
 	"potatoes:potato_4",
+	"cucumber:cucumber_4",
 }
 
 mapgen.generate_grass = function(minp, maxp, seed)
@@ -34,7 +36,6 @@ mapgen.generate_grass = function(minp, maxp, seed)
   if maxp.y < -50 or minp.y > 300 then
     return
   end
-
 
   local pr = PseudoRandom(seed + 6402)
   local count = pr:next(1, 2)
@@ -53,8 +54,8 @@ mapgen.generate_grass = function(minp, maxp, seed)
 			--	minetest.chat_send_all(minetest.pos_to_string(pos))
 			--end
 
-      minetest.set_node(pos, {name=which})
       minetest.set_node(posb, {name="default:mossycobble"})
+      minetest.set_node(pos, {name=which})
     end
   end
 end

@@ -63,7 +63,7 @@ mobs.register_spawn({
   },
 	min_light = 0,
 	max_light = 6,
-	mob_limit = 3,
+	mob_limit = 5,
 	mob_range = 100,
 	max_height = -25000,
 	min_count = 1,

@@ -442,7 +442,7 @@ function mob_spawn.on_joinplayer(player)
 	for k, v in pairs(registered) do
 		players[pname][k] = {
 			-- Initial interval. Wait this long before trying to spawn this mob again.
-			interval = random(v.success_time_min, v.success_time_max)*5
+			interval = random(v.success_time_min, v.success_time_max)
 		}
 	end
 end

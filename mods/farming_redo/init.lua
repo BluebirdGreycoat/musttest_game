@@ -281,8 +281,7 @@ minetest.register_node(":farming:rose_water", {
 	visual_scale = 0.8,
 	paramtype = "light",
 	tiles = {"farming_rose_water.png"},
-	groups = {food_rose_water = 1, vessel = 1, dig_immediate = 3,
-			attached_node = 1},
+	groups = {food_rose_water = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
 	sounds = default.node_sound_defaults(),
 	selection_box = {
 		type = "fixed",
@@ -317,7 +316,7 @@ minetest.register_node(":farming:scarecrow_bottom", {
 			{-12/16, 4/16, -1/16, 12/16, 2/16, 1/16},
 		},
 	},
-	groups = {snappy = 3, flammable = 2},
+	groups = {snappy = 3, flammable = 2, attached_node = 1},
 })
 
 minetest.register_craft({
@@ -342,4 +341,16 @@ minetest.register_craft({
 		{"farming:cotton"},
 		{"farming:cotton"},
 	}
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "farming:string",
+	burntime = 1,
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "farming:cotton",
+	burntime = 1,
 })

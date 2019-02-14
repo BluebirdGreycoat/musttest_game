@@ -332,7 +332,7 @@ if not flowers.reg2 then
 	local eat_mushroom = minetest.item_eat(1)
 	local function mushroom_poison(pname, step)
 		local msg = "# Server: <" .. rename.gpn(pname) .. "> ate a mushroom. Desperate!"
-		hb4.delayed_harm({name=pname, step=step, min=1, max=1, msg=msg})
+		hb4.delayed_harm({name=pname, step=step, min=1, max=1, msg=msg, poison=true})
 	end
 
 	minetest.register_node("flowers:mushroom_red", {

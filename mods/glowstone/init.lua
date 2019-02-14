@@ -45,6 +45,7 @@ local function walk_glowstone(player)
 		min = 1,
 		max = 2,
 		msg = "# Server: <" .. rename.gpn(pname) .. "> was poisoned by glowstone.",
+		poison = true,
 	})
 end
 
@@ -56,6 +57,7 @@ local function punch_glowstone(player)
 		min = 1,
 		max = 2,
 		msg = "# Server: <" .. rename.gpn(pname) .. "> was poisoned by glowstone.",
+		poison = true,
 	})
 end
 

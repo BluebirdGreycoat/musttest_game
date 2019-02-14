@@ -14,19 +14,37 @@ dofile(hb4.modpath .. "/diving_equipment.lua")
 dofile(hb4.modpath .. "/countdown.lua")
 
 --[[
-	{name="player", step=2, min=1, max=3, msg="He died!"}
+	{name="player", step=2, min=1, max=3, msg="He died!", poison=false}
 --]]
 function hb4.delayed_harm2(data)
-	if data.step < 1 then return end
 	local player = minetest.get_player_by_name(data.name)
 	if player then
-		if player:get_hp() <= 0 then return end
+		-- finished harming?
+		if data.step < 1 then
+			if data.poison then
+				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
+			end
+			return
+		end
+
+		-- already dead?
+		if player:get_hp() <= 0 then
+			if data.poison then
+				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
+			end
+			return
+		end
+
+		if data.poison then
+			hud.change_item(user, "hunger", {text="hunger_statbar_poisen.png"})
+		end
+
 		local damage = math.random(data.min, data.max)
-		--minetest.chat_send_player("MustTest", "# Server: " .. damage .. ".")
 		player:set_hp(player:get_hp() - damage)
 		if data.msg and player:get_hp() <= 0 then
 			minetest.chat_send_all(data.msg)
 		end
+
 		data.step = data.step - 1
 		minetest.after(1, hb4.delayed_harm2, data)
 	else

@@ -81,7 +81,7 @@ function nethervine.eat_grass(itemstack, user, pt)
 	if not user or not user:is_player() then return end
 	local pname = user:get_player_name()
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> ate forbidden grass. Desperate!"
-  hb4.delayed_harm({name=pname, step=2, min=1, max=3, msg=msg})
+  hb4.delayed_harm({name=pname, step=2, min=1, max=3, msg=msg, poison=true})
 	return eat_function(itemstack, user, pt)
 end
 

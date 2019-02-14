@@ -244,17 +244,24 @@ function hunger.register_food(name, hunger_change, replace_with_item, poisen, he
 end
 
 -- Poison player
-local function poisenp(tick, time, time_left, player)
-	time_left = time_left + tick
-	if time_left < time then
-		minetest.after(tick, poisenp, tick, time, time_left, player)
-	else
-		hud.change_item(player, "hunger", {text = "hud_hunger_fg.png"})
+local function poisenp(tick, time, time_left, player, gorged)
+	--[[
+		{name="player", step=2, min=1, max=3, msg="He died!", poison=true}
+	--]]
+	local name = player:get_player_name()
+	local data = {
+		name = name,
+		step = time,
+		min = 1,
+		max = 1,
+		poison = true,
+	}
+	data.msg = "# Server: <" .. rename.gpn(name) .. "> was poisoned!"
+	if gorged then
+		local sex = skins.get_gender_strings(name)
+		data.msg = "# Server: <" .. rename.gpn(name) .. "> gorged " .. sex.himself .. " to death."
 	end
-	local hp = player:get_hp() -1 or 0
-	if hp > 0 then
-		player:set_hp(hp)
-	end
+	hb4.delayed_harm2(data)
 end
 
 -- wrapper for minetest.item_eat (this way we make sure other mods can't break this one)
@@ -303,27 +310,12 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 		end
 		local sat = tonumber(hunger.players[name].lvl or 0)
 
-		-- If food would put our saturation over the max, do not eat! (Prevents player from gorge-eating.)
+		-- If food would put our saturation over the max, then behave as if poisoned instead.
+		local gorged = false
 		if sat + hunger_change > HUNGER_MAX then
-			ambiance.sound_play("hunger_eat", user:getpos(), 0.7, 10)
-			ambiance.particles_eat_item(user, itemstack:get_name())
-			itemstack:take_item()
-			minetest.after(0, function()
-				local player = minetest.get_player_by_name(name)
-				if not player or not player:is_player() then return end
-
-				if player:get_hp() <= 0 then return end
-
-				player:set_hp(player:get_hp() - 1) -- Hurt player if gorging.
-
-				if player:get_hp() <= 0 then
-					local sex = skins.get_gender_strings(name)
-					minetest.chat_send_all("# Server: <" .. rename.gpn(name) .. "> gorged " .. sex.himself .. " to death.")
-				else
-					minetest.chat_send_player(name, "# Server: You have eaten too much!")
-				end
-			 end)
-			return itemstack
+			gorged = true
+			heal = nil
+			poisen = 3 -- 3 seconds?
 		end
 
 		-- Remove food from itemstack only if eating was successful.
@@ -346,8 +338,11 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 		end
 		-- Poison
 		if poisen then
-			hud.change_item(user, "hunger", {text = "hunger_statbar_poisen.png"})
-			poisenp(1.0, poisen, 0, user)
+			if gorged then
+				minetest.chat_send_player(name, "# Server: You have eaten too much!")
+			end
+			--hud.change_item(user, "hunger", {text = "hunger_statbar_poisen.png"})
+			poisenp(1.0, poisen, 0, user, gorged)
 		end
 
 		-- eating sound

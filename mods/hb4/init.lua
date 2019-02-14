@@ -36,7 +36,7 @@ function hb4.delayed_harm2(data)
 		end
 
 		if data.poison then
-			hud.change_item(user, "hunger", {text="hunger_statbar_poisen.png"})
+			hud.change_item(player, "hunger", {text="hunger_statbar_poisen.png"})
 		end
 
 		local damage = math.random(data.min, data.max)

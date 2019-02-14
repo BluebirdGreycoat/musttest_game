@@ -63,15 +63,16 @@ mobs.register_spawn({
   },
 	min_light = 0,
 	max_light = 6,
-	interval = 360,
-	chance = 17000,
-	mob_limit = 1,
+	mob_limit = 3,
 	mob_range = 100,
 	max_height = -25000,
 	min_count = 1,
-	max_count = 2,
+	max_count = 1,
 	player_max_range = 40,
 	spawn_height = 3,
+	node_skip = 7,
+	node_jitter = 7,
+	spawn_radius = 40,
 })
 
 

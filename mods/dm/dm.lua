@@ -69,8 +69,6 @@ mobs.register_spawn({
   },
 	min_light = 0,
 	max_light = 2,
-	interval = 360,
-	chance = 14000,
 	mob_limit = 1,
 	mob_range = 80,
 	max_height = -2048,
@@ -78,6 +76,14 @@ mobs.register_spawn({
 	max_count = 2,
 	player_min_range = 30,
 	player_max_range = 100,
+	spawn_height = 3,
+	saturation_time_min = 60*10,
+	saturation_time_max = 60*20,
+	success_time_min = 60*5,
+	success_time_max = 60*10,
+	node_skip = 10,
+	node_jitter = 10,
+	spawn_radius = 100,
 })
 
 
@@ -92,12 +98,19 @@ mobs.register_spawn({
   },
 	min_light = 0,
 	max_light = 4,
-	interval = 360,
-	chance = 10000,
 	mob_limit = 1,
 	mob_range = 100,
 	max_height = -25000,
+	player_min_range = 20,
 	player_max_range = 100,
+	spawn_height = 3,
+	saturation_time_min = 60*10,
+	saturation_time_max = 60*20,
+	success_time_min = 60*5,
+	success_time_max = 60*10,
+	node_skip = 10,
+	node_jitter = 10,
+	spawn_radius = 100,
 })
 
 

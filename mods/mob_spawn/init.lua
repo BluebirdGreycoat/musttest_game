@@ -34,8 +34,8 @@ function mob_spawn.register_spawn(data)
 	-- Min and max duration before mob can be spawned again, after a spawn failure.
 	-- Smaller values attempt to respawn mobs more frequently, but with more load.
 	-- This is an optimization which reduces server load.
-	tb.saturation_time_min = data.saturation_time_min or 60
-	tb.saturation_time_max = data.saturation_time_max or 360
+	tb.saturation_time_min = data.saturation_time_min or 60*5
+	tb.saturation_time_max = data.saturation_time_max or 60*20
 
 	-- Min and max delay before next mob spawn, after a successfull spawn.
 	tb.success_time_min = data.success_time_min or 1

@@ -1,3 +1,4 @@
+[2019/2/15] Added papyrus bed.
 [2019/2/15] Added colored beds, new code written completely from scratch.
 [2019/2/14] Fixed bug: players can now be reliably hurt by arrows.
 [2019/2/14] Adjusted spawn parameters for skeletons and DMs to try and reduce their spawn rate a bit.

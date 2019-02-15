@@ -99,7 +99,7 @@ for k, v in ipairs(beds.bed_colors) do
 				"(beds_bed_top_top.png^[transformR90)^((beds_bed_top_top_mask.png^[multiply:" .. mask .. ")^[transformR90)",
 				"default_wood.png",
 				"beds_bed_side_top_r.png^(beds_bed_side_top_r_mask.png^[multiply:" .. mask .. ")",
-				"(beds_bed_side_top_r.png^[transformfx)",
+				"(beds_bed_side_top_r.png^[transformfx)^((beds_bed_side_top_r_mask.png^[multiply:" .. mask .. ")^[transformfx)",
 				"beds_bed_side_top.png",
 				"beds_transparent.png",
 			}

@@ -26,13 +26,15 @@ beds.nodebox_simple = {
 beds.selectionbox = {-0.5, -0.5, -0.5, 0.5, 0.06, 1.5}
 
 beds.bed_colors = {
-	{name="red", desc="Red", wool="red"},
+	{name="red", desc="Red", wool="red", mask="#ff0000"},
+	{name="brown", desc="Brown", wool="brown", mask="#804c14"},
 }
 
 for k, v in ipairs(beds.bed_colors) do
 	local name = v.name
 	local desc = v.desc
 	local wool = v.wool
+	local mask = v.mask
 
 	beds.register_bed("beds:fancy_bed_" .. name, {
 		description = "Fancy Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
@@ -48,7 +50,7 @@ for k, v in ipairs(beds.bed_colors) do
 				"beds_bed_foot.png",
 			},
 			top = {
-				"beds_bed_top2.png",
+				"beds_bed_top2.png^beds_bed_top2_mask.png[multiply:" .. mask,
 				"default_wood.png",
 				"beds_bed_side2.png",
 				"beds_bed_side2.png^[transformFX",

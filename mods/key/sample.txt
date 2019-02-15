@@ -1,4 +1,5 @@
 -- by boxface
+-- license: MIT
 
 ---- KEYCARD API ----
 keycard = {}

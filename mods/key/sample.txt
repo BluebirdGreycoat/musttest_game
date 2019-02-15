@@ -1,0 +1,500 @@
+-- by boxface
+
+---- KEYCARD API ----
+keycard = {}
+
+local _keycard = {}
+_keycard.players = {}
+_keycard.max_keys = 8
+
+function keycard.get_context(pname)
+	if not _keycard.players[pname] then
+		_keycard.players[pname] = {}
+		_keycard.players[pname].owner = pname
+	end
+	return _keycard.players[pname]
+end
+
+function keycard.clear_context(pname)
+	_keycard.players[pname] = nil
+end
+
+function keycard.get_maxkeys()
+	return _keycard.max_keys
+end
+
+-- deprecated?
+function _keycard.set_context(pname, data)
+	_keycard.players[pname] = data
+end
+---- END API ----
+
+local sample_keys = {
+	{description = "key desc", secret="0001-0001"},
+	{description = "noobs door", secret="0000-1234"}
+}
+
+local function get_formspec(data)
+	if not data then
+		data = {}
+		data.keys = {}
+	end
+	if not data.keys then
+		data.keys = {}
+	end
+	if not data.card_description then
+		data.card_description = ""
+	end
+	if not data.key_description then
+		data.key_description = ""
+	end
+
+	local formspec = "size[8,9]" ..
+		"label[0,0;KeyCard]" ..
+		"list[current_name;card;0,0.5;1,1]" ..
+		"field[2,0.7;4,1;desc;Card name;".. data.card_description .."]" ..
+		"image_button[6.5,0.5;1.25,0.7;wool_red.png;write;Write]"..
+		-- key
+		"label[0.5,6.25;Key]" ..
+		"list[current_name;keys;0.5,6.75;1,1]" ..
+		string.format("field[2,7.05;4,0.7;keydesc;Description;%s]",
+		data.key_description) ..
+		"image_button[5.6,6.75;1.25,0.7;wool_blue.png;addkey;Add]"..
+		"tooltip[addkey;Add Key;#80C080;#FFFF80]" ..
+
+		"list[current_player;main;0,8;8,1]"
+
+	local y = 2.0
+
+	local imax = math.min(keycard.get_maxkeys(), #data.keys)
+	for i=1, imax do
+		local desc = "<free slot>"
+		local secr
+		if data.keys[i] then
+			desc = data.keys[i].description
+			secr = minetest.colorize("#808080", data.keys[i].secret)
+		else
+			desc = ""
+			secr = minetest.colorize("#404040", "0000-0000")
+		end
+		if data.rom == i then
+			desc = minetest.colorize("#FFFF00", desc)
+		end
+		formspec = formspec ..
+			string.format(
+				"image_button[0.5,%f;1,0.5;wool_blue.png;rom%2.2d;%2.2d]",
+				y, i, i) ..
+			string.format("label[1.50,%f;%s]", y, desc) ..
+			string.format("tooltip[rom%2.2d;%s\n%s;#80C080;#FFFF80]",i, desc, secr) ..
+			string.format("image_button[6,%f;1,0.50;wool_pink.png;del%2.2d;Del]", y, i)..
+			string.format("tooltip[del%2.2d;Remove key %2.2d;#80C080;#FFFF80]", i, i)
+
+
+		y = y + 0.5
+	end
+
+	return formspec
+end
+
+local function do_construct(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	inv:set_size("card", 1)
+	inv:set_size("keys", 1)
+	meta:set_string("formspec", get_formspec())
+end
+
+local function do_rightclick(pos, node, player, itemstack, pointed_thing)
+	-- local meta = minetest.get_meta(pos)
+	-- meta:set_string("formspec", get_formspec())
+
+end
+
+local function allow_metadata_inventory_put(pos, listname, index, stack, player)
+	local pname = player:get_player_name()
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+
+	local itemname = stack:get_name()
+	local item_meta = stack:get_meta()
+
+	print("stack meta table: " .. dump(stack:get_meta():to_table()))
+	if listname == "card" then
+		if itemname == "boxfce:keycard_blank" or
+				itemname == "boxfce:keycard_green" or
+				itemname == "boxfce:keycard_red" or
+				itemname == "boxfce:keycard_blue" then
+			local list = inv:get_stack(listname,1)
+			if list:get_count()>0 then
+				return 0
+			else
+				return 1
+			end
+		else
+			minetest.chat_send_player(pname, "Place key card only")
+			return 0
+		end
+	elseif listname == "keys" then
+		if itemname == "default:key" then
+			return stack:get_count()
+		else
+			minetest.chat_send_player(
+				player:get_player_name(),
+				"Only keys here!")
+			return 0
+		end
+	else
+		print("[boxfce:keycard] something went wrong!")
+		return 0
+	end
+end
+
+local function do_metadata_inventory_put(pos, listname, index, stack, player)
+	local pname = player:get_player_name()
+	local meta = minetest.get_meta(pos)
+	local stack_meta = stack:get_meta()
+
+	--minetest.chat_send_player(pname,
+	--	minetest.colorize("yellow", "stack_meta(".. listname .."): " ..
+	--	dump(stack_meta:to_table())))
+
+	if listname == "card" then
+		local context = keycard.get_context(pname)
+		context.keys = minetest.deserialize(stack_meta:get_string("keys"))
+		context.card_inserted = true
+		if not context.keys then
+			context.keys = {}
+		end
+		context.card_description = stack_meta:get_string("description")
+		meta:set_string("formspec", get_formspec(context))
+		minetest.chat_send_player(pname, "Card inserted: " ..
+			context.card_description)
+		minetest.chat_send_player(pname, "KEY CARD: " ..
+			dump(stack_meta:to_table()))
+	elseif listname == "keys" then
+		local context = keycard.get_context(pname)
+		context.key_description = stack_meta:get_string("description")
+		context.secret = stack_meta:get_string("secret")
+
+		-- update formspec
+		meta:set_string("formspec", get_formspec(context))
+	end
+end
+
+local function do_metadata_inventory_take(pos, listname, index, stack, player)
+	local pname = player:get_player_name()
+	local meta = minetest.get_meta(pos)
+	if listname == "card" then
+		local context = keycard.get_context(pname)
+		context.keys = {}
+		meta:set_string("formspec", get_formspec(context))
+	elseif listname == "keys" then
+
+	end
+end
+
+local function keycard_on_use(itemstack, user, pointed_thing)
+	if pointed_thing.type ~= "node" then
+		return itemstack
+	end
+
+	local pos = pointed_thing.under
+	local node = minetest.get_node(pos)
+
+	if not node then
+		return itemstack
+	end
+
+	local on_skeleton_key_use = minetest.registered_nodes[node.name].on_skeleton_key_use
+	if not on_skeleton_key_use then
+		return itemstack
+	end
+
+	-- make a new secret in case the node callback needs it
+	local random = math.random
+	local newsecret = string.format(
+		"%04x%04x%04x%04x",
+		random(2^16) - 1, random(2^16) - 1,
+		random(2^16) - 1, random(2^16) - 1)
+
+	local secret, _, _ = on_skeleton_key_use(pos, user, newsecret)
+	if secret then
+		minetest.chat_send_player(user:get_player_name(), "Secret: " .. secret)
+	end
+end
+
+local function keycard_on_place(itemstack, placer, pointed_thing)
+	local pname = placer:get_player_name()
+	local pos = pointed_thing.under
+	local node = minetest.get_node(pos)
+	local ndef = minetest.registered_nodes[node.name]
+
+	if not ndef then
+		return itemstack
+	end
+
+	-- testing
+
+
+	-- end testing
+
+
+	-- get node secret
+	local meta = minetest.get_meta(pos)
+	local key_lock_secret = meta:get_string("key_lock_secret")
+
+	if key_lock_secret == "" then
+		minetest.chat_send_player(pname, "Item has no keys!")
+		return itemstack
+	end
+
+	-- activate the correct key
+	local stack_meta = itemstack:get_meta()
+	local roms = minetest.deserialize(stack_meta:get_string("keys"))
+
+	--local active_key
+	--for i, item in pairs(roms) do
+	--	if item.secret == key_lock_secret then
+	--
+	--	end
+	--end
+
+-- =============================================================================
+	-- get the correct key
+--	minetest.chat_send_player(pname, "Using key card")
+--	if #keys == 1 then
+--		-- set the only key active
+--		local active_key = keys[1].secret
+--		stack_meta:set_string("secret", active_key)
+--		minetest.chat_send_player(pname, "Setting active key: " .. active_key)
+--	end
+
+	local can_open = false
+	local active_key
+	-- local active_desc
+	for i=1, #roms do
+		if roms[i].secret == key_lock_secret then
+			print("Correct KEY found!")
+			minetest.chat_send_player(pname, "Correct KEY found!")
+
+			active_key = roms[i].secret
+			-- active_desc = roms[i].description
+
+			stack_meta:set_string("secret", active_key)
+			placer:set_wielded_item(itemstack)
+			can_open = true
+			break
+		end
+	end
+
+
+
+	if not can_open then
+		minetest.chat_send_player(pname, "ACCESS DENIED!")
+		return itemstack
+	end
+
+	if not node or node.name == "ignore" then
+		return itemstack
+	end
+
+	local on_key_use = ndef.on_key_use
+	if on_key_use then
+		minetest.chat_send_player(pname, "Calling on_key_use")
+		print("Calling on_key_use")
+		-- HACK: placer to nil to skip protection (FAULTY) check.
+		-- Needed on doors, doors are hardcoded to "default:key"
+		-- Do not try it on chests.
+		-- Not needed on chests.
+
+		-- check if node is a faulty door
+		local protdoors = {
+			"doors:door_steel_a", "doors:door_steel_b",
+			"doors:trapdoor_steel_a", "doors:trapdoor_steel_b"}
+		minetest.chat_send_player(pname, "OBJECT IS: " .. node.name)
+		for i=1, #protdoors do
+			if node.name == protdoors[i] then
+
+				on_key_use(pos, nil)
+				break
+			end
+		end
+
+
+		-- player is nil for some weird reason, get a new player
+		local player = minetest.get_player_by_name(pname)
+
+		-- on_key_use raise an error if "secret" is empty
+		if stack_meta:get_string("secret") == "" then
+			return itemstack
+		end
+
+		on_key_use(pos, player)
+	end
+	return itemstack
+end
+
+local function select_rom(pname, rom)
+	local context = keycard.get_context(pname)
+	context.rom = rom
+
+	-- DEBUG
+	minetest.chat_send_player(pname,
+		string.format("ROM %2.2d SELECTED", rom))
+end
+
+local function delete_key(keys, ndel)
+	local result = {}
+	local id
+	for i=1, ndel-1 do
+		id = #result + 1
+		result[id] = {}
+		result[id].description = keys[i].description
+		result[id].secret = keys[i].secret
+	end
+	for i=ndel+1, #keys do
+		id = #result + 1
+		result[id] = {}
+		result[id].description = keys[i].description
+		result[id].secret = keys[i].secret
+	end
+	return result
+end
+
+local function do_receive_fields(pos, formname, fields, sender)
+	local pname = sender:get_player_name()
+	local meta = minetest.get_meta(pos)
+
+	-- DEBUG
+	minetest.chat_send_player(pname, "Fields: " .. dump(fields))
+
+	if fields.write then
+		-- write data to card
+		local inv = meta:get_inventory()
+		local card_stack = inv:get_stack("card", 1)
+		card_stack:set_name("boxfce:keycard_blue")
+		local card_meta = card_stack:get_meta()
+		card_meta:set_string("description", fields.desc)
+		-- write keys
+		local context = keycard.get_context(pname)
+		card_meta:set_string("keys", minetest.serialize(context.keys))
+		-- set the stack
+		inv:set_stack("card", 1, card_stack)
+	elseif fields.addkey then
+		-- add key to keyring
+
+		-- check keycard inserted
+		local inv = meta:get_inventory()
+		local key_stack = inv:get_stack("keys", 1)
+		local key_meta = key_stack:get_meta()
+		local context = keycard.get_context(pname)
+
+		print("dump keys: " .. dump(context.keys))
+
+		-- card inserted?
+		local inv = meta:get_inventory()
+		local card_stack = inv:get_stack("card", 1)
+
+		local card_inserted = not card_stack:is_empty()
+		local key_inserted = not key_stack:is_empty()
+
+		if card_inserted and key_inserted then
+			if not context.keys then
+				context.keys = {}
+			end
+			local id = #context.keys + 1
+			context.keys[id] = {}
+			if fields.keydesc then
+				context.keys[id].description = fields.keydesc
+			else
+				context.keys[id].description = key_meta:get_string("description")
+			end
+			context.keys[id].secret = key_meta:get_string("secret")
+		else
+			-- context.message = "Insert card"
+			local msg = "Anomalous error"
+			if not card_inserted then
+				msg = "Can't add key, please insert a card"
+			elseif not key_inserted then
+				msg = "Can't add key, please insert a key"
+			end
+			minetest.chat_send_player(pname, msg)
+		end
+	else
+		-- check for select keys and delete keys
+		local context = keycard.get_context(pname)
+		if not context.keys then
+			return
+		end
+
+		-- select row
+		for i=1, #context.keys do
+			local fname = string.format("rom%2.2d", i)
+			if fields[fname] then
+				select_rom(pname, i)
+				break
+			end
+		end
+
+		-- delete key
+		for i=1, #context.keys do
+			local fname = string.format("del%2.2d", i)
+			if fields[fname] then
+				context.keys = delete_key(context.keys, i)
+				break
+			end
+		end
+	end
+
+	-- update formspec
+	local context = keycard.get_context(pname)
+	meta:set_string("formspec", get_formspec(context))
+end
+
+
+minetest.register_node("boxfce:cardbox", {
+	description = "KeyCard setup box",
+	tiles = {"boxfce_cardbox.png"},
+	is_ground_content = true,
+	groups = {cracky=3},
+	drop = "boxfce:cardbox",
+	on_construct = do_construct,
+	on_rightclick = do_rightclick,
+	allow_metadata_inventory_put = allow_metadata_inventory_put,
+	on_metadata_inventory_put = do_metadata_inventory_put,
+	on_metadata_inventory_take = do_metadata_inventory_take,
+	on_receive_fields = do_receive_fields
+})
+
+minetest.register_craftitem("boxfce:keycard_blank", {
+	description = "Blank Key Card",
+	inventory_image = "boxfce_card_blank.png",
+	stack_max = 100,
+	groups = {key=1},
+	on_use = keycard_on_use
+})
+
+minetest.register_tool("boxfce:keycard_red", {
+	description = "Key Card Red",
+	inventory_image = "boxfce_card_red.png",
+	stack_max = 1,
+	groups = {key=1}
+})
+
+minetest.register_craftitem("boxfce:keycard_green", {
+	description = "Key Card Green",
+	inventory_image = "boxfce_card_green.png",
+	stack_max = 1,
+	groups = {key = 1},
+})
+
+minetest.register_tool("boxfce:keycard_blue", {
+	description = "Key Card Blue",
+	inventory_image = "boxfce_card_blue.png",
+	stack_max = 1,
+	groups = {key = 1},
+	on_place = keycard_on_place
+	-- on_use = keycard_on_use
+})
+
+

@@ -26,21 +26,21 @@ beds.nodebox_simple = {
 beds.selectionbox = {-0.5, -0.5, -0.5, 0.5, 0.06, 1.5}
 
 beds.bed_colors = {
-	{name="red", desc="Red", wool="red", mask="#FF0000"},
-	{name="brown", desc="Brown", wool="brown", mask="#572C00"},
-	{name="black", desc="Black", wool="black", mask="#101010"},
-	{name="yellow", desc="Yellow", wool="yellow", mask="#FFDF11"},
-	{name="green", desc="Green", wool="green", mask="#5ED91C"},
-	{name="pink", desc="Pink", wool="pink", mask="#FF7E7E"},
-	{name="orange", desc="Orange", wool="orange", mask="#D65215"},
-	{name="violet", desc="Violet", wool="violet", mask="#5C00AB"},
-	{name="magenta", desc="Magenta", wool="magenta", mask="#CA036F"},
-	{name="dark_green", desc="Dark Green", wool="dark_green", mask="#226800"},
-	{name="cyan", desc="Cyan", wool="cyan", mask="#00848C"},
-	{name="blue", desc="Blue", wool="blue", mask="#004891"},
-	{name="dark_grey", desc="Dark Gray", wool="dark_grey", mask="#3B3B3B"},
-	{name="grey", desc="Gray", wool="grey", mask="#848484"},
-	{name="white", desc="White", wool="white", mask="#DCDCDC"},
+	{name="red", desc="Red", wool="red",                      mask="#cb1919"},
+	{name="brown", desc="Brown", wool="brown",                mask="#703a00"},
+	{name="black", desc="Black", wool="black",                mask="#2b2b2b"},
+	{name="yellow", desc="Yellow", wool="yellow",             mask="#fcff11"},
+	{name="green", desc="Green", wool="green",                mask="#73ff1c"},
+	{name="pink", desc="Pink", wool="pink",                   mask="#ffa6a6"},
+	{name="orange", desc="Orange", wool="orange",             mask="#e96b1e"},
+	{name="violet", desc="Violet", wool="violet",             mask="#670cb4"},
+	{name="magenta", desc="Magenta", wool="magenta",          mask="#e50590"},
+	{name="dark_green", desc="Dark Green", wool="dark_green", mask="#2c7f00"},
+	{name="cyan", desc="Cyan", wool="cyan",                   mask="#00a3ab"},
+	{name="blue", desc="Blue", wool="blue",                   mask="#0059a7"},
+	{name="dark_grey", desc="Dark Gray", wool="dark_grey",    mask="#4c4c4c"},
+	{name="grey", desc="Gray", wool="grey",                   mask="#a2a2a2"},
+	{name="white", desc="White", wool="white",                mask="#f3f3f3"},
 }
 
 for k, v in ipairs(beds.bed_colors) do

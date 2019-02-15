@@ -38,22 +38,22 @@ for k, v in ipairs(beds.bed_colors) do
 
 	beds.register_bed("beds:fancy_bed_" .. name, {
 		description = "Fancy Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
-		inventory_image = "beds_bed_fancy.png",
-		wield_image = "beds_bed_fancy.png",
+		inventory_image = "beds_bed_fancy.png^(beds_bed_fancy_mask.png^[multiply:" .. mask .. ")",
+		wield_image = "beds_bed_fancy.png^(beds_bed_fancy_mask.png^[multiply:" .. mask .. ")",
 		tiles = {
 			bottom = {
-				"beds_bed_top1.png",
+				"beds_bed_top1.png^(beds_bed_top1_mask.png^[multiply:" .. mask .. ")",
 				"default_wood.png",
-				"beds_bed_side1.png",
-				"beds_bed_side1.png^[transformFX",
+				"beds_bed_side1.png^(beds_bed_side1_mask.png^[multiply:" .. mask .. ")",
+				"(beds_bed_side1.png^[transformFX)^((beds_bed_side1_mask.png^[multiply:" .. mask .. ")^[transformFX)",
 				"default_wood.png",
-				"beds_bed_foot.png",
+				"beds_bed_foot.png^(beds_bed_foot_mask.png^[multiply:" .. mask .. ")",
 			},
 			top = {
 				"beds_bed_top2.png^(beds_bed_top2_mask.png^[multiply:" .. mask .. ")",
 				"default_wood.png",
-				"beds_bed_side2.png",
-				"beds_bed_side2.png^[transformFX",
+				"beds_bed_side2.png^(beds_bed_side2_mask.png^[multiply:" .. mask .. ")",
+				"(beds_bed_side2.png^[transformFX)^((beds_bed_side2_mask.png^[multiply:" .. mask .. ")^[transformFX)",
 				"beds_bed_head.png",
 				"default_wood.png",
 			}
@@ -71,22 +71,22 @@ for k, v in ipairs(beds.bed_colors) do
 
 	beds.register_bed("beds:bed_" .. name, {
 		description = "Simple Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
-		inventory_image = "beds_bed.png",
-		wield_image = "beds_bed.png",
+		inventory_image = "beds_bed.png^(beds_bed_mask.png^[multiply:" .. mask .. ")",
+		wield_image = "beds_bed.png^(beds_bed_mask.png^[multiply:" .. mask .. ")",
 		tiles = {
 			bottom = {
-				"beds_bed_top_bottom.png^[transformR90",
+				"(beds_bed_top_bottom.png^[transformR90)",
 				"default_wood.png",
 				"beds_bed_side_bottom_r.png",
-				"beds_bed_side_bottom_r.png^[transformfx",
+				"(beds_bed_side_bottom_r.png^[transformfx)",
 				"beds_transparent.png",
 				"beds_bed_side_bottom.png"
 			},
 			top = {
-				"beds_bed_top_top.png^[transformR90",
+				"(beds_bed_top_top.png^[transformR90)",
 				"default_wood.png",
 				"beds_bed_side_top_r.png",
-				"beds_bed_side_top_r.png^[transformfx",
+				"(beds_bed_side_top_r.png^[transformfx)",
 				"beds_bed_side_top.png",
 				"beds_transparent.png",
 			}

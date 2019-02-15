@@ -75,17 +75,17 @@ for k, v in ipairs(beds.bed_colors) do
 		wield_image = "beds_bed.png^(beds_bed_mask.png^[multiply:" .. mask .. ")",
 		tiles = {
 			bottom = {
-				"(beds_bed_top_bottom.png^[transformR90)",
+				"(beds_bed_top_bottom.png^[transformR90)^((beds_bed_top_bottom_mask.png^[multiply:" .. mask .. ")^[transformR90)",
 				"default_wood.png",
-				"beds_bed_side_bottom_r.png",
-				"(beds_bed_side_bottom_r.png^[transformfx)",
+				"beds_bed_side_bottom_r.png^(beds_bed_side_bottom_r_mask.png^[multiply:" .. mask .. ")",
+				"(beds_bed_side_bottom_r.png^[transformfx)^((beds_bed_side_bottom_r_mask.png^[multiply:" .. mask .. ")^[transformfx)",
 				"beds_transparent.png",
-				"beds_bed_side_bottom.png"
+				"beds_bed_side_bottom.png^(beds_bed_side_bottom_mask.png^[multiply:" .. mask .. ")",
 			},
 			top = {
 				"(beds_bed_top_top.png^[transformR90)",
 				"default_wood.png",
-				"beds_bed_side_top_r.png",
+				"beds_bed_side_top_r.png^(beds_bed_side_top_r_mask.png^[multiply:" .. mask .. ")",
 				"(beds_bed_side_top_r.png^[transformfx)",
 				"beds_bed_side_top.png",
 				"beds_transparent.png",

@@ -1,3 +1,50 @@
+[2019/2/14] Fixed bug: players can now be reliably hurt by arrows.
+[2019/2/14] Adjusted spawn parameters for skeletons and DMs to try and reduce their spawn rate a bit.
+[2019/2/14] Fixed and unified poison code, enabled poison display in HUD (green breads).
+[2019/2/14] Added cucumber crop from farming_redo.
+[2019/2/13] Made cotton and string burnable.
+[2019/2/13] Added some craftitems, etc. from farming_redo.
+[2019/2/12] Increased damage for all standard arrows by 33%.
+[2019/2/12] Updated loot for the Survival Challenge minigame. Importantly, the Nether challenge now starts with the possibility of a bed.
+[2019/2/9] Added pyrite block to stairs mod & circular saw.
+[2019/2/9] Fixed a bug in lava-cooling code.
+[2019/2/8] Added two new slope/stair types to the circular saw & stairs mod. Models designed from scratch.
+[2019/2/8] Also attempted to fix a rare bug in which the bows mod would clobber another tool while using bows.
+[2019/2/8] Attempted to fix long-standing bow duplication bug in the throwing mod. Use 'shift+use' to unload an arrow now, instead of 'Q'.
+[2019/2/7] Hopefully fixed bug with preserving custom-named bows.
+[2019/2/7] Offset each realm coordinates (as shown by HUD) a random amount from the real origin (0, 0, 0).
+[2019/2/7] Fixed dependency problems that suddenly permitted technic item stacksizes to be > 64. Sorry guys, that wasn't an intentional feature!
+[2019/2/4] Added icebrick walls.
+[2019/2/4] Water burns up if placed near Oerkki Stone.
+[2019/2/4] Oerkki Gates explode if player tries to get into another realm by building a tower.
+[2019/2/4] Oerkki Gate has to be built on an actual mountain (Y > 140) in order to get to other realms.
+[2019/2/3] Enabled the possibility for players to use the Oerkki Gate to get to other realm(s).
+[2019/2/3] Punching stuff with a stick should now properly update player names (if changed) in name is shown in infotext.
+[2019/2/3] Fixed a bug when sending a PM to a player who changed their name (they couldn't use /r to reply).
+[2019/2/3] Show days since last login in rejoin-server formspec.
+[2019/2/2] Use realm-relative coordinates in all server chat messages. This means use HUD to determine position, not F5 debug info.
+[2019/2/2] Added HUD coordinates with name of current realm. Also added facing-direction and moved clock down out of way of minimap.
+[2019/2/2] Added realm name to marked players.
+[2019/2/2] Added mud, silt & clay blocks to the Channelwood realm.
+[2019/2/2] Made trees in Channelwood even taller! Also improved the tree design a bit with a custom tree schematic.
+[2019/2/1] Fix bugs in the Oerkki Gate introduced by changes that allow it to reach other realms.
+[2019/2/1] Wrote code allowing the Oerkki Gate to reach other realm(s). Not accessible to players yet.
+[2019/2/1] Added date of placement to protector nodes. Permits to automatically date players' builds, generally, and in a readable way.
+[2019/2/1] Oerkki Gate shouldn't try to teleport the player anymore, if the return gate can't be built for some reason.
+[2019/1/31] Teleports in different dimensions will no longer connect to each other.
+[2019/1/31] Add new realm: Channelwood. Still a WIP, not yet accessible to the majority of players.
+[2019/1/30] Add realm-control mod, mainly for storing a bunch of utility functions.
+[2019/1/30] Fix leak of a player's original name in server messages.
+[2019/1/29] Added bonemeal grinding recipe.
+[2019/1/29] Burn players that walk on top of active furnaces.
+[2019/1/29] Make golden carrot craftable.
+[2019/1/28] Fixed bug with silver-pick and luxore glowstone.
+[2019/1/27] Updated the /privs chatcommand.
+[2019/1/26] Don't exhaust player's stamina as quickly if health is good.
+[2019/1/25] Land ownership HUD item should be less annoying, now.
+[2019/1/25] Chests should now have a trash slot in all chest formspecs.
+[2019/1/14] Player has increased chance to get a Starpearl when digging Blackrack with a silver pick.
+[2018/10/28] Reactor doesn't spam lava anymore if it explodes in an above-ground location. Prevents using it for lava-griefing.
 [2018/10/17] Fixed a bug introduced by the previous attempt to fix a bug.
 [2018/10/16] Fixed portal bug where the return gate would not be constructed if the player moved during transport.
 [2018/9/3] Gems in stone are now MUCH rarer. They were previously far too common.

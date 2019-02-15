@@ -25,7 +25,7 @@ function hb4.fruitregrow.after_place_node_impl(pos, placer, itemstack, pointed_t
 	local node = minetest.get_node(pos)
 	-- Fruit placed by players does not regrow if picked.
 	node.param2 = 1
-	minetest.set_node(pos, node)
+	minetest.swap_node(pos, node)
 end
 
 function hb4.fruitregrow.after_place_node()
@@ -40,7 +40,7 @@ end
 -- will reproduce infinitely!
 function hb4.fruitregrow.on_finish_collapse_impl(pos, node)
 	node.param2 = 1
-	minetest.set_node(pos, node)
+	minetest.swap_node(pos, node)
 end
 
 function hb4.fruitregrow.on_finish_collapse()

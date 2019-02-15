@@ -27,7 +27,20 @@ beds.selectionbox = {-0.5, -0.5, -0.5, 0.5, 0.06, 1.5}
 
 beds.bed_colors = {
 	{name="red", desc="Red", wool="red", mask="#FF0000"},
-	{name="brown", desc="Brown", wool="brown", mask="#804C14"},
+	{name="brown", desc="Brown", wool="brown", mask="#572C00"},
+	{name="black", desc="Black", wool="black", mask="#101010"},
+	{name="yellow", desc="Yellow", wool="yellow", mask="#FFDF11"},
+	{name="green", desc="Green", wool="green", mask="#5ED91C"},
+	{name="pink", desc="Pink", wool="pink", mask="#FF7E7E"},
+	{name="orange", desc="Orange", wool="orange", mask="#D65215"},
+	{name="violet", desc="Violet", wool="violet", mask="#5C00AB"},
+	{name="magenta", desc="Magenta", wool="magenta", mask="#CA036F"},
+	{name="dark_green", desc="Dark Green", wool="dark_green", mask="#226800"},
+	{name="cyan", desc="Cyan", wool="cyan", mask="#00848C"},
+	{name="blue", desc="Blue", wool="blue", mask="#004891"},
+	{name="dark_grey", desc="Dark Gray", wool="dark_grey", mask="#3B3B3B"},
+	{name="grey", desc="Gray", wool="grey", mask="#848484"},
+	{name="white", desc="White", wool="white", mask="#DCDCDC"},
 }
 
 for k, v in ipairs(beds.bed_colors) do
@@ -83,7 +96,7 @@ for k, v in ipairs(beds.bed_colors) do
 				"beds_bed_side_bottom.png^(beds_bed_side_bottom_mask.png^[multiply:" .. mask .. ")",
 			},
 			top = {
-				"(beds_bed_top_top.png^[transformR90)",
+				"(beds_bed_top_top.png^[transformR90)^((beds_bed_top_top_mask.png^[multiply:" .. mask .. ")^[transformR90)",
 				"default_wood.png",
 				"beds_bed_side_top_r.png^(beds_bed_side_top_r_mask.png^[multiply:" .. mask .. ")",
 				"(beds_bed_side_top_r.png^[transformfx)",

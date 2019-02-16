@@ -50,8 +50,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft)
 			for k, obj in pairs(objs) do
 				if obj:get_luaentity() ~= nil then
 					local oname = obj:get_luaentity().name
-					local is_arrow = (string.find(oname, "arrow") or string.find(oname, "fireball"))
-					if not is_arrow and oname ~= "__builtin:item" then
+					if not throwing.entity_blocks_arrow(oname) then
 						local speed = vector.length(self.object:getvelocity())
 						local damage = ((speed + eq)^1.2)/10
             throwing_arrow_punch_entity(obj, self, damage)

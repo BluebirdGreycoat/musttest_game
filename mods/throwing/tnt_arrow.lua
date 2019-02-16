@@ -63,7 +63,8 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
     local objs = minetest.get_objects_inside_radius(table.copy(pos), 2)
     for k, obj in pairs(objs) do
       if obj:get_luaentity() ~= nil then
-        if obj:get_luaentity().name ~= "throwing:arrow_tnt_entity" and obj:get_luaentity().name ~= "__builtin:item" then
+				local oname = obj:get_luaentity().name
+				if not throwing.entity_blocks_arrow(oname) then
           local damage = 1
           -- Alerts mobs who hit them.
           throwing_arrow_punch_entity(obj, self, damage)

@@ -83,7 +83,8 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
 		for k, obj in pairs(objs) do
 			if obj:get_luaentity() ~= nil then
-				if obj:get_luaentity().name ~= "throwing:arrow_shell_entity" and obj:get_luaentity().name ~= "__builtin:item" then
+				local oname = obj:get_luaentity().name
+				if not throwing.entity_blocks_arrow(oname) then
 					local speed = vector.length(self.object:getvelocity())
 					local damage = (((speed + 5)^1.2)/10 + 12) * 1
 					throwing_arrow_punch_entity(obj, self, damage)

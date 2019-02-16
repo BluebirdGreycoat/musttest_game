@@ -52,7 +52,8 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
 		for k, obj in pairs(objs) do
 			if obj:get_luaentity() ~= nil then
-				if obj:get_luaentity().name ~= "throwing:arrow_teleport_entity" and obj:get_luaentity().name ~= "__builtin:item" then
+				local oname = obj:get_luaentity().name
+				if not throwing.entity_blocks_arrow(oname) then
 					self.object:remove()
 					if self.player ~= "" then
 						self.player:set_pos(pos)

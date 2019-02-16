@@ -48,7 +48,8 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1)
 		for k, obj in pairs(objs) do
 			if obj:get_luaentity() ~= nil then
-				if obj:get_luaentity().name ~= "throwing:arrow_dig_entity" and obj:get_luaentity().name ~= "__builtin:item" then
+				local oname = obj:get_luaentity().name
+				if not throwing.entity_blocks_arrow(oname) then
 					local damage = 1.5
 					throwing_arrow_punch_entity(obj, self, damage)
 					self.object:remove()

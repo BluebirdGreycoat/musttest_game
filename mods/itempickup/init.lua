@@ -171,6 +171,12 @@ function itempickup.drop_an_item(pos, stack, digger)
 		local inv = digger:get_inventory()
 		if inv then
 			stack = inv:add_item("main", stack)
+
+			-- If stack couldn't be added because of full inventory, then material is sometimes lost.
+			if not stack:is_empty() and math.random(0, 1) == 0 then
+				-- Don't drop anything on the ground, 50% chance.
+				return
+			end
 		end
 	end
 

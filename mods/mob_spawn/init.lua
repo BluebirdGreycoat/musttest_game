@@ -391,6 +391,7 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	if mname == "iceman:iceman" then
 		if not snow.should_spawn_icemen() then
+			report(mname, "Not the season for icemen.")
 			return 0
 		end
 	end

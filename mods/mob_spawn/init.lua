@@ -385,6 +385,7 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Mobs have a 1 in X chance of spawning on this cycle.
 	if random(1, mdef.spawn_chance) ~= 1 then
+		report(mname, "Skipping mob due to low chance.")
 		return 0
 	end
 

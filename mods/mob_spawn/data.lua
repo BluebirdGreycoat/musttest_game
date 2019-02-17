@@ -14,7 +14,7 @@ register({
 	min_light = 0,
 	max_light = 2,
 	max_height = -2048,
-	spawn_height = 3,
+	clearance = 3,
 })
 
 register({
@@ -28,7 +28,7 @@ register({
 	min_light = 0,
 	max_light = 4,
 	max_height = -25000,
-	spawn_height = 3,
+	clearance = 3,
 })
 
 register({
@@ -37,7 +37,7 @@ register({
 	min_light = 0,
 	max_light = 6,
 	max_height = -25000,
-	spawn_height = 3,
+	clearance = 3,
 })
 
 -- Caverealm griefer mob.
@@ -81,7 +81,8 @@ register({
 	min_light = 0,
 	max_light = 0,
 	max_height = -256,
-	spawn_height = 1,
+	clearance = 1, -- Will spawn in a 1x1x1 area.
+	flyswim = "flyswim",
 })
 
 -- That flying thing.
@@ -92,7 +93,8 @@ register({
 	max_light = 0,
 	min_height = -31000,
 	max_height = -10,
-	spawn_height = 2,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
 })
 
 register({
@@ -102,7 +104,7 @@ register({
 	max_light = default.LIGHT_MAX,
 	min_height = -128,
 	max_height = 31000,
-	spawn_height = 1,
+	clearance = 1,
 })
 
 register({
@@ -127,7 +129,7 @@ register({
 	max_light = 6,
 	mob_limit = 10,
 	max_height = -25000,
-	spawn_height = 3,
+	clearance = 3,
 })
 
 register({

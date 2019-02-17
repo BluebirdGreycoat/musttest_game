@@ -30,6 +30,7 @@ function mob_spawn.register_spawn(data)
 	tb.node_names = data.nodes or {"default:stone"}
 	tb.spawn_radius = data.spawn_radius or 50
 	tb.air_offset = data.air_offset or 1
+	tb.flyswim = data.flyswim or "ground"
 
 	-- Min and max duration before mob can be spawned again, after a spawn failure.
 	-- Smaller values attempt to respawn mobs more frequently, but with more load.
@@ -81,7 +82,7 @@ function mob_spawn.register_spawn(data)
 
 	-- Amount of vertical airspace needed for spawning?
 	-- Need at least this many vertical air nodes.
-	tb.spawn_height = data.spawn_height or 2
+	tb.clearance = data.clearance or 2
 
 	-- Min and max ranges from player before spawning is possible?
 	-- Mobs will not spawn if player too far or too close to spawn point.
@@ -409,7 +410,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	local player_max_range = mdef.player_max_range
 	local min_count = mdef.min_count
 	local max_count = mdef.max_count
-	local spawn_height = mdef.spawn_height
+	local clearance = mdef.clearance
 
 	local players = minetest.get_connected_players()
 
@@ -420,7 +421,13 @@ function mob_spawn.spawn_mobs(pname, index)
 	local offset = mdef.air_offset
 
 	-- Find potential spawn points around player location.
-	local points = search_terrain(spos, step, radius, jitter, names, offset, spawn_height)
+	local points
+
+	if mdef.flyswim == "ground" then
+		points = search_terrain(spos, step, radius, jitter, names, offset, clearance)
+	elseif mdef.flyswim == "flyswim" then
+		points = search_flyswim(spos, step, radius, jitter, names, offset, clearance)
+	end
 	report(mname, "Found " .. #points .. " spawn point(s) @ " .. minetest.pos_to_string(spos) .. "!")
 
 	-- Prevent a crash when accessing the array later.

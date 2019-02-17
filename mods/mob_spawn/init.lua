@@ -257,7 +257,7 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 		gp.y = y + random(-jitter, jitter)
 		gp.z = z + random(-jitter, jitter)
 
-		local bw = get_node(np).name
+		local bw = get_node(gp).name
 
 		for i = 1, #nodes do
 			if bw == nodes[i] then

@@ -215,8 +215,8 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 
 		for i = 1, #nodes do
 			if bw == nodes[i] then
-				if check_space(vector.add(gp, {x=0, y=1, z=0}), vector.add(gp, {x=0, y=height, z=0}), bw) then
-					results[#results+1] = {x=sp.x, y=sp.y, z=sp.z}
+				if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), bw) then
+					results[#results+1] = {x=gp.x, y=gp.y+offset, z=gp.z}
 					break
 				end
 			end

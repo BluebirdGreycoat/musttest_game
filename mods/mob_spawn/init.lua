@@ -91,6 +91,8 @@ function mob_spawn.register_spawn(data)
 	registered[#registered+1] = tb
 end
 
+dofile(mob_spawn.modpath .. "/data.lua")
+
 
 
 function search_terrain(pos, step, radius, jitter, nodes, offset)

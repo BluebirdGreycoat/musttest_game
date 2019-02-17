@@ -25,10 +25,10 @@ function mob_spawn.register_spawn(data)
 	tb.name = data.name or ""
 
 	-- Terrain scanning parameters.
-	tb.node_skip = data.node_skip or 5
-	tb.node_jitter = data.node_jitter or 5
+	tb.node_skip = data.node_skip or 10
+	tb.node_jitter = data.node_jitter or 10
 	tb.node_names = data.nodes or {"default:stone"}
-	tb.spawn_radius = data.spawn_radius or 20
+	tb.spawn_radius = data.spawn_radius or 50
 	tb.air_offset = data.air_offset or 1
 
 	-- Min and max duration before mob can be spawned again, after a spawn failure.
@@ -114,18 +114,20 @@ dofile(mob_spawn.modpath .. "/data.lua")
 
 function search_terrain(pos, step, radius, jitter, nodes, offset)
 	local random = math.random
+	local floor = math.floor
 	local get_node = minetest.get_node
 
 	local jx = random(-jitter, jitter)
 	local jy = random(-jitter, jitter)
 	local jz = random(-jitter, jitter)
 
-	local minx = (pos.x + jx) - radius
-	local miny = (pos.y + jy) - radius
-	local minz = (pos.z + jz) - radius
-	local maxx = (pos.x + jx) + radius
-	local maxy = (pos.y + jy) + radius
-	local maxz = (pos.z + jz) + radius
+	-- Height along the Y-axis is halved to reduce the amount of node checks.
+	local minx = floor((pos.x + jx) - radius      )
+	local miny = floor((pos.y + jy) - (radius / 2))
+	local minz = floor((pos.z + jz) - radius      )
+	local maxx = floor((pos.x + jx) + radius      )
+	local maxy = floor((pos.y + jy) + (radius / 2))
+	local maxz = floor((pos.z + jz) + radius      )
 
 	local results = {}
 	local gp = {x=0, y=0, z=0}

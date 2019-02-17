@@ -23,9 +23,6 @@ register({
 	saturation_time_max = 60*3,
 	success_time_min = 60*3,
 	success_time_max = 60*15,
-	node_skip = 10,
-	node_jitter = 10,
-	spawn_radius = 100,
 })
 
 register({
@@ -46,9 +43,6 @@ register({
 	saturation_time_max = 60*3,
 	success_time_min = 60*3,
 	success_time_max = 60*15,
-	node_skip = 10,
-	node_jitter = 10,
-	spawn_radius = 100,
 })
 
 register({
@@ -99,10 +93,6 @@ register({
 	-- The hight limit for this mob means we can afford more spawn checks.
 	saturation_time_min = 20,
 	saturation_time_max = 60,
-
-	node_skip = 4,
-	node_jitter = 4,
-	spawn_radius = 16,
 })
 
 register({
@@ -167,9 +157,6 @@ register({
 	min_count = 1,
 	max_count = 1,
 	spawn_height = 3,
-	node_skip = 7,
-	node_jitter = 7,
-	spawn_radius = 40,
 })
 
 register({

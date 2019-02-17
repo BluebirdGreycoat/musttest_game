@@ -216,7 +216,34 @@ function mob_spawn.on_globalstep(dtime)
 	execute_spawners()
 end
 
+-- Count how many mobs exist in a given area with a radius.
+-- Returns [mob count], [abs mob count]
+function mob_spawn.check_population(mname, spos, radius)
+	-- Count mobs in mob range.
+	-- We can do this check just for the center position, instead of for each point.
+	local mob_count = 0
+	local abs_count = 0
 
+	local entities = minetest.get_objects_inside_radius(spos, radius)
+
+	for j = 1, #entities do
+		local entity = entities[j]
+		if not entity:is_player() then
+			local ref = entity:get_luaentity()
+			if ref then
+				if ref.name == mname then
+					mob_count = mob_count + 1
+				end
+				if ref.mob then
+					-- Absolute mob count.
+					abs_count = abs_count + 1
+				end
+			end
+		end
+	end
+
+	return mob_count, abs_count
+end
 
 -- API function. Spawns mobs around a player, if possible.
 function mob_spawn.spawn_mobs(pname, index)
@@ -295,7 +322,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	local min_light = mdef.min_light
 	local mob_range = mdef.mob_range
 	local mob_limit = mdef.mob_limit
-	local mob_limit2 = mdef.absolute_mob_limit
+	local abs_limit = mdef.absolute_mob_limit
 	local player_min_range = mdef.player_min_range
 	local player_max_range = mdef.player_max_range
 	local min_count = mdef.min_count
@@ -304,35 +331,6 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	local registered_items = minetest.registered_items
 	local players = minetest.get_connected_players()
-
-	-- Count mobs in mob range.
-	-- We can do this check just for the center position, instead of for each point.
-	local mob_count = 0
-	local mob_count2 = 0
-
-	local entities = minetest.get_objects_inside_radius(spos, mob_range)
-
-	for j = 1, #entities do
-		local entity = entities[j]
-		if not entity:is_player() then
-			local ref = entity:get_luaentity()
-			if ref then
-				if ref.name == mname then
-					mob_count = mob_count + 1
-				end
-				if ref.mob then
-					-- Absolute mob count.
-					mob_count2 = mob_count2 + 1
-				end
-			end
-		end
-	end
-
-	-- Don't spawn mob if there are already too many mobs in area.
-	if mob_count >= mob_limit or mob_count2 >= mob_limit2 then
-		report(mname, "Too many mobs in local area!")
-		return 0
-	end
 
 	local step = mdef.node_skip
 	local radius = mdef.spawn_radius
@@ -346,11 +344,8 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Prevent a crash when accessing the array later.
 	if #points < 1 then
-		report(mname, "Found no spawn point(s)!")
 		return 0
 	end
-
-	minetest.chat_send_player("MustTest", "Mob: " .. mname .. ", Points: " .. #points)
 
 	-- Record number of mobs successfully spawned.
 	local mobs_spawned = 0
@@ -359,6 +354,13 @@ function mob_spawn.spawn_mobs(pname, index)
 		-- Pick a random point for each spawn attempt. Prevents bunching.
 		local pos = points[random(1, #points)]
 		report(mname, "Attempting to spawn mob @ " .. minetest.pos_to_string(pos) .. "!")
+
+		-- Count mobs in mob range.
+		-- Don't spawn mob if there are already too many mobs in area.
+		local mob_count, abs_count = mob_spawn.check_population(mname, pos, mob_range)
+		if mob_count >= mob_limit or abs_count >= abs_limit then
+			goto next_spawn
+		end
 
 		-- Check if light level is ok.
 		-- We perform this check for each possible position.

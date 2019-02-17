@@ -159,6 +159,7 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 	if not placer or not placer:is_player() then
 		return
 	end
+	--minetest.chat_send_player(placer:get_player_name(), "# Server: Using keychain!")
 
 	local pname = placer:get_player_name()
 	local under = pointed_thing.under
@@ -176,6 +177,7 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 			for k, v in ipairs(idata) do
 				if type(v) == "string" and v == secret then
 					-- We have a matching secret. Set it as the "main" secret so that the general key API can use it.
+					--minetest.chat_send_player(pname, "# Server: TEST1")
 					imeta:set_string("secret", v)
 				end
 			end

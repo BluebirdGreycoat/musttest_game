@@ -121,6 +121,9 @@ minetest.register_craft({
 })
 
 
+-- note: there is a bug somewhere that allows two forged keys to be copied, which doesn't make sense.
+-- this bug exists in the official minetest_game, too, but not with books (even though the book code is almost the same).
+-- the bug remains regardless of whether the following code is commented out.
 ---[[
 minetest.register_craft({
 	type = "shapeless",

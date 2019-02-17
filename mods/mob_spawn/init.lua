@@ -41,6 +41,7 @@ function mob_spawn.register_spawn(data)
 	tb.success_time_min = data.success_time_min or 1
 	tb.success_time_max = data.success_time_max or 60
 
+	-- Must be 1 or greater.
 	tb.spawn_chance = data.spawn_chance or 10
 
 	-- How many attempts allowed to spawn this mob per iteration?

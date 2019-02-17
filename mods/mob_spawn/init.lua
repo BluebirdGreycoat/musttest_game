@@ -130,6 +130,50 @@ local function check_space(minp, maxp, material)
 	end
 end
 
+-- May modify argument as output value.
+-- Search both upward and downward (starting from air) to find a non-air node.
+local function try_locate_ground(pos)
+	local get_node = minetest.get_node
+	local s = get_node(pos).name
+	local c = 1
+
+	if s == "air" then
+
+		-- Search downward.
+		while s == "air" then
+			if c > 2 then
+				return false
+			end
+			pos.y = pos.y - 1
+			c = c + 1
+			s = get_node(pos).name
+		end
+
+		-- Found non-air. Leave position pointing at non-air node.
+		return true
+
+	elseif s ~= "air" then
+
+		-- Search upward.
+		while s ~= "air" then
+			if c > 2 then
+				return false
+			end
+			pos.y = pos.y + 1
+			c = c + 1
+			s = get_node(pos).name
+		end
+
+		-- Found air. Set position to point to non-air below.
+		pos.y = pos.y - 1
+		return true
+
+	end
+
+	::cancel::
+	return false
+end
+
 -- Use for flying/swimming mobs.
 local function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
 	local random = math.random
@@ -212,13 +256,17 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 		gp.y = y + random(-jitter, jitter)
 		gp.z = z + random(-jitter, jitter)
 
-		local bw = get_node(gp).name
+		local success = try_locate_ground(gp)
 
-		for i = 1, #nodes do
-			if bw == nodes[i] then
-				if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), bw) then
-					results[#results+1] = {x=gp.x, y=gp.y+offset, z=gp.z}
-					break
+		if success then
+			local bw = get_node(gp).name
+
+			for i = 1, #nodes do
+				if bw == nodes[i] then
+					if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), bw) then
+						results[#results+1] = {x=gp.x, y=gp.y+offset, z=gp.z}
+						break
+					end
 				end
 			end
 		end

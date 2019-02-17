@@ -82,8 +82,8 @@ function mob_spawn.register_spawn(data)
 
 	-- Min and max ranges from player before spawning is possible?
 	-- Mobs will not spawn if player too far or too close to spawn point.
-	tb.player_min_range = data.player_min_range or 6
-	tb.player_max_range = data.player_max_range or 20
+	tb.player_min_range = data.player_min_range or 10
+	tb.player_max_range = data.player_max_range or 50
 
 	-- Store the data. We use an indexed array.
 	-- This allows the same mob to have multiple spawn registrations.

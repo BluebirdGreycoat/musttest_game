@@ -18,8 +18,6 @@ register({
 	max_height = -2048,
 	min_count = 1,
 	max_count = 2,
-	player_min_range = 30,
-	player_max_range = 100,
 	spawn_height = 3,
 	saturation_time_min = 60*1,
 	saturation_time_max = 60*3,
@@ -43,8 +41,6 @@ register({
 	mob_limit = 2,
 	mob_range = 40,
 	max_height = -25000,
-	player_min_range = 10,
-	player_max_range = 100,
 	spawn_height = 3,
 	saturation_time_min = 60*1,
 	saturation_time_max = 60*3,
@@ -65,8 +61,6 @@ register({
 	mob_limit = 1,
 	mob_range = 100,
 	max_height = -25000,
-	player_min_range = 20,
-	player_max_range = 60,
 	spawn_height = 3,
 })
 
@@ -88,8 +82,6 @@ register({
   min_height = -31000,
   max_height = -5000,
   day_toggle = true,
-  player_min_range = 20,
-  player_max_range = 60,
 })
 
 register({
@@ -107,8 +99,6 @@ register({
   min_height = -21,
   max_height = 70,
   day_toggle = false,
-  player_min_range = 5,
-  player_max_range = 30,
 	success_time_min = 1,
 	success_time_max = 6,
 
@@ -131,8 +121,6 @@ register({
 	mob_limit = 1,
 	mob_range = 50,
 	max_height = -256,
-	player_min_range = 20,
-	player_max_range = 60,
 })
 
 -- That flying thing.
@@ -147,8 +135,6 @@ register({
 	mob_range = 50,
 	min_height = -31000,
 	max_height = -10,
-	player_min_range = 20,
-	player_max_range = 60,
 })
 
 register({
@@ -194,7 +180,6 @@ register({
 	max_height = -25000,
 	min_count = 1,
 	max_count = 1,
-	player_max_range = 40,
 	spawn_height = 3,
 	node_skip = 7,
 	node_jitter = 7,
@@ -230,8 +215,6 @@ register({
 	max_height = -25000,
 	min_count = 7,
 	max_count = 16,
-	player_min_range = 30,
-	player_max_range = 100,
 })
 
 -- Reinit per-player data.

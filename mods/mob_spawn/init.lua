@@ -25,10 +25,10 @@ function mob_spawn.register_spawn(data)
 	tb.name = data.name or ""
 
 	-- Terrain scanning parameters.
-	tb.node_skip = data.node_skip or 10
-	tb.node_jitter = data.node_jitter or 10
+	tb.node_skip = data.node_skip or 5
+	tb.node_jitter = data.node_jitter or 5
 	tb.node_names = data.nodes or {"default:stone"}
-	tb.spawn_radius = data.spawn_radius or 50
+	tb.spawn_radius = data.spawn_radius or 40
 	tb.air_offset = data.air_offset or 1
 
 	-- Min and max duration before mob can be spawned again, after a spawn failure.
@@ -349,6 +349,8 @@ function mob_spawn.spawn_mobs(pname, index)
 		report(mname, "Found no spawn point(s)!")
 		return 0
 	end
+
+	minetest.chat_send_player("MustTest", "Points: " .. #points)
 
 	local skip_count_check = (math.random(1, 100) == 1)
 

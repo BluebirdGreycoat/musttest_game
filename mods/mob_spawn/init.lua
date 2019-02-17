@@ -7,7 +7,7 @@ mob_spawn.players = mob_spawn.players or {}
 
 -- May be adjusted @ runtime.
 mob_spawn.server_step = 10
-mob_spawn.enable_reports = false
+mob_spawn.enable_reports = mob_spawn.enable_reports or false
 
 local function report(mob, msg)
 	if mob_spawn.enable_reports then

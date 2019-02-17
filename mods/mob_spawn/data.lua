@@ -69,6 +69,16 @@ register({
   min_height = -21,
   max_height = 70,
   day_toggle = false,
+
+	spawn_chance = 1,
+	absolute_mob_limit = 20,
+	player_min_range = 5,
+	player_max_range = 30,
+	spawn_radius = 20,
+	node_skip = 5,
+	node_jitter = 5,
+	success_time_min = 1,
+	success_time_max = 10,
 })
 
 register({

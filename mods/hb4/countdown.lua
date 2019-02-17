@@ -79,17 +79,7 @@ function countdown.step(data)
 	end
 
 	if report then
-		local message
-		if rd.hour < 1 then
-			message = "# Server: Next scheduled restart in " .. func(rd.hour, "hour") .. ", " .. func(rd.min, "minute") .. ", " .. func(rd.sec, "second") .. "."
-		else
-			-- Round it to nearest hour!
-			-- This function is often called 5 seconds before/after the actual hour rollover.
-			if rd.min > 50 then
-				rd.hour = rd.hour + 1
-			end
-			message = "# Server: Next scheduled restart in " .. func(rd.hour, "hour") .. "."
-		end
+		local message = "# Server: Next scheduled restart in " .. func(rd.hour, "hour") .. ", " .. func(rd.min, "minute") .. ", " .. func(rd.sec, "second") .. "."
 		chat_logging.log_server_message(message)
 		minetest.chat_send_all(color .. message)
 	end

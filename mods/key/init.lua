@@ -121,11 +121,11 @@ minetest.register_craft({
 })
 
 
---[[
+---[[
 minetest.register_craft({
 	type = "shapeless",
 	output = "key:key",
-	recipe = {"key:key", "key:skeleton"}
+	recipe = {"key:skeleton", "key:key"}
 })
 
 key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)

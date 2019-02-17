@@ -159,7 +159,7 @@ end
 
 key.on_chain_place = function(itemstack, placer, pointed_thing)
 	if not placer or not placer:is_player() then
-		return
+		return itemstack
 	end
 	--minetest.chat_send_player(placer:get_player_name(), "# Server: Using keychain!")
 
@@ -172,6 +172,7 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 
 	-- If node has a key secret, then check if we have a matching key on this chain.
 	if secret ~= "" then
+		--minetest.chat_send_player(pname, "# Server: TEST2")
 		local imeta = itemstack:get_meta()
 		-- Data table is expected to be an array.
 		local idata = minetest.deserialize(imeta:get_string("keychain"))
@@ -194,7 +195,7 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 		end
 	end
 
-	if def and def.on_rightclick and not (placer and placer:get_player_control().sneak) then
+	if def and def.on_rightclick and not placer:get_player_control().sneak then
 		return def.on_rightclick(under, node, placer, itemstack, pointed_thing) or itemstack
 	end
 	if pointed_thing.type ~= "node" then
@@ -240,7 +241,7 @@ if not key.registered then
 		stack_max = 1,
 
 		on_place = function(...)
-			key.on_forged_place(...)
+			return key.on_forged_place(...)
 		end,
 	})
 
@@ -253,7 +254,7 @@ if not key.registered then
 		stack_max = 1,
 
 		on_place = function(...)
-			key.on_chain_place(...)
+			return key.on_chain_place(...)
 		end,
 	})
 

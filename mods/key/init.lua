@@ -54,10 +54,12 @@ key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 				idata = {}
 				idesc = ""
 			end
-			if #idata > 18 then
+			if #idata >= 18 then -- Fit 18 keys exactly. >= determined by testing. Darn Lua arrays >:|
 				-- Just copy data to new itemstack without adding the key secret.
 				minetest.chat_send_player(pname, "# Server: Keychain is stuffed! No more keys can fit.")
 				itemstack:get_meta():from_table(chain_original:get_meta():to_table())
+				-- put the key with metadata back in the craft grid
+				craft_inv:set_stack("craft", key_index, key_original)
 			else
 				if idesc == "" then
 					idesc = key_meta:get_string("description")
@@ -74,8 +76,8 @@ key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 				end
 			end
 		end
-		-- put the key with metadata back in the craft grid
-		craft_inv:set_stack("craft", key_index, key_original)
+		-- DO NOT put the key with metadata back in the craft grid
+		-- the recipe consumes it
 	end
 end
 
@@ -179,6 +181,14 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 					-- We have a matching secret. Set it as the "main" secret so that the general key API can use it.
 					--minetest.chat_send_player(pname, "# Server: TEST1")
 					imeta:set_string("secret", v)
+
+					-- Hack: we actually have to set the player's wielded item.
+					-- This is because otherwise when the node goes to check if the player is wielding the right key,
+					-- it won't see the updated metadata secret that we just set.
+					-- We can't pass the changed itemstack to that code directly.
+					-- In fact, some callbacks which check key security don't accept itemstack params at ALL.
+					-- Thus the correct data must be set directly on the player's wielded itemstack.
+					placer:set_wielded_item(itemstack)
 				end
 			end
 		end
@@ -234,6 +244,8 @@ if not key.registered then
 		end,
 	})
 
+	-- keychain. idea from boxface
+	-- all code custom written though
 	minetest.register_craftitem("key:chain", {
 		description = "Key Chain",
 		inventory_image = "key_chain.png",

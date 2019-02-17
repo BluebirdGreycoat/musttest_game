@@ -119,12 +119,6 @@ function search_terrain(pos, step, radius, jitter, nodes, offset)
 		gp.x, gp.y, gp.z = x, y, z
 		local bw = get_node(gp).name
 
-		-- Side effect: spawn lava particles.
-		--if string.find(bw, ":lava_") then
-		--	lava_extras.spawn_particles({x=x, y=y, z=z})
-		--end
-		-- Handled by ABM.
-
 		for i = 1, #nodes do
 			if bw == nodes[i] then
 				sp.x, sp.y, sp.z = x, y+offset, z

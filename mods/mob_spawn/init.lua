@@ -35,11 +35,11 @@ function mob_spawn.register_spawn(data)
 	-- Smaller values attempt to respawn mobs more frequently, but with more load.
 	-- This is an optimization which reduces server load.
 	tb.saturation_time_min = data.saturation_time_min or 60*1
-	tb.saturation_time_max = data.saturation_time_max or 60*6
+	tb.saturation_time_max = data.saturation_time_max or 60*15
 
 	-- Min and max delay before next mob spawn, after a successfull spawn.
-	tb.success_time_min = data.success_time_min or 1
-	tb.success_time_max = data.success_time_max or 20
+	tb.success_time_min = data.success_time_min or 60*1
+	tb.success_time_max = data.success_time_max or 60*5
 
 	-- How many attempts allowed to spawn this mob per iteration?
 	tb.max_spawns_per_run = data.max_spawns_per_run or 10

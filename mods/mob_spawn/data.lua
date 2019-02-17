@@ -13,16 +13,8 @@ register({
   },
 	min_light = 0,
 	max_light = 2,
-	mob_limit = 1,
-	mob_range = 50,
 	max_height = -2048,
-	min_count = 1,
-	max_count = 2,
 	spawn_height = 3,
-	saturation_time_min = 60*1,
-	saturation_time_max = 60*3,
-	success_time_min = 60*3,
-	success_time_max = 60*15,
 })
 
 register({
@@ -35,14 +27,8 @@ register({
   },
 	min_light = 0,
 	max_light = 4,
-	mob_limit = 2,
-	mob_range = 40,
 	max_height = -25000,
 	spawn_height = 3,
-	saturation_time_min = 60*1,
-	saturation_time_max = 60*3,
-	success_time_min = 60*3,
-	success_time_max = 60*15,
 })
 
 register({
@@ -50,8 +36,6 @@ register({
 	nodes = {"whitestone:stone"},
 	min_light = 0,
 	max_light = 6,
-	mob_limit = 1,
-	mob_range = 100,
 	max_height = -25000,
 	spawn_height = 3,
 })
@@ -67,8 +51,6 @@ register({
   },
   min_light = 0,
   max_light = 4,
-  mob_limit = 2,
-  mob_range = 20,
   min_height = -31000,
   max_height = -5000,
   day_toggle = true,
@@ -77,18 +59,16 @@ register({
 register({
   name = "iceman:iceman",
   nodes = {
-		-- Does not spawn on tree snow or footstep snow or ice.
+		-- Does not spawn on tree snow or ice.
     "default:snow",
+		"snow:footprints",
   },
   min_light = 0,
   max_light = 4,
-  mob_limit = 4,
-  mob_range = 25,
+  mob_limit = 20,
   min_height = -21,
   max_height = 70,
   day_toggle = false,
-	success_time_min = 1,
-	success_time_max = 6,
 
 	-- The hight limit for this mob means we can afford more spawn checks.
 	saturation_time_min = 20,
@@ -100,8 +80,6 @@ register({
 	nodes = {"air"},
 	min_light = 0,
 	max_light = 0,
-	mob_limit = 1,
-	mob_range = 50,
 	max_height = -256,
 })
 
@@ -111,8 +89,6 @@ register({
 	nodes = {"air"},
 	min_light = 0,
 	max_light = 0,
-	mob_limit = 1,
-	mob_range = 50,
 	min_height = -31000,
 	max_height = -10,
 })
@@ -122,8 +98,6 @@ register({
 	nodes = {"default:stone"},
 	min_light = 0,
 	max_light = default.LIGHT_MAX,
-	mob_limit = 3,
-	mob_range = 100,
 	min_height = -128,
 	max_height = 31000,
 	spawn_height = 1,
@@ -133,9 +107,7 @@ register({
 	name = "sheep:sheep",
 	nodes = {"default:dirt_with_grass", "moregrass:darkgrass", "default:dirt_with_dry_grass"},
 	min_light = 10,
-	max_light = 15,
-	mob_limit = 2,
-  mob_range = 30,
+	max_light = default.LIGHT_MAX,
 	min_height = -30,
 	max_height = 31000,
 	day_toggle = nil, -- They spawn anytime.
@@ -151,11 +123,8 @@ register({
   },
 	min_light = 0,
 	max_light = 6,
-	mob_limit = 5,
-	mob_range = 100,
+	mob_limit = 10,
 	max_height = -25000,
-	min_count = 1,
-	max_count = 1,
 	spawn_height = 3,
 })
 
@@ -164,8 +133,7 @@ register({
 	nodes = {"default:stone", "default:cobble"},
 	min_light = 0,
 	max_light = 1,
-	mob_limit = 1,
-	mob_range = 30,
+	mob_limit = 10,
 	max_height = -128,
 })
 
@@ -179,8 +147,7 @@ register({
   },
 	min_light = 0,
 	max_light = 6,
-	mob_limit = 3,
-	mob_range = 50,
+	mob_limit = 10,
 	max_height = -25000,
 	min_count = 7,
 	max_count = 16,

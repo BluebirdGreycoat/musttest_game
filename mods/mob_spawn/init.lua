@@ -52,7 +52,7 @@ function mob_spawn.register_spawn(data)
 	-- How many mobs to spawn at once?
 	-- This determines how many mobs spawn, when all other checks pass.
 	tb.min_count = data.min_count or 1
-	tb.max_count = data.max_count or 1
+	tb.max_count = data.max_count or 3
 
 	-- How many mobs of the same kind may exist in the local area?
 	-- Max number of mobs of the *same type* which may spawn in the same local area.

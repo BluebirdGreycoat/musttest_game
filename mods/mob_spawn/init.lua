@@ -60,7 +60,7 @@ function mob_spawn.register_spawn(data)
 
 	-- Max number of mobs (of any kind) in local area for this mob?
 	-- Mob will not spawn if there are too many mobs of *any* type in local area.
-	tb.absolute_mob_limit = data.absolute_mob_limit or 5
+	tb.absolute_mob_limit = data.absolute_mob_limit or 20
 
 	-- What is the radius of the mob's local area?
 	-- What radius to use, when checking for other mobs or players.

@@ -381,6 +381,9 @@ function mob_spawn.spawn_mobs(pname, index)
 		return 0
 	end
 
+	-- Get mob's name.
+	local mname = mdef.name
+
 	local random = math.random
 
 	-- Mobs have a 1 in X chance of spawning on this cycle.
@@ -388,9 +391,6 @@ function mob_spawn.spawn_mobs(pname, index)
 		report(mname, "Skipping mob due to low chance.")
 		return 0
 	end
-
-	-- Get mob's name.
-	local mname = mdef.name
 
 	if mname == "iceman:iceman" then
 		if not snow.should_spawn_icemen() then

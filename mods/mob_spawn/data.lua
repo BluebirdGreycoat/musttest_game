@@ -244,16 +244,6 @@ mob_spawn.players = {}
 local players = minetest.get_connected_players()
 for k, v in ipairs(players) do
 	-- This is an indexed array.
-	local registered = mob_spawn.registered
 	local pname = v:get_player_name()
-	local random = math.random
-
-	players[pname] = {}
-
-	for k, v in pairs(registered) do
-		players[pname][k] = {
-			-- Initial interval. Wait this long before trying to spawn this mob again.
-			interval = random(v.success_time_min, v.success_time_max)
-		}
-	end
+	mob_spawn.reinit_player(pname)
 end

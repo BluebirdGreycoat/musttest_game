@@ -91,6 +91,22 @@ function mob_spawn.register_spawn(data)
 	registered[#registered+1] = tb
 end
 
+function mob_spawn.reinit_player(pname)
+	local players = mob_spawn.players
+	-- This is an indexed array.
+	local registered = mob_spawn.registered
+	local random = math.random
+
+	players[pname] = {}
+
+	for k, v in pairs(registered) do
+		players[pname][k] = {
+			-- Initial interval. Wait this long before trying to spawn this mob again.
+			interval = random(v.success_time_min, v.success_time_max)
+		}
+	end
+end
+
 -- Load mob spawning data.
 dofile(mob_spawn.modpath .. "/data.lua")
 
@@ -426,20 +442,8 @@ end
 
 
 function mob_spawn.on_joinplayer(player)
-	local players = mob_spawn.players
-	-- This is an indexed array.
-	local registered = mob_spawn.registered
 	local pname = player:get_player_name()
-	local random = math.random
-
-	players[pname] = {}
-
-	for k, v in pairs(registered) do
-		players[pname][k] = {
-			-- Initial interval. Wait this long before trying to spawn this mob again.
-			interval = random(v.success_time_min, v.success_time_max)
-		}
-	end
+	mob_spawn.reinit_player(pname)
 end
 
 function mob_spawn.on_leaveplayer(player)

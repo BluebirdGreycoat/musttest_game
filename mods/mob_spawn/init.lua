@@ -33,13 +33,15 @@ function mob_spawn.register_spawn(data)
 
 	-- Min and max duration before mob can be spawned again, after a spawn failure.
 	-- Smaller values attempt to respawn mobs more frequently, but with more load.
-	-- This is an optimization which reduces server load.
+	-- Note: saturation time only applies if there are already too many mobs.
 	tb.saturation_time_min = data.saturation_time_min or 60*1
-	tb.saturation_time_max = data.saturation_time_max or 60*15
+	tb.saturation_time_max = data.saturation_time_max or 60*10
 
 	-- Min and max delay before next mob spawn, after a successfull spawn.
-	tb.success_time_min = data.success_time_min or 60*1
-	tb.success_time_max = data.success_time_max or 60*5
+	tb.success_time_min = data.success_time_min or 1
+	tb.success_time_max = data.success_time_max or 60
+
+	tb.spawn_chance = data.spawn_chance or 10
 
 	-- How many attempts allowed to spawn this mob per iteration?
 	tb.max_spawns_per_run = data.max_spawns_per_run or 10
@@ -174,18 +176,22 @@ function execute_spawners()
 			local pmdata = players[pname][index]
 			if pmdata.interval == 0 then
 				local mname = mdef.name
-				local count = mob_spawn.spawn_mobs(pname, index)
+				local count, saturated = mob_spawn.spawn_mobs(pname, index)
 				if count > 0 then
 					-- Mobs were spawned. Spawn more mobs soon.
 					-- Set the wait timer to expire in a bit.
 					pmdata.interval = random(mdef.success_time_min, mdef.success_time_max)
 					report(mname, "Spawned " .. count .. "!")
 				else
-					-- No mobs spawned. Bad environment or area saturated, wait a while.
-					-- Reset the wait timer.
-					-- Use random duration to prevent thundering herd.
-					pmdata.interval = random(mdef.saturation_time_min, mdef.saturation_time_max)
-					report(mname, "Mob saturated!")
+					if saturated then
+						-- No mobs spawned. Bad environment or area saturated, wait a while.
+						-- Reset the wait timer.
+						-- Use random duration to prevent thundering herd.
+						pmdata.interval = random(mdef.saturation_time_min, mdef.saturation_time_max)
+						report(mname, "Mob saturated!")
+					else
+						pmdata.interval = random(mdef.success_time_min, mdef.success_time_max)
+					end
 				end
 			else
 				-- Decrease time remaining until this mob can be spawned again.
@@ -246,6 +252,7 @@ function mob_spawn.check_population(mname, spos, radius)
 end
 
 -- API function. Spawns mobs around a player, if possible.
+-- Returns [num mobs spawned], [saturated|nil]
 function mob_spawn.spawn_mobs(pname, index)
 	local player = minetest.get_player_by_name(pname)
 	if not player then
@@ -254,6 +261,13 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	local mdef = mob_spawn.registered[index]
 	if not mdef then
+		return 0
+	end
+
+	local random = math.random
+
+	-- Mobs have a 1 in X chance of spawning on this cycle.
+	if random(1, mdef.spawn_chance) ~= 1 then
 		return 0
 	end
 
@@ -300,7 +314,6 @@ function mob_spawn.spawn_mobs(pname, index)
 	end
 
 	-- Mobs rarely spawn in the colonies. They keep killing the noobs!
-	local random = math.random
 	if vector.distance(spos, {x=0, y=0, z=0}) < 100 then
 		if random(1, 10) < 10 then
 			return 0
@@ -349,6 +362,7 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Record number of mobs successfully spawned.
 	local mobs_spawned = 0
+	local mobs_saturated
 
 	for i = 1, attempts do
 		-- Pick a random point for each spawn attempt. Prevents bunching.
@@ -359,6 +373,7 @@ function mob_spawn.spawn_mobs(pname, index)
 		-- Don't spawn mob if there are already too many mobs in area.
 		local mob_count, abs_count = mob_spawn.check_population(mname, pos, mob_range)
 		if mob_count >= mob_limit or abs_count >= abs_limit then
+			mobs_saturated = true
 			goto next_spawn
 		end
 
@@ -428,7 +443,7 @@ function mob_spawn.spawn_mobs(pname, index)
 		::next_spawn::
 	end
 
-	return mobs_spawned
+	return mobs_spawned, mobs_saturated
 end
 
 

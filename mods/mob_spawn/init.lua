@@ -158,13 +158,13 @@ function execute_spawners()
 					-- Mobs were spawned. Spawn more mobs soon.
 					-- Set the wait timer to expire in a bit.
 					pmdata.interval = random(mdef.success_time_min, mdef.success_time_max)
-					report(mname, "Spawned " .. count .. " of Mob '" .. mname .. ":" .. index .. "'!")
+					report(mname, "Spawned " .. count .. "!")
 				else
 					-- No mobs spawned. Bad environment or area saturated, wait a while.
 					-- Reset the wait timer.
 					-- Use random duration to prevent thundering herd.
 					pmdata.interval = random(mdef.saturation_time_min, mdef.saturation_time_max)
-					report(mname, "Mob '" .. mname .. ":" .. index .. "' saturated!")
+					report(mname, "Mob saturated!")
 				end
 			else
 				-- Decrease time remaining until this mob can be spawned again.
@@ -438,8 +438,6 @@ function mob_spawn.on_joinplayer(player)
 		}
 	end
 end
-
-
 
 function mob_spawn.on_leaveplayer(player)
 	mob_spawn.players[player:get_player_name()] = nil

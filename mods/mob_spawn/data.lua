@@ -81,7 +81,7 @@ register({
 	min_light = 0,
 	max_light = 0,
 	max_height = -256,
-	clearance = 1, -- Will spawn in a 1x1x1 area.
+	clearance = 2, -- Wants a 3x3x3 area.
 	flyswim = "flyswim",
 })
 

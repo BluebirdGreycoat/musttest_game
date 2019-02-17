@@ -120,17 +120,18 @@ function search_terrain(pos, step, radius, jitter, nodes, offset)
 	local floor = math.floor
 	local get_node = minetest.get_node
 
-	local jx = random(-jitter, jitter)
-	local jy = random(-jitter, jitter)
-	local jz = random(-jitter, jitter)
+	jitter = floor(jitter)
+	radius = floor(radius)
+	step = floor(step)
+	offset = floor(offset)
 
 	-- Height along the Y-axis is halved to reduce the amount of node checks.
-	local minx = floor((pos.x + jx) - radius      )
-	local miny = floor((pos.y + jy) - (radius / 2))
-	local minz = floor((pos.z + jz) - radius      )
-	local maxx = floor((pos.x + jx) + radius      )
-	local maxy = floor((pos.y + jy) + (radius / 2))
-	local maxz = floor((pos.z + jz) + radius      )
+	local minx = floor(pos.x - radius      )
+	local miny = floor(pos.y - (radius / 2))
+	local minz = floor(pos.z - radius      )
+	local maxx = floor(pos.x + radius      )
+	local maxy = floor(pos.y + (radius / 2))
+	local maxz = floor(pos.z + radius      )
 
 	local results = {}
 	local gp = {x=0, y=0, z=0}
@@ -140,7 +141,10 @@ function search_terrain(pos, step, radius, jitter, nodes, offset)
 	for y = miny, maxy, step do
 	for z = minz, maxz, step do
 
-		gp.x, gp.y, gp.z = x, y, z
+		gp.x = x + random(-jitter, jitter)
+		gp.y = y + random(-jitter, jitter)
+		gp.z = z + random(-jitter, jitter)
+
 		local bw = get_node(gp).name
 
 		for i = 1, #nodes do

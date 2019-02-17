@@ -106,16 +106,12 @@ minetest.register_craft({
 	}
 })
 
-
-
 minetest.register_craft({
 	type = 'cooking',
 	output = 'default:gold_ingot',
 	recipe = 'key:skeleton',
 	cooktime = 5,
 })
-
-
 
 minetest.register_craft({
 	type = 'cooking',
@@ -124,3 +120,35 @@ minetest.register_craft({
 	cooktime = 5,
 })
 
+
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "key:key",
+	recipe = {"key:key", "key:skeleton"}
+})
+
+key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
+	if itemstack:get_name() ~= "key:key" then
+		return
+	end
+
+	local original
+	local index
+	for i = 1, player:get_inventory():get_size("craft") do
+		if old_craft_grid[i]:get_name() == "key:key" then
+			original = old_craft_grid[i]
+			index = i
+		end
+	end
+	if not original then
+		return
+	end
+	local copymeta = original:get_meta():to_table()
+	-- copy of the key held by player's mouse cursor
+	itemstack:get_meta():from_table(copymeta)
+	-- put the key with metadata back in the craft grid
+	craft_inv:set_stack("craft", index, original)
+end
+
+minetest.register_on_craft(function(...) key.on_craft(...) end)

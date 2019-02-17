@@ -158,13 +158,13 @@ function execute_spawners()
 					-- Mobs were spawned. Spawn more mobs soon.
 					-- Set the wait timer to expire in a bit.
 					pmdata.interval = random(mdef.success_time_min, mdef.success_time_max)
-					report(mname, "# Server: Spawned " .. count .. " of Mob '" .. mname .. ":" .. index .. "'!")
+					report(mname, "Spawned " .. count .. " of Mob '" .. mname .. ":" .. index .. "'!")
 				else
 					-- No mobs spawned. Bad environment or area saturated, wait a while.
 					-- Reset the wait timer.
 					-- Use random duration to prevent thundering herd.
 					pmdata.interval = random(mdef.saturation_time_min, mdef.saturation_time_max)
-					report(mname, "# Server: Mob '" .. mname .. ":" .. index .. "' saturated!")
+					report(mname, "Mob '" .. mname .. ":" .. index .. "' saturated!")
 				end
 			else
 				-- Decrease time remaining until this mob can be spawned again.
@@ -201,13 +201,11 @@ end
 function mob_spawn.spawn_mobs(pname, index)
 	local player = minetest.get_player_by_name(pname)
 	if not player then
-		--minetest.chat_send_all("# Server: No player to spawn mobs near!")
 		return 0
 	end
 
 	local mdef = mob_spawn.registered[index]
 	if not mdef then
-		--minetest.chat_send_all("# Server: Mob is not defined!")
 		return 0
 	end
 
@@ -230,13 +228,13 @@ function mob_spawn.spawn_mobs(pname, index)
 		if tod > 4500 and tod < 19500 then
 			-- Daylight, but mob wants night.
 			if daynight == false then
-				report(mname, "# Server: Mob wants night time!")
+				report(mname, "Mob wants night time!")
 				return 0
 			end
 		else
 			-- Night time but mob wants day.
 			if daynight == true then
-				report(mname, "# Server: Mob wants day time!")
+				report(mname, "Mob wants day time!")
 				return 0
 			end
 		end
@@ -249,7 +247,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	local max_height = mdef.max_height
 	local min_height = mdef.min_height
 	if spos.y > max_height or spos.y < min_height then
-		report(mname, "# Server: Bad elevation!")
+		report(mname, "Bad elevation!")
 		return 0
 	end
 
@@ -311,7 +309,7 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Don't spawn mob if there are already too many mobs in area.
 	if mob_count >= mob_limit or mob_count2 >= mob_limit2 then
-		report(mname, "# Server: Too many mobs in local area!")
+		report(mname, "Too many mobs in local area!")
 		return 0
 	end
 
@@ -323,11 +321,11 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Find potential spawn points around player location.
 	local points = search_terrain(spos, step, radius, jitter, names, offset)
-	report(mname, "# Server: Found " .. #points .. " spawn point(s) @ " .. minetest.pos_to_string(spos) .. "!")
+	report(mname, "Found " .. #points .. " spawn point(s) @ " .. minetest.pos_to_string(spos) .. "!")
 
 	-- Prevent a crash when accessing the array later.
 	if #points < 1 then
-		report(mname, "# Server: Found no spawn point(s)!")
+		report(mname, "Found no spawn point(s)!")
 		return 0
 	end
 
@@ -345,20 +343,20 @@ function mob_spawn.spawn_mobs(pname, index)
 			local cc = mob_count + mobs_spawned
 			local cc2 = mob_count2 + mobs_spawned
 			if cc >= mob_limit or cc2 >= mob_limit2 then
-				report(mname, "# Server: Too many mobs in local area! Will spawn no more mobs.")
+				report(mname, "Too many mobs in local area! Will spawn no more mobs.")
 				return mobs_spawned
 			end
 		end
 
 		-- Pick a random point for each spawn attempt. Prevents bunching.
 		local pos = points[random(1, #points)]
-		report(mname, "# Server: Attempting to spawn mob @ " .. minetest.pos_to_string(pos) .. "!")
+		report(mname, "Attempting to spawn mob @ " .. minetest.pos_to_string(pos) .. "!")
 
 		-- Check if light level is ok.
 		-- We perform this check for each possible position.
 		local light = minetest.get_node_light(pos)
 		if not light or light > max_light or light < min_light then
-			report(mname, "# Server: Bad light level!")
+			report(mname, "Bad light level!")
 			goto next_spawn
 		end
 
@@ -374,7 +372,7 @@ function mob_spawn.spawn_mobs(pname, index)
 
     -- Don't spawn if too near player or too far.
     if nearest_dist < player_min_range or nearest_dist > player_max_range then
-			report(mname, "# Server: Player too near or player too far!")
+			report(mname, "Player too near or player too far!")
 			goto next_spawn
 		end
 
@@ -384,7 +382,7 @@ function mob_spawn.spawn_mobs(pname, index)
 			local n = get_node(p).name
 			local d = registered_items[n]
 			if n == "ignore" or d.walkable then
-				report(mname, "# Server: Cannot spawn mob inside solid block!")
+				report(mname, "Cannot spawn mob inside solid block!")
 				goto next_spawn
 			end
     end
@@ -409,7 +407,7 @@ function mob_spawn.spawn_mobs(pname, index)
 					end
 					mob:setyaw((random(0, 360) - 180) / 180 * pi)
 					mobs_spawned = mobs_spawned + 1
-					report(mname, "# Server: Successfully spawned a mob!")
+					report(mname, "Successfully spawned a mob!")
 				else
 					mob:remove()
 				end

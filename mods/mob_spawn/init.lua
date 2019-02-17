@@ -116,7 +116,7 @@ dofile(mob_spawn.modpath .. "/data.lua")
 
 
 -- Return 'true' if volume is only a single material.
-function check_space(minp, maxp, material)
+local function check_space(minp, maxp, material)
 	local positions, counts = minetest.find_nodes_in_area(minp, maxp, material)
 
 	-- Compute number of nodes that can fit in volume.
@@ -130,7 +130,7 @@ function check_space(minp, maxp, material)
 end
 
 -- Use for flying/swimming mobs.
-function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
+local function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
 	local random = math.random
 	local floor = math.floor
 	local get_node = minetest.get_node
@@ -181,7 +181,7 @@ function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
 end
 
 -- Use for ground/surface mobs.
-function search_terrain(pos, step, radius, jitter, nodes, offset, height)
+local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 	local random = math.random
 	local floor = math.floor
 	local get_node = minetest.get_node
@@ -231,7 +231,7 @@ end
 
 
 
-function execute_spawners()
+local function execute_spawners()
 	local players = mob_spawn.players
 	-- This is an indexed array.
 	local mobdefs = mob_spawn.registered

@@ -1,4 +1,6 @@
 
+-- Function is badly named! Should be 'entity_ignores_arrow'.
+-- Return 'true' if the entity cannot be hit, otherwise return 'false' if the entity should be punched.
 function throwing.entity_blocks_arrow(entity_name)
 	-- Dropped itemstacks don't take damage.
 	if entity_name == "__builtin:item" then

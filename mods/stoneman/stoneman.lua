@@ -50,19 +50,6 @@ mobs.register_mob("stoneman:stoneman", {
 
 
 
-mobs.register_spawn({
-	name = "stoneman:stoneman",
-	nodes = {"default:stone", "default:cobble"},
-	min_light = 0,
-	max_light = 1,
-	interval = 30,
-	chance = 7000,
-	mob_limit = 1,
-    absolute_mob_limit = 1,
-    mob_range = 30,
-	max_height = -128,
-})
-
 
 
 mobs.register_egg("stoneman:stoneman", "Stoneman", "default_stone.png", 1)

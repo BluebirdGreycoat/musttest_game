@@ -89,29 +89,6 @@ mobs.register_spawn_abm({
   max_count = 3,
 })
 
--- Caverealm griefer mob.
--- Spawning behavior is similar to icemen on the surface.
-mobs.register_spawn({
-  name = "griefer:griefer",
-  nodes = {
-    "cavestuff:dark_obsidian",
-		"cavestuff:cobble_with_moss",
-		"cavestuff:cobble_with_algae",
-  },
-  min_light = 0,
-  max_light = 4,
-  interval = 60,
-  chance = 3000,
-  mob_limit = 2,
-  absolute_mob_limit = 3,
-  mob_range = 20,
-  min_height = -31000,
-  max_height = -5000,
-  day_toggle = true,
-  player_min_range = 20,
-  player_max_range = 60,
-})
-
 
 
 mobs.register_egg("griefer:griefer", "Black Hearted Griefer", "default_obsidian.png", 1)

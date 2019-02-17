@@ -71,22 +71,6 @@ mobs.register_mob("oerkki:oerkki", {
 
 
 
-mobs.register_spawn({
-	name = "oerkki:oerkki",
-	nodes = {"air"},
-	min_light = 0,
-	max_light = 0,
-	interval = 60,
-	chance = 7000,
-	mob_limit = 1,
-	absolute_mob_limit = 2,
-	mob_range = 50,
-	min_height = -31000,
-	max_height = -10,
-	player_min_range = 20,
-	player_max_range = 60,
-})
-
 
 
 mobs.register_egg("oerkki:oerkki", "Oerkki", "default_obsidian.png", 1)

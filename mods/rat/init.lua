@@ -39,20 +39,6 @@ mobs.register_mob("rat:rat", {
 
 
 
-mobs.register_spawn({
-	name = "rat:rat",
-	nodes = {"default:stone"},
-	min_light = 0,
-	max_light = default.LIGHT_MAX,
-	interval = 300,
-	chance = 10000,
-	mob_limit = 3,
-    mob_range = 100,
-    min_height = -128,
-	max_height = 31000,
-    spawn_height = 1,
-})
-
 
 
 -- Obtainable by players.

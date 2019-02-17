@@ -59,62 +59,6 @@ mobs.register_mob("dm:dm", {
 
 
 
-mobs.register_spawn({
-	name = "dm:dm",
-	nodes = {
-    "default:stone",
-    "cavestuff:cobble_with_moss",
-    "cavestuff:cobble_with_lichen",
-    "cavestuff:cobble_with_algae",
-  },
-	min_light = 0,
-	max_light = 2,
-	mob_limit = 1,
-	mob_range = 50,
-	max_height = -2048,
-	min_count = 1,
-	max_count = 2,
-	player_min_range = 30,
-	player_max_range = 100,
-	spawn_height = 3,
-	saturation_time_min = 60*1,
-	saturation_time_max = 60*3,
-	success_time_min = 60*3,
-	success_time_max = 60*15,
-	node_skip = 10,
-	node_jitter = 10,
-	spawn_radius = 100,
-})
-
-
-
-mobs.register_spawn({
-	name = "dm:dm",
-	nodes = {
-    "rackstone:rackstone",
-    "rackstone:redrack",
-    "rackstone:mg_rackstone",
-    "rackstone:mg_redrack",
-  },
-	min_light = 0,
-	max_light = 4,
-	mob_limit = 2,
-	mob_range = 40,
-	max_height = -25000,
-	player_min_range = 10,
-	player_max_range = 100,
-	spawn_height = 3,
-	saturation_time_min = 60*1,
-	saturation_time_max = 60*3,
-	success_time_min = 60*3,
-	success_time_max = 60*15,
-	node_skip = 10,
-	node_jitter = 10,
-	spawn_radius = 100,
-})
-
-
-
 mobs.register_arrow("dm:fireball", {
 	visual = "sprite",
 	visual_size = {x = 1, y = 1},

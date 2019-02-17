@@ -53,21 +53,6 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 
 
 
-mobs.register_spawn({
-	name = "obsidianmonster:obsidianmonster",
-	nodes = {"air"},
-	min_light = 0,
-	max_light = 0,
-	interval = 60,
-	chance = 10000,
-	mob_limit = 1,
-	absolute_mob_limit = 2,
-	mob_range = 50,
-	max_height = -256,
-	player_min_range = 20,
-	player_max_range = 60,
-})
-
 
 
 mobs.register_egg("obsidianmonster:obsidianmonster", "Obsidian Monster", "default_obsidian.png", 1)

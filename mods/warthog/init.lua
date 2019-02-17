@@ -55,27 +55,6 @@ mobs.register_mob("warthog:warthog", {
 
 
 
-mobs.register_spawn({
-	name = "warthog:warthog",
-	nodes = {
-    "rackstone:rackstone",
-    "rackstone:redrack",
-    "rackstone:mg_rackstone",
-    "rackstone:mg_redrack",
-  },
-	min_light = 0,
-	max_light = 6,
-	interval = 360,
-	chance = 10000,
-	mob_limit = 3,
-	mob_range = 50,
-	max_height = -25000,
-	min_count = 7,
-	max_count = 16,
-	player_min_range = 30,
-	player_max_range = 100,
-})
-
 
 
 mobs.register_egg("warthog:warthog", "Warthog", "rackstone_rackstone.png", 1)

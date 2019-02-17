@@ -53,28 +53,6 @@ mobs.register_mob("skeleton:skeleton", {
 
 
 
-mobs.register_spawn({
-	name = "skeleton:skeleton",
-	nodes = {
-    "rackstone:rackstone",
-    "rackstone:redrack",
-    "rackstone:mg_rackstone",
-    "rackstone:mg_redrack",
-  },
-	min_light = 0,
-	max_light = 6,
-	mob_limit = 5,
-	mob_range = 100,
-	max_height = -25000,
-	min_count = 1,
-	max_count = 1,
-	player_max_range = 40,
-	spawn_height = 3,
-	node_skip = 7,
-	node_jitter = 7,
-	spawn_radius = 40,
-})
-
 
 
 mobs.register_egg("skeleton:skeleton", "Skeleton", "default_dirt.png", 1)

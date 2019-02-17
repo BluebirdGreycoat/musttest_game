@@ -69,36 +69,6 @@ mobs.register_mob("iceman:iceman", {
 
 
 
-mobs.register_spawn({
-  name = "iceman:iceman",
-  nodes = {
-		-- Does not spawn on tree snow or footstep snow or ice.
-    "default:snow",
-  },
-  min_light = 0,
-  max_light = 4,
-  interval = 20,
-  chance = 200,
-  mob_limit = 4,
-  absolute_mob_limit = 6,
-  mob_range = 25,
-  min_height = -21,
-  max_height = 70,
-  day_toggle = false,
-  player_min_range = 5,
-  player_max_range = 30,
-	success_time_min = 1,
-	success_time_max = 6,
-
-	-- The hight limit for this mob means we can afford more spawn checks.
-	saturation_time_min = 20,
-	saturation_time_max = 60,
-
-	node_skip = 4,
-	node_jitter = 4,
-	spawn_radius = 16,
-})
-
 
 
 mobs.register_egg("iceman:iceman", "Iceman", "default_ice.png", 1)

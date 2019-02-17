@@ -53,21 +53,6 @@ mobs.register_mob("golem:stone_golem", {
 
 
 
-mobs.register_spawn({
-	name = "golem:stone_golem",
-	nodes = {"whitestone:stone"},
-	min_light = 0,
-	max_light = 6,
-	interval = 20,
-	chance = 16000,
-	mob_limit = 1,
-    mob_range = 100,
-	max_height = -25000,
-    player_min_range = 20,
-    player_max_range = 60,
-    spawn_height = 3,
-})
-
 
 
 mobs.register_egg("golem:stone_golem", "Stone Golem", "default_stone.png", 1)

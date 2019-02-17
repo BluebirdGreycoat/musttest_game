@@ -108,20 +108,6 @@ mobs.register_mob("sheep:sheep", {
 
 
 
-mobs.register_spawn({
-	name = "sheep:sheep",
-	nodes = {"default:dirt_with_grass", "moregrass:darkgrass", "default:dirt_with_dry_grass"},
-	min_light = 10,
-	max_light = 15,
-	interval = 60,
-	chance = 10000,
-	mob_limit = 2,
-  mob_range = 30,
-	min_height = -30,
-	max_height = 31000,
-	day_toggle = nil, -- They spawn anytime.
-})
-
 
 
 -- Obtainable by players.

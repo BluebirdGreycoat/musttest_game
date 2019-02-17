@@ -91,6 +91,7 @@ function mob_spawn.register_spawn(data)
 	registered[#registered+1] = tb
 end
 
+-- Load mob spawning data.
 dofile(mob_spawn.modpath .. "/data.lua")
 
 

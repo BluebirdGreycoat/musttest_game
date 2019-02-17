@@ -78,7 +78,7 @@ register({
 	node_skip = 8,
 	node_jitter = 8,
 	success_time_min = 1,
-	success_time_max = 60,
+	success_time_max = 20,
 
 	min_count = 1,
 	max_count = 4,

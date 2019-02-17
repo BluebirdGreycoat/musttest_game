@@ -481,7 +481,8 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	-- Prevent a crash when accessing the array later.
 	if #points < 1 then
-		return 0
+		-- No mobs spawned, environment no good (so we can call it saturated).
+		return 0, true
 	end
 
 	-- Record number of mobs successfully spawned.

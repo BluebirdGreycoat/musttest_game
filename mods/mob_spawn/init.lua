@@ -262,7 +262,8 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 
 		for i = 1, #nodes do
 			if bw == nodes[i] then
-				if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), bw) then
+				-- There must be nothing but enough air above.
+				if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), "air") then
 					results[#results+1] = {x=gp.x, y=gp.y+offset, z=gp.z}
 					break
 				end

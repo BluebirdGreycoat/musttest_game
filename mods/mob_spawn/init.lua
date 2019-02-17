@@ -6,12 +6,12 @@ mob_spawn.registered = mob_spawn.registered or {}
 mob_spawn.players = mob_spawn.players or {}
 
 -- May be adjusted @ runtime.
-mob_spawn.server_step = 2
-
+mob_spawn.server_step = 10
+mob_spawn.enable_reports = false
 
 local function report(mob, msg)
-	if mob == "sheep:sheep" then
-		--minetest.chat_send_player("MustTest", msg)
+	if mob_spawn.enable_reports then
+		minetest.chat_send_player("MustTest", "[" .. mob .. "]: " .. msg)
 	end
 end
 

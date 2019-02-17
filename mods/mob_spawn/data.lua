@@ -65,7 +65,7 @@ register({
   },
   min_light = 0,
   max_light = 4,
-  mob_limit = 20,
+  mob_limit = 10,
   min_height = -21,
   max_height = 70,
   day_toggle = false,

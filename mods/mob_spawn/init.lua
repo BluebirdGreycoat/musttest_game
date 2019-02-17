@@ -350,7 +350,7 @@ function mob_spawn.spawn_mobs(pname, index)
 		return 0
 	end
 
-	minetest.chat_send_player("MustTest", "Points: " .. #points)
+	minetest.chat_send_player("MustTest", "Mob: " .. mname .. ", Points: " .. #points)
 
 	local skip_count_check = (math.random(1, 100) == 1)
 

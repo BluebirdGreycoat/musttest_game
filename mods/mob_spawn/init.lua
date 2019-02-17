@@ -133,6 +133,7 @@ end
 -- May modify argument as output value.
 -- Search both upward and downward (starting from air) to find a non-air node.
 local function try_locate_ground(pos)
+	pos = {x=pos.x, y=pos.y, z=pos.z}
 	local get_node = minetest.get_node
 	local s = get_node(pos).name
 	local c = 1
@@ -150,7 +151,7 @@ local function try_locate_ground(pos)
 		end
 
 		-- Found non-air. Leave position pointing at non-air node.
-		return true
+		return true, pos
 
 	elseif s ~= "air" then
 
@@ -166,7 +167,7 @@ local function try_locate_ground(pos)
 
 		-- Found air. Set position to point to non-air below.
 		pos.y = pos.y - 1
-		return true
+		return true, pos
 
 	end
 
@@ -256,15 +257,15 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 		gp.y = y + random(-jitter, jitter)
 		gp.z = z + random(-jitter, jitter)
 
-		local success = try_locate_ground(gp)
+		local success, np = try_locate_ground(gp)
 
 		if success then
-			local bw = get_node(gp).name
+			local bw = get_node(np).name
 
 			for i = 1, #nodes do
 				if bw == nodes[i] then
-					if check_space(vector.add(gp, {x=0, y=offset, z=0}), vector.add(gp, {x=0, y=offset+(height-1), z=0}), bw) then
-						results[#results+1] = {x=gp.x, y=gp.y+offset, z=gp.z}
+					if check_space(vector.add(np, {x=0, y=offset, z=0}), vector.add(np, {x=0, y=offset+(height-1), z=0}), bw) then
+						results[#results+1] = {x=np.x, y=np.y+offset, z=np.z}
 						break
 					end
 				end

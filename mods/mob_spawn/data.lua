@@ -81,6 +81,7 @@ register({
 	min_light = 0,
 	max_light = 0,
 	max_height = -256,
+	spawn_height = 1,
 })
 
 -- That flying thing.
@@ -91,6 +92,7 @@ register({
 	max_light = 0,
 	min_height = -31000,
 	max_height = -10,
+	spawn_height = 2,
 })
 
 register({

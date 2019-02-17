@@ -115,7 +115,22 @@ dofile(mob_spawn.modpath .. "/data.lua")
 
 
 
-function search_terrain(pos, step, radius, jitter, nodes, offset)
+-- Return 'true' if volume is only a single material.
+function check_space(minp, maxp, material)
+	local positions, counts = minetest.find_nodes_in_area(minp, maxp, material)
+
+	-- Compute number of nodes that can fit in volume.
+	local x = (maxp.x - minp.x) + 1
+	local y = (maxp.y - minp.y) + 1
+	local z = (maxp.z - minp.z) + 1
+	local t = x * y * z
+	if counts[material] >= t then
+		return true
+	end
+end
+
+-- Use for flying/swimming mobs.
+function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
 	local random = math.random
 	local floor = math.floor
 	local get_node = minetest.get_node
@@ -149,12 +164,61 @@ function search_terrain(pos, step, radius, jitter, nodes, offset)
 
 		for i = 1, #nodes do
 			if bw == nodes[i] then
-				sp.x, sp.y, sp.z = x, y+offset, z
-				local ab = get_node(sp).name
-				if ab == "air" then
-					results[#results+1] = {x=sp.x, y=sp.y, z=sp.z}
+				-- A volume of radius 1 should just check 1 node.
+				local r = height - 1
+				if check_space(vector.subtract(gp, r), vector.add(gp, r), bw) then
+					results[#results+1] = table.copy(gp)
+					break
 				end
-				break
+			end
+		end
+
+	end
+	end
+	end
+
+	return results
+end
+
+-- Use for ground/surface mobs.
+function search_terrain(pos, step, radius, jitter, nodes, offset, height)
+	local random = math.random
+	local floor = math.floor
+	local get_node = minetest.get_node
+
+	jitter = floor(jitter)
+	radius = floor(radius)
+	step = floor(step)
+	offset = floor(offset)
+
+	-- Height along the Y-axis is halved to reduce the amount of node checks.
+	local minx = floor(pos.x - radius      )
+	local miny = floor(pos.y - (radius / 2))
+	local minz = floor(pos.z - radius      )
+	local maxx = floor(pos.x + radius      )
+	local maxy = floor(pos.y + (radius / 2))
+	local maxz = floor(pos.z + radius      )
+
+	local results = {}
+	local gp = {x=0, y=0, z=0}
+	local sp = {x=0, y=0, z=0}
+
+	for x = minx, maxx, step do
+	for y = miny, maxy, step do
+	for z = minz, maxz, step do
+
+		gp.x = x + random(-jitter, jitter)
+		gp.y = y + random(-jitter, jitter)
+		gp.z = z + random(-jitter, jitter)
+
+		local bw = get_node(gp).name
+
+		for i = 1, #nodes do
+			if bw == nodes[i] then
+				if check_space(vector.add(gp, {x=0, y=1, z=0}), vector.add(gp, {x=0, y=height, z=0}), bw) then
+					results[#results+1] = {x=sp.x, y=sp.y, z=sp.z}
+					break
+				end
 			end
 		end
 
@@ -347,7 +411,6 @@ function mob_spawn.spawn_mobs(pname, index)
 	local max_count = mdef.max_count
 	local spawn_height = mdef.spawn_height
 
-	local registered_items = minetest.registered_items
 	local players = minetest.get_connected_players()
 
 	local step = mdef.node_skip
@@ -357,7 +420,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	local offset = mdef.air_offset
 
 	-- Find potential spawn points around player location.
-	local points = search_terrain(spos, step, radius, jitter, names, offset)
+	local points = search_terrain(spos, step, radius, jitter, names, offset, spawn_height)
 	report(mname, "Found " .. #points .. " spawn point(s) @ " .. minetest.pos_to_string(spos) .. "!")
 
 	-- Prevent a crash when accessing the array later.
@@ -405,17 +468,6 @@ function mob_spawn.spawn_mobs(pname, index)
 			report(mname, "Player too near or player too far!")
 			goto next_spawn
 		end
-
-		-- Are we spawning inside solid nodes?
-    for i = 1, spawn_height, 1 do
-			local p = {x=pos.x, y=(pos.y+i)-1, z=pos.z}
-			local n = get_node(p).name
-			local d = registered_items[n]
-			if n == "ignore" or d.walkable then
-				report(mname, "Cannot spawn mob inside solid block!")
-				goto next_spawn
-			end
-    end
 
 		-- Spawn a random number of mobs.
 		local num_to_spawn = random(min_count, max_count)

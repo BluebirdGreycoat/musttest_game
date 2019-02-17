@@ -4,6 +4,7 @@ key.modpath = minetest.get_modpath("key")
 
 key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 	if itemstack:get_name() == "key:key" then
+		local pname = player:get_player_name()
 		-- Permit copying a key.
 		local original
 		local index
@@ -21,7 +22,9 @@ key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 		itemstack:get_meta():from_table(copymeta)
 		-- put the key with metadata back in the craft grid
 		craft_inv:set_stack("craft", index, original)
+		minetest.chat_send_player(pname, "# Server: Key copied!")
 	elseif itemstack:get_name() == "key:chain" then
+		local pname = player:get_player_name()
 		-- Special: add a key to a keychain, leave key in craft-grid and return new keychain.
 		local key_original
 		local key_index
@@ -253,7 +256,7 @@ if not key.registered then
 		output = 'key:chain',
 		recipe = {
 			{'key:skeleton', 'key:skeleton', 'key:skeleton'},
-			{'key:skeleton', '',             'key:skeleton'},
+			{'key:skeleton', 'default:steel_ingot', 'key:skeleton'},
 			{'key:skeleton', 'key:skeleton', 'key:skeleton'},
 		}
 	})

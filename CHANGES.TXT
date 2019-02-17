@@ -1,3 +1,7 @@
+[2019/2/16] Added keychain item. You can add keys by putting both key and chain in the craft grid.
+[2019/2/16] Keys can now be copied.
+[2019/2/16] All arrows should now ignore other arrows and DM fireballs.
+[2019/2/16] Reduced DM loot drops -- way too much mese!
 [2019/2/15] Added papyrus bed.
 [2019/2/15] Added colored beds, new code written completely from scratch.
 [2019/2/14] Fixed bug: players can now be reliably hurt by arrows.

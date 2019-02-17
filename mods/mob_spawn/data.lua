@@ -69,10 +69,6 @@ register({
   min_height = -21,
   max_height = 70,
   day_toggle = false,
-
-	-- The hight limit for this mob means we can afford more spawn checks.
-	saturation_time_min = 20,
-	saturation_time_max = 60,
 })
 
 register({

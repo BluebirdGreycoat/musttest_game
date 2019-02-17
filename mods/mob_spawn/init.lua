@@ -132,6 +132,7 @@ end
 
 -- May modify argument as output value.
 -- Search both upward and downward (starting from air) to find a non-air node.
+-- Depreciated -- too slow.
 local function try_locate_ground(pos)
 	pos = {x=pos.x, y=pos.y, z=pos.z}
 	local get_node = minetest.get_node

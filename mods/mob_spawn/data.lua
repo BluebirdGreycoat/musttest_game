@@ -79,6 +79,9 @@ register({
 	node_jitter = 5,
 	success_time_min = 1,
 	success_time_max = 10,
+
+	min_count = 1,
+	max_count = 4,
 })
 
 register({

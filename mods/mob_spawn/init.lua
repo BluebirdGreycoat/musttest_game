@@ -352,25 +352,10 @@ function mob_spawn.spawn_mobs(pname, index)
 
 	minetest.chat_send_player("MustTest", "Mob: " .. mname .. ", Points: " .. #points)
 
-	local skip_count_check = (math.random(1, 100) == 1)
-
 	-- Record number of mobs successfully spawned.
 	local mobs_spawned = 0
 
 	for i = 1, attempts do
-		-- Low chance that this check is skipped, to produce large mob crowds.
-		if not skip_count_check then
-			-- Don't spawn mob if there are already too many mobs in area.
-			-- The current mob count is the recorded number of mobs, plus the number
-			-- of mobs that we've spawned after recording that number.
-			local cc = mob_count + mobs_spawned
-			local cc2 = mob_count2 + mobs_spawned
-			if cc >= mob_limit or cc2 >= mob_limit2 then
-				report(mname, "Too many mobs in local area! Will spawn no more mobs.")
-				return mobs_spawned
-			end
-		end
-
 		-- Pick a random point for each spawn attempt. Prevents bunching.
 		local pos = points[random(1, #points)]
 		report(mname, "Attempting to spawn mob @ " .. minetest.pos_to_string(pos) .. "!")
@@ -410,8 +395,9 @@ function mob_spawn.spawn_mobs(pname, index)
 			end
     end
 
-		-- Spawn mobs.
-    for i = min_count, max_count do
+		-- Spawn a random number of mobs.
+		local num_to_spawn = random(min_count, max_count)
+    for i = 1, num_to_spawn, 1 do
 			-- Slightly randomize horizontal positioning.
 			local p2 = {x=random(-5, 5)/10, y=0.5, z=random(-5, 5)/10}
 			local mob = add_entity(vector_add(pos, p2), mname)

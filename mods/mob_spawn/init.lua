@@ -140,7 +140,7 @@ local function try_locate_ground(pos)
 	if s == "air" then
 
 		-- Search downward.
-		while s == "air" then
+		while s == "air" do
 			if c > 2 then
 				return false
 			end
@@ -155,7 +155,7 @@ local function try_locate_ground(pos)
 	elseif s ~= "air" then
 
 		-- Search upward.
-		while s ~= "air" then
+		while s ~= "air" do
 			if c > 2 then
 				return false
 			end

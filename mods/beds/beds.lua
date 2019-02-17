@@ -40,7 +40,7 @@ beds.bed_colors = {
 	{name="blue", desc="Blue", wool="blue",                   mask="#0059a7"},
 	{name="dark_grey", desc="Dark Gray", wool="dark_grey",    mask="#4c4c4c"},
 	{name="grey", desc="Gray", wool="grey",                   mask="#a2a2a2"},
-	{name="white", desc="White", wool="white",                mask="#f3f3f3"},
+	{name="white", desc="Silver", wool="white",               mask="#f3f3f3"},
 }
 
 for k, v in ipairs(beds.bed_colors) do

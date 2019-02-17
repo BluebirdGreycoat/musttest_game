@@ -143,7 +143,7 @@ function _doors.door_toggle(pos, node, clicker)
     -- is player wielding the right key?
     local item = clicker:get_wielded_item()
     local owner = meta:get_string("doors_owner")
-    if item:get_name() == "key:key" then
+    if item:get_name() == "key:key" or item:get_name() == "key:chain" then
       local key_meta = item:get_meta()
       local secret = meta:get_string("key_lock_secret")
 
@@ -739,7 +739,7 @@ function _doors.trapdoor_toggle(pos, node, clicker)
     local item = clicker:get_wielded_item()
     local meta = minetest.get_meta(pos)
     local owner = meta:get_string("doors_owner")
-    if item:get_name() == "key:key" then
+    if item:get_name() == "key:key" or item:get_name() == "key:chain" then
       local key_meta = item:get_meta()
       local secret = meta:get_string("key_lock_secret")
 

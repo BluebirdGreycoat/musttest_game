@@ -282,7 +282,7 @@ function utility.can_interact_with_node(player, pos)
 
 	-- is player wielding the right key?
 	local item = player:get_wielded_item()
-	if item:get_name() == "key:key" then
+	if item:get_name() == "key:key" or item:get_name() == "key:chain" then
 		local key_meta = item:get_meta()
 
 		if key_meta:get_string("secret") == "" then

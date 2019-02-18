@@ -229,9 +229,6 @@ end
 
 -- Use for ground/surface mobs.
 local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
-	-- Profile function execution time.
-	local t1 = os.clock()
-
 	local random = math.random
 	local floor = math.floor
 	local get_node = minetest.get_node
@@ -276,11 +273,6 @@ local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
 	end
 	end
 	end
-
-	-- Calculate elapsed time.
-	local t2 = os.clock()
-	local totalms = math.ceil((t2 - t1) * 1000)
-	minetest.chat_send_player("MustTest", "Took " .. totalms .. " ms!")
 
 	return results
 end
@@ -480,12 +472,20 @@ function mob_spawn.spawn_mobs(pname, index)
 	-- Find potential spawn points around player location.
 	local points
 
+	-- Profile function execution time.
+	local t1 = os.clock()
+
 	if mdef.flyswim == "ground" then
 		points = search_terrain(spos, step, radius, jitter, names, offset, clearance)
 	elseif mdef.flyswim == "flyswim" then
 		points = search_flyswim(spos, step, radius, jitter, names, offset, clearance)
 	end
 	report(mname, "Found " .. #points .. " spawn point(s) @ " .. minetest.pos_to_string(spos) .. "!")
+
+	-- Calculate elapsed time.
+	local t2 = os.clock()
+	local totalms = math.ceil((t2 - t1) * 1000)
+	minetest.chat_send_player("MustTest", "Took " .. totalms .. " ms!")
 
 	-- Prevent a crash when accessing the array later.
 	if #points < 1 then

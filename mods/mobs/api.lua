@@ -2468,6 +2468,11 @@ local function do_states(self, dtime)
 
 							-- Don't bother the admin.
 							if self.attack:is_player() and not gdac.player_is_admin(self.attack:get_player_name() or "") then
+								-- Mob has a chance of removing the player from whatever they're attached to.
+								if random(1, 5) == 1 then
+									utility.detach_player_with_message(self.attack)
+								end
+
 								self.attack:punch(self.object, 1.0, {
 									full_punch_interval = 1.0,
 									damage_groups = {fleshy = self.damage}

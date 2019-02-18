@@ -7,6 +7,7 @@ function carts:get_sign(z)
 end
 
 -- Note: this works for boats, too.
+-- Returns [""] if player wasn't attached. Otherwise, name of previous attachment type.
 function default.detach_player_if_attached(player)
 	local pname = player:get_player_name()
 

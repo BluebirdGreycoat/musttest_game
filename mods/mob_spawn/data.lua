@@ -160,7 +160,7 @@ register({
     "rackstone:mg_redrack",
   },
 	min_light = 0,
-	max_light = 6,
+	max_light = 3,
 	mob_limit = 10,
 	max_height = -25000,
 	min_count = 7,

@@ -33,9 +33,8 @@ mobs.register_mob("warthog:warthog", {
 	jump = true,
 	view_range = 20,
 	drops = {
-		{name = "mobs:meat_raw", chance = 2, min = 1, max = 2},
-		{name = "starpearl:pearl", chance = 10, min = 1, max = 1},
-		{name = "mobs:leather", chance = 1, min = 1, max = 3},
+		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2},
+		{name = "mobs:leather", chance = 2, min = 1, max = 1},
 	},
 	water_damage = 1,
 	lava_damage = 5,

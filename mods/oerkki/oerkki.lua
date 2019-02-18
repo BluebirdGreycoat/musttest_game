@@ -30,9 +30,8 @@ mobs.register_mob("oerkki:oerkki", {
 	fly = true,
 	fly_in = "air",
 	drops = {
-		{name = "mobs:meat_raw", chance = 2, min = 1, max = 2},
-		{name = "default:obsidian", chance = 2, min = 1, max = 6},
-		{name = "mobs:leather", chance = 1, min = 1, max = 3},
+		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2},
+		{name = "mobs:leather", chance = 2, min = 1, max = 1},
 	},
 	water_damage = 1,
 	lava_damage = 100,

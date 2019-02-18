@@ -31,8 +31,8 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 	fall_speed = -6,
 	stepheight = 2.1,
 	drops = {
-		{name = "default:obsidian", chance = 9, min = 1, max = 3},
-		{name = "default:obsidian_shard", chance = 1, min = 1, max = 9},
+		{name = "default:obsidian", chance = 2, min = 1, max = 6},
+		{name = "default:obsidian_shard", chance = 2, min = 1, max = 9},
 	},
 	water_damage = 1,
 	lava_damage = 1,

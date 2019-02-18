@@ -68,7 +68,7 @@ function mob_spawn.register_spawn(data)
 
 	-- What is the radius of the mob's local area?
 	-- What radius to use, when checking for other mobs or players.
-	tb.mob_range = data.mob_range or 30
+	tb.mob_range = data.mob_range or 50
 
 	-- Mob's light requirements?
 	-- Mob will not spawn if light is too bright or too dark.

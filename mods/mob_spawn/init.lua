@@ -337,14 +337,14 @@ function mob_spawn.on_globalstep(dtime)
 	time = 0
 
 	-- Profile function execution time.
-	local t1 = os.clock()
+	--local t1 = os.clock()
 
 	execute_spawners()
 
 	-- Calculate elapsed time.
-	local t2 = os.clock()
-	local totalms = math.ceil((t2 - t1) * 1000)
-	minetest.chat_send_player("MustTest", "Took " .. totalms .. " ms!")
+	--local t2 = os.clock()
+	--local totalms = math.ceil((t2 - t1) * 1000)
+	--minetest.chat_send_player("MustTest", "Took " .. totalms .. " ms!")
 end
 
 -- Count how many mobs exist in a given area with a radius.

@@ -221,27 +221,36 @@ end
 --
 -- Write all sectors marked as dirty to the database.
 function nodestore.do_save()
-	nodestore.db_exec("BEGIN TRANSACTION;")
-	for sector, v in pairs(nodestore.dirty) do
-		-- Generate filename.
-		local keyname = sector_to_keyname(sector)
-
-		nodestore.log("Saving sector " .. keyname .. " because it is dirty.")
-		local data = nodestore.data[sector]
-		if data and table_not_empty(data) then
-			local str = minetest.serialize(data)
-			if type(str) == "string" then
-				nodestore.db_save_sector(sector, str)
-			else
-				nodestore.log("Could not serialize sector " .. keyname .. " to string!")
-			end
-		else
-			nodestore.log("Sector " .. keyname .. " declared dirty, but does not exist in memory or is empty.")
-		end
+	-- First check if anything is dirty. Count dirty entries.
+	local have_dirty = false
+	for k, v in pairs(nodestore.dirty) do
+		have_dirty = true
+		break
 	end
-	-- Clear dirty names.
-	nodestore.dirty = {}
-	nodestore.db_exec("COMMIT;")
+
+	if have_dirty then
+		nodestore.db_exec("BEGIN TRANSACTION;")
+		for sector, v in pairs(nodestore.dirty) do
+			-- Generate filename.
+			local keyname = sector_to_keyname(sector)
+
+			nodestore.log("Saving sector " .. keyname .. " because it is dirty.")
+			local data = nodestore.data[sector]
+			if data and table_not_empty(data) then
+				local str = minetest.serialize(data)
+				if type(str) == "string" then
+					nodestore.db_save_sector(sector, str)
+				else
+					nodestore.log("Could not serialize sector " .. keyname .. " to string!")
+				end
+			else
+				nodestore.log("Sector " .. keyname .. " declared dirty, but does not exist in memory or is empty.")
+			end
+		end
+		-- Clear dirty names.
+		nodestore.dirty = {}
+		nodestore.db_exec("COMMIT;")
+	end
 end
 
 

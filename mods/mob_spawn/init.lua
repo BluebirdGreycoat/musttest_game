@@ -2,6 +2,9 @@
 mob_spawn = mob_spawn or {}
 mob_spawn.modpath = minetest.get_modpath("mob_spawn")
 
+-- Ensure we don't get 'attempt to compare number with nil' at runtime.
+assert(type(default.LIGHT_MAX) == "number")
+
 mob_spawn.registered = mob_spawn.registered or {}
 mob_spawn.players = mob_spawn.players or {}
 

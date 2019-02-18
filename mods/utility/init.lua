@@ -30,6 +30,7 @@ end
 
 dofile(utility.modpath .. "/particle_override.lua")
 dofile(utility.modpath .. "/mapsave.lua")
+dofile(utility.modpath .. "/functions.lua")
 
 -- Get a player's foot position, given the player's position.
 -- Should help compatibility going into 0.5.0 and beyond.

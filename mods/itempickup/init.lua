@@ -27,7 +27,7 @@ itempickup.update = function(dtime)
 		local pname = v:get_player_name()
     if v:is_player() and v:get_hp() > 0 and not gdac_invis.is_invisible(pname) then
 			-- Basic range, when player is standing still.
-			local range = 0.5
+			local range = 0
 			local sneak = false
 			local control = v:get_player_control()
 
@@ -45,14 +45,13 @@ itempickup.update = function(dtime)
 				range = 2.5
 			end
 
-			-- Moving increases pickup range a little (not as much as sneak).
-			if control.up or control.left or control.right then
-				-- Override `sneak`.
-				range = 1.5
+      local pos -- Initialized only if items are searched.
+      local items = {}
+
+			if range > 0 then
+				pos = utility.get_middle_pos(v:get_pos())
+				items = minetest.get_objects_inside_radius(pos, range)
 			end
-      
-      local pos = utility.get_middle_pos(v:get_pos())
-      local items = minetest.get_objects_inside_radius(pos, range)
 
       local inv
       if #items > 0 then

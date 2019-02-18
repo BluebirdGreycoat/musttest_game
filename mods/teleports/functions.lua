@@ -153,7 +153,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
 
 	-- Teleport player to chosen location.
-	preload_tp.preload_and_teleport(pname, pos, 32, function()
+	preload_tp.preload_and_teleport(pname, pos, 16, function()
 		-- Delete 3x3x3 area above teleport.
 		for x=minp.x, maxp.x do
 			for y=minp.y, maxp.y do

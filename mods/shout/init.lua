@@ -79,8 +79,8 @@ shout.HINTS = {
 	"Mr. Momoa, your trailer's on fire.",
 }
 
-local HINT_DELAY_MIN = 60*15
-local HINT_DELAY_MAX = 60*30
+local HINT_DELAY_MIN = 60*45
+local HINT_DELAY_MAX = 60*90
 
 function shout.print_hint()
 	local HINTS = shout.HINTS

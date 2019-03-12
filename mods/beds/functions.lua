@@ -243,8 +243,9 @@ end
 local function node_blocks_bed(nn)
   if nn == "air" then return false end
 
-  if string.find(nn, "ladder")
-		or string.find(nn, "torch") then
+  if string.find(nn, "ladder") or
+			string.find(nn, "torch") or
+			string.find(nn, "memorandum") then
     return false
   end
 

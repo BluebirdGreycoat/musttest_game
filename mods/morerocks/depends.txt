@@ -1,6 +1,5 @@
 default
 falldamage
 node_blackout
-stairs
 oregen
 mapgen

@@ -29,7 +29,7 @@ for k, v in ipairs(rocks) do
 		local image = ndef.tiles[1]
 		if type(image) == "string" then
 			walls.register(
-				"morerocks_ " .. v,
+				"morerocks_" .. v,
 				ndef.description,
 				image, -- Only accepts a string!
 				basename,

@@ -20,7 +20,7 @@ minetest.register_craft({
 })
 
 minetest.register_node("cucumber:seed", {
-  description = "Tomato Seed",
+  description = "Cucumber Seed",
   tiles = {"farming_cucumber_seed.png"},
   wield_image = "farming_cucumber_seed.png",
   inventory_image = "farming_cucumber_seed.png",

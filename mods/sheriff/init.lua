@@ -53,7 +53,10 @@ end
 local accidents = {
 	{
 		func = function(player)
-			minetest.chat_send_player(player:get_player_name(), "# Server: Close call!")
+			local pname = player:get_player_name()
+			minetest.after(2, function()
+				minetest.chat_send_player(pname, "# Server: Close call!")
+			end)
 		end,
 	},
 	{
@@ -66,6 +69,17 @@ local accidents = {
 				max = 1,
 				msg = "# Server: Someone was poisoned!",
 				poison = true,
+			})
+		end,
+	},
+	{
+		func = function(player)
+			tnt.boom(vector.round(player:get_pos()), {
+				radius = 2,
+				ignore_protection = false,
+				ignore_on_blast = false,
+				damage_radius = 3,
+				disable_drops = true,
 			})
 		end,
 	},

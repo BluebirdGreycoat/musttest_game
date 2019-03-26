@@ -172,6 +172,13 @@ function obsidian_gateway.attempt_activation(pos, player)
 		return
 	end
 
+	if sheriff.player_punished(pname) then
+		if sheriff.punish_probability(pname) then
+			sheriff.punish_player(pname)
+			return
+		end
+	end
+
 	minetest.log("action", pname .. " activated gateway @ " .. minetest.pos_to_string(pos))
 
 	local target

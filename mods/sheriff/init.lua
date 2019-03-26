@@ -67,8 +67,8 @@ local accidents = {
 				name = player:get_player_name(),
 				step = 10,
 				min = 1,
-				max = 1,
-				msg = "# Server: Someone was poisoned!",
+				max = math.random(1, 2),
+				msg = "# Server: Someone got poisoned!",
 				poison = true,
 			})
 		end,
@@ -82,6 +82,21 @@ local accidents = {
 				damage_radius = 3,
 				disable_drops = true,
 			})
+		end,
+	},
+	{
+		func = function(player)
+			local inv = player:get_inventory()
+			local sz = inv:get_size("main")
+			local pos = math.random(1, sz)
+			local stack = inv:get_stack("main", pos)
+			if not stack:is_empty() and stack:get_name() ~= "passport:passport" then
+				minetest.chat_send_player(player:get_player_name(), "# Server: Pick-pocket!")
+				stack:take_item(stack:get_count())
+				inv:set_stack("main", pos, stack)
+			else
+				minetest.chat_send_player(player:get_player_name(), "# Server: Close call!")
+			end
 		end,
 	},
 }

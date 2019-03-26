@@ -116,6 +116,13 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	end
 	local pname = player:get_player_name()
 
+	if sheriff.player_punished(pname) then
+		if sheriff.punish_probability(pname) then
+			sheriff.punish_player(pname)
+			return
+		end
+	end
+
 	local p = vector.round(teleport_pos)
 	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}

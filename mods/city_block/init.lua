@@ -328,6 +328,16 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
+	-- Random accidents happen to punished players during PvP.
+	do
+		local pname = hitter:get_player_name()
+		if sheriff.player_punished(pname) then
+			if sheriff.punish_probability(pname) then
+				sheriff.punish_player(pname)
+			end
+		end
+	end
+
 	local p1pos = utility.get_head_pos(hitter:get_pos())
 	local p2pos = utility.get_head_pos(player:get_pos())
 

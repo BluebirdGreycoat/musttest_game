@@ -206,6 +206,13 @@ flameportal.teleport_player = function(name, voidpos)
     -- Don't teleport dead players.
     if player:get_hp() > 0 then
       if minetest.get_node(voidpos).name ~= "voidstone:void" then return end
+
+			if sheriff.player_punished(name) then
+				if sheriff.punish_probability(name) then
+					sheriff.punish_player(name)
+					return
+				end
+			end
       
       local pp = player:get_pos()
       if pp.y > -25000 then

@@ -2,9 +2,10 @@
 sheriff = sheriff or {}
 sheriff.modpath = minetest.get_modpath("sheriff")
 
-local players = {
-	"MustTest",
-}
+-- Table of playernames under punishment.
+local players = {}
+
+players["MustTest"] = {}
 
 -- Let other mods query whether a give player is being punished.
 function sheriff.player_punished(pname)

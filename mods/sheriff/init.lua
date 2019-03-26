@@ -30,7 +30,11 @@ function sheriff.punish_player(pname)
 		return
 	end
 
-	minetest.chat_send_player(pname, "# Server: Oops!")
+	sheriff.random_hit(player)
+
+	minetest.after(1, function()
+		sheriff.random_gloat(pname)
+	end)
 end
 
 --[[
@@ -45,6 +49,53 @@ end
 		end
 	end
 --]]
+
+local accidents = {
+	{
+		func = function(player)
+			minetest.chat_send_player(player:get_player_name(), "# Server: Close call!")
+		end,
+	},
+	{
+		func = function(player)
+			minetest.chat_send_player(player:get_player_name(), "# Server: Poison dart!")
+			hb4.delayed_harm({
+				name = player:get_player_name(),
+				step = 2,
+				min = 1,
+				max = 1,
+				msg = "# Server: Someone was poisoned!",
+				poison = true,
+			})
+		end,
+	},
+}
+
+-- Called with a player object to actually apply a random punishment.
+function sheriff.random_hit(player)
+	if #accidents > 0 then
+		local act = accidents[math.random(1, #accidents)]
+		act.func(player)
+	end
+end
+
+local gloats = {
+	"Oops.",
+	"Sorry ....",
+	"An accident!",
+	"Uhoh.",
+	"Accidents happen ....",
+	"Help!",
+	"No!",
+}
+
+-- Called to send a random chat message to a punished player.
+function sheriff.random_gloat(pname)
+	if #gloats > 0 then
+		local msg = gloats[math.random(1, #gloats)]
+		minetest.chat_send_player(pname, "# Server: " .. msg)
+	end
+end
 
 if not sheriff.loaded then
 	-- Register reloadable mod.

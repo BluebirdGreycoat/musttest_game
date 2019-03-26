@@ -239,6 +239,14 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
   passport.players[name] = nil
   local player = minetest.get_player_by_name(name)
   if player and player:is_player() then
+
+		if sheriff.player_punished(name) then
+			if sheriff.punish_probability(name) then
+				sheriff.punish_player(name)
+				return
+			end
+		end
+
     if vector.distance(player:getpos(), start_pos) < 0.1 then
 			local fwrap = function(...)
 				minetest.chat_send_player(name, "# Server: Transport successful.")

@@ -65,7 +65,7 @@ local accidents = {
 			minetest.chat_send_player(player:get_player_name(), "# Server: Poison dart!")
 			hb4.delayed_harm({
 				name = player:get_player_name(),
-				step = 2,
+				step = 10,
 				min = 1,
 				max = 1,
 				msg = "# Server: Someone was poisoned!",

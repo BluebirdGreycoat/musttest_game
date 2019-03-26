@@ -5,7 +5,7 @@ sheriff.modpath = minetest.get_modpath("sheriff")
 -- Table of playernames under punishment.
 local players = {}
 
-players["MustTest"] = {}
+players["SystemRoot"] = {}
 
 -- Let other mods query whether a give player is being punished.
 function sheriff.player_punished(pname)
@@ -16,7 +16,7 @@ end
 
 -- Can be called by mods to check if player should be punished *this time*.
 function sheriff.punish_probability(pname)
-	if math.random(1, 4) == 1 then
+	if math.random(1, 100) == 1 then
 		return true
 	end
 end

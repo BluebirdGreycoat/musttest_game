@@ -268,6 +268,12 @@ function passport.exec_spawn(name, param)
 		easyvend.sound_error(name)
 		return true
 	end
+	if sheriff.player_punished(name) then
+		if sheriff.punish_probability(name) then
+			sheriff.punish_player(name)
+			return true
+		end
+	end
 	if vector.distance(pos, target) <= 256 then
 		randspawn.reposition_player(name, pos)
 		minetest.after(1, function()

@@ -86,16 +86,19 @@ local accidents = {
 	},
 	{
 		func = function(player)
+			local pname = player:get_player_name()
 			local inv = player:get_inventory()
 			local sz = inv:get_size("main")
 			local pos = math.random(1, sz)
 			local stack = inv:get_stack("main", pos)
 			if not stack:is_empty() and stack:get_name() ~= "passport:passport" then
-				minetest.chat_send_player(player:get_player_name(), "# Server: Pick-pocket!")
+				minetest.chat_send_player(pname, "# Server: Pick-pocket!")
 				stack:take_item(stack:get_count())
 				inv:set_stack("main", pos, stack)
 			else
-				minetest.chat_send_player(player:get_player_name(), "# Server: Close call!")
+				minetest.after(2, function()
+					minetest.chat_send_player(pname, "# Server: Close call!")
+				end)
 			end
 		end,
 	},

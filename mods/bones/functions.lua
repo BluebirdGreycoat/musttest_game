@@ -509,6 +509,13 @@ bones.on_punch = function(pos, node, player)
 			return
     end
 
+		if sheriff.player_punished(pname) then
+			if sheriff.punish_probability(pname) then
+				sheriff.punish_player(pname)
+				return
+			end
+		end
+
 		-- Prevent picking bones right after respawn, before player is repositioned.
 		if bones.nohack.on_hackdetect(player) then
 			minetest.chat_send_player(pname, "# Server: Wait a bit before picking bones.")

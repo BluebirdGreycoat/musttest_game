@@ -714,6 +714,56 @@ doors.register("door_lightwood_glass_locked", {
     },
 })
 
+doors.register("door_fancy_ext1", {
+    tiles = {{name="doors_door_ext_fancy1.png", backface_culling = true}},
+    description = "Fancy Exterior Wood/Glass Door",
+    inventory_image = "doors_item_ext_fancy1.png",
+    groups = {level=1, cracky=3, choppy=3},
+    recipe = {
+        {"group:wood_dark", "default:glass"},
+        {"group:wood_dark", "brass:ingot"},
+        {"group:wood_dark", "group:wood_dark"},
+    },
+})
+
+doors.register("door_fancy_ext1_locked", {
+    tiles = {{name="doors_door_ext_fancy1.png", backface_culling = true}},
+    description = "Locked Fancy Exterior Wood/Glass Door",
+    inventory_image = "doors_item_ext_fancy1.png",
+		protected = true,
+    groups = {level=1, cracky=3, choppy=3},
+    recipe = {
+        {"group:wood_dark", "default:glass", ""},
+        {"group:wood_dark", "brass:ingot", "default:steel_ingot"},
+        {"group:wood_dark", "group:wood_dark", ""},
+    },
+})
+
+doors.register("door_fancy_ext2", {
+    tiles = {{name="doors_door_ext_fancy2.png", backface_culling = true}},
+    description = "Fancy Exterior Wood/Glass Door",
+    inventory_image = "doors_item_ext_fancy2.png",
+    groups = {level=1, cracky=3, choppy=3},
+    recipe = {
+        {"group:wood_dark", "default:glass"},
+        {"group:wood_dark", "default:glass"},
+        {"group:wood_dark", "group:wood_dark"},
+    },
+})
+
+doors.register("door_fancy_ext2_locked", {
+    tiles = {{name="doors_door_ext_fancy2.png", backface_culling = true}},
+    description = "Locked Fancy Exterior Wood/Glass Door",
+    inventory_image = "doors_item_ext_fancy2.png",
+		protected = true,
+    groups = {level=1, cracky=3, choppy=3},
+    recipe = {
+        {"group:wood_dark", "default:glass", ""},
+        {"group:wood_dark", "default:glass", "default:steel_ingot"},
+        {"group:wood_dark", "group:wood_dark", ""},
+    },
+})
+
 -- Capture mods using the old API as best as possible.
 function doors.register_door(name, def)
 	if def.only_placer_can_open then

@@ -2,6 +2,8 @@
 --updated 12/11/2013
 --Mod adding simple on/off lights by qwrwed.
 
+-- License is WTFPL, textures are by VanessaE and paramat, code for flat lights is by LionsDen.
+
 if minetest.get_modpath("unified_inventory") or not minetest.setting_getbool("creative_mode") then
         lightsplus_expect_infinite_stacks = false
 else

@@ -285,10 +285,7 @@ minetest.register_tool("handholds:climbing_pick", {
 		end
 
 		minetest.set_node(pointed_thing.above, {name = "handholds:climbable_air"})
-		minetest.sound_play(
-			"default_dig_cracky",
-			{pos = pointed_thing.above, gain = 0.5, max_hear_distance = 8}
-		)
+		ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
 
 		if not minetest.setting_getbool("creative_mode") then
 			local wdef = itemstack:get_definition()

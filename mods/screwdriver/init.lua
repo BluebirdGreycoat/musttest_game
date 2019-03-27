@@ -127,6 +127,8 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		node.param2 = new_param2
 		minetest.swap_node(pos, node)
     minetest.check_for_falling(pos)
+
+		ambiance.sound_play("default_dug_metal", pos, 1, 30)
 	end
 
 	if not minetest.setting_getbool("creative_mode") then

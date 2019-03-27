@@ -28,7 +28,7 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 	-- We handle stack ourselves.
 	local fakestack = ItemStack(itemstack:get_name())
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.5, 40)
+	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.5, 30)
 	screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_FACE, 200)
 
 	wear = wear + electric_screwdriver.uses

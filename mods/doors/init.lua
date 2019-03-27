@@ -655,6 +655,7 @@ doors.register("door_steel_glass_locked", {
     tiles = {{name="doors_door_steelglass.png", backface_culling = true}},
     description = "Locked Fancy Glass/Iron Door",
     inventory_image = "doors_item_steelglass.png",
+    protected = true,
     groups = {level=1, cracky=3},
     recipe = {
         {"default:steel_ingot", "default:glass", ""},
@@ -679,6 +680,7 @@ doors.register("door_wood_glass_locked", {
     tiles = {{name="doors_door_woodglass.png", backface_culling = true}},
     description = "Locked Fancy Glass/Darkwood Door",
     inventory_image = "doors_item_woodglass.png",
+    protected = true,
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_dark", "default:glass", ""},
@@ -703,6 +705,7 @@ doors.register("door_lightwood_glass_locked", {
     tiles = {{name="doors_door_lightwoodglass.png", backface_culling = true}},
     description = "Locked Fancy Glass/Wood Door",
     inventory_image = "doors_item_lightwoodglass.png",
+    protected = true,
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_light", "default:glass", ""},

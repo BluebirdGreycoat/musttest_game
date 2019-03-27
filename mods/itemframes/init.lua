@@ -117,7 +117,7 @@ local drop_item = function(pos, node)
 end
 
 minetest.register_node("itemframes:frame",{
-	description = "Item Frame",
+	description = "Item Frame\n\nSometimes stored items become invisible.\nPunch with a stick to restore them.",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -190,7 +190,7 @@ minetest.register_node("itemframes:frame",{
 
 
 minetest.register_node("itemframes:pedestal",{
-	description = "Pedestal",
+	description = "Pedestal\n\nSometimes stored items become invisible.\nPunch with a stick to restore them.",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed", fixed = {

@@ -720,9 +720,9 @@ doors.register("door_fancy_ext1", {
     inventory_image = "doors_item_ext_fancy1.png",
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
-        {"group:wood_dark", "default:glass"},
-        {"group:wood_dark", "default:glass"},
-        {"group:wood_dark", "group:wood_dark"},
+        {"group:wood_light", "default:glass"},
+        {"group:wood_light", "default:glass"},
+        {"group:wood_light", "group:wood_light"},
     },
 })
 
@@ -733,9 +733,9 @@ doors.register("door_fancy_ext1_locked", {
 		protected = true,
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
-        {"group:wood_dark", "default:glass", ""},
-        {"group:wood_dark", "default:glass", "default:steel_ingot"},
-        {"group:wood_dark", "group:wood_dark", ""},
+        {"group:wood_light", "default:glass", ""},
+        {"group:wood_light", "default:glass", "default:steel_ingot"},
+        {"group:wood_light", "group:wood_light", ""},
     },
 })
 

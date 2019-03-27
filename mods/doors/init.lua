@@ -232,9 +232,14 @@ function doors.register(name, def)
 		name = "doors:" .. name
 	end
 
+	local inv_image = def.inventory_image
+	if def.protected then
+		inv_image = inv_image .. "^protector_lock.png"
+	end
+
 	minetest.register_craftitem(":" .. name, {
 		description = def.description,
-		inventory_image = def.inventory_image,
+		inventory_image = inv_image,
     groups = def.groups,
 
 		on_place = function(itemstack, placer, pointed_thing)
@@ -913,6 +918,11 @@ function doors.register_trapdoor(name, def)
 
 	def_opened.drop = name_closed
 	def_opened.groups.not_in_creative_inventory = 1
+
+	if def.protected then
+		def_closed.inventory_image = def_closed.inventory_image .. "^protector_lock.png"
+		def_opened.inventory_image = def_opened.inventory_image .. "^protector_lock.png"
+	end
 
 	minetest.register_node(name_opened, def_opened)
 	minetest.register_node(name_closed, def_closed)

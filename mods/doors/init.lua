@@ -721,7 +721,7 @@ doors.register("door_fancy_ext1", {
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_dark", "default:glass"},
-        {"group:wood_dark", "brass:ingot"},
+        {"group:wood_dark", "default:glass"},
         {"group:wood_dark", "group:wood_dark"},
     },
 })
@@ -734,7 +734,7 @@ doors.register("door_fancy_ext1_locked", {
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_dark", "default:glass", ""},
-        {"group:wood_dark", "brass:ingot", "default:steel_ingot"},
+        {"group:wood_dark", "default:glass", "default:steel_ingot"},
         {"group:wood_dark", "group:wood_dark", ""},
     },
 })
@@ -746,7 +746,7 @@ doors.register("door_fancy_ext2", {
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_dark", "default:glass"},
-        {"group:wood_dark", "default:glass"},
+        {"group:wood_dark", "brass:ingot"},
         {"group:wood_dark", "group:wood_dark"},
     },
 })
@@ -759,7 +759,7 @@ doors.register("door_fancy_ext2_locked", {
     groups = {level=1, cracky=3, choppy=3},
     recipe = {
         {"group:wood_dark", "default:glass", ""},
-        {"group:wood_dark", "default:glass", "default:steel_ingot"},
+        {"group:wood_dark", "brass:ingot", "default:steel_ingot"},
         {"group:wood_dark", "group:wood_dark", ""},
     },
 })

@@ -121,7 +121,7 @@ end
 
 if not diving_equipment.registered then
 	minetest.register_craftitem(":scuba:air", {
-		description = "Compressed Air Canister",
+		description = "Compressed Air Canister\n\nUse with a diving helmet.\nLets you stay underwater.",
 		inventory_image = "musttest_compressed_air.png",
 		on_use = function(...)
 			return diving_equipment.on_use(...)
@@ -133,7 +133,7 @@ if not diving_equipment.registered then
 
 	-- The diving mask.
   minetest.register_tool(":3d_armor:helmet_scuba", {
-    description = "Ocean Diving Helmet",
+    description = "Ocean Diving Helmet\n\nUse with compressed air.\nLets you stay underwater.",
     inventory_image = "3d_armor_inv_helmet_scuba.png",
     groups = {armor_head=1, armor_heal=0, armor_use=2000},
     wear = 0,

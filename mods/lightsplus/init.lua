@@ -64,10 +64,10 @@ end
 --	CRAFTING
 --Light
 minetest.register_craft({
-	output = '"lightsplus:light" 10',
+	output = '"lightsplus:light" 6',
 	recipe = {
 		{'default:glass', 'default:glass', 'default:glass'},
-		{'default:torch', 'default:torch', 'default:torch'},
+		{'group:torch_craftitem', 'group:torch_craftitem', 'group:torch_craftitem'},
 		{'default:glass', 'default:glass', 'default:glass'},
 	}
 })

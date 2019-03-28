@@ -8,7 +8,16 @@ map.modpath = minetest.get_modpath("map")
 -- Update HUD flags
 -- Global to allow overriding
 
+-- May be called with player object or player name.
+-- Return 'true' if the minimap is ENABLED.
 function map.update_hud_flags(player)
+	if type(player) == "string" then
+		player = minetest.get_player_by_name(player)
+	end
+	if not player or not player:is_player() then
+		return
+	end
+
 	local has_kit = map.has_mapping_kit(player)
 
 	local minimap_enabled = has_kit
@@ -21,6 +30,10 @@ function map.update_hud_flags(player)
 		minimap = minimap_enabled,
 		minimap_radar = radar_enabled,
 	})
+
+	if minimap_enabled then
+		return true
+	end
 end
 
 -- May be called with either a player object or a player name.
@@ -32,12 +45,13 @@ function map.has_mapping_kit(pname_or_pref)
 	if not player or not player:is_player() then
 		return
 	end
-	if player:get_inventory():contains_item("main", "map:mapping_kit") then
+	if player:get_wielded_item():get_name() == "map:mapping_kit" then
 		return true
 	end
 	return false
 end
 
+-- Use from /lua command, mainly.
 function map.query(pname)
 	if map.has_mapping_kit(pname) then
 		minetest.chat_send_player("MustTest", "# Server: Player <" .. rename.gpn(pname) .. "> has a mapping kit!")
@@ -49,23 +63,32 @@ end
 
 
 function map.cyclic_update()
+	--[[
 	local players = minetest.get_connected_players()
 	for _, player in ipairs(players) do
 		map.update_hud_flags(player)
 	end
 	minetest.after(5.3, function() map.cyclic_update() end)
+	--]]
 end
 
 
 
+function map.update_player(pname)
+	if map.update_hud_flags(pname) then
+		minetest.after(1, function() map.update_player(pname) end)
+	end
+end
+
 function map.on_use(itemstack, user, pointed_thing)
-	map.update_hud_flags(user)
+	map.update_player(user:get_player_name())
 end
 
 
 
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
+	--[[
 	minetest.register_on_joinplayer(function(player)
 		map.update_hud_flags(player)
 	end)
@@ -73,13 +96,14 @@ if not map.run_once then
 
 	-- Cyclic update of HUD flags.
 	minetest.after(5.3, function() map.cyclic_update() end)
+	--]]
 
 
 	-- Mapping kit item.
 	minetest.register_node("map:mapping_kit", {
 		tiles = {"map_mapping_kit_tile.png"},
 		wield_image = "map_mapping_kit.png",
-		description = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse with 'Minimap' key.",
+		description = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse with 'Minimap' key.\nMust be wielded to use.",
 		inventory_image = "map_mapping_kit.png",
 		paramtype = 'light',
 		paramtype2 = "wallmounted",

@@ -32,16 +32,18 @@ dofile(utility.modpath .. "/particle_override.lua")
 dofile(utility.modpath .. "/mapsave.lua")
 dofile(utility.modpath .. "/functions.lua")
 
+utility.offset = 0
+
 -- Get a player's foot position, given the player's position.
 -- Should help compatibility going into 0.5.0 and beyond.
 function utility.get_foot_pos(pos)
-	return vector.add(pos, {x=0, y=1, z=0})
+	return vector.add(pos, {x=0, y=0 + utility.offset, z=0})
 end
 function utility.get_middle_pos(pos)
-	return vector.add(pos, {x=0, y=2, z=0})
+	return vector.add(pos, {x=0, y=1 + utility.offset, z=0})
 end
 function utility.get_head_pos(pos)
-	return vector.add(pos, {x=0, y=2.75, z=0})
+	return vector.add(pos, {x=0, y=1.75 + utility.offset, z=0})
 end
 
 -- Global multipliers for ABMs. Performance setting.

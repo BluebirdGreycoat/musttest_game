@@ -121,9 +121,9 @@ if not flowers.registered then
 		f_groups.attached_node = 1
 
 		-- Flowers are supposed to be flammable! [MustTest]
-		f_groups.flammable = 1
+		f_groups.flammable = 3
 
-		minetest.register_node("flowers:" .. name, {
+		minetest.register_node(":flowers:" .. name, {
 			description = desc,
 			drawtype = "plantlike",
 			waving = 1,

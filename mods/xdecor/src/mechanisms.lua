@@ -39,7 +39,7 @@ end
 function plate.on_punch(pos, node, puncher, pt)
 	local node = minetest.get_node(pos)
 	if node.name:sub(-3) == "_on" then
-		node.name = name:gsub("_on$", "_off")
+		node.name = node.name:gsub("_on$", "_off")
 		if minetest.registered_nodes[node.name] then
 			minetest.set_node(pos, node)
 		end

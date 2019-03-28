@@ -80,7 +80,7 @@ if not map.run_once then
 	minetest.register_node("map:mapping_kit", {
 		tiles = {"map_mapping_kit_tile.png"},
 		wield_image = "map_mapping_kit.png",
-		description = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse with 'Minimap' key.\nMust be wielded to use.",
+		description = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse (punch) and press the 'minimap' key.\nMust be wielded to continue using.",
 		inventory_image = "map_mapping_kit.png",
 		paramtype = 'light',
 		paramtype2 = "wallmounted",

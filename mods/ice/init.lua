@@ -74,6 +74,7 @@ if not ice.registered then
 			level = 1, cracky = 2,
 			ice = 1, melts = 1, cold = 1,
 			want_notify = 1,
+			slippery = 3,
 		},
 		--_melts_to = "default:water_source",
 		sounds = default.node_sound_glass_defaults(),

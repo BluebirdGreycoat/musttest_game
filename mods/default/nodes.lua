@@ -584,6 +584,7 @@ minetest.register_node("default:ice", {
 		melts = 1,
 
 		want_notify = 1,
+		slippery = 3,
 	},
 
 	_melts_to = "default:water_flowing",

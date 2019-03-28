@@ -5,7 +5,7 @@
 stairs.register_stair_and_slab(
 	"ice",
 	"default:ice",
-	{cracky = 3, puts_out_fire = 1, ice = 1},
+	{cracky = 3, puts_out_fire = 1, ice = 1, slippery = 1},
 	{"default_ice.png"},
 	"Ice",
 	default.node_sound_glass_defaults()

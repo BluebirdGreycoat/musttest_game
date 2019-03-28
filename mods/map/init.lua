@@ -9,7 +9,7 @@ map.modpath = minetest.get_modpath("map")
 -- Global to allow overriding
 
 function map.update_hud_flags(player)
-	local has_kit = player:get_inventory():contains_item("main", "map:mapping_kit")
+	local has_kit = map.has_mapping_kit(player)
 
 	local minimap_enabled = has_kit
   local radar_enabled = false
@@ -23,13 +23,18 @@ function map.update_hud_flags(player)
 	})
 end
 
-function map.has_mapping_kit(pname)
-	local player = minetest.get_player_by_name(pname)
+-- May be called with either a player object or a player name.
+function map.has_mapping_kit(pname_or_pref)
+	local player = pname_or_pref
+	if type(pname_or_pref) == "string" then
+		player = minetest.get_player_by_name(pname_or_pref)
+	end
 	if not player or not player:is_player() then
 		return
 	end
-	local has_kit = player:get_inventory():contains_item("main", "map:mapping_kit")
-	return has_kit
+	if player:get_inventory():contains_item("main", "map:mapping_kit") then
+		return true
+	end
 end
 
 function map.query(pname)

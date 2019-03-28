@@ -12,7 +12,7 @@ local function add_gauge(player)
 	local ent = minetest.add_entity(pos, "gauges:hp_bar")
 
 	if ent then
-		ent:set_attach(player, "", {x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
+		ent:set_attach(player, "", {x = 0, y = 20, z = 0}, {x = 0, y = 0, z = 0})
 
 		-- Set initial gauge values.
 		local data = ent:get_luaentity()

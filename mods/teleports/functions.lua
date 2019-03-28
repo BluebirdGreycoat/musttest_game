@@ -131,7 +131,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	local dead_players = minetest.get_objects_inside_radius({x=teleport_pos.x, y=teleport_pos.y+1, z=teleport_pos.z}, 2)
 	for k, v in ipairs(dead_players) do
 			if v and v:is_player() then
-				if not gdac.player_is_admin(v) then -- Don't kill admin.
+				if not gdac.player_is_admin(v) and v:get_player_name() ~= pname then -- Don't kill admin or self (can happen due to lag).
 					-- Only if player isn't already dead.
 					if v:get_hp() > 0 then
 						-- If there's a player here already the map must be loaded, so we

@@ -367,7 +367,7 @@ function(pos, formname, fields, sender)
 	local meta = minetest.get_meta(pos)
 	if fields.toggle then
 		if meta:get_int("enabled") == 1 then
-			meta:set_int("enabled", nil)
+			meta:set_int("enabled", 0)
 		else
 			meta:set_int("enabled", 1)
 		end
@@ -642,7 +642,7 @@ function(pos, elapsed)
 	else
 		-- Slow down timer during sleep periods to reduce load.
 		minetest.get_node_timer(pos):start(math.random(1, 3*60))
-		meta:set_int("active", nil)
+		meta:set_int("active", 0)
 	end
 
 	-- Update infotext.

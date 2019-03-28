@@ -47,7 +47,7 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
   if arrow == "" then return end
   
 	local playerpos = utility.get_foot_pos(player:get_pos())
-	local obj = minetest.add_entity({x=playerpos.x, y=playerpos.y+1.25, z=playerpos.z}, arrow)
+	local obj = minetest.add_entity({x=playerpos.x, y=playerpos.y+1.4, z=playerpos.z}, arrow)
   if not obj then return end
   if not obj:get_luaentity() then return end
 

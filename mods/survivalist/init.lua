@@ -703,7 +703,7 @@ function survivalist.on_dieplayer(player)
     survivalist.modstorage:set_string(pname .. ":mode", nil)
     survivalist.modstorage:set_string(pname .. ":pos", nil)
 		survivalist.modstorage:set_string(pname .. ":home", nil)
-    survivalist.modstorage:set_int(pname .. ":wins_streak", nil)
+    survivalist.modstorage:set_int(pname .. ":wins_streak", 0)
     
     -- Count loss.
     local ms = survivalist.modstorage

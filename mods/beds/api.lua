@@ -18,7 +18,7 @@ local function destruct_bed(pos, n)
 				if vector.equals(p1, p2) then
 					beds.spawn[owner] = nil
 					beds.save_spawns()
-					beds.storage:set_int(owner .. ":count", nil)
+					beds.storage:set_int(owner .. ":count", 0)
 					minetest.chat_send_player(owner, "# Server: Your primary bed is destroyed. Your home position is LOST!")
 					--easyvend.sound_error(owner)
 				else

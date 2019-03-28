@@ -26,7 +26,7 @@ end
 function default.enable_particles_for(pname, enable)
 	local key = "particles:" .. pname
 	if enable == true then
-		modmeta:set_int(key, nil)
+		modmeta:set_int(key, 0)
 		if minetest.get_player_by_name(pname) then
 			players[pname] = true
 		end

@@ -5,7 +5,7 @@ sheriff.modpath = minetest.get_modpath("sheriff")
 -- Table of playernames under punishment.
 local players = {}
 
-players["SystemRoot"] = {}
+--players["SystemRoot"] = {} -- Had infinity range hack. Claimed it was Android, which is entirely plausable.
 players["iisu"] = {}
 
 -- Let other mods query whether a give player is being punished.

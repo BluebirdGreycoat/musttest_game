@@ -170,7 +170,7 @@ function(pos, elapsed)
 	else
 		-- Slow down timer during sleep periods to reduce load.
 		minetest.get_node_timer(pos):start(math.random(1, 3*60))
-		meta:set_int("active", nil)
+		meta:set_int("active", 0)
 	end
 
 	-- Update infotext.

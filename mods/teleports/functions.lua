@@ -136,7 +136,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 					if v:get_hp() > 0 then
 						-- If there's a player here already the map must be loaded, so we
 						-- can put fire where they're standing no problem.
-						local dp = vector.round(utility.get_foot_pos(v:get_pos()))
+						local dp = vector.round(v:get_pos())
 						local node = minetest.get_node(dp)
 						if node.name == "air" then
 							minetest.set_node(dp, {name="fire:basic_flame"})

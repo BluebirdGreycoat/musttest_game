@@ -66,7 +66,7 @@ function status.chat_status(user, param)
   local p1, p2
   
   -- Get uptime.
-  local status_str = minetest.get_server_status()
+  local status_str = status.original_status()
   p1, p2 = string.find(status_str, "uptime=[^,]+")
   local uptime = "uptime=unknown"
   if p1 and p2 then
@@ -173,10 +173,19 @@ end
 
 
 if not status.registered then
+	-- Save original function.
+	status.original_status = minetest.get_server_status
+
+	-- Override builtin status function to prevent showing this message on player join!
+	function minetest.get_server_status(pname, joined)
+		return nil
+	end
+
+
 	-- Override the /status chat command.
-	minetest.register_chatcommand("status", {
+	minetest.override_chatcommand("status", {
 		params = "",
-		description = "Print the server's status information.",
+		description = "Show the server's current status.",
 		privs = {},
 		func = function(...) return status.chat_status(...) end,
 	})

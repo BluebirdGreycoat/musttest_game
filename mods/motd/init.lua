@@ -12,10 +12,10 @@ minetest.register_chatcommand("motd", {
 		local motd = minetest.setting_get("motd")
 		if motd == nil or motd == "" then
 			minetest.chat_send_player(name, "# Server: Message of the day has not been set.")
-            return false
-        end
-        
-        minetest.chat_send_player(name, "# Server: " .. motd)
-        return true
+			return false
+		end
+
+		minetest.chat_send_player(name, "# Server: " .. motd)
+		return true
 	end
 })

@@ -35,6 +35,7 @@ function map.has_mapping_kit(pname_or_pref)
 	if player:get_inventory():contains_item("main", "map:mapping_kit") then
 		return true
 	end
+	return false
 end
 
 function map.query(pname)

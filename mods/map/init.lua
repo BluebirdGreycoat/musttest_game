@@ -62,18 +62,6 @@ end
 
 
 
-function map.cyclic_update()
-	--[[
-	local players = minetest.get_connected_players()
-	for _, player in ipairs(players) do
-		map.update_hud_flags(player)
-	end
-	minetest.after(5.3, function() map.cyclic_update() end)
-	--]]
-end
-
-
-
 function map.update_player(pname)
 	if map.update_hud_flags(pname) then
 		minetest.after(1, function() map.update_player(pname) end)
@@ -88,17 +76,6 @@ end
 
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
-	--[[
-	minetest.register_on_joinplayer(function(player)
-		map.update_hud_flags(player)
-	end)
-
-
-	-- Cyclic update of HUD flags.
-	minetest.after(5.3, function() map.cyclic_update() end)
-	--]]
-
-
 	-- Mapping kit item.
 	minetest.register_node("map:mapping_kit", {
 		tiles = {"map_mapping_kit_tile.png"},

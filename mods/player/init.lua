@@ -23,6 +23,8 @@ function default.player_register_model(name, def)
 end
 
 -- Default player appearance
+-- Controled by 3d_armor mod!
+--[[
 default.player_register_model("character_musttest.b3d", {
 	animation_speed = 30,
 	textures = {"character.png", },
@@ -38,6 +40,7 @@ default.player_register_model("character_musttest.b3d", {
         nod       = { x=221, y=251, },
 	},
 })
+--]]
 
 -- Player stats and animations
 local player_model = {}
@@ -102,7 +105,7 @@ end
 -- Update appearance when the player joins
 minetest.register_on_joinplayer(function(player)
 	default.player_attached[player:get_player_name()] = false
-	default.player_set_model(player, "character_musttest.b3d")
+	--default.player_set_model(player, "character_musttest.b3d")
 	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
 	
 	-- set GUI

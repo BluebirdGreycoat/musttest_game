@@ -36,6 +36,16 @@ function plate.on_player_walk_over(pos, player)
 	end
 end
 
+function plate.on_punch(pos, node, puncher, pt)
+	local node = minetest.get_node(pos)
+	if node.name:sub(-3) == "_on" then
+		node.name = name:gsub("_on$", "_off")
+		if minetest.registered_nodes[node.name] then
+			minetest.set_node(pos, node)
+		end
+	end
+end
+
 function plate.register(material, desc, def)
 	xdecor.register("pressure_"..material.."_off", {
 		description = desc.." Pressure Plate",
@@ -56,7 +66,8 @@ function plate.register(material, desc, def)
 		sounds = def.sounds,
 		drop = "xdecor:pressure_"..material.."_off",
 		sunlight_propagates = true,
-		on_rotate = screwdriver.rotate_simple
+		on_rotate = screwdriver.rotate_simple,
+		on_punch = plate.on_punch,
 	})
 end
 

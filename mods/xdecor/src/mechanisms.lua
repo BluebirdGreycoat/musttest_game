@@ -162,7 +162,7 @@ local function plate_place(pos, placer, itemstack, pt)
 end
 
 xdecor.register("explosive_plate", {
-	description = "Booby-Trapped Pressure Plate (Land-Mine)\n\nExplosive! Use with care.",
+	description = "Booby-Trapped Pressure Plate (Land-Mine)\n\nExplosive! Use with care.\nNot triggered by owner.",
 	tiles = {"default_cobble.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
@@ -206,7 +206,7 @@ local function plate_break(pos, player)
 end
 
 xdecor.register("break_plate", {
-	description = "Booby-Trapped Pressure Plate (Block-Breaker)\n\nWill cause block below to collapse.",
+	description = "Booby-Trapped Pressure Plate (Block-Breaker)\n\nWill cause block below to collapse.\nNot triggered by owner.",
 	tiles = {"default_wood.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),

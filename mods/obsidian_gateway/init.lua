@@ -99,9 +99,9 @@ end
 
 function obsidian_gateway.attempt_activation(pos, player)
 	local pname = player:get_player_name()
-	local ppos = vector.round(vector.add(utility.get_foot_pos(player:get_pos()), {x=0, y=0.3, z=0}))
+	local ppos = vector.round(player:get_pos())
 
-	local under = vector.add(ppos, {x=0, y=-1, z=0})
+	local under = utility.node_under_pos(player:get_pos())
 	local inside = vector.add(under, {x=0, y=1, z=0})
 	local nodeunder = minetest.get_node(under).name
 	-- Player must be standing on one of these.

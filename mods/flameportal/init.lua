@@ -318,9 +318,7 @@ end
 flameportal.try_teleport_on_flint_use =
 function(pref)
   if not pref or not pref:is_player() then return end
-  local p1 = utility.get_foot_pos(pref:get_pos())
-  p1.y = p1.y - 0.8
-  p1 = vector.round(p1)
+  local p1 = utility.node_under_pos(pref:get_pos())
   if minetest.get_node(p1).name == "voidstone:void" then
     flameportal.teleport_player(pref:get_player_name(), p1)
   end

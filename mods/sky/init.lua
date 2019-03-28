@@ -222,8 +222,7 @@ function sky.on_globalstep(dtime)
 		local pdata = datas[pname]
 
 		if not vector_equals(pdata.rpos, rpos) then
-			local fpos = utility.get_foot_pos(ppos)
-			local npos = vector_round({x=rpos.x, y=fpos.y-0.05, z=rpos.z})
+			local npos = utility.node_under_pos(ppos)
 
 			update_player(player, pname, pdata, ppos, npos)
 			pdata.rpos = rpos
@@ -235,9 +234,8 @@ end
 
 function sky.on_joinplayer(player)
 	local ppos = player:get_pos()
-	local fpos = utility.get_foot_pos(ppos)
 	local rpos = vector_round(ppos)
-	local npos = vector_round({x=rpos.x, y=fpos.y-0.05, z=rpos.z})
+	local npos = utility.node_under_pos(ppos)
 
 	-- Initialize player data.
 	local pname = player:get_player_name()

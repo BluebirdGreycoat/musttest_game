@@ -162,12 +162,54 @@ if not flowers.registered then
 	end
 
 	flowers.datas = {
-		{"rose", "Rose", {-0.15, -0.5, -0.15, 0.15, 0.3, 0.15}, {color_red = 1, flammable = 1}},
-		{"tulip", "Orange Tulip", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_orange = 1, flammable = 1}},
-		{"dandelion_yellow", "Yellow Dandelion", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_yellow = 1, flammable = 1}},
-		{"geranium", "Blue Geranium", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_blue = 1, flammable = 1}},
-		{"viola", "Viola", {-0.5, -0.5, -0.5, 0.5, -0.2, 0.5}, {color_violet = 1, flammable = 1}},
-		{"dandelion_white", "White Dandelion", {-0.5, -0.5, -0.5, 0.5, -0.2, 0.5}, {color_white = 1, flammable = 1}},
+		{
+			"rose",
+			"Red Rose",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{color_red = 1, flammable = 1}
+		},
+		{
+			"tulip",
+			"Orange Tulip",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
+			{color_orange = 1, flammable = 1}
+		},
+		{
+			"dandelion_yellow",
+			"Yellow Dandelion",
+			{-4 / 16, -0.5, -4 / 16, 4 / 16, -2 / 16, 4 / 16},
+			{color_yellow = 1, flammable = 1}
+		},
+		{
+			"chrysanthemum_green",
+			"Green Chrysanthemum",
+			{-4 / 16, -0.5, -4 / 16, 4 / 16, -1 / 16, 4 / 16},
+			{color_green = 1, flammable = 1}
+		},
+		{
+			"geranium",
+			"Blue Geranium",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 2 / 16, 2 / 16},
+			{color_blue = 1, flammable = 1}
+		},
+		{
+			"viola",
+			"Viola",
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, -1 / 16, 5 / 16},
+			{color_violet = 1, flammable = 1}
+		},
+		{
+			"dandelion_white",
+			"White Dandelion",
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, -2 / 16, 5 / 16},
+			{color_white = 1, flammable = 1}
+		},
+		{
+			"tulip_black",
+			"Black Tulip",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
+			{color_black = 1, flammable = 1}
+		},
 	}
 
 	for _,item in pairs(flowers.datas) do

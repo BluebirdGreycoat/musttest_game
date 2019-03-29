@@ -37,7 +37,7 @@ walls.register(
 
 walls.register(
 	"quartz_pillar",
-	"Quartz Pillar",
+	"Grooved Quartz",
 	"quartz_pillar_side.png",
 	"quartz:pillar",
 	default.node_sound_glass_defaults()

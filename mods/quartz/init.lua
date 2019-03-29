@@ -64,25 +64,6 @@ minetest.register_node("quartz:pillar", {
 	on_place = minetest.rotate_node
 })
 
--- Stairs & Slabs
-stairs.register_stair_and_slab("quartzblock", "quartz:block",
-		{cracky=3},
-		{"quartz_block.png"},
-		"Quartz",
-		default.node_sound_glass_defaults())
-
-stairs.register_stair_and_slab("chiseledquartzblock", "quartz:chiseled",
-		{cracky=3},
-		{"quartz_chiseled.png"},
-		"Chiseled Quartz",
-		default.node_sound_glass_defaults())
-
-stairs.register_slab("quartzstair", "quartz:pillar",
-		{cracky=3},
-		{"quartz_pillar_top.png", "quartz_pillar_top.png", "quartz_pillar_side.png"},
-		"Quartz Pillar Slab",
-		default.node_sound_glass_defaults())
-
 --
 -- Crafting
 --

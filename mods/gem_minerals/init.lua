@@ -66,6 +66,13 @@ if not gem_minerals.registered then
 			}
 		})
 
+		-- Get gems back from block.
+		minetest.register_craft({
+			type = "shapeless",
+			output = gem .. " 8",
+			recipe = block,
+		})
+
 		-- Cut raw gem.
 		minetest.register_craft({
 			type = "cutting",

@@ -23,7 +23,7 @@ mobs.register_mob("sheep:sheep", {
     runaway = true,
     jump = true,
     drops = {
-        {name = "mobs:meat_raw", chance = 1, min = 1, max = 1}, -- Killing sheep doesn't yield much meat.
+        {name = "mobs:meat_raw_mutton", chance = 1, min = 1, max = 1}, -- Killing sheep doesn't yield much meat.
     },
     water_damage = 1,
     lava_damage = 100,

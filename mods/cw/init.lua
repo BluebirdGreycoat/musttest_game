@@ -13,6 +13,117 @@ if not cw.jungletree_registered then
 	local U = {name = "default:jungletree", prob = 127, force_place = true}
 	local I = {name = "default:jungletree", prob = 255}
 
+	do
+	local jungletree_data = {
+		size = {x = 5, y = 17, z = 5},
+		data = {
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, L, N, _, _,
+			_, _, N, L, N,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, U, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			L, B, L, _, _,
+			_, _, L, B, L,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, B, B, B, _,
+			_, B, B, B, _,
+			_, U, B, U, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, B, L, N,
+			N, L, B, _, _,
+			N, L, B, _, _,
+			_, _, B, L, N,
+			_, _, B, L, N,
+			_, _, B, _, _,
+			N, L, L, L, N,
+			N, L, L, L, N,
+			_, N, L, N, _,
+
+			_, _, B, _, _,
+			_, _, B, _, _,
+			_, _, U, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, L, B, L,
+			L, B, L, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, L, B, L,
+			_, _, _, _, _,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, N, L, N,
+			N, L, N, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, N, L, N,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+		},
+		yslice_prob = {
+			{ypos=6, prob=191},
+			{ypos=7, prob=191},
+			{ypos=8, prob=191},
+			{ypos=9, prob=191},
+			{ypos=10, prob=191},
+		},
+	}
+
+	local data = minetest.serialize_schematic(jungletree_data, "mts", {})
+	local file = io.open(cw.worldpath .. "/cw_jungletree_base.mts", "w")
+	file:write(data)
+	file:close()
+	end
+
+	do
+	-- Main difference is the trunk base doesn't have extra nodes around it.
 	local jungletree_data = {
 		size = {x = 5, y = 17, z = 5},
 		data = {
@@ -119,6 +230,7 @@ if not cw.jungletree_registered then
 	local file = io.open(cw.worldpath .. "/cw_jungletree_top.mts", "w")
 	file:write(data)
 	file:close()
+	end
 
 	cw.jungletree_registered = true
 end

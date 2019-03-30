@@ -92,12 +92,17 @@ local function get_tile(def)
 	return tile
 end
 
-function flowerpot.register_node(nodename)
+function flowerpot.register_node(nodename, imagetransform)
 	assert(nodename, "no nodename passed")
 	local nodedef = minetest.registered_nodes[nodename]
 	if not nodedef then
 		minetest.log("error", nodename .. " is not a known node, unable to register flowerpot")
 		return false
+	end
+
+	local fx = ""
+	if imagetransform then
+		fx = imagetransform
 	end
 
 	local desc = nodedef.description
@@ -108,7 +113,7 @@ function flowerpot.register_node(nodename)
 		-- X-shaped plants, or similar.
 		tiles = {
 			{name = "flowerpot.png"},
-			{name = get_tile(nodedef)},
+			{name = get_tile(nodedef) .. fx},
 			{name = "doors_blank.png"},
 		}
 	else
@@ -116,7 +121,7 @@ function flowerpot.register_node(nodename)
 		tiles = {
 			{name = "flowerpot.png"},
 			{name = "doors_blank.png"},
-			{name = get_tile(nodedef)},
+			{name = get_tile(nodedef) .. fx},
 		}
 	end
 

@@ -1,12 +1,12 @@
 
 local plants = {
-	{name="bluegrass:plant_1", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_2", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_3", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_4", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_5", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_6", drop="bluegrass:bluegrass"},
-	{name="bluegrass:plant_7", drop="bluegrass:bluegrass"},
+	{name="bluegrass:plant_1", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_2", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_3", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_4", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_5", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_6", drop="bluegrass:bluegrass", tilex="^[transformFX"},
+	{name="bluegrass:plant_7", drop="bluegrass:bluegrass", tilex="^[transformFX"},
 
 	{insert="bluegrass:bluegrass", nodes={"bluegrass:plant_1", "bluegrass:plant_2", "bluegrass:plant_3", "bluegrass:plant_4", "bluegrass:plant_5", "bluegrass:plant_6", "bluegrass:plant_7"}},
 
@@ -38,12 +38,18 @@ local plants = {
 
 for k, v in ipairs(plants) do
 	if v.name then
-		flowerpot.register_node(v.name)
-
+		-- Must update node drops BEFORE registering the flowerpot node.
 		if v.drop then
 			minetest.override_item(v.name, {
 				flowerpot_drop = v.drop,
 			})
+		end
+
+		-- Register the flowerpot node.
+		if v.tilex then
+			flowerpot.register_node(v.name, v.tilex)
+		else
+			flowerpot.register_node(v.name)
 		end
 	end
 

@@ -82,7 +82,7 @@ function boat.on_rightclick(self, clicker)
 		end
 		self.driver = clicker
 		clicker:set_attach(self.object, "",
-			{x = 0, y = 11, z = -3}, {x = 0, y = 0, z = 0})
+			{x = 0, y = 0.1, z = -3}, {x = 0, y = 0, z = 0})
 		default.player_attached[name] = true
 		minetest.after(0.2, function()
 			default.player_set_animation(clicker, "sit" , 30)

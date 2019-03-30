@@ -59,7 +59,7 @@ function carts:manage_attachment(player, obj)
 			return
 		end
 		default.player_attached[pname] = true
-		player:set_attach(obj, "", {x=0, y=6, z=0}, {x=0, y=0, z=0})
+		player:set_attach(obj, "", {x=0, y=-4, z=0}, {x=0, y=0, z=0})
 		player:set_eye_offset({x=0, y=-4, z=0},{x=0, y=-4, z=0})
 	else
 		if default.player_attached[pname] then

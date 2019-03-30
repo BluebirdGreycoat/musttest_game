@@ -200,6 +200,7 @@ for _, node in pairs({
 	"default:grass_4",
 	"default:grass_5",
 	"default:junglegrass",
+	"default:coarsegrass",
 	"default:junglesapling",
 	"default:papyrus",
 	"default:pine_sapling",

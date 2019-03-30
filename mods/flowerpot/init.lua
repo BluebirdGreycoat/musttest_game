@@ -311,6 +311,8 @@ if not flowerpot.loaded then
 
 		"cavestuff:mycena",
 		"cavestuff:fungus",
+
+		"mese_crystals:mese_crystal_seed",
 	}) do
 		flowerpot.register_node(node)
 	end

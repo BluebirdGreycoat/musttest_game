@@ -172,12 +172,12 @@ minetest.register_craft({
 
 -- default farming nodes
 for _, node in pairs({
-	"default:acacia_bush_sapling",
-	"default:acacia_bush_stem",
+	--"default:acacia_bush_sapling",
+	--"default:acacia_bush_stem",
 	"default:acacia_sapling",
 	"default:aspen_sapling",
-	"default:bush_sapling",
-	"default:bush_stem",
+	--"default:bush_sapling",
+	--"default:bush_stem",
 	"default:cactus",
 	"default:dry_grass_1",
 	"default:dry_grass_2",

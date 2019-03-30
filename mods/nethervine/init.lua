@@ -106,6 +106,7 @@ if not nethervine.registered then
 
 		drop = "",
 		shears_drop = true,
+		flowerpot_drop = "nethervine:vine",
 
 		-- Nethervines shall not be flammable. They often generate next to lava.
 		groups = {

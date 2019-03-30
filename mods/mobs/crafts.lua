@@ -24,8 +24,8 @@ local meat_types = {
 	{name="mobs:meat_mutton", desc="Cooked Mutton", image="mobs_meat.png", food=10},
 
 	-- Pork.
-	{name="mobs:meat_raw_pork", desc="Raw Pork", image="mobs_meat_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},
-	{name="mobs:meat_pork", desc="Cooked Pork", image="mobs_meat.png", food=7, is_gross=true},
+	{name="mobs:meat_raw_pork", desc="Raw Pork (Yuck)", image="mobs_meat_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},
+	{name="mobs:meat_pork", desc="Cooked Pork (Yuck)", image="mobs_meat.png", food=7, is_gross=true},
 }
 
 for k, v in ipairs(meat_types) do

@@ -51,6 +51,7 @@ minetest.register_craftitem("cucumber:cucumber", {
 	inventory_image = "farming_cucumber.png",
 	groups = {food_cucumber = 1, flammable = 2},
 	on_use = minetest.item_eat(4),
+	flowerpot_insert = {"cucumber:cucumber_1", "cucumber:cucumber_2", "cucumber:cucumber_3", "cucumber:cucumber_4"},
 })
 
 -- cucumber definition
@@ -73,6 +74,7 @@ local crop_def = {
   minlight = 13,
   maxlight = default.LIGHT_MAX,
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	flowerpot_drop = "cucumber:cucumber",
 }
 
 -- stage 1

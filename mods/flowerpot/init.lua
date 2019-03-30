@@ -311,6 +311,34 @@ if not flowerpot.loaded then
 
 		"cavestuff:mycena",
 		"cavestuff:fungus",
+
+		"carrot:plant_1",
+		"carrot:plant_2",
+		"carrot:plant_3",
+		"carrot:plant_4",
+		"carrot:plant_5",
+		"carrot:plant_6",
+		"carrot:plant_7",
+		"carrot:plant_8",
+
+		"cucumber:cucumber_1",
+		"cucumber:cucumber_2",
+		"cucumber:cucumber_3",
+		"cucumber:cucumber_4",
+
+		"tomato:plant_1",
+		"tomato:plant_2",
+		"tomato:plant_3",
+		"tomato:plant_4",
+		"tomato:plant_5",
+		"tomato:plant_6",
+		"tomato:plant_7",
+		"tomato:plant_8",
+
+		"potatoes:potato_1",
+		"potatoes:potato_2",
+		"potatoes:potato_3",
+		"potatoes:potato_4",
 	}) do
 		flowerpot.register_node(node)
 	end

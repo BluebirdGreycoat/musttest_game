@@ -36,6 +36,7 @@ minetest.register_craftitem("tomato:tomato", {
   inventory_image = "tomato_tomato.png",
   on_use = minetest.item_eat(2),
 	groups = {foodrot=1},
+	flowerpot_insert = {"tomato:plant_1", "tomato:plant_2", "tomato:plant_3", "tomato:plant_4", "tomato:plant_5", "tomato:plant_6", "tomato:plant_7", "tomato:plant_8"},
 })
 
 
@@ -62,6 +63,7 @@ local crop_def = {
   minlight = 13,
   maxlight = default.LIGHT_MAX,
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	flowerpot_drop = "tomato:tomato",
 }
 
 crop_def.next_plant = "tomato:plant_2"

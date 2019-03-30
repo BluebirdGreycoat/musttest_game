@@ -9,3 +9,7 @@ moretrees
 jungletree
 firetree
 cavestuff
+carrot
+cucumber
+tomato
+potatoes

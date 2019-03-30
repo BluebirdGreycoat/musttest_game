@@ -45,6 +45,7 @@ minetest.register_craftitem("potatoes:potato", {
 	inventory_image = "farming_potato.png",
 	on_use = minetest.item_eat(1),
 	groups = {foodrot=1},
+	flowerpot_insert = {"potatoes:potato_1", "potatoes:potato_2", "potatoes:potato_3", "potatoes:potato_4"},
 })
 
 -- baked potato
@@ -85,6 +86,7 @@ local crop_def = {
   minlight = 13,
   maxlight = default.LIGHT_MAX,
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	flowerpot_drop = "potatoes:potato",
 }
 
 -- stage 1

@@ -8,7 +8,7 @@ minetest.register_biome({
     node_water_top = "default:ice",
     depth_water_top = 10,
     y_min = -31000,
-    y_max = 31000,
+    y_max = 1000,
     heat_point = 0,
     humidity_point = 0,
 })

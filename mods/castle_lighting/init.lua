@@ -21,9 +21,9 @@ minetest.register_node("castle_lighting:light",{
 minetest.register_craft({
 	output = "castle_lighting:light",
 	recipe = {
-		{"default:stick", "default:glass", "default:stick"},
+		{"group:stick", "default:glass", "group:stick"},
 		{"default:glass", "xdecor:lantern", "default:glass"},
-		{"default:stick", "default:glass", "default:stick"},
+		{"group:stick", "default:glass", "group:stick"},
 	}
 })
 

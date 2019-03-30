@@ -281,7 +281,7 @@ if not sleds.run_once then
 	minetest.register_craft({
 		output = "sleds:sled",
 		recipe = {
-			{"default:stick", "", "default:stick"},
+			{"group:stick", "", "group:stick"},
 			{"group:wood", "group:wood", "group:wood"},
 			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 		},

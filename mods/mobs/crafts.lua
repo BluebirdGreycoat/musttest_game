@@ -91,9 +91,9 @@ minetest.register_tool("mobs:net", {
 minetest.register_craft({
 	output = "mobs:net",
 	recipe = {
-		{"default:stick",     "",                 "default:stick"     },
-		{"default:stick",     "",                 "default:stick"     },
-		{"farming:string",    "default:stick",    "farming:string"    },
+		{"group:stick",     "",                 "group:stick"     },
+		{"group:stick",     "",                 "group:stick"     },
+		{"farming:string",    "group:stick",    "farming:string"    },
 	}
 })
 

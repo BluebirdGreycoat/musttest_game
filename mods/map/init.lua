@@ -109,7 +109,7 @@ if not map.run_once then
 	minetest.register_craft({
 		output = "map:mapping_kit",
 		recipe = {
-			{"default:glass", "default:paper", "default:stick"},
+			{"default:glass", "default:paper", "group:stick"},
 			{"default:steel_ingot", "default:paper", "default:steel_ingot"},
 			{"group:wood", "default:paper", "dye:black"},
 		}

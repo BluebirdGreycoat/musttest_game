@@ -116,7 +116,7 @@ if not cw.jungletree_registered then
 	}
 
 	local data = minetest.serialize_schematic(jungletree_data, "mts", {})
-	local file = io.open(cw.worldpath .. "/cw_jungletree.mts", "w")
+	local file = io.open(cw.worldpath .. "/cw_jungletree_top.mts", "w")
 	file:write(data)
 	file:close()
 
@@ -346,8 +346,8 @@ cw.generate_realm = function(minp, maxp, seed)
 		v.x = v.x - 2
 		v.z = v.z - 2
 
-		local path = basictrees.modpath .. "/schematics/jungle_tree_cw.mts"
-		local path2 = cw.worldpath .. "/cw_jungletree.mts"
+		local path = cw.worldpath .. "/cw_jungletree_base.mts"
+		local path2 = cw.worldpath .. "/cw_jungletree_top.mts"
 		local path3 = path2
 
 		if h > 10 then

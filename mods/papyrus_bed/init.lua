@@ -57,6 +57,6 @@ beds.register_bed("papyrus_bed:bed", {
 	recipe = {
 		{"default:paper", "default:papyrus", "default:papyrus"},
 		{"default:wood", "default:wood", "default:wood"},
-		{"default:stick", "", "default:stick"},
+		{"group:stick", "", "group:stick"},
 	},
 })

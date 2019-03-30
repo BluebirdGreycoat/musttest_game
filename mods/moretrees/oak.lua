@@ -211,8 +211,8 @@ minetest.register_craft({
 minetest.register_craft({
     output = "doors:gate_wood_closed",
     recipe = {
-        {"default:stick", "moretrees:oak_wood", "default:stick"},
-        {"default:stick", "moretrees:oak_wood", "default:stick"}
+        {"group:stick", "moretrees:oak_wood", "group:stick"},
+        {"group:stick", "moretrees:oak_wood", "group:stick"}
     }
 })
 

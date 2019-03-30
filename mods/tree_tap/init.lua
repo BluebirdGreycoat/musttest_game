@@ -35,8 +35,8 @@ minetest.register_tool("tree_tap:tree_tap", {
 minetest.register_craft({
   output = "tree_tap:tree_tap",
   recipe = {
-    {"stainless_steel:ingot", "group:wood",    "default:stick"},
-    {"",               "default:stick", "default:stick"}
+    {"stainless_steel:ingot", "group:wood",    "group:stick"},
+    {"",               "group:stick", "group:stick"}
   },
 })
 

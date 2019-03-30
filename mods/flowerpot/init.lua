@@ -97,7 +97,11 @@ function flowerpot.register_node(nodename)
 		}
 	end
 
-	local dropname = nodename:gsub("grass_%d", "grass_1")
+	local drops = minetest.get_node_drops(nodename, "")
+	local dropitems = {"flowerpot:empty"}
+	for k, v in ipairs(drops) do
+		table.insert(dropitems, v)
+	end
 
 	minetest.register_node(":flowerpot:" .. name, {
 		description = "Flowerpot With " .. desc,
@@ -117,16 +121,21 @@ function flowerpot.register_node(nodename)
 		sounds = default.node_sound_defaults(),
 		groups = {attached_node = 1, oddly_breakable_by_hand = 1, snappy = 3, not_in_creative_inventory = 1},
 		flowerpot_plantname = nodename,
+
+		-- What is this for?
+		--[[
 		on_dig = function(pos, node, digger)
 			minetest.set_node(pos, {name = "flowerpot:empty"})
 			local def = minetest.registered_nodes[node.name]
 			minetest.add_item(pos, dropname)
 		end,
+		--]]
+
 		drop = {
-			max_items = 2,
+			max_items = #dropitems,
 			items = {
 				{
-					items = {"flowerpot:empty", dropname},
+					items = dropitems,
 					rarity = 1,
 				},
 			}

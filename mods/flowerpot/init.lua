@@ -154,6 +154,9 @@ function flowerpot.register_node(nodename)
 		groups = {attached_node = 1, oddly_breakable_by_hand = 1, snappy = 3, not_in_creative_inventory = 1},
 		flowerpot_plantname = nodename,
 
+		-- Some flowers emit light.
+		light_source = nodedef.light_source,
+
 		-- What is this for?
 		--[[
 		on_dig = function(pos, node, digger)

@@ -9,4 +9,3 @@ moretrees
 jungletree
 firetree
 cavestuff
-mese_crystals

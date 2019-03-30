@@ -70,7 +70,7 @@ if not gem_minerals.registered then
 		minetest.register_craft({
 			type = "shapeless",
 			output = gem .. " 8",
-			recipe = block,
+			recipe = {block},
 		})
 
 		-- Cut raw gem.

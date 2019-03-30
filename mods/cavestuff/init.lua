@@ -601,6 +601,7 @@ minetest.register_node("cavestuff:mycena", {
 
 	drop = "",
 	shears_drop = true,
+	flowerpot_drop = "cavestuff:mycena",
 
 	on_use = function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end
@@ -646,6 +647,7 @@ minetest.register_node("cavestuff:fungus", {
 
 	drop = "",
 	shears_drop = true,
+	flowerpot_drop = "cavestuff:fungus",
 
 	on_use = function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end

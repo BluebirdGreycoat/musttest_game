@@ -249,6 +249,7 @@ if not nethervine.registered then
 
 		drop = "farming:cotton", -- Drop string.
 		shears_drop = true, -- Drop self.
+		flowerpot_drop = "nether:glowflower",
 
 		selection_box = {
 			type = "fixed",

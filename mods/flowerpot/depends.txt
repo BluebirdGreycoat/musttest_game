@@ -3,3 +3,9 @@ farming
 flowers
 bakedclay
 nethervine
+reload
+basictrees
+moretrees
+jungletree
+firetree
+cavestuff

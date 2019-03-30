@@ -141,6 +141,7 @@ if not nethervine.registered then
 			walkable = false,
 			buildable_to = true,
 			drop = "nether:grass",
+			flowerpot_drop = "nether:grass",
 			groups = {level = 1, snappy = 3, netherflora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
 			sounds = default.node_sound_leaves_defaults(),
 			selection_box = {
@@ -183,6 +184,8 @@ if not nethervine.registered then
 		place_param2 = 2,
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		flowerpot_insert = {"nether:grass_1", "nether:grass_2", "nether:grass_3"},
 
 		-- Zero-width selection box.
 		selection_box = {

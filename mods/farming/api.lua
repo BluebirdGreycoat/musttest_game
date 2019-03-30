@@ -410,7 +410,10 @@ farming.register_plant = function(name, def)
 	minetest.register_craftitem(":" .. mname .. ":" .. pname, {
 		description = pname:gsub("^%l", string.upper),
 		inventory_image = mname .. "_" .. pname .. ".png",
-        groups = {flammable = 2},
+		groups = {flammable = 2},
+
+		-- Pass through flowerpot data if available.
+		flowerpot_insert = def.flowerpot_insert,
 	})
 
 	-- Register growing steps
@@ -453,6 +456,9 @@ farming.register_plant = function(name, def)
 			minlight = def.minlight,
 			maxlight = def.maxlight,
 			movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+			-- Pass through flowerpot data if available.
+			flowerpot_drop = def.flowerpot_drop,
 		})
 	end
 

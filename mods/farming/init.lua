@@ -23,6 +23,8 @@ farming.register_plant("farming:wheat", {
 	fertility = {"grassland"},
   groups = {flammable = 4},
   place_param2 = 3,
+	flowerpot_drop = "farming:wheat",
+	flowerpot_insert = {"farming:wheat_1", "farming:wheat_2", "farming:wheat_3", "farming:wheat_4", "farming:wheat_5", "farming:wheat_6", "farming:wheat_7", "farming:wheat_8"},
 })
 minetest.register_craftitem("farming:flour", {
 	description = "Flour",
@@ -58,7 +60,9 @@ farming.register_plant("farming:cotton", {
 	minlight = 13,
 	maxlight = default.LIGHT_MAX,
 	fertility = {"grassland", "desert"},
-    groups = {flammable = 4},
+	groups = {flammable = 4},
+	flowerpot_drop = "farming:cotton",
+	flowerpot_insert = {"farming:cotton_1", "farming:cotton_2", "farming:cotton_3", "farming:cotton_4", "farming:cotton_5", "farming:cotton_6", "farming:cotton_7", "farming:cotton_8"},
 })
 
 -- alias no longer used -- we have an actual string item that is craftable from cotton

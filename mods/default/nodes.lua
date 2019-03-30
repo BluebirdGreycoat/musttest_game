@@ -984,6 +984,7 @@ minetest.register_node("default:dry_shrub", {
 		}
 	},
 	shears_drop = true,
+	flowerpot_drop = "default:dry_shrub",
 })
 
 minetest.register_node("default:junglegrass", {
@@ -1001,7 +1002,8 @@ minetest.register_node("default:junglegrass", {
 	walkable = false,
 	buildable_to = true,
 
-	-- Drops are defined in farming mod.
+	-- Default drops are defined in farming mod.
+	flowerpot_drop = "default:junglegrass",
 
 	groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, grass = 1, junglegrass = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
@@ -1045,6 +1047,7 @@ minetest.register_node("default:coarsegrass", {
 
 	drop = "default:stick",
 	shears_drop = true,
+	flowerpot_drop = "default:coarsegrass",
 
 	groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, grass = 1, junglegrass = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
@@ -1089,6 +1092,8 @@ minetest.register_node("default:grass_dummy", {
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
+	flowerpot_insert = {"default:grass_1", "default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"},
+
 	-- Zero-width selection box.
 	selection_box = {
 		type = "fixed",
@@ -1131,7 +1136,8 @@ for i = 1, 5 do
 		walkable = false,
 		buildable_to = true,
 
-		-- Drops are defined in farming mod.
+		-- Default drops are defined in farming mod.
+		flowerpot_drop = "default:grass_dummy",
 
 		groups = {level = 1, snappy = 3, flora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
 		sounds = default.node_sound_leaves_defaults(),
@@ -1175,7 +1181,8 @@ for i = 1, 5 do
 		walkable = false,
 		buildable_to = true,
 
-		-- Drops are defined in farming mod.
+		-- Default drops are defined in farming mod.
+		flowerpot_drop = "default:grass_dummy",
 
 		groups = {level = 1, snappy = 3, hanging_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
 		sounds = default.node_sound_leaves_defaults(),
@@ -1200,6 +1207,8 @@ minetest.register_node("default:dry_grass_dummy", {
 	place_param2 = 2,
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	flowerpot_insert = {"default:dry_grass_1", "default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4", "default:dry_grass_5"},
 
 	-- Zero-width selection box.
 	selection_box = {
@@ -1247,6 +1256,7 @@ for i = 1, 5 do
 
 		drop = "",
 		shears_drop = "default:dry_grass_dummy",
+		flowerpot_drop = "default:dry_grass_dummy",
 
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
@@ -1294,6 +1304,7 @@ for i = 1, 5 do
 
 		drop = "",
 		shears_drop = "default:dry_grass_dummy",
+		flowerpot_drop = "default:dry_grass_dummy",
 
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {

@@ -13,7 +13,7 @@ farming.register_hoe(":farming:hoe_stone", {
 	description = "Stone Hoe",
 	inventory_image = "farming_tool_stonehoe.png",
 	max_uses = 90,
-	material = "group:stone",
+	material = "default:stone",
   groups = {not_repaired_by_anvil = 1},
 })
 

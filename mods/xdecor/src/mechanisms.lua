@@ -119,13 +119,13 @@ xdecor.register("lever_on", {
 minetest.register_craft({
 	output = "xdecor:pressure_stone_off",
 	type = "shapeless",
-	recipe = {"group:stone", "group:stone"}
+	recipe = {"default:stone", "default:stone"}
 })
 
 minetest.register_craft({
 	output = "xdecor:pressure_wood_off",
 	type = "shapeless",
-	recipe = {"group:wood", "group:wood"}
+	recipe = {"basictrees:tree_wood", "basictrees:tree_wood"}
 })
 
 minetest.register_craft({

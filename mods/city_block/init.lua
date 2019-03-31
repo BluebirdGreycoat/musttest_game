@@ -365,7 +365,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	local hp = player:get_hp();
 
 	if damage > 0 then
-		ambiance.sound_play("player_damage", p2pos, 2.0, 20)
+		ambiance.sound_play("player_damage", p2pos, 2.0, 30)
 	end
 
 	if hp > 0 and (hp - damage) <= 0 then -- player will die because of this hit

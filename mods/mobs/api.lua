@@ -2750,12 +2750,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 			minetest.sound_play(weapon:get_definition().sounds[s], {
 				object = self.object, --hitter,
-				max_hear_distance = 8
+				max_hear_distance = 20
 			})
 		else
 			minetest.sound_play("default_punch", {
 				object = self.object, --hitter,
-				max_hear_distance = 5
+				max_hear_distance = 20
 			})
 		end
 

@@ -121,6 +121,52 @@ local transform = {
 	},
 }
 
+-- Force door at position to toggle, produce no sound, no ownership checks.
+-- Function cannot/must not fail.
+function _doors.door_toggle_force(pos, node)
+	local meta = minetest.get_meta(pos)
+	node = node or minetest.get_node(pos)
+	local def = minetest.reg_ns_nodes[node.name]
+	local name = def.door.name
+
+	local state = meta:get_string("state")
+	if state == "" then
+		-- fix up lvm-placed right-hinged doors, default closed
+		if node.name:sub(-2) == "_b" then
+			state = 2
+		else
+			state = 0
+		end
+	else
+		state = tonumber(state)
+	end
+
+	-- until Lua-5.2 we have no bitwise operators :(
+	if state % 2 == 1 then
+		state = state - 1
+	else
+		state = state + 1
+	end
+
+	local dir = node.param2
+
+	minetest.swap_node(pos, {
+		name = name .. transform[state + 1][dir+1].v,
+		param2 = transform[state + 1][dir+1].param2
+	})
+	meta:set_int("state", state)
+end
+
+function _doors.have_matching_door(pos, node)
+	local nn = minetest.get_node(pos)
+	if nn.name == node.name and nn.param2 == node.param2 then
+		return true
+	end
+end
+
+
+
+-- The OFFICIAL door toggle function.
 function _doors.door_toggle(pos, node, clicker)
 	local meta = minetest.get_meta(pos)
 	node = node or minetest.get_node(pos)
@@ -172,6 +218,9 @@ function _doors.door_toggle(pos, node, clicker)
     end
   end
 
+	local door_above = _doors.have_matching_door({x=pos.x, y=pos.y + 2, z=pos.z}, node)
+	local door_below = _doors.have_matching_door({x=pos.x, y=pos.y - 2, z=pos.z}, node)
+
 	-- until Lua-5.2 we have no bitwise operators :(
 	if state % 2 == 1 then
 		state = state - 1
@@ -193,6 +242,14 @@ function _doors.door_toggle(pos, node, clicker)
 		param2 = transform[state + 1][dir+1].param2
 	})
 	meta:set_int("state", state)
+
+	if door_above then
+		_doors.door_toggle_force({x=pos.x, y=pos.y + 2, z=pos.z}, node)
+	end
+
+	if door_below then
+		_doors.door_toggle_force({x=pos.x, y=pos.y - 2, z=pos.z}, node)
+	end
 
 	return true
 end

@@ -23,12 +23,10 @@ function map.update_hud_flags(player)
 	local minimap_enabled = has_kit
   local radar_enabled = false
 
-	-- TODO: Provide way for player to enable radar (ability to disable radar comes after 0.5.0).
-	-- Could be something like a radio device, maybe.
-
+	-- Map & radar combined into same device.
 	player:hud_set_flags({
 		minimap = minimap_enabled,
-		minimap_radar = radar_enabled,
+		minimap_radar = minimap_enabled,
 	})
 
 	if minimap_enabled then

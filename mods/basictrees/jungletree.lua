@@ -85,6 +85,7 @@ minetest.register_node("basictrees:jungletree_leaves", {
 minetest.register_node("basictrees:jungletree_leaves2", {
 	description = "Jungle Tree Leaves",
 	drawtype = "allfaces_optional",
+	waving = 1,
 	tiles = {"default_jungleleaves.png"},
 	--special_tiles = {"default_jungleleaves_simple.png"},
 	paramtype = "light",

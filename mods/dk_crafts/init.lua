@@ -358,7 +358,7 @@ minetest.register_craft({
 minetest.register_craft({
 	type = "shapeless",
 	output = "darkage:glow_glass 1",
-	recipe = {"darkage:glass", "group:torch_craftitem"},
+	recipe = {"darkage:glass", "xdecor:lantern"},
 })
 
 minetest.register_craft({

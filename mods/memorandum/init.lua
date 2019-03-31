@@ -324,7 +324,7 @@ memorandum.on_letter_written_input = function(pos, fields, sender)
 	-- Don't allow letter to be modified if signer is not player and signer isn't blank.
 	-- We need this check to prevent a situation in which a second player edits a letter that
 	-- was erased by a first player. However, two or more players can still edit a letter that isn't signed by any of them.
-	if not (signer == sendername or signer == "") then
+	if not (rename.grn(signer) == sendername or signer == "") then
 		minetest.chat_send_player(sendername, "# Server: This paper is guarded by its signature.")
 		return
 	end

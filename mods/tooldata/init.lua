@@ -14,7 +14,7 @@ materials["mese"]          = {fpi=1.0, time=2.5, uses=70,  mdl=3, ml=3, dmg=7}
 materials["diamond"]       = {fpi=1.0, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
 materials["titanium"]      = {fpi=1.5, time=2.5, uses=150, mdl=3, ml=3, dmg=6}
 materials["silver"]        = {fpi=1.5, time=4.0, uses=20,  mdl=3, ml=3, dmg=5}
-materials["mithril"]       = {fpi=1.5, time=2.0, uses=60,  mdl=3, ml=3, dmg=8}
+materials["mithril"]       = {fpi=1.5, time=2.5, uses=60,  mdl=3, ml=4, dmg=8}
 materials["ruby"]          = {fpi=2.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
 materials["emerald"]       = {fpi=2.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
 materials["sapphire"]      = {fpi=2.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
@@ -40,7 +40,7 @@ tooldata["pick_mese"] =            {groupcaps={cracky ={times={},           }}, 
 tooldata["pick_diamond"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_titanium"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_silver"] =          {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
-tooldata["pick_mithril"] =         {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["pick_mithril"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_ruby"] =            {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
 tooldata["pick_emerald"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_sapphire"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
@@ -56,7 +56,7 @@ tooldata["shovel_mese"] =          {groupcaps={crumbly={times={},           }}, 
 tooldata["shovel_diamond"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_titanium"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_silver"] =        {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
-tooldata["shovel_mithril"] =       {groupcaps={crumbly={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["shovel_mithril"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_ruby"] =          {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_emerald"] =       {groupcaps={crumbly={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
 tooldata["shovel_sapphire"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
@@ -72,7 +72,7 @@ tooldata["axe_mese"] =             {groupcaps={choppy ={times={},           }}, 
 tooldata["axe_diamond"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["axe_titanium"] =         {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["axe_silver"] =           {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
-tooldata["axe_mithril"] =          {groupcaps={choppy ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["axe_mithril"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["axe_ruby"] =             {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["axe_emerald"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["axe_sapphire"] =         {groupcaps={choppy ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
@@ -88,7 +88,7 @@ tooldata["sword_mese"] =           {groupcaps={snappy ={times={},           }}, 
 tooldata["sword_diamond"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["sword_titanium"] =       {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["sword_silver"] =         {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
-tooldata["sword_mithril"] =        {groupcaps={snappy ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["sword_mithril"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["sword_ruby"] =           {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["sword_emerald"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["sword_sapphire"] =       {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}

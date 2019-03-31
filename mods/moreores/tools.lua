@@ -1,6 +1,6 @@
 
 minetest.register_tool("moreores:pick_silver", {
-	description = "Silver Pickaxe",
+	description = "Silver Pickaxe\n\nUse this pick to gently excavate things.",
 	inventory_image = "moreores_tool_silverpick.png",
 	tool_capabilities = tooldata["pick_silver"],
     sound = {breaks = "basictools_tool_breaks"},

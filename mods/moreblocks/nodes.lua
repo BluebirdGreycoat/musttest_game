@@ -98,7 +98,7 @@ local nodes = {
 		sounds = sound_stone,
 		no_stairs = true,
 	},
-  ["circle_sandstone"] = {
+	["circle_sandstone"] = {
 		description = S("Circle Sandstone"),
 		groups = {level = 2, cracky = 2},
 		sounds = sound_stone,
@@ -292,6 +292,16 @@ local nodes = {
 		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
 		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments", "glowstone:glowing_dust"},
+					rarity = 1,
+				},
+			}
+		},
 	},
 
 	--[[
@@ -321,6 +331,16 @@ local nodes = {
 		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
 		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments", "glowstone:glowing_dust 2"},
+					rarity = 1,
+				},
+			}
+		},
 	},
 
 	--[[
@@ -396,23 +416,23 @@ end
 
 
 minetest.override_item("stairs:slab_super_glow_glass", {
-    light_source = 14,
-    sunlight_propagates = true,
+	light_source = 14,
+	sunlight_propagates = true,
 })
 
 minetest.override_item("stairs:stair_super_glow_glass", {
-    light_source = 14,
-    sunlight_propagates = true,
+	light_source = 14,
+	sunlight_propagates = true,
 })
 
 minetest.override_item("stairs:slab_glow_glass", {
-    light_source = 11,
-    sunlight_propagates = true,
+	light_source = 11,
+	sunlight_propagates = true,
 })
 
 minetest.override_item("stairs:stair_glow_glass", {
-    light_source = 11,
-    sunlight_propagates = true,
+	light_source = 11,
+	sunlight_propagates = true,
 })
 
 

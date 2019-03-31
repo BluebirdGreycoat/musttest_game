@@ -505,7 +505,7 @@ memorandum.on_eraser_use = function(itemstack, user, pointed_thing)
 	local signer = meta:get_string("signed")
 
 	-- Don't allow letter to be modified if signer is not player and signer isn't blank.
-	if not (signer == player or signer == "") then
+	if not (rename.grn(signer) == player or signer == "") then
 		minetest.chat_send_player(player, "# Server: This paper is guarded by its signature.")
 		return
 	end

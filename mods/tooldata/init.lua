@@ -8,21 +8,21 @@ local DIG_TIME_MULTIPLIER = 1.0
 local materials = {}
 materials["wood"]          = {fpi=1.2, time=5.0, uses=20,  mdl=1, ml=1, dmg=1}
 materials["stone"]         = {fpi=1.5, time=4.0, uses=30,  mdl=1, ml=1, dmg=3}
-materials["steel"]         = {fpi=1.0, time=3.5, uses=50,  mdl=2, ml=2, dmg=6}
-materials["bronze"]        = {fpi=1.0, time=2.5, uses=30,  mdl=2, ml=2, dmg=5}
-materials["mese"]          = {fpi=0.5, time=2.4, uses=70,  mdl=3, ml=3, dmg=7}
+materials["steel"]         = {fpi=1.0, time=3.5, uses=100, mdl=2, ml=2, dmg=6}
+materials["bronze"]        = {fpi=1.0, time=2.5, uses=50,  mdl=2, ml=2, dmg=5}
+materials["mese"]          = {fpi=0.5, time=2.5, uses=70,  mdl=3, ml=3, dmg=7}
 materials["diamond"]       = {fpi=0.7, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
-materials["titanium"]      = {fpi=1.1, time=2.4, uses=200, mdl=3, ml=3, dmg=6}
+materials["titanium"]      = {fpi=1.1, time=2.5, uses=150, mdl=3, ml=3, dmg=6}
 materials["silver"]        = {fpi=0.9, time=4.0, uses=20,  mdl=3, ml=3, dmg=5}
 materials["mithril"]       = {fpi=0.9, time=2.0, uses=60,  mdl=3, ml=3, dmg=8}
 materials["ruby"]          = {fpi=1.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
-materials["emerald"]       = {fpi=1.0, time=1.9, uses=40,  mdl=3, ml=3, dmg=7}
-materials["sapphire"]      = {fpi=1.0, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
-materials["amethyst"]      = {fpi=1.0, time=2.2, uses=40,  mdl=3, ml=3, dmg=7}
-materials["rubystone"]     = {fpi=1.2, time=1.2, uses=60,  mdl=3, ml=3, dmg=6}
-materials["emeraldstone"]  = {fpi=1.2, time=1.9, uses=60,  mdl=3, ml=3, dmg=6}
+materials["emerald"]       = {fpi=1.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
+materials["sapphire"]      = {fpi=1.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
+materials["amethyst"]      = {fpi=1.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
+materials["rubystone"]     = {fpi=1.2, time=2.0, uses=60,  mdl=3, ml=3, dmg=6}
+materials["emeraldstone"]  = {fpi=1.2, time=2.0, uses=60,  mdl=3, ml=3, dmg=6}
 materials["sapphirestone"] = {fpi=1.2, time=2.0, uses=60,  mdl=3, ml=3, dmg=6}
-materials["amethyststone"] = {fpi=1.2, time=2.2, uses=60,  mdl=3, ml=3, dmg=6}
+materials["amethyststone"] = {fpi=1.2, time=2.0, uses=60,  mdl=3, ml=3, dmg=6}
 
 -- Multipliers based on tool type.
 local tools = {}
@@ -38,27 +38,22 @@ tooldata["pick_steel"] =           {groupcaps={cracky ={times={},           }}, 
 tooldata["pick_bronze"] =          {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_mese"] =            {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_diamond"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
-
 tooldata["pick_titanium"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_silver"] =          {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_mithril"] =         {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
-
 tooldata["pick_ruby"] =            {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
 tooldata["pick_emerald"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_sapphire"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_amethyst"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
-
 tooldata["pick_rubystone"] =       {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
 tooldata["pick_emeraldstone"] =    {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_sapphirestone"] =   {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 tooldata["pick_amethyststone"] =   {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
-
 tooldata["shovel_stone"] =         {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_steel"] =         {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_bronze"] =        {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_mese"] =          {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_diamond"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
-
 tooldata["shovel_titanium"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_silver"] =        {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 tooldata["shovel_mithril"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}

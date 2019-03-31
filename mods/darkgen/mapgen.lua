@@ -46,7 +46,8 @@ darkgen.generate_realm = function(minp, maxp, seed)
   local nstart = darkgen.SHEET_HEIGHT
 
   -- Don't run for out-of-bounds mapchunks.
-  if minp.y > (nstart + 200) or maxp.y < (nstart - 20) then return end
+	-- Need -100 in order to include ocean basins under the ice.
+  if minp.y > (nstart + 200) or maxp.y < (nstart - 100) then return end
 
   -- Grab the voxel manipulator.
   local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")

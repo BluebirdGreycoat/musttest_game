@@ -146,6 +146,8 @@ function flowerpot.register_node(nodename, imagetransform)
 		mesh = "flowerpot.obj",
 		tiles = tiles,
 		paramtype = "light",
+		paramtype2 = "facedir",
+		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
 		sunlight_propagates = true,
 		collision_box = {
 			type = "fixed",
@@ -190,6 +192,8 @@ if not flowerpot.loaded then
 	minetest.register_node("flowerpot:empty", {
 		description = "Flowerpot",
 		drawtype = "mesh",
+		paramtype2 = "facedir",
+		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
 		mesh = "flowerpot.obj",
 		inventory_image = "flowerpot_item.png",
 		wield_image = "flowerpot_item.png",

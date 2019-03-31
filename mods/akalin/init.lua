@@ -102,11 +102,23 @@ minetest.register_node("akalin:glass", {
   is_ground_content = false,
   groups = {level = 1, cracky = 3},
   sounds = default.node_sound_glass_defaults(),
+	silverpick_drop = true,
+
+	drop = {
+		max_items = 2,
+		items = {
+			{
+				items = {"vessels:glass_fragments", "akalin:dust"},
+				rarity = 1,
+			},
+		}
+	},
 })
 
 minetest.register_craft({
-  type = "shapeless",
-  output = "akalin:glass",
-  recipe = {"default:glass", "akalin:ingot"},
+	type = "alloying",
+	output = "akalin:glass",
+	recipe = {"default:glass", "akalin:ingot"},
+	time = 6,
 })
 

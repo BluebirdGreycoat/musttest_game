@@ -105,11 +105,23 @@ minetest.register_node("talinite:glass", {
   is_ground_content = false,
   groups = {level = 1, cracky = 3},
   sounds = default.node_sound_glass_defaults(),
+	silverpick_drop = true,
+
+	drop = {
+		max_items = 2,
+		items = {
+			{
+				items = {"vessels:glass_fragments", "talinite:dust"},
+				rarity = 1,
+			},
+		}
+	},
 })
 
 minetest.register_craft({
-  type = "shapeless",
-  output = "talinite:glass",
-  recipe = {"default:glass", "talinite:ingot"},
+	type = "alloying",
+	output = "talinite:glass",
+	recipe = {"default:glass", "talinite:ingot"},
+	time = 6,
 })
 

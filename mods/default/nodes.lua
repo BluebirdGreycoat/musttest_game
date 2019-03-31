@@ -1716,6 +1716,8 @@ minetest.register_node("default:glass", {
 	is_ground_content = false,
 	groups = {level = 1, cracky = 3},
 	sounds = default.node_sound_glass_defaults(),
+	drop = "vessels:glass_fragments",
+	silverpick_drop = true,
 })
 
 minetest.register_node("default:obsidian_glass", {
@@ -1727,6 +1729,8 @@ minetest.register_node("default:obsidian_glass", {
 	sunlight_propagates = true,
 	sounds = default.node_sound_glass_defaults(),
 	groups = {level = 1, cracky = 2},
+	drop = "default:obsidian_shard",
+	silverpick_drop = true,
 })
 
 

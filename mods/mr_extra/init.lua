@@ -19,7 +19,7 @@ for k, v in ipairs(rocks) do
 		stairs.register_stair_and_slab(
 			"morerocks_" .. v,
 			basename,
-			ndef.groups,
+			utility.copy_builtin_groups(ndef.groups),
 			ndef.tiles, -- Accepts a table.
 			ndef.description,
 			ndef.sounds

@@ -8,6 +8,41 @@ fireambiance = {}
 function fireambiance.on_flame_addremove(pos)
 end
 
+-- Copy standard/builtin groups only.
+-- Used mainly to ensure that stairs/microblock nodes don't include strange groups
+-- that should ONLY apply to their parent fullblock nodes.
+--
+-- Shall not return any groups used in crafting recipes!
+-- Shall return any/all groups required by tools!
+function utility.copy_builtin_groups(old_groups)
+	local groups = {}
+	groups.level = old_groups.level or 1
+
+	if old_groups.crumbly then
+		groups.crumbly = old_groups.crumbly
+	end
+	if old_groups.cracky then
+		groups.cracky = old_groups.cracky
+	end
+	if old_groups.snappy then
+		groups.snappy = old_groups.snappy
+	end
+	if old_groups.choppy then
+		groups.choppy = old_groups.choppy
+	end
+	if old_groups.oddly_breakable_by_hand then
+		groups.oddly_breakable_by_hand = old_groups.oddly_breakable_by_hand
+	end
+	if old_groups.flammable then
+		groups.flammable = old_groups.flammable
+	end
+	if old_groups.dig_immediate then
+		groups.dig_immediate = old_groups.dig_immediate
+	end
+
+	return groups
+end
+
 function utility.inventory_count_items(inv, listname, itemname)
 	local list = inv:get_list(listname)
 	local count = 0

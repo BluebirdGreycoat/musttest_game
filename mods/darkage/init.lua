@@ -128,14 +128,25 @@ if not darkage.run_once then
 	})
 
 	minetest.register_node("darkage:wood_frame", {
-		description = "Wooden Framed Glass",
+		description = "Wood Framed Glass",
 		drawtype = "glasslike_framed",
 		tiles = {"darkage_wood_frame.png"},
 		is_ground_content = false,
 		paramtype = "light",
 		sunlight_propagates = true,
 		groups = {snappy=1, choppy=2},
-		sounds = default.node_sound_stone_defaults()
+		sounds = default.node_sound_stone_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments", "default:stick"},
+					rarity = 1,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:stone_brick", {

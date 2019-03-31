@@ -518,5 +518,16 @@ xdecor.register("woodframed_glass", {
 	sunlight_propagates = true,
 	tiles = {"xdecor_woodframed_glass.png", "xdecor_woodframed_glass_detail.png"},
 	groups = {cracky=2, oddly_breakable_by_hand=1},
-	sounds = default.node_sound_glass_defaults()
+	sounds = default.node_sound_glass_defaults(),
+	silverpick_drop = true,
+
+	drop = {
+		max_items = 2,
+		items = {
+			{
+				items = {"vessels:glass_fragments", "default:stick 2"},
+				rarity = 1,
+			},
+		}
+	},
 })

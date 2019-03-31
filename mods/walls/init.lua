@@ -31,6 +31,29 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		sounds = wall_sounds,
 	})
 
+	register_node(":walls:" .. wall_name .. "_noconnect", {
+		description = wall_desc .. " Pillar",
+		drawtype = "nodebox",
+		node_box = {
+			type = "fixed",
+			fixed = {{-1/4, -1/2, -1/4, 1/4, 1/2, 1/4}},
+		},
+		paramtype = "light",
+		is_ground_content = false,
+		tiles = { wall_texture },
+		walkable = true,
+		groups = {level = 2, cracky = 3},
+		sounds = wall_sounds,
+	})
+
+	minetest.register_craft({
+		output = "walls:" .. wall_name .. "_noconnect",
+		recipe = {
+			{'walls:' .. wall_name},
+			{'walls:' .. wall_name},
+		},
+	})
+
 	register_node(":walls:" .. wall_name .. "_half", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Half Wall",

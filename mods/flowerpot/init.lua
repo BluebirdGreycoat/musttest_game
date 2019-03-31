@@ -141,7 +141,7 @@ function flowerpot.register_node(nodename, imagetransform)
 	end
 
 	minetest.register_node(":flowerpot:" .. name, {
-		description = "Flowerpot With " .. desc,
+		description = "Flowerpot With " .. utility.get_short_desc(desc),
 		drawtype = "mesh",
 		mesh = "flowerpot.obj",
 		tiles = tiles,

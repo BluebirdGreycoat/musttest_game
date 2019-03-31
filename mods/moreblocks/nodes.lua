@@ -291,6 +291,7 @@ local nodes = {
 		light_source = 11,
 		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
+		silverpick_drop = true,
 	},
 
 	--[[
@@ -319,6 +320,7 @@ local nodes = {
 		light_source = 14,
 		groups = {level = 1, cracky = 3},
 		sounds = sound_glass,
+		silverpick_drop = true,
 	},
 
 	--[[
@@ -359,13 +361,12 @@ local nodes = {
 }
 
 for name, def in pairs(nodes) do
-	def.tiles = def.tiles or {"moreblocks_" ..name.. ".png"}
-	minetest.register_node("moreblocks:" ..name, def)
+	def.tiles = def.tiles or {"moreblocks_" .. name .. ".png"}
+	minetest.register_node("moreblocks:" .. name, def)
 	-- I don't need aliases. By MustTest
 	--minetest.register_alias(name, "moreblocks:" ..name)
 	if not def.no_stairs then
-		local groups = {}
-		for k, v in pairs(def.groups) do groups[k] = v end
+		local groups = utility.copy_builtin_groups(def.groups or {})
 
 		assert(type(def.tiles) == "table")
 		stairs.register_stair_and_slab(

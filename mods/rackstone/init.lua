@@ -526,7 +526,7 @@ minetest.register_craft({
 stairs.register_stair_and_slab(
 	"rackstone",
 	"rackstone:rackstone",
-	{cracky=1, rackstone=1, netherack=1},
+	{cracky=1},
 	{"rackstone_rackstone.png"},
 	"Rackstone",
 	default.node_sound_stone_defaults()
@@ -536,7 +536,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"rackstone_block",
 	"rackstone:rackstone_block",
-	{cracky=1, rackstone=1, netherack=1},
+	{cracky=1},
 	{"rackstone_rackstone_block.png"},
 	"Rackstone Block",
 	default.node_sound_stone_defaults()
@@ -546,7 +546,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"rackstone_brick2",
 	"rackstone:rackstone_brick2",
-	{cracky=1, rackstone=1},
+	{cracky=1},
 	{"rackstone_rackstone_brick.png"},
 	"Rackstone Brick",
 	default.node_sound_stone_defaults()
@@ -556,7 +556,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"redrack",
 	"rackstone:redrack",
-	{cracky=3, rackstone=1, netherack=1},
+	{cracky=3},
 	{"rackstone_redrack.png"},
 	"Netherack",
 	rackstone.rackstone_sounds()
@@ -566,7 +566,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"redrack_block",
 	"rackstone:redrack_block",
-	{cracky=3, rackstone=1, netherack=1},
+	{cracky=3},
 	{"rackstone_redrack_block.png"},
 	"Netherack Block",
 	default.node_sound_stone_defaults()
@@ -576,7 +576,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"rackstone_brick",
 	"rackstone:brick",
-	{cracky=2, rackstone=1},
+	{cracky=2},
 	{"rackstone_brick.png"},
 	"Rackstone Brick",
 	default.node_sound_stone_defaults()
@@ -586,7 +586,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"bluerack",
 	"rackstone:bluerack",
-	{cracky=2, rackstone=1, netherack=1},
+	{cracky=2},
 	{"rackstone_bluerack.png"},
 	"Blue Rackstone",
 	rackstone.rackstone_sounds()
@@ -596,7 +596,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"bluerack_block",
 	"rackstone:bluerack_block",
-	{cracky=2, rackstone=1, netherack=1},
+	{cracky=2},
 	{"rackstone_bluerack.png"},
 	"Blue Rackstone Block",
 	default.node_sound_stone_defaults()
@@ -606,7 +606,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"bluerack_brick",
 	"rackstone:bluerack_brick",
-	{cracky=2, rackstone=1},
+	{cracky=2},
 	{"rackstone_bluerack_brick.png"},
 	"Blue Rackstone Brick",
 	default.node_sound_stone_defaults()
@@ -616,7 +616,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"blackrack",
 	"rackstone:blackrack",
-	{cracky=2, rackstone=1, netherack=1},
+	{cracky=2},
 	{"rackstone_blackrack.png"},
 	"Black Rackstone",
 	rackstone.rackstone_sounds()
@@ -626,7 +626,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"blackrack_block",
 	"rackstone:blackrack_block",
-	{cracky=2, rackstone=1, netherack=1},
+	{cracky=2},
 	{"rackstone_blackrack_block.png"},
 	"Black Rackstone Block",
 	default.node_sound_stone_defaults()
@@ -636,7 +636,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"rackstone_brick_black",
 	"rackstone:brick_black",
-	{cracky=2, rackstone=1},
+	{cracky=2},
 	{"rackstone_brick_black.png"},
 	"Black Rackstone Brick",
 	default.node_sound_stone_defaults()

@@ -12,7 +12,7 @@ minetest.register_node("castle_masonry:pavement_brick", {
 	drawtype = "normal",
 	tiles = {"castle_pavement_brick.png"},
 	groups = {cracky=2},
-	paramtype = "light",
+	--paramtype = "light",
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -32,6 +32,9 @@ stairs.register_stair_and_slab("pavement_brick", "castle_masonry:pavement_brick"
 	default.node_sound_stone_defaults()
 )
 
+
+walls.register("masonry_pavement", "Paving Stone", "castle_pavement_brick.png",
+	"castle_masonry:pavement_brick", default.node_sound_stone_defaults())
 
 
 

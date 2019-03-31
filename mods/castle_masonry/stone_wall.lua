@@ -10,7 +10,7 @@ minetest.register_alias("castle:stonewall_corner",  "castle_masonry:stonewall_co
 --]]
 
 minetest.register_node("castle_masonry:stonewall", {
-	description = S("Castle Wall"),
+	description = S("Castle Cobble"),
 	drawtype = "normal",
 	tiles = {"castle_stonewall.png"},
 	--paramtype = "light",
@@ -85,6 +85,9 @@ stairs.register_stair_and_slab("rubble", "castle_masonry:rubble",
 	default.node_sound_stone_defaults()
 )
 
+walls.register("masonry_stonewall", "Castle Cobble", "castle_stonewall.png",
+	"castle_masonry:stonewall", default.node_sound_stone_defaults())
+
 --------------------------------------------------------------------------------------------------------------
 
 minetest.register_node("castle_masonry:dungeon_stone", {
@@ -92,7 +95,7 @@ minetest.register_node("castle_masonry:dungeon_stone", {
 	drawtype = "normal",
 	tiles = {"castle_dungeon_stone.png"},
 	groups = {cracky=2, stone=1, brick=1},
-	paramtype = "light",
+	--paramtype = "light",
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -110,3 +113,6 @@ stairs.register_stair_and_slab("dungeon_stone", "castle_masonry:dungeon_stone",
 	S("Dungeon Stone"),
 	default.node_sound_stone_defaults()
 )
+
+walls.register("masonry_dungeon", "Dungeon Stone", "castle_dungeon_stone.png",
+	"castle_masonry:dungeon_stone", default.node_sound_stone_defaults())

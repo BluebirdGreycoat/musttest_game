@@ -130,7 +130,7 @@ minetest.register_node("lapis:rosace", {
 	"lapis_rosace_side.png"},
 	paramtype2 = "facedir",
 	is_ground_content = false,
-	groups = {cracky = 3, stone = 2},
+	groups = {cracky = 3},
 	sounds = default.node_sound_stone_defaults(),
 })
 

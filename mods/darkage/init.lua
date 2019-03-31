@@ -158,7 +158,7 @@ if not darkage.run_once then
 		description = "Chalked Brick",
 		tiles = {"darkage_chalked_bricks.png"},
 		paramtype2 = "facedir",
-		groups = {cracky = 2, stone = 1},
+		groups = {cracky = 2},
 		sounds = default.node_sound_stone_defaults(),
 	})
 

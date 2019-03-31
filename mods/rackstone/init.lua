@@ -175,7 +175,7 @@ minetest.register_node("rackstone:nether_grit", {
 minetest.register_node("rackstone:void", {
   description = "Nether Void Gap (You Hacker!)",
   tiles = {"rackstone_redrack.png"},
-  groups = {cracky=3, level=2, rackstone=1, netherack=1},
+  groups = {cracky=3, level=2},
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   walkable = false,

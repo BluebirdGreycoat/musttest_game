@@ -2,118 +2,139 @@
 tooldata = tooldata or {}
 
 local modpath = minetest.get_modpath("tooldata")
-local DIG_TIME_MULTIPLIER = 0.7
+local DIG_TIME_MULTIPLIER = 1.0
 
+-- Basic paramters based on material type.
+local materials = {}
+materials["wood"]          = {fpi=1.2, time=5.0, uses=20,  mdl=1, ml=1, dmg=1}
+materials["stone"]         = {fpi=1.5, time=4.0, uses=30,  mdl=1, ml=1, dmg=3}
+materials["steel"]         = {fpi=1.0, time=3.5, uses=50,  mdl=2, ml=2, dmg=6}
+materials["bronze"]        = {fpi=1.0, time=2.5, uses=30,  mdl=2, ml=2, dmg=5}
+materials["mese"]          = {fpi=0.5, time=2.4, uses=70,  mdl=3, ml=3, dmg=7}
+materials["diamond"]       = {fpi=0.7, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
+materials["titanium"]      = {fpi=1.1, time=2.4, uses=200, mdl=3, ml=3, dmg=6}
+materials["silver"]        = {fpi=0.9, time=4.0, uses=20,  mdl=3, ml=3, dmg=5}
+materials["mithril"]       = {fpi=0.9, time=2.0, uses=60,  mdl=3, ml=3, dmg=8}
+materials["ruby"]          = {fpi=1.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
+materials["emerald"]       = {fpi=1.0, time=1.9, uses=40,  mdl=3, ml=3, dmg=7}
+materials["sapphire"]      = {fpi=1.0, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
+materials["amethyst"]      = {fpi=1.0, time=2.2, uses=40,  mdl=3, ml=3, dmg=7}
+materials["rubystone"]     = {fpi=1.2, time=1.2, uses=60,  mdl=3, ml=3, dmg=6}
+materials["emeraldstone"]  = {fpi=1.2, time=1.9, uses=60,  mdl=3, ml=3, dmg=6}
+materials["sapphirestone"] = {fpi=1.2, time=2.0, uses=60,  mdl=3, ml=3, dmg=6}
+materials["amethyststone"] = {fpi=1.2, time=2.2, uses=60,  mdl=3, ml=3, dmg=6}
 
+-- Multipliers based on tool type.
+local tools = {}
+tools["sword"]  = {swing_mp=1.0, damage_mp=1.0}
+tools["axe"]    = {swing_mp=1.0, damage_mp=0.8}
+tools["pick"]   = {swing_mp=1.2, damage_mp=0.7}
+tools["shovel"] = {swing_mp=1.2, damage_mp=0.5}
 
--- Copper tools should be fast, but wear out quickly.
--- Gem tools should be fastest and last long, (but each gem has a best tool, other tools should be similar to diamond).
--- Titanium tools should have medium speed, but last the longest.
+-- Placeholder tables. Will be populated algorithmically.
+tooldata["pick_wood"] =            {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_stone"] =           {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_steel"] =           {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_bronze"] =          {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_mese"] =            {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_diamond"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 
+tooldata["pick_titanium"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_silver"] =          {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_mithril"] =         {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
 
+tooldata["pick_ruby"] =            {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["pick_emerald"] =         {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_sapphire"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_amethyst"] =        {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 
-tooldata["pick_wood"] =            {full_punch_interval=1.2, max_drop_level=1, groupcaps={cracky ={times={[2]=7.0 },    uses=10,  maxlevel=1}}, damage_groups={fleshy=2}}
-tooldata["pick_stone"] =           {full_punch_interval=1.3, max_drop_level=1, groupcaps={cracky ={times={[2]=3.5 },    uses=30,  maxlevel=1}}, damage_groups={fleshy=3}}
-tooldata["pick_steel"] =           {full_punch_interval=1.0, max_drop_level=1, groupcaps={cracky ={times={[1]=3.5 },    uses=50,  maxlevel=2}}, damage_groups={fleshy=4}}
-tooldata["pick_bronze"] =          {full_punch_interval=1.0, max_drop_level=1, groupcaps={cracky ={times={[1]=2.5 },    uses=20,  maxlevel=2}}, damage_groups={fleshy=4}}
-tooldata["pick_mese"] =            {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=2.4 },    uses=70,  maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_diamond"] =         {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=40,  maxlevel=3}}, damage_groups={fleshy=5}}
+tooldata["pick_rubystone"] =       {groupcaps={cracky ={times={}, maxlevel=1}}, damage_groups={fleshy=true}}
+tooldata["pick_emeraldstone"] =    {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_sapphirestone"] =   {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["pick_amethyststone"] =   {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
 
-tooldata["pick_titanium"] =        {full_punch_interval=1.0, max_drop_level=3, groupcaps={cracky ={times={[1]=2.4 },    uses=200, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_silver"] =          {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=6.0 },    uses=20,  maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_mithril"] =         {full_punch_interval=0.9, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=60,  maxlevel=4}}, damage_groups={fleshy=5}}
+tooldata["shovel_stone"] =         {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_steel"] =         {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_bronze"] =        {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_mese"] =          {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_diamond"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
 
-tooldata["pick_ruby"] =            {full_punch_interval=0.8, max_drop_level=3, groupcaps={cracky ={times={[1]=1.2 },    uses=125, maxlevel=4}}, damage_groups={fleshy=5}}
-tooldata["pick_emerald"] =         {full_punch_interval=0.8, max_drop_level=3, groupcaps={cracky ={times={[1]=1.9 },    uses=120, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_sapphire"] =        {full_punch_interval=0.8, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=115, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_amethyst"] =        {full_punch_interval=0.8, max_drop_level=3, groupcaps={cracky ={times={[1]=2.2 },    uses=115, maxlevel=3}}, damage_groups={fleshy=5}}
-
-tooldata["pick_rubystone"] =       {full_punch_interval=1.1, max_drop_level=3, groupcaps={cracky ={times={[1]=1.2 },    uses=155, maxlevel=4}}, damage_groups={fleshy=5}}
-tooldata["pick_emeraldstone"] =    {full_punch_interval=1.1, max_drop_level=3, groupcaps={cracky ={times={[1]=1.9 },    uses=150, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_sapphirestone"] =   {full_punch_interval=1.1, max_drop_level=3, groupcaps={cracky ={times={[1]=2.0 },    uses=145, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["pick_amethyststone"] =   {full_punch_interval=1.1, max_drop_level=3, groupcaps={cracky ={times={[1]=2.2 },    uses=145, maxlevel=3}}, damage_groups={fleshy=5}}
-
-tooldata["shovel_stone"] =         {full_punch_interval=1.4, max_drop_level=1, groupcaps={crumbly={times={[2]=4.00},    uses=20,  maxlevel=1}}, damage_groups={fleshy=2}}
-tooldata["shovel_steel"] =         {full_punch_interval=1.1, max_drop_level=1, groupcaps={crumbly={times={[1]=1.50},    uses=30,  maxlevel=2}}, damage_groups={fleshy=3}}
-tooldata["shovel_bronze"] =        {full_punch_interval=1.1, max_drop_level=1, groupcaps={crumbly={times={[1]=1.20},    uses=20,  maxlevel=2}}, damage_groups={fleshy=3}}
-tooldata["shovel_mese"] =          {full_punch_interval=1.0, max_drop_level=2, groupcaps={crumbly={times={[1]=1.20},    uses=50,  maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_diamond"] =       {full_punch_interval=1.0, max_drop_level=3, groupcaps={crumbly={times={[1]=1.10},    uses=30,  maxlevel=3}}, damage_groups={fleshy=4}}
-
-tooldata["shovel_titanium"] =      {full_punch_interval=1.0, max_drop_level=3, groupcaps={crumbly={times={[1]=1.0 },    uses=200, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_silver"] =        {full_punch_interval=1.0, max_drop_level=3, groupcaps={crumbly={times={[1]=1.10},    uses=30,  maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_mithril"] =       {full_punch_interval=1.0, max_drop_level=3, groupcaps={crumbly={times={[1]=1.10},    uses=30,  maxlevel=3}}, damage_groups={fleshy=4}}
-
-tooldata["shovel_ruby"] =          {full_punch_interval=0.8, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=125, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_emerald"] =       {full_punch_interval=0.8, max_drop_level=3, groupcaps={crumbly={times={[1]=0.70},    uses=130, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_sapphire"] =      {full_punch_interval=0.8, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=115, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_amethyst"] =      {full_punch_interval=0.8, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=125, maxlevel=3}}, damage_groups={fleshy=4}}
-
-tooldata["shovel_rubystone"] =     {full_punch_interval=1.1, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=155, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_emeraldstone"] =  {full_punch_interval=1.1, max_drop_level=3, groupcaps={crumbly={times={[1]=0.70},    uses=160, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_sapphirestone"] = {full_punch_interval=1.1, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=145, maxlevel=3}}, damage_groups={fleshy=4}}
-tooldata["shovel_amethyststone"] = {full_punch_interval=1.1, max_drop_level=3, groupcaps={crumbly={times={[1]=1.30},    uses=155, maxlevel=3}}, damage_groups={fleshy=4}}
-
-tooldata["axe_stone"] =            {full_punch_interval=1.2, max_drop_level=1, groupcaps={choppy ={times={[1]=6.00},    uses=20,  maxlevel=1}}, damage_groups={fleshy=3}}
-tooldata["axe_steel"] =            {full_punch_interval=1.0, max_drop_level=1, groupcaps={choppy ={times={[1]=2.50},    uses=50,  maxlevel=2}}, damage_groups={fleshy=4}}
-tooldata["axe_bronze"] =           {full_punch_interval=1.0, max_drop_level=1, groupcaps={choppy ={times={[1]=1.50},    uses=20,  maxlevel=2}}, damage_groups={fleshy=4}}
-tooldata["axe_mese"] =             {full_punch_interval=0.9, max_drop_level=2, groupcaps={choppy ={times={[1]=2.20},    uses=70,  maxlevel=3}}, damage_groups={fleshy=6}}
-tooldata["axe_diamond"] =          {full_punch_interval=0.9, max_drop_level=3, groupcaps={choppy ={times={[1]=2.10},    uses=40,  maxlevel=3}}, damage_groups={fleshy=7}}
-
-tooldata["axe_titanium"] =         {full_punch_interval=0.9, max_drop_level=3, groupcaps={choppy ={times={[1]=2.50},    uses=200, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["axe_silver"] =           {full_punch_interval=0.9, max_drop_level=3, groupcaps={choppy ={times={[1]=1.50},    uses=30,  maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["axe_mithril"] =          {full_punch_interval=0.9, max_drop_level=3, groupcaps={choppy ={times={[1]=2.10},    uses=30,  maxlevel=3}}, damage_groups={fleshy=7}}
-
-tooldata["axe_ruby"] =             {full_punch_interval=0.8, max_drop_level=3, groupcaps={choppy ={times={[1]=1.60},    uses=125, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_emerald"] =          {full_punch_interval=0.8, max_drop_level=3, groupcaps={choppy ={times={[1]=2.00},    uses=120, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_sapphire"] =         {full_punch_interval=0.8, max_drop_level=3, groupcaps={choppy ={times={[1]=1.20},    uses=115, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_amethyst"] =         {full_punch_interval=0.8, max_drop_level=3, groupcaps={choppy ={times={[1]=2.00},    uses=115, maxlevel=3}}, damage_groups={fleshy=5}}
-
-tooldata["axe_rubystone"] =        {full_punch_interval=1.1, max_drop_level=3, groupcaps={choppy ={times={[1]=1.60},    uses=155, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_emeraldstone"] =     {full_punch_interval=1.1, max_drop_level=3, groupcaps={choppy ={times={[1]=2.00},    uses=150, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_sapphirestone"] =    {full_punch_interval=1.1, max_drop_level=3, groupcaps={choppy ={times={[1]=1.20},    uses=145, maxlevel=3}}, damage_groups={fleshy=5}}
-tooldata["axe_amethyststone"] =    {full_punch_interval=1.1, max_drop_level=3, groupcaps={choppy ={times={[1]=2.00},    uses=145, maxlevel=3}}, damage_groups={fleshy=5}}
-                                   
-tooldata["sword_stone"] =          {full_punch_interval=1.2, max_drop_level=1, groupcaps={snappy ={times={[2]=2.5 },    uses=20,  maxlevel=1}}, damage_groups={fleshy=4}}
-tooldata["sword_steel"] =          {full_punch_interval=0.8, max_drop_level=1, groupcaps={snappy ={times={[1]=2.5 },    uses=50,  maxlevel=2}}, damage_groups={fleshy=6}}
-tooldata["sword_bronze"] =         {full_punch_interval=0.8, max_drop_level=1, groupcaps={snappy ={times={[1]=1.5 },    uses=20,  maxlevel=2}}, damage_groups={fleshy=6}}
-tooldata["sword_mese"] =           {full_punch_interval=0.7, max_drop_level=2, groupcaps={snappy ={times={[1]=2.0 },    uses=70,  maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_diamond"] =        {full_punch_interval=0.7, max_drop_level=3, groupcaps={snappy ={times={[1]=1.7 },    uses=40,  maxlevel=3}}, damage_groups={fleshy=8}}
-
-tooldata["sword_titanium"] =       {full_punch_interval=1.0, max_drop_level=3, groupcaps={snappy ={times={[1]=2.0 },    uses=200, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_silver"] =         {full_punch_interval=0.7, max_drop_level=3, groupcaps={snappy ={times={[1]=0.9 },    uses=20,  maxlevel=3}}, damage_groups={fleshy=8}}
-tooldata["sword_mithril"] =        {full_punch_interval=1.0, max_drop_level=3, groupcaps={snappy ={times={[1]=1.9 },    uses=40,  maxlevel=3}}, damage_groups={fleshy=10}}
-
-tooldata["sword_ruby"] =           {full_punch_interval=0.8, max_drop_level=3, groupcaps={snappy ={times={[1]=1.5 },    uses=135, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_emerald"] =        {full_punch_interval=0.8, max_drop_level=3, groupcaps={snappy ={times={[1]=2.0 },    uses=125, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_sapphire"] =       {full_punch_interval=0.8, max_drop_level=3, groupcaps={snappy ={times={[1]=2.0 },    uses=125, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_amethyst"] =       {full_punch_interval=0.8, max_drop_level=3, groupcaps={snappy ={times={[1]=1.0 },    uses=120, maxlevel=3}}, damage_groups={fleshy=8}}
-
-tooldata["sword_rubystone"] =      {full_punch_interval=1.1, max_drop_level=3, groupcaps={snappy ={times={[1]=1.5 },    uses=165, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_emeraldstone"] =   {full_punch_interval=1.1, max_drop_level=3, groupcaps={snappy ={times={[1]=2.0 },    uses=155, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_sapphirestone"] =  {full_punch_interval=1.1, max_drop_level=3, groupcaps={snappy ={times={[1]=2.0 },    uses=155, maxlevel=3}}, damage_groups={fleshy=7}}
-tooldata["sword_amethyststone"] =  {full_punch_interval=1.1, max_drop_level=3, groupcaps={snappy ={times={[1]=1.0 },    uses=150, maxlevel=3}}, damage_groups={fleshy=8}}
+tooldata["shovel_titanium"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_silver"] =        {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_mithril"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_ruby"] =          {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_emerald"] =       {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_sapphire"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_amethyst"] =      {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_rubystone"] =     {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_emeraldstone"] =  {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_sapphirestone"] = {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["shovel_amethyststone"] = {groupcaps={crumbly={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_stone"] =            {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_steel"] =            {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_bronze"] =           {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_mese"] =             {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_diamond"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_titanium"] =         {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_silver"] =           {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_mithril"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_ruby"] =             {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_emerald"] =          {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_sapphire"] =         {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_amethyst"] =         {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_rubystone"] =        {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_emeraldstone"] =     {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_sapphirestone"] =    {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["axe_amethyststone"] =    {groupcaps={choppy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_stone"] =          {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_steel"] =          {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_bronze"] =         {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_mese"] =           {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_diamond"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_titanium"] =       {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_silver"] =         {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_mithril"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_ruby"] =           {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_emerald"] =        {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_sapphire"] =       {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_amethyst"] =       {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_rubystone"] =      {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_emeraldstone"] =   {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_sapphirestone"] =  {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
+tooldata["sword_amethyststone"] =  {groupcaps={snappy ={times={},           }}, damage_groups={fleshy=true}}
 
 
 
 for k, v in pairs(tooldata) do
+	-- Get tool type and data tables.
+	local tn = k:split("_")[1]
+	local td = tools[tn]
+	assert(td)
+
+	-- Get material name and data tables.
+	local mn = k:split("_")[2]
+	local md = materials[mn]
+	assert(md)
+
+	-- Assign basic values.
+	v.full_punch_interval = md.fpi * td.swing_mp
+	v.max_drop_level = md.mdl
+	v.uses = md.uses
+
+	-- Assign digging times per dig-group.
   for t, j in pairs(v.groupcaps) do
-    if j.times[1] then
-      local time = j.times[1]
-      j.times[1] = time         * DIG_TIME_MULTIPLIER
-      --j.times[2] = (2*(time/3)) * DIG_TIME_MULTIPLIER
-      --j.times[3] = (time/2)     * DIG_TIME_MULTIPLIER
-      j.times[2] = (time/2)     * DIG_TIME_MULTIPLIER
-      j.times[3] = (time/3)     * DIG_TIME_MULTIPLIER
-    elseif j.times[2] then
-      local time = j.times[2]
-      j.times[2] = time         * DIG_TIME_MULTIPLIER
-      --j.times[3] = (2*(time/3)) * DIG_TIME_MULTIPLIER
-      j.times[3] = (time/2)     * DIG_TIME_MULTIPLIER
-    elseif j.times[3] then
-      local time = j.times[3]
-      j.times[3] = time * DIG_TIME_MULTIPLIER
-    end
+		j.times[1] = (md.time/1) * DIG_TIME_MULTIPLIER
+		j.times[2] = (md.time/2) * DIG_TIME_MULTIPLIER
+		j.times[3] = (md.time/3) * DIG_TIME_MULTIPLIER
+
+		-- Assign maxlevel.
+		j.maxlevel = (j.maxlevel or 0) + md.ml
   end
+
+	-- Assign damage amounts per damage-group.
+	for t, j in pairs(v.damage_groups) do
+		v.damage_groups[t] = md.dmg * td.damage_mp
+	end
 end
 
 dofile(modpath .. "/technic.lua")

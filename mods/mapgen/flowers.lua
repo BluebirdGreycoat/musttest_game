@@ -62,6 +62,7 @@ mapgen.generate_flowers = function(minp, maxp, seed)
 			chose_flower(pr, pos)
 
 			-- Natural-grown flowers always appear on mossy cobble.
+			--minetest.chat_send_player("MustTest", "# Server: Placed flower @ " .. rc.pos_to_namestr(pos) .. "!")
 			minetest.set_node(posb, {name="default:mossycobble"})
 		end
 	end

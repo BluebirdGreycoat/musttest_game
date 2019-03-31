@@ -179,7 +179,7 @@ local get_material_properties = function(material)
 		burn_time = minetest.get_craft_result({method="fuel", width=1, items={ItemStack(material.composition_material)}}).time
 	else
 		composition_def = minetest.registered_nodes[material.craft_material]
-		burn_time = minetest.get_craft_result({method="fuel", width=1, items={ItemStack(material.craft_materia)}}).time
+		burn_time = minetest.get_craft_result({method="fuel", width=1, items={ItemStack(material.craft_material)}}).time
 	end
 	
 	local tiles = material.tile
@@ -230,11 +230,7 @@ castle_lighting.register_pillar_brasier = function(material)
 	local composition_def, burn_time, tile, desc = get_material_properties(material)
 	if burn_time > 0 or composition_def.groups.puts_out_fire then return end -- No wooden brasiers, snow brasiers, or ice brasiers, alas.
 	
-	local crossbrace_connectable_groups = {}
-	for group, val in pairs(composition_def.groups) do
-		crossbrace_connectable_groups[group] = val
-	end	
-	crossbrace_connectable_groups.crossbrace_connectable = 1
+	local groups = utility.copy_builtin_groups(composition_def.groups)
 	
 	local mod_name = minetest.get_current_modname()
 
@@ -247,7 +243,7 @@ castle_lighting.register_pillar_brasier = function(material)
 		paramtype = "light",
 		paramtype2 = "facedir",
 		on_rotate = screwdriver.rotate_simple,
-		groups = crossbrace_connectable_groups,
+		groups = groups,
 		sounds = composition_def.sounds,
 
 		-- Unlit brasier should still emit a small amount of light, since it has coals.

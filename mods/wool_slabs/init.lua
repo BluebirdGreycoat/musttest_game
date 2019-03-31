@@ -42,7 +42,7 @@ for i = 1, #dyes, 1 do
 	stairs.register_stair_and_slab(
 		"wool"..n,
 		"wool:"..n,
-		{snappy = 2, choppy = 2, oddly_breakable_by_hand = 3, flammable = 3, wool = 1},
+		{snappy = 2, choppy = 2, oddly_breakable_by_hand = 3, flammable = 3},
 		{"wool_"..n..".png"},
 		"Wool",
 		default.node_sound_defaults()

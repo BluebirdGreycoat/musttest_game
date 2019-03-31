@@ -3,10 +3,34 @@
 local register_stairs = function(basename)
 	local ndef = minetest.registered_nodes["darkage:" .. basename]
 	if ndef then
+		local groups = {}
+		groups.level = ndef.groups.level or 1
+		if ndef.groups.crumbly then
+			groups.crumbly = ndef.groups.crumbly
+		end
+		if ndef.groups.cracky then
+			groups.cracky = ndef.groups.cracky
+		end
+		if ndef.groups.snappy then
+			groups.snappy = ndef.groups.snappy
+		end
+		if ndef.groups.choppy then
+			groups.choppy = ndef.groups.choppy
+		end
+		if ndef.groups.oddly_breakable_by_hand then
+			groups.oddly_breakable_by_hand = ndef.groups.oddly_breakable_by_hand
+		end
+		if ndef.groups.flammable then
+			groups.flammable = ndef.groups.flammable
+		end
+		if ndef.groups.dig_immediate then
+			groups.dig_immediate = ndef.groups.dig_immediate
+		end
+
 		stairs.register_stair_and_slab(
 			basename,
 			"darkage:" .. basename,
-			ndef.groups,
+			groups,
 			ndef.tiles, 
 			ndef.description,
 			ndef.sounds

@@ -2477,6 +2477,7 @@ local function do_states(self, dtime)
 									full_punch_interval = 1.0,
 									damage_groups = {fleshy = self.damage}
 								}, nil)
+								mob_sound(self, "default_punch")
 							end
 
 							-- report death!

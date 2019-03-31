@@ -49,6 +49,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		groups = {cracky = 3},
 		sounds = default.node_sound_glass_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:milk_glass", {
@@ -60,6 +75,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		groups = {cracky = 3},
 		sounds = default.node_sound_glass_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:glow_glass", {
@@ -72,6 +102,25 @@ if not darkage.run_once then
 		light_source = 12,
 		groups = {cracky = 3},
 		sounds = default.node_sound_glass_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+				{
+					items = {"xdecor:lantern"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:glass_round", {
@@ -83,6 +132,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		sounds = default.node_sound_glass_defaults(),
 		groups = {cracky=3},
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:milk_glass_round", {
@@ -94,6 +158,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		groups = {cracky = 3},
 		sounds = default.node_sound_glass_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:glass_square", {
@@ -105,6 +184,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		sounds = default.node_sound_glass_defaults(),
 		groups = {cracky=3},
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:milk_glass_square", {
@@ -116,6 +210,21 @@ if not darkage.run_once then
 		sunlight_propagates = true,
 		groups = {cracky = 3},
 		sounds = default.node_sound_glass_defaults(),
+		silverpick_drop = true,
+
+		drop = {
+			max_items = 2,
+			items = {
+				{
+					items = {"vessels:glass_fragments"},
+					rarity = 1,
+				},
+				{
+					items = {"default:steel_ingot"},
+					rarity = 3,
+				},
+			}
+		},
 	})
 
 	minetest.register_node("darkage:lamp", {

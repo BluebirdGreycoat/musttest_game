@@ -243,7 +243,7 @@ if not vessels.run_once then
 	-- Glass and steel recycling
 
 	minetest.register_craftitem("vessels:glass_fragments", {
-		description = "Pile of Glass Fragments",
+		description = "Pile Of Glass Fragments",
 		inventory_image = "vessels_glass_fragments.png",
 	})
 

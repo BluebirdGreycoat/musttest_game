@@ -71,19 +71,19 @@ minetest.register_craft({
 	}
 })
 
-	stairs.register_stair_and_slab("stonewall", "castle_masonry:stonewall",
-		{cracky=3},
-		{"castle_stonewall.png"},
-		S("Castle Stonewall"),
-		default.node_sound_stone_defaults()
-	)
+stairs.register_stair_and_slab("stonewall", "castle_masonry:stonewall",
+	{cracky=3},
+	{"castle_stonewall.png"},
+	S("Castle Stonewall"),
+	default.node_sound_stone_defaults()
+)
 
-	stairs.register_stair_and_slab("rubble", "castle_masonry:rubble",
-		{cracky=3},
-		{"castle_rubble.png"},
-		S("Castle Rubble"),
-		default.node_sound_stone_defaults()
-	)
+stairs.register_stair_and_slab("rubble", "castle_masonry:rubble",
+	{cracky=3},
+	{"castle_rubble.png"},
+	S("Castle Rubble"),
+	default.node_sound_stone_defaults()
+)
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -104,9 +104,9 @@ minetest.register_craft({
 
 
 
-	stairs.register_stair_and_slab("dungeon_stone", "castle_masonry:dungeon_stone",
-		{cracky=2},
-		{"castle_dungeon_stone.png"},
-		S("Dungeon Stone"),
-		default.node_sound_stone_defaults()
-	)
+stairs.register_stair_and_slab("dungeon_stone", "castle_masonry:dungeon_stone",
+	{cracky=2},
+	{"castle_dungeon_stone.png"},
+	S("Dungeon Stone"),
+	default.node_sound_stone_defaults()
+)

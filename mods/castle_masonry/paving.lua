@@ -25,12 +25,12 @@ minetest.register_craft({
 })
 
 
-	stairs.register_stair_and_slab("pavement_brick", "castle_masonry:pavement_brick",
-		{cracky=2},
-		{"castle_pavement_brick.png"},
-		S("Castle Pavement"),
-		default.node_sound_stone_defaults()
-	)
+stairs.register_stair_and_slab("pavement_brick", "castle_masonry:pavement_brick",
+	{cracky=2},
+	{"castle_pavement_brick.png"},
+	S("Castle Pavement"),
+	default.node_sound_stone_defaults()
+)
 
 
 

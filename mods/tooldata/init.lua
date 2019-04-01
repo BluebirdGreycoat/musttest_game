@@ -26,10 +26,10 @@ materials["amethyststone"] = {fpi=2.5, time=1.3, uses=60,  mdl=3, ml=3, dmg=6}
 
 -- Multipliers based on tool type.
 local tools = {}
-tools["sword"]  = {swing_mp=1.0, damage_mp=1.0}
-tools["axe"]    = {swing_mp=1.0, damage_mp=0.8}
-tools["pick"]   = {swing_mp=1.2, damage_mp=0.7}
-tools["shovel"] = {swing_mp=1.2, damage_mp=0.5}
+tools["sword"]  = {swing_mp=1.0, damage_mp=1.0, uses_mp=1.0}
+tools["axe"]    = {swing_mp=1.0, damage_mp=0.8, uses_mp=1.0}
+tools["pick"]   = {swing_mp=1.2, damage_mp=0.7, uses_mp=8.0}
+tools["shovel"] = {swing_mp=1.2, damage_mp=0.5, uses_mp=1.0}
 
 -- Placeholder tables. Will be populated algorithmically.
 tooldata["pick_wood"] =            {groupcaps={cracky ={times={},           }}, damage_groups={fleshy=true}}
@@ -114,7 +114,7 @@ for k, v in pairs(tooldata) do
 	-- Assign basic values.
 	v.full_punch_interval = md.fpi * td.swing_mp
 	v.max_drop_level = md.mdl
-	v.uses = md.uses
+	v.uses = md.uses * td.uses_mp
 
 	-- Assign digging times per dig-group.
   for t, j in pairs(v.groupcaps) do

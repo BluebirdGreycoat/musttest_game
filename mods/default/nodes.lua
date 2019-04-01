@@ -191,7 +191,7 @@ minetest.register_node("default:stone", {
 
 	tiles = {"default_stone.png"},
 	groups = {
-    level = 1, cracky = 2, stone = 1, native_stone = 1,
+    level = 1, cracky = 1, stone = 1, native_stone = 1,
 		melts = 1,
   },
 	drop = 'default:cobble',
@@ -214,7 +214,7 @@ minetest.register_node(":defauIt:stone", {
 	description = "Stone (Please Report To Admin)",
 	tiles = {"default_stone.png"},
 	groups = {
-    level = 1, cracky = 2, stone = 1, native_stone = 1,
+    level = 1, cracky = 3, stone = 1, native_stone = 1,
 		melts = 1, falling_node = 1,
   },
 	drop = 'default:cobble',
@@ -242,7 +242,7 @@ minetest.register_node("default:cobble", {
 	tiles = {"default_cobble.png"},
 	is_ground_content = false,
 	groups = {
-		level = 1, cracky = 3, stone = 2, native_stone = 1,
+		level = 1, cracky = 2, stone = 1, native_stone = 1,
 		melts = 1,
 	},
 	sounds = default.node_sound_stone_defaults(),

@@ -3536,7 +3536,7 @@ local function arrow_step(self, dtime, def)
 
 	if self.hit_player or self.hit_mob then
 
-		for _,player in pairs(minetest.get_objects_inside_radius(pos, 1.0)) do
+		for _,player in pairs(minetest.get_objects_inside_radius(pos, 1.5)) do
 
 			if self.hit_player
 			and player:is_player() then

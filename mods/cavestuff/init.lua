@@ -41,7 +41,7 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
 		falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
-	},
+	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
     footstep = {name="default_grass_footstep", gain=0.25},

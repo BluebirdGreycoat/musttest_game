@@ -10,7 +10,7 @@ mapfix.players = mapfix.players or {}
 mapfix.modpath = minetest.get_modpath("mapfix")
 
 -- Configurable settings.
-local MIN_TIMEOUT = 30
+local MIN_TIMEOUT = 15
 local DEFAULT_RADIUS = 40
 local MAX_RADIUS = 60
 

@@ -9,12 +9,12 @@ function fireambiance.on_flame_addremove(pos)
 end
 
 local dig_groups = {}
-dig_groups["stone"]         = {level = 1, cracky = 1}
-dig_groups["sandstone"]     = {level = 1, cracky = 2}
-dig_groups["cobble"]        = {level = 1, cracky = 2}
+dig_groups["stone"]         = {level = 1, cracky = 2}
+dig_groups["sandstone"]     = {level = 1, cracky = 3}
+dig_groups["cobble"]        = {level = 1, cracky = 3}
 dig_groups["softcobble"]    = {level = 1, cracky = 3, crumbly = 1}
 dig_groups["wall"]          = {level = 2, cracky = 3}
-dig_groups["clay"]          = {level = 1, cracky = 1, crumbly = 2}
+dig_groups["clay"]          = {level = 1, cracky = 3, crumbly = 2}
 dig_groups["hardore"]       = {level = 2, cracky = 1}
 dig_groups["hardclay"]      = {level = 1, cracky = 3}
 dig_groups["ice"]           = {level = 1, cracky = 3}

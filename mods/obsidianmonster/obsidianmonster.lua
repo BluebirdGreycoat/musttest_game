@@ -4,7 +4,7 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 	passive = false,
 	damage = 3,
 	attack_type = "shoot",
-	shoot_interval = 0.5,
+	shoot_interval = 1.0,
 	arrow = "obsidianmonster:arrow",
 	shoot_offset = 2,
 	hp_min = 10,

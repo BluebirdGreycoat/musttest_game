@@ -9,13 +9,13 @@ function fireambiance.on_flame_addremove(pos)
 end
 
 local dig_groups = {}
-dig_groups["stone"]         = {level = 1, cracky = 2}
-dig_groups["sandstone"]     = {level = 1, cracky = 3}
-dig_groups["cobble"]        = {level = 1, cracky = 3}
+dig_groups["stone"]         = {level = 1, cracky = 1}
+dig_groups["sandstone"]     = {level = 1, cracky = 2}
+dig_groups["cobble"]        = {level = 1, cracky = 2}
 dig_groups["softcobble"]    = {level = 1, cracky = 3, crumbly = 1}
 dig_groups["wall"]          = {level = 2, cracky = 3}
 dig_groups["clay"]          = {level = 1, cracky = 3, crumbly = 2}
-dig_groups["hardore"]       = {level = 2, cracky = 1}
+dig_groups["hardore"]       = {level = 2, cracky = 2}
 dig_groups["hardclay"]      = {level = 1, cracky = 3}
 dig_groups["ice"]           = {level = 1, cracky = 3}
 dig_groups["glass"]         = {level = 1, cracky = 3}
@@ -25,9 +25,9 @@ dig_groups["mineral"]       = {level = 1, cracky = 2}
 dig_groups["minerals"]      = {level = 1, cracky = 2}
 dig_groups["hardmineral"]   = {level = 2, cracky = 1}
 dig_groups["rockgem"]       = {level = 3, cracky = 1}
-dig_groups["brick"]         = {level = 2, cracky = 1}
-dig_groups["bricks"]        = {level = 2, cracky = 1}
-dig_groups["block"]         = {level = 2, cracky = 1} -- Stone blocks, metal blocks, etc.
+dig_groups["brick"]         = {level = 2, cracky = 2}
+dig_groups["bricks"]        = {level = 2, cracky = 2}
+dig_groups["block"]         = {level = 2, cracky = 2} -- Stone blocks, metal blocks, etc.
 dig_groups["obsidian"]      = {level = 3, cracky = 1}
 dig_groups["hardstone"]     = {level = 4, cracky = 1}
 dig_groups["gravel"]        = {level = 1, crumbly = 1}

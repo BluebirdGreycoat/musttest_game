@@ -31,7 +31,7 @@ end
 minetest.register_node("rackstone:rackstone", {
 	description = "Rackstone",
 	tiles = {"rackstone_rackstone.png"},
-	groups = {cracky=2, level=1, rackstone=1, stabilize_dauthsand=1, netherack=1},
+	groups = {cracky=1, level=1, rackstone=1, stabilize_dauthsand=1, netherack=1},
 	sounds = default.node_sound_stone_defaults(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
@@ -42,7 +42,7 @@ minetest.register_node("rackstone:rackstone_brick2", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_rackstone_brick.png"},
-	groups = {cracky=2, level=1, rackstone=1, brick=1},
+	groups = {cracky=2, level=2, rackstone=1, brick=1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -51,7 +51,7 @@ minetest.register_node("rackstone:rackstone_block", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_rackstone_block.png"},
-	groups = {cracky=2, level=1, rackstone=1},
+	groups = {cracky=2, level=2, rackstone=1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -156,7 +156,7 @@ minetest.register_node("rackstone:redrack", {
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
   tiles = {"rackstone_redrack2.png"},
-  groups = {crumbly=3, level=2, falling_node=1},
+  groups = {crumbly=1, level=1, falling_node=1},
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	liquid_viscosity = 8,
@@ -175,7 +175,7 @@ minetest.register_node("rackstone:nether_grit", {
 minetest.register_node("rackstone:void", {
   description = "Nether Void Gap (You Hacker!)",
   tiles = {"rackstone_redrack.png"},
-  groups = {cracky=3, level=2},
+  groups = {cracky=3, level=1},
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   walkable = false,
@@ -189,7 +189,7 @@ minetest.register_node("rackstone:void", {
 minetest.register_node("rackstone:redrack_with_iron", {
   description = "Netherack With Iron",
   tiles = {"rackstone_redrack.png^default_mineral_iron.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore = 1},
+  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore = 1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
 	silverpick_drop = true,
@@ -203,7 +203,7 @@ minetest.register_node("rackstone:redrack_with_iron", {
 minetest.register_node("rackstone:redrack_with_copper", {
   description = "Netherack With Copper",
   tiles = {"rackstone_redrack.png^default_mineral_copper.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore=1},
+  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
 	silverpick_drop = true,
@@ -217,7 +217,7 @@ minetest.register_node("rackstone:redrack_with_copper", {
 minetest.register_node("rackstone:redrack_with_coal", {
   description = "Netherack With Coal",
   tiles = {"rackstone_redrack.png^default_mineral_coal.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1},
+  groups = {cracky=2, level=1, rackstone=1, netherack=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "default:coal_lump",
 	silverpick_drop = true,
@@ -231,7 +231,7 @@ minetest.register_node("rackstone:redrack_with_coal", {
 minetest.register_node("rackstone:redrack_with_tin", {
   description = "Netherack With Tin",
   tiles = {"rackstone_redrack.png^moreores_mineral_tin.png"},
-  groups = {cracky=3, level=1, rackstone=1, netherack=1, ore=1},
+  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore=1},
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",
 	silverpick_drop = true,

@@ -28,7 +28,7 @@ materials["amethyststone"] = {fpi=2.5, time=1.3, uses=60,  mdl=3, ml=3, dmg=6}
 local tools = {}
 tools["sword"]  = {swing_mp=1.0, damage_mp=1.0, uses_mp=1.0}
 tools["axe"]    = {swing_mp=1.0, damage_mp=0.8, uses_mp=1.0}
-tools["pick"]   = {swing_mp=1.2, damage_mp=0.7, uses_mp=8.0}
+tools["pick"]   = {swing_mp=1.2, damage_mp=0.7, uses_mp=10.0}
 tools["shovel"] = {swing_mp=1.2, damage_mp=0.5, uses_mp=1.0}
 
 -- Placeholder tables. Will be populated algorithmically.

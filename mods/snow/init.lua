@@ -95,9 +95,7 @@ local origsnowdef = {
 		},
 	},
 
-	groups = {
-		level = 1,
-		crumbly = 3,
+	groups = utility.dig_groups("snow", {
 		falling_node = 1,
 		puts_out_fire = 1,
 		snow = 1,
@@ -107,7 +105,7 @@ local origsnowdef = {
 
 		-- Currently just used to notify thin_ice and torches.
 		notify_construct = 1,
-	},
+	}),
 
 	-- Sound info.
 	sounds = default.node_sound_snow_defaults(),

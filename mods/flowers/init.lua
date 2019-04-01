@@ -387,7 +387,7 @@ if not flowers.reg2 then
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		groups = {level = 1, choppy = 3, snappy = 3, attached_node = 1, oddly_breakable_by_hand = 3, flammable = 1},
+		groups = utility.dig_groups("plant", {attached_node = 1, flammable = 1}),
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
@@ -429,7 +429,7 @@ if not flowers.reg2 then
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		groups = {level = 1, choppy = 3, snappy = 3, oddly_breakable_by_hand = 3, attached_node = 1, flammable = 1},
+		groups = utility.dig_groups("plant", {attached_node = 1, flammable = 1}),
 		sounds = default.node_sound_leaves_defaults(),
 		on_use = minetest.item_eat(1),
 		selection_box = {
@@ -529,7 +529,7 @@ if not flowers.reg3 then
 		floodable = true,
 
 		-- Lily does not count as flora, it has special handling.
-		groups = {level = 1, choppy = 3, snappy = 3, oddly_breakable_by_hand = 3, flower = 1, flammable = 1},
+		groups = utility.dig_groups("plant", {flower = 1, flammable = 1}),
 
 		sounds = default.node_sound_leaves_defaults(),
 		node_placement_prediction = "",

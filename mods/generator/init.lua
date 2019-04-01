@@ -18,11 +18,10 @@ for k, v in ipairs({
       "generator_mv_side.png", v.tile,
     },
     
-    groups = {
-      level=1, cracky=3,
+    groups = utility.dig_groups("machine", {
       immovable = 1,
       tier_lv = 1, tier_mv = 1,
-    },
+    }),
     
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,

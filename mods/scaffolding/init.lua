@@ -32,7 +32,7 @@ if not scaffolding.run_once then
 			climbable = true,
 			walkable = false,
 			is_ground_content = true,
-			groups = {level=1, choppy=3,oddly_breakable_by_hand=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -85,7 +85,7 @@ if not scaffolding.run_once then
 			climbable = true,
 			walkable = false,
 			is_ground_content = true,
-			groups = {level=1, choppy=3,oddly_breakable_by_hand=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -133,7 +133,7 @@ if not scaffolding.run_once then
 			climbable = false,
 			walkable = true,
 			is_ground_content = true,
-			groups = {level=1, choppy=3,oddly_breakable_by_hand=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -172,7 +172,7 @@ if not scaffolding.run_once then
 			climbable = false,
 			walkable = true,
 			is_ground_content = true,
-			groups = {level=1, choppy=3,oddly_breakable_by_hand=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -205,7 +205,7 @@ if not scaffolding.run_once then
 			climbable = true,
 			walkable = false,
 			is_ground_content = true,
-			groups = {level=1, cracky=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			node_box = {
 					type = "fixed",
@@ -259,7 +259,7 @@ if not scaffolding.run_once then
 			climbable = true,
 			walkable = false,
 			is_ground_content = true,
-			groups = {level=1, cracky=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -308,7 +308,7 @@ if not scaffolding.run_once then
 			climbable = false,
 			walkable = true,
 			is_ground_content = true,
-			groups = {level=1, cracky=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
@@ -347,7 +347,7 @@ if not scaffolding.run_once then
 			climbable = false,
 			walkable = true,
 			is_ground_content = true,
-			groups = {level=1, cracky=3},
+			groups = utility.dig_groups("reallybigitem", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()

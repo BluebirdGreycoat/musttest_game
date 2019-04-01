@@ -24,13 +24,10 @@ minetest.register_node("bones:bones_type2", {
 	},
 	paramtype2 = "facedir",
 
-	groups = {
-    level = 1,
-    dig_immediate = 2,
-    
+	groups = utility.dig_groups("bigitem", {
     bones = 1,
     falling_node = 1,
-  },
+  }),
     --damage_per_second = 2,
 
 	sounds = default.node_sound_gravel_defaults(),
@@ -51,7 +48,7 @@ minetest.register_node("bones:bones", {
 	paramtype2 = "facedir",
     drop = "bones:bones_type2",
 
-	groups = {level = 1, dig_immediate = 2, immovable = 1},
+	groups = utility.dig_groups("bigitem", {immovable = 1}),
 
 	sounds = default.node_sound_gravel_defaults(),
 

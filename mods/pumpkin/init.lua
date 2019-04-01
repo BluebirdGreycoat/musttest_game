@@ -18,7 +18,7 @@ minetest.register_node("pumpkin:seed", {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
   },
-  groups = {level = 1, seed = 1, snappy = 3, attached_node = 1, flammable = 2, notify_destruct = 1},
+  groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
   on_place = function(itemstack, placer, pointed_thing)
     return farming.place_seed(itemstack, placer, pointed_thing, "pumpkin:seed")
   end,
@@ -44,10 +44,9 @@ minetest.register_node("pumpkin:pumpkin", {
     "farming_pumpkin_side.png"
   },
   paramtype2 = "facedir",
-  groups = {
-    choppy = 1, oddly_breakable_by_hand = 1,
+  groups = utility.dig_groups("bigitem", {
     flammable = 2, plant = 1
-  },
+  }),
   sounds = default.node_sound_wood_defaults(),
 })
 
@@ -91,7 +90,7 @@ minetest.register_node("pumpkin:lantern", {
     "farming_pumpkin_face_off.png"
   },
   paramtype2 = "facedir",
-  groups = {choppy = 1, oddly_breakable_by_hand = 1, flammable = 2},
+  groups = utility.dig_groups("bigitem", {flammable = 2}),
   sounds = default.node_sound_wood_defaults(),
   
   on_punch = function(pos, node, puncher)
@@ -113,10 +112,10 @@ minetest.register_node("pumpkin:lantern_on", {
   },
   light_source = 12,
   paramtype2 = "facedir",
-  groups = {
-    choppy = 1, oddly_breakable_by_hand = 1, flammable = 2,
+  groups = utility.dig_groups("bigitem", {
+    flammable = 2,
     not_in_creative_inventory = 1
-  },
+  }),
   sounds = default.node_sound_wood_defaults(),
   drop = "pumpkin:lantern",
   
@@ -185,10 +184,10 @@ local crop_def = {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
   },
-  groups = {
-    snappy = 3, flammable = 2, plant = 1, attached_node = 1,
+  groups = utility.dig_groups("crop", {
+    flammable = 2, plant = 1, attached_node = 1,
     not_in_creative_inventory = 1, notify_destruct = 1,
-  },
+  }),
   sounds = default.node_sound_leaves_defaults(),
   on_timer = farming.grow_plant,
   minlight = 13,

@@ -350,7 +350,7 @@ if not bat2.run_once then
 					"technic_" .. v.tier .. "_battery_box_side.png^battery_meter" .. i .. ".png",
 				},
 
-				groups = {level=1, cracky=3},
+				groups = utility.dig_groups("machine"),
 
 				paramtype = "light",
 				paramtype2 = "facedir",

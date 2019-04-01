@@ -561,7 +561,7 @@ if not stat2.run_once then
       description = v.name .. " Cable Box\n\nBox resistance limit: " .. stat2.chain_limit(v.tier) .. ".\nCables do not turn corners by themselves.\nCable boxes allow them to do so.",
       tiles = {"switching_station_" .. v.tier .. ".png"},
 
-      groups = {level=1, cracky=3},
+      groups = utility.dig_groups("machine"),
       node_box = {
         type = "fixed",
         fixed = nodebox,

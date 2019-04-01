@@ -133,7 +133,7 @@ minetest.register_node("itemframes:frame",{
 	paramtype = "light",
 	paramtype2 = "facedir",
 	sunlight_propagates = true,
-	groups = {choppy = 2, dig_immediate = 2},
+	groups = utility.dig_groups("bigitem"),
 	legacy_wallmounted = true,
 	sounds = default.node_sound_defaults(),
 	on_rotate = screwdriver.disallow,
@@ -206,7 +206,7 @@ minetest.register_node("itemframes:pedestal",{
 	--},
 	tiles = {"itemframes_pedestal.png"},
 	paramtype = "light",
-	groups = {cracky = 3},
+	groups = utility.dig_groups("brick"),
 	sounds = default.node_sound_defaults(),
 	on_rotate = screwdriver.disallow,
 	after_place_node = function(pos, placer, itemstack)

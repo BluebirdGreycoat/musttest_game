@@ -382,7 +382,7 @@ if not flameportal.run_once then
   minetest.register_node("flameportal:redrack", {
     description = "Netherack",
     tiles = {"rackstone_redrack.png"},
-    groups = {cracky=3, level=1, fall_damage_add_percent=-100},
+    groups = utility.dig_groups("netherack", {fall_damage_add_percent=-100}),
     sounds = rackstone.rackstone_sounds(),
     drop = "rackstone:redrack",
   })

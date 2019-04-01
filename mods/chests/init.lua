@@ -63,14 +63,11 @@ chest_api.register_chest("chests:chest_public", {
   sounds = default.node_sound_wood_defaults(),
   sound_open = "default_chest_open",
   sound_close = "default_chest_close",
-  groups = {
-    level = 1, 
-    choppy = 2, 
-    oddly_breakable_by_hand = 1, 
+  groups = utility.dig_groups("chest", {
     chest = 1,
     tubedevice = 1, 
     tubedevice_receiver = 1,
-  },
+  }),
 })
 
 chest_api.register_chest("chests:chest_locked", {
@@ -79,13 +76,10 @@ chest_api.register_chest("chests:chest_locked", {
   sounds = default.node_sound_wood_defaults(),
   sound_open = "default_chest_open",
   sound_close = "default_chest_close",
-  groups = {
-    level = 1, 
-    choppy = 2, 
-    oddly_breakable_by_hand = 1, 
+  groups = utility.dig_groups("chest", {
     chest = 1,
     tubedevice = 1, 
     tubedevice_receiver = 1,
-  },
+  }),
   protected = true,
 })

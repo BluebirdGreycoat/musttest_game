@@ -59,7 +59,8 @@ if not lava.run_once then
 		liquid_renewable = false,
 		damage_per_second = 4 * 2,
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
-		groups = {
+		groups = -- comment
+		{
 			lava = 3,
 			liquid = 2,
 			igniter = 1,
@@ -139,7 +140,8 @@ if not lava.run_once then
 		damage_per_second = 4 * 2,
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 
-		groups = {
+		groups = -- comment
+		{
 			lava = 3,
 			liquid = 2,
 			igniter = 1,

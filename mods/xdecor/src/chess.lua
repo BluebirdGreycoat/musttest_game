@@ -609,7 +609,7 @@ if not realchess.registered then
 		inventory_image = "chessboard_top.png",
 		wield_image = "chessboard_top.png",
 		tiles = {"chessboard_top.png", "chessboard_top.png", "chessboard_sides.png"},
-		groups = {choppy=3, oddly_breakable_by_hand=2, flammable=3},
+		groups = utility.dig_groups("bigitem", {flammable=3}),
 		sounds = default.node_sound_wood_defaults(),
 		node_box = {type = "fixed", fixed = {-.375, -.5, -.375, .375, -.4375, .375}},
 		sunlight_propagates = true,

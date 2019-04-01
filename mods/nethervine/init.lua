@@ -109,12 +109,9 @@ if not nethervine.registered then
 		flowerpot_drop = "nethervine:vine",
 
 		-- Nethervines shall not be flammable. They often generate next to lava.
-		groups = {
-			level = 1,
-			choppy = 2,
-			snappy = 3,
+		groups = utility.dig_groups("plant", {
 			hanging_node = 1,
-		},
+		}),
 
 		sounds = default.node_sound_leaves_defaults(),
 
@@ -143,7 +140,7 @@ if not nethervine.registered then
 			buildable_to = true,
 			drop = "nether:grass",
 			flowerpot_drop = "nether:grass",
-			groups = {level = 1, snappy = 3, netherflora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1},
+			groups = utility.dig_groups("plant", {netherflora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 1}),
 			sounds = default.node_sound_leaves_defaults(),
 			selection_box = {
 				type = "fixed",
@@ -221,7 +218,7 @@ if not nethervine.registered then
 		walkable = false,
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
-		groups = {level = 1, snappy = 3, netherflora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 3},
+		groups = utility.dig_groups("plant", {netherflora = 1, attached_node = 1, not_in_creative_inventory = 1, grass = 1, flammable = 3}),
 
 		selection_box = {
 			type = "fixed",
@@ -245,7 +242,7 @@ if not nethervine.registered then
 		walkable = false,
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
-		groups = {level = 1, snappy = 3, attached_node = 1, not_in_creative_inventory = 1, flammable = 3},
+		groups = utility.dig_groups("plant", {attached_node = 1, not_in_creative_inventory = 1, flammable = 3}),
 		light_source = 10,
 
 		drop = "farming:cotton", -- Drop string.

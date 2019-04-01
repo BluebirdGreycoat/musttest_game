@@ -30,16 +30,14 @@ minetest.register_node("fire:basic_flame", {
 	damage_per_second = 4,
 	drop = "",
 
-	groups = {
-		level=1,
+	groups = utility.dig_groups("bigitem", {
 		igniter = 2,
-		dig_immediate = 2,
 		not_in_creative_inventory = 1,
 		melt_around = 3,
 		flame = 1,
 		flame_sound = 1,
 		notify_construct = 1,
-	},
+	}),
     
 	on_timer = function(pos)
 		local f = minetest.find_node_near(pos, 1, {"group:flammable"})
@@ -166,7 +164,7 @@ minetest.register_node("fire:nether_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
-	groups = {level = 1, igniter = 2, oddly_breakable_by_hand = 3, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1},
+	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1}),
 	drop = "",
     
 	on_construct = function(pos)

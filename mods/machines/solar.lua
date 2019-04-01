@@ -327,7 +327,7 @@ if not solar.run_once then
 				},
 			},
 
-      groups = {level=1, cracky=3},
+      groups = utility.dig_groups("machine"),
 
 			paramtype = "light",
       paramtype2 = "facedir",

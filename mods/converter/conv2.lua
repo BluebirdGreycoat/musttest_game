@@ -341,7 +341,7 @@ if not conv2.run_once then
       "converter_side.png", "converter_side.png",
     },
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		paramtype2 = "facedir",
 		is_ground_content = false,

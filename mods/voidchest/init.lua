@@ -125,11 +125,10 @@ local VOIDCHEST_DEF = {
   tiles = {"voidchest_voidchest.png"},
   
   drop = "starpearl:pearl 8",
-  groups = {
-    level = 3, cracky = 1,
+  groups = utility.dig_groups("chest", {
     immovable = 1, -- No pistons, no nothing.
 		chest = 1,
-  },
+  }),
   sounds = default.node_sound_stone_defaults(),
   
   -- After digging chest, sometimes, a nasty surprise.

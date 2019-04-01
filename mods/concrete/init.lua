@@ -7,14 +7,14 @@ minetest.register_craftitem("concrete:rebar", {
 minetest.register_node("concrete:concrete", {
   description = "Concrete Block",
   tiles = {"technic_concrete_block.png",},
-  groups = {cracky=1, level=2},
+  groups = utility.dig_groups("stone"),
   sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("concrete:brc", {
   description = "Blast-Resistant Concrete Block",
   tiles = {"technic_blast_resistant_concrete_block.png",},
-  groups = {cracky=1, level=4},
+  groups = utility.dig_groups("hardstone"),
   sounds = default.node_sound_stone_defaults(),
   on_blast = function() end, -- TNT-proof.
 })

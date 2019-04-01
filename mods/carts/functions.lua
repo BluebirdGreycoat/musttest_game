@@ -259,12 +259,11 @@ end
 
 function carts:get_rail_groups(additional_groups)
 	-- Get the default rail groups and add more when a table is given
-	local groups = {
-		dig_immediate = 2,
+	local groups = utility.dig_groups("bigitem", {
 		attached_node = 1,
 		rail = 1,
 		connect_to_raillike = minetest.raillike_group("rail")
-	}
+	})
 	if type(additional_groups) == "table" then
 		for k, v in pairs(additional_groups) do
 			groups[k] = v

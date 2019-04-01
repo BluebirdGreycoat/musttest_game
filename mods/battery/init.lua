@@ -32,11 +32,10 @@ for k, v in ipairs({
         "technic_" .. v.tier .. "_battery_box_side.png^battery_meter" .. i .. ".png",
       },
       
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         immovable = 1,
         ["tier_" .. v.tier] = 1,
-      },
+      }),
       
       paramtype2 = "facedir",
       on_rotate = function(...) return screwdriver.rotate_simple(...) end,

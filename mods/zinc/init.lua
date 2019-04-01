@@ -2,7 +2,7 @@
 minetest.register_node("zinc:ore", {
   description = "Zinc Ore",
   tiles = {"default_stone.png^technic_zinc_mineral.png"},
-  groups = {level = 1, cracky = 1, ore = 1},
+  groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "zinc:lump",
   sounds = default.node_sound_stone_defaults(),
 })
@@ -75,7 +75,7 @@ minetest.register_node("zinc:block", {
   description = "Zinc Block",
   tiles = {"technic_zinc_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2, conductor = 1, block = 1},
+  groups = utility.dig_groups("block", {conductor = 1, block = 1}),
   sounds = default.node_sound_metal_defaults(),
 })
 

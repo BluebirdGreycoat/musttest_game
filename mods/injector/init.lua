@@ -9,10 +9,9 @@ minetest.register_node("injector:injector", {
     "technic_injector_side.png", "technic_injector_side.png"
   },
   
-  groups = {
-    level=1, cracky=3,
+  groups = utility.dig_groups("machine", {
     immovable = 1,
-  },
+  }),
   
   paramtype2 = "facedir",
   on_rotate = function(...) return screwdriver.rotate_simple(...) end,

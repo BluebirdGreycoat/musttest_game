@@ -53,7 +53,8 @@ minetest.register_node("lbrim:lava_source", {
   damage_per_second = 16,
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
-  groups = {
+  groups = -- comment
+	{
     lava = 3, 
     liquid = 2, 
     igniter = 1, 
@@ -131,7 +132,8 @@ minetest.register_node("lbrim:lava_flowing", {
   damage_per_second = 16,
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
-  groups = {
+  groups = -- comment
+	{
     lava = 3, 
     liquid = 2, 
     igniter = 1,

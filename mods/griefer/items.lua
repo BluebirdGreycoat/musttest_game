@@ -7,12 +7,7 @@ minetest.register_node("griefer:grieferstone", {
 		"griefer_stoneside.png",
 	},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {
-    cracky = 1, level = 3,
-
-		-- Doesn't need to be immovable, nothing special about this block.
-    --immovable = 1,
-  },
+	groups = utility.dig_groups("obsidian"),
 	drop = "default:goldblock",
 	--[[
 	on_construct = function(...)

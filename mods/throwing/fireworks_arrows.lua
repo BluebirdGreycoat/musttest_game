@@ -167,7 +167,7 @@ minetest.register_node("throwing:firework_trail", {
   pointable = false,
   buildable_to = true,
 	drop = "",
-	groups = {dig_immediate=3},
+	groups = utility.dig_groups("item"),
 	on_timer = function(pos, elapsed)
 		minetest.remove_node(pos)
 	end,
@@ -179,7 +179,7 @@ minetest.register_node("throwing:firework_boom", {
 	light_source = default.LIGHT_MAX - 1,
 	walkable = false,
 	drop = "",
-	groups = {dig_immediate=3},
+	groups = utility.dig_groups("item"),
 	on_timer = function(pos, elapsed)
 		minetest.remove_node(pos)
 	end,
@@ -196,7 +196,7 @@ minetest.register_node("throwing:firework_light", {
   buildable_to = true,
 	walkable = false,
 	drop = "",
-	groups = {dig_immediate=3},
+	groups = utility.dig_groups("item"),
 	on_timer = function(pos, elapsed)
 		minetest.remove_node(pos)
 	end,

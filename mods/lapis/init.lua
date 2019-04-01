@@ -8,11 +8,11 @@ dofile(minetest.get_modpath("lapis").."/columns.lua")
 ----------
 
 minetest.register_node( "lapis:lapis_block",  {
-   description = "Lapis with Calcite",
+   description = "Lapis With Calcite",
    tiles = {"lapis_block.png"},
    paramtype = "light",
    is_ground_content = true,
-   groups = {cracky = 3},
+   groups = utility.dig_groups("stone"),
    drop = {
 		max_items = 1,
 		items = {
@@ -36,7 +36,7 @@ minetest.register_node( "lapis:lapis_brick",  {
    paramtype = "light",
    paramtype2 = "facedir",
    is_ground_content = false,
-   groups = {cracky = 3},
+   groups = utility.dig_groups("brick"),
    sounds = default.node_sound_stone_defaults()
 })
 
@@ -52,7 +52,7 @@ minetest.register_node( "lapis:lapis_cobble",  {
    },
    paramtype = "light",
    is_ground_content = false,
-   groups = {cracky = 3},
+   groups = utility.dig_groups("cobble"),
    sounds = default.node_sound_stone_defaults()
 })
 
@@ -61,7 +61,7 @@ minetest.register_node( "lapis:lazurite_block",  {
    tiles = {"lapis_lazurite_block.png"},
    paramtype = "light",
    is_ground_content = true,
-   groups = {cracky = 3},
+   groups = utility.dig_groups("block"),
    sounds = default.node_sound_stone_defaults()
 })
 
@@ -78,7 +78,7 @@ minetest.register_node( "lapis:lazurite_brick",  {
    paramtype = "light",
    paramtype2 = "facedir",
    is_ground_content = false,
-   groups = {cracky = 3},
+   groups = utility.dig_groups("brick"),
    sounds = default.node_sound_stone_defaults()
 })
 
@@ -87,7 +87,7 @@ minetest.register_node( "lapis:lapis_tile",  {
    tiles = {"lapis_tile.png" },
    is_ground_content = false,
    paramtype = 'light',
-   groups = {cracky = 3},
+   groups = utility.dig_groups("block"),
    sounds = default.node_sound_stone_defaults()
    })
 
@@ -98,7 +98,7 @@ minetest.register_node( "lapis:pyrite_ore",  {
    is_ground_content = true,
    drop= 'lapis:pyrite_lump 2',
 	 silverpick_drop = true,
-   groups = {cracky = 2},
+   groups = utility.dig_groups("mineral"),
    sounds = default.node_sound_stone_defaults() ,
 })
 
@@ -112,7 +112,7 @@ minetest.register_node( "lapis:pyrite_block",  {
    paramtype = "light",
    paramtype2 = "facedir",
    is_ground_content = false,
-   groups = {cracky = 2},
+   groups = utility.dig_groups("block"),
    sounds = default.node_sound_metal_defaults({
      footstep = {name = "default_hard_footstep", gain = 0.5},
      place = {name = "default_place_node_hard", gain = 1.0},
@@ -130,7 +130,7 @@ minetest.register_node("lapis:rosace", {
 	"lapis_rosace_side.png"},
 	paramtype2 = "facedir",
 	is_ground_content = false,
-	groups = {cracky = 3},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_stone_defaults(),
 })
 

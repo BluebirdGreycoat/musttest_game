@@ -1,7 +1,7 @@
 
 xdecor.register("workbench", {
 	description = "Woodworking Bench (Decorative)",
-	groups = {cracky=2, choppy=2, oddly_breakable_by_hand=1},
+	groups = utility.dig_groups("furniture"),
 	sounds = default.node_sound_wood_defaults(),
 	tiles = {"xdecor_workbench_top.png",   "xdecor_workbench_top.png",
 		 "xdecor_workbench_sides.png", "xdecor_workbench_sides.png",

@@ -2,7 +2,7 @@
 minetest.register_node("chromium:ore", {
   description = "Chromium Ore",
   tiles = {"default_stone.png^technic_chromium_mineral.png"},
-  groups = {level = 1, cracky = 1, ore = 1},
+  groups = utility.dig_groups("mineral", {ore=1}),
   drop = "chromium:lump",
   sounds = default.node_sound_stone_defaults(),
 })
@@ -75,7 +75,7 @@ minetest.register_node("chromium:block", {
   description = "Chromium Block",
   tiles = {"technic_chromium_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2, conductor = 1, block = 1},
+  groups = utility.dig_groups("block", {conductor = 1, block = 1}),
   sounds = default.node_sound_metal_defaults(),
 })
 

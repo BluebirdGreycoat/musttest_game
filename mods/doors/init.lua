@@ -508,7 +508,7 @@ doors.register("door_wood", {
     tiles = {{ name = "doors_door_wood.png", backface_culling = true }},
     description = "Wooden Door",
     inventory_image = "doors_item_wood.png",
-    groups = {level = 2, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+    groups = utility.dig_groups("wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:stick"},
         {"group:wood_light", "group:wood_light"},
@@ -539,7 +539,7 @@ doors.register("door_wood_locked", {
     description = "Locked Wooden Door",
     inventory_image = "doors_item_wood.png",
     protected = true,
-    groups = {level = 2, choppy = 2, flammable = 2},
+    groups = utility.dig_groups("wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:stick", ""},
         {"group:wood_light", "group:wood_light", "default:steel_ingot"},
@@ -552,7 +552,7 @@ doors.register("door_steel", {
     description = "Locked Iron Door",
     inventory_image = "doors_item_steel.png",
     protected = true,
-    groups = {cracky = 1, level = 2},
+    groups = utility.dig_groups("metal"),
     sounds = default.node_sound_metal_defaults(),
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
@@ -567,7 +567,7 @@ doors.register("door_steel_unlocked", {
     tiles = {{name = "doors_door_steel.png", backface_culling = true}},
     description = "Iron Door",
     inventory_image = "doors_item_steel.png",
-    groups = {cracky = 1, level = 2},
+    groups = utility.dig_groups("metal"),
     sounds = default.node_sound_metal_defaults(),
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
@@ -582,7 +582,7 @@ doors.register("door_iron", {
 		tiles = {{name = "doors_door_iron.png", backface_culling = true}},
 		description = "Wrought Iron Door",
 		inventory_image = "doors_item_iron.png",
-		groups = {cracky = 1, level = 2},
+		groups = utility.dig_groups("metal"),
 		sounds = default.node_sound_metal_defaults(),
 		sound_open = "doors_iron_door_open",
 		sound_close = "doors_iron_door_close",
@@ -598,7 +598,7 @@ doors.register("door_iron_locked", {
 		description = "Locked Wrought Iron Door",
 		inventory_image = "doors_item_iron.png",
         protected = true,
-		groups = {cracky = 1, level = 2},
+		groups = utility.dig_groups("metal"),
 		sounds = default.node_sound_metal_defaults(),
 		sound_open = "doors_iron_door_open",
 		sound_close = "doors_iron_door_close",
@@ -613,7 +613,7 @@ doors.register("door_glass", {
 		tiles = {"doors_door_glass.png"},
 		description = "Glass Door",
 		inventory_image = "doors_item_glass.png",
-		groups = {level=1, cracky=3, oddly_breakable_by_hand=1},
+		groups = utility.dig_groups("glass"),
 		sounds = default.node_sound_glass_defaults(),
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
@@ -629,7 +629,7 @@ doors.register("door_glass_locked", {
 		description = "Locked Glass Door",
 		inventory_image = "doors_item_glass.png",
         protected = true,
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("glass"),
 		sounds = default.node_sound_glass_defaults(),
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
@@ -644,7 +644,7 @@ doors.register("door_obsidian_glass", {
 		tiles = {"doors_door_obsidian_glass.png"},
 		description = "Obsidian Glass Door",
 		inventory_image = "doors_item_obsidian_glass.png",
-		groups = {level=2, cracky=3},
+		groups = utility.dig_groups("glass"),
 		sounds = default.node_sound_glass_defaults(),
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
@@ -660,7 +660,7 @@ doors.register("door_obsidian_glass_locked", {
     description = "Locked Obsidian Glass Door",
     inventory_image = "doors_item_obsidian_glass.png",
     protected = true,
-    groups = {level=2, cracky=3},
+    groups = utility.dig_groups("glass"),
     sounds = default.node_sound_glass_defaults(),
     sound_open = "doors_glass_door_open",
     sound_close = "doors_glass_door_close",
@@ -675,7 +675,7 @@ doors.register("door_wood_solid", {
     tiles = {"doors_door_woodsolid.png"},
     description = "Solid Wood Door",
     inventory_image = "doors_item_woodsolid.png",
-    groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+    groups = utility.dig_groups("wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:wood_light"},
         {"group:wood_light", "group:wood_light"},
@@ -688,7 +688,7 @@ doors.register("door_wood_solid_locked", {
     description = "Locked Solid Wood Door",
     inventory_image = "doors_item_woodsolid.png",
     protected = true,
-    groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+    groups = utility.dig_groups("wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:wood_light", ""},
         {"group:wood_light", "group:wood_light", "default:steel_ingot"},
@@ -700,7 +700,7 @@ doors.register("door_steel_glass", {
     tiles = {{name="doors_door_steelglass.png", backface_culling = true}},
     description = "Fancy Glass/Iron Door",
     inventory_image = "doors_item_steelglass.png",
-    groups = {level=1, cracky=3},
+    groups = utility.dig_groups("metal"),
     recipe = {
         {"default:steel_ingot", "default:glass"},
         {"default:glass", "default:steel_ingot"},
@@ -713,7 +713,7 @@ doors.register("door_steel_glass_locked", {
     description = "Locked Fancy Glass/Iron Door",
     inventory_image = "doors_item_steelglass.png",
     protected = true,
-    groups = {level=1, cracky=3},
+    groups = utility.dig_groups("metal"),
     recipe = {
         {"default:steel_ingot", "default:glass", ""},
         {"default:glass", "default:steel_ingot", "default:steel_ingot"},
@@ -725,7 +725,7 @@ doors.register("door_wood_glass", {
     tiles = {{name="doors_door_woodglass.png", backface_culling = true}},
     description = "Fancy Glass/Darkwood Door",
     inventory_image = "doors_item_woodglass.png",
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass"},
         {"default:glass", "group:wood_dark"},
@@ -738,7 +738,7 @@ doors.register("door_wood_glass_locked", {
     description = "Locked Fancy Glass/Darkwood Door",
     inventory_image = "doors_item_woodglass.png",
     protected = true,
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass", ""},
         {"default:glass", "group:wood_dark", "default:steel_ingot"},
@@ -750,7 +750,7 @@ doors.register("door_lightwood_glass", {
     tiles = {{name="doors_door_lightwoodglass.png", backface_culling = true}},
     description = "Fancy Glass/Wood Door",
     inventory_image = "doors_item_lightwoodglass.png",
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass"},
         {"default:glass", "group:wood_light"},
@@ -763,7 +763,7 @@ doors.register("door_lightwood_glass_locked", {
     description = "Locked Fancy Glass/Wood Door",
     inventory_image = "doors_item_lightwoodglass.png",
     protected = true,
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass", ""},
         {"default:glass", "group:wood_light", "default:steel_ingot"},
@@ -775,7 +775,7 @@ doors.register("door_fancy_ext1", {
     tiles = {{name="doors_door_ext_fancy1.png", backface_culling = true}},
     description = "Fancy Exterior Wood/Glass Door",
     inventory_image = "doors_item_ext_fancy1.png",
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass"},
         {"group:wood_light", "default:glass"},
@@ -788,7 +788,7 @@ doors.register("door_fancy_ext1_locked", {
     description = "Locked Fancy Exterior Wood/Glass Door",
     inventory_image = "doors_item_ext_fancy1.png",
 		protected = true,
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass", ""},
         {"group:wood_light", "default:glass", "default:steel_ingot"},
@@ -800,7 +800,7 @@ doors.register("door_fancy_ext2", {
     tiles = {{name="doors_door_ext_fancy2.png", backface_culling = true}},
     description = "Fancy Exterior Wood/Glass Door",
     inventory_image = "doors_item_ext_fancy2.png",
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass"},
         {"group:wood_dark", "brass:ingot"},
@@ -813,7 +813,7 @@ doors.register("door_fancy_ext2_locked", {
     description = "Locked Fancy Exterior Wood/Glass Door",
     inventory_image = "doors_item_ext_fancy2.png",
 		protected = true,
-    groups = {level=1, cracky=3, choppy=3},
+    groups = utility.dig_groups("woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass", ""},
         {"group:wood_dark", "brass:ingot", "default:steel_ingot"},
@@ -1047,7 +1047,7 @@ doors.register_trapdoor("doors:trapdoor", {
 	wield_image = "doors_trapdoor.png",
 	tile_front = "doors_trapdoor.png",
 	tile_side = "doors_trapdoor_side.png",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2, door = 1},
+	groups = utility.dig_groups("wood", {flammable = 2, door = 1}),
 })
 
 doors.register_trapdoor("doors:trapdoor_locked", {
@@ -1057,7 +1057,7 @@ doors.register_trapdoor("doors:trapdoor_locked", {
 	tile_front = "doors_trapdoor.png",
 	tile_side = "doors_trapdoor_side.png",
     protected = true,
-	groups = {level = 1, choppy = 2, flammable = 2, door = 1},
+	groups = utility.dig_groups("wood", {flammable = 2, door = 1}),
 })
 
 doors.register_trapdoor("doors:trapdoor_steel", {
@@ -1070,7 +1070,7 @@ doors.register_trapdoor("doors:trapdoor_steel", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
-	groups = {level = 1, cracky = 1, level = 2, door = 1},
+	groups = utility.dig_groups("metal", {door = 1}),
 })
 
 doors.register_trapdoor("doors:trapdoor_iron_locked", {
@@ -1083,7 +1083,7 @@ doors.register_trapdoor("doors:trapdoor_iron_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
-	groups = {level = 1, cracky = 1, level = 2, door = 1},
+	groups = utility.dig_groups("metal", {door = 1}),
 })
 
 doors.register_trapdoor("doors:trapdoor_iron", {
@@ -1095,7 +1095,7 @@ doors.register_trapdoor("doors:trapdoor_iron", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
-	groups = {level = 1, cracky = 1, level = 2, door = 1},
+	groups = utility.dig_groups("metal", {door = 1}),
 })
 
 minetest.register_craft({
@@ -1211,47 +1211,47 @@ doors.register_fencegate("doors:gate_wood", {
 	description = "Wooden Fence Gate",
 	texture = "default_wood.png",
 	material = "default:wood",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2}
+	groups = utility.dig_groups("wood", {flammable = 2}),
 })
 
 doors.register_fencegate("doors:gate_acacia_wood", {
 	description = "Acacia Wood Fence Gate",
 	texture = "default_acacia_wood.png",
 	material = "default:acacia_wood",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2}
+	groups = utility.dig_groups("wood", {flammable = 2}),
 })
 
 doors.register_fencegate("doors:gate_junglewood", {
 	description = "Jungle Wood Fence Gate",
 	texture = "default_junglewood.png",
 	material = "default:junglewood",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2}
+	groups = utility.dig_groups("wood", {flammable = 2}),
 })
 
 doors.register_fencegate("doors:gate_pine_wood", {
 	description = "Pine Wood Fence Gate",
 	texture = "default_pine_wood.png",
 	material = "default:pine_wood",
-	groups = {level = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3}
+	groups = utility.dig_groups("wood", {flammable = 2}),
 })
 
 doors.register_fencegate("doors:gate_aspen_wood", {
 	description = "Aspen Wood Fence Gate",
 	texture = "default_aspen_wood.png",
 	material = "default:aspen_wood",
-	groups = {level = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3}
+	groups = utility.dig_groups("wood", {flammable = 2}),
 })
 
 doors.register_fencegate("doors:gate_iron", {
 	description = "Wrought Iron Fence Gate",
 	texture = "default_fence_iron.png",
 	material = "default:steel_ingot",
-	groups = {level = 1, cracky = 2, oddly_breakable_by_hand = 1}
+	groups = utility.dig_groups("metal"),
 })
 
 doors.register_fencegate("doors:gate_bronze", {
 	description = "Bronze Fence Gate",
 	texture = "default_fence_bronze.png",
 	material = "default:bronze_ingot",
-	groups = {level = 1, cracky = 2, oddly_breakable_by_hand = 1}
+	groups = utility.dig_groups("metal"),
 })

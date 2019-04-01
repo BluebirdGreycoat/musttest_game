@@ -44,7 +44,7 @@ minetest.register_node("moreblocks:red_coal_brick", {
 	place_param2 = 0,
 	tiles = {"moreblocks_coalbrick.png"},
 	is_ground_content = false,
-	groups = {level = 2, cracky = 3, brick = 1},
+	groups = utility.dig_groups("brick", {brick = 1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 

@@ -27,11 +27,11 @@ minetest.register_node("torches:iron_torch", {
 		--wall_bottom = {-0.1, -0.5, -0.1, 0.1, 0.1, 0.1},
 		wall_side = {-0.5, -0.3, -0.1, -0.2, 0.3, 0.1},
 	},
-	groups = {
-		level=1, cracky=3, oddly_breakable_by_hand=3, attached_node=1,
-		melt_around=2, torch=1, torch_craftitem=1,
+	groups = utility.dig_groups("bigitem", {
+		attached_node=1,
+		melt_around=2, torch=1,
 		notify_construct=1, want_notify=1,
-	},
+	}),
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	sunlight_propagates = true,

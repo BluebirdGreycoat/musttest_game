@@ -27,7 +27,7 @@ minetest.register_node("brass:block", {
   description = "Brass Block",
   tiles = {"technic_brass_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2},
+  groups = utility.dig_groups("block"),
   sounds = default.node_sound_metal_defaults(),
 })
 

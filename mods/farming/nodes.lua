@@ -63,7 +63,7 @@ minetest.register_node("farming:soil", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil.png", "default_dirt.png"},
 	drop = "default:dirt",
-	groups = {level=1, crumbly=3, not_in_creative_inventory=1, soil=2, grassland = 1, falling_node = 1, field = 1, want_notify = 1},
+	groups = utility.dig_groups("dirt", {not_in_creative_inventory=1, soil=2, grassland = 1, falling_node = 1, field = 1, want_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	soil = {
 		base = "default:dirt",
@@ -101,7 +101,7 @@ minetest.register_node("farming:soil_wet", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil_wet.png", "default_dirt.png^farming_soil_wet_side.png"},
 	drop = "default:dirt",
-	groups = {level=1, crumbly=3, not_in_creative_inventory=1, soil=3, wet = 1, grassland = 1, falling_node = 1, field = 1, want_notify = 1},
+	groups = utility.dig_groups("dirt", {not_in_creative_inventory=1, soil=3, wet = 1, grassland = 1, falling_node = 1, field = 1, want_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	soil = {
 		base = "default:dirt",
@@ -146,7 +146,7 @@ minetest.register_node("farming:desert_sand_soil", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
 	tiles = {"farming_desert_sand_soil.png", "default_desert_sand.png"},
-	groups = {level=1, crumbly=3, not_in_creative_inventory = 1, falling_node=1, sand=1, soil = 2, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1},
+	groups = utility.dig_groups("sand", {not_in_creative_inventory = 1, falling_node=1, sand=1, soil = 2, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {
 		base = "default:desert_sand",
@@ -184,7 +184,7 @@ minetest.register_node("farming:desert_sand_soil_wet", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
 	tiles = {"farming_desert_sand_soil_wet.png", "farming_desert_sand_soil_wet_side.png"},
-	groups = {level=1, crumbly=3, falling_node=1, sand=1, not_in_creative_inventory=1, soil=3, wet = 1, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1},
+	groups = utility.dig_groups("sand", {falling_node=1, sand=1, not_in_creative_inventory=1, soil=3, wet = 1, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {
 		base = "default:desert_sand",
@@ -209,7 +209,7 @@ minetest.register_node("farming:straw", {
 	description = "Straw\n\nA soft material to fall on.",
 	tiles = {"farming_straw.png"},
 	is_ground_content = false,
-	groups = {level=1, snappy=3, flammable=4, oddly_breakable_by_hand=1, fall_damage_add_percent=-30, falling_node=1},
+	groups = utility.dig_groups("straw", {flammable=4, fall_damage_add_percent=-30, falling_node=1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -218,7 +218,7 @@ minetest.register_node("farming:straw_weathered", {
 	description = "Weathered Straw\n\nA soft material to fall on.",
 	tiles = {"farming_straw_weathered.png"},
 	is_ground_content = false,
-	groups = {level=1, snappy=3, flammable=5, oddly_breakable_by_hand=1, fall_damage_add_percent=-30, falling_node=1},
+	groups = utility.dig_groups("straw", {flammable=5, fall_damage_add_percent=-30, falling_node=1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 })

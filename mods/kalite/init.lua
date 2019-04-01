@@ -4,7 +4,7 @@
 minetest.register_node("kalite:ore", {
   description = "Kalite Ore",
   tiles = {"default_stone.png^gloopores_mineral_kalite.png"},
-  groups = {level = 1, cracky = 3},
+  groups = utility.dig_groups("mineral"),
   drop = {
     max_items = 4,
     items = {

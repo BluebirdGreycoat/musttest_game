@@ -143,7 +143,7 @@ minetest.register_node("barter_table:barter", {
 			{0.250000,-0.500000,0.250000,0.437500,0.500000,0.447500},
 		},
 	},
-	groups = {level=1, choppy=3, oddly_breakable_by_hand=3},
+	groups = utility.dig_groups("furniture"),
 	sounds = default.node_sound_wood_defaults(),
 	on_timer = barter.chest.reset2,
 	on_construct = function(pos)

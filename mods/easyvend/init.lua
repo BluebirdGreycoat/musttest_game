@@ -75,7 +75,7 @@ end
 
 local machine_template = {
 	paramtype2 = "facedir",
-	groups = {level=1, choppy=2, oddly_breakable_by_hand=1, vending=1},
+	groups = utility.dig_groups("furniture", {vending=1}),
 
 	after_place_node = function(...) return easyvend.after_place_node(...) end,
 	can_dig = function(...) return easyvend.can_dig(...) end,

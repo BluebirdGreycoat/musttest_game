@@ -458,7 +458,7 @@ if not ads.run_once then
 			"easyvend_ad_booth.png",
 		},
 		paramtype2 = "facedir",
-		groups = {level = 1, choppy = 2, flammable = 2},
+		groups = utility.dig_groups("furniture", {flammable = 2}),
 		sounds = default.node_sound_wood_defaults(),
 
 		on_construct = function(pos)

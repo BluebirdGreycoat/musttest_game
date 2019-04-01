@@ -371,7 +371,7 @@ if not windy.run_once then
 		drawtype = "glasslike_framed",
 		tiles = {"technic_carbon_steel_block.png", "default_glass.png"},
 		sunlight_propagates = true,
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("glass"),
 		sounds = default.node_sound_stone_defaults(),
 		paramtype = "light",
 	})
@@ -413,7 +413,7 @@ if not windy.run_once then
 		description = "MV Wind Catcher",
 		tiles = {"technic_carbon_steel_block.png"},
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		node_box = {
 			type = "fixed",

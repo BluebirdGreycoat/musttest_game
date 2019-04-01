@@ -72,7 +72,7 @@ local function add_ore(modname, description, mineral_name, oredef)
 		minetest.register_node(modname .. ":mineral_" .. mineral_name, {
 			description = S("%s Ore"):format(S(description)),
 			tiles = {"default_stone.png^" .. modname .. "_mineral_" .. mineral_name .. ".png"},
-			groups = {level = 2, cracky = 3, ore = 1},
+			groups = utility.dig_groups("hardmineral", {ore = 1}),
 			sounds = default_stone_sounds,
 			drop = lump_item,
 			silverpick_drop = true,
@@ -84,7 +84,7 @@ local function add_ore(modname, description, mineral_name, oredef)
 		minetest.register_node(block_item, {
 			description = S("%s Block"):format(S(description)),
 			tiles = { img_base .. "_block.png" },
-			groups = {snappy = 1, bendy = 2, cracky = 1, melty = 2, level= 2, conductor = 1, block = 1},
+			groups = utility.dig_groups("block", {conductor = 1, block = 1}),
 			sounds = default_metal_sounds,
 		})
 		minetest.register_alias(mineral_name.."_block", block_item)

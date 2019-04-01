@@ -9,7 +9,7 @@ whitestone.modpath = minetest.get_modpath("whitestone")
 minetest.register_node("whitestone:stone", {
 	description = "Bleached Stone",
 	tiles = {"whitestone_stone.png"},
-	groups = {cracky=1, level=2, native_stone=1},
+	groups = utility.dig_groups("stone", {native_stone=1}),
     drop = "whitestone:cobble",
 	sounds = default.node_sound_stone_defaults(),
 })
@@ -17,21 +17,21 @@ minetest.register_node("whitestone:stone", {
 minetest.register_node("whitestone:cobble", {
 	description = "Bleached Cobble",
 	tiles = {"whitestone_cobble.png"},
-	groups = {level=2, cracky=2, native_stone=1},
+	groups = utility.dig_groups("cobble", {native_stone=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("whitestone:brick", {
 	description = "Bleached Brick",
 	tiles = {"whitestone_brick.png"},
-	groups = {level=2, cracky=2, brick=1},
+	groups = utility.dig_groups("brick", {brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("whitestone:block", {
 	description = "Bleached Block",
 	tiles = {"whitestone_block.png"},
-	groups = {level=2, cracky=2},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_stone_defaults(),
 })
 

@@ -4,7 +4,7 @@ xdecor.register("booktable", {
 	tiles = {"xdecor_enchantment_top.png",  "xdecor_enchantment_bottom.png",
 		 "xdecor_enchantment_side.png", "xdecor_enchantment_side.png",
 		 "xdecor_enchantment_side.png", "xdecor_enchantment_side.png"},
-	groups = {cracky=1, level=1},
+	groups = utility.dig_groups("furniture"),
 	sounds = default.node_sound_stone_defaults(),
 	on_rotate = screwdriver.rotate_simple,
 	nostairs = true,

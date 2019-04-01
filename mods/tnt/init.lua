@@ -24,7 +24,7 @@ minetest.register_node("tnt:boom", {
 	light_source = default.LIGHT_MAX - 1,
 	walkable = false,
 	drop = "",
-	groups = {dig_immediate = 3},
+	groups = utility.dig_groups("item"),
   pointable = false,
   buildable_to = true,
 	on_construct = function(pos)
@@ -60,12 +60,10 @@ minetest.register_node("tnt:gunpowder", {
 		type = "fixed",
 		fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
 	},
-	groups = {
-    level = 1, 
-    dig_immediate = 2, 
+	groups = utility.dig_groups("bigitem", {
     attached_node = 1, 
     connect_to_raillike = minetest.raillike_group("gunpowder"),
-  },
+  }),
 	sounds = default.node_sound_leaves_defaults(),
 
   on_punch = function(pos, node, puncher)
@@ -133,7 +131,7 @@ minetest.register_node("tnt:gunpowder_burning", {
 		fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
 	},
 	drop = "",
-	groups = {level = 1, dig_immediate = 2, attached_node = 1, connect_to_raillike = minetest.raillike_group("gunpowder")},
+	groups = utility.dig_groups("bigitem", {attached_node = 1, connect_to_raillike = minetest.raillike_group("gunpowder")}),
 	sounds = default.node_sound_leaves_defaults(),
 	on_timer = function(pos, elapsed)
 		for dx = -1, 1 do
@@ -211,7 +209,7 @@ function tnt.register_tnt(def)
         description = def.description,
         tiles = {tnt_top, tnt_bottom, tnt_side},
         is_ground_content = false,
-        groups = {level = 1, choppy = 3, dig_immediate = 2, mesecon = 2, tnt = 1},
+        groups = utility.dig_groups("bigitem", {tnt = 1}),
         sounds = default.node_sound_wood_defaults(),
         
         on_punch = function(pos, node, puncher)

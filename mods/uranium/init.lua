@@ -2,7 +2,7 @@
 minetest.register_node("uranium:ore", {
   description = "Uranium Ore",
   tiles = {"default_stone.png^technic_uranium_mineral.png"},
-  groups = {level = 1, cracky = 3, melts = 1, ore = 1},
+  groups = utility.dig_groups("mineral", {melts = 1, ore = 1}),
   drop = "uranium:lump",
   sounds = default.node_sound_stone_defaults(),
 	
@@ -23,7 +23,7 @@ minetest.register_node("uranium:ore", {
 minetest.register_node("uranium:block", {
   description = "Uranium Block (Not Radioactive)",
   tiles = {"technic_uranium_block.png"},
-  groups = {level = 1, cracky = 3},
+  groups = utility.dig_groups("block"),
   sounds = default.node_sound_stone_defaults(),
 })
 

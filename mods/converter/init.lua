@@ -15,11 +15,10 @@ if not converter.run_once then
       "converter_side.png", "converter_side.png",
     },
     
-    groups = {
-      level=1, cracky=3,
+    groups = utility.dig_groups("machine", {
       immovable = 1,
       tier_lv = 1, tier_mv = 1, tier_hv = 1,
-    },
+    }),
 		drop = "conv2:converter",
     
     paramtype2 = "facedir",

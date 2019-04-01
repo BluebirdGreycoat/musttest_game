@@ -342,7 +342,7 @@ if not anvil.registered then
 		tiles = {"chains_iron.png", "default_stone.png"},
 		paramtype  = "light",
 		paramtype2 = "facedir",
-		groups = {cracky=2, falling_node=1},
+		groups = utility.dig_groups("machine", {falling_node=1}),
 		sounds = default.node_sound_metal_defaults(),
 		is_ground_content = false,
 

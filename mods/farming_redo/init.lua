@@ -317,7 +317,7 @@ minetest.register_node(":farming:scarecrow_bottom", {
 			{-12/16, 4/16, -1/16, 12/16, 2/16, 1/16},
 		},
 	},
-	groups = {snappy = 3, flammable = 2, attached_node = 1},
+	groups = utility.dig_groups("bigitem", {flammable = 2, attached_node = 1}),
 })
 
 minetest.register_craft({

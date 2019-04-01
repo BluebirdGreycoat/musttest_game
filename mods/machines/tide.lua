@@ -394,7 +394,7 @@ if not tide.run_once then
 		description = "MV Tidal Generator",
 		tiles = {"technic_carbon_steel_block.png"},
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		node_box = {
 			type = "fixed",

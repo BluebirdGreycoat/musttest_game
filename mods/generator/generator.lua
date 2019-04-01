@@ -492,7 +492,7 @@ if not generator.gen2_loaded then
 					"generator_" .. n.tier .. "_side.png", v.tile,
 				},
 
-				groups = {level=1, cracky=3},
+				groups = utility.dig_groups("machine"),
 
 				paramtype2 = "facedir",
 				is_ground_content = false,

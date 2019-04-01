@@ -28,7 +28,7 @@ for _, clay in ipairs(clay) do
 	minetest.register_node("bakedclay:" .. clay[1], {
 		description = clay[2] .. " Baked Clay",
 		tiles = {"baked_clay_" .. clay[1] ..".png"},
-		groups = {cracky = 3, bakedclay = 1},
+		groups = utility.dig_groups("hardclay", {bakedclay = 1}),
 		sounds = default.node_sound_stone_defaults(),
 	})
 
@@ -47,7 +47,7 @@ for _, clay in ipairs(clay) do
 	stairs.register_stair_and_slab(
 		"bakedclay_".. clay[1],
 		"bakedclay:".. clay[1],
-		{cracky = 3},
+		utility.dig_groups("hardclay"),
 		{"baked_clay_" .. clay[1] .. ".png"},
 		clay[2] .. " Baked Clay",
 		default.node_sound_stone_defaults()

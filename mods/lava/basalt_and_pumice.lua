@@ -3,7 +3,7 @@ minetest.register_node(":gloopblocks:basalt", {
 	description = "Basalt",
 	tiles = {"gloopblocks_basalt.png"},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {cracky = 1, level = 2},
+	groups = utility.dig_groups("stone"),
 	movement_speed_multiplier = default.ROAD_SPEED,
 })
 
@@ -11,7 +11,7 @@ minetest.register_node(":gloopblocks:pumice", {
 	description = "Pumice",
 	tiles = {"gloopblocks_pumice.png"},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {cracky = 1, level = 1},
+	groups = utility.dig_groups("stone"),
 
 	-- This doesn't really make sense for pumice,
 	-- but we must keep it because a lot of players have relied on it.
@@ -21,7 +21,7 @@ minetest.register_node(":gloopblocks:pumice", {
 stairs.register_stair_and_slab(
 	"basalt",
 	"gloopblocks:basalt",
-	{cracky = 1, level = 2},
+	utility.dig_groups("stone"),
 	{"gloopblocks_basalt.png"},
 	"Basalt",
 	default.node_sound_stone_defaults()
@@ -30,7 +30,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"pumice",
 	"gloopblocks:pumice",
-	{cracky = 1, level = 1},
+	utility.dig_groups("stone"),
 	{"gloopblocks_pumice.png"},
 	"Pumice",
 	default.node_sound_stone_defaults()

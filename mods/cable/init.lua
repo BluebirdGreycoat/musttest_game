@@ -133,10 +133,9 @@ if not cable.run_once then
       description = v.name .. " [Max length: " .. cable.get_max_length(v.tier) .. " meters.]",
       tiles = {v.tile},
       
-      groups = {
-        level=1, dig_immediate=2,
+      groups = utility.dig_groups("bigitem", {
         immovable = 1,
-      },
+      }),
 			drop = "cb2:" .. v.tier,
       
       paramtype = "light",
@@ -221,7 +220,7 @@ if not cable.run_once then
       description = v.name .. " [Max Length: " .. cable.get_max_length(v.tier) .. " Meters.]",
       tiles = {v.tile},
 
-      groups = {level=1, dig_immediate=2},
+      groups = utility.dig_groups("bigitem"),
 
       paramtype = "light",
       drawtype = "nodebox",

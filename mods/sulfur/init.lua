@@ -2,7 +2,7 @@
 minetest.register_node("sulfur:ore", {
   description = "Sulfur Ore",
   tiles = {"default_stone.png^technic_sulfur_mineral.png"},
-  groups = {level = 1, cracky = 1},
+  groups = utility.dig_groups("mineral"),
   drop = "sulfur:lump",
   sounds = default.node_sound_stone_defaults(),
 })

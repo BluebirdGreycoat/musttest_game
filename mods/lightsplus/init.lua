@@ -33,7 +33,7 @@ for _, row in ipairs(lights) do
     minetest.register_node(off, {
         description = desc,
 		tiles = { tiles },
-		groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2},
+		groups = utility.dig_groups("glass"),
 		paramtype = paramtype,
 		paramtype2 = paramtype2,
 		drawtype = drawtype,
@@ -49,7 +49,7 @@ for _, row in ipairs(lights) do
         drop = off,
 		tiles = { tiles },
 		light_source = 14,
-		groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2, not_in_creative_inventory=2},
+		groups = utility.dig_groups("glass", {not_in_creative_inventory=2}),
 		paramtype = paramtype,
 		paramtype2 = paramtype2,
 		drawtype = drawtype,

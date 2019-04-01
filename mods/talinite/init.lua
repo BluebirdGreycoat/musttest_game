@@ -2,7 +2,7 @@
 minetest.register_node("talinite:ore", {
   description = "Talinite Ore",
   tiles = {"default_stone.png^gloopores_mineral_talinite.png"},
-  groups = {level = 1, cracky = 3, ore = 1},
+  groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "talinite:lump",
 	silverpick_drop = true,
   --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
@@ -66,7 +66,7 @@ minetest.register_node("talinite:block", {
   description = "Talinite Block",
   tiles = {"gloopores_talinite_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2},
+  groups = utility.dig_groups("block"),
   light_source = 14,
   sounds = default.node_sound_metal_defaults(),
 })
@@ -103,7 +103,7 @@ minetest.register_node("talinite:glass", {
   sunlight_propagates = true,
   light_source = 10,
   is_ground_content = false,
-  groups = {level = 1, cracky = 3},
+  groups = utility.dig_groups("glass"),
   sounds = default.node_sound_glass_defaults(),
 	silverpick_drop = true,
 

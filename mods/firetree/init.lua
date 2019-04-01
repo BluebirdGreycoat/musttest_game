@@ -24,15 +24,11 @@ minetest.register_node("firetree:leaves", {
 	visual_scale = 1.3,
 	tiles = {"firetree_leaves.png"},
 	paramtype = "light",
-	groups = {
-		level = 1,
-		choppy = 2,
-		snappy = 3,
-		oddly_breakable_by_hand = 1,
+	groups = utility.dig_groups("leaves", {
 		leafdecay = 3,
 		flammable = 2,
 		leaves = 1,
-	},
+	}),
   
 	drop = {
 		max_items = 1,
@@ -60,7 +56,7 @@ minetest.register_node("firetree:whitewood", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"firetree_whitewood.png"},
-	groups = {level=1, choppy=2, oddly_breakable_by_hand=1, flammable=2, wood=1, wood_light=1},
+	groups = utility.dig_groups("wood", {flammable=2, wood=1, wood_light=1}),
 	sounds = default.node_sound_wood_defaults(),
 })
 
@@ -71,7 +67,7 @@ minetest.register_node("firetree:firewood", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"firetree_firewood.png"},
-	groups = {level=1, choppy=2, flammable=2, wood=1, wood_dark=1},
+	groups = utility.dig_groups("wood", {flammable=2, wood=1, wood_dark=1}),
 	sounds = default.node_sound_wood_defaults(),
 })
 
@@ -128,7 +124,7 @@ minetest.register_node("firetree:fruit", {
 		type = "fixed",
 		fixed = {-0.2, -0.5, -0.2, 0.2, 0, 0.2}
 	},
-	groups = {level=1, fleshy=3, dig_immediate=3, flammable=2, leafdecay=3, leafdecay_drop=1, foodrot=1},
+	groups = utility.dig_groups("item", {flammable=2, leafdecay=3, leafdecay_drop=1, foodrot=1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
@@ -246,7 +242,7 @@ minetest.register_node("firetree:sapling", {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.35, 0.3}
 	},
-	groups = {level=1, choppy=2, snappy=2, oddly_breakable_by_hand=1, flammable=2, attached_node=1, sapling=1},
+	groups = utility.dig_groups("plant", {flammable=2, attached_node=1, sapling=1}),
 	sounds = default.node_sound_leaves_defaults(),
     on_timer = on_timer,
     on_place = on_place,
@@ -267,7 +263,7 @@ minetest.register_node("firetree:trunk", {
     description = "Firetree",
 	tiles = {"firetree_trunktop.png", "firetree_trunktop.png", "firetree_trunkside.png"},
 	paramtype2 = "facedir",
-	groups = {level=1, tree=1, choppy=1, flammable=2},
+	groups = utility.dig_groups("tree", {tree=1, flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node,
 	movement_speed_multiplier = default.NORM_SPEED,

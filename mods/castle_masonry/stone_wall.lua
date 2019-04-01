@@ -15,7 +15,7 @@ minetest.register_node("castle_masonry:stonewall", {
 	tiles = {"castle_stonewall.png"},
 	--paramtype = "light",
 	drop = "castle_masonry:stonewall",
-	groups = {cracky=3,stone=1,brick=1},
+	groups = utility.dig_groups("cobble", {stone=1,brick=1}),
 	sunlight_propagates = false,
 	sounds = default.node_sound_stone_defaults(),
 })
@@ -25,7 +25,7 @@ minetest.register_node("castle_masonry:rubble", {
 	drawtype = "normal",
 	tiles = {"castle_rubble.png"},
 	--paramtype = "light",
-	groups = {crumbly=3,falling_node=1},
+	groups = utility.dig_groups("gravel", {falling_node=1}),
 	sounds = default.node_sound_gravel_defaults(),
 })
 
@@ -59,7 +59,7 @@ minetest.register_node("castle_masonry:stonewall_corner", {
 		 "castle_stonewall.png",
 		 "castle_stonewall.png",	
 		 "castle_corner_stonewall2.png"},
-	groups = {cracky=3, stone=1, brick=1},
+	groups = utility.dig_groups("cobble", {stone=1, brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -94,7 +94,7 @@ minetest.register_node("castle_masonry:dungeon_stone", {
 	description = S("Dungeon Stone"),
 	drawtype = "normal",
 	tiles = {"castle_dungeon_stone.png"},
-	groups = {cracky=2, stone=1, brick=1},
+	groups = utility.dig_groups("brick", {stone=1, brick=1}),
 	--paramtype = "light",
 	sounds = default.node_sound_stone_defaults(),
 })

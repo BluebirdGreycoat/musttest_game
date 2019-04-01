@@ -16,7 +16,7 @@ if not ghost_stone.run_once then
     
     tiles = {"default_cobble.png"}, -- Hard to see/looks like cobble.
     is_ground_content = false,
-    groups = {level = 1, cracky = 3}, -- Fast/easy to dig.
+    groups = utility.dig_groups("cobble"),
     sounds = rackstone.rackstone_sounds(),
     walkable = false, -- Player can hide inside/walk through/fall through.
     post_effect_color = {a = 100, r = 255, g = 0, b = 40},

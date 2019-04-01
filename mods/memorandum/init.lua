@@ -635,7 +635,7 @@ if not memorandum.run_once then
 			type = "fixed",
 			fixed = collisionbox_sheet,
 		},
-		groups = {level=1, snappy=3, dig_immediate=3, not_in_creative_inventory=1},
+		groups = utility.dig_groups("item", {not_in_creative_inventory=1}),
 		sounds = default.node_sound_leaves_defaults(),
 
 		on_construct = function(...) return memorandum.on_letter_empty_initialize(...) end,
@@ -670,7 +670,7 @@ if not memorandum.run_once then
 			type = "fixed",
 			fixed = collisionbox_sheet
 		},
-		groups = {level=1, snappy=3, dig_immediate=3, not_in_creative_inventory=1},
+		groups = utility.dig_groups("item", {not_in_creative_inventory=1}),
 		sounds = default.node_sound_leaves_defaults(),
 
 		on_rightclick = function(...) return memorandum.on_rightclick(...) end,
@@ -702,7 +702,7 @@ if not memorandum.run_once then
 		},
 		stack_max = 1,
 		walkable = false,
-		groups = {level=1, vessel=1, dig_immediate=3, attached_node=1, not_in_creative_inventory=1},
+		groups = utility.dig_groups("item", {vessel=1, attached_node=1, not_in_creative_inventory=1}),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 		--sounds = default.node_sound_glass_defaults(),
 

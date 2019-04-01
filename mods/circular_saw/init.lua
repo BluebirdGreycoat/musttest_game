@@ -542,10 +542,9 @@ minetest.register_node("circular_saw:circular_saw",  {
 		return screwdriver.rotate_simple(...)
 	end,
 
-  groups = {
-    level = 1, choppy = 3, oddly_breakable_by_hand = 1,
+  groups = utility.dig_groups("furniture", {
     immovable = 1,
-  },
+  }),
   sounds = default.node_sound_wood_defaults(),
   on_construct = circular_saw.on_construct,
   can_dig = circular_saw.can_dig,

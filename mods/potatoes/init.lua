@@ -22,7 +22,7 @@ minetest.register_node("potatoes:seed", {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
   },
-  groups = {level = 1, seed = 1, snappy = 3, attached_node = 1, flammable = 2, notify_destruct = 1},
+  groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
   on_place = function(itemstack, placer, pointed_thing)
     return farming.place_seed(itemstack, placer, pointed_thing, "potatoes:seed")
   end,
@@ -77,10 +77,10 @@ local crop_def = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
-	groups = {
-		snappy = 3, flammable = 2, plant = 1, attached_node = 1,
+	groups = utility.dig_groups("crop", {
+		flammable = 2, plant = 1, attached_node = 1,
 		not_in_creative_inventory = 1, growing = 1, notify_destruct = 1,
-	},
+	}),
 	sounds = default.node_sound_leaves_defaults(),
   on_timer = farming.grow_plant,
   minlight = 13,

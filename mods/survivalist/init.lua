@@ -1007,7 +1007,7 @@ if not survivalist.run_once then
       paramtype2 = "facedir",
       sunlight_propagates = true,
       walkable = false,
-      groups = {dig_immediate = 3},
+      groups = utility.dig_groups("item"),
       sounds = default.node_sound_metal_defaults(),
       drawtype = "nodebox",
       node_box = nodebox,

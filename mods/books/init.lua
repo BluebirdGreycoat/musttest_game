@@ -75,7 +75,7 @@ end
 
 
 if not books.run_once then
-    local bookshelf_groups = {level = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3}
+    local bookshelf_groups = utility.dig_groups("furniture", {flammable = 3})
     local bookshelf_sounds = default.node_sound_wood_defaults()
     
     minetest.register_node("books:bookshelf", {

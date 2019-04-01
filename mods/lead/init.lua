@@ -2,7 +2,7 @@
 minetest.register_node("lead:ore", {
   description = "Lead Ore",
   tiles = {"default_stone.png^technic_lead_mineral.png"},
-  groups = {level = 1, cracky = 3, ore = 1},
+  groups = utility.dig_groups("mineral", {ore=1}),
   drop = "lead:lump",
   sounds = default.node_sound_stone_defaults(),
 })
@@ -73,7 +73,7 @@ minetest.register_node("lead:block", {
   description = "Lead Block",
   tiles = {"technic_lead_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2},
+  groups = utility.dig_groups("block"),
   sounds = default.node_sound_metal_defaults(),
 })
 

@@ -15,12 +15,11 @@ if not grinder.nodes_registered then
       },
 
       paramtype2 = "facedir",
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         tubedevice = 1, tubedevice_receiver = 1,
         immovable = 1,
         tier_mv = 1,
-      },
+      }),
       
       light_source = v.light,
       on_rotate = function(...) return screwdriver.rotate_simple(...) end,

@@ -160,7 +160,7 @@ function xpanes.register_pane(name, def)
 			connect_back = {{-1/32, -1/2, 1/32, 1/32, 1/2, 1/2}},
 			connect_right = {{1/32, -1/2, -1/32, 1/2, 1/2, 1/32}},
 		},
-		connects_to = {"group:pane", "group:stone", "group:glass", "group:wood", "group:tree"},
+		connects_to = {"group:pane", "group:stone", "group:glass", "group:brick", "group:wood", "group:tree"},
 
 		on_construct = on_construct,
 		after_destruct = after_destruct,
@@ -178,7 +178,7 @@ xpanes.register_pane("pane", {
 	inventory_image = "default_glass.png",
 	wield_image = "default_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, snappy=2, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"default:glass", "default:glass", "default:glass"},
 		{"default:glass", "default:glass", "default:glass"}
@@ -191,7 +191,7 @@ xpanes.register_pane("obsidian_glass", {
 	inventory_image = "default_obsidian_glass.png",
 	wield_image = "default_obsidian_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, snappy=2, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"default:obsidian_glass", "default:obsidian_glass", "default:obsidian_glass"},
 		{"default:obsidian_glass", "default:obsidian_glass", "default:obsidian_glass"}
@@ -203,7 +203,7 @@ xpanes.register_pane("bar", {
 	textures = {"xpanes_bar.png","xpanes_bar.png","xpanes_bar_top.png"},
 	inventory_image = "xpanes_bar.png",
 	wield_image = "xpanes_bar.png",
-	groups = {level=1, cracky=2},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_metal_defaults(),
 	recipe = {
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
@@ -216,7 +216,7 @@ xpanes.register_pane("wood", {
 	textures = {"doors_trapdoor.png", "xpanes_brown.png", "xpanes_brown.png"},
 	inventory_image = "doors_trapdoor.png",
 	wield_image = "doors_trapdoor.png",
-	groups = {level=1, choppy=2, oddly_breakable_by_hand=1},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_wood_defaults(),
 	recipe = {
 		{"default:wood", "default:wood"},
@@ -229,7 +229,7 @@ xpanes.register_pane("iron", {
 	textures = {"doors_trapdoor_iron.png", "xpanes_gray2.png", "xpanes_gray2.png"},
 	inventory_image = "doors_trapdoor_iron.png",
 	wield_image = "doors_trapdoor_iron.png",
-	groups = {level=1, cracky=2},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_metal_defaults(),
 	amount = 1,
 	recipe = {
@@ -243,7 +243,7 @@ xpanes.register_pane("akalin", {
 	inventory_image = "glooptest_akalin_crystal_glass.png",
 	wield_image = "glooptest_akalin_crystal_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"akalin:glass", "akalin:glass", "akalin:glass"},
 		{"akalin:glass", "akalin:glass", "akalin:glass"}
@@ -256,7 +256,7 @@ xpanes.register_pane("alatro", {
 	inventory_image = "glooptest_alatro_crystal_glass.png",
 	wield_image = "glooptest_alatro_crystal_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"alatro:glass", "alatro:glass", "alatro:glass"},
 		{"alatro:glass", "alatro:glass", "alatro:glass"}
@@ -269,7 +269,7 @@ xpanes.register_pane("arol", {
 	inventory_image = "glooptest_arol_crystal_glass.png",
 	wield_image = "glooptest_arol_crystal_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"arol:glass", "arol:glass", "arol:glass"},
 		{"arol:glass", "arol:glass", "arol:glass"}
@@ -282,7 +282,7 @@ xpanes.register_pane("talinite", {
 	inventory_image = "glooptest_talinite_crystal_glass.png",
 	wield_image = "glooptest_talinite_crystal_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	light_source = 10,
 	recipe = {
 		{"talinite:glass", "talinite:glass", "talinite:glass"},
@@ -296,7 +296,7 @@ xpanes.register_pane("dk_glass", {
 	inventory_image = "darkage_glass.png",
 	wield_image = "darkage_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:glass", "darkage:glass", "darkage:glass"},
 		{"darkage:glass", "darkage:glass", "darkage:glass"}
@@ -309,7 +309,7 @@ xpanes.register_pane("dk_mglass", {
 	inventory_image = "darkage_milk_glass.png",
 	wield_image = "darkage_milk_glass.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:milk_glass", "darkage:milk_glass", "darkage:milk_glass"},
 		{"darkage:milk_glass", "darkage:milk_glass", "darkage:milk_glass"}
@@ -322,7 +322,7 @@ xpanes.register_pane("dk_woodframe", {
 	inventory_image = "darkage_wood_frame.png",
 	wield_image = "darkage_wood_frame.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:wood_frame", "darkage:wood_frame", "darkage:wood_frame"},
 		{"darkage:wood_frame", "darkage:wood_frame", "darkage:wood_frame"}
@@ -335,7 +335,7 @@ xpanes.register_pane("dk_glass_round", {
 	inventory_image = "darkage_glass_round.png",
 	wield_image = "darkage_glass_round.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:glass_round", "darkage:glass_round", "darkage:glass_round"},
 		{"darkage:glass_round", "darkage:glass_round", "darkage:glass_round"}
@@ -348,7 +348,7 @@ xpanes.register_pane("dk_mglass_round", {
 	inventory_image = "darkage_milk_glass_round.png",
 	wield_image = "darkage_milk_glass_round.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:milk_glass_round", "darkage:milk_glass_round", "darkage:milk_glass_round"},
 		{"darkage:milk_glass_round", "darkage:milk_glass_round", "darkage:milk_glass_round"}
@@ -361,7 +361,7 @@ xpanes.register_pane("dk_glass_square", {
 	inventory_image = "darkage_glass_square.png",
 	wield_image = "darkage_glass_square.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:glass_square", "darkage:glass_square", "darkage:glass_square"},
 		{"darkage:glass_square", "darkage:glass_square", "darkage:glass_square"}
@@ -374,7 +374,7 @@ xpanes.register_pane("dk_mglass_square", {
 	inventory_image = "darkage_milk_glass_square.png",
 	wield_image = "darkage_milk_glass_square.png",
 	sounds = default.node_sound_glass_defaults(),
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("bigitem"),
 	recipe = {
 		{"darkage:milk_glass_square", "darkage:milk_glass_square", "darkage:milk_glass_square"},
 		{"darkage:milk_glass_square", "darkage:milk_glass_square", "darkage:milk_glass_square"}

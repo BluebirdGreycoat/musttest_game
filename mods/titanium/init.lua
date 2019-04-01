@@ -13,7 +13,7 @@ minetest.register_node("titanium:ore", {
 	description = "Titanium Ore",
 	tiles = { "default_stone.png^titanium_ore.png" },
 	is_ground_content = true,
-	groups = {level=3, cracky=2, ore = 1},
+	groups = utility.dig_groups("mineral", {ore = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	drop = "titanium:titanium",
 	silverpick_drop = true,
@@ -26,7 +26,7 @@ minetest.register_node("titanium:block", {
 	description = "Titanium Block",
 	tiles = { "titanium_block.png" },
 	is_ground_content = true,
-	groups = {cracky=1, level=3},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_metal_defaults(),
 })
 

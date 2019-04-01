@@ -14,7 +14,7 @@ minetest.register_node("luxore:luxore", {
 	tiles = {"luxore_luxore.png"},
 	paramtype = "light",
 	light_source = 14,
-	groups = {level = 2, cracky = 2},
+	groups = utility.dig_groups("cobble"),
 	drop = "luxore:luxcrystal 4",
 	silverpick_drop = true,
 	sounds = default.node_sound_glass_defaults(),

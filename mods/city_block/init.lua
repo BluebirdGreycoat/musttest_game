@@ -99,10 +99,9 @@ if not city_block.run_once then
 		description = "Lawful Zone Marker\n\nMarks as part of the city a 45x45x45 area.\nMurderers and trespassers will be sent to jail if caught in the city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
 		tiles = {"moreblocks_circle_stone_bricks.png^default_tool_mesepick.png"},
 		is_ground_content = false,
-		groups = {
-			cracky=2,level=3,
+		groups = utility.dig_groups("obsidian", {
 			immovable=1,
-		},
+		}),
 		is_ground_content = false,
 		sounds = default.node_sound_stone_defaults(),
 

@@ -21,7 +21,7 @@ minetest.register_node("mese_post:mese_post_light", {
   light_source = default.LIGHT_MAX - 1,
   sunlight_propagates = true,
   is_ground_content = false,
-  groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+  groups = utility.dig_groups("wood", {flammable = 2}),
   sounds = default.node_sound_wood_defaults(),
 })
 

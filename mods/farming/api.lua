@@ -426,7 +426,7 @@ farming.register_plant = function(name, def)
 				{items = {mname .. ":seed_" .. pname}, rarity = 18 - i * 2},
 			}
 		}
-		local nodegroups = {level = 1, snappy = 3, flammable = 2, plant = 1, not_in_creative_inventory = 1, attached_node = 1, notify_destruct = 1}
+		local nodegroups = utility.dig_groups("crop", {flammable = 2, plant = 1, not_in_creative_inventory = 1, attached_node = 1, notify_destruct = 1})
 		nodegroups[pname] = i
 
 		local next_plant = nil

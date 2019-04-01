@@ -17,11 +17,10 @@ if not switching_station.run_once then
       description = v.name .. " Cable Box",
       tiles = {"switching_station_" .. v.tier .. ".png"},
       
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         immovable = 1,
         ["tier_" .. v.tier] = 1,
-      },
+      }),
 			drop = "stat2:" .. v.tier,
       
       paramtype2 = "facedir",

@@ -16,14 +16,14 @@ local function register_pane(name, desc, def)
 end
 
 register_pane("bamboo_frame", "Bamboo Frame", {
-	groups = {choppy=3, oddly_breakable_by_hand=2, pane=1, flammable=2},
+	groups = utility.dig_groups("bigitem", {pane=1, flammable=2}),
 	recipe = {{"default:papyrus", "default:papyrus", "default:papyrus"},
 		  {"default:papyrus", "farming:cotton",  "default:papyrus"},
 		  {"default:papyrus", "default:papyrus", "default:papyrus"}}
 })
 
 register_pane("chainlink", "Chain Link Mesh", {
-	groups = {cracky=3, oddly_breakable_by_hand=2, pane=1},
+	groups = utility.dig_groups("bigitem", {pane=1}),
 	recipe = {{"default:steel_ingot", "", "default:steel_ingot"},
 		  {"", "default:steel_ingot", ""},
 		  {"default:steel_ingot", "", "default:steel_ingot"}},
@@ -32,7 +32,7 @@ register_pane("chainlink", "Chain Link Mesh", {
 
 register_pane("rusty_bar", "Rusty Iron Bars", {
 	sounds = default.node_sound_stone_defaults(),
-	groups = {cracky=2, pane=1},
+	groups = utility.dig_groups("bigitem", {pane=1}),
 	recipe = {{"", "default:dirt", ""},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"}},
@@ -41,7 +41,7 @@ register_pane("rusty_bar", "Rusty Iron Bars", {
 
 register_pane("wood_frame", "Wood Frame", {
 	sounds = default.node_sound_wood_defaults(),
-	groups = {choppy=2, pane=1, flammable=2},
+	groups = utility.dig_groups("bigitem", {pane=1, flammable=2}),
 	recipe = {{"group:wood", "group:stick", "group:wood"},
 		  {"group:stick", "group:stick", "group:stick"},
 		  {"group:wood", "group:stick", "group:wood"}}
@@ -53,7 +53,7 @@ xdecor.register("baricade", {
 	paramtype2 = "facedir",
 	inventory_image = "xdecor_baricade.png",
 	tiles = {"xdecor_baricade.png"},
-	groups = {choppy=2, oddly_breakable_by_hand=1, flammable=2},
+	groups = utility.dig_groups("wood", {flammable=2}),
 	damage_per_second = 4,
 	selection_box = xdecor.nodebox.slab_y(0.3),
 	collision_box = xdecor.pixelbox(2, {{0, 0, 1, 2, 2, 0}})
@@ -63,7 +63,7 @@ xdecor.register("barrel", {
 	description = "Barrel",
 	tiles = {"xdecor_barrel_top.png", "xdecor_barrel_top.png", "xdecor_barrel_sides.png"},
 	on_place = minetest.rotate_node,
-	groups = {choppy=2, oddly_breakable_by_hand=1, flammable=2},
+	groups = utility.dig_groups("wood", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	nostairs = true,
 })
@@ -77,8 +77,8 @@ local function register_storage(name, desc, def)
 		node_box = def.node_box,
 		on_rotate = def.on_rotate,
 		on_place = def.on_place,
-		groups = def.groups or {choppy=2, oddly_breakable_by_hand=1, flammable=2},
-		sounds = default.node_sound_wood_defaults()
+		groups = def.groups or utility.dig_groups("furniture", {flammable=2}),
+		sounds = default.node_sound_wood_defaults(),
 	})
 end
 
@@ -118,7 +118,7 @@ xdecor.register("candle", {
 	wield_image = "xdecor_candle_wield.png",
 	paramtype2 = "wallmounted",
 	walkable = false,
-	groups = {dig_immediate=3, attached_node=1},
+	groups = utility.dig_groups("item", {attached_node=1}),
 	tiles = {{name = "xdecor_candle_floor.png",
 			animation = {type="vertical_frames", length=1.5}},
 		{name = "xdecor_candle_floor.png",
@@ -138,7 +138,7 @@ xdecor.register("chair", {
 	description = "Chair",
 	tiles = {"xdecor_wood.png"},
 	sounds = default.node_sound_wood_defaults(),
-	groups = {choppy=3, oddly_breakable_by_hand=2, flammable=2},
+	groups = utility.dig_groups("furniture", {flammable=2}),
 	on_rotate = screwdriver.rotate_simple,
 	node_box = xdecor.pixelbox(16, {
 		{3,  0, 11,   2, 16, 2}, {11, 0, 11,  2, 16, 2},
@@ -166,7 +166,7 @@ xdecor.register("cobweb", {
 	liquid_range = 0,
 	walkable = false,
 	selection_box = {type = "regular"},
-	groups = {snappy=3, liquid=3, flammable=3},
+	groups = utility.dig_groups("plant", {flammable=3}),
 	sounds = default.node_sound_leaves_defaults(),
 
 	drop = "farming:cotton 5",
@@ -201,7 +201,7 @@ for _, c in pairs(curtain_colors) do
 		wield_image = "wool_white.png^[colorize:"..c..":170",
 		drawtype = "signlike",
 		paramtype2 = "colorwallmounted",
-		groups = {dig_immediate=3, flammable=3},
+		groups = utility.dig_groups("item", {flammable=3}),
 		selection_box = {type="wallmounted"},
 		on_rightclick = function(pos, node, _, itemstack)
 			minetest.set_node(pos, {name="xdecor:curtain_open_"..c, param2=node.param2})
@@ -215,7 +215,7 @@ for _, c in pairs(curtain_colors) do
 		drawtype = "signlike",
 		paramtype2 = "colorwallmounted",
 		walkable = false,
-		groups = {dig_immediate=3, flammable=3, not_in_creative_inventory=1},
+		groups = utility.dig_groups("item", {flammable=3, not_in_creative_inventory=1}),
 		selection_box = {type="wallmounted"},
 		drop = "xdecor:curtain_"..c,
 		on_rightclick = function(pos, node, _, itemstack)
@@ -234,7 +234,7 @@ end
 xdecor.register("cushion", {
 	description = "Cushion",
 	tiles = {"xdecor_cushion.png"},
-	groups = {snappy=3, flammable=3, fall_damage_add_percent=-50},
+	groups = utility.dig_groups("furniture", {flammable=3, fall_damage_add_percent=-50}),
 	on_place = minetest.rotate_node,
 	node_box = xdecor.nodebox.slab_y(0.5),
 	--can_dig = xdecor.sit_dig,
@@ -248,7 +248,7 @@ xdecor.register("cushion", {
 xdecor.register("cushion_block", {
 	description = "Cushion Block",
 	tiles = {"xdecor_cushion.png"},
-	groups = {snappy=3, flammable=3, fall_damage_add_percent=-75, not_in_creative_inventory=1}
+	groups = utility.dig_groups("furniture", {flammable=3, fall_damage_add_percent=-75, not_in_creative_inventory=1})
 })
 
 local function door_access(name)
@@ -293,7 +293,7 @@ for name, recipe in pairs(xdecor_doors) do
 		description = name:gsub("%f[%w]%l", string.upper):gsub("_", " ").." Door",
 		inventory_image = "xdecor_"..name.."_door_inv.png",
 		protected = door_access(name),
-		groups = {choppy=2, cracky=2, oddly_breakable_by_hand=1, door=1},
+		groups = utility.dig_groups("reallybigitem", {door=1}),
 		recipe = recipe
 	})
 end
@@ -303,7 +303,7 @@ xdecor.register("xchest", {
 	tiles = {"xdecor_enderchest_top.png", "xdecor_enderchest_top.png",
 		 "xdecor_enderchest_side.png", "xdecor_enderchest_side.png",
 		 "xdecor_enderchest_side.png", "xdecor_enderchest_front.png"},
-	groups = {cracky=1, choppy=1},
+	groups = utility.dig_groups("chest"),
 	sounds = default.node_sound_stone_defaults(),
 	on_rotate = screwdriver.rotate_simple,
 	on_construct = function(pos)
@@ -328,7 +328,7 @@ xdecor.register("ivy", {
 	drawtype = "signlike",
 	walkable = false,
 	climbable = true,
-	groups = {snappy=3, flora=1, attached_node=1, plant=1, flammable=3},
+	groups = utility.dig_groups("plant", {flora=1, attached_node=1, plant=1, flammable=3}),
 	paramtype2 = "wallmounted",
 	selection_box = {type="wallmounted"},
 	tiles = {"xdecor_ivy.png"},
@@ -345,7 +345,7 @@ xdecor.register("lantern", {
 	wield_image = "xdecor_lantern_inv.png",
 	paramtype2 = "wallmounted",
 	walkable = false,
-	groups = {snappy=3, attached_node=1, dig_immediate=3},
+	groups = utility.dig_groups("item", {attached_node=1}),
 	tiles = {{name="xdecor_lantern.png", animation={type="vertical_frames", length=1.5}}},
 	selection_box = xdecor.pixelbox(16, {{4, 0, 4, 8, 16, 8}})
 })
@@ -354,7 +354,7 @@ for _, l in pairs({"iron", "wooden"}) do
 	xdecor.register(l.."_lightbox", {
 		description = l:gsub("^%l", string.upper).." Light Box",
 		tiles = {"xdecor_"..l.."_lightbox.png"},
-		groups = {cracky=3, choppy=3, oddly_breakable_by_hand=2},
+		groups = utility.dig_groups("bigitem"),
 		light_source = 13,
 		sounds = default.node_sound_glass_defaults()
 	})
@@ -365,7 +365,7 @@ for _, f in pairs({"dandelion_white", "dandelion_yellow", "geranium",
 	xdecor.register("potted_"..f, {
 		description = "Potted "..f:gsub("%f[%w]%l", string.upper):gsub("_", " "),
 		walkable = false,
-		groups = {snappy=3, flammable=3, plant=1, flower=1},
+		groups = utility.dig_groups("bigitem", {flammable=3, plant=1, flower=1}),
 		tiles = {"xdecor_"..f.."_pot.png"},
 		inventory_image = "xdecor_"..f.."_pot.png",
 		drawtype = "plantlike",
@@ -394,7 +394,7 @@ xdecor.register("painting_1", {
 	wield_image = "xdecor_painting_empty.png",
 	paramtype2 = "wallmounted",
 	sunlight_propagates = true,
-	groups = {choppy=3, oddly_breakable_by_hand=2, flammable=2, attached_node=1},
+	groups = utility.dig_groups("bigitem", {flammable=2, attached_node=1}),
 	sounds = default.node_sound_wood_defaults(),
 	node_box = painting_box,
 	node_placement_prediction = "",
@@ -418,8 +418,8 @@ for i = 2, 4 do
 		paramtype2 = "wallmounted",
 		drop = "xdecor:painting_1",
 		sunlight_propagates = true,
-		groups = {choppy=3, oddly_breakable_by_hand=2, flammable=2,
-			  attached_node=1, not_in_creative_inventory=1},
+		groups = utility.dig_groups("bigitem", {flammable=2,
+			  attached_node=1, not_in_creative_inventory=1}),
 		sounds = default.node_sound_wood_defaults(),
 		node_box = painting_box,
 		walkable = false,
@@ -429,7 +429,7 @@ end
 xdecor.register("stonepath", {
 	description = "Garden Stone Path",
 	tiles = {"default_stone.png"},
-	groups = {snappy=3},
+	groups = utility.dig_groups("bigitem"),
 	on_rotate = screwdriver.rotate_simple,
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
@@ -451,8 +451,8 @@ local function register_hard_node(name, desc, def)
 	xdecor.register(name, {
 		description = desc,
 		tiles = {"xdecor_"..name..".png"},
-		groups = def.groups or {cracky=1},
-		sounds = def.sounds or default.node_sound_stone_defaults()
+		groups = def.groups or utility.dig_groups("stone"),
+		sounds = def.sounds or default.node_sound_stone_defaults(),
 	})
 end
 
@@ -464,18 +464,18 @@ register_hard_node("moonbrick", "Moon Brick")
 register_hard_node("stone_tile", "Clean Stone Tile")
 register_hard_node("stone_rune", "Rune Stone")
 register_hard_node("packed_ice", "Packed Ice", {
-	groups = {cracky=1, puts_out_fire=1, slippery=3},
-	sounds = default.node_sound_glass_defaults()
+	groups = utility.dig_groups("stone", {puts_out_fire=1, slippery=3}),
+	sounds = default.node_sound_glass_defaults(),
 })
 register_hard_node("wood_tile", "Wooden Tile", {
-	groups = {choppy=1, wood=1, flammable=2},
+	groups = utility.dig_groups("hardwood", {wood=1, flammable=2}),
 	sounds = default.node_sound_wood_defaults()
 })
 
 xdecor.register("table", {
 	description = "Table",
 	tiles = {"xdecor_wood.png"},
-	groups = {choppy=2, oddly_breakable_by_hand=1, flammable=2},
+	groups = utility.dig_groups("furniture", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	node_box = xdecor.pixelbox(16, {
 		{0, 14, 0, 16, 2, 16}, {5.5, 0, 5.5, 5, 14, 6}
@@ -486,7 +486,7 @@ xdecor.register("tatami", {
 	description = "Tatami",
 	tiles = {"xdecor_tatami.png"},
 	wield_image = "xdecor_tatami.png",
-	groups = {snappy=3, flammable=3},
+	groups = utility.dig_groups("bigitem", {flammable=3}),
 	sunlight_propagates = true,
 	node_box = xdecor.nodebox.slab_y(0.0625)
 })
@@ -494,7 +494,7 @@ xdecor.register("tatami", {
 xdecor.register("trampoline", {
 	description = "Trampoline",
 	tiles = {"xdecor_trampoline.png", "mailbox_blank16.png", "xdecor_trampoline_sides.png"},
-	groups = {cracky=3, oddly_breakable_by_hand=1, fall_damage_add_percent=-80, bouncy=90},
+	groups = utility.dig_groups("furniture", {fall_damage_add_percent=-80, bouncy=90}),
 	node_box = xdecor.nodebox.slab_y(0.5),
 	sounds = {footstep = {name="xdecor_bouncy", gain=0.8}}
 })
@@ -502,7 +502,7 @@ xdecor.register("trampoline", {
 xdecor.register("tv", {
 	description = "Television",
 	light_source = 11,
-	groups = {cracky=3, oddly_breakable_by_hand=2},
+	groups = utility.dig_groups("furniture"),
 	on_rotate = screwdriver.rotate_simple,
 	tiles = {"xdecor_television_left.png^[transformR270",
 		 "xdecor_television_left.png^[transformR90",
@@ -517,7 +517,7 @@ xdecor.register("woodframed_glass", {
 	drawtype = "glasslike_framed",
 	sunlight_propagates = true,
 	tiles = {"xdecor_woodframed_glass.png", "xdecor_woodframed_glass_detail.png"},
-	groups = {cracky=2, oddly_breakable_by_hand=1},
+	groups = utility.dig_groups("glass"),
 	sounds = default.node_sound_glass_defaults(),
 	silverpick_drop = true,
 

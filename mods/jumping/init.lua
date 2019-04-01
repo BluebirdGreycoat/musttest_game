@@ -52,11 +52,10 @@ if not jumping.run_once then
 			description = "Bouncing Cube",
 			paramtype = "light",
 			tiles = {"jumping_bouncer.png"},
-			groups = {
-				snappy = 3,
+			groups = utility.dig_groups("furniture", {
 				bouncy = 20 + (i * 15),
 				fall_damage_add_percent = -50,
-			},
+			}),
 			drop = "jumping:bouncer_1",
 			on_construct = function(...)
 				return jumping.set_infotext(...)
@@ -71,11 +70,10 @@ if not jumping.run_once then
 		description = "Falling Cushion",
 		paramtype = "light",
 		tiles = {"jumping_cushion.png"},
-		groups = {
-			snappy = 3,
+		groups = utility.dig_groups("furniture", {
 			disable_jump = 1,
 			fall_damage_add_percent = -70,
-		},
+		}),
 	})
 
 	minetest.register_craft({

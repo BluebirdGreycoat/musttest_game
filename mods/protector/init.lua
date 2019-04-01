@@ -518,11 +518,10 @@ minetest.register_node("protector:protect", {
 		"moreblocks_circle_stone_bricks.png^protector_logo.png"
 	},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {
-    level = 1, dig_immediate = 2,
+	groups = utility.dig_groups("bigitem", {
     immovable = 1, -- No pistons, no nothing.
 		protector = 1,
-  },
+  }),
 	is_ground_content = false,
 	paramtype = "light",
 	movement_speed_multiplier = default.NORM_SPEED,
@@ -620,11 +619,10 @@ minetest.register_node("protector:protect3", {
 	drawtype = "nodebox",
 	tiles = {"cityblock.png"},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {
-    level = 1, dig_immediate = 2,
+	groups = utility.dig_groups("bigitem", {
     immovable = 1, -- No pistons, no nothing.
 		protector = 1,
-  },
+  }),
 	is_ground_content = false,
 	paramtype = "light",
 	movement_speed_multiplier = default.NORM_SPEED,
@@ -718,11 +716,10 @@ minetest.register_node("protector:protect2", {
 	wield_image = "protector_logo.png",
 	inventory_image = "protector_logo.png",
 	sounds = default.node_sound_stone_defaults(),
-	groups = {
-    level = 1, dig_immediate = 2,
+	groups = utility.dig_groups("bigitem", {
     immovable = 1, -- No pistons, no nothing.
 		protector = 1,
-  },
+  }),
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
@@ -825,11 +822,10 @@ minetest.register_node("protector:protect4", {
 	wield_image = "protector_lock.png",
 	inventory_image = "protector_lock.png",
 	sounds = default.node_sound_stone_defaults(),
-	groups = {
-    level = 1, dig_immediate = 2,
+	groups = utility.dig_groups("bigitem", {
     immovable = 1, -- No pistons, no nothing.
 		protector = 1,
-  },
+  }),
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
@@ -1063,7 +1059,7 @@ do
 			type = "regular",
 		},
 		paramtype = "light",
-		groups = {level = 1, dig_immediate = 3, not_in_creative_inventory = 1},
+		groups = utility.dig_groups("item", {not_in_creative_inventory = 1}),
 		drop = "",
 	})
 end
@@ -1097,7 +1093,7 @@ do
 			type = "regular",
 		},
 		paramtype = "light",
-		groups = {level = 1, dig_immediate = 3, not_in_creative_inventory = 1},
+		groups = utility.dig_groups("item", {not_in_creative_inventory = 1}),
 		drop = "",
 	})
 end

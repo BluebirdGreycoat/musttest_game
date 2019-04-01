@@ -106,7 +106,7 @@ minetest.register_node("handholds:stone", {
 	on_rotate = function()
 		return false
 	end,
-	groups = {cracky = 3, not_in_creative_inventory = 1, handholds = 1},
+	groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
 	drop = 'default:cobble',
 	sounds = default.node_sound_stone_defaults(),
 	after_destruct = function(pos, oldnode)
@@ -126,7 +126,7 @@ minetest.register_node("handholds:desert_stone", {
 	on_rotate = function()
 		return false
 	end,
-	groups = {cracky = 3, not_in_creative_inventory = 1, handholds = 1},
+	groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
 	drop = 'default:desert_cobble',
 	sounds = default.node_sound_stone_defaults(),
 	after_destruct = function(pos, oldnode)
@@ -146,7 +146,7 @@ minetest.register_node("handholds:sandstone", {
 	on_rotate = function()
 		return false
 	end,
-	groups = {cracky = 3, not_in_creative_inventory = 1, handholds = 1},
+	groups = utility.dig_groups("sandstone", {not_in_creative_inventory = 1, handholds = 1}),
 	drop = 'default:sandstone',
 	sounds = default.node_sound_stone_defaults(),
 	after_destruct = function(pos, oldnode)
@@ -166,10 +166,10 @@ minetest.register_node("handholds:ice", {
 	on_rotate = function()
 		return false
 	end,
-	groups = {
-		cracky = 3, puts_out_fire = 1, cools_lava = 1,
+	groups = utility.dig_groups("ice", {
+		puts_out_fire = 1, cools_lava = 1,
 		not_in_creative_inventory = 1, handholds = 1
-	},
+	}),
 	drop = 'default:ice',
 	sounds = default.node_sound_glass_defaults(),
 	after_destruct = function(pos, oldnode)
@@ -198,7 +198,7 @@ minetest.register_node("handholds:rackstone", {
 		"rackstone_rackstone.png", "rackstone_rackstone.png^handholds_holds_dark.png"
 	},
 	paramtype2 = "facedir",
-	groups = {cracky=2, level=1, handholds=1},
+	groups = utility.dig_groups("stone", {handholds=1}),
 	sounds = default.node_sound_stone_defaults(),
 	drop = 'rackstone:rackstone',
 	on_rotate = function()
@@ -219,7 +219,7 @@ minetest.register_node("handholds:redrack", {
 		"rackstone_redrack.png", "rackstone_redrack.png^handholds_holds_very_dark.png"
 	},
 	paramtype2 = "facedir",
-	groups = {cracky=3, level=1, handholds=1},
+	groups = utility.dig_groups("netherack", {handholds=1}),
 	sounds = rackstone.rackstone_sounds(),
 	drop = 'rackstone:redrack',
 	on_rotate = function()

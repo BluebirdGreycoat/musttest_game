@@ -51,11 +51,7 @@ minetest.register_node("torches:torch_floor", {
   walkable = false,
   liquids_pointable = false,
   light_source = 12,
-  groups = {
-    level=1, 
-    snappy=3, 
-    choppy=3, 
-    dig_immediate=3, 
+  groups = utility.dig_groups("item", {
     flammable=1, 
     attached_node=1, 
     torch=1, 
@@ -63,7 +59,7 @@ minetest.register_node("torches:torch_floor", {
 		melt_around=2,
 		notify_construct=1,
 		want_notify=1,
-  },
+  }),
   drop = "torches:torch_floor",
   damage_per_second = 1, -- Torches damage if you stand on top of them.
   selection_box = {
@@ -119,11 +115,7 @@ minetest.register_node("torches:torch_wall", {
   sunlight_propagates = true,
   walkable = false,
   light_source = 12,
-  groups = {
-    level=1, 
-    snappy=3, 
-    choppy=3, 
-    dig_immediate=3, 
+  groups = utility.dig_groups("item", {
     flammable=1, 
     not_in_creative_inventory=1, 
     attached_node=1, 
@@ -131,7 +123,7 @@ minetest.register_node("torches:torch_wall", {
 		melt_around=2,
 		notify_construct=1,
 		want_notify=1,
-  },
+  }),
   drop = "torches:torch_floor",
   selection_box = {
     type = "wallmounted",
@@ -178,11 +170,7 @@ minetest.register_node("torches:torch_ceiling", {
   sunlight_propagates = true,
   walkable = false,
   light_source = 12,
-  groups = {
-    level=1, 
-    snappy=3, 
-    choppy=3, 
-    dig_immediate=3, 
+  groups = utility.dig_groups("item", {
     flammable=1, 
     not_in_creative_inventory=1, 
     attached_node=1, 
@@ -190,7 +178,7 @@ minetest.register_node("torches:torch_ceiling", {
 		melt_around=2,
 		notify_construct=1,
 		want_notify=1,
-  },
+  }),
   drop = "torches:torch_floor",
   selection_box = {
     type = "wallmounted",

@@ -70,12 +70,11 @@ if not ice.registered then
 		use_texture_alpha = true,
 		is_ground_content = true, -- Don't interfere with cavegen.
 		paramtype = "light",
-		groups = {
-			level = 1, cracky = 2,
+		groups = utility.dig_groups("ice", {
 			ice = 1, melts = 1, cold = 1,
 			want_notify = 1,
 			slippery = 5,
-		},
+		}),
 		--_melts_to = "default:water_source",
 		sounds = default.node_sound_glass_defaults(),
 

@@ -9,7 +9,7 @@ minetest.register_node("snow_bricks:snow_brick", {
 	tiles = {"snow_bricks_snow_brick.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
-	groups = {level = 1, cracky = 2, puts_out_fire = 1, melts = 1, cold = 1},
+	groups = utility.dig_groups("brick", {puts_out_fire = 1, melts = 1, cold = 1}),
 	is_ground_content = false,
 
 	_melts_to = "default:water_flowing",
@@ -39,7 +39,7 @@ minetest.register_node("snow_bricks:ice_brick", {
 	tiles = {"snow_bricks_ice_brick.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
-	groups = {level = 1, cracky = 2, puts_out_fire = 1, melts = 1, cold = 1},
+	groups = utility.dig_groups("brick", {puts_out_fire = 1, melts = 1, cold = 1}),
 	is_ground_content = false,
 
 	_melts_to = "default:water_flowing",

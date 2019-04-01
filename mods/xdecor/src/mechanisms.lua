@@ -73,12 +73,12 @@ end
 
 plate.register("wood", "Wooden", {
 	sounds = default.node_sound_wood_defaults(),
-	groups = {choppy=3, oddly_breakable_by_hand=2, flammable=2}
+	groups = utility.dig_groups("bigitem", {flammable=2}),
 })
 
 plate.register("stone", "Stone", {
 	sounds = default.node_sound_stone_defaults(),
-	groups = {cracky=3, oddly_breakable_by_hand=2}
+	groups = utility.dig_groups("bigitem"),
 })
 
 xdecor.register("lever_off", {
@@ -86,7 +86,7 @@ xdecor.register("lever_off", {
 	tiles = {"xdecor_lever_off.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{2, 1, 15, 12, 14, 1}}),
-	groups = {cracky=3, oddly_breakable_by_hand=2},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,
@@ -107,7 +107,7 @@ xdecor.register("lever_on", {
 	tiles = {"xdecor_lever_on.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{2, 1, 15, 12, 14, 1}}),
-	groups = {cracky=3, oddly_breakable_by_hand=2, not_in_creative_inventory=1},
+	groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,
@@ -173,11 +173,11 @@ local function plate_place(pos, placer, itemstack, pt)
 end
 
 xdecor.register("explosive_plate", {
-	description = "Booby-Trapped Pressure Plate (Land-Mine)\n\nExplosive! Use with care.\nNot triggered by owner.",
+	description = "Booby-Trapped Pressure Plate (Land-Mine)\n\nExplosive! Use with care.\nNot triggered by placer.",
 	tiles = {"default_cobble.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
-	groups = {cracky=3, oddly_breakable_by_hand=1},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,
@@ -217,11 +217,11 @@ local function plate_break(pos, player)
 end
 
 xdecor.register("break_plate", {
-	description = "Booby-Trapped Pressure Plate (Block-Breaker)\n\nWill cause block below to collapse.\nNot triggered by owner.",
+	description = "Booby-Trapped Pressure Plate (Block-Breaker)\n\nWill cause block below to collapse.\nNot triggered by placer.",
 	tiles = {"default_wood.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
-	groups = {choppy=3, oddly_breakable_by_hand=1},
+	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_wood_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,

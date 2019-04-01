@@ -9,15 +9,6 @@ local S = maptools.intllib
 
 maptools.creative = maptools.config["hide_from_creative_inventory"]
 
--- Redefine cloud so that the admin pickaxe can mine it:
-minetest.register_node(":default:cloud", {
-	description = S("Cloud"),
-	tiles = {"default_cloud.png"},
-	drop = "",
-	groups = {unbreakable = 1, not_in_creative_inventory = maptools.creative},
-	sounds = default.node_sound_defaults(),
-})
-
 -- Nodes
 -- =====
 

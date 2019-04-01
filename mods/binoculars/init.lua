@@ -63,7 +63,7 @@ if not binoculars.loaded then
 		},
 		selection_box = {type = "wallmounted"},
 		stack_max = 1,
-		groups = {level = 1, dig_immediate = 2, flammable = 3, attached_node = 1},
+		groups = utility.dig_groups("bigitem", {flammable = 3, attached_node = 1}),
 		sounds = default.node_sound_leaves_defaults(),
 
 		on_use = function(...)

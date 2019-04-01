@@ -55,10 +55,9 @@ if not mailbox.run_once then
     collision_box = mb_cbox,
       
     paramtype2 = "facedir",
-    groups = {
-      level = 1, cracky = 3, choppy = 3,
+    groups = utility.dig_groups("furniture", {
       immovable = 1,
-    },
+    }),
     sounds = default.node_sound_wood_defaults(),
     on_rotate = screwdriver.rotate_simple,
     

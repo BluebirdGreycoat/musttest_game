@@ -457,7 +457,8 @@ minetest.register_node("boxfce:cardbox", {
 	description = "KeyCard setup box",
 	tiles = {"boxfce_cardbox.png"},
 	is_ground_content = true,
-	groups = {cracky=3},
+	groups = -- comment
+		{cracky=3},
 	drop = "boxfce:cardbox",
 	on_construct = do_construct,
 	on_rightclick = do_rightclick,

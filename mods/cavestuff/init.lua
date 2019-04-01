@@ -14,11 +14,11 @@ minetest.register_node("cavestuff:cobble_with_moss", {
 		"default_cobble.png",
 		"default_cobble.png^caverealms_moss_side.png",
 	},
-  groups = {
-		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
+  groups = utility.dig_groups("softcobble", {
+		falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
-	},
+	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
     footstep = {name="default_grass_footstep", gain=0.25},
@@ -37,8 +37,8 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
 		"default_cobble.png",
 		"default_cobble.png^caverealms_lichen_side.png",
 	},
-  groups = {
-		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
+  groups = utility.dig_groups("softcobble", {
+		falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
 	},
@@ -60,11 +60,11 @@ minetest.register_node("cavestuff:cobble_with_algae", {
 		"default_cobble.png",
 		"default_cobble.png^caverealms_algae_side.png",
 	},
-  groups = {
-		level = 1, crumbly = 1, cracky = 3, falling_node = 1,
+  groups = utility.dig_groups("softcobble", {
+		falling_node = 1,
 		melts = 1,
 		cavern_soil = 1,
-	},
+	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
     footstep = {name="default_grass_footstep", gain=0.25},
@@ -83,10 +83,10 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 		"default_cobble.png",
 		"default_cobble.png^caverealms_salty_side.png",
 	},
-  groups = {
-		level = 1, crumbly = 2, cracky = 2, falling_node = 1,
+  groups = utility.dig_groups("softcobble", {
+		falling_node = 1,
 		melts = 1,
-	},
+	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults(),
   light_source = 1,
@@ -99,7 +99,7 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 minetest.register_node("cavestuff:cobble_with_rockmelt", {
   description = "Rockmelt Cobble",
   tiles = {"caverealms_hot_cobble.png"},
-  groups = {level=2, cracky=3, crumbly=1, hot=1, falling_node=1, melt_around=3},
+  groups = utility.dig_groups("softcobble", {hot=1, falling_node=1, melt_around=3}),
   damage_per_second = 1,
   light_source = 5,
   sounds = default.node_sound_stone_defaults(),
@@ -130,7 +130,7 @@ minetest.register_node("cavestuff:cobble_with_rockmelt", {
 minetest.register_node("cavestuff:glow_sapphire", {
   description = "Glowing Sapphire",
   tiles = {"caverealms_glow_crystal.png"},
-  groups = {level=1, cracky=3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_glass_defaults(),
   light_source = 13,
   paramtype = "light",
@@ -142,7 +142,7 @@ minetest.register_node("cavestuff:glow_sapphire", {
 stairs.register_stair_and_slab(
 	"glow_sapphire",
 	"cavestuff:glow_sapphire",
-	{level=1, cracky=3},
+	utility.dig_groups("crystal"),
 	{"caverealms_glow_crystal.png"},
 	"Glowing Sapphire",
 	default.node_sound_glass_defaults()
@@ -159,7 +159,7 @@ minetest.override_item("stairs:stair_glow_sapphire", {
 minetest.register_node("cavestuff:glow_emerald", {
   description = "Glowing Emerald",
   tiles = {"caverealms_glow_emerald.png"},
-  groups = {level=1, cracky=3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_glass_defaults(),
   light_source = 10,
   paramtype = "light",
@@ -171,7 +171,7 @@ minetest.register_node("cavestuff:glow_emerald", {
 stairs.register_stair_and_slab(
 	"glow_emerald",
 	"cavestuff:glow_emerald",
-	{level=1, cracky=3},
+	utility.dig_groups("crystal"),
 	{"caverealms_glow_emerald.png"},
 	"Glowing Emerald",
 	default.node_sound_glass_defaults()
@@ -188,7 +188,7 @@ minetest.override_item("stairs:stair_glow_emerald", {
 minetest.register_node("cavestuff:glow_mese", {
   description = "Glowing Mese",
   tiles = {"caverealms_glow_mese.png"},
-  groups = {level=2, cracky=3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_glass_defaults(),
   light_source = 14,
   paramtype = "light",
@@ -200,7 +200,7 @@ minetest.register_node("cavestuff:glow_mese", {
 stairs.register_stair_and_slab(
 	"glow_mese",
 	"cavestuff:glow_mese",
-	{level=2, cracky=3},
+	utility.dig_groups("crystal"),
 	{"caverealms_glow_mese.png"},
 	"Glowing Mese",
 	default.node_sound_glass_defaults()
@@ -217,7 +217,7 @@ minetest.override_item("stairs:stair_glow_mese", {
 minetest.register_node("cavestuff:glow_ruby", {
   description = "Glowing Ruby",
   tiles = {"caverealms_glow_ruby.png"},
-  groups = {level=1, cracky=3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_glass_defaults(),
   light_source = 8,
   paramtype = "light",
@@ -229,7 +229,7 @@ minetest.register_node("cavestuff:glow_ruby", {
 stairs.register_stair_and_slab(
 	"glow_ruby",
 	"cavestuff:glow_ruby",
-	{level=1, cracky=3},
+	utility.dig_groups("crystal"),
 	{"caverealms_glow_ruby.png"},
 	"Glowing Ruby",
 	default.node_sound_glass_defaults()
@@ -246,7 +246,7 @@ minetest.override_item("stairs:stair_glow_ruby", {
 minetest.register_node("cavestuff:glow_amethyst", {
   description = "Glowing Amethyst",
   tiles = {"caverealms_glow_amethyst.png"},
-  groups = {level=1, cracky=3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_glass_defaults(),
   light_source = 7,
   paramtype = "light",
@@ -258,7 +258,7 @@ minetest.register_node("cavestuff:glow_amethyst", {
 stairs.register_stair_and_slab(
 	"glow_amethyst",
 	"cavestuff:glow_amethyst",
-	{level=1, cracky=3},
+	utility.dig_groups("crystal"),
 	{"caverealms_glow_amethyst.png"},
 	"Glowing Amethyst",
 	default.node_sound_glass_defaults()
@@ -275,7 +275,7 @@ minetest.override_item("stairs:stair_glow_amethyst", {
 minetest.register_node("cavestuff:glow_sapphire_ore", {
   description = "Embedded Glowing Sapphire",
   tiles = {"caverealms_glow_ore.png"},
-  groups = {level=2, cracky=2},
+  groups = utility.dig_groups("hardore"),
   sounds = default.node_sound_stone_defaults(),
   light_source = 8,
   paramtype = "light",
@@ -284,7 +284,7 @@ minetest.register_node("cavestuff:glow_sapphire_ore", {
 stairs.register_stair_and_slab(
 	"glow_sapphire_ore",
 	"cavestuff:glow_sapphire_ore",
-	{level=2, cracky=2},
+	utility.dig_groups("hardore"),
 	{"caverealms_glow_ore.png"},
 	"Embedded Glowing Sapphire",
 	default.node_sound_stone_defaults()
@@ -299,7 +299,7 @@ minetest.override_item("stairs:stair_glow_sapphire_ore", {
 minetest.register_node("cavestuff:glow_emerald_ore", {
   description = "Embedded Glowing Emerald",
   tiles = {"caverealms_glow_emerald_ore.png"},
-  groups = {level=2, cracky=2},
+  groups = utility.dig_groups("hardore"),
   sounds = default.node_sound_stone_defaults(),
   light_source = 8,
   paramtype = "light",
@@ -308,7 +308,7 @@ minetest.register_node("cavestuff:glow_emerald_ore", {
 stairs.register_stair_and_slab(
 	"glow_emerald_ore",
 	"cavestuff:glow_emerald_ore",
-	{level=2, cracky=2},
+	utility.dig_groups("hardore"),
 	{"caverealms_glow_emerald_ore.png"},
 	"Embedded Glowing Emerald",
 	default.node_sound_stone_defaults()
@@ -323,7 +323,7 @@ minetest.override_item("stairs:stair_glow_emerald_ore", {
 minetest.register_node("cavestuff:glow_ruby_ore", {
   description = "Embedded Glowing Ruby",
   tiles = {"caverealms_glow_ruby_ore.png"},
-  groups = {level=2, cracky=2},
+  groups = utility.dig_groups("hardore"),
   sounds = default.node_sound_stone_defaults(),
   light_source = 8,
   paramtype = "light",
@@ -332,7 +332,7 @@ minetest.register_node("cavestuff:glow_ruby_ore", {
 stairs.register_stair_and_slab(
 	"glow_ruby_ore",
 	"cavestuff:glow_ruby_ore",
-	{level=2, cracky=2},
+	utility.dig_groups("hardore"),
 	{"caverealms_glow_ruby_ore.png"},
 	"Embedded Glowing Ruby",
 	default.node_sound_stone_defaults()
@@ -347,7 +347,7 @@ minetest.override_item("stairs:stair_glow_ruby_ore", {
 minetest.register_node("cavestuff:glow_amethyst_ore", {
   description = "Embedded Glowing Amethyst",
   tiles = {"caverealms_glow_amethyst_ore.png"},
-  groups = {level=2, cracky=2},
+  groups = utility.dig_groups("hardore"),
   sounds = default.node_sound_stone_defaults(),
   light_source = 8,
   paramtype = "light",
@@ -356,7 +356,7 @@ minetest.register_node("cavestuff:glow_amethyst_ore", {
 stairs.register_stair_and_slab(
 	"glow_amethyst_ore",
 	"cavestuff:glow_amethyst_ore",
-	{level=2, cracky=2},
+	utility.dig_groups("hardore"),
 	{"caverealms_glow_amethyst_ore.png"},
 	"Embedded Glowing Amethyst",
 	default.node_sound_stone_defaults()
@@ -373,10 +373,9 @@ minetest.register_node("cavestuff:glow_worm", {
   tiles = {"caverealms_glow_worm.png"},
   inventory_image = "caverealms_glow_worm.png",
   wield_image = "caverealms_glow_worm.png",
-  groups = {
-		level = 1, snappy = 3, choppy = 3, oddly_breakable_by_hand = 3,
+  groups = utility.dig_groups("plant", {
 		hanging_node = 1, flammable = 3,
-	},
+	}),
   light_source = 5,
   paramtype = "light",
   drawtype = "plantlike",
@@ -399,10 +398,9 @@ minetest.register_node("cavestuff:glow_worm", {
 minetest.register_node("cavestuff:glow_obsidian", {
   description = "Luminescent Obsidian",
   tiles = {"caverealms_glow_obsidian.png"},
-  groups = {
-    cracky = 1, level = 3,
+  groups = utility.dig_groups("obsidian", {
     immovable = 1,
-  },
+  }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
@@ -415,7 +413,7 @@ minetest.register_craft({
 })
 
 stairs.register_stair_and_slab("glow_obsidian", "cavestuff:glow_obsidian",
-		{level=3, cracky=1},
+		utility.dig_groups("obsidian"),
 		{"caverealms_glow_obsidian.png"},
 		"Luminescent Obsidian",
 		default.node_sound_stone_defaults())
@@ -423,10 +421,9 @@ stairs.register_stair_and_slab("glow_obsidian", "cavestuff:glow_obsidian",
 minetest.register_node("cavestuff:glow_obsidian_brick", {
   description = "Luminescent Obsidian Brick",
   tiles = {"caverealms_glow_obsidian_brick.png"},
-  groups = {
-    cracky = 1, level = 3,
+  groups = utility.dig_groups("brick", {
     immovable = 1,
-  },
+  }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
 })
@@ -442,7 +439,7 @@ minetest.register_craft({
 stairs.register_stair_and_slab(
 	"glow_obsidian_brick",
 	"cavestuff:glow_obsidian_brick",
-	{level = 3, cracky = 1},
+	utility.dig_groups("brick"),
 	{"caverealms_glow_obsidian_brick.png"},
 	"Luminescent Obsidian Brick",
 	default.node_sound_stone_defaults())
@@ -450,10 +447,9 @@ stairs.register_stair_and_slab(
 minetest.register_node("cavestuff:glow_obsidian_block", {
   description = "Luminescent Obsidian Block",
   tiles = {"caverealms_glow_obsidian_block.png"},
-  groups = {
-    cracky = 1, level = 3,
+  groups = utility.dig_groups("block", {
     immovable = 1,
-  },
+  }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
 })
@@ -470,7 +466,7 @@ minetest.register_craft({
 stairs.register_stair_and_slab(
 	"glow_obsidian_block",
 	"cavestuff:glow_obsidian_block",
-	{level = 3, cracky = 1},
+	utility.dig_groups("block"),
 	{"caverealms_glow_obsidian_block.png"},
 	"Luminescent Obsidian Block",
 	default.node_sound_stone_defaults())
@@ -478,10 +474,9 @@ stairs.register_stair_and_slab(
 minetest.register_node("cavestuff:dark_obsidian", {
   description = "Dead Obsidian",
   tiles = {"technic_obsidian.png"},
-  groups = {
-    level = 4, cracky = 1,
+  groups = utility.dig_groups("hardstone", {
     immovable = 1,
-  },
+  }),
   sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
   on_blast = function(...) end, -- Blast resistant.
@@ -490,7 +485,7 @@ minetest.register_node("cavestuff:dark_obsidian", {
 stairs.register_stair_and_slab(
 	"dark_obsidian",
 	"cavestuff:dark_obsidian",
-	{level=3, cracky=1},
+	utility.dig_groups("obsidian"),
 	{"technic_obsidian.png"},
 	"Dead Obsidian",
 	default.node_sound_stone_defaults())
@@ -498,7 +493,7 @@ stairs.register_stair_and_slab(
 minetest.register_node("cavestuff:dark_obsidian_brick", {
   description = "Dead Obsidian Brick",
   tiles = {"technic_obsidian_brick.png"},
-  groups = {level = 3, cracky = 1},
+  groups = utility.dig_groups("obsidian"),
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 })
@@ -506,7 +501,7 @@ minetest.register_node("cavestuff:dark_obsidian_brick", {
 stairs.register_stair_and_slab(
 	"dark_obsidian_brick",
 	"cavestuff:dark_obsidian_brick",
-	{level = 3, cracky = 2},
+	utility.dig_groups("obsidian"),
 	{"technic_obsidian_brick.png"},
 	"Dead Obsidian Brick",
 	default.node_sound_stone_defaults())
@@ -514,7 +509,7 @@ stairs.register_stair_and_slab(
 minetest.register_node("cavestuff:dark_obsidian_block", {
   description = "Dead Obsidian Block",
   tiles = {"technic_obsidian_block.png"},
-  groups = {level = 3, cracky = 1},
+  groups = utility.dig_groups("obsidian"),
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 })
@@ -522,7 +517,7 @@ minetest.register_node("cavestuff:dark_obsidian_block", {
 stairs.register_stair_and_slab(
 	"dark_obsidian_block",
 	"cavestuff:dark_obsidian_block",
-	{level = 3, cracky = 2},
+	utility.dig_groups("obsidian"),
 	{"technic_obsidian_block.png"},
 	"Dead Obsidian Block",
 	default.node_sound_stone_defaults())
@@ -547,7 +542,7 @@ minetest.register_craft({
 minetest.register_node("cavestuff:coal_dust", {
   description = "Coal Dust Block",
   tiles = {"caverealms_coal_dust.png"},
-  groups = {level = 1, crumbly = 3, falling_node = 1},
+  groups = utility.dig_groups("sand", {falling_node = 1}),
   sounds = default.node_sound_gravel_defaults(),
   --drop = "dusts:coal 9",
 	movement_speed_multiplier = default.SLOW_SPEED,
@@ -565,7 +560,7 @@ minetest.register_craft({
 minetest.register_node("cavestuff:salt_crystal", {
   description = "Salt Crystal",
   tiles = {"caverealms_salt_crystal.png"},
-  groups = {level = 1, crumbly = 2, cracky = 3},
+  groups = utility.dig_groups("crystal"),
   sounds = default.node_sound_gravel_defaults(),
   light_source = 1,
   paramtype = "light",
@@ -585,7 +580,7 @@ minetest.register_node("cavestuff:mycena", {
   tiles = {"caverealms_mycena.png"},
   inventory_image = "caverealms_mycena.png",
   wield_image = "caverealms_mycena.png",
-  groups = {level = 1, dig_immediate = 2, attached_node = 1, flammable = 3},
+  groups = utility.dig_groups("plant", {attached_node = 1, flammable = 3}),
   light_source = 3,
   paramtype = "light",
   drawtype = "plantlike",
@@ -631,7 +626,7 @@ minetest.register_node("cavestuff:fungus", {
   tiles = {"caverealms_fungi.png"},
   inventory_image = "caverealms_fungi.png",
   wield_image = "caverealms_fungi.png",
-  groups = {level = 1, dig_immediate = 2, attached_node = 1, flammable = 3},
+  groups = utility.dig_groups("plant", {attached_node = 1, flammable = 3}),
   light_source = 3,
   paramtype = "light",
   drawtype = "firelike",
@@ -678,10 +673,10 @@ minetest.register_node("cavestuff:icicle_up", {
   tiles = {"caverealms_icicle_up.png"},
   inventory_image = "caverealms_icicle_up.png",
   wield_image = "caverealms_icicle_up.png",
-  groups = {
-		level = 1, cracky = 3, oddly_breakable_by_hand = 1, attached_node = 1,
+  groups = utility.dig_groups("bigitem", {
+		attached_node = 1,
 		melts = 1,
-	},
+	}),
   sounds = default.node_sound_glass_defaults(),
   paramtype = "light",
   drawtype = "plantlike",
@@ -703,10 +698,10 @@ minetest.register_node("cavestuff:icicle_up_glowing", {
   tiles = {"caverealms_icicle_up.png"},
   inventory_image = "caverealms_icicle_up.png",
   wield_image = "caverealms_icicle_up.png",
-  groups = {
-		level = 1, cracky = 3, oddly_breakable_by_hand = 1, attached_node = 1,
+  groups = utility.dig_groups("bigitem", {
+		attached_node = 1,
 		melts = 1,
-	},
+	}),
   sounds = default.node_sound_glass_defaults(),
   paramtype = "light",
   drawtype = "plantlike",
@@ -729,10 +724,10 @@ minetest.register_node("cavestuff:icicle_down", {
   tiles = {"caverealms_icicle_down.png"},
   inventory_image = "caverealms_icicle_down.png",
   wield_image = "caverealms_icicle_down.png",
-  groups = {
-		level = 1, cracky = 3, oddly_breakable_by_hand = 1, hanging_node = 1,
+  groups = utility.dig_groups("bigitem", {
+		hanging_node = 1,
 		melts = 1,
-	},
+	}),
   sounds = default.node_sound_glass_defaults(),
   paramtype = "light",
   drawtype = "plantlike",
@@ -754,10 +749,10 @@ minetest.register_node("cavestuff:icicle_down_glowing", {
   tiles = {"caverealms_icicle_down.png"},
   inventory_image = "caverealms_icicle_down.png",
   wield_image = "caverealms_icicle_down.png",
-  groups = {
-		level = 1, cracky = 3, oddly_breakable_by_hand = 1, hanging_node = 1,
+  groups = utility.dig_groups("bigitem", {
+		hanging_node = 1,
 		melts = 1,
-	},
+	}),
   sounds = default.node_sound_glass_defaults(),
   paramtype = "light",
   drawtype = "plantlike",
@@ -785,9 +780,9 @@ for i=1, 4, 1 do
     paramtype = "light",
 		paramtype2 = "facedir",
     drawtype = "mesh",
-    groups = {
-			level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100,
-		},
+    groups = utility.dig_groups("crystal", {
+			attached_node = 1, fall_damage_add_percent = 100,
+		}),
     use_texture_alpha = true,
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
@@ -821,10 +816,10 @@ for i=1, 4, 1 do
     paramtype = "light",
 		paramtype2 = "facedir",
     drawtype = "mesh",
-    groups = {
-			level = 1, dig_immediate = 2, attached_node = 1,
+    groups = utility.dig_groups("crystal", {
+			attached_node = 1,
 			fall_damage_add_percent = 100,
-		},
+		}),
     use_texture_alpha = true,
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
@@ -857,9 +852,9 @@ for i=1, 4, 1 do
     drawtype = "mesh",
     paramtype = "light",
 		paramtype2 = "facedir",
-    groups = {
-			level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 100,
-		},
+    groups = utility.dig_groups("crystal", {
+			attached_node = 1, fall_damage_add_percent = 100,
+		}),
     sounds = default.node_sound_stone_defaults(),
     selection_box = {
       type = "fixed",
@@ -888,10 +883,9 @@ minetest.register_node("cavestuff:cobble", {
   description = "Cobblestone",
   tiles = {"default_cobble.png"},
   is_ground_content = true, -- Important!
-  groups = {
-		level = 1, cracky = 3, stone = 2, native_stone = 1,
+  groups = utility.dig_groups("cobble", {
 		melts = 1,
-	},
+	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   drop = "default:cobble", -- Mimic default cobble.
   sounds = default.node_sound_stone_defaults(),

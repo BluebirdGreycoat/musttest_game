@@ -140,8 +140,8 @@ function cauldron.take_soup(pos, node, clicker, itemstack)
 end
 
 xdecor.register("cauldron_empty", {
-	description = "Cauldron\n\nThe manufacturer is not responsible for bad-tasting soup.",
-	groups = {cracky=2, oddly_breakable_by_hand=1},
+	description = "Cauldron\n\nThe manufacturer is not responsible for bad-tasting soup!",
+	groups = utility.dig_groups("bigitem"),
 	on_rotate = screwdriver.rotate_simple,
 	tiles = {"xdecor_cauldron_top_empty.png", "xdecor_cauldron_sides.png"},
 	infotext = "Cauldron (Empty)",
@@ -153,7 +153,7 @@ xdecor.register("cauldron_empty", {
 })
 
 xdecor.register("cauldron_idle", {
-	groups = {cracky=2, oddly_breakable_by_hand=1, not_in_creative_inventory=1},
+	groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 	on_rotate = screwdriver.rotate_simple,
 	tiles = {"xdecor_cauldron_top_idle.png", "xdecor_cauldron_sides.png"},
 	drop = "xdecor:cauldron_empty",
@@ -165,7 +165,7 @@ xdecor.register("cauldron_idle", {
 })
 
 xdecor.register("cauldron_boiling", {
-	groups = {cracky=2, oddly_breakable_by_hand=1, not_in_creative_inventory=1},
+	groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 	on_rotate = screwdriver.rotate_simple,
 	drop = "xdecor:cauldron_empty",
 	infotext = "Cauldron (Active)\nDrop foods inside to make a soup.",
@@ -183,7 +183,7 @@ xdecor.register("cauldron_boiling", {
 })
 
 xdecor.register("cauldron_soup", {
-	groups = {cracky=2, oddly_breakable_by_hand=1, not_in_creative_inventory=1},
+	groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 	on_rotate = screwdriver.rotate_simple,
 	drop = "xdecor:cauldron_empty",
 	infotext = "Cauldron (Active)\nUse a bowl to eat the soup.",

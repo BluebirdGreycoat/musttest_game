@@ -18,41 +18,27 @@ utility.transform_nodebox(basictrees.trunk_nodebox)
 
 
 
-basictrees.sapling_groups = {
+basictrees.sapling_groups = utility.dig_groups("plant", {
     flammable = 2,
     attached_node = 1,
     sapling = 1,
-    
-    level = 1,
-    snappy = 3,
-    choppy = 3,
-    oddly_breakable_by_hand = 3,
-    --dig_immediate = 3,
-}
+})
 
 
 
-basictrees.tree_groups = {
+basictrees.tree_groups = utility.dig_groups("tree", {
     tree = 1,
-    level = 1,
-    choppy = 1,
     flammable = 2,
-}
+})
 
-basictrees.cw_tree_groups = {
+basictrees.cw_tree_groups = utility.dig_groups("tree", {
     tree = 1,
-    level = 1,
-    choppy = 1,
-}
+})
 
 
 
 basictrees.get_wood_groups = function(extra)
-    local groups = extra or {}
-    
-    groups.level = 1
-    groups.choppy = 2
-    --groups.oddly_breakable_by_hand = 1
+    local groups = utility.dig_groups("wood", extra or {})
     
     groups.flammable = 2
     groups.wood = 1
@@ -61,28 +47,18 @@ end
 
 
 
-basictrees.leaves_groups = {
-    level = 1,
-    snappy = 3,
-    choppy = 2,
-    oddly_breakable_by_hand = 3,
-    
+basictrees.leaves_groups = utility.dig_groups("leaves", {
     leafdecay = 3,
     flammable = 2,
     leaves = 1,
     green_leaves = 1,
-}
+})
 
-basictrees.cw_leaves_groups = {
-    level = 1,
-    snappy = 3,
-    choppy = 2,
-    oddly_breakable_by_hand = 3,
-
+basictrees.cw_leaves_groups = utility.dig_groups("leaves", {
     leafdecay = 3,
     leaves = 1,
     green_leaves = 1,
-}
+})
 
 
 

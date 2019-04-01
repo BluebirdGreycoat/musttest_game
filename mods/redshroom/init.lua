@@ -19,7 +19,7 @@ minetest.register_node("redshroom:head", {
 	description = "Red Shroom Head",
 	tiles = {"redshroom_headtop.png", "redshroom_headtop.png", "redshroom_headside1.png^redshroom_headside2.png"},
 	paramtype2 = "facedir",
-	groups = {level=1, snappy=3, choppy=3, oddly_breakable_by_hand=1, flammable=2},
+	groups = utility.dig_groups("shroom", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node
 })
@@ -30,7 +30,7 @@ minetest.register_node("redshroom:head2", {
 	description = "Red Shroom Head",
 	tiles = {"redshroom_headtop.png", "redshroom_headtop.png", "redshroom_headside1.png"},
 	paramtype2 = "facedir",
-	groups = {level=1, snappy=3, choppy=3, oddly_breakable_by_hand=1, flammable=2},
+	groups = utility.dig_groups("shroom", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node
 })
@@ -41,7 +41,7 @@ minetest.register_node("redshroom:stem", {
 	description = "Red Shroom Stem",
 	tiles = {"redshroom_stemtop.png", "redshroom_stemtop.png", "redshroom_stemside.png"},
 	paramtype2 = "facedir",
-	groups = {level=1, snappy=1, choppy=2, flammable=2},
+	groups = utility.dig_groups("shroom", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node
 })
@@ -58,7 +58,7 @@ minetest.register_node("redshroom:stemwhite", {
 	description = "White Shroom Stem",
 	tiles = {"redshroom_stemtop_white.png", "redshroom_stemtop_white.png", "redshroom_stemside_white.png"},
 	paramtype2 = "facedir",
-	groups = {level=1, snappy=1, choppy=2, flammable=2},
+	groups = utility.dig_groups("shroom", {flammable=2}),
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node
 })
@@ -76,8 +76,9 @@ minetest.register_node("redshroom:gills", {
 	drawtype = "plantlike",
 	tiles = {"redshroom_gills.png"},
 	paramtype = "light",
-	groups = {level=1, snappy=3, choppy=3, dig_immediate=2, flammable=2, hanging_node=1},
+	groups = utility.dig_groups("plant", {flammable=2, hanging_node=1}),
 	drop = "", -- Gills are destroyed when dug.
+	shears_drop = true, -- obtainable via shears
     walkable = false,
     buildable_to = true,
 	sounds = default.node_sound_leaves_defaults(),

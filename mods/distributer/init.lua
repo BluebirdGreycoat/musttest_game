@@ -17,11 +17,10 @@ minetest.register_node("distributer:distributer", {
     "technic_supply_converter_side.png", "technic_supply_converter_side.png"
   },
   
-  groups = {
-    level=1, cracky=3,
+  groups = utility.dig_groups("machine", {
     immovable = 1,
     tier_lv = 1, tier_mv = 1, tier_hv = 1,
-  },
+  }),
   
   paramtype2 = "facedir",
   on_rotate = function(...) return screwdriver.rotate_simple(...) end,

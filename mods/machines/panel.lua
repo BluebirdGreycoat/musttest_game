@@ -299,7 +299,7 @@ if not panel.run_once then
 			fixed = nodebox,
 		},
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		paramtype = "light",
 		paramtype2 = "facedir",

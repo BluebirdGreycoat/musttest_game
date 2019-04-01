@@ -109,7 +109,7 @@ minetest.register_node("throwing:torch_trail", {
 	light_source = default.LIGHT_MAX-2,
 	walkable = false,
 	drop = "",
-	groups = {dig_immediate=3},
+	groups = utility.dig_groups("item"),
 	on_timer = function(pos, elapsed)
 		minetest.remove_node(pos)
 	end,

@@ -280,11 +280,10 @@ if not cobble_furnace.run_once then
       "default_furnace_side.png", "default_furnace_front.png"
     },
     
-    groups = {
-      level=1, cracky=3,
+    groups = utility.dig_groups("cobble", {
       tubedevice = 1, tubedevice_receiver = 1,
       immovable = 1,
-    },
+    }),
     
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,
@@ -334,13 +333,12 @@ if not cobble_furnace.run_once then
     light_source = 8,
     drop = "cobble_furnace:inactive",
     
-    groups = {
-      level=1, cracky=3, 
+    groups = utility.dig_groups("cobble", {
       not_in_creative_inventory=1, 
       melt_around = 4,
       tubedevice = 1, tubedevice_receiver = 1,
       immovable = 1,
-    },
+    }),
     
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,

@@ -19,7 +19,7 @@ minetest.register_node("lattice:lattice_wooden", {
 	-- Use `basictrees:tree_wood` movement if in flat position.
 	movement_speed_depends = "basictrees:tree_wood",
 
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+	groups = utility.dig_groups("bigitem", {flammable = 2}),
 	on_place = function(...) return stairs.rotate_and_place(...) end,
 
 	tiles = {
@@ -65,7 +65,7 @@ minetest.register_node("lattice:glass_pane", {
 	-- Use `default:glass` movement if in flat position.
 	movement_speed_depends = "default:glass",
 
-	groups = {level = 1, cracky = 3, oddly_breakable_by_hand = 1},
+	groups = utility.dig_groups("bigitem"),
 	on_place = function(...) return stairs.rotate_and_place(...) end,
 
 	tiles = {
@@ -109,7 +109,7 @@ minetest.register_node("lattice:obsidian_glass_pane", {
 	-- Use `default:obsidian_glass` movement if in flat position.
 	movement_speed_depends = "default:obsidian_glass",
 
-	groups = {level = 1, cracky = 2, oddly_breakable_by_hand = 1},
+	groups = utility.dig_groups("bigitem"),
 	on_place = function(...) return stairs.rotate_and_place(...) end,
 
 	tiles = {
@@ -153,7 +153,7 @@ minetest.register_node("lattice:wrought_iron", {
 	-- Use `default:steelblock` movement if in flat position.
 	movement_speed_depends = "default:steelblock",
 
-	groups = {level = 1, cracky = 2},
+	groups = utility.dig_groups("bigitem"),
 	on_place = function(...) return stairs.rotate_and_place(...) end,
 
 	tiles = {

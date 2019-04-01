@@ -2,7 +2,7 @@
 minetest.register_node("alatro:ore", {
   description = "Alatro Ore",
   tiles = {"default_stone.png^gloopores_mineral_alatro.png"},
-  groups = {level = 1, cracky = 3, ore = 1},
+  groups = utility.dig_groups("mineral", {ore=1}),
   drop = "alatro:lump",
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
@@ -65,7 +65,7 @@ minetest.register_node("alatro:block", {
   description = "Alatro Block",
   tiles = {"gloopores_alatro_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2},
+  groups = utility.dig_groups("block"),
   sounds = default.node_sound_metal_defaults(),
 })
 
@@ -100,7 +100,7 @@ minetest.register_node("alatro:glass", {
   paramtype = "light",
   sunlight_propagates = true,
   is_ground_content = false,
-  groups = {level = 1, cracky = 3},
+  groups = utility.dig_groups("glass"),
   sounds = default.node_sound_glass_defaults(),
 	silverpick_drop = true,
 

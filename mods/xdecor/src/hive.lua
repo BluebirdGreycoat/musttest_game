@@ -49,7 +49,7 @@ xdecor.register("hive", {
 	tiles = {"xdecor_hive_top.png", "xdecor_hive_top.png",
 		 "xdecor_hive_side.png", "xdecor_hive_side.png",
 		 "xdecor_hive_side.png", "xdecor_hive_front.png"},
-	groups = {choppy=3, oddly_breakable_by_hand=2, flammable=1},
+	groups = utility.dig_groups("wood", {flammable=1}),
 	on_construct = hive.construct,
 	on_timer = hive.timer,
 	can_dig = function(pos)
@@ -87,7 +87,7 @@ minetest.register_craft({
 	output = "xdecor:hive",
 	recipe = {
 		{"group:stick", "group:stick", "group:stick"},
-		{"default:paper", "default:paper", "default:paper"},
+		{"default:paper", "basictrees:tree_wood", "default:paper"},
 		{"group:stick", "group:stick", "group:stick"}
 	}
 })

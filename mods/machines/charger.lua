@@ -336,7 +336,7 @@ if not charger.run_once then
 			"charger_side.png",
 		},
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		paramtype2 = "facedir",
 		is_ground_content = false,

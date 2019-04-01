@@ -7,10 +7,9 @@ minetest.register_node("teleports:teleport", {
   description = "Teleport Machine\n\nWarning: device is sensitive to shocks.\nIt will be destroyed if dug.",
   drawtype = "normal",
   tiles = {"teleports_teleport_top.png"},
-  groups = {
-    cracky=2, level=3,
+  groups = utility.dig_groups("machine", {
     immovable=1,
-  },
+  }),
   drop = 'default:diamond 8',
   sounds = default.node_sound_metal_defaults(),
   

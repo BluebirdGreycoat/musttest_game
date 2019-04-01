@@ -760,7 +760,7 @@ if not leecher.run_once then
 		description = "HV Mineral Outsalter\n\nThis leeches ores from rock above.\nMust be placed in a water pool.",
 		tiles = {"technic_carbon_steel_block.png^default_tool_mesepick.png"},
 
-		groups = {level=1, cracky=3},
+		groups = utility.dig_groups("machine"),
 
 		paramtype2 = "facedir",
 		is_ground_content = false,

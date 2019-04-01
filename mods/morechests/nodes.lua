@@ -7,7 +7,7 @@ chest_api.register_chest("morechests:woodchest_public", {
 	sounds = default.node_sound_wood_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, chest = 1},
+	groups = utility.dig_groups("chest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:woodchest_locked", {
@@ -16,7 +16,7 @@ chest_api.register_chest("morechests:woodchest_locked", {
 	sounds = default.node_sound_wood_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 1, choppy = 2, oddly_breakable_by_hand = 1, chest = 1},
+	groups = utility.dig_groups("chest", {chest = 1}),
 	protected = true,
 })
 
@@ -32,7 +32,7 @@ chest_api.register_chest("morechests:copperchest_public", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:copperchest_locked", {
@@ -41,7 +41,7 @@ chest_api.register_chest("morechests:copperchest_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 	protected = true,
 })
 
@@ -56,7 +56,7 @@ chest_api.register_chest("morechests:ironchest_public", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:ironchest_locked", {
@@ -65,7 +65,7 @@ chest_api.register_chest("morechests:ironchest_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 	protected = true,
 })
 
@@ -80,7 +80,7 @@ chest_api.register_chest("morechests:goldchest_public", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:goldchest_locked", {
@@ -89,7 +89,7 @@ chest_api.register_chest("morechests:goldchest_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 	protected = true,
 })
 
@@ -104,7 +104,7 @@ chest_api.register_chest("morechests:silverchest_public", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:silverchest_locked", {
@@ -113,7 +113,7 @@ chest_api.register_chest("morechests:silverchest_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 	protected = true,
 })
 
@@ -128,7 +128,7 @@ chest_api.register_chest("morechests:mithrilchest_public", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 })
 
 chest_api.register_chest("morechests:mithrilchest_locked", {
@@ -137,7 +137,7 @@ chest_api.register_chest("morechests:mithrilchest_locked", {
 	sounds = default.node_sound_metal_defaults(),
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
-	groups = {level = 2, cracky = 2, chest = 1},
+	groups = utility.dig_groups("metalchest", {chest = 1}),
 	protected = true,
 })
 

@@ -104,7 +104,7 @@ end
 
 
 if not vessels.run_once then
-	local shelf_groups = {level = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3}
+	local shelf_groups = utility.dig_groups("furniture", {flammable = 3})
 	local shelf_sounds = default.node_sound_wood_defaults()
 
 	minetest.register_node("vessels:shelf", {
@@ -167,7 +167,7 @@ if not vessels.run_once then
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 		},
-		groups = {level = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_glass_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	})
@@ -194,7 +194,7 @@ if not vessels.run_once then
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 		},
-		groups = {level = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_glass_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	})
@@ -221,7 +221,7 @@ if not vessels.run_once then
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
 		},
-		groups = {level = 1, vessel = 1, dig_immediate = 2, attached_node = 1},
+		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
 		sounds = default.node_sound_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 

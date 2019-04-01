@@ -184,12 +184,11 @@ if not electric_alloy_furnace.run_once then
         "electric_alloy_furnace_side.png", v.tile,
       },
       
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         tubedevice = 1, tubedevice_receiver = 1,
         immovable = 1,
         tier_mv = 1,
-      },
+      }),
       
       light_source = v.light,
       paramtype2 = "facedir",

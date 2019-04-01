@@ -113,7 +113,8 @@ if not admin_tnt.registered then
 		paramtype2 = "facedir",
 
 		-- Requires admin pick to remove.
-		groups = {
+		groups = -- comment
+		{
 			admin_tnt = 1, immovable = 1, unbreakable = 1,
 		},
 

@@ -94,10 +94,9 @@ if not stack_filter.run_once then
       "pipeworks_mese_filter_top.png",
     },
     
-    groups = {
-      level=1, cracky=3,
+    groups = utility.dig_groups("machine", {
       immovable = 1,
-    },
+    }),
     
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,

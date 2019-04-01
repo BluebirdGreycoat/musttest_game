@@ -26,34 +26,23 @@ jungletree.sapling_selection_box = {
 
 
 
-jungletree.sapling_groups = {
-    level = 1,
-    snappy = 3,
-    choppy = 3,
-    oddly_breakable_by_hand = 3,
-    
+jungletree.sapling_groups = utility.dig_groups("plant", {
     flammable = 2,
     attached_node = 1,
     sapling = 1,
-}
+})
 
 
 
-jungletree.tree_groups = {
-    level = 1,
-    choppy = 1,
-    
+jungletree.tree_groups = utility.dig_groups("tree", {
     flammable = 2,
     tree = 1,
-}
+})
 
 
 
 jungletree.get_wood_groups = function(extra)
-    local groups = extra or {}
-    groups.level = 1
-    groups.choppy = 2
-    
+    local groups = utility.dig_groups("wood", extra or {})
     groups.flammable = 2
     groups.wood = 1
     return groups
@@ -61,26 +50,18 @@ end
 
 
 
-jungletree.stair_groups = {
-    level = 1,
-    choppy = 2,
-    
+jungletree.stair_groups = utility.dig_groups("wood", {
     flammable = 2,
-}
+})
 
 
 
-jungletree.leaves_groups = {
-    level = 1,
-    snappy = 3,
-    choppy = 2,
-    oddly_breakable_by_hand = 3,
-    
+jungletree.leaves_groups = utility.dig_groups("leaves", {
     leafdecay = 3,
     flammable = 2,
     leaves = 1,
     green_leaves = 1,
-}
+})
 
 
 

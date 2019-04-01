@@ -269,7 +269,7 @@ if not distrib2.run_once then
 				"network_connector_" .. n.tier .. "_side.png", "network_connector_" .. n.tier .. "_side.png",
 			},
 
-			groups = {level=1, cracky=3},
+			groups = utility.dig_groups("machine"),
 
 			paramtype2 = "facedir",
 			is_ground_content = false,

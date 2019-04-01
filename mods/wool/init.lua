@@ -27,12 +27,11 @@ for i = 1, #dyes do
 		description = desc .. " Wool",
 		tiles = {"wool_" .. name .. ".png"},
 		is_ground_content = false,
-		groups = {
-      level = 1, snappy = 2, choppy = 2, 
-      oddly_breakable_by_hand = 3, flammable = 3, wool = 1,
+		groups = utility.dig_groups("wool", {
+      flammable = 3, wool = 1,
       wool_block = 1,
 			fall_damage_add_percent = -30,
-    },
+    }),
 		sounds = default.node_sound_defaults(),
 	})
 

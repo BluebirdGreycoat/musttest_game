@@ -556,7 +556,7 @@ if not comp2.run_once then
 				},
 
 				paramtype2 = "facedir",
-				groups = {level=1, cracky=3},
+				groups = utility.dig_groups("machine"),
 
 				light_source = v.light,
 				is_ground_content = false,

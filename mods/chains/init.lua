@@ -20,7 +20,7 @@ minetest.register_node("chains:iron_chain", {
 	climbable = true,
 	sunlight_propagates = true,
 	paramtype = "light",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
@@ -37,7 +37,7 @@ minetest.register_node("chains:bronze_chain", {
 	climbable = true,
 	sunlight_propagates = true,
 	paramtype = "light",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
@@ -54,7 +54,7 @@ minetest.register_node("chains:iron_chain_top", {
 	climbable = true,
 	sunlight_propagates = true,
 	paramtype = "light",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
@@ -71,7 +71,7 @@ minetest.register_node("chains:bronze_chain_top", {
 	climbable = true,
 	sunlight_propagates = true,
 	paramtype = "light",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
@@ -102,7 +102,7 @@ minetest.register_node("chains:iron_chandelier", {
 	},
 	drawtype = "mesh",
 	mesh = "chains_chandelier.obj",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	sounds = default.node_sound_metal_defaults(),
 })
 
@@ -129,7 +129,7 @@ minetest.register_node("chains:bronze_chandelier", {
 	},
 	drawtype = "mesh",
 	mesh = "chains_chandelier.obj",
-	groups = {level=1, cracky=3, hanging_node=1},
+	groups = utility.dig_groups("bigitem", {hanging_node=1}),
 	sounds = default.node_sound_metal_defaults(),
 })
 

@@ -1,6 +1,7 @@
 
 local function make_new_groups(groups)
-	local newgroups = {
+	local newgroups = --comment
+	{
 		level = groups.level or 1,
 		snappy = groups.snappy or 0,
 		choppy = groups.choppy or 0,

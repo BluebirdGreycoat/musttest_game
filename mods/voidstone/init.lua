@@ -11,7 +11,8 @@ minetest.register_node('voidstone:void', {
   tiles = {'voidstone_void.png'},
   drawtype = "nodebox",
   paramtype = "light",
-  groups = {
+  groups = -- comment
+	{
     unbreakable=1,
     immovable=1,
     disable_jump=1,

@@ -11,7 +11,7 @@ minetest.register_node("castle_masonry:pavement_brick", {
 	description = S("Paving Stone"),
 	drawtype = "normal",
 	tiles = {"castle_pavement_brick.png"},
-	groups = {cracky=2},
+	groups = utility.dig_groups("brick"),
 	--paramtype = "light",
 	sounds = default.node_sound_stone_defaults(),
 })

@@ -27,7 +27,7 @@ minetest.register_node("cast_iron:block", {
   description = "Cast Iron Block",
   tiles = {"technic_cast_iron_block.png"},
   is_ground_content = false,
-  groups = {cracky = 1, level = 2},
+  groups = utility.dig_groups("block"),
   sounds = default.node_sound_metal_defaults(),
 })
 

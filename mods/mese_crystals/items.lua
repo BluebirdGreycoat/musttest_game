@@ -18,7 +18,7 @@ if not mese_crystals.nodes_registered then
 			paramtype = "light",
 			paramtype2 = "facedir",
 			drawtype = "mesh",
-			groups = {level = 2, cracky = 3, attached_node = 1, fall_damage_add_percent = 60},
+			groups = utility.dig_groups("crystal", {attached_node = 1, fall_damage_add_percent = 60}),
 			drop = "default:mese_crystal_fragment " .. i,
 			use_texture_alpha = true,
 			sounds = default.node_sound_stone_defaults(),

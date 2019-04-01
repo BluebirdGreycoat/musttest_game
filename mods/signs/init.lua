@@ -140,17 +140,17 @@ if not signs.run_once then
 
 	register_sign("wood", "Wooden", {
 		sounds = default.node_sound_wood_defaults(),
-		groups = {level = 1, choppy = 2, attached_node = 1, flammable = 2, oddly_breakable_by_hand = 3}
+		groups = utility.dig_groups("bigitem", {attached_node = 1, flammable = 2})
 	})
 
 	register_sign("steel", "Iron", {
 		sounds = default.node_sound_metal_defaults(),
-		groups = {level = 1, cracky = 3, attached_node = 1}
+		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
 	register_sign("tin", "Tin", {
 		sounds = default.node_sound_metal_defaults(),
-		groups = {level = 1, cracky = 3, attached_node = 1}
+		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
 	minetest.register_craft({

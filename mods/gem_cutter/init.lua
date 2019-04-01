@@ -204,11 +204,10 @@ if not gem_cutter.run_once then
       },
 
       paramtype2 = "facedir",
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         immovable = 1,
         tier_mv = 1,
-      },
+      }),
       
       light_source = v.light,
       on_rotate = function(...) return screwdriver.rotate_simple(...) end,

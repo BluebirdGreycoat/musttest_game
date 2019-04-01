@@ -287,11 +287,10 @@ if not geothermal_generator.run_once then
         "geothermal_generator_side.png", "geothermal_generator_side.png"
       },
       
-      groups = {
-        level=1, cracky=3,
+      groups = utility.dig_groups("machine", {
         immovable = 1,
         tier_lv = 1,
-      },
+      }),
       
       paramtype2 = "facedir",
       on_rotate = function(...) return screwdriver.rotate_simple(...) end,

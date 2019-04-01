@@ -66,7 +66,7 @@ minetest.register_node(":engraver:bench", {
 	description = "Engraving Bench",
 	tiles = {"default_workbench_top.png", "default_wood.png", "default_workbench_sides.png",
 		"default_workbench_sides.png", "default_workbench_sides.png", "default_workbench_sides.png"},
-	groups = {choppy = 3, oddly_breakable_by_hand = 2, flammable = 3},
+	groups = utility.dig_groups("furniture", {flammable = 3}),
 	sounds = default.node_sound_wood_defaults(),
 
 	drawtype = "nodebox",

@@ -289,7 +289,7 @@ if not crusher.registered then
       },
 
       paramtype2 = "facedir",
-      groups = {level=1, cracky=3, immovable = 1},
+      groups = utility.dig_groups("machine", {immovable = 1}),
 			light_source = v.light,
 
       on_rotate = function(...) return screwdriver.rotate_simple(...) end,

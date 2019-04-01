@@ -31,7 +31,7 @@ end
 minetest.register_node("rackstone:rackstone", {
 	description = "Rackstone",
 	tiles = {"rackstone_rackstone.png"},
-	groups = {cracky=1, level=1, rackstone=1, stabilize_dauthsand=1, netherack=1},
+	groups = utility.dig_groups("stone", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = default.node_sound_stone_defaults(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
@@ -42,7 +42,7 @@ minetest.register_node("rackstone:rackstone_brick2", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_rackstone_brick.png"},
-	groups = {cracky=2, level=2, rackstone=1, brick=1},
+	groups = utility.dig_groups("brick", {rackstone=1, brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -51,7 +51,7 @@ minetest.register_node("rackstone:rackstone_block", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_rackstone_block.png"},
-	groups = {cracky=2, level=2, rackstone=1},
+	groups = utility.dig_groups("block", {rackstone=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -123,7 +123,7 @@ rackstone.on_redrack_place = on_redrack_place
 minetest.register_node("rackstone:redrack", {
 	description = "Netherack",
 	tiles = {"rackstone_redrack.png"},
-	groups = {cracky=3, level=1, rackstone=1, stabilize_dauthsand=1, netherack=1},
+	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
@@ -156,7 +156,7 @@ minetest.register_node("rackstone:redrack", {
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
   tiles = {"rackstone_redrack2.png"},
-  groups = {crumbly=1, level=1, falling_node=1},
+  groups = utility.dig_groups("gravel", {falling_node=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	liquid_viscosity = 8,
@@ -175,7 +175,7 @@ minetest.register_node("rackstone:nether_grit", {
 minetest.register_node("rackstone:void", {
   description = "Nether Void Gap (You Hacker!)",
   tiles = {"rackstone_redrack.png"},
-  groups = {cracky=3, level=1},
+  groups = utility.dig_groups("cobble"),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   walkable = false,
@@ -189,7 +189,7 @@ minetest.register_node("rackstone:void", {
 minetest.register_node("rackstone:redrack_with_iron", {
   description = "Netherack With Iron",
   tiles = {"rackstone_redrack.png^default_mineral_iron.png"},
-  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore = 1},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore = 1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
 	silverpick_drop = true,
@@ -203,7 +203,7 @@ minetest.register_node("rackstone:redrack_with_iron", {
 minetest.register_node("rackstone:redrack_with_copper", {
   description = "Netherack With Copper",
   tiles = {"rackstone_redrack.png^default_mineral_copper.png"},
-  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore=1},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
 	silverpick_drop = true,
@@ -217,7 +217,7 @@ minetest.register_node("rackstone:redrack_with_copper", {
 minetest.register_node("rackstone:redrack_with_coal", {
   description = "Netherack With Coal",
   tiles = {"rackstone_redrack.png^default_mineral_coal.png"},
-  groups = {cracky=2, level=1, rackstone=1, netherack=1},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:coal_lump",
 	silverpick_drop = true,
@@ -231,7 +231,7 @@ minetest.register_node("rackstone:redrack_with_coal", {
 minetest.register_node("rackstone:redrack_with_tin", {
   description = "Netherack With Tin",
   tiles = {"rackstone_redrack.png^moreores_mineral_tin.png"},
-  groups = {cracky=2, level=1, rackstone=1, netherack=1, ore=1},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",
 	silverpick_drop = true,
@@ -249,7 +249,7 @@ minetest.register_node("rackstone:tile", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_redtile.png"},
-	groups = {level=2, cracky=2, brick=1},
+	groups = utility.dig_groups("brick", {brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -258,7 +258,7 @@ minetest.register_node("rackstone:brick", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_brick.png"},
-	groups = {level=2, cracky=2, brick=1},
+	groups = utility.dig_groups("brick", {brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -267,7 +267,7 @@ minetest.register_node("rackstone:redrack_block", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_redrack_block.png"},
-	groups = {level=2, cracky=2},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -276,7 +276,7 @@ minetest.register_node("rackstone:brick_black", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_brick_black.png"},
-	groups = {cracky=2, level=2, brick=1},
+	groups = utility.dig_groups("brick", {brick=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -285,7 +285,7 @@ minetest.register_node("rackstone:blackrack_block", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_blackrack_block.png"},
-	groups = {cracky=2, level=2},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -294,7 +294,7 @@ minetest.register_node("rackstone:blackrack_block", {
 minetest.register_node("rackstone:bluerack", {
 	description = "Blue Rackstone",
 	tiles = {"rackstone_bluerack.png"},
-	groups = {cracky=3, level=3, rackstone=1, netherack=1},
+	groups = utility.dig_groups("stone", {rackstone=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -304,7 +304,7 @@ minetest.register_node("rackstone:bluerack_brick", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_bluerack_brick.png"},
-	groups = {cracky=3, level=3, rackstone=1, brick=1},
+	groups = utility.dig_groups("brick", {rackstone=1, brick=1}),
 	sounds = rackstone.rackstone_sounds(),
 })
 
@@ -313,7 +313,7 @@ minetest.register_node("rackstone:bluerack_block", {
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"rackstone_bluerack_block.png"},
-	groups = {cracky=3, level=3, rackstone=1},
+	groups = utility.dig_groups("block", {rackstone=1}),
 	sounds = rackstone.rackstone_sounds(),
 })
 
@@ -322,7 +322,7 @@ minetest.register_node("rackstone:bluerack_block", {
 minetest.register_node("rackstone:blackrack", {
   description = "Black Rackstone",
   tiles = {"rackstone_blackrack.png"},
-  groups = {cracky=2, level=1, rackstone=1, native_stone=1, stabilize_dauthsand=1, netherack=1},
+  groups = utility.dig_groups("netherack", {rackstone=1, native_stone=1, stabilize_dauthsand=1, netherack=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
@@ -365,7 +365,7 @@ minetest.register_node("rackstone:blackrack", {
 minetest.register_node("rackstone:evilrack", {
 	description = "Witchrack",
 	tiles = {"rackstone_evilstone.png"},
-	groups = {level=1, cracky=3, falling_node=1, rackstone=1, netherack=1},
+	groups = utility.dig_groups("netherack", {falling_node=1, rackstone=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -375,7 +375,7 @@ minetest.register_node("rackstone:evilrack", {
 minetest.register_node("rackstone:dauthsand", {
   description = "Dauthsand",
   tiles = {"rackstone_dauthsand.png"},
-  groups = {level=1, crumbly=1, falling_node=1, racksand=1, nether_soil=1},
+  groups = utility.dig_groups("gravel", {falling_node=1, racksand=1, nether_soil=1}),
     --damage_per_second = 4,
     post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),
@@ -408,7 +408,7 @@ minetest.register_node("rackstone:dauthsand", {
 minetest.register_node("rackstone:dauthsand_stable", {
   description = "Dauthsand",
   tiles = {"rackstone_dauthsand.png"},
-  groups = {level=1, crumbly=1, racksand=1, nether_soil=1},
+  groups = utility.dig_groups("gravel", {racksand=1, nether_soil=1}),
     --damage_per_second = 4,
     post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),

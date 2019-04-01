@@ -18,14 +18,14 @@ for k, v in ipairs(items) do
   minetest.register_node("wallplaster:" .. v.name, {
 		description = v.capitalized .. " Wall Plaster",
 		tiles = {"wallplaster_" .. v.name .. ".png"},
-		groups = {choppy = 3, cracky = 2, flammable = 3},
+		groups = utility.dig_groups("wood", {flammable = 3}),
 		sounds = default.node_sound_wood_defaults(),
   })
 
 	stairs.register_stair_and_slab(
 		"wallplaster_" .. v.name,
 		"wallplaster:" .. v.name,
-		{choppy = 3, cracky = 2, flammable = 3},
+		utility.dig_groups("wood", {flammable = 3}),
 		{"wallplaster_" .. v.name .. ".png"},
 		v.capitalized .. " Wall Plaster",
 		default.node_sound_wood_defaults()

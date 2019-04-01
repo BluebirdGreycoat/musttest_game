@@ -117,7 +117,7 @@ minetest.register_node("castle_lighting:brasier_floor", {
 	drawtype = "nodebox",
 	paramtype2 = "facedir",
 	on_rotate = screwdriver.rotate_simple,
-	groups = {cracky=2},
+	groups = utility.dig_groups("brick"),
 	paramtype = "light",
 	node_box = brasier_nodebox,
 	selection_box = brasier_selection_box,

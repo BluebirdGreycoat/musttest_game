@@ -22,7 +22,7 @@ minetest.register_craftitem("quartz:quartz_crystal_piece", {
 minetest.register_node("quartz:quartz_ore", {
 	description = "Quartz Ore",
 	tiles = {"default_stone.png^quartz_ore.png"},
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("mineral"),
 	drop = 'quartz:quartz_crystal',
 	sounds = default.node_sound_stone_defaults(),
 })
@@ -42,7 +42,7 @@ oregen.register_ore({
 minetest.register_node("quartz:block", {
 	description = "Quartz Block",
 	tiles = {"quartz_block.png"},
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("block"),
 	sounds = default.node_sound_glass_defaults(),
 })
 
@@ -50,7 +50,7 @@ minetest.register_node("quartz:block", {
 minetest.register_node("quartz:chiseled", {
 	description = "Chiseled Quartz",
 	tiles = {"quartz_chiseled.png"},
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("brick"),
 	sounds = default.node_sound_glass_defaults(),
 })
 
@@ -59,7 +59,7 @@ minetest.register_node("quartz:pillar", {
 	description = "Quartz Pillar",
 	paramtype2 = "facedir",
 	tiles = {"quartz_pillar_top.png", "quartz_pillar_top.png", "quartz_pillar_side.png"},
-	groups = {level=1, cracky=3},
+	groups = utility.dig_groups("brick"),
 	sounds = default.node_sound_glass_defaults(),
 	on_place = minetest.rotate_node
 })

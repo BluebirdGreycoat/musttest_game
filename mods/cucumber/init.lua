@@ -30,7 +30,7 @@ minetest.register_node("cucumber:seed", {
   walkable = false,
   sunlight_propagates = true,
 	selection_box = farming.select,
-  groups = {level = 1, seed = 1, snappy = 3, attached_node = 1, flammable = 2, notify_destruct = 1},
+  groups = utility.dig_groups("seed", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
   on_place = function(itemstack, placer, pointed_thing)
     return farming.place_seed(itemstack, placer, pointed_thing, "cucumber:seed")
   end,
@@ -65,10 +65,10 @@ local crop_def = {
 	buildable_to = true,
 	drop = "",
 	selection_box = farming.select,
-	groups = {
-		snappy = 3, flammable = 2, plant = 1, attached_node = 1,
+	groups = utility.dig_groups("crop", {
+		flammable = 2, plant = 1, attached_node = 1,
 		not_in_creative_inventory = 1,
-	},
+	}),
 	sounds = default.node_sound_leaves_defaults(),
   on_timer = farming.grow_plant,
   minlight = 13,

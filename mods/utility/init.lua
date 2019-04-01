@@ -8,6 +8,50 @@ fireambiance = {}
 function fireambiance.on_flame_addremove(pos)
 end
 
+local dig_groups = {}
+dig_groups["stone"]     = {level = 1, cracky = 1}
+dig_groups["cobble"]    = {level = 1, cracky = 2}
+dig_groups["ice"]       = {level = 1, cracky = 3}
+dig_groups["glass"]     = {level = 1, cracky = 3}
+dig_groups["netherack"] = {level = 1, cracky = 3}
+dig_groups["mineral"]   = {level = 1, cracky = 2}
+dig_groups["rockgem"]   = {level = 3, cracky = 1}
+dig_groups["brick"]     = {level = 2, cracky = 1}
+dig_groups["block"]     = {level = 2, cracky = 1}
+dig_groups["obsidian"]  = {level = 3, cracky = 1}
+dig_groups["gravel"]    = {level = 1, crumbly = 1}
+dig_groups["dirt"]      = {level = 1, crumbly = 2}
+dig_groups["sand"]      = {level = 1, crumbly = 3}
+dig_groups["tree"]      = {level = 1, choppy = 1}
+dig_groups["wood"]      = {level = 1, choppy = 2}
+dig_groups["leaves"]    = {level = 1, snappy = 2, choppy = 2}
+dig_groups["seeds"]     = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
+dig_groups["plant"]     = {level = 1, snappy = 2}
+dig_groups["crop"]      = {level = 1, snappy = 2}
+dig_groups["wool"]      = {level = 1, snappy = 2, choppy = 2, oddly_breakable_by_hand = 1}
+dig_groups["furniture"] = {level = 1, snappy = 3, choppy = 3, oddly_breakable_by_hand = 3}
+dig_groups["item"]      = {level = 1, dig_immediate = 3}
+dig_groups["bigitem"]   = {level = 1, dig_immediate = 2}
+dig_groups["chest"]     = {level = 1, choppy = 2, oddly_breakable_by_hand = 1}
+
+-- Get dig groups for a node based on its broad category.
+-- When choosing a name for a node, choose the name closest to the node's main material.
+function utility.dig_groups(name, ex)
+	local groups = {}
+
+	local dig = dig_groups[name] or {level = 1, oddly_breakable_by_hand = 3}
+	for k, v in pairs(dig) do
+		groups[k] = v
+	end
+
+	-- Let custom groups override, include other stuff from groups.
+	for k, v in pairs(ex) do
+		groups[k] = v
+	end
+
+	return groups
+end
+
 -- Copy standard/builtin groups only.
 -- Used mainly to ensure that stairs/microblock nodes don't include strange groups
 -- that should ONLY apply to their parent fullblock nodes.

@@ -255,7 +255,7 @@ minetest.register_node("default:stonebrick", {
 	place_param2 = 0,
 	tiles = {"default_stone_brick.png"},
 	is_ground_content = false,
-	groups = {level = 2, cracky = 2, stone = 1},
+	groups = {level = 2, cracky = 1, stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -263,7 +263,7 @@ minetest.register_node("default:stone_block", {
 	description = "Stone Block",
 	tiles = {"default_stone_block.png"},
 	is_ground_content = false,
-	groups = {level = 2, cracky = 2, stone = 1},
+	groups = {level = 2, cracky = 1, stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -272,7 +272,7 @@ minetest.register_node("default:mossycobble", {
 	tiles = {"default_mossycobble.png"},
 	is_ground_content = false,
 	groups = {
-		level = 1, cracky = 3, stone = 1, native_stone = 1,
+		level = 1, cracky = 2, stone = 1, native_stone = 1,
 		melts = 1,
 	},
 	_melts_to = "cavestuff:cobble_with_rockmelt",
@@ -283,7 +283,7 @@ minetest.register_node("default:mossycobble", {
 minetest.register_node("default:desert_stone", {
 	description = "Redstone",
 	tiles = {"default_desert_stone.png"},
-	groups = {level = 2, cracky = 3, stone = 1, native_stone = 1},
+	groups = {level = 1, cracky = 1, stone = 1, native_stone = 1},
 	drop = 'default:desert_cobble',
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
@@ -296,7 +296,7 @@ minetest.register_node("default:desert_cobble", {
 	description = "Redstone Cobble",
 	tiles = {"default_desert_cobble.png"},
 	is_ground_content = false,
-	groups = {level = 1, cracky = 2, stone = 2, native_stone = 1},
+	groups = {level = 1, cracky = 2, stone = 1, native_stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -306,7 +306,7 @@ minetest.register_node("default:desert_stonebrick", {
 	place_param2 = 0,
 	tiles = {"default_desert_stone_brick.png"},
 	is_ground_content = false,
-	groups = {level = 2, cracky = 2, stone = 1},
+	groups = {level = 2, cracky = 1, stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -314,7 +314,7 @@ minetest.register_node("default:desert_stone_block", {
 	description = "Redstone Block",
 	tiles = {"default_desert_stone_block.png"},
 	is_ground_content = false,
-	groups = {level = 2, cracky = 2, stone = 1},
+	groups = {level = 2, cracky = 1, stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -322,7 +322,7 @@ minetest.register_node("default:desert_stone_block", {
 minetest.register_node("default:sandstone", {
 	description = "Sandstone",
 	tiles = {"default_sandstone.png"},
-	groups = {level = 2, crumbly = 1, cracky = 3},
+	groups = {level = 1, cracky = 3, cracky = 3},
 	sounds = default.node_sound_stone_defaults(),
 
 	-- Added on March 16, 2018.

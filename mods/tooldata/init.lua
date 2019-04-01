@@ -6,14 +6,14 @@ local DIG_TIME_MULTIPLIER = 1.0
 
 -- Basic paramters based on material type.
 local materials = {}
-materials["wood"]          = {fpi=3.0, time=5.0, uses=20,  mdl=1, ml=1, dmg=1}
-materials["stone"]         = {fpi=3.0, time=4.0, uses=30,  mdl=1, ml=1, dmg=3}
-materials["steel"]         = {fpi=1.5, time=3.5, uses=100, mdl=2, ml=2, dmg=6}
+materials["wood"]          = {fpi=3.0, time=4.0, uses=20,  mdl=1, ml=1, dmg=1}
+materials["stone"]         = {fpi=3.0, time=3.0, uses=30,  mdl=1, ml=1, dmg=3}
+materials["steel"]         = {fpi=1.5, time=3.0, uses=100, mdl=2, ml=2, dmg=6}
 materials["bronze"]        = {fpi=1.5, time=2.5, uses=50,  mdl=2, ml=2, dmg=5}
 materials["mese"]          = {fpi=1.0, time=2.5, uses=70,  mdl=3, ml=3, dmg=7}
 materials["diamond"]       = {fpi=1.0, time=2.0, uses=40,  mdl=3, ml=3, dmg=7}
 materials["titanium"]      = {fpi=1.5, time=2.5, uses=150, mdl=3, ml=3, dmg=6}
-materials["silver"]        = {fpi=1.5, time=4.0, uses=20,  mdl=3, ml=3, dmg=5}
+materials["silver"]        = {fpi=1.5, time=3.0, uses=20,  mdl=3, ml=3, dmg=5}
 materials["mithril"]       = {fpi=1.5, time=2.5, uses=60,  mdl=3, ml=4, dmg=8}
 materials["ruby"]          = {fpi=2.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}
 materials["emerald"]       = {fpi=2.0, time=1.2, uses=40,  mdl=3, ml=3, dmg=7}

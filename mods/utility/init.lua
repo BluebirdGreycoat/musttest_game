@@ -22,6 +22,7 @@ dig_groups["glass"]         = {level = 1, cracky = 3}
 dig_groups["metal"]         = {level = 1, cracky = 2}
 dig_groups["netherack"]     = {level = 1, cracky = 3}
 dig_groups["mineral"]       = {level = 1, cracky = 2}
+dig_groups["minerals"]      = {level = 1, cracky = 2}
 dig_groups["hardmineral"]   = {level = 2, cracky = 1}
 dig_groups["rockgem"]       = {level = 3, cracky = 1}
 dig_groups["brick"]         = {level = 2, cracky = 1}

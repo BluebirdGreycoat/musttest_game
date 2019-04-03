@@ -20,6 +20,16 @@ end
 -- Shears only dig nodes with `level = 0/1, snappy = 3`.
 --
 -- `oddly_breakable_by_hand` only works if `level = 0/1`.
+--
+-- Base hardness for regular stone is `level = 2, cracky = 2`. Cobble is at
+-- `level = 1, cracky = 3`. These are both carefully tuned to allow new players
+-- to advance: wooden pick digs cobble to make stone pick, and a stone pick is
+-- able to dig regular stone. All other rocks/stones in the game should have
+-- their hardness calculated around regular stone/cobble.
+--
+-- The base hardness for tree trunks is `level = 2, choppy = 2`. Wood is
+-- calculated at `level = 2, choppy = 3`. All other wooden nodes should be
+-- calculated around these two.
 
 local dig_groups = {}
 dig_groups["stone"]         = {level = 2, cracky = 2} -- Carefully tuned dig-params! Do not modify.
@@ -50,7 +60,7 @@ dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand =
 dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.
 dig_groups["wood"]          = {level = 2, choppy = 3} -- Also wooden 'blocklike'. Planks & stuff.
 dig_groups["hardwood"]      = {level = 2, choppy = 1}
-dig_groups["softwood"]      = {level = 2, choppy = 3} -- Cactus, etc.
+dig_groups["softwood"]      = {level = 1, choppy = 3} -- Cactus, etc.
 dig_groups["woodglass"]     = {level = 2, choppy = 2, cracky = 2} -- Doors, etc.
 dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears/hand won't work.
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}

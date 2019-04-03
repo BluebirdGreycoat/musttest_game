@@ -45,9 +45,9 @@ tooldata["hand_hand"] = {
 	max_drop_level = 0,
 	groupcaps = {
 		crumbly = {times={[3]=5.00}, uses=0, maxlevel=1},
-		snappy = {times={[3]=3.00}, uses=0, maxlevel=1},
+		snappy = {times={[3]=1.00}, uses=0, maxlevel=0}, -- Dig plants in 1 second.
 		cracky = {times={[3]=6.00}, uses=0, maxlevel=0}, -- Can dig very weak, soft stone, if long time enough.
-		oddly_breakable_by_hand = {times={[1]=5.00, [2]=2.00, [3]=1.00}, uses=0},
+		oddly_breakable_by_hand = {times={[1]=5.00, [2]=4.00, [3]=3.00}, uses=0},
 	},
 	damage_groups = {fleshy=1},
 }

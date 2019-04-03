@@ -7,8 +7,8 @@ itempickup.modpath = minetest.get_modpath("itempickup")
 local function effect(pos, amount, texture, min_size, max_size, radius, gravity, glow)
 
 	radius = radius or 2
-	min_size = min_size or 0.5
-	max_size = max_size or 1
+	min_size = min_size or 2.0
+	max_size = max_size or 6.0
 	gravity = gravity or -10
 	glow = glow or 0
 

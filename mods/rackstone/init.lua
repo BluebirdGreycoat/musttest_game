@@ -31,7 +31,7 @@ end
 minetest.register_node("rackstone:rackstone", {
 	description = "Rackstone",
 	tiles = {"rackstone_rackstone.png"},
-	groups = utility.dig_groups("stone", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
+	groups = utility.dig_groups("hardstone", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = default.node_sound_stone_defaults(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
@@ -294,7 +294,7 @@ minetest.register_node("rackstone:blackrack_block", {
 minetest.register_node("rackstone:bluerack", {
 	description = "Blue Rackstone",
 	tiles = {"rackstone_bluerack.png"},
-	groups = utility.dig_groups("stone", {rackstone=1, netherack=1}),
+	groups = utility.dig_groups("hardstone", {rackstone=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -322,7 +322,7 @@ minetest.register_node("rackstone:bluerack_block", {
 minetest.register_node("rackstone:blackrack", {
   description = "Black Rackstone",
   tiles = {"rackstone_blackrack.png"},
-  groups = utility.dig_groups("netherack", {rackstone=1, native_stone=1, stabilize_dauthsand=1, netherack=1}),
+  groups = utility.dig_groups("stone", {rackstone=1, native_stone=1, stabilize_dauthsand=1, netherack=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   

@@ -9,7 +9,7 @@ whitestone.modpath = minetest.get_modpath("whitestone")
 minetest.register_node("whitestone:stone", {
 	description = "Bleached Stone",
 	tiles = {"whitestone_stone.png"},
-	groups = utility.dig_groups("stone", {native_stone=1}),
+	groups = utility.dig_groups("hardstone", {native_stone=1}),
     drop = "whitestone:cobble",
 	sounds = default.node_sound_stone_defaults(),
 })

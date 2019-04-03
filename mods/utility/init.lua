@@ -47,8 +47,8 @@ dig_groups["glass"]         = {level = 2, cracky = 3}
 dig_groups["netherack"]     = {level = 0, cracky = 3, oddly_breakable_by_hand = 1} -- Easiest thing to dig, practically!
 dig_groups["mineral"]       = {level = 2, cracky = 3}
 dig_groups["hardmineral"]   = {level = 2, cracky = 1}
-dig_groups["obsidian"]      = {level = 3, cracky = 1}
-dig_groups["hardstone"]     = {level = 3, cracky = 2}
+dig_groups["obsidian"]      = {level = 3, cracky = 1} -- Obsidian, etc. Hardest possible.
+dig_groups["hardstone"]     = {level = 3, cracky = 2} -- Granites, marbles.
 dig_groups["crystal"]       = {level = 2, cracky = 3}
 
 -- Cracky stuff (building blocks/walls/bricks/etc).
@@ -71,9 +71,10 @@ dig_groups["hardwood"]      = {level = 1, choppy = 1}
 dig_groups["softwood"]      = {level = 1, choppy = 3} -- Cactus, etc.
 
 -- Snappy stuff (plants/crops/leaves).
-dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears/hand won't work.
+-- Plants/crops can be dug by hand, but leaves cannot without proper tool.
+dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
-dig_groups["plant"]         = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
+dig_groups["plant"]         = {level = 0, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
 dig_groups["crop"]          = {level = 0, snappy = 3, choppy = 2} -- Ditto ^^^. Also diggable by hand.
 dig_groups["straw"]         = {level = 1, snappy = 2, choppy = 1, oddly_breakable_by_hand = 1}
 dig_groups["shroom"]        = {level = 1, snappy = 2, choppy = 3, oddly_breakable_by_hand = 1}

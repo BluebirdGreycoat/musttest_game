@@ -3,7 +3,7 @@ minetest.register_node(":gloopblocks:basalt", {
 	description = "Basalt",
 	tiles = {"gloopblocks_basalt.png"},
 	sounds = default.node_sound_stone_defaults(),
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("hardstone"),
 	movement_speed_multiplier = default.ROAD_SPEED,
 })
 
@@ -11,7 +11,7 @@ minetest.register_node(":gloopblocks:pumice", {
 	description = "Pumice",
 	tiles = {"gloopblocks_pumice.png"},
 	sounds = default.node_sound_stone_defaults(),
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("softstone"),
 
 	-- This doesn't really make sense for pumice,
 	-- but we must keep it because a lot of players have relied on it.

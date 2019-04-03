@@ -7,7 +7,7 @@ minetest.register_craftitem("concrete:rebar", {
 minetest.register_node("concrete:concrete", {
   description = "Concrete Block",
   tiles = {"technic_concrete_block.png",},
-  groups = utility.dig_groups("stone"),
+  groups = utility.dig_groups("hardstone"),
   sounds = default.node_sound_stone_defaults(),
 })
 

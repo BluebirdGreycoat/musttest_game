@@ -529,7 +529,7 @@ if not darkage.run_once then
 		description = "Dark Basaltic Rock",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",
-		groups = utility.dig_groups("stone", {stone = 1}),
+		groups = utility.dig_groups("hardstone", {stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
 		movement_speed_multiplier = default.ROAD_SPEED,
 	})

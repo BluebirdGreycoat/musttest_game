@@ -711,7 +711,7 @@ minetest.register_node("default:mese", {
 	description = "Mese Block",
 	tiles = {"default_mese_block.png"},
 	paramtype = "light",
-	groups = utility.dig_groups("obsidian", {melts = 1}),
+	groups = utility.dig_groups("hardstone", {melts = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	light_source = 3,
 	

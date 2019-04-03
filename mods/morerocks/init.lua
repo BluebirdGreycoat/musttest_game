@@ -9,28 +9,28 @@ morerocks.modpath = minetest.get_modpath("morerocks")
 minetest.register_node("morerocks:serpentine", {
 	description = "Serpentine",
 	tiles = {"morerocks_serpentine.png"},
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("hardstone"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("morerocks:marble_pink", {
 	description = "Pink Marble",
 	tiles = {"morerocks_marble_stone_pink.png"},
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("hardstone"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("morerocks:marble_white", {
 	description = "White Marble",
 	tiles = {"morerocks_marble_stone_white.png"},
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("hardstone"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("morerocks:marble", {
 	description = "Marble",
 	tiles = {"morerocks_marble_stone.png"},
-	groups = utility.dig_groups("stone"),
+	groups = utility.dig_groups("hardstone"),
 	sounds = default.node_sound_stone_defaults(),
 })
 minetest.register_alias("technic:marble", "morerocks:marble")
@@ -54,7 +54,7 @@ minetest.register_craft({
 minetest.register_node("morerocks:granite", {
 	description = "Granite",
 	tiles = {"morerocks_granite_stone.png"},
-	groups = utility.dig_groups("stone", {stone = 1}),
+	groups = utility.dig_groups("hardstone", {stone = 1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 minetest.register_alias("technic:granite", "morerocks:granite")

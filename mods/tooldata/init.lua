@@ -44,11 +44,13 @@ tooldata["hand_hand"] = {
 --------------------------------------------------------------------------------
 
 -- Player's starting pick.
+-- Start plan: find dry shrub, get sticks. Dig cobble underneath, get cobble.
+-- Upgrade to stone tools ASAP.
 tooldata["pick_wood"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 1, -- Must be 1 otherwise cobble unobtainable.
 	groupcaps = {
-		cracky = {times={[3]=1.00}, uses=50, maxlevel=1},
+		cracky = {times={[3]=3.00}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
@@ -60,7 +62,7 @@ tooldata["pick_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 2, -- Must be 2 otherwise stone unobtainable.
 	groupcaps = {
-		cracky = {times={[2]=1.00, [3]=0.50}, uses=50, maxlevel=2},
+		cracky = {times={[2]=3.00, [3]=2.90}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=3, cracky=7, crumbly=1},
 }
@@ -69,7 +71,7 @@ tooldata["shovel_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 2,
 	groupcaps = {
-		crumbly = {times={[2]=1.00, [3]=0.50}, uses=50, maxlevel=2},
+		crumbly = {times={[2]=3.00, [3]=2.50}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=5, crumbly=1},
 }
@@ -78,7 +80,7 @@ tooldata["axe_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 2,
 	groupcaps = {
-		choppy = {times={[2]=1.00, [3]=0.50}, uses=50, maxlevel=2},
+		choppy = {times={[2]=2.00, [3]=0.70}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=3, cracky=7, crumbly=1},
 }
@@ -87,7 +89,7 @@ tooldata["sword_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 2,
 	groupcaps = {
-		snappy = {times={[2]=1.00, [3]=0.50}, uses=50, maxlevel=2},
+		snappy = {times={[2]=1.00, [3]=0.80}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=20, crumbly=1},
 }

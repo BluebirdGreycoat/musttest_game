@@ -125,7 +125,7 @@ tooldata["pick_stone"] = {
 	groupcaps = {
 		cracky = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=3},
+	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_stone"] = {
@@ -165,7 +165,7 @@ tooldata["pick_steel"] = {
 	groupcaps = {
 		cracky = {times={[1]=4.00, [2]=1.50, [3]=1.10}, uses=150, maxlevel=2},
 	},
-	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_steel"] = {
@@ -211,7 +211,7 @@ tooldata["pick_bronze"] = {
 	groupcaps = {
 		cracky = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_bronze"] = {
@@ -251,7 +251,7 @@ tooldata["pick_mese"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -294,7 +294,7 @@ tooldata["pick_diamond"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 1.5,
 }
 
@@ -338,7 +338,7 @@ tooldata["pick_mithril"] = {
 	groupcaps = {
 		cracky = {times={[1]=1.80, [2]=0.80, [3]=0.40}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 2.5,
 }
 
@@ -382,7 +382,7 @@ tooldata["pick_titanium"] = {
 	groupcaps = {
 		cracky = {times={[1]=3.80, [2]=1.40, [3]=1.00}, uses=250, maxlevel=2},
 	},
-	damage_groups = {fleshy=15, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=15, cracky=1, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_titanium"] = {
@@ -426,7 +426,7 @@ tooldata["pick_silver"] = {
 		cracky = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=30, maxlevel=2},
 		snappy = {times={[1]=4.00, [2]=1.50, [3]=1.30}, uses=20, maxlevel=1}, -- Secondary.
 	},
-	damage_groups = {fleshy=12, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=12, cracky=1, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_silver"] = {
@@ -469,7 +469,7 @@ tooldata["pick_ruby"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
-	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
 }
 
@@ -512,7 +512,7 @@ tooldata["pick_emerald"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
-	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -555,7 +555,7 @@ tooldata["pick_sapphire"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
-	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -598,7 +598,7 @@ tooldata["pick_amethyst"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
-	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -641,7 +641,7 @@ tooldata["pick_rubystone"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
-	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -684,7 +684,7 @@ tooldata["pick_emeraldstone"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
-	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -727,7 +727,7 @@ tooldata["pick_sapphirestone"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
-	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 
@@ -770,7 +770,7 @@ tooldata["pick_amethyststone"] = {
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
-	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
 }
 

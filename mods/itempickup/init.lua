@@ -189,11 +189,14 @@ local drop_extra_item_list = {
 }
 
 
-function itempickup.drop_an_item(pos, stack, digger)
+function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 	local pp = utility.get_middle_pos(digger:get_pos())
 
+	-- Some tools always make their drops go directly to player's inventory.
+	local direct = tool_capabilities.direct_to_inventory
+
 	-- Stack goes directly into inventory if player close enough.
-	if vector.distance(pp, pos) < 3.5 then
+	if vector.distance(pp, pos) < 3.5 or direct then
 		local inv = digger:get_inventory()
 		if inv then
 			stack = inv:add_item("main", stack)
@@ -299,7 +302,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		local sname = stack:get_name()
 
 		-- Give drop to player, or drop on ground.
-		itempickup.drop_an_item(pos, stack, digger)
+		itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 
 		if xp_drop_enabled and drop_xp_list[sname] then
 			local value = drop_xp_list[sname]
@@ -314,7 +317,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 				if x1*x1 >= x2 then
 					if drop_extra_item_list[sname] then
 						-- Give drop to player, or drop on ground.
-						itempickup.drop_an_item(pos, stack, digger)
+						itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 					end
 				end
 			end

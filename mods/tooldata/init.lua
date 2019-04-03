@@ -450,6 +450,7 @@ tooldata["pick_ruby"] = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_ruby"] = {
@@ -459,6 +460,7 @@ tooldata["shovel_ruby"] = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_ruby"] = {
@@ -468,6 +470,7 @@ tooldata["axe_ruby"] = {
 		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_ruby"] = {
@@ -477,6 +480,7 @@ tooldata["sword_ruby"] = {
 		snappy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -489,6 +493,7 @@ tooldata["pick_emerald"] = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_emerald"] = {
@@ -498,6 +503,7 @@ tooldata["shovel_emerald"] = {
 		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_emerald"] = {
@@ -507,6 +513,7 @@ tooldata["axe_emerald"] = {
 		choppy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_emerald"] = {
@@ -516,6 +523,7 @@ tooldata["sword_emerald"] = {
 		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -528,6 +536,7 @@ tooldata["pick_sapphire"] = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_sapphire"] = {
@@ -537,6 +546,7 @@ tooldata["shovel_sapphire"] = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_sapphire"] = {
@@ -546,6 +556,7 @@ tooldata["axe_sapphire"] = {
 		choppy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_sapphire"] = {
@@ -555,6 +566,7 @@ tooldata["sword_sapphire"] = {
 		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -567,6 +579,7 @@ tooldata["pick_amethyst"] = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_amethyst"] = {
@@ -576,6 +589,7 @@ tooldata["shovel_amethyst"] = {
 		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_amethyst"] = {
@@ -585,6 +599,7 @@ tooldata["axe_amethyst"] = {
 		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_amethyst"] = {
@@ -594,6 +609,7 @@ tooldata["sword_amethyst"] = {
 		snappy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -606,6 +622,7 @@ tooldata["pick_rubystone"] = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_rubystone"] = {
@@ -615,6 +632,7 @@ tooldata["shovel_rubystone"] = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_rubystone"] = {
@@ -624,6 +642,7 @@ tooldata["axe_rubystone"] = {
 		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_rubystone"] = {
@@ -633,6 +652,7 @@ tooldata["sword_rubystone"] = {
 		snappy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -645,6 +665,7 @@ tooldata["pick_emeraldstone"] = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_emeraldstone"] = {
@@ -654,6 +675,7 @@ tooldata["shovel_emeraldstone"] = {
 		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_emeraldstone"] = {
@@ -663,6 +685,7 @@ tooldata["axe_emeraldstone"] = {
 		choppy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_emeraldstone"] = {
@@ -672,6 +695,7 @@ tooldata["sword_emeraldstone"] = {
 		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -684,6 +708,7 @@ tooldata["pick_sapphirestone"] = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_sapphirestone"] = {
@@ -693,6 +718,7 @@ tooldata["shovel_sapphirestone"] = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_sapphirestone"] = {
@@ -702,6 +728,7 @@ tooldata["axe_sapphirestone"] = {
 		choppy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_sapphirestone"] = {
@@ -711,6 +738,7 @@ tooldata["sword_sapphirestone"] = {
 		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 --------------------------------------------------------------------------------
@@ -723,6 +751,7 @@ tooldata["pick_amethyststone"] = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_amethyststone"] = {
@@ -732,6 +761,7 @@ tooldata["shovel_amethyststone"] = {
 		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_amethyststone"] = {
@@ -741,6 +771,7 @@ tooldata["axe_amethyststone"] = {
 		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_amethyststone"] = {
@@ -750,6 +781,7 @@ tooldata["sword_amethyststone"] = {
 		snappy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 dofile(modpath .. "/technic.lua")

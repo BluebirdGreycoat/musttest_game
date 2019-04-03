@@ -269,7 +269,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
-	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_"))
+	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_") or tn:find(":axe"))
 
 	-- If node has a drop string/table for silver tools, override drop table.
 	-- Player doesn't get XP for nodes dug this way, but that's good (prevents exploit).

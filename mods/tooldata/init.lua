@@ -83,7 +83,7 @@ tooldata["shears_shears"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[3]=0.25}, uses=70, maxlevel=1},
+		snappy = {times={[3]=0.10}, uses=70, maxlevel=1},
 	},
 }
 

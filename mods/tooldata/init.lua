@@ -16,18 +16,18 @@ tooldata["pick_wood"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[3]=1.00}, uses=50, maxlevel=1},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
 
 tooldata["pick_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=2},
+		cracky = {times={[2]=1.00, [3]=0.50}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=3, cracky=7},
+	damage_groups = {fleshy=3, cracky=7, crumbly=1},
 }
 
 tooldata["pick_steel"] = {
@@ -36,7 +36,7 @@ tooldata["pick_steel"] = {
 	groupcaps = {
 		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
 
 tooldata["pick_bronze"] = {
@@ -50,27 +50,27 @@ tooldata["pick_bronze"] = {
 
 tooldata["pick_mese"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
+		cracky = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=50, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=6, cracky=2, crumbly=1},
 }
 
 tooldata["pick_diamond"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	full_punch_interval = 0.9,
+	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
+		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=50, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 }
 
 tooldata["pick_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=200, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -88,25 +88,25 @@ tooldata["pick_mithril"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 4,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
+		cracky = {times={[1]=1.90, [2]=0.80, [3]=0.60}, uses=50, maxlevel=4},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=2, cracky=5, crumbly=1},
 }
 
 tooldata["pick_ruby"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
+		cracky = {times={[1]=0.20, [2]=0.20, [3]=0.20}, uses=50, maxlevel=4},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=5, cracky=1},
 }
 
 tooldata["pick_emerald"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -115,7 +115,7 @@ tooldata["pick_sapphire"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -124,7 +124,7 @@ tooldata["pick_amethyst"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -214,7 +214,7 @@ tooldata["shovel_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=200, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -358,7 +358,7 @@ tooldata["axe_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=200, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -502,7 +502,7 @@ tooldata["sword_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
+		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }

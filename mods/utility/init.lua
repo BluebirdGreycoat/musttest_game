@@ -56,9 +56,9 @@ dig_groups["furniture"]     = {level = 0, snappy = 2, choppy = 3, oddly_breakabl
 dig_groups["item"]          = {level = 1, dig_immediate = 3}
 dig_groups["bigitem"]       = {level = 1, dig_immediate = 2}
 dig_groups["reallybigitem"] = {level = 2, cracky = 1, choppy = 1, crumbly = 1, snappy = 1, oddly_breakable_by_hand = 3}
-dig_groups["chest"]         = {level = 0, choppy = 3, oddly_breakable_by_hand = 1}
-dig_groups["metalchest"]    = {level = 0, cracky = 3, oddly_breakable_by_hand = 1}
-dig_groups["machine"]       = {level = 0, cracky = 3, oddly_breakable_by_hand = 1}
+dig_groups["chest"]         = {level = 0, choppy = 3, oddly_breakable_by_hand = 3}
+dig_groups["metalchest"]    = {level = 0, cracky = 3, oddly_breakable_by_hand = 3}
+dig_groups["machine"]       = {level = 0, cracky = 3}
 dig_groups["crystal"]       = {level = 2, cracky = 3}
 dig_groups["shroom"]        = {level = 1, snappy = 2, choppy = 3, oddly_breakable_by_hand = 1}
 

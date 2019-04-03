@@ -378,7 +378,7 @@ tooldata["pick_titanium"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=3.80, [2]=1.40, [3]=1.00}, uses=250, maxlevel=2},
+		cracky = {times={[1]=3.80, [2]=1.10, [3]=1.00}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=15, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
@@ -388,7 +388,7 @@ tooldata["shovel_titanium"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=250, maxlevel=2},
+		crumbly = {times={[1]=3.50, [2]=1.10, [3]=1.00}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=6},
 	direct_to_inventory = true,
@@ -398,7 +398,7 @@ tooldata["axe_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 1,
 	groupcaps = {
-		choppy = {times={[1]=2.20, [2]=1.40, [3]=0.80}, uses=250, maxlevel=2},
+		choppy = {times={[1]=2.10, [2]=1.10, [3]=0.70}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -408,7 +408,7 @@ tooldata["sword_titanium"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=1.00, [3]=0.80}, uses=250, maxlevel=2},
+		snappy = {times={[1]=1.90, [2]=1.10, [3]=0.70}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,

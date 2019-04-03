@@ -256,45 +256,48 @@ local function door_access(name)
 end
 
 local xdecor_doors = {
-	japanese = {
+	japanese = { recipe = {
 		{"group:wood", "default:paper"},
 		{"default:paper", "group:wood"},
-		{"group:wood", "default:paper"} },
-	prison = {
+		{"group:wood", "default:paper"}}, groups=utility.dig_groups("door_wood") },
+	prison = { recipe = {
 		{"xpanes:bar_flat", "xpanes:bar_flat",},
 		{"xpanes:bar_flat", "xpanes:bar_flat",},
-		{"xpanes:bar_flat", "xpanes:bar_flat"} },
-	rusty_prison = {
+		{"xpanes:bar_flat", "xpanes:bar_flat"}}, groups=utility.dig_groups("door_metal") },
+	rusty_prison = { recipe = {
 		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat",},
 		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat",},
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat"} },
-	screen = {
+		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat"}}, groups=utility.dig_groups("door_metal") },
+	screen = { recipe = {
 		{"group:wood", "group:wood"},
 		{"xpanes:chainlink_flat", "xpanes:chainlink_flat"},
-		{"group:wood", "group:wood"} },
-	slide = {
+		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+	slide = { recipe = {
 		{"default:paper", "default:paper"},
 		{"default:paper", "default:paper"},
-		{"group:wood", "group:wood"} },
-	woodglass = {
+		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+	woodglass = { recipe = {
 		{"default:glass", "default:glass"},
 		{"group:wood", "group:wood"},
-		{"group:wood", "group:wood"} },
-	stone = {
+		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+	stone = { recipe = {
 		{"default:stone", "default:stone"},
 		{"default:stone", "default:stone"},
-		{"default:stone", "default:stone"} },
+		{"default:stone", "default:stone"}}, groups=utility.dig_groups("door_stone") },
 }
 
-for name, recipe in pairs(xdecor_doors) do
+for name, entry in pairs(xdecor_doors) do
+	local recipe = entry.recipe
+	local groups = entry.groups
+	groups.door = 1
 	if not doors.register then break end
 	doors.register(name.."_door", {
 		tiles = {{name = "xdecor_"..name.."_door.png", backface_culling=true}},
 		description = name:gsub("%f[%w]%l", string.upper):gsub("_", " ").." Door",
 		inventory_image = "xdecor_"..name.."_door_inv.png",
 		protected = door_access(name),
-		groups = utility.dig_groups("door", {door=1}),
-		recipe = recipe
+		groups = groups,
+		recipe = recipe,
 	})
 end
 

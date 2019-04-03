@@ -34,6 +34,12 @@
 --
 -- Titanium tools: another special toolset. Slightly faster dig times than iron
 -- (but not nearly as fast as copper), last MUCH longer, but have poorer drops.
+--
+-- Notes on level difference divider: the division is simple (though not
+-- explained at all in the Lua API document). So for instance, if a node has
+-- `level = 2` and a tool has `maxlevel = 4` in one of its dig groups, then
+-- that simply means that all dig-times for that dig group are divided in half.
+-- `4 - 2 = 2`, so all dig-times are `dig-time / 2`.
 
 tooldata = tooldata or {}
 local modpath = minetest.get_modpath("tooldata")
@@ -592,7 +598,7 @@ tooldata["pick_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=0.60, [2]=0.30, [3]=0.20}, uses=200, maxlevel=4},
+		cracky = {times={[1]=0.60, [2]=10.00, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 	xp_gain = 1.5,

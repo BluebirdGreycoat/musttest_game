@@ -432,7 +432,7 @@ tooldata["pick_ruby"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=1.10, [2]=0.50, [3]=0.30}, uses=150, maxlevel=4},
+		cracky = {times={[1]=1.20, [2]=0.60, [3]=0.40}, uses=150, maxlevel=4},
 	},
 	damage_groups = {fleshy=5, cracky=1},
 	xp_gain = 1.1,
@@ -442,7 +442,7 @@ tooldata["shovel_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		crumbly = {times={[1]=1.00, [2]=0.50, [3]=0.30}, uses=150, maxlevel=3},
+		crumbly = {times={[1]=1.10, [2]=0.60, [3]=0.40}, uses=150, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -451,7 +451,7 @@ tooldata["axe_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		choppy = {times={[1]=1.00, [2]=0.50, [3]=0.30}, uses=150, maxlevel=3},
+		choppy = {times={[1]=1.10, [2]=0.60, [3]=0.40}, uses=150, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -460,7 +460,7 @@ tooldata["sword_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		snappy = {times={[1]=0.80, [2]=0.80, [3]=0.80}, uses=150, maxlevel=3},
+		snappy = {times={[1]=0.90, [2]=0.90, [3]=0.90}, uses=150, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=7, crumbly=1},
 }

@@ -638,7 +638,7 @@ tooldata["sword_amethyst"] = {
 --------------------------------------------------------------------------------
 -- REINFORCED RUBY TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
-tooldata["pick_rubystone"] = {
+tooldata["pick_ruby_rf"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -649,7 +649,7 @@ tooldata["pick_rubystone"] = {
 	xp_gain = 0.3,
 }
 
-tooldata["shovel_rubystone"] = {
+tooldata["shovel_ruby_rf"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
@@ -659,7 +659,7 @@ tooldata["shovel_rubystone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["axe_rubystone"] = {
+tooldata["axe_ruby_rf"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -669,7 +669,7 @@ tooldata["axe_rubystone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["sword_rubystone"] = {
+tooldata["sword_ruby_rf"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
@@ -682,7 +682,7 @@ tooldata["sword_rubystone"] = {
 --------------------------------------------------------------------------------
 -- REINFORCED EMERALD TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
-tooldata["pick_emeraldstone"] = {
+tooldata["pick_emerald_rf"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
@@ -692,7 +692,7 @@ tooldata["pick_emeraldstone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["shovel_emeraldstone"] = {
+tooldata["shovel_emerald_rf"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
@@ -702,7 +702,7 @@ tooldata["shovel_emeraldstone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["axe_emeraldstone"] = {
+tooldata["axe_emerald_rf"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -712,7 +712,7 @@ tooldata["axe_emeraldstone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["sword_emeraldstone"] = {
+tooldata["sword_emerald_rf"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
@@ -725,7 +725,7 @@ tooldata["sword_emeraldstone"] = {
 --------------------------------------------------------------------------------
 -- REINFORCED SAPPHIRE TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
-tooldata["pick_sapphirestone"] = {
+tooldata["pick_sapphire_rf"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -735,7 +735,7 @@ tooldata["pick_sapphirestone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["shovel_sapphirestone"] = {
+tooldata["shovel_sapphire_rf"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
@@ -745,7 +745,7 @@ tooldata["shovel_sapphirestone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["axe_sapphirestone"] = {
+tooldata["axe_sapphire_rf"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -755,7 +755,7 @@ tooldata["axe_sapphirestone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["sword_sapphirestone"] = {
+tooldata["sword_sapphire_rf"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
@@ -768,7 +768,7 @@ tooldata["sword_sapphirestone"] = {
 --------------------------------------------------------------------------------
 -- REINFORCED AMETHYST TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
-tooldata["pick_amethyststone"] = {
+tooldata["pick_amethyst_rf"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
@@ -778,7 +778,7 @@ tooldata["pick_amethyststone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["shovel_amethyststone"] = {
+tooldata["shovel_amethyst_rf"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
@@ -788,7 +788,7 @@ tooldata["shovel_amethyststone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["axe_amethyststone"] = {
+tooldata["axe_amethyst_rf"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
@@ -798,7 +798,7 @@ tooldata["axe_amethyststone"] = {
 	direct_to_inventory = true,
 }
 
-tooldata["sword_amethyststone"] = {
+tooldata["sword_amethyst_rf"] = {
 	full_punch_interval = 0.7,
 	max_drop_level = 3,
 	groupcaps = {

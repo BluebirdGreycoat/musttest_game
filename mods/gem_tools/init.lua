@@ -132,7 +132,7 @@ if not gem_tools.registered then
 			local desc = v.desc .. " " .. j.desc
 			local desc_rf = v.desc .. " " .. j.desc .. " (Reinforced Handle)"
 			local data = j.tool .. "_" .. v.name
-			local data_rf = j.tool .. "_" .. v.name .. "stone"
+			local data_rf = j.tool .. "_" .. v.name .. "_rf"
 			local iimg = "gem_tools_" .. v.name .. "_" .. j.tool .. ".png"
 			local iimg_rf = "gem_tools_rf_" .. v.name .. "_" .. j.tool .. ".png"
 

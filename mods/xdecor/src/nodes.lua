@@ -16,14 +16,14 @@ local function register_pane(name, desc, def)
 end
 
 register_pane("bamboo_frame", "Bamboo Frame", {
-	groups = utility.dig_groups("bigitem", {pane=1, flammable=2}),
+	groups = utility.dig_groups("pane_wood", {pane=1, flammable=2}),
 	recipe = {{"default:papyrus", "default:papyrus", "default:papyrus"},
 		  {"default:papyrus", "farming:cotton",  "default:papyrus"},
 		  {"default:papyrus", "default:papyrus", "default:papyrus"}}
 })
 
 register_pane("chainlink", "Chain Link Mesh", {
-	groups = utility.dig_groups("bigitem", {pane=1}),
+	groups = utility.dig_groups("pane_metal", {pane=1}),
 	recipe = {{"default:steel_ingot", "", "default:steel_ingot"},
 		  {"", "default:steel_ingot", ""},
 		  {"default:steel_ingot", "", "default:steel_ingot"}},
@@ -32,7 +32,7 @@ register_pane("chainlink", "Chain Link Mesh", {
 
 register_pane("rusty_bar", "Rusty Iron Bars", {
 	sounds = default.node_sound_stone_defaults(),
-	groups = utility.dig_groups("bigitem", {pane=1}),
+	groups = utility.dig_groups("pane_metal", {pane=1}),
 	recipe = {{"", "default:dirt", ""},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"}},
@@ -41,7 +41,7 @@ register_pane("rusty_bar", "Rusty Iron Bars", {
 
 register_pane("wood_frame", "Wood Frame", {
 	sounds = default.node_sound_wood_defaults(),
-	groups = utility.dig_groups("bigitem", {pane=1, flammable=2}),
+	groups = utility.dig_groups("pane_wood", {pane=1, flammable=2}),
 	recipe = {{"group:wood", "group:stick", "group:wood"},
 		  {"group:stick", "group:stick", "group:stick"},
 		  {"group:wood", "group:stick", "group:wood"}}
@@ -293,7 +293,7 @@ for name, recipe in pairs(xdecor_doors) do
 		description = name:gsub("%f[%w]%l", string.upper):gsub("_", " ").." Door",
 		inventory_image = "xdecor_"..name.."_door_inv.png",
 		protected = door_access(name),
-		groups = utility.dig_groups("reallybigitem", {door=1}),
+		groups = utility.dig_groups("door", {door=1}),
 		recipe = recipe
 	})
 end
@@ -365,7 +365,7 @@ for _, f in pairs({"dandelion_white", "dandelion_yellow", "geranium",
 	xdecor.register("potted_"..f, {
 		description = "Potted "..f:gsub("%f[%w]%l", string.upper):gsub("_", " "),
 		walkable = false,
-		groups = utility.dig_groups("bigitem", {flammable=3, plant=1, flower=1}),
+		groups = utility.dig_groups("item", {flammable=3}),
 		tiles = {"xdecor_"..f.."_pot.png"},
 		inventory_image = "xdecor_"..f.."_pot.png",
 		drawtype = "plantlike",
@@ -394,7 +394,7 @@ xdecor.register("painting_1", {
 	wield_image = "xdecor_painting_empty.png",
 	paramtype2 = "wallmounted",
 	sunlight_propagates = true,
-	groups = utility.dig_groups("bigitem", {flammable=2, attached_node=1}),
+	groups = utility.dig_groups("item", {flammable=2, attached_node=1}),
 	sounds = default.node_sound_wood_defaults(),
 	node_box = painting_box,
 	node_placement_prediction = "",
@@ -418,7 +418,7 @@ for i = 2, 4 do
 		paramtype2 = "wallmounted",
 		drop = "xdecor:painting_1",
 		sunlight_propagates = true,
-		groups = utility.dig_groups("bigitem", {flammable=2,
+		groups = utility.dig_groups("item", {flammable=2,
 			  attached_node=1, not_in_creative_inventory=1}),
 		sounds = default.node_sound_wood_defaults(),
 		node_box = painting_box,
@@ -451,7 +451,7 @@ local function register_hard_node(name, desc, def)
 	xdecor.register(name, {
 		description = desc,
 		tiles = {"xdecor_"..name..".png"},
-		groups = def.groups or utility.dig_groups("stone"),
+		groups = def.groups or utility.dig_groups("hardstone"),
 		sounds = def.sounds or default.node_sound_stone_defaults(),
 	})
 end
@@ -464,7 +464,7 @@ register_hard_node("moonbrick", "Moon Brick")
 register_hard_node("stone_tile", "Clean Stone Tile")
 register_hard_node("stone_rune", "Rune Stone")
 register_hard_node("packed_ice", "Packed Ice", {
-	groups = utility.dig_groups("stone", {puts_out_fire=1, slippery=3}),
+	groups = utility.dig_groups("hardice", {puts_out_fire=1, slippery=3}),
 	sounds = default.node_sound_glass_defaults(),
 })
 register_hard_node("wood_tile", "Wooden Tile", {

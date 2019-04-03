@@ -753,7 +753,7 @@ minetest.register_node("default:stone_with_diamond", {
 	description = "Diamond Ore",
 	tiles = {"default_stone.png^default_mineral_diamond.png"},
 	-- Player has to get mese pick or similar before they can get diamond.
-	groups = utility.dig_groups("rockgem"),
+	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
@@ -1637,7 +1637,7 @@ default.register_fence("default:fence_iron", {
 	inventory_image = "default_fence_overlay.png^default_fence_iron.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_fence_iron.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:steel_ingot",
-	groups = utility.dig_groups("metal", {fence = 1}),
+	groups = utility.dig_groups("fence_metal", {fence = 1}),
 	sounds = default.node_sound_metal_defaults()
 })
 
@@ -1647,7 +1647,7 @@ default.register_fence("default:fence_bronze", {
 	inventory_image = "default_fence_overlay.png^default_fence_bronze.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_fence_bronze.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:bronze_ingot",
-	groups = utility.dig_groups("metal", {fence = 1}),
+	groups = utility.dig_groups("fence_metal", {fence = 1}),
 	sounds = default.node_sound_metal_defaults()
 })
 
@@ -1657,7 +1657,7 @@ default.register_fence("default:fence_wood", {
 	inventory_image = "default_fence_overlay.png^default_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:wood",
-	groups = utility.dig_groups("wood", {flammable = 2, fence = 1}),
+	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
 	sounds = default.node_sound_wood_defaults()
 })
 
@@ -1667,7 +1667,7 @@ default.register_fence("default:fence_acacia_wood", {
 	inventory_image = "default_fence_overlay.png^default_acacia_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_acacia_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:acacia_wood",
-	groups = utility.dig_groups("wood", {flammable = 2, fence = 1}),
+	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
 	sounds = default.node_sound_wood_defaults()
 })
 
@@ -1677,7 +1677,7 @@ default.register_fence("default:fence_junglewood", {
 	inventory_image = "default_fence_overlay.png^default_junglewood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_junglewood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:junglewood",
-	groups = utility.dig_groups("wood", {flammable = 2, fence = 1}),
+	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
 	sounds = default.node_sound_wood_defaults()
 })
 
@@ -1687,7 +1687,7 @@ default.register_fence("default:fence_pine_wood", {
 	inventory_image = "default_fence_overlay.png^default_pine_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_pine_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:pine_wood",
-	groups = utility.dig_groups("wood", {flammable = 2, fence = 1}),
+	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
 	sounds = default.node_sound_wood_defaults()
 })
 
@@ -1697,7 +1697,7 @@ default.register_fence("default:fence_aspen_wood", {
 	inventory_image = "default_fence_overlay.png^default_aspen_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	wield_image = "default_fence_overlay.png^default_aspen_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:aspen_wood",
-	groups = utility.dig_groups("wood", {flammable = 2, fence = 1}),
+	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
 	sounds = default.node_sound_wood_defaults()
 })
 

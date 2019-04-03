@@ -38,7 +38,7 @@ minetest.register_alias("technic:marble", "morerocks:marble")
 minetest.register_node("morerocks:marble_bricks", {
 	description = "Marble Bricks",
 	tiles = {"morerocks_marble_bricks.png"},
-	groups = utility.dig_groups("bricks"),
+	groups = utility.dig_groups("brick"),
 	sounds = default.node_sound_stone_defaults(),
 })
 minetest.register_alias("technic:marble_bricks", "morerocks:marble_bricks")

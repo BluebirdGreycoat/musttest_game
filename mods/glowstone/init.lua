@@ -29,7 +29,7 @@ minetest.register_node("glowstone:minerals", {
 	tiles = {"glowstone_minerals.png"},
 	paramtype = "light",
 	light_source = 14,
-	groups = utility.dig_groups("minerals"),
+	groups = utility.dig_groups("mineral"),
 	drop = "glowstone:glowing_dust 2",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),

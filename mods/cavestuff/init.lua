@@ -474,7 +474,7 @@ stairs.register_stair_and_slab(
 minetest.register_node("cavestuff:dark_obsidian", {
   description = "Dead Obsidian",
   tiles = {"technic_obsidian.png"},
-  groups = utility.dig_groups("hardstone", {
+  groups = utility.dig_groups("obsidian", {
     immovable = 1,
   }),
   sounds = default.node_sound_stone_defaults(),

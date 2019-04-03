@@ -30,7 +30,7 @@ minetest.register_node("cucumber:seed", {
   walkable = false,
   sunlight_propagates = true,
 	selection_box = farming.select,
-  groups = utility.dig_groups("seed", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
+  groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
   on_place = function(itemstack, placer, pointed_thing)
     return farming.place_seed(itemstack, placer, pointed_thing, "cucumber:seed")
   end,

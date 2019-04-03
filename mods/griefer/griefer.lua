@@ -10,6 +10,7 @@ mobs.register_mob("griefer:griefer", {
 	hp_min = 8,
 	hp_max = 34,
 	armor = 100,
+	armor_level = 2,
 	-- Slightly smaller collision box makes mob movement easier.
 	collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	--collisionbox = {-0.4, -1, -0.4, 0.4, 0.9, 0.4},

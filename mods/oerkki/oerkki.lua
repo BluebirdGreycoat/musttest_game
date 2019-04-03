@@ -11,6 +11,7 @@ mobs.register_mob("oerkki:oerkki", {
 	hp_min = 8,
 	hp_max = 34,
 	armor = 100,
+	armor_level = 2,
 	--collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	collisionbox = {-0.4, -0.4, -0.4, 0.4, 0.4, 0.4},
 	visual = "mesh",

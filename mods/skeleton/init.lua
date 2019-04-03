@@ -13,6 +13,7 @@ mobs.register_mob("skeleton:skeleton", {
 	hp_min = 62,
 	hp_max = 72,
 	armor = 100,
+	armor_level = 3,
 	collisionbox = {-0.4, 0, -0.4, 0.4, 2.5, 0.4},
 	visual = "mesh",
 	mesh = "skeleton_skeleton.b3d",

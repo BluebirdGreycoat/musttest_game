@@ -6,6 +6,9 @@ mobs.register_mob("iceman:iceman", {
 	attack_type = "dogfight",
   group_attack = true,
 
+	-- Require at least steel sword to get any drops.
+	armor_level = 1,
+
 	pathfinding = 2,
 	instance_pathfinding_chance = {10, 100},
 	place_node = "default:snowblock",

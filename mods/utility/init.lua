@@ -22,7 +22,7 @@ end
 -- `oddly_breakable_by_hand` only works if `level = 0/1`.
 
 local dig_groups = {}
-dig_groups["stone"]         = {level = 2, cracky = 2}
+dig_groups["stone"]         = {level = 2, cracky = 2} -- Carefully tuned dig-params! Do not modify.
 dig_groups["softstone"]     = {level = 2, cracky = 3} -- Like sandstone.
 dig_groups["cobble"]        = {level = 1, cracky = 3} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
 dig_groups["softcobble"]    = {level = 1, cracky = 2, crumbly = 1}
@@ -47,8 +47,8 @@ dig_groups["gravel"]        = {level = 1, crumbly = 2}
 dig_groups["dirt"]          = {level = 0, crumbly = 2}
 dig_groups["sand"]          = {level = 0, crumbly = 3}
 dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 3}
-dig_groups["tree"]          = {level = 2, choppy = 1}
-dig_groups["wood"]          = {level = 2, choppy = 2} -- Also wooden 'blocklike'. Planks & stuff.
+dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.
+dig_groups["wood"]          = {level = 2, choppy = 3} -- Also wooden 'blocklike'. Planks & stuff.
 dig_groups["hardwood"]      = {level = 2, choppy = 1}
 dig_groups["softwood"]      = {level = 2, choppy = 3} -- Cactus, etc.
 dig_groups["woodglass"]     = {level = 2, choppy = 2, cracky = 2} -- Doors, etc.
@@ -56,7 +56,7 @@ dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `sn
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["seed"]          = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["plant"]         = {level = 0, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
-dig_groups["crop"]          = {level = 0, snappy = 3, choppy = 1} -- Ditto ^^^.
+dig_groups["crop"]          = {level = 0, snappy = 3, choppy = 2} -- Ditto ^^^.
 dig_groups["straw"]         = {level = 1, snappy = 2, choppy = 1, oddly_breakable_by_hand = 1}
 dig_groups["wool"]          = {level = 1, snappy = 2, choppy = 2, oddly_breakable_by_hand = 1}
 dig_groups["furniture"]     = {level = 0, snappy = 2, choppy = 3, oddly_breakable_by_hand = 3}

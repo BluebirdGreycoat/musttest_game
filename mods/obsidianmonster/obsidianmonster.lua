@@ -10,6 +10,7 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 	hp_min = 10,
 	hp_max = 25,
 	armor = 80,
+	armor_level = 3,
 	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 	visual = "mesh",
 	mesh = "obsidianmonster_obsidianmonster.x",

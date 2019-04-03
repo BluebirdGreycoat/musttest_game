@@ -223,20 +223,22 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	if not idef.tool_capabilities then
 		return
 	end
+	-- We have to get tool capabilities directly from the itemdef in order to access custom data.
+	local tool_capabilities = idef.tool_capabilities
 
-	if (idef.tool_capabilities.xp_gain or 1.0) < 1.0 then
-		minetest.chat_send_player("MustTest", "XP gain: " .. (idef.tool_capabilities.xp_gain or 1.0))
-	end
+	--if (idef.tool_capabilities.xp_gain or 1.0) < 1.0 then
+	--	minetest.chat_send_player("MustTest", "XP gain: " .. (idef.tool_capabilities.xp_gain or 1.0))
+	--end
 
 	-- Player does not get node drop if tool doesn't have sufficient level.
-	if (idef.tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
+	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
 		return
 	end
 
 	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_"))
 
 	-- If node has a drop string/table for silver tools, override drop table.
-	-- Player doesn't get XP for nodes dug this way, but that's ok.
+	-- Player doesn't get XP for nodes dug this way, but that's good (prevents exploit).
 	if is_basic_tool and tn:find("silver") then
 		if ndef.silverpick_drop then
 			local newdrop = ndef.silverpick_drop
@@ -288,7 +290,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 			-- Increase player's XP if not at max yet.
 			if digxp < xp.digxp_max then
-				digxp = digxp + (value * (idef.tool_capabilities.xp_gain or 1.0))
+				digxp = digxp + (value * (tool_capabilities.xp_gain or 1.0))
 				if digxp > xp.digxp_max then
 					digxp = xp.digxp_max
 				end

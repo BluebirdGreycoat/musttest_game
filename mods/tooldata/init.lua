@@ -132,7 +132,7 @@ tooldata["shovel_stone"] = {
 	full_punch_interval = 2.0,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=1},
+		crumbly = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=1, cracky=5, crumbly=1},
 }
@@ -172,7 +172,7 @@ tooldata["shovel_steel"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=1},
+		crumbly = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=6},
 }
@@ -216,7 +216,7 @@ tooldata["shovel_bronze"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = -1,
 	groupcaps = {
-		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=150, maxlevel=1},
+		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }

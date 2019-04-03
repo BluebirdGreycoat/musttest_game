@@ -45,15 +45,7 @@ if not shears.run_once then
         inventory_image = "shears_shears.png",
         wield_image = "shears_shears.png",
         stack_max = 1,
-        max_drop_level=3,
-        tool_capabilities = {
-            full_punch_interval = 1.0,
-            max_drop_level = 0,
-            groupcaps = {
-                snappy = {times={[3]=0.2}, uses=70, maxlevel=3},
-                --wool = {times={[3]=0.2}, uses=1/0.05, maxlevel=3},
-            },
-        },
+        tool_capabilities = tooldata["shears_shears"],
         
         -- OnPlace is used to avoid interfering with regular digging actions on the client.
         -- The shears are allowed to dig leaves and ropes.

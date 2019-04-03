@@ -2791,7 +2791,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 			end
 		else
 			if check_for_death(self, "hit", {type = "punch",
-					puncher = hitter}) then
+					puncher = hitter, tool_capabilities = tool_capabilities}) then
 				return
 			end
 		end

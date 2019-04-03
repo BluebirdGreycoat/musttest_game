@@ -146,7 +146,7 @@ minetest.register_node("handholds:sandstone", {
 	on_rotate = function()
 		return false
 	end,
-	groups = utility.dig_groups("sandstone", {not_in_creative_inventory = 1, handholds = 1}),
+	groups = utility.dig_groups("softstone", {not_in_creative_inventory = 1, handholds = 1}),
 	drop = 'default:sandstone',
 	sounds = default.node_sound_stone_defaults(),
 	after_destruct = function(pos, oldnode)

@@ -332,7 +332,7 @@ if not anvil.registered then
 		sound = {breaks = "default_tool_breaks"},
 		image           = "anvil_tool_steelhammer.png",
 		inventory_image = "anvil_tool_steelhammer.png",
-		tool_capabilities = tooldata["pick_wood"],
+		tool_capabilities = tooldata["hammer_hammer"],
 	})
 
 	-- The anvil itself.

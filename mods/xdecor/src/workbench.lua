@@ -18,7 +18,7 @@ minetest.register_tool("xdecor:hammer", {
 	sound = {breaks = "default_tool_breaks"},
 	inventory_image = "xdecor_hammer.png",
 	wield_image = "xdecor_hammer.png",
-	tool_capabilities = tooldata["pick_wood"],
+	tool_capabilities = tooldata["hammer_hammer"],
 })
 
 -- Recipes

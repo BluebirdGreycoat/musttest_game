@@ -8,53 +8,59 @@ fireambiance = {}
 function fireambiance.on_flame_addremove(pos)
 end
 
+-- `level = 0/1, snappy = 3` enables quick digging via shears.
+-- Otherwise item cannot be dug by shears at all.
+--
+-- The 'hand' only digs items `level = 0` or `level = 1`, with some additional
+-- restrictions. See tool-data file for details.
+
 local dig_groups = {}
 dig_groups["stone"]         = {level = 1, cracky = 1}
-dig_groups["sandstone"]     = {level = 1, cracky = 2}
-dig_groups["cobble"]        = {level = 1, cracky = 2}
-dig_groups["softcobble"]    = {level = 1, cracky = 3, crumbly = 1}
+dig_groups["softstone"]     = {level = 1, cracky = 2}
+dig_groups["cobble"]        = {level = 0, cracky = 2} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
+dig_groups["softcobble"]    = {level = 0, cracky = 2, crumbly = 1}
 dig_groups["wall"]          = {level = 2, cracky = 3}
 dig_groups["clay"]          = {level = 1, cracky = 3, crumbly = 2}
-dig_groups["hardore"]       = {level = 2, cracky = 2}
+dig_groups["hardore"]       = {level = 2, cracky = 3}
 dig_groups["hardclay"]      = {level = 1, cracky = 3}
-dig_groups["ice"]           = {level = 1, cracky = 3}
+dig_groups["ice"]           = {level = 0, cracky = 2}
 dig_groups["glass"]         = {level = 1, cracky = 3}
 dig_groups["metal"]         = {level = 1, cracky = 2}
 dig_groups["netherack"]     = {level = 1, cracky = 3}
 dig_groups["mineral"]       = {level = 1, cracky = 2}
 dig_groups["minerals"]      = {level = 1, cracky = 2}
-dig_groups["hardmineral"]   = {level = 2, cracky = 1}
-dig_groups["rockgem"]       = {level = 3, cracky = 1}
+dig_groups["hardmineral"]   = {level = 2, cracky = 3}
+dig_groups["rockgem"]       = {level = 2, cracky = 3}
 dig_groups["brick"]         = {level = 2, cracky = 2}
 dig_groups["bricks"]        = {level = 2, cracky = 2}
 dig_groups["block"]         = {level = 2, cracky = 2} -- Stone blocks, metal blocks, etc.
 dig_groups["obsidian"]      = {level = 3, cracky = 1}
 dig_groups["hardstone"]     = {level = 4, cracky = 1}
-dig_groups["gravel"]        = {level = 1, crumbly = 1}
-dig_groups["dirt"]          = {level = 1, crumbly = 2}
-dig_groups["sand"]          = {level = 1, crumbly = 3}
-dig_groups["snow"]          = {level = 1, crumbly = 3, oddly_breakable_by_hand = 2}
-dig_groups["tree"]          = {level = 1, choppy = 1}
+dig_groups["gravel"]        = {level = 0, crumbly = 1}
+dig_groups["dirt"]          = {level = 0, crumbly = 2}
+dig_groups["sand"]          = {level = 0, crumbly = 3}
+dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 2}
+dig_groups["tree"]          = {level = 2, choppy = 1}
 dig_groups["wood"]          = {level = 1, choppy = 2} -- Also wooden 'blocklike'. Planks & stuff.
-dig_groups["hardwood"]      = {level = 1, choppy = 1}
-dig_groups["softwood"]      = {level = 1, choppy = 3} -- Cactus, etc.
-dig_groups["woodglass"]     = {level = 1, choppy = 2, cracky = 2} -- Doors, etc.
-dig_groups["leaves"]        = {level = 1, snappy = 2, choppy = 2}
+dig_groups["hardwood"]      = {level = 2, choppy = 1}
+dig_groups["softwood"]      = {level = 2, choppy = 3} -- Cactus, etc.
+dig_groups["woodglass"]     = {level = 2, choppy = 2, cracky = 2} -- Doors, etc.
+dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears/hand won't work.
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["seed"]          = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
-dig_groups["plant"]         = {level = 1, snappy = 3, choppy = 2}
-dig_groups["crop"]          = {level = 1, snappy = 2, choppy = 1}
-dig_groups["straw"]         = {level = 1, snappy = 3, choppy = 1, oddly_breakable_by_hand = 1}
+dig_groups["plant"]         = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
+dig_groups["crop"]          = {level = 1, snappy = 3, choppy = 1} -- Ditto ^^^.
+dig_groups["straw"]         = {level = 1, snappy = 2, choppy = 1, oddly_breakable_by_hand = 1}
 dig_groups["wool"]          = {level = 1, snappy = 2, choppy = 2, oddly_breakable_by_hand = 1}
-dig_groups["furniture"]     = {level = 1, snappy = 3, choppy = 3, oddly_breakable_by_hand = 3}
+dig_groups["furniture"]     = {level = 0, snappy = 2, choppy = 3, oddly_breakable_by_hand = 3}
 dig_groups["item"]          = {level = 1, dig_immediate = 3}
 dig_groups["bigitem"]       = {level = 1, dig_immediate = 2}
 dig_groups["reallybigitem"] = {level = 2, cracky = 1, choppy = 1, crumbly = 1, snappy = 1, oddly_breakable_by_hand = 3}
-dig_groups["chest"]         = {level = 1, choppy = 3, oddly_breakable_by_hand = 1}
-dig_groups["metalchest"]    = {level = 1, cracky = 3, oddly_breakable_by_hand = 1}
-dig_groups["machine"]       = {level = 1, cracky = 3, oddly_breakable_by_hand = 1}
+dig_groups["chest"]         = {level = 0, choppy = 3, oddly_breakable_by_hand = 1}
+dig_groups["metalchest"]    = {level = 0, cracky = 3, oddly_breakable_by_hand = 1}
+dig_groups["machine"]       = {level = 0, cracky = 3, oddly_breakable_by_hand = 1}
 dig_groups["crystal"]       = {level = 2, cracky = 3}
-dig_groups["shroom"]        = {level = 1, snappy = 3, choppy = 3, oddly_breakable_by_hand = 1}
+dig_groups["shroom"]        = {level = 1, snappy = 2, choppy = 3, oddly_breakable_by_hand = 1}
 
 -- Get dig groups for a node based on its broad category.
 -- When choosing a name for a node, choose the name closest to the node's main material.

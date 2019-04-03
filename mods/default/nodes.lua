@@ -321,7 +321,7 @@ minetest.register_node("default:desert_stone_block", {
 minetest.register_node("default:sandstone", {
 	description = "Sandstone",
 	tiles = {"default_sandstone.png"},
-	groups = utility.dig_groups("sandstone", {stone=1}),
+	groups = utility.dig_groups("softstone", {stone=1}),
 	sounds = default.node_sound_stone_defaults(),
 
 	-- Added on March 16, 2018.

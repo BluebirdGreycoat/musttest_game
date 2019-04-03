@@ -216,6 +216,11 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
+	-- Player does not get node drop if tool doesn't have sufficient level.
+	if (tool:get_tool_capabilities().max_drop_level or 0) < (ndef.groups.level or 0) then
+		return
+	end
+
 	-- If node has a drop string/table for silver picks, override drop table.
 	-- Player doesn't get XP for nodes dug this way, but that's ok.
 	if toolname:find("pick") and toolname:find("silver") then

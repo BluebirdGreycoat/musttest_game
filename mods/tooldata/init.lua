@@ -163,7 +163,7 @@ tooldata["pick_steel"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 2, -- Must be 2 otherwise stone unobtainable.
 	groupcaps = {
-		cracky = {times={[1]=4.00, [2]=1.50, [3]=1.10}, uses=150, maxlevel=2},
+		cracky = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }
@@ -172,7 +172,7 @@ tooldata["shovel_steel"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=4.00, [2]=1.50, [3]=1.10}, uses=150, maxlevel=1},
+		crumbly = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=6},
 }
@@ -181,7 +181,7 @@ tooldata["axe_steel"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		choppy = {times={[1]=2.20, [2]=1.50, [3]=0.80}, uses=150, maxlevel=2},
+		choppy = {times={[1]=2.20, [2]=1.20, [3]=0.80}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 }
@@ -190,7 +190,7 @@ tooldata["sword_steel"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=1.00, [3]=0.80}, uses=150, maxlevel=2},
+		snappy = {times={[1]=2.00, [2]=1.20, [3]=0.80}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 }
@@ -200,9 +200,6 @@ tooldata["sword_steel"] = {
 --------------------------------------------------------------------------------
 
 -- Early-obtainable pick with "magical" properties: fast dig, but NO drops.
--- Wear handling is actually the same as stone tools, but seems to wear out faster
--- because tools dig quicker.
---
 -- These tools are just copper tools, craftable from copper ingots.
 
 tooldata["pick_bronze"] = {
@@ -219,7 +216,7 @@ tooldata["shovel_bronze"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = -1,
 	groupcaps = {
-		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=150, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
@@ -228,7 +225,7 @@ tooldata["axe_bronze"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = -1,
 	groupcaps = {
-		choppy = {times={[1]=0.30, [2]=0.30, [3]=0.30}, uses=50, maxlevel=2},
+		choppy = {times={[1]=0.30, [2]=0.30, [3]=0.30}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=4, cracky=1, crumbly=1},
 }
@@ -238,7 +235,7 @@ tooldata["sword_bronze"] = {
 	max_drop_level = -1, -- No drops, so only worth it versus mobs.
 	groupcaps = {
 		-- Sword wears out rather quick, though.
-		snappy = {times={[1]=0.60, [2]=0.60, [3]=0.60}, uses=20, maxlevel=2},
+		snappy = {times={[1]=0.60, [2]=0.60, [3]=0.60}, uses=120, maxlevel=2},
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1}, -- Better damage than steel.
 }
@@ -250,7 +247,7 @@ tooldata["pick_mese"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.40, [2]=1.10, [3]=0.60}, uses=80, maxlevel=3},
+		cracky = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
@@ -260,7 +257,7 @@ tooldata["shovel_mese"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.40, [2]=1.10, [3]=0.60}, uses=80, maxlevel=3},
+		crumbly = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -270,7 +267,7 @@ tooldata["axe_mese"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.40, [2]=1.10, [3]=0.60}, uses=80, maxlevel=3},
+		choppy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -280,7 +277,7 @@ tooldata["sword_mese"] = {
 	full_punch_interval = 0.9,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.40, [2]=1.10, [3]=0.60}, uses=80, maxlevel=3},
+		snappy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -293,7 +290,7 @@ tooldata["pick_diamond"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 2,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=0.90, [3]=0.50}, uses=80, maxlevel=3},
+		cracky = {times={[1]=2.00, [2]=0.60, [3]=0.50}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 1.5,
@@ -303,7 +300,7 @@ tooldata["shovel_diamond"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 2,
 	groupcaps = {
-		crumbly = {times={[1]=2.00, [2]=0.90, [3]=0.50}, uses=80, maxlevel=3},
+		crumbly = {times={[1]=2.00, [2]=0.60, [3]=0.50}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -313,7 +310,7 @@ tooldata["axe_diamond"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 2,
 	groupcaps = {
-		choppy = {times={[1]=2.00, [2]=0.90, [3]=0.50}, uses=80, maxlevel=3},
+		choppy = {times={[1]=2.00, [2]=0.60, [3]=0.50}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -324,7 +321,7 @@ tooldata["sword_diamond"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=0.90, [3]=0.50}, uses=80, maxlevel=3},
+		snappy = {times={[1]=2.00, [2]=0.60, [3]=0.50}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -335,9 +332,9 @@ tooldata["sword_diamond"] = {
 --------------------------------------------------------------------------------
 tooldata["pick_mithril"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = 2,
+	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=1.80, [2]=0.60, [3]=0.40}, uses=80, maxlevel=3},
+		cracky = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 2.5,
@@ -345,9 +342,9 @@ tooldata["pick_mithril"] = {
 
 tooldata["shovel_mithril"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = 2,
+	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=1.80, [2]=0.60, [3]=0.40}, uses=80, maxlevel=3},
+		crumbly = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -355,9 +352,9 @@ tooldata["shovel_mithril"] = {
 
 tooldata["axe_mithril"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 2,
+	max_drop_level = 1,
 	groupcaps = {
-		choppy = {times={[1]=1.80, [2]=0.60, [3]=0.40}, uses=80, maxlevel=3},
+		choppy = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -368,7 +365,7 @@ tooldata["sword_mithril"] = {
 	full_punch_interval = 0.7,
 	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[1]=1.80, [2]=0.60, [3]=0.40}, uses=80, maxlevel=3},
+		snappy = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1},
 	xp_gain = 1.5,
@@ -472,7 +469,7 @@ tooldata["pick_ruby"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
+		cracky = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
@@ -483,7 +480,7 @@ tooldata["shovel_ruby"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		crumbly = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -493,7 +490,7 @@ tooldata["axe_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		choppy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -503,7 +500,7 @@ tooldata["sword_ruby"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
+		snappy = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -516,7 +513,7 @@ tooldata["pick_emerald"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		cracky = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -526,7 +523,7 @@ tooldata["shovel_emerald"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
+		crumbly = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -536,7 +533,7 @@ tooldata["axe_emerald"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
+		choppy = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -546,7 +543,7 @@ tooldata["sword_emerald"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		snappy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -559,7 +556,7 @@ tooldata["pick_sapphire"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
+		cracky = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -569,7 +566,7 @@ tooldata["shovel_sapphire"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		crumbly = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -579,7 +576,7 @@ tooldata["axe_sapphire"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
+		choppy = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -589,7 +586,7 @@ tooldata["sword_sapphire"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		snappy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -602,7 +599,7 @@ tooldata["pick_amethyst"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		cracky = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -612,7 +609,7 @@ tooldata["shovel_amethyst"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
+		crumbly = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -622,7 +619,7 @@ tooldata["axe_amethyst"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
+		choppy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -632,7 +629,7 @@ tooldata["sword_amethyst"] = {
 	full_punch_interval = 0.7,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
+		snappy = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -645,7 +642,7 @@ tooldata["pick_rubystone"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
+		cracky = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -656,7 +653,7 @@ tooldata["shovel_rubystone"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		crumbly = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -666,7 +663,7 @@ tooldata["axe_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		choppy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -676,7 +673,7 @@ tooldata["sword_rubystone"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
+		snappy = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -689,7 +686,7 @@ tooldata["pick_emeraldstone"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		cracky = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -699,7 +696,7 @@ tooldata["shovel_emeraldstone"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
+		crumbly = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -709,7 +706,7 @@ tooldata["axe_emeraldstone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
+		choppy = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -719,7 +716,7 @@ tooldata["sword_emeraldstone"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		snappy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -732,7 +729,7 @@ tooldata["pick_sapphirestone"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
+		cracky = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -742,7 +739,7 @@ tooldata["shovel_sapphirestone"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		crumbly = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -752,7 +749,7 @@ tooldata["axe_sapphirestone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
+		choppy = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -762,7 +759,7 @@ tooldata["sword_sapphirestone"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		snappy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -775,7 +772,7 @@ tooldata["pick_amethyststone"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
-		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		cracky = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
@@ -785,7 +782,7 @@ tooldata["shovel_amethyststone"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
+		crumbly = {times={[1]=1.40, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -795,7 +792,7 @@ tooldata["axe_amethyststone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
+		choppy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -805,7 +802,7 @@ tooldata["sword_amethyststone"] = {
 	full_punch_interval = 0.7,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
+		snappy = {times={[1]=1.40, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,

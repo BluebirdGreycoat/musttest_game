@@ -11,15 +11,22 @@
 --
 -- Early-game toolsets: stone, iron, copper. These should perform similarly,
 -- especially stone since player might get bored if stone digs too slowly and
--- they don't soon find iron or copper.
+-- they don't soon find iron or copper. Note: copper should have better
+-- dig-times than diamond, but not better than gem tools. However copper makes
+-- NO drops.
 --
--- Mid-level (pro) toolsets: diamond & mese.
+-- Mid-level (pro) toolsets: mese, diamond & mithril. Mese, diamond, & mithril
+-- gradually improve their dig-times in the order listed. Average dig times are
+-- between iron and gem tools. Copper tools should have the best dig-times
+-- (except for gem tools), but neither do copper tools produce drops.
 --
--- Expert-level toolsets: mithril, + gem tools + reinforced gem tools.
+-- Drops from mese tools go directly to player's inventory. Diamond & mithril
+-- tools both increase the player's XP gain. These are the ONLY tools to do
+-- this.
 --
--- 1) Mithril:
+-- Expert-level toolsets: gem tools + reinforced gem tools.
 --
--- 2) Gem Tools (inc. Reinforced Gem Tools): these dig faster than any other
+-- 1) Gem Tools (inc. Reinforced Gem Tools): these dig faster than any other
 -- tools in the game, while having perfect drops. Worse wear handling than
 -- titanium but better than steel. The reinforced versions' dig-times are nearly
 -- the same as the regular gem tools, but their wear handling is as good as
@@ -49,6 +56,10 @@
 -- 1 (node is level 3, tool is maxlevel 4), then the level difference divider
 -- still "kicks in", but since the difference is just 1 there is no effect on
 -- actual digging times.
+--
+-- Further note: all picks do excellent damage (better than swords), but have
+-- long swing time, so they're only good as first-strike weapons, then switching
+-- to a sword is better.
 
 tooldata = tooldata or {}
 local modpath = minetest.get_modpath("tooldata")
@@ -97,7 +108,7 @@ tooldata["hand_hand"] = {
 -- Start plan: find dry shrub, get sticks. Dig cobble underneath, get cobble.
 -- Upgrade to stone tools ASAP.
 tooldata["pick_wood"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 2.0,
 	max_drop_level = 1, -- Must be 1 otherwise cobble unobtainable.
 	groupcaps = {
 		cracky = {times={[3]=6.00}, uses=50, maxlevel=1},
@@ -109,12 +120,12 @@ tooldata["pick_wood"] = {
 -- STONE TOOLS: High punch interval, cracky mob damage.
 --------------------------------------------------------------------------------
 tooldata["pick_stone"] = {
-	full_punch_interval = 2.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 2, -- Must be 2 otherwise stone unobtainable.
 	groupcaps = {
 		cracky = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=3, cracky=7, crumbly=1},
+	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=3},
 }
 
 tooldata["shovel_stone"] = {
@@ -123,7 +134,7 @@ tooldata["shovel_stone"] = {
 	groupcaps = {
 		crumbly = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=1},
 	},
-	damage_groups = {fleshy=2, cracky=5, crumbly=1},
+	damage_groups = {fleshy=1, cracky=5, crumbly=1},
 }
 
 tooldata["axe_stone"] = {
@@ -132,7 +143,7 @@ tooldata["axe_stone"] = {
 	groupcaps = {
 		choppy = {times={[2]=2.00, [3]=0.90}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=3, cracky=7, crumbly=1},
+	damage_groups = {fleshy=1, cracky=5, crumbly=1},
 }
 
 tooldata["sword_stone"] = {
@@ -142,23 +153,23 @@ tooldata["sword_stone"] = {
 		-- Should be slightly faster at digging plants than the hand.
 		snappy = {times={[2]=1.10, [3]=0.90}, uses=50, maxlevel=1},
 	},
-	damage_groups = {fleshy=4, cracky=20, crumbly=1},
+	damage_groups = {fleshy=1, cracky=6, crumbly=1},
 }
 
 --------------------------------------------------------------------------------
 -- IRON TOOLS: Dig slightly faster than stone, last much longer. Get all drops.
 --------------------------------------------------------------------------------
 tooldata["pick_steel"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 2, -- Must be 2 otherwise stone unobtainable.
 	groupcaps = {
 		cracky = {times={[1]=4.00, [2]=1.50, [3]=1.10}, uses=150, maxlevel=2},
 	},
-	damage_groups = {fleshy=3, cracky=1, crumbly=1},
+	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=3},
 }
 
 tooldata["shovel_steel"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
 		crumbly = {times={[1]=4.00, [2]=1.50, [3]=1.10}, uses=150, maxlevel=1},
@@ -188,40 +199,37 @@ tooldata["sword_steel"] = {
 -- COPPER TOOLS: Dig faster than steel, NO drops, poor wear handling.
 --------------------------------------------------------------------------------
 
--- Early-obtainable pick with "magical" properties: fast dig, but very poor drops.
+-- Early-obtainable pick with "magical" properties: fast dig, but NO drops.
 -- Wear handling is actually the same as stone tools, but seems to wear out faster
--- because tools dig quicker. Another benefit is improved XP gain.
+-- because tools dig quicker.
 --
 -- These tools are just copper tools, craftable from copper ingots.
 
 tooldata["pick_bronze"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = -1,
 	groupcaps = {
 		cracky = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=3, cracky=1, crumbly=1},
-	xp_gain = 1.5,
+	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=3},
 }
 
 tooldata["shovel_bronze"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = -1,
 	groupcaps = {
-		crumbly = {times={[1]=3.00, [2]=1.40, [3]=0.80}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
-	xp_gain = 1.5,
 }
 
 tooldata["axe_bronze"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = -1,
 	groupcaps = {
-		choppy = {times={[1]=1.80, [2]=1.50, [3]=0.80}, uses=50, maxlevel=2},
+		choppy = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=4, cracky=1, crumbly=1},
-	xp_gain = 1.5,
 }
 
 tooldata["sword_bronze"] = {
@@ -232,101 +240,153 @@ tooldata["sword_bronze"] = {
 		snappy = {times={[1]=0.60, [2]=0.60, [3]=0.60}, uses=20, maxlevel=2},
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1}, -- Better damage than steel.
-	xp_gain = 1.5,
 }
 
 --------------------------------------------------------------------------------
--- MESE TOOLS
+-- MESE TOOLS: perfect drops, faster than steel, better wear handling.
 --------------------------------------------------------------------------------
 tooldata["pick_mese"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 2,
+	full_punch_interval = 3.0,
+	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=50, maxlevel=3},
+		cracky = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=6, cracky=2, crumbly=1},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
+	direct_to_inventory = true,
 }
 
 tooldata["shovel_mese"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	full_punch_interval = 1.5,
+	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["axe_mese"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	direct_to_inventory = true,
 }
 
 tooldata["sword_mese"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
-	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
-	},
-	damage_groups = {fleshy=2, cracky=1},
-}
-
---------------------------------------------------------------------------------
--- DIAMOND TOOLS
---------------------------------------------------------------------------------
-tooldata["pick_diamond"] = {
 	full_punch_interval = 0.9,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=50, maxlevel=3},
+		snappy = {times={[1]=2.40, [2]=1.20, [3]=0.60}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	direct_to_inventory = true,
+}
+
+--------------------------------------------------------------------------------
+-- DIAMOND TOOLS: improved XP gain, poor drops, faster than mese.
+--------------------------------------------------------------------------------
+tooldata["pick_diamond"] = {
+	full_punch_interval = 3.0,
+	max_drop_level = 2,
+	groupcaps = {
+		cracky = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=80, maxlevel=3},
+	},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	xp_gain = 1.5,
 }
 
 tooldata["shovel_diamond"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	full_punch_interval = 1.5,
+	max_drop_level = 2,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	xp_gain = 1.5,
 }
 
 tooldata["axe_diamond"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	max_drop_level = 2,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	xp_gain = 1.5,
 }
 
+-- Reasonably high-damage sword (until gem tools), but gives poor drops.
 tooldata["sword_diamond"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
+	full_punch_interval = 0.8,
+	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		snappy = {times={[1]=2.00, [2]=1.00, [3]=0.50}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=2, cracky=1},
+	damage_groups = {fleshy=8, cracky=1, crumbly=1},
+	xp_gain = 1.5,
+}
+
+--------------------------------------------------------------------------------
+-- MITHRIL TOOLS: improved XP gain, poor drops, faster than diamond.
+--------------------------------------------------------------------------------
+tooldata["pick_mithril"] = {
+	full_punch_interval = 3.0,
+	max_drop_level = 2,
+	groupcaps = {
+		cracky = {times={[1]=1.80, [2]=0.80, [3]=0.40}, uses=80, maxlevel=3},
+	},
+	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=3},
+	xp_gain = 2.5,
+}
+
+tooldata["shovel_mithril"] = {
+	full_punch_interval = 1.5,
+	max_drop_level = 2,
+	groupcaps = {
+		crumbly = {times={[1]=1.80, [2]=0.80, [3]=0.40}, uses=80, maxlevel=3},
+	},
+	damage_groups = {fleshy=8, cracky=1, crumbly=1},
+	xp_gain = 1.5,
+}
+
+tooldata["axe_mithril"] = {
+	full_punch_interval = 1.0,
+	max_drop_level = 2,
+	groupcaps = {
+		choppy = {times={[1]=1.80, [2]=0.80, [3]=0.40}, uses=80, maxlevel=3},
+	},
+	damage_groups = {fleshy=9, cracky=1, crumbly=1},
+	xp_gain = 1.5,
+}
+
+-- Fast, high-damage sword VS mobs, but gives poor drops.
+tooldata["sword_mithril"] = {
+	full_punch_interval = 0.7,
+	max_drop_level = 1,
+	groupcaps = {
+		snappy = {times={[1]=1.80, [2]=0.80, [3]=0.40}, uses=80, maxlevel=3},
+	},
+	damage_groups = {fleshy=10, cracky=1, crumbly=1},
+	xp_gain = 1.5,
 }
 
 --------------------------------------------------------------------------------
 -- TITANIUM TOOLS
 --------------------------------------------------------------------------------
 tooldata["pick_titanium"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 1,
 	groupcaps = {
 		cracky = {times={[1]=3.80, [2]=1.40, [3]=1.00}, uses=250, maxlevel=2},
 	},
-	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	damage_groups = {fleshy=15, cracky=1, crumbly=1, knockback=3},
 }
 
 tooldata["shovel_titanium"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 1,
 	groupcaps = {
 		crumbly = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=250, maxlevel=2},
@@ -360,28 +420,28 @@ tooldata["sword_titanium"] = {
 -- as well as it could be if the correct tool was used.
 
 tooldata["pick_silver"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 4,
+	full_punch_interval = 3.0,
+	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=30, maxlevel=2},
 		snappy = {times={[1]=4.00, [2]=1.50, [3]=1.30}, uses=20, maxlevel=1}, -- Secondary.
 	},
-	damage_groups = {fleshy=2, cracky=1, crumbly=1},
+	damage_groups = {fleshy=12, cracky=1, crumbly=1, knockback=3},
 }
 
 tooldata["shovel_silver"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 4,
+	full_punch_interval = 1.5,
+	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=30, maxlevel=2},
 		snappy = {times={[1]=4.00, [2]=1.50, [3]=1.50}, uses=20, maxlevel=1}, -- Secondary.
 	},
-	damage_groups = {fleshy=2, cracky=1, crumbly=6},
+	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
 
 tooldata["axe_silver"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 4,
+	max_drop_level = 3,
 	groupcaps = {
 		-- The silver axe can do both choppy and snappy jobs equally well.
 		choppy = {times={[1]=2.10, [2]=1.40, [3]=0.70}, uses=30, maxlevel=2},
@@ -392,7 +452,7 @@ tooldata["axe_silver"] = {
 
 tooldata["sword_silver"] = {
 	full_punch_interval = 0.9,
-	max_drop_level = 4,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=2.00, [2]=1.00, [3]=0.70}, uses=30, maxlevel=2},
 		choppy = {times={[1]=2.60, [2]=2.00, [3]=1.10}, uses=20, maxlevel=1}, -- Secondary.
@@ -401,60 +461,20 @@ tooldata["sword_silver"] = {
 }
 
 --------------------------------------------------------------------------------
--- MITHRIL TOOLS
---------------------------------------------------------------------------------
-tooldata["pick_mithril"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 4,
-	groupcaps = {
-		cracky = {times={[1]=1.90, [2]=0.80, [3]=0.60}, uses=50, maxlevel=3},
-	},
-	damage_groups = {fleshy=2, cracky=5, crumbly=1},
-}
-
-tooldata["shovel_mithril"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
-	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
-	},
-	damage_groups = {fleshy=2, cracky=1},
-}
-
-tooldata["axe_mithril"] = {
-	full_punch_interval = 1.0,
-	max_drop_level = 0,
-	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
-	},
-	damage_groups = {fleshy=2, cracky=1},
-}
-
--- Fast, high-damage sword, but poor for drops or farming.
-tooldata["sword_mithril"] = {
-	full_punch_interval = 0.9,
-	max_drop_level = 1,
-	groupcaps = {
-		snappy = {times={[1]=2.50, [2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
-	},
-	damage_groups = {fleshy=16},
-}
-
---------------------------------------------------------------------------------
 -- RUBY TOOLS: Better wear handling than steel. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_ruby"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
 	},
-	damage_groups = {fleshy=7, cracky=1, crumbly=1},
-	direct_to_inventory = true,
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
+	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
 }
 
 tooldata["shovel_ruby"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
@@ -487,17 +507,17 @@ tooldata["sword_ruby"] = {
 -- EMERALD TOOLS: Better wear handling than steel. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_emerald"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
-	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_emerald"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=250, maxlevel=3},
@@ -530,17 +550,17 @@ tooldata["sword_emerald"] = {
 -- SAPPHIRE TOOLS: Better wear handling than steel. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_sapphire"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
 	},
-	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_sapphire"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
@@ -573,17 +593,17 @@ tooldata["sword_sapphire"] = {
 -- AMETHYST TOOLS: Better wear handling than steel. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_amethyst"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=170, maxlevel=3},
 	},
-	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_amethyst"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=200, maxlevel=3},
@@ -616,17 +636,17 @@ tooldata["sword_amethyst"] = {
 -- REINFORCED RUBY TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_rubystone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
 	},
-	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_rubystone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
@@ -659,17 +679,17 @@ tooldata["sword_rubystone"] = {
 -- REINFORCED EMERALD TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_emeraldstone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
-	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_emeraldstone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.00, [2]=0.10, [3]=0.10}, uses=300, maxlevel=3},
@@ -702,17 +722,17 @@ tooldata["sword_emeraldstone"] = {
 -- REINFORCED SAPPHIRE TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_sapphirestone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},
 	},
-	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_sapphirestone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
@@ -745,17 +765,17 @@ tooldata["sword_sapphirestone"] = {
 -- REINFORCED AMETHYST TOOLS: Wear handling like titanium. Fast, perfect drops.
 --------------------------------------------------------------------------------
 tooldata["pick_amethyststone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=2.10, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},
-	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=3},
 	direct_to_inventory = true,
 }
 
 tooldata["shovel_amethyststone"] = {
-	full_punch_interval = 1.0,
+	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
 		crumbly = {times={[1]=2.00, [2]=0.20, [3]=0.20}, uses=250, maxlevel=3},

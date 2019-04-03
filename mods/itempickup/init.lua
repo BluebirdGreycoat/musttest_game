@@ -216,17 +216,20 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
-	local tool_capabilities = tool:get_tool_capabilities()
-	if not tool_capabilities then
+	local idef = tool:get_definition()
+	if not idef then
+		return
+	end
+	if not idef.tool_capabilities then
 		return
 	end
 
-	if tool_capabilities.xp_gain < 1.0 then
-		minetest.chat_send_player("MustTest", "XP gain: " .. tool_capabilities.xp_gain)
+	if (idef.tool_capabilities.xp_gain or 1.0) < 1.0 then
+		minetest.chat_send_player("MustTest", "XP gain: " .. (idef.tool_capabilities.xp_gain or 1.0))
 	end
 
 	-- Player does not get node drop if tool doesn't have sufficient level.
-	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
+	if (idef.tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
 		return
 	end
 
@@ -285,7 +288,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 			-- Increase player's XP if not at max yet.
 			if digxp < xp.digxp_max then
-				digxp = digxp + (value * (tool_capabilities.xp_gain or 1.0))
+				digxp = digxp + (value * (idef.tool_capabilities.xp_gain or 1.0))
 				if digxp > xp.digxp_max then
 					digxp = xp.digxp_max
 				end

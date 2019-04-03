@@ -16,20 +16,22 @@ end
 --
 -- Important/hard-to-craft nodes should be level 0 (like machines) otherwise
 -- player will lose the item if dug with a tool without a high enough level.
+--
+-- Shears only dig nodes with `level = 0/1, snappy = 3`.
 
 local dig_groups = {}
 dig_groups["stone"]         = {level = 1, cracky = 1}
-dig_groups["softstone"]     = {level = 1, cracky = 2}
-dig_groups["cobble"]        = {level = 0, cracky = 2} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
-dig_groups["softcobble"]    = {level = 0, cracky = 2, crumbly = 1}
+dig_groups["softstone"]     = {level = 1, cracky = 2} -- Like sandstone.
+dig_groups["cobble"]        = {level = 1, cracky = 3} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
+dig_groups["softcobble"]    = {level = 1, cracky = 2, crumbly = 1}
 dig_groups["wall"]          = {level = 2, cracky = 3}
-dig_groups["clay"]          = {level = 1, cracky = 3, crumbly = 2}
+dig_groups["clay"]          = {level = 0, cracky = 2, crumbly = 2}
 dig_groups["hardore"]       = {level = 2, cracky = 3}
 dig_groups["hardclay"]      = {level = 1, cracky = 3}
 dig_groups["ice"]           = {level = 0, cracky = 2}
-dig_groups["glass"]         = {level = 1, cracky = 3}
+dig_groups["glass"]         = {level = 2, cracky = 3}
 dig_groups["metal"]         = {level = 1, cracky = 2}
-dig_groups["netherack"]     = {level = 1, cracky = 3}
+dig_groups["netherack"]     = {level = 0, cracky = 3, oddly_breakable_by_hand = 3} -- Easiest thing to dig, practically!
 dig_groups["mineral"]       = {level = 2, cracky = 2}
 dig_groups["minerals"]      = {level = 2, cracky = 2}
 dig_groups["hardmineral"]   = {level = 2, cracky = 3}
@@ -42,7 +44,7 @@ dig_groups["hardstone"]     = {level = 4, cracky = 1}
 dig_groups["gravel"]        = {level = 0, crumbly = 1}
 dig_groups["dirt"]          = {level = 0, crumbly = 2}
 dig_groups["sand"]          = {level = 0, crumbly = 3}
-dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 2}
+dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 3}
 dig_groups["tree"]          = {level = 2, choppy = 1}
 dig_groups["wood"]          = {level = 1, choppy = 2} -- Also wooden 'blocklike'. Planks & stuff.
 dig_groups["hardwood"]      = {level = 2, choppy = 1}
@@ -52,13 +54,13 @@ dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `sn
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["seed"]          = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["plant"]         = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
-dig_groups["crop"]          = {level = 1, snappy = 3, choppy = 1} -- Ditto ^^^.
+dig_groups["crop"]          = {level = 0, snappy = 3, choppy = 1} -- Ditto ^^^.
 dig_groups["straw"]         = {level = 1, snappy = 2, choppy = 1, oddly_breakable_by_hand = 1}
 dig_groups["wool"]          = {level = 1, snappy = 2, choppy = 2, oddly_breakable_by_hand = 1}
 dig_groups["furniture"]     = {level = 0, snappy = 2, choppy = 3, oddly_breakable_by_hand = 3}
-dig_groups["item"]          = {level = 1, dig_immediate = 3}
-dig_groups["bigitem"]       = {level = 1, dig_immediate = 2}
-dig_groups["reallybigitem"] = {level = 2, cracky = 1, choppy = 1, crumbly = 1, snappy = 1, oddly_breakable_by_hand = 3}
+dig_groups["item"]          = {level = 0, dig_immediate = 3}
+dig_groups["bigitem"]       = {level = 0, dig_immediate = 2}
+dig_groups["reallybigitem"] = {level = 0, cracky = 1, choppy = 1, crumbly = 1, snappy = 1, oddly_breakable_by_hand = 1}
 dig_groups["chest"]         = {level = 0, choppy = 3, oddly_breakable_by_hand = 3}
 dig_groups["metalchest"]    = {level = 0, cracky = 3, oddly_breakable_by_hand = 3}
 dig_groups["machine"]       = {level = 0, cracky = 3} -- Must be level 0, or player may lose machine when dug!

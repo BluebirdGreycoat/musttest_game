@@ -516,13 +516,14 @@ tooldata["sword_silver"] = {
 	damage_groups = {fleshy=7},
 }
 
+-- Fast, high-damage sword, but poor for drops or farming.
 tooldata["sword_mithril"] = {
 	full_punch_interval = 0.9,
 	max_drop_level = 1,
 	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
+		snappy = {times={[1]=2.50, [2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=14},
+	damage_groups = {fleshy=16},
 }
 
 tooldata["sword_ruby"] = {
@@ -552,11 +553,12 @@ tooldata["sword_sapphire"] = {
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 }
 
+-- Medium-damage sword, good for mob drops but poor at farming.
 tooldata["sword_amethyst"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 4,
 	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
+		snappy = {times={[1]=2.00, [2]=1.90, [3]=1.80}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1},
 }
@@ -591,16 +593,18 @@ tooldata["sword_sapphirestone"] = {
 	damage_groups = {fleshy=7, cracky=10, crumbly=2},
 }
 
+-- Slower, high-damage sword, poor at farming but good for mob drops.
 tooldata["sword_amethyststone"] = {
 	full_punch_interval = 1.2,
 	max_drop_level = 4,
 	groupcaps = {
-		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
-		choppy = {times={[2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		snappy = {times={[1]=2.00, [2]=1.90, [3]=1.80}, uses=50, maxlevel=2},
+		choppy = {times={[2]=3.00, [3]=1.00}, uses=50, maxlevel=1},
 	},
 	damage_groups = {fleshy=8, cracky=10, crumbly=1},
 }
 
+-- Excellent for crops/leaves, worthless for anything else.
 tooldata["shears_shears"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 1,
@@ -609,12 +613,14 @@ tooldata["shears_shears"] = {
 	},
 }
 
+-- The hand.
 tooldata["hand_hand"] = {
 	full_punch_interval = 0.8,
 	max_drop_level = 0,
 	groupcaps = {
 		crumbly = {times={[3]=5.00}, uses=0, maxlevel=1},
 		snappy = {times={[3]=3.00}, uses=0, maxlevel=1},
+		cracky = {times={[3]=6.00}, uses=0, maxlevel=0}, -- Can dig very weak, soft stone, if long time enough.
 		oddly_breakable_by_hand = {times={[1]=5.00, [2]=4.00, [3]=3.00}, uses=0},
 	},
 	damage_groups = {fleshy=1},

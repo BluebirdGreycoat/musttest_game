@@ -3,6 +3,33 @@ itempickup = itempickup or {}
 itempickup.modpath = minetest.get_modpath("itempickup")
 
 
+-- custom particle effects
+local function effect(pos, amount, texture, min_size, max_size, radius, gravity, glow)
+
+	radius = radius or 2
+	min_size = min_size or 0.5
+	max_size = max_size or 1
+	gravity = gravity or -10
+	glow = glow or 0
+
+	minetest.add_particlespawner({
+		amount = amount,
+		time = 0.25,
+		minpos = pos,
+		maxpos = pos,
+		minvel = {x = -radius, y = -radius, z = -radius},
+		maxvel = {x = radius, y = radius, z = radius},
+		minacc = {x = 0, y = gravity, z = 0},
+		maxacc = {x = 0, y = gravity, z = 0},
+		minexptime = 0.1,
+		maxexptime = 1,
+		minsize = min_size,
+		maxsize = max_size,
+		texture = texture,
+		glow = glow,
+	})
+end
+
 
 itempickup.sound = function(pos)
   ambiance.sound_play("itempickup_pickup", pos, 0.07, 20)
@@ -174,6 +201,8 @@ function itempickup.drop_an_item(pos, stack, digger)
 			-- If stack couldn't be added because of full inventory, then material is sometimes lost.
 			if not stack:is_empty() and math.random(0, 1) == 0 then
 				-- Don't drop anything on the ground, 50% chance.
+				-- Give particle feedback to player.
+				effect(pos, math.random(2, 5), "tnt_smoke.png")
 				return
 			end
 		end
@@ -232,6 +261,8 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 	-- Player does not get node drop if tool doesn't have sufficient level.
 	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
+		-- Particle feedback to player.
+		effect(pos, math.random(2, 5), "tnt_smoke.png")
 		return
 	end
 

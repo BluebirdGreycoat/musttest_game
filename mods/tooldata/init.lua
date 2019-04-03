@@ -593,7 +593,7 @@ tooldata["pick_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=1.00, [2]=0.40, [3]=0.20}, uses=200, maxlevel=4},
+		cracky = {times={[1]=0.60, [2]=0.30, [3]=0.20}, uses=200, maxlevel=4},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 	xp_gain = 0.5,

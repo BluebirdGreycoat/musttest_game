@@ -486,8 +486,7 @@ local function check_for_death(self, cause, cmi_cause)
 			self.nametag2 = self.nametag or ""
 		end
 
-		if show_health
-		and (cmi_cause and cmi_cause.type == "punch") then
+		if show_health and (cmi_cause and cmi_cause.type == "punch") then
 
 			self.htimer = 2
 			self.nametag = "♥ " .. self.health .. " / " .. self.hp_max
@@ -498,11 +497,21 @@ local function check_for_death(self, cause, cmi_cause)
 		return false
 	end
 
-	-- dropped cooked item if mob died in lava
-	if cause == "lava" then
-		item_drop(self, true)
-	else
-		item_drop(self, nil)
+	-- only drop items if weapon is of sufficient level to overcome mob's armor level
+	local can_drop = true
+	if cmi_cause and cmi_cause.tool_capabilities then
+		if (cmi_cause.tool_capabilities.max_drop_level or 0) < (self.armor_level or 0) then
+			can_drop = false
+		end
+	end
+
+	if can_drop then
+		-- dropped cooked item if mob died in lava
+		if cause == "lava" then
+			item_drop(self, true)
+		else
+			item_drop(self, nil)
+		end
 	end
 
 	mob_sound(self, self.sounds.death)
@@ -2785,13 +2794,11 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 		-- exit here if dead, special item check
 		if weapon:get_name() == "mobs:pick_lava" then
-			if check_for_death(self, "lava", {type = "punch",
-					puncher = hitter}) then
+			if check_for_death(self, "lava", {type = "punch", puncher = hitter, tool_capabilities = tool_capabilities}) then
 				return
 			end
 		else
-			if check_for_death(self, "hit", {type = "punch",
-					puncher = hitter, tool_capabilities = tool_capabilities}) then
+			if check_for_death(self, "hit", {type = "punch", puncher = hitter, tool_capabilities = tool_capabilities}) then
 				return
 			end
 		end
@@ -3340,6 +3347,7 @@ if not mobs.registered then
 			name                    = name,
 			mob                     = true, -- Object is a mob.
 			type                    = def.type,
+			armor_level             = def.armor_level or 0,
 			description             = def.description,
 			stepheight              = def.stepheight or 1.1, -- was 0.6
 			attack_type             = def.attack_type,

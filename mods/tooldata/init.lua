@@ -95,7 +95,7 @@ tooldata["pick_mithril"] = {
 
 tooldata["pick_ruby"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = 3,
+	max_drop_level = 0,
 	groupcaps = {
 		cracky = {times={[1]=0.20, [2]=0.20, [3]=0.20}, uses=50, maxlevel=4},
 	},
@@ -133,7 +133,7 @@ tooldata["pick_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -142,7 +142,7 @@ tooldata["pick_emeraldstone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -151,7 +151,7 @@ tooldata["pick_sapphirestone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -160,7 +160,7 @@ tooldata["pick_amethyststone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		cracky = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -241,7 +241,7 @@ tooldata["shovel_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -250,7 +250,7 @@ tooldata["shovel_emerald"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -259,7 +259,7 @@ tooldata["shovel_sapphire"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -268,7 +268,7 @@ tooldata["shovel_amethyst"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -277,7 +277,7 @@ tooldata["shovel_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -286,7 +286,7 @@ tooldata["shovel_emeraldstone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -295,7 +295,7 @@ tooldata["shovel_sapphirestone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -304,7 +304,7 @@ tooldata["shovel_amethyststone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		crumbly = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -385,7 +385,7 @@ tooldata["axe_ruby"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -394,7 +394,7 @@ tooldata["axe_emerald"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -403,7 +403,7 @@ tooldata["axe_sapphire"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -412,7 +412,7 @@ tooldata["axe_amethyst"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -421,7 +421,7 @@ tooldata["axe_rubystone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -430,7 +430,7 @@ tooldata["axe_emeraldstone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -439,7 +439,7 @@ tooldata["axe_sapphirestone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=4},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -448,7 +448,7 @@ tooldata["axe_amethyststone"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 0,
 	groupcaps = {
-		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
+		choppy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
 	damage_groups = {fleshy=2, cracky=1},
 }
@@ -518,7 +518,7 @@ tooldata["sword_silver"] = {
 
 tooldata["sword_mithril"] = {
 	full_punch_interval = 0.9,
-	max_drop_level = 2,
+	max_drop_level = 1,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
@@ -527,7 +527,7 @@ tooldata["sword_mithril"] = {
 
 tooldata["sword_ruby"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
@@ -536,7 +536,7 @@ tooldata["sword_ruby"] = {
 
 tooldata["sword_emerald"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
@@ -545,7 +545,7 @@ tooldata["sword_emerald"] = {
 
 tooldata["sword_sapphire"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 	},
@@ -563,7 +563,7 @@ tooldata["sword_amethyst"] = {
 
 tooldata["sword_rubystone"] = {
 	full_punch_interval = 1.2,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 		choppy = {times={[2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
@@ -573,7 +573,7 @@ tooldata["sword_rubystone"] = {
 
 tooldata["sword_emeraldstone"] = {
 	full_punch_interval = 1.2,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 		choppy = {times={[2]=9.00, [3]=9.00}, uses=50, maxlevel=1},
@@ -583,7 +583,7 @@ tooldata["sword_emeraldstone"] = {
 
 tooldata["sword_sapphirestone"] = {
 	full_punch_interval = 1.2,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		snappy = {times={[1]=9.00, [2]=9.00, [3]=9.00}, uses=50, maxlevel=3},
 		choppy = {times={[2]=9.00, [3]=9.00}, uses=50, maxlevel=1},

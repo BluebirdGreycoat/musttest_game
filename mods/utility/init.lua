@@ -13,6 +13,9 @@ end
 --
 -- The 'hand' only digs items `level = 0` or `level = 1`, with some additional
 -- restrictions. See tool-data file for details.
+--
+-- Important/hard-to-craft nodes should be level 0 (like machines) otherwise
+-- player will lose the item if dug with a tool without a high enough level.
 
 local dig_groups = {}
 dig_groups["stone"]         = {level = 1, cracky = 1}
@@ -27,8 +30,8 @@ dig_groups["ice"]           = {level = 0, cracky = 2}
 dig_groups["glass"]         = {level = 1, cracky = 3}
 dig_groups["metal"]         = {level = 1, cracky = 2}
 dig_groups["netherack"]     = {level = 1, cracky = 3}
-dig_groups["mineral"]       = {level = 1, cracky = 2}
-dig_groups["minerals"]      = {level = 1, cracky = 2}
+dig_groups["mineral"]       = {level = 2, cracky = 2}
+dig_groups["minerals"]      = {level = 2, cracky = 2}
 dig_groups["hardmineral"]   = {level = 2, cracky = 3}
 dig_groups["rockgem"]       = {level = 2, cracky = 3}
 dig_groups["brick"]         = {level = 2, cracky = 2}
@@ -58,9 +61,9 @@ dig_groups["bigitem"]       = {level = 1, dig_immediate = 2}
 dig_groups["reallybigitem"] = {level = 2, cracky = 1, choppy = 1, crumbly = 1, snappy = 1, oddly_breakable_by_hand = 3}
 dig_groups["chest"]         = {level = 0, choppy = 3, oddly_breakable_by_hand = 3}
 dig_groups["metalchest"]    = {level = 0, cracky = 3, oddly_breakable_by_hand = 3}
-dig_groups["machine"]       = {level = 0, cracky = 3}
+dig_groups["machine"]       = {level = 0, cracky = 3} -- Must be level 0, or player may lose machine when dug!
 dig_groups["crystal"]       = {level = 2, cracky = 3}
-dig_groups["shroom"]        = {level = 1, snappy = 2, choppy = 3, oddly_breakable_by_hand = 1}
+dig_groups["shroom"]        = {level = 2, snappy = 2, choppy = 3, oddly_breakable_by_hand = 1}
 
 -- Get dig groups for a node based on its broad category.
 -- When choosing a name for a node, choose the name closest to the node's main material.

@@ -204,7 +204,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	-- Node hasn't been removed yet, we can make use of it.
 	local node = minetest.get_node(pos) -- Node to be dug.
 	local tool = digger:get_wielded_item()
-	local toolname = tool:get_name()
+	local tn = tool:get_name()
 	local xp_drop_enabled = true
 
 	-- Node definition.
@@ -216,14 +216,25 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
-	-- Player does not get node drop if tool doesn't have sufficient level.
-	if (tool:get_tool_capabilities().max_drop_level or 0) < (ndef.groups.level or 0) then
+	local tool_capabilities = tool:get_tool_capabilities()
+	if not tool_capabilities then
 		return
 	end
 
-	-- If node has a drop string/table for silver picks, override drop table.
+	if tool_capabilities.xp_gain < 1.0 then
+		minetest.chat_send_player("MustTest", "XP gain: " .. tool_capabilities.xp_gain)
+	end
+
+	-- Player does not get node drop if tool doesn't have sufficient level.
+	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
+		return
+	end
+
+	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_"))
+
+	-- If node has a drop string/table for silver tools, override drop table.
 	-- Player doesn't get XP for nodes dug this way, but that's ok.
-	if toolname:find("pick") and toolname:find("silver") then
+	if is_basic_tool and tn:find("silver") then
 		if ndef.silverpick_drop then
 			local newdrop = ndef.silverpick_drop
 			if type(newdrop) == "table" then
@@ -234,7 +245,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 				drops = {node.name}
 			end
 		end
-	elseif toolname:find("shears") then
+	elseif tn:find("shears") then
 		if ndef.shears_drop then
 			local newdrop = ndef.shears_drop
 			if type(newdrop) == "table" then
@@ -274,7 +285,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 			-- Increase player's XP if not at max yet.
 			if digxp < xp.digxp_max then
-				digxp = digxp + value
+				digxp = digxp + (value * (tool_capabilities.xp_gain or 1.0))
 				if digxp > xp.digxp_max then
 					digxp = xp.digxp_max
 				end

@@ -53,7 +53,7 @@ dig_groups["bricks"]        = {level = 2, cracky = 2}
 dig_groups["block"]         = {level = 2, cracky = 2} -- Stone blocks, metal blocks, etc.
 dig_groups["obsidian"]      = {level = 3, cracky = 1}
 dig_groups["hardstone"]     = {level = 4, cracky = 1}
-dig_groups["gravel"]        = {level = 1, crumbly = 2}
+dig_groups["gravel"]        = {level = 1, crumbly = 2} -- Cannot be dug by hand (level 1).
 dig_groups["dirt"]          = {level = 0, crumbly = 2}
 dig_groups["sand"]          = {level = 0, crumbly = 3}
 dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 3}

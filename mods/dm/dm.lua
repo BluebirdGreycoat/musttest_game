@@ -4,7 +4,7 @@ mobs.register_mob("dm:dm", {
 	type = "monster",
 	passive = false,
 	damage = 4,
-	armor_level = 4,
+	armor_level = 3,
 	attack_type = "dogshoot",
 	dogshoot_switch = 1,
 	dogshoot_count_max = 10,

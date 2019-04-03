@@ -36,7 +36,7 @@ dig_groups["stone"]         = {level = 2, cracky = 2} -- Carefully tuned dig-par
 dig_groups["softstone"]     = {level = 2, cracky = 3} -- Like sandstone.
 dig_groups["cobble"]        = {level = 1, cracky = 3} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
 dig_groups["softcobble"]    = {level = 1, cracky = 2, crumbly = 1}
-dig_groups["wall"]          = {level = 2, cracky = 3}
+dig_groups["wall"]          = {level = 1, cracky = 3}
 dig_groups["clay"]          = {level = 0, cracky = 2, crumbly = 2}
 dig_groups["hardore"]       = {level = 2, cracky = 3}
 dig_groups["hardclay"]      = {level = 1, cracky = 3}
@@ -48,11 +48,11 @@ dig_groups["mineral"]       = {level = 2, cracky = 2}
 dig_groups["minerals"]      = {level = 2, cracky = 2}
 dig_groups["hardmineral"]   = {level = 2, cracky = 3}
 dig_groups["rockgem"]       = {level = 2, cracky = 3}
-dig_groups["brick"]         = {level = 2, cracky = 2}
-dig_groups["bricks"]        = {level = 2, cracky = 2}
-dig_groups["block"]         = {level = 2, cracky = 2} -- Stone blocks, metal blocks, etc.
+dig_groups["brick"]         = {level = 1, cracky = 2}
+dig_groups["bricks"]        = {level = 1, cracky = 2}
+dig_groups["block"]         = {level = 1, cracky = 2} -- Stone blocks, metal blocks, etc.
 dig_groups["obsidian"]      = {level = 3, cracky = 1}
-dig_groups["hardstone"]     = {level = 4, cracky = 1}
+dig_groups["hardstone"]     = {level = 3, cracky = 1}
 dig_groups["gravel"]        = {level = 1, crumbly = 2} -- Cannot be dug by hand (level 1).
 dig_groups["dirt"]          = {level = 0, crumbly = 2}
 dig_groups["sand"]          = {level = 0, crumbly = 3}

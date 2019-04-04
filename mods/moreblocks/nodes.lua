@@ -149,7 +149,7 @@ local nodes = {
 	},
 	["coal_stone"] = {
 		description = S("Coal Stone"),
-		groups = utility.dig_groups("brick"),
+		groups = utility.dig_groups("hardstone"),
 		sounds = sound_stone,
 	},
 	["iron_stone"] = {

@@ -248,19 +248,19 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
+	-- We have to get tool capabilities directly from the itemdef in order to access custom data.
+	-- If tool capabilities are not present, use those from the HAND. Note: not doing this
+	-- properly was the cause of an embarrassing bug where players could not get items that they
+	-- had dug with the hand while wielding another non-tool item.
 	local idef = tool:get_definition()
 	if not idef then
 		return
 	end
-	if not idef.tool_capabilities then
-		return
-	end
-	-- We have to get tool capabilities directly from the itemdef in order to access custom data.
 	local tool_capabilities = idef.tool_capabilities
-
-	--if (idef.tool_capabilities.xp_gain or 1.0) < 1.0 then
-	--	minetest.chat_send_player("MustTest", "XP gain: " .. (idef.tool_capabilities.xp_gain or 1.0))
-	--end
+	if not tool_capabilities then
+		tool_capabilities = tooldata["hand_hand"]
+		assert(tool_capabilities)
+	end
 
 	-- Player does not get node drop if tool doesn't have sufficient level.
 	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then

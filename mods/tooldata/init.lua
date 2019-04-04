@@ -196,36 +196,36 @@ tooldata["sword_steel"] = {
 }
 
 --------------------------------------------------------------------------------
--- COPPER TOOLS: Dig faster than steel, NO drops, poor wear handling.
+-- COPPER TOOLS: Dig faster than steel, very poor drops, poor wear handling.
 --------------------------------------------------------------------------------
 
--- Early-obtainable pick with "magical" properties: fast dig, but NO drops.
+-- Early-obtainable pick with "magical" properties: fast dig, but poor drops.
 -- These tools are just copper tools, craftable from copper ingots.
 
 tooldata["pick_bronze"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = -1,
+	max_drop_level = 1,
 	groupcaps = {
 		-- Improved wear handling, otherwise players may not find it worth it.
-		cracky = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+		cracky = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }
 
 tooldata["shovel_bronze"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = -1,
+	max_drop_level = 1,
 	groupcaps = {
-		crumbly = {times={[1]=0.40, [2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+		crumbly = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
 
 tooldata["axe_bronze"] = {
 	full_punch_interval = 0.8,
-	max_drop_level = -1,
+	max_drop_level = 1,
 	groupcaps = {
-		choppy = {times={[1]=0.30, [2]=0.30, [3]=0.30}, uses=150, maxlevel=2},
+		choppy = {times={[2]=0.30, [3]=0.30}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=4, cracky=1, crumbly=1},
 }
@@ -235,7 +235,7 @@ tooldata["sword_bronze"] = {
 	max_drop_level = -1, -- No drops, so only worth it versus mobs.
 	groupcaps = {
 		-- Sword wears out rather quick, though.
-		snappy = {times={[1]=0.60, [2]=0.60, [3]=0.60}, uses=120, maxlevel=2},
+		snappy = {times={[2]=0.60, [3]=0.60}, uses=120, maxlevel=2},
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1}, -- Better damage than steel.
 }
@@ -332,7 +332,7 @@ tooldata["sword_diamond"] = {
 --------------------------------------------------------------------------------
 tooldata["pick_mithril"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = 3,
+	max_drop_level = 3, -- Strictly better than diamond.
 	groupcaps = {
 		cracky = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},

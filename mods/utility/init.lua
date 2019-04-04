@@ -19,7 +19,9 @@ end
 --
 -- Shears only dig nodes with `level = 0/1, snappy = 3`.
 --
--- `oddly_breakable_by_hand` only works if `level = 0/1`.
+-- `oddly_breakable_by_hand` only works if `level = 0/1`. HOWEVER, node drops
+-- can ONLY be obtained if the node's level is 0! Level 1 nodes may be dug if
+-- they're `oddly_breakable_by_hand`, but the player won't get the drops.
 --
 -- Base hardness for regular stone is `level = 2, cracky = 2`. Cobble is at
 -- `level = 1, cracky = 3`. These are both carefully tuned to allow new players
@@ -61,6 +63,7 @@ dig_groups["gravel"]        = {level = 2, crumbly = 2} -- Cannot be dug by hand 
 dig_groups["dirt"]          = {level = 2, crumbly = 3}
 dig_groups["sand"]          = {level = 1, crumbly = 2}
 dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 3}
+dig_groups["mud"]           = {level = 0, crumbly = 3, oddly_breakable_by_hand = 1}
 
 -- Choppy stuff (trees/wood).
 dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.

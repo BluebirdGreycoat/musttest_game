@@ -331,7 +331,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:mud", {
 		description = "Mud",
 		tiles = {"darkage_mud_up.png", "darkage_mud.png"},
-		groups = utility.dig_groups("dirt", {falling_node=1}),
+		groups = utility.dig_groups("mud", {falling_node=1}),
 		drop = 'darkage:mud_lump 4',
 		sounds = default.node_sound_dirt_defaults(),
 	})
@@ -339,7 +339,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:silt", {
 		description = "Silt",
 		tiles = {"darkage_silt.png"},
-		groups = utility.dig_groups("dirt", {falling_node=1}),
+		groups = utility.dig_groups("mud", {falling_node=1}),
 		drop = 'darkage:silt_lump 4',
 		sounds = default.node_sound_dirt_defaults(),
 	})

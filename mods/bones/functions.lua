@@ -204,6 +204,7 @@ bones.on_dieplayer = function(player)
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
 	-- Don't make bones if player doesn't have anything.
+	-- This also means that player won't lose XP. Keep this, it is a feature!
 	if player_inventory_empty(player_inv, "main") and
 		player_inventory_empty(player_inv, "craft") and
 		player_inventory_empty(player_inv, "bag1contents") and

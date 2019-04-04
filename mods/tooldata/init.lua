@@ -125,7 +125,7 @@ tooldata["pick_stone"] = {
 	groupcaps = {
 		cracky = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
-	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=6},
+	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=16},
 }
 
 tooldata["shovel_stone"] = {

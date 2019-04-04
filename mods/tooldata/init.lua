@@ -279,7 +279,7 @@ tooldata["sword_mese"] = {
 	groupcaps = {
 		snappy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=100, maxlevel=3},
 	},
-	damage_groups = {fleshy=7, cracky=1, crumbly=1},
+	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
 }
 

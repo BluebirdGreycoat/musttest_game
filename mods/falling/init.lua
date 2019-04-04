@@ -148,6 +148,22 @@ local adjacency = {
 	{x=0, y=0, z=0},
 }
 
+local function outof_bounds(pos)
+	if pos.y < -30912 then
+		return true
+	end
+	if pos.y > 30927 then
+		return true
+	end
+	if pos.x > 30927 then
+		return true
+	end
+	if pos.x < -30912 then
+		return true
+	end
+	return false
+end
+
 local find_slope = function(pos)
 	adjacency[1].x=pos.x-1 adjacency[1].y=pos.y adjacency[1].z=pos.z
 	adjacency[2].x=pos.x+1 adjacency[2].y=pos.y adjacency[2].z=pos.z
@@ -160,7 +176,7 @@ local find_slope = function(pos)
     local p = adjacency[i]
     if node_not_walkable(p) then
 			p.y = p.y + 1
-      if node_not_walkable(p) then
+      if node_not_walkable(p) and not outof_bounds(p) then
         targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
       end
 			p.y = p.y - 1
@@ -213,6 +229,12 @@ minetest.register_entity(":__builtin:falling_node", {
 
   on_activate = function(self, staticdata)
     self.object:set_armor_groups({immortal = 1})
+
+		local pos = self.object:get_pos()
+		if outof_bounds(pos) then
+			self.object:remove()
+			return
+		end
 
     local ds = core.deserialize(staticdata)
     if ds and ds.node then

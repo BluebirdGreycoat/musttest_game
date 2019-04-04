@@ -86,7 +86,7 @@ dig_groups["pane_wood"]     = {level = 1, choppy = 3}
 dig_groups["pane_metal"]    = {level = 1, cracky = 2}
 dig_groups["pane_glass"]    = {level = 1, cracky = 3}
 dig_groups["fence_metal"]   = {level = 1, cracky = 2}
-dig_groups["fence_wood"]    = {level = 1, snappy = 2}
+dig_groups["fence_wood"]    = {level = 1, choppy = 2}
 dig_groups["furniture"]     = {level = 0, snappy = 1, choppy = 3, oddly_breakable_by_hand = 3}
 dig_groups["item"]          = {level = 0, dig_immediate = 3}
 dig_groups["bigitem"]       = {level = 0, dig_immediate = 2}

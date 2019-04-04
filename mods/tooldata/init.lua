@@ -410,7 +410,8 @@ tooldata["sword_titanium"] = {
 	groupcaps = {
 		snappy = {times={[1]=1.90, [2]=1.10, [3]=0.70}, uses=250, maxlevel=2},
 	},
-	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	-- Do a bit more damage than steel, but drops are worse.
+	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
 }
 

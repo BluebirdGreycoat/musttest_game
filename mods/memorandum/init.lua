@@ -173,34 +173,34 @@ memorandum.get_formspec = function(info)
 		return formspec
 	elseif info.edit == 0 then
 		-- Obtain formspec which allows viewing.
-		local formspec = "size[8,5]" ..
+		local formspec = "size[10,8]" ..
 			default.gui_bg ..
 			default.gui_slots ..
 			default.gui_bg_img ..
 			"label[0,0;On this sheet of paper is written a message:]" ..
-			"textarea[0.3,1;8,3;letter;;" .. minetest.formspec_escape(info.text) .. "]" ..
-			"item_image[5,4;1,1;memorandum:letter]" ..
-			"button_exit[6,4;2,1;exit;Close]" ..
-			"label[0,4.3;Letters can be edited with an eraser.]"
+			"textarea[0.3,1;10,6;letter;;" .. minetest.formspec_escape(info.text) .. "]" ..
+			"item_image[7,7;1,1;memorandum:letter]" ..
+			"button_exit[8,7;2,1;exit;Close]" ..
+			"label[0,7.3;Letters can be edited with an eraser.]"
 
 		if type(info.signed) == "string" and info.signed ~= "" then
-			formspec = formspec .. "label[0,4;Signed by <" .. minetest.formspec_escape(info.signed) .. ">]"
+			formspec = formspec .. "label[0,7;Signed by <" .. minetest.formspec_escape(info.signed) .. ">]"
 		else
-			formspec = formspec .. "label[0,4;Letter is not signed.]"
+			formspec = formspec .. "label[0,7;Letter is not signed.]"
 		end
 
 		return formspec
 	elseif info.edit == 1 then
 		-- Obtain 'edit' formspec (this formspec does not actually handle edit permissions).
-		local formspec = "size[8,5]" ..
+		local formspec = "size[10,5]" ..
 			default.gui_bg ..
 			default.gui_slots ..
 			default.gui_bg_img ..
 			"label[0,0;Edit letter below:]" ..
-			"textarea[0.3,0.5;8,3;text;;" .. minetest.formspec_escape(info.text) .. "]" ..
+			"textarea[0.3,0.5;10,3;text;;" .. minetest.formspec_escape(info.text) .. "]" ..
 			"field[0.3,4.3;4,1;signed;Edit Signature;" .. minetest.formspec_escape(info.signed) .. "]" ..
-			"item_image[5,4;1,1;memorandum:letter]" ..
-			"button_exit[6,4;2,1;exit;Done]"
+			"item_image[7,4;1,1;memorandum:letter]" ..
+			"button_exit[8,4;2,1;exit;Done]"
 		-- ^^^ Edit formspec field names are used, `text` & `signed`.
 		-- The other formspecs *must not* use these fieldnames.
 

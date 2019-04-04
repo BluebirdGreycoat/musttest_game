@@ -153,7 +153,7 @@ tooldata["sword_stone"] = {
 		-- Should be slightly faster at digging plants than the hand.
 		snappy = {times={[2]=1.10, [3]=0.90}, uses=50, maxlevel=1},
 	},
-	damage_groups = {fleshy=1, cracky=6, crumbly=1},
+	damage_groups = {fleshy=4, cracky=6, crumbly=1},
 }
 
 --------------------------------------------------------------------------------

@@ -170,7 +170,7 @@ tooldata["pick_steel"] = {
 
 tooldata["shovel_steel"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		crumbly = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
@@ -332,7 +332,7 @@ tooldata["sword_diamond"] = {
 --------------------------------------------------------------------------------
 tooldata["pick_mithril"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		cracky = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
@@ -342,7 +342,7 @@ tooldata["pick_mithril"] = {
 
 tooldata["shovel_mithril"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		crumbly = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
@@ -352,7 +352,7 @@ tooldata["shovel_mithril"] = {
 
 tooldata["axe_mithril"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		choppy = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},

@@ -158,15 +158,15 @@ end
 memorandum.get_formspec = function(info)
 	if info.edit == 2 then
 		-- Obtain formspec which allows writing.
-		local formspec = "size[8,5]" ..
+		local formspec = "size[10,5]" ..
 			default.gui_bg ..
 			default.gui_slots ..
 			default.gui_bg_img ..
 			"label[0,0;Write letter below.]" ..
-			"textarea[0.3,0.5;8,3;text;;" .. minetest.formspec_escape(info.text) .. "]" ..
+			"textarea[0.3,0.5;10,3;text;;" .. minetest.formspec_escape(info.text) .. "]" ..
 			"field[0.3,4.3;4,1;signed;Sign Letter (Optional);" .. minetest.formspec_escape(info.signed) .. "]" ..
-			"item_image[5,4;1,1;default:paper]" ..
-			"button_exit[6,4;2,1;done;Done]"
+			"item_image[7,4;1,1;default:paper]" ..
+			"button_exit[8,4;2,1;done;Done]"
 		-- ^^^ Edit formspec field names are used, `text` & `signed`.
 		-- The other formspecs *must not* use these fieldnames.
 

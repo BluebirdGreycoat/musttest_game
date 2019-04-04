@@ -39,7 +39,7 @@ local dig_groups = {}
 dig_groups["stone"]         = {level = 2, cracky = 2} -- Carefully tuned dig-params! Do not modify.
 dig_groups["softstone"]     = {level = 2, cracky = 3} -- Like sandstone.
 dig_groups["cobble"]        = {level = 1, cracky = 3} -- Must be `cracky=3` otherwise cannot be dug by wooden pick.
-dig_groups["softcobble"]    = {level = 1, cracky = 2, crumbly = 1}
+dig_groups["softcobble"]    = {level = 1, cracky = 3, crumbly = 1} -- Can be dug by wodden pick.
 dig_groups["clay"]          = {level = 0, cracky = 2, crumbly = 2}
 dig_groups["hardore"]       = {level = 2, cracky = 1}
 dig_groups["hardclay"]      = {level = 1, cracky = 2}

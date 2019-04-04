@@ -347,14 +347,14 @@ if not darkage.run_once then
 	minetest.register_node("darkage:schist", {
 		description = "Schist",
 		tiles = {"darkage_schist.png"},
-		groups = utility.dig_groups("cobble"),
+		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults()
 	})
 
 	minetest.register_node("darkage:gneiss", {
 		description = "Gneiss",
 		tiles = {"darkage_gneiss.png"},
-		groups = utility.dig_groups("stone", {stone=1}),
+		groups = utility.dig_groups("softstone", {stone=1}),
 		drop = "darkage:gneiss_rubble",
 		sounds = default.node_sound_stone_defaults()
 	})
@@ -384,7 +384,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:marble", {
 		description = "White Serpentine",
 		tiles = {"darkage_marble.png"},
-		groups = utility.dig_groups("stone", {stone=1}),
+		groups = utility.dig_groups("hardstone", {stone=1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 
@@ -400,7 +400,7 @@ if not darkage.run_once then
 		description = "Slate",
 		tiles = {"darkage_slate.png", "darkage_slate.png", "darkage_slate_side.png"},
 		drop = 'darkage:slate_rubble',
-		groups = utility.dig_groups("cobble"),
+		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults()
 	})
 
@@ -437,7 +437,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:shale", {
 		description = "Shale",
 		tiles = {"darkage_shale.png", "darkage_shale.png", "darkage_shale_side.png"},
-		groups = utility.dig_groups("softcobble"),
+		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults()
 	})
 
@@ -452,7 +452,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:ors_rubble", {
 		description = "Old Red Sandstone Rubble",
 		tiles = {"darkage_ors_rubble.png"},
-		groups = utility.dig_groups("softcobble", {stone = 2}),
+		groups = utility.dig_groups("softcobble", {stone = 1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 

@@ -241,7 +241,7 @@ tooldata["sword_bronze"] = {
 }
 
 --------------------------------------------------------------------------------
--- MESE TOOLS: perfect drops, faster than steel, better wear handling.
+-- MESE TOOLS: perfect drops, faster than steel, slightly worse wear handling.
 --------------------------------------------------------------------------------
 tooldata["pick_mese"] = {
 	full_punch_interval = 3.0,
@@ -319,7 +319,7 @@ tooldata["axe_diamond"] = {
 -- Reasonably high-damage sword (until gem tools), but gives poor drops.
 tooldata["sword_diamond"] = {
 	full_punch_interval = 0.8,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		snappy = {times={[1]=2.00, [2]=0.60, [3]=0.50}, uses=80, maxlevel=3},
 	},

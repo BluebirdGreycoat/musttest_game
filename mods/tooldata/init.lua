@@ -247,7 +247,7 @@ tooldata["pick_mese"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
+		cracky = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=100, maxlevel=3},
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
@@ -257,7 +257,7 @@ tooldata["shovel_mese"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
+		crumbly = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=100, maxlevel=3},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -267,7 +267,7 @@ tooldata["axe_mese"] = {
 	full_punch_interval = 1.0,
 	max_drop_level = 3,
 	groupcaps = {
-		choppy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
+		choppy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=100, maxlevel=3},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -277,7 +277,7 @@ tooldata["sword_mese"] = {
 	full_punch_interval = 0.9,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=80, maxlevel=3},
+		snappy = {times={[1]=2.20, [2]=0.80, [3]=0.60}, uses=100, maxlevel=3},
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
@@ -328,11 +328,11 @@ tooldata["sword_diamond"] = {
 }
 
 --------------------------------------------------------------------------------
--- MITHRIL TOOLS: improved XP gain, poor drops, faster than diamond.
+-- MITHRIL TOOLS: improved XP gain, decent drops, faster than diamond.
 --------------------------------------------------------------------------------
 tooldata["pick_mithril"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = 2,
+	max_drop_level = 3,
 	groupcaps = {
 		cracky = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
@@ -363,7 +363,7 @@ tooldata["axe_mithril"] = {
 -- Fast, high-damage sword VS mobs, but gives poor drops.
 tooldata["sword_mithril"] = {
 	full_punch_interval = 0.7,
-	max_drop_level = 1,
+	max_drop_level = 2,
 	groupcaps = {
 		snappy = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},

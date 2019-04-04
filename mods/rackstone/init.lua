@@ -156,7 +156,7 @@ minetest.register_node("rackstone:redrack", {
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
   tiles = {"rackstone_redrack2.png"},
-  groups = utility.dig_groups("gravel", {falling_node=1}),
+  groups = utility.dig_groups("racksand", {falling_node=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	liquid_viscosity = 8,
@@ -375,7 +375,7 @@ minetest.register_node("rackstone:evilrack", {
 minetest.register_node("rackstone:dauthsand", {
   description = "Dauthsand",
   tiles = {"rackstone_dauthsand.png"},
-  groups = utility.dig_groups("gravel", {falling_node=1, racksand=1, nether_soil=1}),
+  groups = utility.dig_groups("racksand", {falling_node=1, racksand=1, nether_soil=1}),
     --damage_per_second = 4,
     post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),

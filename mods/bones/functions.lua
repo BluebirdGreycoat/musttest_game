@@ -242,6 +242,7 @@ bones.on_dieplayer = function(player)
 	end
 
 	-- Halve player XP!
+	-- Note: player doesn't lose any XP if their bones were EMPTY.
 	local xp_amount = xp.get_xp(pname, "digxp")
 	xp_amount = xp_amount/2
 	local xp_for_bones = (xp_amount/3)*2

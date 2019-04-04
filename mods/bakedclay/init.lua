@@ -104,8 +104,6 @@ minetest.register_craft( {
 
 local function add_simple_flower(name, desc, box, f_groups)
 
-	f_groups.level = 1
-	f_groups.snappy = 3
 	f_groups.flower = 1
 	f_groups.flora = 1
 	f_groups.attached_node = 1
@@ -122,7 +120,7 @@ local function add_simple_flower(name, desc, box, f_groups)
 		paramtype = "light",
 		walkable = false,
 		buildable_to = true,
-		groups = f_groups,
+		groups = utility.dig_groups("plant", f_groups),
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
 			type = "fixed",

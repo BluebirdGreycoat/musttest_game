@@ -76,7 +76,8 @@ dig_groups["softwood"]      = {level = 1, choppy = 3} -- Cactus, etc.
 
 -- Snappy stuff (plants/crops/leaves).
 -- Plants/crops can be dug by hand, but leaves cannot without proper tool.
-dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
+-- Addendum: player can dig leaves by hand but won't get drops.
+dig_groups["leaves"]        = {level = 1, snappy = 3, choppy = 2, oddly_breakable_by_hand = 1} -- Must be `snappy=3` otherwise shears won't work.
 dig_groups["seeds"]         = {level = 1, snappy = 2, oddly_breakable_by_hand = 3}
 dig_groups["plant"]         = {level = 0, snappy = 3, choppy = 2} -- Must be `snappy=3` otherwise shears won't work.
 dig_groups["crop"]          = {level = 0, snappy = 3, choppy = 2} -- Ditto ^^^. Also diggable by hand.

@@ -45,8 +45,8 @@ dig_groups["hardore"]       = {level = 2, cracky = 1}
 dig_groups["hardclay"]      = {level = 1, cracky = 2}
 dig_groups["ice"]           = {level = 0, cracky = 2}
 dig_groups["hardice"]       = {level = 1, cracky = 1}
-dig_groups["glass"]         = {level = 2, cracky = 3}
-dig_groups["netherack"]     = {level = 0, cracky = 3, oddly_breakable_by_hand = 1} -- Easiest thing to dig, practically!
+dig_groups["glass"]         = {level = 1, cracky = 3}
+dig_groups["netherack"]     = {level = 1, cracky = 3, oddly_breakable_by_hand = 1} -- Easiest thing to dig, practically!
 dig_groups["mineral"]       = {level = 2, cracky = 3}
 dig_groups["hardmineral"]   = {level = 2, cracky = 1}
 dig_groups["obsidian"]      = {level = 3, cracky = 1} -- Obsidian, etc. Hardest possible.

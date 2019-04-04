@@ -251,6 +251,7 @@ tooldata["pick_mese"] = {
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
+	destroy_chance = 10,
 }
 
 tooldata["shovel_mese"] = {
@@ -261,6 +262,7 @@ tooldata["shovel_mese"] = {
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 10,
 }
 
 tooldata["axe_mese"] = {
@@ -271,6 +273,7 @@ tooldata["axe_mese"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 10,
 }
 
 tooldata["sword_mese"] = {
@@ -281,6 +284,7 @@ tooldata["sword_mese"] = {
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 10,
 }
 
 --------------------------------------------------------------------------------
@@ -475,6 +479,7 @@ tooldata["pick_ruby"] = {
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
 	xp_gain = 0.3,
+	destroy_chance = 20, -- 50/1000
 }
 
 tooldata["shovel_ruby"] = {
@@ -485,6 +490,7 @@ tooldata["shovel_ruby"] = {
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_ruby"] = {
@@ -495,6 +501,7 @@ tooldata["axe_ruby"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_ruby"] = {
@@ -505,6 +512,7 @@ tooldata["sword_ruby"] = {
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -518,6 +526,7 @@ tooldata["pick_emerald"] = {
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_emerald"] = {
@@ -528,6 +537,7 @@ tooldata["shovel_emerald"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_emerald"] = {
@@ -538,6 +548,7 @@ tooldata["axe_emerald"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_emerald"] = {
@@ -548,6 +559,7 @@ tooldata["sword_emerald"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -561,6 +573,7 @@ tooldata["pick_sapphire"] = {
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_sapphire"] = {
@@ -571,6 +584,7 @@ tooldata["shovel_sapphire"] = {
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_sapphire"] = {
@@ -581,6 +595,7 @@ tooldata["axe_sapphire"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_sapphire"] = {
@@ -591,6 +606,7 @@ tooldata["sword_sapphire"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -604,6 +620,7 @@ tooldata["pick_amethyst"] = {
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_amethyst"] = {
@@ -614,6 +631,7 @@ tooldata["shovel_amethyst"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_amethyst"] = {
@@ -624,6 +642,7 @@ tooldata["axe_amethyst"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_amethyst"] = {
@@ -634,6 +653,7 @@ tooldata["sword_amethyst"] = {
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -648,6 +668,7 @@ tooldata["pick_ruby_rf"] = {
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
 	xp_gain = 0.3,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_ruby_rf"] = {
@@ -658,6 +679,7 @@ tooldata["shovel_ruby_rf"] = {
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_ruby_rf"] = {
@@ -668,6 +690,7 @@ tooldata["axe_ruby_rf"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_ruby_rf"] = {
@@ -678,6 +701,7 @@ tooldata["sword_ruby_rf"] = {
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -691,6 +715,7 @@ tooldata["pick_emerald_rf"] = {
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_emerald_rf"] = {
@@ -701,6 +726,7 @@ tooldata["shovel_emerald_rf"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_emerald_rf"] = {
@@ -711,6 +737,7 @@ tooldata["axe_emerald_rf"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_emerald_rf"] = {
@@ -721,6 +748,7 @@ tooldata["sword_emerald_rf"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -734,6 +762,7 @@ tooldata["pick_sapphire_rf"] = {
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_sapphire_rf"] = {
@@ -744,6 +773,7 @@ tooldata["shovel_sapphire_rf"] = {
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_sapphire_rf"] = {
@@ -754,6 +784,7 @@ tooldata["axe_sapphire_rf"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_sapphire_rf"] = {
@@ -764,6 +795,7 @@ tooldata["sword_sapphire_rf"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 --------------------------------------------------------------------------------
@@ -777,6 +809,7 @@ tooldata["pick_amethyst_rf"] = {
 	},
 	damage_groups = {fleshy=16, cracky=1, crumbly=1, knockback=10},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["shovel_amethyst_rf"] = {
@@ -787,6 +820,7 @@ tooldata["shovel_amethyst_rf"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["axe_amethyst_rf"] = {
@@ -797,6 +831,7 @@ tooldata["axe_amethyst_rf"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 tooldata["sword_amethyst_rf"] = {
@@ -807,6 +842,7 @@ tooldata["sword_amethyst_rf"] = {
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,
+	destroy_chance = 20,
 }
 
 dofile(modpath .. "/technic.lua")

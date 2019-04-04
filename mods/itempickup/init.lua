@@ -264,9 +264,21 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 	-- Player does not get node drop if tool doesn't have sufficient level.
 	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
-		-- Particle feedback to player.
-		effect(pos, math.random(2, 5), "tnt_smoke.png")
-		return
+		-- 1 in 4 chance player will get the node anyway.
+		if math.random(1, 4) > 1 then
+			-- Particle feedback to player.
+			effect(pos, math.random(2, 5), "tnt_smoke.png")
+			return
+		end
+	end
+
+	-- Test tool's chance to destroy node regardless of node/tool levels.
+	if tool_capabilities.destroy_chance then
+		if math.random(1, 1000) < tool_capabilities.destroy_chance then
+			-- Particle feedback to player.
+			effect(pos, math.random(2, 5), "tnt_smoke.png")
+			return
+		end
 	end
 
 	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_") or tn:find(":axe"))

@@ -2,13 +2,10 @@
 --updated 12/11/2013
 --Mod adding simple on/off lights by qwrwed.
 
--- License is WTFPL, textures are by VanessaE and paramat, code for flat lights is by LionsDen.
+-- License is WTFPL, textures are by VanessaE and paramat, code for flat lights
+-- is by LionsDen.
 
-if minetest.get_modpath("unified_inventory") or not minetest.setting_getbool("creative_mode") then
-        lightsplus_expect_infinite_stacks = false
-else
-        lightsplus_expect_infinite_stacks = true
-end
+-- Mod updated and made compatible with MustTest, by MustTest.
 
 --Node Definitions and Functions
 local lights = {
@@ -22,44 +19,51 @@ local lights = {
 
 
 for _, row in ipairs(lights) do
-    local off = row[1]
-    local on = row[2]
+	local off = row[1]
+	local on = row[2]
 	local desc = row[3]
 	local tiles = row[4]
 	local paramtype = row[5]
 	local paramtype2 = row[6]
 	local drawtype = row[7]
 	local nodebox = row[8]
-    minetest.register_node(off, {
-        description = desc,
+
+	local dig_group = "glass"
+	if off:find("flat") then
+		dig_group = "bigitem"
+	end
+
+	minetest.register_node(off, {
+		description = desc,
 		tiles = { tiles },
-		groups = utility.dig_groups("glass"),
+		groups = utility.dig_groups(dig_group),
 		paramtype = paramtype,
 		paramtype2 = paramtype2,
 		drawtype = drawtype,
 		node_box = nodebox,
 		selection_box = nodebox,
 		on_punch = function(pos, node, puncher)
-            minetest.set_node(pos, {name=on, param2=node.param2})
-        end,
+			minetest.set_node(pos, {name=on, param2=node.param2})
+		end,
 		on_place = minetest.rotate_and_place
-    })
-    minetest.register_node(on, {
-        description = desc.." (Active)",
-        drop = off,
+	})
+
+	minetest.register_node(on, {
+		description = desc .. " (Active)",
+		drop = off,
 		tiles = { tiles },
 		light_source = 14,
-		groups = utility.dig_groups("glass", {not_in_creative_inventory=2}),
+		groups = utility.dig_groups(dig_group, {not_in_creative_inventory=1}),
 		paramtype = paramtype,
 		paramtype2 = paramtype2,
 		drawtype = drawtype,
 		node_box = nodebox,
 		selection_box = nodebox,
-        on_punch = function(pos, node, puncher)
-            minetest.set_node(pos, {name=off, param2=node.param2})
-        end,
+		on_punch = function(pos, node, puncher)
+			minetest.set_node(pos, {name=off, param2=node.param2})
+		end,
 		on_place = minetest.rotate_and_place
-    })
+	})
 end
 
 

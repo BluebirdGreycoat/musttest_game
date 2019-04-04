@@ -3,7 +3,7 @@ minetest.register_node("nyancat:nyancat", {
 	tiles = {"nyancat_side.png", "nyancat_side.png", "nyancat_side.png",
 		"nyancat_side.png", "nyancat_back.png", "nyancat_front.png"},
 	paramtype2 = "facedir",
-	groups = utility.dig_groups("hardstone"),
+	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
 	legacy_facedir_simple = true,
 	light_source = 14,
@@ -18,7 +18,7 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 		"nyancat_rainbow.png"
 	},
 	paramtype2 = "facedir",
-	groups = utility.dig_groups("hardstone"),
+	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
 	light_source = 14,
 	sounds = default.node_sound_defaults(),

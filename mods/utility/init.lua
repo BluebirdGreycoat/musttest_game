@@ -65,6 +65,7 @@ dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand =
 -- Choppy stuff (trees/wood).
 dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.
 dig_groups["wood"]          = {level = 2, choppy = 3} -- Also wooden 'blocklike'. Planks & stuff.
+dig_groups["nyan"]          = {level = 3, choppy = 1}
 
 -- Choppy stuff (crafted building materials).
 dig_groups["hardwood"]      = {level = 1, choppy = 1}

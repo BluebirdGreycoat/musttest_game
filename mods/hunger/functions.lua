@@ -76,13 +76,17 @@ local function distance(player)
 	return o -- Number of meters player is outside the city radius.
 end
 
+local function get_dig_exhaustion(player)
+	return HUNGER_EXHAUST_DIG
+end
+
 -- player-action based hunger changes
 function hunger.handle_node_actions(pos, oldnode, player, ext)
 	if not player or not player:is_player() then
 		return
 	end
 	local name = player:get_player_name()
-	if not name or not hunger.players[name] then
+	if not hunger.players[name] then
 		return
 	end
 
@@ -96,7 +100,7 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 
 	-- placenode event
 	if not ext then
-		new = HUNGER_EXHAUST_DIG
+		new = get_dig_exhaustion(player)
 	end
 
 	-- assume its send by action_timer(globalstep)

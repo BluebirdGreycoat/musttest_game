@@ -84,6 +84,7 @@ local function get_dig_exhaustion(player)
 	local tdef = tool:get_definition()
 	local tcap = tdef.tool_capabilities
 	if tcap and tcap.dig_exhaustion_modifier then
+		minetest.log("Exhaustion modifier: " .. tcap.dig_exhaustion_modifier)
 		return (HUNGER_EXHAUST_DIG * tcap.dig_exhaustion_modifier)
 	end
 	return HUNGER_EXHAUST_DIG

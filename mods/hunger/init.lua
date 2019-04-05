@@ -22,6 +22,7 @@ HUNGER_MAX = 30			-- maximum level of saturation
 local modpath = minetest.get_modpath("hunger")
 dofile(modpath .. "/functions.lua")
 dofile(modpath .. "/food.lua")
+dofile(modpath .. "/legacy.lua")
 
 
 -- Callbacks

@@ -22,6 +22,7 @@ minetest.register_node("kalite:ore", {
     }
   },
   sounds = default.node_sound_stone_defaults(),
+	silverpick_drop = true,
 
 	-- Digging kalite has a chance to release poison gas.
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)

@@ -125,7 +125,7 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 
 	-- Player doesn't get exhausted as quickly if fit and in good health.
 	if player:get_hp() >= 18 then
-		new = math.floor(new / 3.0)
+		new = math.floor(new / 2.0)
 	end
 	exhaus = exhaus + new
 

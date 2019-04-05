@@ -126,6 +126,7 @@ tooldata["pick_stone"] = {
 		cracky = {times={[2]=2.00, [3]=1.90}, uses=50, maxlevel=2},
 	},
 	damage_groups = {fleshy=1, cracky=12, crumbly=1, knockback=16},
+	dig_exhaustion_modifier = 1.5,
 }
 
 tooldata["shovel_stone"] = {
@@ -166,6 +167,7 @@ tooldata["pick_steel"] = {
 		cracky = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
+	dig_exhaustion_modifier = 0.8,
 }
 
 tooldata["shovel_steel"] = {
@@ -175,6 +177,7 @@ tooldata["shovel_steel"] = {
 		crumbly = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=6},
+	dig_exhaustion_modifier = 0.8,
 }
 
 tooldata["axe_steel"] = {
@@ -184,6 +187,7 @@ tooldata["axe_steel"] = {
 		choppy = {times={[1]=2.20, [2]=1.20, [3]=0.80}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=5, cracky=1, crumbly=1},
+	dig_exhaustion_modifier = 0.7,
 }
 
 tooldata["sword_steel"] = {
@@ -193,6 +197,7 @@ tooldata["sword_steel"] = {
 		snappy = {times={[1]=2.00, [2]=1.20, [3]=0.80}, uses=150, maxlevel=2},
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
+	dig_exhaustion_modifier = 0.5,
 }
 
 --------------------------------------------------------------------------------
@@ -343,6 +348,7 @@ tooldata["pick_mithril"] = {
 	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 2.5,
 	dig_exhaustion_modifier = 0.5,
+	destroy_chance = 5,
 }
 
 tooldata["shovel_mithril"] = {

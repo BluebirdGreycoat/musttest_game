@@ -347,7 +347,7 @@ tooldata["pick_mithril"] = {
 	},
 	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 2.5,
-	dig_exhaustion_modifier = 0.5,
+	dig_exhaustion_modifier = 0.6,
 	destroy_chance = 5,
 }
 
@@ -359,7 +359,7 @@ tooldata["shovel_mithril"] = {
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	xp_gain = 1.5,
-	dig_exhaustion_modifier = 0.5,
+	dig_exhaustion_modifier = 0.7,
 }
 
 tooldata["axe_mithril"] = {
@@ -371,6 +371,7 @@ tooldata["axe_mithril"] = {
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	xp_gain = 1.5,
 	dig_exhaustion_modifier = 0.5,
+	destroy_chance = 5,
 }
 
 -- Fast, high-damage sword VS mobs, but gives poor drops.
@@ -490,7 +491,7 @@ tooldata["pick_ruby"] = {
 	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
 	xp_gain = 0.3,
 	destroy_chance = 20, -- 50/1000
-	dig_exhaustion_modifier = 100.0, -- For testing!
+	--dig_exhaustion_modifier = 100.0, -- For testing! (Tested, works.)
 }
 
 tooldata["shovel_ruby"] = {

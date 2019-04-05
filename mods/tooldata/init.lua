@@ -342,6 +342,7 @@ tooldata["pick_mithril"] = {
 	},
 	damage_groups = {fleshy=19, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 2.5,
+	dig_exhaustion_modifier = 0.5,
 }
 
 tooldata["shovel_mithril"] = {
@@ -352,6 +353,7 @@ tooldata["shovel_mithril"] = {
 	},
 	damage_groups = {fleshy=8, cracky=1, crumbly=1},
 	xp_gain = 1.5,
+	dig_exhaustion_modifier = 0.5,
 }
 
 tooldata["axe_mithril"] = {
@@ -362,6 +364,7 @@ tooldata["axe_mithril"] = {
 	},
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	xp_gain = 1.5,
+	dig_exhaustion_modifier = 0.5,
 }
 
 -- Fast, high-damage sword VS mobs, but gives poor drops.
@@ -373,6 +376,7 @@ tooldata["sword_mithril"] = {
 	},
 	damage_groups = {fleshy=10, cracky=1, crumbly=1},
 	xp_gain = 1.5,
+	dig_exhaustion_modifier = 0.5,
 }
 
 --------------------------------------------------------------------------------

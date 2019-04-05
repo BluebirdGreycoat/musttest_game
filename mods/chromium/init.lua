@@ -4,6 +4,7 @@ minetest.register_node("chromium:ore", {
   tiles = {"default_stone.png^technic_chromium_mineral.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "chromium:lump",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
 })
 

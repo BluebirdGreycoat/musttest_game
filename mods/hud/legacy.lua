@@ -1,3 +1,6 @@
+-- Armor
+function hud.set_armor()
+end
 
 if hud.show_armor then
   local armor_org_func = armor.set_player_armor
@@ -24,5 +27,32 @@ if hud.show_armor then
       armor_lvl = get_armor_lvl(def[name])
     end
     hud.change_item(player, "armor", {number = armor_lvl})
+  end
+end
+
+-- Hunger related functions
+if not hud.show_hunger then
+  function hud.set_hunger()
+    hud.notify_hunger(1, true)
+  end
+
+  function hud.get_hunger()
+    hud.notify_hunger(1, true)
+  end
+
+  function hud.item_eat(hp_change, replace_with_item)
+    return function(itemstack, user, pointed_thing)
+      hud.notify_hunger(1, true)
+      local func = minetest.item_eat(hp_change, replace_with_item)
+      return func(itemstack, user, pointed_thing)
+    end
+  end
+
+  function hud.save_hunger()
+    hud.notify_hunger(1, true)
+  end
+  
+  function hud.load_hunger(player)
+    hud.notify_hunger(1, true)
   end
 end

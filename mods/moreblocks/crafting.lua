@@ -207,9 +207,11 @@ minetest.register_craft({
 
 minetest.register_craft({
 	output = "moreblocks:glow_glass",
+	recipe = {
 		{"", "dusts:diamond", ""},
 		{"", "default:glass", ""},
 		{"", "group:torch_craftitem", ""},
+	},
 })
 
 minetest.register_craft({

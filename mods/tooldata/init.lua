@@ -303,7 +303,7 @@ tooldata["pick_diamond"] = {
 	},
 	damage_groups = {fleshy=17, cracky=1, crumbly=1, knockback=6},
 	xp_gain = 1.5,
-	range_modifier 1.2,
+	range_modifier = 1.2,
 }
 
 tooldata["shovel_diamond"] = {
@@ -314,7 +314,7 @@ tooldata["shovel_diamond"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	xp_gain = 1.5,
-	range_modifier 1.2,
+	range_modifier = 1.2,
 }
 
 tooldata["axe_diamond"] = {
@@ -325,7 +325,7 @@ tooldata["axe_diamond"] = {
 	},
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	xp_gain = 1.5,
-	range_modifier 1.2,
+	range_modifier = 1.2,
 }
 
 -- Reasonably high-damage sword (until gem tools), but gives poor drops.

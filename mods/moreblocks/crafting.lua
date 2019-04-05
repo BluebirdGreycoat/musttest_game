@@ -206,22 +206,25 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	type = "shapeless",
 	output = "moreblocks:glow_glass",
-	recipe = {"glowstone:glowing_dust", "default:glass"},
+		{"", "dusts:diamond", ""},
+		{"", "default:glass", ""},
+		{"", "group:torch_craftitem", ""},
 })
 
 minetest.register_craft({
 	output = "moreblocks:super_glow_glass",
 	recipe = {
-		{"glowstone:glowing_dust", "default:glass", "glowstone:glowing_dust"},
+		{"", "dusts:diamond", ""},
+		{"group:torch_craftitem", "default:glass", "group:torch_craftitem"},
+		{"", "dusts:diamond", ""},
 	},
 })
 
 minetest.register_craft({
 	output = "moreblocks:super_glow_glass",
 	type = "shapeless",
-	recipe = {"moreblocks:glow_glass", "glowstone:glowing_dust"},
+	recipe = {"moreblocks:glow_glass", "group:torch_craftitem", "dusts:diamond"},
 })
 
 minetest.register_craft({

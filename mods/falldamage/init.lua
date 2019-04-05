@@ -41,7 +41,13 @@ end
 
 local old_register_tool = minetest.register_tool
 function minetest.register_tool(name, def)
-	return old_register_tool(name, def)
+	local ndef = table.copy(def)
+	if ndef.tool_capabilities then
+		if ndef.tool_capabilities.range_modifier then
+			ndef.range = (ndef.range or 4.0) * ndef.tool_capabilities.range_modifier
+		end
+	end
+	return old_register_tool(name, ndef)
 end
 
 

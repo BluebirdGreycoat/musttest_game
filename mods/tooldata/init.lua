@@ -204,7 +204,7 @@ tooldata["sword_steel"] = {
 
 tooldata["pick_bronze"] = {
 	full_punch_interval = 3.0,
-	max_drop_level = 1,
+	max_drop_level = 0,
 	groupcaps = {
 		-- Improved wear handling, otherwise players may not find it worth it.
 		cracky = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
@@ -214,7 +214,7 @@ tooldata["pick_bronze"] = {
 
 tooldata["shovel_bronze"] = {
 	full_punch_interval = 1.5,
-	max_drop_level = 1,
+	max_drop_level = 0,
 	groupcaps = {
 		crumbly = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
 	},
@@ -223,7 +223,7 @@ tooldata["shovel_bronze"] = {
 
 tooldata["axe_bronze"] = {
 	full_punch_interval = 0.8,
-	max_drop_level = 1,
+	max_drop_level = 0,
 	groupcaps = {
 		choppy = {times={[2]=0.30, [3]=0.30}, uses=150, maxlevel=2},
 	},

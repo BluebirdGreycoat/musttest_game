@@ -490,6 +490,7 @@ tooldata["pick_ruby"] = {
 	direct_to_inventory = true, -- Item goes directly to player inventory, no dropping.
 	xp_gain = 0.3,
 	destroy_chance = 20, -- 50/1000
+	dig_exhaustion_modifier = 100.0, -- For testing!
 }
 
 tooldata["shovel_ruby"] = {

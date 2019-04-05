@@ -376,12 +376,12 @@ tooldata["axe_mithril"] = {
 
 -- Fast, high-damage sword VS mobs, but gives poor drops.
 tooldata["sword_mithril"] = {
-	full_punch_interval = 0.7,
-	max_drop_level = 2,
+	full_punch_interval = 0.7, -- Same as amethyst.
+	max_drop_level = 2, -- But less than amethyst.
 	groupcaps = {
 		snappy = {times={[1]=1.80, [2]=0.40, [3]=0.30}, uses=80, maxlevel=3},
 	},
-	damage_groups = {fleshy=10, cracky=1, crumbly=1},
+	damage_groups = {fleshy=10, cracky=1, crumbly=1}, -- Just slightly more damage than amethyst.
 	xp_gain = 1.5,
 	dig_exhaustion_modifier = 0.5,
 }

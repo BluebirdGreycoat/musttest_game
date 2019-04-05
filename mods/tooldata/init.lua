@@ -670,7 +670,7 @@ tooldata["sword_amethyst"] = {
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,
 	destroy_chance = 20,
-	range_modifier 1.1,
+	range_modifier = 1.1,
 }
 
 --------------------------------------------------------------------------------
@@ -860,7 +860,7 @@ tooldata["sword_amethyst_rf"] = {
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	direct_to_inventory = true,
 	destroy_chance = 20,
-	range_modifier 1.1,
+	range_modifier = 1.1,
 }
 
 dofile(modpath .. "/technic.lua")

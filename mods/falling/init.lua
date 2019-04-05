@@ -149,10 +149,10 @@ local adjacency = {
 }
 
 local function outof_bounds(pos)
-	if pos.z < -30912 then
+	if pos.y < -30912 then
 		return true
 	end
-	if pos.z > 30927 then
+	if pos.y > 30927 then
 		return true
 	end
 	if pos.x > 30927 then

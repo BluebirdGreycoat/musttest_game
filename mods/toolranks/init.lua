@@ -115,26 +115,13 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   local itemdesc  = itemdef.original_description -- Original Description
   local dugnodes  = tonumber(itemmeta:get_string("tr_dug")) or 0 -- Number of nodes dug
   local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1 -- Level the tool had
-                                                                    -- on the last dig
-  local most_digs = mod_storage:get_int("most_digs") or 0
-  local most_digs_user = mod_storage:get_string("most_digs_user") or 0
-  
+
   -- Only count nodes that spend the tool
   if(digparams.wear > 0) then
    dugnodes = dugnodes + 1
    itemmeta:set_string("tr_dug", dugnodes)
   end
-  if(dugnodes > most_digs) then
-    most_digs = dugnodes
-    if(most_digs_user ~= user:get_player_name()) then -- Avoid spam.
-      most_digs_user = user:get_player_name()
-      minetest.chat_send_all("# Server: Most used tool is now a " .. utility.get_short_desc(itemdesc)
-                             .. " owned by <" .. rename.gpn(user:get_player_name())
-                             .. "> with " .. dugnodes .. " uses.")
-    end
-    mod_storage:set_int("most_digs", dugnodes)
-    mod_storage:set_string("most_digs_user", user:get_player_name())
-  end
+
   if(itemstack:get_wear() > 60135) then
     minetest.chat_send_player(user:get_player_name(), "# Server: Your tool is about to break!")
     ambiance.sound_play("default_tool_breaks", user:get_pos(), 1.0, 20)
@@ -164,7 +151,6 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   -- Uncomment for testing ^
 
   itemstack:add_wear(wear)
-
   return itemstack
 end
 

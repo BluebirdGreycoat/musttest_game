@@ -77,6 +77,15 @@ local function distance(player)
 end
 
 local function get_dig_exhaustion(player)
+	-- Note: this code will skip obtaining the 'hand' tool capabilities whenever
+	-- the player is wielding a non-tool, but since the hand doesn't have a dig
+	-- exhaustion modifier anyway, that's OK.
+	local tool = player:get_wielded_item()
+	local tdef = tool:get_definition()
+	local tcap = tdef.tool_capabilities
+	if tcap and tcap.dig_exhaustion_modifier then
+		return (HUNGER_EXHAUST_DIG * tcap.dig_exhaustion_modifier)
+	end
 	return HUNGER_EXHAUST_DIG
 end
 

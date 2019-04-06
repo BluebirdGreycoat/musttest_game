@@ -101,7 +101,49 @@ function rockdrill.is_blastable(name)
 	return true
 end
 
+function rockdrill.handle_node_drops(pos, user)
+	---[[
+	local node = minetest.get_node(pos)
+	if node.name == "air" then
+		return
+	end
+	local def = minetest.registered_nodes[node.name]
+	if def and def.groups then
+		local ig = (def.groups.immovable or 0)
+		if ig > 0 then
+			return
+		end
+	end
+	local inv = user:get_inventory()
+	if not inv then
+		return
+	end
+	-- This function takes both nodetables and nodenames.
+	-- Pass nodenames, because passing a nodetable gives wrong results.
+	local drops = minetest.get_node_drops(node.name, "")
+	--minetest.chat_send_player("MustTest", dump(drops))
+	for _, item in pairs(drops) do
+		local stack = ItemStack(item) -- Itemstring to itemstack.
+		local remain = inv:add_item("main", stack)
+		if not remain:is_empty() then
+			local p = {
+				x = pos.x + math.random()/2 - 0.25,
+				y = pos.y + math.random()/2 - 0.25,
+				z = pos.z + math.random()/2 - 0.25,
+			}
+			minetest.add_item(p, remain)
+		end
+	end
+	minetest.remove_node(pos)
+	--]]
+
+	--_nodeupdate.drop_node_as_entity(pos)
+end
+
 function rockdrill.on_use(itemstack, user, pt)
+	if not user or not user:is_player() then
+		return
+	end
 	if pt.type ~= "node" then
 		return
 	end
@@ -135,7 +177,7 @@ function rockdrill.on_use(itemstack, user, pt)
 			end
 		else
 			-- No on_blast function? Destroy node normally.
-			_nodeupdate.drop_node_as_entity(v)
+			rockdrill.handle_node_drops(v, user)
 		end
 		minetest.check_for_falling(v)
 	end

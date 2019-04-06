@@ -418,6 +418,14 @@ tooldata["pick_titanium"] = {
 			max_drop_level = 2,
 			direct_to_inventory = true,
 		},
+		["kalite:ore"] = {
+			max_drop_level = 2,
+			direct_to_inventory = true,
+		},
+		["moreores:mineral_tin"] = {
+			max_drop_level = 2,
+			direct_to_inventory = true,
+		},
 	},
 }
 

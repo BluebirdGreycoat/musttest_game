@@ -31,6 +31,15 @@ function nodeinspector.inspect(pname, under, above)
 	local descunder = utility.get_short_desc(defunder.description or "<NONE>")
 	local descabove = utility.get_short_desc(defabove.description or "<NONE>")
 
+	local levelunder = 0
+	local levelabove = 0
+	if defunder.groups then
+		levelunder = (defunder.groups.level or 0)
+	end
+	if defabove.groups then
+		levelabove = (defabove.groups.level or 0)
+	end
+
 	if descunder == "" then descunder = "<NONE>" end
 	if descabove == "" then descabove = "<NONE>" end
 
@@ -83,6 +92,7 @@ function nodeinspector.inspect(pname, under, above)
 		"label[0,2.0;" .. escape(protunder) .. "]" ..
 		"label[0,2.4;" .. escape("Protection Check: " .. checkunder) .. "]" ..
 		"label[0,2.8;" .. escape("Meta Owner: " .. mounder) .. "]" ..
+		"label[0,3.2;" .. escape("Node Level: " .. levelunder) .. "]" ..
 		"item_image[6,0;1,1;" .. escape(nodeunder.name) .. "]" ..
 
 		"label[0,4.0;" .. escape("Node Above " .. strabove .. ":") .. "]" ..
@@ -93,6 +103,7 @@ function nodeinspector.inspect(pname, under, above)
 		"label[0,6.0;" .. escape(protabove) .. "]" ..
 		"label[0,6.4;" .. escape("Protection Check: " .. checkabove) .. "]" ..
 		"label[0,6.8;" .. escape("Meta Owner: " .. moabove) .. "]" ..
+		"label[0,7.2;" .. escape("Node Level: " .. levelabove) .. "]" ..
 		"item_image[6,4;1,1;" .. escape(nodeabove.name) .. "]" ..
 
 		"item_image[4,8;1,1;nodeinspector:nodeinspector]" ..

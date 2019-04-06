@@ -233,15 +233,14 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		return
 	end
 
-	-- Node hasn't been removed yet, we can make use of it.
+	-- Node hasn't been removed yet, we can make use of it. GOOD!
 	local node = minetest.get_node(pos) -- Node to be dug.
 	local tool = digger:get_wielded_item()
 	local tn = tool:get_name()
 	local xp_drop_enabled = true
 
 	-- Node definition.
-	local ndef = minetest.reg_ns_nodes[node.name] or
-		minetest.registered_nodes[node.name]
+	local ndef = minetest.reg_ns_nodes[node.name] or minetest.registered_nodes[node.name]
 
 	-- Nil check.
 	if not ndef then
@@ -260,6 +259,11 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	if not tool_capabilities then
 		tool_capabilities = tooldata["hand_hand"]
 		assert(tool_capabilities)
+	end
+	if tool_capabilities.node_overrides then
+		if tool_capabilities.node_overrides[node.name] then
+			tool_capabilities = tool_capabilities.node_overrides[node.name]
+		end
 	end
 
 	-- Player does not get node drop if tool doesn't have sufficient level.

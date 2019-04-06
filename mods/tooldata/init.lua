@@ -401,6 +401,24 @@ tooldata["pick_titanium"] = {
 	},
 	damage_groups = {fleshy=15, cracky=1, crumbly=1, knockback=6},
 	direct_to_inventory = true,
+
+	-- Enable titanium pick to dig these nodes specially!
+	-- Note: if one flag is overridden, then all must be specified, otherwise initial flags will be ignored.
+	-- Only builtin engine parameters are exempt.
+	node_overrides = {
+		["default:stone_with_coal"] = {
+			max_drop_level = 2,
+			direct_to_inventory = true,
+		},
+		["default:stone_with_iron"] = {
+			max_drop_level = 2,
+			direct_to_inventory = true,
+		},
+		["default:stone_with_copper"] = {
+			max_drop_level = 2,
+			direct_to_inventory = true,
+		},
+	},
 }
 
 tooldata["shovel_titanium"] = {

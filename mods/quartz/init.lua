@@ -25,6 +25,7 @@ minetest.register_node("quartz:quartz_ore", {
 	groups = utility.dig_groups("mineral"),
 	drop = 'quartz:quartz_crystal',
 	sounds = default.node_sound_stone_defaults(),
+	silverpick_drop = true,
 })
 
 oregen.register_ore({

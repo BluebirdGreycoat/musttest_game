@@ -86,7 +86,7 @@ function nodeinspector.inspect(pname, under, above)
 
 		"label[0,0.0;" .. escape("Node Under " .. strunder .. ":") .. "]" ..
 		"label[0,0.4;" .. escape("Description: " .. descunder) .. "]" ..
-		"label[0,0.8;" .. escape("Name: " .. nodeunder.name) .. "]" ..
+		"label[0,0.8;" .. escape("Node ID: " .. nodeunder.name) .. "]" ..
 		"label[0,1.2;" .. escape("Node Light: " .. lightunder) .. "]" ..
 		"label[0,1.6;" .. escape("Land Claimed By: " .. ownerunder) .. "]" ..
 		"label[0,2.0;" .. escape(protunder) .. "]" ..
@@ -97,7 +97,7 @@ function nodeinspector.inspect(pname, under, above)
 
 		"label[0,4.0;" .. escape("Node Above " .. strabove .. ":") .. "]" ..
 		"label[0,4.4;" .. escape("Description: " .. descabove) .. "]" ..
-		"label[0,4.8;" .. escape("Name: " .. nodeabove.name) .. "]" ..
+		"label[0,4.8;" .. escape("Node ID: " .. nodeabove.name) .. "]" ..
 		"label[0,5.2;" .. escape("Node Light: " .. lightabove) .. "]" ..
 		"label[0,5.6;" .. escape("Land Claimed By: " .. ownerabove) .. "]" ..
 		"label[0,6.0;" .. escape(protabove) .. "]" ..

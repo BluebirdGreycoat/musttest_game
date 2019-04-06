@@ -466,13 +466,15 @@ tooldata["sword_titanium"] = {
 
 -- Silver tools can be dual-purposed, but their secondary purpose isn't performed
 -- as well as it could be if the correct tool was used.
+-- Note: must be able to pick level 3 nodes, otherwise nodes at that level won't
+-- be able to work with special silverpick drops.
 
 tooldata["pick_silver"] = {
 	full_punch_interval = 3.0,
 	max_drop_level = 3,
 	groupcaps = {
-		cracky = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=30, maxlevel=2},
-		snappy = {times={[1]=4.00, [2]=1.50, [3]=1.30}, uses=20, maxlevel=1}, -- Secondary.
+		cracky = {times={[1]=1.50, [2]=1.00, [3]=0.50}, uses=30, maxlevel=3},
+		snappy = {times={[1]=2.00, [2]=1.50, [3]=1.00}, uses=20, maxlevel=1}, -- Secondary.
 	},
 	damage_groups = {fleshy=12, cracky=1, crumbly=1, knockback=6},
 }
@@ -481,8 +483,8 @@ tooldata["shovel_silver"] = {
 	full_punch_interval = 1.5,
 	max_drop_level = 3,
 	groupcaps = {
-		crumbly = {times={[1]=3.50, [2]=1.30, [3]=1.00}, uses=30, maxlevel=2},
-		snappy = {times={[1]=4.00, [2]=1.50, [3]=1.50}, uses=20, maxlevel=1}, -- Secondary.
+		crumbly = {times={[1]=1.50, [2]=1.00, [3]=0.50}, uses=30, maxlevel=3},
+		snappy = {times={[1]=2.00, [2]=1.50, [3]=1.00}, uses=20, maxlevel=1}, -- Secondary.
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
@@ -492,8 +494,8 @@ tooldata["axe_silver"] = {
 	max_drop_level = 3,
 	groupcaps = {
 		-- The silver axe can do both choppy and snappy jobs equally well.
-		choppy = {times={[1]=2.10, [2]=1.40, [3]=0.70}, uses=30, maxlevel=2},
-		snappy = {times={[1]=2.10, [2]=1.40, [3]=0.70}, uses=20, maxlevel=2}, -- Secondary.
+		choppy = {times={[1]=1.50, [2]=1.00, [3]=0.50}, uses=30, maxlevel=3},
+		snappy = {times={[1]=2.00, [2]=1.50, [3]=1.00}, uses=20, maxlevel=2}, -- Secondary.
 	},
 	damage_groups = {fleshy=2, cracky=1, crumbly=1},
 }
@@ -502,8 +504,8 @@ tooldata["sword_silver"] = {
 	full_punch_interval = 0.9,
 	max_drop_level = 3,
 	groupcaps = {
-		snappy = {times={[1]=2.00, [2]=1.00, [3]=0.70}, uses=30, maxlevel=2},
-		choppy = {times={[1]=2.60, [2]=2.00, [3]=1.10}, uses=20, maxlevel=1}, -- Secondary.
+		snappy = {times={[1]=1.50, [2]=1.00, [3]=0.50}, uses=30, maxlevel=3},
+		choppy = {times={[1]=2.00, [2]=1.50, [3]=1.00}, uses=20, maxlevel=1}, -- Secondary.
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 }

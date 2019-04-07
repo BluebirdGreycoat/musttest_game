@@ -278,7 +278,20 @@ tooldata["axe_mese"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
-	-- Has NO destroy chance!
+	destroy_chance = 10,
+
+	node_overrides = {
+		["nyancat:nyancat"] = {
+			max_drop_level = 3,
+			destroy_chance = nil,
+			direct_to_inventory = true,
+		},
+		["nyancat:nyancat_rainbow"] = {
+			max_drop_level = 3,
+			destroy_chance = nil,
+			direct_to_inventory = true,
+		},
+	},
 }
 
 tooldata["sword_mese"] = {

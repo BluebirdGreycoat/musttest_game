@@ -278,7 +278,7 @@ tooldata["axe_mese"] = {
 	},
 	damage_groups = {fleshy=6, cracky=1, crumbly=1},
 	direct_to_inventory = true,
-	destroy_chance = 10,
+	-- Has NO destroy chance!
 }
 
 tooldata["sword_mese"] = {
@@ -375,7 +375,7 @@ tooldata["axe_mithril"] = {
 	damage_groups = {fleshy=9, cracky=1, crumbly=1},
 	xp_gain = 1.5,
 	dig_exhaustion_modifier = 0.5,
-	destroy_chance = 5,
+	destroy_chance = 15,
 }
 
 -- Fast, high-damage sword VS mobs, but gives poor drops.

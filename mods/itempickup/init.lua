@@ -272,6 +272,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	local max_drop_level = (tool_capabilities.max_drop_level or 0)
 	if tool_level >= 7 then
 		max_drop_level = max_drop_level + 1
+		minetest.log("max_drop_level increased!")
 	end
 
 	-- Player does not get node drop if tool doesn't have sufficient level.

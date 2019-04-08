@@ -236,6 +236,8 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	-- Node hasn't been removed yet, we can make use of it. GOOD!
 	local node = minetest.get_node(pos) -- Node to be dug.
 	local tool = digger:get_wielded_item()
+	local tool_meta = tool:get_meta()
+	local tool_level = tonumber(tool_meta:get_string("tr_lastlevel")) or 1
 	local tn = tool:get_name()
 	local xp_drop_enabled = true
 
@@ -266,8 +268,14 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		end
 	end
 
+	-- Max level (toolranks) tool gets its `max_drop_level` improved by 1!
+	local max_drop_level = (tool_capabilities.max_drop_level or 0)
+	if tool_level >= 7 then
+		max_drop_level = max_drop_level + 1
+	end
+
 	-- Player does not get node drop if tool doesn't have sufficient level.
-	if (tool_capabilities.max_drop_level or 0) < (ndef.groups.level or 0) then
+	if (max_drop_level) < (ndef.groups.level or 0) then
 		-- 1 in 4 chance player will get the node anyway.
 		if math.random(1, 4) > 1 then
 			-- Particle feedback to player.

@@ -227,6 +227,17 @@ end
 
 
 
+-- Table of XP gain multipliers based on tool's rank (toolranks mod).
+local xp_gain_ranks = {
+	[1] = 0.5,
+	[2] = 0.9,
+	[3] = 1.0,
+	[4] = 1.1,
+	[5] = 1.2,
+	[6] = 1.3,
+	[7] = 1.5,
+}
+
 function itempickup.handle_node_drops(pos, drops, digger)
 	-- Nil check.
 	if not digger or not digger:is_player() then
@@ -294,6 +305,13 @@ function itempickup.handle_node_drops(pos, drops, digger)
 		end
 	end
 
+	-- Tool's (toolranks) rank modifies the mineral XP gain rate!
+	local xp_gain_multiplier = (tool_capabilities.xp_gain or 1.0)
+	if xp_gain_ranks[tool_level] then
+		xp_gain_multiplier = (xp_gain_multiplier * xp_gain_ranks[tool_level])
+		minetest.log("xp gain: " .. xp_gain_multiplier)
+	end
+
 	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_") or tn:find(":axe"))
 
 	-- If node has a drop string/table for silver tools, override drop table.
@@ -349,7 +367,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 			-- Increase player's XP if not at max yet.
 			if digxp < xp.digxp_max then
-				digxp = digxp + (value * (tool_capabilities.xp_gain or 1.0))
+				digxp = digxp + (value * xp_gain_multiplier)
 				if digxp > xp.digxp_max then
 					digxp = xp.digxp_max
 				end

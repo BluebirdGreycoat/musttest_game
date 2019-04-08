@@ -69,7 +69,7 @@ function toolranks.create_description(name, uses, level)
 
 	local strpart = "Nodes dug"
 	if tooltype == "sword" then
-		strpart = "Weapon swings"
+		strpart = "Weapon strikes"
 	elseif tooltype == "pickaxe" then
 		strpart = "Nodes picked"
 	elseif tooltype == "axe" then

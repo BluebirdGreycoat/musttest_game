@@ -309,7 +309,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	local xp_gain_multiplier = (tool_capabilities.xp_gain or 1.0)
 	if xp_gain_ranks[tool_level] then
 		xp_gain_multiplier = (xp_gain_multiplier * xp_gain_ranks[tool_level])
-		minetest.log("xp gain: " .. xp_gain_multiplier)
+		--minetest.log("xp gain: " .. xp_gain_multiplier) -- Tested, works!
 	end
 
 	local is_basic_tool = (tn:find("pick_") or tn:find("sword_") or tn:find("shovel_") or tn:find("axe_") or tn:find(":axe"))

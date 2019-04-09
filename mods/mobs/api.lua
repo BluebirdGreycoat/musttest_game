@@ -500,7 +500,19 @@ local function check_for_death(self, cause, cmi_cause)
 	-- only drop items if weapon is of sufficient level to overcome mob's armor level
 	local can_drop = true
 	if cmi_cause and cmi_cause.tool_capabilities then
-		if (cmi_cause.tool_capabilities.max_drop_level or 0) < (self.armor_level or 0) then
+		local max_drop_level = (cmi_cause.tool_capabilities.max_drop_level or 0)
+
+		-- Increase weapon's max drop level if rank is level 7.
+		local tool_level = 1
+		if cmi_cause.wielded then
+			local tool_meta = cmi_cause.wielded:get_meta()
+			tool_level = tonumber(tool_meta:get_string("tr_lastlevel")) or 1
+		end
+		if tool_level >= 7 then
+			max_drop_level = max_drop_level + 1
+		end
+
+		if (max_drop_level) < (self.armor_level or 0) then
 			can_drop = false
 		end
 	end
@@ -2794,11 +2806,21 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 		-- exit here if dead, special item check
 		if weapon:get_name() == "mobs:pick_lava" then
-			if check_for_death(self, "lava", {type = "punch", puncher = hitter, tool_capabilities = tool_capabilities}) then
+			if check_for_death(self, "lava", {
+						type = "punch",
+						puncher = hitter,
+						tool_capabilities = tool_capabilities,
+						wielded = weapon,
+					}) then
 				return
 			end
 		else
-			if check_for_death(self, "hit", {type = "punch", puncher = hitter, tool_capabilities = tool_capabilities}) then
+			if check_for_death(self, "hit", {
+						type = "punch",
+						puncher = hitter,
+						tool_capabilities = tool_capabilities,
+						wielded = weapon,
+					}) then
 				return
 			end
 		end

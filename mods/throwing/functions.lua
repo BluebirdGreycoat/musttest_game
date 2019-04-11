@@ -110,6 +110,7 @@ end
 function throwing_arrow_punch_entity (obj, self, damage)
 	local toolcaps = {
 		full_punch_interval = 1.0,
+		max_drop_level = 3,
 		damage_groups = {fleshy = damage},
 	}
   local player = minetest.get_player_by_name(self.player_name or "")

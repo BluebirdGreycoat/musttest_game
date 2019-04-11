@@ -2681,7 +2681,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	-- weapon wear
 	local weapon = hitter:get_wielded_item()
-	minetest.log("weapon: <" .. weapon:get_name() .. ">")
+	--minetest.log("weapon: <" .. weapon:get_name() .. ">")
 	local punch_interval = 1.4
 
 	-- calculate mob damage

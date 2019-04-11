@@ -913,6 +913,7 @@ function td_api.arrow_toolcaps(name, damage)
 		max_drop_level = 3,
 		damage_groups = {fleshy = damage},
 	}
+	-- This table gets sent through the engine, so only builtin parameters work.
 	return tc
 end
 

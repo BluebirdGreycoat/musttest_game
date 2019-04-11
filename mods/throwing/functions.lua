@@ -109,7 +109,8 @@ end
 
 function throwing_arrow_punch_entity (target, self, damage)
 	-- Get tool capabilities from the tool-data API.
-	local toolcaps = td_api.arrow_toolcaps(self.name or "", damage)
+	local luaent = self.object:get_luaentity() or {}
+	local toolcaps = td_api.arrow_toolcaps(luaent.name or "", damage)
 
   local player = minetest.get_player_by_name(self.player_name or "")
   if player and player:is_player() then

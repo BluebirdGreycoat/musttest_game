@@ -62,7 +62,9 @@
 -- to a sword is better.
 
 tooldata = tooldata or {}
+td_api = td_api or {}
 local modpath = minetest.get_modpath("tooldata")
+td_api.modpath = modpath
 
 --------------------------------------------------------------------------------
 -- MISC TOOLS
@@ -903,5 +905,15 @@ tooldata["sword_amethyst_rf"] = {
 	destroy_chance = 20,
 	range_modifier = 1.5,
 }
+
+function td_api.arrow_toolcaps(name, damage)
+	minetest.log(name)
+	local tc = {
+		full_punch_interval = 1.0,
+		max_drop_level = 3,
+		damage_groups = {fleshy = damage},
+	}
+	return tc
+end
 
 dofile(modpath .. "/technic.lua")

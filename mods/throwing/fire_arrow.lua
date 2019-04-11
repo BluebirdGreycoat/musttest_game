@@ -30,6 +30,7 @@ minetest.register_node("throwing:arrow_fire_box", {
 })
 
 local THROWING_ARROW_ENTITY={
+	name = "throwing:arrow_fire",
 	physical = false,
 	timer=0,
 	visual = "wielditem",
@@ -116,14 +117,14 @@ minetest.register_node("throwing:light", {
 minetest.register_craft({
 	output = 'throwing:arrow_fire',
 	recipe = {
-		{'default:stick', 'default:stick', 'default:torch'},
+		{'default:stick', 'default:stick', 'group:torch_craftitem'},
 	},
 })
 
 minetest.register_craft({
 	output = 'throwing:arrow_fire',
 	recipe = {
-		{'default:torch', 'default:stick', 'default:stick'},
+		{'group:torch_craftitem', 'default:stick', 'default:stick'},
 	},
 })
 

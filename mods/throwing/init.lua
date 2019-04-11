@@ -39,20 +39,8 @@ if not DISABLE_TELEPORT_ARROW then
 	dofile(minetest.get_modpath("throwing").."/teleport_arrow.lua")
 end
 
-if not DISABLE_DIG_ARROW then
-	dofile(minetest.get_modpath("throwing").."/dig_arrow.lua")
-end
-
-if not DISABLE_BUILD_ARROW then
-	dofile(minetest.get_modpath("throwing").."/build_arrow.lua")
-end
-
 if minetest.get_modpath('fire') and minetest.get_modpath('tnt') and not DISABLE_TNT_ARROW then
 	dofile(minetest.get_modpath("throwing").."/tnt_arrow.lua")
-end
-
-if not DISABLE_TORCH_ARROW then
-	dofile(minetest.get_modpath("throwing").."/torch_arrow.lua")
 end
 
 if minetest.get_modpath('tnt') and not DISABLE_SHELL_ARROW then

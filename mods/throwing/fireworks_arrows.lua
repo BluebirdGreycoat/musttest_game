@@ -31,6 +31,7 @@ local function throwing_register_fireworks(color, desc)
 	})
 	
 	local THROWING_ARROW_ENTITY={
+		name = "throwing:arrow_fireworks_" .. color,
 		physical = false,
 		timer=0,
 		visual = "wielditem",

@@ -31,7 +31,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft)
 	})
 	
 	local THROWING_ARROW_ENTITY = {
-		name = "throwing:arrow_" .. kind,
+		_name = "throwing:arrow_" .. kind,
 		physical = false,
 		timer=0,
 		visual = "wielditem",

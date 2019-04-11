@@ -3367,7 +3367,10 @@ if not mobs.registered then
 		mobs.spawning_mobs[name] = true
 
 		minetest.register_entity(name, {
+			-- Warning: this parameter is set by the engine anway!
 			name                    = name,
+
+			_name                   = name,
 			mob                     = true, -- Object is a mob.
 			type                    = def.type,
 			armor_level             = def.armor_level or 0,

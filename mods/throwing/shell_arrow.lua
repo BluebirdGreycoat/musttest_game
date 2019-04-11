@@ -30,7 +30,7 @@ minetest.register_node("throwing:arrow_shell_box", {
 })
 
 local THROWING_ARROW_ENTITY={
-	name = "throwing:arrow_shell",
+	_name = "throwing:arrow_shell",
 	physical = false,
 	timer=0,
 	visual = "wielditem",

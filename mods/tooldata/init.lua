@@ -907,7 +907,7 @@ tooldata["sword_amethyst_rf"] = {
 }
 
 function td_api.arrow_toolcaps(name, damage)
-	minetest.log(name)
+	--minetest.log(name)
 	local tc = {
 		full_punch_interval = 1.0,
 		max_drop_level = 3,

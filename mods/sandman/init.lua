@@ -117,6 +117,7 @@ mobs.register_mob("sandman:stoneman", {
 	type = "monster",
 	passive = false,
 	attack_type = "dogfight",
+  group_attack = true,
 	reach = 2,
 	damage = 2,
 	hp_min = 30,

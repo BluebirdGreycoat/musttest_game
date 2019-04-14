@@ -54,7 +54,7 @@ rc.realms = {
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
-		disabled = true, -- Currently testing.
+		disabled = false,
 	},
 }
 

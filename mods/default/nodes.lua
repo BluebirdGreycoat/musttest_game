@@ -740,10 +740,20 @@ minetest.register_node("default:desert_stone_with_copper", {
 
 minetest.register_node("default:desert_stone_with_iron", {
 	description = "Redstone Iron Ore",
-	-- Use old copper image, the pattern looks nicer.
+	-- Use old iron image, the pattern looks nicer.
 	tiles = {"default_desert_stone.png^default_mineral_iron2.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
+	silverpick_drop = true,
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:desert_stone_with_diamond", {
+	description = "Redstone Diamond Deposit",
+	-- Use old diamond image, the pattern looks nicer.
+	tiles = {"default_desert_stone.png^default_mineral_diamond2.png"},
+	groups = utility.dig_groups("hardmineral"),
+	drop = 'default:diamond',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
@@ -830,7 +840,7 @@ minetest.register_node("default:goldblock", {
 
 
 minetest.register_node("default:stone_with_diamond", {
-	description = "Diamond Ore",
+	description = "Diamond Deposit",
 	tiles = {"default_stone.png^default_mineral_diamond.png"},
 	-- Player has to get mese pick or similar before they can get diamond.
 	groups = utility.dig_groups("hardmineral"),

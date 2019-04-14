@@ -87,10 +87,11 @@ jarkati.register_decoration({
 	probability = 700,
 })
 
+-- Scatter "rubble" around the bases of cliffs.
 jarkati.register_decoration({
-	nodes = {"default:desert_cobble"},
+	nodes = {"default:desert_cobble", "stairs:slab_desert_cobble"},
 	probability = 10,
-	spawn_by = {"default:desert_stone"},
+	spawn_by = {"default:desert_stone", "default:sandstone"},
 })
 
 jarkati.register_decoration({
@@ -166,6 +167,16 @@ jarkati.noise5param2d = {
 	lacunarity = 2,
 }
 
+jarkati.noise6param3d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=32*NOISE_SCALE, y=32*NOISE_SCALE, z=32*NOISE_SCALE},
+	seed = 3817,
+	octaves = 3,
+	persist = 0.5,
+	lacunarity = 2,
+}
+
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
@@ -174,15 +185,23 @@ local c_desert_cobble   = minetest.get_content_id("default:desert_cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
+local c_shadow_caster   = minetest.get_content_id("default:stone")
 
 -- Externally located tables for performance.
-local data = {}
+local vm_data = {}
 local biome_data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 local noisemap3 = {}
 local noisemap4 = {}
 local noisemap5 = {}
+local noisemap6 = {}
+local perlin1
+local perlin2
+local perlin3
+local perlin4
+local perlin5
+local perlin6
 
 jarkati.generate_realm = function(minp, maxp, seed)
 	local nbeg = jarkati.REALM_START
@@ -197,8 +216,9 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	-- Grab the voxel manipulator.
 	-- Read current map data.
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
-	vm:get_data(data)
-	local area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+	vm:get_data(vm_data)
+	local max_area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+	local min_area = VoxelArea:new {MinEdge=minp, MaxEdge=maxp}
 
 	-- Actual emerged area should be bigger than the chunk we're generating!
 	assert(emin.y < minp.y and emin.x < minp.x and emin.z < minp.z)
@@ -216,25 +236,31 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 	-- Compute side lengths.
 	local side_len_x = ((x1-x0)+1)
+	local side_len_y = ((y1-y0)+1)
 	local side_len_z = ((z1-z0)+1)
 	local sides2D = {x=side_len_x, y=side_len_z}
+	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
 	local bp2d = {x=x0, y=z0}
+	local bp3d = {x=x0, y=y0, z=z0}
 
 	-- Get noisemaps.
-	local perlin1 = minetest.get_perlin_map(jarkati.noise1param2d, sides2D)
+	perlin1 = perlin1 or minetest.get_perlin_map(jarkati.noise1param2d, sides2D)
 	perlin1:get2dMap_flat(bp2d, noisemap1)
 
-	local perlin2 = minetest.get_perlin_map(jarkati.noise2param2d, sides2D)
+	perlin2 = perlin2 or minetest.get_perlin_map(jarkati.noise2param2d, sides2D)
 	perlin2:get2dMap_flat(bp2d, noisemap2)
 
-	local perlin3 = minetest.get_perlin_map(jarkati.noise3param2d, sides2D)
+	perlin3 = perlin3 or minetest.get_perlin_map(jarkati.noise3param2d, sides2D)
 	perlin3:get2dMap_flat(bp2d, noisemap3)
 
-	local perlin4 = minetest.get_perlin_map(jarkati.noise4param2d, sides2D)
+	perlin4 = perlin4 or minetest.get_perlin_map(jarkati.noise4param2d, sides2D)
 	perlin4:get2dMap_flat(bp2d, noisemap4)
 
-	local perlin5 = minetest.get_perlin_map(jarkati.noise5param2d, sides2D)
+	perlin5 = perlin5 or minetest.get_perlin_map(jarkati.noise5param2d, sides2D)
 	perlin5:get2dMap_flat(bp2d, noisemap5)
+
+	perlin6 = perlin6 or minetest.get_perlin_map(jarkati.noise6param3d, sides3D)
+	perlin6:get3dMap_flat(bp3d, noisemap6)
 
 	-- Localize commonly used functions for speed.
 	local floor = math.floor
@@ -283,6 +309,23 @@ jarkati.generate_realm = function(minp, maxp, seed)
 		return h
 	end
 
+	local function cavern(x, y, z)
+		local np = min_area:index(x, y, z)
+		local n1 = noisemap6[np]
+
+		return (abs(n1) < 0.1)
+	end
+
+	--[[
+	-- Add shadow-caster layer.
+	for z = z0, z1 do
+		for x = x0, x1 do
+			local vp = max_area:index(x, (y1 + 1), z)
+			vm_data[vp] = c_shadow_caster
+		end
+	end
+	--]]
+
 	-- Generic filler stone type.
 	local c_stone = c_desert_stone
 
@@ -293,23 +336,32 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			local miny = (y0 - 0)
 			local maxy = (y1 + 0)
 
+			miny = max(miny, nbeg)
+			maxy = min(maxy, nend)
+
 			-- First pass through column.
 			for y = miny, maxy do
-				local vp = area:index(x, y, z)
-				local cid = data[vp]
+				local cave = cavern(x, y, z)
+				local vp = max_area:index(x, y, z)
+				local cid = vm_data[vp]
 
 				-- Don't overwrite previously existing stuff (non-ignore, non-air).
 				if (cid == c_air or cid == c_ignore) then
-					if y <= ground then
-						data[vp] = c_stone
+					if cave then
+						vm_data[vp] = c_air
 					else
-						data[vp] = c_air
+						if y <= ground then
+							vm_data[vp] = c_stone
+						else
+							vm_data[vp] = c_air
+						end
 					end
 				end
 			end -- End column loop.
 		end
 	end
 
+	---[[
 	-- Localize for speed.
 	local all_biomes = jarkati.biomes
 	local function biomes(biomes)
@@ -340,7 +392,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			-- Second pass through column.
 			for y = miny, maxy do
 				if y >= nbeg and y <= nend then
-					local vp = area:index(x, y, z)
+					local vp = max_area:index(x, y, z)
 
 					if y <= ground then
 						count = 1
@@ -357,7 +409,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 						if (count >= v.min_level and count <= v.max_level) then
 							if (depth >= v.min_depth and depth <= v.max_depth) then
-								data[vp] = v.cid
+								vm_data[vp] = v.cid
 							end
 						end
 					end
@@ -365,31 +417,49 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			end -- End column loop.
 		end
 	end
+	--]]
 
-	-- Third mapgen pass. Generate bedrock layer overwriting everything else (critical).
+	--[[
+	-- Use shadow-caster layer to propagate shadows, then remove it.
+	vm:set_data(vm_data)
+	vm:calc_lighting()
 	for z = z0, z1 do
 		for x = x0, x1 do
-			-- Randomize height of the bedrock a bit.
-			local bedrock = (nbeg + pr:next(5, pr:next(6, 7)))
-			local miny = max(y0, nbeg)
-			local maxy = min(y1, bedrock)
-
-			-- Third pass through column.
-			for y = miny, maxy do
-				local vp = area:index(x, y, z)
-				data[vp] = c_bedrock
-			end -- End column loop.
+			local vp = max_area:index(x, (y1 + 1), z)
+			vm_data[vp] = c_ignore
 		end
 	end
+	--]]
+
+	---[[
+	-- Third mapgen pass. Generate bedrock layer overwriting everything else (critical).
+	if not (y1 < nbeg or y0 > (nbeg + 10)) then
+		for z = z0, z1 do
+			for x = x0, x1 do
+				-- Randomize height of the bedrock a bit.
+				local bedrock = (nbeg + pr:next(5, pr:next(6, 7)))
+				local miny = max(y0, nbeg)
+				local maxy = min(y1, bedrock)
+
+				-- Third pass through column.
+				for y = miny, maxy do
+					local vp = max_area:index(x, y, z)
+					vm_data[vp] = c_bedrock
+				end -- End column loop.
+			end
+		end
+	end
+	--]]
 
 	-- Finalize voxel manipulator.
-	vm:set_data(data)
-	--vm:set_lighting({day=0, night=0})
+	vm:set_data(vm_data)
 	minetest.generate_ores(vm)
-	vm:calc_lighting()
-	--vm:update_liquids() -- No liquid nodes placed.
-	vm:write_to_map()
+	vm:write_to_map(false)
 
+	-- Not needed to do this, it will be done during the "mapfix" call.
+	--vm:update_liquids()
+
+	---[[
 	-- Localize for speed.
 	local all_decorations = jarkati.decorations
 	local decopos = {x=0, y=0, z=0}
@@ -428,6 +498,12 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			end
 		end
 	end
+	--]]
+
+	-- Correct lighting and liquid flow.
+	-- This works, but for some reason I have to grab a new voxelmanip object.
+	-- I can't seem to fix lighting using the original mapgen object?
+	mapfix.work(minp, maxp)
 end
 
 
@@ -442,9 +518,31 @@ if not jarkati.registered then
 		ore_type = "scatter",
 		ore = "default:desert_stone_with_copper",
 		wherein = {"default:desert_stone"},
-		clust_scarcity = 15*15*15,
-		clust_num_ores = 3,
-		clust_size = 5,
+		clust_scarcity = 10*10*10,
+		clust_num_ores = 4,
+		clust_size = 3,
+		y_min = 3600,
+		y_max = 3900,
+	})
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_copper",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 24*24*24,
+		clust_num_ores = 27,
+		clust_size = 6,
+		y_min = 3600,
+		y_max = 3700,
+	})
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_iron",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 10*10*10,
+		clust_num_ores = 4,
+		clust_size = 3,
 		y_min = 3600,
 		y_max = 3900,
 	})
@@ -453,11 +551,22 @@ if not jarkati.registered then
 		ore_type = "scatter",
 		ore = "default:desert_stone_with_iron",
 		wherein = {"default:desert_stone"},
-		clust_scarcity = 16*16*16,
-		clust_num_ores = 3,
-		clust_size = 5,
+		clust_scarcity = 24*24*24,
+		clust_num_ores = 27,
+		clust_size = 6,
 		y_min = 3600,
-		y_max = 3900,
+		y_max = 3700,
+	})
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_diamond",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 24*24*24,
+		clust_num_ores = 16,
+		clust_size = 6,
+		y_min = 3600,
+		y_max = 3700,
 	})
 
 	local c = "jarkati:core"

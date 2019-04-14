@@ -26,3 +26,7 @@ dofile(modpath .. "/craftitems.lua")
 dofile(modpath .. "/default_nodes.lua")
 dofile(modpath .. "/nodes.lua")
 
+minetest.register_node("maptools:shadow_caster", {
+	description = "Shadow Caster (You Hacker!)",
+	sunlight_propagates = false,
+})

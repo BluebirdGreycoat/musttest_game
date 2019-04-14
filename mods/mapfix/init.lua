@@ -21,6 +21,9 @@ local function work(minp, maxp)
 	return vm:get_emerged_area()
 end
 
+-- Export this function publicly.
+mapfix.work = work
+
 -- Public API function. May be called from other mods.
 function mapfix.execute(pos, radius)
 	pos = vector.round(pos)

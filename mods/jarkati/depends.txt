@@ -3,3 +3,4 @@ mapgen
 oregen
 reload
 bedrock
+maptools

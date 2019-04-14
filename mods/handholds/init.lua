@@ -127,7 +127,7 @@ minetest.register_node("handholds:desert_stone", {
 		return false
 	end,
 	groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
-	drop = 'default:desert_cobble',
+	drop = 'default:desert_cobble2',
 	sounds = default.node_sound_stone_defaults(),
 	after_destruct = function(pos, oldnode)
 		remove_air(pos, oldnode)

@@ -93,8 +93,8 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:desertstone_tile",
 	recipe = {
-		{"default:desert_cobble", "default:desert_cobble"},
-		{"default:desert_cobble", "default:desert_cobble"}
+		{"default:desert_cobble2", "default:desert_cobble2"},
+		{"default:desert_cobble2", "default:desert_cobble2"}
 	}
 })
 

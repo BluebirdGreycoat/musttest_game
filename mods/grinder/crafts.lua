@@ -17,14 +17,14 @@ if not grinder.crafts_registered then
 
 		minetest.register_craft({
       type = "grinding",
-			output = 'default:sand',
+			output = 'default:sand 4',
 			recipe = 'default:stone',
 			time = 10,
 		})
 
     minetest.register_craft({
       type = "grinding",
-      output = 'default:desert_sand',
+      output = 'default:desert_sand 4',
       recipe = 'default:desert_stone',
       time = 10,
     })
@@ -33,6 +33,20 @@ if not grinder.crafts_registered then
       type = "grinding",
       output = "default:sand 2",
       recipe = "default:sandstone",
+      time = 10,
+    })
+
+    minetest.register_craft({
+      type = "grinding",
+      output = "default:desert_sand 2",
+      recipe = "default:desert_sandstone",
+      time = 10,
+    })
+
+    minetest.register_craft({
+      type = "grinding",
+      output = "default:silver_sand 2",
+      recipe = "default:silver_sandstone",
       time = 10,
     })
 

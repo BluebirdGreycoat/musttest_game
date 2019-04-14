@@ -424,11 +424,20 @@ walls.register("desert_stonebrick", "Redstone Brick", "default_desert_stone_bric
 walls.register("sandstone", "Sandstone", "default_sandstone.png",
 		"default:sandstone", default.node_sound_stone_defaults())
 
+walls.register("desert_sandstone", "Desert Sandstone", "default_desert_sandstone.png",
+		"default:desert_sandstone", default.node_sound_stone_defaults())
+
+walls.register("silver_sandstone", "Silver Sandstone", "default_silver_sandstone.png",
+		"default:silver_sandstone", default.node_sound_stone_defaults())
+
 walls.register("mossycobble", "Mossy Cobblestone", "default_mossycobble.png",
 		"default:mossycobble", default.node_sound_stone_defaults())
 
-walls.register("desertcobble", "Cobble Redstone", "default_desert_cobble.png",
+walls.register("desertcobble", "Chalked Cobble Redstone", "default_desert_cobble.png",
 		"default:desert_cobble", default.node_sound_stone_defaults())
+
+walls.register("desertcobble2", "Cobble Redstone", "default_desert_cobble2.png",
+		"default:desert_cobble2", default.node_sound_stone_defaults())
 
 walls.register("redrack", "Netherack", "rackstone_redrack.png",
 		"rackstone:redrack", default.node_sound_stone_defaults())

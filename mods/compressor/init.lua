@@ -271,7 +271,14 @@ if not compressor.run_once then
   minetest.register_craft({
     type = "compressing",
     output = "default:desert_stone",
-    recipe = "default:desert_sand",
+    recipe = "default:desert_sandstone 2",
+    time = 16,
+  })
+
+  minetest.register_craft({
+    type = "compressing",
+    output = "default:stone",
+    recipe = "default:sandstone 2",
     time = 16,
   })
 
@@ -281,7 +288,21 @@ if not compressor.run_once then
     recipe = "default:sand 2",
     time = 16,
   })
-  
+
+  minetest.register_craft({
+    type = "compressing",
+    output = "default:desert_sandstone",
+    recipe = "default:desert_sand 2",
+    time = 16,
+  })
+
+  minetest.register_craft({
+    type = "compressing",
+    output = "default:silver_sandstone",
+    recipe = "default:silver_sand 2",
+    time = 16,
+  })
+
   local c = "compressor:core"
   local f = compressor.modpath .. "/init.lua"
   reload.register_file(c, f, false)

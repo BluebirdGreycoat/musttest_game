@@ -283,7 +283,7 @@ minetest.register_node("default:desert_stone", {
 	description = "Redstone",
 	tiles = {"default_desert_stone.png"},
 	groups = utility.dig_groups("stone", {stone = 1, native_stone = 1}),
-	drop = 'default:desert_cobble',
+	drop = 'default:desert_cobble2',
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
 
@@ -292,10 +292,18 @@ minetest.register_node("default:desert_stone", {
 })
 
 minetest.register_node("default:desert_cobble", {
-	description = "Redstone Cobble",
-	tiles = {"default_desert_cobble.png"},
+	description = "Chalked Redstone Cobble",
+	tiles = {"default_desert_cobble.png"}, -- Original "chalked" image (pre 5.0.0).
 	is_ground_content = false,
 	groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:desert_cobble2", {
+	description = "Redstone Cobble",
+	tiles = {"default_desert_cobble2.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("cobble"),
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -342,10 +350,61 @@ minetest.register_node("default:sandstone_block", {
 	description = "Sandstone Block",
 	tiles = {"default_sandstone_block.png"},
 	is_ground_content = false,
-	groups = utility.dig_groups("block", {stone=1, block=1}),
+	groups = utility.dig_groups("block", {block=1}),
 	sounds = default.node_sound_stone_defaults(),
 })
 
+
+minetest.register_node("default:desert_sandstone", {
+	description = "Desert Sandstone",
+	tiles = {"default_desert_sandstone.png"},
+	groups = utility.dig_groups("softstone", {stone=1}),
+	sounds = default.node_sound_stone_defaults(),
+	movement_speed_multiplier = default.ROAD_SPEED,
+})
+
+minetest.register_node("default:desert_sandstone_brick", {
+	description = "Desert Sandstone Brick",
+	paramtype2 = "facedir",
+	place_param2 = 0,
+	tiles = {"default_desert_sandstone_brick.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("brick", {brick=1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:desert_sandstone_block", {
+	description = "Desert Sandstone Block",
+	tiles = {"default_desert_sandstone_block.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("block", {block=1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:silver_sandstone", {
+	description = "Silver Sandstone",
+	tiles = {"default_silver_sandstone.png"},
+	groups = utility.dig_groups("softstone", {stone=1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:silver_sandstone_brick", {
+	description = "Silver Sandstone Brick",
+	paramtype2 = "facedir",
+	place_param2 = 0,
+	tiles = {"default_silver_sandstone_brick.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("brick", {brick=1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:silver_sandstone_block", {
+	description = "Silver Sandstone Block",
+	tiles = {"default_silver_sandstone_block.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("block", {block=1}),
+	sounds = default.node_sound_stone_defaults(),
+})
 
 minetest.register_node("default:obsidian", {
 	description = "Obsidian",

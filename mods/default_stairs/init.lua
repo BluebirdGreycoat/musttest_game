@@ -115,6 +115,15 @@ stairs.register_stair_and_slab(
 	"default:desert_cobble",
 	{cracky = 3},
 	{"default_desert_cobble.png"},
+	"Chalked Cobble Redstone",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"desert_cobble2",
+	"default:desert_cobble2",
+	{cracky = 3},
+	{"default_desert_cobble2.png"},
 	"Cobble Redstone",
 	default.node_sound_stone_defaults()
 )
@@ -140,7 +149,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"sandstone",
 	"default:sandstone",
-	{crumbly = 1, cracky = 3},
+	{cracky = 3},
 	{"default_sandstone.png"},
 	"Sandstone",
 	default.node_sound_stone_defaults()
@@ -161,6 +170,60 @@ stairs.register_stair_and_slab(
 	{cracky = 2},
 	{"default_sandstone_block.png"},
 	"Sandstone Block",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"desert_sandstone",
+	"default:desert_sandstone",
+	{cracky = 3},
+	{"default_desert_sandstone.png"},
+	"Desert Sandstone",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"desert_sandstonebrick",
+	"default:desert_sandstone_brick",
+	{cracky = 2},
+	{"default_desert_sandstone_brick.png"},
+	"Desert Sandstone Brick",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"desert_sandstone_block",
+	"default:desert_sandstone_block",
+	{cracky = 2},
+	{"default_desert_sandstone_block.png"},
+	"Desert Sandstone Block",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"silver_sandstone",
+	"default:silver_sandstone",
+	{cracky = 3},
+	{"default_silver_sandstone.png"},
+	"Silver Sandstone",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"silver_sandstonebrick",
+	"default:silver_sandstone_brick",
+	{cracky = 2},
+	{"default_silver_sandstone_brick.png"},
+	"Silver Sandstone Brick",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"silver_sandstone_block",
+	"default:silver_sandstone_block",
+	{cracky = 2},
+	{"default_silver_sandstone_block.png"},
+	"Silver Sandstone Block",
 	default.node_sound_stone_defaults()
 )
 

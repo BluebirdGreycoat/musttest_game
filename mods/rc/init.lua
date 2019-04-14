@@ -18,6 +18,7 @@ rc.realms = {
 		gate_maxp = {x=30000, y=-10, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = -10,
+		underground = -32, -- Affects sky color, see sky mod.
 		sealevel = 0,
 		windlevel = 20,
 		realm_origin = {x=-1067, y=-10, z=8930},
@@ -33,6 +34,7 @@ rc.realms = {
 		gate_maxp = {x=30000, y=3067, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3066,
+		underground = 3050,
 		sealevel = 3066,
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
@@ -48,12 +50,39 @@ rc.realms = {
 		gate_maxp = {x=30000, y=3640, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
 		ground = 3740,
+		underground = 3730,
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
 		disabled = true, -- Currently testing.
 	},
 }
+
+-- Return true if a position is underground in some realm.
+-- False is returned if not underground.
+-- Returns nil if position isn't in any valid realm.
+function rc.position_underground(pos)
+	local p = vector.round(pos)
+
+	for k, v in ipairs(rc.realms) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		-- Is position within realm boundaries?
+		if p.x >= minp.x and p.x <= maxp.x and
+				p.y >= minp.y and p.y <= maxp.y and
+				p.z >= minp.z and p.z <= maxp.z then
+			if p.y < v.underground then
+				return true
+			else
+				return false
+			end
+		end
+	end
+
+	-- Not in any realm?
+	return nil
+end
 
 -- Used by ice/ice-brick/snow nodes to determine if they should melt away.
 function rc.ice_melts_at_pos(pos)

@@ -183,7 +183,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 
 	-- Update player's sky colors. Use flags to avoid extra calls.
 	if vector_distance(playerpos, pdata.ppos) > 5 then
-		if playerpos.y < -32 and pdata.sky == 0 then
+		if rc.position_underground(playerpos) and pdata.sky == 0 then
 			if playerpos.y > -25000 and pdata.sky ~= 1 then
 				-- Cave background.
 				player:set_sky({a=255, r=0, g=0, b=0}, "plain", {})
@@ -193,7 +193,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 				player:set_sky({a=255, r=10, g=0, b=0}, "plain", {})
 				pdata.sky = 2
 			end
-		elseif playerpos.y >= -32 and pdata.sky ~= 0 then
+		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
 			player:set_sky({}, "regular", {})
 			pdata.sky = 0
 		end

@@ -85,6 +85,7 @@ jarkati.register_layer({
 jarkati.register_decoration({
 	nodes = {"stairs:slab_desert_cobble"},
 	probability = 700,
+	place_on = {"default:desert_sand"},
 })
 
 -- Scatter "rubble" around the bases of cliffs.
@@ -92,11 +93,13 @@ jarkati.register_decoration({
 	nodes = {"default:desert_cobble", "stairs:slab_desert_cobble"},
 	probability = 10,
 	spawn_by = {"default:desert_stone", "default:sandstone"},
+	place_on = {"default:desert_sand"},
 })
 
 jarkati.register_decoration({
 	nodes = {"default:dry_shrub"},
 	probability = 110,
+	place_on = {"default:desert_sand"},
 })
 
 jarkati.register_decoration({
@@ -109,6 +112,7 @@ jarkati.register_decoration({
 	},
 	param2 = 2,
 	probability = 50,
+	place_on = {"default:desert_sand"},
 })
 
 local NOISE_SCALE = 1
@@ -124,14 +128,15 @@ jarkati.noise1param2d = {
 	lacunarity = 2,
 }
 
+-- Modifies frequency of vertical tunnel shafts.
 jarkati.noise2param2d = {
 	offset = 0,
 	scale = 1,
-	spread = {x=32*NOISE_SCALE, y=32*NOISE_SCALE, z=32*NOISE_SCALE},
-	seed = 1123,
-	octaves = 4,
-	persist = 0.8,
-	lacunarity = 2,
+	spread = {x=64*NOISE_SCALE, y=64*NOISE_SCALE, z=64*NOISE_SCALE},
+	seed = 8827,
+	octaves = 6,
+	persist = 0.4, -- Amplitude multiplier.
+	lacunarity = 2, -- Wavelength divisor.
 }
 
 -- Mese/tableland terrain-height modifier.
@@ -167,14 +172,26 @@ jarkati.noise5param2d = {
 	lacunarity = 2,
 }
 
+-- Primary cavern noise.
 jarkati.noise6param3d = {
 	offset = 0,
 	scale = 1,
-	spread = {x=32*NOISE_SCALE, y=32*NOISE_SCALE, z=32*NOISE_SCALE},
+	spread = {x=128*NOISE_SCALE, y=32*NOISE_SCALE, z=128*NOISE_SCALE},
 	seed = 3817,
-	octaves = 3,
+	octaves = 5,
 	persist = 0.5,
 	lacunarity = 2,
+}
+
+-- Vertical tunnel noise.
+jarkati.noise7param3d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=8*NOISE_SCALE, y=64*NOISE_SCALE, z=8*NOISE_SCALE},
+	seed = 7848,
+	octaves = 4,
+	persist = 0.7,
+	lacunarity = 1.5,
 }
 
 -- Content IDs used with the voxel manipulator.
@@ -185,6 +202,7 @@ local c_desert_cobble   = minetest.get_content_id("default:desert_cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
+local c_water           = minetest.get_content_id("default:water_source")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -197,6 +215,7 @@ local noisemap3 = {}
 local noisemap4 = {}
 local noisemap5 = {}
 local noisemap6 = {}
+local noisemap7 = {}
 
 local perlin1
 local perlin2
@@ -204,6 +223,7 @@ local perlin3
 local perlin4
 local perlin5
 local perlin6
+local perlin7
 
 jarkati.generate_realm = function(minp, maxp, seed)
 	local nbeg = jarkati.REALM_START
@@ -264,6 +284,9 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	perlin6 = perlin6 or minetest.get_perlin_map(jarkati.noise6param3d, sides3D)
 	perlin6:get3dMap_flat(bp3d, noisemap6)
 
+	perlin7 = perlin7 or minetest.get_perlin_map(jarkati.noise7param3d, sides3D)
+	perlin7:get3dMap_flat(bp3d, noisemap7)
+
 	-- Localize commonly used functions for speed.
 	local floor = math.floor
 	local ceil = math.ceil
@@ -314,8 +337,41 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	local function cavern(x, y, z)
 		local np = min_area:index(x, y, z)
 		local n1 = noisemap6[np]
+		local n2 = noisemap7[np]
 
-		return (abs(n1) < 0.1)
+		-- Get index into 2D noise arrays.
+		local nx = (x - x0)
+		local nz = (z - z0)
+		local ni2 = (side_len_z*nz+nx)
+		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
+		ni2 = ni2 + 1
+		local n3 = abs(noisemap2[ni2])
+
+		-- Reduce cavern noise at realm base.
+		local d = (y - nbeg)
+		if d < 0 then d = 0 end
+		d = d / 16
+		if d > 1 then d = 1 end
+		if d < 0 then d = 0 end
+		n1 = n1 * d
+
+		-- Reduce cavern noise at surface level.
+		local f = (slev - y)
+		if f < 0 then f = 0 end
+		f = f / 16
+		if f > 1 then f = 1 end
+		if f < 0 then f = 0 end
+		n1 = n1 * f
+
+		-- Expand cavern noise 50 meters below surface level, 10 meters above and below.
+		local x = abs((slev - 50) - y)
+		x = x * -1 + 16 -- Invert range.
+		x = x / 16
+		if x > 1 then x = 1 end
+		if x < 0 then x = 0 end
+		n1 = n1 * (1 + x)
+
+		return (abs(n1) > 0.6 or (abs(n2) * (n3 * n3)) > 0.8)
 	end
 
 	-- Generic filler stone type.
@@ -397,7 +453,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			local miny = (y0 - 0)
 			local maxy = (y1 + 0)
 
-	    -- Get heightmap value at this location.
+	    -- Get heightmap value at this location. This may have been adjusted by a surface cave.
 			local ground = heightmap[max_area:index(x, 0, z)]
 
 			-- Count of how many "surfaces" were detected (so far) while iterating down.
@@ -408,14 +464,19 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			-- Get array and array-size of all biomes valid for this position.
 			local vb, bc = biomes(all_biomes)
 
-			-- Second pass through column.
-			for y = miny, maxy do
+			-- Second pass through column. Iterate backwards for depth checking.
+			for y = maxy, miny, -1 do
 				if y >= nbeg and y <= nend then
-					local vp = max_area:index(x, y, z)
+					local vp0 = max_area:index(x, y, z)
+					local vpu = max_area:index(x, (y - 1), z)
 
 					if y <= ground then
 						count = 1
-						depth = ((ground - y) + 1)
+						if vm_data[vp0] ~= c_air and vm_data[vpu] ~= c_air then
+							depth = (ground - y) + 1
+						else
+							depth = 0
+						end
 					else
 						count = 0
 						depth = 0
@@ -428,7 +489,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 						if (count >= v.min_level and count <= v.max_level) then
 							if (depth >= v.min_depth and depth <= v.max_depth) then
-								vm_data[vp] = v.cid
+								vm_data[vp0] = v.cid
 							end
 						end
 					end
@@ -471,6 +532,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	local all_decorations = jarkati.decorations
 	local decopos = {x=0, y=0, z=0}
 	local set_node = minetest.set_node
+	local get_node = minetest.get_node
 	local deconode = {name="", param2=0}
 
 	-- Fourth mapgen pass. Generate decorations using highlevel placement functions.
@@ -493,6 +555,26 @@ jarkati.generate_realm = function(minp, maxp, seed)
 							if not minetest.find_node_near(decopos, 1, v.spawn_by) then
 								spawn = false
 							end
+						end
+
+						decopos.y = decopos.y - 1
+						local nn = get_node(decopos).name
+						decopos.y = decopos.y + 1
+						if v.place_on then
+							local hs = false
+							for t, j in ipairs(v.place_on) do
+								if j == nn then
+									hs = true
+									break
+								end
+							end
+							if not hs then
+								spawn = false
+							end
+						end
+						-- Always spawn on solid nodes only, never in air.
+						if nn == "air" then
+							spawn = false
 						end
 
 						if spawn then

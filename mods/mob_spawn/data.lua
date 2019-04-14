@@ -167,6 +167,33 @@ register({
 	max_count = 16,
 })
 
+register({
+  name = "sandman:sandman",
+  nodes = {
+    "default:desert_sand",
+  },
+  min_light = 0,
+  max_light = 4,
+  mob_limit = 10,
+  min_height = 3700,
+  max_height = 3800,
+  day_toggle = false,
+
+	spawn_chance = 1,
+	mob_range = 30,
+	absolute_mob_limit = 20,
+	player_min_range = 5,
+	player_max_range = 20,
+	spawn_radius = 20,
+	node_skip = 4,
+	node_jitter = 4,
+	success_time_min = 1,
+	success_time_max = 20,
+
+	min_count = 1,
+	max_count = 4,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 local players = minetest.get_connected_players()

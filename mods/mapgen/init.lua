@@ -9,6 +9,8 @@ minetest.clear_registered_decorations()
 
 mapgen = mapgen or {}
 mapgen.modpath = minetest.get_modpath("mapgen")
+mapgen.report_time = mapgen.report_time or 0
+mapgen.report_chunks = mapgen.report_chunks or 0
 
 
 
@@ -25,6 +27,17 @@ end
 if not mapgen.files_registered then
     local mp = mapgen.modpath
 
+		-- Inform players.
+		minetest.register_on_generated(function(minp, maxp, seed)
+			local time = os.time() -- Time since epoc in seconds.
+			if (time - mapgen.report_time) > 60 then
+				minetest.chat_send_all("# Server: Mapgen working, expect lag. (Chunks: " .. mapgen.report_chunks .. ".)")
+				mapgen.report_time = time
+				mapgen.report_chunks = 0
+			end
+			mapgen.report_chunks = mapgen.report_chunks + 1
+		end)
+
     -- These files are reloadable. Their functions can be changed at runtime.
     reload_or_dofile("mapgen:shrubs",	    mp .. "/shrubs.lua")
     reload_or_dofile("mapgen:papyrus",		mp .. "/papyrus.lua")
@@ -39,7 +52,7 @@ if not mapgen.files_registered then
     dofile(mp .. "/mg_alias.lua")
     dofile(mp .. "/mapgen.lua")
     dofile(mp .. "/biome.lua")
-    
+
     minetest.register_on_generated(function(minp, maxp, seed)
         mapgen.generate_dry_shrubs	(minp, maxp, seed)
         mapgen.generate_papyrus	(minp, maxp, seed)

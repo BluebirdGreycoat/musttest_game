@@ -5,7 +5,7 @@ jarkati.modpath = minetest.get_modpath("jarkati")
 -- These match values in the realm-control mod.
 jarkati.REALM_START = 3600
 jarkati.REALM_END = 3900
-jarkati.SEA_LEVEL = 3640
+jarkati.SEA_LEVEL = 3740
 
 jarkati.biomes = {}
 jarkati.decorations = {}
@@ -385,8 +385,9 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	-- Finalize voxel manipulator.
 	vm:set_data(data)
 	--vm:set_lighting({day=0, night=0})
+	minetest.generate_ores(vm)
 	vm:calc_lighting()
-	vm:update_liquids()
+	--vm:update_liquids() -- No liquid nodes placed.
 	vm:write_to_map()
 
 	-- Localize for speed.
@@ -436,6 +437,28 @@ if not jarkati.registered then
 	minetest.register_on_generated(function(...)
 		jarkati.generate_realm(...)
 	end)
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_copper",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 15*15*15,
+		clust_num_ores = 3,
+		clust_size = 5,
+		y_min = 3600,
+		y_max = 3900,
+	})
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_iron",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 16*16*16,
+		clust_num_ores = 3,
+		clust_size = 5,
+		y_min = 3600,
+		y_max = 3900,
+	})
 
 	local c = "jarkati:core"
 	local f = jarkati.modpath .. "/init.lua"

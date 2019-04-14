@@ -45,7 +45,7 @@ if not grinder.crafts_registered then
 
     minetest.register_craft({
       type = "grinding",
-      output = "default:silver_sand 2",
+      output = "sand:sand_with_ice_crystals 2",
       recipe = "default:silver_sandstone",
       time = 10,
     })

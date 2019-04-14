@@ -386,6 +386,7 @@ minetest.register_node("default:silver_sandstone", {
 	tiles = {"default_silver_sandstone.png"},
 	groups = utility.dig_groups("softstone", {stone=1}),
 	sounds = default.node_sound_stone_defaults(),
+	movement_speed_multiplier = default.ROAD_SPEED,
 })
 
 minetest.register_node("default:silver_sandstone_brick", {
@@ -723,6 +724,26 @@ minetest.register_node("default:stone_with_copper", {
 	tiles = {"default_stone.png^default_mineral_copper.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
+	silverpick_drop = true,
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:desert_stone_with_copper", {
+	description = "Redstone Copper Ore",
+	-- Use old copper image, the pattern looks nicer.
+	tiles = {"default_desert_stone.png^default_mineral_copper2.png"},
+	groups = utility.dig_groups("mineral", {ore = 1}),
+	drop = 'default:copper_lump',
+	silverpick_drop = true,
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:desert_stone_with_iron", {
+	description = "Redstone Iron Ore",
+	-- Use old copper image, the pattern looks nicer.
+	tiles = {"default_desert_stone.png^default_mineral_iron2.png"},
+	groups = utility.dig_groups("mineral", {ore = 1}),
+	drop = 'default:iron_lump',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })

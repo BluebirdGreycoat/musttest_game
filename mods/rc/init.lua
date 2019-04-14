@@ -45,12 +45,12 @@ rc.realms = {
 		minp = {x=-30912, y=3600, z=-30912},
 		maxp = {x=30927, y=3900, z=30927},
 		gate_minp = {x=-30000, y=3620, z=-30000},
-		gate_maxp = {x=30000, y=3650, z=30000},
+		gate_maxp = {x=30000, y=3640, z=30000},
 		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
-		ground = 3640,
-		sealevel = 3640,
-		windlevel = 3650,
-		realm_origin = {x=1986, y=3600, z=-1864},
+		ground = 3740,
+		sealevel = 3740,
+		windlevel = 3750,
+		realm_origin = {x=1986, y=3700, z=-1864},
 		disabled = true, -- Currently testing.
 	},
 }

@@ -299,7 +299,7 @@ if not compressor.run_once then
   minetest.register_craft({
     type = "compressing",
     output = "default:silver_sandstone",
-    recipe = "default:silver_sand 2",
+    recipe = "sand:sand_with_ice_crystals 2",
     time = 16,
   })
 

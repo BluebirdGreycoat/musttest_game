@@ -194,6 +194,17 @@ register({
 	max_count = 4,
 })
 
+register({
+	name = "sandman:stoneman",
+	nodes = {"default:desert_stone"},
+	min_light = 0,
+	max_light = 4,
+	mob_limit = 10,
+	min_height = 3600,
+	max_height = 3800,
+	spawn_chance = 1,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 local players = minetest.get_connected_players()

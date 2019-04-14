@@ -21,6 +21,7 @@ rc.realms = {
 		sealevel = 0,
 		windlevel = 20,
 		realm_origin = {x=-1067, y=-10, z=8930},
+		disabled = false, -- Whether realm can be "gated" to. Use when testing!
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.
@@ -35,6 +36,22 @@ rc.realms = {
 		sealevel = 3066,
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
+		disabled = false, -- Whether realm can be "gated" to.
+	},
+	{
+		id = 3, -- REALM ID. Code relies on this.
+		name = "jarkati",
+		description = "Jarkati",
+		minp = {x=-30912, y=3600, z=-30912},
+		maxp = {x=30927, y=3900, z=30927},
+		gate_minp = {x=-30000, y=3620, z=-30000},
+		gate_maxp = {x=30000, y=3650, z=30000},
+		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		ground = 3640,
+		sealevel = 3640,
+		windlevel = 3650,
+		realm_origin = {x=1986, y=3600, z=-1864},
+		disabled = true, -- Currently testing.
 	},
 }
 
@@ -132,12 +149,34 @@ function rc.get_realm_data(name)
 	return nil
 end
 
+function rc.get_random_enabled_realm_data()
+	if (#rc.realms) < 1 then
+		return
+	end
+
+	local tries = 1
+	local realm = rc.realms[math.random(1, #rc.realms)]
+	while realm.disabled and tries < 10 do
+		tries = tries + 1
+		realm = rc.realms[math.random(1, #rc.realms)]
+	end
+
+	if realm.disabled then
+		return
+	end
+
+	return realm
+end
+
 function rc.get_random_realm_gate_position(pname, origin)
 	if rc.is_valid_realm_pos(origin) then
 		if origin.y >= 128 and origin.y <= 1000 then
 			-- If gateway is positioned in the Overworld mountains,
 			-- permit easy realm hopping.
-			local realm = rc.realms[math.random(1, #rc.realms)]
+			local realm = rc.get_random_enabled_realm_data()
+			if not realm then
+				return nil
+			end
 			assert(realm)
 
 			local pos = {
@@ -180,9 +219,12 @@ function rc.get_random_realm_gate_position(pname, origin)
 			-- Sometimes a realm hop is possible.
 			local realm
 			if math.random(1, 10) == 1 then
-				realm = rc.realms[math.random(1, #rc.realms)]
+				realm = rc.get_random_enabled_realm_data()
 			else
 				realm = rc.get_realm_data(rc.current_realm_at_pos(origin))
+			end
+			if not realm then
+				return nil
 			end
 			assert(realm)
 

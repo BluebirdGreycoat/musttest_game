@@ -510,11 +510,9 @@ end
 
 if not cw.registered then
 	-- Register the mapgen callback.
-	if minetest.settings:get_bool("enable_channelwood", false) then
-		minetest.register_on_generated(function(...)
-			cw.generate_realm(...)
-		end)
-	end
+	minetest.register_on_generated(function(...)
+		cw.generate_realm(...)
+	end)
 
 	local c = "cw:core"
 	local f = cw.modpath .. "/init.lua"

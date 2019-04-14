@@ -114,9 +114,10 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
+			local o = vector.round(teleportee:get_pos())
 			teleportee:set_pos(p)
 			rc.notify_realm_update(teleportee:get_player_name(), p)
-			return true, "Teleporting to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
+			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
 		end
 	end
 
@@ -143,9 +144,10 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
+			local o = vector.round(teleportee:get_pos())
 			teleportee:set_pos(p)
 			rc.notify_realm_update(teleportee:get_player_name(), p)
-			return true, "Teleporting to " .. rc.pos_to_namestr(p) .. "."
+			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
 		end
 	end
 
@@ -165,9 +167,10 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport outside of any realm."
 		end
+		local o = vector.round(teleportee:get_pos())
 		teleportee:set_pos(p)
 		rc.notify_realm_update(teleportee:get_player_name(), p)
-		return true, "Teleporting to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
+		return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
 	end
 
 	if not core.check_player_privs(name, {bring=true}) then
@@ -187,9 +190,10 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
+		local o = vector.round(teleportee:get_pos())
 		teleportee:set_pos(p)
 		rc.notify_realm_update(teleportee:get_player_name(), p)
-		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
+		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
 	end
 
 	local teleportee = nil
@@ -209,9 +213,10 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
+		local o = vector.round(teleportee:get_pos())
 		teleportee:set_pos(p)
 		rc.notify_realm_update(teleportee:get_player_name(), p)
-		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> to " .. rc.pos_to_namestr(p) .. "."
+		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
 	end
 
 	local teleportee = nil
@@ -234,9 +239,10 @@ function serveressentials.do_teleport(name, param)
 			return false, "Cannot teleport players outside realm boundaries."
 		end
 		p = find_free_position_near(p)
+		local o = vector.round(teleportee:get_pos())
 		teleportee:set_pos(p)
 		rc.notify_realm_update(teleportee:get_player_name(), p)
-		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
+		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
 	end
 
 	return false, 'Invalid parameters or player not found (see /help teleport).'

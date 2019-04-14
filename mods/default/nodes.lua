@@ -289,6 +289,15 @@ minetest.register_node("default:desert_stone", {
 
 	-- Made desert stone a road material on March 16, 2018.
 	movement_speed_multiplier = default.ROAD_SPEED,
+
+	-- Collapsed stone breaks up into cobble.
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="default:desert_cobble2"})
+  end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:desert_cobble2"})
+	end,
 })
 
 minetest.register_node("default:desert_cobble", {

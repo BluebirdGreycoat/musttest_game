@@ -185,17 +185,19 @@ local c_desert_cobble   = minetest.get_content_id("default:desert_cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
-local c_shadow_caster   = minetest.get_content_id("default:stone")
 
 -- Externally located tables for performance.
 local vm_data = {}
 local biome_data = {}
+local heightmap = {}
+
 local noisemap1 = {}
 local noisemap2 = {}
 local noisemap3 = {}
 local noisemap4 = {}
 local noisemap5 = {}
 local noisemap6 = {}
+
 local perlin1
 local perlin2
 local perlin3
@@ -316,41 +318,57 @@ jarkati.generate_realm = function(minp, maxp, seed)
 		return (abs(n1) < 0.1)
 	end
 
-	--[[
-	-- Add shadow-caster layer.
-	for z = z0, z1 do
-		for x = x0, x1 do
-			local vp = max_area:index(x, (y1 + 1), z)
-			vm_data[vp] = c_shadow_caster
-		end
-	end
-	--]]
-
 	-- Generic filler stone type.
 	local c_stone = c_desert_stone
 
 	-- First mapgen pass. Generate stone terrain shape, fill rest with air (critical).
+	-- This also constructs the heightmap, which caches the height values.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			local ground = floor(height(z, x))
+			heightmap[max_area:index(x, 0, z)] = ground
+
 			local miny = (y0 - 0)
 			local maxy = (y1 + 0)
 
 			miny = max(miny, nbeg)
 			maxy = min(maxy, nend)
 
+			-- Flag set once a cave has carved away part of the surface in this column.
+			-- Second flag set once the floor of the first cave is reached.
+			-- Once the floor of the first cave is reached, the heightmap is adjusted.
+			-- The heightmap is ONLY adjusted for caves that intersect with base ground level.
+			local gc0 = false
+			local gc1 = false
+
 			-- First pass through column.
-			for y = miny, maxy do
+			-- Iterate downwards so we can detect when caves modify the surface height.
+			for y = maxy, miny, -1 do
 				local cave = cavern(x, y, z)
 				local vp = max_area:index(x, y, z)
 				local cid = vm_data[vp]
 
 				-- Don't overwrite previously existing stuff (non-ignore, non-air).
+				-- This avoids ruining schematics that were previously placed.
 				if (cid == c_air or cid == c_ignore) then
 					if cave then
+						-- We've started carving a cave in this column.
+						-- Don't bother flagging this unless the cave roof would be above ground level.
+						if (y > ground and not gc0) then
+							gc0 = true
+						end
+
 						vm_data[vp] = c_air
 					else
 						if y <= ground then
+							-- We've finished carving a cave in this column.
+							-- Adjust heightmap.
+							-- But don't bother if cave floor would be above ground level.
+							if (gc0 and not gc1) then
+								heightmap[max_area:index(x, 0, z)] = y
+								gc1 = true
+							end
+
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air
@@ -376,10 +394,11 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	-- Second mapgen pass. Generate topsoil layers.
 	for z = z0, z1 do
 		for x = x0, x1 do
-	    -- By "overscanning" we avoid missing topsoils at chunk tops/bottoms.
-			local ground = floor(height(z, x))
 			local miny = (y0 - 0)
 			local maxy = (y1 + 0)
+
+	    -- Get heightmap value at this location.
+			local ground = heightmap[max_area:index(x, 0, z)]
 
 			-- Count of how many "surfaces" were detected (so far) while iterating down.
 			-- 0 means we haven't found ground yet. 1 means found ground, >1 indicates a cave surface.
@@ -415,18 +434,6 @@ jarkati.generate_realm = function(minp, maxp, seed)
 					end
 				end
 			end -- End column loop.
-		end
-	end
-	--]]
-
-	--[[
-	-- Use shadow-caster layer to propagate shadows, then remove it.
-	vm:set_data(vm_data)
-	vm:calc_lighting()
-	for z = z0, z1 do
-		for x = x0, x1 do
-			local vp = max_area:index(x, (y1 + 1), z)
-			vm_data[vp] = c_ignore
 		end
 	end
 	--]]
@@ -472,7 +479,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 			for k, v in ipairs(all_decorations) do
 				if dpr:next(1, v.probability) == 1 then
-					local g0 = floor(height(z, x))
+					local g0 = heightmap[max_area:index(x, 0, z)]
 					local g1 = (g0 + 1)
 
 					-- Don't place decorations outside the current mapchunk.
@@ -503,7 +510,8 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	-- Correct lighting and liquid flow.
 	-- This works, but for some reason I have to grab a new voxelmanip object.
 	-- I can't seem to fix lighting using the original mapgen object?
-	mapfix.work(minp, maxp)
+	-- Seems to require the full overgenerated mapchunk size with non-singlenode.
+	mapfix.work(emin, emax)
 end
 
 
@@ -518,7 +526,7 @@ if not jarkati.registered then
 		ore_type = "scatter",
 		ore = "default:desert_stone_with_copper",
 		wherein = {"default:desert_stone"},
-		clust_scarcity = 10*10*10,
+		clust_scarcity = 6*6*6,
 		clust_num_ores = 4,
 		clust_size = 3,
 		y_min = 3600,
@@ -529,7 +537,7 @@ if not jarkati.registered then
 		ore_type = "scatter",
 		ore = "default:desert_stone_with_copper",
 		wherein = {"default:desert_stone"},
-		clust_scarcity = 24*24*24,
+		clust_scarcity = 15*15*15,
 		clust_num_ores = 27,
 		clust_size = 6,
 		y_min = 3600,
@@ -562,9 +570,20 @@ if not jarkati.registered then
 		ore_type = "scatter",
 		ore = "default:desert_stone_with_diamond",
 		wherein = {"default:desert_stone"},
-		clust_scarcity = 24*24*24,
-		clust_num_ores = 16,
-		clust_size = 6,
+		clust_scarcity = 17*17*17,
+		clust_num_ores = 4,
+		clust_size = 3,
+		y_min = 3600,
+		y_max = 3900,
+	})
+
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_diamond",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 15*15*15,
+		clust_num_ores = 6,
+		clust_size = 3,
 		y_min = 3600,
 		y_max = 3700,
 	})

@@ -45,7 +45,10 @@ function jarkati.register_decoration(data)
 		assert(minetest.registered_nodes[v])
 	end
 
-	td.param2 = data.param2 or 0
+	td.param2 = data.param2 or {0}
+	if not td.all_ceilings and not td.all_floors then
+		td.ground_level = true
+	end
 
 	jarkati.decorations[#jarkati.decorations + 1] = td
 end
@@ -110,9 +113,22 @@ jarkati.register_decoration({
 		"default:dry_grass_4",
 		"default:dry_grass_5",
 	},
-	param2 = 2,
+	param2 = {2},
 	probability = 50,
 	place_on = {"default:desert_sand"},
+})
+
+jarkati.register_decoration({
+	nodes = {
+		"cavestuff:redspike1",
+		"cavestuff:redspike2",
+		"cavestuff:redspike3",
+		"cavestuff:redspike4",
+	},
+	param2 = {0, 1, 2, 3},
+	probability = 120,
+	all_floors = true,
+	place_on = {"default:desert_stone"},
 })
 
 local NOISE_SCALE = 1
@@ -535,52 +551,84 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	local get_node = minetest.get_node
 	local deconode = {name="", param2=0}
 
+	local function decorate(v, x, y, z, d)
+		-- Don't place decorations outside chunk boundaries.
+		-- (X and Z are already checked.)
+		if (y < y0 or y > y1) then
+			return
+		end
+
+		decopos.x = x
+		decopos.y = y
+		decopos.z = z
+
+		if v.spawn_by then
+			if not minetest.find_node_near(decopos, 1, v.spawn_by) then
+				return
+			end
+		end
+
+		decopos.y = decopos.y + d
+		local nn = get_node(decopos).name
+		decopos.y = decopos.y - d
+		if v.place_on then
+			local hs = false
+			for t, j in ipairs(v.place_on) do
+				if j == nn then
+					hs = true
+					break
+				end
+			end
+			if not hs then
+				return
+			end
+		end
+
+		-- Always spawn on solid nodes only, never in air.
+		-- This avoids placing the decoration on ground that was carved away by the cavegen.
+		if nn == "air" or nn == "ignore" then
+			return
+		end
+
+		deconode.name = v.nodes[dpr:next(1, #v.nodes)]
+		deconode.param2 = v.param2[dpr:next(1, #v.param2)]
+		set_node(decopos, deconode)
+	end
+
 	-- Fourth mapgen pass. Generate decorations using highlevel placement functions.
+	-- Note: we still read the voxelmanip data! But we can't modify it.
 	for z = z0, z1 do
 		for x = x0, x1 do
 
 			for k, v in ipairs(all_decorations) do
 				if dpr:next(1, v.probability) == 1 then
-					local g0 = heightmap[max_area:index(x, 0, z)]
-					local g1 = (g0 + 1)
+					-- Don't bother with ground-level placement if 'all_floors' was specified.
+					if (v.ground_level and not v.all_floors) then
+						local g0 = heightmap[max_area:index(x, 0, z)]
+						local g1 = (g0 + 1)
+						decorate(v, x, g1, z, -1)
+					end
 
-					-- Don't place decorations outside the current mapchunk.
-					if (g1 >= y0 and g1 <= y1) then
-						local spawn = true
-						decopos.x = x
-						decopos.y = g1
-						decopos.z = z
+					if (v.all_floors or v.all_ceilings) then
+						local miny = (y0 - 1)
+						local maxy = (y1 + 1)
+						for y = maxy, miny, -1 do
+							local vpa = max_area:index(x, y, z)
+							local vpu = max_area:index(x, (y - 1), z)
 
-						if v.spawn_by then
-							if not minetest.find_node_near(decopos, 1, v.spawn_by) then
-								spawn = false
-							end
-						end
+							local cida = vm_data[vpa]
+							local cidu = vm_data[vpu]
 
-						decopos.y = decopos.y - 1
-						local nn = get_node(decopos).name
-						decopos.y = decopos.y + 1
-						if v.place_on then
-							local hs = false
-							for t, j in ipairs(v.place_on) do
-								if j == nn then
-									hs = true
-									break
+							if v.all_floors then
+								if (cida == c_air and cidu ~= c_air) then
+									decorate(v, x, y, z, -1)
 								end
 							end
-							if not hs then
-								spawn = false
+							if v.all_ceilings then
+								if (cida ~= c_air and cidu == c_air) then
+									decorate(v, x, (y - 1), z, 1)
+								end
 							end
-						end
-						-- Always spawn on solid nodes only, never in air.
-						if nn == "air" then
-							spawn = false
-						end
-
-						if spawn then
-							deconode.name = v.nodes[dpr:next(1, #v.nodes)]
-							deconode.param2 = v.param2
-							set_node(decopos, deconode)
 						end
 					end
 				end
@@ -592,7 +640,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	-- Correct lighting and liquid flow.
 	-- This works, but for some reason I have to grab a new voxelmanip object.
 	-- I can't seem to fix lighting using the original mapgen object?
-	-- Seems to require the full overgenerated mapchunk size with non-singlenode.
+	-- Seems to require the full overgenerated mapchunk size if non-singlenode.
 	mapfix.work(emin, emax)
 end
 

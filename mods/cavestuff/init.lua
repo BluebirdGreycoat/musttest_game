@@ -877,6 +877,39 @@ for i=1, 4, 1 do
   })
 end
 
+for i=1, 4, 1 do
+  minetest.register_node("cavestuff:redspike" .. i, {
+    description = "Redstone Spike",
+    mesh = "mese_crystal_ore" .. i .. ".obj",
+    tiles = {"default_desert_stone.png"},
+    drawtype = "mesh",
+    paramtype = "light",
+		paramtype2 = "facedir",
+    groups = utility.dig_groups("crystal", {
+			attached_node = 1, fall_damage_add_percent = 100,
+		}),
+    sounds = default.node_sound_stone_defaults(),
+    selection_box = {
+      type = "fixed",
+      fixed = {-0.3, -0.5, -0.3, 0.3, 0.35, 0.3}
+    },
+		on_rotate = function(...)
+			return screwdriver.rotate_simple(...)
+		end,
+		on_construct = function(pos)
+			local node = minetest.get_node(pos)
+			node.param2 = math.random(0, 3)
+			minetest.swap_node(pos, node)
+		end,
+		on_player_walk_over = function(pos, player)
+			player:set_hp(player:get_hp() - 1)
+			if player:get_hp() == 0 then
+				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
+			end
+		end,
+  })
+end
+
 -- Special cobble type which mimics default cobble. Needed for cavegen.
 -- The player should not be able to obtain this nodetype directly.
 minetest.register_node("cavestuff:cobble", {

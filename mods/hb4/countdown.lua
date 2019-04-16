@@ -71,15 +71,8 @@ function countdown.step(data)
 		data.sec = rd.sec
 	end
 
-	local func = function(time, str)
-		if time == 1 then
-			return time .. " " .. str
-		end
-		return time .. " " .. str .. "s"
-	end
-
 	if report then
-		local message = "# Server: Next scheduled restart in " .. func(rd.hour, "hour") .. ", " .. func(rd.min, "minute") .. ", " .. func(rd.sec, "second") .. "."
+		local message = "# Server: Nightly restart: " .. rd.hour .. ":" .. rd.min .. ":" .. rd.sec .. "."
 		chat_logging.log_server_message(message)
 		minetest.chat_send_all(color .. message)
 	end

@@ -466,7 +466,7 @@ function(pos, elapsed)
 		if not leecher.data[hash] then
 			leecher.data[hash] = {
 				timer = 0,
-				timer2 = math.random(10, 20),
+				timer2 = math.random(1, 10),
 				timer3 = math.random(1, 60),
 				ores = {},
 				dist = {},
@@ -522,7 +522,7 @@ function(pos, elapsed)
 		-- Produce ores every now and then.
 		data.timer2 = data.timer2 - 1
 		if data.timer2 < 0 then
-			data.timer2 = math.random(10, 40)
+			data.timer2 = math.random(1, 10)
 			produce_ore = true
 		end
 
@@ -553,9 +553,10 @@ function(pos, elapsed)
 							-- Occasionally remove an ore.
 							-- Frequency of removal is a balance between performance
 							-- and machine efficiency.
-							if math.random(1, 7) == 1 then
+							if math.random(1, 20) == 1 then
 								local sz = #(data.ores[ore])
 								if sz > 0 then
+									-- Get the location of a random ore of this type.
 									local rnd = math.random(1, sz)
 									local p2 = data.ores[ore][rnd]
 
@@ -578,7 +579,7 @@ function(pos, elapsed)
 										node = vm:get_node_at(p2)
 									end
 
-									-- If not was successfully loaded try replacing it.
+									-- If node was successfully loaded try replacing it.
 									-- We make sure nodename is as expected, to avoid
 									-- breaking people's stuff.
 									if node and node.name == ore then
@@ -630,7 +631,7 @@ function(pos, elapsed)
 		end
 
 		-- Occasionally dig ceiling.
-		if math.random(1, 10) == 1 then
+		if math.random(1, 20) == 1 then
 			if #(data.water) > 0 then
 				local p2 = data.water[math.random(1, #(data.water))]
 				do_ceiling_dig(p2)

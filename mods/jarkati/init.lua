@@ -718,6 +718,17 @@ if not jarkati.registered then
 		y_max = 3700,
 	})
 
+	oregen.register_ore({
+		ore_type = "scatter",
+		ore = "default:desert_stone_with_coal",
+		wherein = {"default:desert_stone"},
+		clust_scarcity = 8*8*8,
+		clust_num_ores = 8,
+		clust_size = 3,
+		y_min = 3600,
+		y_max = 3900,
+	})
+
 	local c = "jarkati:core"
 	local f = jarkati.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

@@ -24,6 +24,10 @@ local ore_conversion_data = {
 	["default:stone_with_copper"] = "dusts:copper",
 	["default:stone_with_gold"] = "dusts:gold",
 	["default:stone_with_diamond"] = "dusts:diamond",
+	["default:desert_stone_with_coal"] = "dusts:coal",
+	["default:desert_stone_with_iron"] = "dusts:iron",
+	["default:desert_stone_with_copper"] = "dusts:copper",
+	["default:desert_stone_with_diamond"] = "dusts:diamond",
 	["moreores:mineral_tin"] = "dusts:tin",
 	["moreores:mineral_silver"] = "dusts:silver",
 	["moreores:mineral_mithril"] = "dusts:mithril",
@@ -35,7 +39,7 @@ local ore_conversion_data = {
 	["rackstone:redrack_with_copper"] = "dusts:copper",
 	["rackstone:redrack_with_tin"] = "dusts:tin",
 	["talinite:ore"] = "talinite:dust",
-	["uranium:ore"] = "uranium:dust_7",
+	["uranium:ore"] = "uranium:dust",
 	["zinc:ore"] = "zinc:dust",
 	["sulfur:ore"] = "sulfur:dust",
 }
@@ -43,6 +47,7 @@ local ore_conversion_data = {
 -- Nodes listed here are dissolved without any result.
 local ore_dissolve_data = {
 	["default:stone"] = true,
+	["default:desert_stone"] = true,
 	["rackstone:redrack"] = true,
 	["rackstone:rackstone"] = true,
 	["rackstone:mg_redrack"] = true,

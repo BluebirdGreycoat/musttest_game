@@ -681,7 +681,7 @@ minetest.register_node("default:ice", {
 --
 
 minetest.register_node("default:stone_with_coal", {
-	description = "Coal Ore",
+	description = "Coal Deposit",
 	tiles = {"default_stone.png^default_mineral_coal.png"},
   -- Cannot be flammable (although I would like it to be)
   -- because that interferes with TNT mining (the TNT replaces
@@ -699,6 +699,18 @@ minetest.register_node("default:stone_with_coal", {
 			end
 		end
 	end,
+})
+
+minetest.register_node("default:desert_stone_with_coal", {
+	description = "Redstone Coal Deposit",
+	tiles = {"default_desert_stone.png^default_mineral_coal2.png"},
+  -- Cannot be flammable (although I would like it to be)
+  -- because that interferes with TNT mining (the TNT replaces
+  -- all coal with flame instead of dropping it).
+	groups = utility.dig_groups("mineral"),
+	drop = 'default:coal_lump',
+	silverpick_drop = true,
+	sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_node("default:coalblock", {

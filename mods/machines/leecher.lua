@@ -757,7 +757,7 @@ end
 
 if not leecher.run_once then
 	minetest.register_node(":leecher:leecher", {
-		description = "HV Mineral Outsalter\n\nThis leeches ores from rock above.\nMust be placed in a water pool.",
+		description = "HV Mineral Outsalter\n\nThis leeches trace ores from rock above, very slowly.\nMust be placed in a water pool (wider is better).",
 		tiles = {"technic_carbon_steel_block.png^default_tool_mesepick.png"},
 
 		groups = utility.dig_groups("machine"),

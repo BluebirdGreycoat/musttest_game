@@ -5,6 +5,7 @@ minetest.register_node("sulfur:ore", {
   groups = utility.dig_groups("mineral"),
   drop = "sulfur:lump",
   sounds = default.node_sound_stone_defaults(),
+	silverpick_drop = true,
 })
 
 minetest.register_craftitem("sulfur:lump", {

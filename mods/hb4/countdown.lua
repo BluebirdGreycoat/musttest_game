@@ -72,7 +72,7 @@ function countdown.step(data)
 	end
 
 	if report then
-		local message = "# Server: Nightly restart: " .. rd.hour .. ":" .. rd.min .. ":" .. rd.sec .. "."
+		local message = "# Server: Nightly restart in: " .. rd.hour .. ":" .. rd.min .. ":" .. rd.sec .. "."
 		chat_logging.log_server_message(message)
 		minetest.chat_send_all(color .. message)
 	end

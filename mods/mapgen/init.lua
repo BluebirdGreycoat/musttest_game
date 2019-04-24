@@ -30,7 +30,7 @@ if not mapgen.files_registered then
 		-- Inform players.
 		minetest.register_on_generated(function(minp, maxp, seed)
 			local time = os.time() -- Time since epoc in seconds.
-			if (time - mapgen.report_time) > 60 then
+			if (time - mapgen.report_time) > 60 and mapgen.report_chunks > 0 then
 				minetest.chat_send_all("# Server: Mapgen working, expect lag. (Chunks: " .. mapgen.report_chunks .. ".)")
 				mapgen.report_time = time
 				mapgen.report_chunks = 0

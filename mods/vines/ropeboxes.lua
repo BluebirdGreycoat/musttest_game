@@ -26,7 +26,7 @@ local function register_rope_block(multiple, pixels)
         },
         selection_box = {type="regular"},
         collision_box = {type="regular"},
-        groups = { flammable=2, level=1, choppy=3, oddly_breakable_by_hand=1 },
+        groups = utility.dig_groups("furniture", {flammable=2}),
         
         after_place_node = function(pos)
             local p = {x=pos.x, y=pos.y-1, z=pos.z}
@@ -94,7 +94,7 @@ minetest.register_node("vines:rope", {
   drop = "",
   tiles = { "vines_rope.png" },
   drawtype = "plantlike",
-  groups = {flammable=2, not_in_creative_inventory=1, always_stable=1},
+  groups = utility.dig_groups("ignore", {flammable=2, not_in_creative_inventory=1, always_stable=1}),
   sounds =  default.node_sound_leaves_defaults(),
   selection_box = {
     type = "fixed",
@@ -112,7 +112,7 @@ minetest.register_node("vines:rope_bottom", {
   drop = "",
   tiles = { "vines_rope_bottom.png" },
   drawtype = "plantlike",
-  groups = {flammable=2, not_in_creative_inventory=1, always_stable=1},
+  groups = utility.dig_groups("ignore", {flammable=2, not_in_creative_inventory=1, always_stable=1}),
   sounds =  default.node_sound_leaves_defaults(),
   selection_box = {
 	  type = "fixed",
@@ -150,7 +150,7 @@ minetest.register_node("vines:rope_top", {
   drop = "",
   tiles = { "vines_rope_top.png" },
   drawtype = "plantlike",
-  groups = {not_in_creative_inventory=1, always_stable=1},
+  groups = utility.dig_groups("ignore", {not_in_creative_inventory=1, always_stable=1}),
   sounds =  default.node_sound_leaves_defaults(),
   selection_box = {
 	  type = "fixed",

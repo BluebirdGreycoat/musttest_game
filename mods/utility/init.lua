@@ -35,6 +35,9 @@ end
 
 local dig_groups = {}
 
+-- Special undiggable group.
+dig_groups["ignore"]        = {}
+
 -- Cracky stuff (stones/rocks/minerals).
 dig_groups["stone"]         = {level = 2, cracky = 2} -- Carefully tuned dig-params! Do not modify.
 dig_groups["softstone"]     = {level = 2, cracky = 3} -- Like sandstone.

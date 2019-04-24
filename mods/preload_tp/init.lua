@@ -29,6 +29,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 
 		-- Check if there was an error on the LAST call.
 		-- This avoids false error reports if the area to be generated exceeds the max map edge.
+		-- Update: actually it doesn't?
 		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
 			minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
 			return

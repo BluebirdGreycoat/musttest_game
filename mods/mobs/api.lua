@@ -2494,9 +2494,16 @@ local function do_states(self, dtime)
 
 							-- Don't bother the admin.
 							if self.attack:is_player() and not gdac.player_is_admin(self.attack:get_player_name() or "") then
+								local dmg1 = self.damage or 0
+								local dmg2 = math.random(self.damage_min or 0, self.damage_max or 0)
+								local dmg = dmg1
+								if dmg2 > dmg1 then
+									dmg = dmg2
+								end
+
 								self.attack:punch(self.object, 1.0, {
 									full_punch_interval = 1.0,
-									damage_groups = {fleshy = self.damage}
+									damage_groups = {fleshy = dmg}
 								}, nil)
 								ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
 								--mob_sound(self, "default_punch")
@@ -3400,7 +3407,14 @@ if not mobs.registered then
 			view_range              = def.view_range or 5,
 			walk_velocity           = def.walk_velocity or 1,
 			run_velocity            = def.run_velocity or 2,
+
+			-- Mob always does at least this amount of damage.
+			-- But if random damage between min and max would be greater,
+			-- then that damage is done instead.
 			damage                  = (def.damage or 0) * difficulty,
+			damage_min              = (def.damage_min or 0) * difficulty,
+			damage_max              = (def.damage_max or 0) * difficulty,
+
 			daytime_despawn         = def.daytime_despawn,
 			on_despawn              = def.on_despawn,
 			light_damage            = def.light_damage or 0,

@@ -43,6 +43,8 @@ mobs.register_mob("sandman:sandman", {
 
 	reach = 2,
 	damage = 1,
+	damage_min = 0,
+	damage_max = 4,
 	hp_min = 8,
 	hp_max = 30,
 	armor = 100,
@@ -120,6 +122,8 @@ mobs.register_mob("sandman:stoneman", {
   group_attack = true,
 	reach = 2,
 	damage = 2,
+	damage_min = 2,
+	damage_max = 4,
 	hp_min = 30,
 	hp_max = 60,
 	armor = 100,

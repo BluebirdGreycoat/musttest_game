@@ -17,6 +17,8 @@ mobs.register_mob("iceman:iceman", {
 
 	reach = 2,
 	damage = 3,
+	damage_min = 2,
+	damage_max = 5,
 	hp_min = 12,
 	hp_max = 25,
 	armor = 80,

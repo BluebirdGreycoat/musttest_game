@@ -36,19 +36,53 @@ end
 function jarkati.register_decoration(data)
 	local td = table.copy(data)
 
-	assert(type(td.nodes) == "table")
+	-- Convert single node to table.
+	if type(td.nodes) == "string" then
+		td.nodes = {td.nodes}
+	end
+
+	-- Used only with the `nodes` parameter.
+	td.param2 = data.param2 or {0}
+
+	assert(type(td.nodes) == "table" or type(td.schematic) == "string" or type(td.schematic) == "table")
 	assert(type(td.probability) == "number")
 	assert(td.probability >= 1)
 
 	-- Ensure all node names are actually registered!
-	for k, v in ipairs(td.nodes) do
-		assert(minetest.registered_nodes[v])
+	if td.nodes then
+		for k, v in ipairs(td.nodes) do
+			assert(minetest.registered_nodes[v])
+		end
 	end
 
-	td.param2 = data.param2 or {0}
 	if not td.all_ceilings and not td.all_floors then
 		td.ground_level = true
 	end
+
+	-- Default schematic parameters.
+	td.rotation = data.rotation or "0"
+	td.replacements = data.replacements or {}
+	td.force_placement = data.force_placement or false
+	td.flags = data.flags or ""
+
+	-- Placement Y-offset is always 0 (ignored) if `place_center_y` is specified.
+	if td.flags:find("place_center_y") then
+		td.place_offset_y = 0
+	else
+		td.place_offset_y = data.place_offset_y or 0
+
+		-- Invert for `all_ceilings` decorations.
+		if td.all_ceilings and td.place_offset_y > 0 then
+			td.place_offset_y = -td.place_offset_y
+		end
+	end
+
+	-- The object or schematic's aprox `radius`, when checking for flat ground.
+	-- Non-zero basically means all ground in the radius must be the same height.
+	td.radius = data.radius or 0
+
+	td.y_min = data.y_min or -31000
+	td.y_max = data.y_max or 31000
 
 	jarkati.decorations[#jarkati.decorations + 1] = td
 end
@@ -86,7 +120,7 @@ jarkati.register_layer({
 })
 
 jarkati.register_decoration({
-	nodes = {"stairs:slab_desert_cobble"},
+	nodes = "stairs:slab_desert_cobble",
 	probability = 700,
 	place_on = {"default:desert_sand"},
 })
@@ -100,7 +134,7 @@ jarkati.register_decoration({
 })
 
 jarkati.register_decoration({
-	nodes = {"default:dry_shrub"},
+	nodes = "default:dry_shrub",
 	probability = 110,
 	place_on = {"default:desert_sand"},
 })
@@ -130,6 +164,184 @@ jarkati.register_decoration({
 	all_floors = true,
 	place_on = {"default:desert_stone"},
 })
+
+---[[
+do
+	local _ = {name = "air"}
+	local X = {name = "default:gravel"}
+	local C1 = {name = "stairs:micro_desert_sandstone", param2 = 1}
+	local C2 = {name = "stairs:micro_desert_sandstone", param2 = 2}
+	local C3 = {name = "stairs:micro_desert_sandstone", param2 = 0}
+	local C4 = {name = "stairs:micro_desert_sandstone", param2 = 3}
+	local L = {name = "stairs:slab_desert_sandstone"}
+	local R = {name = "default:desert_sandstone"}
+	local S = {name = "default:desert_sand"}
+
+	jarkati.register_decoration({
+		schematic = {
+			size = {x=4, y=2, z=4},
+			data = {
+				S, R, R, S,
+				C1, L, L, C3,
+
+				R, X, X, R,
+				L, _, _, L,
+
+				R, X, X, R,
+				L, _, _, L,
+
+				S, R, R, S,
+				C2, L, L, C4,
+			},
+		},
+		force_placement = true,
+		flags = "place_center_x,place_center_z",
+		rotation = "random",
+    place_offset_y = -1,
+    radius = 3,
+		probability = 800,
+		place_on = {"default:desert_sand"},
+
+    y_max = 3750,
+    y_min = 3730,
+	})
+end
+--]]
+
+---[[
+do
+	local _ = {name = "air"}
+	local X = {name = "default:gravel"}
+	local C1 = {name = "stairs:micro_desert_sandstone", param2 = 1}
+	local C2 = {name = "stairs:micro_desert_sandstone", param2 = 2}
+	local C3 = {name = "stairs:micro_desert_sandstone", param2 = 0}
+	local C4 = {name = "stairs:micro_desert_sandstone", param2 = 3}
+	local L1 = {name = "stairs:stair_desert_sandstone", param2 = 0}
+	local L2 = {name = "stairs:stair_desert_sandstone", param2 = 1}
+	local L3 = {name = "stairs:stair_desert_sandstone", param2 = 2}
+	local L4 = {name = "stairs:stair_desert_sandstone", param2 = 3}
+	local R = {name = "default:desert_sandstone"}
+	local S = {name = "default:desert_sand"}
+
+	jarkati.register_decoration({
+		schematic = {
+			size = {x=4, y=2, z=4},
+			data = {
+				S, R, R, S,
+				C1, L1, L1, C3,
+
+				R, X, X, R,
+				L2, _, _, L4,
+
+				R, X, X, R,
+				L2, _, _, L4,
+
+				S, R, R, S,
+				C2, L3, L3, C4,
+			},
+		},
+		force_placement = true,
+		flags = "place_center_x,place_center_z",
+		rotation = "random",
+    place_offset_y = -1,
+    radius = 4,
+		probability = 800,
+		place_on = {"default:desert_sand"},
+
+    y_max = 3750,
+    y_min = 3730,
+	})
+end
+--]]
+
+---[[
+do
+	local _ = {name = "air"}
+	local X = {name = "rackstone:nether_grit"}
+	local C1 = {name = "stairs:micro_desert_sandstone", param2 = 1}
+	local C2 = {name = "stairs:micro_desert_sandstone", param2 = 2}
+	local C3 = {name = "stairs:micro_desert_sandstone", param2 = 0}
+	local C4 = {name = "stairs:micro_desert_sandstone", param2 = 3}
+	local L = {name = "stairs:slab_desert_sandstone"}
+	local R = {name = "default:desert_sandstone"}
+	local S = {name = "default:desert_sand"}
+
+	jarkati.register_decoration({
+		schematic = {
+			size = {x=4, y=2, z=4},
+			data = {
+				S, R, R, S,
+				C1, L, L, C3,
+
+				R, X, X, R,
+				L, _, _, L,
+
+				R, X, X, R,
+				L, _, _, L,
+
+				S, R, R, S,
+				C2, L, L, C4,
+			},
+		},
+		force_placement = true,
+		flags = "place_center_x,place_center_z",
+		rotation = "random",
+    place_offset_y = -1,
+    radius = 3,
+		probability = 2500,
+		place_on = {"default:desert_sand"},
+
+    y_max = 3750,
+    y_min = 3730,
+	})
+end
+--]]
+
+---[[
+do
+	local _ = {name = "air"}
+	local X = {name = "rackstone:nether_grit"}
+	local C1 = {name = "stairs:micro_desert_sandstone", param2 = 1}
+	local C2 = {name = "stairs:micro_desert_sandstone", param2 = 2}
+	local C3 = {name = "stairs:micro_desert_sandstone", param2 = 0}
+	local C4 = {name = "stairs:micro_desert_sandstone", param2 = 3}
+	local L1 = {name = "stairs:stair_desert_sandstone", param2 = 0}
+	local L2 = {name = "stairs:stair_desert_sandstone", param2 = 1}
+	local L3 = {name = "stairs:stair_desert_sandstone", param2 = 2}
+	local L4 = {name = "stairs:stair_desert_sandstone", param2 = 3}
+	local R = {name = "default:desert_sandstone"}
+	local S = {name = "default:desert_sand"}
+
+	jarkati.register_decoration({
+		schematic = {
+			size = {x=4, y=2, z=4},
+			data = {
+				S, R, R, S,
+				C1, L1, L1, C3,
+
+				R, X, X, R,
+				L2, _, _, L4,
+
+				R, X, X, R,
+				L2, _, _, L4,
+
+				S, R, R, S,
+				C2, L3, L3, C4,
+			},
+		},
+		force_placement = true,
+		flags = "place_center_x,place_center_z",
+		rotation = "random",
+    place_offset_y = -1,
+    radius = 4,
+		probability = 2500,
+		place_on = {"default:desert_sand"},
+
+    y_max = 3750,
+    y_min = 3730,
+	})
+end
+--]]
 
 local NOISE_SCALE = 1
 
@@ -549,6 +761,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	local decopos = {x=0, y=0, z=0}
 	local set_node = minetest.set_node
 	local get_node = minetest.get_node
+	local put_schem = minetest.place_schematic
 	local deconode = {name="", param2=0}
 
 	local function decorate(v, x, y, z, d)
@@ -563,36 +776,75 @@ jarkati.generate_realm = function(minp, maxp, seed)
 		decopos.z = z
 
 		if v.spawn_by then
-			if not minetest.find_node_near(decopos, 1, v.spawn_by) then
+			if not minetest.find_node_near(decopos, (v.radius + 1), v.spawn_by) then
 				return
 			end
 		end
 
-		decopos.y = decopos.y + d
-		local nn = get_node(decopos).name
-		decopos.y = decopos.y - d
-		if v.place_on then
-			local hs = false
-			for t, j in ipairs(v.place_on) do
-				if j == nn then
-					hs = true
-					break
+		-- Validate the ground/ceiling surface.
+		do
+	    local x1 = decopos.x - v.radius
+	    local x2 = decopos.x + v.radius
+	    local z1 = decopos.z - v.radius
+	    local z2 = decopos.z + v.radius
+	    local nn
+
+	    -- All must be a valid floor/ceiling node!
+	    decopos.y = decopos.y + d
+	    for x = x1, x2 do
+				for z = z1, z2 do
+					decopos.x = x
+					decopos.z = z
+					nn = get_node(decopos).name
+					-- Always check to make sure we're not air, here.
+					-- This avoids spawning decorations on ground that was carved away by the cavegen.
+					if nn == "air" or nn == "ignore" then
+						return
+					end
+					-- If decoration requires specific node type, check if we have it.
+					if v.place_on then
+						local hs = false
+						for t, j in ipairs(v.place_on) do
+							if j == nn then
+								hs = true
+								break
+							end
+						end
+						if not hs then
+							return
+						end
+					end
 				end
-			end
-			if not hs then
-				return
-			end
+	    end
+
+	    -- All must be empty air!
+	    decopos.y = decopos.y - d
+	    for x = x1, x2 do
+				for z = z1, z2 do
+					decopos.x = x
+					decopos.z = z
+					nn = get_node(decopos).name
+					if nn ~= "air" then
+						return
+					end
+				end
+	    end
+
+	    -- Reset deco coordinates.
+	    decopos.x = x
+	    decopos.y = y
+	    decopos.z = z
 		end
 
-		-- Always spawn on solid nodes only, never in air.
-		-- This avoids placing the decoration on ground that was carved away by the cavegen.
-		if nn == "air" or nn == "ignore" then
-			return
+		if v.nodes then
+			deconode.name = v.nodes[dpr:next(1, #v.nodes)]
+			deconode.param2 = v.param2[dpr:next(1, #v.param2)]
+			set_node(decopos, deconode)
+		elseif v.schematic then
+	    decopos.y = decopos.y + v.place_offset_y
+	    put_schem(decopos, v.schematic, v.rotation, v.replacements, v.force_placement, v.flags)
+	    decopos.y = decopos.y - v.place_offset_y
 		end
-
-		deconode.name = v.nodes[dpr:next(1, #v.nodes)]
-		deconode.param2 = v.param2[dpr:next(1, #v.param2)]
-		set_node(decopos, deconode)
 	end
 
 	-- Fourth mapgen pass. Generate decorations using highlevel placement functions.
@@ -601,37 +853,41 @@ jarkati.generate_realm = function(minp, maxp, seed)
 		for x = x0, x1 do
 
 			for k, v in ipairs(all_decorations) do
-				if dpr:next(1, v.probability) == 1 then
-					-- Don't bother with ground-level placement if 'all_floors' was specified.
-					if (v.ground_level and not v.all_floors) then
-						local g0 = heightmap[max_area:index(x, 0, z)]
-						local g1 = (g0 + 1)
-						decorate(v, x, g1, z, -1)
-					end
 
-					if (v.all_floors or v.all_ceilings) then
-						local miny = (y0 - 1)
-						local maxy = (y1 + 1)
-						for y = maxy, miny, -1 do
-							local vpa = max_area:index(x, y, z)
-							local vpu = max_area:index(x, (y - 1), z)
+				if not (y0 > v.y_max or y1 < v.y_min) then
+					if dpr:next(1, v.probability) == 1 then
+						-- Don't bother with ground-level placement if 'all_floors' was specified.
+						if (v.ground_level and not v.all_floors) then
+							local g0 = heightmap[max_area:index(x, 0, z)]
+							local g1 = (g0 + 1)
+							decorate(v, x, g1, z, -1)
+						end
 
-							local cida = vm_data[vpa]
-							local cidu = vm_data[vpu]
+						if (v.all_floors or v.all_ceilings) then
+							local miny = (y0 - 1)
+							local maxy = (y1 + 1)
+							for y = maxy, miny, -1 do
+								local vpa = max_area:index(x, y, z)
+								local vpu = max_area:index(x, (y - 1), z)
 
-							if v.all_floors then
-								if (cida == c_air and cidu ~= c_air) then
-									decorate(v, x, y, z, -1)
+								local cida = vm_data[vpa]
+								local cidu = vm_data[vpu]
+
+								if v.all_floors then
+									if (cida == c_air and cidu ~= c_air) then
+										decorate(v, x, y, z, -1)
+									end
 								end
-							end
-							if v.all_ceilings then
-								if (cida ~= c_air and cidu == c_air) then
-									decorate(v, x, (y - 1), z, 1)
+								if v.all_ceilings then
+									if (cida ~= c_air and cidu == c_air) then
+										decorate(v, x, (y - 1), z, 1)
+									end
 								end
 							end
 						end
 					end
 				end
+
 			end
 		end
 	end

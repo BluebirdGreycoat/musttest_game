@@ -30,7 +30,7 @@ end
 -- Sand Monster by PilzAdam
 
 mobs.register_mob("sandman:sandman", {
-	description = "Jarkati Sand Native",
+	description = "Sand Native",
 	type = "monster",
 	passive = false,
 	attack_type = "dogfight",
@@ -115,7 +115,7 @@ mobs.register_egg("sandman:sandman", "Jarkati Sand Native", "default_desert_sand
 -- Dirt Monster by PilzAdam
 
 mobs.register_mob("sandman:stoneman", {
-	description = "Jarkati Cave Dweller",
+	description = "Dirty Cave Dweller",
 	type = "monster",
 	passive = false,
 	attack_type = "dogfight",

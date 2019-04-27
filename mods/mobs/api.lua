@@ -768,6 +768,7 @@ local function do_env_damage(self)
 				meta:set_int("protection_cancel", 1)
 
 				minetest.set_node(pa, {name="fire:basic_flame"})
+				minetest.check_for_falling(pb)
 			else
 				minetest.set_node(pb, {name="fire:basic_flame"})
 			end

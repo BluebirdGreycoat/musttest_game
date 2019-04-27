@@ -9,6 +9,7 @@ minetest.register_node("griefer:grieferstone", {
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("obsidian"),
 	drop = "default:goldblock",
+	silverpick_drop = true,
 	--[[
 	on_construct = function(...)
 		return griefer.on_stone_construct(...)

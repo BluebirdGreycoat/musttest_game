@@ -27,6 +27,9 @@ minetest.register_node("bones:bones_type2", {
 	groups = utility.dig_groups("bigitem", {
     bones = 1,
     falling_node = 1,
+
+		-- Enables mob mobs to burn up in lava eventually.
+		flammable = 1,
   }),
     --damage_per_second = 2,
 

@@ -42,6 +42,10 @@ function jarkati.register_decoration(data)
 		td.nodes = {td.nodes}
 	end
 
+	if type(td.replace_surface) == "string" then
+		td.replace_surface = {td.replace_surface}
+	end
+
 	-- Used only with the `nodes` parameter.
 	td.param2 = data.param2 or {0}
 
@@ -151,6 +155,7 @@ jarkati.register_decoration({
 	param2 = {2},
 	probability = 50,
 	place_on = {"default:desert_sand"},
+	replace_surface = "default:dirt_with_dry_grass",
 })
 
 jarkati.register_decoration({
@@ -841,6 +846,20 @@ jarkati.generate_realm = function(minp, maxp, seed)
 					nn = get_node(decopos).name
 					if nn ~= "air" then
 						return
+					end
+				end
+	    end
+
+	    -- Back to ground. Replace ground surface!
+	    if v.replace_surface then
+				decopos.y = decopos.y + d
+				for x = x1, x2 do
+					for z = z1, z2 do
+						decopos.x = x
+						decopos.z = z
+						deconode.name = v.replace_surface[dpr:next(1, #v.replace_surface)]
+						deconode.param2 = 0
+						set_node(decopos, deconode)
 					end
 				end
 	    end

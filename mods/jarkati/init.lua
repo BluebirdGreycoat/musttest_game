@@ -202,7 +202,7 @@ do
 		probability = 800,
 		place_on = {"default:desert_sand"},
 
-    y_max = 3750,
+    y_max = 3760,
     y_min = 3730,
 	})
 end
@@ -248,7 +248,7 @@ do
 		probability = 800,
 		place_on = {"default:desert_sand"},
 
-    y_max = 3750,
+    y_max = 3760,
     y_min = 3730,
 	})
 end
@@ -769,6 +769,9 @@ jarkati.generate_realm = function(minp, maxp, seed)
 		-- (X and Z are already checked.)
 		if (y < y0 or y > y1) then
 			return
+		end
+		if (y > v.y_max or y < v.y_min) then
+	    return
 		end
 
 		decopos.x = x

@@ -79,6 +79,8 @@ local function get_reactor_damage(pos)
 	local c_steel = minetest.get_content_id("stainless_steel:block")
 	local c_water_source = minetest.get_content_id("default:water_source")
 	local c_water_flowing = minetest.get_content_id("default:water_flowing")
+	local c_cw_source = minetest.get_content_id("cw:water_source")
+	local c_cw_flowing = minetest.get_content_id("cw:water_flowing")
 	local c_river_source = minetest.get_content_id("default:river_water_source")
 	local c_river_flowing = minetest.get_content_id("default:river_water_flowing")
 	local c_concrete = minetest.get_content_id("concrete:concrete")
@@ -110,7 +112,9 @@ local function get_reactor_damage(pos)
 		elseif x == pos1.x+3 or x == pos2.x-3 or
 		       y == pos1.y+3 or y == pos2.y-3 or
 		       z == pos1.z+3 or z == pos2.z-3 then
-			if cid == c_water_source or cid == c_water_flowing or cid == c_river_source or cid == c_river_flowing then
+			if cid == c_water_source or cid == c_water_flowing or
+				cid == c_river_source or cid == c_river_flowing or
+				cid == c_cw_source or cid == c_cw_flowing then
 				water_layer = water_layer + 1
 			end
 		end

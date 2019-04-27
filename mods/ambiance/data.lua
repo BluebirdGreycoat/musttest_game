@@ -16,12 +16,12 @@ ambiance.allsounds = {
 	{name="cave_bats",      gain=0.7, miny=-25000, maxy=-60,    time="night",   indoors=false, mintime=60, maxtime=120, },
 
 	-- Wind: surface sound only, any time of day (but more common at night).
-	{name="wind1",          gain=1.0, miny=-15,    maxy=32000,  time="day",     indoors=false, },
-	{name="wind2",          gain=1.0, miny=-15,    maxy=32000,  time="day",     indoors=false, },
-	{name="desertwind",     gain=1.0, miny=-15,    maxy=32000,  time="day",     indoors=false, },
-	{name="wind1",          gain=1.0, miny=-15,    maxy=32000,  time="night",   indoors=false, mintime=20, maxtime=50, },
-	{name="wind2",          gain=1.0, miny=-15,    maxy=32000,  time="night",   indoors=false, mintime=20, maxtime=50, },
-	{name="desertwind",     gain=1.0, miny=-15,    maxy=32000,  time="night",   indoors=false, mintime=20, maxtime=50, },
+	{name="wind1",          gain=1.0, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="wind2",          gain=1.0, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="desertwind",     gain=1.0, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="wind1",          gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },
+	{name="wind2",          gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },
+	{name="desertwind",     gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },
 
 	-- Various animal sounds.
 	{name="wolves",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false, },
@@ -33,17 +33,17 @@ ambiance.allsounds = {
 	{name="lava",           gain=0.8, miny=-31000, maxy=-25000, time="",        indoors=nil,   mintime=7, maxtime=7, },
 
 	-- More animal sounds. These should play with less frequency.
-	{name="cricket",        gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, },
-	{name="jungle_night_1", gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, },
-	{name="cardinal",       gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, mintime=20, maxtime=60, },
-	{name="crestedlark",    gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, mintime=20, maxtime=60, },
-	{name="deer",           gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, mintime=20, maxtime=120, },
-	{name="frog",           gain=0.7, miny=-10,    maxy=32000,  time="liminal", indoors=false, },
-	{name="robin",          gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, },
-	{name="bluejay",        gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, },
-	{name="gull",           gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, },
-	{name="peacock",        gain=1.0, miny=-10,    maxy=32000,  time="liminal", indoors=false, },
-	{name="canadianloon1",  gain=1.0, miny=-10,    maxy=32000,  time="night",   indoors=false, mintime=120, maxtime=360, },
+	{name="cricket",        gain=1.0, miny=-10,    maxy=3300,   time="night",   indoors=false, },
+	{name="jungle_night_1", gain=1.0, miny=-10,    maxy=3300,   time="night",   indoors=false, },
+	{name="cardinal",       gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, mintime=20, maxtime=60, },
+	{name="crestedlark",    gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, mintime=20, maxtime=60, },
+	{name="deer",           gain=1.0, miny=-10,    maxy=3300,   time="night",   indoors=false, mintime=20, maxtime=120, },
+	{name="frog",           gain=0.7, miny=-10,    maxy=3300,   time="liminal", indoors=false, },
+	{name="robin",          gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, },
+	{name="bluejay",        gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, },
+	{name="gull",           gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, },
+	{name="peacock",        gain=1.0, miny=-10,    maxy=3300,   time="liminal", indoors=false, },
+	{name="canadianloon1",  gain=1.0, miny=-10,    maxy=3300,   time="night",   indoors=false, mintime=120, maxtime=360, },
 
 	-- Rare deep cave sounds.
 	{name="obsidianmonster_obsidianmonster", gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560, },
@@ -52,6 +52,11 @@ ambiance.allsounds = {
 
 	-- Nether yuck.
 	{name="nether_extract_blood", gain=1.0, miny=-31000, maxy=-20000, time="", indoors=false, mintime=280, maxtime=860, },
+
+	-- Continuous wind on Jarkati surface.
+	{name="wind1",          gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
+	{name="wind2",          gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
+	{name="desertwind",     gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
 }
 
 -- Initialize extra table parameters.

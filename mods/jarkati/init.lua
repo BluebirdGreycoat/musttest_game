@@ -6,6 +6,7 @@ jarkati.modpath = minetest.get_modpath("jarkati")
 jarkati.REALM_START = 3600
 jarkati.REALM_END = 3900
 jarkati.SEA_LEVEL = 3740
+jarkati.LAVA_LEVEL = 3610
 
 jarkati.biomes = {}
 jarkati.decorations = {}
@@ -431,6 +432,7 @@ local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
 local c_water           = minetest.get_content_id("default:water_source")
+local c_lava            = minetest.get_content_id("default:lava_source")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -457,6 +459,8 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	local nbeg = jarkati.REALM_START
 	local nend = jarkati.REALM_END
 	local slev = jarkati.SEA_LEVEL
+	local lbeg = jarkati.REALM_START
+	local lend = jarkati.LAVA_LEVEL
 
 	-- Don't run for out-of-bounds mapchunks.
 	if minp.y > nend or maxp.y < nbeg then
@@ -642,7 +646,11 @@ jarkati.generate_realm = function(minp, maxp, seed)
 							gc0 = true
 						end
 
-						vm_data[vp] = c_air
+						if (y >= lbeg and y <= lend) then
+							vm_data[vp] = c_lava
+						else
+							vm_data[vp] = c_air
+						end
 					else
 						if y <= ground then
 							-- We've finished carving a cave in this column.
@@ -655,7 +663,11 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 							vm_data[vp] = c_stone
 						else
-							vm_data[vp] = c_air
+							if (y >= lbeg and y <= lend) then
+								vm_data[vp] = c_lava
+							else
+								vm_data[vp] = c_air
+							end
 						end
 					end
 				end

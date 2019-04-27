@@ -54,9 +54,9 @@ ambiance.allsounds = {
 	{name="nether_extract_blood", gain=1.0, miny=-31000, maxy=-20000, time="", indoors=false, mintime=280, maxtime=860, },
 
 	-- Continuous wind on Jarkati surface.
-	{name="wind1",          gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
-	{name="wind2",          gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
-	{name="desertwind",     gain=1.5, miny=3735, maxy=3300,  time="", indoors=false, mintime=20, maxtime=50, },
+	{name="wind1",          gain=1.5, miny=3735, maxy=3900,  time="", indoors=false, mintime=20, maxtime=50, },
+	{name="wind2",          gain=1.5, miny=3735, maxy=3900,  time="", indoors=false, mintime=20, maxtime=50, },
+	{name="desertwind",     gain=1.5, miny=3735, maxy=3900,  time="", indoors=false, mintime=20, maxtime=50, },
 }
 
 -- Initialize extra table parameters.

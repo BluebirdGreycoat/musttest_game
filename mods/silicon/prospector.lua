@@ -86,7 +86,7 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	local toolmeta = get_metadata(toolstack)
 	local look_diameter = toolmeta.look_radius * 2 + 1
 	local charge_to_take = toolmeta.look_depth * (toolmeta.look_depth + 1) * look_diameter * look_diameter
-	charge_to_take = math.floor(charge_to_take / 10)
+	charge_to_take = math.floor(charge_to_take / 30)
 
 	if wear > math.floor(65535-charge_to_take) then
 		-- Tool has no charge left.

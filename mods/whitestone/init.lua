@@ -10,7 +10,8 @@ minetest.register_node("whitestone:stone", {
 	description = "Bleached Stone",
 	tiles = {"whitestone_stone.png"},
 	groups = utility.dig_groups("hardstone", {native_stone=1}),
-    drop = "whitestone:cobble",
+	drop = "whitestone:cobble",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 

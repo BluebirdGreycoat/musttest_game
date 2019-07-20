@@ -1603,6 +1603,15 @@ local function general_attack(self)
 				objs[n] = nil
 			end
 
+			-- If player nametag is off, reduce range at which mob can see them.
+			if player_labels.query_nametag_onoff(pname) == false then
+				local r = self.view_range * 0.8
+				local p = objs[n]:get_pos()
+				if vector.distance(p, s) > r then
+					objs[n] = nil
+				end
+			end
+
 		-- or are we a mob?
 		elseif ent and ent._cmi_is_mob then
 

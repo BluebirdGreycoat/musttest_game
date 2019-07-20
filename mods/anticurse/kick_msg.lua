@@ -23,6 +23,8 @@ local foul = {
 	"You have been warned for uninteresting language.",
 	"Don't say rude talk here.",
 	"Rude!",
+	"Pollution is bad. Foul language pollutes the soul.",
+	"Wash your mood.",
 }
 
 local curse = {
@@ -33,13 +35,15 @@ local curse = {
 	"Cursing is for noobs.",
 	"What, you couldn't express yourself civilly?",
 	"We don't live in Washington, DC. Talk like that is not allowed.",
-	"You chat was duct-taped.",
+	"Your chat was duct-taped.",
 	"Bad language. Do you happen to live in Chicago?",
 	"Express your feelings without ruining the chat.",
 	"This is for that bad word you used!",
 	"Don't be profane.",
 	"Profantiy!",
 	"Consider yourself warned for uninteresting language.",
+	"Pollution is bad. Cursing pollutes the soul.",
+	"Wash your mood!",
 }
 
 

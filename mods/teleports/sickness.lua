@@ -1,6 +1,7 @@
 
 portal_sickness = portal_sickness or {}
 portal_sickness.players = portal_sickness.players or {}
+portal_sickness.version = portal_sickness.version or 0
 
 -- Localize.
 local players = portal_sickness.players
@@ -32,7 +33,21 @@ function portal_sickness.init_if_needed(pname)
 		players[pname] = {
 			count = 0,
 			sick = false,
+			time = 0,
+			version = portal_sickness.version,
 		}
+	end
+
+	-- If stored data has old version, then reset it.
+	if players[pname] then
+		if not players[pname].version or players[pname].version < portal_sickness.version then
+			players[pname] = {
+				count = 0,
+				sick = false,
+				time = 0,
+				version = portal_sickness.version,
+			}
+		end
 	end
 end
 
@@ -55,16 +70,24 @@ function portal_sickness.on_use_portal(pname)
 		return
 	end
 
-	players[pname].count = players[pname].count + 1
-	local max = 10 - players[pname].count
-	if max < 1 then
-		max = 1
-	end
+	local t1 = players[pname].time
+	local t2 = os.time()
+	local mt = math.random(30, 90)
 
-	if (math.random(1, max) == 1) then
-		minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
-		players[pname].sick = true
-		sicken_sound(pname)
+	if (t2 - t1) < mt then
+		players[pname].count = players[pname].count + 1
+		local max = 10 - players[pname].count
+		if max < 1 then
+			max = 1
+		end
+
+		if (math.random(1, max) == 1) then
+			minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
+			players[pname].sick = true
+			sicken_sound(pname)
+		end
+	else
+		minetest.chat_send_player("MustTest", "# Server: TOO LATE.")
 	end
 end
 

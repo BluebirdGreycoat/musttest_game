@@ -80,6 +80,20 @@ end
 
 
 
+function preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+	local end_time = os.time()
+	if (end_time - start_time) < total_time then
+		minetest.after(1, function()
+			preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+		end)
+		return
+	end
+
+	preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+end
+
+
+
 -- API function. Preload the area, then teleport the player there
 -- only if they have not moved during the preload. After a successful
 -- teleport, execute the callback function if it's not nil.
@@ -105,13 +119,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 			return
 		end
 
-		--local end_time = os.time()
-		--if (end_time - start_time) < total_time then
-		--
-		--	return
-		--end
-
-		preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+		preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
 	end
 
 	local minp = vector.add(tp, vector.new(-radius, -radius, -radius))

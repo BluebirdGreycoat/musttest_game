@@ -235,6 +235,7 @@ flameportal.teleport_player = function(name, voidpos)
 								end
 							end)
 						end
+						portal_sickness.on_use_portal(pname)
 					end, nil, false, "nether_portal_usual")
 
         end

@@ -378,7 +378,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 			for k, v in ipairs(friendstobring) do
 				local friend = minetest.get_player_by_name(v)
 				if friend then
-					preload_tp.preload_and_teleport(friend:get_player_name(), pdest, 16, nil, nil, nil, true)
+					local fname = friend:get_player_name()
+					preload_tp.preload_and_teleport(fname, pdest, 16, nil, nil, nil, true)
+					portal_sickness.on_use_portal(fname)
 				end
 			end
 
@@ -388,6 +390,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 					mapfix.execute(target, 10)
 				end)
 			end
+
+			portal_sickness.on_use_portal(pname)
 		end, nil, false, "nether_portal_usual")
 end
 

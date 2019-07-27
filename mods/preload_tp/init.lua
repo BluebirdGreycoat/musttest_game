@@ -95,14 +95,14 @@ end
 
 
 function preload_tp.spawn_spinup_particles(pos, time)
-	local xd = 2
-	local zd = 2
+	local xd = 1
+	local zd = 1
 
 	minetest.add_particlespawner({
 		amount = 80,
 		time = time,
-		minpos = {x=pos.x-xd, y=pos.y-1, z=pos.z-zd},
-		maxpos = {x=pos.x+xd, y=pos.y+3, z=pos.z+zd},
+		minpos = {x=pos.x-xd, y=pos.y-0, z=pos.z-zd},
+		maxpos = {x=pos.x+xd, y=pos.y+2, z=pos.z+zd},
 		minvel = {x=0, y=-1, z=0},
 		maxvel = {x=0, y=1, z=0},
 		minacc = {x=0, y=-1, z=0},
@@ -114,12 +114,13 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		collisiondetection = false,
 		vertical = true,
 		texture = "default_coal_lump.png",
+		glow = 14,
 	})
 	minetest.add_particlespawner({
 		amount = 80,
 		time = time,
-		minpos = {x=pos.x-xd, y=pos.y-1, z=pos.z-zd},
-		maxpos = {x=pos.x+xd, y=pos.y+3, z=pos.z+zd},
+		minpos = {x=pos.x-xd, y=pos.y-0, z=pos.z-zd},
+		maxpos = {x=pos.x+xd, y=pos.y+2, z=pos.z+zd},
 		minvel = {x=-1, y=-1, z=-1},
 		maxvel = {x=1, y=1, z=1},
 		minacc = {x=-1, y=-1, z=-1},
@@ -130,6 +131,7 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		maxsize = 2,
 		collisiondetection = false,
 		texture = "default_mese_crystal.png",
+		glow = 14,
 	})
 end
 
@@ -152,8 +154,8 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
-	preload_tp.spawn_spinup_particles(vector.round(pp), total_time)
-	preload_tp.spawn_spinup_particles(vector.round(tp), total_time)
+	preload_tp.spawn_spinup_particles(vector.round(pp), total_time + 2)
+	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 2)
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}

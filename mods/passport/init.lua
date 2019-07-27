@@ -250,6 +250,7 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
     if vector.distance(player:getpos(), start_pos) < 0.1 then
 			local fwrap = function(...)
 				minetest.chat_send_player(name, "# Server: Transport successful.")
+				portal_sickness.on_use_portal(name)
 				return func(...)
 			end
 			preload_tp.preload_and_teleport(name, target_pos, 32, nil, func, name, false)
@@ -284,8 +285,10 @@ function passport.exec_spawn(name, param)
 	end
 	if vector.distance(pos, target) <= 256 then
 		randspawn.reposition_player(name, pos)
+
 		minetest.after(1, function()
 			minetest.chat_send_player(name, "# Server: You have been returned to the spawnpoint.")
+			portal_sickness.on_use_portal(name)
 		end)
 	else
 		minetest.chat_send_player(name, "# Server: You are too far from the spawnpoint! You need a PoC to teleport from farther.")

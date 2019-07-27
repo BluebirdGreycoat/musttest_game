@@ -4,6 +4,82 @@ preload_tp.modpath = minetest.get_modpath("preload_tp")
 
 
 
+function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+	-- Check if there was an error on the LAST call.
+	-- This avoids false error reports if the area to be generated exceeds the max map edge.
+	-- Update: actually it doesn't?
+	if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+		minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
+		return
+	end
+
+	-- Find the player.
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		-- The player left, or something. Do not teleport them.
+		minetest.log("action", pname .. " left the game while a teleport callback was in progress")
+		return
+	end
+
+	-- The player may optionally be force-teleported.
+	if not force then
+		-- Did the player move?
+		if vector.distance(pp, player:get_pos()) > 0.1 then
+			minetest.chat_send_player(pname, "# Server: Transport error. You cannot move while a transport is in progress.")
+			return
+		end
+
+		-- If the player killed themselves, do not teleport them.
+		if player:get_hp() == 0 then
+			minetest.chat_send_player(pname, "# Server: Transport error. You are dead.")
+			return
+		end
+	end
+
+	-- But we must never teleport a player who is attached.
+	if default.player_attached[pname] then
+		minetest.chat_send_player(pname, "# Server: Transport error. Player attached!")
+		return
+	end
+
+	-- Execute the callback function, if everything else succeeded.
+	if pre_cb then
+		-- If the pre-teleport callback returns 'success' then that
+		-- signals that the teleport must be aborted for some reason.
+		if pre_cb(cb_param) then
+			minetest.chat_send_player(pname, "# Server: Transport canceled.")
+			return
+		end
+	end
+
+	minetest.log("action", "executing teleport callback for " .. pname .. "!")
+
+	-- Teleport player only if they didn't move (or teleporting is forced).
+	wield3d.on_teleport()
+	rc.notify_realm_update(player, tp)
+	player:set_pos(tp)
+	minetest.log("action", pname .. " actually teleports to " .. minetest.pos_to_string(tp))
+
+	-- Execute the callback function, if everything else succeeded.
+	if post_cb then
+		post_cb(cb_param)
+	end
+
+	local thesound = "teleport"
+	if type(tpsound) == "string" then
+		thesound = tpsound
+	end
+
+	-- The teleport sound, played @ old & new locations.
+	ambiance.sound_play(thesound, pp, 1.0, 50)
+	preload_tp.spawn_particles(pp)
+
+	ambiance.sound_play(thesound, tp, 1.0, 50)
+	preload_tp.spawn_particles(tp)
+end
+
+
+
 -- API function. Preload the area, then teleport the player there
 -- only if they have not moved during the preload. After a successful
 -- teleport, execute the callback function if it's not nil.
@@ -16,6 +92,8 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	-- We need to copy the position table to avoid it being modified on us.
 	local tp = table.copy(tpos)
 	local pp = player:get_pos()
+	local start_time = os.time()
+	local total_time = 5
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
@@ -27,77 +105,13 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 			return
 		end
 
-		-- Check if there was an error on the LAST call.
-		-- This avoids false error reports if the area to be generated exceeds the max map edge.
-		-- Update: actually it doesn't?
-		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-			minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
-			return
-		end
+		--local end_time = os.time()
+		--if (end_time - start_time) < total_time then
+		--
+		--	return
+		--end
 
-		-- Find the player.
-		local player = minetest.get_player_by_name(pname)
-		if not player or not player:is_player() then
-			-- The player left, or something. Do not teleport them.
-			minetest.log("action", pname .. " left the game while a teleport callback was in progress")
-			return
-		end
-
-		-- The player may optionally be force-teleported.
-		if not force then
-			-- Did the player move?
-			if vector.distance(pp, player:get_pos()) > 0.1 then
-				minetest.chat_send_player(pname, "# Server: Transport error. You cannot move while a transport is in progress.")
-				return
-			end
-
-			-- If the player killed themselves, do not teleport them.
-			if player:get_hp() == 0 then
-				minetest.chat_send_player(pname, "# Server: Transport error. You are dead.")
-				return
-			end
-		end
-
-		-- But we must never teleport a player who is attached.
-		if default.player_attached[pname] then
-			minetest.chat_send_player(pname, "# Server: Transport error. Player attached!")
-			return
-		end
-
-		-- Execute the callback function, if everything else succeeded.
-		if pre_cb then
-			-- If the pre-teleport callback returns 'success' then that
-			-- signals that the teleport must be aborted for some reason.
-			if pre_cb(cb_param) then
-				minetest.chat_send_player(pname, "# Server: Transport canceled.")
-				return
-			end
-		end
-
-		minetest.log("action", "executing teleport callback for " .. pname .. "!")
-
-		-- Teleport player only if they didn't move (or teleporting is forced).
-		wield3d.on_teleport()
-		rc.notify_realm_update(player, tp)
-		player:set_pos(tp)
-		minetest.log("action", pname .. " actually teleports to " .. minetest.pos_to_string(tp))
-
-		-- Execute the callback function, if everything else succeeded.
-		if post_cb then
-			post_cb(cb_param)
-		end
-
-		local thesound = "teleport"
-		if type(tpsound) == "string" then
-			thesound = tpsound
-		end
-
-		-- The teleport sound, played @ old & new locations.
-		ambiance.sound_play(thesound, pp, 1.0, 50)
-		preload_tp.spawn_particles(pp)
-
-		ambiance.sound_play(thesound, tp, 1.0, 50)
-		preload_tp.spawn_particles(tp)
+		preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
 	end
 
 	local minp = vector.add(tp, vector.new(-radius, -radius, -radius))

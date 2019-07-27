@@ -4,6 +4,7 @@ portal_sickness.players = portal_sickness.players or {}
 
 -- Localize.
 local players = portal_sickness.players
+local alert_color = core.get_color_escape_sequence("#ff0000")
 
 local function portal_sicken(pname)
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS."
@@ -41,7 +42,7 @@ function portal_sickness.on_use_portal(pname)
 	end
 
 	if (math.random(1, max) == 1) then
-		minetest.chat_send_player(pname, "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
+		minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
 		players[pname].sick = true
 	end
 end
@@ -64,7 +65,7 @@ function portal_sickness.check_sick(pname)
 
 		portal_sickness.init_if_needed(pname)
 		if players[pname].sick then
-			minetest.chat_send_player(pname, "# Server: WARNING: You still have PORTAL SICKNESS!")
+			minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You still have PORTAL SICKNESS!")
 		end
 	end)
 end

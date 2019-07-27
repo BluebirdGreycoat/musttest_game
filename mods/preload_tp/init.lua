@@ -99,7 +99,7 @@ function preload_tp.spawn_spinup_particles(pos, time)
 	local zd = 1
 
 	minetest.add_particlespawner({
-		amount = 80,
+		amount = 160,
 		time = time,
 		minpos = {x=pos.x-xd, y=pos.y-0, z=pos.z-zd},
 		maxpos = {x=pos.x+xd, y=pos.y+2, z=pos.z+zd},
@@ -107,8 +107,8 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		maxvel = {x=0, y=1, z=0},
 		minacc = {x=0, y=-1, z=0},
 		maxacc = {x=0, y=1, z=0},
-		minexptime = 1,
-		maxexptime = 1,
+		minexptime = 0.5,
+		maxexptime = 1.5,
 		minsize = 0.5,
 		maxsize = 2,
 		collisiondetection = false,
@@ -117,7 +117,7 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		glow = 14,
 	})
 	minetest.add_particlespawner({
-		amount = 80,
+		amount = 160,
 		time = time,
 		minpos = {x=pos.x-xd, y=pos.y-0, z=pos.z-zd},
 		maxpos = {x=pos.x+xd, y=pos.y+2, z=pos.z+zd},
@@ -125,8 +125,8 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		maxvel = {x=1, y=1, z=1},
 		minacc = {x=-1, y=-1, z=-1},
 		maxacc = {x=1, y=1, z=1},
-		minexptime = 1,
-		maxexptime = 1,
+		minexptime = 0.5,
+		maxexptime = 1.5,
 		minsize = 0.5,
 		maxsize = 2,
 		collisiondetection = false,
@@ -155,7 +155,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
 	preload_tp.spawn_spinup_particles(vector.round(pp), total_time + 2)
-	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 2)
+	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 5)
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}

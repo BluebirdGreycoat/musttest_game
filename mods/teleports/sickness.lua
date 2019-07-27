@@ -86,8 +86,6 @@ function portal_sickness.on_use_portal(pname)
 			players[pname].sick = true
 			sicken_sound(pname)
 		end
-	else
-		minetest.chat_send_player("MustTest", "# Server: TOO LATE.")
 	end
 
 	-- Update time since last use of portal.

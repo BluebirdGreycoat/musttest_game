@@ -11,6 +11,16 @@ local function portal_sicken(pname)
 	hb4.delayed_harm({name=pname, step=30, min=1, max=3, msg=msg, poison=true})
 end
 
+local function sicken_sound(pname)
+	minetest.after(1, function()
+		local player = minetest.get_player_by_name(pname)
+		if not player or not player:is_player() then
+			return
+		end
+		ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+	end)
+end
+
 function portal_sickness.init_if_needed(pname)
 	if not players[pname] then
 		players[pname] = {
@@ -44,6 +54,7 @@ function portal_sickness.on_use_portal(pname)
 	if (math.random(1, max) == 1) then
 		minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
 		players[pname].sick = true
+		sicken_sound(pname)
 	end
 end
 

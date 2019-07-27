@@ -501,6 +501,7 @@ function beds.on_player_receive_fields(player, formname, fields)
 
 	if fields.quit or fields.leave then
 		lay_down(player, nil, nil, false)
+		portal_sickness.check_sick(player:get_player_name())
 		update_formspecs(false)
 	end
 

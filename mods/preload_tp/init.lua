@@ -119,7 +119,13 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 			return
 		end
 
-		preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+		if not force then
+			preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+			return
+		end
+
+		-- Forced teleport always teleports as soon as possible!
+		preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
 	end
 
 	local minp = vector.add(tp, vector.new(-radius, -radius, -radius))

@@ -35,8 +35,12 @@ function portal_sickness.on_use_portal(pname)
 	end
 
 	players[pname].count = players[pname].count + 1
+	local max = 10 - players[pname].count
+	if max < 1 then
+		max = 1
+	end
 
-	if (math.random(1, 7) == 1) then
+	if (math.random(1, max) == 1) then
 		minetest.chat_send_player(pname, "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
 		players[pname].sick = true
 	end

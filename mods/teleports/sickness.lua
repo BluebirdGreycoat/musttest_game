@@ -21,6 +21,12 @@ local function sicken_sound(pname)
 	end)
 end
 
+function portal_sickness.reset(pname)
+	portal_sickness.init_if_needed(pname)
+	players[pname].sick = false
+	players[pname].count = 0
+end
+
 function portal_sickness.init_if_needed(pname)
 	if not players[pname] then
 		players[pname] = {

@@ -42,6 +42,7 @@ function portal_sickness.on_use_portal(pname)
 
 	if players[pname].sick then
 		portal_sicken(pname)
+		players[pname].sick = false
 		return
 	end
 

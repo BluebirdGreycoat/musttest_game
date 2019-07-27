@@ -76,6 +76,8 @@ function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_p
 
 	ambiance.sound_play(thesound, tp, 1.0, 50)
 	preload_tp.spawn_particles(tp)
+
+	preload_tp.spawn_spinup_particles(vector.round(tp), 3)
 end
 
 
@@ -155,7 +157,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
 	preload_tp.spawn_spinup_particles(vector.round(pp), total_time + 2)
-	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 5)
+	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 1)
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}

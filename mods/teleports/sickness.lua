@@ -42,7 +42,10 @@ function portal_sickness.on_use_portal(pname)
 
 	if players[pname].sick then
 		portal_sicken(pname)
+
+		-- Reset!
 		players[pname].sick = false
+		players[pname].count = 0
 		return
 	end
 

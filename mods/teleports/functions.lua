@@ -178,7 +178,11 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 				end
 			end
 		end
-	end, nil, nil, false)
+	end,
+	function()
+		portal_sickness.on_use_portal(pname)
+	end,
+	nil, false)
 end
 
 

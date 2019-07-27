@@ -152,7 +152,12 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local tp = table.copy(tpos)
 	local pp = player:get_pos()
 	local start_time = os.time()
-	local total_time = 5
+
+	-- Time to teleport depends on distance.
+	local total_time = math.floor(vector.distance(pp, tp) / 1000)
+	if total_time < 2 then
+		total_time = 2
+	end
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
@@ -180,7 +185,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local maxp = vector.add(tp, vector.new(radius, radius, radius))
 
 	-- Emerge the target area. Once emergence is complete player can be teleported.
-	minetest.chat_send_player(pname, "# Server: Loading target location. Please stand by.")
+	minetest.chat_send_player(pname, "# Server: Acquiring target coordinates for spatial translation. Please stand by.")
 	minetest.emerge_area(minp, maxp, cb, tbparam)
 end
 

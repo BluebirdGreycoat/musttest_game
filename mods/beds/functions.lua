@@ -215,6 +215,9 @@ function beds.skip_night()
 
 				-- Refill stamina.
 				sprint.set_stamina(player, SPRINT_STAMINA)
+
+				-- Notify portal sickness mod.
+				portal_sickness.on_use_bed(pname)
       end
     end)
   end

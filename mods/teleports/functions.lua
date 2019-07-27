@@ -6,6 +6,8 @@ teleports.teleports = teleports.teleports or {}
 teleports.min_range = 250
 teleports.datafile = minetest.get_worldpath() .. "/teleports.txt"
 
+dofile(teleports.modpath .. "/sickness.lua")
+
 
 
 local nyanbow = "nyancat:nyancat_rainbow"

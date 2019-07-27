@@ -89,6 +89,9 @@ function portal_sickness.on_use_portal(pname)
 	else
 		minetest.chat_send_player("MustTest", "# Server: TOO LATE.")
 	end
+
+	-- Update time since last use of portal.
+	players[pname].time = t2
 end
 
 function portal_sickness.on_use_bed(pname)

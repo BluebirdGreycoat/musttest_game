@@ -19,7 +19,7 @@ local function portal_sicken(pname, count)
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS."
 	hb4.delayed_harm({name=pname, step=step, min=1, max=3, msg=msg, poison=true})
 
-	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has contracted FATAL portal sickness!")
+	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has contracted portal sickness!")
 end
 
 local function sicken_sound(pname)
@@ -71,18 +71,25 @@ function portal_sickness.on_use_portal(pname)
 
 	portal_sickness.init_if_needed(pname)
 
-	if players[pname].sick then
-		portal_sicken(pname, players[pname].count)
-
-		-- Reset!
-		players[pname].sick = false
-		players[pname].count = 0
-		return
-	end
-
 	local t1 = players[pname].time
 	local t2 = os.time()
 	local mt = math.random(30, 90)
+	local max_time = math.random(60*10, 60*20)
+
+	-- If player waits long enough, they don't sicken, but neither does the
+	-- sickness go away!
+	if (t2 - t1) < max_time then
+		if players[pname].sick then
+			portal_sicken(pname, players[pname].count)
+
+			-- Reset!
+			players[pname].sick = false
+			players[pname].count = 0
+			return
+		end
+	else
+		portal_sickness.check_sick(pname)
+	end
 
 	if (t2 - t1) < mt then
 		players[pname].count = players[pname].count + 1

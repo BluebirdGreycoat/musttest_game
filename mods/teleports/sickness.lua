@@ -7,9 +7,19 @@ portal_sickness.version = portal_sickness.version or 0
 local players = portal_sickness.players
 local alert_color = core.get_color_escape_sequence("#ff0000")
 
-local function portal_sicken(pname)
+local function portal_sicken(pname, count)
+	if count < 1 then
+		count = 1
+	end
+
+	-- Length of sickness increases based on how many times player has teleported
+	-- since the last sickness.
+	local step = count * 10
+
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS."
-	hb4.delayed_harm({name=pname, step=30, min=1, max=3, msg=msg, poison=true})
+	hb4.delayed_harm({name=pname, step=step, min=1, max=3, msg=msg, poison=true})
+
+	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has contracted FATAL portal sickness!")
 end
 
 local function sicken_sound(pname)
@@ -62,7 +72,7 @@ function portal_sickness.on_use_portal(pname)
 	portal_sickness.init_if_needed(pname)
 
 	if players[pname].sick then
-		portal_sicken(pname)
+		portal_sicken(pname, players[pname].count)
 
 		-- Reset!
 		players[pname].sick = false

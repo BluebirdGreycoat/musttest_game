@@ -94,6 +94,47 @@ end
 
 
 
+function preload_tp.spawn_spinup_particles(pos, time)
+	local xd = 2
+	local zd = 2
+
+	minetest.add_particlespawner({
+		amount = 80,
+		time = time,
+		minpos = {x=pos.x-xd, y=pos.y-1, z=pos.z-zd},
+		maxpos = {x=pos.x+xd, y=pos.y+3, z=pos.z+zd},
+		minvel = {x=0, y=-1, z=0},
+		maxvel = {x=0, y=1, z=0},
+		minacc = {x=0, y=-1, z=0},
+		maxacc = {x=0, y=1, z=0},
+		minexptime = 1,
+		maxexptime = 1,
+		minsize = 0.5,
+		maxsize = 2,
+		collisiondetection = false,
+		vertical = true,
+		texture = "default_coal_lump.png",
+	})
+	minetest.add_particlespawner({
+		amount = 80,
+		time = time,
+		minpos = {x=pos.x-xd, y=pos.y-1, z=pos.z-zd},
+		maxpos = {x=pos.x+xd, y=pos.y+3, z=pos.z+zd},
+		minvel = {x=-1, y=-1, z=-1},
+		maxvel = {x=1, y=1, z=1},
+		minacc = {x=-1, y=-1, z=-1},
+		maxacc = {x=1, y=1, z=1},
+		minexptime = 1,
+		maxexptime = 1,
+		minsize = 0.5,
+		maxsize = 2,
+		collisiondetection = false,
+		texture = "default_mese_crystal.png",
+	})
+end
+
+
+
 -- API function. Preload the area, then teleport the player there
 -- only if they have not moved during the preload. After a successful
 -- teleport, execute the callback function if it's not nil.
@@ -110,6 +151,9 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local total_time = 5
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
+
+	preload_tp.spawn_spinup_particles(vector.round(pp), total_time)
+	preload_tp.spawn_spinup_particles(vector.round(tp), total_time)
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}

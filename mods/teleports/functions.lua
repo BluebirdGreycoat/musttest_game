@@ -112,24 +112,7 @@ end
 
 
 
-teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
-	if not player or not player:is_player() then
-		return
-	end
-	local pname = player:get_player_name()
-
-	if sheriff.player_punished(pname) then
-		if sheriff.punish_probability(pname) then
-			sheriff.punish_player(pname)
-			return
-		end
-	end
-
-	local p = vector.round(teleport_pos)
-	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
-	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}
-
-	-- Kill players standing on target teleport pad.
+function teleports.kill_players_at_pos(teleport_pos, pname)
 	local dead_players = minetest.get_objects_inside_radius({x=teleport_pos.x, y=teleport_pos.y+1, z=teleport_pos.z}, 2)
 	for k, v in ipairs(dead_players) do
 			if v and v:is_player() then
@@ -149,7 +132,26 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 				end
 			end
 	end
+end
 
+
+
+teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
+	if not player or not player:is_player() then
+		return
+	end
+	local pname = player:get_player_name()
+
+	if sheriff.player_punished(pname) then
+		if sheriff.punish_probability(pname) then
+			sheriff.punish_player(pname)
+			return
+		end
+	end
+
+	local p = vector.round(teleport_pos)
+	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
+	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}
 	local pos = vector.round(target)
 
 	local start_realm = rc.current_realm_at_pos(origin_pos)
@@ -163,6 +165,9 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 
 	-- Teleport player to chosen location.
 	preload_tp.preload_and_teleport(pname, pos, 16, function()
+		-- Kill players standing on target teleport pad.
+		teleports.kill_players_at_pos(teleport_pos, pname)
+
 		-- Delete 3x3x3 area above teleport.
 		for x=minp.x, maxp.x do
 			for y=minp.y, maxp.y do

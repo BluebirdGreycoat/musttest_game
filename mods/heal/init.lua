@@ -18,6 +18,7 @@ function heal.heal_health_and_hunger(pname)
   player:set_hp(20)
   hunger.update_hunger(player, 30)
 	sprint.set_stamina(player, SPRINT_STAMINA)
+	portal_sickness.reset(pname)
 end
 
 

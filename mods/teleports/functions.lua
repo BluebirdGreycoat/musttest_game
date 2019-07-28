@@ -149,6 +149,12 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		end
 	end
 
+	local player_pos = player:get_pos()
+	if (player_pos.y < origin_pos.y) or (vector.distance(player_pos, origin_pos) > 2) then
+		minetest.chat_send_player(pname, "# Server: You must stand on portal activation surface!")
+		return
+	end
+
 	local p = vector.round(teleport_pos)
 	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}

@@ -183,6 +183,8 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		portal_sickness.on_use_portal(pname)
 	end,
 	nil, false)
+
+	teleports.ping_all_teleports()
 end
 
 
@@ -670,6 +672,49 @@ teleports.on_destruct = function(pos)
 		if vector.equals(EachTeleport.pos, pos) then
 			table.remove(teleports.teleports, i)
 			teleports.save()
+		end
+	end
+end
+
+
+
+function teleports.ping_all_teleports()
+	local players = minetest.get_connected_players()
+	local pp = {}
+
+	for k, v in ipairs(players) do
+		table.insert(pp, v:get_pos())
+	end
+
+	local ping = function(pos)
+		local xd = 1
+		local zd = 1
+
+		minetest.add_particlespawner({
+			amount = 80,
+			time = 5,
+			minpos = {x=pos.x-xd, y=pos.y+1, z=pos.z-zd},
+			maxpos = {x=pos.x+xd, y=pos.y+3, z=pos.z+zd},
+			minvel = {x=-1, y=-1, z=-1},
+			maxvel = {x=1, y=1, z=1},
+			minacc = {x=-1, y=-1, z=-1},
+			maxacc = {x=1, y=1, z=1},
+			minexptime = 0.5,
+			maxexptime = 1.5,
+			minsize = 0.5,
+			maxsize = 2,
+			collisiondetection = false,
+			texture = "default_obsidian_shard.png",
+			glow = 14,
+		})
+	end
+
+	-- Spawn particles over every teleport that's near a player.
+	for k, v in ipairs(teleports.teleports) do
+		for i, j in ipairs(pp) do
+			if vector.distance(v.pos, j) < 32 then
+				ping(v.pos)
+			end
 		end
 	end
 end

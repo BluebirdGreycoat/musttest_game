@@ -118,6 +118,10 @@ function portal_sickness.on_use_bed(pname)
 	minetest.chat_send_player(pname, "# Server: You no longer have portal sickness.")
 end
 
+function portal_sickness.on_die_player(pname)
+	portal_sickness.reset(pname)
+end
+
 function portal_sickness.check_sick(pname)
 	minetest.after(2, function()
 		local player = minetest.get_player_by_name(pname)

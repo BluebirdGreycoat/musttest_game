@@ -250,6 +250,7 @@ bones.on_dieplayer = function(player)
 
 	-- Death sound.
 	ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+	portal_sickness.on_die_player(pname)
 
 	-- These inventories are always cleared.
 	player_inv:set_list("craftpreview", {})

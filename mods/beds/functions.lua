@@ -217,7 +217,7 @@ function beds.skip_night()
 				sprint.set_stamina(player, SPRINT_STAMINA)
 
 				-- Notify portal sickness mod.
-				minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
+				--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 				portal_sickness.on_use_bed(pname)
       end
     end)
@@ -500,17 +500,27 @@ function beds.on_player_receive_fields(player, formname, fields)
 		return
 	end
 
-	if fields.quit or fields.leave then
+	-- Because "Force night skip" button is a button_exit, it will set fields.quit
+	-- and lay_down call will change value of player_in_bed, so it must be taken
+	-- earlier.
+	local pib = count_players_in_bed()
+	local ges = get_participating_players()
+	local is_majority = (ges / 2) < pib
+
+	if (fields.quit or fields.leave) and not fields.force then
 		lay_down(player, nil, nil, false)
-		portal_sickness.check_sick(player:get_player_name())
 		update_formspecs(false)
+
+		portal_sickness.check_sick(player:get_player_name())
 	end
 
 	if fields.force then
-		update_formspecs(is_night_skip_enabled())
-		if is_night_skip_enabled() then
+		if is_majority and is_night_skip_enabled() then
+			update_formspecs(true)
 			beds.skip_night()
 			beds.kick_players()
+		else
+			update_formspecs(false)
 		end
 	end
 end

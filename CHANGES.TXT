@@ -1,3 +1,6 @@
+[2019/7/27] Added particles and a time delay when teleporting via portal.
+[2019/7/27] Added a game mechanic for portal sickness and curing.
+[2019/7/20] Made mobs less likely to see player when their nametag is off.
 [2019/2/16] Added keychain item. You can add keys by putting both key and chain in the craft grid.
 [2019/2/16] Keys can now be copied.
 [2019/2/16] All arrows should now ignore other arrows and DM fireballs.

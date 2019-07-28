@@ -217,6 +217,7 @@ function beds.skip_night()
 				sprint.set_stamina(player, SPRINT_STAMINA)
 
 				-- Notify portal sickness mod.
+				minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 				portal_sickness.on_use_bed(pname)
       end
     end)

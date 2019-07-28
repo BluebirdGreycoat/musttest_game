@@ -505,7 +505,7 @@ function beds.on_player_receive_fields(player, formname, fields)
 	-- earlier.
 	local pib = count_players_in_bed()
 	local ges = get_participating_players()
-	local is_majority = (ges / 2) < pib
+	local is_majority = ((#ges) / 2) < pib
 
 	if (fields.quit or fields.leave) and not fields.force then
 		lay_down(player, nil, nil, false)

@@ -72,7 +72,7 @@ function portal_sickness.on_use_portal(pname)
 
 	portal_sickness.init_if_needed(pname)
 
-	local rand_time_add = players[pname].count * 10
+	local rand_time_add = (players[pname].count - 6) * 10
 	local t1 = players[pname].time
 	local t2 = os.time()
 	local mt = math.random(30, math.random(40, 140 + rand_time_add))
@@ -94,7 +94,7 @@ function portal_sickness.on_use_portal(pname)
 
 	if (t2 - t1) < mt then
 		players[pname].count = players[pname].count + 1
-		local max = 5 - players[pname].count
+		local max = 8 - players[pname].count
 		if max < 1 then
 			max = 1
 		end

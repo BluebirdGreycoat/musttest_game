@@ -467,8 +467,8 @@ local function player_killed_mob(self, player)
 
 	-- Make first character uppercase.
 	msg = string.upper(msg:sub(1, 1)) .. msg:sub(2)
+	msg = string.gsub(msg, "%s+", " ") -- Remove duplicate spaces.
 	msg = string.gsub(msg, " %.$", ".") -- Remove space before period.
-	msg:gsub("%s+", " ") -- Remove duplicate spaces.
 	minetest.chat_send_all("# Server: " .. msg)
 
 	message_spam_avoidance[pname] = {}

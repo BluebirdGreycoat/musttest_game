@@ -93,13 +93,13 @@ function portal_sickness.on_use_portal(pname)
 
 	if (t2 - t1) < mt then
 		players[pname].count = players[pname].count + 1
-		local max = 6 - players[pname].count
+		local max = 7 - players[pname].count
 		if max < 1 then
 			max = 1
 		end
-		minetest.chat_send_player("MustTest", "# Server: sickness probability: 1 in " .. max .. ".")
+		--minetest.chat_send_player("MustTest", "# Server: sickness probability: 1 in " .. max .. ".")
 
-		if (math.random(1, max) == 1) then
+		if (math.random(1, max) == 1) or players[pname].sick == 1 then
 			if players[pname].sick == 0 then
 				minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You are feeling queasy!")
 				players[pname].sick = 1

@@ -118,9 +118,273 @@ end
 
 
 
+local kill_adj = {
+	"killed",
+	"slain",
+	"slaughtered",
+	"mauled",
+	"murdered",
+	"pwned",
+	"owned",
+	"dispatched",
+	"neutralized",
+	"wasted",
+	"polished off",
+	"rubbed out",
+	"snuffed out",
+	"assassinated",
+	"annulled",
+	"destroyed",
+	"finished off",
+	"terminated",
+	"wiped out",
+	"scrubbed",
+	"abolished",
+	"obliterated",
+	"voided",
+	"ended",
+	"annihilated",
+	"undone",
+	"nullified",
+	"exterminated",
+}
+local kill_adv = {
+	"brutally",
+	"",
+	"swiftly",
+	"",
+	"savagely",
+	"",
+	"viciously",
+	"",
+	"uncivilly",
+	"",
+	"barbarously",
+	"",
+	"ruthlessly",
+	"",
+	"ferociously",
+	"",
+	"rudely",
+	"",
+	"cruelly",
+	"",
+}
+local kill_ang = {
+	"angry",
+	"",
+	"PO'ed",
+	"",
+	"furious",
+	"",
+	"disgusted",
+	"",
+	"infuriated",
+	"",
+	"annoyed",
+	"",
+	"irritated",
+	"",
+	"bitter",
+	"",
+	"offended",
+	"",
+	"outraged",
+	"",
+	"irate",
+	"",
+	"enraged",
+	"",
+	"indignant",
+	"",
+	"irritable",
+	"",
+	"cross",
+	"",
+	"riled",
+	"",
+	"vexed",
+	"",
+	"wrathful",
+	"",
+	"fierce",
+	"",
+	"displeased",
+	"",
+	"irascible",
+	"",
+	"ireful",
+	"",
+	"sulky",
+	"",
+	"ill-tempered",
+	"",
+	"vehement",
+	"",
+	"raging",
+	"",
+	"incensed",
+	"",
+	"frenzied",
+	"",
+	"enthusiastic",
+	"",
+	"fuming",
+	"",
+	"cranky",
+	"",
+	"peevish",
+	"",
+	"belligerent",
+	"",
+}
+
+local function mob_killed_player(self, player)
+
+	local pname = player:get_player_name()
+	local mname = utility.get_short_desc(self.description or "mob")
+	local adv = kill_adv[math.random(1, #kill_adv)]
+	if adv ~= "" then
+		adv = adv .. " "
+	end
+	local adj = kill_adj[math.random(1, #kill_adj)]
+	local ang = kill_ang[math.random(1, #kill_ang)]
+	if ang ~= "" then
+		ang = ang .. " "
+	end
+	local an = "a"
+	if ang ~= "" then
+		if ang:find("^[aeiouAEIOU]") then
+			an = "an"
+		end
+	else
+		if mname:find("^[aeiouAEIOU]") then
+			an = "an"
+		end
+	end
+	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was " .. adv .. adj .. " by " .. an .. " " .. ang .. mname .. ".")
+end
+
+
+
+
+local murder_messages = {
+	"<n> <v> collapsed from <k>'s brutal attack.",
+	"<k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
+	"<k> killed <n> <v> with great prejudice.",
+	"<n> <v> died from <k>'s horrid slaying.",
+	"<n> <v> fell prey to <k>'s deadly <w>.",
+	"<k> went out of <k_his> way to slay <n> <v> with <k_his> <w>.",
+	"<n> <v> danced <v_himself> to death under <k>'s craftily wielded <w>.",
+	"<k> used <k_his> <w> to kill <n> <v> with prejudice.",
+	"<k> made a splortching sound with <n> <v>'s head.",
+	"<n> <v> got flattened by <k>'s skillfully handled <w>.",
+	"<n> <v> became prey for <k>.",
+	"<n> <v> didn't get out of <k>'s way in time.",
+	"<n> <v> SAW <k> coming with <k_his> <w>. Didn't get away in time.",
+	"<n> <v> made no real attempt to get out of <k>'s way.",
+	"<k> barreled through <n> <v> as if <v_he> wasn't there.",
+	"<k> sent <n> <v> to that place where kindling wood isn't needed.",
+	"<n> <v> didn't suspect that <k> meant <v_him> any harm.",
+	"<n> <v> fought <k> to the death and lost painfully.",
+	"<n> <v> knew <k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
+	"<k> clonked <n> <v> over the head using <k_his> <w> with silent skill.",
+	"<k> made sure <n> <v> didn't see that coming!",
+	"<k> has decided <k_his> favorite weapon is <k_his> <w>.",
+	"<n> <v> did the mad hatter dance just before being killed with <k>'s <w>.",
+	"<n> <v> played the victim to <k>'s bully behavior!",
+	"<k> used <n> <v> for weapons practice with <k_his> <w>.",
+	"<n> <v> failed to avoid <k>'s oncoming weapon.",
+	"<k> successfully got <n> <v> to complain of a headache.",
+	"<n> <v> got <v_himself> some serious hurt from <k>'s <w>.",
+	"Trying to talk peace to <k> didn't win any for <n> <v>.",
+	"<n> <v> was brutally slain by <k>'s <w>.",
+	"<n> <v> jumped the mad-hatter dance under <k>'s <w>.",
+	"<n> <v> got <v_himself> a fatal mauling by <k>'s <w>.",
+	"<k> just assassinated <n> <v> with <k_his> <w>.",
+	"<k> split <n> <v>'s wig.",
+	"<k> took revenge on <n> <v>.",
+	"<k> flattened <n> <v>.",
+	"<n> <v> played dead. Permanently.",
+	"<n> <v> never saw what hit <v_him>.",
+	"<k> took <n> <v> by surprise.",
+	"<n> <v> was assassinated.",
+	"<k> didn't take any prisoners from <n> <v>.",
+	"<k> pinned <n> <v> to the wall with <k_his> <w>.",
+	"<n> <v> failed <v_his> weapon checks.",
+}
+
 local function player_killed_mob(self, player)
 	local pname = player:get_player_name()
-	minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> killed a mob!")
+	local mname = utility.get_short_desc(self.description or "mob")
+
+	local msg = murder_messages[math.random(1, #murder_messages)]
+	msg = string.gsub(msg, "<v>", mname)
+	msg = string.gsub(msg, "<k>", "<" .. rename.gpn(pname) .. ">")
+
+	local ksex = skins.get_gender_strings(pname)
+	local vsex = skins.get_random_standard_gender(5) -- 5% female.
+
+	msg = string.gsub(msg, "<k_himself>", ksex.himself)
+	msg = string.gsub(msg, "<k_his>", ksex.his)
+
+	msg = string.gsub(msg, "<v_himself>", vsex.himself)
+	msg = string.gsub(msg, "<v_his>", vsex.his)
+	msg = string.gsub(msg, "<v_him>", vsex.him)
+	msg = string.gsub(msg, "<v_he>", vsex.he)
+
+	if string.find(msg, "<a>") then
+		local adv = kill_adv[math.random(1, #kill_adv)]
+		if adv ~= "" then
+			adv = adv .. " "
+		end
+		string.gsub(msg, "<a>", adv)
+	end
+
+	if string.find(msg, "<j>") then
+		local adj = kill_adj[math.random(1, #kill_adj)]
+		if adj ~= "" then
+			adj = adj .. " "
+		end
+		string.gsub(msg, "<j>", adj)
+	end
+
+	if string.find(msg, "<g>") then
+		local ang = kill_ang[math.random(1, #kill_ang)]
+		if ang ~= "" then
+			ang = ang .. " "
+		end
+		string.gsub(msg, "<g>", ang)
+	end
+
+	if string.find(msg, "<n>") then
+		local an = "a"
+		if mname:find("^[aeiouAEIOU]") then
+			an = "an"
+		end
+		string.gsub(msg, "<n>", an)
+	end
+
+	-- Get weapon description.
+	if string.find(msg, "<w>") then
+		local wield = player:get_wielded_item()
+		local def = minetest.registered_items[wield:get_name()]
+		local meta = wield:get_meta()
+		local description = meta:get_string("description")
+		if description ~= "" then
+			msg = string.gsub(msg, "<w>", "'" .. utility.get_short_desc(description):trim() .. "'")
+		elseif def and def.description then
+			local str = utility.get_short_desc(def.description)
+			if str == "" then
+				str = "Potato Fist"
+			end
+			msg = string.gsub(msg, "<w>", str)
+		end
+	end
+
+	-- Make first character uppercase.
+	msg:gsub("^%l", string.upper)
+	minetest.chat_send_all("# Server: " .. msg)
 end
 
 
@@ -1881,155 +2145,6 @@ local function follow_flop(self)
 			self.state = "stand"
 		end
 	end
-end
-
-
-
-local kill_adj = {
-	"killed",
-	"slain",
-	"slaughtered",
-	"mauled",
-	"murdered",
-	"pwned",
-	"owned",
-	"dispatched",
-	"neutralized",
-	"wasted",
-	"polished off",
-	"rubbed out",
-	"snuffed out",
-	"assassinated",
-	"annulled",
-	"destroyed",
-	"finished off",
-	"terminated",
-	"wiped out",
-	"scrubbed",
-	"abolished",
-	"obliterated",
-	"voided",
-	"ended",
-	"annihilated",
-	"undone",
-	"nullified",
-	"exterminated",
-}
-local kill_adv = {
-	"brutally",
-	"",
-	"swiftly",
-	"",
-	"savagely",
-	"",
-	"viciously",
-	"",
-	"uncivilly",
-	"",
-	"barbarously",
-	"",
-	"ruthlessly",
-	"",
-	"ferociously",
-	"",
-	"rudely",
-	"",
-	"cruelly",
-	"",
-}
-local kill_ang = {
-	"angry",
-	"",
-	"PO'ed",
-	"",
-	"furious",
-	"",
-	"disgusted",
-	"",
-	"infuriated",
-	"",
-	"annoyed",
-	"",
-	"irritated",
-	"",
-	"bitter",
-	"",
-	"offended",
-	"",
-	"outraged",
-	"",
-	"irate",
-	"",
-	"enraged",
-	"",
-	"indignant",
-	"",
-	"irritable",
-	"",
-	"cross",
-	"",
-	"riled",
-	"",
-	"vexed",
-	"",
-	"wrathful",
-	"",
-	"fierce",
-	"",
-	"displeased",
-	"",
-	"irascible",
-	"",
-	"ireful",
-	"",
-	"sulky",
-	"",
-	"ill-tempered",
-	"",
-	"vehement",
-	"",
-	"raging",
-	"",
-	"incensed",
-	"",
-	"frenzied",
-	"",
-	"enthusiastic",
-	"",
-	"fuming",
-	"",
-	"cranky",
-	"",
-	"peevish",
-	"",
-	"belligerent",
-	"",
-}
-
-local function mob_killed_player(self, player)
-
-	local pname = player:get_player_name()
-	local mname = utility.get_short_desc(self.description or "mob")
-	local adv = kill_adv[math.random(1, #kill_adv)]
-	if adv ~= "" then
-		adv = adv .. " "
-	end
-	local adj = kill_adj[math.random(1, #kill_adj)]
-	local ang = kill_ang[math.random(1, #kill_ang)]
-	if ang ~= "" then
-		ang = ang .. " "
-	end
-	local an = "a"
-	if ang ~= "" then
-		if ang:find("^[aeiouAEIOU]") then
-			an = "an"
-		end
-	else
-		if mname:find("^[aeiouAEIOU]") then
-			an = "an"
-		end
-	end
-	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was " .. adv .. adj .. " by " .. an .. " " .. ang .. mname .. ".")
 end
 
 

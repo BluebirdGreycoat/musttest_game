@@ -244,6 +244,26 @@ function skins.get_gender_strings(pname)
 	return data
 end
 
+function skins.get_random_standard_gender(fem_chance)
+	local data = {}
+
+	if math.random(1, 100) <= fem_chance then
+		data.him = "her"
+		data.he = "she"
+		data.his = "her"
+		data.his_possessive = "hers"
+		data.himself = "herself"
+	else
+		data.him = "him"
+		data.he = "he"
+		data.his = "his"
+		data.his_possessive = "his"
+		data.himself = "himself"
+	end
+
+	return data
+end
+
 -- Register button once.
 if skins.inv then
 	inventory_plus.register_button("skins", "Avatar")

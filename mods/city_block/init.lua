@@ -268,6 +268,7 @@ function city_block.murder_message(killer, victim, sendto)
 			end
 		end
 	end
+
 	if type(sendto) == "string" then
 		minetest.chat_send_player(sendto, "# Server: " .. msg)
 	else

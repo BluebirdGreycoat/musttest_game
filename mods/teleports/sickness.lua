@@ -1,7 +1,7 @@
 
 portal_sickness = portal_sickness or {}
 portal_sickness.players = portal_sickness.players or {}
-portal_sickness.version = portal_sickness.version or 0
+portal_sickness.version = portal_sickness.version or 1
 
 -- Localize.
 local players = portal_sickness.players
@@ -42,7 +42,7 @@ function portal_sickness.init_if_needed(pname)
 	if not players[pname] then
 		players[pname] = {
 			count = 0,
-			sick = false,
+			sick = 0,
 			time = 0,
 			version = portal_sickness.version,
 		}
@@ -53,7 +53,7 @@ function portal_sickness.init_if_needed(pname)
 		if not players[pname].version or players[pname].version < portal_sickness.version then
 			players[pname] = {
 				count = 0,
-				sick = false,
+				sick = 0,
 				time = 0,
 				version = portal_sickness.version,
 			}

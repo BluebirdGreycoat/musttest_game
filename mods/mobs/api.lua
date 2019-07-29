@@ -383,7 +383,7 @@ local function player_killed_mob(self, player)
 	end
 
 	-- Make first character uppercase.
-	msg:gsub("^%l", string.upper)
+	msg = string.upper(msg:sub(1, 1)) .. msg:sub(2)
 	minetest.chat_send_all("# Server: " .. msg)
 end
 

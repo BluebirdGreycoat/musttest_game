@@ -314,8 +314,15 @@ local murder_messages = {
 	"<n> <v> failed <v_his> weapon checks.",
 }
 
+local message_spam_avoidance = {}
+
 local function player_killed_mob(self, player)
 	local pname = player:get_player_name()
+	if message_spam_avoidance[pname] then
+		return
+	end
+
+
 	local mname = utility.get_short_desc(self.description or "mob")
 
 	local msg = murder_messages[math.random(1, #murder_messages)]
@@ -385,6 +392,11 @@ local function player_killed_mob(self, player)
 	-- Make first character uppercase.
 	msg = string.upper(msg:sub(1, 1)) .. msg:sub(2)
 	minetest.chat_send_all("# Server: " .. msg)
+
+	message_spam_avoidance[pname] = {}
+	minetest.after(math.random(10, 60*2), function()
+		message_spam_avoidance[pname] = nil
+	end)
 end
 
 

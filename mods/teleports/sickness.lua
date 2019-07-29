@@ -93,7 +93,7 @@ function portal_sickness.on_use_portal(pname)
 
 	if (t2 - t1) < mt then
 		players[pname].count = players[pname].count + 1
-		local max = 7 - players[pname].count
+		local max = 5 - players[pname].count
 		if max < 1 then
 			max = 1
 		end

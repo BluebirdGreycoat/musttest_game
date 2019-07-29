@@ -118,6 +118,13 @@ end
 
 
 
+local function player_killed_mob(self, player)
+	local pname = player:get_player_name()
+	minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> killed a mob!")
+end
+
+
+
 local function do_attack(self, player)
 	if self.state == "attack" then
 		return
@@ -2023,13 +2030,6 @@ local function mob_killed_player(self, player)
 		end
 	end
 	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was " .. adv .. adj .. " by " .. an .. " " .. ang .. mname .. ".")
-end
-
-
-
-local function player_killed_mob(self, player)
-	local pname = player:get_player_name()
-	minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> killed a mob!")
 end
 
 

@@ -121,11 +121,17 @@ end
 function portal_sickness.on_use_bed(pname)
 	portal_sickness.init_if_needed(pname)
 
+	local was_ill = (players[pname].count > 0 or players[pname].sick > 0)
+
 	players[pname].count = 0
 	players[pname].sick = 0
 	players[pname].time = os.time()
 
-	minetest.chat_send_player(pname, "# Server: You no longer have portal sickness.")
+	if was_ill then
+		minetest.after(2, function()
+			minetest.chat_send_player(pname, "# Server: You feel refreshed. The queasiness from portal sickness has gone.")
+		end)
+	end
 end
 
 function portal_sickness.on_die_player(pname)

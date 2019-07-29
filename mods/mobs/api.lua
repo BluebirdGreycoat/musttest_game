@@ -338,7 +338,7 @@ local function player_killed_mob(self, player)
 		if adv ~= "" then
 			adv = adv .. " "
 		end
-		string.gsub(msg, "<a>", adv)
+		msg = string.gsub(msg, "<a>", adv)
 	end
 
 	if string.find(msg, "<j>") then
@@ -346,7 +346,7 @@ local function player_killed_mob(self, player)
 		if adj ~= "" then
 			adj = adj .. " "
 		end
-		string.gsub(msg, "<j>", adj)
+		msg = string.gsub(msg, "<j>", adj)
 	end
 
 	if string.find(msg, "<g>") then
@@ -354,7 +354,7 @@ local function player_killed_mob(self, player)
 		if ang ~= "" then
 			ang = ang .. " "
 		end
-		string.gsub(msg, "<g>", ang)
+		msg = string.gsub(msg, "<g>", ang)
 	end
 
 	if string.find(msg, "<n>") then
@@ -362,7 +362,7 @@ local function player_killed_mob(self, player)
 		if mname:find("^[aeiouAEIOU]") then
 			an = "an"
 		end
-		string.gsub(msg, "<n>", an)
+		msg = string.gsub(msg, "<n>", an)
 	end
 
 	-- Get weapon description.

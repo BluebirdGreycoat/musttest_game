@@ -34,7 +34,7 @@ end
 
 function portal_sickness.reset(pname)
 	portal_sickness.init_if_needed(pname)
-	players[pname].sick = false
+	players[pname].sick = 0
 	players[pname].count = 0
 end
 
@@ -73,17 +73,17 @@ function portal_sickness.on_use_portal(pname)
 
 	local t1 = players[pname].time
 	local t2 = os.time()
-	local mt = math.random(30, 90)
+	local mt = math.random(30, math.random(40, 140))
 	local max_time = math.random(60*10, 60*20)
 
 	-- If player waits long enough, they don't sicken, but neither does the
 	-- sickness go away!
 	if (t2 - t1) < max_time then
-		if players[pname].sick then
+		if players[pname].sick >= 2 then
 			portal_sicken(pname, players[pname].count)
 
 			-- Reset!
-			players[pname].sick = false
+			players[pname].sick = 0
 			players[pname].count = 0
 			return
 		end
@@ -99,9 +99,14 @@ function portal_sickness.on_use_portal(pname)
 		end
 
 		if (math.random(1, max) == 1) then
-			minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
-			players[pname].sick = true
-			sicken_sound(pname)
+			if players[pname].sick == 0 then
+				minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You are feeling queasy!")
+				players[pname].sick = 1
+			elseif players[pname].sick == 1 then
+				minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You have contracted PORTAL SICKNESS! You must sleep it off to be cured.")
+				players[pname].sick = 2
+				sicken_sound(pname)
+			end
 		end
 	end
 
@@ -113,7 +118,7 @@ function portal_sickness.on_use_bed(pname)
 	portal_sickness.init_if_needed(pname)
 
 	players[pname].count = 0
-	players[pname].sick = false
+	players[pname].sick = 0
 
 	minetest.chat_send_player(pname, "# Server: You no longer have portal sickness.")
 end
@@ -130,8 +135,10 @@ function portal_sickness.check_sick(pname)
 		end
 
 		portal_sickness.init_if_needed(pname)
-		if players[pname].sick then
+		if players[pname].sick >= 2 then
 			minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You still have PORTAL SICKNESS!")
+		elseif players[pname].sick == 1 then
+			minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You are still feeling queasy!")
 		end
 	end)
 end
@@ -143,9 +150,9 @@ end
 function portal_sickness.on_leave_player(pname)
 	portal_sickness.init_if_needed(pname)
 
-	-- Only erase data if player is not sick.
+	-- Only erase data if player is not sick or queasy.
 	-- Once player gets sick, relogging doesn't remove the sickness!
-	if not players[pname].sick then
+	if players[pname].sick == 0 then
 		players[pname] = nil
 	end
 end

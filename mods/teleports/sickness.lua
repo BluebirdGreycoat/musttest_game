@@ -36,6 +36,7 @@ function portal_sickness.reset(pname)
 	portal_sickness.init_if_needed(pname)
 	players[pname].sick = 0
 	players[pname].count = 0
+	players[pname].time = os.time()
 end
 
 function portal_sickness.init_if_needed(pname)
@@ -43,7 +44,7 @@ function portal_sickness.init_if_needed(pname)
 		players[pname] = {
 			count = 0,
 			sick = 0,
-			time = 0,
+			time = os.time(),
 			version = portal_sickness.version,
 		}
 	end
@@ -54,7 +55,7 @@ function portal_sickness.init_if_needed(pname)
 			players[pname] = {
 				count = 0,
 				sick = 0,
-				time = 0,
+				time = os.time(),
 				version = portal_sickness.version,
 			}
 		end
@@ -85,10 +86,9 @@ function portal_sickness.on_use_portal(pname)
 			-- Reset!
 			players[pname].sick = 0
 			players[pname].count = 0
+			players[pname].time = t2
 			return
 		end
-	else
-		portal_sickness.check_sick(pname)
 	end
 
 	if (t2 - t1) < mt then
@@ -109,6 +109,8 @@ function portal_sickness.on_use_portal(pname)
 				sicken_sound(pname)
 			end
 		end
+	else
+		portal_sickness.check_sick(pname)
 	end
 
 	-- Update time since last use of portal.
@@ -120,6 +122,7 @@ function portal_sickness.on_use_bed(pname)
 
 	players[pname].count = 0
 	players[pname].sick = 0
+	players[pname].time = os.time()
 
 	minetest.chat_send_player(pname, "# Server: You no longer have portal sickness.")
 end

@@ -148,6 +148,66 @@ local kill_adj = {
 	"nullified",
 	"exterminated",
 }
+local kill_adj2 = {
+	"killed",
+	"slew",
+	"slaughtered",
+	"mauled",
+	"murdered",
+	"pwned",
+	"owned",
+	"dispatched",
+	"neutralized",
+	"wasted",
+	"polished off",
+	"rubbed out",
+	"snuffed out",
+	"assassinated",
+	"annulled",
+	"destroyed",
+	"finished off",
+	"terminated",
+	"wiped out",
+	"scrubbed",
+	"abolished",
+	"obliterated",
+	"voided",
+	"ended",
+	"annihilated",
+	"undid",
+	"nullified",
+	"exterminated",
+}
+local kill_adj3 = {
+	"kill",
+	"slay",
+	"slaughter",
+	"maul",
+	"murder",
+	"pwn",
+	"own",
+	"dispatch",
+	"neutralize",
+	"waste",
+	"polish off",
+	"rub out",
+	"snuff out",
+	"assassinate",
+	"annul",
+	"destroy",
+	"finish off",
+	"terminate",
+	"wipe out",
+	"scrub",
+	"abolish",
+	"obliterate",
+	"void",
+	"end",
+	"annihilate",
+	"undo",
+	"nullify",
+	"exterminate",
+}
 local kill_adv = {
 	"brutally",
 	"",
@@ -269,16 +329,16 @@ end
 
 
 local murder_messages = {
-	"<n> <v> collapsed from <k>'s brutal attack.",
+	"<n> <v> collapsed from <k>'s <angry>attack.",
 	"<k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
-	"<k> killed <n> <v> with great prejudice.",
+	"<k> <brutally><slew> <n> <v> with great prejudice.",
 	"<n> <v> died from <k>'s horrid slaying.",
 	"<n> <v> fell prey to <k>'s deadly <w>.",
-	"<k> went out of <k_his> way to slay <n> <v> with <k_his> <w>.",
+	"<k> went out of <k_his> way to <slay> <n> <v> with <k_his> <w>.",
 	"<n> <v> danced <v_himself> to death under <k>'s craftily wielded <w>.",
-	"<k> used <k_his> <w> to kill <n> <v> with prejudice.",
+	"<k> used <k_his> <w> to <slay> <n> <v> with prejudice.",
 	"<k> made a splortching sound with <n> <v>'s head.",
-	"<n> <v> got flattened by <k>'s skillfully handled <w>.",
+	"<n> <v> was <slain> by <k>'s skillfully handled <w>.",
 	"<n> <v> became prey for <k>.",
 	"<n> <v> didn't get out of <k>'s way in time.",
 	"<n> <v> SAW <k> coming with <k_his> <w>. Didn't get away in time.",
@@ -288,29 +348,29 @@ local murder_messages = {
 	"<n> <v> didn't suspect that <k> meant <v_him> any harm.",
 	"<n> <v> fought <k> to the death and lost painfully.",
 	"<n> <v> knew <k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
-	"<k> clonked <n> <v> over the head using <k_his> <w> with silent skill.",
+	"<k> <brutally>clonked <n> <v> over the head using <k_his> <w> with silent skill.",
 	"<k> made sure <n> <v> didn't see that coming!",
 	"<k> has decided <k_his> favorite weapon is <k_his> <w>.",
-	"<n> <v> did the mad hatter dance just before being killed with <k>'s <w>.",
+	"<n> <v> did the mad hatter dance just before being <slain> with <k>'s <w>.",
 	"<n> <v> played the victim to <k>'s bully behavior!",
 	"<k> used <n> <v> for weapons practice with <k_his> <w>.",
 	"<n> <v> failed to avoid <k>'s oncoming weapon.",
 	"<k> successfully got <n> <v> to complain of a headache.",
 	"<n> <v> got <v_himself> some serious hurt from <k>'s <w>.",
 	"Trying to talk peace to <k> didn't win any for <n> <v>.",
-	"<n> <v> was brutally slain by <k>'s <w>.",
+	"<n> <v> was <brutally><slain> by <k>'s <w>.",
 	"<n> <v> jumped the mad-hatter dance under <k>'s <w>.",
 	"<n> <v> got <v_himself> a fatal mauling by <k>'s <w>.",
-	"<k> just assassinated <n> <v> with <k_his> <w>.",
+	"<k> <brutally><slew> <n> <v> with <k_his> <w>.",
 	"<k> split <n> <v>'s wig.",
 	"<k> took revenge on <n> <v>.",
-	"<k> flattened <n> <v>.",
+	"<k> <brutally><slew> <n> <v>.",
 	"<n> <v> played dead. Permanently.",
 	"<n> <v> never saw what hit <v_him>.",
 	"<k> took <n> <v> by surprise.",
-	"<n> <v> was assassinated.",
+	"<n> <v> was <brutally><slain>.",
 	"<k> didn't take any prisoners from <n> <v>.",
-	"<k> pinned <n> <v> to the wall with <k_his> <w>.",
+	"<k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
 	"<n> <v> failed <v_his> weapon checks.",
 }
 
@@ -340,28 +400,44 @@ local function player_killed_mob(self, player)
 	msg = string.gsub(msg, "<v_him>", vsex.him)
 	msg = string.gsub(msg, "<v_he>", vsex.he)
 
-	if string.find(msg, "<a>") then
+	if string.find(msg, "<brutally>") then
 		local adv = kill_adv[math.random(1, #kill_adv)]
 		if adv ~= "" then
 			adv = adv .. " "
 		end
-		msg = string.gsub(msg, "<a>", adv)
+		msg = string.gsub(msg, "<brutally>", adv)
 	end
 
-	if string.find(msg, "<j>") then
+	if string.find(msg, "<slain>") then
 		local adj = kill_adj[math.random(1, #kill_adj)]
 		if adj ~= "" then
 			adj = adj .. " "
 		end
-		msg = string.gsub(msg, "<j>", adj)
+		msg = string.gsub(msg, "<slain>", adj)
 	end
 
-	if string.find(msg, "<g>") then
+	if string.find(msg, "<slew>") then
+		local adj = kill_adj2[math.random(1, #kill_adj2)]
+		if adj ~= "" then
+			adj = adj .. " "
+		end
+		msg = string.gsub(msg, "<slew>", adj)
+	end
+
+	if string.find(msg, "<slay>") then
+		local adj = kill_adj3[math.random(1, #kill_adj3)]
+		if adj ~= "" then
+			adj = adj .. " "
+		end
+		msg = string.gsub(msg, "<slay>", adj)
+	end
+
+	if string.find(msg, "<angry>") then
 		local ang = kill_ang[math.random(1, #kill_ang)]
 		if ang ~= "" then
 			ang = ang .. " "
 		end
-		msg = string.gsub(msg, "<g>", ang)
+		msg = string.gsub(msg, "<angry>", ang)
 	end
 
 	if string.find(msg, "<n>") then

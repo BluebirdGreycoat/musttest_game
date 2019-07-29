@@ -327,50 +327,58 @@ end
 
 
 
+local pain_words = {
+	"harm",
+	"pain",
+	"grief",
+	"trouble",
+	"evil",
+	"ill will",
+}
 
 local murder_messages = {
-	"<n> <v> collapsed from <k>'s <angry>attack.",
-	"<k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
-	"<k> <brutally><slew> <n> <v> with great prejudice.",
-	"<n> <v> died from <k>'s horrid slaying.",
-	"<n> <v> fell prey to <k>'s deadly <w>.",
-	"<k> went out of <k_his> way to <slay> <n> <v> with <k_his> <w>.",
-	"<n> <v> danced <v_himself> to death under <k>'s craftily wielded <w>.",
-	"<k> used <k_his> <w> to <slay> <n> <v> with prejudice.",
-	"<k> made a splortching sound with <n> <v>'s head.",
-	"<n> <v> was <slain> by <k>'s skillfully handled <w>.",
-	"<n> <v> became prey for <k>.",
-	"<n> <v> didn't get out of <k>'s way in time.",
-	"<n> <v> SAW <k> coming with <k_his> <w>. Didn't get away in time.",
-	"<n> <v> made no real attempt to get out of <k>'s way.",
-	"<k> barreled through <n> <v> as if <v_he> wasn't there.",
-	"<k> sent <n> <v> to that place where kindling wood isn't needed.",
-	"<n> <v> didn't suspect that <k> meant <v_him> any harm.",
-	"<n> <v> fought <k> to the death and lost painfully.",
-	"<n> <v> knew <k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
-	"<k> <brutally>clonked <n> <v> over the head using <k_his> <w> with silent skill.",
-	"<k> made sure <n> <v> didn't see that coming!",
-	"<k> has decided <k_his> favorite weapon is <k_his> <w>.",
-	"<n> <v> did the mad hatter dance just before being <slain> with <k>'s <w>.",
-	"<n> <v> played the victim to <k>'s bully behavior!",
-	"<k> used <n> <v> for weapons practice with <k_his> <w>.",
-	"<n> <v> failed to avoid <k>'s oncoming weapon.",
-	"<k> successfully got <n> <v> to complain of a headache.",
-	"<n> <v> got <v_himself> some serious hurt from <k>'s <w>.",
-	"Trying to talk peace to <k> didn't win any for <n> <v>.",
-	"<n> <v> was <brutally><slain> by <k>'s <w>.",
-	"<n> <v> jumped the mad-hatter dance under <k>'s <w>.",
-	"<n> <v> got <v_himself> a fatal mauling by <k>'s <w>.",
-	"<k> <brutally><slew> <n> <v> with <k_his> <w>.",
-	"<k> split <n> <v>'s wig.",
-	"<k> took revenge on <n> <v>.",
-	"<k> <brutally><slew> <n> <v>.",
+	"<n> <v> collapsed from <an_angry_k><k>'s <angry>attack.",
+	"<an_angry_k><k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
+	"<an_angry_k><k> <brutally><slew> <n> <v> with great prejudice.",
+	"<n> <v> died from <an_angry_k><k>'s horrid slaying.",
+	"<n> <v> fell prey to <an_angry_k><k>'s deadly <w>.",
+	"<an_angry_k><k> went out of <k_his> way to <slay> <n> <v> with <k_his> <w>.",
+	"<n> <v> danced <v_himself> to death under <an_angry_k><k>'s craftily wielded <w>.",
+	"<an_angry_k><k> used <k_his> <w> to <slay> <n> <v> with prejudice.",
+	"<an_angry_k><k> made a splortching sound with <n> <v>'s head.",
+	"<n> <v> was <slain> by <an_angry_k><k>'s skillfully handled <w>.",
+	"<n> <v> became prey for <an_angry_k><k>.",
+	"<n> <v> didn't get out of <an_angry_k><k>'s way in time.",
+	"<n> <v> SAW <an_angry_k><k> coming with <k_his> <w>. Didn't get away in time.",
+	"<n> <v> made no real attempt to get out of <an_angry_k><k>'s way.",
+	"<an_angry_k><k> barreled through <n> <v> as if <v_he> wasn't there.",
+	"<an_angry_k><k> sent <n> <v> to that place where kindling wood isn't needed.",
+	"<n> <v> didn't suspect that <an_angry_k><k> meant <v_him> any <pain>.",
+	"<n> <v> fought <an_angry_k><k> to the death and lost painfully.",
+	"<n> <v> knew <an_angry_k><k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
+	"<an_angry_k><k> <brutally>clonked <n> <v> over the head using <k_his> <w> with silent skill.",
+	"<an_angry_k><k> made sure <n> <v> didn't see that coming!",
+	"<an_angry_k><k> has decided <k_his> favorite weapon is <k_his> <w>.",
+	"<n> <v> did the mad hatter dance just before being <slain> with <an_angry_k><k>'s <w>.",
+	"<n> <v> played the victim to <an_angry_k><k>'s bully behavior!",
+	"<an_angry_k><k> used <n> <v> for weapons practice with <k_his> <w>.",
+	"<n> <v> failed to avoid <an_angry_k><k>'s oncoming weapon.",
+	"<an_angry_k><k> successfully got <n> <v> to complain of a headache.",
+	"<n> <v> got <v_himself> some serious hurt from <an_angry_k><k>'s <w>.",
+	"Trying to talk peace to <an_angry_k><k> didn't win any for <n> <v>.",
+	"<n> <v> was <brutally><slain> by <an_angry_k><k>'s <w>.",
+	"<n> <v> jumped the mad-hatter dance under <an_angry_k><k>'s <w>.",
+	"<n> <v> got <v_himself> a fatal mauling by <an_angry_k><k>'s <w>.",
+	"<an_angry_k><k> <brutally><slew> <n> <v> with <k_his> <w>.",
+	"<an_angry_k><k> split <n> <v>'s wig.",
+	"<an_angry_k><k> took revenge on <n> <v>.",
+	"<an_angry_k><k> <brutally><slew> <n> <v>.",
 	"<n> <v> played dead. Permanently.",
 	"<n> <v> never saw what hit <v_him>.",
-	"<k> took <n> <v> by surprise.",
+	"<an_angry_k><k> took <n> <v> by surprise.",
 	"<n> <v> was <brutally><slain>.",
-	"<k> didn't take any prisoners from <n> <v>.",
-	"<k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
+	"<an_angry_k><k> didn't take any prisoners from <n> <v>.",
+	"<an_angry_k><k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
 	"<n> <v> failed <v_his> weapon checks.",
 }
 
@@ -410,26 +418,22 @@ local function player_killed_mob(self, player)
 
 	if string.find(msg, "<slain>") then
 		local adj = kill_adj[math.random(1, #kill_adj)]
-		if adj ~= "" then
-			adj = adj .. " "
-		end
 		msg = string.gsub(msg, "<slain>", adj)
 	end
 
 	if string.find(msg, "<slew>") then
 		local adj = kill_adj2[math.random(1, #kill_adj2)]
-		if adj ~= "" then
-			adj = adj .. " "
-		end
 		msg = string.gsub(msg, "<slew>", adj)
 	end
 
 	if string.find(msg, "<slay>") then
 		local adj = kill_adj3[math.random(1, #kill_adj3)]
-		if adj ~= "" then
-			adj = adj .. " "
-		end
 		msg = string.gsub(msg, "<slay>", adj)
+	end
+
+	if string.find(msg, "<pain>") then
+		local adj = pain_words[math.random(1, #pain_words)]
+		msg = string.gsub(msg, "<pain>", adj)
 	end
 
 	if string.find(msg, "<angry>") then
@@ -438,6 +442,23 @@ local function player_killed_mob(self, player)
 			ang = ang .. " "
 		end
 		msg = string.gsub(msg, "<angry>", ang)
+	end
+
+	if string.find(msg, "<an_angry_k>") then
+		local replace = ""
+
+		local angry = kill_ang[math.random(1, #kill_ang)]
+		if angry ~= "" then
+			local an = "a"
+
+			if angry:find("^[aeiouAEIOU]") then
+				an = "an"
+			end
+
+			replace = an .. " " .. angry .. " "
+		end
+
+		msg = string.gsub(msg, "<an_angry_k>", replace)
 	end
 
 	if string.find(msg, "<n>") then

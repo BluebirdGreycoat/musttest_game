@@ -497,6 +497,16 @@ local function check_for_death(self, cause, cmi_cause)
 		return false
 	end
 
+	-- Mob will die, check if we were attacked.
+	if cause == "hit" then
+		if self.last_attacked_by and self.last_attacked_by ~= "" then
+			local attacked_by = minetest.get_player_by_name(self.last_attacked_by)
+			if attacked_by then
+				player_killed_mob(self, attacked_by)
+			end
+		end
+	end
+
 	-- only drop items if weapon is of sufficient level to overcome mob's armor level
 	local can_drop = true
 	if cmi_cause and cmi_cause.tool_capabilities then
@@ -2017,6 +2027,13 @@ end
 
 
 
+local function player_killed_mob(self, player)
+	local pname = player:get_player_name()
+	minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> killed a mob!")
+end
+
+
+
 -- dogshoot attack switch and counter function
 local function dogswitch(self, dtime)
 
@@ -2667,6 +2684,9 @@ local tr = minetest.get_modpath("toolranks")
 
 -- deal damage and effects when mob punched
 local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
+
+	-- Record name of last attacker.
+	self.last_attacked_by = (hitter and hitter:is_player() and hitter:get_player_name()) or ""
 
 	-- custom punch function
 	if self.do_punch then

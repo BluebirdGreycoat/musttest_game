@@ -97,6 +97,7 @@ function portal_sickness.on_use_portal(pname)
 		if max < 1 then
 			max = 1
 		end
+		minetest.chat_send_player("MustTest", "# Server: sickness probability: 1 in " .. max .. ".")
 
 		if (math.random(1, max) == 1) then
 			if players[pname].sick == 0 then

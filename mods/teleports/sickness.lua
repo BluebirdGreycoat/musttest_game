@@ -72,9 +72,10 @@ function portal_sickness.on_use_portal(pname)
 
 	portal_sickness.init_if_needed(pname)
 
+	local rand_time_add = players[pname].count * 10
 	local t1 = players[pname].time
 	local t2 = os.time()
-	local mt = math.random(30, math.random(40, 140))
+	local mt = math.random(30, math.random(40, 140 + rand_time_add))
 	local max_time = math.random(60*10, 60*20)
 
 	-- If player waits long enough, they don't sicken, but neither does the

@@ -46,7 +46,8 @@ function hb4.delayed_harm2(data)
 		end
 
 		data.step = data.step - 1
-		minetest.after(1, hb4.delayed_harm2, data)
+		local time = (data.time or 1)
+		minetest.after(time, hb4.delayed_harm2, data)
 	else
 		-- Player logged off. Wait until they come back.
 		-- Player cannot escape harm!

@@ -231,10 +231,13 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 
 	local above = minetest.get_node(pt.above)
 
-	if minetest.is_protected(pt.under, placer:get_player_name()) then
-		minetest.record_protection_violation(pt.under, placer:get_player_name())
-		return
-	end
+	-- Permit player to place seed on protected soil (by commenting this code).
+	-- This allows players to build public farms.
+	--if minetest.is_protected(pt.under, placer:get_player_name()) then
+	--	minetest.record_protection_violation(pt.under, placer:get_player_name())
+	--	return
+	--end
+
 	if minetest.is_protected(pt.above, placer:get_player_name()) then
 		minetest.record_protection_violation(pt.above, placer:get_player_name())
 		return

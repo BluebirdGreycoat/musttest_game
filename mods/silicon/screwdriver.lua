@@ -11,6 +11,10 @@ electric_screwdriver.description = "Electric Screwdriver\n\nAn electrical, reusa
 electric_screwdriver.uses = math.floor(65535/2500)
 
 function electric_screwdriver.on_use(itemstack, user, pt)
+	if not user or not user:is_player() then
+		return
+	end
+
 	if pt.type ~= "node" then
 		return
 	end
@@ -41,6 +45,10 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 end
 
 function electric_screwdriver.on_place(itemstack, user, pt)
+	if not user or not user:is_player() then
+		return
+	end
+
 	if pt.type ~= "node" then
 		return
 	end
@@ -58,7 +66,7 @@ function electric_screwdriver.on_place(itemstack, user, pt)
 	-- We handle stack ourselves.
 	local fakestack = ItemStack(itemstack:get_name())
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.5, 40)
+	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
 	screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_AXIS, 200)
 
 	wear = wear + electric_screwdriver.uses

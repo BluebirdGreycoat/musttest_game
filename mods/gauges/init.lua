@@ -19,7 +19,7 @@ local function add_gauge(player)
 		data.wielder = player
 		data.chp = player:get_hp()
 		data.cbreath = player:get_breath()
-		ent:set_properties({textures = {"health_" .. tostring(data.chp) .. ".png^breath_" .. tostring(data.cbreath) .. ".png"}})
+		ent:set_properties({textures = {"health_" .. tostring(data.chp) .. ".png^breath_" .. tostring(data.cbreath) .. ".png"}, glow = -1})
 
 		player_wielding[pname] = {}
 		player_wielding[pname].object = ent
@@ -123,7 +123,7 @@ local hp_bar = {
 		local hp = wielder:get_hp()
 		local breath = wielder:get_breath()
 		if hp ~= self.chp or breath ~= self.cbreath then
-			self.object:set_properties({textures = {"health_" .. tostring(hp) .. ".png^breath_" .. tostring(breath) .. ".png"}})
+			self.object:set_properties({textures = {"health_" .. tostring(hp) .. ".png^breath_" .. tostring(breath) .. ".png"}, glow = -1})
 			self.chp = hp
 			self.cbreath = breath
 		end

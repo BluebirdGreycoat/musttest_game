@@ -17,7 +17,20 @@ local function portal_sicken(pname, count)
 	local step = count * 10
 
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS."
-	hb4.delayed_harm({name=pname, step=step, min=1, max=3, msg=msg, poison=true})
+	hb4.delayed_harm({
+		name = pname, step = step, min = 1, max = 3, msg = msg, poison = true,
+
+		done = function()
+			portal_sickness.init_if_needed(pname)
+			-- Don't cure player.
+			-- Check if player is actually still sick, and hasn't died (and been
+			-- reset) in the meantime.
+			if players[pname].sick >= 2 then
+				players[pname].sick = 1 -- Go back to feeling queasy.
+				portal_sickness.check_sick(pname)
+			end
+		end,
+	})
 
 	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has contracted portal sickness!")
 end
@@ -81,13 +94,14 @@ function portal_sickness.on_use_portal(pname)
 	-- If player waits long enough, they don't sicken, but neither does the
 	-- sickness go away!
 	if (t2 - t1) < max_time then
-		if players[pname].sick >= 2 then
+		if players[pname].sick == 2 then
+			players[pname].sick = 3
 			portal_sicken(pname, players[pname].count)
-
-			-- Reset!
-			players[pname].sick = 0
-			players[pname].count = 0
-			players[pname].time = t2
+			return
+		elseif players[pname].sick >= 3 then
+			-- Teleporting while throwing up? Just die already!
+			player:set_hp(0)
+			minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS.")
 			return
 		end
 	end

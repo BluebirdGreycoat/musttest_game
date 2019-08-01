@@ -24,6 +24,10 @@ function hb4.delayed_harm2(data)
 			if data.poison then
 				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
 			end
+			-- Execute termination callback.
+			if data.done then
+				data.done()
+			end
 			return
 		end
 
@@ -31,6 +35,10 @@ function hb4.delayed_harm2(data)
 		if player:get_hp() <= 0 then
 			if data.poison then
 				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
+			end
+			-- Execute termination callback.
+			if data.done then
+				data.done()
 			end
 			return
 		end

@@ -1,3 +1,4 @@
+[2019/7/31] Allow players to place seeds on protected hoed soil - makes public farms a possibility
 [2019/7/27] Added particles and a time delay when teleporting via portal.
 [2019/7/27] Added a game mechanic for portal sickness and curing.
 [2019/7/20] Made mobs less likely to see player when their nametag is off.

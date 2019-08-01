@@ -330,10 +330,10 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	-- Random accidents happen to punished players during PvP.
 	do
-		local pname = hitter:get_player_name()
-		if sheriff.player_punished(pname) then
-			if sheriff.punish_probability(pname) then
-				sheriff.punish_player(pname)
+		local attacker_pname = hitter:get_player_name()
+		if sheriff.player_punished(attacker_pname) then
+			if sheriff.punish_probability(attacker_pname) then
+				sheriff.punish_player(attacker_pname)
 			end
 		end
 	end
@@ -357,11 +357,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return true
 	end
 
-	local pname = player:get_player_name();
-	local name = hitter:get_player_name();
+	local victim_pname = player:get_player_name();
+	local attacker_pname = hitter:get_player_name();
 	local t = minetest.get_gametime() or 0;
-	city_block.attacker[pname] = name;
-	city_block.attack[pname] = t;
+	city_block.attacker[victim_pname] = attacker_pname;
+	city_block.attack[victim_pname] = t;
 	local hp = player:get_hp();
 
 	if damage > 0 then
@@ -370,29 +370,29 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	if hp > 0 and (hp - damage) <= 0 then -- player will die because of this hit
 		default.detach_player_if_attached(player)
-		city_block.murder_message(name, pname)
+		city_block.murder_message(attacker_pname, victim_pname)
 
 		if city_block:in_city(p2pos) then
-			local t0 = city_block.attack[name] or t;
+			local t0 = city_block.attack[attacker_pname] or t;
 			t0 = t - t0;
-			if not city_block.attacker[name] then 
-				city_block.attacker[name] = ""
+			if not city_block.attacker[attacker_pname] then
+				city_block.attacker[attacker_pname] = ""
 			end
 			local landowner = protector.get_node_owner(p2pos) or ""
 
 			-- Justified killing 10 seconds after provocation, but not if the victim owns the land.
-			if city_block.attacker[name] == pname and t0 < 10 and pname ~= landowner then 
+			if city_block.attacker[attacker_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
 				return
 			else -- go to jail
 				jail.go_to_jail(hitter, nil)
 				minetest.chat_send_all(
-					"# Server: Criminal <" .. rename.gpn(name) .. "> was sent to gaol for " ..
-					city_block:get_adjective() .. " <" .. rename.gpn(pname) .. "> within city limits.")
+					"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
+					city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
 			end
 		else
 			-- Bed position is only lost if player died outside city.
-			minetest.chat_send_player(pname, "# Server: Your bed is lost! You were assassinated outside town.")
-			beds.clear_player_spawn(pname)
+			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside town.")
+			beds.clear_player_spawn(victim_pname)
 		end
 	end
 end

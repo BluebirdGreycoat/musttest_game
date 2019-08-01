@@ -26,7 +26,7 @@ local function portal_sicken(pname, count)
 			-- Check if player is actually still sick, and hasn't died (and been
 			-- reset) in the meantime.
 			if players[pname].sick >= 2 then
-				players[pname].sick = 1 -- Go back to feeling queasy.
+				players[pname].sick = 2 -- Go back to feeling sick.
 				portal_sickness.check_sick(pname)
 			end
 		end,

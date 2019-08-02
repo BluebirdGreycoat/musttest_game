@@ -5,7 +5,7 @@ electric_screwdriver.modpath = minetest.get_modpath("silicon")
 electric_screwdriver.image = "technic_sonic_screwdriver.png"
 electric_screwdriver.sound = "technic_sonic_screwdriver"
 electric_screwdriver.name = "electric_screwdriver:electric_screwdriver"
-electric_screwdriver.description = "Electric Screwdriver\n\nAn electrical, reusable screwdriver.\nMust be charged to use."
+electric_screwdriver.description = "Electric Screwdriver\n\nAn electrical, reusable screwdriver.\nMust be charged to use.\nLeft-click + 'E' copies rotation, right-click + 'E' applies rotation."
 electric_screwdriver.sound_gain = 0.3
 electric_screwdriver.sound_dist = 25
 

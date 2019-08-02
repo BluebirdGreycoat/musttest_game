@@ -29,11 +29,26 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 		return
 	end
 
-	-- We handle stack ourselves.
-	local fakestack = ItemStack(itemstack:get_name())
+	local control = user:get_player_control()
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
-	screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_FACE, 200)
+	if control.aux1 then
+		local meta = itemstack:get_meta()
+		local node = minetest.get_node(pt.under)
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef and ndef.paramtype2 == "facedir" then
+			if node.param2 >= 0 and node.param2 <= 23 then
+				meta:set_int("screwdriver_rotation", node.param2)
+
+				minetest.chat_send_player(user:get_player_name(),
+					"# Server: copied facedir (" .. node.param2 .. ")!")
+			end
+		end
+	else
+		-- We handle stack ourselves.
+		local fakestack = ItemStack(itemstack:get_name())
+		ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
+		screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_FACE, 200)
+	end
 
 	wear = wear + electric_screwdriver.uses
 	-- Don't let wear reach max or tool will be destroyed.
@@ -63,11 +78,28 @@ function electric_screwdriver.on_place(itemstack, user, pt)
 		return
 	end
 
-	-- We handle stack ourselves.
-	local fakestack = ItemStack(itemstack:get_name())
+	local control = user:get_player_control()
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
-	screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_AXIS, 200)
+	if control.aux1 then
+		if not minetest.is_protected(pt.under, user:get_player_name()) then
+			local meta = itemstack:get_meta()
+			local param2 = meta:get_int("screwdriver_rotation")
+			local node = minetest.get_node(pt.under)
+			local ndef = minetest.registered_nodes[node.name]
+			if ndef and ndef.paramtype2 == "facedir" then
+				if param2 >= 0 and param2 <= 23 then
+					node.param2 = param2
+					minetest.swap_node(pt.under, node)
+					ambiance.sound_play("default_dug_metal", pt.under, 1, 30)
+				end
+			end
+		end
+	else
+		-- We handle stack ourselves.
+		local fakestack = ItemStack(itemstack:get_name())
+		ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
+		screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_AXIS, 200)
+	end
 
 	wear = wear + electric_screwdriver.uses
 	-- Don't let wear reach max or tool will be destroyed.

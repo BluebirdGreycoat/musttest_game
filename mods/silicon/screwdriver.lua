@@ -6,6 +6,8 @@ electric_screwdriver.image = "technic_sonic_screwdriver.png"
 electric_screwdriver.sound = "technic_sonic_screwdriver"
 electric_screwdriver.name = "electric_screwdriver:electric_screwdriver"
 electric_screwdriver.description = "Electric Screwdriver\n\nAn electrical, reusable screwdriver.\nMust be charged to use."
+electric_screwdriver.sound_gain = 0.3
+electric_screwdriver.sound_dist = 25
 
 -- This is how many nodes the electric screwdriver can spin.
 electric_screwdriver.uses = math.floor(65535/2500)
@@ -49,7 +51,7 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 		screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_FACE, 200)
 	end
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
+	ambiance.sound_play(electric_screwdriver.sound, pt.under, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
 	wear = wear + electric_screwdriver.uses
 	-- Don't let wear reach max or tool will be destroyed.
@@ -101,7 +103,7 @@ function electric_screwdriver.on_place(itemstack, user, pt)
 		screwdriver.handler(fakestack, user, pt, screwdriver.ROTATE_AXIS, 200)
 	end
 
-	ambiance.sound_play(electric_screwdriver.sound, pt.under, 0.4, 30)
+	ambiance.sound_play(electric_screwdriver.sound, pt.under, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
 	wear = wear + electric_screwdriver.uses
 	-- Don't let wear reach max or tool will be destroyed.

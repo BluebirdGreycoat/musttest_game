@@ -156,6 +156,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	end
 
 	-- Small chance to be teleported somewhere completely random.
+	local use_random = false
 	if math.random(1, 1000) == 1 then
 		if #(teleports.teleports) > 0 then
 			local tp = teleports.teleports[math.random(1, #(teleports.teleports))]
@@ -164,6 +165,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 				return
 			end
 			teleport_pos = tp.pos
+			use_random = true
 		end
 	end
 
@@ -172,11 +174,14 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}
 	local pos = vector.round(target)
 
-	local start_realm = rc.current_realm_at_pos(origin_pos)
-	local target_realm = rc.current_realm_at_pos(pos)
-	if target_realm == "" or start_realm == "" or start_realm ~= target_realm then
-		minetest.chat_send_player(pname, "# Server: Target location is in a different realm! Aborting.")
-		return
+	-- Perform this check only if teleport target wasn't randomized.
+	if not use_random then
+		local start_realm = rc.current_realm_at_pos(origin_pos)
+		local target_realm = rc.current_realm_at_pos(pos)
+		if target_realm == "" or start_realm == "" or start_realm ~= target_realm then
+			minetest.chat_send_player(pname, "# Server: Target location is in a different realm! Aborting.")
+			return
+		end
 	end
 
 	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))

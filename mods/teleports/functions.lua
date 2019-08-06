@@ -155,6 +155,18 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		return
 	end
 
+	-- Small chance to be teleported somewhere completely random.
+	if math.random(1, 1000) == 1 then
+		if #(teleports.teleports) > 0 then
+			local tp = teleports.teleports[math.random(1, #(teleports.teleports))]
+			if not tp then
+				minetest.chat_send_player(pname, "# Server: Transport error! Aborted.")
+				return
+			end
+			teleport_pos = tp.pos
+		end
+	end
+
 	local p = vector.round(teleport_pos)
 	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}

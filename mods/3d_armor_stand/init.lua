@@ -337,8 +337,8 @@ minetest.register_abm({
 minetest.register_craft({
 	output = "3d_armor_stand:armor_stand",
 	recipe = {
-		{"", "group:fence", ""},
-		{"", "group:fence", ""},
+		{"", "default:fence_pine_wood", ""},
+		{"", "default:fence_pine_wood", ""},
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 	}
 })

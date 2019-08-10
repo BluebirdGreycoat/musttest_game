@@ -993,7 +993,7 @@ minetest.register_entity("protector:display", {
 	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
 	textures = {"protector:display_node"},
 	timer = 0,
-	--glow = 255, -- Does not work.
+	glow = 14,
 
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
@@ -1015,7 +1015,7 @@ minetest.register_entity("protector:display_small", {
 	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
 	textures = {"protector:display_node_small"},
 	timer = 0,
-	--glow = 13, -- Does not work.
+	glow = 14,
 
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime

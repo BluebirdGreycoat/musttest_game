@@ -322,6 +322,7 @@ minetest.register_entity("3d_armor_stand:armor_entity", {
 	end,
 })
 
+--[[
 minetest.register_abm({
 	nodenames = {"3d_armor_stand:locked_armor_stand", "3d_armor_stand:armor_stand"},
 	interval = 15,
@@ -333,6 +334,7 @@ minetest.register_abm({
 		update_entity(pos)
 	end
 })
+--]]
 
 minetest.register_craft({
 	output = "3d_armor_stand:armor_stand",

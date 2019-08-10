@@ -258,6 +258,10 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 		meta:set_string("infotext", "Armor Stand (Owned by <" .. rename.gpn(meta:get_string("owner")) .. ">!)")
 		add_hidden_node(pos, placer)
 	end,
+	_on_rename_check = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("infotext", "Armor Stand (Owned by <" .. rename.gpn(meta:get_string("owner")) .. ">!)")
+	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		if not has_locked_armor_stand_privilege(meta, player) then

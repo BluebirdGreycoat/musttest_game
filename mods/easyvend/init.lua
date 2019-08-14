@@ -85,7 +85,19 @@ local machine_template = {
 	allow_metadata_inventory_put = function(...) return easyvend.allow_metadata_inventory_put(...) end,
 	allow_metadata_inventory_take = function(...) return easyvend.allow_metadata_inventory_take(...) end,
 	allow_metadata_inventory_move = function(...) return easyvend.allow_metadata_inventory_move(...) end,
-	on_punch = function(...) return easyvend.machine_check(...) end,
+
+	on_punch = function(...)
+		depositor.check_machine(...)
+		return easyvend.machine_check(...)
+	end,
+
+	on_construct = function(...)
+		depositor.on_construct(...)
+	end,
+
+	on_destruct = function(...)
+		depositor.on_destruct(...)
+	end,
 
 	-- Called by rename LBM.
 	_on_rename_check = function(pos)
@@ -98,7 +110,9 @@ local machine_template = {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
+
 		easyvend.machine_check(pos, minetest.get_node(pos))
+		depositor.check_machine(pos)
 	end,
 }
 

@@ -412,6 +412,41 @@ end
 
 
 
+function ads._on_rename_check(pos)
+	local meta = minetest.get_meta(pos)
+	local pname = meta:get_string("owner")
+	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
+end
+
+
+
+function ads.after_place_node(pos, placer)
+	local pname = placer:get_player_name()
+	local meta = minetest.get_meta(pos)
+	meta:set_string("owner", pname)
+	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
+end
+
+
+
+function ads.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
+	return count
+end
+
+
+
+function ads.allow_metadata_inventory_put(pos, listname, index, stack, player)
+	return stack:get_count()
+end
+
+
+
+function ads.allow_metadata_inventory_take(pos, listname, index, stack, player)
+	return stack:get_count()
+end
+
+
+
 if not ads.run_once then
 	ads.load_data()
 	minetest.register_on_shutdown(function() ads.save_data() end)
@@ -461,14 +496,41 @@ if not ads.run_once then
 		groups = utility.dig_groups("furniture", {flammable = 2}),
 		sounds = default.node_sound_wood_defaults(),
 
+		after_place_node = function(pos, placer, itemstack, pt)
+			ads.after_place_node(pos, placer)
+		end,
+
+		on_punch = function(pos, node, puncher, pt)
+			depositor.check_machine(pos)
+		end,
+
 		on_construct = function(pos)
-			local meta = minetest.get_meta(pos)
-			meta:set_string("infotext", "Market Advertisement Booth")
+			depositor.on_construct(pos)
+		end,
+
+		on_destruct = function(pos)
+			depositor.on_destruct(pos)
 		end,
 
 		on_rightclick = function(pos, node, clicker, itemstack, pt)
 			ads.show_formspec(vector.round(pos), clicker:get_player_name(), true)
 			return itemstack
+		end,
+
+		_on_rename_check = function(...)
+			ads._on_rename_check(...)
+		end,
+
+		allow_metadata_inventory_move = function(...)
+			return ads.allow_metadata_inventory_move(...)
+		end,
+
+		allow_metadata_inventory_put = function(...)
+			return ads.allow_metadata_inventory_put(...)
+		end,
+
+		allow_metadata_inventory_take = function(...)
+			return ads.allow_metadata_inventory_take(...)
 		end,
 	})
 

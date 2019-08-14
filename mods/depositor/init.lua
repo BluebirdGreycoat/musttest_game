@@ -7,6 +7,7 @@ depositor.shops = depositor.shops or {}
 
 
 function depositor.load()
+	-- Custom file format. minetest.serialize() is unusable for large tables.
 	depositor.shops = {}
 	local file, err = io.open(depositor.datafile, "r")
 	if not file or err then
@@ -35,6 +36,7 @@ end
 
 
 function depositor.save()
+	-- Custom file format. minetest.serialize() is unusable for large tables.
 	local datastring = ""
 	for k, v in ipairs(depositor.shops) do
 		datastring = datastring ..

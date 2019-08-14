@@ -56,10 +56,11 @@ end
 
 
 function ads.show_inventory_formspec(pos, pname, booth)
-	local spos = minetest.pos_to_string(vector.round(pos))
+	pos = vector.round(pos)
+	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 
 	local formspec =
-		"size[10,8]" ..
+		"size[8,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..

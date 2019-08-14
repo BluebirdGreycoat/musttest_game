@@ -59,17 +59,28 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	pos = vector.round(pos)
 	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 
+	-- Obtain hooks into the trash mod's trash slot inventory.
+	local ltrash, mtrash = trash.get_listname()
+	local itrash = trash.get_iconname()
+
 	local formspec =
 		"size[8,9]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"list[nodemeta:" .. spos .. ";storage;1,0;6,4;]" ..
+		"list[nodemeta:" .. spos .. ";storage;0,0.3;6,4;]" ..
 		"list[current_player;main;0,4.85;8,1;]" ..
 		"list[current_player;main;0,6.08;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
 		"listring[current_player;main]" ..
-		default.get_hotbar_bg(0, 4.85)
+		default.get_hotbar_bg ..
+
+		-- Vending icon.
+		"item_image[7,0.3;1,1;easyvend:vendor_on]" ..
+
+		-- Trash icon.
+		"list[" .. ltrash .. ";" .. mtrash .. ";7,1.3;1,1;]" ..
+		"image[7,1.3;1,1;" .. itrash .. "]"
 
 	local b = "|"
 	if booth then

@@ -7,18 +7,29 @@ depositor.shops = depositor.shops or {}
 
 
 function depositor.load()
-	--[[
+	depositor.shops = {}
 	local file, err = io.open(depositor.datafile, "r")
-	if err then
-		depositor.shops = {}
+	if not file or err then
 		return
 	end
-	depositor.shops = minetest.deserialize(file:read("*all"))
-	if type(depositor.shops) ~= "table" then
-		depositor.shops = {}
+	local datastring = file:read("*all")
+	if not datastring or datastring == "" then
+		return
 	end
 	file:close()
-	--]]
+
+	local records = string.split(datastring, "\n")
+	for _, record in ipairs(records) do
+		local data = string.split(record, ",")
+		if #data >= 3 then
+			local x = tonumber(data[1])
+			local y = tonumber(data[2])
+			local z = tonumber(data[3])
+			if x and y and z then
+				table.insert(depositor.shops, {pos={x=x, y=y, z=z}})
+			end
+		end
+	end
 end
 
 

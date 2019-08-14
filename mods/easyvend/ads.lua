@@ -56,11 +56,7 @@ end
 
 
 function ads.show_inventory_formspec(pos, pname, booth)
-	local spos = vector.round(pos)
-	if not spos then
-		minetest.chat_send_player(pname, "# Server: DEBUG.")
-		return
-	end
+	local spos = minetest.pos_to_string(vector.round(pos))
 
 	local formspec =
 		"size[10,8]" ..

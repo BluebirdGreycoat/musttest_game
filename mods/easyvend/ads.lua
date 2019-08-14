@@ -55,6 +55,31 @@ end
 
 
 
+function ads.show_inventory_formspec(pos, pname, booth)
+	local spos = vector.round(pos)
+
+	local formspec =
+		"size[10,8]" ..
+		default.gui_bg ..
+		default.gui_bg_img ..
+		default.gui_slots ..
+		"list[nodemeta:" .. spos .. ";storage;0,0;6,4;]" ..
+		"list[current_player;main;0,3.85;8,1;]" ..
+		"list[current_player;main;0,5.08;8,3;8]" ..
+		"listring[nodemeta:" .. spos .. ";storage]" ..
+		"listring[current_player;main]" ..
+		default.get_hotbar_bg(0, 3.85)
+
+	local b = "|"
+	if booth then
+		b = "|booth"
+	end
+	local key = "ads:inventory_" .. minetest.pos_to_string(vector.round(pos)) .. b
+	minetest.show_formspec(pname, key, formspec)
+end
+
+
+
 function ads.on_receive_submission_fields(player, formname, fields)
 	if string.sub(formname, 1, 15) ~= "ads:submission_" then
 		return
@@ -281,6 +306,7 @@ function ads.generate_formspec(pos, pname, booth)
 	end
 
 	formspec = formspec ..
+		"button[6,7.3;2,1;storage;Inventory]" ..
 		"button[8,7.3;2,1;done;Done]"
 	return formspec
 end
@@ -321,6 +347,11 @@ function ads.on_receive_fields(player, formname, fields)
 
 		if fields.newadd then
 			ads.show_submission_formspec(pos, pname, booth)
+			return true
+		end
+
+		if fields.storage then
+			ads.show_inventory_formspec(pos, pname, booth)
 			return true
 		end
 	end
@@ -425,23 +456,70 @@ function ads.after_place_node(pos, placer)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("owner", pname)
 	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
+
+	local inv = meta:get_inventory()
+	inv:set_size("storage", 4*6)
+end
+
+
+
+local function has_inventory_privilege(meta, player)
+  if minetest.check_player_privs(player, "protection_bypass") then
+    return true
+  end
+
+	if player:get_player_name() == meta:get_string("owner") then
+		return true
+	end
+
+	return false
 end
 
 
 
 function ads.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
+	local meta = minetest.get_meta(pos)
+
+	if from_list ~= to_list then
+		return 0
+	end
+
+	if not has_inventory_privilege(meta, player) then
+		return 0
+	end
+
 	return count
 end
 
 
 
 function ads.allow_metadata_inventory_put(pos, listname, index, stack, player)
+	local meta = minetest.get_meta(pos)
+
+	if listname ~= "storage" then
+		return 0
+	end
+
+	if not has_inventory_privilege(meta, player) then
+		return 0
+	end
+
 	return stack:get_count()
 end
 
 
 
 function ads.allow_metadata_inventory_take(pos, listname, index, stack, player)
+	local meta = minetest.get_meta(pos)
+
+	if listname ~= "storage" then
+		return 0
+	end
+
+	if not has_inventory_privilege(meta, player) then
+		return 0
+	end
+
 	return stack:get_count()
 end
 

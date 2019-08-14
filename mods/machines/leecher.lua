@@ -369,7 +369,12 @@ end
 
 leecher.on_receive_fields =
 function(pos, formname, fields, sender)
+	if minetest.test_protection(pos, sender:get_player_name()) then
+		return
+	end
+
 	local meta = minetest.get_meta(pos)
+
 	if fields.toggle then
 		if meta:get_int("enabled") == 1 then
 			meta:set_int("enabled", 0)

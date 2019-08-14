@@ -60,16 +60,16 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 
 	local formspec =
-		"size[8,8]" ..
+		"size[8,9]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"list[nodemeta:" .. spos .. ";storage;0,0;6,4;]" ..
-		"list[current_player;main;0,3.85;8,1;]" ..
-		"list[current_player;main;0,5.08;8,3;8]" ..
+		"list[nodemeta:" .. spos .. ";storage;1,0;6,4;]" ..
+		"list[current_player;main;0,4.85;8,1;]" ..
+		"list[current_player;main;0,6.08;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
 		"listring[current_player;main]" ..
-		default.get_hotbar_bg(0, 3.85)
+		default.get_hotbar_bg(0, 4.85)
 
 	local b = "|"
 	if booth then

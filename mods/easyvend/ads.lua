@@ -313,12 +313,12 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
+			"button[6,7.3;2,1;storage;Inventory]" ..
 			"button[0,7.3;4,1;newadd;List Your Shop (Wants Gold)]" ..
 			"item_image[4,7.3;1,1;easyvend:vendor_on]"
 	end
 
 	formspec = formspec ..
-		"button[6,7.3;2,1;storage;Inventory]" ..
 		"button[8,7.3;2,1;done;Done]"
 	return formspec
 end

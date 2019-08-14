@@ -362,6 +362,9 @@ easyvend.machine_check = function(pos, node)
 	itemname=itemstack:get_name()
 	meta:set_string("itemname", itemname)
 
+	-- Inform remote market system of any changes.
+	depositor.update_info(pos, machine_owner, itemname, cost, buysell)
+
 	local change
 	if node.name == "easyvend:vendor" or node.name == "easyvend:depositor" then
 		if active then change = easyvend.machine_enable(pos, node) end

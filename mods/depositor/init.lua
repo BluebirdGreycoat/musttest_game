@@ -88,6 +88,11 @@ end
 
 
 
+function depositor.update_info(pos, owner, itemname, cost, bsb)
+end
+
+
+
 if not depositor.run_once then
 	depositor.load()
 

@@ -111,8 +111,8 @@ local machine_template = {
 
 		meta:set_string("rename", dname)
 
-		easyvend.machine_check(pos, minetest.get_node(pos))
 		depositor.check_machine(pos)
+		easyvend.machine_check(pos, minetest.get_node(pos))
 	end,
 }
 

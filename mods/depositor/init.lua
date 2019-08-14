@@ -7,6 +7,7 @@ depositor.shops = depositor.shops or {}
 
 
 function depositor.load()
+	--[[
 	local file, err = io.open(depositor.datafile, "r")
 	if err then
 		depositor.shops = {}
@@ -17,14 +18,16 @@ function depositor.load()
 		depositor.shops = {}
 	end
 	file:close()
+	--]]
 end
 
 
 
 function depositor.save()
-	local datastring = xban.serialize(depositor.shops)
-	if not datastring then
-		return
+	local datastring = ""
+	for k, v in ipairs(depositor.shops) do
+		datastring = datastring ..
+			v.pos.x .. "," .. v.pos.y .. "," .. v.pos.z .. "\n"
 	end
 	local file, err = io.open(depositor.datafile, "w")
 	if err then

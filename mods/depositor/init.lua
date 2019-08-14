@@ -22,12 +22,17 @@ function depositor.load()
 	local records = string.split(datastring, "\n")
 	for _, record in ipairs(records) do
 		local data = string.split(record, ",")
-		if #data >= 3 then
+		if #data >= 7 then
 			local x = tonumber(data[1])
 			local y = tonumber(data[2])
 			local z = tonumber(data[3])
-			if x and y and z then
-				table.insert(depositor.shops, {pos={x=x, y=y, z=z}})
+			local o = tostring(data[4])
+			local i = tostring(data[5])
+			local c = tonumber(data[6])
+			local t = tonumber(data[7])
+
+			if x and y and z and o and i and c and t then
+				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, cost=c, type=t})
 			end
 		end
 	end
@@ -39,8 +44,21 @@ function depositor.save()
 	-- Custom file format. minetest.serialize() is unusable for large tables.
 	local datastring = ""
 	for k, v in ipairs(depositor.shops) do
-		datastring = datastring ..
-			v.pos.x .. "," .. v.pos.y .. "," .. v.pos.z .. "\n"
+		if v.pos then
+			local x = v.pos.x
+			local y = v.pos.y
+			local z = v.pos.z
+			local t = v.type
+			local o = v.owner
+			local i = v.item
+			local c = v.cost
+
+			if x and y and z and t and o and i and c then
+				-- x,y,z,owner,item,cost,type
+				datastring = datastring ..
+					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "\n"
+			end
+		end
 	end
 	local file, err = io.open(depositor.datafile, "w")
 	if err then
@@ -89,6 +107,25 @@ end
 
 
 function depositor.update_info(pos, owner, itemname, cost, bsb)
+	pos = vector.round(pos)
+	for k, dep in ipairs(depositor.shops) do
+		if vector.equals(dep.pos, pos) then
+			dep.owner = owner or "server"
+			dep.item = itemname or "none"
+			dep.cost = cost or 0
+
+			dep.type = 0
+			if bsb == "sell" then
+				dep.type = 1
+			elseif bsb == "buy" then
+				dep.type = 2
+			elseif bsb == "info" then
+				dep.type = 3
+			end
+
+			return
+		end
+	end
 end
 
 

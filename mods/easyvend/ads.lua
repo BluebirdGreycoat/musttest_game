@@ -73,7 +73,7 @@ function ads.show_inventory_formspec(pos, pname, booth)
 		"list[current_player;main;0,6.08;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
 		"listring[current_player;main]" ..
-		default.get_hotbar_bg ..
+		default.get_hotbar_bg(0, 4.85) ..
 
 		-- Vending icon.
 		"item_image[7,0.3;1,1;easyvend:vendor_on]" ..

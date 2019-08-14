@@ -79,8 +79,8 @@ function ads.show_inventory_formspec(pos, pname, booth)
 		"item_image[7,0.3;1,1;easyvend:vendor_on]" ..
 
 		-- Trash icon.
-		"list[" .. ltrash .. ";" .. mtrash .. ";7,1.3;1,1;]" ..
-		"image[7,1.3;1,1;" .. itrash .. "]"
+		"list[" .. ltrash .. ";" .. mtrash .. ";7,2.3;1,1;]" ..
+		"image[7,2.3;1,1;" .. itrash .. "]"
 
 	local b = "|"
 	if booth then

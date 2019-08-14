@@ -3,6 +3,7 @@ depositor = depositor or {}
 depositor.modpath = minetest.get_modpath("depositor")
 depositor.datafile = minetest.get_worldpath() .. "/shops.txt"
 depositor.shops = depositor.shops or {}
+depositor.dirty = true
 
 
 
@@ -108,6 +109,8 @@ end
 
 function depositor.update_info(pos, owner, itemname, cost, bsb)
 	pos = vector.round(pos)
+	local needsave = false
+
 	for k, dep in ipairs(depositor.shops) do
 		if vector.equals(dep.pos, pos) then
 			dep.owner = owner or "server"
@@ -123,15 +126,31 @@ function depositor.update_info(pos, owner, itemname, cost, bsb)
 				dep.type = 3
 			end
 
-			return
+			needsave = true
+			break
 		end
 	end
+
+	if needsave then
+		depositor.dirty = true
+	end
+end
+
+
+
+function depositor.on_mapsave()
+	if depositor.dirty then
+		depositor.save()
+	end
+	depositor.dirty = false
 end
 
 
 
 if not depositor.run_once then
 	depositor.load()
+
+	minetest.register_on_mapsave(function() depositor.on_mapsave() end)
 
 	local c = "depositor:core"
 	local f = depositor.modpath .. "/init.lua"

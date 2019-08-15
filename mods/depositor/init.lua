@@ -80,7 +80,8 @@ function depositor.check_machine(pos)
 		end
 	end
 	table.insert(depositor.shops, {pos={x=pos.x, y=pos.y, z=pos.z}})
-	depositor.save()
+	depositor.dirty = true
+	--depositor.save()
 end
 
 
@@ -89,7 +90,8 @@ end
 function depositor.on_construct(pos)
 	pos = vector.round(pos)
 	table.insert(depositor.shops, {pos={x=pos.x, y=pos.y, z=pos.z}})
-	depositor.save()
+	depositor.dirty = true
+	--depositor.save()
 end
 
 
@@ -100,7 +102,8 @@ function depositor.on_destruct(pos)
 	for i, dep in ipairs(depositor.shops) do
 		if vector.equals(dep.pos, pos) then
 			table.remove(depositor.shops, i)
-			depositor.save()
+			depositor.dirty = true
+			--depositor.save()
 		end
 	end
 end

@@ -229,6 +229,20 @@ end
 
 
 
+function ads.get_valid_shops(pos, owner)
+	local db = {}
+	for k, v in ipairs(depositor.shops) do
+		if v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
+			if v.type == 1 or v.type == 2 then
+				table.insert(db, {item=v.item, cost=v.cost, type=v.type})
+			end
+		end
+	end
+	return db
+end
+
+
+
 function ads.generate_formspec(pos, pname, booth)
 	-- Set up player's view of the data.
 	-- We copy the table to ensure it is not modified while the player views it.
@@ -238,6 +252,7 @@ function ads.generate_formspec(pos, pname, booth)
 		ads.players[pname] = {}
 		ads.players[pname].ads = ads.get_valid_ads(pos)
 		ads.players[pname].selected = 0
+		ads.players[pname].shopselect = 0
 	end
 	local data = ads.players[pname]
 
@@ -291,10 +306,9 @@ function ads.generate_formspec(pos, pname, booth)
 	formspec = formspec .. ";" .. data.selected .. ";false]" ..
 		"label[0,6.8;You bought " .. ownadcount .. " " .. strad .. " in this list.]"
 
-	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;;0;false]"
-
 	local addesc = "See your shop advertisement here!"
 
+	local shoplist = ""
 	if data.selected and data.selected >= 1 and data.selected <= #(data.ads) then
 		if data.ads[data.selected] then
 			local ad = data.ads[data.selected]
@@ -306,8 +320,48 @@ function ads.generate_formspec(pos, pname, booth)
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end
+
+			-- List nearby shops belonging to the selected ad.
+			local shops = ads.get_valid_shops(pos, ad.owner)
+			ads.players[pname].shops = shops
+			for k, v in ipairs(shops) do
+				if v.owner == ad.owner then
+					local str = ""
+
+					local buysell = "Unknown"
+					if v.type == 1 then
+						str = str .. "Selling"
+						buysell = "Cost"
+					elseif v.type == 2 then
+						str = str .. "Buying"
+						buyself = "Payment"
+					else
+						str = str .. "Unknown"
+					end
+
+					str = str .. ": "
+
+					local def = minetest.registered_items[v.item]
+					local cdef = minetest.registered_items["default:gold_ingot"]
+					if def and cdef then
+						str = str .. utility.get_short_desc(def.description or "Unknown Item")	
+						str = str .. ", " .. buysell .. ": " .. v.cost .. "x" .. utility.get_short_desc(cdef.description or "Unknown Item")
+
+						str = minetest.formspec_escape(str)
+						shoplist = shoplist .. str
+
+						-- Append comma.
+						if k < #shops then
+							shoplist = shoplist .. ","
+						end
+					end
+				end
+			end
 		end
 	end
+
+	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;" .. shoplist
+	formspec = formspec .. ";" .. (data.shopselect or 0) .. ";false]"
 
 	addesc = minetest.formspec_escape(addesc)
 	formspec = formspec ..
@@ -351,8 +405,25 @@ function ads.on_receive_fields(player, formname, fields)
 		local index = event.index
 		local max = #(ads.players[pname].ads)
 		if index > max then index = max end
+
+		-- Reset selected shop whenever selected ad changes.
+		if index ~= ads.players[pname].selected then
+			ads.players[pname].shopselect = 0
+		end
+
 		ads.players[pname].selected = index
 		--minetest.chat_send_all("" .. index)
+	end
+
+	local event = minetest.explode_textlist_event(fields["shoplist"])
+	if event.type == "CHG" then
+		if ads.players[pname].shops then
+			local index = event.index
+			local max = #(ads.players[pname].shops)
+			if index > max then index = max end
+			ads.players[pname].shopselect = index
+			--minetest.chat_send_all("" .. index)
+		end
 	end
 
 	local booth = false

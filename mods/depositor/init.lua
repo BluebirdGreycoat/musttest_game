@@ -2,7 +2,9 @@
 depositor = depositor or {}
 depositor.modpath = minetest.get_modpath("depositor")
 depositor.datafile = minetest.get_worldpath() .. "/shops.txt"
-depositor.shops = depositor.shops or {}
+depositor.dropfile = minetest.get_worldpath() .. "/drops.txt"
+depositor.shops = depositor.shops or {} -- Shop data.
+depositor.drops = depositor.drops or {} -- Dropsite data.
 depositor.dirty = true
 
 
@@ -46,6 +48,21 @@ function depositor.load()
 			end
 		end
 	end
+
+	depositor.drops = {}
+	local file, err = io.open(depositor.dropfile, "r")
+	if not file or err then
+		return
+	end
+	local datastring = file:read("*all")
+	if not datastring or datastring == "" then
+		return
+	end
+	file:close()
+	local drops = minetest.deserialize(datastring)
+	if drops and type(drops) == "table" then
+		depositor.drops = drops
+	end
 end
 
 
@@ -82,6 +99,16 @@ function depositor.save()
 		return
 	end
 	file:write(datastring)
+	file:close()
+
+	local file, err = io.open(depositor.dropfile, "w")
+	if err then
+		return
+	end
+	local datastring = minetest.serialize(depositor.drops)
+	if datastring then
+		file:write(datastring)
+	end
 	file:close()
 end
 

@@ -3,9 +3,27 @@ depositor = depositor or {}
 depositor.modpath = minetest.get_modpath("depositor")
 depositor.datafile = minetest.get_worldpath() .. "/shops.txt"
 depositor.dropfile = minetest.get_worldpath() .. "/drops.txt"
-depositor.shops = depositor.shops or {} -- Shop data.
-depositor.drops = depositor.drops or {} -- Dropsite data.
+depositor.shops = depositor.shops or {} -- Shop data. Indexed array format.
+depositor.drops = depositor.drops or {} -- Dropsite data. Indexed by player name.
 depositor.dirty = true
+
+
+
+function depositor.set_drop_location(pname, pos)
+	pos = vector.round(pos)
+	depositor.drops[pname] = {
+		pos = {x=pos.x, y=pos.y, z=pos.z},
+	}
+end
+
+
+
+-- Return `pos` or nil.
+function depositor.get_drop_location(pname)
+	if depositor.drops[pname] then
+		return depositor.drops[pname].pos
+	end
+end
 
 
 
@@ -197,6 +215,7 @@ end
 if not depositor.run_once then
 	depositor.load()
 
+	minetest.register_on_shutdown(function() depositor.on_mapsave() end)
 	minetest.register_on_mapsave(function() depositor.on_mapsave() end)
 
 	local c = "depositor:core"

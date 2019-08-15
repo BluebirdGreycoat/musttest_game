@@ -84,8 +84,16 @@ function ads.show_inventory_formspec(pos, pname, booth)
 
 	-- Buttons.
 	formspec = formspec ..
-		"button[0,4.3;2,1;backinv;Back]" ..
-		"button[2,4.3;3,1;setpoint;Mark Delivery Point]"
+		"button[0,4.3;2,1;backinv;Back]"
+
+	local p2 = depositor.get_drop_location(pname)
+	if p2 and vector.equals(pos, p2) then
+		formspec = formspec ..
+			"button[2,4.3;3,1;unsetpoint;Revoke Delivery Point]"
+	else
+		formspec = formspec ..
+			"button[2,4.3;3,1;setpoint;Mark Delivery Point]"
+	end
 
 	local b = "|"
 	if booth then
@@ -652,6 +660,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 				local p2 = depositor.get_drop_location(pname)
 				if p2 then
 					minetest.chat_send_player(pname, "# Server: Goods will be delivered to drop-point at " .. rc.pos_to_namestr(p2) .. "! Payments are also retrieved at this location.")
+					ads.show_inventory_formspec(pos, pname, booth)
 				else
 					minetest.chat_send_player(pname, "# Server: Error, could not set delivery drop-point.")
 					easyvend.sound_error(pname)
@@ -664,6 +673,12 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 			minetest.chat_send_player(pname, "# Server: Error (0xDEADBEEF).")
 			easyvend.sound_error(pname)
 		end
+		return true
+	end
+
+	if booth and fields.unsetpoint then
+		depositor.unset_drop_location(pname)
+		ads.show_inventory_formspec(pos, pname, booth)
 		return true
 	end
 

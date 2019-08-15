@@ -18,6 +18,12 @@ end
 
 
 
+function depositor.unset_drop_location(pname)
+	depositor.drops[pname] = nil
+end
+
+
+
 -- Return `pos` or nil.
 function depositor.get_drop_location(pname)
 	if depositor.drops[pname] then

@@ -677,6 +677,10 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 	end
 
 	if booth and fields.unsetpoint then
+		local p2 = depositor.get_drop_location(pname)
+		if p2 then
+			minetest.chat_send_player(pname, "# Server: Delivery point at " .. rc.pos_to_namestr(p2) .. " revoked by explicit request.")
+		end
 		depositor.unset_drop_location(pname)
 		ads.show_inventory_formspec(pos, pname, booth)
 		return true

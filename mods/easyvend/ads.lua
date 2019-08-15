@@ -232,9 +232,9 @@ end
 function ads.get_valid_shops(pos, owner)
 	local db = {}
 	for k, v in ipairs(depositor.shops) do
-		if v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
-			if v.type == 1 or v.type == 2 then
-				table.insert(db, {item=v.item, cost=v.cost, type=v.type})
+		if v.active and v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
+			if (v.type == 1 or v.type == 2) and v.item ~= "none" and v.item ~= "" and v.item ~= "ignore" then
+				table.insert(db, {item=v.item, cost=v.cost, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
 			end
 		end
 	end
@@ -325,38 +325,34 @@ function ads.generate_formspec(pos, pname, booth)
 			local shops = ads.get_valid_shops(pos, ad.owner)
 			ads.players[pname].shops = shops
 			for k, v in ipairs(shops) do
-				if v.owner == ad.owner then
-					local str = ""
+				local str = ""
 
-					local buysell = "Unknown"
-					if v.type == 1 then
-						str = str .. "Selling"
-						buysell = "Cost"
-					elseif v.type == 2 then
-						str = str .. "Buying"
-						buyself = "Payment"
-					else
-						str = str .. "Unknown"
-					end
+				if v.type == 1 then
+					str = str .. "Selling"
+				elseif v.type == 2 then
+					str = str .. "Buying"
+				else
+					str = str .. "Unknown"
+				end
 
-					str = str .. ": "
+				str = str .. ": "
 
-					local def = minetest.registered_items[v.item]
-					local cdef = minetest.registered_items["default:gold_ingot"]
-					if def and cdef then
-						str = str .. utility.get_short_desc(def.description or "Unknown Item")	
-						str = str .. ", " .. buysell .. ": " .. v.cost .. "x" .. utility.get_short_desc(cdef.description or "Unknown Item")
+				local def = minetest.registered_items[v.item]
+				local cdef = minetest.registered_items["default:gold_ingot"]
+				if def and cdef then
+					str = str .. utility.get_short_desc(def.description or "Unknown Item")	
+					str = str .. ", " .. v.cost .. "x " .. utility.get_short_desc(cdef.description or "Unknown Item")
 
-						str = minetest.formspec_escape(str)
-						shoplist = shoplist .. str
+					str = minetest.formspec_escape(str)
+					shoplist = shoplist .. str
 
-						-- Append comma.
-						if k < #shops then
-							shoplist = shoplist .. ","
-						end
+					-- Append comma.
+					if k < #shops then
+						shoplist = shoplist .. ","
 					end
 				end
-			end
+
+			end -- end for
 		end
 	end
 
@@ -648,7 +644,7 @@ if not ads.run_once then
 	--]]
 
 	minetest.register_node(":market:booth", {
-		description = "Shop Discovery Booth",
+		description = "Trade Booth",
 		tiles = {
 			"easyvend_vendor_side.png",
 			"easyvend_vendor_side.png",

@@ -23,7 +23,7 @@ function depositor.load()
 	local records = string.split(datastring, "\n")
 	for _, record in ipairs(records) do
 		local data = string.split(record, ",")
-		if #data >= 7 then
+		if #data >= 8 then
 			local x = tonumber(data[1])
 			local y = tonumber(data[2])
 			local z = tonumber(data[3])
@@ -31,9 +31,18 @@ function depositor.load()
 			local i = tostring(data[5])
 			local c = tonumber(data[6])
 			local t = tonumber(data[7])
+			local a = tonumber(data[8])
 
-			if x and y and z and o and i and c and t then
-				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, cost=c, type=t})
+			if a == 0 then
+				a = false
+			elseif a == 1 then
+				a = true
+			else
+				a = false
+			end
+
+			if x and y and z and o and i and c and t and a then
+				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, cost=c, type=t, active=a})
 			end
 		end
 	end
@@ -53,11 +62,18 @@ function depositor.save()
 			local o = v.owner
 			local i = v.item
 			local c = v.cost
+			local a = v.active
 
-			if x and y and z and t and o and i and c then
+			if a then
+				a = 1
+			else
+				a = 0
+			end
+
+			if x and y and z and t and o and i and c and a then
 				-- x,y,z,owner,item,cost,type
 				datastring = datastring ..
-					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "\n"
+					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "," .. a .. "\n"
 			end
 		end
 	end
@@ -110,7 +126,7 @@ end
 
 
 
-function depositor.update_info(pos, owner, itemname, cost, bsb)
+function depositor.update_info(pos, owner, itemname, cost, bsb, active)
 	pos = vector.round(pos)
 	local needsave = false
 
@@ -119,6 +135,7 @@ function depositor.update_info(pos, owner, itemname, cost, bsb)
 			dep.owner = owner or "server"
 			dep.item = itemname or "none"
 			dep.cost = cost or 0
+			dep.active = active
 
 			dep.type = 0
 			if bsb == "sell" then

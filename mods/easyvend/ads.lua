@@ -76,16 +76,16 @@ function ads.show_inventory_formspec(pos, pname, booth)
 		default.get_hotbar_bg(0, 5.85) ..
 
 		-- Vending icon.
-		"item_image[7,0.3;1,1;easyvend:vendor_on]" ..
+		"item_image[5,4.3;1,1;easyvend:vendor_on]" ..
 
 		-- Trash icon.
-		"list[" .. ltrash .. ";" .. mtrash .. ";7,2.3;1,1;]" ..
-		"image[7,2.3;1,1;" .. itrash .. "]"
+		"list[" .. ltrash .. ";" .. mtrash .. ";7,0.3;1,1;]" ..
+		"image[7,0.3;1,1;" .. itrash .. "]"
 
 	-- Buttons.
 	formspec = formspec ..
-		"button[0,5;2,1;back;Back]" ..
-		"button[2,5;3,1;setpoint;Mark Delivery Point]"
+		"button[0,4.3;2,1;backinv;Back]" ..
+		"button[2,4.3;3,1;setpoint;Mark Delivery Point]"
 
 	local b = "|"
 	if booth then
@@ -613,6 +613,40 @@ end
 
 
 
+function ads.on_receive_inventory_fields(player, formname, fields)
+	if string.sub(formname, 1, 14) ~= "ads:inventory_" then
+		return
+	end
+	local pos = minetest.string_to_pos(string.sub(formname, 15, string.find(formname, "|")-1))
+	if not pos then
+		return true
+	end
+
+	local pname = player:get_player_name()
+	if not ads.players[pname] then
+		return true
+	end
+
+	if fields.done or fields.quit then
+		minetest.close_formspec(pname, formname)
+		return true
+	end
+
+	local booth = false
+	if string.find(formname, "|booth") then
+		booth = true
+	end
+
+	if booth and fields.backinv then
+		ads.show_formspec(pos, pname, booth)
+		return true
+	end
+
+	return true
+end
+
+
+
 if not ads.run_once then
 	ads.load_data()
 	minetest.register_on_shutdown(function() ads.save_data() end)
@@ -623,6 +657,9 @@ if not ads.run_once then
 	end)
 	minetest.register_on_player_receive_fields(function(...)
 		return ads.on_receive_submission_fields(...)
+	end)
+	minetest.register_on_player_receive_fields(function(...)
+		return ads.on_receive_inventory_fields(...)
 	end)
 
 	local c = "ads:core"

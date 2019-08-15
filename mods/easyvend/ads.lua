@@ -245,7 +245,7 @@ function ads.generate_formspec(pos, pname, booth)
 	local ownadcount = 0
 
 	local formspec =
-		"size[15,8]" ..
+		"size[15.2,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -284,14 +284,14 @@ function ads.generate_formspec(pos, pname, booth)
 		::continue::
 	end
 
-	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;;0;false]"
-
 	local strad = "entries"
 	if ownadcount == 1 then
 		strad = "entry"
 	end
 	formspec = formspec .. ";" .. data.selected .. ";false]" ..
 		"label[0,6.8;You bought " .. ownadcount .. " " .. strad .. " in this list.]"
+
+	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;;0;false]"
 
 	local addesc = "See your shop advertisement here!"
 
@@ -315,13 +315,13 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
-			"button[6,7.3;2,1;storage;Inventory]" ..
+			"button[11.2,7.3;2,1;storage;Inventory]" ..
 			"button[0,7.3;4,1;newadd;List Your Shop (Wants Gold)]" ..
 			"item_image[4,7.3;1,1;easyvend:vendor_on]"
 	end
 
 	formspec = formspec ..
-		"button[8,7.3;2,1;done;Done]"
+		"button[13.2,7.3;2,1;done;Done]"
 	return formspec
 end
 

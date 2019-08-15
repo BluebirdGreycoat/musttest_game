@@ -9,7 +9,7 @@ depositor.dirty = true
 
 
 
-function depositor.set_drop_location(pname, pos)
+function depositor.set_drop_location(pos, pname)
 	pos = vector.round(pos)
 	depositor.drops[pname] = {
 		pos = {x=pos.x, y=pos.y, z=pos.z},

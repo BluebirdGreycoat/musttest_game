@@ -642,6 +642,31 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 		return true
 	end
 
+	if booth and fields.setpoint then
+		local node = minetest.get_node(pos)
+		if node.name == "market:booth" then
+			local meta = minetest.get_meta(pos)
+			-- Owner or admin may use.
+			if meta:get_string("owner") == pname or minetest.check_player_privs(player, "protection_bypass") then
+				depositor.set_drop_location(pos, pname)
+				local p2 = depositor.get_drop_location(pname)
+				if p2 then
+					minetest.chat_send_player(pname, "# Server: Goods will be delivered to drop-point at " .. rc.pos_to_namestr(p2) .. "! Payments are also retrieved at this location.")
+				else
+					minetest.chat_send_player(pname, "# Server: Error, could not set delivery drop-point.")
+					easyvend.sound_error(pname)
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: Cannot set delivery drop-point, you do not own this booth.")
+				easyvend.sound_error(pname)
+			end
+		else
+			minetest.chat_send_player(pname, "# Server: Error (0xDEADBEEF).")
+			easyvend.sound_error(pname)
+		end
+		return true
+	end
+
 	return true
 end
 

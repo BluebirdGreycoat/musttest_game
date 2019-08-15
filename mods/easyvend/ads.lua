@@ -64,16 +64,16 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	local itrash = trash.get_iconname()
 
 	local formspec =
-		"size[8,9]" ..
+		"size[8,10]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
 		"list[nodemeta:" .. spos .. ";storage;0,0.3;6,4;]" ..
-		"list[current_player;main;0,4.85;8,1;]" ..
-		"list[current_player;main;0,6.08;8,3;8]" ..
+		"list[current_player;main;0,5.85;8,1;]" ..
+		"list[current_player;main;0,7.08;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
 		"listring[current_player;main]" ..
-		default.get_hotbar_bg(0, 4.85) ..
+		default.get_hotbar_bg(0, 5.85) ..
 
 		-- Vending icon.
 		"item_image[7,0.3;1,1;easyvend:vendor_on]" ..
@@ -81,6 +81,11 @@ function ads.show_inventory_formspec(pos, pname, booth)
 		-- Trash icon.
 		"list[" .. ltrash .. ";" .. mtrash .. ";7,2.3;1,1;]" ..
 		"image[7,2.3;1,1;" .. itrash .. "]"
+
+	-- Buttons.
+	formspec = formspec ..
+		"button[0,5;2,1;back;Back]" ..
+		"button[2,5;3,1;setpoint;Mark Delivery Point]"
 
 	local b = "|"
 	if booth then

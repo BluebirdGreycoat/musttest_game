@@ -378,9 +378,15 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
-			"button[11.2,7.3;2,1;storage;Inventory]" ..
 			"button[0,7.3;4,1;newadd;List Your Shop (Wants Gold)]" ..
 			"item_image[4,7.3;1,1;easyvend:vendor_on]"
+
+		-- Show inventory button only if player has permissions on this booth.
+		local meta = minetest.get_meta(pos)
+		if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
+			formspec = formspec ..
+				"button[11.2,7.3;2,1;storage;Inventory]"
+		end
 	end
 
 	formspec = formspec ..

@@ -245,7 +245,7 @@ function ads.generate_formspec(pos, pname, booth)
 	local ownadcount = 0
 
 	local formspec =
-		"size[10,8]" ..
+		"size[15,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -283,6 +283,8 @@ function ads.generate_formspec(pos, pname, booth)
 
 		::continue::
 	end
+
+	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;;0;false]"
 
 	local strad = "entries"
 	if ownadcount == 1 then

@@ -762,6 +762,14 @@ end
 
 
 
+function ads.can_dig(pos, player)
+	local meta = minetest.get_meta(pos);
+	local inv = meta:get_inventory()
+	return inv:is_empty("storage")
+end
+
+
+
 if not ads.run_once then
 	ads.load_data()
 	minetest.register_on_shutdown(function() ads.save_data() end)
@@ -849,6 +857,10 @@ if not ads.run_once then
 
 		allow_metadata_inventory_take = function(...)
 			return ads.allow_metadata_inventory_take(...)
+		end,
+
+		can_dig = function(...)
+			return ads.can_dig(...)
 		end,
 	})
 

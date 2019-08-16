@@ -64,35 +64,36 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	local itrash = trash.get_iconname()
 
 	local formspec =
-		"size[9,18]" ..
+		"size[16,11]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"list[nodemeta:" .. spos .. ";storage;0,0.3;14,5;]" ..
-		"list[current_player;main;0,5.85;8,1;]" ..
-		"list[current_player;main;0,7.08;8,3;8]" ..
+		"list[nodemeta:" .. spos .. ";storage;0,0;16,5;]" ..
+		"list[nodemeta:" .. spos .. ";storage;9,5;7,6;80]" ..
+		"list[current_player;main;0,6.6;8,1;]" ..
+		"list[current_player;main;0,8;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
 		"listring[current_player;main]" ..
-		default.get_hotbar_bg(0, 5.85) ..
+		default.get_hotbar_bg(0, 6.6) ..
 
 		-- Vending icon.
-		"item_image[5,4.3;1,1;easyvend:vendor_on]" ..
+		"item_image[5,5.3;1,1;easyvend:vendor_on]" ..
 
 		-- Trash icon.
-		"list[" .. ltrash .. ";" .. mtrash .. ";7,0.3;1,1;]" ..
-		"image[7,0.3;1,1;" .. itrash .. "]"
+		"list[" .. ltrash .. ";" .. mtrash .. ";7,5.3;1,1;]" ..
+		"image[7,5.3;1,1;" .. itrash .. "]"
 
 	-- Buttons.
 	formspec = formspec ..
-		"button[0,4.3;2,1;backinv;Back]"
+		"button[0,5.3;2,1;backinv;Back]"
 
 	local p2 = depositor.get_drop_location(pname)
 	if p2 and vector.equals(pos, p2) then
 		formspec = formspec ..
-			"button[2,4.3;3,1;unsetpoint;Revoke Delivery Point]"
+			"button[2,5.3;3,1;unsetpoint;Revoke Delivery Point]"
 	else
 		formspec = formspec ..
-			"button[2,4.3;3,1;setpoint;Mark Delivery Point]"
+			"button[2,5.3;3,1;setpoint;Mark Delivery Point]"
 	end
 
 	local b = "|"
@@ -617,7 +618,7 @@ function ads.after_place_node(pos, placer)
 	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
 
 	local inv = meta:get_inventory()
-	inv:set_size("storage", 5*14)
+	inv:set_size("storage", (5*16) + (7*6))
 
 	depositor.update_info(pos, pname, "none", 0, 0, "none", "info")
 end

@@ -390,8 +390,25 @@ function ads.generate_formspec(pos, pname, booth)
 			local shops = ads.players[pname].shops
 			local sel = (data.shopselect or 0)
 			if shops and sel ~= 0 then
-				formspec = formspec ..
-					"button[5,7.3;5,1;dotrade;Buy]"
+				local text = ""
+				local idef = minetest.registered_items[shops[sel].item]
+				local cdef = minetest.registered_items["default:gold_ingot"]
+				local cost = shops[sel].cost or 0
+
+				if idef and cdef then
+					if shops[sel].type == 1 then
+						text = "Purchase (" .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
+							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
+					elseif shops[sel].type == 2 then
+						text = "Deposit (" .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
+							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
+					end
+
+					if text ~= "" then
+						formspec = formspec ..
+							"button[5,7.3;6.2,1;dotrade;" .. minetest.formspec_escape(text) .. "]"
+					end
+				end
 			end
 		end
 	end

@@ -770,6 +770,17 @@ end
 
 
 
+function ads.on_blast(pos)
+	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
+	local drops = {}
+	default.get_inventory_drops(pos, "storage", drops)
+	drops[#drops+1] = "market:booth"
+	minetest.remove_node(pos)
+	return drops
+end
+
+
+
 if not ads.run_once then
 	ads.load_data()
 	minetest.register_on_shutdown(function() ads.save_data() end)
@@ -861,6 +872,10 @@ if not ads.run_once then
 
 		can_dig = function(...)
 			return ads.can_dig(...)
+		end,
+
+		on_blast = function(...)
+			return ads.on_blast(...)
 		end,
 	})
 

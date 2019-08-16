@@ -12,15 +12,11 @@ local registered_chests = easyvend.registered_chests
 
 
 local currency_types = {
-	--"default:coal_lump",
-	--"default:coalblock",
-	--"grinder:diamond_shard",
-	--"default:diamond",
-	--"default:diamondblock",
-	--"default:mese_crystal_fragment",
-	--"default:mese_crystal",
-	--"default:mese",
-	"default:gold_ingot",
+	"currency:minegeld",
+	"currency:minegeld_5",
+	"currency:minegeld_10",
+	"currency:minegeld_50",
+	"currency:minegeld_100",
 }
 local initial_currency = 1
 

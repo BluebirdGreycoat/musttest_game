@@ -44,6 +44,10 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Unknown vendor type!"
 	end
 
+	-- Security checks and vending use requires map access.
+	utility.ensure_map_loaded(vector.add(user_drop, {x=-8, y=-8, z=-8}), vector.add(user_drop, {x=8, y=8, z=8}))
+	utility.ensure_map_loaded(vector.add(vendor_drop, {x=-8, y=-8, z=-8}), vector.add(vendor_drop, {x=8, y=8, z=8}))
+
 	if minetest.get_node(user_drop).name ~= "market:booth" or
 		minetest.get_node(vendor_drop).name ~= "market:booth"
 	then
@@ -72,6 +76,7 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Vendor information unexpectedly changed! Refusing to trade items."
 	end
 
+	-- The trade function requires map access!
 	utility.ensure_map_loaded(vector.add(vend_pos, {x=-8, y=-8, z=-8}), vector.add(vend_pos, {x=8, y=8, z=8}))
 	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage")
 

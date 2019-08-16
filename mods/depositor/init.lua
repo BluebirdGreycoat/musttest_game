@@ -34,7 +34,7 @@ end
 
 
 -- Return error string in case of error, otherwise nil.
-function depositor.execute_trade(user, vendor, user_pos, vendor_pos, item, cost, type)
+function depositor.execute_trade(user_name, vendor_name, user_drop, vendor_drop, item, number, cost, currency, type)
 	return "Attempted trade!"
 end
 

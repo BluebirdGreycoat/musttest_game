@@ -389,7 +389,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 			local shops = ads.players[pname].shops
 			local sel = (data.shopselect or 0)
-			if shops and sel ~= 0 then
+			if shops and sel ~= 0 and shops[sel] then
 				local text = ""
 				local idef = minetest.registered_items[shops[sel].item]
 				local cdef = minetest.registered_items[shops[sel].currency]
@@ -483,7 +483,7 @@ function ads.on_receive_fields(player, formname, fields)
 				elseif fields.dotrade then
 					local sel = ads.players[pname].shopselect or 0
 					local shops = ads.players[pname].shops
-					if shops and sel ~= 0 then
+					if shops and sel ~= 0 and shops[sel] then
 						local item = shops[sel].item
 						local cost = shops[sel].cost
 						local type = shops[sel].type

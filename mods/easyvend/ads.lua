@@ -8,7 +8,8 @@ ads.datapath = ads.worldpath .. "/advertisements.dat"
 ads.dirty = true
 ads.bodylen = 1024
 ads.titlelen = 64
-ads.viewrange = 2500
+ads.viewrange = 2500 -- Distance at which ads are visible.
+ads.marketrange = 30 -- Distance at which shops are visible (distance from ad source).
 ads.days = 30
 
 
@@ -19,21 +20,21 @@ function ads.generate_submission_formspec()
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;Submit a public advertisement for your shop! Note that this costs gold.]" ..
-		"label[0,0.4;Having your shop listed in the public market directory greatly increases its visibility.]" ..
+		"label[0,0;Submit a public advertisement for your shop to enable remote trading.]" ..
+		"label[0,0.4;Having your shop listed in the public market directory also increases its visibility.]" ..
 		"label[0,1.0;Write your shop’s tagline here. It is limited to " .. ads.titlelen .. " characters. Example: ‘Buy Wood Here!’]" ..
 		"item_image[9,0;1,1;default:gold_ingot]" ..
 		"field[0.3,1.7;10,1;title;;]"
 
 	formspec = formspec ..
-		"label[0,2.5;Enter a description of your shop. This would usually include details on items sold, and pricing.]" ..
-		"label[0,2.9;You will also want to include instructions on how to find your shop starting from various locations.]" ..
-		"label[0,3.3;You should make sure your submission is " .. ads.bodylen .. " characters or less.]" ..
+		"label[0,2.5;Enter a description of your shop. This might include details on items sold, and pricing.]" ..
+		"label[0,2.9;You will also want to include instructions on how to find your shop.]" ..
+		"label[0,3.3;You should make sure the text is " .. ads.bodylen .. " characters or less.]" ..
 		"textarea[0.3,3.8;10,3.0;text;;]"
 
 	formspec = formspec ..
-		"label[0,6.4;Submitted advertisements are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
-		"label[0,6.8;Thank you for your understanding, and happy trading!]" ..
+		"label[0,6.4;Advertisement records are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
+		"label[0,6.8;Note that you should submit your advertisement from the location of your shop.]" ..
 		"button[5,7.3;2,1;cancel;Cancel]" ..
 		"button[7,7.3;3,1;submit;Submit Ad! (Cost: 1 Gold)]" ..
 		"field_close_on_enter[title;false]" ..
@@ -175,7 +176,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		inv:remove_item("main", ItemStack("default:gold_ingot"))
 		ads.add_entry({
 			shop = fields.title or "No Title Set",
-			pos = pos,
+			pos = pos, -- Records the position at which the advertisement was submitted.
 			owner = pname,
 			custom = fields.text or "No Text Submitted",
 			expires = os.time() + (60*60*24*math.floor(ads.days)),
@@ -207,6 +208,7 @@ end
 
 
 function ads.get_valid_ads(pos)
+	pos = vector.round(pos)
 	local temp = {}
 	local curtime = os.time()
 	for i = 1, #(ads.data), 1 do
@@ -226,7 +228,13 @@ function ads.get_valid_ads(pos)
 		end
 
 		-- Don't show ads for far shops.
+		-- That is, don't show ads that were submitted far from the current location.
 		if vector.distance(pos, ad.pos) > ads.viewrange then
+			goto continue
+		end
+
+		-- Ignore ads submitted in a different realm.
+		if not rc.same_realm(pos, ad.pos) then
 			goto continue
 		end
 
@@ -243,11 +251,19 @@ end
 
 
 
-function ads.get_valid_shops(pos, owner)
+function ads.get_valid_shops(ad_pos, owner)
 	local db = {}
 	for k, v in ipairs(depositor.shops) do
-		if v.active and v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
-			if (v.type == 1 or v.type == 2) and v.item ~= "none" and v.item ~= "" and v.item ~= "ignore" then
+		if v.active and
+			v.owner == owner and
+			vector.distance(ad_pos, v.pos) < ads.marketrange and
+			rc.same_realm(ad_pos, v.pos)
+		then
+			if (v.type == 1 or v.type == 2) and
+				v.item ~= "none" and
+				v.item ~= "" and
+				v.item ~= "ignore"
+			then
 				table.insert(db, {owner=v.owner, item=v.item, number=v.number, cost=v.cost, currency=v.currency, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
 			end
 		end
@@ -331,17 +347,19 @@ function ads.generate_formspec(pos, pname, booth)
 	if data.selected and data.selected >= 1 and data.selected <= #(data.ads) then
 		if data.ads[data.selected] then
 			local ad = data.ads[data.selected]
+			local esc = minetest.formspec_escape
 			formspec = formspec ..
-				"label[5.35,5.0;<" .. rename.gpn(ad.owner) .. "> paid for this listing.]" ..
-				"label[5.35,5.4;Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".]" ..
-				"label[5.35,5.8;Expires on " .. os.date("!%Y/%m/%d", ad.expires) .. ".]" ..
-				"label[5.35,6.2;Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.]"
+				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> paid for this listing.") .. "]" ..
+				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
+				"label[5.35,5.8;" .. esc("Expires after " .. os.date("!%Y/%m/%d", ad.expires) .. ".") .. "]" ..
+				"label[5.35,6.2;" .. esc("Submitted from " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
+				"label[5.35,6.6;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end
 
 			-- List nearby shops belonging to the selected ad.
-			local shops = ads.get_valid_shops(pos, ad.owner)
+			local shops = ads.get_valid_shops(ad.pos, ad.owner)
 			ads.players[pname].shops = shops
 			for k, v in ipairs(shops) do
 				local str = ""

@@ -34,7 +34,20 @@ end
 
 
 -- Return error string in case of error, otherwise nil.
-function depositor.execute_trade(user_name, vendor_name, user_drop, vendor_drop, item, number, cost, currency, type)
+function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, vendor_drop, item, number, cost, currency, type)
+	local user = minetest.get_player_by_name(user_name)
+	if not user or not user:is_player() then
+		return "Invalid user!"
+	end
+
+	local meta = minetest.get_meta(user_drop)
+	local inv = meta:get_inventory()
+	if not inv then
+		return "Could not obtain inventory!"
+	end
+
+	easyvend.execute_trade(vend_pos, user, inv, "storage")
+
 	return "Attempted trade!"
 end
 

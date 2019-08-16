@@ -492,9 +492,10 @@ function ads.on_receive_fields(player, formname, fields)
 						local owner = shops[sel].owner or ""
 						local putsite = depositor.get_drop_location(pname)
 						local dropsite = depositor.get_drop_location(owner)
+						local vpos = shops[sel].pos
 						if putsite then
 							if dropsite then
-								local err = depositor.execute_trade(pname, owner, putsite, dropsite, item, number, cost, currency, type)
+								local err = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, currency, type)
 								if err then
 									minetest.chat_send_player(pname, "# Server: " .. err)
 									easyvend.sound_error(pname)

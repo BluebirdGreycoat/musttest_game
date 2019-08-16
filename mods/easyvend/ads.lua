@@ -247,7 +247,7 @@ function ads.get_valid_shops(pos, owner)
 	for k, v in ipairs(depositor.shops) do
 		if v.active and v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
 			if (v.type == 1 or v.type == 2) and v.item ~= "none" and v.item ~= "" and v.item ~= "ignore" then
-				table.insert(db, {owner=v.owner, item=v.item, cost=v.cost, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
+				table.insert(db, {owner=v.owner, item=v.item, number=v.number, cost=v.cost, currency=v.currency, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
 			end
 		end
 	end
@@ -351,9 +351,9 @@ function ads.generate_formspec(pos, pname, booth)
 				str = str .. ": "
 
 				local def = minetest.registered_items[v.item]
-				local cdef = minetest.registered_items["default:gold_ingot"]
+				local cdef = minetest.registered_items[v.currency]
 				if def and cdef then
-					str = str .. utility.get_short_desc(def.description or "Unknown Item")	
+					str = str .. v.number .. "x " .. utility.get_short_desc(def.description or "Unknown Item")
 					str = str .. ", " .. v.cost .. "x " .. utility.get_short_desc(cdef.description or "Unknown Item")
 
 					str = minetest.formspec_escape(str)
@@ -392,15 +392,15 @@ function ads.generate_formspec(pos, pname, booth)
 			if shops and sel ~= 0 then
 				local text = ""
 				local idef = minetest.registered_items[shops[sel].item]
-				local cdef = minetest.registered_items["default:gold_ingot"]
+				local cdef = minetest.registered_items[shops[sel].currency]
 				local cost = shops[sel].cost or 0
 
 				if idef and cdef then
 					if shops[sel].type == 1 then
-						text = "Purchase (" .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
+						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
 							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
 					elseif shops[sel].type == 2 then
-						text = "Deposit (" .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
+						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
 							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
 					end
 

@@ -231,6 +231,16 @@ function depositor.on_destruct(pos)
 	pos = vector.round(pos)
 	for i, dep in ipairs(depositor.shops) do
 		if vector.equals(dep.pos, pos) then
+			-- If this was the active drop point, then we must remove it.
+			local meta = minetest.get_meta(pos)
+			local owner = meta:get_string("owner")
+
+			if depositor.drops[owner] then
+				if vector.equals(depositor.drops[owner].pos, pos) then
+					depositor.drops[owner] = nil
+				end
+			end
+
 			table.remove(depositor.shops, i)
 			depositor.dirty = true
 			--depositor.save()

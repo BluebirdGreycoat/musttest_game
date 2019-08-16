@@ -259,16 +259,21 @@ end
 
 function ads.generate_formspec(pos, pname, booth)
 	-- Set up player's view of the data.
-	-- We copy the table to ensure it is not modified while the player views it.
 	if not ads.players[pname] then
-		-- Set up data only if missing.
-		-- Data should not go missing unless the main data table was changed.
 		ads.players[pname] = {}
-		ads.players[pname].ads = ads.get_valid_ads(pos)
-		ads.players[pname].selected = 0
-		ads.players[pname].shopselect = 0
 	end
 	local data = ads.players[pname]
+	data.ads = ads.get_valid_ads(pos) or {}
+	data.shops = data.shops or {}
+	data.selected = data.selected or 0
+	data.shopselect = data.shopselect or 0
+
+	if data.selected ~= 0 and data.selected > #data.ads then
+		data.selected = #data.ads
+	end
+	if data.shopselect ~= 0 and data.shopselect > #data.shops then
+		data.shopselect = #data.shops
+	end
 
 	-- Count of how many ads player owns in this list.
 	local ownadcount = 0

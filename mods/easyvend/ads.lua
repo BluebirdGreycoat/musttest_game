@@ -354,7 +354,7 @@ function ads.generate_formspec(pos, pname, booth)
 				local cdef = minetest.registered_items[v.currency]
 				if def and cdef then
 					str = str .. v.number .. "x " .. utility.get_short_desc(def.description or "Unknown Item")
-					str = str .. ", " .. v.cost .. "x " .. utility.get_short_desc(cdef.description or "Unknown Item")
+					str = str .. " For " .. v.cost .. "x " .. utility.get_short_desc(cdef.description or "Unknown Item")
 
 					str = minetest.formspec_escape(str)
 					shoplist = shoplist .. str

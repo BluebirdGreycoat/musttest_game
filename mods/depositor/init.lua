@@ -48,7 +48,12 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 
 	easyvend.execute_trade(vend_pos, user, inv, "storage")
 
-	return "Attempted trade!"
+	local meta = minetest.get_meta(vend_pos)
+	local msg = meta:get_string("message")
+
+	if msg ~= "" then
+		return msg
+	end
 end
 
 

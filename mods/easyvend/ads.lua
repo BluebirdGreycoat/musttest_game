@@ -64,11 +64,11 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	local itrash = trash.get_iconname()
 
 	local formspec =
-		"size[8,10]" ..
+		"size[9,18]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"list[nodemeta:" .. spos .. ";storage;0,0.3;6,4;]" ..
+		"list[nodemeta:" .. spos .. ";storage;0,0.3;14,5;]" ..
 		"list[current_player;main;0,5.85;8,1;]" ..
 		"list[current_player;main;0,7.08;8,3;8]" ..
 		"listring[nodemeta:" .. spos .. ";storage]" ..
@@ -617,7 +617,7 @@ function ads.after_place_node(pos, placer)
 	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
 
 	local inv = meta:get_inventory()
-	inv:set_size("storage", 4*6)
+	inv:set_size("storage", 5*14)
 
 	depositor.update_info(pos, pname, "none", 0, 0, "none", "info")
 end

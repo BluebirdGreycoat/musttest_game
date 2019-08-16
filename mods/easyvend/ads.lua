@@ -838,7 +838,7 @@ if not ads.run_once then
 	--]]
 
 	minetest.register_node(":market:booth", {
-		description = "Trade Booth",
+		description = "Trade Booth\n\nA kiosk for remote-delivery trading.",
 		tiles = {
 			"easyvend_vendor_side.png",
 			"easyvend_vendor_side.png",

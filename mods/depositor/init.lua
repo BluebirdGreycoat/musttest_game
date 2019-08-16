@@ -33,6 +33,13 @@ end
 
 
 
+-- Return error string in case of error, otherwise nil.
+function depositor.execute_trade(user, vendor, user_pos, vendor_pos, item, cost, type)
+	return "Attempted trade!"
+end
+
+
+
 function depositor.load()
 	-- Custom file format. minetest.serialize() is unusable for large tables.
 	depositor.shops = {}

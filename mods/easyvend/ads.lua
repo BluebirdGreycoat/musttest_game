@@ -247,7 +247,7 @@ function ads.get_valid_shops(pos, owner)
 	for k, v in ipairs(depositor.shops) do
 		if v.active and v.owner == owner and vector.distance(pos, v.pos) < ads.viewrange then
 			if (v.type == 1 or v.type == 2) and v.item ~= "none" and v.item ~= "" and v.item ~= "ignore" then
-				table.insert(db, {item=v.item, cost=v.cost, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
+				table.insert(db, {owner=v.owner, item=v.item, cost=v.cost, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
 			end
 		end
 	end
@@ -474,11 +474,40 @@ function ads.on_receive_fields(player, formname, fields)
 			return true
 		end
 
-		if fields.storage then
+		if fields.storage or fields.dotrade then
 			local meta = minetest.get_meta(pos)
-			-- Show inventory formspec only if player has permissions.
 			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
-				ads.show_inventory_formspec(pos, pname, booth)
+
+				if fields.storage then
+					ads.show_inventory_formspec(pos, pname, booth)
+				elseif fields.dotrade then
+					local sel = ads.players[pname].shopselect or 0
+					local shops = ads.players[pname].shops
+					if shops and sel ~= 0 then
+						local item = shops[sel].item
+						local cost = shops[sel].cost
+						local type = shops[sel].type
+						local owner = shops[sel].owner or ""
+						local putsite = depositor.get_drop_location(pname)
+						local dropsite = depositor.get_drop_location(owner)
+						if putsite then
+							if dropsite then
+								local err = depositor.execute_trade(pname, owner, putsite, dropsite, item, cost, type)
+								if err then
+									minetest.chat_send_player(pname, "# Server: " .. err)
+									easyvend.sound_error(pname)
+								end
+							else
+								minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote vending.")
+								easyvend.sound_error(pname)
+							end
+						else
+							minetest.chat_send_player(pname, "# Server: Cannot execute trade. You have not registered an address for remote vending.")
+							easyvend.sound_error(pname)
+						end
+					end
+				end
+
 			end
 			return true
 		end

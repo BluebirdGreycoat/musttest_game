@@ -72,6 +72,7 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Vendor information unexpectedly changed! Refusing to trade items."
 	end
 
+	utility.ensure_map_loaded(vector.add(vend_pos, {x=-8, y=-8, z=-8}), vector.add(vend_pos, {x=8, y=8, z=8}))
 	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage")
 
 	local status = meta3:get_string("status")

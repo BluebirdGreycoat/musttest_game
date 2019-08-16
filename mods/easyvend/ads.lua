@@ -500,11 +500,11 @@ function ads.on_receive_fields(player, formname, fields)
 									easyvend.sound_error(pname)
 								end
 							else
-								minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote vending.")
+								minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote trading.")
 								easyvend.sound_error(pname)
 							end
 						else
-							minetest.chat_send_player(pname, "# Server: Cannot execute trade. You have not registered an address for remote vending.")
+							minetest.chat_send_player(pname, "# Server: Cannot execute trade. You have not registered an address for remote trading.")
 							easyvend.sound_error(pname)
 						end
 					end

@@ -532,7 +532,7 @@ easyvend.make_infotext = function(pos, nodename, owner, cost, number, itemstring
 	return d
 end
 
-easyvend.execute_trade = function(pos, sender, player_inv, pin)
+easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 	local sendername = sender:get_player_name()
 	local meta = minetest.get_meta(pos)
 
@@ -844,7 +844,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		return
 	end
 
-	return easyvend.execute_trade(pos, sender, sender:get_inventory(), "main")
+	return easyvend.execute_trade(pos, sender, sender:get_inventory(), "main", nil, nil)
 end
 
 easyvend.after_place_node = function(pos, placer)

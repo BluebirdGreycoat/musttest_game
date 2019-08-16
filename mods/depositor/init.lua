@@ -40,13 +40,32 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Invalid user!"
 	end
 
+	if type ~= 1 and type ~= 2 then
+		return "Unknown vendor type!"
+	end
+
 	local meta = minetest.get_meta(user_drop)
 	local inv = meta:get_inventory()
 	if not inv then
-		return "Could not obtain inventory!"
+		return "Could not obtain user inventory!"
 	end
 
-	easyvend.execute_trade(vend_pos, user, inv, "storage")
+	local meta2 = minetest.get_meta(vendor_drop)
+	local inv2 = meta2:get_inventory()
+	if not inv2 then
+		return "Could not obtain vendor inventory!"
+	end
+
+	if meta2:get_string("owner") ~= vendor_name or
+		meta2:get_string("itemname") ~= item or
+		meta2:get_string("machine_currency") ~= currency or
+		meta2:get_int("number") ~= number or
+		meta2:get_int("cost") ~= cost
+	then
+		return "Vendor information unexpectedly changed! Refusing to trade items."
+	end
+
+	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage")
 
 	local meta = minetest.get_meta(vend_pos)
 	local status = meta:get_string("status")
@@ -54,6 +73,13 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 
 	if status ~= "" and msg ~= "" then
 		return "Remote status: " .. status .. " Remote message: " .. msg
+	else
+		if status ~= "" then
+			return "Remote status: " .. status
+		end
+		if msg ~= "" then
+			return "Remote message: " .. msg
+		end
 	end
 end
 

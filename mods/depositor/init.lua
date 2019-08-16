@@ -56,20 +56,20 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Could not obtain vendor inventory!"
 	end
 
-	if meta2:get_string("owner") ~= vendor_name or
-		meta2:get_string("itemname") ~= item or
-		meta2:get_string("machine_currency") ~= currency or
-		meta2:get_int("number") ~= number or
-		meta2:get_int("cost") ~= cost
+	local meta3 = minetest.get_meta(vend_pos)
+	if meta3:get_string("owner") ~= vendor_name or
+		meta3:get_string("itemname") ~= item or
+		meta3:get_string("machine_currency") ~= currency or
+		meta3:get_int("number") ~= number or
+		meta3:get_int("cost") ~= cost
 	then
 		return "Vendor information unexpectedly changed! Refusing to trade items."
 	end
 
 	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage")
 
-	local meta = minetest.get_meta(vend_pos)
-	local status = meta:get_string("status")
-	local msg = meta:get_string("message")
+	local status = meta3:get_string("status")
+	local msg = meta3:get_string("message")
 
 	if status ~= "" and msg ~= "" then
 		return "Remote status: " .. status .. " Remote message: " .. msg

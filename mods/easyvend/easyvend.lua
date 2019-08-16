@@ -20,6 +20,16 @@ local currency_types = {
 }
 local initial_currency = 1
 
+function easyvend.is_valid_currency(currency)
+	for k, v in ipairs(currency_types) do
+		if v == currency then
+			return true
+		end
+	end
+
+	return false
+end
+
 
 
 --easyvend.currency = "default:diamond"
@@ -108,24 +118,24 @@ easyvend.set_formspec = function(pos)
 	local number = meta:get_int("number")
 	local cost = meta:get_int("cost")
 	local itemname = meta:get_string("itemname")
-		local bg = ""
+	local bg = ""
 	local configmode = meta:get_int("configmode") == 1
-		if minetest.get_modpath("default") then
-			bg = default.formspec.get_form_colors() .. default.formspec.get_form_image() .. default.formspec.get_slot_colors()
-		end
+	if minetest.get_modpath("default") then
+		bg = default.formspec.get_form_colors() .. default.formspec.get_form_image() .. default.formspec.get_slot_colors()
+	end
 
-		local numbertext, costtext, buysellbuttontext
+	local numbertext, costtext, buysellbuttontext
 	local itemcounttooltip = "Item count (append “s” to multiply with maximum stack size)"
-		local buysell = easyvend.buysell(node.name)
-		if buysell == "sell" then
-		numbertext = "Offered item"
+	local buysell = easyvend.buysell(node.name)
+	if buysell == "sell" then
+		numbertext = "Offered Item"
 		costtext = "Price"
 		buysellbuttontext = "Buy"
-		elseif buysell == "buy" then
-		numbertext = "Requested item"
+	elseif buysell == "buy" then
+		numbertext = "Requested Item"
 		costtext = "Payment"
 		buysellbuttontext = "Sell"
-		else
+	else
 		return
 	end
 	local status = meta:get_string("status")
@@ -264,16 +274,17 @@ easyvend.machine_check = function(pos, node)
 	local itemstack = inv:get_stack("item",1)
 	local buysell = easyvend.buysell(node.name)
     
-    local machine_currency = meta:get_string("machine_currency")
+	local machine_currency = meta:get_string("machine_currency")
 
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, true)
-        chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, false)
+		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, false)
 	else
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, true)
 		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, false)
 	end
+
 	if chest_pos_remove and chest_pos_add then
 		local rchest, rchestdef, rchest_meta, rchest_inv
 		rchest = minetest.get_node(chest_pos_remove)
@@ -352,8 +363,14 @@ easyvend.machine_check = function(pos, node)
 		end
 		meta:set_int("joketimer", jt)
 	end
-	meta:set_string("status", status)
 
+	-- If the currency type is depreciated, then this warning overrides all others.
+	if not easyvend.is_valid_currency(machine_currency) then
+		--active = false -- Don't ruin old shops!
+		status = "Alert: machine uses a depreciated currency standard!"
+	end
+
+	meta:set_string("status", status)
 	meta:set_string("infotext", easyvend.make_infotext(pos, node.name, machine_owner, cost, number, itemname))
 	itemname=itemstack:get_name()
 	meta:set_string("itemname", itemname)

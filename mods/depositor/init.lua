@@ -49,10 +49,11 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 	easyvend.execute_trade(vend_pos, user, inv, "storage")
 
 	local meta = minetest.get_meta(vend_pos)
+	local status = meta:get_string("status")
 	local msg = meta:get_string("message")
 
-	if msg ~= "" then
-		return msg
+	if status ~= "" and msg ~= "" then
+		return "Remote status: " .. status .. " Remote message: " .. msg
 	end
 end
 

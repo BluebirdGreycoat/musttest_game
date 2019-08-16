@@ -495,10 +495,9 @@ function ads.on_receive_fields(player, formname, fields)
 						local vpos = shops[sel].pos
 						if putsite then
 							if dropsite then
-								local err = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, currency, type)
-								if err then
-									minetest.chat_send_player(pname, "# Server: " .. err)
-									easyvend.sound_error(pname)
+								local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, currency, type)
+								if msg then
+									minetest.chat_send_player(pname, "# Server: " .. msg)
 								end
 							else
 								minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote trading.")

@@ -44,6 +44,12 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 		return "Unknown vendor type!"
 	end
 
+	if minetest.get_node(user_drop).name ~= "market:booth" or
+		minetest.get_node(vendor_drop).name ~= "market:booth"
+	then
+		return "Error: 0xDEADBEAF."
+	end
+
 	local meta = minetest.get_meta(user_drop)
 	local inv = meta:get_inventory()
 	if not inv then

@@ -401,7 +401,7 @@ function ads.generate_formspec(pos, pname, booth)
 				local cdef = minetest.registered_items[shops[sel].currency]
 				local cost = shops[sel].cost or 0
 
-				if idef and cdef then
+				if idef and cdef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
 						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
 							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"

@@ -104,7 +104,7 @@ easyvend.is_active = function(nodename)
 	end
 end
 
-easyvend.set_formspec = function(pos, player)
+easyvend.set_formspec = function(pos)
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
 
@@ -435,7 +435,7 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		meta:set_string("status", "Awaiting configuration by owner.")
 		meta:set_string("message", "No item specified.")
 		easyvend.sound_error(sender:get_player_name())
-		easyvend.set_formspec(pos, sender)
+		easyvend.set_formspec(pos)
 		return
 	elseif ( number == nil or number < 1 or number > maxnumber ) then
 		if maxnumber > 1 then
@@ -445,7 +445,7 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		end
 		meta:set_int("number", oldnumber)
 		easyvend.sound_error(sender:get_player_name())
-		easyvend.set_formspec(pos, sender)
+		easyvend.set_formspec(pos)
 		return
 	elseif ( cost == nil or cost < 1 or cost > maxcost ) then
 		if maxcost > 1 then
@@ -455,7 +455,7 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 		end
 		meta:set_int("cost", oldcost)
 		easyvend.sound_error(sender:get_player_name())
-		easyvend.set_formspec(pos, sender)
+		easyvend.set_formspec(pos)
 		return
 	end
 	meta:set_int("number", number)
@@ -532,13 +532,9 @@ easyvend.make_infotext = function(pos, nodename, owner, cost, number, itemstring
 	return d
 end
 
-easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
+easyvend.execute_trade = function(pos, sender, player_inv)
 	local sendername = sender:get_player_name()
 	local meta = minetest.get_meta(pos)
-
-	if not fields.buysell then
-		return
-	end
 
 	local node = minetest.get_node(pos)
 	local number = meta:get_int("number")
@@ -548,7 +544,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 	local check_wear = meta:get_int("wear") == 0 and minetest.registered_tools[itemname] ~= nil
 
 	local buysell = easyvend.buysell(node.name)
-	
+
 	local number_stack_max = item:get_stack_max()
 	local maxnumber = number_stack_max * slots_max
 
@@ -559,10 +555,10 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		easyvend.machine_disable(pos, node, sendername)
 		return
 	end
-    
-    local machine_currency = meta:get_string("machine_currency")
-    local machine_owner = meta:get_string("owner")
-    
+
+	local machine_currency = meta:get_string("machine_currency")
+	local machine_owner = meta:get_string("owner")
+
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, true)
@@ -581,8 +577,6 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		local achestdef = registered_chests[achest.name]
 		local achest_meta = minetest.get_meta(chest_pos_add)
 		local achest_inv = achest_meta:get_inventory()
-
-		local player_inv = sender:get_inventory()
 
 		local stack = {name=itemname, count=number, wear=0, metadata=""}
 		local price = {name=machine_currency, count=cost, wear=0, metadata=""}
@@ -841,8 +835,16 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		easyvend.sound_error(sendername)
 	end
 
-	easyvend.set_formspec(pos, sender)
+	easyvend.set_formspec(pos)
+end
 
+-- Executed when player uses formspec on actual vending machine.
+easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
+	if not fields.buysell then
+		return
+	end
+
+	return easyvend.execute_trade(pos, sender, sender:get_inventory())
 end
 
 easyvend.after_place_node = function(pos, placer)
@@ -881,7 +883,7 @@ easyvend.after_place_node = function(pos, placer)
 	meta:set_string("owner", player_name or "")
 	meta:set_string("rename", dname)
 
-	easyvend.set_formspec(pos, placer)
+	easyvend.set_formspec(pos)
 end
 
 easyvend.can_dig = function(pos, player)
@@ -928,7 +930,7 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
             meta:set_string("machine_currency", currency_types[idx])
             meta:set_int("machine_currency_idx", idx)
             
-            easyvend.set_formspec(pos, sender)
+            easyvend.set_formspec(pos)
         end
     end
 
@@ -938,7 +940,7 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 		else
 			meta:set_string("message", "Only the owner may change the configuration.")
 			easyvend.sound_error(sendername)
-			easyvend.set_formspec(pos, sender)
+			easyvend.set_formspec(pos)
 			return
 		end
 	elseif fields.wear ~= nil then
@@ -958,12 +960,12 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 				end
 				meta:set_int("wear", 0)
 			end
-			easyvend.set_formspec(pos, sender)
+			easyvend.set_formspec(pos)
 			return
 		else
 			meta:set_string("message", "Only the owner may change the configuration.")
 			easyvend.sound_error(sendername)
-			easyvend.set_formspec(pos, sender)
+			easyvend.set_formspec(pos)
 			return
 		end
 	elseif fields.buysell then
@@ -1180,7 +1182,7 @@ easyvend.allow_metadata_inventory_put = function(pos, listname, index, stack, pl
 			else
 				inv:set_stack( "item", 1, stack:get_name() )
 				meta:set_string("itemname", stack:get_name())
-				easyvend.set_formspec(pos, player)
+				easyvend.set_formspec(pos)
 			end
 		end
 	end

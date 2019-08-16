@@ -1,3 +1,4 @@
+[2019/8/16] Added a remote-trading system using the market booths, version 0.1 (very complex, there may be bugs).
 [2019/8/10] Made protector fields glow in the dark.
 [2019/8/10] Added armor stands.
 [2019/7/31] Allow players to place seeds on protected hoed soil - makes public farms a possibility.

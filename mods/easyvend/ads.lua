@@ -451,7 +451,11 @@ function ads.on_receive_fields(player, formname, fields)
 		end
 
 		if fields.storage then
-			ads.show_inventory_formspec(pos, pname, booth)
+			local meta = minetest.get_meta(pos)
+			-- Show inventory formspec only if player has permissions.
+			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
+				ads.show_inventory_formspec(pos, pname, booth)
+			end
 			return true
 		end
 	end

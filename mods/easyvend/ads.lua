@@ -617,7 +617,7 @@ function ads.after_place_node(pos, placer)
 	local inv = meta:get_inventory()
 	inv:set_size("storage", 4*6)
 
-	depositor.update_info(pos, pname, "none", 0, "info")
+	depositor.update_info(pos, pname, "none", 0, 0, "none", "info")
 end
 
 

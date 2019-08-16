@@ -363,7 +363,7 @@ easyvend.machine_check = function(pos, node)
 	meta:set_string("itemname", itemname)
 
 	-- Inform remote market system of any changes.
-	depositor.update_info(pos, machine_owner, itemname, cost, buysell, active)
+	depositor.update_info(pos, machine_owner, itemname, number, cost, machine_currency, buysell, active)
 
 	local change
 	if node.name == "easyvend:vendor" or node.name == "easyvend:depositor" then

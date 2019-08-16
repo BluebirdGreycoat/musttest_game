@@ -56,7 +56,7 @@ function depositor.load()
 	local records = string.split(datastring, "\n")
 	for _, record in ipairs(records) do
 		local data = string.split(record, ",")
-		if #data >= 8 then
+		if #data >= 10 then
 			local x = tonumber(data[1])
 			local y = tonumber(data[2])
 			local z = tonumber(data[3])
@@ -65,6 +65,8 @@ function depositor.load()
 			local c = tonumber(data[6])
 			local t = tonumber(data[7])
 			local a = tonumber(data[8])
+			local n = tonumber(data[9])
+			local r = tostring(data[10])
 
 			if a == 0 then
 				a = false
@@ -74,8 +76,8 @@ function depositor.load()
 				a = false
 			end
 
-			if x and y and z and o and i and c and t and a then
-				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, cost=c, type=t, active=a})
+			if x and y and z and o and i and c and t and a and n and r then
+				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
 			end
 		end
 	end
@@ -109,6 +111,8 @@ function depositor.save()
 			local t = v.type
 			local o = v.owner
 			local i = v.item
+			local n = v.number
+			local r = v.currency
 			local c = v.cost
 			local a = v.active
 
@@ -118,10 +122,10 @@ function depositor.save()
 				a = 0
 			end
 
-			if x and y and z and t and o and i and c and a then
+			if x and y and z and t and o and i and c and a and r and n then
 				-- x,y,z,owner,item,cost,type
 				datastring = datastring ..
-					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "," .. a .. "\n"
+					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "," .. a .. "," .. n .. "," .. r .. "\n"
 			end
 		end
 	end
@@ -184,7 +188,7 @@ end
 
 
 
-function depositor.update_info(pos, owner, itemname, cost, bsb, active)
+function depositor.update_info(pos, owner, itemname, number, cost, currency, bsb, active)
 	pos = vector.round(pos)
 	local needsave = false
 
@@ -193,6 +197,8 @@ function depositor.update_info(pos, owner, itemname, cost, bsb, active)
 			dep.owner = owner or "server"
 			dep.item = itemname or "none"
 			dep.cost = cost or 0
+			dep.number = number or 0
+			dep.currency = currency or "none"
 			dep.active = active
 
 			dep.type = 0

@@ -67,7 +67,7 @@ function currency.room_for_cash(inv, name, amount)
 
 			-- Find the denomination value just smaller than the remaining cash we need to fit.
 			local idx = 5
-			while denom > remainder do
+			while denom > remainder and idx > 0 do
 				denom = currency_values[idx]
 				idx = idx - 1
 			end

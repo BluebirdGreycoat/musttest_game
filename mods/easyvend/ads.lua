@@ -9,7 +9,7 @@ ads.dirty = true
 ads.bodylen = 1024
 ads.titlelen = 64
 ads.viewrange = 5000 -- Distance at which ads are visible.
-ads.marketrange = 30 -- Distance at which shops are visible (distance from ad source).
+ads.marketrange = 10 -- Distance at which shops are visible (distance from ad source).
 ads.days = 30
 
 

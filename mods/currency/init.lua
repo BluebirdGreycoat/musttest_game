@@ -12,6 +12,7 @@ currency.stackmax = 10
 -- function currency.has(pname, amount)
 --
 -- Base API functions for managing fungible currency as itemstacks.
+--
 -- function currency.is_currency(name)
 -- function currency.get_stack_value(name, count)
 -- function currency.room_for_cash(inv, name, amount)
@@ -19,6 +20,7 @@ currency.stackmax = 10
 -- function currency.remove_cash(inv, name, amount)
 -- function currency.has_cash_amount(inv, name, amount)
 -- function currency.get_cash_value(inv, name)
+-- function currency.needed_empty_slots(amount)
 
 
 
@@ -64,6 +66,33 @@ function currency.is_currency(name)
 	end
 
 	return false
+end
+
+
+
+-- This computes the number of inventory slots that would be needed to store the
+-- given amount of cash as itemstacks, assuming the cash is not combined with any
+-- cash stacks already in the inventory. This can be used when it is necessary to
+-- absolutely guarantee that an inventory has enough space.
+function currency.needed_empty_slots(amount)
+	local wanted_slots = 0
+	local stackmax = currency.stackmax
+	local remainder = amount
+
+	local idx = 5
+	while idx > 0 then
+		local denom = currency_values[idx]
+		local count = math.modf(remainder / denom)
+		while count > 0 do
+			local can_add = math.min(count, stackmax)
+			remainder = remainder - (can_add * denom)
+			wanted_slots = wanted_slots + 1
+			count = count - can_add
+		end
+		idx = idx - 1
+	end
+
+	return wanted_slots
 end
 
 

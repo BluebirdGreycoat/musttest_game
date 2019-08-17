@@ -29,8 +29,6 @@ local initial_currency = 1
 local cost_stack_max = 64
 local maxcost = cost_stack_max * slots_max
 
-local joketimer_start = 3
-
 -- Allow for other mods to register custom chests
 easyvend.register_chest = function(node_name, inv_list, meta_owner)
 	easyvend.registered_chests[node_name] = { inv_list = inv_list, meta_owner = meta_owner }
@@ -338,22 +336,6 @@ easyvend.machine_check = function(pos, node)
 		status = "Awaiting configuration by owner."
 	end
 
-	if itemname == machine_currency and number == cost and active then
-		local jt = meta:get_int("joketimer")
-		if jt > 0 then
-			jt = jt - 1
-		end
-		if jt == 0 then
-			if buysell == "sell" then
-				meta:set_string("message", "Item bought.")
-			else
-				meta:set_string("message", "Item sold.")
-			end
-			jt = -1
-		end
-		meta:set_int("joketimer", jt)
-	end
-
 	-- If the currency type is depreciated, then this warning overrides all others.
 	if not currency.is_currency(machine_currency) then
 		--active = false -- Don't ruin old shops!
@@ -467,16 +449,7 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	itemname=itemstack:get_name()
 	meta:set_string("itemname", itemname)
 	meta:set_int("configmode", 0)
-    
-    local machine_currency = meta:get_string("machine_currency")
-
-	if itemname == machine_currency and number == cost and cost <= cost_stack_max then
-		meta:set_string("message", "Configuration successful. I am feeling funny.")
-		meta:set_int("joketimer", joketimer_start)
-		meta:set_int("joke_id", easyvend.assign_joke(buysell))
-	else
-		meta:set_string("message", "Configuration successful.")
-	end
+	meta:set_string("message", "Configuration successful.")
 
 	local change = easyvend.machine_check(pos, node)
 
@@ -621,12 +594,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						player_inv:add_item(pin, stack)
 					end
 					vchest_inv:add_item(vchest_name, price)
-					if itemname == machine_currency and number == cost and cost <= cost_stack_max then
-						meta:set_string("message", easyvend.get_joke(buysell, meta:get_int("joke_id")))
-						meta:set_int("joketimer", joketimer_start)
-					else
-						meta:set_string("message", "Item bought.")
-					end
+					meta:set_string("message", "Item bought.")
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
 				else
@@ -736,12 +704,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 					rchest_inv:remove_item(rchestdef.inv_list, price)
 					player_inv:add_item(pin, price)
 					meta:set_string("status", "Ready.")
-					if itemname == machine_currency and number == cost and cost <= cost_stack_max then
-						meta:set_string("message", easyvend.get_joke(buysell, meta:get_int("joke_id")))
-						meta:set_int("joketimer", joketimer_start)
-					else
-						meta:set_string("message", "Item sold.")
-					end
+					meta:set_string("message", "Item sold.")
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
 				else
@@ -898,8 +861,6 @@ easyvend.after_place_node = function(pos, placer)
 	meta:set_int("cost", 1)
 	meta:set_int("stock", -1)
 	meta:set_int("configmode", 1)
-	meta:set_int("joketimer", -1)
-	meta:set_int("joke_id", 1)
 	meta:set_string("itemname", "")
 
 	meta:set_string("owner", player_name or "")
@@ -993,54 +954,6 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 	elseif fields.buysell then
 		easyvend.on_receive_fields_buysell(pos, formname, fields, sender)
 	end
-end
-
--- Jokes: Appear when machine exchanges currency for currency at equal rate
-
--- Vendor
-local jokes_vendor = {
-	"Thank you. You have made a vending machine very happy.",
-	"Humans have a strange sense of humor.",
-	"Let’s get this over with …",
-	"Item “bought”.",
-	"Tit for tat.",
-	"Do you realize what you’ve just bought?",
-}
--- Depositor
-local jokes_depositor = {
-	"Thank you, the money started to smell inside.",
-	"Money doesn’t grow on trees, you know?",
-	"Sanity sold.",
-	"Well, that was an awkward exchange.",
-	"Are you having fun?",
-	"Is this really trading?",
-}
-
-easyvend.assign_joke = function(buysell)
-	local jokes
-	if buysell == "sell" then
-		jokes = jokes_vendor
-	elseif buysell == "buy" then
-		jokes = jokes_depositor
-	end
-	local r = math.random(1,#jokes)
-	return r
-end
-
-easyvend.get_joke = function(buysell, id)
-	local joke
-	if buysell == nil or id == nil then
-		-- Fallback message (should never happen)
-		return "Items exchanged."
-	end
-	if buysell == "sell" then
-		joke = jokes_vendor[id]
-		if joke == nil then joke = jokes_vendor[1] end
-	elseif buysell == "buy" then
-		joke = jokes_depositor[id]
-		if joke == nil then joke = jokes_depositor[1] end
-	end
-	return joke
 end
 
 easyvend.sound_error = function(playername) 

@@ -100,6 +100,7 @@ end
 
 -- Try to add the given amount of cash to the inventory.
 -- It is not an error if the inventory does not have enough space.
+-- Note: it is critical to combine stacks first, before taking up free slots.
 function currency.add_cash(inv, name, amount)
 	if amount < 0 then
 		return

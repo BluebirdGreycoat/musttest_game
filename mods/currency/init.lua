@@ -26,8 +26,8 @@ end
 
 
 if not currency.registered then
-	--dofile(currency.modpath .. "/craftitems.lua")
-	--dofile(currency.modpath .. "/crafting.lua")
+	dofile(currency.modpath .. "/craftitems.lua")
+	dofile(currency.modpath .. "/crafting.lua")
 
 	local c = "currency:core"
 	local f = currency.modpath .. "/init.lua"

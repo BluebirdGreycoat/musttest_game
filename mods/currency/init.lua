@@ -233,6 +233,7 @@ function currency.remove_cash(inv, name, amount)
 					-- They shouldn't be letting their inventory become clogged!
 					-- Default to smallest possible denomination.
 					inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
+					do_stack_split = false
 				end
 			else
 				do_stack_split = true

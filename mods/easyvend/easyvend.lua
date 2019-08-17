@@ -20,16 +20,6 @@ local currency_types = {
 }
 local initial_currency = 1
 
-function easyvend.is_valid_currency(currency)
-	for k, v in ipairs(currency_types) do
-		if v == currency then
-			return true
-		end
-	end
-
-	return false
-end
-
 
 
 --easyvend.currency = "default:diamond"
@@ -365,7 +355,7 @@ easyvend.machine_check = function(pos, node)
 	end
 
 	-- If the currency type is depreciated, then this warning overrides all others.
-	if not easyvend.is_valid_currency(machine_currency) then
+	if not currency.is_currency(machine_currency) then
 		--active = false -- Don't ruin old shops!
 		status = "Alert: machine uses a depreciated currency standard!"
 	end

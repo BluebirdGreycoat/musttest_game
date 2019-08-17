@@ -236,9 +236,11 @@ function currency.remove_cash(inv, name, amount)
 					if add_back > 0 then -- Should never be less than 1, but just in case.
 						-- If this doesn't fit, oh well, the player has lost some cash.
 						-- They shouldn't be letting their inventory become clogged!
-						-- Default to smallest possible denomination.
-						inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
+						currency.add_cash(inv, name, add_back) -- Might fail to add the whole amount.
 						remainder = remainder + add_back
+
+						-- We should only have to split a large denomination ONCE. We can exit here.
+						return
 					end
 				end
 			end

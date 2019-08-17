@@ -61,7 +61,9 @@ function currency.room_for_cash(inv, name, amount)
 
 		if stack:is_empty() then
 			-- An emtpy stack can fit the maximum amount of the largest denomination.
-			total = total + (stackmax * currency_values[5])
+			local value = (stackmax * currency_values[5])
+			total = total + value
+			remainder = remainder - value
 		else
 			-- If the stack is not empty, check if it's a currency type.
 			-- If not a currency type, then we cannot use this inventory slot.

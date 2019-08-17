@@ -32,6 +32,20 @@ local currency_values_by_name = {
 
 
 
+-- Obtain the total value given a denomination and a count of the number of banknotes.
+function currency.get_stack_value(name, count)
+	if count <= 0 then
+		return 0
+	end
+	local val = currency_values_by_name[name]
+	if not val then
+		return 0
+	end
+	return val * count
+end
+
+
+
 function currency.is_currency(name)
 	for k, v in ipairs(currency_names) do
 		if v == name then

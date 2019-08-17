@@ -64,7 +64,18 @@ function currency.room_for_cash(inv, name, amount)
 			local denom = currency_values[5]
 			local value = (stackmax * denom)
 			total = total + value
-			remainder = remainder - denom
+
+			-- Find the denomination value just smaller than the remaining cash we need to fit.
+			local idx = 5
+			while denom > remainder do
+				denom = currency_values[idx]
+				idx = idx - 1
+			end
+			local sz = 1
+			while remainder >= denom and sz < stackmax do
+				remainder = remainder - denom
+				sz = sz + 1
+			end
 		else
 			-- If the stack is not empty, check if it's a currency type.
 			-- If not a currency type, then we cannot use this inventory slot.

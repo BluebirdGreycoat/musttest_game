@@ -557,6 +557,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 	( itemname == nil or itemname=="") then
 		meta:set_string("status", "Invalid item count or price!")
 		easyvend.machine_disable(pos, node, sendername)
+		easyvend.set_formspec(pos)
 		return
 	end
 
@@ -567,6 +568,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 	if not currency.is_currency(machine_currency) then
 		meta:set_string("status", "Machine uses a depreciated currency standard!")
 		easyvend.machine_disable(pos, node, sendername)
+		easyvend.set_formspec(pos)
 		return
 	end
 

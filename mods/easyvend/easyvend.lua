@@ -574,19 +574,19 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 		end
 
 		local stack = {name=itemname, count=number, wear=0, metadata=""}
-		local price = {name=machine_currency, count=cost, wear=0, metadata=""}
+		local price = currency.get_stack_value(machine_currency, cost)
 		local chest_has, player_has, chest_free, player_free, chest_out, player_out
 		local msg = ""
 
 		if buysell == "sell" then
 			chest_has, chest_out = easyvend.check_and_get_items(rchest_inv, rchestdef.inv_list, stack, check_wear)
-			player_has, player_out = easyvend.check_and_get_items(player_inv, pin, price, check_wear)
-			chest_free = vchest_inv:room_for_item(vchest_name, price)
+			player_has = currency.has_cash_amount(player_inv, pin, price)
+			chest_free = currency.room_for_cash(vchest_inv, vchest_name, price)
 			player_free = player_inv:room_for_item(pin, stack)
 			if chest_has and player_has and chest_free and player_free then
 				if cost <= cost_stack_max and number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
-					player_inv:remove_item(pin, price)
+					currency.remove_cash(player_inv, pin, price)
 					if check_wear then
 						rchest_inv:set_stack(rchestdef.inv_list, chest_out[1].id, "")
 						player_inv:add_item(pin, chest_out[1].item)
@@ -594,20 +594,17 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						stack = rchest_inv:remove_item(rchestdef.inv_list, stack)
 						player_inv:add_item(pin, stack)
 					end
-					vchest_inv:add_item(vchest_name, price)
+					currency.add_cash(vchest_inv, vchest_name, price)
 					meta:set_string("message", "Item bought.")
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
 				else
 					-- Large item counts (multiple stacks)
-					local coststacks = math.modf(cost / cost_stack_max)
-					local costremainder = math.fmod(cost, cost_stack_max)
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					local costfree = coststacks
+					local costfree = currency.needed_empty_slots(price)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
-					if costremainder > 0 then costfree = costfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, pin) < numberfree then
 						if numberfree > 1 then
 							msg = string.format("No room in your inventory (%d empty slots required)!", numberfree)
@@ -622,14 +619,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						-- Remember items for transfer
 						local cheststacks = {}
 						easyvend.machine_enable(pos, node)
-						for i=1, coststacks do
-							price.count = cost_stack_max
-							player_inv:remove_item(pin, price)
-						end
-						if costremainder > 0 then
-							price.count = costremainder
-							player_inv:remove_item(pin, price)
-						end
+
+						currency.remove_cash(player_inv, pin, price)
+
 						if check_wear then
 							for o=1,#chest_out do
 								rchest_inv:set_stack(rchestdef.inv_list, chest_out[o].id, "")
@@ -644,14 +636,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 							stack.count = numberremainder
 							table.insert(cheststacks, rchest_inv:remove_item(rchestdef.inv_list, stack))
 						end
-						for i=1, coststacks do
-							price.count = cost_stack_max
-							vchest_inv:add_item(vchest_name, price)
-						end
-						if costremainder > 0 then
-							price.count = costremainder
-							vchest_inv:add_item(vchest_name, price)
-						end
+
+						currency.add_cash(vchest_inv, vchest_name, price)
+
 						if check_wear then
 							for o=1,#chest_out do
 								player_inv:add_item(pin, chest_out[o].item)
@@ -661,6 +648,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 								player_inv:add_item(pin, cheststacks[i])
 							end
 						end
+
 						meta:set_string("message", "Item bought.")
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
@@ -688,13 +676,14 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 				end
 			end
 		else
-			chest_has, chest_out = easyvend.check_and_get_items(rchest_inv, rchestdef.inv_list, price, check_wear)
+			chest_has = currency.has_cash_amount(rchest_inv, rchestdef.inv_list, price)
 			player_has, player_out = easyvend.check_and_get_items(player_inv, pin, stack, check_wear)
 			chest_free = vchest_inv:room_for_item(vchest_name, stack)
-			player_free = player_inv:room_for_item(pin, price)
+			player_free = currency.room_for_cash(player_inv, pin, price)
 			if chest_has and player_has and chest_free and player_free then
 				if cost <= cost_stack_max and number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
+
 					if check_wear then
 						player_inv:set_stack(pin, player_out[1].id, "")
 						vchest_inv:add_item(vchest_name, player_out[1].item)
@@ -702,22 +691,21 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						stack = player_inv:remove_item(pin, stack)
 						vchest_inv:add_item(vchest_name, stack)
 					end
-					rchest_inv:remove_item(rchestdef.inv_list, price)
-					player_inv:add_item(pin, price)
+
+					currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
+					currency.add_cash(player_inv, pin, price)
+
 					meta:set_string("status", "Ready.")
 					meta:set_string("message", "Item sold.")
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
 				else
 					-- Large item counts (multiple stacks)
-					local coststacks = math.modf(cost / cost_stack_max)
-					local costremainder = math.fmod(cost, cost_stack_max)
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					local costfree = coststacks
+					local costfree = currency.needed_empty_slots(price)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
-					if costremainder > 0 then costfree = costfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, pin) < costfree then
 						if costfree > 1 then
 							msg = string.format("No room in your inventory (%d empty slots required)!", costfree)
@@ -733,14 +721,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						easyvend.machine_enable(pos, node)
 						-- Remember removed items for transfer
 						local playerstacks = {}
-						for i=1, coststacks do
-							price.count = cost_stack_max
-							rchest_inv:remove_item(rchestdef.inv_list, price)
-						end
-						if costremainder > 0 then
-							price.count = costremainder
-							rchest_inv:remove_item(rchestdef.inv_list, price)
-						end
+
+						currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
+
 						if check_wear then
 							for o=1,#player_out do
 								player_inv:set_stack(pin, player_out[o].id, "")
@@ -755,14 +738,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 							stack.count = numberremainder
 							table.insert(playerstacks, player_inv:remove_item(pin, stack))
 						end
-						for i=1, coststacks do
-							price.count = cost_stack_max
-							player_inv:add_item(pin, price)
-						end
-						if costremainder > 0 then
-							price.count = costremainder
-							player_inv:add_item(pin, price)
-						end
+
+						currency.add_cash(player_inv, pin, price)
+
 						if check_wear then
 							for o=1,#player_out do
 								vchest_inv:add_item(vchest_name, player_out[o].item)

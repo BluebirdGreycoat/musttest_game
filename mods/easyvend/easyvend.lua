@@ -563,6 +563,13 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 	local machine_currency = meta:get_string("machine_currency")
 	local machine_owner = meta:get_string("owner")
 
+	-- Check currency.
+	if not currency.is_currency(machine_currency) then
+		meta:set_string("status", "Machine uses a depreciated currency standard!")
+		easyvend.machine_disable(pos, node, sendername)
+		return
+	end
+
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, true)

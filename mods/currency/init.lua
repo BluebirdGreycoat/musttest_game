@@ -206,13 +206,39 @@ function currency.remove_cash(inv, name, amount)
 	-- of cash to remove has been accounted for. Note: this requires the cash
 	-- stacks to be sorted largest first!
 	local remainder = amount
+	local do_stack_split = false
+	::try_again::
+
 	for k, v in ipairs(available) do
 		local value = currency_values_by_name[v.name]
 		local count = math.modf(remainder / value)
-		local can_del = math.min(count, v.count)
-		local stack = ItemStack(v.name .. " " .. (v.count - can_del))
-		inv:set_stack(name, v.index, stack)
-		remainder = remainder - (can_del * value)
+
+		if count > 0 then
+			local can_del = math.min(count, v.count)
+			local stack = ItemStack(v.name .. " " .. (v.count - can_del))
+			inv:set_stack(name, v.index, stack)
+			remainder = remainder - (can_del * value)
+		else
+			-- The current cash stack is of a denomination much larger than the remaining cash we need to remove.
+			-- If this is our second iteration through the cash stacks, then we'll have to split the stack into a smaller denomination.
+			if do_stack_split then
+				-- Remove 1 banknote from the stack, this should cover the whole of the remaining amount + some overcost.
+				local stack = ItemStack(v.name .. " " .. (v.count - 1))
+				inv:set_stack(name, v.index, stack)
+
+				-- Add back the overcost.
+				local add_back = (value - remainder)
+				if add_back > 0 then -- Should never be less than 1, but just in case.
+					-- If this doesn't fit, oh well, the player has lost some cash.
+					-- They shouldn't be letting their inventory become clogged!
+					-- Default to smallest possible denomination.
+					inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
+				end
+			else
+				do_stack_split = true
+				goto try_again
+			end
+		end
 
 		if remainder <= 0 then
 			break

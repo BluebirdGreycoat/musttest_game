@@ -8,6 +8,7 @@ currency.stackmax = 10
 -- function currency.add(pname, amount)
 -- function currency.remove(pname, amount)
 -- function currency.tell(pname)
+-- function currency.has(pname, amount)
 
 
 
@@ -343,6 +344,10 @@ end
 -- Tell whether the inventory has at least a given amount of cash.
 function currency.has_cash_amount(inv, name, amount)
 	return (currency.get_cash(inv, name) >= amount)
+end
+
+function currency.has(pname, amount)
+	return (currency.tell(pname) >= amount)
 end
 
 

@@ -11,6 +11,7 @@ ads.titlelen = 64
 ads.viewrange = 5000 -- Distance at which ads are visible.
 ads.marketrange = 10 -- Distance at which shops are visible (distance from ad source).
 ads.days = 30
+ads.ad_cost = 1525
 
 
 
@@ -36,7 +37,7 @@ function ads.generate_submission_formspec()
 		"label[0,6.4;Advertisement records are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
 		"label[0,6.8;Note that you should submit your advertisement from the location of your shop.]" ..
 		"button[5,7.3;2,1;cancel;Cancel]" ..
-		"button[7,7.3;3,1;submit;Submit (Cost: 1000 MG)]" ..
+		"button[7,7.3;3,1;submit;Submit (Cost: " .. ads.ad_cost .. " MG)]" ..
 		"field_close_on_enter[title;false]" ..
 		"item_image[0,7.3;1,1;currency:minegeld_100]"
 	return formspec
@@ -120,10 +121,11 @@ function ads.on_receive_submission_fields(player, formname, fields)
 
 	if fields.submit then
 		local inv = player:get_inventory()
-		local gotgold = inv:contains_item("main", ItemStack("currency:minegeld_100 10"))
+		--local gotgold = inv:contains_item("main", ItemStack("currency:minegeld_100 10"))
+		local gotgold = currency.has_cash_amount(inv, "main", ads.ad_cost)
 
 		if not gotgold then
-			minetest.chat_send_player(pname, "# Server: You must be able to pay 1000 minegeld to register an advertisement for your shop!")
+			minetest.chat_send_player(pname, "# Server: You must be able to pay " .. ads.ad_cost .. " minegeld to register an advertisement for your shop!")
 			easyvend.sound_error(pname)
 			goto error
 		end
@@ -173,7 +175,8 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		--minetest.close_formspec(pname, formname)
 		ambiance.sound_play("easyvend_activate", player:get_pos(), 0.5, 10)
 
-		inv:remove_item("main", ItemStack("currency:minegeld_100 10"))
+		--inv:remove_item("main", ItemStack("currency:minegeld_100 10"))
+		currency.remove_cash(inv, "main", ads.ad_cost)
 		ads.add_entry({
 			shop = fields.title or "No Title Set",
 			pos = pos, -- Records the position at which the advertisement was submitted.

@@ -36,7 +36,7 @@ function ads.generate_submission_formspec()
 		"label[0,6.4;Advertisement records are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
 		"label[0,6.8;Note that you should submit your advertisement from the location of your shop.]" ..
 		"button[5,7.3;2,1;cancel;Cancel]" ..
-		"button[7,7.3;3,1;submit;Submit Ad! (Cost: 1000 MG)]" ..
+		"button[7,7.3;3,1;submit;Submit (Cost: 1000 MG)]" ..
 		"field_close_on_enter[title;false]" ..
 		"item_image[0,7.3;1,1;currency:minegeld_100]"
 	return formspec

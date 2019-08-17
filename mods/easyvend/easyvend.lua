@@ -577,6 +577,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 		local price = {name=machine_currency, count=cost, wear=0, metadata=""}
 		local chest_has, player_has, chest_free, player_free, chest_out, player_out
 		local msg = ""
+
 		if buysell == "sell" then
 			chest_has, chest_out = easyvend.check_and_get_items(rchest_inv, rchestdef.inv_list, stack, check_wear)
 			player_has, player_out = easyvend.check_and_get_items(player_inv, pin, price, check_wear)

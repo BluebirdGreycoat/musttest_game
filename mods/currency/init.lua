@@ -4,11 +4,21 @@ currency.modpath = minetest.get_modpath("currency")
 currency.stackmax = 10
 
 -- Test functions. These are also part of the public API, and work with the player's main inventory ("main").
+--
 -- function currency.room(pname, amount)
 -- function currency.add(pname, amount)
 -- function currency.remove(pname, amount)
 -- function currency.tell(pname)
 -- function currency.has(pname, amount)
+--
+-- Base API functions for managing fungible currency as itemstacks.
+-- function currency.is_currency(name)
+-- function currency.get_stack_value(name, count)
+-- function currency.room_for_cash(inv, name, amount)
+-- function currency.add_cash(inv, name, amount)
+-- function currency.remove_cash(inv, name, amount)
+-- function currency.has_cash_amount(inv, name, amount)
+-- function currency.get_cash_value(inv, name)
 
 
 

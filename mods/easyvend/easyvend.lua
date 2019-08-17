@@ -868,7 +868,7 @@ easyvend.after_place_node = function(pos, placer)
 	inv:set_size("item", 1)
 	inv:set_size("gold", 1)
 
-	local machine_currency = "default:gold_ingot"
+	local machine_currency = currency_types[initial_currency]
 	meta:set_string("machine_currency", machine_currency)
 	meta:set_int("machine_currency_idx", initial_currency)
 	inv:set_stack( "gold", 1, machine_currency )

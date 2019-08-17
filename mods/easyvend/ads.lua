@@ -402,7 +402,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
-			"button[0,7.3;4,1;newadd;List Your Shop (Wants Gold)]" ..
+			"button[0,7.3;4,1;newadd;List Your Shop]" ..
 			"item_image[4,7.3;1,1;easyvend:vendor_on]"
 
 		-- Show inventory/purchase button only if player has permissions on this booth.

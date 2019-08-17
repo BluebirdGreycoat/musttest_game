@@ -239,7 +239,6 @@ function currency.remove_cash(inv, name, amount)
 						-- Default to smallest possible denomination.
 						inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
 						remainder = remainder + add_back
-						do_stack_split = false
 					end
 				end
 			end
@@ -251,9 +250,11 @@ function currency.remove_cash(inv, name, amount)
 	end
 
 	-- If we didn't remove as much cash as we should have, try again, this time splitting the larger denominations.
-	if remainder > 0 then
-		do_stack_split = true
-		goto try_again
+	if not do_stack_split then
+		if remainder > 0 then
+			do_stack_split = true
+			goto try_again
+		end
 	end
 end
 

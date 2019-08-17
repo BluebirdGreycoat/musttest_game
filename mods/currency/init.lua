@@ -116,12 +116,18 @@ function currency.add_cash(inv, name, amount)
 
 		if stack:is_empty() and largest_denom > 0 then
 			-- Calculate how many of our (current) largest denomination we need to get close to the remaining value.
-			local count = math.modf(remainder / currency_values[largest_denom])
+			local count
+			::try_again::
+			count = math.modf(remainder / currency_values[largest_denom])
 
 			-- If none of the (current) largest denomination fit, we need to switch to smaller notes.
 			-- Since the smallest note has a value of 1, then `largest_denom` should never go to 0.
 			if count <= 0 then
 				largest_denom = largest_denom - 1
+				if largest_denom <= 0 then
+					return -- Should never happen anyway.
+				end
+				goto try_again
 			else
 				-- Fill this slot with our (current) largest denomination and subtract the value from the remaining value.
 				local can_add = math.min(count, stackmax)

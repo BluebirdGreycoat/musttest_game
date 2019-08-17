@@ -109,12 +109,15 @@ function currency.add_cash(inv, name, amount)
 	local stackmax = currency.stackmax
 	local remainder = amount
 	local largest_denom = 5
+	local do_stack_combining = false
+
+	::try_stack_combining::
 
 	-- We check each slot individually.
 	for i=1, size, 1 do
 		local stack = inv:get_stack(name, i)
 
-		if stack:is_empty() and largest_denom > 0 then
+		if stack:is_empty() then
 			-- Calculate how many of our (current) largest denomination we need to get close to the remaining value.
 			local count
 			::try_again::
@@ -134,23 +137,40 @@ function currency.add_cash(inv, name, amount)
 				inv:set_stack(name, i, ItemStack(currency_names[largest_denom] .. " " .. can_add))
 				remainder = remainder - (currency_values[largest_denom] * can_add)
 			end
-		else
-			-- If the stack is not empty, check if it's a currency type.
-			-- If not a currency type, then we cannot use this inventory slot.
-			local sn = stack:get_name()
-			if currency.is_currency(sn) then
+		elseif not stack:is_empty() and stack:get_name() == currency_names[largest_denom] then
+			-- If the stack isn't empty, but is the same as our (current) largest denomination, then we can combine easily.
+			-- Calculate how many of our (current) largest denomination we need to get close to the remaining value.
+			local count = math.modf(remainder / currency_values[largest_denom])
+
+			-- Only drop a banknote into this stack if the remaining cash to add can support the value of this denomination.
+			if count > 0 then
 				local freespace = stack:get_free_space()
+				local can_add = math.min(count, freespace)
+				stack:set_count(stack:get_count() + can_add)
+				inv:set_stack(name, i, stack)
+				remainder = remainder - (currency_values[largest_denom] * can_add)
+			end
+		else
+			-- Attempt to combine stacks only on the second iteration, in case we couldn't
+			-- add all funds during the first pass.
+			if do_stack_combining then
+				-- If the stack is not empty, check if it's a currency type.
+				-- If not a currency type, then we cannot use this inventory slot.
+				local sn = stack:get_name()
+				if currency.is_currency(sn) then
+					local freespace = stack:get_free_space()
 
-				-- Calculate how many notes of the slot's denomination we need to try and stuff into this slot to get close to the remaining value.
-				local count = math.modf(remainder / currency_values_by_name[sn])
+					-- Calculate how many notes of the slot's denomination we need to try and stuff into this slot to get close to the remaining value.
+					local count = math.modf(remainder / currency_values_by_name[sn])
 
-				if count > 0 then
-					-- Calculate the number of notes we can/should add to this slot.
-					-- Add them, and subtract the applied value from the remaining value.
-					local can_add = math.min(count, freespace)
-					stack:set_count(stack:get_count() + can_add)
-					inv:set_stack(name, i, stack)
-					remainder = remainder - (currency_values_by_name[sn] * can_add)
+					if count > 0 then
+						-- Calculate the number of notes we can/should add to this slot.
+						-- Add them, and subtract the applied value from the remaining value.
+						local can_add = math.min(count, freespace)
+						stack:set_count(stack:get_count() + can_add)
+						inv:set_stack(name, i, stack)
+						remainder = remainder - (currency_values_by_name[sn] * can_add)
+					end
 				end
 			end
 		end
@@ -159,6 +179,12 @@ function currency.add_cash(inv, name, amount)
 		if remainder <= 0 then
 			return
 		end
+	end
+
+	-- If we didn't add all the cash, try combining with existing stacks.
+	if remainder > 0 and not do_stack_combining then
+		do_stack_combining = true
+		goto try_stack_combining
 	end
 end
 
@@ -183,6 +209,10 @@ function currency.remove_cash(inv, name, amount)
 	local do_stack_split = false
 	local size
 
+	-- On the first iteration through the inventory, we try to fulfill the removing of cash
+	-- using just the banknotes in the inventory. If we cannot remove the requested amount
+	-- of cash using this method, then we iterate the inventory again, this time in order to
+	-- find and split banknotes as needed.
 	::try_again::
 
 	-- Will store data relating to all available cash stacks in the inventory.

@@ -53,6 +53,7 @@ function currency.room_for_cash(inv, name, amount)
 	local size = inv:get_size(name)
 	local stackmax = currency.stackmax
 	local total = 0
+	local remainder = amount
 
 	-- We check each slot individually.
 	for i=1, size, 1 do
@@ -68,14 +69,26 @@ function currency.room_for_cash(inv, name, amount)
 			if currency.is_currency(sn) then
 				local freespace = stack:get_free_space()
 
-				-- This slot can fit this much extra value.
-				total = total + (freespace * currency_values_by_name[sn])
+				local denom = currency_values_by_name[sn]
+				local value = (freespace * denom)
+
+				-- We must ignore the slot if its denomination value is larger than the
+				-- remainding value we need to check space for; this is because we can't
+				-- put any of that remaining value in this slot. If, on the other hand,
+				-- the slot's denomination value was smaller than the remaining value,
+				-- then we could put part of the remaining value in the slot and continue
+				-- checking other slots for space to hold the rest.
+				if denom < remainder then
+					-- This slot can fit this much extra value.
+					total = total + value
+					remainder = remainder - value
+				end
 			end
 		end
 
 		-- Check if total space is the amount needed.
 		-- Exit inventory checking as early as possible.
-		if total >= amount then
+		if total >= amount and remainder <= 0 then
 			return true
 		end
 	end

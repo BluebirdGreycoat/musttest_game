@@ -225,15 +225,19 @@ function currency.remove_cash(inv, name, amount)
 				-- Remove 1 banknote from the stack, this should cover the whole of the remaining amount + some overcost.
 				local stack = ItemStack(v.name .. " " .. (v.count - 1))
 				inv:set_stack(name, v.index, stack)
+				remainder = remainder - value
 
 				-- Add back the overcost.
-				local add_back = (value - remainder)
-				if add_back > 0 then -- Should never be less than 1, but just in case.
-					-- If this doesn't fit, oh well, the player has lost some cash.
-					-- They shouldn't be letting their inventory become clogged!
-					-- Default to smallest possible denomination.
-					inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
-					do_stack_split = false
+				if remainder < 0 then
+					local add_back = math.abs(remainder)
+					if add_back > 0 then -- Should never be less than 1, but just in case.
+						-- If this doesn't fit, oh well, the player has lost some cash.
+						-- They shouldn't be letting their inventory become clogged!
+						-- Default to smallest possible denomination.
+						inv:add_item(name, ItemStack("currency:minegeld " .. add_back))
+						remainder = remainder + add_back
+						do_stack_split = false
+					end
 				end
 			else
 				do_stack_split = true

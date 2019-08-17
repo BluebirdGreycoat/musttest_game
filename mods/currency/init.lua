@@ -59,20 +59,21 @@ function currency.room_for_cash(inv, name, amount)
 		local stack = inv:get_stack(name, i)
 
 		if stack:is_empty() then
-			local denom = currency_values[5]
-			local count = math.modf(remainder / denom)
+			local denom
+			local count = 0
 
 			-- Find the denomination value just smaller than the remaining cash we need to fit.
 			local idx = 5
 			while count < 1 and idx > 0 do
 				denom = currency_values[idx]
-				count = math.modf(remainder, denom)
-				minetest.chat_send_player("MustTest", "# Server: Denom is " .. denom)
+				count = math.modf(remainder / denom)
+				--minetest.chat_send_player("MustTest", "# Server: Denom is " .. denom)
 				idx = idx - 1
 			end
 
 			if count > 0 then
-
+				local can_add = math.min(count, stackmax)
+				remainder = remainder - (denom * can_add)
 			end
 		else
 			-- If the stack is not empty, check if it's a currency type.
@@ -80,19 +81,20 @@ function currency.room_for_cash(inv, name, amount)
 			local sn = stack:get_name()
 			if currency.is_currency(sn) then
 				local freespace = stack:get_free_space()
+				if freespace > 0 then
+					local denom = currency_values_by_name[sn]
+					local count = math.modf(remainder / denom)
 
-				local denom = currency_values_by_name[sn]
-				local count = math.modf(remainder / denom)
-
-				-- We must ignore the slot if its denomination value is larger than the
-				-- remainding value we need to check space for; this is because we can't
-				-- put any of that remaining value in this slot. If, on the other hand,
-				-- the slot's denomination value was smaller than the remaining value,
-				-- then we could put part of the remaining value in the slot and continue
-				-- checking other slots for space to hold the rest.
-				if count > 0 then
-					local can_add = math.min(count, freespace)
-					remainder = remainder - (denom * can_add)
+					-- We must ignore the slot if its denomination value is larger than the
+					-- remainding value we need to check space for; this is because we can't
+					-- put any of that remaining value in this slot. If, on the other hand,
+					-- the slot's denomination value was smaller than the remaining value,
+					-- then we could put part of the remaining value in the slot and continue
+					-- checking other slots for space to hold the rest.
+					if count > 0 then
+						local can_add = math.min(count, freespace)
+						remainder = remainder - (denom * can_add)
+					end
 				end
 			end
 		end
@@ -166,17 +168,19 @@ function currency.add_cash(inv, name, amount)
 			local sn = stack:get_name()
 			if currency.is_currency(sn) then
 				local freespace = stack:get_free_space()
+				if freespace > 0 then
+					-- Calculate how many notes of the slot's denomination we need to try and stuff into this slot to get close to the remaining value.
+					local count = math.modf(remainder / currency_values_by_name[sn])
 
-				-- Calculate how many notes of the slot's denomination we need to try and stuff into this slot to get close to the remaining value.
-				local count = math.modf(remainder / currency_values_by_name[sn])
-
-				if count > 0 then
-					-- Calculate the number of notes we can/should add to this slot.
-					-- Add them, and subtract the applied value from the remaining value.
-					local can_add = math.min(count, freespace)
-					stack:set_count(stack:get_count() + can_add)
-					inv:set_stack(name, i, stack)
-					remainder = remainder - (currency_values_by_name[sn] * can_add)
+					-- We must ignore the slot if the denomination value is larger than the remaining cash we need to add.
+					if count > 0 then
+						-- Calculate the number of notes we can/should add to this slot.
+						-- Add them, and subtract the applied value from the remaining value.
+						local can_add = math.min(count, freespace)
+						stack:set_count(stack:get_count() + can_add)
+						inv:set_stack(name, i, stack)
+						remainder = remainder - (currency_values_by_name[sn] * can_add)
+					end
 				end
 			end
 		end

@@ -72,7 +72,7 @@ function currency.room_for_cash(inv, name, amount)
 				idx = idx - 1
 			end
 			local sz = 1
-			while remainder >= denom and sz < stackmax do
+			while remainder >= denom and sz <= stackmax do
 				remainder = remainder - denom
 				sz = sz + 1
 			end
@@ -97,7 +97,7 @@ function currency.room_for_cash(inv, name, amount)
 					total = total + value
 
 					local sz = 1
-					while remainder >= denom and sz < freespace do
+					while remainder >= denom and sz <= freespace do
 						remainder = remainder - denom
 						sz = sz + 1
 					end

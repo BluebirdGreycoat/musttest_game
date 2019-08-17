@@ -45,6 +45,11 @@ end
 
 -- Tell whether the inventory has enough room for the given amount of cash.
 -- Try largest denominations first.
+-- Note: function assumes that cash stacks are combined whenever possible when adding the cash.
+-- However, the order in which cash may be combined with preexisting stacks is not specified.
+-- This means that you may need a few empty slots to be available, depending on how the remainder is split up.
+-- If no empty slots are found in such a case, this function will return false, even if there would be another possible way to combine the stacks.
+-- The solution is to keep your inventory from becoming clogged, so you always have a few empty slots.
 function currency.room_for_cash(inv, name, amount)
 	if amount < 0 then
 		return true
@@ -127,6 +132,7 @@ end
 -- Try to add the given amount of cash to the inventory.
 -- It is not an error if the inventory does not have enough space.
 -- Note: it is critical to combine stacks first, before taking up free slots.
+-- All cash is guaranteed to be added only if you have first checked if all the cash can fit with `currency.room_for_cash`.
 function currency.add_cash(inv, name, amount)
 	if amount < 0 then
 		return

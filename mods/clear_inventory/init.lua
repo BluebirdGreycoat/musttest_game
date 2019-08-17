@@ -28,6 +28,7 @@ function clear_inventory.clear(name, param)
 	for k, v in ipairs(main) do
 		if v:get_name() ~= "passport:passport" then
 			v:set_count(0)
+			v:set_name("")
 		end
 	end
 	

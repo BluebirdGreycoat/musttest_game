@@ -85,7 +85,7 @@ function currency.room_for_cash(inv, name, amount)
 					-- This slot can fit this much extra value.
 					total = total + value
 
-					while remainder >= denom then
+					while remainder >= denom do
 						remainder = remainder - denom
 					end
 				end

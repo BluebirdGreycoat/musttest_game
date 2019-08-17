@@ -78,7 +78,7 @@ function currency.room_for_cash(inv, name, amount)
 				-- the slot's denomination value was smaller than the remaining value,
 				-- then we could put part of the remaining value in the slot and continue
 				-- checking other slots for space to hold the rest.
-				if denom < remainder then
+				if denom <= remainder then
 					-- This slot can fit this much extra value.
 					total = total + value
 					remainder = remainder - value

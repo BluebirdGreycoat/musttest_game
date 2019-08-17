@@ -357,7 +357,8 @@ easyvend.machine_check = function(pos, node)
 	-- If the currency type is depreciated, then this warning overrides all others.
 	if not currency.is_currency(machine_currency) then
 		--active = false -- Don't ruin old shops!
-		status = "Alert: machine uses a depreciated currency standard!"
+		status = "Machine uses a depreciated currency standard!"
+		active = false
 	end
 
 	meta:set_string("status", status)

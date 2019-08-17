@@ -178,12 +178,19 @@ function currency.remove_cash(inv, name, amount)
 		return
 	end
 
+	local available = {}
+	local remainder = amount
+	local do_stack_split = false
+	local size
+
+	::try_again::
+
 	-- Will store data relating to all available cash stacks in the inventory.
 	-- Stores stack name, count, and inventory slot index.
-	local available = {}
+	available = {}
 
 	-- Iterate the inventory and find all cash stacks.
-	local size = inv:get_size(name)
+	size = inv:get_size(name)
 	for i=1, size, 1 do
 		local stack = inv:get_stack(name, i)
 		if not stack:is_empty() then
@@ -205,10 +212,6 @@ function currency.remove_cash(inv, name, amount)
 	-- For each cash stack, remove bits from the inventory until the whole amount
 	-- of cash to remove has been accounted for. Note: this requires the cash
 	-- stacks to be sorted largest first!
-	local remainder = amount
-	local do_stack_split = false
-	::try_again::
-
 	for k, v in ipairs(available) do
 		local value = currency_values_by_name[v.name]
 		local count = math.modf(remainder / value)
@@ -239,15 +242,18 @@ function currency.remove_cash(inv, name, amount)
 						do_stack_split = false
 					end
 				end
-			else
-				do_stack_split = true
-				goto try_again
 			end
 		end
 
 		if remainder <= 0 then
 			break
 		end
+	end
+
+	-- If we didn't remove as much cash as we should have, try again, this time splitting the larger denominations.
+	if remainder > 0 then
+		do_stack_split = true
+		goto try_again
 	end
 end
 

@@ -52,7 +52,6 @@ function currency.room_for_cash(inv, name, amount)
 
 	local size = inv:get_size(name)
 	local stackmax = currency.stackmax
-	local total = 0
 	local remainder = amount
 
 	-- We check each slot individually.
@@ -63,7 +62,6 @@ function currency.room_for_cash(inv, name, amount)
 			-- An empty stack can fit the maximum amount of the largest denomination.
 			local denom = currency_values[5]
 			local value = (stackmax * denom)
-			total = total + value
 
 			-- Find the denomination value just smaller than the remaining cash we need to fit.
 			local idx = 5
@@ -94,9 +92,6 @@ function currency.room_for_cash(inv, name, amount)
 				-- then we could put part of the remaining value in the slot and continue
 				-- checking other slots for space to hold the rest.
 				if denom <= remainder then
-					-- This slot can fit this much extra value.
-					total = total + value
-
 					local sz = 1
 					while remainder >= denom and sz <= freespace do
 						remainder = remainder - denom
@@ -106,9 +101,9 @@ function currency.room_for_cash(inv, name, amount)
 			end
 		end
 
-		-- Check if total space is the amount needed.
+		-- Check if we managed to fit everything.
 		-- Exit inventory checking as early as possible.
-		if total >= amount and remainder <= 0 then
+		if remainder <= 0 then
 			return true
 		end
 	end

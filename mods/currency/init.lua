@@ -67,7 +67,7 @@ function currency.room_for_cash(inv, name, amount)
 
 			-- Find the denomination value just smaller than the remaining cash we need to fit.
 			local idx = 5
-			while denom > remainder and idx > 0 do
+			while denom >= remainder and idx > 0 do
 				denom = currency_values[idx]
 				minetest.chat_send_player("MustTest", "# Server: Denom is " .. denom)
 				idx = idx - 1

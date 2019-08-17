@@ -15,6 +15,11 @@ function trash.allow_put(inv, listname, index, stack, player)
 		return 0
 	end
 
+	-- Don't allow minegeld to be trashed.
+	if minetest.get_item_group(stack:get_name(), "minegeld") ~= 0 then
+		return 0
+	end
+
 	return stack:get_count()
 end
 

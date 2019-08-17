@@ -80,7 +80,7 @@ function currency.needed_empty_slots(amount)
 	local remainder = amount
 
 	local idx = 5
-	while idx > 0 then
+	while idx > 0 do
 		local denom = currency_values[idx]
 		local count = math.modf(remainder / denom)
 		while count > 0 do

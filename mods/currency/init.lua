@@ -3,7 +3,7 @@ currency = currency or {}
 currency.modpath = minetest.get_modpath("currency")
 currency.stackmax = 10
 
--- Test functions.
+-- Test functions. These are also part of the public API, and work with the player's main inventory ("main").
 -- function currency.room(pname, amount)
 -- function currency.add(pname, amount)
 -- function currency.remove(pname, amount)
@@ -118,13 +118,22 @@ end
 -- Test func.
 function currency.room(pname, amount)
 	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return false
+	end
 	local inv = player:get_inventory()
+	if not inv then
+		return false
+	end
 	local room = currency.room_for_cash(inv, "main", amount)
+	--[[
 	if room then
 		minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> has room for " .. amount .. " minegeld!")
 	else
 		minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> does NOT have room for " .. amount .. " minegeld!")
 	end
+	--]]
+	return room
 end
 
 
@@ -201,7 +210,13 @@ end
 -- Test func.
 function currency.add(pname, amount)
 	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return
+	end
 	local inv = player:get_inventory()
+	if not inv then
+		return
+	end
 	currency.add_cash(inv, "main", amount)
 end
 
@@ -313,7 +328,13 @@ end
 -- Test func.
 function currency.remove(pname, amount)
 	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return
+	end
 	local inv = player:get_inventory()
+	if not inv then
+		return
+	end
 	currency.remove_cash(inv, "main", amount)
 end
 
@@ -348,9 +369,16 @@ end
 -- Test func.
 function currency.tell(pname)
 	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return 0
+	end
 	local inv = player:get_inventory()
+	if not inv then
+		return 0
+	end
 	local amount = currency.get_cash_value(inv, "main")
-	minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> has " .. amount .. " minegeld!")
+	--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> has " .. amount .. " minegeld!")
+	return amount
 end
 
 

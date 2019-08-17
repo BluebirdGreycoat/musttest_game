@@ -201,13 +201,23 @@ function currency.remove_cash(inv, name, amount)
 		end
 	end
 
-	-- Sort table so that largest denominations come first.
-	table.sort(available,
-		function(a, b)
-			if currency_values_by_name[a.name] > currency_values_by_name[b.name] then
-				return true
-			end
-		end)
+	if do_stack_split then
+		-- Sort table so that SMALLEST denominations come first.
+		table.sort(available,
+			function(a, b)
+				if currency_values_by_name[a.name] < currency_values_by_name[b.name] then
+					return true
+				end
+			end)
+	else
+		-- Sort table so that largest denominations come first.
+		table.sort(available,
+			function(a, b)
+				if currency_values_by_name[a.name] > currency_values_by_name[b.name] then
+					return true
+				end
+			end)
+	end
 
 	-- For each cash stack, remove bits from the inventory until the whole amount
 	-- of cash to remove has been accounted for. Note: this requires the cash

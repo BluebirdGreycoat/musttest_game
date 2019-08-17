@@ -23,7 +23,7 @@ function ads.generate_submission_formspec()
 		"label[0,0;Submit a public advertisement for your shop to enable remote trading.]" ..
 		"label[0,0.4;Having your shop listed in the public market directory also increases its visibility.]" ..
 		"label[0,1.0;Write your shop’s tagline here. It is limited to " .. ads.titlelen .. " characters. Example: ‘Buy Wood Here!’]" ..
-		"item_image[9,0;1,1;default:gold_ingot]" ..
+		"item_image[9,0;1,1;currency:minegeld_100]" ..
 		"field[0.3,1.7;10,1;title;;]"
 
 	formspec = formspec ..
@@ -36,9 +36,9 @@ function ads.generate_submission_formspec()
 		"label[0,6.4;Advertisement records are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
 		"label[0,6.8;Note that you should submit your advertisement from the location of your shop.]" ..
 		"button[5,7.3;2,1;cancel;Cancel]" ..
-		"button[7,7.3;3,1;submit;Submit Ad! (Cost: 1 Gold)]" ..
+		"button[7,7.3;3,1;submit;Submit Ad! (Cost: 1000 MG)]" ..
 		"field_close_on_enter[title;false]" ..
-		"item_image[0,7.3;1,1;default:gold_ingot]"
+		"item_image[0,7.3;1,1;currency:minegeld_100]"
 	return formspec
 end
 
@@ -120,10 +120,10 @@ function ads.on_receive_submission_fields(player, formname, fields)
 
 	if fields.submit then
 		local inv = player:get_inventory()
-		local gotgold = inv:contains_item("main", ItemStack("default:gold_ingot"))
+		local gotgold = inv:contains_item("main", ItemStack("currency:minegeld_100 10"))
 
 		if not gotgold then
-			minetest.chat_send_player(pname, "# Server: You must be able to pay 1 gold ingot to register an advertisement for your shop!")
+			minetest.chat_send_player(pname, "# Server: You must be able to pay 1000 minegeld to register an advertisement for your shop!")
 			easyvend.sound_error(pname)
 			goto error
 		end
@@ -173,7 +173,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		--minetest.close_formspec(pname, formname)
 		ambiance.sound_play("easyvend_activate", player:get_pos(), 0.5, 10)
 
-		inv:remove_item("main", ItemStack("default:gold_ingot"))
+		inv:remove_item("main", ItemStack("currency:minegeld_100 10"))
 		ads.add_entry({
 			shop = fields.title or "No Title Set",
 			pos = pos, -- Records the position at which the advertisement was submitted.

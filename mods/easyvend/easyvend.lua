@@ -592,6 +592,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 		local achest_inv = achest_meta:get_inventory()
 
 		-- If passing a target inventory, redirect operations to it.
+		-- This also indicates whether this is a remote trade executed via market.
 		local vchest_inv = achest_inv
 		local vchest_name = achestdef.inv_list
 		if vendor_inv and iin then

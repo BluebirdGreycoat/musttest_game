@@ -343,7 +343,7 @@ end
 
 -- Tell whether the inventory has at least a given amount of cash.
 function currency.has_cash_amount(inv, name, amount)
-	return (currency.get_cash(inv, name) >= amount)
+	return (currency.get_cash_value(inv, name) >= amount)
 end
 
 function currency.has(pname, amount)

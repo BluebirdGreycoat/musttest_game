@@ -378,9 +378,8 @@ function ads.generate_formspec(pos, pname, booth)
 				str = str .. ": "
 
 				local def = minetest.registered_items[v.item]
-				local cdef = minetest.registered_items[v.currency]
-				if def and cdef then
-					str = str .. v.number .. "x " .. utility.get_short_desc(def.description or "Unknown Item")
+				if def then
+					str = str .. v.number .. "x " .. utility.get_short_desc(def.description)
 					str = str .. " For " .. currency.get_stack_value(v.currency, v.cost) .. " Minegeld"
 
 					str = minetest.formspec_escape(str)
@@ -419,16 +418,14 @@ function ads.generate_formspec(pos, pname, booth)
 			if shops and sel ~= 0 and shops[sel] then
 				local text = ""
 				local idef = minetest.registered_items[shops[sel].item]
-				local cdef = minetest.registered_items[shops[sel].currency]
+				local curt = shops[sel].currency
 				local cost = shops[sel].cost or 0
 
-				if idef and cdef and shops[sel].owner ~= pname then
+				if idef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
-						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
-							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
+						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. currency.get_stack_value(curt, cost) .. " Minegeld)"
 					elseif shops[sel].type == 2 then
-						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description or "Unknown Item") .. " For " .. cost .. "x " ..
-							utility.get_short_desc(cdef.description or "Unknown Item") .. ")"
+						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. currency.get_stack_value(curt, cost) .. " Minegeld)"
 					end
 
 					if text ~= "" then

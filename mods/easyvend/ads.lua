@@ -306,10 +306,10 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
-			"label[0,0.4;" .. minetest.formspec_escape("You can view listings for shops closer than " .. ads.viewrange .. " meters from this booth.") .. "]"
+			"label[0,0.4;" .. minetest.formspec_escape("You are viewing advertisements for shops that were posted within " .. ads.viewrange .. " meters of this booth.") .. "]"
 	else
 		formspec = formspec ..
-			"label[0,0.4;" .. minetest.formspec_escape("You are viewing the listings for shops within " .. ads.viewrange .. " meters of your position.") .. "]"
+			"label[0,0.4;" .. minetest.formspec_escape("You are viewing advertisements for shops within " .. ads.viewrange .. " meters of your position.") .. "]"
 	end
 
 	formspec = formspec ..

@@ -766,7 +766,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 				easyvend.sound_error(pname)
 			end
 		else
-			minetest.chat_send_player(pname, "# Server: Error (0xDEADBEEF).")
+			minetest.chat_send_player(pname, "# Server: Error: 0xDEADBEEF 5392 (Please report).")
 			easyvend.sound_error(pname)
 		end
 		return true

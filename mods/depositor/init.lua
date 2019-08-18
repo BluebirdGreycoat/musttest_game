@@ -56,7 +56,7 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 	if minetest.get_node(user_drop).name ~= "market:booth" or
 		minetest.get_node(vendor_drop).name ~= "market:booth"
 	then
-		return "Error: 0xDEADBEEF."
+		return "Error: 0xDEADBEEF 9020 (Please report)."
 	end
 
 	local meta = minetest.get_meta(user_drop)
@@ -108,61 +108,58 @@ function depositor.load()
 	local file, err = io.open(depositor.datafile, "r")
 	if err then
 		minetest.log("error", "Failed to open " .. depositor.datafile .. " for reading: " .. err)
-		return
-	end
-	local datastring = file:read("*all")
-	if not datastring or datastring == "" then
-		return
-	end
-	file:close()
+	else
+		local datastring = file:read("*all")
+		if datastring and datastring ~= "" then
+			local records = string.split(datastring, "\n")
+			for record_number, record in ipairs(records) do
+				local data = string.split(record, ",")
+				if #data >= 10 then
+					local x = tonumber(data[1])
+					local y = tonumber(data[2])
+					local z = tonumber(data[3])
+					local o = tostring(data[4])
+					local i = tostring(data[5])
+					local c = tonumber(data[6])
+					local t = tonumber(data[7])
+					local a = tonumber(data[8])
+					local n = tonumber(data[9])
+					local r = tostring(data[10])
 
-	local records = string.split(datastring, "\n")
-	for record_number, record in ipairs(records) do
-		local data = string.split(record, ",")
-		if #data >= 10 then
-			local x = tonumber(data[1])
-			local y = tonumber(data[2])
-			local z = tonumber(data[3])
-			local o = tostring(data[4])
-			local i = tostring(data[5])
-			local c = tonumber(data[6])
-			local t = tonumber(data[7])
-			local a = tonumber(data[8])
-			local n = tonumber(data[9])
-			local r = tostring(data[10])
+					if a == 0 then
+						a = false
+					elseif a == 1 then
+						a = true
+					else
+						a = false
+					end
 
-			if a == 0 then
-				a = false
-			elseif a == 1 then
-				a = true
-			else
-				a = false
+					if x and y and z and o and i and c and t and a and n and r then
+						table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
+					else
+						minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
+					end
+				else
+					minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
+				end
 			end
-
-			if x and y and z and o and i and c and t and a and n and r then
-				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
-			else
-				minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
-			end
-		else
-			minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
 		end
+		file:close()
 	end
 
 	depositor.drops = {}
 	local file, err = io.open(depositor.dropfile, "r")
-	if not file or err then
+	if err then
 		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for reading: " .. err)
-		return
-	end
-	local datastring = file:read("*all")
-	if not datastring or datastring == "" then
-		return
-	end
-	file:close()
-	local drops = minetest.deserialize(datastring)
-	if drops and type(drops) == "table" then
-		depositor.drops = drops
+	else
+		local datastring = file:read("*all")
+		if datastring and datastring ~= "" then
+			local drops = minetest.deserialize(datastring)
+			if drops and type(drops) == "table" then
+				depositor.drops = drops
+			end
+		end
+		file:close()
 	end
 end
 
@@ -200,21 +197,21 @@ function depositor.save()
 	local file, err = io.open(depositor.datafile, "w")
 	if err then
 		minetest.log("error", "Failed to open " .. depositor.datafile .. " for writing: " .. err)
-		return
+	else
+		file:write(datastring)
+		file:close()
 	end
-	file:write(datastring)
-	file:close()
 
 	local file, err = io.open(depositor.dropfile, "w")
 	if err then
 		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for writing: " .. err)
-		return
+	else
+		local datastring = minetest.serialize(depositor.drops)
+		if datastring then
+			file:write(datastring)
+		end
+		file:close()
 	end
-	local datastring = minetest.serialize(depositor.drops)
-	if datastring then
-		file:write(datastring)
-	end
-	file:close()
 end
 
 

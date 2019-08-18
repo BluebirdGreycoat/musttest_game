@@ -34,7 +34,7 @@ end
 
 
 -- Return error string in case of error, otherwise nil.
-function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, vendor_drop, item, number, cost, currency, type)
+function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, vendor_drop, item, number, cost, tax, currency, type)
 	local user = minetest.get_player_by_name(user_name)
 	if not user or not user:is_player() then
 		return "Invalid user!"
@@ -83,7 +83,7 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 
 	-- The trade function requires map access!
 	utility.ensure_map_loaded(vector.add(vend_pos, {x=-8, y=-8, z=-8}), vector.add(vend_pos, {x=8, y=8, z=8}))
-	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage")
+	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage", tax)
 
 	local status = meta3:get_string("status")
 	local msg = meta3:get_string("message")

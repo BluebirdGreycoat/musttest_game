@@ -510,7 +510,7 @@ easyvend.make_infotext = function(pos, nodename, owner, cost, number, itemstring
 	return d
 end
 
-easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
+easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin, remote_tax)
 	local sendername = sender:get_player_name()
 	local meta = minetest.get_meta(pos)
 
@@ -590,14 +590,20 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 		local msg = ""
 
 		if buysell == "sell" then
+			-- Vending.
+			local pricewithtax = price
+			if vendor_inv then
+				pricewithtax = currency.calculate_tax(price, 1, remote_tax)
+			end
+
 			chest_has, chest_out = easyvend.check_and_get_items(rchest_inv, rchestdef.inv_list, stack, check_wear)
-			player_has = currency.has_cash_amount(player_inv, pin, price)
+			player_has = currency.has_cash_amount(player_inv, pin, pricewithtax)
 			chest_free = currency.room_for_cash(vchest_inv, vchest_name, price)
 			player_free = player_inv:room_for_item(pin, stack)
 			if chest_has and player_has and chest_free and player_free then
 				if cost <= cost_stack_max and number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
-					currency.remove_cash(player_inv, pin, price)
+					currency.remove_cash(player_inv, pin, pricewithtax)
 					if check_wear then
 						rchest_inv:set_stack(rchestdef.inv_list, chest_out[1].id, "")
 						player_inv:add_item(pin, chest_out[1].item)
@@ -631,7 +637,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 						local cheststacks = {}
 						easyvend.machine_enable(pos, node)
 
-						currency.remove_cash(player_inv, pin, price)
+						currency.remove_cash(player_inv, pin, pricewithtax)
 
 						if check_wear then
 							for o=1,#chest_out do
@@ -687,10 +693,16 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 				end
 			end
 		else
+			-- Depositing.
+			local pricewithtax = price
+			if vendor_inv then
+				pricewithtax = currency.calculate_tax(price, 2, remote_tax)
+			end
+
 			chest_has = currency.has_cash_amount(rchest_inv, rchestdef.inv_list, price)
 			player_has, player_out = easyvend.check_and_get_items(player_inv, pin, stack, check_wear)
 			chest_free = vchest_inv:room_for_item(vchest_name, stack)
-			player_free = currency.room_for_cash(player_inv, pin, price)
+			player_free = currency.room_for_cash(player_inv, pin, pricewithtax)
 			if chest_has and player_has and chest_free and player_free then
 				if cost <= cost_stack_max and number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
@@ -704,7 +716,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 					end
 
 					currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
-					currency.add_cash(player_inv, pin, price)
+					currency.add_cash(player_inv, pin, pricewithtax)
 
 					meta:set_string("status", "Ready.")
 					meta:set_string("message", "Item sold.")
@@ -715,7 +727,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					local costfree = currency.needed_empty_slots(price)
+					local costfree = currency.needed_empty_slots(pricewithtax)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, pin) < costfree then
 						if costfree > 1 then
@@ -750,7 +762,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 							table.insert(playerstacks, player_inv:remove_item(pin, stack))
 						end
 
-						currency.add_cash(player_inv, pin, price)
+						currency.add_cash(player_inv, pin, pricewithtax)
 
 						if check_wear then
 							for o=1,#player_out do
@@ -820,7 +832,7 @@ easyvend.on_receive_fields_buysell = function(pos, formname, fields, sender)
 		return
 	end
 
-	return easyvend.execute_trade(pos, sender, sender:get_inventory(), "main", nil, nil)
+	return easyvend.execute_trade(pos, sender, sender:get_inventory(), "main", nil, nil, nil)
 end
 
 easyvend.after_place_node = function(pos, placer)

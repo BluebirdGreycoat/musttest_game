@@ -12,6 +12,7 @@ ads.viewrange = 5000 -- Distance at which ads are visible.
 ads.marketrange = 10 -- Distance at which shops are visible (distance from ad source).
 ads.days = 30
 ads.ad_cost = 1525
+ads.tax = 3
 
 
 
@@ -302,7 +303,7 @@ function ads.generate_formspec(pos, pname, booth)
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;" .. minetest.formspec_escape("View nearby shops & trading opportunities! NOTICE: A 3% commission is applied to all remote transactions.") .. "]"
+		"label[0,0;" .. minetest.formspec_escape("View nearby shops & trading opportunities! NOTICE: A " .. ads.tax .. "% tax is applied to all remote transactions.") .. "]"
 
 	if booth then
 		formspec = formspec ..
@@ -377,6 +378,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 				str = str .. ": "
 				local cost = currency.get_stack_value(v.currency, v.cost)
+				cost = currency.calculate_tax(cost, v.type, ads.tax)
 
 				local def = minetest.registered_items[v.item]
 				if def then
@@ -424,6 +426,7 @@ function ads.generate_formspec(pos, pname, booth)
 				local cost = shops[sel].cost or 0
 
 				local realcost = currency.get_stack_value(curt, cost)
+				realcost = currency.calculate_tax(realcost, shops[sel].type, ads.tax)
 
 				if idef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
@@ -523,7 +526,7 @@ function ads.on_receive_fields(player, formname, fields)
 						local vpos = shops[sel].pos
 						if putsite then
 							if dropsite then
-								local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, currency, type)
+								local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, ads.tax, currency, type)
 								if msg then
 									minetest.chat_send_player(pname, "# Server: " .. msg)
 								end

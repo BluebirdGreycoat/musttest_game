@@ -441,6 +441,27 @@ end
 
 
 
+-- Helper function to calculate tax based on whether transaction is a purchase or a deposit.
+function currency.calculate_tax(amount, type, tax)
+	local calc_part = function(w, p) local x = (w * p) return x / 100 end
+
+	if type == 1 then
+		-- Purchasing.
+		local wtax = amount + calc_part(amount, tax)
+		return math.floor(wtax)
+	elseif type == 2 then
+		-- Depositing.
+		local wtax = amount - calc_part(amount, tax)
+		wtax = math.max(wtax, 1)
+		return math.floor(wtax)
+	end
+
+	-- Fallback (should never happen).
+	return math.floor(amount)
+end
+
+
+
 if not currency.registered then
 	dofile(currency.modpath .. "/craftitems.lua")
 	dofile(currency.modpath .. "/crafting.lua")

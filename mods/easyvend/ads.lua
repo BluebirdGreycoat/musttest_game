@@ -302,14 +302,14 @@ function ads.generate_formspec(pos, pname, booth)
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;View nearby shops & trading opportunities!]"
+		"label[0,0;" .. minetest.formspec_escape("View nearby shops & trading opportunities! NOTICE: A 3% commission is applied to all remote transactions.") .. "]"
 
 	if booth then
 		formspec = formspec ..
-			"label[0,0.4;You can view listings for shops closer than " .. ads.viewrange .. " meters from this booth.]"
+			"label[0,0.4;" .. minetest.formspec_escape("You can view listings for shops closer than " .. ads.viewrange .. " meters from this booth.") .. "]"
 	else
 		formspec = formspec ..
-			"label[0,0.4;You are viewing the listings for shops within " .. ads.viewrange .. " meters of your position.]"
+			"label[0,0.4;" .. minetest.formspec_escape("You are viewing the listings for shops within " .. ads.viewrange .. " meters of your position.") .. "]"
 	end
 
 	formspec = formspec ..
@@ -376,11 +376,12 @@ function ads.generate_formspec(pos, pname, booth)
 				end
 
 				str = str .. ": "
+				local cost = currency.get_stack_value(v.currency, v.cost)
 
 				local def = minetest.registered_items[v.item]
 				if def then
 					str = str .. v.number .. "x " .. utility.get_short_desc(def.description)
-					str = str .. " For " .. currency.get_stack_value(v.currency, v.cost) .. " Minegeld"
+					str = str .. " For " .. cost .. " Minegeld"
 
 					str = minetest.formspec_escape(str)
 					shoplist = shoplist .. str
@@ -422,11 +423,13 @@ function ads.generate_formspec(pos, pname, booth)
 				local curt = shops[sel].currency
 				local cost = shops[sel].cost or 0
 
+				local realcost = currency.get_stack_value(curt, cost)
+
 				if idef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
-						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. currency.get_stack_value(curt, cost) .. " Minegeld)"
+						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " Minegeld)"
 					elseif shops[sel].type == 2 then
-						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. currency.get_stack_value(curt, cost) .. " Minegeld)"
+						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " Minegeld)"
 					end
 
 					if text ~= "" then

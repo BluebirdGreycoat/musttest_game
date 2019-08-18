@@ -484,20 +484,11 @@ easyvend.make_infotext = function(pos, nodename, owner, cost, number, itemstring
 		printitem = string.format("%d×%s", number, iname)
 	end
     
-    local meta = minetest.get_meta(pos)
-    local machine_currency = meta:get_string("machine_currency")
-    
-    local machine_currency_desc = utility.get_short_desc(minetest.registered_items[machine_currency].description)
-    if machine_currency_desc == nil or machine_currency_desc == "" then
-        machine_currency_desc = machine_currency
-    end
-		machine_currency_desc = utility.get_short_desc(machine_currency_desc)
-    
-	if cost == 1 then
-		printcost = machine_currency_desc
-	else
-		printcost = string.format("%d×%s", cost, machine_currency_desc)
-	end
+	local meta = minetest.get_meta(pos)
+	local machine_currency = meta:get_string("machine_currency")
+
+	printcost = currency.get_stack_value(machine_currency, cost) .. " Minegeld"
+
 	if nodename == "easyvend:vendor_on" then
 		d = string.format("Vending Machine (Owned by <%s>!)\nSelling: %s\nPrice: %s", dname, printitem, printcost)
 	elseif nodename == "easyvend:vendor" then

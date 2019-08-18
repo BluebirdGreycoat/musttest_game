@@ -617,6 +617,10 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					meta:set_string("message", "Item bought.")
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
+
+					minetest.log("action", sendername .. " bought " .. number .. " " ..
+						itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
+						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
 				else
 					-- Large item counts (multiple stacks)
 					local numberstacks = math.modf(number / number_stack_max)
@@ -671,6 +675,10 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						meta:set_string("message", "Item bought.")
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
+
+						minetest.log("action", sendername .. " bought " .. number .. " " ..
+							itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
+							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
 					end
 				end
 			elseif chest_has and player_has then
@@ -724,6 +732,10 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					meta:set_string("message", "Item sold.")
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
+
+					minetest.log("action", sendername .. " sold " .. number .. " " ..
+						itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
+						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
 				else
 					-- Large item counts (multiple stacks)
 					local numberstacks = math.modf(number / number_stack_max)
@@ -779,6 +791,10 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						meta:set_string("message", "Item sold.")
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
+
+						minetest.log("action", sendername .. " sold " .. number .. " " ..
+							itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
+							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
 					end
 				end
 			elseif chest_has and player_has then

@@ -237,7 +237,6 @@ function depositor.on_construct(pos)
 	pos = vector.round(pos)
 	table.insert(depositor.shops, {pos={x=pos.x, y=pos.y, z=pos.z}})
 	depositor.dirty = true
-	--depositor.save()
 end
 
 
@@ -245,7 +244,8 @@ end
 -- Called for vending & delivery booths.
 function depositor.on_destruct(pos)
 	pos = vector.round(pos)
-	for i, dep in ipairs(depositor.shops) do
+	for i=1, #(depositor.shops), 1 do
+		local dep = depositor.shops[i]
 		if vector.equals(dep.pos, pos) then
 			-- If this was the active drop point, then we must remove it.
 			local meta = minetest.get_meta(pos)
@@ -259,7 +259,7 @@ function depositor.on_destruct(pos)
 
 			table.remove(depositor.shops, i)
 			depositor.dirty = true
-			--depositor.save()
+			return
 		end
 	end
 end

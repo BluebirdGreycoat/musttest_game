@@ -338,6 +338,11 @@ easyvend.machine_check = function(pos, node)
 		status = "Awaiting configuration by owner."
 	end
 
+	if currency.is_currency(itemname) then
+		status = "Cannot treat currency as a directly saleable item!"
+		active = false
+	end
+
 	-- If the currency type is depreciated, then this warning overrides all others.
 	if not currency.is_currency(machine_currency) then
 		status = "Machine uses a depreciated currency standard!"
@@ -536,6 +541,14 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 	-- Check currency.
 	if not currency.is_currency(machine_currency) then
 		meta:set_string("status", "Machine uses a depreciated currency standard!")
+		easyvend.machine_disable(pos, node, sendername)
+		easyvend.set_formspec(pos)
+		return
+	end
+
+	-- Cannot sell or buy currency directly.
+	if currency.is_currency(itemname) then
+		meta:set_string("status", "Cannot treat currency as a directly saleable item!")
 		easyvend.machine_disable(pos, node, sendername)
 		easyvend.set_formspec(pos)
 		return
@@ -1108,8 +1121,15 @@ easyvend.allow_metadata_inventory_put = function(pos, listname, index, stack, pl
 			if stack==nil then
 				inv:set_stack( "item", 1, nil )
 			else
-				inv:set_stack( "item", 1, stack:get_name() )
-				meta:set_string("itemname", stack:get_name())
+				local sn = stack:get_name()
+
+				-- Do not permit currency denominations to be placed in this slot.
+				if currency.is_currency(sn) then
+					return 0
+				end
+
+				inv:set_stack("item", 1, sn)
+				meta:set_string("itemname", sn)
 				easyvend.set_formspec(pos)
 			end
 		end

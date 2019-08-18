@@ -350,7 +350,6 @@ easyvend.machine_check = function(pos, node)
 	end
 
 	meta:set_string("status", status)
-	meta:set_string("infotext", easyvend.make_infotext(pos, node.name, machine_owner, cost, number, itemname))
 	itemname=itemstack:get_name()
 	meta:set_string("itemname", itemname)
 
@@ -363,6 +362,9 @@ easyvend.machine_check = function(pos, node)
 	elseif node.name == "easyvend:vendor_on" or node.name == "easyvend:depositor_on" then
 		if not active then change = easyvend.machine_disable(pos, node) end
 	end
+
+	local current_node = minetest.get_node(pos)
+	meta:set_string("infotext", easyvend.make_infotext(pos, current_node.name, machine_owner, cost, number, itemname))
 	easyvend.set_formspec(pos)
 	return change
 end

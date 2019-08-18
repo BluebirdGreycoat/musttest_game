@@ -266,9 +266,11 @@ easyvend.machine_check = function(pos, node)
 
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then
+		-- Vending machine.
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, true)
 		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, false)
 	else
+		-- Depositing machine.
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, true)
 		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, false)
 	end
@@ -338,7 +340,6 @@ easyvend.machine_check = function(pos, node)
 
 	-- If the currency type is depreciated, then this warning overrides all others.
 	if not currency.is_currency(machine_currency) then
-		--active = false -- Don't ruin old shops!
 		status = "Machine uses a depreciated currency standard!"
 		active = false
 	end
@@ -547,9 +548,11 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then
+		-- Vending.
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, true)
 		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, false)
 	else
+		-- Depositing.
 		chest_pos_remove, chest_error_remove = easyvend.find_connected_chest(machine_owner, pos, machine_currency, check_wear, cost, true)
 		chest_pos_add, chest_error_add = easyvend.find_connected_chest(machine_owner, pos, itemname, check_wear, number, false)
 	end
@@ -750,6 +753,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin)
 								vchest_inv:add_item(vchest_name, playerstacks[i])
 							end
 						end
+
 						meta:set_string("message", "Item sold.")
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
@@ -883,18 +887,18 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 	local owner = meta:get_string("owner")
 	local sendername = sender:get_player_name(sender)
     
-    if fields.easyvend_currency_image then
-        if meta:get_int("configmode") == 1 and sendername == owner then
-            
-            local idx = meta:get_int("machine_currency_idx") or initial_currency
-            idx = idx + 1
-            if idx > #currency_types then idx = 1 end
-            meta:set_string("machine_currency", currency_types[idx])
-            meta:set_int("machine_currency_idx", idx)
-            
-            easyvend.set_formspec(pos)
-        end
-    end
+	if fields.easyvend_currency_image then
+		if meta:get_int("configmode") == 1 and sendername == owner then
+			-- Toggle through possible banknote denominations.
+			local idx = meta:get_int("machine_currency_idx") or initial_currency
+			idx = idx + 1
+			if idx > #currency_types then idx = 1 end
+			meta:set_string("machine_currency", currency_types[idx])
+			meta:set_int("machine_currency_idx", idx)
+
+			easyvend.set_formspec(pos)
+		end
+	end
 
 	if fields.config or fields.save or fields.usermode then
 		if sender:get_player_name() == owner then
@@ -1052,19 +1056,34 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 		if (inv ~= nil) then
 			if (itemname ~= nil and amount ~= nil and removing ~= nil and check_wear ~= nil) then
 				local chest_has, chest_free
-				local stack = {name=itemname, count=amount, wear=0, metadata=""}
-				local stack_max = minetest.registered_items[itemname].stack_max
+				-- We're going to query the chest to answer two questions:
+				-- Does the chest contain the item in the amount requested?
+				-- Does the chest contain free slots suitable to store the amount requested?
 
-				local stacks = math.modf(amount / stack_max)
-				local stacksremainder = math.fmod(amount, stack_max)
-				local free = stacks
-				if stacksremainder > 0 then free = free + 1 end
+				if currency.is_currency(itemname) then
+					-- Item is a fungible currency, use currency-related functions.
+					local value = currency.get_stack_value(itemname, amount)
+					local needed_free = currency.needed_empty_slots(value)
+					local has_free = easyvend.free_slots(inv, chestdef.inv_list)
+					chest_has = currency.has_cash_amount(inv, chestdef.inv_list, value)
+					chest_free = (needed_free <= has_free)
+				else
+					-- Do regular itemstack-style check.
+					local stack = {name=itemname, count=amount, wear=0, metadata=""}
+					local stack_max = minetest.registered_items[itemname].stack_max
 
-				chest_has = easyvend.check_and_get_items(inv, chestdef.inv_list, stack, check_wear)
+					local stacks = math.modf(amount / stack_max)
+					local stacksremainder = math.fmod(amount, stack_max)
+					local free = stacks
+					if stacksremainder > 0 then free = free + 1 end
+
+					chest_has = easyvend.check_and_get_items(inv, chestdef.inv_list, stack, check_wear)
+					chest_free = inv:room_for_item(chestdef.inv_list, stack) and easyvend.free_slots(inv, chestdef.inv_list) >= free
+				end
+
 				if chest_has then
 					internal.stock = internal.stock + 1
 				end
-				chest_free = inv:room_for_item(chestdef.inv_list, stack) and easyvend.free_slots(inv, chestdef.inv_list) >= free
 				if chest_free then
 					internal.space = internal.space + 1
 				end

@@ -618,7 +618,11 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
 
-					minetest.log("action", sendername .. " bought " .. number .. " " ..
+					local remote_str = ""
+					if vendor_inv then
+						remote_str = " remotely"
+					end
+					minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
 				else
@@ -676,7 +680,11 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
 
-						minetest.log("action", sendername .. " bought " .. number .. " " ..
+						local remote_str = ""
+						if vendor_inv then
+							remote_str = " remotely"
+						end
+						minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
 					end
@@ -733,7 +741,11 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
 
-					minetest.log("action", sendername .. " sold " .. number .. " " ..
+					local remote_str = ""
+					if vendor_inv then
+						remote_str = " remotely"
+					end
+					minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
 				else
@@ -792,7 +804,11 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
 
-						minetest.log("action", sendername .. " sold " .. number .. " " ..
+						local remote_str = ""
+						if vendor_inv then
+							remote_str = " remotely"
+						end
+						minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
 					end

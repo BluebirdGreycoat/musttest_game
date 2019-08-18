@@ -106,7 +106,8 @@ function depositor.load()
 	-- Custom file format. minetest.serialize() is unusable for large tables.
 	depositor.shops = {}
 	local file, err = io.open(depositor.datafile, "r")
-	if not file or err then
+	if err then
+		minetest.log("error", "Failed to read " .. depositor.datafile .. ": " .. err)
 		return
 	end
 	local datastring = file:read("*all")
@@ -116,7 +117,7 @@ function depositor.load()
 	file:close()
 
 	local records = string.split(datastring, "\n")
-	for _, record in ipairs(records) do
+	for record_number, record in ipairs(records) do
 		local data = string.split(record, ",")
 		if #data >= 10 then
 			local x = tonumber(data[1])
@@ -140,13 +141,18 @@ function depositor.load()
 
 			if x and y and z and o and i and c and t and a and n and r then
 				table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
+			else
+				minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
 			end
+		else
+			minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt!")
 		end
 	end
 
 	depositor.drops = {}
 	local file, err = io.open(depositor.dropfile, "r")
 	if not file or err then
+		minetest.log("error", "Failed to read " .. depositor.dropfile .. ": " .. err)
 		return
 	end
 	local datastring = file:read("*all")
@@ -185,7 +191,7 @@ function depositor.save()
 			end
 
 			if x and y and z and t and o and i and c and a and r and n then
-				-- x,y,z,owner,item,cost,type
+				-- x,y,z,owner,item,cost,type,active,number,currency
 				datastring = datastring ..
 					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "," .. a .. "," .. n .. "," .. r .. "\n"
 			end

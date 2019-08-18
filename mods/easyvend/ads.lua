@@ -131,7 +131,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		end
 
 		if not passport.player_registered(pname) then
-			minetest.chat_send_player(pname, "# Server: You must be a colony citizen before you can purchace a shop advertisement!")
+			minetest.chat_send_player(pname, "# Server: You must be a Citizen of the Colony before you can purchase a shop advertisement!")
 			easyvend.sound_error(pname)
 			goto error
 		end
@@ -381,7 +381,7 @@ function ads.generate_formspec(pos, pname, booth)
 				local cdef = minetest.registered_items[v.currency]
 				if def and cdef then
 					str = str .. v.number .. "x " .. utility.get_short_desc(def.description or "Unknown Item")
-					str = str .. " For " .. v.cost .. "x " .. utility.get_short_desc(cdef.description or "Unknown Item")
+					str = str .. " For " .. currency.get_stack_value(v.currency, v.cost) .. " Minegeld"
 
 					str = minetest.formspec_escape(str)
 					shoplist = shoplist .. str

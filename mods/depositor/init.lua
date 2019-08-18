@@ -107,7 +107,7 @@ function depositor.load()
 	depositor.shops = {}
 	local file, err = io.open(depositor.datafile, "r")
 	if err then
-		minetest.log("error", "Failed to read " .. depositor.datafile .. ": " .. err)
+		minetest.log("error", "Failed to open " .. depositor.datafile .. " for reading: " .. err)
 		return
 	end
 	local datastring = file:read("*all")
@@ -152,7 +152,7 @@ function depositor.load()
 	depositor.drops = {}
 	local file, err = io.open(depositor.dropfile, "r")
 	if not file or err then
-		minetest.log("error", "Failed to read " .. depositor.dropfile .. ": " .. err)
+		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for reading: " .. err)
 		return
 	end
 	local datastring = file:read("*all")
@@ -199,6 +199,7 @@ function depositor.save()
 	end
 	local file, err = io.open(depositor.datafile, "w")
 	if err then
+		minetest.log("error", "Failed to open " .. depositor.datafile .. " for writing: " .. err)
 		return
 	end
 	file:write(datastring)
@@ -206,6 +207,7 @@ function depositor.save()
 
 	local file, err = io.open(depositor.dropfile, "w")
 	if err then
+		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for writing: " .. err)
 		return
 	end
 	local datastring = minetest.serialize(depositor.drops)

@@ -606,6 +606,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 				if cost <= cost_stack_max and number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
 					currency.remove_cash(player_inv, pin, pricewithtax)
+
 					if check_wear then
 						rchest_inv:set_stack(rchestdef.inv_list, chest_out[1].id, "")
 						player_inv:add_item(pin, chest_out[1].item)
@@ -613,10 +614,15 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						stack = rchest_inv:remove_item(rchestdef.inv_list, stack)
 						player_inv:add_item(pin, stack)
 					end
+
 					currency.add_cash(vchest_inv, vchest_name, price)
+
 					meta:set_string("message", "Item bought.")
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
+
+					-- Deliver tax to the colonial government.
+					currency.record_tax_income(pricewithtax - price)
 
 					local remote_str = ""
 					if vendor_inv then
@@ -680,6 +686,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
 
+						-- Deliver tax to the colonial government.
+						currency.record_tax_income(pricewithtax - price)
+
 						local remote_str = ""
 						if vendor_inv then
 							remote_str = " remotely"
@@ -740,6 +749,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					meta:set_string("message", "Item sold.")
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
+
+					-- Deliver tax to the colonial government.
+					currency.record_tax_income(price - pricewithtax)
 
 					local remote_str = ""
 					if vendor_inv then
@@ -803,6 +815,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						meta:set_string("message", "Item sold.")
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
+
+						-- Deliver tax to the colonial government.
+						currency.record_tax_income(price - pricewithtax)
 
 						local remote_str = ""
 						if vendor_inv then

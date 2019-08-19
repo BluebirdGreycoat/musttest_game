@@ -465,6 +465,23 @@ end
 
 
 
+-- Shall be called whenever stuff is purchased (vending/depositing) and tax is added/deducted.
+-- The tax value is stored so we keep track of how much currency from taxes we have.
+function currency.record_tax_income(amount)
+	if amount <= 0 then
+		return
+	end
+
+	if not currency.data.taxes_stored then
+		currency.data.taxes_stored = 0
+	end
+
+	currency.data.taxes_stored = currency.data.taxes_stored + amount
+	currency.dirty = true
+end
+
+
+
 function currency.load()
 	currency.data = {}
 	local file, err = io.open(currency.filename, "r")

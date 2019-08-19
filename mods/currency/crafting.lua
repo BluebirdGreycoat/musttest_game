@@ -147,6 +147,88 @@ minetest.register_craft({
 
 minetest.register_craft({
 	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_50",
+		"currency:minegeld_20",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_50",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_20",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "currency:minegeld_100",
+	recipe = {
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_20",
+		"currency:minegeld_10",
+		"currency:minegeld_10",
+	},
+})
+
+minetest.register_craft({
+	type = "shapeless",
 	output = "currency:minegeld_50 2",
 	recipe = {"currency:minegeld_100" },
 })

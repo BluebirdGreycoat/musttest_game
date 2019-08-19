@@ -1,8 +1,6 @@
 
 easyvend = easyvend or {}
-
-
--- TODO: Improve mod compability
+easyvend.modpath = minetest.get_modpath("easyvend")
 
 local slots_max = 31
 
@@ -11,23 +9,17 @@ local registered_chests = easyvend.registered_chests
 
 
 
-local currency_types = {
-	"currency:minegeld",
-	"currency:minegeld_5",
-	"currency:minegeld_10",
-	"currency:minegeld_50",
-	"currency:minegeld_100",
-}
+local currency_types = {}
 local initial_currency = 1
 
+for k, v in ipairs(currency.note_names) do
+	table.insert(currency_types, v)
+end
 
-
---easyvend.currency = "default:diamond"
---easyvend.currency_desc = "Diamond"
-
---local cost_stack_max = minetest.registered_items[easyvend.currency].stack_max
-local cost_stack_max = 64
+local cost_stack_max = currency.stackmax
 local maxcost = cost_stack_max * slots_max
+
+
 
 -- Allow for other mods to register custom chests
 easyvend.register_chest = function(node_name, inv_list, meta_owner)
@@ -66,7 +58,7 @@ easyvend.check_and_get_items = function(inventory, listname, itemtable, check_we
 end
 
 
-easyvend.free_slots= function(inv, listname)
+easyvend.free_slots = function(inv, listname)
 	local size = inv:get_size(listname)
 	local free = 0
 	for i=1,size do

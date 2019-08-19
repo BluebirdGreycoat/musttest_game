@@ -3,4 +3,5 @@ grinder
 chests
 coresounds
 screwdriver?
-reload?
+reload
+currency

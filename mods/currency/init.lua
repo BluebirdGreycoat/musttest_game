@@ -29,22 +29,31 @@ currency.filename = minetest.get_worldpath() .. "/currency.txt"
 
 local currency_names = {
 	"currency:minegeld",
+	"currency:minegeld_2",
 	"currency:minegeld_5",
 	"currency:minegeld_10",
+	"currency:minegeld_20",
 	"currency:minegeld_50",
 	"currency:minegeld_100",
 }
 
-local currency_values = {1, 5, 10, 50, 100}
+local currency_values = {1, 2, 5, 10, 20, 50, 100}
 
 local currency_values_by_name = {
 	["currency:minegeld"] = 1,
+	["currency:minegeld_2"] = 2,
 	["currency:minegeld_5"] = 5,
 	["currency:minegeld_10"] = 10,
+	["currency:minegeld_20"] = 20,
 	["currency:minegeld_50"] = 50,
 	["currency:minegeld_100"] = 100,
 }
 
+local currency_count = 7 -- Number of denominations.
+
+-- Export as public API (indexed arrays).
+currency.note_names = currency_names
+currency.note_values = currency_values
 
 
 -- Obtain the total value given a denomination and a count of the number of banknotes.
@@ -82,7 +91,7 @@ function currency.needed_empty_slots(amount)
 	local stackmax = currency.stackmax
 	local remainder = amount
 
-	local idx = 5
+	local idx = currency_count
 	while idx > 0 do
 		local denom = currency_values[idx]
 		local count = math.modf(remainder / denom)
@@ -125,7 +134,7 @@ function currency.room_for_cash(inv, name, amount)
 			local count = 0
 
 			-- Find the denomination value just smaller than the remaining cash we need to fit.
-			local idx = 5
+			local idx = currency_count
 			while count < 1 and idx > 0 do
 				denom = currency_values[idx]
 				count = math.modf(remainder / denom)
@@ -207,7 +216,7 @@ function currency.add_cash(inv, name, amount)
 	local size = inv:get_size(name)
 	local stackmax = currency.stackmax
 	local remainder = amount
-	local largest_denom = 5
+	local largest_denom = currency_count
 	local do_stack_combining = false
 
 	-- We check each slot individually.

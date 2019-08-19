@@ -2,6 +2,8 @@
 currency = currency or {}
 currency.modpath = minetest.get_modpath("currency")
 currency.stackmax = 10
+currency.data = currency.data or {}
+currency.dirty = true
 
 -- Test functions. These are also part of the public API, and work with the player's main inventory ("main").
 --
@@ -462,9 +464,26 @@ end
 
 
 
+function currency.load()
+	currency.dirty = false
+end
+
+
+
+function currency.save()
+	if currency.dirty then
+		-- Save data.
+	end
+	currency.dirty = false
+end
+
+
+
 if not currency.registered then
 	dofile(currency.modpath .. "/craftitems.lua")
 	dofile(currency.modpath .. "/crafting.lua")
+
+	currency.load()
 
 	local c = "currency:core"
 	local f = currency.modpath .. "/init.lua"

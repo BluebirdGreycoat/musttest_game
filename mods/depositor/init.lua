@@ -161,6 +161,8 @@ function depositor.load()
 		end
 		file:close()
 	end
+
+	depositor.dirty = false
 end
 
 

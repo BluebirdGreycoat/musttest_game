@@ -6,6 +6,13 @@ minetest.register_craftitem("currency:minegeld", {
 	groups = {minegeld = 1, flammable = 3},
 })
 
+minetest.register_craftitem("currency:minegeld_2", {
+	description = "Two Minegeld Banknote",
+	inventory_image = "minegeld_2.png",
+	stack_max = currency.stackmax,
+	groups = {minegeld = 1, flammable = 3},
+})
+
 minetest.register_craftitem("currency:minegeld_5", {
 	description = "Five Minegeld Banknote",
 	inventory_image = "minegeld_5.png",
@@ -16,6 +23,13 @@ minetest.register_craftitem("currency:minegeld_5", {
 minetest.register_craftitem("currency:minegeld_10", {
 	description = "Ten Minegeld Banknote",
 	inventory_image = "minegeld_10.png",
+	stack_max = currency.stackmax,
+	groups = {minegeld = 1, flammable = 3},
+})
+
+minetest.register_craftitem("currency:minegeld_20", {
+	description = "Twenty Minegeld Banknote",
+	inventory_image = "minegeld_20.png",
 	stack_max = currency.stackmax,
 	groups = {minegeld = 1, flammable = 3},
 })

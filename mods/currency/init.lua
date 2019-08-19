@@ -4,6 +4,7 @@ currency.modpath = minetest.get_modpath("currency")
 currency.stackmax = 10
 currency.data = currency.data or {}
 currency.dirty = true
+currency.filename = minetest.get_worldpath() .. "/currency.txt"
 
 -- Test functions. These are also part of the public API, and work with the player's main inventory ("main").
 --
@@ -465,6 +466,20 @@ end
 
 
 function currency.load()
+	currency.data = {}
+	local file, err = io.open(currency.filename, "r")
+	if err then
+		minetest.log("error", "Failed to open " .. currency.filename .. " for reading: " .. err)
+	else
+		local datastring = file:read("*all")
+		if datastring and datastring ~= "" then
+			local data = minetest.deserialize(datastring)
+			if data and type(data) == "table" then
+				currency.data = data
+			end
+		end
+		file:close()
+	end
 	currency.dirty = false
 end
 
@@ -473,6 +488,16 @@ end
 function currency.save()
 	if currency.dirty then
 		-- Save data.
+		local file, err = io.open(currency.filename, "w")
+		if err then
+			minetest.log("error", "Failed to open " .. currency.filename .. " for writing: " .. err)
+		else
+			local datastring = minetest.serialize(currency.data)
+			if datastring then
+				file:write(datastring)
+			end
+			file:close()
+		end
 	end
 	currency.dirty = false
 end

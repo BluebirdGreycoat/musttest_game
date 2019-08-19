@@ -11,7 +11,7 @@ ads.titlelen = 64
 ads.viewrange = 5000 -- Distance at which ads are visible.
 ads.marketrange = 10 -- Distance at which shops are visible (distance from ad source).
 ads.days = 30
-ads.ad_cost = 1525
+ads.ad_cost = 250
 ads.tax = 3
 
 

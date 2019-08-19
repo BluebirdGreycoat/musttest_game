@@ -20,14 +20,6 @@ local modpath = minetest.get_modpath("moreores")
 dofile(modpath .. "/_config.txt")
 dofile(modpath .. "/tools.lua")
 
--- `mg` support:
--- Disabled. By MustTest
---[[
-if minetest.get_modpath("mg") then
-	dofile(modpath .. "/mg.lua")
-end
---]]
-
 -- Utility functions
 -- =================
 

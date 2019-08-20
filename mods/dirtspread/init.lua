@@ -64,7 +64,7 @@ minetest.register_abm({
 })
 
 
-
+--[[
 minetest.register_craft({
 	output = "default:dirt_with_snow",
 	recipe = {
@@ -72,6 +72,7 @@ minetest.register_craft({
 		{"default:dirt"},
 	},
 })
+--]]
 
 
 

@@ -126,16 +126,15 @@ function depositor.load()
 					local n = tonumber(data[9])
 					local r = tostring(data[10])
 
-					if a == 0 then
-						a = false
-					elseif a == 1 then
-						a = true
-					else
-						a = false
-					end
-
 					if x and y and z and o and i and c and t and a and n and r then
-						table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
+						local act = false
+						if a == 0 then
+							act = false
+						elseif a == 1 then
+							act = true
+						end
+
+						table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=act})
 					else
 						minetest.log("error", "Could not deserialize record #" .. record_number .. " from shops.txt! Data: " .. record)
 					end

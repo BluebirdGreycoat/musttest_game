@@ -15,40 +15,58 @@ ads.tax = 3
 
 
 
-function ads.generate_submission_formspec()
+function ads.generate_submission_formspec(data)
 	local esc = minetest.formspec_escape
+
+	local title_text = ""
+	local body_text = ""
+	local edit_mode_str = ""
+
+	local submit_name = "submit"
+	local submit_text = "Submit (Cost: " .. ads.ad_cost .. " MG)"
+
+	if data then
+		title_text = data.title_text
+		body_text = data.body_text
+
+		submit_name = "confirmedit"
+		submit_text = "Confirm Edits"
+
+		edit_mode_str = " [EDIT MODE]"
+	end
 
 	local formspec =
 		"size[10,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;" .. esc("Submit a public advertisement for your shop to enable remote trading.") .. "]" ..
+		"label[0,0;" .. esc("Submit a public advertisement for your shop to enable remote trading." .. edit_mode_str) .. "]" ..
 		"label[0,0.4;" .. esc("Having your shop listed in the public market directory also increases its visibility.") .. "]" ..
 		"label[0,1.0;" .. esc("Write your shop’s tagline here. It is limited to " .. ads.titlelen .. " characters. Example: ‘Buy Wood Here!’") .. "]" ..
 		"item_image[9,0;1,1;currency:minegeld_100]" ..
-		"field[0.3,1.7;10,1;title;;]"
+		"field[0.3,1.7;10,1;title;;" .. esc(title_text) .. "]"
 
 	formspec = formspec ..
 		"label[0,2.5;" .. esc("Enter a description of your shop. This might include details on items sold, and pricing.") .. "]" ..
 		"label[0,2.9;" .. esc("You may also want to include instructions on how to find your shop.") .. "]" ..
 		"label[0,3.3;" .. esc("You should make sure the text is " .. ads.bodylen .. " characters or less.") .. "]" ..
-		"textarea[0.3,3.8;10,3.0;text;;]"
+		"textarea[0.3,3.8;10,3.0;text;;" .. esc(body_text) .. "]"
 
 	formspec = formspec ..
 		"label[0,6.4;" .. esc("Note that you SHOULD submit your advertisement from the location of your shop.") .. "]" ..
 		"label[0,6.8;" .. esc("If you submit elsewhere, vending/depositing machines will not be available for remote trading.") .. "]" ..
 		"button[5,7.3;2,1;cancel;" .. esc("Cancel") .. "]" ..
-		"button[7,7.3;3,1;submit;" .. esc("Submit (Cost: " .. ads.ad_cost .. " MG)") .. "]" ..
+		"button[7,7.3;3,1;" .. submit_name .. ";" .. esc(submit_text) .. "]" ..
 		"field_close_on_enter[title;false]" ..
 		"item_image[0,7.3;1,1;currency:minegeld_100]"
+
 	return formspec
 end
 
 
 
-function ads.show_submission_formspec(pos, pname, booth)
-	local formspec = ads.generate_submission_formspec()
+function ads.show_submission_formspec(pos, pname, booth, data)
+	local formspec = ads.generate_submission_formspec(data)
 	local b = "|"
 	if booth then
 		b = "|booth"
@@ -154,6 +172,14 @@ function ads.on_receive_submission_fields(player, formname, fields)
 
 	if not booth then
 		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
+		easyvend.sound_error(pname)
+		return true
+	end
+
+	-- Ensure player data exists.
+	if not ads.players[pname] then
+		minetest.chat_send_player(pname, "# Server: Error: userdata not initialized.")
+		easyvend.sound_error(pname)
 		return true
 	end
 
@@ -165,22 +191,33 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		-- Everything good.
 	else
 		minetest.chat_send_player(pname, "# Server: You don't have permission to do that.")
+		easyvend.sound_error(pname)
 		return true
 	end
 
-	if fields.submit then
-		local inv = player:get_inventory()
-		--local gotgold = inv:contains_item("main", ItemStack("currency:minegeld_100 10"))
-		local gotgold = currency.has_cash_amount(inv, "main", ads.ad_cost)
+	if fields.submit or fields.confirmedit then
+		local inv
 
-		if not gotgold then
-			minetest.chat_send_player(pname, "# Server: You must be able to pay " .. ads.ad_cost .. " minegeld to register an advertisement for your shop!")
-			easyvend.sound_error(pname)
-			goto error
+		if fields.submit then
+			inv = player:get_inventory()
+			local gotgold = currency.has_cash_amount(inv, "main", ads.ad_cost)
+
+			if not gotgold then
+				minetest.chat_send_player(pname, "# Server: You must be able to pay " .. ads.ad_cost .. " minegeld to register an advertisement for your shop!")
+				easyvend.sound_error(pname)
+				goto error
+			end
+		elseif fields.confirmedit then
+			local str = ads.players[pname].editname
+			if not str or str == "" then
+				minetest.chat_send_player(pname, "# Server: The name of the advertisement to be edited was not specified.")
+				easyvend.sound_error(pname)
+				goto error
+			end
 		end
 
 		if not passport.player_registered(pname) then
-			minetest.chat_send_player(pname, "# Server: You must be a Citizen of the Colony before you can purchase a shop advertisement!")
+			minetest.chat_send_player(pname, "# Server: You must be a Citizen of the Colony before you can purchase or edit a shop advertisement!")
 			easyvend.sound_error(pname)
 			goto error
 		end
@@ -198,11 +235,24 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		end
 
 		-- Make sure a shop with this title doesn't already exist.
-		for k, v in ipairs(ads.data) do
-			if v.shop == fields.title then
-				minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
-				easyvend.sound_error(pname)
-				goto error
+		if fields.submit then
+			for k, v in ipairs(ads.data) do
+				if v.shop == fields.title then
+					minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
+					easyvend.sound_error(pname)
+					goto error
+				end
+			end
+		elseif fields.confirmedit then
+			local original_name = ads.players[pname].editname or ""
+			for k, v in ipairs(ads.data) do
+				if v.shop ~= original_name then
+					if v.shop == fields.title then
+						minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
+						easyvend.sound_error(pname)
+						goto error
+					end
+				end
 			end
 		end
 
@@ -230,20 +280,35 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			goto error
     end
 
-		--minetest.close_formspec(pname, formname)
 		ambiance.sound_play("easyvend_activate", player:get_pos(), 0.5, 10)
 
-		--inv:remove_item("main", ItemStack("currency:minegeld_100 10"))
-		currency.remove_cash(inv, "main", ads.ad_cost)
-		ads.add_entry({
-			shop = fields.title or "No Title Set",
-			pos = pos, -- Records the position at which the advertisement was submitted.
-			owner = pname,
-			custom = fields.text or "No Text Submitted",
-			date = os.time(),
-		})
+		if fields.submit then
+			currency.remove_cash(inv, "main", ads.ad_cost)
+			ads.add_entry({
+				shop = fields.title or "No Title Set",
+				pos = pos, -- Records the position at which the advertisement was submitted.
+				owner = pname,
+				custom = fields.text or "No Text Submitted",
+				date = os.time(),
+			})
+		elseif fields.confirmedit then
+			for k, v in ipairs(ads.data) do
+				if v.shop == ads.players[pname].editname then
+					v.shop = fields.title or "No Title Set"
+					v.custom = fields.text or "No Text Submitted"
+					ads.dirty = true
+					ads.players = {} -- Force refetching data for all players.
+					break
+				end
+			end
+		end
 
-		minetest.chat_send_player(pname, "# Server: Advertisement submitted.")
+		if fields.submit then
+			minetest.chat_send_player(pname, "# Server: Advertisement submitted.")
+		elseif fields.confirmedit then
+			minetest.chat_send_player(pname, "# Server: Advertisement updated.")
+		end
+
 		ads.show_formspec(pos, pname, booth)
 		do return true end
 
@@ -620,7 +685,13 @@ function ads.on_receive_fields(player, formname, fields)
 						if sel >= 1 and sel <= #data then
 							if data[sel].owner == pname or minetest.check_player_privs(pname, "server") then
 								ads.players[pname].shopselect = 0
-								minetest.chat_send_player(pname, "# Server: Would edit advertisement titled: \"" .. data[sel].shop .. "\"!")
+								ads.players[pname].editname = data[sel].shop -- Record name of the advertisement the player will be editing.
+								local edit_info = {
+									title_text = data[sel].shop
+									body_text = data[sel].custom
+								}
+								ads.show_submission_formspec(pos, pname, booth, edit_info)
+								return true
 							else
 								-- Player doesn't have privs to edit this record.
 								minetest.chat_send_player(pname, "# Server: The selected advertisement does not belong to you.")
@@ -901,7 +972,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 				easyvend.sound_error(pname)
 			end
 		else
-			minetest.chat_send_player(pname, "# Server: Error: 0xDEADBEEF 5392 (Please report).")
+			minetest.chat_send_player(pname, "# Server: Error: 0xDEADBEEF 5392 (please report).")
 			easyvend.sound_error(pname)
 		end
 		return true

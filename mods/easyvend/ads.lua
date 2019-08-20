@@ -557,6 +557,24 @@ function ads.on_receive_fields(player, formname, fields)
 					end
 				elseif fields.editrecord then
 				elseif fields.deleterecord then
+					local sel = ads.players[pname].selected or 0
+					if sel ~= 0 then
+						local data = ads.players[pname].ads or {}
+						if sel >= 1 and sel < #data then
+							if data[sel].owner == pname or minetest.check_player_privs(pname, "server") then
+								ads.players[pname].shopselect = 0
+								minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. data[sel].shop .. "\"!")
+							else
+								minetest.chat_send_player(pname, "# Server: The selected advertisement does not belong to you.")
+							end
+						else
+							-- Selection index out of range.
+							minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+						end
+					else
+						-- Nothing selected.
+						minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+					end
 				end
 
 			else
@@ -564,6 +582,9 @@ function ads.on_receive_fields(player, formname, fields)
 				minetest.chat_send_player(pname, "# Server: You do not have permission to do that.")
 			end
 		end
+	else
+		-- Player sent fields requiring a market booth, but this is a "detached" formspec.
+		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
 	end
 
 	ads.show_formspec(pos, pname, booth)

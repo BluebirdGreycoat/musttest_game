@@ -90,13 +90,33 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	formspec = formspec ..
 		"button[0,5.3;2,1;backinv;Back]"
 
+	local add_setpoint_tip = function(formspec, name)
+		local text = "Both you and your potential customers must have a trading booth\n" ..
+			"marked as their remote delivery point in order for remote trading to work.\n" ..
+			"This is also required if you are a buyer looking to purchase items remotely.\n" ..
+			"\n"
+
+		local dp = depositor.get_drop_location(pname)
+		if dp then
+			text = text .. "Your currently registered delivery address is " .. rc.pos_to_namestr(dp) .. "."
+		else
+			text = text .. "You currently have no remote delivery address set!"
+		end
+
+		formspec = formspec ..
+			"tooltip[" .. name .. ";" .. minetest.formspec_escape(text) .. "]"
+		return formspec
+	end
+
 	local p2 = depositor.get_drop_location(pname)
 	if p2 and vector.equals(pos, p2) then
 		formspec = formspec ..
 			"button[2,5.3;3,1;unsetpoint;Revoke Delivery Point]"
+		formspec = add_setpoint_tip(formspec, "unsetpoint")
 	else
 		formspec = formspec ..
 			"button[2,5.3;3,1;setpoint;Mark Delivery Point]"
+		formspec = add_setpoint_tip(formspec, "setpoint")
 	end
 
 	local b = "|"

@@ -294,11 +294,17 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		elseif fields.confirmedit then
 			for k, v in ipairs(ads.data) do
 				if v.shop == ads.players[pname].editname then
-					v.shop = fields.title or "No Title Set"
-					v.custom = fields.text or "No Text Submitted"
-					ads.dirty = true
-					ads.players = {} -- Force refetching data for all players.
-					break
+					if v.owner == pname or minetest.check_player_privs(pname, "server") then
+						v.shop = fields.title or "No Title Set"
+						v.custom = fields.text or "No Text Submitted"
+						ads.dirty = true
+						ads.players = {} -- Force refetching data for all players.
+						break
+					else
+						minetest.chat_send_player("# Server: Advertisement was submitted by someone else! You do not have permission to edit it.")
+						easyvend.sound_error(pname)
+						goto error
+					end
 				end
 			end
 		end

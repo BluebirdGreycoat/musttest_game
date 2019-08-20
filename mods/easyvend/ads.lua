@@ -468,9 +468,10 @@ function ads.generate_formspec(pos, pname, booth)
 			formspec = formspec ..
 				"button[0,7.5;4,1;newadd;List Your Shop]" ..
 				"tooltip[newadd;" .. minetest.formspec_escape(
-					"Listing your shop makes it visible from other market booths within 5 kilomters of this one.\n" ..
-						"This also allows citizens to buy items from your shop using remote delivery.\n" ..
-						"Make sure you create the advertisement from the actual location of your shop!") .. "]" ..
+					"Listing your shop makes it visible to other market booths within 5 kilomters of this one.\n" ..
+						"This also allows citizens to trade using your vending/depositing machines with remote delivery.\n" ..
+						"Make sure you create the advertisement from the actual location of your shop!\n" ..
+						"The market booth automatically links with vending/depositing machines within 15 meters.") .. "]" ..
 				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..

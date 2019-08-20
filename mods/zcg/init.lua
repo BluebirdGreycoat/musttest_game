@@ -71,8 +71,9 @@ zcg.add_craft = function(input, realout, output, groups)
 			local parts = string.split(strpart, " ")
 			assert(type(parts[1]) == "string")
       local groupname = parts[1]
+			local groupcount = parts[2] or 1
       if groups[groupname] ~= nil then
-        c.items[i] = groups[groupname]
+        c.items[i] = groups[groupname] .. " " .. groupcount
       else
         for _, gi in ipairs(zcg.items_in_group(groupname)) do
           local g2 = groups

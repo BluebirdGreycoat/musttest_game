@@ -239,6 +239,14 @@ easyvend.machine_enable = function(pos, node)
 	end
 end
 
+easyvend.upgrade_currency = function(pos, meta, old_currency, old_cost)
+	if old_currency == "default:gold_ingot" then
+		meta:set_string("machine_currency", "currency:minegeld_5")
+		return ("currency:minegeld_5"), (old_cost * 25)
+	end
+	return old_currency, old_cost
+end
+
 easyvend.machine_check = function(pos, node)
 	local active = true
 	local status = "Ready."
@@ -246,15 +254,19 @@ easyvend.machine_check = function(pos, node)
 	local meta = minetest.get_meta(pos)
 
 	local machine_owner = meta:get_string("owner")
-	local number = meta:get_int("number")
-	local cost = meta:get_int("cost")
 	local itemname = meta:get_string("itemname")
+	local number = meta:get_int("number")
+
 	local check_wear = meta:get_int("wear") == 0
 	local inv = meta:get_inventory()
-	local itemstack = inv:get_stack("item",1)
+	local itemstack = inv:get_stack("item", 1)
 	local buysell = easyvend.buysell(node.name)
     
 	local machine_currency = meta:get_string("machine_currency")
+	local cost = meta:get_int("cost")
+
+	-- If the machine uses a depreciated currency, this will upgrade it using a fixed exchange rate.
+	machine_currency, cost = easyvend.upgrade_currency(pos, meta, machine_currency, cost)
 
 	local chest_pos_remove, chest_error_remove, chest_pos_add, chest_error_add
 	if buysell == "sell" then

@@ -137,7 +137,7 @@ function depositor.load()
 					if x and y and z and o and i and c and t and a and n and r then
 						table.insert(depositor.shops, {pos={x=x, y=y, z=z}, owner=o, item=i, number=n, cost=c, currency=r, type=t, active=a})
 					else
-						minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt! Data: " .. record)
+						minetest.log("error", "Could not deserialize record #" .. record_number .. " from shops.txt! Data: " .. record)
 					end
 				else
 					minetest.log("error", "Could not load record #" .. record_number .. " from shops.txt! Data: " .. record)

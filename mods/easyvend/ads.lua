@@ -476,7 +476,16 @@ function ads.generate_formspec(pos, pname, booth)
 				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..
-				"button[11.2,7.5;2,1;storage;Inventory]"
+				"button[11.2,7.5;2,1;storage;Inventory]" ..
+				"tooltip[storage;" .. minetest.formspec_escape(
+					"The inventory is used when trading remotely, while it is registered as your delivery address.\n" ..
+					"You can trade remotely from any market booth that you own. But only one booth can be your delivery point.\n" ..
+					"\n" ..
+					"When purchasing an item remotely, your market booth's inventory must have currency to pay the cost.\n" ..
+					"The purchased item will be sent to your market booth and cash will be removed from the same location.\n" ..
+					"\n" ..
+					"If you are depositing an item, your market booth must have the item in its inventory ready for transport.\n" ..
+					"Cash for the deposit will be sent to the same location.") .. "]"
 
 			local shops = ads.players[pname].shops
 			local sel = (data.shopselect or 0)
@@ -501,13 +510,7 @@ function ads.generate_formspec(pos, pname, booth)
 							"button[5,7.5;6.2,1;dotrade;" .. minetest.formspec_escape(text) .. "]" ..
 							"tooltip[dotrade;" .. minetest.formspec_escape(
 								"This will try to execute a purchase or a deposit, depending on the type of shop selected.\n" ..
-									"The transaction will be aborted if either you or the vendor did not register a market booth as your delivery address.\n" ..
-									"\n" ..
-									"If you intend to purchase the listed item, your market booth's inventory must have currency to pay the cost.\n" ..
-									"The purchased item will be sent to your market booth and cash removed from the same location.\n" ..
-									"\n" ..
-									"If you are depositing an item, you must have the item in your market booth's inventory so that it may be transported.\n" ..
-									"Cash for the deposit will be sent to the same location.") .. "]"
+									"The transaction will be aborted if anything goes wrong.") .. "]"
 					end
 				end
 			end

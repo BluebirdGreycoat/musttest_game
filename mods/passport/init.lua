@@ -86,6 +86,16 @@ passport.compose_formspec = function(pname)
     "label[1,5.6;Server Name: Must Test]" ..
     "label[1,6.0;Server Address: arklegacy.duckdns.org]" ..
     "label[1,6.4;Server Port: 30000]"
+
+	for i=1, 7, 1 do
+		local name = "xdecor:ivy"
+		if i == 1 or i == 7 then
+			name = "default:sword_steel"
+		end
+
+		formspec = formspec .. "item_image[0," .. i-1 .. ";1,1;" .. name .. "]"
+		formspec = formspec .. "item_image[6," .. i-1 .. ";1,1;" .. name .. "]"
+	end
   
   return formspec
 end

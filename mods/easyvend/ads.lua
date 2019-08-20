@@ -196,6 +196,15 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			goto error
 		end
 
+		-- Make sure a shop with this title doesn't already exist.
+		for k, v in ipairs(ads.data) do
+			if v.shop == fields.title then
+				minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
+				easyvend.sound_error(pname)
+				goto error
+			end
+		end
+
     if anticurse.check(pname, fields.text, "foul") then
 			minetest.chat_send_player(pname, "# Server: Don't include foul language, please!")
 			easyvend.sound_error(pname)

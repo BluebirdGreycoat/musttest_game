@@ -300,7 +300,7 @@ function ads.generate_formspec(pos, pname, booth)
 	local ownadcount = 0
 
 	local fs_size_x = 15.2
-	local fs_size_y = 8
+	local fs_size_y = 8.2
 
 	-- If the formspec is viewed from a market booth, we need an extra row for more buttons.
 	if booth then

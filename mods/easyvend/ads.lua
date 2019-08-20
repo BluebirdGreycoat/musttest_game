@@ -455,7 +455,7 @@ function ads.generate_formspec(pos, pname, booth)
 			-- Edit/remove add buttons.
 			formspec = formspec ..
 				"button[0,8.4;2,1;editrecord;" .. minetest.formspec_escape("Edit Record") .. "]" ..
-				"button[2,8.4;4,1;deleterecord;" .. minetest.formspec_escape("Delete Record For Refund") .. "]"
+				"button[2,8.4;4,1;deleterecord;" .. minetest.formspec_escape("Delete Record (With Refund)") .. "]"
 		end
 	end
 

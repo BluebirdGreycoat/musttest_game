@@ -98,9 +98,15 @@ function ads.show_inventory_formspec(pos, pname, booth)
 
 		local dp = depositor.get_drop_location(pname)
 		if dp then
-			text = text .. "Your currently registered delivery address is " .. rc.pos_to_namestr(dp) .. "."
+			text = text .. "Your currently registered delivery address is " .. rc.pos_to_namestr(dp) .. ".\n"
 		else
-			text = text .. "You currently have no remote delivery address set!"
+			text = text .. "You currently have no remote delivery address set!\n"
+		end
+
+		if vector.equals(dp, pos) then
+			text = text .. "This is located at this market booth here."
+		else
+			text = text .. "This is located elsewhere than the current market booth."
 		end
 
 		formspec = formspec ..

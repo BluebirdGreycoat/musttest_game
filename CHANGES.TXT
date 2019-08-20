@@ -1,3 +1,4 @@
+[2018/8/20] Added tooltips to the market booth formspec which should hopefully explain some stuff.
 [2019/8/20] Shop advertisements no longer expire after any amount of time.
 [2019/8/20] Added ability to delete a shop advertisement for a refund of the cost.
 [2019/8/18] Polished up the vending & remote trading systems, added a fungible currency with special handling functions. Fixed bugs (lots of!).

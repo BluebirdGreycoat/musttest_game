@@ -37,6 +37,7 @@ function ads.generate_submission_formspec()
 
 	formspec = formspec ..
 		"label[0,6.4;" .. esc("Note that you SHOULD submit your advertisement from the location of your shop.") .. "]" ..
+		"label[0,6.8;" .. esc("If you submit elsewhere, vending/depositing machines will not be available for remote trading.") .. "]" ..
 		"button[5,7.3;2,1;cancel;" .. esc("Cancel") .. "]" ..
 		"button[7,7.3;3,1;submit;" .. esc("Submit (Cost: " .. ads.ad_cost .. " MG)") .. "]" ..
 		"field_close_on_enter[title;false]" ..

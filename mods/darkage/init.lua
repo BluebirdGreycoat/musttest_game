@@ -321,8 +321,9 @@ if not darkage.run_once then
 		sounds = default.node_sound_stone_defaults(),
 	})
 
+	-- Sterile dirt does not grow plants. This soil is useless for farming.
 	minetest.register_node("darkage:darkdirt", {
-		description = "Dark Dirt",
+		description = "Coarse Sterile Dirt",
 		tiles = {"darkage_darkdirt.png"},
 		groups = utility.dig_groups("dirt", {falling_node=1, soil=1}),
 		sounds = default.node_sound_dirt_defaults(),

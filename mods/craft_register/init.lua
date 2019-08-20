@@ -113,23 +113,25 @@ minetest.register_craft = function(def)
     end
     
     if def.type == "compressing" then
-      local stack = ItemStack(def.recipe)
-      local name = stack:get_name()
-      local count = stack:get_count()
+      local stack = string.split(def.recipe, " ")
+      local name = tostring(stack[1])
+      local count = tonumber(stack[2] or 1)
       
       local time = def.time
       if type(time) ~= "number" then time = 6 end
       
-      if string.find(def.recipe, "^group:") then
-        registered_compression_groups[name] = {}
-        registered_compression_groups[name].time = time
-        registered_compression_groups[name].output = def.output
-				registered_compression_groups[name].count = count
-      else
-				registered_compressions[name] = {}
-				registered_compressions[name].time = time
-				registered_compressions[name].output = def.output
-				registered_compressions[name].count = count
+			if count > 0 then
+				if string.find(def.recipe, "^group:") then
+					registered_compression_groups[name] = {}
+					registered_compression_groups[name].time = time
+					registered_compression_groups[name].output = def.output
+					registered_compression_groups[name].count = count
+				else
+					registered_compressions[name] = {}
+					registered_compressions[name].time = time
+					registered_compressions[name].output = def.output
+					registered_compressions[name].count = count
+				end
 			end
       return
     end
@@ -486,7 +488,7 @@ minetest.get_craft_result = function(def)
 
             decinput.items = {}
             decinput.items[1] = ItemStack(i[1]) -- Force copy.
-            decinput.items[1]:take_item()
+            decinput.items[1]:take_item(count)
 
             return output, decinput
           end

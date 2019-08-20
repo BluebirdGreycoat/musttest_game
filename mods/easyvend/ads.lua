@@ -10,35 +10,35 @@ ads.bodylen = 1024
 ads.titlelen = 64
 ads.viewrange = 5000 -- Distance at which ads are visible.
 ads.marketrange = 15 -- Distance at which shops are visible (distance from ad source).
-ads.days = 30
 ads.ad_cost = 250
 ads.tax = 3
 
 
 
 function ads.generate_submission_formspec()
+	local esc = minetest.formspec_escape
+
 	local formspec =
 		"size[10,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;Submit a public advertisement for your shop to enable remote trading.]" ..
-		"label[0,0.4;Having your shop listed in the public market directory also increases its visibility.]" ..
-		"label[0,1.0;Write your shop’s tagline here. It is limited to " .. ads.titlelen .. " characters. Example: ‘Buy Wood Here!’]" ..
+		"label[0,0;" .. esc("Submit a public advertisement for your shop to enable remote trading.") .. "]" ..
+		"label[0,0.4;" .. esc("Having your shop listed in the public market directory also increases its visibility.") .. "]" ..
+		"label[0,1.0;" .. esc("Write your shop’s tagline here. It is limited to " .. ads.titlelen .. " characters. Example: ‘Buy Wood Here!’") .. "]" ..
 		"item_image[9,0;1,1;currency:minegeld_100]" ..
 		"field[0.3,1.7;10,1;title;;]"
 
 	formspec = formspec ..
-		"label[0,2.5;Enter a description of your shop. This might include details on items sold, and pricing.]" ..
-		"label[0,2.9;You will also want to include instructions on how to find your shop.]" ..
-		"label[0,3.3;You should make sure the text is " .. ads.bodylen .. " characters or less.]" ..
+		"label[0,2.5;" .. esc("Enter a description of your shop. This might include details on items sold, and pricing.") .. "]" ..
+		"label[0,2.9;" .. esc("You may also want to include instructions on how to find your shop.") .. "]" ..
+		"label[0,3.3;" .. esc("You should make sure the text is " .. ads.bodylen .. " characters or less.") .. "]" ..
 		"textarea[0.3,3.8;10,3.0;text;;]"
 
 	formspec = formspec ..
-		"label[0,6.4;Advertisement records are always removed exactly " .. math.floor(ads.days) .. " days after submission.]" ..
-		"label[0,6.8;Note that you should submit your advertisement from the location of your shop.]" ..
-		"button[5,7.3;2,1;cancel;Cancel]" ..
-		"button[7,7.3;3,1;submit;Submit (Cost: " .. ads.ad_cost .. " MG)]" ..
+		"label[0,6.4;" .. esc("Note that you SHOULD submit your advertisement from the location of your shop.") .. "]" ..
+		"button[5,7.3;2,1;cancel;" .. esc("Cancel") .. "]" ..
+		"button[7,7.3;3,1;submit;" .. esc("Submit (Cost: " .. ads.ad_cost .. " MG)") .. "]" ..
 		"field_close_on_enter[title;false]" ..
 		"item_image[0,7.3;1,1;currency:minegeld_100]"
 	return formspec
@@ -205,7 +205,6 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			pos = pos, -- Records the position at which the advertisement was submitted.
 			owner = pname,
 			custom = fields.text or "No Text Submitted",
-			expires = os.time() + (60*60*24*math.floor(ads.days)),
 			date = os.time(),
 		})
 
@@ -231,7 +230,6 @@ end
 function ads.get_valid_ads(pos)
 	pos = vector.round(pos)
 	local temp = {}
-	local curtime = os.time()
 	for i = 1, #(ads.data), 1 do
 		local ad = ads.data[i]
 		local str = ""
@@ -256,11 +254,6 @@ function ads.get_valid_ads(pos)
 
 		-- Ignore ads submitted in a different realm.
 		if not rc.same_realm(pos, ad.pos) then
-			goto continue
-		end
-
-		-- Don't show expired ads.
-		if ad.expires < curtime then
 			goto continue
 		end
 
@@ -382,9 +375,8 @@ function ads.generate_formspec(pos, pname, booth)
 			formspec = formspec ..
 				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> paid for this listing.") .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
-				"label[5.35,5.8;" .. esc("Expires after " .. os.date("!%Y/%m/%d", ad.expires) .. ".") .. "]" ..
-				"label[5.35,6.2;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
-				"label[5.35,6.6;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
+				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
+				"label[5.35,6.4;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end
@@ -682,29 +674,10 @@ function ads.add_entry(data)
 		pos = data.pos,					-- {x,y,z}
 		owner = data.owner, 		-- playername
 		custom = data.custom,		-- Custom text. Here are directions to my shop.
-		expires = data.expires,	-- timestamp of expiration (integer)
 		date = data.date,				-- timestamp of submission (integer)
 	}
 	ads.dirty = true
 	ads.players = {}
-end
-
-
-
-function ads.remove_expired()
-	-- Remove expired ads.
-	local temp = {}
-	local time = os.time()
-	for k, v in ipairs(ads.data) do
-		-- Ad is removed it expiration time is older than current time.
-		if v.expires > time then
-			temp[#temp+1] = v
-		else
-			ads.dirty = true
-			ads.players = {}
-		end
-	end
-	ads.data = temp
 end
 
 
@@ -722,15 +695,11 @@ function ads.load_data()
 			ads.players = {}
     end
   end
-	-- Remove expired ads after loading.
-	ads.remove_expired()
 end
 
 
 
 function ads.save_data()
-	-- Remove expired ads before saving.
-	ads.remove_expired()
 	if ads.dirty then
 		local str = minetest.serialize(ads.data)
 		if type(str) ~= "string" then return end -- Failsafe.
@@ -739,8 +708,8 @@ function ads.save_data()
 			file:write(str)
 			file:close()
 		end
-		ads.dirty = false
 	end
+	ads.dirty = false
 end
 
 
@@ -936,25 +905,6 @@ if not ads.run_once then
 	local c = "ads:core"
 	local f = ads.modpath .. "/ads.lua"
 	reload.register_file(c, f, false)
-
-	--[[
-	ads.add_entry({
-		shop = "Rabit’s Coal Pharmacy",
-		pos = {x=0,y=0,z=0},
-		owner = "Rabit",
-		custom = "You can find my shop on Fifth Av.",
-		expires = os.time() + (60*60*24*7),
-		date = os.time(),
-	})
-	ads.add_entry({
-		shop = "Fox’s Mineral Industry",
-		pos = {x=0,y=0,z=0},
-		owner = "Fox",
-		custom = "I am at the North Square. Purple building!",
-		expires = os.time() + (60*60*24*7),
-		date = os.time(),
-	})
-	--]]
 
 	minetest.register_node(":market:booth", {
 		description = "Trade Booth\n\nA market kiosk enabling remote advertising & trading.",

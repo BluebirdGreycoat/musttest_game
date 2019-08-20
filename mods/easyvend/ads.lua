@@ -595,6 +595,16 @@ function ads.generate_formspec(pos, pname, booth)
 		end
 	end
 
+	if booth and (booth_owner == pname or minetest.check_player_privs(pname, "server")) then
+		-- All good.
+	else
+		if booth then
+			formspec = formspec .. "label[0,7.5;" .. esc("You cannot use this market booth for remote trading, because you do not own it.") .. "]"
+		else
+			formspec = formspec .. "label[0,7.5;" .. esc("You cannot use this interface for remote trading, because it is detached.") .. "]"
+		end
+	end
+
 	formspec = formspec ..
 		"button[13.2,7.5;2,1;done;Done]"
 	return formspec

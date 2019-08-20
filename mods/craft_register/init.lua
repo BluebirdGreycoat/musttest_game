@@ -12,6 +12,7 @@ local registered_extracts = {}
 local registered_extracting_groups = {}
 local registered_cuttings = {}
 local registered_compressions = {}
+local registered_compression_groups = {}
 local registered_alloys = {}
 local registered_separables = {}
 
@@ -119,10 +120,17 @@ minetest.register_craft = function(def)
       local time = def.time
       if type(time) ~= "number" then time = 6 end
       
-      registered_compressions[name] = {}
-      registered_compressions[name].time = time
-      registered_compressions[name].output = def.output
-      registered_compressions[name].count = count
+      if string.find(def.recipe, "^group:") then
+        registered_compression_groups[name] = {}
+        registered_compression_groups[name].time = time
+        registered_compression_groups[name].output = def.output
+				registered_compression_groups[name].count = count
+      else
+				registered_compressions[name] = {}
+				registered_compressions[name].time = time
+				registered_compressions[name].output = def.output
+				registered_compressions[name].count = count
+			end
       return
     end
     
@@ -256,6 +264,23 @@ minetest.get_all_craft_recipes = function(item)
 
   -- Find all compression recipes for this item.
   for k, v in pairs(registered_compressions) do
+    local name = ItemStack(v.output):get_name()
+    if item == name then
+      -- Make sure the table is ready for input.
+      -- (In case no previous recipes existed for this item.)
+      if not recipes then recipes = {} end
+
+      recipes[#recipes+1] = {
+        width = 1,
+        type = "compressing",
+        items = {k .. " " .. v.count},
+        output = v,
+        method = "normal",
+      }
+    end
+  end
+
+  for k, v in pairs(registered_compression_groups) do
     local name = ItemStack(v.output):get_name()
     if item == name then
       -- Make sure the table is ready for input.
@@ -443,6 +468,30 @@ minetest.get_craft_result = function(def)
       decinput.items[1]:take_item(count)
 
       return output, decinput
+    else -- Determine if a group recipe matches.
+      local def = minetest.registered_items[name]
+      if def and def.groups then
+        for k, v in pairs(def.groups) do
+          local gkey = "group:" .. k
+          if registered_compression_groups[gkey] then
+						local count = registered_compression_groups[gkey].count
+						if i[1]:get_count() < count then goto ugh end
+
+            local output = {}
+            local decinput = {}
+
+            output.item = registered_compression_groups[gkey].output
+            output.time = registered_compression_groups[gkey].time
+            output.replacements = {}
+
+            decinput.items = {}
+            decinput.items[1] = ItemStack(i[1]) -- Force copy.
+            decinput.items[1]:take_item()
+
+            return output, decinput
+          end
+        end
+      end
     end
     ::ugh::
     return {item=ItemStack({}), time=0}, {items={}}

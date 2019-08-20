@@ -15,6 +15,14 @@ minetest.register_craftitem("plastic:plastic_sheeting", {
 })
 
 minetest.register_craft({
+	type = "compressing",
+	output = "plastic:oil_extract 2",
+	recipe = "group:leaves 6",
+	time = 6,
+})
+
+--[[
+minetest.register_craft({
   type = "shapeless",
   output = "plastic:oil_extract 4",
   recipe = {
@@ -26,6 +34,7 @@ minetest.register_craft({
     "group:leaves",
   },
 })
+--]]
 
 minetest.register_craft({
   type = "cooking",

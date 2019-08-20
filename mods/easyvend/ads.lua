@@ -505,6 +505,7 @@ function ads.generate_formspec(pos, pname, booth)
 									"\n" ..
 									"If you intend to purchase the listed item, your delivery address's inventory must have currency to pay the cost.\n" ..
 									"The purchased item will be sent to your registered delivery address market booth (you must have one set).\n" ..
+									"\n" ..
 									"If you are depositing an item, you must have the item in your delivery address's inventory so that it may be transported.\n" ..
 									"Cash for the deposit will be sent to your registered delivery address.") .. "]"
 					end

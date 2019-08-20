@@ -413,11 +413,11 @@ function ads.generate_formspec(pos, pname, booth)
 		if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
 			-- List-shop button w/ vendor image.
 			formspec = formspec ..
-				"button[0,7.3;4,1;newadd;List Your Shop]" ..
-				"item_image[4,7.3;1,1;easyvend:vendor_on]"
+				"button[0,7.5;4,1;newadd;List Your Shop]" ..
+				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..
-				"button[11.2,7.3;2,1;storage;Inventory]"
+				"button[11.2,7.5;2,1;storage;Inventory]"
 
 			local shops = ads.players[pname].shops
 			local sel = (data.shopselect or 0)
@@ -439,7 +439,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 					if text ~= "" then
 						formspec = formspec ..
-							"button[5,7.3;6.2,1;dotrade;" .. minetest.formspec_escape(text) .. "]"
+							"button[5,7.5;6.2,1;dotrade;" .. minetest.formspec_escape(text) .. "]"
 					end
 				end
 			end
@@ -447,7 +447,7 @@ function ads.generate_formspec(pos, pname, booth)
 	end
 
 	formspec = formspec ..
-		"button[13.2,7.3;2,1;done;Done]"
+		"button[13.2,7.5;2,1;done;Done]"
 	return formspec
 end
 

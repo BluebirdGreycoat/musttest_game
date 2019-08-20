@@ -338,7 +338,7 @@ if not crusher.registered then
 
 	minetest.register_craft({
 		type = "crushing",
-		output = 'default:dirt',
+		output = 'darkage:darkdirt',
 		recipe = 'default:gravel',
 		time = 60*1.5,
 	})

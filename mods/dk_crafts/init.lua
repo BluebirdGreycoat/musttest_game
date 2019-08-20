@@ -214,14 +214,6 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "darkage:darkdirt 4",
-	recipe = {
-		{"default:dirt",	"default:gravel"},
-		{"default:gravel",	"default:dirt"},
-	}
-})
-
-minetest.register_craft({
 	output = "darkage:mud 2",
 	recipe = {
 		{"default:dirt",			"default:dirt"},

@@ -10,7 +10,7 @@ if not grinder.crafts_registered then
 
 		minetest.register_craft({
       type = "grinding",
-			output = 'default:dirt',
+			output = 'darkage:darkdirt',
 			recipe = 'default:gravel',
 			time = 10,
 		})

@@ -94,7 +94,7 @@ passport.compose_formspec = function(pname)
 		end
 
 		formspec = formspec .. "item_image[0," .. i-1 .. ";1,1;" .. name .. "]"
-		formspec = formspec .. "item_image[6," .. i-1 .. ";1,1;" .. name .. "]"
+		formspec = formspec .. "item_image[9," .. i-1 .. ";1,1;" .. name .. "]"
 	end
   
   return formspec

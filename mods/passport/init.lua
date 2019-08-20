@@ -51,7 +51,7 @@ passport.compose_formspec = function(pname)
   for k, v in pairs(passport.recalls) do
     local n = v.name
     local c = v.code
-    buttons = buttons .. "button_exit[5," .. i .. ";3,1;" .. c .. ";" .. n .. "]"
+    buttons = buttons .. "button_exit[6," .. i .. ";3,1;" .. c .. ";" .. n .. "]"
     i = i + 1
   end
   
@@ -65,28 +65,27 @@ passport.compose_formspec = function(pname)
   if particle == true then boolparticle = 'true' end
   if particle == false then boolparticle = 'false' end
 
-  local formspec = "size[8,7]" ..
+  local formspec = "size[10,7]" ..
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-    "label[0,0.0;Registered citizens can teleport to any of the colony's recall locations.]" ..
-    "label[0,0.4;Server topic: https://forum.minetest.net/viewtopic.php?f=10&t=16087]" ..
-    --"label[0,0.4;This costs 1 gold ingot.]" ..
+    "label[1,0.0;Registered citizens can teleport to any of the colony's recall locations.]" ..
+    "label[1,0.4;Server topic: https://forum.minetest.net/viewtopic.php?f=10&t=16087]" ..
     buttons ..
-    "button_exit[0,1;2,1;exit;Close]" ..
-    "button_exit[2,1;2,1;mapfix;Fix Map]" ..
-    "button[2,2;2,1;email;E-Mail]" ..
-    "button[0,2;2,1;survivalist;Survivalist]" ..
-    "button[0,3;2,1;rename;Nickname]" ..
-		"button[2,3;2,1;chatfilter;Chat Filter]" ..
+    "button_exit[1,1;2,1;exit;Close]" ..
+    "button_exit[3,1;2,1;mapfix;Fix Map]" ..
+    "button[3,2;2,1;email;E-Mail]" ..
+    "button[1,2;2,1;survivalist;Survivalist]" ..
+    "button[1,3;2,1;rename;Nickname]" ..
+		"button[3,3;2,1;chatfilter;Chat Filter]" ..
     
-    "checkbox[0,4.2;toggleparticles;Enable Particles;" ..
+    "checkbox[1,4.2;toggleparticles;Enable Particles;" ..
       boolparticle .. "]" ..
-    "checkbox[0,4.8;togglechat;Enable Chat Echoing;" ..
+    "checkbox[1,4.8;togglechat;Enable Chat Echoing;" ..
       boolecho .. "]" ..
-    "label[0,5.6;Server Name: Must Test]" ..
-    "label[0,6.0;Server Address: arklegacy.duckdns.org]" ..
-    "label[0,6.4;Server Port: 30000]"
+    "label[1,5.6;Server Name: Must Test]" ..
+    "label[1,6.0;Server Address: arklegacy.duckdns.org]" ..
+    "label[1,6.4;Server Port: 30000]"
   
   return formspec
 end

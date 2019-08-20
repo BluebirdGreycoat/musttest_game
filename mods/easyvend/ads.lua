@@ -187,7 +187,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 	local node = minetest.get_node(pos)
 	local meta = minetest.get_meta(pos)
 
-	if node.name == "market:booth" and (meta:get_string("owner") ~= pname or minetest.check_player_privs(pname, "server")) then
+	if node.name == "market:booth" and (meta:get_string("owner") == pname or minetest.check_player_privs(pname, "server")) then
 		-- Everything good.
 	else
 		minetest.chat_send_player(pname, "# Server: You don't have permission to do that.")

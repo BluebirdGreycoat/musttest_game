@@ -65,7 +65,12 @@ zcg.add_craft = function(input, realout, output, groups)
   if c.items == nil then return end
   for i, item in pairs(c.items) do
     if item:sub(0,6) == "group:" then
-      local groupname = item:sub(7)
+			-- The recipe item name may contain a count value.
+			-- We must extract just the name after the "group:".
+			local strpart = item:sub(7)
+			local parts = string.split(strpart, " ")
+			assert(type(parts[1]) == "string")
+      local groupname = parts[1]
       if groups[groupname] ~= nil then
         c.items[i] = groups[groupname]
       else

@@ -376,7 +376,7 @@ function ads.generate_formspec(pos, pname, booth)
 				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> paid for this listing.") .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
 				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
-				"label[5.35,6.4;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
+				"label[5.35,6.2;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end

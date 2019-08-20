@@ -316,7 +316,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 	formspec = formspec ..
 		"item_image[14.2,0;1,1;easyvend:depositor_on]" ..
-		"textlist[0,0.9;5,5.8;adlist;"
+		"textlist[0,1;5,5.8;adlist;"
 
 	for i = 1, #(data.ads), 1 do
 		local ad = data.ads[i]
@@ -345,7 +345,7 @@ function ads.generate_formspec(pos, pname, booth)
 		strad = "entry"
 	end
 	formspec = formspec .. ";" .. data.selected .. ";false]" ..
-		"label[0,6.8;You bought " .. ownadcount .. " " .. strad .. " in this list.]"
+		"label[0,7;You bought " .. ownadcount .. " " .. strad .. " in this list.]"
 
 	local addesc = "See your shop advertisement here!"
 
@@ -400,12 +400,12 @@ function ads.generate_formspec(pos, pname, booth)
 		end
 	end
 
-	formspec = formspec .. "textlist[10,0.9;5,5.8;shoplist;" .. shoplist
+	formspec = formspec .. "textlist[10,1;5,5.8;shoplist;" .. shoplist
 	formspec = formspec .. ";" .. (data.shopselect or 0) .. ";false]"
 
 	addesc = minetest.formspec_escape(addesc)
 	formspec = formspec ..
-		"textarea[5.6,0.87;4.7,4.6;warning;;" .. addesc .. "]"
+		"textarea[5.6,0.97;4.7,4.6;warning;;" .. addesc .. "]"
 
 	if booth then
 		-- Show inventory/purchase button only if player has permissions on this booth.

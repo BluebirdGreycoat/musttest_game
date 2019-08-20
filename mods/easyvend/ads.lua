@@ -427,6 +427,7 @@ function ads.generate_formspec(pos, pname, booth)
 		fs_size_y = 9
 	end
 
+	local esc = minetest.formspec_escape
 	local formspec =
 		"size[" .. fs_size_x .. "," .. fs_size_y .. "]" ..
 		default.gui_bg ..
@@ -481,7 +482,6 @@ function ads.generate_formspec(pos, pname, booth)
 	if data.selected and data.selected >= 1 and data.selected <= #(data.ads) then
 		if data.ads[data.selected] then
 			local ad = data.ads[data.selected]
-			local esc = minetest.formspec_escape
 			formspec = formspec ..
 				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> paid for this listing.") .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..

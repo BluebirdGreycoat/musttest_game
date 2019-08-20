@@ -499,7 +499,7 @@ function ads.generate_formspec(pos, pname, booth)
 					if text ~= "" then
 						formspec = formspec ..
 							"button[5,7.5;6.2,1;dotrade;" .. minetest.formspec_escape(text) .. "]" ..
-							"tooltip[newadd;" .. minetest.formspec_escape(
+							"tooltip[dotrade;" .. minetest.formspec_escape(
 								"This will try to execute a purchase or a deposit, depending on the type of shop selected.\n" ..
 									"The transaction will be aborted if either you or the vendor did not register a delivery address.\n" ..
 									"\n" ..

@@ -467,6 +467,10 @@ function ads.generate_formspec(pos, pname, booth)
 			-- List-shop button w/ vendor image.
 			formspec = formspec ..
 				"button[0,7.5;4,1;newadd;List Your Shop]" ..
+				"tooltip[newadd;" .. minetest.formspec_escape(
+					"Listing your shop makes it visible from other market booths within 5 kilomters of this one.\n" ..
+						"This also allows citizens to buy items from your shop using remote delivery.\n" ..
+						"Make sure you create the advertisement from the actual location of your shop!") .. "]" ..
 				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..

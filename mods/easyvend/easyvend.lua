@@ -548,9 +548,12 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 
 	-- Check currency.
 	if not currency.is_currency(machine_currency) then
-		meta:set_string("status", "Machine uses a depreciated currency standard!")
-		easyvend.machine_disable(pos, node, sendername)
-		easyvend.set_formspec(pos)
+		minetest.chat_send_player(sendername, "# Server: Shop at " .. rc.pos_to_namestr(pos) .. " uses a depreciated currency, attempting to upgrade!")
+		minetest.chat_send_player(sendername, "# Server: If this happens, try to use the shop again and it may work if nothing else is wrong.")
+		easyvend.machine_check(pos, node)
+		--meta:set_string("status", "Machine uses a depreciated currency standard!")
+		--easyvend.machine_disable(pos, node, sendername)
+		--easyvend.set_formspec(pos)
 		return
 	end
 

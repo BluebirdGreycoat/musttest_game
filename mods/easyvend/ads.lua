@@ -93,7 +93,7 @@ function ads.show_inventory_formspec(pos, pname, booth)
 
 	local add_setpoint_tip = function(formspec, name)
 		local text = "Both you and your potential customers must have a trading booth\n" ..
-			"marked as their remote delivery point in order for remote trading to work.\n" ..
+			"registered as their remote delivery address in order for remote trading to work.\n" ..
 			"This is also required if you are a buyer looking to purchase items remotely.\n" ..
 			"\n"
 
@@ -468,10 +468,11 @@ function ads.generate_formspec(pos, pname, booth)
 			formspec = formspec ..
 				"button[0,7.5;4,1;newadd;List Your Shop]" ..
 				"tooltip[newadd;" .. minetest.formspec_escape(
-					"Listing your shop makes it visible to other market booths within 5 kilomters of this one.\n" ..
-						"This also allows citizens to trade using your vending/depositing machines with remote delivery.\n" ..
+					"Listing your shop makes it visible to other market booths within 5 kilometers of this one.\n" ..
+						"This also allows citizens to trade using your vending/depositing machines remotely.\n" ..
+						"\n" ..
 						"Make sure you create the advertisement from the actual location of your shop!\n" ..
-						"The market booth automatically links with vending/depositing machines within 15 meters.") .. "]" ..
+						"The market booth only links with vending/depositing machines within 15 meters.") .. "]" ..
 				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..

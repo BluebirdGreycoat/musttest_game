@@ -120,6 +120,28 @@ function ads.on_receive_submission_fields(player, formname, fields)
 	end
 	local pname = player:get_player_name()
 
+	-- Determine if we were called from a market booth.
+	local booth = false
+	if string.find(formname, "|booth") then
+		booth = true
+	end
+
+	if not booth then
+		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
+		return true
+	end
+
+	-- Check booth owner.
+	local node = minetest.get_node(pos)
+	local meta = minetest.get_meta(pos)
+
+	if node.name == "market:booth" and (meta:get_string("owner") ~= pname or minetest.check_player_privs(pname, "server")) then
+		-- Everything good.
+	else
+		minetest.chat_send_player(pname, "# Server: You don't have permission to do that.")
+		return true
+	end
+
 	if fields.submit then
 		local inv = player:get_inventory()
 		--local gotgold = inv:contains_item("main", ItemStack("currency:minegeld_100 10"))
@@ -187,11 +209,6 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			date = os.time(),
 		})
 
-		local booth = false
-		if string.find(formname, "|booth") then
-			booth = true
-		end
-
 		ads.show_formspec(pos, pname, booth)
 		do return true end
 
@@ -199,7 +216,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 	end
 
 	if fields.cancel or fields.quit then
-		if string.find(formname, "|booth") then
+		if booth then
 			ads.show_formspec(pos, pname, true)
 		else
 			minetest.close_formspec(pname, formname)
@@ -515,12 +532,7 @@ function ads.on_receive_fields(player, formname, fields)
 	if string.find(formname, "|booth") then
 		booth = true
 
-		if fields.newadd then
-			ads.show_submission_formspec(pos, pname, booth)
-			return true
-		end
-
-		if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord then
+		if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord or fields.newadd then
 			local meta = minetest.get_meta(pos)
 			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
 
@@ -588,12 +600,13 @@ function ads.on_receive_fields(player, formname, fields)
 							if owner == pname or minetest.check_player_privs(pname, "server") then
 								ads.players[pname].shopselect = 0 -- Unselect any vendor/depositor listing.
 								ads.players[pname].selected = 0 -- Reset ad selection to nil to prevent double-deletions.
-								minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. title .. "\"!")
+								--minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. title .. "\"!")
 
 								-- Search for record by owner/title and delete it.
 								for k, v in ipairs(ads.data) do
 									if v.shop == title and v.owner == owner then
 										table.remove(ads.data, k)
+										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(pname) .. "> was removed.")
 										break
 									end
 								end
@@ -612,6 +625,9 @@ function ads.on_receive_fields(player, formname, fields)
 						minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
 						easyvend.sound_error(pname)
 					end
+				elseif fields.newadd then
+					ads.show_submission_formspec(pos, pname, booth)
+					return true
 				end
 
 			else

@@ -598,17 +598,33 @@ function ads.on_receive_fields(player, formname, fields)
 							local owner = data[sel].owner
 							local title = data[sel].shop
 							if owner == pname or minetest.check_player_privs(pname, "server") then
-								ads.players[pname].shopselect = 0 -- Unselect any vendor/depositor listing.
-								ads.players[pname].selected = 0 -- Reset ad selection to nil to prevent double-deletions.
-								--minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. title .. "\"!")
+								local player_inv = player:get_inventory()
+								if currency.room_for_cash(player_inv, "main", ads.ad_cost) then
+									ads.players[pname].shopselect = 0 -- Unselect any vendor/depositor listing.
+									ads.players[pname].selected = 0 -- Reset ad selection to nil to prevent double-deletions.
+									--minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. title .. "\"!")
 
-								-- Search for record by owner/title and delete it.
-								for k, v in ipairs(ads.data) do
-									if v.shop == title and v.owner == owner then
-										table.remove(ads.data, k)
-										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(pname) .. "> was removed.")
-										break
+									-- Search for record by owner/title and delete it.
+									local found = false
+									for k, v in ipairs(ads.data) do
+										if v.shop == title and v.owner == owner then
+											table.remove(ads.data, k)
+											found = true
+											break
+										end
 									end
+
+									if found then
+										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(pname) .. "> was removed.")
+										currency.add_cash(player_inv, "main", ads.ad_cost)
+									else
+										minetest.chat_send_player(pname, "# Server: Could not locate advertisement record for deletion!")
+										easyvend.sound_error(pname)
+									end
+								else
+									-- Player doesn't have room in their inventory for the cash.
+									minetest.chat_send_player(pname, "# Server: You must have room in your inventory to receive the cash refund of " .. ads.ad_cost .. " mg.")
+									easyvend.sound_error(pname)
 								end
 							else
 								-- Player doesn't have privs to delete this record.

@@ -299,8 +299,16 @@ function ads.generate_formspec(pos, pname, booth)
 	-- Count of how many ads player owns in this list.
 	local ownadcount = 0
 
+	local fs_size_x = 15.2
+	local fs_size_y = 8
+
+	-- If the formspec is viewed from a market booth, we need an extra row for more buttons.
+	if booth then
+		fs_size_y = 9
+	end
+
 	local formspec =
-		"size[15.2,9]" ..
+		"size[" .. fs_size_x .. "," .. fs_size_y .. "]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -512,12 +520,13 @@ function ads.on_receive_fields(player, formname, fields)
 			return true
 		end
 
-		if fields.storage or fields.dotrade then
+		if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord then
 			local meta = minetest.get_meta(pos)
 			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
 
 				if fields.storage then
 					ads.show_inventory_formspec(pos, pname, booth)
+					return true
 				elseif fields.dotrade then
 					local sel = ads.players[pname].shopselect or 0
 					local shops = ads.players[pname].shops
@@ -546,10 +555,14 @@ function ads.on_receive_fields(player, formname, fields)
 							easyvend.sound_error(pname)
 						end
 					end
+				elseif fields.editrecord then
+				elseif fields.deleterecord then
 				end
 
+			else
+				-- Player sent button click on a market booth they don't own.
+				minetest.chat_send_player(pname, "# Server: You do not have permission to do that.")
 			end
-			return true
 		end
 	end
 

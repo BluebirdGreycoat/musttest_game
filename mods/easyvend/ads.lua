@@ -413,14 +413,17 @@ function ads.generate_formspec(pos, pname, booth)
 		data.shopselect = #data.shops
 	end
 
+	local meta = minetest.get_meta(pos)
+	local booth_owner = meta:get_string("owner")
+
 	-- Count of how many ads player owns in this list.
 	local ownadcount = 0
 
 	local fs_size_x = 15.2
 	local fs_size_y = 8.2
 
-	-- If the formspec is viewed from a market booth, we need an extra row for more buttons.
-	if booth then
+	-- If the formspec is viewed from an OWNED market booth, we need an extra row for more buttons.
+	if booth and (booth_owner == pname or minetest.check_player_privs(pname, "server")) then
 		fs_size_y = 9
 	end
 
@@ -533,8 +536,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		-- Show inventory/purchase button only if player has permissions on this booth.
-		local meta = minetest.get_meta(pos)
-		if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
+		if booth_owner == pname or minetest.check_player_privs(pname, "server") then
 			-- List-shop button w/ vendor image.
 			formspec = formspec ..
 				"button[0,7.5;4,1;newadd;List Your Shop]" ..
@@ -653,7 +655,7 @@ function ads.on_receive_fields(player, formname, fields)
 	if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord or fields.newadd then
 		if booth then
 			local meta = minetest.get_meta(pos)
-			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
+			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "server") then
 
 				if fields.storage then
 					ads.show_inventory_formspec(pos, pname, booth)
@@ -870,7 +872,7 @@ end
 
 
 local function has_inventory_privilege(meta, player)
-  if minetest.check_player_privs(player, "protection_bypass") then
+  if minetest.check_player_privs(player, "server") then
     return true
   end
 
@@ -965,7 +967,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 		if node.name == "market:booth" then
 			local meta = minetest.get_meta(pos)
 			-- Owner or admin may use.
-			if meta:get_string("owner") == pname or minetest.check_player_privs(player, "protection_bypass") then
+			if meta:get_string("owner") == pname or minetest.check_player_privs(player, "server") then
 				depositor.set_drop_location(pos, pname)
 				local p2 = depositor.get_drop_location(pname)
 				if p2 then

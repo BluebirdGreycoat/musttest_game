@@ -242,6 +242,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			date = os.time(),
 		})
 
+		minetest.chat_send_player(pname, "# Server: Advertisement submitted.")
 		ads.show_formspec(pos, pname, booth)
 		do return true end
 

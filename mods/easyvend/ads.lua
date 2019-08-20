@@ -693,8 +693,8 @@ function ads.on_receive_fields(player, formname, fields)
 								ads.players[pname].shopselect = 0
 								ads.players[pname].editname = data[sel].shop -- Record name of the advertisement the player will be editing.
 								local edit_info = {
-									title_text = data[sel].shop
-									body_text = data[sel].custom
+									title_text = data[sel].shop,
+									body_text = data[sel].custom,
 								}
 								ads.show_submission_formspec(pos, pname, booth, edit_info)
 								return true

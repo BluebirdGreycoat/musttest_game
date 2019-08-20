@@ -277,6 +277,7 @@ end
 
 
 
+-- Constructs the main formspec, for viewing ads and shop listings.
 function ads.generate_formspec(pos, pname, booth)
 	-- Set up player's view of the data.
 	if not ads.players[pname] then
@@ -299,7 +300,7 @@ function ads.generate_formspec(pos, pname, booth)
 	local ownadcount = 0
 
 	local formspec =
-		"size[15.2,8]" ..
+		"size[15.2,9]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -314,6 +315,7 @@ function ads.generate_formspec(pos, pname, booth)
 	end
 
 	formspec = formspec ..
+		"item_image[14.2,0;1,1;easyvend:depositor_on]" ..
 		"textlist[0,0.9;5,5.8;adlist;"
 
 	for i = 1, #(data.ads), 1 do

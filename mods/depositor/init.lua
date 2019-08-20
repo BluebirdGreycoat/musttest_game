@@ -114,7 +114,7 @@ function depositor.load()
 			local records = string.split(datastring, "\n")
 			for record_number, record in ipairs(records) do
 				local data = string.split(record, ",")
-				if #data >= 10 then
+				if type(data) == "table" and #data >= 10 then
 					local x = tonumber(data[1])
 					local y = tonumber(data[2])
 					local z = tonumber(data[3])

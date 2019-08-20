@@ -648,8 +648,10 @@ function ads.on_receive_fields(player, formname, fields)
 	local booth = false
 	if string.find(formname, "|booth") then
 		booth = true
+	end
 
-		if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord or fields.newadd then
+	if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord or fields.newadd then
+		if booth then
 			local meta = minetest.get_meta(pos)
 			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "protection_bypass") then
 
@@ -774,11 +776,11 @@ function ads.on_receive_fields(player, formname, fields)
 				minetest.chat_send_player(pname, "# Server: You do not have permission to do that.")
 				easyvend.sound_error(pname)
 			end
+		else
+			-- Player sent fields requiring a market booth, but this is a "detached" formspec.
+			minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
+			easyvend.sound_error(pname)
 		end
-	else
-		-- Player sent fields requiring a market booth, but this is a "detached" formspec.
-		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
-		easyvend.sound_error(pname)
 	end
 
 	ads.show_formspec(pos, pname, booth)

@@ -583,9 +583,20 @@ function ads.on_receive_fields(player, formname, fields)
 					if sel ~= 0 then
 						local data = ads.players[pname].ads or {}
 						if sel >= 1 and sel <= #data then
-							if data[sel].owner == pname or minetest.check_player_privs(pname, "server") then
-								ads.players[pname].shopselect = 0
-								minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. data[sel].shop .. "\"!")
+							local owner = data[sel].owner
+							local title = data[sel].shop
+							if owner == pname or minetest.check_player_privs(pname, "server") then
+								ads.players[pname].shopselect = 0 -- Unselect any vendor/depositor listing.
+								ads.players[pname].selected = 0 -- Reset ad selection to nil to prevent double-deletions.
+								minetest.chat_send_player(pname, "# Server: Would delete advertisement titled: \"" .. title .. "\"!")
+
+								-- Search for record by owner/title and delete it.
+								for k, v in ipairs(ads.data) do
+									if v.shop == title and v.owner == owner then
+										table.remove(ads.data, k)
+										break
+									end
+								end
 							else
 								-- Player doesn't have privs to delete this record.
 								minetest.chat_send_player(pname, "# Server: The selected advertisement does not belong to you.")

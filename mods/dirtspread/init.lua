@@ -50,11 +50,11 @@ minetest.register_abm({
 
 		local name = n2.name
 
-        -- Convert dirt to something else based on what is on top.
+		-- Convert dirt to something else based on what is on top.
 		if minetest.get_item_group(name, "snow") ~= 0 then
 			minetest.set_node(pos, {name = "default:dirt_with_snow"})
-        elseif minetest.get_item_group(name, "junglegrass") ~= 0 then
-            minetest.set_node(pos, {name = "moregrass:darkgrass"})
+		elseif minetest.get_item_group(name, "junglegrass") ~= 0 then
+			minetest.set_node(pos, {name = "moregrass:darkgrass"})
 		elseif minetest.get_item_group(name, "dry_grass") ~= 0 then
 			minetest.set_node(pos, {name = "default:dirt_with_dry_grass"})
 		elseif minetest.get_item_group(name, "grass") ~= 0 then

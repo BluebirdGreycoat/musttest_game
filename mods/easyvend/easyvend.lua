@@ -16,8 +16,8 @@ for k, v in ipairs(currency.note_names) do
 	table.insert(currency_types, v)
 end
 
-local cost_stack_max = currency.stackmax
-local maxcost = cost_stack_max * slots_max
+-- Maximum price that can be configured on a vendor or depositor.
+local maxcost = 1000000
 
 
 
@@ -105,7 +105,7 @@ easyvend.set_formspec = function(pos)
 	end
 
 	local numbertext, costtext, buysellbuttontext
-	local itemcounttooltip = "Item count (append “s” to multiply with maximum stack size)"
+	local itemcounttooltip = "Item count"
 	local buysell = easyvend.buysell(node.name)
 	if buysell == "sell" then
 		numbertext = "Offered Item"
@@ -401,27 +401,6 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	local number = fields.number
 	local cost = fields.cost
 
-	--[[ Convenience function:
-	When appending “s” or “S” to the number, it is multiplied
-	by the maximum stack size.
-	TODO: Expose this in user documentation ]]
-	local number_stack_max = itemstack:get_stack_max()
-	local ss = string.sub(number, #number, #number)
-	if ss == "s" or ss == "S" then
-		local n = tonumber(string.sub(number, 1, #number-1))
-		if string.len(number) == 1 then n = 1 end
-		if n ~= nil then
-			number = n * number_stack_max
-		end
-	end
-	ss = string.sub(cost, #cost, #cost)
-	if ss == "s" or ss == "S" then
-		local n = tonumber(string.sub(cost, 1, #cost-1))
-		if string.len(cost) == 1 then n = 1 end
-		if n ~= nil then
-			cost = n * cost_stack_max
-		end
-	end
 	number = tonumber(number)
 	cost = tonumber(cost)
 
@@ -613,7 +592,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 			chest_free = currency.room_for_cash(vchest_inv, vchest_name, price)
 			player_free = player_inv:room_for_item(pin, stack)
 			if chest_has and player_has and chest_free and player_free then
-				if cost <= cost_stack_max and number <= number_stack_max then
+				if number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
 					currency.remove_cash(player_inv, pin, pricewithtax)
 
@@ -646,7 +625,6 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					--local costfree = currency.needed_empty_slots(price)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, pin) < numberfree then
 						if numberfree > 1 then
@@ -741,7 +719,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 			chest_free = vchest_inv:room_for_item(vchest_name, stack)
 			player_free = currency.room_for_cash(player_inv, pin, pricewithtax)
 			if chest_has and player_has and chest_free and player_free then
-				if cost <= cost_stack_max and number <= number_stack_max then
+				if number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
 
 					if check_wear then
@@ -775,14 +753,9 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					local costfree = currency.needed_empty_slots(pricewithtax)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
-					if not player_free and easyvend.free_slots(player_inv, pin) < costfree then
-						if costfree > 1 then
-							msg = string.format("No room in your inventory (%d empty slots required)!", costfree)
-						else
-							msg = "No room in your inventory!"
-						end
+					if not player_free and not currency.room_for_cash(player_inv, pin, pricewithtax) then
+						msg = "Not enough room in your inventory for payment!"
 						meta:set_string("message", msg)
 						easyvend.sound_error(sendername)
 					elseif not chest_free and easyvend.free_slots(vchest_inv, vchest_name) < numberfree then

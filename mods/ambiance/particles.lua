@@ -308,8 +308,8 @@ function ambiance.flamespawner(self, dtime)
 			minetest.add_particle(particle)
 
 			-- Occasionally play flame sound.
-			if math.random(1, 6) == 1 then
-				ambiance.sound_play("fire_small", pos, 1.0, 32)
+			if math.random(1, 10) == 1 then
+				ambiance.sound_play("fire_small", pos, 1.0, 16)
 			end
 		end
 	end

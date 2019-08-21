@@ -153,7 +153,7 @@ function currency.room_for_cash(inv, name, amount)
 		end)
 
 	-- We check each slot individually.
-	for i=1, size, 1 do
+	for i=1, #available, 1 do
 		local stack = inv:get_stack(name, available[i].index)
 
 		if stack:is_empty() then

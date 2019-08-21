@@ -1124,9 +1124,9 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 
 					-- If the chest doesn't have enough space to ADD currency,
 					-- we can't safely remove currency, either (due to currency denomination splitting).
-					--if not chest_free then
-					--	chest_has = false
-					--end
+					if not chest_free then
+						chest_has = false
+					end
 				else
 					-- Do regular itemstack-style check.
 					local stack = {name=itemname, count=amount, wear=0, metadata=""}
@@ -1138,7 +1138,7 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 					if stacksremainder > 0 then free = free + 1 end
 
 					chest_has = easyvend.check_and_get_items(inv, chestdef.inv_list, stack, check_wear)
-					chest_free = inv:room_for_item(chestdef.inv_list, stack) and easyvend.free_slots(inv, chestdef.inv_list) >= free
+					chest_free = inv:room_for_item(chestdef.inv_list, stack)-- and easyvend.free_slots(inv, chestdef.inv_list) >= free
 				end
 
 				if chest_has then

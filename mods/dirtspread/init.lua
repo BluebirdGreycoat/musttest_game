@@ -45,7 +45,7 @@ minetest.register_abm({
 		end
 
 		-- Anything on top?
-		local n2 = minetest.get_node(above)
+		local n2 = minetest.get_node_or_nil(above)
 		if not n2 then return end
 
 		local name = n2.name

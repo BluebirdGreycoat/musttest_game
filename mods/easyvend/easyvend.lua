@@ -1124,9 +1124,9 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 
 					-- If the chest doesn't have enough space to ADD currency,
 					-- we can't safely remove currency, either (due to currency denomination splitting).
-					if not chest_free then
-						chest_has = false
-					end
+					--if not chest_free then
+					--	chest_has = false
+					--end
 				else
 					-- Do regular itemstack-style check.
 					local stack = {name=itemname, count=amount, wear=0, metadata=""}

@@ -646,7 +646,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					local numberstacks = math.modf(number / number_stack_max)
 					local numberremainder = math.fmod(number, number_stack_max)
 					local numberfree = numberstacks
-					local costfree = currency.needed_empty_slots(price)
+					--local costfree = currency.needed_empty_slots(price)
 					if numberremainder > 0 then numberfree = numberfree + 1 end
 					if not player_free and easyvend.free_slots(player_inv, pin) < numberfree then
 						if numberfree > 1 then
@@ -655,7 +655,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 							msg = "No room in your inventory!"
 						end
 						meta:set_string("message", msg)
-					elseif not chest_free and easyvend.free_slots(vchest_inv, vchest_name) < costfree then
+					elseif not chest_free and not currency.room_for_cash(vchest_inv, vchest_name, price) then
 						meta:set_string("status", "No room in the machine’s storage!")
 						easyvend.machine_disable(pos, node, sendername)
 					else

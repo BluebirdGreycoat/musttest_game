@@ -58,6 +58,7 @@ easyvend.check_and_get_items = function(inventory, listname, itemtable, check_we
 end
 
 
+
 easyvend.free_slots = function(inv, listname)
 	local size = inv:get_size(listname)
 	local free = 0
@@ -69,6 +70,8 @@ easyvend.free_slots = function(inv, listname)
 	end
 	return free
 end
+
+
 
 easyvend.buysell = function(nodename)
 	local buysell = nil
@@ -1123,22 +1126,19 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 					chest_has = currency.has_cash_amount(inv, chestdef.inv_list, value)
 
 					-- If the chest doesn't have enough space to ADD currency,
-					-- we can't safely remove currency, either (due to currency denomination splitting).
+					-- we can't safely remove currency, either (due to denomination splitting).
 					if not chest_free then
 						chest_has = false
 					end
 				else
-					-- Do regular itemstack-style check.
+					-- Do regular itemstack-style check. Note: as of the current Minetest version,
+					-- the raw inv:room_for_item() check works with stacks over the stackmax limit.
+					-- The old version of this check also checked for number of free slots,
+					-- but that shouldn't be necessary.
 					local stack = {name=itemname, count=amount, wear=0, metadata=""}
-					local stack_max = minetest.registered_items[itemname].stack_max
-
-					local stacks = math.modf(amount / stack_max)
-					local stacksremainder = math.fmod(amount, stack_max)
-					local free = stacks
-					if stacksremainder > 0 then free = free + 1 end
 
 					chest_has = easyvend.check_and_get_items(inv, chestdef.inv_list, stack, check_wear)
-					chest_free = inv:room_for_item(chestdef.inv_list, stack)-- and easyvend.free_slots(inv, chestdef.inv_list) >= free
+					chest_free = inv:room_for_item(chestdef.inv_list, stack)
 				end
 
 				if chest_has then

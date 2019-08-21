@@ -17,7 +17,8 @@ function tnt.burn(pos)
 	end
 end
 
-reload.register_file("tnt:boom", minetest.get_modpath("tnt").."/tnt_boom.lua")
+reload.register_file("tnt:boom", minetest.get_modpath("tnt") .. "/tnt_boom.lua")
+reload.register_file("tnt:cdp", minetest.get_modpath("tnt") .. "/cdp.lua")
 
 minetest.register_node("tnt:boom", {
 	drawtype = "airlike",

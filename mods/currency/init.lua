@@ -125,9 +125,36 @@ function currency.room_for_cash(inv, name, amount)
 	local stackmax = currency.stackmax
 	local remainder = amount
 
-	-- We check each slot individually.
+	local available = {}
+
+	-- First, iterate the inventory and find all existing cash stacks.
+	-- We must sort them so that largest denominations come first.
 	for i=1, size, 1 do
 		local stack = inv:get_stack(name, i)
+		if not stack:is_empty() then
+			local sn = stack:get_name()
+			if currency.is_currency(sn) then
+				table.insert(available, {name=sn, index=i});
+			end
+		else
+			table.insert(available, {name="", index=i})
+		end
+	end
+
+	-- Sort! Largest denomination first, empty slots last.
+	table.sort(available,
+		function(a, b)
+			-- If the slot is empty (has a blank name) then its value is 0.
+			local v1 = currency_values_by_name[a.name] or 0
+			local v2 = currency_values_by_name[b.name] or 0
+			if v1 > v2 then
+				return true
+			end
+		end)
+
+	-- We check each slot individually.
+	for i=1, size, 1 do
+		local stack = inv:get_stack(name, available[i].index)
 
 		if stack:is_empty() then
 			local denom
@@ -217,11 +244,39 @@ function currency.add_cash(inv, name, amount)
 	local stackmax = currency.stackmax
 	local remainder = amount
 	local largest_denom = currency_count
-	local do_stack_combining = false
 
-	-- We check each slot individually.
+	local available = {}
+
+	-- First, iterate the inventory and find all existing cash stacks.
+	-- We must sort them so that largest denominations come first.
 	for i=1, size, 1 do
 		local stack = inv:get_stack(name, i)
+		if not stack:is_empty() then
+			local sn = stack:get_name()
+			if currency.is_currency(sn) then
+				table.insert(available, {name=sn, index=i});
+			end
+		else
+			table.insert(available, {name="", index=i})
+		end
+	end
+
+	-- Sort! Largest denomination first, empty slots last.
+	table.sort(available,
+		function(a, b)
+			-- If the slot is empty (has a blank name) then its value is 0.
+			local v1 = currency_values_by_name[a.name] or 0
+			local v2 = currency_values_by_name[b.name] or 0
+			if v1 > v2 then
+				return true
+			end
+		end)
+
+	-- Now that the slots have been ordered, we can go through them and add the cash as needed.
+
+	-- We check each slot individually.
+	for i=1, #available, 1 do
+		local stack = inv:get_stack(name, available[i].index)
 
 		if stack:is_empty() then
 			-- Calculate how many of our (current) largest denomination we need to get close to the remaining value.
@@ -240,7 +295,7 @@ function currency.add_cash(inv, name, amount)
 			else
 				-- Fill this slot with our (current) largest denomination and subtract the value from the remaining value.
 				local can_add = math.min(count, stackmax)
-				inv:set_stack(name, i, ItemStack(currency_names[largest_denom] .. " " .. can_add))
+				inv:set_stack(name, available[i].index, ItemStack(currency_names[largest_denom] .. " " .. can_add))
 				remainder = remainder - (currency_values[largest_denom] * can_add)
 			end
 		else
@@ -259,7 +314,7 @@ function currency.add_cash(inv, name, amount)
 						-- Add them, and subtract the applied value from the remaining value.
 						local can_add = math.min(count, freespace)
 						stack:set_count(stack:get_count() + can_add)
-						inv:set_stack(name, i, stack)
+						inv:set_stack(name, available[i].index, stack)
 						remainder = remainder - (currency_values_by_name[sn] * can_add)
 					end
 				end

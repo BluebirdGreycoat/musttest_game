@@ -1142,10 +1142,8 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 				if currency.is_currency(itemname) then
 					-- Item is a fungible currency, use currency-related functions.
 					local value = currency.get_stack_value(itemname, amount)
-					local needed_free = currency.needed_empty_slots(value)
-					local has_free = easyvend.free_slots(inv, chestdef.inv_list)
+					chest_free = currency.room_for_cash(inv, chestdef.inv_list, value)
 					chest_has = currency.has_cash_amount(inv, chestdef.inv_list, value)
-					chest_free = (needed_free <= has_free)
 				else
 					-- Do regular itemstack-style check.
 					local stack = {name=itemname, count=amount, wear=0, metadata=""}

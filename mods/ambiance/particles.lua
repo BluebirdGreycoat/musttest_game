@@ -236,7 +236,7 @@ end
 local function player_nearby(pos)
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
-		if vector.distance(pos, v:get_pos()) < 8 then
+		if vector.distance(pos, v:get_pos()) < 16 then
 			return true
 		end
 	end
@@ -263,7 +263,7 @@ function ambiance.flamespawner(self, dtime)
 	if self.ct < 0 then
 		local pos = self.object:get_pos()
 		self.good = player_nearby(pos)
-		self.ct = math.random(1, 3)
+		self.ct = math.random(2, 8)
 	end
 
 	if self.st < 0 then
@@ -306,6 +306,11 @@ function ambiance.flamespawner(self, dtime)
 				particle.pos.y = pos.y + rnd(0.4, 0.6)
 			end
 			minetest.add_particle(particle)
+
+			-- Occasionally play flame sound.
+			if math.random(1, 6) == 1 then
+				ambiance.sound_play("fire_small", pos, 1.0, 32)
+			end
 		end
 	end
 end

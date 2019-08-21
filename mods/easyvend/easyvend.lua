@@ -2,7 +2,6 @@
 easyvend = easyvend or {}
 easyvend.modpath = minetest.get_modpath("easyvend")
 
-local slots_max = 31
 
 local traversable_node_types = easyvend.traversable_node_types
 local registered_chests = easyvend.registered_chests
@@ -18,6 +17,7 @@ end
 
 -- Maximum price that can be configured on a vendor or depositor.
 local maxcost = 1000000
+local slots_max = 30
 
 
 

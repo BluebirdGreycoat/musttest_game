@@ -405,6 +405,11 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	cost = tonumber(cost)
 
 	local itemname=""
+	local number_stack_max = 0
+	if itemstack and not itemstack:is_empty() then
+		itemname = itemstack:get_name()
+		number_stack_max = itemstack:get_stack_max()
+	end
 
 	local oldnumber = meta:get_int("number")
 	local oldcost = meta:get_int("cost")
@@ -439,7 +444,6 @@ easyvend.on_receive_fields_config = function(pos, formname, fields, sender)
 	end
 	meta:set_int("number", number)
 	meta:set_int("cost", cost)
-	itemname=itemstack:get_name()
 	meta:set_string("itemname", itemname)
 	meta:set_int("configmode", 0)
 	meta:set_string("message", "Configuration successful.")

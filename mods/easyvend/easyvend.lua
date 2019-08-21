@@ -1117,6 +1117,12 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 					local value = currency.get_stack_value(itemname, amount)
 					chest_free = currency.room_for_cash(inv, chestdef.inv_list, value)
 					chest_has = currency.has_cash_amount(inv, chestdef.inv_list, value)
+
+					-- If the chest doesn't have enough space to ADD currency,
+					-- we can't safely remove currency, either (due to currency denomination splitting).
+					if not chest_free then
+						chest_has = false
+					end
 				else
 					-- Do regular itemstack-style check.
 					local stack = {name=itemname, count=amount, wear=0, metadata=""}

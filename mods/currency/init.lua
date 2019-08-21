@@ -24,6 +24,7 @@ currency.filename = minetest.get_worldpath() .. "/currency.txt"
 -- function currency.has_cash_amount(inv, name, amount)
 -- function currency.get_cash_value(inv, name)
 -- function currency.needed_empty_slots(amount)
+-- function currency.safe_to_remove_cash(inv, name, amount)
 
 
 
@@ -343,8 +344,26 @@ end
 
 
 
+-- In general, it is always safe to remove a given amount of cash from an inventory,
+-- if the SAME amount can be added to it. This is because, while removing cash can
+-- cause stacks to be split, those split stacks together will never be more than
+-- the total value to be removed, and therefore they can always be safely added
+-- if there was room to add the whole value in the first place.
+function currency.safe_to_remove_cash(inv, name, amount)
+	if currency.room_for_cash(inv, name, amount) then
+		return true
+	end
+	return false
+end
+
+
+
 -- Try to remove a given amount of cash from the inventory.
--- It is not an error if the inventory has less than the given amount.
+-- It is not an error if the inventory has less than the wanted amount.
+-- Warning: in some cases it is necessary to split large bills into smaller ones
+-- in order to remove the requested amount of value! If the inventory does not
+-- have enough space to fit the smaller bills once the large bill has been split,
+-- then value will be LOST.
 function currency.remove_cash(inv, name, amount)
 	if amount < 0 then
 		return

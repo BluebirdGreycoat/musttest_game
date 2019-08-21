@@ -336,6 +336,9 @@ easyvend.machine_check = function(pos, node)
 			else
 				status = "The depositing machine is out of money!"
 			end
+		elseif chest_error_remove == "no_scratch" and buysell ~= "sell" then
+			-- Not enough extra free slots for splitting currency stacks.
+			status = "The depositing machine does not have enough space for transaction!"
 		elseif chest_error_add == "no_space" then
 			status = "No room in the machine’s storage!"
 		else
@@ -1077,6 +1080,8 @@ easyvend.find_connected_chest = function(owner, pos, nodename, check_wear, amoun
 		return nil, "no_chest"
 	elseif chest_internal.chests == chest_internal.other_chests then
 		return nil, "not_owned"
+	elseif removing and chest_internal.scratch < 1 then
+		return nil, "no_scratch" -- Not enough scratch space for currency transaction.
 	elseif removing and chest_internal.stock < 1 then
 		return nil, "no_stock"
 	elseif not removing and chest_internal.space < 1 then
@@ -1097,6 +1102,7 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 		internal.other_chests = 0
 		internal.stock = 0
 		internal.space = 0
+		internal.scratch = 0
 	end
 
 	local node = minetest.get_node_or_nil(pos)
@@ -1129,6 +1135,8 @@ easyvend.find_chest = function(owner, pos, dy, itemname, check_wear, amount, rem
 					-- we can't safely remove currency, either (due to denomination splitting).
 					if not chest_free then
 						chest_has = false
+					else
+						internal.scratch = internal.scratch + 1
 					end
 				else
 					-- Do regular itemstack-style check. Note: as of the current Minetest version,

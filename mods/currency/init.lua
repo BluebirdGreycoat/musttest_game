@@ -379,6 +379,9 @@ function currency.remove_cash(inv, name, amount)
 
 	if do_stack_split then
 		-- Sort table so that SMALLEST denominations come first.
+		-- This is done in order to prevent the proliferation of small bills in a given inventory,
+		-- if cash is removed often. Basically, by sorting smallest first, we ensure that
+		-- smaller bills are consumed first when removing cash.
 		table.sort(available,
 			function(a, b)
 				if currency_values_by_name[a.name] < currency_values_by_name[b.name] then

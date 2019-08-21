@@ -206,6 +206,14 @@ minetest.register_entity(":__builtin:falling_node", {
   meta = {},
 
   set_node = function(self, node, meta)
+		-- If this is a snow node and snow is supposed to be melted, then just remove the falling entity so we don't create gfx artifacts.
+		if node.name == "default:snow" then
+			if not snow.is_visible() then
+				self.object:remove()
+				return
+			end
+		end
+
     self.node = node
     self.meta = meta or {}
     self.object:set_properties({

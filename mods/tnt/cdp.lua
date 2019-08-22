@@ -15,7 +15,7 @@ function cdp.on_ignite(pos)
 	end
 
 	local timer = minetest.get_node_timer(pos)
-	if timer:started() then
+	if timer:is_started() then
 		return
 	end
 
@@ -52,7 +52,7 @@ end
 
 if not cdp.registered then
 	minetest.register_node("tnt:controled_demolition_pack", {
-		description = "Controled Low-Yield Demolition Pack\n\nUse to clear rubbish off land.\nDoes not work in protected zones.\nPlace directly under rubbish, then ignite.",
+		description = "Controled Low-Yield Demolition Pack\n\nUse to clear rubbish off land (e.g. doors, chests).\nDoes not work in protected zones.\nPlace directly under rubbish, then ignite.",
 		tiles = {"tnt_cdp_top.png", "tnt_cdp_bottom.png", "tnt_cdp_side.png"},
 		is_ground_content = false,
 		groups = utility.dig_groups("bigitem", {tnt = 1}),

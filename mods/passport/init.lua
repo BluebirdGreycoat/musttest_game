@@ -349,7 +349,7 @@ if not passport.registered then
 
   -- Keep this in inventory to prevent deletion.
   minetest.register_craftitem("passport:passport_adv", {
-    description = "Proof Of Citizenship\n\n" ..
+    description = "Key Of Citizenship\n\n" ..
 			"Keep this in your MAIN inventory at ALL times!\n" ..
 			"This preserves your Account during server purge.\n" ..
 			"It cannot be stolen or lost by dying.",

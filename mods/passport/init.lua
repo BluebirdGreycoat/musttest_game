@@ -6,6 +6,7 @@ passport = passport or {}
 passport.recalls = passport.recalls or {}
 passport.players = passport.players or {}
 passport.registered_players = passport.registered_players or {} -- Cache of registered players.
+passport.keyed_players = passport.keyed_players or {}
 passport.modpath = minetest.get_modpath("passport")
 
 
@@ -433,6 +434,32 @@ passport.player_registered = function(pname)
   return false
 end
 
+-- This checks (and caches the result!) of whether the player has a KEY OF CITIZENSHIP.
+passport.player_has_key = function(pname)
+	-- Read cache if available.
+	local keyed = passport.keyed_players[pname]
+	if type(keyed) ~= "nil" then
+		return keyed
+	end
+
+  local player = minetest.get_player_by_name(pname)
+  if player and player:is_player() then
+    local inv = player:get_inventory()
+    if inv then
+			if inv:contains_item("main", "passport:passport_adv") then
+				passport.keyed_players[pname] = true -- Cache for next time.
+				return true
+			else
+				passport.keyed_players[pname] = false -- Cache for next time.
+				return false
+			end
+    end
+  end
+
+	-- Return false, but don't cache the value -- we could not confirm it!
+  return false
+end
+
 
 
 function passport.on_leaveplayer(player, timeout)
@@ -440,6 +467,7 @@ function passport.on_leaveplayer(player, timeout)
 
 	-- Remove cache of player registration.
 	passport.registered_players[pname] = nil
+	passport.keyed_players[pname] = nil
 end
 
 

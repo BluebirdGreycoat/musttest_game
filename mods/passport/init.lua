@@ -126,6 +126,15 @@ passport.on_use = function(itemstack, user, pointed)
   return itemstack
 end
 
+passport.on_use_simple = function(itemstack, user, pointed)
+  if user and user:is_player() then
+		minetest.chat_send_player(user:get_player_name(),
+			"# Server: This awkward chunk of reflective metal seems to mock you, " ..
+			"yet remains strangely inert. Perhaps it can be upgraded?")
+  end
+  return itemstack
+end
+
 
 
 passport.on_receive_fields = function(player, formname, fields)
@@ -328,7 +337,18 @@ if not passport.registered then
 			"Keep this in your MAIN inventory at ALL times!\n" ..
 			"This preserves your Account during server purge.\n" ..
 			"It cannot be stolen or lost by dying.",
-    inventory_image = "default_bronze_block.png",
+    inventory_image = "default_bronze_block.png^default_pick_steel.png",
+		stack_max = 1,
+    on_use = function(...) return passport.on_use_simple(...) end,
+  })
+
+  -- Keep this in inventory to prevent deletion.
+  minetest.register_craftitem("passport:passport_adv", {
+    description = "Proof Of Citizenship\n\n" ..
+			"Keep this in your MAIN inventory at ALL times!\n" ..
+			"This preserves your Account during server purge.\n" ..
+			"It cannot be stolen or lost by dying.",
+    inventory_image = "adv_passport.png",
 		stack_max = 1,
     on_use = function(...) return passport.on_use(...) end,
   })
@@ -385,7 +405,7 @@ passport.player_registered = function(pname)
   if player and player:is_player() then
     local inv = player:get_inventory()
     if inv then
-			if inv:contains_item("main", "passport:passport") then
+			if inv:contains_item("main", "passport:passport") or inv:contains_item("main", "passport:passport_adv") then
 				passport.registered_players[pname] = true -- Cache for next time.
 				return true
 			else

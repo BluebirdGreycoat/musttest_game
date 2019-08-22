@@ -99,7 +99,9 @@ passport.compose_formspec = function(pname)
 
 	for i=1, 7, 1 do
 		local name = "xdecor:ivy"
-		if i == 1 or i == 7 then
+		if i == 1 then
+			name = "passport:passport_adv"
+		elseif i == 7 then
 			name = "default:sword_steel"
 		end
 
@@ -337,7 +339,7 @@ if not passport.registered then
 			"Keep this in your MAIN inventory at ALL times!\n" ..
 			"This preserves your Account during server purge.\n" ..
 			"It cannot be stolen or lost by dying.",
-    inventory_image = "default_bronze_block.png^default_pick_steel.png",
+    inventory_image = "default_bronze_block.png^default_tool_steelpick.png",
 		stack_max = 1,
     on_use = function(...) return passport.on_use_simple(...) end,
   })

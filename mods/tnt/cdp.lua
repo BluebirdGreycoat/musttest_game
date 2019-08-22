@@ -44,7 +44,7 @@ function cdp.on_timer(pos, elapsed)
 	tnt.boom(pos, {
 		radius = 3,
 		ignore_protection = false,
-		ignore_on_blast = true,
+		ignore_on_blast = false,
 		damage_radius = 5,
 		disable_drops = true,
 	})

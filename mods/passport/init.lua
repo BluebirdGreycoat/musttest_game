@@ -369,7 +369,7 @@ if not passport.registered then
   minetest.register_craft({
     output = 'passport:passport_adv 1',
     recipe = {
-      {'mese_crystals:zentamine', 'default:mese_crystal_fragment', 'mese_crystals:zentamine'},
+      {'mese_crystals:zentamine', 'passport:passport', 'mese_crystals:zentamine'},
       {'techcrafts:control_logic_unit', 'quartz:quartz_crystal_piece', 'techcrafts:control_logic_unit'},
       {'dusts:diamond_shard', 'techcrafts:control_logic_unit', 'default:obsidian_shard'},
     },

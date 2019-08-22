@@ -26,7 +26,7 @@ function clear_inventory.clear(name, param)
 	
 	local main = inv:get_list("main")
 	for k, v in ipairs(main) do
-		if v:get_name() ~= "passport:passport" then
+		if not passport.is_passport(v:get_name()) then
 			v:set_count(0)
 			v:set_name("")
 		end

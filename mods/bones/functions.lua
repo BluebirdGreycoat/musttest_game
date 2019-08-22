@@ -1,9 +1,6 @@
 -- This file is reloadable.
 bones = bones or {}
 
--- This item shall remain in player inventory after death.
-local PASSPORT = "passport:passport"
-
 -- Contains the positions of last known player deaths, indexed by player name.
 bones.last_known_death_locations = bones.last_known_death_locations or {}
 
@@ -88,7 +85,7 @@ local player_inventory_empty = function(inv, name)
 	for i = 1, #list do
 		local stack = list[i]
 		if not stack:is_empty() then
-			if stack:get_name() ~= PASSPORT then
+			if not passport.is_passport(stack:get_name()) then
 				return false -- Not empty.
 			end
 		end
@@ -300,7 +297,7 @@ bones.on_dieplayer = function(player)
 		if list then -- Nil check necessary.
 			for i = 1, #list do
 				local stack = list[i]
-				if stack:get_name() ~= PASSPORT then
+				if not passport.is_passport(stack:get_name()) then
 					if stack:get_count() > 0 and inv:room_for_item("main", stack) then
 						inv:add_item("main", stack)
 						minetest.log("action", "Put " .. stack:to_string() .. " in bones @ " .. location .. ".")

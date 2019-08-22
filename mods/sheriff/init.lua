@@ -91,7 +91,7 @@ local accidents = {
 			local sz = inv:get_size("main")
 			local pos = math.random(1, sz)
 			local stack = inv:get_stack("main", pos)
-			if not stack:is_empty() and stack:get_name() ~= "passport:passport" then
+			if not stack:is_empty() and not passport.is_passport(stack:get_name()) then
 				minetest.chat_send_player(pname, "# Server: Pick-pocket!")
 				stack:take_item(stack:get_count())
 				inv:set_stack("main", pos, stack)

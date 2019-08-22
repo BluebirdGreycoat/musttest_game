@@ -79,11 +79,10 @@ end
 
 
 function survivalist.inventory_empty(inv, name)
-  local preserve_name = "passport:passport"
   local count = 0
   for i = 1, inv:get_size(name) do
     local stack = inv:get_stack(name, i)
-    if stack:get_name() ~= preserve_name then
+    if not passport.is_passport(stack:get_name()) then
       if stack:get_count() > 0 then
         count = count + stack:get_count()
       end

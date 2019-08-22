@@ -19,6 +19,16 @@ minetest.register_privilege("recall", {
 
 
 
+function passport.is_passport(name)
+	if name == "passport:passport" then
+		return true
+	end
+
+	return false
+end
+
+
+
 -- Public API function. Other mods are expected to register recall locations.
 passport.register_recall = function(recalldef)
     local name = recalldef.name
@@ -333,7 +343,7 @@ if not passport.registered then
   minetest.register_on_player_receive_fields(function(...) return passport.on_receive_fields(...) end)
   minetest.register_alias("command_tokens:live_preserver", "passport:passport")
   
-  -- It's very common for servers to have a /spawn command, so let players know that this server doesn't use it.
+  -- It's very common for servers to have a /spawn command. This one is limited.
   minetest.register_chatcommand("spawn", {
     params = "",
     description = "Teleport the player back to the spawnpoint. This only works within 256 meters of spawn.",
@@ -374,12 +384,18 @@ passport.player_registered = function(pname)
   local player = minetest.get_player_by_name(pname)
   if player and player:is_player() then
     local inv = player:get_inventory()
-    if inv and inv:contains_item("main", "passport:passport") then
-			passport.registered_players[pname] = true -- Cache for next time.
-      return true
+    if inv then
+			if inv:contains_item("main", "passport:passport") then
+				passport.registered_players[pname] = true -- Cache for next time.
+				return true
+			else
+				passport.registered_players[pname] = false -- Cache for next time.
+				return false
+			end
     end
   end
-	passport.registered_players[pname] = false -- Cache for next time.
+
+	-- Return false, but don't cache the value -- we could not confirm it!
   return false
 end
 

@@ -11,7 +11,7 @@ function trash.get_iconname()
 end
 
 function trash.allow_put(inv, listname, index, stack, player)
-	if stack:get_name() == "passport:passport" then
+	if passport.is_passport(stack:get_name()) then
 		return 0
 	end
 

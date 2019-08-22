@@ -60,8 +60,8 @@ if not cdp.registered then
 	minetest.register_craft({
 		output = "tnt:controled_demolition_pack",
 		recipe = {
-			{"", "default:steel_ingot", ""},
-			{"default:steel_ingot", "tnt:tnt", "default:steel_ingot"},
+			{"", "moreores:tin_ingot", ""},
+			{"moreores:tin_ingot", "tnt:tnt", "moreores:tin_ingot"},
 			{"", "morechests:ironchest_public_closed", ""},
 		},
 	})

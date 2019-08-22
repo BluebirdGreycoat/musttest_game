@@ -14,17 +14,31 @@ function cdp.on_ignite(pos)
 end
 
 function cdp.on_timer(pos, elapsed)
-	local above = vector.add(pos, {x=0, y=1, z=0})
-	if not minetest.test_protection(above, "") then
-		local node = minetest.get_node(above)
-		local ndef = minetest.registered_nodes[node.name]
-		if ndef and ndef.on_blast then
-			ndef.on_blast(above, 1.0)
-		end
+	local remove = function(pos)
+		if not minetest.test_protection(pos, "") then
+			local node = minetest.get_node(pos)
+			local ndef = minetest.registered_nodes[node.name]
+			if ndef and ndef.on_blast then
+				ndef.on_blast(pos, 1.0)
+			end
 
-		-- Might have already been removed by the `on_blast` callback,
-		-- but just to make sure.
-		minetest.remove_node(above)
+			-- Might have already been removed by the `on_blast` callback,
+			-- but just to make sure.
+			minetest.remove_node(pos)
+		end
+	end
+
+	-- Remove nodes adjacent to all 6 sides.
+	local targets = {
+		{x=pos.x+1, y=pos.y, z=pos.z},
+		{x=pos.x-1, y=pos.y, z=pos.z},
+		{x=pos.x, y=pos.y+1, z=pos.z},
+		{x=pos.x, y=pos.y-1, z=pos.z},
+		{x=pos.x, y=pos.y, z=pos.z+1},
+		{x=pos.x, y=pos.y, z=pos.z-1},
+	}
+	for k, v in ipairs(targets) do
+		remove(v)
 	end
 
 	-- Make sure to remove ourselves.
@@ -42,7 +56,7 @@ end
 
 if not cdp.registered then
 	minetest.register_node("tnt:controled_demolition_pack", {
-		description = "Controled Low-Yield Demolition Pack\n\nUse to clear rubbish off land (e.g. doors, chests).\nDoes not work in protected zones.\nPlace directly under rubbish, then ignite.",
+		description = "Controled Low-Yield Demolition Pack\n\nUse to clear rubbish off land (e.g. doors, chests).\nDoes not work in protected zones.\nPlace directly next to rubbish, then ignite.",
 		tiles = {"tnt_cdp_top.png", "tnt_cdp_bottom.png", "tnt_cdp_side.png"},
 		is_ground_content = false,
 		groups = utility.dig_groups("bigitem", {tnt = 1}),

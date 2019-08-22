@@ -14,8 +14,8 @@ function cdp.on_ignite(pos)
 end
 
 function cdp.on_timer(pos, elapsed)
+	local above = vector.add(pos, {x=0, y=1, z=0})
 	if not minetest.test_protection(above, "") then
-		local above = vector.add(pos, {x=0, y=1, z=0})
 		local node = minetest.get_node(above)
 		local ndef = minetest.registered_nodes[node.name]
 		if ndef and ndef.on_blast then

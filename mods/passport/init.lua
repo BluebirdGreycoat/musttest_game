@@ -365,6 +365,15 @@ if not passport.registered then
     },
   })
   
+  minetest.register_craft({
+    output = 'passport:passport_adv 1',
+    recipe = {
+      {'mese_crystals:zentamine', 'default:mese_crystal_fragment', 'mese_crystals:zentamine'},
+      {'techcrafts:control_logic_unit', 'quartz:quartz_crystal_piece', 'techcrafts:control_logic_unit'},
+      {'dusts:diamond_shard', 'techcrafts:control_logic_unit', 'default:obsidian_shard'},
+    },
+  })
+
   minetest.register_on_player_receive_fields(function(...) return passport.on_receive_fields(...) end)
   minetest.register_alias("command_tokens:live_preserver", "passport:passport")
   

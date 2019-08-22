@@ -23,6 +23,9 @@ function passport.is_passport(name)
 	if name == "passport:passport" then
 		return true
 	end
+	if name == "passport:passport_adv" then
+		return true
+	end
 
 	return false
 end

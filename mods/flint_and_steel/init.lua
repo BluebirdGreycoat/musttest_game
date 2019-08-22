@@ -43,7 +43,6 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 				return
 			end
 		end
-		breath.ignite_nearby_gas(pt.under)
 		
 		if minetest.get_item_group(nn, "flammable") >= 1 or is_coalblock or is_tnt or is_gunpowder or is_netherack then
 			local flame_pos = pt.above
@@ -74,6 +73,9 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 			end
 		end
 	end
+
+	-- Trigger gas explosions sometimes.
+	breath.ignite_nearby_gas(pt.under)
   
   -- Wear tool.
   local wdef = itemstack:get_definition()

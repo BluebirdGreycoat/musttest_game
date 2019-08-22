@@ -239,11 +239,11 @@ function tnt.register_tnt(def)
 					-- Players without the TNT priv go through checks.
 					if not minetest.check_player_privs(placer, {tnt=true}) then
 						if (pos.y > -100 and pos.y < 1000) then
-							minetest.chat_send_player(pname, "# Server: Use of TNT near Overworld's ground level is forbidden.")
+							minetest.chat_send_player(pname, "# Server: Use of TNT near the Overworld's ground level is forbidden.")
 							return itemstack
 						end
 						if city_block:in_no_tnt_zone(pos) then
-							minetest.chat_send_player(pname, "# Server: Too close to a residential zone for TNT!")
+							minetest.chat_send_player(pname, "# Server: Too close to a residential zone for blasting!")
 							return itemstack
 						end
 					end

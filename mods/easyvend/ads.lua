@@ -573,9 +573,9 @@ function ads.generate_formspec(pos, pname, booth)
 
 				if idef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
-						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " Minegeld)"
+						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " MG)"
 					elseif shops[sel].type == 2 then
-						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " Minegeld)"
+						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " MG)"
 					end
 
 					if text ~= "" then

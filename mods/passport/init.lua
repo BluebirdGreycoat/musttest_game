@@ -337,16 +337,13 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 	local name = itemstack:get_name()
 	if name == "passport:passport_adv" then
 		local pname = player:get_player_name()
-		local stack = ItemStack("passport:passport_adv")
-		local meta = stack:get_meta()
+		local meta = itemstack:get_meta()
 		meta:set_string("owner", pname)
 
-		minetest.after(0, function()
+		minetest.after(3, function()
 			minetest.chat_send_player(pname,
 				"# Server: A newly fashioned Key of Citizenship emits a soft blue glow mere moments after its crafter finishes the device.")
 		end)
-
-		return stack
 	end
 end
 

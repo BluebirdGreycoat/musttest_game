@@ -126,6 +126,8 @@ end
 
 
 passport.on_use = function(itemstack, user, pointed)
+	local changed = false
+
   if user and user:is_player() then
 		local pname = user:get_player_name()
 
@@ -142,11 +144,15 @@ passport.on_use = function(itemstack, user, pointed)
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A previously uninitialized Key of Citizenship begins to emit a soft blue glow, binding to its owner.")
 			end)
+
+			changed = true
 		end
 
 		-- Initialize data if not set.
 		if meta:get_int("date") == 0 then
 			meta:set_int("date", os.time())
+
+			changed = true
 		end
 
 		if owner ~= pname then
@@ -157,6 +163,10 @@ passport.on_use = function(itemstack, user, pointed)
 
     passport.show_formspec(pname)
   end
+
+	if changed then
+		return itemstack
+	end
 end
 
 passport.on_use_simple = function(itemstack, user, pointed)

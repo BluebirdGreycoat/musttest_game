@@ -144,6 +144,11 @@ passport.on_use = function(itemstack, user, pointed)
 			end)
 		end
 
+		-- Initialize data if not set.
+		if meta:get_int("date") == 0 then
+			meta:set_int("date", os.time())
+		end
+
 		if owner ~= pname then
 			minetest.chat_send_player(pname, "# Server: This Key of Citizenship was activated and bound to someone else's biomarker! You cannot access it.")
 			easyvend.sound_error(pname)

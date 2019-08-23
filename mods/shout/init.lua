@@ -77,6 +77,7 @@ shout.HINTS = {
 	"This sentence is false.",
 	"You can send game-balance suggestions to MustTest using the in-game email system.",
 	"Mr. Momoa, your trailer's on fire.",
+	"You can use a trade booth to buy and sell items remotely, for shops set up to support it.",
 }
 
 local HINT_DELAY_MIN = 60*45

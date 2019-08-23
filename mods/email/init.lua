@@ -175,7 +175,7 @@ function email.on_joinplayer(player)
 			local inbox = email.get_inbox(pname)
 			if #inbox > 0 then
 				minetest.chat_send_player(pname,
-					"# Server: You have mail (" ..  #inbox .. ")! Use a Key Of Citizenship to view it.")
+					"# Server: You have mail (" ..  #inbox .. ")! Use a Key of Citizenship to view it.")
 			end
 		end
 	end)

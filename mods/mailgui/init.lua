@@ -165,7 +165,7 @@ mailgui.compose_formspec = function(pname)
     
     -- Inbox panel.
     "label[1,0.5;Inbox (" .. #inboxes .. " / " .. email.maxsize .. ")]" ..
-    "checkbox[3.91,0.32;enable_interupt;Enable Live Interrupt;" ..
+    "checkbox[3.8,0.32;enable_interupt;Enable Live Interrupt;" ..
       intlive .. "]" ..
     "textlist[0,1.1;6.31,1.8;headers;"
 

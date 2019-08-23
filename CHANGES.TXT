@@ -1,3 +1,4 @@
+[2018/8/22] Added Key of Citizenship, as an upgrade to the PoC. Naturally the PoC interface moved to the KoC.
 [2018/8/20] Oil extract recipe now requires a compressor.
 [2018/8/20] Added tooltips to the market booth formspec which should hopefully explain some stuff.
 [2019/8/20] Shop advertisements no longer expire after any amount of time.

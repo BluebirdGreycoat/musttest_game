@@ -333,6 +333,25 @@ end
 
 
 
+function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
+	local name = itemstack:get_name()
+	if name == "passport:passport_adv" then
+		local pname = player:get_player_name()
+		local stack = ItemStack("passport:passport_adv")
+		local meta = stack:get_meta()
+		meta:set_string("owner", pname)
+
+		minetest.after(0, function()
+			minetest.chat_send_player(pname,
+				"# Server: A newly fashioned Key of Citizenship emits a soft blue glow mere moments after its crafter finishes the device.")
+		end)
+
+		return stack
+	end
+end
+
+
+
 if not passport.registered then
   -- Obtain modstorage.
   passport.modstorage = minetest.get_mod_storage()
@@ -401,6 +420,8 @@ if not passport.registered then
 	minetest.register_on_leaveplayer(function(...)
 		return passport.on_leaveplayer(...)
 	end)
+
+	minetest.register_on_craft(function(...) passport.on_craft(...) end)
 
   passport.registered = true
 end

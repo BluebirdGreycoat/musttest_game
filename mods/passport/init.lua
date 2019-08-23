@@ -127,9 +127,31 @@ end
 
 passport.on_use = function(itemstack, user, pointed)
   if user and user:is_player() then
-    passport.show_formspec(user:get_player_name())
+		local pname = user:get_player_name()
+
+		-- Check (and if needed, set) owner.
+		local meta = itemstack:get_meta()
+		local owner = meta:get_string("owner")
+		if owner == "" then
+			owner = pname
+
+			-- Store owner and data of activation.
+			meta:set_string("owner", owner)
+			meta:set_int("date", os.time())
+
+			minetest.after(3, function()
+				minetest.chat_send_player(pname, "# Server: A previously uninitialized Key of Citizenship begins to emit a soft blue glow, binding to its owner.")
+			end)
+		end
+
+		if owner ~= pname then
+			minetest.chat_send_player(pname, "# Server: This Key of Citizenship was activated and bound to someone else's biomarker! You cannot access it.")
+			easyvend.sound_error(pname)
+			return
+		end
+
+    passport.show_formspec(pname)
   end
-  return itemstack
 end
 
 passport.on_use_simple = function(itemstack, user, pointed)
@@ -338,7 +360,10 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 	if name == "passport:passport_adv" then
 		local pname = player:get_player_name()
 		local meta = itemstack:get_meta()
+
+		-- Store owner and data of activation.
 		meta:set_string("owner", pname)
+		meta:set_int("date", os.time())
 
 		minetest.after(3, function()
 			minetest.chat_send_player(pname,

@@ -160,10 +160,11 @@ mailgui.compose_formspec = function(pname)
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-    "label[0,0;==| Send and Receive Mail |==]" ..
+		"item_image[0,0;1,1;passport:passport_adv]" ..
+    "label[1,0;==| Send and Receive Mail |==]" ..
     
     -- Inbox panel.
-    "label[0,0.5;Inbox (" .. #inboxes .. " / " .. email.maxsize .. ")]" ..
+    "label[1,0.5;Inbox (" .. #inboxes .. " / " .. email.maxsize .. ")]" ..
     "checkbox[3.91,0.32;enable_interupt;Enable Live Interrupt;" ..
       intlive .. "]" ..
     "textlist[0,1.1;6.31,1.8;headers;"

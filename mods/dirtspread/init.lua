@@ -20,59 +20,85 @@ minetest.register_abm({
     
 	catch_up = false,
 	action = function(pos, node)
-		-- default:dirt does nothing if underground.
-		-- [MustTest]
-		if pos.y < -30 then
+		-- Get node above: pos, name, def, groups.
+		local above = {x=pos.x, y=pos.y+1, z=pos.z}
+		local node_above = minetest.get_node_or_nil(above)
+		if not node_above then return end
+		local name_above = node_above.name
+		local ndef_above = minetest.registered_nodes[name_above]
+		if not ndef_above then return end
+		local groups_above = ndef_above.groups or {}
+
+		local below = {x=pos.x, y=pos.y-1, z=pos.z}
+		local node_below = minetest.get_node_or_nil(below)
+		if not node_below then return end
+		local name_below = node_below.name
+		local ndef_below = minetest.registered_nodes[name_below]
+		if not ndef_below then return end
+		local groups_below = ndef_below.groups or {}
+
+		-- If snow is above, turn to dirt-with-snow. This happens at any altitude in any light condition.
+		if groups_above.snow and groups_above.snow > 0 then
+			minetest.set_node(pos, {name = "default:dirt_with_snow"})
 			return
 		end
 
-		-- Most likely case, half the time it's too dark for this.
-		local above = {x = pos.x, y = pos.y + 1, z = pos.z}
-		if (minetest.get_node_light(above) or 0) < 13 then
+		-- If cold is below, turn to sterile dirt. This happens at any altitude in any light condition.
+		if groups_below.cold and groups_below.cold > 0 then
+			minetest.set_node(pos, {name = "darkage:darkdirt"})
 			return
 		end
 
-		-- Look for likely neighbors.
-		local p2 = minetest.find_node_near(pos, 1, {"group:spreading_dirt_type"})
-		if p2 then
-			-- But the node needs to be under air in this case.
-			local n2 = minetest.get_node(above)
-			if n2 and n2.name == "air" then
-				local n3 = minetest.get_node(p2)
-				minetest.set_node(pos, {name = n3.name})
+		-- These checks depend on having enough light!
+		if (minetest.get_node_light(above) or 0) >= 13 then
+			-- Actions to take only if dirt is near surface, above surface, or in other realms.
+			if pos.y >= -30 then
+				-- Look for likely neighbors with the spreading dirt property.
+				local p2 = minetest.find_node_near(pos, 1, {"group:spreading_dirt_type"})
+				if p2 then
+					-- But the node needs to be under air in this case.
+					local n2 = minetest.get_node(above)
+					if n2.name == "air" then
+						local n3 = minetest.get_node(p2)
+						minetest.set_node(pos, {name = n3.name})
+						return
+					end
+				end
+			end
+
+			-- If dirt turns to dirt-with-grass, any sterile dirt nearby ceases to be sterile.
+			-- This makes it possible to reclaim sterile dirt (there is no way otherwise).
+			local spread_dirt = function(pos)
+				local p2 = minetest.find_node_near(pos, 1, "darkage:darkdirt")
+				if p2 then
+					minetest.set_node(p2, {name = "default:dirt"})
+				end
+			end
+
+			-- If node above is one of these plant types, then grow grass or similar.
+			-- Note that this can happen at any altitude (but will not spread naturally if underground).
+			if groups_above.junglegrass and groups_above.junglegrass > 0 then
+				minetest.set_node(pos, {name = "moregrass:darkgrass"})
+				return
+			elseif groups_above.dry_grass and groups_above.dry_grass > 0 then
+				minetest.set_node(pos, {name = "default:dirt_with_dry_grass"})
+				return
+			elseif groups_above.grass and groups_above.grass > 0 then
+				minetest.set_node(pos, {name = "default:dirt_with_grass"})
 				return
 			end
+		else
+			return
 		end
 
-		-- Anything on top?
-		local n2 = minetest.get_node_or_nil(above)
-		if not n2 then return end
-
-		local name = n2.name
-
-		-- Convert dirt to something else based on what is on top.
-		if minetest.get_item_group(name, "snow") ~= 0 then
-			minetest.set_node(pos, {name = "default:dirt_with_snow"})
-		elseif minetest.get_item_group(name, "junglegrass") ~= 0 then
-			minetest.set_node(pos, {name = "moregrass:darkgrass"})
-		elseif minetest.get_item_group(name, "dry_grass") ~= 0 then
-			minetest.set_node(pos, {name = "default:dirt_with_dry_grass"})
-		elseif minetest.get_item_group(name, "grass") ~= 0 then
-			minetest.set_node(pos, {name = "default:dirt_with_grass"})
+		-- If we reach here, the dirt is not being cultivated. Slowly turn to sterile dirt.
+		-- Partly this causes dirt loss if players do not take care of their dirt, and
+		-- partly this reduces the number of eligible nodes to run the ABM.
+		if math.random(1, 100) == 1 then
+			minetest.set_node(pos, {name="darkage:darkdirt"})
 		end
 	end
 })
-
-
---[[
-minetest.register_craft({
-	output = "default:dirt_with_snow",
-	recipe = {
-		{"default:snow"},
-		{"default:dirt"},
-	},
-})
---]]
 
 
 
@@ -94,9 +120,13 @@ function dirtspread.dirt_covered_check(pos)
 	end
 end
 
+
+
 function dirtspread.dirt_on_timer(pos, elapsed)
 	dirtspread.dirt_covered_check(pos)
 end
+
+
 
 function dirtspread.check_dirt_covered_timer(pos)
 	local node = minetest.get_node(pos)

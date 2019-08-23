@@ -539,9 +539,12 @@ minetest.register_node("default:dirt_with_snow", {
 	on_timer = function(...)
 		return dirtspread.dirt_on_timer(...)
 	end,
+	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
+	--[[
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 

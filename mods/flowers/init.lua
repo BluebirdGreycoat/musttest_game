@@ -288,7 +288,6 @@ end
 -- Indexed array.
 flowers.mushroom_surfaces = {
 	"default:dirt",
-	"darkage:darkdirt",
 	"rackstone:dauthsand",
 	"group:soil",
 	"group:tree",

@@ -12,7 +12,7 @@ function papyrus.random_height()
 end
 
 function papyrus.is_dirt_name(name)
-	if name == "default:dirt_with_grass" or name == "default:dirt" or name == "moregrass:darkgrass" or name == "darkage:darkdirt" then
+	if name == "default:dirt_with_grass" or name == "default:dirt" or name == "moregrass:darkgrass" then
 		return true
 	end
 end

@@ -19,7 +19,8 @@ function joinspec.on_joinplayer(player)
 	local pname = player:get_player_name()
 	if player:get_hp() > 0 then
 		local result = passport.player_registered(pname)
-		joinspec.show_formspec(pname, result)
+		local haskey = passport.player_has_key(pname)
+		joinspec.show_formspec(pname, result, haskey)
 	else
 		minetest.log("error", "Player " .. pname .. " joined while dead! Not showimg welcome formspec.")
 
@@ -33,7 +34,7 @@ end
 
 
 
-function joinspec.generate_formspec(pname, returningplayer)
+function joinspec.generate_formspec(pname, returningplayer, haskey)
 	local formspec = ""
 
 	if returningplayer then
@@ -77,8 +78,12 @@ function joinspec.generate_formspec(pname, returningplayer)
 		formspec = formspec ..
 			"button[0,3.8;2,1;wrongserver;Not Now]" ..
 			"button[2,3.8;2,1;trading;Trading]" ..
-			"button[4,3.8;1,1;passport;PoC]" ..
 			"button[5,3.8;2,1;playgame;Proceed!]"
+
+		if haskey then
+			formspec = formspec ..
+				"button[4,3.8;1,1;passport;Key]"
+		end
 
 		formspec = formspec ..
 			"label[2.6,4.7;" .. minetest.formspec_escape(COLOR_ORANGE .. "Priority: Survive!") .. "]"
@@ -131,8 +136,8 @@ end
 
 
 
-function joinspec.show_formspec(pname, returningplayer)
-	local formspec = joinspec.generate_formspec(pname, returningplayer)
+function joinspec.show_formspec(pname, returningplayer, haskey)
+	local formspec = joinspec.generate_formspec(pname, returningplayer, haskey)
 	minetest.show_formspec(pname, "joinspec:main", formspec)
 end
 

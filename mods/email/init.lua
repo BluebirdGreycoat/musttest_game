@@ -195,7 +195,7 @@ if not email.registered then
 	-- Depreciated command.
 	minetest.register_chatcommand("inbox", {
 		params = "",
-		description = "Depreciated command; use PoC instead.",
+		description = "Depreciated command; use KoC instead.",
 		func = function(name, param)
 			minetest.chat_send_player(name, "# Server: This command is depreciated; the functionality has moved to the passport token.")
 			easyvend.sound_error(name)
@@ -205,7 +205,7 @@ if not email.registered then
 	-- Depreciated command.
 	minetest.register_chatcommand("mail", {
 		params = "",
-		description = "Depreciated command; use PoC instead.",
+		description = "Depreciated command; use KoC instead.",
 		func = function(name, param)
 			minetest.chat_send_player(name, "# Server: This command is depreciated; the functionality has moved to the passport token.")
 			easyvend.sound_error(name)

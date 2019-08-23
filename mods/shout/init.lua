@@ -10,7 +10,7 @@ local WHITE = core.get_color_escape_sequence("#ffffff")
 
 
 shout.HINTS = {
-	"You can ignore players who create drama or ruin chat by using the chat-filter interface, accessed through the PoC.",
+	"You can ignore players who create drama or ruin chat by using the chat-filter interface, accessed through the Key of Citizenship.",
 	"Mobs sometimes place blocks in protected areas. This is not griefing, because the blocks are not protected. Anyone may remove them.",
 	"You may use the '/r <message>' command to quickly reply via PM to the last player to send you a PM.",
 	"Strenuous activity increases your exhaustion and therefore hunger over time. This includes swimming, mining, or sprinting.",
@@ -27,7 +27,7 @@ shout.HINTS = {
 	"Some rare foods heal hearts immediately. You may prefer to save these for combat situations.",
 	"Most trees will refuse to grow underground. Firetrees do not suffer this limitation.",
 	"You can get information about a node using the node inspector tool.",
-	"To ensure your account is not scrubbed, always keep a passport token (PoC) in your main inventory.",
+	"To ensure your account is not scrubbed, always keep a passport token (PoC or KoC) in your main inventory.",
 	"Players are not sent to jail for kills committed with ranged weapons or other indirect munitions.",
 	"Prevent griefing by protecting your structures. Serious builders are advised to protect the land around their builds as well.",
 	"Protect your bases to prevent griefing by others.",

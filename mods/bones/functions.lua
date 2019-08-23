@@ -290,7 +290,7 @@ bones.on_dieplayer = function(player)
 	local location = minetest.pos_to_string(pos)
 	local num_stacks = 0
 
-	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC items.
+	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC/KoC items.
 	-- Empty the player's main inv. We must not to clobber any passports.
 	do
 		local list = player_inv:get_list("main")

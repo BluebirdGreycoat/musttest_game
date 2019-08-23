@@ -37,7 +37,7 @@ end
 
 -- Chat-command callback function.
 -- Handles minimum timeout and required privileges.
--- Called by PoC.
+-- Called by KoC.
 mapfix.command = function(pname, param)
 	-- Profile function execution time.
 	local t1 = os.clock()

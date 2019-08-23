@@ -325,7 +325,7 @@ function passport.exec_spawn(name, param)
 			portal_sickness.on_use_portal(name)
 		end)
 	else
-		minetest.chat_send_player(name, "# Server: You are too far from the spawnpoint! You need a PoC to teleport from farther.")
+		minetest.chat_send_player(name, "# Server: You are too far from the spawnpoint! You need a Key of Citizenship to teleport from farther.")
 		easyvend.sound_error(name)
 	end
 	return true

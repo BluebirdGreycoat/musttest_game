@@ -153,7 +153,7 @@ end
 function status.chat_admin(name, param)
 	minetest.chat_send_player(name,
 		STATUS_COLOR .. "# Server: The administrator of this server is <MustTest>. " ..
-		"You may send me messages with the mail interface found in the PoC.")
+		"You may send me messages using the email interface found through the Key of Citizenship.")
 	return true
 end
 

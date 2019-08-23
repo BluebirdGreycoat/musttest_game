@@ -147,7 +147,7 @@ end
 
 
 
--- Check player's language, and kick them if they are not protected by the PoC.
+-- Check player's language, and kick them if they are not protected by the PoC/KoC.
 -- Or, mute them and send a message to other players that they were muted.
 -- This function can be called from other mods.
 function chat_core.check_language(name, message)

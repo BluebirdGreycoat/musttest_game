@@ -366,7 +366,7 @@ chat_controls.info = "* * * Documentation * * *\n" ..
 	"\n" ..
 	"Each of the three text fields uses the same format: separate names and words with commas. Whitespace does not matter.\n" ..
 	"\n" ..
-	"The ignore list is for players you don't want to hear from. If a player is listed here, you will not see their public chat or receive PMs from them. You might choose to ignore a player if they annoy you extremely, ruin your enjoyment of the server, or are just plain full of drama. There are two important points: an ignored player will still be able to get their messages through to you if they are standing very close -- the range is 64 meters. If you wish to prevent even this, you'll need to move away from them. An ignored player may also continue to send you mail through the PoC.\n" ..
+	"The ignore list is for players you don't want to hear from. If a player is listed here, you will not see their public chat or receive PMs from them. You might choose to ignore a player if they annoy you extremely, ruin your enjoyment of the server, or are just plain full of drama. There are two important points: an ignored player will still be able to get their messages through to you if they are standing very close -- the range is 64 meters. If you wish to prevent even this, you'll need to move away from them. An ignored player may also continue to send you mail using their Key of Citizenship.\n" ..
 	"\n" ..
 	"Also keep in mind that if an ignored player attempts to send you a PM, the server will inform them to the effect that you are not available for comment.\n" ..
 	"\n" ..
@@ -466,7 +466,7 @@ function chat_controls.on_receive_fields(player, formname, fields)
 	end
 
   if fields.close or fields.quit then
-		-- Go back to the PoC control panel.
+		-- Go back to the KoC control panel.
     passport.show_formspec(pname)
     return true
   end

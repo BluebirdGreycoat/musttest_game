@@ -363,7 +363,7 @@ function rename.on_receive_fields(player, formname, fields)
 	end
 
   if fields.close or fields.quit then
-		-- Go back to the PoC control panel.
+		-- Go back to the KoC control panel.
     passport.show_formspec(pname)
     return true
   end

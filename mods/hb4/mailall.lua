@@ -60,7 +60,7 @@ if not mailall.registered then
 	minetest.register_chatcommand("mailall", {
 		params = "<message>",
 		description = "Send an in-game email to all registered players on the server.",
-		privs = {shout=true, interact=true},
+		privs = {server=true},
 		func = function(...)
 			return mailall.run_command(...)
 		end

@@ -161,6 +161,10 @@ passport.on_use = function(itemstack, user, pointed)
 			return
 		end
 
+		-- Record number of uses.
+		meta:set_int("uses", meta:get_int("uses") + 1)
+
+		-- Show KoC interface.
     passport.show_formspec(pname)
   end
 

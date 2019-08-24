@@ -47,7 +47,7 @@ anticurse.foul = {
   {word="a+ss+", white={
     "glass", "brass", "grass", "vassal", "passion", "pass", "mass", "gass",
 		"embarass", "class", "canvass", "assur", "assum", "associa", "assis+t",
-    "assimil", "assign", "assess", "assert", "assent", "potassium", "lass",
+    "assim+il", "assign", "assess", "assert", "assent", "potassium", "lass",
 		"tassel", "bass", "assem", "sass", "assort", "assail", "quass", "assault",
     "morass", "bias", "nass", "vass", "dass", "as+as+in", "assauge", "assay",
 		"secur", "asset", "sever", "assid", "assib", "soil", "assyria", "cass",
@@ -160,7 +160,7 @@ anticurse.curse = {
 		"helleb", "hel+cat", "chell", "thel+",
 	}},
 
-  {word="h+a+d+e+s+", white={"desert", "shades"}},
+  {word="h+a+d+e+s+", white={"desert", "shades", "design", "witha"}},
 
   -- Banned b/c 99/100, it's used to insult.
   {word="j+e+w+", white={"jewel"}},

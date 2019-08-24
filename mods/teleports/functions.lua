@@ -290,6 +290,16 @@ teleports.calculate_charge = function(pos)
 		end
     
     charge = math.floor(charge + 0.5)
+
+		-- Combined teleports interfere with each other and reduce their range.
+		local minp = vector.add(pos, {x=-2, y=0, z=-2})
+		local maxp = vector.add(pos, {x=2, y=0, z=2})
+		local others = minetest.find_nodes_in_area(minp, maxp, "teleports:teleport")
+
+		if others and #others > 0 then
+			charge = charge / #others
+		end
+
     return charge, ncount, is_nyanporter
 end
 
@@ -315,6 +325,7 @@ teleports.calculate_range = function(pos)
 	if nyan then
 		local owner = minetest.get_meta(pos):get_string("owner")
 		-- There is an admin teleport pair between the Surface Colony and the City of Fire.
+		-- This special exception code makes it work.
 		if owner == "MustTest" then
 			return 31000, nyan
 		else

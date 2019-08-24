@@ -1,15 +1,21 @@
 
 anticurse = anticurse or {}
 
-function anticurse.test(string)
+function anticurse.test(string, noreport)
 	if anticurse.check_string(anticurse.foul, string) then
-		minetest.chat_send_player("MustTest", "# Server: String contains crudity!")
+		if not noreport then
+			minetest.chat_send_player("MustTest", "# Server: String contains crudity!")
+		end
 		return false
 	elseif anticurse.check_string(anticurse.curse, string) then
-		minetest.chat_send_player("MustTest", "# Server: String contains cursing!")
+		if not noreport then
+			minetest.chat_send_player("MustTest", "# Server: String contains cursing!")
+		end
 		return false
 	else
-		minetest.chat_send_player("MustTest", "# Server: String confirmed SJW-safe!")
+		if not noreport then
+			minetest.chat_send_player("MustTest", "# Server: String confirmed SJW-safe!")
+		end
 	end
 	return true
 end
@@ -30,7 +36,7 @@ function anticurse.dump_files()
 	if type(input) == "string" then
 		local rows = string.split(input, "\n")
 		for k, v in ipairs(rows) do
-			local result = anticurse.test(v)
+			local result = anticurse.test(v, true)
 			if result then
 				lines2:write(v .. "\n")
 			else

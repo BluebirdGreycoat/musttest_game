@@ -1115,7 +1115,7 @@ if not ads.run_once then
 		output = "market:booth",
 		recipe = {
 			{'', 'default:sign_wall_wood', ''},
-			{'', 'easyvend:vendor', ''},
+			{'chests:chest_public_closed', 'easyvend:vendor', 'chests:chest_public_closed'},
 			{'', 'techcrafts:control_logic_unit', ''},
 		},
 	})

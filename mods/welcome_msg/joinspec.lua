@@ -3,7 +3,26 @@ joinspec = joinspec or {}
 joinspec.modpath = minetest.get_modpath("welcome_msg")
 
 joinspec.data = {
-	warning = "Welcome to Must Test! Scroll text to see all.\n\nYou may read the server’s webpage at http://arklegacy.duckdns.org/. You can find the rules there as well as an introduction to the world and a few hints for surviving.\n\nThis is a hard-core PvP & PvE survival server. The only way to find greatness is to survive, mine, build, and fight your way up! There is no creative mode.\n\nThere are mobs here. Always carry a weapon and don’t go out at night on the surface!\n\nDue to the way the mapgen generates ores, trade with other players is strongly recommended; sell what you don’t need and buy what you do.",
+	warning = "Welcome to Must Test! Scroll text to see all.\n\n" ..
+		"You may read the server’s webpage at http://arklegacy.duckdns.org/. " ..
+		"You can find the rules there as well as an introduction to the world and " ..
+		"a few hints for surviving.\n\n" ..
+		"This is a heavily modded hard-core PvP & PvE survival server. " ..
+		"The only way to find greatness is to survive, mine, build, and fight your way up! " ..
+		"There is no creative mode.\n\n" ..
+		"Monsters lurk where you don’t expect them. Always carry a weapon and don’t go out at night!\n\n" ..
+		"Due to the way the mapgen generates ores, trade with other players is strongly recommended; " ..
+		"sell what you don’t need and buy what you do.\n\n" ..
+		"Minegeld is currency here. " ..
+		"You can trade gold, silver and copper ingots for minegeld at the Wild North Precious Metal Exchange, " ..
+		"which is located in the northeast quarter of the city at 1238, -8748.\n\n" ..
+		"In order to register and preserve your account and player data, " ..
+		"you must obtain a Proof of Citizenship. The recipe is in the craft guide.\n\n" ..
+		"Further information can be found on the server’s website, but be warned that it " ..
+		"is quite sparse, only covering a few important items -- part of the experience is " ..
+		"about experimenting and discovering undocumented features. You can of course " ..
+		"ask questions. Better hope that no one leads you astray. :-)",
+
 	alert = "A recent client is recommended to enjoy advanced features.",
 	version = minetest.get_version(),
 }

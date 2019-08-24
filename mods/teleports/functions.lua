@@ -157,7 +157,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 
 	-- Small chance to be teleported somewhere completely random.
 	local use_random = false
-	if math.random(1, 1000) == 1 then
+	if math.random(1, 256) == 1 then
 		if #(teleports.teleports) > 0 then
 			local tp = teleports.teleports[math.random(1, #(teleports.teleports))]
 			if not tp then

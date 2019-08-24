@@ -37,6 +37,11 @@ local function normalize_string(str)
 	str = sub(str, "he'll", "he\0ll")
 
 	-- Ignore "it's". Commonly confused with tits.
+	local a, b = string_find(str, "%wt its ")
+	if a and b then
+		local s2 = str:sub(1, a) .. "t\0its\0" .. str:sub(b)
+		str = s2
+	end
 	str = sub(str, "it's", "it\0s")
 	str = sub(str, " it[ %p]", "\0it\0")
 	

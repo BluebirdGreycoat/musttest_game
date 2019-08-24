@@ -75,6 +75,7 @@ anticurse.foul = {
 
   {word="s+p+e*r+m+", white={
 		"permanent", "permit", "was", "minute", "his", "permis+ion", "plants", "mese",
+		"days", "month"
 	}},
   {word="s+e+m+e+n+", white={
 		"basement", "advertisement", "musement", "advisement", "mention", "now",
@@ -102,7 +103,7 @@ anticurse.foul = {
 		"spanish", "then", "cash", "finish", "hit+ing", "was", "accomplish", "push",
 		"wish", "bugs", "has", "trash", "crash", "his", "stash", "gosh", "does",
 		"says", "too", "bombs", "mobs", "rush", "bush", "unless", "yesh", "the", "there",
-		"smash", "english", "ar+ows",
+		"smash", "english", "ar+ows", "dash", "ithink",
 	}},
 
 	"s+c+h+i+t+",

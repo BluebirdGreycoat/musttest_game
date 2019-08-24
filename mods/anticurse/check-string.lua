@@ -38,7 +38,7 @@ local function normalize_string(str)
 
 	-- Ignore "it's". Commonly confused with tits.
 	str = sub(str, "it's", "it\0s")
-	str = sub(str, " it ", "\0it\0")
+	str = sub(str, " it[ %p]", "\0it\0")
 	
 	-- Remove symbols that will interfere with our regexs.
 	str = sub(str, "%p", "") -- Punctuation.

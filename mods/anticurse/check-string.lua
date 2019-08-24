@@ -15,6 +15,9 @@ local function normalize_string(str)
 	str = sub(str, "%z", "") -- Zero byte.
 	str = sub(str, "%c", "") -- Control bytes.
 
+	-- Ignore numbers and number-like sequences.
+	str = sub(str, "%d%s*[%*%-%/%+x%.]%s*%d", "\0")
+
 	-- Normalize certain symbols to alphabetical.
 	str = sub(str, "%$", "s")
 	str = sub(str, "3", "e")

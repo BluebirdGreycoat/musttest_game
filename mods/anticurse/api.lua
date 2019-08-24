@@ -36,7 +36,8 @@ function anticurse.dump_files()
 	if type(input) == "string" then
 		local rows = string.split(input, "\n")
 		for k, v in ipairs(rows) do
-			local result = anticurse.test(v, true)
+			local s = v:sub(v:find(">") + 1)
+			local result = anticurse.test(s, true)
 			if result then
 				lines2:write(v .. "\n")
 			else

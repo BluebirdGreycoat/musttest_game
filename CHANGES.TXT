@@ -1,4 +1,5 @@
 [2019/8/23] Teleports now have a (small) chance to randomly teleport the player to a random target teleport.
+[2019/8/23] The Key of Citizenship now binds to its owner when crafted, or on first use. Only its owner can use it.
 [2019/8/22] Added Key of Citizenship, as an upgrade to the PoC. Naturally the PoC interface moved to the KoC.
 [2019/8/20] Oil extract recipe now requires a compressor.
 [2019/8/20] Added tooltips to the market booth formspec which should hopefully explain some stuff.

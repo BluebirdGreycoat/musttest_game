@@ -5,14 +5,15 @@ anticurse.foul = {
 		"whats", "exact", "exist", "xd", "except", "its", "exha", "exp", "extra", "thats",
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
 		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
-		"excellent",
+		"excellent", "exotic",
 	}},
 
 	"h+y+m+e+n+",
 
 	"s+%d+x+",
   
-  {word="b+i*t+c+h+", white={"cheap"}},
+  {word="b+i*t+c+h+", white={"cheap", "doubt", "check", "childish", "chaotic"}},
+
   {word="c+u+n+t+", white={"truck"}},
   "c+v+n+t+",
 	{word="t+w+a+t+", white={"water", "watch", "just"}},
@@ -35,7 +36,7 @@ anticurse.foul = {
   "f+c+k+",
 	"p+h+u*c*k+",
 	"f+k+y+",
-	"f+k+u+",
+	{word="f+k+u+", white={"afk"}},
 	"f+a+c*k+u",
 	"f+a+c*k+y",
 	"f+%d+c+k+",

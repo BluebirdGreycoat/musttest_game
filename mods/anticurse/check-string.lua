@@ -11,6 +11,10 @@ local function normalize_string(str)
 	local sub = string_gsub
 	str = string_lower(str)
 
+	-- Remove these first, we use them later in order to implement ignoring certain sequences.
+	str = sub(str, "%z", "") -- Zero byte.
+	str = sub(str, "%c", "") -- Control bytes.
+
 	-- Normalize certain symbols to alphabetical.
 	str = sub(str, "%$", "s")
 	str = sub(str, "3", "e")
@@ -27,27 +31,28 @@ local function normalize_string(str)
 	str = sub(str, "%(%)", "o")
 
 	-- Ignore contraction for 'he will'. Common token.
-	str = sub(str, "he'll", "")
+	str = sub(str, "he'll", "he\0ll")
+
+	-- Ignore "it's". Commonly confused with tits.
+	str = sub(str, "it's", "it\0s")
 	
 	-- Remove symbols that will interfere with our regexs.
 	str = sub(str, "%p", "") -- Punctuation.
-	str = sub(str, "%z", "") -- Zero byte.
-	str = sub(str, "%c", "") -- Control bytes.
 	
 	-- Some badwords need special treatment. Preserve the space-break in front of some words using another character.
-	str = sub(str, " ass", "~ass") -- Fix false-negatives with strings like "you are an ass".
+	str = sub(str, " ass", "\0ass") -- Fix false-negatives with strings like "you are an ass".
 
 	-- Ignore false-positives like "same name as server".
 	--str = sub(str, "as s%w", "")
 	local a, b = string_find(str, "as s%w")
 	if a and b then
-		local s2 = str:sub(1, a) .. "s~s" .. str:sub(b)
+		local s2 = str:sub(1, a) .. "s\0s" .. str:sub(b)
 		str = s2
 	end
 
-	str = sub(str, "but ", "but~") -- Fix false-positives with strings like "but there arent".
-	str = sub(str, "put ", "put~") -- Fix 'puto' (spanish) conflicting with "put on armor/put torch".
-	str = sub(str, "had ", "had~") -- Ignore false-positives like "had 3 solars".
+	str = sub(str, "but ", "but\0") -- Fix false-positives with strings like "but there arent".
+	str = sub(str, "put ", "put\0") -- Fix 'puto' (spanish) conflicting with "put on armor/put torch".
+	str = sub(str, "had ", "had\0") -- Ignore false-positives like "had 3 solars".
 	
 	-- Remove all spaces.
 	str = sub(str, "%s", "")

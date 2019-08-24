@@ -36,7 +36,15 @@ local function normalize_string(str)
 	
 	-- Some badwords need special treatment. Preserve the space-break in front of some words using another character.
 	str = sub(str, " ass", "~ass") -- Fix false-negatives with strings like "you are an ass".
-	str = sub(str, "as s%w", "") -- Ignore false-positives like "same name as server".
+
+	-- Ignore false-positives like "same name as server".
+	--str = sub(str, "as s%w", "")
+	local a, b = string_find(str, "as s%w")
+	if a and b then
+		local s2 = str:sub(1, a) .. "s~s" .. str:sub(b)
+		str = s2
+	end
+
 	str = sub(str, "but ", "but~") -- Fix false-positives with strings like "but there arent".
 	str = sub(str, "put ", "put~") -- Fix 'puto' (spanish) conflicting with "put on armor/put torch".
 	str = sub(str, "had ", "had~") -- Ignore false-positives like "had 3 solars".

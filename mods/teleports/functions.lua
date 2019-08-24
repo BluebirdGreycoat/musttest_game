@@ -269,7 +269,6 @@ teleports.calculate_charge = function(pos)
     }
     
 		local bows = 0
-    local ncount = 0
     local charge = 1 -- Ambient charge is at least 1 (the teleport block provides 1 KJ).
     for k, v in ipairs(positions) do
         local n = minetest.get_node(v).name
@@ -278,7 +277,6 @@ teleports.calculate_charge = function(pos)
 					c = teleports.charge_blocks[n].charge
 				end
         charge = charge + c
-        ncount = ncount + 1
 				if n == nyanbow then
 					bows = bows + 1
 				end
@@ -296,11 +294,13 @@ teleports.calculate_charge = function(pos)
 		local maxp = vector.add(pos, {x=2, y=0, z=2})
 		local others = minetest.find_nodes_in_area(minp, maxp, "teleports:teleport")
 
+		local other_count = 1
 		if others and #others > 0 then
 			charge = charge / #others
+			other_count = #others
 		end
 
-    return charge, ncount, is_nyanporter
+    return charge, other_count, is_nyanporter
 end
 
 
@@ -321,7 +321,7 @@ end
 
 teleports.calculate_range = function(pos)
   -- Compute charge.
-  local chg, cnt, nyan = teleports.calculate_charge(pos)
+  local chg, other_cnt, nyan = teleports.calculate_charge(pos)
 	if nyan then
 		local owner = minetest.get_meta(pos):get_string("owner")
 		-- There is an admin teleport pair between the Surface Colony and the City of Fire.
@@ -329,7 +329,8 @@ teleports.calculate_range = function(pos)
 		if owner == "MustTest" then
 			return 31000, nyan
 		else
-			return 7770, nyan
+			-- Range of nyan teleports is reduced if they're crowded.
+			return (7770 / other_cnt), nyan
 		end
 	end
   

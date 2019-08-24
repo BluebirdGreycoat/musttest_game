@@ -20,8 +20,8 @@ joinspec.data = {
 		"you must obtain a Proof of Citizenship. The recipe is in the craft guide.\n\n" ..
 		"Further information can be found on the server’s website, but be warned that it " ..
 		"is quite sparse, only covering a few important items -- part of the experience is " ..
-		"about experimenting, exploring and discovering undocumented features. You can of course " ..
-		"ask questions. Better hope that no one leads you astray. :-)",
+		"about experimenting, exploring and discovering undocumented features.\n\nYou can of course " ..
+		"ask questions of the old-timers. Better hope that no one leads you astray. :-)",
 
 	alert = "A recent client is recommended to enjoy advanced features.",
 	version = minetest.get_version(),

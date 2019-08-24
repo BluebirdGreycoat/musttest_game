@@ -156,8 +156,24 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	end
 
 	-- Small chance to be teleported somewhere completely random.
+	-- The chance increases a LOT if teleports are crowded.
 	local use_random = false
-	if math.random(1, 256) == 1 then
+	local random_chance = 500 -- Actually 470, because nearby-count is always at least 1 (counting self).
+	local count_nearby = 0
+
+	for k, v in ipairs(teleports.teleports) do
+		if vector.distance(v.pos, origin_pos) < 50 then
+			count_nearby = count_nearby + 1
+		end
+	end
+
+	random_chance = random_chance - (count_nearby * 30)
+
+	if random_chance < 10 then
+		random_chance = 10
+	end
+
+	if math.random(1, random_chance) == 1 then
 		if #(teleports.teleports) > 0 then
 			local tp = teleports.teleports[math.random(1, #(teleports.teleports))]
 			if not tp then

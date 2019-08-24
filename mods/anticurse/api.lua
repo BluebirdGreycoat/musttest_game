@@ -4,11 +4,49 @@ anticurse = anticurse or {}
 function anticurse.test(string)
 	if anticurse.check_string(anticurse.foul, string) then
 		minetest.chat_send_player("MustTest", "# Server: String contains crudity!")
+		return false
 	elseif anticurse.check_string(anticurse.curse, string) then
 		minetest.chat_send_player("MustTest", "# Server: String contains cursing!")
+		return false
 	else
 		minetest.chat_send_player("MustTest", "# Server: String confirmed SJW-safe!")
 	end
+	return true
+end
+
+
+
+function anticurse.dump_files()
+	minetest.chat_send_player("MustTest", "# Server: Starting processing ...")
+
+	local lines1, err1 = io.open(minetest.get_worldpath() .. "/ac_dump_bad.txt", "w")
+	if err1 then return end
+	local lines2, err2 = io.open(minetest.get_worldpath() .. "/ac_dump_good.txt", "w")
+	if err2 then lines1:close() return end
+	local lines3, err3 = io.open(minetest.get_worldpath() .. "/cursing.txt", "r")
+	if err3 then lines1:close() lines2:close() return end
+
+	local input = lines3:read("*all")
+	if type(input) == "string" then
+		local rows = string.split(input, "\n")
+		for k, v in ipairs(rows) do
+			local result = anticurse.test(v)
+			if result then
+				lines2:write(v .. "\n")
+			else
+				lines1:write(v .. "\n")
+			end
+		end
+	end
+
+	lines1:write("\n* * * DONE * * *\n")
+	lines2:write("\n* * * DONE * * *\n")
+
+	lines1:close()
+	lines2:close()
+	lines3:close()
+
+	minetest.chat_send_player("MustTest", "# Server: Finished processing!")
 end
 
 

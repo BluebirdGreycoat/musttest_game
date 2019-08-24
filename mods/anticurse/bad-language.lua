@@ -4,7 +4,8 @@ anticurse.foul = {
   {word="s+e+x+", white={
 		"whats", "exact", "exist", "xd", "except", "its", "exha", "exp", "extra", "thats",
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
-		"house", "example", "exchange", "please", "excuse", "course", "extend",
+		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
+		"excellent",
 	}},
 
 	"h+y+m+e+n+",
@@ -62,7 +63,7 @@ anticurse.foul = {
 	"s+u+x+",
 	"d+i+x+",
 	{word="h+o+m+o+", white={"homogeneous"}},
-	{word="t+i+t+s+", white={"wait", "got", "petits", "itsa", "itsnext", "itsnot"}},
+	{word="t+i+t+s+", white={"wait", "got", "petits", "itsa", "itsnext", "itsnot", "mt", "at", "it", "itsin", "itsat", "itsjust"}},
 	{word="b+oo+b+", white={"booby", "boo+boo+"}},
 
   "a+ss+e*h+o+l+e+",
@@ -112,10 +113,11 @@ anticurse.foul = {
 		"darsela", "similar", "parse", "setup", "hoarse", "sparse", "rehearse",
 		"arsenal", "far", "war", "scarse", "dear", "self", "seem", "bar", "bear",
 		"shears", "semilla", "carser", "server", "quedarse", "near", "sea", "coarse",
+		"charset", "juntarse",
 	}},
 
 	{word="f+a+g+o+t+", white={"gotcha"}},
-  {word="g+a+y+", white={"gayety", "gayeties", "yak", "ing"}},
+  {word="g+a+y+", white={"gayety", "gayeties", "yak", "ing", "yack"}},
   
   {word="p+u+s+y+", white={"pussycat", "pussyfoot"}},
   "p+ss+y+",

@@ -1764,7 +1764,6 @@ minetest.register_node("default:ladder_wood_trap", {
 		--wall_side = = <default>
 	},
 	groups = utility.dig_groups("bigitem", {flammable = 2}),
-	legacy_wallmounted = true,
 	sounds = default.node_sound_wood_defaults(),
 })
 

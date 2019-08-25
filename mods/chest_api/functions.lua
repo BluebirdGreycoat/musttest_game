@@ -411,6 +411,9 @@ local function open_chest(def, pos, node, clicker)
 	-- Chest basename.
 	local name = def._chest_basename
 
+	-- Delay before opening chest formspec.
+	local open_delay = (not admin and 0.2 or 0)
+
 	-- Don't play sound or open chest, if opener is admin and not invisible.
 	local admin = (gdac.player_is_admin(pname) and gdac_invis.is_invisible(pname))
 	if not admin then
@@ -419,6 +422,9 @@ local function open_chest(def, pos, node, clicker)
 		if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
 			-- Play sound, open chest.
 			ambiance.sound_play(def.sound_open, pos, 0.5, 20)
+		else
+			-- Oiled chests open faster.
+			open_delay = 0
 		end
 
 		if not chest_lid_obstructed(pos) then
@@ -428,7 +434,7 @@ local function open_chest(def, pos, node, clicker)
 		end
 	end
 
-  minetest.after(not admin and 0.2 or 0, minetest.show_formspec,
+  minetest.after(open_delay, minetest.show_formspec,
       clicker:get_player_name(),
       "default:chest",
 			chest_api.get_chest_formspec(name, def.description, pos))

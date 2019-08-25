@@ -229,12 +229,17 @@ function _doors.door_toggle(pos, node, clicker)
 	end
 
 	local dir = node.param2
-	if state % 2 == 0 then
-		minetest.sound_play(def.door.sounds[1],
-			{pos = pos, gain = 0.3, max_hear_distance = 10})
-	else
-		minetest.sound_play(def.door.sounds[2],
-			{pos = pos, gain = 0.3, max_hear_distance = 10})
+
+	-- Play door open/close sound (check if hinges are oiled, in which case door makes no sound).
+	local last_oiled = meta:get_int("oiled_time")
+	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+		if state % 2 == 0 then
+			minetest.sound_play(def.door.sounds[1],
+				{pos = pos, gain = 0.3, max_hear_distance = 20})
+		else
+			minetest.sound_play(def.door.sounds[2],
+				{pos = pos, gain = 0.3, max_hear_distance = 20})
+		end
 	end
 
 	minetest.swap_node(pos, {
@@ -885,14 +890,27 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 
 	local def = minetest.reg_ns_nodes[node.name]
 
+	-- Play trapdoor open/close sound (check if hinges are oiled, in which case door makes no sound).
+	local play_sound = false
+	local last_oiled = meta:get_int("oiled_time")
+	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+		play_sound = true
+	end
+
 	if string.sub(node.name, -5) == "_open" then
-		minetest.sound_play(def.sound_close,
-			{pos = pos, gain = 0.3, max_hear_distance = 10})
+		if play_sound then
+			minetest.sound_play(def.sound_close,
+				{pos = pos, gain = 0.3, max_hear_distance = 20})
+		end
+
 		minetest.swap_node(pos, {name = string.sub(node.name, 1,
 			string.len(node.name) - 5), param1 = node.param1, param2 = node.param2})
 	else
-		minetest.sound_play(def.sound_open,
-			{pos = pos, gain = 0.3, max_hear_distance = 10})
+		if play_sound then
+			minetest.sound_play(def.sound_open,
+				{pos = pos, gain = 0.3, max_hear_distance = 20})
+		end
+
 		minetest.swap_node(pos, {name = node.name .. "_open",
 			param1 = node.param1, param2 = node.param2})
 	end
@@ -1160,7 +1178,7 @@ function doors.register_fencegate(name, def)
 			local node_def = minetest.reg_ns_nodes[node.name]
 			minetest.swap_node(pos, {name = node_def.gate, param2 = node.param2})
 			minetest.sound_play(node_def.sound, {pos = pos, gain = 0.3,
-				max_hear_distance = 8})
+				max_hear_distance = 20})
 			return itemstack
 		end,
 		selection_box = {

@@ -414,8 +414,13 @@ local function open_chest(def, pos, node, clicker)
 	-- Don't play sound or open chest, if opener is admin and not invisible.
 	local admin = (gdac.player_is_admin(pname) and gdac_invis.is_invisible(pname))
 	if not admin then
-		-- Play sound, open chest.
-		ambiance.sound_play(def.sound_open, pos, 0.5, 20)
+		local meta = minetest.get_meta(pos)
+		local last_oiled = meta:get_int("oiled_time")
+		if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+			-- Play sound, open chest.
+			ambiance.sound_play(def.sound_open, pos, 0.5, 20)
+		end
+
 		if not chest_lid_obstructed(pos) then
 			minetest.swap_node(pos,
 					{ name = name .. "_open",
@@ -458,7 +463,12 @@ local function close_chest(pn, pos, node, swap, sound)
     name = swap,
     param2 = node.param2
   })
-  ambiance.sound_play(sound, pos, 0.5, 20)
+
+	local meta = minetest.get_meta(pos)
+	local last_oiled = meta:get_int("oiled_time")
+	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+		ambiance.sound_play(sound, pos, 0.5, 20)
+	end
 
 	-- Mithril chests auto-sort when closed.
 	-- Thus they are always already sorted when opened.

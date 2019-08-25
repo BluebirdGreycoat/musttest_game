@@ -412,10 +412,10 @@ local function open_chest(def, pos, node, clicker)
 	local name = def._chest_basename
 
 	-- Delay before opening chest formspec.
+	local admin = (gdac.player_is_admin(pname) and gdac_invis.is_invisible(pname))
 	local open_delay = (not admin and 0.2 or 0)
 
 	-- Don't play sound or open chest, if opener is admin and not invisible.
-	local admin = (gdac.player_is_admin(pname) and gdac_invis.is_invisible(pname))
 	if not admin then
 		local meta = minetest.get_meta(pos)
 		local last_oiled = meta:get_int("oiled_time")

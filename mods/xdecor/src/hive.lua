@@ -1,6 +1,9 @@
 local hive = {}
 local honey_max = 5
 
+local bees_time_min = 5
+local bees_time_max = 10
+
 local function update_formspec(pos, meta)
 	local meta = meta or minetest.get_meta(pos)
 	local status = meta:get_string("status")
@@ -31,7 +34,7 @@ function hive.construct(pos)
 	inv:set_size("honey", 1)
 
 	local timer = minetest.get_node_timer(pos)
-	timer:start(math.random(64, 128))
+	timer:start(math.random(bees_time_min, bees_time_max))
 end
 
 function hive.timer(pos)
@@ -138,14 +141,24 @@ xdecor.register("hive", {
 
 		-- Restart timer.
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(64, 128))
+		timer:start(math.random(bees_time_min, bees_time_max))
 	end,
 
 	allow_metadata_inventory_put = function() return 0 end,
 
-	on_metadata_inventory_take = function(pos, _, _, stack)
+	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(64, 128))
+		timer:start(math.random(bees_time_min, bees_time_max))
+
+		-- Sting the player if they don't own this land.
+		if player and minetest.test_protection(pos, player:get_player_name()) then
+			if player:get_hp() > 0 then
+				player:set_hp(player:get_hp() - 1)
+				if player:get_hp() <= 0 then
+					minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> was stung by a swarm of angry bees.")
+				end
+			end
+		end
 	end
 })
 

@@ -853,40 +853,41 @@ end
 ----trapdoor----
 
 function _doors.trapdoor_toggle(pos, node, clicker)
-  node = node or minetest.get_node(pos)
-  if clicker and not minetest.check_player_privs(clicker, "protection_bypass") then
-    -- is player wielding the right key?
-    local item = clicker:get_wielded_item()
-    local meta = minetest.get_meta(pos)
-    local owner = meta:get_string("doors_owner")
-    if item:get_name() == "key:key" or item:get_name() == "key:chain" then
-      local key_meta = item:get_meta()
-      local secret = meta:get_string("key_lock_secret")
+	node = node or minetest.get_node(pos)
+	local meta = minetest.get_meta(pos)
 
-      if key_meta:get_string("secret") == "" then
-        local key_oldmeta = item:get_metadata()
-        if key_oldmeta == "" or not minetest.parse_json(key_oldmeta) then
+	if clicker and not minetest.check_player_privs(clicker, "protection_bypass") then
+		-- is player wielding the right key?
+		local item = clicker:get_wielded_item()
+		local owner = meta:get_string("doors_owner")
+		if item:get_name() == "key:key" or item:get_name() == "key:chain" then
+			local key_meta = item:get_meta()
+			local secret = meta:get_string("key_lock_secret")
+
+			if key_meta:get_string("secret") == "" then
+				local key_oldmeta = item:get_metadata()
+				if key_oldmeta == "" or not minetest.parse_json(key_oldmeta) then
 					ambiance.sound_play("doors_locked", pos, 1.0, 20)
-          return false
-        end
+					return false
+				end
 
-        key_meta:set_string("secret", minetest.parse_json(key_oldmeta).secret)
-        item:set_metadata("")
-      end
+				key_meta:set_string("secret", minetest.parse_json(key_oldmeta).secret)
+				item:set_metadata("")
+			end
 
-      if secret ~= key_meta:get_string("secret") then
-        minetest.chat_send_player(clicker:get_player_name(), "# Server: Key does not fit lock!")
+			if secret ~= key_meta:get_string("secret") then
+				minetest.chat_send_player(clicker:get_player_name(), "# Server: Key does not fit lock!")
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
-        return false
-      end
+				return false
+			end
 
-    elseif owner ~= "" then
-      if clicker:get_player_name() ~= owner then
+		elseif owner ~= "" then
+			if clicker:get_player_name() ~= owner then
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
-        return false
-      end
-    end
-  end
+				return false
+			end
+		end
+	end
 
 	local def = minetest.reg_ns_nodes[node.name]
 

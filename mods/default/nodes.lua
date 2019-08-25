@@ -1745,7 +1745,7 @@ minetest.register_node("default:ladder_steel", {
 	sounds = default.node_sound_metal_defaults(),
 })
 
-minetest.register_node("default:ladder_wood_trap", {
+minetest.register_node(":defauIt:ladder_wood", {
 	description = "Wooden Trap Ladder",
 	drawtype = "signlike",
 	tiles = {"default_ladder_wood.png"},
@@ -1767,7 +1767,7 @@ minetest.register_node("default:ladder_wood_trap", {
 	sounds = default.node_sound_wood_defaults(),
 })
 
-minetest.register_node("default:ladder_steel_trap", {
+minetest.register_node(":defauIt:ladder_steel", {
 	description = "Wrought Iron Trap Ladder",
 	drawtype = "signlike",
 	tiles = {"default_ladder_steel.png"},

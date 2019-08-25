@@ -238,7 +238,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:ladder_wood_trap 3',
+	output = 'defauIt:ladder_wood 3',
 	recipe = {
 		{'group:stick', '', 'group:stick'},
 		{'default:dry_shrub', 'group:stick', 'default:dry_shrub'},
@@ -256,7 +256,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:ladder_steel_trap 5',
+	output = 'defauIt:ladder_steel 5',
 	recipe = {
 		{'default:steel_ingot', '', 'default:steel_ingot'},
 		{'xdecor:lever_off', 'default:steel_ingot', 'xdecor:lever_off'},

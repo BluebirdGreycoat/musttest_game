@@ -247,11 +247,19 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	-- Count reduced from 15 to 3, by MustTest
-	output = 'default:ladder_steel 3',
+	output = 'default:ladder_steel 5',
 	recipe = {
 		{'default:steel_ingot', '', 'default:steel_ingot'},
 		{'default:steel_ingot', 'default:steel_ingot', 'default:steel_ingot'},
+		{'default:steel_ingot', '', 'default:steel_ingot'},
+	}
+})
+
+minetest.register_craft({
+	output = 'default:ladder_steel_trap 5',
+	recipe = {
+		{'default:steel_ingot', '', 'default:steel_ingot'},
+		{'xdecor:lever_off', 'default:steel_ingot', 'xdecor:lever_off'},
 		{'default:steel_ingot', '', 'default:steel_ingot'},
 	}
 })

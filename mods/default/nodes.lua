@@ -1745,6 +1745,29 @@ minetest.register_node("default:ladder_steel", {
 	sounds = default.node_sound_metal_defaults(),
 })
 
+minetest.register_node("default:ladder_wood_trap", {
+	description = "Wooden Trap Ladder",
+	drawtype = "signlike",
+	tiles = {"default_ladder_wood.png"},
+	inventory_image = "default_ladder_wood.png",
+	wield_image = "default_ladder_wood.png",
+	paramtype = "light",
+	paramtype2 = "wallmounted",
+	sunlight_propagates = true,
+	walkable = false,
+	climbable = false, -- Player drops through.
+	is_ground_content = false,
+	selection_box = {
+		type = "wallmounted",
+		--wall_top = = <default>
+		--wall_bottom = = <default>
+		--wall_side = = <default>
+	},
+	groups = utility.dig_groups("bigitem", {flammable = 2, ladder=1}),
+	legacy_wallmounted = true,
+	sounds = default.node_sound_wood_defaults(),
+})
+
 default.register_fence("default:fence_iron", {
 	description = "Wrought Iron Fence",
 	texture = "default_fence_iron.png",

@@ -229,11 +229,19 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	-- Output count increased from 3 to 4, by MustTest.
-	output = 'default:ladder_wood 4',
+	output = 'default:ladder_wood 3',
 	recipe = {
 		{'group:stick', '', 'group:stick'},
 		{'group:stick', 'group:stick', 'group:stick'},
+		{'group:stick', '', 'group:stick'},
+	}
+})
+
+minetest.register_craft({
+	output = 'default:ladder_wood_trap 3',
+	recipe = {
+		{'group:stick', '', 'group:stick'},
+		{'default:dry_shrub', 'group:stick', 'default:dry_shrub'},
 		{'group:stick', '', 'group:stick'},
 	}
 })

@@ -124,6 +124,12 @@ minetest.register_node("vines:rope", {
 			timer:start( rope_timer_rate )
 		end
 	end,
+
+	-- This is not called when rope is destroyed via voxelmanip.
+	after_destruct = function(pos, oldnode)
+		local p = {x=pos.x, y=pos.y-1, z=pos.z}
+		vines.destroy_rope_starting(p, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')
+	end,
 })
 
 minetest.register_node("vines:rope_bottom", {

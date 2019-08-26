@@ -192,6 +192,14 @@ end
 
 minetest.register_on_player_receive_fields(handle_engraver_use)
 
+minetest.register_craft({
+	output = "engraver:chisel",
+	recipe = {
+		{"carbon_steel:ingot"},
+		{"default:stick"},
+	},
+})
+
 
 
 

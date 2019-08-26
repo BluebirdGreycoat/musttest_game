@@ -168,6 +168,16 @@ minetest.register_node("vines:rope_bottom", {
 			newmeta:set_int("length_remaining", currentlength-1)
 			newmeta:mark_as_private("length_remaining")
 			minetest.swap_node(pos, {name="vines:rope"}) -- Do not erase meta.
+
+			-- Check if there is another rope-middle node below, if so, combine ropes.
+			local p2 = {x=pos.x, y=pos.y-2, z=pos.z}
+			local n2 = minetest.get_node(p2)
+			if n2.name == "vines:rope" then
+				-- We have to swap the bottom node for a middle node, otherwise
+				-- there will be a strangely collision box blockage in the middle of the rope
+				-- for no apparent reason.
+				minetest.swap_node(p, {name="vines:rope"}) -- Do not erase meta.
+			end
 		end
 	end,
 

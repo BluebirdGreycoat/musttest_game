@@ -111,6 +111,19 @@ minetest.register_node("vines:rope", {
 	},
 
 	movement_speed_multiplier = default.ROPE_SPEED,
+
+	-- If rope has broken (middle rope piece with no middle or bottom piece below)
+	-- then repair rope on punch.
+	on_punch = function(pos, node, puncher, pt)
+		local under = {x=pos.x, y=pos.y-1, z=pos.z}
+		local n = minetest.get_node(under)
+
+		if n.name ~= "vines:rope" and n.name ~= "vines:rope_bottom" then
+			minetest.swap_node(pos, {name="vines:rope_bottom"}) -- Do not erase meta.
+			local timer = minetest.get_node_timer( pos )
+			timer:start( rope_timer_rate )
+		end
+	end,
 })
 
 minetest.register_node("vines:rope_bottom", {
@@ -154,7 +167,7 @@ minetest.register_node("vines:rope_bottom", {
 			local newmeta = minetest.get_meta(p)
 			newmeta:set_int("length_remaining", currentlength-1)
 			newmeta:mark_as_private("length_remaining")
-			minetest.set_node(pos, {name="vines:rope"})
+			minetest.swap_node(pos, {name="vines:rope"}) -- Do not erase meta.
 		end
 	end,
 
@@ -165,6 +178,7 @@ minetest.register_node("vines:rope_bottom", {
 	end,
 })
 
+-- The top-rope-node is placed only when rope is being destroyed!
 minetest.register_node("vines:rope_top", {
 	description = "Rope",
 	walkable = false,
@@ -198,7 +212,7 @@ minetest.register_node("vines:rope_top", {
 			minetest.set_node(pos, {name="air"})
 		else
 			local timer = minetest.get_node_timer( pos )
-			timer:start( rope_timer_rate )
+			timer:start( 3.0 )
 		end
 	end
 })

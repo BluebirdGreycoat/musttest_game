@@ -133,7 +133,7 @@ minetest.register_craft({
 	recipe = {
 		{"group:stick"},
 		{"default:steel_ingot"},
-		{"default:stone"},
+		{"moreores:tin_ingot"},
 	}
 })
 

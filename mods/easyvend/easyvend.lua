@@ -601,7 +601,6 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 			if chest_has and player_has and chest_free and player_free then
 				if number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
-					currency.remove_cash(player_inv, pin, pricewithtax)
 
 					if check_wear then
 						rchest_inv:set_stack(rchestdef.inv_list, chest_out[1].id, "")
@@ -611,19 +610,22 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						player_inv:add_item(pin, stack)
 					end
 
+					-- Transfer cash.
+					currency.remove_cash(player_inv, pin, pricewithtax)
 					currency.add_cash(vchest_inv, vchest_name, price)
+
+					-- Deliver tax to the colonial government.
+					currency.record_tax_income(pricewithtax - price)
 
 					meta:set_string("message", "Item bought.")
 					easyvend.sound_vend(pos)
 					easyvend.machine_check(pos, node)
 
-					-- Deliver tax to the colonial government.
-					currency.record_tax_income(pricewithtax - price)
-
 					local remote_str = ""
 					if vendor_inv then
 						remote_str = " remotely"
 					end
+
 					minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
@@ -648,10 +650,8 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						local cheststacks = {}
 						easyvend.machine_enable(pos, node)
 
-						currency.remove_cash(player_inv, pin, pricewithtax)
-
 						if check_wear then
-							for o=1,#chest_out do
+							for o=1, #chest_out do
 								rchest_inv:set_stack(rchestdef.inv_list, chest_out[o].id, "")
 							end
 						else
@@ -660,34 +660,38 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 								table.insert(cheststacks, rchest_inv:remove_item(rchestdef.inv_list, stack))
 							end
 						end
+
 						if numberremainder > 0 then
 							stack.count = numberremainder
 							table.insert(cheststacks, rchest_inv:remove_item(rchestdef.inv_list, stack))
 						end
 
-						currency.add_cash(vchest_inv, vchest_name, price)
-
 						if check_wear then
-							for o=1,#chest_out do
+							for o=1, #chest_out do
 								player_inv:add_item(pin, chest_out[o].item)
 							end
 						else
-							for i=1,#cheststacks do
+							for i=1, #cheststacks do
 								player_inv:add_item(pin, cheststacks[i])
 							end
 						end
+
+						-- Transfer money.
+						currency.remove_cash(player_inv, pin, pricewithtax)
+						currency.add_cash(vchest_inv, vchest_name, price)
+
+						-- Deliver tax to the colonial government.
+						currency.record_tax_income(pricewithtax - price)
 
 						meta:set_string("message", "Item bought.")
 						easyvend.sound_vend(pos)
 						easyvend.machine_check(pos, node)
 
-						-- Deliver tax to the colonial government.
-						currency.record_tax_income(pricewithtax - price)
-
 						local remote_str = ""
 						if vendor_inv then
 							remote_str = " remotely"
 						end
+
 						minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
@@ -737,21 +741,23 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						vchest_inv:add_item(vchest_name, stack)
 					end
 
+					-- Transfer money.
 					currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
 					currency.add_cash(player_inv, pin, pricewithtax)
+
+					-- Deliver tax to the colonial government.
+					currency.record_tax_income(price - pricewithtax)
 
 					meta:set_string("status", "Ready.")
 					meta:set_string("message", "Item sold.")
 					easyvend.sound_deposit(pos)
 					easyvend.machine_check(pos, node)
 
-					-- Deliver tax to the colonial government.
-					currency.record_tax_income(price - pricewithtax)
-
 					local remote_str = ""
 					if vendor_inv then
 						remote_str = " remotely"
 					end
+
 					minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
@@ -773,10 +779,8 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						-- Remember removed items for transfer
 						local playerstacks = {}
 
-						currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
-
 						if check_wear then
-							for o=1,#player_out do
+							for o=1, #player_out do
 								player_inv:set_stack(pin, player_out[o].id, "")
 							end
 						else
@@ -785,34 +789,38 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 								table.insert(playerstacks, player_inv:remove_item(pin, stack))
 							end
 						end
+
 						if numberremainder > 0 then
 							stack.count = numberremainder
 							table.insert(playerstacks, player_inv:remove_item(pin, stack))
 						end
 
-						currency.add_cash(player_inv, pin, pricewithtax)
-
 						if check_wear then
-							for o=1,#player_out do
+							for o=1, #player_out do
 								vchest_inv:add_item(vchest_name, player_out[o].item)
 							end
 						else
-							for i=1,#playerstacks do
+							for i=1, #playerstacks do
 								vchest_inv:add_item(vchest_name, playerstacks[i])
 							end
 						end
+
+						-- Transfer money.
+						currency.remove_cash(rchest_inv, rchestdef.inv_list, price)
+						currency.add_cash(player_inv, pin, pricewithtax)
+
+						-- Deliver tax to the colonial government.
+						currency.record_tax_income(price - pricewithtax)
 
 						meta:set_string("message", "Item sold.")
 						easyvend.sound_deposit(pos)
 						easyvend.machine_check(pos, node)
 
-						-- Deliver tax to the colonial government.
-						currency.record_tax_income(price - pricewithtax)
-
 						local remote_str = ""
 						if vendor_inv then
 							remote_str = " remotely"
 						end
+
 						minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))

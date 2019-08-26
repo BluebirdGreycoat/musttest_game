@@ -55,15 +55,15 @@ local function register_rope_block(multiple, pixels)
 		minetest.register_craft({
 			output = "vines:1rope_block",
 			recipe =  {
-				{'group:wood', 'vines:ropesegment'},
-				{'vines:ropesegment', 'vines:ropesegment'},
-				{'vines:ropesegment', 'vines:ropesegment'},
+				{'vines:ropesegment', 'group:wood', 'vines:ropesegment'},
+				{'vines:ropesegment', 'vines:ropesegment', 'vines:ropesegment'},
+				{'vines:ropesegment', 'vines:ropesegment', 'vines:ropesegment'},
 			}
 		})
 	--
 	else
 		local rec = {}
-		for i=1,multiple,1 do
+		for i=1, multiple, 1 do
 			rec[i] = "vines:1rope_block"
 		end
 
@@ -86,12 +86,10 @@ end
 --creates rope blocks with length multiples 1-5.
 --second parameter sets how many pixels wide the rope texture is
 register_rope_block(1, 4)
-
--- We only need the first tier ropebox (MustTest).
---register_rope_block(2, 8)
---register_rope_block(3, 10)
---register_rope_block(4, 10)
---register_rope_block(5, 12)
+register_rope_block(2, 8)
+register_rope_block(3, 10)
+register_rope_block(4, 10)
+register_rope_block(5, 12)
 
 minetest.register_node("vines:rope", {
 	description = "Rope",

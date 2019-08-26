@@ -123,7 +123,7 @@ minetest.register_node("vines:rope_bottom", {
 	-- end when sliding downwards in darkness.
   collision_box = {
 	  type = "fixed",
-	  fixed = {-0.5, -0.5, -0.5, 0.5, -0.4, 0.5},
+	  fixed = {-0.3, -0.5, -0.3, 0.3, -0.4, 0.3},
   },
 
 	movement_speed_multiplier = default.ROPE_SPEED,

@@ -194,7 +194,7 @@ local function handle_engraver_use(player, formname, fields)
 		meta:set_string("chiseled_date", os.time())
 		meta:set_int("engraver_chiseled", 1)
 		meta:mark_as_private({"chiseled_text", "chiseled_date", "engraver_chiseled"})
-		meta:set_string("infotext", "Chiseled Text Reads:\n\n"message)
+		meta:set_string("infotext", "Chiseled Text Reads:\n\n" .. message)
 		ambiance.sound_play("anvil_clang", pos, 1.0, 30)
 	end
 

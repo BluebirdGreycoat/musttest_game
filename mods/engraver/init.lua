@@ -61,6 +61,8 @@ local function node_can_be_chiseled(pos)
 			was_engraved = true
 		elseif k == "infotext" then
 			has_infotext = true
+		elseif k == "chiseled_text" or k == "chiseled_date" then
+			-- Nothing to be done. Ignore these fields.
 		else
 			has_other_fields = true
 		end
@@ -81,7 +83,7 @@ end
 local function show_chisel_formspec(pos, user)
 	local pname = user:get_player_name()
 	local node = minetest.get_node(pos)
-	local text = minetest.get_meta(pos):get_string("infotext")
+	local text = minetest.get_meta(pos):get_string("chiseled_text")
 
 	local formspec = "size[5,2.3]" ..
 		default.gui_bg ..
@@ -170,19 +172,30 @@ local function handle_engraver_use(player, formname, fields)
 	-- Translate escape sequences.
 	message = string.gsub(message, "%%[nN]", "\n")
 
-	local meta = minetest.get_meta(pos)
-	meta:set_string("infotext", message)
-	ambiance.sound_play("anvil_clang", pos, 1.0, 30)
-
 	-- Add wear to the chisel.
+	local got_chisel = false
 	local inv = player:get_inventory()
 	local index = player:get_wield_index()
 	local chisel = inv:get_stack("main", index)
-	chisel:add_wear(300)
-	inv:set_stack("main", index, chisel)
+	if chisel:get_name() == "engraver:chisel" then
+		chisel:add_wear(300)
+		inv:set_stack("main", index, chisel)
 
-	if chisel:is_empty() == 0 then
-		ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
+		if chisel:is_empty() == 0 then
+			ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
+		end
+
+		got_chisel = true
+	end
+
+	if got_chisel then
+		local meta = minetest.get_meta(pos)
+		meta:set_string("chiseled_text", message)
+		meta:set_string("chiseled_date", os.time())
+		meta:set_int("engraver_chiseled", 1)
+		meta:mark_as_private({"chiseled_text", "chiseled_date", "engraver_chiseled"})
+		meta:set_string("infotext", "Chiseled Text Reads:\n\n"message)
+		ambiance.sound_play("anvil_clang", pos, 1.0, 30)
 	end
 
 	return true

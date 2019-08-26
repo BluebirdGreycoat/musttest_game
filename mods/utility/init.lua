@@ -8,6 +8,18 @@ fireambiance = {}
 function fireambiance.on_flame_addremove(pos)
 end
 
+function utility.trim_remove_special_chars(msg)
+	local sub = string.gsub
+	msg = sub(msg, "%z", "") -- Zero byte.
+	msg = sub(msg, "%c", "") -- Control bytes.
+
+	-- Trim whitespace.
+	msg = sub(msg, "^%s+", "")
+	msg = sub(msg, "%s+$", "")
+
+	return msg
+end
+
 -- `level = 0/1, snappy = 3` enables quick digging via shears.
 -- Otherwise item cannot be dug by shears at all.
 --

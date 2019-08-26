@@ -43,38 +43,30 @@ function signs.on_receive_fields(pos, formname, fields, sender)
 		return
 	end
 
-	if anticurse.check(pname, fields.text, "foul") then
-		anticurse.log(pname, fields.text)
+	local message = utility.trim_remove_special_chars(fields.text)
+
+	if anticurse.check(pname, message, "foul") then
+		anticurse.log(pname, message)
 		minetest.chat_send_player(pname, "# Server: Please do not write dirty talk on a sign.")
 		return
-	elseif anticurse.check(pname, fields.text, "curse") then
-		anticurse.log(pname, fields.text)
+	elseif anticurse.check(pname, message, "curse") then
+		anticurse.log(pname, message)
 		minetest.chat_send_player(pname, "# Server: Please do not curse on a sign.")
 		return
 	end
 
 	minetest.log("action", pname .. " wrote \"" ..
-		fields.text .. "\" to sign at " .. minetest.pos_to_string(pos))
+		message .. "\" to sign at " .. minetest.pos_to_string(pos))
 
-	meta:set_string("text", fields.text)
+	meta:set_string("text", message)
 	meta:set_string("author", pname)
 
 	meta:mark_as_private({"text", "author"})
 
-	local dt = fields.text
-	do
-		local sub = string.gsub
-		dt = sub(dt, "%z", "") -- Zero byte.
-		dt = sub(dt, "%c", "") -- Control bytes.
+	-- Translate escape sequences.
+	message = string.gsub(message, "%%[nN]", "\n")
 
-		-- Trim whitespace.
-		dt = sub(dt, "^%s+", "")
-		dt = sub(dt, "%s+$", "")
-
-		-- Translate escape sequences.
-		dt = sub(dt, "%%[nN]", "\n")
-	end
-	meta:set_string("infotext", dt)
+	meta:set_string("infotext", message)
 
 	-- Zero-out old stuff.
 	meta:set_string("formspec", nil)

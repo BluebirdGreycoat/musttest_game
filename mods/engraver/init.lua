@@ -1,4 +1,200 @@
 
+local function player_wields_tools(user)
+	local chisel_index = user:get_wield_index()
+	local hammer_index = chisel_index + 1
+
+	local inv = user:get_inventory()
+	local chisel_stack = inv:get_stack("main", chisel_index)
+	local chisel_name = chisel_stack:get_name()
+	local hammer_stack = inv:get_stack("main", hammer_index)
+	local hammer_name = hammer_stack:get_name()
+
+	if chisel_name ~= "engraver:chisel" then
+		return false
+	end
+
+	if hammer_name ~= "xdecor:hammer" and hammer_name ~= "anvil:hammer" then
+		return false
+	end
+
+	return true
+end
+
+
+
+local function node_can_be_chiseled(pos)
+	local node = minetest.get_node(pos)
+	local ndef = minetest.registered_nodes[node.name]
+
+	if not ndef then
+		return false
+	end
+
+	-- Check node drawtype (must be full node).
+	local dt = ndef.drawtype
+	if dt ~= "normal" and dt ~= "glasslike" and dt ~= "glasslike_framed" and dt ~= "glasslike_framed_optional" and dt ~= "allfaces" and dt ~= "allfaces_optional" then
+		return false
+	end
+
+	-- Check node groups (must be stone, brick or block).
+	local groups = ndef.groups or {}
+	if (groups.stone and groups.stone > 0) or (groups.brick and groups.brick > 0) or (groups.block and groups.block > 0) then
+		-- Do nothing.
+	else
+		return false
+	end
+
+	-- Check meta (cannot have infotext or formspec, or must have been previously chiseled).
+	local meta = minetest.get_meta(pos)
+	local data = meta:to_table() or {fields={}, inventory={}}
+
+	-- Any inventory fields means this node can't be engraved.
+	for k, v in pairs(data.inventory)
+		return false
+	end
+
+	local was_engraved = false
+	local has_other_fields = false
+	local has_infotext = false
+	for k, v in pairs(data.fields) do
+		if k == "engraver_chiseled" then
+			was_engraved = true
+		elseif k == "infotext" then
+			has_infotext = true
+		else
+			has_other_fields = true
+		end
+	end
+
+	if has_infotext and not was_engraved then
+		return false
+	end
+	if has_other_fields then
+		return false
+	end
+
+	return true
+end
+
+
+
+local function show_chisel_formspec(pos, user)
+	local pname = user:get_player_name()
+	local node = minetest.get_node(pos)
+	local text = minetest.get_meta(pos):get_string("infotext")
+
+	local formspec = "size[5,2.3]" ..
+		default.gui_bg ..
+		default.gui_bg_img ..
+		default.gui_slots ..
+		"item_image[1,1;1,1;" .. minetest.formspec_escape(node.name) .. "]" ..
+		"field[0.3,0.3;5,1;text;;" .. minetest.formspec_escape(text) .. "]" ..
+		"button_exit[2,1;2,1;proceed;Chisel Text]" ..
+		"label[0,2;`%n' inserts a new line.]"
+
+	local formname = "engraver:chisel_" .. minetest.pos_to_string(pos)
+	minetest.show_formspec(pname, formname, formspec)
+end
+
+
+
+-- Must be a tool for the wear bar to work.
+minetest.register_tool("engraver:chisel", {
+	description = "Chisel",
+	groups = {not_repaired_by_anvil = 1},
+	inventory_image = "engraver_chisel.png",
+	wield_image = "engraver_chisel.png",
+
+	on_use = function(itemstack, user, pt)
+		if not user or not user:is_player() then
+			return
+		end
+
+		if pt.type ~= "node" then
+			return
+		end
+
+		if not player_wields_tools(user) then
+			return
+		end
+
+		if not node_can_be_chiseled(pt.under) then
+			return
+		end
+
+		ambiance.sound_play("anvil_clang", pt.under, 1.0, 30)
+		show_chisel_formspec(pt.under, user)
+	end,
+})
+
+
+
+local function handle_engraver_use(player, formname, fields)
+	if not string.find(formname, "^engraver:chisel_") then
+		return
+	end
+	if not player or not player:is_player() then
+		return true
+	end
+	local pname = player:get_player_name()
+
+	local pos = minetest.string_to_pos(string.sub(formname, string.len("engraver:chisel_") + 1))
+	if not pos then
+		return true
+	end
+
+	if not player_wields_tools(player) then
+		return true
+	end
+
+	if not node_can_be_chiseled(pos) then
+		return true
+	end
+
+	if not fields.text or type(fields.text) ~= "string" then
+		return true
+	end
+
+	local message = utility.trim_remove_special_chars(fields.text)
+
+	if anticurse.check(pname, message, "foul") then
+		anticurse.log(pname, message)
+		minetest.chat_send_player(pname, "# Server: Don't use a chisel for naughty talk!")
+		return true
+	elseif anticurse.check(pname, message, "curse") then
+		anticurse.log(pname, message)
+		minetest.chat_send_player(pname, "# Server: Please do not curse with a chisel.")
+		return true
+	end
+
+	-- Translate escape sequences.
+	message = string.gsub(message, "%%[nN]", "\n")
+
+	local meta = minetest.get_meta(pos)
+	meta:set_string("infotext", message)
+	ambiance.sound_play("anvil_clang", pos, 1.0, 30)
+
+	-- Add wear to the chisel.
+	local inv = player:get_inventory()
+	local index = player:get_wield_index()
+	local chisel = inv:get_stack("main", index)
+	chisel:add_wear(300)
+	inv:set_stack("main", index, chisel)
+
+	if chisel:is_empty() == 0 then
+		ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
+	end
+
+	return true
+end
+
+
+
+minetest.register_on_player_receive_fields(handle_engraver_use)
+
+
+
+
 -- Code by 'octacian'
 
 --

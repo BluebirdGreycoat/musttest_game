@@ -1,8 +1,8 @@
 local hive = {}
 local honey_max = 5
 
-local bees_time_min = 5
-local bees_time_max = 10
+local bees_time_min = 64
+local bees_time_max = 64*8
 
 local function update_formspec(pos, meta)
 	local meta = meta or minetest.get_meta(pos)

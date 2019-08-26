@@ -105,7 +105,7 @@ minetest.register_node("vines:rope", {
 
 minetest.register_node("vines:rope_bottom", {
   description = "Rope",
-  walkable = false,
+  walkable = true,
   climbable = true,
   sunlight_propagates = true,
   paramtype = "light",

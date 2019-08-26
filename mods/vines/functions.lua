@@ -21,6 +21,11 @@ vines.destroy_rope_starting = function(p, targetnode, bottomnode, topnode)
 	if n == bottomnode then
 		tab[i] = p
 	end
+
+	if #tab == 0 then
+		return
+	end
+
 	local y0 = p.y
 	--print("test5")
 	local manip = minetest.get_voxel_manip()

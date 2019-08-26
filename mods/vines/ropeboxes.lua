@@ -1,3 +1,6 @@
+
+local rope_timer_rate = 0.2
+
 local function register_rope_block(multiple, pixels)
 	minetest.register_node(string.format("vines:%irope_block", multiple), {
 		description = string.format("Rope (%i Meters)", vines.ropeLength*multiple),
@@ -137,7 +140,7 @@ minetest.register_node("vines:rope_bottom", {
 
 	on_construct = function( pos )
 		local timer = minetest.get_node_timer( pos )
-		timer:start( 1 )
+		timer:start( rope_timer_rate )
 	end,
 
 	on_timer = function( pos, elapsed )
@@ -158,7 +161,7 @@ minetest.register_node("vines:rope_bottom", {
 	-- If rope has fallen asleep, you can wake it up with a punch.
 	on_punch = function(pos, node, puncher, pt)
 		local timer = minetest.get_node_timer( pos )
-		timer:start( 1 )
+		timer:start( rope_timer_rate )
 	end,
 })
 
@@ -183,7 +186,7 @@ minetest.register_node("vines:rope_top", {
 
 	on_construct = function( pos )
 		local timer = minetest.get_node_timer( pos )
-		timer:start( 1 )
+		timer:start( rope_timer_rate )
 	end,
 
 	on_timer = function( pos, elapsed )
@@ -195,7 +198,7 @@ minetest.register_node("vines:rope_top", {
 			minetest.set_node(pos, {name="air"})
 		else
 			local timer = minetest.get_node_timer( pos )
-			timer:start( 1 )
+			timer:start( rope_timer_rate )
 		end
 	end
 })

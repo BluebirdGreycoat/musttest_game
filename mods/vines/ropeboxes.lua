@@ -152,11 +152,14 @@ minetest.register_node("vines:rope_bottom", {
 			newmeta:set_int("length_remaining", currentlength-1)
 			newmeta:mark_as_private("length_remaining")
 			minetest.set_node(pos, {name="vines:rope"})
-		else
-			local timer = minetest.get_node_timer( pos )
-			timer:start( 1 )
 		end
-	end
+	end,
+
+	-- If rope has fallen asleep, you can wake it up with a punch.
+	on_punch = function(pos, node, puncher, pt)
+		local timer = minetest.get_node_timer( pos )
+		timer:start( 1 )
+	end,
 })
 
 minetest.register_node("vines:rope_top", {
@@ -191,7 +194,7 @@ minetest.register_node("vines:rope_top", {
 			vines.destroy_rope_starting(p, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')
 			minetest.set_node(pos, {name="air"})
 		else
-				local timer = minetest.get_node_timer( pos )
+			local timer = minetest.get_node_timer( pos )
 			timer:start( 1 )
 		end
 	end

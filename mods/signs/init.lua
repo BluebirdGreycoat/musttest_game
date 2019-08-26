@@ -93,6 +93,13 @@ function signs.on_player_receive_fields(player, formname, fields)
 		return true
 	end
 
+	-- Make sure player is actually using a sign.
+	local node = minetest.get_node(pos)
+	local name = node.name
+	if name ~= "signs:sign_wall_wood" and name ~= "signs:sign_wall_steel" and name ~= "signs:sign_wall_tin" then
+		return true
+	end
+
 	signs.on_receive_fields(pos, "", fields, player)
 	return true
 end

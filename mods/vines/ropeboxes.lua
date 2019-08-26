@@ -1,6 +1,6 @@
 local function register_rope_block(multiple, pixels)
 	minetest.register_node(string.format("vines:%irope_block", multiple), {
-        description = string.format("Rope %im", vines.ropeLength*multiple),
+        description = string.format("Rope (%i Meters)", vines.ropeLength*multiple),
         drawtype="nodebox",
         sunlight_propagates = true,
         paramtype = "light",

@@ -195,7 +195,12 @@ local function handle_engraver_use(player, formname, fields)
 		-- Translate escape sequences.
 		message = string.gsub(message, "%%[nN]", "\n")
 
-		meta:set_string("infotext", "Chiseled Text Reads:\n\n" .. message)
+		if message ~= "" then
+			meta:set_string("infotext", "Chiseled Text Reads:\n\n" .. message)
+		else
+			meta:set_string("infotext", "")
+		end
+
 		ambiance.sound_play("anvil_clang", pos, 1.0, 30)
 	end
 

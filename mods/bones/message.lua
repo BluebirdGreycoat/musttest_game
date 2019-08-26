@@ -14,6 +14,49 @@ local release_player = function(player)
 end
 bones.release_player = release_player
 
+local msg_str1 = {
+	"Blackbox",
+	"Blackbox",
+
+	"Bonebox",
+	"Bonebox",
+	"Bonebox",
+
+	"Death signal",
+	"Blackbox signal",
+	"Bonebox signal",
+
+	"Death beacon",
+	"Blackbox beacon",
+	"Bonebox beacon",
+}
+local msg_str2 = {
+	"perished",
+	"perished",
+	"perished",
+
+	"died",
+	"died",
+	"died",
+
+	"kicked the bucket",
+	"kicked the bucket",
+
+	"was killed",
+	"was slain",
+	"lost a life",
+	"croaked",
+	"bit the dust",
+	"passed away",
+	"passed on",
+
+	"expired",
+	"expired",
+}
+local function random_str(strs)
+	return strs[math.random(1, #strs)]
+end
+
 
 
 local send_chat_world = function(pos, player)
@@ -27,13 +70,14 @@ local send_chat_world = function(pos, player)
 
 	if show_everyone then
 		local dname = rename.gpn(player)
-		minetest.chat_send_all("# Server: Blackbox detected. Player <" .. dname .. "> perished at " .. rc.pos_to_namestr(pos) .. ".")
+		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. " ..
+			"<" .. dname .. "> " .. random_str(msg_str2) .. " at " .. rc.pos_to_namestr(pos) .. ".")
 	else
-		minetest.chat_send_all("# Server: Blackbox detected. ID and location unknown.")
-		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ". Your blackbox locator signal is SUPPRESSED.")
+		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. ID and location unknown.")
+		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ". The locator beacon was SUPPRESSED.")
 	end
 
-	minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your blackbox at the above coordinates.")
+	minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your bonebox at the above coordinates.")
 
 	-- The player can't trigger any more chat messages until released.
 	bones.players[player] = true

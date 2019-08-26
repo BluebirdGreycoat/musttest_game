@@ -118,6 +118,14 @@ minetest.register_node("vines:rope_bottom", {
 	  type = "fixed",
 	  fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
   },
+
+	-- The bottom node has a collision box so that the player doesn't fall off the
+	-- end when sliding downwards in darkness.
+  collision_box = {
+	  type = "fixed",
+	  fixed = {-0.5, -0.5, -0.5, 0.5, -0.4, 0.5},
+  },
+
 	movement_speed_multiplier = default.ROPE_SPEED,
   on_construct = function( pos )
     local timer = minetest.get_node_timer( pos )

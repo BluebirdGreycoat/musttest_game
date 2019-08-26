@@ -602,6 +602,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 				if number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
 
+					-- Transfer items before transfering cash (this is because cash transfers can use up an unexpected number of free slots).
 					if check_wear then
 						rchest_inv:set_stack(rchestdef.inv_list, chest_out[1].id, "")
 						player_inv:add_item(pin, chest_out[1].item)
@@ -650,6 +651,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						local cheststacks = {}
 						easyvend.machine_enable(pos, node)
 
+						-- Transfer items before transfering cash (this is because cash transfers can use up an unexpected number of free slots).
 						if check_wear then
 							for o=1, #chest_out do
 								rchest_inv:set_stack(rchestdef.inv_list, chest_out[o].id, "")
@@ -733,6 +735,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 				if number <= number_stack_max then
 					easyvend.machine_enable(pos, node)
 
+					-- Transfer items before transfering cash (this is because cash transfers can use up an unexpected number of free slots).
 					if check_wear then
 						player_inv:set_stack(pin, player_out[1].id, "")
 						vchest_inv:add_item(vchest_name, player_out[1].item)
@@ -779,6 +782,7 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						-- Remember removed items for transfer
 						local playerstacks = {}
 
+						-- Transfer items before transfering cash (this is because cash transfers can use up an unexpected number of free slots).
 						if check_wear then
 							for o=1, #player_out do
 								player_inv:set_stack(pin, player_out[o].id, "")

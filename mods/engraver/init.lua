@@ -49,7 +49,7 @@ local function node_can_be_chiseled(pos)
 	local data = meta:to_table() or {fields={}, inventory={}}
 
 	-- Any inventory fields means this node can't be engraved.
-	for k, v in pairs(data.inventory)
+	for k, v in pairs(data.inventory) do
 		return false
 	end
 

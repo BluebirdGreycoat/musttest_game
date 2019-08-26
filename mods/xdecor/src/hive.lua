@@ -14,7 +14,7 @@ local function update_formspec(pos, meta)
 	end
 
 	local formspec = [[ size[8,5;]
-			label[0.5,0;"]] .. minetest.formspec_escape(text) .. [["]
+			label[0.5,0;]] .. minetest.formspec_escape(text) .. [[]
 			image[6,0;1,1;hive_bee.png]
 			image[5,0;1,1;hive_layout.png]
 			list[context;honey;5,0;1,1;]

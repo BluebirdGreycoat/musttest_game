@@ -31,7 +31,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = true,
 			walkable = false,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -84,7 +83,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = true,
 			walkable = false,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -132,7 +130,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = false,
 			walkable = true,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -171,7 +168,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = false,
 			walkable = true,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -204,7 +200,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = true,
 			walkable = false,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			node_box = {
@@ -258,7 +253,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = true,
 			walkable = false,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -307,7 +301,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = false,
 			walkable = true,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -346,7 +339,6 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = false,
 			walkable = true,
-			is_ground_content = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)

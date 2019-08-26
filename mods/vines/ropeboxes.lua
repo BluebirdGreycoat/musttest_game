@@ -35,6 +35,7 @@ local function register_rope_block(multiple, pixels)
             minetest.add_node(p, {name="vines:rope_bottom"})
             local meta = minetest.get_meta(p)
             meta:set_int("length_remaining", vines.ropeLength*multiple)
+						meta:mark_as_private("length_remaining")
             end
         end,
         after_destruct = function(pos)
@@ -141,6 +142,7 @@ minetest.register_node("vines:rope_bottom", {
 	  minetest.add_node(p, {name="vines:rope_bottom"})
 	  local newmeta = minetest.get_meta(p)
 	  newmeta:set_int("length_remaining", currentlength-1)
+		newmeta:mark_as_private("length_remaining")
 	  minetest.set_node(pos, {name="vines:rope"})
     else
       local timer = minetest.get_node_timer( pos )

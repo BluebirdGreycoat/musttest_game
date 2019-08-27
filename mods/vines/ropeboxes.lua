@@ -113,6 +113,16 @@ minetest.register_node("vines:rope", {
 	-- If rope has broken (middle rope piece with no middle or bottom piece below)
 	-- then repair rope on punch.
 	on_punch = function(pos, node, puncher, pt)
+		local above = {x=pos.x, y=pos.y+1, z=pos.z}
+		local n = minetest.get_node(above)
+		if (string.find(n.name, "^vines:") and string.find(n.name, "rope_block$")) or n.name == "vines:rope" then
+			-- Nothing.
+		else
+			-- No ropeblock above, need to destroy rope!
+			vines.destroy_rope_starting(pos, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')
+			return
+		end
+
 		local under = {x=pos.x, y=pos.y-1, z=pos.z}
 		local n = minetest.get_node(under)
 
@@ -120,6 +130,7 @@ minetest.register_node("vines:rope", {
 			minetest.swap_node(pos, {name="vines:rope_bottom"}) -- Do not erase meta.
 			local timer = minetest.get_node_timer( pos )
 			timer:start( rope_timer_rate )
+			return
 		end
 	end,
 

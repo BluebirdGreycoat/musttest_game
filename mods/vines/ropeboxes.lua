@@ -118,7 +118,7 @@ minetest.register_node("vines:rope", {
 		if (string.find(n.name, "^vines:") and string.find(n.name, "rope_block$")) or n.name == "vines:rope" then
 			-- Nothing.
 		else
-			-- No ropeblock above, need to destroy rope!
+			-- No ropeblock above and no rope-middle-section, need to destroy rope!
 			vines.destroy_rope_starting(pos, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')
 			return
 		end

@@ -28,7 +28,7 @@ shears.on_place = function(itemstack, user, pointed_thing)
 
 	if node.name == "vines:rope" then
 		itemstack:add_wear(65535 / (USES - 1))
-		minetest.set_node(pos, {name="vines:rope_bottom"})
+		minetest.swap_node(pos, {name="vines:rope_bottom"}) -- Do not wipe metadata.
 		local p = {x=pos.x, y=pos.y-1, z=pos.z}
 		local n = minetest.get_node(p)
 		if (n.name == 'vines:rope' or n.name == 'vines:rope_bottom') then

@@ -3,6 +3,7 @@ plastic = plastic or {}
 plastic.modpath = minetest.get_modpath("plastic")
 
 -- Important: the ability to oil door/chest hinges does NOT require protection access.
+-- Can also polish infotext engravings so they become permanent (requires protection check).
 function plastic.oil_extract_on_use(itemstack, user, pt)
 	if not user or not user:is_player() then
 		return
@@ -21,9 +22,10 @@ function plastic.oil_extract_on_use(itemstack, user, pt)
 
 	local groups = ndef.groups or {}
 	local success = false
+	local meta = minetest.get_meta(under)
 
-	local oil_hinge = function(pos)
-		local meta = minetest.get_meta(pos)
+	local oil_hinge = function(pos, meta)
+		local meta = meta or minetest.get_meta(pos)
 		meta:set_int("oiled_hinge", 1)
 		meta:set_int("oiled_time", os.time())
 		meta:mark_as_private({"oiled_hinge", "oiled_time"})
@@ -33,17 +35,26 @@ function plastic.oil_extract_on_use(itemstack, user, pt)
 	if (groups.door and groups.door > 0) or (groups.trapdoor and groups.trapdoor > 0) then
 		local pname = user:get_player_name()
 
-		oil_hinge(under)
+		oil_hinge(under, meta)
 
 		minetest.chat_send_player(pname, "# Server: Door hinges at " .. rc.pos_to_namestr(under) .. " have been oiled.")
 		success = true
 	elseif (groups.chest_node and groups.chest_node > 0) then
 		local pname = user:get_player_name()
 
-		oil_hinge(under)
+		oil_hinge(under, meta)
 
 		minetest.chat_send_player(pname, "# Server: Chest hinges at " .. rc.pos_to_namestr(under) .. " have been oiled.")
 		success = true
+	elseif meta:get_int("engraver_chiseled") ~= 0 then
+		-- Node has text engraving, polish it so that it cannot be modified anymore.
+		local pname = user:get_player_name()
+		if not minetest.test_protection(under, pname) then -- Requires protection access.
+			minetest.chat_send_player(pname, "# Server: Text engraving at " .. rc.pos_to_namestr(under) .. " has been polished.")
+			meta:set_int("chiseled_polished", 1)
+			meta:mark_as_private("chiseled_polished")
+			success = true
+		end
 	end
 
 	if success then

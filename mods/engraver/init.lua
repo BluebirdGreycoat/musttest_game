@@ -54,6 +54,7 @@ local function node_can_be_chiseled(pos)
 	end
 
 	local was_engraved = false
+	local was_polished = false
 	local has_other_fields = false
 	local has_infotext = false
 	for k, v in pairs(data.fields) do
@@ -63,6 +64,8 @@ local function node_can_be_chiseled(pos)
 			has_infotext = true
 		elseif k == "chiseled_text" or k == "chiseled_date" then
 			-- Nothing to be done. Ignore these fields.
+		elseif k == "chiseled_polished" then
+			was_polished = true
 		else
 			has_other_fields = true
 		end
@@ -71,7 +74,7 @@ local function node_can_be_chiseled(pos)
 	if has_infotext and not was_engraved then
 		return false
 	end
-	if has_other_fields then
+	if has_other_fields or was_polished then
 		return false
 	end
 
@@ -199,6 +202,7 @@ local function handle_engraver_use(player, formname, fields)
 			meta:set_string("infotext", message)
 		else
 			meta:set_string("infotext", "")
+			meta:set_int("engraver_chiseled", 0)
 		end
 
 		minetest.chat_send_player(pname, "# Server: Text chiseled successfully.")

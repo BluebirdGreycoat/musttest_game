@@ -1,9 +1,10 @@
+[2019/8/27] Oil extract can now be used to polish text engravings. Polished text engravings can't be defaced unless you remove the whole block.
 [2019/8/26] Added chisel, to chisel text into stone. Use while you have a hammer in the slot to the right of the chisel. Good for writing text that you don't want to be discovered right away unless player points right at it.
-[2019/8/26] Player can no longer fall of the end of a rope. Also added in the 4 extra ropeblocks from the original mod. Fixed some bugs.
+[2019/8/26] Player can no longer fall off the end of a rope. Also added in the 4 extra ropeblocks from the original mod. Fixed some bugs.
 [2019/8/26] Added a bit of randomness to bonebox signal messages.
 [2019/8/25] Discovered and fixed a vending bug, where bought item would not be given to player!
 [2019/8/25] Added fake "trap" ladders.
-[2019/8/25] Player gets stung if they take honey from hive, but someone else owns the land its on.
+[2019/8/25] Player gets stung if they take honey from hive, but someone else owns the land it is on.
 [2019/8/25] Bees now need full sunlight nearby in order to make honey. They hibernate if sunlight is not available.
 [2019/8/24] Chest/door hinges can now be oiled to suppress the sound when they're opened or closed.
 [2019/8/23] Teleports now have a (small) chance to randomly teleport the player to a random target teleport. This chance increases if there are many teleports in a small area.

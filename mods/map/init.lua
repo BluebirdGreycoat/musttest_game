@@ -93,18 +93,20 @@ function map.on_player_inventory_action(player, action, inventory, info)
 		if not map.players[pname] then
 			map.update_inventory_info(pname)
 		end
-		if info.from_list == "main" or info.to_list == "main" then
+		if info.from_list == "main" then
 			local from = info.from_index
-			local to = info.to_index
-			-- If the moved from/to slot was listed as holding a mapping kit, need to refresh the cache.
+			-- If the moved from slot was listed as holding a mapping kit, need to refresh the cache.
 			for k, v in ipairs(map.players[pname].indices) do
-				if from == v or to == v then
-					minetest.after(0, function()
-						map.update_inventory_info(pname)
-					end)
+				if from == v then
+					map.update_inventory_info(pname)
 					break
 				end
 			end
+		end
+		if info.to_list == "main" then
+			-- We don't know what item was added to the main inv, so we have to refresh always.
+			-- This is only called when player moves from player-inv to another player-inv.
+			map.update_inventory_info(pname)
 		end
 	end
 end

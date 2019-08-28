@@ -9,10 +9,12 @@ map.modpath = minetest.get_modpath("map")
 -- Is called when an item is dropped/taken from ground, or is moved/taken from chest, etc.
 -- Specifically, NOT called when inventory is modified in code by a process the player does not directly control.
 function map.on_player_inventory_action(player, action, inventory, info)
+	--[[
 	if action == "take" or action == "put" then
 		minetest.chat_send_player("MustTest",
 			"# Server: " .. action .. " in " .. info.index .. ", " .. info.stack:get_name() .. " " .. info.stack:get_count())
 	end
+	--]]
 end
 
 

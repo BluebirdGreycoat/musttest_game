@@ -132,6 +132,24 @@ local item = {
 			end
 		end
 	end,
+
+	on_punch = function(self, hitter)
+		local inv = hitter:get_inventory()
+		if inv and self.itemstring ~= "" then
+			local stack = ItemStack(self.itemstring)
+			local count = stack:get_count()
+			local left = inv:add_item("main", stack)
+			if left and not left:is_empty() then
+				count = count - left:get_count()
+				self:set_item(left)
+				return
+			end
+			minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
+				stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(self.object:getpos()))
+		end
+		self.itemstring = ""
+		self.object:remove()
+	end,
 }
 
 -- set defined item as new __builtin:item, with the old one as fallback table

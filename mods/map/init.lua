@@ -5,6 +5,8 @@ map.modpath = minetest.get_modpath("map")
 
 
 
+-- Not called when player digs or places node, or if player picks up a dropped item.
+-- Is called when an item is dropped on the ground, or is moved/taken from chest, etc.
 function map.on_player_inventory_action(player, action, inventory, info)
 	minetest.chat_send_player("MustTest", "# Server: Inventory action! " .. action)
 end
@@ -127,6 +129,9 @@ if not map.run_once then
 		recipe = "map:mapping_kit",
 		burntime = 5,
 	})
+
+	minetest.register_on_player_inventory_action(function(...)
+		return map.on_player_inventory_action(...) end)
 
 	local c = "map:core"
 	local f = map.modpath .. "/init.lua"

@@ -6,7 +6,8 @@ map.modpath = minetest.get_modpath("map")
 
 
 -- Not called when player digs or places node, or if player picks up a dropped item.
--- Is called when an item is dropped on the ground, or is moved/taken from chest, etc.
+-- Is called when an item is dropped/taken from ground, or is moved/taken from chest, etc.
+-- Specifically, NOT called when inventory is modified in code by a process the player does not directly control.
 function map.on_player_inventory_action(player, action, inventory, info)
 	if action == "take" or action == "put" then
 		minetest.chat_send_player("MustTest",

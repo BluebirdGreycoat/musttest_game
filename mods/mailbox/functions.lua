@@ -51,13 +51,26 @@ function(player, formname, fields)
         if fields.get then
           local minv = meta:get_inventory()
           local pinv = player:get_inventory()
+
+					local added_map = false
+
           for i = 1, minv:get_size('main'), 1 do
             local stack = minv:get_stack('main', i)
             if pinv:room_for_item('main', stack) then
               pinv:add_item('main', stack)
               minv:set_stack('main', i, ItemStack(nil))
+
+							-- Notify if a mapping kit was added.
+							if stack:get_name() == "map:mapping_kit" then
+								added_map = true
+							end
             end
           end
+
+					-- Notify if a mapping kit was added.
+					if added_map then
+						map.update_inventory_info(pname)
+					end
         end
 
 				if fields.reject and type(fields.reject) == "string" then

@@ -6,14 +6,18 @@ map.players = map.players or {}
 
 
 
+-- Shall be called shortly after player joins game, to create the initial cache.
+-- Shall also be called whenever inventory is modified in such a way that a mapping kit is moved/added/removed.
+-- The cache shall be cleared whenever the player dies.
+-- Shall also be called whenever the player modifies their inventory in a way that a mapping kit is changed.
 function map.update_inventory_info(pname)
-	if not map.players[pname] then
-		map.players[pname] = {has_kit = false, indices={}}
-	end
-
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
 		return
+	end
+
+	if not map.players[pname] then
+		map.players[pname] = {has_kit = false, indices={}}
 	end
 
 	local inv = player:get_inventory()
@@ -53,10 +57,14 @@ function map.update_inventory_info(pname)
 	else
 		map.players[pname].has_kit = false
 	end
+
+	-- Finally, update the HUD flags on the client.
+	map.update_hud_flags(player)
 end
 
 
 
+-- Called from bones code, mainly.
 function map.clear_inventory_info(pname)
 	map.players[pname] = {has_kit = false, indices={}}
 end
@@ -101,9 +109,6 @@ end
 
 
 
--- Update HUD flags
--- Global to allow overriding
-
 -- May be called with player object or player name.
 -- Return 'true' if the minimap is ENABLED.
 function map.update_hud_flags(player)
@@ -138,6 +143,7 @@ function map.has_mapping_kit(pname_or_pref)
 	if type(pname) ~= "string" then
 		pname = pname_or_pref:get_player_name()
 	end
+	-- If data doesn't exist yet, create the cache.
 	if not map.players[pname] then
 		map.update_inventory_info(pname)
 	end
@@ -157,16 +163,17 @@ end
 
 
 
-function map.update_player(pname)
-	if map.update_hud_flags(pname) then
-		minetest.after(1, function() map.update_player(pname) end)
-	end
+function map.on_use(itemstack, user, pointed_thing)
+	map.update_inventory_info(user:get_player_name())
 end
 
 
 
-function map.on_use(itemstack, user, pointed_thing)
-	map.update_player(user:get_player_name())
+function map.on_joinplayer(player)
+	local pname = player:get_player_name()
+	minetest.after(3, function()
+		map.update_inventory_info(pname)
+	end)
 end
 
 
@@ -224,6 +231,9 @@ if not map.run_once then
 
 	minetest.register_on_player_inventory_action(function(...)
 		return map.on_player_inventory_action(...) end)
+
+	minetest.register_on_joinplayer(function(...)
+		return map.on_joinplayer(...) end)
 
 	local c = "map:core"
 	local f = map.modpath .. "/init.lua"

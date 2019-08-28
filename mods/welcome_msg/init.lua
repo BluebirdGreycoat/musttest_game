@@ -37,7 +37,7 @@ welcome.on_joinplayer = function(player)
 	local pname = player:get_player_name()
 
 	if banned_names.guest_name(pname) then
-		minetest.after(10, function() minetest.chat_send_player(pname, "# Server: WARNING! You have logged in using a \"guest name\". Please be aware that such accounts are subject to deletion WITHOUT WARNING. You are still free to explore the server, though! If you want to play permanently, log in under another (non-guest) name and register the account by crafting and keeping a Proof of Citizenship item.") end)
+		minetest.after(10, function() minetest.chat_send_player(pname, "# Server: WARNING! You have logged in using a \"guest name\". Please be aware that such accounts are subject to deletion WITHOUT WARNING. You are still free to explore the server, though! If you want to play permanently, log in under another (non-guest) name and register the account by crafting and keeping a Proof of Citizenship.") end)
 	 return
 	end
 

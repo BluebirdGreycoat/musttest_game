@@ -542,17 +542,28 @@ bones.on_punch = function(pos, node, player)
     local inv = meta:get_inventory()
     local player_inv = player:get_inventory()
     local has_space = true
+		local added_map = false
 
     for i = 1, inv:get_size("main") do
 			local stk = inv:get_stack("main", i)
 			if player_inv:room_for_item("main", stk) then
 				inv:set_stack("main", i, nil)
 				player_inv:add_item("main", stk)
+
+				-- Notify if a mapping kit was added.
+				if stk:get_name() == "map:mapping_kit" then
+					added_map = true
+				end
 			else
 				has_space = false
 				break
 			end
     end
+
+		-- Notify if a mapping kit was added.
+		if added_map then
+			map.update_inventory_info(pname)
+		end
 
     -- remove bones if player emptied them
     if has_space then

@@ -391,6 +391,12 @@ zcg.on_receive_fields = function(player, formname, fields)
 						local stack = ItemStack(ni)
 						stack:set_count(stack:get_stack_max())
 						local leftover = inv:add_item("main", stack)
+
+						-- Notify if a mapping kit was added.
+						if stack:get_name() == "map:mapping_kit" then
+							map.update_inventory_info(pn)
+						end
+
 						if not leftover or leftover:get_count() == 0 then
 							local desc = utility.get_short_desc(stack:get_definition().description or "Undescribed Item")
 							minetest.chat_send_player(pn, "# Server: Added '" .. desc .. "' to inventory!")

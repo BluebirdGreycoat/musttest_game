@@ -99,7 +99,9 @@ function map.on_player_inventory_action(player, action, inventory, info)
 			-- If the moved from/to slot was listed as holding a mapping kit, need to refresh the cache.
 			for k, v in ipairs(map.players[pname].indices) do
 				if from == v or to == v then
-					map.update_inventory_info(pname)
+					minetest.after(0, function()
+						map.update_inventory_info(pname)
+					end)
 					break
 				end
 			end

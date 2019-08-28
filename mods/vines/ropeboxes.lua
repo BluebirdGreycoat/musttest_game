@@ -45,6 +45,17 @@ local function register_rope_block(multiple, pixels)
 			end
 		end,
 
+		on_punch = function(pos, node, puncher, pt)
+			local p = {x=pos.x, y=pos.y-1, z=pos.z}
+			local n = minetest.get_node(p)
+			if n.name == "air" then
+			minetest.add_node(p, {name="vines:rope_bottom"})
+			local meta = minetest.get_meta(p)
+			meta:set_int("length_remaining", vines.ropeLength*multiple)
+			meta:mark_as_private("length_remaining")
+			end
+		end,
+
 		after_destruct = function(pos)
 			local p = {x=pos.x, y=pos.y-1, z=pos.z}
 			vines.destroy_rope_starting(p, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')

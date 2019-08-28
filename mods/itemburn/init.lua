@@ -135,20 +135,56 @@ local item = {
 
 	on_punch = function(self, hitter)
 		local inv = hitter:get_inventory()
-		if inv and self.itemstring ~= "" then
+		if not inv then
+			return
+		end
+
+		local clear = false
+
+		if self.itemstring ~= "" then
 			local stack = ItemStack(self.itemstring)
+			local n = stack:get_name()
 			local count = stack:get_count()
-			local left = inv:add_item("main", stack)
+
+			local left
+			local index
+
+			for i=1, inv:get_size("main"), 1 do
+				local s2 = inv:get_stack("main", i)
+				local n2 = s2:get_name()
+				local empty = s2:is_empty()
+				if n == n2 or empty then
+					if empty then
+						local s3 = ItemStack("")
+						left = s3:add_item(stack)
+						index = i
+						inv:set_stack("main", i, s3)
+						break
+					elseif s2:get_free_space() > 0 then
+						left = s2:add_item(stack)
+						index = i
+						inv:set_stack("main", i, s2)
+						break
+					end
+				end
+			end
+
 			if left and not left:is_empty() then
 				count = count - left:get_count()
 				self:set_item(left)
-				return
+			else
+				-- Flag the item entity to be cleared and removed.
+				clear = true
 			end
+
 			minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
-				stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(self.object:getpos()))
+				stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector.round(self.object:getpos())))
 		end
-		self.itemstring = ""
-		self.object:remove()
+
+		if clear then
+			self.itemstring = ""
+			self.object:remove()
+		end
 	end,
 }
 

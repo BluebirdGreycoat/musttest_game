@@ -148,6 +148,7 @@ local item = {
 
 			local left
 			local index
+			local inserted = false
 
 			for i=1, inv:get_size("main"), 1 do
 				local s2 = inv:get_stack("main", i)
@@ -159,19 +160,27 @@ local item = {
 						left = s3:add_item(stack)
 						index = i
 						inv:set_stack("main", i, s3)
+						inserted = true
 						break
-					elseif s2:get_free_space() > 0 then
+					elseif name == n2 and s2:get_free_space() > 0 then
 						left = s2:add_item(stack)
 						index = i
 						inv:set_stack("main", i, s2)
+						inserted = true
 						break
 					end
 				end
 			end
 
+			-- If something was added to the inv, we update the entity, but do not clear it.
 			if left and not left:is_empty() then
 				count = count - left:get_count()
 				self:set_item(left)
+				clear = false
+			end
+
+			-- If nothing was added to the inventory, we cannot remove the entity.
+			if not inserted then
 				clear = false
 			end
 

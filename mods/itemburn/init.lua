@@ -168,7 +168,7 @@ local item = {
 						left = s2:add_item(stack)
 						index = i
 						inv:set_stack("main", i, s2)
-						newstack = ItemStack(stack:take_item(left:get_count())) -- A copy of the stack being added.
+						newstack = ItemStack(stack:take_item(s2:get_free_space())) -- A copy of the stack being added.
 						inserted = true
 						break
 					end

@@ -156,8 +156,8 @@ local item = {
 				local empty = s2:is_empty()
 				if name == n2 or empty then
 					if empty then
-						local s3 = ItemStack("")
-						left = s3:add_item(stack)
+						local s3 = stack:take_item(math.min(stack:get_count(), stack:get_stack_max()))
+						left = stack
 						index = i
 						inv:set_stack("main", i, s3)
 						inserted = true

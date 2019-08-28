@@ -180,6 +180,13 @@ end
 
 
 
+function map.on_leaveplayer(player, timeout)
+	-- Cleanup.
+	map.players[player:get_player_name()] = nil
+end
+
+
+
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
 	-- Mapping kit item.
@@ -236,6 +243,9 @@ if not map.run_once then
 
 	minetest.register_on_joinplayer(function(...)
 		return map.on_joinplayer(...) end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return map.on_leaveplayer(...) end)
 
 	local c = "map:core"
 	local f = map.modpath .. "/init.lua"

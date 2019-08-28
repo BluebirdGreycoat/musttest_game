@@ -551,7 +551,7 @@ bones.on_punch = function(pos, node, player)
 				player_inv:add_item("main", stk)
 
 				-- Notify if a mapping kit was added.
-				if stk:get_name() == "map:mapping_kit" then
+				if map.is_mapping_kit(stk:get_name()) then
 					added_map = true
 				end
 			else

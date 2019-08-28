@@ -61,7 +61,7 @@ function(player, formname, fields)
               minv:set_stack('main', i, ItemStack(nil))
 
 							-- Notify if a mapping kit was added.
-							if stack:get_name() == "map:mapping_kit" then
+							if map.is_mapping_kit(stack:get_name()) then
 								added_map = true
 							end
             end

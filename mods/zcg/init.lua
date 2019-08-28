@@ -393,7 +393,7 @@ zcg.on_receive_fields = function(player, formname, fields)
 						local leftover = inv:add_item("main", stack)
 
 						-- Notify if a mapping kit was added.
-						if stack:get_name() == "map:mapping_kit" then
+						if map.is_mapping_kit(stack:get_name()) then
 							map.update_inventory_info(pn)
 						end
 

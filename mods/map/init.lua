@@ -28,11 +28,11 @@ function map.update_inventory_info(pname)
 	-- Reset list ID indices array.
 	map.players[pname].indices = {}
 
-	if inv:contains_item("main", "map:mapping_kit") then
+	if inv:contains_item("main", "map:mapping_kit") or inv:contains_item("main", "map:mapping_tool") then
 		local list = inv:get_list("main")
 		for k, v in ipairs(list) do
 			if not v:is_empty() then
-				if v:get_name() == "map:mapping_kit" then
+				if map.is_mapping_kit(v:get_name()) then
 					table.insert(map.players[pname].indices, k)
 				end
 			end
@@ -84,7 +84,7 @@ function map.on_player_inventory_action(player, action, inventory, info)
 
 	if action == "put" or action == "take" then
 		local name = info.stack:get_name()
-		if name == "map:mapping_kit" then
+		if map.is_mapping_kit(name) then
 			local pname = player:get_player_name()
 			map.update_inventory_info(pname)
 		end
@@ -107,7 +107,7 @@ function map.on_player_inventory_action(player, action, inventory, info)
 			-- This is only called when player moves from player-inv to another player-inv.
 			-- We have to check what item was added.
 			local stack = inventory:get_stack("main", info.to_index)
-			if stack:get_name() == "map:mapping_kit" then
+			if map.is_mapping_kit(stack:get_name()) then
 				map.update_inventory_info(pname)
 			end
 		end
@@ -192,13 +192,36 @@ end
 
 
 
+function map.is_mapping_kit(name)
+	if name == "map:mapping_kit" or name == "map:mapping_tool" then
+		return true
+	end
+
+	return false
+end
+
+
+
+function map.on_place(itemstack, placer, pt)
+	local fakestack = ItemStack("map:mapping_kit")
+	local retstack, success = minetest.item_place(fakestack, placer, pt)
+	if success then
+		itemstack:take_item()
+		return itemstack
+	end
+end
+
+
+
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
+	local desc = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse (punch) and press the 'minimap' key.\nMust be wielded to continue using."
+
 	-- Mapping kit item.
 	minetest.register_node("map:mapping_kit", {
 		tiles = {"map_mapping_kit_tile.png"},
 		wield_image = "map_mapping_kit.png",
-		description = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse (punch) and press the 'minimap' key.\nMust be wielded to continue using.",
+		description = desc,
 		inventory_image = "map_mapping_kit.png",
 		paramtype = 'light',
 		paramtype2 = "wallmounted",
@@ -215,9 +238,27 @@ if not map.run_once then
 		stack_max = 1,
 		groups = utility.dig_groups("bigitem", {flammable = 3, attached_node = 1}),
 		sounds = default.node_sound_leaves_defaults(),
+		drop = "map:mapping_tool",
 
 		on_use = function(...)
 			return map.on_use(...)
+		end,
+	})
+
+	-- Tool item is required in order for wear-bar to work.
+	minetest.register_tool("map:mapping_tool", {
+		description = desc,
+		inventory_image = "map_mapping_kit.png",
+
+		wear_represents = "eu_charge",
+		groups = {not_repaired_by_anvil = 1, disable_repair = 1},
+
+		on_use = function(...)
+			return map.on_use(...)
+		end,
+
+		on_place = function(...)
+			return map.on_place(...)
 		end,
 	})
 
@@ -225,7 +266,7 @@ if not map.run_once then
 
 	-- Crafting.
 	minetest.register_craft({
-		output = "map:mapping_kit",
+		output = "map:mapping_tool",
 		recipe = {
 			{"default:glass", "default:paper", "group:stick"},
 			{"default:steel_ingot", "default:paper", "default:steel_ingot"},
@@ -234,10 +275,11 @@ if not map.run_once then
 	})
 
 
+
 	-- Fuel.
 	minetest.register_craft({
 		type = "fuel",
-		recipe = "map:mapping_kit",
+		recipe = "map:mapping_tool",
 		burntime = 5,
 	})
 

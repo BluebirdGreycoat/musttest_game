@@ -1,3 +1,4 @@
+[2019/8/28] The minimap can now be used as long as there is a mapping kit in any slot of the player's hot-bar.
 [2019/8/27] Oil extract can now be used to polish text engravings. Polished text engravings can't be defaced unless you remove the whole block.
 [2019/8/26] Added chisel, to chisel text into stone. Use while you have a hammer in the slot to the right of the chisel. Good for writing text that you don't want to be discovered right away unless player points right at it.
 [2019/8/26] Player can no longer fall off the end of a rope. Also added in the 4 extra ropeblocks from the original mod. Fixed some bugs.

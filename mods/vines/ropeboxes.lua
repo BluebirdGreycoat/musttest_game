@@ -38,10 +38,10 @@ local function register_rope_block(multiple, pixels)
 			local p = {x=pos.x, y=pos.y-1, z=pos.z}
 			local n = minetest.get_node(p)
 			if n.name == "air" then
-			minetest.add_node(p, {name="vines:rope_bottom"})
-			local meta = minetest.get_meta(p)
-			meta:set_int("length_remaining", vines.ropeLength*multiple)
-			meta:mark_as_private("length_remaining")
+				minetest.add_node(p, {name="vines:rope_bottom"})
+				local meta = minetest.get_meta(p)
+				meta:set_int("length_remaining", vines.ropeLength*multiple)
+				meta:mark_as_private("length_remaining")
 			end
 		end,
 
@@ -49,10 +49,10 @@ local function register_rope_block(multiple, pixels)
 			local p = {x=pos.x, y=pos.y-1, z=pos.z}
 			local n = minetest.get_node(p)
 			if n.name == "air" then
-			minetest.add_node(p, {name="vines:rope_bottom"})
-			local meta = minetest.get_meta(p)
-			meta:set_int("length_remaining", vines.ropeLength*multiple)
-			meta:mark_as_private("length_remaining")
+				minetest.add_node(p, {name="vines:rope_bottom"})
+				local meta = minetest.get_meta(p)
+				meta:set_int("length_remaining", vines.ropeLength*multiple)
+				meta:mark_as_private("length_remaining")
 			end
 		end,
 

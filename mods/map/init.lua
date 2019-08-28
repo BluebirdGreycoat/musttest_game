@@ -75,7 +75,7 @@ end
 -- Is called when an item is dropped/taken from ground, or is moved/taken from chest, etc.
 -- Specifically, NOT called when inventory is modified by a process the player did not initiate.
 function map.on_player_inventory_action(player, action, inventory, info)
-	---[[
+	--[[
 	if action == "take" or action == "put" then
 		minetest.chat_send_player("MustTest",
 			"# Server: " .. action .. " in " .. info.index .. ", " .. info.stack:get_name() .. " " .. info.stack:get_count())

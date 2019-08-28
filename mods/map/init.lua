@@ -24,7 +24,7 @@ function map.update_inventory_info(pname)
 	-- Reset list ID indices array.
 	map.players[pname].indices = {}
 
-	if inv:contains_item("map:mapping_kit") then
+	if inv:contains_item("main", "map:mapping_kit") then
 		local list = inv:get_list("main")
 		for k, v in ipairs(list) do
 			if not v:is_empty() then

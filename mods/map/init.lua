@@ -104,9 +104,12 @@ function map.on_player_inventory_action(player, action, inventory, info)
 			end
 		end
 		if info.to_list == "main" then
-			-- We don't know what item was added to the main inv, so we have to refresh always.
 			-- This is only called when player moves from player-inv to another player-inv.
-			map.update_inventory_info(pname)
+			-- We have to check what item was added.
+			local stack = inventory:get_stack("main", info.to_index)
+			if stack:get_name() == "map:mapping_kit" then
+				map.update_inventory_info(pname)
+			end
 		end
 	end
 end

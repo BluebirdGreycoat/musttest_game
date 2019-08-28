@@ -139,11 +139,11 @@ local item = {
 			return
 		end
 
-		local clear = false
+		local clear = true
 
 		if self.itemstring ~= "" then
 			local stack = ItemStack(self.itemstring)
-			local n = stack:get_name()
+			local name = stack:get_name()
 			local count = stack:get_count()
 
 			local left
@@ -153,7 +153,7 @@ local item = {
 				local s2 = inv:get_stack("main", i)
 				local n2 = s2:get_name()
 				local empty = s2:is_empty()
-				if n == n2 or empty then
+				if name == n2 or empty then
 					if empty then
 						local s3 = ItemStack("")
 						left = s3:add_item(stack)
@@ -172,9 +172,7 @@ local item = {
 			if left and not left:is_empty() then
 				count = count - left:get_count()
 				self:set_item(left)
-			else
-				-- Flag the item entity to be cleared and removed.
-				clear = true
+				clear = false
 			end
 
 			minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..

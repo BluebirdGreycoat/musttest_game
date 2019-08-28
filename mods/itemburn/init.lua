@@ -149,6 +149,7 @@ local item = {
 			local left
 			local index
 			local inserted = false
+			local newstack
 
 			for i=1, inv:get_size("main"), 1 do
 				local s2 = inv:get_stack("main", i)
@@ -160,12 +161,14 @@ local item = {
 						left = stack
 						index = i
 						inv:set_stack("main", i, s3)
+						newstack = ItemStack(s3) -- A copy of the stack being added.
 						inserted = true
 						break
 					elseif name == n2 and s2:get_free_space() > 0 then
 						left = s2:add_item(stack)
 						index = i
 						inv:set_stack("main", i, s2)
+						newstack = ItemStack(stack:take_item(left:get_count())) -- A copy of the stack being added.
 						inserted = true
 						break
 					end
@@ -184,8 +187,17 @@ local item = {
 				clear = false
 			end
 
-			minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
-				stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector.round(self.object:getpos())))
+			if inserted then
+				minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
+					stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector.round(self.object:getpos())))
+
+				-- Execute player inventory callbacks.
+				-- Note: inventory callbacks are called when player drops item (Q) so this
+				-- implements the reciprocal.
+				for _, func in ipairs(core.registered_on_player_inventory_actions) do
+					func(hitter, "put", inv, {listname="main", index=index, stack=newstack})
+				end
+			end
 		end
 
 		if clear then

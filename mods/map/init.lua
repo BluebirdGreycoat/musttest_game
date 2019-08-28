@@ -5,6 +5,12 @@ map.modpath = minetest.get_modpath("map")
 
 
 
+function map.on_player_inventory_action(player, action, inventory, info)
+	minetest.chat_send_player("MustTest", "# Server: Inventory action! " .. action)
+end
+
+
+
 -- Update HUD flags
 -- Global to allow overriding
 

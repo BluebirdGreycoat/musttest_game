@@ -2,19 +2,101 @@
 
 map = map or {}
 map.modpath = minetest.get_modpath("map")
+map.players = map.players or {}
+
+
+
+function map.update_inventory_info(pname)
+	if not map.players[pname] then
+		map.players[pname] = {has_kit = false, indices={}}
+	end
+
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then
+		return
+	end
+
+	local inv = player:get_inventory()
+	if not inv then
+		return
+	end
+
+	-- Reset list ID indices array.
+	map.players[pname].indices = {}
+
+	if inv:contains_item("map:mapping_kit") then
+		local list = inv:get_list("main")
+		for k, v in ipairs(list) do
+			if not v:is_empty() then
+				if v:get_name() == "map:mapping_kit" then
+					table.insert(map.players[pname].indices, k)
+				end
+			end
+		end
+	end
+
+	if #(map.players[pname].indices) > 0 then
+		-- At least one inventory slot has a mapping kit.
+		-- Need to check if there's one in the hotbar.
+		local has_kit = false
+		local barmax = 8
+		if minetest.check_player_privs(pname, "big_hotbar") then
+			barmax = 16
+		end
+		for k, v in ipairs(map.players[pname].indices) do
+			if v >= 1 and v <= barmax then
+				has_kit = true
+				break
+			end
+		end
+		map.players[pname].has_kit = has_kit
+	else
+		map.players[pname].has_kit = false
+	end
+end
+
+
+
+function map.clear_inventory_info(pname)
+	map.players[pname] = {has_kit = false, indices={}}
+end
 
 
 
 -- Not called when player digs or places node, or if player picks up a dropped item.
 -- Is called when an item is dropped/taken from ground, or is moved/taken from chest, etc.
--- Specifically, NOT called when inventory is modified in code by a process the player does not directly control.
+-- Specifically, NOT called when inventory is modified by a process the player did not initiate.
 function map.on_player_inventory_action(player, action, inventory, info)
-	--[[
+	---[[
 	if action == "take" or action == "put" then
 		minetest.chat_send_player("MustTest",
 			"# Server: " .. action .. " in " .. info.index .. ", " .. info.stack:get_name() .. " " .. info.stack:get_count())
 	end
 	--]]
+
+	if action == "put" or action == "take" then
+		local name = info.stack:get_name()
+		if name == "map:mapping_kit" then
+			local pname = player:get_player_name()
+			map.update_inventory_info(pname)
+		end
+	elseif action == "move" then
+		local pname = player:get_player_name()
+		if not map.players[pname] then
+			map.update_inventory_info(pname)
+		end
+		if info.from_list == "main" or info.to_list == "main" then
+			local from = info.from_index
+			local to = info.to_index
+			-- If the moved from/to slot was listed as holding a mapping kit, need to refresh the cache.
+			for k, v in ipairs(map.players[pname].indices) do
+				if from == v or to == v then
+					map.update_inventory_info(pname)
+					break
+				end
+			end
+		end
+	end
 end
 
 
@@ -48,20 +130,21 @@ function map.update_hud_flags(player)
 	end
 end
 
+
+
 -- May be called with either a player object or a player name.
 function map.has_mapping_kit(pname_or_pref)
-	local player = pname_or_pref
-	if type(pname_or_pref) == "string" then
-		player = minetest.get_player_by_name(pname_or_pref)
+	local pname = pname_or_pref
+	if type(pname) ~= "string" then
+		pname = pname_or_pref:get_player_name()
 	end
-	if not player or not player:is_player() then
-		return
+	if not map.players[pname] then
+		map.update_inventory_info(pname)
 	end
-	if player:get_wielded_item():get_name() == "map:mapping_kit" then
-		return true
-	end
-	return false
+	return map.players[pname].has_kit
 end
+
+
 
 -- Use from /lua command, mainly.
 function map.query(pname)
@@ -79,6 +162,8 @@ function map.update_player(pname)
 		minetest.after(1, function() map.update_player(pname) end)
 	end
 end
+
+
 
 function map.on_use(itemstack, user, pointed_thing)
 	map.update_player(user:get_player_name())
@@ -116,8 +201,8 @@ if not map.run_once then
 	})
 
 
-	-- Crafting.
 
+	-- Crafting.
 	minetest.register_craft({
 		output = "map:mapping_kit",
 		recipe = {
@@ -129,12 +214,13 @@ if not map.run_once then
 
 
 	-- Fuel.
-
 	minetest.register_craft({
 		type = "fuel",
 		recipe = "map:mapping_kit",
 		burntime = 5,
 	})
+
+
 
 	minetest.register_on_player_inventory_action(function(...)
 		return map.on_player_inventory_action(...) end)

@@ -379,6 +379,11 @@ bones.on_dieplayer = function(player)
 	meta:set_string("owner", pname)
 	meta:set_int("numstacks", num_stacks)
 
+	-- Notify the mapping code it needs to recalculate the mapkit cache.
+	minetest.after(0, function()
+		map.clear_inventory_info(pname)
+	end)
+
 	if share_bones_time ~= 0 then
 		meta:set_string("infotext",
 			"Unfortunate <" .. rename.gpn(pname) ..

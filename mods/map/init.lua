@@ -3,6 +3,8 @@
 map = map or {}
 map.modpath = minetest.get_modpath("map")
 map.players = map.players or {}
+map.time_step = 10
+map.charge_time = 60*60 -- 1 hour of continuous use.
 
 
 
@@ -33,7 +35,12 @@ function map.update_inventory_info(pname)
 		for k, v in ipairs(list) do
 			if not v:is_empty() then
 				if map.is_mapping_kit(v:get_name()) then
-					table.insert(map.players[pname].indices, k)
+					local wear = v:get_wear()
+					-- If wear is 0, the tool is not charged, and has never been charged.
+					-- Ignore discharged mapping kits/tools.
+					if wear > 0 and wear < 65534 then
+						table.insert(map.players[pname].indices, k)
+					end
 				end
 			end
 		end
@@ -67,6 +74,62 @@ end
 -- Called from bones code, mainly.
 function map.clear_inventory_info(pname)
 	map.players[pname] = {has_kit = false, indices={}}
+end
+
+
+
+
+function map.consume_charge()
+	for name, data in pairs(map.players) do
+		if data.has_kit and #data.indices > 0 then
+			local player = minetest.get_player_by_name(name)
+			if player and player:is_player() then
+				local inv = player:get_inventory()
+				if inv then
+					local idx = inv:get_size("main") + 1
+					-- Find first mapping kit.
+					for _, index in ipairs(data.indices) do
+						if index < idx then
+							idx = index
+						end
+					end
+					if idx ~= 0 then
+						local stack = inv:get_stack("main", idx)
+						local sn = stack:get_name()
+						if map.is_mapping_kit(sn) then
+							local depleted = false
+
+							-- Convert nodes to tools.
+							if sn == "map:mapping_kit" then
+								stack = ItemStack("map:mapping_tool")
+							end
+
+							-- Use up charge.
+							-- Note: we assume the tool has charge, if not, it should not have been in the cache!
+							local wear = stack:get_wear()
+							local increment = (65535 / map.charge_time)
+							wear = wear + (increment * map.time_step)
+							-- Don't let wear reach max or tool will be destroyed.
+							if wear >= 65534 then
+								wear = 65534
+								depleted = true
+							end
+							stack:set_wear(math.floor(wear))
+							inv:set_stack("main", idx, stack)
+
+							-- If this mapping tool has no charge left, update the cache info.
+							if depleted then
+								map.update_inventory_info(name)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	-- Call recursively.
+	minetest.after(map.time_step, function() map.consume_charge() end)
 end
 
 
@@ -293,6 +356,8 @@ if not map.run_once then
 
 	minetest.register_on_leaveplayer(function(...)
 		return map.on_leaveplayer(...) end)
+
+	minetest.after(map.time_step, function() map.consume_charge() end)
 
 	local c = "map:core"
 	local f = map.modpath .. "/init.lua"

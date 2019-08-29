@@ -73,6 +73,10 @@ minetest.register_chatcommand("recharge", {
 				-- A value greater than 1 means some energy has been drained.
 				tool:set_wear(1)
 				player:set_wielded_item(tool)
+
+				if map.is_mapping_kit(tool:get_name()) then
+					map.update_inventory_info(name)
+				end
 			else
 				minetest.chat_send_player(name, "# Server: Wielded item is not rechargeable.")
 			end

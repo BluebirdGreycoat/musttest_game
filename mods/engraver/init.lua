@@ -172,6 +172,11 @@ local function handle_engraver_use(player, formname, fields)
 		return true
 	end
 
+	if string.len(message) > 256 then
+		minetest.chat_send_player(pname, "# Server: Message is too long. Put something shorter.")
+		return true
+	end
+
 	-- Add wear to the chisel.
 	local got_chisel = false
 	local inv = player:get_inventory()

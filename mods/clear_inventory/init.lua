@@ -33,6 +33,7 @@ function clear_inventory.clear(name, param)
 	end
 	
 	inv:set_list("main", main)
+	map.update_inventory_info(name)
 	
 	minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(player:get_player_name()) .. ">'s inventory cleared!")
 end

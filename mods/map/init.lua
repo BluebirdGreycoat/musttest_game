@@ -331,7 +331,7 @@ if not map.run_once then
 	minetest.register_craft({
 		output = "map:mapping_tool",
 		recipe = {
-			{"default:glass", "plastic:plastic_sheet", "default:obsidian_shard"},
+			{"default:glass", "plastic:plastic_sheeting", "default:obsidian_shard"},
 			{"default:steel_ingot", "techcrafts:control_logic_unit", "default:steel_ingot"},
 			{"fine_wire:silver", "battery:battery", "dusts:diamond"},
 		}

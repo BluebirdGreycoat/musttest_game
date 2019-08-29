@@ -278,7 +278,7 @@ end
 
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
-	local desc = "Mapping Kit\n\nAllows viewing a map of your surroundings.\nUse (punch) and press the 'minimap' key.\nMust be wielded to continue using."
+	local desc = "Great Rockscan Uplink\n\nAllows viewing a map of your surroundings.\nKeep in your hotbar and use with the 'minimap' key (default F9).\nMust be charged to operate."
 
 	-- Mapping kit item.
 	minetest.register_node("map:mapping_kit", {
@@ -331,9 +331,9 @@ if not map.run_once then
 	minetest.register_craft({
 		output = "map:mapping_tool",
 		recipe = {
-			{"default:glass", "default:paper", "group:stick"},
-			{"default:steel_ingot", "default:paper", "default:steel_ingot"},
-			{"group:wood", "default:paper", "dye:black"},
+			{"default:glass", "plastic:plastic_sheet", "default:obsidian_shard"},
+			{"default:steel_ingot", "techcrafts:control_logic_unit", "default:steel_ingot"},
+			{"fine_wire:silver", "battery:battery", "dusts:diamond"},
 		}
 	})
 

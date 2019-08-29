@@ -102,6 +102,7 @@ function map.consume_charge()
 							-- Convert nodes to tools.
 							if sn == "map:mapping_kit" then
 								stack = ItemStack("map:mapping_tool")
+								stack:set_wear(1) -- Give full charge.
 							end
 
 							-- Use up charge.

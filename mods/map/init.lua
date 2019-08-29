@@ -40,6 +40,10 @@ function map.update_inventory_info(pname)
 					-- Ignore discharged mapping kits/tools.
 					if wear > 0 and wear < 65534 then
 						table.insert(map.players[pname].indices, k)
+					elseif wear == 0 and v:get_name() == "map:mapping_kit" then
+						-- Treat mapping kit as if it is a tool with full charge.
+						-- The item will be upgraded by the function that actually handles charge draining.
+						table.insert(map.players[pname].indices, k)
 					end
 				end
 			end

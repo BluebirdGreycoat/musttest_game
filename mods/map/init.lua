@@ -278,7 +278,7 @@ end
 
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
-	local desc = "Great Rockscan Uplink\n\nAllows viewing a map of your surroundings.\nKeep in your hotbar and use with the 'minimap' key (default F9).\nMust be charged to operate."
+	local desc = "Stone Mapper Uplink\n\nAllows viewing a map of your surroundings.\nKeep in your hotbar and use with the 'minimap' key (default F9).\nMust be charged to operate."
 
 	-- Mapping kit item.
 	minetest.register_node("map:mapping_kit", {

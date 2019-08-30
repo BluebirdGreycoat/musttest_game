@@ -575,6 +575,31 @@ minetest.register_node("default:dark_dirt_with_snow", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
+minetest.register_node("default:dry_dirt_with_snow", {
+	description = "Dry Dirt With Snow",
+	tiles = {
+		"default_snow.png",
+		"default_dry_dirt.png",
+		{name = "default_dry_dirt.png^default_snow_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1, spreading_dirt_type = 1, snowy = 1, cold = 1}),
+	drop = 'default:dry_dirt',
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults({
+		footstep = {name = "default_snow_footstep", gain = 0.2},
+	}),
+	on_timer = function(...)
+		return dirtspread.dirt_on_timer(...)
+	end,
+	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
+	--[[
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="default:dry_dirt"})
+  end,
+	--]]
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
 minetest.register_node("default:dirt_with_rainforest_litter", {
 	description = "Dirt With Leaf Litter",
 	tiles = {

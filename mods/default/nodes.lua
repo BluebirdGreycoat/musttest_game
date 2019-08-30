@@ -638,6 +638,23 @@ minetest.register_node("default:dark_dirt_with_rainforest_litter", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
+minetest.register_node("default:dry_dirt_with_rainforest_litter", {
+	description = "Dry Dirt With Leaf Litter",
+	tiles = {
+		"default_rainforest_litter.png",
+		"default_dry_dirt.png",
+		{name = "default_dry_dirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1}),
+	drop = "default:dry_dirt",
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults(),
+	on_finish_collapse = function(pos, node)
+		minetest.swap_node(pos, {name="default:dry_dirt"})
+	end,
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
 minetest.register_node("default:dirt_with_coniferous_litter", {
 	description = "Dirt With Acidic Litter",
 	tiles = {
@@ -673,6 +690,23 @@ minetest.register_node("default:dark_dirt_with_coniferous_litter", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
+minetest.register_node("default:dry_dirt_with_coniferous_litter", {
+	description = "Dry Dirt With Acidic Litter",
+	tiles = {
+		"default_coniferous_litter.png",
+		"default_dry_dirt.png",
+		{name = "default_dry_dirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1}),
+	drop = "default:dry_dirt",
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults(),
+	on_finish_collapse = function(pos, node)
+		minetest.swap_node(pos, {name="default:dry_dirt"})
+	end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 

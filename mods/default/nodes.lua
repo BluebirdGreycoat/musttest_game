@@ -453,21 +453,21 @@ minetest.register_node("default:dirt", {
 	description = "Dirt",
 	tiles = {"default_dirt.png"},
 	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1}),
-    --damage_per_second = 4,
-    post_effect_color = {a=255, r=0, g=0, b=0},
+	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
 minetest.register_node("default:dirt_with_grass", {
 	description = "Dirt With Grass",
-	tiles = {"default_grass.png", "default_dirt.png",
-		{name = "default_dirt.png^default_grass_side.png",
-			tileable_vertical = false}},
+	tiles = {
+		"default_grass.png",
+		"default_dirt.png",
+		{name = "default_dirt.png^default_grass_side.png", tileable_vertical = false},
+	},
 	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, spreading_dirt_type = 1}),
 	drop = 'default:dirt',
-    --damage_per_second = 4,
-    post_effect_color = {a=255, r=0, g=0, b=0},
+	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
@@ -483,13 +483,14 @@ minetest.register_node("default:dirt_with_grass", {
 -- Does this node even exist in the world?
 minetest.register_node("default:dirt_with_grass_footsteps", {
 	description = "Dirt With Grass And Footsteps",
-	tiles = {"default_grass.png^default_footprint.png", "default_dirt.png",
-		{name = "default_dirt.png^default_grass_side.png",
-			tileable_vertical = false}},
+	tiles = {
+		"default_grass.png^default_footprint.png",
+		"default_dirt.png",
+		{name = "default_dirt.png^default_grass_side.png", tileable_vertical = false},
+	},
 	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, not_in_creative_inventory = 1}),
 	drop = 'default:dirt',
-    --damage_per_second = 4,
-    post_effect_color = {a=255, r=0, g=0, b=0},
+	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
@@ -511,7 +512,6 @@ minetest.register_node("default:dirt_with_dry_grass", {
 	},
 	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, spreading_dirt_type = 1}),
 	drop = 'default:dirt',
-	--damage_per_second = 4,
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
@@ -527,12 +527,13 @@ minetest.register_node("default:dirt_with_dry_grass", {
 
 minetest.register_node("default:dirt_with_snow", {
 	description = "Dirt With Snow",
-	tiles = {"default_snow.png", "default_dirt.png",
-		{name = "default_dirt.png^default_snow_side.png",
-			tileable_vertical = false}},
+	tiles = {
+		"default_snow.png",
+		"default_dirt.png",
+		{name = "default_dirt.png^default_snow_side.png", tileable_vertical = false},
+	},
 	groups = utility.dig_groups("dirt", {falling_node = 1, spreading_dirt_type = 1, snowy = 1, cold = 1}),
 	drop = 'default:dirt',
-	--damage_per_second = 4,
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_snow_footstep", gain = 0.2},
@@ -549,6 +550,31 @@ minetest.register_node("default:dirt_with_snow", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
+minetest.register_node("default:dark_dirt_with_snow", {
+	description = "Sterile Dirt With Snow",
+	tiles = {
+		"default_snow.png",
+		"darkage_darkdirt.png",
+		{name = "darkage_darkdirt.png^default_snow_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1, spreading_dirt_type = 1, snowy = 1, cold = 1}),
+	drop = 'darkage:darkdirt',
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults({
+		footstep = {name = "default_snow_footstep", gain = 0.2},
+	}),
+	on_timer = function(...)
+		return dirtspread.dirt_on_timer(...)
+	end,
+	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
+	--[[
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="darkage:darkdirt"})
+  end,
+	--]]
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
 minetest.register_node("default:dirt_with_rainforest_litter", {
 	description = "Dirt With Leaf Litter",
 	tiles = {
@@ -556,7 +582,7 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, spreading_dirt_type = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1}),
 	drop = "default:dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -564,6 +590,25 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
 	}),
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
+  end,
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
+minetest.register_node("default:dark_dirt_with_rainforest_litter", {
+	description = "Sterile Dirt With Leaf Litter",
+	tiles = {
+		"default_rainforest_litter.png",
+		"darkage_darkdirt.png",
+		{name = "darkage_darkdirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1}),
+	drop = "darkage:darkdirt",
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults({
+		footstep = {name = "default_grass_footstep", gain = 0.4},
+	}),
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -575,7 +620,7 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, spreading_dirt_type = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1}),
 	drop = "default:dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -587,8 +632,27 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
+minetest.register_node("default:dark_dirt_with_coniferous_litter", {
+	description = "Sterile Dirt With Acidic Litter",
+	tiles = {
+		"default_coniferous_litter.png",
+		"darkage_darkdirt.png",
+		{name = "darkage_darkdirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
+	},
+	groups = utility.dig_groups("dirt", {falling_node = 1}),
+	drop = "darkage:darkdirt",
+	post_effect_color = {a=255, r=0, g=0, b=0},
+	sounds = default.node_sound_dirt_defaults({
+		footstep = {name = "default_grass_footstep", gain = 0.4},
+	}),
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="darkage:darkdirt"})
+  end,
+	movement_speed_multiplier = default.SLOW_SPEED,
+})
+
 minetest.register_node("default:dry_dirt", {
-	description = "Dry Steril Dirt",
+	description = "Dry Dirt",
 	tiles = {"default_dry_dirt.png"},
 	groups = utility.dig_groups("dirt", {falling_node = 1}),
 	post_effect_color = {a=255, r=0, g=0, b=0},
@@ -642,6 +706,7 @@ minetest.register_node("default:permafrost_with_moss", {
 		"default_permafrost.png",
 		{name = "default_permafrost.png^default_moss_side.png", tileable_vertical = false},
 	},
+	drop = "default:permafrost",
 	groups = utility.dig_groups("cobble", {falling_node = 1, cold = 1}),
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},

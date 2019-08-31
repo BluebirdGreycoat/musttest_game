@@ -6,7 +6,11 @@ obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
 
 -- Gateway schematic.
 local o = {"default:obsidian", "griefer:grieferstone", "cavestuff:dark_obsidian", "cavestuff:glow_obsidian"}
-local a = "air"
+local a = function(name)
+	if name == "air" then
+		return true
+	end
+end
 
 local gate_northsouth = {
 	data = {

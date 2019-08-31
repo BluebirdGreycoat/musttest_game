@@ -89,6 +89,10 @@ function schematic_find.detect_schematic(pos, schematic)
 								break
 							end
 						end
+					elseif type(n) == "function" then
+						if n(nn) then
+							yes = true
+						end
 					end
 
 					if yes then

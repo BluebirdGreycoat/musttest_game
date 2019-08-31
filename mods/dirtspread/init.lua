@@ -2,8 +2,18 @@
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
 
+if not dirtspread.registered then
+	local c = "dirtspread:core"
+	local f = dirtspread.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	dirtspread.registered = true
+end
 
 
+
+-- Depreciated.
+--[[
 -- Convert dirt to something that fits the environment.
 minetest.register_abm({
   label = "Grass/Snow Spread",
@@ -99,9 +109,12 @@ minetest.register_abm({
 		end
 	end
 })
+--]]
 
 
 
+-- Depreciated.
+--[[
 function dirtspread.dirt_covered_check(pos)
 	local node = minetest.get_node(pos)
 	if minetest.get_item_group(node.name, "soil") ~= 0 then
@@ -137,4 +150,7 @@ function dirtspread.check_dirt_covered_timer(pos)
 		end
 	end
 end
+--]]
+
+
 

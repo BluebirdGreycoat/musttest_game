@@ -169,7 +169,9 @@ local function append_to_core_defns()
 	local add_node_copy = minetest.add_node
 	minetest.add_node = function(pos, node)
 		add_node_copy(pos, node)
-		dirtspread.check_dirt_covered_timer({x=pos.x, y=pos.y-1, z=pos.z})
+
+		-- Depreciated.
+		--dirtspread.check_dirt_covered_timer({x=pos.x, y=pos.y-1, z=pos.z})
 
 		local a = minetest.get_objects_inside_radius(pos, 0.87)
 		for _,obj in ipairs(a) do

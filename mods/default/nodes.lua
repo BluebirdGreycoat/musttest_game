@@ -471,9 +471,10 @@ minetest.register_node("default:dirt_with_grass", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
@@ -494,9 +495,10 @@ minetest.register_node("default:dirt_with_grass_footsteps", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
@@ -516,9 +518,10 @@ minetest.register_node("default:dirt_with_dry_grass", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
@@ -538,9 +541,10 @@ minetest.register_node("default:dirt_with_snow", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_snow_footstep", gain = 0.2},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
 	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
 	--[[
   on_finish_collapse = function(pos, node)
@@ -563,9 +567,10 @@ minetest.register_node("default:dark_dirt_with_snow", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_snow_footstep", gain = 0.2},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
 	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
 	--[[
   on_finish_collapse = function(pos, node)
@@ -588,9 +593,10 @@ minetest.register_node("default:dry_dirt_with_snow", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_snow_footstep", gain = 0.2},
 	}),
-	on_timer = function(...)
-		return dirtspread.dirt_on_timer(...)
-	end,
+	-- Depreciated.
+	--on_timer = function(...)
+	--	return dirtspread.dirt_on_timer(...)
+	--end,
 	-- Dirt with snow does not need to turn back to dirt if it falls. After all, snow does not have roots that would be broken, unlike grass.
 	--[[
   on_finish_collapse = function(pos, node)

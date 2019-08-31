@@ -8,7 +8,7 @@ minetest.register_node("moregrass:darkgrass", {
 			tileable_vertical = false
 		}
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, soil = 1, spreading_dirt_type = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1}),
 	drop = 'default:dirt',
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},

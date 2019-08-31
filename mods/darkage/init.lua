@@ -325,7 +325,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:darkdirt", {
 		description = "Coarse Sterile Dirt",
 		tiles = {"darkage_darkdirt.png"},
-		groups = utility.dig_groups("dirt", {falling_node=1}),
+		groups = utility.dig_groups("dirt", {dirt_type = 1, sterile_dirt_type = 1, raw_dirt_type = 1, falling_node = 1}),
 		sounds = default.node_sound_dirt_defaults(),
 	})
 

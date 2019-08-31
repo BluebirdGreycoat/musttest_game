@@ -2,7 +2,36 @@
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
 
+-- Groups:
+--
+-- `dirt_type`             (any and all dirt types in the game).
+-- `sterile_dirt_type`     (dirt which cannot grow anything).
+-- `raw_dirt_type`         (dirt without snow, grass, or other decoration).
+-- `non_sterile_dirt_type` (dirt theoretically capable of growing plants).
+-- `hoed_dirt_type`        (dirt which has been hoed into rows).
+-- `dry_dirt_type`         (dirt which is dry).
+-- `grassy_dirt_type`      (dirt with grassy decoration).
+-- `snowy_dirt_type`       (dirt with snow on top).
+-- `leafy_dirt_type`       (dirt with leaf-litter on top).
+-- `non_raw_dirt_type`     (any dirt with decoration, grass or otherwise).
+
+function dirtspread.run_abm(pos, node)
+end
+
 if not dirtspread.registered then
+	minetest.register_abm({
+		label = "Dirt Management",
+		nodenames = {"group:dirt_type"},
+
+		interval = 20/2 * default.ABM_TIMER_MULTIPLIER,
+		chance = 100/2 * default.ABM_CHANCE_MULTIPLIER,
+		catch_up = false,
+
+		action = function(...)
+			dirtspread.run_abm(...)
+		end,
+	})
+
 	local c = "dirtspread:core"
 	local f = dirtspread.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

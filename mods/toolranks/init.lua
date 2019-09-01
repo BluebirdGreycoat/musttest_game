@@ -172,11 +172,12 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 	end
 
 	-- Don't print message more than once every 5 seconds.
-	if os.time() > (pdata.last_alert or 0) + 5 then
+	local os_time = os.time()
+	if os_time > (pdata.last_alert or 0) + 5 then
 		if(itemstack:get_wear() > 60135) then
 			minetest.chat_send_player(pname, "# Server: Your tool is about to break!")
 			ambiance.sound_play("default_tool_breaks", user:get_pos(), 1.0, 20)
-			pdata.last_alert = os.time()
+			pdata.last_alert = os_time
 		end
 	end
 

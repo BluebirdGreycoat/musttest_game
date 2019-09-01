@@ -13,6 +13,11 @@ minetest.register_node("whitestone:stone", {
 	drop = "whitestone:cobble",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("whitestone:cobble", {
@@ -20,6 +25,11 @@ minetest.register_node("whitestone:cobble", {
 	tiles = {"whitestone_cobble.png"},
 	groups = utility.dig_groups("cobble", {native_stone=1}),
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("whitestone:brick", {

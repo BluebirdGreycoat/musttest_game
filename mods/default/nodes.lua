@@ -199,6 +199,11 @@ minetest.register_node("default:stone", {
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
 
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
+
 	-- Collapsed stone breaks up into cobble.
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:cobble"})
@@ -246,6 +251,11 @@ minetest.register_node("default:cobble", {
 	}),
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("default:stonebrick", {
@@ -287,6 +297,11 @@ minetest.register_node("default:desert_stone", {
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
 
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
+
 	-- Made desert stone a road material on March 16, 2018.
 	movement_speed_multiplier = default.ROAD_SPEED,
 
@@ -314,6 +329,11 @@ minetest.register_node("default:desert_cobble2", {
 	is_ground_content = false,
 	groups = utility.dig_groups("cobble"),
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("default:desert_stonebrick", {
@@ -931,6 +951,11 @@ minetest.register_node("default:ice", {
 	_melts_to = "default:water_flowing",
 	sounds = default.node_sound_glass_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_ICE,
+
+	-- Common ice does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 
 	-- Hack to notify self.
 	on_construct = function(pos)

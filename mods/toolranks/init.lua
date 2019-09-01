@@ -1,6 +1,8 @@
 
 toolranks = toolranks or {}
 toolranks.modpath = minetest.get_modpath("toolranks")
+toolranks.players = toolranks.players or {}
+local players = toolranks.players
 if not toolranks.mod_storage then
 	toolranks.mod_storage = minetest.get_mod_storage()
 end
@@ -110,6 +112,51 @@ function toolranks.get_level(uses, max_uses, old_level)
 end
 
 function toolranks.new_afteruse(itemstack, user, node, digparams)
+	local pname = user:get_player_name()
+
+	-- Initialize data if not already done.
+	local pdata = players[pname]
+	if not pdata then
+		players[pname] = {}
+		pdata = players[pname]
+
+		-- Default values.
+		pdata.last_node = node.name -- Name of the last node dug, used for caching.
+		pdata.last_ignore = false
+
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef then
+			if ndef._toolranks then
+				if ndef._toolranks.ignore then
+					pdata.last_ignore = true
+				end
+			end
+		else
+			-- Ignore unknown nodes.
+			pdata.last_ignore = true
+		end
+	end
+
+	-- Get cached player data.
+	if pdata.last_node ~= node.name then
+		pdata.last_node = node.name
+		pdata.last_ignore = false
+
+		-- If this node is different from the last node, update cached information.
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef then
+			if ndef._toolranks then
+				if ndef._toolranks.ignore then
+					pdata.last_ignore = true
+				end
+			end
+		else
+			-- Ignore unknown nodes.
+			pdata.last_ignore = true
+		end
+	end
+
+	local ignore_this_node = pdata.last_ignore
   local itemmeta  = itemstack:get_meta() -- Metadata
   local itemdef   = itemstack:get_definition() -- Item Definition
   local itemdesc  = itemdef.original_description -- Original Description
@@ -117,13 +164,15 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1 -- Level the tool had
 
   -- Only count nodes that spend the tool
-  if(digparams.wear > 0) then
-   dugnodes = dugnodes + 1
-   itemmeta:set_string("tr_dug", dugnodes)
-  end
+	if not ignore_this_node then
+		if(digparams.wear > 0) then
+		dugnodes = dugnodes + 1
+		itemmeta:set_string("tr_dug", dugnodes)
+		end
+	end
 
   if(itemstack:get_wear() > 60135) then
-    minetest.chat_send_player(user:get_player_name(), "# Server: Your tool is about to break!")
+    minetest.chat_send_player(pname, "# Server: Your tool is about to break!")
     ambiance.sound_play("default_tool_breaks", user:get_pos(), 1.0, 20)
   end
 
@@ -134,11 +183,11 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   if lastlevel < level then
     local levelup_text = "# Server: Your " .. utility.get_short_desc(itemdesc) .. " just leveled up!"
     ambiance.sound_play("toolranks_levelup", user:get_pos(), 1.0, 20)
-    minetest.chat_send_player(user:get_player_name(), levelup_text)
+    minetest.chat_send_player(pname, levelup_text)
     itemmeta:set_string("tr_lastlevel", level)
   end
 
-  local newdesc   = toolranks.create_description(itemdesc, dugnodes, level)
+  local newdesc = toolranks.create_description(itemdesc, dugnodes, level)
 
 	itemmeta:set_string("tr_desc", newdesc)
 	toolranks.apply_description(itemmeta, itemdef)

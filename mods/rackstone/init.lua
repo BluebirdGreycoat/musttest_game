@@ -35,6 +35,11 @@ minetest.register_node("rackstone:rackstone", {
 	sounds = default.node_sound_stone_defaults(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("rackstone:rackstone_brick2", {
@@ -126,6 +131,11 @@ minetest.register_node("rackstone:redrack", {
 	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
   
   after_destruct = function(...)
     after_redrack_remove(...)

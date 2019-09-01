@@ -112,6 +112,12 @@ function toolranks.get_level(uses, max_uses, old_level)
 end
 
 function toolranks.new_afteruse(itemstack, user, node, digparams)
+	-- If either is not specified, then behave like builtin.
+	if not user or not node then
+		itemstack:add_wear(digparams.wear)
+		return itemstack
+	end
+
 	local pname = user:get_player_name()
 
 	-- Initialize data if not already done.

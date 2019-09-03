@@ -7,9 +7,17 @@ sand.modpath = minetest.get_modpath("sand")
 minetest.register_node("sand:sand_with_ice_crystals", {
 	description = "Silver Sand",
 	tiles = {"sand_silver_sand.png"},
-	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, fall_damage_add_percent = -20}),
+	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, fall_damage_add_percent = -20, dirtspread_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 

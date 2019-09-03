@@ -1,9 +1,17 @@
 
+-- The algorithm here is useful for much more than dirt management. It can also
+-- handle any kind of behavior for any node similarly to an ABM, *except* liquids.
+-- Depends on the nodes having `on_timer` and `on_construct` callbacks.
+-- The node must also be in the `dirtspread_notify` group, and be registered here.
+-- If the node's logic changes it, make sure to use `minetest.add_node` in order
+-- to make the update logic cascade.
+
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
-dirtspread.delay = 5
+dirtspread.delay = 0.5
 dirtspread.index = 1
 dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
+dirtspread.blocks = dirtspread.blocks or {}
 
 -- Groups:
 --
@@ -17,6 +25,18 @@ dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 -- `snowy_dirt_type`       (dirt with snow on top).
 -- `leafy_dirt_type`       (dirt with leaf-litter on top).
 -- `non_raw_dirt_type`     (any dirt with decoration, grass or otherwise).
+-- `permafrost_type`       (all permafrost nodes).
+--
+-- Other Notable Groups:
+--
+-- `water`
+-- `lava`
+-- `snow`
+-- `snowy`
+-- `cold`
+-- `wet`
+-- `sand`
+-- `gravel`
 --
 -- Names:
 --
@@ -39,25 +59,73 @@ dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 -- `default:dry_dirt_with_dry_grass`
 -- `farming:soil`
 -- `farming:soil_wet`
+-- `farming:desert_sand_soil`
+-- `farming:desert_sand_soil_wet`
+-- `default:permafrost`
+-- `default:permafrost_with_snow`
+-- `default:permafrost_with_stones`
+-- `default:permafrost_with_snow_and_stones`
+-- `default:permafrost_with_moss`
+-- `default:permafrost_with_moss_and_stones`
+-- `sand:sand_with_ice_crystals`
+-- `default:sand`
+-- `default:desert_sand`
+-- `default:gravel`
+-- `default:snowblock`
 
 
 
 -- Called whenever a dirt node of any type is constructed.
--- Note: only called for dirt nodes.
+-- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
 function dirtspread.on_construct(pos)
+	local node = minetest.get_node(pos)
+	local ndef = dirtspread.get_active_block(node.name)
+	if ndef then
+		local timer = minetest.get_node_timer(pos)
+		timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
+	end
 end
 
 
 
 -- Called whenever a timer on any dirt node expires.
--- Note: only called for dirt nodes.
+-- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
 function dirtspread.on_timer(pos, elapsed)
+	local node = minetest.get_node(pos)
+	local ndef = dirtspread.get_active_block(node.name)
+	if ndef and ndef.func then
+		if ndef.func(table.copy(pos), node) then
+			local timer = minetest.get_node_timer(pos)
+			timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
+		end
+	end
 end
 
 
 
--- Called to update a dirt node, possibly changing it to another type.
-function dirtspread.on_notify(pos)
+-- Called to update nodes around the given position (possibly including self).
+local minp = {x=0, y=0, z=0}
+local maxp = {x=0, y=0, z=0}
+function dirtspread.on_notify_around(pos)
+	minp.x = pos.x - 1
+	minp.y = pos.y - 1
+	minp.z = pos.z - 1
+
+	maxp.x = pos.x + 1
+	maxp.y = pos.y + 1
+	maxp.z = pos.z + 1
+
+	local positions = minetest.find_nodes_in_area(minp, maxp, "group:dirtspread_notify")
+	for i=1, #positions, 1 do
+		local timer = minetest.get_node_timer(positions[i])
+		if not timer:is_started() then
+			local node = minetest.get_node(positions[i])
+			local ndef = dirtspread.get_active_block(node.name)
+			if ndef then
+				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
+			end
+		end
+	end
 end
 
 
@@ -85,17 +153,37 @@ end
 
 -- Called periodically to update nodes.
 function dirtspread.periodic_execute()
-	local poss = dirtspread.positions
-	local exec = dirtspread.on_notify
 	local endx = dirtspread.index - 1
 
-	for i=1, endx, 1 do
-		exec(poss[i])
+	-- Update just 1 node per run.
+	if endx >= 1 then
+		dirtspread.on_notify_around(dirtspread.positions[endx])
+		dirtspread.index = endx
 	end
 
-	dirtspread.index = 1
 	minetest.after(dirtspread.delay, dirtspread.periodic_execute)
 end
+
+
+
+function dirtspread.get_active_block(name)
+	return dirtspread.blocks[name] -- May return nil.
+end
+
+
+
+function dirtspread.register_active_block(name, data)
+	local newdata = {
+		min_time = data.min_time or 1
+		max_time = data.max_time or 1
+	}
+	dirtspread.blocks[name] = newdata
+end
+
+
+
+-- File is reloadable.
+dofile(dirtspread.modpath .. "/registrations.lua")
 
 
 

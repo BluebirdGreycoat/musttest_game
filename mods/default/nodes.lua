@@ -472,7 +472,7 @@ minetest.register_node("default:obsidian_block", {
 minetest.register_node("default:dirt", {
 	description = "Dirt",
 	tiles = {"default_dirt.png"},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_sterile_dirt_type = 1, raw_dirt_type = 1, soil = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_sterile_dirt_type = 1, raw_dirt_type = 1, soil = 1, dirtspread_notify = 1}),
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
@@ -493,7 +493,7 @@ minetest.register_node("default:dirt_with_grass", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_grass_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1, dirtspread_notify = 1}),
 	drop = 'default:dirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -525,7 +525,7 @@ minetest.register_node("default:dirt_with_grass_footsteps", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_grass_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1, not_in_creative_inventory = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1, not_in_creative_inventory = 1, dirtspread_notify = 1}),
 	drop = 'default:dirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -556,7 +556,7 @@ minetest.register_node("default:dirt_with_dry_grass", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_dry_grass_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, soil = 1, dirtspread_notify = 1}),
 	drop = 'default:dirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -587,7 +587,7 @@ minetest.register_node("default:dirt_with_snow", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_snow_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1, dirtspread_notify = 1}),
 	drop = 'default:dirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -621,7 +621,7 @@ minetest.register_node("default:dark_dirt_with_snow", {
 		"darkage_darkdirt.png",
 		{name = "darkage_darkdirt.png^default_snow_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, sterile_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, sterile_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1, dirtspread_notify = 1}),
 	drop = 'darkage:darkdirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -655,7 +655,7 @@ minetest.register_node("default:dry_dirt_with_snow", {
 		"default_dry_dirt.png",
 		{name = "default_dry_dirt.png^default_snow_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, dry_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, dry_dirt_type = 1, snowy_dirt_type = 1, snowy = 1, cold = 1, dirtspread_notify = 1}),
 	drop = 'default:dry_dirt',
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -689,7 +689,7 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, non_sterile_dirt_type = 1, soil = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, non_sterile_dirt_type = 1, soil = 1, dirtspread_notify = 1}),
 	drop = "default:dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -716,7 +716,7 @@ minetest.register_node("default:dark_dirt_with_rainforest_litter", {
 		"darkage_darkdirt.png",
 		{name = "darkage_darkdirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, leafy_dirt_type = 1, non_raw_dirt_type = 1, sterile_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, leafy_dirt_type = 1, non_raw_dirt_type = 1, sterile_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	drop = "darkage:darkdirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -743,7 +743,7 @@ minetest.register_node("default:dry_dirt_with_rainforest_litter", {
 		"default_dry_dirt.png",
 		{name = "default_dry_dirt.png^default_rainforest_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dry_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dry_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	drop = "default:dry_dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
@@ -768,7 +768,7 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
 		"default_dirt.png",
 		{name = "default_dirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {falling_node = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dirt_type = 1, soil = 1}),
+	groups = utility.dig_groups("dirt", {falling_node = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dirt_type = 1, soil = 1, dirtspread_notify = 1}),
 	drop = "default:dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -795,7 +795,7 @@ minetest.register_node("default:dark_dirt_with_coniferous_litter", {
 		"darkage_darkdirt.png",
 		{name = "darkage_darkdirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	drop = "darkage:darkdirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -822,7 +822,7 @@ minetest.register_node("default:dry_dirt_with_coniferous_litter", {
 		"default_dry_dirt.png",
 		{name = "default_dry_dirt.png^default_coniferous_litter_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dry_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, non_sterile_dirt_type = 1, non_raw_dirt_type = 1, leafy_dirt_type = 1, dry_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	drop = "default:dry_dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
@@ -843,7 +843,7 @@ minetest.register_node("default:dry_dirt_with_coniferous_litter", {
 minetest.register_node("default:dry_dirt", {
 	description = "Dry Dirt",
 	tiles = {"default_dry_dirt.png"},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, dry_dirt_type = 1, non_sterile_dirt_type = 1, raw_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, dry_dirt_type = 1, non_sterile_dirt_type = 1, raw_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
@@ -864,7 +864,7 @@ minetest.register_node("default:dry_dirt_with_dry_grass", {
 		"default_dry_dirt.png",
 		{name = "default_dry_dirt.png^default_dry_grass_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("dirt", {dirt_type = 1, dry_dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, falling_node = 1}),
+	groups = utility.dig_groups("dirt", {dirt_type = 1, dry_dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, grassy_dirt_type = 1, falling_node = 1, dirtspread_notify = 1}),
 	drop = "default:dry_dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults({
@@ -887,9 +887,17 @@ minetest.register_node("default:dry_dirt_with_dry_grass", {
 minetest.register_node("default:permafrost", {
 	description = "Permafrost",
 	tiles = {"default_permafrost.png"},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost_with_snow", {
@@ -899,9 +907,17 @@ minetest.register_node("default:permafrost_with_snow", {
 		"default_permafrost.png",
 		{name = "default_permafrost.png^default_snow_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost_with_stones", {
@@ -911,9 +927,17 @@ minetest.register_node("default:permafrost_with_stones", {
 		"default_permafrost.png",
 		"default_permafrost.png^default_stones_side.png",
 	},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_gravel_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost_with_snow_and_stones", {
@@ -923,9 +947,17 @@ minetest.register_node("default:permafrost_with_snow_and_stones", {
 		"default_permafrost.png",
 		"default_permafrost.png^default_snow_side.png^default_stones_side.png",
 	},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_gravel_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost_with_moss", {
@@ -936,7 +968,7 @@ minetest.register_node("default:permafrost_with_moss", {
 		{name = "default_permafrost.png^default_moss_side.png", tileable_vertical = false},
 	},
 	drop = "default:permafrost",
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
@@ -944,6 +976,14 @@ minetest.register_node("default:permafrost_with_moss", {
     minetest.swap_node(pos, {name="default:permafrost"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost_with_moss_and_stones", {
@@ -954,7 +994,7 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
 		{name = "default_permafrost.png^default_moss_side.png^default_stones.png", tileable_vertical = false},
 	},
 	drop = "default:permafrost_with_stones",
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
@@ -962,6 +1002,14 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
     minetest.swap_node(pos, {name="default:permafrost_with_stones"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 
@@ -969,25 +1017,41 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
 minetest.register_node("default:sand", {
 	description = "Sand",
 	tiles = {"default_sand.png"},
-	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, fall_damage_add_percent = -20}),
+	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, fall_damage_add_percent = -20, dirtspread_notify = 1}),
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:desert_sand", {
 	description = "Desert Sand",
 	tiles = {"default_desert_sand.png"},
-	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, soil = 1, fall_damage_add_percent = -20}),
+	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, soil = 1, fall_damage_add_percent = -20, dirtspread_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 
 minetest.register_node("default:gravel", {
 	description = "Gravel",
 	tiles = {"default_gravel.png"},
-	groups = utility.dig_groups("gravel", {falling_node = 1}),
+	groups = utility.dig_groups("gravel", {falling_node = 1, gravel = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_gravel_defaults(),
 	drop = {
 		max_items = 1,

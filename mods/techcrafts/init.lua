@@ -36,9 +36,9 @@ minetest.register_craftitem("techcrafts:control_logic_unit", {
 minetest.register_craft({
   output = 'techcrafts:control_logic_unit',
   recipe = {
-    {'', 'fine_wire:gold', ''},
+    {'silicon:wafer', 'fine_wire:gold', 'silicon:wafer'},
     {'default:copper_ingot', 'silicon:wafer', 'default:copper_ingot'},
-    {'', 'chromium:ingot', ''},
+    {'quartz:quartz_crystal_piece', 'chromium:ingot', 'quartz:quartz_crystal_piece'},
   }
 })
 

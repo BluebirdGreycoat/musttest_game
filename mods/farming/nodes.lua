@@ -79,8 +79,6 @@ minetest.register_node("farming:soil", {
 
 	on_timer = function(...)
 		farming.on_soil_notify(...)
-
-		return dirtspread.on_timer(...)
 	end,
 
   on_finish_collapse = function(pos, node)
@@ -121,8 +119,6 @@ minetest.register_node("farming:soil_wet", {
 
 	on_timer = function(...)
 		farming.on_soil_notify(...)
-
-		return dirtspread.on_timer(...)
 	end,
 
   on_finish_collapse = function(pos, node)
@@ -171,8 +167,6 @@ minetest.register_node("farming:desert_sand_soil", {
 
 	on_timer = function(...)
 		farming.on_soil_notify(...)
-
-		return dirtspread.on_timer(...)
 	end,
 
   on_finish_collapse = function(pos, node)
@@ -213,8 +207,6 @@ minetest.register_node("farming:desert_sand_soil_wet", {
 
 	on_timer = function(...)
 		farming.on_soil_notify(...)
-
-		return dirtspread.on_timer(...)
 	end,
 
   on_finish_collapse = function(pos, node)

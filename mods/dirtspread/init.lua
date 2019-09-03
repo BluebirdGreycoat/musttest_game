@@ -1,7 +1,7 @@
 
 -- The algorithm here is useful for much more than dirt management. It can also
 -- handle any kind of behavior for any node similarly to an ABM, *except* liquids.
--- The node must be in the `dirtspread_notify` group, and be registered here.
+-- The node must be in the `dirtspread_notify` group, and be registered somewhere.
 -- If the node's logic changes it, make sure to use `minetest.add_node` in order
 -- to make the update logic cascade.
 

@@ -70,20 +70,26 @@ minetest.register_node("farming:soil", {
 		dry = "farming:soil",
 		wet = "farming:soil_wet"
 	},
+
 	on_notify = function(pos, other)
 		if other.y == pos.y+1 then
 			farming.notify_soil_single(pos)
 		end
 	end,
+
 	on_timer = function(...)
 		farming.on_soil_notify(...)
 
-		-- Depreciated.
-		--return dirtspread.dirt_on_timer(...)
+		return dirtspread.on_timer(...)
 	end,
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
 })
 
 minetest.register_node("farming:soil_wet", {
@@ -110,20 +116,26 @@ minetest.register_node("farming:soil_wet", {
 		dry = "farming:soil",
 		wet = "farming:soil_wet"
 	},
+
 	on_notify = function(pos, other)
 		if other.y == pos.y+1 then
 			farming.notify_soil_single(pos)
 		end
 	end,
+
 	on_timer = function(...)
 		farming.on_soil_notify(...)
 
-		-- Depreciated.
-		--return dirtspread.dirt_on_timer(...)
+		return dirtspread.on_timer(...)
 	end,
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
 })
 
 minetest.override_item("default:desert_sand", {

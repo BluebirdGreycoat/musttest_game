@@ -476,6 +476,14 @@ minetest.register_node("default:dirt", {
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dirt_with_grass", {
@@ -499,6 +507,14 @@ minetest.register_node("default:dirt_with_grass", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 -- Does this node even exist in the world?
@@ -523,6 +539,14 @@ minetest.register_node("default:dirt_with_grass_footsteps", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dirt_with_dry_grass", {
@@ -546,6 +570,14 @@ minetest.register_node("default:dirt_with_dry_grass", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dirt_with_snow", {
@@ -572,6 +604,14 @@ minetest.register_node("default:dirt_with_snow", {
   end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dark_dirt_with_snow", {
@@ -598,6 +638,14 @@ minetest.register_node("default:dark_dirt_with_snow", {
   end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dry_dirt_with_snow", {
@@ -624,6 +672,14 @@ minetest.register_node("default:dry_dirt_with_snow", {
   end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dirt_with_rainforest_litter", {
@@ -643,6 +699,14 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dark_dirt_with_rainforest_litter", {
@@ -662,6 +726,14 @@ minetest.register_node("default:dark_dirt_with_rainforest_litter", {
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dry_dirt_with_rainforest_litter", {
@@ -679,6 +751,14 @@ minetest.register_node("default:dry_dirt_with_rainforest_litter", {
 		minetest.swap_node(pos, {name="default:dry_dirt"})
 	end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dirt_with_coniferous_litter", {
@@ -698,6 +778,14 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dark_dirt_with_coniferous_litter", {
@@ -717,6 +805,14 @@ minetest.register_node("default:dark_dirt_with_coniferous_litter", {
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dry_dirt_with_coniferous_litter", {
@@ -734,6 +830,14 @@ minetest.register_node("default:dry_dirt_with_coniferous_litter", {
 		minetest.swap_node(pos, {name="default:dry_dirt"})
 	end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dry_dirt", {
@@ -743,6 +847,14 @@ minetest.register_node("default:dry_dirt", {
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:dry_dirt_with_dry_grass", {
@@ -762,6 +874,14 @@ minetest.register_node("default:dry_dirt_with_dry_grass", {
     minetest.swap_node(pos, {name="default:dry_dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_construct = function(...)
+		return dirtspread.on_construct(...)
+	end,
+
+	on_timer = function(...)
+		return dirtspread.on_timer(...)
+	end,
 })
 
 minetest.register_node("default:permafrost", {

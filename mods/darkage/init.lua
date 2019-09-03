@@ -327,6 +327,14 @@ if not darkage.run_once then
 		tiles = {"darkage_darkdirt.png"},
 		groups = utility.dig_groups("dirt", {dirt_type = 1, sterile_dirt_type = 1, raw_dirt_type = 1, falling_node = 1}),
 		sounds = default.node_sound_dirt_defaults(),
+
+		on_construct = function(...)
+			return dirtspread.on_construct(...)
+		end,
+
+		on_timer = function(...)
+			return dirtspread.on_timer(...)
+		end,
 	})
 
 	minetest.register_node("darkage:mud", {

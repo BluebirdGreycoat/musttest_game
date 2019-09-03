@@ -488,3 +488,19 @@ function utility.ensure_map_loaded(minp, maxp)
 	vm:read_from_map(minp, maxp)
 	return vm:get_emerged_area() -- Return area actually loaded.
 end
+
+
+
+function table.shuffle(t, from, to, random)
+	from = from or 1
+	to = to or #t
+	random = random or math.random
+	local n = to - from + 1
+	while n > 1 do
+		local r = from + n-1
+		local l = from + random(0, n-1)
+		t[l], t[r] = t[r], t[l]
+		n = n-1
+	end
+end
+

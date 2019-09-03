@@ -11,10 +11,6 @@ minetest.register_node("sand:sand_with_ice_crystals", {
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,

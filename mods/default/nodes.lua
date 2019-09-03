@@ -477,10 +477,6 @@ minetest.register_node("default:dirt", {
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -507,10 +503,6 @@ minetest.register_node("default:dirt_with_grass", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -540,10 +532,6 @@ minetest.register_node("default:dirt_with_grass_footsteps", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -570,10 +558,6 @@ minetest.register_node("default:dirt_with_dry_grass", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -605,10 +589,6 @@ minetest.register_node("default:dirt_with_snow", {
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -638,10 +618,6 @@ minetest.register_node("default:dark_dirt_with_snow", {
   end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -673,10 +649,6 @@ minetest.register_node("default:dry_dirt_with_snow", {
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -699,10 +671,6 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
     minetest.swap_node(pos, {name="default:dirt"})
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -727,10 +695,6 @@ minetest.register_node("default:dark_dirt_with_rainforest_litter", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -751,10 +715,6 @@ minetest.register_node("default:dry_dirt_with_rainforest_litter", {
 		minetest.swap_node(pos, {name="default:dry_dirt"})
 	end,
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -779,10 +739,6 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -806,10 +762,6 @@ minetest.register_node("default:dark_dirt_with_coniferous_litter", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -831,10 +783,6 @@ minetest.register_node("default:dry_dirt_with_coniferous_litter", {
 	end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -847,10 +795,6 @@ minetest.register_node("default:dry_dirt", {
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -875,10 +819,6 @@ minetest.register_node("default:dry_dirt_with_dry_grass", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -890,10 +830,6 @@ minetest.register_node("default:permafrost", {
 	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -911,10 +847,6 @@ minetest.register_node("default:permafrost_with_snow", {
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -931,10 +863,6 @@ minetest.register_node("default:permafrost_with_stones", {
 	sounds = default.node_sound_gravel_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -950,10 +878,6 @@ minetest.register_node("default:permafrost_with_snow_and_stones", {
 	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_gravel_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
@@ -977,10 +901,6 @@ minetest.register_node("default:permafrost_with_moss", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -1003,10 +923,6 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -1022,10 +938,6 @@ minetest.register_node("default:sand", {
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,
@@ -1037,10 +949,6 @@ minetest.register_node("default:desert_sand", {
 	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, soil = 1, fall_damage_add_percent = -20, dirtspread_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 
 	on_timer = function(...)
 		return dirtspread.on_timer(...)

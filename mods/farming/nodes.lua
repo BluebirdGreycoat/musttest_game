@@ -86,10 +86,6 @@ minetest.register_node("farming:soil", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 })
 
 minetest.register_node("farming:soil_wet", {
@@ -132,10 +128,6 @@ minetest.register_node("farming:soil_wet", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 })
 
 minetest.override_item("default:desert_sand", {
@@ -186,10 +178,6 @@ minetest.register_node("farming:desert_sand_soil", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:desert_sand"})
   end,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 })
 
 minetest.register_node("farming:desert_sand_soil_wet", {
@@ -232,10 +220,6 @@ minetest.register_node("farming:desert_sand_soil_wet", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:desert_sand"})
   end,
-
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
 })
 
 minetest.register_node("farming:straw", {

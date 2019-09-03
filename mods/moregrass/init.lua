@@ -22,10 +22,6 @@ minetest.register_node("moregrass:darkgrass", {
   end,
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 
-	on_construct = function(...)
-		return dirtspread.on_construct(...)
-	end,
-
 	on_timer = function(...)
 		return dirtspread.on_timer(...)
 	end,

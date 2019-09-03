@@ -268,6 +268,7 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	end
 
 	-- add the node and remove 1 item from the itemstack
+	-- note: use of `add_node` automatically invokes droplift + dirtspread notifications.
 	minetest.add_node(pt.above, {name = plantname, param2 = 1})
 	tick(pt.above)
   itemstack:take_item()

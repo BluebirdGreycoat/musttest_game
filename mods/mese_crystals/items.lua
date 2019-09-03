@@ -85,6 +85,9 @@ function mese_crystals.on_seed_place(itemstack, user, pt)
 			node.name = "mese_crystals:mese_crystal_ore1"
 			minetest.set_node(pos1, {name=node.name, param2=math.random(0, 3)})
 			minetest.get_node_timer(pos1):start(mese_crystals.get_grow_time())
+
+			dirtspread.on_environment(pos1)
+			droplift.notify(pos1)
 		end
 	end
 	return itemstack

@@ -249,6 +249,9 @@ memorandum.on_paper_initialize = function(itemstack, placer, pointed_thing)
 		minetest.set_node(above, {name="memorandum:letter_empty", param2=facedir})
 	end
 
+	dirtspread.on_environment(above)
+	droplift.notify(above)
+
 	itemstack:take_item()
 	return itemstack
 end
@@ -584,6 +587,9 @@ memorandum.on_message_place = function(itemstack, placer, pointed_thing)
 	meta:set_string("signed", data.author)
 	meta:set_string("infotext", "Bottle With Message")
 	meta:mark_as_private({"text", "signed"})
+
+	dirtspread.on_environment(pos)
+	droplift.notify(pos)
 
 	itemstack:take_item()
 	return itemstack

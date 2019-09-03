@@ -427,6 +427,10 @@ function default.sapling_on_place(itemstack, placer, pointed_thing,
 		end
 	end
 
+	-- Notify other hooks.
+	dirtspread.on_environment(pos)
+	droplift.notify(pos)
+
 	if take_item then
 		itemstack:take_item()
 	end

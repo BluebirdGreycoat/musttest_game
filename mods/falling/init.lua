@@ -6,7 +6,7 @@ local get_node = core.get_node
 local get_node_or_nil = core.get_node_or_nil
 local get_node_drops = core.get_node_drops
 local add_item = core.add_item
-local add_node = core.add_node
+local add_node = core.set_node
 local add_node_level = core.add_node_level
 local remove_node = core.remove_node
 local random = math.random
@@ -125,9 +125,13 @@ local entity_physics = function(pos, node, pharm, mharm)
 			end
     else
       local l = r:get_luaentity()
-      if l.mob and l.mob == true then
-        r:punch(r, 1, tool_capabilities, nil)
-      end
+			if l then
+				if l.mob and l.mob == true then
+					r:punch(r, 1, tool_capabilities, nil)
+				elseif l.name == "__builtin:item" then
+					droplift.invoke(obj)
+				end
+			end
     end
   end
 end
@@ -364,6 +368,9 @@ minetest.register_entity(":__builtin:falling_node", {
 						if callback then
 							callback(np, self.node)
 						end
+
+						-- Dirtspread notification.
+						dirtspread.on_environment(np)
 					end
         else
 					-- Not air and protected, so we drop as entity instead.

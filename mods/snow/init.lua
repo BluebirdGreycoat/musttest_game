@@ -53,6 +53,8 @@ function snow.on_place(itemstack, placer, pt)
 			end
 
 			minetest.set_node(pt.above, {name=itemstack:get_name()})
+			dirtspread.on_environment(pt.above) -- Explicit call.
+
 			-- We cannot call minetest.place_node() because that will create an infinite loop.
 			minetest.check_for_falling(pt.above)
 

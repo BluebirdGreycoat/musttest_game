@@ -48,7 +48,8 @@ function dirtspread.on_timer(pos, elapsed)
 end
 
 -- Called whenever a node neighboring a dirt node is added or removed.
-function dirtspread.on_environment(pos, other)
+-- Warning: may be called many times in quick succession (e.g., falling nodes).
+function dirtspread.on_environment(pos)
 	minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
 end
 

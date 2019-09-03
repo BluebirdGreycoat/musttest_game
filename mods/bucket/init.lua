@@ -199,6 +199,10 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 				--minetest.place_node(lpos, {name = placename})
 				minetest.set_node(lpos, {name = placename})
 				minetest.check_for_falling(lpos)
+
+				-- Notify dirt.
+				dirtspread.on_environment(lpos)
+
 				return ItemStack("bucket:bucket_empty")
 			end
 		})

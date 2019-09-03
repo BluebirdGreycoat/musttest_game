@@ -136,6 +136,10 @@ function cans.register_can(d)
       charge = charge - 1
       set_can_level(itemstack, charge)
       set_can_wear(itemstack, charge, data.can_capacity)
+
+      -- Notify dirt.
+      dirtspread.on_environment(pos)
+
       return itemstack
     end,
   })

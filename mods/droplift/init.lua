@@ -166,6 +166,7 @@ local function append_to_core_defns()
 	end
 
 	-- Update drops inside newly placed nodes.
+	-- Note: only called when player places node, not when `minetest.set_node()` is used!
 	local add_node_copy = minetest.add_node
 	minetest.add_node = function(pos, node)
 		add_node_copy(pos, node)

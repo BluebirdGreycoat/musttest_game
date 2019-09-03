@@ -1,8 +1,7 @@
 
 -- The algorithm here is useful for much more than dirt management. It can also
 -- handle any kind of behavior for any node similarly to an ABM, *except* liquids.
--- Depends on the nodes having `on_timer` and `on_construct` callbacks.
--- The node must also be in the `dirtspread_notify` group, and be registered here.
+-- The node must be in the `dirtspread_notify` group, and be registered here.
 -- If the node's logic changes it, make sure to use `minetest.add_node` in order
 -- to make the update logic cascade.
 

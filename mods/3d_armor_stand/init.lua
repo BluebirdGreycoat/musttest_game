@@ -171,6 +171,12 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 		for _, element in pairs(elements) do
 			inv:set_size("armor_"..element, 1)
 		end
+		local timer = minetest.get_node_timer(pos)
+		timer:start(60*60) -- 1 hour.
+	end,
+	on_timer = function(pos, elapsed)
+		update_entity(pos)
+		return true -- Restart timer with same timeout.
 	end,
 	can_dig = function(pos, player)
 		local meta = minetest.get_meta(pos)
@@ -199,9 +205,19 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 	end,
 	on_metadata_inventory_put = function(pos)
 		update_entity(pos)
+
+		local timer = minetest.get_node_timer(pos)
+		if not timer:is_started() then
+			timer:start(60*60)
+		end
 	end,
 	on_metadata_inventory_take = function(pos)
 		update_entity(pos)
+
+		local timer = minetest.get_node_timer(pos)
+		if not timer:is_started() then
+			timer:start(60*60)
+		end
 	end,
 	after_destruct = function(pos)
 		update_entity(pos)
@@ -240,6 +256,12 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 		for _, element in pairs(elements) do
 			inv:set_size("armor_"..element, 1)
 		end
+		local timer = minetest.get_node_timer(pos)
+		timer:start(60*60) -- 1 hour.
+	end,
+	on_timer = function(pos, elapsed)
+		update_entity(pos)
+		return true -- Restart timer with same timeout.
 	end,
 	can_dig = function(pos, player)
 		local meta = minetest.get_meta(pos)
@@ -286,9 +308,19 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 	end,
 	on_metadata_inventory_put = function(pos)
 		update_entity(pos)
+
+		local timer = minetest.get_node_timer(pos)
+		if not timer:is_started() then
+			timer:start(60*60)
+		end
 	end,
 	on_metadata_inventory_take = function(pos)
 		update_entity(pos)
+
+		local timer = minetest.get_node_timer(pos)
+		if not timer:is_started() then
+			timer:start(60*60)
+		end
 	end,
 	after_destruct = function(pos)
 		update_entity(pos)
@@ -325,20 +357,6 @@ minetest.register_entity("3d_armor_stand:armor_entity", {
 		return false, false, drops
 	end,
 })
-
---[[
-minetest.register_abm({
-	nodenames = {"3d_armor_stand:locked_armor_stand", "3d_armor_stand:armor_stand"},
-	interval = 15,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local num
-		num = #minetest.get_objects_inside_radius(pos, 0.5)
-		if num > 0 then return end
-		update_entity(pos)
-	end
-})
---]]
 
 minetest.register_craft({
 	output = "3d_armor_stand:armor_stand",

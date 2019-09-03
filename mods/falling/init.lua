@@ -129,7 +129,7 @@ local entity_physics = function(pos, node, pharm, mharm)
 				if l.mob and l.mob == true then
 					r:punch(r, 1, tool_capabilities, nil)
 				elseif l.name == "__builtin:item" then
-					droplift.invoke(obj)
+					droplift.invoke(r)
 				end
 			end
     end

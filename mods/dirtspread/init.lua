@@ -14,24 +14,47 @@ dirtspread.modpath = minetest.get_modpath("dirtspread")
 -- `snowy_dirt_type`       (dirt with snow on top).
 -- `leafy_dirt_type`       (dirt with leaf-litter on top).
 -- `non_raw_dirt_type`     (any dirt with decoration, grass or otherwise).
+--
+-- Names:
+--
+-- `default:dirt`
+-- `darkage:darkdirt`
+-- `default:dirt_with_grass`
+-- `default:dirt_with_grass_footsteps`
+-- `moregrass:darkgrass`
+-- `default:dirt_with_dry_grass`
+-- `default:dirt_with_snow`
+-- `default:dark_dirt_with_snow`
+-- `default:dry_dirt_with_snow`
+-- `default:dirt_with_rainforest_litter`
+-- `default:dark_dirt_with_rainforest_litter`
+-- `default:dry_dirt_with_rainforest_litter`
+-- `default:dirt_with_coniferous_litter`
+-- `default:dark_dirt_with_coniferous_litter`
+-- `default:dry_dirt_with_coniferous_litter`
+-- `default:dry_dirt`
+-- `default:dry_dirt_with_dry_grass`
+-- `farming:soil`
+-- `farming:soil_wet`
 
-function dirtspread.run_abm(pos, node)
+
+
+-- Called whenever a dirt node of any type is constructed.
+function dirtspread.on_construct(pos)
 end
 
+-- Called whenever a timer on any dirt node expires.
+function dirtspread.on_timer(pos, elapsed)
+end
+
+-- Called whenever a node neighboring a dirt node is added or removed.
+function dirtspread.on_environment(pos, other)
+	minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
+end
+
+
+
 if not dirtspread.registered then
-	minetest.register_abm({
-		label = "Dirt Management",
-		nodenames = {"group:dirt_type"},
-
-		interval = 20/2 * default.ABM_TIMER_MULTIPLIER,
-		chance = 100/2 * default.ABM_CHANCE_MULTIPLIER,
-		catch_up = false,
-
-		action = function(...)
-			dirtspread.run_abm(...)
-		end,
-	})
-
 	local c = "dirtspread:core"
 	local f = dirtspread.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

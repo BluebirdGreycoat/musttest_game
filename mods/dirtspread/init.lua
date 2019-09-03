@@ -81,6 +81,8 @@ function dirtspread.on_construct(pos)
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
 	if ndef then
+		--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))
+
 		local timer = minetest.get_node_timer(pos)
 		timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
 	end
@@ -91,6 +93,8 @@ end
 -- Called whenever a timer on any dirt node expires.
 -- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
 function dirtspread.on_timer(pos, elapsed)
+	--minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
+
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
 	if ndef and ndef.func then
@@ -107,6 +111,8 @@ end
 local minp = {x=0, y=0, z=0}
 local maxp = {x=0, y=0, z=0}
 function dirtspread.on_notify_around(pos)
+	--minetest.chat_send_player("MustTest", "Notify: " .. minetest.pos_to_string(pos))
+
 	minp.x = pos.x - 1
 	minp.y = pos.y - 1
 	minp.z = pos.z - 1
@@ -122,6 +128,8 @@ function dirtspread.on_notify_around(pos)
 			local node = minetest.get_node(positions[i])
 			local ndef = dirtspread.get_active_block(node.name)
 			if ndef then
+				--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))
+
 				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
 			end
 		end
@@ -133,6 +141,8 @@ end
 -- Called whenever a node is added or removed (any node, not just nodes around dirt!).
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
 function dirtspread.on_environment(pos)
+	--minetest.chat_send_player("MustTest", "Environment: " .. minetest.pos_to_string(pos))
+
 	-- Add position to table of positions to be updated later.
 	local poss = dirtspread.positions
 	local idex = dirtspread.index
@@ -147,6 +157,7 @@ function dirtspread.on_environment(pos)
 	end
 
 	idex = idex + 1
+	dirtspread.index = idex
 end
 
 
@@ -176,6 +187,7 @@ function dirtspread.register_active_block(name, data)
 	local newdata = {
 		min_time = data.min_time or 1,
 		max_time = data.max_time or 1,
+		func = data.func,
 	}
 	dirtspread.blocks[name] = newdata
 end

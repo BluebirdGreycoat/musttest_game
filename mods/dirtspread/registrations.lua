@@ -7,6 +7,8 @@ dirtspread.register_active_block("default:dirt", {
 
 	-- If function returns `true`, timer will be restarted with new random timeout.
 	func = function(pos, node)
+		--minetest.chat_send_player("MustTest", "ABM func: " .. minetest.pos_to_string(pos))
+
 		local above = {x=pos.x, y=pos.y+1, z=pos.z}
 		local n2 = minetest.get_node(above)
 		local ndef = minetest.registered_nodes[n2.name]

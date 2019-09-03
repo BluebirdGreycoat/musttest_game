@@ -1,6 +1,9 @@
 
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
+dirtspread.delay = 5
+dirtspread.index = 1
+dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 
 -- Groups:
 --
@@ -44,16 +47,54 @@ dirtspread.modpath = minetest.get_modpath("dirtspread")
 function dirtspread.on_construct(pos)
 end
 
+
+
 -- Called whenever a timer on any dirt node expires.
 -- Note: only called for dirt nodes.
 function dirtspread.on_timer(pos, elapsed)
 end
 
+
+
+-- Called to update a dirt node, possibly changing it to another type.
+function dirtspread.on_notify(pos)
+end
+
+
+
 -- Called whenever a node is added or removed (any node, not just nodes around dirt!).
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
--- We have to do logic for checking for dirt in this function.
 function dirtspread.on_environment(pos)
-	minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
+	-- Add position to table of positions to be updated later.
+	local poss = dirtspread.positions
+	local idex = dirtspread.index
+
+	local p = poss[idex]
+	if p then
+		p.x = pos.x
+		p.y = pos.y
+		p.z = pos.z
+	else
+		poss[idex] = {x=pos.x, y=pos.y, z=pos.z}
+	end
+
+	idex = idex + 1
+end
+
+
+
+-- Called periodically to update nodes.
+function dirtspread.periodic_execute()
+	local poss = dirtspread.positions
+	local exec = dirtspread.on_notify
+	local endx = dirtspread.index - 1
+
+	for i=1, endx, 1 do
+		exec(poss[i])
+	end
+
+	dirtspread.index = 1
+	minetest.after(dirtspread.delay, dirtspread.periodic_execute)
 end
 
 
@@ -66,6 +107,8 @@ if not dirtspread.registered then
 		dirtspread.on_environment(pos)
 		return res
 	end
+
+	minetest.after(dirtspread.delay, dirtspread.periodic_execute)
 
 	local c = "dirtspread:core"
 	local f = dirtspread.modpath .. "/init.lua"

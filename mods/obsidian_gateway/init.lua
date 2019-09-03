@@ -323,9 +323,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 				--minetest.chat_send_all("# Server: Attempting to grief gateway @ " .. minetest.pos_to_string(plava) .. "!")
 				if minetest.get_node(plava).name == "air" then
 					if plava.y < -10 then
-						minetest.set_node(plava, {name="default:lava_source"})
+						minetest.add_node(plava, {name="default:lava_source"})
 					else
-						minetest.set_node(plava, {name="fire:basic_flame"})
+						minetest.add_node(plava, {name="fire:basic_flame"})
 					end
 				end
 			end

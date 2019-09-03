@@ -12,7 +12,7 @@ function rope.place(itemstack, placer, pointed_thing)
 
 		while oldnode.name == "air" and not itemstack:is_empty() do
 			local newnode = {name = stackname, param1 = 0}
-			minetest.set_node(pos, newnode)
+			minetest.add_node(pos, newnode)
 			itemstack:take_item()
 			pos.y = pos.y - 1
 			oldnode = minetest.get_node(pos)

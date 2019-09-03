@@ -20,7 +20,7 @@ local function remove_air(pos, oldnode)
 		west_node.param2 == 3)
 
 	if not keep_air then
-		minetest.set_node(airpos, {name = "air"})
+		minetest.add_node(airpos, {name = "air"})
 	end
 end
 
@@ -57,7 +57,7 @@ local function remove_handholds(pos)
 		local nn = minetest.get_node(node_pos).name
 		local def = minetest.registered_items[nn]
 		if def and def._handholds_original then
-			minetest.set_node(node_pos, {name = def._handholds_original})
+			minetest.add_node(node_pos, {name = def._handholds_original})
 		end
 	end
 end
@@ -185,7 +185,7 @@ minetest.register_node("handholds:ice", {
 
 	on_timer = function(pos, elapsed)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.set_node(pos, {name="default:water_flowing"})
+			minetest.add_node(pos, {name="default:water_flowing"})
 		end
 	end,
 })
@@ -263,28 +263,28 @@ minetest.register_tool("handholds:climbing_pick", {
 			vector.subtract(pointed_thing.under, pointed_thing.above))
 
 		if node_name == "default:stone" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:stone", param2 = rotation})
 		elseif node_name == "default:desert_stone" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:desert_stone", param2 = rotation})
 		elseif node_name == "default:sandstone" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:sandstone", param2 = rotation})
 		elseif node_name == "default:ice" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:ice", param2 = rotation})
 		elseif node_name == "rackstone:rackstone" or node_name == "rackstone:mg_rackstone" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:rackstone", param2 = rotation})
 		elseif node_name == "rackstone:redrack" or node_name == "rackstone:mg_redrack" then
-			minetest.set_node(pointed_thing.under,
+			minetest.add_node(pointed_thing.under,
 				{name = "handholds:redrack", param2 = rotation})
 		else
 			return
 		end
 
-		minetest.set_node(pointed_thing.above, {name = "handholds:climbable_air"})
+		minetest.add_node(pointed_thing.above, {name = "handholds:climbable_air"})
 		ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
 
 		if not minetest.setting_getbool("creative_mode") then

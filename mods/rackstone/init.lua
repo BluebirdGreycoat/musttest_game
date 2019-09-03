@@ -21,7 +21,7 @@ function(pos)
   local maxp = {x=pos.x+1, y=pos.y, z=pos.z+1}
   local nodes = minetest.find_nodes_in_area(minp, maxp, "rackstone:dauthsand_stable")
   for k, v in ipairs(nodes) do
-    minetest.set_node(v, {name="rackstone:dauthsand"})
+    minetest.add_node(v, {name="rackstone:dauthsand"})
     minetest.check_for_falling(v)
   end
 end
@@ -75,12 +75,12 @@ local after_redrack_remove = function(pos)
     ambiance.sound_play("tnt_gunpowder_burning", pos, 2, 20)
     
     if which == 1 then
-      minetest.set_node(pos, {name='rackstone:evilrack'})
+      minetest.add_node(pos, {name='rackstone:evilrack'})
       core.check_for_falling(pos)
     elseif which == 2 then
-      minetest.set_node(pos, {name="fire:nether_flame"})
+      minetest.add_node(pos, {name="fire:nether_flame"})
     elseif which == 3 then
-      minetest.set_node(pos, {name="default:lava_source"})
+      minetest.add_node(pos, {name="default:lava_source"})
     else
 			--ambiance.sound_play("tnt_gunpowder_burning", pos, 2, 20)
 			-- Delay after TNT gunpowder burning sound to give warning.
@@ -344,7 +344,7 @@ minetest.register_node("rackstone:blackrack", {
     if placer then
       local node = minetest.get_node(pos)
       node.param2 = 1
-      minetest.set_node(pos, node)
+      minetest.swap_node(pos, node)
     end
   end,
   

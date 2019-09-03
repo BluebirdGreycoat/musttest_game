@@ -258,7 +258,7 @@ minetest.register_abm({
 				if minetest.test_protection(p, "") then
 					return
 				end
-				minetest.set_node(p, {name = "fire:basic_flame"})
+				minetest.add_node(p, {name = "fire:basic_flame"})
 			end
 		end,
 	})

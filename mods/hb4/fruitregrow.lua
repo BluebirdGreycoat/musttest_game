@@ -11,7 +11,7 @@ function hb4.fruitregrow.on_timer(pos, elapsed)
 		local fruit = meta:get_string("fruitname")
 		if fruit ~= "" and minetest.reg_ns_nodes[fruit] then
 			-- param2 is 0, so fruit can regrow if picked again.
-			minetest.set_node(pos, {name=fruit})
+			minetest.add_node(pos, {name=fruit})
 			return
 		end
 	end
@@ -55,7 +55,7 @@ function hb4.fruitregrow.after_dig_node_impl(pos, oldnode, oldmetadata, digger)
 	-- Only for fruit placed by the mapgen/voxelmanip/schems.
 	if oldnode.param2 == 0 then
 		local node = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z})
-		minetest.set_node(pos, {name="hb4:fruitregrow"})
+		minetest.add_node(pos, {name="hb4:fruitregrow"})
 		local meta = minetest.get_meta(pos)
 		meta:set_string("fruitname", oldnode.name)
 		meta:set_string("leafname", node.name)

@@ -37,14 +37,14 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,
 			--[[on_rightclick = function(pos, node, player, itemstack, pointed_thing)
 					if itemstack:get_name() == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 
 					end
 			end,
@@ -52,7 +52,7 @@ if not scaffolding.run_once then
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "air"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,]]
@@ -89,7 +89,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,
@@ -97,14 +97,14 @@ if not scaffolding.run_once then
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "air"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,]]
@@ -136,7 +136,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_platform"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			node_box = {
@@ -174,7 +174,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:platform"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			node_box = {
@@ -218,7 +218,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_iron_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,
@@ -226,14 +226,14 @@ if not scaffolding.run_once then
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_iron_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "air"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():remove_item("main", ItemStack("beer_test:tankard"))
 							puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
@@ -259,7 +259,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:iron_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
 			end,
@@ -267,14 +267,14 @@ if not scaffolding.run_once then
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:iron_scaffolding"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			on_punch = function(pos, node, puncher)
 			local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "air"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 							--puncher:get_inventory():remove_item("main", ItemStack("beer_test:tankard"))
 							puncher:get_inventory():add_item("main", ItemStack("scaffolding:scaffolding"))
 					end
@@ -307,7 +307,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:reinforced_iron_platform"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			node_box = {
@@ -345,7 +345,7 @@ if not scaffolding.run_once then
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
 							node.name = "scaffolding:iron_platform"
-							minetest.env:set_node(pos, node)
+							minetest.add_node(pos, node)
 					end
 			end,
 			node_box = {

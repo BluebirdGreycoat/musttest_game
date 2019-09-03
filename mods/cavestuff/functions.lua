@@ -19,10 +19,10 @@ function cavestuff.hotcobble.after_place_node(pos, placer, itemstack, pointed_th
 	if pos.y < -20 then
 		-- Underground, placing hot cobble is the same as placing a lava source.
 		-- The action of placing it destabilizes it enough to become fully melted.
-		minetest.set_node(pos, {name="default:lava_flowing"})
+		minetest.add_node(pos, {name="default:lava_flowing"})
 	else
 		-- Don't allow hot cobble to be placed above surface level.
-		minetest.set_node(pos, {name="default:cobble"})
+		minetest.add_node(pos, {name="default:cobble"})
 	end
 end
 
@@ -49,17 +49,17 @@ function cavestuff.hotcobble.after_dig_node(pos, oldnode, oldmetadata, digger)
 	for k, v in ipairs(positions) do
 		local node = minetest.get_node(v)
 		if string.find(node.name, ":lava_") then
-			minetest.set_node(pos, {name="default:lava_source"})
+			minetest.add_node(pos, {name="default:lava_source"})
 			return
 		end
 	end
 
 	if pos.y < -20 then
 		-- Underground, digging hot cobble is enough to destabilize it and turn it into a lava source.
-		minetest.set_node(pos, {name="default:lava_source"})
+		minetest.add_node(pos, {name="default:lava_source"})
 	else
 		-- To prevent lava griefs of buildings on the surface, don't convert hot cobble to lava when dug.
-		minetest.set_node(pos, {name="default:cobble"})
+		minetest.add_node(pos, {name="default:cobble"})
 	end
 end
 

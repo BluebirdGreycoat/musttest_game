@@ -34,7 +34,7 @@ hb4.leafscatter.add = function(pos, minp, maxp, leaf, chance)
 
 	local random = math.random
 	local getn = minetest.get_node
-	local setn = minetest.set_node
+	local setn = minetest.add_node
 
 	local leafnear = function(p)
 		local p_ = {

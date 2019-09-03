@@ -38,7 +38,7 @@ function ice.on_ice_timer(pos, elapsed)
 	if nn == "default:ice" then
 		-- Transform thick, opaque ice to thin ice.
 		if minetest.find_node_near(pos, 1, "group:melt_around") then
-			minetest.set_node(pos, {name="ice:thin_ice"})
+			minetest.add_node(pos, {name="ice:thin_ice"})
 			return
 		end
 	elseif nn == "ice:thin_ice" then
@@ -48,7 +48,7 @@ function ice.on_ice_timer(pos, elapsed)
 		local warm = minetest.find_nodes_in_area(minp, maxp, "group:melt_around")
 		local heat = minetest.find_nodes_in_area(minp, maxp, {"group:flame", "group:hot"})
 		if #warm >= 3 or #heat > 0 then
-			minetest.set_node(pos, {name="default:water_source"})
+			minetest.add_node(pos, {name="default:water_source"})
 			minetest.check_for_falling(pos)
 			return
 		end
@@ -56,7 +56,7 @@ function ice.on_ice_timer(pos, elapsed)
 		-- Turn thin ice opaque again.
 		local above = minetest.get_node({x=pos.x, y=pos.y+1, z=pos.z}).name
 		if snow.is_snow(above) or above == "default:snowblock" then
-			minetest.set_node(pos, {name="default:ice"})
+			minetest.add_node(pos, {name="default:ice"})
 			return
 		end
 	end

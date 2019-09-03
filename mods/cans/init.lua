@@ -66,7 +66,7 @@ function cans.register_can(d)
       end
       
       if node.name == "default:lava_source" then
-        minetest.set_node(pointed_thing.under, {name="fire:basic_flame"})
+        minetest.add_node(pointed_thing.under, {name="fire:basic_flame"})
         local pos = user:getpos()
         minetest.sound_play("default_cool_lava", {pos = pos, max_hear_distance = 16, gain = 0.25})
         if not heatdamage.is_immune(user:get_player_name()) then
@@ -139,6 +139,7 @@ function cans.register_can(d)
 
       -- Notify dirt.
       dirtspread.on_environment(pos)
+			droplift.notify(pos)
 
       return itemstack
     end,

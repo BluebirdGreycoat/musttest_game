@@ -245,7 +245,7 @@ minetest.register_node("vines:rope_top", {
 
 		if (n.name ~= "ignore") then
 			vines.destroy_rope_starting(p, 'vines:rope', 'vines:rope_bottom', 'vines:rope_top')
-			minetest.set_node(pos, {name="air"})
+			minetest.add_node(pos, {name="air"})
 		else
 			local timer = minetest.get_node_timer( pos )
 			timer:start( 3.0 )

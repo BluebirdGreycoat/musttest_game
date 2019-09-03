@@ -68,11 +68,11 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 	if self.lastpos.x~=nil then
 		if throwing_node_should_block_arrow(node.name) then
       if node.name == "throwing:light" or not minetest.test_protection(self.lastpos, "") then
-        minetest.set_node(self.lastpos, {name="fire:basic_flame"})
+        minetest.add_node(self.lastpos, {name="fire:basic_flame"})
       else
         local fpos = minetest.find_node_near(pos, 1, "air")
         if fpos then
-          minetest.set_node(fpos, {name="fire:basic_flame"})
+          minetest.add_node(fpos, {name="fire:basic_flame"})
         end
       end
       minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.0, max_hear_distance=2*64})

@@ -93,7 +93,7 @@ function real_torch.relight(itemstack, user, pointed_thing)
 	end
 
 	if rep then
-		minetest.set_node(pos, {name = nod.name, param2 = nod.param2})
+		minetest.add_node(pos, {name = nod.name, param2 = nod.param2})
 
 		if not is_creative(user:get_player_name()) then
 			itemstack:take_item()
@@ -239,7 +239,7 @@ minetest.override_item("tnt:gunpowder", {
 
 		if rep then
 
-			minetest.set_node(pos, {name = nod.name, param2 = nod.param2})
+			minetest.add_node(pos, {name = nod.name, param2 = nod.param2})
 
 			add_effects(pos, 1)
 

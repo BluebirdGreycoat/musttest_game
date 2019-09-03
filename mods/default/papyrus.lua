@@ -118,7 +118,7 @@ function papyrus.grow(pos, node)
 		return 0
 	end
 	-- Grow!
-	minetest.set_node(pos, {name = papyrus.plantname})
+	minetest.add_node(pos, {name = papyrus.plantname})
 	return 0
 end
 

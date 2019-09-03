@@ -15,7 +15,7 @@ local pumice_node =						{name="gloopblocks:pumice"}
 local find = string.find
 local findn = minetest.find_node_near
 local random = math.random
-local setn = minetest.set_node
+local setn = minetest.add_node
 local getn = minetest.get_node
 local play = minetest.sound_play
 

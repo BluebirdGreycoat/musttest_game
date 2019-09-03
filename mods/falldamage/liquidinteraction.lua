@@ -293,6 +293,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	end
 
 	-- Add node and update
+	-- This executes additional hooks (droplift, dirtspread).
 	core.add_node(place_to, newnode)
 
 	local take_item = true

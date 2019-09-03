@@ -29,7 +29,7 @@ fruitscatter.scatter_fruit = function(leaf, fruit, minp, maxp, chance)
             if random(1, chance) == 1 then
                 local p1, p2 = find_air_under_leaf(leaf, x, minp.y, maxp.y, z)
                 if p1 then
-                    minetest.set_node(p1, {name=fruit})
+                    minetest.add_node(p1, {name=fruit})
                     minetest.check_for_falling(p1)
                 end
             end

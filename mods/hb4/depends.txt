@@ -2,3 +2,4 @@ reload
 unified_inventory?
 sfinv_buttons?
 inventory_plus?
+droplift

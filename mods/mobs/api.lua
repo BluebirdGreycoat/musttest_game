@@ -1155,14 +1155,14 @@ local function do_env_damage(self)
 		if minetest.get_node(pb).name == "air" and minetest.get_node(pa).name == "air" then
 			if self.makes_bones_in_lava and self.makes_bones_in_lava == true then
 
-				minetest.set_node(pb, {name="bones:bones_type2"})
+				minetest.add_node(pb, {name="bones:bones_type2"})
 				local meta = minetest.get_meta(pb)
 				meta:set_int("protection_cancel", 1)
 
-				minetest.set_node(pa, {name="fire:basic_flame"})
+				minetest.add_node(pa, {name="fire:basic_flame"})
 				minetest.check_for_falling(pb)
 			else
-				minetest.set_node(pb, {name="fire:basic_flame"})
+				minetest.add_node(pb, {name="fire:basic_flame"})
 			end
 		end
 
@@ -1537,7 +1537,7 @@ local function replace(self, pos)
 
 		if on_replace_return ~= false then
 
-			minetest.set_node(target, {name = with})
+			minetest.add_node(target, {name = with})
 
 			-- when cow/sheep eats grass, replace wool and milk
 			if self.gotten == true then
@@ -1583,7 +1583,7 @@ local function try_break_block(self, s)
 		and not ndef1.on_blast then
 
 			local oldnode = minetest.get_node(s)
-			minetest.set_node(s, {name = "air"})
+			minetest.add_node(s, {name = "air"})
 
 			-- Run script hook
 			for _, callback in ipairs(minetest.registered_on_dignodes) do
@@ -1844,7 +1844,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 						if canput then
 
 							-- Place node the mob likes, or use fallback.
-							minetest.set_node(s, {name = self.place_node or node_pathfiner_place})
+							minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
 							local meta = minetest.get_meta(s)
 							meta:set_int("protection_cancel", 1)
 							sfn.drop_node(s)

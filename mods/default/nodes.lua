@@ -1045,7 +1045,7 @@ minetest.register_node("default:snowblock", {
 
 	on_timer = function(pos, elapsed)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.set_node(pos, {name="default:water_flowing"})
+			minetest.add_node(pos, {name="default:water_flowing"})
 			return
 		end
 		return ice.on_ice_timer(pos, elapsed)
@@ -1088,7 +1088,7 @@ minetest.register_node("default:ice", {
 
 	on_timer = function(pos, elapsed)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.set_node(pos, {name="default:water_flowing"})
+			minetest.add_node(pos, {name="default:water_flowing"})
 			return
 		end
 		return ice.on_ice_timer(pos, elapsed)
@@ -1896,7 +1896,7 @@ minetest.register_node("default:water_source", {
 	on_construct = function(pos)
 		farming.notify_soil(pos)
 		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 			return
 		end
 		if rc.current_realm_at_pos(pos) == "channelwood" then
@@ -1904,7 +1904,7 @@ minetest.register_node("default:water_source", {
 			return
 		end
 		if pos.y < -25000 then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
 
@@ -1967,7 +1967,7 @@ minetest.register_node("default:water_flowing", {
 
 	on_construct = function(pos)
 		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 			return
 		end
 		if rc.current_realm_at_pos(pos) == "channelwood" then
@@ -1975,7 +1975,7 @@ minetest.register_node("default:water_flowing", {
 			return
 		end
 		if pos.y < -25000 then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
 })
@@ -2032,12 +2032,12 @@ minetest.register_node("default:river_water_source", {
 	on_construct = function(pos)
 		farming.notify_soil(pos)
 		if minetest.find_node_near(pos, 10, "griefer:grieferstone") then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 			return
 		end
 
 		if pos.y < -25000 then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
 

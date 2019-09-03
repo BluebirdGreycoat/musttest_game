@@ -98,6 +98,6 @@ mobs.register_arrow("obsidianmonster:arrow", {
 		if realnode.name == "bones:bones" or realnode.name == "ignore" then
 			return
 		end
-		minetest.set_node(pos, {name="fire:basic_flame"})
+		minetest.add_node(pos, {name="fire:basic_flame"})
 	end
 })

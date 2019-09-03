@@ -39,7 +39,7 @@ local addspawner = minetest.add_particlespawner
 local fnn = minetest.find_node_near
 local after = minetest.after
 local rm = minetest.remove_node
-local setn = minetest.set_node
+local setn = minetest.add_node
 local getn = minetest.get_node
 
 local function do_spawn_particles(pos, node)

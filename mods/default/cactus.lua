@@ -135,7 +135,7 @@ function cactus.grow(pos, node)
 		return 0
 	end
 	-- Grow!
-	minetest.set_node(pos, {name = cactus.plantname})
+	minetest.add_node(pos, {name = cactus.plantname})
 	return 0
 end
 

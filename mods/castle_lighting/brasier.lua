@@ -49,11 +49,11 @@ local brasier_burn = function(pos)
 		timer:start(fuel_burned * 60) -- one minute of flame per second of burn time, for balance.
 		
 		if node_above.name == "air" then
-			minetest.set_node(pos_above, {name = "fire:permanent_flame"})
+			minetest.add_node(pos_above, {name = "fire:permanent_flame"})
 		end
 	else
 		if node_above.name == "fire:permanent_flame" then
-			minetest.set_node(pos_above, {name = "air"})
+			minetest.add_node(pos_above, {name = "air"})
 		end
 	end
 end
@@ -81,7 +81,7 @@ local brasier_on_destruct = function(pos, oldnode)
 	local pos_above = {x=pos.x, y=pos.y+1, z=pos.z}
 	local node_above = minetest.get_node(pos_above)
 	if node_above.name == "fire:permanent_flame" then
-		minetest.set_node(pos_above, {name = "air"})
+		minetest.add_node(pos_above, {name = "air"})
 	end
 end
 

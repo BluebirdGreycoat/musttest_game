@@ -57,9 +57,9 @@ function cauldron.filling(pos, node, clicker, itemstack)
 			else
 				itemstack:replace("bucket:bucket_water")
 			end
-			minetest.set_node(pos, {name="xdecor:cauldron_empty", param2=node.param2})
+			minetest.add_node(pos, {name="xdecor:cauldron_empty", param2=node.param2})
 		elseif wield_item:sub(-6) == "_water" and node.name:sub(-6) == "_empty" then
-			minetest.set_node(pos, {name="xdecor:cauldron_idle", param2=node.param2})
+			minetest.add_node(pos, {name="xdecor:cauldron_idle", param2=node.param2})
 			itemstack:replace("bucket:bucket_empty")
 		end
 		return itemstack
@@ -73,7 +73,7 @@ function cauldron.idle_timer(pos)
 	end
 
 	local node = minetest.get_node(pos)
-	minetest.set_node(pos, {name="xdecor:cauldron_boiling", param2=node.param2})
+	minetest.add_node(pos, {name="xdecor:cauldron_boiling", param2=node.param2})
 	return true
 end
 
@@ -106,12 +106,12 @@ function cauldron.boiling_timer(pos)
 
 	if #ingredients >= 2 then
 		for _, obj in pairs(objs) do obj:remove() end
-		minetest.set_node(pos, {name="xdecor:cauldron_soup", param2=node.param2})
+		minetest.add_node(pos, {name="xdecor:cauldron_soup", param2=node.param2})
 	end
 
 	local node_under = {x=pos.x, y=pos.y-1, z=pos.z}
 	if not minetest.get_node(node_under).name:find("fire") then
-		minetest.set_node(pos, {name="xdecor:cauldron_idle", param2=node.param2})
+		minetest.add_node(pos, {name="xdecor:cauldron_idle", param2=node.param2})
 	end
 	return true
 end
@@ -134,7 +134,7 @@ function cauldron.take_soup(pos, node, clicker, itemstack)
 			itemstack:replace("xdecor:bowl_soup 1")
 		end
 
-		minetest.set_node(pos, {name="xdecor:cauldron_empty", param2=node.param2})
+		minetest.add_node(pos, {name="xdecor:cauldron_empty", param2=node.param2})
 	end
 	return itemstack
 end

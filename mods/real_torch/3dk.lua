@@ -31,7 +31,7 @@ minetest.register_node("real_torch:kalite_torch", {
   _torches_node_ceiling = "real_torch:kalite_torch_ceiling",
 
   on_flood = function(pos, oldnode, newnode)
-    minetest.set_node(pos, {name="air"})
+    minetest.add_node(pos, {name="air"})
     minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
     return true
   end,
@@ -42,7 +42,7 @@ minetest.register_node("real_torch:kalite_torch", {
 
 	on_ignite = function(pos, igniter)
 		local nod = minetest.get_node(pos)
-		minetest.set_node(pos, {name = "torches:kalite_torch_floor", param2 = nod.param2})
+		minetest.add_node(pos, {name = "torches:kalite_torch_floor", param2 = nod.param2})
 	end,
 })
 
@@ -71,10 +71,10 @@ minetest.register_node("real_torch:kalite_torch_wall", {
 	sounds = default.node_sound_wood_defaults(),
 	on_ignite = function(pos, igniter)
 		local nod = minetest.get_node(pos)
-		minetest.set_node(pos, {name = "torches:kalite_torch_wall", param2 = nod.param2})
+		minetest.add_node(pos, {name = "torches:kalite_torch_wall", param2 = nod.param2})
 	end,
   on_flood = function(pos, oldnode, newnode)
-    minetest.set_node(pos, {name="air"})
+    minetest.add_node(pos, {name="air"})
     minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
     return true
   end,
@@ -105,10 +105,10 @@ minetest.register_node("real_torch:kalite_torch_ceiling", {
 	sounds = default.node_sound_wood_defaults(),
 	on_ignite = function(pos, igniter)
 		local nod = minetest.get_node(pos)
-		minetest.set_node(pos, {name = "torches:kalite_torch_ceiling", param2 = nod.param2})
+		minetest.add_node(pos, {name = "torches:kalite_torch_ceiling", param2 = nod.param2})
 	end,
   on_flood = function(pos, oldnode, newnode)
-    minetest.set_node(pos, {name="air"})
+    minetest.add_node(pos, {name="air"})
     minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
     return true
   end,
@@ -120,7 +120,7 @@ minetest.override_item("torches:kalite_torch_floor", {
 
 	on_timer = function(pos, elapsed)
 		local p2 = minetest.get_node(pos).param2
-		minetest.set_node(pos, {name = "real_torch:kalite_torch", param2 = p2})
+		minetest.add_node(pos, {name = "real_torch:kalite_torch", param2 = p2})
 		minetest.sound_play({name="real_torch_burnout", gain = 0.1},
 			{pos = pos, max_hear_distance = 10})
 	end,
@@ -131,7 +131,7 @@ minetest.override_item("torches:kalite_torch_wall", {
 
 	on_timer = function(pos, elapsed)
 		local p2 = minetest.get_node(pos).param2
-		minetest.set_node(pos, {name = "real_torch:kalite_torch_wall", param2 = p2})
+		minetest.add_node(pos, {name = "real_torch:kalite_torch_wall", param2 = p2})
 		minetest.sound_play({name="real_torch_burnout", gain = 0.1},
 			{pos = pos, max_hear_distance = 10})
 	end,
@@ -142,7 +142,7 @@ minetest.override_item("torches:kalite_torch_ceiling", {
 
 	on_timer = function(pos, elapsed)
 		local p2 = minetest.get_node(pos).param2
-		minetest.set_node(pos, {name = "real_torch:kalite_torch_ceiling", param2 = p2})
+		minetest.add_node(pos, {name = "real_torch:kalite_torch_ceiling", param2 = p2})
 		minetest.sound_play({name="real_torch_burnout", gain = 0.1},
 			{pos = pos, max_hear_distance = 10})
 	end,

@@ -164,15 +164,6 @@ function flowerpot.register_node(nodename, imagetransform)
 		-- Some flowers emit light.
 		light_source = nodedef.light_source,
 
-		-- What is this for?
-		--[[
-		on_dig = function(pos, node, digger)
-			minetest.set_node(pos, {name = "flowerpot:empty"})
-			local def = minetest.registered_nodes[node.name]
-			minetest.add_item(pos, dropname)
-		end,
-		--]]
-
 		drop = {
 			max_items = #dropitems,
 			items = {

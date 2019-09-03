@@ -589,7 +589,7 @@ function(pos, elapsed)
 									-- breaking people's stuff.
 									if node and node.name == ore then
 										--minetest.chat_send_all("# Server: Placing water @ " .. minetest.pos_to_string(p2) .. "!")
-										minetest.set_node(p2, {name=LEECH_RESULT})
+										minetest.add_node(p2, {name=LEECH_RESULT})
 									end
 								end
 							end

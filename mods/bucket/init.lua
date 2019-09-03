@@ -202,6 +202,7 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 
 				-- Notify dirt.
 				dirtspread.on_environment(lpos)
+				droplift.notify(lpos)
 
 				return ItemStack("bucket:bucket_empty")
 			end
@@ -253,14 +254,14 @@ minetest.register_craftitem("bucket:bucket_empty", {
 			end
 
 			if node.name == "default:lava_source" then
-				minetest.set_node(pointed_thing.under, {name="fire:basic_flame"})
+				minetest.add_node(pointed_thing.under, {name="fire:basic_flame"})
 				local pos = user:getpos()
 				minetest.sound_play("default_cool_lava", {pos = pos, max_hear_distance = 16, gain = 0.25})
 				if not heatdamage.is_immune(user:get_player_name()) then
 					bucket.harm_player_after(user:get_player_name(), 2)
 				end
 			else
-				minetest.set_node(pointed_thing.under, {name="air"})
+				minetest.add_node(pointed_thing.under, {name="air"})
 			end
 
 			return ItemStack(giving_back)

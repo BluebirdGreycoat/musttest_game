@@ -75,7 +75,7 @@ local function choose_rotation(pos, tier)
 		if node.name == rn then
 			local n2 = minetest.get_node(pos)
 			n2.param2 = node.param2
-			minetest.set_node(pos, n2)
+			minetest.swap_node(pos, n2)
 			return
 		end
 	end
@@ -86,7 +86,7 @@ local function choose_rotation(pos, tier)
 		if node.name == sn then
 			local n2 = minetest.get_node(pos)
 			n2.param2 = v.param2
-			minetest.set_node(pos, n2)
+			minetest.swap_node(pos, n2)
 			return
 		end
 	end

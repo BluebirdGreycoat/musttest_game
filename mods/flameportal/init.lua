@@ -133,7 +133,7 @@ flameportal.activate_gateway = function(pos)
     for k, v in ipairs(flames) do
         if math.random(1, 3) == 1 then
             if minetest.get_node(v).name == "air" then
-                minetest.set_node(v, {name="fire:nether_flame"})
+                minetest.add_node(v, {name="fire:nether_flame"})
             end
         end
     end
@@ -151,7 +151,7 @@ flameportal.activate_gateway = function(pos)
     }
     
     for k, v in ipairs(void) do
-        minetest.set_node(v, {name="voidstone:void"})
+        minetest.add_node(v, {name="voidstone:void"})
     end
 end
 
@@ -165,10 +165,10 @@ flameportal.make_platform = function(param)
         local node = minetest.get_node(pos)
         if node.name == "air" or node.name == "rackstone:redrack" then
           if not minetest.test_protection(pos, "") then
-            minetest.set_node(pos, {name="rackstone:redrack"})
+            minetest.add_node(pos, {name="rackstone:redrack"})
             
             if vector.equals(pos, param.top) then
-              minetest.set_node(pos, {name="flameportal:redrack"})
+              minetest.add_node(pos, {name="flameportal:redrack"})
             end
           end
         end
@@ -332,7 +332,7 @@ flameportal.after_portal_destruct = function(pos, oldnode)
     if oldnode.name == "fire:nether_flame" then
         local p = minetest.find_node_near(pos, 2, "voidstone:void")
         if p then
-            minetest.set_node(p, {name="fire:basic_flame"})
+            minetest.add_node(p, {name="fire:basic_flame"})
         end
     elseif oldnode.name == "voidstone:void" then
         local void = {
@@ -347,7 +347,7 @@ flameportal.after_portal_destruct = function(pos, oldnode)
         for k, v in pairs(void) do
             local n = minetest.get_node(v).name
             if n == "voidstone:void" then
-                minetest.set_node(v, {name="fire:basic_flame"})
+                minetest.add_node(v, {name="fire:basic_flame"})
             end
         end
     elseif oldnode.name == "default:obsidian" then
@@ -368,7 +368,7 @@ flameportal.after_portal_destruct = function(pos, oldnode)
         for k, v in pairs(void) do
             local n = minetest.get_node(v).name
             if n == "voidstone:void" then
-                minetest.set_node(v, {name="fire:basic_flame"})
+                minetest.add_node(v, {name="fire:basic_flame"})
             end
         end
     end

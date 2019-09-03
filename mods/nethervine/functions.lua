@@ -93,7 +93,7 @@ function nethervine.flora_spread(pos, node)
 
   -- Nether flora grows in nether regardless of light level.
   if pos.y < -25000 then
-    minetest.set_node(airp, {name = node.name})
+    minetest.add_node(airp, {name = node.name})
     return true
   end
   return false

@@ -145,7 +145,7 @@ local VOIDCHEST_DEF = {
         })
       end)
     elseif math.random(1, 10) == 1 then
-      minetest.set_node(pos, {name="fire:nether_flame"})
+      minetest.add_node(pos, {name="fire:nether_flame"})
     end
   end,
 

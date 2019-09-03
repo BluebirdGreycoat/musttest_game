@@ -55,15 +55,15 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 							
 			if minetest.get_node(flame_pos).name == "air" or is_tnt or is_gunpowder then
 				if is_coalblock then
-					minetest.set_node(flame_pos, {name = "fire:permanent_flame"})
+					minetest.add_node(flame_pos, {name = "fire:permanent_flame"})
 				elseif is_netherack then
-					minetest.set_node(flame_pos, {name = "fire:nether_flame"})
+					minetest.add_node(flame_pos, {name = "fire:nether_flame"})
 				elseif is_tnt then
-					minetest.set_node(flame_pos, {name = "tnt:tnt_burning"})
+					minetest.add_node(flame_pos, {name = "tnt:tnt_burning"})
 				elseif is_gunpowder then
-					minetest.set_node(flame_pos, {name = "tnt:gunpowder_burning"})
+					minetest.add_node(flame_pos, {name = "tnt:gunpowder_burning"})
 				else
-					minetest.set_node(flame_pos, {name = "fire:basic_flame"})
+					minetest.add_node(flame_pos, {name = "fire:basic_flame"})
 				end
 			end
 		elseif nn == "default:obsidian" then

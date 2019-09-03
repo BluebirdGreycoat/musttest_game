@@ -279,7 +279,7 @@ bones.on_dieplayer = function(player)
 	utility.ensure_map_loaded(minp, maxp)
     
 	local param2 = minetest.dir_to_facedir(player:get_look_dir())
-	minetest.set_node(pos, {name = "bones:bones", param2 = param2})
+	minetest.add_node(pos, {name = "bones:bones", param2 = param2})
 
 	local meta = minetest.get_meta(pos)
 	meta:set_float("digxp", xp_for_bones)

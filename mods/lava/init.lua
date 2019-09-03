@@ -74,7 +74,7 @@ if not lava.run_once then
 				if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
 					local pa = vector.add(pos, {x=0, y=1, z=0})
 					if minetest.get_node(pa).name == "air" then
-						minetest.set_node(pa, {name="fire:basic_flame"})
+						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
 					player:set_hp(0)
@@ -156,7 +156,7 @@ if not lava.run_once then
 				if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
 					local pa = vector.add(pos, {x=0, y=1, z=0})
 					if minetest.get_node(pa).name == "air" then
-						minetest.set_node(pa, {name="fire:basic_flame"})
+						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
 					player:set_hp(0)

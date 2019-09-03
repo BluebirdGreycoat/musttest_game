@@ -33,18 +33,18 @@ local function grow_icicle(pos, node)
   local nbelow = minetest.get_node(pbelow)
   if nbelow.name == "air" then -- Grow icicle down.
     if minetest.find_node_near(pos, 1, "glowstone:minerals") then
-      minetest.set_node(pbelow, {name="cavestuff:icicle_down_glowing"})
+      minetest.add_node(pbelow, {name="cavestuff:icicle_down_glowing"})
     else
-      minetest.set_node(pbelow, {name="cavestuff:icicle_down"})
+      minetest.add_node(pbelow, {name="cavestuff:icicle_down"})
     end
   else -- Cannot grow below, try growing up.
     local pabove = {x=pos.x, y=pos.y+1, z=pos.z}
     local nabove = minetest.get_node(pabove)
     if nabove.name == "air" then -- Grow icicle up.
       if minetest.find_node_near(pos, 1, "glowstone:minerals") then
-        minetest.set_node(pabove, {name="cavestuff:icicle_up_glowing"})
+        minetest.add_node(pabove, {name="cavestuff:icicle_up_glowing"})
       else
-        minetest.set_node(pabove, {name="cavestuff:icicle_up"})
+        minetest.add_node(pabove, {name="cavestuff:icicle_up"})
       end
     end
   end

@@ -269,7 +269,7 @@ function farming.on_update_soil(pos, node)
 	pos.y = pos.y - 1
 
 	if not nn_def or (nn_def.walkable and minetest.get_item_group(nn.name, "plant") == 0) then
-		minetest.set_node(pos, {name = base})
+		minetest.add_node(pos, {name = base})
 		return
 	end
 	-- check if there is water nearby
@@ -281,7 +281,7 @@ function farming.on_update_soil(pos, node)
 	if minetest.find_node_near(pos, radius, {"group:water"}) then
 		-- if it is dry soil and not base node, turn it into wet soil
 		if wet_lvl == 0 then
-			minetest.set_node(pos, {name = wet})
+			minetest.add_node(pos, {name = wet})
 			farming.notify_soil_single(pos)
 		end
 	else
@@ -292,13 +292,13 @@ function farming.on_update_soil(pos, node)
 			if wet_lvl == 0 then
 				-- only turn it back if there is no plant/seed on top of it
 				if minetest.get_item_group(nn.name, "plant") == 0 and minetest.get_item_group(nn.name, "seed") == 0 then
-					minetest.set_node(pos, {name = base})
+					minetest.add_node(pos, {name = base})
 					-- Base dirt doesn't need soil notifications.
 				end
 
 			-- if its wet turn it back into dry soil
 			elseif wet_lvl == 1 then
-				minetest.set_node(pos, {name = dry})
+				minetest.add_node(pos, {name = dry})
 				farming.notify_soil_single(pos)
 			end
 		end

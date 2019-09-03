@@ -40,22 +40,33 @@ dirtspread.modpath = minetest.get_modpath("dirtspread")
 
 
 -- Called whenever a dirt node of any type is constructed.
+-- Note: only called for dirt nodes.
 function dirtspread.on_construct(pos)
 end
 
 -- Called whenever a timer on any dirt node expires.
+-- Note: only called for dirt nodes.
 function dirtspread.on_timer(pos, elapsed)
 end
 
--- Called whenever a node neighboring a dirt node is added or removed.
+-- Called whenever a node is added or removed (any node, not just nodes around dirt!).
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
+-- We have to do logic for checking for dirt in this function.
 function dirtspread.on_environment(pos)
-	minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
+	--minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
 end
 
 
 
 if not dirtspread.registered then
+	-- Hook `minetest.remove_node`. This is called only when player removes a node, not for mods!
+	local remove_node_copy = minetest.remove_node
+	function minetest.remove_node(pos)
+		local res = remove_node_copy(pos)
+		dirtspread.on_environment(pos)
+		return res
+	end
+
 	local c = "dirtspread:core"
 	local f = dirtspread.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

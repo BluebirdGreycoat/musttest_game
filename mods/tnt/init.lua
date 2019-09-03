@@ -10,10 +10,10 @@ function tnt.burn(pos)
 	local group = minetest.get_item_group(name, "tnt")
 	if group > 0 then
 		minetest.sound_play("tnt_ignite", {pos = pos})
-		minetest.set_node(pos, {name = name .. "_burning"})
+		minetest.add_node(pos, {name = name .. "_burning"})
 		minetest.get_node_timer(pos):start(1)
 	elseif name == "tnt:gunpowder" then
-		minetest.set_node(pos, {name = "tnt:gunpowder_burning"})
+		minetest.add_node(pos, {name = "tnt:gunpowder_burning"})
 	end
 end
 
@@ -218,7 +218,7 @@ function tnt.register_tnt(def)
             if wielded == "torches:torch_floor" or
                wielded == "torches:iron_torch" or
                wielded == "torches:kalite_torch_floor" then
-                minetest.set_node(pos, {name = name .. "_burning"})
+                minetest.add_node(pos, {name = name .. "_burning"})
                 minetest.log("action", puncher:get_player_name() ..
                   " ignites " .. node.name .. " at " ..
                   minetest.pos_to_string(pos))

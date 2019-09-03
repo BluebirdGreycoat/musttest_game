@@ -231,7 +231,7 @@ function flowers.flower_spread(pos, node)
 	-- However, preserve grasses in sand dune biomes.
 	if minetest.get_item_group(under.name, "sand") == 1 and
 			under.name ~= "default:sand" then
-		minetest.set_node(pos, {name = "default:dry_shrub"})
+		minetest.add_node(pos, {name = "default:dry_shrub"})
 		return false
 	end
 
@@ -276,7 +276,7 @@ function flowers.flower_spread(pos, node)
 			return false
 		end
 
-		minetest.set_node(seedling_above, {name = node.name, param2 = node.param2})
+		minetest.add_node(seedling_above, {name = node.name, param2 = node.param2})
 		return true
 	end
 
@@ -478,13 +478,13 @@ function flowers.mushroom_spread(pos, node)
 	end
 	-- Mushrooms grow in nether regardless of light level.
 	if pos.y < -25000 then
-		minetest.set_node(airp, {name = node.name})
+		minetest.add_node(airp, {name = node.name})
 		return true
 	end
 	-- Otherwise, check light-level before growing.
 	if minetest.get_node_light(pos, 0.5) <= 7 and
 		minetest.get_node_light(airp, 0.5) <= 7 then
-		minetest.set_node(airp, {name = node.name})
+		minetest.add_node(airp, {name = node.name})
 		return true
 	end
 	return false
@@ -551,7 +551,7 @@ if not flowers.reg3 then
 			if def and def.liquidtype == "source" and
 					minetest.get_item_group(node, "water") > 0 then
 				if not minetest.is_protected(pos, player_name) then
-					minetest.set_node(pos, {name = "flowers:waterlily",
+					minetest.add_node(pos, {name = "flowers:waterlily",
 						param2 = math.random(0, 3)})
 					--if not minetest.setting_getbool("creative_mode") then
 						itemstack:take_item()
@@ -636,7 +636,7 @@ function flowers.create_lilyspawner_near(pos)
 		water.y = water.y + 1
 		if minetest.get_node(water).name == "air" then
 			if not minetest.find_node_near(pos, 2, "group:cold") then
-				minetest.set_node(water, {name="flowers:lilyspawner"})
+				minetest.add_node(water, {name="flowers:lilyspawner"})
 				return true
 			end
 		end
@@ -756,7 +756,7 @@ function flowers.lily_spread(pos)
 			end
 		end
 
-		minetest.set_node(growpos, {name="flowers:waterlily", param2=math.random(0, 3)})
+		minetest.add_node(growpos, {name="flowers:waterlily", param2=math.random(0, 3)})
 		return true
 	end
 

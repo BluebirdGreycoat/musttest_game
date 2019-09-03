@@ -27,7 +27,7 @@ minetest.register_node("snow_bricks:snow_brick", {
 	on_timer = function(pos, elapsed)
 		if rc.ice_melts_at_pos(pos) then
 			-- If in nether, then water's constructor will convert again to fire.
-			minetest.set_node(pos, {name="default:water_flowing"})
+			minetest.add_node(pos, {name="default:water_flowing"})
 		end
 	end,
 })
@@ -57,7 +57,7 @@ minetest.register_node("snow_bricks:ice_brick", {
 	on_timer = function(pos, elapsed)
 		if rc.ice_melts_at_pos(pos) then
 			-- If in nether, then water's constructor will convert again to fire.
-			minetest.set_node(pos, {name="default:water_flowing"})
+			minetest.add_node(pos, {name="default:water_flowing"})
 		end
 	end,
 })

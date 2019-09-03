@@ -14,7 +14,7 @@ function bonemeal.do_dirtspread(pos)
 	})
 	if dirt then
 		local node = minetest.get_node(dirt)
-		minetest.set_node(pos, {name=node.name})
+		minetest.add_node(pos, {name=node.name})
 	end
 end
 
@@ -101,9 +101,9 @@ function bonemeal.on_use(itemstack, user, pt)
 					if anode.name == "air" then
 						if not minetest.is_protected(above, user:get_player_name()) then
 							if math.random(1, 4) > 1 then
-								minetest.set_node(above, {name="default:dry_grass_" .. math.random(1, 5),  param2=2})
+								minetest.add_node(above, {name="default:dry_grass_" .. math.random(1, 5),  param2=2})
 							else
-								minetest.set_node(above, {name="default:dry_shrub"})
+								minetest.add_node(above, {name="default:dry_shrub"})
 							end
 						end
 					end
@@ -116,9 +116,9 @@ function bonemeal.on_use(itemstack, user, pt)
 					if anode.name == "air" then
 						if not minetest.is_protected(above, user:get_player_name()) then
 							if math.random(1, 2) == 1 then
-								minetest.set_node(above, {name="default:grass_" .. math.random(1, 5),  param2=2})
+								minetest.add_node(above, {name="default:grass_" .. math.random(1, 5),  param2=2})
 							else
-								minetest.set_node(above, {name="default:coarsegrass",  param2=2})
+								minetest.add_node(above, {name="default:coarsegrass",  param2=2})
 							end
 						end
 					end
@@ -131,9 +131,9 @@ function bonemeal.on_use(itemstack, user, pt)
 					if anode.name == "air" then
 						if not minetest.is_protected(above, user:get_player_name()) then
 							if math.random(1, 2) == 1 then
-								minetest.set_node(above, {name="default:junglegrass", param2=2})
+								minetest.add_node(above, {name="default:junglegrass", param2=2})
 							else
-								minetest.set_node(above, {name="default:coarsegrass",  param2=2})
+								minetest.add_node(above, {name="default:coarsegrass",  param2=2})
 							end
 						end
 					end

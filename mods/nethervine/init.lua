@@ -48,7 +48,7 @@ nethervine.grow = function(pos, node)
 		return
 	end
 
-	minetest.set_node(pos, {name = "nethervine:vine"})
+	minetest.add_node(pos, {name = "nethervine:vine"})
 
 	if have_minerals then
 		timer:start(math.random(60*1, 60*2))

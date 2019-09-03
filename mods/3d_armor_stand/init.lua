@@ -119,7 +119,7 @@ local function add_hidden_node(pos, player)
 	local name = player:get_player_name()
 	local node = minetest.get_node(p)
 	if node.name == "air" and not minetest.is_protected(pos, name) then
-		minetest.set_node(p, {name="3d_armor_stand:top"})
+		minetest.add_node(p, {name="3d_armor_stand:top"})
 	end
 end
 

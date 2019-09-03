@@ -283,7 +283,7 @@ memorandum.on_letter_empty_input = function(pos, fields, sender)
 	-- so no check to see if player is wielding eraser.
 
 	local facedir = minetest.get_node(pos).param2
-	minetest.set_node(pos, {name="memorandum:letter_written", param2=facedir})
+	minetest.add_node(pos, {name="memorandum:letter_written", param2=facedir})
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("text", fields.text)
@@ -428,9 +428,9 @@ memorandum.on_letter_item_place = function(itemstack, placer, pointed_thing)
 	if minetest.get_node(above).name ~= "air" then return end
 
 	if (above.x ~= under.x) or (above.z ~= under.z) then
-		minetest.set_node(above, {name="memorandum:letter_written", param2=param2_walldirections[facedir+1]})
+		minetest.add_node(above, {name="memorandum:letter_written", param2=param2_walldirections[facedir+1]})
 	else
-		minetest.set_node(above, {name="memorandum:letter_written", param2=facedir})
+		minetest.add_node(above, {name="memorandum:letter_written", param2=facedir})
 	end
 
 	local text = itemstack:get_metadata()
@@ -536,7 +536,7 @@ memorandum.on_message_use = function(itemstack, user, pointed_thing)
 	-- This allows players to post messages to each other without requiring mailboxes.
 	-- Note that no one will be able to dig the letter except the owner of the area, or the player who placed it.
 
-	minetest.set_node(pos, {name="memorandum:letter_written", param2=math.random(0, 3)})
+	minetest.add_node(pos, {name="memorandum:letter_written", param2=math.random(0, 3)})
 
 	local text = itemstack:get_metadata()
 	local data = memorandum.extract_metainfo(text)

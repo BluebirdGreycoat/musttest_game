@@ -23,7 +23,7 @@ function stairs.setup_nodedef_callbacks(subname, def)
 		assert(not def.on_timer)
 		def.on_timer = function(pos, elapsed)
 			if rc.ice_melts_at_pos(pos) then
-				minetest.set_node(pos, {name="default:water_flowing"})
+				minetest.add_node(pos, {name="default:water_flowing"})
 			end
 		end
 	end
@@ -720,7 +720,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 							player_name)
 						return
 					end
-					minetest.set_node(pointed_thing.under, {name = recipeitem, param2 = p2})
+					minetest.add_node(pointed_thing.under, {name = recipeitem, param2 = p2})
 					if not minetest.setting_getbool("creative_mode") then
 						itemstack:take_item()
 					end

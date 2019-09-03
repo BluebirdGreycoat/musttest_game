@@ -224,10 +224,10 @@ for k, v in ipairs({
 			for z=minp.z, maxp.z do
 				local p = {x=x, y=y, z=z}
 				if p.y < -14 then
-					minetest.set_node(p, {name="default:lava_source"})
+					minetest.add_node(p, {name="default:lava_source"})
 					minetest.transforming_liquid_add(p)
 				else
-					minetest.set_node(p, {name="fire:basic_flame"})
+					minetest.add_node(p, {name="fire:basic_flame"})
 				end
 			end
 			end
@@ -564,7 +564,7 @@ for k, v in ipairs({
 					"default:river_water_flowing",
 				})
 				if nodes and #nodes > 0 then
-					minetest.set_node(nodes[math.random(1, #nodes)], {name="default:river_water_source"})
+					minetest.add_node(nodes[math.random(1, #nodes)], {name="default:river_water_source"})
 				end
 			end
 		else

@@ -110,8 +110,8 @@ function beds.register_bed(name, def)
 				return itemstack
 			end
 
-			minetest.set_node(pos, {name = name .. "_bottom", param2 = dir})
-			minetest.set_node(botpos, {name = name .. "_top", param2 = dir})
+			minetest.add_node(pos, {name = name .. "_bottom", param2 = dir})
+			minetest.add_node(botpos, {name = name .. "_top", param2 = dir})
 
 			-- If player is holding 'E', then bed shall be public.
 			do
@@ -171,7 +171,7 @@ function beds.register_bed(name, def)
 			-- do not remove_node here - it will trigger destroy_bed()
 			minetest.swap_node(p, {name = "air"})
 			minetest.swap_node(pos, node) -- Do not remove meta.
-			minetest.set_node(newp, {name = name .. "_top", param2 = new_param2})
+			minetest.add_node(newp, {name = name .. "_top", param2 = new_param2})
 			return true
 		end,
 

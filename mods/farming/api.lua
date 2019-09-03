@@ -46,7 +46,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
     if math.random(1, 2) == 1 then
       local p = {x=pt.under.x, y=pt.under.y-1, z=pt.under.z}
       if minetest.get_node(p).name == "default:obsidian" then
-        minetest.set_node(p, {name="rackstone:bluerack"})
+        minetest.add_node(p, {name="rackstone:bluerack"})
         ambiance.sound_play("default_dig_cracky", pt.under, 1.0, 10)
       end
     end
@@ -90,7 +90,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	end
 
 	-- turn the node into soil and play sound
-	minetest.set_node(pt.under, {name = ndef.soil.dry})
+	minetest.add_node(pt.under, {name = ndef.soil.dry})
 	minetest.sound_play("default_dig_crumbly", {
 		pos = pt.under,
 		gain = 0.5,

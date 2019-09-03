@@ -124,7 +124,7 @@ function teleports.kill_players_at_pos(teleport_pos, pname)
 						local dp = vector.round(v:get_pos())
 						local node = minetest.get_node(dp)
 						if node.name == "air" then
-							minetest.set_node(dp, {name="fire:basic_flame"})
+							minetest.add_node(dp, {name="fire:basic_flame"})
 						end
 						v:set_hp(0)
 						minetest.chat_send_all("# Server: <" .. rename.gpn(v:get_player_name()) .. "> was killed by a teleport. Noob!")
@@ -216,7 +216,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 					if node.name ~= "ignore" then
 						-- Do not destroy players' bones.
 						if node.name ~= "air" and node.name ~= "bones:bones" then
-							minetest.set_node(pos, {name="fire:basic_flame"})
+							minetest.add_node(pos, {name="fire:basic_flame"})
 						end
 					end
 				end

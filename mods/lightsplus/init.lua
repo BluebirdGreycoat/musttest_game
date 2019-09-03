@@ -43,7 +43,7 @@ for _, row in ipairs(lights) do
 		node_box = nodebox,
 		selection_box = nodebox,
 		on_punch = function(pos, node, puncher)
-			minetest.set_node(pos, {name=on, param2=node.param2})
+			minetest.swap_node(pos, {name=on, param2=node.param2})
 		end,
 		on_place = minetest.rotate_and_place
 	})
@@ -60,7 +60,7 @@ for _, row in ipairs(lights) do
 		node_box = nodebox,
 		selection_box = nodebox,
 		on_punch = function(pos, node, puncher)
-			minetest.set_node(pos, {name=off, param2=node.param2})
+			minetest.swap_node(pos, {name=off, param2=node.param2})
 		end,
 		on_place = minetest.rotate_and_place
 	})

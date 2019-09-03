@@ -204,7 +204,7 @@ for _, c in pairs(curtain_colors) do
 		groups = utility.dig_groups("item", {flammable=3}),
 		selection_box = {type="wallmounted"},
 		on_rightclick = function(pos, node, _, itemstack)
-			minetest.set_node(pos, {name="xdecor:curtain_open_"..c, param2=node.param2})
+			minetest.add_node(pos, {name="xdecor:curtain_open_"..c, param2=node.param2})
 			return itemstack
 		end
 	})
@@ -219,7 +219,7 @@ for _, c in pairs(curtain_colors) do
 		selection_box = {type="wallmounted"},
 		drop = "xdecor:curtain_"..c,
 		on_rightclick = function(pos, node, _, itemstack)
-			minetest.set_node(pos, {name="xdecor:curtain_"..c, param2=node.param2})
+			minetest.add_node(pos, {name="xdecor:curtain_"..c, param2=node.param2})
 			return itemstack
 		end
 	})

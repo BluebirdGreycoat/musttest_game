@@ -53,7 +53,7 @@ end
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
 -- We have to do logic for checking for dirt in this function.
 function dirtspread.on_environment(pos)
-	--minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
+	minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
 end
 
 

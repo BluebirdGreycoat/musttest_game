@@ -174,8 +174,8 @@ end
 
 function dirtspread.register_active_block(name, data)
 	local newdata = {
-		min_time = data.min_time or 1
-		max_time = data.max_time or 1
+		min_time = data.min_time or 1,
+		max_time = data.max_time or 1,
 	}
 	dirtspread.blocks[name] = newdata
 end

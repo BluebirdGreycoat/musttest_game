@@ -36,6 +36,7 @@ dirtspread.blocks = dirtspread.blocks or {}
 -- `wet`
 -- `sand`
 -- `gravel`
+-- `leaves`
 --
 -- Names:
 --

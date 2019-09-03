@@ -2,7 +2,7 @@
 tinderbox = tinderbox or {}
 tinderbox.modpath = minetest.get_modpath("tinderbox")
 
-local TINDERBOX_USES = 16
+local TINDERBOX_USES = 256
 
 function tinderbox.on_use(itemstack, user, pt)
 	if not user or not user:is_player() then return end

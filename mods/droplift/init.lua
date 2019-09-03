@@ -185,5 +185,15 @@ local function append_to_core_defns()
 
 end
 
+-- Public API function, notify drops in/at a position.
+function droplift.notify(pos)
+	local a = minetest.get_objects_inside_radius(pos, 0.87)
+	for _, obj in ipairs(a) do
+		local ent = obj:get_luaentity()
+		if ent and ent.name == "__builtin:item" then
+			async(obj)
+		end
+	end
+end
 
 append_to_core_defns()

@@ -119,7 +119,7 @@ function dirtspread.on_notify_around(pos)
 
 				--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
 
-				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
+				timer:start(ndef.min_time, ndef.max_time)
 			end
 		end
 	end
@@ -177,6 +177,9 @@ function dirtspread.register_active_block(name, data)
 		max_time = data.max_time or 1,
 		func = data.func,
 	}
+	assert(newdata.min_time >= 0)
+	assert(newdata.max_time >= 0)
+	assert(newdata.min_time <= newdata.max_time)
 	dirtspread.blocks[name] = newdata
 end
 

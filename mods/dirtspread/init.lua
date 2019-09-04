@@ -190,7 +190,7 @@ end
 
 
 -- File is reloadable.
-dofile(dirtspread.modpath .. "/registrations.lua")
+--dofile(dirtspread.modpath .. "/registrations.lua")
 
 
 

@@ -10,21 +10,47 @@ local INTERACTION_DATA = {
 		when_lava_nearby = "darkage:darkdirt",
 		when_fire_nearby = "default:dry_dirt",
 
-		when_ice_above = "default:permafrost",
-		when_ice_below = "default:permafrost",
-		when_ice_nearby = "default:permafrost",
+		when_group_ice_above = "default:permafrost",
+		when_group_ice_below = "default:permafrost",
+		when_group_ice_nearby = "default:permafrost",
 
-		when_snow_above = "default:dirt_with_snow",
-		when_snow_below = "default:permafrost",
-		when_snow_nearby = "default:dirt_with_snow",
+		when_group_snow_above = "default:dirt_with_snow",
+		when_group_snow_below = "default:permafrost",
+		when_group_snow_nearby = "default:dirt_with_snow",
 
-		when_sand_above = "darkage:darkdirt",
-		when_sand_below = "default:dry_dirt",
-		when_sand_nearby = "default:dry_dirt",
+		when_group_snowy_nearby = "default:dirt_with_snow",
+
+		when_group_sand_above = "darkage:darkdirt",
+		when_group_sand_below = "default:dry_dirt",
+		when_group_sand_nearby = "default:dry_dirt",
+
+		when_default_dirt_with_grass_nearby = function(pos, light, name, def, groups)
+			if light < 13 then
+				return "", true -- Wait a bit.
+			end
+
+			return "default:dirt_with_grass", false -- Done.
+		end,
+
+		when_default_dirt_with_dry_grass_nearby = function(pos, light, name, def, groups)
+			if light < 13 then
+				return "", true -- Wait a bit.
+			end
+
+			return "default:dirt_with_dry_grass", false -- Done.
+		end,
+
+		when_moregrass_darkgrass_nearby = function(pos, light, name, def, groups)
+			if light < 13 then
+				return "", true -- Wait a bit.
+			end
+
+			return "moregrass:darkgrass", false -- Done.
+		end,
 
 		-- Shall return the nodename to set, or "" to leave unchanged.
 		-- Return boolean second parameter to indicate whether to wait.
-		when_flora_above = function(pos, light, name, def, groups)
+		when_group_flora_above = function(pos, light, name, def, groups)
 			if groups.junglegrass and groups.junglegrass > 0 then
 				if light >= 13 then
 					return "moregrass:darkgrass", false
@@ -45,7 +71,7 @@ local INTERACTION_DATA = {
 				end
 			end
 
-			return "", false
+			return "", false -- Nothing to be done.
 		end,
 
 		-- These control which neighbors are generally searched.
@@ -54,12 +80,56 @@ local INTERACTION_DATA = {
 		search_vertical_diagonals = true,
 	},
 
+	["default:dirt_with_grass"] = {
+		when_buried = "default:dirt",
+		when_covered = "default:dirt",
+
+		when_lava_nearby = "darkage:darkdirt",
+		when_fire_nearby = "default:dirt_with_dry_grass",
+
+		when_group_snow_above = "default:dirt_with_snow",
+		when_group_ice_below = "default:permafrost_with_moss",
+	},
+
+	["default:dirt_with_dry_grass"] = {
+		when_buried = "default:dirt",
+		when_covered = "default:dirt",
+
+		when_lava_nearby = "darkage:darkdirt",
+		when_fire_nearby = "default:dirt",
+
+		when_group_snow_above = "default:dirt_with_snow",
+		when_group_ice_below = "default:permafrost_with_moss",
+	},
+
+	["moregrass:darkgrass"] = {
+		when_buried = "default:dirt",
+		when_covered = "default:dirt",
+
+		when_lava_nearby = "darkage:darkdirt",
+		when_fire_nearby = "default:dirt_with_dry_grass",
+
+		when_group_snow_above = "default:dirt_with_snow",
+		when_group_ice_below = "default:permafrost_with_moss",
+	},
+
 	["default:permafrost"] = {
 		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dry_dirt",
+		when_fire_nearby = "default:dirt",
 
-		when_snow_above = "default:permafrost_with_snow",
-		when_flora_above = "default:permafrost_with_moss",
+		when_group_snow_above = "default:permafrost_with_snow",
+		when_group_flora_above = "default:permafrost_with_moss",
+	},
+
+	["default:permafrost_with_moss"] = {
+		when_buried = "default:permafrost",
+		when_covered = "default:permafrost",
+
+		when_lava_nearby = "darkage:darkdirt",
+		when_fire_nearby = "default:permafrost",
+
+		when_group_snow_above = "default:permafrost_with_snow",
+		when_default_cobble_above = "default:permafrost_with_stones",
 	},
 }
 
@@ -130,6 +200,25 @@ local HANDLER = function(pos, node)
 			node.name = interaction_data.when_fire_nearby
 			minetest.add_node(pos, node)
 			return
+		end
+	end
+
+	-- Action when the node is covered (by liquid or walkable node).
+	-- A node is covered if the node above it takes up a whole block.
+	-- There shall be a seperate facility for handling partial nodes.
+	if interaction_data.when_covered then
+		local n2 = minetest.get_node(above)
+		local d2 = minetest.registered_nodes[n2.name]
+		
+		if d2 then
+			local walkable = d2.walkable
+			local liquid = d2.liquidtype or "none"
+	
+			if walkable or liquid ~= "none" then
+				node.name = interaction_data.when_covered
+				minetest.add_node(pos, node)
+				return
+			end
 		end
 	end
 
@@ -226,10 +315,10 @@ local HANDLER = function(pos, node)
 		end
 	end
 
-	local execute_action = function(node_or_group)
-		local above_key = "when_" .. node_or_group .. "_above"
-		local below_key = "when_" .. node_or_group .. "_below"
-		local nearby_key = "when_" .. node_or_group .. "_nearby"
+	local execute_action = function(is_group, gkey, node_or_group)
+		local above_key = "when_" .. gkey .. "_above"
+		local below_key = "when_" .. gkey .. "_below"
+		local nearby_key = "when_" .. gkey .. "_nearby"
 
 		-- Action above.
 		if interaction_data[above_key] then
@@ -239,19 +328,29 @@ local HANDLER = function(pos, node)
 			if d2 then
 				g2 = d2.groups or {}
 			end
-			if g2[node_or_group] and g2[node_or_group] > 0 then
+			local good = false
+			if is_group then
+				if g2[node_or_group] and g2[node_or_group] > 0 then
+					good = true
+				end
+			else
+				if n2.name == node_or_group then
+					good = true
+				end
+			end
+			if good then
 				if type(interaction_data[above_key]) == "string" then
 					node.name = interaction_data[above_key]
 					minetest.add_node(pos, node)
-					return
+					return false, true -- Don't wait, done.
 				elseif type(interaction_data[above_key]) == "function" then
 					local ret, wait = interaction_data[above_key](pos, light_above, n2.name, d2, g2)
 					if ret and ret ~= "" then
 						node.name = ret
 						minetest.add_node(pos, node)
-						return
+						return false, true -- Don't wait, done.
 					elseif wait then
-						return true
+						return true, false -- Wait, not done.
 					end
 				end
 			end
@@ -265,19 +364,29 @@ local HANDLER = function(pos, node)
 			if d2 then
 				g2 = d2.groups or {}
 			end
-			if g2[node_or_group] and g2[node_or_group] > 0 then
+			local good = false
+			if is_group then
+				if g2[node_or_group] and g2[node_or_group] > 0 then
+					good = true
+				end
+			else
+				if n2.name == node_or_group then
+					good = true
+				end
+			end
+			if good then
 				if type(interaction_data[below_key]) == "string" then
 					node.name = interaction_data[below_key]
 					minetest.add_node(pos, node)
-					return
+					return false, true -- Don't wait, done.
 				elseif type(interaction_data[below_key]) == "function" then
 					local ret, wait = interaction_data[below_key](pos, light_above, n2.name, d2, g2)
 					if ret and ret ~= "" then
 						node.name = ret
 						minetest.add_node(pos, node)
-						return
+						return false, true -- Don't wait, done.
 					elseif wait then
-						return true
+						return true, false -- Wait, not done.
 					end
 				end
 			end
@@ -285,19 +394,29 @@ local HANDLER = function(pos, node)
 
 		-- Action nearby.
 		if interaction_data[nearby_key] then
-			if find_nearby(node_or_group) then
+			local find_name = node_or_group
+			if is_group then
+				find_name = "group:" .. find_name
+			end
+			local p2 = find_nearby(find_name)
+			if p2 then
 				if type(interaction_data[nearby_key]) == "string" then
 					node.name = interaction_data[nearby_key]
 					minetest.add_node(pos, node)
-					return
+					return false, true -- Don't wait, done.
 				elseif type(interaction_data[nearby_key]) == "function" then
-					local ret, wait = interaction_data[nearby_key](pos, light_above, n2.name, d2, g2)
-					if ret and ret ~= "" then
-						node.name = ret
-						minetest.add_node(pos, node)
-						return
-					elseif wait then
-						return true
+					local n2 = minetest.get_node(p2)
+					local d2 = minetest.registered_nodes[n2.name]
+					if d2 then
+						local g2 = d2.groups or {}
+						local ret, wait = interaction_data[nearby_key](pos, light_above, n2.name, d2, g2)
+						if ret and ret ~= "" then
+							node.name = ret
+							minetest.add_node(pos, node)
+							return false, true -- Don't wait, done.
+						elseif wait then
+							return true, false -- Wait, not done.
+						end
 					end
 				end
 			end
@@ -309,15 +428,32 @@ local HANDLER = function(pos, node)
 	for key, data in pairs(interaction_data) do
 		if key:find("^when_") then
 			-- Skip these special keys.
-			if key ~= "when_buried" and key ~= "when_lava_nearby" and key ~= "when_fire_nearby" then
+			if key ~= "when_buried" and key ~= "when_lava_nearby" and key ~= "when_fire_nearby" and key ~= "when_covered" then
 				if key:find("_above$") or key:find("_below$") or key:find("_nearby$") then
-					local first = key:find("_") + 1
+					local _, first = key:find("^when_group_")
+					local is_group = true
+					if not first then
+						_, first = key:find("^when_")
+						is_group = false
+					end
+					first = first + 1
 					local last = key:find("_[^_]*$") - 1
 					local part = key:sub(first, last)
+					local gkey = part
+					if not is_group then
+						-- Need to replace the first '_' in `part` with a ':'.
+						local p = part:find('_')
+						part = part:sub(1, p-1) .. ':' .. part:sub(p+1)
+					else
+						gkey = "group_" .. gkey
+					end
 					if not done_parts[part] then
-						local wait = execute_action(part)
+						minetest.chat_send_all(gkey .. ", " .. part)
+						local wait, done = execute_action(is_group, gkey, part)
 						if wait then
 							return true
+						elseif done then
+							return
 						end
 						done_parts[part] = true
 					end

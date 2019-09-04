@@ -304,6 +304,8 @@ local HANDLER = function(pos, node)
 		end
 	end
 
+	local done_parts = {}
+
 	for key, data in pairs(interaction_data) do
 		if key:find("^when_") then
 			-- Skip these special keys.
@@ -312,9 +314,12 @@ local HANDLER = function(pos, node)
 					local first = key:find("_") + 1
 					local last = key:find("_[^_]*$") - 1
 					local part = key:sub(first, last)
-					local wait = execute_action(part)
-					if wait then
-						return true
+					if not done_parts[part] then
+						local wait = execute_action(part)
+						if wait then
+							return true
+						end
+						done_parts[part] = true
 					end
 				end
 			end

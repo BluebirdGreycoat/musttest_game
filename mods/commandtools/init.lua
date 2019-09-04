@@ -24,8 +24,6 @@ commandtools.pick_on_use = function(itemstack, user, pointed_thing)
 			minetest.log("action", pname .. " digs " .. minetest.get_node(pos).name .. " at " .. minetest.pos_to_string(pos) .. " using an Admin Pickaxe.")
 			minetest.remove_node(pos) -- The node is removed directly, which means it even works on non-empty containers and group-less nodes.
 			minetest.check_for_falling(pos) -- Run node update actions like falling nodes.
-
-			dirtspread.on_environment(pos)
 		end
 	elseif pointed_thing.type == "object" then
 		local ref = pointed_thing.ref

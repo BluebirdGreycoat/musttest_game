@@ -192,7 +192,7 @@ minetest.register_node("default:stone", {
 	tiles = {"default_stone.png"},
 	groups = utility.dig_groups("stone", {
     stone = 1, native_stone = 1,
-		melts = 1,
+		melts = 1, cobble_type = 1,
   }),
 	drop = 'default:cobble',
 	legacy_mineral = true,
@@ -247,7 +247,7 @@ minetest.register_node("default:cobble", {
 	is_ground_content = false,
 	groups = utility.dig_groups("cobble", {
 		stone = 1, native_stone = 1,
-		melts = 1,
+		melts = 1, cobble_type = 1,
 	}),
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",

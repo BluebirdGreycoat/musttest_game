@@ -83,7 +83,11 @@ function dirtspread.on_timer(pos, elapsed)
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
 	if ndef and ndef.func then
-		ndef.func(table.copy(pos), node)
+		-- If the function returns `true`, restart the timer.
+		if ndef.func(table.copy(pos), node) then
+			local timer = minetest.get_node_timer(pos)
+			timer:start(ndef.min_time, ndef.max_time)
+		end
 	end
 end
 

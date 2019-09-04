@@ -17,7 +17,7 @@ minetest.register_node("cavestuff:cobble_with_moss", {
   groups = utility.dig_groups("softcobble", {
 		falling_node = 1,
 		melts = 1,
-		cavern_soil = 1,
+		cavern_soil = 1, cobble_type = 1,
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
@@ -40,7 +40,7 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
   groups = utility.dig_groups("softcobble", {
 		falling_node = 1,
 		melts = 1,
-		cavern_soil = 1,
+		cavern_soil = 1, cobble_type = 1,
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
@@ -63,7 +63,7 @@ minetest.register_node("cavestuff:cobble_with_algae", {
   groups = utility.dig_groups("softcobble", {
 		falling_node = 1,
 		melts = 1,
-		cavern_soil = 1,
+		cavern_soil = 1, cobble_type = 1,
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults({
@@ -85,7 +85,7 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 	},
   groups = utility.dig_groups("softcobble", {
 		falling_node = 1,
-		melts = 1,
+		melts = 1, cobble_type = 1,
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   sounds = default.node_sound_gravel_defaults(),
@@ -99,7 +99,7 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 minetest.register_node("cavestuff:cobble_with_rockmelt", {
   description = "Rockmelt Cobble",
   tiles = {"caverealms_hot_cobble.png"},
-  groups = utility.dig_groups("softcobble", {hot=1, falling_node=1, melt_around=3}),
+  groups = utility.dig_groups("softcobble", {hot=1, falling_node=1, melt_around=3, cobble_type=1}),
   damage_per_second = 1,
   light_source = 5,
   sounds = default.node_sound_stone_defaults(),
@@ -917,7 +917,7 @@ minetest.register_node("cavestuff:cobble", {
   tiles = {"default_cobble.png"},
   is_ground_content = true, -- Important!
   groups = utility.dig_groups("cobble", {
-		melts = 1,
+		melts = 1, cobble_type = 1,
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   drop = "default:cobble", -- Mimic default cobble.

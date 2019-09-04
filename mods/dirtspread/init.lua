@@ -8,7 +8,7 @@
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
 dirtspread.delay = 0.5
-dirtspread.index = 1
+dirtspread.index = dirtspread.index or 0
 dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 dirtspread.blocks = dirtspread.blocks or {}
 
@@ -78,7 +78,7 @@ dirtspread.blocks = dirtspread.blocks or {}
 -- Called whenever a timer on any dirt node expires.
 -- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
 function dirtspread.on_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
+	minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
 
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
@@ -93,7 +93,7 @@ end
 local minp = {x=0, y=0, z=0}
 local maxp = {x=0, y=0, z=0}
 function dirtspread.on_notify_around(pos)
-	--minetest.chat_send_player("MustTest", "Notify: " .. minetest.pos_to_string(pos))
+	minetest.chat_send_player("MustTest", "Notify: " .. minetest.pos_to_string(pos))
 
 	minp.x = pos.x - 1
 	minp.y = pos.y - 1
@@ -110,7 +110,7 @@ function dirtspread.on_notify_around(pos)
 			local node = minetest.get_node(positions[i])
 			local ndef = dirtspread.get_active_block(node.name)
 			if ndef then
-				--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))
+				minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))
 
 				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
 			end
@@ -123,11 +123,11 @@ end
 -- Called whenever a node is added or removed (any node, not just nodes around dirt!).
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
 function dirtspread.on_environment(pos)
-	--minetest.chat_send_player("MustTest", "Environment: " .. minetest.pos_to_string(pos))
+	minetest.chat_send_player("MustTest", "Environment: " .. minetest.pos_to_string(pos))
 
 	-- Add position to table of positions to be updated later.
 	local poss = dirtspread.positions
-	local idex = dirtspread.index
+	local idex = dirtspread.index + 1
 
 	local p = poss[idex]
 	if p then
@@ -138,7 +138,6 @@ function dirtspread.on_environment(pos)
 		poss[idex] = {x=pos.x, y=pos.y, z=pos.z}
 	end
 
-	idex = idex + 1
 	dirtspread.index = idex
 end
 
@@ -146,12 +145,12 @@ end
 
 -- Called periodically to update nodes.
 function dirtspread.periodic_execute()
-	local endx = dirtspread.index - 1
+	local endx = dirtspread.index
 
 	-- Update just 1 node per run.
-	if endx >= 1 then
+	if endx > 0 then
 		dirtspread.on_notify_around(dirtspread.positions[endx])
-		dirtspread.index = endx
+		dirtspread.index = endx - 1
 	end
 
 	minetest.after(dirtspread.delay, dirtspread.periodic_execute)

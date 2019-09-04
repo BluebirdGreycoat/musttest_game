@@ -168,6 +168,19 @@ local function register_node(name, def2)
 				dirtspread.on_timer(pos, elapsed)
 			end
 		end
+
+		-- TNT uses voxelmanip, need to hook the `on_blast` method.
+		if def.on_blast then
+			local old = def.on_blast
+			def.on_blast = function(pos, intensity)
+				dirtspread.on_environment(pos)
+				return old(pos, intensity)
+			end
+		else
+			def.on_blast = function(pos, intensity)
+				dirtspread.on_environment(pos)
+			end
+		end
 	end
 
 	--clumpfall.update_nodedef(name, def)

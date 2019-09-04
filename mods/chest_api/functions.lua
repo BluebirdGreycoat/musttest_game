@@ -419,7 +419,7 @@ local function open_chest(def, pos, node, clicker)
 	if not admin then
 		local meta = minetest.get_meta(pos)
 		local last_oiled = meta:get_int("oiled_time")
-		if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+		if (os.time() - last_oiled) > math.random(0, 60*60*24*30) then
 			-- Play sound, open chest.
 			ambiance.sound_play(def.sound_open, pos, 0.5, 20)
 		else
@@ -472,7 +472,7 @@ local function close_chest(pn, pos, node, swap, sound)
 
 	local meta = minetest.get_meta(pos)
 	local last_oiled = meta:get_int("oiled_time")
-	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+	if (os.time() - last_oiled) > math.random(0, 60*60*24*30) then
 		ambiance.sound_play(sound, pos, 0.5, 20)
 	end
 

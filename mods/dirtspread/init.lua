@@ -104,10 +104,12 @@ function dirtspread.on_notify_around(pos)
 	maxp.z = pos.z + 1
 
 	local positions = minetest.find_nodes_in_area(minp, maxp, "group:dirtspread_notify")
+	minetest.chat_send_player("MustTest", "Counts: " .. #positions)
 	for i=1, #positions, 1 do
-		local timer = minetest.get_node_timer(positions[i])
+		local p2 = positions[i]
+		local timer = minetest.get_node_timer(p2)
 		if not timer:is_started() then
-			local node = minetest.get_node(positions[i])
+			local node = minetest.get_node(p2)
 			local ndef = dirtspread.get_active_block(node.name)
 			if ndef then
 				minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))

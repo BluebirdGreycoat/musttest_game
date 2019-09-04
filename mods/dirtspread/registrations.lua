@@ -8,7 +8,7 @@ dirtspread.register_active_block("default:dirt", {
 	-- If function uses `minetest.add_node`, neighbor nodes will be notified again.
 	-- This can create a cascade effect, which may or may not be desired.
 	func = function(pos, node)
-		print("test1")
+		--print("test1")
 		local above = {x=pos.x, y=pos.y+1, z=pos.z}
 		local below = {x=pos.x, y=pos.y-1, z=pos.z}
 
@@ -27,7 +27,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 		
-		print("test2")
+		--print("test2")
 		-- Also turn to sterile dirt if lava is anywhere even slightly nearby.
 		if minetest.find_node_near(pos, 3, "group:lava") then
 			node.name = "darkage:darkdirt"
@@ -35,7 +35,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 
-		print("test3")
+		--print("test3")
 		-- Dry dirt out if next to fire or sand.
 		if minetest.find_node_near(pos, 1, {"group:fire", "group:sand"}) then
 			node.name = "default:dry_dirt"
@@ -43,7 +43,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 
-		print("test4")
+		--print("test4")
 		-- Get what's below us.
 		local n2_below = minetest.get_node(below)
 		local ndef_below = minetest.registered_nodes[n2_below.name]
@@ -52,7 +52,7 @@ dirtspread.register_active_block("default:dirt", {
 			gb = ndef_below.groups or {}
 		end
 
-		print("test5")
+		--print("test5")
 		-- Convert to permafrost if placed on top of ice or snow (but not cold).
 		if (gb.snow and gb.snow > 0) or (gb.ice and gb.ice > 0) then
 			node.name = "default:permafrost"
@@ -60,7 +60,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 
-		print("test6")
+		--print("test6")
 		-- Get what's above us.
 		local n2_above = minetest.get_node(above)
 		local ndef_above = minetest.registered_nodes[n2_above.name]
@@ -74,13 +74,13 @@ dirtspread.register_active_block("default:dirt", {
 			under_walkable = ndef_above.walkable
 		end
 
-		print("test7")
+		--print("test7")
 		-- If under liquid, do nothing further. (If this was lava, that was already handled above.)
 		if lqa ~= "none" then
 			return
 		end
 
-		print("test8")
+		--print("test8")
 		-- Convert to permafrost if ice placed on top.
 		if (ga.ice and ga.ice > 0) then
 			node.name = "default:permafrost"
@@ -93,7 +93,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 
-		print("test9")
+		--print("test9")
 		-- Are we under air?
 		local under_air = (n2_above.name == "air")
 
@@ -106,7 +106,7 @@ dirtspread.register_active_block("default:dirt", {
 		}
 		table.shuffle(sides_4)
 
-		print("test10")
+		--print("test10")
 		-- If snow nearby, convert to dirt with snow.
 		-- Convert to permafrost instead, if next to ice.
 		-- But node must be under air/non-walkable in this case.
@@ -132,7 +132,7 @@ dirtspread.register_active_block("default:dirt", {
 			end
 		end
 
-		print("test11")
+		--print("test11")
 		-- If there's a plant above the dirt, convert to grassy dirt of some type.
 		if ga.junglegrass and ga.junglegrass > 0 then
 			node.name = "moregrass:darkgrass"
@@ -148,7 +148,7 @@ dirtspread.register_active_block("default:dirt", {
 			return
 		end
 
-		print("test12")
+		--print("test12")
 		-- Convert dirt to grass if grassy dirt is nearby.
 		-- (Only if dirt would not turn to permafrost.)
 		-- But node must be under air/non-walkable in this case.

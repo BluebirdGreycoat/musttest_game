@@ -78,7 +78,7 @@ dirtspread.blocks = dirtspread.blocks or {}
 -- Called whenever a timer on any dirt node expires.
 -- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
 function dirtspread.on_timer(pos, elapsed)
-	minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
+	--minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
 
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
@@ -93,7 +93,7 @@ end
 local minp = {x=0, y=0, z=0}
 local maxp = {x=0, y=0, z=0}
 function dirtspread.on_notify_around(pos)
-	minetest.chat_send_player("MustTest", "Notify: " .. minetest.pos_to_string(pos))
+	--minetest.chat_send_player("MustTest", "Notify: " .. minetest.pos_to_string(pos))
 
 	minp.x = pos.x - 1
 	minp.y = pos.y - 1
@@ -104,16 +104,20 @@ function dirtspread.on_notify_around(pos)
 	maxp.z = pos.z + 1
 
 	local positions = minetest.find_nodes_in_area(minp, maxp, "group:dirtspread_notify")
-	minetest.chat_send_player("MustTest", "Counts: " .. #positions)
+	--minetest.chat_send_player("MustTest", "Counts: " .. #positions)
 	for i=1, #positions, 1 do
 		local p2 = positions[i]
 		local node = minetest.get_node(p2)
 		local ndef = dirtspread.get_active_block(node.name)
 		if ndef then
-			minetest.chat_send_player("MustTest", "Got nodedef: " .. minetest.pos_to_string(p2))
+			--minetest.chat_send_player("MustTest", "Got nodedef: " .. minetest.pos_to_string(p2))
+
 			local timer = minetest.get_node_timer(p2)
 			if not timer:is_started() then
-				minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
+				-- Alert: sometimes this can fail because the timer, for some reason, is
+				-- already started and has a huge timeout value (> 659000). Very odd!
+
+				--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
 
 				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
 			end
@@ -126,7 +130,7 @@ end
 -- Called whenever a node is added or removed (any node, not just nodes around dirt!).
 -- Warning: may be called many times in quick succession (e.g., falling nodes).
 function dirtspread.on_environment(pos)
-	minetest.chat_send_player("MustTest", "Environment: " .. minetest.pos_to_string(pos))
+	--minetest.chat_send_player("MustTest", "Environment: " .. minetest.pos_to_string(pos))
 
 	-- Add position to table of positions to be updated later.
 	local poss = dirtspread.positions

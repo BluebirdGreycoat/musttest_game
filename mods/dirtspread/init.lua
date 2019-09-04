@@ -75,8 +75,7 @@ dirtspread.blocks = dirtspread.blocks or {}
 
 
 
--- Called whenever a timer on any dirt node expires.
--- Note: only called for dirt/soil/permafrost/sand/gravel nodes.
+-- Called whenever a timer on any active node expires.
 function dirtspread.on_timer(pos, elapsed)
 	--minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
 

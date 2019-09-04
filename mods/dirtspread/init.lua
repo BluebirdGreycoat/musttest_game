@@ -107,12 +107,12 @@ function dirtspread.on_notify_around(pos)
 	minetest.chat_send_player("MustTest", "Counts: " .. #positions)
 	for i=1, #positions, 1 do
 		local p2 = positions[i]
-		local timer = minetest.get_node_timer(p2)
-		if not timer:is_started() then
-			local node = minetest.get_node(p2)
-			local ndef = dirtspread.get_active_block(node.name)
-			if ndef then
-				minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(pos))
+		local node = minetest.get_node(p2)
+		local ndef = dirtspread.get_active_block(node.name)
+		if ndef then
+			local timer = minetest.get_node_timer(p2)
+			if not timer:is_started() then
+				minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
 
 				timer:start(math.random(ndef.min_time * 10, ndef.max_time * 10) / 10) -- Fractional.
 			end

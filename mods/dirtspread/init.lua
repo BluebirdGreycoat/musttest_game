@@ -117,14 +117,17 @@ function dirtspread.on_notify_around(pos)
 			--minetest.chat_send_player("MustTest", "Got nodedef: " .. minetest.pos_to_string(p2))
 
 			local timer = minetest.get_node_timer(p2)
+
+			-- Alert: sometimes this can fail because the timer, for some reason, is
+			-- already started and has a huge timeout value (> 659000). Very odd!
+			-- In any case, it makes sense to reset the timer whenever something changes.
+			--[[
 			if not timer:is_started() then
-				-- Alert: sometimes this can fail because the timer, for some reason, is
-				-- already started and has a huge timeout value (> 659000). Very odd!
-
-				--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
-
-				timer:start(ndef.min_time, ndef.max_time)
 			end
+			--]]
+
+			--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
+			timer:start(ndef.min_time, ndef.max_time)
 		end
 	end
 end
@@ -155,10 +158,12 @@ end
 
 
 -- Called periodically to update nodes.
+-- This is not part of the public API!
 function dirtspread.periodic_execute()
 	local endx = dirtspread.index
 
 	-- Update just 1 node per run.
+	-- This spreads out the updates over time.
 	if endx > 0 then
 		dirtspread.on_notify_around(dirtspread.positions[endx])
 		dirtspread.index = endx - 1
@@ -169,6 +174,23 @@ end
 
 
 
+-- Execute any remaining updates on shutdown.
+-- This is not part of the public API!
+function dirtspread.on_shutdown()
+	local endx = dirtspread.index
+	local poss = dirtspread.positions
+
+	while endx > 0 do
+		dirtspread.on_notify_around(poss[endx])
+		endx = endx - 1
+	end
+
+	dirtspread.index = endx
+end
+
+
+
+-- Obtain the data for a registered active block.
 function dirtspread.get_active_block(name)
 	return dirtspread.blocks[name] -- May return nil.
 end
@@ -204,6 +226,7 @@ if not dirtspread.registered then
 	end
 
 	minetest.after(dirtspread.delay, dirtspread.periodic_execute)
+	minetest.register_on_shutdown(function() dirtspread.on_shutdown() end)
 
 	local c = "dirtspread:core"
 	local f = dirtspread.modpath .. "/init.lua"

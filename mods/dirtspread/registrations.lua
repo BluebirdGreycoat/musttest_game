@@ -270,7 +270,7 @@ local HANDLER = function(pos, node)
 					node.name = interaction_data[below_key]
 					minetest.add_node(pos, node)
 					return
-				elseif type(interaction_data[below_key] == "function" then
+				elseif type(interaction_data[below_key]) == "function" then
 					local ret, wait = interaction_data[below_key](pos, light_above, n2.name, d2, g2)
 					if ret and ret ~= "" then
 						node.name = ret
@@ -290,7 +290,7 @@ local HANDLER = function(pos, node)
 					node.name = interaction_data[nearby_key]
 					minetest.add_node(pos, node)
 					return
-				elseif type(interaction_data[nearby_key] == "function" then
+				elseif type(interaction_data[nearby_key]) == "function" then
 					local ret, wait = interaction_data[nearby_key](pos, light_above, n2.name, d2, g2)
 					if ret and ret ~= "" then
 						node.name = ret

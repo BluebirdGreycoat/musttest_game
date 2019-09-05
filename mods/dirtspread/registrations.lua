@@ -23,11 +23,17 @@ local INTERACTION_DATA = {
 			if_nearby = "default:permafrost",
 		},
 
-		when_group_snow_near = {
+		when_snow1_near = {
 			nodenames = {"group:snow", "group:snowy"},
 			if_above = "default:dirt_with_snow",
 			if_below = "default:permafrost",
 			if_nearby = "default:dirt_with_snow",
+		},
+
+		when_snow2_near = {
+			nodenames = {"group:snow", "group:snowy"},
+			if_nearby = "default:dirt_with_snow",
+			require_not_covered = true,
 		},
 
 		when_group_sand_near = {
@@ -39,6 +45,7 @@ local INTERACTION_DATA = {
 
 		when_default_dirt_with_grass_near = {
 			nodenames = {"default:dirt_with_grass", "default:dirt_with_grass_footsteps"},
+			require_not_covered = true,
 
 			if_nearby = function(pos, light, name, def, groups)
 				if light < 13 then
@@ -51,6 +58,7 @@ local INTERACTION_DATA = {
 
 		when_default_dirt_with_dry_grass_near = {
 			nodenames = "default:dirt_with_dry_grass",
+			require_not_covered = true,
 
 			if_nearby = function(pos, light, name, def, groups)
 				if light < 13 then
@@ -63,6 +71,7 @@ local INTERACTION_DATA = {
 
 		when_moregrass_darkgrass_near = {
 			nodenames = "moregrass:darkgrass",
+			require_not_covered = true,
 
 			if_nearby = function(pos, light, name, def, groups)
 				if light < 13 then
@@ -77,6 +86,7 @@ local INTERACTION_DATA = {
 		-- Return boolean second parameter to indicate whether to wait.
 		when_group_flora_near = {
 			nodenames = "group:flora",
+			require_not_covered = true,
 
 			if_above = function(pos, light, name, def, groups)
 				if groups.junglegrass and groups.junglegrass > 0 then
@@ -126,6 +136,7 @@ local INTERACTION_DATA = {
 		when_group_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
+			require_not_covered = true,
 		},
 	},
 
@@ -151,6 +162,7 @@ local INTERACTION_DATA = {
 		when_group_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
+			require_not_covered = true,
 		},
 	},
 
@@ -171,11 +183,13 @@ local INTERACTION_DATA = {
 		when_group_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dirt_with_snow",
+			require_not_covered = true,
 		},
 
 		when_group_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
+			require_not_covered = true,
 		},
 	},
 
@@ -213,6 +227,7 @@ local INTERACTION_DATA = {
 		when_group_flora_near = {
 			nodenames = "group:flora",
 			if_above = "default:permafrost_with_moss",
+			require_not_covered = true,
 		},
 	},
 
@@ -297,20 +312,26 @@ local HANDLER = function(pos, node)
 	-- Action when the node is covered (by liquid or walkable node).
 	-- A node is covered if the node above it takes up a whole block.
 	-- There shall be a seperate facility for handling partial nodes.
-	if interaction_data.if_covered then
+	local is_covered = false
+	do -- Check whether the node is covered.
 		local n2 = minetest.get_node(above)
 		local d2 = minetest.registered_nodes[n2.name]
-		
+
 		if d2 then
 			local walkable = d2.walkable
 			local liquid = d2.liquidtype or "none"
-	
+
 			if walkable or liquid ~= "none" then
-				node.name = interaction_data.if_covered
-				minetest.add_node(pos, node)
-				return
+				is_covered = true
 			end
 		end
+	end
+
+	-- Action to take if the node is covered by liquid or walkable.
+	if interaction_data.if_covered and is_covered then
+		node.name = interaction_data.if_covered
+		minetest.add_node(pos, node)
+		return
 	end
 
 	-- Get what's to the 4 sides (not including center or corners).
@@ -461,11 +482,13 @@ local HANDLER = function(pos, node)
 
 	for key, data in pairs(interaction_data) do
 		if key:find("^when_") and key:find("_near$") then
-			local wait, done = execute_action(data)
-			if wait then
-				return true
-			elseif done then
-				return
+			if not (data.require_not_covered and is_covered) then
+				local wait, done = execute_action(data)
+				if wait then
+					return true
+				elseif done then
+					return
+				end
 			end
 		end
 	end

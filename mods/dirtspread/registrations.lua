@@ -477,40 +477,10 @@ local HANDLER = function(pos, node)
 	table.shuffle(neighbors_beside_4)
 
 	local find_nearby = function(neighbors, names)
-		if type(names) == "string" then
-			for k, v in ipairs(neighbors) do
-				local n2 = minetest.get_node(v)
-				if n2.name == names then
-					return v
-				elseif string.find(names, "^group:") then
-					local g = string.sub(names, string.len("group:") + 1)
-					local d2 = minetest.registered_nodes[n2.name]
-					local g2 = {}
-					if d2 then
-						g2 = d2.groups or {}
-					end
-					if g2[g] and g2[g] > 0 then
-						return v
-					end
-				end
-			end
-		elseif type(names) == "table" then
-			for k, v in ipairs(neighbors) do
-				local n2 = minetest.get_node(v)
-				local d2
-				local g2
-				for _, n in ipairs(names) do
-					if n2.name == n then
-						return v
-					elseif string.find(n, "^group:") then
-						local g = string.sub(n, string.len("group:") + 1)
-						d2 = d2 or minetest.registered_nodes[n2.name]
-						g2 = g2 or d2.groups or {}
-						if g2[g] and g2[g] > 0 then
-							return v
-						end
-					end
-				end
+		for k, v in ipairs(neighbors) do
+			local n2 = minetest.get_node(v)
+			if node_has_name_or_group(n2.name, names) then
+				return v
 			end
 		end
 	end

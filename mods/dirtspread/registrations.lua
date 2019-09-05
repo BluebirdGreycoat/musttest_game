@@ -71,6 +71,7 @@ local INTERACTION_DATA = {
 			-- If value is not a string, then it must be a function.
 			-- The signature is `pos`, `light`, `loc`, `name`, `def`, `groups`.
 			-- `pos` is the position of the current node, `loc` is the triggering neighbor position.
+			-- Can return nothing if nothing is to be done.
 			if_adjacent_side = function(pos, light, loc, name, def, groups)
 				if light < 13 then
 					return "", true -- Wait a bit.

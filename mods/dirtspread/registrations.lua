@@ -13,6 +13,8 @@ local INTERACTION_DATA = {
 		},
 
 		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
+		-- This may be needed in order to break endless looping interactions.
+		-- Checks are performed in the order in which they appear here.
 		action_ordering = {
 			"lava",
 			"fire",

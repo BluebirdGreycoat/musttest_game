@@ -237,7 +237,7 @@ local INTERACTION_DATA = {
 
 		when_default_cobble_near = {
 			nodenames = "default:cobble",
-			if_above = "default:permafrost_with_stones",
+			if_nearby = "default:permafrost_with_stones",
 		},
 	},
 }

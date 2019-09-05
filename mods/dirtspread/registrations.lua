@@ -136,6 +136,7 @@ local INTERACTION_DATA = {
 		when_group_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dirt_with_snow",
+			if_adjacent_side = "default:dirt_with_snow",
 		},
 
 		when_group_ice_near = {

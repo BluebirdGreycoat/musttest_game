@@ -329,7 +329,7 @@ local HANDLER = function(pos, node)
 			if nn == name then
 				return true
 			elseif name:find("^group:") then
-				local g = name:sub(name:len() + 1)
+				local g = name:sub(7)
 				local d = minetest.registered_nodes[nn]
 				if d then
 					local g2 = d.groups or {}
@@ -343,7 +343,7 @@ local HANDLER = function(pos, node)
 				if nn == n then
 					return true
 				elseif n:find("^group:") then
-					local g = n:sub(n:len() + 1)
+					local g = n:sub(7)
 					local d = minetest.registered_nodes[nn]
 					if d then
 						local g2 = d.groups or {}

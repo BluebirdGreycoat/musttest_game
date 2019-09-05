@@ -25,9 +25,7 @@ local INTERACTION_DATA = {
 			"snow2",
 			"sand",
 			"flora",
-			"grass1",
-			"grass2",
-			"grass3",
+			"grass",
 		},
 
 		-- The key name doesn't actually matter, it can be anything,
@@ -66,42 +64,24 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dry_dirt",
 		},
 
-		when_grass1_near = {
-			nodenames = {"default:dirt_with_grass", "default:dirt_with_grass_footsteps"},
+		when_grass_near = {
+			nodenames = {"default:dirt_with_grass", "default:dirt_with_grass_footsteps", "default:dirt_with_dry_grass", "moregrass:darkgrass"},
 			require_not_covered = true,
 
-			if_adjacent_side = function(pos, light, name, def, groups)
+			-- If value is not a string, then it must be a function.
+			-- The signature is `pos`, `light`, `loc`, `name`, `def`, `groups`.
+			-- `pos` is the position of the current node, `loc` is the triggering neighbor position.
+			if_adjacent_side = function(pos, light, loc, name, def, groups)
 				if light < 13 then
 					return "", true -- Wait a bit.
 				end
 
-				return "default:dirt_with_grass", false -- Done.
-			end,
-		},
-
-		when_grass2_near = {
-			nodenames = "default:dirt_with_dry_grass",
-			require_not_covered = true,
-
-			if_adjacent_side = function(pos, light, name, def, groups)
-				if light < 13 then
-					return "", true -- Wait a bit.
+				-- Special case.
+				if name == "default:dirt_with_grass_footsteps" then
+					name = "default:dirt_with_grass"
 				end
 
-				return "default:dirt_with_dry_grass", false -- Done.
-			end,
-		},
-
-		when_grass3_near = {
-			nodenames = "moregrass:darkgrass",
-			require_not_covered = true,
-
-			if_adjacent_side = function(pos, light, name, def, groups)
-				if light < 13 then
-					return "", true -- Wait a bit.
-				end
-
-				return "moregrass:darkgrass", false -- Done.
+				return name, false -- Done.
 			end,
 		},
 
@@ -111,7 +91,7 @@ local INTERACTION_DATA = {
 			nodenames = "group:flora",
 			require_not_covered = true,
 
-			if_above = function(pos, light, name, def, groups)
+			if_above = function(pos, light, loc, name, def, groups)
 				if groups.junglegrass and groups.junglegrass > 0 then
 					if light >= 13 then
 						return "moregrass:darkgrass", false
@@ -141,12 +121,12 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt_with_dry_grass",
 		},
@@ -168,12 +148,12 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt",
 		},
@@ -194,12 +174,12 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt_with_dry_grass",
 		},
@@ -225,24 +205,24 @@ local INTERACTION_DATA = {
 			action = "default:dirt",
 		},
 
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt",
 		},
 	},
 
 	["default:permafrost"] = {
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt",
 		},
@@ -267,12 +247,12 @@ local INTERACTION_DATA = {
 			action = "default:permafrost",
 		},
 
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:permafrost",
 		},
@@ -335,9 +315,11 @@ local HANDLER = function(pos, node)
 		end
 
 		if light == 0 then
-			node.name = interaction_data.if_buried
-			minetest.add_node(pos, node)
-			return
+			if interaction_data.if_buried ~= node.name then
+				node.name = interaction_data.if_buried
+				minetest.add_node(pos, node)
+				return
+			end
 		end
 	end
 
@@ -408,14 +390,18 @@ local HANDLER = function(pos, node)
 	if interaction_data.if_covered and is_covered then
 		local dt = interaction_data.if_covered
 		if type(dt) == "string" then
-			node.name = dt
-			minetest.add_node(pos, node)
-			return
-		elseif type(dt) == "table" then
-			if dt.action then
-				node.name = dt.action
+			if node.name ~= dt then
+				node.name = dt
 				minetest.add_node(pos, node)
 				return
+			end
+		elseif type(dt) == "table" then
+			if dt.action then
+				if dt.action ~= node.name then
+					node.name = dt.action
+					minetest.add_node(pos, node)
+					return
+				end
 			end
 		end
 	end
@@ -482,6 +468,7 @@ local HANDLER = function(pos, node)
 		{x=pos.x,   y=pos.y,   z=pos.z-1},
 		{x=pos.x,   y=pos.y,   z=pos.z+1},
 	}
+	table.shuffle(neighbors_beside_4)
 
 	local find_nearby = function(neighbors, names)
 		if type(names) == "string" then
@@ -526,19 +513,23 @@ local HANDLER = function(pos, node)
 		local p2 = find_nearby(neighbors, nodenames)
 		if p2 then
 			if type(callback) == "string" then
-				node.name = callback
-				minetest.add_node(pos, node)
-				return false, true -- Don't wait, done.
+				if node.name ~= callback then
+					node.name = callback
+					minetest.add_node(pos, node)
+					return false, true -- Don't wait, done.
+				end
 			elseif type(callback) == "function" then
 				local n2 = minetest.get_node(p2)
 				local d2 = minetest.registered_nodes[n2.name]
 				if d2 then
 					local g2 = d2.groups or {}
-					local ret, wait = callback(pos, light_above, n2.name, d2, g2)
+					local ret, wait = callback(pos, light_above, p2, n2.name, d2, g2)
 					if ret and ret ~= "" then
-						node.name = ret
-						minetest.add_node(pos, node)
-						return false, true -- Don't wait, done.
+						if node.name ~= ret then
+							node.name = ret
+							minetest.add_node(pos, node)
+							return false, true -- Don't wait, done.
+						end
 					elseif wait then
 						return true, false -- Wait, not done.
 					end

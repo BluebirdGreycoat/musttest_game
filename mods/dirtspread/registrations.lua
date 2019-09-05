@@ -387,10 +387,17 @@ local HANDLER = function(pos, node)
 
 	-- Action to take if the node is covered by liquid or walkable.
 	if interaction_data.if_covered and is_covered then
-		if interaction_data.if_covered.action then
-			node.name = interaction_data.if_covered.action
+		local dt = interaction_data.if_covered
+		if type(dt) == "string" then
+			node.name = dt
 			minetest.add_node(pos, node)
 			return
+		elseif type(dt) == "table" then
+			if dt.action then
+				node.name = dt.action
+				minetest.add_node(pos, node)
+				return
+			end
 		end
 	end
 

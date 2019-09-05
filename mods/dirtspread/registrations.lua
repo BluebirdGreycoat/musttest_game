@@ -3,12 +3,10 @@
 
 local INTERACTION_DATA = {
 	["default:dirt"] = {
-		when_buried = "darkage:darkdirt",
+		if_buried = "darkage:darkdirt",
 
-		-- The lava/fire checks always search all possible neighbors.
-		-- The lava check always searchs up to 3 nodes away.
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dry_dirt",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dry_dirt",
 
 		when_group_ice_above = "default:permafrost",
 		when_group_ice_below = "default:permafrost",
@@ -73,60 +71,63 @@ local INTERACTION_DATA = {
 
 			return "", false -- Nothing to be done.
 		end,
-
-		-- These control which neighbors are generally searched.
-		search_all_neighbors = false,
-		search_flat_diagonals = false,
-		search_vertical_diagonals = true,
 	},
 
 	["default:dirt_with_grass"] = {
-		when_buried = "default:dirt",
-		when_covered = "default:dirt",
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
 
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dirt_with_dry_grass",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dirt_with_dry_grass",
 
 		when_group_snow_above = "default:dirt_with_snow",
 		when_group_ice_below = "default:permafrost_with_moss",
 	},
 
 	["default:dirt_with_dry_grass"] = {
-		when_buried = "default:dirt",
-		when_covered = "default:dirt",
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
 
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dirt",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dirt",
 
 		when_group_snow_above = "default:dirt_with_snow",
 		when_group_ice_below = "default:permafrost_with_moss",
 	},
 
 	["moregrass:darkgrass"] = {
-		when_buried = "default:dirt",
-		when_covered = "default:dirt",
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
 
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dirt_with_dry_grass",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dirt_with_dry_grass",
 
 		when_group_snow_above = "default:dirt_with_snow",
 		when_group_ice_below = "default:permafrost_with_moss",
 	},
 
+	["default:dirt_with_snow"] = {
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
+
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dirt",
+	},
+
 	["default:permafrost"] = {
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:dirt",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:dirt",
 
 		when_group_snow_above = "default:permafrost_with_snow",
 		when_group_flora_above = "default:permafrost_with_moss",
 	},
 
 	["default:permafrost_with_moss"] = {
-		when_buried = "default:permafrost",
-		when_covered = "default:permafrost",
+		if_buried = "default:permafrost",
+		if_covered = "default:permafrost",
 
-		when_lava_nearby = "darkage:darkdirt",
-		when_fire_nearby = "default:permafrost",
+		when_group_lava_nearby = "darkage:darkdirt",
+		when_group_fire_nearby = "default:permafrost",
 
 		when_group_snow_above = "default:permafrost_with_snow",
 		when_default_cobble_above = "default:permafrost_with_stones",
@@ -157,7 +158,7 @@ local HANDLER = function(pos, node)
 	local light_above = minetest.get_node_light(above) or 0
 
 	-- Action when node is in complete darkness (is buried, no light).
-	if interaction_data.when_buried then
+	if interaction_data.if_buried then
 		local sides_6 = {
 			{x=pos.x+1, y=pos.y, z=pos.z},
 			{x=pos.x-1, y=pos.y, z=pos.z},
@@ -179,25 +180,7 @@ local HANDLER = function(pos, node)
 		end
 
 		if light == 0 then
-			node.name = interaction_data.when_buried
-			minetest.add_node(pos, node)
-			return
-		end
-	end
-
-	-- Action when there is lava nearby.
-	if interaction_data.when_lava_nearby then
-		if minetest.find_node_near(pos, 3, "group:lava") then
-			node.name = interaction_data.when_lava_nearby
-			minetest.add_node(pos, node)
-			return
-		end
-	end
-
-	-- Action when there is fire nearby.
-	if interaction_data.when_fire_nearby then
-		if minetest.find_node_near(pos, 1, "group:fire") then
-			node.name = interaction_data.when_fire_nearby
+			node.name = interaction_data.if_buried
 			minetest.add_node(pos, node)
 			return
 		end
@@ -206,7 +189,7 @@ local HANDLER = function(pos, node)
 	-- Action when the node is covered (by liquid or walkable node).
 	-- A node is covered if the node above it takes up a whole block.
 	-- There shall be a seperate facility for handling partial nodes.
-	if interaction_data.when_covered then
+	if interaction_data.if_covered then
 		local n2 = minetest.get_node(above)
 		local d2 = minetest.registered_nodes[n2.name]
 		
@@ -215,7 +198,7 @@ local HANDLER = function(pos, node)
 			local liquid = d2.liquidtype or "none"
 	
 			if walkable or liquid ~= "none" then
-				node.name = interaction_data.when_covered
+				node.name = interaction_data.if_covered
 				minetest.add_node(pos, node)
 				return
 			end
@@ -223,61 +206,56 @@ local HANDLER = function(pos, node)
 	end
 
 	-- Get what's to the 4 sides (not including center or corners).
-	local sides_to_search = {
-		{x=pos.x-1, y=pos.y, z=pos.z},
-		{x=pos.x+1, y=pos.y, z=pos.z},
-		{x=pos.x, y=pos.y, z=pos.z-1},
-		{x=pos.x, y=pos.y, z=pos.z+1},
+	local neighbors = {
+		-- Adjacent horizontal sides.
+		{x=pos.x-1, y=pos.y,   z=pos.z  },
+		{x=pos.x+1, y=pos.y,   z=pos.z  },
+		{x=pos.x,   y=pos.y,   z=pos.z-1},
+		{x=pos.x,   y=pos.y,   z=pos.z+1},
+
+		-- Horizontal diagonals.
+		{x=pos.x+1, y=pos.y,   z=pos.z+1},
+		{x=pos.x-1, y=pos.y,   z=pos.z+1},
+		{x=pos.x+1, y=pos.y,   z=pos.z-1},
+		{x=pos.x-1, y=pos.y,   z=pos.z-1},
+
+		-- Directly below.
+		{x=pos.x,   y=pos.y-1, z=pos.z  },
+
+		-- Adjacent sides below.
+		{x=pos.x+1, y=pos.y-1, z=pos.z  },
+		{x=pos.x-1, y=pos.y-1, z=pos.z  },
+		{x=pos.x,   y=pos.y-1, z=pos.z+1},
+		{x=pos.x,   y=pos.y-1, z=pos.z-1},
+
+		-- Adjacent diagonals below.
+		{x=pos.x+1, y=pos.y-1, z=pos.z+1},
+		{x=pos.x-1, y=pos.y-1, z=pos.z+1},
+		{x=pos.x+1, y=pos.y-1, z=pos.z-1},
+		{x=pos.x-1, y=pos.y-1, z=pos.z-1},
+
+		-- Directly above.
+		{x=pos.x,   y=pos.y+1, z=pos.z  },
+
+		-- Adjacent sides above.
+		{x=pos.x+1, y=pos.y+1, z=pos.z  },
+		{x=pos.x-1, y=pos.y+1, z=pos.z  },
+		{x=pos.x,   y=pos.y+1, z=pos.z+1},
+		{x=pos.x,   y=pos.y+1, z=pos.z-1},
+
+		-- Adjacent diagonals above.
+		{x=pos.x+1, y=pos.y+1, z=pos.z+1},
+		{x=pos.x-1, y=pos.y+1, z=pos.z+1},
+		{x=pos.x+1, y=pos.y+1, z=pos.z-1},
+		{x=pos.x-1, y=pos.y+1, z=pos.z-1},
 	}
 
-	if interaction_data.search_all_neighbors then
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y, z=pos.z-1})
-
-		table.insert(sides_to_search, {x=pos.x, y=pos.y-1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y-1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y-1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y-1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y-1, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y-1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y-1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y-1, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y-1, z=pos.z-1})
-
-		table.insert(sides_to_search, {x=pos.x, y=pos.y+1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y+1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y+1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y+1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y+1, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y+1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y+1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y+1, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y+1, z=pos.z-1})
-	elseif interaction_data.search_flat_diagonals then
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y, z=pos.z-1})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y, z=pos.z-1})
-	elseif interaction_data.search_vertical_diagonals then
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y-1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y-1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y-1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y-1, z=pos.z-1})
-
-		table.insert(sides_to_search, {x=pos.x+1, y=pos.y+1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x-1, y=pos.y+1, z=pos.z})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y+1, z=pos.z+1})
-		table.insert(sides_to_search, {x=pos.x, y=pos.y+1, z=pos.z-1})
-	end
-
-	-- This is needed so that which side gets checked first isn't predictable.
-	table.shuffle(sides_to_search)
+	-- This is needed so that the order in which neighbors are checked is random.
+	table.shuffle(neighbors)
 
 	local find_nearby = function(names)
 		if type(names) == "string" then
-			for k, v in ipairs(sides_to_search) do
+			for k, v in ipairs(neighbors) do
 				local n2 = minetest.get_node(v)
 				if n2.name == names then
 					return v
@@ -294,7 +272,7 @@ local HANDLER = function(pos, node)
 				end
 			end
 		elseif type(names) == "table" then
-			for k, v in ipairs(sides_to_search) do
+			for k, v in ipairs(neighbors) do
 				local n2 = minetest.get_node(v)
 				for _, n in ipairs(names) do
 					if n2.name == n then
@@ -423,40 +401,38 @@ local HANDLER = function(pos, node)
 		end
 	end
 
+	-- Keep track of which keys have already been processed.
 	local done_parts = {}
 
 	for key, data in pairs(interaction_data) do
 		if key:find("^when_") then
-			-- Skip these special keys.
-			if key ~= "when_buried" and key ~= "when_lava_nearby" and key ~= "when_fire_nearby" and key ~= "when_covered" then
-				if key:find("_above$") or key:find("_below$") or key:find("_nearby$") then
-					local _, first = key:find("^when_group_")
-					local is_group = true
-					if not first then
-						_, first = key:find("^when_")
-						is_group = false
+			if key:find("_above$") or key:find("_below$") or key:find("_nearby$") then
+				local _, first = key:find("^when_group_")
+				local is_group = true
+				if not first then
+					_, first = key:find("^when_")
+					is_group = false
+				end
+				first = first + 1
+				local last = key:find("_[^_]*$") - 1
+				local part = key:sub(first, last)
+				local gkey = part
+				if not is_group then
+					-- Need to replace the first '_' in `part` with a ':'.
+					local p = part:find('_')
+					part = part:sub(1, p-1) .. ':' .. part:sub(p+1)
+				else
+					gkey = "group_" .. gkey
+				end
+				if not done_parts[part] then
+					minetest.chat_send_all(gkey .. ", " .. part)
+					local wait, done = execute_action(is_group, gkey, part)
+					if wait then
+						return true
+					elseif done then
+						return
 					end
-					first = first + 1
-					local last = key:find("_[^_]*$") - 1
-					local part = key:sub(first, last)
-					local gkey = part
-					if not is_group then
-						-- Need to replace the first '_' in `part` with a ':'.
-						local p = part:find('_')
-						part = part:sub(1, p-1) .. ':' .. part:sub(p+1)
-					else
-						gkey = "group_" .. gkey
-					end
-					if not done_parts[part] then
-						minetest.chat_send_all(gkey .. ", " .. part)
-						local wait, done = execute_action(is_group, gkey, part)
-						if wait then
-							return true
-						elseif done then
-							return
-						end
-						done_parts[part] = true
-					end
+					done_parts[part] = true
 				end
 			end
 		end

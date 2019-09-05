@@ -160,12 +160,14 @@ end
 -- This is not part of the public API!
 function dirtspread.periodic_execute()
 	local endx = dirtspread.index
+	local count = 0
 
 	-- Update just 1 node per run.
 	-- This spreads out the updates over time.
-	if endx > 0 then
+	while endx > 0 and count < 10 do
 		dirtspread.on_notify_around(dirtspread.positions[endx])
 		dirtspread.index = endx - 1
+		count = count + 1
 	end
 
 	minetest.after(dirtspread.delay, dirtspread.periodic_execute)

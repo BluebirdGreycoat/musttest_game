@@ -6,28 +6,33 @@ local INTERACTION_DATA = {
 		-- Node turns to this if buried.
 		if_buried = "darkage:darkdirt",
 
+		if_covered = {
+			-- Ignore these nodes when checking whether node is covered by something.
+			-- Note: non-walkable nodes are always ignored by default.
+			ignore = {"group:snow", "group:snowy"},
+		},
+
 		-- The key name doesn't actually matter, it can be anything,
 		-- as long as it begins with "when_" and ends with "_near".
-		when_group_lava_near = {
+		when_lava_near = {
 			nodenames = "group:lava",
 			if_nearby = "darkage:darkdirt",
 		},
 
-		when_group_fire_near = {
+		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dry_dirt",
 		},
 
-		when_group_ice_near = {
+		when_ice_near = {
 			nodenames = "group:ice",
 			if_nearby = "default:permafrost",
 		},
 
 		when_snow1_near = {
-			nodenames = {"group:snow", "group:snowy"},
+			nodenames = {"group:snow"},
 			if_above = "default:dirt_with_snow",
 			if_below = "default:permafrost",
-			if_nearby = "default:dirt_with_snow",
 		},
 
 		when_snow2_near = {
@@ -36,18 +41,18 @@ local INTERACTION_DATA = {
 			require_not_covered = true,
 		},
 
-		when_group_sand_near = {
+		when_sand_near = {
 			nodenames = "group:sand",
 			if_above = "darkage:darkdirt",
 			if_below = "default:dry_dirt",
 			if_nearby = "default:dry_dirt",
 		},
 
-		when_default_dirt_with_grass_near = {
+		when_grass1_near = {
 			nodenames = {"default:dirt_with_grass", "default:dirt_with_grass_footsteps"},
 			require_not_covered = true,
 
-			if_nearby = function(pos, light, name, def, groups)
+			if_adjacent_side = function(pos, light, name, def, groups)
 				if light < 13 then
 					return "", true -- Wait a bit.
 				end
@@ -56,11 +61,11 @@ local INTERACTION_DATA = {
 			end,
 		},
 
-		when_default_dirt_with_dry_grass_near = {
+		when_grass2_near = {
 			nodenames = "default:dirt_with_dry_grass",
 			require_not_covered = true,
 
-			if_nearby = function(pos, light, name, def, groups)
+			if_adjacent_side = function(pos, light, name, def, groups)
 				if light < 13 then
 					return "", true -- Wait a bit.
 				end
@@ -69,11 +74,11 @@ local INTERACTION_DATA = {
 			end,
 		},
 
-		when_moregrass_darkgrass_near = {
+		when_grass3_near = {
 			nodenames = "moregrass:darkgrass",
 			require_not_covered = true,
 
-			if_nearby = function(pos, light, name, def, groups)
+			if_adjacent_side = function(pos, light, name, def, groups)
 				if light < 13 then
 					return "", true -- Wait a bit.
 				end
@@ -84,7 +89,7 @@ local INTERACTION_DATA = {
 
 		-- Shall return the nodename to set, or "" to leave unchanged.
 		-- Return boolean second parameter to indicate whether to wait.
-		when_group_flora_near = {
+		when_flora_near = {
 			nodenames = "group:flora",
 			require_not_covered = true,
 
@@ -195,7 +200,11 @@ local INTERACTION_DATA = {
 
 	["default:dirt_with_snow"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+
+		if_covered = {
+			ignore = "group:snow",
+			action = "default:dirt",
+		},
 
 		when_group_lava_near = {
 			nodenames = "group:lava",
@@ -233,7 +242,11 @@ local INTERACTION_DATA = {
 
 	["default:permafrost_with_moss"] = {
 		if_buried = "default:permafrost",
-		if_covered = "default:permafrost",
+
+		if_covered = {
+			ignore = "default:cobble",
+			action = "default:permafrost",
+		},
 
 		when_group_lava_near = {
 			nodenames = "group:lava",
@@ -252,7 +265,7 @@ local INTERACTION_DATA = {
 
 		when_default_cobble_near = {
 			nodenames = "default:cobble",
-			if_nearby = "default:permafrost_with_stones",
+			if_above = "default:permafrost_with_stones",
 		},
 	},
 }
@@ -309,29 +322,76 @@ local HANDLER = function(pos, node)
 		end
 	end
 
+	local node_has_name_or_group = function(nn, name)
+		local tt = type(name)
+		if tt == "string" then
+			if nn == name then
+				return true
+			elseif name:find("^group:") then
+				local g = name:sub(name:len() + 1)
+				local d = minetest.registered_nodes[nn]
+				if d then
+					local g2 = d.groups or {}
+					if g2[g] and g2[g] > 0 then
+						return true
+					end
+				end
+			end
+		elseif tt == "table" then
+			for _, n in ipairs(name) do
+				if nn == n then
+					return true
+				elseif n:find("^group:") then
+					local g = n:sub(n:len() + 1)
+					local d = minetest.registered_nodes[nn]
+					if d then
+						local g2 = d.groups or {}
+						if g2[g] and g2[g] > 0 then
+							return true
+						end
+					end
+				end
+			end
+		end
+	end
+
 	-- Action when the node is covered (by liquid or walkable node).
 	-- A node is covered if the node above it takes up a whole block.
 	-- There shall be a seperate facility for handling partial nodes.
 	local is_covered = false
-	do -- Check whether the node is covered.
+
+	-- Check whether the node is covered.
+	do
 		local n2 = minetest.get_node(above)
-		local d2 = minetest.registered_nodes[n2.name]
 
-		if d2 then
-			local walkable = d2.walkable
-			local liquid = d2.liquidtype or "none"
+		local ignore = false
+		local dt = interaction_data.if_covered
+		if type(dt) == "table" then
+			if dt.ignore and node_has_name_or_group(n2.name, dt.ignore) then
+				ignore = true
+			end
+		end
 
-			if walkable or liquid ~= "none" then
-				is_covered = true
+		if not ignore then
+			local d2 = minetest.registered_nodes[n2.name]
+			if d2 then
+				local walkable = d2.walkable
+				local liquid = d2.liquidtype or "none"
+
+				if walkable or liquid ~= "none" then
+					is_covered = true
+				end
 			end
 		end
 	end
 
 	-- Action to take if the node is covered by liquid or walkable.
 	if interaction_data.if_covered and is_covered then
-		node.name = interaction_data.if_covered
-		minetest.add_node(pos, node)
-		return
+		if interaction_data.if_covered.action then
+			node.name = interaction_data.if_covered.action
+			minetest.add_node(pos, node)
+			return
+		end
 	end
 
 	-- Get what's to the 4 sides (not including center or corners).
@@ -388,6 +448,13 @@ local HANDLER = function(pos, node)
 
 	local neighbors_below = {
 		{x=pos.x, y=pos.y-1, z=pos.z},
+	}
+
+	local neighbors_beside_4 = {
+		{x=pos.x-1, y=pos.y,   z=pos.z  },
+		{x=pos.x+1, y=pos.y,   z=pos.z  },
+		{x=pos.x,   y=pos.y,   z=pos.z-1},
+		{x=pos.x,   y=pos.y,   z=pos.z+1},
 	}
 
 	local find_nearby = function(neighbors, names)
@@ -466,6 +533,14 @@ local HANDLER = function(pos, node)
 		-- Action below.
 		if data.if_below then
 			local wait, done = do_nodecheck(data.if_below, neighbors_below, data.nodenames)
+			if wait or done then
+				return wait, done
+			end
+		end
+
+		-- Action if adjacent to 1 of 4 sides.
+		if data.if_adjacent_side then
+			local wait, done = do_nodecheck(data.if_adjacent_side, neighbors_beside_4, data.nodenames)
 			if wait or done then
 				return wait, done
 			end

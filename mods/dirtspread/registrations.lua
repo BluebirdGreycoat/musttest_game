@@ -9,7 +9,21 @@ local INTERACTION_DATA = {
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
 			-- Note: non-walkable nodes are always ignored by default.
-			ignore = {"group:snow", "group:snowy"},
+			ignore = {"group:snow"},
+		},
+
+		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
+		action_ordering = {
+			"lava",
+			"fire",
+			"ice",
+			"snow1",
+			"snow2",
+			"sand",
+			"flora",
+			"grass1",
+			"grass2",
+			"grass3",
 		},
 
 		-- The key name doesn't actually matter, it can be anything,
@@ -563,14 +577,32 @@ local HANDLER = function(pos, node)
 		end
 	end
 
-	for key, data in pairs(interaction_data) do
-		if key:find("^when_") and key:find("_near$") then
-			if not (data.require_not_covered and is_covered) then
-				local wait, done = execute_action(data)
-				if wait then
-					return true
-				elseif done then
-					return
+	-- Apply checks in specific order.
+	if interaction_data.action_ordering then
+		for _, key in ipairs(interaction_data.action_ordering) do
+			local data = interaction_data["when_" .. key .. "_near"]
+			if data then
+				if not (data.require_not_covered and is_covered) then
+					local wait, done = execute_action(data)
+					if wait then
+						return true
+					elseif done then
+						return
+					end
+				end
+			end
+		end
+	else
+		-- Apply checks in whatever order the keys happen to be stored in.
+		for key, data in pairs(interaction_data) do
+			if key:find("^when_") and key:find("_near$") then
+				if not (data.require_not_covered and is_covered) then
+					local wait, done = execute_action(data)
+					if wait then
+						return true
+					elseif done then
+						return
+					end
 				end
 			end
 		end

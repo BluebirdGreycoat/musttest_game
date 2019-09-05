@@ -3,7 +3,7 @@
 
 local INTERACTION_DATA = {
 	["default:dirt"] = {
-		-- Node turns to this if buried.
+		-- Node turns to this if buried (node surrounded by nodes that block light).
 		if_buried = "darkage:darkdirt",
 
 		if_covered = {
@@ -82,38 +82,40 @@ local INTERACTION_DATA = {
 					name = "default:dirt_with_grass"
 				end
 
-				return name, false -- Done.
+				return name
 			end,
 		},
 
 		-- Shall return the nodename to set, or "" to leave unchanged.
 		-- Return boolean second parameter to indicate whether to wait.
 		when_flora_near = {
-			nodenames = "group:flora",
+			nodenames = {"group:flora", "default:dry_shrub"},
 			require_not_covered = true,
 
 			if_above = function(pos, light, loc, name, def, groups)
+				if name == "default:dry_shrub" then
+					return "default:dry_dirt"
+				end
+
 				if groups.junglegrass and groups.junglegrass > 0 then
 					if light >= 13 then
-						return "moregrass:darkgrass", false
+						return "moregrass:darkgrass"
 					else
 						return "", true
 					end
 				elseif groups.dry_grass and groups.dry_grass > 0 then
 					if light >= 13 then
-						return "default:dirt_with_dry_grass", false
+						return "default:dirt_with_dry_grass"
 					else
 						return "", true
 					end
 				elseif groups.grass and groups.grass > 0 then
 					if light >= 13 then
-						return "default:dirt_with_grass", false
+						return "default:dirt_with_grass"
 					else
 						return "", true
 					end
 				end
-
-				return "", false -- Nothing to be done.
 			end,
 		},
 	},

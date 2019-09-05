@@ -415,7 +415,7 @@ local HANDLER = function(pos, node)
 				node.name = callback
 				minetest.add_node(pos, node)
 				return false, true -- Don't wait, done.
-			elseif type(callback == "function" then
+			elseif type(callback) == "function" then
 				local n2 = minetest.get_node(p2)
 				local d2 = minetest.registered_nodes[n2.name]
 				if d2 then

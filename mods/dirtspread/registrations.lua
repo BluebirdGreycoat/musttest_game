@@ -367,7 +367,7 @@ local HANDLER = function(pos, node)
 
 	local neighbors_below = {
 		{x=pos.x, y=pos.y-1, z=pos.z},
-	},
+	}
 
 	local find_nearby = function(neighbors, names)
 		if type(names) == "string" then

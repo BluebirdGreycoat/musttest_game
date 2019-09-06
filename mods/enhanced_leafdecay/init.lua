@@ -27,7 +27,7 @@ function(args)
   local t = (args.tree or "group:tree")
   local functor = function(pos, elapsed)
     -- If we can find a trunk right away, then done.
-    if minetest.find_node_near(pos, r, t) then
+    if utility.find_node_near_not_world_edge(pos, r, t) then
       return
     end
     

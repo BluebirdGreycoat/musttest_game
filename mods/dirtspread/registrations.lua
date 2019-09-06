@@ -300,7 +300,7 @@ local INTERACTION_DATA = {
 				minetest.remove_node(loc)
 
 				-- But regular dirt is made.
-				return "default:dirt",
+				return "default:dirt"
 			end,
 		},
 	},

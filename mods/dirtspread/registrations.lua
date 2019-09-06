@@ -242,12 +242,12 @@ local INTERACTION_DATA = {
 
 		when_sand_near = {
 			nodenames = "group:sand",
-			if_adjacent_side = "default:dirt_with_grass",
+			if_adjacent_side = "default:dirt_with_dry_grass",
 			require_not_covered = true,
 		},
 
 		when_dry_near = {
-			nodenames = {"default:dirt_with_dry_grass", "default:dry_dirt_with_dry_grass", "default:dirt", "darkage:darkdirt", "default:dry_dirt"},
+			nodenames = {"default:dirt_with_dry_grass", "default:dry_dirt_with_dry_grass", "darkage:darkdirt", "default:dry_dirt"},
 			if_nearby = "default:dirt_with_grass",
 			require_not_covered = true,
 		},

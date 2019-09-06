@@ -779,7 +779,7 @@ minetest.register_node("default:permafrost_with_snow", {
 		"default_permafrost.png",
 		{name = "default_permafrost.png^default_snow_side.png", tileable_vertical = false},
 	},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, snowy = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -803,7 +803,7 @@ minetest.register_node("default:permafrost_with_snow_and_stones", {
 		"default_permafrost.png",
 		"default_permafrost.png^default_snow_side.png^default_stones_side.png",
 	},
-	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1, snowy = 1, dirtspread_notify = 1}),
 	sounds = default.node_sound_gravel_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
 })

@@ -129,6 +129,7 @@ local INTERACTION_DATA = {
 			"fire",
 			"snow",
 			"ice",
+			"sand",
 		},
 
 		when_lava_near = {
@@ -154,6 +155,12 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dirt_with_dry_grass",
 			require_not_covered = true,
 		},
+
+		when_sand_near = {
+			nodenames = "group:sand",
+			if_adjacent_side = "default:dirt_with_dry_grass",
+			require_not_covered = true,
+		},
 	},
 
 	["default:dirt_with_dry_grass"] = {
@@ -165,6 +172,7 @@ local INTERACTION_DATA = {
 			"fire",
 			"snow",
 			"ice",
+			"sand",
 		},
 
 		when_lava_near = {
@@ -188,6 +196,12 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dirt",
 			require_not_covered = true,
 		},
+
+		when_sand_near = {
+			nodenames = "group:sand",
+			if_adjacent_side = "default:dry_dirt_with_dry_grass",
+			require_not_covered = true,
+		},
 	},
 
 	["moregrass:darkgrass"] = {
@@ -198,7 +212,8 @@ local INTERACTION_DATA = {
 			"lava",
 			"fire",
 			"snow",
-			"ice",
+			"cold",
+			"sand",
 		},
 
 		when_lava_near = {
@@ -218,9 +233,15 @@ local INTERACTION_DATA = {
 			require_not_covered = true,
 		},
 
-		when_ice_near = {
-			nodenames = "group:ice",
+		when_cold_near = {
+			nodenames = {"group:ice", "group:cold", "group:snowy"},
 			if_nearby = "default:dirt_with_grass",
+			require_not_covered = true,
+		},
+
+		when_sand_near = {
+			nodenames = "group:sand",
+			if_adjacent_side = "default:dirt_with_grass",
 			require_not_covered = true,
 		},
 	},
@@ -700,6 +721,48 @@ local INTERACTION_DATA = {
 		when_snow_near = {
 			nodenames = {"group:snow", "group:ice"},
 			if_nearby = "sand:sand_with_ice_crystals",
+		},
+	},
+
+	["default:snow"] = {
+		action_ordering = {"lava", "fire"},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+	},
+
+	["default:snowblock"] = {
+		action_ordering = {"lava", "fire"},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+	},
+
+	["snow:footprints"] = {
+		action_ordering = {"lava", "fire"},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
 		},
 	},
 }

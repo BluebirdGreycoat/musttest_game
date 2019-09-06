@@ -293,8 +293,15 @@ local INTERACTION_DATA = {
 
 		when_minerals_near = {
 			nodenames = "glowstone:minerals",
-			if_below = "default:dirt",
 			require_not_covered = true,
+
+			if_below = function(pos, light, loc, name, def, groups)
+				-- The minerals are used up.
+				minetest.remove_node(loc)
+
+				-- But regular dirt is made.
+				return "default:dirt",
+			end,
 		},
 	},
 

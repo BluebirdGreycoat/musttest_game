@@ -289,8 +289,15 @@ local INTERACTION_DATA = {
 			action = "darkage:darkdirt",
 		},
 
+		action_ordering = {"lava", "fire"},
+
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
 			if_nearby = "darkage:darkdirt",
 		},
 	},

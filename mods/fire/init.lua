@@ -37,6 +37,7 @@ minetest.register_node("fire:basic_flame", {
 		flame = 1,
 		flame_sound = 1,
 		notify_construct = 1,
+		fire = 1,
 	}),
     
 	on_timer = function(pos)
@@ -112,7 +113,7 @@ minetest.register_node("fire:permanent_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
-	groups = {igniter = 2, dig_immediate = 2, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1},
+	groups = {igniter = 2, dig_immediate = 2, melt_around = 3, flame = 1, flame_sound = 1, fire = 1, notify_construct = 1},
 	drop = "",
 
 	on_construct = function(pos)
@@ -164,7 +165,7 @@ minetest.register_node("fire:nether_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4,
-	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, flame_sound = 1, notify_construct = 1}),
+	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, fire = 1, flame_sound = 1, notify_construct = 1}),
 	drop = "",
     
 	on_construct = function(pos)

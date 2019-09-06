@@ -82,7 +82,7 @@ function dirtspread.on_timer(pos, elapsed)
 	-- If `ignore` is nearby, we're next to an unloaded mapchunk.
 	-- We cannot assume we'll have enough data to execute the active block function.
 	-- We'll need to restart the timer and try again later.
-	if minetest.find_node_near(pos, 1, "ignore") then
+	if utility.find_node_near_not_world_edge(pos, 1, "ignore") then
 		return true
 	end
 

@@ -33,7 +33,7 @@ function(args)
     
     -- If `ignore` is nearby, we can't assume there isn't a trunk.
     -- We'll need to restart the timer.
-    if minetest.find_node_near(pos, r, "ignore") then
+    if utility.find_node_near_not_world_edge(pos, r, "ignore") then
       return true
     end
     

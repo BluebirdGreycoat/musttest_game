@@ -801,8 +801,9 @@ INTERACTION_DATA["default:dirt_with_grass_footsteps"] = INTERACTION_DATA["defaul
 
 
 
-local MIN_TIME = 1
-local MAX_TIME = 5
+-- Nodes update to their environment every 30 seconds to 15 minutes.
+local MIN_TIME = 30
+local MAX_TIME = 60*15
 
 
 

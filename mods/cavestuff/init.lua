@@ -99,7 +99,7 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 minetest.register_node("cavestuff:cobble_with_rockmelt", {
   description = "Rockmelt Cobble",
   tiles = {"caverealms_hot_cobble.png"},
-  groups = utility.dig_groups("softcobble", {hot=1, falling_node=1, melt_around=3, cobble_type=1}),
+  groups = utility.dig_groups("softcobble", {hot=1, falling_node=1, melt_around=3, cobble_type=1, rockmelt=1}),
   damage_per_second = 1,
   light_source = 5,
   sounds = default.node_sound_stone_defaults(),

@@ -8,7 +8,7 @@ local INTERACTION_DATA = {
 
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
-			-- Note: non-walkable nodes are always ignored by default.
+			-- Note: non-walkable/buildable_to nodes are always ignored by default.
 			ignore = {"group:snow"},
 		},
 
@@ -31,7 +31,7 @@ local INTERACTION_DATA = {
 		-- The key name doesn't actually matter, it can be anything,
 		-- as long as it begins with "when_" and ends with "_near".
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
@@ -124,23 +124,32 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+			"ice",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
 		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt_with_dry_grass",
+			require_not_covered = true,
 		},
 
-		when_group_snow_near = {
+		when_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dirt_with_snow",
-			if_adjacent_side = "default:dirt_with_snow",
+			if_adjacent_side = "default:dirt_with_dry_grass",
+			require_not_covered = true,
 		},
 
-		when_group_ice_near = {
+		when_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
 			require_not_covered = true,
@@ -151,8 +160,15 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+			"ice",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
@@ -161,12 +177,13 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dirt",
 		},
 
-		when_group_snow_near = {
+		when_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dirt_with_snow",
+			require_not_covered = true,
 		},
 
-		when_group_ice_near = {
+		when_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
 			require_not_covered = true,
@@ -177,23 +194,31 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 		if_covered = "default:dirt",
 
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+			"ice",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
 		when_fire_near = {
 			nodenames = "group:fire",
 			if_nearby = "default:dirt_with_dry_grass",
+			require_not_covered = true,
 		},
 
-		when_group_snow_near = {
+		when_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dirt_with_snow",
 			require_not_covered = true,
 		},
 
-		when_group_ice_near = {
+		when_ice_near = {
 			nodenames = "group:ice",
 			if_below = "default:permafrost_with_moss",
 			require_not_covered = true,
@@ -208,8 +233,13 @@ local INTERACTION_DATA = {
 			action = "default:dirt",
 		},
 
+		action_ordering = {
+			"lava",
+			"fire",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
@@ -219,9 +249,214 @@ local INTERACTION_DATA = {
 		},
 	},
 
-	["default:permafrost"] = {
+	["darkage:darkdirt"] = {
+		if_covered = {
+			ignore = "group:snow",
+		},
+
+		when_snow_near = {
+			nodenames = "group:snow",
+			if_above = "default:dark_dirt_with_snow",
+			if_adjacent_side = "default:dark_dirt_with_snow",
+			require_not_covered = true,
+		},
+	},
+
+	["default:dark_dirt_with_snow"] = {
+		if_covered = {
+			ignore = "group:snow",
+			action = "darkage:darkdirt",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+	},
+
+	["default:dry_dirt"] = {
+		if_buried = "darkage:darkdirt",
+
+		if_covered = {
+			ignore = "group:snow",
+		},
+
+		action_ordering = {"lava", "snow"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_snow_near = {
+			nodenames = "group:snow",
+			if_above = "default:dirt",
+		},
+	},
+
+	["default:dry_dirt_with_snow"] = {
+		if_buried = "default:dry_dirt",
+
+		if_covered = {
+			ignore = "group:snow",
+			action = "default:dry_dirt",
+		},
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dry_dirt",
+		},
+	},
+
+	["default:dirt_with_rainforest_litter"] = {
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dirt",
+		},
+	},
+
+	["default:dirt_with_coniferous_litter"] = {
+		if_buried = "default:dirt",
+		if_covered = "default:dirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dirt",
+		},
+	},
+
+	["default:dark_dirt_with_rainforest_litter"] = {
+		if_buried = "darkage:darkdirt",
+		if_covered = "darkage:darkdirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "darkage:darkdirt",
+		},
+	},
+
+	["default:dark_dirt_with_coniferous_litter"] = {
+		if_buried = "darkage:darkdirt",
+		if_covered = "darkage:darkdirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "darkage:darkdirt",
+		},
+	},
+
+	["default:dry_dirt_with_rainforest_litter"] = {
+		if_buried = "default:dry_dirt",
+		if_covered = "default:dry_dirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dry_dirt",
+		},
+	},
+
+	["default:dry_dirt_with_coniferous_litter"] = {
+		if_buried = "default:dry_dirt",
+		if_covered = "default:dry_dirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dry_dirt",
+		},
+	},
+
+	["default:dry_dirt_with_dry_grass"] = {
+		if_buried = "default:dry_dirt",
+		if_covered = "default:dry_dirt",
+
+		action_ordering = {"lava", "fire"},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:dry_dirt",
+		},
+	},
+
+	["default:permafrost"] = {
+		if_covered = {
+			ignore = {
+				"group:snow",
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+		},
+
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+			"cobble",
+			"flora",
+		},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
@@ -230,28 +465,53 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dirt",
 		},
 
-		when_group_snow_near = {
+		when_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:permafrost_with_snow",
+			require_not_covered = true,
 		},
 
-		when_group_flora_near = {
+		when_cobble_near = {
+			nodenames = {
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+			if_above = "default:permafrost_with_stones",
+		},
+
+		when_flora_near = {
 			nodenames = "group:flora",
 			if_above = "default:permafrost_with_moss",
 			require_not_covered = true,
 		},
 	},
 
-	["default:permafrost_with_moss"] = {
-		if_buried = "default:permafrost",
-
+	["default:permafrost_with_snow"] = {
 		if_covered = {
-			ignore = "default:cobble",
+			ignore = {
+				"group:snow",
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
 			action = "default:permafrost",
 		},
 
+		action_ordering = {
+			"lava",
+			"fire",
+			"cobble",
+		},
+
 		when_lava_near = {
-			nodenames = "group:lava",
+			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
 		},
 
@@ -260,17 +520,186 @@ local INTERACTION_DATA = {
 			if_nearby = "default:permafrost",
 		},
 
-		when_group_snow_near = {
-			nodenames = "group:snow",
-			if_above = "default:permafrost_with_snow",
+		when_cobble_near = {
+			nodenames = {
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+			if_above = "default:permafrost_with_snow_and_stones",
+		},
+	},
+
+	["default:permafrost_with_stones"] = {
+		if_buried = "default:permafrost",
+
+		if_covered = {
+			ignore = "group:snow",
 		},
 
-		when_default_cobble_near = {
-			nodenames = "default:cobble",
+		action_ordering = {
+			"lava",
+			"snow",
+			"flora",
+		},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_snow_near = {
+			nodenames = "group:snow",
+			if_above = "default:permafrost_with_snow_and_stones",
+		},
+
+		when_flora_near = {
+			nodenames = "group:flora",
+			if_above = "default:permafrost_with_moss_and_stones",
+			require_not_covered = true,
+		},
+	},
+
+	["default:permafrost_with_snow_and_stones"] = {
+		if_covered = {
+			ignore = {
+				"group:snow",
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+			action = "default:permafrost_with_stones",
+		},
+
+		action_ordering = {
+			"lava",
+			"fire",
+			"cobble",
+		},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:permafrost_with_stones",
+		},
+
+		when_cobble_near = {
+			nodenames = {
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
 			if_above = "default:permafrost_with_stones",
 		},
 	},
+
+	["default:permafrost_with_moss"] = {
+		if_buried = "default:permafrost",
+
+		if_covered = {
+			ignore = {
+				"group:snow",
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+			action = "default:permafrost",
+		},
+
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+			"cobble",
+		},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:permafrost",
+		},
+
+		when_snow_near = {
+			nodenames = "group:snow",
+			if_above = "default:permafrost_with_snow",
+			if_adjacent_side = "default:permafrost_with_snow",
+			require_not_covered = true,
+		},
+
+		when_cobble_near = {
+			nodenames = {
+				"default:cobble",
+				"cavestuff:cobble_with_moss",
+				"cavestuff:cobble_with_lichen",
+				"cavestuff:cobble_with_algae",
+				"cavestuff:cobble_with_salt",
+				"cavestuff:cobble",
+			},
+			if_above = "default:permafrost_with_stones",
+		},
+	},
+
+	["default:permafrost_with_moss_and_stones"] = {
+		if_buried = "default:permafrost",
+
+		if_covered = {
+			ignore = {"group:snow"},
+			action = "default:permafrost_with_stones",
+		},
+
+		action_ordering = {
+			"lava",
+			"fire",
+			"snow",
+		},
+
+		when_lava_near = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "darkage:darkdirt",
+		},
+
+		when_fire_near = {
+			nodenames = "group:fire",
+			if_nearby = "default:permafrost_with_stones",
+		},
+
+		when_snow_near = {
+			nodenames = "group:snow",
+			if_above = "default:permafrost_with_snow_and_stones",
+			require_not_covered = true,
+		},
+	},
+
+	["default:sand"] = {
+		when_snow_near = {
+			nodenames = {"group:snow", "group:ice"},
+			if_nearby = "sand:sand_with_ice_crystals",
+		},
+	},
 }
+
+-- Copy.
+INTERACTION_DATA["default:dirt_with_grass_footsteps"] = INTERACTION_DATA["default:dirt_with_grass"]
 
 
 

@@ -79,6 +79,13 @@ dirtspread.blocks = dirtspread.blocks or {}
 function dirtspread.on_timer(pos, elapsed)
 	--minetest.chat_send_player("MustTest", "On timer: " .. minetest.pos_to_string(pos))
 
+	-- If `ignore` is nearby, we're next to an unloaded mapchunk.
+	-- We cannot assume we'll have enough data to execute the active block function.
+	-- We'll need to restart the timer and try again later.
+	if minetest.find_node_near(pos, 1, "ignore") then
+		return true
+	end
+
 	local node = minetest.get_node(pos)
 	local ndef = dirtspread.get_active_block(node.name)
 	if ndef and ndef.func then

@@ -55,6 +55,7 @@ function(args)
     -- Remove node.
     minetest.remove_node(pos)
     minetest.check_for_falling(pos)
+		instability.check_unsupported_around(pos)
   end
   return functor
 end

@@ -151,7 +151,7 @@ local INTERACTION_DATA = {
 
 		when_ice_near = {
 			nodenames = "group:ice",
-			if_below = "default:permafrost_with_moss",
+			if_nearby = "default:dirt_with_dry_grass",
 			require_not_covered = true,
 		},
 	},
@@ -185,7 +185,7 @@ local INTERACTION_DATA = {
 
 		when_ice_near = {
 			nodenames = "group:ice",
-			if_below = "default:permafrost_with_moss",
+			if_nearby = "default:dirt",
 			require_not_covered = true,
 		},
 	},
@@ -220,7 +220,7 @@ local INTERACTION_DATA = {
 
 		when_ice_near = {
 			nodenames = "group:ice",
-			if_below = "default:permafrost_with_moss",
+			if_nearby = "default:dirt_with_grass",
 			require_not_covered = true,
 		},
 	},
@@ -452,6 +452,7 @@ local INTERACTION_DATA = {
 			"fire",
 			"snow",
 			"cobble",
+			"grass",
 			"flora",
 		},
 
@@ -487,6 +488,11 @@ local INTERACTION_DATA = {
 			nodenames = "group:flora",
 			if_above = "default:permafrost_with_moss",
 			require_not_covered = true,
+		},
+
+		when_grass_near = {
+			nodenames = {"moregrass:darkgrass", "default:dirt_with_grass"},
+			if_adjacent_side = "default:permafrost_with_moss",
 		},
 	},
 

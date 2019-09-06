@@ -848,6 +848,7 @@ local HANDLER = function(pos, node)
 			if interaction_data.if_buried ~= node.name then
 				node.name = interaction_data.if_buried
 				minetest.add_node(pos, node)
+				minetest.check_for_falling(pos)
 				return
 			end
 		end
@@ -926,6 +927,7 @@ local HANDLER = function(pos, node)
 			if node.name ~= dt then
 				node.name = dt
 				minetest.add_node(pos, node)
+				minetest.check_for_falling(pos)
 				return
 			end
 		elseif type(dt) == "table" then
@@ -933,6 +935,7 @@ local HANDLER = function(pos, node)
 				if dt.action ~= node.name then
 					node.name = dt.action
 					minetest.add_node(pos, node)
+					minetest.check_for_falling(pos)
 					return
 				end
 			end
@@ -1019,6 +1022,7 @@ local HANDLER = function(pos, node)
 				if node.name ~= callback then
 					node.name = callback
 					minetest.add_node(pos, node)
+					minetest.check_for_falling(pos)
 					return false, true -- Don't wait, done.
 				end
 			elseif type(callback) == "function" then
@@ -1031,6 +1035,7 @@ local HANDLER = function(pos, node)
 						if node.name ~= ret then
 							node.name = ret
 							minetest.add_node(pos, node)
+							minetest.check_for_falling(pos)
 							return false, true -- Don't wait, done.
 						end
 					elseif wait then

@@ -214,6 +214,7 @@ local INTERACTION_DATA = {
 			"snow",
 			"cold",
 			"sand",
+			"dry",
 		},
 
 		when_lava_near = {
@@ -242,6 +243,12 @@ local INTERACTION_DATA = {
 		when_sand_near = {
 			nodenames = "group:sand",
 			if_adjacent_side = "default:dirt_with_grass",
+			require_not_covered = true,
+		},
+
+		when_dry_near = {
+			nodenames = {"default:dirt_with_dry_grass", "default:dry_dirt_with_dry_grass", "default:dirt", "darkage:darkdirt", "default:dry_dirt"},
+			if_nearby = "default:dirt_with_grass",
 			require_not_covered = true,
 		},
 	},
@@ -275,10 +282,18 @@ local INTERACTION_DATA = {
 			ignore = "group:snow",
 		},
 
+		action_ordering = {"snow", "minerals"},
+
 		when_snow_near = {
 			nodenames = "group:snow",
 			if_above = "default:dark_dirt_with_snow",
 			if_adjacent_side = "default:dark_dirt_with_snow",
+			require_not_covered = true,
+		},
+
+		when_minerals_near = {
+			nodenames = "glowstone:minerals",
+			if_below = "default:dirt",
 			require_not_covered = true,
 		},
 	},
@@ -318,7 +333,7 @@ local INTERACTION_DATA = {
 
 		when_snow_near = {
 			nodenames = "group:snow",
-			if_above = "default:dirt",
+			if_nearby = "default:dry_dirt_with_snow",
 		},
 	},
 

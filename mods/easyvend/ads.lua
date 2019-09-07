@@ -494,8 +494,14 @@ function ads.generate_formspec(pos, pname, booth)
 	if data.selected and data.selected >= 1 and data.selected <= #(data.ads) then
 		if data.ads[data.selected] then
 			local ad = data.ads[data.selected]
+
+			local owner_text = "<" .. rename.gpn(ad.owner) .. "> owns this listing."
+			if gdac.player_is_admin(ad.owner) then
+				owner_text = "Record of Public Notice."
+			end
+
 			formspec = formspec ..
-				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> owns this listing.") .. "]" ..
+				"label[5.35,5.0;" .. esc(owner_text) .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
 				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
 				"label[5.35,6.2;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"

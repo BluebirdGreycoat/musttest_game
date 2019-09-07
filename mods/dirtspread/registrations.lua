@@ -9,7 +9,7 @@ local INTERACTION_DATA = {
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
 			-- Note: non-walkable/buildable_to nodes are always ignored by default.
-			ignore = {"group:snow"},
+			ignore = {"group:snow", "group:leaves"},
 		},
 
 		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
@@ -25,6 +25,7 @@ local INTERACTION_DATA = {
 			"snow2",
 			"sand",
 			"flora",
+			"leaves",
 			"grass",
 		},
 
@@ -115,6 +116,19 @@ local INTERACTION_DATA = {
 					else
 						return "", true
 					end
+				end
+			end,
+		},
+
+		when_leaves_near = {
+			nodenames = "group:leaves",
+
+			if_above = function(pos, light, loc, name, def, groups)
+				local water = minetest.find_node_near(pos, 5, "group:water")
+				if water then
+					return "default:dirt_with_rainforest_litter"
+				else
+					return "default:dirt_with_coniferous_litter"
 				end
 			end,
 		},
@@ -279,10 +293,10 @@ local INTERACTION_DATA = {
 
 	["darkage:darkdirt"] = {
 		if_covered = {
-			ignore = {"group:snow", "group:ice"},
+			ignore = {"group:snow", "group:ice", "group:leaves"},
 		},
 
-		action_ordering = {"snow", "ice", "minerals"},
+		action_ordering = {"snow", "ice", "leaves", "minerals"},
 
 		when_snow_near = {
 			nodenames = "group:snow",
@@ -310,6 +324,19 @@ local INTERACTION_DATA = {
 			if_below = "default:permafrost",
 			if_adjacent_side = "default:permafrost",
 		},
+
+		when_leaves_near = {
+			nodenames = "group:leaves",
+
+			if_above = function(pos, light, loc, name, def, groups)
+				local water = minetest.find_node_near(pos, 5, "group:water")
+				if water then
+					return "default:dark_dirt_with_rainforest_litter"
+				else
+					return "default:dark_dirt_with_coniferous_litter"
+				end
+			end,
+		},
 	},
 
 	["default:dark_dirt_with_snow"] = {
@@ -335,10 +362,10 @@ local INTERACTION_DATA = {
 		if_buried = "darkage:darkdirt",
 
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:leaves"},
 		},
 
-		action_ordering = {"lava", "water", "snow"},
+		action_ordering = {"lava", "water", "snow", "leaves"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
@@ -353,6 +380,19 @@ local INTERACTION_DATA = {
 		when_snow_near = {
 			nodenames = "group:snow",
 			if_nearby = "default:dry_dirt_with_snow",
+		},
+
+		when_leaves_near = {
+			nodenames = "group:leaves",
+
+			if_above = function(pos, light, loc, name, def, groups)
+				local water = minetest.find_node_near(pos, 5, "group:water")
+				if water then
+					return "default:dry_dirt_with_rainforest_litter"
+				else
+					return "default:dry_dirt_with_coniferous_litter"
+				end
+			end,
 		},
 	},
 
@@ -395,7 +435,7 @@ local INTERACTION_DATA = {
 
 		when_fire_near = {
 			nodenames = "group:fire",
-			if_nearby = "default:dirt",
+			if_nearby = "default:dry_dirt_with_rainforest_litter",
 		},
 	},
 
@@ -412,7 +452,7 @@ local INTERACTION_DATA = {
 
 		when_fire_near = {
 			nodenames = "group:fire",
-			if_nearby = "default:dirt",
+			if_nearby = "default:dry_dirt_with_coniferous_litter",
 		},
 	},
 

@@ -171,7 +171,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 	end
 
 	if not booth then
-		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
+		minetest.chat_send_player(pname, "# Server: This action can only be completed at a market kiosk.")
 		easyvend.sound_error(pname)
 		return true
 	end
@@ -541,23 +541,23 @@ function ads.generate_formspec(pos, pname, booth)
 			formspec = formspec ..
 				"button[0,7.5;4,1;newadd;List Your Shop]" ..
 				"tooltip[newadd;" .. minetest.formspec_escape(
-					"Listing your shop makes it visible to other market booths within 5 kilometers of this one.\n" ..
+					"Listing your shop makes it visible to other market kiosks within 5 kilometers of this one.\n" ..
 						"This also allows citizens to trade using your vending/depositing machines remotely.\n" ..
 						"\n" ..
 						"Make sure you create the advertisement from the actual location of your shop!\n" ..
-						"The market booth only links with vending/depositing machines within 15 meters.") .. "]" ..
+						"The market kiosk only links with vending/depositing machines within 15 meters.") .. "]" ..
 				"item_image[4,7.5;1,1;easyvend:vendor_on]"
 
 			formspec = formspec ..
 				"button[11.2,7.5;2,1;storage;Inventory]" ..
 				"tooltip[storage;" .. minetest.formspec_escape(
 					"The inventory is used when trading remotely, while it is registered as your delivery address.\n" ..
-					"You can trade remotely from any market booth that you own. But only one booth can be your delivery point.\n" ..
+					"You can trade remotely from any market kiosk that you own. But only one kiosk can be your delivery point.\n" ..
 					"\n" ..
-					"When purchasing an item remotely, your market booth's inventory must have currency to pay the cost.\n" ..
-					"The purchased item will be sent to your market booth and cash will be removed from the same location.\n" ..
+					"When purchasing an item remotely, your market kiosk's inventory must have currency to pay the cost.\n" ..
+					"The purchased item will be sent to your market kiosk and cash will be removed from the same location.\n" ..
 					"\n" ..
-					"If you are depositing an item, your market booth must have the item in its inventory ready for transport.\n" ..
+					"If you are depositing an item, your market kiosk must have the item in its inventory ready for transport.\n" ..
 					"Cash for the deposit will be sent to the same location.") .. "]"
 
 			local shops = ads.players[pname].shops
@@ -599,7 +599,7 @@ function ads.generate_formspec(pos, pname, booth)
 		-- All good.
 	else
 		if booth then
-			formspec = formspec .. "label[0,7.5;" .. esc("You cannot use this market booth for remote trading, because you do not own it.") .. "]"
+			formspec = formspec .. "label[0,7.5;" .. esc("You cannot use this market kiosk for remote trading, because you do not own it.") .. "]"
 		else
 			formspec = formspec .. "label[0,7.5;" .. esc("You cannot use this interface for remote trading, because it is detached.") .. "]"
 		end
@@ -790,7 +790,7 @@ function ads.on_receive_fields(player, formname, fields)
 			end
 		else
 			-- Player sent fields requiring a market booth, but this is a "detached" formspec.
-			minetest.chat_send_player(pname, "# Server: This action can only be completed at a market booth.")
+			minetest.chat_send_player(pname, "# Server: This action can only be completed at a market kiosk.")
 			easyvend.sound_error(pname)
 		end
 	end
@@ -988,7 +988,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 					easyvend.sound_error(pname)
 				end
 			else
-				minetest.chat_send_player(pname, "# Server: Cannot set delivery drop-point, you do not own this booth.")
+				minetest.chat_send_player(pname, "# Server: Cannot set delivery drop-point, you do not own this kiosk.")
 				easyvend.sound_error(pname)
 			end
 		else

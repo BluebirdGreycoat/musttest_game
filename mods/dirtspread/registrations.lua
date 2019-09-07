@@ -338,11 +338,16 @@ local INTERACTION_DATA = {
 			ignore = "group:snow",
 		},
 
-		action_ordering = {"lava", "snow"},
+		action_ordering = {"lava", "water", "snow"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
+		},
+
+		when_water_near = {
+			nodenames = "group:water",
+			if_nearby = "default:dirt",
 		},
 
 		when_snow_near = {
@@ -359,11 +364,16 @@ local INTERACTION_DATA = {
 			action = "default:dry_dirt",
 		},
 
-		action_ordering = {"lava", "fire"},
+		action_ordering = {"lava", "water", "fire"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
+		},
+
+		when_water_near = {
+			nodenames = "group:water",
+			if_nearby = "default:dirt_with_snow",
 		},
 
 		when_fire_near = {
@@ -444,11 +454,16 @@ local INTERACTION_DATA = {
 		if_buried = "default:dry_dirt",
 		if_covered = "default:dry_dirt",
 
-		action_ordering = {"lava", "fire"},
+		action_ordering = {"lava", "water", "fire"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
+		},
+
+		when_water_near = {
+			nodenames = "group:water",
+			if_nearby = "default:dirt_with_rainforest_litter",
 		},
 
 		when_fire_near = {
@@ -461,11 +476,16 @@ local INTERACTION_DATA = {
 		if_buried = "default:dry_dirt",
 		if_covered = "default:dry_dirt",
 
-		action_ordering = {"lava", "fire"},
+		action_ordering = {"lava", "water", "fire"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
+		},
+
+		when_water_near = {
+			nodenames = "group:water",
+			if_nearby = "default:dirt_with_coniferous_litter",
 		},
 
 		when_fire_near = {
@@ -478,11 +498,16 @@ local INTERACTION_DATA = {
 		if_buried = "default:dry_dirt",
 		if_covered = "default:dry_dirt",
 
-		action_ordering = {"lava", "fire"},
+		action_ordering = {"lava", "water", "fire"},
 
 		when_lava_near = {
 			nodenames = {"group:lava", "group:rockmelt"},
 			if_nearby = "darkage:darkdirt",
+		},
+
+		when_water_near = {
+			nodenames = "group:water",
+			if_nearby = "default:dirt_with_dry_grass",
 		},
 
 		when_fire_near = {

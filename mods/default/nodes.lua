@@ -831,7 +831,7 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
 	tiles = {
 		"default_moss.png^default_stones.png",
 		"default_permafrost.png",
-		{name = "default_permafrost.png^default_moss_side.png^default_stones.png", tileable_vertical = false},
+		{name = "default_permafrost.png^default_moss_side.png^default_stones_side.png", tileable_vertical = false},
 	},
 	drop = "default:permafrost_with_stones",
 	groups = utility.dig_groups("cobble", {permafrost_type = 1, falling_node = 1, cold = 1}),

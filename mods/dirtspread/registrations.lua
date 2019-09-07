@@ -501,6 +501,7 @@ local INTERACTION_DATA = {
 				"cavestuff:cobble_with_algae",
 				"cavestuff:cobble_with_salt",
 				"cavestuff:cobble",
+				"group:ice",
 			},
 		},
 
@@ -537,6 +538,7 @@ local INTERACTION_DATA = {
 				"cavestuff:cobble_with_algae",
 				"cavestuff:cobble_with_salt",
 				"cavestuff:cobble",
+				"group:ice", -- Also brings stone in permafrost to the surface.
 			},
 			if_above = "default:permafrost_with_stones",
 		},

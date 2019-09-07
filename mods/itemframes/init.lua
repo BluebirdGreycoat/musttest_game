@@ -152,7 +152,7 @@ minetest.register_node("itemframes:frame",{
 		local name = clicker and clicker:get_player_name()
 
 		if map.is_mapping_kit(itemstack:get_name()) then
-			minetest.chat_send_player("MustTest", "Updating inventory: " .. itemstack:get_name() .. ", " .. name)
+			--minetest.chat_send_player("MustTest", "Updating inventory: " .. itemstack:get_name() .. ", " .. name)
 			minetest.after(0, function() map.update_inventory_info(name) end)
 		end
 

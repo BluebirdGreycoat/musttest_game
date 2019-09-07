@@ -284,10 +284,22 @@ function ads.on_receive_submission_fields(player, formname, fields)
 
 		if fields.submit then
 			currency.remove_cash(inv, "main", ads.ad_cost)
+
+			local real_owner = pname
+
+			-- This allows admins to create records owned by other players,
+			-- based on who owns the land.
+			if gdac.player_is_admin(pname) then
+				local land_owner = protector.get_node_owner(pos) or ""
+				if land_owner ~= "" then
+					real_owner = land_owner
+				end
+			end
+
 			ads.add_entry({
 				shop = fields.title or "No Title Set",
 				pos = pos, -- Records the position at which the advertisement was submitted.
-				owner = pname,
+				owner = real_owner,
 				custom = fields.text or "No Text Submitted",
 				date = os.time(),
 			})
@@ -301,7 +313,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 						ads.players = {} -- Force refetching data for all players.
 						break
 					else
-						minetest.chat_send_player("# Server: Advertisement was submitted by someone else! You do not have permission to edit it.")
+						minetest.chat_send_player("# Server: Public notice was submitted by someone else! You do not have permission to edit it.")
 						easyvend.sound_error(pname)
 						goto error
 					end
@@ -310,9 +322,9 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		end
 
 		if fields.submit then
-			minetest.chat_send_player(pname, "# Server: Advertisement submitted.")
+			minetest.chat_send_player(pname, "# Server: Notice submitted.")
 		elseif fields.confirmedit then
-			minetest.chat_send_player(pname, "# Server: Advertisement updated.")
+			minetest.chat_send_player(pname, "# Server: Notice updated.")
 		end
 
 		ads.show_formspec(pos, pname, booth)

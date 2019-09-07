@@ -285,7 +285,7 @@ function map.on_place(itemstack, placer, pt)
 	end
 
 	if ndef.on_rightclick and not placer:get_player_control().sneak then
-		return ndef.on_rightclick(pt.under, node, placer, fakestack, pt) or itemstack
+		return ndef.on_rightclick(pt.under, node, placer, itemstack, pt) or itemstack
 	end
 
 	local fakestack = ItemStack("map:mapping_kit")

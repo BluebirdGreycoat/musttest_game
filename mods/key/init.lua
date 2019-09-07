@@ -161,6 +161,9 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 	if not placer or not placer:is_player() then
 		return itemstack
 	end
+	if pointed_thing.type ~= "node" then
+		return itemstack
+	end
 	--minetest.chat_send_player(placer:get_player_name(), "# Server: Using keychain!")
 
 	local pname = placer:get_player_name()
@@ -197,9 +200,6 @@ key.on_chain_place = function(itemstack, placer, pointed_thing)
 
 	if def and def.on_rightclick and not placer:get_player_control().sneak then
 		return def.on_rightclick(under, node, placer, itemstack, pointed_thing) or itemstack
-	end
-	if pointed_thing.type ~= "node" then
-		return itemstack
 	end
 
 	local pos = pointed_thing.under

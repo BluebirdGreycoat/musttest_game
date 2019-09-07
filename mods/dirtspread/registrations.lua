@@ -279,10 +279,10 @@ local INTERACTION_DATA = {
 
 	["darkage:darkdirt"] = {
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:ice"},
 		},
 
-		action_ordering = {"snow", "minerals"},
+		action_ordering = {"snow", "ice", "minerals"},
 
 		when_snow_near = {
 			nodenames = "group:snow",
@@ -302,6 +302,13 @@ local INTERACTION_DATA = {
 				-- But regular dirt is made.
 				return "default:dirt"
 			end,
+		},
+
+		when_ice_near = {
+			nodenames = "group:ice",
+			if_above = "default:permafrost",
+			if_below = "default:permafrost",
+			if_adjacent_side = "default:permafrost",
 		},
 	},
 
@@ -513,7 +520,7 @@ local INTERACTION_DATA = {
 
 		when_fire_near = {
 			nodenames = "group:fire",
-			if_nearby = "default:dirt",
+			if_nearby = "darkage:darkdirt",
 		},
 
 		when_snow_near = {

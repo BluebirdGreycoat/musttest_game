@@ -226,6 +226,8 @@ function dirtspread.register_active_block(name, data)
 	g.dirtspread_notify = 1
 
 	-- Hook `on_timer`.
+	-- FIXME: What happens when node already has timer callback?!
+	-- We end up overriding the original timeout value and messing things up!
 	local on_timer
 	if ndef.on_timer then
 		local old = ndef.on_timer

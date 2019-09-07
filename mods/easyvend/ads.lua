@@ -887,6 +887,15 @@ end
 
 function ads.after_place_node(pos, placer)
 	local pname = placer:get_player_name()
+
+	-- If placed by admin, use landowner as real owner.
+	if gdac.player_is_admin(pname) then
+		local landowner = protector.get_node_owner(pos) or ""
+		if landowner ~= "" then
+			pname = landowner
+		end
+	end
+
 	local meta = minetest.get_meta(pos)
 	meta:set_string("owner", pname)
 	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")

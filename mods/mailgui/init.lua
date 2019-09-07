@@ -301,7 +301,7 @@ mailgui.gui_handler = function(pref, fname, fields)
         email.clear_inbox(pname, tb)
         table.remove(pstate.inboxes, idx)
         
-        pstate.infotext = "Message from <" .. frm
+        pstate.infotext = "Message from <" .. rename.gpn(frm)
           .. "> (subject: " .. sub .. ") deleted!"
       else
         pstate.infotext = "Invalid selection index. Please select an email first."

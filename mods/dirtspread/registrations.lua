@@ -428,7 +428,10 @@ local INTERACTION_DATA = {
 
 	["default:dirt_with_rainforest_litter"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "default:dirt",
+		},
 
 		action_ordering = {"lava", "fire"},
 
@@ -445,7 +448,10 @@ local INTERACTION_DATA = {
 
 	["default:dirt_with_coniferous_litter"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "default:dirt",
+		},
 
 		action_ordering = {"lava", "fire"},
 
@@ -462,7 +468,10 @@ local INTERACTION_DATA = {
 
 	["default:dark_dirt_with_rainforest_litter"] = {
 		if_buried = "darkage:darkdirt",
-		if_covered = "darkage:darkdirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "darkage:darkdirt",
+		},
 
 		action_ordering = {"lava", "fire"},
 
@@ -479,7 +488,10 @@ local INTERACTION_DATA = {
 
 	["default:dark_dirt_with_coniferous_litter"] = {
 		if_buried = "darkage:darkdirt",
-		if_covered = "darkage:darkdirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "darkage:darkdirt",
+		},
 
 		action_ordering = {"lava", "fire"},
 
@@ -496,7 +508,10 @@ local INTERACTION_DATA = {
 
 	["default:dry_dirt_with_rainforest_litter"] = {
 		if_buried = "default:dry_dirt",
-		if_covered = "default:dry_dirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "default:dry_dirt",
+		},
 
 		action_ordering = {"lava", "water", "fire"},
 
@@ -518,7 +533,10 @@ local INTERACTION_DATA = {
 
 	["default:dry_dirt_with_coniferous_litter"] = {
 		if_buried = "default:dry_dirt",
-		if_covered = "default:dry_dirt",
+		if_covered = {
+			ignore = "group:leaves",
+			action = "default:dry_dirt",
+		},
 
 		action_ordering = {"lava", "water", "fire"},
 

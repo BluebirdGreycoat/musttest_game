@@ -983,7 +983,7 @@ local HANDLER = function(pos, node)
 				local walkable = d2.walkable
 				local liquid = d2.liquidtype or "none"
 
-				-- Builtable-to nodes cannot cover other nodes.
+				-- Buildable-to nodes cannot cover other nodes.
 				if not d2.buildable_to then
 					if walkable or liquid ~= "none" then
 						is_covered = true

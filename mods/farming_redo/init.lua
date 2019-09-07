@@ -13,12 +13,12 @@ minetest.register_craft({
 	replacements = {{"farming:cutting_board", "farming:cutting_board"}},
 })
 
--- mortar & pestle uses only 3 wheat to make flour, contast with hand-craft which uses 4 wheat for 1 flour
+-- mortar & pestle uses only 2 wheat to make flour, contast with hand-craft which uses 4 wheat for 1 flour
 minetest.register_craft({
 	type = "shapeless",
 	output = "farming:flour",
 	recipe = {
-		"farming:wheat", "farming:wheat", "farming:wheat",
+		"farming:wheat", "farming:wheat",
 		"farming:mortar_pestle"
 	},
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},

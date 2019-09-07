@@ -85,17 +85,18 @@ if not plastic.registered then
 		inventory_image = "homedecor_plastic_sheeting.png",
 	})
 
+	-- By machine: 3 leaves --> 1 oil
 	minetest.register_craft({
 		type = "compressing",
-		output = "plastic:oil_extract 2",
-		recipe = "group:leaves 6",
-		time = 6,
+		output = "plastic:oil_extract 1",
+		recipe = "group:leaves 3",
+		time = 5,
 	})
 
-	--[[
+	-- By hand: 6 leaves --> 1 oil
 	minetest.register_craft({
 		type = "shapeless",
-		output = "plastic:oil_extract 4",
+		output = "plastic:oil_extract 1",
 		recipe = {
 			"group:leaves",
 			"group:leaves",
@@ -105,7 +106,17 @@ if not plastic.registered then
 			"group:leaves",
 		},
 	})
-	--]]
+
+	-- With pestle: 4 leaves --> 1 oil
+	minetest.register_craft({
+		type = "shapeless",
+		output = "plastic:oil_extract 1",
+		recipe = {
+			"group:leaves", "group:leaves", "group:leaves", "group:leaves",
+			"farming:mortar_pestle"
+		},
+		replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
+	})
 
 	minetest.register_craft({
 		type = "cooking",

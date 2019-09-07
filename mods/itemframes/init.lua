@@ -150,16 +150,17 @@ minetest.register_node("itemframes:frame",{
 		if not itemstack then return end
 		local meta = minetest.get_meta(pos)
 		local name = clicker and clicker:get_player_name()
-		if name == meta:get_string("owner") or
-				minetest.check_player_privs(name, "protection_bypass") then
+
+		if map.is_mapping_kit(itemstack:get_name()) then
+			minetest.chat_send_player("MustTest", "Updating inventory: " .. itemstack:get_name() .. ", " .. name)
+			minetest.after(0, function() map.update_inventory_info(name) end)
+		end
+
+		if name == meta:get_string("owner") or minetest.check_player_privs(name, "protection_bypass") then
 			drop_item(pos,node)
 			local s = itemstack:take_item()
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
-		end
-		if map.is_mapping_kit(itemstack:get_name()) then
-			minetest.chat_send_player("MustTest", "Updating inventory: " .. itemstack:get_name() .. ", " .. name)
-			minetest.after(0, function() map.update_inventory_info(name) end)
 		end
 		return itemstack
 	end,
@@ -226,15 +227,16 @@ minetest.register_node("itemframes:pedestal",{
 		if not itemstack then return end
 		local meta = minetest.get_meta(pos)
 		local name = clicker and clicker:get_player_name()
-		if name == meta:get_string("owner") or
-				minetest.check_player_privs(name, "protection_bypass") then
+
+		if map.is_mapping_kit(itemstack:get_name()) then
+			minetest.after(0, function() map.update_inventory_info(name) end)
+		end
+
+		if name == meta:get_string("owner") or minetest.check_player_privs(name, "protection_bypass") then
 			drop_item(pos,node)
 			local s = itemstack:take_item()
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
-		end
-		if map.is_mapping_kit(itemstack:get_name()) then
-			minetest.after(0, function() map.update_inventory_info(name) end)
 		end
 		return itemstack
 	end,

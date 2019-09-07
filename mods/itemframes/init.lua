@@ -157,6 +157,9 @@ minetest.register_node("itemframes:frame",{
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
 		end
+		if map.is_mapping_kit(itemstack:get_name()) then
+			minetest.after(0, function() map.update_inventory_info(name) end)
+		end
 		return itemstack
 	end,
 	on_punch = function(pos,node,puncher)
@@ -228,6 +231,9 @@ minetest.register_node("itemframes:pedestal",{
 			local s = itemstack:take_item()
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
+		end
+		if map.is_mapping_kit(itemstack:get_name()) then
+			minetest.after(0, function() map.update_inventory_info(name) end)
 		end
 		return itemstack
 	end,

@@ -203,7 +203,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			local gotgold = currency.has_cash_amount(inv, "main", ads.ad_cost)
 
 			if not gotgold then
-				minetest.chat_send_player(pname, "# Server: You must be able to pay " .. ads.ad_cost .. " minegeld to register an advertisement for your shop!")
+				minetest.chat_send_player(pname, "# Server: You must be able to pay " .. ads.ad_cost .. " minegeld to register a public notice!")
 				easyvend.sound_error(pname)
 				goto error
 			end
@@ -217,7 +217,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		end
 
 		if not passport.player_registered(pname) then
-			minetest.chat_send_player(pname, "# Server: You must be a Citizen of the Colony before you can purchase or edit a shop advertisement!")
+			minetest.chat_send_player(pname, "# Server: You must be a Citizen of the Colony before you can purchase or edit a public notice!")
 			easyvend.sound_error(pname)
 			goto error
 		end
@@ -238,7 +238,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 		if fields.submit then
 			for k, v in ipairs(ads.data) do
 				if v.shop == fields.title then
-					minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
+					minetest.chat_send_player(pname, "# Server: A public notice with that title already exists! Your notice title must be unique.")
 					easyvend.sound_error(pname)
 					goto error
 				end
@@ -248,7 +248,7 @@ function ads.on_receive_submission_fields(player, formname, fields)
 			for k, v in ipairs(ads.data) do
 				if v.shop ~= original_name then
 					if v.shop == fields.title then
-						minetest.chat_send_player(pname, "# Server: A shop advertisement with that name already exists! Your shop name must be unique.")
+						minetest.chat_send_player(pname, "# Server: A public notice with that title already exists! Your notice title must be unique.")
 						easyvend.sound_error(pname)
 						goto error
 					end
@@ -437,10 +437,10 @@ function ads.generate_formspec(pos, pname, booth)
 
 	if booth then
 		formspec = formspec ..
-			"label[0,0.4;" .. minetest.formspec_escape("You are viewing advertisements for shops that were posted within " .. ads.viewrange .. " meters of this booth.") .. "]"
+			"label[0,0.4;" .. minetest.formspec_escape("You are viewing public notices that were posted within " .. ads.viewrange .. " meters of this kiosk.") .. "]"
 	else
 		formspec = formspec ..
-			"label[0,0.4;" .. minetest.formspec_escape("You are viewing advertisements for shops within " .. ads.viewrange .. " meters of your position.") .. "]"
+			"label[0,0.4;" .. minetest.formspec_escape("You are viewing public notices within " .. ads.viewrange .. " meters of your position.") .. "]"
 	end
 
 	formspec = formspec ..
@@ -476,14 +476,14 @@ function ads.generate_formspec(pos, pname, booth)
 	formspec = formspec .. ";" .. data.selected .. ";false]" ..
 		"label[0,7;You bought " .. ownadcount .. " " .. strad .. " in this list.]"
 
-	local addesc = "See your shop advertisement here!"
+	local addesc = "See your public notice here!"
 
 	local shoplist = ""
 	if data.selected and data.selected >= 1 and data.selected <= #(data.ads) then
 		if data.ads[data.selected] then
 			local ad = data.ads[data.selected]
 			formspec = formspec ..
-				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> paid for this listing.") .. "]" ..
+				"label[5.35,5.0;" .. esc("<" .. rename.gpn(ad.owner) .. "> owns this listing.") .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
 				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
 				"label[5.35,6.2;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
@@ -714,17 +714,17 @@ function ads.on_receive_fields(player, formname, fields)
 								return true
 							else
 								-- Player doesn't have privs to edit this record.
-								minetest.chat_send_player(pname, "# Server: The selected advertisement does not belong to you.")
+								minetest.chat_send_player(pname, "# Server: The selected notice does not belong to you.")
 								easyvend.sound_error(pname)
 							end
 						else
 							-- Selection index out of range.
-							minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+							minetest.chat_send_player(pname, "# Server: You must select one of your own public notices, first.")
 							easyvend.sound_error(pname)
 						end
 					else
 						-- Nothing selected.
-						minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+						minetest.chat_send_player(pname, "# Server: You must select one of your own public notices, first.")
 						easyvend.sound_error(pname)
 					end
 				elseif fields.deleterecord then
@@ -755,7 +755,7 @@ function ads.on_receive_fields(player, formname, fields)
 										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(pname) .. "> was removed.")
 										currency.add_cash(player_inv, "main", ads.ad_cost)
 									else
-										minetest.chat_send_player(pname, "# Server: Could not locate advertisement record for deletion!")
+										minetest.chat_send_player(pname, "# Server: Could not locate record for deletion!")
 										easyvend.sound_error(pname)
 									end
 								else
@@ -765,17 +765,17 @@ function ads.on_receive_fields(player, formname, fields)
 								end
 							else
 								-- Player doesn't have privs to delete this record.
-								minetest.chat_send_player(pname, "# Server: The selected advertisement does not belong to you.")
+								minetest.chat_send_player(pname, "# Server: The selected public notice does not belong to you.")
 								easyvend.sound_error(pname)
 							end
 						else
 							-- Selection index out of range.
-							minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+							minetest.chat_send_player(pname, "# Server: You must select one of your own public notices, first.")
 							easyvend.sound_error(pname)
 						end
 					else
 						-- Nothing selected.
-						minetest.chat_send_player(pname, "# Server: You must select one of your own shop advertisements, first.")
+						minetest.chat_send_player(pname, "# Server: You must select one of your own public notices, first.")
 						easyvend.sound_error(pname)
 					end
 				elseif fields.newadd then

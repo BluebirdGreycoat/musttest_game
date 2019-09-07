@@ -19,13 +19,14 @@ end
 
 function ambiance.check_water_pressure(pos, player)
 	local y = pos.y
-	local c = 30
+	local c = 45
 	local w = 0
 
 	local n = minetest.get_node(pos)
 	local d = minetest.registered_nodes[n.name] or {}
 	local g = d.groups or {}
 
+	-- Count water nodes above player, starting with position.
 	while c > 0 and g.water and g.water > 0 do
 		w = w + 1
 		c = c - 1
@@ -38,9 +39,11 @@ function ambiance.check_water_pressure(pos, player)
 	pos.y = y
 
 	local damage = 0
-	if w > 30 then
+	if w >= 45 then
+		damage = 3
+	elseif w >= 30 then
 		damage = 2
-	elseif w > 15 then
+	elseif w >= 15 then
 		damage = 1
 	end
 

@@ -57,6 +57,16 @@ if not grinder.crafts_registered then
       time = 5,
     })
 
+		minetest.register_craft({
+			type = "shapeless",
+			output = "farming:flour",
+			recipe = {
+				"farming:seed_wheat", "farming:seed_wheat",
+				"farming:mortar_pestle"
+			},
+			replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
+		})
+
     -- Recipes for desert stone & cobble.
 		--[[
     minetest.register_craft({

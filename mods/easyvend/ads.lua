@@ -761,8 +761,10 @@ function ads.on_receive_fields(player, formname, fields)
 
 									-- Search for record by owner/title and delete it.
 									local found = false
+									local ad_real_owner = ""
 									for k, v in ipairs(ads.data) do
 										if v.shop == title and v.owner == owner then
+											ad_real_owner = v.owner
 											table.remove(ads.data, k)
 											found = true
 											break
@@ -770,7 +772,7 @@ function ads.on_receive_fields(player, formname, fields)
 									end
 
 									if found then
-										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(pname) .. "> was removed.")
+										minetest.chat_send_player(pname, "# Server: Advertisement titled: \"" .. title .. "\", owned by <" .. rename.gpn(ad_real_owner) .. "> was removed.")
 										currency.add_cash(player_inv, "main", ads.ad_cost)
 									else
 										minetest.chat_send_player(pname, "# Server: Could not locate record for deletion!")

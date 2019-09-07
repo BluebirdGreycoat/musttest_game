@@ -86,7 +86,8 @@ ambiance.globalstep_scuba = function(dtime)
 								ambiance.particles_underwater(pos)
 								ambiance.particles_underwater({x=pos.x, y=pos.y+1, z=pos.z})
 
-								--ambiance.check_water_pressure(vector.round(pos), v)
+								-- Water-shaft makers will H8TE this!
+								ambiance.check_water_pressure(vector.round(pos), v)
 
 								sprint.add_stamina(v, -3)
             else

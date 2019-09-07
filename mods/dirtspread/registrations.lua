@@ -1,6 +1,10 @@
 
 -- File is reloadable.
 
+-- Nodes update to their environment every 30 seconds to 15 minutes.
+local MIN_TIME = 1--30
+local MAX_TIME = 5--60*15
+
 local INTERACTION_DATA = {
 	["default:dirt"] = {
 		-- Node turns to this if buried (node surrounded by nodes that block light).
@@ -872,12 +876,6 @@ local INTERACTION_DATA = {
 
 -- Copy.
 INTERACTION_DATA["default:dirt_with_grass_footsteps"] = INTERACTION_DATA["default:dirt_with_grass"]
-
-
-
--- Nodes update to their environment every 30 seconds to 15 minutes.
-local MIN_TIME = 1--30
-local MAX_TIME = 5--60*15
 
 
 

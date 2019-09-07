@@ -271,6 +271,33 @@ end
 
 
 function map.on_place(itemstack, placer, pt)
+	if not placer or not placer:is_player() then
+		return
+	end
+	if pt.type ~= "node" then
+		return
+	end
+
+	local node = minetest.get_node(pt.under)
+	local ndef = minetest.registered_nodes[node.name]
+	if not ndef then
+		return
+	end
+
+	if ndef.on_rightclick and not placer:get_player_control().sneak then
+		local fakestack = ItemStack("map:mapping_kit")
+		local newstack = ndef.on_rightclick(under, node, placer, fakestack, pt) or fakestack
+		if newstack then
+			if newstack:get_name() == "map:mapping_kit" then
+				itemstack:set_count(newstack:get_count())
+			else
+				-- The callback changed our itemstack completely.
+				return newstack
+			end
+		end
+		return
+	end
+
 	local fakestack = ItemStack("map:mapping_kit")
 	local retstack, success = minetest.item_place(fakestack, placer, pt)
 	if success then

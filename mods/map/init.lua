@@ -285,17 +285,7 @@ function map.on_place(itemstack, placer, pt)
 	end
 
 	if ndef.on_rightclick and not placer:get_player_control().sneak then
-		local fakestack = ItemStack("map:mapping_kit")
-		local newstack = ndef.on_rightclick(pt.under, node, placer, fakestack, pt) or fakestack
-		if newstack then
-			if newstack:get_name() == "map:mapping_kit" then
-				itemstack:set_count(newstack:get_count())
-			else
-				-- The callback changed our itemstack completely.
-				return newstack
-			end
-		end
-		return
+		return ndef.on_rightclick(pt.under, node, placer, fakestack, pt) or itemstack
 	end
 
 	local fakestack = ItemStack("map:mapping_kit")

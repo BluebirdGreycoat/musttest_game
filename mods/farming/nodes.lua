@@ -63,7 +63,7 @@ minetest.register_node("farming:soil", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil.png", "default_dirt.png"},
 	drop = "default:dirt",
-	groups = utility.dig_groups("dirt", {not_in_creative_inventory = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, hoed_dirt_type = 1, soil = 2, grassland = 1, falling_node = 1, field = 1, want_notify = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("dirt", {not_in_creative_inventory = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, hoed_dirt_type = 1, soil = 2, grassland = 1, falling_node = 1, field = 1, want_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	soil = {
 		base = "default:dirt",
@@ -103,7 +103,7 @@ minetest.register_node("farming:soil_wet", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil_wet.png", "default_dirt.png^farming_soil_wet_side.png"},
 	drop = "default:dirt",
-	groups = utility.dig_groups("dirt", {not_in_creative_inventory = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, hoed_dirt_type = 1, soil = 3, wet = 1, grassland = 1, falling_node = 1, field = 1, want_notify = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("dirt", {not_in_creative_inventory = 1, dirt_type = 1, non_raw_dirt_type = 1, non_sterile_dirt_type = 1, hoed_dirt_type = 1, soil = 3, wet = 1, grassland = 1, falling_node = 1, field = 1, want_notify = 1}),
 	sounds = default.node_sound_dirt_defaults(),
 	soil = {
 		base = "default:dirt",
@@ -151,7 +151,7 @@ minetest.register_node("farming:desert_sand_soil", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
 	tiles = {"farming_desert_sand_soil.png", "default_desert_sand.png"},
-	groups = utility.dig_groups("sand", {not_in_creative_inventory = 1, falling_node = 1, sand = 1, soil = 2, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("sand", {not_in_creative_inventory = 1, falling_node = 1, sand = 1, soil = 2, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {
 		base = "default:desert_sand",
@@ -191,7 +191,7 @@ minetest.register_node("farming:desert_sand_soil_wet", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
 	tiles = {"farming_desert_sand_soil_wet.png", "farming_desert_sand_soil_wet_side.png"},
-	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, not_in_creative_inventory = 1, soil = 3, wet = 1, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1, dirtspread_notify = 1}),
+	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, not_in_creative_inventory = 1, soil = 3, wet = 1, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {
 		base = "default:desert_sand",

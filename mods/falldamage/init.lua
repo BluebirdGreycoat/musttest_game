@@ -156,33 +156,6 @@ local function register_node(name, def2)
 		end
 	end
 
-	if def.groups.dirtspread_notify and def.groups.dirtspread_notify > 0 then
-		if def.on_timer then
-			local old = def.on_timer
-			def.on_timer = function(pos, elapsed)
-				dirtspread.on_timer(pos, elapsed)
-				return old(pos, elapsed)
-			end
-		else
-			def.on_timer = function(pos, elapsed)
-				dirtspread.on_timer(pos, elapsed)
-			end
-		end
-
-		-- TNT uses voxelmanip, need to hook the `on_blast` method.
-		if def.on_blast then
-			local old = def.on_blast
-			def.on_blast = function(pos, intensity)
-				dirtspread.on_environment(pos)
-				return old(pos, intensity)
-			end
-		else
-			def.on_blast = function(pos, intensity)
-				dirtspread.on_environment(pos)
-			end
-		end
-	end
-
 	--clumpfall.update_nodedef(name, def)
 
 	falldamage.apply_range_checks(def)

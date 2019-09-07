@@ -207,6 +207,10 @@ end
 
 
 function dirtspread.register_active_block(name, data)
+	-- Update node definition. Node must already have been registered!
+	local ndef = minetest.registered_nodes[name]
+	assert(ndef)
+
 	local newdata = {
 		min_time = data.min_time or 1,
 		max_time = data.max_time or 1,
@@ -216,6 +220,44 @@ function dirtspread.register_active_block(name, data)
 	assert(newdata.max_time >= 0)
 	assert(newdata.min_time <= newdata.max_time)
 	dirtspread.blocks[name] = newdata
+
+	-- Node must be added to the `dirtspread_notify` group.
+	local g = table.copy(ndef.groups or {})
+	g.dirtspread_notify = 1
+
+	-- Hook `on_timer`.
+	local on_timer
+	if ndef.on_timer then
+		local old = ndef.on_timer
+		on_timer = function(pos, elapsed)
+			dirtspread.on_timer(pos, elapsed)
+			return old(pos, elapsed)
+		end
+	else
+		on_timer = function(pos, elapsed)
+			dirtspread.on_timer(pos, elapsed)
+		end
+	end
+
+	-- TNT uses voxelmanip, need to hook the `on_blast` method.
+	local on_blast
+	if ndef.on_blast then
+		local old = ndef.on_blast
+		on_blast = function(pos, intensity)
+			dirtspread.on_environment(pos)
+			return old(pos, intensity)
+		end
+	else
+		on_blast = function(pos, intensity)
+			dirtspread.on_environment(pos)
+		end
+	end
+
+	minetest.override_item(name, {
+		groups = g,
+		on_timer = on_timer,
+		on_blast = on_blast,
+	})
 end
 
 

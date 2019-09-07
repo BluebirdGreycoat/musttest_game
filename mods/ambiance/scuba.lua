@@ -17,6 +17,48 @@ end
 
 
 
+function ambiance.check_water_pressure(pos, player)
+	local y = pos.y
+	local c = 30
+	local w = 0
+
+	local n = minetest.get_node(pos)
+	local d = minetest.registered_nodes[n.name] or {}
+	local g = d.groups or {}
+
+	while c > 0 and g.water and g.water > 0 do
+		w = w + 1
+		c = c - 1
+		pos.y = pos.y + 1
+		n = minetest.get_node(pos)
+		d = minetest.registered_nodes[n.name] or {}
+		g = d.groups or {}
+	end
+
+	pos.y = y
+
+	local damage = 0
+	if w > 30 then
+		damage = 2
+	elseif w > 15 then
+		damage = 1
+	end
+
+	if damage > 0 then
+		if player:get_hp() > 0 then
+			player:set_hp(player:get_hp() - damage)
+			if player:get_hp() <= 0 then
+				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> was wrecked by water pressure.")
+			end
+		end
+	end
+
+	-- Return water column count.
+	return w
+end
+
+
+
 local scuba_timer = 0
 local scuba_step = 1
 ambiance.globalstep_scuba = function(dtime)
@@ -40,6 +82,8 @@ ambiance.globalstep_scuba = function(dtime)
                 end
 								ambiance.particles_underwater(pos)
 								ambiance.particles_underwater({x=pos.x, y=pos.y+1, z=pos.z})
+
+								--ambiance.check_water_pressure(vector.round(pos), v)
 
 								sprint.add_stamina(v, -3)
             else

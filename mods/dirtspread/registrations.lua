@@ -449,7 +449,7 @@ local INTERACTION_DATA = {
 	["default:dirt_with_rainforest_litter"] = {
 		if_buried = "default:dirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:tree"},
 			action = "default:dirt",
 		},
 

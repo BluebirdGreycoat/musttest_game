@@ -13,7 +13,7 @@ local INTERACTION_DATA = {
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
 			-- Note: non-walkable/buildable_to nodes are always ignored by default.
-			ignore = {"group:snow", "group:leaves"},
+			ignore = {"group:snow", "group:leaves", "group:fence", "group:door", "group:trapdoor"},
 		},
 
 		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
@@ -140,7 +140,11 @@ local INTERACTION_DATA = {
 
 	["default:dirt_with_grass"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+
+		if_covered = {
+			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			action = "default:dirt",
+		},
 
 		action_ordering = {
 			"lava",
@@ -163,7 +167,6 @@ local INTERACTION_DATA = {
 
 		when_snow_near = {
 			nodenames = "group:snow",
-			if_above = "default:dirt_with_snow",
 			if_adjacent_side = "default:dirt_with_dry_grass",
 			require_not_covered = true,
 		},
@@ -183,7 +186,11 @@ local INTERACTION_DATA = {
 
 	["default:dirt_with_dry_grass"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+
+		if_covered = {
+			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			action = "default:dirt",
+		},
 
 		action_ordering = {
 			"lava",
@@ -224,7 +231,11 @@ local INTERACTION_DATA = {
 
 	["moregrass:darkgrass"] = {
 		if_buried = "default:dirt",
-		if_covered = "default:dirt",
+
+		if_covered = {
+			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			action = "default:dirt",
+		},
 
 		action_ordering = {
 			"lava",
@@ -275,7 +286,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:fence", "group:door", "group:trapdoor"},
 			action = "default:dirt",
 		},
 

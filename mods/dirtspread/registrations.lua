@@ -961,17 +961,24 @@ local HANDLER = function(pos, node)
 				end
 			end
 		elseif tt == "table" then
+			local d
+			local g2
 			for _, n in ipairs(name) do
 				if nn == n then
 					return true
 				elseif n:find("^group:") then
 					local g = n:sub(7)
-					local d = minetest.registered_nodes[nn]
-					if d then
-						local g2 = d.groups or {}
-						if g2[g] and g2[g] > 0 then
-							return true
-						end
+
+					-- No mater how many groups/names to test against, get the node def and groups only once.
+					if not d then
+						d = minetest.registered_nodes[nn]
+					end
+					if not g2 then
+						g2 = d and d.groups or {}
+					end
+
+					if g2[g] and g2[g] > 0 then
+						return true
 					end
 				end
 			end

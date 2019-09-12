@@ -29,9 +29,9 @@ local INTERACTION_DATA = {
 			"snow2",
 			"sand",
 			"flora",
+			"tree",
 			"leaves",
 			"grass",
-			"tree",
 		},
 
 		-- The key name doesn't actually matter, it can be anything,

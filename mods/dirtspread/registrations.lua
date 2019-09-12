@@ -13,7 +13,7 @@ local INTERACTION_DATA = {
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
 			-- Note: non-walkable/buildable_to nodes are always ignored by default.
-			ignore = {"group:snow", "group:leaves", "group:fence", "group:door", "group:trapdoor"},
+			ignore = {"group:snow", "group:leaves", "group:fence", "group:door", "group:trapdoor", "group:tree"},
 		},
 
 		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
@@ -31,6 +31,7 @@ local INTERACTION_DATA = {
 			"flora",
 			"leaves",
 			"grass",
+			"tree",
 		},
 
 		-- The key name doesn't actually matter, it can be anything,
@@ -134,6 +135,14 @@ local INTERACTION_DATA = {
 				else
 					return "default:dirt_with_coniferous_litter"
 				end
+			end,
+		},
+
+		when_tree_near = {
+			nodenames = "group:tree",
+
+			if_above = function(pos, light, loc, name, def, groups)
+				return "default:dirt_with_rainforest_litter"
 			end,
 		},
 	},

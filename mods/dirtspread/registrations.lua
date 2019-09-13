@@ -1038,7 +1038,7 @@ local HANDLER = function(pos, node)
 		end
 	end
 
-	-- Action to take if the node is covered by liquid or walkable.
+	-- Action to take if the node is covered by liquid or walkable (and not ignored).
 	if interaction_data.if_covered and is_covered then
 		local dt = interaction_data.if_covered
 		if type(dt) == "string" then
@@ -1069,10 +1069,10 @@ local HANDLER = function(pos, node)
 								node.name = ret
 								minetest.add_node(pos, node)
 								minetest.check_for_falling(pos)
-								return false, true -- Don't wait, done.
+								return -- Don't wait, done.
 							end
 						elseif wait then
-							return true, false -- Wait, not done.
+							return true-- Wait, not done.
 						end
 					end
 				end

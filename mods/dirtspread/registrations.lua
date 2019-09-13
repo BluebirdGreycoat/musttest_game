@@ -13,7 +13,10 @@ local INTERACTION_DATA = {
 		if_covered = {
 			-- Ignore these nodes when checking whether node is covered by something.
 			-- Note: non-walkable/buildable_to nodes are always ignored by default.
-			ignore = {"group:snow", "group:leaves", "group:fence", "group:door", "group:trapdoor", "group:tree"},
+			ignore = {
+				"group:snow", "group:leaves", "group:fence", "group:door", "group:trapdoor", "group:tree",
+				"xdecor:stonepath",
+			},
 		},
 
 		-- If present, this table informs the algorithm what order to apply `when_*_near` checks.
@@ -151,7 +154,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 
 		if_covered = {
-			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			ignore = {"group:fence", "group:door", "group:trapdoor", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -197,7 +200,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 
 		if_covered = {
-			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			ignore = {"group:fence", "group:door", "group:trapdoor", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -242,7 +245,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:dirt",
 
 		if_covered = {
-			ignore = {"group:fence", "group:door", "group:trapdoor"},
+			ignore = {"group:fence", "group:door", "group:trapdoor", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -253,6 +256,13 @@ local INTERACTION_DATA = {
 			"cold",
 			"sand",
 			"dry",
+			"stonepath",
+			"junglegrass",
+		},
+
+		when_junglegrass_near = {
+			nodenames = "default:junglegrass",
+			if_above = "default:dirt_with_rainforest_litter",
 		},
 
 		when_lava_near = {
@@ -289,13 +299,18 @@ local INTERACTION_DATA = {
 			if_nearby = "default:dirt_with_grass",
 			require_not_covered = true,
 		},
+
+		when_stonepath_near = {
+			nodenames = "xdecor:stonepath",
+			if_above = "default:dirt_with_grass",
+		},
 	},
 
 	["default:dirt_with_snow"] = {
 		if_buried = "default:dirt",
 
 		if_covered = {
-			ignore = {"group:snow", "group:fence", "group:door", "group:trapdoor"},
+			ignore = {"group:snow", "group:fence", "group:door", "group:trapdoor", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -365,7 +380,7 @@ local INTERACTION_DATA = {
 
 	["default:dark_dirt_with_snow"] = {
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:fence", "group:door", "group:trapdoor", "xdecor:stonepath"},
 			action = "darkage:darkdirt",
 		},
 
@@ -424,7 +439,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:dry_dirt",
 
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "default:dry_dirt",
 		},
 
@@ -449,7 +464,7 @@ local INTERACTION_DATA = {
 	["default:dirt_with_rainforest_litter"] = {
 		if_buried = "default:dirt",
 		if_covered = {
-			ignore = {"group:leaves", "group:tree"},
+			ignore = {"group:leaves", "group:tree", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -469,7 +484,7 @@ local INTERACTION_DATA = {
 	["default:dirt_with_coniferous_litter"] = {
 		if_buried = "default:dirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "default:dirt",
 		},
 
@@ -489,7 +504,7 @@ local INTERACTION_DATA = {
 	["default:dark_dirt_with_rainforest_litter"] = {
 		if_buried = "darkage:darkdirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "darkage:darkdirt",
 		},
 
@@ -509,7 +524,7 @@ local INTERACTION_DATA = {
 	["default:dark_dirt_with_coniferous_litter"] = {
 		if_buried = "darkage:darkdirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "darkage:darkdirt",
 		},
 
@@ -529,7 +544,7 @@ local INTERACTION_DATA = {
 	["default:dry_dirt_with_rainforest_litter"] = {
 		if_buried = "default:dry_dirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "default:dry_dirt",
 		},
 
@@ -554,7 +569,7 @@ local INTERACTION_DATA = {
 	["default:dry_dirt_with_coniferous_litter"] = {
 		if_buried = "default:dry_dirt",
 		if_covered = {
-			ignore = "group:leaves",
+			ignore = {"group:leaves", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 			action = "default:dry_dirt",
 		},
 
@@ -578,7 +593,10 @@ local INTERACTION_DATA = {
 
 	["default:dry_dirt_with_dry_grass"] = {
 		if_buried = "default:dry_dirt",
-		if_covered = "default:dry_dirt",
+		if_covered = {
+			ignore = {"group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
+			action = "default:dry_dirt",
+		},
 
 		action_ordering = {"lava", "water", "fire"},
 
@@ -659,6 +677,7 @@ local INTERACTION_DATA = {
 		when_grass_near = {
 			nodenames = {"moregrass:darkgrass", "default:dirt_with_grass"},
 			if_adjacent_side = "default:permafrost_with_moss",
+			require_not_covered = true,
 		},
 	},
 
@@ -672,6 +691,7 @@ local INTERACTION_DATA = {
 				"cavestuff:cobble_with_algae",
 				"cavestuff:cobble_with_salt",
 				"cavestuff:cobble",
+				"group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
 			},
 			action = "default:permafrost",
 		},
@@ -709,7 +729,7 @@ local INTERACTION_DATA = {
 		if_buried = "default:permafrost",
 
 		if_covered = {
-			ignore = "group:snow",
+			ignore = {"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath"},
 		},
 
 		action_ordering = {
@@ -745,6 +765,7 @@ local INTERACTION_DATA = {
 				"cavestuff:cobble_with_algae",
 				"cavestuff:cobble_with_salt",
 				"cavestuff:cobble",
+				"group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
 			},
 			action = "default:permafrost_with_stones",
 		},
@@ -790,6 +811,7 @@ local INTERACTION_DATA = {
 				"cavestuff:cobble_with_algae",
 				"cavestuff:cobble_with_salt",
 				"cavestuff:cobble",
+				"group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
 			},
 			action = "default:permafrost",
 		},
@@ -799,6 +821,7 @@ local INTERACTION_DATA = {
 			"fire",
 			"snow",
 			"cobble",
+			"junglegrass",
 		},
 
 		when_lava_near = {
@@ -818,6 +841,11 @@ local INTERACTION_DATA = {
 			require_not_covered = true,
 		},
 
+		when_junglegrass_near = {
+			nodenames = {"default:junglegrass", "group:grass"},
+			if_above = "default:permafrost_with_moss_and_stones",
+		},
+
 		when_cobble_near = {
 			nodenames = {
 				"default:cobble",
@@ -835,7 +863,9 @@ local INTERACTION_DATA = {
 		if_buried = "default:permafrost",
 
 		if_covered = {
-			ignore = {"group:snow"},
+			ignore = {
+				"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
+			},
 			action = "default:permafrost_with_stones",
 		},
 

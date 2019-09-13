@@ -169,9 +169,13 @@ function dirtspread.periodic_execute()
 	local endx = dirtspread.index
 	local count = 0
 
-	-- Update just 10 nodes per run.
+	-- Update just 50 nodes per run.
 	-- This spreads out the updates over time.
-	while endx > 0 and count < 10 do
+	if endx > 0 then
+		table.shuffle(dirtspread.positions, 1, endx)
+	end
+
+	while endx > 0 and count < 50 do
 		dirtspread.on_notify_around(dirtspread.positions[endx])
 		endx = endx - 1
 		count = count + 1

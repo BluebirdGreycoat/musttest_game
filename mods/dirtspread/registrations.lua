@@ -1050,11 +1050,31 @@ local HANDLER = function(pos, node)
 			end
 		elseif type(dt) == "table" then
 			if dt.action then
-				if dt.action ~= node.name then
-					node.name = dt.action
-					minetest.add_node(pos, node)
-					minetest.check_for_falling(pos)
-					return
+				if type(dt.action) == "string" then
+					if dt.action ~= node.name then
+						node.name = dt.action
+						minetest.add_node(pos, node)
+						minetest.check_for_falling(pos)
+						return
+					end
+				elseif type(dt.action) == "function" then
+					local p2 = {x=pos.x, y=pos.y+1, z=pos.z}
+					local n2 = minetest.get_node(p2)
+					local d2 = minetest.registered_nodes[n2.name]
+					local g2 = d2 and d2.groups or {}
+					if d2 then
+						local ret, wait = dt.action(pos, light_above, p2, n2.name, d2, g2)
+						if ret and ret ~= "" then
+							if node.name ~= ret then
+								node.name = ret
+								minetest.add_node(pos, node)
+								minetest.check_for_falling(pos)
+								return false, true -- Don't wait, done.
+							end
+						elseif wait then
+							return true, false -- Wait, not done.
+						end
+					end
 				end
 			end
 		end

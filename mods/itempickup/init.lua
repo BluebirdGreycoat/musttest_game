@@ -119,6 +119,7 @@ end
 
 -- Anything not listed here is assumed to have an XP value of 0.
 -- Be carefull not to include nodes that can be dug over and over again.
+-- This is a list of *drops* that, when obtained, increase XP.
 local drop_xp_list = {
 	["akalin:lump"] = 1.0,
 	["alatro:lump"] = 1.0,
@@ -152,8 +153,7 @@ for k, v in pairs(drop_xp_list) do
 	drop_xp_list[k] = v * drop_xp_multiplier
 end
 
--- Stuff listed here is what player can actually get, if XP == max.
--- Be carefull not to include nodes that can be dug over and over again.
+-- Stuff listed here is what player can actually get, if XP is near max.
 local drop_extra_item_list = {
 	["akalin:lump"] = true,
 	["alatro:lump"] = true,
@@ -187,6 +187,61 @@ local drop_extra_item_list = {
 	["zinc:lump"] = true,
 	["sulfur:lump"] = true,
 }
+
+-- List of nodes capable of providing extra drops.
+-- Player can only get extra drop for mineral XP if they dug one of these nodes.
+-- Also, node must be one of these in order to increase mining XP.
+local drop_node_list = {
+	["default:stone_with_coal"] = true,
+	["default:desert_stone_with_coal"] = true,
+	["default:stone_with_iron"] = true,
+	["default:stone_with_copper"] = true,
+	["default:desert_stone_with_copper"] = true,
+	["default:desert_stone_with_iron"] = true,
+	["default:desert_stone_with_diamond"] = true,
+	["default:stone_with_mese"] = true,
+	["default:stone_with_gold"] = true,
+	["default:stone_with_diamond"] = true,
+
+	["rackstone:redrack_with_coal"] = true,
+	["rackstone:redrack_with_iron"] = true,
+	["rackstone:redrack_with_copper"] = true,
+	["rackstone:redrack_with_tin"] = true,
+
+	["akalin:ore"] = true,
+	["alatro:ore"] = true,
+	["arol:ore"] = true,
+	["talinite:ore"] = true,
+
+	["titanium:ore"] = true,
+	["uranium:ore"] = true,
+	["sulfur:ore"] = true,
+	["kalite:ore"] = true,
+	["chromium:ore"] = true,
+	["zinc:ore"] = true,
+	["lead:ore"] = true,
+
+	["glowstone:luxore"] = true,
+	["glowstone:minerals"] = true,
+	["glowstone:glowstone"] = true,
+
+	["moreores:mineral_tin"] = true,
+	["moreores:mineral_silver"] = true,
+	["moreores:mineral_mithril"] = true,
+
+	["gems:ruby_ore"] = true,
+	["gems:emerald_ore"] = true,
+	["gems:sapphire_ore"] = true,
+	["gems:amethyst_ore"] = true,
+
+	["mese_crystals:mese_crystal_ore1"] = true,
+	["mese_crystals:mese_crystal_ore2"] = true,
+	["mese_crystals:mese_crystal_ore3"] = true,
+	["mese_crystals:mese_crystal_ore4"] = true,
+
+	["quartz:quartz_ore"] = true,
+}
+
 
 
 function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
@@ -355,7 +410,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 
 			-- Reward player more when Mineral XP is higher.
 			-- But only for ore nodes.
-			if ngroups.xp_enabled_ore and ngroups.xp_enabled_ore > 0 then
+			if drop_node_list[node.name] then
 				-- Both X's should be in range [0, 1].
 				local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
 				local x2 = math.random(0, 10000)/10000
@@ -368,13 +423,15 @@ function itempickup.handle_node_drops(pos, drops, digger)
 			end
 
 			-- Increase player's XP if not at max yet.
-			if digxp < xp.digxp_max then
-				digxp = digxp + (value * xp_gain_multiplier)
-				if digxp > xp.digxp_max then
-					digxp = xp.digxp_max
+			if drop_node_list[node.name] then
+				if digxp < xp.digxp_max then
+					digxp = digxp + (value * xp_gain_multiplier)
+					if digxp > xp.digxp_max then
+						digxp = xp.digxp_max
+					end
+					xp.set_xp(pname, "digxp", digxp)
+					hud_clock.update_xp(pname)
 				end
-				xp.set_xp(pname, "digxp", digxp)
-				hud_clock.update_xp(pname)
 			end
 		end -- If item in drop_xp list.
 	end

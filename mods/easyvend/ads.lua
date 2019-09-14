@@ -767,6 +767,7 @@ function ads.on_receive_fields(player, formname, fields)
 											ad_real_owner = v.owner
 											table.remove(ads.data, k)
 											found = true
+											ads.dirty = true
 											break
 										end
 									end

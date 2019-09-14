@@ -856,6 +856,7 @@ function ads.load_data()
     local db = minetest.deserialize(data)
     file:close()
     if type(db) == "table" then
+			table.shuffle(db)
       ads.data = db
 			ads.dirty = false
 			ads.players = {}

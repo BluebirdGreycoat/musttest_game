@@ -120,7 +120,7 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "grinding",
-  output = 'dusts:diamond',
+  output = 'dusts:diamond 2',
   recipe = 'dusts:diamond_shard',
   time = 15,
 })

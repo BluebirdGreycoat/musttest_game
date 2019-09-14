@@ -7,7 +7,7 @@
 
 dirtspread = dirtspread or {}
 dirtspread.modpath = minetest.get_modpath("dirtspread")
-dirtspread.delay = 0.5
+dirtspread.delay = 1.5
 dirtspread.index = dirtspread.index or 0
 dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 dirtspread.blocks = dirtspread.blocks or {}

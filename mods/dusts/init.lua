@@ -60,26 +60,6 @@ minetest.register_alias("grinder:mithril_dust",  "dusts:mithril")
 
 
 minetest.register_craft({
-  output = "default:diamond",
-  recipe = {
-    {"dusts:diamond_shard", "dusts:diamond_shard", "dusts:diamond_shard"},
-    {"dusts:diamond_shard", "dusts:diamond_shard", "dusts:diamond_shard"},
-    {"dusts:diamond_shard", "dusts:diamond_shard", "dusts:diamond_shard"},
-  }
-})
-
-minetest.register_craft({
-  output = "dusts:diamond_shard",
-  recipe = {
-    {"dusts:diamond", "dusts:diamond", "dusts:diamond"},
-    {"dusts:diamond", "dusts:diamond", "dusts:diamond"},
-    {"dusts:diamond", "dusts:diamond", "dusts:diamond"},
-  }
-})
-
-
-
-minetest.register_craft({
   type = "grinding",
   output = 'dusts:iron 2',
   recipe = 'default:iron_lump',
@@ -140,14 +120,14 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "grinding",
-  output = 'dusts:diamond 9',
+  output = 'dusts:diamond',
   recipe = 'dusts:diamond_shard',
   time = 15,
 })
 
 minetest.register_craft({
   type = "grinding",
-  output = 'dusts:diamond_shard 9',
+  output = 'dusts:diamond_shard 3',
   recipe = 'default:diamond',
   time = 15,
 })

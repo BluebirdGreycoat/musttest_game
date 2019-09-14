@@ -72,9 +72,9 @@ end
 minetest.register_craft({
 	output = "lightsplus:light",
 	recipe = {
-		{'plastic:plastic_sheeting', 'dusts:diamond', 'plastic:plastic_sheeting'},
-		{'plastic:plastic_sheeting', 'xdecor:lantern', 'plastic:plastic_sheeting'},
-		{'plastic:plastic_sheeting', 'default:glass', 'plastic:plastic_sheeting'},
+		{'plastic:plastic_sheeting', 'plastic:plastic_sheeting', 'plastic:plastic_sheeting'},
+		{'plastic:plastic_sheeting', 'moreblocks:super_glow_glass', 'plastic:plastic_sheeting'},
+		{'plastic:plastic_sheeting', 'plastic:plastic_sheeting', 'plastic:plastic_sheeting'},
 	}
 })
 

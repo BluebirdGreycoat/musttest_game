@@ -1,9 +1,9 @@
 
 -- File is reloadable.
 
--- Nodes update to their environment every 30 seconds to 15 minutes.
-local MIN_TIME = 30
-local MAX_TIME = 60*15
+-- Nodes update to their environment every 5 minutes to 60 minutes.
+local MIN_TIME = 60*5
+local MAX_TIME = 60*60
 
 local INTERACTION_DATA = {
 	["default:dirt"] = {

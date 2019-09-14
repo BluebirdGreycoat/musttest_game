@@ -259,6 +259,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	if not ndef then
 		return
 	end
+	local ngroups = ndef.groups or {}
 
 	-- We have to get tool capabilities directly from the itemdef in order to access custom data.
 	-- If tool capabilities are not present, use those from the HAND. Note: not doing this
@@ -353,7 +354,8 @@ function itempickup.handle_node_drops(pos, drops, digger)
 			local digxp = xp.get_xp(pname, "digxp")
 
 			-- Reward player more when Mineral XP is higher.
-			do
+			-- But only for ore nodes.
+			if ngroups.xp_enabled_ore and ngroups.xp_enabled_ore > 0 then
 				-- Both X's should be in range [0, 1].
 				local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
 				local x2 = math.random(0, 10000)/10000

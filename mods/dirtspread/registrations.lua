@@ -940,6 +940,110 @@ local INTERACTION_DATA = {
 			if_nearby = "air",
 		},
 	},
+
+	["cavestuff:cobble_with_moss"] = {
+		action_ordering = {"lava", "fire", "snow"},
+
+		if_covered = {
+			ignore = {
+				"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
+			},
+			action = "default:cobble",
+		},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+
+		when_snow_nearby = {
+			nodenames = "group:snow",
+			if_nearby = "default:cobble",
+		},
+	},
+
+	["cavestuff:cobble_with_lichen"] = {
+		action_ordering = {"lava", "fire", "snow"},
+
+		if_covered = {
+			ignore = {
+				"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
+			},
+			action = "default:cobble",
+		},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+
+		when_snow_nearby = {
+			nodenames = "group:snow",
+			if_nearby = "default:cobble",
+		},
+	},
+
+	["cavestuff:cobble_with_algae"] = {
+		action_ordering = {"lava", "fire", "snow"},
+
+		if_covered = {
+			ignore = {
+				"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
+			},
+			action = "default:cobble",
+		},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+
+		when_snow_nearby = {
+			nodenames = "group:snow",
+			if_nearby = "default:cobble",
+		},
+	},
+
+	["cavestuff:cobble_with_salt"] = {
+		action_ordering = {"lava", "fire", "snow"},
+
+		if_covered = {
+			ignore = {
+				"group:snow", "group:door", "group:trapdoor", "group:fence", "xdecor:stonepath",
+			},
+			action = "default:cobble",
+		},
+
+		when_lava_nearby = {
+			nodenames = {"group:lava", "group:rockmelt"},
+			if_nearby = "fire:basic_flame",
+		},
+
+		when_fire_nearby = {
+			nodenames = "group:fire",
+			if_nearby = "air",
+		},
+
+		when_snow_nearby = {
+			nodenames = "group:snow",
+			if_nearby = "default:cobble",
+		},
+	},
 }
 
 -- Copy.

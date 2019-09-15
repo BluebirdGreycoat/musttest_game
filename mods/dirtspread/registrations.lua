@@ -953,12 +953,12 @@ local INTERACTION_DATA = {
 
 		when_lava_nearby = {
 			nodenames = {"group:lava", "group:rockmelt"},
-			if_nearby = "fire:basic_flame",
+			if_nearby = "default:cobble",
 		},
 
 		when_fire_nearby = {
 			nodenames = "group:fire",
-			if_nearby = "air",
+			if_nearby = "default:cobble",
 		},
 
 		when_snow_nearby = {
@@ -979,12 +979,12 @@ local INTERACTION_DATA = {
 
 		when_lava_nearby = {
 			nodenames = {"group:lava", "group:rockmelt"},
-			if_nearby = "fire:basic_flame",
+			if_nearby = "default:cobble",
 		},
 
 		when_fire_nearby = {
 			nodenames = "group:fire",
-			if_nearby = "air",
+			if_nearby = "default:cobble",
 		},
 
 		when_snow_nearby = {
@@ -1005,12 +1005,12 @@ local INTERACTION_DATA = {
 
 		when_lava_nearby = {
 			nodenames = {"group:lava", "group:rockmelt"},
-			if_nearby = "fire:basic_flame",
+			if_nearby = "default:cobble",
 		},
 
 		when_fire_nearby = {
 			nodenames = "group:fire",
-			if_nearby = "air",
+			if_nearby = "default:cobble",
 		},
 
 		when_snow_nearby = {
@@ -1031,12 +1031,12 @@ local INTERACTION_DATA = {
 
 		when_lava_nearby = {
 			nodenames = {"group:lava", "group:rockmelt"},
-			if_nearby = "fire:basic_flame",
+			if_nearby = "default:cobble",
 		},
 
 		when_fire_nearby = {
 			nodenames = "group:fire",
-			if_nearby = "air",
+			if_nearby = "default:cobble",
 		},
 
 		when_snow_nearby = {

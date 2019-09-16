@@ -621,7 +621,7 @@ end
 
 
 -- Running gag.
-funnction memorandum.check_explosive_runes(pname, pos, author, text)
+function memorandum.check_explosive_runes(pname, pos, author, text)
 	-- Validate arguments.
 	if type(pname) ~= "string" or type(pos) ~= "table" or type(author) ~= "string" or type(text) ~= "string" then
 		return

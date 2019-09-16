@@ -646,7 +646,7 @@ function memorandum.check_explosive_runes(pname, pos, author, text)
 			radius = math.random(1, math.random(1, 4)),
 			damage_radius = math.random(5, 15),
 			ignore_protection = false,
-			disable_drops = false,
+			disable_drops = true,
 			ignore_on_blast = false,
 		}
 		local t = math.floor(text:len() / 10)

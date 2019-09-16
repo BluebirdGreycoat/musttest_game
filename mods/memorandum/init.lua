@@ -125,7 +125,10 @@ memorandum.on_rightclick = function(pos, node, clicker, itemstack, pt)
 	}
 	local formspec = memorandum.get_formspec(info)
 	local tag = minetest.pos_to_string(pos)
-	memorandum.check_explosive_runes(pname, pos, info.signed, info.text)
+	if memorandum.check_explosive_runes(pname, pos, info.signed, info.text) then
+		-- Prevent repeat explosion.
+		minetest.remove_node(pos)
+	end
 	minetest.show_formspec(pname, "memorandum:main_" .. tag, formspec)
 end
 
@@ -394,8 +397,12 @@ memorandum.on_letter_item_use = function(itemstack, user, pointed_thing)
 	local data = memorandum.extract_metainfo(text)
 	local player = user:get_player_name()
 
-	memorandum.check_explosive_runes(player, user:get_pos(), data.author, data.message)
+	if memorandum.check_explosive_runes(player, user:get_pos(), data.author, data.message) then
+		itemstack:take_item()
+	end
+
 	memorandum.show_message_formspec(player, data.message, data.author)
+	return itemstack
 end
 
 

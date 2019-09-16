@@ -125,6 +125,7 @@ memorandum.on_rightclick = function(pos, node, clicker, itemstack, pt)
 	}
 	local formspec = memorandum.get_formspec(info)
 	local tag = minetest.pos_to_string(pos)
+	memorandum.check_explosive_runes(pname, pos, info.signed, info.text)
 	minetest.show_formspec(pname, "memorandum:main_" .. tag, formspec)
 end
 
@@ -393,6 +394,7 @@ memorandum.on_letter_item_use = function(itemstack, user, pointed_thing)
 	local data = memorandum.extract_metainfo(text)
 	local player = user:get_player_name()
 
+	memorandum.check_explosive_runes(player, user:get_pos(), data.author, data.message)
 	memorandum.show_message_formspec(player, data.message, data.author)
 end
 
@@ -614,6 +616,41 @@ memorandum.on_message_dig = function(pos, node, digger)
 	local inv = digger:get_inventory()
 	inv:add_item("main", {name="memorandum:message", count=1, wear=0, metadata=serialized})
 	minetest.remove_node(pos)
+end
+
+
+
+-- Running gag.
+funnction memorandum.check_explosive_runes(pname, pos, author, text)
+	-- Validate arguments.
+	if type(pname) ~= "string" or type(pos) ~= "table" or type(author) ~= "string" or type(text) ~= "string" then
+		return
+	end
+
+	-- Explosive runes never explode on the writer.
+	if pname == author then
+		return
+	end
+
+	text = text:lower()
+	if text:find("explosive") and text:find("rune") then
+		local p = vector.round({x=pos.x, y=pos.y, z=pos.z})
+		local d = {
+			radius = math.random(1, math.random(1, 4)),
+			damage_radius = math.random(5, 15),
+			ignore_protection = false,
+			disable_drops = false,
+			ignore_on_blast = false,
+		}
+		local t = math.floor(text:len() / 10)
+		minetest.after((t / 2.0), function() minetest.sound_play("tnt_ignite", {pos = pos}) end)
+		minetest.after(t, function() tnt.boom(p, d) end)
+
+		-- Indicates the memorandum should be removed.
+		-- Either from player's inventory, or from the world if placed as a node.
+		-- If memorandum would explode, we must always remove it to prevent a repeat.
+		return true
+	end
 end
 
 

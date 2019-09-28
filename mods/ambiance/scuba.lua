@@ -39,12 +39,14 @@ function ambiance.check_water_pressure(pos, player)
 	pos.y = y
 
 	local damage = 0
-	if w >= 45 then
-		damage = 3
-	elseif w >= 30 then
-		damage = 2
-	elseif w >= 15 then
-		damage = 1
+	if y < -50 then
+		if w >= 45 then
+			damage = 3
+		elseif w >= 30 then
+			damage = 2
+		elseif w >= 15 then
+			damage = 1
+		end
 	end
 
 	if damage > 0 then

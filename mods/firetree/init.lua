@@ -132,7 +132,7 @@ minetest.register_node("firetree:fruit", {
     if user and user:is_player() then
       local name = user:get_player_name()
       if heatdamage then
-        heatdamage.immunize_player(name, 6)
+        heatdamage.immunize_player(name, 10)
         --minetest.sound_play("hunger_eat", {to_player = name, gain = 0.7})
         ambiance.sound_play("hunger_eat", user:getpos(), 0.7, 10)
         itemstack:take_item()

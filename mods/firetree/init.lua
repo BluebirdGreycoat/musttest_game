@@ -199,6 +199,12 @@ end
 
 
 local on_timer = function(pos, elapsed)
+				if mtflower.can_grow(pos) then
+					if mtflower.try_grow(pos, "firetree:trunk", "firetree:leaves", "glowstone:minerals", "glowstone:minerals") then
+						return
+					end
+				end
+
     if not can_grow(pos) then
         minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
         return

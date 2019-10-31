@@ -362,6 +362,18 @@ end
 
 
 
+function fortress.chat_command(name, param)
+	local player = minetest.get_player_by_name(name)
+	if not player or not player:is_player() then
+		return
+	end
+
+	local pos = vector.round(player:get_pos())
+	fortress.spawn_fortress(pos, fortress.default)
+end
+
+
+
 if not fortress.run_once then
 	fortress.load_data()
 
@@ -382,6 +394,17 @@ if not fortress.run_once then
 	minetest.register_on_mapsave(function()
 		return fortress.save_data()
 	end)
+
+	minetest.register_chatcommand("spawn_fortress", {
+		params = "",
+		description = "Spawn a fortress starting at your current location.",
+		privs = {server=true},
+
+		func = function(...)
+			fortress.chat_command(...)
+			return true
+		end,
+	})
 
 	local c = "fortress:core"
 	local f = fortress.modpath .. "/init.lua"

@@ -82,6 +82,12 @@ minetest.register_node("basictrees:pine_sapling", {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
 	on_timer = function(pos)
+				if mtflower.can_grow(pos) then
+					if mtflower.try_grow(pos, "basictrees:pine_trunk", "basictrees:pine_needles", "glowstone:minerals", "glowstone:minerals") then
+						return
+					end
+				end
+
         if not basictrees.can_grow(pos) then
             minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
             return

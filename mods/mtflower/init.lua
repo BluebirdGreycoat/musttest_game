@@ -557,7 +557,7 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 	end
 
 	-- Remove items out of the soil (the tree 'eats' them).
-	minetest.bulk_set_node(positions, {name="default:cobble"})
+	minetest.bulk_set_node(positions, {name="default:gravel"})
 	for k, v in ipairs(positions) do
 		minetest.check_for_falling(v)
 	end

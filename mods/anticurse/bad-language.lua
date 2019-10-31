@@ -65,7 +65,7 @@ anticurse.foul = {
 	"d+i+x+",
 	{word="h+o+m+o+", white={"homogeneous"}},
 	{word="t+i+t+s+", white={
-		"wait", "got", "petits", "itsa", "itsnext", "itsnot",
+		"wait", "got", "petits", "itsa", "itsnext", "itsnot", "test",
 		"mt", "at", "itsin", "itsat", "itsjust", "havent", "itsonly",
 	}},
 

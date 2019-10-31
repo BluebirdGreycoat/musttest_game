@@ -1,3 +1,4 @@
+[2019/10/31] Added a new tree generation algorithm. Grow trees in deep caves!
 [2019/8/28] Mapper item must now be charged to use. The minimap uses energy as long as the mapper item is in the player's hot-bar.
 [2019/8/28] The minimap can now be used as long as there is a mapping kit in any slot of the player's hot-bar.
 [2019/8/27] Oil extract can now be used to polish text engravings. Polished text engravings can't be defaced unless you remove the whole block.

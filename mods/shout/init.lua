@@ -1,6 +1,7 @@
 
 shout = shout or {}
 shout.modpath = minetest.get_modpath("shout")
+shout.worldpath = minetest.get_worldpath()
 shout.players = shout.players or {}
 
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
@@ -9,7 +10,7 @@ local WHITE = core.get_color_escape_sequence("#ffffff")
 
 
 
-shout.HINTS = {
+shout.BUILTIN_HINTS = {
 	"You can ignore players who create drama or ruin chat by using the chat-filter interface, accessed through the Key of Citizenship.",
 	"Mobs sometimes place blocks in protected areas. This is not griefing, because the blocks are not protected. Anyone may remove them.",
 	"You may use the '/r <message>' command to quickly reply via PM to the last player to send you a PM.",
@@ -79,6 +80,12 @@ shout.HINTS = {
 	"Mr. Momoa, your trailer's on fire.",
 	"You can use a trade booth to buy and sell items remotely, for shops set up to support it.",
 }
+
+shout.HINTS = table.copy(shout.BUILTIN_HINTS)
+
+function shout.hint_add(name, param)
+	minetest.chat_send_player(name, "Hint message: \"" .. param .. "\".")
+end
 
 local HINT_DELAY_MIN = 60*45
 local HINT_DELAY_MAX = 60*90
@@ -300,4 +307,18 @@ if not shout.run_once then
 	reload.register_file(c, f, false)
 
 	shout.run_once = true
+end
+
+if not shout.run_once2 then
+	minetest.register_chatcommand("hint_add", {
+		params = "<message>",
+		description = "Add a hint message to the hint list.",
+		privs = {server=true},
+		func = function(name, param)
+			shout.hint_add(name, param)
+			return true
+		end,
+	})
+
+	shout.run_once2 = true
 end

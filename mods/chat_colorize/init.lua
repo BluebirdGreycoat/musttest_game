@@ -25,9 +25,15 @@ function chat_colorize.notify_death(pname)
 
 	chat_colorize.player_just_died[pname] = true
 
-	minetest.after(15, function()
+	minetest.after(math.random(10, 20), function()
 		chat_colorize.player_just_died[pname] = nil
 	end)
+end
+
+function chat_colorize.is_ragequit(pname)
+	if chat_colorize.player_just_died[pname] then
+		return true
+	end
 end
 
 
@@ -89,6 +95,23 @@ chat_colorize.should_suppress = function(pname)
 end
 
 
+local ragequit = {
+	"Rage-quit",
+	"Sneaked out",
+	"Left in a huff",
+	"Quit",
+	"Couldn't take the heat",
+	"Embarrassed",
+	"Stormed out",
+	"Stormed off",
+	"Walked out",
+	"Ugh",
+	"This place stinks",
+	"Gone home",
+	"This server sucks, I'm going home",
+	"Getting out",
+	"Escaped",
+}
 
 chat_colorize.send_all = function(message)
   local color = ""
@@ -116,7 +139,8 @@ chat_colorize.send_all = function(message)
 		-- March 20, 2018: changed "timed out" to "connection broke" for better understanding.
     message = string.gsub(message, ". %(timed out%)$", ". (Broken connection.)")
 
-		if message:find("left the game") then
+		if nick and message:find("left the game") and chat_colorize.is_ragequit(nick) then
+			message = message .. " (" .. ragequit[math.random(1, #ragequit)] .. ".)"
 		end
   end
   

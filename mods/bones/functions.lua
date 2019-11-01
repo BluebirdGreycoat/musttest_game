@@ -200,6 +200,9 @@ bones.on_dieplayer = function(player)
 	-- This is needed because this information is lost on respawn.
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
+	-- Death sound.
+	ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+
 	-- Don't make bones if player doesn't have anything.
 	-- This also means that player won't lose XP. Keep this, it is a feature!
 	if player_inventory_empty(player_inv, "main") and
@@ -245,8 +248,6 @@ bones.on_dieplayer = function(player)
 	local xp_for_bones = (xp_amount/3)*2
 	xp.set_xp(pname, "digxp", xp_amount)
 
-	-- Death sound.
-	ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
 	portal_sickness.on_die_player(pname)
 
 	-- These inventories are always cleared.

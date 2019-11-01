@@ -1,5 +1,6 @@
 
 chat_colorize = chat_colorize or {}
+chat_colorize.player_just_died = chat_colorize.player_just_died or {}
 chat_colorize.modpath = minetest.get_modpath("chat_colorize")
 
 
@@ -14,6 +15,20 @@ if minetest.get_modpath("reload") then
 end
 mp = nil
 rn = nil
+
+
+
+function chat_colorize.notify_death(pname)
+	if chat_colorize.player_just_died[pname] then
+		return
+	end
+
+	chat_colorize.player_just_died[pname] = true
+
+	minetest.after(15, function()
+		chat_colorize.player_just_died[pname] = nil
+	end)
+end
 
 
 
@@ -100,6 +115,9 @@ chat_colorize.send_all = function(message)
     -- Rewrite the timeout message.
 		-- March 20, 2018: changed "timed out" to "connection broke" for better understanding.
     message = string.gsub(message, ". %(timed out%)$", ". (Broken connection.)")
+
+		if message:find("left the game") then
+		end
   end
   
   if is_server_message then

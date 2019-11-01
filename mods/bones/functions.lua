@@ -426,6 +426,8 @@ bones.on_dieplayer = function(player)
 			minetest.log("action", "Got " .. name .. " @ " .. minetest.pos_to_string(pos) .. " after 1 second bone check!")
 		end
 	end)
+
+	chat_colorize.notify_death(pname)
 end
 
 

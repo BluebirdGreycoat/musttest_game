@@ -2,6 +2,7 @@
 shout = shout or {}
 shout.modpath = minetest.get_modpath("shout")
 shout.worldpath = minetest.get_worldpath()
+shout.datafile = shout.worldpath .. "/hints.txt"
 shout.players = shout.players or {}
 
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
@@ -10,6 +11,7 @@ local WHITE = core.get_color_escape_sequence("#ffffff")
 
 
 
+shout.HINTS = {}
 shout.BUILTIN_HINTS = {
 	"You can ignore players who create drama or ruin chat by using the chat-filter interface, accessed through the Key of Citizenship.",
 	"Mobs sometimes place blocks in protected areas. This is not griefing, because the blocks are not protected. Anyone may remove them.",
@@ -81,10 +83,99 @@ shout.BUILTIN_HINTS = {
 	"You can use a trade booth to buy and sell items remotely, for shops set up to support it.",
 }
 
-shout.HINTS = table.copy(shout.BUILTIN_HINTS)
-
 function shout.hint_add(name, param)
-	minetest.chat_send_player(name, "Hint message: \"" .. param .. "\".")
+	name = name:trim()
+	param = param:trim()
+
+	if param:len() == 0 then
+		minetest.chat_send_player(name, "# Server: Not adding an empty hint message.")
+		return
+	end
+
+	minetest.chat_send_player(name, "# Server: Will add hint message: \"" .. param .. "\".")
+
+	-- Will store all hints loaded from file.
+	local loaded_hints = {}
+
+	-- Load all hints from world datafile.
+	local file, err = io.open(shout.datafile, "r")
+	if err then
+		minetest.chat_send_player(name, "# Server: Failed to open \"" .. shout.datafile .. "\" for reading: " .. err)
+	else
+		local datastring = file:read("*all")
+		if datastring and datastring ~= "" then
+			local records = string.split(datastring, "\n")
+			for record_number, record in ipairs(records) do
+				local data = record:trim()
+				if data:len() > 0 then
+					table.insert(loaded_hints, data)
+				end
+			end
+		end
+		file:close()
+	end
+
+	minetest.chat_send_player(name, "# Server: Loaded " .. #loaded_hints .. " previously saved hints.")
+
+	-- Add the new hint message.
+	table.insert(loaded_hints, param)
+
+	-- Custom file format. minetest.serialize() is unusable for large tables.
+	local datastring = ""
+	for k, record in ipairs(loaded_hints) do
+		datastring = datastring .. record .. "\n"
+	end
+
+	-- Now save all non-builtin hints back to the file.
+	local file, err = io.open(shout.datafile, "w")
+	if err then
+		minetest.chat_send_player(name, "# Server: Failed to open \"" .. shout.datafile .. "\" for writing: " .. err)
+	else
+		file:write(datastring)
+		file:close()
+	end
+
+	-- Recombine both tables.
+	shout.HINTS = {}
+	for k, v in ipairs(shout.BUILTIN_HINTS) do
+		table.insert(shout.HINTS, v)
+	end
+	for k, v in ipairs(loaded_hints) do
+		table.insert(shout.HINTS, v)
+	end
+end
+
+-- Load any saved hints whenever mod is reloaded or server starts.
+do
+	-- Will store all hints loaded from file.
+	local loaded_hints = {}
+
+	-- Load all hints from world datafile.
+	local file, err = io.open(shout.datafile, "r")
+	if err then
+		minetest.log("error", "Failed to open " .. shout.datafile .. " for reading: " .. err)
+	else
+		local datastring = file:read("*all")
+		if datastring and datastring ~= "" then
+			local records = string.split(datastring, "\n")
+			for record_number, record in ipairs(records) do
+				local data = record:trim()
+				if data:len() > 0 then
+					table.insert(loaded_hints, data)
+				end
+			end
+		end
+		file:close()
+	end
+
+	-- Recombine both tables.
+	shout.HINTS = {}
+	for k, v in ipairs(shout.BUILTIN_HINTS) do
+		table.insert(shout.HINTS, v)
+	end
+	for k, v in ipairs(loaded_hints) do
+		table.insert(shout.HINTS, v)
+	end
 end
 
 local HINT_DELAY_MIN = 60*45
@@ -93,6 +184,7 @@ local HINT_DELAY_MAX = 60*90
 function shout.print_hint()
 	local HINTS = shout.HINTS
 
+	-- Only if hints are available.
 	if #HINTS > 0 then
 		minetest.chat_send_all("# Server: " .. HINTS[math.random(1, #HINTS)])
 	end

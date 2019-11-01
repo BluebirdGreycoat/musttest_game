@@ -139,8 +139,15 @@ chat_colorize.send_all = function(message)
 		-- March 20, 2018: changed "timed out" to "connection broke" for better understanding.
     message = string.gsub(message, ". %(timed out%)$", ". (Broken connection.)")
 
-		if nick and message:find("left the game") and chat_colorize.is_ragequit(nick) then
+		-- Check whether this is a player-leave-game message.
+		local is_leaveplayer = message:find("left the game")
+
+		if nick and is_leaveplayer and chat_colorize.is_ragequit(nick) then
 			message = message .. " (" .. ragequit[math.random(1, #ragequit)] .. ".)"
+		end
+
+		if nick then
+			chat_logging.report_leavejoin_player(nick, message)
 		end
   end
   

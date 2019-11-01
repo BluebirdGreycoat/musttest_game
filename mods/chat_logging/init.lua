@@ -64,6 +64,7 @@ end
 
 
 chat_logging.on_joinplayer = function(obj)
+	--[[
   local pname = obj:get_player_name()
   local prefix = "[" .. get_time_and_place(pname) .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
@@ -79,11 +80,33 @@ chat_logging.on_joinplayer = function(obj)
 	end
   chat_logging.logfile:flush()
 	chat_logging.logfile2:flush()
+	--]]
 end
 
 
 
+chat_logging.report_leavejoin_player = function(pname, message)
+  local prefix = "[" .. get_time_and_place(pname) .. "] "
+  local prefix2 = "[" .. get_public_time() .. "] "
+  local wspace = generate_whitespace(prefix)
+	local wspace2 = generate_shortspace(prefix2)
+  prefix = prefix .. wspace
+	prefix2 = prefix2 .. wspace2
+
+	local msg = prefix .. message .. "\n"
+	local msg2 = prefix2 .. message .. "\n"
+
+	chat_logging.logfile:write(msg)
+	if not chat_colorize.should_suppress(pname) then
+		chat_logging.logfile2:write(msg2)
+	end
+
+  chat_logging.logfile:flush()
+	chat_logging.logfile2:flush()
+end
+
 chat_logging.on_leaveplayer = function(obj, timeout)
+	--[[
   local pname = obj:get_player_name()
   local prefix = "[" .. get_time_and_place(pname) .. "] "
   local prefix2 = "[" .. get_public_time() .. "] "
@@ -108,6 +131,7 @@ chat_logging.on_leaveplayer = function(obj, timeout)
   end
   chat_logging.logfile:flush()
 	chat_logging.logfile2:flush()
+	--]]
 end
 
 
@@ -122,10 +146,10 @@ if not chat_logging.opened then
 
   minetest.register_on_shutdown(function(...) 
     return chat_logging.on_shutdown(...) end)
-  minetest.register_on_joinplayer(function(...) 
-    return chat_logging.on_joinplayer(...) end)
-  minetest.register_on_leaveplayer(function(...) 
-    return chat_logging.on_leaveplayer(...) end)
+  --minetest.register_on_joinplayer(function(...)
+  --  return chat_logging.on_joinplayer(...) end)
+  --minetest.register_on_leaveplayer(function(...)
+  --  return chat_logging.on_leaveplayer(...) end)
   
   chat_logging.opened = true
 end

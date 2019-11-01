@@ -203,6 +203,9 @@ bones.on_dieplayer = function(player)
 	-- Death sound.
 	ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
 
+	-- Notify of death.
+	chat_colorize.notify_death(pname)
+
 	-- Don't make bones if player doesn't have anything.
 	-- This also means that player won't lose XP. Keep this, it is a feature!
 	if player_inventory_empty(player_inv, "main") and
@@ -248,6 +251,7 @@ bones.on_dieplayer = function(player)
 	local xp_for_bones = (xp_amount/3)*2
 	xp.set_xp(pname, "digxp", xp_amount)
 
+	-- Note: portal sickness only removed if player would leave bones.
 	portal_sickness.on_die_player(pname)
 
 	-- These inventories are always cleared.
@@ -427,8 +431,6 @@ bones.on_dieplayer = function(player)
 			minetest.log("action", "Got " .. name .. " @ " .. minetest.pos_to_string(pos) .. " after 1 second bone check!")
 		end
 	end)
-
-	chat_colorize.notify_death(pname)
 end
 
 

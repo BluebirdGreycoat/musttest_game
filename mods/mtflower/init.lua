@@ -75,41 +75,50 @@ function mtflower.may_replace_node(pos, tree, leaf, is_leaf)
 	end
 end
 
-function mtflower.shape_to_positions(shape)
+function mtflower.shape_to_positions(shape, offset)
 	if type(shape) == "string" then
 		if shape == "single" then
-			return {{x=0, y=0, z=0}}
+			return {{x=0, y=0, z=0}}, {x=0, y=0, z=0}
 		elseif shape == "cross" then
 			return {
 														 {x= 1, y=0, z= 0},
 					{x= 0, y=0, z= 1}, {x= 0, y=0, z= 0}, {x= 0, y=0, z=-1},
 														 {x=-1, y=0, z= 0},
-				}
+				}, {x=0, y=0, z=0}
 		elseif shape == "square" then
 			local spots = {
 				{x=0, y=0, z=0}, {x=1, y=0, z=0},
 				{x=0, y=0, z=1}, {x=1, y=0, z=1},
 			}
-			local adjust = {x=math.random(-1, 0), y=0, z=math.random(-1, 0)}
-			for k, v in ipairs(spots) do
-				local p = vector.add(v, adjust)
-				v.x = p.x
-				v.y = p.y
-				v.z = p.z
+			if not offset then
+				local adjust = {x=math.random(-1, 0), y=0, z=math.random(-1, 0)}
+				for k, v in ipairs(spots) do
+					local p = vector.add(v, adjust)
+					v.x = p.x
+					v.y = p.y
+					v.z = p.z
+				end
+				return spots, adjust
+			else
+				for k, v in ipairs(spots) do
+					v.x = v.x + offset.x
+					v.y = v.y + offset.y
+					v.z = v.z + offset.z
+				end
+				return spots, offset
 			end
-			return spots
 		end
 	end
 
 	-- Fallback.
-	return {{x=0, y=0, z=0}}
+	return {{x=0, y=0, z=0}}, {x=0, y=0, z=0}
 end
 
-function mtflower.generate_roots(pos, shape, tree, leaf)
+function mtflower.generate_roots(pos, shape, offset, tree, leaf)
 	pos = vector.round(pos)
 
 	-- Get a list of positions to start the bottom of the root from.
-	local starts = mtflower.shape_to_positions(shape)
+	local starts = mtflower.shape_to_positions(shape, offset)
 
 	-- Adjust start positions downward 1 meter so they don't interfere with trunk.
 	for k, v in ipairs(starts) do
@@ -162,7 +171,7 @@ function mtflower.generate_trunk(pos, shape, height, tree, leaves)
 	pos = vector.round(pos)
 
 	-- Get a list of positions to start the bottom of the trunk from.
-	local starts = mtflower.shape_to_positions(shape)
+	local starts, offset = mtflower.shape_to_positions(shape)
 
 	-- Sanitize arguments.
 	if type(height) ~= "number" then height = tonumber(height) or 10 end
@@ -202,63 +211,96 @@ function mtflower.generate_trunk(pos, shape, height, tree, leaves)
 	minetest.bulk_set_node(trunks, {name = tree})
 
 	-- Return all positions of trunks.
-	return trunks
+	return trunks, offset
 end
 
-function mtflower.try_spawn_branch(pos, tree, leaf, radius, cluster_count, first_cluster)
+function mtflower.try_spawn_branch(pos, tree, leaf, recursive, cluster_count, first_cluster)
 	pos = vector.round(pos)
 
 	-- Sanitize arguments.
 	if type(tree) ~= "string" then tree = "default:tree" end
 	if tree == "ignore" then return {}, {} end
 	if not minetest.registered_nodes[tree] then return {}, {} end
-	if type(radius) ~= "number" then radius = 1 end
-	if radius < 1 then radius = 1 end
-	if radius > 3 then radius = 3 end
+	if type(recursive) ~= "number" then recursive = 1 end
+	if recursive < 1 then recursive = 1 end
 	if type(leaf) ~= "string" then leaf = "default:tree" end
 	if not minetest.registered_nodes[leaf] then return {}, {} end
 	if leaf == "ignore" then return {}, {} end
 
-	local branch = branches[math.random(1, #branches)]
+	local branch
+	local tree_near = {x=0, y=0, z=0}
+	local p1
+	local p2
+	local try_count = 1
 
-	local p1 = vector.add(pos, branch[1])
-	local p2 = vector.add(pos, branch[2])
+	while tree_near do
+		if try_count >= 3 then
+			break
+		end
 
-	-- Do not spawn branches if the 'end' would be too close to the trunk.
-	local tree_near = minetest.find_node_near(p2, radius, tree)
+		branch = branches[math.random(1, #branches)]
+
+		p1 = vector.add(pos, branch[1])
+		p2 = vector.add(pos, branch[2])
+
+		-- Do not spawn branches if the 'end' would be too close to the trunk or a branch.
+		tree_near = minetest.find_node_near(p2, 1, {"mtflower:ignore", tree})
+		try_count = try_count + 1
+	end
+
 	if tree_near then return {}, {} end
 
 	local all = {}
 	local arms = {}
 
-	if radius == 1 then
-		if cluster_count >= 2 and not first_cluster then
-			-- Fork in two directions.
-			local more1 = mtflower.try_spawn_branch(p2, tree, leaf, 3, cluster_count, first_cluster)
-			for k, v in ipairs(more1) do
-				table.insert(all, v)
-			end
-
-			local more2 = mtflower.try_spawn_branch(p2, tree, leaf, 3, cluster_count, first_cluster)
-			for k, v in ipairs(more2) do
-				table.insert(all, v)
-			end
-		end
-	end
-
+	-- Declare these positions as branch nodes, if a branch can be placed.
 	if mtflower.may_replace_node(p1, tree, leaf) then
-		minetest.set_node(p1, {name=tree})
+		minetest.set_node(p1, {name="mtflower:ignore"})
 		table.insert(all, p1)
 
 		-- Add this position to the list of arm positions (branch next to trunk).
-		if radius == 1 then
+		-- Only for top level frame of recursive function.
+		if recursive == 1 then
 			table.insert(arms, p1)
 		end
 	end
 
 	if mtflower.may_replace_node(p2, tree, leaf) then
-		minetest.set_node(p2, {name=tree})
+		minetest.set_node(p2, {name="mtflower:ignore"})
 		table.insert(all, p2)
+	end
+
+	-- In top-level frame of recursive function -- can call self to create more complex branches.
+	-- Recursive marker must be GREATER THAN 1 for the recursive calls!
+	if recursive == 1 then
+		local endpoints = {table.copy(p2)}
+
+		if cluster_count >= 2 and not first_cluster then
+			endpoints = {}
+
+			-- Fork in two directions.
+			local more1 = mtflower.try_spawn_branch(p2, tree, leaf, 2, cluster_count, first_cluster)
+			for k, v in ipairs(more1) do
+				table.insert(all, v)
+			end
+			table.insert(endpoints, more1[2])
+
+			local more2 = mtflower.try_spawn_branch(p2, tree, leaf, 2, cluster_count, first_cluster)
+			for k, v in ipairs(more2) do
+				table.insert(all, v)
+			end
+			table.insert(endpoints, more2[2])
+		end
+
+		-- For big trees, make one of the branches even longer (if possible).
+		-- Do this for all clusters including the first one.
+		if cluster_count >= 3 and #endpoints > 0 then
+			local randp = endpoints[math.random(1, #endpoints)]
+			local more3 = mtflower.try_spawn_branch(randp, tree, leaf, 2, cluster_count, first_cluster)
+			for k, v in ipairs(more3) do
+				table.insert(all, v)
+			end
+		end
 	end
 
 	-- Return all the locations where branch nodes were placed.
@@ -334,6 +376,9 @@ function mtflower.generate_branches(trunks, tries, tree, leaf)
 			first_cluster = false
 		end
 	end
+
+	-- Branch locations calculated, place branch nodes.
+	minetest.bulk_set_node(all, {name=tree})
 
 	return all, arms
 end
@@ -469,8 +514,8 @@ end
 
 function mtflower.generate_tree(pos, shape, height, tree, leaf)
 	local tries = mtflower.branch_tries_from_shape(shape)
-	local roots = mtflower.generate_roots(pos, shape, tree, leaf)
-	local trunks = mtflower.generate_trunk(pos, shape, height, tree, leaf)
+	local trunks, offset = mtflower.generate_trunk(pos, shape, height, tree, leaf)
+	local roots = mtflower.generate_roots(pos, shape, offset, tree, leaf)
 
 	if not trunks or #trunks == 0 then
 		return
@@ -532,11 +577,12 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 	local positions = minetest.find_nodes_in_area(minp, maxp, mineral)
 
 	local height = math.floor(#positions * 1.5)
-	if height < 6 then
-		return
-	end
 	if height > 40 then
 		height = 40
+	end
+	height = math.floor(height * (math.random(95, 105) / 100))
+	if height < 6 then
+		return
 	end
 
 	local shape = "single"
@@ -563,7 +609,7 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 	end
 
 	-- Scatter items drawn up out of the soil in the tree itself.
-	if #arms > 0 then
+	if arms and #arms > 0 then
 		local amount = math.floor(#positions / 4)
 		for i = 1, amount, 1 do
 			local spot = arms[math.random(1, #arms)]
@@ -575,6 +621,28 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 end
 
 if not mtflower.registered then
+	-- Used when generating branches.
+	minetest.register_node("mtflower:ignore", {
+		drawtype = "airlike",
+		description = "MTFLOWER IGNORE (Please Report to Admin)",
+		paramtype = "light",
+		sunlight_propagates = true,
+		walkable = false,
+		pointable = false,
+		groups = {immovable = 1},
+		climbable = false,
+		buildable_to = true,
+		floodable = true,
+		drop = "",
+
+		on_finish_collapse = function(pos, node)
+			minetest.remove_node(pos)
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+    	-- Do nothing.
+  	end,
+	})
 
 	-- Register mod as reloadable if reload functionality is available.
 	if minetest.get_modpath("reload") then

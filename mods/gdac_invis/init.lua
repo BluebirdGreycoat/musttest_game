@@ -43,7 +43,7 @@ gdac_invis.toggle_invisibility = function(name, param)
         makes_footstep_sound = false,
 
 				-- Cannot be zero-size because otherwise player would fall through cracks.
-        collisionbox = {-0.01, 0, -0.01, 0.01, 0.02, 0.01},
+        collisionbox = {0, 0, 0, 0, 0, 0},
 
 				collide_with_objects = false,
 				is_visible = false,

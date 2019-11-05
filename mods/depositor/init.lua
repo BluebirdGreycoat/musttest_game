@@ -9,6 +9,149 @@ depositor.dirty = true
 
 
 
+function depositor.get_random_vending_or_depositing_machine()
+	local data
+	if #depositor.shops > 0 then
+		local shops = {}
+		for k, v in ipairs(depositor.shops) do
+			if (v.type == 2 or v.type == 1) and v.active then
+				table.insert(shops, v)
+			end
+		end
+
+		if #shops > 0 then
+			local v = shops[math.random(1, #shops)]
+			data = table.copy(v) -- Copy the data so it cannot be modified.
+		end
+	end
+	return data
+end
+
+-- Get random depositor shop data or nil.
+function depositor.get_random_depositing_machine()
+	local data
+	if #depositor.shops > 0 then
+		local shops = {}
+		for k, v in ipairs(depositor.shops) do
+			if v.type == 2 and v.active then -- Is depositing machine.
+				table.insert(shops, v)
+			end
+		end
+
+		if #shops > 0 then
+			local v = shops[math.random(1, #shops)]
+			data = table.copy(v) -- Copy the data so it cannot be modified.
+		end
+	end
+	return data
+end
+
+function depositor.get_random_vending_machine()
+	local data
+	if #depositor.shops > 0 then
+		local shops = {}
+		for k, v in ipairs(depositor.shops) do
+			if v.type == 1 and v.active then -- Is vending machine.
+				table.insert(shops, v)
+			end
+		end
+
+		if #shops > 0 then
+			local v = shops[math.random(1, #shops)]
+			data = table.copy(v) -- Copy the data so it cannot be modified.
+		end
+	end
+	return data
+end
+
+-- Returns data for a depositor offering the highest bid for an item, or nil.
+-- Will exclude depositors demanding more than the maximum.
+function depositor.get_random_depositor_buying_item(item, maximum)
+	local data
+	if #depositor.shops > 0 then
+		local shops = {}
+		for k, v in ipairs(depositor.shops) do
+			if v.type == 2 and v.active then -- Is ative depositing machine.
+				-- Only if depositor is buying item of not more than given max.
+				if v.item == item and v.number <= maximum and v.number >= 1 then
+					table.insert(shops, v)
+				end
+			end
+		end
+
+		if #shops > 0 then
+			-- Sort shops, highest bid first.
+			table.sort(shops,
+				function(a, b)
+					local v1 = currency.get_stack_value(a.currency, a.cost)
+					local v2 = currency.get_stack_value(b.currency, b.cost)
+					if v1 > v2 then
+						return true
+					end
+				end)
+
+			-- If multiple shops have the same highest bid value,
+			-- then get a random shop from these that are bidding highest.
+			local last = 0
+			local highest_bid = shops[1].cost
+			for k, v in ipairs(shops) do
+				if v.cost >= highest_bid then
+					last = last + 1
+				end
+			end
+
+			local v = shops[math.random(1, last)]
+			data = table.copy(v) -- Copy the data so it cannot be modified.
+		end
+	end
+	return data
+end
+
+-- Returns data for a vendor offering the lowest price for an item, or nil.
+-- Will exclude vendors selling less than the minimum.
+function depositor.get_random_vendor_selling_item(item, minimum)
+	local data
+	if #depositor.shops > 0 then
+		local shops = {}
+		for k, v in ipairs(depositor.shops) do
+			if v.type == 1 and v.active then -- Is ative vending machine.
+				-- Only if vendor is selling item of at least this minimum amount.
+				if v.item == item and v.number >= minimum and v.number >= 1 then
+					table.insert(shops, v)
+				end
+			end
+		end
+
+		if #shops > 0 then
+			-- Sort shops, lowest price first.
+			table.sort(shops,
+				function(a, b)
+					local v1 = currency.get_stack_value(a.currency, a.cost)
+					local v2 = currency.get_stack_value(b.currency, b.cost)
+					if v1 < v2 then
+						return true
+					end
+				end)
+
+			-- If multiple shops have the same lowest price value,
+			-- then get a random shop from these that are priced the lowest.
+			local last = 0
+			local lowest_price = shops[1].cost
+			for k, v in ipairs(shops) do
+				if v.cost >= lowest_price then
+					last = last + 1
+				end
+			end
+
+			local v = shops[math.random(1, last)]
+			data = table.copy(v) -- Copy the data so it cannot be modified.
+		end
+	end
+	return data
+end
+
+
+
 function depositor.set_drop_location(pos, pname)
 	pos = vector.round(pos)
 	depositor.drops[pname] = {
@@ -50,8 +193,8 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 	end
 
 	-- Security checks and vending use requires map access.
-	utility.ensure_map_loaded(vector.add(user_drop, {x=-8, y=-8, z=-8}), vector.add(user_drop, {x=8, y=8, z=8}))
-	utility.ensure_map_loaded(vector.add(vendor_drop, {x=-8, y=-8, z=-8}), vector.add(vendor_drop, {x=8, y=8, z=8}))
+	utility.ensure_map_loaded(vector.add(user_drop, {x=-7, y=-7, z=-7}), vector.add(user_drop, {x=7, y=7, z=7}))
+	utility.ensure_map_loaded(vector.add(vendor_drop, {x=-7, y=-7, z=-7}), vector.add(vendor_drop, {x=7, y=7, z=7}))
 
 	if minetest.get_node(user_drop).name ~= "market:booth" or
 		minetest.get_node(vendor_drop).name ~= "market:booth"
@@ -82,7 +225,7 @@ function depositor.execute_trade(vend_pos, user_name, vendor_name, user_drop, ve
 	end
 
 	-- The trade function requires map access!
-	utility.ensure_map_loaded(vector.add(vend_pos, {x=-8, y=-8, z=-8}), vector.add(vend_pos, {x=8, y=8, z=8}))
+	utility.ensure_map_loaded(vector.add(vend_pos, {x=-7, y=-7, z=-7}), vector.add(vend_pos, {x=7, y=7, z=7}))
 	easyvend.execute_trade(vend_pos, user, inv, "storage", inv2, "storage", tax)
 
 	local status = meta3:get_string("status")

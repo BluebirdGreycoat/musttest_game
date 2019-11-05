@@ -30,6 +30,9 @@ function mese_crystals.on_tool_use(itemstack, user, pt)
 		node.name = "mese_crystals:mese_crystal_ore1"
 		minetest.swap_node(pos, node)
 		minetest.get_node_timer(pos):start(mese_crystals.get_grow_time())
+	else
+		-- Just restart growing timer.
+		minetest.get_node_timer(pos):start(mese_crystals.get_grow_time())
 	end
 
 	-- Give wielder a harvest.

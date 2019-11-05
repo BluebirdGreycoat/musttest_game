@@ -13,6 +13,14 @@ function nodeinspector.inspect(pname, under, above)
 			local str = dump(data) or "No data!"
 			minetest.chat_send_player(pname, "# Server: " .. str)
 		end
+
+		local timer = minetest.get_node_timer(under)
+		if timer:is_started() then
+			timer = "YES"
+		else
+			timer = "NO"
+		end
+		minetest.chat_send_player(pname, "# Server: Nodetimer: " .. timer)
 	end
 
 	local nodeunder = minetest.get_node(under)

@@ -43,6 +43,7 @@ anticurse.foul = {
 	"n+i+g+e+r+",
   
   "b+l+o*w+j+o*b+",
+	"s+h+t+h+o+l+e+",
 
   -- This word needs a big whitelist.
   {word="a+ss+", white={

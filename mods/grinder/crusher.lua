@@ -359,7 +359,7 @@ if not crusher.registered then
 
 	minetest.register_craft({
 		type = "crushing",
-		output = 'default:obsidian_shard 9',
+		output = 'default:obsidian_shard 6',
 		recipe = 'default:obsidian',
 		time = 60*3,
 	})

@@ -1,4 +1,4 @@
-function throwing_register_arrow_standard (kind, desc, eq, toughness, craft)
+function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, craftcount)
 	minetest.register_craftitem("throwing:arrow_" .. kind, {
 		description = desc .. " Arrow",
 		inventory_image = "throwing_arrow_" .. kind .. ".png",
@@ -81,15 +81,19 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft)
 	
 	minetest.register_entity("throwing:arrow_" .. kind .. "_entity", THROWING_ARROW_ENTITY)
 	
+	if not craftcount then
+		craftcount = 16
+	end
+
 	minetest.register_craft({
-		output = 'throwing:arrow_' .. kind .. ' 16',
+		output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
 		recipe = {
 			{'default:stick', 'default:stick', craft},
 		}
 	})
 	
 	minetest.register_craft({
-		output = 'throwing:arrow_' .. kind .. ' 16',
+		output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
 		recipe = {
 			{craft, 'default:stick', 'default:stick'},
 		}
@@ -109,5 +113,5 @@ if not DISABLE_DIAMOND_ARROW then
 end
 
 if not DISABLE_OBSIDIAN_ARROW then
-	throwing_register_arrow_standard ('obsidian', 'Obsidian', 20, 0.88, 'default:obsidian')
+	throwing_register_arrow_standard ('obsidian', 'Obsidian', 20, 0.88, 'default:obsidian_shard', 2)
 end

@@ -16,7 +16,7 @@ anticurse.foul = {
 
   {word="c+u+n+t+", white={"truck"}},
   "c+v+n+t+",
-	{word="t+w+a+t+", white={"water", "watch", "just"}},
+	{word="t+w+a+t+", white={"water", "watch", "just", "wait"}},
   
   -- It's generally pretty easy to check for this naughty word.
   {word="f+u+c*k+", white={"keep", "know", "could"}},

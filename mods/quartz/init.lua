@@ -81,41 +81,27 @@ minetest.register_craft({
 minetest.register_craft({
 	output = '"quartz:block" 4',
 	recipe = {
-		{'quartz:quartz_crystal', 'quartz:quartz_crystal', ''},
-		{'quartz:quartz_crystal', 'quartz:quartz_crystal', ''},
-		{'', '', ''}
+		{'quartz:quartz_crystal', 'quartz:quartz_crystal'},
+		{'quartz:quartz_crystal', 'quartz:quartz_crystal'},
 	}
 })
 
 -- Chiseled Quartz
 minetest.register_craft({
-	output = 'quartz:chiseled 2',
+	output = 'quartz:chiseled 4',
 	recipe = {
-		{'stairs:slab_quartzblock', '', ''},
-		{'stairs:slab_quartzblock', '', ''},
-		{'', '', ''},
+		{'quartz:block', 'quartz:block'},
+		{'quartz:block', 'quartz:block'},
 	}
 })
-
--- Chiseled Quartz (for stairsplus)
---[[
-minetest.register_craft({
-	output = 'quartz:chiseled 2',
-	recipe = {
-		{'quartz:slab_block', '', ''},
-		{'quartz:slab_block', '', ''},
-		{'', '', ''},
-	}
-})
---]]
 
 -- Quartz Pillar
 minetest.register_craft({
-	output = 'quartz:pillar 2',
+	output = 'quartz:pillar 3',
 	recipe = {
-		{'quartz:block', '', ''},
-		{'quartz:block', '', ''},
-		{'', '', ''},
+		{'quartz:block'},
+		{'quartz:block'},
+		{'quartz:block'},
 	}
 })
 

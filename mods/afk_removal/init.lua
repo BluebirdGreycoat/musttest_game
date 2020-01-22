@@ -17,6 +17,7 @@ afk_removal.reset_timeout = function(name)
         afk_removal.players[name] = {time=0, pos={x=0, y=0, z=0}}
     end
     afk_removal.players[name].time = 0
+		afk_removal.players[name].afk = nil
 end
 
 
@@ -29,6 +30,22 @@ end
 function afk_removal.on_leaveplayer(player, timedout)
 	local pname = player:get_player_name()
 	afk_removal.players[pname] = nil
+end
+
+
+
+-- API function to query whether a player is currently AFK.
+-- Note that this only has meaning for registered players.
+-- Unregistered players are kicked, so you generally won't encounter those.
+function afk_removal.is_afk(pname)
+	local p = afk_removal.players
+	local o = p[pname]
+	if o then
+		if o.afk then
+			return true
+		end
+	end
+	return false
 end
 
 
@@ -47,6 +64,7 @@ afk_removal.update = function()
       if dist > 0.5 then
         afk_removal.players[name].pos = pos
         afk_removal.players[name].time = 0
+				afk_removal.players[name].afk = nil
       else
         local time = afk_removal.players[name].time
         time = time + afk_removal.steptime
@@ -57,6 +75,7 @@ afk_removal.update = function()
 						-- If player is registered, ignore them.
 						afk_removal.players[name].pos = pos
 						afk_removal.players[name].time = 0
+						afk_removal.players[name].afk = true
 					else
 						local remain = afk_removal.timeout - time
 						minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math.floor(remain) .. " seconds.")

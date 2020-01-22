@@ -20,7 +20,12 @@ local count_players_in_bed = function()
     local count = 0
     for k, v in pairs(beds.player) do
         local nobeds = minetest.check_player_privs(k, {nobeds=true})
-				--nobeds = false -- For testing.
+
+				-- Ignore AFK folks.
+				if afk_removal.is_afk(k) then
+					nobeds = true
+				end
+
 				local registered = passport.player_registered(k)
         if not nobeds and registered then
             count = count + 1
@@ -35,9 +40,15 @@ local get_participating_players = function()
     local players = minetest.get_connected_players()
     local outp = {}
     for k, v in ipairs(players) do
+				local pname = v:get_player_name()
         local nobeds = minetest.check_player_privs(v, {nobeds=true})
-				--nobeds = false -- For testing.
-				local registered = passport.player_registered(v:get_player_name())
+
+				-- Ignore AFK folks.
+				if afk_removal.is_afk(pname) then
+					nobeds = true
+				end
+
+				local registered = passport.player_registered(pname)
         if not nobeds and registered then
             outp[#outp+1] = v
         end

@@ -368,13 +368,13 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	end
   
   -- Clamp to avoid massive explosions.
-  if count > 30 then count = 30 end
+  if count > 64 then count = 64 end
 
 	vm1:set_data(data)
 	vm1:write_to_map()
 
 	-- recalculate new radius
-	radius = math.floor(radius * math.pow(count, 0.56))
+	radius = math.floor(radius * math.pow(count, 0.60))
 
 	-- If no protections are present, we can optimize by skipping the protection
 	-- check for individual nodes. If we have a small radius, then don't bother.

@@ -403,19 +403,31 @@ teleports.update = function(pos)
 	local yespublic = meta:get_string("yespublic") or 'true'
 
 	local buttons = "";
-	local nearby = teleports.find_nearby(pos, 5, network, yespublic)
+	local nearby = teleports.find_nearby(pos, 10, network, yespublic)
 
+	local button_x = 5
+	local button_y = 1
 	for i, v in ipairs(nearby) do
 			local tp = v.pos
 			local data = tp.x .. "," .. tp.y .. "," .. tp.z
 			local real_label = rc.pos_to_string(tp)
 			meta:set_string("loc" .. (i), data)
+
 			if v.name ~= nil then
 					if v.name ~= "" then
 							real_label = v.name
 					end
 			end
-			buttons = buttons .. "button_exit[5," .. (i) .. ";3,0.5;tp" .. i .. ";" .. minetest.formspec_escape(real_label) .. "]";
+
+			buttons = buttons ..
+				"button_exit[" .. button_x .. "," .. button_y ..
+				";3,0.5;tp" .. i .. ";" .. minetest.formspec_escape(real_label) .. "]";
+
+			button_y = button_y + 1
+			if button_y >= 6 then
+				button_y = 1
+				button_x = 8
+			end
 	end
 
 	local public = meta:get_int("public") or 1
@@ -436,7 +448,7 @@ teleports.update = function(pos)
 		charge = "NYBW"
 	end
 
-	local formspec = "size[8,7;]" ..
+	local formspec = "size[11,7;]" ..
 			default.gui_bg ..
 			default.gui_bg_img ..
 			default.gui_slots ..
@@ -459,7 +471,7 @@ teleports.update = function(pos)
 			"label[2,5.35;Transport Range: " .. range .. " M]" ..
 
 			"list[context;price;0,0.75;1,1;]" ..
-			"list[current_player;main;0,6;8,1;]" ..
+			"list[current_player;main;0,6;11,1;]" ..
 			"listring[]" ..
 			default.get_hotbar_bg(0, 6)
     
@@ -550,25 +562,26 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
     if needsave == true then
         teleports.save()
     end
+
+		local pressed_tp_button = false
+		local pressed_tp_location
+		for i = 1, 10, 1 do
+			-- According to button names/data set in the machine update function.
+			local btnname = "tp" .. i
+			local posname = "loc" .. i
+			if fields[btnname] then
+				pressed_tp_button = true
+				pressed_tp_location = meta:get_string(posname)
+				break
+			end
+		end
     
-    if fields.tp1 or fields.tp2 or fields.tp3 or fields.tp4 or fields.tp5 then
+    if pressed_tp_button then
         local have_biofuel = false
-        local tpname = nil
+        local tpname = pressed_tp_location
         local have_target = false
         local target_pos = {x=0, y=0, z=0}
         
-        if fields.tp1 then
-            tpname = meta:get_string("loc1")
-        elseif fields.tp2 then
-            tpname = meta:get_string("loc2")
-        elseif fields.tp3 then
-            tpname = meta:get_string("loc3")
-        elseif fields.tp4 then
-            tpname = meta:get_string("loc4")
-        elseif fields.tp5 then
-            tpname = meta:get_string("loc5")
-        end
-           
         if tpname and type(tpname) == "string" then
             local tppos = minetest.string_to_pos(tpname)
             if tppos then

@@ -405,7 +405,7 @@ teleports.update = function(pos)
 	local buttons = "";
 	local nearby = teleports.find_nearby(pos, 10, network, yespublic)
 
-	local button_x = 5
+	local button_x = 8
 	local button_y = 1
 	for i, v in ipairs(nearby) do
 			local tp = v.pos
@@ -426,7 +426,7 @@ teleports.update = function(pos)
 			button_y = button_y + 1
 			if button_y >= 6 then
 				button_y = 1
-				button_x = 8
+				button_x = 5
 			end
 	end
 

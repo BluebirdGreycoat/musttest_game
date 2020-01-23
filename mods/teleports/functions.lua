@@ -472,8 +472,7 @@ teleports.update = function(pos)
 
 			"list[context;price;0,0.75;1,1;]" ..
 			"list[current_player;main;0,6;11,1;]" ..
-			"listring[]" ..
-			default.get_hotbar_bg(0, 6)
+			"listring[]"
     
 	meta:set_string("formspec", formspec)
 end

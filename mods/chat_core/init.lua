@@ -349,6 +349,7 @@ chat_core.handle_command_msg = function(name, param)
 			end
 
 			minetest.after(0, function()
+				chat_core.alert_player_sound(to)
 				minetest.chat_send_player(to, color_magenta .. "# PM: FROM <" .. rename.gpn(name) .. coord_string .. ">: " .. newmsg)
 				-- Record name of last player to send this player a PM.
 				if chat_core.players[to] then
@@ -374,6 +375,12 @@ function chat_core.handle_command_r(name, param)
 	end
 
 	return chat_core.handle_command_msg(name, to .. " " .. param) -- Prepend target name, and call normal /msg function.
+end
+
+
+
+function chat_core.alert_player_sound(to)
+	minetest.sound_play("easyvend_error", {to_player = to, gain = 1})
 end
 
 

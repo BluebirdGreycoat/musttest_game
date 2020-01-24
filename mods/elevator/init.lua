@@ -474,7 +474,7 @@ for _,mode in ipairs({"on", "off"}) do
             formspecs[sender:get_player_name()] = {pos}
             if on then
                 if vector.distance(sender:getpos(), pos) > 1 or minetest.get_node(sender:getpos()).name ~= nodename then
-                    minetest.chat_send_player(sender:get_player_name(), "You are not inside the booth.")
+                    minetest.chat_send_player(sender:get_player_name(), "# Server: You are not inside the booth.")
                     return
                 end
                 -- Build the formspec from the motor table.
@@ -491,47 +491,55 @@ for _,mode in ipairs({"on", "off"}) do
                 formspecs[sender:get_player_name()] = {pos, tpnames}
                 if #tpnames > 0 then
                     if not minetest.is_protected(pos, sender:get_player_name()) then
-                        formspec = "size[4,6]"
+                        formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+												.."size[4,6]"
                         .."label[0,0;Click once to travel.]"
                         .."textlist[-0.1,0.5;4,4;target;"..table.concat(tpnames_l, ",").."]"
                         .."field[0.25,5.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
                         .."button_exit[-0.05,5.5;4,1;setlabel;Set label]"
                     else
-                        formspec = "size[4,4.4]"
+                        formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+												.."size[4,4.4]"
                         .."label[0,0;Click once to travel.]"
                         .."textlist[-0.1,0.5;4,4;target;"..table.concat(tpnames_l, ",").."]"
                     end
                 else
                     if not minetest.is_protected(pos, sender:get_player_name()) then
-                        formspec = "size[4,2]"
+                        formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+												.."size[4,2]"
                         .."label[0,0;No targets available.]"
                         .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
                         .."button_exit[-0.05,1.5;4,1;setlabel;Set label]"
                     else
-                        formspec = "size[4,0.4]"
+                        formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+												.."size[4,0.4]"
                         .."label[0,0;No targets available.]"
                     end
                 end
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
             elseif not elevator.motors[meta:get_string("motor")] then
                 if not minetest.is_protected(pos, sender:get_player_name()) then
-                    formspec = "size[4,2]"
+                    formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+										.."size[4,2]"
                     .."label[0,0;This elevator is inactive.]"
                     .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
                     .."button_exit[-0.05,1.5;4,1;setlabel;Set label]"
                 else
-                    formspec = "size[4,0.4]"
+                    formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+										.."size[4,0.4]"
                     .."label[0,0;This elevator is inactive.]"
                 end
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
             elseif boxes[meta:get_string("motor")] then
                 if not minetest.is_protected(pos, sender:get_player_name()) then
-                    formspec = "size[4,2]"
+                    formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+										.."size[4,2]"
                     .."label[0,0;This elevator is in use.]"
                     .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
                     .."button_exit[-0.05,1.5;4,1;setlabel;Set label]"
                 else
-                    formspec = "size[4,0.4]"
+                    formspec = default.gui_bg .. default.gui_bg_img .. default.gui_slots
+										.."size[4,0.4]"
                     .."label[0,0;This elevator is in use.]"
                 end
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
@@ -589,12 +597,12 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
             if motor then
                 meta:set_string("motor", "")
                 build_motor(motorhash)
-                minetest.chat_send_player(sender:get_player_name(), "Recalibrated to a new motor, please try again.")
+                minetest.chat_send_player(sender:get_player_name(), "# Server: Recalibrated to a new motor, please try again.")
                 return true
             end
         end
         if not motor then
-            minetest.chat_send_player(sender:get_player_name(), "This elevator is not attached to a motor.")
+            minetest.chat_send_player(sender:get_player_name(), "# Server: This elevator is not attached to a motor.")
             return true
         end
         if not formspecs[sender:get_player_name()][2] or not formspecs[sender:get_player_name()][2][minetest.explode_textlist_event(fields.target).index] then
@@ -612,7 +620,7 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
         if target then
             -- Final check.
             if boxes[motorhash] then
-                minetest.chat_send_player(sender:get_player_name(), "This elevator is in use.")
+                minetest.chat_send_player(sender:get_player_name(), "# Server: This elevator is in use.")
                 return true
             end
             local obj = create_box(motorhash, pos, target, sender)
@@ -628,7 +636,7 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
                 end
             end
         else
-            minetest.chat_send_player(sender:get_player_name(), "This target is invalid.")
+            minetest.chat_send_player(sender:get_player_name(), "# Server: This target is invalid.")
             return true
         end
         return true

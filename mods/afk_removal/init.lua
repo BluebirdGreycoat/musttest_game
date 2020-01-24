@@ -48,6 +48,17 @@ function afk_removal.is_afk(pname)
 	return false
 end
 
+-- Returns the number of seconds since player's last action.
+-- Returns -1 if player data is not available (wrong player name?).
+function afk_removal.seconds_since_action(pname)
+	local p = afk_removal.players
+	local o = p[pname]
+	if o then
+		return o.time
+	end
+	return -1
+end
+
 
 
 
@@ -61,21 +72,23 @@ afk_removal.update = function()
     if not minetest.check_player_privs(name, {canafk=true}) then
       local pos = vector.round(player:getpos())
       local dist = vector.distance(pos, afk_removal.players[name].pos)
+			local nokick = false
+
       if dist > 0.5 then
         afk_removal.players[name].pos = pos
         afk_removal.players[name].time = 0
 				afk_removal.players[name].afk = nil
       else
+				-- Increase time since AFK started.
         local time = afk_removal.players[name].time
         time = time + afk_removal.steptime
         afk_removal.players[name].time = time
         
         if time >= afk_removal.warntime then
-					if player:get_hp() > 0 and passport.player_registered(name) then -- Only ignore players who are registered and NOT dead.
-						-- If player is registered, ignore them.
-						afk_removal.players[name].pos = pos
-						afk_removal.players[name].time = 0
-						afk_removal.players[name].afk = true
+					-- Only ignore players who are registered and NOT dead.
+					if player:get_hp() > 0 and passport.player_registered(name) then
+						-- If player is registered and NOT dead, don't send message.
+						nokick = true
 					else
 						local remain = afk_removal.timeout - time
 						minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math.floor(remain) .. " seconds.")
@@ -86,10 +99,16 @@ afk_removal.update = function()
       
       -- Kick players who have done nothing for too long.
       if afk_removal.players[name].time >= afk_removal.timeout then
-        afk_removal.players[name] = nil
-        minetest.kick_player(name, "Kicked for inactivity.")
-				local dname = rename.gpn(name)
-        minetest.chat_send_all("# Server: <" .. dname .. "> was kicked for being AFK too long.")
+				if nokick then
+					-- If player is registered and NOT dead, then just mark them as AFK.
+					-- If player is registered but dead, they'll be kicked anyway.
+					afk_removal.players[name].afk = true
+				else
+					afk_removal.players[name] = nil
+					minetest.kick_player(name, "Kicked for inactivity.")
+					local dname = rename.gpn(name)
+					minetest.chat_send_all("# Server: <" .. dname .. "> was kicked for being AFK too long.")
+				end
       end
     end -- If player doesn't have 'canafk' priv.
   end
@@ -122,6 +141,38 @@ function afk_removal.on_craft(itemstack, player, old_craft_grid, craft_inv)
 end
 
 
+
+function afk_removal.do_afk(name, param)
+	if param ~= "" then
+		local pname = rename.grn(param)
+		if afk_removal.is_afk() then
+			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
+		else
+			if minetest.get_player_by_name(pname) then
+				local time = afk_removal.seconds_since_action(pname)
+				if time < 60 then
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
+				elseif time < 60*2 then
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> might be AFK.")
+				else
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
+				end
+			else
+				minetest.chat_send_player(name, "# Server: <" .. pname .. "> is not online.")
+			end
+		end
+	else
+		if afk_removal.players[name].afk then
+			afk_removal.players[name].afk = nil
+		else
+			afk_removal.players[name].afk = true
+			minetest.chat_send_player(name, "# Server: You've gone AFK!")
+		end
+	end
+end
+
+
+
 if not afk_removal.registered then
 	-- Crafting resets the player's AFK timeout.
 	minetest.register_on_craft(function(...)
@@ -144,6 +195,16 @@ if not afk_removal.registered then
 	minetest.register_on_leaveplayer(function(...)
 		return afk_removal.on_leaveplayer(...)
 	end)
+
+	minetest.register_chatcommand("afk", {
+		params = "[name]",
+		description = "Query whether another player is AFK, or toggle your own AFK status.",
+		privs = {interact=true},
+		func = function(...)
+			afk_removal.do_afk(...)
+			return true
+		end,
+	})
 
 	local c = "afk_removal:core"
 	local f = afk_removal.modpath .. "/init.lua"

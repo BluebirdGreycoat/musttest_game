@@ -896,8 +896,8 @@ minetest.register_craft({
 minetest.register_craft({
 		output = "elevator:shaft",
 		recipe = {
-				{"cast_iron:ingot", "default:obsidian_glass"},
-				{"default:obsidian_glass", "glooptest:chainlink"},
+				{"xpanes:chainlink_flat", "cast_iron:ingot"},
+				{"default:obsidian_glass", "xpanes:chainlink_flat"},
 		},
 })
 

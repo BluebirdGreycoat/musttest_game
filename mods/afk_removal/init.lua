@@ -164,6 +164,7 @@ function afk_removal.do_afk(name, param)
 	else
 		if afk_removal.players[name].afk then
 			afk_removal.players[name].afk = nil
+			minetest.chat_send_player(name, "# Server: You're no longer AFK.")
 		else
 			afk_removal.players[name].afk = true
 			minetest.chat_send_player(name, "# Server: You've gone AFK!")

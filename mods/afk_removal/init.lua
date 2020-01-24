@@ -142,6 +142,22 @@ end
 
 
 
+local function toggle_status(name)
+	if not afk_removal.players[name] then
+		return
+	end
+
+	if afk_removal.players[name].afk then
+		afk_removal.players[name].afk = nil
+		minetest.chat_send_player(name, "# Server: You're no longer AFK.")
+	else
+		afk_removal.players[name].afk = true
+		minetest.chat_send_player(name, "# Server: You've gone AFK!")
+	end
+end
+
+
+
 function afk_removal.do_afk(name, param)
 	if param ~= "" then
 		local pname = rename.grn(param)
@@ -162,13 +178,7 @@ function afk_removal.do_afk(name, param)
 			end
 		end
 	else
-		if afk_removal.players[name].afk then
-			afk_removal.players[name].afk = nil
-			minetest.chat_send_player(name, "# Server: You're no longer AFK.")
-		else
-			afk_removal.players[name].afk = true
-			minetest.chat_send_player(name, "# Server: You've gone AFK!")
-		end
+		minetest.after(0, toggle_status, name)
 	end
 end
 

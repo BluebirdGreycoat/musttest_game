@@ -220,6 +220,7 @@ function shout.shout(name, param)
 	for _, player in ipairs(players) do
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then
+			chat_core.alert_player_sound(target_name)
 			minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
 		end
 	end

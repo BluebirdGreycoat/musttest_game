@@ -158,7 +158,7 @@ function afk_removal.do_afk(name, param)
 					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
 				end
 			else
-				minetest.chat_send_player(name, "# Server: <" .. pname .. "> is not online.")
+				minetest.chat_send_player(name, "# Server: <" .. param .. "> is not online.")
 			end
 		end
 	else

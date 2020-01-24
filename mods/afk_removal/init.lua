@@ -161,7 +161,7 @@ end
 function afk_removal.do_afk(name, param)
 	if param ~= "" then
 		local pname = rename.grn(param)
-		if afk_removal.is_afk() then
+		if afk_removal.is_afk(pname) then
 			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
 		else
 			if minetest.get_player_by_name(pname) then

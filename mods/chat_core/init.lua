@@ -81,6 +81,7 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 		if pname ~= from then
 			local chosen_color = ""
 			local should_send = true
+			local should_beep = false
 			local ignored = false
 
 			-- Execute chat filters. Order is relevant!
@@ -123,6 +124,7 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 				-- This overrides any previous coloring.
 				if string.find(mlower, plower) or string.find(mlower, plowero) then
 					chosen_color = color_green
+					should_beep = true
 				end
 
 				-- If /me, use correct color.
@@ -131,6 +133,9 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 				end
 
 				-- Finally send the message.
+				if should_beep then
+					chat_core.alert_player_sound(pname)
+				end
 				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			end
 		else -- Message being echoed back to player that sent it.

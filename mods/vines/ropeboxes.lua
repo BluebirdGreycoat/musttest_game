@@ -209,6 +209,18 @@ minetest.register_node("vines:rope_bottom", {
 
 	-- If rope has fallen asleep, you can wake it up with a punch.
 	on_punch = function(pos, node, puncher, pt)
+		if not puncher or not puncher:is_player() then
+			return
+		end
+
+		-- If the rope is protected, don't extend the rope any further.
+		-- This lets players use ropes as secure entrances to forts.
+		-- That is, only owner can let rope down, others cannot let it down.
+		local pname = puncher:get_player_name()
+		if minetest.test_protection(pos, pname) then
+			return
+		end
+
 		local timer = minetest.get_node_timer( pos )
 		timer:start( rope_timer_rate )
 	end,

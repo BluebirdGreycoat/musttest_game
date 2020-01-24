@@ -61,56 +61,55 @@ end
 
 
 
-
-
-
 afk_removal.update = function()
   local allplayers = minetest.get_connected_players()
   for k, player in ipairs(allplayers) do
     local name = player:get_player_name()
+		local target = afk_removal.players[name]
     
-    if not minetest.check_player_privs(name, {canafk=true}) then
-      local pos = vector.round(player:getpos())
-      local dist = vector.distance(pos, afk_removal.players[name].pos)
-			local nokick = false
+		local pos = vector.round(player:getpos())
+		local dist = vector.distance(pos, target.pos)
+		local nokick = false
 
-      if dist > 0.5 then
-        afk_removal.players[name].pos = pos
-        afk_removal.players[name].time = 0
-				afk_removal.players[name].afk = nil
-      else
-				-- Increase time since AFK started.
-        local time = afk_removal.players[name].time
-        time = time + afk_removal.steptime
-        afk_removal.players[name].time = time
-        
-        if time >= afk_removal.warntime then
-					-- Only ignore players who are registered and NOT dead.
-					if player:get_hp() > 0 and passport.player_registered(name) then
-						-- If player is registered and NOT dead, don't send message.
-						nokick = true
-					else
-						local remain = afk_removal.timeout - time
-						minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math.floor(remain) .. " seconds.")
-						easyvend.sound_error(name)
-					end
-        end
-      end
-      
-      -- Kick players who have done nothing for too long.
-      if afk_removal.players[name].time >= afk_removal.timeout then
-				if nokick then
-					-- If player is registered and NOT dead, then just mark them as AFK.
-					-- If player is registered but dead, they'll be kicked anyway.
-					afk_removal.players[name].afk = true
+    if minetest.check_player_privs(name, {canafk=true}) then
+			nokick = true
+    end
+
+		if dist > 0.5 then
+			target.pos = pos
+			target.time = 0
+			target.afk = nil
+		else
+			-- Increase time since AFK started.
+			local time = target.time
+			time = time + afk_removal.steptime
+			target.time = time
+
+			if not nokick and time >= afk_removal.warntime then
+				-- Only ignore players who are registered and NOT dead.
+				if player:get_hp() > 0 and passport.player_registered(name) then
+					-- If player is registered and NOT dead, don't send message.
+					nokick = true
 				else
-					afk_removal.players[name] = nil
-					minetest.kick_player(name, "Kicked for inactivity.")
-					local dname = rename.gpn(name)
-					minetest.chat_send_all("# Server: <" .. dname .. "> was kicked for being AFK too long.")
+					local remain = afk_removal.timeout - time
+					minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math.floor(remain) .. " seconds.")
+					easyvend.sound_error(name)
 				end
-      end
-    end -- If player doesn't have 'canafk' priv.
+			end
+		end
+
+		-- Kick players who have done nothing for too long.
+		if target.time >= afk_removal.timeout then
+			if nokick then
+				-- If player is registered and NOT dead, then just mark them as AFK.
+				-- If player is registered but dead, they'll be kicked anyway.
+				target.afk = true
+			else
+				minetest.kick_player(name, "Kicked for inactivity.")
+				local dname = rename.gpn(name)
+				minetest.chat_send_all("# Server: <" .. dname .. "> was kicked for being AFK too long.")
+			end
+		end
   end
 end
 

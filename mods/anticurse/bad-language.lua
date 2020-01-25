@@ -5,7 +5,7 @@ anticurse.foul = {
 		"whats", "exact", "exist", "xd", "except", "its", "exha", "exp", "extra", "thats",
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
 		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
-		"excellent", "exotic",
+		"excellent", "exotic", "extensive",
 	}},
 
 	"h+y+m+e+n+",

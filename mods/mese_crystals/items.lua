@@ -52,7 +52,7 @@ if not mese_crystals.nodes_registered then
 	end
 
 	minetest.register_craftitem("mese_crystals:zentamine", {
-  	description = "Raw Zentamine Fragment",
+  	description = "Zentamine Shard",
   	inventory_image = "zentamine_fragment.png",
 	})
 

@@ -490,7 +490,7 @@ for _,mode in ipairs({"on", "off"}) do
                 end
                 formspecs[sender:get_player_name()] = {pos, tpnames}
                 if #tpnames > 0 then
-                    if not minetest.is_protected(pos, sender:get_player_name()) then
+                    if not minetest.test_protection(pos, sender:get_player_name()) then
                         formspec = "size[4,6]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
                         .."label[0,0;Click once to travel.]"
                         .."textlist[-0.1,0.5;4,4;target;"..table.concat(tpnames_l, ",").."]"
@@ -502,7 +502,7 @@ for _,mode in ipairs({"on", "off"}) do
                         .."textlist[-0.1,0.5;4,4;target;"..table.concat(tpnames_l, ",").."]"
                     end
                 else
-                    if not minetest.is_protected(pos, sender:get_player_name()) then
+                    if not minetest.test_protection(pos, sender:get_player_name()) then
                         formspec = "size[4,2]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
                         .."label[0,0;No targets available.]"
                         .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
@@ -514,7 +514,7 @@ for _,mode in ipairs({"on", "off"}) do
                 end
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
             elseif not elevator.motors[meta:get_string("motor")] then
-                if not minetest.is_protected(pos, sender:get_player_name()) then
+                if not minetest.test_protection(pos, sender:get_player_name()) then
                     formspec = "size[4,2]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
                     .."label[0,0;This elevator is inactive.]"
                     .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
@@ -525,7 +525,7 @@ for _,mode in ipairs({"on", "off"}) do
                 end
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
             elseif boxes[meta:get_string("motor")] then
-                if not minetest.is_protected(pos, sender:get_player_name()) then
+                if not minetest.test_protection(pos, sender:get_player_name()) then
                     formspec = "size[4,2]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
                     .."label[0,0;This elevator is in use.]"
                     .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
@@ -557,7 +557,7 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
     end
     local meta = minetest.get_meta(pos)
     if fields.setlabel then
-        if minetest.is_protected(pos, sender:get_player_name()) then
+        if minetest.test_protection(pos, sender:get_player_name()) then
             return true
         end
         meta:set_string("label", fields.label)

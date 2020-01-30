@@ -1,3 +1,4 @@
+[2020/1/30] Add new shelf nodes.
 [2020/1/24] Added realtime elevator mod.
 [2020/1/24] The server now sends an auditory beep when player receives a PM or mention by another player.
 [2020/1/24] Added /afk chat-command.

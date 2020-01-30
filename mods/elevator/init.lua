@@ -485,7 +485,12 @@ for _,mode in ipairs({"on", "off"}) do
                 for ji,jv in ipairs(motor.pnames) do
                     if tonumber(jv) ~= pos.y then
                         table.insert(tpnames, jv)
-                        table.insert(tpnames_l, (motor.labels[ji] and motor.labels[ji] ~= "") and (jv.." - "..minetest.formspec_escape(motor.labels[ji])) or jv)
+												local jy = jv
+												local rp = rc.pos_to_realmpos({x=pos.x, y=jv, z=pos.z})
+												if rp then
+													jy = rp.y
+												end
+                        table.insert(tpnames_l, (motor.labels[ji] and motor.labels[ji] ~= "") and (jy .. " - " .. minetest.formspec_escape(motor.labels[ji])) or jy)
                     end
                 end
                 formspecs[sender:get_player_name()] = {pos, tpnames}

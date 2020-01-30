@@ -70,6 +70,7 @@ function inventory_plus.get_formspec()
 	for k, v in pairs(buttons) do
 		-- 'k' is element name, 'v' is display label.
 
+		assert(positions[k])
 		local x, y = ox + positions[k][1], oy + positions[k][2]
 
 		formspec = formspec .. "image_button[" .. x .. "," .. y ..

@@ -490,7 +490,13 @@ for _,mode in ipairs({"on", "off"}) do
 												if rp then
 													jy = tostring(rp.y)
 												end
-                        table.insert(tpnames_l, (motor.labels[ji] and motor.labels[ji] ~= "") and (jy .. " - " .. minetest.formspec_escape(motor.labels[ji])) or jy)
+												local ename = (motor.labels[ji] and motor.labels[ji] ~= "") and (jy .. " - " .. minetest.formspec_escape(motor.labels[ji])) or jy
+												if tonumber(jv) > pos.y then
+													ename = ename .. " - Up"
+												else
+													ename = ename .. " - Down"
+												end
+                        table.insert(tpnames_l, ename)
                     end
                 end
                 formspecs[sender:get_player_name()] = {pos, tpnames}

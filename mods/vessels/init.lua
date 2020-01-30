@@ -145,11 +145,58 @@ if not vessels.run_once then
 			return vessels.on_blast(...) end,
 	})
 
+	minetest.register_node("vessels:shelf2", {
+		description = "Vessels Shelf",
+		tiles = {
+			"default_wood.png",
+			"default_wood.png",
+			"default_wood.png",
+			"default_wood.png",
+			"vessels_shelf2.png",
+			"vessels_shelf2.png"
+		},
+		paramtype2 = "facedir",
+		is_ground_content = false,
+		groups = shelf_groups,
+		sounds = shelf_sounds,
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_construct = function(...)
+			return vessels.on_construct(...) end,
+
+		can_dig = function(...)
+			return vessels.can_dig(...) end,
+
+		allow_metadata_inventory_put = function(...)
+			return vessels.allow_metadata_inventory_put(...) end,
+
+		on_metadata_inventory_move = function(...)
+			return vessels.on_metadata_inventory_move(...) end,
+
+		on_metadata_inventory_put = function(...)
+			return vessels.on_metadata_inventory_put(...) end,
+
+		on_metadata_inventory_take = function(...)
+			return vessels.on_metadata_inventory_take(...) end,
+
+		on_blast = function(...)
+			return vessels.on_blast(...) end,
+	})
+
 	minetest.register_craft({
 		output = "vessels:shelf",
 		recipe = {
 			{"group:wood", "group:wood", "group:wood"},
 			{"group:vessel", "group:vessel", "group:vessel"},
+			{"group:wood", "group:wood", "group:wood"},
+		}
+	})
+
+	minetest.register_craft({
+		output = "vessels:shelf2",
+		recipe = {
+			{"group:wood", "group:wood", "group:wood"},
+			{"group:vessel", "", "group:vessel"},
 			{"group:wood", "group:wood", "group:wood"},
 		}
 	})

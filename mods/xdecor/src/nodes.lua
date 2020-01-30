@@ -110,6 +110,18 @@ register_storage("multishelf", "Multi Shelf", {
 		 "default_wood.png", "default_wood.png^xdecor_multishelf.png"},
 })
 
+register_storage("multishelf2", "Multi Shelf", {
+	on_rotate = screwdriver.rotate_simple,
+	tiles = {"default_wood.png", "default_wood.png", "default_wood.png",
+		 "default_wood.png", "default_wood.png^xdecor_multishelf2.png"},
+})
+
+register_storage("multishelf3", "Multi Shelf", {
+	on_rotate = screwdriver.rotate_simple,
+	tiles = {"default_wood.png", "default_wood.png", "default_wood.png",
+		 "default_wood.png", "default_wood.png^xdecor_multishelf3.png"},
+})
+
 xdecor.register("candle", {
 	description = "Candle",
 	light_source = 8,

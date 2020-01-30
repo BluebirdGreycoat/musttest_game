@@ -167,6 +167,24 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = "xdecor:multishelf2",
+	recipe = {
+		{"group:wood_light", "group:wood_light", "group:wood_light"},
+		{"default:paper", "group:book", "group:book"},
+		{"group:wood_light", "group:wood_light", "group:wood_light"}
+	}
+})
+
+minetest.register_craft({
+	output = "xdecor:multishelf3",
+	recipe = {
+		{"group:wood_light", "group:wood_light", "group:wood_light"},
+		{"default:paper", "group:book", "group:vessel"},
+		{"group:wood_light", "group:wood_light", "group:wood_light"}
+	}
+})
+
+minetest.register_craft({
 	output = "xdecor:packed_ice",
 	recipe = {
 		{"default:ice", "default:ice", ""},

@@ -82,7 +82,7 @@ plate.register("stone", "Stone", {
 })
 
 xdecor.register("lever_off", {
-	description = "Lever",
+	description = "Spring Lever",
 	tiles = {"xdecor_lever_off.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{2, 1, 15, 12, 14, 1}}),

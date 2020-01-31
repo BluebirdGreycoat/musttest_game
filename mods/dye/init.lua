@@ -99,13 +99,7 @@ end
 minetest.register_craft({
   type = "shapeless",
   output = "dye:black",
-  recipe = {"default:coal_lump"},
-})
-
-minetest.register_craft({
-  type = "shapeless",
-  output = "dye:green",
-  recipe = {"default:cactus"},
+  recipe = {"default:coal_lump", "default:clay_lump"},
 })
   
 -- Mix recipes.

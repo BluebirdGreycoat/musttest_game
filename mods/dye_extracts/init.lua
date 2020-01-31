@@ -29,6 +29,13 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
+  output = 'dye:black 5',
+  recipe = 'flowers:tulip_black',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
   output = 'dye:yellow 5',
   recipe = 'flowers:dandelion_yellow',
   time = 3,
@@ -36,21 +43,28 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
-  output = 'dye:green 4',
+  output = 'dye:green',
   recipe = 'default:cactus',
   time = 12,
 })
 
 minetest.register_craft({
   type = "extracting",
-  output = 'dye:black 4',
+  output = 'dye:green 5',
+  recipe = 'flowers:chrysanthemum_green',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:black 2',
   recipe = 'default:coal_lump',
   time = 12,
 })
 
 minetest.register_craft({
   type = "extracting",
-  output = 'dye:black 2',
+  output = 'dye:black',
   recipe = 'dusts:coal',
   time = 6,
 })
@@ -66,14 +80,14 @@ minetest.register_craft({
   type = "extracting",
   output = 'dye:green',
   recipe = 'default:grass_dummy',
-  time = 3,
+  time = 12,
 })
 
 minetest.register_craft({
   type = "extracting",
   output = 'dye:brown',
   recipe = 'default:dry_shrub',
-  time = 3,
+  time = 12,
 })
 
 minetest.register_craft({

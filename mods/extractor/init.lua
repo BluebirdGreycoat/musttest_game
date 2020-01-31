@@ -250,13 +250,6 @@ if not extractor.run_once then
 			{'stainless_steel:ingot', 'cb2:mv',       'stainless_steel:ingot'},
 		}
 	})
-
-  minetest.register_craft({
-    type = "extracting",
-    output = "dye:green",
-    recipe = "group:leaves",
-    time = 4,
-  })
   
   local c = "extractor:core"
   local f = extractor.modpath .. "/init.lua"

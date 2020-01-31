@@ -1,3 +1,4 @@
+[2020/1/31] Replaced the texture for the advanced protector logo node.
 [2020/1/31] Added protector placer tool.
 [2020/1/30] Reduced elevator speed a bit.
 [2020/1/30] Fixed a bunch of dye-related recipes to improve balance just a bit.

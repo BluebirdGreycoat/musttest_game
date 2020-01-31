@@ -1,5 +1,5 @@
 -- Initial speed of a box.
-local SPEED = 10
+local SPEED = 7
 -- Acceleration of a box.
 local ACCEL = 0.1
 -- Elevator interface/database version.

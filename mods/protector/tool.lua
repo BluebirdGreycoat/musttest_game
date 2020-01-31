@@ -6,7 +6,7 @@ local get_public_time = function()
 end
 
 minetest.register_craftitem("protector:tool", {
-	description = "Protector Placer Tool\n\nStand near protector, face direction and use.\nHold sneak to copy member names.\nHold 'E' to double the gap distance.",
+	description = "Claim Expansion Tool\n\nStand near protector, face direction and use.\nHold sneak to copy member names.\nHold 'E' to double the gap distance.",
 	inventory_image = "nodeinspector.png^protector_lock.png",
 	stack_max = 1,
 
@@ -22,6 +22,11 @@ minetest.register_craftitem("protector:tool", {
        "protector:protect3", "protector:protect4"})
 
 		if #pp == 0 then return end -- none found
+
+		if #pp > 1 then
+			minetest.chat_send_player(name, "# Server: Too many protectors nearby, choice would be ambiguous.")
+			return
+		end
 
 		pos = pp[1] -- take position of first protector found
 
@@ -154,7 +159,11 @@ minetest.register_craftitem("protector:tool", {
 
 		-- did we get a protector to use ?
 		if not nod then
-			minetest.chat_send_player(name, "# Server: No protectors available to place!")
+			if s then
+				minetest.chat_send_player(name, "# Server: No basic protectors available to place!")
+			else
+				minetest.chat_send_player(name, "# Server: No advanced protectors available to place!")
+			end
 			return
 		end
 
@@ -185,7 +194,7 @@ minetest.register_craftitem("protector:tool", {
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
-		if members_copied then
+		if members_copied and not s then
 			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ". Members copied.")
 		else
 			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ".")

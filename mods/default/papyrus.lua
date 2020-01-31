@@ -1,7 +1,7 @@
 
 papyrus = papyrus or {}
 papyrus.modpath = minetest.get_modpath("default")
-papyrus.steptime = {min=60, max=60*6}
+papyrus.steptime = {min=60*5, max=60*20}
 papyrus.plantname = "default:papyrus"
 papyrus.maxheight = 5
 papyrus.minlight = 13

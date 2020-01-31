@@ -172,8 +172,10 @@ minetest.register_craftitem("protector:tool", {
 		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 
 		-- copy members across if holding sneak when using tool
+		local members_copied = false
 		if user:get_player_control().sneak then
 			meta:set_string("members", members)
+			members_copied = true
 		else
 			meta:set_string("members", "")
 		end
@@ -182,7 +184,12 @@ minetest.register_craftitem("protector:tool", {
 		protector.update_nearby_players(pos)
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
-		minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ".")
+
+		if members_copied then
+			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ". Members copied.")
+		else
+			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ".")
+		end
 	end,
 })
 

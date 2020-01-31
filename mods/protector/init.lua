@@ -15,6 +15,7 @@ protector.hurt = (tonumber(minetest.settings:get("protector_hurt")) or 0)
 protector.display_time = 60*2
 
 dofile(protector.modpath .. "/hud.lua")
+dofile(protector.modpath .. "/tool.lua")
 
 -- Temporary pos store.
 local player_pos = protector.players
@@ -467,21 +468,17 @@ function minetest.test_protection(pos, digger)
 	return protector.old_is_protected(pos, digger)
 end
 
+
+
 -- Make sure protection block doesn't overlap another protector's area
 
-function protector.check_overlap(itemstack, placer, pt)
-	if pt.type ~= "node" then
-		return itemstack
-	end
-	local pname = placer:get_player_name()
-	local prot_type = itemstack:get_name()
-
-	if not protector.can_dig(protector.radius, 2, prot_type, pt.above, pname, true, 3) then
-		minetest.chat_send_player(pname, "# Server: Protection bounds overlap into another person's area claim.")
-		return
+function protector.check_overlap_main(protname, pname, spos)
+	if not protector.can_dig(protector.radius, 2, protname, spos, pname, true, 3) then
+		-- Overlap with other player's protection.
+		return false, 1
 	end
 
-	local pos = {x=pt.under.x, y=pt.under.y, z=pt.under.z}
+	local pos = {x=spos.x, y=spos.y, z=spos.z}
 	local rad = protector.radius
 	local bones = minetest.find_nodes_in_area(
 		{x = pos.x - rad, y = pos.y - rad, z = pos.z - rad},
@@ -493,15 +490,43 @@ function protector.check_overlap(itemstack, placer, pt)
 			local meta = minetest.get_meta(v)
 			local owner = meta:get_string("owner") or ""
 			if owner ~= "" and owner ~= "server" then
-				minetest.chat_send_player(pname, "# Server: You cannot claim this area while someone's fresh corpse is nearby!")
-				return
+				-- fresh bones nearby
+				return false, 2
 			end
 			local oldowner = meta:get_string("oldowner") or ""
 			if oldowner ~= "" and oldowner ~= "server" then
-				minetest.chat_send_player(pname, "# Server: You must remove all corpses before you can claim this area.")
-				return
+				-- old bones nearby
+				return false, 3
 			end
 		end
+	end
+
+	-- no overlap with other protection
+	return true, 0
+end
+
+
+
+function protector.check_overlap(itemstack, placer, pt)
+	if pt.type ~= "node" then
+		return itemstack
+	end
+	local pname = placer:get_player_name()
+	local prot_type = itemstack:get_name()
+
+	local success, reason = protector.check_overlap_main(prot_type, pname, pt.above)
+
+	if not success then
+		if reason == 1 then
+			minetest.chat_send_player(pname, "# Server: Protection bounds overlap into another person's area claim.")
+		elseif reason == 2 then
+			minetest.chat_send_player(pname, "# Server: You cannot claim this area while someone's fresh corpse is nearby!")
+		elseif reason == 3 then
+			minetest.chat_send_player(pname, "# Server: You must remove all corpses before you can claim this area.")
+		else
+			minetest.chat_send_player(pname, "# Server: Cannot place protection for unknown reason.")
+		end
+		return
 	end
 
 	return minetest.item_place(itemstack, placer, pt)

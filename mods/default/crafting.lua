@@ -8,6 +8,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "shapeless",
+	output = 'default:stick',
+	recipe = {'default:dry_shrub'}
+})
+
+minetest.register_craft({
   output = "default:stick",
   recipe = {
 		{"torches:torch_floor", "torches:torch_floor"},

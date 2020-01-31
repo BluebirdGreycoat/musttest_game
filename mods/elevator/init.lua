@@ -907,8 +907,9 @@ minetest.register_craft({
 minetest.register_craft({
 		output = "elevator:shaft",
 		recipe = {
-				{"xpanes:chainlink_flat", "cast_iron:ingot"},
-				{"default:obsidian_glass", "xpanes:chainlink_flat"},
+				{"titanium:crystal", "", "titanium:crystal"},
+				{"xpanes:chainlink_flat", "", "xpanes:chainlink_flat"},
+				{"default:obsidian_glass", "", "cast_iron:ingot"},
 		},
 })
 

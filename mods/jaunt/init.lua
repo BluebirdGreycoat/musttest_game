@@ -16,7 +16,7 @@ function jaunt.get_formspec(player)
     "label[1,0.4;Requires Teleport for Anchor]" ..
 		"field[0.3,1.3;2.9,1;player;;]" ..
 		"button[3.0,1.0;1.5,1;go;Jaunt]" ..
-		"button[1.25,2.0;2.25,1;cancel;Abort2]"
+		"button[1.25,2.0;2.25,1;cancel;Abort]"
 
 	return formspec
 end
@@ -79,6 +79,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							nil, false)
 
 							-- don't reshow the formspec
+							minetest.close_formspec(pname, "jaunt:fs")
 							return true
 						else
 							minetest.chat_send_player(pname, "# Server: Target signal origin is too weak to accurately triangulate!")

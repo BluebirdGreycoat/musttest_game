@@ -78,6 +78,8 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							end,
 							nil, false)
 
+							-- don't reshow the formspec
+							return true
 						else
 							minetest.chat_send_player(pname, "# Server: Target signal origin is too weak to accurately triangulate!")
 						end

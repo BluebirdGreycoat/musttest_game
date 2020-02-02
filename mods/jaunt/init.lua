@@ -16,7 +16,7 @@ function jaunt.get_formspec(player)
     "label[1,0.4;Requires Teleport for Anchor]" ..
 		"field[0.3,1.3;2.9,1;player;;]" ..
 		"button[3.0,1.0;1.5,1;go;Jaunt]" ..
-		"button[1.25,2.0;2.25,1;cancel;Abort]"
+		"button[1.25,2.0;2.25,1;cancel;Abort2]"
 
 	return formspec
 end

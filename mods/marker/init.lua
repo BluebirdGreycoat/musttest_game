@@ -686,15 +686,24 @@ marker.on_receive_fields = function(player, formname, fields)
 								if not marker.players[targetname] then
 									marker.load_player(targetname)
 								end
+
 								if marker.have_list(targetname, name) then
 									minetest.chat_send_player(pname, "# Server: The other Key already hosts a marker list with that name. Cannot transfer data!")
 								else
-									local datafrom = marker.get_list(pname, name)
-									local datato = marker.get_list(targetname, name)
-									for i = 1, #datafrom, 1 do
-										datato[#datato + 1] = table.copy(datafrom[i])
+									if marker.list_count(targetname) < marker.max_lists then
+										local datafrom = marker.get_list(pname, name)
+
+										-- because we checked to make sure the target key doesn't have this list already,
+										-- we have assured that this will create it for the first time, and it will be empty
+										local datato = marker.get_list(targetname, name)
+										for i = 1, #datafrom, 1 do
+											datato[#datato + 1] = table.copy(datafrom[i])
+										end
+
+										minetest.chat_send_player(pname, "# Server: Marker list sent!")
+									else
+										minetest.chat_send_player(pname, "# Server: The other Key's marker list storage is full! Cannot transfer data.")
 									end
-									minetest.chat_send_player(pname, "# Server: Marker list sent!")
 								end
 							else
 								minetest.chat_send_player(pname, "# Server: You must select a marker list, first.")

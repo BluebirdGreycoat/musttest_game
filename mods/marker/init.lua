@@ -599,8 +599,11 @@ marker.on_receive_fields = function(player, formname, fields)
 	end
 	local gui = allgui[pname]
 
-	if fields.done or fields.quit then
+	if fields.done then
     passport.show_formspec(pname)
+		return true
+	end
+	if fields.quit then
 		return true
 	end
 

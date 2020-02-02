@@ -65,7 +65,7 @@ passport.compose_formspec = function(pname)
   for k, v in pairs(passport.recalls) do
     local n = v.name
     local c = v.code
-    buttons = buttons .. "button_exit[6," .. i .. ";3,1;" .. c .. ";" .. n .. "]"
+    buttons = buttons .. "button_exit[6," .. (i-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
     i = i + 1
   end
   
@@ -86,21 +86,30 @@ passport.compose_formspec = function(pname)
 		"label[1,0.0;" ..
 			minetest.formspec_escape("Active Interface to your Key of Citizenship. Owner: <" .. rename.gpn(pname) .. ">") .. "]" ..
     buttons ..
-    "button_exit[1,6;2,1;exit;Close]" ..
-    "button_exit[1,3;2,1;mapfix;Fix Map]" ..
-    "button[3,1;2,1;email;E-Mail]" ..
-    "button[1,2;2,1;survivalist;Survivalist]" ..
-    "button[3,2;2,1;rename;Nickname]" ..
-		"button[3,3;2,1;chatfilter;Chat Filter]" ..
-		"button[1,1;2,1;marker;Markers]" ..
+    "button_exit[1,5.7;2,1;exit;Close]" ..
+    "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..
+    "button[3,0.7;2,1;email;E-Mail]" ..
+    "button[1,1.7;2,1;survivalist;Survivalist]" ..
+    "button[3,1.7;2,1;rename;Nickname]" ..
+		"button[3,2.7;2,1;chatfilter;Chat Filter]" ..
+		"button[1,0.7;2,1;marker;Markers]" ..
 
 		"tooltip[email;Hold 'E' while using the Key to access directly.]" ..
 		"tooltip[marker;Hold 'sneak' while using the Key to access directly.]" ..
     
-    "checkbox[1,4.2;toggleparticles;Enable Particles;" ..
+    "checkbox[3,5.0;togglechat;Enable Echo;" ..
+      boolecho .. "]" ..
+    "checkbox[1,5.0;toggleparticles;Want Particles;" ..
       boolparticle .. "]" ..
-    "checkbox[1,4.8;togglechat;Enable Chat Echoing;" ..
-      boolecho .. "]"
+
+		"tooltip[togglechat;" .. 
+			minetest.formspec_escape(
+				"Toggle whether the server should echo your chat back to your client.\n" ..
+				"Newer clients should keep this checked.") .. "]" ..
+		"tooltip[toggleparticles;" .. 
+			minetest.formspec_escape(
+				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
+				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning ...") .. "]"
 
 	for i=1, 7, 1 do
 		local name = "xdecor:ivy"

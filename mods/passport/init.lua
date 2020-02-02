@@ -83,23 +83,24 @@ passport.compose_formspec = function(pname)
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-    "label[1,0.0;Registered citizens can teleport to any of the colony's recall locations.]" ..
-    "label[1,0.4;Server topic: https://forum.minetest.net/viewtopic.php?f=10&t=16087]" ..
+		"label[1,0.0;" ..
+			minetest.formspec_escape("Active Interface to your Key of Citizenship. Owner: <" .. rename.gpn(pname) .. ">") .. "]" ..
     buttons ..
-    "button_exit[1,1;2,1;exit;Close]" ..
-    "button_exit[3,1;2,1;mapfix;Fix Map]" ..
-    "button[3,2;2,1;email;E-Mail]" ..
+    "button_exit[1,6;2,1;exit;Close]" ..
+    "button_exit[1,3;2,1;mapfix;Fix Map]" ..
+    "button[3,1;2,1;email;E-Mail]" ..
     "button[1,2;2,1;survivalist;Survivalist]" ..
-    "button[1,3;2,1;rename;Nickname]" ..
+    "button[3,2;2,1;rename;Nickname]" ..
 		"button[3,3;2,1;chatfilter;Chat Filter]" ..
+		"button[1,1;2,1;marker;Markers]" ..
+
+		"tooltip[email;Hold 'E' while using the Key to access directly.]" ..
+		"tooltip[marker;Hold 'sneak' while using the Key to access directly.]" ..
     
     "checkbox[1,4.2;toggleparticles;Enable Particles;" ..
       boolparticle .. "]" ..
     "checkbox[1,4.8;togglechat;Enable Chat Echoing;" ..
-      boolecho .. "]" ..
-    "label[1,5.6;Server Name: Must Test]" ..
-    "label[1,6.0;Server Address: arklegacy.duckdns.org]" ..
-    "label[1,6.4;Server Port: 30000]"
+      boolecho .. "]"
 
 	for i=1, 7, 1 do
 		local name = "xdecor:ivy"
@@ -165,8 +166,15 @@ passport.on_use = function(itemstack, user, pointed)
 		meta:set_int("uses", meta:get_int("uses") + 1)
 		changed = true
 
-		-- Show KoC interface.
-    passport.show_formspec(pname)
+		local control = user:get_player_control()
+		if control.sneak then
+			marker.show_formspec(pname)
+		elseif control.aux1 then
+			mailgui.show_formspec(pname)
+		else
+			-- Show KoC interface.
+			passport.show_formspec(pname)
+		end
   end
 
 	if changed then
@@ -202,6 +210,11 @@ passport.on_receive_fields = function(player, formname, fields)
 
 	if fields.chatfilter then
 		chat_controls.show_formspec(pname)
+		return true
+	end
+
+	if fields.marker then
+		marker.show_formspec(pname)
 		return true
 	end
   

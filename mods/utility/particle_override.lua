@@ -38,6 +38,20 @@ end
 
 
 
+function minetest.add_particlespawner_single(data)
+	local id
+	local pname = data.playername or ""
+	if players[pname] then
+		local player = minetest.get_player_by_name(pname)
+		if player then
+			if vector.distance(player:get_pos(), data.minpos) <= maxdist then
+				id = add_particlespawner(data)
+			end
+		end
+	end
+	return id
+end
+
 function minetest.add_particlespawner(data)
 	for k, v in pairs(players) do
 		local player = minetest.get_player_by_name(k)

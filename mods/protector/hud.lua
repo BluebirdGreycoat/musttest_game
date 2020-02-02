@@ -18,7 +18,7 @@ function protector.update_nearby_players(pos)
 end
 
 local gs_timer = 0.0
-local gs_timestep = 1.5
+local gs_timestep = 0.5
 
 minetest.register_globalstep(function(dtime)
 	gs_timer = gs_timer + dtime

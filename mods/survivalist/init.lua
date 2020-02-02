@@ -911,13 +911,17 @@ function survivalist.on_receive_fields(player, formname, fields)
   if formname ~= "survivalist:survivalist" and formname ~= "survivalist:rankings" then
     return
   end
+
+	if fields.quit then
+		return true
+	end
   
   if fields.show_rankings then
     survivalist.show_rankings_formspec(pname)
     return true
   end
   
-  if fields.close_rankings or (fields.quit and formname == "survivalist:rankings") then
+  if fields.close_rankings or formname == "survivalist:rankings" then
     survivalist.show_formspec(pname)
     return true
   end
@@ -956,7 +960,7 @@ function survivalist.on_receive_fields(player, formname, fields)
     end
   end
   
-  if fields.close or fields.quit then
+  if fields.close then
     --minetest.close_formspec(pname, "survivalist:survivalist")
     passport.show_formspec(pname)
     return true

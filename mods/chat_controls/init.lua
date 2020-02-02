@@ -447,6 +447,10 @@ function chat_controls.on_receive_fields(player, formname, fields)
     return
   end
 
+	if fields.quit then
+		return true
+	end
+
 	if fields.apply then
 		chat_controls.set_lists_from_fields(pname, fields)
 		chat_controls.save_lists_for_player(pname)
@@ -465,7 +469,7 @@ function chat_controls.on_receive_fields(player, formname, fields)
 		return true
 	end
 
-  if fields.close or fields.quit then
+  if fields.close then
 		-- Go back to the KoC control panel.
     passport.show_formspec(pname)
     return true

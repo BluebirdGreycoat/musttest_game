@@ -356,13 +356,17 @@ function rename.on_receive_fields(player, formname, fields)
     return
   end
 
+	if fields.quit then
+		return true
+	end
+
 	if fields.choose then
 		rename.purchase_rename(pname, fields.alias)
 		minetest.close_formspec(pname, "rename:rename")
 		return true
 	end
 
-  if fields.close or fields.quit then
+  if fields.close then
 		-- Go back to the KoC control panel.
     passport.show_formspec(pname)
     return true

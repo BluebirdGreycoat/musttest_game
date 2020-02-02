@@ -228,7 +228,7 @@ mailgui.compose_formspec = function(pname)
     "button[12,6.8;2,1;outcopy;Get Copy]" ..
   
     -- Close button.
-    "button[12,0;2,1;quit;Close]"
+    "button[12,0;2,1;done;Close]"
   
   return formspec
 end
@@ -528,7 +528,6 @@ mailgui.gui_handler = function(pref, fname, fields)
   
   if fields.quit then
     mailgui.open_inboxes[pname] = nil
-    passport.show_formspec(pname)
   end
   return true
 end

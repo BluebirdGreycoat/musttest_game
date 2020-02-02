@@ -2,7 +2,7 @@
 -- protector placement tool (thanks to Shara for code and idea)
 
 local get_public_time = function()
-  return os.date("!%Y/%m/%d UTC")
+	return os.date("!%Y/%m/%d UTC")
 end
 
 minetest.register_craftitem("protector:tool", {
@@ -19,7 +19,7 @@ minetest.register_craftitem("protector:tool", {
 		local pp = minetest.find_nodes_in_area(
 			vector.subtract(pos, 2), vector.add(pos, 2),
 			{"protector:protect", "protector:protect2",
-       "protector:protect3", "protector:protect4"})
+			"protector:protect3", "protector:protect4"})
 
 		if #pp == 0 then return end -- none found
 
@@ -51,6 +51,13 @@ minetest.register_craftitem("protector:tool", {
 		-- get members on protector
 		local meta = minetest.get_meta(pos)
 		local members = meta:get_string("members") or ""
+		local owner = meta:get_string("owner") or ""
+
+		-- require the tool user to be the owner of the initial protector node
+		if owner ~= name then
+			minetest.chat_send_player(name, "# Server: Cannot expand claim from origin, the protector is not yours!")
+			return
+		end
 
 		-- get direction player is facing
 		local dir = minetest.dir_to_facedir( user:get_look_dir() )

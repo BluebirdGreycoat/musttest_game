@@ -111,6 +111,10 @@ passport.compose_formspec = function(pname)
 				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
 				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning ...") .. "]"
 
+	if survivalist.player_beat_cave_challenge(pname) then
+		formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
+	end
+
 	for i=1, 7, 1 do
 		local name = "xdecor:ivy"
 		if i == 1 then
@@ -224,6 +228,11 @@ passport.on_receive_fields = function(player, formname, fields)
 
 	if fields.marker then
 		marker.show_formspec(pname)
+		return true
+	end
+
+	if fields.jaunt and survivalist.player_beat_cave_challenge(pname) then
+		jaunt.show_formspec(pname)
 		return true
 	end
   

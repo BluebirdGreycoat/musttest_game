@@ -6,6 +6,7 @@ marker.gui = marker.gui or {}
 marker.steptime = 1
 marker.max_waypoints = 100
 marker.max_lists = 50
+marker.proximity_range = 10
 
 local timer = 0
 local delay = marker.steptime
@@ -675,7 +676,7 @@ marker.on_receive_fields = function(player, formname, fields)
 			if targetname ~= pname then
 				local ptarget = minetest.get_player_by_name(targetname)
 				if ptarget and ptarget:is_player() then
-					if vector.distance(ptarget:get_pos(), player:get_pos()) < 5 then
+					if vector.distance(ptarget:get_pos(), player:get_pos()) < marker.proximity_range then
 						local inv = ptarget:get_inventory()
 						if inv:contains_item("main", "passport:passport_adv") then
 							local name = marker.get_list_name(pname, gui.index1)

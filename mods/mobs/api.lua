@@ -909,6 +909,13 @@ local function check_for_death(self, cause, cmi_cause)
 		end
 	end
 
+	-- mob doesn't drop anything if killed by sunlight
+	-- this fixes the problem of drops being scattered around after sunrise
+	-- caused by icemen and sandmen
+	if cause == "light" then
+		can_drop = false
+	end
+
 	if can_drop then
 		-- dropped cooked item if mob died in lava
 		if cause == "lava" then

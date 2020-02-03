@@ -534,7 +534,7 @@ minetest.register_craft({
   output = "doors:door_wood_locked",
   recipe = {
     {"firetree:firewood", "group:stick", ""},
-    {"firetree:firewood", "firetree:firewood", "default:steel_ingot"},
+    {"firetree:firewood", "firetree:firewood", "default:padlock"},
     {"firetree:firewood", "firetree:firewood", ""},
   },
 })
@@ -547,7 +547,7 @@ doors.register("door_wood_locked", {
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:stick", ""},
-        {"group:wood_light", "group:wood_light", "default:steel_ingot"},
+        {"group:wood_light", "group:wood_light", "default:padlock"},
         {"group:wood_light", "group:wood_light", ""},
     }
 })
@@ -563,7 +563,7 @@ doors.register("door_steel", {
     sound_close = "doors_steel_door_close",
     recipe = {
         {"default:steel_ingot", "default:steel_ingot", ""},
-        {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+        {"default:steel_ingot", "default:steel_ingot", "default:padlock"},
         {"default:steel_ingot", "default:steel_ingot", ""},
     }
 })
@@ -609,7 +609,7 @@ doors.register("door_iron_locked", {
 		sound_close = "doors_iron_door_close",
 		recipe = {
 			{"default:iron_lump", "default:iron_lump", ""},
-			{"default:iron_lump", "default:iron_lump", "default:steel_ingot"},
+			{"default:iron_lump", "default:iron_lump", "default:padlock"},
 			{"default:iron_lump", "default:iron_lump", ""},
 		}
 })
@@ -640,7 +640,7 @@ doors.register("door_glass_locked", {
 		sound_close = "doors_glass_door_close",
 		recipe = {
 			{"default:glass", "default:glass", ""},
-			{"default:glass", "default:glass", "default:steel_ingot"},
+			{"default:glass", "default:glass", "default:padlock"},
 			{"default:glass", "default:glass", ""},
 		}
 })
@@ -671,7 +671,7 @@ doors.register("door_obsidian_glass_locked", {
     sound_close = "doors_glass_door_close",
     recipe = {
         {"default:obsidian_glass", "default:obsidian_glass", ""},
-        {"default:obsidian_glass", "default:obsidian_glass", "default:steel_ingot"},
+        {"default:obsidian_glass", "default:obsidian_glass", "default:padlock"},
         {"default:obsidian_glass", "default:obsidian_glass", ""},
     },
 })
@@ -696,7 +696,7 @@ doors.register("door_wood_solid_locked", {
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
         {"group:wood_light", "group:wood_light", ""},
-        {"group:wood_light", "group:wood_light", "default:steel_ingot"},
+        {"group:wood_light", "group:wood_light", "default:padlock"},
         {"group:wood_light", "group:wood_light", ""},
     },
 })
@@ -721,7 +721,7 @@ doors.register("door_steel_glass_locked", {
     groups = utility.dig_groups("door_metal"),
     recipe = {
         {"default:steel_ingot", "default:glass", ""},
-        {"default:glass", "default:steel_ingot", "default:steel_ingot"},
+        {"default:glass", "default:steel_ingot", "default:padlock"},
         {"default:steel_ingot", "default:glass", ""},
     },
 })
@@ -746,7 +746,7 @@ doors.register("door_wood_glass_locked", {
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass", ""},
-        {"default:glass", "group:wood_dark", "default:steel_ingot"},
+        {"default:glass", "group:wood_dark", "default:padlock"},
         {"group:wood_dark", "default:glass", ""},
     },
 })
@@ -771,7 +771,7 @@ doors.register("door_lightwood_glass_locked", {
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass", ""},
-        {"default:glass", "group:wood_light", "default:steel_ingot"},
+        {"default:glass", "group:wood_light", "default:padlock"},
         {"group:wood_light", "default:glass", ""},
     },
 })
@@ -796,7 +796,7 @@ doors.register("door_fancy_ext1_locked", {
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_light", "default:glass", ""},
-        {"group:wood_light", "default:glass", "default:steel_ingot"},
+        {"group:wood_light", "default:glass", "default:padlock"},
         {"group:wood_light", "group:wood_light", ""},
     },
 })
@@ -821,7 +821,7 @@ doors.register("door_fancy_ext2_locked", {
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
         {"group:wood_dark", "default:glass", ""},
-        {"group:wood_dark", "brass:ingot", "default:steel_ingot"},
+        {"group:wood_dark", "brass:ingot", "default:padlock"},
         {"group:wood_dark", "group:wood_dark", ""},
     },
 })
@@ -1129,7 +1129,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'doors:trapdoor_locked',
 	recipe = {
-		{'default:wood', 'default:steel_ingot', 'default:wood'},
+		{'default:wood', 'default:padlock', 'default:wood'},
 		{'default:wood', 'default:wood',        'default:wood'},
 		{'', '', ''},
 	}
@@ -1138,6 +1138,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'doors:trapdoor_steel',
 	recipe = {
+		{'', 'default:padlock'},
 		{'default:steel_ingot', 'default:steel_ingot'},
 		{'default:steel_ingot', 'default:steel_ingot'},
 	}
@@ -1154,7 +1155,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'doors:trapdoor_iron_locked',
 	recipe = {
-		{'default:iron_lump', 'default:steel_ingot', 'default:iron_lump'},
+		{'default:iron_lump', 'default:padlock', 'default:iron_lump'},
 		{'default:iron_lump', 'default:iron_lump',   'default:iron_lump'},
 	}
 })

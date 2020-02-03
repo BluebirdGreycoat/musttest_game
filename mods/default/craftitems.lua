@@ -39,6 +39,11 @@ minetest.register_craftitem("default:paper", {
     groups = {flammable = 3},
 })
 
+minetest.register_craftitem("default:padlock", {
+	description = "Lock",
+	inventory_image = "lock_item.png",
+})
+
 minetest.register_craftitem("default:coal_lump", {
 	description = "Coal Lump",
 	inventory_image = "default_coal_lump.png",

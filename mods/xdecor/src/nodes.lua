@@ -273,13 +273,13 @@ local xdecor_doors = {
 		{"default:paper", "group:wood"},
 		{"group:wood", "default:paper"}}, groups=utility.dig_groups("door_wood") },
 	prison = { recipe = {
-		{"xpanes:bar_flat", "xpanes:bar_flat",},
-		{"xpanes:bar_flat", "xpanes:bar_flat",},
-		{"xpanes:bar_flat", "xpanes:bar_flat"}}, groups=utility.dig_groups("door_metal") },
+		{"xpanes:bar_flat", "xpanes:bar_flat", ""},
+		{"xpanes:bar_flat", "xpanes:bar_flat", "default:padlock"},
+		{"xpanes:bar_flat", "xpanes:bar_flat", ""}}, groups=utility.dig_groups("door_metal") },
 	rusty_prison = { recipe = {
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat",},
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat",},
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat"}}, groups=utility.dig_groups("door_metal") },
+		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", ""},
+		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", "default:padlock"},
+		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", ""}}, groups=utility.dig_groups("door_metal") },
 	screen = { recipe = {
 		{"group:wood", "group:wood"},
 		{"xpanes:chainlink_flat", "xpanes:chainlink_flat"},

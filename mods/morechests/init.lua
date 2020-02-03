@@ -12,6 +12,9 @@ if minetest.get_modpath("easyvend") then
   easyvend.register_chest("morechests:copperchest_locked_open", "main", "owner")
   easyvend.register_chest("morechests:copperchest_locked_closed", "main", "owner")
   
+  easyvend.register_chest("morechests:diamondchest_locked_open", "main", "owner")
+  easyvend.register_chest("morechests:diamondchest_locked_closed", "main", "owner")
+
   easyvend.register_chest("morechests:ironchest_locked_open", "main", "owner")
   easyvend.register_chest("morechests:ironchest_locked_closed", "main", "owner")
   

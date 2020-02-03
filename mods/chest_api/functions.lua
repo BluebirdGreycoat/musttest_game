@@ -147,6 +147,29 @@ chest_api.get_chest_formspec = function(name, desc, pos)
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
     end
 
+	-- Locked or unlocked diamond chest.
+  elseif string.find(name, "diamond") then
+    formspec = "size[12,11]" .. defgui ..
+      "list[nodemeta:" .. spos .. ";main;0,1.3;12,5;]" ..
+      "list[current_player;main;1,6.85;8,1;]" ..
+      "list[current_player;main;1,8.08;8,3;8]" ..
+      "listring[nodemeta:" .. spos .. ";main]" ..
+      "listring[current_player;main]" ..
+      "label[0,0;" .. desc .. "]" ..
+      default.get_hotbar_bg(1, 6.85)
+
+			-- Trash icon.
+			.. "list[" .. ltrash .. ";" .. mtrash .. ";10,6.85;1,1;]" ..
+			"image[10,6.85;1,1;" .. itrash .. "]"
+
+    -- Locked diamond chest.
+    if string.find(name, "locked") then
+      local chest_name = meta:get_string("chest_name") or ""
+      formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
+        "field[8.25,0.45;2,0.75;name;;]" ..
+        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+    end
+
 	-- Locked or unlocked mithril chest.
   elseif string.find(name, "mithril") then
     formspec = "size[14,11]" .. defgui ..
@@ -545,7 +568,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
 
   if fields.rename then
     -- Anitcheat check.
-    if (string.find(nn, "copper") or
+    if (string.find(nn, "copper") or string.find(nn, "diamond") or
         string.find(nn, "iron") or
         string.find(nn, "silver") or
         string.find(nn, "gold") or
@@ -667,6 +690,8 @@ function chest_api.protected_on_construct(pos)
 	local name = minetest.get_node(pos).name
 	if string.find(name, "gold") then
 		inv:set_size("main", 12*4)
+	elseif string.find(name, "diamond") then
+		inv:set_size("main", 12*5)
 	elseif string.find(name, "mithril") then
 		inv:set_size("main", 14*5)
 	elseif name:find("woodchest") or name:find("^chests:chest_") then
@@ -876,6 +901,8 @@ function chest_api.public_on_construct(pos)
 	local inv = meta:get_inventory()
 	if string.find(name, "gold") then
 		inv:set_size("main", 12*4)
+	elseif string.find(name, "diamond") then
+		inv:set_size("main", 12*5)
 	elseif string.find(name, "mithril") then
 		inv:set_size("main", 14*5)
 	elseif name:find("woodchest") or name:find("^chests:chest_") then

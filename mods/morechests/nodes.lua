@@ -25,6 +25,28 @@ minetest.register_alias("morechests:woodchest_locked", "morechests:woodchest_loc
 minetest.register_alias("morechests:woodchest_public", "morechests:woodchest_public_closed")
 
 
+chest_api.register_chest("morechests:diamondchest_public", {
+	description = "Unlocked Diamond Chest",
+	tiles = { "chest_diamond.png" },
+	sounds = default.node_sound_stone_defaults(),
+	sound_open = "default_chest_open",
+	sound_close = "default_chest_close",
+	groups = utility.dig_groups("chest", {chest = 1}),
+})
+
+chest_api.register_chest("morechests:diamondchest_locked", {
+	description = "Locked Diamond Chest",
+	tiles = { "chest_diamond_locked.png" },
+	sounds = default.node_sound_stone_defaults(),
+	sound_open = "default_chest_open",
+	sound_close = "default_chest_close",
+	groups = utility.dig_groups("chest", {chest = 1}),
+	protected = true,
+})
+
+minetest.register_alias("morechests:diamondchest_public", "morechests:diamondchest_public_closed")
+minetest.register_alias("morechests:diamondchest_locked", "morechests:diamondchest_locked_closed")
+
 
 chest_api.register_chest("morechests:copperchest_public", {
 	description = "Unlocked Copper-Plated Chest",

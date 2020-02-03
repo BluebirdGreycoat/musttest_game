@@ -253,6 +253,14 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = 'default:padlock',
+	recipe = {
+		{"moreores:tin_ingot"},
+		{"cast_iron:ingot"},
+	},
+})
+
+minetest.register_craft({
 	output = 'default:ladder_steel 5',
 	recipe = {
 		{'default:steel_ingot', '', 'default:steel_ingot'},

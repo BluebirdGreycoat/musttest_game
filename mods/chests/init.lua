@@ -19,7 +19,7 @@ minetest.register_craft({
 	output = 'chests:chest_locked_closed',
 	recipe = {
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
-		{'group:wood_light', 'group:ingot',       'group:wood_light'},
+		{'group:wood_light', 'default:padlock',   'group:wood_light'},
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
 	}
 })
@@ -29,7 +29,7 @@ minetest.register_craft({
 minetest.register_craft( {
 	type = "shapeless",
 	output = "chests:chest_locked_closed",
-	recipe = {"chests:chest_public_closed", "group:ingot"},
+	recipe = {"chests:chest_public_closed", "default:padlock"},
 })
 
 

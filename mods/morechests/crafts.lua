@@ -12,7 +12,7 @@ minetest.register_craft({
     output = "morechests:woodchest_locked",
     recipe = {
         {"group:wood_dark", "group:wood_dark",    "group:wood_dark"},
-        {"group:wood_dark", "group:ingot",        "group:wood_dark"},
+        {"group:wood_dark", "default:padlock",    "group:wood_dark"},
         {"group:wood_dark", "group:wood_dark",    "group:wood_dark"},
     }
 })
@@ -20,7 +20,7 @@ minetest.register_craft({
 minetest.register_craft( {
 	type = "shapeless",
 	output = "morechests:woodchest_locked",
-	recipe = {"morechests:woodchest", "group:ingot"},
+	recipe = {"morechests:woodchest", "default:padlock"},
 })
 
 
@@ -66,7 +66,7 @@ local register_metal_chest = function(ingot, chestpublic, chestlocked)
     minetest.register_craft( {
         type = "shapeless",
         output = chestlocked,
-        recipe = {chestpublic, "group:ingot"},
+        recipe = {chestpublic, "default:padlock"},
     })
 end
 
@@ -78,6 +78,7 @@ register_metal_chest("cast_iron:ingot",         "morechests:ironchest_public",  
 register_metal_chest("default:gold_ingot",      "morechests:goldchest_public",      "morechests:goldchest_locked")
 register_metal_chest("moreores:silver_ingot",   "morechests:silverchest_public",    "morechests:silverchest_locked")
 register_metal_chest("moreores:mithril_ingot",  "morechests:mithrilchest_public",   "morechests:mithrilchest_locked")
+register_metal_chest("default:diamond",         "morechests:diamondchest_public",   "morechests:diamondchest_locked")
 
 
 

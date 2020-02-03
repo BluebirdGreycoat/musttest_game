@@ -32,6 +32,7 @@ function rename.rename_player(pname, dname, tell)
 	-- This avoids creating alias for players that don't yet exist.
 	-- Doing so prevents real players from logging in with that name.
 	if not minetest.player_exists(pname) then
+		minetest.chat_send_player(tell, "# Server: Player <" .. pname .. "> does not exist.")
 		return
 	end
 

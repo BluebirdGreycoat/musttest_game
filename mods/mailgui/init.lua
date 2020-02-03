@@ -274,12 +274,6 @@ mailgui.gui_handler = function(pref, fname, fields)
 		return true
 	end
 
-	if fields.done then
-		mailgui.open_inboxes[pname] = nil
-		passport.show_formspec(pname)
-		return true
-	end
-
   -- Obtain state table for this player.
   local pstate = mailgui.players[pname]
   -- Don't update message composing state unless told to.
@@ -287,6 +281,12 @@ mailgui.gui_handler = function(pref, fname, fields)
   if fields.subject then pstate.subject = fields.subject end
   if fields.mailto then pstate.mailto = fields.mailto end
   
+	if fields.done then
+		mailgui.open_inboxes[pname] = nil
+		passport.show_formspec(pname)
+		return true
+	end
+
   if fields.delall then
     email.clear_inbox(pname, pstate.inboxes)
     pstate.inboxes = {}

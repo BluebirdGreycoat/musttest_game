@@ -257,9 +257,10 @@ function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 			stack = inv:add_item("main", stack)
 
 			-- If stack couldn't be added because of full inventory, then material is sometimes lost.
-			if not stack:is_empty() and math.random(0, 1) == 0 then
-				-- Don't drop anything on the ground, 50% chance.
+			if not stack:is_empty() and math.random(0, 3) == 0 then
+				-- Don't drop anything on the ground, 25% chance.
 				-- Give particle feedback to player.
+				digger:set_hp(digger:get_hp() - 1)
 				effect(pos, math.random(2, 5), "tnt_smoke.png")
 				return
 			end

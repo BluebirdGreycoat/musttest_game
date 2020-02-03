@@ -931,6 +931,11 @@ function survivalist.on_receive_fields(player, formname, fields)
     survivalist.show_rankings_formspec(pname)
     return true
   end
+
+	if fields.rankings_table then
+		survivalist.show_rankings_formspec(pname)
+		return true
+	end
   
   if fields.close_rankings or formname == "survivalist:rankings" then
     survivalist.show_formspec(pname)

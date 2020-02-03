@@ -840,7 +840,7 @@ function survivalist.compose_formspec(pname)
 	if inchallenge then
 		formspec = formspec .. "button[0,6.2;2,1;abort;Go Home]"
 	else
-		formspec = formspec .. "button[0,6.2;2,1;start;Begin Challenge]"
+		formspec = formspec .. "button[0,6.2;3,1;start;Begin Challenge]"
 	end
 
 	-- Show `Claim Victory` only if a challenge is in progress.

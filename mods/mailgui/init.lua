@@ -269,6 +269,17 @@ mailgui.gui_handler = function(pref, fname, fields)
   local pname = pref:get_player_name()
   if not mailgui.players[pname] then return true end -- No state, abort!
   
+	if fields.quit then
+		mailgui.open_inboxes[pname] = nil
+		return true
+	end
+
+	if fields.done then
+		mailgui.open_inboxes[pname] = nil
+		passport.show_formspec(pname)
+		return true
+	end
+
   -- Obtain state table for this player.
   local pstate = mailgui.players[pname]
   -- Don't update message composing state unless told to.
@@ -522,13 +533,7 @@ mailgui.gui_handler = function(pref, fname, fields)
   end
   
   -- Keep displaying formspec until explicitly told to quit.
-  if not fields.quit then
-    mailgui.show_formspec(pname, true)
-  end
-  
-  if fields.quit then
-    mailgui.open_inboxes[pname] = nil
-  end
+	mailgui.show_formspec(pname, true)
   return true
 end
 

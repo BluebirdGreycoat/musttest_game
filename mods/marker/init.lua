@@ -75,20 +75,20 @@ function marker.update_single_hud(player)
 			end
 		end
 
-		if dist < 30 then
+		if dist < 40 then
 			if not data.pts then
 				local wp = vector.add(data.pos, {x=0, y=0.5, z=0})
 				local particles = {
-					amount = 10,
+					amount = 20,
 					time = 0,
-					minpos = wp,
-					maxpos = wp,
+					minpos = vector.add(wp, {x=-0.1, y=-0.1, z=-0.1}),
+					maxpos = vector.add(wp, {x=0.1, y=0.1, z=0.1}),
 					minvel = vector.new(-0.5, -0.5, -0.5),
 					maxvel = vector.new(0.5, 0.5, 0.5),
 					minacc = {x=0, y=0, z=0},
 					maxacc = {x=0, y=0, z=0},
 					minexptime = 0.5,
-					maxexptime = 1.5,
+					maxexptime = 2.0,
 					minsize = 1,
 					maxsize = 1,
 					collisiondetection = false,
@@ -100,7 +100,7 @@ function marker.update_single_hud(player)
 				}
 				data.pts = minetest.add_particlespawner_single(particles)
 			end
-		elseif dist > 35 then
+		elseif dist > 50 then
 			if data.pts then
 				minetest.delete_particlespawner(data.pts, player)
 				data.pts = nil

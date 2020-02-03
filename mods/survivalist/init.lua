@@ -977,6 +977,7 @@ function survivalist.on_receive_fields(player, formname, fields)
     return true
   end
   
+	survivalist.show_formspec(pname)
   return true
 end
 

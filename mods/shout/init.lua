@@ -86,6 +86,7 @@ shout.BUILTIN_HINTS = {
 function shout.hint_add(name, param)
 	name = name:trim()
 	param = param:trim()
+	param = param:gsub("%s+", " ")
 
 	if param:len() == 0 then
 		minetest.chat_send_player(name, "# Server: Not adding an empty hint message.")
@@ -405,7 +406,7 @@ end
 if not shout.run_once2 then
 	minetest.register_chatcommand("hint_add", {
 		params = "<message>",
-		description = "Add a hint message to the hint list.",
+		description = "Add a hint message to the hint list. Example between quotes: '/hint_add This is a hint message. Another sentance.'",
 		privs = {server=true},
 		func = function(name, param)
 			shout.hint_add(name, param)

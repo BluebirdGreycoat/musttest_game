@@ -12,12 +12,18 @@ afk_removal.warntime = 60 * 9
 -- This should be called from any mod that wishes to reset the kick timeout for a player.
 -- For example, a chat mod may call this when a player chats.
 afk_removal.reset_timeout = function(name)
-    -- Ensure an entry exists for this name.
-    if not afk_removal.players[name] then
-        afk_removal.players[name] = {time=0, pos={x=0, y=0, z=0}}
-    end
-    afk_removal.players[name].time = 0
-		afk_removal.players[name].afk = nil
+	-- localize
+	local players = afk_removal.players
+
+	-- Ensure an entry exists for this name.
+	local data = players[name]
+	if not data then
+		players[name] = {time=0, pos={x=0, y=0, z=0}}
+		data = players[name]
+	end
+
+	data.time = 0
+	data.afk = nil
 end
 
 

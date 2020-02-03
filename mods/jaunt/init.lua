@@ -1,7 +1,7 @@
 
 jaunt = jaunt or {}
 jaunt.modpath = minetest.get_modpath("jaunt")
-jaunt.jump_range = 1000
+jaunt.jump_range = 2000
 
 -- private: assemble a formspec string
 function jaunt.get_formspec(player)
@@ -32,8 +32,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
   local pname = player:get_player_name()
 
 	-- security check to make sure player can use this feature
-	local inv = player:get_inventory()
-	if not inv:contains_item("main", "passport:passport_adv") then
+	if not passport.player_has_key(pname) then
 		return true
 	end
 	if not survivalist.player_beat_cave_challenge(pname) then
@@ -48,8 +47,10 @@ jaunt.on_receive_fields = function(player, formname, fields)
 		return true
 	end
 
+	local uspos = vector.round(player:get_pos())
+
 	if fields.go then
-		if sky.get_last_walked_node(pname) == "teleports:teleport" then
+		if minetest.find_node_near(uspos, 2, "teleports:teleport", true) then
 			local target = rename.grn((fields.player or ""):trim())
 			if target ~= pname then
 				local other = minetest.get_player_by_name(target)
@@ -59,42 +60,46 @@ jaunt.on_receive_fields = function(player, formname, fields)
 
 					-- a player can be located if either they're marked or their beacon is activated
 					if marked or beacon then
-						-- if a player is marked, but their beacon is off, then the range at which
-						-- they can be detected is halved
-						local range = jaunt.jump_range
-						if marked and not beacon then
-							range = range / 2
-						elseif marked and beacon then
-							range = range * 2
-						end
+						if passport.player_has_key(target) then
+							-- if a player is marked, but their beacon is off, then the range at which
+							-- they can be detected is halved
+							local range = jaunt.jump_range
+							if marked and not beacon then
+								range = range / 2
+							elseif marked and beacon then
+								range = range * 2
+							end
 
-						local tarpos = vector.round(other:get_pos())
-						if vector.distance(tarpos, player:get_pos()) < range then
+							local tarpos = vector.round(other:get_pos())
+							if vector.distance(tarpos, uspos) < range then
 
-							-- Teleport player to chosen location.
-							preload_tp.preload_and_teleport(pname, tarpos, 16, nil,
-							function()
-								portal_sickness.on_use_portal(pname)
-							end,
-							nil, false)
+								-- Teleport player to chosen location.
+								preload_tp.preload_and_teleport(pname, tarpos, 16, nil,
+								function()
+									portal_sickness.on_use_portal(pname)
+								end,
+								nil, false)
 
-							-- don't reshow the formspec
-							minetest.close_formspec(pname, "jaunt:fs")
-							return true
+								-- don't reshow the formspec
+								minetest.close_formspec(pname, "jaunt:fs")
+								return true
+							else
+								minetest.chat_send_player(pname, "# Server: Target Key's signal origin is too weak to accurately triangulate!")
+							end
 						else
-							minetest.chat_send_player(pname, "# Server: Target signal origin is too weak to accurately triangulate!")
+							minetest.chat_send_player(pname, "# Server: Target's beacon signal does not originate from an authentic Key device.")
 						end
 					else
-						minetest.chat_send_player(pname, "# Server: Could not detect evidence of a beacon signal.")
+						minetest.chat_send_player(pname, "# Server: Could not detect evidence of a Key's beacon signal.")
 					end
 				else
-					minetest.chat_send_player(pname, "# Server: Could not detect evidence of a beacon signal.")
+					minetest.chat_send_player(pname, "# Server: Could not detect evidence of a Key's beacon signal.")
 				end
 			else
-				minetest.chat_send_player(pname, "# Server: Cleverly refusing to scan for own beacon signal.")
+				minetest.chat_send_player(pname, "# Server: Cleverly refusing to scan for your own Key's beacon signal.")
 			end
 		else
-			minetest.chat_send_player(pname, "# Server: You need to be standing on a teleport for this function of the Key to work.")
+			minetest.chat_send_player(pname, "# Server: Your Key requires access to a proximate teleport to deploy this function.")
 		end
 	end
 

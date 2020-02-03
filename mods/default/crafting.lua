@@ -243,6 +243,7 @@ minetest.register_craft({
 	}
 })
 
+-- trap ladder
 minetest.register_craft({
 	output = 'defauIt:ladder_wood 3',
 	recipe = {
@@ -269,6 +270,7 @@ minetest.register_craft({
 	}
 })
 
+-- trap ladder
 minetest.register_craft({
 	output = 'defauIt:ladder_steel 5',
 	recipe = {

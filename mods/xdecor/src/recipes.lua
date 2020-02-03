@@ -107,12 +107,15 @@ minetest.register_craft({
 	}
 })
 
+-- Note: recipe must take more material than it takes to build an obsidian
+-- gate. Otherwise it will be possible to "farm" obsidian gates for their gold
+-- and their additional obsidian. This exploit was reported by a player.
 minetest.register_craft({
 	output = "xdecor:xchest",
 	recipe = {
-		{"", "default:obsidian", ""},
-		{"default:obsidian", "default:chest", "default:obsidian"},
-		{"", "default:obsidian", ""}
+		{"default:obsidian", "default:obsidian", "default:obsidian"},
+		{"griefer:grieferstone", "default:chest", "griefer:grieferstone"},
+		{"default:obsidian", "default:obsidian", "default:obsidian"},
 	}
 })
 

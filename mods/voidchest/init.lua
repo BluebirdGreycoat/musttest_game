@@ -231,11 +231,12 @@ minetest.register_alias("voidchest:voidchest", "voidchest:voidchest_closed")
 
 
 
+-- This is strictly an upgrade from the usual xdecor void-chest.
 minetest.register_craft({
   output = "voidchest:voidchest_closed",
   recipe = {
     {"starpearl:pearl", "starpearl:pearl",    "starpearl:pearl"},
-    {"starpearl:pearl", "group:chest_closed", "starpearl:pearl"},
+    {"starpearl:pearl", "xdecor:xchest", "starpearl:pearl"},
     {"starpearl:pearl", "starpearl:pearl",    "starpearl:pearl"},
   },
 })

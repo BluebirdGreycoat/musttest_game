@@ -512,7 +512,7 @@ function circular_saw.can_dig(pos,player)
 end
 
 minetest.register_node("circular_saw:circular_saw",  {
-  description = "Circular Saw\n\nRequires mese fragments to power the cutting blade.\nDo not allow children to use.",
+  description = "Circular Table Saw\n\nRequires mese fragments to power the saw wheel.\nDo not allow children to use.",
   drawtype = "nodebox",
   node_box = {
     type = "fixed",

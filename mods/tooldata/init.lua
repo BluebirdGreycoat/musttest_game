@@ -341,6 +341,15 @@ tooldata["axe_diamond"] = {
 	damage_groups = {fleshy=7, cracky=1, crumbly=1},
 	xp_gain = 1.5,
 	range_modifier = 1.5,
+
+	node_overrides = {
+		["nyancat:nyancat"] = {
+			max_drop_level = 3,
+		},
+		["nyancat:nyancat_rainbow"] = {
+			max_drop_level = 3,
+		},
+	},
 }
 
 -- Reasonably high-damage sword (until gem tools), but gives poor drops.

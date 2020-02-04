@@ -184,6 +184,13 @@ local xslope_quarter = {
 		{-0.25, -0.25, 0, -0.5, -0.5, -0.5},
 	}
 }
+local xslope_quarter2 = {
+	type = "fixed",
+	fixed = {
+		{0.0, -0.5, 0.5, 0.5, 0, 0},
+		{0.5, -0.25, 0, 0.25, -0.5, -0.5},
+	}
+}
 local xslope_three_quarter = {
 	type = "fixed",
 	fixed = {
@@ -366,6 +373,30 @@ local slopes_defs = {
 		selection_box = box_regular,
 		light=4/5,
 	},
+	["_inner_cut4"] = {
+		mesh = "moreblocks_slope_inner_cut4.obj",
+		collision_box = box_slope_inner,
+		selection_box = box_slope_inner,
+		light=4/5,
+	},
+	["_inner_cut5"] = {
+		mesh = "moreblocks_slope_inner_cut5.obj",
+		collision_box = box_slope_inner,
+		selection_box = box_slope_inner,
+		light=4/5,
+	},
+	["_inner_cut6"] = {
+		mesh = "moreblocks_slope_inner_cut6.obj",
+		collision_box = box_slope_inner,
+		selection_box = box_slope_inner,
+		light=4/5,
+	},
+	["_inner_cut7"] = {
+		mesh = "moreblocks_slope_inner_cut7.obj",
+		collision_box = box_regular,
+		selection_box = box_regular,
+		light=4/5,
+	},
 	["_inner_cut_half"] = {
 		mesh = "moreblocks_slope_inner_cut_half.obj",
 		collision_box = box_slope_inner_half,
@@ -433,6 +464,12 @@ local slopes_defs = {
 		mesh = "xslopes_quarter.obj",
 		collision_box = xslope_quarter,
 		selection_box = xslope_quarter,
+		light=1/5,
+	},
+	["_xslope_quarter2"] = {
+		mesh = "xslopes_quarter2.obj",
+		collision_box = xslope_quarter2,
+		selection_box = xslope_quarter2,
 		light=1/5,
 	},
 	["_xslope_three_quarter"] = {
@@ -562,6 +599,12 @@ local slopes_defs = {
 		collision_box = astair_4,
 		selection_box = astair_4,
 		light=1/3,
+	},
+	["_astair_5"] = {
+		mesh = "moreblocks_slope_inner_cut8.obj",
+		collision_box = box_regular,
+		selection_box = box_regular,
+		light=4/5,
 	},
 }
 

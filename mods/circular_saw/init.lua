@@ -64,6 +64,10 @@ circular_saw.names = {
   {"slope", "_inner_cut2", 8},
 
   {"slope", "_inner_cut3", 8},
+  {"slope", "_inner_cut4", 4},
+  {"slope", "_inner_cut5", 4},
+  {"slope", "_inner_cut6", 7},
+  {"slope", "_inner_cut7", 8},
   {"slope", "_inner_cut_half", 4},
   {"slope", "_inner_cut_half_raised", 8},
   {"slope", "_outer", 3},
@@ -75,6 +79,7 @@ circular_saw.names = {
   {"slope", "_outer_cut_half_raised", 3},
   {"slope", "_cut", 4},
 	{"slope", "_xslope_quarter", 2},
+	{"slope", "_xslope_quarter2", 2},
 	{"slope", "_xslope_three_quarter", 6},
 	{"slope", "_xslope_three_quarter_half", 4},
 	{"slope", "_xslope_cut", 4},
@@ -109,6 +114,7 @@ circular_saw.names = {
   {"slope", "_astair_2", 5},
   {"slope", "_astair_3", 6},
   {"slope", "_astair_4", 6},
+  {"slope", "_astair_5", 8},
 }
 
 function circular_saw:get_cost(inv, stackname)
@@ -360,7 +366,7 @@ function circular_saw.on_metadata_inventory_put(
   end
 end
 
-local mese_to_cut_ratio = 10
+local mese_to_cut_ratio = 32
 
 function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack, player)
   local meta = minetest.get_meta(pos)
@@ -373,16 +379,21 @@ function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack,
 			easyvend.sound_error(player:get_player_name())
       return 0
     else
-      local count = math.ceil(stack:get_count() / mese_to_cut_ratio)
-      if count < 1 then count = 1 end
-      local fuel = inv:get_stack("fuel", 1)
-      if fuel:get_count() < count then
+			-- We do know how much each block at each position costs:
+			local cost = circular_saw.names[index][3] * stack:get_count()
+
+			local fuel = math.ceil(cost / mese_to_cut_ratio)
+      if fuel < 1 then fuel = 1 end
+
+      local fstack = inv:get_stack("fuel", 1)
+      if fstack:get_count() < fuel then
         minetest.chat_send_player(player:get_player_name(), "# Server: Not enough energy!")
 				easyvend.sound_error(player:get_player_name())
         return 0
       end
     end
   end
+
   return stack:get_count()
 end
 
@@ -407,14 +418,13 @@ function circular_saw.on_metadata_inventory_take(
   -- If it is one of the offered stairs: find out how many
   -- microblocks have to be substracted:
   if listname == "output" then
-    local fuel = math.ceil(stack:get_count() / mese_to_cut_ratio)
+    -- We do know how much each block at each position costs:
+    local cost = circular_saw.names[index][3] * stack:get_count()
+
+    local fuel = math.ceil(cost / mese_to_cut_ratio)
     if fuel < 1 then fuel = 1 end
     inv:remove_item("fuel", ItemStack("default:mese_crystal_fragment " .. fuel))
     
-    -- We do know how much each block at each position costs:
-    local cost = circular_saw.names[index][3]
-        * stack:get_count()
-
     circular_saw:update_inventory(pos, -cost)
   elseif listname == "micro" then
     -- Each microblock costs 1 microblock:

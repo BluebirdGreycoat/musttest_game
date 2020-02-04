@@ -67,7 +67,7 @@ function marker.update_single_hud(player)
 					world_pos = wp,
 				})
 			end
-		elseif dist < 10 or dist > 80 then
+		elseif dist < 15 or dist > 80 then
 			-- remove hud element if too far and not yet removed
 			if data.hnd then
 				pref:hud_remove(data.hnd)

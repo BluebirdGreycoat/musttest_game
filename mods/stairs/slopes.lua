@@ -7,6 +7,13 @@ Licensed under the zlib license. See LICENSE.md for more information.
 
 local S = function(str) return str end
 
+local box_regular = {
+	type = "fixed",
+	fixed = {
+		{-0.5,  -0.5,  -0.5, 0.5, 0.5, 0.5},
+	}
+}
+
 local box_slope = {
 	type = "fixed",
 	fixed = {
@@ -321,6 +328,18 @@ local slopes_defs = {
 		mesh = "moreblocks_slope_inner_cut.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
+		light=4/5,
+	},
+	["_inner_cut2"] = {
+		mesh = "moreblocks_slope_inner_cut2.obj",
+		collision_box = box_regular,
+		selection_box = box_regular,
+		light=4/5,
+	},
+	["_inner_cut3"] = {
+		mesh = "moreblocks_slope_inner_cut3.obj",
+		collision_box = box_regular,
+		selection_box = box_regular,
 		light=4/5,
 	},
 	["_inner_cut_half"] = {

@@ -12,146 +12,104 @@ circular_saw = circular_saw or {}
 -- This is populated by stairsplus:register_all:
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
--- How many microblocks does this shape at the output inventory cost:
+-- 3rd parameter: how many microblocks does this shape cost:
 -- It may cause slight loss, but no gain.
-circular_saw.cost_in_microblocks = {
-  1, 1, 1, 1, 1, 1, 1, 2,
-	2, 2, 3, 2, 4, 2, 4, 4,
-	5, 6, 7, 1, 1, 2, 4, 6,
-	7, 8, 3, 3, 1, 1, 2, 4,
-	4, 2, 6, 7, 3, 7, 7, 4,
-	8, 3, 2, 6, 2, 1, 3, 4,
-
-	-- Cost for extra custom slopes/microblocks. In same order as custom blocks in the `names' list.
-	2, 6, 4, 4, 1,
-
-	-- New slabs.
-	1, 2, 2, 3, 3, 1, 3,
-
-	-- New stairs.
-	1, 1,
-
-	-- More slopes.
-	4, 2,
-
-	-- Half-size slopes.
-	2, 1, 3, 1, 2, 1,
-
-	-- Right-hand versions.
-	2, 1, 3, 1,
-
-	-- Half hole slab.
-	2,
-
-	-- Angled stairs.
-	6, 6,
-}
-
+-- 1st and 2nd parameters are nodename prefix/postfixes.
 circular_saw.names = {
-  {"micro", "_1"},
-  {"panel", "_1"},
-  {"micro", "_2"},
-  {"panel", "_2"},
-  {"micro", "_4"},
-  {"panel", "_4"},
-  {"micro", ""},
-  {"panel", ""},
+  {"micro", "_1", 1},
+  {"panel", "_1", 1},
+  {"micro", "_2", 1},
+  {"panel", "_2", 1},
+  {"micro", "_4", 1},
+  {"panel", "_4", 1},
+  {"micro", "", 1},
+  {"panel", "", 2},
 
-  {"micro", "_12"},
-  {"panel", "_12"},
-  {"micro", "_14"},
-  {"panel", "_14"},
-  {"micro", "_15"},
-  {"panel", "_15"},
+  {"micro", "_12", 2},
+  {"panel", "_12", 2},
+  {"micro", "_14", 3},
+  {"panel", "_14", 2},
+  {"micro", "_15", 4},
+  {"panel", "_15", 2},
+  {"micro", "_16", 4},
+  {"panel", "_16", 4},
 
-	-- These 2 are custom.
-  {"micro", "_16"},
-  {"panel", "_16"},
+  {"stair", "_outer", 5},
+  {"stair", "", 6},
+  {"stair", "_inner", 7},
+  {"slab", "_1", 1},
+  {"slab", "_2", 1},
+  {"slab", "_quarter", 2},
+  {"slab", "", 4},
+  {"slab", "_three_quarter", 6},
 
-  {"stair", "_outer"},
-  {"stair", ""},
-  {"stair", "_inner"},
-  {"slab", "_1"},
-  {"slab", "_2"},
-  {"slab", "_quarter"},
-  {"slab", ""},
-  {"slab", "_three_quarter"},
-  {"slab", "_14"},
-  {"slab", "_15"},
+  {"slab", "_14", 7},
+  {"slab", "_15", 8},
+  {"stair", "_half", 3},
+  {"stair", "_right_half", 3}, -- Not included in vanila moreblocks? Must be custom.
+  {"stair", "_alt_1", 1},
+  {"stair", "_alt_2", 1},
+  {"stair", "_alt_4", 2},
+  {"stair", "_alt", 4},
 
-  {"stair", "_half"},
-  {"stair", "_right_half"}, -- Not included in vanila moreblocks? Must be custom.
-  {"stair", "_alt_1"},
-  {"stair", "_alt_2"},
-  {"stair", "_alt_4"},
-  {"stair", "_alt"},
+  {"slope", "", 4},
+  {"slope", "_half", 2},
+  {"slope", "_half_raised", 6},
+  {"slope", "_inner", 7},
+  {"slope", "_inner_half", 3},
+  {"slope", "_inner_half_raised", 7},
+  {"slope", "_inner_cut", 7},
+  {"slope", "_inner_cut2", 8},
 
-  {"slope", ""},
-  {"slope", "_half"},
-  {"slope", "_half_raised"},
-  {"slope", "_inner"},
-  {"slope", "_inner_half"},
-  {"slope", "_inner_half_raised"},
-  {"slope", "_inner_cut"},
-  {"slope", "_inner_cut_half"},
-  {"slope", "_inner_cut_half_raised"},
+  {"slope", "_inner_cut3", 8},
+  {"slope", "_inner_cut_half", 4},
+  {"slope", "_inner_cut_half_raised", 8},
+  {"slope", "_outer", 3},
+  {"slope", "_outer_half", 2},
+  {"slope", "_outer_half_raised", 6},
+  {"slope", "_outer_cut", 2},
+  {"slope", "_outer_cut_half", 1},
 
-  {"slope", "_outer"},
-  {"slope", "_outer_half"},
-  {"slope", "_outer_half_raised"},
-  {"slope", "_outer_cut"},
-  {"slope", "_outer_cut_half"},
-  {"slope", "_outer_cut_half_raised"},
+  {"slope", "_outer_cut_half_raised", 3},
+  {"slope", "_cut", 4},
+	{"slope", "_xslope_quarter", 2},
+	{"slope", "_xslope_three_quarter", 6},
+	{"slope", "_xslope_three_quarter_half", 4},
+	{"slope", "_xslope_cut", 4},
+	{"slope", "_xslope_slope", 1},
+	{"slab", "_two_sides", 1},
 
-  {"slope", "_cut"},
+	{"slab", "_three_sides", 2},
+	{"slab", "_three_sides_u", 2},
+	{"slab", "_four_sides", 3},
+	{"slab", "_hole", 3},
+	{"slab", "_two_opposite", 1},
+	{"slab", "_pit", 3},
+  {"stair", "_half_1", 1},
+  {"stair", "_right_half_1", 1},
 
-	-- Extra slopes, custom.
-	{"slope", "_xslope_quarter"},
-	{"slope", "_xslope_three_quarter"},
-	{"slope", "_xslope_three_quarter_half"},
-	{"slope", "_xslope_cut"},
-	{"slope", "_xslope_slope"},
+  {"slope", "_xslope_peak", 4},
+  {"slope", "_xslope_peak_half", 2},
+  {"slope", "_lh", 2},
+  {"slope", "_half_lh", 1},
+  {"slope", "_half_raised_lh", 3},
+	{"slope", "_xslope_slope_lh", 1},
+  {"slope", "_xslope_peak_lh", 2},
+  {"slope", "_xslope_peak_half_lh", 1},
 
-	-- New slabs from latest moreblocks mod.
-	{"slab", "_two_sides"},
-	{"slab", "_three_sides"},
-	{"slab", "_three_sides_u"},
-
-	-- Custom.
-	{"slab", "_four_sides"},
-	{"slab", "_hole"},
-	{"slab", "_two_opposite"},
-	{"slab", "_pit"},
-  {"stair", "_half_1"},
-  {"stair", "_right_half_1"},
-  {"slope", "_xslope_peak"},
-  {"slope", "_xslope_peak_half"},
-
-	-- Slope, half-size variants. Custom.
-  {"slope", "_lh"},
-  {"slope", "_half_lh"},
-  {"slope", "_half_raised_lh"},
-	{"slope", "_xslope_slope_lh"},
-  {"slope", "_xslope_peak_lh"},
-  {"slope", "_xslope_peak_half_lh"},
-
-	-- Right-hand-side variants, for those that need it.
-  {"slope", "_rh"},
-  {"slope", "_half_rh"},
-  {"slope", "_half_raised_rh"},
-	{"slope", "_xslope_slope_rh"},
-
-	{"slab", "_hole_half"},
-
-	-- Angled stair nodes.
-  {"slope", "_astair_1"},
-  {"slope", "_astair_2"},
+  {"slope", "_rh", 2},
+  {"slope", "_half_rh", 1},
+  {"slope", "_half_raised_rh", 3},
+	{"slope", "_xslope_slope_rh", 1},
+	{"slab", "_hole_half", 2},
+  {"slope", "_astair_1", 6},
+  {"slope", "_astair_2", 6},
 }
 
 function circular_saw:get_cost(inv, stackname)
   for i, item in pairs(inv:get_list("output")) do
     if item:get_name() == stackname then
-      return circular_saw.cost_in_microblocks[i]
+      return circular_saw.names[i][3]
     end
   end
 end
@@ -169,7 +127,7 @@ function circular_saw:get_output_inv(modname, material, amount, max)
 
   for i = 1, #circular_saw.names do
     local t = circular_saw.names[i]
-    local cost = circular_saw.cost_in_microblocks[i]
+    local cost = t[3]
     local balance = math.min(math.floor(amount/cost), max)
     local nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
     if minetest.registered_nodes[nodename] then
@@ -449,7 +407,7 @@ function circular_saw.on_metadata_inventory_take(
     inv:remove_item("fuel", ItemStack("default:mese_crystal_fragment " .. fuel))
     
     -- We do know how much each block at each position costs:
-    local cost = circular_saw.cost_in_microblocks[index]
+    local cost = circular_saw.names[index][3]
         * stack:get_count()
 
     circular_saw:update_inventory(pos, -cost)
@@ -478,7 +436,8 @@ function circular_saw.on_construct(pos)
       "field[0.3,4.0;1,1;max_offered;" ..S("Max").. ":;${max_offered}]" ..
       "button[1,3.7;1,1;Set;" ..S("Set").. "]" ..
       "list[context;output;2.8,0;13,6;]" ..
-      "list[current_player;main;2.8,6.25;8,4;]" ..
+      "list[context;output;8.8,6;7,4;78]" ..
+      "list[current_player;main;0.5,6.25;8,4;]" ..
       "label[0,5;Mese Fuel\nStorage]" ..
       "list[context;fuel;1.5,5;1,1;]"
   )
@@ -491,7 +450,7 @@ function circular_saw.on_construct(pos)
   inv:set_size("input", 1)    -- Input slot for full blocks of material x.
   inv:set_size("micro", 1)    -- Storage for 1-7 surplus microblocks.
   inv:set_size("recycle", 1)  -- Surplus partial blocks can be placed here.
-  inv:set_size("output", 6*13) -- 6x13 versions of stair-parts of material x.
+  inv:set_size("output", 6*13+7*4) -- Many versions of stair-parts of material x.
   inv:set_size("fuel", 1)
 
   circular_saw:reset(pos)

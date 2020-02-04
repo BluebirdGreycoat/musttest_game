@@ -52,7 +52,7 @@ function marker.update_single_hud(player)
 		local data = waypoints[i]
 		local dist = d(data.pos, p2)
 
-		if dist > 15 and dist < 60 then
+		if dist > 12 and dist < 60 then
 			-- add hud element if nearby and not already added
 			if not data.hnd then
 				local wp = vector.add(data.pos, {x=0, y=1, z=0})
@@ -67,7 +67,7 @@ function marker.update_single_hud(player)
 					world_pos = wp,
 				})
 			end
-		elseif dist < 15 or dist > 80 then
+		elseif dist < 12 or dist > 80 then
 			-- remove hud element if too far and not yet removed
 			if data.hnd then
 				pref:hud_remove(data.hnd)

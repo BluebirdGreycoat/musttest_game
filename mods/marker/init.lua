@@ -52,7 +52,7 @@ function marker.update_single_hud(player)
 		local data = waypoints[i]
 		local dist = d(data.pos, p2)
 
-		if dist > 10 and dist < 60 then
+		if dist > 15 and dist < 60 then
 			-- add hud element if nearby and not already added
 			if not data.hnd then
 				local wp = vector.add(data.pos, {x=0, y=1, z=0})

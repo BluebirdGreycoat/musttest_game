@@ -279,6 +279,30 @@ local astair_2 = {
 	}
 }
 
+local astair_3 = {
+	type = "fixed",
+	fixed = {
+		-- Box.
+		{-0.5, -0.5, -0.5, 0.5, 0, 0.5},
+
+		-- Corner angle.
+		{-0.5, 0, 0.5, 0, 0.5, 0.25},
+		{-0.5, 0, 0.25, -0.25, 0.5, 0},
+	}
+}
+
+local astair_4 = {
+	type = "fixed",
+	fixed = {
+		-- Box.
+		{-0.5, -0.5, -0.5, 0.5, 0, 0.5},
+
+		-- Corner angle.
+		{-0.5, 0, 0.5, 0, 0.5, 0.25},
+		{-0.5, 0, 0.25, -0.25, 0.5, 0},
+	}
+}
+
 -- Node will be called <modname>:slope_<subname>
 
 local slopes_defs = {
@@ -523,6 +547,20 @@ local slopes_defs = {
 		mesh = "astair_2.obj",
 		collision_box = astair_2,
 		selection_box = astair_2,
+		light=1/3,
+	},
+
+	["_astair_3"] = {
+		mesh = "astair_3.obj",
+		collision_box = astair_3,
+		selection_box = astair_3,
+		light=1/3,
+	},
+
+	["_astair_4"] = {
+		mesh = "astair_4.obj",
+		collision_box = astair_4,
+		selection_box = astair_4,
 		light=1/3,
 	},
 }

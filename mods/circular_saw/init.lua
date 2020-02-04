@@ -46,10 +46,12 @@ circular_saw.names = {
   {"slab", "_14", 7},
   {"slab", "_15", 8},
   {"stair", "_half", 3},
-  {"stair", "_right_half", 3}, -- Not included in vanila moreblocks? Must be custom.
+  {"stair", "_right_half", 3},
   {"stair", "_alt_1", 1},
   {"stair", "_alt_2", 1},
   {"stair", "_alt_4", 2},
+  {"stair", "_alt_5", 1},
+  {"stair", "_alt_6", 2},
   {"stair", "_alt", 4},
 
   {"slope", "", 4},
@@ -85,6 +87,7 @@ circular_saw.names = {
 	{"slab", "_hole", 3},
 	{"slab", "_two_opposite", 1},
 	{"slab", "_pit", 3},
+	{"slab", "_pit_half", 2},
   {"stair", "_half_1", 1},
   {"stair", "_right_half_1", 1},
 
@@ -103,7 +106,9 @@ circular_saw.names = {
 	{"slope", "_xslope_slope_rh", 1},
 	{"slab", "_hole_half", 2},
   {"slope", "_astair_1", 6},
-  {"slope", "_astair_2", 6},
+  {"slope", "_astair_2", 5},
+  {"slope", "_astair_3", 6},
+  {"slope", "_astair_4", 6},
 }
 
 function circular_saw:get_cost(inv, stackname)

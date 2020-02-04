@@ -1,6 +1,8 @@
 
 mob_spawn = mob_spawn or {}
 mob_spawn.modpath = minetest.get_modpath("mob_spawn")
+mob_spawn.report_name = "MustTest"
+mob_spawn.report_mob = ""
 
 -- Ensure we don't get 'attempt to compare number with nil' at runtime.
 assert(type(default.LIGHT_MAX) == "number")
@@ -14,7 +16,9 @@ mob_spawn.enable_reports = mob_spawn.enable_reports or false
 
 local function report(mob, msg)
 	if mob_spawn.enable_reports then
-		minetest.chat_send_player("MustTest", "[" .. mob .. "]: " .. msg)
+		if mob == mob_spawn.report_mob or mob_spawn.report_mob == "" then
+			minetest.chat_send_player(mob_spawn.report_name, "[" .. mob .. "]: " .. msg)
+		end
 	end
 end
 
@@ -91,6 +95,16 @@ function mob_spawn.register_spawn(data)
 	-- Mobs will not spawn if player too far or too close to spawn point.
 	tb.player_min_range = data.player_min_range or 10
 	tb.player_max_range = data.player_max_range or 50
+
+	-- Copy the noiseparams table, if there is one.
+	-- Mobs can be spawned only if noise is ABOVE the noise threshold.
+	tb.noise_params = data.noise_params or nil
+	tb.noise_threshold = data.noise_threshold or 0
+
+	-- Create perlin noise object if wanted.
+	if tb.noise_params then
+		tb.perlin = PerlinNoise(tb.noise_params)
+	end
 
 	-- Store the data. We use an indexed array.
 	-- This allows the same mob to have multiple spawn registrations.
@@ -450,6 +464,15 @@ function mob_spawn.spawn_mobs(pname, index)
 		end
 	elseif vector.distance(spos, {x=0, y=-30790, z=0}) < 100 then
 		if random(1, 10) < 10 then
+			return 0
+		end
+	end
+
+	-- If have perlin object, then check if mob can spawn in this location.
+	if mdef.perlin and mdef.noise_threshold then
+		local noise = mdef.perlin:get_3d(spos)
+		if noise < mdef.noise_threshold then
+			report(mname, "Mob needs more noise! " .. noise)
 			return 0
 		end
 	end

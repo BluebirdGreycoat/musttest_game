@@ -15,6 +15,18 @@ register({
 	max_light = 2,
 	max_height = -2048,
 	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 48912,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 register({
@@ -29,6 +41,18 @@ register({
 	max_light = 4,
 	max_height = -25000,
 	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 48912,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.0,
 })
 
 register({
@@ -93,6 +117,18 @@ register({
 	max_height = -256,
 	clearance = 2, -- Wants a 3x3x3 area.
 	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 2837189,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 -- That flying thing.
@@ -105,6 +141,18 @@ register({
 	max_height = -10,
 	clearance = 2, -- Wants a 3x3x3 area.
 	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 27192,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 register({
@@ -140,6 +188,18 @@ register({
 	mob_limit = 10,
 	max_height = -25000,
 	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 4817889,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 register({
@@ -165,6 +225,18 @@ register({
 	max_height = -25000,
 	min_count = 7,
 	max_count = 16,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 423821,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 register({

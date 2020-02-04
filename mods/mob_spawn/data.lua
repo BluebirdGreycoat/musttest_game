@@ -13,6 +13,7 @@ register({
   },
 	min_light = 0,
 	max_light = 2,
+	min_height = -26000,
 	max_height = -2048,
 	clearance = 3,
 

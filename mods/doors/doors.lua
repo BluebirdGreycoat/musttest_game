@@ -11,24 +11,6 @@ doors.register("door_wood", {
     }
 })
 
-minetest.register_craft({
-  output = "doors:door_wood",
-  recipe = {
-    {"firetree:firewood", "group:stick"},
-    {"firetree:firewood", "firetree:firewood"},
-    {"firetree:firewood", "firetree:firewood"},
-  },
-})
-
-minetest.register_craft({
-  output = "doors:door_wood_locked",
-  recipe = {
-    {"firetree:firewood", "group:stick", ""},
-    {"firetree:firewood", "firetree:firewood", "default:padlock"},
-    {"firetree:firewood", "firetree:firewood", ""},
-  },
-})
-
 doors.register("door_wood_locked", {
     tiles = {{ name = "doors_door_wood.png", backface_culling = true }},
     description = "Locked Wooden Door",
@@ -40,6 +22,26 @@ doors.register("door_wood_locked", {
         {"group:wood_light", "group:wood_light", "default:padlock"},
         {"group:wood_light", "group:wood_light", ""},
     }
+})
+
+-- Supplementary recipe for wood door.
+minetest.register_craft({
+  output = "doors:door_wood",
+  recipe = {
+    {"firetree:firewood", "group:stick"},
+    {"firetree:firewood", "firetree:firewood"},
+    {"firetree:firewood", "firetree:firewood"},
+  },
+})
+
+-- Supplementary recipe for wood door.
+minetest.register_craft({
+  output = "doors:door_wood_locked",
+  recipe = {
+    {"firetree:firewood", "group:stick", ""},
+    {"firetree:firewood", "firetree:firewood", "default:padlock"},
+    {"firetree:firewood", "firetree:firewood", ""},
+  },
 })
 
 doors.register("door_steel", {
@@ -314,4 +316,241 @@ doors.register("door_fancy_ext2_locked", {
         {"group:wood_dark", "brass:ingot", "default:padlock"},
         {"group:wood_dark", "group:wood_dark", ""},
     },
+})
+
+doors.register("door_wood2", {
+    tiles = {{ name = "doors_door_wood2.png", backface_culling = true }},
+    description = "Wooden Door",
+    inventory_image = "doors_item_wood2.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:tree_wood"},
+        {"basictrees:tree_wood", "basictrees:tree_wood"},
+        {"basictrees:tree_wood", "basictrees:tree_wood"},
+    }
+})
+
+doors.register("door_wood2_locked", {
+    tiles = {{ name = "doors_door_wood2.png", backface_culling = true }},
+    description = "Locked Wooden Door",
+    inventory_image = "doors_item_wood2.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:tree_wood", ""},
+        {"basictrees:tree_wood", "basictrees:tree_wood", "default:padlock"},
+        {"basictrees:tree_wood", "basictrees:tree_wood", ""},
+    }
+})
+
+doors.register("door_obsidian_glass2", {
+		tiles = {"doors_door_obsidian_glass2.png"},
+		description = "Obsidian Glass Door",
+		inventory_image = "doors_item_obsidian_glass2.png",
+		groups = utility.dig_groups("door_glass"),
+		sounds = default.node_sound_glass_defaults(),
+		sound_open = "doors_glass_door_open",
+		sound_close = "doors_glass_door_close",
+		recipe = {
+			{"default:obsidian_shard", "default:obsidian_shard"},
+			{"default:obsidian_glass", "default:obsidian_glass"},
+			{"default:obsidian_glass", "default:obsidian_glass"},
+		},
+})
+
+doors.register("door_obsidian_glass2_locked", {
+    tiles = {"doors_door_obsidian_glass2.png"},
+    description = "Locked Obsidian Glass Door",
+    inventory_image = "doors_item_obsidian_glass2.png",
+    protected = true,
+    groups = utility.dig_groups("door_glass"),
+    sounds = default.node_sound_glass_defaults(),
+    sound_open = "doors_glass_door_open",
+    sound_close = "doors_glass_door_close",
+    recipe = {
+        {"default:obsidian_shard", "default:obsidian_shard", ""},
+        {"default:obsidian_glass", "default:obsidian_glass", "default:padlock"},
+        {"default:obsidian_glass", "default:obsidian_glass", ""},
+    },
+})
+
+doors.register("door_steel2", {
+    tiles = {{name = "doors_door_steel2.png", backface_culling = true}},
+    description = "Cast Iron Door",
+    inventory_image = "doors_item_steel2.png",
+    groups = utility.dig_groups("door_metal"),
+    sounds = default.node_sound_metal_defaults(),
+    sound_open = "doors_steel_door_open",
+    sound_close = "doors_steel_door_close",
+    recipe = {
+        {"cast_iron:ingot", "cast_iron:ingot"},
+        {"cast_iron:ingot", "cast_iron:ingot"},
+        {"cast_iron:ingot", "cast_iron:ingot"},
+    }
+})
+
+doors.register("door_steel2_locked", {
+    tiles = {{name = "doors_door_steel2.png", backface_culling = true}},
+    description = "Locked Cast Iron Door",
+    inventory_image = "doors_item_steel2.png",
+    protected = true,
+    groups = utility.dig_groups("door_metal"),
+    sounds = default.node_sound_metal_defaults(),
+    sound_open = "doors_steel_door_open",
+    sound_close = "doors_steel_door_close",
+    recipe = {
+        {"cast_iron:ingot", "cast_iron:ingot", ""},
+        {"cast_iron:ingot", "cast_iron:ingot", "default:padlock"},
+        {"cast_iron:ingot", "cast_iron:ingot", ""},
+    }
+})
+
+doors.register("door_acacia", {
+    tiles = {{ name = "doors_door_acacia.png", backface_culling = true }},
+    description = "Acacia Door",
+    inventory_image = "doors_item_acacia.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:acacia_wood"},
+        {"basictrees:acacia_wood", "basictrees:acacia_wood"},
+        {"basictrees:acacia_wood", "basictrees:acacia_wood"},
+    }
+})
+
+doors.register("door_acacia_locked", {
+    tiles = {{ name = "doors_door_acacia.png", backface_culling = true }},
+    description = "Locked Acacia Door",
+    inventory_image = "doors_item_acacia.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:acacia_wood", ""},
+        {"basictrees:acacia_wood", "basictrees:acacia_wood", "default:padlock"},
+        {"basictrees:acacia_wood", "basictrees:acacia_wood", ""},
+    }
+})
+
+doors.register("door_pine", {
+    tiles = {{ name = "doors_door_pine.png", backface_culling = true }},
+    description = "Pine Door",
+    inventory_image = "doors_item_pine.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:pine_wood"},
+        {"basictrees:pine_wood", "basictrees:pine_wood"},
+        {"basictrees:pine_wood", "basictrees:pine_wood"},
+    }
+})
+
+doors.register("door_pine_locked", {
+    tiles = {{ name = "doors_door_pine.png", backface_culling = true }},
+    description = "Locked Pine Door",
+    inventory_image = "doors_item_pine.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:pine_wood", ""},
+        {"basictrees:pine_wood", "basictrees:pine_wood", "default:padlock"},
+        {"basictrees:pine_wood", "basictrees:pine_wood", ""},
+    }
+})
+
+doors.register("door_jungle", {
+    tiles = {{ name = "doors_door_jungle.png", backface_culling = true }},
+    description = "Jungle Wood Door",
+    inventory_image = "doors_item_jungle.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:jungletree_wood"},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+    }
+})
+
+doors.register("door_jungle_locked", {
+    tiles = {{ name = "doors_door_jungle.png", backface_culling = true }},
+    description = "Locked Jungle Wood Door",
+    inventory_image = "doors_item_jungle.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:jungletree_wood", ""},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", "default:padlock"},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+    }
+})
+
+doors.register("door_aspen", {
+    tiles = {{ name = "doors_door_aspen.png", backface_culling = true }},
+    description = "Aspen Door",
+    inventory_image = "doors_item_aspen.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:aspen_wood"},
+        {"basictrees:aspen_wood", "basictrees:aspen_wood"},
+        {"basictrees:aspen_wood", "basictrees:aspen_wood"},
+    }
+})
+
+doors.register("door_aspen_locked", {
+    tiles = {{ name = "doors_door_aspen.png", backface_culling = true }},
+    description = "Locked Aspen Door",
+    inventory_image = "doors_item_aspen.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "basictrees:aspen_wood", ""},
+        {"basictrees:aspen_wood", "basictrees:aspen_wood", "default:padlock"},
+        {"basictrees:aspen_wood", "basictrees:aspen_wood", ""},
+    }
+})
+
+doors.register("door_woodsteel", {
+    tiles = {{ name = "doors_door_woodsteel.png", backface_culling = true }},
+    description = "Steel-Bound Door",
+    inventory_image = "doors_item_woodsteel.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+        {"default:steel_ingot", "default:steel_ingot"},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+    }
+})
+
+doors.register("door_woodsteel_locked", {
+    tiles = {{ name = "doors_door_woodsteel.png", backface_culling = true }},
+    description = "Locked Steel-Bound Door",
+    inventory_image = "doors_item_woodsteel.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+        {"default:steel_ingot", "default:steel_ingot", "default:padlock"},
+        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+    }
+})
+
+doors.register("door_wood3", {
+    tiles = {{ name = "doors_door_wood3.png", backface_culling = true }},
+    description = "Wooden Door",
+    inventory_image = "doors_item_wood3.png",
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "group:stick"},
+        {"basictrees:tree_wood", "basictrees:tree_wood"},
+        {"basictrees:tree_wood", "basictrees:tree_wood"},
+    }
+})
+
+doors.register("door_wood3_locked", {
+    tiles = {{ name = "doors_door_wood3.png", backface_culling = true }},
+    description = "Locked Wooden Door",
+    inventory_image = "doors_item_wood3.png",
+    protected = true,
+    groups = utility.dig_groups("door_wood", {flammable = 2}),
+    recipe = {
+        {"group:stick", "group:stick", ""},
+        {"basictrees:tree_wood", "basictrees:tree_wood", "default:padlock"},
+        {"basictrees:tree_wood", "basictrees:tree_wood", ""},
+    }
 })

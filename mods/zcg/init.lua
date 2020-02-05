@@ -339,7 +339,7 @@ end
 
 -- Sound volumes.
 local click_gain = 0.2
-local page_gain = 1.0
+local page_gain = 0.7
 local sound_range = 16
 
 -- It seems the player's main inventory formspec does not have a formname.

@@ -409,7 +409,7 @@ minetest.log('action', MN .. ": Registered auth handler")
 -- Housekeeping
 minetest.register_on_leaveplayer(function(player)
 	-- Schedule a check to see if the player has gone
-	minetest.after(60, cache_check, player:get_player_name())
+	minetest.after(60*3, cache_check, player:get_player_name())
 end)
 
 minetest.register_on_prejoinplayer(function(name, ip)

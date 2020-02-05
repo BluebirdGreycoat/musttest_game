@@ -9,14 +9,14 @@ gem_mapgen.modpath = minetest.get_modpath("gem_mapgen")
 
 if not gem_mapgen.registered then
 	local ores = {
-		{ore="ruby", scar=48, num=4, size=3, ymin=-30000, ymax=-15000},
-		{ore="ruby", scar=24, num=6, size=3, ymin=-20000, ymax=-18000},
-		{ore="amethyst", scar=45, num=4, size=3, ymin=-30000, ymax=-5000},
-		{ore="amethyst", scar=22, num=6, size=3, ymin=-9000, ymax=-6000},
-		{ore="sapphire", scar=42, num=4, size=2, ymin=-30000, ymax=-18000},
-		{ore="sapphire", scar=28, num=6, size=3, ymin=-21000, ymax=-18000},
-		{ore="emerald", scar=40, num=4, size=2, ymin=-30000, ymax=-5000},
-		{ore="emerald", scar=27, num=6, size=3, ymin=-10000, ymax=-8000},
+		{ore="ruby", scar=48, num=3, size=4, ymin=-30000, ymax=-15000},
+		{ore="ruby", scar=24, num=6, size=4, ymin=-20000, ymax=-18000},
+		{ore="amethyst", scar=45, num=3, size=4, ymin=-30000, ymax=-5000},
+		{ore="amethyst", scar=22, num=6, size=4, ymin=-9000, ymax=-6000},
+		{ore="sapphire", scar=42, num=3, size=4, ymin=-30000, ymax=-18000},
+		{ore="sapphire", scar=28, num=6, size=4, ymin=-21000, ymax=-18000},
+		{ore="emerald", scar=40, num=3, size=4, ymin=-30000, ymax=-5000},
+		{ore="emerald", scar=27, num=6, size=4, ymin=-10000, ymax=-8000},
 	}
 
 	for k, v in ipairs(ores) do

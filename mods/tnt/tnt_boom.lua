@@ -14,9 +14,9 @@ end)
 
 -- loss probabilities array (one in X will be lost)
 local stack_loss_prob = {}
-stack_loss_prob["default:cobble"] = 2
-stack_loss_prob["rackstone:redrack"] = 2
-stack_loss_prob["default:ice"] = 2
+stack_loss_prob["default:cobble"] = 4
+stack_loss_prob["rackstone:redrack"] = 4
+stack_loss_prob["default:ice"] = 4
 
 local function rand_pos(center, pos, radius)
   pos.x = center.x + math.random(-radius, radius)

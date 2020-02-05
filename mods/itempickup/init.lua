@@ -98,15 +98,21 @@ itempickup.update = function(dtime)
 								end
 							end
 						end
-						local item = ItemStack(name)
 
-						-- Ensure player's inventory has enough room.
-						if inv and inv:room_for_item("main", item) then
-							inv:add_item("main", item)
-							itempickup.sound(pos)
-							luaent.itemstring = "" -- Prevents item duplication.
-							n:remove()
+						local item = ItemStack(name)
+						local ndef = minetest.registered_items[item:get_name()]
+						if ndef and (not ndef._no_auto_pop or control.aux1) then
+
+							-- Ensure player's inventory has enough room.
+							if inv and inv:room_for_item("main", item) then
+								inv:add_item("main", item)
+								itempickup.sound(pos)
+								luaent.itemstring = "" -- Prevents item duplication.
+								n:remove()
+							end
+
 						end
+
           end
         end
 				::next_drop::

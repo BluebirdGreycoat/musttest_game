@@ -486,8 +486,13 @@ if not zcg.registered then
 	-- Register button once.
 	inventory_plus.register_button("zcg", "Craft Journal")
 
-	minetest.register_on_player_receive_fields(function(...)
-		return zcg.on_receive_fields(...)
+	-- Per Lua docs, newest functions are called first.
+	-- Therefore resister inside minetest.after() to ensure this function is
+	-- registered AFTER all other mods have registered theirs.
+	minetest.after(0, function()
+		minetest.register_on_player_receive_fields(function(...)
+			return zcg.on_receive_fields(...)
+		end)
 	end)
 
 	local c = "zcg:core"

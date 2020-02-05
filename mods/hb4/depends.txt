@@ -1,5 +1,5 @@
 reload
-unified_inventory?
-sfinv_buttons?
-inventory_plus?
+inventory_plus
 droplift
+coresounds
+craft_register

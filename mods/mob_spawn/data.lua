@@ -27,7 +27,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.3,
+	noise_threshold = 0.5,
 })
 
 register({
@@ -53,7 +53,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.0,
+	noise_threshold = 0.3,
 })
 
 register({

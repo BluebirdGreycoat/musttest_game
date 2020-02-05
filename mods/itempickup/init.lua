@@ -285,12 +285,12 @@ end
 
 -- Table of XP gain multipliers based on tool's rank (toolranks mod).
 local xp_gain_ranks = {
-	[1] = 0.5,
-	[2] = 0.9,
-	[3] = 1.0,
-	[4] = 1.1,
-	[5] = 1.2,
-	[6] = 1.3,
+	[1] = 0.1,
+	[2] = 0.3,
+	[3] = 0.5,
+	[4] = 1.0,
+	[5] = 1.1,
+	[6] = 1.2,
 	[7] = 1.5,
 }
 

@@ -137,7 +137,6 @@ minetest.register_node("rackstone:redrack", {
 		ignore = true,
 	},
 	_no_auto_pop = true,
-	stack_max = 128,
   
   after_destruct = function(...)
     after_redrack_remove(...)

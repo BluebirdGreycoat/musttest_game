@@ -258,7 +258,6 @@ minetest.register_node("default:cobble", {
 	},
 
 	_no_auto_pop = true,
-	stack_max = 128,
 })
 
 minetest.register_node("default:stonebrick", {
@@ -940,7 +939,6 @@ minetest.register_node("default:ice", {
 	tiles = {"default_ice.png"},
 	is_ground_content = false,
 	paramtype = "light",
-	stack_max = 128,
 
 	groups = utility.dig_groups("ice", {
 		ice = 1,

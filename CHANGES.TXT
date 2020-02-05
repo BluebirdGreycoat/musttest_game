@@ -1,3 +1,6 @@
+[2020/2/5] Added a whole bunch more doors. Adjusted some recipes.
+[2020/2/5] Use a better, more dusty-looking formspec background everywhere, instead of the boring builtin one.
+[2020/2/5] Use a real character preview image in the 3D armor formspec.
 [2020/2/4] Player gets damaged 1/2 heart whenever stuff is destroyed because player dug it while their inventory was full. This warns player that material was destroyed, and discourages player from leaving drops everywhere (which may lag server) while mining.
 [2020/2/4] Cobble/ice/netherack no longer auto-pop into player's inventory when holding shift. Use 'E' to auto-collect these items. This helps with TNT mining.
 [2020/2/4] Mobs (icemen, sandmen) no longer drop items if killed by sunlight (assuming they don't teleport underground in time). This removes the item-drop messes left over from dispersed mob-parties after sunrise.

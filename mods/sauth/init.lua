@@ -228,6 +228,7 @@ sauth.auth_handler = {
 		if not auth_table[name] and add_to_cache then auth_table[name] = record end -- Cache if reqd
 		return record
 	end,
+
 	create_auth = function(name, password)
 		assert(type(name) == 'string')
 		assert(type(password) == 'string')
@@ -242,12 +243,14 @@ sauth.auth_handler = {
 		add_record(name,password,privs,ts)
 		return true
 	end,
+
 	delete_auth = function(name)
 		assert(type(name) == 'string')
 		-- Offline only!
 		if auth_table[name] == nil then del_record(name) end
 		return true
 	end,
+
 	set_password = function(name, password)
 		assert(type(name) == 'string')
 		assert(type(password) == 'string')
@@ -260,6 +263,7 @@ sauth.auth_handler = {
 		end
 		return true
 	end,
+
 	set_privileges = function(name, privs)
 		assert(type(name) == 'string')
 		assert(type(privs) == 'table')
@@ -287,15 +291,18 @@ sauth.auth_handler = {
 		minetest.notify_authentication_modified(name)
 		return true
 	end,
+
 	reload = function()
 		return true
 	end,
+
 	record_login = function(name)
 		assert(type(name) == 'string')
 		update_login(name)
 		auth_table[name].last_login = os.time()
 		return true
 	end,
+
 	name_search = function(name)
 		assert(type(name) == 'string')
 		return get_names(name)

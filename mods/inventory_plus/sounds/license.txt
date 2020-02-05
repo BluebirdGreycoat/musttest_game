@@ -1,0 +1,10 @@
+ 
+For files `pageflip[1-5].ogg`:
+From: https://freesound.org
+Author: themfish/theMfish
+License: Attribution 3.0 Unported (CC BY 3.0)
+
+For file `button_click.ogg`:
+From: https://freesound.org
+Author: Christopherderp
+License: CC0 1.0 Universal (CC0 1.0)

@@ -337,12 +337,16 @@ function zcg.update_search(pn, tsearch)
 	zcg.users[pn].searchlist = flat
 end
 
-
+-- Sound volumes.
+local click_gain = 0.2
+local page_gain = 1.0
+local sound_range = 16
 
 -- It seems the player's main inventory formspec does not have a formname.
 local singleplayer = minetest.is_singleplayer()
 zcg.on_receive_fields = function(player, formname, fields)
-  local pn = player:get_player_name();
+	local played_sound = false
+  local pn = player:get_player_name()
   if zcg.users[pn] == nil then
 		zcg.users[pn] = {
 			current_item = "",
@@ -356,6 +360,9 @@ zcg.on_receive_fields = function(player, formname, fields)
 	end
   if fields.zcg then
     inventory_plus.set_inventory_formspec(player, zcg.formspec(pn))
+		if not played_sound and not fields.quit then
+			ambiance.sound_play("button_click", player:get_pos(), click_gain, sound_range)
+		end
     return
   elseif fields.zcg_previous then
     if zcg.users[pn].history.index > 1 then
@@ -412,6 +419,8 @@ zcg.on_receive_fields = function(player, formname, fields)
 			else
 				zcg.users[pn].spage = tonumber(k:sub(10))
 			end
+			ambiance.sound_play("pageflip", player:get_pos(), page_gain, sound_range)
+			played_sound = true
 			zcg.users[pn].searchtext = fields.zcg_sbox or "<INVAL>"
       inventory_plus.set_inventory_formspec(player,zcg.formspec(pn))
     elseif (k:sub(0,8)=="zcg_alt:") then
@@ -440,6 +449,14 @@ zcg.on_receive_fields = function(player, formname, fields)
 			end
     end
   end
+
+	if not played_sound and not fields.quit then
+		ambiance.sound_play("button_click", player:get_pos(), click_gain, sound_range)
+	end
+
+	if not played_sound and (fields.close or fields.exit or fields.done) then
+		ambiance.sound_play("button_click", player:get_pos(), click_gain, sound_range)
+	end
 end
 
 
@@ -467,7 +484,7 @@ if not zcg.registered then
 	end)
 
 	-- Register button once.
-	inventory_plus.register_button("zcg", "Craft Guide")
+	inventory_plus.register_button("zcg", "Craft Journal")
 
 	minetest.register_on_player_receive_fields(function(...)
 		return zcg.on_receive_fields(...)

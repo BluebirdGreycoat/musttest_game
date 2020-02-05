@@ -644,7 +644,11 @@ function ads.on_receive_fields(player, formname, fields)
 		return true
 	end
 
-	if fields.done or fields.quit then
+	if fields.quit then
+		return true
+	end
+
+	if fields.done then
 		minetest.close_formspec(pname, formname)
 		return true
 	end

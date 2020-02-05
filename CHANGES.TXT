@@ -1,5 +1,11 @@
+[2020/4/2] Mobs (icemen, sandmen) no longer drop items if killed by sunlight (assuming they don't teleport underground in time).
+[2020/4/2] Updated circular-table-saw. Added a bunch of new shapes.
+[2020/4/2] Added a perlin-noise-based parameter to certain mob spawns. Therefore some mobs won't spawn in some regions, but will spawn in others.
+[2020/4/2] Added diamond chest.
+[2020/3/2] Added a lock craftitem, use it in recipes for locked doors and chests.
+[2020/3/2] Fixed an exploit allowing to harvest gold/obsidian from obsidian gates.
 [2020/2/2] Updated the description of the Underearth Survivalist Challenge to report on the reward gained.
-[2020/2/2] Added a waypoint/marker system to the Key of Citizenship
+[2020/2/2] Added a waypoint/marker system to the Key of Citizenship.
 [2020/1/31] Replaced the texture for the advanced protector logo node.
 [2020/1/31] Added protector placer tool.
 [2020/1/30] Reduced elevator speed a bit.

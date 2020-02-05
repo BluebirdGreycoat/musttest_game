@@ -13,10 +13,10 @@ minetest.after(0, function()
 end)
 
 -- loss probabilities array (one in X will be lost)
-local loss_prob = {}
-
---loss_prob["default:cobble"] = 3
---loss_prob["default:dirt"] = 4
+local stack_loss_prob = {}
+stack_loss_prob["default:cobble"] = 2
+stack_loss_prob["rackstone:redrack"] = 2
+stack_loss_prob["default:ice"] = 2
 
 local function rand_pos(center, pos, radius)
   pos.x = center.x + math.random(-radius, radius)
@@ -33,26 +33,35 @@ end
 local function eject_drops(drops, pos, radius)
   local drop_pos = vector.new(pos)
   for name, total in pairs(drops) do
-    local count = total
-    local item = ItemStack(name)
-    
-    while count > 0 do
-      local take = math.max(1,math.min(radius * radius, count, item:get_stack_max()))
-      
-      rand_pos(pos, drop_pos, radius*0.9)
-      local dropitem = ItemStack(name)
-      dropitem:set_count(take)
-      
-      local obj = minetest.add_item(drop_pos, dropitem)
-      if obj then
-        obj:get_luaentity().collect = true
-        obj:setacceleration({x = 0, y = -10, z = 0})
-        obj:setvelocity({x = math.random(-3, 3), y = math.random(0, 10), z = math.random(-3, 3)})
-				droplift.invoke(obj, math.random(3, 10))
-      end
-      
-      count = count - take
-    end
+		local trash = false
+
+		-- Nothing is lost unless the player loses it.
+		if stack_loss_prob[name] ~= nil and math.random(1, stack_loss_prob[name]) == 1 then
+			trash = true
+		end
+
+		if not trash then
+			local count = total
+			local item = ItemStack(name)
+
+			while count > 0 do
+				local take = math.max(1,math.min(radius * radius, count, item:get_stack_max()))
+
+				rand_pos(pos, drop_pos, radius*0.9)
+				local dropitem = ItemStack(name)
+				dropitem:set_count(take)
+
+				local obj = minetest.add_item(drop_pos, dropitem)
+				if obj then
+					obj:get_luaentity().collect = true
+					obj:setacceleration({x = 0, y = -10, z = 0})
+					obj:setvelocity({x = math.random(-3, 3), y = math.random(0, 10), z = math.random(-3, 3)})
+					droplift.invoke(obj, math.random(3, 10))
+				end
+
+				count = count - take
+			end
+		end
   end
 end
 
@@ -60,11 +69,6 @@ local function add_drop(drops, item)
 	item = ItemStack(item)
 	local name = item:get_name()
 	
-  -- Nothing is lost unless the player loses it.
-  --if loss_prob[name] ~= nil and math.random(1, loss_prob[name]) == 1 then
-	--	return
-	--end
-
 	local drop = drops[name]
 	if drop == nil then
 		drops[name] = item:get_count()

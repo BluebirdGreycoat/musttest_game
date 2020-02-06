@@ -61,7 +61,7 @@ ambiance.globalstep = function(dtime)
 
 								-- If have perlin object, then check if mob can spawn in this location.
 								if v.perlin and v.noise_threshold then
-									local noise = v.perlin:get_3d(spos)
+									local noise = v.perlin:get_3d(pos)
 									if noise < v.noise_threshold then
 										nospawn = true
 									end

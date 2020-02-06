@@ -63,6 +63,7 @@ local compute_gain = function(distance, max)
   res = (res * -1) + 1
   return res
 end
+ambiance.compute_gain = compute_gain
   
 -- This function plays a sound for each player within a given range.
 -- The audio gain is reduced for players far from the position at which the sound should play.

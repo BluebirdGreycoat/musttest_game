@@ -101,7 +101,8 @@ if not ambiance.tree_sounds_registered then
 
 								-- Is player in this sounds's Y layer?
 								if ppos.y >= v.miny and ppos.y <= v.maxy then
-									if vector.distance(pos, ppos) < v.range then
+									local pdist = vector.distance(pos, ppos)
+									if pdist < v.range then
 										-- Don't play sound if player is underwater (muted sounds).
 										-- Note: player's underwater status is modified by the scuba code.
 										local underwater = ambiance.players[pname].underwater
@@ -123,7 +124,8 @@ if not ambiance.tree_sounds_registered then
 												-- Clamp gain!
 												if gain < 0.0 then gain = 0.0 end
 												if gain > 2.0 then gain = 2.0 end
-												minetest.sound_play(v.name, {to_player=pname, gain=gain})
+												local md = ambiance.compute_gain(pdist, v.range)
+												minetest.sound_play(v.name, {to_player=pname, gain=gain*md})
 											end
 										end
 									end

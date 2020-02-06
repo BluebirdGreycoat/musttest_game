@@ -248,6 +248,50 @@ tooldata["sword_bronze"] = {
 }
 
 --------------------------------------------------------------------------------
+-- BRONZE TOOLS: Dig faster than steel, very poor drops, poor wear handling.
+--------------------------------------------------------------------------------
+
+-- Early-obtainable pick with "magical" properties: fast dig, but poor drops.
+
+tooldata["pick_bronze2"] = {
+	full_punch_interval = 3.0,
+	max_drop_level = 1,
+	groupcaps = {
+		-- Improved wear handling, otherwise players may not find it worth it.
+		cracky = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+	},
+	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
+}
+
+tooldata["shovel_bronze2"] = {
+	full_punch_interval = 1.5,
+	max_drop_level = 1,
+	groupcaps = {
+		crumbly = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+	},
+	damage_groups = {fleshy=2, cracky=1, crumbly=1},
+}
+
+tooldata["axe_bronze2"] = {
+	full_punch_interval = 0.8,
+	max_drop_level = 1,
+	groupcaps = {
+		choppy = {times={[2]=0.30, [3]=0.30}, uses=150, maxlevel=2},
+	},
+	damage_groups = {fleshy=4, cracky=1, crumbly=1},
+}
+
+tooldata["sword_bronze2"] = {
+	full_punch_interval = 0.9,
+	max_drop_level = 0,
+	groupcaps = {
+		-- Sword wears out rather quick, though.
+		snappy = {times={[2]=0.60, [3]=0.60}, uses=120, maxlevel=2},
+	},
+	damage_groups = {fleshy=10, cracky=1, crumbly=1}, -- Better damage than steel.
+}
+
+--------------------------------------------------------------------------------
 -- MESE TOOLS: perfect drops, faster than steel, slightly worse wear handling.
 --------------------------------------------------------------------------------
 tooldata["pick_mese"] = {

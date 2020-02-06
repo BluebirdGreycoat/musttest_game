@@ -34,6 +34,13 @@ minetest.register_tool(":default:pick_bronze", {
     sound = {breaks = "basictools_tool_breaks"},
 })
 
+minetest.register_tool(":default:pick_bronze2", {
+	description = "Bronze Pickaxe",
+	inventory_image = "default_tool_bronzepick2.png",
+	tool_capabilities = tooldata["pick_bronze2"],
+    sound = {breaks = "basictools_tool_breaks"},
+})
+
 minetest.register_tool(":default:pick_mese", {
 	description = "Mese Pickaxe",
 	inventory_image = "default_tool_mesepick.png",
@@ -70,6 +77,14 @@ minetest.register_tool(":default:shovel_bronze", {
 	inventory_image = "default_tool_bronzeshovel.png",
 	wield_image = "default_tool_bronzeshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_bronze"],
+    sound = {breaks = "basictools_tool_breaks"},
+})
+
+minetest.register_tool(":default:shovel_bronze2", {
+	description = "Bronze Shovel",
+	inventory_image = "default_tool_bronzeshovel2.png",
+	wield_image = "default_tool_bronzeshovel2.png^[transformR90",
+	tool_capabilities = tooldata["shovel_bronze2"],
     sound = {breaks = "basictools_tool_breaks"},
 })
 
@@ -111,6 +126,13 @@ minetest.register_tool(":default:axe_bronze", {
     sound = {breaks = "basictools_tool_breaks"},
 })
 
+minetest.register_tool(":default:axe_bronze2", {
+	description = "Bronze Axe",
+	inventory_image = "default_tool_bronzeaxe2.png",
+	tool_capabilities = tooldata["axe_bronze2"],
+    sound = {breaks = "basictools_tool_breaks"},
+})
+
 minetest.register_tool(":default:axe_mese", {
 	description = "Mese Axe",
 	inventory_image = "default_tool_meseaxe.png",
@@ -144,6 +166,13 @@ minetest.register_tool(":default:sword_bronze", {
 	description = "Copper Sword",
 	inventory_image = "default_tool_bronzesword.png",
 	tool_capabilities = tooldata["sword_bronze"],
+    sound = {breaks = "basictools_tool_breaks"},
+})
+
+minetest.register_tool(":default:sword_bronze2", {
+	description = "Bronze Sword",
+	inventory_image = "default_tool_bronzesword2.png",
+	tool_capabilities = tooldata["sword_bronze2"],
     sound = {breaks = "basictools_tool_breaks"},
 })
 
@@ -200,6 +229,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = 'default:pick_bronze2',
+	recipe = {
+		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
+		{'', 'group:stick', ''},
+		{'', 'group:stick', ''},
+	}
+})
+
+minetest.register_craft({
 	output = 'default:pick_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal', 'default:mese_crystal'},
@@ -239,6 +277,15 @@ minetest.register_craft({
 	output = 'default:shovel_bronze',
 	recipe = {
 		{'default:copper_ingot'},
+		{'group:stick'},
+		{'group:stick'},
+	}
+})
+
+minetest.register_craft({
+	output = 'default:shovel_bronze2',
+	recipe = {
+		{'default:bronze_ingot'},
 		{'group:stick'},
 		{'group:stick'},
 	}
@@ -290,6 +337,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = 'default:axe_bronze2',
+	recipe = {
+		{'default:bronze_ingot', 'default:bronze_ingot'},
+		{'default:bronze_ingot', 'group:stick'},
+		{'', 'group:stick'},
+	}
+})
+
+minetest.register_craft({
 	output = 'default:axe_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal'},
@@ -335,6 +391,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = 'default:axe_bronze2',
+	recipe = {
+		{'default:bronze_ingot', 'default:bronze_ingot'},
+		{'group:stick', 'default:bronze_ingot'},
+		{'group:stick', ''},
+	}
+})
+
+minetest.register_craft({
 	output = 'default:axe_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal'},
@@ -375,6 +440,15 @@ minetest.register_craft({
 	recipe = {
 		{'default:copper_ingot'},
 		{'default:copper_ingot'},
+		{'group:stick'},
+	}
+})
+
+minetest.register_craft({
+	output = 'default:sword_bronze2',
+	recipe = {
+		{'default:bronze_ingot'},
+		{'default:bronze_ingot'},
 		{'group:stick'},
 	}
 })

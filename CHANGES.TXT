@@ -1,3 +1,7 @@
+[2020/2/6] Added an eerie sound for obsidian gateways.
+[2020/2/6] Added a soft, perpetual wind sound to the surfaces of the Overworld, Channelwood, and Jarkati.
+[2020/2/6] Edited some sounds to remove zero-energy starts (which can cause clicks and pops).
+[2020/2/6] Redesigned ambiance system for better realism w.r.t. bird/insect sounds using a technique involving entities.
 [2020/2/5] Added GUI pageflip and button-press sounds.
 [2020/2/5] Added a whole bunch more doors. Adjusted some recipes.
 [2020/2/5] Use a better, more dusty-looking formspec background everywhere, instead of the boring builtin one.

@@ -38,7 +38,7 @@ for k, v in ipairs(ambiance.tree_sounds) do
 	-- This ensures all sounds start with random times on first run.
 	v.timer = math.random(v.mintime, v.maxtime)
 
-	v.range = v.range or 50
+	v.range = v.range or 30
 end
 
 

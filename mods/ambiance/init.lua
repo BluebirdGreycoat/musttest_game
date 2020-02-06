@@ -52,28 +52,43 @@ ambiance.globalstep = function(dtime)
 						local pos = utility.get_foot_pos(player:get_pos())
 						-- Is player in this sounds's Y layer?
 						if pos.y >= v.miny and pos.y <= v.maxy then
+
 							-- Don't play sound if player is underwater (muted sounds).
 							-- Note: player's underwater status is modified by the scuba code.
 							local underwater = ambiance.players[name].underwater
 							if underwater == nil then
-								-- Only play sound if sound can be played indoors or out-of-doors.
-			          -- If sound doesn't care whether indoors or out-of-doors, then play it.
-								-- Randomize position a bit in case player is just standing under an overhang.
-								pos.x = rand(pos.x - 1, pos.x + 1)
-								pos.y = rand(pos.y - 1, pos.y + 1)
-								pos.z = rand(pos.z - 1, pos.z + 1)
-								local indoors
-								if v.indoors ~= nil then
-									indoors = ambiance.check_indoors(name, pos)
+								local nospawn = false
+
+								-- If have perlin object, then check if mob can spawn in this location.
+								if v.perlin and v.noise_threshold then
+									local noise = v.perlin:get_3d(spos)
+									if noise < v.noise_threshold then
+										nospawn = true
+									end
 								end
-      			    if v.indoors == indoors then
-									-- Play sound to current player!
-									-- If multiple players can hear, the sound will be played at the same time to all of them.
-									local gain = rand(v.mingain*100.0, v.maxgain*100.0)/100.0
-									-- Clamp gain!
-									if gain < 0.0 then gain = 0.0 end
-									if gain > 2.0 then gain = 2.0 end
-									minetest.sound_play(v.name, {to_player=name, gain=gain})
+
+								if not nospawn then
+									-- Only play sound if sound can be played indoors or out-of-doors.
+									-- If sound doesn't care whether indoors or out-of-doors, then play it.
+
+									local indoors
+									if v.indoors ~= nil then
+										-- Randomize position a bit in case player is just standing under an overhang.
+										pos.x = rand(pos.x - 1, pos.x + 1)
+										pos.y = rand(pos.y - 1, pos.y + 1)
+										pos.z = rand(pos.z - 1, pos.z + 1)
+										indoors = ambiance.check_indoors(name, pos)
+									end
+
+									if v.indoors == indoors then
+										-- Play sound to current player!
+										-- If multiple players can hear, the sound will be played at the same time to all of them.
+										local gain = rand(v.mingain*100.0, v.maxgain*100.0)/100.0
+										-- Clamp gain!
+										if gain < 0.0 then gain = 0.0 end
+										if gain > 2.0 then gain = 2.0 end
+										minetest.sound_play(v.name, {to_player=name, gain=gain})
+									end
 								end
 							end
 						end

@@ -13,7 +13,20 @@ ambiance.allsounds = {
 	{name="drippingwater3", gain=1.0, miny=-25000, maxy=-30,    time="",        indoors=nil,   mintime=30, maxtime=400, },
 
 	-- Cave bats: occurs in over-world caves, only at night.
-	{name="cave_bats",      gain=0.7, miny=-25000, maxy=-60,    time="night",   indoors=false, mintime=60, maxtime=120, },
+	{
+		name="cave_bats",      gain=0.7, miny=-25000, maxy=-60,    time="night",   indoors=false, mintime=60, maxtime=120,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=128, y=128, z=128},
+			seed = 577891,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.5,
+	},
 
 	-- Wind: surface sound only, any time of day (but more common at night).
 	{name="wind1",          gain=0.7, miny=-15,    maxy=3300,  time="day",      indoors=false, },
@@ -27,8 +40,36 @@ ambiance.allsounds = {
 	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=-15,maxy=3300,time="", indoors=nil, mintime=6,  maxtime=8, }, -- Continuous quiet loop.
 
 	-- Various animal sounds.
-	{name="wolves",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false, },
-	{name="coyote",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false, },
+	{
+		name="wolves",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=128, y=128, z=128},
+			seed = 381783,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.5,
+	},
+
+	{
+		name="coyote",         gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=128, y=128, z=128},
+			seed = 6822034,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.5,
+	},
+
 	{name="craw",           gain=1.0, miny=3000,   maxy=3300,   time="day"  ,   indoors=false, },
 	{name="hornedowl",      gain=1.0, miny=3000,   maxy=3300,   time="night",   indoors=false, },
 
@@ -55,7 +96,20 @@ ambiance.allsounds = {
 	{name="mobs_spider",                     gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560, },
 
 	-- Nether yuck.
-	{name="nether_extract_blood", gain=1.0, miny=-31000, maxy=-20000, time="", indoors=false, mintime=280, maxtime=860, },
+	{
+		name="nether_extract_blood", gain=1.0, miny=-31000, maxy=-20000, time="", indoors=false, mintime=280, maxtime=860,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=128, y=128, z=128},
+			seed = 282934,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.5,
+	},
 
 	-- Continuous wind on Jarkati surface.
 	{name="wind1",          gain=1.5, miny=3735, maxy=3900,  time="", indoors=false, mintime=20, maxtime=40, },
@@ -82,6 +136,12 @@ for k, v in ipairs(ambiance.allsounds) do
 	-- Initialize timer to a random value between min and max time.
 	-- This ensures all sounds start with random times on first run.
 	v.timer = math.random(v.mintime, v.maxtime)
+
+	-- Create perlin noise object if wanted.
+	if v.noise_params then
+		v.perlin = PerlinNoise(v.noise_params)
+	end
+	v.noise_threshold = v.noise_threshold or 0
 end
 
 -- Lava & scuba sounds (or any special sound) must be handled differently.

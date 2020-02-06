@@ -109,12 +109,12 @@ if not ambiance.tree_sounds_registered then
 										if underwater == nil then
 											-- Only play sound if sound can be played indoors or out-of-doors.
 											-- If sound doesn't care whether indoors or out-of-doors, then play it.
-											-- Randomize position a bit in case player is just standing under an overhang.
-											ppos.x = rand(ppos.x - 1, ppos.x + 1)
-											ppos.y = rand(ppos.y - 1, ppos.y + 1)
-											ppos.z = rand(ppos.z - 1, ppos.z + 1)
 											local indoors
 											if v.indoors ~= nil then
+												-- Randomize position a bit in case player is just standing under an overhang.
+												ppos.x = rand(ppos.x - 1, ppos.x + 1)
+												ppos.y = rand(ppos.y - 1, ppos.y + 1)
+												ppos.z = rand(ppos.z - 1, ppos.z + 1)
 												indoors = ambiance.check_indoors(pname, ppos)
 											end
 											if v.indoors == indoors then

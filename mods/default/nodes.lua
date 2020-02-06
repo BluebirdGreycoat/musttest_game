@@ -445,6 +445,8 @@ minetest.register_node("default:obsidian", {
 	groups = utility.dig_groups("obsidian", {stone=1}),
   on_blast = function(...) end, -- Blast resistant.
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
+
+	-- Callbacks are overridden in flameportal mod!
 })
 
 minetest.register_node("default:obsidianbrick", {

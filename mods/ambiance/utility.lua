@@ -82,7 +82,8 @@ ambiance.sound_play = function(name, pos, gain, range, exempt_player)
         local p1 = v:getpos()
         local dist = vector.distance(p1, pos)
         local gn = compute_gain(dist, range)
-        minetest.sound_play(name, {to_player=n, gain=gn*gain})
+				-- Ephemeral sound.
+        minetest.sound_play(name, {to_player=n, gain=gn*gain}, true)
       end
     end
   end

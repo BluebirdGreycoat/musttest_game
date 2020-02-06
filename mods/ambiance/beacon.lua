@@ -23,6 +23,37 @@ function ambiance.spawn_sound_beacon(name, pos, radius, count)
 	minetest.add_entity(pos, name)
 end
 
+-- Trigger all sound beacons in a given radius to execute an environment recheck.
+function ambiance.recheck_nearby_sound_beacons(pos, radius)
+	--minetest.chat_send_all('recheck2')
+	pos = vector.round(pos)
+	local objs = minetest.get_objects_inside_radius(pos, radius)
+	for i = 1, #objs, 1 do
+		local ent = objs[i]:get_luaentity()
+		if ent then
+			if ent.name:find("^soundbeacon:") then
+				--minetest.chat_send_all('recheck')
+				ent._ctime = 0
+			end
+		end
+	end
+end
+
+function ambiance.replay_nearby_sound_beacons(pos, radius)
+	--minetest.chat_send_all('replay2')
+	pos = vector.round(pos)
+	local objs = minetest.get_objects_inside_radius(pos, radius)
+	for i = 1, #objs, 1 do
+		local ent = objs[i]:get_luaentity()
+		if ent then
+			if ent.name:find("^soundbeacon:") then
+				--minetest.chat_send_all('replay')
+				ent._ptime = 0
+			end
+		end
+	end
+end
+
 function ambiance.spawn_sound_beacon_inside_area(name, pos, minp, maxp, radius, count)
 	local p1 = vector.add(pos, minp)
 	local p2 = vector.add(pos, maxp)

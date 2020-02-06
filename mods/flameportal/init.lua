@@ -390,7 +390,10 @@ if not flameportal.run_once then
   minetest.register_alias("flameportal:no_fall_damage", "flameportal:redrack")
 
   minetest.override_item("default:obsidian", {
-    after_destruct = function(...) return flameportal.after_portal_destruct(...) end,
+    after_destruct = function(pos, oldnode)
+			minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
+			return flameportal.after_portal_destruct(pos, oldnode)
+		end,
     -- Obsidian is blast resitant now.
     --on_blast = function(pos) minetest.remove_node(pos) end,
   })

@@ -46,8 +46,8 @@ end
 if not ambiance.tree_sounds_registered then
 	ambiance.register_sound_beacon(":soundbeacon:trees", {
 		-- Minimum and maximum times between environment checks.
-		check_time_min = 5,
-		check_time_max = 10,
+		check_time_min = 60,
+		check_time_max = 60*60,
 
 		-- Minimum and maximum times between sounds playing.
 		play_time_min = 5,

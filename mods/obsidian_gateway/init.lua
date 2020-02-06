@@ -101,22 +101,7 @@ end
 
 
 
-function obsidian_gateway.attempt_activation(pos, player)
-	local pname = player:get_player_name()
-	local ppos = vector.round(player:get_pos())
-
-	local under = utility.node_under_pos(player:get_pos())
-	local inside = vector.add(under, {x=0, y=1, z=0})
-	local nodeunder = minetest.get_node(under).name
-	-- Player must be standing on one of these.
-	if nodeunder ~= "default:obsidian" and
-			nodeunder ~= "griefer:grieferstone" and
-			nodeunder ~= "cavestuff:dark_obsidian" then
-		-- This triggers when other types of portals are used, so is incorrect to display this chat.
-		--minetest.chat_send_player(pname, "# Server: You need to be standing in the gateway for it to work!")
-		return
-	end
-
+function obsidian_gateway.find_gate(pos)
 	local result
 	local points
 	local counts
@@ -128,7 +113,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 	-- Find the gateway (threshold under player)!
 	result, points, counts, origin =
-		schematic_find.detect_schematic(inside, gate_northsouth)
+		schematic_find.detect_schematic(pos, gate_northsouth)
 	northsouth = true
 	ns_key = "ns"
 	if result then
@@ -137,7 +122,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	if not result then
 		-- Couldn't find northsouth gateway, so try to find eastwest.
 		result, points, counts, origin =
-			schematic_find.detect_schematic(inside, gate_eastwest)
+			schematic_find.detect_schematic(pos, gate_eastwest)
 		northsouth = false
 		ns_key = "ew"
 		if result then
@@ -172,9 +157,47 @@ function obsidian_gateway.attempt_activation(pos, player)
 			yes = true
 		end
 	end
-	if not yes then
+
+	if yes then
+		return true, origin, airpoints, northsouth, ns_key, playerorigin
+	end
+end
+
+
+
+function obsidian_gateway.attempt_activation(pos, player)
+	local pname = player:get_player_name()
+	local ppos = vector.round(player:get_pos())
+
+	local under = utility.node_under_pos(player:get_pos())
+	local inside = vector.add(under, {x=0, y=1, z=0})
+	local nodeunder = minetest.get_node(under).name
+	-- Player must be standing on one of these.
+	if nodeunder ~= "default:obsidian" and
+			nodeunder ~= "griefer:grieferstone" and
+			nodeunder ~= "cavestuff:dark_obsidian" then
+		-- This triggers when other types of portals are used, so is incorrect to display this chat.
+		--minetest.chat_send_player(pname, "# Server: You need to be standing in the gateway for it to work!")
 		return
 	end
+
+	local success
+	local origin
+	local northsouth
+	local ns_key
+	local playerorigin
+	local airpoints
+
+	success, origin, airpoints, northsouth, ns_key, playerorigin =
+		obsidian_gateway.find_gate(pos)
+
+	if not success then
+		return
+	end
+
+	-- Add/update sound beacon.
+	ambiance.spawn_sound_beacon("soundbeacon:gate", origin, 20, 1)
+	ambiance.replay_nearby_sound_beacons(origin, 6)
 
 	if sheriff.player_punished(pname) then
 		if sheriff.punish_probability(pname) then
@@ -395,6 +418,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 				end)
 			end
 
+			ambiance.spawn_sound_beacon("soundbeacon:gate", target, 20, 1)
+			ambiance.replay_nearby_sound_beacons(target, 6)
 			portal_sickness.on_use_portal(pname)
 		end, nil, false, "nether_portal_usual")
 end

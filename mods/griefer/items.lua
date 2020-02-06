@@ -18,6 +18,9 @@ minetest.register_node("griefer:grieferstone", {
 		return griefer.on_stone_timer(...)
 	end,
 	--]]
+	after_destruct = function(pos)
+		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
+	end,
 })
 
 

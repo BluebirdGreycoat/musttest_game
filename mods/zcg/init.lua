@@ -338,7 +338,7 @@ function zcg.update_search(pn, tsearch)
 end
 
 -- Sound volumes.
-local click_gain = 0.2
+local click_gain = 0.4
 local page_gain = 0.7
 local sound_range = 16
 

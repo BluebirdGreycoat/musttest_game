@@ -18,14 +18,14 @@ ambiance.allsounds = {
 		noise_params = {
 			offset = 0,
 			scale = 1,
-			spread = {x=128, y=128, z=128},
+			spread = {x=256, y=256, z=256},
 			seed = 577891,
 			octaves = 2,
 			persist = 0.5,
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.5,
+		noise_threshold = 0.3,
 	},
 
 	-- Wind: surface sound only, any time of day (but more common at night).
@@ -45,14 +45,14 @@ ambiance.allsounds = {
 		noise_params = {
 			offset = 0,
 			scale = 1,
-			spread = {x=128, y=128, z=128},
+			spread = {x=256, y=256, z=256},
 			seed = 381783,
 			octaves = 2,
 			persist = 0.5,
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.5,
+		noise_threshold = 0.3,
 	},
 
 	{
@@ -60,14 +60,14 @@ ambiance.allsounds = {
 		noise_params = {
 			offset = 0,
 			scale = 1,
-			spread = {x=128, y=128, z=128},
+			spread = {x=256, y=256, z=256},
 			seed = 6822034,
 			octaves = 2,
 			persist = 0.5,
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.5,
+		noise_threshold = 0.3,
 	},
 
 	{name="craw",           gain=1.0, miny=3000,   maxy=3300,   time="day"  ,   indoors=false, },
@@ -101,14 +101,14 @@ ambiance.allsounds = {
 		noise_params = {
 			offset = 0,
 			scale = 1,
-			spread = {x=128, y=128, z=128},
+			spread = {x=256, y=256, z=256},
 			seed = 282934,
 			octaves = 2,
 			persist = 0.5,
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.5,
+		noise_threshold = 0.3,
 	},
 
 	-- Continuous wind on Jarkati surface.

@@ -98,6 +98,7 @@ minetest.register_node("moretrees:date_palm_sapling", {
 		minetest.place_schematic(vector.add(vector.add(pos, {x=0, y=math.random(-1, 1), z=0}), SCHEMATIC_RELP), path, "random", nil, false)
 		trunkgen.check_trunk(pos, 3, "moretrees:date_palm_tree")
 		snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
+		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
 	end,
     
     on_construct = function(pos)

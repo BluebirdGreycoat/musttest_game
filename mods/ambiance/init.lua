@@ -10,6 +10,8 @@ dofile(ambiance.modpath .. "/data.lua")
 dofile(ambiance.modpath .. "/utility.lua")
 dofile(ambiance.modpath .. "/scuba.lua")
 dofile(ambiance.modpath .. "/particles.lua")
+dofile(ambiance.modpath .. "/beacon.lua")
+dofile(ambiance.modpath .. "/treesounds.lua")
 
 
 
@@ -29,6 +31,7 @@ ambiance.globalstep = function(dtime)
 
 	-- Get current time of day.
 	local curtime = minetest.get_timeofday()
+	local rand = math.random
     
 	-- For all sounds, check if anyone can hear them. If yes, play sound to players that can hear.
 	local allsounds = ambiance.allsounds
@@ -37,7 +40,7 @@ ambiance.globalstep = function(dtime)
 		if v.timer <= 0 then
 			-- Timer has expired, fire sound (if possible).
 			-- Also reset the timer so the sound can fire again.
-			v.timer = math.random(v.mintime, v.maxtime)
+			v.timer = rand(v.mintime, v.maxtime)
 
 			-- Can this sound play at the current time of day?
       if ambiance.check_time(v.time, curtime) then
@@ -54,11 +57,18 @@ ambiance.globalstep = function(dtime)
 							if underwater == nil then
 								-- Only play sound if sound can be played indoors or out-of-doors.
 			          -- If sound doesn't care whether indoors or out-of-doors, then play it.
-								local indoors = ambiance.check_indoors(name, pos)
-      			    if v.indoors == nil or v.indoors == indoors then
+								-- Randomize position a bit in case player is just standing under an overhang.
+								pos.x = rand(pos.x - 1, pos.x + 1)
+								pos.y = rand(pos.y - 1, pos.y + 1)
+								pos.z = rand(pos.z - 1, pos.z + 1)
+								local indoors
+								if v.indoors ~= nil then
+									indoors = ambiance.check_indoors(name, pos)
+								end
+      			    if v.indoors == indoors then
 									-- Play sound to current player!
 									-- If multiple players can hear, the sound will be played at the same time to all of them.
-									local gain = math.random(v.mingain*100.0, v.maxgain*100.0)/100.0
+									local gain = rand(v.mingain*100.0, v.maxgain*100.0)/100.0
 									-- Clamp gain!
 									if gain < 0.0 then gain = 0.0 end
 									if gain > 2.0 then gain = 2.0 end

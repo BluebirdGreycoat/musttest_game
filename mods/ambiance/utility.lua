@@ -94,7 +94,9 @@ ambiance.check_indoors = function(pname, pos)
 	-- Check for sunlight if on the surface. This is a fast, quick hack that works.
 	if pos.y > -20 then
 		-- Is position indoors?
-		if (minetest.get_node_light(vector.add(pos, {x=0, y=1, z=0}), 0.5) or 0) < 15 then
+		-- The brightest lamp gives light-level 13 on its 8 adjacent nodes.
+		-- This means light-level 14 and 15 represent sunlight.
+		if (minetest.get_node_light(vector.add(pos, {x=0, y=1, z=0}), 0.5) or 0) < 14 then
 			return true
 		end
 	else

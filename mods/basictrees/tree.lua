@@ -69,6 +69,7 @@ minetest.register_node("basictrees:tree_sapling", {
     minetest.place_schematic(vector.add(pos, SCHEMATIC_RELP),
       path, "random", nil, false)
     snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
+		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
   end,
 
   on_construct = function(pos)

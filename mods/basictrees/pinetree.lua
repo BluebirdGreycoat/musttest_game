@@ -116,6 +116,7 @@ minetest.register_node("basictrees:pine_sapling", {
 				minetest.spawn_tree(pos, treedef)
 
         snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
+				ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
         fruitscatter.scatter_fruit_under_leaves(
             pos,
             "basictrees:pine_needles",

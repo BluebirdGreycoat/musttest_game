@@ -100,6 +100,7 @@ minetest.register_node("moretrees:beech_sapling", {
 		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:beech_leaves", math.random(10, 30))
 		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:beech_leaves", math.random(10, 30))
 		snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
+		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
 	end,
     
     on_construct = function(pos)

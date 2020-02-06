@@ -357,6 +357,7 @@ if not particles.run_once then
 		collisionbox = {0, 0, 0, 0, 0, 0},
 		physical = false,
 		textures = {"air"},
+		is_visible = false,
 
 		on_activate = function(self, staticdata, dtime_s)
 			self.object:remove()
@@ -387,6 +388,7 @@ if not particles.run_once then
 		collisionbox = {0, 0, 0, 0, 0, 0},
 		physical = false,
 		textures = {"air"},
+		is_visible = false,
 
 		on_activate = function(self, staticdata, dtime_s)
 		end,

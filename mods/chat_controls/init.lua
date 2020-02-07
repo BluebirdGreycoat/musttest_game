@@ -149,39 +149,44 @@ function chat_controls.load_lists_for_player(pname)
 	shout = minetest.deserialize(shout)
 
 	-- Ensure player entry exists.
-	chat_controls.players[pname] = chat_controls.players[pname] or {}
-	chat_controls.players[pname].chathide = chathide
-	chat_controls.players[pname].distance = distance
-	chat_controls.players[pname].nobeep = nobeep
-
-	if ignore and type(ignore) == "table" then
-		chat_controls.players[pname].ignore = ignore
-	else
-		chat_controls.players[pname].ignore = {}
+	local entry = chat_controls.players[pname]
+	if not entry then
+		chat_controls.players[pname] = {}
+		entry = chat_controls.players[pname]
 	end
 
-	if filter and type(filter) == "table" then
-		chat_controls.players[pname].filter = filter
+	entry.chathide = chathide
+	entry.distance = distance
+	entry.nobeep = nobeep
+
+	if type(ignore) == "table" then
+		entry.ignore = ignore
 	else
-		chat_controls.players[pname].filter = {}
+		entry.ignore = {}
 	end
 
-	if white and type(white) == "table" then
-		chat_controls.players[pname].white = white
+	if type(filter) == "table" then
+		entry.filter = filter
 	else
-		chat_controls.players[pname].white = {}
+		entry.filter = {}
 	end
 
-	if pm and type(pm) == "table" then
-		chat_controls.players[pname].pm = pm
+	if type(white) == "table" then
+		entry.white = white
 	else
-		chat_controls.players[pname].pm = {}
+		entry.white = {}
 	end
 
-	if shout and type(shout) == "table" then
-		chat_controls.players[pname].shout = shout
+	if type(pm) == "table" then
+		entry.pm = pm
 	else
-		chat_controls.players[pname].shout = {}
+		entry.pm = {}
+	end
+
+	if type(shout) == "table" then
+		entry.shout = shout
+	else
+		entry.shout = {}
 	end
 end
 

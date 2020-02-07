@@ -1,3 +1,6 @@
+[2020/2/7] The chat-alert-sound now changes volume based on player's AFK status. Louder when AFK, quieter when not AFK.
+[2020/2/7] Added an option to turn the chat-alert-sound off, in the chat-filter formspec accessed from the Key.
+[2020/2/7] Replaced the chat-alert-sound with something that sounds better, less annoying.
 [2020/2/7] Reduced volume on all the footstep sounds. They seemed too loud compared to the rest of the ambiance.
 [2020/2/6] Added an eerie sound for obsidian gateways.
 [2020/2/6] Added a soft, perpetual wind sound to the surfaces of the Overworld, Channelwood, and Jarkati.

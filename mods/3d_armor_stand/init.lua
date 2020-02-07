@@ -370,6 +370,6 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "3d_armor_stand:locked_armor_stand",
 	recipe = {
-		{"3d_armor_stand:armor_stand", "default:steel_ingot"},
+		{"3d_armor_stand:armor_stand", "default:padlock"},
 	}
 })

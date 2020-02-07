@@ -177,6 +177,8 @@ function joinspec.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.passport then
+		passport.open_keys[pname] = true
+		ambiance.sound_play("fancy_chime1", player:get_pos(), 1.0, 20)
 		passport.show_formspec(pname)
 	end
 

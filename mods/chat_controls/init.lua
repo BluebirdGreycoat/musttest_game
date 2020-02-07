@@ -305,6 +305,7 @@ function chat_controls.set_lists_from_fields(pname, fields)
 		end
 	end
 
+	-- Don't use the rename algorithm on the filter list, since this often contains stuff other than player names.
 	for i = 1, #filter do
 		local entry = string.trim(filter[i])
 		if #entry > 0 then
@@ -315,14 +316,14 @@ function chat_controls.set_lists_from_fields(pname, fields)
 	for i = 1, #pm do
 		local entry = string.trim(pm[i])
 		if #entry > 0 then
-			new_pm[#new_pm+1] = (entry)
+			new_pm[#new_pm+1] = rename.grn(entry)
 		end
 	end
 
 	for i = 1, #shout do
 		local entry = string.trim(shout[i])
 		if #entry > 0 then
-			new_shout[#new_shout+1] = (entry)
+			new_shout[#new_shout+1] = rename.grn(entry)
 			--minetest.chat_send_player("MustTest", new_shout[#new_shout])
 		end
 	end

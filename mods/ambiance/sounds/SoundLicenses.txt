@@ -15,7 +15,7 @@
 
 --HollowWind, Black Boe, Creative Commons 0 License, http://www.freesound.org/people/Black%20Boe/sounds/22331/
 
---drippingwater*.ogg sounds: CC0, Dripping Water Mod, by kddekadenz, http://minetest.net/forum/viewtopic.php?id=1688
+--drippingwater.[1,2,3].ogg sounds: CC0, Dripping Water Mod, by kddekadenz, http://minetest.net/forum/viewtopic.php?id=1688
 
 --best cardinal bird: License: Attribution 3.0 | Recorded by PsychoBird,  http://soundbible.com/1515-Best-Cardinal-Bird.html
 
@@ -117,6 +117,9 @@ owl.2.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
 owl.3.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
 owl.4.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
 owl.5.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
+drippingwater.4.ogg: cut/modified, hybu, CC0 1.0 Universal (CC0 1.0)
+drippingwater.5.ogg: cut/modified, giddster, CC0 1.0 Universal (CC0 1.0)
+drippingwater.6.ogg: cut/modified, giddster, CC0 1.0 Universal (CC0 1.0)
 
 
 

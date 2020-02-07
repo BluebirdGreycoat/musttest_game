@@ -8,9 +8,20 @@
 ambiance.allsounds = {
 	-- Dripping water: occurs in over-world caves at any time of day.
 	-- Can also be heard in developed areas, underground.
-	{name="drippingwater1", gain=1.0, miny=-25000, maxy=-30,    time="",        indoors=nil,   mintime=30, maxtime=400, },
-	{name="drippingwater2", gain=1.0, miny=-25000, maxy=-30,    time="",        indoors=nil,   mintime=30, maxtime=400, },
-	{name="drippingwater3", gain=1.0, miny=-25000, maxy=-30,    time="",        indoors=nil,   mintime=30, maxtime=400, },
+	{
+		name="drippingwater", mingain=0.2, maxgain = 1.0, miny=-25000, maxy=-30,    time="",        indoors=nil,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 2129394,
+			octaves = 3,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.0,
+	},
 
 	-- Cave bats: occurs in over-world caves, only at night.
 	{

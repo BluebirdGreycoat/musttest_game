@@ -129,6 +129,7 @@ function chat_controls.load_lists_for_player(pname)
 	local filter = ms:get_string(pname .. ":f")
 	local white = ms:get_string(pname .. ":w")
 	local chathide = ms:get_string(pname .. ":h")
+	local nobeep = ms:get_string(pname .. ":b")
 	local distance = ms:get_int(pname .. ":d")
 	local pm = ms:get_string(pname .. ":p")
 	local shout = ms:get_string(pname .. ":s")
@@ -136,6 +137,9 @@ function chat_controls.load_lists_for_player(pname)
 	-- Could be uninitialized if user never selected an option.
 	if chathide == "" then
 		chathide = "false"
+	end
+	if nobeep == "" then
+		nobeep = "false"
 	end
 
 	ignore = minetest.deserialize(ignore)
@@ -148,6 +152,7 @@ function chat_controls.load_lists_for_player(pname)
 	chat_controls.players[pname] = chat_controls.players[pname] or {}
 	chat_controls.players[pname].chathide = chathide
 	chat_controls.players[pname].distance = distance
+	chat_controls.players[pname].nobeep = nobeep
 
 	if ignore and type(ignore) == "table" then
 		chat_controls.players[pname].ignore = ignore
@@ -191,6 +196,15 @@ function chat_controls.save_lists_for_player(pname)
 	local tb = chat_controls.players[pname]
 	local chathide = tb.chathide
 	local distance = tb.distance
+	local nobeep = tb.nobeep
+
+	-- Could be uninitialized if user never selected an option.
+	if chathide == "" then
+		chathide = "false"
+	end
+	if nobeep == "" then
+		nobeep = "false"
+	end
 
 	-- Clamp to prevent data corruption.
 	if distance < 0 then
@@ -211,6 +225,7 @@ function chat_controls.save_lists_for_player(pname)
 	ms:set_string(pname .. ":f", filter)
 	ms:set_string(pname .. ":w", white)
 	ms:set_string(pname .. ":h", chathide)
+	ms:set_string(pname .. ":b", nobeep)
 	ms:set_int(pname .. ":d", distance)
 	ms:set_string(pname .. ":p", pm)
 	ms:set_string(pname .. ":s", shout)
@@ -218,8 +233,10 @@ end
 
 
 
-function chat_controls.on_joinplayer(pname)
-	chat_controls.load_lists_for_player(pname)
+function chat_controls.on_joinplayer(pname, player)
+	if passport.player_has_key(pname, player) then
+		chat_controls.load_lists_for_player(pname)
+	end
 end
 
 
@@ -500,7 +517,7 @@ if not chat_controls.run_once then
   end)
 
 	minetest.register_on_joinplayer(function(player)
-		return chat_controls.on_joinplayer(player:get_player_name())
+		return chat_controls.on_joinplayer(player:get_player_name(), player)
 	end)
 
 	minetest.register_on_leaveplayer(function(player)

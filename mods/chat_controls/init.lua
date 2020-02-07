@@ -18,6 +18,17 @@ function chat_controls.player_ignored(pname, from)
 	end
 end
 
+function chat_controls.beep_enabled(pname)
+	local tb = chat_controls.players[pname]
+	if not tb then
+		return
+	end
+	if tb.nobeep == "true" then
+		return false
+	end
+	return true
+end
+
 function chat_controls.player_ignored_pm(pname, from)
 	if not chat_controls.players[pname] then
 		return

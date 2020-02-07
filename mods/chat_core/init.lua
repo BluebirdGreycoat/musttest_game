@@ -385,7 +385,9 @@ end
 
 
 function chat_core.alert_player_sound(to)
-	minetest.sound_play("easyvend_error", {to_player = to, gain = 1})
+	if chat_controls.beep_enabled(to) then
+		minetest.sound_play("easyvend_error", {to_player = to, gain = 1})
+	end
 end
 
 

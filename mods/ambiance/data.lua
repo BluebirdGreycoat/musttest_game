@@ -73,6 +73,7 @@ ambiance.allsounds = {
 	{name="craw",           gain=1.0, miny=3000,   maxy=3300,   time="day"  ,   indoors=false, },
 	{name="hornedowl",      gain=1.0, miny=3000,   maxy=3300,   time="night",   indoors=false, },
 
+	-- Owl in Overworld.
 	{
 		name="owl",           gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false,
 		noise_params = {
@@ -85,7 +86,23 @@ ambiance.allsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = 0.5,
+	},
+
+	-- Owl in Channelwood.
+	{
+		name="owl",           gain=1.0, miny=3000, maxy=3300,   time="night",   indoors=false,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 2819294,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.2,
 	},
 
 	-- Continuous lava rumble in the nether.
@@ -103,12 +120,67 @@ ambiance.allsounds = {
 	{name="bluejay",        gain=1.0, miny=3000,    maxy=3300,   time="liminal", indoors=false, },
 	{name="gull",           gain=1.0, miny=3000,    maxy=3300,   time="day",     indoors=false, },
 	{name="peacock",        gain=1.0, miny=3000,    maxy=3300,   time="liminal", indoors=false, },
-	{name="canadianloon1",  gain=1.0, miny=3000,    maxy=3300,   time="night",   indoors=false, mintime=120, maxtime=360, },
+
+	{
+		name="canadianloon1",  gain=1.0, miny=3000,    maxy=3300,   time="night",   indoors=false, mintime=120, maxtime=360,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 6582929,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.3,
+	},
 
 	-- Rare deep cave sounds.
-	{name="obsidianmonster_obsidianmonster", gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560, },
-	{name="mobs_sandmonster",                gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560, },
-	{name="mobs_spider",                     gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560, },
+	{
+   name="obsidianmonster_obsidianmonster", gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 589731,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.3,
+	},
+
+	{
+		name="mobs_sandmonster",                gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 57187382,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.3,
+	},
+
+	{
+		name="mobs_spider",                     gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 5672824,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.3,
+	},
 
 	-- Nether yuck.
 	{

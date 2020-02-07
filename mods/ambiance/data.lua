@@ -73,6 +73,21 @@ ambiance.allsounds = {
 	{name="craw",           gain=1.0, miny=3000,   maxy=3300,   time="day"  ,   indoors=false, },
 	{name="hornedowl",      gain=1.0, miny=3000,   maxy=3300,   time="night",   indoors=false, },
 
+	{
+		name="owl",           gain=1.0, miny=-10,    maxy=1000,   time="night",   indoors=false,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=256, y=256, z=256},
+			seed = 589981,
+			octaves = 2,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.3,
+	},
+
 	-- Continuous lava rumble in the nether.
 	{name="lava",           gain=0.8, miny=-31000, maxy=-25000, time="",        indoors=nil,   mintime=7, maxtime=7, },
 
@@ -117,6 +132,8 @@ ambiance.allsounds = {
 	{name="desertwind",     gain=1.5, miny=3735, maxy=3900,  time="", indoors=false, mintime=20, maxtime=40, },
 	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=3735, maxy=3900, time="", indoors=nil,mintime=6, maxtime=8, }, -- Continuous quiet loop.
 }
+
+
 
 -- Initialize extra table parameters.
 for k, v in ipairs(ambiance.allsounds) do

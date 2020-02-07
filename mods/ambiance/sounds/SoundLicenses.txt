@@ -54,7 +54,7 @@ ComboWind uses:
 --seagull, Attribution Noncommercial License., hazure,  http://www.freesound.org/people/hazure/sounds/23707/,
 
 desert:
-coyote2, Attribution License, rogerforeman, http://www.freesound.org/people/rogerforeman/sounds/68068/
+coyote.1.ogg, Attribution License, rogerforeman, http://www.freesound.org/people/rogerforeman/sounds/68068/
 http://www.freesound.org/people/Proxima4/sounds/104319/
 Desert Monolith.wav, Creative Commons 0 License, Proxima4, http://www.freesound.org/people/Proxima4/sounds/104319/
 Rattlesnake Rattle, Public Domain, fws.gov,  http://soundbible.com/237-Rattlesnake-Rattle.html
@@ -107,8 +107,16 @@ zero-project
 
 
 ================================================================================
+All these sounds are from www.freesound.org:
 obsidian_gate_rumble.ogg: cut/modified, florianreichelt, CC0 1.0 Universal (CC0 1.0)
-
+coyote.2.ogg: cut/modified, Ramston, Attribution 3.0 Unported (CC BY 3.0)
+coyote.3.ogg: cut/modified, Ramston, Attribution 3.0 Unported (CC BY 3.0)
+coyote.4.ogg: cut/modified, Ramston, Attribution 3.0 Unported (CC BY 3.0)
+owl.1.ogg: cut/modified, AndrewJonesFoto, Attribution 3.0 Unported (CC BY 3.0)
+owl.2.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
+owl.3.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
+owl.4.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
+owl.5.ogg: cut/modified, Benboncan, Attribution 3.0 Unported (CC BY 3.0)
 
 
 

@@ -458,6 +458,15 @@ zcg.on_receive_fields = function(player, formname, fields)
 	if not played_sound and (fields.close or fields.exit or fields.done) then
 		ambiance.sound_play("button_click", player:get_pos(), click_gain, sound_range)
 	end
+
+	-- This works because the 'quit' field is sent whenever the player tabs or ESC's out of a formspec,
+	-- but not when changing to show a different formspec.
+	if fields.quit then
+		if passport.open_keys[pn] then
+			passport.open_keys[pn] = nil
+			ambiance.sound_play("fancy_chime2", player:get_pos(), 1.0, 20)
+		end
+	end
 end
 
 

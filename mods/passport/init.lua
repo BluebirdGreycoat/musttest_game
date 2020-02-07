@@ -9,6 +9,10 @@ passport.registered_players = passport.registered_players or {} -- Cache of regi
 passport.keyed_players = passport.keyed_players or {}
 passport.modpath = minetest.get_modpath("passport")
 
+-- List of players with open keys.
+-- On formspec close, playername should be removed and close-sound played.
+passport.open_keys = passport.open_keys or {}
+
 
 
 local PASSPORT_TELEPORT_RANGE = 3000 -- 3 Kilometers.
@@ -156,7 +160,7 @@ passport.on_use = function(itemstack, user, pointed)
 			meta:set_int("date", os.time())
 
 			minetest.after(3, function()
-				minetest.chat_send_player(pname, "# Server: A previously uninitialized Key of Citizenship begins to emit a soft blue glow, binding to its owner.")
+				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
 			end)
 
 			changed = true
@@ -170,7 +174,7 @@ passport.on_use = function(itemstack, user, pointed)
 		end
 
 		if owner ~= pname then
-			minetest.chat_send_player(pname, "# Server: This Key of Citizenship was activated and bound to someone else's biomarker! You cannot access it.")
+			minetest.chat_send_player(pname, "# Server: This Key was initialized by someone else! You cannot access it.")
 			easyvend.sound_error(pname)
 			return
 		end
@@ -188,6 +192,8 @@ passport.on_use = function(itemstack, user, pointed)
 			-- Show KoC interface.
 			passport.show_formspec(pname)
 		end
+		passport.open_keys[pname] = true
+		ambiance.sound_play("fancy_chime1", user:get_pos(), 1.0, 20)
   end
 
 	if changed then

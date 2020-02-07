@@ -529,22 +529,25 @@ passport.player_registered = function(pname)
 end
 
 -- This checks (and caches the result!) of whether the player has a KEY OF CITIZENSHIP.
-passport.player_has_key = function(pname)
+-- Second param is optional, may be nil.
+passport.player_has_key = function(pname, player)
+	local all_players = passport.keyed_players
+
 	-- Read cache if available.
-	local keyed = passport.keyed_players[pname]
-	if type(keyed) ~= "nil" then
+	local keyed = all_players[pname]
+	if keyed ~= nil then
 		return keyed
 	end
 
-  local player = minetest.get_player_by_name(pname)
-  if player and player:is_player() then
-    local inv = player:get_inventory()
+  local pref = player or minetest.get_player_by_name(pname)
+  if pref then
+    local inv = pref:get_inventory()
     if inv then
 			if inv:contains_item("main", "passport:passport_adv") then
-				passport.keyed_players[pname] = true -- Cache for next time.
+				all_players[pname] = true -- Cache for next time.
 				return true
 			else
-				passport.keyed_players[pname] = false -- Cache for next time.
+				all_players[pname] = false -- Cache for next time.
 				return false
 			end
     end

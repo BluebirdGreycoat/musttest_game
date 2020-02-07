@@ -421,8 +421,10 @@ function chat_controls.compose_formspec(pname)
 	--minetest.chat_send_player("MustTest", ignore)
 
 	local chathide = "false"
+	local nobeep = "false"
 	if chat_controls.players[pname] then
 		chathide = chat_controls.players[pname].chathide
+		nobeep = chat_controls.players[pname].nobeep
 	end
 
   local formspec = ""
@@ -460,7 +462,8 @@ function chat_controls.compose_formspec(pname)
 		"tooltip[white;Separate names with commas. You may use aliases.]" ..
 		"tooltip[dist;Min >= 0, max <= 30000.]" ..
 
-		"checkbox[0,4.2;chathide;Hide chat from non-whitelisted users farther than DISTANCE meters.;" .. chathide .. "]"
+		"checkbox[0,4.2;chathide;Hide chat from non-whitelisted users farther than DISTANCE meters.;" .. chathide .. "]" ..
+		"checkbox[3,8.8;nobeep;Disable audio alerts.;" .. nobeep .. "]"
 
   return formspec
 end
@@ -495,6 +498,17 @@ function chat_controls.on_receive_fields(player, formname, fields)
 	if fields.chathide then
 		if chat_controls.players[pname] then
 			chat_controls.players[pname].chathide = fields.chathide
+		end
+		-- Clicking the checkbox so far, does the same thing as clicking apply.
+		chat_controls.set_lists_from_fields(pname, fields)
+		chat_controls.save_lists_for_player(pname)
+		chat_controls.show_formspec(pname)
+		return true
+	end
+
+	if fields.nobeep then
+		if chat_controls.players[pname] then
+			chat_controls.players[pname].nobeep = fields.nobeep
 		end
 		-- Clicking the checkbox so far, does the same thing as clicking apply.
 		chat_controls.set_lists_from_fields(pname, fields)

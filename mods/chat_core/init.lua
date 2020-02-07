@@ -386,7 +386,20 @@ end
 
 function chat_core.alert_player_sound(to)
 	if chat_controls.beep_enabled(to) then
-		minetest.sound_play("easyvend_error", {to_player = to, gain = 1})
+		if afk_removal.is_afk(to) then
+			minetest.sound_play("chat_alert", {to_player = to, gain = 1})
+		else
+			if afk_removal.seconds_since_action(to) > 60*2 then
+				minetest.sound_play("chat_alert", {to_player = to, gain = 1})
+			else
+				minetest.sound_play("chat_alert", {to_player = to, gain = 0.4})
+			end
+		end
+		local pref = minetest.get_player_by_name(to)
+		if pref then
+			local pos = pref:get_pos()
+			ambiance.sound_play("chat_alert", pos, 0.5, 20, to)
+		end
 	end
 end
 

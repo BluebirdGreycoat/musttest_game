@@ -1,7 +1,8 @@
+[2020/2/7] Reduced volume on all the footstep sounds. They seemed too loud compared to the rest of the ambiance.
 [2020/2/6] Added an eerie sound for obsidian gateways.
 [2020/2/6] Added a soft, perpetual wind sound to the surfaces of the Overworld, Channelwood, and Jarkati.
-[2020/2/6] Edited some sounds to remove zero-energy starts (which can cause clicks and pops).
-[2020/2/6] Redesigned ambiance system for better realism w.r.t. bird/insect sounds using a technique involving entities.
+[2020/2/6] Edited some sounds to remove non-zero-energy starts (which can cause clicks and pops).
+[2020/2/6] Redesigned ambiance system for better realism w.r.t. bird/insect sounds using a technique involving entities. Unfortunately, this tecnique cannot be backwards-applied to existing trees, etc. So if you want the bird/insect sounds back, you'll need to cut down and replant your trees. The upside is that these sounds no longer play in the open wastes, where there are no trees ....
 [2020/2/5] Added GUI pageflip and button-press sounds.
 [2020/2/5] Added a whole bunch more doors. Adjusted some recipes.
 [2020/2/5] Use a better, more dusty-looking formspec background everywhere, instead of the boring builtin one.

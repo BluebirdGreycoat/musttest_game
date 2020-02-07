@@ -1,0 +1,4 @@
+ 
+chat_alert.ogg: cut/modified, plasterbrain, CC0 1.0 Universal (CC0 1.0)
+fancy_chime1.ogg: cut/modified, kreutzkamp, CC0 1.0 Universal (CC0 1.0)
+fancy_chime2.ogg: cut/modified, kreutzkamp, CC0 1.0 Universal (CC0 1.0)

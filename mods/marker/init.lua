@@ -702,6 +702,7 @@ marker.on_receive_fields = function(player, formname, fields)
 										end
 
 										minetest.chat_send_player(pname, "# Server: Marker list sent!")
+										minetest.chat_send_player(targetname, "# Server: <" .. rename.gpn(pname) .. "> sent a marker list to your Key!")
 									else
 										minetest.chat_send_player(pname, "# Server: The other Key's marker list storage is full! Cannot transfer data.")
 									end

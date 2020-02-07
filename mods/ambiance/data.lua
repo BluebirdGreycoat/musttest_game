@@ -29,9 +29,9 @@ ambiance.allsounds = {
 	},
 
 	-- Wind: surface sound only, any time of day (but more common at night).
-	{name="wind1",          gain=0.7, miny=-15,    maxy=3300,  time="day",      indoors=false, },
-	{name="wind2",          gain=0.7, miny=-15,    maxy=3300,  time="day",      indoors=false, },
-	{name="desertwind",     gain=0.7, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="wind1",          gain=0.5, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="wind2",          gain=0.5, miny=-15,    maxy=3300,  time="day",      indoors=false, },
+	{name="desertwind",     gain=0.5, miny=-15,    maxy=3300,  time="day",      indoors=false, },
 	{name="wind1",          gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },
 	{name="wind2",          gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },
 	{name="desertwind",     gain=1.0, miny=-15,    maxy=3300,  time="night",    indoors=false, mintime=20, maxtime=50, },

@@ -36,8 +36,11 @@ end
 
 function hunger.get_hunger(player)
 	local pname = player:get_player_name()
-	local lvl = hunger.players[pname].lvl
-	return lvl
+	local data = hunger.players[pname]
+	if not data then
+		return 0
+	end
+	return data.lvl
 end
 
 function hunger.update_hunger(player, new_lvl)

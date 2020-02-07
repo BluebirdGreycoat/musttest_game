@@ -347,6 +347,7 @@ local singleplayer = minetest.is_singleplayer()
 zcg.on_receive_fields = function(player, formname, fields)
 	local played_sound = false
   local pn = player:get_player_name()
+	afk_removal.reset_timeout(pn)
   if zcg.users[pn] == nil then
 		zcg.users[pn] = {
 			current_item = "",

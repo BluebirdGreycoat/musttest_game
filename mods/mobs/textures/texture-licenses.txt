@@ -1,0 +1,2 @@
+mobs_pork.png: WTFPL
+mobs_pork_raw.png: WTFPL

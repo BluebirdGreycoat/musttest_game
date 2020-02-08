@@ -67,11 +67,16 @@ ambiance.compute_gain = compute_gain
   
 -- This function plays a sound for each player within a given range.
 -- The audio gain is reduced for players far from the position at which the sound should play.
-ambiance.sound_play = function(name, pos, gain, range, exempt_player)
+ambiance.sound_play = function(name, pos, gain, range, exempt_player, ephemeral)
   -- Range check! Stupid engine bug. >:(
   if pos.x > 31000 or pos.x < -31000 or pos.z > 31000 or pos.z < -31000 or pos.y > 31000 or pos.y < -31000 then
     return -- Abort!
   end
+
+	local eph = true
+	if ephemeral ~= nil then
+		eph = ephemeral
+	end
 
   local exempt = exempt_player or ""
   local players = minetest.get_objects_inside_radius(pos, range)
@@ -83,7 +88,7 @@ ambiance.sound_play = function(name, pos, gain, range, exempt_player)
         local dist = vector.distance(p1, pos)
         local gn = compute_gain(dist, range)
 				-- Ephemeral sound.
-        minetest.sound_play(name, {to_player=n, gain=gn*gain}, true)
+        minetest.sound_play(name, {to_player=n, gain=gn*gain}, eph)
       end
     end
   end

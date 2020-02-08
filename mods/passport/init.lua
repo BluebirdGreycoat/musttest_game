@@ -194,7 +194,7 @@ passport.on_use = function(itemstack, user, pointed)
 		end
 		passport.open_keys[pname] = true
 		local ppos = user:get_pos()
-		minetest.after(0, ambiance.sound_play, "fancy_chime1", ppos, 1.0, 20)
+		minetest.after(0, ambiance.sound_play, "fancy_chime1", ppos, 1.0, 20, "", false)
   end
 
 	if changed then

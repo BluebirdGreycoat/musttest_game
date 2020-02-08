@@ -464,7 +464,7 @@ zcg.on_receive_fields = function(player, formname, fields)
 	if fields.quit then
 		if passport.open_keys[pn] then
 			passport.open_keys[pn] = nil
-			ambiance.sound_play("fancy_chime2", player:get_pos(), 1.0, 20)
+			ambiance.sound_play("fancy_chime2", player:get_pos(), 1.0, 20, "", false)
 		end
 	end
 end

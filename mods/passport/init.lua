@@ -193,7 +193,8 @@ passport.on_use = function(itemstack, user, pointed)
 			passport.show_formspec(pname)
 		end
 		passport.open_keys[pname] = true
-		ambiance.sound_play("fancy_chime1", user:get_pos(), 1.0, 20)
+		local ppos = user:get_pos()
+		minetest.after(0, ambiance.sound_play, "fancy_chime1", ppos, 1.0, 20)
   end
 
 	if changed then

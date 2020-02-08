@@ -59,7 +59,7 @@ ambiance.globalstep = function(dtime)
 							if underwater == nil then
 								local nospawn = false
 
-								-- If have perlin object, then check if mob can spawn in this location.
+								-- If have perlin object, then check if sound can spawn in this location.
 								if v.perlin and v.noise_threshold then
 									local noise = v.perlin:get_3d(pos)
 									if noise < v.noise_threshold then

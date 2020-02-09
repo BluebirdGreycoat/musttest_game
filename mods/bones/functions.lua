@@ -201,7 +201,7 @@ bones.on_dieplayer = function(player)
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
 	-- Death sound.
-	ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+	coresounds.play_death_sound(player, pname)
 
 	-- Notify of death.
 	chat_colorize.notify_death(pname)

@@ -3,6 +3,17 @@ default = default or {}
 coresounds = coresounds or {}
 coresounds.modpath = minetest.get_modpath("coresounds")
 
+-- Currently used by both death and teleport-sickness code.
+function coresounds.play_death_sound(player, pname)
+	if skins.get_player_sex(pname) == "female" then
+		ambiance.sound_play("death_female", player:get_pos(), 1.0, 30)
+	else
+		ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+	end
+end
+
+
+
 function coresounds.play_sound_node_place(pos, nn)
 	local def = minetest.reg_ns_nodes[nn] or minetest.registered_nodes[nn]
 	if not def then return end

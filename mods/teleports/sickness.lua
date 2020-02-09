@@ -41,7 +41,8 @@ local function sicken_sound(pname)
 		if not player or not player:is_player() then
 			return
 		end
-		ambiance.sound_play("hungry_games_death", player:get_pos(), 1.0, 30)
+		-- Can also be used because it sounds like someone being sick.
+		coresounds.play_death_sound(player, pname)
 	end)
 end
 

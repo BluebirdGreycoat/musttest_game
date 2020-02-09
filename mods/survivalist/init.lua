@@ -661,6 +661,15 @@ function survivalist.player_beat_cave_challenge(pname)
 	return false
 end
 
+function survivalist.player_beat_nether_challenge(pname)
+	local ms = survivalist.modstorage
+	local va = ms:get_int(pname .. ":wins_nether") or 0
+	if va > 0 then
+		return true
+	end
+	return false
+end
+
 
 
 -- If a player joins the server and a Survivalist Challenge is running, inform them.

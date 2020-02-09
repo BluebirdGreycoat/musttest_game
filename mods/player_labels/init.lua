@@ -130,6 +130,16 @@ player_labels.toggle_nametag_broadcast = function(name)
   end
 end
 
+function player_labels.enable_nametag(pname)
+	player_labels.cast[pname] = true
+	player_labels.enable_nametag_broadcast(pname)
+end
+
+function player_labels.disable_nametag(pname)
+	player_labels.cast[pname] = false
+	player_labels.disable_nametag_broadcast(pname)
+end
+
 
 
 player_labels.enable_nametag_broadcast = function(name)
@@ -210,6 +220,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 		easyvend.sound_error(user:get_player_name())
     return
   end
+
   player_labels.toggle_nametag_broadcast(user:get_player_name())
   return
 end

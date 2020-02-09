@@ -45,7 +45,7 @@ function gauges.on_global_step()
 	-- Add gauges to players without them.
 	for _, player in ipairs(minetest.get_connected_players()) do
 		local name = player:get_player_name()
-		if not gdac_invis.is_invisible(name) then
+		if not gdac_invis.is_invisible(name) and not cloaking.is_cloaked(name) then
 			local wield = player_wielding[name]
 			if not wield then
 				add_gauge(player)
@@ -56,7 +56,7 @@ function gauges.on_global_step()
 
 	-- Remove expired player entries.
 	for name, wield in pairs(player_wielding) do
-		if not active_players[name] or gdac_invis.is_invisible(name) then
+		if not active_players[name] or gdac_invis.is_invisible(name) or cloaking.is_cloaked(name) then
 			if wield.object then
 				wield.object:remove()
 			end

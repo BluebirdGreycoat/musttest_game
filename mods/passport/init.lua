@@ -119,6 +119,14 @@ passport.compose_formspec = function(pname)
 		formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
 	end
 
+	if survivalist.player_beat_nether_challenge(pname) then
+		if cloaking.is_cloaked(pname) then
+			formspec = formspec .. "button[3,3.7;2,1;cloak;Uncloak]"
+		else
+			formspec = formspec .. "button[3,3.7;2,1;cloak;Cloak]"
+		end
+	end
+
 	for i=1, 7, 1 do
 		local name = "xdecor:ivy"
 		if i == 1 then
@@ -239,10 +247,25 @@ passport.on_receive_fields = function(player, formname, fields)
 	end
 
 	if fields.jaunt and survivalist.player_beat_cave_challenge(pname) then
+		-- Jaunt code performs its own security validation.
 		jaunt.show_formspec(pname)
 		return true
 	end
   
+	if fields.cloak and survivalist.player_beat_nether_challenge(pname) then
+		-- Security check to make sure player can use this feature.
+		if not passport.player_has_key(pname) then
+			return true
+		end
+		if not survivalist.player_beat_nether_challenge(pname) then
+			return true
+		end
+
+		cloaking.toggle_cloak(pname)
+		passport.show_formspec(pname) -- Reshow formspec.
+		return true
+	end
+
   if fields.survivalist then
     survivalist.show_formspec(pname)
     return true

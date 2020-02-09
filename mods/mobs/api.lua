@@ -58,12 +58,13 @@ local default_knockback = 1
 -- Used by spawner function.
 mobs.spawn_protected = spawn_protected
 
--- Invisibility mod check
+-- Legacy.
 if not mobs.invis then
 	mobs.invis = {}
-	if minetest.global_exists("invisibility") then
-		mobs.invis = invisibility
-	end
+end
+
+function mobs.is_invisible(pname)
+	return cloaking.is_cloaked(pname)
 end
 
 -- creative check
@@ -1990,7 +1991,7 @@ local function general_attack(self)
 			-- if player invisible or mob not setup to attack then remove from list
 			if self.attack_players == false
 			or (self.owner and self.type ~= "monster")
-			or mobs.invis[pname]
+			or mobs.is_invisible(pname)
 			or not specific_attack(self.specific_attack, "player")
 			or minetest.check_player_privs(pname, {mob_respect=true}) then
 				objs[n] = nil
@@ -2103,7 +2104,7 @@ local function runaway_from(self)
 
 			pname = objs[n]:get_player_name()
 
-			if mobs.invis[pname]
+			if mobs.is_invisible(pname)
 			or self.owner == pname then
 
 				name = ""
@@ -2173,7 +2174,7 @@ local function follow_flop(self)
 		for n = 1, #players do
 
 			if get_distance(players[n]:get_pos(), s) < self.view_range
-			and not mobs.invis[ players[n]:get_player_name() ] then
+			and not mobs.is_invisible( players[n]:get_player_name() ) then
 
 				self.following = players[n]
 
@@ -2463,7 +2464,7 @@ local function do_states(self, dtime)
 		or not self.attack
 		or not self.attack:get_pos()
 		or self.attack:get_hp() <= 0
-		or (self.attack:is_player() and mobs.invis[ self.attack:get_player_name() ]) then
+		or (self.attack:is_player() and mobs.is_invisible( self.attack:get_player_name() )) then
 
 --			print(" ** stop attacking **", dist, self.view_range)
 			self.state = "stand"
@@ -3167,7 +3168,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	and self.state ~= "flop"
 	and self.child == false
 	and name ~= "" and name ~= self.owner
-	and not mobs.invis[ name ] then
+	and not mobs.is_invisible( name ) then
 
 		--minetest.chat_send_player("MustTest", "Will really attack!")
 

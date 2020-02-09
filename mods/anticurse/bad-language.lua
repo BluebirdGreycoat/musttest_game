@@ -35,7 +35,12 @@ anticurse.foul = {
   "f+u*c+k+e+r+",
   "f+c+k+",
 	"p+h+u*c*k+",
-	"f+k+y+",
+
+	{word="f+k+y+", white={
+		"afk",
+		"yet",
+	}},
+
 	{word="f+k+u+", white={"afk"}},
 	"f+a+c*k+u",
 	"f+a+c*k+y",

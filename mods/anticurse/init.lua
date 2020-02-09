@@ -34,8 +34,8 @@ end
 
 
 minetest.register_privilege("anticurse_bypass", {
-    description = "Player's chat will not be scanned for cursing.",
-    give_to_singleplayer = true,
+	description = "Player's chat will not be scanned for cursing.",
+	give_to_singleplayer = true,
 })
 
 minetest.register_on_prejoinplayer(function(pname, ip)

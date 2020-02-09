@@ -349,6 +349,34 @@ xdecor.register("ivy", {
 	tiles = {"xdecor_ivy.png"},
 	inventory_image = "xdecor_ivy.png",
 	wield_image = "xdecor_ivy.png",
+	sounds = default.node_sound_leaves_defaults(),
+
+	on_construct = function(pos)
+		local timer = minetest.get_node_timer(pos)
+		timer:start(math.random(60, 60*15))
+	end,
+
+	on_timer = function(pos, elapsed)
+		local water = minetest.find_node_near(pos, 5, "group:water")
+		local cold = minetest.find_node_near(pos, 2, "group:cold")
+		local hot = minetest.find_node_near(pos, 5, {"group:lava", "group:fire"})
+		if not water or cold or hot then
+			local node = minetest.get_node(pos)
+			minetest.swap_node(pos, {name="xdecor:dead_ivy", param2=node.param2})
+		end
+	end,
+})
+
+xdecor.register("dead_ivy", {
+	description = "Withered Ivy",
+	drawtype = "signlike",
+	walkable = false,
+	groups = utility.dig_groups("plant", {attached_node=1, flammable=3}),
+	paramtype2 = "wallmounted",
+	selection_box = {type="wallmounted"},
+	tiles = {"xdecor_dead_ivy.png"},
+	inventory_image = "xdecor_dead_ivy.png",
+	wield_image = "xdecor_dead_ivy.png",
 	sounds = default.node_sound_leaves_defaults()
 })
 

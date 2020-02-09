@@ -141,7 +141,9 @@ anticurse.foul = {
 
 	-- Spanish.
 	{word="p+u+t+o+s*", white={"input"}},
-	{word="p+u+t+a+s*", white={}},
+	{word="p+u+t+a+s*", white={
+		"reputation",
+	}},
 
 	-- German.
 	"h+u+r+e+n+s+o+h+n+", -- Son of a bitch/daughter of a whore.

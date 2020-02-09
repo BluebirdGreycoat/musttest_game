@@ -35,6 +35,7 @@ local function normalize_string(str)
 
 	-- Ignore contraction for 'he will'. Common token.
 	str = sub(str, "he'll", "he\0ll")
+	str = sub(str, "b/c", "because")
 
 	-- Ignore "it's". Commonly confused with tits.
 	local a, b = string_find(str, "%wt its ")

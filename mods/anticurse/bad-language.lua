@@ -143,7 +143,7 @@ anticurse.foul = {
   {word="c+u+m+", white={
 		"accumulat", "acumen", "circum", "cucumber", "cumber", "cumulat",
 		"document", "ecumeni", "encumber", "encumbranc", "incumb", "locum", "scum",
-		"succumb", "mach", "documen",
+		"succumb", "mach", "documen", "move",
 	}},
   {word="c+v+m+", white={"mach"}},
 

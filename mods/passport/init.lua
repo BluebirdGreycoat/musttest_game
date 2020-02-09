@@ -92,7 +92,7 @@ passport.compose_formspec = function(pname)
     buttons ..
     "button_exit[1,5.7;2,1;exit;Close]" ..
     "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..
-    "button[3,0.7;2,1;email;Key-Mail]" ..
+    "button[3,0.7;2,1;email;Mail]" ..
     "button[1,1.7;2,1;survivalist;Survivalist]" ..
     "button[3,1.7;2,1;rename;Nickname]" ..
 		"button[3,2.7;2,1;chatfilter;Chat Filter]" ..

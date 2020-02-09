@@ -20,8 +20,8 @@ local meat_types = {
 	{name="mobs:meat", desc="Cooked Meat (Unidentified)", image="mobs_meat.png", food=6},
 
 	-- Mutton.
-	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_meat_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},
-	{name="mobs:meat_mutton", desc="Cooked Mutton", image="mobs_meat.png", food=10},
+	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_mutton_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},
+	{name="mobs:meat_mutton", desc="Cooked Mutton", image="mobs_mutton.png", food=10},
 
 	-- Pork.
 	{name="mobs:meat_raw_pork", desc="Raw Pork (Yuck)", image="mobs_pork_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},

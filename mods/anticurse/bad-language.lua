@@ -128,7 +128,7 @@ anticurse.foul = {
 		"darsela", "similar", "parse", "setup", "hoarse", "sparse", "rehearse",
 		"arsenal", "far", "war", "scarse", "dear", "self", "seem", "bar", "bear",
 		"shears", "semilla", "carser", "server", "quedarse", "near", "sea", "coarse",
-		"charset", "juntarse",
+		"charset", "juntarse", "yearseve",
 	}},
 
 	{word="f+a+g+o+t+", white={"gotcha"}},
@@ -143,7 +143,7 @@ anticurse.foul = {
   {word="c+u+m+", white={
 		"accumulat", "acumen", "circum", "cucumber", "cumber", "cumulat",
 		"document", "ecumeni", "encumber", "encumbranc", "incumb", "locum", "scum",
-		"succumb", "mach", "documen", "move",
+		"succumb", "mach", "documen", "move", "electric",
 	}},
   {word="c+v+m+", white={"mach"}},
 

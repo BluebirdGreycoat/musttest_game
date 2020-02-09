@@ -73,7 +73,7 @@ anticurse.foul = {
 	{word="t+i+t+s+", white={
 		"wait", "got", "petits", "itsa", "itsnext", "itsnot", "test",
 		"mt", "at", "itsin", "itsat", "itsjust", "havent", "itsonly",
-		"some",
+		"some", "otit",
 	}},
 
 	{word="b+oo+b+", white={"booby", "boo+boo+"}},
@@ -128,7 +128,7 @@ anticurse.foul = {
 		"darsela", "similar", "parse", "setup", "hoarse", "sparse", "rehearse",
 		"arsenal", "far", "war", "scarse", "dear", "self", "seem", "bar", "bear",
 		"shears", "semilla", "carser", "server", "quedarse", "near", "sea", "coarse",
-		"charset", "juntarse", "yearseve",
+		"charset", "juntarse", "yearseve", "year", "calendar",
 	}},
 
 	{word="f+a+g+o+t+", white={"gotcha"}},

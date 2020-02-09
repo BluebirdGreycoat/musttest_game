@@ -5,6 +5,41 @@ cloaking = cloaking or {}
 cloaking.modpath = minetest.get_modpath("cloaking")
 cloaking.players = cloaking.players or {}
 
+function cloaking.do_scan(pname)
+	-- If player is cloaked, check for reasons to disable the cloak.
+	if cloaking.players[pname] then
+		local pref = minetest.get_player_by_name(pname)
+		if pref then
+			local pos = pref:get_pos()
+
+			local player_count = 0
+			local mob_count = 0
+
+			-- If there are nearby entities, disable the cloak.
+			local objs = minetest.get_objects_inside_radius(pos, 5)
+			for i = 1, #objs, 1 do
+				if objs[i]:is_player() then
+					player_count = player_count + 1
+				else
+					local ent = objs[i]:get_luaentity()
+					if ent and ent.mob then
+						mob_count = mob_count + 1
+					end
+				end
+			end
+
+			if player_count > 1 or mob_count > 0 then
+				cloaking.toggle_cloak(pname)
+			end
+		end
+	end
+
+	-- If cloak still enabled for this player, then check again in 1 second.
+	if cloaking.players[pname] then
+		minetest.after(1, cloaking.do_scan, pname)
+	end
+end
+
 function cloaking.is_cloaked(pname)
 	if cloaking.players[pname] then
 		return true
@@ -32,6 +67,9 @@ function cloaking.toggle_cloak(pname)
 		})
 
 		minetest.chat_send_player(pname, "# Server: Cloak activated.")
+
+		-- Enable scanning for reasons to cancel the cloak.
+		minetest.after(1, cloaking.do_scan, pname)
 	else
 		-- Disable cloak.
 		cloaking.players[pname] = nil

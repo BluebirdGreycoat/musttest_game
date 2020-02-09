@@ -100,7 +100,9 @@ anticurse.foul = {
 
   {word="b+r+e+a*s+t+", white={"brea*stplate", "noob", "rest"}},
   {word="d+i*c+k+", white={"dickens"}},
-	{word="d+i+k+", white={"and", "know", "should", "kill", "would", "keep", "medikit"}},
+	{word="d+i+k+", white={
+		"and", "know", "should", "kill", "would", "keep", "medikit", "knew", "xd",
+	}},
   
   --"p+e+r+v+e+r+t+",
   

@@ -364,6 +364,15 @@ xdecor.register("ivy", {
 			local node = minetest.get_node(pos)
 			minetest.swap_node(pos, {name="xdecor:dead_ivy", param2=node.param2})
 		end
+
+		-- Check again in 1 - 3 hours.
+		local timer = minetest.get_node_timer(pos)
+		timer:start(math.random(60*60, 60*60*3))
+	end,
+
+	on_punch = function(pos, node, puncher, pt)
+		local timer = minetest.get_node_timer(pos)
+		timer:start(math.random(60, 60*15))
 	end,
 })
 

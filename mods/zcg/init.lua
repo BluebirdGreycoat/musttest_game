@@ -447,6 +447,8 @@ zcg.on_receive_fields = function(player, formname, fields)
 					zcg.users[pn].spage = 0 -- Reset user's search page.
 				end
 				inventory_plus.set_inventory_formspec(player,zcg.formspec(pn))
+				ambiance.sound_play("pageflip", player:get_pos(), page_gain, sound_range)
+				played_sound = true
 			end
     end
   end

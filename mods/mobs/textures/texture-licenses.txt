@@ -3,3 +3,4 @@ mobs_pork_raw.png: WTFPL
 
 mobs_mutton.png: Creative Commons Attribution-ShareAlike 4.0 International, Hugues Ross
 mobs_mutton_raw.png: Creative Commons Attribution-ShareAlike 4.0 International, Hugues Ross
+handholds_tool.png: Creative Commons Attribution-ShareAlike 4.0 International, Hugues Ross

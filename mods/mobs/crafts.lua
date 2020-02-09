@@ -16,8 +16,8 @@ minetest.register_craft({
 
 local meat_types = {
 	-- Regular meat, creature type not defined.
-	{name="mobs:meat_raw", desc="Strange Raw Meat", image="mobs_meat_raw.png", food=3, cooked="mobs:meat", is_raw=true},
-	{name="mobs:meat", desc="Strange Cooked Meat", image="mobs_meat.png", food=6},
+	{name="mobs:meat_raw", desc="Raw Meat (Unidentified)", image="mobs_meat_raw.png", food=3, cooked="mobs:meat", is_raw=true},
+	{name="mobs:meat", desc="Cooked Meat (Unidentified)", image="mobs_meat.png", food=6},
 
 	-- Mutton.
 	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_meat_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},

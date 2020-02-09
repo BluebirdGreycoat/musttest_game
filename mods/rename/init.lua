@@ -300,7 +300,7 @@ help_info =
 	"Alias, no one else may claim that Alias, or any similar to it in terms of " ..
 	"capitalization. Also, no one may enter the Colony with that name or any name " ..
 	"similar to it (again, in terms of capitalization). Other Citizens may send you " ..
-	"E-Mail using your Alias, and use bounty marks or gag orders or jailers on you, " ..
+	"Key-Mail using your Alias, and use bounty marks or gag orders or jailers on you, " ..
 	"also using your Alias. Other Citizens may send you PMs using your Alias. Any new land you " ..
 	"protect and items you own will continue to be protected under your original " ..
 	"identification, which cannot be changed.\n\n" ..

@@ -195,9 +195,9 @@ if not email.registered then
 	-- Depreciated command.
 	minetest.register_chatcommand("inbox", {
 		params = "",
-		description = "Depreciated command; use KoC instead.",
+		description = "Depreciated command; use Key of Citizenship instead.",
 		func = function(name, param)
-			minetest.chat_send_player(name, "# Server: This command is depreciated; the functionality has moved to the passport token.")
+			minetest.chat_send_player(name, "# Server: This command is unavailable; the functionality is accessed from the Key.")
 			easyvend.sound_error(name)
 		end
 	})
@@ -207,7 +207,7 @@ if not email.registered then
 		params = "",
 		description = "Depreciated command; use KoC instead.",
 		func = function(name, param)
-			minetest.chat_send_player(name, "# Server: This command is depreciated; the functionality has moved to the passport token.")
+			minetest.chat_send_player(name, "# Server: This command is unavailable; the functionality is accessed from the Key.")
 			easyvend.sound_error(name)
 		end,
 	})

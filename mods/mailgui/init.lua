@@ -16,7 +16,7 @@ mailgui.open_inboxes = mailgui.open_inboxes or {}
 mailgui.alert_player = function(from, pname)
   -- If target player's inbox is open, alert them.
   minetest.after(5, function() -- The delay is useful if player sends mail to themselves.
-    minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(from) .. "> sent you mail! A passport is needed to see it.")
+    minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(from) .. "> sent you mail! A Key is needed to view it.")
     if mailgui.open_inboxes[pname] then
       if mailgui.players[pname] then -- Sanity check.
         local intlive = mailgui.players[pname].live or 'true'

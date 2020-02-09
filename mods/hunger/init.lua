@@ -26,37 +26,37 @@ dofile(modpath .. "/legacy.lua")
 
 
 -- Callbacks
-if minetest.setting_getbool("enable_damage") then
-    minetest.register_on_joinplayer(function(player)
-			local inv = player:get_inventory()
-			inv:set_size("hunger", 1)
 
-			local name = player:get_player_name()
-			hunger.players[name] = {}
-			hunger.players[name].lvl = hunger.read(player)
-			hunger.players[name].exhaus = 0
-			local lvl = hunger.players[name].lvl
-			if lvl > 20 then
-				lvl = 20
-			end
-			minetest.after(0.8, function()
-				hud.swap_statbar(player, "hunger", "air")
-				hud.change_item(player, "hunger", {number = lvl, max = 20})
-			end)
-    end)
+-- initialization
+minetest.register_on_joinplayer(function(player)
+	local inv = player:get_inventory()
+	inv:set_size("hunger", 1)
 
-    -- for exhaustion
-    minetest.register_on_placenode(hunger.handle_node_actions)
-    minetest.register_on_dignode(hunger.handle_node_actions)
-    minetest.register_on_respawnplayer(function(player)
-			hunger.update_hunger(player, 20)
-    end)
+	local name = player:get_player_name()
+	hunger.players[name] = {}
+	hunger.players[name].lvl = hunger.read(player)
+	hunger.players[name].exhaus = 0
+	local lvl = hunger.players[name].lvl
+	if lvl > 20 then
+		lvl = 20
+	end
+	minetest.after(0.8, function()
+		hud.swap_statbar(player, "hunger", "air")
+		hud.change_item(player, "hunger", {number = lvl, max = 20})
+	end)
+end)
 
-		-- clean up
-		minetest.register_on_leaveplayer(function(player, timeout)
-			local pname = player:get_player_name()
-			hunger.players[pname] = nil
-		end)
-end
+-- for exhaustion
+minetest.register_on_placenode(hunger.handle_node_actions)
+minetest.register_on_dignode(hunger.handle_node_actions)
+minetest.register_on_respawnplayer(function(player)
+	hunger.update_hunger(player, 20)
+end)
+
+-- clean up
+minetest.register_on_leaveplayer(function(player, timeout)
+	local pname = player:get_player_name()
+	hunger.players[pname] = nil
+end)
 
 

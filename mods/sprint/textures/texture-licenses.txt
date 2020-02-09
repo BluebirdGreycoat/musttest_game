@@ -1,0 +1,3 @@
+
+sprint_stamina_icon.png: Creative Commons Attribution-ShareAlike 4.0 International, Hugues Ross
+sprint_stamina_icon_bg.png: Creative Commons Attribution-ShareAlike 4.0 International, Hugues Ross

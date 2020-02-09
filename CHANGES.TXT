@@ -1,3 +1,8 @@
+[2020/2/9] More sounds for when player dies.
+[2020/2/9] Updated prospector texture to something less ugly. Updated a few other item textures, too.
+[2020/2/9] Use better-looking sprite for the stamina HUD indicator.
+[2020/2/9] Differentiate between different kinds of meat with new meat textures.
+[2020/2/7] Updated recipe for the locked armor stand.
 [2020/2/7] Added more cave waterdrop sounds.
 [2020/2/7] The chat-alert-sound now changes volume based on player's AFK status. Louder when AFK, quieter when not AFK.
 [2020/2/7] Added an option to turn the chat-alert-sound off, in the chat-filter formspec accessed from the Key.

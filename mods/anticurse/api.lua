@@ -1,19 +1,19 @@
 
 anticurse = anticurse or {}
 
-function anticurse.test(string, noreport)
-	if anticurse.check_string(anticurse.foul, string) then
-		if not noreport then
+function anticurse.test(str, noreport)
+	if anticurse.check_string(anticurse.foul, str) then
+		if noreport == false then
 			minetest.chat_send_player("MustTest", "# Server: String contains crudity!")
 		end
 		return false
-	elseif anticurse.check_string(anticurse.curse, string) then
-		if not noreport then
+	elseif anticurse.check_string(anticurse.curse, str) then
+		if noreport == false then
 			minetest.chat_send_player("MustTest", "# Server: String contains cursing!")
 		end
 		return false
 	else
-		if not noreport then
+		if noreport == false then
 			minetest.chat_send_player("MustTest", "# Server: String confirmed SJW-safe!")
 		end
 	end

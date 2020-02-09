@@ -77,7 +77,7 @@ anticurse.foul = {
 
   {word="s+p+e*r+m+", white={
 		"permanent", "permit", "was", "minute", "his", "permis+ion", "plants", "mese",
-		"days", "month"
+		"days", "month", "permafrost",
 	}},
   {word="s+e+m+e+n+", white={
 		"basement", "advertisement", "musement", "advisement", "mention", "now",

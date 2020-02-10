@@ -1,3 +1,5 @@
+[2020/2/10] Added huge cavern ambiance.
+[2020/2/9] Finally implemented reward (cloaking) for beating the Nether Challenge!
 [2020/2/9] More sounds for when player dies.
 [2020/2/9] Updated prospector texture to something less ugly. Updated a few other item textures, too.
 [2020/2/9] Use better-looking sprite for the stamina HUD indicator.

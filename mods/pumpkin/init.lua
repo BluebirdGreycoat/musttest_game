@@ -130,7 +130,7 @@ minetest.register_node("pumpkin:lantern_on", {
 minetest.register_craft({
   type = "shapeless",
   output = "pumpkin:lantern",
-  recipe = {"xdecor:lantern", "pumpkin:pumpkin"},
+  recipe = {"xdecor:candle", "pumpkin:pumpkin"},
 })
 
 

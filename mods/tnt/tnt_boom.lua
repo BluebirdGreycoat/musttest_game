@@ -187,7 +187,12 @@ local function entity_physics(pos, radius, drops, boomdef)
 				if obj:get_hp() > 0 then
 					obj:set_hp(obj:get_hp() - damage)
 					if obj:get_hp() <= 0 then
-						minetest.chat_send_all("# Server: <" .. rename.gpn(obj:get_player_name()) .. "> exploded.")
+						local pname = obj:get_player_name()
+						if player_labels.query_nametag_onoff(pname) == true then
+							minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> exploded.")
+						else
+							minetest.chat_send_all("# Server: Someone exploded.")
+						end
 					end
 				end
 

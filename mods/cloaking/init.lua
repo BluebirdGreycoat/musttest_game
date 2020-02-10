@@ -89,7 +89,8 @@ end
 function cloaking.on_dieplayer(player, reason)
 	local pname = player:get_player_name()
 	if cloaking.is_cloaked(pname) then
-		cloaking.toggle_cloak(pname)
+		-- Ensure cloak is disabled *after* player is dead (and bones spawned), not before!
+		minetest.after(0, cloaking.toggle_cloak, pname)
 	end
 end
 

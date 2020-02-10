@@ -313,6 +313,11 @@ for name, entry in pairs(xdecor_doors) do
 	})
 end
 
+local function perform_inventory_check(player)
+	local inv = player:get_inventory()
+	inv:set_size("xchest", 8)
+end
+
 xdecor.register("xchest", {
 	description = "Void Chest\n\nHas a (small) shared inventory with other Void Chests.",
 	tiles = {"xdecor_enderchest_top.png", "xdecor_enderchest_top.png",
@@ -321,6 +326,7 @@ xdecor.register("xchest", {
 	groups = utility.dig_groups("chest"),
 	sounds = default.node_sound_stone_defaults(),
 	on_rotate = screwdriver.rotate_simple,
+
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", [[ size[8,6]
@@ -330,13 +336,29 @@ xdecor.register("xchest", {
 				listring[current_player;main] ]]
 				..xbg..default.get_hotbar_bg(0,2))
 		meta:set_string("infotext", "Void Chest")
-	end
-})
+	end,
 
-minetest.register_on_joinplayer(function(player)
-	local inv = player:get_inventory()
-	inv:set_size("xchest", 8)
-end)
+	-- Don't permit placement in certain realms.
+	on_place = function(itemstack, placer, pt)
+		if not placer or not placer:is_player() then
+			return
+		end
+
+		if pt.type == "node" then
+			local rnu = rc.current_realm_at_pos(pt.under)
+			local rna = rc.current_realm_at_pos(pt.above)
+
+			if rnu == "abyss" or rna == "abyss" or rnu == "" or rna == "" then
+				utility.shell_boom(pt.above)
+				itemstack:take_item()
+				return itemstack
+			end
+
+			perform_inventory_check(placer)
+			return minetest.item_place(itemstack, placer, pt)
+		end
+	end,
+})
 
 xdecor.register("ivy", {
 	description = "Ivy",

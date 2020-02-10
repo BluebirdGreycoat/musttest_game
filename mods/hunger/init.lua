@@ -51,6 +51,7 @@ minetest.register_on_placenode(hunger.handle_node_actions)
 minetest.register_on_dignode(hunger.handle_node_actions)
 minetest.register_on_respawnplayer(function(player)
 	hunger.update_hunger(player, 20)
+	return true
 end)
 
 -- clean up

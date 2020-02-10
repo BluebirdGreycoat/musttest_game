@@ -747,7 +747,7 @@ function survivalist.abort_game(pname)
 		end
 
 		minetest.chat_send_player(pname, "# Server: Challenge termination confirmed.")
-		local target = {x=0, y=-7, z=0}
+		local target = rc.static_spawn("abyss")
 		target = minetest.string_to_pos(survivalist.modstorage:get_string(pname .. ":home")) or target
 
 		-- Pre-teleport callback function. We may need to abort to prevent cheating.

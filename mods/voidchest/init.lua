@@ -112,6 +112,13 @@ end)
 
 
 
+local function perform_inventory_check(player)
+  local inv = player:get_inventory()
+  inv:set_size("voidchest:voidchest", 14*4)
+end
+
+
+
 -- Definitions common to both open and closed variants on the starfissure chest.
 local VOIDCHEST_DEF = {
   drawtype = "mesh",
@@ -202,6 +209,27 @@ local VOIDCHEST_DEF = {
 		meta:set_string("rename", dname)
 		meta:set_string("infotext", "Star-Fissure Box (Owned by <" .. dname .. ">!)")
 	end,
+
+	-- Don't permit placement in certain realms.
+	on_place = function(itemstack, placer, pt)
+		if not placer or not placer:is_player() then
+			return
+		end
+
+		if pt.type == "node" then
+			local rnu = rc.current_realm_at_pos(pt.under)
+			local rna = rc.current_realm_at_pos(pt.above)
+
+			if rnu == "abyss" or rna == "abyss" or rnu == "" or rna == "" then
+				utility.shell_boom(pt.above)
+				itemstack:take_item()
+				return itemstack
+			end
+
+			perform_inventory_check(placer)
+			return minetest.item_place(itemstack, placer, pt)
+		end
+	end,
 }
 
 -- Split definitions.
@@ -223,6 +251,7 @@ VOIDCHEST_OPENED.selection_box = {
 }
 
 
+
 minetest.register_node("voidchest:voidchest_closed", VOIDCHEST_CLOSED)
 minetest.register_node("voidchest:voidchest_opened", VOIDCHEST_OPENED)
 
@@ -240,11 +269,4 @@ minetest.register_craft({
     {"starpearl:pearl", "starpearl:pearl",    "starpearl:pearl"},
   },
 })
-
-
-
-minetest.register_on_joinplayer(function(player)
-  local inv = player:get_inventory()
-  inv:set_size("voidchest:voidchest", 14*4)
-end)
 

@@ -643,6 +643,49 @@ end
 
 
 
+function commandtools.gate_on_use(itemstack, user, pt)
+	if not user then return end
+	if not user:is_player() then return end
+	local pname = user:get_player_name()
+
+	local havepriv = minetest.check_player_privs(user, {commandtools_shovel=true})
+	if not havepriv then
+		-- Try and remove it from the bad player.
+		itemstack:take_item()
+		return itemstack
+	end
+
+	local control = user:get_player_control()
+	local good
+	local err
+
+	if control.aux1 then
+		if control.sneak then
+			-- Use + sneak: copy origin gate info.
+			good, err = pcall(function() commandtools.gatecopy_origin(pname, pt.under) end)
+		else
+			-- Use - sneak: copy target gate info.
+			good, err = pcall(function() commandtools.gatecopy_target(pname, pt.under) end)
+		end
+	else
+		if control.sneak then
+			-- Sneak (no use): paste target information onto origin gate.
+			good, err = pcall(function() commandtools.gaterepair_origin(pname, pt.under) end)
+		else
+			-- Regular tool use: paste origin information onto target gate.
+			good, err = pcall(function() commandtools.gaterepair_target(pname, pt.under) end)
+		end
+	end
+
+	if not good then
+		minetest.chat_send_player(pname, "# Server: Error running code! " .. err)
+	else
+		minetest.chat_send_player(pname, "# Server: Success.")
+	end
+end
+
+
+
 -- Run-once initialization code only.
 if not commandtools.run_once then
 	minetest.register_privilege("commandtools_pick", {
@@ -686,6 +729,17 @@ if not commandtools.run_once then
 		inventory_image = "commandtools_shovel.png",
 		groups = {not_in_creative_inventory = 1},
 		on_use = function(...) return commandtools.shovel_on_use(...) end,
+	})
+
+	minetest.register_tool("commandtools:gate", {
+		description = "Admin Gate Repair Tool\n\n" ..
+			"Hold 'E' to copy gate data, otherwise will paste gate data.\n" ..
+			"Hold 'sneak' to copy origin gate info, or paste target info onto origin gate.\n" ..
+			"Otherwise will copy target gate info, or will paste origin info onto target gate.",
+		range = 12,
+		inventory_image = "commandtools_shovel.png",
+		groups = {not_in_creative_inventory = 1},
+		on_use = function(...) return commandtools.gate_on_use(...) end,
 	})
 
 	-- Reloadable.

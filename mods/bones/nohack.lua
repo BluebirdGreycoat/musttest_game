@@ -21,6 +21,7 @@ function bones.nohack.on_respawnplayer(player)
 	minetest.after(30, function()
 		players[pname] = nil
 	end)
+	return true
 end
 
 

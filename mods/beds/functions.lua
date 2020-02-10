@@ -424,6 +424,7 @@ function beds.on_respawnplayer(player)
 	local pos = beds.spawn[name]
 	if pos then
 		-- Don't preload area, that could allow a cheat.
+		-- Update player's position immediately, without delay.
 		wield3d.on_teleport()
 		player:set_pos(pos)
 
@@ -443,16 +444,21 @@ function beds.on_respawnplayer(player)
 		end
 
 		ambiance.sound_play("respawn", pos, 1.0, 10)
-		return true
 	else
-		local death_pos = {x=0, y=0, z=0}
+		-- If the death position is not known, assume they died in the Abyss.
+		local death_pos = rc.static_spawn("abyss")
 		if bones.last_known_death_locations[name] then
 			death_pos = bones.last_known_death_locations[name]
 		end
+		-- Tests show that `on_respawnplayer` is only called for existing players
+		-- that die and respawn, NOT for newly-joined players!
+
 		--minetest.chat_send_all("death at " .. minetest.pos_to_string(death_pos))
+		--minetest.after(1, function() minetest.chat_send_all("on_respawnplayer was called!") end)
 		randspawn.reposition_player(name, death_pos)
-		return true -- Disable regular player placement.
 	end
+
+	return true -- Disable regular player placement.
 end
 
 

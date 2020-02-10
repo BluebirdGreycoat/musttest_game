@@ -2,6 +2,7 @@
 randspawn = randspawn or {}
 randspawn.modpath = minetest.get_modpath("randspawn")
 
+-- Central square.
 local fallback_pos = {x=0, y=-7, z=0}
 
 local ab = {
@@ -28,6 +29,18 @@ local positions = {
 }
 
 local function get_respawn_position(death_pos)
+	-- If player died in the abyss they respawn in the abyss.
+	local rn = rc.current_realm_at_pos(death_pos)
+	if rn == "abyss" or rn == "" then
+		return rc.static_spawn("abyss")
+	end
+	if rn == "channelwood" or rn == "jarkati" then
+		return rc.static_spawn("abyss")
+	end
+
+	-- Otherwise player is in the overworld, caverns, or netherealms.
+	-- They respawn in one of the cities.
+
 	local tb = os.date("*t")
 	local m = tb.month
 	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
@@ -59,13 +72,15 @@ randspawn.reposition_player = function(pname, death_pos)
 	end
 end
 
+--[[
 function randspawn.on_newplayer(player)
 	local pname = player:get_player_name()
-	local fake_dpos = {x=0, y=0, z=0}
+	local fake_dpos = rc.static_spawn("abyss")
 	minetest.after(0.1, function()
 		randspawn.reposition_player(pname, fake_dpos)
 	end)
 end
+--]]
 
 function randspawn.get_spawn_name()
 	local tb = os.date("*t")
@@ -85,9 +100,11 @@ if not randspawn.run_once then
 	local name = "randspawn:core"
 	reload.register_file(name, file, false)
 
+	--[[
 	minetest.register_on_newplayer(function(...)
 		return randspawn.on_newplayer(...)
 	end)
+	--]]
 
 	randspawn.run_once = true
 end

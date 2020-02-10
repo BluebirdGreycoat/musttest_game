@@ -30,7 +30,7 @@ end
 
 function afk_removal.on_joinplayer(player)
 	local name = player:get_player_name()
-	afk_removal.players[name] = {time=0, pos={x=0, y=0, z=0}}
+	afk_removal.players[name] = {time=0, pos=player:get_pos()}
 end
 
 function afk_removal.on_leaveplayer(player, timedout)

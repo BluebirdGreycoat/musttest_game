@@ -56,6 +56,22 @@ rc.realms = {
 		realm_origin = {x=1986, y=3700, z=-1864},
 		disabled = false,
 	},
+	{
+		id = 4, -- REALM ID. Code relies on this.
+		name = "abyss",
+		description = "Charn",
+		minp = vector.add({x=-9174, y=4100, z=5782}, {x=-100, y=-100, z=-100}),
+		maxp = vector.add({x=-9174, y=4100, z=5782}, {x=100, y=100, z=100}),
+		gate_minp = vector.add({x=-9174, y=4100, z=5782}, {x=-80, y=-80, z=-80}),
+		gate_maxp = vector.add({x=-9174, y=4100, z=5782}, {x=80, y=80, z=80}),
+		orig = {x=-9174, y=4100, z=5782}, -- Respawn point, if necessary.
+		ground = 4200,
+		underground = 4200,
+		sealevel = 4200,
+		windlevel = 4200,
+		realm_origin = {x=-9174, y=4100, z=5782},
+		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
+	},
 }
 
 -- Return true if a position is underground in some realm.
@@ -395,6 +411,7 @@ function rc.current_realm(player)
 	return rc.current_realm_at_pos(p)
 end
 
+-- API function. Get string name of the current realm at a position.
 function rc.current_realm_at_pos(p)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
@@ -410,6 +427,18 @@ function rc.current_realm_at_pos(p)
 
 	-- Not in any realm?
 	return ""
+end
+
+-- API function. Get static spawn point of a named realm.
+function rc.static_spawn(name)
+	for k, v in ipairs(rc.realms) do
+		if v.name == name then
+			return table.copy(v.orig)
+		end
+	end
+
+	-- Not in any realm?
+	return {x=0, y=-7, z=0}
 end
 
 function rc.same_realm(p1, p2)
@@ -464,14 +493,14 @@ function rc.check_position(player)
 		-- Some old clients, it seems, can randomly cause this problem.
 		-- Or someone is deliberately triggering it.
 		reset = {}
-		reset.spawn = {x=0, y=-7, z=0}
+		reset.spawn = rc.static_spawn("abyss")
 	end
 
 	-- Check if player is currently in the void.
 	if not reset then
 		if rc.players[n].realm == "" then
 			reset = {}
-			reset.spawn = {x=0, y=-7, z=0}
+			reset.spawn = rc.static_spawn("abyss")
 		end
 	end
 

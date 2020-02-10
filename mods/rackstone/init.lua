@@ -40,6 +40,22 @@ minetest.register_node("rackstone:rackstone", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	drop = "rackstone:cobble",
+})
+
+minetest.register_node("rackstone:cobble", {
+	description = "Rackstone Cobble",
+	tiles = {"rackstone_rackstone_cobble.png"},
+	groups = utility.dig_groups("cobble", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
+	sounds = default.node_sound_stone_defaults(),
+  after_destruct = rackstone.destabilize_dauthsand,
+	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })
 
 minetest.register_node("rackstone:rackstone_brick2", {
@@ -513,6 +529,13 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "cooking",
+	output = 'rackstone:rackstone',
+	recipe = 'rackstone:cobble',
+	cooktime = 6,
+})
+
+minetest.register_craft({
 	type = "grinding",
 	output = 'rackstone:dauthsand',
 	recipe = 'rackstone:redrack',
@@ -540,6 +563,15 @@ stairs.register_stair_and_slab(
 	{cracky=1},
 	{"rackstone_rackstone.png"},
 	"Rackstone",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
+	"rackstone_cobble",
+	"rackstone:cobble",
+	{cracky=1},
+	{"rackstone_rackstone_cobble.png"},
+	"Rackstone Cobble",
 	default.node_sound_stone_defaults()
 )
 

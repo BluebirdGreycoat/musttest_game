@@ -5,7 +5,8 @@
 
 -- Table of registered sounds. Algorithm intended for intermittent sounds only, continuous sounds need special treatment.
 -- Data includes what environment the sound needs to play, what time of day, what elevations, etc. This table is updated dynamically.
-ambiance.allsounds = {
+ambiance.allsounds = {}
+ambiance.tmpsounds = {
 	-- Dripping water: occurs in over-world caves at any time of day.
 	-- Can also be heard in developed areas, underground.
 	{
@@ -292,35 +293,42 @@ ambiance.allsounds = {
 
 
 -- Initialize extra table parameters.
-for k, v in ipairs(ambiance.allsounds) do
-	-- Mintime & maxtime are the min and max seconds a sound can play again after it has played.
-	-- The timer is reset to a new random value between min and max every time the sound plays.
-	v.mintime = v.mintime or 30
-	v.maxtime = v.maxtime or 120
-	if v.mintime < 0 then v.mintime = 0 end
-	if v.maxtime < v.mintime then v.maxtime = v.mintime end
+minetest.after(0, function()
+	for k, v in ipairs(ambiance.tmpsounds) do
+		-- Mintime & maxtime are the min and max seconds a sound can play again after it has played.
+		-- The timer is reset to a new random value between min and max every time the sound plays.
+		v.mintime = v.mintime or 30
+		v.maxtime = v.maxtime or 120
+		if v.mintime < 0 then v.mintime = 0 end
+		if v.maxtime < v.mintime then v.maxtime = v.mintime end
 
-	-- If minimum or maximum gain are not specified, calculate min and max gain.
-	v.mingain = v.mingain or (v.gain - 0.5)
-	v.maxgain = v.maxgain or (v.gain + 0.1)
-	if v.mingain < 0 then v.mingain = 0 end
-	if v.maxgain < v.mingain then v.maxgain = v.mingain end
+		-- If minimum or maximum gain are not specified, calculate min and max gain.
+		v.mingain = v.mingain or (v.gain - 0.5)
+		v.maxgain = v.maxgain or (v.gain + 0.1)
+		if v.mingain < 0 then v.mingain = 0 end
+		if v.maxgain < v.mingain then v.maxgain = v.mingain end
 
-	-- Initialize timer to a random value between min and max time.
-	-- This ensures all sounds start with random times on first run.
-	v.timer = math.random(v.mintime, v.maxtime)
+		-- Initialize timer to a random value between min and max time.
+		-- This ensures all sounds start with random times on first run.
+		v.timer = math.random(v.mintime, v.maxtime)
 
-	-- Create perlin noise object if wanted.
-	if v.noise_params then
-		if v.include_world_seed then
-			v.perlin = minetest.get_perlin(v.noise_params)
-		else
-			v.perlin = PerlinNoise(v.noise_params)
+		-- Create perlin noise object if wanted.
+		if v.noise_params then
+			if v.include_world_seed then
+				v.perlin = minetest.get_perlin(v.noise_params)
+				assert(v.perlin)
+			else
+				v.perlin = PerlinNoise(v.noise_params)
+				assert(v.perlin)
+			end
+			assert(v.perlin)
 		end
-		assert(v.perlin)
+		v.noise_threshold = v.noise_threshold or 0
 	end
-	v.noise_threshold = v.noise_threshold or 0
-end
+
+	ambiance.allsounds = ambiance.tmpsounds
+	ambiance.tmpsounds = nil
+end)
 
 -- Lava & scuba sounds (or any special sound) must be handled differently.
 

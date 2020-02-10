@@ -188,6 +188,19 @@ end
 
 
 
+-- This function may be called from mods to dump player bones EXACTLY as if the
+-- player had died, including any side-effects. The sole exception is that the
+-- player's health is not actually changed. You might need to update a few other
+-- datums too, to get exactly the right result.
+function bones.dump_bones(pname)
+	local player = minetest.get_player_by_name(pname)
+	if player then
+		bones.on_dieplayer(player)
+	end
+end
+
+
+
 bones.on_dieplayer = function(player)
 	local bones_mode = "bones"
 	local player_inv = player:get_inventory()
@@ -198,6 +211,7 @@ bones.on_dieplayer = function(player)
 
 	-- Record position of player on death.
 	-- This is needed because this information is lost on respawn.
+	-- We must record this info *always*, even if player does not leave bones.
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
 	-- Death sound.

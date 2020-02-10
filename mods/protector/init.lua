@@ -34,6 +34,23 @@ end
 
 
 
+-- Function to determine whether player may place protection in a realm.
+-- Admin can always place protection regardless of realm.
+local function realm_allows_protection(pos, pname)
+	if gdac.player_is_admin(pname) then
+		return true
+	end
+
+	local rn = rc.current_realm_at_pos(pos)
+	if rn == "abyss" or rn == "" then
+		return false
+	end
+
+	return true
+end
+
+
+
 -- Singular function to find relevant protector nodes in an area.
 function protector.find_protector_nodes(pos, r, mult, nodename)
 	-- Arguments:
@@ -473,6 +490,10 @@ end
 -- Make sure protection block doesn't overlap another protector's area
 
 function protector.check_overlap_main(protname, pname, spos)
+	if not realm_allows_protection(spos, pname) then
+		return false, 4
+	end
+
 	if not protector.can_dig(protector.radius, 2, protname, spos, pname, true, 3) then
 		-- Overlap with other player's protection.
 		return false, 1
@@ -511,6 +532,7 @@ function protector.check_overlap(itemstack, placer, pt)
 	if pt.type ~= "node" then
 		return itemstack
 	end
+
 	local pname = placer:get_player_name()
 	local prot_type = itemstack:get_name()
 
@@ -523,6 +545,8 @@ function protector.check_overlap(itemstack, placer, pt)
 			minetest.chat_send_player(pname, "# Server: You cannot claim this area while someone's fresh corpse is nearby!")
 		elseif reason == 3 then
 			minetest.chat_send_player(pname, "# Server: You must remove all corpses before you can claim this area.")
+		elseif reason == 4 then
+			minetest.chat_send_player(pname, "# Server: Cannot claim protection here, there is no land authority!")
 		else
 			minetest.chat_send_player(pname, "# Server: Cannot place protection for unknown reason.")
 		end

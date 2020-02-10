@@ -37,3 +37,34 @@ function utility.find_node_near_not_world_edge(pos, rad, node)
 		return positions[math.random(1, #positions)]
 	end
 end
+
+
+local function add_effects(pos, radius)
+	minetest.add_particlespawner({
+		amount = 8,
+		time = 0.5,
+		minpos = vector.subtract(pos, radius / 2),
+		maxpos = vector.add(pos, radius / 2),
+		minvel = {x=-10, y=-10, z=-10},
+		maxvel = {x=10,  y=10,  z=10},
+		minacc = vector.new(),
+		maxacc = vector.new(),
+		minexptime = 0.5,
+		maxexptime = 1,
+		minsize = 0.5,
+		maxsize = 1,
+		texture = "tnt_smoke.png",
+	})
+end
+
+function utility.shell_boom(pos)
+	minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.5, max_hear_distance=2*64})
+
+  -- Don't destroy things.
+  if minetest.get_node(pos).name == "air" then
+    minetest.set_node(pos, {name="tnt:boom"})
+    minetest.get_node_timer(pos):start(0.5)
+  end
+
+  add_effects(pos, 1)
+end

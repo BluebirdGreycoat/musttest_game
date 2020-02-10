@@ -118,6 +118,7 @@ end
 
 function sprint.on_respawnplayer(player)
 	sprint.set_stamina(player, 0)
+	return true
 end
 
 

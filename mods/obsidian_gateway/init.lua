@@ -400,13 +400,45 @@ function obsidian_gateway.attempt_activation(pos, player)
 				meta:set_string("obsidian_gateway_success_" .. ns_key, "yes")
 				meta:mark_as_private("obsidian_gateway_success_" .. ns_key)
 			end
+
+			-- If the destination is the Abyss, then kill player first.
+			-- This helps to prevent player from bringing any foreign items into this realm.
+			-- Note: this relies on the teleport code already checking all other preconditions
+			-- first. I.e., if this callback returns 'false', then the player absolutely
+			-- will be teleported.
+			if rc.current_realm_at_pos(pdest) == "abyss" then
+				-- Dump player bones, as if they died.
+				-- This should behave exactly as if the player died, with the exception of
+				-- setting the player's health to 0.
+				bones.dump_bones(pname)
+				bones.last_known_death_locations[pname] = nil -- Fake death.
+				minetest.get_player_by_name(pname):set_hp(20)
+			end
 		end,
 		function()
 			for k, v in ipairs(friendstobring) do
 				local friend = minetest.get_player_by_name(v)
 				if friend then
 					local fname = friend:get_player_name()
-					preload_tp.preload_and_teleport(fname, pdest, 16, nil, nil, nil, true)
+
+					preload_tp.preload_and_teleport(fname, pdest, 16,
+						function()
+							-- If the destination is the Abyss, then kill player first.
+							-- This helps to prevent player from bringing any foreign items into this realm.
+							-- Note: this relies on the teleport code already checking all other preconditions
+							-- first. I.e., if this callback returns 'false', then the player absolutely
+							-- will be teleported.
+							if rc.current_realm_at_pos(pdest) == "abyss" then
+								-- Dump player bones, as if they died.
+								-- This should behave exactly as if the player died, with the exception of
+								-- setting the player's health to 0.
+								bones.dump_bones(fname)
+								bones.last_known_death_locations[fname] = nil -- Fake death.
+								minetest.get_player_by_name(fname):set_hp(20)
+							end
+						end,
+					nil, nil, true)
+
 					portal_sickness.on_use_portal(fname)
 				end
 			end

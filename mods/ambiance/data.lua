@@ -86,6 +86,25 @@ ambiance.allsounds = {
    noise_threshold = 0.5,
 	},
 
+	{
+		name="darkwind",     gain=1.0, miny=-31000,    maxy=-256,  time="",    indoors=nil, mintime=200, maxtime=500,
+
+		-- These parameters match the mapgen.
+		noise_params = {
+			flags = "defaults",
+			lacunarity = 2,
+			offset = 0,
+			scale = 1,
+			spread = {x=768, y=256, z=768},
+			seed = 59033 + minetest.get_mapgen_setting("fixed_map_seed"),
+			octaves = 6,
+			persistence = 0.63,
+		},
+   -- Mapgen threshold is 0.6.
+   -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
+   noise_threshold = 0.5,
+	},
+
 	-- This plays in both overworld and channelwood (jarkati has its own entry).
 	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=-15,maxy=3300,time="", indoors=nil, mintime=6,  maxtime=8, }, -- Continuous quiet loop.
 

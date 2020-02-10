@@ -65,6 +65,10 @@ ambiance.allsounds = {
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+
+   -- The world-seed is very large, causing integer overflow.
+   -- So we need to get the engine to calculate it against the world seed,
+   -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
 	},
 
@@ -85,6 +89,10 @@ ambiance.allsounds = {
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+
+   -- The world-seed is very large, causing integer overflow.
+   -- So we need to get the engine to calculate it against the world seed,
+   -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
 	},
 
@@ -105,6 +113,10 @@ ambiance.allsounds = {
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+
+   -- The world-seed is very large, causing integer overflow.
+   -- So we need to get the engine to calculate it against the world seed,
+   -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
 	},
 

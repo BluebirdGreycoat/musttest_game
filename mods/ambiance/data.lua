@@ -58,13 +58,14 @@ ambiance.allsounds = {
 			offset = 0,
 			scale = 1,
 			spread = {x=768, y=256, z=768},
-			seed = 59033 + tonumber(minetest.get_mapgen_setting("seed")),
+			seed = 59033,
 			octaves = 6,
 			persistence = 0.63,
 		},
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+   include_world_seed = true,
 	},
 
 	{
@@ -77,13 +78,14 @@ ambiance.allsounds = {
 			offset = 0,
 			scale = 1,
 			spread = {x=768, y=256, z=768},
-			seed = 59033 + tonumber(minetest.get_mapgen_setting("seed")),
+			seed = 59033,
 			octaves = 6,
 			persistence = 0.63,
 		},
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+   include_world_seed = true,
 	},
 
 	{
@@ -96,13 +98,14 @@ ambiance.allsounds = {
 			offset = 0,
 			scale = 1,
 			spread = {x=768, y=256, z=768},
-			seed = 59033 + tonumber(minetest.get_mapgen_setting("seed")),
+			seed = 59033,
 			octaves = 6,
 			persistence = 0.63,
 		},
    -- Mapgen threshold is 0.6.
    -- Use a slightly lower threshold so that the sound extends outside the caverns a bit.
    noise_threshold = 0.5,
+   include_world_seed = true,
 	},
 
 	-- This plays in both overworld and channelwood (jarkati has its own entry).
@@ -297,7 +300,12 @@ for k, v in ipairs(ambiance.allsounds) do
 
 	-- Create perlin noise object if wanted.
 	if v.noise_params then
-		v.perlin = PerlinNoise(v.noise_params)
+		if v.include_world_seed then
+			v.perlin = minetest.get_perlin(v.noise_params)
+		else
+			v.perlin = PerlinNoise(v.noise_params)
+		end
+		assert(v.perlin)
 	end
 	v.noise_threshold = v.noise_threshold or 0
 end

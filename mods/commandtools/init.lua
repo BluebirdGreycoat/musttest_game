@@ -570,33 +570,13 @@ function commandtools.shovel_on_use(itemstack, user, pt)
 		return itemstack
 	end
 
-	local control = user:get_player_control()
-	local good
-	local err
-
-	if control.aux1 then
-		if control.sneak then
-			-- Use + sneak: copy origin gate info.
-			good, err = pcall(function() commandtools.gatecopy_origin(pname, pt.under) end)
-		else
-			-- Use - sneak: copy target gate info.
-			good, err = pcall(function() commandtools.gatecopy_target(pname, pt.under) end)
-		end
-	else
-		if control.sneak then
-			-- Sneak (no use): paste target information onto origin gate.
-			good, err = pcall(function() commandtools.gaterepair_origin(pname, pt.under) end)
-		else
-			-- Regular tool use: paste origin information onto target gate.
-			good, err = pcall(function() commandtools.gaterepair_target(pname, pt.under) end)
-		end
+	if pt.type ~= "node" then
+		return
 	end
 
-	if not good then
-		minetest.chat_send_player(pname, "# Server: Error running code! " .. err)
-	else
-		minetest.chat_send_player(pname, "# Server: Success.")
-	end
+	local SCHEMATIC_RELP = {x=-4, y=-1, z=-4}
+	local path = basictrees.modpath .. "/schematics/acacia_tree_from_sapling.mts"
+	minetest.place_schematic(vector.add(pt.above, SCHEMATIC_RELP), path, "random", nil, false)
 
 	--[[
 

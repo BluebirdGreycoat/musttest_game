@@ -15,6 +15,14 @@ function()
     return default.node_sound_stone_defaults(table)
 end
 
+rackstone.cobble_sounds =
+function()
+    local table = {
+			footstep = {name="default_gravel_footstep", gain=0.5},
+    }
+    return default.node_sound_stone_defaults(table)
+end
+
 rackstone.destabilize_dauthsand =
 function(pos)
   local minp = {x=pos.x-1, y=pos.y, z=pos.z-1}
@@ -48,7 +56,7 @@ minetest.register_node("rackstone:cobble", {
 	description = "Rackstone Cobble",
 	tiles = {"rackstone_rackstone_cobble.png"},
 	groups = utility.dig_groups("cobble", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
-	sounds = default.node_sound_stone_defaults(),
+	sounds = rackstone.cobble_sounds(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
 

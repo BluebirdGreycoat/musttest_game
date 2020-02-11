@@ -59,7 +59,7 @@ rc.realms = {
 	{
 		id = 4, -- REALM ID. Code relies on this.
 		name = "abyss",
-		description = "CHARN",
+		description = "Outback",
 		minp = vector.add({x=-9174, y=4100, z=5782}, {x=-100, y=-100, z=-100}),
 		maxp = vector.add({x=-9174, y=4100, z=5782}, {x=100, y=100, z=100}),
 		gate_minp = vector.add({x=-9174, y=4100, z=5782}, {x=-80, y=-80, z=-80}),

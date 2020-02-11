@@ -66,7 +66,7 @@ rc.realms = {
 		gate_maxp = vector.add({x=-9174, y=4100, z=5782}, {x=80, y=80, z=80}),
 		orig = {x=-9174, y=4100, z=5782}, -- Respawn point, if necessary.
 		ground = 4200,
-		underground = 4200,
+		underground = 4160, -- Affects sky color, see sky mod.
 		sealevel = 4200,
 		windlevel = 4200,
 		realm_origin = {x=-9174, y=4100, z=5782},

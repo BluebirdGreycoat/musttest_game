@@ -1728,6 +1728,132 @@ for i = 1, 5 do
 	})
 end
 
+
+
+
+
+
+
+minetest.register_node("default:dry_grass2_dummy", {
+	description = "Dry Grass",
+	drawtype = "plantlike",
+	waving = 1,
+	tiles = {"default_dry_grass2_1.png"},
+	inventory_image = "default_dry_grass2_3.png",
+	wield_image = "default_dry_grass2_3.png",
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	flowerpot_insert = {"default:dry_grass2_1", "default:dry_grass2_2", "default:dry_grass2_3", "default:dry_grass2_4", "default:dry_grass2_5"},
+
+	-- Zero-width selection box.
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -0.5, 0.5},
+	},
+
+	on_place = function(itemstack, placer, pt)
+		-- place a random dry grass node
+		-- If pointing to the ceiling place hanging grass.
+		--minetest.chat_send_all(dump(pt))
+		if pt.type == "node" then
+			--minetest.chat_send_all("1: " .. minetest.pos_to_string(pt.under) .. ".")
+			--minetest.chat_send_all("2: " .. minetest.pos_to_string(pt.above) .. ".")
+			if pt.under.y-1 == pt.above.y then
+				--minetest.chat_send_all("hanging!")
+				local stack = ItemStack("default:dry_grass2_" .. math.random(1,5) .. "_hanging")
+				local ret = minetest.item_place(stack, placer, pt)
+				return ItemStack("default:dry_grass2_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
+			end
+		end
+
+		local stack = ItemStack("default:dry_grass2_" .. math.random(1, 5))
+		local ret = minetest.item_place(stack, placer, pt)
+		return ItemStack("default:dry_grass2_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
+	end,
+})
+
+for i = 1, 5 do
+	minetest.register_node("default:dry_grass2_" .. i, {
+		description = "Dry Grass",
+		drawtype = "plantlike",
+		waving = 1,
+		tiles = {"default_dry_grass2_" .. i .. ".png"},
+		inventory_image = "default_dry_grass2_3.png",
+		wield_image = "default_dry_grass2_3.png",
+		paramtype = "light",
+		paramtype2 = "meshoptions",
+		place_param2 = 2,
+		sunlight_propagates = true,
+		walkable = false,
+		buildable_to = true,
+		groups = utility.dig_groups("plant", {flammable = 3, flora = 1, attached_node = 1,
+			not_in_creative_inventory=1, dry_grass = 1}),
+
+		drop = "",
+		shears_drop = "default:dry_grass2_dummy",
+		flowerpot_drop = "default:dry_grass2_dummy",
+
+		sounds = default.node_sound_leaves_defaults(),
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
+		},
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_construct = function(...)
+			return flowers.on_flora_construct(...)
+		end,
+
+		on_destruct = function(...)
+			return flowers.on_flora_destruct(...)
+		end,
+
+		on_timer = function(...)
+			return flowers.on_flora_timer(...)
+		end,
+
+		on_punch = function(...)
+			return flowers.on_flora_punch(...)
+		end,
+	})
+end
+
+for i = 1, 5 do
+	minetest.register_node("default:dry_grass2_" .. i .. "_hanging", {
+		description = "Dry Grass",
+		drawtype = "plantlike",
+		-- Waving hanging grass looks silly.
+		--waving = 1,
+		tiles = {"default_dry_grass2_" .. i .. ".png^[transformFY"},
+		inventory_image = "default_dry_grass2_3.png",
+		wield_image = "default_dry_grass2_3.png",
+		paramtype = "light",
+		paramtype2 = "meshoptions",
+		place_param2 = 2,
+		sunlight_propagates = true,
+		walkable = false,
+		buildable_to = true,
+		-- Not in flora group, since it does not need to spread.
+		groups = utility.dig_groups("plant", {flammable = 3, hanging_node = 1,
+			not_in_creative_inventory=1, dry_grass = 1}),
+
+		drop = "",
+		shears_drop = "default:dry_grass2_dummy",
+		flowerpot_drop = "default:dry_grass2_dummy",
+
+		sounds = default.node_sound_leaves_defaults(),
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.5, 0.5, -0.5, 0.5, 5/16, 0.5},
+		},
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	})
+end
+
 --
 -- Liquids
 --

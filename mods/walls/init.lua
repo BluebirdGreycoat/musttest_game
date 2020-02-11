@@ -481,3 +481,6 @@ walls.register("obsidian", "Obsidian", "default_obsidian.png",
 walls.register("obsidian_brick", "Obsidian Brick", "default_obsidian_brick.png",
 		"default:obsidianbrick", default.node_sound_stone_defaults())
 
+walls.register("rackstone_cobble", "Rackstone Cobble", "rackstone_rackstone_cobble.png",
+		"rackstone:cobble", default.node_sound_stone_defaults())
+

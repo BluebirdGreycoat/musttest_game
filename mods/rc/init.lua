@@ -343,7 +343,9 @@ end
 
 function rc.is_valid_realm_pos(pos)
 	local p = vector.round(pos)
-	for k, v in ipairs(rc.realms) do
+	for i = 1, #rc.realms, 1 do
+		local v = rc.realms[i]
+
 		local minp = v.minp
 		local maxp = v.maxp
 

@@ -2,6 +2,8 @@
 serveressentials = serveressentials or {}
 serveressentials.modpath = minetest.get_modpath("serveressentials")
 
+dofile(serveressentials.modpath .. "/outback.lua")
+
 function serveressentials.get_short_stack_desc(stack)
 	local def = minetest.registered_items[stack:get_name()]
 	local meta = stack:get_meta()

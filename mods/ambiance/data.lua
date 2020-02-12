@@ -294,6 +294,9 @@ ambiance.tmpsounds = {
 	{name="wind2",          gain=1.0, miny=4160, maxy=4200,  time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="desertwind",     gain=1.0, miny=4160, maxy=4200,  time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=4160, maxy=4200, time="", indoors=nil,mintime=6, maxtime=8, }, -- Continuous quiet loop.
+
+	{name="wolves",         mingain=0.2, maxgain=1.3, miny=4160,    maxy=4200,   time="night",   indoors=nil, },
+	{name="coyote",         mingain=0.2, maxgain=1.3, miny=4160,    maxy=4200,   time="night",   indoors=nil, },
 }
 
 

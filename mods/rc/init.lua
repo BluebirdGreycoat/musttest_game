@@ -186,7 +186,14 @@ function rc.get_realm_data(name)
 			return v
 		end
 		if v.name == "overworld" then
+			-- Alternate names.
 			if name == "netherworld" or name == "nether" or name == "caverns" or name == "caves" then
+				return v
+			end
+		end
+		if v.name == "abyss" then
+			-- Alternate names.
+			if name == "outback" then
 				return v
 			end
 		end

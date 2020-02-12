@@ -1,4 +1,15 @@
 
+local nodes = {
+	{pos={x=-9167, y=4103, z=5779}, node={name="xdecor:lantern", param2=1}},
+	{pos={x=-9167, y=4103, z=5785}, node={name="xdecor:lantern", param2=1}},
+}
+
+local function rebuild_nodes()
+	for k, v in ipairs(nodes) do
+		minetest.set_node(v.pos, v.node)
+	end
+end
+
 local metadata = {
 	-- Gate room, protection on floor.
 	{pos={x=-9174, y=4099, z=5782}, meta={fields={
@@ -99,6 +110,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	minetest.place_schematic(pos, schematic, "0", {}, true, "")
 
 	-- Finally, rebuild the metadata.
+	rebuild_nodes()
 	rebuild_metadata()
 	restart_timers()
 end

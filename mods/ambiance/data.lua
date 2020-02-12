@@ -293,7 +293,7 @@ ambiance.tmpsounds = {
 	{name="wind1",          gain=1.0, miny=4160, maxy=4200,  time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="wind2",          gain=1.0, miny=4160, maxy=4200,  time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="desertwind",     gain=1.0, miny=4160, maxy=4200,  time="", indoors=nil, mintime=20, maxtime=40, },
-	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=3735, maxy=3900, time="", indoors=nil,mintime=6, maxtime=8, }, -- Continuous quiet loop.
+	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=4160, maxy=4200, time="", indoors=nil,mintime=6, maxtime=8, }, -- Continuous quiet loop.
 }
 
 

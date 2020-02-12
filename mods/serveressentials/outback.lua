@@ -44,6 +44,13 @@ local metadata = {
 	{pos={x=-9174, y=4175, z=5744}, meta={fields={
 		state = "1",
 	}}},
+	-- The gateway portal itself.
+	{pos={x=-9164, y=4101, z=5780}, meta={fields={
+		obsidian_gateway_success_ew = "yes",
+		obsidian_gateway_return_gate_ew = "0",
+		obsidian_gateway_owner_ew = "MustTest",
+		obsidian_gateway_destination_ew = "(-1530,23,2633)",
+	}}},
 }
 
 local function rebuild_metadata()

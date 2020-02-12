@@ -295,6 +295,11 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 		return true
 	end
 
+	-- Prevent users from modifying the map outside of any realm.
+	if not rc.is_valid_realm_pos(pos) then
+		return false
+	end
+
 	if infolevel == 3 then
 		infolevel = 1
 	end

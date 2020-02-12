@@ -296,7 +296,7 @@ ambiance.tmpsounds = {
 	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=4160, maxy=4200, time="", indoors=nil,mintime=6, maxtime=8, }, -- Continuous quiet loop.
 
 	-- Nighttime insects.
-	{name="night_cicada",   mingain=0.2, maxgain=1.0, miny=4160, maxy=4200, time="night", indoors=nil,mintime=7, maxtime=11, }, -- Continuous quiet loop.
+	{name="night_cicadas",   mingain=0.2, maxgain=1.0, miny=4160, maxy=4200, time="night", indoors=nil,mintime=7, maxtime=11, }, -- Continuous quiet loop.
 
 	{name="wolves",         mingain=0.2, maxgain=1.3, miny=4160,    maxy=4200,   time="night",   indoors=nil, mintime=20, maxtime=60, },
 	{name="coyote",         mingain=0.2, maxgain=1.3, miny=4160,    maxy=4200,   time="night",   indoors=nil, mintime=10, maxtime=30, },

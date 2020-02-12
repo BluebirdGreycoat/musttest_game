@@ -64,8 +64,7 @@ rc.realms = {
 		maxp = vector.add({x=-9174, y=4100, z=5782}, {x=100, y=100, z=100}),
 		gate_minp = vector.add({x=-9174, y=4100, z=5782}, {x=-80, y=-80, z=-80}),
 		gate_maxp = vector.add({x=-9174, y=4100, z=5782}, {x=80, y=80, z=80}),
-		--orig = {x=-9174, y=4100, z=5782}, -- Respawn point, if necessary.
-		orig = {x=-9223, y=4169, z=5861},
+		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
 		ground = 4200,
 		underground = 4160, -- Affects sky color, see sky mod.
 		sealevel = 4200,

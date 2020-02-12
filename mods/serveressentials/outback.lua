@@ -30,15 +30,15 @@ local metadata = {
 	}}},
 	-- Poem, left side.
 	{pos={x=-9172, y=4100, z=5783}, meta={fields={
-		infotext = "Make your choice, adventurous Stranger,\nStrike the Gate and bide the danger!",
+		infotext = "Make your choice, adventurous Stranger,\nStrike the Gate and bide the Danger!",
 		author = "MustTest",
-		text = "Make your choice, adventurous Stranger,%nStrike the Gate and bide the danger!"
+		text = "Make your choice, adventurous Stranger,%nStrike the Gate and bide the Danger!"
 	}}},
 	-- Poem, right side.
 	{pos={x=-9172, y=4100, z=5781}, meta={fields={
-		infotext = "Or else wonder, till it drives you mad,\nWhat would have happened, if you had.",
+		infotext = "Or else wonder, till it drives you mad,\nWhat would have followed, if you had.",
 		author = "MustTest",
-		text = "Or else wonder, till it drives you mad,%nWhat would have happened, if you had."
+		text = "Or else wonder, till it drives you mad,%nWhat would have followed, if you had."
 	}}},
 	-- Door on the miner's hut.
 	{pos={x=-9174, y=4175, z=5744}, meta={fields={

@@ -156,7 +156,11 @@ heatdamage.globalstep = function(dtime)
 
 							if v:get_hp() <= 0 then
 								-- Player died.
-								minetest.chat_send_all("# Server: <" .. rename.gpn(name) .. "> burned up.")
+								if player_labels.query_nametag_onoff(name) == true then
+									minetest.chat_send_all("# Server: <" .. rename.gpn(name) .. "> caught fire.")
+								else
+									minetest.chat_send_all("# Server: Someone caught fire.")
+								end
 							end
             end
           end

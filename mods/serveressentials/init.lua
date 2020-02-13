@@ -28,6 +28,17 @@ function serveressentials.acacia_fixup(pos)
 	end
 end
 
+-- The acacia tree schematic-from-sapling needs some help (because of falling-node physics).
+function serveressentials.fix_acacia_tree(minp, maxp)
+	for x = minp.x, maxp.x, 1 do
+		for y = minp.y, maxp.y, 1 do
+			for z = minp.z, maxp.z, 1 do
+				serveressentials.acacia_fixup({x=x, y=y, z=z})
+			end
+		end
+	end
+end
+
 function serveressentials.get_short_stack_desc(stack)
 	local def = minetest.registered_items[stack:get_name()]
 	local meta = stack:get_meta()

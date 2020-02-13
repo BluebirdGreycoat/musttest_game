@@ -31,6 +31,11 @@ basictrees.tree_groups = utility.dig_groups("tree", {
     flammable = 2,
 })
 
+basictrees.dead_tree_groups = utility.dig_groups("deadtree", {
+    tree = 1,
+    flammable = 2,
+})
+
 basictrees.cw_tree_groups = utility.dig_groups("tree", {
     tree = 1,
 })

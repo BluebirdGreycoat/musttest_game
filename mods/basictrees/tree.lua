@@ -34,6 +34,25 @@ minetest.register_node("basictrees:tree_trunk", {
   }),
 })
 
+minetest.register_node("basictrees:tree_trunk_dead", {
+	drawtype = "nodebox",
+	paramtype = "light",
+	node_box = {
+		type = "fixed",
+		fixed = basictrees.trunk_nodebox,
+	},
+
+	description = "Tree",
+	tiles = {"default_tree_top.png", "default_tree_top.png", "default_tree.png"},
+	paramtype2 = "facedir",
+	groups = basictrees.dead_tree_groups,
+	sounds = default.node_sound_wood_defaults(),
+	on_place = minetest.rotate_node,
+	movement_speed_multiplier = default.NORM_SPEED,
+
+	drop = "basictrees:tree_trunk",
+})
+
 
 
 minetest.register_node("basictrees:tree_sapling", {

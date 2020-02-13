@@ -83,7 +83,7 @@ dig_groups["racksand"]      = {level = 3, crumbly = 3}
 
 -- Choppy stuff (trees/wood).
 dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.
-dig_groups["deadtree"]      = {level = 2, choppy = 2, oddly_breakable_by_hand = 1}
+dig_groups["deadtree"]      = {level = 0, choppy = 2, oddly_breakable_by_hand = 1}
 dig_groups["wood"]          = {level = 2, choppy = 3} -- Also wooden 'blocklike'. Planks & stuff.
 dig_groups["nyan"]          = {level = 3, choppy = 1}
 

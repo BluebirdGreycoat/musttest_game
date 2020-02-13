@@ -1,7 +1,11 @@
 
 local nodes = {
+	-- Replace torches with real lanterns in front of the gate.
 	{pos={x=-9167, y=4103, z=5779}, node={name="xdecor:lantern", param2=1}},
 	{pos={x=-9167, y=4103, z=5785}, node={name="xdecor:lantern", param2=1}},
+
+	-- Add a furnace to the miner's hut.
+	{pos={x=-9177, y=4176, z=5745}, node={name="redstone_furnace:inactive", param2=3}},
 }
 
 local function rebuild_nodes()

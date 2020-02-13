@@ -1,12 +1,12 @@
 
-cobble_furnace = cobble_furnace or {}
-cobble_furnace.modpath = minetest.get_modpath("cobble_furnace")
-local FURNACE_SPEED = 3.0
+redstone_furnace = redstone_furnace or {}
+redstone_furnace.modpath = minetest.get_modpath("redstone_furnace")
+local FURNACE_SPEED = 1.5
 
 
 
 -- Get active formspec.
-cobble_furnace.get_active_formspec = function(fuel_percent, item_percent)
+redstone_furnace.get_active_formspec = function(fuel_percent, item_percent)
   local formspec = 
     "size[8,8.5]"..
     default.formspec.get_form_colors() ..
@@ -36,13 +36,13 @@ end
 
 
 
-cobble_furnace.get_inactive_formspec = function()
-  return cobble_furnace.get_active_formspec(100, 0)
+redstone_furnace.get_inactive_formspec = function()
+  return redstone_furnace.get_active_formspec(100, 0)
 end
 
 
 
-cobble_furnace.can_dig = function(pos, player)
+redstone_furnace.can_dig = function(pos, player)
   local meta = minetest.get_meta(pos);
   local inv = meta:get_inventory()
   return inv:is_empty("fuel") and inv:is_empty("dst") and inv:is_empty("src")
@@ -50,7 +50,7 @@ end
 
 
 
-cobble_furnace.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+redstone_furnace.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
   if minetest.test_protection(pos, player:get_player_name()) then
     return 0
   end
@@ -74,16 +74,16 @@ end
 
 
 
-cobble_furnace.allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+redstone_furnace.allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
   local stack = inv:get_stack(from_list, from_index)
-  return cobble_furnace.allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
+  return redstone_furnace.allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
 end
 
 
 
-cobble_furnace.allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+redstone_furnace.allow_metadata_inventory_take = function(pos, listname, index, stack, player)
   if minetest.test_protection(pos, player:get_player_name()) then
     return 0
   end
@@ -92,7 +92,7 @@ end
 
 
 
-cobble_furnace.on_timer = function(pos, elapsed)
+redstone_furnace.on_timer = function(pos, elapsed)
   --
   -- Inizialize metadata
   --
@@ -165,7 +165,7 @@ cobble_furnace.on_timer = function(pos, elapsed)
   --
   -- Update formspec, infotext and node
   --
-  local formspec = cobble_furnace.get_inactive_formspec()
+  local formspec = redstone_furnace.get_inactive_formspec()
   local item_state
   local item_percent = 0
   if cookable then
@@ -191,9 +191,9 @@ cobble_furnace.on_timer = function(pos, elapsed)
     active = "Active "
     local fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
-    formspec = cobble_furnace.get_active_formspec(fuel_percent, item_percent)
+    formspec = redstone_furnace.get_active_formspec(fuel_percent, item_percent)
 		local nnn = minetest.get_node(pos).name
-	  if machines.swap_node(pos, "cobble_furnace:active") then
+	  if machines.swap_node(pos, "redstone_furnace:active") then
 			torchmelt.start_melting(pos)
 			notify.notify_adjacent(pos)
 		end
@@ -203,7 +203,7 @@ cobble_furnace.on_timer = function(pos, elapsed)
     if not fuellist[1]:is_empty() then
       fuel_state = "0%"
     end
-    machines.swap_node(pos, "cobble_furnace:inactive")
+    machines.swap_node(pos, "redstone_furnace:inactive")
     -- stop timer on the inactive furnace
     local timer = minetest.get_node_timer(pos)
     timer:stop()
@@ -226,22 +226,22 @@ end
 
 
 
-cobble_furnace.on_blast = function(pos)
+redstone_furnace.on_blast = function(pos)
   local drops = {}
   default.get_inventory_drops(pos, "src", drops)
   default.get_inventory_drops(pos, "fuel", drops)
   default.get_inventory_drops(pos, "dst", drops)
-  drops[#drops+1] = "cobble_furnace:inactive"
+  drops[#drops+1] = "redstone_furnace:inactive"
   minetest.remove_node(pos)
   return drops
 end
 
 
 
-cobble_furnace.on_construct = function(pos)
+redstone_furnace.on_construct = function(pos)
   local meta = minetest.get_meta(pos)
   meta:set_string("infotext", "Coal Furnace")
-  meta:set_string("formspec", cobble_furnace.get_inactive_formspec())
+  meta:set_string("formspec", redstone_furnace.get_inactive_formspec())
   local inv = meta:get_inventory()
   inv:set_size('src', 1)
   inv:set_size('fuel', 1)
@@ -250,20 +250,20 @@ end
 
 
 
-cobble_furnace.on_metadata_inventory_move = function(pos)
+redstone_furnace.on_metadata_inventory_move = function(pos)
   local timer = minetest.get_node_timer(pos)
   timer:start(1.0)
 end
 
 
 
-cobble_furnace.on_metadata_inventory_put = function(pos)
+redstone_furnace.on_metadata_inventory_put = function(pos)
   -- Start timer function, it will sort out whether furnace can burn or not.
   local timer = minetest.get_node_timer(pos)
   timer:start(1.0)
 end
 
-cobble_furnace.burn_feet = function(pos, player)
+redstone_furnace.burn_feet = function(pos, player)
 	if not heatdamage.is_immune(player:get_player_name()) then
 		player:set_hp(player:get_hp() - 1)
 	end
@@ -271,13 +271,13 @@ end
 
 
 
-if not cobble_furnace.run_once then
-  minetest.register_node("cobble_furnace:inactive", {
+if not redstone_furnace.run_once then
+  minetest.register_node("redstone_furnace:inactive", {
     description = "Fuel-Fired Furnace\n\nCooks or smelts things, but slowly and inefficiently.\nBurns coal and other flammable things.",
     tiles = {
-      "default_furnace_top.png", "default_furnace_bottom.png",
-      "default_furnace_side.png", "default_furnace_side.png",
-      "default_furnace_side.png", "default_furnace_front.png"
+      "redstone_furnace_top.png", "redstone_furnace_bottom.png",
+      "redstone_furnace_side.png", "redstone_furnace_side.png",
+      "redstone_furnace_side.png", "redstone_furnace_front.png"
     },
     
     groups = utility.dig_groups("cobble", {
@@ -291,36 +291,36 @@ if not cobble_furnace.run_once then
     sounds = default.node_sound_stone_defaults(),
 
     can_dig = function(...)
-      return cobble_furnace.can_dig(...) end,
+      return redstone_furnace.can_dig(...) end,
     on_timer = function(...)
-      return cobble_furnace.on_timer(...) end,
+      return redstone_furnace.on_timer(...) end,
     on_construct = function(...)
-      return cobble_furnace.on_construct(...) end,
+      return redstone_furnace.on_construct(...) end,
 
     on_metadata_inventory_move = function(...)
-      return cobble_furnace.on_metadata_inventory_move(...) end,
+      return redstone_furnace.on_metadata_inventory_move(...) end,
     on_metadata_inventory_put = function(...)
-      return cobble_furnace.on_metadata_inventory_put(...) end,
+      return redstone_furnace.on_metadata_inventory_put(...) end,
     on_blast = function(...)
-      return cobble_furnace.on_blast(...) end,
+      return redstone_furnace.on_blast(...) end,
 
     allow_metadata_inventory_put = function(...)
-      return cobble_furnace.allow_metadata_inventory_put(...) end,
+      return redstone_furnace.allow_metadata_inventory_put(...) end,
     allow_metadata_inventory_move = function(...)
-      return cobble_furnace.allow_metadata_inventory_move(...) end,
+      return redstone_furnace.allow_metadata_inventory_move(...) end,
     allow_metadata_inventory_take = function(...)
-      return cobble_furnace.allow_metadata_inventory_take(...) end,
+      return redstone_furnace.allow_metadata_inventory_take(...) end,
   })
 
 
 
-  minetest.register_node("cobble_furnace:active", {
+  minetest.register_node("redstone_furnace:active", {
     tiles = {
-      "default_furnace_top.png", "default_furnace_bottom.png",
-      "default_furnace_side.png", "default_furnace_side.png",
-      "default_furnace_side.png",
+      "redstone_furnace_top.png", "redstone_furnace_bottom.png",
+      "redstone_furnace_side.png", "redstone_furnace_side.png",
+      "redstone_furnace_side.png",
       {
-        image = "default_furnace_front_active.png",
+        image = "redstone_furnace_front_active.png",
         backface_culling = false,
         animation = {
           type = "vertical_frames",
@@ -331,7 +331,7 @@ if not cobble_furnace.run_once then
       }
     },
     light_source = 8,
-    drop = "cobble_furnace:inactive",
+    drop = "redstone_furnace:inactive",
     
     groups = utility.dig_groups("cobble", {
       not_in_creative_inventory=1, 
@@ -346,43 +346,39 @@ if not cobble_furnace.run_once then
     sounds = default.node_sound_stone_defaults(),
     
     on_timer = function(...)
-      return cobble_furnace.on_timer(...) end,
+      return redstone_furnace.on_timer(...) end,
     can_dig = function(...)
-      return cobble_furnace.can_dig(...) end,
+      return redstone_furnace.can_dig(...) end,
     on_blast = function(...)
-      return cobble_furnace.on_blast(...) end,
+      return redstone_furnace.on_blast(...) end,
 
     allow_metadata_inventory_put = function(...)
-      return cobble_furnace.allow_metadata_inventory_put(...) end,
+      return redstone_furnace.allow_metadata_inventory_put(...) end,
     allow_metadata_inventory_move = function(...)
-      return cobble_furnace.allow_metadata_inventory_move(...) end,
+      return redstone_furnace.allow_metadata_inventory_move(...) end,
     allow_metadata_inventory_take = function(...)
-      return cobble_furnace.allow_metadata_inventory_take(...) end,
+      return redstone_furnace.allow_metadata_inventory_take(...) end,
 
 		on_player_walk_over = function(...)
-			return cobble_furnace.burn_feet(...) end,
+			return redstone_furnace.burn_feet(...) end,
   })
 
 
 
   -- Recipe modified by MustTest.
   minetest.register_craft({
-    output = 'cobble_furnace:inactive',
+    output = 'redstone_furnace:inactive',
     recipe = {
-      {'default:cobble', 'default:cobble', 'default:cobble'},
-      {'default:cobble', 'group:torch_craftitem', 'default:cobble'},
-      {'default:cobble', 'default:cobble', 'default:cobble'},
+      {'rackstone:cobble', 'rackstone:cobble', 'rackstone:cobble'},
+      {'rackstone:cobble', 'group:torch_craftitem', 'rackstone:cobble'},
+      {'rackstone:cobble', 'rackstone:cobble', 'rackstone:cobble'},
     }
   })
-
-  -- Compatibility.
-  minetest.register_alias("default:furnace", "cobble_furnace:inactive")
-  minetest.register_alias("default:furnace_active", "cobble_furnace:active")
   
-  local c = "cobble_furnace:core"
-  local f = cobble_furnace.modpath .. "/init.lua"
+  local c = "redstone_furnace:core"
+  local f = redstone_furnace.modpath .. "/init.lua"
   reload.register_file(c, f, false)
   
-  cobble_furnace.run_once = true
+  redstone_furnace.run_once = true
 end
 

@@ -59,12 +59,28 @@ local metadata = {
 	{pos={x=-9174, y=4175, z=5744}, meta={fields={
 		state = "1",
 	}}},
+	-- Door on the secret beer stash.
+	{pos={x=-9090, y=4182, z=5869}, meta={fields={
+		state = "0",
+	}}},
 	-- The gateway portal itself.
 	{pos={x=-9164, y=4101, z=5780}, meta={fields={
 		obsidian_gateway_success_ew = "yes",
 		obsidian_gateway_return_gate_ew = "0",
 		obsidian_gateway_owner_ew = "MustTest",
 		obsidian_gateway_destination_ew = "(-1530,23,2633)",
+	}}},
+	-- Gravesite sign, left.
+	{pos={x=-9265, y=4172, z=5724}, meta={fields={
+		infotext = "RiP",
+		author = "MustTest",
+		text = "RiP"
+	}}},
+	-- Gravesite sign, right.
+	{pos={x=-9267, y=4172, z=5724}, meta={fields={
+		infotext = "RiP",
+		author = "MustTest",
+		text = "RiP"
 	}}},
 }
 

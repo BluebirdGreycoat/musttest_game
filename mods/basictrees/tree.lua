@@ -34,6 +34,9 @@ minetest.register_node("basictrees:tree_trunk", {
   }),
 })
 
+-- Note: dead tree must drop itself, not regular tree, because otherwise if player
+-- places the node, they won't be able to dig it by hand again, which will be
+-- confusing.
 minetest.register_node("basictrees:tree_trunk_dead", {
 	drawtype = "nodebox",
 	paramtype = "light",
@@ -42,15 +45,13 @@ minetest.register_node("basictrees:tree_trunk_dead", {
 		fixed = basictrees.trunk_nodebox,
 	},
 
-	description = "Tree",
-	tiles = {"default_tree_top.png", "default_tree_top.png", "default_tree.png"},
+	description = "Dead Tree",
+	tiles = {"default_tree_dead_top.png", "default_tree_dead_top.png", "default_tree_dead.png"},
 	paramtype2 = "facedir",
 	groups = basictrees.dead_tree_groups,
 	sounds = default.node_sound_wood_defaults(),
 	on_place = minetest.rotate_node,
 	movement_speed_multiplier = default.NORM_SPEED,
-
-	drop = "basictrees:tree_trunk",
 })
 
 
@@ -152,6 +153,13 @@ minetest.register_craft({
 	output = 'basictrees:tree_wood 4',
 	recipe = {
 		{'basictrees:tree_trunk'},
+	}
+})
+
+minetest.register_craft({
+	output = 'basictrees:tree_wood 4',
+	recipe = {
+		{'basictrees:tree_trunk_dead'},
 	}
 })
 

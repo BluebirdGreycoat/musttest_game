@@ -22,6 +22,7 @@ minetest.register_node("bedrock:fullclip", {
 	drawtype = "airlike",
 	paramtype = "light",
 	sunlight_propagates = true,
+	pointable = false,
 
 	groups = {unbreakable = 1, immovable = 1, not_in_creative_inventory = 1},
 	drop = "",

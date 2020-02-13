@@ -33,7 +33,7 @@ function serveressentials.check_outback_reset()
 
 		serveressentials.rebuild_outback()
 		minetest.chat_send_all("# Server: The desert wind ceases to blow across the Outback.")
-		minetest.chat_send_all("# Server: Then it resumes, and there is nothing left of what went before.")
+		minetest.chat_send_all("# Server: When it resumes, there is nothing left of what went before.")
 	end
 end
 minetest.after(0, function() serveressentials.check_outback_reset() end)

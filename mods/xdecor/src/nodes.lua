@@ -296,6 +296,10 @@ local xdecor_doors = {
 		{"default:stone", "default:stone"},
 		{"default:stone", "default:stone"},
 		{"default:stone", "default:stone"}}, groups=utility.dig_groups("door_stone") },
+	redstone = { recipe = {
+		{"rackstone:rackstone", "rackstone:rackstone"},
+		{"rackstone:rackstone", "rackstone:rackstone"},
+		{"rackstone:rackstone", "rackstone:rackstone"}}, groups=utility.dig_groups("door_stone") },
 }
 
 for name, entry in pairs(xdecor_doors) do

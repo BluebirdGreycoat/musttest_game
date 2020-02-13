@@ -375,6 +375,15 @@ if not redstone_furnace.run_once then
     }
   })
   
+  minetest.register_craft({
+    output = 'redstone_furnace:inactive',
+    recipe = {
+      {'default:desert_cobble', 'default:desert_cobble', 'default:desert_cobble'},
+      {'default:desert_cobble', 'group:torch_craftitem', 'default:desert_cobble'},
+      {'default:desert_cobble', 'default:desert_cobble', 'default:desert_cobble'},
+    }
+  })
+
   local c = "redstone_furnace:core"
   local f = redstone_furnace.modpath .. "/init.lua"
   reload.register_file(c, f, false)

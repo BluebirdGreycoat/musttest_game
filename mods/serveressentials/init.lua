@@ -1,7 +1,11 @@
 
 serveressentials = serveressentials or {}
 serveressentials.modpath = minetest.get_modpath("serveressentials")
-serveressentials.modstorage = minetest.get_mod_storage()
+
+-- Can be gotton once only, at load time.
+if not serveressentials.modstorage then
+	serveressentials.modstorage = minetest.get_mod_storage()
+end
 
 dofile(serveressentials.modpath .. "/outback.lua")
 

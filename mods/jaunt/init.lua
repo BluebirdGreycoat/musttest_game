@@ -1,7 +1,7 @@
 
 jaunt = jaunt or {}
 jaunt.modpath = minetest.get_modpath("jaunt")
-jaunt.jump_range = 2000
+jaunt.jump_range = 3000
 
 -- private: assemble a formspec string
 function jaunt.get_formspec(player)
@@ -71,20 +71,24 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							end
 
 							local tarpos = vector.round(other:get_pos())
-							if vector.distance(tarpos, uspos) < range then
+							if rc.current_realm_at_pos(tarpos) == rc.current_realm_at_pos(uspos) then
+								if vector.distance(tarpos, uspos) < range then
 
-								-- Teleport player to chosen location.
-								preload_tp.preload_and_teleport(pname, tarpos, 16, nil,
-								function()
-									portal_sickness.on_use_portal(pname)
-								end,
-								nil, false)
+									-- Teleport player to chosen location.
+									preload_tp.preload_and_teleport(pname, tarpos, 16, nil,
+									function()
+										portal_sickness.on_use_portal(pname)
+									end,
+									nil, false)
 
-								-- don't reshow the formspec
-								minetest.close_formspec(pname, "jaunt:fs")
-								return true
+									-- don't reshow the formspec
+									minetest.close_formspec(pname, "jaunt:fs")
+									return true
+								else
+									minetest.chat_send_player(pname, "# Server: Target Key's signal origin is too weak to accurately triangulate!")
+								end
 							else
-								minetest.chat_send_player(pname, "# Server: Target Key's signal origin is too weak to accurately triangulate!")
+								minetest.chat_send_player(pname, "# Server: Target's Key is not located in this realm!")
 							end
 						else
 							minetest.chat_send_player(pname, "# Server: Target's beacon signal does not originate from an authentic Key device.")

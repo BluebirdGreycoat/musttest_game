@@ -101,6 +101,8 @@ function rc.position_underground(pos)
 end
 
 -- Used by ice/ice-brick/snow nodes to determine if they should melt away.
+-- This is also used by the tree-snowdust code to determine whether a tree
+-- should spawn with snow on top.
 function rc.ice_melts_at_pos(pos)
 	if pos.y < -26000 or pos.y > 1000 then
 		return true

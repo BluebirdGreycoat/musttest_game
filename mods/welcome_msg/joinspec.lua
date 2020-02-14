@@ -170,6 +170,7 @@ function joinspec.on_receive_fields(player, formname, fields)
 
 	if fields.wrongserver then
 		minetest.kick_player(pname, "You pressed the 'Leave Server' button. ;-)")
+		minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was kicked off the server.")
 	end
 
 	if fields.passport then

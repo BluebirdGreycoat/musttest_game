@@ -3,8 +3,8 @@ afk_removal = afk_removal or {}
 afk_removal.players = afk_removal.players or {}
 afk_removal.modpath = minetest.get_modpath("afk_removal")
 afk_removal.steptime = 5
-afk_removal.timeout = 60 * 10
-afk_removal.warntime = 60 * 9
+afk_removal.timeout = 60 * 30
+afk_removal.warntime = 60 * 29
 
 
 

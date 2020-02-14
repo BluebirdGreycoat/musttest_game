@@ -64,6 +64,7 @@ minetest.register_node("rackstone:cobble", {
 	_toolranks = {
 		ignore = true,
 	},
+	_no_auto_pop = true,
 })
 
 minetest.register_node("rackstone:rackstone_brick2", {
@@ -155,12 +156,12 @@ minetest.register_node("rackstone:redrack", {
 	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+	drop = "rackstone:redrack_cobble",
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
 		ignore = true,
 	},
-	_no_auto_pop = true,
   
   after_destruct = function(...)
     after_redrack_remove(...)
@@ -187,6 +188,49 @@ minetest.register_node("rackstone:redrack", {
 		end
 	end,
 })
+
+
+
+minetest.register_node("rackstone:redrack_cobble", {
+	description = "Cobbled Netherack",
+	tiles = {"rackstone_redrack_cobble.png"},
+	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
+	sounds = rackstone.rackstone_sounds(),
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
+	_no_auto_pop = true,
+
+  after_destruct = function(...)
+    after_redrack_remove(...)
+    rackstone.destabilize_dauthsand(...)
+  end,
+
+  on_construct = function(...)
+    on_redrack_place(...)
+  end,
+
+	on_player_walk_over = function(pos, player)
+		if math.random(1, 2000) == 1 then
+			minetest.after(math.random(1, 4), function()
+				if not minetest.test_protection(pos, "") then
+					tnt.boom(pos, {
+						radius = 2,
+						ignore_protection = false,
+						ignore_on_blast = false,
+						damage_radius = 3,
+						disable_drops = true,
+					})
+				end
+			end)
+		end
+	end,
+})
+
+
 
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
@@ -544,6 +588,13 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "cooking",
+	output = 'rackstone:redrack',
+	recipe = 'rackstone:redrack_cobble',
+	cooktime = 3,
+})
+
+minetest.register_craft({
 	type = "grinding",
 	output = 'rackstone:dauthsand',
 	recipe = 'rackstone:redrack',
@@ -610,6 +661,15 @@ stairs.register_stair_and_slab(
 	{cracky=3},
 	{"rackstone_redrack.png"},
 	"Netherack",
+	rackstone.rackstone_sounds()
+)
+
+stairs.register_stair_and_slab(
+	"redrack_cobble",
+	"rackstone:redrack_cobble",
+	{cracky=3},
+	{"rackstone_redrack_cobble.png"},
+	"Cobbled Netherack",
 	rackstone.rackstone_sounds()
 )
 

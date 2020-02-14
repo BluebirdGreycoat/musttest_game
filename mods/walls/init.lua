@@ -442,6 +442,9 @@ walls.register("desertcobble2", "Cobble Redstone", "default_desert_cobble2.png",
 walls.register("redrack", "Netherack", "rackstone_redrack.png",
 		"rackstone:redrack", default.node_sound_stone_defaults())
 
+walls.register("redrack_cobble", "Cobbled Netherack", "rackstone_redrack_cobble.png",
+		"rackstone:redrack_cobble", default.node_sound_stone_defaults())
+
 walls.register("redrack_brick", "Netherack Brick", "rackstone_brick.png",
 		"rackstone:brick", default.node_sound_stone_defaults())
 
@@ -459,6 +462,9 @@ walls.register("blackrack_brick", "Black Rackstone Brick", "rackstone_brick_blac
 
 walls.register("rackstone_brick", "Rackstone Brick", "rackstone_rackstone_brick.png",
 		"rackstone:rackstone_brick2", default.node_sound_stone_defaults())
+
+walls.register("rackstone", "Rackstone", "rackstone_rackstone.png",
+		"rackstone:rackstone", default.node_sound_stone_defaults())
 
 walls.register("whitestone_brick", "Bleached Brick", "whitestone_brick.png",
 		"whitestone:brick", default.node_sound_stone_defaults())

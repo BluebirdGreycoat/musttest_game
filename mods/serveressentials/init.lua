@@ -38,6 +38,30 @@ function serveressentials.check_outback_reset()
 end
 minetest.after(0, function() serveressentials.check_outback_reset() end)
 
+
+
+-- Get the number of seconds until the next schedualed reset of the Outback.
+function serveressentials.get_outback_timeout()
+	local meta = serveressentials.modstorage
+	local stime = meta:get_string("outback_reset_time")
+
+	-- If timestamp is missing, then initialize it to the current time.
+	if not stime or stime == "" then
+		stime = tostring(os.time())
+		meta:set_string("outback_reset_time", stime)
+	end
+
+	local time = tonumber(stime) -- Time of last reset (or initialization).
+	local days = 30 -- Timeout in days.
+	local timeout = 60 * 60 * 24 * days
+	local now = os.time() -- Current time.
+	local later = time + timeout -- Time of next reset.
+
+	return (later - now)
+end
+
+
+
 function serveressentials.acacia_fixup(pos)
 	local n1 = minetest.get_node(pos)
 	if n1.name == "basictrees:acacia_trunk" and n1.param2 >= 0 and n1.param2 <= 3 then

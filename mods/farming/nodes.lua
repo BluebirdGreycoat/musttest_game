@@ -319,6 +319,28 @@ for i = 1, 5 do
 	})
 end
 
+for i = 1, 5 do
+	minetest.override_item("default:dry_grass2_"..i, {
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {'potatoes:seed'}, rarity = 5},
+			},
+		},
+	})
+end
+
+for i = 1, 5 do
+	minetest.override_item("default:dry_grass2_"..i.."_hanging", {
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {'potatoes:seed'}, rarity = 5},
+			},
+		},
+	})
+end
+
 minetest.override_item("default:junglegrass", {
 	drop = {
 		max_items = 1,

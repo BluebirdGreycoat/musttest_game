@@ -5,18 +5,21 @@ jaunt.jump_range = 3000
 
 -- private: assemble a formspec string
 function jaunt.get_formspec(player)
-	local formspec = "size[4.5,2.6]" ..
+	local formspec = "size[4.5,5.5]" ..
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots
 
 	formspec = formspec ..
 		"item_image[0,0;1,1;passport:passport_adv]" ..
-    "label[1,0;Key: Teleport to Player Beacon]" ..
-    "label[1,0.4;Requires Teleport for Anchor]" ..
+    "label[1,0;Key: Teleport to player beacon.]" ..
+    "label[1,0.4;Requires teleport for anchor.]" ..
 		"field[0.3,1.3;2.9,1;player;;]" ..
 		"button[3.0,1.0;1.5,1;go;Jaunt]" ..
-		"button[1.25,2.0;2.25,1;cancel;Abort]"
+		"button[1.25,2.0;2.25,1;cancel;Abort]" ..
+    "label[0,3;Jaunt range is influenced by the status\nof the target's beacon. Marked players can\nbe found from farther.]" ..
+		"item_image[1.25,4.5;1,1;command_tokens:mark_player]" ..
+		"item_image[2.25,4.5;1,1;player_labels:show]"
 
 	return formspec
 end

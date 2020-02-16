@@ -25,7 +25,7 @@ function chat_colorize.notify_death(pname)
 
 	chat_colorize.player_just_died[pname] = true
 
-	minetest.after(math.random(10, 20), function()
+	minetest.after(math.random(30, 60), function()
 		chat_colorize.player_just_died[pname] = nil
 	end)
 end

@@ -1,3 +1,4 @@
+[2020/2/16] Added a new kind of glowstone, only obtainable in the Outback.
 [2020/2/13] Mostly finished created a new realm, for new players.
 [2020/2/10] Added huge cavern ambiance.
 [2020/2/9] Finally implemented reward (cloaking) for beating the Nether Challenge!

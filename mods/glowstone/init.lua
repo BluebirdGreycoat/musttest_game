@@ -22,6 +22,19 @@ minetest.register_node("glowstone:luxore", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
+-- Note: this spawns ONLY in the Outback realm!
+-- Silver picks cannot be obtained there (no silver).
+-- Therefore node must drop itself when dug.
+-- Shall have no crafting recipe. Only obtained in the Outback.
+minetest.register_node("glowstone:cobble", {
+	description = "Sunstone Deposit",
+	tiles = {"glowstone_cobble.png"},
+	paramtype = "light",
+	light_source = 14,
+	groups = utility.dig_groups("mineral", {glowmineral = 1}),
+	sounds = default.node_sound_stone_defaults(),
+})
+
 
 
 minetest.register_node("glowstone:minerals", {
@@ -64,7 +77,7 @@ end
 
 
 minetest.register_node("glowstone:glowstone", {
-	description = "Glowstone",
+	description = "Toxic Glowstone",
 	tiles = {"glowstone_glowstone.png"},
 	paramtype = "light",
 	light_source = 14,

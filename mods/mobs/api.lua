@@ -3272,19 +3272,25 @@ end
 local function mob_activate(self, staticdata, def, dtime)
 
 	-- remove monsters in peaceful mode
-	if self.type == "monster"
-	and peaceful_only then
+	--if self.type == "monster" and peaceful_only then
+	--	self.object:remove()
+	--	return
+	--end
 
-		self.object:remove()
-
-		return
+	-- Remove mob if activated during daytime and has 'daytime_despawn'.
+	if self.daytime_despawn then
+		local tod = (minetest.get_timeofday() or 0) * 24000
+		if tod > 4500 and tod < 19500 then
+			-- Daylight, but mob despawns at daytime.
+			self.object:remove()
+			return
+		end
 	end
 
 	-- load entity variables
 	local tmp = minetest.deserialize(staticdata)
-
 	if tmp then
-		for _,stat in pairs(tmp) do
+		for _, stat in pairs(tmp) do
 			self[_] = stat
 		end
 	end

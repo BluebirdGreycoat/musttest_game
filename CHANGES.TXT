@@ -1,3 +1,4 @@
+[2020/2/16] Icemen (and some other mobs) no longer appear if loaded from old mapblocks during daytime (this is a bugfix).
 [2020/2/16] Added some help/info-text to the jaunt formspec from the Key.
 [2020/2/16] Improved textures for various seeds for farming plants.
 [2020/2/16] Added a new kind of glowstone, only obtainable in the Outback.

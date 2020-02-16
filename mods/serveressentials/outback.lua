@@ -72,15 +72,15 @@ local metadata = {
 	}}},
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4172, z=5724}, meta={fields={
-		infotext = "RiP",
+		infotext = "Henry D. Miner\nApril 13, 1821 - October 3, 1890\n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\"",
 		author = "MustTest",
-		text = "RiP"
+		text = "Henry D. Miner%nApril 13, 1821 - October 3, 1890%n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\""
 	}}},
 	-- Gravesite sign, right.
 	{pos={x=-9267, y=4172, z=5724}, meta={fields={
-		infotext = "RiP",
+		infotext = "Martha Ann Lee Miner\nNovember 2, 1829 - February 19, 1897",
 		author = "MustTest",
-		text = "RiP"
+		text = "Martha Ann Lee Miner%nNovember 2, 1829 - February 19, 1897"
 	}}},
 }
 

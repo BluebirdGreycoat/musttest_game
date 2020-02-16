@@ -82,6 +82,18 @@ local metadata = {
 		author = "MustTest",
 		text = "Martha Ann Lee Miner%nNovember 2, 1829 - February 19, 1897"
 	}}},
+	-- Spawn sign, left.
+	{pos={x=-9221, y=4170, z=5861}, meta={fields={
+		infotext = "Use /spawn to get back here.",
+		author = "MustTest",
+		text = "Use /spawn to get back here."
+	}}},
+	-- Spawn sign, right.
+	{pos={x=-9221, y=4170, z=5860}, meta={fields={
+		infotext = "Use /info to get help.",
+		author = "MustTest",
+		text = "Use /info to get help."
+	}}},
 }
 
 local function rebuild_metadata()

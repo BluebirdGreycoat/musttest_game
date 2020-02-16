@@ -3,8 +3,9 @@ randspawn = randspawn or {}
 randspawn.modpath = minetest.get_modpath("randspawn")
 
 -- Central square.
-local fallback_pos = {x=0, y=-7, z=0}
+--local fallback_pos = {x=0, y=-7, z=0}
 
+--[[
 local ab = {
 	{pos = {x=0, y=-7, z=0}, name="Central Plaza"}, -- Central.
 	{pos = {x=0, y=-7, z=198}, name="North Quarter"}, -- North.
@@ -27,8 +28,15 @@ local positions = {
 	[11]=ab[4],
 	[12]=ab[5],
 }
+--]]
 
 local function get_respawn_position(death_pos)
+	-- Regardless of where player dies, if they have no bed,
+	-- then they respawn in the outback. Note that a player may lose their bed if
+	-- killed by another player outside of the city.
+	return rc.static_spawn("abyss")
+
+	--[[
 	-- If player died in the abyss they respawn in the abyss.
 	local rn = rc.current_realm_at_pos(death_pos)
 	if rn == "abyss" or rn == "" then
@@ -54,10 +62,12 @@ local function get_respawn_position(death_pos)
 	else
 		return fallback_pos
 	end
+	--]]
 end
 randspawn.get_respawn_pos = get_respawn_position
 
--- Note: this is also called from the /spawn chatcommand.
+-- Note: this is also called from the /spawn chatcommand,
+-- but only after validation passes (distance, etc.).
 randspawn.reposition_player = function(pname, death_pos)
 	local player = minetest.get_player_by_name(pname)
 	if player then
@@ -81,7 +91,11 @@ function randspawn.on_newplayer(player)
 end
 --]]
 
+-- The calendar item calls this to report the location of the current spawnpoint.
 function randspawn.get_spawn_name()
+	return "Central Plaza"
+
+	--[[
 	local tb = os.date("*t")
 	local m = tb.month
 	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
@@ -89,6 +103,7 @@ function randspawn.get_spawn_name()
 	else
 		return "Central Plaza"
 	end
+	--]]
 end
 
 

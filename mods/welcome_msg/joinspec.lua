@@ -44,7 +44,7 @@ function joinspec.on_joinplayer(player)
 	else
 		minetest.log("error", "Player " .. pname .. " joined while dead! Not showing welcome formspec.")
 
-		-- Force respawn player in city (bypass bed code for simplicity's sake)
+		-- Force respawn player in Outback (bypass bed code for simplicity's sake)
 		-- if player joins while dead. This nixes a 'disconnect on death' hack.
 		-- An uncracked client will still display the respawn formspec, and the
 		-- player will respawn again in their bed after pressing the button.

@@ -131,7 +131,7 @@ function hud_clock.get_date_string()
 end
 
 function hud_clock.get_calendar_infotext()
-	return hud_clock.get_date_string() .. "\nCurrent Spawn: " .. randspawn.get_spawn_name()
+	return hud_clock.get_date_string() .. "\nSpawn: " .. randspawn.get_spawn_name()
 end
 
 minetest.register_node("clock:calendar", {

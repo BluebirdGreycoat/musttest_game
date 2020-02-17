@@ -3,7 +3,7 @@ joinspec = joinspec or {}
 joinspec.modpath = minetest.get_modpath("welcome_msg")
 
 joinspec.data = {
-	warning = "Welcome to the frontier, Stranger! You have arrived on Enyekala (Must Test), an advanced survival-mode game built on top of the Minetest Project (https://www.minetest.net/).\n\n" ..
+	warning = "Welcome to the frontier, Stranger! You have arrived on Enyekala (Must Test), a complex, detailed survival-mode game built on top of the Minetest Engine (https://www.minetest.net/).\n\n" ..
 		"Please read this text, as it contains important information about this server. You will need to scroll this text to read all of it. Once you have closed this formspec, you can reshow it by typing “/info” in the chat, without quotes.\n\n" ..
 		"This is a heavily modded, hard-core PvP & PvE survival server. " ..
 		"The only way to find greatness is to survive, mine, build, and fight your way up! " ..

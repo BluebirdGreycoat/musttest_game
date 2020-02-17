@@ -764,12 +764,14 @@ stairs.register_stair_and_slab(
 
 
 
+-- These nodes appear only in the Outback.
+-- They have enhanced drops in order to help new players.
 minetest.register_node("rackstone:rackstone_with_coal", {
   description = "Rackstone With Coal",
   tiles = {"rackstone_rackstone.png^default_mineral_coal.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:coal_lump",
+  drop = "default:coal_lump 3",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -779,7 +781,7 @@ minetest.register_node("rackstone:rackstone_with_iron", {
   tiles = {"rackstone_rackstone.png^default_mineral_iron.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:iron_lump",
+  drop = "default:iron_lump 3",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -789,7 +791,7 @@ minetest.register_node("rackstone:rackstone_with_copper", {
   tiles = {"rackstone_rackstone.png^default_mineral_copper.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:copper_lump",
+  drop = "default:copper_lump 2",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -799,7 +801,7 @@ minetest.register_node("rackstone:rackstone_with_gold", {
   tiles = {"rackstone_rackstone.png^default_mineral_gold.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:gold_lump",
+  drop = "default:gold_lump 2",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -809,7 +811,7 @@ minetest.register_node("rackstone:rackstone_with_diamond", {
   tiles = {"rackstone_rackstone.png^default_mineral_diamond.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:diamond",
+  drop = "default:diamond 2",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -819,7 +821,7 @@ minetest.register_node("rackstone:rackstone_with_mese", {
   tiles = {"rackstone_rackstone.png^default_mineral_mese.png"},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "default:mese_crystal",
+  drop = "default:mese_crystal 2",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
@@ -829,7 +831,7 @@ minetest.register_node("rackstone:rackstone_with_meat", {
   tiles = {"rackstone_rackstone.png^rackstone_meat.png"},
   groups = utility.dig_groups("netherack", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
-  drop = "mobs:meat_raw 3",
+  drop = "mobs:meat_raw 4",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })

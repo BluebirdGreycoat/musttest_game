@@ -3,7 +3,7 @@ serveressentials = serveressentials or {}
 serveressentials.modpath = minetest.get_modpath("serveressentials")
 
 -- Reset timeout in days.
-serveressentials.reset_timeout = 7
+serveressentials.reset_timeout = 30
 
 -- Can be gotton once only, at load time.
 if not serveressentials.modstorage then

@@ -1,3 +1,4 @@
+[2020/2/17] Added protectors to important locations in the Outback dimension.
 [2020/2/17] Improve ore drops in the Outback so that a new player doesn't have to mine so much.
 [2020/2/17] Added a calendar to player start items.
 [2020/2/17] Experiment: reset the Outback every week instead of every month.

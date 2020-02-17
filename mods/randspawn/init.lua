@@ -1,6 +1,8 @@
 
 randspawn = randspawn or {}
 randspawn.modpath = minetest.get_modpath("randspawn")
+randspawn.min_days = 10
+randspawn.max_days = 90
 
 function randspawn.check_spawn_reset()
 	local meta = randspawn.modstorage
@@ -10,7 +12,7 @@ function randspawn.check_spawn_reset()
 	-- Outback reset will be schedualed after the timeout.
 	if not stime or stime == "" then
 		local time = os.time()
-		local days = 60*60*24*math.random(7, 31)
+		local days = 60*60*24*math.random(randspawn.min_days, randspawn.max_days)
 		time = time + days
 		stime = tostring(time)
 		meta:set_string("spawn_reset_timer", stime)
@@ -24,7 +26,7 @@ function randspawn.check_spawn_reset()
 	local later = tonumber(stime) -- Time of future reset (or initialization).
 
 	if now >= later then
-		later = later + 60*60*24*math.random(7, 31)
+		later = later + 60*60*24*math.random(randspawn.min_days, randspawn.max_days)
 		stime = tostring(later)
 		meta:set_string("spawn_reset_timer", stime)
 

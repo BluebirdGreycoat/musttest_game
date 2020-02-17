@@ -49,6 +49,39 @@ local register_reinforce = function(basename)
 		})
 	end
 
+	-- Reinforced Window.
+	do
+		local itemname = string.split(basename, ":")[2]
+		local realname = "dk_reinforced:" .. itemname .. "_cross"
+
+		local reinforced = table.copy(ndef)
+		reinforced.description = "Reinforced " .. ndef.description .. " Cross"
+		for i, tile in ipairs(reinforced.tiles) do
+			reinforced.tiles[i] = tile .. "^darkage_reinforce_window.png"
+		end
+
+		-- Don't inherit groups from parent node.
+		reinforced.groups = make_new_groups(reinforced.groups or {})
+
+		minetest.register_node(realname, reinforced)
+
+		minetest.register_craft({
+			output = realname,
+			recipe = {
+				{"",	"group:stick", 			""},
+				{"group:stick",						basename,	"group:stick"},
+				{"",	"group:stick", 			""},
+			}
+		})
+
+		-- Recycling.
+		minetest.register_craft({
+			type = "shapeless",
+			output = basename,
+			recipe = {realname},
+		})
+	end
+
 	-- Reinforced Slope.
 	do
 		local itemname = string.split(basename, ":")[2]

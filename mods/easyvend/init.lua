@@ -154,18 +154,18 @@ minetest.register_node("easyvend:depositor_on", depositor_on)
 minetest.register_craft({
 	output = 'easyvend:vendor',
 	recipe = {
-								{'group:wood', 'group:wood', 'group:wood'},
-								{'group:wood', 'techcrafts:control_logic_unit', 'group:wood'},
-								{'group:wood', 'default:steel_ingot', 'group:wood'},
-				}
+		{'group:wood', 'group:wood', 'group:wood'},
+		{'group:wood', 'xdecor:lever_off', 'group:wood'},
+		{'group:wood', 'default:steel_ingot', 'group:wood'},
+	}
 })
 
 minetest.register_craft({
 	output = 'easyvend:depositor',
 	recipe = {
-								{'group:wood', 'default:steel_ingot', 'group:wood'},
-								{'group:wood', 'techcrafts:control_logic_unit', 'group:wood'},
-								{'group:wood', 'group:wood', 'group:wood'},
-				}
+		{'group:wood', 'default:steel_ingot', 'group:wood'},
+		{'group:wood', 'xdecor:lever_off', 'group:wood'},
+		{'group:wood', 'group:wood', 'group:wood'},
+	}
 })
 

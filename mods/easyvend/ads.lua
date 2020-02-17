@@ -1151,7 +1151,7 @@ if not ads.run_once then
 		recipe = {
 			{'', 'default:sign_wall_wood', ''},
 			{'chests:chest_public_closed', 'easyvend:vendor', 'chests:chest_public_closed'},
-			{'', 'techcrafts:control_logic_unit', ''},
+			{'', 'fine_wire:copper', ''},
 		},
 	})
 

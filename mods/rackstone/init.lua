@@ -249,6 +249,14 @@ minetest.register_node("rackstone:nether_grit", {
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
 	damage_per_second = 1,
+
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {'default:flint'}, rarity = 16},
+			{items = {'rackstone:nether_grit'}}
+		}
+	},
 })
 
 minetest.register_node("rackstone:void", {

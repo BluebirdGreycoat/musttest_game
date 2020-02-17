@@ -1,3 +1,5 @@
+[2020/2/16] The calendar item now displays timers for events in the Outback and its Dimensional Gate.
+[2020/2/16] The Dimensional Gate in the outback now changes its exit location from time to time ….
 [2020/2/16] Icemen (and some other mobs) no longer appear if loaded from old mapblocks during daytime (this is a bugfix).
 [2020/2/16] Added some help/info-text to the jaunt formspec from the Key.
 [2020/2/16] Improved textures for various seeds for farming plants.

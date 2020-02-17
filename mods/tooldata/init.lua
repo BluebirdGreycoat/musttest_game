@@ -214,7 +214,7 @@ tooldata["pick_bronze"] = {
 	max_drop_level = 0,
 	groupcaps = {
 		-- Improved wear handling, otherwise players may not find it worth it.
-		cracky = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+		cracky = {times={[2]=0.40, [3]=0.40}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }
@@ -258,7 +258,7 @@ tooldata["pick_bronze2"] = {
 	max_drop_level = 1,
 	groupcaps = {
 		-- Improved wear handling, otherwise players may not find it worth it.
-		cracky = {times={[2]=0.40, [3]=0.40}, uses=150, maxlevel=2},
+		cracky = {times={[2]=0.40, [3]=0.40}, uses=250, maxlevel=2},
 	},
 	damage_groups = {fleshy=13, cracky=1, crumbly=1, knockback=6},
 }

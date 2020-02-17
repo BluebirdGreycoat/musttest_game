@@ -1,8 +1,13 @@
 
 randspawn = randspawn or {}
 randspawn.modpath = minetest.get_modpath("randspawn")
+
+-- After the Outback gateway exit coordinates are changed, this is the min and
+-- max number of days until it changes again.
 randspawn.min_days = 10
 randspawn.max_days = 90
+
+
 
 function randspawn.check_spawn_reset()
 	local meta = randspawn.modstorage
@@ -103,69 +108,15 @@ end
 
 
 
--- Central square.
---local fallback_pos = {x=0, y=-7, z=0}
-
---[[
-local ab = {
-	{pos = {x=0, y=-7, z=0}, name="Central Plaza"}, -- Central.
-	{pos = {x=0, y=-7, z=198}, name="North Quarter"}, -- North.
-	{pos = {x=198, y=-7, z=0}, name="East Quarter"}, -- East.
-	{pos = {x=0, y=-7, z=-198}, name="South Quarter"}, -- South.
-	{pos = {x=-198, y=-7, z=0}, name="West Quarter"}, -- West.
-}
-
-local positions = {
-	[1]=ab[2],
-	[2]=ab[3],
-	[3]=ab[4],
-	[4]=ab[5],
-	[5]=ab[2],
-	[6]=ab[3],
-	[7]=ab[4],
-	[8]=ab[5],
-	[9]=ab[2],
-	[10]=ab[3],
-	[11]=ab[4],
-	[12]=ab[5],
-}
---]]
-
 local function get_respawn_position(death_pos)
 	-- Regardless of where player dies, if they have no bed,
 	-- then they respawn in the outback. Note that a player may lose their bed if
 	-- killed by another player outside of the city.
 	return rc.static_spawn("abyss")
-
-	--[[
-	-- If player died in the abyss they respawn in the abyss.
-	local rn = rc.current_realm_at_pos(death_pos)
-	if rn == "abyss" or rn == "" then
-		return rc.static_spawn("abyss")
-	end
-	if rn == "channelwood" or rn == "jarkati" then
-		return rc.static_spawn("abyss")
-	end
-
-	-- Otherwise player is in the overworld, caverns, or netherealms.
-	-- They respawn in one of the cities.
-
-	local tb = os.date("*t")
-	local m = tb.month
-	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
-		local pos = vector.new(positions[m].pos)
-		-- If player dies in the nether they respawn in the Nether City.
-		if death_pos.y < -25000 then
-			pos.y = -30793
-		end
-		--minetest.chat_send_all("respawn at " .. minetest.pos_to_string(pos))
-		return pos
-	else
-		return fallback_pos
-	end
-	--]]
 end
 randspawn.get_respawn_pos = get_respawn_position
+
+
 
 -- Note: this is also called from the /spawn chatcommand,
 -- but only after validation passes (distance, etc.).
@@ -182,15 +133,7 @@ randspawn.reposition_player = function(pname, death_pos)
 	end
 end
 
---[[
-function randspawn.on_newplayer(player)
-	local pname = player:get_player_name()
-	local fake_dpos = rc.static_spawn("abyss")
-	minetest.after(0.1, function()
-		randspawn.reposition_player(pname, fake_dpos)
-	end)
-end
---]]
+
 
 -- The calendar item calls this to report the location of the current spawnpoint.
 function randspawn.get_spawn_name()
@@ -201,16 +144,6 @@ function randspawn.get_spawn_name()
 	end
 
 	return "Unknown Location"
-
-	--[[
-	local tb = os.date("*t")
-	local m = tb.month
-	if positions[m] and tb.wday ~= 7 and tb.wday ~= 1 then
-		return positions[m].name
-	else
-		return "Central Plaza"
-	end
-	--]]
 end
 
 
@@ -220,12 +153,6 @@ if not randspawn.run_once then
 	local file = randspawn.modpath .. "/init.lua"
 	local name = "randspawn:core"
 	reload.register_file(name, file, false)
-
-	--[[
-	minetest.register_on_newplayer(function(...)
-		return randspawn.on_newplayer(...)
-	end)
-	--]]
 
 	randspawn.modstorage = minetest.get_mod_storage()
 	randspawn.run_once = true

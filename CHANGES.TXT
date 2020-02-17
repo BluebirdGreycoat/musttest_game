@@ -1,3 +1,4 @@
+[2020/2/17] Experiment: reset the Outback every week instead of every month.
 [2020/2/17] Added a tinderbox to player start items.
 [2020/2/17] Tinderbox is now craftable using charcoal.
 [2020/2/17] Reduced level of Nether grit and dauthsand from 3 to 2, for easier digging.

@@ -2,6 +2,9 @@
 serveressentials = serveressentials or {}
 serveressentials.modpath = minetest.get_modpath("serveressentials")
 
+-- Reset timeout in days.
+serveressentials.reset_timeout = 7
+
 -- Can be gotton once only, at load time.
 if not serveressentials.modstorage then
 	serveressentials.modstorage = minetest.get_mod_storage()
@@ -22,7 +25,7 @@ function serveressentials.check_outback_reset()
 	end
 
 	local time = tonumber(stime) -- Time of last reset (or initialization).
-	local days = 30 -- Timeout in days.
+	local days = serveressentials.reset_timeout -- Timeout in days.
 	local timeout = 60 * 60 * 24 * days
 	local now = os.time() -- Current time.
 	local later = time + timeout -- Time of next reset.

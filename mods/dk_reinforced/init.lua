@@ -206,4 +206,5 @@ register_reinforce("moreblocks:tar")
 register_reinforce("glowstone:glowstone")
 register_reinforce("glowstone:minerals")
 register_reinforce("luxore:luxore")
+register_reinforce("glowstone:cobble")
 

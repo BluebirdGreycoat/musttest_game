@@ -41,6 +41,7 @@ minetest.after(0, function() serveressentials.check_outback_reset() end)
 
 
 -- Get the number of seconds until the next schedualed reset of the Outback.
+-- This is also used by the calendar item.
 function serveressentials.get_outback_timeout()
 	local meta = serveressentials.modstorage
 	local stime = meta:get_string("outback_reset_time")

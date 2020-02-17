@@ -1,4 +1,39 @@
 
+local function get_exit_location()
+	local meta = serveressentials.modstorage
+	local s = meta:get_string("outback_exit_location")
+	if s and s ~= "" then
+		local p = minetest.string_to_pos(s)
+		if p then
+			return s
+		end
+	end
+
+	-- Fallback.
+	return "(0,-7,0)"
+end
+serveressentials.get_exit_location = get_exit_location
+
+function serveressentials.get_current_exit_location()
+	-- Also need to update the gate itself, right away.
+	local m2 = minetest.get_meta({x=-9164, y=4101, z=5780})
+	local s2 = m2:get_string("obsidian_gateway_destination_ew")
+	return s2
+end
+
+function serveressentials.update_exit_location(pos)
+	pos = vector.round(pos)
+
+	-- Update the location stored in mod-storage.
+	local meta = serveressentials.modstorage
+	local s = minetest.pos_to_string(pos)
+	meta:set_string("outback_exit_location", s)
+
+	-- Also need to update the gate itself, right away.
+	local m2 = minetest.get_meta({x=-9164, y=4101, z=5780})
+	m2:set_string("obsidian_gateway_destination_ew", s)
+end
+
 local nodes = {
 	-- Replace torches with real lanterns in front of the gate.
 	{pos={x=-9167, y=4103, z=5779}, node={name="xdecor:lantern", param2=1}},
@@ -68,7 +103,7 @@ local metadata = {
 		obsidian_gateway_success_ew = "yes",
 		obsidian_gateway_return_gate_ew = "0",
 		obsidian_gateway_owner_ew = "MustTest",
-		obsidian_gateway_destination_ew = "(-1530,23,2633)",
+		obsidian_gateway_destination_ew = get_exit_location(),
 	}}},
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4172, z=5724}, meta={fields={

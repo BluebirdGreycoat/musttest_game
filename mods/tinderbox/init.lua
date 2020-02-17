@@ -93,6 +93,15 @@ if not tinderbox.registered then
 		},
 	})
 
+	minetest.register_craft({
+		output = "tinderbox:tinderbox",
+		recipe = {
+			{'', 'group:stick', ''},
+			{'group:stick', 'charcoal:charcoal', 'group:stick'},
+			{'', 'group:stick', 'group:leaves'},
+		},
+	})
+
 	local c = "tinderbox:core"
 	local f = tinderbox.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

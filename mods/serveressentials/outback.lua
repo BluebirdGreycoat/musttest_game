@@ -41,6 +41,17 @@ local nodes = {
 
 	-- Add a furnace to the miner's hut.
 	{pos={x=-9177, y=4176, z=5745}, node={name="redstone_furnace:inactive", param2=3}},
+
+	-- Graveyard protector.
+	{pos={x=-9266, y=4170, z=5724}, node={name="protector:protect3", param2=0}},
+
+	-- Farm protectors.
+	{pos={x=-9082, y=4179, z=5720}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9139, y=4168, z=5795}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9199, y=4169, z=5836}, node={name="protector:protect3", param2=0}},
+
+	-- Protector in the miner's hut.
+	{pos={x=-9176, y=4175, z=5745}, node={name="protector:protect3", param2=0}},
 }
 
 local function rebuild_nodes()
@@ -94,7 +105,7 @@ local metadata = {
 	{pos={x=-9174, y=4175, z=5744}, meta={fields={
 		state = "1",
 	}}},
-	-- Door on the secret beer stash.
+	-- Door on the calico stash (safe from Indians!).
 	{pos={x=-9090, y=4182, z=5869}, meta={fields={
 		state = "0",
 	}}},
@@ -128,6 +139,39 @@ local metadata = {
 		infotext = "Use /info to get help.",
 		author = "MustTest",
 		text = "Use /info to get help."
+	}}},
+	-- Graveyard protector.
+	{pos={x=-9266, y=4170, z=5724}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
+	}}},
+	-- Farm protectors.
+	{pos={x=-9082, y=4179, z=5720}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
+	}}},
+	{pos={x=-9139, y=4168, z=5795}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
+	}}},
+	{pos={x=-9199, y=4169, z=5836}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
+	}}},
+	-- Protector in the miner's hut.
+	{pos={x=-9176, y=4175, z=5745}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
 	}}},
 }
 

@@ -52,6 +52,9 @@ local nodes = {
 
 	-- Protector in the miner's hut.
 	{pos={x=-9176, y=4175, z=5745}, node={name="protector:protect3", param2=0}},
+
+	-- Spawn protector.
+	{pos={x=-9223, y=4168, z=5861}, node={name="protector:protect3", param2=0}},
 }
 
 local function rebuild_nodes()
@@ -168,6 +171,13 @@ local metadata = {
 	}}},
 	-- Protector in the miner's hut.
 	{pos={x=-9176, y=4175, z=5745}, meta={fields={
+		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
+		owner = "MustTest",
+		placedate = "2020/02/12 UTC",
+		rename = "MustTest",
+	}}},
+	-- Spawn protector.
+	{pos={x=-9223, y=4168, z=5861}, meta={fields={
 		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
 		owner = "MustTest",
 		placedate = "2020/02/12 UTC",

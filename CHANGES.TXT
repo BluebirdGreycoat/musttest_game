@@ -1,3 +1,4 @@
+[2020/2/17] Reduced level of Nether grit and dauthsand from 3 to 2, for easier digging.
 [2020/2/17] Flint is now obtainable from Nether grit.
 [2020/2/17] Reduced wear rate on copper/bronze tools to make them more useful.
 [2020/2/16] The calendar item now displays timers for events in the Outback and its Dimensional Gate.

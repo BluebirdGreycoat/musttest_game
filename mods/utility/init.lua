@@ -79,7 +79,7 @@ dig_groups["dirt"]          = {level = 2, crumbly = 3}
 dig_groups["sand"]          = {level = 1, crumbly = 2}
 dig_groups["snow"]          = {level = 0, crumbly = 3, oddly_breakable_by_hand = 3}
 dig_groups["mud"]           = {level = 0, crumbly = 3, oddly_breakable_by_hand = 1}
-dig_groups["racksand"]      = {level = 3, crumbly = 3}
+dig_groups["racksand"]      = {level = 2, crumbly = 3}
 
 -- Choppy stuff (trees/wood).
 dig_groups["tree"]          = {level = 2, choppy = 2} -- Carefully tuned dig-params! Do not change.

@@ -108,6 +108,7 @@ end
 
 
 
+-- This function shall ALWAYS return the Outback's static_spawn!
 local function get_respawn_position(death_pos)
 	-- Regardless of where player dies, if they have no bed,
 	-- then they respawn in the outback. Note that a player may lose their bed if
@@ -120,6 +121,7 @@ randspawn.get_respawn_pos = get_respawn_position
 
 -- Note: this is also called from the /spawn chatcommand,
 -- but only after validation passes (distance, etc.).
+-- This API shall place player at the Outback's static_spawn, ALWAYS.
 randspawn.reposition_player = function(pname, death_pos)
 	local player = minetest.get_player_by_name(pname)
 	if player then

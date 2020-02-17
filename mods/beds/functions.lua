@@ -455,7 +455,15 @@ function beds.on_respawnplayer(player)
 
 		--minetest.chat_send_all("death at " .. minetest.pos_to_string(death_pos))
 		--minetest.after(1, function() minetest.chat_send_all("on_respawnplayer was called!") end)
+
+		-- Shall place player in the Outback, ALWAYS.
 		randspawn.reposition_player(name, death_pos)
+
+		-- If player died in a realm other than the abyss, then give them initial
+		-- stuff upon respawning there.
+		if rc.current_realm_at_pos(death_pos) ~= "abyss" then
+			give_initial_stuff.give(player)
+		end
 	end
 
 	return true -- Disable regular player placement.

@@ -442,8 +442,11 @@ function passport.award_cash(pname, player)
 		return
 	end
 
-	local stack = ItemStack("currency:minegeld_20 10")
-	local leftover = inv:add_item("main", stack)
+	local cash_stack = ItemStack("currency:minegeld_20 10")
+	local prot_stack = ItemStack("protector:protect3")
+
+	local cash_left = inv:add_item("main", cash_stack)
+	local prot_left = inv:add_item("main", prot_stack)
 
 	minetest.chat_send_player(pname,
 		core.get_color_escape_sequence("#ffff00") ..
@@ -453,14 +456,20 @@ function passport.award_cash(pname, player)
 		core.get_color_escape_sequence("#ffff00") ..
 		"# Server: This is roughly equivalent to 8 gold ingots according to the Guild of Weights and Measures.")
 
-	if leftover:is_empty() then
+	if cash_left:is_empty() and prot_left:is_empty() then
 		minetest.chat_send_player(pname,
 			core.get_color_escape_sequence("#ffff00") ..
 			"# Server: The cash has been directly added to your inventory. Trade wisely and well, Adventurer!")
 	else
 		local pos = vector.round(player:get_pos())
 		pos.y = pos.y + 1
-		minetest.add_item(pos, leftover)
+
+		if not cash_left:is_empty() then
+			minetest.add_item(pos, cash_left)
+		end
+		if not prot_left:is_empty() then
+			minetest.add_item(pos, prot_left)
+		end
 
 		minetest.chat_send_player(pname,
 			core.get_color_escape_sequence("#ffff00") ..

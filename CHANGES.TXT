@@ -1,3 +1,4 @@
+[2020/2/18] Players may not place protectors near the Outback gate's exit location in the overworld. Existing protectors, if any, are left untouched. However, if their owner digs them, they won't be able to put them back until the gate moves again ….
 [2020/2/18] Added secret stone and rackstone trapdoors.
 [2020/2/18] Grant some cash to player the first (and only the first) time they craft a PoC. Should give new players a start on the economy and make setting up shops more worthwhile. Note: this should be considered experimental for now ….
 [2020/2/18] Improve quality of stone door camouflage.

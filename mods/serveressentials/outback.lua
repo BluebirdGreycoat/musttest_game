@@ -1,4 +1,20 @@
 
+-- The current location of the Outback's gateway exit.
+-- Note: this is updated to the correct position (as stored in mod-storage)
+-- on first load or whenever the mod is reloaded.
+serveressentials.gateway_exit_position = {x=0, y=0, z=0}
+
+-- Called by the protector mod to determine if a protector can be placed here,
+-- with respect to the Outback gateway's current exit location.
+local PROTECTOR_DISTANCE_FROM_EXIT = 50
+function serveressentials.protector_can_place(pos)
+	local p2 = serveressentials.gateway_exit_position
+	if vector.distance(pos, p2) > PROTECTOR_DISTANCE_FROM_EXIT then
+		return true
+	end
+	return false
+end
+
 local function get_exit_location()
 	local meta = serveressentials.modstorage
 	local s = meta:get_string("outback_exit_location")
@@ -13,6 +29,7 @@ local function get_exit_location()
 	return "(0,-7,0)"
 end
 serveressentials.get_exit_location = get_exit_location
+serveressentials.gateway_exit_position = minetest.string_to_pos(get_exit_location())
 
 function serveressentials.get_current_exit_location()
 	-- Also need to update the gate itself, right away.
@@ -23,6 +40,12 @@ end
 
 function serveressentials.update_exit_location(pos)
 	pos = vector.round(pos)
+
+	-- Update position stored in memory.
+	local p = serveressentials.gateway_exit_position
+	p.x = pos.x
+	p.y = pos.y
+	p.z = pos.z
 
 	-- Update the location stored in mod-storage.
 	local meta = serveressentials.modstorage

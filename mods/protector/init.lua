@@ -499,6 +499,13 @@ function protector.check_overlap_main(protname, pname, spos)
 		return false, 4
 	end
 
+	-- Do not allow protections to be placed near the Outback gate's exit coordinates.
+	-- Note: this prevents the admin from placing protection here, too.
+	-- Existing protections (if any) remain untouched.
+	if not serveressentials.protector_can_place(spos) then
+		return false, 5
+	end
+
 	if not protector.can_dig(protector.radius, 2, protname, spos, pname, true, 3) then
 		-- Overlap with other player's protection.
 		return false, 1
@@ -551,7 +558,9 @@ function protector.check_overlap(itemstack, placer, pt)
 		elseif reason == 3 then
 			minetest.chat_send_player(pname, "# Server: You must remove all corpses before you can claim this area.")
 		elseif reason == 4 then
-			minetest.chat_send_player(pname, "# Server: Cannot claim protection here, there is no land authority!")
+			minetest.chat_send_player(pname, "# Server: Cannot claim protection here, there is no land authority.")
+		elseif reason == 5 then
+			minetest.chat_send_player(pname, "# Server: The area near the Outback gate's exit is public. Cannot claim land here.")
 		else
 			minetest.chat_send_player(pname, "# Server: Cannot place protection for unknown reason.")
 		end

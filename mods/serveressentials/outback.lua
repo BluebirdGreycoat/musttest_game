@@ -231,6 +231,21 @@ local function callback(blockpos, action, calls_remaining, param)
 	local maxp = table.copy(rc.get_realm_data("abyss").maxp)
 	local pos_metas = minetest.find_nodes_with_meta(minp, maxp)
 
+	-- Locate all bones and load their meta into memory.
+	local bones = {}
+	for k, v in ipairs(pos_metas) do
+		local node = minetest.get_node(v)
+		if node.name == "bones:bones" then
+			local meta = minetest.get_meta(v)
+			local data = {}
+			data.pos = v
+			data.meta = meta:to_table()
+			data.node = node
+			bones[#bones + 1] = data
+		end
+	end
+
+	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
 	local schematic = rc.modpath .. "/outback_map.mts"
 	local pos = {x=-9274, y=4000, z=5682}
 	minetest.place_schematic(pos, schematic, "0", {}, true, "")
@@ -241,7 +256,13 @@ local function callback(blockpos, action, calls_remaining, param)
 		meta:from_table(nil)
 	end
 
-	-- Finally, rebuild the metadata.
+	-- Restore all bones.
+	for k, v in ipairs(bones) do
+		minetest.set_node(v.pos, v.node)
+		minetest.get_meta(v.pos):from_table(v.meta)
+	end
+
+	-- Finally, rebuild the core metadata and node structure.
 	rebuild_nodes()
 	rebuild_metadata()
 	restart_timers()

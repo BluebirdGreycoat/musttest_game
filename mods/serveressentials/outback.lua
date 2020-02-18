@@ -226,9 +226,20 @@ local function callback(blockpos, action, calls_remaining, param)
 		return
 	end
 
+	-- Locate all nodes with metadata.
+	local minp = table.copy(rc.get_realm_data("abyss").minp)
+	local maxp = table.copy(rc.get_realm_data("abyss").maxp)
+	local pos_metas = minetest.find_nodes_with_meta(minp, maxp)
+
 	local schematic = rc.modpath .. "/outback_map.mts"
 	local pos = {x=-9274, y=4000, z=5682}
 	minetest.place_schematic(pos, schematic, "0", {}, true, "")
+
+	-- Erase all stale metadata.
+	for k, v in ipairs(pos_metas) do
+		local meta = minetest.get_meta(v)
+		meta:from_table(nil)
+	end
 
 	-- Finally, rebuild the metadata.
 	rebuild_nodes()

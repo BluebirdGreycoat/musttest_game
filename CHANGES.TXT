@@ -1,3 +1,4 @@
+[2020/2/17] Players' bones are now preserved when the Outback resets, and will remain in the realm.
 [2020/2/17] Reduce cost of vending/depositing machines & the market booth. New players may need to rely on these.
 [2020/2/17] Added protectors to important locations in the Outback dimension.
 [2020/2/17] Improve ore drops in the Outback so that a new player doesn't have to mine so much.

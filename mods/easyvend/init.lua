@@ -155,7 +155,7 @@ minetest.register_craft({
 	output = 'easyvend:vendor',
 	recipe = {
 		{'group:wood', 'group:wood', 'group:wood'},
-		{'group:wood', 'xdecor:lever_off', 'group:wood'},
+		{'group:wood', 'default:copper_ingot', 'group:wood'},
 		{'group:wood', 'default:steel_ingot', 'group:wood'},
 	}
 })
@@ -164,7 +164,7 @@ minetest.register_craft({
 	output = 'easyvend:depositor',
 	recipe = {
 		{'group:wood', 'default:steel_ingot', 'group:wood'},
-		{'group:wood', 'xdecor:lever_off', 'group:wood'},
+		{'group:wood', 'default:copper_ingot', 'group:wood'},
 		{'group:wood', 'group:wood', 'group:wood'},
 	}
 })

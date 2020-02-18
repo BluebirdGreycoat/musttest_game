@@ -493,6 +493,9 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 			minetest.chat_send_player(pname,
 				"# Server: A newly fashioned Key of Citizenship emits a soft blue glow mere moments after its crafter finishes the device.")
 		end)
+
+		-- Clear cache of player registration.
+		passport.keyed_players[pname] = nil
 	elseif name == "passport:passport" then
 		-- Check if this is the first time this player has crafted a PoC.
 		local pname = player:get_player_name()
@@ -504,6 +507,9 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 
 			passport.award_cash(pname, player)
 		end
+
+		-- Clear cache of player registration.
+		passport.registered_players[pname] = nil
 	end
 end
 
@@ -588,9 +594,11 @@ end
 -- This function may be called serveral times on player-login and other times.
 -- We cache the result on first call.
 passport.player_registered = function(pname)
+	local all_players = passport.registered_players
+
 	-- Read cache if available.
-	local registered = passport.registered_players[pname]
-	if type(registered) ~= "nil" then
+	local registered = all_players[pname]
+	if registered ~= nil then
 		return registered
 	end
 
@@ -599,10 +607,10 @@ passport.player_registered = function(pname)
     local inv = player:get_inventory()
     if inv then
 			if inv:contains_item("main", "passport:passport") or inv:contains_item("main", "passport:passport_adv") then
-				passport.registered_players[pname] = true -- Cache for next time.
+				all_players[pname] = true -- Cache for next time.
 				return true
 			else
-				passport.registered_players[pname] = false -- Cache for next time.
+				all_players[pname] = false -- Cache for next time.
 				return false
 			end
     end

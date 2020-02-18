@@ -260,7 +260,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	for k, v in ipairs(bones) do
 		minetest.set_node(v.pos, v.node)
 		minetest.get_meta(v.pos):from_table(v.meta)
-		minetest.get_node_timer(v.pos):start(1)
+		minetest.get_node_timer(v.pos):start(10)
 	end
 
 	-- Finally, rebuild the core metadata and node structure.

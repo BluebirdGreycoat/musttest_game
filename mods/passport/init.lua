@@ -436,6 +436,40 @@ end
 
 
 
+function passport.award_cash(pname, player)
+	local inv = player:get_inventory()
+	if not inv then
+		return
+	end
+
+	local stack = ItemStack("currency:minegeld_20 10")
+	local leftover = inv:add_item("main", stack)
+
+	minetest.chat_send_player(pname,
+		core.get_color_escape_sequence("#ffff00") ..
+		"# Server: Bank notice - As this is the first recorded time you have obtained a PoC, the Colony grants you 200 minegeld.")
+
+	minetest.chat_send_player(pname,
+		core.get_color_escape_sequence("#ffff00") ..
+		"# Server: This is roughly equivalent to 8 gold ingots according to the Guild of Weights and Measures.")
+
+	if leftover:is_empty() then
+		minetest.chat_send_player(pname,
+			core.get_color_escape_sequence("#ffff00") ..
+			"# Server: The cash has been directly added to your inventory. Trade wisely and well, Adventurer!")
+	else
+		local pos = vector.round(player:get_pos())
+		pos.y = pos.y + 1
+		minetest.add_item(pos, leftover)
+
+		minetest.chat_send_player(pname,
+			core.get_color_escape_sequence("#ffff00") ..
+			"# Server: The cash could not be added to your inventory (no space). Check near your position for drops.")
+	end
+end
+
+
+
 function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 	local name = itemstack:get_name()
 	if name == "passport:passport_adv" then
@@ -450,6 +484,17 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 			minetest.chat_send_player(pname,
 				"# Server: A newly fashioned Key of Citizenship emits a soft blue glow mere moments after its crafter finishes the device.")
 		end)
+	elseif name == "passport:passport" then
+		-- Check if this is the first time this player has crafted a PoC.
+		local pname = player:get_player_name()
+		local meta = passport.modstorage
+
+		local key = pname .. ":crafted_poc"
+		if meta:get_int(key) == 0 then
+			meta:set_int(key, 1)
+
+			passport.award_cash(pname, player)
+		end
 	end
 end
 

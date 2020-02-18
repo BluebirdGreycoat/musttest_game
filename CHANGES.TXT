@@ -1,3 +1,4 @@
+[2020/2/18] Added secret stone and rackstone trapdoors.
 [2020/2/18] Grant some cash to player the first (and only the first) time they craft a PoC. Should give new players a start on the economy and make setting up shops more worthwhile. Note: this should be considered experimental for now ….
 [2020/2/18] Improve quality of stone door camouflage.
 [2020/2/17] Returned the Outback's reset timer to 30 days. Protections for important locations should hopefully solve the griefing problems.

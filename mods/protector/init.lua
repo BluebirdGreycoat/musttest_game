@@ -572,6 +572,7 @@ end
 
 
 
+-- Called in the `after_place_node` of protector:protect3 and protector:protect4.
 function protector.timed_setup(pos, placer, meta)
 	local pname = placer:get_player_name()
 
@@ -590,6 +591,7 @@ function protector.timed_setup(pos, placer, meta)
 	end
 end
 
+-- Called in the `on_timer` of protector:protect3 and protector:protect4.
 function protector.on_timer(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("temprot") == 1 then

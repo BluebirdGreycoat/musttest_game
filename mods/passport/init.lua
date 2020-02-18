@@ -496,6 +496,7 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 
 		-- Clear cache of player registration.
 		passport.keyed_players[pname] = nil
+		passport.registered_players[pname] = nil
 	elseif name == "passport:passport" then
 		-- Check if this is the first time this player has crafted a PoC.
 		local pname = player:get_player_name()
@@ -509,6 +510,7 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 		end
 
 		-- Clear cache of player registration.
+		passport.keyed_players[pname] = nil
 		passport.registered_players[pname] = nil
 	end
 end

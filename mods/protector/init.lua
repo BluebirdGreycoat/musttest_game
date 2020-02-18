@@ -570,6 +570,69 @@ function protector.check_overlap(itemstack, placer, pt)
 	return minetest.item_place(itemstack, placer, pt)
 end
 
+
+
+function protector.timed_setup(pos, placer, meta)
+	local pname = placer:get_player_name()
+
+	-- If protector was placed by someone without a Key, then it is a temporary protector.
+	-- Set up timer stuff if needed.
+	if not passport.player_has_key(pname, placer) then
+		local timer = minetest.get_node_timer(pos)
+		timer:start(60) -- Run once a minute.
+
+		local hours = 720 -- 1 month, or 30 days.
+		local minutes = hours * 60
+
+		meta:set_int("temprot", 1)
+		meta:set_int("timerot", minutes)
+		meta:mark_as_private({"temprot", "timerot"})
+	end
+end
+
+function protector.on_timer(pos, elapsed)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("temprot") == 1 then
+		local minutes = meta:get_int("timerot")
+		minutes = minutes - math.floor(elapsed / 60)
+
+		if minutes >= 0 then
+			meta:set_int("timerot", minutes)
+			meta:set_string("infotext", protector.get_infotext(meta))
+
+			-- Rerun timer for same timeout.
+			minetest.get_node_timer(pos):start(60)
+			return
+		end
+
+		-- Replace protector with expired protector node.
+		-- Preserve param2 and node appearance.
+		local node = minetest.get_node(pos)
+		local ndef = minetest.registered_nodes[node.name]
+		node.name = ndef._expired_protector_name
+		minetest.set_node(pos, node)
+	end
+end
+
+-- Using data from the meta, assemble and return an infotext string.
+function protector.get_infotext(meta)
+	local owner = meta:get_string("owner")
+	local dname = rename.gpn(owner)
+	local pdate = meta:get_string("placedate")
+
+	local timeout = ""
+	if meta:get_int("temprot") == 1 then
+		local minutes = meta:get_int("timerot")
+		if minutes < 0 then minutes = 0 end
+		local hours = math.floor(minutes / 60)
+		timeout = "\n------------------------------------------\nExpires in " .. hours .. " hours\nGet KEY to make permanent claims"
+	end
+
+	return "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. pdate .. timeout
+end
+
+
+
 --= Protection Lock
 
 minetest.register_node("protector:protect", {
@@ -610,7 +673,7 @@ minetest.register_node("protector:protect", {
 		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -666,7 +729,7 @@ minetest.register_node("protector:protect", {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 	end,
 
 	on_destruct = function(pos)
@@ -704,6 +767,8 @@ minetest.register_node("protector:protect3", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		protector.timed_setup(pos, placer, meta)
+
 		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
@@ -711,12 +776,16 @@ minetest.register_node("protector:protect3", {
 		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
 	end,
+
+	_expired_protector_name = "protector:expired1",
+
+	on_timer = protector.on_timer,
 
 	on_use = function(itemstack, user, pointed_thing)
 		if pointed_thing.type ~= "node" then
@@ -759,7 +828,7 @@ minetest.register_node("protector:protect3", {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 	end,
 
 	on_destruct = function(pos)
@@ -812,7 +881,7 @@ minetest.register_node("protector:protect2", {
 		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
@@ -868,7 +937,7 @@ minetest.register_node("protector:protect2", {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 	end,
 
 	on_destruct = function(pos)
@@ -911,6 +980,8 @@ minetest.register_node("protector:protect4", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		protector.timed_setup(pos, placer, meta)
+
 		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
@@ -918,12 +989,16 @@ minetest.register_node("protector:protect4", {
 		meta:set_string("placedate", placedate)
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
 	end,
+
+	_expired_protector_name = "protector:expired2",
+
+	on_timer = protector.on_timer,
 
 	on_use = function(itemstack, user, pointed_thing)
 		if pointed_thing.type ~= "node" then
@@ -966,7 +1041,7 @@ minetest.register_node("protector:protect4", {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		meta:set_string("infotext", protector.get_infotext(meta))
 	end,
 
 	on_destruct = function(pos)
@@ -1193,3 +1268,46 @@ function protector.toggle_area_display(pos, entity)
 end
 
 dofile(protector.modpath .. "/crafts.lua")
+
+
+
+-- Expired protector node.
+minetest.register_node("protector:expired1", {
+	description = "Expired Protector",
+	drawtype = "nodebox",
+	tiles = {"cityblock.png"},
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("bigitem"),
+	paramtype = "light",
+	movement_speed_multiplier = default.NORM_SPEED,
+
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5 ,-0.5, -0.5, 0.5, 0.5, 0.5},
+		}
+	},
+})
+
+minetest.register_node("protector:expired2", {
+	description = "Expired Protector",
+	tiles = {"protector_lock.png"},
+	wield_image = "protector_lock.png",
+	inventory_image = "protector_lock.png",
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("bigitem"),
+	paramtype = 'light',
+	paramtype2 = "wallmounted",
+	legacy_wallmounted = true,
+
+	drawtype = "nodebox",
+	sunlight_propagates = true,
+	walkable = false,
+	node_box = {
+		type = "wallmounted",
+		wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
+		wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
+		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
+	},
+	selection_box = {type = "wallmounted"},
+})

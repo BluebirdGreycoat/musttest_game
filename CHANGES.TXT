@@ -1,3 +1,4 @@
+[2020/2/18] 7x7x7 protectors placed by players without a KEY are now timed protectors, which expire after a while. Player can place regular, permanent protectors by crafting a KEY, or by using the advanced protectors instead (which never expire).
 [2020/2/18] Grant a basic protector to new players the first time they craft a PoC. This is to assist new players in guarding their stuff, considering how difficult it is to find mese by mining. A future update will make these into "timed" protectors, which expire after some time.
 [2020/2/18] Players may not place protectors near the Outback gate's exit location in the overworld. Existing protectors, if any, are left untouched. However, if their owner digs them, they won't be able to put them back until the gate moves again ….
 [2020/2/18] Added secret stone and rackstone trapdoors.

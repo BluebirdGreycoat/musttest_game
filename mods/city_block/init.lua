@@ -96,7 +96,7 @@ if not city_block.run_once then
 	city_block:load()
 
 	minetest.register_node("city_block:cityblock", {
-		description = "Lawful Zone Marker\n\nMarks as part of the city a 45x45x45 area.\nMurderers and trespassers will be sent to jail if caught in the city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
+		description = "Lawful Zone Marker [Marks a 45x45x45 area as a city.]\n\nSaves your bed respawn position, if someone killed you within the city area.\nMurderers and trespassers will be sent to the Colony jail if caught in a city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
 		tiles = {"moreblocks_circle_stone_bricks.png^default_tool_mesepick.png"},
 		is_ground_content = false,
 		groups = utility.dig_groups("obsidian", {
@@ -391,7 +391,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			end
 		else
 			-- Bed position is only lost if player died outside city.
-			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside town.")
+			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
 			beds.clear_player_spawn(victim_pname)
 		end
 	end

@@ -408,7 +408,7 @@ function passport.exec_spawn(name, param)
 	if jail.suppress(name) then
 		return true
 	end
-	local target = randspawn.get_respawn_pos(pos)
+	local target = randspawn.get_respawn_pos(pos, name)
 	if vector.distance(pos, target) < 20 then
 		minetest.chat_send_player(name, "# Server: Too close to the spawnpoint!")
 		easyvend.sound_error(name)

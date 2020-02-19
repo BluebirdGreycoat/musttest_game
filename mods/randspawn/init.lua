@@ -109,7 +109,7 @@ end
 
 
 -- This function shall ALWAYS return the Outback's static_spawn!
-local function get_respawn_position(death_pos)
+local function get_respawn_position(invoke_pos, pname)
 	-- Regardless of where player dies, if they have no bed,
 	-- then they respawn in the outback. Note that a player may lose their bed if
 	-- killed by another player outside of the city.
@@ -126,7 +126,7 @@ randspawn.reposition_player = function(pname, death_pos)
 	local player = minetest.get_player_by_name(pname)
 	if player then
 		-- Ensure teleport is forced, to prevent a cheat.
-		local pos = get_respawn_position(death_pos)
+		local pos = get_respawn_position(death_pos, pname)
 		pos = vector.add(pos, {x=math.random(-2, 2), y=0, z=math.random(-2, 2)})
 		preload_tp.preload_and_teleport(pname, pos, 32, nil,
 			function()

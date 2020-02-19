@@ -14,12 +14,6 @@ end
 
 function jail.go_to_jail(player, bcb)
 	local pname = player:get_player_name()
-
-	local cb = function(...)
-		portal_sickness.on_use_portal(pname)
-		bcb(...)
-	end
-
 	local jailpos = jailposition(player)
 	preload_tp.preload_and_teleport(pname, jailpos, 32, nil, bcb, nil, true)
 end

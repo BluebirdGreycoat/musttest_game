@@ -53,6 +53,19 @@ function city_block:in_city(pos)
 	return false
 end
 
+function city_block:in_safebed_zone(pos)
+	-- Covers a 111x111x111 area.
+	local r = 55
+	for k, v in ipairs(self.blocks) do
+		if pos.x > (v.pos.x - r) and pos.x < (v.pos.x + r) and
+			 pos.z > (v.pos.z - r) and pos.z < (v.pos.z + r) and
+			 pos.y > (v.pos.y - r) and pos.y < (v.pos.y + r) then
+			return true
+		end
+	end
+	return false
+end
+
 function city_block:in_no_tnt_zone(pos)
 	local r = 50
 	for k, v in ipairs(self.blocks) do
@@ -391,8 +404,10 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			end
 		else
 			-- Bed position is only lost if player died outside city.
-			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
-			beds.clear_player_spawn(victim_pname)
+			if not city_block:in_safebed_zone(p2pos) then
+				minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
+				beds.clear_player_spawn(victim_pname)
+			end
 		end
 	end
 end

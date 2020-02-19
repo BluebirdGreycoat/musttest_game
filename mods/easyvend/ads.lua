@@ -8,9 +8,9 @@ ads.datapath = ads.worldpath .. "/advertisements.dat"
 ads.dirty = true
 ads.bodylen = 1024
 ads.titlelen = 64
-ads.viewrange = 5000 -- Distance at which ads are visible.
+ads.viewrange = 8000 -- Distance at which ads are visible.
 ads.marketrange = 15 -- Distance at which shops are visible (distance from ad source).
-ads.ad_cost = 250
+ads.ad_cost = 5
 ads.tax = 3
 
 

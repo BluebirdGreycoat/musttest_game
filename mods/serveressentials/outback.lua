@@ -78,6 +78,10 @@ local nodes = {
 
 	-- Spawn protector.
 	{pos={x=-9223, y=4168, z=5861}, node={name="protector:protect3", param2=0}},
+
+	-- Extra signs at spawn.
+	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
+	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
 }
 
 local function rebuild_nodes()
@@ -165,6 +169,18 @@ local metadata = {
 		infotext = "Use /info to get help.",
 		author = "MustTest",
 		text = "Use /info to get help."
+	}}},
+	-- Spawn sign, bottom left.
+	{pos={x=-9221, y=4169, z=5861}, meta={fields={
+		infotext = "See \"http://arklegacy.duckdns.org\" for important info.",
+		author = "MustTest",
+		text = "See \"http://arklegacy.duckdns.org\" for important info."
+	}}},
+	-- Spawn sign, bottom right.
+	{pos={x=-9221, y=4169, z=5860}, meta={fields={
+		infotext = "Take care, don't rush!",
+		author = "MustTest",
+		text = "Take care, don't rush!"
 	}}},
 	-- Graveyard protector.
 	{pos={x=-9266, y=4170, z=5724}, meta={fields={

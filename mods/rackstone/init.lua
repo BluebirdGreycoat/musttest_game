@@ -636,7 +636,7 @@ stairs.register_stair_and_slab(
 stairs.register_stair_and_slab(
 	"rackstone_cobble",
 	"rackstone:cobble",
-	{cracky=1},
+	{cracky=2},
 	{"rackstone_rackstone_cobble.png"},
 	"Rackstone Cobble",
 	default.node_sound_stone_defaults()

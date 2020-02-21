@@ -33,7 +33,7 @@ gdac_invis.toggle_invisibility = function(name, param)
 
 			-- Store player's current properties.
 			local playerproperties = player:get_properties()
-			gdac_invis.players[name].collisionbox = playerproperties.collisionbox
+			--gdac_invis.players[name].collisionbox = playerproperties.collisionbox
 
       --player_labels.disable_nametag_broadcast(name)
       player:set_nametag_attributes({color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)})
@@ -43,11 +43,12 @@ gdac_invis.toggle_invisibility = function(name, param)
         makes_footstep_sound = false,
 
 				-- Cannot be zero-size because otherwise player would fall through cracks.
-        collisionbox = {0},
-				selectionbox = {0},
+        --collisionbox = {0},
+				--selectionbox = {0},
 
 				collide_with_objects = false,
 				is_visible = false,
+				pointable = false,
       })
       
       minetest.chat_send_player(name, "# Server: You become invisible!")
@@ -55,13 +56,14 @@ gdac_invis.toggle_invisibility = function(name, param)
       player_labels.enable_nametag_broadcast(name)
 
 			-- Restore player properties.
-			local collisionbox = gdac_invis.players[name].collisionbox
+			--local collisionbox = gdac_invis.players[name].collisionbox
       player:set_properties({
 				visual_size = {x=1, y=1},
         makes_footstep_sound = true,
-				collisionbox = collisionbox,
+				--collisionbox = collisionbox,
 				collide_with_objects = true,
 				is_visible = true,
+				pointable = true,
 			})
       gdac_invis.players[name] = nil
       

@@ -1,3 +1,4 @@
+
 function hud.read_conf()
 	local mod_path = minetest.get_modpath("hud")
 	local set = io.open(mod_path .. "/hud.conf", "r")

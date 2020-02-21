@@ -478,7 +478,7 @@ if not zcg.registered then
 	-- We can't do this at craft-register time because the logic needs access to
 	-- the groups of the recipe output items, which may not be known by the engine
 	-- until after recipes for the items are registered.
-	minetest.after(0, function()
+	minetest.register_on_mods_loaded(function()
 		local t1 = os.clock()
 		-- Must search through ALL registered items! Cannot use shortcut tables.
 		for name, item in pairs(minetest.registered_items) do

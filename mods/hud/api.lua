@@ -66,6 +66,8 @@ function hud.register(name, def)
 	return true
 end
 
+
+
 -- swaps stabar positions
 function hud.swap_statbar(player, item1, item2)
 	if not player or not item1 or not item2 then
@@ -119,11 +121,14 @@ function hud.swap_statbar(player, item1, item2)
 
 end
 
+
+
 function hud.change_item(player, name, def)
 	if not player or not player:is_player() or not name or not def then
 		throw_error("Not enough parameters given to change HUD item")
 		return false
 	end
+
 	local i_name = player:get_player_name().."_"..name
 	local elem = hud_id[i_name]
 	if not elem then
@@ -164,6 +169,7 @@ function hud.change_item(player, name, def)
 			end
 		end
 	end
+
 	if def.text and elem.text then
 		if def.text ~= elem.text then
 			player:hud_change(elem.id, "text", def.text)
@@ -186,6 +192,8 @@ function hud.change_item(player, name, def)
 	return true
 end
 
+
+
 function hud.remove_item(player, name)
 	if not player or not name then
 		throw_error("Not enough parameters given")
@@ -207,31 +215,32 @@ end
 -- Add registered HUD items to joining players
 --
 
--- Following code is placed here to keep HUD ids internal
+-- Following code is placed here to keep HUD ids internal.
 local function add_hud_item(player, name, def)
 	if not player or not name or not def then
 		throw_error("not enough parameters given")
 		return false
 	end
-	local i_name = player:get_player_name().."_"..name
+
+	local i_name = player:get_player_name() .. "_" .. name
 	hud_id[i_name] = def
 	hud_id[i_name].id = player:hud_add(def)
 end
 
 minetest.register_on_joinplayer(function(player)
-
-	-- first: hide the default statbars
+	-- First: hide the default statbars.
 	local hud_flags = player:hud_get_flags()
 	hud_flags.healthbar = false
 	hud_flags.breathbar = false
 	player:hud_set_flags(hud_flags)
 
-	-- now add the backgrounds for statbars
-	for _,item in pairs(sb_bg) do
+	-- Now add the backgrounds for statbars.
+	for _, item in pairs(sb_bg) do
 		add_hud_item(player, _.."_bg", item)
 	end
-	-- and finally the actual HUD items
-	for _,item in pairs(items) do
+
+	-- And finally the actual HUD items.
+	for _, item in pairs(items) do
 		add_hud_item(player, _, item)
 	end
 end)

@@ -9,9 +9,9 @@ local gap = 16*1.5
 HUD_HEALTH_POS = {x = 0.5,y = 1}
 HUD_HEALTH_OFFSET = {x = -width + -gap, y = -107}
 HUD_AIR_POS = {x = 0.5, y = 1}
-HUD_AIR_OFFSET = {x = gap, y = -107}
+HUD_AIR_OFFSET = {x = gap, y = -127}
 HUD_HUNGER_POS = {x = 0.5, y = 1}
-HUD_HUNGER_OFFSET = {x = gap, y = -127}
+HUD_HUNGER_OFFSET = {x = gap, y = -107}
 HUD_ARMOR_POS = {x = 0.5, y = 1}
 HUD_ARMOR_OFFSET = {x = -width + -gap, y = -127}
 

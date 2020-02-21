@@ -40,8 +40,8 @@ minetest.register_on_joinplayer(function(player)
 	if lvl > 20 then
 		lvl = 20
 	end
+
 	minetest.after(0.8, function()
-		hud.swap_statbar(player, "hunger", "air")
 		hud.change_item(player, "hunger", {number = lvl, max = 20})
 	end)
 end)

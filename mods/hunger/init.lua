@@ -37,12 +37,12 @@ minetest.register_on_joinplayer(function(player)
 	hunger.players[name].lvl = hunger.read(player)
 	hunger.players[name].exhaus = 0
 	local lvl = hunger.players[name].lvl
-	if lvl > 20 then
-		lvl = 20
+	if lvl > 30 then
+		lvl = 30
 	end
 
 	minetest.after(0.8, function()
-		hud.change_item(player, "hunger", {number = lvl, max = 20})
+		hud.change_item(player, "hunger", {number = lvl, max = HUNGER_MAX})
 	end)
 end)
 

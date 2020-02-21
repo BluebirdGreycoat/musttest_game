@@ -22,5 +22,5 @@ function armor.set_player_armor(self, player)
 	if def[name] and def[name].level then
 		armor_lvl = get_armor_lvl(def[name])
 	end
-	hud.change_item(player, "armor", {number = armor_lvl})
+	hud.change_item(player, "armor", {number = armor_lvl, max = 20})
 end

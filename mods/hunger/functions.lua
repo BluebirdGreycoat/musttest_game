@@ -59,11 +59,8 @@ function hunger.update_hunger(player, new_lvl)
   if lvl < 0 then lvl = 0 end
   
 	hunger.players[name].lvl = lvl
-	if lvl > 20 then
-		lvl = 20
-	end
   
-	hud.change_item(player, "hunger", {number = lvl})
+	hud.change_item(player, "hunger", {number = lvl, max = HUNGER_MAX})
 	hunger.save(player)
 end
 local update_hunger = hunger.update_hunger
@@ -358,7 +355,6 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 			if gorged then
 				minetest.chat_send_player(name, "# Server: You have eaten too much!")
 			end
-			--hud.change_item(user, "hunger", {text = "hunger_statbar_poisen.png"})
 			poisenp(1.0, poisen, 0, user, gorged)
 		end
 

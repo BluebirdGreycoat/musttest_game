@@ -1,3 +1,4 @@
+[2020/2/21] Attempt to fix the long-standing bug where the HUD stat-icons would not show the real values.
 [2020/2/21] Finally fixed the bug where player could sometimes fall through the world after being kicked off a sled.
 [2020/2/19] Updated city-block description to inform that it can save your bed's respawn pos during PvP.
 [2020/2/18] 7x7x7 protectors placed by players without a KEY are now timed protectors, which expire after a while. Player can place regular, permanent protectors by crafting a KEY, or by using the advanced protectors instead (which never expire).

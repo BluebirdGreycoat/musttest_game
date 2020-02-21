@@ -6,46 +6,7 @@ function carts:get_sign(z)
 	end
 end
 
--- Note: this works for boats, too.
--- Returns [""] if player wasn't attached. Otherwise, name of previous attachment type.
-function default.detach_player_if_attached(player)
-	local pname = player:get_player_name()
 
-  -- Player might be in bed! Get them out properly.
-	if beds.kick_one_player(pname) then
-		return "bed"
-	end
-
-	local ents = minetest.get_objects_inside_radius(utility.get_foot_pos(player:get_pos()), 1)
-
-	local result = ""
-	for k, obj in ipairs(ents) do
-		local ent = obj:get_luaentity()
-		if ent and ent.name == "carts:cart" then
-			if ent.driver and ent.driver == pname then
-				ent.driver = nil
-				result = "cart"
-			end
-		elseif ent and ent.name == "boats:boat" then
-			if ent.driver then
-				if ent.driver:get_player_name() == pname then
-					ent.driver = nil
-					result = "boat"
-				end
-			end
-		elseif ent and ent.name == "sleds:sled" then
-			if ent.driver then
-				if ent.driver:get_player_name() == pname then
-					ent.driver = nil
-					result = "sled"
-				end
-			end
-		end
-	end
-
-	carts:manage_attachment(player, nil)
-	return result
-end
 
 function carts:manage_attachment(player, obj)
 	if not player then

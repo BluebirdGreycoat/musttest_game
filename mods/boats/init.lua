@@ -1,6 +1,7 @@
 --
 -- Helper functions
 --
+boats = boats or {}
 
 local function is_water(pos)
 	local nn = minetest.get_node(pos).name
@@ -90,6 +91,8 @@ function boat.on_rightclick(self, clicker)
 		clicker:set_look_horizontal(self.object:getyaw())
 	end
 end
+-- Make accessible externally.
+boats.on_rightclick = boat.on_rightclick
 
 
 function boat.on_activate(self, staticdata, dtime_s)

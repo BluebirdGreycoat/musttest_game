@@ -68,3 +68,42 @@ function utility.shell_boom(pos)
 
   add_effects(pos, 1)
 end
+
+
+
+-- Note: this works for boats, too.
+-- Returns [""] if player wasn't attached. Otherwise, name of previous attachment type.
+function default.detach_player_if_attached(player)
+	local pname = player:get_player_name()
+
+	-- Player might be in bed! Get them out properly.
+	if beds.kick_one_player(pname) then
+		return "bed"
+	end
+
+	local ents = minetest.get_objects_inside_radius(utility.get_foot_pos(player:get_pos()), 2)
+
+	local result = ""
+	for k, obj in ipairs(ents) do
+		local ent = obj:get_luaentity()
+		if ent and ent.name == "carts:cart" then
+			-- Must detach player from cart.
+			carts:manage_attachment(player, nil)
+			result = "cart"
+		elseif ent and ent.name == "boats:boat" then
+			if ent.driver and ent.driver == player then
+				-- Since boat driver == player, this should always detach.
+				boats.on_rightclick(ent, player)
+				result = "boat"
+			end
+		elseif ent and ent.name == "sleds:sled" then
+			if ent.driver and ent.driver == player then
+				sleds.on_rightclick(ent, player)
+				result = "sled"
+			end
+		end
+	end
+
+	return result
+end
+

@@ -2741,20 +2741,21 @@ local function do_states(self, dtime)
 
 							-- play attack sound
 							mob_sound(self, self.sounds.attack)
+							local targetname = (self.attack:is_player() and self.attack:get_player_name() or "")
 
 							-- punch player (or what player is attached to)
 							local attached = self.attack:get_attach()
-							if attached then
+							if attached or default.player_attached[targetname] then
 								-- Mob has a chance of removing the player from whatever they're attached to.
 								if self.attack:is_player() and random(1, 5) == 1 then
 									utility.detach_player_with_message(self.attack)
-								else
+								elseif attached then
 									self.attack = attached
 								end
 							end
 
 							-- Don't bother the admin.
-							if self.attack:is_player() and not gdac.player_is_admin(self.attack:get_player_name() or "") then
+							if not gdac.player_is_admin(targetname) then
 								local dmg1 = self.damage or 0
 								local dmg2 = math.random(self.damage_min or 0, self.damage_max or 0)
 								local dmg = dmg1

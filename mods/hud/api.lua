@@ -234,12 +234,4 @@ minetest.register_on_joinplayer(function(player)
 	for _,item in pairs(items) do
 		add_hud_item(player, _, item)
 	end
-
-	-- fancy hotbar (only when no crafting mod present)
-	--if minetest.get_modpath("crafting") == nil then
-	  --  minetest.after(0.5, function()
-		--player:hud_set_hotbar_image("hud_hotbar.png")
-		--player:hud_set_hotbar_selected_image("hud_hotbar_selected.png")
-	   -- end)
-	--end
 end)

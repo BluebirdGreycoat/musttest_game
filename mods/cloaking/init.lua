@@ -64,6 +64,7 @@ function cloaking.toggle_cloak(pname)
 		player:set_properties({
 			visual_size = {x=0, y=0},
 			is_visible = false,
+			pointable = false,
 		})
 
 		minetest.chat_send_player(pname, "# Server: Cloak activated.")
@@ -79,6 +80,7 @@ function cloaking.toggle_cloak(pname)
 		player:set_properties({
 			visual_size = {x=1, y=1},
 			is_visible = true,
+			pointable = true,
 		})
 
 		minetest.chat_send_player(pname, "# Server: Cloak offline.")

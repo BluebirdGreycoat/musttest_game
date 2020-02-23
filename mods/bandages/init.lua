@@ -20,7 +20,7 @@ bandages.movement_limit_from_level = function(level)
 		return 20
 	elseif level == 2 then
 		return 5
-	else if level == 3 then
+	elseif level == 3 then
 		return 2
 	end
 	return 0

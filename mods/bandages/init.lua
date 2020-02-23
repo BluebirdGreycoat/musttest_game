@@ -211,7 +211,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
   else
     -- Otherwise, try to heal self.
     local hp = user:get_hp()
-		local hp_max = target:get_properties().hp_max
+		local hp_max = user:get_properties().hp_max
 
     if hp >= hp_max then
       return bandages.player_not_hurt(pname)

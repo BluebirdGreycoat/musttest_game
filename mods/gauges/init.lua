@@ -9,6 +9,10 @@ local function update_textures(gauge, player)
 	local hp = math.floor((player:get_hp() / props.hp_max) * 20)
 	local breath = math.floor((player:get_breath() / props.breath_max) * 11)
 
+	-- Clamp values to ensure they're in range.
+	hp = math.max(math.min(hp, 20), 0)
+	breath = math.max(math.min(breath, 11), 0)
+
 	gauge.object:set_properties({
 		textures = {
 			"health_" .. tostring(hp) .. ".png^breath_" .. tostring(breath) .. ".png"

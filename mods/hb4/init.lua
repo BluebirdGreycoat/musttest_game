@@ -48,7 +48,14 @@ function hb4.delayed_harm2(data)
 		end
 
 		local damage = math.random(data.min, data.max)
-		player:set_hp(player:get_hp() - damage)
+		local hp = player:get_hp()
+		if hp > (data.hp_min or 0) then
+			local new_hp = hp - damage
+			new_hp = math.max(new_hp, (data.hp_min or 0))
+			player:set_hp(new_hp)
+		end
+
+		-- Message is printed only if player died.
 		if data.msg and player:get_hp() <= 0 then
 			minetest.chat_send_all(data.msg)
 		end

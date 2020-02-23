@@ -276,6 +276,9 @@ local function poisenp(tick, time, time_left, player, gorged)
 	if gorged then
 		local sex = skins.get_gender_strings(name)
 		data.msg = "# Server: <" .. rename.gpn(name) .. "> gorged " .. sex.himself .. " to death."
+
+		-- Overeating will not damage player below 2 hp!
+		data.hp_min = 2
 	end
 	hb4.delayed_harm2(data)
 end

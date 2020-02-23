@@ -1,3 +1,4 @@
+[2020/2/23] Player can no longer die from over-eating.
 [2020/2/22] Redesigned the hunger/passive-healing system, including how bandages work.
 [2020/2/22] Player's maximum HP increases as they gain mineral XP.
 [2020/2/22] Increased the cap on players' max mineral XP.

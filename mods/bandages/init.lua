@@ -63,8 +63,8 @@ bandages.player_not_hurt = function(pname)
 	--easyvend.sound_error(pname)
 end
 
-bandages.player_bandages_self = function(pname, hp)
-  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is now " .. hp .. "/20 HP.")
+bandages.player_bandages_self = function(pname, hp, hp_max)
+  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is now " .. hp .. "/" .. hp_max .. " HP.")
 end
 
 bandages.target_is_dead = function(pname, tname)
@@ -77,9 +77,9 @@ bandages.player_is_dead = function(pname)
 	--easyvend.sound_error(pname)
 end
 
-bandages.player_bandages_target = function(pname, tname, hp)
+bandages.player_bandages_target = function(pname, tname, hp, hp_max)
   minetest.chat_send_player(tname, "# Server: Player <" .. rename.gpn(pname) .. "> used a bandage on you.")
-  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. ">'s health improves to " .. hp .. "/20 HP.")
+  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. ">'s health improves to " .. hp .. "/" .. hp_max .. " HP.")
 end
 
 bandages.medkit_already_in_use = function(pname)
@@ -203,7 +203,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
 			-- This solves an exploit people have found.
 			if target:get_hp() == 0 then return end
       target:set_hp(hp + bandages.hp_from_level(level))
-      bandages.player_bandages_target(pname, tname, target:get_hp())
+      bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
     end)
     
     itemstack:take_item()
@@ -241,7 +241,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
 			-- This solves an exploit people have found.
 			if user:get_hp() == 0 then return end
       user:set_hp(hp + bandages.hp_from_level(level))
-      bandages.player_bandages_self(pname, user:get_hp())
+      bandages.player_bandages_self(pname, user:get_hp(), hp_max)
     end)
     
     itemstack:take_item()

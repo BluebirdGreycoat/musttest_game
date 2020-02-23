@@ -223,9 +223,19 @@ local function hunger_globaltimer(dtime)
 
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30) player is not drowning
 				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
-					-- Disable passive healing once player's health falls below 66%.
+					-- If player's health is >= 2/3rds, they may passively heal completely.
 					if hp >= (hp_max/3)*2 then
-						player:set_hp(hp + HUNGER_HEAL)
+						local new_hp = hp + HUNGER_HEAL
+						player:set_hp(new_hp)
+					else
+						-- Otherwise (if player's heath < 2/3rds), then player's passive healing is capped to 1/3 of full health.
+						local heal_cap = math.floor(hp_max / 3)
+						local new_hp = math.min((hp + HUNGER_HEAL), heal_cap)
+
+						-- But don't reduce player's health, only increase it.
+						if new_hp > hp then
+							player:set_hp(new_hp)
+						end
 					end
 				end
 

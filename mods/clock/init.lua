@@ -51,8 +51,6 @@ minetest.register_globalstep(function ( dtime )
 				if player_hud[name] then
 					local h = player_hud[name].clock
 					player:hud_change(h, "text", hud_clock.get_time())
-					--local x = player_hud[name].digxp
-					--player:hud_change(x, "text", ("Dig XP: " .. xp.get_xp(pname, "digxp")))
 				end
 			end
 		end

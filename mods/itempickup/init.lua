@@ -420,7 +420,9 @@ function itempickup.handle_node_drops(pos, drops, digger)
 			-- But only for ore nodes.
 			if drop_node_list[node.name] then
 				-- Both X's should be in range [0, 1].
-				local x1 = math.min(math.max(0, digxp), xp.digxp_max) / xp.digxp_max
+				-- If player's XP is > 1000, then clamp to 1000 for purposes of this calculation.
+				local max = 1000
+				local x1 = math.min(math.max(0, digxp), max) / max
 				local x2 = math.random(0, 10000)/10000
 				if x1*x1 >= x2 then
 					if drop_extra_item_list[sname] then

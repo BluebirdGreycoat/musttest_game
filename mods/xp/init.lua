@@ -1,7 +1,7 @@
 
 xp = xp or {}
 xp.modpath = minetest.get_modpath("xp")
-xp.digxp_max = 1000
+xp.digxp_max = 1000000
 xp.data = xp.data or {} -- Data is stored in string form.
 xp.dirty = true
 

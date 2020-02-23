@@ -76,6 +76,7 @@ if minetest.get_modpath("inventory_plus") then
     default.gui_slots ..
     "button[0,0.5;2,0.5;main;Back]" ..
     "image[4,0.25;2,4;armor_preview]" ..
+    "label[6,0.5;HP Max: hp_max]" ..
     "label[6,1;Level: armor_level]" ..
     "label[6,1.4;Heal:  armor_heal]" ..
     --"label[6,1.8;Fire:  armor_fire]" ..
@@ -83,11 +84,6 @@ if minetest.get_modpath("inventory_plus") then
     "list[current_player;main;0,4.25;8,1;]" ..
     "list[current_player;main;0,5.5;8,3;8]" ..
     default.get_hotbar_bg(0, 4.25)
-    
-  if minetest.get_modpath("crafting") then
-    inventory_plus.get_formspec = function(player, page)
-    end
-  end
 end
 
 if minetest.get_modpath("skins") then
@@ -239,6 +235,14 @@ armor.get_preview = function(self, name)
 	end
 end
 
+local function get_player_max_hp(name)
+	local pref = minetest.get_player_by_name(name)
+	if pref then
+		return pref:get_properties().hp_max
+	end
+	return 20
+end
+
 armor.get_armor_formspec = function(self, name)
 	if not armor.textures[name] then
 		minetest.log("error", "3d_armor: Player texture["..name.."] is nil [get_armor_formspec]")
@@ -248,13 +252,15 @@ armor.get_armor_formspec = function(self, name)
 		minetest.log("error", "3d_armor: Armor def["..name.."] is nil [get_armor_formspec]")
 		return ""
 	end
-	local formspec = 
-    armor.formspec.."list[detached:"..name.."_armor;armor;0,1.5;3,2;]"
+
+	local formspec = armor.formspec .. "list[detached:"..name.."_armor;armor;0,1.5;3,2;]"
 	formspec = formspec:gsub("armor_preview", armor.textures[name].preview)
 	formspec = formspec:gsub("armor_level", armor.def[name].level)
 	formspec = formspec:gsub("armor_heal", armor.def[name].heal)
 	formspec = formspec:gsub("armor_fire", armor.def[name].fire)
 	formspec = formspec:gsub("armor_radiation", armor.def[name].radiation)
+	formspec = formspec:gsub("hp_max", tostring(get_player_max_hp(name)))
+
 	return formspec
 end
 

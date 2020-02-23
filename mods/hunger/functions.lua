@@ -328,7 +328,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 
 		-- If food would put our saturation over the max, then behave as if poisoned instead.
 		local gorged = false
-		if sat + hunger_change > HUNGER_MAX then
+		if sat >= HUNGER_MAX then
 			gorged = true
 			heal = nil
 			poisen = 3 -- 3 seconds?

@@ -300,9 +300,6 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
 		storage:set_string(pname, minetest.pos_to_string(return_pos))
 		minetest.log("action", "Player " .. pname .. " teleports into the nether @ (" .. minetest.pos_to_string(target) .. ")")
 	end, nil, false, "nether_portal_usual")
-
-  --player:set_pos(target)
-  --player:set_hp(20)
 end
 
 

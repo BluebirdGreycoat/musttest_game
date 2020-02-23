@@ -4,6 +4,18 @@
 gauges = {}
 local player_wielding = {}
 
+local function update_textures(gauge, player)
+	local props = player:get_properties()
+	local hp = math.floor((player:get_hp() / props.hp_max) * 20)
+	local breath = math.floor((player:get_breath() / props.breath_max) * 11)
+
+	gauge.object:set_properties({
+		textures = {
+			"health_" .. tostring(hp) .. ".png^breath_" .. tostring(breath) .. ".png"
+		},
+	})
+end
+
 local function add_gauge(player)
 	rc.check_position(player) -- Check position before calling `add_entity'.
 	local pname = player:get_player_name()
@@ -19,7 +31,8 @@ local function add_gauge(player)
 		data.wielder = player
 		data.chp = player:get_hp()
 		data.cbreath = player:get_breath()
-		ent:set_properties({textures = {"health_" .. tostring(data.chp) .. ".png^breath_" .. tostring(data.cbreath) .. ".png"}, glow = -1})
+
+		update_textures(data, player)
 
 		player_wielding[pname] = {}
 		player_wielding[pname].object = ent
@@ -88,6 +101,7 @@ local hp_bar = {
 		z = 1.5*bar_scalar,
 	}, -- Y value is (1 / 16) * 1.5.
 	wielder = nil,
+	glow = -1,
 
 	-- Cached values.
 	chp = 0,
@@ -112,6 +126,7 @@ local hp_bar = {
 			return
 		end
 		self.timer = 0
+
 		local wielder = self.wielder
 		if wielder == nil then
 			self.object:remove()
@@ -120,10 +135,13 @@ local hp_bar = {
 			self.object:remove()
 			return
 		end
+
 		local hp = wielder:get_hp()
 		local breath = wielder:get_breath()
+
 		if hp ~= self.chp or breath ~= self.cbreath then
-			self.object:set_properties({textures = {"health_" .. tostring(hp) .. ".png^breath_" .. tostring(breath) .. ".png"}, glow = -1})
+			update_textures(self, wielder)
+
 			self.chp = hp
 			self.cbreath = breath
 		end

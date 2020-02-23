@@ -219,10 +219,12 @@ local function hunger_globaltimer(dtime)
 			if tab then
 				local air = player:get_breath() or 0
 				local hp = player:get_hp()
+				local hp_max = player:get_properties().hp_max
 
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30) player is not drowning
 				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
-					if player:get_hp() < 16 then -- Food doesn't heal players past 16 hp. Use bandages for that.
+					-- Disable passive healing once player's health falls below 66%.
+					if hp >= (hp_max/3)*2 then
 						player:set_hp(hp + HUNGER_HEAL)
 					end
 				end
@@ -337,16 +339,17 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 		if not result or result:get_count() == 0 then return end
 
 		local hp = user:get_hp()
+		local hp_max = user:get_properties().hp_max
 		-- Saturation
 		if sat < HUNGER_MAX and hunger_change then
 			sat = sat + hunger_change
 			hunger.update_hunger(user, sat)
 		end
 		-- Healing
-		if hp < 20 and heal then
+		if hp < hp_max and heal then
 			hp = hp + heal
-			if hp > 20 then
-				hp = 20
+			if hp > hp_max then
+				hp = hp_max
 			end
 			user:set_hp(hp)
 		end

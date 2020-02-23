@@ -413,7 +413,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				bones.dump_bones(pname)
 				bones.last_known_death_locations[pname] = nil -- Fake death.
 				local pref = minetest.get_player_by_name(pname)
-				pref:set_hp(20)
+				pref:set_hp(pref:get_properties().hp_max)
 				give_initial_stuff.give(pref)
 			end
 		end,
@@ -437,7 +437,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 								bones.dump_bones(fname)
 								bones.last_known_death_locations[fname] = nil -- Fake death.
 								local pref = minetest.get_player_by_name(fname)
-								pref:set_hp(20)
+								pref:set_hp(pref:get_properties().hp_max)
 								give_initial_stuff.give(pref)
 							end
 						end,

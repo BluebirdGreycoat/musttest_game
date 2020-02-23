@@ -2,7 +2,6 @@
 bandages = bandages or {}
 bandages.modpath = minetest.get_modpath("bandages")
 bandages.players = bandages.players or {}
-bandages.movement_limit = 5.0
 
 
 
@@ -15,6 +14,17 @@ if minetest.get_modpath("reload") then
 end
 
 
+
+bandages.movement_limit_from_level = function(level)
+	if level == 1 then
+		return 20
+	elseif level == 2 then
+		return 5
+	else if level == 3 then
+		return 2
+	end
+	return 0
+end
 
 bandages.hp_from_level = function(level)
   if level == 1 then
@@ -33,7 +43,7 @@ bandages.delay_from_level = function(level)
   elseif level == 2 then
     return 2.0
   elseif level == 3 then
-    return 3.0
+    return 2.5
   end
   return 0
 end
@@ -127,24 +137,24 @@ bandages.play_sound_effects = function(pos, level)
   end
 end
 
-bandages.get_minimum_damage_from_level = function(level)
-  if level == 1 then
-    return 19
-  elseif level == 2 then
-    return 17
-  elseif level == 3 then
-    return 15
-  end
-  return 0
+bandages.get_max_damage_for_level = function(level, hp, hp_max)
+	if level == 3 then
+		return 1
+	elseif level == 2 then
+		return (hp_max / 3)
+	elseif level == 1 then
+		return (hp_max / 5) * 4
+	end
+	return 0
 end
 
-bandages.target_not_hurt_enough = function(pname, tname, level)
-  minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(tname) .. "> is not severely hurt enough for a level " .. level .. " medkit.")
+bandages.target_too_hurt = function(pname, tname, level)
+  minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(tname) .. "> is too severely hurt for a level " .. level .. " medkit.")
 	--easyvend.sound_error(pname)
 end
 
-bandages.player_not_hurt_enough = function(pname, level)
-  minetest.chat_send_player(pname, "# Server: You are not severely hurt enough for a level " .. level .. " medkit.")
+bandages.player_too_hurt = function(pname, level)
+  minetest.chat_send_player(pname, "# Server: You are too severely hurt for a level " .. level .. " medkit.")
 	--easyvend.sound_error(pname)
 end
 
@@ -161,15 +171,16 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
     end
     local tname = target:get_player_name()
     local hp = target:get_hp()
+		local hp_max = target:get_properties().hp_max
     
-    if hp >= 20 then
+    if hp >= hp_max then
       return bandages.target_not_hurt(pname, tname)
     end
     if hp <= 0 then
       return bandages.target_is_dead(pname, tname)
     end
-    if hp > bandages.get_minimum_damage_from_level(level) then
-      return bandages.target_not_hurt_enough(pname, tname, level)
+    if hp < bandages.get_max_damage_for_level(level, hp, hp_max) then
+      return bandages.target_too_hurt(pname, tname, level)
     end
     if bandages.players[pname] or bandages.players[tname] then
       return bandages.medkit_already_in_use(pname)
@@ -185,7 +196,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
       bandages.players[pname] = nil
       local target = minetest.get_player_by_name(tname)
       if not target or not target:is_player() then return end
-      if vector.distance(target:get_pos(), pos) > bandages.movement_limit then
+      if vector.distance(target:get_pos(), pos) > bandages.movement_limit_from_level(level) then
         return bandages.target_moved_too_much(pname, tname)
       end
 			-- Don't heal target if already dead.
@@ -200,14 +211,16 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
   else
     -- Otherwise, try to heal self.
     local hp = user:get_hp()
-    if hp >= 20 then
+		local hp_max = target:get_properties().hp_max
+
+    if hp >= hp_max then
       return bandages.player_not_hurt(pname)
     end
     if hp <= 0 then
       return bandages.player_is_dead(pname)
     end
-    if hp > bandages.get_minimum_damage_from_level(level) then
-      return bandages.player_not_hurt_enough(pname, level)
+    if hp < bandages.get_max_damage_for_level(level, hp, hp_max) then
+      return bandages.player_too_hurt(pname, level)
     end
     if bandages.players[pname] then
       return bandages.medkit_already_in_use(pname)
@@ -221,7 +234,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
       bandages.players[pname] = nil
       local user = minetest.get_player_by_name(pname)
       if not user or not user:is_player() then return end
-      if vector.distance(user:get_pos(), pos) > bandages.movement_limit then
+      if vector.distance(user:get_pos(), pos) > bandages.movement_limit_from_level(level) then
         return bandages.player_moved_too_much(pname)
       end
 			-- Don't heal user if already dead.

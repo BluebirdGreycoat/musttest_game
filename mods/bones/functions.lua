@@ -783,9 +783,6 @@ end
 
 
 function bones.kill_bully_on_leaveplayer(pref, timeout)
-	--if pref:get_player_name() == "MustTest" then
-	--	pref:set_hp(0)
-	--end
 end
 
 

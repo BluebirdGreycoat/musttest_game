@@ -351,6 +351,28 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:stair_" ..subname..alternate, def)
+
+		if recipeitem then
+			if alternate == "_inner" then
+				minetest.register_craft({
+					output = "stairs:stair_" .. subname .. alternate .. ' 8',
+					recipe = {
+						{recipeitem, recipeitem, recipeitem},
+						{recipeitem, recipeitem, ''},
+						{recipeitem, '', recipeitem},
+					},
+				})
+			elseif alternate == "_outer" then
+				minetest.register_craft({
+					output = "stairs:stair_" .. subname .. alternate .. ' 8',
+					recipe = {
+						{recipeitem, recipeitem, recipeitem},
+						{recipeitem, '', ''},
+						{recipeitem, '', ''},
+					},
+				})
+			end
+		end
 	end
 	minetest.register_alias("stairs:stair_" ..subname.. "_bottom", "stairs:stair_" ..subname)
 

@@ -6,6 +6,7 @@ doors.register_trapdoor("doors:trapdoor", {
 	tile_front = "doors_trapdoor.png",
 	tile_side = "doors_trapdoor_side.png",
 	groups = utility.dig_groups("door_wood", {flammable = 2, door = 1}),
+	recipeitem = "default:wood",
 })
 
 doors.register_trapdoor("doors:trapdoor_locked", {
@@ -16,6 +17,7 @@ doors.register_trapdoor("doors:trapdoor_locked", {
 	tile_side = "doors_trapdoor_side.png",
 	protected = true,
 	groups = utility.dig_groups("door_wood", {flammable = 2, door = 1}),
+	recipeitem = "default:wood",
 })
 
 doors.register_trapdoor("doors:trapdoor_steel", {
@@ -29,6 +31,7 @@ doors.register_trapdoor("doors:trapdoor_steel", {
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
 	groups = utility.dig_groups("door_metal", {door = 1}),
+	recipeitem = "default:steel_ingot",
 })
 
 doors.register_trapdoor("doors:trapdoor_steel_unlocked", {
@@ -41,6 +44,7 @@ doors.register_trapdoor("doors:trapdoor_steel_unlocked", {
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
 	groups = utility.dig_groups("door_metal", {door = 1}),
+	recipeitem = "default:steel_ingot",
 })
 
 doors.register_trapdoor("doors:trapdoor_stone", {
@@ -51,6 +55,7 @@ doors.register_trapdoor("doors:trapdoor_stone", {
 	tile_side = "doors_trapdoor_stone_side.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("door_metal", {door = 1}),
+	recipeitem = "default:stone",
 })
 
 doors.register_trapdoor("doors:trapdoor_rackstone", {
@@ -61,6 +66,7 @@ doors.register_trapdoor("doors:trapdoor_rackstone", {
 	tile_side = "doors_trapdoor_rackstone_side.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("door_metal", {door = 1}),
+	recipeitem = "rackstone:rackstone",
 })
 
 doors.register_trapdoor("doors:trapdoor_iron_locked", {
@@ -74,6 +80,7 @@ doors.register_trapdoor("doors:trapdoor_iron_locked", {
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
 	groups = utility.dig_groups("door_metal", {door = 1}),
+	recipeitem = "default:iron_lump",
 })
 
 doors.register_trapdoor("doors:trapdoor_iron", {
@@ -86,71 +93,5 @@ doors.register_trapdoor("doors:trapdoor_iron", {
 	sound_open = "doors_steel_door_open",
 	sound_close = "doors_steel_door_close",
 	groups = utility.dig_groups("door_metal", {door = 1}),
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor 2',
-	recipe = {
-		{'default:wood', 'default:wood', 'group:stick'},
-		{'default:wood', 'default:wood', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_locked',
-	recipe = {
-		{'', 'default:padlock', ''},
-		{'default:wood', 'default:wood', 'group:stick'},
-		{'default:wood', 'default:wood', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_steel',
-	recipe = {
-		{'', 'default:padlock', ''},
-		{'default:steel_ingot', 'default:steel_ingot', 'group:stick'},
-		{'default:steel_ingot', 'default:steel_ingot', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_steel_unlocked',
-	recipe = {
-		{'default:steel_ingot', 'default:steel_ingot', 'group:stick'},
-		{'default:steel_ingot', 'default:steel_ingot', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_rackstone',
-	recipe = {
-		{'rackstone:rackstone', 'rackstone:rackstone', 'group:stick'},
-		{'rackstone:rackstone', 'rackstone:rackstone', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_stone',
-	recipe = {
-		{'default:stone', 'default:stone', 'group:stick'},
-		{'default:stone', 'default:stone', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_iron',
-	recipe = {
-		{'default:iron_lump', 'default:iron_lump', 'group:stick'},
-		{'default:iron_lump', 'default:iron_lump', 'group:stick'},
-	}
-})
-
-minetest.register_craft({
-	output = 'doors:trapdoor_iron_locked',
-	recipe = {
-		{'', 'default:padlock', ''},
-		{'default:iron_lump', 'default:iron_lump', 'group:stick'},
-		{'default:iron_lump', 'default:iron_lump', 'group:stick'},
-	}
+	recipeitem = "default:iron_lump",
 })

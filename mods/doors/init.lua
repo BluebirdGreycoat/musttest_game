@@ -601,6 +601,8 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 	end
 end
 
+
+
 function doors.register_trapdoor(name, def)
 	if not name:find(":") then
 		name = "doors:" .. name
@@ -740,9 +742,31 @@ function doors.register_trapdoor(name, def)
 	minetest.register_node(name_opened, def_opened)
 	minetest.register_node(name_closed, def_closed)
 
+	if def.recipeitem then
+		if def.protected then
+			minetest.register_craft({
+				output = name,
+				recipe = {
+					{'', 'default:padlock', ''},
+					{def.recipeitem, def.recipeitem, 'group:stick'},
+					{def.recipeitem, def.recipeitem, 'group:stick'},
+				}
+			})
+		else
+			minetest.register_craft({
+				output = name,
+				recipe = {
+					{def.recipeitem, def.recipeitem, 'group:stick'},
+					{def.recipeitem, def.recipeitem, 'group:stick'},
+				}
+			})
+		end
+	end
+
 	_doors.registered_trapdoors[name_opened] = true
 	_doors.registered_trapdoors[name_closed] = true
 end
+
 
 
 ----fence gate----

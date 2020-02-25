@@ -604,6 +604,9 @@ end
 
 
 function doors.register_trapdoor(name, def)
+	local origname = name
+	local origdef = table.copy(def)
+
 	if not name:find(":") then
 		name = "doors:" .. name
 	end
@@ -758,6 +761,180 @@ function doors.register_trapdoor(name, def)
 				recipe = {
 					{def.recipeitem, def.recipeitem, 'group:stick'},
 					{def.recipeitem, def.recipeitem, 'group:stick'},
+				}
+			})
+		end
+	end
+
+	_doors.registered_trapdoors[name_opened] = true
+	_doors.registered_trapdoors[name_closed] = true
+
+	doors.register_trapdoor_climbable("climbable_" .. origname, origdef)
+end
+
+
+
+
+function doors.register_trapdoor_climbable(name, def)
+	if not name:find(":") then
+		name = "doors:" .. name
+	end
+
+	def.groups = def.groups or {}
+	def.groups.trapdoor = 1
+
+	local name_closed = name
+	local name_opened = name.."_open"
+
+	def.description = def.description .. " With Ladder"
+
+	def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+		_doors.trapdoor_toggle(pos, node, clicker)
+		return itemstack
+	end
+
+	-- Common trapdoor configuration
+	def.drawtype = "nodebox"
+	def.paramtype = "light"
+	def.paramtype2 = "facedir"
+	def.climbable = true
+	def.is_ground_content = false
+
+	if def.protected then
+		def.can_dig = can_dig_door
+		def.after_place_node = function(pos, placer, itemstack, pointed_thing)
+			local pn = placer:get_player_name()
+			local meta = minetest.get_meta(pos)
+			meta:set_string("doors_owner", pn)
+			local dname = rename.gpn(pn)
+			meta:set_string("rename", dname)
+			meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
+
+			return minetest.setting_getbool("creative_mode")
+		end
+
+		def.on_blast = function() end
+		def.on_key_use = function(pos, player)
+			local door = doors.get(pos)
+			door:toggle(player)
+		end
+		def.on_skeleton_key_use = function(pos, player, newsecret)
+			local meta = minetest.get_meta(pos)
+			local owner = meta:get_string("doors_owner")
+			local pname = player:get_player_name()
+
+			-- verify placer is owner of lockable door
+			if not gdac.player_is_admin(pname) then
+				if owner ~= pname then
+					minetest.record_protection_violation(pos, pname)
+					minetest.chat_send_player(pname, "# Server: You do not own this trapdoor.")
+					return nil
+				end
+			end
+
+			local secret = meta:get_string("key_lock_secret")
+			if secret == "" then
+				secret = newsecret
+				meta:set_string("key_lock_secret", secret)
+			end
+
+			return secret, "a locked trapdoor", owner
+		end
+
+		-- Called by rename LBM.
+		def._on_rename_check = function(pos)
+			local meta = minetest.get_meta(pos)
+			local owner = meta:get_string("doors_owner")
+			-- Nobody placed this block.
+			if owner == "" then
+				return
+			end
+			local dname = rename.gpn(owner)
+
+			meta:set_string("rename", dname)
+			meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
+		end
+
+		-- Disable client dig prediction.
+		def.node_dig_prediction = ""
+	else
+		def.on_blast = function(pos, intensity)
+			minetest.remove_node(pos)
+			return {name}
+		end
+	end
+
+	if not def.sounds then
+		def.sounds = default.node_sound_wood_defaults()
+	end
+
+	if not def.sound_open then
+		def.sound_open = "doors_door_open"
+	end
+
+	if not def.sound_close then
+		def.sound_close = "doors_door_close"
+	end
+
+	local def_opened = table.copy(def)
+	local def_closed = table.copy(def)
+
+	def_closed.node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -6/16, 0.5}
+	}
+	def_closed.selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -6/16, 0.5}
+	}
+	def_closed.tiles = {def.tile_front,
+			def.tile_front .. '^[transformFY',
+			def.tile_side, def.tile_side,
+			def.tile_side, def.tile_side}
+
+	def_opened.node_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, 6/16, 0.5, 0.5, 0.5}
+	}
+	def_opened.selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, 6/16, 0.5, 0.5, 0.5}
+	}
+	def_opened.tiles = {def.tile_side, def.tile_side,
+			def.tile_side .. '^[transform3',
+			def.tile_side .. '^[transform1',
+			def.tile_front .. '^[transform46',
+			def.tile_front .. '^[transform6'}
+
+	def_opened.drop = name_closed
+	def_opened.groups.not_in_creative_inventory = 1
+
+	if def.protected then
+		def_closed.inventory_image = def_closed.inventory_image .. "^protector_lock.png"
+		def_opened.inventory_image = def_opened.inventory_image .. "^protector_lock.png"
+	end
+	def_closed.inventory_image = def_closed.inventory_image .. "^doors_ladder.png"
+	def_opened.inventory_image = def_opened.inventory_image .. "^doors_ladder.png"
+
+	minetest.register_node(name_opened, def_opened)
+	minetest.register_node(name_closed, def_closed)
+
+	if def.recipeitem then
+		if def.protected then
+			minetest.register_craft({
+				output = name,
+				recipe = {
+					{'', 'default:padlock', ''},
+					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
+					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
+				}
+			})
+		else
+			minetest.register_craft({
+				output = name,
+				recipe = {
+					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
+					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
 				}
 			})
 		end

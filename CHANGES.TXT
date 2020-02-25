@@ -1,3 +1,5 @@
+[2020/2/25] Add climbable trapdoors.
+[2020/2/25] Added regular craft recipes for inner and outer corner stairs.
 [2020/2/23] Fixed some oversights in the new passive-healing system.
 [2020/2/23] Player can no longer die from over-eating.
 [2020/2/22] Redesigned the hunger/passive-healing system, including how bandages work.

@@ -1,5 +1,5 @@
 
-doors.register_trapdoor("doors:trapdoor", {
+doors.register_trapdoor("trapdoor", {
 	description = "Wooden Trapdoor",
 	inventory_image = "doors_trapdoor.png",
 	wield_image = "doors_trapdoor.png",
@@ -9,7 +9,7 @@ doors.register_trapdoor("doors:trapdoor", {
 	recipeitem = "default:wood",
 })
 
-doors.register_trapdoor("doors:trapdoor_locked", {
+doors.register_trapdoor("trapdoor_locked", {
 	description = "Locked Wooden Trapdoor",
 	inventory_image = "doors_trapdoor.png",
 	wield_image = "doors_trapdoor.png",
@@ -20,7 +20,7 @@ doors.register_trapdoor("doors:trapdoor_locked", {
 	recipeitem = "default:wood",
 })
 
-doors.register_trapdoor("doors:trapdoor_steel", {
+doors.register_trapdoor("trapdoor_steel", {
 	description = "Locked Iron Trapdoor",
 	inventory_image = "doors_trapdoor_steel.png",
 	wield_image = "doors_trapdoor_steel.png",
@@ -34,7 +34,7 @@ doors.register_trapdoor("doors:trapdoor_steel", {
 	recipeitem = "default:steel_ingot",
 })
 
-doors.register_trapdoor("doors:trapdoor_steel_unlocked", {
+doors.register_trapdoor("trapdoor_steel_unlocked", {
 	description = "Iron Trapdoor",
 	inventory_image = "doors_trapdoor_steel.png",
 	wield_image = "doors_trapdoor_steel.png",
@@ -47,7 +47,7 @@ doors.register_trapdoor("doors:trapdoor_steel_unlocked", {
 	recipeitem = "default:steel_ingot",
 })
 
-doors.register_trapdoor("doors:trapdoor_stone", {
+doors.register_trapdoor("trapdoor_stone", {
 	description = "Stone Trapdoor",
 	inventory_image = "doors_trapdoor_stone.png",
 	wield_image = "doors_trapdoor_stone.png",
@@ -58,7 +58,7 @@ doors.register_trapdoor("doors:trapdoor_stone", {
 	recipeitem = "default:stone",
 })
 
-doors.register_trapdoor("doors:trapdoor_rackstone", {
+doors.register_trapdoor("trapdoor_rackstone", {
 	description = "Rackstone Trapdoor",
 	inventory_image = "doors_trapdoor_rackstone.png",
 	wield_image = "doors_trapdoor_rackstone.png",
@@ -69,7 +69,7 @@ doors.register_trapdoor("doors:trapdoor_rackstone", {
 	recipeitem = "rackstone:rackstone",
 })
 
-doors.register_trapdoor("doors:trapdoor_iron_locked", {
+doors.register_trapdoor("trapdoor_iron_locked", {
 	description = "Locked Wrought Iron Trapdoor",
 	inventory_image = "doors_trapdoor_iron.png",
 	wield_image = "doors_trapdoor_iron.png",
@@ -83,7 +83,7 @@ doors.register_trapdoor("doors:trapdoor_iron_locked", {
 	recipeitem = "default:iron_lump",
 })
 
-doors.register_trapdoor("doors:trapdoor_iron", {
+doors.register_trapdoor("trapdoor_iron", {
 	description = "Wrought Iron Trapdoor",
 	inventory_image = "doors_trapdoor_iron.png",
 	wield_image = "doors_trapdoor_iron.png",

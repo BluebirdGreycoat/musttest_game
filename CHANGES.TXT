@@ -1,3 +1,4 @@
+[2020/2/26] Enabled cutting glowstone nodes with the table saw.
 [2020/2/26] Added flint-and-steel to player start items when they spawn in the Outback.
 [2020/2/25] Add climbable trapdoors.
 [2020/2/25] Added regular craft recipes for inner and outer corner stairs.

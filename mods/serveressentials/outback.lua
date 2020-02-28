@@ -82,6 +82,13 @@ local nodes = {
 	-- Extra signs at spawn.
 	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
 	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
+
+	-- Extra pillar between Oerkki spawn point and the gate.
+	{pos={x=-9169, y=4104, z=5782}, node={name="pillars:rackstone_cobble_top", param2=3}},
+	{pos={x=-9169, y=4103, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4102, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4101, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4100, z=5782}, node={name="pillars:rackstone_cobble_bottom", param2=3}},
 }
 
 local function rebuild_nodes()

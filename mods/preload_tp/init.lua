@@ -24,7 +24,7 @@ function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_p
 	-- The player may optionally be force-teleported.
 	if not force then
 		-- Did the player move?
-		if vector.distance(pp, player:get_pos()) > 0.1 then
+		if vector.distance(pp, player:get_pos()) > 1.5 then
 			minetest.chat_send_player(pname, "# Server: Transport error. You cannot move while a transport is in progress.")
 			return
 		end

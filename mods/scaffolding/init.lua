@@ -68,6 +68,7 @@ if not scaffolding.run_once then
 							{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 					},
 			},
+			_no_collapse_on_walkover = true,
 			after_dig_node = function(pos, node, metadata, digger)
 			default.dig_up(pos, node, digger)
 	end,
@@ -85,6 +86,7 @@ if not scaffolding.run_once then
 			walkable = false,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
+			_no_collapse_on_walkover = true,
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -132,6 +134,7 @@ if not scaffolding.run_once then
 			walkable = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
+			_no_collapse_on_walkover = true,
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -170,6 +173,7 @@ if not scaffolding.run_once then
 			walkable = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_wood_defaults(),
+			_no_collapse_on_walkover = true,
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -202,6 +206,7 @@ if not scaffolding.run_once then
 			walkable = false,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
+			_no_collapse_on_walkover = true,
 			node_box = {
 					type = "fixed",
 					fixed = {
@@ -253,6 +258,7 @@ if not scaffolding.run_once then
 			paramtype2 = "facedir",
 			climbable = true,
 			walkable = false,
+			_no_collapse_on_walkover = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
 			on_punch = function(pos, node, puncher)
@@ -303,6 +309,7 @@ if not scaffolding.run_once then
 			walkable = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
+			_no_collapse_on_walkover = true,
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then
@@ -341,6 +348,7 @@ if not scaffolding.run_once then
 			walkable = true,
 			groups = utility.dig_groups("scaffolding", {scaffolding=1}),
 			sounds = default.node_sound_stone_defaults(),
+			_no_collapse_on_walkover = true,
 			on_punch = function(pos, node, puncher)
 					local tool = puncher:get_wielded_item():get_name()
 					if tool and tool == "scaffolding:scaffolding_wrench" then

@@ -175,8 +175,10 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 			end
 
 			-- The default action is only rarely taken.
-			if random(1, 500) == 1 then
-				default_on_walkover(nodepos, sname, player)
+			if not sdef._no_collapse_on_walkover then
+				if random(1, 500) == 1 then
+					default_on_walkover(nodepos, sname, player)
+				end
 			end
 		end -- Air/ignore check.
 	end

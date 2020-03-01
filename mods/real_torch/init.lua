@@ -20,6 +20,7 @@ end
 
 
 -- start timer on any already placed torches
+--[[
 minetest.register_lbm({
 	name = "real_torch:convert_torch_to_node_timer",
 	nodenames = {"torches:torch_floor", "torches:torch_wall", "torches:torch_ceiling"},
@@ -40,6 +41,7 @@ minetest.register_lbm({
 		end
 	end
 })
+--]]
 
 function real_torch.start_timer(pos)
 	minetest.get_node_timer(pos):start(math.random(real_torch.min_duration, real_torch.max_duration))

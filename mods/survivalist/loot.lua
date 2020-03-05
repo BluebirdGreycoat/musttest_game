@@ -1,79 +1,101 @@
 
+local critical_loot = {
+	-- The main problem with the `surface` challenge is keeping it from being too easy.
+	-- This is especially due to travel being very swift, and too much food can go a long way.
+	["surface"] = {
+		{item="default:stick", min=5, max=20},
+		{item="farming:bread", min=5, max=20},
+		{item="default:steel_ingot", min=5, max=20},
+		{item="default:diamond", min=3, max=9},
+		{item="bones:bones_type2", min=9, max=27},
+		{item="torches:torch_floor", min=10, max=30},
+		{item="bucket:bucket_water", min=1, max=4},
+		{item="default:dirt", min=6, max=12},
+	},
+
+	-- The challenge of `cave` mode is building a farm to make food and keep going.
+	-- Finding sources of iron and coal are critical. Farm supplies have to be provided
+	-- right away because otherwise the gamemode would probably be impossible.
+	["cave"] = {
+		{item="default:stick", min=10, max=30},
+		{item="farming:bread", min=10, max=50},
+		{item="basictrees:tree_apple", min=10, max=50},
+		{item="pumpkin:bread", min=10, max=30},
+		{item="default:steel_ingot", min=30, max=64},
+		{item="default:coal_lump", min=30, max=64},
+		{item="bones:bones_type2", min=10, max=40},
+		{item="default:dirt", min=6, max=12},
+		{item="torches:torch_floor", min=10, max=30},
+		{item="bucket:bucket_water", min=4, max=12},
+		{item="default:grass_dummy", min=5, max=20},
+		{item="moreblocks:super_glow_glass", min=6, max=20},
+		{item="rackstone:dauthsand", min=3, max=6},
+		{item="firetree:sapling", min=2, max=3},
+		{item="griefer:grieferstone", min=2, max=4},
+		{item="titanium:crystal", min=3, max=16},
+	},
+
+	-- Like `cave` mode, in this gamemode building a farm and finding sources of iron and coal are critical.
+	["nether"] = {
+		{item="default:stick", min=10, max=30},
+		{item="farming:bread", min=10, max=50},
+		{item="basictrees:tree_apple", min=10, max=50},
+		{item="default:steel_ingot", min=30, max=64},
+		{item="default:coal_lump", min=30, max=64},
+		{item="gems:ruby_gem", min=3, max=13},
+		{item="torches:kalite_torch_floor", min=10, max=25},
+		{item="moreblocks:super_glow_glass", min=6, max=20},
+		{item="rackstone:dauthsand", min=3, max=12},
+		{item="firetree:sapling", min=2, max=3},
+		{item="default:flint", min=3, max=5},
+		{item="bluegrass:seed", min=3, max=16},
+		{item="griefer:grieferstone", min=2, max=4},
+		{item="titanium:crystal", min=3, max=16},
+
+		{item="default:cobble", min=1, max=64},
+		{item="default:cobble", min=1, max=64},
+		{item="default:cobble", min=1, max=64},
+
+		-- Nether challenge must have bed, because otherwise it is too
+		-- difficult/impossible to craft one.
+		{item="beds:fancy_bed_bottom", min=3, max=5},
+	},
+}
+
+
+
 function survivalist.fill_loot_chest(inv, gamemode)
 	if not inv then
 		return
 	end
+
   local loot = {}
+  local critical = critical_loot[gamemode]
+  if not critical then
+		return
+	end
+  loot = table.copy(critical)
+  table.shuffle(loot)
 
-  if gamemode == "surface" then
-    -- The main problem with the `surface` challenge is keeping it from being too easy.
-    -- This is especially due to travel being very swift, and too much food can go a long way.
-    loot = {
-      {item="default:stick", min=1, max=20},
-      {item="farming:bread", min=1, max=10},
-      {item="basictrees:tree_apple", min=1, max=20},
-      {item="pumpkin:bread", min=1, max=10},
-      {item="default:steel_ingot", min=3, max=15},
-      {item="default:diamond", min=1, max=8},
-      {item="bones:bones_type2", min=1, max=25},
-      {item="torches:torch_floor", min=10, max=30},
-    }
-  elseif gamemode == "cave" then
-    -- The challenge of `cave` mode is building a farm to make food and keep going.
-    -- Finding sources of iron and coal are critical. Farm supplies have to be provided
-    -- right away because otherwise the gamemode would probably be impossible.
-    loot = {
-      {item="default:stick", min=10, max=30},
-      {item="farming:bread", min=10, max=20},
-      {item="basictrees:tree_apple", min=10, max=20},
-      {item="pumpkin:bread", min=10, max=20},
-      {item="default:steel_ingot", min=30, max=64},
-      {item="bones:bones_type2", min=10, max=40},
-      {item="default:dirt", min=3, max=6},
-      {item="torches:torch_floor", min=10, max=30},
-      {item="bucket:bucket_water", min=1, max=4},
-      {item="default:grass_dummy", min=1, max=10},
-      {item="moreblocks:super_glow_glass", min=6, max=10},
-      {item="rackstone:dauthsand", min=3, max=6},
-      {item="firetree:sapling", min=1, max=2},
-      {item="griefer:grieferstone", min=1, max=4},
-      {item="titanium:crystal", min=3, max=8},
-    }
-  elseif gamemode == "nether" then
-    -- Like `cave` mode, in this gamemode building a farm and finding sources of iron and coal are critical.
-    loot = {
-      {item="default:stick", min=1, max=30},
-      {item="farming:bread", min=10, max=30},
-      {item="basictrees:tree_apple", min=10, max=20},
-      {item="default:steel_ingot", min=30, max=64},
-      {item="default:coal_lump", min=30, max=64},
-      {item="gems:ruby_gem", min=3, max=13},
-      {item="torches:kalite_torch_floor", min=10, max=25},
-      {item="moreblocks:super_glow_glass", min=3, max=10},
-      {item="rackstone:dauthsand", min=3, max=6},
-      {item="firetree:sapling", min=1, max=2},
-      {item="default:flint", min=5, max=16},
-      {item="bluegrass:seed", min=3, max=16},
-      {item="griefer:grieferstone", min=1, max=4},
-      {item="titanium:crystal", min=1, max=8},
-      {item="default:cobble", min=1, max=64},
-      {item="beds:fancy_bed_bottom", min=1, max=3},
-    }
+  local positions = {}
+  local listsize = inv:get_size("main")
+  for i = 1, listsize, 1 do
+		positions[#positions + 1] = i
   end
+  table.shuffle(positions)
 
-	local loot_tries = #loot * 3
-	for i=1, loot_tries, 1 do
-		-- Randomize the order in which loot is applied.
-		local v = loot[math.random(1, #loot)]
+  -- Add loot.
+	for k, v in ipairs(loot) do
+		local min = math.floor(v.min)
+		local max = math.ceil(v.max)
 
-		-- Divide min/max by 3 (logic is applied 3 times). This splits stacks up.
-    local min = math.floor(v.min / 3.0)
-    local max = math.ceil(v.max / 3.0)
-		if max > min then
+		if max >= min then
 			local count = math.floor(math.random(min, max))
-			if count > 0 then
-				inv:set_stack("main", math.random(1, 12*4), ItemStack(v.item .. " " .. count))
+			if count > 0 and #positions > 0 then
+				local idx = positions[#positions]
+				positions[#positions] = nil
+				inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
 			end
 		end
-  end
+	end
 end

@@ -64,6 +64,19 @@ local critical_loot = {
 
 
 
+local bonus_loot = {
+	{item="farming:seed_wheat", min=2, max=6, chance=40},
+	{item="farming:seed_cotton", min=2, max=6, chance=40},
+	{item="potatoes:seed", min=2, max=6, chance=40},
+	{item="default:junglegrass", min=2, max=6, chance=40},
+	{item="default:cactus", min=2, max=6, chance=40},
+	{item="bandages:bandage_3", min=5, max=30, chance=40},
+	{item="carbon_steel:ingot", min=5, max=30, chance=40},
+	{item="default:mese_crystal", min=5, max=30, chance=40},
+}
+
+
+
 function survivalist.fill_loot_chest(inv, gamemode)
 	if not inv then
 		return
@@ -92,6 +105,25 @@ function survivalist.fill_loot_chest(inv, gamemode)
 		if max >= min then
 			local count = math.floor(math.random(min, max))
 			if count > 0 and #positions > 0 then
+				local idx = positions[#positions]
+				positions[#positions] = nil
+				inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
+			end
+		end
+	end
+
+	local bonus = table.copy(bonus_loot)
+	table.shuffle(bonus)
+
+	-- Add bonus loot.
+	for k, v in ipairs(bonus) do
+		local min = math.floor(v.min)
+		local max = math.ceil(v.max)
+
+		if max >= min then
+			local count = math.floor(math.random(min, max))
+			local chance = math.random(0, 100)
+			if count > 0 and #positions > 0 and chance < v.chance then
 				local idx = positions[#positions]
 				positions[#positions] = nil
 				inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))

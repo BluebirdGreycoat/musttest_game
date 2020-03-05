@@ -334,7 +334,7 @@ if not geothermal_generator.run_once then
     recipe = {
       {'morerocks:granite', 'default:diamond', 'morerocks:granite'},
       {'fine_wire:copper', 'techcrafts:machine_casing', 'fine_wire:copper'},
-      {'morerocks:granite', 'cb2:hv', 'morerocks:granite'},
+      {'morerocks:granite', 'cb2:lv', 'morerocks:granite'},
     }
   })
 

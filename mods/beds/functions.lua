@@ -435,7 +435,7 @@ function beds.on_respawnplayer(player)
 		local spawncount = beds.storage:get_int(name .. ":count")
 		if spawncount <= 1 then
 			beds.spawn[name] = nil
-			minetest.chat_send_player(name, "# Server: Warning, bed respawn position lost! Sleep again to reset it.")
+			minetest.chat_send_player(name, "# Server: Warning, your bed respawn position is lost! Sleep again to renew it.")
 			beds.save_spawns()
 		else
 			spawncount = spawncount - 1

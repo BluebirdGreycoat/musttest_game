@@ -5,6 +5,7 @@ afk_removal.modpath = minetest.get_modpath("afk_removal")
 afk_removal.steptime = 5
 afk_removal.timeout = 60 * 30
 afk_removal.warntime = 60 * 29
+afk_removal.disable_kick = minetest.is_singleplayer()
 
 
 
@@ -77,7 +78,7 @@ afk_removal.update = function()
 		local dist = vector.distance(pos, target.pos)
 		local nokick = false
 
-    if minetest.check_player_privs(name, {canafk=true}) then
+    if afk_removal.disable_kick or minetest.check_player_privs(name, {canafk=true}) then
 			nokick = true
     end
 

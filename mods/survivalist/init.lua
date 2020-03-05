@@ -268,7 +268,10 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
 		chestpos = vector.round(chestpos)
     
     -- Create chest with stuff.
-    minetest.set_node(chestpos, {name="morechests:goldchest_public_closed"})
+    minetest.set_node(chestpos, {
+			name = "morechests:goldchest_public_closed",
+			param2 = math.random(0, 3),
+		})
     local meta = minetest.get_meta(chestpos)
     local inv = meta:get_inventory()
 		if inv then

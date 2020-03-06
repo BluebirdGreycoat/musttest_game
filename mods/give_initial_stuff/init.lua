@@ -1,15 +1,16 @@
-local stuff_string = minetest.setting_get("initial_stuff") or
-		"default:pick_steel,default:axe_steel,default:shovel_steel," ..
-		"torches:torch_floor 99,default:cobble 99"
 
-give_initial_stuff = {
-	items = {}
-}
+give_initial_stuff = give_initial_stuff or {}
+give_initial_stuff.modpath = minetest.get_modpath("give_initial_stuff")
+give_initial_stuff.items = give_initial_stuff.items or {}
 
--- Also used when a Survival Challenge is started.
+-- Start items are hardcoded intentionally. The Outback (where new players
+-- start on first join) depends on this.
+local stuff_string =
+	"default:pick_wood,mobs:meat_mutton 10,torches:torch_floor 10," ..
+	"tinderbox:tinderbox,clock:calendar,flint_and_steel:flint_and_steel"
+
+-- This is also called when a Survival Challenge is started.
 function give_initial_stuff.give(player)
-	minetest.log("action",
-			"Giving initial stuff to player " .. player:get_player_name())
 	local inv = player:get_inventory()
 	for _, stack in ipairs(give_initial_stuff.items) do
 		inv:add_item("main", stack)
@@ -39,7 +40,17 @@ function give_initial_stuff.get_list()
 	return give_initial_stuff.items
 end
 
-give_initial_stuff.add_from_csv(stuff_string)
-if minetest.setting_getbool("give_initial_stuff") then
-	minetest.register_on_newplayer(give_initial_stuff.give)
+if not give_initial_stuff.registered then
+	give_initial_stuff.add_from_csv(stuff_string)
+
+	-- Initial stuff is always given to a new player regardless of server configuration.
+	minetest.register_on_newplayer(function(...)
+		give_initial_stuff.give(...)
+	end)
+
+	local c = "give_initial_stuff:core"
+	local f = give_initial_stuff.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	give_initial_stuff.registered = true
 end

@@ -8,6 +8,9 @@ function serveressentials.check_outback_reset()
 	if not stime or stime == "" then
 		stime = tostring(os.time())
 		meta:set_string("outback_reset_time", stime)
+
+		-- Note: we reach here only when a new world is first started.
+		serveressentials.rebuild_outback()
 		return
 	end
 

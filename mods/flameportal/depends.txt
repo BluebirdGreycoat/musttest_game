@@ -1,2 +1,4 @@
 default
 reload
+rackstone
+fire

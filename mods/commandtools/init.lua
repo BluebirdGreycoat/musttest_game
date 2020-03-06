@@ -241,7 +241,7 @@ local schems = {
 
 local function place_schem(pos, dir, slope, placer)
 	local data = schems[dir][slope]
-	local path = minetest.get_worldpath() .. "/schems/" .. data.schem
+	local path = commandtools.modpath .. "/schems/" .. data.schem
 	minetest.place_schematic(vector.add(pos, data.offset), path, data.rotation)
 
 	if data.prot then
@@ -260,14 +260,14 @@ local function place_schem(pos, dir, slope, placer)
 	end
 
 	if slope ~= "corner" then
-		local path2 = minetest.get_worldpath() .. "/schems/roadbed_ns.mts"
+		local path2 = commandtools.modpath .. "/schems/roadbed_ns.mts"
 		local bp = vector.add(vector.add(pos, data.offset), {x=0, y=-4, z=0})
 		for i=1, 3, 1 do
 			minetest.place_schematic(bp, path2, data.rotation)
 			bp.y = bp.y - 4
 		end
 
-		local path3 = minetest.get_worldpath() .. "/schems/roadair_ns.mts"
+		local path3 = commandtools.modpath .. "/schems/roadair_ns.mts"
 		local ap
 		if slope ~= "up_steep" and slope ~= "down_steep" then
 			ap = vector.add(vector.add(pos, data.offset), {x=0, y=5, z=0})
@@ -280,14 +280,14 @@ local function place_schem(pos, dir, slope, placer)
 			ap.y = ap.y + 4
 		end
 	else
-		local path2 = minetest.get_worldpath() .. "/schems/cornerbed_ne.mts"
+		local path2 = commandtools.modpath .. "/schems/cornerbed_ne.mts"
 		local bp = vector.add(vector.add(pos, data.offset), {x=0, y=-4, z=0})
 		for i=1, 3, 1 do
 			minetest.place_schematic(bp, path2, data.rotation)
 			bp.y = bp.y - 4
 		end
 
-		local path3 = minetest.get_worldpath() .. "/schems/cornerair_ne.mts"
+		local path3 = commandtools.modpath .. "/schems/cornerair_ne.mts"
 		local ap = vector.add(vector.add(pos, data.offset), {x=0, y=5, z=0})
 		for i=1, 3, 1 do
 			minetest.place_schematic(ap, path3, data.rotation)

@@ -22,6 +22,14 @@ dofile(serveressentials.modpath .. "/teleport.lua")
 
 
 if not serveressentials.registered then
+	-- Overriding the teleport chat-command is necessary in order to let admins
+	-- use realm-relative coordinates. It also prevents admins from accidentally
+	-- teleporting into "unallocated" parts of the world, which can damage* the
+	-- map and possibly require use of WorldEdit to fix.
+	--
+	-- *I.e. cause to be generated chunks that shouldn't be generated, which can
+	-- cause a cascade of lighting issues that ruin any terrain below. Note that
+	-- this works in concert with the 'rc' (RealmControl) code.
 	assert(minetest.registered_chatcommands["teleport"])
 	minetest.override_chatcommand("teleport", {
 		func = function(name, param)

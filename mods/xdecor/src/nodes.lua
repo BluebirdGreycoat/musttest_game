@@ -292,10 +292,16 @@ local xdecor_doors = {
 		{"default:glass", "default:glass"},
 		{"group:wood", "group:wood"},
 		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+
+	-- No locked version. This is intentional,
+	-- you only use it for camouflage.
 	stone = { recipe = {
 		{"default:stone", "default:stone"},
 		{"default:stone", "default:stone"},
 		{"default:stone", "default:stone"}}, groups=utility.dig_groups("door_stone") },
+
+	-- No locked version. This is intentional,
+	-- you only use it for camouflage.
 	redstone = { recipe = {
 		{"rackstone:rackstone", "rackstone:rackstone"},
 		{"rackstone:rackstone", "rackstone:rackstone"},

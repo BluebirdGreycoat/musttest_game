@@ -554,3 +554,17 @@ doors.register("door_wood3_locked", {
         {"basictrees:tree_wood", "basictrees:tree_wood", ""},
     }
 })
+
+-- No locked version. This is intentional,
+-- you only use it for camouflage.
+doors.register("door_desertstone", {
+    tiles = {{ name = "doors_door_redstone.png", backface_culling = true }},
+    description = "Desert Stone Door",
+    inventory_image = "doors_item_redstone.png",
+    groups = utility.dig_groups("door_stone"),
+    recipe = {
+        {"default:desert_stone", "default:desert_stone"},
+        {"default:desert_stone", "default:desert_stone"},
+        {"default:desert_stone", "default:desert_stone"},
+    }
+})

@@ -47,6 +47,7 @@ doors.register_trapdoor("trapdoor_steel_unlocked", {
 	recipeitem = "default:steel_ingot",
 })
 
+-- No locked version. Use for camo.
 doors.register_trapdoor("trapdoor_stone", {
 	description = "Stone Trapdoor",
 	inventory_image = "doors_trapdoor_stone.png",
@@ -54,10 +55,23 @@ doors.register_trapdoor("trapdoor_stone", {
 	tile_front = "doors_trapdoor_stone.png",
 	tile_side = "doors_trapdoor_stone_side.png",
 	sounds = default.node_sound_stone_defaults(),
-	groups = utility.dig_groups("door_metal", {door = 1}),
+	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:stone",
 })
 
+-- No locked version. Use for camo.
+doors.register_trapdoor("trapdoor_desertstone", {
+	description = "Desert Stone Trapdoor",
+	inventory_image = "doors_trapdoor_redstone.png",
+	wield_image = "doors_trapdoor_redstone.png",
+	tile_front = "doors_trapdoor_redstone.png",
+	tile_side = "doors_trapdoor_redstone_side.png",
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:desert_stone",
+})
+
+-- No locked version. Use for camo.
 doors.register_trapdoor("trapdoor_rackstone", {
 	description = "Rackstone Trapdoor",
 	inventory_image = "doors_trapdoor_rackstone.png",

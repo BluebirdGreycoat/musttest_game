@@ -568,3 +568,28 @@ doors.register("door_desertstone", {
         {"default:desert_stone", "default:desert_stone"},
     }
 })
+
+doors.register("door_sandstone", {
+    tiles = {{ name = "doors_door_sandstone.png", backface_culling = true }},
+    description = "Sandstone Door",
+    inventory_image = "doors_item_sandstone.png",
+    groups = utility.dig_groups("door_stone"),
+    recipe = {
+        {"default:sandstone", "default:sandstone"},
+        {"default:sandstone", "default:sandstone"},
+        {"default:sandstone", "default:sandstone"},
+    }
+})
+
+doors.register("door_sandstone_locked", {
+    tiles = {{ name = "doors_door_sandstone.png", backface_culling = true }},
+    description = "Locked Sandstone Door",
+    inventory_image = "doors_item_sandstone.png",
+    groups = utility.dig_groups("door_stone"),
+    protected = true,
+    recipe = {
+        {"default:sandstone", "default:sandstone", ""},
+        {"default:sandstone", "default:sandstone", "default:padlock"},
+        {"default:sandstone", "default:sandstone", ""},
+    }
+})

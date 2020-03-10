@@ -79,7 +79,7 @@ doors.register_trapdoor("trapdoor_rackstone", {
 	tile_front = "doors_trapdoor_rackstone.png",
 	tile_side = "doors_trapdoor_rackstone_side.png",
 	sounds = default.node_sound_stone_defaults(),
-	groups = utility.dig_groups("door_metal", {door = 1}),
+	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "rackstone:rackstone",
 })
 
@@ -108,4 +108,27 @@ doors.register_trapdoor("trapdoor_iron", {
 	sound_close = "doors_steel_door_close",
 	groups = utility.dig_groups("door_metal", {door = 1}),
 	recipeitem = "default:iron_lump",
+})
+
+doors.register_trapdoor("trapdoor_sandstone", {
+	description = "Sandstone Trapdoor",
+	inventory_image = "doors_trapdoor_sandstone.png",
+	wield_image = "doors_trapdoor_sandstone.png",
+	tile_front = "doors_trapdoor_sandstone.png",
+	tile_side = "doors_trapdoor_sandstone_side.png",
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:sandstone",
+})
+
+doors.register_trapdoor("trapdoor_sandstone_locked", {
+	description = "Locked Sandstone Trapdoor",
+	inventory_image = "doors_trapdoor_sandstone.png",
+	wield_image = "doors_trapdoor_sandstone.png",
+	tile_front = "doors_trapdoor_sandstone.png",
+	tile_side = "doors_trapdoor_sandstone_side.png",
+	protected = true,
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:sandstone",
 })

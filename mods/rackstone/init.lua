@@ -205,7 +205,6 @@ minetest.register_node("rackstone:redrack_cobble", {
 	_no_auto_pop = true,
 
   after_destruct = function(...)
-    after_redrack_remove(...)
     rackstone.destabilize_dauthsand(...)
   end,
 

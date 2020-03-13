@@ -15,9 +15,9 @@ minetest.override_item("rackstone:redrack", {
 -- Make a mapgen-specific copy of this nodetype.
 local rdef = table.copy(minetest.registered_nodes["rackstone:redrack"])
 rdef.is_ground_content = true
-rdef.drop = "rackstone:redrack"
+rdef.drop = "rackstone:redrack_cobble"
 rdef.after_place_node = function(pos) -- In case player manages to obtain.
-  minetest.swap_node(pos, {name="rackstone:redrack"})
+  minetest.swap_node(pos, {name="rackstone:redrack_cobble"})
 end
 
 --[[
@@ -33,9 +33,9 @@ minetest.register_node(":rackstone:mg_redrack", rdef)
 -- Make a mapgen-specific copy of this nodetype.
 local ddef = table.copy(minetest.registered_nodes["rackstone:rackstone"])
 ddef.is_ground_content = true
-ddef.drop = "rackstone:rackstone"
+ddef.drop = "rackstone:cobble"
 ddef.after_place_node = function(pos) -- In case player manages to obtain.
-  minetest.swap_node(pos, {name="rackstone:rackstone"})
+  minetest.swap_node(pos, {name="rackstone:cobble"})
 end
 minetest.register_node(":rackstone:mg_rackstone", ddef)
 

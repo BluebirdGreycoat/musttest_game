@@ -214,14 +214,14 @@ minetest.register_node("rackstone:redrack_cobble", {
   end,
 
 	on_player_walk_over = function(pos, player)
-		if math.random(1, 2000) == 1 then
+		if math.random(1, 10000) == 1 then
 			minetest.after(math.random(1, 4), function()
 				if not minetest.test_protection(pos, "") then
 					tnt.boom(pos, {
 						radius = 2,
 						ignore_protection = false,
 						ignore_on_blast = false,
-						damage_radius = 3,
+						damage_radius = 2,
 						disable_drops = true,
 					})
 				end

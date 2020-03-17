@@ -308,30 +308,33 @@ function beds.on_rightclick(pos, player)
 	if player:get_hp() == 0 then
 		return
 	end
-
-	-- Protection check only needed if bed is not explicitly public.
-	if owner ~= "server" then
-		if minetest.test_protection(pos, name) then
-			minetest.chat_send_player(name, "# Server: You cannot steal that bed!")
-			return
-		end
-	end
   
   if owner == "" then
-		-- If bed has no owner, clicker takes ownership.
-		local dname = rename.gpn(name)
-    meta:set_string("owner", name)
-		meta:set_string("rename", dname)
-		meta:mark_as_private({"owner", "rename"})
-    meta:set_string("infotext", "Bed (Owned by <" .. dname .. ">!)")
+		-- If bed has no owner, and pos is not protected, player takes ownership.
+		-- Note: this is to prevent player from taking ownership of an unowned bed
+		-- in an area protected by someone else.
+		if minetest.test_protection(pos, name) then
+			minetest.chat_send_player(name, "# Server: You cannot take ownership of this bed due to protection.")
+			return
+		else
+			local dname = rename.gpn(name)
+			meta:set_string("owner", name)
+			meta:set_string("rename", dname)
+			meta:mark_as_private({"owner", "rename"})
+			meta:set_string("infotext", "Bed (Owned by <" .. dname .. ">!)")
+		end
 	elseif owner == "server" then
-		-- Nothing needed so far.
-		-- If owner is server, then bed is public and player may use it.
+		-- No code needed here so far.
+		-- If owner is server, then bed is public and player may sleep here.
 		-- But respawn position must not be set here.
   elseif owner ~= name then
     minetest.chat_send_player(name, "# Server: You cannot sleep here, this bed is not yours!")
     return
   end
+
+	-- Otherwise, if bed is public OR the bed is owned by the player, then they
+	-- are allowed to sleep, even if the bed is protected by someone else (and the
+	-- protector wasn't shared, e.g., basic protection).
 
 	if beds.monsters_nearby(pos, player) then
 		minetest.chat_send_player(name, "# Server: You cannot sleep now, there are monsters nearby!")

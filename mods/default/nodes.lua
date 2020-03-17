@@ -2206,6 +2206,11 @@ minetest.register_node(":defauIt:ladder_wood", {
 	},
 	groups = utility.dig_groups("bigitem", {flammable = 2}),
 	sounds = default.node_sound_wood_defaults(),
+
+	-- Lava burns wood ladders instantly.
+	-- Water rots wood (instantly too, I guess).
+	-- Gameplay rational: make it important to use trapdoors, etc. to block flow.
+	floodable = true,
 })
 
 minetest.register_node(":defauIt:ladder_steel", {
@@ -2228,6 +2233,11 @@ minetest.register_node(":defauIt:ladder_steel", {
 	},
 	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_metal_defaults(),
+
+	-- Lava melts metal ladders quickly.
+	-- Water rusts them (quickly too, I guess).
+	-- Gameplay rational: make it important to use trapdoors, etc. to block flow.
+	floodable = true,
 })
 
 default.register_fence("default:fence_iron", {

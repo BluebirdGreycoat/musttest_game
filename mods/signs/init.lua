@@ -109,6 +109,7 @@ if not signs.run_once then
 			sunlight_propagates = true,
 			is_ground_content = false,
 			walkable = false,
+			floodable = true,
 			node_box = {
 				type = "wallmounted",
 				wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},

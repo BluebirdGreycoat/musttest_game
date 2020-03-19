@@ -19,8 +19,10 @@ local function destruct_bed(pos, n)
 					beds.spawn[owner] = nil
 					beds.save_spawns()
 					beds.storage:set_int(owner .. ":count", 0)
-					minetest.chat_send_player(owner, "# Server: Your primary bed is destroyed. Your home position is LOST!")
-					--easyvend.sound_error(owner)
+
+					chat_core.alert_player_sound(owner)
+					local RED = core.get_color_escape_sequence("#ff0000")
+					minetest.chat_send_player(owner, RED .. "# Server: Your primary bed is destroyed. Your home position is LOST!")
 				else
 					minetest.chat_send_player(owner, "# Server: A secondary bed owned by you was destroyed.")
 				end

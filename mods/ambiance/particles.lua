@@ -309,7 +309,7 @@ function ambiance.flamespawner(self, dtime)
 
 			-- Occasionally play flame sound.
 			if math.random(1, 10) == 1 then
-				ambiance.sound_play("fire_small", pos, 0.5, 16)
+				ambiance.sound_play("fire_small", pos, 0.3, 16)
 			end
 		end
 	end

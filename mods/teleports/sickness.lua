@@ -18,10 +18,16 @@ local function portal_sicken(pname, count)
 
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS."
 	hb4.delayed_harm({
-		name = pname, step = step, min = 1, max = 3, msg = msg, poison = true,
+		name = pname,
+		step = step,
+		min = 1,
+		max = 3,
+		msg = msg,
+		poison = true,
 
 		done = function()
 			portal_sickness.init_if_needed(pname)
+
 			-- Don't cure player.
 			-- Check if player is actually still sick, and hasn't died (and been
 			-- reset) in the meantime.

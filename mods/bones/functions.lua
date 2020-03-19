@@ -214,6 +214,8 @@ bones.on_dieplayer = function(player)
 	-- We must record this info *always*, even if player does not leave bones.
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
+	minetest.log("action", "player <" .. pname .. "> died @ " .. minetest.pos_to_string(player:get_pos()))
+
 	-- Death sound.
 	coresounds.play_death_sound(player, pname)
 

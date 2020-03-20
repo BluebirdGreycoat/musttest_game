@@ -72,7 +72,9 @@ local item = {
 		builtin_item.on_step(self, dtime)
 
 		local is_falling = false
-		if self.object:get_velocity().y < -0.1 then
+		local vel = self.object:get_velocity()
+
+		if vel.y < -0.1 then
 			is_falling = true
 			self.need_lava_check = true
 			--minetest.chat_send_all("# Server: Falling!")

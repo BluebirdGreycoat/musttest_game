@@ -74,6 +74,11 @@ local item = {
 		local is_falling = false
 		local vel = self.object:get_velocity()
 
+		-- Fix spurious error.
+		if not vel then
+			return
+		end
+
 		if vel.y < -0.1 then
 			is_falling = true
 			self.need_lava_check = true

@@ -689,7 +689,7 @@ if not reactor.run_once then
 			description = "Fission Reactor Core\n\nConnects to an HV power-network.\nGenerates huge amounts of power.\nExplosion danger, requires shielding!",
 			tiles = {"reactor_core.png"},
 
-			groups = utility.dig_groups("machine"),
+			groups = utility.dig_groups("machine", {immovable=1}),
 
 			paramtype2 = "facedir",
 			is_ground_content = false,

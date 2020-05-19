@@ -262,7 +262,7 @@ if not darkage.run_once then
 		description = "Stone Masonry",
 		tiles = {"darkage_stone_brick.png"},
 		paramtype2 = "facedir",
-		groups = utility.dig_groups("brick"),
+		groups = utility.dig_groups("brick", {brick=1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 
@@ -278,7 +278,7 @@ if not darkage.run_once then
 		description = "Chalked Brick",
 		tiles = {"darkage_chalked_bricks.png"},
 		paramtype2 = "facedir",
-		groups = utility.dig_groups("brick"),
+		groups = utility.dig_groups("brick", {brick=1}),
 		sounds = default.node_sound_stone_defaults(),
 	})
 
@@ -317,7 +317,7 @@ if not darkage.run_once then
 		},
 		paramtype2 = "facedir",
 		drop = 'default:cobble',
-		groups = utility.dig_groups("brick"),
+		groups = utility.dig_groups("brick", {brick=1}),
 		sounds = default.node_sound_stone_defaults(),
 	})
 
@@ -393,7 +393,7 @@ if not darkage.run_once then
 		description = "White Serpentine Tile",
 		tiles = {"darkage_marble_tile.png"},
 		paramtype2 = "facedir",
-		groups = utility.dig_groups("stone"),
+		groups = utility.dig_groups("stone", {brick=1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 

@@ -1988,6 +1988,10 @@ local function general_attack(self)
 	end
 
 	local s = self.object:get_pos()
+	-- Stupid spurious errors.
+	if not s then
+		return
+	end
 	local objs = minetest.get_objects_inside_radius(s, self.view_range)
 
 	-- remove entities we aren't interested in
@@ -3494,6 +3498,7 @@ local function mob_step(self, dtime)
 	end
 
 	local pos = self.object:get_pos()
+	if not pos then return end -- Stupid spurious errors.
 	local yaw = 0
 
 	-- when lifetimer expires remove mob (except npc and tamed)

@@ -188,15 +188,15 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 		if rc.position_underground(playerpos) and pdata.sky == 0 then
 			if playerpos.y > -25000 and pdata.sky ~= 1 then
 				-- Cave background.
-				player:set_sky({a=255, r=0, g=0, b=0}, "plain", {})
+				player:set_sky({base_color={a=255, r=0, g=0, b=0}, type="plain", clouds=false})
 				pdata.sky = 1
 			elseif pdata.sky ~= 2 then
 				-- Nether background.
-				player:set_sky({a=255, r=10, g=0, b=0}, "plain", {})
+				player:set_sky({base_color={a=255, r=10, g=0, b=0}, type="plain", clouds=false})
 				pdata.sky = 2
 			end
 		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
-			player:set_sky({}, "regular", {})
+			player:set_sky({type="regular", clouds=true})
 			pdata.sky = 0
 		end
 

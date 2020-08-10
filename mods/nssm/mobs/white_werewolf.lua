@@ -1,5 +1,5 @@
 
-local scale = 0.4
+local scale = 0.5
 
 mobs.register_mob("nssm:white_werewolf", {
 	type = "monster",

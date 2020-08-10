@@ -8,7 +8,7 @@ mobs.register_mob("nssm:white_werewolf", {
 	textures = {
 		{"white_werewolf.png"}
 	},
-	visual_size = {x = 4, y = 4},
+	visual_size = {x = 1, y = 1},
 	makes_footstep_sound = true,
 	view_range = 30,
 	walk_velocity = 3,

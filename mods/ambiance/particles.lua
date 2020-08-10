@@ -256,6 +256,7 @@ function ambiance.flamespawner(self, dtime)
 		local nn = minetest.get_node(pos).name
 		if not string.find(nn, "^fire:") and not string.find(nn, "^maptools:") then
 			self.object:remove()
+			return
 		end
 	end
 

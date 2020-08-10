@@ -1,14 +1,17 @@
+
+local scale = 0.4
+
 mobs.register_mob("nssm:white_werewolf", {
 	type = "monster",
 	hp_max = 40,
 	hp_min = 25,
-	collisionbox = {-0.85, -0.01, -0.85, 0.85, 3.50, 0.85},
+	collisionbox = {-0.85*scale, -0.01, -0.85*scale, 0.85*scale, 3.50*scale, 0.85*scale},
 	visual = "mesh",
 	mesh = "white_werewolf.x",
 	textures = {
 		{"white_werewolf.png"}
 	},
-	visual_size = {x = 1, y = 1},
+	visual_size = {x = 4*scale, y = 4*scale},
 	makes_footstep_sound = true,
 	view_range = 30,
 	walk_velocity = 3,

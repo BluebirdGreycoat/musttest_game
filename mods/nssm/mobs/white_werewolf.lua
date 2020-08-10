@@ -1,10 +1,12 @@
 
 local scale = 0.5
+local hpmul = 10.0
 
 mobs.register_mob("nssm:white_werewolf", {
 	type = "monster",
-	hp_max = 40,
-	hp_min = 25,
+	description = "Giant White Wolf",
+	hp_max = 40*hpmul,
+	hp_min = 25*hpmul,
 	collisionbox = {-0.85*scale, -0.01, -0.85*scale, 0.85*scale, 3.50*scale, 0.85*scale},
 	visual = "mesh",
 	mesh = "white_werewolf.x",
@@ -20,7 +22,7 @@ mobs.register_mob("nssm:white_werewolf", {
 	sounds = {
 		random = "werewolf",
 	},
-	damage = 5,
+	damage = 10,
 	jump = true,
 	drops = {
 		{name = "nssm:white_wolf_leg", chance = 2, min = 1, max = 2},

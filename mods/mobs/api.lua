@@ -40,9 +40,9 @@ local function compute_yaw_to_target(self, p, s)
 end
 
 -- Load settings.
-local damage_enabled =  minetest.setting_getbool("enable_damage")
-local peaceful_only =   minetest.setting_getbool("only_peaceful_mobs")
-local disable_blood =   minetest.setting_getbool("mobs_disable_blood")
+local damage_enabled =  true --minetest.setting_getbool("enable_damage")
+local peaceful_only =   false --minetest.setting_getbool("only_peaceful_mobs")
+local disable_blood =   false --minetest.setting_getbool("mobs_disable_blood")
 local mobs_drop_items = minetest.settings:get_bool("mobs_drop_items") ~= false
 local mobs_griefing =   minetest.settings:get_bool("mobs_griefing") ~= false
 local creative =        minetest.setting_getbool("creative_mode")

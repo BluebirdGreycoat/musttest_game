@@ -934,7 +934,9 @@ local function check_for_death(self, cause, cmi_cause)
 	if self.on_die then
 
 		self.on_die(self, pos)
-		self.object:remove()
+
+		-- Mark for removal as last action on mob_step().
+		self.mkrm = true
 
 		return true
 	end
@@ -958,10 +960,13 @@ local function check_for_death(self, cause, cmi_cause)
 		set_animation(self, "die")
 
 		minetest.after(length, function(self)
-			self.object:remove()
+			-- Mark for removal as last action on mob_step().
+			-- Note: this is deferred for a bit!
+			self.mkrm = true
 		end, self)
 	else
-		self.object:remove()
+		-- Mark for removal as last action on mob_step().
+		self.mkrm = true
 	end
 
 	effect(pos, 20, "tnt_smoke.png")
@@ -1056,7 +1061,9 @@ local function do_env_damage(self)
 
 	-- remove mob if beyond map limits
 	if not within_limits(pos, 0) then
-		self.object:remove()
+		-- Mark for removal as last action on mob_step().
+		self.mkrm = true
+
 		return
 	end
 
@@ -1070,7 +1077,9 @@ local function do_env_damage(self)
 				self.on_despawn(self)
 				return
 			else
-				self.object:remove()
+				-- Mark for removal as last action on mob_step().
+				self.mkrm = true
+
 				return
 			end
 		end
@@ -1093,7 +1102,9 @@ local function do_env_damage(self)
 
 	if self.despawns_in_dark_caves and pos.y < -12 then
 		if (minetest.get_node_light(pos) or 0) == 0 then
-			self.object:remove()
+			-- Mark for removal as last action on mob_step().
+			self.mkrm = true
+
 			return
 		end
 	end
@@ -2554,7 +2565,8 @@ local function do_states(self, dtime)
 						node_break_radius = 1
 					end
 
-					self.object:remove()
+					-- Mark for removal as last action on mob_step().
+					self.mkrm = true
 
 					if minetest.get_modpath("tnt") and tnt and tnt.boom then
 
@@ -3226,7 +3238,8 @@ local function mob_staticdata(self)
 
 		--print ("REMOVED " .. self.name)
 
-		self.object:remove()
+		-- Mark for removal as last action on mob_step().
+		self.mkrm = true
 
 		return ""-- nil
 	end
@@ -3272,18 +3285,15 @@ end
 -- activate mob and reload settings
 local function mob_activate(self, staticdata, def, dtime)
 
-	-- remove monsters in peaceful mode
-	--if self.type == "monster" and peaceful_only then
-	--	self.object:remove()
-	--	return
-	--end
-
 	-- Remove mob if activated during daytime and has 'daytime_despawn'.
 	if self.daytime_despawn then
 		local tod = (minetest.get_timeofday() or 0) * 24000
 		if tod > 4500 and tod < 19500 then
 			-- Daylight, but mob despawns at daytime.
-			self.object:remove()
+
+			-- Mark for removal as last action on mob_step().
+			self.mkrm = true
+
 			return
 		end
 	end
@@ -3453,12 +3463,10 @@ local function mob_step(self, dtime)
 				end
 			end
 
---			minetest.log("action",
---				S("lifetimer expired, removed @1", self.name))
-
 			effect(pos, 15, "tnt_smoke.png", 2, 4, 2, 0)
 
-			self.object:remove()
+			-- Mark for removal as last action on mob_step().
+			self.mkrm = true
 
 			return
 		end
@@ -3595,6 +3603,12 @@ local function mob_step(self, dtime)
 
 	runaway_from(self)
 
+	-- The final action of mob_step():
+	-- if the mob was marked for removal, we call :remove() here.
+	-- :remove() should not be called anywhere else!
+	if self.mkrm then
+		self.object:remove()
+	end
 end
 
 
@@ -4135,7 +4149,8 @@ function mobs.capture_mob(self, clicker, chance_hand, chance_net, chance_lasso, 
 				minetest.add_item(clicker:get_pos(), new_stack)
 			end
 
-			self.object:remove()
+			-- Mark for removal as last action on mob_step().
+			self.mkrm = true
 
 			mob_sound(self, "default_place_node_hard")
 
@@ -4326,6 +4341,8 @@ if not mobs.registered then
 					minetest.add_entity(self.object:get_pos(), new_name)
 				end
 
+				-- Remove mob immediately, as last step of this function.
+				-- Controls returns to engine.
 				self.object:remove()
 			end
 		})

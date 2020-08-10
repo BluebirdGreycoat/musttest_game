@@ -46,14 +46,17 @@ minetest.register_entity("wield3d:wield_entity", {
 	collisionbox = {-0.125,-0.125,-0.125, 0.125,0.125,0.125},
 	visual = "wielditem",
 	pointable = false,
+
 	on_activate = function(self, staticdata)
 		if staticdata == "expired" then
 			self.object:remove()
 		end
 	end,
+
 	on_punch = function(self)
 		self.object:remove()
 	end,
+
 	get_staticdata = function(self)
 		return "expired"
 	end,

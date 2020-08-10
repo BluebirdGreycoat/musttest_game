@@ -77,23 +77,24 @@ end
 
 THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 	self.timer=self.timer+dtime
-	local pos = self.object:getpos()
+	local pos = self.object:get_pos()
 	local node = minetest.get_node(pos)
 
 	if self.timer>0.2 then
+		local vel = self.object:get_velocity()
 		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
 		for k, obj in pairs(objs) do
 			if obj:get_luaentity() ~= nil then
 				local oname = obj:get_luaentity().name
 				if not throwing.entity_blocks_arrow(oname) then
-					local speed = vector.length(self.object:getvelocity())
+					local speed = vector.length(vel)
 					local damage = (((speed + 5)^1.2)/10 + 12) * 1
 					throwing_arrow_punch_entity(obj, self, damage)
 					self.object:remove()
 					boom(pos)
 				end
       elseif obj:is_player() then
-        local speed = vector.length(self.object:getvelocity())
+        local speed = vector.length(vel)
         local damage = ((speed + 5)^1.2)/10 + 12
         throwing_arrow_punch_entity(obj, self, damage)
         self.object:remove()

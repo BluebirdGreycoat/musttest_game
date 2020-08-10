@@ -75,7 +75,7 @@ local function throwing_register_fireworks(color, desc)
 	
 	THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		self.timer=self.timer+dtime
-		local pos = self.object:getpos()
+		local pos = self.object:get_pos()
 		local node = minetest.get_node(pos)
 		if not self.played_launch_sound then
 			ambiance.sound_play("throwing_firework_launch", pos, 0.8, 2*64)

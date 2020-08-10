@@ -4,6 +4,30 @@ mob_spawn.registered = {}
 local register = mob_spawn.register_spawn
 
 register({
+	name = "nssm:white_werewolf",
+	nodes = {
+    "default:snow",
+    "snow:footprints",
+  },
+	min_height = -10,
+	max_height = 300,
+	clearance = 3,
+
+	-- Matches noise params for the ambiant wolf sound.
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=256, y=256, z=256},
+		seed = 381783,
+		octaves = 2,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.35, -- Slightly higher than noise_threshold for ambiant sound.
+})
+
+register({
 	name = "dm:dm",
 	nodes = {
     "default:stone",

@@ -26,6 +26,10 @@ local meat_types = {
 	-- Pork.
 	{name="mobs:meat_raw_pork", desc="Raw Pork (Yuck)", image="mobs_pork_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},
 	{name="mobs:meat_pork", desc="Cooked Pork (Yuck)", image="mobs_pork.png", food=7, is_gross=true},
+
+	-- White Wolf.
+	{name="nssm:white_wolf_leg", desc="White Wolf Leg", image="werewolf_leg.png", food=3, cooked="nssm:roasted_white_wolf_leg", is_raw=true},
+	{name="nssm:roasted_white_wolf_leg", desc="Roasted White Wolf Leg", image="roasted_werewolf_leg.png", food=6},
 }
 
 for k, v in ipairs(meat_types) do
@@ -55,7 +59,7 @@ for k, v in ipairs(meat_types) do
 		groups.food_meat_gross = 1
 	end
 
-	minetest.register_craftitem(v.name, {
+	minetest.register_craftitem(":" .. v.name, {
 		description = v.desc,
 		inventory_image = v.image,
 		groups = groups,

@@ -29,7 +29,7 @@ local item = {
 	burn_up = function(self, lava)
 		-- disappear in a smoke puff
 		self.itemstring = ""
-		self.object:remove()
+
 		local p = self.object:getpos()
 		minetest.sound_play("default_item_smoke", {
 			pos = p,
@@ -55,6 +55,8 @@ local item = {
 			local node = minetest.get_node(p)
 			lava_extras.spawn_particles(p, node)
 		end
+
+		self.object:remove()
 	end,
 
 	melt_in_lava = function(self, lpos)

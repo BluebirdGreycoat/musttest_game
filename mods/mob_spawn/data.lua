@@ -28,7 +28,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.35, -- Slightly higher than noise_threshold for ambiant sound.
+	noise_threshold = 0.6, -- Higher than noise_threshold for ambiant sound.
 })
 
 register({

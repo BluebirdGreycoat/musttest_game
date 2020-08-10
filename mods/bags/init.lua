@@ -161,8 +161,8 @@ minetest.register_craft({
 	output = "bags:small",
 	recipe = {
 		{"", "group:stick", ""},
-		{"mobs:leather", "mobs:leather", "mobs:leather"},
-		{"mobs:leather", "mobs:leather", "mobs:leather"},
+		{"group:leather", "group:leather", "group:leather"},
+		{"group:leather", "group:leather", "group:leather"},
 	},
 })
 

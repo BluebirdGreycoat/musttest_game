@@ -3,6 +3,7 @@
 minetest.register_craftitem("nssm:white_wolf_fur", {
 	description = "White Wolf Fur",
 	image = "white_wolf_fur.png",
+	groups = {flammable = 2, leather = 1},
 })
 
 --[[

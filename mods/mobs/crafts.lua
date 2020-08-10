@@ -81,7 +81,7 @@ end
 minetest.register_craftitem("mobs:leather", {
 	description = "Leather",
 	inventory_image = "mobs_leather.png",
-	groups = {flammable = 2},
+	groups = {flammable = 2, leather = 1},
 })
 
 minetest.register_tool("mobs:net", {

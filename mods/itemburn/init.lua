@@ -70,13 +70,16 @@ local item = {
 		lava_extras.spawn_particles(lpos, node)
 	end,
 
-	on_step = function(self, dtime)
-		builtin_item.on_step(self, dtime)
+	on_step = function(self, dtime, moveresult)
+		builtin_item.on_step(self, dtime, moveresult)
 
 		local is_falling = false
 		local vel = self.object:get_velocity()
 
 		-- Fix spurious error.
+		-- Note: documentation explains this is caused by :remove() being called
+		-- inside the original on_step() function; see just a few lines above, where
+		-- it gets called.
 		if not vel then
 			return
 		end

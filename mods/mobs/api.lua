@@ -3434,8 +3434,60 @@ end
 
 
 
+local function smooth_rotate(self)
+	-- smooth rotation by ThomasMonroe314
+
+	if self.delay and self.delay > 0 then
+
+		local yaw = self.object:get_yaw()
+
+		if self.delay == 1 then
+			yaw = self.target_yaw
+		else
+			local dif = abs(yaw - self.target_yaw)
+
+			if yaw > self.target_yaw then
+
+				if dif > pi then
+					dif = 2 * pi - dif -- need to add
+					yaw = yaw + dif / self.delay
+				else
+					yaw = yaw - dif / self.delay -- need to subtract
+				end
+
+			elseif yaw < self.target_yaw then
+
+				if dif > pi then
+					dif = 2 * pi - dif
+					yaw = yaw - dif / self.delay -- need to subtract
+				else
+					yaw = yaw + dif / self.delay -- need to add
+				end
+			end
+
+			if yaw > (pi * 2) then yaw = yaw - (pi * 2) end
+			if yaw < 0 then yaw = yaw + (pi * 2) end
+		end
+
+		self.delay = self.delay - 1
+		self.object:set_yaw(yaw)
+	end
+
+	-- end rotation
+end
+
+
+
 -- main mob function
 local function mob_step(self, dtime)
+	-- The final (actually first) action of mob_step():
+	-- if the mob was marked for removal, we call :remove() here.
+	-- :remove() should not be called anywhere else!
+	if self.mkrm then
+		self.object:remove()
+		return
+	end
+
 	local pos = self.object:get_pos()
 	local yaw = 0
 
@@ -3497,45 +3549,8 @@ local function mob_step(self, dtime)
 	-- check if falling, flying, floating
 	falling(self, pos)
 
-	-- smooth rotation by ThomasMonroe314
-
-	if self.delay and self.delay > 0 then
-
-		local yaw = self.object:get_yaw()
-
-		if self.delay == 1 then
-			yaw = self.target_yaw
-		else
-			local dif = abs(yaw - self.target_yaw)
-
-			if yaw > self.target_yaw then
-
-				if dif > pi then
-					dif = 2 * pi - dif -- need to add
-					yaw = yaw + dif / self.delay
-				else
-					yaw = yaw - dif / self.delay -- need to subtract
-				end
-
-			elseif yaw < self.target_yaw then
-
-				if dif > pi then
-					dif = 2 * pi - dif
-					yaw = yaw - dif / self.delay -- need to subtract
-				else
-					yaw = yaw + dif / self.delay -- need to add
-				end
-			end
-
-			if yaw > (pi * 2) then yaw = yaw - (pi * 2) end
-			if yaw < 0 then yaw = yaw + (pi * 2) end
-		end
-
-		self.delay = self.delay - 1
-		self.object:set_yaw(yaw)
-	end
-
-	-- end rotation
+	-- Do smooth rotation.
+	smooth_rotate(self)
 
 	-- knockback timer
 	if self.pause_timer > 0 then
@@ -3602,13 +3617,6 @@ local function mob_step(self, dtime)
 	do_jump(self)
 
 	runaway_from(self)
-
-	-- The final action of mob_step():
-	-- if the mob was marked for removal, we call :remove() here.
-	-- :remove() should not be called anywhere else!
-	if self.mkrm then
-		self.object:remove()
-	end
 end
 
 
@@ -4344,6 +4352,7 @@ if not mobs.registered then
 				-- Remove mob immediately, as last step of this function.
 				-- Controls returns to engine.
 				self.object:remove()
+				self.mkrm = true
 			end
 		})
 	end

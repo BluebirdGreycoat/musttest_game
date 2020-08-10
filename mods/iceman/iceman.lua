@@ -68,7 +68,12 @@ mobs.register_mob("iceman:iceman", {
 		local pos = self.object:get_pos()
 		ambiance.sound_play("teleport", pos, 1.0, 20)
 		preload_tp.spawn_particles(pos)
-		self.object:remove()
+
+		-- Note: cannot call object:remove()!
+		--self.object:remove()
+
+		-- We must do this instead: mark object for removal by the mob API.
+		self.mkrm = true
 	end,
 })
 

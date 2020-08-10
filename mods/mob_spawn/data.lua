@@ -14,6 +14,7 @@ register({
 	clearance = 3,
 
 	mob_limit = 1,
+	absolute_mob_limit = 100,
 	mob_range = 60,
 
 	-- Matches noise params for the ambiant wolf sound.

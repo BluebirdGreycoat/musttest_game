@@ -62,6 +62,9 @@ local msg_str2 = {
 	"passed out (permanently)",
 	"is somewhat dead",
 	"suffered corporeal malfunction",
+	"gave up the ghost",
+	"gave up on life",
+	"failed survival lessons",
 }
 local function random_str(strs)
 	return strs[math.random(1, #strs)]

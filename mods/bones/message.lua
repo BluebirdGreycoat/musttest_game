@@ -52,6 +52,16 @@ local msg_str2 = {
 
 	"expired",
 	"expired",
+
+	"did something fatal",
+	"became honestly dead",
+	"became somewhat dead",
+	"was involved in a fatal occurrence",
+	"had a fatal accident",
+	"is completely dead",
+	"passed out (permanently)",
+	"is somewhat dead",
+	"suffered corporeal malfunction",
 }
 local function random_str(strs)
 	return strs[math.random(1, #strs)]

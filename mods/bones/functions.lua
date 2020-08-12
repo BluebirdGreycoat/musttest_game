@@ -258,11 +258,18 @@ bones.on_dieplayer = function(player)
 	if bones_mode ~= "bones" then
 		-- Cannot create bones, therefore we don't modify player inventories.
 		minetest.log("action", "Player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos) .. ", but cannot create bones!")
+
+		-- Halve player's mining XP without storing it anywhere.
+		-- Prevents player from being able to use this as an exploit.
+		local xp_amount = xp.get_xp(pname, "digxp")
+		xp_amount = (xp_amount / 3) * 2
+		xp.set_xp(pname, "digxp", xp_amount)
+		hud_clock.update_xp(pname)
+
 		return
 	end
 
 	-- Halve player XP!
-	-- Note: player doesn't lose any XP if their bones were EMPTY.
 	local xp_amount = xp.get_xp(pname, "digxp")
 	xp_amount = xp_amount/2
 	local xp_for_bones = (xp_amount/3)*2

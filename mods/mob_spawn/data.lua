@@ -15,7 +15,15 @@ register({
 
 	mob_limit = 1,
 	absolute_mob_limit = 100,
-	mob_range = 60,
+	mob_range = 100,
+
+	-- After a successful spawn, wait a lot of time before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 1,
 
 	-- Matches noise params for the ambiant wolf sound.
 	noise_params = {

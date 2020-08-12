@@ -26,7 +26,7 @@ mobs.register_mob("nssm:white_werewolf", {
 	jump = true,
 	drops = {
 		{name = "nssm:white_wolf_leg", chance = 2, min = 1, max = 2},
-		{name = "nssm:white_wolf_fur", chance = 2, min = 1, max = 1},
+		{name = "nssm:white_wolf_fur", chance = 2, min = 3, max = 5},
 	},
 	armor = 80,
 	drawtype = "front",

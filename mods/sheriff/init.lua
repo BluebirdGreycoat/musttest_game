@@ -1,18 +1,45 @@
 
 sheriff = sheriff or {}
 sheriff.modpath = minetest.get_modpath("sheriff")
+sheriff.players = sheriff.players or {}
 
--- Table of playernames under punishment.
-local players = {}
+-- Get mod storage if not done already.
+if not sheriff.storage then
+	sheriff.storage = minetest.get_mod_storage()
+end
 
---players["SystemRoot"] = {} -- Had infinity range hack. Claimed it was Android, which is entirely plausable.
-players["iisu"] = {}
-
--- Let other mods query whether a give player is being punished.
+-- Let other mods query whether a give player is a registered cheater.
 function sheriff.player_punished(pname)
-	if players[pname] then
-		return true
+	local data = sheriff.players[pname]
+	if data then
+		if data.is_cheater then
+			return true
+		end
+	else
+		-- Not in cache, load from mod storage.
+		local s = sheriff.storage:get_string(pname)
+		if s and s ~= "" then
+			local d = minetest.deserialize(s)
+			if d then
+				sheriff.players[pname] = d
+				if d.is_cheater then
+					return true
+				end
+			end
+		end
 	end
+end
+
+-- Call to register a player as a cheater.
+function sheriff.register_cheater(pname)
+	local data = {
+		is_cheater = true,
+	}
+	local s = minetest.serialize(data)
+	sheriff.storage:set_string(pname, s)
+
+	-- Also add it to the cache.
+	sheriff.players[pname] = data
 end
 
 -- Can be called by mods to check if player should be punished *this time*.
@@ -135,6 +162,23 @@ if not sheriff.loaded then
 	local c = "sheriff:core"
 	local f = sheriff.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
+
+	minetest.register_chatcommand("register_cheater", {
+		params = "[name]",
+		description = "Register the named player as a confirmed cheater.",
+		privs = {server=true},
+		func = function(pname, param)
+			param = param:trim()
+			if param and param ~= "" then
+				param = rename.grn(param)
+				sheriff.register_cheater(param)
+				minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
+			else
+				minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
+			end
+			return true
+		end,
+	})
 
 	sheriff.loaded = true
 end

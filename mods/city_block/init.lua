@@ -397,10 +397,12 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			if city_block.attacker[attacker_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
 				return
 			else -- go to jail
-				jail.go_to_jail(hitter, nil)
-				minetest.chat_send_all(
-					"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
-					city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
+				if not sheriff.player_punished(victim_pname) then
+					jail.go_to_jail(hitter, nil)
+					minetest.chat_send_all(
+						"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
+						city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
+				end
 			end
 		else
 			-- Bed position is only lost if player died outside city.

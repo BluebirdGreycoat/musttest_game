@@ -57,7 +57,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 			local target = rename.grn((fields.player or ""):trim())
 			if target ~= pname then
 				local other = minetest.get_player_by_name(target)
-				if other and other:is_player() then
+				if other and other:is_player() and not cloaking.is_cloaked(target) then
 					local marked = command_tokens.mark.player_marked(target)
 					local beacon = player_labels.query_nametag_onoff(target)
 

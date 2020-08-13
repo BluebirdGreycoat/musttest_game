@@ -397,6 +397,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			if city_block.attacker[attacker_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
 				return
 			else -- go to jail
+				-- Killers don't go to jail if the victim is a registered cheater.
 				if not sheriff.player_punished(victim_pname) then
 					jail.go_to_jail(hitter, nil)
 					minetest.chat_send_all(
@@ -407,8 +408,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		else
 			-- Bed position is only lost if player died outside city.
 			if not city_block:in_safebed_zone(p2pos) then
-				minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
-				beds.clear_player_spawn(victim_pname)
+				-- Victim doesn't lose their bed respawn if they were killed by a cheater.
+				if not sheriff.player_punished(attacker_pname) then
+					minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
+					beds.clear_player_spawn(victim_pname)
+				end
 			end
 		end
 	end

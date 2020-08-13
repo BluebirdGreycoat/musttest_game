@@ -698,7 +698,7 @@ bones.on_timer = function(pos, elapsed)
 			end
 			if cheaters_are_present then
 				local timer = minetest.get_node_timer(pos)
-				timer:start(60*20)
+				timer:start(60*math.random(10, 60))
 				return
 			end
 		end

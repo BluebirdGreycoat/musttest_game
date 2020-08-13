@@ -377,7 +377,7 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
   local player = minetest.get_player_by_name(name)
   if player and player:is_player() then
 
-		if sheriff.player_punished(name) then
+		if sheriff.is_cheater(name) then
 			if sheriff.punish_probability(name) then
 				sheriff.punish_player(name)
 				return
@@ -414,7 +414,7 @@ function passport.exec_spawn(name, param)
 		easyvend.sound_error(name)
 		return true
 	end
-	if sheriff.player_punished(name) then
+	if sheriff.is_cheater(name) then
 		if sheriff.punish_probability(name) then
 			sheriff.punish_player(name)
 			return true

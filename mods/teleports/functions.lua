@@ -142,7 +142,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	end
 	local pname = player:get_player_name()
 
-	if sheriff.player_punished(pname) then
+	if sheriff.is_cheater(pname) then
 		if sheriff.punish_probability(pname) then
 			sheriff.punish_player(pname)
 			return

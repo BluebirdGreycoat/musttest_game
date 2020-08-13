@@ -9,7 +9,7 @@ if not sheriff.storage then
 end
 
 -- Let other mods query whether a give player is a registered cheater.
-function sheriff.player_punished(pname)
+function sheriff.is_cheater(pname)
 	local data = sheriff.players[pname]
 	if data then
 		if data.is_cheater then
@@ -30,11 +30,31 @@ function sheriff.player_punished(pname)
 	end
 end
 
+function sheriff.get_data_or_nil(pname)
+	local data = sheriff.players[pname]
+	if data then
+		return data
+	end
+
+	-- Not in cache, load from mod storage.
+	local s = sheriff.storage:get_string(pname)
+	if s and s ~= "" then
+		local d = minetest.deserialize(s)
+		if d then
+			sheriff.players[pname] = d
+			return d
+		end
+	end
+end
+
 -- Call to register a player as a cheater.
 function sheriff.register_cheater(pname)
-	local data = {
-		is_cheater = true,
-	}
+	local data = sheriff.get_data_or_nil(pname) or {}
+
+	-- Record the fact that the player is a cheater (boolean) and time of record.
+	data.is_cheater = true
+	data.cheater_time = os.time()
+
 	local s = minetest.serialize(data)
 	sheriff.storage:set_string(pname, s)
 
@@ -67,7 +87,7 @@ end
 
 --[[
 	-- Usage is as follows:
-	if sheriff.player_punished(name) then
+	if sheriff.is_cheater(name) then
 		if sheriff.punish_probability(name) then
 			sheriff.punish_player(name)
 

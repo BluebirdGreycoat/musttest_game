@@ -344,7 +344,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	-- Random accidents happen to punished players during PvP.
 	do
 		local attacker_pname = hitter:get_player_name()
-		if sheriff.player_punished(attacker_pname) then
+		if sheriff.is_cheater(attacker_pname) then
 			if sheriff.punish_probability(attacker_pname) then
 				sheriff.punish_player(attacker_pname)
 			end
@@ -398,7 +398,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 				return
 			else -- go to jail
 				-- Killers don't go to jail if the victim is a registered cheater.
-				if not sheriff.player_punished(victim_pname) then
+				if not sheriff.is_cheater(victim_pname) then
 					jail.go_to_jail(hitter, nil)
 					minetest.chat_send_all(
 						"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
@@ -409,7 +409,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			-- Bed position is only lost if player died outside city.
 			if not city_block:in_safebed_zone(p2pos) then
 				-- Victim doesn't lose their bed respawn if they were killed by a cheater.
-				if not sheriff.player_punished(attacker_pname) then
+				if not sheriff.is_cheater(attacker_pname) then
 					minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
 					beds.clear_player_spawn(victim_pname)
 				end

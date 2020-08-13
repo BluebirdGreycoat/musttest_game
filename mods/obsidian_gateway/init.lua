@@ -199,7 +199,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	ambiance.spawn_sound_beacon("soundbeacon:gate", origin, 20, 1)
 	ambiance.replay_nearby_sound_beacons(origin, 6)
 
-	if sheriff.player_punished(pname) then
+	if sheriff.is_cheater(pname) then
 		if sheriff.punish_probability(pname) then
 			sheriff.punish_player(pname)
 			return

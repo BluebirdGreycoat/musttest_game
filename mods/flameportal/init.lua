@@ -207,7 +207,7 @@ flameportal.teleport_player = function(name, voidpos)
     if player:get_hp() > 0 then
       if minetest.get_node(voidpos).name ~= "voidstone:void" then return end
 
-			if sheriff.player_punished(name) then
+			if sheriff.is_cheater(name) then
 				if sheriff.punish_probability(name) then
 					sheriff.punish_player(name)
 					return

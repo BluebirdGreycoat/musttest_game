@@ -1,6 +1,7 @@
 
 jail = jail or {}
 jail.modpath = minetest.get_modpath("jail")
+jail.noclip_radius = 15 -- Max distance of player from jail.
 
 
 local function jailposition(player)
@@ -32,7 +33,7 @@ function jail.is_player_in_jail(pref)
 	local jp = jailposition(pref) -- Get position of jail.
 	local pp = pref:get_pos() -- Position of player.
 	local dt = vector.distance(jp, pp) -- Distance between points.
-	if dt > 20 then
+	if dt > jail.noclip_radius then
 		return false -- Player is NOT in jail!
 	end
 	return true -- Player is in jail.

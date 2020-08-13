@@ -15,7 +15,7 @@ end
 -- Shall return the player to the nearest jail within their current dimension.
 function jail.on_player_escaped_jail(pref)
 	local jp = jailposition(pref)
-	preload_tp.preload_and_teleport(pref:get_player_name(), jp, 8, nil, nil, true)
+	preload_tp.preload_and_teleport(pref:get_player_name(), jp, 8, nil, nil, nil, true)
 end
 
 function jail.is_player_in_jail(pref)

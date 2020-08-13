@@ -62,6 +62,18 @@ function sheriff.register_cheater(pname)
 	sheriff.players[pname] = data
 end
 
+-- Call to unregister a player as a cheater.
+function sheriff.unregister_cheater(pname)
+	local data = sheriff.get_data_or_nil(pname)
+	if data then
+		-- Remove from mod storage.
+		sheriff.storage:set_string(pname, "")
+
+		-- Remove from cache.
+		sheriff.players[pname] = nil
+	end
+end
+
 -- Can be called by mods to check if player should be punished *this time*.
 function sheriff.punish_probability(pname)
 	if math.random(1, 100) == 1 then
@@ -194,6 +206,27 @@ if not sheriff.loaded then
 				if minetest.player_exists(param) then
 					sheriff.register_cheater(param)
 					minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
+				else
+					minetest.chat_send_player(pname, "# Server: Named player does not exist.")
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
+			end
+			return true
+		end,
+	})
+
+	minetest.register_chatcommand("unregister_cheater", {
+		params = "[name]",
+		description = "Remove a player from being registered as a cheater.",
+		privs = {server=true},
+		func = function(pname, param)
+			param = param:trim()
+			if param and param ~= "" then
+				param = rename.grn(param)
+				if minetest.player_exists(param) then
+					sheriff.unregister_cheater(param)
+					minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> is not registered as a cheater.")
 				else
 					minetest.chat_send_player(pname, "# Server: Named player does not exist.")
 				end

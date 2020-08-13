@@ -684,6 +684,25 @@ bones.on_timer = function(pos, elapsed)
 			return
 		end
 
+		-- Bones will NOT decay as long as cheaters are present on the server. This
+		-- prevents cheaters from being able to steal other player's stuff. If the
+		-- player that died is themself a cheater, they don't get this protection.
+		if not sheriff.player_punished(meta:get_string("owner")) then
+			local cheaters_are_present = false
+			local all_players = minetest.get_connected_players()
+			for k, v in ipairs(all_players) do
+				if sheriff.player_punished(v:get_player_name()) then
+					cheaters_are_present = true
+					break
+				end
+			end
+			if cheaters_are_present then
+				local timer = minetest.get_node_timer(pos)
+				timer:start(60*20)
+				return
+			end
+		end
+
 		minetest.log("action", "Fresh bones @ " .. minetest.pos_to_string(pos) .. " decay into old bones.")
 		local diedate = meta:get_string("diedate")
 		if diedate == "" then

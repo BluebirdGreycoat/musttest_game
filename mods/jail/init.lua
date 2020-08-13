@@ -16,7 +16,16 @@ end
 function jail.on_player_escaped_jail(pref)
 	local jp = jailposition(pref)
 	default.detach_player_if_attached(pref) -- Otherwise teleport could fail.
-	preload_tp.preload_and_teleport(pref:get_player_name(), jp, 8, nil, nil, nil, true)
+	local pname = pref:get_player_name()
+	local cb = function(pname)
+		local pref = minetest.get_player_by_name(pname)
+		if pref then
+			-- AFTER player has been teleported back, damage them.
+			pref:set_pos(jp)
+			pref:set_hp(pref:get_hp() - 1)
+		end
+	end
+	preload_tp.preload_and_teleport(pname, jp, 8, nil, cb, pname, true)
 end
 
 function jail.is_player_in_jail(pref)

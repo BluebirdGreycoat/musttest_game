@@ -15,6 +15,7 @@ end
 -- Shall return the player to the nearest jail within their current dimension.
 function jail.on_player_escaped_jail(pref)
 	local jp = jailposition(pref)
+	default.detach_player_if_attached(pref) -- Otherwise teleport could fail.
 	preload_tp.preload_and_teleport(pref:get_player_name(), jp, 8, nil, nil, nil, true)
 end
 
@@ -69,6 +70,8 @@ function jail.notify_sent_to_jail(pref)
 	-- This key should be cleared only if they leave jail through legit means!
 	local meta = pref:get_meta()
 	meta:set_int("should_be_in_jail", 1)
+
+	minetest.after(1, jail.check_player_in_jail, pref:get_player_name())
 end
 
 function jail.notify_player_death(pref)

@@ -185,7 +185,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local maxp = vector.add(tp, vector.new(radius, radius, radius))
 
 	-- Emerge the target area. Once emergence is complete player can be teleported.
-	minetest.chat_send_player(pname, "# Server: Acquiring target coordinates for spatial translation. Please stand by.")
+	minetest.chat_send_player(pname, "# Server: Spatially translating! Stand by.")
 	minetest.emerge_area(minp, maxp, cb, tbparam)
 end
 

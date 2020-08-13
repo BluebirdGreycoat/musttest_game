@@ -19,7 +19,9 @@ function cloaking.do_scan(pname)
 			local objs = minetest.get_objects_inside_radius(pos, 5)
 			for i = 1, #objs, 1 do
 				if objs[i]:is_player() then
-					player_count = player_count + 1
+					if not gdac.player_is_admin(objs[i]) then
+						player_count = player_count + 1
+					end
 				else
 					local ent = objs[i]:get_luaentity()
 					if ent and ent.mob then
@@ -28,6 +30,7 @@ function cloaking.do_scan(pname)
 				end
 			end
 
+			-- There will always be at least one player (themselves).
 			if player_count > 1 or mob_count > 0 then
 				cloaking.toggle_cloak(pname)
 			end

@@ -76,6 +76,12 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							local tarpos = vector.round(other:get_pos())
 							if rc.current_realm_at_pos(tarpos) == rc.current_realm_at_pos(uspos) then
 								if vector.distance(tarpos, uspos) < range then
+									-- Alert player that someone's coming to them.
+									local RED = core.get_color_escape_sequence("#ff0000")
+									minetest.chat_send_player(target,
+										RED .. "# Server: Alert! Incoming jaunt from <" ..
+										rename.gpn(pname) .. ">.")
+									chat_core.alert_player_sound(target)
 
 									-- Teleport player to chosen location.
 									preload_tp.preload_and_teleport(pname, tarpos, 16, nil,

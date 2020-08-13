@@ -84,7 +84,16 @@ jaunt.on_receive_fields = function(player, formname, fields)
 									chat_core.alert_player_sound(target)
 
 									-- Teleport player to chosen location.
-									preload_tp.preload_and_teleport(pname, tarpos, 16, nil,
+									preload_tp.preload_and_teleport(pname, tarpos, 16,
+									-- Pre-teleport callback.
+									function()
+										-- Abort teleport if target player cloaked themselves.
+										if cloaking.is_cloaked(target) then
+											minetest.chat_send_player(pname, "# Server: Lost link to target beacon.")
+											return true -- Abort transport.
+										end
+									end,
+									-- Post-teleport callback.
 									function()
 										portal_sickness.on_use_portal(pname)
 									end,

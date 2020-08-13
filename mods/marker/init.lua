@@ -6,7 +6,18 @@ marker.gui = marker.gui or {}
 marker.steptime = 1
 marker.max_waypoints = 100
 marker.max_lists = 50
+
+-- Max distance of players who wish to share marker lists.
 marker.proximity_range = 10
+
+-- Min/max ranges for visual particles.
+marker.pr_min = 40
+marker.pr_max = 50
+
+-- Min/max ranges for HUD text objects.
+marker.ht_min = 12
+marker.ht_max1 = 100
+marker.ht_max2 = 110
 
 local timer = 0
 local delay = marker.steptime
@@ -52,7 +63,7 @@ function marker.update_single_hud(player)
 		local data = waypoints[i]
 		local dist = d(data.pos, p2)
 
-		if dist > 12 and dist < 60 then
+		if dist > marker.ht_min and dist < marker.ht_max1 then
 			-- add hud element if nearby and not already added
 			if not data.hnd then
 				local wp = vector.add(data.pos, {x=0, y=1, z=0})
@@ -67,7 +78,7 @@ function marker.update_single_hud(player)
 					world_pos = wp,
 				})
 			end
-		elseif dist < 12 or dist > 80 then
+		elseif dist < marker.ht_min or dist > marker.ht_max2 then
 			-- remove hud element if too far and not yet removed
 			if data.hnd then
 				pref:hud_remove(data.hnd)
@@ -75,7 +86,7 @@ function marker.update_single_hud(player)
 			end
 		end
 
-		if dist < 40 then
+		if dist < marker.pr_min then
 			if not data.pts then
 				local wp = vector.add(data.pos, {x=0, y=0.5, z=0})
 				local particles = {
@@ -100,7 +111,7 @@ function marker.update_single_hud(player)
 				}
 				data.pts = minetest.add_particlespawner_single(particles)
 			end
-		elseif dist > 50 then
+		elseif dist > marker.pr_max then
 			if data.pts then
 				minetest.delete_particlespawner(data.pts, player)
 				data.pts = nil

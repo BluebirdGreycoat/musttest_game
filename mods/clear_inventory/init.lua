@@ -2,6 +2,25 @@
 clear_inventory = clear_inventory or {}
 clear_inventory.modpath = minetest.get_modpath("clear_inventory")
 
+function clear_inventory.clear_primary_inventories(player)
+	local inv = player:get_inventory()
+
+	inv:set_list("craft", {})
+	inv:set_list("craftpreview", {})
+	inv:set_list("craftresult", {})
+
+	local main = inv:get_list("main")
+	for k, v in ipairs(main) do
+		if not passport.is_passport(v:get_name()) then
+			v:set_count(0)
+			v:set_name("")
+		end
+	end
+
+	inv:set_list("main", main)
+	map.update_inventory_info(player:get_player_name())
+end
+
 function clear_inventory.clear(name, param)
 	local player
 
@@ -18,23 +37,10 @@ function clear_inventory.clear(name, param)
 		return
 	end
 
-	local inv = player:get_inventory()
+	-- Actually clear the player's inventory!
+	clear_inventory.clear_primary_inventories(player)
 	
-	inv:set_list("craft", {})
-	inv:set_list("craftpreview", {})
-	inv:set_list("craftresult", {})
-	
-	local main = inv:get_list("main")
-	for k, v in ipairs(main) do
-		if not passport.is_passport(v:get_name()) then
-			v:set_count(0)
-			v:set_name("")
-		end
-	end
-	
-	inv:set_list("main", main)
-	map.update_inventory_info(name)
-	
+	-- Report to player.
 	minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(player:get_player_name()) .. ">'s inventory cleared!")
 end
 

@@ -14,21 +14,21 @@ minetest.register_chatcommand("kill", {
 	description = "Kill specified player.",
 	privs = {kill=true},
 	func = function(name, param)
-        if param == nil or param == "" then
-            minetest.chat_send_player(name, "# Server: You must supply a player's name.")
-						easyvend.sound_error(name)
-            return false
-        end
-        
-        assert(type(param) == "string")
-        local player = minetest.get_player_by_name(param)
-        if not player then
-            minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(param) .. "> not found.")
-						easyvend.sound_error(name)
-            return false
-        end
-        
-        player:set_hp(0)
+		if param == nil or param == "" then
+			minetest.chat_send_player(name, "# Server: You must supply a player's name.")
+			easyvend.sound_error(name)
+			return false
+		end
+
+		assert(type(param) == "string")
+		local player = minetest.get_player_by_name(param)
+		if not player then
+			minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(param) .. "> not found.")
+			easyvend.sound_error(name)
+			return false
+		end
+
+		player:set_hp(0)
 		return true
 	end
 })

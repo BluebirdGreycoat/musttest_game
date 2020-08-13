@@ -222,6 +222,7 @@ bones.on_dieplayer = function(player)
 
 	-- Notify of death.
 	chat_colorize.notify_death(pname)
+	jail.notify_player_death(player)
 
 	-- Don't make bones if player doesn't have anything.
 	-- This also means that player won't lose XP. Keep this, it is a feature!
@@ -255,12 +256,18 @@ bones.on_dieplayer = function(player)
 		bones_mode = "drop"
 	end
 
+	-- If player died and ought to leave bones because they have stuff in their
+	-- inventory, BUT we cannot actually place bones (no suitable location found),
+	-- then player doesn't lose their items. This is a safety feature since it is
+	-- possible to die in locations where bones cannot physically be placed.
+	-- E.g., player dies in a 1x1 mineshaft occupied by ladder nodes.
 	if bones_mode ~= "bones" then
 		-- Cannot create bones, therefore we don't modify player inventories.
 		minetest.log("action", "Player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos) .. ", but cannot create bones!")
 
-		-- Halve player's mining XP without storing it anywhere.
+		-- Reduce player's mining XP without storing it anywhere.
 		-- Prevents player from being able to use this as an exploit.
+		-- Death should always have a cost!
 		local xp_amount = xp.get_xp(pname, "digxp")
 		xp_amount = (xp_amount / 3) * 2
 		xp.set_xp(pname, "digxp", xp_amount)

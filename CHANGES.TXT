@@ -1,3 +1,6 @@
+[2020/8/12] Made markers visible from slightly longer range.
+[2020/8/12] Noclipping players can't escape from jail anymore.
+[2020/8/12] It is no longer possible to use the 'Jaunt' special ability to teleport to cloaked players.
 [2020/8/10] Added a new, rare and very powerful mob.
 [2020/3/1] Scaffolding now *never* collapses when player walks on it, even when not protected.
 [2020/2/26] Enabled cutting glowstone nodes with the table saw.

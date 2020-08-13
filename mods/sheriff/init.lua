@@ -171,8 +171,12 @@ if not sheriff.loaded then
 			param = param:trim()
 			if param and param ~= "" then
 				param = rename.grn(param)
-				sheriff.register_cheater(param)
-				minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
+				if minetest.player_exists(param) then
+					sheriff.register_cheater(param)
+					minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
+				else
+					minetest.chat_send_player(pname, "# Server: Named player does not exist.")
+				end
 			else
 				minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
 			end

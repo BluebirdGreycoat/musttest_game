@@ -1,5 +1,5 @@
 
-gdac.position_logger_path = minetest.get_worldpath() / "/positions.txt"
+gdac.position_logger_path = minetest.get_worldpath() .. "/positions.txt"
 
 function gdac.position_logger_record(pname, pos, time)
 	-- Record format: player|20,190,-4|489128934

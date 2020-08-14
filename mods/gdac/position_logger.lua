@@ -3,7 +3,6 @@ gdac.position_logger_path = minetest.get_worldpath() .. "/positions.txt"
 gdac.position_logger_players = gdac.position_logger_players or {}
 
 function gdac.position_logger_record(pname, pos, time, attached, sneak, sprint, jump)
-	-- Record format: player|20,190,-4|489128934
 	local s = pname .. "|" ..
 		math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "|" ..
 		time .. "|" .. attached .. "|" .. sneak .. "|" .. sprint .. "|" .. jump .. "\n"
@@ -11,13 +10,13 @@ function gdac.position_logger_record(pname, pos, time, attached, sneak, sprint, 
 end
 
 local yes_attached = "attached"
-local not_attached = "no"
-local yes_sneak = "sneak"
-local not_sneak = "no"
-local yes_sprint = "sprint"
-local not_sprint = "no"
+local not_attached = "detached"
+local yes_sneak = "sneaking"
+local not_sneak = "no_sneak"
+local yes_sprint = "running"
+local not_sprint = "not_run"
 local yes_jump = "jumping"
-local not_jump = "no"
+local not_jump = "no_jump"
 
 local time = 0
 function gdac.position_logger_step(dtime)
@@ -31,35 +30,38 @@ function gdac.position_logger_step(dtime)
 	for i=1, #players, 1 do
 		local pref = players[i]
 		local pname = pref:get_player_name()
-		local prev_pos = gdac.position_logger_players[pname]
-		local pos = pref:get_pos()
 
-		if not prev_pos or vector.distance(prev_pos, pos) >= 1 then
-			local ctrl = pref:get_player_control()
+		if not gdac.player_is_admin(pname) then
+			local prev_pos = gdac.position_logger_players[pname]
+			local pos = pref:get_pos()
 
-			local sneak = not_sneak
-			local attach = not_attached
-			local sprint = not_sprint
-			local jump = not_jump
+			if not prev_pos or vector.distance(prev_pos, pos) >= 1 then
+				local ctrl = pref:get_player_control()
 
-			if ctrl.sneak then
-				sneak = yes_sneak
-			end
-			if ctrl.aux1 then
-				sprint = yes_sprint
-			end
-			if ctrl.jump then
-				jump = yes_jump
-			end
-			if default.player_attached[pname] then
-				attach = yes_attached
+				local sneak = not_sneak
+				local attach = not_attached
+				local sprint = not_sprint
+				local jump = not_jump
+
+				if ctrl.sneak then
+					sneak = yes_sneak
+				end
+				if ctrl.aux1 then
+					sprint = yes_sprint
+				end
+				if ctrl.jump then
+					jump = yes_jump
+				end
+				if default.player_attached[pname] then
+					attach = yes_attached
+				end
+
+				local time = os.time()
+				gdac.position_logger_record(pname, pos, time, attach, sneak, sprint, jump)
 			end
 
-			local time = os.time()
-			gdac.position_logger_record(pname, pos, time, attach, sneak, sprint, jump)
+			gdac.position_logger_players[pname] = pos
 		end
-
-		gdac.position_logger_players[pname] = pos
 	end
 end
 

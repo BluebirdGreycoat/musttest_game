@@ -1,5 +1,6 @@
 
 gdac.position_logger_path = minetest.get_worldpath() .. "/positions.txt"
+gdac.position_logger_players = gdac.position_logger_players or {}
 
 function gdac.position_logger_record(pname, pos, time)
 	-- Record format: player|20,190,-4|489128934
@@ -21,12 +22,19 @@ function gdac.position_logger_step(dtime)
 	for i=1, #players, 1 do
 		local pref = players[i]
 		local pname = pref:get_player_name()
+		local prev_pos = gdac.position_logger_players[pname]
 		local pos = pref:get_pos()
-		local time = os.time()
-		gdac.position_logger_record(pname, pos, time)
+
+		if not prev_pos or vector.distance(prev_pos, pos) >= 1 then
+			local time = os.time()
+			gdac.position_logger_record(pname, pos, time)
+		end
+
+		gdac.position_logger_players[pname] = pos
 	end
 end
 
+-- Code which runs only once per session.
 if not gdac.position_logger_registered then
 	-- Open log file.
 	gdac.position_logger_file = io.open(gdac.position_logger_path, "a")

@@ -35,7 +35,7 @@ function gdac.position_logger_step(dtime)
 		local pos = pref:get_pos()
 
 		if not prev_pos or vector.distance(prev_pos, pos) >= 1 then
-			local ctrl = pref:get_player_controls()
+			local ctrl = pref:get_player_control()
 
 			local sneak = not_sneak
 			local attach = not_attached

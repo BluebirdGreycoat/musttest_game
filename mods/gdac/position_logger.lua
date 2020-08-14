@@ -51,6 +51,9 @@ function gdac.position_logger_step(dtime)
 			if ctrl.jump then
 				jump = yes_jump
 			end
+			if default.player_attached[pname] then
+				attach = yes_attached
+			end
 
 			local time = os.time()
 			gdac.position_logger_record(pname, pos, time, attach, sneak, sprint, jump)

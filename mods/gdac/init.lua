@@ -5,6 +5,8 @@ gdac = gdac or {}
 gdac.session_violations = gdac.session_violations or {}
 gdac.modpath = minetest.get_modpath("gdac")
 
+dofile(gdac.modpath .. "/position_logger.lua")
+
 
 
 function gdac.player_is_admin(playerorname)

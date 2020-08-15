@@ -75,7 +75,8 @@ function ac.report_suspicious_act(pname, pos, act)
 		minetest.chat_send_player(ac.admin_name,
 			"# Server: <" .. rename.gpn(pname) ..
 			"> caught in suspicious activity: '" .. act .. "' at " ..
-			rc.pos_to_namestr(pos) .. ".")
+			rc.pos_to_namestr(pos) .. ". Suspicion: .. " ..
+			ac.get_suspicion_count(pname) .. ".")
 	end
 end
 

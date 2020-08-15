@@ -11,6 +11,11 @@ end
 -- Let other mods query whether player *might* be a cheater, based on
 -- heuristics.
 function sheriff.is_suspected_cheater(pname)
+	-- If player is a confirmed cheater then they're a suspected cheater, too.
+	if sheriff.is_cheater(pname) then
+		return true
+	end
+
 	local total_suspicion = ac.get_total_suspicion(pname)
 	local clean_sessions = ac.get_clean_sessions(pname)
 	if clean_sessions < 1 then clean_sessions = 1 end

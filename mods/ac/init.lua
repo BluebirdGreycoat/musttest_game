@@ -307,10 +307,11 @@ function ac.check_player(pname)
 	-- Check if player still logged in.
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
+		local pp = pref:get_pos()
+
 		-- Don't bother performing checks for dead players.
 		if pref:get_hp() > 0 then
 			local op = ac.get_position_at_last_check_or_nil(pname)
-			local pp = pref:get_pos()
 			-- Don't bother checking player if they haven't moved.
 			if not op or vector.distance(pp, op) > 1 then
 				-- Don't check players in the Outback.

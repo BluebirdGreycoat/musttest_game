@@ -169,6 +169,8 @@ function ac.check_player(pname)
 		-- Reduce time to next check if they have some suspicion on them.
 		local delay = math.random(ac.default_delay_min, ac.default_delay_max)
 		delay = delay - ac.get_suspicion_count(pname)
+
+		-- Schedule check.
 		if delay < 1 then delay = 1 end
 		minetest.after(delay, ac.check_player, pname)
 	end

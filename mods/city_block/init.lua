@@ -90,19 +90,6 @@ function city_block:in_no_leecher_zone(pos)
 	return false
 end
 
--- This isn't used anywhere?
-function city_block:city_boundaries(pos)
-	for i, EachBlock in ipairs(self.blocks) do
-		if (pos.x == (EachBlock.pos.x - 21) or pos.x == (EachBlock.pos.x + 21)) and pos.z > (EachBlock.pos.z - 22) and pos.z < (EachBlock.pos.z + 22 ) then
-			return true
-		end
-		if (pos.z == (EachBlock.pos.z - 21) or pos.z == (EachBlock.pos.z + 21)) and pos.x > (EachBlock.pos.x - 22) and pos.x < (EachBlock.pos.x + 22 ) then
-			return true
-		end
-	end
-	return false
-end
-
 
 
 if not city_block.run_once then

@@ -8,6 +8,19 @@ if not sheriff.storage then
 	sheriff.storage = minetest.get_mod_storage()
 end
 
+-- Let other mods query whether player *might* be a cheater, based on
+-- heuristics.
+function sheriff.is_suspected_cheater(pname)
+	local total_suspicion = ac.get_total_suspicion(pname)
+	local clean_sessions = ac.get_clean_sessions(pname)
+	if clean_sessions < 1 then clean_sessions = 1 end
+	local avg_suspicion = total_suspicion / clean_sessions
+
+	if avg_suspicion >= ac.high_average_suspicion then
+		return true
+	end
+end
+
 -- Let other mods query whether a give player is a registered cheater.
 function sheriff.is_cheater(pname)
 	local data = sheriff.players[pname]

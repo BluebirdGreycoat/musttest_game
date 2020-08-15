@@ -361,6 +361,10 @@ end
 
 function ac.on_joinplayer(pref)
 	local pname = pref:get_player_name()
+
+	-- Do not perform AC checks for admin player.
+	if gdac.player_is_admin(pname) then return end
+
 	local delay = math.random(ac.initial_delay_min, ac.initial_delay_max)
 
 	-- Reduce time to next check if they have some suspicion on them.

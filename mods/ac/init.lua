@@ -390,7 +390,7 @@ function ac.on_shutdown()
 				local k3 = pname .. ":total_suspicion"
 				local dd = ac.storage:get_int(k1)
 				dd = dd + 1
-				ac.storage:set_int(k1, cc)
+				ac.storage:set_int(k1, dd)
 				ac.storage:set_int(k2, 1) -- The last session (this one) was dirty.
 
 				-- Add suspicion count from this session to the permanent total for this

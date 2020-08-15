@@ -622,6 +622,10 @@ function protector.get_infotext(meta)
 	local dname = rename.gpn(owner)
 	local pdate = meta:get_string("placedate")
 
+	if not pdate or pdate == "" then
+		pdate = "an unknown date!"
+	end
+
 	local timeout = ""
 	if meta:get_int("temprot") == 1 then
 		local minutes = meta:get_int("timerot")
@@ -719,13 +723,9 @@ minetest.register_node("protector:protect", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
-		local placedate = meta:get_string("placedate")
 		-- Nobody placed this block.
 		if owner == "" then
 			return
-		end
-		if placedate == "" then
-			placedate = "an unknown date!"
 		end
 		local cname = meta:get_string("rename")
 		local dname = rename.gpn(owner)

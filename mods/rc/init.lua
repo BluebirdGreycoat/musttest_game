@@ -7,8 +7,8 @@ rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 
 local default_sky = {type="regular", clouds=true}
-local default_sun = {visible=true, sunrise_visible=true}
-local default_moon = {visible=true}
+local default_sun = {visible=true, sunrise_visible=true, scale=1}
+local default_moon = {visible=true, scale=1}
 local default_stars = {visible=true, count=1000}
 local default_clouds = {height=120, density=0.4, speed={x=0, z=-2}, thickness=16}
 
@@ -46,6 +46,7 @@ rc.realms = {
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
 		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}, thickness=4},
+		moon_data={scale=1.5},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.
@@ -63,6 +64,8 @@ rc.realms = {
 		realm_origin = {x=1986, y=3700, z=-1864},
 		sky_data={clouds=true},
 		cloud_data={height=3900, density=0.2, speed={x=5, z=2}},
+		moon_data={scale=0.4},
+		sun_data={scale=0.4},
 	},
 	{
 		id = 4, -- REALM ID. Code relies on this.

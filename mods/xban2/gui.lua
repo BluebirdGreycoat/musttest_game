@@ -200,6 +200,10 @@ local function make_fs(name)
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then
 			infomsg[#infomsg+1] = "User was last seen at " ..
 				rc.pos_to_namestr(vector.round(e.last_pos[record_name])) .. "."
+
+			-- We can also add a button to allow the formspec user to jump to this
+			-- location.
+			fsn=fsn+1 fs[fsn] = "button[13,10.3;3,1;jump;Jump To Last Pos]"
 		end
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
@@ -249,6 +253,8 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		state.filter = filter
 		state.list = make_list(filter)
 		minetest.show_formspec(name, FORMNAME, make_fs(name))
+	end
+	if fields.jump then
 	end
 
 	return true

@@ -296,7 +296,7 @@ function ac.check_prior_path(pname, act)
 	for i=1, #path, 1 do
 		local t = path[i]
 		local delay = (math.random(1, 300) / 300) -- Get fractional random number.
-		minetest.after(delay, ac.check_prior_position, pname, t.pos, t.time, act)
+		minetest.after(delay, ac.check_prior_position, pname, vector.round(t.pos), t.time, act)
 	end
 end
 

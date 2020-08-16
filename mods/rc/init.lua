@@ -200,6 +200,7 @@ function rc.get_realm_sky(pos)
 		for k, v in pairs(n.sky_data or {}) do
 			t[k] = v
 		end
+		minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -212,6 +213,7 @@ function rc.get_realm_sun(pos)
 		for k, v in pairs(n.sun_data or {}) do
 			t[k] = v
 		end
+		minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -224,6 +226,7 @@ function rc.get_realm_moon(pos)
 		for k, v in pairs(n.moon_data or {}) do
 			t[k] = v
 		end
+		minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -236,6 +239,7 @@ function rc.get_realm_stars(pos)
 		for k, v in pairs(n.star_data or {}) do
 			t[k] = v
 		end
+		minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -248,6 +252,7 @@ function rc.get_realm_clouds(pos)
 		for k, v in pairs(n.cloud_data or {}) do
 			t[k] = v
 		end
+		minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}

@@ -5,7 +5,6 @@
 -- Increase checks on a player if others report them for cheating.
 -- * Requires: a reliable way for players to report cheaters that is not
 -- * trivially open to abuse.
--- Increase checks for a player when they're near other players.
 -- When player triggers suspicion first time, check their recent positions, too.
 -- * Requires: keep track of player's position for last 30 seconds.
 -- * Note: don't perform these extra checks (of player's prior positions) if the
@@ -311,6 +310,21 @@ function ac.do_standard_check(pname, pref)
 	end
 end
 
+function ac.nearby_player_count(pname, pref)
+	local p1 = pref:get_pos()
+	local players = minetest.get_connected_players()
+	local count = 0
+	for k, v in ipairs(players) do
+		if v:get_player_name() ~= pname then
+			local p2 = v:get_pos()
+			if vector.distance(p1, p2) < 75 then
+				count = count + 1
+			end
+		end
+	end
+	return count
+end
+
 function ac.check_player(pname)
 	-- Check if player still logged in.
 	local pref = minetest.get_player_by_name(pname)
@@ -359,6 +373,12 @@ function ac.check_player(pname)
 			delay = delay + math.random(ac.low_suspicion_increase_min, ac.low_suspicion_increase_max)
 		elseif avg_suspicion > ac.high_average_suspicion then
 			delay = delay - math.random(ac.high_suspicion_reduce_min, ac.high_suspicion_reduce_max)
+		end
+
+		-- Reduce time to next check if player is near others.
+		local others = ac.nearby_player_count(pname, pref)
+		if others > 0 then
+			delay = delay - math.random(0, others * 10)
 		end
 
 		-- Schedule check not less than 1 second future.

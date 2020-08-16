@@ -10,7 +10,7 @@ local default_sky = {type="regular", clouds=true}
 local default_sun = {visible=true, sunrise_visible=true}
 local default_moon = {visible=true}
 local default_stars = {visible=true, count=1000}
-local default_clouds = {height=120, density=0.4, speed={x=0, z=-2}}
+local default_clouds = {height=120, density=0.4, speed={x=0, z=-2}, thickness=16}
 
 -- Known realms. Min/max area positions should not overlap!
 rc.realms = {
@@ -45,7 +45,7 @@ rc.realms = {
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
-		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}},
+		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}, thickness=4},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.

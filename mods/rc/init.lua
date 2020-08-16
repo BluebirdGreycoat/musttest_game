@@ -46,7 +46,7 @@ rc.realms = {
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
 		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}, thickness=4},
-		moon_data={scale=1.5},
+		moon_data={scale=2.5},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.

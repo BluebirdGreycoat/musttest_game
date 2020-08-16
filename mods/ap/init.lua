@@ -7,6 +7,10 @@ ap.players = ap.players or {}
 -- This must be at least 1 (though such a small value is NOT useful).
 ap.record_time = 60
 
+function ap.get_record_time()
+	return ap.record_time
+end
+
 function ap.update_players()
 	local players = minetest.get_connected_players()
 	for i=1, #players, 1 do

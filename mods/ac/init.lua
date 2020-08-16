@@ -5,11 +5,6 @@
 -- Increase checks on a player if others report them for cheating.
 -- * Requires: a reliable way for players to report cheaters that is not
 -- * trivially open to abuse.
--- When player triggers suspicion first time, check their recent positions, too.
--- * Requires: keep track of player's position for last 30 seconds.
--- * Note: don't perform these extra checks (of player's prior positions) if the
--- * last recorded cheat (detected by standard check) was less than 30 seconds
--- * ago.
 
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")
@@ -64,6 +59,18 @@ function ac.get_suspicion_count(pname)
 		if ac.players[pname].suspicion_count then
 			-- Must be a non-negative integer.
 			return ac.players[pname].suspicion_count
+		end
+	end
+	return 0
+end
+
+-- Get timestamp of the last time a cheat was detected by the standard checking
+-- function (and its confirmation spawns), not including cheats detected along a
+-- path.
+function ac.get_last_cheat_time(pname)
+	if ac.players[pname] then
+		if ac.players[pname].last_cheat_time then
+			return ac.players[pname].last_cheat_time
 		end
 	end
 	return 0
@@ -133,7 +140,7 @@ end
 -- Record in current session memory.
 -- Note: this may be called out of sequence! Therefore we shouldn't use current
 -- time or player's current position.
-function ac.record_suspicious_act(pname, act)
+function ac.record_suspicious_act(pname, time, act)
 	local pdata = ac.players[pname]
 	if not pdata then
 		ac.players[pname] = {}
@@ -147,6 +154,15 @@ function ac.record_suspicious_act(pname, act)
 		pdata.fly_count = (pdata.fly_count or 0) + 1
 	elseif act == "clip" then
 		pdata.clip_count = (pdata.clip_count or 0) + 1
+	end
+
+	-- This is used for recording the most recent last time when a cheat was
+	-- detected by the cheat-confirmation functions. This should be nil when we're
+	-- checking a path, as that is considered "a separate feature". Cheats detected
+	-- along a path should all be considered part of the same "instance" of cheating,
+	-- so we don't record timestamps in that case.
+	if time ~= nil then
+		pdata.last_cheat_time = time
 	end
 end
 
@@ -255,6 +271,35 @@ function ac.is_clipping(pos)
 	return false
 end
 
+function ac.check_prior_position(pname, pos, time, act)
+	local cheat = false
+
+	if act == "fly" then
+		if ac.is_flying(pos) then cheat = true end
+	elseif act == "clip" then
+		if ac.is_clipping(pos) then cheat = true end
+	end
+
+	if cheat then
+		ac.record_suspicious_act(pname, nil, act) -- Record in current session memory.
+		ac.report_suspicious_act(pname, pos, act) -- Report to admin (if logged in).
+		ac.log_suspicious_act(pname, pos, time, act) -- Log to file.
+	end
+end
+
+function ac.check_prior_path(pname, act)
+	-- Get prior known locations for this player.
+	-- Locations should be provided in order, with timestamps.
+	local path = ap.get_position_list(pname)
+
+	-- Spread checking of the path out over a few seconds.
+	for i=1, #path, 1 do
+		local t = path[i]
+		local delay = (math.random(1, 300) / 300) -- Get fractional random number.
+		minetest.after(delay, ac.check_prior_position, pname, t.pos, t.time, act)
+	end
+end
+
 function ac.confirm_flying(pname, last_pos)
 	-- Check if player still logged on.
 	-- This function is designed to be called from minetest.after right after an
@@ -268,10 +313,18 @@ function ac.confirm_flying(pname, last_pos)
 		-- If player stopped flying, then it might have been a false-positive.
 		if not ac.is_flying(pos) then return end
 
+		local time = os.time()
+		local prevtime = ac.get_last_cheat_time(pname)
+
 		-- If we reach here then the player is still flying!
-		ac.record_suspicious_act(pname, "fly") -- Record in current session memory.
+		ac.record_suspicious_act(pname, time, "fly") -- Record in current session memory.
 		ac.report_suspicious_act(pname, pos, "fly") -- Report to admin (if logged in).
-		ac.log_suspicious_act(pname, pos, os.time(), "fly") -- Log to file.
+		ac.log_suspicious_act(pname, pos, time, "fly") -- Log to file.
+
+		-- Check the player's prior path if we haven't done so recently.
+		if (time - prevtime) > ap.get_record_time() then
+			ac.check_prior_path(pname, "fly")
+		end
 	end
 end
 
@@ -286,10 +339,18 @@ function ac.confirm_clipping(pname, last_pos)
 		-- If player stopped clipping, then it might have been a false-positive.
 		if not ac.is_clipping(pos) then return end
 
+		local time = os.time()
+		local prevtime = ac.get_last_cheat_time(pname)
+
 		-- If we reach here then the player is still clipping!
-		ac.record_suspicious_act(pname, "clip") -- Record in current session memory.
+		ac.record_suspicious_act(pname, time, "clip") -- Record in current session memory.
 		ac.report_suspicious_act(pname, pos, "clip") -- Report to admin (if logged in).
-		ac.log_suspicious_act(pname, pos, os.time(), "clip") -- Log to file.
+		ac.log_suspicious_act(pname, pos, time, "clip") -- Log to file.
+
+		-- Check the player's prior path if we haven't done so recently.
+		if (time - prevtime) > ap.get_record_time() then
+			ac.check_prior_path(pname, "clip")
+		end
 	end
 end
 

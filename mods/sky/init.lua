@@ -256,7 +256,7 @@ function sky.on_joinplayer(player)
 		rpos = rpos, -- Last known player position, rounded.
 		snode = "", -- Name of last walked node.
 		wnode = "", -- Name of last node above walked node.
-		sky = 0, -- Current sky colors flag.
+		sky = -1, -- Current sky colors flag.
 	}
 
 	local pdata = sky.players[pname]

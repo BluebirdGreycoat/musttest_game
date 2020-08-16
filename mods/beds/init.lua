@@ -39,7 +39,7 @@ minetest.register_on_player_receive_fields(function(...)
 	return beds.on_player_receive_fields(...)
 end)
 
-minetest.register_chatcommand("bed", {
+minetest.register_chatcommand("chkbed", {
 	params = "",
 	description = "Query the status of your own bed.",
 	privs = {},

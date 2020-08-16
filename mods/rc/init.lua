@@ -9,7 +9,7 @@ rc.modpath = minetest.get_modpath("rc")
 local default_sky = {type="regular", clouds=true}
 local default_sun = {visible=true, sunrise_visible=true}
 local default_moon = {visible=true}
-local default_stars = {visible=true}
+local default_stars = {visible=true, count=1000}
 local default_clouds = {height=120, density=0.4}
 
 -- Known realms. Min/max area positions should not overlap!
@@ -82,7 +82,7 @@ rc.realms = {
     sky_data = {clouds=false},
     sun_data = {},
     moon_data = {},
-    star_data = {visible=false},
+    star_data = {visible=false, count=100},
 	},
 }
 

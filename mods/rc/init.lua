@@ -7,7 +7,7 @@ rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 
 local default_sky = {type="regular", clouds=true}
-local default_sun = {visible=true}
+local default_sun = {visible=true, sunrise_visible=true}
 local default_moon = {visible=true}
 local default_stars = {visible=true}
 local default_clouds = {}
@@ -60,6 +60,7 @@ rc.realms = {
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
+		cloud_data={height=3760},
 	},
 	{
 		id = 4, -- REALM ID. Code relies on this.
@@ -76,7 +77,7 @@ rc.realms = {
 		windlevel = 4200,
 		realm_origin = {x=-9174, y=4100, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
-    sky_data = {},
+    sky_data = {clouds=false},
     sun_data = {},
     moon_data = {},
     star_data = {},
@@ -195,8 +196,8 @@ end
 function rc.get_realm_sky(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		local t = table.copy(n.sky_data or {})
-		for k, v in pairs(default_sky) do
+		local t = table.copy(default_sky)
+		for k, v in pairs(n.sky_data or {}) do
 			t[k] = v
 		end
 		return t
@@ -207,8 +208,8 @@ end
 function rc.get_realm_sun(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		local t = table.copy(n.sun_data or {})
-		for k, v in pairs(default_sun) do
+		local t = table.copy(default_sun)
+		for k, v in pairs(n.sun_data or {}) do
 			t[k] = v
 		end
 		return t
@@ -219,8 +220,8 @@ end
 function rc.get_realm_moon(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		local t = table.copy(n.moon_data or {})
-		for k, v in pairs(default_moon) do
+		local t = table.copy(default_moon)
+		for k, v in pairs(n.moon_data or {}) do
 			t[k] = v
 		end
 		return t
@@ -231,8 +232,8 @@ end
 function rc.get_realm_stars(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		local t = table.copy(n.star_data or {})
-		for k, v in pairs(default_stars) do
+		local t = table.copy(default_stars)
+		for k, v in pairs(n.star_data or {}) do
 			t[k] = v
 		end
 		return t
@@ -243,8 +244,8 @@ end
 function rc.get_realm_clouds(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		local t = table.copy(n.cloud_data or {})
-		for k, v in pairs(default_clouds) do
+		local t = table.copy(default_clouds)
+		for k, v in pairs(n.cloud_data or {}) do
 			t[k] = v
 		end
 		return t

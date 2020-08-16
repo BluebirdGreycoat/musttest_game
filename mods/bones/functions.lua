@@ -629,6 +629,9 @@ bones.do_grab_bones_message = function(pname, pos, meta)
 		if player_labels.query_nametag_onoff(pname) == false then
 			public = false
 		end
+		if cloaking.is_cloaked(pname) then
+			public = false
+		end
 
 		local numstacks = meta:get_int("numstacks")
 		local stacks = "stacks"

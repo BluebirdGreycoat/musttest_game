@@ -82,6 +82,9 @@ local send_chat_world = function(pos, player)
 	if player_labels.query_nametag_onoff(player) == false then
 		show_everyone = false
 	end
+	if cloaking.is_cloaked(player) then
+		show_everyone = false
+	end
 
 	if show_everyone then
 		local dname = rename.gpn(player)

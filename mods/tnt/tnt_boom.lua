@@ -188,7 +188,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 					obj:set_hp(obj:get_hp() - damage)
 					if obj:get_hp() <= 0 then
 						local pname = obj:get_player_name()
-						if player_labels.query_nametag_onoff(pname) == true then
+						if player_labels.query_nametag_onoff(pname) == true and not cloaking.is_cloaked(pname) then
 							minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> exploded.")
 						else
 							minetest.chat_send_all("# Server: Someone exploded.")

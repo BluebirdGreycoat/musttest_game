@@ -1,4 +1,5 @@
 
+--[[
 gdac.position_logger_path = minetest.get_worldpath() .. "/positions.txt"
 gdac.position_logger_players = gdac.position_logger_players or {}
 
@@ -77,3 +78,6 @@ if not gdac.position_logger_registered then
 
 	gdac.position_logger_registered = true
 end
+--]]
+
+

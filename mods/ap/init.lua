@@ -1,0 +1,70 @@
+
+ap = ap or {}
+ap.modpath = minetest.get_modpath("ap")
+ap.players = ap.players or {}
+
+-- Number of seconds to keep track of player's reported positions.
+-- This must be at least 1 (though such a small value is NOT useful).
+ap.record_time = 60
+
+function ap.update_players()
+	local players = minetest.get_connected_players()
+	for i=1, #players, 1 do
+		local pref = players[i]
+		local p = pref:get_pos()
+		local t = ap.players[pref:get_player_name()].positions
+
+		-- Don't add position to list of last recorded positions if the player
+		-- hasn't moved since last time.
+		local add = true
+		if #t > 0 then
+			local op = t[#t]
+			if vector.distance(op, p) < 1 then
+				add = false
+			end
+		end
+
+		-- Insert position into player's record (for this session) and remove old
+		-- entries from the beginning.
+		if add then
+			table.insert(t, p})
+			if #t > ap.record_time then
+				table.remove(t, 1)
+			end
+		end
+	end
+end
+
+function ap.on_joinplayer(pref)
+	ap.players[pref:get_player_name()] = {
+		positions = {},
+	}
+end
+
+function ap.on_leaveplayer(pref)
+	ap.players[pref:get_player_name()] = nil
+end
+
+local time = 0
+function ap.global_step(dtime)
+	time = time + dtime
+	if time < 1 then return end
+	time = 0
+
+	ap.update_players()
+end
+
+if not ap.registered then
+	local c = "ap:core"
+	local f = ap.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	minetest.register_on_joinplayer(function(...)
+		ap.on_joinplayer(...) end)
+	minetest.register_on_leaveplayer(function(...)
+		ap.on_leaveplayer(...) end)
+	minetest.register_globalstep(function(...)
+		ap.global_step(...) end)
+
+	ap.registered = true
+end

@@ -122,8 +122,8 @@ function ac.get_position_at_last_check_or_nil(pname)
 end
 
 -- Log to file.
-function ac.log_suspicious_act(pname, pos, act)
-	local s = pname .. "|" .. act .. "|" .. os.time() .. "|" ..
+function ac.log_suspicious_act(pname, pos, time, act)
+	local s = pname .. "|" .. act .. "|" .. time .. "|" ..
 		math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) ..
 		"|" .. ac.get_suspicion_count(pname) .. "\n"
 	ac.logfile:write(s)
@@ -131,6 +131,8 @@ function ac.log_suspicious_act(pname, pos, act)
 end
 
 -- Record in current session memory.
+-- Note: this may be called out of sequence! Therefore we shouldn't use current
+-- time or player's current position.
 function ac.record_suspicious_act(pname, act)
 	local pdata = ac.players[pname]
 	if not pdata then
@@ -269,7 +271,7 @@ function ac.confirm_flying(pname, last_pos)
 		-- If we reach here then the player is still flying!
 		ac.record_suspicious_act(pname, "fly") -- Record in current session memory.
 		ac.report_suspicious_act(pname, pos, "fly") -- Report to admin (if logged in).
-		ac.log_suspicious_act(pname, pos, "fly") -- Log to file.
+		ac.log_suspicious_act(pname, pos, os.time(), "fly") -- Log to file.
 	end
 end
 
@@ -287,7 +289,7 @@ function ac.confirm_clipping(pname, last_pos)
 		-- If we reach here then the player is still clipping!
 		ac.record_suspicious_act(pname, "clip") -- Record in current session memory.
 		ac.report_suspicious_act(pname, pos, "clip") -- Report to admin (if logged in).
-		ac.log_suspicious_act(pname, pos, "clip") -- Log to file.
+		ac.log_suspicious_act(pname, pos, os.time(), "clip") -- Log to file.
 	end
 end
 

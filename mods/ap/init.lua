@@ -11,7 +11,7 @@ function ap.update_players()
 	local players = minetest.get_connected_players()
 	for i=1, #players, 1 do
 		local pref = players[i]
-		local p = pref:get_pos()
+		local p = pref:get_pos() -- Note: position is NOT rounded.
 		local t = ap.players[pref:get_player_name()].positions
 
 		-- Don't add position to list of last recorded positions if the player
@@ -27,12 +27,19 @@ function ap.update_players()
 		-- Insert position into player's record (for this session) and remove old
 		-- entries from the beginning.
 		if add then
-			table.insert(t, p)
+			table.insert(t, {pos=p, time=os.time()})
 			if #t > ap.record_time then
 				table.remove(t, 1)
 			end
 		end
 	end
+end
+
+-- Returns a list of positions for this player in the last few seconds,
+-- or an empty table if that player wasn't loaded.
+-- Each entry is a table in the format {pos, time}.
+function ap.get_position_list(pname)
+	return ap.players[pname].positions or {}
 end
 
 function ap.on_joinplayer(pref)

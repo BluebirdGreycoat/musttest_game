@@ -97,8 +97,16 @@ reload.impl.dostring = function(name, str)
 		reload.chat_send_player(name, PREFIX .. "No argument provided.")
 		return false
 	end
-	
-	local func, err = loadstring(str)
+
+	-- Code injection.
+	local ci = "do " .. -- Begin new block.
+		"local me=minetest.get_player_by_name(\"" .. name .. "\") " ..
+		"local mypos=me:get_pos() " ..
+		"local function player(pname) return minetest.get_player_by_name(pname) end " ..
+		"local function print(text) minetest.chat_send_player(\"" .. name .. "\", \"# Server: \" .. text) end " ..
+		str .. " end" -- User code & end of block.
+
+	local func, err = loadstring(ci)
 	if not func then  -- Syntax error.
 		reload.chat_send_player(name, PREFIX .. "Could not compile string. Received error message: '" .. err .. "'.")
 		return false

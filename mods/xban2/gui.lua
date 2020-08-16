@@ -227,11 +227,11 @@ function xban.gui.on_receive_fields(player, formname, fields)
 	if formname ~= FORMNAME then return end
 	local name = player:get_player_name()
 	if not minetest.check_player_privs(name, { ban=true }) then
-		minetest.log("warning",
-				"[xban2] Received fields from unauthorized user: "..name)
+		minetest.log("warning", "[xban2] Received fields from unauthorized user: " .. name)
 		return true
 	end
 	local state = get_state(name)
+
 	if fields.player then
 		local t = minetest.explode_textlist_event(fields.player)
 		if (t.type == "CHG") or (t.type == "DCL") then
@@ -240,6 +240,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		end
 		return true
 	end
+
 	if fields.entry then
 		local t = minetest.explode_textlist_event(fields.entry)
 		if (t.type == "CHG") or (t.type == "DCL") then
@@ -248,13 +249,32 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		end
 		return true
 	end
+
 	if fields.search then
 		local filter = fields.filter or ""
 		state.filter = filter
 		state.list = make_list(filter)
 		minetest.show_formspec(name, FORMNAME, make_fs(name))
 	end
+
 	if fields.jump then
+		local list = state.list
+		local pli = state.player_index or 1
+		if pli > #list then
+			pli = #list
+		end
+		local record_name = list[pli]
+		if record_name then
+			local e, strings, gotten = get_record_simple(record_name)
+			if type(e.last_pos) == "table" and e.last_pos[record_name] then
+				local pos = table.copy(e.last_pos[record_name])
+				minetest.chat_send_player(name,
+					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
+					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")
+				player:set_pos(pos)
+				rc.notify_realm_update(name, pos)
+			end
+		end
 	end
 
 	return true

@@ -10,7 +10,7 @@ local default_sky = {type="regular", clouds=true}
 local default_sun = {visible=true, sunrise_visible=true}
 local default_moon = {visible=true}
 local default_stars = {visible=true}
-local default_clouds = {}
+local default_clouds = {height=120, density=0.4}
 
 -- Known realms. Min/max area positions should not overlap!
 rc.realms = {
@@ -45,6 +45,7 @@ rc.realms = {
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
+		cloud_data={height=3100, density=0.7},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.
@@ -60,7 +61,7 @@ rc.realms = {
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
-		cloud_data={height=3760},
+		cloud_data={height=3900, density=0.1},
 	},
 	{
 		id = 4, -- REALM ID. Code relies on this.
@@ -80,8 +81,7 @@ rc.realms = {
     sky_data = {clouds=false},
     sun_data = {},
     moon_data = {},
-    star_data = {},
-    cloud_data = {},
+    star_data = {visible=false},
 	},
 }
 
@@ -200,7 +200,7 @@ function rc.get_realm_sky(pos)
 		for k, v in pairs(n.sky_data or {}) do
 			t[k] = v
 		end
-		minetest.chat_send_all(dump(t))
+		--minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -213,7 +213,7 @@ function rc.get_realm_sun(pos)
 		for k, v in pairs(n.sun_data or {}) do
 			t[k] = v
 		end
-		minetest.chat_send_all(dump(t))
+		--minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -226,7 +226,7 @@ function rc.get_realm_moon(pos)
 		for k, v in pairs(n.moon_data or {}) do
 			t[k] = v
 		end
-		minetest.chat_send_all(dump(t))
+		--minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -239,7 +239,7 @@ function rc.get_realm_stars(pos)
 		for k, v in pairs(n.star_data or {}) do
 			t[k] = v
 		end
-		minetest.chat_send_all(dump(t))
+		--minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}
@@ -252,7 +252,7 @@ function rc.get_realm_clouds(pos)
 		for k, v in pairs(n.cloud_data or {}) do
 			t[k] = v
 		end
-		minetest.chat_send_all(dump(t))
+		--minetest.chat_send_all(dump(t))
 		return t
 	end
 	return {}

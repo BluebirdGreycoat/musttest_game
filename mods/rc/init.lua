@@ -82,7 +82,7 @@ rc.realms = {
     sky_data = {clouds=false},
     sun_data = {},
     moon_data = {},
-    star_data = {visible=false, count=100},
+    star_data = {visible=true, count=50},
 	},
 }
 

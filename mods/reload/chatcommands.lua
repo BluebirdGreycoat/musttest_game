@@ -95,6 +95,7 @@ reload.impl.dostring = function(name, str)
 	local PREFIX = reload.chat_prefix
 	if not str or str == "" then
 		reload.chat_send_player(name, PREFIX .. "No argument provided.")
+		reload.chat_send_player(name, PREFIX .. "Note: available custom variables are: me, mypos, player(name), print(text).")
 		return false
 	end
 

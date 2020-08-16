@@ -10,8 +10,6 @@
 -- * Note: don't perform these extra checks (of player's prior positions) if the
 -- * last recorded cheat (detected by standard check) was less than 30 seconds
 -- * ago.
--- Fix visible sun/moon/stars in underground areas.
--- * Allow each realm to have its own sky data (use new MT APIs).
 
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")

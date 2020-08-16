@@ -203,10 +203,10 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 			end
 		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
 			player:set_sky(rc.get_realm_sky(playerpos))
-			player:set_sun(rc.get_realm_sky(playerpos))
-			player:set_moon(rc.get_realm_sky(playerpos))
-			player:set_stars(rc.get_realm_sky(playerpos))
-			player:set_clouds(rc.get_realm_sky(playerpos))
+			player:set_sun(rc.get_realm_sun(playerpos))
+			player:set_moon(rc.get_realm_moon(playerpos))
+			player:set_stars(rc.get_realm_stars(playerpos))
+			player:set_clouds(rc.get_realm_clouds(playerpos))
 			pdata.sky = 0
 		end
 

@@ -184,19 +184,29 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 	end
 
 	-- Update player's sky colors. Use flags to avoid extra calls.
-	if vector_distance(playerpos, pdata.ppos) > 5 then
-		if rc.position_underground(playerpos) and pdata.sky == 0 then
+	if vector_distance(playerpos, pdata.ppos) > 5 or pdata.sky == -1 then
+		if rc.position_underground(playerpos) and pdata.sky <= 0 then
 			if playerpos.y > -25000 and pdata.sky ~= 1 then
-				-- Cave background.
+				-- Cave (natural) background.
 				player:set_sky({base_color={a=255, r=0, g=0, b=0}, type="plain", clouds=false})
+				player:set_sun({visible=false})
+				player:set_moon({visible=false})
+				player:set_stars({visible=false})
 				pdata.sky = 1
 			elseif pdata.sky ~= 2 then
-				-- Nether background.
+				-- Nether (cave) background.
 				player:set_sky({base_color={a=255, r=10, g=0, b=0}, type="plain", clouds=false})
+				player:set_sun({visible=false})
+				player:set_moon({visible=false})
+				player:set_stars({visible=false})
 				pdata.sky = 2
 			end
 		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
-			player:set_sky({type="regular", clouds=true})
+			player:set_sky(rc.get_realm_sky(playerpos))
+			player:set_sun(rc.get_realm_sky(playerpos))
+			player:set_moon(rc.get_realm_sky(playerpos))
+			player:set_stars(rc.get_realm_sky(playerpos))
+			player:set_clouds(rc.get_realm_sky(playerpos))
 			pdata.sky = 0
 		end
 
@@ -260,6 +270,13 @@ end
 function sky.on_leaveplayer(player, timeout)
 	local pname = player:get_player_name()
 	sky.players[pname] = nil
+end
+
+
+
+function sky.notify_sky_update_needed(pname)
+	-- "-1" indicates that the sky needs updating for this player.
+	sky.players[pname].sky = -1
 end
 
 

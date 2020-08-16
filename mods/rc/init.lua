@@ -54,7 +54,6 @@ rc.realms = {
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
-		disabled = false,
 	},
 	{
 		id = 4, -- REALM ID. Code relies on this.
@@ -71,6 +70,11 @@ rc.realms = {
 		windlevel = 4200,
 		realm_origin = {x=-9174, y=4100, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
+    sky_data = {},
+    sun_data = {},
+    moon_data = {},
+    star_data = {},
+    cloud_data = {},
 	},
 }
 
@@ -180,6 +184,46 @@ function rc.pos_to_string(pos)
 
 	-- Indicate failure.
 	return "(Nan,Nan,Nan)"
+end
+
+function rc.get_realm_sky(pos)
+	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if n then
+		return n.sky_data or {}
+	end
+	return {}
+end
+
+function rc.get_realm_sun(pos)
+	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if n then
+		return n.sun_data or {}
+	end
+	return {}
+end
+
+function rc.get_realm_moon(pos)
+	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if n then
+		return n.moon_data or {}
+	end
+	return {}
+end
+
+function rc.get_realm_stars(pos)
+	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if n then
+		return n.star_data or {}
+	end
+	return {}
+end
+
+function rc.get_realm_clouds(pos)
+	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if n then
+		return n.cloud_data or {}
+	end
+	return {}
 end
 
 function rc.get_realm_data(name)
@@ -613,6 +657,7 @@ function rc.notify_realm_update(player, pos)
 	end
 	tb.pos = p
 	tb.realm = rc.current_realm_at_pos(p)
+	sky.notify_sky_update_needed(n)
 end
 
 if not rc.registered then

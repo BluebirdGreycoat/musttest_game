@@ -58,15 +58,21 @@ local msg_str2 = {
 	"did something fatal",
 	"became honestly dead",
 	"became somewhat dead",
+	"became mostly dead",
 	"was involved in a fatal occurrence",
 	"had a fatal accident",
+	"is honestly dead",
 	"is completely dead",
+	"is mostly dead",
 	"passed out (permanently)",
 	"is somewhat dead",
 	"suffered corporeal malfunction",
 	"gave up the ghost",
 	"gave up on life",
 	"failed survival lessons",
+	"threw out the book",
+	"met the grim reaper",
+	"ended life",
 }
 local function random_str(strs)
 	return strs[math.random(1, #strs)]

@@ -224,6 +224,11 @@ bones.on_dieplayer = function(player)
 	chat_colorize.notify_death(pname)
 	jail.notify_player_death(player)
 
+	-- Special case for admin.
+	if gdac.player_is_admin(pname) then
+		return
+	end
+
 	-- Don't make bones if player doesn't have anything.
 	-- This also means that player won't lose XP. Keep this, it is a feature!
 	if player_inventory_empty(player_inv, "main") and

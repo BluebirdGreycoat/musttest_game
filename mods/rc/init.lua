@@ -45,7 +45,7 @@ rc.realms = {
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
-		cloud_data={height=3100, density=0.7},
+		cloud_data={height=3112, density=0.6},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.
@@ -61,7 +61,8 @@ rc.realms = {
 		sealevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
-		cloud_data={height=3900, density=0.1},
+		sky_data={clouds=true},
+		cloud_data={height=3900, density=0.2},
 	},
 	{
 		id = 4, -- REALM ID. Code relies on this.

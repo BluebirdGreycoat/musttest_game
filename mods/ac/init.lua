@@ -5,6 +5,14 @@
 -- Increase checks on a player if others report them for cheating.
 -- * Requires: a reliable way for players to report cheaters that is not
 -- * trivially open to abuse.
+-- Increase checks for a player when they're near other players.
+-- When player triggers suspicion first time, check their recent positions, too.
+-- * Requires: keep track of player's position for last 30 seconds.
+-- * Note: don't perform these extra checks (of player's prior positions) if the
+-- * last recorded cheat (detected by standard check) was less than 30 seconds
+-- * ago.
+-- Fix visible sun/moon/stars in underground areas.
+-- * Allow each realm to have its own sky data (use new MT APIs).
 
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")

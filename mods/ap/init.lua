@@ -1,6 +1,6 @@
 
 ap = ap or {}
-ap.modpath = minetest.get_modpath("ap")
+ap.modpath = ap.modpath or minetest.get_modpath("ap")
 ap.players = ap.players or {}
 
 -- Number of seconds to keep track of player's reported positions.

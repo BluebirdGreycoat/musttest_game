@@ -22,7 +22,7 @@ function ap.update_players()
 		-- hasn't moved since last time.
 		local add = true
 		if #t > 0 then
-			local op = t[#t]
+			local op = t[#t].pos
 			if vector.distance(op, p) < 1 then
 				add = false
 			end

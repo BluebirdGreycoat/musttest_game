@@ -189,7 +189,12 @@ local function make_fs(name)
 		
 		local infomsg = {}
 		infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
-		infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
+
+		if #ips <= 5 then
+			infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
+		else
+			infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): DYNAMIC"
+		end
 
 		-- last_pos and last_seen are per name, not per record-entry.
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then

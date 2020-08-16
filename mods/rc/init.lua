@@ -6,6 +6,12 @@ rc = rc or {}
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 
+local default_sky = {type="regular", clouds=true}
+local default_sun = {visible=true}
+local default_moon = {visible=true}
+local default_stars = {visible=true}
+local default_clouds = {}
+
 -- Known realms. Min/max area positions should not overlap!
 rc.realms = {
 	{
@@ -189,7 +195,11 @@ end
 function rc.get_realm_sky(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		return n.sky_data or {}
+		local t = table.copy(n.sky_data or {})
+		for k, v in pairs(default_sky) do
+			t[k] = v
+		end
+		return t
 	end
 	return {}
 end
@@ -197,7 +207,11 @@ end
 function rc.get_realm_sun(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		return n.sun_data or {}
+		local t = table.copy(n.sun_data or {})
+		for k, v in pairs(default_sun) do
+			t[k] = v
+		end
+		return t
 	end
 	return {}
 end
@@ -205,7 +219,11 @@ end
 function rc.get_realm_moon(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		return n.moon_data or {}
+		local t = table.copy(n.moon_data or {})
+		for k, v in pairs(default_moon) do
+			t[k] = v
+		end
+		return t
 	end
 	return {}
 end
@@ -213,7 +231,11 @@ end
 function rc.get_realm_stars(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		return n.star_data or {}
+		local t = table.copy(n.star_data or {})
+		for k, v in pairs(default_stars) do
+			t[k] = v
+		end
+		return t
 	end
 	return {}
 end
@@ -221,7 +243,11 @@ end
 function rc.get_realm_clouds(pos)
 	local n = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if n then
-		return n.cloud_data or {}
+		local t = table.copy(n.cloud_data or {})
+		for k, v in pairs(default_clouds) do
+			t[k] = v
+		end
+		return t
 	end
 	return {}
 end

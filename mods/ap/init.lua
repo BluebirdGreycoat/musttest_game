@@ -27,7 +27,7 @@ function ap.update_players()
 		-- Insert position into player's record (for this session) and remove old
 		-- entries from the beginning.
 		if add then
-			table.insert(t, p})
+			table.insert(t, p)
 			if #t > ap.record_time then
 				table.remove(t, 1)
 			end

@@ -267,7 +267,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		if record_name then
 			local e, strings, gotten = get_record_simple(record_name)
 			if type(e.last_pos) == "table" and e.last_pos[record_name] then
-				local pos = table.copy(e.last_pos[record_name])
+				local pos = vector.round(table.copy(e.last_pos[record_name]))
 				minetest.chat_send_player(name,
 					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
 					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")

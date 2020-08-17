@@ -325,7 +325,7 @@ local function mob_killed_player(self, player)
 	end
 
 	local victim = "<" .. rename.gpn(pname) .. ">"
-	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == true then
+	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
 		victim = "An explorer"
 	end
 
@@ -403,7 +403,7 @@ local function player_killed_mob(self, player)
 	local msg = murder_messages[math.random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", mname)
 
-	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == true then
+	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
 		msg = string.gsub(msg, "<k>", "explorer")
 	else
 		msg = string.gsub(msg, "<k>", "<" .. rename.gpn(pname) .. ">")

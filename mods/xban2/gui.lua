@@ -129,10 +129,11 @@ local function make_fs(name)
 	for k, v in ipairs(list) do
 		local dn = rename.gpn(v)
 		local rn = rename.grn(v)
+		local ts = ac.get_total_suspicion(rn)
 		if dn ~= rn then
-			nlist[k] = minetest.formspec_escape(dn .. " [" .. rn .. "]")
+			nlist[k] = ESC(dn .. " [" .. rn .. "] (" .. ts .. ")")
 		else
-			nlist[k] = minetest.formspec_escape(rn)
+			nlist[k] = ESC(rn .. " (" .. ts .. ")")
 		end
 	end
 
@@ -208,6 +209,12 @@ local function make_fs(name)
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
 				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
+		end
+
+		if sheriff.is_suspected_cheater(record_name) then
+			infomsg[#infomsg+1] = "Player is a suspected cheater! (High AVG suspicion.)"
+		elseif sheriff.is_cheater(record_name) then
+			infomsg[#infomsg+1] = "Player is a registered cheater/hacker."
 		end
 
 		for k, v in ipairs(infomsg) do

@@ -41,6 +41,12 @@ ac.high_suspicion_reduce_max = 10
 ac.low_suspicion_increase_min = 1
 ac.low_suspicion_increase_max = 10
 
+-- Once accumulated suspicion for a single session (not including total suspicion
+-- over all sessions) exceeds this amount, player is registered as a confirmed
+-- cheater. Note that the player will not automatically be registered as a cheater
+-- if they merely have high avg suspicion over multiple sessions.
+ac.cheat_registration_threshold = 50
+
 ac.admin_name = "MustTest"
 
 -- Open logfile if not already opened.
@@ -321,6 +327,14 @@ function ac.confirm_flying(pname, last_pos)
 		ac.report_suspicious_act(pname, pos, "fly") -- Report to admin (if logged in).
 		ac.log_suspicious_act(pname, pos, time, "fly") -- Log to file.
 
+		-- Register as confirmed cheater if suspicion for this session exceeds threshold.
+		local ts = ac.get_suspicion_count(pname)
+		if ts > ac.cheat_registration_threshold then
+			if not sheriff.is_cheater(pname) then
+				sheriff.register_cheater(pname)
+			end
+		end
+
 		-- Check the player's prior path if we haven't done so recently.
 		if (time - prevtime) > ap.get_record_time() then
 			ac.check_prior_path(pname, "fly")
@@ -346,6 +360,14 @@ function ac.confirm_clipping(pname, last_pos)
 		ac.record_suspicious_act(pname, time, "clip") -- Record in current session memory.
 		ac.report_suspicious_act(pname, pos, "clip") -- Report to admin (if logged in).
 		ac.log_suspicious_act(pname, pos, time, "clip") -- Log to file.
+
+		-- Register as confirmed cheater if suspicion for this session exceeds threshold.
+		local ts = ac.get_suspicion_count(pname)
+		if ts > ac.cheat_registration_threshold then
+			if not sheriff.is_cheater(pname) then
+				sheriff.register_cheater(pname)
+			end
+		end
 
 		-- Check the player's prior path if we haven't done so recently.
 		if (time - prevtime) > ap.get_record_time() then

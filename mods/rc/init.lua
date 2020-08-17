@@ -10,7 +10,12 @@ local default_sky = {type="regular", clouds=true}
 local default_sun = {visible=true, sunrise_visible=true, scale=1}
 local default_moon = {visible=true, scale=1}
 local default_stars = {visible=true, count=1000}
-local default_clouds = {height=120, density=0.4, speed={x=0, z=-2}, thickness=16}
+local default_clouds = {
+	height = 120,
+	density = 0.4,
+	speed = {x = 0, z = -2},
+	thickness = 16,
+}
 
 -- Known realms. Min/max area positions should not overlap!
 rc.realms = {
@@ -29,6 +34,11 @@ rc.realms = {
 		windlevel = 20,
 		realm_origin = {x=-1067, y=-10, z=8930},
 		disabled = false, -- Whether realm can be "gated" to. Use when testing!
+
+		cloud_data = {
+			-- Overworld clouds change direction of travel on every restart.
+			speed = {x = math.random(-200, 200)/200, z = math.random(-200, 200)/200},
+		},
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.

@@ -323,7 +323,13 @@ local function mob_killed_player(self, player)
 			an = "an"
 		end
 	end
-	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was " .. adv .. adj .. " by " .. an .. " " .. ang .. mname .. ".")
+
+	local victim = "<" .. rename.gpn(pname) .. ">"
+	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) then
+		victim = "An explorer"
+	end
+
+	minetest.chat_send_all("# Server: " .. victim .. " was " .. adv .. adj .. " by " .. an .. " " .. ang .. mname .. ".")
 end
 
 
@@ -396,7 +402,12 @@ local function player_killed_mob(self, player)
 
 	local msg = murder_messages[math.random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", mname)
-	msg = string.gsub(msg, "<k>", "<" .. rename.gpn(pname) .. ">")
+
+	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) then
+		msg = string.gsub(msg, "<k>", "explorer")
+	else
+		msg = string.gsub(msg, "<k>", "<" .. rename.gpn(pname) .. ">")
+	end
 
 	local ksex = skins.get_gender_strings(pname)
 	local vsex = skins.get_random_standard_gender(5) -- 5% female.

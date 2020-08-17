@@ -409,6 +409,13 @@ function ac.nearby_player_count(pname, pref)
 end
 
 function ac.check_player(pname)
+	-- If this player is already a registered cheater, don't bother checking them
+	-- for further cheats. Unless such checks ought to trigger immediate punishments
+	-- when failed, it's probably a waste of resources.
+	if sheriff.is_cheater(pname) then
+		return
+	end
+
 	-- Check if player still logged in.
 	local pref = minetest.get_player_by_name(pname)
 	if pref then

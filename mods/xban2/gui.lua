@@ -131,9 +131,17 @@ local function make_fs(name)
 		local rn = rename.grn(v)
 		local ts = ac.get_total_suspicion(rn)
 		if dn ~= rn then
-			nlist[k] = ESC(dn .. " [" .. rn .. "] (" .. ts .. ")")
+			if ts > 0 then
+				nlist[k] = ESC(dn .. " [" .. rn .. "] (" .. ts .. ")")
+			else
+				nlist[k] = ESC(dn .. " [" .. rn .. "]")
+			end
 		else
-			nlist[k] = ESC(rn .. " (" .. ts .. ")")
+			if ts > 0 then
+				nlist[k] = ESC(rn .. " (" .. ts .. ")")
+			else
+				nlist[k] = ESC(rn)
+			end
 		end
 	end
 

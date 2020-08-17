@@ -219,10 +219,10 @@ local function make_fs(name)
 				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
 		end
 
-		if sheriff.is_suspected_cheater(record_name) then
-			infomsg[#infomsg+1] = "Player is a suspected cheater! (High AVG suspicion.)"
-		elseif sheriff.is_cheater(record_name) then
+		if sheriff.is_cheater(record_name) then
 			infomsg[#infomsg+1] = "Player is a registered cheater/hacker."
+		elseif sheriff.is_suspected_cheater(record_name) then
+			infomsg[#infomsg+1] = "Player is a suspected cheater!"
 		end
 
 		for k, v in ipairs(infomsg) do

@@ -35,6 +35,42 @@ function pm.seek_player_or_mob_or_item(pos)
 	return nil, obj
 end
 
+function pm.seek_player_or_mob(pos)
+	local obj = nil
+	local dst = pm.sight_range
+
+	local all = minetest.get_objects_inside_radius(pos, pm.sight_range)
+
+	-- Filter out anything that isn't a player or mob or dropped item.
+	local objects = {}
+	for i=1, #all, 1 do
+		if all[i]:is_player() and all[i]:get_hp() > 0 then
+			objects[#objects+1] = all[i]
+		else
+			ent = all[i]:get_luaentity()
+			if ent then
+				if ent.mob then
+					objects[#objects+1] = all[i]
+				end
+			end
+		end
+	end
+
+	for i=1, #objects, 1 do
+		local ref = objects[i]
+		local p = ref:get_pos()
+		local d = vector.distance(pos, p)
+		-- Distance > 1 to ignore self (basically a hack).
+		if d > 1 and d < dst then
+			dst = d
+			obj = ref
+		end
+	end
+
+	-- Object or nil.
+	return nil, obj
+end
+
 function pm.seek_player_or_item(pos)
 	local obj = nil
 	local dst = pm.sight_range

@@ -16,6 +16,18 @@ pm.range = 2
 pm.velocity = 3
 
 dofile(pm.modpath .. "/seek.lua")
+dofile(pm.modpath .. "/action.lua")
+
+function pm.target_is_player_or_mob(target)
+	if target:is_player() then
+		return true
+	end
+
+	local ent = target:get_luaentity()
+	if ent.mob then
+		return true
+	end
+end
 
 function pm.spawn_path_particle(pos)
 	local particles = {
@@ -130,6 +142,13 @@ function pm.follower_on_step(self, dtime, moveresult)
 		end
 	end
 
+	-- Entity changes its behavior every so often.
+	if not self._behavior_timer or self._behavior_timer < 0 then
+		self._behavior_timer = math.random(1, 20)*60
+		pm.choose_random_behavior(self)
+	end
+	self._behavior_timer = self._behavior_timer - dtime
+
 	-- Entities sometimes get stuck against objects.
 	-- Unstick them by rounding their positions to the nearest air node.
 	if not self._unstick_timer or self._unstick_timer < 0 then
@@ -211,7 +230,9 @@ function pm.follower_on_step(self, dtime, moveresult)
 				local s = target:get_pos()
 				if s then
 					s = vector.round(s)
-					s.y = s.y + 1 -- For entities, seek above them, not at their feet.
+					if pm.target_is_player_or_mob(target) then
+						s.y = s.y + 1 -- For players or mobs, seek above them, not at their feet.
+					end
 					s = minetest.find_node_near(s, 1, "air", true)
 					-- Target must be standing in air.
 					-- Otherwise it would never be reachable.
@@ -581,11 +602,30 @@ function pm.spawn_wisp(pos, behavior)
 			local luaent = ent:get_luaentity()
 			if luaent then
 				luaent._behavior = behavior
+				luaent._behavior_timer = math.random(1, 20)*60
 				return ent
 			else
 				ent:remove()
 			end
 		end
+	end
+end
+
+local behaviors = {
+	"follower",
+	"pest",
+	"thief",
+	"healer",
+	"explorer",
+	"boom",
+}
+
+function pm.choose_random_behavior(self)
+	self._behavior = behaviors[math.random(1, #behaviors)]
+
+	-- Don't chose a self-destructive behavior by chance.
+	if self._behavior == "boom" then
+		self._behavior = "follower"
 	end
 end
 
@@ -614,6 +654,11 @@ function pm.spawn_explorer(pos)
 	return pm.spawn_wisp(pos, "explorer")
 end
 
+-- BOOM entity.
+function pm.spawn_boom(pos)
+	return pm.spawn_wisp(pos, "boom")
+end
+
 -- Table of functions for obtaining interest points.
 local interests = {
 	follower = function(self)
@@ -635,15 +680,28 @@ local interests = {
 	explorer = function(self)
 		return pm.seek_node_with_meta(self.object:get_pos())
 	end,
+
+	boom = function(self)
+		return pm.seek_player_or_mob(self.object:get_pos())
+	end,
 }
 
 -- Table of possible action functions to take on arriving at a target.
-local behaviors = {
+local actions = {
 	pest = function(self, pos, target)
-		if target and target:is_player() then
-			--minetest.chat_send_all('bothering player with damage')
-			target:set_hp(target:get_hp() - 1)
-		end
+		pm.hurt_nearby_players(self)
+	end,
+
+	healer = function(self, pos, target)
+		pm.heal_nearby_players(self)
+	end,
+
+	thief = function(self, pos, target)
+		pm.steal_nearby_item(self, target)
+	end,
+
+	boom = function(self, pos, target)
+		pm.explode_nearby_target(self, target)
 	end,
 }
 
@@ -660,8 +718,8 @@ function pm.on_arrival(self, pos, other)
 	--minetest.chat_send_all('arrived at target')
 	if self._behavior then
 		--minetest.chat_send_all('have behavior: ' .. self._behavior)
-		if behaviors[self._behavior] then
-			behaviors[self._behavior](self, pos, other)
+		if actions[self._behavior] then
+			actions[self._behavior](self, pos, other)
 		end
 	end
 end

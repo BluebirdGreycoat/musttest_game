@@ -285,7 +285,9 @@ local function add_effects(pos, radius, drops)
 			most = count
 			local def = minetest.registered_nodes[name]
 			if def and def.tiles and def.tiles[1] then
-				texture = def.tiles[1]
+				if type(def.tiles[1]) == "string" then
+					texture = def.tiles[1]
+				end
 			end
 		end
 	end

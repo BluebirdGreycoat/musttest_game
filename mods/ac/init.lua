@@ -423,13 +423,16 @@ function ac.check_player(pname)
 
 		-- Don't bother performing checks for dead players.
 		if pref:get_hp() > 0 then
-			local op = ac.get_position_at_last_check_or_nil(pname)
-			-- Don't bother checking player if they haven't moved.
-			if not op or vector.distance(pp, op) > 1 then
-				-- Don't check players in the Outback.
-				if rc.current_realm_at_pos(pp) ~= "abyss" then
-					ac.record_player_position(pname, pp)
-					ac.do_standard_check(pname, pref)
+			-- Don't check players attached to entities.
+			if not default.player_attached[pname] then
+				local op = ac.get_position_at_last_check_or_nil(pname)
+				-- Don't bother checking player if they haven't moved.
+				if not op or vector.distance(pp, op) > 1 then
+					-- Don't check players in the Outback.
+					if rc.current_realm_at_pos(pp) ~= "abyss" then
+						ac.record_player_position(pname, pp)
+						ac.do_standard_check(pname, pref)
+					end
 				end
 			end
 		end

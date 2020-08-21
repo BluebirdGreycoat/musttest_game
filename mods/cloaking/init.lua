@@ -5,6 +5,29 @@ cloaking = cloaking or {}
 cloaking.modpath = minetest.get_modpath("cloaking")
 cloaking.players = cloaking.players or {}
 
+function cloaking.particle_effect(pos)
+	local particles = {
+		amount = 100,
+		time = 1.1,
+		minpos = vector.add(pos, {x=-0.1, y=-0.1, z=-0.1}),
+		maxpos = vector.add(pos, {x=0.1, y=0.1, z=0.1}),
+		minvel = vector.new(-3.5, -3.5, -3.5),
+		maxvel = vector.new(3.5, 3.5, 3.5),
+		minacc = {x=0, y=0, z=0},
+		maxacc = {x=0, y=0, z=0},
+		minexptime = 1.5,
+		maxexptime = 2.0,
+		minsize = 0.5,
+		maxsize = 1.0,
+		collisiondetection = false,
+		collision_removal = false,
+		vertical = false,
+		texture = "quartz_crystal_piece.png",
+		glow = 14,
+	}
+	minetest.add_particlespawner(particles)
+end
+
 function cloaking.do_scan(pname)
 	-- If player is cloaked, check for reasons to disable the cloak.
 	if cloaking.players[pname] then
@@ -70,6 +93,7 @@ function cloaking.toggle_cloak(pname)
 			pointable = false,
 		})
 
+		cloaking.particle_effect(player:get_pos())
 		minetest.chat_send_player(pname, "# Server: Cloak activated.")
 
 		-- Enable scanning for reasons to cancel the cloak.
@@ -86,6 +110,7 @@ function cloaking.toggle_cloak(pname)
 			pointable = true,
 		})
 
+		cloaking.particle_effect(player:get_pos())
 		minetest.chat_send_player(pname, "# Server: Cloak offline.")
 	end
 end

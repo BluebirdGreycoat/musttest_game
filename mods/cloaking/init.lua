@@ -18,7 +18,7 @@ function cloaking.do_scan(pname)
 			-- If there are nearby entities, disable the cloak.
 			local objs = minetest.get_objects_inside_radius(pos, 5)
 			for i = 1, #objs, 1 do
-				if objs[i]:is_player() then
+				if objs[i]:is_player() and objs[i]:get_hp() > 0 then
 					if not gdac.player_is_admin(objs[i]) then
 						player_count = player_count + 1
 					end

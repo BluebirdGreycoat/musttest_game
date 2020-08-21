@@ -167,6 +167,14 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}
 	local cb = function(blockpos, action, calls_remaining, param)
+		-- Send blocks to client as soon as they're available; looks better that way.
+		if blockpos then
+			local pref = minetest.get_player_by_name(pname)
+			if pref then
+				pref:send_mapblock(blockpos)
+			end
+		end
+
 		-- We don't do anything until the last callback.
 		if calls_remaining ~= 0 then
 			return

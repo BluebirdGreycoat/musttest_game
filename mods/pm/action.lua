@@ -56,8 +56,8 @@ function pm.steal_nearby_item(self, target)
 			local idx = math.random(1, max)
 			local stack = inv:get_stack("main", idx)
 			if not passport.is_passport(stack:get_name()) then
-				if stack:get_count() > 1 then
-					local item = stack:take_item()
+				if stack:get_count() >= 10 then
+					local item = stack:take_item(math.random(1, 10))
 					inv:set_stack("main", idx, stack)
 					minetest.item_drop(item, target, self.object:get_pos())
 				end
@@ -80,5 +80,24 @@ function pm.explode_nearby_target(self, target)
 			ignore_on_blast = false,
 			disable_drops = true,
 		})
+	end
+end
+
+function pm.commit_arson_at_target(pos)
+	local p = vector.round(pos)
+	p = minetest.find_node_near(pos, 1, "air", true)
+	if p and not minetest.test_protection(p, "") then
+		minetest.set_node(p, {name="fire:basic_flame"})
+	end
+end
+
+function pm.teleport_player_to_prior_location(target)
+	if target and target:is_player() then
+		local pname = target:get_player_name()
+		local positions = ap.get_position_list(pname)
+		if #positions > 0 then
+			local tpos = positions[1].pos
+			preload_tp.preload_and_teleport(pname, tpos, 8, nil, nil, nil, true)
+		end
 	end
 end

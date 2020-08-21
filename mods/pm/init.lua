@@ -29,6 +29,20 @@ function pm.target_is_player_or_mob(target)
 	end
 end
 
+function pm.debug_chat(text)
+	-- Comment or uncomment as needed for debugging.
+	--minetest.chat_send_all(text)
+end
+function pm.debug_path(path)
+	-- Ditto.
+	--for k, v in ipairs(path) do pm.spawn_path_particle(v) end
+end
+function pm.debug_goal(pos)
+	-- Ditto.
+	--pm.spawn_path_particle(pos)
+	--pm.death_particle_effect(pos)
+end
+
 function pm.death_particle_effect(pos)
 	local particles = {
 		amount = 100,
@@ -123,7 +137,7 @@ function pm.follower_on_activate(self, staticdata, dtime_s)
 		local data = minetest.deserialize(staticdata)
 		if type(data) == "table" then
 			for k, v in pairs(data) do
-				--minetest.chat_send_all("on_activate(): self["..k.."]="..v)
+				pm.debug_chat("on_activate(): self["..k.."]="..v)
 				self[k] = v
 			end
 			return
@@ -142,7 +156,7 @@ function pm.follower_get_staticdata(self)
 		local t = type(v)
 		if t == "number" or t == "string" or t == "boolean" then
 			if k:find("_") == 1 then
-				--minetest.chat_send_all("get_staticdata(): data["..k.."]="..v)
+				pm.debug_chat("get_staticdata(): data["..k.."]="..tostring(v))
 				data[k] = v
 			end
 		end
@@ -211,30 +225,30 @@ function pm.follower_on_step(self, dtime, moveresult)
 	end
 
 	-- If currently following a path, remove waypoints as we reach them.
-	local finished_path_this_frame = false
 	if self._path and #(self._path) > 0 then
 		local p = self._path[1]
 		-- Remove waypoint from path if we've reached it.
 		if vector.distance(p, self.object:get_pos()) < 0.5 then
-			--minetest.chat_send_all('hit waypoint')
+			pm.debug_chat('hit waypoint')
 			self._stuck_timer = 2
 			table.remove(self._path, 1)
 		end
 
 		-- Remove path when all waypoints exhausted.
 		if #(self._path) < 1 then
-			--minetest.chat_send_all('finished following path')
-			finished_path_this_frame = true
+			pm.debug_chat('finished following path: ' .. minetest.pos_to_string(self._goto))
+			pm.debug_chat('node at terminus: ' .. minetest.get_node(self._goto).name)
 			self._path = nil
 			self._path_is_los = nil
 			self._stuck_timer = nil
+			self._failed_pathfind_cooldown = nil
 			self.object:set_velocity({x=0, y=0, z=0})
 		end
 
 		if self._stuck_timer then
 			self._stuck_timer = self._stuck_timer - dtime
 			if self._stuck_timer < 0 then
-				--minetest.chat_send_all('got stuck following path')
+				pm.debug_chat('got stuck following path')
 				-- Got stuck trying to follow path.
 				-- This is caused because the entity is physical and may collide with
 				-- the environment. Blocks may have been added in the entity's path, or
@@ -262,13 +276,13 @@ function pm.follower_on_step(self, dtime, moveresult)
 	pm.follower_spawn_particles(pos, self.object)
 
 	-- Find new target/goal-waypoint if we don't have one.
-	if not self._acquire_target_cooldown then
-		if not self._goto then
+	if not self._acquire_target_cooldown and not self._failed_pathfind_cooldown then
+		if not self._goto and not self._path then
 			local tp, target = self._interest_point(self, pos)
 			if target then
 				-- Target is another entity.
-				--minetest.chat_send_all('acquired moving target')
-				--if target:is_player() then minetest.chat_send_all('targeting player') end
+				pm.debug_chat('acquired moving target')
+				--if target:is_player() then pm.debug_chat('targeting player') end
 				local s = tp
 				if not s then s = target:get_pos() end
 				if s then
@@ -282,7 +296,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					if s then
 						-- Don't reacquire target if we're already sitting on it.
 						if vector.distance(pos, s) > pm.range then
-							--minetest.chat_send_all('set moving target goal')
+							pm.debug_chat('set moving target goal')
 							self._goto = vector.round(s)
 							self._target = target -- Userdata object.
 						end
@@ -291,30 +305,30 @@ function pm.follower_on_step(self, dtime, moveresult)
 				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			elseif tp then
 				-- Target is a static location.
-				--minetest.chat_send_all('acquired static target')
+				pm.debug_chat('acquired static target')
 				-- Don't reacquire target if we're already sitting on it.
 				if vector.distance(pos, tp) > pm.range then
-					--minetest.chat_send_all('set static target goal')
+					pm.debug_chat('set static target goal')
 					self._goto = vector.round(tp)
 					self._target = nil
 				end
 				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			else
 				-- No target acquired. Wait awhile before calling function again.
-				--minetest.chat_send_all('no target acquired')
+				pm.debug_chat('no target acquired')
 				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			end
 		end
 	end
 
-	-- Get a path to our target if we don't have a path yet.
-	if not self._failed_pathfind_cooldown and not finished_path_this_frame then
-		if self._goto and not self._path then
-			--minetest.chat_send_all('want path to target')
+	-- Get a path to our target if we don't have a path yet, and target is not nearby.
+	if not self._failed_pathfind_cooldown then
+		if self._goto and not self._path and vector.distance(self._goto, pos) > pm.range then
+			pm.debug_chat('want path to target')
 			local los, obstruction = minetest.line_of_sight(vector.round(pos), vector.round(self._goto))
 			if los then
 				-- We have LOS (line of sight) direct to target.
-				--minetest.chat_send_all('LOS confirmed')
+				pm.debug_chat('LOS confirmed')
 				local dir = vector.subtract(vector.round(self._goto), vector.round(pos))
 				local dst = vector.length(dir)
 				dir = vector.normalize(dir) -- Returns 0,0,0 for zero-length vector.
@@ -331,12 +345,26 @@ function pm.follower_on_step(self, dtime, moveresult)
 				end
 			else
 				-- No line of sight to target. Use pathfinder!
-				--minetest.chat_send_all('will try pathfinder')
-				local a1 = minetest.find_node_near(vector.round(pos), 1, "air", true)
-				local a2 = minetest.find_node_near(vector.round(self._goto), 1, "air", true)
+				pm.debug_chat('will try pathfinder')
+				local rp1 = vector.round(pos)
+				local rp2 = vector.round(self._goto)
+
+				local a1 = rp1
+				local a2 = rp2
+
+				local d1 = minetest.registered_nodes[minetest.get_node(rp1).name]
+				local d2 = minetest.registered_nodes[minetest.get_node(rp2).name]
+
+				-- If either start or end are non-walkable, we don't need to look for air.
+				if d1.walkable then
+					a1 = minetest.find_node_near(rp1, 2, "air", true)
+				end
+				if d2.walkable then
+					a2 = minetest.find_node_near(rp2, 2, "air", true)
+				end
 
 				if a1 and a2 then
-					--minetest.chat_send_all('start and end position are both in air')
+					pm.debug_chat('start and end position are both in air')
 					local prepath = {table.copy(a1)}
 					local postpath = {table.copy(a2)}
 
@@ -363,21 +391,21 @@ function pm.follower_on_step(self, dtime, moveresult)
 					local d = vector.distance(a1, a2)
 					local r = math.max(1, math.floor(pm.sight_range - d))
 
-					--minetest.chat_send_all("trying to find path")
+					pm.debug_chat("trying to find path")
 					self._path = minetest.find_path(a1, a2, r, 1, 1, "A*_noprefetch")
 
 					if not self._path then
-						--minetest.chat_send_all('no path found')
+						pm.debug_chat('no path found')
 						-- If we couldn't find a path to this location, we should remove this
 						-- goal. Also set the pathfinder cooldown timer.
 						self._goto = nil
 						self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 					else
 						if #(self._path) >= 1 then
-							--minetest.chat_send_all("got path")
+							pm.debug_chat("got path")
 							self._stuck_timer = nil
 
-							--minetest.chat_send_all('welding pre and post paths')
+							pm.debug_chat('welding pre and post paths')
 							local path = {}
 							for i=1, #prepath, 1 do
 								path[#path+1] = prepath[i]
@@ -389,14 +417,15 @@ function pm.follower_on_step(self, dtime, moveresult)
 								path[#path+1] = postpath[i]
 							end
 							self._path = path
+							self._stuck_timer = nil
 
 							-- Debug render path.
-							--for k, v in ipairs(self._path) do pm.spawn_path_particle(v) end
+							pm.debug_path(self._path)
 
 							-- If start and end points are equal, toss this path out.
 							-- Also set the pathfinder cooldown timer.
 							if vector.equals(self._path[1], self._path[#(self._path)]) then
-								--minetest.chat_send_all('tossing path because start and end are equal')
+								pm.debug_chat('tossing path because start and end are equal')
 								self._path = nil
 								self._goto = nil
 								self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
@@ -405,7 +434,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 							-- If path's start position is too far away, we can't use the path.
 							if self._path then
 								if vector.distance(self._path[1], pos) > pm.range then
-									--minetest.chat_send_all('tossing path because start is too far away')
+									pm.debug_chat('tossing path because start is too far away')
 									self._path = nil
 									self._goto = nil
 									self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
@@ -414,7 +443,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 						else
 							-- Not a real path!
 							-- Must have at least one position.
-							--minetest.chat_send_all('tossing path because it is bogus')
+							pm.debug_chat('tossing path because it is bogus')
 							self._goto = nil
 							self._path = nil
 							self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
@@ -463,13 +492,14 @@ function pm.follower_on_step(self, dtime, moveresult)
 
 				-- Set new path.
 				self._path = path
+				self._stuck_timer = nil
 
 				-- Debug render path.
-				--for k, v in ipairs(self._path) do pm.spawn_path_particle(v) end
+				pm.debug_path(self._path)
 			end
 		end
 
-		--minetest.chat_send_all('following path')
+		pm.debug_chat('following path')
 		local waypoint = self._path[1]
 		local waynode = minetest.get_node(waypoint)
 
@@ -498,11 +528,11 @@ function pm.follower_on_step(self, dtime, moveresult)
 				end
 			else
 				-- Cause entity to float 1.5 meters above ground when following path,
-				-- if there's enough head room.
+				-- if there's enough head room. But not for the last waypoint in the path.
 				waypoint.y = waypoint.y + 1
 				local n = minetest.get_node(waypoint)
 
-				if n.name == "air" then
+				if n.name == "air" and #(self._path) > 1 then
 					waypoint.y = waypoint.y - 0.5
 					--self.object:move_to(waypoint, true)
 					--table.remove(self._path, 1)
@@ -530,7 +560,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 			end
 		else
 			-- Path obstructed. Need new path, this one is bad.
-			--minetest.chat_send_all('path obstructed: ' .. waynode.name)
+			pm.debug_chat('path obstructed: ' .. waynode.name)
 			self._path = nil
 			self._path_is_los = nil
 			self._goto = nil
@@ -548,7 +578,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 				if vector.distance(target_pos, end_path) > 3 then
 					local los, obstruction = minetest.line_of_sight(vector.round(pos), vector.round(target_pos))
 					if los then
-						--minetest.chat_send_all('target moved, repathing via LOS')
+						pm.debug_chat('target moved, repathing via LOS')
 						self._goto = vector.round(target_pos)
 
 						local dir = vector.subtract(self._goto, vector.round(pos))
@@ -574,10 +604,10 @@ function pm.follower_on_step(self, dtime, moveresult)
 	-- Remove target waypoint once we're close enough to it.
 	-- Only if done following path.
 	if self._goto and not self._path then
-		--minetest.chat_send_all('distance to goal: ' .. vector.distance(self._goto, pos))
-		--pm.spawn_path_particle(self._goto)
+		pm.debug_chat('distance to goal: ' .. vector.distance(self._goto, pos))
+		pm.debug_goal(self._goto)
 		if vector.distance(self._goto, pos) < pm.range then
-			--minetest.chat_send_all('reached goal')
+			pm.debug_chat('reached goal')
 			--self.object:move_to(self._goto, true)
 
 			-- Have we arrived at the target (if we did indeed have a target)?
@@ -587,7 +617,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					s = vector.round(s)
 					s.y = s.y + 1 -- For entities, we seek above them, not at their feet.
 					if vector.distance(pos, s) < pm.range then
-						--minetest.chat_send_all('reached dynamic target')
+						pm.debug_chat('reached dynamic target')
 						-- We have reached our moveable target.
 						-- We can clear this and set a timer to delay acquiring the next target.
 						self._on_arrival(self, self._goto, self._target)
@@ -597,7 +627,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					else
 						-- Our moveable target has moved. We must move toward it again.
 						-- Do so right away, without delay.
-						--minetest.chat_send_all('target has moved, reacquiring')
+						pm.debug_chat('target has moved, reacquiring')
 						self._goto = s
 						self._acquire_target_cooldown = nil
 						self._failed_pathfind_cooldown = nil
@@ -608,7 +638,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					self._goto = nil
 				end
 			else
-				--minetest.chat_send_all('reached static target')
+				pm.debug_chat('reached static target')
 				self._on_arrival(self, self._goto, nil)
 				-- No moving target, so we can clear this.
 				self._goto = nil
@@ -676,6 +706,8 @@ local behaviors = {
 	"communal",
 	"solitary",
 	"guard",
+	"arsonist",
+	"porter",
 }
 
 function pm.choose_random_behavior(self)
@@ -746,6 +778,18 @@ local interests = {
 		end
 		return nil, nil
 	end,
+
+	arsonist = function(self, pos)
+		local target = pm.seek_flammable_node(self, pos)
+		if not target then
+			return pm.seek_player_or_mob(self, pos)
+		end
+		return target, nil
+	end,
+
+	porter = function(self, pos)
+		return pm.seek_player(self, pos)
+	end,
 }
 
 -- Table of possible action functions to take on arriving at a target.
@@ -777,6 +821,14 @@ local actions = {
 			end
 		end
 	end,
+
+	arsonist = function(self, pos, target)
+		pm.commit_arson_at_target(pos)
+	end,
+
+	porter = function(self, pos, target)
+		pm.teleport_player_to_prior_location(target)
+	end,
 }
 
 function pm.interest_point(self, pos)
@@ -789,9 +841,9 @@ function pm.interest_point(self, pos)
 end
 
 function pm.on_arrival(self, pos, other)
-	--minetest.chat_send_all('arrived at target')
+	pm.debug_chat('arrived at target')
 	if self._behavior then
-		--minetest.chat_send_all('have behavior: ' .. self._behavior)
+		pm.debug_chat('have behavior: ' .. self._behavior)
 		if actions[self._behavior] then
 			actions[self._behavior](self, pos, other)
 		end

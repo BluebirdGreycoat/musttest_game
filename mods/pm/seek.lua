@@ -1,4 +1,17 @@
 
+function pm.seek_flammable_node(self, pos)
+	local minp = vector.add(pos, {x=-8, y=-8, z=-8})
+	local maxp = vector.add(pos, {x=8, y=8, z=8})
+	local positions = minetest.find_nodes_in_area_under_air(minp, maxp, "group:flammable")
+	if #positions > 0 then
+		local p2 = positions[math.random(1, #positions)]
+		if not minetest.test_protection(p2, "") then
+			return p2, nil
+		end
+	end
+	return nil, nil
+end
+
 function pm.seek_player_or_mob_or_item(self, pos)
 	local all = pm.get_nearby_objects(self, pos, pm.sight_range)
 
@@ -141,7 +154,6 @@ function pm.seek_node_with_meta(self, pos)
 end
 
 function pm.seek_wisp(self, pos)
-	--minetest.chat_send_all('seek wisp')
 	local all = pm.get_nearby_objects(self, pos, pm.sight_range)
 
 	-- Filter out anything that isn't a player or mob or dropped item.
@@ -149,7 +161,6 @@ function pm.seek_wisp(self, pos)
 	for i=1, #all, 1 do
 		local ent = all[i]:get_luaentity()
 		if ent then
-			--minetest.chat_send_all('entity 2: ' .. ent.name .. ", " .. dump(ent.mob))
 			if ent.mob and ent._name and ent._name == "pm:follower" then
 				objects[#objects+1] = all[i]
 			end
@@ -202,6 +213,14 @@ function pm.seek_solitude(self, pos)
 		dir = vector.normalize(dir)
 		dir = vector.multiply(dir, 10)
 		local air = minetest.find_node_near(vector.add(pos, dir), 11, "air", true)
+
+		-- Don't go flying when looking for solitude, stay near ground.
+		if air then
+			while minetest.get_node(vector.add(air, {x=0, y=-1, z=0})).name == "air" do
+				air.y = air.y - 1
+			end
+		end
+
 		return air, nil
 	end
 

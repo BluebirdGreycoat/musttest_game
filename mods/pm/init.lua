@@ -166,6 +166,10 @@ end
 
 function pm.follower_on_step(self, dtime, moveresult)
 	-- Remove object once we're old enough.
+	if not self._lifetime then
+		self.object:remove()
+		return
+	end
 	self._lifetime = self._lifetime - dtime
 	if self._lifetime < 0 then
 		self.object:remove()

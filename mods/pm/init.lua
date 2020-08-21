@@ -137,7 +137,7 @@ function pm.follower_on_activate(self, staticdata, dtime_s)
 		local data = minetest.deserialize(staticdata)
 		if type(data) == "table" then
 			for k, v in pairs(data) do
-				pm.debug_chat("on_activate(): self["..k.."]="..v)
+				pm.debug_chat("on_activate(): self["..k.."]="..tostring(v))
 				self[k] = v
 			end
 			return

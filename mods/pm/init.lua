@@ -225,7 +225,9 @@ function pm.follower_on_step(self, dtime, moveresult)
 	self._sound_time = self._sound_time - dtime
 	if self._sound_time < 0 then
 		self._sound_time = math.random(100, 300)/100
-		ambiance.sound_play("wisp", self.object:get_pos(), 0.2, 32)
+		if not self._no_sound then
+			ambiance.sound_play("wisp", self.object:get_pos(), 0.2, 32)
+		end
 	end
 
 	-- If currently following a path, remove waypoints as we reach them.
@@ -692,6 +694,11 @@ function pm.spawn_wisp(pos, behavior)
 				-- We format it as a string so that this data is saved statically.
 				luaent._spawn_origin = minetest.pos_to_string(pos)
 
+				-- Wisp has a chance to be completely silent.
+				if math.random(1, 10) == 1 then
+					luaent._no_sound = true
+				end
+
 				return ent
 			else
 				ent:remove()
@@ -706,7 +713,7 @@ local behaviors = {
 	"thief",
 	"healer",
 	"explorer",
-	"boom",
+	"boom", -- Never chosen by chance.
 	"communal",
 	"solitary",
 	"guard",

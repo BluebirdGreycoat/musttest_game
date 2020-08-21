@@ -19,7 +19,9 @@ function pm.seek_player_or_mob_or_item(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			objects[#objects+1] = all[i]
+			if not gdac.player_is_admin(all[i]) then
+				objects[#objects+1] = all[i]
+			end
 		else
 			local ent = all[i]:get_luaentity()
 			if ent then
@@ -44,7 +46,9 @@ function pm.seek_player_or_mob(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			objects[#objects+1] = all[i]
+			if not gdac.player_is_admin(all[i]) then
+				objects[#objects+1] = all[i]
+			end
 		else
 			local ent = all[i]:get_luaentity()
 			if ent then
@@ -69,7 +73,9 @@ function pm.seek_player_or_mob_not_wisp(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			objects[#objects+1] = all[i]
+			if not gdac.player_is_admin(all[i]) then
+				objects[#objects+1] = all[i]
+			end
 		else
 			local ent = all[i]:get_luaentity()
 			if ent then
@@ -96,7 +102,9 @@ function pm.seek_player_or_item(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			objects[#objects+1] = all[i]
+			if not gdac.player_is_admin(all[i]) then
+				objects[#objects+1] = all[i]
+			end
 		else
 			local ent = all[i]:get_luaentity()
 			if ent then
@@ -121,7 +129,9 @@ function pm.seek_player(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			objects[#objects+1] = all[i]
+			if not gdac.player_is_admin(all[i]) then
+				objects[#objects+1] = all[i]
+			end
 		end
 	end
 

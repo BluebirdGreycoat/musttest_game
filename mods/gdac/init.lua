@@ -10,12 +10,14 @@ dofile(gdac.modpath .. "/position_logger.lua")
 
 
 function gdac.player_is_admin(playerorname)
-	if type(playerorname) == "string" then
-		if playerorname == "MustTest" or playerorname == "singleplayer" then
-			return true
-		end
+	do return false end
+	local pref = playerorname
+	if type(pref) == "string" then
+		pref = minetest.get_player_by_name(pref)
 	end
-	return minetest.check_player_privs(playerorname, {server=true})
+	if pref then
+		return minetest.check_player_privs(pref, {server=true})
+	end
 end
 
 

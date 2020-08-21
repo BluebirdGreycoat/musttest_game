@@ -3,6 +3,33 @@
 mob_spawn.registered = {}
 local register = mob_spawn.register_spawn
 
+-- This is not working, for some reason.
+-- Anyway, the wisp mob has special spawning code.
+--[[
+register({
+	name = "pm:follower",
+	nodes = {
+    "basictrees:jungletree_leaves2",
+  },
+	min_height = 3111-16,
+	max_height = 3115+16,
+	clearance = 1,
+
+	mob_limit = 1,
+	absolute_mob_limit = 5,
+	mob_range = 100,
+
+	-- After a successful spawn, wait a lot of time before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
+
+	min_count = 1,
+	max_count = 3,
+
+	add_entity_func = function(...) pm.spawn_random_wisp(...) end,
+})
+--]]
+
 register({
 	name = "nssm:white_werewolf",
 	nodes = {

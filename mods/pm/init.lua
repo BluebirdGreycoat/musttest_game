@@ -29,6 +29,47 @@ function pm.target_is_player_or_mob(target)
 	end
 end
 
+function pm.death_particle_effect(pos)
+	local particles = {
+		amount = 100,
+		time = 1.1,
+		minpos = vector.add(pos, {x=-0.1, y=-0.1, z=-0.1}),
+		maxpos = vector.add(pos, {x=0.1, y=0.1, z=0.1}),
+		minvel = vector.new(-3.5, -3.5, -3.5),
+		maxvel = vector.new(3.5, 3.5, 3.5),
+		minacc = {x=0, y=0, z=0},
+		maxacc = {x=0, y=0, z=0},
+		minexptime = 1.5,
+		maxexptime = 2.0,
+		minsize = 0.5,
+		maxsize = 1.0,
+		collisiondetection = false,
+		collision_removal = false,
+		vertical = false,
+		texture = "quartz_crystal_piece.png",
+		glow = 14,
+		--attached = entity,
+	}
+	minetest.add_particlespawner(particles)
+end
+
+-- Get objects inside radius, but remove self from the returned list.
+function pm.get_nearby_objects(self, pos, radius)
+	local objects = minetest.get_objects_inside_radius(pos, radius)
+	if self._identity then
+		for i=1, #objects, 1 do
+			local ent = objects[i]:get_luaentity()
+			if ent and ent._identity then
+				if ent._identity == self._identity then
+					table.remove(objects, i)
+					break
+				end
+			end
+		end
+	end
+	return objects
+end
+
 function pm.spawn_path_particle(pos)
 	local particles = {
 		amount = 1,
@@ -91,14 +132,15 @@ function pm.follower_on_activate(self, staticdata, dtime_s)
 
 	-- Otherwise, set up default data.
 	self._timer = self._timer or 0
-	self._lifetime = self._lifetime or 60*60
+	self._lifetime = self._lifetime or 60*60*24
 	self._sound_time = self._sound_time or 0
 end
 
 function pm.follower_get_staticdata(self)
 	local data = {}
 	for k, v in pairs(self) do
-		if type(v) == "number" or type(v) == "string" then
+		local t = type(v)
+		if t == "number" or t == "string" or t == "boolean" then
 			if k:find("_") == 1 then
 				--minetest.chat_send_all("get_staticdata(): data["..k.."]="..v)
 				data[k] = v
@@ -222,12 +264,13 @@ function pm.follower_on_step(self, dtime, moveresult)
 	-- Find new target/goal-waypoint if we don't have one.
 	if not self._acquire_target_cooldown then
 		if not self._goto then
-			local tp, target = self._interest_point(self)
+			local tp, target = self._interest_point(self, pos)
 			if target then
 				-- Target is another entity.
 				--minetest.chat_send_all('acquired moving target')
 				--if target:is_player() then minetest.chat_send_all('targeting player') end
-				local s = target:get_pos()
+				local s = tp
+				if not s then s = target:get_pos() end
 				if s then
 					s = vector.round(s)
 					if pm.target_is_player_or_mob(target) then
@@ -325,43 +368,10 @@ function pm.follower_on_step(self, dtime, moveresult)
 
 					if not self._path then
 						--minetest.chat_send_all('no path found')
-						--[[
-						-- Can't find path? (Also assumes no LOS, here.)
-						-- Check if entity is flying and make it follow a path to the ground.
-						-- (The pathfinder only works for ground paths.)
-						-- This prevents the entity from getting stuck in the air if its
-						-- target has left its line of sight (and the entity was flying).
-						local path = {}
-						local p = vector.round(pos)
-						p.y = p.y - 1
-						while minetest.get_node(p).name == "air" do
-							path[#path+1] = table.copy(p)
-							p.y = p.y - 1
-						end
-
-						minetest.chat_send_all('length of proposed path to ground: ' .. #path)
-
-						if #path >= 2 then
-							-- Path to ground only if path would be at least 2 positions long.
-							minetest.chat_send_all('pathing to ground')
-							self._path = path
-							self._path_is_los = true
-							self._stuck_timer = nil
-							self._goto = path[#path]
-							self._target = nil
-
-							-- This counts as a pathfinding/target failure, so we install cooldowns.
-							self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
-							self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
-						else
-						--]]
-							-- If we couldn't find a path to this location, we should remove this
-							-- goal. Also set the pathfinder cooldown timer.
-							self._goto = nil
-							self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
-						--[[
-						end
-						--]]
+						-- If we couldn't find a path to this location, we should remove this
+						-- goal. Also set the pathfinder cooldown timer.
+						self._goto = nil
+						self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 					else
 						if #(self._path) >= 1 then
 							--minetest.chat_send_all("got path")
@@ -528,6 +538,39 @@ function pm.follower_on_step(self, dtime, moveresult)
 		end
 	end
 
+	-- Dynamic targets can move while we're trying to path to them.
+	-- Update path as long as we have LOS to the target.
+	if self._target and self._path and self._goto then
+		local target_pos = self._target:get_pos()
+		if target_pos then
+			if #(self._path) > 0 then
+				local end_path = self._path[#(self._path)]
+				if vector.distance(target_pos, end_path) > 3 then
+					local los, obstruction = minetest.line_of_sight(vector.round(pos), vector.round(target_pos))
+					if los then
+						--minetest.chat_send_all('target moved, repathing via LOS')
+						self._goto = vector.round(target_pos)
+
+						local dir = vector.subtract(self._goto, vector.round(pos))
+						local dst = vector.length(dir)
+						dir = vector.normalize(dir) -- Returns 0,0,0 for zero-length vector.
+
+						-- Assemble a straight-line path.
+						local path = {}
+						for i=1, dst, 1 do
+							path[#path+1] = vector.add(pos, vector.multiply(dir, i))
+						end
+						if #path > 0 then
+							self._path = path
+							self._path_is_los = true
+							self._stuck_timer = nil
+						end
+					end
+				end
+			end
+		end
+	end
+
 	-- Remove target waypoint once we're close enough to it.
 	-- Only if done following path.
 	if self._goto and not self._path then
@@ -589,6 +632,9 @@ function pm.follower_on_step(self, dtime, moveresult)
 end
 
 function pm.follower_on_punch(self, puncher, time_from_last_punch, tool_capabilities, dir)
+	local pos = self.object:get_pos()
+	pm.death_particle_effect(pos)
+	minetest.add_item(pos, "glowstone:glowing_dust " .. math.random(1, 3))
 	self.object:remove()
 end
 
@@ -603,6 +649,15 @@ function pm.spawn_wisp(pos, behavior)
 			if luaent then
 				luaent._behavior = behavior
 				luaent._behavior_timer = math.random(1, 20)*60
+
+				-- Allows to uniquely identify the wisp to other wisps, with little chance of collision.
+				-- In particular this allows the wisp to ignore itself in any object queries.
+				luaent._identity = math.random(1, 32000)
+
+				-- This is so the wisp knows where it spawned at.
+				-- We format it as a string so that this data is saved statically.
+				luaent._spawn_origin = minetest.pos_to_string(pos)
+
 				return ent
 			else
 				ent:remove()
@@ -618,6 +673,9 @@ local behaviors = {
 	"healer",
 	"explorer",
 	"boom",
+	"communal",
+	"solitary",
+	"guard",
 }
 
 function pm.choose_random_behavior(self)
@@ -629,60 +687,64 @@ function pm.choose_random_behavior(self)
 	end
 end
 
--- FOLLOWER entity.
-function pm.spawn_follower(pos)
-	return pm.spawn_wisp(pos, "follower")
-end
-
--- PEST entity.
-function pm.spawn_pest(pos)
-	return pm.spawn_wisp(pos, "pest")
-end
-
--- THIEF entity.
-function pm.spawn_thief(pos)
-	return pm.spawn_wisp(pos, "thief")
-end
-
--- HEALER entity.
-function pm.spawn_healer(pos)
-	return pm.spawn_wisp(pos, "healer")
-end
-
--- EXPLORER entity.
-function pm.spawn_explorer(pos)
-	return pm.spawn_wisp(pos, "explorer")
-end
-
--- BOOM entity.
-function pm.spawn_boom(pos)
-	return pm.spawn_wisp(pos, "boom")
+-- Create entity at position, if possible.
+function pm.spawn_random_wisp(pos)
+	local act = behaviors[math.random(1, #behaviors)]
+	if act == "boom" then
+		act = "follower"
+	end
+	return pm.spawn_wisp(pos, act)
 end
 
 -- Table of functions for obtaining interest points.
 local interests = {
-	follower = function(self)
-		return pm.seek_player_or_mob_or_item(self.object:get_pos())
+	follower = function(self, pos)
+		return pm.seek_player_or_mob_or_item(self, pos)
 	end,
 
-	thief = function(self)
-		return pm.seek_player_or_item(self.object:get_pos())
+	thief = function(self, pos)
+		return pm.seek_player_or_item(self, pos)
 	end,
 
-	pest = function(self)
-		return pm.seek_player(self.object:get_pos())
+	pest = function(self, pos)
+		return pm.seek_player(self, pos)
 	end,
 
-	healer = function(self)
-		return pm.seek_player(self.object:get_pos())
+	healer = function(self, pos)
+		return pm.seek_player(self, pos)
 	end,
 
-	explorer = function(self)
-		return pm.seek_node_with_meta(self.object:get_pos())
+	explorer = function(self, pos)
+		return pm.seek_node_with_meta(self, pos)
 	end,
 
-	boom = function(self)
-		return pm.seek_player_or_mob(self.object:get_pos())
+	-- Suicide, never chosen at random.
+	boom = function(self, pos)
+		return pm.seek_player_or_mob(self, pos)
+	end,
+
+	communal = function(self, pos)
+		return pm.seek_wisp(self, pos)
+	end,
+
+	solitary = function(self, pos)
+		return pm.seek_solitude(self, pos)
+	end,
+
+	guard = function(self, pos)
+		-- Seek target in sight-range of spawn origin, otherwise return to origin.
+		if self._spawn_origin then
+			local origin = minetest.string_to_pos(self._spawn_origin)
+			if origin then
+				if vector.distance(origin, self.object:get_pos()) > pm.sight_range then
+					return origin, nil
+				else
+					-- Within sight range of spawn origin, seek target.
+					return pm.seek_player_or_mob_not_wisp(self, pos)
+				end
+			end
+		end
+		return nil, nil
 	end,
 }
 
@@ -703,12 +765,24 @@ local actions = {
 	boom = function(self, pos, target)
 		pm.explode_nearby_target(self, target)
 	end,
+
+	guard = function(self, pos, target)
+		-- Attack target, but only if in sight-range of spawn origin.
+		if self._spawn_origin then
+			local origin = minetest.string_to_pos(self._spawn_origin)
+			if origin then
+				if vector.distance(origin, self.object:get_pos()) < pm.sight_range then
+					pm.hurt_nearby_player_or_mob_not_wisp(self)
+				end
+			end
+		end
+	end,
 }
 
-function pm.interest_point(self)
+function pm.interest_point(self, pos)
 	if self._behavior then
 		if interests[self._behavior] then
-			return interests[self._behavior](self)
+			return interests[self._behavior](self, pos)
 		end
 	end
 	return nil, nil
@@ -747,12 +821,12 @@ if not pm.registered then
 			-- This is so that wandering/drifting wisps don't bury themselves.
 			physical = true,
 			collisionbox = {-0.2, -0.2, -0.2, 0.2, 0.2, 0.2},
-
-			-- So other game code can tell what this entity is.
-			_name = "pm:follower",
-			description = "Seon",
-			mob = true,
 		},
+
+		-- So other game code can tell what this entity is.
+		_name = "pm:follower",
+		description = "Seon",
+		mob = true,
 
 		on_step = function(...) return pm.follower_on_step(...) end,
 		on_punch = function(...) return pm.follower_on_punch(...) end,

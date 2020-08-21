@@ -1,10 +1,39 @@
 
+local function throw_player(e, p)
+	local p1 = e:get_pos()
+	local p2 = p:get_pos()
+	p1.y = p2.y
+	local vel = vector.subtract(p2, p1)
+	vel = vector.normalize(vel)
+	vel = vector.add(vel, {x=0, y=0.5, z=0})
+	vel = vector.multiply(vel, 10)
+	p:add_player_velocity(vel)
+end
+
 function pm.hurt_nearby_players(self)
 	local pos = self.object:get_pos()
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
 		if vector.distance(pos, v:get_pos()) < 2 then
+			throw_player(self.object, v)
 			v:set_hp(v:get_hp() - 1)
+		end
+	end
+end
+
+function pm.hurt_nearby_player_or_mob_not_wisp(self)
+	local pos = self.object:get_pos()
+	local objects = pm.get_nearby_objects(self, pos, 2)
+	for k, v in ipairs(objects) do
+		if v:is_player() then
+			throw_player(self.object, v)
+			v:set_hp(v:get_hp() - 1)
+		else
+			local ent = v:get_luaentity()
+			if ent.mob and ent.name ~= "pm:follower" then
+				local tcaps = tooldata["sword_steel"]
+				v:punch(v, 1.0, tcaps, nil)
+			end
 		end
 	end
 end

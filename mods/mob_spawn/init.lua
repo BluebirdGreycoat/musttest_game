@@ -565,25 +565,29 @@ function mob_spawn.spawn_mobs(pname, index)
     for i = 1, num_to_spawn, 1 do
 			-- Slightly randomize horizontal positioning.
 			local p2 = {x=random(-5, 5)/10, y=0.5, z=random(-5, 5)/10}
-			local mob = add_entity(vector_add(pos, p2), mname)
-			if mob then
-				local ent = mob:get_luaentity()
-				if ent then
-					-- Adjust the chance to use pathfinding on a per-entity basis.
-					if ent.pathfinding and ent.pathfinding ~= 0 then
-						local chance = ent.instance_pathfinding_chance or {100, 100}
-						local res = math.random(1, chance[2])
-						--minetest.chat_send_player("MustTest", "Chance: " .. res .. " of " .. chance[1] .. " in " .. chance[2])
-						if res > chance[1] then
-							--minetest.chat_send_player("MustTest", "Mob will not pathfind!")
-							ent.pathfinding = 0
+			if mdef.add_entity_func then
+				mdef.add_entity_func(vector_add(pos, p2))
+			else
+				local mob = add_entity(vector_add(pos, p2), mname)
+				if mob then
+					local ent = mob:get_luaentity()
+					if ent then
+						-- Adjust the chance to use pathfinding on a per-entity basis.
+						if ent.pathfinding and ent.pathfinding ~= 0 then
+							local chance = ent.instance_pathfinding_chance or {100, 100}
+							local res = math.random(1, chance[2])
+							--minetest.chat_send_player("MustTest", "Chance: " .. res .. " of " .. chance[1] .. " in " .. chance[2])
+							if res > chance[1] then
+								--minetest.chat_send_player("MustTest", "Mob will not pathfind!")
+								ent.pathfinding = 0
+							end
 						end
+						mob:setyaw((random(0, 360) - 180) / 180 * pi)
+						mobs_spawned = mobs_spawned + 1
+						report(mname, "Successfully spawned a mob!")
+					else
+						mob:remove()
 					end
-					mob:setyaw((random(0, 360) - 180) / 180 * pi)
-					mobs_spawned = mobs_spawned + 1
-					report(mname, "Successfully spawned a mob!")
-				else
-					mob:remove()
 				end
 			end
     end

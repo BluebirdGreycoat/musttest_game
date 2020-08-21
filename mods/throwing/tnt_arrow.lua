@@ -45,10 +45,10 @@ local THROWING_ARROW_ENTITY={
 local function boom(pos)
   -- Detonate some TNT!
   tnt.boom(pos, {
-    radius = 3,
+    radius = 2,
     ignore_protection = false,
     ignore_on_blast = false,
-    damage_radius = 3,
+    damage_radius = 5,
     disable_drops = true,
   })
 end

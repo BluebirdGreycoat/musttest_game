@@ -1,5 +1,6 @@
+
 local cid_data = {}
-minetest.after(0, function()
+minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_nodes) do
 		cid_data[minetest.get_content_id(name)] = {
 			name = name,
@@ -198,14 +199,10 @@ local function entity_physics(pos, radius, drops, boomdef)
 
 				-- Do knockback only if player didn't die.
 				if obj:get_hp() > 0 then
-					-- Currently the engine has no method to set player velocity.
-					-- See #2960. Instead, we knock the player back 1.0 node, and slightly
-					-- upwards.
 					local dir = vector.normalize(vector.subtract(obj_pos, pos))
-					local moveoff = vector.multiply(dir, dist + 1.0)
-					local newpos = vector.add(pos, moveoff)
-					newpos = vector.add(newpos, {x = 0, y = 0.2, z = 0})
-					obj:set_pos(newpos)
+					local moveoff = vector.multiply(dir, 2 / dist * radius)
+					moveoff = vector.multiply(moveoff, 3)
+					obj:add_player_velocity(moveoff)
 				end
 			end
 		else

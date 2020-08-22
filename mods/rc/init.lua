@@ -688,6 +688,7 @@ end
 
 -- API function. Call this whenever a player teleports,
 -- or lawfully changes realm. You can pass a player object or a name.
+-- Note: this must be called *before* you call :set_pos() on the player!
 function rc.notify_realm_update(player, pos)
 	local p = vector.round(pos)
 	local n = ""
@@ -696,11 +697,26 @@ function rc.notify_realm_update(player, pos)
 	else
 		n = player:get_player_name()
 	end
+	local pref = minetest.get_player_by_name(n)
+
 	local tb = rc.players[n]
 	if not tb then
 		minetest.log("action", "could not find data for player " .. n .. " when updating realm info")
 		return
 	end
+
+	if pref and tb.realm then
+		local pp = vector.round(pref:get_pos())
+		local rr = rc.current_realm_at_pos(pp)
+		if rr ~= tb.realm then
+			if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
+				minetest.chat_send_all("# Server: Someone has plane shifted.")
+			else
+				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted.")
+			end
+		end
+	end
+
 	tb.pos = p
 	tb.realm = rc.current_realm_at_pos(p)
 	sky.notify_sky_update_needed(n)

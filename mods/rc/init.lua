@@ -712,7 +712,11 @@ function rc.notify_realm_update(player, pos)
 			if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
 				minetest.chat_send_all("# Server: Someone has plane shifted.")
 			else
-				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted.")
+				local d = rc.get_realm_data(p)
+				if d and d.description then
+					local realm_name = d.description
+					minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. ".")
+				end
 			end
 		end
 	end

@@ -37,7 +37,7 @@ function cloaking.hud_effect(pname)
 			local pos = pref:get_pos()
 			local r = 10
 			local particles = {
-				amount = 1000,
+				amount = 300,
 				time = 1.1,
 				--minpos = vector.add(pos, {x=-0.1, y=-0.1, z=-0.1}),
 				--maxpos = vector.add(pos, {x=0.1, y=0.1, z=0.1}),

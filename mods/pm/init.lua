@@ -14,6 +14,8 @@ pm.aq_cooldown_max = 10
 -- Range at which entity is considered to have found its target.
 pm.range = 2
 pm.velocity = 3
+pm.run_velocity = 4.5
+pm.walk_velocity = 2
 
 dofile(pm.modpath .. "/seek.lua")
 dofile(pm.modpath .. "/action.lua")
@@ -162,6 +164,19 @@ function pm.follower_get_staticdata(self)
 		end
 	end
 	return minetest.serialize(data) or ""
+end
+
+function pm.get_wanted_velocity(self)
+	if self and self._path then
+		if #(self._path) > (pm.sight_range * 0.75) then
+			return pm.run_velocity
+		elseif #(self._path) < 5 then
+			return pm.walk_velocity
+		else
+			return pm.velocity
+		end
+	end
+	return pm.velocity
 end
 
 function pm.follower_on_step(self, dtime, moveresult)
@@ -529,7 +544,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 				local dir = vector.subtract(waypoint, pos)
 				if vector.length(dir) > 0.4 then
 					dir = vector.normalize(dir)
-					dir = vector.multiply(dir, pm.velocity)
+					dir = vector.multiply(dir, pm.get_wanted_velocity(self))
 					self.object:set_velocity(dir)
 				end
 			else
@@ -547,7 +562,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					local dir = vector.subtract(waypoint, pos)
 					if vector.length(dir) > 0.4 then
 						dir = vector.normalize(dir)
-						dir = vector.multiply(dir, pm.velocity)
+						dir = vector.multiply(dir, pm.get_wanted_velocity(self))
 						self.object:set_velocity(dir)
 					end
 				else
@@ -559,7 +574,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					local dir = vector.subtract(waypoint, pos)
 					if vector.length(dir) > 0.4 then
 						dir = vector.normalize(dir)
-						dir = vector.multiply(dir, pm.velocity)
+						dir = vector.multiply(dir, pm.get_wanted_velocity(self))
 						self.object:set_velocity(dir)
 					end
 				end

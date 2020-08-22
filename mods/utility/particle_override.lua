@@ -10,6 +10,8 @@ local maxdist = 50
 local add_particlespawner = minetest.add_particlespawner
 local add_particle = minetest.add_particle
 
+utility.original_add_particlespawner = add_particlespawner
+utility.original_add_particle = add_particle
 
 
 function default.particles_enabled_for(pname)

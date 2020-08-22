@@ -28,6 +28,47 @@ function cloaking.particle_effect(pos)
 	minetest.add_particlespawner(particles)
 end
 
+function cloaking.hud_effect(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
+		if cloaking.is_cloaked(pname) then
+			minetest.chat_send_all('testing')
+
+			local pos = pref:get_pos()
+			local r = 10
+			local particles = {
+				amount = 1000,
+				time = 1.1,
+				--minpos = vector.add(pos, {x=-0.1, y=-0.1, z=-0.1}),
+				--maxpos = vector.add(pos, {x=0.1, y=0.1, z=0.1}),
+				minpos = {x=-r, y=-r/2, z=-r},
+				maxpos = {x=r, y=r/2, z=r},
+				minvel = vector.new(0, -3.5, 0),
+				maxvel = vector.new(0, 3.5, 0),
+				minacc = {x=0, y=0, z=0},
+				maxacc = {x=0, y=0, z=0},
+				minexptime = 1.5,
+				maxexptime = 2.0,
+				minsize = 0.5,
+				maxsize = 1.0,
+				collisiondetection = false,
+				collision_removal = false,
+				vertical = false,
+				texture = "quartz_crystal_piece.png",
+				glow = 14,
+				attached = pref,
+				playername = pname,
+			}
+			-- Cannot use the overriden version of minetest.add_particlespawner()
+			-- because sending multiple attached particle-spawners to different players
+			-- is broken.
+			utility.original_add_particlespawner(particles)
+
+			minetest.after(1, cloaking.hud_effect, pname)
+		end
+	end
+end
+
 function cloaking.do_scan(pname)
 	-- If player is cloaked, check for reasons to disable the cloak.
 	if cloaking.players[pname] then
@@ -93,11 +134,12 @@ function cloaking.toggle_cloak(pname)
 			pointable = false,
 		})
 
-		cloaking.particle_effect(player:get_pos())
+		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))
 		minetest.chat_send_player(pname, "# Server: Cloak activated.")
 
 		-- Enable scanning for reasons to cancel the cloak.
 		minetest.after(1, cloaking.do_scan, pname)
+		minetest.after(1, cloaking.hud_effect, pname)
 	else
 		-- Disable cloak.
 		cloaking.players[pname] = nil
@@ -110,7 +152,7 @@ function cloaking.toggle_cloak(pname)
 			pointable = true,
 		})
 
-		cloaking.particle_effect(player:get_pos())
+		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))
 		minetest.chat_send_player(pname, "# Server: Cloak offline.")
 	end
 end

@@ -366,6 +366,11 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 		return true
 	end
 
+	-- Registered cheaters lose locked chest privileges.
+	if sheriff.is_cheater(meta:get_string("owner")) then
+		return true
+	end
+
   -- Locked silver chests have sharing functionality. Remember to grandfather in old shared ironside chests.
 	if name:find("iron") or name:find("silver") then
 		local share_names, share_count = get_share_names(meta)

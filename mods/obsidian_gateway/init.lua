@@ -7,7 +7,9 @@ obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
 -- Gateway schematic.
 local o = {"default:obsidian", "griefer:grieferstone", "cavestuff:dark_obsidian", "cavestuff:glow_obsidian"}
 local a = function(name)
-	if name == "air" then
+	-- Bones check needed here to prevent players from blocking a gate by dying in
+	-- it. E.g., bones never decay while a hacker is online.
+	if name == "air" or name =="bones:bones" then
 		return true
 	end
 end

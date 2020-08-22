@@ -708,7 +708,8 @@ function rc.notify_realm_update(player, pos)
 	if pref and tb.realm then
 		local pp = vector.round(pref:get_pos())
 		local rr = rc.current_realm_at_pos(pp)
-		if rr ~= tb.realm then
+		local rr2 = rc.current_realm_at_pos(p)
+		if rr ~= rr2 then
 			if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
 				minetest.chat_send_all("# Server: Someone has plane shifted.")
 			else

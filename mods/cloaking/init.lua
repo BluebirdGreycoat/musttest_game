@@ -32,7 +32,7 @@ function cloaking.hud_effect(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
 		if cloaking.is_cloaked(pname) then
-			minetest.chat_send_all('testing')
+			--minetest.chat_send_all('testing')
 
 			local pos = pref:get_pos()
 			local r = 10

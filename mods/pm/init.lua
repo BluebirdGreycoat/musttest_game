@@ -719,6 +719,7 @@ local behaviors = {
 	"guard",
 	"arsonist",
 	"porter",
+	"pusher",
 }
 
 function pm.choose_random_behavior(self)
@@ -801,6 +802,10 @@ local interests = {
 	porter = function(self, pos)
 		return pm.seek_player(self, pos)
 	end,
+
+	pusher = function(self, pos)
+		return pm.seek_player(self, pos)
+	end,
 }
 
 -- Table of possible action functions to take on arriving at a target.
@@ -839,6 +844,10 @@ local actions = {
 
 	porter = function(self, pos, target)
 		pm.teleport_player_to_prior_location(target)
+	end,
+
+	pusher = function(self, pos, target)
+		pm.shove_player(self, target)
 	end,
 }
 

@@ -10,6 +10,12 @@ local function throw_player(e, p)
 	p:add_player_velocity(vel)
 end
 
+function pm.shove_player(self, target)
+	if target and target:is_player() then
+		throw_player(self.object, target)
+	end
+end
+
 function pm.hurt_nearby_players(self)
 	local pos = self.object:get_pos()
 	local players = minetest.get_connected_players()

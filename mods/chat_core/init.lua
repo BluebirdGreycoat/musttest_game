@@ -202,14 +202,19 @@ end
 
 local generate_coord_string = function(name)
 	local coord_string = ""
-	if command_tokens.mark.player_marked(name) then
-		local entity = minetest.get_player_by_name(name)
-		local pos = entity:get_pos()
+	local entity = minetest.get_player_by_name(name)
+	if not entity then
+		return coord_string
+	end
+	local pos = entity:get_pos()
+
+	if command_tokens.mark.player_marked(name) or
+			(sheriff.is_suspected_cheater(name) and city_block:in_city(pos)) then
 
 		local pstr = rc.pos_to_string(vector_round(pos))
 		pstr = string.gsub(pstr, "[%(%)]", "")
 
-		-- remember to include leading space!
+		-- Remember to include leading space!
 		coord_string = " [" .. rc.realm_description_at_pos(pos) .. ": " .. pstr .. "]"
 		minetest.chat_send_player(name, "# Server: You are marked (" .. pstr .. ")!")
 	end

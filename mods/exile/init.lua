@@ -141,8 +141,8 @@ function exile.send_to_exile(pname)
 		-- Calculate a new position away from the city-blocks.
 		pos.y = y -- Only move player in the X,Z dimensions.
 		local center = {x=x, y=y, z=z}
-		local dir = vector_subtract(pos, center)
-		local gpos = vector_round(vector_add(vector_multiply(dir, 2), center))
+		local dir = vector_normalize(vector_subtract(pos, center))
+		local gpos = vector_round(vector_add(vector_multiply(dir, 100), center))
 		gpos.y = y -- Only move player in the X,Z dimensions.
 		local rn2 = rc.current_realm_at_pos(gpos)
 

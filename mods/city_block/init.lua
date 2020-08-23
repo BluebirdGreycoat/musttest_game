@@ -22,6 +22,8 @@ local math_random = math.random
 -- Returns a table of the N-nearest city-blocks to a given position.
 -- The return value format is: {{pos, owner}, {pos, owner}, ...}
 -- Note: only returns blocks in the same realm! See RC mod.
+-- The 'rangelim' parameter is optional, if specified, blocks farther than this
+-- are ignored entirely.
 function city_block:nearest_blocks_to_position(pos, num, rangelim)
 	local get_rn = rc.current_realm_at_pos
 	local realm = get_rn(pos)

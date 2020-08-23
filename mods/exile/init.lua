@@ -9,6 +9,7 @@ local vector_subtract = vector.subtract
 local vector_multiply = vector.multiply
 local vector_round = vector.round
 local vector_add = vector.add
+local math_random = math.random
 
 -- Helper to query whether there is a nearby non-cheating player (also not self)
 -- within a certain range.
@@ -154,16 +155,44 @@ function exile.send_to_exile(pname)
 	end
 end
 
+-- Function shall return 'true' if player was confirmed to be in violation of their exile.
 function exile.check_player(pname)
 	if exile.player_in_violation(pname) then
 		exile.send_to_exile(pname)
+		return true
 	end
+end
+
+function exile.repeating_check(pname)
+	-- Only check confirmed cheaters, as no one else can be exiled.
+	if sheriff.is_cheater(pname) then
+		if exile.check_player(pname) then
+
+			-- Schedule another check shortly, if caught in violation the first time.
+			-- And so on.
+			minetest.after(math_random(1, 3), exile.repeating_check, pname)
+		end
+	end
+end
+
+-- To be called if a cheater is confirmed/registered during game-play time.
+function exile.notify_new_exile(pname)
+	-- Just call the function as if they've just joined.
+	exile.on_joinplayer(minetest.get_player_by_name(pname))
+end
+
+function exile.on_joinplayer(pref)
+	local pname = pref:get_player_name()
+	minetest.after(math_random(1, 10), exile.repeating_check, pname)
 end
 
 if not exile.registered then
 	local c = "exile:core"
 	local f = exile.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
+
+	minetest.register_on_joinplayer(function(...)
+		exile.on_joinplayer(...) end)
 
 	exile.registered = true
 end

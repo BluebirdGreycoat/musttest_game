@@ -23,7 +23,8 @@ local math_random = math.random
 -- The return value format is: {{pos, owner}, {pos, owner}, ...}
 -- Note: only returns blocks in the same realm! See RC mod.
 function city_block:nearest_blocks_to_position(pos, num)
-	local realm = rc.current_realm_at_pos(pos)
+	local get_rn = rc.current_realm_at_pos
+	local realm = get_rn(pos)
 
 	-- Copy the master table's indices so we don't modify it.
 	-- We do not need to copy the inner table data itself. Just the indices.
@@ -32,7 +33,7 @@ function city_block:nearest_blocks_to_position(pos, num)
 	local sblocks = self.blocks
 	for i=1, #sblocks, 1 do
 		local p = sblocks[i].pos
-		if rc.current_realm_at_pos(p) == realm then
+		if get_rn(p) == realm then
 			blocks[#blocks+1] = sblocks[i]
 		end
 	end

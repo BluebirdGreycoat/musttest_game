@@ -76,6 +76,8 @@ function exile.send_to_exile(pname)
 		-- Only if we wouldn't cause player to change realms, or enter the void.
 		if rn2 ~= "" and rn1 == rn2 then
 			pref:set_pos(gpos)
+			pref:set_hp(pref:get_hp() - 1)
+			minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
 		end
 	end
 end

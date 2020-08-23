@@ -55,7 +55,7 @@ command_tokens.jail.execute = function(player, target)
 	target = rename.grn(target)
 
   if not minetest.get_player_by_name(target) then
-    minetest.chat_send_player(player, "# Server: Law-enforcement couldn't find player <" .. rename.gpn(target) .. ">.")
+    minetest.chat_send_player(player, "# Server: Law enforcement couldn't find player <" .. rename.gpn(target) .. ">.")
     return
   end
 

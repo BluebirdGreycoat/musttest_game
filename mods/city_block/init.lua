@@ -21,13 +21,20 @@ local math_random = math.random
 
 -- Returns a table of the N-nearest city-blocks to a given position.
 -- The return value format is: {{pos, owner}, {pos, owner}, ...}
+-- Note: only returns blocks in the same realm! See RC mod.
 function city_block:nearest_blocks_to_position(pos, num)
+	local realm = rc.current_realm_at_pos(pos)
+
 	-- Copy the master table's indices so we don't modify it.
 	-- We do not need to copy the inner table data itself. Just the indices.
+	-- Only copy over blocks in the same realm, too.
 	local blocks = {}
 	local sblocks = self.blocks
 	for i=1, #sblocks, 1 do
-		blocks[#blocks+1] = sblocks[i]
+		local p = sblocks[i].pos
+		if rc.current_realm_at_pos(p) == realm then
+			blocks[#blocks+1] = sblocks[i]
+		end
 	end
 
 	-- Sort blocks, nearest blocks first.

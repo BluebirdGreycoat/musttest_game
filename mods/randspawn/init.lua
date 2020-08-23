@@ -75,13 +75,14 @@ local function callback(blockpos, action, calls_remaining, param)
 	end
 
 	local pos = param.pos
+	local get_node = minetest.get_node
 
 	-- Start at sea level and check upwards 200 meters to find ground.
 	for y = -10, 200, 1 do
 		pos.y = y
-		local nu = minetest.get_node(pos)
+		local nu = get_node(pos)
 		pos.y = y + 1
-		local na = minetest.get_node(pos)
+		local na = get_node(pos)
 
 		-- Exit if map not loaded.
 		if nu.name == "ignore" or na.name == "ignore" then

@@ -27,6 +27,65 @@ local function nearby_noncheater(pname, pos, range)
 	end
 end
 
+local function move_player_to_exile(pname, target)
+	local minp = vector.add(target, {x=-8, y=-100, z=-8})
+	local maxp = vector.add(target, {x=8, y=100, z=8})
+
+	local function callback(blockpos, action, calls_remaining, param)
+		-- We don't do anything until the last callback.
+		if calls_remaining ~= 0 then
+			return
+		end
+
+		-- Check if there was an error on the LAST call.
+		-- Note: this will usually fail if the area to emerge intersects the map edge.
+		-- But usually we don't try to do that, here.
+		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+			return
+		end
+
+		local pos = param.target
+		local pname = param.pname
+		local get_node = minetest.get_node
+
+		-- Locate ground level, or some area where the player can fit in air.
+		for y = -90, 90, 1 do
+			pos.y = y - 1
+			local n1 = get_node(pos)
+			pos.y = y + 2
+			local n2 = get_node(pos)
+			pos.y = y + 1
+			local n3 = get_node(pos)
+
+			-- Exit if map not loaded.
+			if n1.name == "ignore" or n2.name == "ignore" or n3.name == "ignore" then
+				return
+			end
+
+			local d1 = minetest.registered_nodes[n1.name]
+			local d2 = minetest.registered_nodes[n2.name]
+			local d3 = minetest.registered_nodes[n3.name]
+			if d1 and d2 and d3 then
+				if d1.walkable and not d2.walkable and not d3.walkable then
+					pos.y = pos.y - 1
+					local post_cb = function(param)
+						local pname = param.pname
+						minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
+					end
+
+					-- Wrapped in minetest.after() to avoid *potential* callstack issues.
+					minetest.after(0, function()
+						preload_tp.preload_and_teleport(pname, pos, 8, nil, post_cb, param, true)
+					end)
+				end
+			end
+		end
+	end
+
+	minetest.emerge_area(minp, maxp, callback,
+		{target=table.copy(target), pname=pname})
+end
+
 -- A player is violating their exile if ...
 function exile.player_in_violation(pname)
 	-- They are a registered cheater ...
@@ -75,9 +134,8 @@ function exile.send_to_exile(pname)
 
 		-- Only if we wouldn't cause player to change realms, or enter the void.
 		if rn2 ~= "" and rn1 == rn2 then
-			pref:set_pos(gpos)
+			move_player_to_exile(pname, gpos)
 			pref:set_hp(pref:get_hp() - 1)
-			minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
 		end
 	end
 end

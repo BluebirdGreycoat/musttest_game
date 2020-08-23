@@ -8,6 +8,7 @@ local vector_normalize = vector.normalize
 local vector_subtract = vector.subtract
 local vector_multiply = vector.multiply
 local vector_round = vector.round
+local vector_add = vector.add
 
 -- Helper to query whether there is a nearby non-cheating player (also not self)
 -- within a certain range.

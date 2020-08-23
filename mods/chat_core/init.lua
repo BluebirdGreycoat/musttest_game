@@ -216,7 +216,14 @@ local generate_coord_string = function(name)
 
 		-- Remember to include leading space!
 		coord_string = " [" .. rc.realm_description_at_pos(pos) .. ": " .. pstr .. "]"
-		minetest.chat_send_player(name, "# Server: You are marked (" .. pstr .. ")!")
+
+		-- If server is not echoing player's chat back to the player, then their
+		-- client is old (or they have chat-echo turned off). In this case, the
+		-- player will need a special info message sent to them in order for them to
+		-- know if they're marked.
+		if not chat_echo.get_echo(name) then
+			minetest.chat_send_player(name, "# Server: You are marked (" .. pstr .. ")!")
+		end
 	end
 	return coord_string
 end

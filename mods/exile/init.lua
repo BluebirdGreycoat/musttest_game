@@ -51,7 +51,7 @@ function exile.send_to_exile(pname)
 	if pref then
 		local pos = pref:get_pos()
 		local rn1 = rc.current_realm_at_pos(pos)
-		local cb = city_block:nearest_blocks_to_position(pos, 5)
+		local cb = city_block:nearest_blocks_to_position(pos, 5, 100)
 
 		-- Calculate the average postion of nearby city-blocks.
 		local x, y, z, n = 0, 0, 0, #cb

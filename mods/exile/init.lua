@@ -106,7 +106,7 @@ function exile.player_in_violation(pname)
 			-- And there's a normal player near them ...
 			if nearby_noncheater(pname, pos, 100) then
 				-- And they are in a city area ...
-				if city_block:in_city(pos) then
+				if city_block:in_city_suburbs(pos) then
 					return true
 				end
 			end

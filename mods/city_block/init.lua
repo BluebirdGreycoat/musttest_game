@@ -110,6 +110,21 @@ function city_block:in_city(pos)
 	return false
 end
 
+function city_block:in_city_suburbs(pos)
+	local r = 44
+	local blocks = self.blocks
+	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
+		local v = blocks[i]
+		local vpos = v.pos
+		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
+			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
+			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+			return true
+		end
+	end
+	return false
+end
+
 function city_block:in_safebed_zone(pos)
 	-- Covers a 111x111x111 area.
 	local r = 55

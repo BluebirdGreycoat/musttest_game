@@ -164,14 +164,13 @@ function exile.check_player(pname)
 end
 
 function exile.repeating_check(pname)
+	--minetest.chat_send_player("MustTest", "repeating check")
 	-- Only check confirmed cheaters, as no one else can be exiled.
 	if sheriff.is_cheater(pname) then
-		if exile.check_player(pname) then
+		exile.check_player(pname)
 
-			-- Schedule another check shortly, if caught in violation the first time.
-			-- And so on.
-			minetest.after(math_random(1, 3), exile.repeating_check, pname)
-		end
+		-- Schedule another check shortly.
+		minetest.after(math_random(1, 3), exile.repeating_check, pname)
 	end
 end
 

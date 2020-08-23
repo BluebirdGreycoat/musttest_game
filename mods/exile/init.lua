@@ -53,7 +53,7 @@ function exile.send_to_exile(pname)
 		local cb = city_block:nearest_blocks_to_position(pos, 5)
 
 		-- Calculate the average postion of nearby city-blocks.
-		local x, y, z, n = nil, nil, nil, #cb
+		local x, y, z, n = 0, 0, 0, #cb
 		for i=1, n, 1 do
 			local b = cb[i]
 			local p = b.pos

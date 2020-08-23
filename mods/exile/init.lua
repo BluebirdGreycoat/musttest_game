@@ -103,7 +103,7 @@ function exile.player_in_violation(pname)
 		if pref then
 			local pos = pref:get_pos()
 			-- And there's a normal player near them ...
-			if nearby_noncheater(pname, pos, 50) then
+			if nearby_noncheater(pname, pos, 100) then
 				-- And they are in a city area ...
 				if city_block:in_city(pos) then
 					return true
@@ -151,6 +151,12 @@ function exile.send_to_exile(pname)
 			move_player_to_exile(pname, gpos)
 			pref:set_hp(pref:get_hp() - 1)
 		end
+	end
+end
+
+function exile.check_player(pname)
+	if exile.player_in_violation(pname) then
+		exile.send_to_exile(pname)
 	end
 end
 

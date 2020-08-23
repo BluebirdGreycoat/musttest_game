@@ -120,6 +120,11 @@ function exile.send_to_exile(pname)
 		local rn1 = rc.current_realm_at_pos(pos)
 		local cb = city_block:nearest_blocks_to_position(pos, 5, 100)
 
+		-- No nearby city-blocks? Cannot move player (also avoid divide-by-zero).
+		if #cb == 0 then
+			return
+		end
+
 		-- Calculate the average postion of nearby city-blocks.
 		local x, y, z, n = 0, 0, 0, #cb
 		for i=1, n, 1 do

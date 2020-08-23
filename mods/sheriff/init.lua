@@ -30,7 +30,7 @@ function sheriff.is_suspected_cheater(pname)
 	end
 end
 
--- Let other mods query whether a give player is a registered cheater.
+-- Let other mods query whether a given player is a registered cheater.
 function sheriff.is_cheater(pname)
 	local data = sheriff.players[pname]
 	if data then

@@ -53,7 +53,8 @@ local function move_player_to_exile(pname, target)
 		local get_node = minetest.get_node
 
 		-- Locate ground level, or some area where the player can fit in air.
-		for y = -90, 90, 1 do
+		-- Start from sky and work downwards, to reduce chance of tp'ing to cave.
+		for y = 90, -90, -1 do
 			pos.y = orig_y + y - 1
 			local n1 = get_node(pos)
 			pos.y = orig_y + y

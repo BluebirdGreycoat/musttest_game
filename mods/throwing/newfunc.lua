@@ -1,3 +1,4 @@
+--[[
 function throwing.entity_blocks_arrow(entity_name)
 	-- Dropped itemstacks don't take damage.
 	if entity_name == "__builtin:item" then
@@ -13,3 +14,4 @@ function throwing.entity_blocks_arrow(entity_name)
 	-- Entity is unknown, so punch it for damage!
 	return false
 end
+--]]

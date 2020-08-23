@@ -1,6 +1,7 @@
 
 -- Function is badly named! Should be 'entity_ignores_arrow'.
 -- Return 'true' if the entity cannot be hit, otherwise return 'false' if the entity should be punched.
+-- Note: 'entity_name' is the registered name of the entity to be checked for hit.
 function throwing.entity_blocks_arrow(entity_name)
 	-- Dropped itemstacks don't take damage.
 	if entity_name == "__builtin:item" then
@@ -10,6 +11,16 @@ function throwing.entity_blocks_arrow(entity_name)
 	-- Ignore other arrows/fireballs in flight.
 	local is_arrow = (string.find(entity_name, "arrow") or string.find(entity_name, "fireball"))
 	if is_arrow then
+		return true
+	end
+
+	-- Ignore health gauges above players.
+	if entity_name == "gauges:hp_bar" then
+		return true
+	end
+
+	-- Ignore sound beacones.
+	if entity_name:find("^soundbeacon:") then
 		return true
 	end
 

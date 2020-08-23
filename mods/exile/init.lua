@@ -76,7 +76,7 @@ local function move_player_to_exile(pname, target)
 						pos.y = orig_y + y
 						local post_cb = function(param)
 							local pname = param.pname
-							--minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
+							minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
 						end
 
 						-- Wrapped in minetest.after() to avoid *potential* callstack issues.

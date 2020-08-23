@@ -15,6 +15,7 @@ local pumice_node =						{name="gloopblocks:pumice"}
 local find = string.find
 local findn = minetest.find_node_near
 local random = math.random
+local math_random = math.random
 local setn = minetest.add_node
 local getn = minetest.get_node
 local play = minetest.sound_play
@@ -51,7 +52,7 @@ local function do_lava_melting(pos, node)
 		local def = allnodes[getn(mpos).name] or {}
 		if def._melts_to then
 			setn(mpos, {name=def._melts_to})
-			if math.random(1, 10) == 1 then
+			if math_random(1, 10) == 1 then
 				sfn.drop_node(mpos)
 			end
 		elseif def.on_melt then
@@ -78,7 +79,7 @@ end
 -- Cool lava sources to regular obsidian.
 local function do_lavasource_cooling(pos, node)
 	setn(pos, obsidian_node)
-	if math.random(1, 10) == 1 then
+	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end
 
@@ -94,7 +95,7 @@ end
 -- Flowing lava + flowing water = pumice.
 local function do_flowinglava_flowingwater_cooling(pos, node)
 	setn(pos, pumice_node)
-	if math.random(1, 10) == 1 then
+	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end
 
@@ -110,7 +111,7 @@ end
 -- Flowing lava + water source = basalt.
 local function do_flowinglava_watersource_cooling(pos, node)
 	setn(pos, basalt_node)
-	if math.random(1, 10) == 1 then
+	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end
 
@@ -126,7 +127,7 @@ end
 -- Cool rockmelt to basalt rubble.
 local function do_rockmelt_cooling(pos, node)
 	setn(pos, basaltic_node)
-	if math.random(1, 10) == 1 then
+	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end
 end

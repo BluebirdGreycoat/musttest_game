@@ -3,6 +3,9 @@ chat_controls = chat_controls or {}
 chat_controls.modpath = minetest.get_modpath("chat_controls")
 chat_controls.players = chat_controls.players or {}
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 
 
 function chat_controls.player_ignored(pname, from)
@@ -73,7 +76,7 @@ function chat_controls.player_too_far(pname, from)
 	end
 	local d1 = p1:get_pos()
 	local d2 = p2:get_pos()
-	if vector.distance(d1, d2) > dist then
+	if vector_distance(d1, d2) > dist then
 		return true
 	end
 end

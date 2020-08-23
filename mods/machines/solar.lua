@@ -6,6 +6,10 @@ solar_lv = solar_lv or {}
 solar_mv = solar_mv or {}
 solar_hv = solar_hv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 function do_log(meta, str)
@@ -116,7 +120,7 @@ for k, v in ipairs({
 					-- Normalize.
 					h = h / 60
 					-- Add scaling to power output.
-					eu_rate = math.floor(v.power * h)
+					eu_rate = math_floor(v.power * h)
 					-- Clamp.
 					if eu_rate < 1 then eu_rate = 1 end
 				end
@@ -125,7 +129,7 @@ for k, v in ipairs({
 			if goodenv then
 				--minetest.chat_send_all("# Server: Good env!")
 				-- Randomize time to next nodecheck.
-				meta:set_int("chktmr", math.random(3, 15))
+				meta:set_int("chktmr", math_random(3, 15))
 
 				meta:set_int("active", 1)
 				meta:set_int("eups", eu_rate)
@@ -214,7 +218,7 @@ for k, v in ipairs({
 			minetest.get_node_timer(pos):start(1.0)
 		else
 			-- Slow down timer during sleep periods to reduce load.
-			minetest.get_node_timer(pos):start(math.random(1, 3*60))
+			minetest.get_node_timer(pos):start(math_random(1, 3*60))
 			meta:set_int("chktmr", 0)
 			meta:set_int("active", 0)
 			meta:set_int("eups", 0)

@@ -18,6 +18,8 @@ local staminaHud = sprint.stamina_hud
 local speedmults = sprint.speed_mults
 local jumpmults = sprint.jump_mults
 local floor = math.floor
+local math_random = math.random
+
 
 
 -- Public API functions.
@@ -154,17 +156,17 @@ function sprint.globalstep(dtime)
 			
 			--If the player is sprinting, create particles behind him/her 
 			if do_particle and playerInfo["sprinting"] == true then
-				local numParticles = math.random(1, 2)
+				local numParticles = math_random(1, 2)
 				local playerPos = player:getpos()
 				local playerNode = minetest.get_node({x=playerPos["x"], y=playerPos["y"]-1, z=playerPos["z"]})
 				if playerNode["name"] ~= "air" then
 					for i=1, numParticles, 1 do
 						minetest.add_particle({
-							pos = {x=playerPos["x"]+math.random(-1,1)*math.random()/2,y=playerPos["y"]+0.1,z=playerPos["z"]+math.random(-1,1)*math.random()/2},
+							pos = {x=playerPos["x"]+math_random(-1,1)*math_random()/2,y=playerPos["y"]+0.1,z=playerPos["z"]+math_random(-1,1)*math_random()/2},
 							vel = {x=0, y=5, z=0},
 							acc = {x=0, y=-13, z=0},
-							expirationtime = math.random(),
-							size = math.random()+0.5,
+							expirationtime = math_random(),
+							size = math_random()+0.5,
 							collisiondetection = true,
 							vertical = false,
 							texture = "sprint_particle.png",

@@ -1,6 +1,9 @@
 
 -- Kalite: a coal substitute.
 
+-- Localize for performance.
+local math_random = math.random
+
 minetest.register_node("kalite:ore", {
   description = "Kalite Ore",
   tiles = {"default_stone.png^gloopores_mineral_kalite.png"},
@@ -27,7 +30,7 @@ minetest.register_node("kalite:ore", {
 	-- Digging kalite has a chance to release poison gas.
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		if pos.y < -1024 then
-			if math.random(1, 300) == 1 then
+			if math_random(1, 300) == 1 then
 				breath.spawn_gas(pos)
 			end
 		end

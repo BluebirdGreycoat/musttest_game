@@ -2,6 +2,9 @@
 snow_bricks = snow_bricks or {}
 snow_bricks.modpath = minetest.get_modpath("snow_bricks")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 minetest.register_node("snow_bricks:snow_brick", {
@@ -20,7 +23,7 @@ minetest.register_node("snow_bricks:snow_brick", {
 
 	on_construct = function(pos)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+			minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 		end
 	end,
 
@@ -50,7 +53,7 @@ minetest.register_node("snow_bricks:ice_brick", {
 
 	on_construct = function(pos)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+			minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 		end
 	end,
 

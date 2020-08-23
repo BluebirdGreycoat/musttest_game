@@ -2,6 +2,9 @@
 cavestuff = cavestuff or {}
 cavestuff.modpath = minetest.get_modpath("cavestuff")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- Hot cobble functions.
 cavestuff.hotcobble = cavestuff.hotcobble or {}
 
@@ -76,9 +79,9 @@ end
 
 function cavestuff.hotcobble.on_finish_collapse(pos, node)
 	if pos.y < -10 then
-		if math.random(1, 10) > 8 then
+		if math_random(1, 10) > 8 then
 			minetest.swap_node(pos, {name="default:lava_source"})
-		elseif math.random(1, 75) == 1 then
+		elseif math_random(1, 75) == 1 then
 			minetest.remove_node(pos)
 			
 			-- Detonate some TNT!

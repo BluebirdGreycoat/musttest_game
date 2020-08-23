@@ -5,6 +5,12 @@ wat2.modpath = minetest.get_modpath("geothermal_generator")
 local BUFFER_SIZE = tech.hydroturbine.buffer
 local ENERGY_AMOUNT = tech.hydroturbine.power
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 wat2.on_energy_get =
 function(pos, energy)
 	local meta = minetest.get_meta(pos)
@@ -120,10 +126,10 @@ function(pos, meta)
 
     if cw > 0 then
       -- Randomize time to next nodecheck.
-      meta:set_int("chktmr", math.random(3, 15))
+      meta:set_int("chktmr", math_random(3, 15))
 
       meta:set_int("active", 1)
-      meta:set_int("eups", math.floor(cw * ENERGY_AMOUNT))
+      meta:set_int("eups", math_floor(cw * ENERGY_AMOUNT))
 
       machines.swap_node(pos, "wat2:lv_active")
       result = true
@@ -207,7 +213,7 @@ function(pos, elapsed)
 		minetest.get_node_timer(pos):start(1.0)
 	else
 		-- Slow down timer during sleep periods to reduce load.
-		minetest.get_node_timer(pos):start(math.random(1, 3*60))
+		minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		meta:set_int("chktmr", 0)
 		meta:set_int("active", 0)
 		meta:set_int("eups", 0)

@@ -1,3 +1,7 @@
+
+-- Localize for performance.
+local math_random = math.random
+
 -- Indexed array.
 -- List of nodes which nether flora can use as soil.
 nethervine.flora_surfaces = {
@@ -33,7 +37,7 @@ end
 
 function nethervine.on_flora_construct(pos)
   if nethervine.surface_can_spawn_flora({x=pos.x, y=pos.y-1, z=pos.z}) then
-    minetest.get_node_timer(pos):start(math.random(nethervine.flora_mintime, nethervine.flora_maxtime))
+    minetest.get_node_timer(pos):start(math_random(nethervine.flora_mintime, nethervine.flora_maxtime))
   end
 end
 
@@ -44,7 +48,7 @@ function nethervine.on_flora_destruct(pos)
   local flora = minetest.find_nodes_in_area_under_air(minp, maxp, nethervine.flora_nodes)
   if flora and #flora > 0 then
     for i=1, #flora do
-      minetest.get_node_timer(flora[i]):start(math.random(nethervine.flora_mintime, nethervine.flora_maxtime))
+      minetest.get_node_timer(flora[i]):start(math_random(nethervine.flora_mintime, nethervine.flora_maxtime))
     end
   end
 end
@@ -54,7 +58,7 @@ function nethervine.on_flora_timer(pos, elapsed)
 
   local node = minetest.get_node(pos)
   if nethervine.flora_spread(pos, node) then
-    minetest.get_node_timer(pos):start(math.random(nethervine.flora_mintime, nethervine.flora_maxtime))
+    minetest.get_node_timer(pos):start(math_random(nethervine.flora_mintime, nethervine.flora_maxtime))
   else
     -- Else timer should stop, cannot grow anymore.
     minetest.get_node_timer(pos):stop()
@@ -63,7 +67,7 @@ end
 
 function nethervine.on_flora_punch(pos, node, puncher, pt)
   if nethervine.surface_can_spawn_flora({x=pos.x, y=pos.y-1, z=pos.z}) then
-    minetest.get_node_timer(pos):start(math.random(nethervine.flora_mintime, nethervine.flora_maxtime))
+    minetest.get_node_timer(pos):start(math_random(nethervine.flora_mintime, nethervine.flora_maxtime))
   end
 end
 
@@ -84,7 +88,7 @@ function nethervine.flora_spread(pos, node)
     return false -- Max flora reached.
   end
 
-  local randp = dirt[math.random(1, #dirt)]
+  local randp = dirt[math_random(1, #dirt)]
   local airp = {x=randp.x, y=randp.y+1, z=randp.z}
   local airn = minetest.get_node_or_nil(airp)
   if not airn or airn.name ~= "air" then

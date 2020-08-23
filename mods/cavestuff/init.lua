@@ -2,6 +2,9 @@
 cavestuff = cavestuff or {}
 cavestuff.modpath = minetest.get_modpath("cavestuff")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- Functions.
 dofile(cavestuff.modpath .. "/functions.lua")
 
@@ -824,7 +827,7 @@ for i=1, 4, 1 do
 		end,
 		on_construct = function(pos)
 			local node = minetest.get_node(pos)
-			node.param2 = math.random(0, 3)
+			node.param2 = math_random(0, 3)
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
@@ -860,7 +863,7 @@ for i=1, 4, 1 do
 		end,
 		on_construct = function(pos)
 			local node = minetest.get_node(pos)
-			node.param2 = math.random(0, 3)
+			node.param2 = math_random(0, 3)
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
@@ -893,7 +896,7 @@ for i=1, 4, 1 do
 		end,
 		on_construct = function(pos)
 			local node = minetest.get_node(pos)
-			node.param2 = math.random(0, 3)
+			node.param2 = math_random(0, 3)
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
@@ -926,7 +929,7 @@ for i=1, 4, 1 do
 		end,
 		on_construct = function(pos)
 			local node = minetest.get_node(pos)
-			node.param2 = math.random(0, 3)
+			node.param2 = math_random(0, 3)
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)

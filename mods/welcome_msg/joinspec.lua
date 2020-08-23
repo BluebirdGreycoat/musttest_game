@@ -2,6 +2,12 @@
 joinspec = joinspec or {}
 joinspec.modpath = minetest.get_modpath("welcome_msg")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+
+
+
 joinspec.data = {
 	warning = "Welcome to the frontier, Stranger! You have arrived on Enyekala (Must Test), a complex, detailed survival-mode game built on top of the Minetest Engine (https://www.minetest.net/).\n\n" ..
 		"Please read this text, as it contains important information about this server. You will need to scroll this text to read all of it. Once you have closed this formspec, you can reshow it by typing “/info” in the chat, without quotes.\n\n" ..
@@ -56,8 +62,8 @@ function joinspec.on_joinplayer(player)
 		-- If player logs in (or spawns) in the Outback, then show them the reset
 		-- timeout after 30 seconds.
 		minetest.after(30, function()
-			local days1 = math.floor(serveressentials.get_outback_timeout() / (60*60*24))
-			local days2 = math.floor(randspawn.get_spawn_reset_timeout() / (60*60*24))
+			local days1 = math_floor(serveressentials.get_outback_timeout() / (60*60*24))
+			local days2 = math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24))
 			local s1 = "s"
 			local s2 = "s"
 			if days1 == 1 then s1 = "" end
@@ -98,7 +104,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)
 		if pauth and pauth.last_login then
-			local days = math.floor((os.time() - pauth.last_login) / (60 * 60 * 24))
+			local days = math_floor((os.time() - pauth.last_login) / (60 * 60 * 24))
 			logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M UTC", pauth.last_login) .. " "
 
 			if days <= 0 then
@@ -187,7 +193,7 @@ function joinspec.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.trading then
-		local pos = vector.round(player:get_pos())
+		local pos = vector_round(player:get_pos())
 		ads.show_formspec(pos, pname, false)
 	end
 

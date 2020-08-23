@@ -6,6 +6,11 @@ currency.data = currency.data or {}
 currency.dirty = true
 currency.filename = minetest.get_worldpath() .. "/currency.txt"
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_min = math.min
+local math_max = math.max
+
 -- Test functions. These are also part of the public API, and work with the player's main inventory ("main").
 --
 -- function currency.room(pname, amount)
@@ -97,7 +102,7 @@ function currency.needed_empty_slots(amount)
 		local denom = currency_values[idx]
 		local count = math.modf(remainder / denom)
 		while count > 0 do
-			local can_add = math.min(count, stackmax)
+			local can_add = math_min(count, stackmax)
 			remainder = remainder - (can_add * denom)
 			wanted_slots = wanted_slots + 1
 			count = count - can_add
@@ -171,7 +176,7 @@ function currency.room_for_cash(inv, name, amount)
 			end
 
 			if count > 0 then
-				local can_add = math.min(count, stackmax)
+				local can_add = math_min(count, stackmax)
 				remainder = remainder - (denom * can_add)
 			end
 		else
@@ -191,7 +196,7 @@ function currency.room_for_cash(inv, name, amount)
 					-- then we could put part of the remaining value in the slot and continue
 					-- checking other slots for space to hold the rest.
 					if count > 0 then
-						local can_add = math.min(count, freespace)
+						local can_add = math_min(count, freespace)
 						remainder = remainder - (denom * can_add)
 					end
 				end
@@ -295,7 +300,7 @@ function currency.add_cash(inv, name, amount)
 				goto try_again
 			else
 				-- Fill this slot with our (current) largest denomination and subtract the value from the remaining value.
-				local can_add = math.min(count, stackmax)
+				local can_add = math_min(count, stackmax)
 				inv:set_stack(name, available[i].index, ItemStack(currency_names[largest_denom] .. " " .. can_add))
 				remainder = remainder - (currency_values[largest_denom] * can_add)
 			end
@@ -313,7 +318,7 @@ function currency.add_cash(inv, name, amount)
 					if count > 0 then
 						-- Calculate the number of notes we can/should add to this slot.
 						-- Add them, and subtract the applied value from the remaining value.
-						local can_add = math.min(count, freespace)
+						local can_add = math_min(count, freespace)
 						stack:set_count(stack:get_count() + can_add)
 						inv:set_stack(name, available[i].index, stack)
 						remainder = remainder - (currency_values_by_name[sn] * can_add)
@@ -425,7 +430,7 @@ function currency.remove_cash(inv, name, amount)
 		local count = math.modf(remainder / value)
 
 		if count > 0 then
-			local can_del = math.min(count, v.count)
+			local can_del = math_min(count, v.count)
 			local stack = ItemStack(v.name .. " " .. (v.count - can_del))
 			inv:set_stack(name, v.index, stack)
 			remainder = remainder - (can_del * value)
@@ -537,16 +542,16 @@ function currency.calculate_tax(amount, type, tax)
 	if type == 1 then
 		-- Purchasing.
 		local wtax = amount + calc_part(amount, tax)
-		return math.floor(wtax)
+		return math_floor(wtax)
 	elseif type == 2 then
 		-- Depositing.
 		local wtax = amount - calc_part(amount, tax)
-		wtax = math.max(wtax, 1)
-		return math.floor(wtax)
+		wtax = math_max(wtax, 1)
+		return math_floor(wtax)
 	end
 
 	-- Fallback (should never happen).
-	return math.floor(amount)
+	return math_floor(amount)
 end
 
 

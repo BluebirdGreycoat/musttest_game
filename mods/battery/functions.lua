@@ -4,6 +4,8 @@ battery_lv = battery_lv or {}
 battery_mv = battery_mv or {}
 battery_hv = battery_hv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
 
 
 for k, v in ipairs({
@@ -44,7 +46,7 @@ for k, v in ipairs({
       "Energy: " .. chg .. "/" .. max .. " EUs\n"
     
     if max > 0 then
-      local percent = math.floor(chg / max * 100)
+      local percent = math_floor(chg / max * 100)
       infotext = infotext .. "Charge: " .. percent .. "%"
     else
       infotext = infotext .. "Charge: 0%"
@@ -89,7 +91,7 @@ for k, v in ipairs({
     local name = "battery:array0_" .. v.tier
     
     if max > 0 then -- Avoid divide-by-zero.
-      local percent = math.floor((chg / max) * 100)
+      local percent = math_floor((chg / max) * 100)
       local sz = math.ceil(100 / 12)
       for i = 0, 12, 1 do
         if percent <= sz*i then

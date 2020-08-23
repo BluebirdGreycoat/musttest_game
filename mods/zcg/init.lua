@@ -9,6 +9,9 @@ zcg.users = zcg.users or {}
 zcg.crafts = zcg.crafts or {}
 zcg.itemlist = zcg.itemlist or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 zcg.items_in_group = function(group)
@@ -154,7 +157,7 @@ zcg.formspec = function(pn)
         for i, item in pairs(c.items) do
 					local stack = ItemStack(item)
 					local itemname = stack:get_name()
-          formspec = formspec .. "item_image_button["..((i-1)%c.width+x)..","..(math.floor((i-1)/c.width+y)+0.5)..";1,1;"..item..";zcg:"..itemname..";]"
+          formspec = formspec .. "item_image_button["..((i-1)%c.width+x)..","..(math_floor((i-1)/c.width+y)+0.5)..";1,1;"..item..";zcg:"..itemname..";]"
         end
         if c.type == "normal" or
           c.type == "cooking" or
@@ -224,7 +227,7 @@ zcg.formspec = function(pn)
 		for _, name in ipairs(whichlist) do
 			if s < page*npp then s = s+1 else
 				if i >= npp then break end
-				formspec = formspec .. "item_image_button["..(i%8)..","..(math.floor(i/8)+4.5)..";1,1;"..name..";zcg:"..name..";]"
+				formspec = formspec .. "item_image_button["..(i%8)..","..(math_floor(i/8)+4.5)..";1,1;"..name..";zcg:"..name..";]"
 				i = i+1
 			end
 		end

@@ -6,6 +6,11 @@ ambiance.players = ambiance.players or {}
 ambiance.environment_cache = ambiance.environment_cache or {}
 ambiance.modpath = minetest.get_modpath("ambiance")
 
+-- Localize for performance.
+local math_random = math.random
+
+
+
 dofile(ambiance.modpath .. "/data.lua")
 dofile(ambiance.modpath .. "/utility.lua")
 dofile(ambiance.modpath .. "/scuba.lua")
@@ -32,7 +37,7 @@ ambiance.globalstep = function(dtime)
 
 	-- Get current time of day.
 	local curtime = minetest.get_timeofday()
-	local rand = math.random
+	local rand = math_random
     
 	-- For all sounds, check if anyone can hear them. If yes, play sound to players that can hear.
 	local allsounds = ambiance.allsounds

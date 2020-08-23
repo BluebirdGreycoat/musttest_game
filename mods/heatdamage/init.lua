@@ -2,6 +2,9 @@
 heatdamage = heatdamage or {}
 heatdamage.modpath = minetest.get_modpath("heatdamage")
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 heatdamage.immune_players = heatdamage.immune_players or {}
@@ -38,7 +41,7 @@ heatdamage.immunize_player = function(pname, add_seconds)
   end
   
   local total = heatdamage.immune_players[pname].timer
-  minetest.chat_send_player(pname, "# Server: You are protected from heat for " .. math.floor(total) .. " seconds.")
+  minetest.chat_send_player(pname, "# Server: You are protected from heat for " .. math_floor(total) .. " seconds.")
 end
 
 
@@ -139,7 +142,7 @@ heatdamage.globalstep = function(dtime)
         cachetimer = 0
     end
     
-    local floor = math.floor
+    local floor = math_floor
     local scan = heatdamage.environment_scan
     local players = minetest.get_connected_players()
     

@@ -2,6 +2,9 @@
 geothermal_generator = geothermal_generator or {}
 geothermal_generator.modpath = minetest.get_modpath("geothermal_generator")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 geothermal_generator.update_formspec =
@@ -120,7 +123,7 @@ function(pos, meta)
     
     if count_water > 0 and count_lava > 0 then
       -- Randomize time to next nodecheck.
-      meta:set_int("chktmr", math.random(3, 15))
+      meta:set_int("chktmr", math_random(3, 15))
       
       meta:set_int("active", 1)
       meta:set_int("eups", (count_water + count_lava) * 10)

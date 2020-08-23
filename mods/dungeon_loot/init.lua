@@ -24,6 +24,9 @@
 dungeon_loot = {}
 dungeon_loot.version = 1.2
 
+-- Localize for performance.
+local math_random = math.random
+
 -- Load other file(s)
 local modpath = minetest.get_modpath(minetest.get_current_modname())
 dofile(modpath.."/config.lua") 		-- All the constants for simple tuning
@@ -57,7 +60,7 @@ local function get_basic_loot(loot_list, depth)
 			return nil, 0
 		end
 	end
-	local leftover = math.random(1,total_chance)
+	local leftover = math_random(1,total_chance)
 	local type_amount = 0
 	for i,v in ipairs(loot_list) do
 		if v.chance_and_amount then
@@ -79,18 +82,18 @@ local function get_basic_loot(loot_list, depth)
 		error("Unable to choose a loot_type from basic_list table.")
 		return nil, 0
 	end
-	loot_amount = math.random(1,math.ceil(type_amount/2))
+	loot_amount = math_random(1,math.ceil(type_amount/2))
 	if depth > dungeon_loot.depth_first_basic_increase then
-		loot_amount = math.random(1,type_amount)
+		loot_amount = math_random(1,type_amount)
 	end
 	if depth > dungeon_loot.depth_second_basic_increase then
-		loot_amount = math.random(1,type_amount*2)
+		loot_amount = math_random(1,type_amount*2)
 	end
 	return loot_type, loot_amount
 end
 
 local function get_item_and_amount(list_item, actual_depth)
-	if list_item.chance < math.random() then
+	if list_item.chance < math_random() then
 		return nil, 0
 	end
 	-- Suspicious trickery
@@ -111,7 +114,7 @@ local function get_item_and_amount(list_item, actual_depth)
 		max_depth = math.ceil(math.abs(actual_depth))
 	end
 	if list_item.type == "depth_cutoff" then
-		local rnd_depth = math.random(1,max_depth)
+		local rnd_depth = math_random(1,max_depth)
  		loot_type, loot_depth = get_max_loot(list_name, rnd_depth)
 		if list_item.max_amount == 1 then 	-- For tools & weapons
 			amount = 1
@@ -123,7 +126,7 @@ local function get_item_and_amount(list_item, actual_depth)
 			local leftover = rnd_depth
 			while leftover > 0 do
 				amount = amount + 1
-				leftover = leftover - math.random(1,loot_depth)
+				leftover = leftover - math_random(1,loot_depth)
 				leftover = leftover - math.ceil(loot_depth/2)
 			end
 		end
@@ -167,7 +170,7 @@ local function place_spawner(tab)
 	if tab == nil or #tab < 1 then
 		return
 	end
-	local pos = tab[math.random(1, #tab)]
+	local pos = tab[math_random(1, #tab)]
 	pos.y = pos.y - 1
 	local below = core.get_node_or_nil(pos)
 	if below and below.name ~= "air" then

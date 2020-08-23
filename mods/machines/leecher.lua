@@ -3,6 +3,9 @@ leecher = leecher or {}
 leecher.data = leecher.data or {}
 leecher.modpath = minetest.get_modpath("machines")
 
+-- Localize for performance.
+local math_random = math.random
+
 local BUFFER_SIZE = tech.leecher.buffer
 local ENERGY_AMOUNT = tech.leecher.power
 local DISSOLVE_HEIGHT = 50
@@ -236,7 +239,7 @@ local function do_water_boiling(pos)
 	local nn = minetest.get_node(pos).name
 	if nn == "default:water_source" or nn == "default:river_water_source" then
 		local bubbles = {
-			amount = math.random(3, 5),
+			amount = math_random(3, 5),
 			time = 1.0,
 			minpos = vector.add(pos, {x=-1, y=0.5, z=-1}),
 			maxpos = vector.add(pos, {x=1, y=0.5, z=1}),
@@ -295,8 +298,8 @@ local function do_ceiling_dig(pos)
 
 	-- A random horizontal offset allows us to get around small
 	-- obstructions (usually power cables and whatnot).
-	local x = math.random(-1, 1)
-	local z = math.random(-1, 1)
+	local x = math_random(-1, 1)
+	local z = math_random(-1, 1)
 
 	for i = 1, DISSOLVE_HEIGHT, 1 do
 		local p = {x=pos.x+x, y=pos.y+i, z=pos.z+z}
@@ -471,8 +474,8 @@ function(pos, elapsed)
 		if not leecher.data[hash] then
 			leecher.data[hash] = {
 				timer = 0,
-				timer2 = math.random(1, 10),
-				timer3 = math.random(1, 60),
+				timer2 = math_random(1, 10),
+				timer3 = math_random(1, 60),
 				ores = {},
 				dist = {},
 				water = {},
@@ -485,9 +488,9 @@ function(pos, elapsed)
 
 		-- Reread map region every long while.
 		data.timer = data.timer + elapsed
-		if data.timer > (60*15)+math.random(1, 10) then
+		if data.timer > (60*15)+math_random(1, 10) then
 			data.timer = 0
-			data.timer3 = math.random(1, 60)
+			data.timer3 = math_random(1, 60)
 			data.ores = {}
 			data.dist = {}
 			data.water = {}
@@ -527,7 +530,7 @@ function(pos, elapsed)
 		-- Produce ores every now and then.
 		data.timer2 = data.timer2 - 1
 		if data.timer2 < 0 then
-			data.timer2 = math.random(1, 10)
+			data.timer2 = math_random(1, 10)
 			produce_ore = true
 		end
 
@@ -540,7 +543,7 @@ function(pos, elapsed)
 						last = v.max
 					end
 				end
-				local rnd = math.random(1, last)
+				local rnd = math_random(1, last)
 				local ore = ""
 				for k, v in ipairs(data.dist) do
 					if rnd >= v.min and rnd <= v.max then
@@ -558,11 +561,11 @@ function(pos, elapsed)
 							-- Occasionally remove an ore.
 							-- Frequency of removal is a balance between performance
 							-- and machine efficiency.
-							if math.random(1, 20) == 1 then
+							if math_random(1, 20) == 1 then
 								local sz = #(data.ores[ore])
 								if sz > 0 then
 									-- Get the location of a random ore of this type.
-									local rnd = math.random(1, sz)
+									local rnd = math_random(1, sz)
 									local p2 = data.ores[ore][rnd]
 
 									-- Can't dig ores that are protected.
@@ -618,7 +621,7 @@ function(pos, elapsed)
 		-- Update water surface detection every so often.
 		data.timer3 = data.timer3 - 1
 		if data.timer3 < 0 then
-			data.timer3 = math.random(30, 60*3)
+			data.timer3 = math_random(30, 60*3)
 			read_water = true
 		end
 
@@ -627,18 +630,18 @@ function(pos, elapsed)
 		end
 
 		-- Spawn boiling particles.
-		if #(data.water) > 0 and math.random(1, 2) == 1 then
-			local rnd = math.random(1, 2)
+		if #(data.water) > 0 and math_random(1, 2) == 1 then
+			local rnd = math_random(1, 2)
 			for i = 1, rnd, 1 do
-				local p2 = data.water[math.random(1, #(data.water))]
+				local p2 = data.water[math_random(1, #(data.water))]
 				do_water_boiling(p2)
 			end
 		end
 
 		-- Occasionally dig ceiling.
-		if math.random(1, 20) == 1 then
+		if math_random(1, 20) == 1 then
 			if #(data.water) > 0 then
-				local p2 = data.water[math.random(1, #(data.water))]
+				local p2 = data.water[math_random(1, #(data.water))]
 				do_ceiling_dig(p2)
 			end
 		end
@@ -652,7 +655,7 @@ function(pos, elapsed)
 		meta:set_int("active", 1)
 	else
 		-- Slow down timer during sleep periods to reduce load.
-		minetest.get_node_timer(pos):start(math.random(1, 3*60))
+		minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		meta:set_int("active", 0)
 	end
 

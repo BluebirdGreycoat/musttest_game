@@ -2,6 +2,9 @@
 ice = ice or {}
 ice.modpath = minetest.get_modpath("ice")
 
+-- Localize for performance.
+local math_random = math.random
+
 if minetest.get_modpath("reload") then
 	local c = "ice:core"
 	local f = ice.modpath .. "/init.lua"
@@ -10,7 +13,7 @@ if minetest.get_modpath("reload") then
 	end
 end
 
--- May be used as argument to math.random().
+-- May be used as argument to math_random().
 function ice.minmax_time()
 	return ice.min_time, ice.max_time
 end
@@ -23,7 +26,7 @@ function ice.on_ice_notify(pos, other)
 
 	local timer = minetest.get_node_timer(pos)
 	--if not timer:is_started() then
-		timer:start(math.random(ice.minmax_time()))
+		timer:start(math_random(ice.minmax_time()))
 	--end
 end
 
@@ -85,7 +88,7 @@ if not ice.registered then
 
 		-- Hack to notify self.
 		on_construct = function(pos)
-			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+			minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 		end,
 
 		on_notify = function(...)

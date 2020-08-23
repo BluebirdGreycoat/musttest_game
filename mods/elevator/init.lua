@@ -7,6 +7,14 @@ local VERSION = 8
 -- Maximum time a box can go without players nearby.
 local PTIMEOUT = 120
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+local math_min = math.min
+local math_max = math.max
+
 -- Detect optional mods.
 local technic_path = minetest.get_modpath("technic")
 local chains_path = minetest.get_modpath("chains")
@@ -112,7 +120,7 @@ local function create_box(motorhash, pos, target, sender)
     end
     -- Set the box properties.
     obj:get_luaentity().motor = motorhash
-    obj:get_luaentity().uid = math.floor(math.random() * 1000000)
+    obj:get_luaentity().uid = math_floor(math_random() * 1000000)
     obj:get_luaentity().attached = sender:get_player_name()
     obj:get_luaentity().start = pos
     obj:get_luaentity().target = target
@@ -140,7 +148,7 @@ local function teleport_player_from_elevator(player)
         end
         return minetest.registered_nodes[minetest.get_node(pos).name].walkable
     end
-    local pos = vector.round(player:getpos())
+    local pos = vector_round(player:getpos())
     local node = minetest.get_node(pos)
     -- elevator_off is like a shaft, so the player would already be falling.
     if node.name == "elevator:elevator_on" then
@@ -186,8 +194,8 @@ minetest.register_globalstep(function(dtime)
         if type(obj) ~= "table" then
             return
         end
-        lastboxes[motor] = lastboxes[motor] and math.min(lastboxes[motor], PTIMEOUT) or PTIMEOUT
-        lastboxes[motor] = math.max(lastboxes[motor] - 1, 0)
+        lastboxes[motor] = lastboxes[motor] and math_min(lastboxes[motor], PTIMEOUT) or PTIMEOUT
+        lastboxes[motor] = math_max(lastboxes[motor] - 1, 0)
         local pos = obj:getpos()
         if pos then
             for _,object in ipairs(minetest.get_objects_inside_radius(pos, 5)) do
@@ -473,7 +481,7 @@ for _,mode in ipairs({"on", "off"}) do
             local meta = minetest.get_meta(pos)
             formspecs[sender:get_player_name()] = {pos}
             if on then
-                if vector.distance(sender:getpos(), pos) > 1 or minetest.get_node(sender:getpos()).name ~= nodename then
+                if vector_distance(sender:getpos(), pos) > 1 or minetest.get_node(sender:getpos()).name ~= nodename then
                     minetest.chat_send_player(sender:get_player_name(), "# Server: You are not inside the booth.")
                     return
                 end
@@ -579,7 +587,7 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
         return true
     end
     -- Double check if it's ok to go.
-    if vector.distance(sender:getpos(), pos) > 1 then
+    if vector_distance(sender:getpos(), pos) > 1 then
         return true
     end
     if fields.target then
@@ -858,13 +866,13 @@ local box_entity = {
 
         -- Loop through all travelled nodes.
         for y=self.lastpos.y,pos.y,((self.lastpos.y > pos.y) and -0.3 or 0.3) do
-            local p = vector.round({x=pos.x, y=y, z=pos.z})
+            local p = vector_round({x=pos.x, y=y, z=pos.z})
             local node = get_node(p)
             if node.name == "elevator:shaft" then
                 -- Nothing, just continue on our way.
             elseif node.name == "elevator:elevator_on" or node.name == "elevator:elevator_off" then
                 -- If this is our target, detach the player here, destroy this box, and update the target elevator without waiting for the abm.
-                if vector.distance(p, self.target) < 1 then
+                if vector_distance(p, self.target) < 1 then
                     minetest.log("action", "[elevator] "..minetest.pos_to_string(p).." broke due to arrival.")
                     detach(self, vector.add(self.target, {x=0, y=-0.4, z=0}))
                     self.object:remove()

@@ -1,6 +1,8 @@
 
 cans = cans or {}
 
+-- Localize for performance.
+local math_floor = math.floor
 
 
 local function set_can_wear(itemstack, level, max_level)
@@ -8,7 +10,7 @@ local function set_can_wear(itemstack, level, max_level)
   if level == 0 then
     temp = 0
   else
-    temp = 65536 - math.floor(level / max_level * 65535)
+    temp = 65536 - math_floor(level / max_level * 65535)
     if temp > 65535 then temp = 65535 end
     if temp < 1 then temp = 1 end
   end

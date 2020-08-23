@@ -9,6 +9,9 @@ email.maxsize = 100
 email.max_subject_length = 128
 email.max_message_length = 1024*2
 
+-- Localize for performance.
+local math_random = math.random
+
 dofile(email.modpath .. "/database.lua")
 
 
@@ -143,7 +146,7 @@ function email.send_mail_ex(from, to, subject, message)
   
   -- Find a unique ID for this new email.
   ::tryagain::
-  local rng = math.random(1, 32000) -- 0 is not a valid ID. Important!
+  local rng = math_random(1, 32000) -- 0 is not a valid ID. Important!
   for k, v in ipairs(inboxes) do
     if v.rng == rng then goto tryagain end
   end

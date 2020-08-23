@@ -1,3 +1,11 @@
+
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_min = math.min
+
+
+
 local cart_entity = {
 	physical = false, -- otherwise going uphill breaks
 	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
@@ -126,7 +134,7 @@ function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, 
 	if tool_capabilities and tool_capabilities.full_punch_interval then
 		punch_interval = tool_capabilities.full_punch_interval
 	end
-	time_from_last_punch = math.min(time_from_last_punch or punch_interval, punch_interval)
+	time_from_last_punch = math_min(time_from_last_punch or punch_interval, punch_interval)
 	local f = 2 * (time_from_last_punch / punch_interval)
 
 	self.velocity = vector.multiply(cart_dir, f)
@@ -198,8 +206,8 @@ local function rail_on_step(self, dtime)
 	self.old_vel = vector.new(vel)
 
 	if self.old_pos and not self.punched then
-		local flo_pos = vector.round(pos)
-		local flo_old = vector.round(self.old_pos)
+		local flo_pos = vector_round(pos)
+		local flo_old = vector_round(self.old_pos)
 		if vector.equals(flo_pos, flo_old) then
 			-- Do not check one node multiple times
 			return
@@ -241,7 +249,7 @@ local function rail_on_step(self, dtime)
 	local new_acc = {x=0, y=0, z=0}
 	if vector.equals(dir, {x=0, y=0, z=0}) then
 		vel = {x = 0, y = 0, z = 0}
-		pos = vector.round(pos)
+		pos = vector_round(pos)
 		update.pos = true
 		update.vel = true
 	else
@@ -250,17 +258,17 @@ local function rail_on_step(self, dtime)
 			vel = vector.multiply(dir, math.abs(vel.x + vel.z))
 			update.vel = true
 			if dir.y ~= self.old_dir.y then
-				pos = vector.round(pos)
+				pos = vector_round(pos)
 				update.pos = true
 			end
 		end
 		-- Center on the rail
-		if dir.z ~= 0 and math.floor(pos.x + 0.5) ~= pos.x then
-			pos.x = math.floor(pos.x + 0.5)
+		if dir.z ~= 0 and math_floor(pos.x + 0.5) ~= pos.x then
+			pos.x = math_floor(pos.x + 0.5)
 			update.pos = true
 		end
-		if dir.x ~= 0 and math.floor(pos.z + 0.5) ~= pos.z then
-			pos.z = math.floor(pos.z + 0.5)
+		if dir.x ~= 0 and math_floor(pos.z + 0.5) ~= pos.z then
+			pos.z = math_floor(pos.z + 0.5)
 			update.pos = true
 		end
 

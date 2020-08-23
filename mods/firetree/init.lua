@@ -4,6 +4,9 @@ firetree.modpath = minetest.get_modpath("firetree")
 local SAPLING_TIME_MIN = 5*60
 local SAPLING_TIME_MAX = 10*60
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local FIRETREE_SCHEMATICS = {
@@ -160,7 +163,7 @@ local can_grow = function(pos)
 	-- Reduced chance to grow if cold/ice nearby.
 	local below = {x=pos.x, y=pos.y-1, z=pos.z}
 	local cold = minetest.find_nodes_in_area(vector.subtract(below, 3), vector.add(below, 3), "group:cold")
-	if #cold > math.random(0, 196) then
+	if #cold > math_random(0, 196) then
 		return false
 	end
 
@@ -193,7 +196,7 @@ end
 
 
 local on_construct = function(pos)
-    minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+    minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 end
 
 
@@ -206,13 +209,13 @@ local on_timer = function(pos, elapsed)
 				end
 
     if not can_grow(pos) then
-        minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+        minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
         return
     end
 
     minetest.set_node(pos, {name='air'}) -- Remove sapling first.
     local schempath = firetree.modpath .. "/schematics/"
-    local path = schempath .. FIRETREE_SCHEMATICS[math.random(#FIRETREE_SCHEMATICS)]
+    local path = schempath .. FIRETREE_SCHEMATICS[math_random(#FIRETREE_SCHEMATICS)]
     minetest.place_schematic(vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
 end
 
@@ -220,7 +223,7 @@ end
 
 firetree.create_firetree_on_vmanip = function(vm, pos)
     local schempath = firetree.modpath .. "/schematics/"
-    local path = schempath .. FIRETREE_SCHEMATICS[math.random(#FIRETREE_SCHEMATICS)]
+    local path = schempath .. FIRETREE_SCHEMATICS[math_random(#FIRETREE_SCHEMATICS)]
     minetest.place_schematic_on_vmanip(vm, vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
 end
 
@@ -228,7 +231,7 @@ end
 
 firetree.create_firetree = function(pos)
     local schempath = firetree.modpath .. "/schematics/"
-    local path = schempath .. FIRETREE_SCHEMATICS[math.random(#FIRETREE_SCHEMATICS)]
+    local path = schempath .. FIRETREE_SCHEMATICS[math_random(#FIRETREE_SCHEMATICS)]
     minetest.place_schematic(vector.add(pos, {x=-2, y=0, z=-2}), path, "0", nil, false)
 end
 

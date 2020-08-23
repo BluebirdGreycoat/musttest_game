@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 function mese_crystals.on_tool_use(itemstack, user, pt)
 	if pt.type ~= "node" then return end
 	local pos = pt.under
@@ -41,7 +44,7 @@ function mese_crystals.on_tool_use(itemstack, user, pt)
 		itemstack:add_wear(65535 / 400)
 		local inv = user:get_inventory()
 		local stack
-		if math.random(1, 40) == 1 then
+		if math_random(1, 40) == 1 then
 			stack = ItemStack("default:mese_crystal")
 		else
 			stack = ItemStack("mese_crystals:zentamine")

@@ -5,6 +5,11 @@ Copyright (c) 2011-2015 Calinou and contributors.
 Licensed under the zlib license. See LICENSE.md for more information.
 --]]
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_min = math.min
+local math_max = math.max
+
 local S = function(str) return str end
 
 circular_saw = circular_saw or {}
@@ -139,7 +144,7 @@ function circular_saw:get_output_inv(modname, material, amount, max)
   for i = 1, #circular_saw.names do
     local t = circular_saw.names[i]
     local cost = t[3]
-    local balance = math.min(math.floor(amount/cost), max)
+    local balance = math_min(math_floor(amount/cost), max)
     local nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
     if minetest.registered_nodes[nodename] then
       pos = pos + 1
@@ -201,7 +206,7 @@ function circular_saw:update_inventory(pos, amount)
   local material = name_parts[2] or ""
 
   inv:set_list("input", { -- Display as many full blocks as possible:
-    node_name.. " " .. math.floor(amount / 8)
+    node_name.. " " .. math_floor(amount / 8)
   })
 
   -- The stairnodes made of default nodes use moreblocks namespace, other mods keep own:
@@ -310,7 +315,7 @@ function circular_saw.allow_metadata_inventory_put(pos, listname, index, stack, 
     local maxcost = (stackmax * 8) + 7
     local cost = circular_saw:get_cost(inv, stackname)
     if (incost + cost) > maxcost then
-      return math.max((maxcost - incost) / cost, 0)
+      return math_max((maxcost - incost) / cost, 0)
     end
     return count
   end

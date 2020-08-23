@@ -6,6 +6,10 @@ rc = rc or {}
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
 local default_sky = {type="regular", clouds=true}
 local default_sun = {visible=true, sunrise_visible=true, scale=1}
 local default_moon = {visible=true, scale=1}
@@ -37,7 +41,7 @@ rc.realms = {
 
 		cloud_data = {
 			-- Overworld clouds change direction of travel on every restart.
-			speed = {x = math.random(-200, 200)/200, z = math.random(-200, 200)/200},
+			speed = {x = math_random(-200, 200)/200, z = math_random(-200, 200)/200},
 		},
 	},
 	{
@@ -103,7 +107,7 @@ rc.realms = {
 -- False is returned if not underground.
 -- Returns nil if position isn't in any valid realm.
 function rc.position_underground(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
@@ -299,10 +303,10 @@ function rc.get_random_enabled_realm_data()
 	end
 
 	local tries = 1
-	local realm = rc.realms[math.random(1, #rc.realms)]
+	local realm = rc.realms[math_random(1, #rc.realms)]
 	while realm.disabled and tries < 10 do
 		tries = tries + 1
-		realm = rc.realms[math.random(1, #rc.realms)]
+		realm = rc.realms[math_random(1, #rc.realms)]
 	end
 
 	if realm.disabled then
@@ -324,9 +328,9 @@ function rc.get_random_realm_gate_position(pname, origin)
 			assert(realm)
 
 			local pos = {
-				x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
-				y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
-				z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+				x = math_random(realm.gate_minp.x, realm.gate_maxp.x),
+				y = math_random(realm.gate_minp.y, realm.gate_maxp.y),
+				z = math_random(realm.gate_minp.z, realm.gate_maxp.z),
 			}
 
 			local below = vector.add(origin, {x=0, y=-16, z=0})
@@ -340,7 +344,7 @@ function rc.get_random_realm_gate_position(pname, origin)
 			--	minetest.chat_send_player(pname, "# Server: " .. k .. " = " .. v .. "!")
 			--end
 
-			if counts["default:stone"] > math.random(10000, 30000) then
+			if counts["default:stone"] > math_random(10000, 30000) then
 				-- Search again, even deeper. The stone amount should be MUCH higher.
 				below = vector.add(below, {x=0, y=-32, z=0})
 				minp = vector.add(below, {x=-16, y=-16, z=-16})
@@ -351,7 +355,7 @@ function rc.get_random_realm_gate_position(pname, origin)
 				--	minetest.chat_send_player(pname, "# Server: " .. k .. " = " .. v .. "!")
 				--end
 
-				if counts["default:stone"] > math.random(20000, 32000) then
+				if counts["default:stone"] > math_random(20000, 32000) then
 					--minetest.chat_send_player("MustTest", "# Server: Success! " .. counts["default:stone"])
 					return pos
 				end
@@ -362,7 +366,7 @@ function rc.get_random_realm_gate_position(pname, origin)
 			-- 9/10 times the exit point stays in the same realm.
 			-- Sometimes a realm hop is possible.
 			local realm
-			if math.random(1, 10) == 1 then
+			if math_random(1, 10) == 1 then
 				realm = rc.get_random_enabled_realm_data()
 			else
 				realm = rc.get_realm_data(rc.current_realm_at_pos(origin))
@@ -374,9 +378,9 @@ function rc.get_random_realm_gate_position(pname, origin)
 
 			-- Not more than 5000 meters away from origin!
 			local pos = {
-				x = math.random(-5000, 5000) + origin.x,
-				y = math.random(-5000, 5000) + origin.y,
-				z = math.random(-5000, 5000) + origin.z,
+				x = math_random(-5000, 5000) + origin.x,
+				y = math_random(-5000, 5000) + origin.y,
+				z = math_random(-5000, 5000) + origin.z,
 			}
 
 			local min = math.min
@@ -398,9 +402,9 @@ function rc.get_random_realm_gate_position(pname, origin)
 	-- Not more than 5000 meters in any direction, and MUST stay in the Overworld
 	-- (or the Nether).
 	local pos = {
-		x = math.random(-5000, 5000) + origin.x,
-		y = math.random(-5000, 5000) + origin.y,
-		z = math.random(-5000, 5000) + origin.z,
+		x = math_random(-5000, 5000) + origin.x,
+		y = math_random(-5000, 5000) + origin.y,
+		z = math_random(-5000, 5000) + origin.z,
 	}
 
 	local min = math.min
@@ -415,7 +419,7 @@ function rc.get_random_realm_gate_position(pname, origin)
 end
 
 function rc.is_valid_gateway_region(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	for k, v in ipairs(rc.realms) do
 		local gate_minp = v.gate_minp
 		local gate_maxp = v.gate_maxp
@@ -433,7 +437,7 @@ function rc.is_valid_gateway_region(pos)
 end
 
 function rc.is_valid_realm_pos(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	for i = 1, #rc.realms, 1 do
 		local v = rc.realms[i]
 
@@ -453,7 +457,7 @@ function rc.is_valid_realm_pos(pos)
 end
 
 function rc.get_ground_level_at_pos(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
 		local maxp = v.maxp
@@ -471,7 +475,7 @@ function rc.get_ground_level_at_pos(pos)
 end
 
 function rc.get_sea_level_at_pos(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
 		local maxp = v.maxp
@@ -489,7 +493,7 @@ function rc.get_sea_level_at_pos(pos)
 end
 
 function rc.get_wind_level_at_pos(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	for k, v in ipairs(rc.realms) do
 		local minp = v.minp
 		local maxp = v.maxp
@@ -508,7 +512,7 @@ end
 
 -- API function. Get string name of the current realm the player is in.
 function rc.current_realm(player)
-	local p = vector.round(player:get_pos())
+	local p = vector_round(player:get_pos())
 	return rc.current_realm_at_pos(p)
 end
 
@@ -575,7 +579,7 @@ end
 -- valid location. If last valid location not found, reset them to 0,0,0.
 -- This function should be called from a global-step callback somewhere.
 function rc.check_position(player)
-	local p = vector.round(player:get_pos())
+	local p = vector_round(player:get_pos())
 	local n = player:get_player_name()
 
 	-- Data not initialized yet.
@@ -690,7 +694,7 @@ end
 -- or lawfully changes realm. You can pass a player object or a name.
 -- Note: this must be called *before* you call :set_pos() on the player!
 function rc.notify_realm_update(player, pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	local n = ""
 	if type(player) == "string" then
 		n = player
@@ -706,7 +710,7 @@ function rc.notify_realm_update(player, pos)
 	end
 
 	if pref and tb.realm then
-		local pp = vector.round(pref:get_pos())
+		local pp = vector_round(pref:get_pos())
 		local rr = rc.current_realm_at_pos(pp)
 		local rr2 = rc.current_realm_at_pos(p)
 		if rr ~= rr2 then

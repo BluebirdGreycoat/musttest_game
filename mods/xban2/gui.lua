@@ -2,6 +2,9 @@
 xban.gui = xban.gui or {}
 xban.gui.states = xban.gui.states or {}
 
+-- Localize for performance.
+local vector_round = vector.round
+
 local FORMNAME = "xban2:main"
 local MAXLISTSIZE = 1000
 
@@ -208,7 +211,7 @@ local function make_fs(name)
 		-- last_pos and last_seen are per name, not per record-entry.
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then
 			infomsg[#infomsg+1] = "User was last seen at " ..
-				rc.pos_to_namestr(vector.round(e.last_pos[record_name])) .. "."
+				rc.pos_to_namestr(vector_round(e.last_pos[record_name])) .. "."
 
 			-- We can also add a button to allow the formspec user to jump to this
 			-- location.
@@ -282,7 +285,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		if record_name then
 			local e, strings, gotten = get_record_simple(record_name)
 			if type(e.last_pos) == "table" and e.last_pos[record_name] then
-				local pos = vector.round(table.copy(e.last_pos[record_name]))
+				local pos = vector_round(table.copy(e.last_pos[record_name]))
 				minetest.chat_send_player(name,
 					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
 					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")

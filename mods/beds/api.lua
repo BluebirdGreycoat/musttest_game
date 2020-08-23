@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 local reverse = true
 
 local function destruct_bed(pos, n)
@@ -13,8 +16,8 @@ local function destruct_bed(pos, n)
     local owner = meta:get_string("owner") or ""
     if owner ~= "" and owner ~= "server" then
 			if beds.spawn[owner] then
-				local p1 = vector.round(pos)
-				local p2 = vector.round(beds.spawn[owner])
+				local p1 = vector_round(pos)
+				local p2 = vector_round(beds.spawn[owner])
 				if vector.equals(p1, p2) then
 					beds.spawn[owner] = nil
 					beds.save_spawns()

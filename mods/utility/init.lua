@@ -3,6 +3,11 @@ default = default or {}
 utility = utility or {}
 utility.modpath = minetest.get_modpath("utility")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
 -- Dummy function.
 fireambiance = {}
 function fireambiance.on_flame_addremove(pos)
@@ -217,7 +222,7 @@ function utility.get_head_pos(pos)
 end
 -- Get rounded position of node player is standing on.
 function utility.node_under_pos(pos)
-	return vector.round(vector.add(pos, {x=0, y=-0.05, z=0}))
+	return vector_round(vector.add(pos, {x=0, y=-0.05, z=0}))
 end
 
 -- Global multipliers for ABMs. Performance setting.
@@ -324,11 +329,11 @@ function default.intersects_protection(minp, maxp, player_name, interval)
   end
 
   for zf = minp.z, maxp.z, d.z do
-    local z = math.floor(zf + 0.5)
+    local z = math_floor(zf + 0.5)
     for yf = minp.y, maxp.y, d.y do
-      local y = math.floor(yf + 0.5)
+      local y = math_floor(yf + 0.5)
       for xf = minp.x, maxp.x, d.x do
-        local x = math.floor(xf + 0.5)
+        local x = math_floor(xf + 0.5)
         if minetest.test_protection({x = x, y = y, z = z}, player_name) then
           return true
         end
@@ -495,7 +500,7 @@ end
 function table.shuffle(t, from, to, random)
 	from = from or 1
 	to = to or #t
-	random = random or math.random
+	random = random or math_random
 	local n = to - from + 1
 	while n > 1 do
 		local r = from + n-1

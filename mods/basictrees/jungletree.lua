@@ -7,6 +7,9 @@ local SCHEMATIC_MINP = {x=-2, y=1, z=-2}
 local SCHEMATIC_MAXP = {x=2, y=15, z=2}
 local SCHEMATIC_RELP = {x=-2, y=-1, z=-2}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 minetest.register_node("basictrees:jungletree_trunk", {
@@ -123,20 +126,20 @@ minetest.register_node("basictrees:jungletree_sapling", {
 				end
 
         if not basictrees.can_grow(pos) then
-            minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+            minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
             return
         end
         
         local path = basictrees.modpath .. "/schematics/jungle_tree_from_sapling.mts"
         minetest.place_schematic(vector.add(pos, SCHEMATIC_RELP), path, "random", nil, false)
-				hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "basictrees:jungletree_leaves", math.random(10, 30))
-				hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "basictrees:jungletree_leaves", math.random(10, 30))
+				hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "basictrees:jungletree_leaves", math_random(10, 30))
+				hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "basictrees:jungletree_leaves", math_random(10, 30))
         snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
 				ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
     end,
 
 	on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+		minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 	end,
 
 	on_place = function(itemstack, placer, pointed_thing)

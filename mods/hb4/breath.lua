@@ -2,8 +2,14 @@
 breath = breath or {}
 breath.modpath = minetest.get_modpath("hb4")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 function breath.time()
-	return math.random(20, 200)/10
+	return math_random(20, 200)/10
 end
 
 -- Recursive algorithm.
@@ -87,7 +93,7 @@ end
 
 function breath.ignite_nearby_gas(pos)
 	--minetest.chat_send_player("MustTest", "# Server: Igniting gas @ " .. minetest.pos_to_string(pos) .. "!")
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local gas = minetest.find_node_near(pos, 2, {"group:gas"})
 	if gas then
 		minetest.set_node(gas, {name="fire:basic_flame"})
@@ -104,7 +110,7 @@ function breath.extinguish_torches_around(v)
 	-- Replace nearby torches or fire with gas.
 	for i = 1, #torches, 1 do
 		local nn = minetest.get_node(torches[i]).name
-		minetest.after(math.random(1, 10), function()
+		minetest.after(math_random(1, 10), function()
 			-- We delayed a bit, we must ensure node has not changed.
 			local n2 = minetest.get_node(torches[i]).name
 			if n2 == nn then
@@ -121,9 +127,9 @@ end
 
 
 function breath.spawn_gas(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	ambiance.sound_play("tnt_ignite", pos, 1.0, 60)
-	local positions = floodfill(pos, math.random(10, 30))
+	local positions = floodfill(pos, math_random(10, 30))
 	local set_node = minetest.set_node
 
 	for k, v in ipairs(positions) do

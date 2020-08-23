@@ -7,6 +7,10 @@ protector.radius = 5
 protector.radius_small = 3 -- Must always be smaller than primary radius.
 protector.max_share_count = 12
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 -- Tool drop is disabled because it is too easy to exploit this using lag.
 --protector.drop = minetest.setting_getbool("protector_drop") or false
 
@@ -210,12 +214,12 @@ protector.generate_formspec = function(meta)
 
 			-- show username
 			formspec = formspec .. "button[" .. (i % 4 * 2)
-			.. "," .. math.floor(i / 4 + 3)
+			.. "," .. math_floor(i / 4 + 3)
 			.. ";1.5,.5;protector_member;" .. rename.gpn(members[n]) .. "]"
 
 			-- username remove button
 			.. "button[" .. (i % 4 * 2 + 1.25) .. ","
-			.. math.floor(i / 4 + 3)
+			.. math_floor(i / 4 + 3)
 			.. ";.75,.5;protector_del_member_" .. members[n] .. ";X]"
 		end
 
@@ -226,12 +230,12 @@ protector.generate_formspec = function(meta)
 
 		-- user name entry field
 		formspec = formspec .. "field[" .. (i % 4 * 2 + 1 / 3) .. ","
-		.. (math.floor(i / 4 + 3) + 1 / 3)
+		.. (math_floor(i / 4 + 3) + 1 / 3)
 		.. ";1.433,.5;protector_add_member;;]"
 
 		-- username add button
 		.."button[" .. (i % 4 * 2 + 1.25) .. ","
-		.. math.floor(i / 4 + 3) .. ";.75,.5;protector_submit;+]"
+		.. math_floor(i / 4 + 3) .. ";.75,.5;protector_submit;+]"
 
 	end
 
@@ -399,7 +403,7 @@ function protector.punish_player(pos, pname)
 	if protector.flip then
 
 		-- yaw +/- 180°
-		local yaw = player:get_look_horizontal() + math.random(-math.pi, math.pi)
+		local yaw = player:get_look_horizontal() + math_random(-math.pi, math.pi)
 		player:set_look_horizontal(yaw)
 
 		-- Invert pitch.
@@ -442,7 +446,7 @@ function protector.punish_player(pos, pname)
 				-- drop stack
 				local obj = minetest.add_item(player:get_pos(), sta)
 				if obj then
-					obj:setvelocity({x = math.random(-5, 5), y = 5, z = math.random(-5, 5)})
+					obj:setvelocity({x = math_random(-5, 5), y = 5, z = math_random(-5, 5)})
 				end
 			end)
 
@@ -596,7 +600,7 @@ function protector.on_timer(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("temprot") == 1 then
 		local minutes = meta:get_int("timerot")
-		minutes = minutes - math.floor(elapsed / 60)
+		minutes = minutes - math_floor(elapsed / 60)
 
 		if minutes >= 0 then
 			meta:set_int("timerot", minutes)
@@ -630,7 +634,7 @@ function protector.get_infotext(meta)
 	if meta:get_int("temprot") == 1 then
 		local minutes = meta:get_int("timerot")
 		if minutes < 0 then minutes = 0 end
-		local hours = math.floor(minutes / 60)
+		local hours = math_floor(minutes / 60)
 		timeout = "\n------------------------------------------\nExpires in " .. hours .. " hours\nGet KEY to make permanent claims"
 	end
 

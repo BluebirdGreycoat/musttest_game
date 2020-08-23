@@ -5,6 +5,12 @@ panel.modpath = minetest.get_modpath("machines")
 local BUFFER_SIZE = tech.solar_panel.buffer
 local POWER_OUTPUT = tech.solar_panel.power
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 panel.on_energy_get =
 function(pos, energy)
 	local meta = minetest.get_meta(pos)
@@ -98,7 +104,7 @@ function(pos, meta)
 				-- Normalize.
 				h = h / 60
 				-- Add scaling to power output.
-				eu_rate = math.floor(POWER_OUTPUT * h)
+				eu_rate = math_floor(POWER_OUTPUT * h)
 				-- Clamp.
 				if eu_rate < 1 then eu_rate = 1 end
 			end
@@ -107,7 +113,7 @@ function(pos, meta)
 		if goodenv then
 			--minetest.chat_send_all("# Server: Good env!")
 			-- Randomize time to next nodecheck.
-			meta:set_int("chktmr", math.random(3, 15))
+			meta:set_int("chktmr", math_random(3, 15))
 
 			meta:set_int("active", 1)
 			meta:set_int("eups", eu_rate)
@@ -188,7 +194,7 @@ function(pos, elapsed)
 		minetest.get_node_timer(pos):start(1.0)
 	else
 		-- Slow down timer during sleep periods to reduce load.
-		minetest.get_node_timer(pos):start(math.random(1, 3*60))
+		minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		meta:set_int("chktmr", 0)
 		meta:set_int("active", 0)
 		meta:set_int("eups", 0)

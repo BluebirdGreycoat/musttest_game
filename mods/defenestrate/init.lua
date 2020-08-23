@@ -3,6 +3,9 @@ defenestrate = defenestrate or {}
 defenestrate.modpath = minetest.get_modpath("defenestrate")
 defenestrate.timeout = 3
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 --[===[
 -- Returns nil, or item, number.
 function defenestrate.get_random_item_in_play()
@@ -56,7 +59,7 @@ function defenestrate.do_stuff()
 		return
 	end
 
-	if vector.distance(vendor.pos, deposit.pos) > ads.viewrange then
+	if vector_distance(vendor.pos, deposit.pos) > ads.viewrange then
 		minetest.log("autotrade: Randomly selected vending and depositing machines exceed maximum trading range.")
 		return
 	end

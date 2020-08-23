@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 -- function to safely remove climbable air
 local function remove_air(pos, oldnode)
 	local dir = minetest.facedir_to_dir(oldnode.param2)
@@ -179,7 +182,7 @@ minetest.register_node("handholds:ice", {
 
 	on_construct = function(pos)
 		if rc.ice_melts_at_pos(pos) then
-			minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+			minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 		end
 	end,
 

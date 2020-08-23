@@ -13,6 +13,9 @@
 --	local anticheat_routines=loadfile(minetest.get_modpath("anticheat").."/anticheat_routines.bin")
 --	check_noclip, check_fly, check_player = anticheat_routines(minetest,cheat);
 
+-- Localize for performance.
+local math_floor = math.floor
+
 local anticheat_routines = function(minetest,cheat, CHECK_AGAIN, punish_cheat)
 
 	-- DETAILED NOCLIP CHECK
@@ -48,9 +51,9 @@ local anticheat_routines = function(minetest,cheat, CHECK_AGAIN, punish_cheat)
 
 	local round = function (x)
 		if x > 0 then
-			return math.floor(x+0.5)
+			return math_floor(x+0.5)
 		else
-			return -math.floor(-x+0.5)
+			return -math_floor(-x+0.5)
 		end
 	end
 

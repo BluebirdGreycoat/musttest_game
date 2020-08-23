@@ -3,6 +3,9 @@ chat_colorize = chat_colorize or {}
 chat_colorize.player_just_died = chat_colorize.player_just_died or {}
 chat_colorize.modpath = minetest.get_modpath("chat_colorize")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 -- Support for hot reloading.
@@ -25,7 +28,7 @@ function chat_colorize.notify_death(pname)
 
 	chat_colorize.player_just_died[pname] = true
 
-	minetest.after(math.random(30, 60), function()
+	minetest.after(math_random(30, 60), function()
 		chat_colorize.player_just_died[pname] = nil
 	end)
 end
@@ -143,7 +146,7 @@ chat_colorize.send_all = function(message)
 		local is_leaveplayer = message:find("left the game")
 
 		if nick and is_leaveplayer and chat_colorize.is_ragequit(nick) then
-			message = message .. " (" .. ragequit[math.random(1, #ragequit)] .. ".)"
+			message = message .. " (" .. ragequit[math_random(1, #ragequit)] .. ".)"
 		end
 
 		if nick then

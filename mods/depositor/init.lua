@@ -7,6 +7,10 @@ depositor.shops = depositor.shops or {} -- Shop data. Indexed array format.
 depositor.drops = depositor.drops or {} -- Dropsite data. Indexed by player name.
 depositor.dirty = true
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
 
 
 function depositor.get_random_vending_or_depositing_machine()
@@ -20,7 +24,7 @@ function depositor.get_random_vending_or_depositing_machine()
 		end
 
 		if #shops > 0 then
-			local v = shops[math.random(1, #shops)]
+			local v = shops[math_random(1, #shops)]
 			data = table.copy(v) -- Copy the data so it cannot be modified.
 		end
 	end
@@ -39,7 +43,7 @@ function depositor.get_random_depositing_machine()
 		end
 
 		if #shops > 0 then
-			local v = shops[math.random(1, #shops)]
+			local v = shops[math_random(1, #shops)]
 			data = table.copy(v) -- Copy the data so it cannot be modified.
 		end
 	end
@@ -57,7 +61,7 @@ function depositor.get_random_vending_machine()
 		end
 
 		if #shops > 0 then
-			local v = shops[math.random(1, #shops)]
+			local v = shops[math_random(1, #shops)]
 			data = table.copy(v) -- Copy the data so it cannot be modified.
 		end
 	end
@@ -100,7 +104,7 @@ function depositor.get_random_depositor_buying_item(item, maximum)
 				end
 			end
 
-			local v = shops[math.random(1, last)]
+			local v = shops[math_random(1, last)]
 			data = table.copy(v) -- Copy the data so it cannot be modified.
 		end
 	end
@@ -143,7 +147,7 @@ function depositor.get_random_vendor_selling_item(item, minimum)
 				end
 			end
 
-			local v = shops[math.random(1, last)]
+			local v = shops[math_random(1, last)]
 			data = table.copy(v) -- Copy the data so it cannot be modified.
 		end
 	end
@@ -153,7 +157,7 @@ end
 
 
 function depositor.set_drop_location(pos, pname)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	depositor.drops[pname] = {
 		pos = {x=pos.x, y=pos.y, z=pos.z},
 	}
@@ -362,7 +366,7 @@ end
 
 -- Called for vending & delivery booths.
 function depositor.check_machine(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	for i, dep in ipairs(depositor.shops) do
 		if vector.equals(dep.pos, pos) then
 			return
@@ -377,7 +381,7 @@ end
 
 -- Called for vending & delivery booths.
 function depositor.on_construct(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	table.insert(depositor.shops, {pos={x=pos.x, y=pos.y, z=pos.z}})
 	depositor.dirty = true
 end
@@ -386,7 +390,7 @@ end
 
 -- Called for vending & delivery booths.
 function depositor.on_destruct(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	for i=1, #(depositor.shops), 1 do
 		local dep = depositor.shops[i]
 		if vector.equals(dep.pos, pos) then
@@ -410,7 +414,7 @@ end
 
 
 function depositor.update_info(pos, owner, itemname, number, cost, currency, bsb, active)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local needsave = false
 
 	for k, dep in ipairs(depositor.shops) do

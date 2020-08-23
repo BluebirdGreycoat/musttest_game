@@ -2,6 +2,9 @@
 jungletree = jungletree or {}
 jungletree.modpath = minetest.get_modpath("jungletree")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local SAPLING_TIME_MIN = 60*15
@@ -161,14 +164,14 @@ minetest.register_node("jungletree:jungletree_sapling", {
 				end
 
       if not jungletree.can_grow(pos) then
-        minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+        minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
         return
       end
 
       minetest.set_node(pos, {name='air'}) -- Remove sapling first.
       local path = jungletree.modpath .. "/schematics/jungletree_jungletree.mts"
       local schempos = vector.add(pos, SCHEMATIC_RELP)
-      local subtract = math.random(0, math.random(0, 2))
+      local subtract = math_random(0, math_random(0, 2))
       schempos.y = schempos.y - subtract
       minetest.place_schematic(schempos, path, "0", nil, false)
       trunkgen.generate_bole(pos, "jungletree:jungletree_tree")
@@ -182,7 +185,7 @@ minetest.register_node("jungletree:jungletree_sapling", {
     end,
     
     on_construct = function(pos)
-      minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+      minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
     end,
     
     on_place = function(itemstack, placer, pointed_thing)

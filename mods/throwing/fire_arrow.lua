@@ -1,3 +1,9 @@
+
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 minetest.register_craftitem("throwing:arrow_fire", {
 	description = "Fire Arrow",
 	inventory_image = "throwing_arrow_fire.png",
@@ -78,9 +84,9 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
       minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.0, max_hear_distance=2*64})
 			self.object:remove()
 		end
-		if math.floor(self.lastpos.x+0.5) ~= math.floor(pos.x+0.5) or
-			math.floor(self.lastpos.y+0.5) ~= math.floor(pos.y+0.5) or
-			math.floor(self.lastpos.z+0.5) ~= math.floor(pos.z+0.5) then
+		if math_floor(self.lastpos.x+0.5) ~= math_floor(pos.x+0.5) or
+			math_floor(self.lastpos.y+0.5) ~= math_floor(pos.y+0.5) or
+			math_floor(self.lastpos.z+0.5) ~= math_floor(pos.z+0.5) then
 			if minetest.get_node(pos).name == "air" then
 				minetest.set_node(pos, {name="throwing:light"})
 			end

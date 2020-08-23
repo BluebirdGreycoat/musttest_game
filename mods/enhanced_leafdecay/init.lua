@@ -2,6 +2,9 @@
 enhanced_leafdecay = enhanced_leafdecay or {}
 enhanced_leafdecay.modpath = minetest.get_modpath("enhanced_leafdecay")
 
+-- Localize for performance.
+local math_random = math.random
+
 local LEAFDECAY_MIN_TIME = 1
 local LEAFDECAY_MAX_TIME = 20
 
@@ -15,7 +18,7 @@ enhanced_leafdecay.make_leaf_constructor =
 function(args)
   local functor = function(pos)
     local timer = minetest.get_node_timer(pos)
-    timer:start(math.random(LEAFDECAY_MIN_TIME * 10, LEAFDECAY_MAX_TIME * 10) / 10)
+    timer:start(math_random(LEAFDECAY_MIN_TIME * 10, LEAFDECAY_MAX_TIME * 10) / 10)
   end
   return functor
 end
@@ -44,9 +47,9 @@ function(args)
     for k, v in ipairs(stacks) do
       if v ~= node.name or minetest.get_item_group(node.name, "leafdecay_drop") ~= 0 then
         local loc = {
-          x = pos.x - 0.5 + math.random(),
-          y = pos.y - 0.5 + math.random(),
-          z = pos.z - 0.5 + math.random(),
+          x = pos.x - 0.5 + math_random(),
+          y = pos.y - 0.5 + math_random(),
+          z = pos.z - 0.5 + math_random(),
         }
         minetest.add_item(loc, v)
       end
@@ -75,7 +78,7 @@ function(args)
     for k, v in ipairs(leaves) do
       local timer = minetest.get_node_timer(v)
 			if not timer:is_started() then
-				timer:start(math.random(LEAFDECAY_MIN_TIME * 10, LEAFDECAY_MAX_TIME * 10) / 10)
+				timer:start(math_random(LEAFDECAY_MIN_TIME * 10, LEAFDECAY_MAX_TIME * 10) / 10)
 			end
     end
   end

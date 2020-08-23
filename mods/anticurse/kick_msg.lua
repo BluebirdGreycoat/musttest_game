@@ -1,4 +1,9 @@
 
+-- Localize for performance.
+local math_random = math.random
+
+
+
 local foul = {
 	"No bad words!",
 	"No crudity! We breath only clean air here.",
@@ -52,13 +57,13 @@ anticurse.get_kick_message = function(reason)
 	local prefix = ""
 	if reason == "foul" then
 		local len = #foul
-		local idx = math.random(1, len)
+		local idx = math_random(1, len)
 		if foul[idx] then
 			return prefix..foul[idx]
 		end
 	elseif reason == "curse" then
 		local len = #curse
-		local idx = math.random(1, len)
+		local idx = math_random(1, len)
 		if curse[idx] then
 			return prefix..curse[idx]
 		end

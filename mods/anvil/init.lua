@@ -7,6 +7,12 @@
 anvil = anvil or {}
 anvil.modpath = minetest.get_modpath("anvil")
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 anvil.tmp = anvil.tmp or {}
 
 -- Item entity's displacement above the anvil.
@@ -242,7 +248,7 @@ function anvil.on_punch(pos, node, puncher)
 	end
 
 	-- 65535 is max damage.
-	local damage_state = 40-math.floor(input:get_wear()/1638)
+	local damage_state = 40-math_floor(input:get_wear()/1638)
 
 	local tool_name = input:get_name()
 
@@ -292,7 +298,7 @@ function anvil.on_punch(pos, node, puncher)
 		pos.y = pos.y + item_displacement
 		ambiance.sound_play("anvil_clang", pos, 1.0, 30)
 		minetest.add_particlespawner({
-			amount = math.random(3, 10),
+			amount = math_random(3, 10),
 			time = 0.1,
 			minpos = pos,
 			maxpos = pos,

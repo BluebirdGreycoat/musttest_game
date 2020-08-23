@@ -11,10 +11,12 @@ local abs = math.abs
 local min = math.min
 local max = math.max
 local atann = math.atan
-local random = math.random
+local random = math_random
+local math_random = math.random
 local floor = math.floor
 local v_round = vector.round
 local v_equals = vector.equals
+local vector_distance = vector.distance
 
 local atan = function(x)
 	if not x or x ~= x then
@@ -304,12 +306,12 @@ local function mob_killed_player(self, player)
 
 	local pname = player:get_player_name()
 	local mname = utility.get_short_desc(self.description or "mob")
-	local adv = kill_adv[math.random(1, #kill_adv)]
+	local adv = kill_adv[math_random(1, #kill_adv)]
 	if adv ~= "" then
 		adv = adv .. " "
 	end
-	local adj = kill_adj[math.random(1, #kill_adj)]
-	local ang = kill_ang[math.random(1, #kill_ang)]
+	local adj = kill_adj[math_random(1, #kill_adj)]
+	local ang = kill_ang[math_random(1, #kill_ang)]
 	if ang ~= "" then
 		ang = ang .. " "
 	end
@@ -400,7 +402,7 @@ local function player_killed_mob(self, player)
 
 	local mname = utility.get_short_desc(self.description or "mob")
 
-	local msg = murder_messages[math.random(1, #murder_messages)]
+	local msg = murder_messages[math_random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", mname)
 
 	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
@@ -421,7 +423,7 @@ local function player_killed_mob(self, player)
 	msg = string.gsub(msg, "<v_he>", vsex.he)
 
 	if string.find(msg, "<brutally>") then
-		local adv = kill_adv[math.random(1, #kill_adv)]
+		local adv = kill_adv[math_random(1, #kill_adv)]
 		if adv ~= "" then
 			adv = adv .. " "
 		end
@@ -429,27 +431,27 @@ local function player_killed_mob(self, player)
 	end
 
 	if string.find(msg, "<slain>") then
-		local adj = kill_adj[math.random(1, #kill_adj)]
+		local adj = kill_adj[math_random(1, #kill_adj)]
 		msg = string.gsub(msg, "<slain>", adj)
 	end
 
 	if string.find(msg, "<slew>") then
-		local adj = kill_adj2[math.random(1, #kill_adj2)]
+		local adj = kill_adj2[math_random(1, #kill_adj2)]
 		msg = string.gsub(msg, "<slew>", adj)
 	end
 
 	if string.find(msg, "<slay>") then
-		local adj = kill_adj3[math.random(1, #kill_adj3)]
+		local adj = kill_adj3[math_random(1, #kill_adj3)]
 		msg = string.gsub(msg, "<slay>", adj)
 	end
 
 	if string.find(msg, "<pain>") then
-		local adj = pain_words[math.random(1, #pain_words)]
+		local adj = pain_words[math_random(1, #pain_words)]
 		msg = string.gsub(msg, "<pain>", adj)
 	end
 
 	if string.find(msg, "<angry>") then
-		local ang = kill_ang[math.random(1, #kill_ang)]
+		local ang = kill_ang[math_random(1, #kill_ang)]
 		if ang ~= "" then
 			ang = ang .. " "
 		end
@@ -459,7 +461,7 @@ local function player_killed_mob(self, player)
 	if string.find(msg, "<an_angry_k>") then
 		local replace = ""
 
-		local angry = kill_ang[math.random(1, #kill_ang)]
+		local angry = kill_ang[math_random(1, #kill_ang)]
 		if angry ~= "" then
 			local an = "a"
 
@@ -505,7 +507,7 @@ local function player_killed_mob(self, player)
 	minetest.chat_send_all("# Server: " .. msg)
 
 	message_spam_avoidance[pname] = {}
-	minetest.after(math.random(10, 60*2), function()
+	minetest.after(math_random(10, 60*2), function()
 		message_spam_avoidance[pname] = nil
 	end)
 end
@@ -1180,7 +1182,7 @@ local function do_env_damage(self)
 		effect(pos, 5, "tnt_smoke.png")
 
 		pos.y = pos.y - 1 -- erase effect of adjusting for particle position.
-		local pb = vector.round(pos) -- use rounded position
+		local pb = v_round(pos) -- use rounded position
 		local pa = {x=pb.x, y=pb.y+1, z=pb.z}
 		if minetest.get_node(pb).name == "air" and minetest.get_node(pa).name == "air" then
 			if self.makes_bones_in_lava and self.makes_bones_in_lava == true then
@@ -1630,9 +1632,9 @@ local function try_break_block(self, s)
 			--minetest.chat_send_player("MustTest", dump(drops))
 			for _, item in pairs(drops) do
 				local p = {
-					x = s.x + math.random()/2 - 0.25,
-					y = s.y + math.random()/2 - 0.25,
-					z = s.z + math.random()/2 - 0.25,
+					x = s.x + math_random()/2 - 0.25,
+					y = s.y + math_random()/2 - 0.25,
+					z = s.z + math_random()/2 - 0.25,
 				}
 				minetest.add_item(p, item)
 			end
@@ -2033,7 +2035,7 @@ local function general_attack(self)
 			if objs[n] and player_labels.query_nametag_onoff(pname) == false then
 				local r = self.view_range * 0.8
 				local p = objs[n]:get_pos()
-				if vector.distance(p, s) > r then
+				if vector_distance(p, s) > r then
 					objs[n] = nil
 				end
 			end
@@ -2789,7 +2791,7 @@ local function do_states(self, dtime)
 							-- Don't bother the admin.
 							if not gdac.player_is_admin(targetname) then
 								local dmg1 = self.damage or 0
-								local dmg2 = math.random(self.damage_min or 0, self.damage_max or 0)
+								local dmg2 = math_random(self.damage_min or 0, self.damage_max or 0)
 								local dmg = dmg1
 								if dmg2 > dmg1 then
 									dmg = dmg2

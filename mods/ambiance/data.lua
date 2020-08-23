@@ -1,6 +1,9 @@
 
 -- This file is reloadable.
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 -- Table of registered sounds. Algorithm intended for intermittent sounds only, continuous sounds need special treatment.
@@ -322,7 +325,7 @@ minetest.after(0, function()
 
 		-- Initialize timer to a random value between min and max time.
 		-- This ensures all sounds start with random times on first run.
-		v.timer = math.random(v.mintime, v.maxtime)
+		v.timer = math_random(v.mintime, v.maxtime)
 
 		-- Create perlin noise object if wanted.
 		if v.noise_params then

@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 
 if not mese_crystals.nodes_registered then
 	local boxes = {
@@ -45,7 +48,7 @@ if not mese_crystals.nodes_registered then
 			end,
 			on_construct = function(pos)
 				local node = minetest.get_node(pos)
-				node.param2 = math.random(0, 3)
+				node.param2 = math_random(0, 3)
 				minetest.swap_node(pos, node)
 			end,
 		})
@@ -83,7 +86,7 @@ function mese_crystals.on_seed_place(itemstack, user, pt)
 		if node1.name == "air" and not minetest.is_protected(pos1, user:get_player_name()) then
 			itemstack:take_item()
 			node.name = "mese_crystals:mese_crystal_ore1"
-			minetest.add_node(pos1, {name=node.name, param2=math.random(0, 3)})
+			minetest.add_node(pos1, {name=node.name, param2=math_random(0, 3)})
 			minetest.get_node_timer(pos1):start(mese_crystals.get_grow_time())
 
 			dirtspread.on_environment(pos1)

@@ -1,5 +1,8 @@
 screwdriver = screwdriver or {}
 
+-- Localize for performance.
+local math_random = math.random
+
 local function register_pane(name, desc, def)
 	xpanes.register_pane(name, {
 		description = desc,
@@ -385,7 +388,7 @@ xdecor.register("ivy", {
 
 	on_construct = function(pos)
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(60, 60*15))
+		timer:start(math_random(60, 60*15))
 	end,
 
 	on_timer = function(pos, elapsed)
@@ -399,12 +402,12 @@ xdecor.register("ivy", {
 
 		-- Check again in 1 - 3 hours.
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(60*60, 60*60*3))
+		timer:start(math_random(60*60, 60*60*3))
 	end,
 
 	on_punch = function(pos, node, puncher, pt)
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(60, 60*15))
+		timer:start(math_random(60, 60*15))
 	end,
 })
 
@@ -485,7 +488,7 @@ xdecor.register("painting_1", {
 	walkable = false,
 
 	on_place = function(itemstack, placer, pointed_thing)
-		local num = math.random(4)
+		local num = math_random(4)
 		local leftover = minetest.item_place_node(
 			ItemStack("xdecor:painting_"..num), placer, pointed_thing)
 		if leftover:get_count() == 0 and
@@ -524,7 +527,7 @@ xdecor.register("stonepath", {
 	selection_box = xdecor.nodebox.slab_y(0.05),
 	on_construct = function(pos)
 		local node = minetest.get_node(pos)
-		node.param2 = math.random(1, 3)
+		node.param2 = math_random(1, 3)
 		minetest.swap_node(pos, node)
 	end,
 	movement_speed_multiplier = default.NORM_SPEED,

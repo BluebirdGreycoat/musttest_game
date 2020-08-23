@@ -1,6 +1,12 @@
 
 beds = beds or {}
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 -- Reloadable file.
 if not beds.run_functions_once then
 	local c = "beds:functions"
@@ -130,7 +136,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 
 		-- physics, eye_offset, etc
 		player:set_eye_offset({x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
-		player:set_look_horizontal(math.random(1, 180) / 100)
+		player:set_look_horizontal(math_random(1, 180) / 100)
 		default.player_attached[name] = false
 		player:set_physics_override(1, 1, 1)
 		hud_flags.wielditem = true
@@ -296,7 +302,7 @@ end
 
 
 function beds.on_rightclick(pos, player)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
   local name = player:get_player_name()
   local meta = minetest.get_meta(pos)
   local owner = meta:get_string("owner") or ""
@@ -369,7 +375,7 @@ function beds.on_rightclick(pos, player)
 
 		-- If the bed is public, then player doesn't sethome here, and respawn count is not changed.
 		if owner ~= "server" then
-			beds.set_spawn(vector.round(pos), name)
+			beds.set_spawn(vector_round(pos), name)
 
 			-- Sleeping in a bed refreshes the respawn count for this player.
 			-- The player will respawn at this bed as long as their count is

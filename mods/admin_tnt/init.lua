@@ -4,13 +4,18 @@ admin_tnt.modpath = minetest.get_modpath("admin_tnt")
 admin_tnt.explode_time = 60*60*24*3+60*60*3
 admin_tnt.step_time = 30
 
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 -- Development protection.
 --if not minetest.is_singleplayer() then
 --	return
 --end
 
 local function time_to_string(time)
-	local floor = math.floor
+	local floor = math_floor
 	local mod = math.mod
 
 	local days = floor(time/86400)
@@ -74,7 +79,7 @@ function admin_tnt.after_place_node(pos, placer, itemstack, pt)
 		return
 	end
 
-	local et = math.floor(admin_tnt.explode_time)
+	local et = math_floor(admin_tnt.explode_time)
 
 	-- Start nodetimer.
 	local timer = minetest.get_node_timer(pos)

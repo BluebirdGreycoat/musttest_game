@@ -1,4 +1,9 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 local armor_org_func = armor.set_player_armor
 
 local function get_armor_lvl(def)
@@ -11,7 +16,7 @@ local function get_armor_lvl(def)
 		ret = 1
 	end
 
-	return math.floor(tonumber(20 * (ret)))
+	return math_floor(tonumber(20 * (ret)))
 end
 
 function armor.set_player_armor(self, player)

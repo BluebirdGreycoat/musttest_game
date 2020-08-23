@@ -2,6 +2,9 @@
 -- We need to override the Minetest particle API in order to
 -- control which clients receive particles.
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 local players = {}
 local modmeta = minetest.get_mod_storage()
 local maxdist = 50
@@ -46,7 +49,7 @@ function minetest.add_particlespawner_single(data)
 	if players[pname] then
 		local player = minetest.get_player_by_name(pname)
 		if player then
-			if vector.distance(player:get_pos(), data.minpos) <= maxdist then
+			if vector_distance(player:get_pos(), data.minpos) <= maxdist then
 				id = add_particlespawner(data)
 			end
 		end
@@ -58,7 +61,7 @@ function minetest.add_particlespawner(data)
 	for k, v in pairs(players) do
 		local player = minetest.get_player_by_name(k)
 		if player then
-			if vector.distance(player:get_pos(), data.minpos) <= maxdist then
+			if vector_distance(player:get_pos(), data.minpos) <= maxdist then
 				data.playername = k
 				add_particlespawner(data)
 			end
@@ -70,7 +73,7 @@ function minetest.add_particle(data)
 	for k, v in pairs(players) do
 		local player = minetest.get_player_by_name(k)
 		if player then
-			if vector.distance(player:get_pos(), data.pos) <= maxdist then
+			if vector_distance(player:get_pos(), data.pos) <= maxdist then
 				data.playername = k
 				add_particle(data)
 			end

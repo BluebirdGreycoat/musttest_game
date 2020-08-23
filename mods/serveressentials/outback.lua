@@ -4,12 +4,16 @@
 -- on first load or whenever the mod is reloaded.
 serveressentials.gateway_exit_position = {x=0, y=0, z=0}
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 -- Called by the protector mod to determine if a protector can be placed here,
 -- with respect to the Outback gateway's current exit location.
 local PROTECTOR_DISTANCE_FROM_EXIT = 50
 function serveressentials.protector_can_place(pos)
 	local p2 = serveressentials.gateway_exit_position
-	if vector.distance(pos, p2) > PROTECTOR_DISTANCE_FROM_EXIT then
+	if vector_distance(pos, p2) > PROTECTOR_DISTANCE_FROM_EXIT then
 		return true
 	end
 	return false
@@ -39,7 +43,7 @@ function serveressentials.get_current_exit_location()
 end
 
 function serveressentials.update_exit_location(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
 	-- Update position stored in memory.
 	local p = serveressentials.gateway_exit_position

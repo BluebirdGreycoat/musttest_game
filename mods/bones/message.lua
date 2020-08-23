@@ -5,6 +5,9 @@
 bones = bones or {}
 bones.players = bones.players or {}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local release_player = function(player)
@@ -75,7 +78,7 @@ local msg_str2 = {
 	"ended life",
 }
 local function random_str(strs)
-	return strs[math.random(1, #strs)]
+	return strs[math_random(1, #strs)]
 end
 
 

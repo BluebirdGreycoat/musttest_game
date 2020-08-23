@@ -8,6 +8,9 @@
 flowers = flowers or {}
 flowers.modpath = minetest.get_modpath("flowers")
 
+-- Localize for performance.
+local math_random = math.random
+
 flowers.flora_mintime = 60*3
 flowers.flora_maxtime = 60*30
 
@@ -60,7 +63,7 @@ end
 
 function flowers.on_flora_construct(pos)
 	if flowers.surface_can_spawn_flora({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.flora_mintime, flowers.flora_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.flora_mintime, flowers.flora_maxtime))
 	end
 end
 
@@ -71,7 +74,7 @@ function flowers.on_flora_destruct(pos)
 	local flora = minetest.find_nodes_in_area_under_air(minp, maxp, "group:flora")
 	if flora and #flora > 0 then
 		for i=1, #flora do
-			minetest.get_node_timer(flora[i]):start(math.random(flowers.flora_mintime, flowers.flora_maxtime))
+			minetest.get_node_timer(flora[i]):start(math_random(flowers.flora_mintime, flowers.flora_maxtime))
 		end
 	end
 end
@@ -81,7 +84,7 @@ function flowers.on_flora_timer(pos, elapsed)
 
 	local node = minetest.get_node(pos)
 	if flowers.flower_spread(pos, node) then
-		minetest.get_node_timer(pos):start(math.random(flowers.flora_mintime, flowers.flora_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.flora_mintime, flowers.flora_maxtime))
 	else
 		-- Else timer should stop, cannot grow anymore.
 		minetest.get_node_timer(pos):stop()
@@ -90,7 +93,7 @@ end
 
 function flowers.on_flora_punch(pos, node, puncher, pt)
 	if flowers.surface_can_spawn_flora({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.flora_mintime, flowers.flora_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.flora_mintime, flowers.flora_maxtime))
 	end
 end
 
@@ -258,7 +261,7 @@ function flowers.flower_spread(pos, node)
 
 	local soils = minetest.find_nodes_in_area_under_air(pos0, pos1, "group:soil")
 	if #soils > 0 then
-		local seedling = soils[math.random(1, #soils)]
+		local seedling = soils[math_random(1, #soils)]
 		local seedling_above = {x=seedling.x, y=seedling.y+1, z=seedling.z}
 
 		local light = minetest.get_node_light(seedling_above) or 0
@@ -327,7 +330,7 @@ end
 
 function flowers.on_mushroom_construct(pos)
 	if flowers.surface_can_spawn_mushroom({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
 	end
 end
 
@@ -338,7 +341,7 @@ function flowers.on_mushroom_destruct(pos)
 	local mushrooms = minetest.find_nodes_in_area_under_air(minp, maxp, flowers.mushroom_nodes)
 	if mushrooms and #mushrooms > 0 then
 		for i=1, #mushrooms do
-			minetest.get_node_timer(mushrooms[i]):start(math.random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
+			minetest.get_node_timer(mushrooms[i]):start(math_random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
 		end
 	end
 end
@@ -348,7 +351,7 @@ function flowers.on_mushroom_timer(pos, elapsed)
 
 	local node = minetest.get_node(pos)
 	if flowers.mushroom_spread(pos, node) then
-		minetest.get_node_timer(pos):start(math.random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
 	else
 		-- Else timer should stop, cannot grow anymore.
 		minetest.get_node_timer(pos):stop()
@@ -357,7 +360,7 @@ end
 
 function flowers.on_mushroom_punch(pos, node, puncher, pt)
 	if flowers.surface_can_spawn_mushroom({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
 	end
 end
 
@@ -470,7 +473,7 @@ function flowers.mushroom_spread(pos, node)
 	if not dirt or #dirt == 0 then
 		return false
 	end
-	local randp = dirt[math.random(1, #dirt)]
+	local randp = dirt[math_random(1, #dirt)]
 	local airp = {x=randp.x, y=randp.y+1, z=randp.z}
 	local airn = minetest.get_node_or_nil(airp)
 	if not airn or airn.name ~= "air" then
@@ -552,7 +555,7 @@ if not flowers.reg3 then
 					minetest.get_item_group(node, "water") > 0 then
 				if not minetest.is_protected(pos, player_name) then
 					minetest.add_node(pos, {name = "flowers:waterlily",
-						param2 = math.random(0, 3)})
+						param2 = math_random(0, 3)})
 					--if not minetest.setting_getbool("creative_mode") then
 						itemstack:take_item()
 					--end
@@ -685,7 +688,7 @@ end
 -- This is called for both lily and lilyspawner.
 function flowers.on_lily_construct(pos)
 	if flowers.surface_can_spawn_lily({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.lily_mintime, flowers.lily_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.lily_mintime, flowers.lily_maxtime))
 	end
 end
 
@@ -696,7 +699,7 @@ function flowers.on_lily_destruct(pos)
 	local lilies = minetest.find_nodes_in_area(minp, maxp, "flowers:waterlily")
 	if lilies and #lilies > 0 then
 		for i=1, #lilies do
-			minetest.get_node_timer(lilies[i]):start(math.random(flowers.lily_mintime, flowers.lily_maxtime))
+			minetest.get_node_timer(lilies[i]):start(math_random(flowers.lily_mintime, flowers.lily_maxtime))
 		end
 	end
 end
@@ -705,7 +708,7 @@ function flowers.on_lily_timer(pos, elapsed)
 	--minetest.chat_send_player("MustTest", "Lily timer @ " .. minetest.pos_to_string(pos) .. "!")
 
 	if flowers.lily_spread(pos) then
-		minetest.get_node_timer(pos):start(math.random(flowers.lily_mintime, flowers.lily_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.lily_mintime, flowers.lily_maxtime))
 	else
 		-- Else timer should stop, cannot grow anymore.
 		minetest.get_node_timer(pos):stop()
@@ -714,7 +717,7 @@ end
 
 function flowers.on_lily_punch(pos, node, puncher, pt)
 	if flowers.surface_can_spawn_lily({x=pos.x, y=pos.y-1, z=pos.z}) then
-		minetest.get_node_timer(pos):start(math.random(flowers.lily_mintime, flowers.lily_maxtime))
+		minetest.get_node_timer(pos):start(math_random(flowers.lily_mintime, flowers.lily_maxtime))
 	end
 end
 
@@ -743,7 +746,7 @@ function flowers.lily_spread(pos)
 
 	local water = minetest.find_nodes_in_area_under_air(pos0, pos1, "default:water_source")
 	if #water > 0 then
-		local growpos = water[math.random(1, #water)]
+		local growpos = water[math_random(1, #water)]
 		growpos.y = growpos.y + 1
 
 		local light = minetest.get_node_light(growpos) or 0
@@ -756,7 +759,7 @@ function flowers.lily_spread(pos)
 			end
 		end
 
-		minetest.add_node(growpos, {name="flowers:waterlily", param2=math.random(0, 3)})
+		minetest.add_node(growpos, {name="flowers:waterlily", param2=math_random(0, 3)})
 		return true
 	end
 

@@ -3,6 +3,11 @@
 memorandum = memorandum or {}
 memorandum.modpath = minetest.get_modpath("memorandum")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 local collisionbox_sheet = {
@@ -545,7 +550,7 @@ memorandum.on_message_use = function(itemstack, user, pointed_thing)
 	-- This allows players to post messages to each other without requiring mailboxes.
 	-- Note that no one will be able to dig the letter except the owner of the area, or the player who placed it.
 
-	minetest.add_node(pos, {name="memorandum:letter_written", param2=math.random(0, 3)})
+	minetest.add_node(pos, {name="memorandum:letter_written", param2=math_random(0, 3)})
 
 	local text = itemstack:get_metadata()
 	local data = memorandum.extract_metainfo(text)
@@ -641,15 +646,15 @@ function memorandum.check_explosive_runes(pname, pos, author, text)
 
 	text = text:lower()
 	if text:find("explosive") and text:find("rune") then
-		local p = vector.round({x=pos.x, y=pos.y, z=pos.z})
+		local p = vector_round({x=pos.x, y=pos.y, z=pos.z})
 		local d = {
-			radius = math.random(1, math.random(1, 4)),
-			damage_radius = math.random(5, 15),
+			radius = math_random(1, math_random(1, 4)),
+			damage_radius = math_random(5, 15),
 			ignore_protection = false,
 			disable_drops = true,
 			ignore_on_blast = false,
 		}
-		local t = math.floor(text:len() / 10)
+		local t = math_floor(text:len() / 10)
 		minetest.after((t / 2.0), function() minetest.sound_play("tnt_ignite", {pos = pos}) end)
 		minetest.after(t, function() tnt.boom(p, d) end)
 

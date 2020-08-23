@@ -2,6 +2,11 @@
 voidchest = voidchest or {}
 voidchest.modpath = minetest.get_modpath("voidchest")
 
+-- Localize for performance.
+local math_random = math.random
+
+
+
 local function get_chest_formspec()
 	-- Obtain hooks into the trash mod's trash slot inventory.
 	local ltrash, mtrash = trash.get_listname()
@@ -141,8 +146,8 @@ local VOIDCHEST_DEF = {
   -- After digging chest, sometimes, a nasty surprise.
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
     minetest.sound_play("tnt_gunpowder_burning", {pos=pos, gain=2})
-    if math.random(1, 10) == 1 then
-      minetest.after(math.random(1, 5), function()
+    if math_random(1, 10) == 1 then
+      minetest.after(math_random(1, 5), function()
         tnt.boom(pos, {
           radius = 2,
           ignore_protection = false,
@@ -151,7 +156,7 @@ local VOIDCHEST_DEF = {
           disable_drops = true,
         })
       end)
-    elseif math.random(1, 10) == 1 then
+    elseif math_random(1, 10) == 1 then
       minetest.add_node(pos, {name="fire:nether_flame"})
     end
   end,

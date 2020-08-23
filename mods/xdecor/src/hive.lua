@@ -1,6 +1,9 @@
 local hive = {}
 local honey_max = 5
 
+-- Localize for performance.
+local math_random = math.random
+
 local bees_time_min = 64
 local bees_time_max = 64*8
 
@@ -34,7 +37,7 @@ function hive.construct(pos)
 	inv:set_size("honey", 1)
 
 	local timer = minetest.get_node_timer(pos)
-	timer:start(math.random(bees_time_min, bees_time_max))
+	timer:start(math_random(bees_time_min, bees_time_max))
 end
 
 function hive.timer(pos)
@@ -141,14 +144,14 @@ xdecor.register("hive", {
 
 		-- Restart timer.
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(bees_time_min, bees_time_max))
+		timer:start(math_random(bees_time_min, bees_time_max))
 	end,
 
 	allow_metadata_inventory_put = function() return 0 end,
 
 	on_metadata_inventory_take = function(pos, listname, index, stack, player)
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(bees_time_min, bees_time_max))
+		timer:start(math_random(bees_time_min, bees_time_max))
 
 		-- Sting the player if they don't own this land.
 		if player and minetest.test_protection(pos, player:get_player_name()) then

@@ -5,6 +5,13 @@ gdac = gdac or {}
 gdac.session_violations = gdac.session_violations or {}
 gdac.modpath = minetest.get_modpath("gdac")
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 dofile(gdac.modpath .. "/position_logger.lua")
 
 
@@ -145,7 +152,7 @@ local check_fly = function(pos)
 		return false
 	end
 
-	--local p = vector.round(pos)
+	--local p = vector_round(pos)
 	-- Check up to 2 meters below player, and 1 meter all around.
 	-- Fly cheaters tend to be pretty blatent in their cheating,
 	-- and I want to avoid logging players who do a lot of jumping.
@@ -176,10 +183,10 @@ check_fly_again = function(name, old_pos)
 			local d = y2 - y1
 			if d < 0.1 then -- If distance is negative or *close to it* then player probably is not falling.
 				-- If player hasn't moved they may have just glitched accidentally.
-				if vector.distance(new_pos, old_pos) > 0.5 then
+				if vector_distance(new_pos, old_pos) > 0.5 then
 					gdac.add_session_violation(name)
 					gdac.log("Possible flier? <" .. name ..
-						"> caught flying at " .. minetest.pos_to_string(vector.round(new_pos)) .. ". SV: " ..
+						"> caught flying at " .. minetest.pos_to_string(vector_round(new_pos)) .. ". SV: " ..
 						gdac.session_violations[name] .. ".")
 				end
 
@@ -210,7 +217,7 @@ gdac.antifly_globalstep = function(dtime)
 			if flytimer > flytimeout then
 				flytimer = 0
 				-- Random time to next check so that it cannot be predicted.
-				flytimeout = math.random(gdac.fly_timeout_min, gdac.fly_timeout_max)
+				flytimeout = math_random(gdac.fly_timeout_min, gdac.fly_timeout_max)
 				check = true
 			end
 			data.flytimer = flytimer
@@ -250,7 +257,7 @@ end
 
 
 local check_clip = function(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	local p1 = {x=p.x, y=p.y,   z=p.z}
 	local p2 = {x=p.x, y=p.y+1, z=p.z}
 
@@ -282,10 +289,10 @@ check_clip_again = function(name, old_pos)
 		local still_cheating = check_clip(new_pos)
 		if still_cheating == true then
 			-- If player hasn't moved they may have just glitched accidentally.
-			if vector.distance(new_pos, old_pos) > 0.5 then
+			if vector_distance(new_pos, old_pos) > 0.5 then
 				gdac.add_session_violation(name)
 				gdac.log("Possible noclipper? <" .. name ..
-					"> caught inside \"" .. minetest.get_node(new_pos).name .. "\" at " .. minetest.pos_to_string(vector.round(new_pos)) .. ". SV: " ..
+					"> caught inside \"" .. minetest.get_node(new_pos).name .. "\" at " .. minetest.pos_to_string(vector_round(new_pos)) .. ". SV: " ..
 					gdac.session_violations[name] .. ".")
 			end
 
@@ -315,7 +322,7 @@ gdac.anticlip_globalstep = function(dtime)
 			if cliptimer > cliptimeout then
 				cliptimer = 0
 				-- Random time to next check so that it cannot be predicted.
-				cliptimeout = math.random(gdac.clip_timeout_min, gdac.clip_timeout_max)
+				cliptimeout = math_random(gdac.clip_timeout_min, gdac.clip_timeout_max)
 				check = true
 			end
 			data.cliptimer = cliptimer
@@ -338,14 +345,14 @@ end
 
 gdac.check_long_range_interact = function(pos, node, digger, strpart)
 	local ppos = digger:getpos()
-	local d = vector.distance(pos, ppos)
+	local d = vector_distance(pos, ppos)
 	if d > gdac.interact_range_limit then
 		local pname = digger:get_player_name()
 		local nodename = node.name
 		gdac.add_session_violation(pname)
 		gdac.log("Possible cheater? <" .. pname ..
-			"> " .. strpart .. " '" .. nodename .. "' at " .. minetest.pos_to_string(vector.round(pos)) ..
-			"; TOO FAR from player at " .. minetest.pos_to_string(vector.round(ppos)) ..
+			"> " .. strpart .. " '" .. nodename .. "' at " .. minetest.pos_to_string(vector_round(pos)) ..
+			"; TOO FAR from player at " .. minetest.pos_to_string(vector_round(ppos)) ..
 			". D: " .. round(d) ..  ". SV: " ..
 			gdac.session_violations[pname] .. ".")
 	end
@@ -435,7 +442,7 @@ if not gdac.registered then
 	end
 
 	-- Detect digging at long range.
-	local random = math.random
+	local random = math_random
 	minetest.register_on_dignode(function(pos, oldnode, digger)
 		if not digger or not digger:is_player() then return end
 
@@ -510,11 +517,11 @@ if not gdac.registered then
 	--  gdac.players[player:get_player_name()] = {
 	--    -- Fly data.
 	--    flytimer = 0,
-	--    flytimeout = math.random(gdac.fly_timeout_min, gdac.fly_timeout_max),
+	--    flytimeout = math_random(gdac.fly_timeout_min, gdac.fly_timeout_max),
 	--
 	--    -- Noclip data.
 	--    cliptimer = 0,
-	--    cliptimeout = math.random(gdac.clip_timeout_min, gdac.clip_timeout_max),
+	--    cliptimeout = math_random(gdac.clip_timeout_min, gdac.clip_timeout_max),
 	--  }
 	--end)
 

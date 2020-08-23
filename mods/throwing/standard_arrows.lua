@@ -1,3 +1,9 @@
+
+-- Localize for performance.
+local math_random = math.random
+
+
+
 function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, craftcount)
 	minetest.register_craftitem("throwing:arrow_" .. kind, {
 		description = desc .. " Arrow",
@@ -70,7 +76,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		if self.lastpos.x~=nil then
 			if throwing_node_should_block_arrow(node.name) then
 				self.object:remove()
-				if math.random() < toughness then
+				if math_random() < toughness then
 					minetest.add_item(self.lastpos, 'throwing:arrow_' .. kind)
 				else
 					minetest.add_item(self.lastpos, 'default:stick')

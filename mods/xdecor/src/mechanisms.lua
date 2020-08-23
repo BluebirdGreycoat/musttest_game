@@ -3,6 +3,9 @@
 local plate = {}
 screwdriver = screwdriver or {}
 
+-- Localize for performance.
+local math_random = math.random
+
 local function door_toggle(pos_actuator, pos_door, player)
 	local actuator = minetest.get_node(pos_actuator)
 	local door = doors.get(pos_door)
@@ -157,7 +160,7 @@ local function plate_explode(pos, player)
 	minetest.remove_node(pos)
 
 	-- Detonate some TNT! Usually kills player, may not necessarily cause environment damage.
-  tnt.boom(vector.add(pos, {x=math.random(-2, 2), y=0, z=math.random(-2, 2)}), {
+  tnt.boom(vector.add(pos, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)}), {
     radius = 3,
     ignore_protection = false,
     ignore_on_blast = false,

@@ -3,6 +3,7 @@ local set_node = minetest.set_node
 local get_node = minetest.get_node
 local swap_node = minetest.swap_node
 local ipairs = ipairs
+local math_random = math.random
 
 
 
@@ -341,7 +342,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
 
   for k, v in ipairs(chnk_pos_grass) do
 		-- Use swap_node to avoid triggering the construction timer.
-		swap_node(v, {name="nether:grass_" .. math.random(1, 3)})
+		swap_node(v, {name="nether:grass_" .. math_random(1, 3)})
   end
 
   for k, v in ipairs(chnk_pos_flower) do

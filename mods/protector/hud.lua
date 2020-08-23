@@ -6,11 +6,15 @@ protector.hud = protector.hud or {}
 local hud = protector.hud
 hud.players = {}
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 function protector.update_nearby_players(pos)
 	local players = minetest.get_connected_players()
 	for _, player in ipairs(players) do
 		local p1 = player:get_pos()
-		if vector.distance(pos, p1) <= 6 then
+		if vector_distance(pos, p1) <= 6 then
 			local pname = player:get_player_name()
 			hud.players[pname].moved = true -- Will trigger a HUD update.
 		end
@@ -35,7 +39,7 @@ minetest.register_globalstep(function(dtime)
 		local timer = hud.players[pname].timer
 
 		-- Detect if the player moved through some other means.
-		local pos = vector.round(player:get_pos())
+		local pos = vector_round(player:get_pos())
 		if not vector.equals(hud.players[pname].pos, pos) then
 			moving = true
 		end

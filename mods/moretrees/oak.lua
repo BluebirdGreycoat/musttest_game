@@ -7,6 +7,9 @@ local SCHEMATIC_MINP = {x=-4, y=0, z=-4}
 local SCHEMATIC_MAXP = {x=4, y=12, z=4}
 local SCHEMATIC_RELP = {x=-4, y=0, z=-4}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 minetest.register_node("moretrees:oak_tree", {
@@ -90,16 +93,16 @@ minetest.register_node("moretrees:oak_sapling", {
 				end
 
 		if not moretrees.can_grow(pos) then
-			minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+			minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 			return
 		end
 
 		minetest.set_node(pos, {name='air'}) -- Remove sapling first.
 		local path = moretrees.modpath .. "/schematics/oak.mts"
-		minetest.place_schematic(vector.add(vector.add(pos, {x=0, y=math.random(-1, 1), z=0}), SCHEMATIC_RELP), path, "random", nil, false)
+		minetest.place_schematic(vector.add(vector.add(pos, {x=0, y=math_random(-1, 1), z=0}), SCHEMATIC_RELP), path, "random", nil, false)
 		trunkgen.check_trunk(pos, 3, "moretrees:oak_tree")
-		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:oak_leaves", math.random(10, 30))
-		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:oak_leaves", math.random(10, 30))
+		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:oak_leaves", math_random(10, 30))
+		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:oak_leaves", math_random(10, 30))
 		snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
 		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
         
@@ -109,12 +112,12 @@ minetest.register_node("moretrees:oak_sapling", {
             "moretrees:oak_acorn",
             SCHEMATIC_MINP,
             SCHEMATIC_MAXP,
-            math.random(6, 10)
+            math_random(6, 10)
         )
 	end,
     
     on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+		minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 	end,
     
     on_place = function(itemstack, placer, pointed_thing)

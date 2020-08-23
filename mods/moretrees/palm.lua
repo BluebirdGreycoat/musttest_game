@@ -7,6 +7,9 @@ local SCHEMATIC_MINP = {x=-4, y=0, z=-4}
 local SCHEMATIC_MAXP = {x=4, y=13, z=4}
 local SCHEMATIC_RELP = {x=-4, y=0, z=-4}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 minetest.register_node("moretrees:palm_tree", {
@@ -90,13 +93,13 @@ minetest.register_node("moretrees:palm_sapling", {
 				end
 
 		if not moretrees.can_grow(pos) then
-			minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+			minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 			return
 		end
 
 		minetest.set_node(pos, {name='air'}) -- Remove sapling first.
 		local path = moretrees.modpath .. "/schematics/palm.mts"
-		minetest.place_schematic(vector.add(vector.add(pos, {x=0, y=math.random(-1, 1), z=0}), SCHEMATIC_RELP), path, "random", nil, false)
+		minetest.place_schematic(vector.add(vector.add(pos, {x=0, y=math_random(-1, 1), z=0}), SCHEMATIC_RELP), path, "random", nil, false)
 		trunkgen.check_trunk(pos, 3, "moretrees:palm_tree")
 		snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
 		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
@@ -107,12 +110,12 @@ minetest.register_node("moretrees:palm_sapling", {
             "moretrees:coconut",
             SCHEMATIC_MINP,
             SCHEMATIC_MAXP,
-            math.random(5, 6)
+            math_random(5, 6)
         )
 	end,
     
     on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+		minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 	end,
     
     on_place = function(itemstack, placer, pointed_thing)

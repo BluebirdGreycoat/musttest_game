@@ -1,10 +1,13 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 function pm.seek_flammable_node(self, pos)
 	local minp = vector.add(pos, {x=-8, y=-8, z=-8})
 	local maxp = vector.add(pos, {x=8, y=8, z=8})
 	local positions = minetest.find_nodes_in_area_under_air(minp, maxp, "group:flammable")
 	if #positions > 0 then
-		local p2 = positions[math.random(1, #positions)]
+		local p2 = positions[math_random(1, #positions)]
 		if not minetest.test_protection(p2, "") then
 			return p2, nil
 		end
@@ -33,7 +36,7 @@ function pm.seek_player_or_mob_or_item(self, pos)
 	end
 
 	if #objects > 0 then
-		return nil, objects[math.random(1, #objects)]
+		return nil, objects[math_random(1, #objects)]
 	end
 
 	return nil, nil
@@ -60,7 +63,7 @@ function pm.seek_player_or_mob(self, pos)
 	end
 
 	if #objects > 0 then
-		return nil, objects[math.random(1, #objects)]
+		return nil, objects[math_random(1, #objects)]
 	end
 
 	return nil, nil
@@ -89,7 +92,7 @@ function pm.seek_player_or_mob_not_wisp(self, pos)
 	end
 
 	if #objects > 0 then
-		return nil, objects[math.random(1, #objects)]
+		return nil, objects[math_random(1, #objects)]
 	end
 
 	return nil, nil
@@ -116,7 +119,7 @@ function pm.seek_player_or_item(self, pos)
 	end
 
 	if #objects > 0 then
-		return nil, objects[math.random(1, #objects)]
+		return nil, objects[math_random(1, #objects)]
 	end
 
 	return nil, nil
@@ -136,7 +139,7 @@ function pm.seek_player(self, pos)
 	end
 
 	if #objects > 0 then
-		return nil, objects[math.random(1, #objects)]
+		return nil, objects[math_random(1, #objects)]
 	end
 
 	return nil, nil
@@ -150,12 +153,12 @@ function pm.seek_node_with_meta(self, pos)
 
 	if positions then
 		if #positions > 0 then
-			local pos = positions[math.random(1, #positions)]
+			local pos = positions[math_random(1, #positions)]
 			local minp = vector.add(pos, {x=-1, y=-1, z=-1})
 			local maxp = vector.add(pos, {x=1, y=1, z=1})
 			local airs = minetest.find_nodes_in_area(minp, maxp, "air")
 			if airs and #airs > 0 then
-				return airs[math.random(1, #airs)], nil
+				return airs[math_random(1, #airs)], nil
 			end
 		end
 	end
@@ -178,7 +181,7 @@ function pm.seek_wisp(self, pos)
 	end
 
 	if #objects > 0 then
-		local wisp = objects[math.random(1, #objects)]
+		local wisp = objects[math_random(1, #objects)]
 		local p = wisp:get_pos()
 		p.y = p.y - 3 -- Keep communal wisps from following each other into the sky.
 		return p, wisp

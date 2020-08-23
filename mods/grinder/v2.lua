@@ -10,6 +10,10 @@ local RECIPE_TYPE = "grinding"
 grind2_lv = grind2_lv or {}
 grind2_mv = grind2_mv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 for j, t in ipairs({
@@ -153,9 +157,9 @@ for j, t in ipairs({
 
 		local bats = utility.inventory_count_items(inv, "upg", "battery:battery")
 		if bats == 1 then
-			return math.floor(t.demand*0.8)
+			return math_floor(t.demand*0.8)
 		elseif bats == 2 then
-			return math.floor(t.demand*0.7)
+			return math_floor(t.demand*0.7)
 		end
 
 		return t.demand
@@ -325,7 +329,7 @@ for j, t in ipairs({
 			-- If total energy time wasn't recorded yet, record it.
 			if meta:get_int("fueltotaltime") == 0 then
 				local energy = inv:get_stack("buffer", 1):get_count()
-				meta:set_int("fueltotaltime", math.floor(energy/demand))
+				meta:set_int("fueltotaltime", math_floor(energy/demand))
 			end
 
 			goto on_cook
@@ -379,7 +383,7 @@ for j, t in ipairs({
 			if energy:get_count() >= demand then
 				-- Increment cooktime.
 				meta:set_float("srctime", meta:get_float("srctime") + 1/speed)
-				energy:take_item(math.floor(demand/speed))
+				energy:take_item(math_floor(demand/speed))
 				inv:set_stack("buffer", 1, energy)
 				-- Set machine active.
 				keeprunning = true
@@ -400,8 +404,8 @@ for j, t in ipairs({
 				method = "mesefuel", width = 1, items = fuellist})
 			if fuel.time > 0 then
 				local old = inv:get_stack("buffer", 1):get_count()
-				local energy = old + math.floor(fuel.time * MACHINE_FUEL_EU_PER_SEC)
-				meta:set_int("fueltotaltime", math.floor(energy/demand))
+				local energy = old + math_floor(fuel.time * MACHINE_FUEL_EU_PER_SEC)
+				meta:set_int("fueltotaltime", math_floor(energy/demand))
 				inv:set_stack("buffer", 1, "atomic:energy " .. energy)
 				inv:set_stack("fuel", 1, afterfuel.items[1])
 				goto check_got_enough_energy
@@ -421,7 +425,7 @@ for j, t in ipairs({
 				if energy > 0 then
 					local old = inv:get_stack("buffer", 1):get_count()
 					energy = energy + old
-					meta:set_int("fueltotaltime", math.floor(energy/demand))
+					meta:set_int("fueltotaltime", math_floor(energy/demand))
 					inv:set_stack("buffer", 1, "atomic:energy " .. energy)
 					goto check_got_enough_energy
 				else
@@ -455,13 +459,13 @@ for j, t in ipairs({
 			if keeprunning then
 				local itempercent = 0
 				if cookable then
-					itempercent = math.floor(meta:get_float("srctime") / cooked.time * 100)
+					itempercent = math_floor(meta:get_float("srctime") / cooked.time * 100)
 				end
-				local fueltime = math.floor(inv:get_stack("buffer", 1):get_count()/demand)
+				local fueltime = math_floor(inv:get_stack("buffer", 1):get_count()/demand)
 				local fueltotaltime = meta:get_int("fueltotaltime")
-				local fuelpercent = math.floor(fueltime / fueltotaltime * 100)
+				local fuelpercent = math_floor(fueltime / fueltotaltime * 100)
 
-				local eu_demand = math.floor(demand/speed)
+				local eu_demand = math_floor(demand/speed)
 				local infotext = t.up .. " " .. MACHINE_NAME .. " (Active)\n" ..
 					"Demand: " .. eu_demand .. " EU Per/Sec"
 				local formspec = func.formspec_active(fuelpercent, itempercent)
@@ -478,7 +482,7 @@ for j, t in ipairs({
 				meta:set_int("fueltotaltime", 0)
 				meta:set_float("srctime", 0)
 				machines.swap_node(pos, "grind2:" .. t.tier .. "_inactive")
-				minetest.get_node_timer(pos):start(math.random(1, 3*60))
+				minetest.get_node_timer(pos):start(math_random(1, 3*60))
 			end
 		end
 	end

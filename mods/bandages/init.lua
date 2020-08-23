@@ -3,6 +3,9 @@ bandages = bandages or {}
 bandages.modpath = minetest.get_modpath("bandages")
 bandages.players = bandages.players or {}
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 
 
 if minetest.get_modpath("reload") then
@@ -196,7 +199,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
       bandages.players[pname] = nil
       local target = minetest.get_player_by_name(tname)
       if not target or not target:is_player() then return end
-      if vector.distance(target:get_pos(), pos) > bandages.movement_limit_from_level(level) then
+      if vector_distance(target:get_pos(), pos) > bandages.movement_limit_from_level(level) then
         return bandages.target_moved_too_much(pname, tname)
       end
 			-- Don't heal target if already dead.
@@ -234,7 +237,7 @@ bandages.use_bandage = function(itemstack, user, pointed_thing, level)
       bandages.players[pname] = nil
       local user = minetest.get_player_by_name(pname)
       if not user or not user:is_player() then return end
-      if vector.distance(user:get_pos(), pos) > bandages.movement_limit_from_level(level) then
+      if vector_distance(user:get_pos(), pos) > bandages.movement_limit_from_level(level) then
         return bandages.player_moved_too_much(pname)
       end
 			-- Don't heal user if already dead.

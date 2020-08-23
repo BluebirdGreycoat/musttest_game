@@ -2,6 +2,9 @@
 rename = rename or {}
 rename.modpath = minetest.get_modpath("rename")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 -- Make sure a chosen name is valid.
@@ -437,7 +440,7 @@ if not rename.run_once then
 		--once_per_session = true,
 		action = function(pos)
 			-- Spread the action out over many frames.
-			minetest.after(math.random(10, 600) / 10, function()
+			minetest.after(math_random(10, 600) / 10, function()
 				-- Get the node anew.
 				local node = minetest.get_node(pos)
 				-- If it has a rename handler, execute it.

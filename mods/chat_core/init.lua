@@ -8,6 +8,10 @@ chat_core = chat_core or {}
 chat_core.modpath = minetest.get_modpath("chat_core")
 chat_core.players = chat_core.players or {}
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 
 function chat_core.on_joinplayer(player)
 	local pname = player:get_player_name()
@@ -103,7 +107,7 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 
 			-- Chat from nearby players is highlighted.
 			-- Even ignored players may talk if they are close enough.
-			if vector.distance(ppos, tpos) < 64 then
+			if vector_distance(ppos, tpos) < 64 then
 				-- Highlight chat from nearby player only if originating player is not invisible.
 				if not gdac_invis.is_invisible(from) then
 					chosen_color = color_dark_cyan
@@ -202,7 +206,7 @@ local generate_coord_string = function(name)
 		local entity = minetest.get_player_by_name(name)
 		local pos = entity:get_pos()
 
-		local pstr = rc.pos_to_string(vector.round(pos))
+		local pstr = rc.pos_to_string(vector_round(pos))
 		pstr = string.gsub(pstr, "[%(%)]", "")
 
 		-- remember to include leading space!

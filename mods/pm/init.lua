@@ -17,6 +17,15 @@ pm.velocity = 3
 pm.run_velocity = 4.5
 pm.walk_velocity = 2
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_max = math.max
+local math_random = math.random
+
+
+
 dofile(pm.modpath .. "/seek.lua")
 dofile(pm.modpath .. "/action.lua")
 
@@ -219,7 +228,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 
 	-- Entity changes its behavior every so often.
 	if not self._behavior_timer or self._behavior_timer < 0 then
-		self._behavior_timer = math.random(1, 20)*60
+		self._behavior_timer = math_random(1, 20)*60
 		pm.choose_random_behavior(self)
 	end
 	self._behavior_timer = self._behavior_timer - dtime
@@ -227,7 +236,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 	-- Entities sometimes get stuck against objects.
 	-- Unstick them by rounding their positions to the nearest air node.
 	if not self._unstick_timer or self._unstick_timer < 0 then
-		self._unstick_timer = math.random(1, 30)
+		self._unstick_timer = math_random(1, 30)
 		local air = minetest.find_node_near(self.object:get_pos(), 1, "air", true)
 		if air then
 			self.object:set_pos(air)
@@ -239,7 +248,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 	if not self._sound_time then self._sound_time = 0 end
 	self._sound_time = self._sound_time - dtime
 	if self._sound_time < 0 then
-		self._sound_time = math.random(100, 300)/100
+		self._sound_time = math_random(100, 300)/100
 		if not self._no_sound then
 			ambiance.sound_play("wisp", self.object:get_pos(), 0.2, 32)
 		end
@@ -249,7 +258,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 	if self._path and #(self._path) > 0 then
 		local p = self._path[1]
 		-- Remove waypoint from path if we've reached it.
-		if vector.distance(p, self.object:get_pos()) < 0.5 then
+		if vector_distance(p, self.object:get_pos()) < 0.5 then
 			pm.debug_chat('hit waypoint')
 			self._stuck_timer = 2
 			table.remove(self._path, 1)
@@ -278,7 +287,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 				self._goto = nil
 				self._path = nil
 				self._target = nil
-				self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+				self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 				self._stuck_timer = nil
 				self._wander_cooldown = nil
 				self.object:set_velocity({x=0, y=0, z=0})
@@ -307,7 +316,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 				local s = tp
 				if not s then s = target:get_pos() end
 				if s then
-					s = vector.round(s)
+					s = vector_round(s)
 					if pm.target_is_player_or_mob(target) then
 						s.y = s.y + 1 -- For players or mobs, seek above them, not at their feet.
 					end
@@ -316,41 +325,41 @@ function pm.follower_on_step(self, dtime, moveresult)
 					-- Otherwise it would never be reachable.
 					if s then
 						-- Don't reacquire target if we're already sitting on it.
-						if vector.distance(pos, s) > pm.range then
+						if vector_distance(pos, s) > pm.range then
 							pm.debug_chat('set moving target goal')
-							self._goto = vector.round(s)
+							self._goto = vector_round(s)
 							self._target = target -- Userdata object.
 						end
 					end
 				end
-				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
+				self._acquire_target_cooldown = math_random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			elseif tp then
 				-- Target is a static location.
 				pm.debug_chat('acquired static target')
 				-- Don't reacquire target if we're already sitting on it.
-				if vector.distance(pos, tp) > pm.range then
+				if vector_distance(pos, tp) > pm.range then
 					pm.debug_chat('set static target goal')
-					self._goto = vector.round(tp)
+					self._goto = vector_round(tp)
 					self._target = nil
 				end
-				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
+				self._acquire_target_cooldown = math_random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			else
 				-- No target acquired. Wait awhile before calling function again.
 				pm.debug_chat('no target acquired')
-				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
+				self._acquire_target_cooldown = math_random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			end
 		end
 	end
 
 	-- Get a path to our target if we don't have a path yet, and target is not nearby.
 	if not self._failed_pathfind_cooldown then
-		if self._goto and not self._path and vector.distance(self._goto, pos) > pm.range then
+		if self._goto and not self._path and vector_distance(self._goto, pos) > pm.range then
 			pm.debug_chat('want path to target')
-			local los, obstruction = minetest.line_of_sight(vector.round(pos), vector.round(self._goto))
+			local los, obstruction = minetest.line_of_sight(vector_round(pos), vector_round(self._goto))
 			if los then
 				-- We have LOS (line of sight) direct to target.
 				pm.debug_chat('LOS confirmed')
-				local dir = vector.subtract(vector.round(self._goto), vector.round(pos))
+				local dir = vector.subtract(vector_round(self._goto), vector_round(pos))
 				local dst = vector.length(dir)
 				dir = vector.normalize(dir) -- Returns 0,0,0 for zero-length vector.
 
@@ -367,8 +376,8 @@ function pm.follower_on_step(self, dtime, moveresult)
 			else
 				-- No line of sight to target. Use pathfinder!
 				pm.debug_chat('will try pathfinder')
-				local rp1 = vector.round(pos)
-				local rp2 = vector.round(self._goto)
+				local rp1 = vector_round(pos)
+				local rp2 = vector_round(self._goto)
 
 				local a1 = rp1
 				local a2 = rp2
@@ -409,8 +418,8 @@ function pm.follower_on_step(self, dtime, moveresult)
 
 					-- The shorter the apparent distance between these 2 points, the farther
 					-- we can afford to look around.
-					local d = vector.distance(a1, a2)
-					local r = math.max(1, math.floor(pm.sight_range - d))
+					local d = vector_distance(a1, a2)
+					local r = math_max(1, math_floor(pm.sight_range - d))
 
 					pm.debug_chat("trying to find path")
 					self._path = minetest.find_path(a1, a2, r, 1, 1, "A*_noprefetch")
@@ -420,7 +429,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 						-- If we couldn't find a path to this location, we should remove this
 						-- goal. Also set the pathfinder cooldown timer.
 						self._goto = nil
-						self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+						self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 					else
 						if #(self._path) >= 1 then
 							pm.debug_chat("got path")
@@ -449,16 +458,16 @@ function pm.follower_on_step(self, dtime, moveresult)
 								pm.debug_chat('tossing path because start and end are equal')
 								self._path = nil
 								self._goto = nil
-								self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+								self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 							end
 
 							-- If path's start position is too far away, we can't use the path.
 							if self._path then
-								if vector.distance(self._path[1], pos) > pm.range then
+								if vector_distance(self._path[1], pos) > pm.range then
 									pm.debug_chat('tossing path because start is too far away')
 									self._path = nil
 									self._goto = nil
-									self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+									self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 								end
 							end
 						else
@@ -467,7 +476,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 							pm.debug_chat('tossing path because it is bogus')
 							self._goto = nil
 							self._path = nil
-							self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+							self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 						end
 					end
 				else
@@ -475,7 +484,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					-- Thus we must give up this target.
 					self._goto = nil
 					self._path = nil
-					self._failed_pathfind_cooldown = math.random(pm.pf_cooldown_min, pm.pf_cooldown_max)
+					self._failed_pathfind_cooldown = math_random(pm.pf_cooldown_min, pm.pf_cooldown_max)
 				end
 			end
 		end
@@ -596,13 +605,13 @@ function pm.follower_on_step(self, dtime, moveresult)
 		if target_pos then
 			if #(self._path) > 0 then
 				local end_path = self._path[#(self._path)]
-				if vector.distance(target_pos, end_path) > 3 then
-					local los, obstruction = minetest.line_of_sight(vector.round(pos), vector.round(target_pos))
+				if vector_distance(target_pos, end_path) > 3 then
+					local los, obstruction = minetest.line_of_sight(vector_round(pos), vector_round(target_pos))
 					if los then
 						pm.debug_chat('target moved, repathing via LOS')
-						self._goto = vector.round(target_pos)
+						self._goto = vector_round(target_pos)
 
-						local dir = vector.subtract(self._goto, vector.round(pos))
+						local dir = vector.subtract(self._goto, vector_round(pos))
 						local dst = vector.length(dir)
 						dir = vector.normalize(dir) -- Returns 0,0,0 for zero-length vector.
 
@@ -625,9 +634,9 @@ function pm.follower_on_step(self, dtime, moveresult)
 	-- Remove target waypoint once we're close enough to it.
 	-- Only if done following path.
 	if self._goto and not self._path then
-		pm.debug_chat('distance to goal: ' .. vector.distance(self._goto, pos))
+		pm.debug_chat('distance to goal: ' .. vector_distance(self._goto, pos))
 		pm.debug_goal(self._goto)
-		if vector.distance(self._goto, pos) < pm.range then
+		if vector_distance(self._goto, pos) < pm.range then
 			pm.debug_chat('reached goal')
 			--self.object:move_to(self._goto, true)
 
@@ -635,16 +644,16 @@ function pm.follower_on_step(self, dtime, moveresult)
 			if self._target then
 				local s = self._target:get_pos()
 				if s then
-					s = vector.round(s)
+					s = vector_round(s)
 					s.y = s.y + 1 -- For entities, we seek above them, not at their feet.
-					if vector.distance(pos, s) < pm.range then
+					if vector_distance(pos, s) < pm.range then
 						pm.debug_chat('reached dynamic target')
 						-- We have reached our moveable target.
 						-- We can clear this and set a timer to delay acquiring the next target.
 						self._on_arrival(self, self._goto, self._target)
 						self._goto = nil
 						self._target = nil
-						self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
+						self._acquire_target_cooldown = math_random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 					else
 						-- Our moveable target has moved. We must move toward it again.
 						-- Do so right away, without delay.
@@ -663,7 +672,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 				self._on_arrival(self, self._goto, nil)
 				-- No moving target, so we can clear this.
 				self._goto = nil
-				self._acquire_target_cooldown = math.random(pm.aq_cooldown_min, pm.aq_cooldown_max)
+				self._acquire_target_cooldown = math_random(pm.aq_cooldown_min, pm.aq_cooldown_max)
 			end
 		end
 	end
@@ -672,12 +681,12 @@ function pm.follower_on_step(self, dtime, moveresult)
 	if not self._wander_cooldown then
 		if not self._goto then
 			local dir = {
-				x = math.random(-1, 1)/10,
-				y = math.random(-1, 1)/10,
-				z = math.random(-1, 1)/10
+				x = math_random(-1, 1)/10,
+				y = math_random(-1, 1)/10,
+				z = math_random(-1, 1)/10
 			}
 			self.object:set_velocity(dir)
-			self._wander_cooldown = math.random(1, 5)
+			self._wander_cooldown = math_random(1, 5)
 		end
 	end
 end
@@ -685,13 +694,13 @@ end
 function pm.follower_on_punch(self, puncher, time_from_last_punch, tool_capabilities, dir)
 	local pos = self.object:get_pos()
 	pm.death_particle_effect(pos)
-	minetest.add_item(pos, "glowstone:glowing_dust " .. math.random(1, 3))
+	minetest.add_item(pos, "glowstone:glowing_dust " .. math_random(1, 3))
 	self.object:remove()
 end
 
 -- Create entity at position, if possible.
 function pm.spawn_wisp(pos, behavior)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local node = minetest.get_node(pos)
 	if node.name == "air" then
 		local ent = minetest.add_entity(pos, "pm:follower")
@@ -699,18 +708,18 @@ function pm.spawn_wisp(pos, behavior)
 			local luaent = ent:get_luaentity()
 			if luaent then
 				luaent._behavior = behavior
-				luaent._behavior_timer = math.random(1, 20)*60
+				luaent._behavior_timer = math_random(1, 20)*60
 
 				-- Allows to uniquely identify the wisp to other wisps, with little chance of collision.
 				-- In particular this allows the wisp to ignore itself in any object queries.
-				luaent._identity = math.random(1, 32000)
+				luaent._identity = math_random(1, 32000)
 
 				-- This is so the wisp knows where it spawned at.
 				-- We format it as a string so that this data is saved statically.
 				luaent._spawn_origin = minetest.pos_to_string(pos)
 
 				-- Wisp has a chance to be completely silent.
-				if math.random(1, 10) == 1 then
+				if math_random(1, 10) == 1 then
 					luaent._no_sound = true
 				end
 
@@ -738,7 +747,7 @@ local behaviors = {
 }
 
 function pm.choose_random_behavior(self)
-	self._behavior = behaviors[math.random(1, #behaviors)]
+	self._behavior = behaviors[math_random(1, #behaviors)]
 
 	-- Don't chose a self-destructive behavior by chance.
 	if self._behavior == "boom" then
@@ -748,7 +757,7 @@ end
 
 -- Create entity at position, if possible.
 function pm.spawn_random_wisp(pos)
-	local act = behaviors[math.random(1, #behaviors)]
+	local act = behaviors[math_random(1, #behaviors)]
 	if act == "boom" then
 		act = "follower"
 	end
@@ -795,7 +804,7 @@ local interests = {
 		if self._spawn_origin then
 			local origin = minetest.string_to_pos(self._spawn_origin)
 			if origin then
-				if vector.distance(origin, self.object:get_pos()) > pm.sight_range then
+				if vector_distance(origin, self.object:get_pos()) > pm.sight_range then
 					return origin, nil
 				else
 					-- Within sight range of spawn origin, seek target.
@@ -846,7 +855,7 @@ local actions = {
 		if self._spawn_origin then
 			local origin = minetest.string_to_pos(self._spawn_origin)
 			if origin then
-				if vector.distance(origin, self.object:get_pos()) < pm.sight_range then
+				if vector_distance(origin, self.object:get_pos()) < pm.sight_range then
 					pm.hurt_nearby_player_or_mob_not_wisp(self)
 				end
 			end

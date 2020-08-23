@@ -1,60 +1,10 @@
---"Cobble bomb" mod. Lets get started
+-- "Cobble bomb" mod. Let's get started!
 
---Some code from tnt mod
---[[
-local function calc_velocity(pos1, pos2, old_vel, power)
-	local vel = vector.direction(pos1, pos2)
-	vel = vector.normalize(vel)
-	vel = vector.multiply(vel, power)
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
 
-	-- Divide by distance
-	local dist = vector.distance(pos1, pos2)
-	dist = math.max(dist, 1)
-	vel = vector.divide(vel, dist)
 
-	-- Add old velocity
-	vel = vector.add(vel, old_vel)
-	return vel
-end
-
-local function entity_physics(pos, radius)
-	-- Make the damage radius larger than the destruction radius
-	radius = radius * 2
-	local objs = minetest.get_objects_inside_radius(pos, radius)
-	for _, obj in pairs(objs) do
-		local obj_pos = obj:getpos()
-		local obj_vel = obj:getvelocity()
-		local dist = math.max(1, vector.distance(pos, obj_pos))
-
-		if obj_vel ~= nil then
-			obj:setvelocity(calc_velocity(pos, obj_pos,
-					obj_vel, radius * 10))
-		end
-
-		local damage = (4 / dist) * radius
-		obj:set_hp(obj:get_hp() - damage)
-	end
-end
-
-local function add_effects(pos, radius)
-	minetest.add_particlespawner({
-		amount = 128,
-		time = 1,
-		minpos = vector.subtract(pos, radius / 2),
-		maxpos = vector.add(pos, radius / 2),
-		minvel = {x=-20, y=-20, z=-20},
-		maxvel = {x=20,  y=20,  z=20},
-		minacc = vector.new(),
-		maxacc = vector.new(),
-		minexptime = 1,
-		maxexptime = 3,
-		minsize = 8,
-		maxsize = 16,
-		texture = "tnt_smoke.png",
-	})
-end
---]]
---End of Some code from tnt mod
 
 minetest.register_entity("cobble_bomb:cobblebomb", {
     full_name = "Cobble Bomb",
@@ -96,7 +46,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
                 self:bomb_explode();
                 return;
             else
-                --self.object:setacceleration({x=math.random(-1, 1)*self.bomb_inertion*10, y=-10, z=math.random(-1, 1)*self.bomb_inertion*10});
+                --self.object:setacceleration({x=math_random(-1, 1)*self.bomb_inertion*10, y=-10, z=math_random(-1, 1)*self.bomb_inertion*10});
                 --self.bomb_inertion = self.bomb_inertion - 1;
             end
         elseif self.bomb_punched ~= nil then
@@ -132,7 +82,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 		
 		-- Disable lag's griefer-friendly code.
 		--[[
-		pos = vector.round(pos);
+		pos = vector_round(pos);
 
 		minetest.sound_play("tnt_explode", {pos=pos, gain=1.5, max_hear_distance=30});
 		entity_physics(pos, 4);
@@ -142,7 +92,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 		if not minetest.test_protection(pos, "") then
 			local stonenodes = minetest.find_nodes_in_area(vector.subtract(pos, 2), vector.add(pos, 2), {"default:stone"});
 			for _, p in ipairs(stonenodes) do
-				if math.random(1, 100) > 10 then
+				if math_random(1, 100) > 10 then
 					minetest.remove_node(p);
 				end
 			end

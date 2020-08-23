@@ -12,6 +12,11 @@ city_block.blocks = city_block.blocks or {}
 city_block.filename = minetest.get_worldpath() .. "/city_blocks.txt"
 city_block.modpath = minetest.get_modpath("city_block")
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_random = math.random
+
 
 
 function city_block:save()
@@ -113,7 +118,7 @@ if not city_block.run_once then
 				meta:set_string("rename", dname)
 				meta:set_string("owner", pname)
 				meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
-				table.insert(city_block.blocks, {pos=vector.round(pos), owner=pname})
+				table.insert(city_block.blocks, {pos=vector_round(pos), owner=pname})
 				city_block:save()
 			end
 		end,
@@ -183,7 +188,7 @@ function city_block:get_adjective()
     "fatally thrashing",
     "fatally stabbing",
   }
-  return adjectives[math.random(1, #adjectives)]
+  return adjectives[math_random(1, #adjectives)]
 end
 
 
@@ -235,7 +240,7 @@ local murder_messages = {
 }
 
 function city_block.murder_message(killer, victim, sendto)
-	local msg = murder_messages[math.random(1, #murder_messages)]
+	local msg = murder_messages[math_random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", "<" .. rename.gpn(victim) .. ">")
 	msg = string.gsub(msg, "<k>", "<" .. rename.gpn(killer) .. ">")
 
@@ -295,7 +300,7 @@ end
 
 function city_block.hit_possible(p1pos, p2pos)
 	-- Range limit, stops hackers with long reach.
-	if vector.distance(p1pos, p2pos) > 5 then
+	if vector_distance(p1pos, p2pos) > 5 then
 		return false
 	end
 
@@ -307,7 +312,7 @@ function city_block.hit_possible(p1pos, p2pos)
 	--[[
 	local los, pstop = minetest.line_of_sight(p1pos, p2pos)
 	while not los do
-		if throwing.node_blocks_arrow(minetest.get_node(vector.round(pstop)).name) then
+		if throwing.node_blocks_arrow(minetest.get_node(vector_round(pstop)).name) then
 			return false
 		end
 		local dir = vector.direction(pstop, p2pos)

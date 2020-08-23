@@ -21,6 +21,10 @@ droplift = {
 
 --------------------------------------------------- Local
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_max = math.max
+
 local function obstructed(p)
 	local n = minetest.get_node_or_nil(p)
 	if not n then return false end
@@ -78,7 +82,7 @@ local function lift(obj)
 				ent.sync0, ent.sync1 = nil, nil
 			end
 -- Space
-			p = {x = p.x, y = math.floor(p.y - 0.5) + 1.800001, z = p.z}
+			p = {x = p.x, y = math_floor(p.y - 0.5) + 1.800001, z = p.z}
 			obj:set_pos(p)
 			if s1 or obstructed(p) then
 				minetest.after(t, lift, obj)
@@ -116,7 +120,7 @@ local function async(obj, usync)
 			end
 -- Space.
 			if hash == ent.hash then
-				obj:set_pos({x = p.x, y = math.floor(p.y - 0.5) + 0.800001, z = p.z})
+				obj:set_pos({x = p.x, y = math_floor(p.y - 0.5) + 0.800001, z = p.z})
 				if not ent.is_entombed then
 					ent.is_entombed = true
 					minetest.after(1, lift, obj)
@@ -128,7 +132,7 @@ local function async(obj, usync)
 end
 
 droplift.invoke = function(obj, sync)
-	async(obj, (sync and math.max(0,sync)))
+	async(obj, (sync and math_max(0,sync)))
 end
 
 -- * Events *

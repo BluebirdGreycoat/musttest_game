@@ -2,6 +2,9 @@
 _nodeupdate = _nodeupdate or {}
 _nodeupdate.modpath = minetest.get_modpath("nodeupdate")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- Grab old update function and save it.
 if not _nodeupdate.old_update then
 	_nodeupdate.old_update = core.check_single_for_falling
@@ -37,9 +40,9 @@ function _nodeupdate.drop_node_as_entity(pos)
 	--minetest.chat_send_player("MustTest", dump(drops))
 	for _, item in pairs(drops) do
 		local p = {
-			x = pos.x + math.random()/2 - 0.25,
-			y = pos.y + math.random()/2 - 0.25,
-			z = pos.z + math.random()/2 - 0.25,
+			x = pos.x + math_random()/2 - 0.25,
+			y = pos.y + math_random()/2 - 0.25,
+			z = pos.z + math_random()/2 - 0.25,
 		}
 		add_item(p, item)
 	end
@@ -69,9 +72,9 @@ core.check_single_for_falling = function(p)
 			-- Pass node name, because passing a node table gives wrong results.
 			for _, item in pairs(get_node_drops(n.name, "")) do
 				local pos = {
-						x = p.x + math.random()/2 - 0.25,
-						y = p.y + math.random()/2 - 0.25,
-						z = p.z + math.random()/2 - 0.25,
+						x = p.x + math_random()/2 - 0.25,
+						y = p.y + math_random()/2 - 0.25,
+						z = p.z + math_random()/2 - 0.25,
 				}
 				add_item(pos, item)
 			end

@@ -4,6 +4,9 @@ command_tokens.mute = command_tokens.mute or {}
 command_tokens.mute.players = command_tokens.mute.players or {}
 local mute_duration = 60*10 -- Time in seconds.
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local formspec = "size[4.1,2.0]" ..
@@ -80,7 +83,7 @@ command_tokens.mute.execute = function(player, target)
 		-- Mute player if they wern't muted, unmute them if they were.
 		if not command_tokens.mute.players[target] then
 			-- Mark this occurance with an ID that isn't likely to be already in use.
-			local rng = math.random(0, 65000)
+			local rng = math_random(0, 65000)
 			command_tokens.mute.players[target] = rng
 			minetest.after(mute_duration, unmute_on_timeout, target, rng)
 			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been duct-taped!")

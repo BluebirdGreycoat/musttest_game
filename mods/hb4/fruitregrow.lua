@@ -2,6 +2,9 @@
 hb4 = hb4 or {}
 hb4.fruitregrow = hb4.fruitregrow or {}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 function hb4.fruitregrow.on_timer(pos, elapsed)
@@ -60,7 +63,7 @@ function hb4.fruitregrow.after_dig_node_impl(pos, oldnode, oldmetadata, digger)
 		meta:set_string("fruitname", oldnode.name)
 		meta:set_string("leafname", node.name)
 		local timer = minetest.get_node_timer(pos)
-		timer:start(math.random(60*20, 60*120))
+		timer:start(math_random(60*20, 60*120))
 	end
 end
 

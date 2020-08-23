@@ -1,3 +1,7 @@
+
+-- Localize for performance.
+local vector_round = vector.round
+
 function carts:get_sign(z)
 	if z == 0 then
 		return 0
@@ -89,7 +93,7 @@ function carts:check_front_up_down(pos, dir_, check_up, railtype)
 end
 
 function carts:get_rail_direction(pos_, dir, ctrl, old_switch, railtype)
-	local pos = vector.round(pos_)
+	local pos = vector_round(pos_)
 	local cur
 	local left_check, right_check = true, true
 
@@ -164,8 +168,8 @@ function carts:get_rail_direction(pos_, dir, ctrl, old_switch, railtype)
 end
 
 function carts:pathfinder(pos_, old_pos, old_dir, ctrl, pf_switch, railtype)
-	local pos = vector.round(pos_)
-	local pf_pos = vector.round(old_pos)
+	local pos = vector_round(pos_)
+	local pf_pos = vector_round(old_pos)
 	local pf_dir = vector.new(old_dir)
 
 	for i = 1, 3 do

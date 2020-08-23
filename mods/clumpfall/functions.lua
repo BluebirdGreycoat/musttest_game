@@ -16,6 +16,9 @@
 
 clumpfall.functions = {} --global functions variable
 
+-- Localize for performance.
+local math_random = math.random
+
 --[[
 Description: 
     Searches for clump_fall_nodes within a given volume of radius clump_radius and all of the center points between the 3D points given by the parameters. 
@@ -182,7 +185,7 @@ function clumpfall.functions.do_clump_fall(...)
 	if found_no_fallable_nodes == false then
 		--This will be used with the new min and max position that have been found.
 		--These are used instead of the old ones so that the range of cascading can't expand indefinitely and cause crashes
-		minetest.after(math.random(1, 10), clumpfall.functions.do_clump_fall, {new_min_pos, new_max_pos})
+		minetest.after(math_random(1, 10), clumpfall.functions.do_clump_fall, {new_min_pos, new_max_pos})
 	end
 end
 

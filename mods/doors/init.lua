@@ -2,6 +2,9 @@
 doors = {}
 doors.modpath = minetest.get_modpath("doors")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- private data
 local _doors = {}
 _doors.registered_doors = {}
@@ -233,7 +236,7 @@ function _doors.door_toggle(pos, node, clicker)
 
 	-- Play door open/close sound (check if hinges are oiled, in which case door makes no sound).
 	local last_oiled = meta:get_int("oiled_time")
-	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+	if (os.time() - last_oiled) > math_random(0, 60*60*24*7) then
 		if state % 2 == 0 then
 			minetest.sound_play(def.door.sounds[1],
 				{pos = pos, gain = 0.3, max_hear_distance = 20})
@@ -578,7 +581,7 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 	-- Play trapdoor open/close sound (check if hinges are oiled, in which case door makes no sound).
 	local play_sound = false
 	local last_oiled = meta:get_int("oiled_time")
-	if (os.time() - last_oiled) > math.random(0, 60*60*24*7) then
+	if (os.time() - last_oiled) > math_random(0, 60*60*24*7) then
 		play_sound = true
 	end
 

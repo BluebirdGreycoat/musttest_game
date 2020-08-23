@@ -13,6 +13,12 @@ passport.modpath = minetest.get_modpath("passport")
 -- On formspec close, playername should be removed and close-sound played.
 passport.open_keys = passport.open_keys or {}
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 local PASSPORT_TELEPORT_RANGE = 3000 -- 3 Kilometers.
@@ -337,7 +343,7 @@ passport.attempt_teleport = function(player, data)
   end
   
   for k, v in pairs(passport.recalls) do
-    if vector.distance(pp, v.position(player)) < v.min_dist then
+    if vector_distance(pp, v.position(player)) < v.min_dist then
       if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
       minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
 			easyvend.sound_error(nn)
@@ -345,9 +351,9 @@ passport.attempt_teleport = function(player, data)
     end
   end
   
-  if vector.distance(pp, tg) > PASSPORT_TELEPORT_RANGE then
+  if vector_distance(pp, tg) > PASSPORT_TELEPORT_RANGE then
     if data.on_failure then data.on_failure(nn, "too_far", data.tname) end
-		local dist = math.floor(vector.distance(pp, tg))
+		local dist = math_floor(vector_distance(pp, tg))
     minetest.chat_send_player(nn, "# Server: Beacon signal is too weak. You are out of range: distance " .. dist/1000 .. " kilometers.")
 		easyvend.sound_error(nn)
     return -- To far from requested beacon.
@@ -360,12 +366,12 @@ passport.attempt_teleport = function(player, data)
   end
   
   -- Everything satisfied. Let's teleport!
-  local dist = vector.distance(pp, tg)
+  local dist = vector_distance(pp, tg)
   local time = math.ceil(math.sqrt(dist / 10))
   
   minetest.chat_send_player(nn, "# Server: Recall beacon signal requires " .. time .. " seconds to triangulate; please hold still.")
   passport.players[nn] = true
-	local pos = vector.add(tg, {x=math.random(-2, 2), y=0, z=math.random(-2, 2)})
+	local pos = vector.add(tg, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)})
   minetest.after(time, passport.do_teleport, nn, pp, pos, data.on_success)
 end
 
@@ -384,7 +390,7 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
 			end
 		end
 
-    if vector.distance(player:getpos(), start_pos) < 0.1 then
+    if vector_distance(player:getpos(), start_pos) < 0.1 then
 			--local fwrap = function(...)
 			--	minetest.chat_send_player(name, "# Server: Transport successful.")
 			--	portal_sickness.on_use_portal(name)
@@ -404,12 +410,12 @@ end
 function passport.exec_spawn(name, param)
 	local player = minetest.get_player_by_name(name)
 	if not player then return false end
-	local pos = vector.round(player:get_pos())
+	local pos = vector_round(player:get_pos())
 	if jail.suppress(name) then
 		return true
 	end
 	local target = randspawn.get_respawn_pos(pos, name)
-	if vector.distance(pos, target) < 20 then
+	if vector_distance(pos, target) < 20 then
 		minetest.chat_send_player(name, "# Server: Too close to the spawnpoint!")
 		easyvend.sound_error(name)
 		return true
@@ -420,7 +426,7 @@ function passport.exec_spawn(name, param)
 			return true
 		end
 	end
-	if vector.distance(pos, target) <= 256 then
+	if vector_distance(pos, target) <= 256 then
 		randspawn.reposition_player(name, pos)
 
 		minetest.after(1, function()
@@ -461,7 +467,7 @@ function passport.award_cash(pname, player)
 			core.get_color_escape_sequence("#ffff00") ..
 			"# Server: The cash has been directly added to your inventory. Trade wisely and well, Adventurer!")
 	else
-		local pos = vector.round(player:get_pos())
+		local pos = vector_round(player:get_pos())
 		pos.y = pos.y + 1
 
 		if not cash_left:is_empty() then

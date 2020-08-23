@@ -2,6 +2,9 @@
 trunkgen = trunkgen or {}
 trunkgen.modpath = minetest.get_modpath("trunkgen")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 -- Utility function.
@@ -17,7 +20,7 @@ end
 trunkgen.generate_bole = function(pos, nodename)
   local pr = {}
   function pr:next(min, max)
-    return math.random(min, max)
+    return math_random(min, max)
   end
 
   local sides =
@@ -60,7 +63,7 @@ end
 
 -- Generates a jungletree-style leaf-branch.
 trunkgen.generate_jungletree_branches = function(pos, tname, lnames, minh, maxh)
-  local n = math.random(1, 3) -- How many?
+  local n = math_random(1, 3) -- How many?
   
   if type(lnames) == "string" then
     lnames = {[1]=lnames}
@@ -81,8 +84,8 @@ trunkgen.generate_jungletree_branches = function(pos, tname, lnames, minh, maxh)
   }
   
   for i=1, n do
-    local h = math.random(minh, maxh) -- How high?
-    local p = vector.new(positions[math.random(1, #positions)]) -- Where?
+    local h = math_random(minh, maxh) -- How high?
+    local p = vector.new(positions[math_random(1, #positions)]) -- Where?
     p.y = p.y+h
     
     -- Make!
@@ -101,7 +104,7 @@ trunkgen.generate_jungletree_branches = function(pos, tname, lnames, minh, maxh)
     }
     for j=1, #lp do
       local p = lp[j]
-      trunkgen.set_node(p, {name=lnames[math.random(1, #lnames)]})
+      trunkgen.set_node(p, {name=lnames[math_random(1, #lnames)]})
     end
   end
 end

@@ -3,6 +3,10 @@ jail = jail or {}
 jail.modpath = minetest.get_modpath("jail")
 jail.noclip_radius = 15 -- Max distance of player from jail.
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
+
 
 local function jailposition(player)
 	local pos = {x=0, y=-50, z=0}
@@ -32,7 +36,7 @@ end
 function jail.is_player_in_jail(pref)
 	local jp = jailposition(pref) -- Get position of jail.
 	local pp = pref:get_pos() -- Position of player.
-	local dt = vector.distance(jp, pp) -- Distance between points.
+	local dt = vector_distance(jp, pp) -- Distance between points.
 	if dt > jail.noclip_radius then
 		return false -- Player is NOT in jail!
 	end
@@ -114,7 +118,7 @@ end
 jail_data.suppress = function(name)
     local player = minetest.get_player_by_name(name)
     if player and player:is_player() then
-        if vector.distance(player:getpos(), jail_data.position(player)) < jail_data.min_dist then
+        if vector_distance(player:getpos(), jail_data.position(player)) < jail_data.min_dist then
             minetest.chat_send_player(name, "# Server: Error: security override. Recall is disabled within convict re-education block.")
 						easyvend.sound_error(name)
             return true -- Too close to jail.

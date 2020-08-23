@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 mobs.register_mob("obsidianmonster:obsidianmonster", {
 	type = "monster",
 	passive = false,
@@ -88,7 +91,7 @@ mobs.register_arrow("obsidianmonster:arrow", {
 	end,
 
 	hit_node = function(self, pos, node)
-		pos = vector.round(pos)
+		pos = vector_round(pos)
 		if minetest.test_protection(pos, "") then
 			return
 		end

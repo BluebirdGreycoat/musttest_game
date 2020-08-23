@@ -5,6 +5,10 @@ gen2_lv = gen2_lv or {}
 gen2_mv = gen2_mv or {}
 gen2_hv = gen2_hv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 for k, v in ipairs({
@@ -120,7 +124,7 @@ for k, v in ipairs({
 		local eups = meta:get_int("eups")
 		local machine_state = "Standby"
 		if keeprunning then machine_state = "Active" end
-		local output = math.floor(eups / v.bt)
+		local output = math_floor(eups / v.bt)
 		if not keeprunning then
 			output = 0
 		end
@@ -324,7 +328,7 @@ for k, v in ipairs({
 					keeprunning = true -- Restart timer.
 
 					if is_mese then
-						meta:set_int("eups", math.floor(v.mese))
+						meta:set_int("eups", math_floor(v.mese))
 					else
 						meta:set_int("eups", v.eups)
 					end
@@ -368,8 +372,8 @@ for k, v in ipairs({
 		meta:set_float("time", time)
 		meta:set_float("time2", time2)
 
-		fuel_percent = math.floor(time / maxtime * 100)
-		item_percent = math.floor(time2 / maxtime2 * 100)
+		fuel_percent = math_floor(time / maxtime * 100)
+		item_percent = math_floor(time2 / maxtime2 * 100)
 
 		meta:set_string("infotext", func.compose_infotext(pos, keeprunning))
 		meta:set_string("formspec", func.compose_formspec(fuel_percent, item_percent))
@@ -379,7 +383,7 @@ for k, v in ipairs({
 			minetest.get_node_timer(pos):start(1.0)
 		else
 			-- Slow down timer during sleep periods to reduce load.
-			minetest.get_node_timer(pos):start(math.random(1, 3*60))
+			minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		end
 	end
 

@@ -3,6 +3,9 @@ chat_logging = chat_logging or {}
 chat_logging.modpath = minetest.get_modpath("chat_logging")
 chat_logging.worldpath = minetest.get_worldpath()
 
+-- Localize for performance.
+local vector_round = vector.round
+
 
 
 -- Register this file as reloadable, if not already done.
@@ -24,7 +27,7 @@ local get_time_and_place = function(pname)
   local place = "N/A"
   local player = minetest.get_player_by_name(pname)
   if player and player:is_player() then
-    place = minetest.pos_to_string(vector.round(player:get_pos()))
+    place = minetest.pos_to_string(vector_round(player:get_pos()))
   end
   return os.date("%Y-%m-%d, %H:%M @ " .. place)
 end

@@ -1,5 +1,9 @@
 
 --[[
+
+-- Localize for performance.
+local math_random = math.random
+
 function griefer.get_griefer_count(pos)
 	local ents = minetest.get_objects_inside_radius(pos, 10)
 	local count = 0
@@ -20,13 +24,13 @@ end
 
 
 function griefer.on_stone_construct(pos)
-	minetest.get_node_timer(pos):start(math.random(10, 60)
+	minetest.get_node_timer(pos):start(math_random(10, 60)
 end
 
 
 
 function griefer.on_stone_timer(pos, elapsed)
-	minetest.get_node_timer(pos):start(math.random(10, 60)
+	minetest.get_node_timer(pos):start(math_random(10, 60)
 end
 --]]
 

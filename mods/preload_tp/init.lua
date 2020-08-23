@@ -2,6 +2,11 @@
 preload_tp = preload_tp or {}
 preload_tp.modpath = minetest.get_modpath("preload_tp")
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+
 
 
 function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
@@ -24,7 +29,7 @@ function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_p
 	-- The player may optionally be force-teleported.
 	if not force then
 		-- Did the player move?
-		if vector.distance(pp, player:get_pos()) > 1.5 then
+		if vector_distance(pp, player:get_pos()) > 1.5 then
 			minetest.chat_send_player(pname, "# Server: Transport error. You cannot move while a transport is in progress.")
 			return
 		end
@@ -77,7 +82,7 @@ function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_p
 	ambiance.sound_play(thesound, tp, 1.0, 50)
 	preload_tp.spawn_particles(tp)
 
-	preload_tp.spawn_spinup_particles(vector.round(tp), 3)
+	preload_tp.spawn_spinup_particles(vector_round(tp), 3)
 end
 
 
@@ -154,15 +159,15 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 	local start_time = os.time()
 
 	-- Time to teleport depends on distance.
-	local total_time = math.floor(vector.distance(pp, tp) / 1000)
+	local total_time = math_floor(vector_distance(pp, tp) / 1000)
 	if total_time < 2 then
 		total_time = 2
 	end
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
-	preload_tp.spawn_spinup_particles(vector.round(pp), total_time + 2)
-	preload_tp.spawn_spinup_particles(vector.round(tp), total_time + 1)
+	preload_tp.spawn_spinup_particles(vector_round(pp), total_time + 2)
+	preload_tp.spawn_spinup_particles(vector_round(tp), total_time + 1)
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local tbparam = {}

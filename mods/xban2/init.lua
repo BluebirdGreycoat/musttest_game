@@ -4,6 +4,9 @@ xban.db = xban.db or {}
 xban.tempbans = xban.tempbans or {}
 xban.MP = minetest.get_modpath("xban2")
 
+-- Localize for performance.
+local vector_round = vector.round
+
 -- Reloadable.
 dofile(xban.MP.."/serialize.lua")
 
@@ -187,7 +190,7 @@ function xban.get_record(player)
 	local last_pos
 	if e.last_pos and e.last_pos[player] then
 		last_pos = ("User was last seen at %s."):format(
-		  rc.pos_to_namestr(vector.round(e.last_pos[player])))
+		  rc.pos_to_namestr(vector_round(e.last_pos[player])))
 	end
 	return record, last_pos
 end

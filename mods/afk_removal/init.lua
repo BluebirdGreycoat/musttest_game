@@ -7,6 +7,11 @@ afk_removal.timeout = 60 * 30
 afk_removal.warntime = 60 * 29
 afk_removal.disable_kick = minetest.is_singleplayer()
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+
 
 
 -- Public API function.
@@ -74,8 +79,8 @@ afk_removal.update = function()
     local name = player:get_player_name()
 		local target = afk_removal.players[name]
     
-		local pos = vector.round(player:getpos())
-		local dist = vector.distance(pos, target.pos)
+		local pos = vector_round(player:getpos())
+		local dist = vector_distance(pos, target.pos)
 		local nokick = false
 
     if afk_removal.disable_kick or minetest.check_player_privs(name, {canafk=true}) then
@@ -99,7 +104,7 @@ afk_removal.update = function()
 					nokick = true
 				else
 					local remain = afk_removal.timeout - time
-					minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math.floor(remain) .. " seconds.")
+					minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math_floor(remain) .. " seconds.")
 					easyvend.sound_error(name)
 				end
 			end

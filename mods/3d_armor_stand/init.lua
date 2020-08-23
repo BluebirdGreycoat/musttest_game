@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 local armor_stand_formspec = "size[8,7]" ..
 	default.gui_bg ..
 	default.gui_bg_img ..
@@ -343,7 +346,7 @@ minetest.register_entity("3d_armor_stand:armor_entity", {
 	on_activate = function(self)
 		local pos = self.object:get_pos()
 		if pos then
-			self.pos = vector.round(pos)
+			self.pos = vector_round(pos)
 			update_entity(pos)
 		end
 	end,

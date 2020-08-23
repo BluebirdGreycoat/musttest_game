@@ -2,6 +2,8 @@
 easyvend = easyvend or {}
 easyvend.modpath = minetest.get_modpath("easyvend")
 
+-- Localize for performance.
+local math_floor = math.floor
 
 local traversable_node_types = easyvend.traversable_node_types
 local registered_chests = easyvend.registered_chests
@@ -246,8 +248,8 @@ easyvend.upgrade_currency = function(pos, meta, old_currency, old_cost)
 	if old_currency == "default:gold_ingot" then
 		-- Upgrade gold to currency at 1 to 25. This is a fixed exchange rate.
 		meta:set_string("machine_currency", "currency:minegeld_5")
-		meta:set_int("cost", math.floor((old_cost * 25) / 5))
-		return ("currency:minegeld_5"), math.floor((old_cost * 25) / 5)
+		meta:set_int("cost", math_floor((old_cost * 25) / 5))
+		return ("currency:minegeld_5"), math_floor((old_cost * 25) / 5)
 	end
 	return old_currency, old_cost
 end

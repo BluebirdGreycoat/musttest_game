@@ -4,6 +4,11 @@ hud.registered_items = {}
 hud.damage_events = {}
 hud.breath_events = {}
 
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 -- keep id handling internal
 local hud_id = {}	-- hud item ids
 local sb_bg = {}	-- statbar background ids
@@ -85,7 +90,7 @@ function hud.change_item(player, name, def)
 
 	-- Update supported values (currently number and text only)
 	if def.number and elem.number then
-		elem.number = math.floor((def.number / def.max) * 20)
+		elem.number = math_floor((def.number / def.max) * 20)
 
 		player:hud_change(elem.id, "number", elem.number)
 	end

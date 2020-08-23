@@ -10,6 +10,13 @@ fortress.pending = fortress.pending or {}
 fortress.active = fortress.active or {}
 fortress.dirty = true
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 dofile(fortress.modpath .. "/default.lua")
 
 
@@ -38,14 +45,14 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			limit = {},
 			pos = {x=pos.x, y=pos.y, z=pos.z},
 		}
-		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector.round(pos)) .. "!")
+		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector_round(pos)) .. "!")
 	end
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
 	-- Use `initial` if not specified.
 	-- Multiple initial start-points may be specified, pick a random one.
 	if not start then
-		start = data.initial[math.random(1, #data.initial)]
+		start = data.initial[math_random(1, #data.initial)]
 	end
 
 	-- Chosen chunk must have associated data.
@@ -55,7 +62,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Use default offset if none specified.
 	do
 		local offset = info.offset or {x=0, y=0, z=0}
-		pos = vector.round(vector.add(pos, vector.multiply(offset, data.step)))
+		pos = vector_round(vector.add(pos, vector.multiply(offset, data.step)))
 	end
 
 	-- Calculate all positions this chunk will potentially occupy.
@@ -66,7 +73,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		for x = 0, size.x-1, 1 do
 			for y = 0, size.y-1, 1 do
 				for z = 0, size.z-1, 1 do
-					local p3 = vector.round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, data.step)))
+					local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, data.step)))
 					local hash = minetest.hash_node_position(p3)
 					hashes[#hashes+1] = hash
 				end
@@ -108,7 +115,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		local thischunk = info.schem
 		for k, v in ipairs(thischunk) do
 			local chance = v.chance or 100
-			if math.random(1, 100) <= chance then
+			if math_random(1, 100) <= chance then
 				local file = v.file
 				local path = fortress.schempath .. "/" .. file .. ".mts"
 				local adjust = v.adjust or {x=0, y=0, z=0}
@@ -140,7 +147,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Recursively generate further chunks.
 	for dir, chunks in pairs(info.next) do
 		local dirvec = keydirs[dir]
-		local p2 = vector.round(vector.add(vector.multiply(dirvec, data.step), pos))
+		local p2 = vector_round(vector.add(vector.multiply(dirvec, data.step), pos))
 		for index, chunk in ipairs(chunks) do
 			local info = data.chunks[chunk.chunk]
 			-- Current chunk must have associated data.
@@ -157,21 +164,21 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			if limit > 0 then
 				local limit2 = internal.limit[chunk.chunk] or 0
 				if limit2 > limit then
-					local diff = math.floor(limit2 - limit)
+					local diff = math_floor(limit2 - limit)
 					-- Every 1 count past the limit reduces chance by 10.
 					chance = chance - diff * 10
 				end
 			end
 
 			-- Add chunk data to fortress pattern if chance test succeeds.
-			if math.random(1, 100) <= chance then
+			if math_random(1, 100) <= chance then
 				local continue = false
 				if type(chunk.continue) == "boolean" then
 					continue = chunk.continue
 				end
 				local p3 = vector.multiply(chunk.shift or {x=0, y=0, z=0}, data.step)
-				local loc = vector.round(vector.add(p3, p2))
-				local delay = (math.random(1, 10)/10)+1.0
+				local loc = vector_round(vector.add(p3, p2))
+				local delay = (math_random(1, 10)/10)+1.0
 				internal.depth = internal.depth + 1
 				--minetest.chat_send_all("# Server: Depth " .. internal.depth .. "!")
 				minetest.after(delay, function()
@@ -191,7 +198,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Check if all build-data is gathered yet.
 	::checkdone::
 	if internal.depth == 0 then
-		minetest.log("action", "Finished generating fortress pattern in " .. math.floor(os.clock()-internal.time) .. " seconds!")
+		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.clock()-internal.time) .. " seconds!")
 
 		-- Push build data to pending queue.
 		for k, v in ipairs(build) do
@@ -281,7 +288,7 @@ function fortress.resume_construction()
 
 				::checkdone::
 				if internal.depth == 0 then
-					minetest.log("action", "Fortress fully generated in " .. math.floor(os.clock()-internal.time) .. " seconds!")
+					minetest.log("action", "Fortress fully generated in " .. math_floor(os.clock()-internal.time) .. " seconds!")
 					fortress.save_data()
 				end
 			end
@@ -290,7 +297,7 @@ function fortress.resume_construction()
 			minetest.emerge_area(minp, maxp, cb, tbparam)
 		end)
 		-- Separate calls to build fortress sections by random time, sequentially.
-		timer = timer + (math.random(1, 100)/20)
+		timer = timer + (math_random(1, 100)/20)
 	end
 end
 
@@ -368,7 +375,7 @@ function fortress.chat_command(name, param)
 		return
 	end
 
-	local pos = vector.round(player:get_pos())
+	local pos = vector_round(player:get_pos())
 	fortress.spawn_fortress(pos, fortress.default)
 end
 

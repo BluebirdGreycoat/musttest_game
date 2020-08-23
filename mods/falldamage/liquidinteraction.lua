@@ -3,8 +3,10 @@
 -- List of all nodes which have special liquid interaction override code.
 falldamage.liquid_interact_nodes = falldamage.liquid_interact_nodes or {}
 
+-- Localize for performance.
 local string_gsub = string.gsub
 local string_find = string.find
+local math_floor = math.floor
 
 -- Alter the way a node interacts with liquids base on its data.
 -- Specifically, this determines whether a node can be placed in liquid.
@@ -278,7 +280,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 			color_divisor = 32
 		end
 		if color_divisor then
-			local color = math.floor(metatable.palette_index / color_divisor)
+			local color = math_floor(metatable.palette_index / color_divisor)
 			local other = newnode.param2 % color_divisor
 			newnode.param2 = color * color_divisor + other
 		end

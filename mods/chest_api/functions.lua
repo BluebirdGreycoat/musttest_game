@@ -1,4 +1,10 @@
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+local math_random = math.random
+
+
+
 -- This function is responsible for triggering the update of vending
 -- machines when a chest inventory is modified.
 chest_api.update_vending = function(pos)
@@ -404,7 +410,7 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 		local node = minetest.get_node(pos)
 		if string.find(node.name, "_open$") then
 			-- Player must be near enough to the chest.
-			if vector.distance(pos, player:get_pos()) < 6 then
+			if vector_distance(pos, player:get_pos()) < 6 then
 				return true
 			end
 		end
@@ -447,7 +453,7 @@ local function open_chest(def, pos, node, clicker)
 	if not admin then
 		local meta = minetest.get_meta(pos)
 		local last_oiled = meta:get_int("oiled_time")
-		if (os.time() - last_oiled) > math.random(0, 60*60*24*30) then
+		if (os.time() - last_oiled) > math_random(0, 60*60*24*30) then
 			-- Play sound, open chest.
 			ambiance.sound_play(def.sound_open, pos, 0.5, 20)
 		else
@@ -500,7 +506,7 @@ local function close_chest(pn, pos, node, swap, sound)
 
 	local meta = minetest.get_meta(pos)
 	local last_oiled = meta:get_int("oiled_time")
-	if (os.time() - last_oiled) > math.random(0, 60*60*24*30) then
+	if (os.time() - last_oiled) > math_random(0, 60*60*24*30) then
 		ambiance.sound_play(sound, pos, 0.5, 20)
 	end
 

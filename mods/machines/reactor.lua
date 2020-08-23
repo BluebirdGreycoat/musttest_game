@@ -11,6 +11,10 @@ local TOTAL_COOK_TIME = tech.reactor.totaltime
 local ENERGY_AMOUNT = tech.reactor.power
 local REACTOR_TIER = "hv"
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 local SS_OFF = 0
@@ -166,7 +170,7 @@ local function check_environment(pos, meta)
     end
 
 		-- Randomize time to next nodecheck.
-		meta:set_int("chktmr", math.random(1*60, 3*60))
+		meta:set_int("chktmr", math_random(1*60, 3*60))
 		return result
   end
 
@@ -292,7 +296,7 @@ for k, v in ipairs({
 		local eups = meta:get_int("eups")
 		local machine_state = "Standby"
 		if keeprunning then machine_state = "Active" end
-		local output = math.floor(eups / ENERGY_TIME)
+		local output = math_floor(eups / ENERGY_TIME)
 		if not keeprunning then
 			output = 0
 		end
@@ -544,8 +548,8 @@ for k, v in ipairs({
 		meta:set_int("time", time)
 		meta:set_float("time2", time2)
 
-		fuel_percent = math.floor(time / maxtime * 100)
-		item_percent = math.floor(time2 / maxtime2 * 100)
+		fuel_percent = math_floor(time / maxtime * 100)
+		item_percent = math_floor(time2 / maxtime2 * 100)
 
 		meta:set_string("infotext", func.compose_infotext(pos, keeprunning))
 		meta:set_string("formspec", func.compose_formspec(fuel_percent, item_percent))
@@ -555,7 +559,7 @@ for k, v in ipairs({
 			minetest.get_node_timer(pos):start(1.0)
 
 			-- Change water to salt water sometimes.
-			if math.random(1, 60) == 1 then
+			if math_random(1, 60) == 1 then
 				local minp = {x=pos.x-1, y=pos.y-1, z=pos.z-1}
 				local maxp = {x=pos.x+1, y=pos.y+1, z=pos.z+1}
 				local nodes = minetest.find_nodes_in_area(minp, maxp, {
@@ -564,12 +568,12 @@ for k, v in ipairs({
 					"default:river_water_flowing",
 				})
 				if nodes and #nodes > 0 then
-					minetest.add_node(nodes[math.random(1, #nodes)], {name="default:river_water_source"})
+					minetest.add_node(nodes[math_random(1, #nodes)], {name="default:river_water_source"})
 				end
 			end
 		else
 			-- Slow down timer during sleep periods to reduce load.
-			minetest.get_node_timer(pos):start(math.random(1, 3*60))
+			minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		end
 	end
 

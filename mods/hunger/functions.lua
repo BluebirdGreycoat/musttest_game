@@ -1,3 +1,11 @@
+
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_min = math.min
+
+
+
 -- read/write
 function hunger.read(player)
 	local inv = player:get_inventory()
@@ -125,7 +133,7 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 
 	-- Player doesn't get exhausted as quickly if fit and in good health.
 	if player:get_hp() >= 18 then
-		new = math.floor(new / 2.0)
+		new = math_floor(new / 2.0)
 	end
 	exhaus = exhaus + new
 
@@ -135,7 +143,7 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 		if h > 0 and distance(player) > 0 then
 			-- Player gets hungrier faster when away from their support base.
 			local loss = -1
-			local owner = protector.get_node_owner(vector.round(player:get_pos())) or ""
+			local owner = protector.get_node_owner(vector_round(player:get_pos())) or ""
 			if owner ~= name then
 				loss = -2
 			end
@@ -167,7 +175,7 @@ function hunger.increase_exhaustion(player, amount)
 		end
 		-- Player doesn't get exhausted as quickly if fit and in good health.
 		if player:get_hp() >= 18 then
-			amount = math.floor(amount / 3.0)
+			amount = math_floor(amount / 3.0)
 		end
 		hunger.players[pname].exhaus = hunger.players[pname].exhaus + amount
 	end
@@ -229,8 +237,8 @@ local function hunger_globaltimer(dtime)
 						player:set_hp(new_hp)
 					else
 						-- Otherwise (if player's heath < 2/3rds), then player's passive healing is capped to 1/3 of full health.
-						local heal_cap = math.floor(hp_max / 3)
-						local new_hp = math.min((hp + HUNGER_HEAL), heal_cap)
+						local heal_cap = math_floor(hp_max / 3)
+						local new_hp = math_min((hp + HUNGER_HEAL), heal_cap)
 
 						-- But don't reduce player's health, only increase it.
 						if new_hp > hp then
@@ -391,7 +399,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 					inv:add_item("main", replace_with_item)
 				else
 					local pos = user:getpos()
-					pos.y = math.floor(pos.y + 0.5)
+					pos.y = math_floor(pos.y + 0.5)
 					core.add_item(pos, replace_with_item)
 				end
 			end

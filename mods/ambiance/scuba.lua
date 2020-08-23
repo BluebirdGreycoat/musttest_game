@@ -1,6 +1,10 @@
 
 -- This file is reloadable.
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 
 
 local done_scuba = function(name)
@@ -89,7 +93,7 @@ ambiance.globalstep_scuba = function(dtime)
 								ambiance.particles_underwater({x=pos.x, y=pos.y+1, z=pos.z})
 
 								-- Water-shaft makers will H8TE this!
-								ambiance.check_water_pressure(vector.round(pos), v)
+								ambiance.check_water_pressure(vector_round(pos), v)
 
 								sprint.add_stamina(v, -3)
             else
@@ -104,7 +108,7 @@ ambiance.globalstep_scuba = function(dtime)
             if under == 1 then
                 if entry.psplash == nil then entry.psplash = pos end
                 
-                if vector.distance(entry.psplash, pos) > 0.5 and entry.hsplash == nil then
+                if vector_distance(entry.psplash, pos) > 0.5 and entry.hsplash == nil then
                     ambiance.sound_play("splashing", pos, 1.0, 30)
                     entry.hsplash = true
                     entry.psplash = pos

@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 mobs.register_mob("sheep:sheep", {
     type = "animal",
     passive = true,
@@ -78,14 +81,14 @@ mobs.register_mob("sheep:sheep", {
 
             local obj = minetest.add_item(
                 self.object:getpos(),
-                ItemStack( "wool:white " .. math.random(1, 3) )
+                ItemStack( "wool:white " .. math_random(1, 3) )
             )
 
             if obj then
                 obj:setvelocity({
-                    x = math.random(-1, 1),
+                    x = math_random(-1, 1),
                     y = 5,
-                    z = math.random(-1, 1)
+                    z = math_random(-1, 1)
                 })
             end
 

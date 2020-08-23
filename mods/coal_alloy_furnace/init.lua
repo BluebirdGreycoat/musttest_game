@@ -3,6 +3,8 @@ coal_alloy_furnace = coal_alloy_furnace or {}
 coal_alloy_furnace.modpath = minetest.get_modpath("coal_alloy_furnace")
 local FURNACE_SPEED = 3.0
 
+-- Localize for performance.
+local math_floor = math.floor
 
 
 -- Get active formspec.
@@ -170,7 +172,7 @@ coal_alloy_furnace.on_timer = function(pos, elapsed)
   local item_state
   local item_percent = 0
   if cookable then
-    item_percent = math.floor(src_time / cooked.time * 100)
+    item_percent = math_floor(src_time / cooked.time * 100)
     if item_percent > 100 then
       item_state = "100% (Output Full)"
     else
@@ -190,7 +192,7 @@ coal_alloy_furnace.on_timer = function(pos, elapsed)
 
   if fuel_time <= fuel_totaltime and fuel_totaltime ~= 0 then
     active = "Active "
-    local fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
+    local fuel_percent = math_floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
     formspec = coal_alloy_furnace.get_active_formspec(fuel_percent, item_percent)
 		if machines.swap_node(pos, "coal_alloy_furnace:active") then

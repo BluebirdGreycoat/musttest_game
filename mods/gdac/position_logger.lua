@@ -1,11 +1,15 @@
 
 --[[
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+local math_floor = math.floor
+
 gdac.position_logger_path = minetest.get_worldpath() .. "/positions.txt"
 gdac.position_logger_players = gdac.position_logger_players or {}
 
 function gdac.position_logger_record(pname, pos, time, attached, sneak, sprint, jump)
 	local s = pname .. "|" ..
-		math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "|" ..
+		math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "|" ..
 		time .. "|" .. attached .. "|" .. sneak .. "|" .. sprint .. "|" .. jump .. "\n"
 	gdac.position_logger_file:write(s)
 end
@@ -36,7 +40,7 @@ function gdac.position_logger_step(dtime)
 			local prev_pos = gdac.position_logger_players[pname]
 			local pos = pref:get_pos()
 
-			if not prev_pos or vector.distance(prev_pos, pos) >= 1 then
+			if not prev_pos or vector_distance(prev_pos, pos) >= 1 then
 				local ctrl = pref:get_player_control()
 
 				local sneak = not_sneak

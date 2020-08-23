@@ -5,6 +5,13 @@ conv2.modpath = minetest.get_modpath("converter")
 local BUFFER_SIZE = tech.converter.buffer
 local ENERGY_AMOUNT = tech.converter.power
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 -- First key is voltage from. Second key is voltage to.
 -- Note that we never have 'from' and 'to' be the same voltage tier.
 local efficiency = {
@@ -39,7 +46,7 @@ function(pos, side) -- side should be p1 or p2.
 		local pos1 = minetest.string_to_pos(meta1:get_string(side))
 
 		if pos1 then
-			if vector.distance(pos, pos1) < 1.01 then
+			if vector_distance(pos, pos1) < 1.01 then
 				local node = minetest.get_node(pos1)
 				local nmeta = minetest.get_meta(pos1)
 				local nowner = nmeta:get_string("owner")
@@ -124,7 +131,7 @@ function(pos, tiera, tierb, invalidconfig, keeprunning)
 		--print(tiera)
 		--print(tierb)
 		infotext = infotext .. string.upper(tiera) .. " -> " .. string.upper(tierb) .. "\n" ..
-			"Efficiency: " .. math.floor(efficiency[tiera][tierb] * 100) .. "%"
+			"Efficiency: " .. math_floor(efficiency[tiera][tierb] * 100) .. "%"
 	end
 	return infotext
 end
@@ -199,7 +206,7 @@ function(pos, elapsed)
 		-- There should be at least BUFFER_SIZE energy in inventory.
 		local total_energy = inv:get_stack("buffer", 1)
 		local eff = efficiency[tiera][tierb]
-		local amount_to_send = math.floor(total_energy:get_count() * eff)
+		local amount_to_send = math_floor(total_energy:get_count() * eff)
 		local amount_not_sent = net2.put_energy(posb, ownb, amount_to_send, tierb)
 
 		-- 3 possible cases.
@@ -216,7 +223,7 @@ function(pos, elapsed)
 			assert(amount_not_sent > 0)
 			local amount_sent = (amount_to_send - amount_not_sent)
 			-- print((7000*100)/(0.7*100))
-			local full_cost = math.floor((amount_sent*100)/(eff*100))
+			local full_cost = math_floor((amount_sent*100)/(eff*100))
 			assert(total_energy:get_count() > full_cost)
 			local energy_remaining = total_energy:take_item(full_cost)
 			inv:set_stack("buffer", 1, energy_remaining)
@@ -237,7 +244,7 @@ function(pos, elapsed)
 	if keeprunning then
 		minetest.get_node_timer(pos):start(1.0)
 	else
-		minetest.get_node_timer(pos):start(math.random(1, 60*3))
+		minetest.get_node_timer(pos):start(math_random(1, 60*3))
 	end
 end
 

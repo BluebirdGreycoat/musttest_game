@@ -1,11 +1,14 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 function mese_crystals.get_grow_time()
-	return mese_crystals.growtime + math.random(1, 30)
+	return mese_crystals.growtime + math_random(1, 30)
 	--return mese_crystals.growtime
 end
 
 function mese_crystals.get_long_grow_time()
-	return mese_crystals.longgrowtime + math.random(1, 30)
+	return mese_crystals.longgrowtime + math_random(1, 30)
 	--return mese_crystals.longgrowtime
 end
 

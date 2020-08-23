@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
 -- Code API.
 hud_clock = hud_clock or {}
 
@@ -15,7 +18,7 @@ local last_time = os.time()
 
 
 local function floormod ( x, y )
-	return (math.floor(x) % y);
+	return (math_floor(x) % y);
 end
 
 local function get_digxp(pname)
@@ -109,11 +112,11 @@ end)
 function hud_clock.get_datetime(days)
 	local season = snow.get_day()
 
-	local r1 = math.floor(days/(34*12)) -- Years.
-	local r2 = math.floor(days%(34*12)) -- Year remainder, in days.
+	local r1 = math_floor(days/(34*12)) -- Years.
+	local r2 = math_floor(days%(34*12)) -- Year remainder, in days.
 
-	local m1 = math.floor(r2/34) -- Months.
-	local m2 = math.floor(r2%34) -- Month remainder, in days.
+	local m1 = math_floor(r2/34) -- Months.
+	local m2 = math_floor(r2%34) -- Month remainder, in days.
 	local d1 = m2 -- Days.
 
 	return season .. "\nSince Epoch: " .. r1+1 .. "/" .. m1+1 .. "/" .. d1+1
@@ -124,15 +127,15 @@ function hud_clock.get_date_string()
 	local time = os.time()
 	local epoch = os.time({year=2016, month=10, day=1})
 	time = time - epoch
-	local days = math.floor(((time/60)/60)/24)
+	local days = math_floor(((time/60)/60)/24)
 	return hud_clock.get_datetime(days)
 end
 
 function hud_clock.get_calendar_infotext()
 	return hud_clock.get_date_string() ..
 		"\nSpawn: " .. randspawn.get_spawn_name() ..
-		"\nOutback Winds: " .. math.floor(serveressentials.get_outback_timeout() / (60*60*24)) .. " Days" ..
-		"\nOutback Gate: " .. math.floor(randspawn.get_spawn_reset_timeout() / (60*60*24)) .. " Days"
+		"\nOutback Winds: " .. math_floor(serveressentials.get_outback_timeout() / (60*60*24)) .. " Days" ..
+		"\nOutback Gate: " .. math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24)) .. " Days"
 end
 
 minetest.register_node("clock:calendar", {

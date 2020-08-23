@@ -1,4 +1,12 @@
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+local math_min = math.min
+local math_max = math.max
+
 local cid_data = {}
 minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_nodes) do
@@ -20,14 +28,14 @@ stack_loss_prob["rackstone:redrack"] = 4
 stack_loss_prob["default:ice"] = 4
 
 local function rand_pos(center, pos, radius)
-  pos.x = center.x + math.random(-radius, radius)
-  pos.z = center.z + math.random(-radius, radius)
+  pos.x = center.x + math_random(-radius, radius)
+  pos.z = center.z + math_random(-radius, radius)
   
   -- Keep picking random positions until a position inside the sphere is chosen.
   -- This gives us a uniform (flattened) spherical distribution.
-  while vector.distance(center, pos) >= radius do
-    pos.x = center.x + math.random(-radius, radius)
-    pos.z = center.z + math.random(-radius, radius)
+  while vector_distance(center, pos) >= radius do
+    pos.x = center.x + math_random(-radius, radius)
+    pos.z = center.z + math_random(-radius, radius)
   end
 end
 
@@ -37,7 +45,7 @@ local function eject_drops(drops, pos, radius)
 		local trash = false
 
 		-- Nothing is lost unless the player loses it.
-		if stack_loss_prob[name] ~= nil and math.random(1, stack_loss_prob[name]) == 1 then
+		if stack_loss_prob[name] ~= nil and math_random(1, stack_loss_prob[name]) == 1 then
 			trash = true
 		end
 
@@ -46,7 +54,7 @@ local function eject_drops(drops, pos, radius)
 			local item = ItemStack(name)
 
 			while count > 0 do
-				local take = math.max(1,math.min(radius * radius, count, item:get_stack_max()))
+				local take = math_max(1, math_min(radius * radius, count, item:get_stack_max()))
 
 				rand_pos(pos, drop_pos, radius*0.9)
 				local dropitem = ItemStack(name)
@@ -56,8 +64,8 @@ local function eject_drops(drops, pos, radius)
 				if obj then
 					obj:get_luaentity().collect = true
 					obj:setacceleration({x = 0, y = -10, z = 0})
-					obj:setvelocity({x = math.random(-3, 3), y = math.random(0, 10), z = math.random(-3, 3)})
-					droplift.invoke(obj, math.random(3, 10))
+					obj:setvelocity({x = math_random(-3, 3), y = math_random(0, 10), z = math_random(-3, 3)})
+					droplift.invoke(obj, math_random(3, 10))
 				end
 
 				count = count - take
@@ -148,8 +156,8 @@ local function calc_velocity(pos1, pos2, old_vel, power)
 	vel = vector.multiply(vel, power)
 
 	-- Divide by distance
-	local dist = vector.distance(pos1, pos2)
-	dist = math.max(dist, 1)
+	local dist = vector_distance(pos1, pos2)
+	dist = math_max(dist, 1)
 	vel = vector.divide(vel, dist)
 
 	-- Add old velocity
@@ -157,9 +165,9 @@ local function calc_velocity(pos1, pos2, old_vel, power)
 
 	-- randomize it a bit
 	vel = vector.add(vel, {
-		x = math.random() - 0.5,
-		y = math.random() - 0.5,
-		z = math.random() - 0.5,
+		x = math_random() - 0.5,
+		y = math_random() - 0.5,
+		z = math_random() - 0.5,
 	})
 
 	-- Limit to terminal velocity
@@ -174,7 +182,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	for _, obj in pairs(objs) do
 		local obj_pos = obj:get_pos()
-		local dist = math.max(1, vector.distance(pos, obj_pos))
+		local dist = math_max(1, vector_distance(pos, obj_pos))
 
 		-- Calculate damage to be applied to player or mob.
 		local damage = (8 / dist) * radius
@@ -340,7 +348,7 @@ end
 
 
 local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pname)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	-- scan for adjacent TNT nodes first, and enlarge the explosion
 	local vm1 = VoxelManip()
 	local p1 = vector.subtract(pos, 2)
@@ -382,7 +390,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	vm1:write_to_map()
 
 	-- recalculate new radius
-	radius = math.floor(radius * math.pow(count, 0.60))
+	radius = math_floor(radius * math.pow(count, 0.60))
 
 	-- If no protections are present, we can optimize by skipping the protection
 	-- check for individual nodes. If we have a small radius, then don't bother.
@@ -454,7 +462,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 		for x=minr.x, maxr.x do
 			for y=minr.y, maxr.y do
 				local p = {x=x, y=y, z=z}
-				local d = vector.distance(pos, p)
+				local d = vector_distance(pos, p)
 				if d < radius+2 and d > radius-2 then
 					-- Check for nodes with 'falling_node' in groups.
 					minetest.check_single_for_falling(p)
@@ -472,7 +480,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
   end
 
 	for _, queued_data in ipairs(on_blast_queue) do
-		local dist = math.max(1, vector.distance(queued_data.pos, pos))
+		local dist = math_max(1, vector_distance(queued_data.pos, pos))
 		local intensity = (radius * radius) / (dist * dist)
 		local node_drops = queued_data.on_blast(queued_data.pos, intensity)
 		if node_drops then
@@ -505,7 +513,7 @@ end
 --]]
 
 function tnt.boom(pos, def)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	-- The TNT code crashes sometimes, for no particular reason?
 	local func = function()
 		tnt.boom_impl(pos, def)

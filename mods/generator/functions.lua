@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
 -- Typedata is used when traversing the network, without touching the node.
 -- It must contain as much data as needed to get the node even if unloaded.
 -- This must be done after node construction.
@@ -103,7 +106,7 @@ function(pos, elapsed)
     -- Keep burning current fuel item.
     time = time - 1
     meta:set_float("time", time)
-    percent = math.floor(time / maxtime * 100)
+    percent = math_floor(time / maxtime * 100)
     fuel_state = percent .. "%"
     eu_buffered = eu_buffered + eups
     

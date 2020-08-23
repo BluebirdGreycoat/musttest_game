@@ -3,6 +3,9 @@
 --
 boats = boats or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+
 local function is_water(pos)
 	local nn = minetest.get_node(pos).name
 	return minetest.get_item_group(nn, "water") ~= 0
@@ -210,7 +213,7 @@ function boat.on_step(self, dtime)
 			new_acce = {x = 0, y = 0, z = 0}
 			if math.abs(self.object:getvelocity().y) < 1 then
 				local pos = self.object:getpos()
-				pos.y = math.floor(pos.y) + 0.5
+				pos.y = math_floor(pos.y) + 0.5
 				self.object:set_pos(pos)
 				new_velo = get_velocity(self.v, self.object:getyaw(), 0)
 			else

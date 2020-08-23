@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
 distributer.update_formspec =
 function(pos, chg, max, cnt)
   local meta = minetest.get_meta(pos)
@@ -100,7 +103,7 @@ function(pos, chg, max, cnt)
     "Stored EUs: " .. chg .. "/" .. max .. "\n"
   
   if max > 0 then
-    local percent = math.floor(chg / max * 100)
+    local percent = math_floor(chg / max * 100)
     infotext = infotext .. "Total Charge: " .. percent .. "%"
   else
     infotext = infotext .. "Total Charge: 0%"

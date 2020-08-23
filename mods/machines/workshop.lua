@@ -2,6 +2,9 @@
 workshop = workshop or {}
 workshop.modpath = minetest.get_modpath("machines")
 
+-- Localize for performance.
+local math_random = math.random
+
 local BUFFER_SIZE = tech.workshop.buffer
 local ENERGY_AMOUNT = tech.workshop.power
 local REPAIR_RATE = tech.workshop.repair
@@ -162,7 +165,7 @@ function(pos, elapsed)
 		meta:set_int("active", 1)
 	else
 		-- Slow down timer during sleep periods to reduce load.
-		minetest.get_node_timer(pos):start(math.random(1, 3*60))
+		minetest.get_node_timer(pos):start(math_random(1, 3*60))
 		meta:set_int("active", 0)
 	end
 

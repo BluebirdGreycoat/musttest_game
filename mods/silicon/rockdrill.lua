@@ -8,8 +8,12 @@ rockdrill.name = "rockdrill:rockdrill"
 rockdrill.description = "Rock Drill\n\nUses stored energy to blast stone.\nWon't function in protected areas.\nMust be charged to use."
 rockdrill.range = 4
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 -- This is how many nodes the tool can blast.
-rockdrill.uses = math.floor(65535/2500)
+rockdrill.uses = math_floor(65535/2500)
 
 -- Find all blastable nodes in a small radius.
 function rockdrill.find_stone(sp, wear)
@@ -42,7 +46,7 @@ function rockdrill.find_stone(sp, wear)
 	if depth >= rockdrill.range then
 		goto next
 	end
-	if wear > math.floor(65535-rockdrill.uses) then
+	if wear > math_floor(65535-rockdrill.uses) then
 		goto next
 	end
 
@@ -127,9 +131,9 @@ function rockdrill.handle_node_drops(pos, user)
 		local remain = inv:add_item("main", stack)
 		if not remain:is_empty() then
 			local p = {
-				x = pos.x + math.random()/2 - 0.25,
-				y = pos.y + math.random()/2 - 0.25,
-				z = pos.z + math.random()/2 - 0.25,
+				x = pos.x + math_random()/2 - 0.25,
+				y = pos.y + math_random()/2 - 0.25,
+				z = pos.z + math_random()/2 - 0.25,
 			}
 			minetest.add_item(p, remain)
 		end
@@ -153,7 +157,7 @@ function rockdrill.on_use(itemstack, user, pt)
 		-- Once it is charged the first time, wear should never be 0 again.
 		return
 	end
-	if wear > math.floor(65535-rockdrill.uses) then
+	if wear > math_floor(65535-rockdrill.uses) then
 		-- Tool has no charge left.
 		return
 	end

@@ -2,6 +2,9 @@
 net2 = net2 or {}
 net2.modpath = minetest.get_modpath("networks")
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 -- Network cache tables.
 -- Caches are sorted first by voltage tier, then by owner,
 -- and finally by hashed position.
@@ -335,9 +338,8 @@ function net2.get_network(pos, owner, tier)
 
 	-- Determine network radius. This allows us to use a cool optimization.
 	local rad = 0
-	local distance = vector.distance
 	for k, v in ipairs(allnodes) do
-		local d = distance(pos, v.pos)
+		local d = vector_distance(pos, v.pos)
 		if d > rad then
 			rad = d
 		end
@@ -404,7 +406,7 @@ function net2.clear_caches(pos, owner, tier)
 	net2.networks[tier][owner][hash] = nil
 	for k, v in pairs(net2.networks[tier][owner]) do
 		-- Any caches closer than their calculated radius could be dirty.
-		if vector.distance(v.pos, pos) <= v.radius then
+		if vector_distance(v.pos, pos) <= v.radius then
 			tbrm[#tbrm+1] = k
 		end
 	end

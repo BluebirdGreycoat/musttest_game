@@ -2,6 +2,9 @@
 chainsaw = chainsaw or {}
 chainsaw.modpath = minetest.get_modpath("silicon")
 
+-- Localize for performance.
+local math_floor = math.floor
+
 chainsaw.image = "chainsaw_chainsaw.png"
 chainsaw.sound = "chainsaw"
 chainsaw.name = "chainsaw:chainsaw"
@@ -9,7 +12,7 @@ chainsaw.description = "Chainsaw\n\nUses stored energy to cut timber.\nWon't fun
 chainsaw.range = 6
 
 -- This is how many nodes the chainsaw can cut.
-chainsaw.uses = math.floor(65535/1500)
+chainsaw.uses = math_floor(65535/1500)
 
 -- Find all timber nodes in a small radius.
 function chainsaw.find_timber(sp, wear)
@@ -42,7 +45,7 @@ function chainsaw.find_timber(sp, wear)
 	if depth >= chainsaw.range then
 		goto next
 	end
-	if wear > math.floor(65535-chainsaw.uses) then
+	if wear > math_floor(65535-chainsaw.uses) then
 		goto next
 	end
 
@@ -111,7 +114,7 @@ function chainsaw.on_use(itemstack, user, pt)
 		-- Once it is charged the first time, wear should never be 0 again.
 		return
 	end
-	if wear > math.floor(65535-chainsaw.uses) then
+	if wear > math_floor(65535-chainsaw.uses) then
 		-- Tool has no charge left.
 		return
 	end

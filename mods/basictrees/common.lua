@@ -1,6 +1,9 @@
 
 basictrees = basictrees or {}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 basictrees.sapling_selection_box = {
@@ -71,11 +74,11 @@ basictrees.can_grow = function(pos)
 	-- Reduced chance to grow if cold/ice nearby.
 	local below = {x=pos.x, y=pos.y-1, z=pos.z}
 	local cold = minetest.find_nodes_in_area(vector.subtract(below, 1), vector.add(below, 1), "group:cold")
-	if #cold > math.random(0, 18) then
+	if #cold > math_random(0, 18) then
 		return false
 	end
 
-	if pos.y < math.random(-64, 0) then
+	if pos.y < math_random(-64, 0) then
 		return false
 	end
 

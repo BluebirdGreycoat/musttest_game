@@ -2,6 +2,11 @@
 obsidian_gateway = obsidian_gateway or {}
 obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_random = math.random
+
 
 
 -- Gateway schematic.
@@ -169,7 +174,7 @@ end
 
 function obsidian_gateway.attempt_activation(pos, player)
 	local pname = player:get_player_name()
-	local ppos = vector.round(player:get_pos())
+	local ppos = vector_round(player:get_pos())
 
 	local under = utility.node_under_pos(player:get_pos())
 	local inside = vector.add(under, {x=0, y=1, z=0})
@@ -255,18 +260,18 @@ function obsidian_gateway.attempt_activation(pos, player)
 				return true
 			end
 			-- Don't allow exit points near the colonies.
-			if vector.distance(target, {x=0, y=0, z=0}) < 2000 or
-				vector.distance(target, {x=0, y=-30790, z=0}) < 2000 then
+			if vector_distance(target, {x=0, y=0, z=0}) < 2000 or
+				vector_distance(target, {x=0, y=-30790, z=0}) < 2000 then
 				return true
 			end
 			-- Exit must not be too close to start.
-			if vector.distance(target, origin) < 500 then
+			if vector_distance(target, origin) < 500 then
 				return true
 			end
 			-- Or too far.
 			-- This causes too many failures.
 			-- Note: this is now handled by the 'rc' mod.
-			--if vector.distance(target, origin) > 7000 then
+			--if vector_distance(target, origin) > 7000 then
 			--	return true
 			--end
 			if not rc.is_valid_gateway_region(target) then
@@ -285,7 +290,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				---[[
 				minetest.after(0, function()
 					-- Detonate some TNT!
-					tnt.boom(vector.add(ppos, {x=math.random(-3, 3), y=0, z=math.random(-3, 3)}), {
+					tnt.boom(vector.add(ppos, {x=math_random(-3, 3), y=0, z=math_random(-3, 3)}), {
 						radius = 3,
 						ignore_protection = false,
 						ignore_on_blast = false,
@@ -321,9 +326,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- Without changing the coordinates of the gateway.
 	local pdest
 	if northsouth then
-		pdest = vector.add(target, {x=math.random(0, 1), y=0, z=0})
+		pdest = vector.add(target, {x=math_random(0, 1), y=0, z=0})
 	else
-		pdest = vector.add(target, {x=0, y=0, z=math.random(0, 1)})
+		pdest = vector.add(target, {x=0, y=0, z=math_random(0, 1)})
 	end
 
 	-- Collect any friends to bring along.
@@ -331,7 +336,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	local allplayers = minetest.get_connected_players()
 	for k, v in ipairs(allplayers) do
 		if v:get_player_name() ~= pname then
-			if vector.distance(v:get_pos(), player:get_pos()) < 3 then
+			if vector_distance(v:get_pos(), player:get_pos()) < 3 then
 				friendstobring[#friendstobring+1] = v:get_player_name()
 			end
 		end
@@ -344,7 +349,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		function()
 			if not isowner then
 				-- Grief portal if used by someone other than owner.
-				local plava = airpoints[math.random(1, #airpoints)]
+				local plava = airpoints[math_random(1, #airpoints)]
 				--minetest.chat_send_all("# Server: Attempting to grief gateway @ " .. minetest.pos_to_string(plava) .. "!")
 				if minetest.get_node(plava).name == "air" then
 					if plava.y < -10 then

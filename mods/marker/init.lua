@@ -19,6 +19,10 @@ marker.ht_min = 12
 marker.ht_max1 = 100
 marker.ht_max2 = 110
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 local timer = 0
 local delay = marker.steptime
 function marker.on_globalstep(dtime)
@@ -276,7 +280,7 @@ function marker.add_waypoint(player, pos, list)
 	end
 
 	-- add position
-	positions[#positions + 1] = vector.round(pos)
+	positions[#positions + 1] = vector_round(pos)
 
 	-- save changes
 	marker.save_player(player)
@@ -687,7 +691,7 @@ marker.on_receive_fields = function(player, formname, fields)
 			if targetname ~= pname then
 				local ptarget = minetest.get_player_by_name(targetname)
 				if ptarget and ptarget:is_player() then
-					if vector.distance(ptarget:get_pos(), player:get_pos()) < marker.proximity_range then
+					if vector_distance(ptarget:get_pos(), player:get_pos()) < marker.proximity_range then
 						local inv = ptarget:get_inventory()
 						if inv:contains_item("main", "passport:passport_adv") then
 							local name = marker.get_list_name(pname, gui.index1)
@@ -794,7 +798,7 @@ marker.on_receive_fields = function(player, formname, fields)
 			marker.add_waypoint(pname, pos, "default")
 			local deflist = marker.get_list(pname, "default")
 			gui.index2 = #deflist
-			minetest.chat_send_player(pname, "# Server: Placed marker at " .. rc.pos_to_namestr(vector.round(pos)) .. ".")
+			minetest.chat_send_player(pname, "# Server: Placed marker at " .. rc.pos_to_namestr(vector_round(pos)) .. ".")
 		else
 			minetest.chat_send_player(pname, "# Server: Cannot place a new marker, storage is full.")
 		end

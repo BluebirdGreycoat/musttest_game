@@ -2,6 +2,13 @@
 itemburn = itemburn or {}
 itemburn.modpath = minetest.get_modpath("itemburn")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+local math_min = math.min
+
+
+
 -- Use an offset for finding the node under the drop,
 -- to allow thin slab shielding for lava, etc.
 itemburn.footstep=-0.25
@@ -96,10 +103,10 @@ local item = {
 			local node = minetest.get_node(pos)
 			--minetest.chat_send_all("# Server: A=" .. node.name)
 			if string.find(node.name, ":lava_") then
-				self:melt_in_lava(vector.round(pos))
+				self:melt_in_lava(vector_round(pos))
 				return
 			else
-				local pb = vector.round({x=pos.x, y=pos.y+itemburn.get_fs(), z=pos.z})
+				local pb = vector_round({x=pos.x, y=pos.y+itemburn.get_fs(), z=pos.z})
 				local node = minetest.get_node(pb)
 				--minetest.chat_send_all("# Server: U=" .. node.name)
 				if string.find(node.name, ":lava_") then
@@ -113,7 +120,7 @@ local item = {
 		-- flammable, check for igniters
 		self.ignite_timer = (self.ignite_timer or 0) - dtime
 		if self.ignite_timer < 0 then
-			self.ignite_timer = math.random(10, 100)/10
+			self.ignite_timer = math_random(10, 100)/10
 
 			local pos = self.object:getpos()
 			local node = minetest.get_node_or_nil(pos)
@@ -123,10 +130,10 @@ local item = {
 
 			-- Immediately burn up flammable items in lava
 			if minetest.get_item_group(node.name, "lava") > 0 then
-				self:melt_in_lava(vector.round(pos))
+				self:melt_in_lava(vector_round(pos))
 			else
 				-- Check if sitting on top of lava.
-				local pb = vector.round({x=pos.x, y=pos.y+itemburn.get_fs(), z=pos.z})
+				local pb = vector_round({x=pos.x, y=pos.y+itemburn.get_fs(), z=pos.z})
 				local nb = minetest.get_node_or_nil(pb)
 				if nb then
 					local l = minetest.get_item_group(nb.name, "lava")
@@ -138,7 +145,7 @@ local item = {
 
 				--  otherwise there'll be a chance based on its igniter value
 				local burn_chance = (self.flammable or 1) * minetest.get_item_group(node.name, "igniter")
-				if burn_chance > 0 and math.random(0, burn_chance) ~= 0 then
+				if burn_chance > 0 and math_random(0, burn_chance) ~= 0 then
 					self:burn_up()
 				end
 			end
@@ -169,7 +176,7 @@ local item = {
 				local empty = s2:is_empty()
 				if name == n2 or empty then
 					if empty then
-						local s3 = stack:take_item(math.min(stack:get_count(), stack:get_stack_max()))
+						local s3 = stack:take_item(math_min(stack:get_count(), stack:get_stack_max()))
 						left = stack
 						index = i
 						inv:set_stack("main", i, s3)
@@ -177,7 +184,7 @@ local item = {
 						inserted = true
 						break
 					elseif name == n2 and s2:get_free_space() > 0 then
-						newstack = ItemStack(stack):take_item(math.min(s2:get_free_space(), stack:get_count())) -- A copy of the stack being added.
+						newstack = ItemStack(stack):take_item(math_min(s2:get_free_space(), stack:get_count())) -- A copy of the stack being added.
 						left = s2:add_item(stack)
 						index = i
 						inv:set_stack("main", i, s2)
@@ -201,7 +208,7 @@ local item = {
 
 			if inserted then
 				minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
-					stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector.round(self.object:getpos())))
+					stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector_round(self.object:getpos())))
 
 				-- Execute player inventory callbacks.
 				-- Note: inventory callbacks are called when player drops item (Q) so this

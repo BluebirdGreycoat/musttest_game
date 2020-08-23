@@ -2,6 +2,13 @@
 mtflower = mtflower or {}
 mtflower.modpath = minetest.get_modpath("mtflower")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 -- All branch positions have been tested and declared accurate.
 local branches = {
 	-- Straights.
@@ -44,7 +51,7 @@ local branches = {
 }
 
 function mtflower.may_replace_node(pos, tree, leaf, is_leaf)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local node = minetest.get_node(pos)
 
 	-- Replace air and leaves of the same kind of tree.
@@ -91,7 +98,7 @@ function mtflower.shape_to_positions(shape, offset)
 				{x=0, y=0, z=1}, {x=1, y=0, z=1},
 			}
 			if not offset then
-				local adjust = {x=math.random(-1, 0), y=0, z=math.random(-1, 0)}
+				local adjust = {x=math_random(-1, 0), y=0, z=math_random(-1, 0)}
 				for k, v in ipairs(spots) do
 					local p = vector.add(v, adjust)
 					v.x = p.x
@@ -115,7 +122,7 @@ function mtflower.shape_to_positions(shape, offset)
 end
 
 function mtflower.generate_roots(pos, shape, offset, tree, leaf)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
 	-- Get a list of positions to start the bottom of the root from.
 	local starts = mtflower.shape_to_positions(shape, offset)
@@ -168,7 +175,7 @@ function mtflower.generate_roots(pos, shape, offset, tree, leaf)
 end
 
 function mtflower.generate_trunk(pos, shape, height, tree, leaves)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
 	-- Get a list of positions to start the bottom of the trunk from.
 	local starts, offset = mtflower.shape_to_positions(shape)
@@ -215,7 +222,7 @@ function mtflower.generate_trunk(pos, shape, height, tree, leaves)
 end
 
 function mtflower.try_spawn_branch(pos, tree, leaf, recursive, cluster_count, first_cluster)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
 	-- Sanitize arguments.
 	if type(tree) ~= "string" then tree = "default:tree" end
@@ -238,7 +245,7 @@ function mtflower.try_spawn_branch(pos, tree, leaf, recursive, cluster_count, fi
 			break
 		end
 
-		branch = branches[math.random(1, #branches)]
+		branch = branches[math_random(1, #branches)]
 
 		p1 = vector.add(pos, branch[1])
 		p2 = vector.add(pos, branch[2])
@@ -295,7 +302,7 @@ function mtflower.try_spawn_branch(pos, tree, leaf, recursive, cluster_count, fi
 		-- For big trees, make one of the branches even longer (if possible).
 		-- Do this for all clusters including the first one.
 		if cluster_count >= 3 and #endpoints > 0 then
-			local randp = endpoints[math.random(1, #endpoints)]
+			local randp = endpoints[math_random(1, #endpoints)]
 			local more3 = mtflower.try_spawn_branch(randp, tree, leaf, 2, cluster_count, first_cluster)
 			for k, v in ipairs(more3) do
 				table.insert(all, v)
@@ -337,7 +344,7 @@ function mtflower.generate_branches(trunks, tries, tree, leaf)
 		end
 
 		if #found > 0 then
-			return found[math.random(1, #found)]
+			return found[math_random(1, #found)]
 		end
 	end
 
@@ -355,7 +362,7 @@ function mtflower.generate_branches(trunks, tries, tree, leaf)
 
 	-- This function spawns 2 or 3 horizontal layers going down from Y-start.
 	local spawn_cluster = function(ytop, cluster_count, first_cluster)
-		local width = math.random(3, 5)
+		local width = math_random(3, 5)
 		for y = ytop, ytop - width, -2 do
 			spawn_horizontal_cluster(y, cluster_count, first_cluster)
 		end
@@ -369,10 +376,10 @@ function mtflower.generate_branches(trunks, tries, tree, leaf)
 
 	-- Actually spawn the clusters.
 	local first_cluster = true
-	local dist = math.random(-11, -8)
+	local dist = math_random(-11, -8)
 	for y = ymax, ymin, dist do
 		if y > ymin + 8 or first_cluster then
-			spawn_cluster(y + math.random(-1, 1), cluster_count, first_cluster)
+			spawn_cluster(y + math_random(-1, 1), cluster_count, first_cluster)
 			first_cluster = false
 		end
 	end
@@ -384,7 +391,7 @@ function mtflower.generate_branches(trunks, tries, tree, leaf)
 end
 
 function mtflower.spawn_leaf_cube(pos, tree, leaves)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local above = vector.add(pos, {x=0, y=1, z=0})
 
 	-- Sanitize arguments.
@@ -438,7 +445,7 @@ function mtflower.spawn_leaf_cube(pos, tree, leaves)
 				local p = {x=x, y=y, z=z}
 
 				-- Skip placing 1 in 7 leaves, but never skip sides.
-				if math.random(1, 7) <= 6 or is_side(p) then
+				if math_random(1, 7) <= 6 or is_side(p) then
 					if mtflower.may_replace_node(p, tree, leaves, true) then
 						minetest.set_node(p, {name=leaves})
 						table.insert(spots, p)
@@ -462,7 +469,7 @@ function mtflower.spawn_leaf_cube(pos, tree, leaves)
 		v.y = v.y + pos.y
 		v.z = v.z + pos.z
 
-		if math.random(1, 4) == 1 then
+		if math_random(1, 4) == 1 then
 			if mtflower.may_replace_node(v, tree, leaves, true) then
 				minetest.set_node(v, {name=leaves})
 				table.insert(spots, v)
@@ -529,16 +536,16 @@ function mtflower.generate_tree(pos, shape, height, tree, leaf)
 end
 
 function mtflower.can_grow(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 
-	if pos.y > math.random(-200, -100) then
+	if pos.y > math_random(-200, -100) then
 		return false
 	end
 
 	-- Reduced chance to grow if cold/ice nearby.
 	local below = {x=pos.x, y=pos.y-1, z=pos.z}
 	local cold = minetest.find_nodes_in_area(vector.subtract(below, 1), vector.add(below, 1), "group:cold")
-	if #cold > math.random(0, 18) then
+	if #cold > math_random(0, 18) then
 		return false
 	end
 
@@ -576,11 +583,11 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 
 	local positions = minetest.find_nodes_in_area(minp, maxp, mineral)
 
-	local height = math.floor(#positions * 1.5)
+	local height = math_floor(#positions * 1.5)
 	if height > 40 then
 		height = 40
 	end
-	height = math.floor(height * (math.random(95, 105) / 100))
+	height = math_floor(height * (math_random(95, 105) / 100))
 	if height < 6 then
 		return
 	end
@@ -589,7 +596,7 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 
 	if height >= 30 then
 		shape = "cross"
-	elseif height >= math.random(20, 30) then
+	elseif height >= math_random(20, 30) then
 		shape = "square"
 	end
 
@@ -610,9 +617,9 @@ function mtflower.try_grow(pos, tree, leaf, lamp, mineral)
 
 	-- Scatter items drawn up out of the soil in the tree itself.
 	if arms and #arms > 0 then
-		local amount = math.floor(#positions / 4)
+		local amount = math_floor(#positions / 4)
 		for i = 1, amount, 1 do
-			local spot = arms[math.random(1, #arms)]
+			local spot = arms[math_random(1, #arms)]
 			minetest.set_node(spot, {name=lamp})
 		end
 	end

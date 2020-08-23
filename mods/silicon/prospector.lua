@@ -2,6 +2,10 @@
 prospector = prospector or {}
 prospector.modpath = minetest.get_modpath("silicon")
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 prospector.image = "prospector.png"
 prospector.name = "prospector:prospector"
 prospector.description = "Prospector\n\nTool to scan for hidden materials.\nMust be charged to use."
@@ -64,7 +68,7 @@ local function update_description(toolstack)
 	accuracy = accuracy * -1 + 1 -- Invert.
 	if accuracy < 0 then accuracy = 0 end
 	if accuracy > 1 then accuracy = 1 end
-	accuracy = math.floor(accuracy * 100)
+	accuracy = math_floor(accuracy * 100)
 
 	local meta = toolstack:get_meta()
 	meta:set_int("accuracy", accuracy)
@@ -86,9 +90,9 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	local toolmeta = get_metadata(toolstack)
 	local look_diameter = toolmeta.look_radius * 2 + 1
 	local charge_to_take = toolmeta.look_depth * (toolmeta.look_depth + 1) * look_diameter * look_diameter
-	charge_to_take = math.floor(charge_to_take / 30)
+	charge_to_take = math_floor(charge_to_take / 30)
 
-	if wear > math.floor(65535-charge_to_take) then
+	if wear > math_floor(65535-charge_to_take) then
 		-- Tool has no charge left.
 		return 10
 	end
@@ -133,8 +137,8 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	--]]
 
 	local accuracy = toolmeta.accuracy
-	if math.random() > accuracy/100 then
-		if math.random(1, 2) == 1 then
+	if math_random() > accuracy/100 then
+		if math_random(1, 2) == 1 then
 			found = not found
 		end
 	end

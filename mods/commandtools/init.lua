@@ -2,6 +2,9 @@
 commandtools = commandtools or {}
 commandtools.modpath = minetest.get_modpath("commandtools")
 
+-- Localize for performance.
+local vector_round = vector.round
+
 
 
 -- Pick.
@@ -116,7 +119,7 @@ commandtools.hoe_on_use = function(itemstack, user, pointed_thing)
 	elseif pointed_thing.type == "node" then
 		local pos = pointed_thing.under
 		if not pos then return end
-		pos = vector.round(pos)
+		pos = vector_round(pos)
 
 		--sfn.update_node(pos)
 		--do return end
@@ -392,7 +395,7 @@ function commandtools.gaterepair_origin(pname, pos)
 	end
 
 	local target = table.copy(commandtools.gateinfo.target_pos)
-	target = vector.round(target)
+	target = vector_round(target)
 
 	if ns_key == "ns" then
 		playerorigin = vector.add(target, {x=1, y=1, z=0})
@@ -447,7 +450,7 @@ function commandtools.gaterepair_target(pname, pos)
 	end
 
 	local target = table.copy(commandtools.gateinfo.origin_pos)
-	target = vector.round(target)
+	target = vector_round(target)
 
 	if ns_key == "ns" then
 		playerorigin = vector.add(target, {x=1, y=1, z=0})
@@ -502,8 +505,8 @@ function commandtools.gatecopy_origin(pname, pos)
 
 	if target and owner and owner ~= "" then
 		minetest.chat_send_player(pname, "# Server: Copied ORIGIN gateway information!")
-		commandtools.gateinfo.origin_pos = vector.round(origin)
-		commandtools.gateinfo.origin_dest = vector.round(target)
+		commandtools.gateinfo.origin_pos = vector_round(origin)
+		commandtools.gateinfo.origin_dest = vector_round(target)
 		commandtools.gateinfo.origin_owner = owner
 		commandtools.gateinfo.direction = ns_key
 	else
@@ -547,8 +550,8 @@ function commandtools.gatecopy_target(pname, pos)
 
 	if target and owner and owner ~= "" then
 		minetest.chat_send_player(pname, "# Server: Copied TARGET gateway information!")
-		commandtools.gateinfo.target_pos = vector.round(origin)
-		commandtools.gateinfo.target_dest = vector.round(target)
+		commandtools.gateinfo.target_pos = vector_round(origin)
+		commandtools.gateinfo.target_dest = vector_round(target)
 		commandtools.gateinfo.target_owner = owner
 		commandtools.gateinfo.direction = ns_key
 	else

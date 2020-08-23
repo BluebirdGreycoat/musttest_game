@@ -1,4 +1,10 @@
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+local math_random = math.random
+
+
+
 ambiance.tree_sounds = {
 	{name="craw",           gain=1.0, miny=-20,    maxy=500,   time="day"  ,   indoors=false, mintime=120, maxtime=360, },
 	{name="hornedowl",      gain=1.0, miny=-20,    maxy=500,   time="night",   indoors=false, mintime=120, maxtime=360, },
@@ -36,7 +42,7 @@ for k, v in ipairs(ambiance.tree_sounds) do
 
 	-- Initialize timer to a random value between min and max time.
 	-- This ensures all sounds start with random times on first run.
-	v.timer = math.random(v.mintime, v.maxtime)
+	v.timer = math_random(v.mintime, v.maxtime)
 
 	v.range = v.range or 30
 end
@@ -81,7 +87,7 @@ if not ambiance.tree_sounds_registered then
 
 			-- Get current time of day.
 			local curtime = minetest.get_timeofday()
-			local rand = math.random
+			local rand = math_random
 
 			for k, v in ipairs(allsounds) do
 				v.timer = v.timer - dtime
@@ -101,7 +107,7 @@ if not ambiance.tree_sounds_registered then
 
 								-- Is player in this sounds's Y layer?
 								if ppos.y >= v.miny and ppos.y <= v.maxy then
-									local pdist = vector.distance(pos, ppos)
+									local pdist = vector_distance(pos, ppos)
 									if pdist < v.range then
 										-- Don't play sound if player is underwater (muted sounds).
 										-- Note: player's underwater status is modified by the scuba code.

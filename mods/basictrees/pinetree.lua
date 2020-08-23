@@ -7,6 +7,9 @@ local SCHEMATIC_MINP = {x=-2, y=1, z=-2}
 local SCHEMATIC_MAXP = {x=2, y=16, z=2}
 local SCHEMATIC_RELP = {x=-2, y=-1, z=-2}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 minetest.register_node("basictrees:pine_trunk", {
@@ -89,7 +92,7 @@ minetest.register_node("basictrees:pine_sapling", {
 				end
 
         if not basictrees.can_grow(pos) then
-            minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+            minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
             return
         end
         
@@ -123,12 +126,12 @@ minetest.register_node("basictrees:pine_sapling", {
             "basictrees:pine_cone",
             SCHEMATIC_MINP,
             SCHEMATIC_MAXP,
-            math.random(6, 10)
+            math_random(6, 10)
         )
     end,
 
 	on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+		minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 	end,
 
 	on_place = function(itemstack, placer, pointed_thing)

@@ -3,6 +3,10 @@ jaunt = jaunt or {}
 jaunt.modpath = minetest.get_modpath("jaunt")
 jaunt.jump_range = 3000
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+
 -- private: assemble a formspec string
 function jaunt.get_formspec(player)
 	local formspec = "size[4.5,5.5]" ..
@@ -50,7 +54,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 		return true
 	end
 
-	local uspos = vector.round(player:get_pos())
+	local uspos = vector_round(player:get_pos())
 
 	if fields.go then
 		if minetest.find_node_near(uspos, 2, "teleports:teleport", true) then
@@ -73,9 +77,9 @@ jaunt.on_receive_fields = function(player, formname, fields)
 								range = range * 2
 							end
 
-							local tarpos = vector.round(other:get_pos())
+							local tarpos = vector_round(other:get_pos())
 							if rc.current_realm_at_pos(tarpos) == rc.current_realm_at_pos(uspos) then
-								if vector.distance(tarpos, uspos) < range then
+								if vector_distance(tarpos, uspos) < range then
 									-- Alert player that someone's coming to them.
 									local RED = core.get_color_escape_sequence("#ff0000")
 									minetest.chat_send_player(target,

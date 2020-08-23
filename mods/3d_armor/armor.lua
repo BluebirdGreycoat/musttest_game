@@ -1,3 +1,10 @@
+
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 ARMOR_INIT_DELAY = 1
 ARMOR_INIT_TIMES = 1
 ARMOR_BONES_DELAY = 1
@@ -191,7 +198,7 @@ armor.set_player_armor = function(self, player)
 	end
 	local armor_groups = {fleshy=100}
 	if armor_level > 0 then
-		armor_groups.level = math.floor(armor_level / 20)
+		armor_groups.level = math_floor(armor_level / 20)
 		armor_groups.fleshy = 100 - armor_level
 		armor_groups.radiation = 100 - armor_radiation
 	end
@@ -459,7 +466,7 @@ if ARMOR_DROP == true or ARMOR_DESTROY == true then
 	armor.drop_armor = function(pos, stack)
 		local obj = minetest.add_item(pos, stack)
 		if obj then
-			obj:setvelocity({x=math.random(-1, 1), y=5, z=math.random(-1, 1)})
+			obj:setvelocity({x=math_random(-1, 1), y=5, z=math_random(-1, 1)})
 		end
 	end
 
@@ -557,7 +564,7 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 		armor.def[name].state = state
 		armor.def[name].count = items
 		heal_max = heal_max * ARMOR_HEAL_MULTIPLIER
-		if heal_max > math.random(100) then
+		if heal_max > math_random(100) then
 			hp_change = 0
 		end
 		armor:update_armor(player)

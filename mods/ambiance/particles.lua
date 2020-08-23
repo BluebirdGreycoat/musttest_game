@@ -2,6 +2,11 @@
 particles = particles or {}
 particles.modpath = minetest.get_modpath("ambiance")
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local math_random = math.random
+
+
 
 
 -- Food crumbs when player eats something.
@@ -23,7 +28,7 @@ function ambiance.particles_eat_item(user, name)
 	end
 
 	local rnd = function(u, l)
-		return math.random(u*10, l*10)/10
+		return math_random(u*10, l*10)/10
 	end
 
 	local pos = user:get_pos()
@@ -32,7 +37,7 @@ function ambiance.particles_eat_item(user, name)
 	local push = vector.multiply(minetest.yaw_to_dir(yaw), 1.5)
 	pos = vector.add(pos, forward)
 	local particles = {
-		amount = math.random(2, 5),
+		amount = math_random(2, 5),
 		time = 0.2,
 		minpos = vector.add(pos, {x=-0.1, y=1.1, z=-0.1}),
 		maxpos = vector.add(pos, {x=0.1, y=1.6, z=0.1}),
@@ -57,11 +62,11 @@ end
 -- Particles when player is entirely submerged.
 function ambiance.particles_underwater(pos)
 	local rnd = function(u, l)
-		return math.random(u*10, l*10)/10
+		return math_random(u*10, l*10)/10
 	end
 
 	local particles = {
-		amount = math.random(5, 10),
+		amount = math_random(5, 10),
 		time = 1.0,
 		minpos = vector.add(pos, -0.5),
 		maxpos = vector.add(pos, 0.5),
@@ -86,11 +91,11 @@ end
 -- Swimming particles when player is swimming on water surface.
 function ambiance.particles_swimming(pos)
 	local rnd = function(u, l)
-		return math.random(u*10, l*10)/10
+		return math_random(u*10, l*10)/10
 	end
 
 	local bubbles = {
-		amount = math.random(5, 10),
+		amount = math_random(5, 10),
 		time = 1.0,
 		minpos = vector.add(pos, -0.5),
 		maxpos = vector.add(pos, 0.5),
@@ -109,7 +114,7 @@ function ambiance.particles_swimming(pos)
 	}
 	minetest.add_particlespawner(bubbles)
 	local splash = {
-		amount = math.random(5, 10),
+		amount = math_random(5, 10),
 		time = 1.0,
 		minpos = vector.add(pos, -0.5),
 		maxpos = vector.add(pos, 0.5),
@@ -155,7 +160,7 @@ function ambiance.particles_on_dig(pos, node)
 		return
 	end
 	local particles = {
-		amount = math.random(5, 10),
+		amount = math_random(5, 10),
 		time = 0.1,
 		minpos = vector.add(pos, -0.49),
 		maxpos = vector.add(pos, 0.49),
@@ -183,7 +188,7 @@ function ambiance.particles_on_punch(pos, node)
 		return
 	end
 	local particles = {
-		amount = math.random(1, 5),
+		amount = math_random(1, 5),
 		time = 0.1,
 		minpos = vector.add(pos, -0.49),
 		maxpos = vector.add(pos, 0.49),
@@ -211,7 +216,7 @@ function ambiance.particles_on_place(pos, node)
 		return
 	end
 	local particles = {
-		amount = math.random(5, 10),
+		amount = math_random(5, 10),
 		time = 0.1,
 		minpos = vector.add(pos, -0.49),
 		maxpos = vector.add(pos, 0.49),
@@ -236,7 +241,7 @@ end
 local function player_nearby(pos)
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
-		if vector.distance(pos, v:get_pos()) < 16 then
+		if vector_distance(pos, v:get_pos()) < 16 then
 			return true
 		end
 	end
@@ -251,7 +256,7 @@ function ambiance.flamespawner(self, dtime)
 
 	-- Remove spawner if no flame here.
 	if self.nt < 0 then
-		self.nt = math.random(10, 60)
+		self.nt = math_random(10, 60)
 		local pos = self.object:get_pos()
 		local nn = minetest.get_node(pos).name
 		if not string.find(nn, "^fire:") and not string.find(nn, "^maptools:") then
@@ -264,12 +269,12 @@ function ambiance.flamespawner(self, dtime)
 	if self.ct < 0 then
 		local pos = self.object:get_pos()
 		self.good = player_nearby(pos)
-		self.ct = math.random(2, 8)
+		self.ct = math_random(2, 8)
 	end
 
 	if self.st < 0 then
 		local rnd = function(u, l)
-			return math.random(u*10, l*10)/10
+			return math_random(u*10, l*10)/10
 		end
 		self.st = rnd(0.5, 1.0)
 
@@ -294,7 +299,7 @@ function ambiance.flamespawner(self, dtime)
 				},
 				glow = rnd(10, 15),
 			}
-			if math.random(1, 6) == 1 then
+			if math_random(1, 6) == 1 then
 				particle.texture = "smoke_particles.png"
 				particle.animation = {
 					type = "vertical_frames",
@@ -309,7 +314,7 @@ function ambiance.flamespawner(self, dtime)
 			minetest.add_particle(particle)
 
 			-- Occasionally play flame sound.
-			if math.random(1, 10) == 1 then
+			if math_random(1, 10) == 1 then
 				ambiance.sound_play("fire_small", pos, 0.3, 16)
 			end
 		end

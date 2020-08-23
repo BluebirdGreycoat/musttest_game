@@ -1,6 +1,9 @@
 -- Minetest 0.4 mod: bucket
 -- See README.txt for licensing and other information.
 
+-- Localize for performance.
+local math_floor = math.floor
+
 minetest.register_alias("bucket", "bucket:bucket_empty")
 minetest.register_alias("bucket_water", "bucket:bucket_water")
 minetest.register_alias("bucket_lava", "bucket:bucket_lava")
@@ -244,7 +247,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 					inv:add_item("main", liquiddef.itemname)
 				else
 					local pos = user:getpos()
-					pos.y = math.floor(pos.y + 0.5)
+					pos.y = math_floor(pos.y + 0.5)
 					minetest.add_item(pos, liquiddef.itemname)
 				end
 

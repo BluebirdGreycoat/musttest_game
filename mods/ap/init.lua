@@ -7,6 +7,9 @@ ap.players = ap.players or {}
 -- This must be at least 1 (though such a small value is NOT useful).
 ap.record_time = 60
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 function ap.get_record_time()
 	return ap.record_time
 end
@@ -23,7 +26,7 @@ function ap.update_players()
 		local add = true
 		if #t > 0 then
 			local op = t[#t].pos
-			if vector.distance(op, p) < 1 then
+			if vector_distance(op, p) < 1 then
 				add = false
 			end
 		end

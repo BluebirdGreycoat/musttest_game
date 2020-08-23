@@ -16,6 +16,9 @@
 
 clumpfall = {} --global variable
 
+-- Localize for performance.
+local math_random = math.random
+
 --the maximum radius of blocks to cause to fall at once. 
 clumpfall.clump_radius = 1
 
@@ -76,7 +79,7 @@ function clumpfall.update_nodedef(name, def)
 		end
 
 		if pos.y > 1000 then
-			minetest.after(math.random(1, 10), function()
+			minetest.after(math_random(1, 10), function()
 				do_clump_fall(pos)
 			end)
 		end
@@ -115,12 +118,12 @@ function clumpfall.update_nodedef(name, def)
 		--minetest.chat_send_player("MustTest", "Test4")
 		if b and c and c.y > 1000 then
 			--minetest.chat_send_player("MustTest", "Test5")
-			minetest.after(math.random(1, 10), function()
+			minetest.after(math_random(1, 10), function()
 				--minetest.chat_send_player("MustTest", "Test6")
 				do_clump_fall(c)
 			end)
 		elseif pt.type == "node" and pt.under and pt.above then
-			minetest.after(math.random(1, 10), function()
+			minetest.after(math_random(1, 10), function()
 				do_clump_fall(pt.under)
 				do_clump_fall(pt.above)
 			end)

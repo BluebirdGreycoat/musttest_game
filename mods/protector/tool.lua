@@ -1,6 +1,9 @@
 
 -- protector placement tool (thanks to Shara for code and idea)
 
+-- Localize for performance.
+local vector_round = vector.round
+
 local get_public_time = function()
 	return os.date("!%Y/%m/%d UTC")
 end
@@ -15,7 +18,7 @@ minetest.register_craftitem("protector:tool", {
 		local name = user:get_player_name()
 
 		-- check for protector near player (2 block radius)
-		local pos = vector.round(user:get_pos())
+		local pos = vector_round(user:get_pos())
 		local pp = minetest.find_nodes_in_area(
 			vector.subtract(pos, 2), vector.add(pos, 2),
 			{"protector:protect", "protector:protect2",

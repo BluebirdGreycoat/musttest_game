@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 function farming.notify_soil(pos)
 	local minp = vector.add(pos, -4)
 	local maxp = vector.add(pos, 4)
@@ -7,7 +10,7 @@ function farming.notify_soil(pos)
 		for i=1, #soils do
 			local timer = minetest.get_node_timer(soils[i])
 			if timer and not timer:is_started() then
-				timer:start(math.random(1, 60))
+				timer:start(math_random(1, 60))
 			end
 		end
 	end
@@ -16,7 +19,7 @@ end
 function farming.notify_soil_single(pos)
 	local timer = minetest.get_node_timer(pos)
   if timer and not timer:is_started() then
-  	timer:start(math.random(1, 60))
+  	timer:start(math_random(1, 60))
 	end
 end
 
@@ -43,7 +46,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
     minetest.remove_node(pt.under)
     -- 1/2 chance to get bluerack back; this is because 1 bluerack makes 2 seeds.
     -- This way, we don't make it possible to magically duplicate resources.
-    if math.random(1, 2) == 1 then
+    if math_random(1, 2) == 1 then
       local p = {x=pt.under.x, y=pt.under.y-1, z=pt.under.z}
       if minetest.get_node(p).name == "default:obsidian" then
         minetest.add_node(p, {name="rackstone:bluerack"})
@@ -194,7 +197,7 @@ local function tick(pos)
 	local mult = tick_multiplier(pos)
 	local min = 200 * mult
 	local max = 350 * mult
-  minetest.get_node_timer(pos):start(math.random(min, max))
+  minetest.get_node_timer(pos):start(math_random(min, max))
 
   --minetest.get_node_timer(pos):start(1.0) -- Debug
 end
@@ -203,7 +206,7 @@ end
 local function tick_again(pos)
 	local min = 40
 	local max = 80
-  minetest.get_node_timer(pos):start(math.random(min, max))
+  minetest.get_node_timer(pos):start(math_random(min, max))
 
   --minetest.get_node_timer(pos):start(1.0) -- Debug
 end

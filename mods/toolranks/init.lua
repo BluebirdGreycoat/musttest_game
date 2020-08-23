@@ -1,4 +1,9 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 toolranks = toolranks or {}
 toolranks.modpath = minetest.get_modpath("toolranks")
 toolranks.players = toolranks.players or {}
@@ -188,7 +193,7 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 	end
 
 	-- pass total number of nodes (of this type) that could be dug assuming no tool repairs, as second param to this function
-  local level = toolranks.get_level(dugnodes, math.floor(65535 / digparams.wear), lastlevel)
+  local level = toolranks.get_level(dugnodes, math_floor(65535 / digparams.wear), lastlevel)
 
 	-- New level should never be less than the old level.
   if lastlevel < level then

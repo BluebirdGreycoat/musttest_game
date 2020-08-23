@@ -2,6 +2,9 @@
 key = key or {}
 key.modpath = minetest.get_modpath("key")
 
+-- Localize for performance.
+local vector_round = vector.round
+
 key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 	if itemstack:get_name() == "key:key" then
 		local pname = player:get_player_name()
@@ -117,7 +120,7 @@ key.on_skeleton_use = function(itemstack, user, pointed_thing)
 			meta:set_string("secret", secret)
 			meta:set_string("description", "Key to <" .. rename.gpn(owner) .. ">'s " ..
 				utility.get_short_desc(ndef.description) .. " @ " ..
-				rc.pos_to_namestr(vector.round(pos)))
+				rc.pos_to_namestr(vector_round(pos)))
 			return itemstack
 		end
 	end

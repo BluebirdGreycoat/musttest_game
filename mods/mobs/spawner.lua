@@ -3,6 +3,9 @@ local random = math.random
 local pi = math.pi
 local node_ok = mobs.node_ok
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 
 
 local attempt_spawn_mob = function(pos, moblimit, mobrange, daynight, miny, maxy, name, minl, maxl, prange_min, prange_max, minc, maxc, spawn_height, absolute_mob_limit)
@@ -58,7 +61,7 @@ local attempt_spawn_mob = function(pos, moblimit, mobrange, daynight, miny, maxy
     for n = 1, #players do
         local ref = players[n]
         local p = ref:getpos()
-        local d = vector.distance(pos, p)
+        local d = vector_distance(pos, p)
         if d < neardist then neardist = d end
     end
     

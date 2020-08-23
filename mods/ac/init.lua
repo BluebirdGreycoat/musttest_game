@@ -49,6 +49,14 @@ ac.cheat_registration_threshold = 50
 
 ac.admin_name = "MustTest"
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 -- Open logfile if not already opened.
 if not ac.logfile then
 	-- Open file in append mode.
@@ -137,7 +145,7 @@ end
 -- Log to file.
 function ac.log_suspicious_act(pname, pos, time, act)
 	local s = pname .. "|" .. act .. "|" .. time .. "|" ..
-		math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) ..
+		math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) ..
 		"|" .. ac.get_suspicion_count(pname) .. "\n"
 	ac.logfile:write(s)
 	ac.logfile:flush()
@@ -301,8 +309,8 @@ function ac.check_prior_path(pname, act)
 	-- Spread checking of the path out over a few seconds.
 	for i=1, #path, 1 do
 		local t = path[i]
-		local delay = (math.random(1, 300) / 300) -- Get fractional random number.
-		minetest.after(delay, ac.check_prior_position, pname, vector.round(t.pos), t.time, act)
+		local delay = (math_random(1, 300) / 300) -- Get fractional random number.
+		minetest.after(delay, ac.check_prior_position, pname, vector_round(t.pos), t.time, act)
 	end
 end
 
@@ -312,7 +320,7 @@ function ac.confirm_flying(pname, last_pos)
 	-- initial trigger of suspicion, to try and confirm it.
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
-		local pos = vector.round(pref:get_pos())
+		local pos = vector_round(pref:get_pos())
 		-- If player is falling at least somewhat quickly, then they aren't flying.
 		if pos.y < (last_pos.y - 1) then return end
 
@@ -348,7 +356,7 @@ function ac.confirm_clipping(pname, last_pos)
 	-- initial trigger of suspicion, to try and confirm it.
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
-		local pos = vector.round(pref:get_pos())
+		local pos = vector_round(pref:get_pos())
 
 		-- If player stopped clipping, then it might have been a false-positive.
 		if not ac.is_clipping(pos) then return end
@@ -378,17 +386,17 @@ end
 
 function ac.do_standard_check(pname, pref)
 	--minetest.chat_send_player(pname, "# Server: Check player!")
-	local pos = vector.round(pref:get_pos())
+	local pos = vector_round(pref:get_pos())
 
 	if ac.is_flying(pos) then
 		-- Check again in a moment.
-		local delay = math.random(1, 3)
+		local delay = math_random(1, 3)
 		minetest.after(delay, ac.confirm_flying, pname, pos)
 	end
 
 	if ac.is_clipping(pos) then
 		-- Check again in a moment.
-		local delay = math.random(1, 3)
+		local delay = math_random(1, 3)
 		minetest.after(delay, ac.confirm_clipping, pname, pos)
 	end
 end
@@ -400,7 +408,7 @@ function ac.nearby_player_count(pname, pref)
 	for k, v in ipairs(players) do
 		if v:get_player_name() ~= pname then
 			local p2 = v:get_pos()
-			if vector.distance(p1, p2) < 75 then
+			if vector_distance(p1, p2) < 75 then
 				count = count + 1
 			end
 		end
@@ -427,7 +435,7 @@ function ac.check_player(pname)
 			if not default.player_attached[pname] then
 				local op = ac.get_position_at_last_check_or_nil(pname)
 				-- Don't bother checking player if they haven't moved.
-				if not op or vector.distance(pp, op) > 1 then
+				if not op or vector_distance(pp, op) > 1 then
 					-- Don't check players in the Outback.
 					if rc.current_realm_at_pos(pp) ~= "abyss" then
 						ac.record_player_position(pname, pp)
@@ -439,15 +447,15 @@ function ac.check_player(pname)
 
 		-- Check this player again after some delay.
 		-- Reduce time to next check if player has some suspicion on them.
-		local delay = math.random(ac.default_delay_min, ac.default_delay_max)
+		local delay = math_random(ac.default_delay_min, ac.default_delay_max)
 		delay = delay - ac.get_suspicion_count(pname)
 
 		if city_block:in_city(pp) then
 			-- Decrease time to next check if the position is within the city.
-			delay = delay - math.random(ac.city_reduce_min, ac.city_reduce_max)
+			delay = delay - math_random(ac.city_reduce_min, ac.city_reduce_max)
 		elseif not city_block:in_no_leecher_zone(pp) then
 			-- Increase time to next check if the position is in the outlands.
-			delay = delay + math.random(ac.outland_increase_min, ac.outland_increase_max)
+			delay = delay + math_random(ac.outland_increase_min, ac.outland_increase_max)
 		end
 
 		-- Increase time between standard checks if many players are logged in.
@@ -463,15 +471,15 @@ function ac.check_player(pname)
 		local avg_suspicion = total_suspicion / clean_sessions
 
 		if avg_suspicion < ac.low_average_suspicion then
-			delay = delay + math.random(ac.low_suspicion_increase_min, ac.low_suspicion_increase_max)
+			delay = delay + math_random(ac.low_suspicion_increase_min, ac.low_suspicion_increase_max)
 		elseif avg_suspicion > ac.high_average_suspicion then
-			delay = delay - math.random(ac.high_suspicion_reduce_min, ac.high_suspicion_reduce_max)
+			delay = delay - math_random(ac.high_suspicion_reduce_min, ac.high_suspicion_reduce_max)
 		end
 
 		-- Reduce time to next check if player is near others.
 		local others = ac.nearby_player_count(pname, pref)
 		if others > 0 then
-			delay = delay - math.random(0, others * 10)
+			delay = delay - math_random(0, others * 10)
 		end
 
 		-- Schedule check not less than 1 second future.
@@ -486,7 +494,7 @@ function ac.on_joinplayer(pref)
 	-- Do not perform AC checks for admin player.
 	if gdac.player_is_admin(pname) then return end
 
-	local delay = math.random(ac.initial_delay_min, ac.initial_delay_max)
+	local delay = math_random(ac.initial_delay_min, ac.initial_delay_max)
 
 	-- Reduce time to next check if they have some suspicion on them.
 	delay = delay - ac.get_suspicion_count(pname)

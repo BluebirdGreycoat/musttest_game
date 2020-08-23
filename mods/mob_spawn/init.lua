@@ -14,6 +14,13 @@ mob_spawn.players = mob_spawn.players or {}
 mob_spawn.server_step = 10
 mob_spawn.enable_reports = mob_spawn.enable_reports or false
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 local function report(mob, msg)
 	if mob_spawn.enable_reports then
 		if mob == mob_spawn.report_mob or mob_spawn.report_mob == "" then
@@ -116,7 +123,7 @@ function mob_spawn.reinit_player(pname)
 	local players = mob_spawn.players
 	-- This is an indexed array.
 	local registered = mob_spawn.registered
-	local random = math.random
+	local random = math_random
 
 	players[pname] = {}
 
@@ -195,7 +202,7 @@ end
 
 -- Use for flying/swimming mobs.
 local function search_flyswim(pos, step, radius, jitter, nodes, offset, height)
-	local random = math.random
+	local random = math_random
 	local floor = math.floor
 	local get_node = minetest.get_node
 
@@ -246,7 +253,7 @@ end
 
 -- Use for ground/surface mobs.
 local function search_terrain(pos, step, radius, jitter, nodes, offset, height)
-	local random = math.random
+	local random = math_random
 	local floor = math.floor
 	local get_node = minetest.get_node
 
@@ -301,7 +308,7 @@ local function execute_spawners()
 	-- This is an indexed array.
 	local mobdefs = mob_spawn.registered
 	local step = mob_spawn.server_step
-	local random = math.random
+	local random = math_random
 
 	-- For each player online.
 	for pname, k in pairs(players) do
@@ -409,7 +416,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	-- Get mob's name.
 	local mname = mdef.name
 
-	local random = math.random
+	local random = math_random
 
 	-- Mobs have a 1 in X chance of spawning on this cycle.
 	if random(1, mdef.spawn_chance) ~= 1 then
@@ -446,7 +453,7 @@ function mob_spawn.spawn_mobs(pname, index)
 		end
 	end
 
-	local spos = vector.round(player:get_pos())
+	local spos = vector_round(player:get_pos())
 
 	-- Check if height levels are ok.
 	-- We only bother checking the center point.
@@ -458,11 +465,11 @@ function mob_spawn.spawn_mobs(pname, index)
 	end
 
 	-- Mobs rarely spawn in the colonies. They keep killing the noobs!
-	if vector.distance(spos, {x=0, y=0, z=0}) < 100 then
+	if vector_distance(spos, {x=0, y=0, z=0}) < 100 then
 		if random(1, 10) < 10 then
 			return 0
 		end
-	elseif vector.distance(spos, {x=0, y=-30790, z=0}) < 100 then
+	elseif vector_distance(spos, {x=0, y=-30790, z=0}) < 100 then
 		if random(1, 10) < 10 then
 			return 0
 		end
@@ -548,7 +555,7 @@ function mob_spawn.spawn_mobs(pname, index)
     local nearest_dist = player_max_range + 1
     for j = 1, #players do
 			local p = players[j]:get_pos()
-			local d = vector.distance(pos, p)
+			local d = vector_distance(pos, p)
 			if d < nearest_dist then
 				nearest_dist = d
 			end
@@ -575,7 +582,7 @@ function mob_spawn.spawn_mobs(pname, index)
 						-- Adjust the chance to use pathfinding on a per-entity basis.
 						if ent.pathfinding and ent.pathfinding ~= 0 then
 							local chance = ent.instance_pathfinding_chance or {100, 100}
-							local res = math.random(1, chance[2])
+							local res = math_random(1, chance[2])
 							--minetest.chat_send_player("MustTest", "Chance: " .. res .. " of " .. chance[1] .. " in " .. chance[2])
 							if res > chance[1] then
 								--minetest.chat_send_player("MustTest", "Mob will not pathfind!")

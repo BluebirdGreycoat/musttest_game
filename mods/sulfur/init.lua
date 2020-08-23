@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+
 minetest.register_node("sulfur:ore", {
   description = "Sulfur Ore",
   tiles = {"default_stone.png^technic_sulfur_mineral.png"},
@@ -60,9 +63,9 @@ local generate = function(minp, maxp, seed)
 	local min = math.min
 
   local grid_size = 5
-  for x = minp.x + math.floor(grid_size / 2), maxp.x, grid_size do
-  for y = minp.y + math.floor(grid_size / 2), maxp.y, grid_size do
-  for z = minp.z + math.floor(grid_size / 2), maxp.z, grid_size do
+  for x = minp.x + math_floor(grid_size / 2), maxp.x, grid_size do
+  for y = minp.y + math_floor(grid_size / 2), maxp.y, grid_size do
+  for z = minp.z + math_floor(grid_size / 2), maxp.z, grid_size do
     local c = data[a:index(x, y, z)]
     if (c == c_lava or c == c_lava_flowing) and sulfur_noise:get3d({x = x, y = z, z = z}) >= 0.2 then
 			--minetest.chat_send_all("found lava")

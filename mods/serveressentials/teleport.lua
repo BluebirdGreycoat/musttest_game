@@ -1,11 +1,14 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 function serveressentials.do_teleport(name, param)
 	name = name:trim()
 	param = param:trim()
 
 	-- Returns (pos, true) if found, otherwise (pos, false)
 	local function find_free_position_near(pos)
-		pos = vector.round(pos)
+		pos = vector_round(pos)
 		local tries = {
 			{x=1,y=0,z=0},
 			{x=-1,y=0,z=0},
@@ -34,7 +37,7 @@ function serveressentials.do_teleport(name, param)
 	p.y = tonumber(p.y)
 	p.z = tonumber(p.z)
 	if p.x and p.y and p.z then
-		p = vector.round(p)
+		p = vector_round(p)
 		local lm = 31000
 		if p.x < -lm or p.x > lm or p.y < -lm or p.y > lm or p.z < -lm or p.z > lm then
 			return false, "Cannot teleport out of map bounds."
@@ -44,7 +47,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
-			local o = vector.round(teleportee:get_pos())
+			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
 			teleportee:set_pos(p)
 			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
@@ -74,7 +77,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
-			local o = vector.round(teleportee:get_pos())
+			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
 			teleportee:set_pos(p)
 			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
@@ -89,7 +92,7 @@ function serveressentials.do_teleport(name, param)
 	if target_name then
 		local target = core.get_player_by_name(target_name)
 		if target then
-			p = vector.round(target:get_pos())
+			p = vector_round(target:get_pos())
 		end
 	end
 	if teleportee and p then
@@ -97,7 +100,7 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport outside of any realm."
 		end
-		local o = vector.round(teleportee:get_pos())
+		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		teleportee:set_pos(p)
 		return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
@@ -116,11 +119,11 @@ function serveressentials.do_teleport(name, param)
 		teleportee = core.get_player_by_name(teleportee_name)
 	end
 	if teleportee and p.x and p.y and p.z then
-		p = vector.round(p)
+		p = vector_round(p)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
-		local o = vector.round(teleportee:get_pos())
+		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
@@ -143,7 +146,7 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
-		local o = vector.round(teleportee:get_pos())
+		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
@@ -164,12 +167,12 @@ function serveressentials.do_teleport(name, param)
 		end
 	end
 	if teleportee and p then
-		p = vector.round(p)
+		p = vector_round(p)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
 		p = find_free_position_near(p)
-		local o = vector.round(teleportee:get_pos())
+		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."

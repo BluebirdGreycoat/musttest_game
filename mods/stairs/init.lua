@@ -1,6 +1,11 @@
 -- Minetest 0.4 mod: stairs
 -- See README.txt for licensing and other information.
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
 
 -- Global namespace for functions
 
@@ -16,7 +21,7 @@ function stairs.setup_nodedef_callbacks(subname, def)
 		assert(not def.on_construct)
 		def.on_construct = function(pos)
 			if rc.ice_melts_at_pos(pos) then
-				minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+				minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 			end
 		end
 
@@ -760,7 +765,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 				local p2 = under.param2
 
 				-- combine two slabs if possible
-				if slab_trans_dir[math.floor(p2 / 4)] == dir then
+				if slab_trans_dir[math_floor(p2 / 4)] == dir then
 					if not recipeitem then
 						return itemstack
 					end

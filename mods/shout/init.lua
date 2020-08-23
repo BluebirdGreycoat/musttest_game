@@ -5,6 +5,12 @@ shout.worldpath = minetest.get_worldpath()
 shout.datafile = shout.worldpath .. "/hints.txt"
 shout.players = shout.players or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
@@ -187,11 +193,11 @@ function shout.print_hint()
 
 	-- Only if hints are available.
 	if #HINTS > 0 then
-		minetest.chat_send_all("# Server: " .. HINTS[math.random(1, #HINTS)])
+		minetest.chat_send_all("# Server: " .. HINTS[math_random(1, #HINTS)])
 	end
 
 	-- Print another hint after some delay.
-	minetest.after(math.random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
+	minetest.after(math_random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
 end
 
 
@@ -324,7 +330,7 @@ function shout.x(name, param)
 	local mk = ""
 	if command_tokens.mark.player_marked(name) then
 		local pos = minetest.get_player_by_name(name):getpos()
-		mk = " [" .. math.floor(pos.x) .. "," .. math.floor(pos.y) .. "," .. math.floor(pos.z) .. "]"
+		mk = " [" .. math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "]"
 	end
 
 	local dname = rename.gpn(name)
@@ -395,7 +401,7 @@ if not shout.run_once then
 
 	-- Start hints. A hint is written into public chat every so often.
 	-- But not too often, or it becomes annoying.
-	minetest.after(math.random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
+	minetest.after(math_random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
 
 	local c = "shout:core"
 	local f = shout.modpath .. "/init.lua"

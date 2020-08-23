@@ -2,13 +2,16 @@
 nethervine = nethervine or {}
 nethervine.modpath = minetest.get_modpath("nethervine")
 
+-- Localize for performance.
+local math_random = math.random
+
 dofile(nethervine.modpath .. "/functions.lua")
 
 
 
 nethervine.vine_on_construct = function(pos)
 	local timer = minetest.get_node_timer(pos)
-	timer:start(math.random(60*3, 60*6))
+	timer:start(math_random(60*3, 60*6))
 end
 
 nethervine.vine_on_timer = function(pos, elapsed)
@@ -51,9 +54,9 @@ nethervine.grow = function(pos, node)
 	minetest.add_node(pos, {name = "nethervine:vine"})
 
 	if have_minerals then
-		timer:start(math.random(60*1, 60*2))
+		timer:start(math_random(60*1, 60*2))
 	else
-		timer:start(math.random(60*3, 60*6))
+		timer:start(math_random(60*3, 60*6))
 	end
 end
 
@@ -193,7 +196,7 @@ if not nethervine.registered then
 
 		on_place = function(itemstack, placer, pt)
 			-- place a random grass node
-			local stack = ItemStack("nether:grass_" .. math.random(1,3))
+			local stack = ItemStack("nether:grass_" .. math_random(1,3))
 			local ret = minetest.item_place(stack, placer, pt)
 			return ItemStack("nether:grass " .. itemstack:get_count() - (1 - ret:get_count()))
 		end,

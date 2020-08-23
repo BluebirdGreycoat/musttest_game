@@ -9,8 +9,11 @@ electric_screwdriver.description = "Electric Screwdriver\n\nAn electrical, reusa
 electric_screwdriver.sound_gain = 0.1
 electric_screwdriver.sound_dist = 25
 
+-- Localize for performance.
+local math_floor = math.floor
+
 -- This is how many nodes the electric screwdriver can spin.
-electric_screwdriver.uses = math.floor(65535/2500)
+electric_screwdriver.uses = math_floor(65535/2500)
 
 function electric_screwdriver.on_use(itemstack, user, pt)
 	if not user or not user:is_player() then
@@ -26,7 +29,7 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 		-- Once it is charged the first time, wear should never be 0 again.
 		return
 	end
-	if wear > math.floor(65535-electric_screwdriver.uses) then
+	if wear > math_floor(65535-electric_screwdriver.uses) then
 		-- Tool has no charge left.
 		return
 	end
@@ -76,7 +79,7 @@ function electric_screwdriver.on_place(itemstack, user, pt)
 		-- Once it is charged the first time, wear should never be 0 again.
 		return
 	end
-	if wear > math.floor(65535-electric_screwdriver.uses) then
+	if wear > math_floor(65535-electric_screwdriver.uses) then
 		-- Tool has no charge left.
 		return
 	end

@@ -178,6 +178,9 @@ default:cloud
 -- Stone
 --
 
+-- Localize for performance.
+local math_random = math.random
+
 minetest.register_node("default:stone", {
 	description = "Stone",
 
@@ -920,7 +923,7 @@ minetest.register_node("default:snowblock", {
 
 	-- Hack to notify self.
 	on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+		minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 	end,
 
 	on_notify = function(...)
@@ -964,7 +967,7 @@ minetest.register_node("default:ice", {
 
 	-- Hack to notify self.
 	on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(ice.minmax_time()))
+		minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
 	end,
 
 	on_notify = function(...)
@@ -1002,7 +1005,7 @@ minetest.register_node("default:stone_with_coal", {
 	-- Digging coal ore has a chance to release poison gas.
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		if pos.y < -1024 then
-			if math.random(1, 300) == 1 then
+			if math_random(1, 300) == 1 then
 				breath.spawn_gas(pos)
 			end
 		end
@@ -1522,13 +1525,13 @@ minetest.register_node("default:grass_dummy", {
 			--minetest.chat_send_all("2: " .. minetest.pos_to_string(pt.above) .. ".")
 			if pt.under.y-1 == pt.above.y then
 				--minetest.chat_send_all("hanging!")
-				local stack = ItemStack("default:grass_" .. math.random(1,5) .. "_hanging")
+				local stack = ItemStack("default:grass_" .. math_random(1,5) .. "_hanging")
 				local ret = minetest.item_place(stack, placer, pt)
 				return ItemStack("default:grass_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 			end
 		end
 
-		local stack = ItemStack("default:grass_" .. math.random(1,5))
+		local stack = ItemStack("default:grass_" .. math_random(1,5))
 		local ret = minetest.item_place(stack, placer, pt)
 		return ItemStack("default:grass_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 	end,
@@ -1638,13 +1641,13 @@ minetest.register_node("default:dry_grass_dummy", {
 			--minetest.chat_send_all("2: " .. minetest.pos_to_string(pt.above) .. ".")
 			if pt.under.y-1 == pt.above.y then
 				--minetest.chat_send_all("hanging!")
-				local stack = ItemStack("default:dry_grass_" .. math.random(1,5) .. "_hanging")
+				local stack = ItemStack("default:dry_grass_" .. math_random(1,5) .. "_hanging")
 				local ret = minetest.item_place(stack, placer, pt)
 				return ItemStack("default:dry_grass_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 			end
 		end
 
-		local stack = ItemStack("default:dry_grass_" .. math.random(1, 5))
+		local stack = ItemStack("default:dry_grass_" .. math_random(1, 5))
 		local ret = minetest.item_place(stack, placer, pt)
 		return ItemStack("default:dry_grass_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 	end,
@@ -1764,13 +1767,13 @@ minetest.register_node("default:dry_grass2_dummy", {
 			--minetest.chat_send_all("2: " .. minetest.pos_to_string(pt.above) .. ".")
 			if pt.under.y-1 == pt.above.y then
 				--minetest.chat_send_all("hanging!")
-				local stack = ItemStack("default:dry_grass2_" .. math.random(1,5) .. "_hanging")
+				local stack = ItemStack("default:dry_grass2_" .. math_random(1,5) .. "_hanging")
 				local ret = minetest.item_place(stack, placer, pt)
 				return ItemStack("default:dry_grass2_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 			end
 		end
 
-		local stack = ItemStack("default:dry_grass2_" .. math.random(1, 5))
+		local stack = ItemStack("default:dry_grass2_" .. math_random(1, 5))
 		local ret = minetest.item_place(stack, placer, pt)
 		return ItemStack("default:dry_grass2_dummy " .. itemstack:get_count() - (1 - ret:get_count()))
 	end,

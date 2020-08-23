@@ -13,6 +13,9 @@
 flowerpot = flowerpot or {}
 flowerpot.modpath = minetest.get_modpath("flowerpot")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- handle plant removal from flowerpot
 -- Seems to be dead code, here.
 --[[
@@ -60,7 +63,7 @@ function flowerpot.on_rightclick(pos, node, clicker, itemstack, pointed_thing)
 	-- then pick a random node from the table of possibilities.
 	if type(ndef.flowerpot_insert) == "table" then
 		if #(ndef.flowerpot_insert) > 0 then
-			nodename = ndef.flowerpot_insert[math.random(1, #(ndef.flowerpot_insert))]
+			nodename = ndef.flowerpot_insert[math_random(1, #(ndef.flowerpot_insert))]
 		end
 	end
 	if type(nodename) ~= "string" then

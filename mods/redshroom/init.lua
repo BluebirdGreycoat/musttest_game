@@ -2,6 +2,9 @@
 redshroom = redshroom or {}
 redshroom.modpath = minetest.get_modpath("redshroom")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local SHROOM_SCHEMATICS = {
@@ -93,7 +96,7 @@ minetest.register_node("redshroom:gills", {
 
 redshroom.create_shroom_on_vmanip = function(vm, pos)
     local schempath = redshroom.modpath .. "/schematics/"
-    local path = schempath .. SHROOM_SCHEMATICS[math.random(#SHROOM_SCHEMATICS)]
+    local path = schempath .. SHROOM_SCHEMATICS[math_random(#SHROOM_SCHEMATICS)]
     minetest.place_schematic_on_vmanip(vm, vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
 end
 
@@ -101,6 +104,6 @@ end
 
 redshroom.create_shroom = function(pos)
     local schempath = redshroom.modpath .. "/schematics/"
-    local path = schempath .. SHROOM_SCHEMATICS[math.random(#SHROOM_SCHEMATICS)]
+    local path = schempath .. SHROOM_SCHEMATICS[math_random(#SHROOM_SCHEMATICS)]
     minetest.place_schematic(vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
 end

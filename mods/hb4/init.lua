@@ -2,6 +2,10 @@
 hb4 = hb4 or {}
 hb4.modpath = minetest.get_modpath("hb4")
 
+-- Localize for performance.
+local math_random = math.random
+local math_max = math.max
+
 dofile(hb4.modpath .. "/leafscatter.lua")
 dofile(hb4.modpath .. "/fruitregrow.lua")
 dofile(hb4.modpath .. "/floodfill.lua")
@@ -47,11 +51,11 @@ function hb4.delayed_harm2(data)
 			hud.change_item(player, "hunger", {text="hunger_statbar_poisen.png"})
 		end
 
-		local damage = math.random(data.min, data.max)
+		local damage = math_random(data.min, data.max)
 		local hp = player:get_hp()
 		if hp > (data.hp_min or 0) then
 			local new_hp = hp - damage
-			new_hp = math.max(new_hp, (data.hp_min or 0))
+			new_hp = math_max(new_hp, (data.hp_min or 0))
 			player:set_hp(new_hp)
 		end
 

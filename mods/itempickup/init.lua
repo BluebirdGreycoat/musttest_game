@@ -2,6 +2,13 @@
 itempickup = itempickup or {}
 itempickup.modpath = minetest.get_modpath("itempickup")
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+local math_random = math.random
+local math_min = math.min
+local math_max = math.max
+
+
 
 -- custom particle effects
 local function effect(pos, amount, texture, min_size, max_size, radius, gravity, glow)
@@ -257,17 +264,17 @@ function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 	local direct = tool_capabilities.direct_to_inventory
 
 	-- Stack goes directly into inventory if player close enough.
-	if vector.distance(pp, pos) < 3.5 or direct then
+	if vector_distance(pp, pos) < 3.5 or direct then
 		local inv = digger:get_inventory()
 		if inv then
 			stack = inv:add_item("main", stack)
 
 			-- If stack couldn't be added because of full inventory, then material is sometimes lost.
-			if not stack:is_empty() and math.random(0, 3) == 0 then
+			if not stack:is_empty() and math_random(0, 3) == 0 then
 				-- Don't drop anything on the ground, 25% chance.
 				-- Give particle feedback to player.
 				digger:set_hp(digger:get_hp() - 1)
-				effect(pos, math.random(2, 5), "tnt_smoke.png")
+				effect(pos, math_random(2, 5), "tnt_smoke.png")
 				return
 			end
 		end
@@ -279,9 +286,9 @@ function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 		-- Make the drop fly a bit.
 		if obj then
 			obj:set_velocity({
-				x=math.random(-10, 10) / 5,
+				x=math_random(-10, 10) / 5,
 				y=3,
-				z=math.random(-10, 10) / 5,
+				z=math_random(-10, 10) / 5,
 			})
 		end
 	end
@@ -352,18 +359,18 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	-- Player does not get node drop if tool doesn't have sufficient level.
 	if (max_drop_level) < (ndef.groups.level or 0) then
 		-- 1 in 4 chance player will get the node anyway.
-		if math.random(1, 4) > 1 then
+		if math_random(1, 4) > 1 then
 			-- Particle feedback to player.
-			effect(pos, math.random(2, 5), "tnt_smoke.png")
+			effect(pos, math_random(2, 5), "tnt_smoke.png")
 			return
 		end
 	end
 
 	-- Test tool's chance to destroy node regardless of node/tool levels.
 	if tool_capabilities.destroy_chance then
-		if math.random(1, 1000) < tool_capabilities.destroy_chance then
+		if math_random(1, 1000) < tool_capabilities.destroy_chance then
 			-- Particle feedback to player.
-			effect(pos, math.random(2, 5), "tnt_smoke.png")
+			effect(pos, math_random(2, 5), "tnt_smoke.png")
 			return
 		end
 	end
@@ -422,8 +429,8 @@ function itempickup.handle_node_drops(pos, drops, digger)
 				-- Both X's should be in range [0, 1].
 				-- If player's XP is > 1000, then clamp to 1000 for purposes of this calculation.
 				local max = 1000
-				local x1 = math.min(math.max(0, digxp), max) / max
-				local x2 = math.random(0, 10000)/10000
+				local x1 = math_min(math_max(0, digxp), max) / max
+				local x2 = math_random(0, 10000)/10000
 				if x1*x1 >= x2 then
 					if drop_extra_item_list[sname] then
 						-- Give drop to player, or drop on ground.

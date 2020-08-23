@@ -2,6 +2,10 @@
 snowscatter = snowscatter or {}
 snowscatter.modpath = minetest.get_modpath("snowscatter")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
 
 
 local find_floor = function(x, ybot, ytop, z)
@@ -40,7 +44,7 @@ end
 -- API function which dumps snow dust in an area.
 snowscatter.dump_snowdust = function(minp_, maxp_, chance, avoidXZ)
     local minp, maxp = utility.sort_positions(minp_, maxp_)
-    local random = math.random
+    local random = math_random
     for x = minp.x, maxp.x, 1 do
         for z = minp.z, maxp.z, 1 do
 						-- If avoidance column is specificed, do not place snow in that column.
@@ -70,13 +74,13 @@ end
 snowscatter.dump_snowdust_on_tree = function(pos, minp, maxp)
     local sminp = {x=pos.x+minp.x, y=pos.y+minp.y, z=pos.z+minp.z}
     local smaxp = {x=pos.x+maxp.x, y=pos.y+maxp.y+1, z=pos.z+maxp.z}
-    snowscatter.dump_snowdust(sminp, smaxp, math.random(5, 20), {x=pos.x, z=pos.z})
+    snowscatter.dump_snowdust(sminp, smaxp, math_random(5, 20), {x=pos.x, z=pos.z})
 end
 
 
 
 snowscatter.execute_chatcommand = function(name, param)
-    local p = vector.round(minetest.get_player_by_name(name):getpos())
+    local p = vector_round(minetest.get_player_by_name(name):getpos())
     local r = 10
     snowscatter.dump_snowdust({x=p.x-r, y=p.y-r, z=p.z-r}, {x=p.x+r, y=p.y+r, z=p.z+r}, 5, nil)
     minetest.chat_send_player(name, "# Server: Scattered snow!")

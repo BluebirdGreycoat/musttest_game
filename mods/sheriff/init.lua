@@ -3,6 +3,10 @@ sheriff = sheriff or {}
 sheriff.modpath = minetest.get_modpath("sheriff")
 sheriff.players = sheriff.players or {}
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
 -- Get mod storage if not done already.
 if not sheriff.storage then
 	sheriff.storage = minetest.get_mod_storage()
@@ -94,7 +98,7 @@ end
 
 -- Can be called by mods to check if player should be punished *this time*.
 function sheriff.punish_probability(pname)
-	if math.random(1, 100) == 1 then
+	if math_random(1, 100) == 1 then
 		return true
 	end
 end
@@ -144,7 +148,7 @@ local accidents = {
 				name = player:get_player_name(),
 				step = 10,
 				min = 1,
-				max = math.random(1, 2),
+				max = math_random(1, 2),
 				msg = "# Server: Someone got poisoned!",
 				poison = true,
 			})
@@ -152,7 +156,7 @@ local accidents = {
 	},
 	{
 		func = function(player)
-			tnt.boom(vector.round(player:get_pos()), {
+			tnt.boom(vector_round(player:get_pos()), {
 				radius = 2,
 				ignore_protection = false,
 				ignore_on_blast = false,
@@ -166,7 +170,7 @@ local accidents = {
 			local pname = player:get_player_name()
 			local inv = player:get_inventory()
 			local sz = inv:get_size("main")
-			local pos = math.random(1, sz)
+			local pos = math_random(1, sz)
 			local stack = inv:get_stack("main", pos)
 			if not stack:is_empty() and not passport.is_passport(stack:get_name()) then
 				minetest.chat_send_player(pname, "# Server: Pick-pocket!")
@@ -184,7 +188,7 @@ local accidents = {
 -- Called with a player object to actually apply a random punishment.
 function sheriff.random_hit(player)
 	if #accidents > 0 then
-		local act = accidents[math.random(1, #accidents)]
+		local act = accidents[math_random(1, #accidents)]
 		act.func(player)
 	end
 end
@@ -202,7 +206,7 @@ local gloats = {
 -- Called to send a random chat message to a punished player.
 function sheriff.random_gloat(pname)
 	if #gloats > 0 then
-		local msg = gloats[math.random(1, #gloats)]
+		local msg = gloats[math_random(1, #gloats)]
 		minetest.chat_send_player(pname, "# Server: " .. msg)
 	end
 end

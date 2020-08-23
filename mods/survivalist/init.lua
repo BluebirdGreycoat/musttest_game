@@ -4,6 +4,12 @@ survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
 -- Positions of surface & nether cities.
 local surfacecitypos = {x=0, y=-8, z=0}
 local nethercitypos = {x=0, y=-30793, z=0}
@@ -147,11 +153,11 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
 	end
 
 	-- Record home position.
-	local homepos = vector.round(player:get_pos())
+	local homepos = vector_round(player:get_pos())
 
   -- Teleport player.
 	wield3d.on_teleport()
-  player:set_pos(vector.add(pos, {x=math.random(-3, 3), y=0.5, z=math.random(-3, 3)}))
+  player:set_pos(vector.add(pos, {x=math_random(-3, 3), y=0.5, z=math_random(-3, 3)}))
   
   -- Make sure player is healthy.
   heal.heal_health_and_hunger(pname)
@@ -175,9 +181,9 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   -- Inform player the game has begun.
 	if not gdac.player_is_admin(pname) then
 		local dname = rename.gpn(pname)
-		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector.round(pos)) .. "!")
+		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector_round(pos)) .. "!")
 	else
-		minetest.chat_send_player(pname, "# Server: You have begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector.round(pos)) .. "!")
+		minetest.chat_send_player(pname, "# Server: You have begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector_round(pos)) .. "!")
 	end
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")
@@ -189,7 +195,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   survivalist.modstorage:set_string(pname .. ":mode", gamemode)
   
   -- Record the player's starting position.
-  survivalist.modstorage:set_string(pname .. ":pos", minetest.pos_to_string(vector.round(pos)))
+  survivalist.modstorage:set_string(pname .. ":pos", minetest.pos_to_string(vector_round(pos)))
 
 	-- Record the player's home position. Used when canceling a Challenge.
 	survivalist.modstorage:set_string(pname .. ":home", minetest.pos_to_string(homepos))
@@ -264,13 +270,13 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
     minetest.place_schematic(vector.add(pos2, {x=-4, y=0, z=-4}), path, "random", nil, true)
     
     -- Choose a location for the chest.
-    local chestpos = vector.add(pos2, vector.new(math.random(-3, 3), 1, math.random(-3, 3)))
-		chestpos = vector.round(chestpos)
+    local chestpos = vector.add(pos2, vector.new(math_random(-3, 3), 1, math_random(-3, 3)))
+		chestpos = vector_round(chestpos)
     
     -- Create chest with stuff.
     minetest.set_node(chestpos, {
 			name = "morechests:goldchest_public_closed",
-			param2 = math.random(0, 3),
+			param2 = math_random(0, 3),
 		})
     local meta = minetest.get_meta(chestpos)
     local inv = meta:get_inventory()
@@ -383,7 +389,7 @@ function survivalist.start_game(pname, gamemode)
 			-- Home position must have been recorded.
 			if opos then
 				-- We must be close enough to the other player's home pos, in order to be grouped with them.
-				if vector.distance(opos, player:get_pos()) <= 5 then
+				if vector_distance(opos, player:get_pos()) <= 5 then
 					-- The other player must currently be accepting groups.
 					-- Groups are not saved across restarts; this means that a player cannot
 					-- team with another after the server restarts, even if less time than
@@ -404,18 +410,18 @@ function survivalist.start_game(pname, gamemode)
 
 	if not group then
 		-- Find a random position on the X,Z plane.
-		while vector.distance(pos, surfacecitypos) < 10000 or vector.distance(pos, nethercitypos) < 10000 do
+		while vector_distance(pos, surfacecitypos) < 10000 or vector_distance(pos, nethercitypos) < 10000 do
 			for j, k in ipairs({"x", "z"}) do
-				pos[k] = math.random(-30000, 30000)
+				pos[k] = math_random(-30000, 30000)
 			end
 
 			-- Gamemode determines depth.
 			if gamemode == "surface" then
 				pos.y = -10
 			elseif gamemode == "cave" then
-				pos.y = math.random(-24000, -3000)
+				pos.y = math_random(-24000, -3000)
 			elseif gamemode == "nether" then
-				pos.y = math.random(-30860, -30810)
+				pos.y = math_random(-30860, -30810)
 			end
 		end
 	end
@@ -440,9 +446,9 @@ function survivalist.player_in_victory_range(pname)
     return
   end
 	local pos = player:get_pos()
-  if vector.distance(pos, surfacecitypos) <= 20 then
+  if vector_distance(pos, surfacecitypos) <= 20 then
 		return true
-  elseif vector.distance(pos, nethercitypos) <= 20 then
+  elseif vector_distance(pos, nethercitypos) <= 20 then
 		return true
   end
 end
@@ -470,10 +476,10 @@ function survivalist.attempt_claim(pname)
   
   -- The position and name of the city the player claims victory in.
   local finalcitypos
-  if vector.distance(pos, surfacecitypos) <= 20 then
+  if vector_distance(pos, surfacecitypos) <= 20 then
     finalcitypos = table.copy(surfacecitypos)
     cityname = "Surface Colony"
-  elseif vector.distance(pos, nethercitypos) <= 20 then
+  elseif vector_distance(pos, nethercitypos) <= 20 then
     finalcitypos = table.copy(nethercitypos)
     cityname = "Nether City"
   end
@@ -499,12 +505,12 @@ function survivalist.attempt_claim(pname)
   
   -- If the starting position couldn't be parsed we'll just give the player 1 token.
   if startpos then
-    local dist = vector.distance(finalcitypos, startpos)
+    local dist = vector_distance(finalcitypos, startpos)
     -- Discount the minimum distance.
     dist = dist - 10000
     -- Get distance in kilometers.
     -- One skill mark per extra kilometer over 10k.
-    dist = math.floor(dist / 1000)
+    dist = math_floor(dist / 1000)
     -- Clamp, just in case.
     if dist < 1 then
       dist = 1

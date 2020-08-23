@@ -10,6 +10,9 @@ skins.modpath = minetest.get_modpath("simple_skins")
 skins.armor = minetest.get_modpath("3d_armor")
 skins.inv = minetest.get_modpath("inventory_plus")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- load skin list
 skins.list = {}
 skins.add = function(skin)
@@ -247,7 +250,7 @@ end
 function skins.get_random_standard_gender(fem_chance)
 	local data = {}
 
-	if math.random(1, 100) <= fem_chance then
+	if math_random(1, 100) <= fem_chance then
 		data.him = "her"
 		data.he = "she"
 		data.his = "her"

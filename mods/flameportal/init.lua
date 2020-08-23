@@ -2,11 +2,15 @@
 flameportal = flameportal or {}
 flameportal.modpath = minetest.get_modpath("flameportal")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
 
 
 -- Check if the position `pos` is the center of a portal ring.
 flameportal.check_is_gateway = function(pos)
-    local p = vector.round(pos)
+    local p = vector_round(pos)
     
     local positions = {
         -- North side.
@@ -105,7 +109,7 @@ end
 flameportal.activate_gateway = function(pos)
     if flameportal.check_is_gateway(pos) == false then return end
     
-    local p = vector.round(pos)
+    local p = vector_round(pos)
     minetest.log("action", "Nether portal activated at (" .. minetest.pos_to_string(p) .. ")")
     
     local flames = {
@@ -131,7 +135,7 @@ flameportal.activate_gateway = function(pos)
     }
     
     for k, v in ipairs(flames) do
-        if math.random(1, 3) == 1 then
+        if math_random(1, 3) == 1 then
             if minetest.get_node(v).name == "air" then
                 minetest.add_node(v, {name="fire:nether_flame"})
             end
@@ -183,7 +187,7 @@ flameportal.make_flame_pillar = function(param)
   for x = param.minp.x, param.maxp.x, 1 do
     for y = param.minp.y, param.maxp.y, 1 do
       for z = param.minp.z, param.maxp.z, 1 do
-        if math.random(1, 7) == 1 then
+        if math_random(1, 7) == 1 then
           -- Leave a vertical tunnel clear for the player to drop down.
           if not (x == param.avoid_x and z == param.avoid_z) then
             local pos = {x=x, y=y, z=z}
@@ -227,11 +231,11 @@ flameportal.teleport_player = function(name, voidpos)
 
 					preload_tp.preload_and_teleport(pname, return_pos, 32, nil, function()
 						-- Damage player on return journey only sometimes.
-						if math.random(1, 30) == 1 then
+						if math_random(1, 30) == 1 then
 							minetest.after(0.5, function()
 								local pref = minetest.get_player_by_name(pname)
 								if pref and pref:is_player() then
-									pref:set_hp(pref:get_hp() - math.random(2, 15))
+									pref:set_hp(pref:get_hp() - math_random(2, 15))
 								end
 							end)
 						end
@@ -255,15 +259,15 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
   
   if spos == "" then
     -- If metadata target hasn't been initialized yet.
-    local pos = vector.round(voidpos)
+    local pos = vector_round(voidpos)
     --local pr = PcgRandom(pos.x+pos.y+pos.z)
     target = {x=0, y=-30790, z=0}
     --target.x = pr:next(-30000, 30000)
     --target.z = pr:next(-30000, 30000)
 
 		-- Chose a wholy random location.
-		target.x = math.random(-30000, 30000)
-		target.z = math.random(-30000, 30000)
+		target.x = math_random(-30000, 30000)
+		target.z = math_random(-30000, 30000)
 
     meta:set_string("target", minetest.pos_to_string(target))
   else

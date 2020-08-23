@@ -6,6 +6,12 @@ teleports.teleports = teleports.teleports or {}
 teleports.min_range = 250
 teleports.datafile = minetest.get_worldpath() .. "/teleports.txt"
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+local math_random = math.random
+
 dofile(teleports.modpath .. "/sickness.lua")
 
 
@@ -121,7 +127,7 @@ function teleports.kill_players_at_pos(teleport_pos, pname)
 					if v:get_hp() > 0 then
 						-- If there's a player here already the map must be loaded, so we
 						-- can put fire where they're standing no problem.
-						local dp = vector.round(v:get_pos())
+						local dp = vector_round(v:get_pos())
 						local node = minetest.get_node(dp)
 						if node.name == "air" then
 							minetest.add_node(dp, {name="fire:basic_flame"})
@@ -150,7 +156,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	end
 
 	local player_pos = player:get_pos()
-	if (player_pos.y < origin_pos.y) or (vector.distance(player_pos, origin_pos) > 2) then
+	if (player_pos.y < origin_pos.y) or (vector_distance(player_pos, origin_pos) > 2) then
 		minetest.chat_send_player(pname, "# Server: You must stand on portal activation surface!")
 		return
 	end
@@ -162,7 +168,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	local count_nearby = 0
 
 	for k, v in ipairs(teleports.teleports) do
-		if vector.distance(v.pos, origin_pos) < 50 then
+		if vector_distance(v.pos, origin_pos) < 50 then
 			count_nearby = count_nearby + 1
 		end
 	end
@@ -173,9 +179,9 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		random_chance = 10
 	end
 
-	if math.random(1, random_chance) == 1 then
+	if math_random(1, random_chance) == 1 then
 		if #(teleports.teleports) > 0 then
-			local tp = teleports.teleports[math.random(1, #(teleports.teleports))]
+			local tp = teleports.teleports[math_random(1, #(teleports.teleports))]
 			if not tp then
 				minetest.chat_send_player(pname, "# Server: Transport error! Aborted.")
 				return
@@ -185,10 +191,10 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		end
 	end
 
-	local p = vector.round(teleport_pos)
+	local p = vector_round(teleport_pos)
 	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}
-	local pos = vector.round(target)
+	local pos = vector_round(target)
 
 	-- Perform this check only if teleport target wasn't randomized.
 	if not use_random then
@@ -240,7 +246,7 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 
 	for i = #teleports.teleports, 1, -1 do
 		local tp = teleports.teleports[i]
-		if not vector.equals(tp.pos, pos) and vector.distance(tp.pos, pos) <= trange then
+		if not vector.equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then
 			local target_realm = rc.current_realm_at_pos(tp.pos)
 			-- Only find teleports in the same dimension.
 			if start_realm ~= "" and start_realm == target_realm then
@@ -303,7 +309,7 @@ teleports.calculate_charge = function(pos)
 			is_nyanporter = true
 		end
     
-    charge = math.floor(charge + 0.5)
+    charge = math_floor(charge + 0.5)
 
 		-- Combined teleports interfere with each other and reduce their range.
 		local minp = vector.add(pos, {x=-2, y=0, z=-2})
@@ -354,7 +360,7 @@ teleports.calculate_range = function(pos)
   local inc = 25
   
   -- Compute extra range.
-  local rng = math.floor(inc * chg)
+  local rng = math_floor(inc * chg)
   
   -- Calculate how much to scale extra range by depth.
   local scalar = cds(pos.y)
@@ -366,7 +372,7 @@ teleports.calculate_range = function(pos)
   rng = rng + 250
   
   -- Teleport range shall not go below 250 meters.
-  return math.floor(rng), nyan
+  return math_floor(rng), nyan
 end
 
 
@@ -584,7 +590,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
         if tpname and type(tpname) == "string" then
             local tppos = minetest.string_to_pos(tpname)
             if tppos then
-                if vector.distance(tppos, pos) <= teleports.calculate_range(pos) then
+                if vector_distance(tppos, pos) <= teleports.calculate_range(pos) then
 										-- Do not permit teleporting from one realm to another.
 										-- Doing so requires a different kind of teleport device.
 										local start_realm = rc.current_realm_at_pos(pos)
@@ -631,7 +637,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
             -- This means players save on fuel when using long range teleports,
             -- instead of using a chain of short-range teleports.
             -- However, long range teleports cost more to make.
-            local rcost = math.floor(vector.distance(pos, target_pos) / 300)
+            local rcost = math_floor(vector_distance(pos, target_pos) / 300)
             if rcost < 1 then rcost = 1 end
             
             local price1 = {name="default:mossycobble", count=rcost, wear=0, metadata=""}
@@ -655,7 +661,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
           
           if have_biofuel or admin or isnyan or infinite_fuel then
             local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
-            local spawn_pos = {x=teleport_pos.x-1+math.random(0, 2), y=teleport_pos.y+1, z=teleport_pos.z-1+math.random(0, 2)}
+            local spawn_pos = {x=teleport_pos.x-1+math_random(0, 2), y=teleport_pos.y+1, z=teleport_pos.z-1+math_random(0, 2)}
             teleports.teleport_player(player, pos, teleport_pos, spawn_pos)
           end
         end
@@ -727,7 +733,7 @@ teleports.after_place_node = function(pos, placer)
 
 		teleports.update(pos)
 
-		table.insert(teleports.teleports, {pos=vector.round(pos)})
+		table.insert(teleports.teleports, {pos=vector_round(pos)})
 		teleports.save()
 	end
 end
@@ -780,7 +786,7 @@ function teleports.ping_all_teleports()
 	-- Spawn particles over every teleport that's near a player.
 	for k, v in ipairs(teleports.teleports) do
 		for i, j in ipairs(pp) do
-			if vector.distance(v.pos, j) < 32 then
+			if vector_distance(v.pos, j) < 32 then
 				ping(v.pos)
 			end
 		end

@@ -3,6 +3,9 @@ barter.chest = barter.chest or {}
 barter.reset_delay = 60*20 -- Number of seconds to reset after pressing start.
 barter.long_delay = 60*60*3
 
+-- Localize for performance.
+local math_floor = math.floor
+
 barter.chest.formspec = {
 	main = "size[8,9]"..
 		default.gui_bg ..
@@ -177,7 +180,7 @@ minetest.register_node("barter_table:barter", {
 
 					-- Alert players how much time is left.
 					local elasped = timer:get_elapsed()
-					minetest.chat_send_player(sender:get_player_name(), "# Server: The periodic reset for this table is scheduled to occure in " .. math.floor((barter.long_delay - elasped)/60) .. " minutes.")
+					minetest.chat_send_player(sender:get_player_name(), "# Server: The periodic reset for this table is scheduled to occure in " .. math_floor((barter.long_delay - elasped)/60) .. " minutes.")
           minetest.chat_send_player(sender:get_player_name(), "# Server: WARNING: make sure you have enough space in your inventory to receive bartered goods.")
 				end
 			end

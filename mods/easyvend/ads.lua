@@ -13,6 +13,11 @@ ads.marketrange = 15 -- Distance at which shops are visible (distance from ad so
 ads.ad_cost = 5
 ads.tax = 3
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_floor = math.floor
+
 
 
 function ads.generate_submission_formspec(data)
@@ -71,14 +76,14 @@ function ads.show_submission_formspec(pos, pname, booth, data)
 	if booth then
 		b = "|booth"
 	end
-	local key = "ads:submission_" .. minetest.pos_to_string(vector.round(pos)) .. b
+	local key = "ads:submission_" .. minetest.pos_to_string(vector_round(pos)) .. b
 	minetest.show_formspec(pname, key, formspec)
 end
 
 
 
 function ads.show_inventory_formspec(pos, pname, booth)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 
 	-- Obtain hooks into the trash mod's trash slot inventory.
@@ -147,7 +152,7 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	if booth then
 		b = "|booth"
 	end
-	local key = "ads:inventory_" .. minetest.pos_to_string(vector.round(pos)) .. b
+	local key = "ads:inventory_" .. minetest.pos_to_string(vector_round(pos)) .. b
 	minetest.show_formspec(pname, key, formspec)
 end
 
@@ -347,7 +352,7 @@ end
 
 
 function ads.get_valid_ads(pos)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local temp = {}
 	for i = 1, #(ads.data), 1 do
 		local ad = ads.data[i]
@@ -367,7 +372,7 @@ function ads.get_valid_ads(pos)
 
 		-- Don't show ads for far shops.
 		-- That is, don't show ads that were submitted far from the current location.
-		if vector.distance(pos, ad.pos) > ads.viewrange then
+		if vector_distance(pos, ad.pos) > ads.viewrange then
 			goto continue
 		end
 
@@ -389,7 +394,7 @@ function ads.get_valid_shops(ad_pos, owner)
 	for k, v in ipairs(depositor.shops) do
 		if v.active and
 			v.owner == owner and
-			vector.distance(ad_pos, v.pos) < ads.marketrange and
+			vector_distance(ad_pos, v.pos) < ads.marketrange and
 			rc.same_realm(ad_pos, v.pos)
 		then
 			if (v.type == 1 or v.type == 2) and
@@ -504,7 +509,7 @@ function ads.generate_formspec(pos, pname, booth)
 				"label[5.35,5.0;" .. esc(owner_text) .. "]" ..
 				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
 				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
-				"label[5.35,6.2;" .. esc("Distance " .. math.floor(vector.distance(ad.pos, pos)) .. " meters.") .. "]"
+				"label[5.35,6.2;" .. esc("Distance " .. math_floor(vector_distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end
@@ -832,7 +837,7 @@ function ads.show_formspec(pos, pname, booth)
 	if booth then
 		b = "|booth"
 	end
-	local key = "ads:main_" .. minetest.pos_to_string(vector.round(pos)) .. b
+	local key = "ads:main_" .. minetest.pos_to_string(vector_round(pos)) .. b
 	minetest.show_formspec(pname, key, formspec)
 end
 
@@ -1117,7 +1122,7 @@ if not ads.run_once then
 		end,
 
 		on_rightclick = function(pos, node, clicker, itemstack, pt)
-			ads.show_formspec(vector.round(pos), clicker:get_player_name(), true)
+			ads.show_formspec(vector_round(pos), clicker:get_player_name(), true)
 			return itemstack
 		end,
 

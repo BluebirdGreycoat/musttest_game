@@ -2,6 +2,9 @@
 randspawn = randspawn or {}
 randspawn.modpath = minetest.get_modpath("randspawn")
 
+-- Localize for performance.
+local math_random = math.random
+
 -- After the Outback gateway exit coordinates are changed, this is the min and
 -- max number of days until it changes again.
 randspawn.min_days = 10
@@ -17,7 +20,7 @@ function randspawn.check_spawn_reset()
 	-- Outback reset will be schedualed after the timeout.
 	if not stime or stime == "" then
 		local time = os.time()
-		local days = 60*60*24*math.random(randspawn.min_days, randspawn.max_days)
+		local days = 60*60*24*math_random(randspawn.min_days, randspawn.max_days)
 		time = time + days
 		stime = tostring(time)
 		meta:set_string("spawn_reset_timer", stime)
@@ -31,7 +34,7 @@ function randspawn.check_spawn_reset()
 	local later = tonumber(stime) -- Time of future reset (or initialization).
 
 	if now >= later then
-		later = later + 60*60*24*math.random(randspawn.min_days, randspawn.max_days)
+		later = later + 60*60*24*math_random(randspawn.min_days, randspawn.max_days)
 		stime = tostring(later)
 		meta:set_string("spawn_reset_timer", stime)
 
@@ -98,7 +101,7 @@ end
 
 function randspawn.find_new_spawn()
 	-- Call `serveressentials.update_exit_location()` once we have a new spawnpoint.
-	local pos = {x=math.random(-6000, 6000), y=0, z=math.random(-6000, 6000)}
+	local pos = {x=math_random(-6000, 6000), y=0, z=math_random(-6000, 6000)}
 
 	local minp = vector.add(pos, {x=-7, y=-7, z=-7})
 	local maxp = vector.add(pos, {x=7, y=200, z=7})
@@ -127,7 +130,7 @@ randspawn.reposition_player = function(pname, death_pos)
 	if player then
 		-- Ensure teleport is forced, to prevent a cheat.
 		local pos = get_respawn_position(death_pos, pname)
-		pos = vector.add(pos, {x=math.random(-2, 2), y=0, z=math.random(-2, 2)})
+		pos = vector.add(pos, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)})
 		preload_tp.preload_and_teleport(pname, pos, 32, nil,
 			function()
 				ambiance.sound_play("respawn", pos, 0.5, 10)

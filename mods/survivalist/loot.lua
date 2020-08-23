@@ -1,4 +1,10 @@
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
+
+
 local critical_loot = {
 	-- The main problem with the `surface` challenge is keeping it from being too easy.
 	-- This is especially due to travel being very swift, and too much food can go a long way.
@@ -99,11 +105,11 @@ function survivalist.fill_loot_chest(inv, gamemode)
 
   -- Add loot.
 	for k, v in ipairs(loot) do
-		local min = math.floor(v.min)
+		local min = math_floor(v.min)
 		local max = math.ceil(v.max)
 
 		if max >= min then
-			local count = math.floor(math.random(min, max))
+			local count = math_floor(math_random(min, max))
 			if count > 0 and #positions > 0 then
 				local idx = positions[#positions]
 				positions[#positions] = nil
@@ -117,12 +123,12 @@ function survivalist.fill_loot_chest(inv, gamemode)
 
 	-- Add bonus loot.
 	for k, v in ipairs(bonus) do
-		local min = math.floor(v.min)
+		local min = math_floor(v.min)
 		local max = math.ceil(v.max)
 
 		if max >= min then
-			local count = math.floor(math.random(min, max))
-			local chance = math.random(0, 100)
+			local count = math_floor(math_random(min, max))
+			local chance = math_random(0, 100)
 			if count > 0 and #positions > 0 and chance < v.chance then
 				local idx = positions[#positions]
 				positions[#positions] = nil

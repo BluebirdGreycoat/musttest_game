@@ -3,6 +3,9 @@ redstone_furnace = redstone_furnace or {}
 redstone_furnace.modpath = minetest.get_modpath("redstone_furnace")
 local FURNACE_SPEED = 1.5
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 -- Get active formspec.
@@ -169,7 +172,7 @@ redstone_furnace.on_timer = function(pos, elapsed)
   local item_state
   local item_percent = 0
   if cookable then
-    item_percent = math.floor(src_time / cooked.time * 100)
+    item_percent = math_floor(src_time / cooked.time * 100)
     if item_percent > 100 then
       item_state = "100% (Output Full)"
     else
@@ -189,7 +192,7 @@ redstone_furnace.on_timer = function(pos, elapsed)
 
   if fuel_time <= fuel_totaltime and fuel_totaltime ~= 0 then
     active = "Active "
-    local fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
+    local fuel_percent = math_floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
     formspec = redstone_furnace.get_active_formspec(fuel_percent, item_percent)
 		local nnn = minetest.get_node(pos).name

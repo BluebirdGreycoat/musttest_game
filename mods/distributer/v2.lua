@@ -6,6 +6,10 @@ distrib2_lv = distrib2_lv or {}
 distrib2_mv = distrib2_mv or {}
 distrib2_hv = distrib2_hv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 
 
 for k, v in ipairs({
@@ -137,8 +141,8 @@ for k, v in ipairs({
 				end
 				if #targets > 0 then
 					local energy = inv:get_stack("buffer", 1)
-					local toeach = math.floor(energy:get_count() / (#targets))
-					toeach = math.floor(toeach * 0.8) -- 80% efficiency.
+					local toeach = math_floor(energy:get_count() / (#targets))
+					toeach = math_floor(toeach * 0.8) -- 80% efficiency.
 					if toeach > 0 then
 						for i, j in ipairs(targets) do
 							local m2 = minetest.get_meta(j)
@@ -174,7 +178,7 @@ for k, v in ipairs({
 		if keeprunning then
 			minetest.get_node_timer(pos):start(1.0)
 		else
-			minetest.get_node_timer(pos):start(math.random(1, 60*3))
+			minetest.get_node_timer(pos):start(math_random(1, 60*3))
 		end
 	end
 

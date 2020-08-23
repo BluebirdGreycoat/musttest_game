@@ -4,6 +4,9 @@ bat2_lv = bat2_lv or {}
 bat2_mv = bat2_mv or {}
 bat2_hv = bat2_hv or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+
 for k, v in ipairs({
   {tier="lv", up="LV", name="LV", buffer=tech.battery_lv.buffer},
   {tier="mv", up="MV", name="MV", buffer=tech.battery_mv.buffer},
@@ -59,7 +62,7 @@ for k, v in ipairs({
       "Energy: " .. chg .. "/" .. max .. " EUs\n"
 
     if max > 0 then
-      local percent = math.floor(chg / max * 100)
+      local percent = math_floor(chg / max * 100)
       infotext = infotext .. "Charge: " .. percent .. "%"
     else
       infotext = infotext .. "Charge: 0%"
@@ -104,7 +107,7 @@ for k, v in ipairs({
     local name = "bat2:bt0_" .. v.tier
 
     if max > 0 then -- Avoid divide-by-zero.
-      local percent = math.floor((chg / max) * 100)
+      local percent = math_floor((chg / max) * 100)
       local sz = math.ceil(100 / 12)
       for i = 0, 12, 1 do
         if percent <= sz*i then

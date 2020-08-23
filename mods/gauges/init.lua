@@ -4,14 +4,21 @@
 gauges = {}
 local player_wielding = {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_max = math.max
+local math_min = math.min
+
+
+
 local function update_textures(gauge, player)
 	local props = player:get_properties()
-	local hp = math.floor((player:get_hp() / props.hp_max) * 20)
-	local breath = math.floor((player:get_breath() / props.breath_max) * 11)
+	local hp = math_floor((player:get_hp() / props.hp_max) * 20)
+	local breath = math_floor((player:get_breath() / props.breath_max) * 11)
 
 	-- Clamp values to ensure they're in range.
-	hp = math.max(math.min(hp, 20), 0)
-	breath = math.max(math.min(breath, 11), 0)
+	hp = math_max(math_min(hp, 20), 0)
+	breath = math_max(math_min(breath, 11), 0)
 
 	gauge.object:set_properties({
 		textures = {

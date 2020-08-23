@@ -1,4 +1,9 @@
 
+-- Localize for performance.
+local math_random = math.random
+local math_min = math.min
+local math_max = math.max
+
 function utility.detach_player_with_message(player)
 	local k = default.detach_player_if_attached(player)
 	if k then
@@ -23,18 +28,18 @@ function utility.find_node_near_not_world_edge(pos, rad, node)
 	local minp = vector.subtract(pos, rad)
 	local maxp = vector.add(pos, rad)
 
-	minp.x = math.max(minp.x, -30912)
-	minp.y = math.max(minp.y, -30912)
-	minp.z = math.max(minp.z, -30912)
+	minp.x = math_max(minp.x, -30912)
+	minp.y = math_max(minp.y, -30912)
+	minp.z = math_max(minp.z, -30912)
 
-	maxp.x = math.min(maxp.x, 30927)
-	maxp.y = math.min(maxp.y, 30927)
-	maxp.z = math.min(maxp.z, 30927)
+	maxp.x = math_min(maxp.x, 30927)
+	maxp.y = math_min(maxp.y, 30927)
+	maxp.z = math_min(maxp.z, 30927)
 
 	local positions = minetest.find_nodes_in_area(minp, maxp, node)
 
 	if (#positions > 0) then
-		return positions[math.random(1, #positions)]
+		return positions[math_random(1, #positions)]
 	end
 end
 

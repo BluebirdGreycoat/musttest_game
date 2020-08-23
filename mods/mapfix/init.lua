@@ -9,6 +9,10 @@ mapfix = mapfix or {}
 mapfix.players = mapfix.players or {}
 mapfix.modpath = minetest.get_modpath("mapfix")
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_floor = math.floor
+
 -- Configurable settings.
 local MIN_TIMEOUT = 15
 local DEFAULT_RADIUS = 40
@@ -26,8 +30,8 @@ mapfix.work = work
 
 -- Public API function. May be called from other mods.
 function mapfix.execute(pos, radius)
-	pos = vector.round(pos)
-	radius = math.floor(radius)
+	pos = vector_round(pos)
+	radius = math_floor(radius)
 
 	local minp = vector.subtract(pos, radius)
 	local maxp = vector.add(pos, radius)
@@ -86,8 +90,8 @@ mapfix.command = function(pname, param)
 		mapfix.players[pname] = os.time()
 	end
 
-	local pos = vector.round(player:get_pos())
-	radius = math.floor(radius)
+	local pos = vector_round(player:get_pos())
+	radius = math_floor(radius)
 
 	-- Check privs.
 	if radius > MAX_RADIUS then

@@ -4,6 +4,10 @@
 
 fire = {}
 
+-- Localize for performance.
+local math_random = math.random
+
+
 
 -- Register flame nodes
 
@@ -54,7 +58,7 @@ minetest.register_node("fire:basic_flame", {
 		end
 
 		-- restart timer
-		local time = math.random(30, 60)
+		local time = math_random(30, 60)
 		minetest.get_node_timer(pos):start(time)
 		--ambiance.fire_particles(pos, time)
 	end,
@@ -63,7 +67,7 @@ minetest.register_node("fire:basic_flame", {
 	on_construct = function(pos)
 		fireambiance.on_flame_addremove(pos)
 		particles.add_flame_spawner(pos)
-		local time = math.random(30, 60)
+		local time = math_random(30, 60)
 		minetest.get_node_timer(pos):start(time)
 		--ambiance.fire_particles(pos, time)
 		torchmelt.start_melting(pos)

@@ -6,9 +6,13 @@ papyrus.plantname = "default:papyrus"
 papyrus.maxheight = 5
 papyrus.minlight = 13
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 -- Should return a random height for an individual plant to grow.
 function papyrus.random_height()
-	return math.floor(math.random(math.random(2, 3), math.random(3, 5)))
+	return math_floor(math_random(math_random(2, 3), math_random(3, 5)))
 end
 
 function papyrus.is_dirt_name(name)
@@ -80,7 +84,7 @@ function papyrus.reset_grow_height_and_timer(pos)
 	end
 	local min = papyrus.steptime.min
 	local max = papyrus.steptime.max
-	minetest.get_node_timer(p):start(math.random(min, max))
+	minetest.get_node_timer(p):start(math_random(min, max))
 end
 
 -- Attempt to grow papyrus.
@@ -128,7 +132,7 @@ function papyrus.on_construct(pos)
 	if papyrus.has_dirt(pos) then
 		local min = papyrus.steptime.min
 		local max = papyrus.steptime.max
-		minetest.get_node_timer(pos):start(math.random(min, max))
+		minetest.get_node_timer(pos):start(math_random(min, max))
 	end
 end
 

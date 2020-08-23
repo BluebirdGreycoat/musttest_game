@@ -3,6 +3,9 @@ rackstone = rackstone or {}
 rackstone.modpath = minetest.get_modpath("rackstone")
 -- group:rackstone is being used to check if a node should be considered naturally occuring for ambiance purposes.
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 rackstone.rackstone_sounds = 
@@ -95,8 +98,8 @@ local after_redrack_remove = function(pos)
   end
 
   -- Tricks!
-  if math.random(1, 500) == 1 then
-    local which = math.random(1, 4)
+  if math_random(1, 500) == 1 then
+    local which = math_random(1, 4)
     ambiance.sound_play("tnt_gunpowder_burning", pos, 2, 20)
     
     if which == 1 then
@@ -125,7 +128,7 @@ end
 rackstone.after_redrack_remove = after_redrack_remove
 
 local on_redrack_place = function(pos)
-  if math.random(1, 6) == 1 then
+  if math_random(1, 6) == 1 then
     local posabove = {x=pos.x, y=pos.y+1, z=pos.z}
     local light = minetest.get_node_light(posabove)
     if light then
@@ -133,7 +136,7 @@ local on_redrack_place = function(pos)
         -- Copy position table, just in case.
         local npos = {x=pos.x, y=pos.y, z=pos.z}
         ambiance.sound_play("default_gravel_footstep", npos, 1, 20)
-        minetest.after(math.random(1, 6), function()
+        minetest.after(math_random(1, 6), function()
           minetest.remove_node(npos)
           local def = {
             radius = 2,
@@ -173,8 +176,8 @@ minetest.register_node("rackstone:redrack", {
   end,
 
 	on_player_walk_over = function(pos, player)
-		if math.random(1, 2000) == 1 then
-			minetest.after(math.random(1, 4), function()
+		if math_random(1, 2000) == 1 then
+			minetest.after(math_random(1, 4), function()
 				if not minetest.test_protection(pos, "") then
 					tnt.boom(pos, {
 						radius = 2,
@@ -213,8 +216,8 @@ minetest.register_node("rackstone:redrack_cobble", {
   end,
 
 	on_player_walk_over = function(pos, player)
-		if math.random(1, 10000) == 1 then
-			minetest.after(math.random(1, 4), function()
+		if math_random(1, 10000) == 1 then
+			minetest.after(math_random(1, 4), function()
 				if not minetest.test_protection(pos, "") then
 					tnt.boom(pos, {
 						radius = 2,
@@ -437,7 +440,7 @@ minetest.register_node("rackstone:blackrack", {
         chance = 20
       end
 
-      if math.random(1, chance) == 1 then
+      if math_random(1, chance) == 1 then
         local inv = digger:get_inventory()
         local leftover = inv:add_item("main", ItemStack('starpearl:pearl'))
         minetest.add_item(pos, leftover)

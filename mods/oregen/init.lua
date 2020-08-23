@@ -2,6 +2,9 @@
 oregen = oregen or {}
 oregen.modpath = minetest.get_modpath("oregen")
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 -- Settings. These affect all ores registered through this mod.
@@ -81,14 +84,14 @@ oregen.register_ore = function(oredef)
     local noise_threshold = oredef.noise_threshold      or default.noise_threshold
     local noise_params = oredef.noise_params            or default.noise_params
     
-    count = math.floor(count * oregen.count_multiplier + 0.5)
+    count = math_floor(count * oregen.count_multiplier + 0.5)
     if count <= 1 then count = 1 end
     
     if algorithm == "blob" then
-        scarcity = math.floor(scarcity * oregen.scarcity_blob_multiplier + 0.5)
+        scarcity = math_floor(scarcity * oregen.scarcity_blob_multiplier + 0.5)
         if scarcity <= 1 then scarcity = 1 end
     else
-        scarcity = math.floor(scarcity * oregen.scarcity_multiplier + 0.5)
+        scarcity = math_floor(scarcity * oregen.scarcity_multiplier + 0.5)
         if scarcity <= 1 then scarcity = 1 end
     end
     
@@ -96,7 +99,7 @@ oregen.register_ore = function(oredef)
         algorithm = "blob"
     end
     
-    diameter = math.floor(diameter * oregen.size_multiplier + 0.5)
+    diameter = math_floor(diameter * oregen.size_multiplier + 0.5)
     if diameter <= 1 then diameter = 1 end
     
     miny = miny + oregen.depth_offset

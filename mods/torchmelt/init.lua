@@ -2,6 +2,9 @@
 torchmelt = torchmelt or {}
 torchmelt.modpath = minetest.get_modpath("torchmelt")
 
+-- Localize for performance.
+local math_random = math.random
+
 torchmelt.min_time = 15
 torchmelt.max_time = 80
 
@@ -16,7 +19,7 @@ function torchmelt.start_melting(pos)
 end
 
 function torchmelt.on_construct(pos)
-	minetest.get_node_timer(pos):start(math.random(torchmelt.min_time, torchmelt.max_time))
+	minetest.get_node_timer(pos):start(math_random(torchmelt.min_time, torchmelt.max_time))
 end
 
 local function torch_melt(pos)
@@ -30,7 +33,7 @@ local function torch_melt(pos)
 	local snow = minetest.find_nodes_in_area(minp, maxp, snow.get_names())
 	if #snow > 0 then
 		-- Remove a random snow node.
-		local p = snow[math.random(1, #snow)]
+		local p = snow[math_random(1, #snow)]
 		minetest.remove_node(p)
 		minetest.check_for_falling(p)
 		return true
@@ -42,7 +45,7 @@ function torchmelt.on_timer(pos, elapsed)
 	--minetest.chat_send_player("MustTest", "# Server: Torchmelt @ " .. minetest.pos_to_string(pos) .. "!")
 
 	if torch_melt(pos) then
-		minetest.get_node_timer(pos):start(math.random(torchmelt.min_time, torchmelt.max_time))
+		minetest.get_node_timer(pos):start(math_random(torchmelt.min_time, torchmelt.max_time))
 	else
 		--minetest.chat_send_player("MustTest", "# Server: Removed node @ " .. minetest.pos_to_string(pos) .. "!")
 

@@ -1,4 +1,7 @@
 
+-- Localize for performance.
+local math_random = math.random
+
 -- This is both seed and edible fruit.
 minetest.register_node("raspberries:fruit", {
   description = "Raspberries",
@@ -105,7 +108,7 @@ function(pos, oldnode, oldmetadata, digger)
       minetest.after(0, function()
         minetest.set_node(pos, {name="raspberries:plant_2", param2=2})
         local timer = minetest.get_node_timer(pos)
-        timer:start(math.random(300, 700))
+        timer:start(math_random(300, 700))
       end)
     end
   end
@@ -134,14 +137,14 @@ function(pos, oldnode, oldmetadata, digger)
       minetest.add_item(pos, leftover)
     else
       local inv = digger:get_inventory()
-      local leftover = inv:add_item("main", ItemStack("raspberries:fruit " .. math.random(1, 5)))
+      local leftover = inv:add_item("main", ItemStack("raspberries:fruit " .. math_random(1, 5)))
       minetest.add_item(pos, leftover)
       
       -- Restore bush. Player did not actually dig it up.
       minetest.after(0, function()
         minetest.set_node(pos, {name="raspberries:plant_2", param2=2})
         local timer = minetest.get_node_timer(pos)
-        timer:start(math.random(300, 700))
+        timer:start(math_random(300, 700))
       end)
     end
   end

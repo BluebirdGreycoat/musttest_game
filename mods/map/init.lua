@@ -6,6 +6,9 @@ map.players = map.players or {}
 map.time_step = 10
 map.charge_time = 60*60 -- 1 hour of continuous use.
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 -- Shall be called shortly after player joins game, to create the initial cache.
@@ -119,7 +122,7 @@ function map.consume_charge()
 								wear = 65534
 								depleted = true
 							end
-							stack:set_wear(math.floor(wear))
+							stack:set_wear(math_floor(wear))
 							inv:set_stack("main", idx, stack)
 
 							-- If this mapping tool has no charge left, update the cache info.

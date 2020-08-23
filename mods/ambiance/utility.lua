@@ -1,6 +1,9 @@
 
 -- This file is reloadable.
 
+-- Localize vector.distance() for performance.
+local vector_distance = vector.distance
+
 
 
 -- Checks if the given position would place the player underwater, swimming, or not-in-water.
@@ -85,7 +88,7 @@ ambiance.sound_play = function(name, pos, gain, range, exempt_player, ephemeral)
       local n = v:get_player_name()
       if n ~= exempt then
         local p1 = v:getpos()
-        local dist = vector.distance(p1, pos)
+        local dist = vector_distance(p1, pos)
         local gn = compute_gain(dist, range)
 				-- Ephemeral sound.
         minetest.sound_play(name, {to_player=n, gain=gn*gain}, eph)

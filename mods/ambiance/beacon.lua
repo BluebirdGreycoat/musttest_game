@@ -1,8 +1,11 @@
 
+-- Localize for performance.
+local vector_round = vector.round
+
 -- Spawn a named sound beacon at `pos`, while ensuring that no more than `count`
 -- beacons of the same type are spawned within `radius` meters.
 function ambiance.spawn_sound_beacon(name, pos, radius, count)
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	local c = 0
 
@@ -26,7 +29,7 @@ end
 -- Trigger all sound beacons in a given radius to execute an environment recheck.
 function ambiance.recheck_nearby_sound_beacons(pos, radius)
 	--minetest.chat_send_all('recheck2')
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	for i = 1, #objs, 1 do
 		local ent = objs[i]:get_luaentity()
@@ -41,7 +44,7 @@ end
 
 function ambiance.replay_nearby_sound_beacons(pos, radius)
 	--minetest.chat_send_all('replay2')
-	pos = vector.round(pos)
+	pos = vector_round(pos)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	for i = 1, #objs, 1 do
 		local ent = objs[i]:get_luaentity()
@@ -102,7 +105,7 @@ function ambiance.register_sound_beacon(name, callbacks)
 		end,
 
 		on_step = function(self, dtime)
-			local pos = vector.round(self.object:get_pos())
+			local pos = vector_round(self.object:get_pos())
 			self._data = self._data or {}
 			local d = self._data
 

@@ -5,6 +5,9 @@ diving_equipment.airtime = 60
 diving_equipment.steptime = 5
 diving_equipment.players = diving_equipment.players or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+
 -- Must return true if player is wearing the diving helmet.
 function diving_equipment.have_equipment(pref)
 	local inv = pref:get_inventory()
@@ -83,7 +86,7 @@ function diving_equipment.on_use(itemstack, user, pt)
 	minetest.after(diving_equipment.steptime, diving_equipment.replenish_air,
 		pname, diving_equipment.airtime)
 
-	minetest.chat_send_player(pname, "# Server: Air canister attached; you have " .. math.floor(diving_equipment.airtime) .. " seconds of air.")
+	minetest.chat_send_player(pname, "# Server: Air canister attached; you have " .. math_floor(diving_equipment.airtime) .. " seconds of air.")
 	ambiance.sound_play("default_place_node_metal", user:get_pos(), 1.0, 20)
 
 	-- An empty bottle will be added back when used up.

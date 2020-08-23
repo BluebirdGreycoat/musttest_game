@@ -7,6 +7,9 @@ local SCHEMATIC_MINP = {x=-2, y=0, z=-2}
 local SCHEMATIC_MAXP = {x=2, y=14, z=2}
 local SCHEMATIC_RELP = {x=-2, y=0, z=-2}
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 local leafcolors = {
@@ -93,7 +96,7 @@ minetest.register_node("moretrees:jungletree_sapling", {
 		end
 
 		if not moretrees.can_grow(pos) then
-			minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+			minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 			return
 		end
 
@@ -104,9 +107,9 @@ minetest.register_node("moretrees:jungletree_sapling", {
 			"jungletree_green.mts",
 		}
 
-		local path = moretrees.modpath .. "/schematics/" .. schems[math.random(1, #schems)]
+		local path = moretrees.modpath .. "/schematics/" .. schems[math_random(1, #schems)]
 		local schempos = vector.add(pos, SCHEMATIC_RELP)
-		local subtract = math.random(0, math.random(0, 4))
+		local subtract = math_random(0, math_random(0, 4))
 		schempos.y = schempos.y - subtract
 		minetest.place_schematic(schempos, path, "random", nil, false)
 		trunkgen.generate_bole(pos, "moretrees:jungletree_tree")
@@ -114,19 +117,19 @@ minetest.register_node("moretrees:jungletree_sapling", {
 			pos, "moretrees:jungletree_tree",
 			{"moretrees:jungletree_leaves_red", "moretrees:jungletree_leaves_green", "moretrees:jungletree_leaves_yellow"},
 			3, 10-subtract)
-		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_green", math.random(10, 30))
-		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_red", math.random(10, 30))
-		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_yellow", math.random(10, 30))
+		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_green", math_random(10, 30))
+		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_red", math_random(10, 30))
+		hb4.leafscatter.remove(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_yellow", math_random(10, 30))
 
-		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_green", math.random(10, 30))
-		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_red", math.random(10, 30))
-		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_yellow", math.random(10, 30))
+		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_green", math_random(10, 30))
+		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_red", math_random(10, 30))
+		hb4.leafscatter.add(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, "moretrees:jungletree_leaves_yellow", math_random(10, 30))
 		snowscatter.dump_snowdust_on_tree(pos, SCHEMATIC_MINP, SCHEMATIC_MAXP)
 		ambiance.spawn_sound_beacon_inside_area("soundbeacon:trees", pos, SCHEMATIC_MINP, SCHEMATIC_MAXP, 40, 3)
 	end,
 
 	on_construct = function(pos)
-		minetest.get_node_timer(pos):start(math.random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
+		minetest.get_node_timer(pos):start(math_random(SAPLING_TIME_MIN, SAPLING_TIME_MAX))
 	end,
 
 	on_place = function(itemstack, placer, pointed_thing)

@@ -3,6 +3,9 @@ portal_sickness = portal_sickness or {}
 portal_sickness.players = portal_sickness.players or {}
 portal_sickness.version = portal_sickness.version or 1
 
+-- Localize for performance.
+local math_random = math.random
+
 -- Localize.
 local players = portal_sickness.players
 local alert_color = core.get_color_escape_sequence("#ff0000")
@@ -95,8 +98,8 @@ function portal_sickness.on_use_portal(pname)
 	local rand_time_add = (players[pname].count - 6) * 10
 	local t1 = players[pname].time
 	local t2 = os.time()
-	local mt = math.random(30, math.random(40, 140 + rand_time_add))
-	local max_time = math.random(60*10, 60*20)
+	local mt = math_random(30, math_random(40, 140 + rand_time_add))
+	local max_time = math_random(60*10, 60*20)
 
 	-- If player waits long enough, they don't sicken, but neither does the
 	-- sickness go away!
@@ -121,7 +124,7 @@ function portal_sickness.on_use_portal(pname)
 		end
 		--minetest.chat_send_player("MustTest", "# Server: sickness probability: 1 in " .. max .. ".")
 
-		if (math.random(1, max) == 1) or players[pname].sick == 1 then
+		if (math_random(1, max) == 1) or players[pname].sick == 1 then
 			if players[pname].sick == 0 then
 				minetest.chat_send_player(pname, alert_color .. "# Server: WARNING: You are feeling queasy!")
 				players[pname].sick = 1

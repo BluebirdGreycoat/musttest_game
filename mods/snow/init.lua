@@ -4,8 +4,12 @@
 -- This code modifies the `default:snow` definition to create seasons.
 snow = {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_random = math.random
+
 function snow.on_player_walk_over(pos, player)
-	minetest.swap_node(pos, {name="snow:footprints", param2=math.random(0, 3)})
+	minetest.swap_node(pos, {name="snow:footprints", param2=math_random(0, 3)})
 end
 
 function snow.on_dig(pos, node, digger)
@@ -256,7 +260,7 @@ function snow.choose_level()
 	local epoch = os.time({year=2016, month=10, day=1})
 	local secs = os.time()-epoch
 	local day = (((secs/60)/60)/24)
-	local which = math.floor(day%cnt)+off
+	local which = math_floor(day%cnt)+off
 	assert(which >= 1)
 	assert(which <= 17*2)
 	return which
@@ -342,7 +346,7 @@ function snow.get_snowfootdef()
 			return
 		end
 		local time = 60*60*24*7
-		local rand = math.random(60*60*1, 60*60*24)
+		local rand = math_random(60*60*1, 60*60*24)
 		minetest.get_node_timer(pos):start(time+rand)
 	end
 	def.on_timer = function(pos, elapsed)
@@ -350,7 +354,7 @@ function snow.get_snowfootdef()
 	end
 	def.on_player_walk_over = function(pos, player)
 		local time = 60*60*24*7
-		local rand = math.random(60*60*1, 60*60*24)
+		local rand = math_random(60*60*1, 60*60*24)
 		minetest.get_node_timer(pos):start(time+rand)
 	end
 	-- Snow with footprints turns back to snow if it falls.
@@ -396,7 +400,7 @@ function snow.get_treedef()
 
 	-- Player should not be able to obtain node.
 	def.on_finish_collapse = function(pos, node)
-		if math.random(1, 3) == 1 then
+		if math_random(1, 3) == 1 then
 			minetest.remove_node(pos)
 		end
 	end

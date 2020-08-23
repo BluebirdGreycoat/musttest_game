@@ -6,6 +6,11 @@ xp.data = xp.data or {} -- Data is stored in string form.
 xp.dirty = true
 xp.dirty_players = xp.dirty_players or {}
 
+-- Localize for performance.
+local math_floor = math.floor
+local math_min = math.min
+local math_max = math.max
+
 
 
 -- This code supports multiple types of XP.
@@ -35,15 +40,15 @@ function xp.update_players_max_hp(pname)
 		return
 	end
 
-	local amount = math.max(math.min(xp.get_xp(pname, "digxp"), 50000), 0)
+	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), 50000), 0)
 	local kilos = (amount / 1000)
-	local hpinc = math.floor(kilos * 2)
+	local hpinc = math_floor(kilos * 2)
 
 	local max_hp = pref:get_properties().hp_max
 	local hp = pref:get_hp()
 	local percent = (hp / max_hp)
 	local new_max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc)
-	local new_hp = math.min((percent * new_max_hp), new_max_hp)
+	local new_hp = math_min((percent * new_max_hp), new_max_hp)
 
 	--minetest.chat_send_all('new max hp: ' .. new_max_hp .. ', new hp: ' .. new_hp)
 

@@ -2,14 +2,17 @@
 bluegrass = bluegrass or {}
 bluegrass.modpath = minetest.get_modpath("bluegrass")
 
+-- Localize for performance.
+local math_random = math.random
+
 
 
 -- How often node timers for plants will tick, +/- some random value.
 local function tick(pos, data)
   if data then
-    minetest.get_node_timer(pos):start(math.random(data.min_time, data.max_time))
+    minetest.get_node_timer(pos):start(math_random(data.min_time, data.max_time))
   else
-    minetest.get_node_timer(pos):start(math.random(166, 286))
+    minetest.get_node_timer(pos):start(math_random(166, 286))
     --minetest.get_node_timer(pos):start(1.0) -- Debug
   end
 end
@@ -18,7 +21,7 @@ end
 
 -- How often a growth failure tick is retried.
 local function tick_again(pos)
-  minetest.get_node_timer(pos):start(math.random(40, 80))
+  minetest.get_node_timer(pos):start(math_random(40, 80))
   --minetest.get_node_timer(pos):start(1.0) -- Debug
 end
 

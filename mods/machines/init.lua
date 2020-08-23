@@ -9,6 +9,9 @@ machines.modpath = minetest.get_modpath("machines")
 local NEED_LOG = true
 local SINGLEPLAYER = minetest.is_singleplayer()
 
+-- Localize for performance.
+local math_floor = math.floor
+
 
 
 -- API function, for logging machine updates. Needed during debugging.
@@ -80,7 +83,7 @@ function(pos, name_cfg, name_ugp, wanted_time, eu_demand)
     for k, v in ipairs(upglist) do
       if v:get_name() == "battery:battery" and v:get_count() == 1 then
         -- Each battery upgrade reduces energy needed by 1/3 of previous.
-        eups = math.floor((eups / 3) * 2)
+        eups = math_floor((eups / 3) * 2)
       end
     end
   end
@@ -345,7 +348,7 @@ function(pos, elapsed, data)
   local item_state
   local item_percent = 0
   if cookable then
-    item_percent = math.floor(src_time / cooked.time * 100)
+    item_percent = math_floor(src_time / cooked.time * 100)
     if item_percent > 100 then
       item_state = "100% (Output Full)"
     else
@@ -365,7 +368,7 @@ function(pos, elapsed, data)
 
   if fuel_time <= fuel_totaltime and fuel_totaltime ~= 0 then
     active = "Active"
-    local fuel_percent = math.floor(fuel_time / fuel_totaltime * 100)
+    local fuel_percent = math_floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
     formspec = data.form.active(fuel_percent, item_percent)
     machines.swap_node(pos, data.swap.active)

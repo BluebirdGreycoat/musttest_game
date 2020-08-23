@@ -5,6 +5,11 @@
 realchess = realchess or {}
 realchess.modpath = minetest.get_modpath("xdecor")
 
+-- Localize for performance.
+local math_floor = math.floor
+
+
+
 local function index_to_xy(idx)
 	idx = idx - 1
 	local x = idx % 8
@@ -551,7 +556,7 @@ end
 
 local function timeout_format(timeout_limit)
 	local time_remaining = timeout_limit - minetest.get_gametime()
-	local minutes = math.floor(time_remaining / 60)
+	local minutes = math_floor(time_remaining / 60)
 	local seconds = time_remaining % 60
 
 	if minutes == 0 then return seconds.." seconds" end

@@ -3,6 +3,9 @@
 
 real_torch = {}
 
+-- Localize for performance.
+local math_random = math.random
+
 -- check for timer settings or use defaults
 -- torches stay lit for 6 - 7 hours of real time
 real_torch.min_duration = tonumber(minetest.settings:get("torch_min_duration")) or (60*60*6)  --10--1200
@@ -27,7 +30,7 @@ minetest.register_lbm({
 	action = function(pos)
 		if not minetest.get_node_timer(pos):is_started() then
 			minetest.get_node_timer(pos):start(
-				math.random(real_torch.min_duration, real_torch.max_duration))
+				math_random(real_torch.min_duration, real_torch.max_duration))
 		end
 	end
 })
@@ -37,18 +40,18 @@ minetest.register_lbm({
 	action = function(pos)
 		if not minetest.get_node_timer(pos):is_started() then
 			minetest.get_node_timer(pos):start(
-				math.random(real_torch.min_duration*5, real_torch.max_duration*6))
+				math_random(real_torch.min_duration*5, real_torch.max_duration*6))
 		end
 	end
 })
 --]]
 
 function real_torch.start_timer(pos)
-	minetest.get_node_timer(pos):start(math.random(real_torch.min_duration, real_torch.max_duration))
+	minetest.get_node_timer(pos):start(math_random(real_torch.min_duration, real_torch.max_duration))
 end
 function real_torch.start_kalite_timer(pos)
-	minetest.get_node_timer(pos):start(math.random(real_torch.min_duration*5, real_torch.max_duration*6))
-	--minetest.get_node_timer(pos):start(math.random(5, 10))
+	minetest.get_node_timer(pos):start(math_random(real_torch.min_duration*5, real_torch.max_duration*6))
+	--minetest.get_node_timer(pos):start(math_random(5, 10))
 end
 
 

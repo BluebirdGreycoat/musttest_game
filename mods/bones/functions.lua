@@ -4,6 +4,12 @@ bones = bones or {}
 -- Contains the positions of last known player deaths, indexed by player name.
 bones.last_known_death_locations = bones.last_known_death_locations or {}
 
+-- Localize for performance.
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 local get_public_time = function()
   return os.date("!%Y/%m/%d, %H:%M:%S UTC")
 end
@@ -65,9 +71,9 @@ local drop = function(pos, itemstack)
 	local obj = minetest.add_item(pos, itemstack:take_item(itemstack:get_count()))
 	if obj then
 		obj:setvelocity({
-			x = math.random(-10, 10) / 9,
+			x = math_random(-10, 10) / 9,
 			y = 5,
-			z = math.random(-10, 10) / 9,
+			z = math_random(-10, 10) / 9,
 		})
 	end
 end
@@ -245,7 +251,7 @@ bones.on_dieplayer = function(player)
 		return
 	end
 
-	local pos = vector.round(utility.get_middle_pos(player:get_pos()))
+	local pos = vector_round(utility.get_middle_pos(player:get_pos()))
 
 	-- Check if it's possible to place bones, if not find space near player.
 	if bones_mode == "bones" then
@@ -667,7 +673,7 @@ bones.do_grab_bones_message = function(pname, pos, meta)
 				"# Server: Player <" ..
 				rename.gpn(pname) ..
 				"> claimed " .. ownerstring .. " " .. agestring .. " bones at " ..
-				rc.pos_to_namestr(vector.round(pos)) ..
+				rc.pos_to_namestr(vector_round(pos)) ..
 				" with " .. numstacks .. " " .. stacks .. ".")
 		else
 			minetest.chat_send_all(
@@ -706,7 +712,7 @@ bones.on_timer = function(pos, elapsed)
 			end
 			if cheaters_are_present then
 				local timer = minetest.get_node_timer(pos)
-				timer:start(60*math.random(10, 60))
+				timer:start(60*math_random(10, 60))
 				return
 			end
 		end

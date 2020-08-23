@@ -1,4 +1,11 @@
 
+-- Localize for performance.
+local vector_distance = vector.distance
+local vector_round = vector.round
+local math_random = math.random
+
+
+
 local function throw_player(e, p)
 	local p1 = e:get_pos()
 	local p2 = p:get_pos()
@@ -20,7 +27,7 @@ function pm.hurt_nearby_players(self)
 	local pos = self.object:get_pos()
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
-		if vector.distance(pos, v:get_pos()) < 2 then
+		if vector_distance(pos, v:get_pos()) < 2 then
 			throw_player(self.object, v)
 			v:set_hp(v:get_hp() - 1)
 		end
@@ -48,7 +55,7 @@ function pm.heal_nearby_players(self)
 	local pos = self.object:get_pos()
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
-		if vector.distance(pos, v:get_pos()) < 2 then
+		if vector_distance(pos, v:get_pos()) < 2 then
 			v:set_hp(v:get_hp() + 1)
 		end
 	end
@@ -59,11 +66,11 @@ function pm.steal_nearby_item(self, target)
 		if target:is_player() then
 			local inv = target:get_inventory()
 			local max = inv:get_size("main")
-			local idx = math.random(1, max)
+			local idx = math_random(1, max)
 			local stack = inv:get_stack("main", idx)
 			if not passport.is_passport(stack:get_name()) then
 				if stack:get_count() >= 10 then
-					local item = stack:take_item(math.random(1, 10))
+					local item = stack:take_item(math_random(1, 10))
 					inv:set_stack("main", idx, stack)
 					minetest.item_drop(item, target, self.object:get_pos())
 				end
@@ -90,7 +97,7 @@ function pm.explode_nearby_target(self, target)
 end
 
 function pm.commit_arson_at_target(pos)
-	local p = vector.round(pos)
+	local p = vector_round(pos)
 	p = minetest.find_node_near(pos, 1, "air", true)
 	if p and not minetest.test_protection(p, "") then
 		minetest.set_node(p, {name="fire:basic_flame"})

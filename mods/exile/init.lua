@@ -4,6 +4,10 @@ exile.modpath = minetest.get_modpath("exile")
 
 -- Localize for performance.
 local vector_distance = vector.distance
+local vector_normalize = vector.normalize
+local vector_subtract = vector.subtract
+local vector_multiply = vector.multiply
+local vector_round = vector.round
 
 -- Helper to query whether there is a nearby non-cheating player (also not self)
 -- within a certain range.
@@ -45,6 +49,31 @@ function exile.send_to_exile(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
 		local pos = pref:get_pos()
+		local rn1 = rc.current_realm_at_pos(pos)
+		local cb = city_block:nearest_blocks_to_position(pos, 5)
+
+		-- Calculate the average postion of nearby city-blocks.
+		local x, y, z, n = nil, nil, nil, #cb
+		for i=1, n, 1 do
+			local b = cb[i]
+			local p = b.pos
+			x = x + p.x
+			y = y + p.y
+			z = z + p.z
+		end
+		x = x / n
+		y = y / n
+		z = z / n
+
+		-- Calculate a new position away from the city-blocks.
+		local center = {x=x, y=y, z=z}
+		local gpos = vector_round(vector_add(vector_multiply(vector_subtract(pos, center), 2), center))
+		local rn2 = rc.current_realm_at_pos(gpos)
+
+		-- Only if we wouldn't cause player to change realms, or enter the void.
+		if rn2 ~= "" and rn1 == rn2 then
+			pref:set_pos(gpos)
+		end
 	end
 end
 

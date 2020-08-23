@@ -19,6 +19,37 @@ local math_random = math.random
 
 
 
+-- Returns a table of the N-nearest city-blocks to a given position.
+-- The return value format is: {{pos, owner}, {pos, owner}, ...}
+function city_block:nearest_blocks_to_position(pos, num)
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	local blocks = {}
+	local sblocks = self.blocks
+	for i=1, #sblocks, 1 do
+		blocks[#blocks+1] = sblocks[i]
+	end
+
+	-- Sort blocks, nearest blocks first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest blocks (should be at the front of the sorted table).
+	local ret = {}
+	for i=1, num, 1 do
+		if i <= #blocks then
+			ret[#ret+1] = blocks[i]
+		else
+			break
+		end
+	end
+	return ret
+end
+
 function city_block:save()
 	local datastring = minetest.serialize(self.blocks)
 	if not datastring then

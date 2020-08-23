@@ -41,6 +41,13 @@ function exile.player_in_violation(pname)
 	end
 end
 
+function exile.send_to_exile(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
+		local pos = pref:get_pos()
+	end
+end
+
 if not exile.registered then
 	local c = "exile:core"
 	local f = exile.modpath .. "/init.lua"

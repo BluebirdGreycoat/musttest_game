@@ -82,6 +82,9 @@ function sheriff.register_cheater(pname)
 
 	-- Also add it to the cache.
 	sheriff.players[pname] = data
+
+	-- Notify the exile mod.
+	exile.notify_new_exile(pname)
 end
 
 -- Call to unregister a player as a cheater.

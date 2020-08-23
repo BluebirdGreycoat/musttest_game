@@ -182,8 +182,10 @@ function exile.notify_new_exile(pname)
 end
 
 function exile.on_joinplayer(pref)
-	local pname = pref:get_player_name()
-	minetest.after(math_random(1, 10), exile.repeating_check, pname)
+	if pref and pref:is_player() then
+		local pname = pref:get_player_name()
+		minetest.after(math_random(1, 10), exile.repeating_check, pname)
+	end
 end
 
 if not exile.registered then

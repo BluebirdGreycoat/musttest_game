@@ -50,7 +50,8 @@ function city_block:in_city(pos)
 	local r = 22
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
-		local vpos = blocks[i]
+		local v = blocks[i]
+		local vpos = v.pos
 		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
 			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
 			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
@@ -65,7 +66,8 @@ function city_block:in_safebed_zone(pos)
 	local r = 55
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
-		local vpos = blocks[i]
+		local v = blocks[i]
+		local vpos = v.pos
 		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
 			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
 			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
@@ -79,7 +81,8 @@ function city_block:in_no_tnt_zone(pos)
 	local r = 50
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
-		local vpos = blocks[i]
+		local v = blocks[i]
+		local vpos = v.pos
 		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
 			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
 			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
@@ -93,7 +96,8 @@ function city_block:in_no_leecher_zone(pos)
 	local r = 100
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
-		local vpos = blocks[i]
+		local v = blocks[i]
+		local vpos = v.pos
 		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
 			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
 			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then

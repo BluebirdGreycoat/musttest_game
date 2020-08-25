@@ -345,8 +345,13 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- Create a gateway at the player's destination.
 	-- This gateway links back to the first.
 	-- If it is destroyed, the player is stuck!
-	preload_tp.preload_and_teleport(pname, pdest, 32,
-		function()
+	preload_tp.execute({
+		player_name = pname,
+		target_position = pdest,
+		emerge_radius = 32,
+		particle_effects = true,
+
+		pre_teleport_callback = function()
 			if not isowner then
 				-- Grief portal if used by someone other than owner.
 				local plava = airpoints[math_random(1, #airpoints)]
@@ -424,14 +429,19 @@ function obsidian_gateway.attempt_activation(pos, player)
 				give_initial_stuff.give(pref)
 			end
 		end,
-		function()
+
+		post_teleport_callback = function()
 			for k, v in ipairs(friendstobring) do
 				local friend = minetest.get_player_by_name(v)
 				if friend then
 					local fname = friend:get_player_name()
 
-					preload_tp.preload_and_teleport(fname, pdest, 16,
-						function()
+					preload_tp.execute({
+						player_name = fname,
+						target_position = pdest,
+						particle_effects = true,
+
+						pre_teleport_callback = function()
 							-- If the destination is the Abyss, then kill player first.
 							-- This helps to prevent player from bringing any foreign items into this realm.
 							-- Note: this relies on the teleport code already checking all other preconditions
@@ -443,12 +453,16 @@ function obsidian_gateway.attempt_activation(pos, player)
 								-- setting the player's health to 0.
 								bones.dump_bones(fname)
 								bones.last_known_death_locations[fname] = nil -- Fake death.
+
 								local pref = minetest.get_player_by_name(fname)
 								pref:set_hp(pref:get_properties().hp_max)
 								give_initial_stuff.give(pref)
 							end
 						end,
-					nil, nil, true)
+
+						force_teleport = true,
+						send_blocks = true,
+					})
 
 					portal_sickness.on_use_portal(fname)
 				end
@@ -464,7 +478,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 			ambiance.spawn_sound_beacon("soundbeacon:gate", target, 20, 1)
 			ambiance.replay_nearby_sound_beacons(target, 6)
 			portal_sickness.on_use_portal(pname)
-		end, nil, false, "nether_portal_usual")
+		end,
+
+		teleport_sound = "nether_portal_usual",
+		send_blocks = true,
+	})
 end
 
 

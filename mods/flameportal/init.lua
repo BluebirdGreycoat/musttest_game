@@ -229,19 +229,29 @@ flameportal.teleport_player = function(name, voidpos)
         if return_pos then
           minetest.log("action", "Player " .. pname .. " returns from the nether at (" .. minetest.pos_to_string(voidpos) .. ")")
 
-					preload_tp.preload_and_teleport(pname, return_pos, 32, nil, function()
-						-- Damage player on return journey only sometimes.
-						if math_random(1, 30) == 1 then
-							minetest.after(0.5, function()
-								local pref = minetest.get_player_by_name(pname)
-								if pref and pref:is_player() then
-									pref:set_hp(pref:get_hp() - math_random(2, 15))
-								end
-							end)
-						end
-						portal_sickness.on_use_portal(pname)
-					end, nil, false, "nether_portal_usual")
+					preload_tp.execute({
+						player_name = pname,
+						target_position = return_pos,
+						emerge_radius = 32,
+						particle_effects = true,
 
+						post_teleport_callback = function()
+							-- Damage player on return journey only sometimes.
+							if math_random(1, 30) == 1 then
+								minetest.after(0.5, function()
+									local pref = minetest.get_player_by_name(pname)
+									if pref and pref:is_player() then
+										pref:set_hp(pref:get_hp() - math_random(2, 15))
+									end
+								end)
+							end
+							portal_sickness.on_use_portal(pname)
+						end,
+
+						force_teleport = false,
+						teleport_sound = "nether_portal_usual",
+						send_blocks = true,
+					})
         end
       end
     end
@@ -293,17 +303,27 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
   
   target.y = target.y+10
 
-	preload_tp.preload_and_teleport(pname, target, 64,
-	function()
-		flameportal.make_platform(tb)
-		flameportal.make_flame_pillar(tb2)
-	end,
-	function()
-		local storage = flameportal.modstorage
-		local return_pos = {x=voidpos.x, y=voidpos.y+1, z=voidpos.z}
-		storage:set_string(pname, minetest.pos_to_string(return_pos))
-		minetest.log("action", "Player " .. pname .. " teleports into the nether @ (" .. minetest.pos_to_string(target) .. ")")
-	end, nil, false, "nether_portal_usual")
+	preload_tp.execute({
+		player_name = pname,
+		target_position = target,
+		emerge_radius = 64,
+		particle_effects = true,
+
+		pre_teleport_callback = function()
+			flameportal.make_platform(tb)
+			flameportal.make_flame_pillar(tb2)
+		end,
+
+		post_teleport_callback = function()
+			local storage = flameportal.modstorage
+			local return_pos = {x=voidpos.x, y=voidpos.y+1, z=voidpos.z}
+			storage:set_string(pname, minetest.pos_to_string(return_pos))
+			minetest.log("action", "Player " .. pname .. " teleports into the nether @ (" .. minetest.pos_to_string(target) .. ")")
+		end,
+
+		teleport_sound = "nether_portal_usual",
+		send_blocks = true,
+	})
 end
 
 

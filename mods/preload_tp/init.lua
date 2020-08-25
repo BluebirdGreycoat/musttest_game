@@ -9,15 +9,17 @@ local math_floor = math.floor
 
 
 
-function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
-	-- Check if there was an error on the LAST call.
-	-- This avoids false error reports if the area to be generated exceeds the max map edge.
-	-- Update: actually it doesn't?
-	if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-		minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
-		return
-	end
-
+function preload_tp.finalize(parameters)
+	local pname = parameters.player_name
+	local force = parameters.force_teleport
+	local pp = parameters.start_position
+	local tp = parameters.target_position
+	local pre_cb = parameters.pre_teleport_callback
+	local post_cb = parameters.post_teleport_callback
+	local cb_param = parameters.callback_param
+	local tpsound = parameters.teleport_sound
+	local pfx = parameters.particle_effects
+	
 	-- Find the player.
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
@@ -77,26 +79,30 @@ function preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_p
 
 	-- The teleport sound, played @ old & new locations.
 	ambiance.sound_play(thesound, pp, 1.0, 50)
-	preload_tp.spawn_particles(pp)
-
 	ambiance.sound_play(thesound, tp, 1.0, 50)
-	preload_tp.spawn_particles(tp)
 
-	preload_tp.spawn_spinup_particles(vector_round(tp), 3)
+	if pfx then
+		preload_tp.spawn_particles(pp)
+		preload_tp.spawn_particles(tp)
+		preload_tp.spawn_spinup_particles(vector_round(tp), 3)
+	end
 end
 
 
 
-function preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+function preload_tp.wait_for_timeout(parameters)
+	local start_time = parameters.start_time
+	local total_time = parameters.total_time
+
 	local end_time = os.time()
 	if (end_time - start_time) < total_time then
 		minetest.after(1, function()
-			preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+			preload_tp.wait_for_timeout(parameters)
 		end)
 		return
 	end
 
-	preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+	preload_tp.finalize(parameters)
 end
 
 
@@ -147,13 +153,38 @@ end
 -- API function. Preload the area, then teleport the player there
 -- only if they have not moved during the preload. After a successful
 -- teleport, execute the callback function if it's not nil.
-function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, cb_param, force, tpsound)
+function preload_tp.execute(parameters)
+	-- Copy table so we don't end up modifying the original.
+	parameters = table.copy(parameters)
+
+	-- Set default parameters.
+	parameters.player_name = parameters.player_name or ""
+	parameters.target_position = parameters.target_position or {x=0, y=0, z=0}
+	parameters.emerge_radius = parameters.emerge_radius or 16
+	parameters.pre_teleport_callback = parameters.pre_teleport_callback or nil
+	parameters.post_teleport_callback = parameters.post_teleport_callback or nil
+	parameters.callback_param = parameters.callback_param or nil
+	parameters.force_teleport = parameters.force_teleport or false
+	parameters.teleport_sound = parameters.teleport_sound or nil
+	parameters.send_blocks = parameters.send_blocks or false
+	parameters.particle_effects = parameters.particle_effects or false
+
+	local pname = parameters.player_name
+	local tpos = parameters.target_position
+	local radius = parameters.emerge_radius
+	local pre_cb = parameters.pre_teleport_callback
+	local post_cb = parameters.post_teleport_callback
+	local cb_param = parameters.callback_param
+	local force = parameters.force_teleport
+	local tpsound = parameters.teleport_sound
+	local sendblocks = parameters.send_blocks
+	local pfx = parameters.particle_effects
+
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
 		return
 	end
 
-	-- We need to copy the position table to avoid it being modified on us.
 	local tp = table.copy(tpos)
 	local pp = player:get_pos()
 	local start_time = os.time()
@@ -164,19 +195,34 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 		total_time = 2
 	end
 
+	parameters.start_position = pp
+	parameters.start_time = start_time
+	parameters.total_time = total_time
+
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
-	preload_tp.spawn_spinup_particles(vector_round(pp), total_time + 2)
-	preload_tp.spawn_spinup_particles(vector_round(tp), total_time + 1)
+	if pfx then
+		preload_tp.spawn_spinup_particles(vector_round(pp), total_time + 2)
+		preload_tp.spawn_spinup_particles(vector_round(tp), total_time + 1)
+	end
 
 	-- Build callback function. When the map is loaded, we can teleport the player.
-	local tbparam = {}
-	local cb = function(blockpos, action, calls_remaining, param)
+	local cb = function(blockpos, action, calls_remaining, parameters)
+		-- Check if there was an error.
+		-- This avoids false error reports if the area to be generated exceeds the max map edge.
+		-- Update: actually it doesn't?
+		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+			minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
+			return
+		end
+
 		-- Send blocks to client as soon as they're available; looks better that way.
-		if blockpos then
-			local pref = minetest.get_player_by_name(pname)
-			if pref then
-				pref:send_mapblock(blockpos)
+		if sendblocks then
+			if blockpos then
+				local pref = minetest.get_player_by_name(pname)
+				if pref then
+					pref:send_mapblock(blockpos)
+				end
 			end
 		end
 
@@ -186,12 +232,12 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 		end
 
 		if not force then
-			preload_tp.wait_for_timeout(start_time, total_time, pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+			preload_tp.wait_for_timeout(parameters)
 			return
 		end
 
 		-- Forced teleport always teleports as soon as possible!
-		preload_tp.finalize(pname, action, force, pp, tp, pre_cb, post_cb, cb_param, tpsound)
+		preload_tp.finalize(parameters)
 	end
 
 	local minp = vector.add(tp, vector.new(-radius, -radius, -radius))
@@ -199,7 +245,7 @@ function preload_tp.preload_and_teleport(pname, tpos, radius, pre_cb, post_cb, c
 
 	-- Emerge the target area. Once emergence is complete player can be teleported.
 	minetest.chat_send_player(pname, "# Server: Spatially translating! Stand by.")
-	minetest.emerge_area(minp, maxp, cb, tbparam)
+	minetest.emerge_area(minp, maxp, cb, parameters)
 end
 
 

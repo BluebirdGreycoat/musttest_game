@@ -719,7 +719,16 @@ function survivalist.abort_game(pname)
 		end
 
 		-- Teleport is forced.
-		preload_tp.preload_and_teleport(pname, target, 32, pcb, bcb, nil, true)
+		preload_tp.execute({
+			player_name = pname,
+			target_position = target,
+			emerge_radius = 32,
+			pre_teleport_callback = pcb,
+			post_teleport_callback = bcb,
+			force_teleport = true,
+			send_blocks = true,
+			particle_effects = true,
+		})
 	else
 		minetest.chat_send_player(pname, "# Server: You are not in a Survival Challenge; cannot abort.")
 		easyvend.sound_error(pname)

@@ -132,10 +132,20 @@ randspawn.reposition_player = function(pname, death_pos)
 		-- Ensure teleport is forced, to prevent a cheat.
 		local pos = get_respawn_position(death_pos, pname)
 		pos = vector.add(pos, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)})
-		preload_tp.preload_and_teleport(pname, pos, 32, nil,
-			function()
+
+		preload_tp.execute({
+			player_name = pname,
+			target_position = pos,
+			emerge_radius = 32,
+
+			post_teleport_callback = function()
 				ambiance.sound_play("respawn", pos, 0.5, 10)
-			end, nil, true)
+			end,
+
+			force_teleport = true,
+			send_blocks = false,
+			particle_effects = true,
+		})
 	end
 end
 

@@ -83,7 +83,16 @@ local function move_player_to_exile(pname, target)
 
 						-- Wrapped in minetest.after() to avoid *potential* callstack issues.
 						minetest.after(0, function()
-							preload_tp.preload_and_teleport(pname, pos, 8, nil, post_cb, param, true)
+							preload_tp.execute({
+								player_name = pname,
+								target_position = pos,
+								emerge_radius = 8,
+								post_teleport_callback = post_cb,
+								callback_param = param,
+								force_teleport = true,
+								send_blocks = false,
+								particle_effects = true,
+							})
 						end)
 
 						return
@@ -172,7 +181,7 @@ function exile.repeating_check(pname)
 		exile.check_player(pname)
 
 		-- Schedule another check shortly.
-		minetest.after(0, exile.repeating_check, pname)
+		minetest.after(1, exile.repeating_check, pname)
 	end
 end
 

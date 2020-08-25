@@ -391,13 +391,15 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
 		end
 
     if vector_distance(player:getpos(), start_pos) < 0.1 then
-			--local fwrap = function(...)
-			--	minetest.chat_send_player(name, "# Server: Transport successful.")
-			--	portal_sickness.on_use_portal(name)
-			--	return func(...)
-			--end
-			preload_tp.preload_and_teleport(name, target_pos, 32, nil, func, name, false)
-      --if func then func(name) end
+			preload_tp.execute({
+				player_name = name,
+				target_position = target_pos,
+				emerge_radius = 32,
+				post_teleport_callback = func,
+				callback_param = name,
+				send_blocks = true,
+				particle_effects = true,
+			})
     else
       minetest.chat_send_player(name, "# Server: Unable to accurately triangulate beacon position! Aborted.")
 			easyvend.sound_error(name)

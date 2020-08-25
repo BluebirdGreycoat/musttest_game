@@ -209,30 +209,37 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
 
 	-- Teleport player to chosen location.
-	preload_tp.preload_and_teleport(pname, pos, 16, function()
-		-- Kill players standing on target teleport pad.
-		teleports.kill_players_at_pos(teleport_pos, pname)
+	preload_tp.execute({
+		player_name = pname,
+		target_position = pos,
+		send_blocks = true,
+		particle_effects = true,
 
-		-- Delete 3x3x3 area above teleport.
-		for x=minp.x, maxp.x do
-			for y=minp.y, maxp.y do
-				for z=minp.z, maxp.z do
-					local pos = {x=x, y=y, z=z}
-					local node = minetest.get_node(pos)
-					if node.name ~= "ignore" then
-						-- Do not destroy players' bones.
-						if node.name ~= "air" and node.name ~= "bones:bones" then
-							minetest.add_node(pos, {name="fire:basic_flame"})
+		pre_teleport_callback = function()
+			-- Kill players standing on target teleport pad.
+			teleports.kill_players_at_pos(teleport_pos, pname)
+
+			-- Delete 3x3x3 area above teleport.
+			for x=minp.x, maxp.x do
+				for y=minp.y, maxp.y do
+					for z=minp.z, maxp.z do
+						local pos = {x=x, y=y, z=z}
+						local node = minetest.get_node(pos)
+						if node.name ~= "ignore" then
+							-- Do not destroy players' bones.
+							if node.name ~= "air" and node.name ~= "bones:bones" then
+								minetest.add_node(pos, {name="fire:basic_flame"})
+							end
 						end
 					end
 				end
 			end
-		end
-	end,
-	function()
-		portal_sickness.on_use_portal(pname)
-	end,
-	nil, false)
+		end,
+
+		post_teleport_callback = function()
+			portal_sickness.on_use_portal(pname)
+		end,
+	})
 
 	teleports.ping_all_teleports()
 end

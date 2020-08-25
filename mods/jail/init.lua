@@ -22,6 +22,7 @@ function jail.on_player_escaped_jail(pref)
 	local jp = jailposition(pref)
 	default.detach_player_if_attached(pref) -- Otherwise teleport could fail.
 	local pname = pref:get_player_name()
+
 	local cb = function(pname)
 		local pref = minetest.get_player_by_name(pname)
 		if pref then
@@ -30,7 +31,17 @@ function jail.on_player_escaped_jail(pref)
 			pref:set_hp(pref:get_hp() - 1)
 		end
 	end
-	preload_tp.preload_and_teleport(pname, jp, 8, nil, cb, pname, true)
+
+	preload_tp.execute({
+		player_name = pname,
+		target_position = jp,
+		emerge_radius = 8,
+		post_teleport_callback = cb,
+		callback_param = pname,
+		force_teleport = true,
+		send_blocks = false,
+		particle_effects = false,
+	})
 end
 
 function jail.is_player_in_jail(pref)
@@ -76,7 +87,16 @@ function jail.go_to_jail(player, bcb)
 	end
 
 	local jailpos = jailposition(player)
-	preload_tp.preload_and_teleport(pname, jailpos, 32, nil, fwrap, nil, true)
+
+	preload_tp.execute({
+		player_name = pname,
+		target_position = jailpos,
+		emerge_radius = 32,
+		post_teleport_callback = fwrap,
+		force_teleport = true,
+		send_blocks = true,
+		particle_effects = true,
+	})
 end
 
 function jail.notify_sent_to_jail(pref)

@@ -88,20 +88,26 @@ jaunt.on_receive_fields = function(player, formname, fields)
 									chat_core.alert_player_sound(target)
 
 									-- Teleport player to chosen location.
-									preload_tp.preload_and_teleport(pname, tarpos, 16,
-									-- Pre-teleport callback.
-									function()
-										-- Abort teleport if target player cloaked themselves.
-										if cloaking.is_cloaked(target) then
-											minetest.chat_send_player(pname, "# Server: Lost link to target beacon.")
-											return true -- Abort transport.
-										end
-									end,
-									-- Post-teleport callback.
-									function()
-										portal_sickness.on_use_portal(pname)
-									end,
-									nil, false)
+									preload_tp.execute({
+										player_name = pname,
+										target_position = tarpos,
+										send_blocks = true,
+										particle_effects = true,
+
+										-- Pre-teleport callback.
+										pre_teleport_callback = function()
+											-- Abort teleport if target player cloaked themselves.
+											if cloaking.is_cloaked(target) then
+												minetest.chat_send_player(pname, "# Server: Lost link to target beacon.")
+												return true -- Abort transport.
+											end
+										end,
+
+										-- Post-teleport callback.
+										post_teleport_callback = function()
+											portal_sickness.on_use_portal(pname)
+										end,
+									})
 
 									-- don't reshow the formspec
 									minetest.close_formspec(pname, "jaunt:fs")

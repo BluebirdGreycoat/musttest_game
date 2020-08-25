@@ -110,7 +110,14 @@ function pm.teleport_player_to_prior_location(target)
 		local positions = ap.get_position_list(pname)
 		if #positions > 0 then
 			local tpos = positions[1].pos
-			preload_tp.preload_and_teleport(pname, tpos, 8, nil, nil, nil, true)
+			preload_tp.execute({
+				player_name = pname,
+				target_position = tpos,
+				emerge_radius = 8,
+				force_teleport = true,
+				send_blocks = false, -- Player's client probably already has them loaded.
+				particle_effects = true,
+			})
 		end
 	end
 end

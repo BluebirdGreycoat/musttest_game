@@ -1,6 +1,7 @@
 
 exile = exile or {}
 exile.modpath = minetest.get_modpath("exile")
+exile.eviction_notices = exile.eviction_notices or {}
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -76,9 +77,17 @@ local function move_player_to_exile(pname, target)
 					if d1.walkable and not d2.walkable and not d3.walkable then
 						--minetest.chat_send_player("MustTest", 'found ground')
 						pos.y = orig_y + y
+
 						local post_cb = function(param)
+							-- Report publicly, while avoiding chat spam.
 							local pname = param.pname
-							minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
+							if not exile.eviction_notices[pname] then
+								minetest.chat_send_all("# Server: Law enforcement evicted <" .. rename.gpn(pname) .. "> from town.")
+								exile.eviction_notices[pname] = true
+								minetest.after(60, function()
+									exile.eviction_notices[pname] = nil
+								end)
+							end
 						end
 
 						-- Wrapped in minetest.after() to avoid *potential* callstack issues.

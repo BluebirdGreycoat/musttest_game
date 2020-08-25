@@ -115,42 +115,44 @@ end
 
 
 
-local jail_data = {
-	name = "Colony Jail",
-	codename = "jail:jail",
-	position = jailposition,
-	min_dist = 30,
-}
+if not jail.registered then
+	local c = "jail:core"
+	local f = jail.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
 
+	local jail_data = {
+		name = "Colony Jail",
+		codename = "jail:jail",
+		position = jailposition,
+		min_dist = 30,
+	}
 
-
-jail_data.on_success = function(name)
-	local pref = minetest.get_player_by_name(name)
-	if pref then
-		jail.notify_sent_to_jail(pref)
-		local dname = rename.gpn(name)
-		minetest.chat_send_all("# Server: <" .. dname .. "> sent to jail for no particular reason.")
+	jail_data.on_success = function(name)
+		local pref = minetest.get_player_by_name(name)
+		if pref then
+			jail.notify_sent_to_jail(pref)
+			local dname = rename.gpn(name)
+			minetest.chat_send_all("# Server: <" .. dname .. "> sent to jail for no particular reason.")
+		end
 	end
+
+	jail_data.suppress = function(name)
+			local player = minetest.get_player_by_name(name)
+			if player and player:is_player() then
+					if vector_distance(player:getpos(), jail_data.position(player)) < jail_data.min_dist then
+							minetest.chat_send_player(name, "# Server: Error: security override. Recall is disabled within convict re-education block.")
+							easyvend.sound_error(name)
+							return true -- Too close to jail.
+					end
+			end
+	end
+	jail.suppress = jail_data.suppress
+
+	passport.register_recall(jail_data)
+
+	minetest.register_on_joinplayer(function(pref)
+		minetest.after(5, jail.check_player_in_jail, pref:get_player_name())
+	end)
+
+	jail.registered = true
 end
-
-
-
-jail_data.suppress = function(name)
-    local player = minetest.get_player_by_name(name)
-    if player and player:is_player() then
-        if vector_distance(player:getpos(), jail_data.position(player)) < jail_data.min_dist then
-            minetest.chat_send_player(name, "# Server: Error: security override. Recall is disabled within convict re-education block.")
-						easyvend.sound_error(name)
-            return true -- Too close to jail.
-        end
-    end
-end
-jail.suppress = jail_data.suppress
-
-
-
-passport.register_recall(jail_data)
-
-minetest.register_on_joinplayer(function(pref)
-	minetest.after(5, jail.check_player_in_jail, pref:get_player_name())
-end)

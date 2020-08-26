@@ -28,6 +28,7 @@ local math_random = math.random
 
 dofile(pm.modpath .. "/seek.lua")
 dofile(pm.modpath .. "/action.lua")
+dofile(pm.modpath .. "/spawner.lua")
 
 function pm.target_is_player_or_mob(target)
 	if target:is_player() then
@@ -702,7 +703,18 @@ end
 function pm.spawn_wisp(pos, behavior)
 	pos = vector_round(pos)
 	local node = minetest.get_node(pos)
+
+	local pos_ok = false
 	if node.name == "air" then
+		pos_ok = true
+	else
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef and not ndef.walkable then
+			pos_ok = true
+		end
+	end
+
+	if pos_ok then
 		local ent = minetest.add_entity(pos, "pm:follower")
 		if ent then
 			local luaent = ent:get_luaentity()
@@ -934,6 +946,36 @@ if not pm.registered then
 	}
 
 	minetest.register_entity("pm:follower", entity)
+
+	minetest.register_node("pm:spawner", {
+		drawtype = "airlike",
+		description = "Wisp Spawner (Please Report to Admin)",
+		paramtype = "light",
+		sunlight_propagates = true,
+		walkable = false,
+		pointable = false,
+		groups = {immovable = 1},
+		climbable = false,
+		buildable_to = true,
+		floodable = true,
+		drop = "",
+
+		on_construct = function(...)
+			return pm.on_nodespawner_construct(...)
+		end,
+
+		on_timer = function(...)
+			return pm.on_nodespawner_timer(...)
+		end,
+
+		on_finish_collapse = function(pos, node)
+			minetest.remove_node(pos)
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+    	-- Do nothing.
+  	end,
+	})
 
 	local c = "pm:core"
 	local f = pm.modpath .. "/init.lua"

@@ -208,6 +208,11 @@ do
 		probability = 800,
 		place_on = {"default:desert_sand"},
 
+		-- Called with 'pos', the placement position of the decoration.
+		custom_func = function(...)
+			pm.on_wisp_vent_place(...)
+		end,
+
     y_max = 3760,
     y_min = 3730,
 	})
@@ -253,6 +258,11 @@ do
     radius = 4,
 		probability = 800,
 		place_on = {"default:desert_sand"},
+
+		-- Called with 'pos', the placement position of the decoration.
+		custom_func = function(...)
+			pm.on_wisp_vent_place(...)
+		end,
 
     y_max = 3760,
     y_min = 3730,
@@ -860,6 +870,10 @@ jarkati.generate_realm = function(minp, maxp, seed)
 						deconode.name = v.replace_surface[dpr:next(1, #v.replace_surface)]
 						deconode.param2 = 0
 						set_node(decopos, deconode)
+
+						if v.custom_func then
+							v.custom_func(decopos)
+						end
 					end
 				end
 	    end
@@ -874,10 +888,18 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			deconode.name = v.nodes[dpr:next(1, #v.nodes)]
 			deconode.param2 = v.param2[dpr:next(1, #v.param2)]
 			set_node(decopos, deconode)
+
+			if v.custom_func then
+				v.custom_func(decopos)
+			end
 		elseif v.schematic then
 	    decopos.y = decopos.y + v.place_offset_y
 	    put_schem(decopos, v.schematic, v.rotation, v.replacements, v.force_placement, v.flags)
 	    decopos.y = decopos.y - v.place_offset_y
+
+			if v.custom_func then
+				v.custom_func(decopos)
+			end
 		end
 	end
 

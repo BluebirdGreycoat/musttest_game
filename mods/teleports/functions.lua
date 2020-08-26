@@ -9,6 +9,7 @@ teleports.datafile = minetest.get_worldpath() .. "/teleports.txt"
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
+local vector_add = vector.add
 local math_floor = math.floor
 local math_random = math.random
 
@@ -795,6 +796,12 @@ function teleports.ping_all_teleports()
 		for i, j in ipairs(pp) do
 			if vector_distance(v.pos, j) < 32 then
 				ping(v.pos)
+
+				if math_random(1, 100) == 1 then
+					minetest.after(math_random(1, 5), function()
+						pm.spawn_random_wisp(vector_add(v.pos, {x=0, y=1, z=0}))
+					end)
+				end
 			end
 		end
 	end

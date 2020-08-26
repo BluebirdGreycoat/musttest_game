@@ -5,7 +5,8 @@ anticurse.foul = {
 		"whats", "exact", "exist", "xd", "except", "its", "exha", "exp", "extra", "thats",
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
 		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
-		"excel+ent", "exotic", "extensive", "exces+ive", "exam", "years",
+		"excel+ent", "exotic", "extensive", "exces+ive", "exam", "years", "exit",
+		"drops", "floods",
 	}},
 
 	"h+y+m+e+n+",
@@ -66,7 +67,7 @@ anticurse.foul = {
 		"super", "supper", "shrub", "soon", "sil", "spr", "small", "scary", "slow",
 		"speedy", "she", "simple", "sleep", "sick", "settle", "stress", "stand",
 		"snow", "such", "yass", "fass", "dass", "kasse", "casse", "estas", "school",
-		"sarc", "areas", "seem",
+		"sarc", "areas", "seem", "pleas+e",
   }},
 
 	"d+u+m+b+a+s+",
@@ -77,9 +78,10 @@ anticurse.foul = {
 		"wait", "got", "petits", "itsa", "itsnext", "itsnot", "test",
 		"mt", "at", "itsin", "itsat", "itsjust", "havent", "itsonly",
 		"some", "otit", "itself", "reset", "cant", "frost", "monster",
+		"right", "itsbeen",
 	}},
 
-	{word="b+oo+b+", white={"booby", "boo+boo+"}},
+	{word="b+oo+b+", white={"booby", "boo+boo+", "bamboo"}},
 
   "a+ss+e*h+o+l+e+",
   {word="a+h+o+l+e+s+", white={"sur", "inahole"}},
@@ -90,7 +92,7 @@ anticurse.foul = {
 	}},
   {word="s+e+m+e+n+", white={
 		"basement", "advertisement", "musement", "advisement", "mention", "now",
-		"those", "menace",
+		"those", "menace", "surprise", "enough",
 	}},
 
   -- Is it necessary to ban this word?
@@ -134,7 +136,7 @@ anticurse.foul = {
 		"arsenal", "far", "war", "scarse", "dear", "self", "seem", "bar", "bear",
 		"shears", "semilla", "carser", "server", "quedarse", "near", "sea", "coarse",
 		"charset", "juntarse", "yearseve", "year", "calendar", "disappears", "even",
-		"stars",
+		"stars", "every", "hears",
 	}},
 
 	{word="f+a+g+o+t+", white={"gotcha"}},
@@ -144,7 +146,9 @@ anticurse.foul = {
   "p+ss+y+",
   
   {word="c+o+c+k+", white={"peacock", "cockney", "cockroach"}},
-  {word="w+h+o+r+e+", white={"reach", "read", "really", "remove"}},
+  {word="w+h+o+r+e+", white={
+		"reach", "read", "really", "remove", "record",
+	}},
   
   {word="c+u+m+", white={
 		"accumulat", "acumen", "circum", "cucumber", "cumber", "cumulat",
@@ -154,7 +158,7 @@ anticurse.foul = {
   {word="c+v+m+", white={"mach"}},
 
 	-- Spanish.
-	{word="p+u+t+o+s*", white={"input"}},
+	{word="p+u+t+o+s*", white={"input", "help"}},
 	{word="p+u+t+a+s*", white={
 		"reputation",
 	}},

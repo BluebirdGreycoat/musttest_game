@@ -1,3 +1,12 @@
+[2020/8/26] Quartz in sand Jarkati mineral now reduces player's movement speed, like regular sand.
+[2020/8/25] Added new mineral to Jarkati: quartz ore in sand, to match the 'wisp' theme. Generates only regionally.
+[2020/8/25] Wisps have a very small chance to spawn whenever players use teleports or the cloaking device.
+[2020/8/25] Added wisp nests to Jarkati. Very rare. They spawn at mapgen-time.
+[2020/8/25] Fixed a long-standing bug with teleports, in which an intended feature was actually missing for an entire year!
+[2020/8/25] Cheating players now have Jaunt/Cloak/Big-Hotbar features automatically revoked. (Such players probably cheated the Survival Challenge.)
+[2020/8/24] Known cheaters are now automatically booted out of town by law enforcement if caught tresspassing near other players. Use those city blocks!
+[2020/8/23] Started coding 'exile' mod, for cheaters. Should be fun.
+[2020/8/22] Fixed an exploit allowing cheating players to block the exit gate from the Outback.
 [2020/8/21] Cloak ability: added particle effects.
 [2020/8/16] Fixed sky bugs, added clouds to other realms.
 [2020/8/16] Added new chat-command: 'chkbed'.

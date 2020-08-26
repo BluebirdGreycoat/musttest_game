@@ -121,15 +121,18 @@ passport.compose_formspec = function(pname)
 				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
 				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning ...") .. "]"
 
-	if survivalist.player_beat_cave_challenge(pname) then
-		formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
-	end
+	-- Special abilities are revoked for cheaters.
+	if not sheriff.is_cheater(pname) then
+		if survivalist.player_beat_cave_challenge(pname) then
+			formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
+		end
 
-	if survivalist.player_beat_nether_challenge(pname) then
-		if cloaking.is_cloaked(pname) then
-			formspec = formspec .. "button[3,3.7;2,1;cloak;Uncloak]"
-		else
-			formspec = formspec .. "button[3,3.7;2,1;cloak;Cloak]"
+		if survivalist.player_beat_nether_challenge(pname) then
+			if cloaking.is_cloaked(pname) then
+				formspec = formspec .. "button[3,3.7;2,1;cloak;Uncloak]"
+			else
+				formspec = formspec .. "button[3,3.7;2,1;cloak;Cloak]"
+			end
 		end
 	end
 
@@ -264,6 +267,11 @@ passport.on_receive_fields = function(player, formname, fields)
 			return true
 		end
 		if not survivalist.player_beat_nether_challenge(pname) then
+			return true
+		end
+
+		-- Cloaking ability is revoked for cheaters.
+		if sheriff.is_cheater(pname) then
 			return true
 		end
 

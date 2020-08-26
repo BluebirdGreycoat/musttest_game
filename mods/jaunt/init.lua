@@ -46,6 +46,11 @@ jaunt.on_receive_fields = function(player, formname, fields)
 		return true
 	end
 
+	-- Jaunt ability is revoked for cheaters.
+	if sheriff.is_cheater(pname) then
+		return true
+	end
+
 	if fields.cancel then
     passport.show_formspec(pname)
 		return true

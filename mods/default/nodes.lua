@@ -180,6 +180,7 @@ default:cloud
 
 -- Localize for performance.
 local math_random = math.random
+local vector_add = vector.add
 
 minetest.register_node("default:stone", {
 	description = "Stone",
@@ -884,6 +885,15 @@ minetest.register_node("default:gravel", {
 		}
 	},
 	post_effect_color = {a=255, r=0, g=0, b=0},
+
+	-- Gravel is a component of wisp nests in Jarkati.
+	after_destruct = function(pos, oldnode)
+		local a = vector_add(pos, {x=0, y=1, z=0})
+		local n = minetest.get_node(a)
+		if n.name == "pm:spawner" then
+			minetest.remove_node(a)
+		end
+	end,
 })
 
 minetest.register_node("default:clay", {

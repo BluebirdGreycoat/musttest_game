@@ -2,6 +2,7 @@
 pm = pm or {}
 pm.modpath = minetest.get_modpath("pm")
 pm.sight_range = 30
+pm.nest_range = 15
 
 -- Pathfinder cooldown min/max time.
 pm.pf_cooldown_min = 5
@@ -145,6 +146,20 @@ function pm.follower_spawn_particles(pos, entity)
 	minetest.add_particlespawner(particles)
 end
 
+local overrides = {
+	nest_guard = {
+		-- Wisp is persistent and will not alter behavior.
+		_no_autochose_behavior = true,
+		_no_lifespan_limit = true,
+	},
+
+	nest_worker = {
+		-- Wisp is persistent and will not alter behavior.
+		_no_autochose_behavior = true,
+		_no_lifespan_limit = true,
+	},
+}
+
 -- Create entity at position, if possible.
 function pm.spawn_wisp(pos, behavior)
 	pos = vector_round(pos)
@@ -181,7 +196,15 @@ function pm.spawn_wisp(pos, behavior)
 					luaent._no_sound = true
 				end
 
-				return ent
+				-- Apply overrides if wanted.
+				if overrides[behavior] then
+					local o = overrides[behavior]
+					for k, v in pairs(o) do
+						luaent[k] = v
+					end
+				end
+
+				return ent, luaent
 			else
 				ent:remove()
 			end
@@ -199,9 +222,11 @@ local behaviors = {
 	"communal",
 	"solitary",
 	"guard",
+	"nest_guard",
 	"arsonist",
 	"porter",
 	"pusher",
+	"nest_worker",
 }
 
 function pm.choose_random_behavior(self)
@@ -210,6 +235,10 @@ function pm.choose_random_behavior(self)
 	-- Don't chose a self-destructive behavior by chance.
 	if self._behavior == "boom" then
 		self._behavior = "follower"
+	elseif self._behavior == "nest_guard" then
+		self._behavior = "guard"
+	elseif self._behavior == "nest_worker" then
+		self._behavior = "explorer"
 	end
 end
 
@@ -218,6 +247,10 @@ function pm.spawn_random_wisp(pos)
 	local act = behaviors[math_random(1, #behaviors)]
 	if act == "boom" then
 		act = "follower"
+	elseif act == "nest_guard" then
+		act = "guard"
+	elseif act == "nest_worker" then
+		act = "explorer"
 	end
 	return pm.spawn_wisp(pos, act)
 end
@@ -273,6 +306,40 @@ local interests = {
 		return nil, nil
 	end,
 
+	-- Never chosen at random, can only be deliberately created.
+	nest_guard = function(self, pos)
+		-- Seek target in sight-range of spawn origin, otherwise return to origin.
+		if self._spawn_origin then
+			local origin = minetest.string_to_pos(self._spawn_origin)
+			if origin then
+				if vector_distance(origin, self.object:get_pos()) > pm.nest_range then
+					return origin, nil
+				else
+					-- Within sight range of spawn origin, seek target.
+					return pm.seek_player(self, pos)
+				end
+			end
+		end
+		return nil, nil
+	end,
+
+	-- Never chosen at random, can only be deliberately created.
+	nest_worker = function(self, pos)
+		-- Seek target in sight-range of spawn origin, otherwise return to origin.
+		if self._spawn_origin then
+			local origin = minetest.string_to_pos(self._spawn_origin)
+			if origin then
+				if vector_distance(origin, self.object:get_pos()) > pm.sight_range then
+					return origin, nil
+				else
+					-- Within sight range of spawn origin, seek target.
+					return pm.seek_flora(self, pos)
+				end
+			end
+		end
+		return nil, nil
+	end,
+
 	arsonist = function(self, pos)
 		local target = pm.seek_flammable_node(self, pos)
 		if not target then
@@ -314,6 +381,18 @@ local actions = {
 			local origin = minetest.string_to_pos(self._spawn_origin)
 			if origin then
 				if vector_distance(origin, self.object:get_pos()) < pm.sight_range then
+					pm.hurt_nearby_player_or_mob_not_wisp(self)
+				end
+			end
+		end
+	end,
+
+	nest_guard = function(self, pos, target)
+		-- Attack target, but only if in sight-range of spawn origin.
+		if self._spawn_origin then
+			local origin = minetest.string_to_pos(self._spawn_origin)
+			if origin then
+				if vector_distance(origin, self.object:get_pos()) < pm.nest_range then
 					pm.hurt_nearby_player_or_mob_not_wisp(self)
 				end
 			end

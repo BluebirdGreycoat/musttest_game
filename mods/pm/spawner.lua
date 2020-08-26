@@ -10,7 +10,7 @@ local quartz_node = {name="pm:quartz_ore"}
 
 function pm.on_nodespawner_construct(pos)
 	local timer = minetest.get_node_timer(pos)
-	timer:start(5.0)
+	timer:start(math_random(100, 500)/100)
 end
 
 function pm.on_nodespawner_destruct(pos)
@@ -26,7 +26,19 @@ function pm.on_nodespawner_timer(pos, elapsed)
 	local n = get_node(pos)
 	pos.y = pos.y + 1
 	if n.name == "default:gravel" then
-		pm.spawn_random_wisp(pos)
+		-- Storing a metadata cookie ensures we only build the nest once, even if
+		-- this timer function is called again.
+		local meta = minetest.get_meta(pos)
+		if meta:get_int("nest_built") ~= 1 then
+			pm.spawn_wisp(pos, "nest_guard")
+			pm.spawn_wisp(pos, "nest_worker")
+			meta:set_int("nest_built", 1)
+		end
+
+		-- Keep calling this timer function.
+		-- This allows us to add extra behavior later.
+		local timer = minetest.get_node_timer(pos)
+		timer:start(10.0)
 	else
 		remove_node(pos)
 	end

@@ -57,10 +57,12 @@ function pm.follower_on_step(self, dtime, moveresult)
 		self.object:remove()
 		return
 	end
-	self._lifetime = self._lifetime - dtime
-	if self._lifetime < 0 then
-		self.object:remove()
-		return
+	if not self._no_lifespan_limit then
+		self._lifetime = self._lifetime - dtime
+		if self._lifetime < 0 then
+			self.object:remove()
+			return
+		end
 	end
 
 	-- Cooldown timer for the pathfinder, since using it is intensive.
@@ -90,11 +92,13 @@ function pm.follower_on_step(self, dtime, moveresult)
 	end
 
 	-- Entity changes its behavior every so often.
-	if not self._behavior_timer or self._behavior_timer < 0 then
-		self._behavior_timer = math_random(1, 20)*60
-		pm.choose_random_behavior(self)
+	if not self._no_autochose_behavior then
+		if not self._behavior_timer or self._behavior_timer < 0 then
+			self._behavior_timer = math_random(1, 20)*60
+			pm.choose_random_behavior(self)
+		end
+		self._behavior_timer = self._behavior_timer - dtime
 	end
-	self._behavior_timer = self._behavior_timer - dtime
 
 	-- Entities sometimes get stuck against objects.
 	-- Unstick them by rounding their positions to the nearest air node.

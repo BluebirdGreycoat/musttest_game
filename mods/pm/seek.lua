@@ -166,6 +166,27 @@ function pm.seek_node_with_meta(self, pos)
 	return nil, nil
 end
 
+function pm.seek_flora(self, pos)
+	local minp = vector.add(pos, {x=-16, y=-8, z=-16})
+	local maxp = vector.add(pos, {x=16, y=8, z=16})
+
+	local positions = minetest.find_nodes_in_area(minp, maxp, "group:flora")
+
+	if positions then
+		if #positions > 0 then
+			local pos = positions[math_random(1, #positions)]
+			local minp = vector.add(pos, {x=-1, y=-1, z=-1})
+			local maxp = vector.add(pos, {x=1, y=1, z=1})
+			local airs = minetest.find_nodes_in_area(minp, maxp, "air")
+			if airs and #airs > 0 then
+				return airs[math_random(1, #airs)], nil
+			end
+		end
+	end
+
+	return nil, nil
+end
+
 function pm.seek_wisp(self, pos)
 	local all = pm.get_nearby_objects(self, pos, pm.sight_range)
 

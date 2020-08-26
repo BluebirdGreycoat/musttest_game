@@ -964,6 +964,10 @@ if not pm.registered then
 			return pm.on_nodespawner_construct(...)
 		end,
 
+		on_destruct = function(...)
+			return pm.on_nodespawner_destruct(...)
+		end,
+
 		on_timer = function(...)
 			return pm.on_nodespawner_timer(...)
 		end,

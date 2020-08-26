@@ -157,6 +157,11 @@ local hp_bar = {
 			self.cbreath = breath
 		end
 	end,
+
+	on_blast = function(self, damage)
+		-- No damage (punching), no knockback, no drops.
+		return false, false, {}
+	end,
 }
 
 minetest.register_entity("gauges:hp_bar", hp_bar)

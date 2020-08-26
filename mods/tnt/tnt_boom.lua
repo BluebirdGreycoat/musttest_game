@@ -237,6 +237,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 					obj:setvelocity(calc_velocity(pos, obj_pos,
 							obj_vel, radius * 10))
 				end
+
 				if do_damage then
 					if not obj:get_armor_groups().immortal then
 						obj:punch(obj, 1.0, {
@@ -245,6 +246,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 						}, nil)
 					end
 				end
+
 				for _, item in ipairs(entity_drops) do
 					add_drop(drops, item)
 				end

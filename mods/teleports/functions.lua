@@ -143,7 +143,7 @@ end
 
 
 
-teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
+teleports.teleport_player = function(player, origin_pos, teleport_pos)
 	if not player or not player:is_player() then
 		return
 	end
@@ -165,11 +165,11 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	-- Small chance to be teleported somewhere completely random.
 	-- The chance increases a LOT if teleports are crowded.
 	local use_random = false
-	local random_chance = 500 -- Actually 470, because nearby-count is always at least 1 (counting self).
+	local random_chance = 1000 -- Actually 970, because nearby-count is always at least 1 (counting self).
 	local count_nearby = 0
 
 	for k, v in ipairs(teleports.teleports) do
-		if vector_distance(v.pos, origin_pos) < 50 then
+		if vector_distance(v.pos, origin_pos) < 100 then
 			count_nearby = count_nearby + 1
 		end
 	end
@@ -180,6 +180,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 		random_chance = 10
 	end
 
+	--minetest.chat_send_all('chance: ' .. random_chance)
 	if math_random(1, random_chance) == 1 then
 		if #(teleports.teleports) > 0 then
 			local tp = teleports.teleports[math_random(1, #(teleports.teleports))]
@@ -195,6 +196,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 	local p = vector_round(teleport_pos)
 	local minp = {x=p.x-1, y=p.y+1, z=p.z-1}
 	local maxp = {x=p.x+1, y=p.y+3, z=p.z+1}
+	local target = {x=p.x-1+math_random(0, 2), y=p.y+1, z=p.z-1+math_random(0, 2)}
 	local pos = vector_round(target)
 
 	-- Perform this check only if teleport target wasn't randomized.
@@ -239,6 +241,14 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, target)
 
 		post_teleport_callback = function()
 			portal_sickness.on_use_portal(pname)
+
+			if use_random then
+				minetest.after(10, function()
+					local RED = core.get_color_escape_sequence("#ff0000")
+					minetest.chat_send_player(pname, RED .. "# Server: Coordinate translation error. Unknown destination!")
+					chat_core.alert_player_sound(pname)
+				end)
+			end
 		end,
 	})
 
@@ -669,8 +679,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
           
           if have_biofuel or admin or isnyan or infinite_fuel then
             local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
-            local spawn_pos = {x=teleport_pos.x-1+math_random(0, 2), y=teleport_pos.y+1, z=teleport_pos.z-1+math_random(0, 2)}
-            teleports.teleport_player(player, pos, teleport_pos, spawn_pos)
+            teleports.teleport_player(player, pos, teleport_pos)
           end
         end
     end

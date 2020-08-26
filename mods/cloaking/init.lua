@@ -5,6 +5,23 @@ cloaking = cloaking or {}
 cloaking.modpath = minetest.get_modpath("cloaking")
 cloaking.players = cloaking.players or {}
 
+-- Localize for speed.
+local math_random = math.random
+local vector_round = vector.round
+local vector_add = vector.add
+
+function cloaking.spawn_wisp(pos)
+	local minp = vector_add(pos, -5)
+	local maxp = vector_add(pos, 5)
+
+	local positions = minetest.find_nodes_in_area(minp, maxp, "air")
+
+	if #positions > 0 then
+		local p = positions[math_random(1, #positions)]
+		pm.spawn_random_wisp(p)
+	end
+end
+
 function cloaking.particle_effect(pos)
 	local particles = {
 		amount = 100,
@@ -97,6 +114,11 @@ function cloaking.do_scan(pname)
 			-- There will always be at least one player (themselves).
 			if player_count > 1 or mob_count > 0 then
 				cloaking.toggle_cloak(pname)
+			end
+
+			-- Randomly sometimes spawn wisps.
+			if math_random(1, 1000) == 1 then
+				cloaking.spawn_wisp(vector_round(pos))
 			end
 		end
 	end

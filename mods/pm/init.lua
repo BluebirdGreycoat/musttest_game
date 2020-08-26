@@ -981,6 +981,15 @@ if not pm.registered then
   	end,
 	})
 
+	minetest.register_node("pm:quartz_ore", {
+		description = "Quartz Crystals In Sand",
+		tiles = {"default_desert_sand.png^quartz_ore.png"},
+		groups = utility.dig_groups("mineral"),
+		drop = 'quartz:quartz_crystal',
+		sounds = default.node_sound_stone_defaults(),
+		silverpick_drop = true,
+	})
+
 	local c = "pm:core"
 	local f = pm.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

@@ -6,7 +6,7 @@ local get_node = minetest.get_node
 local remove_node = minetest.remove_node
 local math_random = math.random
 local spawner_node = {name="pm:spawner"}
-local quartz_node = {name="quartz:block"}
+local quartz_node = {name="pm:quartz_ore"}
 
 function pm.on_nodespawner_construct(pos)
 	local timer = minetest.get_node_timer(pos)

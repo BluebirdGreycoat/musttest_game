@@ -513,6 +513,7 @@ if not pm.registered then
 		drop = 'quartz:quartz_crystal',
 		sounds = default.node_sound_stone_defaults(),
 		silverpick_drop = true,
+		movement_speed_multiplier = default.SLOW_SPEED,
 
 		after_destruct = function(pos, oldnode)
 			if math_random(1, 500) == 1 then

@@ -11,7 +11,9 @@ anticurse.foul = {
 
 	"h+y+m+e+n+",
 
-	"s+%d+x+",
+	{word="s+%d+x+", white={
+		"drops",
+	}},
   
   {word="b+i*t+c+h+", white={"cheap", "doubt", "check", "childish", "chaotic"}},
 

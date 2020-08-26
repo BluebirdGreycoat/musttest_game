@@ -6,6 +6,7 @@ local get_node = minetest.get_node
 local remove_node = minetest.remove_node
 local math_random = math.random
 local spawner_node = {name="pm:spawner"}
+local quartz_node = {name="quartz:block"}
 
 function pm.on_nodespawner_construct(pos)
 	local timer = minetest.get_node_timer(pos)
@@ -45,6 +46,8 @@ function pm.on_wisp_vent_place(pos)
 			local p = positions[i]
 			p.y = p.y + 1
 			set_node(p, spawner_node)
+			p.y = p.y - 2
+			set_node(p, quartz_node)
 		end
 	end
 end

@@ -25,7 +25,7 @@ anticurse.foul = {
   {word="f+u+c*k+", white={"keep", "know", "could"}},
   {word="f+u+c+k*", white={
 		"can", "claim", "come", "came", "uclid", "could", "custom", "grief",
-		"cheat",
+		"cheat", "confucius",
 	}},
 
 	"f+u+q+",
@@ -122,7 +122,7 @@ anticurse.foul = {
 		"spanish", "then", "cash", "finish", "hit+ing", "was", "accomplish", "push",
 		"wish", "bugs", "has", "trash", "crash", "his", "stash", "gosh", "does",
 		"says", "too", "bombs", "mobs", "rush", "bush", "unless", "yesh", "the", "there",
-		"smash", "english", "ar+ows", "dash", "ithink",
+		"smash", "english", "ar+ows", "dash", "ithink", "refresh", "enemys", "enemies",
 	}},
 
 	"s+c+h+i+t+",

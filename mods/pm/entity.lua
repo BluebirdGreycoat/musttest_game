@@ -286,7 +286,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 					-- The shorter the apparent distance between these 2 points, the farther
 					-- we can afford to look around.
 					local d = vector_distance(a1, a2)
-					local r = math_max(1, math_floor(pm.sight_range - d))
+					local r = math_max(10, math_floor(pm.sight_range - d))
 
 					pm.debug_chat("trying to find path")
 					self._path = minetest.find_path(a1, a2, r, 1, 1, "A*_noprefetch")

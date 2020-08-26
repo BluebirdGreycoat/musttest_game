@@ -69,7 +69,7 @@ anticurse.foul = {
 		"super", "supper", "shrub", "soon", "sil", "spr", "small", "scary", "slow",
 		"speedy", "she", "simple", "sleep", "sick", "settle", "stress", "stand",
 		"snow", "such", "yass", "fass", "dass", "kasse", "casse", "estas", "school",
-		"sarc", "areas", "seem", "pleas+e",
+		"sarc", "areas", "seem", "pleas+e", "say",
   }},
 
 	"d+u+m+b+a+s+",
@@ -111,7 +111,7 @@ anticurse.foul = {
   {word="d+i*c+k+", white={"dickens"}},
 	{word="d+i+k+", white={
 		"and", "know", "should", "kill", "would", "keep", "medikit", "knew", "xd",
-		"traveled", "word",
+		"traveled", "word", "kalite", "found",
 	}},
   
   --"p+e+r+v+e+r+t+",

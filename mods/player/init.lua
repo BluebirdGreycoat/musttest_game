@@ -104,7 +104,8 @@ end
 
 -- Update appearance when the player joins
 minetest.register_on_joinplayer(function(player)
-	default.player_attached[player:get_player_name()] = false
+	local pname = player:get_player_name()
+	default.player_attached[pname] = false
 	--default.player_set_model(player, "character_musttest.b3d")
 	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
 	
@@ -113,8 +114,9 @@ minetest.register_on_joinplayer(function(player)
 	--if not minetest.setting_getbool("creative_mode") then
 	--	player:set_inventory_formspec(default.formspec.get_default_form())
 	--end
-	
-  if minetest.check_player_privs(player, {big_hotbar=true}) then
+
+	-- Big hot-bar is revoked for cheaters.
+  if minetest.check_player_privs(player, {big_hotbar=true}) and not sheriff.is_cheater(pname) then
     player:hud_set_hotbar_image("gui_hotbar2.png")
     player:hud_set_hotbar_itemcount(16)
   else

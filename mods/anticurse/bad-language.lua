@@ -5,7 +5,7 @@ anticurse.foul = {
 		"whats", "exact", "exist", "xd", "except", "its", "exha", "exp", "extra", "thats",
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
 		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
-		"excel+ent", "exotic", "extensive", "exces+ive",
+		"excel+ent", "exotic", "extensive", "exces+ive", "exam", "years",
 	}},
 
 	"h+y+m+e+n+",
@@ -20,7 +20,10 @@ anticurse.foul = {
   
   -- It's generally pretty easy to check for this naughty word.
   {word="f+u+c*k+", white={"keep", "know", "could"}},
-  {word="f+u+c+k*", white={"can", "claim", "come", "came", "uclid", "could", "custom"}},
+  {word="f+u+c+k*", white={
+		"can", "claim", "come", "came", "uclid", "could", "custom", "grief",
+		"cheat",
+	}},
 
 	"f+u+q+",
 	"f+v+q+",
@@ -73,7 +76,7 @@ anticurse.foul = {
 	{word="t+i+t+s+", white={
 		"wait", "got", "petits", "itsa", "itsnext", "itsnot", "test",
 		"mt", "at", "itsin", "itsat", "itsjust", "havent", "itsonly",
-		"some", "otit", "itself", "reset",
+		"some", "otit", "itself", "reset", "cant", "frost", "monster",
 	}},
 
 	{word="b+oo+b+", white={"booby", "boo+boo+"}},
@@ -87,6 +90,7 @@ anticurse.foul = {
 	}},
   {word="s+e+m+e+n+", white={
 		"basement", "advertisement", "musement", "advisement", "mention", "now",
+		"those", "menace",
 	}},
 
   -- Is it necessary to ban this word?
@@ -103,6 +107,7 @@ anticurse.foul = {
   {word="d+i*c+k+", white={"dickens"}},
 	{word="d+i+k+", white={
 		"and", "know", "should", "kill", "would", "keep", "medikit", "knew", "xd",
+		"traveled", "word",
 	}},
   
   --"p+e+r+v+e+r+t+",
@@ -128,7 +133,8 @@ anticurse.foul = {
 		"darsela", "similar", "parse", "setup", "hoarse", "sparse", "rehearse",
 		"arsenal", "far", "war", "scarse", "dear", "self", "seem", "bar", "bear",
 		"shears", "semilla", "carser", "server", "quedarse", "near", "sea", "coarse",
-		"charset", "juntarse", "yearseve", "year", "calendar",
+		"charset", "juntarse", "yearseve", "year", "calendar", "disappears", "even",
+		"stars",
 	}},
 
 	{word="f+a+g+o+t+", white={"gotcha"}},
@@ -138,7 +144,7 @@ anticurse.foul = {
   "p+ss+y+",
   
   {word="c+o+c+k+", white={"peacock", "cockney", "cockroach"}},
-  {word="w+h+o+r+e+", white={"reach", "read", "really"}},
+  {word="w+h+o+r+e+", white={"reach", "read", "really", "remove"}},
   
   {word="c+u+m+", white={
 		"accumulat", "acumen", "circum", "cucumber", "cumber", "cumulat",

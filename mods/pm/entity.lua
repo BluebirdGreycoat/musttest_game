@@ -125,7 +125,7 @@ function pm.follower_on_step(self, dtime, moveresult)
 	if self._path and #(self._path) > 0 then
 		local p = self._path[1]
 		-- Remove waypoint from path if we've reached it.
-		if vector_distance(p, self.object:get_pos()) < 0.5 then
+		if vector_distance(p, self.object:get_pos()) < 0.75 then
 			pm.debug_chat('hit waypoint')
 			self._stuck_timer = 2
 			table.remove(self._path, 1)

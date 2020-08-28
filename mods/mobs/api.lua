@@ -473,6 +473,7 @@ local function player_killed_mob(self, player)
 			else
 				name = "explorer"
 			end
+			replace = replace .. name
 		else
 			replace = replace .. "<" .. rename.gpn(pname) .. ">"
 		end

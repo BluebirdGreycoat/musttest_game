@@ -346,48 +346,48 @@ local pain_words = {
 }
 
 local murder_messages = {
-	"<n> <v> collapsed from <an_angry_k><k>'s <angry>attack.",
-	"<an_angry_k><k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
-	"<an_angry_k><k> <brutally><slew> <n> <v> with great prejudice.",
-	"<n> <v> died from <an_angry_k><k>'s horrid slaying.",
-	"<n> <v> fell prey to <an_angry_k><k>'s deadly <w>.",
-	"<an_angry_k><k> went out of <k_his> way to <slay> <n> <v> with <k_his> <w>.",
-	"<n> <v> danced <v_himself> to death under <an_angry_k><k>'s craftily wielded <w>.",
-	"<an_angry_k><k> used <k_his> <w> to <slay> <n> <v> with prejudice.",
-	"<an_angry_k><k> made a splortching sound with <n> <v>'s head.",
-	"<n> <v> was <slain> by <an_angry_k><k>'s skillfully handled <w>.",
-	"<n> <v> became prey for <an_angry_k><k>.",
-	"<n> <v> didn't get out of <an_angry_k><k>'s way in time.",
-	"<n> <v> SAW <an_angry_k><k> coming with <k_his> <w>. Didn't get away in time.",
-	"<n> <v> made no real attempt to get out of <an_angry_k><k>'s way.",
-	"<an_angry_k><k> barreled through <n> <v> as if <v_he> wasn't there.",
-	"<an_angry_k><k> sent <n> <v> to that place where kindling wood isn't needed.",
-	"<n> <v> didn't suspect that <an_angry_k><k> meant <v_him> any <pain>.",
-	"<n> <v> fought <an_angry_k><k> to the death and lost painfully.",
-	"<n> <v> knew <an_angry_k><k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
-	"<an_angry_k><k> <brutally>clonked <n> <v> over the head using <k_his> <w> with silent skill.",
-	"<an_angry_k><k> made sure <n> <v> didn't see that coming!",
-	"<an_angry_k><k> has decided <k_his> favorite weapon is <k_his> <w>.",
-	"<n> <v> did the mad hatter dance just before being <slain> with <an_angry_k><k>'s <w>.",
-	"<n> <v> played the victim to <an_angry_k><k>'s bully behavior!",
-	"<an_angry_k><k> used <n> <v> for weapons practice with <k_his> <w>.",
-	"<n> <v> failed to avoid <an_angry_k><k>'s oncoming weapon.",
-	"<an_angry_k><k> successfully got <n> <v> to complain of a headache.",
-	"<n> <v> got <v_himself> some serious hurt from <an_angry_k><k>'s <w>.",
-	"Trying to talk peace to <an_angry_k><k> didn't win any for <n> <v>.",
-	"<n> <v> was <brutally><slain> by <an_angry_k><k>'s <w>.",
-	"<n> <v> jumped the mad-hatter dance under <an_angry_k><k>'s <w>.",
-	"<n> <v> got <v_himself> a fatal mauling by <an_angry_k><k>'s <w>.",
-	"<an_angry_k><k> <brutally><slew> <n> <v> with <k_his> <w>.",
-	"<an_angry_k><k> split <n> <v>'s wig.",
-	"<an_angry_k><k> took revenge on <n> <v>.",
-	"<an_angry_k><k> <brutally><slew> <n> <v>.",
+	"<n> <v> collapsed from <an_angry_k>'s <angry>attack.",
+	"<an_angry_k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
+	"<an_angry_k> <brutally><slew> <n> <v> with great prejudice.",
+	"<n> <v> died from <an_angry_k>'s horrid slaying.",
+	"<n> <v> fell prey to <an_angry_k>'s deadly <w>.",
+	"<an_angry_k> went out of <k_his> way to <slay> <n> <v> with <k_his> <w>.",
+	"<n> <v> danced <v_himself> to death under <an_angry_k>'s craftily wielded <w>.",
+	"<an_angry_k> used <k_his> <w> to <slay> <n> <v> with prejudice.",
+	"<an_angry_k> made a splortching sound with <n> <v>'s head.",
+	"<n> <v> was <slain> by <an_angry_k>'s skillfully handled <w>.",
+	"<n> <v> became prey for <an_angry_k>.",
+	"<n> <v> didn't get out of <an_angry_k>'s way in time.",
+	"<n> <v> SAW <an_angry_k> coming with <k_his> <w>. Didn't get away in time.",
+	"<n> <v> made no real attempt to get out of <an_angry_k>'s way.",
+	"<an_angry_k> barreled through <n> <v> as if <v_he> wasn't there.",
+	"<an_angry_k> sent <n> <v> to that place where kindling wood isn't needed.",
+	"<n> <v> didn't suspect that <an_angry_k> meant <v_him> any <pain>.",
+	"<n> <v> fought <an_angry_k> to the death and lost painfully.",
+	"<n> <v> knew <an_angry_k> was wielding <k_his> <w> but didn't guess what <k> meant to do with it.",
+	"<an_angry_k> <brutally>clonked <n> <v> over the head using <k_his> <w> with silent skill.",
+	"<an_angry_k> made sure <n> <v> didn't see that coming!",
+	"<an_angry_k> has decided <k_his> favorite weapon is <k_his> <w>.",
+	"<n> <v> did the mad hatter dance just before being <slain> with <an_angry_k>'s <w>.",
+	"<n> <v> played the victim to <an_angry_k>'s bully behavior!",
+	"<an_angry_k> used <n> <v> for weapons practice with <k_his> <w>.",
+	"<n> <v> failed to avoid <an_angry_k>'s oncoming weapon.",
+	"<an_angry_k> successfully got <n> <v> to complain of a headache.",
+	"<n> <v> got <v_himself> some serious hurt from <an_angry_k>'s <w>.",
+	"Trying to talk peace to <an_angry_k> didn't win any for <n> <v>.",
+	"<n> <v> was <brutally><slain> by <an_angry_k>'s <w>.",
+	"<n> <v> jumped the mad-hatter dance under <an_angry_k>'s <w>.",
+	"<n> <v> got <v_himself> a fatal mauling by <an_angry_k>'s <w>.",
+	"<an_angry_k> <brutally><slew> <n> <v> with <k_his> <w>.",
+	"<an_angry_k> split <n> <v>'s wig.",
+	"<an_angry_k> took revenge on <n> <v>.",
+	"<an_angry_k> <brutally><slew> <n> <v>.",
 	"<n> <v> played dead. Permanently.",
 	"<n> <v> never saw what hit <v_him>.",
-	"<an_angry_k><k> took <n> <v> by surprise.",
+	"<an_angry_k> took <n> <v> by surprise.",
 	"<n> <v> was <brutally><slain>.",
-	"<an_angry_k><k> didn't take any prisoners from <n> <v>.",
-	"<an_angry_k><k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
+	"<an_angry_k> didn't take any prisoners from <n> <v>.",
+	"<an_angry_k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
 	"<n> <v> failed <v_his> weapon checks.",
 }
 
@@ -404,12 +404,6 @@ local function player_killed_mob(self, player)
 
 	local msg = murder_messages[math_random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", mname)
-
-	if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
-		msg = string.gsub(msg, "<k>", "explorer")
-	else
-		msg = string.gsub(msg, "<k>", "<" .. rename.gpn(pname) .. ">")
-	end
 
 	local ksex = skins.get_gender_strings(pname)
 	local vsex = skins.get_random_standard_gender(5) -- 5% female.
@@ -470,6 +464,17 @@ local function player_killed_mob(self, player)
 			end
 
 			replace = an .. " " .. angry .. " "
+		end
+
+		local name = ""
+		if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
+			if replace == "" then
+				name = "an explorer"
+			else
+				name = "explorer"
+			end
+		else
+			replace = replace .. "<" .. rename.gpn(pname) .. ">"
 		end
 
 		msg = string.gsub(msg, "<an_angry_k>", replace)

@@ -46,6 +46,7 @@ end
 function pm.debug_chat(text)
 	-- Comment or uncomment as needed for debugging.
 	--minetest.chat_send_all(text)
+	--minetest.chat_send_player("MustTest", text)
 end
 function pm.debug_path(path)
 	-- Ditto.

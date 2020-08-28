@@ -577,11 +577,13 @@ function commandtools.shovel_on_use(itemstack, user, pt)
 		return
 	end
 
+	--[[
 	local SCHEMATIC_RELP = {x=-4, y=-1, z=-4}
 	local path = basictrees.modpath .. "/schematics/acacia_tree_from_sapling.mts"
 	minetest.place_schematic(vector.add(pt.above, SCHEMATIC_RELP), path, "random", nil, false)
+	--]]
 
-	--[[
+	---[[
 
 	if pt.type ~= "node" then
 		return

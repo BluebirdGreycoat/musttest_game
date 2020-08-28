@@ -39,6 +39,23 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 			fixed = {{-1/4, -1/2, -1/4, 1/4, 1/2, 1/4}},
 		},
 		paramtype = "light",
+		paramtype2 = "facedir",
+		--is_ground_content = false,
+		tiles = { wall_texture },
+		walkable = true,
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+	})
+
+	register_node(":walls:" .. wall_name .. "_noconnect_wide", {
+		description = wall_desc .. " Wide Pillar",
+		drawtype = "nodebox",
+		node_box = {
+			type = "fixed",
+			fixed = {{-0.5, -0.5, -0.25, 0.5, 0.5, 0.25}},
+		},
+		paramtype = "light",
+		paramtype2 = "facedir",
 		is_ground_content = false,
 		tiles = { wall_texture },
 		walkable = true,
@@ -51,6 +68,14 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		recipe = {
 			{'walls:' .. wall_name},
 			{'walls:' .. wall_name},
+		},
+	})
+
+	minetest.register_craft({
+		output = "walls:" .. wall_name .. "_noconnect_wide",
+		recipe = {
+			{'walls:' .. wall_name .. "_noconnect"},
+			{'walls:' .. wall_name .. "_noconnect"},
 		},
 	})
 
@@ -165,6 +190,78 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
+	register_node(":pillars:" .. wall_name .. "_bottom_full", {
+		drawtype = "nodebox",
+		description = wall_desc .. " Wide Pillar Base",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, -0.5, -0.5, 0.5, -0.375, 0.5},
+				{-0.375, -0.375, -0.5, 0.375, -0.125, 0.5},
+				{-0.25, -0.125, -0.5, 0.25, 0.5, 0.5},
+			},
+		},
+	})
+
+	register_node(":pillars:" .. wall_name .. "_bottom_back", {
+		drawtype = "nodebox",
+		description = wall_desc .. " Wide Pillar Base",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, -0.5, -0.5, 0.5, -0.375, 0.5}, -- NodeBox4
+				{-0.5, -0.375, -0.375, 0.5, -0.125, 0.5}, -- NodeBox5
+				{-0.5, -0.125, -0.25, 0.5, 0.5, 0.5}, -- NodeBox6
+			},
+		},
+	})
+
+	register_node(":pillars:" .. wall_name .. "_top_full", {
+		drawtype = "nodebox",
+		description = wall_desc .. " Wide Pillar Top",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, 0.375, -0.5, 0.5, 0.5, 0.5},
+				{-0.5, 0.125, -0.375, 0.5, 0.375, 0.375},
+				{-0.5, -0.5, -0.25, 0.5, 0.5, 0.25},
+			},
+		},
+	})
+
+	register_node(":pillars:" .. wall_name .. "_top_back", {
+		drawtype = "nodebox",
+		description = wall_desc .. " Wide Pillar Top",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, 0.375, -0.5, 0.5, 0.5, 0.5}, -- NodeBox1
+				{-0.5, 0.125, -0.375, 0.5, 0.375, 0.5}, -- NodeBox2
+				{-0.5, -0.5, -0.25, 0.5, 0.125, 0.5}, -- NodeBox3
+			},
+		},
+	})
+
 	minetest.register_craft({
 		output = "pillars:"..wall_name.."_bottom 4",
 		recipe = {
@@ -194,6 +291,16 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		type="shapeless",
 		recipe = {"pillars:"..wall_name.."_top_half", "pillars:"..wall_name.."_top_half"},
 	})
+	minetest.register_craft({
+		output = "pillars:"..wall_name.."_top_full",
+		type="shapeless",
+		recipe = {"pillars:"..wall_name.."_top", "pillars:"..wall_name.."_top_half"},
+	})
+	minetest.register_craft({
+		output = "pillars:"..wall_name.."_top_back",
+		type="shapeless",
+		recipe = {"pillars:"..wall_name.."_top_full", "walls:" .. wall_name},
+	})
 
 	minetest.register_craft({
 		output = "pillars:"..wall_name.."_bottom_half 2",
@@ -205,9 +312,19 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		type="shapeless",
 		recipe = {"pillars:"..wall_name.."_bottom_half", "pillars:"..wall_name.."_bottom_half"},
 	})
+	minetest.register_craft({
+		output = "pillars:"..wall_name.."_bottom_full",
+		type="shapeless",
+		recipe = {"pillars:"..wall_name.."_bottom", "pillars:"..wall_name.."_bottom_half"},
+	})
+	minetest.register_craft({
+		output = "pillars:"..wall_name.."_bottom_back",
+		type="shapeless",
+		recipe = {"pillars:"..wall_name.."_bottom_full", "walls:" .. wall_name},
+	})
 
 	
-	register_node(":murderhole:"..wall_name, {
+	register_node(":murderhole:" .. wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Murder Hole",
 		tiles = { wall_texture },
@@ -226,7 +343,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 	
-	register_node(":machicolation:"..wall_name, {
+	register_node(":machicolation:" .. wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Machicolation",
 		tiles = { wall_texture },

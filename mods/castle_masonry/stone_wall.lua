@@ -36,6 +36,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "shapeless",
+	output = "castle_masonry:stonewall",
+	recipe = { "default:cobble", "darkage:darkdirt"},
+})
+
+minetest.register_craft({
 	output = "castle_masonry:rubble",
 	recipe = {
 		{"castle_masonry:stonewall"},
@@ -46,6 +52,12 @@ minetest.register_craft({
 	type = "shapeless",
 	output = "castle_masonry:rubble 2",
 	recipe = {"default:gravel", "default:dirt"},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "castle_masonry:rubble 2",
+	recipe = {"default:gravel", "darkage:darkdirt"},
 })
 
 minetest.register_node("castle_masonry:stonewall_corner", {

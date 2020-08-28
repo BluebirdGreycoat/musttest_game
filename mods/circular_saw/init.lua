@@ -22,6 +22,7 @@ circular_saw.known_nodes = circular_saw.known_nodes or {}
 -- 1st and 2nd parameters are nodename prefix/postfixes.
 circular_saw.names = {
   {"micro", "_1", 1},
+  {"micro", "_1s", 1},
   {"panel", "_1", 1},
   {"micro", "_2", 1},
   {"panel", "_2", 1},
@@ -37,6 +38,7 @@ circular_saw.names = {
   {"micro", "_15", 4},
   {"panel", "_15", 2},
   {"micro", "_16", 4},
+  {"micro", "_16s", 2},
   {"panel", "_16", 4},
 
   {"stair", "_outer", 5},

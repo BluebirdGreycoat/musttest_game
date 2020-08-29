@@ -80,7 +80,7 @@ anticurse.foul = {
 		"wait", "got", "petits", "itsa", "itsnext", "itsnot", "test",
 		"mt", "at", "itsin", "itsat", "itsjust", "havent", "itsonly",
 		"some", "otit", "itself", "reset", "cant", "frost", "monster",
-		"right", "itsbeen", "itseasier", "itseasy",
+		"right", "itsbeen", "itseasier", "itseasy", "spooky", "shout",
 	}},
 
 	{word="b+oo+b+", white={"booby", "boo+boo+", "bamboo"}},

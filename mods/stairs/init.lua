@@ -500,6 +500,20 @@ local microblocks_defs = {
 		},
 		light=8/64,
 	},
+	["_c"] = {
+		node_box = {
+			type = "fixed",
+			fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25},
+		},
+		light=8/64,
+	},
+	["_1c"] = {
+		node_box = {
+			type = "fixed",
+			fixed = {-0.25, -0.5, -0.25, 0.25, -0.4375, 0.25},
+		},
+		light=1/64,
+	},
 	["_1"] = {
 		node_box = {
 			type = "fixed",

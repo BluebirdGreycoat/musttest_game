@@ -23,6 +23,8 @@ circular_saw.known_nodes = circular_saw.known_nodes or {}
 circular_saw.names = {
   {"micro", "_1", 1},
   {"micro", "_1s", 1},
+  {"micro", "_1c", 1},
+  {"micro", "_c", 1},
   {"panel", "_1", 1},
   {"micro", "_2", 1},
   {"panel", "_2", 1},

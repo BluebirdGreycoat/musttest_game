@@ -1,3 +1,4 @@
+[2020/9/6] Update AC to correct false positives caused by bouncers.
 [2020/9/2] Two more microblock shapes for table saw.
 [2020/8/28] More node shapes: pillars, microblocks. Cheaper castle masonry recipe.
 [2020/8/26] Quartz in sand Jarkati mineral now reduces player's movement speed, like regular sand.

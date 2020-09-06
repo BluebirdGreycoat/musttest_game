@@ -226,6 +226,30 @@ function ac.is_flying(pos)
 	local tb = minetest.find_nodes_in_area(minp, maxp, "air")
 	if #tb >= 27 then
 		-- If all nodes under player are air, then player is not supported.
+		-- However, they could be jumping with help of a bouncer.
+		-- Note: trampolines do not throw player high enough to be a concern.
+		local p = vector_round(pos)
+		local z = p.y
+		local d = p.y - 30
+		local get_node = minetest.get_node
+		for y = z, d, -1 do
+			p.y = y
+			local n = get_node(p).name
+			if n:find("^jumping:") then
+				-- Bouncer underneath. Not flying.
+				return false
+			elseif n ~= "air" and n ~= "ignore" then
+				-- We have found a node that isn't a bouncer.
+				-- If this node is walkable then we found the ground.
+				local ndef = minetest.registered_nodes[n] or {}
+				if ndef.walkable then
+					-- Found walkable node. Probably the ground.
+					return true
+				end
+			end
+		end
+
+		-- Could most likely be flying.
 		return true
 	end
 
@@ -502,6 +526,20 @@ function ac.on_joinplayer(pref)
 
 	-- Schedule check.
 	minetest.after(delay, ac.check_player, pname)
+end
+
+function ac.erase_statistics(pname)
+	local k1 = pname .. ":dirty_sessions"
+	local k2 = pname .. ":last_session_dirty"
+	local k3 = pname .. ":total_suspicion"
+	local k4 = pname .. ":clean_sessions"
+
+	ac.storage:set_int(k1, 0)
+	ac.storage:set_int(k2, 0)
+	ac.storage:set_int(k3, 0)
+	ac.storage:set_int(k4, 0)
+
+	ac.players[pname] = nil
 end
 
 function ac.on_shutdown()

@@ -97,6 +97,9 @@ function sheriff.unregister_cheater(pname)
 		-- Remove from cache.
 		sheriff.players[pname] = nil
 	end
+
+	-- Remove cheat statistics, too.
+	ac.erase_statistics(pname)
 end
 
 -- Can be called by mods to check if player should be punished *this time*.

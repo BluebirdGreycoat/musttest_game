@@ -806,7 +806,7 @@ function teleports.ping_all_teleports()
 			if vector_distance(v.pos, j) < 32 then
 				ping(v.pos)
 
-				if math_random(1, 100) == 1 then
+				if math_random(1, 1000) == 1 then
 					minetest.after(math_random(1, 5), function()
 						pm.spawn_random_wisp(vector_add(v.pos, {x=0, y=1, z=0}))
 					end)

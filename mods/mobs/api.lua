@@ -389,6 +389,7 @@ local murder_messages = {
 	"<an_angry_k> didn't take any prisoners from <n> <v>.",
 	"<an_angry_k> <brutally>pinned <n> <v> to the wall with <k_his> <w>.",
 	"<n> <v> failed <v_his> weapon checks.",
+	"<k> eliminated <n> <v>.",
 }
 
 local message_spam_avoidance = {}

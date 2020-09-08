@@ -481,6 +481,14 @@ local function player_killed_mob(self, player)
 		msg = string.gsub(msg, "<an_angry_k>", replace)
 	end
 
+	if msg:find("<k>") then
+		local replace = "<" .. rename.gpn(pname) .. ">"
+		if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
+			replace = "an explorer"
+		end
+		msg:gsub("<k>", replace)
+	end
+
 	if string.find(msg, "<n>") then
 		local an = "a"
 		if mname:find("^[aeiouAEIOU]") then

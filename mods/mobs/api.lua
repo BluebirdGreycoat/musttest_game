@@ -487,7 +487,7 @@ local function player_killed_mob(self, player)
 		if cloaking.is_cloaked(pname) or player_labels.query_nametag_onoff(pname) == false then
 			replace = "an explorer"
 		end
-		msg:gsub("<k>", replace)
+		msg = msg:gsub("<k>", replace)
 	end
 
 	if string.find(msg, "<n>") then

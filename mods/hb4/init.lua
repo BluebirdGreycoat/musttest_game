@@ -15,7 +15,11 @@ dofile(hb4.modpath .. "/mailall.lua")
 dofile(hb4.modpath .. "/spawn_sanitizer.lua")
 dofile(hb4.modpath .. "/nodeinspector.lua")
 dofile(hb4.modpath .. "/diving_equipment.lua")
-dofile(hb4.modpath .. "/countdown.lua")
+
+-- Server restart countdown not active in singleplayer.
+if not minetest.is_singleplayer() then
+	dofile(hb4.modpath .. "/countdown.lua")
+end
 
 --[[
 	{name="player", step=2, min=1, max=3, msg="He died!", poison=false}

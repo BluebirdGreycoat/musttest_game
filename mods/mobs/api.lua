@@ -551,11 +551,16 @@ local function set_velocity(self, v)
 		return
 	end
 
-	local yaw = (self.object:getyaw() or 0) + (self.rotate or 0)
+	local yaw = (self.object:get_yaw() or 0) + (self.rotate or 0)
+	local vel = self.object:get_velocity()
+	local y = 0
+	if vel then
+		y = vel.y or 0
+	end
 
 	self.object:setvelocity({
 		x = sin(yaw) * -v,
-		y = self.object:getvelocity().y,
+		y = y,
 		z = cos(yaw) * v
 	})
 end

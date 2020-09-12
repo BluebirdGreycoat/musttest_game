@@ -365,9 +365,12 @@ end
 
 
 if not shout.run_once then
-	minetest.after(10, function()
-		minetest.chat_send_all("# Server: Startup complete.")
-	end)
+	-- Post 'startup complete' message only in multiplayer.
+	if not minetest.is_singleplayer() then
+		minetest.after(10, function()
+			minetest.chat_send_all("# Server: Startup complete.")
+		end)
+	end
 
 	minetest.register_chatcommand("shout", {
 		params = "<message>",
@@ -399,18 +402,6 @@ if not shout.run_once then
 		end,
 	})
 
-	-- Start hints. A hint is written into public chat every so often.
-	-- But not too often, or it becomes annoying.
-	minetest.after(math_random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
-
-	local c = "shout:core"
-	local f = shout.modpath .. "/init.lua"
-	reload.register_file(c, f, false)
-
-	shout.run_once = true
-end
-
-if not shout.run_once2 then
 	minetest.register_chatcommand("hint_add", {
 		params = "<message>",
 		description = "Add a hint message to the hint list. Example between quotes: '/hint_add This is a hint message. Another sentance.'",
@@ -421,5 +412,13 @@ if not shout.run_once2 then
 		end,
 	})
 
-	shout.run_once2 = true
+	-- Start hints. A hint is written into public chat every so often.
+	-- But not too often, or it becomes annoying.
+	minetest.after(math_random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
+
+	local c = "shout:core"
+	local f = shout.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	shout.run_once = true
 end

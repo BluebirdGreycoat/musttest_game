@@ -558,6 +558,8 @@ local function set_velocity(self, v)
 		y = vel.y or 0
 	end
 
+	y = max(min(y, 20), -20)
+
 	self.object:setvelocity({
 		x = sin(yaw) * -v,
 		y = y,

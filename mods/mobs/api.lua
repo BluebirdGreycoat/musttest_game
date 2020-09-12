@@ -558,9 +558,13 @@ local function set_velocity(self, v)
 		y = vel.y or 0
 	end
 
-	y = max(min(y, 20), -20)
+	-- Fix crash: 2020-09-12 14:26:15: ERROR[Main]: ServerError: AsyncErr:
+	-- ServerThread::run Lua: Runtime error from mod 'griefer' in callback
+	-- luaentity_Step(): Invalid float vector dimension range 'y' (expected
+	-- -2.14748e+06 < y < 2.14748e+06 got -1.96364e+12).
+	y = max(min(y, 200), -200)
 
-	self.object:setvelocity({
+	self.object:set_velocity({
 		x = sin(yaw) * -v,
 		y = y,
 		z = cos(yaw) * v

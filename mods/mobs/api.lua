@@ -2282,7 +2282,7 @@ local function follow_flop(self)
 				if dist > self.reach
 				and self.order ~= "stand" then
 
-					set_velocity(self, self.walk_velocity)
+					set_velocity(self, self.walk_velocity or 0)
 
 					if self.walk_chance ~= 0 then
 						set_animation(self, "walk")
@@ -2393,7 +2393,7 @@ local function do_states(self, dtime)
 			and random(1, 100) <= self.walk_chance
 			and is_at_cliff(self) == false then
 
-				set_velocity(self, self.walk_velocity)
+				set_velocity(self, self.walk_velocity or 0)
 				self.state = "walk"
 				set_animation(self, "walk")
 
@@ -2445,7 +2445,7 @@ local function do_states(self, dtime)
 					-- look towards land and jump/move in that direction
 					yaw = set_yaw(self, yaw, 6)
 					do_jump(self)
-					set_velocity(self, self.walk_velocity)
+					set_velocity(self, self.walk_velocity or 0)
 				else
 					yaw = yaw + random(-0.5, 0.5)
 				end
@@ -2475,7 +2475,7 @@ local function do_states(self, dtime)
 			self.state = "stand"
 			set_animation(self, "stand")
 		else
-			set_velocity(self, self.walk_velocity)
+			set_velocity(self, self.walk_velocity or 0)
 
 			if flight_check(self)
 			and self.animation
@@ -2500,7 +2500,7 @@ local function do_states(self, dtime)
 			self.state = "stand"
 			set_animation(self, "stand")
 		else
-			set_velocity(self, self.run_velocity)
+			set_velocity(self, self.run_velocity or 0)
 			set_animation(self, "walk")
 		end
 
@@ -2567,7 +2567,7 @@ local function do_states(self, dtime)
 			if self.v_start and (self.stop_to_explode or dist < 1.5) then
 				set_velocity(self, 0)
 			else
-				set_velocity(self, self.run_velocity)
+				set_velocity(self, self.run_velocity or 0)
 			end
 
 			if self.animation and self.animation.run_start then
@@ -2744,12 +2744,12 @@ local function do_states(self, dtime)
 				else
 
 					if self.path.stuck then
-						set_velocity(self, self.walk_velocity)
+						set_velocity(self, self.walk_velocity or 0)
 					else --]]
 						if overunder_waypoint then
 							set_velocity(self, 0.1) ---[[
 						else
-							set_velocity(self, self.run_velocity) ---[[
+							set_velocity(self, self.run_velocity or 0) ---[[
 						end
 					end
 

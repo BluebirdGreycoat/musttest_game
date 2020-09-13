@@ -36,7 +36,7 @@ if not minetest.is_singleplayer() then
 		end
 
 		-- Inform players periodically.
-		minetest.register_on_generated(mapgen.notify_chat)
+		minetest.register_on_generated(notify_chat)
 
 		mapgen.chat_registered = true
 	end

@@ -7,6 +7,8 @@ local math_floor = math.floor
 toolranks = toolranks or {}
 toolranks.modpath = minetest.get_modpath("toolranks")
 toolranks.players = toolranks.players or {}
+toolranks.tools = toolranks.tools or {}
+
 local players = toolranks.players
 if not toolranks.mod_storage then
 	toolranks.mod_storage = minetest.get_mod_storage()
@@ -114,6 +116,21 @@ function toolranks.get_level(uses, max_uses, old_level)
 		lvl = old_level
 	end
 	return lvl
+end
+
+-- API function: allow to get the rank-level of a tool,
+-- (or 0, if the item is not a tool).
+function toolranks.get_tool_level(item)
+	local name = item:get_name()
+	local count = item:get_count()
+
+	if count == 1 and toolranks.tools[name] then
+		local meta = item:get_meta()
+		local rank = tonumber(meta:get_string("tr_lastlevel")) or 1
+		return rank
+	end
+
+	return 0
 end
 
 function toolranks.new_afteruse(itemstack, user, node, digparams)
@@ -240,6 +257,7 @@ end
 if not toolranks.registered then
 	local function override_item(name)
 		--print(name)
+		toolranks.tools[name] = true
 		local itemdef = table.copy(minetest.registered_items[name])
 
 		-- Found out by reading MT sources that these must both be nill'ed.

@@ -20,7 +20,14 @@ function trash.allow_put(inv, listname, index, stack, player)
 		return 0
 	end
 
-	return stack:get_count()
+	local stack_count = stack:get_count()
+
+	-- Do not allow trashing of tools that have gained rank.
+	if toolranks.get_tool_level(stack) > 1 then
+		return 0
+	end
+
+	return stack_count
 end
 
 function trash.on_put(inv, to_list, to_index, stack, player)

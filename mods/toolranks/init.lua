@@ -120,6 +120,7 @@ end
 
 -- API function: allow to get the rank-level of a tool,
 -- (or 0, if the item is not a tool).
+-- The lowest possible (valid) rank is 1.
 function toolranks.get_tool_level(item)
 	local name = item:get_name()
 	local count = item:get_count()

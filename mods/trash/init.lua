@@ -27,6 +27,11 @@ function trash.allow_put(inv, listname, index, stack, player)
 		return 0
 	end
 
+	-- Do not allow trashing of items with engraved names.
+	if engraver.item_has_custom_description(stack) then
+		return 0
+	end
+
 	return stack_count
 end
 

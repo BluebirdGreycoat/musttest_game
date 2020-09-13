@@ -1,4 +1,19 @@
 
+engraver = engraver or {}
+engraver.modpath = minetest.get_modpath("engraver")
+
+-- API function to allow caller to check if an item has a custom description.
+function engraver.item_has_custom_description(item)
+	if item:get_count() ~= 1 then
+		return false
+	end
+
+	local meta = item:get_meta()
+	local en_desc = meta:get_string("en_desc") or ""
+	local ar_desc = meta:get_string("ar_desc") or ""
+	return en_desc ~= "" or ar_desc ~= ""
+end
+
 local function player_wields_tools(user)
 	local chisel_index = user:get_wield_index()
 	local hammer_index = chisel_index + 1

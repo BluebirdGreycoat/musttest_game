@@ -8,6 +8,13 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
+  output = 'dye:white 5',
+  recipe = 'flowers:rose_white',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
   output = 'dye:blue 5',
   recipe = 'flowers:geranium',
   time = 3,

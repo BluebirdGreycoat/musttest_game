@@ -280,6 +280,7 @@ if not flowerpot.loaded then
 		"flowers:geranium",
 		"flowers:chrysanthemum_green",
 		"flowers:rose",
+                "flowers:rose_white",
 		"flowers:tulip",
 		"flowers:tulip_black",
 		"flowers:viola",

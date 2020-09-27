@@ -9,6 +9,8 @@
 -- This line was added by Dresdan.
 -- I'm ganna learn today boys.
 
+-- This is Nakilashiva. I'm ganna lorn too.
+
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")
 ac.wpath = minetest.get_worldpath()

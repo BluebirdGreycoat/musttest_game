@@ -19,6 +19,7 @@ end
 
 local flowers_list = {
 	'flowers:rose',
+        'flowers:rose_white',
 	'flowers:tulip',
 	'flowers:dandelion_yellow',
 	'flowers:chrysanthemum_green',

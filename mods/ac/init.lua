@@ -7,6 +7,7 @@
 -- * trivially open to abuse.
 
 -- This line was added by Dresdan.
+-- I'm ganna learn today boys.
 
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")

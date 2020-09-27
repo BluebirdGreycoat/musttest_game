@@ -6,6 +6,8 @@
 -- * Requires: a reliable way for players to report cheaters that is not
 -- * trivially open to abuse.
 
+-- This line was added by Dresdan.
+
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")
 ac.wpath = minetest.get_worldpath()

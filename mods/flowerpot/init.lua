@@ -292,6 +292,7 @@ if not flowerpot.loaded then
 		"flowers:thistle",
 		"flowers:lazarus",
 		"flowers:mannagrass",
+		"flowers:lupine_blue",
 
 		"nether:glowflower",
 		"nether:grass_dried",

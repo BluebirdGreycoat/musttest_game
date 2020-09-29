@@ -13,6 +13,7 @@ wield3d.location = {
 	["flowers:dandelion_yellow"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:geranium"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:rose"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
+	["flowers:rose_white"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:tulip"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:viola"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["default:shovel_wood"] = {bone, pos, {x=rx, y=135, z=rz}, scale},

@@ -311,6 +311,19 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = "farming:rose_water",
+	recipe = {
+		{"flowers:rose_white", "flowers:rose_white", "flowers:rose_white"},
+		{"flowers:rose_white", "flowers:rose_white", "flowers:rose_white"},
+		{"bucket:bucket_water", "farming:pot", "vessels:glass_bottle"},
+	},
+	replacements = {
+		{"bucket:bucket_water", "bucket:bucket_empty"},
+		{"farming:pot", "farming:pot"},
+	}
+})
+
 minetest.register_node(":farming:scarecrow_bottom", {
 	description = "Scarecrow ... Thing",
 	paramtype = "light",

@@ -10,6 +10,8 @@
 -- I'm ganna learn today boys.
 -- im ganna make flowers
 
+-- This is Nakilashiva. I'm ganna lorn too.
+
 ac = ac or {}
 ac.modpath = minetest.get_modpath("ac")
 ac.wpath = minetest.get_worldpath()

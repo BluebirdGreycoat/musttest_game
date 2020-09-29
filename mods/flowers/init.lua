@@ -217,6 +217,18 @@ if not flowers.registered then
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
 			{color_black = 1, flammable = 1}
 		},
+                {
+			"zinnia_red",
+			"Red Zinnia",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
+			{color_red = 1, flammable = 1}
+		},
+                {
+			"lupine_purple",
+			"Purple Lupine",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{color_violet = 1, flammable = 1}
+		},
 	}
 
 	for _,item in pairs(flowers.datas) do

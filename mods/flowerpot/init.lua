@@ -281,9 +281,11 @@ if not flowerpot.loaded then
 		"flowers:chrysanthemum_green",
 		"flowers:rose",
                 "flowers:rose_white",
+                "flowers:zinnia_red",
 		"flowers:tulip",
 		"flowers:tulip_black",
 		"flowers:viola",
+                "flowers:lupine_purple",
 
 		"flowers:mushroom_brown",
 		"flowers:mushroom_red",

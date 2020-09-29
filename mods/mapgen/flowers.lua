@@ -30,7 +30,7 @@ local flowers_list = {
 	'flowers:dandelion_white',
 	'flowers:tulip_black',
 	"flowers:delphinium",
-	"flowers:lupine_blue",
+	"flowers:lockspur",
 	"flowers:thistle",
 	"flowers:lazarus",
 	"flowers:mannagrass",

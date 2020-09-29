@@ -151,6 +151,7 @@ local flowers = {
 	{"thistle", "Thistle", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_magenta = 1}},
 	{"lazarus", "Lazarus Bell", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_pink = 1}},
 	{"mannagrass", "Reed Mannagrass", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_dark_green = 1}},
+	{"lupine_blue", "Blue Lupine", {-0.15, -0.5, -0.15, 0.15, 0.3, 0.15}, {color_cyan = 1}},
 }
 
 for _,item in pairs(flowers) do
@@ -161,6 +162,13 @@ minetest.register_craft({
   type = "extracting",
   output = 'dye:cyan 5',
   recipe = 'flowers:delphinium',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:cyan 5',
+  recipe = 'flowers:lupine_blue',
   time = 3,
 })
 

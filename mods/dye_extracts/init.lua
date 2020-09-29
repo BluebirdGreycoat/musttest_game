@@ -15,6 +15,13 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
+  output = 'dye:red 5',
+  recipe = 'flowers:zinnia_red',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
   output = 'dye:blue 5',
   recipe = 'flowers:geranium',
   time = 3,
@@ -24,6 +31,13 @@ minetest.register_craft({
   type = "extracting",
   output = 'dye:violet 5',
   recipe = 'flowers:viola',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:violet 5',
+  recipe = 'flowers:lupine_purple',
   time = 3,
 })
 

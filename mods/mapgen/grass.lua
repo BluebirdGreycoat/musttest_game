@@ -26,6 +26,7 @@ local plants = {
 	"tomato:plant_7",
 	"carrot:plant_8",
 	"blueberries:plant_4",
+	"coffee_bush:plant_4",
 	"raspberries:plant_4",
 	"potatoes:potato_4",
 	"onions:allium_sprouts_4",

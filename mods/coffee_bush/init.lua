@@ -80,22 +80,22 @@ function(pos, oldnode, oldmetadata, digger)
     else
       -- Restore bush. Player did not actually dig it up.
       minetest.after(0, function()
-        minetest.set_node(pos, {name="blueberries:plant_2", param2=2})
+        minetest.set_node(pos, {name="coffee_bush:plant_2", param2=2})
         local timer = minetest.get_node_timer(pos)
         timer:start(math_random(300, 700))
       end)
     end
   end
 end
-minetest.register_node("blueberries:plant_2", table.copy(crop_def))
+minetest.register_node("coffee_bush:plant_2", table.copy(crop_def))
 
 crop_def.description = "Coffee Bush with Blossoms"
 crop_def.inventory_image = "coffee_bush3.png"
-crop_def.next_plant = "blueberries:plant_4"
+crop_def.next_plant = "coffee_bush:plant_4"
 crop_def.tiles = {"coffee_bush3.png"}
 minetest.register_node("coffee_bush:plant_3", table.copy(crop_def))
 
-crop_def.description = "Coffee Bush with Blueberries"
+crop_def.description = "Coffee Bush with Coffee Beans"
 crop_def.inventory_image = "coffee_bush4.png"
 crop_def.next_plant = nil
 crop_def.tiles = {"coffee_bush4.png"}
@@ -123,5 +123,5 @@ function(pos, oldnode, oldmetadata, digger)
     end
   end
 end
-minetest.register_node("blueberries:plant_4", table.copy(crop_def))
+minetest.register_node("coffee_bush:plant_4", table.copy(crop_def))
 

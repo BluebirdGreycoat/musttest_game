@@ -22,25 +22,25 @@ minetest.register_node("thorium:ore", {
 
 minetest.register_node("thorium:block", {
   description = "thorium Block (slighty radioactive)",
-  tiles = {"technic_uranium_block.png"},
+  tiles = {"nhryciw1_thorium_block.png"},
   groups = utility.dig_groups("block"),
   sounds = default.node_sound_stone_defaults(),
 })
 
 minetest.register_craftitem("thorium:lump", {
   description = "Thorium Ore Lump",
-  inventory_image = "technic_uranium_lump.png",
+  inventory_image = "nhryciw1_thorium_lump.png",
 })
 
 minetest.register_craftitem("thorium:ingot", {
 	description = "Thorium Ingot",
-	inventory_image = "technic_uranium_ingot.png",
+	inventory_image = "nhryciw1_thorium_ingot.png",
 	groups = {ingot = 1},
 })
 
 minetest.register_craftitem("thorium:dust", {
 	description = "Thorium Dust",
-	inventory_image = "technic_uranium_dust.png",
+	inventory_image = "nhryciw1_thorium_dust.png",
 })
 
 
@@ -112,7 +112,7 @@ oregen.register_ore({
 
 minetest.register_craftitem("thorium:rod", {
   description = "Fission Reactor Thorium Fuel Rod",
-  inventory_image = "technic_uranium_fuel.png",
+  inventory_image = "nhryciw1_thorium_fuel.png",
 	stack_max = 1,
 })
 

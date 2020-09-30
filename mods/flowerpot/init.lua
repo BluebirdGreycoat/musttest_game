@@ -359,6 +359,11 @@ if not flowerpot.loaded then
 		"potatoes:potato_2",
 		"potatoes:potato_3",
 		"potatoes:potato_4",
+
+		"onions:allium_sprouts_1",
+		"onions:allium_sprouts_2",
+		"onions:allium_sprouts_3",
+		"onions:allium_sprouts_4",
 	}) do
 		flowerpot.register_node(node)
 	end

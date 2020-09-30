@@ -18,16 +18,17 @@ local find_surface = function(xz, b, t)
 end
 
 local plants = {
-  "default:junglegrass",
+	"default:junglegrass",
 	"default:coarsegrass",
 	"default:dry_grass_5",
-  "default:grass_5",
-  "pumpkin:plant_8",
-  "tomato:plant_7",
-  "carrot:plant_8",
-  "blueberries:plant_4",
-  "raspberries:plant_4",
+	"default:grass_5",
+	"pumpkin:plant_8",
+	"tomato:plant_7",
+	"carrot:plant_8",
+	"blueberries:plant_4",
+	"raspberries:plant_4",
 	"potatoes:potato_4",
+	"onions:allium_sprouts_4",
 	"cucumber:cucumber_4",
 }
 

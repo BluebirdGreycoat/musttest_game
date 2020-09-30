@@ -45,7 +45,12 @@ minetest.register_craftitem("onions:onion", {
 	inventory_image = "wild_onion.png",
 	on_use = minetest.item_eat(1),
 	groups = {foodrot=1},
-	flowerpot_insert = {"onions:allium_sprouts_1", "onions:allium_sprouts_2", "onions:allium_sprouts_3", "onions:allium_sprouts_4"},
+	flowerpot_insert = {
+		"onions:allium_sprouts_1",
+		"onions:allium_sprouts_2",
+		"onions:allium_sprouts_3",
+		"onions:allium_sprouts_4",
+	},
 })
 
 -- onion definition

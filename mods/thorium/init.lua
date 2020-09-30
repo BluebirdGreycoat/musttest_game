@@ -73,7 +73,7 @@ minetest.register_craft({
 
 
 minetest.register_craft({
-	output = "uranium:block",
+	output = "thorium:block",
 	recipe = {
 		{"thorium:ingot", "thorium:ingot", "thorium:ingot"},
 		{"thorium:ingot", "thorium:ingot", "thorium:ingot"},

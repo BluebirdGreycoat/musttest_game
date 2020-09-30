@@ -78,7 +78,7 @@ function(pos, oldnode, oldmetadata, digger)
       local leftover = inv:add_item("main", ItemStack(oldnode.name))
       minetest.add_item(pos, leftover)
     else
-      -- Restore bush. Player did not actually dig it up.
+      -- Restore bush. Player did not actually dig it up yet.
       minetest.after(0, function()
         minetest.set_node(pos, {name="coffee_bush:plant_2", param2=2})
         local timer = minetest.get_node_timer(pos)

@@ -36,6 +36,63 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
+  output = 'dye:pink 5',
+  recipe = 'flowers:foxglove_pink',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:orange 5',
+  recipe = 'flowers:poppy_orange',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:blue 5',
+  recipe = 'flowers:bluebell',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:magenta 5',
+  recipe = 'flowers:snapdragon',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:cyan 5',
+  recipe = 'flowers:forgetmenot',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:black 5',
+  recipe = 'flowers:iris_black',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:yellow 5',
+  recipe = 'flowers:daylily',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:dark_green 5',
+  recipe = 'flowers:jack',
+  time = 3,
+})
+
+
+minetest.register_craft({
+  type = "extracting",
   output = 'dye:violet 5',
   recipe = 'flowers:lupine_purple',
   time = 3,

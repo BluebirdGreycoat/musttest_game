@@ -57,7 +57,7 @@ mapgen.generate_grass = function(minp, maxp, seed)
 			--end
 
       minetest.set_node(posb, {name="default:mossycobble"})
-      minetest.set_node(pos, {name=which})
+      minetest.set_node(pos, {name=which}) 
     end
   end
 end

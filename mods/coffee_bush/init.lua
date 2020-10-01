@@ -1,3 +1,4 @@
+-- Random junk line.
 -- Localize for performance.
 local math_random = math.random
 

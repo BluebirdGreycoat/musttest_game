@@ -1,6 +1,7 @@
 -- Random junk line.
 -- Localize for performance.
 -- Another random junk line.
+-- A fourth line.
 local math_random = math.random
 
 -- This is both seed and edible Bean.

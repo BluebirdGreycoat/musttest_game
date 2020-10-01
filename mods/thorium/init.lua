@@ -1,5 +1,5 @@
 minetest.register_node("thorium:ore", {
-  description = "thorium Ore",
+  description = "Thorium Ore",
   tiles = {"default_stone.png^technic_thorium_mineral.png"},
   groups = utility.dig_groups("mineral", {melts = 1, ore = 1}),
   drop = "thorium:lump",
@@ -21,7 +21,7 @@ minetest.register_node("thorium:ore", {
 })
 
 minetest.register_node("thorium:block", {
-  description = "thorium Block (slighty radioactive)",
+  description = "Thorium Block",
   tiles = {"technic_thorium_block.png"},
   groups = utility.dig_groups("block"),
   sounds = default.node_sound_stone_defaults(),

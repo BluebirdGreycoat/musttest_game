@@ -1,8 +1,5 @@
 
---[[
-	Original textures from DocFarming mod
-	https://forum.minetest.net/viewtopic.php?id=3948
-]]
+
 
 local S = function(s)
 	return s
@@ -43,14 +40,41 @@ minetest.register_node("onions:seed", {
 minetest.register_craftitem("onions:onion", {
 	description = S("Wild Onion"),
 	inventory_image = "wild_onion.png",
-	on_use = minetest.item_eat(1),
+	on_use = minetest.item_eat(2),
 	groups = {foodrot=1},
 	flowerpot_insert = {
-		"onions:allium_sprouts_1",
-		"onions:allium_sprouts_2",
-		"onions:allium_sprouts_3",
-		"onions:allium_sprouts_4",
-	},
+		"onions:allium_sprouts_1", "onions:allium_sprouts_2", "onions:allium_sprouts_3", "onions:allium_sprouts_4",},
+})
+
+-- sauteed onions
+minetest.register_craftitem("onions:sauteed_onions", {
+	description = S("Sauteed Onions"),
+	inventory_image = "sauteed_onions.png",
+	on_use = minetest.item_eat(6),
+	groups = {foodrot=1},
+})
+
+minetest.register_craft({
+	type = "cooking",
+	cooktime = 10,
+	output = "onions:sauteed_onions",
+	recipe = "onions:onion"
+})
+
+-- onion_potato salad recipe
+minetest.register_craftitem("onions:onion_potato_salad", {
+	description = "Potato And Wild Onion Salad",
+	inventory_image = "onion_potato_salad.png",
+	on_use = minetest.item_eat(10, "xdecor:bowl"),
+})
+
+minetest.register_craft({
+	output = "onions:onion_potato_salad",
+	recipe = {
+		{"onions:onion"},
+		{"potatoes:baked_potato"},
+		{"xdecor:bowl"},
+	}
 })
 
 -- onion definition

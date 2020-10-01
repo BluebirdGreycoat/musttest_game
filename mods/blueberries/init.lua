@@ -32,7 +32,7 @@ minetest.register_node("blueberries:fruit", {
   }),
   on_use = minetest.item_eat(1),
 })
-
+0
 -- blueberry muffin (thanks to sosogirl123 @ deviantart.com for muffin image)
 
 minetest.register_craftitem("blueberries:muffin", {

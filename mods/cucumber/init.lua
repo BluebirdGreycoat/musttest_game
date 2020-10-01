@@ -19,6 +19,15 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = "farming:onion_potato_salad",
+	recipe = {
+		{"cucumber:cucumber"},
+		{"potatoes:baked_potato"},
+		{"xdecor:bowl"},
+	}
+})
+
 minetest.register_node("cucumber:seed", {
   description = "Cucumber Seed",
   tiles = {"farming_cucumber_seed.png"},

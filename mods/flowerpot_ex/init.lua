@@ -17,12 +17,12 @@ local plants = {
  
 	{insert="blueberries:fruit", nodes={"blueberries:plant_1", "blueberries:plant_2", "blueberries:plant_3", "blueberries:plant_4"}},
 	
-	{name="coffee_bush:plant_1", drop="coffeebeans:seeds"},
-	{name="coffee_bush:plant_2", drop="coffeebeans:seeds"},
-	{name="coffee_bush:plant_3", drop="coffeebeans:seeds"},
-	{name="coffee_bush:plant_4", drop="coffeebeans:seeds"},
+	{name="coffee_bush:plant_1", drop="coffee_bush:seeds"},
+	{name="coffee_bush:plant_2", drop="coffee_bush:seeds"},
+	{name="coffee_bush:plant_3", drop="coffee_bush:seeds"},
+	{name="coffee_bush:plant_4", drop="coffee_bush:seeds"},
 
-	{insert="coffeebeans:seeds", nodes={"coffee_bush:plant_1", "coffee_bush:plant_2", "coffee_bush:plant_3", "coffee_bush:plant_4"}},
+	{insert="coffee_bush:seeds", nodes={"coffee_bush:plant_1", "coffee_bush:plant_2", "coffee_bush:plant_3", "coffee_bush:plant_4"}},
 
 
 	{name="raspberries:plant_1", drop="raspberries:fruit"},

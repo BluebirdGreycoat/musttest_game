@@ -1,11 +1,10 @@
-
- Localize for performance.
+-- Localize for performance.
 local math_random = math.random
 
 -- This is both seed and edible Bean.
 minetest.register_node("coffee_bush:seeds", {
   description = "Coffee Beans",
-  tile--s = {"coffeebeans.png"},
+  tiles = {"coffeebeans.png"},
   wield_image = "coffeebeans.png",
   inventory_image = "coffeebeans.png",
   drawtype = "signlike",

@@ -1,11 +1,11 @@
 
- Localize for performance.
+-- Localize for performance.
 local math_random = math.random
 
 -- This is both seed and edible fruit.
 minetest.register_node("blueberries:fruit", {
   description = "Blueberries",
-  tile--s = {"blueberries_blueberries.png"},
+  tiles = {"blueberries_blueberries.png"},
   wield_image = "blueberries_blueberries.png",
   inventory_image = "blueberries_blueberries.png",
   drawtype = "signlike",

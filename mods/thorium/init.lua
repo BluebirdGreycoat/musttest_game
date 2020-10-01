@@ -21,7 +21,7 @@ minetest.register_node("thorium:ore", {
 })
 
 minetest.register_node("thorium:block", {
-  description = "Thorium Block",
+  description = "Thorium Block (Not Radioactive)",
   tiles = {"technic_thorium_block.png"},
   groups = utility.dig_groups("block"),
   sounds = default.node_sound_stone_defaults(),

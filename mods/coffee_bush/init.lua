@@ -62,7 +62,7 @@ crop_def.next_plant = "coffee_bush:plant_2"
 crop_def.tiles = {"coffee_bush1.png"}
 minetest.register_node("coffee_bush:plant_1", table.copy(crop_def))
 
-crop_def.description = "coffee_bush"
+crop_def.description = "Coffee Bush"
 crop_def.inventory_image = "coffee_bush2.png"
 crop_def.next_plant = "coffee_bush:plant_3"
 crop_def.tiles = {"coffee_bush2.png"}
@@ -88,13 +88,13 @@ function(pos, oldnode, oldmetadata, digger)
 end
 minetest.register_node("coffee_bush:plant_2", table.copy(crop_def))
 
-crop_def.description = "Coffee Bush with Blossoms"
+crop_def.description = "Coffee Bush With Blossoms"
 crop_def.inventory_image = "coffee_bush3.png"
 crop_def.next_plant = "coffee_bush:plant_4"
 crop_def.tiles = {"coffee_bush3.png"}
 minetest.register_node("coffee_bush:plant_3", table.copy(crop_def))
 
-crop_def.description = "Coffee Bush with Coffee Beans"
+crop_def.description = "Coffee Bush With Beans"
 crop_def.inventory_image = "coffee_bush4.png"
 crop_def.next_plant = nil
 crop_def.tiles = {"coffee_bush4.png"}

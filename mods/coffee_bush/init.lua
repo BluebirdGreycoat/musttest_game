@@ -1,7 +1,4 @@
--- Random junk line.
--- Localize for performance.
--- Another random junk line.
--- A fourth line.
+
 local math_random = math.random
 
 -- This is both seed and edible Bean.
@@ -32,7 +29,7 @@ minetest.register_node("coffee_bush:seeds", {
     dug = {name = "default_grass_footstep", gain = 0.2},
     place = {name = "default_place_node", gain = 0.25},
   }),
-  on_use = minetest.item_eat(1),
+  on_use = minetest.item_eat(4),
 })
 
 

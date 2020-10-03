@@ -23,6 +23,8 @@ local plants = {
 	{name="coffee_bush:plant_4", drop="coffee_bush:seeds"},
 
 	{insert="coffee_bush:seeds", nodes={"coffee_bush:plant_1", "coffee_bush:plant_2", "coffee_bush:plant_3", "coffee_bush:plant_4"}},
+        
+        {insert="aloevera:aloe_slice", nodes={"aloevera:aloe_plant_01", "aloevera:aloe_plant_02", "aloevera:aloe_plant_03", "aloevera:aloe_plant_04"}},
 
 
 	{name="raspberries:plant_1", drop="raspberries:fruit"},

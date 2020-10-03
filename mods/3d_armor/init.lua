@@ -279,7 +279,7 @@ for k, v in pairs(ARMOR_MATERIALS) do
 		},
 	})
 
-	if not string.find(v, "wood") and not string.find(v, "diamond") and string.find(v, "_ingot") then
+	if not string.find(v, "wood") and not string.find(v, "diamond") and string.find(v, "ingot") then
 		minetest.register_craft({
 			type = "cooking",
 			output = v .. " 5",

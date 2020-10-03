@@ -1,5 +1,6 @@
 
 -- Adding a comment for junk'n'stuff.
+-- Another junk line.
 -- Localize for performance.
 local math_random = math.random
 

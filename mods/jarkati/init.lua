@@ -144,6 +144,7 @@ jarkati.register_decoration({
 	place_on = {"default:desert_sand"},
 })
 
+
 jarkati.register_decoration({
 	nodes = {
 		"default:dry_grass_1",

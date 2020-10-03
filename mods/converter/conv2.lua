@@ -225,8 +225,8 @@ function(pos, elapsed)
 			-- print((7000*100)/(0.7*100))
 			local full_cost = math_floor((amount_sent*100)/(eff*100))
 			assert(total_energy:get_count() > full_cost)
-			local energy_remaining = total_energy:take_item(full_cost)
-			inv:set_stack("buffer", 1, energy_remaining)
+			total_energy:take_item(full_cost)
+			inv:set_stack("buffer", 1, total_energy)
 		end
 	end
 

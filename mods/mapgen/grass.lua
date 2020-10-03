@@ -26,6 +26,7 @@ local plants = {
 	"tomato:plant_7",
 	"carrot:plant_8",
 	"blueberries:plant_4",
+	"coffee_bush:plant_4",
 	"raspberries:plant_4",
 	"potatoes:potato_4",
 	"onions:allium_sprouts_4",
@@ -56,7 +57,7 @@ mapgen.generate_grass = function(minp, maxp, seed)
 			--end
 
       minetest.set_node(posb, {name="default:mossycobble"})
-      minetest.set_node(pos, {name=which})
+      minetest.set_node(pos, {name=which}) 
     end
   end
 end

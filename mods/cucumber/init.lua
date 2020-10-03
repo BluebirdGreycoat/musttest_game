@@ -5,15 +5,34 @@
 ]]
 
 minetest.register_craftitem(":farming:potato_salad", {
-	description = "Cucumber And Potato Salad",
+	description = "Cucumber and Potato Salad",
 	inventory_image = "farming_potato_salad.png",
 	on_use = minetest.item_eat(10, "xdecor:bowl"),
+        
+        
+})
+
+minetest.register_craftitem(":farming:onion_potato_salad", {
+	description = "Potato and Onion Salad",
+	inventory_image = "farming_potato_onion_salad.png",
+	on_use = minetest.item_eat(10, "xdecor:bowl"),
+        
+        
 })
 
 minetest.register_craft({
 	output = "farming:potato_salad",
 	recipe = {
 		{"cucumber:cucumber"},
+		{"potatoes:baked_potato"},
+		{"xdecor:bowl"},
+	}
+})
+
+minetest.register_craft({
+	output = "farming:onion_potato_salad",
+	recipe = {
+		{"onions:onion"},
 		{"potatoes:baked_potato"},
 		{"xdecor:bowl"},
 	}

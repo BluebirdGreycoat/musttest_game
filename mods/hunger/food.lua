@@ -251,8 +251,9 @@ if minetest.get_modpath("farming") and farming.mod == "redo" then
 	register_food("farming:donut", 4)
 	register_food("farming:donut_chocolate", 6)
 	register_food("farming:donut_apple", 6)
-	register_food("farming:raspberries", 1)
+	register_food("farming:raspberries", 1) 
 	register_food("farming:blueberries", 1)
+	register_food("farming:coffeebeans", 1)
 	register_food("farming:muffin_blueberry", 4)
 	if minetest.get_modpath("vessels") then
 		register_food("farming:smoothie_raspberry", 2, "vessels:drinking_glass")

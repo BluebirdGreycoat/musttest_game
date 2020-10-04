@@ -39,6 +39,7 @@
  * quartz:quartz_ore
 +* talinite:ore
  * titanium:ore
++* thorium:ore
 +* uranium:ore
 +* zinc:ore
  * morerocks:marble

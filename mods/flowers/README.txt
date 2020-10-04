@@ -31,6 +31,15 @@ paramat (CC BY-SA 3.0):
   
 Nakilashiva (CC BY-SA 3.0):
   flowers_rose_white.png -- Derived from RHRhino's texture
+  flowers_iris_black.png
+  flowers_lupine_purple.png
+  flowers_poppy_orange.png
+  flowers_daylily.png
+  flowers_bluebells.png
+  flowers_jack_in_the_pulpit.png
+  flowers_zinnia_red.png
+  flowers_foxglove_pink.png
+  
 
 Dresdan (CC BY-SA 3.0):
   flowers_lockspur.png

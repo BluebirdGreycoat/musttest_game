@@ -34,6 +34,7 @@ minetest.register_craft({
   time = 3,
 })
 
+
 minetest.register_craft({
   type = "extracting",
   output = 'dye:pink 5',

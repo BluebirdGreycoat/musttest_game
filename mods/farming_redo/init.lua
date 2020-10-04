@@ -230,6 +230,24 @@ minetest.register_craft({
 	replacements = {{"farming:baking_tray", "farming:baking_tray"}}
 })
 
+
+minetest.register_craftitem(":farming:apple_pie", {
+	description = "Apple Pie",
+	inventory_image = "farming_apple_pie.png",
+	on_use = minetest.item_eat(6),
+})
+
+minetest.register_craft({
+	output = "farming:apple_pie",
+	type = "shapeless",
+	recipe = {
+		"farming:flour", "farming:sugar",
+		"basictrees:tree_apple", "farming:baking_tray"
+	},
+	replacements = {{"farming:baking_tray", "farming:baking_tray"}}
+})
+
+
 minetest.register_node(":farming:salt", {
 	description = "Salt",
 	inventory_image = "farming_salt.png",

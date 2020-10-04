@@ -220,7 +220,7 @@ if not flowers.registered then
 		{
 			"zinnia_red",
 			"Red Zinnia",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
 			{color_red = 1, flammable = 1}
 		},
 		{
@@ -232,37 +232,37 @@ if not flowers.registered then
 		{
 			"jack",
 			"Jack in the Pulpit",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_dark_green = 1, flammable = 1}
 		},
 		{
 			"poppy_orange",
 			"Orange Poppy",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
 			{color_orange = 1, flammable = 1}
 		},
 		{
 			"daylily",
 			"Daylily",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, 3 / 16, 5 / 16},
 			{color_yellow = 1, flammable = 1}
 		},
 		{
 			"iris_black",
 			"Black Iris",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
 			{color_black = 1, flammable = 1}
 		},
 		{
 			"forgetmenot",
 			"Forget-Me-Not",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, -2 / 16, 5 / 16},
 			{color_cyan = 1, flammable = 1}
 		},
 		{
 			"snapdragon",
 			"Snapdragon",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-5 / 16, -0.5, -5 / 16, 5 / 16, 1 / 16, 5 / 16},
 			{color_magenta = 1, flammable = 1}
 		},
 		{
@@ -274,7 +274,7 @@ if not flowers.registered then
 		{
 			"foxglove_pink",
 			"Pink Foxglove",
-			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_pink = 1, flammable = 1}
 		},
 	}

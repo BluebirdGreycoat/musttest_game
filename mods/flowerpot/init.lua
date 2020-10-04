@@ -359,6 +359,11 @@ if not flowerpot.loaded then
 		"potatoes:potato_2",
 		"potatoes:potato_3",
 		"potatoes:potato_4",
+                
+                "aloevera:aloe_plant_01",
+                "aloevera:aloe_plant_02",
+                "aloevera:aloe_plant_03",
+                "aloevera:aloe_plant_04",
 
 		"onions:allium_sprouts_1",
 		"onions:allium_sprouts_2",

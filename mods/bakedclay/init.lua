@@ -147,10 +147,12 @@ local function add_simple_flower(name, desc, box, f_groups)
 end
 
 local flowers = {
-	{"delphinium", "Blue Delphinium", {-0.15, -0.5, -0.15, 0.15, 0.3, 0.15}, {color_cyan = 1}},
+	{"delphinium", "Blue Delphinium", {-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
+        {color_cyan = 1}},
 	{"thistle", "Thistle", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_magenta = 1}},
 	{"lazarus", "Lazarus Bell", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_pink = 1}},
-	{"mannagrass", "Reed Mannagrass", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_dark_green = 1}},
+	{"mannagrass", "Reed Mannagrass", {-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
+        {color_dark_green = 1}},
 	{"lockspur", "Lockspur", {-0.15, -0.5, -0.15, 0.15, 0.3, 0.15}, {color_cyan = 1}},
 }
 

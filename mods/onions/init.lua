@@ -77,21 +77,6 @@ minetest.register_craft({
 	}
 })
 
--- sauted onions
-minetest.register_craftitem("onions:suateed_onions", {
-	description = S("Suateed Onions"),
-	inventory_image = "suateed_onions.png",
-	on_use = minetest.item_eat(8),
-	groups = {foodrot=1},
-})
-
-minetest.register_craft({
-	type = "cooking",
-	cooktime = 10,
-	output = "onions:suateed_onions",
-	recipe = "onions:wild_onion"
-})
-
 -- onion definition
 local crop_def = {
 	drawtype = "plantlike",

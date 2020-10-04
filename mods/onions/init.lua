@@ -136,3 +136,9 @@ crop_def.drop = {
 	}
 }
 minetest.register_node("onions:allium_sprouts_4", table.copy(crop_def))
+
+-- Some aliases for old item names.
+minetest.register_alias("farming:onion_potato_salad", "onions:onion_potato_salad")
+minetest.register_alias("onions:suateed_onions", "onions:sauteed_onions")
+
+

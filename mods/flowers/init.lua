@@ -217,68 +217,67 @@ if not flowers.registered then
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
 			{color_black = 1, flammable = 1}
 		},
-                {
+		{
 			"zinnia_red",
 			"Red Zinnia",
 			{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
 			{color_red = 1, flammable = 1}
 		},
-                {
+		{
 			"lupine_purple",
 			"Purple Lupine",
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
 			{color_violet = 1, flammable = 1}
 		},
-                  {
+		{
 			"jack",
 			"Jack in the Pulpit",
 			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_dark_green = 1, flammable = 1}
 		},
-                {
+		{
 			"poppy_orange",
 			"Orange Poppy",
 			{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
 			{color_orange = 1, flammable = 1}
 		},
-                {
+		{
 			"daylily",
 			"Daylily",
 			{-5 / 16, -0.5, -5 / 16, 5 / 16, 3 / 16, 5 / 16},
 			{color_yellow = 1, flammable = 1}
 		},
-                {
+		{
 			"iris_black",
 			"Black Iris",
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
 			{color_black = 1, flammable = 1}
 		},
-                {
+		{
 			"forgetmenot",
 			"Forget-Me-Not",
 			{-5 / 16, -0.5, -5 / 16, 5 / 16, -2 / 16, 5 / 16},
 			{color_cyan = 1, flammable = 1}
 		},
-                {
+		{
 			"snapdragon",
 			"Snapdragon",
 			{-5 / 16, -0.5, -5 / 16, 5 / 16, 1 / 16, 5 / 16},
 			{color_magenta = 1, flammable = 1}
 		},
-                {
+		{
 			"bluebell",
 			"Bluebell",
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
 			{color_blue = 1, flammable = 1}
 		},
-                {
+		{
 			"foxglove_pink",
 			"Pink Foxglove",
 			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_pink = 1, flammable = 1}
 		},
 	}
-        
 
 	for _,item in pairs(flowers.datas) do
 		add_simple_flower(unpack(item))

@@ -117,7 +117,7 @@ minetest.register_craft({
 })
 
 minetest.register_node("techcrafts:machine_casing", {
-  description = "Machine Chasis",
+  description = "Machine Chassis",
   groups = utility.dig_groups("machine"),
   
   -- This node has some special rendering properties so that it

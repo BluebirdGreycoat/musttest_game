@@ -43,7 +43,7 @@ local ore_conversion_data = {
 	["rackstone:redrack_with_tin"] = "dusts:tin",
 	["talinite:ore"] = "talinite:dust",
 	["thorium:ore"] = "thorium:dust",
-    ["uranium:ore"] = "uranium:dust",
+	["uranium:ore"] = "uranium:dust",
 	["zinc:ore"] = "zinc:dust",
 	["sulfur:ore"] = "sulfur:dust",
 }

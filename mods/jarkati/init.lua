@@ -151,6 +151,22 @@ jarkati.register_decoration({
 	place_on = {"default:desert_sand"},
 })
 
+-- These should add a decoration to the Jarkati landscape but couldn't get it to work. I modified the depends to use flowers but the way the flowers mod is set up seems to conflict with the way the jarkati mod interprets "nodes". Maybe you can look into it? I added these two items to flowers but did not otherwise put them in the mapgen. They will show up in the craftguide.
+        
+--jarkati.register_decoration({
+--	nodes = "flowers:desertrose_red",
+--	probability = 100,
+--	place_on = {"default:desert_sand"},
+--        replace_surface = "default:dirt_with_dry_grass",
+--})
+
+--jarkati.register_decoration({
+--	nodes = "flowers:desertrose_pink",
+--	probability = 100,
+--	place_on = {"default:desert_sand"},
+--        replace_surface = "default:dirt_with_dry_grass",
+--})
+
 
 jarkati.register_decoration({
 	nodes = {

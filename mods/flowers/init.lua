@@ -277,6 +277,18 @@ if not flowers.registered then
 			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_pink = 1, flammable = 1}
 		},
+--                {
+--			"desertrose",
+--			"Red Desert Rose",
+--			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
+--			{color_red = 1, flammable = 1}
+--		},
+--                {
+--			"desertrose_pink",
+--			"Pink Desert Rose",
+--			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
+--			{color_pink = 1, flammable = 1}
+--		},
 	}
 
 	for _,item in pairs(flowers.datas) do

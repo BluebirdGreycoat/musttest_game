@@ -47,6 +47,44 @@ minetest.register_craft({
 	}
 })
 
+--tomato sandwich
+
+minetest.register_craftitem(":farming:tomato_sandwich", {
+	description = "Toasted Tomato Sandwich",
+	inventory_image = "farming_toasted_tomato_sandwich.png",
+	on_use = minetest.item_eat(6),
+	groups = {flammable = 2},
+})
+
+minetest.register_craft({
+	output = "farming:tomato_sandwich",
+	recipe = {
+		{"farming:flour"},
+		{"tomato:tomato"},
+		{"farming:sugar"},
+	}
+})
+
+-- carrot cake
+
+minetest.register_craftitem(":farming:carrot_cake", {
+	description = "Carrot Cake",
+	inventory_image = "farming_carrot_cake.png",
+	on_use = minetest.item_eat(4),
+	groups = {flammable = 2},
+})
+
+minetest.register_craft({
+	output = "farming:carrot_cake",
+	type = "shapeless",
+	recipe = {
+		"farming:flour", "farming:sugar",
+		"carrot:regular", "carrot:regular", "carrot:regular",
+                "farming:baking_tray"
+	},
+	replacements = {{"farming:baking_tray", "farming:baking_tray"}}
+})
+
 minetest.register_craft({
 	type = "fuel",
 	recipe = "farming:straw",

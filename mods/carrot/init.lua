@@ -34,7 +34,7 @@ minetest.register_node("carrot:seed", {
 minetest.register_craftitem("carrot:regular", {
   description = "Carrot",
   inventory_image = "carrot_regular.png",
-  on_use = minetest.item_eat(2),
+  on_use = minetest.item_eat(1),
 	flowerpot_insert = {"carrot:plant_1", "carrot:plant_2", "carrot:plant_3", "carrot:plant_4", "carrot:plant_5", "carrot:plant_6", "carrot:plant_7", "carrot:plant_8"},
 })
 

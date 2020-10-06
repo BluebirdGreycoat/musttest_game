@@ -116,8 +116,8 @@ for k, v in pairs(ARMOR_MATERIALS) do
 			{"", v, ""},
 		},
 	})
-	-- Reverse cooking recipes for all sheilds except armor and diamond.
-	if not string.find(v, "wood") and not string.find(v, "diamond") and string.find(v, "_ingot") then
+	-- Reverse cooking recipes for all shields except wood and diamond.
+	if not string.find(v, "wood") and not string.find(v, "diamond") and string.find(v, "ingot") then
 		minetest.register_craft({
 			type = "cooking",
 			output = v .. " 7",

@@ -18,7 +18,7 @@ if minetest.get_modpath("mobs") ~= nil then
 		register_food("mobs:meat", 8)
 		register_food("mobs:meat_raw", 4)
 		register_food("mobs:rat_cooked", 4)
-		register_food("mobs:honey", 2)
+		register_food("mobs:honey", 3)
 		register_food("mobs:pork_raw", 3, "", 3)
 		register_food("mobs:pork_cooked", 8)
 		register_food("mobs:chicken_cooked", 6)
@@ -35,12 +35,12 @@ if minetest.get_modpath("mobs") ~= nil then
 end
 
 if minetest.get_modpath("moretrees") ~= nil then
-	register_food("moretrees:coconut_milk", 1)
-	register_food("moretrees:raw_coconut", 2)
-	register_food("moretrees:acorn_muffin", 3)
+	register_food("moretrees:coconut_milk", 0)
+	register_food("moretrees:raw_coconut", 3)
+	register_food("moretrees:acorn_muffin", 8)
 	register_food("moretrees:spruce_nuts", 1)
-	register_food("moretrees:pine_nuts", 1)
-	register_food("moretrees:fir_nuts", 1)
+	register_food("moretrees:pine_nuts", 3)
+	register_food("moretrees:fir_nuts", 3)
 end
 
 if minetest.get_modpath("dwarves") ~= nil then

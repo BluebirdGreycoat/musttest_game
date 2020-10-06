@@ -50,7 +50,7 @@ minetest.register_craftitem("onions:onion", {
 minetest.register_craftitem("onions:sauteed_onions", {
 	description = S("Sauteed Onions"),
 	inventory_image = "sauteed_onions.png",
-	on_use = minetest.item_eat(6),
+	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
 })
 

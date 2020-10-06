@@ -18,6 +18,8 @@ wield3d.location = {
 	["flowers:tulip"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:viola"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:foxglove_pink"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
+--        ["flowers:desertrose_pink"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
+--        ["flowers:desertrose_red"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:bluebell"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:snapdragon"] = {bone, pos, {x=rx, y=180, z=rz}, scale},
 	["flowers:forgetmenot"] = {bone, pos, {x=rx, y=180, z=rz}, scale},

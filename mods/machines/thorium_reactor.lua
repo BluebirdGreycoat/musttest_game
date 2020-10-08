@@ -9,7 +9,7 @@ local BUFFER_SIZE = tech.reactor2.buffer
 local ENERGY_TIME = tech.reactor2.time
 local TOTAL_COOK_TIME = tech.reactor2.totaltime
 local ENERGY_AMOUNT = tech.reactor2.power
-local REACTOR_TIER = "lv"
+local REACTOR_TIER = "mv"
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -77,20 +77,14 @@ local function get_reactor_damage(pos)
 	local MinEdge, MaxEdge = vm:read_from_map(pos1, pos2)
 	local data = vm:get_data()
 	local area = VoxelArea:new({MinEdge=MinEdge, MaxEdge=MaxEdge})
-
-	--[[ local c_blast_concrete = minetest.get_content_id("concrete:brc")
+    
+	local c_air = minetest.get_content_id("default:air")
+	local c_concrete = minetest.get_content_id("concrete:concrete")
 	local c_lead = minetest.get_content_id("lead:block")
-	local c_steel = minetest.get_content_id("stainless_steel:block")
-	local c_water_source = minetest.get_content_id("default:water_source")
-	local c_water_flowing = minetest.get_content_id("default:water_flowing")
-	local c_cw_source = minetest.get_content_id("cw:water_source")
-	local c_cw_flowing = minetest.get_content_id("cw:water_flowing")
-	local c_river_source = minetest.get_content_id("default:river_water_source")
-	local c_river_flowing = minetest.get_content_id("default:river_water_flowing")  --]]
-	local c_concrete = minetest.get_content_id("default:air")
-
-	--local concrete_layer, blast_layer, lead_layer, water_layer = 0, 0, 0, 0
-	local concrete_layer = 0
+	local c_lava_flowing = minetest.get_content_id("default:lava_flowing")
+	local c_lava_source = minetest.get_content_id("default:lava_source")
+    
+	local air_layer, concrete_layer, lava_layer, lead_layer = 0, 0, 0, 0
     
 	for z = pos1.z, pos2.z do
 	for y = pos1.y, pos2.y do
@@ -99,29 +93,28 @@ local function get_reactor_damage(pos)
 		if x == pos1.x+0 or x == pos2.x-0 or
 		   y == pos1.y+0 or y == pos2.y-0 or
 		   z == pos1.z+0 or z == pos2.z-0 then
-			if cid == c_concrete then
-				concrete_layer = concrete_layer + 1
+			if cid == c_air then
+				air_layer = air_layer + 1
 			end
-	--[[	elseif x == pos1.x+1 or x == pos2.x-1 or
-					 y == pos1.y+1 or y == pos2.y-1 or
-		       z == pos1.z+1 or z == pos2.z-1 then
-			if cid == c_blast_concrete then
-				blast_layer = blast_layer + 1
+		elseif x == pos1.x+1 or x == pos2.x-1 or
+			   y == pos1.y+1 or y == pos2.y-1 or
+		   	   z == pos1.z+1 or z == pos2.z-1 then
+				if cid == c_concrete then
+					cncrete_layer = concrete_layer + 1
 			end
+
 		elseif x == pos1.x+2 or x == pos2.x-2 or
 		       y == pos1.y+2 or y == pos2.y-2 or
 		       z == pos1.z+2 or z == pos2.z-2 then
-			if cid == c_lead or cid == c_steel then
-				lead_layer = lead_layer + 1
+			if cid == c_lava_source or cid ==c_lava_flowing then
+				lava_layer = lava_layer + 1
 			end
 		elseif x == pos1.x+3 or x == pos2.x-3 or
 		       y == pos1.y+3 or y == pos2.y-3 or
 		       z == pos1.z+3 or z == pos2.z-3 then
-			if cid == c_water_source or cid == c_water_flowing or
-				cid == c_river_source or cid == c_river_flowing or
-				cid == c_cw_source or cid == c_cw_flowing then
-				water_layer = water_layer + 1
-			end --]]
+			if cid == c_lead then
+				lead_layer = lead_layer + 1
+			end
 		end
 	end
 	end
@@ -134,14 +127,14 @@ local function get_reactor_damage(pos)
 	--	return 0
 	--end
 
-	if concrete_layer > 25 then concrete_layer = 25 end
---[[	if lead_layer > 96 then lead_layer = 96 end
-	if blast_layer > 216 then blast_layer = 216 end
-	if concrete_layer > 384 then concrete_layer = 384 end --]]
-	return (25 - concrete_layer)--[[ +
-		(96 - lead_layer) +
-		(216 - blast_layer) +
-		(384 - concrete_layer)--]]
+	if lead_layer > 23 then lead_layer = 23 end
+	if lava_layer > 96 then lava_layer = 96 end
+	if concrete_layer > 216 then concrete_layer = 216 end
+	if air_layer > 0 then air_layer = 0 end 
+	return (23 - lead_layer) +
+		(96 - lava_layer) +
+		(216 - concrete_layer) +
+        (0 - air_layer)
 end
 
 

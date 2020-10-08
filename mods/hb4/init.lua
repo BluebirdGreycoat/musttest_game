@@ -39,18 +39,6 @@ function hb4.delayed_harm2(data)
 			return
 		end
 
-		-- already dead?
-		if player:get_hp() <= 0 then
-			if data.poison then
-				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
-			end
-			-- Execute termination callback.
-			if data.done then
-				data.done()
-			end
-			return
-		end
-
 		if data.poison then
 			hud.change_item(player, "hunger", {text="hunger_statbar_poisen.png"})
 		end
@@ -63,9 +51,19 @@ function hb4.delayed_harm2(data)
 			player:set_hp(new_hp)
 		end
 
-		-- Message is printed only if player died.
-		if data.msg and player:get_hp() <= 0 then
-			minetest.chat_send_all(data.msg)
+		-- Message is printed only if player died. Return if we killed them.
+		if player:get_hp() <= 0 then
+			if data.poison then
+				hud.change_item(player, "hunger", {text="hud_hunger_fg.png"})
+			end
+			-- Execute termination callback.
+			if data.done then
+				data.done()
+			end
+			if data.msg then
+				minetest.chat_send_all(data.msg)
+			end
+			return
 		end
 
 		data.step = data.step - 1

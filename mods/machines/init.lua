@@ -483,5 +483,6 @@ if not machines.run_once then
 	dofile(machines.modpath .. "/leecher.lua")
 	dofile(machines.modpath .. "/charger.lua")
 	dofile(machines.modpath .. "/workshop.lua")
+    dofile(machines.modpath .. "/thorium_reactor.lua")
   machines.run_once = true
 end

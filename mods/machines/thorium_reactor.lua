@@ -5,16 +5,19 @@ reactor_inactive = reactor_inactive or {}
 reactor_active = reactor_active or {}
 reactor.siren = reactor.siren or {}
 
-local BUFFER_SIZE = tech.reactor2.buffer
-local ENERGY_TIME = tech.reactor2.time
-local TOTAL_COOK_TIME = tech.reactor2.totaltime
-local ENERGY_AMOUNT = tech.reactor2.power
+local BUFFER_SIZE = tech.breeder.buffer
+local ENERGY_TIME = tech.breeder.time
+local TOTAL_COOK_TIME = tech.breeder.totaltime
+local ENERGY_AMOUNT = tech.breeder.power
 local REACTOR_TIER = "mv"
 
 -- Localize for performance.
 local math_floor = math.floor
 local math_random = math.random
 
+
+
+--all of the debug stuff this is going to send me will get annoying, but i want it in the beginning so i can monitor them.
 
 
 local SS_OFF = 0
@@ -72,19 +75,19 @@ local function get_reactor_damage(pos)
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 	local vm = VoxelManip()
-	local pos1 = vector.subtract(pos, 1)
-	local pos2 = vector.add(pos, 1)
+	local pos1 = vector.subtract(pos, 3)
+	local pos2 = vector.add(pos, 3)
 	local MinEdge, MaxEdge = vm:read_from_map(pos1, pos2)
 	local data = vm:get_data()
 	local area = VoxelArea:new({MinEdge=MinEdge, MaxEdge=MaxEdge})
     
 	local c_air = minetest.get_content_id("default:air")
 	local c_concrete = minetest.get_content_id("concrete:concrete")
-	local c_lead = minetest.get_content_id("lead:block")
+	local c_steel = minetest.get_content_id("stainless_steel:block")
 	local c_lava_flowing = minetest.get_content_id("default:lava_flowing")
 	local c_lava_source = minetest.get_content_id("default:lava_source")
     
-	local air_layer, concrete_layer, lava_layer, lead_layer = 0, 0, 0, 0
+	local concrete_layer, lava_layer, steel_layer = 0, 0, 0, 0
     
 	for z = pos1.z, pos2.z do
 	for y = pos1.y, pos2.y do
@@ -93,54 +96,46 @@ local function get_reactor_damage(pos)
 		if x == pos1.x+0 or x == pos2.x-0 or
 		   y == pos1.y+0 or y == pos2.y-0 or
 		   z == pos1.z+0 or z == pos2.z-0 then
-			if cid == c_air then
-				air_layer = air_layer + 1
+			if cid == c_concrete then
+					cncrete_layer = concrete_layer + 1
 			end
 		elseif x == pos1.x+1 or x == pos2.x-1 or
 			   y == pos1.y+1 or y == pos2.y-1 or
 		   	   z == pos1.z+1 or z == pos2.z-1 then
-				if cid == c_concrete then
-					cncrete_layer = concrete_layer + 1
+				if cid == c_lava_source or cid ==c_lava_flowing then
+				lava_layer = lava_layer + 1
 			end
 
 		elseif x == pos1.x+2 or x == pos2.x-2 or
 		       y == pos1.y+2 or y == pos2.y-2 or
 		       z == pos1.z+2 or z == pos2.z-2 then
-			if cid == c_lava_source or cid ==c_lava_flowing then
-				lava_layer = lava_layer + 1
-			end
-		elseif x == pos1.x+3 or x == pos2.x-3 or
-		       y == pos1.y+3 or y == pos2.y-3 or
-		       z == pos1.z+3 or z == pos2.z-3 then
-			if cid == c_lead then
-				lead_layer = lead_layer + 1
+			if cid == c_steel then
+				steel_layer = steel_layer + 1
 			end
 		end
 	end
 	end
 	end
 
-	--minetest.chat_send_player("MustTest", "Checking thorium reactor!")
+	--minetest.chat_send_player("nhryciw1", "Checking thorium reactor!")
 
 	-- Debug!
 	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
 	--	return 0
 	--end
 
-	if lead_layer > 23 then lead_layer = 23 end
+	if steel_layer > 23 then steel_layer = 23 end
 	if lava_layer > 96 then lava_layer = 96 end
 	if concrete_layer > 216 then concrete_layer = 216 end
-	if air_layer > 0 then air_layer = 0 end 
-	return (23 - lead_layer) +
+	return (23 - steel_layer) +
 		(96 - lava_layer) +
-		(216 - concrete_layer) +
-        (0 - air_layer)
+		(216 - concrete_layer) 
 end
 
 
 
 local function check_environment(pos, meta)
-	--minetest.chat_send_player("MustTest", "Check env!")
+	minetest.chat_send_player("nhryciw1", "Check env!")
 
   local timer = meta:get_int("chktmr")
   --local active = meta:get_int("active")
@@ -153,7 +148,7 @@ local function check_environment(pos, meta)
 			good = true
 		end
 
-		--minetest.chat_send_player("MustTest", "Reactor damage: " .. damage .. "!")
+		minetest.chat_send_player("nhryciw1", "Reactor damage: " .. damage .. "!")
 
     if good then
 			meta:set_string("error", "DUMMY")
@@ -212,24 +207,7 @@ for k, v in ipairs({
 				disable_drops = true,
 			})
 
-			local minp = vector.subtract(pos, 1)
-			local maxp = vector.add(pos, 1)
-
-			-- Transform reactor and all water around it into lava.
-			-- Must be done *after* explosion runs.
-			for x=minp.x, maxp.x do
-			for y=minp.y, maxp.y do
-			for z=minp.z, maxp.z do
-				local p = {x=x, y=y, z=z}
-				if p.y < -14 then
-					minetest.add_node(p, {name="default:lava_source"})
-					minetest.transforming_liquid_add(p)
-				else
-					minetest.add_node(p, {name="fire:basic_flame"})
-				end
-			end
-			end
-			end
+			
 		end)
 	end
 
@@ -244,7 +222,7 @@ for k, v in ipairs({
 
 	func.on_punch =
 	function(pos, node, puncher, pointed_thing)
-		--minetest.chat_send_player("MustTest", "Punched!")
+		minetest.chat_send_player("nhryciw1", "Punched!")
 		func.trigger_update(pos)
 
 		-- Check reactor integrity.
@@ -265,7 +243,7 @@ for k, v in ipairs({
 			default.formspec.get_slot_colors() ..
 
 			"label[1,0.5;Thorium Rod Compartment]" ..
-			"list[context;fuel;1,1;3,2;]" ..
+			"list[context;fuel;1,1;3,6;]" ..
 
 			"image[4,1.5;1,1;default_furnace_fire_bg.png^[lowpart:" ..
 			(fuel_percent) .. ":default_furnace_fire_fg.png]" ..
@@ -328,7 +306,7 @@ for k, v in ipairs({
 		if listname == "fuel" then
 			local node = minetest.get_node(pos)
 			-- Cannot put rods in an active reactor.
-			if node.name == "reactor:inactive2" and stack:get_name() == "thorium:rod" then
+			if node.name == "breeder:inactive" and stack:get_name() == "thorium:rod" then
 				return stack:get_count()
 			end
 		end
@@ -360,7 +338,7 @@ for k, v in ipairs({
 
 	func.on_timer =
 	function(pos, elapsed)
-		--minetest.chat_send_all("# Server: On Timer! " .. minetest.get_gametime())
+		minetest.chat_send_player("nhryciw1","# Server: On Timer! " .. minetest.get_gametime())
 
 		local keeprunning = false
 		local meta = minetest.get_meta(pos)
@@ -423,7 +401,7 @@ for k, v in ipairs({
 
 		-- Radiation damage to nearby players.
 		if v.name == "active" then
-			local entities = minetest.get_objects_inside_radius(pos, 4.5)
+			local entities = minetest.get_objects_inside_radius(pos, 3.5)
 			for k, v in ipairs(entities) do
 				if v:is_player() then
 					v:set_hp(v:get_hp() - 1)
@@ -435,7 +413,7 @@ for k, v in ipairs({
 
 		do
 			local stack = inv:get_stack("out", 1)
-			--minetest.chat_send_player("MustTest", "# Server: " .. stack:get_count() .. " charge!")
+			minetest.chat_send_player("nhryciw1", "# Server: " .. stack:get_count() .. " charge!")
 			if stack:get_count() >= BUFFER_SIZE then
 				need_discharge = true
 			end
@@ -476,7 +454,7 @@ for k, v in ipairs({
 
 				-- Check if we have enough fuel.
 				local rods = 0
-				for i = 1, 2, 1 do
+				for i = 1, 6, 1 do
 					local stack = inv:get_stack("fuel", i)
 					if stack:get_name() == "thorium:rod" and stack:get_count() > 0 then
 						rods = rods + 1
@@ -496,19 +474,19 @@ for k, v in ipairs({
 
 					time = TOTAL_COOK_TIME
 					meta:set_int("maxtime", TOTAL_COOK_TIME)
-					machines.swap_node(pos, "reactor:active2")
+					machines.swap_node(pos, "breeder:active")
 					fuel_percent = 100
 					keeprunning = true -- Restart timer.
 					meta:set_int("eups", ENERGY_AMOUNT)
 				else
 					-- No valid fuel in fuel slot.
-					machines.swap_node(pos, "reactor:inactive2")
+					machines.swap_node(pos, "breeder:inactive")
 					--minetest.get_node_timer(pos):stop()
 					time2 = 0
 				end
 			else
 				-- No more fuel, shutdown generator.
-				machines.swap_node(pos, "reactor:inactive2")
+				machines.swap_node(pos, "breeder:inactive")
 				--minetest.get_node_timer(pos):stop()
 				meta:set_int("eups", 0)
 				time2 = 0
@@ -517,7 +495,8 @@ for k, v in ipairs({
 
 		-- Discharge energy into the network.
 		if need_discharge then
-			--minetest.chat_send_player("MustTest", "# Server: Discharging reactor!")
+        
+			minetest.chat_send_player("nhryciw1", "# Server: Discharging breeder reactor!")
 
 			local energy = inv:get_stack("out", 1)
 			local old = energy:get_count()
@@ -553,17 +532,7 @@ for k, v in ipairs({
 			minetest.get_node_timer(pos):start(1.0)
 
 			-- Change water to salt water sometimes.
-			--[[if math_random(1, 60) == 1 then
-				local minp = {x=pos.x-1, y=pos.y-1, z=pos.z-1}
-				local maxp = {x=pos.x+1, y=pos.y+1, z=pos.z+1}
-				local nodes = minetest.find_nodes_in_area(minp, maxp, {
-					"default:water_source",
-					"default:water_flowing",
-					"default:river_water_flowing",
-				})
-				if nodes and #nodes > 0 then
-					minetest.add_node(nodes[math_random(1, #nodes)], {name="default:river_water_source"})
-				end--]]
+			
 			end
 		else
 			-- Slow down timer during sleep periods to reduce load.
@@ -582,7 +551,7 @@ for k, v in ipairs({
 			func.reactor_destroy(pos)
 		else
 			-- Only save reactor if it wasn't active.
-			drops[#drops+1] = "reactor:inactive2"
+			drops[#drops+1] = "breeder:inactive"
 		end
 		return drops
 	end
@@ -597,7 +566,7 @@ for k, v in ipairs({
 		meta:set_string("infotext", func.compose_infotext(pos, false))
 		meta:set_string("formspec", func.compose_formspec(0, 0))
 
-		--minetest.chat_send_player("MustTest", "Constructed!")
+		minetest.chat_send_player("nhryciw1", "Breeder reactor constructed!")
 
 		inv:set_size("fuel", 6)
 		inv:set_size("out", 1)
@@ -683,8 +652,8 @@ if not reactor.run_once then
 		-- Which function table are we operating on?
 		local func = _G["reactor_" .. v.name]
 
-		minetest.register_node(":reactor:" .. v.name, {
-			description = "Fission Reactor Core\n\nConnects to an HV power-network.\nGenerates huge amounts of power.\nExplosion danger, requires shielding!",
+		minetest.register_node(":breeder:" .. v.name, {
+			description = "Thorium Breeder Reactor Core\n\nConnects to an MV power-network.\nGenerates significant amounts of power.\nExplosion danger, requires shielding!",
 			tiles = {"reactor_core.png"},
 
 			groups = utility.dig_groups("machine", {immovable=1}),
@@ -692,7 +661,7 @@ if not reactor.run_once then
 			paramtype2 = "facedir",
 			is_ground_content = false,
 			sounds = default.node_sound_metal_defaults(),
-			drop = "reactor:inactive",
+			drop = "breeder:inactive",
 			light_source = v.light,
 
 			on_energy_get = function(...)
@@ -731,15 +700,15 @@ if not reactor.run_once then
 	end
 
 	minetest.register_craft({
-		output = 'reactor:inactive2',
+		output = 'breeder:inactive',
 		recipe = {
 			{'techcrafts:carbon_plate',          'default:obsidian_glass', 'techcrafts:carbon_plate'},
-			{'techcrafts:composite_plate',       'gen2:lv_inactive', 'techcrafts:composite_plate'},
+			{'techcrafts:composite_plate',       'gen2:mv_inactive', 'techcrafts:composite_plate'},
 			{'stainless_steel:ingot', 'geo2:lv_inactive',       'stainless_steel:ingot'},
 		}
 	})
 
-  local c = "reactor:core2"
+  local c = "breeder:core2"
   local f = machines.modpath .. "/thorium_reactor.lua"
   reload.register_file(c, f, false)
 

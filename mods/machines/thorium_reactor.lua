@@ -87,7 +87,7 @@ local function get_reactor_damage(pos)
 	local c_lava_flowing = minetest.get_content_id("default:lava_flowing")
 	local c_lava_source = minetest.get_content_id("default:lava_source")
     
-	local concrete_layer, lava_layer, steel_layer = 0, 0, 0, 0
+	local concrete_layer, lava_layer, steel_layer = 0, 0, 0
     
 	for z = pos1.z, pos2.z do
 	for y = pos1.y, pos2.y do
@@ -102,7 +102,7 @@ local function get_reactor_damage(pos)
 		elseif x == pos1.x+1 or x == pos2.x-1 or
 			   y == pos1.y+1 or y == pos2.y-1 or
 		   	   z == pos1.z+1 or z == pos2.z-1 then
-				if cid == c_lava_source or cid ==c_lava_flowing then
+				if cid == c_lava_source or cid == c_lava_flowing then
 				lava_layer = lava_layer + 1
 			end
 
@@ -117,7 +117,7 @@ local function get_reactor_damage(pos)
 	end
 	end
 
-	--minetest.chat_send_player("nhryciw1", "Checking thorium reactor!")
+	minetest.chat_send_player("nhryciw1", "Checking thorium reactor!")
 
 	-- Debug!
 	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
@@ -125,13 +125,25 @@ local function get_reactor_damage(pos)
 	--end
 
 	if steel_layer > 23 then steel_layer = 23 end
-	if lava_layer > 96 then lava_layer = 96 end
+	if lava_layer > 88 then lava_layer = 88 end
 	if concrete_layer > 216 then concrete_layer = 216 end
 	return (23 - steel_layer) +
-		(96 - lava_layer) +
+		(88 - lava_layer) +
 		(216 - concrete_layer) 
 end
-
+--[[note: the 88 lava instead of 96 is so that the refuel ladder can have can have 8 blocks around it to protect it from the lava (see below)
+b=none meltable block
+l=ladder
+L=lava
+L,L,L,L,L,L,L
+L,L,L,L,L,L,L
+L,L,b,b,b,L,L
+L,L,b,l,b,L,L
+L,L,b,b,b,L,L
+L,L,L,L,L,L,L
+L,L,L,L,L,L,L
+also the 2 missing steel are becuase you cant swim thru steel (obviously)
+--]]
 
 
 local function check_environment(pos, meta)
@@ -708,7 +720,7 @@ if not reactor.run_once then
 		}
 	})
 
-  local c = "breeder:core2"
+  local c = "breeder:core"
   local f = machines.modpath .. "/thorium_reactor.lua"
   reload.register_file(c, f, false)
 

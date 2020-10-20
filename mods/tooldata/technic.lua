@@ -10,7 +10,7 @@ tech = {
 	windy={power=60, buffer=1000},
 	tidal={power=50, buffer=1000},
 
-	reactor2={power=10000, time=10, totaltime=60*60*24*10, buffer=30000},
+	breeder={power=10000, time=10, totaltime=60*60*24*10, buffer=30000},
     reactor={power=10000, time=5, totaltime=60*60*24*7, buffer=60000},
 	converter={power=1000, buffer=50000},
 

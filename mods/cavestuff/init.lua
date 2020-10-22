@@ -457,7 +457,7 @@ minetest.register_node("cavestuff:glow_obsidian_brick", {
 })
 
 minetest.register_craft({
-	output = "cavestuff:glow_obsidian_brick",
+	output = "cavestuff:glow_obsidian_brick 4",
 	recipe = {
 		{"cavestuff:glow_obsidian", "cavestuff:glow_obsidian"},
 		{"cavestuff:glow_obsidian", "cavestuff:glow_obsidian"},

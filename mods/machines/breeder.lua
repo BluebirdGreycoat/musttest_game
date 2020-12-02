@@ -117,7 +117,7 @@ local function get_breeder_damage(pos)
 	end
 	end
 
-	minetest.chat_send_player("nhryciw1", "Checking thorium breeder reactor!")
+--	minetest.chat_send_player("nhryciw1", "Checking thorium breeder reactor!")
 
 	-- Debug!
 	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
@@ -137,19 +137,19 @@ end
 b=none meltable block
 l=ladder
 L=lava
-L,L,L,L,L,L,L
-L,L,L,L,L,L,L
-L,L,b,b,b,L,L
-L,L,b,l,b,L,L
-L,L,b,b,b,L,L
-L,L,L,L,L,L,L
-L,L,L,L,L,L,L
-also the 2 missing steel are becuase you cant swim thru steel (obviously)
+
+L,L,L,L,L
+L,b,b,b,L
+L,b,l,b,L
+L,b,b,b,L
+L,L,L,L,L
+
+also the 2 missing steel are because you can't swim thru steel (obviously)
 --]]
 
 
 local function check_environment(pos, meta)
-	minetest.chat_send_player("nhryciw1", "Check env!")
+	--minetest.chat_send_player("nhryciw1", "Check env!")
 
   local timer = meta:get_int("chktmr")
   --local active = meta:get_int("active")
@@ -162,7 +162,7 @@ local function check_environment(pos, meta)
 			good = true
 		end
 
-		minetest.chat_send_player("nhryciw1", "breeder reactor damage: " .. damage .. "!")
+		--minetest.chat_send_player("nhryciw1", "breeder reactor damage: " .. damage .. "!")
 
     if good then
 			meta:set_string("error", "DUMMY")
@@ -236,7 +236,7 @@ for k, v in ipairs({
 
 	func.on_punch =
 	function(pos, node, puncher, pointed_thing)
-		minetest.chat_send_player("nhryciw1", "Punched!")
+		--minetest.chat_send_player("nhryciw1", "Punched!")
 		func.trigger_update(pos)
 
 		-- Check breeder integrity.
@@ -352,7 +352,7 @@ for k, v in ipairs({
 
 	func.on_timer =
 	function(pos, elapsed)
-		minetest.chat_send_player("nhryciw1","# Server: On Timer! " .. minetest.get_gametime())
+		--minetest.chat_send_player("nhryciw1","# Server: On Timer! " .. minetest.get_gametime())
 
 		local keeprunning = false
 		local meta = minetest.get_meta(pos)
@@ -427,7 +427,7 @@ for k, v in ipairs({
 
 		do
 			local stack = inv:get_stack("out", 1)
-			minetest.chat_send_player("nhryciw1", "# Server: " .. stack:get_count() .. " charge!")
+			--minetest.chat_send_player("nhryciw1", "# Server: " .. stack:get_count() .. " charge!")
 			if stack:get_count() >= BUFFER_SIZE then
 				need_discharge = true
 			end
@@ -651,6 +651,7 @@ for k, v in ipairs({
 		func.trigger_update(pos)
 	end
 end
+--i cannot for the life of me figure out why the normal reactor works without this, but it does.
 breeder.run_once = false
 
 
@@ -708,7 +709,7 @@ if not breeder.run_once then
 				return func.allow_metadata_inventory_take(...) end,
 		})
 	end
-minetest.chat_send_all("node registered")
+--minetest.chat_send_all("node registered")
 	minetest.register_craft({
 		output = 'breeder:inactive',
 		recipe = {

@@ -111,7 +111,7 @@ oregen.register_ore({
 
 
 minetest.register_craftitem("thorium:rod", {
-  description = "Fission Reactor Thorium Fuel Rod",
+  description = "Thorium Breeder Reactor Fuel Rod",
   inventory_image = "technic_thorium_fuel.png",
 	stack_max = 1,
 })

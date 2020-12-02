@@ -4,7 +4,7 @@ minetest.register_node("uranium:ore", {
   tiles = {"default_stone.png^technic_uranium_mineral.png"},
   groups = utility.dig_groups("mineral", {melts = 1, ore = 1}),
   drop = "uranium:lump",
-  sounds = default.node_sound_stone_defaults(),
+  sounds = default.node_sound_metal_defaults(),
 	silverpick_drop = true,
 	
 	-- Uranium in stone reacts badly to lava.

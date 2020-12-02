@@ -24,7 +24,7 @@ minetest.register_node("thorium:block", {
   description = "Thorium Block",
   tiles = {"technic_thorium_block.png"},
   groups = utility.dig_groups("block"),
-  sounds = default.node_sound_stone_defaults(),
+  sounds = default.node_sound_metal_defaults(),
 })
 
 minetest.register_craftitem("thorium:lump", {
@@ -119,7 +119,7 @@ minetest.register_craftitem("thorium:rod", {
 minetest.register_craft({
   type = "compressing",
   output = "thorium:rod",
-  recipe = "thorium:ingot 12",
-  time = 60,
+  recipe = "thorium:ingot 16",
+  time = 80,
 })
 

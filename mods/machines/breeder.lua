@@ -123,9 +123,10 @@ local function get_breeder_damage(pos)
 	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
 	--	return 0
 	--end
-    minetest.chat_send_all(steel_layer)
-    minetest.chat_send_all(lava_layer)
-    minetest.chat_send_all(concrete_layer)
+
+	--minetest.chat_send_all(steel_layer)
+	--minetest.chat_send_all(lava_layer)
+	--minetest.chat_send_all(concrete_layer)
 	if steel_layer > 24 then steel_layer = 24 end
 	if lava_layer > 88 then lava_layer = 88 end
 	if concrete_layer > 216 then concrete_layer = 216 end
@@ -527,7 +528,7 @@ for k, v in ipairs({
 		-- unload the buffered energy.
 		if not keeprunning then
 			local energy = inv:get_stack("out", 1)
-			energy:set_count(net2.put_energy(pos, owner, energy:get_count(), breeder_TIER))
+			energy:set_count(net2.put_energy(pos, owner, energy:get_count(), BREEDER_TIER))
 			inv:set_stack("out", 1, energy)
 		end
 
@@ -610,7 +611,7 @@ for k, v in ipairs({
 	function(pos)
 		local meta = minetest.get_meta(pos)
 		siren_set_state(pos, SS_OFF)
-		net2.clear_caches(pos, meta:get_string("owner"), breeder_TIER)
+		net2.clear_caches(pos, meta:get_string("owner"), BREEDER_TIER)
 		nodestore.del_node(pos)
 		if v.name == "active" then
 			func.breeder_destroy(pos)
@@ -626,7 +627,7 @@ for k, v in ipairs({
 		local owner = placer:get_player_name()
 		meta:set_string("nodename", node.name)
 		meta:set_string("owner", owner)
-		net2.clear_caches(pos, owner, breeder_TIER)
+		net2.clear_caches(pos, owner, BREEDER_TIER)
 		nodestore.add_node(pos)
 	end
 
@@ -710,14 +711,14 @@ if not breeder.run_once then
 		})
 	end
 --minetest.chat_send_all("node registered")
-	minetest.register_craft({
-		output = 'breeder:inactive',
-		recipe = {
-			{'techcrafts:carbon_plate',          'default:obsidian_glass', 'techcrafts:carbon_plate'},
-			{'techcrafts:composite_plate',       'gen2:mv_inactive', 'techcrafts:composite_plate'},
-			{'stainless_steel:ingot', 'geo2:lv_inactive',       'stainless_steel:ingot'},
-		}
-	})
+--	minetest.register_craft({
+--		output = 'breeder:inactive',
+--		recipe = {
+--			{'techcrafts:carbon_plate',          'default:obsidian_glass', 'techcrafts:carbon_plate'},
+--			{'techcrafts:composite_plate',       'gen2:mv_inactive', 'techcrafts:composite_plate'},
+--			{'stainless_steel:ingot', 'geo2:lv_inactive',       'stainless_steel:ingot'},
+--		}
+--	})
 
   local c = "breeder:core"
   local f = machines.modpath .. "/breeder.lua"

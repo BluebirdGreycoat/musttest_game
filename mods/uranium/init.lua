@@ -25,7 +25,7 @@ minetest.register_node("uranium:block", {
   description = "Uranium Block (Not Radioactive)",
   tiles = {"technic_uranium_block.png"},
   groups = utility.dig_groups("block"),
-  sounds = default.node_sound_stone_defaults(),
+  sounds = default.node_sound_metal_defaults(),
 })
 
 minetest.register_craftitem("uranium:lump", {

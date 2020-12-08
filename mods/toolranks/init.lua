@@ -291,6 +291,9 @@ if not toolranks.registered then
 	override_item("default:pick_bronze")
 	override_item("default:axe_bronze")
 	override_item("default:shovel_bronze")
+	override_item("default:pick_bronze2")
+	override_item("default:axe_bronze2")
+	override_item("default:shovel_bronze2")
 	override_item("default:pick_mese")
 	override_item("default:axe_mese")
 	override_item("default:shovel_mese")
@@ -311,6 +314,7 @@ if not toolranks.registered then
 	override_item("default:sword_stone")
 	override_item("default:sword_steel")
 	override_item("default:sword_bronze")
+	override_item("default:sword_bronze2")
 	override_item("default:sword_mese")
 	override_item("default:sword_diamond")
 

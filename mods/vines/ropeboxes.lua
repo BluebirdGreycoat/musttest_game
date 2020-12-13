@@ -113,6 +113,7 @@ minetest.register_node("vines:rope", {
 	drawtype = "plantlike",
 	groups = utility.dig_groups("ignore", {flammable=2, not_in_creative_inventory=1, always_stable=1}),
 	sounds =  default.node_sound_leaves_defaults(),
+	light_source = 1,
 
 	selection_box = {
 		type = "fixed",
@@ -168,6 +169,7 @@ minetest.register_node("vines:rope_bottom", {
 		type = "fixed",
 		fixed = {-1/7, -1/2, -1/7, 1/7, 1/2, 1/7},
 	},
+	light_source = 1,
 
 	-- The bottom node has a collision box so that the player doesn't fall off the
 	-- end when sliding downwards in darkness.
@@ -240,6 +242,7 @@ minetest.register_node("vines:rope_top", {
 	drawtype = "plantlike",
 	groups = utility.dig_groups("ignore", {not_in_creative_inventory=1, always_stable=1}),
 	sounds =  default.node_sound_leaves_defaults(),
+	light_source = 1,
 
 	selection_box = {
 		type = "fixed",

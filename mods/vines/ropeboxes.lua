@@ -120,6 +120,7 @@ minetest.register_node("vines:rope", {
 	},
 
 	movement_speed_multiplier = default.ROPE_SPEED,
+	_no_collapse_on_walkover = true,
 
 	-- If rope has broken (middle rope piece with no middle or bottom piece below)
 	-- then repair rope on punch.
@@ -176,6 +177,7 @@ minetest.register_node("vines:rope_bottom", {
 	},
 
 	movement_speed_multiplier = default.ROPE_SPEED,
+	_no_collapse_on_walkover = true,
 
 	on_construct = function( pos )
 		local timer = minetest.get_node_timer( pos )
@@ -245,6 +247,7 @@ minetest.register_node("vines:rope_top", {
 	},
 
 	movement_speed_multiplier = default.ROPE_SPEED,
+	_no_collapse_on_walkover = true,
 
 	on_construct = function( pos )
 		local timer = minetest.get_node_timer( pos )

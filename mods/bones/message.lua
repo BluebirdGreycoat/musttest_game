@@ -76,6 +76,10 @@ local msg_str2 = {
 	"threw out the book",
 	"met the grim reaper",
 	"ended life",
+
+	"met a sticky end",
+	"met a horrid end",
+	"met a terrifying end",
 }
 local function random_str(strs)
 	return strs[math_random(1, #strs)]

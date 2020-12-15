@@ -254,6 +254,7 @@ function anvil.on_punch(pos, node, puncher)
 
 	local hud2 = nil
 	local hud3 = nil
+
 	if( input:get_wear()>0 ) then
 		hud2 = puncher:hud_add({
 			hud_elem_type = "statbar",
@@ -275,13 +276,14 @@ function anvil.on_punch(pos, node, puncher)
 			offset = {x = -320, y = 0},
 			size = {x=32, y=32},
 		})
+
+		minetest.after(2, function()
+			if( puncher ) then
+				puncher:hud_remove(hud2)
+				puncher:hud_remove(hud3)
+			end
+		end)
 	end
-	minetest.after(2, function()
-		if( puncher ) then
-			puncher:hud_remove(hud2)
-			puncher:hud_remove(hud3)
-		end
-	end)
 
 	-- Tell the player when the job is done.
 	if (input:get_wear() == 0) then

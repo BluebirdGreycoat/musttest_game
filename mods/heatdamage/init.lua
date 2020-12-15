@@ -76,7 +76,7 @@ heatdamage.environment_scan = function(pos)
     for k, v in ipairs(cache) do
         if distance(pos, v.pos) < range then
             heatdamage.cache_hit = heatdamage.cache_hit + 1
-            return v.counts
+            return v.counts, v.lava
         end
     end
 
@@ -89,6 +89,7 @@ heatdamage.environment_scan = function(pos)
         {"group:lava", "group:flame"})
         
     local total = 0
+		local lava = 0
     
 		local get_node = minetest.get_node
     for k, v in ipairs(ps) do
@@ -96,12 +97,16 @@ heatdamage.environment_scan = function(pos)
         if is_exposed(v) then
             if n == "default:lava_source" then
                 total = total + 0.2
+								lava = lava + 1
             elseif n == "default:lava_flowing" then
                 total = total + 0.2
+								lava = lava + 1
             elseif n == "lbrim:lava_source" then
                 total = total + 0.15
+								lava = lava + 1
             elseif n == "lbrim:lava_flowing" then
                 total = total + 0.15
+								lava = lava + 1
             elseif n == "fire:basic_flame" then
                 total = total + 0.06
             elseif n == "fire:nether_flame" then
@@ -114,10 +119,10 @@ heatdamage.environment_scan = function(pos)
     
     -- Cache results for next time.
     local idx = #cache + 1
-    cache[idx] = {pos=loc, counts=total}
+    cache[idx] = {pos=loc, counts=total, lava=lava}
     
     heatdamage.cache_miss = heatdamage.cache_miss + 1
-    return total
+    return total, lava
 end
 
 
@@ -151,11 +156,19 @@ heatdamage.globalstep = function(dtime)
         if heatdamage.immune_players[name] == nil then
           if v:get_hp() > 0 then -- Don't bother if player already dead.
             -- Scan environment for nearby heat sources capable of causing damage to players.
-            local total = floor(scan(v:getpos()) + 0.5)
+            local total, lava = scan(v:get_pos())
+						total = floor(total + 0.5)
             
             if total > 0 then
 							sprint.set_stamina(v, 0)
 							v:set_hp(v:get_hp() - total * serverstep)
+
+							if lava and lava > 2 then
+								local p = minetest.find_node_near(v:get_pos(), 1, "air", true)
+								if p then
+									minetest.set_node(p, {name="fire:basic_flame"})
+								end
+							end
 
 							if v:get_hp() <= 0 then
 								-- Player died.

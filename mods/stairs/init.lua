@@ -676,6 +676,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		is_ground_content = false,
 		groups = groups,
 		sounds = sounds,
+		move_speed_stair = recipeitem,
 		light_source = math.ceil(ndef.light_source*0.75),
 		selection_box = {
 			type = "fixed",

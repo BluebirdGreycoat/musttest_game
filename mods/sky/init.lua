@@ -143,6 +143,18 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 						local def2 = ns_nodes[sdef.movement_speed_depends] or {}
 						if def2 then sdef = def2 end
 					end
+				elseif sdef.move_speed_stair then
+					-- Assume node is stair-like and has a standard 'flat' orientation.
+					local p2 = snode.param2
+					local is_flat = false
+					if p2 >= 20 and p2 <= 23 then
+						is_flat = true
+					end
+					if is_flat then
+						-- If stair is flat and has a parent type, use the parent type.
+						local def2 = ns_nodes[sdef.move_speed_stair] or {}
+						if def2 then sdef = def2 end
+					end
 				end
 
 				local smult = sdef.movement_speed_multiplier or default.NORM_SPEED

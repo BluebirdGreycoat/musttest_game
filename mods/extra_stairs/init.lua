@@ -48,3 +48,22 @@ for _, tree in ipairs(all_trees) do
 	)
 end
 
+-- Register a copy of this node for use with acacia trees sapling schematic.
+local acacia_branch = minetest.registered_nodes["stairs:slope_acacia_trunk_outer"]
+if acacia_branch then
+	acacia_branch = table.copy(acacia_branch)
+	acacia_branch.name = nil
+	acacia_branch.drop = "default:stick 10"
+
+	-- Acacia slopes left over from cut trees look pretty ugly.
+	-- This fixes them up and makes them slightly useful.
+	acacia_branch.on_finish_collapse = function(pos, node)
+		minetest.remove_node(pos)
+		minetest.add_item(pos, "default:stick " .. math.random(1, 10))
+	end
+	acacia_branch.on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, "default:stick " .. math.random(1, 10))
+	end
+
+	minetest.register_node(":basictrees:acacia_branch", acacia_branch)
+end

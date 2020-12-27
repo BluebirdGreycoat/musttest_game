@@ -6,10 +6,10 @@ function serveressentials.acacia_fixup(pos)
 		local n2 = minetest.get_node(vector.add(pos, {x=0,y=-1,z=0}))
 		if n2.name == "air" then
 			local positions = {
-				{pos={x=pos.x-1, y=pos.y-1, z=pos.z-1}, node={name="stairs:slope_acacia_trunk_outer", param2=22}},
-				{pos={x=pos.x-1, y=pos.y-1, z=pos.z+1}, node={name="stairs:slope_acacia_trunk_outer", param2=21}},
-				{pos={x=pos.x+1, y=pos.y-1, z=pos.z-1}, node={name="stairs:slope_acacia_trunk_outer", param2=23}},
-				{pos={x=pos.x+1, y=pos.y-1, z=pos.z+1}, node={name="stairs:slope_acacia_trunk_outer", param2=20}},
+				{pos={x=pos.x-1, y=pos.y-1, z=pos.z-1}, node={name="basictrees:acacia_branch", param2=22}},
+				{pos={x=pos.x-1, y=pos.y-1, z=pos.z+1}, node={name="basictrees:acacia_branch", param2=21}},
+				{pos={x=pos.x+1, y=pos.y-1, z=pos.z-1}, node={name="basictrees:acacia_branch", param2=23}},
+				{pos={x=pos.x+1, y=pos.y-1, z=pos.z+1}, node={name="basictrees:acacia_branch", param2=20}},
 			}
 			for k, v in ipairs(positions) do
 				local n3 = minetest.get_node(v.pos)
@@ -25,6 +25,8 @@ end
 
 -- The acacia tree schematic-from-sapling needs some help (because of falling-node physics).
 function serveressentials.fix_acacia_tree(minp, maxp)
+	if not minetest.registered_nodes["basictrees:acacia_branch"] then return end
+
 	for x = minp.x, maxp.x, 1 do
 		for y = minp.y, maxp.y, 1 do
 			for z = minp.z, maxp.z, 1 do

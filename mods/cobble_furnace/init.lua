@@ -9,6 +9,10 @@ local math_floor = math.floor
 
 -- Get active formspec.
 cobble_furnace.get_active_formspec = function(fuel_percent, item_percent)
+	-- Obtain hooks into the trash mod's trash slot inventory.
+	local ltrash, mtrash = trash.get_listname()
+	local itrash = trash.get_iconname()
+
   local formspec = 
     "size[8,8.5]"..
     default.formspec.get_form_colors() ..
@@ -33,6 +37,11 @@ cobble_furnace.get_active_formspec = function(fuel_percent, item_percent)
     "listring[context;fuel]"..
     "listring[current_player;main]"..
     default.get_hotbar_bg(0, 4.25)
+
+		-- Trash icon.
+		.. "list[" .. ltrash .. ";" .. mtrash .. ";0.75,0.5;1,1;]" ..
+		"image[0.75,0.5;1,1;" .. itrash .. "]"
+
   return formspec
 end
 

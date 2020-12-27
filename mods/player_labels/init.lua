@@ -203,8 +203,10 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       if gdac_invis.is_invisible(oname) == true then return end
 
 			local sex = skins.get_gender_strings(oname)
+			local xp_amount = xp.get_xp(oname, "digxp")
       
       minetest.chat_send_player(uname, "# Server: Player's alias is <" .. rename.gpn(oname) .. ">; " .. sex.his .. " login name is <" .. oname .. ">.")
+			minetest.chat_send_player(uname, "# Server: Player <" .. rename.gpn(oname) .. ">'s mineral XP is " .. xp_amount .. ".")
       minetest.chat_send_player(oname, "# Server: Player <" .. rename.gpn(uname) .. "> identified you.")
       
       refcount_increment(oname)

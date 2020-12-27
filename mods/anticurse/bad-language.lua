@@ -125,7 +125,10 @@ anticurse.foul = {
 		"smash", "english", "ar+ows", "dash", "ithink", "refresh", "enemys", "enemies",
 	}},
 
+	"s+h+i+t+h+e+a+d+",
+	"s+c+h+i+t+h+e+a+d+",
 	"s+c+h+i+t+",
+
   {word="p+oo+p+", white={"nincompoop"}},
   "l+e+s+b+i+a+n+",
   {word="k+i+k+e+", white={"keep", "key", "kennst", "ski"}},

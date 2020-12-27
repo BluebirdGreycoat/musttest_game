@@ -9,7 +9,8 @@ local math_floor = math.floor
 local math_random = math.random
 
 function snow.on_player_walk_over(pos, player)
-	minetest.swap_node(pos, {name="snow:footprints", param2=math_random(0, 3)})
+	local facedir = minetest.dir_to_facedir(player:get_look_dir())
+	minetest.swap_node(pos, {name = "snow:footprints", param2 = facedir})
 end
 
 function snow.on_dig(pos, node, digger)
@@ -362,6 +363,7 @@ function snow.get_snowfootdef()
 		local time = 60*60*24*7
 		local rand = math_random(60*60*1, 60*60*24)
 		minetest.get_node_timer(pos):start(time+rand)
+		return snow.on_player_walk_over(pos, player)
 	end
 	-- Snow with footprints turns back to snow if it falls.
 	def.on_finish_collapse = function(pos, node)

@@ -87,7 +87,7 @@ local origsnowdef = {
 	floodable = true,
 	walkable = true,
 	drawtype = "nodebox",
-	movement_speed_multiplier = default.SLOW_SPEED,
+	movement_speed_multiplier = default.SLOW_SPEED_SNOW_THICK,
 	_melts_to = "air",
 
 	-- All snow types should become `default:snow`.
@@ -217,11 +217,11 @@ for i = 1, 17, 1 do
 	end
 
 	if i <= 5 then
-		snow.snowdef[i].movement_speed_multiplier = default.NORM_SPEED
+		snow.snowdef[i].movement_speed_multiplier = default.SLOW_SPEED_SNOW_LIGHT
 	end
 
 	if i >= 6 and i <= 10 then
-		snow.snowdef[i].movement_speed_multiplier = default.SLOW_SPEED_NETHER
+		snow.snowdef[i].movement_speed_multiplier = default.SLOW_SPEED_SNOW
 	end
 	-- Deeper snow will default to `default.SLOW_SPEED`.
 
@@ -307,6 +307,12 @@ function snow.get_snowfootdef()
 
 	def.paramtype2 = "facedir"
 	def.on_rotate = false -- It would be silly if screwdriver could rotate this.
+
+	def.movement_speed_multiplier = def.movement_speed_multiplier +
+		default.SLOW_SPEED_SNOW_TRACKS_ADDITIVE
+	if def.movement_speed_multiplier > default.NORM_SPEED then
+		def.movement_speed_multiplier = default.NORM_SPEED
+	end
 
 	def.dumpnodes_tile = {"default_snow.png"}
 	def.tiles = {

@@ -148,7 +148,16 @@ minetest.register_craft({
 	output = "xdecor:lantern",
 	recipe = {
 		{"default:iron_lump"},
-		{"default:torch"},
+		{"torches:torch_floor"},
+		{"default:iron_lump"}
+	}
+})
+
+minetest.register_craft({
+	output = "xdecor:lantern",
+	recipe = {
+		{"default:iron_lump"},
+		{"torches:kalite_torch_floor"},
 		{"default:iron_lump"}
 	}
 })

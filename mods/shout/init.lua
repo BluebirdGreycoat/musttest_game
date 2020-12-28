@@ -318,11 +318,17 @@ function shout.x(name, param)
 		return
 	end
 
+	-- Allow player to use channel speak even while gagged.
+	-- Rational: if the gagged player is on a channel with others,
+	-- then probably they're in a group together, or are related.
+	-- Chat between such shouldn't be blocked.
+	--[[
 	if command_tokens.mute.player_muted(name) then
 		minetest.chat_send_player(name, "# Server: You cannot talk while gagged!")
 		easyvend.sound_error(name)
 		return
 	end
+	--]]
 
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
 	if chat_core.check_language(name, param) then return end

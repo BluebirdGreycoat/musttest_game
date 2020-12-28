@@ -326,11 +326,16 @@ chat_core.handle_command_msg = function(name, param)
 		return -- Player doesn't have shout priv.
 	end
 
+	-- Gagged players cannot polute global chat, but PMs are allowed.
+	-- If an annoying pervert is PM'ing someone, that person should take advantage
+	-- of the ignore-list in their Key. Or use F2 if they don't have a Key.
+	--[[
 	if command_tokens.mute.player_muted(name) then
 		minetest.chat_send_player(name, "# Server: You are gagged at the moment.")
 		easyvend.sound_error(name)
 		return -- Player is muted.
 	end
+	--]]
 
 	local coord_string = generate_coord_string(name)
 

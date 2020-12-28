@@ -17,8 +17,6 @@ local math_random = math.random
 local fuel = {}
 
 
---all of the debug stuff this is going to send me will get annoying, but i want it in the beginning so i can monitor them.
-
 
 local SS_OFF = 0
 local SS_DANGER = 1
@@ -80,15 +78,14 @@ local function get_breeder_damage(pos)
 	local MinEdge, MaxEdge = vm:read_from_map(pos1, pos2)
 	local data = vm:get_data()
 	local area = VoxelArea:new({MinEdge=MinEdge, MaxEdge=MaxEdge})
-    
-	local c_air = minetest.get_content_id("air")
+
 	local c_concrete = minetest.get_content_id("concrete:concrete")
 	local c_steel = minetest.get_content_id("stainless_steel:block")
-	local c_lava_flowing = minetest.get_content_id("default:lava_flowing")
 	local c_lava_source = minetest.get_content_id("default:lava_source")
-    
-	local concrete_layer, lava_layer, steel_layer = 0, 0, 0
-    
+	local c_lava_flowing = minetest.get_content_id("default:lava_flowing")
+
+	local concrete_layer, steel_layer, lava_layer = 0, 0, 0
+
 	for z = pos1.z, pos2.z do
 	for y = pos1.y, pos2.y do
 	for x = pos1.x, pos2.x do
@@ -97,56 +94,40 @@ local function get_breeder_damage(pos)
 		   y == pos1.y+0 or y == pos2.y-0 or
 		   z == pos1.z+0 or z == pos2.z-0 then
 			if cid == c_concrete then
-					concrete_layer = concrete_layer + 1
+				concrete_layer = concrete_layer + 1
 			end
 		elseif x == pos1.x+1 or x == pos2.x-1 or
-			   y == pos1.y+1 or y == pos2.y-1 or
-		   	   z == pos1.z+1 or z == pos2.z-1 then
-				if cid == c_lava_source or cid == c_lava_flowing then
-				lava_layer = lava_layer + 1
+					 y == pos1.y+1 or y == pos2.y-1 or
+		       z == pos1.z+1 or z == pos2.z-1 then
+			if cid == c_steel then
+				steel_layer = steel_layer + 1
 			end
-
 		elseif x == pos1.x+2 or x == pos2.x-2 or
 		       y == pos1.y+2 or y == pos2.y-2 or
 		       z == pos1.z+2 or z == pos2.z-2 then
-			if cid == c_steel then
-				steel_layer = steel_layer + 1
+			if cid == c_lava_source or cid == c_lava_flowing then
+				lava_layer = lava_layer + 1
 			end
 		end
 	end
 	end
 	end
 
---	minetest.chat_send_player("nhryciw1", "Checking thorium breeder reactor!")
+	--minetest.chat_send_player("nhryciw1", "Checking thorium breeder reactor!")
 
 	-- Debug!
 	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
 	--	return 0
 	--end
 
-	--minetest.chat_send_all(steel_layer)
-	--minetest.chat_send_all(lava_layer)
-	--minetest.chat_send_all(concrete_layer)
-	if steel_layer > 24 then steel_layer = 24 end
-	if lava_layer > 88 then lava_layer = 88 end
+	if lava_layer > 24 then lava_layer = 24 end
+	if steel_layer > 96 then steel_layer = 96 end
 	if concrete_layer > 216 then concrete_layer = 216 end
-	return (24 - steel_layer) +
-		(88 - lava_layer) +
+	return (24 - lava_layer) +
+		(96 - steel_layer) +
 		(216 - concrete_layer) 
 end
---[[note: the 88 lava instead of 96 is so that the refuel ladder can have can have 8 blocks around it to protect it from the lava (see below)
-b=none meltable block
-l=ladder
-L=lava
 
-L,L,L,L,L
-L,b,b,b,L
-L,b,l,b,L
-L,b,b,b,L
-L,L,L,L,L
-
-also the 2 missing steel are because you can't swim thru steel (obviously)
---]]
 
 
 local function check_environment(pos, meta)
@@ -163,7 +144,7 @@ local function check_environment(pos, meta)
 			good = true
 		end
 
-		--minetest.chat_send_player("nhryciw1", "breeder reactor damage: " .. damage .. "!")
+		--minetest.chat_send_player("nhryciw1", "Breeder reactor damage: " .. damage .. "!")
 
     if good then
 			meta:set_string("error", "DUMMY")
@@ -222,7 +203,6 @@ for k, v in ipairs({
 				disable_drops = true,
 			})
 
-			
 		end)
 	end
 
@@ -258,7 +238,7 @@ for k, v in ipairs({
 			default.formspec.get_slot_colors() ..
 
 			"label[1,0.5;Thorium Rod Compartment]" ..
-			"list[context;fuel;1,1;3,6;]" ..
+			"list[context;fuel;1,1;3,2;]" ..
 
 			"image[4,1.5;1,1;default_furnace_fire_bg.png^[lowpart:" ..
 			(fuel_percent) .. ":default_furnace_fire_fg.png]" ..
@@ -287,7 +267,7 @@ for k, v in ipairs({
 		if not keeprunning then
 			output = 0
 		end
-		local infotext = "Thorium Breeder Reactor (" .. machine_state .. ")\n" ..
+		local infotext = "Breeder Reactor (" .. machine_state .. ")\n" ..
 			"Output: " .. output .. " EU Per/Sec"
 		local err = meta:get_string("error") or "DUMMY"
 		if err ~= "" and err ~= "DUMMY" then
@@ -295,7 +275,7 @@ for k, v in ipairs({
 		end
 		local damage = meta:get_int("damage")
 		if damage > 0 then
-			infotext = infotext .. "\nbreeder reactor damage: " .. damage .. "!"
+			infotext = infotext .. "\nReactor damage: " .. damage .. "!"
 		end
 		return infotext
 	end
@@ -510,7 +490,6 @@ for k, v in ipairs({
 
 		-- Discharge energy into the network.
 		if need_discharge then
-        
 			--minetest.chat_send_player("nhryciw1", "# Server: Discharging breeder reactor!")
 
 			local energy = inv:get_stack("out", 1)
@@ -711,18 +690,19 @@ if not breeder.run_once then
 		})
 	end
 --minetest.chat_send_all("node registered")
---	minetest.register_craft({
---		output = 'breeder:inactive',
---		recipe = {
---			{'techcrafts:carbon_plate',          'default:obsidian_glass', 'techcrafts:carbon_plate'},
---			{'techcrafts:composite_plate',       'gen2:mv_inactive', 'techcrafts:composite_plate'},
---			{'stainless_steel:ingot', 'geo2:lv_inactive',       'stainless_steel:ingot'},
---		}
---	})
+	minetest.register_craft({
+		output = 'breeder:inactive',
+		recipe = {
+			{'techcrafts:carbon_plate',          'default:obsidian_glass', 'techcrafts:carbon_plate'},
+			{'techcrafts:composite_plate',       'gen2:mv_inactive', 'techcrafts:composite_plate'},
+			{'stainless_steel:ingot', 'geo2:lv_inactive',       'stainless_steel:ingot'},
+		}
+	})
 
   local c = "breeder:core"
   local f = machines.modpath .. "/breeder.lua"
   reload.register_file(c, f, false)
-    breeder.run_once = true
+
+  breeder.run_once = true
 end
 

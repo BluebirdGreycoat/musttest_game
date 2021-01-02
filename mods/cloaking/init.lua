@@ -142,6 +142,12 @@ function cloaking.toggle_cloak(pname)
 		return
 	end
 
+	if gdac_invis.is_invisible(pname) then
+		minetest.chat_send_player(pname, "# Server: You are using the admin invisibility system! Invisibility mode will be disabled, first.")
+		minetest.chat_send_player(pname, "# Server: The delay involved in switching invisibility systems may allow you to be briefly seen.")
+		gdac_invis.toggle_invisibility(pname, "")
+	end
+
 	if not cloaking.players[pname] then
 		-- Enable cloak.
 		cloaking.players[pname] = true
@@ -154,6 +160,7 @@ function cloaking.toggle_cloak(pname)
 			visual_size = {x=0, y=0},
 			is_visible = false,
 			pointable = false,
+			show_on_minimap = false,
 		})
 
 		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))
@@ -172,6 +179,7 @@ function cloaking.toggle_cloak(pname)
 			visual_size = {x=1, y=1},
 			is_visible = true,
 			pointable = true,
+			show_on_minimap = true,
 		})
 
 		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))

@@ -70,6 +70,7 @@ local nametag_show = function(name)
     local col = {a=255, r=0, g=255, b=255}
     local txt = gdac_invis.gpn(obj:get_player_name())
     obj:set_nametag_attributes({color=col, text=txt})
+		obj:set_properties({show_on_minimap = true})
   end
 end
 
@@ -79,6 +80,7 @@ local nametag_hide = function(name)
     local col = {a=0, r=0, g=0, b=0}
     local txt = gdac_invis.gpn(obj:get_player_name())
     obj:set_nametag_attributes({color=col, text=txt})
+		obj:set_properties({show_on_minimap = false})
   end
 end
 
@@ -193,6 +195,7 @@ end
 player_labels.on_token_use = function(itemstack, user, pointed_thing)
   if not user then return end
   if not user:is_player() then return end
+	local pname = user:get_player_name()
 
   if pointed_thing.type == "object" then
     local object = pointed_thing.ref
@@ -201,6 +204,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       local oname = object:get_player_name()
       
       if gdac_invis.is_invisible(oname) == true then return end
+			if cloaking.is_cloaked(oname) then return end
 
 			local sex = skins.get_gender_strings(oname)
 			local xp_amount = xp.get_xp(oname, "digxp")
@@ -217,13 +221,21 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
     end
   end
 
-  if gdac_invis.is_invisible(user:get_player_name()) == true then
-    minetest.chat_send_player(user:get_player_name(), "# Server: Not while invisible!")
-		easyvend.sound_error(user:get_player_name())
+  if gdac_invis.is_invisible(pname) == true then
+    minetest.chat_send_player(pname, "# Server: You are currently invisible! Being invisible already hides your nametag.")
+		minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, stop being invisible.")
+		easyvend.sound_error(pname)
     return
   end
 
-  player_labels.toggle_nametag_broadcast(user:get_player_name())
+	if cloaking.is_cloaked(pname) then
+		minetest.chat_send_player(pname, "# Server: You are currently cloaked! Being cloaked already hides your nametag.")
+		minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, turn of your cloak.")
+		easyvend.sound_error(pname)
+		return
+	end
+
+  player_labels.toggle_nametag_broadcast(pname)
   return
 end
 

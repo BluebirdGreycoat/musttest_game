@@ -26,16 +26,18 @@ end
 
 
 gdac_invis.toggle_invisibility = function(name, param)
+	if cloaking.is_cloaked(name) then
+		minetest.chat_send_player(name, "# Server: You are currently cloaked! The cloak will be disabled, first.")
+		minetest.chat_send_player(name, "# Server: The delay involved in switching invisibility systems may allow you to be briefly seen.")
+		cloaking.toggle_cloak(name)
+	end
+
   local player = minetest.get_player_by_name(name)
   if player and player:is_player() then
     if not gdac_invis.players[name] then
       gdac_invis.players[name] = {}
 
-			-- Store player's current properties.
-			local playerproperties = player:get_properties()
-			--gdac_invis.players[name].collisionbox = playerproperties.collisionbox
-
-      --player_labels.disable_nametag_broadcast(name)
+      player_labels.disable_nametag(name)
       player:set_nametag_attributes({color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)})
       
       player:set_properties({
@@ -49,21 +51,20 @@ gdac_invis.toggle_invisibility = function(name, param)
 				collide_with_objects = false,
 				is_visible = false,
 				pointable = false,
+				show_on_minimap = false,
       })
       
       minetest.chat_send_player(name, "# Server: You become invisible!")
     else
-      player_labels.enable_nametag_broadcast(name)
+      player_labels.enable_nametag(name)
 
-			-- Restore player properties.
-			--local collisionbox = gdac_invis.players[name].collisionbox
       player:set_properties({
 				visual_size = {x=1, y=1},
         makes_footstep_sound = true,
-				--collisionbox = collisionbox,
 				collide_with_objects = true,
 				is_visible = true,
 				pointable = true,
+				show_on_minimap = true,
 			})
       gdac_invis.players[name] = nil
       

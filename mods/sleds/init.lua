@@ -156,6 +156,10 @@ function sleds.on_step(self, dtime)
 		self.v = 0
 	end
 
+	-- Update jump timer.
+	self.jump = (self.jump or 0) - dtime
+	if self.jump < 0 then self.jump = 0 end
+
 	-- Accelerate sled forwards if going downhill.
 	local is_flying = false
 	local last_y = self.y
@@ -189,6 +193,19 @@ function sleds.on_step(self, dtime)
 			self.object:set_yaw(yaw + (1 + dtime) * 0.03)
 		elseif ctrl.right then
 			self.object:set_yaw(yaw - (1 + dtime) * 0.03)
+		end
+
+		-- Allow sled to jump, if velocity high enough and
+		-- pilot hasn't already executed a jump.
+		if ctrl.jump and self.v > 6 and (self.jump or 0) <= 0 then
+			local sta = sprint.get_stamina(self.driver)
+			local stacost = 5
+			if sta >= stacost then
+				velo.y = velo.y + 6
+				self.v = self.v - 1 -- Knock velocity down a bit.
+				self.jump = 2 -- 2 second delay before pilot can jump again.
+				sprint.add_stamina(self.driver, -stacost)
+			end
 		end
 	end
 

@@ -118,6 +118,15 @@ function sprint.add_stamina(player, sta)
 	end
 end
 
+function sprint.get_stamina(player)
+	local pname = player:get_player_name()
+	if players[pname] then
+		local stamina = players[pname]["stamina"]
+		return stamina
+	end
+	return 0
+end
+
 function sprint.on_respawnplayer(player)
 	sprint.set_stamina(player, 0)
 	return true

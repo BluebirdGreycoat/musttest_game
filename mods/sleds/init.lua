@@ -169,7 +169,7 @@ function sleds.on_step(self, dtime)
 			local node = minetest.get_node({x=pos.x, y=pos.y-2, z=pos.z})
 			-- But not if sled is flying.
 			if node.name ~= "air" then
-				self.v = self.v + 0.1
+				self.v = self.v + 0.2
 			else
 				-- Don't compute driver controls if flying.
 				is_flying = true
@@ -203,7 +203,7 @@ function sleds.on_step(self, dtime)
 			if sta >= stacost then
 				velo.y = velo.y + 6
 				self.v = self.v - 1 -- Knock velocity down a bit.
-				self.jump = 0.5 -- Delay before pilot can jump again.
+				self.jump = 1.5 -- Delay before pilot can jump again.
 				sprint.add_stamina(self.driver, -stacost)
 			end
 		end

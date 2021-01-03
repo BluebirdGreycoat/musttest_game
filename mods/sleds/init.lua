@@ -203,7 +203,7 @@ function sleds.on_step(self, dtime)
 			if sta >= stacost then
 				velo.y = velo.y + 6
 				self.v = self.v - 1 -- Knock velocity down a bit.
-				self.jump = 2 -- 2 second delay before pilot can jump again.
+				self.jump = 0.5 -- Delay before pilot can jump again.
 				sprint.add_stamina(self.driver, -stacost)
 			end
 		end

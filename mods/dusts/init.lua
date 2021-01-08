@@ -119,6 +119,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+  type = "anvil",
+  output = 'dusts:coal 2',
+  recipe = 'default:coal_lump',
+})
+
+minetest.register_craft({
   type = "grinding",
   output = 'dusts:diamond 2',
   recipe = 'dusts:diamond_shard',
@@ -127,9 +133,15 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "grinding",
-  output = 'dusts:diamond_shard 3',
+  output = 'dusts:diamond_shard 9',
   recipe = 'default:diamond',
   time = 15,
+})
+
+minetest.register_craft({
+  type = "anvil",
+  output = 'dusts:diamond_shard 9',
+  recipe = 'default:diamond',
 })
 
 minetest.register_craft({

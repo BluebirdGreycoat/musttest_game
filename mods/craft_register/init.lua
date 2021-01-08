@@ -15,6 +15,7 @@ local registered_compressions = {}
 local registered_compression_groups = {}
 local registered_alloys = {}
 local registered_separables = {}
+local registered_hammerings = {}
 
 
 
@@ -30,6 +31,17 @@ minetest.register_craft = function(def)
       registered_mesefuels[def.recipe].burntime = def.burntime
       return
     end
+
+		if def.type == "anvil" then
+      local stack = string.split(def.recipe, " ")
+      local name = tostring(stack[1])
+      local count = tonumber(stack[2] or 1)
+
+			registered_hammerings[name] = {}
+			registered_hammerings[name].output = def.output
+			registered_hammerings[name].count = count
+			return
+		end
 
     if def.type == "coalfuel" then
       registered_coalfuels[def.recipe] = {}
@@ -359,6 +371,24 @@ minetest.get_all_craft_recipes = function(item)
     end
   end
 
+  -- Obtain all registered anvil recipes for this item.
+  for k, v in pairs(registered_hammerings) do
+    local name = ItemStack(v.output):get_name()
+    if item == name then
+      -- Make sure the table is ready for input.
+      -- (In case no previous recipes existed for this item.)
+      if not recipes then recipes = {} end
+
+      recipes[#recipes+1] = {
+        width = 1,
+        type = "anvil",
+        items = {k .. " " .. v.count},
+        output = v,
+        method = "normal",
+      }
+    end
+  end
+
   return recipes -- Nil is a valid return value.
 end
 
@@ -592,6 +622,29 @@ minetest.get_craft_result = function(def)
     else
       return {item=ItemStack({}), time=0}, {items={}}
     end
+  end
+
+  if m == "anvil" then
+    local name = i[1]:get_name()
+    if registered_hammerings[name] then
+      local count = registered_hammerings[name].count
+      if i[1]:get_count() < count then goto ugh end
+
+      local output = {}
+      local decinput = {}
+
+      output.item = registered_hammerings[name].output
+      output.time = 1 -- Has no meaning for hammer recipes, but cannot be 0!
+      output.replacements = {}
+
+      decinput.items = {}
+      decinput.items[1] = ItemStack(i[1]) -- Force copy.
+      decinput.items[1]:take_item(count)
+
+      return output, decinput
+		end
+    ::ugh::
+		return {item=ItemStack({}), time=0}, {items={}}
   end
 
   if m == "mesefuel" then

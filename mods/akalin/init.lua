@@ -48,6 +48,12 @@ minetest.register_craft({
   time = 10,
 })
 
+minetest.register_craft({
+  type = "anvil",
+  output = 'akalin:dust 2',
+  recipe = 'akalin:lump',
+})
+
 minetest.register_craftitem("akalin:ingot", {
   description = "Akalin Ingot",
   inventory_image = "gloopores_akalin_ingot.png",

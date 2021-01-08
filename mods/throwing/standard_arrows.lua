@@ -116,7 +116,7 @@ if not DISABLE_STEEL_ARROW then
 end
 
 if not DISABLE_DIAMOND_ARROW then
-	throwing_register_arrow_standard ('diamond', 'Diamond', 25, 0.97, 'default:diamond')
+	throwing_register_arrow_standard ('diamond', 'Diamond', 25, 0.97, 'dusts:diamond_shard', 2)
 end
 
 if not DISABLE_OBSIDIAN_ARROW then

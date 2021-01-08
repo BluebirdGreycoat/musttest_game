@@ -38,7 +38,9 @@ local update_item = function(pos, node)
     anvil.tmp.texture = inv:get_stack("input", 1):get_name()
     local e = minetest.env:add_entity(pos,"anvil:item")
     local yaw = math.pi*2 - node.param2 * math.pi/2
-    e:setyaw(yaw)
+    e:set_yaw(yaw)
+	else
+		remove_item(pos, node)
   end
 end
 
@@ -126,24 +128,31 @@ function anvil.allow_metadata_inventory_put(pos, listname, index, stack, player)
 		return 0
 	end
 
-	local meta = minetest.get_meta(pos)
-	if listname~="input" then
+	if listname ~= "input" then
 		return 0
 	end
-	if (listname=='input'
-		and (stack:get_wear() == 0
-		or minetest.get_item_group(stack:get_name(), "not_repaired_by_anvil") ~= 0
-		or stack:get_name() == "cans:water_can"
-		or stack:get_name() == "cans:lava_can" )) then
 
-		-- Report error if tool is not the wieldhand.
-		if stack:get_name() ~= "" then
-			local pname = player:get_player_name()
-			minetest.chat_send_player(pname, '# Server: This anvil is for damaged tools only.')
+	-- Enable use with anvil/hammer craft recipes.
+	local is_recipe = minetest.get_craft_result({method="anvil", width=1, items={stack}}).time ~= 0
+
+	if not is_recipe then
+		-- If not a recipe, it must be a valid tool type that can be repaired.
+		if (listname == 'input'
+			and (stack:get_wear() == 0
+			or minetest.get_item_group(stack:get_name(), "not_repaired_by_anvil") ~= 0
+			or stack:get_name() == "cans:water_can"
+			or stack:get_name() == "cans:lava_can" )) then
+
+			-- Report error if tool is not the wieldhand.
+			if stack:get_name() ~= "" then
+				local pname = player:get_player_name()
+				minetest.chat_send_player(pname, '# Server: Not a hammerable item or tool needing repair.')
+			end
+			return 0
 		end
-		return 0
 	end
 
+	local meta = minetest.get_meta(pos)
 	if meta:get_inventory():room_for_item("input", stack) then
 		return stack:get_count()
 	end
@@ -192,8 +201,8 @@ function anvil.on_rightclick(pos, node, clicker, itemstack)
 	end
 
 	local this_def = minetest.reg_ns_nodes[node.name]
-	if this_def.allow_metadata_inventory_put(pos, "input", 1, itemstack:peek_item(), clicker) > 0 then
-		local s = itemstack:take_item()
+	if this_def.allow_metadata_inventory_put(pos, "input", 1, itemstack, clicker) > 0 then
+		local s = itemstack:take_item(itemstack:get_count())
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
 		inv:add_item("input", s)
@@ -201,6 +210,8 @@ function anvil.on_rightclick(pos, node, clicker, itemstack)
 	end
 	return itemstack
 end
+
+
 
 function anvil.on_punch(pos, node, puncher)
 	if( not( pos ) or not( node ) or not( puncher )) then
@@ -231,31 +242,31 @@ function anvil.on_punch(pos, node, puncher)
 	if wieldname ~= 'anvil:hammer' and wieldname ~= "xdecor:hammer" then
 		return
 	end
-	local hammerwear = 300
-	-- The xdecor hammer wears out faster (it is cheaper to craft).
-	if wieldname == "xdecor:hammer" then
-		hammerwear = 1000
-	end
 
-	local input = inv:get_stack('input',1)
+	local input = inv:get_stack('input', 1)
+	local cr, ci = minetest.get_craft_result({method="anvil", width=1, items={input}})
+	local is_recipe = cr.time ~= 0
 
 	-- Only tools can be repaired.
-	if( not( input )
-	or input:is_empty()
-			or input:get_name() == "cans:water_can"
-			or input:get_name() == "cans:lava_can" ) then
-		return
+	-- Also allow recipe input.
+	if not is_recipe then
+		if ( not( input )
+		or input:is_empty()
+				or input:get_name() == "cans:water_can"
+				or input:get_name() == "cans:lava_can" ) then
+			return
+		end
 	end
 
-	-- 65535 is max damage.
-	local damage_state = 40-math_floor(input:get_wear()/1638)
+	-- Show wear-status HUD element only if repairing a tool.
+	if not is_recipe and input:get_wear() > 0 then
+		-- 65535 is max damage.
+		local damage_state = 40-math_floor(input:get_wear()/1638)
 
-	local tool_name = input:get_name()
+		local hud2 = nil
+		local hud3 = nil
+		local pname = puncher:get_player_name()
 
-	local hud2 = nil
-	local hud3 = nil
-
-	if( input:get_wear()>0 ) then
 		hud2 = puncher:hud_add({
 			hud_elem_type = "statbar",
 			text = "default_cloud.png^[colorize:#ff0000:256",
@@ -278,7 +289,8 @@ function anvil.on_punch(pos, node, puncher)
 		})
 
 		minetest.after(2, function()
-			if( puncher ) then
+			local puncher = minetest.get_player_by_name(pname)
+			if puncher and puncher:is_player() then
 				puncher:hud_remove(hud2)
 				puncher:hud_remove(hud3)
 			end
@@ -286,17 +298,23 @@ function anvil.on_punch(pos, node, puncher)
 	end
 
 	-- Tell the player when the job is done.
-	if (input:get_wear() == 0) then
-		local tool_desc
-		if minetest.registered_items[tool_name] and minetest.registered_items[tool_name].description then
-			tool_desc = utility.get_short_desc(minetest.registered_items[tool_name].description)
-		else
-			tool_desc = tool_name
+	local tool_name = input:get_name()
+	if minetest.registered_tools[tool_name] then
+		if not is_recipe and input:get_wear() == 0 then
+			local tool_desc = "Unknown Tool"
+
+			if minetest.registered_items[tool_name] and minetest.registered_items[tool_name].description then
+				tool_desc = utility.get_short_desc(minetest.registered_items[tool_name].description)
+			end
+
+			local pname = puncher:get_player_name()
+			minetest.chat_send_player(pname, '# Server: Your "' .. tool_desc .. '" has been repaired successfully.')
+			return
 		end
-		local pname = puncher:get_player_name()
-		minetest.chat_send_player(pname, '# Server: Your `' .. tool_desc .. '` has been repaired successfully.')
-		return
-	else
+	end
+
+	-- Show sparks if repairing a tool or crafting an item.
+	if is_recipe or input:get_wear() > 0 then
 		pos.y = pos.y + item_displacement
 		ambiance.sound_play("anvil_clang", pos, 1.0, 30)
 		minetest.add_particlespawner({
@@ -318,17 +336,48 @@ function anvil.on_punch(pos, node, puncher)
 		})
 	end
 
-	-- Do the actual repair.
-	input:add_wear( -1500 )
-	inv:set_stack("input", 1, input)
+	if not is_recipe then
+		-- Do the actual repair.
+		input:add_wear( -1500 )
+		inv:set_stack("input", 1, input)
+	else
+		-- Hammer is being used for crafting!
+		local p = {x=pos.x, y=pos.y + 0.5, z=pos.z}
+		local r = minetest.add_item(p, cr.item)
+		if r then
+			r:add_velocity({
+				x = math_random(-1, 1),
+				y = 2,
+				z = math_random(-1, 1),
+			})
+			local rs = ci.items[1]
+			if rs:get_count() > 0 then
+				inv:set_stack("input", 1, rs)
+				update_item_if_needed(pos, node)
+			else
+				inv:set_stack("input", 1, ItemStack(""))
+				remove_item(pos, node)
+			end
+		end
+	end
 
 	-- Damage the hammer slightly.
+	local hammerwear = 300
+	-- The xdecor hammer wears out faster (it is cheaper to craft).
+	if wieldname == "xdecor:hammer" then
+		hammerwear = 1000
+	end
+	-- Wear is less if hammer is used for crafting.
+	if is_recipe then hammerwear = hammerwear / 3 end
+	-- Now apply damage to hammer and update wielded item.
 	wielded:add_wear(hammerwear)
 	if wielded:is_empty() then
 		ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
 	end
-	puncher:set_wielded_item( wielded )
+	puncher:set_wielded_item(wielded)
 end
+
+
 
 if not anvil.registered then
 	minetest.register_alias("castle:anvil", "anvil:anvil")

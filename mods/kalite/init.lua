@@ -65,6 +65,12 @@ minetest.register_craft({
   time = 10,
 })
 
+minetest.register_craft({
+  type = "anvil",
+  output = 'kalite:dust 2',
+  recipe = 'kalite:lump',
+})
+
 minetest.register_craftitem("kalite:ingot", {
   description = "Compressed Kalite",
   inventory_image = "glooptest_compressed_kalite.png",

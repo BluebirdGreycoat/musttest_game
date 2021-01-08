@@ -48,6 +48,12 @@ minetest.register_craft({
   time = 10,
 })
 
+minetest.register_craft({
+  type = "anvil",
+  output = 'arol:dust 2',
+  recipe = 'arol:lump',
+})
+
 minetest.register_craftitem("arol:ingot", {
   description = "Arol Ingot",
   inventory_image = "gloopores_arol_ingot.png",

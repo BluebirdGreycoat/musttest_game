@@ -167,6 +167,7 @@ zcg.formspec = function(pn)
           c.type == "alloying" or
           c.type == "separating" or
           c.type == "compressing" or
+					c.type == "anvil" or
 					c.type == "crushing" then
           formspec = formspec .. "image[6,2.5;1,1;zcg_method_"..c.type..".png]"
         else -- we don't have an image for other types of crafting
@@ -191,6 +192,8 @@ zcg.formspec = function(pn)
           formspec = formspec .. "label[0,2.5;Method: Alloying]"
         elseif c.type == "separating" then
           formspec = formspec .. "label[0,2.5;Method: Separating]"
+        elseif c.type == "anvil" then
+          formspec = formspec .. "label[0,2.5;Method: Hammering]"
         end
 
 				if type(c.result) == "string" then

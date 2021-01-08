@@ -235,6 +235,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "anvil",
+	output = 'default:paper',
+	recipe = 'default:papyrus 2',
+})
+
+minetest.register_craft({
 	output = 'default:ladder_wood 3',
 	recipe = {
 		{'group:stick', '', 'group:stick'},
@@ -306,23 +312,18 @@ minetest.register_craft({
     })
 	   --]]
 
-		---[[
 minetest.register_craft({
+	type = "anvil",
 	output = 'default:mese_crystal_fragment 9',
-	recipe = {
-		{'default:mese_crystal'},
-	}
+	recipe = 'default:mese_crystal',
 })
-		   --]]
 
-		--[[
-    minetest.register_craft({
-      type = "grinding",
-      output = "default:mese_crystal_fragment 9",
-      recipe = "default:mese_crystal",
-      time = 10,
-    })
-		   --]]
+minetest.register_craft({
+	type = "grinding",
+	output = "default:mese_crystal_fragment 9",
+	recipe = "default:mese_crystal",
+	time = 10,
+})
 
 minetest.register_craft({
 	output = "default:mese_crystal",
@@ -352,6 +353,12 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "grinding",
+	output = 'default:obsidian_shard 9',
+	recipe = 'default:obsidian',
+})
+
+minetest.register_craft({
+  type = "anvil",
 	output = 'default:obsidian_shard 9',
 	recipe = 'default:obsidian',
 })

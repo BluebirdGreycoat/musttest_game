@@ -28,8 +28,14 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+  type = "anvil",
+  output = 'sulfur:dust 2',
+  recipe = 'sulfur:lump',
+})
+
+minetest.register_craft({
   type = "crushing",
-  output = 'sulfur:dust 4',
+  output = 'sulfur:dust 6',
   recipe = 'sulfur:lump',
 	time = 60*1.5,
 })

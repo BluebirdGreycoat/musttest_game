@@ -48,6 +48,12 @@ minetest.register_craft({
   time = 10,
 })
 
+minetest.register_craft({
+  type = "anvil",
+  output = 'alatro:dust 2',
+  recipe = 'alatro:lump',
+})
+
 minetest.register_craftitem("alatro:ingot", {
   description = "Alatro Ingot",
   inventory_image = "gloopores_alatro_ingot.png",

@@ -125,7 +125,7 @@ function ingots.register_ingots(ingot_item, texture, is_big)
 			-- Horizontal rotation only!
 			on_rotate = screwdriver.rotate_simple,
 
-			groups = {cracky = 3, level = 2, not_in_creative_inventory = 1},
+			groups = {cracky = 3, level = 2, not_in_creative_inventory = 1, falling_node = 1},
 			drop = ingot_item .. " " .. i,
 			on_punch = function (pos, node, puncher, pointed_thing)
 				if puncher then

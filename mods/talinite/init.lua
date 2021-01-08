@@ -49,6 +49,12 @@ minetest.register_craft({
   time = 10,
 })
 
+minetest.register_craft({
+  type = "anvil",
+  output = 'talinite:dust 2',
+  recipe = 'talinite:lump',
+})
+
 minetest.register_craftitem("talinite:ingot", {
   description = "Talinite Ingot",
   inventory_image = "gloopores_talinite_ingot.png",

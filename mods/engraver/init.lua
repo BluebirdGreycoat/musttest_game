@@ -525,3 +525,9 @@ minetest.register_craft({
 	time = 10,
 })
 
+minetest.register_craft({
+	type = "anvil",
+	output = "engraver:plate",
+	recipe = "default:bronze_ingot",
+})
+

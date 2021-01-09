@@ -1092,7 +1092,7 @@ if not ads.run_once then
 	reload.register_file(c, f, false)
 
 	minetest.register_node(":market:booth", {
-		description = "Networked Trade Kiosk\n\nA market kiosk enabling remote trading.\nCan also display public notices.",
+		description = "Networked Trade Kiosk\n\nA market kiosk enables remote trading.\nWill link with nearby vending/depositing machines.\nCan also display public notices.",
 		tiles = {
 			"easyvend_vendor_side.png",
 			"easyvend_vendor_side.png",

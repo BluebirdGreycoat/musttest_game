@@ -121,7 +121,7 @@ if minetest.get_modpath("screwdriver") ~= nil then
 end
 
 local vendor_on = table.copy(machine_template)
-vendor_on.description = "Vending Machine"
+vendor_on.description = "Vending Machine\n\nRemote trading possible; see Trade Kiosk."
 vendor_on.tiles ={"easyvend_vendor_bottom.png", "easyvend_vendor_bottom.png", "easyvend_vendor_side.png",
 	"easyvend_vendor_side.png", "easyvend_vendor_side.png", "easyvend_vendor_front_on.png"}
 vendor_on.groups.not_in_creative_inventory = 1
@@ -134,7 +134,7 @@ vendor_off.tiles = table.copy(vendor_on.tiles)
 vendor_off.tiles[6] = "easyvend_vendor_front_off.png"
 
 local depositor_on = table.copy(machine_template)
-depositor_on.description = "Depositing Machine"
+depositor_on.description = "Depositing Machine\n\nRemote trading possible; see Trade Kiosk."
 depositor_on.tiles ={"easyvend_depositor_bottom.png", "easyvend_depositor_bottom.png", "easyvend_depositor_side.png",
 	"easyvend_depositor_side.png", "easyvend_depositor_side.png", "easyvend_depositor_front_on.png"}
 depositor_on.groups.not_in_creative_inventory = 1

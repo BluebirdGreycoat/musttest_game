@@ -127,7 +127,10 @@ function exile.player_in_violation(pname)
 			if nearby_noncheater(pname, pos, 100) then
 				-- And they are in a city area ...
 				if city_block:in_city_suburbs(pos) then
-					return true
+					-- And not currently in jail ...
+					if not jail.is_player_in_jail(pref) then
+						return true
+					end
 				end
 			end
 		end

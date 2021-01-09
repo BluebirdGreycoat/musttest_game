@@ -359,21 +359,6 @@ end
 
 
 
-local in_jail = function(pos)
-	-- Surface jail.
-	if pos.y <= -48 and pos.y >= -52 then
-		if pos.x >= -11 and pos.x <= 11 and pos.z >= -11 and pos.z <= 11 then
-			return true
-		end
-	end
-	-- Nether jail.
-	if pos.y <= -30760 and pos.y >= -30770 then
-		if pos.x >= -11 and pos.x <= 11 and pos.z >= -11 and pos.z <= 11 then
-			return true
-		end
-	end
-end
-
 function city_block.hit_possible(p1pos, p2pos)
 	-- Range limit, stops hackers with long reach.
 	if vector_distance(p1pos, p2pos) > 5 then
@@ -428,7 +413,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- PvP is disabled for players in jail. This fixes a possible way to exploit jail.
-	if in_jail(p1pos) or in_jail(p2pos) then
+	if jail.is_player_in_jail(hitter) or jail.is_player_in_jail(player) then
 		minetest.chat_send_player(hitter:get_player_name(), "# Server: Brawling is not allowed in jail. This is colony law.")
 		return true
 	end

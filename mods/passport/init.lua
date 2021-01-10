@@ -109,6 +109,7 @@ passport.compose_formspec = function(pname)
 	local beacons = {}
 	if pref then
 		local player_pos = pref:get_pos()
+		-- Shall return an empty table if there are no beacons.
 		beacons = teleports.nearest_beacons_to_position(player_pos, 6, 1024)
 	end
 	passport.player_recalls[pname] = passport.beacons_to_recalls(beacons)
@@ -392,7 +393,7 @@ end
 passport.attempt_teleport = function(player, data)
   local pp = player:get_pos()
   local nn = player:get_player_name()
-  local tg = data.position(player)
+  local tg = data.position(player) -- May return nil.
 	local recalls = passport.player_recalls[nn]
 
 	if not recalls then
@@ -423,22 +424,28 @@ passport.attempt_teleport = function(player, data)
   
 	-- Is player too close to custom (player-built) recalls?
   for k, v in ipairs(recalls) do
-    if vector_distance(pp, v.position(player)) < v.min_dist then
-      if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
-      minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
-			easyvend.sound_error(nn)
-      return -- Too close to a beacon.
-    end
+		local vpp = v.position(player) -- May return nil.
+		if vpp then
+			if vector_distance(pp, vpp) < v.min_dist then
+				if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
+				minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
+				easyvend.sound_error(nn)
+				return -- Too close to a beacon.
+			end
+		end
   end
   
 	-- Is player too close to builtin (server) recalls?
   for k, v in ipairs(passport.recalls) do
-    if vector_distance(pp, v.position(player)) < v.min_dist then
-      if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
-      minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
-			easyvend.sound_error(nn)
-      return -- Too close to a beacon.
-    end
+		local vpp = v.position(player) -- May return nil.
+		if vpp then
+			if vector_distance(pp, vpp) < v.min_dist then
+				if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
+				minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
+				easyvend.sound_error(nn)
+				return -- Too close to a beacon.
+			end
+		end
   end
 
   if vector_distance(pp, tg) > PASSPORT_TELEPORT_RANGE then

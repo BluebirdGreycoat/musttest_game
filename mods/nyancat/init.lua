@@ -66,7 +66,7 @@ function nyancat.generate(minp, maxp, seed)
 			local y0 = pr:next(minp.y, maxp.y)
 			local z0 = pr:next(minp.z, maxp.z)
 			local p0 = {x = x0, y = y0, z = z0}
-			nyancat.place(p0, pr:next(0, 3), pr:next(3, 15))
+			nyancat.place(p0, pr:next(0, 3), pr:next(3, 8))
 		end
 	end
 end

@@ -1,3 +1,34 @@
+[2021/1/10] Made oil extract compressible from certain seeds.
+[2021/1/10] Updated mapgen messages to annoyingly blame players now. :)
+[2021/1/10] Rosestone teleports now require fuel, but are still more fuel-efficient than other types of teleports.
+[2021/1/10] Reduced the average length of rosestone (formerly nyan) spawns. The reason for this change is that, due to huge caverns, nyans were much easier to find than before large caverns were added to Minetest, several years ago. This change should hopefully make the number of nyan rainbows smaller, making them more valuable.
+[2021/1/10] Reduced the range of obsidian gate hops so they're less powerful. This does not affect existing gates, of course.
+[2021/1/10] Allow mushrooms to be grown on mossy cobble, where they are naturally found.
+[2021/1/10] Gave a separate name to the brimstone ocean, "Abyssal Plain".
+[2021/1/10] Updated the formspec shown to players on join. Political censorship and associated purges is/are TERRIBLE and has always led to very bad things. I don't know of any historical exceptions.
+[2021/1/9] Renamed nyan cats to Glowing Rosestone Seed/Tail. This is partly due to trademark issues, and partly because the rainbows were just too ugly and silly.
+[2021/1/9] Removed the ability to burn nyan cats/rainbows in the furnace. Who thought that was a good idea?
+[2021/1/9] Players can't steal nyan cat heads out of teleports.
+[2021/1/9] Allowed players to construct their own recall beacons using nyan cats and teleports. Put a cat head in the fuel slot to make it a recall beacon.
+[2021/1/9] Enabled using nyan cat heads in teleports as infinite fuel.
+[2021/1/9] Players may now create their own jails. Place 8 griefer-stone with a city-block in the middle, and then punch the city-block with 8 nyan cat heads. Jails now have a range, and crimes committed too far from a jail won't be punished. The server's hardcoded jail has been changed to a city-block jail.
+[2021/1/8] Various bugfixes.
+[2021/1/7] Made the anvil more useful. The anvil is now used to craft some items.
+[2021/1/3] Made the sled a bit easier to use, and allow it to jump up shallow slopes. You have to press and hold the jump button, of course.
+[2021/1/2] Various cloaking/invisibility bugfixes.
+[2020/12/27] Added more-or-less finished thorium reactor machine (player-contributed).
+[2020/12/27] The nametag show/hide tool now lets a player discover how much XP another player has.
+[2020/12/27] Added a trash slot to regular furnace formspecs.
+[2020/12/27] Tracks in snow now always face the direction of player travel. This should make it much easier to tell the direction a player was going when you come across tracks in the wilderness.
+[2020/12/27] Improved usefulness/realism of snow tracks in regard to player's walking speed.
+[2020/12/27] Improved the movespeed calculation for stairs nodes.
+[2020/12/27] Fixed up acacia trees. The sloped branches are actually useful now, and don't clutter up the landscape, especially in the Outback.
+[2020/12/12] Made it so ropes can be seen in the dark.
+[2020/12/12] Fixed bug where ropes could collapse. Ooops!
+[2020/12/7] Added the first version of the thorium reactor (player-contributed).
+[2020/10/23] Bronze tools added to tool-ranks (player-contributed).
+[2020/10/8] Take a stab at fixing a portal sickness bug (player-contributed).
+[2020/10/4] Added a bunch of player-contributed stuff regarding plants/flowers.
 [2020/9/13] No longer possible to accidentally trash tools with custom descriptions or rank higher than level 1.
 [2020/9/6] Update AC to correct false positives caused by bouncers.
 [2020/9/2] Two more microblock shapes for table saw.

@@ -32,18 +32,6 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 	sounds = default.node_sound_defaults(),
 })
 
-minetest.register_craft({
-	type = "fuel",
-	recipe = "nyancat:nyancat",
-	burntime = 1,
-})
-
-minetest.register_craft({
-	type = "fuel",
-	recipe = "nyancat:nyancat_rainbow",
-	burntime = 1,
-})
-
 nyancat = {}
 
 function nyancat.place(pos, facedir, length)

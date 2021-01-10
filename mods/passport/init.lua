@@ -411,7 +411,7 @@ passport.attempt_teleport = function(player, data)
 		return
 	end
   
-  for k, v in pairs(recalls) do
+  for k, v in ipairs(recalls) do
     if v.suppress then
       if v.suppress(nn) then
         minetest.chat_send_player(nn, "# Server: Beacon signal is jammed and cannot be triangulated.")
@@ -422,7 +422,7 @@ passport.attempt_teleport = function(player, data)
   end
   
 	-- Is player too close to custom (player-built) recalls?
-  for k, v in pairs(recalls) do
+  for k, v in ipairs(recalls) do
     if vector_distance(pp, v.position(player)) < v.min_dist then
       if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
       minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
@@ -432,7 +432,7 @@ passport.attempt_teleport = function(player, data)
   end
   
 	-- Is player too close to builtin (server) recalls?
-  for k, v in pairs(passport.recalls) do
+  for k, v in ipairs(passport.recalls) do
     if vector_distance(pp, v.position(player)) < v.min_dist then
       if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
       minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")

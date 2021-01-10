@@ -421,15 +421,26 @@ passport.attempt_teleport = function(player, data)
     end
   end
   
+	-- Is player too close to custom (player-built) recalls?
   for k, v in pairs(recalls) do
     if vector_distance(pp, v.position(player)) < v.min_dist then
       if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
       minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
 			easyvend.sound_error(nn)
-      return -- To close to a beacon.
+      return -- Too close to a beacon.
     end
   end
   
+	-- Is player too close to builtin (server) recalls?
+  for k, v in pairs(passport.recalls) do
+    if vector_distance(pp, v.position(player)) < v.min_dist then
+      if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
+      minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
+			easyvend.sound_error(nn)
+      return -- Too close to a beacon.
+    end
+  end
+
   if vector_distance(pp, tg) > PASSPORT_TELEPORT_RANGE then
     if data.on_failure then data.on_failure(nn, "too_far", data.tname) end
 		local dist = math_floor(vector_distance(pp, tg))

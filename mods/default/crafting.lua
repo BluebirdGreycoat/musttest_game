@@ -241,6 +241,13 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "compressing",
+	output = 'default:paper',
+	recipe = 'default:papyrus 2',
+	time = 5,
+})
+
+minetest.register_craft({
 	output = 'default:ladder_wood 3',
 	recipe = {
 		{'group:stick', '', 'group:stick'},

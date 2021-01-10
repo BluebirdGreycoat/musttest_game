@@ -19,7 +19,7 @@ minetest.register_node("nyancat:nyancat", {
 })
 
 minetest.register_node("nyancat:nyancat_rainbow", {
-	description = "Nyan Cat Rainbow",
+	description = "Glowing Rosestone",
 	tiles = {
 		"nyancat_rainbow.png^[transformR90",
 		"nyancat_rainbow.png^[transformR90",

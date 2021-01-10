@@ -1,6 +1,6 @@
 
 minetest.register_node("griefer:grieferstone", {
-	description = "Oerkki Stone\n\nSummons the Oerkki from darkness into light.\nAn important component of gateway portals.",
+	description = "Oerkki Stone\n\nSummons Oerkki.\nGateway component.",
 	tiles = {
 		"griefer_stonetop.png",
 		"griefer_stonetop.png",
@@ -20,6 +20,7 @@ minetest.register_node("griefer:grieferstone", {
 	--]]
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
+		jail.notify_jail_destruct(pos)
 	end,
 })
 

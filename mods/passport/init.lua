@@ -352,7 +352,7 @@ passport.attempt_teleport = function(player, data)
   for k, v in pairs(passport.recalls) do
     if v.suppress then
       if v.suppress(nn) then
-        minetest.chat_send_player(nn, "# Server: Beacon signal is suppressed and cannot be triangulated.")
+        minetest.chat_send_player(nn, "# Server: Beacon signal is jammed and cannot be triangulated.")
 				easyvend.sound_error(nn)
         return -- Someone suppressed the ability to teleport.
       end

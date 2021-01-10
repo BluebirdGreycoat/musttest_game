@@ -15,7 +15,52 @@ city_block.modpath = minetest.get_modpath("city_block")
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
+local vector_add = vector.add
+local vector_equals = vector.equals
 local math_random = math.random
+
+
+
+function city_block.on_punch(pos, node, puncher, pt)
+	if not pos or not node or not puncher or not pt then
+		return
+	end
+
+	local pname = puncher:get_player_name()
+
+	if minetest.test_protection(pos, pname) then
+		return
+	end
+
+	local wielded = puncher:get_wielded_item()
+	if wielded:get_name() == "nyancat:nyancat" and wielded:get_count() >= 8 then
+		for i, v in ipairs(city_block.blocks) do
+			if vector_equals(v.pos, pos) then
+				if not v.is_jail then
+					local p1 = vector_add(pos, {x=-1, y=0, z=-1})
+					local p2 = vector_add(pos, {x=1, y=0, z=1})
+					local positions, counts = minetest.find_nodes_in_area(p1, p2, "griefer:grieferstone")
+
+					if counts["griefer:grieferstone"] == 8 then
+						v.is_jail = true
+						local meta = minetest.get_meta(pos)
+						local infotext = meta:get_string("infotext")
+						infotext = infotext .. "\nJail Marker"
+						meta:set_string("infotext", infotext)
+
+						city_block:save()
+
+						wielded:take_item(8)
+						puncher:set_wielded_item(wielded)
+
+						minetest.chat_send_player(pname, "# Server: Jail position marked!")
+						return
+					end
+				end
+			end
+		end
+	end
+end
 
 
 
@@ -114,6 +159,27 @@ function city_block:nearest_jails_to_position(pos, num, rangelim)
 	end
 	return ret
 end
+
+
+
+function city_block.erase_jail(pos)
+	pos = vector_round(pos)
+	local b = city_block.blocks
+	for k, v in ipairs(b) do
+		if vector_equals(pos, v.pos) then
+			local meta = minetest.get_meta(pos)
+			local pname = meta:get_string("owner")
+			local dname = rename.gpn(pname)
+			meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
+
+			v.is_jail = nil
+			city_block:save()
+			return
+		end
+	end
+end
+
+
 
 function city_block:save()
 	local datastring = minetest.serialize(self.blocks)
@@ -251,7 +317,7 @@ if not city_block.run_once then
 			-- The cityblock may not exist in the list if the node was created by falling,
 			-- and was later dug.
 			for i, EachBlock in ipairs(city_block.blocks) do
-				if vector.equals(EachBlock.pos, pos) then
+				if vector_equals(EachBlock.pos, pos) then
 					table.remove(city_block.blocks, i)
 					city_block:save()
 				end
@@ -270,6 +336,10 @@ if not city_block.run_once then
 
 			meta:set_string("rename", dname)
 			meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
+		end,
+
+		on_punch = function(...)
+			return city_block.on_punch(...)
 		end,
 	})
 

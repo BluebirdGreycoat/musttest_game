@@ -10,6 +10,18 @@ local vector_add = vector.add
 
 
 
+function jail.notify_jail_destruct(pos)
+	local p1 = vector_add(pos, {x=-1, y=0, z=-1})
+	local p2 = vector_add(pos, {x=1, y=0, z=1})
+	local positions, counts = minetest.find_nodes_in_area(p1, p2, "city_block:cityblock")
+
+	for k, v in ipairs(positions) do
+		city_block.erase_jail(v)
+	end
+end
+
+
+
 function jail.get_nearest_jail_pos(player)
 	local pp = vector_round(player:get_pos())
 

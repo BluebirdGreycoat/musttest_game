@@ -707,8 +707,6 @@ teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, p
   elseif listname == "price" and stack:get_name() == "flowers:waterlily" then
     return stack:get_count()
 	elseif listname == "price" and stack:get_name() == "nyancat:nyancat" then
-		-- Note: no protection check is done when fuel is removed,
-		-- so nyancats can be stolen! This is a feature, not a bug.
 		if minetest.test_protection(pos, pname) then return 0 end
 		return stack:get_count()
   end

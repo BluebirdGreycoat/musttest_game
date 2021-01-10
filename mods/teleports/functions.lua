@@ -516,6 +516,12 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 		local infinite_fuel = false
 		if owner == "MustTest" then
 			infinite_fuel = true
+		else
+			local inv = meta:get_inventory()
+			local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+			if inv:contains_item("price", item) then
+				infinite_fuel = true
+			end
 		end
     
     local admin = minetest.check_player_privs(playername, {server=true})
@@ -700,6 +706,10 @@ teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, p
     return stack:get_count()
   elseif listname == "price" and stack:get_name() == "flowers:waterlily" then
     return stack:get_count()
+	elseif listname == "price" and stack:get_name() == "nyancat:nyancat" then
+		-- Note: no protection check is done when fuel is removed,
+		-- so nyancats can be stolen! This is a feature, not a bug.
+		return stack:get_count()
   end
   
   return 0

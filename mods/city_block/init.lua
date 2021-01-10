@@ -68,6 +68,53 @@ function city_block:nearest_blocks_to_position(pos, num, rangelim)
 	return ret
 end
 
+function city_block:nearest_jails_to_position(pos, num, rangelim)
+	local get_rn = rc.current_realm_at_pos
+	local realm = get_rn(pos)
+
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	-- Only copy over blocks in the same realm, too.
+	local blocks = {}
+	local sblocks = self.blocks
+	for i=1, #sblocks, 1 do
+		local v = sblocks[i]
+		local p = v.pos
+		if v.is_jail then
+			if rangelim then
+				if vector_distance(p, pos) < rangelim then
+					if get_rn(p) == realm then
+						blocks[#blocks+1] = v
+					end
+				end
+			else
+				if get_rn(p) == realm then
+					blocks[#blocks+1] = v
+				end
+			end
+		end
+	end
+
+	-- Sort blocks, nearest blocks first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest blocks (should be at the front of the sorted table).
+	local ret = {}
+	for i=1, num, 1 do
+		if i <= #blocks then
+			ret[#ret+1] = blocks[i]
+		else
+			break
+		end
+	end
+	return ret
+end
+
 function city_block:save()
 	local datastring = minetest.serialize(self.blocks)
 	if not datastring then
@@ -452,10 +499,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			else -- go to jail
 				-- Killers don't go to jail if the victim is a registered cheater.
 				if not sheriff.is_cheater(victim_pname) then
-					jail.go_to_jail(hitter, nil)
-					minetest.chat_send_all(
-						"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
-						city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
+					if jail.go_to_jail(hitter, nil) then
+						minetest.chat_send_all(
+							"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
+							city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
+					end
 				end
 			end
 		else

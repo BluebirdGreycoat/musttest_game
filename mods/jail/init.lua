@@ -5,21 +5,32 @@ jail.noclip_radius = 15 -- Max distance of player from jail.
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance
+local vector_round = vector.round
+local vector_add = vector.add
 
 
 
 function jail.get_nearest_jail_pos(player)
-	local pos = {x=0, y=-50, z=0}
-	if player:get_pos().y < -25000 then
-		pos.y = -30765
+	local pp = vector_round(player:get_pos())
+
+	-- Find the location of the nearest player-constructed jail.
+	local jails = city_block:nearest_jails_to_position(pp, 1, 3000)
+	if jails[1] then
+		return vector_add(jails[1].pos, {x=0, y=1, z=0})
 	end
-	return pos
 end
 
 -- This function shall be called only when player escapes jail via hack, etc.
 -- Shall return the player to the nearest jail within their current dimension.
 function jail.on_player_escaped_jail(pref)
 	local jp = jail.get_nearest_jail_pos(pref)
+	if not jp then
+		-- If there's no nearby jail we might as well let them out.
+		-- As if the player died.
+		jail.notify_player_death(pref)
+		return
+	end
+
 	default.detach_player_if_attached(pref) -- Otherwise teleport could fail.
 	local pname = pref:get_player_name()
 
@@ -46,6 +57,10 @@ end
 
 function jail.is_player_in_jail(pref)
 	local jp = jail.get_nearest_jail_pos(pref) -- Get position of jail.
+	if not jp then
+		return false -- No jails available, player cannot be in one.
+	end
+
 	local pp = pref:get_pos() -- Position of player.
 	local dt = vector_distance(jp, pp) -- Distance between points.
 	if dt > jail.noclip_radius then
@@ -66,7 +81,7 @@ function jail.check_player_in_jail(pname)
 
 			-- Check again in 1 second.
 			minetest.after(1, jail.check_player_in_jail, pname)
-		end
+		end -- Else player is no longer marked to be in jail.
 	end -- Else player has logged out.
 	-- Checks will resume when player (any player) logs in again.
 end
@@ -87,6 +102,9 @@ function jail.go_to_jail(player, bcb)
 	end
 
 	local jailpos = jail.get_nearest_jail_pos(player)
+	if not jailpos then
+		return -- Failed to send player to jail.
+	end
 
 	preload_tp.execute({
 		player_name = pname,
@@ -97,6 +115,9 @@ function jail.go_to_jail(player, bcb)
 		send_blocks = true,
 		particle_effects = true,
 	})
+
+	-- Player should be sent to jail successfully, no reason for error right now.
+	return true
 end
 
 function jail.notify_sent_to_jail(pref)

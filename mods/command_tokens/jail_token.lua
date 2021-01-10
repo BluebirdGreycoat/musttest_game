@@ -133,7 +133,9 @@ command_tokens.jail.execute = function(player, target)
 				end
 			end
 
-			jail.go_to_jail(minetest.get_player_by_name(target), bcb)
+			if not jail.go_to_jail(minetest.get_player_by_name(target), bcb) then
+				minetest.chat_send_player(player, "# Server: There's no law enforcement to speak of!")
+			end
 		else
 			minetest.chat_send_player(player, "# Server: Player <" .. rename.gpn(target) .. "> could not be detached!")
 		end

@@ -45,7 +45,7 @@ end
 
 
 
--- Public API function. Other mods are expected to register recall locations.
+-- Public API function. Only used by jail mod.
 passport.register_recall = function(recalldef)
     local name = recalldef.name
     local position = recalldef.position
@@ -55,7 +55,7 @@ passport.register_recall = function(recalldef)
     local tname = recalldef.codename
     local suppress = recalldef.suppress
     local idx = #(passport.recalls) + 1
-    local code = "v" .. idx .. ""
+    local code = "z" .. idx .. ""
     passport.recalls[idx] = {
       name = name,
       position = position,
@@ -370,6 +370,20 @@ passport.on_receive_fields = function(player, formname, fields)
 		end
 	end
   
+	for k, v in ipairs(passport.recalls) do
+		local c = v.code
+		if fields[c] then
+			if not minetest.check_player_privs(pname, {recall=true}) then
+				minetest.chat_send_player(pname, "# Server: You are not authorized to request transport.")
+				easyvend.sound_error(pname)
+				return true
+			end
+
+			passport.attempt_teleport(player, v)
+			return true
+		end
+	end
+
   return true
 end
 

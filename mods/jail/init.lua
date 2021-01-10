@@ -8,7 +8,7 @@ local vector_distance = vector.distance
 
 
 
-local function jailposition(player)
+function jail.get_nearest_jail_pos(player)
 	local pos = {x=0, y=-50, z=0}
 	if player:get_pos().y < -25000 then
 		pos.y = -30765
@@ -19,7 +19,7 @@ end
 -- This function shall be called only when player escapes jail via hack, etc.
 -- Shall return the player to the nearest jail within their current dimension.
 function jail.on_player_escaped_jail(pref)
-	local jp = jailposition(pref)
+	local jp = jail.get_nearest_jail_pos(pref)
 	default.detach_player_if_attached(pref) -- Otherwise teleport could fail.
 	local pname = pref:get_player_name()
 
@@ -45,7 +45,7 @@ function jail.on_player_escaped_jail(pref)
 end
 
 function jail.is_player_in_jail(pref)
-	local jp = jailposition(pref) -- Get position of jail.
+	local jp = jail.get_nearest_jail_pos(pref) -- Get position of jail.
 	local pp = pref:get_pos() -- Position of player.
 	local dt = vector_distance(jp, pp) -- Distance between points.
 	if dt > jail.noclip_radius then
@@ -86,7 +86,7 @@ function jail.go_to_jail(player, bcb)
 		end
 	end
 
-	local jailpos = jailposition(player)
+	local jailpos = jail.get_nearest_jail_pos(player)
 
 	preload_tp.execute({
 		player_name = pname,
@@ -123,7 +123,7 @@ if not jail.registered then
 	local jail_data = {
 		name = "Jail",
 		codename = "jail:jail",
-		position = jailposition,
+		position = function(...) return jail.get_nearest_jail_pos(...) end,
 		min_dist = 30,
 	}
 

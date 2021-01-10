@@ -219,7 +219,7 @@ minetest.register_node("bluegrass:seed", {
     type = "fixed",
     fixed = {-0.5, 5/16, -0.5, 0.5, 0.5, 0.5},
   },
-  groups = utility.dig_groups("seeds", {seed = 1, hanging_node = 1, flammable = 2}),
+  groups = utility.dig_groups("seeds", {seed = 1, seed_oil = 1, hanging_node = 1, flammable = 2}),
   on_place = function(itemstack, placer, pointed_thing)
     return bluegrass.place_seed(itemstack, placer, pointed_thing, "bluegrass:seed")
   end,

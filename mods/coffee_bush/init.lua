@@ -16,7 +16,7 @@ minetest.register_node("coffee_bush:seeds", {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
   },
-  groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, foodrot = 1, notify_destruct = 1}),
+  groups = utility.dig_groups("seeds", {seed = 1, seed_oil = 1, attached_node = 1, flammable = 2, foodrot = 1, notify_destruct = 1}),
   on_place = function(itemstack, placer, pointed_thing)
     return farming.place_seed(itemstack, placer, pointed_thing, "coffee_bush:seeds")
   end,

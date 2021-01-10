@@ -303,6 +303,13 @@ if not compressor.run_once then
     time = 16,
   })
 
+	minetest.register_craft({
+		type = "compressing",
+		output = "plastic:oil_extract",
+		recipe = "group:seed_oil 15",
+		time = 7,
+	})
+
   local c = "compressor:core"
   local f = compressor.modpath .. "/init.lua"
   reload.register_file(c, f, false)

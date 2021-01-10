@@ -369,7 +369,7 @@ farming.register_plant = function(name, def)
 	end
 
 	-- Register seed
-	local g = {level = 1, seed = 1, snappy = 3, attached_node = 1, flammable = 2, notify_destruct = 1}
+	local g = {level = 1, seed = 1, seed_oil = 1, snappy = 3, attached_node = 1, flammable = 2, notify_destruct = 1}
 	for k, v in pairs(def.fertility) do
 		g[v] = 1
 	end

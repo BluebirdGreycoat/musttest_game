@@ -372,6 +372,7 @@ flowers.mushroom_surfaces = {
 	"rackstone:dauthsand",
 	"group:soil",
 	"group:tree",
+	"default:mossycobble",
 
 	-- We disable these because they are much too common.
 	-- Mushroom farms would be too easy to make, especially during a cave survival challenge.

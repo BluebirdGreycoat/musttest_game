@@ -137,14 +137,14 @@ if not jail.registered then
 	end
 
 	jail_data.suppress = function(name)
-			local player = minetest.get_player_by_name(name)
-			if player and player:is_player() then
-					if jail.is_player_in_jail(player) then
-							minetest.chat_send_player(name, "# Server: Error: security override. Recall is disabled within convict re-education block.")
-							easyvend.sound_error(name)
-							return true -- Too close to jail.
-					end
+		local player = minetest.get_player_by_name(name)
+		if player and player:is_player() then
+			if jail.is_player_in_jail(player) then
+				minetest.chat_send_player(name, "# Server: Error: security override. Recall is disabled within convict re-education block.")
+				easyvend.sound_error(name)
+				return true -- Too close to jail.
 			end
+		end
 	end
 	jail.suppress = jail_data.suppress
 

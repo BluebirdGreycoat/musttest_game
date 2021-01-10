@@ -5,6 +5,8 @@ joinspec.modpath = minetest.get_modpath("welcome_msg")
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
+local PRIORITY_MESSAGE = "Fight Big Tech Censorship!"
+local PRIORITY_X_OFFSET = 1.4
 
 
 
@@ -132,7 +134,8 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 		end
 
 		formspec = formspec ..
-			"label[2.6,4.7;" .. minetest.formspec_escape(COLOR_ORANGE .. "Priority: Survive!") .. "]"
+			"label[" .. PRIORITY_X_OFFSET .. ",4.7;" .. minetest.formspec_escape(COLOR_ORANGE ..
+				"Priority: " .. PRIORITY_MESSAGE) .. "]"
 	else
 		-- New player.
 		formspec = formspec ..
@@ -156,7 +159,8 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"button[4,7.3;3,1;playgame;Accept Challenge!]"
 
 		formspec = formspec ..
-			"label[2.6,8.1;" .. minetest.formspec_escape(COLOR_ORANGE .. "Priority: Survive!") .. "]"
+			"label[" .. PRIORITY_X_OFFSET .. ",8.1;" .. minetest.formspec_escape(COLOR_ORANGE ..
+				"Priority: " .. PRIORITY_MESSAGE) .. "]"
 	end
 
 	return formspec

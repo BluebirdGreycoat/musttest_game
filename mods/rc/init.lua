@@ -553,7 +553,10 @@ end
 function rc.realm_description_at_pos(p)
 	-- Special realm name.
 	if p.y < -25000 then
-		return "Netherworld"
+		if p.y < -30760 and p.y > -30800 then
+			return "Abyssal Plain"
+		end
+		return "Nether"
 	elseif p.y < -5000 then
 		return "Caverns"
 	end

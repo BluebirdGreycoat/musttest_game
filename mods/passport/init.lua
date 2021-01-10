@@ -107,9 +107,9 @@ passport.compose_formspec = function(pname)
 		"tooltip[email;Hold 'E' while using the Key to access directly.]" ..
 		"tooltip[marker;Hold 'sneak' while using the Key to access directly.]" ..
     
-    "checkbox[3,5.0;togglechat;Enable Echo;" ..
+    "checkbox[3,5.0;togglechat;Text Echo;" ..
       boolecho .. "]" ..
-    "checkbox[1,5.0;toggleparticles;Want Particles;" ..
+    "checkbox[1,5.0;toggleparticles;Particles;" ..
       boolparticle .. "]" ..
 
 		"tooltip[togglechat;" .. 

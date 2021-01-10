@@ -2,8 +2,10 @@
 recall = recall or {}
 recall.modpath = minetest.get_modpath("recall")
 
+-- Recalls are now constructed/managed by players.
+-- See teleports mod and passport mod.
 
-
+--[[
 local function central(player)
 	local pos = {x=0, y=-3, z=0}
 	if player:get_pos().y < -25000 then
@@ -53,7 +55,7 @@ local recalls = {
 	{name="North Quarter",  position=north,  			min_dist=20},
 	{name="South Quarter",  position=south, 			min_dist=20},
 }
-
+--]]
 
 --[[
 for k, v in pairs(recalls) do

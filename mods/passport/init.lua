@@ -5,6 +5,7 @@
 passport = passport or {}
 passport.recalls = passport.recalls or {}
 passport.players = passport.players or {}
+passport.player_recalls = passport.player_recalls or {}
 passport.registered_players = passport.registered_players or {} -- Cache of registered players.
 passport.keyed_players = passport.keyed_players or {}
 passport.modpath = minetest.get_modpath("passport")
@@ -16,15 +17,16 @@ passport.open_keys = passport.open_keys or {}
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
+local vector_add = vector.add
 local math_floor = math.floor
 local math_random = math.random
 
 
 
-local PASSPORT_TELEPORT_RANGE = 3000 -- 3 Kilometers.
+local PASSPORT_TELEPORT_RANGE = 512
 
 minetest.register_privilege("recall", {
-  description = "Player can request a teleport back to the city.",
+  description = "Player can request a teleport to nearby recall beacons.",
   give_to_singleplayer = false,
 })
 
@@ -68,6 +70,26 @@ end
 
 
 
+function passport.beacons_to_recalls(beacons)
+	local recalls = {}
+	for k, v in ipairs(beacons) do
+		local idx = #recalls + 1
+		local real_label = rc.pos_to_string(v.pos)
+		if v.name ~= nil and v.name ~= "" then
+			real_label = v.name
+		end
+    recalls[idx] = {
+      name = real_label,
+      position = function() return vector_add(v.pos, {x=0, y=1, z=0}) end,
+      code = "v" .. idx .. "",
+      min_dist = 30,
+    }
+	end
+	return recalls
+end
+
+
+
 passport.compose_formspec = function(pname)
   local buttons = ""
   
@@ -82,7 +104,23 @@ passport.compose_formspec = function(pname)
 			i = i + 1
 		end
   end
+
+	local pref = minetest.get_player_by_name(pname)
+	local beacons = {}
+	if pref then
+		local player_pos = pref:get_pos()
+		beacons = teleports.nearest_beacons_to_position(player_pos, 6, 1024)
+	end
+	passport.player_recalls[pname] = passport.beacons_to_recalls(beacons)
   
+  local h = 1
+  for k, v in ipairs(passport.player_recalls[pname]) do
+    local n = v.name
+    local c = v.code
+		buttons = buttons .. "button_exit[6," .. (h-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
+		h = h + 1
+  end
+
   local boolecho = 'true'
   local echo = chat_echo.get_echo(pname)
   if echo == true then boolecho = 'true' end
@@ -99,6 +137,8 @@ passport.compose_formspec = function(pname)
     default.gui_slots ..
 		"label[1,0.0;" ..
 			minetest.formspec_escape("Key Of Citizenship Interface") .. "]" ..
+		"label[6,0.0;" ..
+			minetest.formspec_escape("Recalls Nearby (" .. #beacons .. ")") .. "]" ..
     buttons ..
     "button_exit[1,5.7;2,1;exit;Close]" ..
     "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..
@@ -314,19 +354,21 @@ passport.on_receive_fields = function(player, formname, fields)
     return true
   end
 
-  for k, v in pairs(passport.recalls) do
-    local c = v.code
-    if fields[c] then
-      if not minetest.check_player_privs(pname, {recall=true}) then
-        minetest.chat_send_player(pname, "# Server: You are not authorized to request transport.")
-				easyvend.sound_error(pname)
-        return true
-      end
-  
-      passport.attempt_teleport(player, v)
-      return true
-    end
-  end
+	if passport.player_recalls[pname] then
+		for k, v in ipairs(passport.player_recalls[pname]) do
+			local c = v.code
+			if fields[c] then
+				if not minetest.check_player_privs(pname, {recall=true}) then
+					minetest.chat_send_player(pname, "# Server: You are not authorized to request transport.")
+					easyvend.sound_error(pname)
+					return true
+				end
+
+				passport.attempt_teleport(player, v)
+				return true
+			end
+		end
+	end
   
   return true
 end
@@ -337,6 +379,12 @@ passport.attempt_teleport = function(player, data)
   local pp = player:get_pos()
   local nn = player:get_player_name()
   local tg = data.position(player)
+	local recalls = passport.player_recalls[nn]
+
+	if not recalls then
+		minetest.chat_send_player(nn, "# Server: No data associated with beacon signal.")
+		return
+	end
 
 	if not tg then
 		minetest.chat_send_player(nn, "# Server: Beacon does not provide position data. Aborting.")
@@ -349,7 +397,7 @@ passport.attempt_teleport = function(player, data)
 		return
 	end
   
-  for k, v in pairs(passport.recalls) do
+  for k, v in pairs(recalls) do
     if v.suppress then
       if v.suppress(nn) then
         minetest.chat_send_player(nn, "# Server: Beacon signal is jammed and cannot be triangulated.")
@@ -359,7 +407,7 @@ passport.attempt_teleport = function(player, data)
     end
   end
   
-  for k, v in pairs(passport.recalls) do
+  for k, v in pairs(recalls) do
     if vector_distance(pp, v.position(player)) < v.min_dist then
       if data.on_failure then data.on_failure(nn, "too_close", v.tname) end
       minetest.chat_send_player(nn, "# Server: You are too close to a nearby beacon signal.")
@@ -388,7 +436,7 @@ passport.attempt_teleport = function(player, data)
   
   minetest.chat_send_player(nn, "# Server: Recall beacon signal requires " .. time .. " seconds to triangulate; please hold still.")
   passport.players[nn] = true
-	local pos = vector.add(tg, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)})
+	local pos = vector.add(tg, {x=math_random(-1, 1), y=0, z=math_random(-1, 1)})
   minetest.after(time, passport.do_teleport, nn, pp, pos, data.on_success)
 end
 

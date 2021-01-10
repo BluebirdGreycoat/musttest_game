@@ -10,6 +10,7 @@ teleports.datafile = minetest.get_worldpath() .. "/teleports.txt"
 local vector_distance = vector.distance
 local vector_round = vector.round
 local vector_add = vector.add
+local vector_equals = vector.equals
 local math_floor = math.floor
 local math_random = math.random
 
@@ -39,6 +40,55 @@ teleports.charge_blocks = {
   ["arol:block"]              = {charge=0.5  },
   ["talinite:block"]          = {charge=1.1  },
 }
+
+
+
+function teleports.nearest_beacons_to_position(pos, num, rangelim)
+	local get_rn = rc.current_realm_at_pos
+	local realm = get_rn(pos)
+
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	-- Only copy over blocks in the same realm, too.
+	local blocks = {}
+	local sblocks = teleports.teleports
+	for i=1, #sblocks, 1 do
+		local v = sblocks[i]
+		local p = v.pos
+		if v.is_recall then
+			if rangelim then
+				if vector_distance(p, pos) < rangelim then
+					if get_rn(p) == realm then
+						blocks[#blocks+1] = v
+					end
+				end
+			else
+				if get_rn(p) == realm then
+					blocks[#blocks+1] = v
+				end
+			end
+		end
+	end
+
+	-- Sort blocks, nearest blocks first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest blocks (should be at the front of the sorted table).
+	local ret = {}
+	for i=1, num, 1 do
+		if i <= #blocks then
+			ret[#ret+1] = blocks[i]
+		else
+			break
+		end
+	end
+	return ret
+end
 
 
 
@@ -264,7 +314,7 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 
 	for i = #teleports.teleports, 1, -1 do
 		local tp = teleports.teleports[i]
-		if not vector.equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then
+		if not vector_equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then
 			local target_realm = rc.current_realm_at_pos(tp.pos)
 			-- Only find teleports in the same dimension.
 			if start_realm ~= "" and start_realm == target_realm then
@@ -288,7 +338,7 @@ end
 teleports.find_specific = function(pos)
     for i = 1, #teleports.teleports, 1 do
         local tp = teleports.teleports[i]
-        if vector.equals(tp.pos, pos) then
+        if vector_equals(tp.pos, pos) then
             return i -- Return index of teleport.
         end
     end
@@ -397,6 +447,7 @@ end
 
 function teleports.write_infotext(pos)
 	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
 	local name = meta:get_string("name")
 	local network = meta:get_string("network")
 	local owner = meta:get_string("owner")
@@ -413,7 +464,13 @@ function teleports.write_infotext(pos)
 	if network == "" then net = "PUBLIC" end
 	if public == 'false' then net = "SUPPRESSED" end
 
-	meta:set_string("infotext", "Teleporter. Punch to update controls.\nOwner: " .. own .. "\nBeacon ID: " .. id .. "\nBeacon Channel: " .. net)
+	local beacon = ""
+	local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+	if inv:contains_item("price", item) then
+		beacon = "\nRecall signal emission normal"
+	end
+
+	meta:set_string("infotext", "Teleporter. Punch to update controls.\nOwner: " .. own .. "\nBeacon ID: " .. id .. "\nBeacon Channel: " .. net .. beacon)
 end
 
 
@@ -623,7 +680,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 											local exists = false
 											for i = 1, #teleports.teleports, 1 do
 													local tp = teleports.teleports[i]
-													if vector.equals(tp.pos, tppos) then
+													if vector_equals(tp.pos, tppos) then
 															exists = true
 															break
 													end
@@ -737,6 +794,46 @@ end
 
 
 
+function teleports.update_beacon_data(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+
+	if inv:contains_item("price", item) then
+		for k, v in ipairs(teleports.teleports) do
+			if vector_equals(v.pos, pos) then
+				if not v.is_recall then
+					v.is_recall = true
+					teleports.save()
+				end
+			end
+		end
+	else
+		for k, v in ipairs(teleports.teleports) do
+			if vector_equals(v.pos, pos) then
+				if v.is_recall then
+					v.is_recall = nil
+					teleports.save()
+				end
+			end
+		end
+	end
+end
+
+
+
+function teleports.on_metadata_inventory_put(pos, listname, index, stack, player)
+	teleports.update_beacon_data(pos)
+end
+
+
+
+function teleports.on_metadata_inventory_take(pos, listname, index, stack, player)
+	teleports.update_beacon_data(pos)
+end
+
+
+
 teleports.can_dig = function(pos)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
@@ -775,7 +872,7 @@ end
 teleports.on_destruct = function(pos)
 	--minetest.chat_send_all("# Server: Destructing teleport!")
 	for i, EachTeleport in ipairs(teleports.teleports) do
-		if vector.equals(EachTeleport.pos, pos) then
+		if vector_equals(EachTeleport.pos, pos) then
 			table.remove(teleports.teleports, i)
 			teleports.save()
 		end

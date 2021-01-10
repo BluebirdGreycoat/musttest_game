@@ -21,6 +21,8 @@ minetest.register_node("teleports:teleport", {
   allow_metadata_inventory_put = function(...) return teleports.allow_metadata_inventory_put(...) end,
   allow_metadata_inventory_take = function(...) return teleports.allow_metadata_inventory_take(...) end,
   allow_metadata_inventory_move = function(...) return teleports.allow_metadata_inventory_move(...) end,
+	on_metadata_inventory_put = function(...) return teleports.on_metadata_inventory_put(...) end,
+	on_metadata_inventory_take = function(...) return teleports.on_metadata_inventory_take(...) end,
 
 	-- Called by rename LBM.
 	_on_rename_check = function(pos)

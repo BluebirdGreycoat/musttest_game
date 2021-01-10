@@ -7,7 +7,7 @@ local math_max = math.max
 
 
 minetest.register_node("nyancat:nyancat", {
-	description = "Glowing Roseline Seed",
+	description = "Glowing Rosestone Seed",
 	tiles = {"nyancat_side.png^[transformR90", "nyancat_side.png^[transformR90",
 		"nyancat_side.png",
 		"nyancat_side.png", "nyancat_side.png", "nyancat_side.png"},
@@ -20,7 +20,7 @@ minetest.register_node("nyancat:nyancat", {
 })
 
 minetest.register_node("nyancat:nyancat_rainbow", {
-	description = "Glowing Roseline Tail",
+	description = "Glowing Rosestone Tail",
 	tiles = {
 		"nyancat_rainbow.png^[transformR90",
 		"nyancat_rainbow.png^[transformR90",

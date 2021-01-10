@@ -15,7 +15,7 @@ minetest.register_node("nyancat:nyancat", {
 	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
 	legacy_facedir_simple = true,
-	light_source = 14,
+	light_source = 12,
 	sounds = default.node_sound_defaults(),
 })
 
@@ -29,7 +29,7 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 	paramtype2 = "facedir",
 	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
-	light_source = 14,
+	light_source = 12,
 	sounds = default.node_sound_defaults(),
 })
 

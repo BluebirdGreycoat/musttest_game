@@ -561,194 +561,204 @@ end
 
 
 teleports.on_receive_fields = function(pos, formname, fields, player)
-    if not player then return end
-    if not player:is_player() then return end
-    if player:get_hp() <= 0 then return end -- Ignore dead players.
-    
-    local playername = player:get_player_name()
-    local meta = minetest.get_meta(pos)
-		local isnyan = teleports.is_nyanbow_teleport(pos)
-    local owner = meta:get_string("owner") or ""
+	if not player then return end
+	if not player:is_player() then return end
+	if player:get_hp() <= 0 then return end -- Ignore dead players.
 
-		local infinite_fuel = false
-		if owner == "MustTest" then
+	local playername = player:get_player_name()
+	local meta = minetest.get_meta(pos)
+	local isnyan = teleports.is_nyanbow_teleport(pos)
+	local owner = meta:get_string("owner") or ""
+
+	local infinite_fuel = false
+	if owner == "MustTest" then
+		infinite_fuel = true
+	else
+		local inv = meta:get_inventory()
+		local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+		if inv:contains_item("price", item) then
 			infinite_fuel = true
+		end
+	end
+
+	local admin = minetest.check_player_privs(playername, {server=true})
+	local needsave = false
+
+	-- Make sure this teleport, at this postion, has an entry.
+	local tp_idx = teleports.find_specific(pos)
+	if not tp_idx then
+		minetest.chat_send_player(playername, "# Server: Transporter data error: 0xDEADBEEF.")
+		easyvend.sound_error(playername)
+		return
+	end
+	if not teleports.teleports[tp_idx] then
+		minetest.chat_send_player(playername, "# Server: Transporter data error: 0xDEADBEEF.")
+		easyvend.sound_error(playername)
+		return
+	end
+
+	if fields.showhide then
+		if owner == playername or admin then
+			if fields.showhide == "true" then
+				meta:set_int("public", 1)
+			else
+				meta:set_int("public", 0)
+			end
 		else
-			local inv = meta:get_inventory()
-			local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
-			if inv:contains_item("price", item) then
-				infinite_fuel = true
-			end
+			minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
+			easyvend.sound_error(playername)
 		end
-    
-    local admin = minetest.check_player_privs(playername, {server=true})
-    local needsave = false
-    
-    -- Make sure this teleport, at this postion, has an entry.
-    local tp_idx = teleports.find_specific(pos)
-    if not tp_idx then
-        minetest.chat_send_player(playername, "# Server: Transporter data error: 0xDEADBEEF.")
-				easyvend.sound_error(playername)
-        return
-    end
-    if not teleports.teleports[tp_idx] then
-        minetest.chat_send_player(playername, "# Server: Transporter data error: 0xDEADBEEF.")
-				easyvend.sound_error(playername)
-        return
-    end
+	end
 
-    if fields.showhide then
-        if owner == playername or admin then
-            if fields.showhide == "true" then
-                meta:set_int("public", 1)
-            else
-                meta:set_int("public", 0)
-            end
-        else
-            minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
-						easyvend.sound_error(playername)
-        end
-    end
-    
-    if fields.yespublic then
-        if owner == playername or admin then
-            if fields.yespublic == "true" then
-                meta:set_string("yespublic", 'true')
-            else
-                meta:set_string("yespublic", 'false')
-            end
-        else
-            minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
-						easyvend.sound_error(playername)
-        end
-    end
-    
-    if fields.change_id and fields.id then
-        if owner == playername or admin then
-            meta:set_string("name", fields.id)
-            teleports.teleports[tp_idx].name = fields.id
-            needsave = true
-        else
-            minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
-						easyvend.sound_error(playername)
-        end
-    end
-    
-    if fields.change_network and fields.network then
-        if owner == playername or admin then
-            meta:set_string("network", fields.network)
-            teleports.teleports[tp_idx].channel = fields.network
-            needsave = true
-        else
-            minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
-						easyvend.sound_error(playername)
-        end
-    end
-    
-    if needsave == true then
-        teleports.save()
-    end
-
-		local pressed_tp_button = false
-		local pressed_tp_location
-		for i = 1, 10, 1 do
-			-- According to button names/data set in the machine update function.
-			local btnname = "tp" .. i
-			local posname = "loc" .. i
-			if fields[btnname] then
-				pressed_tp_button = true
-				pressed_tp_location = meta:get_string(posname)
-				break
+	if fields.yespublic then
+		if owner == playername or admin then
+			if fields.yespublic == "true" then
+				meta:set_string("yespublic", 'true')
+			else
+				meta:set_string("yespublic", 'false')
 			end
+		else
+			minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
+			easyvend.sound_error(playername)
 		end
-    
-    if pressed_tp_button then
-        local have_biofuel = false
-        local tpname = pressed_tp_location
-        local have_target = false
-        local target_pos = {x=0, y=0, z=0}
-        
-        if tpname and type(tpname) == "string" then
-            local tppos = minetest.string_to_pos(tpname)
-            if tppos then
-                if vector_distance(tppos, pos) <= teleports.calculate_range(pos) then
-										-- Do not permit teleporting from one realm to another.
-										-- Doing so requires a different kind of teleport device.
-										local start_realm = rc.current_realm_at_pos(pos)
-										local target_realm = rc.current_realm_at_pos(tppos)
-										if start_realm ~= "" and start_realm == target_realm then
-											local exists = false
-											for i = 1, #teleports.teleports, 1 do
-													local tp = teleports.teleports[i]
-													if vector_equals(tp.pos, tppos) then
-															exists = true
-															break
-													end
-											end
+	end
 
-											if exists then
-												have_target = true
-												target_pos = tppos
-											else
-													minetest.chat_send_player(playername, "# Server: Transport control error: target no longer exists.")
-													easyvend.sound_error(playername)
-											end
-										else
-											minetest.chat_send_player(playername, "# Server: Cannot teleport between realm boundaries!")
-											easyvend.sound_error(playername)
-										end
-                else
-                    minetest.chat_send_player(playername, "# Server: Transport control error: target out of range!")
-										easyvend.sound_error(playername)
-                end
-            else
-                minetest.chat_send_player(playername, "# Server: Transport control error: 0xDEADBEEF.")
-								easyvend.sound_error(playername)
-            end
-        else
-            minetest.chat_send_player(playername, "# Server: Transport control error: formspec.")
-						easyvend.sound_error(playername)
-        end
-         
-        if have_target == true then -- Don't use fuel unless a valid target is found.
-          local inv = meta:get_inventory();
-          
-          if not admin and not isnyan and not infinite_fuel then -- Don't do fuel calculation if admin is using teleport.
-            -- Cost is 1 item of fuel per 300 meters.
-            -- This means players save on fuel when using long range teleports,
-            -- instead of using a chain of short-range teleports.
-            -- However, long range teleports cost more to make.
-            local rcost = math_floor(vector_distance(pos, target_pos) / 300)
-            if rcost < 1 then rcost = 1 end
-            
-            local price1 = {name="default:mossycobble", count=rcost, wear=0, metadata=""}
-            local price2 = {name="flowers:waterlily", count=rcost, wear=0, metadata=""}
-            if not inv:is_empty("price") then
-              if inv:contains_item("price", price1) then
-                inv:remove_item("price", price1)
-                have_biofuel = true
-              elseif inv:contains_item("price", price2) then
-                inv:remove_item("price", price2)
-                have_biofuel = true
-              else
-                minetest.chat_send_player(playername, "# Server: Insufficient stored energy for transport. Add more biofuel.")
-								easyvend.sound_error(playername)
-              end
-            else
-              minetest.chat_send_player(playername, "# Server: Transporter is on maintenance energy only. Add biofuel to use.")
+	if fields.change_id and fields.id then
+		if owner == playername or admin then
+			meta:set_string("name", fields.id)
+			teleports.teleports[tp_idx].name = fields.id
+			needsave = true
+		else
+			minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
+			easyvend.sound_error(playername)
+		end
+	end
+
+	if fields.change_network and fields.network then
+		if owner == playername or admin then
+			meta:set_string("network", fields.network)
+			teleports.teleports[tp_idx].channel = fields.network
+			needsave = true
+		else
+			minetest.chat_send_player(playername, "# Server: Only the owner can change the configuration.")
+			easyvend.sound_error(playername)
+		end
+	end
+
+	if needsave == true then
+		teleports.save()
+	end
+
+	local pressed_tp_button = false
+	local pressed_tp_location
+	for i = 1, 10, 1 do
+		-- According to button names/data set in the machine update function.
+		local btnname = "tp" .. i
+		local posname = "loc" .. i
+		if fields[btnname] then
+			pressed_tp_button = true
+			pressed_tp_location = meta:get_string(posname)
+			break
+		end
+	end
+
+	if pressed_tp_button then
+		local have_biofuel = false
+		local tpname = pressed_tp_location
+		local have_target = false
+		local target_pos = {x=0, y=0, z=0}
+
+		if tpname and type(tpname) == "string" then
+			local tppos = minetest.string_to_pos(tpname)
+			if tppos then
+				if vector_distance(tppos, pos) <= teleports.calculate_range(pos) then
+					-- Do not permit teleporting from one realm to another.
+					-- Doing so requires a different kind of teleport device.
+					local start_realm = rc.current_realm_at_pos(pos)
+					local target_realm = rc.current_realm_at_pos(tppos)
+					if start_realm ~= "" and start_realm == target_realm then
+						local exists = false
+						for i = 1, #teleports.teleports, 1 do
+							local tp = teleports.teleports[i]
+							if vector_equals(tp.pos, tppos) then
+								exists = true
+								break
+							end
+						end
+
+						if exists then
+							have_target = true
+							target_pos = tppos
+						else
+							minetest.chat_send_player(playername, "# Server: Transport control error: target no longer exists.")
 							easyvend.sound_error(playername)
-            end
-          end
-          
-          if have_biofuel or admin or isnyan or infinite_fuel then
-            local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
-            teleports.teleport_player(player, pos, teleport_pos)
-          end
-        end
-    end
+						end
+					else
+						minetest.chat_send_player(playername, "# Server: Cannot teleport between realm boundaries!")
+						easyvend.sound_error(playername)
+					end
+				else
+					minetest.chat_send_player(playername, "# Server: Transport control error: target out of range!")
+					easyvend.sound_error(playername)
+				end
+			else
+				minetest.chat_send_player(playername, "# Server: Transport control error: 0xDEADBEEF.")
+				easyvend.sound_error(playername)
+			end
+		else
+			minetest.chat_send_player(playername, "# Server: Transport control error: formspec.")
+			easyvend.sound_error(playername)
+		end
 
-    -- Always update the teleport formspec.
-    teleports.update(pos)
+		if have_target == true then -- Don't use fuel unless a valid target is found.
+			local inv = meta:get_inventory();
+
+			if not admin and not infinite_fuel then -- Don't do fuel calculation if admin is using teleport.
+				-- Cost is 1 item of fuel per 300 meters.
+				-- This means players save on fuel when using long range teleports,
+				-- instead of using a chain of short-range teleports.
+				-- However, long range teleports cost more to make.
+				local rcost = math_floor(vector_distance(pos, target_pos) / 300)
+				if isnyan then
+					-- Nyan teleports have much greater fuel efficiency.
+					rcost = math_floor(vector_distance(pos, target_pos) / 600)
+				end
+				if rcost < 1 then rcost = 1 end
+
+				-- If using lilies as fuel, fewer are required.
+				-- Lilies are bit harder to get.
+				local lcost = math_floor(rcost * 0.5)
+				if lcost < 1 then lcost = 1 end
+
+				local price1 = {name="default:mossycobble", count=rcost, wear=0, metadata=""}
+				local price2 = {name="flowers:waterlily", count=lcost, wear=0, metadata=""}
+
+				if not inv:is_empty("price") then
+					if inv:contains_item("price", price1) then
+						inv:remove_item("price", price1)
+						have_biofuel = true
+					elseif inv:contains_item("price", price2) then
+						inv:remove_item("price", price2)
+						have_biofuel = true
+					else
+						minetest.chat_send_player(playername, "# Server: Insufficient stored energy for transport. Add more biofuel.")
+						easyvend.sound_error(playername)
+					end
+				else
+					minetest.chat_send_player(playername, "# Server: Transporter is on maintenance energy only. Add biofuel to use.")
+					easyvend.sound_error(playername)
+				end
+			end
+
+			if have_biofuel or admin or infinite_fuel then
+				local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
+				teleports.teleport_player(player, pos, teleport_pos)
+			end
+		end
+	end
+
+	-- Always update the teleport formspec.
+	teleports.update(pos)
 end
 
 
@@ -963,4 +973,22 @@ teleports.on_diamond_place = function(itemstack, placer, pointed_thing)
     else
         return ItemStack("default:diamondblock " .. itemstack:get_count() - (1 - ret:get_count()))
     end
+end
+
+
+-- Admin API function, refills ALL teleports with fuel (if fuel is empty).
+function teleports.refill_all()
+	local tps = teleports.teleports
+
+	for k, v in ipairs(tps) do
+		local meta = minetest.get_meta(v.pos)
+		if meta then
+			local inv = meta:get_inventory()
+			if inv then
+				if inv:is_empty("price") then
+					inv:set_stack("price", 1, ItemStack("flowers:waterlily 64"))
+				end
+			end
+		end
+	end
 end

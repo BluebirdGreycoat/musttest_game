@@ -69,7 +69,8 @@ function xp.write_xp()
 		local temp = {}
 		for k, v in pairs(xp.data) do
 			-- Only save XP if >= min XP.
-			if tonumber(v) >= 5.0 then
+			local n = tonumber(v)
+			if n >= 5.0 then
 				temp[k] = v
 			end
 		end

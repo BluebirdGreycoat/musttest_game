@@ -23,7 +23,7 @@ local math_random = math.random
 
 
 
-local PASSPORT_TELEPORT_RANGE = 512
+local PASSPORT_TELEPORT_RANGE = 750
 
 minetest.register_privilege("recall", {
   description = "Player can request a teleport to nearby recall beacons.",
@@ -110,7 +110,7 @@ passport.compose_formspec = function(pname)
 	if pref then
 		local player_pos = pref:get_pos()
 		-- Shall return an empty table if there are no beacons.
-		beacons = teleports.nearest_beacons_to_position(player_pos, 6, 1024)
+		beacons = teleports.nearest_beacons_to_position(player_pos, 6, 1000)
 	end
 	passport.player_recalls[pname] = passport.beacons_to_recalls(beacons)
   

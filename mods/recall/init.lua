@@ -55,7 +55,9 @@ local recalls = {
 }
 
 
-
+--[[
 for k, v in pairs(recalls) do
     passport.register_recall(v)
 end
+--]]
+

@@ -260,12 +260,12 @@ function obsidian_gateway.attempt_activation(pos, player)
 				return true
 			end
 			-- Don't allow exit points near the colonies.
-			if vector_distance(target, {x=0, y=0, z=0}) < 2000 or
-				vector_distance(target, {x=0, y=-30790, z=0}) < 2000 then
+			if vector_distance(target, {x=0, y=0, z=0}) < 1000 or
+				vector_distance(target, {x=0, y=-30790, z=0}) < 1000 then
 				return true
 			end
 			-- Exit must not be too close to start.
-			if vector_distance(target, origin) < 500 then
+			if vector_distance(target, origin) < 100 then
 				return true
 			end
 			-- Or too far.

@@ -376,11 +376,11 @@ function rc.get_random_realm_gate_position(pname, origin)
 			end
 			assert(realm)
 
-			-- Not more than 5000 meters away from origin!
+			-- Not more than 1000 meters away from origin!
 			local pos = {
-				x = math_random(-5000, 5000) + origin.x,
-				y = math_random(-5000, 5000) + origin.y,
-				z = math_random(-5000, 5000) + origin.z,
+				x = math_random(-1000, 1000) + origin.x,
+				y = math_random(-1000, 1000) + origin.y,
+				z = math_random(-1000, 1000) + origin.z,
 			}
 
 			local min = math.min
@@ -399,12 +399,12 @@ function rc.get_random_realm_gate_position(pname, origin)
 	assert(realm)
 
 	-- Player is in the Overworld or Nether. Use old Gateway behavior!
-	-- Not more than 5000 meters in any direction, and MUST stay in the Overworld
+	-- Not more than 1000 meters in any direction, and MUST stay in the Overworld
 	-- (or the Nether).
 	local pos = {
-		x = math_random(-5000, 5000) + origin.x,
-		y = math_random(-5000, 5000) + origin.y,
-		z = math_random(-5000, 5000) + origin.z,
+		x = math_random(-1000, 1000) + origin.x,
+		y = math_random(-1000, 1000) + origin.y,
+		z = math_random(-1000, 1000) + origin.z,
 	}
 
 	local min = math.min

@@ -75,8 +75,12 @@ passport.compose_formspec = function(pname)
   for k, v in pairs(passport.recalls) do
     local n = v.name
     local c = v.code
-    buttons = buttons .. "button_exit[6," .. (i-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
-    i = i + 1
+		if v.tname == "jail:jail" then
+			buttons = buttons .. "button_exit[3,5.7;2,1;" .. c .. ";" .. n .. "]"
+		else
+			buttons = buttons .. "button_exit[6," .. (i-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
+			i = i + 1
+		end
   end
   
   local boolecho = 'true'
@@ -94,7 +98,7 @@ passport.compose_formspec = function(pname)
     default.gui_bg_img ..
     default.gui_slots ..
 		"label[1,0.0;" ..
-			minetest.formspec_escape("Active Interface to your Key of Citizenship. Owner: <" .. rename.gpn(pname) .. ">") .. "]" ..
+			minetest.formspec_escape("Key Of Citizenship Interface") .. "]" ..
     buttons ..
     "button_exit[1,5.7;2,1;exit;Close]" ..
     "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..

@@ -121,7 +121,7 @@ if not jail.registered then
 	reload.register_file(c, f, false)
 
 	local jail_data = {
-		name = "Colony Jail",
+		name = "Jail",
 		codename = "jail:jail",
 		position = jailposition,
 		min_dist = 30,
@@ -148,6 +148,8 @@ if not jail.registered then
 	end
 	jail.suppress = jail_data.suppress
 
+	-- The jail recall is mandatory.
+	-- It is not grouped with other recall buttons in the passport formspec.
 	passport.register_recall(jail_data)
 
 	minetest.register_on_joinplayer(function(pref)

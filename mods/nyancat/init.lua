@@ -7,9 +7,10 @@ local math_max = math.max
 
 
 minetest.register_node("nyancat:nyancat", {
-	description = "Nyan Cat",
-	tiles = {"nyancat_side.png", "nyancat_side.png", "nyancat_side.png",
-		"nyancat_side.png", "nyancat_back.png", "nyancat_front.png"},
+	description = "Glowing Roseline Seed",
+	tiles = {"nyancat_side.png^[transformR90", "nyancat_side.png^[transformR90",
+		"nyancat_side.png",
+		"nyancat_side.png", "nyancat_side.png", "nyancat_side.png"},
 	paramtype2 = "facedir",
 	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
@@ -19,7 +20,7 @@ minetest.register_node("nyancat:nyancat", {
 })
 
 minetest.register_node("nyancat:nyancat_rainbow", {
-	description = "Glowing Rosestone",
+	description = "Glowing Roseline Tail",
 	tiles = {
 		"nyancat_rainbow.png^[transformR90",
 		"nyancat_rainbow.png^[transformR90",

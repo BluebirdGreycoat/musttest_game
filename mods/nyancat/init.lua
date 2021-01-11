@@ -1,8 +1,12 @@
 
 -- Localize for performance.
 local math_floor = math.floor
+local math_random = math.random
 local math_min = math.min
 local math_max = math.max
+local set_node = minetest.set_node
+local vector_round = vector.round
+local hash_pos = minetest.hash_node_position
 
 
 
@@ -37,18 +41,57 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 
 nyancat = {}
 
-function nyancat.place(pos, facedir, length)
-	if facedir > 3 then
-		facedir = 0
+local crystal_directions = {
+	{x=1,   y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=-1},
+
+	-- Duplicate entries increase the chance that this direction is taken.
+	{x=0,   y=-1,   z=0},
+	{x=0,   y=-1,   z=0},
+	{x=0,   y=1,   z=0},
+	{x=0,   y=1,   z=0},
+}
+
+local generate_crystal -- Forward declaration needed for recursion.
+generate_crystal = function(pos, rec_, tot_, has_)
+	local rec = rec_ or 0
+	local tot = tot_ or math_random(3, 10)
+	local has = has_ or {}
+
+	local key = hash_pos(pos)
+	local gud = false
+
+	if not has[key] then
+		if rec == 0 then
+			set_node(pos, {name="nyancat:nyancat"})
+			has[key] = true
+			gud = true
+		else
+			set_node(pos, {name="nyancat:nyancat_rainbow", param2=math_random(0, 3)})
+			has[key] = true
+			gud = true
+		end
 	end
-	local tailvec = minetest.facedir_to_dir(facedir)
-	local p = {x = pos.x, y = pos.y, z = pos.z}
-	minetest.set_node(p, {name = "nyancat:nyancat", param2 = facedir})
-	for i = 1, length do
-		p.x = p.x + tailvec.x
-		p.z = p.z + tailvec.z
-		minetest.set_node(p, {name = "nyancat:nyancat_rainbow", param2 = facedir})
+
+	-- Do not generate crystal larger than max num blocks.
+	if rec >= tot then return end
+
+	local d1 = crystal_directions[math_random(1, #crystal_directions)]
+	local p1 = {x=pos.x+d1.x, y=pos.y+d1.y, z=pos.z+d1.z}
+
+	-- Recursive call.
+	if gud then
+		generate_crystal(p1, rec+1, tot, has)
+	else
+		generate_crystal(p1, rec+0, tot, has)
 	end
+end
+
+nyancat.place = function(pos, count)
+	minetest.chat_send_all('generating rosestone at ' .. minetest.pos_to_string(pos) .. ' with ' .. count .. ' blocks')
+  generate_crystal(vector_round(pos), nil, count)
 end
 
 function nyancat.generate(minp, maxp, seed)
@@ -63,12 +106,12 @@ function nyancat.generate(minp, maxp, seed)
 	local pr = PseudoRandom(seed + 9324342)
 	local max_num_nyancats = math_floor(volume / (16 * 16 * 16))
 	for i = 1, max_num_nyancats do
-		if pr:next(0, 2000) == 0 then
+		if pr:next(0, 1000) == 0 then
 			local x0 = pr:next(minp.x, maxp.x)
 			local y0 = pr:next(minp.y, maxp.y)
 			local z0 = pr:next(minp.z, maxp.z)
 			local p0 = {x = x0, y = y0, z = z0}
-			nyancat.place(p0, pr:next(0, 3), pr:next(3, 16))
+			nyancat.place(p0, pr:next(3, 16))
 		end
 	end
 end

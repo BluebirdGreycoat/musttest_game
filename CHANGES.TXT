@@ -1,3 +1,4 @@
+[2021/1/11] Made glowing rosestone more fragile.
 [2021/1/10] Made oil extract compressible from certain seeds.
 [2021/1/10] Updated mapgen messages to annoyingly blame players now. :)
 [2021/1/10] Rosestone teleports now require fuel, but are still more fuel-efficient than other types of teleports.

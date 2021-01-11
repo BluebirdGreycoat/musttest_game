@@ -16,7 +16,9 @@ minetest.register_node("nyancat:nyancat", {
 	is_ground_content = false,
 	legacy_facedir_simple = true,
 	light_source = 10,
-	sounds = default.node_sound_defaults(),
+	sounds = default.node_sound_glass_defaults(),
+	silverpick_drop = true,
+	drop = "default:glass",
 })
 
 minetest.register_node("nyancat:nyancat_rainbow", {
@@ -30,7 +32,7 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 	groups = utility.dig_groups("nyan"),
 	is_ground_content = false,
 	light_source = 10,
-	sounds = default.node_sound_defaults(),
+	sounds = default.node_sound_glass_defaults(),
 })
 
 nyancat = {}

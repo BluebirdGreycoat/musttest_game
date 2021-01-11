@@ -63,12 +63,12 @@ function nyancat.generate(minp, maxp, seed)
 	local pr = PseudoRandom(seed + 9324342)
 	local max_num_nyancats = math_floor(volume / (16 * 16 * 16))
 	for i = 1, max_num_nyancats do
-		if pr:next(0, 1000) == 0 then
+		if pr:next(0, 2000) == 0 then
 			local x0 = pr:next(minp.x, maxp.x)
 			local y0 = pr:next(minp.y, maxp.y)
 			local z0 = pr:next(minp.z, maxp.z)
 			local p0 = {x = x0, y = y0, z = z0}
-			nyancat.place(p0, pr:next(0, 3), pr:next(3, 10))
+			nyancat.place(p0, pr:next(0, 3), pr:next(3, 16))
 		end
 	end
 end

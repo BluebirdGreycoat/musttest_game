@@ -1,3 +1,4 @@
+[2021/1/11] Made rosestones generate with coral-like formations instead of the silly straight lines.
 [2021/1/11] Made glowing rosestone more fragile.
 [2021/1/10] Made oil extract compressible from certain seeds.
 [2021/1/10] Updated mapgen messages to annoyingly blame players now. :)

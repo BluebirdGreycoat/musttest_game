@@ -74,7 +74,7 @@ if not minetest.is_singleplayer() then
 			if (time - mapgen.report_time) > 120 and mapgen.report_chunks > 0 then
 				local blamed = mapgen.most_blamed()
 
-				if blamed then
+				if blamed and mapgen.report_chunks >= 5 then
 					minetest.chat_send_all(
 						"# Server: Mapgen scrambling. Blame <" .. rename.gpn(blamed) .. "> for lag. Chunks: " ..
 						mapgen.report_chunks .. ".")

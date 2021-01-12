@@ -396,15 +396,36 @@ end
 
 
 local function cds(y)
-  local scalar = 1
-  if y < 0 then
-    local depth = math.abs(y)
-    scalar = depth / 30912
-    if scalar > 1 then scalar = 1 end
-    if scalar < 0 then scalar = 0 end
-    scalar = (scalar * -1) + 1
-  end
-  return scalar
+	local scalar = 1
+	if y < 0 then
+		-- You can probably tell that I'm really, really bad at math.
+
+		local depth = math.abs(y)
+		scalar = depth / 30912
+
+		-- Clamp.
+		if scalar > 1 then scalar = 1 end
+		if scalar < 0 then scalar = 0 end
+
+		-- Invert.
+		scalar = (scalar * -1) + 1
+
+		-- Magic!
+		-- The number of iterations determines the steepness of the curve.
+		for i=1, 5, 1 do
+			scalar = scalar * 1.719
+			scalar = scalar + 1
+
+			-- Input to log should be [1, 2.719].
+			-- Log should return something in range [0, 1].
+			scalar = math.log(scalar)
+		end
+
+		-- Clamp.
+		if scalar > 1 then scalar = 1 end
+		if scalar < 0 then scalar = 0 end
+	end
+	return scalar
 end
 
 
@@ -526,7 +547,7 @@ teleports.update = function(pos)
 	local range = teleports.calculate_range(pos)
 
 	if isnyan then
-		charge = "NYBW"
+		charge = "ROSE"
 	end
 
 	local formspec = "size[11,7;]" ..

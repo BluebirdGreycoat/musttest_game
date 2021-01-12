@@ -139,7 +139,6 @@ generate_crystal = function(pos, rec_, tot_, has_, dirs)
 end
 
 rosestone.place = function(pos, count)
-	minetest.chat_send_all('generating rosestone at ' .. minetest.pos_to_string(pos) .. ' with ' .. count .. ' blocks')
 	local which = all_dirs[math_random(1, 4)]
   generate_crystal(vector_round(pos), nil, count, nil, which)
 end

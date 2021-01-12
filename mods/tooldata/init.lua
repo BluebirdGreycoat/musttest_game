@@ -327,12 +327,12 @@ tooldata["axe_mese"] = {
 	destroy_chance = 10,
 
 	node_overrides = {
-		["nyancat:nyancat"] = {
+		["rosestone:head"] = {
 			max_drop_level = 3,
 			destroy_chance = nil,
 			direct_to_inventory = true,
 		},
-		["nyancat:nyancat_rainbow"] = {
+		["rosestone:tail"] = {
 			max_drop_level = 3,
 			destroy_chance = nil,
 			direct_to_inventory = true,
@@ -387,10 +387,10 @@ tooldata["axe_diamond"] = {
 	range_modifier = 1.5,
 
 	node_overrides = {
-		["nyancat:nyancat"] = {
+		["rosestone:head"] = {
 			max_drop_level = 3,
 		},
-		["nyancat:nyancat_rainbow"] = {
+		["rosestone:tail"] = {
 			max_drop_level = 3,
 		},
 	},

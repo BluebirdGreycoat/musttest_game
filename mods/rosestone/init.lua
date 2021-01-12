@@ -7,10 +7,11 @@ local math_max = math.max
 local set_node = minetest.set_node
 local vector_round = vector.round
 local hash_pos = minetest.hash_node_position
+local unhash_pos = minetest.get_position_from_hash
 
 
 
-minetest.register_node("nyancat:nyancat", {
+minetest.register_node("rosestone:head", {
 	description = "Glowing Rosestone Seed",
 	tiles = {"nyancat_side.png^[transformR90", "nyancat_side.png^[transformR90",
 		"nyancat_side.png",
@@ -25,7 +26,7 @@ minetest.register_node("nyancat:nyancat", {
 	drop = "default:glass",
 })
 
-minetest.register_node("nyancat:nyancat_rainbow", {
+minetest.register_node("rosestone:tail", {
 	description = "Glowing Rosestone Tail",
 	tiles = {
 		"nyancat_rainbow.png^[transformR90",
@@ -39,23 +40,61 @@ minetest.register_node("nyancat:nyancat_rainbow", {
 	sounds = default.node_sound_glass_defaults(),
 })
 
-nyancat = {}
+rosestone = {}
 
-local crystal_directions = {
+local crystal_dirs1 = {
+	{x=1,   y=0,    z=0},
+	{x=1,   y=0,    z=0},
 	{x=1,   y=0,    z=0},
 	{x=-1,  y=0,    z=0},
 	{x=0,   y=0,    z=1},
 	{x=0,   y=0,    z=-1},
+	{x=0,   y=1,    z=0},
+	{x=0,   y=-1,   z=0},
+}
 
-	-- Duplicate entries increase the chance that this direction is taken.
+local crystal_dirs2 = {
+	{x=1,   y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=-1},
+	{x=0,   y=1,    z=0},
 	{x=0,   y=-1,   z=0},
+}
+
+local crystal_dirs3 = {
+	{x=1,   y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=-1},
+	{x=0,   y=1,    z=0},
 	{x=0,   y=-1,   z=0},
-	{x=0,   y=1,   z=0},
-	{x=0,   y=1,   z=0},
+}
+
+local crystal_dirs4 = {
+	{x=1,   y=0,    z=0},
+	{x=-1,  y=0,    z=0},
+	{x=0,   y=0,    z=1},
+	{x=0,   y=0,    z=-1},
+	{x=0,   y=0,    z=-1},
+	{x=0,   y=0,    z=-1},
+	{x=0,   y=1,    z=0},
+	{x=0,   y=-1,   z=0},
+}
+
+local all_dirs = {
+	crystal_dirs1,
+	crystal_dirs2,
+	crystal_dirs3,
+	crystal_dirs4,
 }
 
 local generate_crystal -- Forward declaration needed for recursion.
-generate_crystal = function(pos, rec_, tot_, has_)
+generate_crystal = function(pos, rec_, tot_, has_, dirs)
 	local rec = rec_ or 0
 	local tot = tot_ or math_random(3, 10)
 	local has = has_ or {}
@@ -65,11 +104,11 @@ generate_crystal = function(pos, rec_, tot_, has_)
 
 	if not has[key] then
 		if rec == 0 then
-			set_node(pos, {name="nyancat:nyancat"})
+			set_node(pos, {name="rosestone:head"})
 			has[key] = true
 			gud = true
 		else
-			set_node(pos, {name="nyancat:nyancat_rainbow", param2=math_random(0, 3)})
+			set_node(pos, {name="rosestone:tail", param2=math_random(0, 3)})
 			has[key] = true
 			gud = true
 		end
@@ -78,24 +117,35 @@ generate_crystal = function(pos, rec_, tot_, has_)
 	-- Do not generate crystal larger than max num blocks.
 	if rec >= tot then return end
 
-	local d1 = crystal_directions[math_random(1, #crystal_directions)]
+	local d1 = dirs[math_random(1, #dirs)]
 	local p1 = {x=pos.x+d1.x, y=pos.y+d1.y, z=pos.z+d1.z}
 
 	-- Recursive call.
 	if gud then
-		generate_crystal(p1, rec+1, tot, has)
+		generate_crystal(p1, rec+1, tot, has, dirs)
 	else
-		generate_crystal(p1, rec+0, tot, has)
+		local t = {}
+		for k, v in pairs(has) do
+			t[#t+1] = k
+		end
+		if #t > 0 then
+			local x2 = unhash_pos(t[math_random(1, #t)])
+			local d2 = dirs[math_random(1, #dirs)]
+			local p2 = {x=x2.x+d1.x, y=x2.y+d1.y, z=x2.z+d1.z}
+
+			generate_crystal(p2, rec+0, tot, has, dirs)
+		end
 	end
 end
 
-nyancat.place = function(pos, count)
+rosestone.place = function(pos, count)
 	minetest.chat_send_all('generating rosestone at ' .. minetest.pos_to_string(pos) .. ' with ' .. count .. ' blocks')
-  generate_crystal(vector_round(pos), nil, count)
+	local which = all_dirs[math_random(1, 4)]
+  generate_crystal(vector_round(pos), nil, count, nil, which)
 end
 
-function nyancat.generate(minp, maxp, seed)
-	local height_min = -25000 -- Don't generate nyan cats in the nether.
+function rosestone.generate(minp, maxp, seed)
+	local height_min = -25000 -- Don't generate rosestone crystals in the nether.
 	local height_max = -32
 	if maxp.y < height_min or minp.y > height_max then
 		return
@@ -111,19 +161,19 @@ function nyancat.generate(minp, maxp, seed)
 			local y0 = pr:next(minp.y, maxp.y)
 			local z0 = pr:next(minp.z, maxp.z)
 			local p0 = {x = x0, y = y0, z = z0}
-			nyancat.place(p0, pr:next(3, 16))
+			rosestone.place(p0, pr:next(3, 16))
 		end
 	end
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
-	nyancat.generate(minp, maxp, seed)
+	rosestone.generate(minp, maxp, seed)
 end)
 
 -- Legacy
-minetest.register_alias("default:nyancat", "nyancat:nyancat")
-minetest.register_alias("default:nyancat_rainbow", "nyancat:nyancat_rainbow")
-minetest.register_alias("nyancat", "nyancat:nyancat")
-minetest.register_alias("nyancat_rainbow", "nyancat:nyancat_rainbow")
-default.make_nyancat = nyancat.place
-default.generate_nyancats = nyancat.generate
+minetest.register_alias("nyancat:nyancat", "rosestone:head")
+minetest.register_alias("nyancat:nyancat_rainbow", "rosestone:tail")
+minetest.register_alias("default:nyancat", "rosestone:head")
+minetest.register_alias("default:nyancat_rainbow", "rosestone:tail")
+minetest.register_alias("nyancat", "rosestone:head")
+minetest.register_alias("nyancat_rainbow", "rosestone:tail")

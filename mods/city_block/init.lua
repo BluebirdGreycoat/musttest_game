@@ -33,7 +33,7 @@ function city_block.on_punch(pos, node, puncher, pt)
 	end
 
 	local wielded = puncher:get_wielded_item()
-	if wielded:get_name() == "nyancat:nyancat" and wielded:get_count() >= 8 then
+	if wielded:get_name() == "rosestone:head" and wielded:get_count() >= 8 then
 		for i, v in ipairs(city_block.blocks) do
 			if vector_equals(v.pos, pos) then
 				if not v.is_jail then

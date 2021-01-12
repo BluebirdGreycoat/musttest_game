@@ -18,7 +18,7 @@ dofile(teleports.modpath .. "/sickness.lua")
 
 
 
-local nyanbow = "nyancat:nyancat_rainbow"
+local nyanbow = "rosestone:tail"
 
 -- Table of blocks which can be used to super-charge a teleport. Each block has a specific charge value.
 teleports.charge_blocks = {
@@ -465,7 +465,7 @@ function teleports.write_infotext(pos)
 	if public == 'false' then net = "SUPPRESSED" end
 
 	local beacon = ""
-	local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+	local item = {name="rosestone:head", count=1, wear=0, metadata=""}
 	if inv:contains_item("price", item) then
 		beacon = "\nRecall signal emission normal"
 	end
@@ -575,7 +575,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 		infinite_fuel = true
 	else
 		local inv = meta:get_inventory()
-		local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+		local item = {name="rosestone:head", count=1, wear=0, metadata=""}
 		if inv:contains_item("price", item) then
 			infinite_fuel = true
 		end
@@ -773,7 +773,7 @@ teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, p
     return stack:get_count()
   elseif listname == "price" and stack:get_name() == "flowers:waterlily" then
     return stack:get_count()
-	elseif listname == "price" and stack:get_name() == "nyancat:nyancat" then
+	elseif listname == "price" and stack:get_name() == "rosestone:head" then
 		if minetest.test_protection(pos, pname) then return 0 end
 		return stack:get_count()
   end
@@ -788,7 +788,7 @@ teleports.allow_metadata_inventory_take = function(pos, listname, index, stack, 
   -- Protection interferes with building public networks.
 	--if minetest.test_protection(pos, pname) then return 0 end
 
-	if stack:get_name() == "nyancat:nyancat" then
+	if stack:get_name() == "rosestone:head" then
 		if minetest.test_protection(pos, pname) then return 0 end
 		return stack:get_count()
 	end
@@ -807,7 +807,7 @@ end
 function teleports.update_beacon_data(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	local item = {name="nyancat:nyancat", count=1, wear=0, metadata=""}
+	local item = {name="rosestone:head", count=1, wear=0, metadata=""}
 
 	if inv:contains_item("price", item) then
 		for k, v in ipairs(teleports.teleports) do

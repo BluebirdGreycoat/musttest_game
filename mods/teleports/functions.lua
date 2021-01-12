@@ -193,7 +193,23 @@ end
 
 
 
-teleports.teleport_player = function(player, origin_pos, teleport_pos)
+-- Calculates the probability scalar of a TP to misjump based on range vs max range.
+local function tpc(r1, r2)
+	if r1 > r2 then return 0 end
+	local d = r1 / r2
+	d = d * -1 + 1
+	for i=1, 10, 1 do
+		d = d * 1.719 + 1
+		d = math.log(d)
+	end
+	if d < 0 then d = 0 end
+	if d > 1 then d = 1 end
+	return d
+end
+
+
+
+teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_range)
 	if not player or not player:is_player() then
 		return
 	end
@@ -214,21 +230,31 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos)
 
 	-- Small chance to be teleported somewhere completely random.
 	-- The chance increases a LOT if teleports are crowded.
+	-- You could theorize that their signals interfere with each other.
 	local use_random = false
-	local random_chance = 1000 -- Actually 970, because nearby-count is always at least 1 (counting self).
+	local random_chance = 1030 -- Actually 1000, because nearby-count is always at least 1 (counting self).
 	local count_nearby = 0
 
+	-- Count number of nearby teleports (including self).
 	for k, v in ipairs(teleports.teleports) do
 		if vector_distance(v.pos, origin_pos) < 100 then
 			count_nearby = count_nearby + 1
 		end
 	end
 
+	-- Chance of misjump increases if teleports are crowded.
 	random_chance = random_chance - (count_nearby * 30)
+	if random_chance < 0 then random_chance = 0 end
 
-	if random_chance < 10 then
-		random_chance = 10
+	-- Chance of misjump increases as teleport is operated closer to its max range.
+	local teleport_distance = vector_distance(origin_pos, teleport_pos)
+	random_chance = random_chance * tpc(teleport_distance, teleport_range)
+
+	-- Chance should never be worse than 1 in 50.
+	if random_chance < 50 then
+		random_chance = 50
 	end
+	random_chance = math_floor(random_chance)
 
 	--minetest.chat_send_all('chance: ' .. random_chance)
 	if math_random(1, random_chance) == 1 then
@@ -688,11 +714,13 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 		local tpname = pressed_tp_location
 		local have_target = false
 		local target_pos = {x=0, y=0, z=0}
+		local teleport_range = nil
 
 		if tpname and type(tpname) == "string" then
 			local tppos = minetest.string_to_pos(tpname)
 			if tppos then
-				if vector_distance(tppos, pos) <= teleports.calculate_range(pos) then
+				teleport_range = teleports.calculate_range(pos)
+				if vector_distance(tppos, pos) <= teleport_range then
 					-- Do not permit teleporting from one realm to another.
 					-- Doing so requires a different kind of teleport device.
 					local start_realm = rc.current_realm_at_pos(pos)
@@ -773,7 +801,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 
 			if have_biofuel or admin or infinite_fuel then
 				local teleport_pos = {x=target_pos.x, y=target_pos.y, z=target_pos.z}
-				teleports.teleport_player(player, pos, teleport_pos)
+				teleports.teleport_player(player, pos, teleport_pos, teleport_range)
 			end
 		end
 	end

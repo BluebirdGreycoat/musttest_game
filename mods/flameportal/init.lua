@@ -382,8 +382,6 @@ flameportal.after_portal_destruct = function(pos, oldnode)
             {x=pos.x-1, y=pos.y,   z=pos.z  },
             {x=pos.x,   y=pos.y,   z=pos.z+1},
             {x=pos.x,   y=pos.y,   z=pos.z-1},
-            {x=pos.x,   y=pos.y+1, z=pos.z  },
-            {x=pos.x,   y=pos.y-1, z=pos.z  },
         }
         
         for k, v in pairs(void) do

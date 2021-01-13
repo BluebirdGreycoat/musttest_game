@@ -280,6 +280,7 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
 		target.z = math_random(-30000, 30000)
 
     meta:set_string("target", minetest.pos_to_string(target))
+		meta:mark_as_private({"target"})
   else
     -- Target location already set, use it.
     target = minetest.string_to_pos(spos)

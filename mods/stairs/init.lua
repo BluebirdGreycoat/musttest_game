@@ -360,6 +360,20 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		if recipeitem then
 			if alternate == "_inner" then
 				minetest.register_craft({
+					type = "shapeless",
+					output = recipeitem .. ' 7',
+					recipe = {
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+					},
+				})
+				minetest.register_craft({
 					output = "stairs:stair_" .. subname .. alternate .. ' 8',
 					recipe = {
 						{recipeitem, recipeitem, recipeitem},
@@ -368,6 +382,20 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 					},
 				})
 			elseif alternate == "_outer" then
+				minetest.register_craft({
+					type = "shapeless",
+					output = recipeitem .. ' 5',
+					recipe = {
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+						"stairs:stair_" .. subname .. alternate,
+					},
+				})
 				minetest.register_craft({
 					output = "stairs:stair_" .. subname .. alternate .. ' 8',
 					recipe = {

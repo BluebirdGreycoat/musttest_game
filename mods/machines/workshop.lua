@@ -14,7 +14,7 @@ local REPAIR_RATE = tech.workshop.repair
 workshop.compose_formspec =
 function(pos)
 	local formspec =
-		"size[8,4.5]" ..
+		"size[8,7.75]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -29,6 +29,8 @@ function(pos)
 		"list[context;main;6.0,1;1,1]" ..
 
 		"list[current_player;main;0,3.5;8,1;]" ..
+		"list[current_player;main;0,4.75;8,3;8]" ..
+
 		"listring[context;main]" ..
 		"listring[current_player;main]" ..
 		default.get_hotbar_bg(0, 3.5)

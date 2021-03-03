@@ -209,6 +209,32 @@ end
 
 
 
+minetest.register_on_craft(function(...) moretrees.on_coconut_milk_craft(...) end)
+moretrees.on_coconut_milk_craft = function(itemstack, player, old_craft_grid, craft_inv)
+	if itemstack:get_name() ~= "moretrees:coconut_milk" then
+		return
+	end
+
+	local original
+	local index
+	for i = 1, player:get_inventory():get_size("craft") do
+		for j in ipairs(cutting_tools) do
+			local tool = cutting_tools[j]
+			if old_craft_grid[i]:get_name() == tool then
+				original = old_craft_grid[i]
+				index = i
+			end
+		end
+	end
+	if not original then
+		return
+	end
+	-- put the tool with metadata back in the craft grid
+	craft_inv:set_stack("craft", index, original)
+end
+
+
+
 minetest.register_craft({
     output = 'moretrees:palm_wood 4',
     recipe = {

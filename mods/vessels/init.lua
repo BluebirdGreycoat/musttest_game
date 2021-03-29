@@ -254,6 +254,35 @@ if not vessels.run_once then
 			{"default:glass",   "default:glass",    "default:glass"}
 		}
 	})
+    
+    
+	minetest.register_node("vessels:vessels_drinking_mug", {
+		description = "Drinking Mug (Empty)",
+		drawtype = "plantlike",
+		tiles = {"vessels_drinking_mug.png"},
+		inventory_image = "vessels_drinking_mug_inv.png",
+		wield_image = "vessels_drinking_mug.png",
+		paramtype = "light",
+		is_ground_content = false,
+		walkable = false,
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+		},
+		groups = utility.dig_groups("item", {vessel = 1, attached_node = 1}),
+		sounds = default.node_sound_glass_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	})
+
+	minetest.register_craft( {
+		output = "vessels:vessels_drinking_mug 14",
+		recipe = {
+			{"default:glass",   "",                 "default:glass"},
+			{"default:glass",   "",                 "default:glass"},
+			{"default:glass",   "default:clay_lump",    "default:glass"}
+		}
+	})
+
 
 	minetest.register_node("vessels:steel_bottle", {
 		description = "Heavy Iron Bottle (Empty)",

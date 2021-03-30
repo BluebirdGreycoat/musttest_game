@@ -195,6 +195,16 @@ jarkati.register_decoration({
 	place_on = {"default:desert_stone"},
 })
 
+jarkati.register_decoration({
+	nodes = {
+		"default:tvine",
+	},
+	probability = 1200,
+	all_floors = true,
+	place_on = {"default:desert_stone"},
+	replace_surface = "talinite:ore",
+})
+
 ---[[
 do
 	local _ = {name = "air"}

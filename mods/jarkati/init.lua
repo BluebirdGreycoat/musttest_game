@@ -134,7 +134,7 @@ jarkati.register_decoration({
 	nodes = "aloevera:aloe_plant_04",
 	probability = 1500,
 	place_on = {"default:desert_sand"},
-        replace_surface = "default:dirt_with_dry_grass",
+	replace_surface = "default:dirt_with_dry_grass",
 })
 
 -- Scatter "rubble" around the bases of cliffs.
@@ -193,6 +193,12 @@ jarkati.register_decoration({
 	probability = 120,
 	all_floors = true,
 	place_on = {"default:desert_stone"},
+	replace_surface = {
+		"default:desert_cobble",
+		"default:desert_cobble2",
+		"default:desert_cobble2",
+		"default:desert_cobble2",
+	},
 })
 
 ---[[

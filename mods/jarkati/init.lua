@@ -46,6 +46,10 @@ function jarkati.register_decoration(data)
 		td.replace_surface = {td.replace_surface}
 	end
 
+	if type(td.place_on) == "string" then
+		td.place_on = {td.place_on}
+	end
+
 	-- Used only with the `nodes` parameter.
 	td.param2 = data.param2 or {0}
 
@@ -202,13 +206,11 @@ jarkati.register_decoration({
 })
 
 jarkati.register_decoration({
-	nodes = {
-		"default:tvine",
-	},
+	nodes = "default:tvine_stunted",
 	probability = 1200,
 	all_floors = true,
-	place_on = {"default:desert_stone"},
-	replace_surface = "talinite:ore",
+	place_on = "default:desert_stone",
+	replace_surface = "talinite:desert_ore",
 })
 
 ---[[

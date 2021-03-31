@@ -1,9 +1,13 @@
 
+-- Twisted Vine Mod
+-- Idea and textures by alauer
+-- Code by MustTest
+
 tvine = tvine or {}
 tvine.modpath = minetest.get_modpath("default")
 tvine.steptime = {min=60*5, max=60*20}
 --tvine.steptime = {min=1, max=1}
-tvine.maxheight = 7
+tvine.maxheight = 15
 tvine.minlight = 10
 tvine.light_source = 9
 
@@ -47,7 +51,12 @@ end
 
 -- Should return a random height for an individual plant to grow.
 function tvine.random_height()
-	return math_floor(math_random(math_random(2, 3), math_random(3, 7)))
+	local m = tvine.maxheight
+	local h = math_floor(m / 2)
+	local x = 2
+	if h < x then h = x end
+	if m < h then m = h end
+	return math_floor(math_random(math_random(x, h), math_random(h, m)))
 end
 
 function tvine.is_dirt_name(name)
@@ -55,6 +64,7 @@ function tvine.is_dirt_name(name)
         name == "default:dirt" or 
         name == "moregrass:darkgrass" or 
         name == "talinite:ore" or
+        name == "talinite:desert_ore" or
         minetest.get_item_group(name, "soil") > 1 then
 		return true
 	end
@@ -74,14 +84,18 @@ function tvine.can_grow(pos)
 	if not tvine.has_dirt(pos) then
 		return
 	end
+
 	-- Must have water nearby.
 	local p = vector.add(pos, {x=0, y=-1, z=0})
 	if not minetest.find_node_near(p, 3, {"group:water"}) then
 		return
 	end
-	if not minetest.find_node_near(p, 5, {"talinite:block"}) then
+
+	-- Also needs minerals.
+	if not minetest.find_node_near(p, 3, {"glowstone:minerals"}) then
 		return
 	end
+
 	return true
 end
 
@@ -279,208 +293,247 @@ function tvine.dig_up(pos, node, digger)
 end
 
 if not tvine.run_once then
-    minetest.register_node("default:tvine_seed", {
-    description = "Twisted Vine Seed",
-    tiles = {"aloe_seeds.png"},
-    wield_image = "aloe_seeds.png",
-    inventory_image = "aloe_seeds.png",
-    drawtype = "signlike",
-    paramtype = "light",
-    paramtype2 = "wallmounted",
-    walkable = false,
-    sunlight_propagates = true,
-    selection_box = {
-        type = "fixed",
-        fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
-    },
-    groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
-    on_place = function(itemstack, placer, pointed_thing)
-        return farming.place_seed(itemstack, placer, pointed_thing, "default:tvine_seed")
-    end,
-    extra_growing_surfaces = {
-        "default:dirt_with_grass",
-        "default:dirt",
-        "moregrass:darkgrass",
-        "talinite:ore",
-    },
-    on_timer = function(...)
-        return tvine.on_seed_timer(...)
-    end,
-    minlight = 10,
-    maxlight = 15,
-    next_plant = {"default:tvine_top", "default:tvine_top_alt"},
-    fertility = {"grassland"},
-    sounds = default.node_sound_dirt_defaults({
-            dug = {name = "default_grass_footstep", gain = 0.2},
-            place = {name = "default_place_node", gain = 0.25},
-        }),
-    })
+	minetest.register_node("default:tvine_seed", {
+	description = "Twisted Vine Seed",
+	tiles = {"aloe_seeds.png"},
+	wield_image = "aloe_seeds.png",
+	inventory_image = "aloe_seeds.png",
+	drawtype = "signlike",
+	paramtype = "light",
+	paramtype2 = "wallmounted",
+	walkable = false,
+	sunlight_propagates = true,
+	selection_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+	},
+	groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
+	on_place = function(itemstack, placer, pointed_thing)
+		return farming.place_seed(itemstack, placer, pointed_thing, "default:tvine_seed")
+	end,
+	extra_growing_surfaces = {
+		"default:dirt_with_grass",
+		"default:dirt",
+		"moregrass:darkgrass",
+		"talinite:ore",
+		"talinite:desert_ore",
+	},
+	on_timer = function(...)
+		return tvine.on_seed_timer(...)
+	end,
+	minlight = 10,
+	maxlight = 15,
+	next_plant = {"default:tvine_top", "default:tvine_top_alt"},
+	fertility = {"grassland"},
+	sounds = default.node_sound_dirt_defaults({
+			dug = {name = "default_grass_footstep", gain = 0.2},
+			place = {name = "default_place_node", gain = 0.25},
+		}),
+	})
 
-    minetest.register_node("default:tvine_display", {
-        description = "Twisted Vine",
-        drawtype = "plantlike",
-        tiles = {"default_tvine_display.png"},
-        inventory_image = "default_tvine.png",
-        wield_image = "default_tvine.png",
-        paramtype = "light",
-        sunlight_propagates = true,
-        light_source = tvine.light_source,
-        walkable = false,
-        -- Manually placed vines are not climbable.
-        selection_box = {
-            type = "fixed",
-            fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
-        },
-        groups = utility.dig_groups("plant", {flammable = 2}),
-        sounds = default.node_sound_leaves_defaults(),
-        movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
-    })
+	-- This version is for display only - does not grow or provide seeds.
+	minetest.register_node("default:tvine_display", {
+		description = "Twisted Vine",
+		drawtype = "plantlike",
+		tiles = {"default_tvine_display.png"},
+		inventory_image = "default_tvine_display.png",
+		wield_image = "default_tvine_display.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		-- Manually placed vines are not climbable.
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	})
 
-    minetest.register_node("default:tvine", {
-        description = "Twisted Vine (Hacker!)",
-        drawtype = "plantlike",
-        tiles = {"default_tvine.png"},
-        inventory_image = "default_tvine.png",
-        wield_image = "default_tvine.png",
-        paramtype = "light",
-        sunlight_propagates = true,
-        light_source = tvine.light_source,
-        walkable = false,
-        climbable = true,
-        drop = "default:tvine_display",
-        selection_box = {
-            type = "fixed",
-            fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
-        },
-        groups = utility.dig_groups("plant", {flammable = 2}),
-        sounds = default.node_sound_leaves_defaults(),
-        movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	-- This version provides seeds!
+	minetest.register_node("default:tvine_stunted", {
+		description = "Twisted Vine (Hacker!)",
+		drawtype = "plantlike",
+		tiles = {"default_tvine_display.png"},
+		inventory_image = "default_tvine.png",
+		wield_image = "default_tvine.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		-- Manually placed vines are not climbable.
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		drop = "default:tvine_seed",
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	})
 
-        on_construct = function(...)
-            return tvine.on_construct(...)
-        end,
+	stalk_drops = {
+		max_items = 1,
+		items = {
+			{items = {'talinite:dust'}, rarity = 3},
+		},
+	}
 
-        on_destruct = function(...)
-            return tvine.on_destruct(...)
-        end,
+	minetest.register_node("default:tvine", {
+		description = "Twisted Vine (Hacker!)",
+		drawtype = "plantlike",
+		tiles = {"default_tvine.png"},
+		inventory_image = "default_tvine.png",
+		wield_image = "default_tvine.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		climbable = true,
+		drop = stalk_drops,
+		selection_box = {
+				type = "fixed",
+				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
-        on_timer = function(...)
-            return tvine.on_timer(...)
-        end,
+		on_construct = function(...)
+			return tvine.on_construct(...)
+		end,
 
-        after_dig_node = function(...)
-            return tvine.after_dig_node(...)
-        end,
-    })
+		on_destruct = function(...)
+			return tvine.on_destruct(...)
+		end,
 
-    minetest.register_node("default:tvine_alt", {
-        description = "Twisted Vine (Hacker!)",
-        drawtype = "plantlike",
-        tiles = {"default_tvine_alt.png"},
-        inventory_image = "default_tvine.png",
-        wield_image = "default_tvine.png",
-        paramtype = "light",
-        sunlight_propagates = true,
-        light_source = tvine.light_source,
-        walkable = false,
-        climbable = true,
-        drop = "default:tvine_display",
-        selection_box = {
-            type = "fixed",
-            fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
-        },
-        groups = utility.dig_groups("plant", {flammable = 2}),
-        sounds = default.node_sound_leaves_defaults(),
-        movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+		on_timer = function(...)
+			return tvine.on_timer(...)
+		end,
 
-        on_construct = function(...)
-            return tvine.on_construct(...)
-        end,
+		after_dig_node = function(...)
+			return tvine.after_dig_node(...)
+		end,
+	})
 
-        on_destruct = function(...)
-            return tvine.on_destruct(...)
-        end,
+	minetest.register_node("default:tvine_alt", {
+		description = "Twisted Vine (Hacker!)",
+		drawtype = "plantlike",
+		tiles = {"default_tvine_alt.png"},
+		inventory_image = "default_tvine.png",
+		wield_image = "default_tvine.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		climbable = true,
+		drop = stalk_drops,
+		selection_box = {
+				type = "fixed",
+				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
-        on_timer = function(...)
-            return tvine.on_timer(...)
-        end,
+		on_construct = function(...)
+			return tvine.on_construct(...)
+		end,
 
-        after_dig_node = function(...)
-            return tvine.after_dig_node(...)
-        end,
-    })
+		on_destruct = function(...)
+			return tvine.on_destruct(...)
+		end,
 
-    minetest.register_node("default:tvine_top", {
-        description = "Twisted Vine (Hacker!)",
-        drawtype = "plantlike",
-        tiles = {"default_tvine_top.png"},
-        inventory_image = "default_tvine.png",
-        wield_image = "default_tvine.png",
-        paramtype = "light",
-        sunlight_propagates = true,
-        light_source = tvine.light_source,
-        walkable = false,
-        drop = "default:tvine_seed",
-        selection_box = {
-            type = "fixed",
-            fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
-        },
-        groups = utility.dig_groups("plant", {flammable = 2}),
-        sounds = default.node_sound_leaves_defaults(),
-        movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+		on_timer = function(...)
+			return tvine.on_timer(...)
+		end,
 
-        on_construct = function(...)
-            return tvine.on_construct(...)
-        end,
+		after_dig_node = function(...)
+			return tvine.after_dig_node(...)
+		end,
+	})
 
-        on_destruct = function(...)
-            return tvine.on_destruct(...)
-        end,
+	top_drops = {
+		max_items = 2,
+		items = {
+			{items = {'default:tvine_display'}, rarity = 10},
+			{items = {'default:tvine_seed'}}
+		},
+	}
 
-        on_timer = function(...)
-            return tvine.on_timer(...)
-        end,
+	minetest.register_node("default:tvine_top", {
+		description = "Twisted Vine (Hacker!)",
+		drawtype = "plantlike",
+		tiles = {"default_tvine_top.png"},
+		inventory_image = "default_tvine.png",
+		wield_image = "default_tvine.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		drop = top_drops,
+		selection_box = {
+				type = "fixed",
+				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
-        after_dig_node = function(...)
-            return tvine.after_dig_node(...)
-        end,
-    })
+		on_construct = function(...)
+			return tvine.on_construct(...)
+		end,
 
-    minetest.register_node("default:tvine_top_alt", {
-        description = "Twisted Vine (Hacker!)",
-        drawtype = "plantlike",
-        tiles = {"default_tvine_top_alt.png"},
-        inventory_image = "default_tvine.png",
-        wield_image = "default_tvine.png",
-        paramtype = "light",
-        sunlight_propagates = true,
-        light_source = tvine.light_source,
-        walkable = false,
-        drop = "default:tvine_seed",
-        selection_box = {
-            type = "fixed",
-            fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
-        },
-        groups = utility.dig_groups("plant", {flammable = 2}),
-        sounds = default.node_sound_leaves_defaults(),
-        movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+		on_destruct = function(...)
+			return tvine.on_destruct(...)
+		end,
 
-        on_construct = function(...)
-            return tvine.on_construct(...)
-        end,
+		on_timer = function(...)
+			return tvine.on_timer(...)
+		end,
 
-        on_destruct = function(...)
-            return tvine.on_destruct(...)
-        end,
+		after_dig_node = function(...)
+			return tvine.after_dig_node(...)
+		end,
+	})
 
-        on_timer = function(...)
-            return tvine.on_timer(...)
-        end,
+	minetest.register_node("default:tvine_top_alt", {
+		description = "Twisted Vine (Hacker!)",
+		drawtype = "plantlike",
+		tiles = {"default_tvine_top_alt.png"},
+		inventory_image = "default_tvine.png",
+		wield_image = "default_tvine.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = tvine.light_source,
+		walkable = false,
+		drop = top_drops,
+		selection_box = {
+				type = "fixed",
+				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+		},
+		groups = utility.dig_groups("plant", {flammable = 2}),
+		sounds = default.node_sound_leaves_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
-        after_dig_node = function(...)
-            return tvine.after_dig_node(...)
-        end,
-    })
+		on_construct = function(...)
+			return tvine.on_construct(...)
+		end,
+
+		on_destruct = function(...)
+			return tvine.on_destruct(...)
+		end,
+
+		on_timer = function(...)
+			return tvine.on_timer(...)
+		end,
+
+		after_dig_node = function(...)
+			return tvine.after_dig_node(...)
+		end,
+	})
 
 	local c = "tvine:core"
 	local f = tvine.modpath .. "/tvine.lua"

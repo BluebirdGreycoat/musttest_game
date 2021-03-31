@@ -106,6 +106,7 @@ function tvine.get_grow_height(pos)
 	if maxh == 0 then
 		maxh = tvine.random_height()
 		meta:set_int("tvine_height", maxh)
+		meta:mark_as_private("tvine_height")
 	end
 	return maxh
 end
@@ -130,6 +131,7 @@ function tvine.reset_grow_height_and_timer(pos)
 		local meta = minetest.get_meta(p)
 		local maxh = tvine.random_height()
 		meta:set_int("tvine_height", maxh)
+		meta:mark_as_private("tvine_height")
 	else
 		return
 	end

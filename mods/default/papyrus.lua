@@ -50,6 +50,7 @@ function papyrus.get_grow_height(pos)
 	if maxh == 0 then
 		maxh = papyrus.random_height()
 		meta:set_int("papyrus_height", maxh)
+		meta:mark_as_private("papyrus_height")
 	end
 	return maxh
 end
@@ -74,6 +75,7 @@ function papyrus.reset_grow_height_and_timer(pos)
 		local meta = minetest.get_meta(p)
 		local maxh = papyrus.random_height()
 		meta:set_int("papyrus_height", maxh)
+		meta:mark_as_private("papyrus_height")
 	else
 		return
 	end

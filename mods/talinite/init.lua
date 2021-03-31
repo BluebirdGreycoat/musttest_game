@@ -10,7 +10,7 @@ minetest.register_node("talinite:ore", {
 })
 
 minetest.register_node("talinite:desert_ore", {
-  description = "Talinite Desert Ore",
+  description = "Desert Talinite Ore",
   tiles = {"default_desert_stone.png^gloopores_mineral_talinite.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "talinite:lump",

@@ -77,6 +77,14 @@ function bonemeal.on_use(itemstack, user, pt)
 					papyrus.grow(pos, node)
 				end
 				take = true
+			elseif node.name == "default:tvine" or 
+                        node.name == "default:tvine_alt" or 
+                        node.name == "default:tvine_top" or 
+                        node.name == "default:tvine_top_alt" then
+				if math_random(1, 3) == 1 then
+					tvine.grow(pos, node)
+				end
+				take = true
 			elseif def.groups and def.groups.sapling and def.groups.sapling > 0 and def.on_timer then
 				local timer = minetest.get_node_timer(pos)
 				if timer:is_started() then

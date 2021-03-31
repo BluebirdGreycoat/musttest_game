@@ -264,9 +264,24 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	if not ndef or not ndef.buildable_to then
 		return itemstack
 	end
+    
+    local pdef = minetest.reg_ns_nodes[plantname]
+    if not pdef then
+        return itemstack
+    end
+    
+    local have_surface = false
+    if pdef.extra_growing_surfaces then
+        for k, v in ipairs(pdef.extra_growing_surfaces) do
+            if v == under.name then
+                have_surface = true
+                break
+            end
+        end
+    end
 
 	-- check if pointing at soil
-	if minetest.get_item_group(under.name, "soil") < 2 then
+	if minetest.get_item_group(under.name, "soil") < 2 and not have_surface then
 		return itemstack
 	end
 
@@ -274,7 +289,7 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	-- note: use of `add_node` automatically invokes droplift + dirtspread notifications.
 	minetest.add_node(pt.above, {name = plantname, param2 = 1})
 	tick(pt.above)
-  itemstack:take_item()
+    itemstack:take_item()
 	return itemstack
 end
 
@@ -288,6 +303,11 @@ farming.grow_plant = function(pos, elapsed)
 		-- disable timer for fully grown plant
 		return
 	end
+    
+    local next_plant = def.next_plant
+    if type(next_plant) == "table" then
+        next_plant = next_plant[math.random(1, #next_plant)]
+    end
 
 	-- grow seed
 	if minetest.get_item_group(node.name, "seed") and def.fertility then
@@ -299,12 +319,12 @@ farming.grow_plant = function(pos, elapsed)
 		-- omitted is a check for light, we assume seeds can germinate in the dark.
 		for _, v in pairs(def.fertility) do
 			if minetest.get_item_group(soil_node.name, v) ~= 0 then
-				local placenode = {name = def.next_plant}
+				local placenode = {name = next_plant}
 				if def.place_param2 then
 					placenode.param2 = def.place_param2
 				end
 				minetest.swap_node(pos, placenode)
-				if minetest.reg_ns_nodes[def.next_plant].next_plant then
+				if minetest.reg_ns_nodes[next_plant].next_plant then
 					tick(pos)
 					return
 				end
@@ -329,14 +349,14 @@ farming.grow_plant = function(pos, elapsed)
 	end
   
 	-- grow
-	local placenode = {name = def.next_plant}
+	local placenode = {name = next_plant}
 	if def.place_param2 then
 		placenode.param2 = def.place_param2
 	end
 	minetest.swap_node(pos, placenode)
   
 	-- new timer needed?
-	if minetest.reg_ns_nodes[def.next_plant].next_plant then
+	if minetest.reg_ns_nodes[next_plant].next_plant then
 		tick(pos)
 	end
   

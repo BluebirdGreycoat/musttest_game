@@ -265,20 +265,20 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 		return itemstack
 	end
     
-    local pdef = minetest.reg_ns_nodes[plantname]
-    if not pdef then
-        return itemstack
-    end
-    
-    local have_surface = false
-    if pdef.extra_growing_surfaces then
-        for k, v in ipairs(pdef.extra_growing_surfaces) do
-            if v == under.name then
-                have_surface = true
-                break
-            end
-        end
-    end
+	local pdef = minetest.reg_ns_nodes[plantname]
+	if not pdef then
+			return itemstack
+	end
+
+	local have_surface = false
+	if pdef.soil_nodes then
+		for k, v in ipairs(pdef.soil_nodes) do
+			if v == under.name then
+				have_surface = true
+				break
+			end
+		end
+	end
 
 	-- check if pointing at soil
 	if minetest.get_item_group(under.name, "soil") < 2 and not have_surface then
@@ -298,24 +298,44 @@ farming.grow_plant = function(pos, elapsed)
 	local node = minetest.get_node(pos)
 	local name = node.name
 	local def = minetest.reg_ns_nodes[name]
+	local soil_node = minetest.get_node_or_nil({x = pos.x, y = pos.y - 1, z = pos.z})
+
+	if not soil_node then
+		tick_again(pos)
+		--minetest.chat_send_all('fail 1')
+		return
+	end
   
 	if not def.next_plant then
 		-- disable timer for fully grown plant
+		--minetest.chat_send_all('fail 2')
 		return
 	end
     
-    local next_plant = def.next_plant
-    if type(next_plant) == "table" then
-        next_plant = next_plant[math.random(1, #next_plant)]
-    end
+	-- Allow to randomly choose the next plant from a variety.
+	local next_plant = def.next_plant
+	if type(next_plant) == "table" then
+		next_plant = next_plant[math.random(1, #next_plant)]
+	end
+
+	local have_soil = false
+	if def.soil_nodes then
+		for k, v in ipairs(def.soil_nodes) do
+			if v == soil_node.name then
+				have_soil = true
+				break
+			end
+		end
+	end
 
 	-- grow seed
 	if minetest.get_item_group(node.name, "seed") and def.fertility then
-		local soil_node = minetest.get_node_or_nil({x = pos.x, y = pos.y - 1, z = pos.z})
-		if not soil_node then
+		if not have_soil then
 			tick_again(pos)
+			--minetest.chat_send_all('fail 3')
 			return
 		end
+
 		-- omitted is a check for light, we assume seeds can germinate in the dark.
 		for _, v in pairs(def.fertility) do
 			if minetest.get_item_group(soil_node.name, v) ~= 0 then
@@ -326,25 +346,30 @@ farming.grow_plant = function(pos, elapsed)
 				minetest.swap_node(pos, placenode)
 				if minetest.reg_ns_nodes[next_plant].next_plant then
 					tick(pos)
+					--minetest.chat_send_all('fail 4')
 					return
 				end
 			end
 		end
 
+		--minetest.chat_send_all('fail 8')
 		return
 	end
   
 	-- check if on wet soil
-	local below = minetest.get_node({x = pos.x, y = pos.y - 1, z = pos.z})
-	if minetest.get_item_group(below.name, "soil") < 3 then
-		tick_again(pos)
-		return
+	if not have_soil then
+		if minetest.get_item_group(soil_node.name, "soil") < 3 then
+			tick_again(pos)
+			--minetest.chat_send_all('fail 5')
+			return
+		end
 	end
   
 	-- check light
 	local light = minetest.get_node_light(pos)
 	if not light or light < def.minlight or light > def.maxlight then
 		tick_again(pos)
+		--minetest.chat_send_all('fail 6')
 		return
 	end
   
@@ -358,8 +383,13 @@ farming.grow_plant = function(pos, elapsed)
 	-- new timer needed?
 	if minetest.reg_ns_nodes[next_plant].next_plant then
 		tick(pos)
+	elseif def.farming_restart_timer then
+		-- Allow the second-to-last plant in a growing
+		-- sequence to request a timer restart.
+		tick(pos)
 	end
   
+	--minetest.chat_send_all('fail 7')
 	return
 end
 

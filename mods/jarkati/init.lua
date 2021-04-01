@@ -207,11 +207,33 @@ jarkati.register_decoration({
 
 jarkati.register_decoration({
 	nodes = "default:tvine_stunted",
-	probability = 1200,
+	probability = 1400,
 	all_floors = true,
 	place_on = "default:desert_stone",
 	replace_surface = "talinite:desert_ore",
 })
+
+do
+	local L = {name = "default:tvine"}
+	local R = {name = "default:tvine_alt"}
+	local S = {name = "default:tvine_top"}
+
+	jarkati.register_decoration({
+		schematic = {
+			size = {x=1, y=3, z=1},
+			data = {
+				L,
+				R,
+				S,
+			},
+		},
+		flags = "place_center_x,place_center_z",
+		probability = 3400,
+		all_floors = true,
+		place_on = "default:desert_stone",
+		replace_surface = "talinite:desert_ore",
+	})
+end
 
 ---[[
 do

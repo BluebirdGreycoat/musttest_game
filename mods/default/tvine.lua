@@ -7,8 +7,9 @@ tvine = tvine or {}
 tvine.modpath = minetest.get_modpath("default")
 tvine.steptime = {min=60*5, max=60*20}
 --tvine.steptime = {min=1, max=1}
-tvine.maxheight = 15
+tvine.maxheight = 16
 tvine.minlight = 10
+tvine.maxlight = 15
 tvine.light_source = 9
 
 -- Localize for performance.
@@ -176,17 +177,16 @@ function tvine.grow(pos, node)
 		return 0
 	end
 	-- Check if we have enough light.
-    if minetest.get_node_light(pos) < tvine.minlight then
+	if minetest.get_node_light(pos) < tvine.minlight then
 		return 0
 	end
     
-    
 	-- Grow!
-    local p2 = {x=pos.x, y=pos.y-1, z=pos.z}
-    local n2 = minetest.get_node(p2)
-    if tvine.is_plant_name(n2.name) then
-        minetest.swap_node(p2, {name = tvine.chose_bot_name(p2)})
-    end
+	local p2 = {x=pos.x, y=pos.y-1, z=pos.z}
+	local n2 = minetest.get_node(p2)
+	if tvine.is_plant_name(n2.name) then
+			minetest.swap_node(p2, {name = tvine.chose_bot_name(p2)})
+	end
 	minetest.swap_node(pos, {name = tvine.chose_top_name(pos)})
     
 	return 0
@@ -295,44 +295,6 @@ function tvine.dig_up(pos, node, digger)
 end
 
 if not tvine.run_once then
-	minetest.register_node("default:tvine_seed", {
-	description = "Twisted Vine Seed",
-	tiles = {"aloe_seeds.png"},
-	wield_image = "aloe_seeds.png",
-	inventory_image = "aloe_seeds.png",
-	drawtype = "signlike",
-	paramtype = "light",
-	paramtype2 = "wallmounted",
-	walkable = false,
-	sunlight_propagates = true,
-	selection_box = {
-			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
-	},
-	groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
-	on_place = function(itemstack, placer, pointed_thing)
-		return farming.place_seed(itemstack, placer, pointed_thing, "default:tvine_seed")
-	end,
-	extra_growing_surfaces = {
-		"default:dirt_with_grass",
-		"default:dirt",
-		"moregrass:darkgrass",
-		"talinite:ore",
-		"talinite:desert_ore",
-	},
-	on_timer = function(...)
-		return tvine.on_seed_timer(...)
-	end,
-	minlight = 10,
-	maxlight = 15,
-	next_plant = {"default:tvine_top", "default:tvine_top_alt"},
-	fertility = {"grassland"},
-	sounds = default.node_sound_dirt_defaults({
-			dug = {name = "default_grass_footstep", gain = 0.2},
-			place = {name = "default_place_node", gain = 0.25},
-		}),
-	})
-
 	-- This version is for display only - does not grow or provide seeds.
 	minetest.register_node("default:tvine_display", {
 		description = "Twisted Vine",
@@ -352,6 +314,41 @@ if not tvine.run_once then
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	})
+
+	minetest.register_node("default:tvine_seed", {
+		description = "Twisted Vine Seed",
+		tiles = {"aloe_seeds.png"},
+		wield_image = "aloe_seeds.png",
+		inventory_image = "aloe_seeds.png",
+		drawtype = "signlike",
+		paramtype = "light",
+		paramtype2 = "wallmounted",
+		walkable = false,
+		sunlight_propagates = true,
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+		},
+		groups = utility.dig_groups("seeds", {seed = 1, attached_node = 1, flammable = 2, notify_destruct = 1}),
+		on_place = function(itemstack, placer, pointed_thing)
+			return farming.place_seed(itemstack, placer, pointed_thing, "default:tvine_seed")
+		end,
+		soil_nodes = {
+			"default:dirt_with_grass",
+			"default:dirt",
+			"moregrass:darkgrass",
+			"talinite:ore",
+			"talinite:desert_ore",
+		},
+		on_timer = function(...) return farming.grow_plant(...) end,
+		minlight = tvine.minlight,
+		maxlight = tvine.maxlight,
+		next_plant = {"default:tvine_stunted"},
+		sounds = default.node_sound_dirt_defaults({
+			dug = {name = "default_grass_footstep", gain = 0.2},
+			place = {name = "default_place_node", gain = 0.25},
+		}),
 	})
 
 	-- This version provides seeds!
@@ -374,6 +371,22 @@ if not tvine.run_once then
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		next_plant = {"default:tvine_top", "default:tvine_top_alt"},
+		on_timer = function(...) return farming.grow_plant(...) end,
+		minlight = tvine.minlight,
+		maxlight = tvine.maxlight,
+		soil_nodes = {
+			"default:dirt_with_grass",
+			"default:dirt",
+			"moregrass:darkgrass",
+			"talinite:ore",
+			"talinite:desert_ore",
+		},
+
+		-- Instruct farming mod to restart the timer, even though it would see this
+		-- plant as the last one in the growing sequence (there's no 'next_plant').
+		farming_restart_timer = true,
 	})
 
 	stalk_drops = {
@@ -396,8 +409,8 @@ if not tvine.run_once then
 		climbable = true,
 		drop = stalk_drops,
 		selection_box = {
-				type = "fixed",
-				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 		},
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
@@ -433,8 +446,8 @@ if not tvine.run_once then
 		climbable = true,
 		drop = stalk_drops,
 		selection_box = {
-				type = "fixed",
-				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 		},
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
@@ -460,8 +473,9 @@ if not tvine.run_once then
 	top_drops = {
 		max_items = 2,
 		items = {
-			{items = {'default:tvine_display'}, rarity = 10},
-			{items = {'default:tvine_seed'}}
+			{items = {'default:tvine_display'}, rarity = 5},
+			{items = {'default:tvine_seed'}},
+			{items = {'default:tvine_seed'}, rarity = 10},
 		},
 	}
 
@@ -477,8 +491,8 @@ if not tvine.run_once then
 		walkable = false,
 		drop = top_drops,
 		selection_box = {
-				type = "fixed",
-				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 		},
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
@@ -513,8 +527,8 @@ if not tvine.run_once then
 		walkable = false,
 		drop = top_drops,
 		selection_box = {
-				type = "fixed",
-				fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+			type = "fixed",
+			fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 		},
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),

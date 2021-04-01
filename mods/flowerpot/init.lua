@@ -362,15 +362,17 @@ if not flowerpot.loaded then
 		"potatoes:potato_3",
 		"potatoes:potato_4",
                 
-                "aloevera:aloe_plant_01",
-                "aloevera:aloe_plant_02",
-                "aloevera:aloe_plant_03",
-                "aloevera:aloe_plant_04",
+		"aloevera:aloe_plant_01",
+		"aloevera:aloe_plant_02",
+		"aloevera:aloe_plant_03",
+		"aloevera:aloe_plant_04",
 
 		"onions:allium_sprouts_1",
 		"onions:allium_sprouts_2",
 		"onions:allium_sprouts_3",
 		"onions:allium_sprouts_4",
+
+		"default:tvine_display",
 	}) do
 		flowerpot.register_node(node)
 	end

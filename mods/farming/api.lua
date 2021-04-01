@@ -172,7 +172,7 @@ farming.register_hoe = function(name, def)
 	end
 end
 
-local function tick_multiplier(pos)
+local function tick_multiplier(pos, def)
 	local minp = vector.subtract(pos, 2)
 	local maxp = vector.add(pos, 2)
 
@@ -193,8 +193,8 @@ local function tick_multiplier(pos)
 end
 
 -- how often node timers for plants will tick, +/- some random value
-local function tick(pos)
-	local mult = tick_multiplier(pos)
+local function tick(pos, def)
+	local mult = tick_multiplier(pos, def)
 	local min = 200 * mult
 	local max = 350 * mult
   minetest.get_node_timer(pos):start(math_random(min, max))
@@ -203,7 +203,7 @@ local function tick(pos)
 end
 
 -- how often a growth failure tick is retried (e.g. too dark)
-local function tick_again(pos)
+local function tick_again(pos, def)
 	local min = 40
 	local max = 80
   minetest.get_node_timer(pos):start(math_random(min, max))
@@ -226,9 +226,9 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
   
   -- Pass through interactions to nodes that define them (like chests).
   do
-    local pdef = minetest.reg_ns_nodes[under.name]
-    if pdef and pdef.on_rightclick and not placer:get_player_control().sneak then
-      return pdef.on_rightclick(pt.under, under, placer, itemstack, pt)
+    local ndef = minetest.reg_ns_nodes[under.name]
+    if ndef and ndef.on_rightclick and not placer:get_player_control().sneak then
+      return ndef.on_rightclick(pt.under, under, placer, itemstack, pt)
     end
   end
 
@@ -267,7 +267,7 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
     
 	local pdef = minetest.reg_ns_nodes[plantname]
 	if not pdef then
-			return itemstack
+		return itemstack
 	end
 
 	local have_surface = false
@@ -288,8 +288,8 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	-- add the node and remove 1 item from the itemstack
 	-- note: use of `add_node` automatically invokes droplift + dirtspread notifications.
 	minetest.add_node(pt.above, {name = plantname, param2 = 1})
-	tick(pt.above)
-    itemstack:take_item()
+	tick(pt.above, pdef)
+	itemstack:take_item()
 	return itemstack
 end
 
@@ -301,7 +301,7 @@ farming.grow_plant = function(pos, elapsed)
 	local soil_node = minetest.get_node_or_nil({x = pos.x, y = pos.y - 1, z = pos.z})
 
 	if not soil_node then
-		tick_again(pos)
+		tick_again(pos, def)
 		--minetest.chat_send_all('fail 1')
 		return
 	end
@@ -331,7 +331,7 @@ farming.grow_plant = function(pos, elapsed)
 	-- grow seed
 	if minetest.get_item_group(node.name, "seed") and def.fertility then
 		if not have_soil then
-			tick_again(pos)
+			tick_again(pos, def)
 			--minetest.chat_send_all('fail 3')
 			return
 		end
@@ -345,7 +345,7 @@ farming.grow_plant = function(pos, elapsed)
 				end
 				minetest.swap_node(pos, placenode)
 				if minetest.reg_ns_nodes[next_plant].next_plant then
-					tick(pos)
+					tick(pos, def)
 					--minetest.chat_send_all('fail 4')
 					return
 				end
@@ -359,7 +359,7 @@ farming.grow_plant = function(pos, elapsed)
 	-- check if on wet soil
 	if not have_soil then
 		if minetest.get_item_group(soil_node.name, "soil") < 3 then
-			tick_again(pos)
+			tick_again(pos, def)
 			--minetest.chat_send_all('fail 5')
 			return
 		end
@@ -368,7 +368,7 @@ farming.grow_plant = function(pos, elapsed)
 	-- check light
 	local light = minetest.get_node_light(pos)
 	if not light or light < def.minlight or light > def.maxlight then
-		tick_again(pos)
+		tick_again(pos, def)
 		--minetest.chat_send_all('fail 6')
 		return
 	end
@@ -382,11 +382,11 @@ farming.grow_plant = function(pos, elapsed)
   
 	-- new timer needed?
 	if minetest.reg_ns_nodes[next_plant].next_plant then
-		tick(pos)
+		tick(pos, def)
 	elseif def.farming_restart_timer then
 		-- Allow the second-to-last plant in a growing
 		-- sequence to request a timer restart.
-		tick(pos)
+		tick(pos, def)
 	end
   
 	--minetest.chat_send_all('fail 7')

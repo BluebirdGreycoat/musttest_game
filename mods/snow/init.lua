@@ -424,6 +424,10 @@ minetest.register_node(":default:snow", snow.get_snowdef())
 minetest.register_node("snow:footprints", snow.get_snowfootdef())
 minetest.register_node("snow:tree", snow.get_treedef())
 
+minetest.override_item("default:snow", {
+	tiles = {{name="snow_macro.png", align_style="world", scale=8}},
+})
+
 -- Should return `true' if name is snow or any variant thereof,
 -- (footsteps, treesnow) NOT including default:snowblock.
 function snow.is_snow(name)

@@ -407,6 +407,10 @@ if not tvine.run_once then
 		farming_minerals_unused = true,
 		farming_growing_time_min = 60*10,
 		farming_growing_time_max = 60*40,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="default:tvine_display"})
+		end,
 	})
 
 	stalk_drops = {
@@ -452,6 +456,14 @@ if not tvine.run_once then
 		after_dig_node = function(...)
 			return tvine.after_dig_node(...)
 		end,
+
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="default:tvine_display", param2=math_random(0, 239)})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="default:tvine_display"})
+		end,
 	})
 
 	minetest.register_node("default:tvine_alt", {
@@ -489,6 +501,14 @@ if not tvine.run_once then
 
 		after_dig_node = function(...)
 			return tvine.after_dig_node(...)
+		end,
+
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="default:tvine_display", param2=math_random(0, 239)})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="default:tvine_display"})
 		end,
 	})
 
@@ -537,6 +557,14 @@ if not tvine.run_once then
 			return tvine.after_dig_node(...)
 		end,
 
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="default:tvine_display", param2=math_random(0, 239)})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="default:tvine_display"})
+		end,
+
 		-- Instruct farming mod to restart the timer.
 		-- Otherwise, after growing the last plant, the timer would halt.
 		farming_restart_timer = true,
@@ -578,6 +606,14 @@ if not tvine.run_once then
 
 		after_dig_node = function(...)
 			return tvine.after_dig_node(...)
+		end,
+
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="default:tvine_display", param2=math_random(0, 239)})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="default:tvine_display"})
 		end,
 
 		-- Instruct farming mod to restart the timer.

@@ -15,12 +15,13 @@ function nodeinspector.inspect(pname, under, above)
 		end
 
 		local timer = minetest.get_node_timer(under)
+		local yesno = ""
 		if timer:is_started() then
-			timer = "YES"
+			yesno = "YES"
 		else
-			timer = "NO"
+			yesno = "NO"
 		end
-		minetest.chat_send_player(pname, "# Server: Nodetimer: " .. timer)
+		minetest.chat_send_player(pname, "# Server: Nodetimer: " .. yesno .. ", Timeout: " .. timer:get_timeout() .. ", Elapsed: " .. timer:get_elapsed() .. ".")
 	end
 
 	local nodeunder = minetest.get_node(under)

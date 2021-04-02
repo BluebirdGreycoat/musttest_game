@@ -56,6 +56,7 @@ minetest.register_craft({
 farming.register_plant("farming:cotton", {
 	description = "Cotton Seed",
 	inventory_image = "farming_cotton_seed.png",
+	paramtype2 = "degrotate",
 	steps = 8,
 	minlight = 13,
 	maxlight = default.LIGHT_MAX,

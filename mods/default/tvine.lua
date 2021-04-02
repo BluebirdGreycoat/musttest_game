@@ -185,9 +185,9 @@ function tvine.grow(pos, node)
 	local p2 = {x=pos.x, y=pos.y-1, z=pos.z}
 	local n2 = minetest.get_node(p2)
 	if tvine.is_plant_name(n2.name) then
-			minetest.swap_node(p2, {name = tvine.chose_bot_name(p2)})
+			minetest.swap_node(p2, {name = tvine.chose_bot_name(p2), param2=n2.param2})
 	end
-	minetest.swap_node(pos, {name = tvine.chose_top_name(pos)})
+	minetest.swap_node(pos, {name = tvine.chose_top_name(pos), param2=n2.param2})
     
 	return 0
 end
@@ -239,30 +239,36 @@ function tvine.chose_bot_name(pos)
 end
 
 function tvine.on_construct(pos)
-    local p = {x=pos.x, y=pos.y-1, z=pos.z}
-    if not tvine.is_plant_name(minetest.get_node(p).name) then 
-        if math_random(1, 2) == 1 then
-            minetest.swap_node(pos, {name="default:tvine_top"})
-        else
-            minetest.swap_node(pos, {name="default:tvine_top_alt"})
-        end
-    end
+	local p = {x=pos.x, y=pos.y-1, z=pos.z}
+	local n = minetest.get_node(p)
+
+	if not tvine.is_plant_name(n.name) then
+		if math_random(1, 2) == 1 then
+			minetest.swap_node(pos, {name="default:tvine_top", param2=math_random(0, 239)})
+		else
+			minetest.swap_node(pos, {name="default:tvine_top_alt", param2=math_random(0, 239)})
+		end
+	else
+		local n2 = minetest.get_node(pos)
+		n2.param2 = n.param2
+		minetest.swap_node(pos, n2)
+	end
 end
 
 function tvine.on_seed_timer(pos, elapsed)
-    if math_random(1, 2) == 1 then
-        minetest.set_node(pos, {name = "default:tvine_top"})
-    else
-        minetest.set_node(pos, {name = "default:tvine_top_alt"})
-    end
+	if math_random(1, 2) == 1 then
+		minetest.set_node(pos, {name = "default:tvine_top"})
+	else
+		minetest.set_node(pos, {name = "default:tvine_top_alt"})
+	end
 
-    -- Only the ground-level plant piece should have nodetimer.
-    -- If plant is not placed on soil, it will never have nodetimer.
-    if tvine.has_dirt(pos) then
-        local min = tvine.steptime.min
-        local max = tvine.steptime.max
-        minetest.get_node_timer(pos):start(math_random(min, max))
-    end
+	-- Only the ground-level plant piece should have nodetimer.
+	-- If plant is not placed on soil, it will never have nodetimer.
+	if tvine.has_dirt(pos) then
+		local min = tvine.steptime.min
+		local max = tvine.steptime.max
+		minetest.get_node_timer(pos):start(math_random(min, max))
+	end
 end
 
 function tvine.on_destruct(pos)
@@ -277,7 +283,11 @@ function tvine.on_timer(pos, elapsed)
 	if result == 10 then return end
 	-- Plant cannot grow because of ice.
 	if result == 12 then return end
-	return true
+
+	local min = tvine.steptime.min
+	local max = tvine.steptime.max
+	minetest.get_node_timer(pos):start(math_random(min, max))
+	--return true
 end
 
 function tvine.after_dig_node(pos, node, metadata, digger)
@@ -294,6 +304,12 @@ function tvine.dig_up(pos, node, digger)
   end
 end
 
+function tvine.on_display_construct(pos)
+	local n = minetest.get_node(pos)
+	n.param2 = math_random(0, 239)
+	minetest.swap_node(pos, n)
+end
+
 if not tvine.run_once then
 	-- This version is for display only - does not grow or provide seeds.
 	minetest.register_node("default:tvine_display", {
@@ -303,6 +319,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine_display.png",
 		wield_image = "default_tvine_display.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -314,6 +331,8 @@ if not tvine.run_once then
 		groups = utility.dig_groups("plant", {flammable = 2}),
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+		on_construct = function(...) return tvine.on_display_construct(...) end,
 	})
 
 	minetest.register_node("default:tvine_seed", {
@@ -349,6 +368,7 @@ if not tvine.run_once then
 			dug = {name = "default_grass_footstep", gain = 0.2},
 			place = {name = "default_place_node", gain = 0.25},
 		}),
+		farming_minerals_unused = true,
 	})
 
 	-- This version provides seeds!
@@ -359,6 +379,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine.png",
 		wield_image = "default_tvine.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -383,10 +404,9 @@ if not tvine.run_once then
 			"talinite:ore",
 			"talinite:desert_ore",
 		},
-
-		-- Instruct farming mod to restart the timer, even though it would see this
-		-- plant as the last one in the growing sequence (there's no 'next_plant').
-		farming_restart_timer = true,
+		farming_minerals_unused = true,
+		farming_growing_time_min = 60*10,
+		farming_growing_time_max = 60*40,
 	})
 
 	stalk_drops = {
@@ -403,6 +423,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine.png",
 		wield_image = "default_tvine.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -440,6 +461,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine.png",
 		wield_image = "default_tvine.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -486,6 +508,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine.png",
 		wield_image = "default_tvine.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -513,6 +536,12 @@ if not tvine.run_once then
 		after_dig_node = function(...)
 			return tvine.after_dig_node(...)
 		end,
+
+		-- Instruct farming mod to restart the timer.
+		-- Otherwise, after growing the last plant, the timer would halt.
+		farming_restart_timer = true,
+		farming_growing_time_min = tvine.steptime.min,
+		farming_growing_time_max = tvine.steptime.max,
 	})
 
 	minetest.register_node("default:tvine_top_alt", {
@@ -522,6 +551,7 @@ if not tvine.run_once then
 		inventory_image = "default_tvine.png",
 		wield_image = "default_tvine.png",
 		paramtype = "light",
+		paramtype2 = "degrotate",
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
@@ -549,6 +579,12 @@ if not tvine.run_once then
 		after_dig_node = function(...)
 			return tvine.after_dig_node(...)
 		end,
+
+		-- Instruct farming mod to restart the timer.
+		-- Otherwise, after growing the last plant, the timer would halt.
+		farming_restart_timer = true,
+		farming_growing_time_min = tvine.steptime.min,
+		farming_growing_time_max = tvine.steptime.max,
 	})
 
 	local c = "tvine:core"

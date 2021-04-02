@@ -181,11 +181,15 @@ local function tick_multiplier(pos, def)
 	local cold = minetest.find_nodes_in_area(minp, maxp, "group:cold")
 	mult = mult + (#cold / 2)
 
-	minp = vector.subtract(pos, 3)
-	maxp = vector.add(pos, 3)
+	-- Plant can disable minerals, if they should not grow any faster when
+	-- minerals are present.
+	if not def.farming_minerals_unused then
+		minp = vector.subtract(pos, 3)
+		maxp = vector.add(pos, 3)
 
-	local minerals = minetest.find_nodes_in_area(minp, maxp, "glowstone:minerals")
-	mult = mult - (#minerals / 4)
+		local minerals = minetest.find_nodes_in_area(minp, maxp, "glowstone:minerals")
+		mult = mult - (#minerals / 4)
+	end
 
 	-- Multiplier cannot be less than 0.3.
 	if mult < 0.2 then mult = 0.2 end
@@ -195,8 +199,8 @@ end
 -- how often node timers for plants will tick, +/- some random value
 local function tick(pos, def)
 	local mult = tick_multiplier(pos, def)
-	local min = 200 * mult
-	local max = 350 * mult
+	local min = (def.farming_growing_time_min or 200) * mult
+	local max = (def.farming_growing_time_max or 350) * mult
   minetest.get_node_timer(pos):start(math_random(min, max))
 
   --minetest.get_node_timer(pos):start(1.0) -- Debug
@@ -204,8 +208,8 @@ end
 
 -- how often a growth failure tick is retried (e.g. too dark)
 local function tick_again(pos, def)
-	local min = 40
-	local max = 80
+	local min = 50
+	local max = 100
   minetest.get_node_timer(pos):start(math_random(min, max))
 
   --minetest.get_node_timer(pos):start(1.0) -- Debug
@@ -373,20 +377,24 @@ farming.grow_plant = function(pos, elapsed)
 		return
 	end
   
+	local npdef = minetest.reg_ns_nodes[next_plant]
+
 	-- grow
 	local placenode = {name = next_plant}
-	if def.place_param2 then
-		placenode.param2 = def.place_param2
+	if npdef.place_param2 then
+		placenode.param2 = npdef.place_param2
+	elseif npdef.paramtype2 == "degrotate" then
+		placenode.param2 = math_random(0, 239)
 	end
 	minetest.swap_node(pos, placenode)
   
 	-- new timer needed?
-	if minetest.reg_ns_nodes[next_plant].next_plant then
-		tick(pos, def)
-	elseif def.farming_restart_timer then
-		-- Allow the second-to-last plant in a growing
+	if npdef.next_plant then
+		tick(pos, npdef)
+	elseif npdef.farming_restart_timer then
+		-- Allow the last plant in a growing
 		-- sequence to request a timer restart.
-		tick(pos, def)
+		tick(pos, npdef)
 	end
   
 	--minetest.chat_send_all('fail 7')

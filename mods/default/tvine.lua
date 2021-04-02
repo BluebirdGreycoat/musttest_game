@@ -623,6 +623,13 @@ if not tvine.run_once then
 		farming_growing_time_max = tvine.steptime.max,
 	})
 
+	minetest.register_craft({
+		type = "extracting",
+		output = 'talinite:dust 4',
+		recipe = 'default:tvine_display',
+		time = 5,
+	})
+
 	local c = "tvine:core"
 	local f = tvine.modpath .. "/tvine.lua"
 	reload.register_file(c, f, false)

@@ -416,7 +416,7 @@ if not tvine.run_once then
 	stalk_drops = {
 		max_items = 1,
 		items = {
-			{items = {'talinite:dust'}, rarity = 3},
+			{items = {'talinite:dust'}, rarity = 2},
 		},
 	}
 

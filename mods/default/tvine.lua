@@ -337,9 +337,9 @@ if not tvine.run_once then
 
 	minetest.register_node("default:tvine_seed", {
 		description = "Twisted Vine Seed",
-		tiles = {"aloe_seeds.png"},
-		wield_image = "aloe_seeds.png",
-		inventory_image = "aloe_seeds.png",
+		tiles = {"tvine_seed.png"},
+		wield_image = "tvine_seed.png",
+		inventory_image = "tvine_seed.png",
 		drawtype = "signlike",
 		paramtype = "light",
 		paramtype2 = "wallmounted",

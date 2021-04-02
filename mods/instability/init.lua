@@ -17,6 +17,8 @@ local getn = minetest.get_node
 -- First argument is the node to check. Second argument is the node it may or may not be supporting.
 -- This allows liquid nodes to support each other, but not anybody else.
 local function node_considered_supporting(nn, on)
+	--minetest.chat_send_all(nn .. ', ' .. on)
+
   if nn == "air" then return false end
   if snow.is_snow(nn) then return false end
 
@@ -42,6 +44,11 @@ local function node_considered_supporting(nn, on)
 		-- Papyrus is self-supporting. Otherwise, digging 1 papyrus
 		-- would cause nearby papyrus to fall, which looks bad.
 		if nn == "default:papyrus" and on == "default:papyrus" then
+			return true
+		end
+
+		-- Twisted vines are self-supporting.
+		if stringf(nn, "default:tvine") and stringf(on, "default:tvine") then
 			return true
 		end
 	end

@@ -13,7 +13,7 @@ minetest.register_node("talinite:desert_ore", {
   description = "Desert Talinite Ore",
   tiles = {"default_desert_stone.png^gloopores_mineral_talinite.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
-  drop = "talinite:lump",
+  drop = "talinite:dust",
 	silverpick_drop = true,
   --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
   sounds = default.node_sound_stone_defaults(),

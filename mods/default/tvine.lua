@@ -277,6 +277,7 @@ end
 
 function tvine.on_timer(pos, elapsed)
 	--minetest.chat_send_all("# Server: Plant timer @ " .. minetest.pos_to_string(pos) .. "!")
+	local p = vector.new(pos)
 	local node = minetest.get_node(pos)
 	local result = tvine.grow(pos, node)
 	-- Plant has reached max height.
@@ -286,7 +287,7 @@ function tvine.on_timer(pos, elapsed)
 
 	local min = tvine.steptime.min
 	local max = tvine.steptime.max
-	minetest.get_node_timer(pos):start(math_random(min, max))
+	minetest.get_node_timer(p):start(math_random(min, max))
 	--return true
 end
 

@@ -333,31 +333,27 @@ farming.grow_plant = function(pos, elapsed)
 	end
 
 	-- grow seed
-	if minetest.get_item_group(node.name, "seed") and def.fertility then
-		if not have_soil then
-			tick_again(pos, def)
-			--minetest.chat_send_all('fail 3')
-			return
-		end
-
-		-- omitted is a check for light, we assume seeds can germinate in the dark.
-		for _, v in pairs(def.fertility) do
-			if minetest.get_item_group(soil_node.name, v) ~= 0 then
-				local placenode = {name = next_plant}
-				if def.place_param2 then
-					placenode.param2 = def.place_param2
-				end
-				minetest.swap_node(pos, placenode)
-				if minetest.reg_ns_nodes[next_plant].next_plant then
-					tick(pos, def)
-					--minetest.chat_send_all('fail 4')
-					return
+	if not have_soil then
+		if minetest.get_item_group(node.name, "seed") ~= 0 and def.fertility then
+			-- omitted is a check for light, we assume seeds can germinate in the dark.
+			for _, v in pairs(def.fertility) do
+				if minetest.get_item_group(soil_node.name, v) ~= 0 then
+					local placenode = {name = next_plant}
+					if def.place_param2 then
+						placenode.param2 = def.place_param2
+					end
+					minetest.swap_node(pos, placenode)
+					if minetest.reg_ns_nodes[next_plant].next_plant then
+						tick(pos, def)
+						--minetest.chat_send_all('fail 4')
+						return
+					end
 				end
 			end
-		end
 
-		--minetest.chat_send_all('fail 8')
-		return
+			--minetest.chat_send_all('fail 8')
+			return
+		end
 	end
   
 	-- check if on wet soil

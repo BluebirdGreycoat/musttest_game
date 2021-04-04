@@ -194,6 +194,7 @@ minetest.register_node("default:stone", {
 		--]]
 
 	tiles = {{name="stone_macro.png", align_style="world", scale=8}},
+
 	groups = utility.dig_groups("stone", {
     stone = 1, native_stone = 1,
 		melts = 1, cobble_type = 1,
@@ -297,7 +298,9 @@ minetest.register_node("default:mossycobble", {
 
 minetest.register_node("default:desert_stone", {
 	description = "Redstone",
+
 	tiles = {{name="desert_stone_macro.png", align_style="world", scale=8}},
+
 	groups = utility.dig_groups("stone", {stone = 1, native_stone = 1}),
 	drop = 'default:desert_cobble2',
 	legacy_mineral = true,

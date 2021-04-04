@@ -1,6 +1,6 @@
 
 -- Twisted Vine Mod
--- Idea and textures by alauer
+-- Idea and textures by alauer/Dresdan
 -- Code by MustTest
 
 tvine = tvine or {}

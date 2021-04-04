@@ -635,6 +635,7 @@ if not passport.registered then
     inventory_image = "default_bronze_block.png^default_tool_steelpick.png",
 		stack_max = 1,
     on_use = function(...) return passport.on_use_simple(...) end,
+		on_drop = function(itemstack, dropper, pos) return itemstack end,
   })
 
   -- Keep this in inventory to prevent deletion.
@@ -646,6 +647,7 @@ if not passport.registered then
     inventory_image = "adv_passport.png",
 		stack_max = 1,
     on_use = function(...) return passport.on_use(...) end,
+		on_drop = function(itemstack, dropper, pos) return itemstack end,
   })
 
   minetest.register_craft({

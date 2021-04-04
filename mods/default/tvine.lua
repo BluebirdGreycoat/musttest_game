@@ -323,6 +323,7 @@ if not tvine.run_once then
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
+		waving = 1,
 		-- Manually placed vines are not climbable.
 		selection_box = {
 			type = "fixed",
@@ -383,6 +384,7 @@ if not tvine.run_once then
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
+		waving = 1,
 		-- Manually placed vines are not climbable.
 		selection_box = {
 			type = "fixed",
@@ -532,6 +534,7 @@ if not tvine.run_once then
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
+		waving = 1,
 		drop = top_drops,
 		selection_box = {
 			type = "fixed",
@@ -583,6 +586,7 @@ if not tvine.run_once then
 		sunlight_propagates = true,
 		light_source = tvine.light_source,
 		walkable = false,
+		waving = 1,
 		drop = top_drops,
 		selection_box = {
 			type = "fixed",

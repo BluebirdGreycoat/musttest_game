@@ -277,7 +277,14 @@ minetest.register_node("rackstone:void", {
 
 minetest.register_node("rackstone:redrack_with_iron", {
   description = "Netherack With Iron",
-  tiles = {"rackstone_redrack.png^default_mineral_iron.png"},
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+	},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore = 1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
@@ -291,7 +298,14 @@ minetest.register_node("rackstone:redrack_with_iron", {
 
 minetest.register_node("rackstone:redrack_with_copper", {
   description = "Netherack With Copper",
-  tiles = {"rackstone_redrack.png^default_mineral_copper.png"},
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+	},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
@@ -303,12 +317,30 @@ minetest.register_node("rackstone:redrack_with_copper", {
   end,
 })
 
+minetest.register_craftitem("rackstone:dauth_lump", {
+  description = "Dauth Lump",
+  inventory_image = "rackstone_dauth_lump.png",
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "rackstone:dauth_lump",
+	burntime = 60,
+})
+
 minetest.register_node("rackstone:redrack_with_coal", {
   description = "Netherack With Coal",
-  tiles = {"rackstone_redrack.png^default_mineral_coal.png"},
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+	},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = rackstone.rackstone_sounds(),
-  drop = "default:coal_lump",
+  drop = "rackstone:dauth_lump",
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
@@ -319,7 +351,14 @@ minetest.register_node("rackstone:redrack_with_coal", {
 
 minetest.register_node("rackstone:redrack_with_tin", {
   description = "Netherack With Tin",
-  tiles = {"rackstone_redrack.png^moreores_mineral_tin.png"},
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+	},
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",

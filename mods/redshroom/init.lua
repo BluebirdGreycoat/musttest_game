@@ -72,6 +72,13 @@ minetest.register_craft({
   recipe = {"redshroom:stemwhite"},
 })
 
+minetest.register_craft({
+  type = "cooking",
+  output = "default:coal_lump",
+  recipe = "redshroom:stemwhite",
+	cooktime = 60,
+})
+
 
 
 minetest.register_node("redshroom:gills", {

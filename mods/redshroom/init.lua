@@ -74,7 +74,7 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "cooking",
-  output = "default:coal_lump",
+  output = "default:coal_lump 4",
   recipe = "redshroom:stemwhite",
 	cooktime = 60,
 })

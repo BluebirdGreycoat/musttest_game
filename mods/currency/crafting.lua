@@ -199,6 +199,7 @@ minetest.register_craft({
 		"currency:minegeld_10",
 		"currency:minegeld_10",
 		"currency:minegeld_10",
+		"currency:minegeld_10",
 	},
 })
 

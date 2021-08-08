@@ -211,12 +211,6 @@ if not status.registered then
 		func = function(name, param)
 			local result, message = timefunc(name, param)
 			message = STATUS_COLOR .. "# Server: " .. message
-
-			-- Add missing period.
-			if string.find(message, "Current time is") then
-				message = message .. "."
-			end
-
 			return result, message
 		end,
 	})

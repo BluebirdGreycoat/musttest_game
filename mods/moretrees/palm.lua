@@ -181,9 +181,19 @@ minetest.register_craftitem("moretrees:coconut_milk", {
 
 local cutting_tools = {
 	"default:axe_bronze",
+	"default:axe_bronze2",
 	"default:axe_diamond",
 	"default:axe_mese",
 	"default:axe_steel",
+	"default:axe_stone",
+	"gems:axe_amethyst",
+	"gems:axe_amethyst_rf",
+	"gems:axe_emerald",
+	"gems:axe_emerald_rf",
+	"gems:axe_ruby",
+	"gems:axe_ruby_rf",
+	"gems:axe_sapphire",
+	"gems:axe_sapphire_rf",
 	"moreores:axe_mithril",
 	"moreores:axe_silver",
 }

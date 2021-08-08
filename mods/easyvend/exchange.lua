@@ -18,6 +18,7 @@ for k, v in ipairs(exchange.types) do
 				inv:remove_item("main", v.item)
 				local cash = currency.tell(pname)
 				minetest.chat_send_player(pname, "# Server: Currency exchanged: you receive " .. v.rate .. " minegeld. You now have " .. cash .. " MG.")
+				easyvend.sound_deposit(pos)
 			else
 				local cash = currency.tell(pname)
 				minetest.chat_send_player(pname, "# Server: Not enough room in your inventory. You currently have " .. cash .. " MG.")

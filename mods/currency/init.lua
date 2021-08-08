@@ -1,7 +1,7 @@
 
 currency = currency or {}
 currency.modpath = minetest.get_modpath("currency")
-currency.stackmax = 100
+currency.stackmax = 256
 currency.data = currency.data or {}
 currency.dirty = true
 currency.filename = minetest.get_worldpath() .. "/currency.txt"

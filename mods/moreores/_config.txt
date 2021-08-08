@@ -9,7 +9,7 @@
 -- Chunk sizes for ore generation (bigger = ore deposits are more scattered around) (scarcity)
 moreores_tin_chunk_size = 10
 moreores_silver_chunk_size = 12
-moreores_mithril_chunk_size = 16
+moreores_mithril_chunk_size = 19
 
 moreores_tin_chunk_radius = 3
 moreores_silver_chunk_radius = 3

@@ -107,13 +107,20 @@ function survivalist.fill_loot_chest(inv, gamemode)
 	for k, v in ipairs(loot) do
 		local min = math_floor(v.min)
 		local max = math.ceil(v.max)
+		local stackmax = minetest.registered_items[v.item].stack_max or 64
 
 		if max >= min then
 			local count = math_floor(math_random(min, max))
-			if count > 0 and #positions > 0 then
+			while count > 0 and #positions > 0 do
 				local idx = positions[#positions]
+				if count > stackmax then
+					inv:set_stack("main", idx, ItemStack(v.item .. " " .. stackmax))
+					count = count - stackmax
+				else
+					inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
+					count = 0
+				end
 				positions[#positions] = nil
-				inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
 			end
 		end
 	end
@@ -125,14 +132,23 @@ function survivalist.fill_loot_chest(inv, gamemode)
 	for k, v in ipairs(bonus) do
 		local min = math_floor(v.min)
 		local max = math.ceil(v.max)
+		local stackmax = minetest.registered_items[v.item].stack_max or 64
 
 		if max >= min then
 			local count = math_floor(math_random(min, max))
 			local chance = math_random(0, 100)
-			if count > 0 and #positions > 0 and chance < v.chance then
-				local idx = positions[#positions]
-				positions[#positions] = nil
-				inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
+			if chance < v.chance then
+				while count > 0 and #positions > 0 do
+					local idx = positions[#positions]
+					if count > stackmax then
+						inv:set_stack("main", idx, ItemStack(v.item .. " " .. stackmax))
+						count = count - stackmax
+					else
+						inv:set_stack("main", idx, ItemStack(v.item .. " " .. count))
+						count = 0
+					end
+					positions[#positions] = nil
+				end
 			end
 		end
 	end

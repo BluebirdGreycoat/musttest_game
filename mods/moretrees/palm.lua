@@ -181,9 +181,19 @@ minetest.register_craftitem("moretrees:coconut_milk", {
 
 local cutting_tools = {
 	"default:axe_bronze",
+	"default:axe_bronze2",
 	"default:axe_diamond",
 	"default:axe_mese",
 	"default:axe_steel",
+	"default:axe_stone",
+	"gems:axe_amethyst",
+	"gems:axe_amethyst_rf",
+	"gems:axe_emerald",
+	"gems:axe_emerald_rf",
+	"gems:axe_ruby",
+	"gems:axe_ruby_rf",
+	"gems:axe_sapphire",
+	"gems:axe_sapphire_rf",
 	"moreores:axe_mithril",
 	"moreores:axe_silver",
 }
@@ -205,6 +215,32 @@ for i in ipairs(cutting_tools) do
 			{ tool, tool },
 		}
 	})
+end
+
+
+
+minetest.register_on_craft(function(...) moretrees.on_coconut_milk_craft(...) end)
+moretrees.on_coconut_milk_craft = function(itemstack, player, old_craft_grid, craft_inv)
+	if itemstack:get_name() ~= "moretrees:coconut_milk" then
+		return
+	end
+
+	local original
+	local index
+	for i = 1, player:get_inventory():get_size("craft") do
+		for j in ipairs(cutting_tools) do
+			local tool = cutting_tools[j]
+			if old_craft_grid[i]:get_name() == tool then
+				original = old_craft_grid[i]
+				index = i
+			end
+		end
+	end
+	if not original then
+		return
+	end
+	-- put the tool with metadata back in the craft grid
+	craft_inv:set_stack("craft", index, original)
 end
 
 

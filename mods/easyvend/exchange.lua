@@ -3,9 +3,9 @@ exchange = exchange or {}
 exchange.modpath = minetest.get_modpath("easyvend")
 
 exchange.types = {
-	{name = "Gold", key = "gold", rate = 35, image = "default_gold_ingot.png", item = "default:gold_lump", block = "default:goldblock"},
-	{name = "Silver", key = "silver", rate = 14, image = "moreores_silver_ingot.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
-	{name = "Copper", key = "copper", rate = 9, image = "default_copper_ingot.png", item = "default:copper_lump", block = "default:copperblock"},
+	{name = "Gold", key = "gold", rate = 35, image = "default_gold_lump.png", item = "default:gold_lump", block = "default:goldblock"},
+	{name = "Silver", key = "silver", rate = 14, image = "moreores_silver_lump.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
+	{name = "Copper", key = "copper", rate = 9, image = "default_copper_lump.png", item = "default:copper_lump", block = "default:copperblock"},
 }
 
 for k, v in ipairs(exchange.types) do

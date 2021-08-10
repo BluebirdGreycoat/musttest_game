@@ -3,9 +3,9 @@ exchange = exchange or {}
 exchange.modpath = minetest.get_modpath("easyvend")
 
 exchange.types = {
-	{name = "Gold", key = "gold", rate = 35, image = "default_gold_ingot.png", item = "default:gold_ingot", block = "default:goldblock"},
-	{name = "Silver", key = "silver", rate = 14, image = "moreores_silver_ingot.png", item = "moreores:silver_ingot", block = "moreores:silver_block"},
-	{name = "Copper", key = "copper", rate = 9, image = "default_copper_ingot.png", item = "default:copper_ingot", block = "default:copperblock"},
+	{name = "Gold", key = "gold", rate = 35, image = "default_gold_ingot.png", item = "default:gold_lump", block = "default:goldblock"},
+	{name = "Silver", key = "silver", rate = 14, image = "moreores_silver_ingot.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
+	{name = "Copper", key = "copper", rate = 9, image = "default_copper_ingot.png", item = "default:copper_lump", block = "default:copperblock"},
 }
 
 for k, v in ipairs(exchange.types) do
@@ -25,7 +25,7 @@ for k, v in ipairs(exchange.types) do
 			end
 		else
 			local cash = currency.tell(pname)
-			minetest.chat_send_player(pname, "# Server: You don't have any " .. v.key .. ". You currently have " .. cash .. " MG.")
+			minetest.chat_send_player(pname, "# Server: You don't have any unrefined " .. v.key .. ". You currently have " .. cash .. " MG.")
 		end
 	end
 
@@ -33,7 +33,7 @@ for k, v in ipairs(exchange.types) do
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext",
 			v.name .. " Currency Exchange\nPunch to exchange " .. v.key ..
-			" for MG\n1 " .. v.key .. " = " .. v.rate .. " MG")
+			" for MG\n1 unrefined " .. v.key .. " = " .. v.rate .. " MG")
 	end
 end
 

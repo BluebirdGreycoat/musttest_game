@@ -153,7 +153,7 @@ anticurse.foul = {
   
   {word="c+o+c+k+", white={"peacock", "cockney", "cockroach"}},
   {word="w+h+o+r+e+", white={
-		"reach", "read", "really", "remove", "record",
+		"reach", "read", "really", "remove", "record", "relay",
 	}},
   
   {word="c+u+m+", white={

@@ -5,9 +5,9 @@ exchange.modpath = minetest.get_modpath("easyvend")
 -- Note: exchange rate is doubled because only lumps are accepted now, not ingots.
 -- (Previously most folks would double their ingots before exchanging them.)
 exchange.types = {
-	{name = "Gold", key = "gold", rate = 35*2, image = "default_gold_lump.png", item = "default:gold_lump", block = "default:goldblock"},
-	{name = "Silver", key = "silver", rate = 14*2, image = "moreores_silver_lump.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
-	{name = "Copper", key = "copper", rate = 9*2, image = "default_copper_lump.png", item = "default:copper_lump", block = "default:copperblock"},
+	{name = "Gold", key = "gold", rate = 62, image = "default_gold_lump.png", item = "default:gold_lump", block = "default:goldblock"},
+	{name = "Silver", key = "silver", rate = 25, image = "moreores_silver_lump.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
+	{name = "Copper", key = "copper", rate = 16, image = "default_copper_lump.png", item = "default:copper_lump", block = "default:copperblock"},
 }
 
 for k, v in ipairs(exchange.types) do

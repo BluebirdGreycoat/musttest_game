@@ -607,6 +607,9 @@ function ads.generate_formspec(pos, pname, booth)
 							"tooltip[dotrade;" .. minetest.formspec_escape(
 								"This will try to execute a purchase or a deposit, depending on the type of shop selected.\n" ..
 									"The transaction will be aborted if anything goes wrong.") .. "]"
+
+						formspec = formspec ..
+							"button[9,7.5;2,1;domark;" .. minetest.formspec_escape("Mark Location") .. "]"
 					end
 				end
 			end

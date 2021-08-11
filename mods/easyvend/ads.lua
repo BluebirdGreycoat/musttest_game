@@ -733,10 +733,11 @@ function ads.on_receive_fields(player, formname, fields)
 					local shops = ads.players[pname].shops
 					if shops and sel ~= 0 and shops[sel] then
 						local vpos = shops[sel].pos
-						local lname = pname .. "'s Vending Locations"
+						local lname = pname .. "'s Vend Locs"
 						if marker.list_size(pname, lname) < marker.max_waypoints then
 							marker.add_waypoint(pname, vpos, lname)
 							marker.update_single_hud(pname)
+							minetest.chat_send_player(pname, "# Server: Location added to marker list.")
 						end
 					end
 					return true

@@ -609,7 +609,7 @@ function ads.generate_formspec(pos, pname, booth)
 									"The transaction will be aborted if anything goes wrong.") .. "]"
 
 						formspec = formspec ..
-							"button[9,7.5;2,1;domark;" .. minetest.formspec_escape("Mark Location") .. "]"
+							"button[9,8.4;2.2,1;domark;" .. minetest.formspec_escape("Mark Location") .. "]"
 					end
 				end
 			end

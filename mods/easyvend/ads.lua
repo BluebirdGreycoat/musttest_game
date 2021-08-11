@@ -692,7 +692,7 @@ function ads.on_receive_fields(player, formname, fields)
 		booth = true
 	end
 
-	if fields.storage or fields.dotrade or fields.editrecord or fields.deleterecord or fields.newadd then
+	if fields.storage or fields.dotrade or fields.domark or fields.editrecord or fields.deleterecord or fields.newadd then
 		if booth then
 			local meta = minetest.get_meta(pos)
 			if meta:get_string("owner") == pname or minetest.check_player_privs(pname, "server") then
@@ -728,6 +728,18 @@ function ads.on_receive_fields(player, formname, fields)
 							easyvend.sound_error(pname)
 						end
 					end
+				elseif fields.domark then
+					local sel = ads.players[pname].shopselect or 0
+					local shops = ads.players[pname].shops
+					if shops and sel ~= 0 and shops[sel] then
+						local vpos = shops[sel].pos
+						local lname = pname .. "'s Vending Locations"
+						if marker.list_size(pname, lname) < marker.max_waypoints then
+							marker.add_waypoint(pname, vpos, lname)
+							marker.update_single_hud(pname)
+						end
+					end
+					return true
 				elseif fields.editrecord then
 					local sel = ads.players[pname].selected or 0
 					if sel ~= 0 then

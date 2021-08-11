@@ -253,6 +253,7 @@ minetest.register_craftitem("protector:tool2", {
 		local members = meta:get_string("members") or ""
 		local owner = meta:get_string("owner") or ""
 		local placedate = meta:get_string("placedate") or ""
+		local protname = minetest.get_node(pos).name
 
 		-- require the tool user to be the owner of the initial protector node
 		if not minetest.check_player_privs(name, {protection_bypass=true}) then

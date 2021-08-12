@@ -15,6 +15,21 @@ for k, v in ipairs({
   -- Which function table are we operating on?
   local functable = _G["bat2_" .. v.tier]
 
+	functable.do_battery_decay =
+	function(meta)
+		-- Decay happens whenever the battery bank becomes exhausted,
+		-- with a small chance to break some of the storage units.
+		if math.random(1, 50) == 1 then
+			local inv = meta:get_inventory()
+			local size = inv:get_size("batteries")
+			local idx = math.random(1, size)
+			local stack = inv:get_stack("batteries", idx)
+			if stack:get_name() == "battery:battery" then
+				inv:set_stack("batteries", idx, ItemStack("battery:battery_broken"))
+			end
+		end
+	end
+
 	functable.on_energy_put =
 	function(pos, energy)
 		--minetest.chat_send_all("# Server: Got " .. energy .. " energy!")
@@ -39,11 +54,18 @@ for k, v in ipairs({
 		local meta = minetest.get_meta(pos)
 		local have = meta:get_int("energy")
 		if have < energy then
+			if have > 0 then
+				functable.do_battery_decay(meta)
+			end
 			meta:set_int("energy", 0)
 			functable.trigger_update(pos)
 			return have
 		end
+		local old_have = have
 		have = have - energy
+		if have <= 0 and old_have > 0 then
+			functable.do_battery_decay(meta)
+		end
 		meta:set_int("energy", have)
 		functable.trigger_update(pos)
 		return energy

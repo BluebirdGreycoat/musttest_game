@@ -17,3 +17,9 @@ minetest.register_craft({
     {'group:wood', 'default:copper_ingot', 'group:wood'},
   }
 })
+
+minetest.register_craftitem("battery:battery_broken", {
+  description = "Broken RE Battery",
+  inventory_image = "technic_battery_broken.png",
+  stack_max = 1, -- May store meta in the future.
+})

@@ -14,7 +14,8 @@ tech = {
 	reactor={power=10000, time=5, totaltime=60*60*24*7, buffer=60000},
 	converter={power=1000, buffer=50000},
 
-	leecher={power=800, buffer=60000},
+	-- Leecher power usage is per water node.
+	leecher={power=10, buffer=60000},
 	charger={power=100, buffer=5000},
 	workshop={power=160, buffer=5000, repair=70},
 

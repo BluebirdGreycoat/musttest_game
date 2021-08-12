@@ -2,14 +2,29 @@
 leecher = leecher or {}
 leecher.data = leecher.data or {}
 leecher.modpath = minetest.get_modpath("machines")
+leecher.liquid_range = 20
 
 -- Localize for performance.
 local math_random = math.random
 
 local BUFFER_SIZE = tech.leecher.buffer
 local ENERGY_AMOUNT = tech.leecher.power
-local DISSOLVE_HEIGHT = 50
-local LEECH_RESULT = "default:river_water_source"
+local DISSOLVE_HEIGHT = 120
+
+
+
+-- Per testing, this function will load a node from any position on the map as
+-- long as it was previously generated.
+local function safe_get_node(p)
+	local n = minetest.get_node_or_nil(p)
+	if not n then
+		-- Load map and get node.
+		-- This will still return "ignore" if the location was never generated.
+		local v = VoxelManip(p, p)
+		n = v:get_node_at(p)
+	end
+	return n
+end
 
 
 
@@ -90,10 +105,11 @@ local function get_water_surface(startpos)
 	local traversal = {}
 	local queue = {}
 	local output = {}
-	local curpos, hash, exists, name, found, depth, is_water
+	local curpos, hash, exists, name, found, depth, is_water, is_leecher
 	local first = true
 	local get_node_hash = minetest.hash_node_position
 	local get_node = minetest.get_node
+	local max_depth = leecher.liquid_range
 	startpos.d = 1
 	queue[#queue+1] = startpos
 
@@ -113,13 +129,14 @@ local function get_water_surface(startpos)
 		end
 	end
 
-	if depth >= 10 then
+	if depth >= max_depth then
 		goto next
 	end
 
 	name = get_node(curpos).name
 	found = false
 	is_water = false
+	is_leecher = false
 
 	if name == "default:water_source" or name == "default:river_water_source" then
 		is_water = true
@@ -127,6 +144,7 @@ local function get_water_surface(startpos)
 	end
 
 	if name == "leecher:leecher" then
+		is_leecher = true
 		found = true
 	end
 
@@ -143,7 +161,7 @@ local function get_water_surface(startpos)
 
 	traversal[hash] = depth
 	if not exists then
-		if is_water then
+		if is_water or is_leecher then
 			output[#output+1] = curpos
 		end
 	end
@@ -164,74 +182,6 @@ local function get_water_surface(startpos)
 	-- Max water count is ~144.
 	--minetest.chat_send_all("water: " .. #output)
 	return output
-end
-
-local function get_ore_position_tables(pos, water_count)
-	local ores = {}
-	local cids = {}
-
-	-- Get content IDs from names.
-	-- This code only needs to run once.
-	if not leecher.cids then
-		leecher.cids = {}
-		for k, v in pairs(ore_conversion_data) do
-			if minetest.registered_items[k] then
-				local id = minetest.get_content_id(k)
-				leecher.cids[id] = k
-			end
-		end
-	end
-
-	local rad = 10
-
-	local height = math.ceil(water_count/2)
-	if height < 10 then
-		height = 10
-	end
-
-	local minp = {x=pos.x-rad, y=pos.y+1, z=pos.z-rad}
-	local maxp = {x=pos.x+rad, y=pos.y+height, z=pos.z+rad}
-  local vm = minetest.get_voxel_manip(minp, maxp)
-	local emin, emax = vm:get_emerged_area()
-	local data = vm:get_data()
-	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
-
-	-- Count all content IDs.
-  for z = minp.z, maxp.z, 1 do
-    for x = minp.x, maxp.x, 1 do
-      for y = minp.y, maxp.y, 1 do
-				local vp = area:index(x, y, z)
-				local id = data[vp]
-				-- Record positions for nodes that we care about.
-				-- This way, we can refer to their positions later.
-				-- This allows us to remove ores from time to time.
-				if leecher.cids[id] then
-					if not cids[id] then
-						cids[id] = {}
-					end
-					cids[id][#(cids[id])+1] = {x=x, y=y, z=z}
-				end
-			end
-		end
-	end
-
-	-- Convert content IDs to names.
-	for k, v in pairs(cids) do
-		local name = minetest.get_name_from_content_id(k)
-		-- Don't record ore unless we can produce it.
-		if ore_conversion_data[name] then
-			if minetest.registered_items[ore_conversion_data[name]] then
-				ores[name] = v
-			end
-		end
-	end
-
-	-- Debug!
-	--for k, v in pairs(ores) do
-	--	minetest.chat_send_all("# Server: '" .. k .. "=" .. #v .. "!")
-	--end
-
-	return ores
 end
 
 
@@ -263,78 +213,99 @@ end
 
 
 
--- Dig ceiling above position.
-local function do_ceiling_dig(pos)
-	-- Helper to remove water above a dislodged node.
-	-- This avoids annoying liquid messes.
-	local remove_water_above
-	remove_water_above = function(p2)
-		local p3 = vector.add(p2, {x=0, y=1, z=0})
-		if minetest.test_protection(p3, "") then
-			return
-		end
-		if minetest.get_node(p3).name == LEECH_RESULT then
-			minetest.remove_node(p3)
-		else
-			return
-		end
-		local adjacent = {
-			{x=p3.x+1, y=p3.y, z=p3.z},
-			{x=p3.x-1, y=p3.y, z=p3.z},
-			{x=p3.x, y=p3.y, z=p3.z+1},
-			{x=p3.x, y=p3.y, z=p3.z-1},
-		}
-		for k, v in ipairs(adjacent) do
-			if minetest.get_node(v).name == LEECH_RESULT then
-				if not minetest.test_protection(v, "") then
-					minetest.remove_node(v)
-				end
-			end
-		end
-		local p4 = vector.add(p3, {x=0, y=1, z=0})
-		if minetest.get_node(p4).name == LEECH_RESULT then
-			remove_water_above(p4)
+local function check_outsalting_done(heights)
+	local reached_max = false
+	local count = 0
+	local size = 0
+	for k, v in pairs(heights) do
+		size = size + 1
+		if v >= DISSOLVE_HEIGHT then
+			count = count + 1
 		end
 	end
+	if count == size and size > 0 then
+		reached_max = true
+	end
+	return reached_max
+end
 
-	-- A random horizontal offset allows us to get around small
-	-- obstructions (usually power cables and whatnot).
-	local x = math_random(-1, 1)
-	local z = math_random(-1, 1)
 
-	for i = 1, DISSOLVE_HEIGHT, 1 do
-		local p = {x=pos.x+x, y=pos.y+i, z=pos.z+z}
-		local node = minetest.get_node(p)
+
+-- Dig ceiling above position.
+local function do_ceiling_dig(pos, heights)
+	local hash = minetest.hash_node_position(pos)
+	local yheight = heights[hash] or 0
+	yheight = yheight + 1
+
+	local p3 = vector.new(pos)
+	p3.y = p3.y + yheight
+	while safe_get_node(p3).name == "air" do
+		p3.y = p3.y + 1
+		yheight = yheight + 1
+	end
+
+	heights[hash] = yheight
+
+	if yheight >= DISSOLVE_HEIGHT then
+		return false, nil
+	end
+
+	if true then
+		local p = {x=pos.x, y=pos.y+yheight, z=pos.z}
+		local node = safe_get_node(p)
 		if node.name == "air" then
 			-- Keep going.
+		elseif node.name == "ignore" then
+			-- Stop on finding "ignore".
+			return false, nil
 		elseif ore_dissolve_data[node.name] then
 			if not minetest.test_protection(p, "") then
-				remove_water_above(p)
+				-- Dissolve node without giving any result.
 				minetest.remove_node(p)
 				minetest.check_for_falling(p)
+				return true, nil
+			else
+				return false, nil
 			end
-			break
 		elseif ore_conversion_data[node.name] then
-			-- If we encounter a dissolvable node that wasn't dissolved yet,
-			-- we drop it instead.
+			-- If we encounter a dissolvable node, dissolve it.
 			if not minetest.test_protection(p, "") then
-				remove_water_above(p)
-				sfn.drop_node(p)
+				minetest.remove_node(p)
 				minetest.check_for_falling(p)
+				local count = math_random(4, 16)
+				local stack = ItemStack(ore_conversion_data[node.name] .. " " .. count)
+				if stack:is_known() then
+					return true, stack
+				else
+					return false, nil
+				end
+			else
+				return false, nil
 			end
-			break
 		elseif ore_drop_data[node.name] then
 			if not minetest.test_protection(p, "") then
-				remove_water_above(p)
+				-- Undissolvable node, just drop it.
 				sfn.drop_node(p)
 				minetest.check_for_falling(p)
+				return true, nil
+			else
+				return false, nil
 			end
-			break
 		else
-			-- Anything unrecognized should stop ceilingward iteration.
-			break
+			-- If it's protected, we ran into a developed zone, the machine should go
+			-- into standby mode.
+			if minetest.test_protection(p, "") then
+				return false, nil
+			end
+
+			-- Unrecognized node, drop it.
+			sfn.drop_node(p)
+			minetest.check_for_falling(p)
+			return true, nil
 		end
 	end
+
+	return true, nil
 end
 
 
@@ -371,6 +342,8 @@ function(pos)
 	return formspec
 end
 
+
+
 leecher.on_receive_fields =
 function(pos, formname, fields, sender)
 	if minetest.test_protection(pos, sender:get_player_name()) then
@@ -392,6 +365,8 @@ function(pos, formname, fields, sender)
 	end
 end
 
+
+
 leecher.compose_infotext =
 function(pos)
 	local meta = minetest.get_meta(pos)
@@ -399,12 +374,18 @@ function(pos)
 	local eups = 0
 	if meta:get_int("active") == 1 then
 		state = "Active"
-		eups = ENERGY_AMOUNT
+		eups = meta:get_int("eups_usage")
 	end
 	local infotext = "HV Mineral Outsalter (" .. state .. ")\n" ..
 		"Demand: " .. eups .. " EU Per/Sec"
+	local errstr = meta:get_string("error")
+	if errstr ~= "" and errstr ~= "DUMMY" then
+		infotext = infotext .. "\nMessage: " .. errstr
+	end
 	return infotext
 end
+
+
 
 leecher.trigger_update =
 function(pos)
@@ -413,10 +394,14 @@ function(pos)
 	timer:start(1.0)
 end
 
+
+
 leecher.on_punch =
 function(pos, node, puncher, pointed_thing)
   leecher.trigger_update(pos)
 end
+
+
 
 leecher.can_dig =
 function(pos, player)
@@ -424,6 +409,8 @@ function(pos, player)
 	local inv = meta:get_inventory()
 	return inv:is_empty("main")
 end
+
+
 
 leecher.on_timer =
 function(pos, elapsed)
@@ -433,32 +420,48 @@ function(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	local hash = minetest.hash_node_position(pos)
-	local need_mapread = false
-	local produce_ore = false
-	local read_water = false
 	local try_run = false
 
 	-- If the machine is enabled, keep running.
 	if meta:get_int("enabled") == 1 then
 		try_run = true
+		meta:set_string("error", "DUMMY")
 	end
 
-	::try_again::
 	if try_run then
 		-- Assuming we can keep running unless someone says otherwise.
 		keeprunning = true
 
+		-- Ensure external datatable exists.
+		if not leecher.data[hash] then
+			leecher.data[hash] = {
+				timer2 = 10,
+				timer3 = math_random(1, 60),
+				water = {},
+				heights = {},
+			}
+		end
+
+		-- Bring datatable local.
+		local data = leecher.data[hash]
+
 		-- Consume energy.
 		do
+			local energy_usage = #(data.water or {}) * ENERGY_AMOUNT
+			if energy_usage < 200 then energy_usage = 200 end
+			meta:set_int("eups_usage", energy_usage)
+
 			local energy = inv:get_stack("buffer", 1)
-			if energy:get_count() >= ENERGY_AMOUNT then
-				energy:set_count(energy:get_count() - ENERGY_AMOUNT)
+			--energy = ItemStack("atomic:energy 60000")
+
+			if energy:get_count() >= energy_usage then
+				energy:set_count(energy:get_count() - energy_usage)
 				inv:set_stack("buffer", 1, energy)
 			else
 				-- Try to get energy from network.
 				local owner = meta:get_string("owner")
 				local gotten = net2.get_energy(pos, owner, BUFFER_SIZE, "hv")
-				if gotten >= ENERGY_AMOUNT then
+				if gotten >= energy_usage then
 					energy = ItemStack("atomic:energy " .. (energy:get_count() + gotten))
 					inv:set_stack("buffer", 1, energy)
 					-- Wait for next iteration before producing again.
@@ -466,187 +469,96 @@ function(pos, elapsed)
 				end
 
 				-- Not enough energy!
+				meta:set_string("error", "Insufficient power.")
+				meta:set_int("enabled", 0)
 				keeprunning = false
 				goto cancel
 			end
 		end
 
-		-- Ensure external datatable exists.
-		if not leecher.data[hash] then
-			leecher.data[hash] = {
-				timer = 0,
-				timer2 = math_random(1, 10),
-				timer3 = math_random(1, 60),
-				ores = {},
-				dist = {},
-				water = {},
-			}
-			need_mapread = true
-		end
-
-		-- Bring datatable local.
-		local data = leecher.data[hash]
-
-		-- Reread map region every long while.
-		data.timer = data.timer + elapsed
-		if data.timer > (60*15)+math_random(1, 10) then
-			data.timer = 0
-			data.timer3 = math_random(1, 60)
-			data.ores = {}
-			data.dist = {}
-			data.water = {}
-			need_mapread = true
-		end
-
-		if need_mapread then
-			data.ores = {}
-			data.dist = {}
-			data.water = {}
-
-			-- Read counts of all ores in local region.
-			data.water = get_water_surface(pos)
-			data.ores = get_ore_position_tables(pos, #(data.water))
-
-			-- Build ore distribution table.
-			-- This allows us to pick ores randomly.
-			local dist = {}
-			local last = 0
-			for k, v in pairs(data.ores) do
-				local count = #v
-				if count > 0 then
-					local inst = {
-						name = k,
-						min = last,
-						max = last+count,
-					}
-					--minetest.chat_send_all("# Server: " .. inst.name .. ": " .. inst.min .. " -> " .. inst.max .. "!")
-					last = last+count+1
-					dist[#dist+1] = inst
-				end
-			end
-
-			data.dist = dist
-		end
-
-		-- Produce ores every now and then.
-		data.timer2 = data.timer2 - 1
-		if data.timer2 < 0 then
-			data.timer2 = math_random(1, 10)
-			produce_ore = true
-		end
-
-		if produce_ore then
-			if #(data.dist) > 0 then
-				-- Choose a random ore and produce it.
-				local last = 0
-				for k, v in ipairs(data.dist) do
-					if v.max > last then
-						last = v.max
-					end
-				end
-				local rnd = math_random(1, last)
-				local ore = ""
-				for k, v in ipairs(data.dist) do
-					if rnd >= v.min and rnd <= v.max then
-						ore = v.name
-						break
-					end
-				end
-				if ore ~= "" then
-					local realore = ""
-					if ore_conversion_data[ore] then
-						realore = ore_conversion_data[ore]
-					end
-					if realore ~= "" then
-						if inv:room_for_item("main", realore) then
-							-- Occasionally remove an ore.
-							-- Frequency of removal is a balance between performance
-							-- and machine efficiency.
-							if math_random(1, 20) == 1 then
-								local sz = #(data.ores[ore])
-								if sz > 0 then
-									-- Get the location of a random ore of this type.
-									local rnd = math_random(1, sz)
-									local p2 = data.ores[ore][rnd]
-
-									-- Can't dig ores that are protected.
-									if minetest.test_protection(p2, "") then
-										keeprunning = false
-										goto cancel
-									end
-
-									table.remove(data.ores[ore], rnd)
-
-									-- Get node, loading it if needed.
-									-- Note: this will return 'ignore' if position was never created by mapgen!
-									local vm = nil
-									local node = minetest.get_node_or_nil(p2)
-									if not node then
-										local minp = {x=p2.x-1, y=p2.y-1, z=p2.z-1}
-										local maxp = {x=p2.x+1, y=p2.y+1, z=p2.z+1}
-										vm = minetest.get_voxel_manip(minp, maxp)
-										node = vm:get_node_at(p2)
-									end
-
-									-- If node was successfully loaded try replacing it.
-									-- We make sure nodename is as expected, to avoid
-									-- breaking people's stuff.
-									if node and node.name == ore then
-										--minetest.chat_send_all("# Server: Placing water @ " .. minetest.pos_to_string(p2) .. "!")
-										minetest.add_node(p2, {name=LEECH_RESULT})
-									end
-								end
-							end
-
-							-- Don't actually add item unless removing the ore
-							-- (if removal was attempted) was successful.
-							inv:add_item("main", realore)
-						else
-							-- Output storage is full.
-							keeprunning = false
-							goto cancel
-						end
-					end
-				else
-					-- No ore chosen, bug maybe?
-					keeprunning = false
-					goto cancel
-				end
-			else
-				-- Shutdown if no ores available.
-				keeprunning = false
-				goto cancel
-			end
+		if not data.water or #(data.water) == 0 then
+			meta:set_string("error", "Warming up (" .. data.timer3 .. ") ...")
 		end
 
 		-- Update water surface detection every so often.
 		data.timer3 = data.timer3 - 1
 		if data.timer3 < 0 then
 			data.timer3 = math_random(30, 60*3)
-			read_water = true
-		end
-
-		if read_water then
 			data.water = get_water_surface(pos)
+			data.heights = {}
+
+			-- Initialize the height data.
+			for k, v in ipairs(data.water) do
+				local hash = minetest.hash_node_position(v)
+				data.heights[hash] = 0
+			end
+
+			if #(data.water) < 2 then
+				meta:set_string("error", "No outsalting fluid!")
+				meta:set_int("enabled", 0)
+				data.water = {}
+				data.heights = {}
+				keeprunning = false
+				goto cancel
+			end
 		end
 
 		-- Spawn boiling particles.
-		if #(data.water) > 0 and math_random(1, 2) == 1 then
-			local rnd = math_random(1, 2)
+		if #(data.water) > 0 then
+			local rnd = math_random(1, 3)
 			for i = 1, rnd, 1 do
 				local p2 = data.water[math_random(1, #(data.water))]
-				do_water_boiling(p2)
+				minetest.after(math_random(1, 10) / 10, do_water_boiling, p2)
 			end
 		end
 
-		-- Occasionally dig ceiling.
-		if math_random(1, 20) == 1 then
+		-- Dig ceiling.
+		data.timer2 = data.timer2 - 1
+		if data.timer2 < 0 then
+			data.timer2 = 10
+
 			if #(data.water) > 0 then
-				local p2 = data.water[math_random(1, #(data.water))]
-				do_ceiling_dig(p2)
+				local idx = math_random(1, #(data.water))
+				local p2 = data.water[idx]
+				local success, rstack = do_ceiling_dig(p2, data.heights)
+
+				if not success then
+					table.remove(data.water, idx)
+
+					-- First, check if outsalting reached its max height.
+					local reached_max = check_outsalting_done(data.heights)
+					if reached_max then
+						meta:set_string("error", "Finished.")
+						meta:set_int("enabled", 0)
+						keeprunning = false
+						goto cancel
+					end
+
+					-- Check if we ran out of vertical columns.
+					-- This could happen before reaching max height if we ran into a
+					-- protected region.
+					if #(data.water) == 0 then
+						meta:set_string("error", "Outsalting aborted!")
+						meta:set_int("enabled", 0)
+						keeprunning = false
+						goto cancel
+					end
+				end
+
+				if rstack then
+					if inv:room_for_item("main", rstack) then
+						inv:add_item("main", rstack)
+					else
+						meta:set_string("error", "Inventory full.")
+						meta:set_int("enabled", 0)
+						keeprunning = false
+						goto cancel
+					end
+				end
 			end
 		end
 	end
+
 	-- Jump here if something prevents machine from working.
 	::cancel::
 
@@ -662,12 +574,17 @@ function(pos, elapsed)
 
 	-- Update infotext.
 	meta:set_string("infotext", leecher.compose_infotext(pos))
+	meta:set_string("formspec", leecher.compose_formspec(pos))
 end
+
+
 
 leecher.on_construct =
 function(pos)
 	leecher.data[minetest.hash_node_position(pos)] = nil
 end
+
+
 
 leecher.after_place_node =
 function(pos, placer, itemstack, pointed_thing)
@@ -690,6 +607,8 @@ function(pos, placer, itemstack, pointed_thing)
 	timer:start(1.0)
 end
 
+
+
 leecher.on_blast =
 function(pos)
   local drops = {}
@@ -699,6 +618,8 @@ function(pos)
 	leecher.data[minetest.hash_node_position(pos)] = nil
   return drops
 end
+
+
 
 leecher.allow_metadata_inventory_put =
 function(pos, listname, index, stack, player)
@@ -715,10 +636,14 @@ function(pos, listname, index, stack, player)
   return 0
 end
 
+
+
 leecher.allow_metadata_inventory_move =
 function(pos, from_list, from_index, to_list, to_index, count, player)
   return 0
 end
+
+
 
 leecher.allow_metadata_inventory_take =
 function(pos, listname, index, stack, player)
@@ -732,20 +657,28 @@ function(pos, listname, index, stack, player)
   return 0
 end
 
+
+
 leecher.on_metadata_inventory_move =
 function(pos)
   leecher.trigger_update(pos)
 end
+
+
 
 leecher.on_metadata_inventory_put =
 function(pos)
   leecher.trigger_update(pos)
 end
 
+
+
 leecher.on_metadata_inventory_take =
 function(pos, listname, index, stack, player)
   leecher.trigger_update(pos)
 end
+
+
 
 leecher.on_destruct =
 function(pos)
@@ -761,7 +694,7 @@ leecher.on_place = function(itemstack, placer, pt)
 	if pt.type == "node" then
 		if city_block:in_no_leecher_zone(pt.under) then
 			local pname = placer:get_player_name()
-			minetest.chat_send_player(pname, "# Server: Mineral extraction is forbidden within 200 meters of a residential area!")
+			minetest.chat_send_player(pname, "# Server: Mineral extraction is forbidden this close to a residential area!")
 			return itemstack
 		end
 	end
@@ -773,7 +706,14 @@ end
 if not leecher.run_once then
 	minetest.register_node(":leecher:leecher", {
 		description = "HV Mineral Outsalter\n\nThis leeches trace ores from rock above, very slowly.\nMust be placed in a water pool (wider is better).",
-		tiles = {"technic_carbon_steel_block.png^default_tool_mesepick.png"},
+		tiles = {
+			"technic_carbon_steel_block.png^default_tool_mesepick.png",
+			"technic_carbon_steel_block.png",
+			"technic_carbon_steel_block.png",
+			"technic_carbon_steel_block.png",
+			"technic_carbon_steel_block.png",
+			"technic_carbon_steel_block.png",
+		},
 
 		groups = utility.dig_groups("machine"),
 

@@ -4,6 +4,8 @@ tide.modpath = minetest.get_modpath("machines")
 
 -- Localize for performance.
 local math_random = math.random
+local item_group = minetest.get_item_group
+local vector_distance = vector.distance
 
 local BUFFER_SIZE = tech.tidal.buffer
 local ENERGY_AMOUNT = tech.tidal.power
@@ -11,7 +13,7 @@ local ENERGY_AMOUNT = tech.tidal.power
 
 
 local function is_water(nn)
-	if minetest.get_item_group(nn, "water") ~= 0 then
+	if item_group(nn, "water") ~= 0 then
 		return true
 	end
 end
@@ -22,11 +24,12 @@ end
 local function count_nearby_ocean(startpos)
 	local traversal = {}
 	local queue = {}
-	local curpos, hash, exists, name, found, depth
+	local curpos, hash, exists, name, found_water, found_tide, depth
 	local first = true
 	local get_node_hash = minetest.hash_node_position
 	local get_node = minetest.get_node
-	local count = 0
+	local num_waters = 0
+	local num_tidals = 0
 	startpos.d = 1
 	queue[#queue+1] = startpos
 
@@ -51,19 +54,30 @@ local function count_nearby_ocean(startpos)
 	end
 
 	name = get_node(curpos).name
-	found = false
+	found_water = false
+	found_tide = false
 
 	if is_water(name) then
-		found = true
+		found_water = true
+	elseif name == "tide:tide" then
+		found_tide = true
 	end
 
-	if not found then
+	if not found_water and not found_tide then
 		goto next
 	end
 
 	traversal[hash] = depth
 	if not exists then
-		count = count + 1
+		if found_tide then
+			-- The amount this tidal contributes to the total number of tidals is
+			-- dependant on its distance to the source tidal.
+			local mult = vector_distance(startpos, curpos) / -20 + 1
+			if mult < 0 then mult = 0 end
+			num_tidals = num_tidals + mult
+		elseif found_water then
+			num_waters = num_waters + 1
+		end
 	end
 
 	-- Queue up adjacent locations.
@@ -80,7 +94,7 @@ local function count_nearby_ocean(startpos)
 		goto continue
 	end
 
-	return count
+	return num_waters, num_tidals
 end
 
 tide.on_energy_get =
@@ -174,7 +188,8 @@ function(pos, meta)
 			end
 		end
 
-		local ocean = count_nearby_ocean({x=pos.x, y=pos.y-1, z=pos.z})
+		-- Start from self-pos so that at least one tidal (self) is always found.
+		local ocean, tidals = count_nearby_ocean({x=pos.x, y=pos.y, z=pos.z})
 		--minetest.chat_send_player("MustTest", "# Server: Ocean: " .. ocean)
 		if ocean >= 500 and sidewater >= 4 then
 			good = true
@@ -182,10 +197,27 @@ function(pos, meta)
 
     if good then
 			--minetest.chat_send_all("# Server: Good!")
+
+			-- Prevent divide-by-zero.
+			local div = tidals or 0
+			if div < 1 then div = 1 end
+
+			-- Scale energy production by size of the ocean.
+			-- If a player could build a REALLY big reservoir, it would be possible to
+			-- get this to go higher than x1. In that case it might be worth it to
+			-- build more tidals in close proximity.
+			local amount = eups * (ocean / (17*11*17))
+			if amount > eups then amount = eups end
+
+			-- Scale energy production by number of neighbor tidals.
+			-- This makes packing them very inefficient, but not entirely pointless
+			-- in small numbers.
+			amount = amount / (div * 0.85)
+
       -- Randomize time to next nodecheck.
       meta:set_int("chktmr", math_random(1, 60*3))
       meta:set_int("active", 1)
-      meta:set_int("eups", eups)
+      meta:set_int("eups", amount)
 			meta:set_string("error", "DUMMY")
       result = true
     else
@@ -445,9 +477,9 @@ if not tide.run_once then
 	minetest.register_craft({
 		output = 'tide:tide',
 		recipe = {
-			{'',                           'cb2:mv',              ''},
+			{'', 'cb2:mv', ''},
 			{'carbon_steel:ingot', 'carbon_steel:block', 'carbon_steel:ingot'},
-			{'',                           'techcrafts:electric_motor',           ''},
+			{'', 'techcrafts:electric_motor', ''},
 		}
 	})
 

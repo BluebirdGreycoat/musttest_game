@@ -16,7 +16,15 @@ minetest.register_node("titanium:ore", {
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	drop = "titanium:titanium",
-	silverpick_drop = true,
+	silverpick_drop = "titanium:ore_mined",
+})
+
+minetest.register_node("titanium:ore_mined", {
+	description = "Titanium Ore",
+	tiles = { "default_stone.png^titanium_ore.png" },
+	is_ground_content = true,
+	groups = utility.dig_groups("mineral"),
+	sounds = default.node_sound_stone_defaults(),
 })
 
 

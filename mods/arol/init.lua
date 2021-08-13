@@ -4,7 +4,14 @@ minetest.register_node("arol:ore", {
   tiles = {"default_stone.png^gloopores_mineral_arol.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "arol:lump",
-	silverpick_drop = true,
+	silverpick_drop = "arol:ore_mined",
+  sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("arol:ore_mined", {
+  description = "Arol Ore",
+  tiles = {"default_stone.png^gloopores_mineral_arol.png"},
+  groups = utility.dig_groups("mineral"),
   sounds = default.node_sound_stone_defaults(),
 })
 

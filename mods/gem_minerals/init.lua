@@ -30,7 +30,14 @@ if not gem_minerals.registered then
 			groups = utility.dig_groups("hardstone"),
 			sounds = default.node_sound_stone_defaults(),
 			drop = "gems:raw_" .. v.name,
-			silverpick_drop = true,
+			silverpick_drop = ore .. "_mined",
+		})
+
+		minetest.register_node(":" .. ore .. "_mined", {
+			description = v.desc .. " Ore",
+			tiles = {"default_stone.png^gem_minerals_" .. v.name .. "_ore.png"},
+			groups = utility.dig_groups("hardstone"),
+			sounds = default.node_sound_stone_defaults(),
 		})
 
 		-- Block.

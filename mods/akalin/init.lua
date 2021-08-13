@@ -4,7 +4,14 @@ minetest.register_node("akalin:ore", {
   tiles = {"default_stone.png^gloopores_mineral_akalin.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "akalin:lump",
-	silverpick_drop = true,
+	silverpick_drop = "akalin:ore_mined",
+  sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("akalin:ore_mined", {
+  description = "Akalin Ore",
+  tiles = {"default_stone.png^gloopores_mineral_akalin.png"},
+  groups = utility.dig_groups("mineral"),
   sounds = default.node_sound_stone_defaults(),
 })
 

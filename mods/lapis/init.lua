@@ -97,7 +97,16 @@ minetest.register_node( "lapis:pyrite_ore",  {
    paramtype = "light",
    is_ground_content = true,
    drop= 'lapis:pyrite_lump 2',
-	 silverpick_drop = true,
+	 silverpick_drop = "lapis:pyrite_ore_mined",
+   groups = utility.dig_groups("mineral"),
+   sounds = default.node_sound_stone_defaults() ,
+})
+
+minetest.register_node( "lapis:pyrite_ore_mined",  {
+   description = "Pyrite Ore",
+   tiles = {"default_stone.png^lapis_mineral_pyrite.png" },
+   paramtype = "light",
+   is_ground_content = true,
    groups = utility.dig_groups("mineral"),
    sounds = default.node_sound_stone_defaults() ,
 })

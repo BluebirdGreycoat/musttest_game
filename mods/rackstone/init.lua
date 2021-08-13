@@ -288,12 +288,27 @@ minetest.register_node("rackstone:redrack_with_iron", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore = 1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:iron_lump",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:redrack_with_iron_mined",
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
     after_redrack_remove(...)
   end,
+})
+
+minetest.register_node("rackstone:redrack_with_iron_mined", {
+  description = "Netherack With Iron",
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+		"rackstone_redrack.png^default_mineral_iron3.png",
+	},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = rackstone.rackstone_sounds(),
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
 minetest.register_node("rackstone:redrack_with_copper", {
@@ -309,12 +324,27 @@ minetest.register_node("rackstone:redrack_with_copper", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "default:copper_lump",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:redrack_with_copper_mined",
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
     after_redrack_remove(...)
   end,
+})
+
+minetest.register_node("rackstone:redrack_with_copper_mined", {
+  description = "Netherack With Copper",
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+		"rackstone_redrack.png^default_mineral_copper3.png",
+	},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = rackstone.rackstone_sounds(),
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
 minetest.register_craftitem("rackstone:dauth_lump", {
@@ -341,12 +371,27 @@ minetest.register_node("rackstone:redrack_with_coal", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "rackstone:dauth_lump",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:redrack_with_coal_mined",
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
   
   after_destruct = function(...)
     after_redrack_remove(...)
   end,
+})
+
+minetest.register_node("rackstone:redrack_with_coal_mined", {
+  description = "Netherack With Coal",
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+		"rackstone_redrack.png^default_mineral_coal3.png",
+	},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = rackstone.rackstone_sounds(),
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
 minetest.register_node("rackstone:redrack_with_tin", {
@@ -362,12 +407,27 @@ minetest.register_node("rackstone:redrack_with_tin", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1, ore=1}),
   sounds = rackstone.rackstone_sounds(),
   drop = "moreores:tin_lump",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:redrack_with_tin_mined",
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 
   after_destruct = function(...)
     after_redrack_remove(...)
   end,
+})
+
+minetest.register_node("rackstone:redrack_with_tin_mined", {
+  description = "Netherack With Tin",
+  tiles = {
+		"rackstone_redrack.png",
+		"rackstone_redrack.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+		"rackstone_redrack.png^moreores_mineral_tin2.png",
+	},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = rackstone.rackstone_sounds(),
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
 
@@ -813,7 +873,15 @@ minetest.register_node("rackstone:rackstone_with_coal", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:coal_lump 3",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_coal_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_coal_mined", {
+  description = "Rackstone With Coal",
+  tiles = {"rackstone_rackstone.png^default_mineral_coal.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -823,7 +891,15 @@ minetest.register_node("rackstone:rackstone_with_iron", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:iron_lump 3",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_iron_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_iron_mined", {
+  description = "Rackstone With Iron",
+  tiles = {"rackstone_rackstone.png^default_mineral_iron.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -833,7 +909,15 @@ minetest.register_node("rackstone:rackstone_with_copper", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:copper_lump 2",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_copper_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_copper_mined", {
+  description = "Rackstone With Copper",
+  tiles = {"rackstone_rackstone.png^default_mineral_copper.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -843,7 +927,15 @@ minetest.register_node("rackstone:rackstone_with_gold", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:gold_lump 2",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_gold_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_gold_mined", {
+  description = "Rackstone With Gold",
+  tiles = {"rackstone_rackstone.png^default_mineral_gold.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -853,7 +945,15 @@ minetest.register_node("rackstone:rackstone_with_diamond", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:diamond 2",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_diamond_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_diamond_mined", {
+  description = "Rackstone With Diamond",
+  tiles = {"rackstone_rackstone.png^default_mineral_diamond.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -863,7 +963,15 @@ minetest.register_node("rackstone:rackstone_with_mese", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:mese_crystal 2",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_mese_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_mese_mined", {
+  description = "Rackstone With Mese",
+  tiles = {"rackstone_rackstone.png^default_mineral_mese.png"},
+  groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })
 
@@ -873,6 +981,14 @@ minetest.register_node("rackstone:rackstone_with_meat", {
   groups = utility.dig_groups("netherack", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "mobs:meat_raw 4",
-	silverpick_drop = true,
+	silverpick_drop = "rackstone:rackstone_with_meat_mined",
+	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+})
+
+minetest.register_node("rackstone:rackstone_with_meat_mined", {
+  description = "Rackstone With Unidentified Meat",
+  tiles = {"rackstone_rackstone.png^rackstone_meat.png"},
+  groups = utility.dig_groups("netherack", {rackstone=1, netherack=1}),
+  sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 })

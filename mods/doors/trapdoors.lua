@@ -132,3 +132,14 @@ doors.register_trapdoor("trapdoor_sandstone_locked", {
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:sandstone",
 })
+
+doors.register_trapdoor("trapdoor_glass", {
+	description = "Glass Trapdoor",
+	inventory_image = "default_glass.png",
+	wield_image = "default_glass.png",
+	tile_front = "default_glass.png",
+	tile_side = "default_glass.png",
+	sounds = default.node_sound_glass_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:glass",
+})

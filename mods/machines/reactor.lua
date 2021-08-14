@@ -529,23 +529,23 @@ for k, v in ipairs({
 		if need_discharge then
 			--minetest.chat_send_player("MustTest", "# Server: Discharging reactor!")
 			local timer = meta:get_int("dschgtmr")
-			local energy = inv:get_stack("out", 1)
-			local old = energy:get_count()
 
 			if timer <= 0 then
+				local energy = inv:get_stack("out", 1)
+				local old = energy:get_count()
 				energy:set_count(net2.put_energy(pos, owner, old, REACTOR_TIER))
 				inv:set_stack("out", 1, energy)
+
+				if energy:get_count() < old then
+					-- If we succeeded in discharging energy, keep doing so.
+					-- Otherwise, batteries are full.
+					keeprunning = true
+				else
+					meta:set_int("dschgtmr", 60)
+				end
 			else
 				timer = timer - 1
 				meta:set_int("dschgtmr", timer)
-			end
-
-			if energy:get_count() < old then
-				-- If we succeeded in discharging energy, keep doing so.
-				-- Otherwise, batteries are full.
-				keeprunning = true
-			else
-				meta:set_int("dschgtmr", 60)
 			end
 		end
 

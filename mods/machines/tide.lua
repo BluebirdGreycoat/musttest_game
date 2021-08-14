@@ -285,6 +285,11 @@ function(pos, elapsed)
 			end
 		end
 		keeprunning = true
+
+		-- Not actually producing any energy? Go to sleep.
+		if eups < 1 then
+			keeprunning = false
+		end
 	end
 
 	-- Discharge energy.

@@ -648,8 +648,10 @@ for k, v in ipairs({
 		func.trigger_update(pos)
 	end
 end
+
 --i cannot for the life of me figure out why the normal reactor works without this, but it does.
-breeder.run_once = false
+--breeder.run_once = false
+
 
 
 if not breeder.run_once then

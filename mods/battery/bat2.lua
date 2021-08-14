@@ -68,7 +68,9 @@ for k, v in ipairs({
 		meta:set_int("energy", total)
 		energy = energy - toput
 
-		functable.trigger_update(pos)
+		if toput > 0 then
+			functable.trigger_update(pos)
+		end
 		return energy
 	end
 
@@ -78,12 +80,16 @@ for k, v in ipairs({
 		local have = meta:get_int("energy")
 		if have < energy then
 			meta:set_int("energy", 0)
-			functable.trigger_update(pos)
+			if have > 0 then
+				functable.trigger_update(pos)
+			end
 			return have
 		end
 		have = have - energy
 		meta:set_int("energy", have)
-		functable.trigger_update(pos)
+		if energy > 0 then
+			functable.trigger_update(pos)
+		end
 		return energy
 	end
 

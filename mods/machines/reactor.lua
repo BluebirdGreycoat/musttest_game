@@ -530,6 +530,10 @@ for k, v in ipairs({
 			--minetest.chat_send_player("MustTest", "# Server: Discharging reactor!")
 			local timer = meta:get_int("dschgtmr")
 
+			-- It's frequently the case that a reactor spends a lot of time trying to
+			-- send energy to a network where all the batteries are full. We can save
+			-- the server some work by delaying a little before the next discharge, if
+			-- the last discharge didn't succeed.
 			if timer <= 0 then
 				local energy = inv:get_stack("out", 1)
 				local old = energy:get_count()

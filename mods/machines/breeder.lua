@@ -651,6 +651,9 @@ end
 
 --i cannot for the life of me figure out why the normal reactor works without this, but it does.
 --breeder.run_once = false
+--
+-- ^^^ This could only break if some code used the wrong table name left over
+-- from copy+paste. Anyway it works now. -- MustTest
 
 
 

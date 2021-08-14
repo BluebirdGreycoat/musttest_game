@@ -17,15 +17,38 @@ for k, v in ipairs({
 
 	functable.do_battery_decay =
 	function(meta)
-		-- Decay happens whenever the battery bank becomes exhausted,
-		-- with a small chance to break some of the storage units.
-		if math.random(1, 50) == 1 then
+		local timeout = false
+		local time0 = meta:get_int("decay")
+		local time1 = os.time()
+
+		if time1 > (time0 + 60*60*24*3) then
+			-- Note: we do not add 72 hours to the decay timeout unless a battery cell
+			-- actually decays. This means that if we don't decay a battery after 72
+			-- hours, we'll try again every hour after that until we do.
+			meta:set_int("decay", (time0 + 60*60*24*3+60*60))
+			timeout = true
+		end
+
+		-- The battery is considered "full" (and 'stressed') when over 90% usage.
+		local maxstorage = false
+		local chg, max = functable.get_energy_status(meta)
+		if (chg / max) > 0.9 then
+			maxstorage = true
+		end
+
+		-- Decay happens slowly while the battery bank is holding the max amount
+		-- of energy. This sort of simulates batteries becoming weaker over time
+		-- and needing replacing.
+		if timeout and maxstorage and math.random(1, 100) == 1 then
 			local inv = meta:get_inventory()
 			local size = inv:get_size("batteries")
 			local idx = math.random(1, size)
 			local stack = inv:get_stack("batteries", idx)
 			if stack:get_name() == "battery:battery" then
 				inv:set_stack("batteries", idx, ItemStack("battery:battery_broken"))
+
+				-- Update decay timeout value.
+				meta:set_int("decay", time1)
 			end
 		end
 	end
@@ -54,18 +77,11 @@ for k, v in ipairs({
 		local meta = minetest.get_meta(pos)
 		local have = meta:get_int("energy")
 		if have < energy then
-			if have > 0 then
-				functable.do_battery_decay(meta)
-			end
 			meta:set_int("energy", 0)
 			functable.trigger_update(pos)
 			return have
 		end
-		local old_have = have
 		have = have - energy
-		if have <= 0 and old_have > 0 then
-			functable.do_battery_decay(meta)
-		end
 		meta:set_int("energy", have)
 		functable.trigger_update(pos)
 		return energy
@@ -238,11 +254,18 @@ for k, v in ipairs({
 
     -- Needed in case the operator removes or adds a battery.
     -- Also, EUs can be added/drained from batteries without going through a distributer.
+		functable.do_battery_decay(meta)
     functable.update_maximum_charge(meta)
 
     functable.update_charge_visual(pos)
     functable.compose_infotext(pos)
     functable.compose_formspec(pos)
+
+		-- Run timer again, to expire in 1 hour.
+		-- If the machine needs an update sooner, the timer will be restarted with
+		-- a quicker timeout.
+		local timer = minetest.get_node_timer(pos)
+		timer:start(60*60)
   end
 
   functable.on_blast =
@@ -282,6 +305,7 @@ for k, v in ipairs({
 			"energy",
 			"old_eu",
 			"max",
+			"decay",
 		})
 	end
 
@@ -319,10 +343,9 @@ for k, v in ipairs({
 
   functable.trigger_update =
   function(pos)
+		-- Restart timer without new timeout even if already running.
     local timer = minetest.get_node_timer(pos)
-    if not timer:is_started() then
-      timer:start(1.0)
-    end
+		timer:start(1.0)
   end
 
   -- Read the current & max charge of the battery, but do not trigger any update.

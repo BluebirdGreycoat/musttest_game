@@ -183,12 +183,16 @@ for k, v in ipairs({
 		local have = inv:get_stack("out", 1):get_count()
 		if have < energy then
 			inv:set_stack("out", 1, ItemStack(""))
-			func.trigger_update(pos)
+			if have > 0 then
+				func.trigger_update(pos)
+			end
 			return have
 		end
 		have = have - energy
 		inv:set_stack("out", 1, ItemStack("atomic:energy " .. have))
-		func.trigger_update(pos)
+		if energy > 0 then
+			func.trigger_update(pos)
+		end
 		return energy
 	end
 

@@ -277,7 +277,7 @@ local function do_ceiling_dig(pos, heights)
 				-- Any param2 value other than 0 indicates this node was NOT placed by
 				-- the mapgen.
 				if node.param2 ~= 0 then
-					count = 1
+					count = math_random(4, 8)
 				end
 
 				local stack = ItemStack(ore_conversion_data[node.name] .. " " .. count)

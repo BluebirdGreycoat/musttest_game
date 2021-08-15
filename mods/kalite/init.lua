@@ -25,7 +25,8 @@ minetest.register_node("kalite:ore", {
     }
   },
   sounds = default.node_sound_stone_defaults(),
-	silverpick_drop = "kalite:ore_mined",
+	silverpick_drop = true,
+	place_param2 = 10,
 
 	-- Digging kalite has a chance to release poison gas.
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -35,13 +36,6 @@ minetest.register_node("kalite:ore", {
 			end
 		end
 	end,
-})
-
-minetest.register_node("kalite:ore_mined", {
-  description = "Kalite Ore",
-  tiles = {"default_stone.png^gloopores_mineral_kalite.png"},
-  groups = utility.dig_groups("mineral"),
-  sounds = default.node_sound_stone_defaults(),
 })
 
 oregen.register_ore({

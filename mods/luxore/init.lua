@@ -16,21 +16,13 @@ minetest.register_node("luxore:luxore", {
 	light_source = 14,
 	groups = utility.dig_groups("cobble"),
 	drop = "luxore:luxcrystal 4",
-	silverpick_drop = "luxore:luxore_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_glass_defaults(),
-})
-
-minetest.register_node("luxore:luxore_mined", {
-	description = "Lux Ore",
-	tiles = {"luxore_luxore.png"},
-	paramtype = "light",
-	light_source = 14,
-	groups = utility.dig_groups("cobble"),
-	sounds = default.node_sound_glass_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_craft({
-	output = "luxore:luxore_mined",
+	output = "luxore:luxore",
 	recipe = {
 		{"",                    "luxore:luxcrystal",        ""                  },
 		{"luxore:luxcrystal",   "default:cobble",           "luxore:luxcrystal" },

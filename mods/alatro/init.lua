@@ -4,15 +4,9 @@ minetest.register_node("alatro:ore", {
   tiles = {"default_stone.png^gloopores_mineral_alatro.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "alatro:lump",
-	silverpick_drop = "alatro:ore_mined",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("alatro:ore_mined", {
-  description = "Alatro Ore",
-  tiles = {"default_stone.png^gloopores_mineral_alatro.png"},
-  groups = utility.dig_groups("mineral"),
-  sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 oregen.register_ore({

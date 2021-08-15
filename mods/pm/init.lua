@@ -513,7 +513,8 @@ if not pm.registered then
 		groups = utility.dig_groups("mineral"),
 		drop = 'quartz:quartz_crystal',
 		sounds = default.node_sound_stone_defaults(),
-		silverpick_drop = "pm:quartz_ore_mined",
+		silverpick_drop = true,
+		place_param2 = 10,
 		movement_speed_multiplier = default.SLOW_SPEED,
 
 		after_destruct = function(pos, oldnode)
@@ -521,14 +522,6 @@ if not pm.registered then
 				pm.spawn_random_wisp(pos)
 			end
 		end,
-	})
-
-	minetest.register_node("pm:quartz_ore_mined", {
-		description = "Quartz Crystals In Sand",
-		tiles = {"default_desert_sand.png^quartz_ore.png"},
-		groups = utility.dig_groups("mineral"),
-		sounds = default.node_sound_stone_defaults(),
-		movement_speed_multiplier = default.SLOW_SPEED,
 	})
 
 	local c = "pm:core"

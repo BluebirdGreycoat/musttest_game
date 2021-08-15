@@ -8,14 +8,8 @@ minetest.register_node("sulfur:ore", {
   groups = utility.dig_groups("mineral"),
   drop = "sulfur:lump",
   sounds = default.node_sound_stone_defaults(),
-	silverpick_drop = "sulfur:ore_mined",
-})
-
-minetest.register_node("sulfur:ore_mined", {
-  description = "Sulfur Ore",
-  tiles = {"default_stone.png^technic_sulfur_mineral.png"},
-  groups = utility.dig_groups("mineral"),
-  sounds = default.node_sound_stone_defaults(),
+	silverpick_drop = true,
+	place_param2 = 10,
 })
 
 minetest.register_craftitem("sulfur:lump", {

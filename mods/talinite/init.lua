@@ -4,17 +4,10 @@ minetest.register_node("talinite:ore", {
   tiles = {"default_stone.png^gloopores_mineral_talinite.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "talinite:lump",
-	silverpick_drop = "talinite:ore_mined",
+	silverpick_drop = true,
   --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
   sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("talinite:ore_mined", {
-  description = "Talinite Ore",
-  tiles = {"default_stone.png^gloopores_mineral_talinite.png"},
-  groups = utility.dig_groups("mineral"),
-  --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
-  sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("talinite:desert_ore", {
@@ -22,17 +15,10 @@ minetest.register_node("talinite:desert_ore", {
   tiles = {"default_desert_stone.png^gloopores_mineral_talinite.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "talinite:dust",
-	silverpick_drop = "talinite:desert_ore_mined",
+	silverpick_drop = true,
   --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
   sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("talinite:desert_ore_mined", {
-  description = "Desert Talinite Ore",
-  tiles = {"default_desert_stone.png^gloopores_mineral_talinite.png"},
-  groups = utility.dig_groups("mineral"),
-  --light_source = 6, -- This ore glows. (Buggy? Does not update light.)
-  sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 oregen.register_ore({

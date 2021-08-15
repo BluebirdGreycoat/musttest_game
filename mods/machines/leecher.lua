@@ -273,6 +273,13 @@ local function do_ceiling_dig(pos, heights)
 				minetest.remove_node(p)
 				minetest.check_for_falling(p)
 				local count = math_random(4, 16)
+
+				-- Any param2 value other than 0 indicates this node was NOT placed by
+				-- the mapgen.
+				if node.param2 ~= 0 then
+					count = 1
+				end
+
 				local stack = ItemStack(ore_conversion_data[node.name] .. " " .. count)
 				if stack:is_known() then
 					return true, stack

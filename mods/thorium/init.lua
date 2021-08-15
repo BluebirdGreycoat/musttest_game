@@ -5,28 +5,9 @@ minetest.register_node("thorium:ore", {
   groups = utility.dig_groups("mineral", {melts = 1, ore = 1}),
   drop = "thorium:lump",
   sounds = default.node_sound_stone_defaults(),
-	silverpick_drop = "thorium:ore_mined",
+	silverpick_drop = true,
+	place_param2 = 10,
 	
-	-- thorium ore reacts like uranium ore with respect to lava, only less violently.
-	on_melt = function(pos, other)
-		minetest.after(0, function()
-      tnt.boom(pos, {
-        radius = 2,
-        ignore_protection = false,
-        ignore_on_blast = false,
-        damage_radius = 3,
-        disable_drops = true,
-      })
-		end)
-	end,
-})
-
-minetest.register_node("thorium:ore_mined", {
-  description = "Thorium Ore",
-  tiles = {"default_stone.png^technic_thorium_mineral.png"},
-  groups = utility.dig_groups("mineral", {melts = 1}),
-  sounds = default.node_sound_stone_defaults(),
-
 	-- thorium ore reacts like uranium ore with respect to lava, only less violently.
 	on_melt = function(pos, other)
 		minetest.after(0, function()

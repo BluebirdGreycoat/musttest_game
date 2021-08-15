@@ -1012,8 +1012,9 @@ minetest.register_node("default:stone_with_coal", {
   -- all coal with flame instead of dropping it).
 	groups = utility.dig_groups("mineral"),
 	drop = 'default:coal_lump',
-	silverpick_drop = "default:stone_with_coal_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 
 	-- Digging coal ore has a chance to release poison gas.
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
@@ -1025,15 +1026,6 @@ minetest.register_node("default:stone_with_coal", {
 	end,
 })
 
-minetest.register_node("default:stone_with_coal_mined", {
-	description = "Coal Deposit",
-	tiles = {"default_stone.png^default_mineral_coal.png"},
-  -- Cannot be flammable (although I would like it to be)
-  -- because that interferes with TNT mining (the TNT replaces
-  -- all coal with flame instead of dropping it).
-	groups = utility.dig_groups("mineral"),
-})
-
 minetest.register_node("default:desert_stone_with_coal", {
 	description = "Redstone Coal Deposit",
 	tiles = {"default_desert_stone.png^default_mineral_coal2.png"},
@@ -1042,18 +1034,9 @@ minetest.register_node("default:desert_stone_with_coal", {
   -- all coal with flame instead of dropping it).
 	groups = utility.dig_groups("mineral"),
 	drop = 'default:coal_lump',
-	silverpick_drop = "default:desert_stone_with_coal_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:desert_stone_with_coal_mined", {
-	description = "Redstone Coal Deposit",
-	tiles = {"default_desert_stone.png^default_mineral_coal2.png"},
-  -- Cannot be flammable (although I would like it to be)
-  -- because that interferes with TNT mining (the TNT replaces
-  -- all coal with flame instead of dropping it).
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:coalblock", {
@@ -1070,15 +1053,9 @@ minetest.register_node("default:stone_with_iron", {
 	tiles = {"default_stone.png^default_mineral_iron.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
-	silverpick_drop = "default:stone_with_iron_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:stone_with_iron_mined", {
-	description = "Iron Ore",
-	tiles = {"default_stone.png^default_mineral_iron.png"},
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:steelblock", {
@@ -1095,15 +1072,9 @@ minetest.register_node("default:stone_with_copper", {
 	tiles = {"default_stone.png^default_mineral_copper.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
-	silverpick_drop = "default:stone_with_copper_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:stone_with_copper_mined", {
-	description = "Copper Ore",
-	tiles = {"default_stone.png^default_mineral_copper.png"},
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:desert_stone_with_copper", {
@@ -1112,16 +1083,9 @@ minetest.register_node("default:desert_stone_with_copper", {
 	tiles = {"default_desert_stone.png^default_mineral_copper2.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
-	silverpick_drop = "default:desert_stone_with_copper_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:desert_stone_with_copper_mined", {
-	description = "Redstone Copper Ore",
-	-- Use old copper image, the pattern looks nicer.
-	tiles = {"default_desert_stone.png^default_mineral_copper2.png"},
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:desert_stone_with_iron", {
@@ -1130,16 +1094,9 @@ minetest.register_node("default:desert_stone_with_iron", {
 	tiles = {"default_desert_stone.png^default_mineral_iron2.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
-	silverpick_drop = "default:desert_stone_with_iron_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:desert_stone_with_iron_mined", {
-	description = "Redstone Iron Ore",
-	-- Use old iron image, the pattern looks nicer.
-	tiles = {"default_desert_stone.png^default_mineral_iron2.png"},
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:desert_stone_with_diamond", {
@@ -1148,16 +1105,9 @@ minetest.register_node("default:desert_stone_with_diamond", {
 	tiles = {"default_desert_stone.png^default_mineral_diamond2.png"},
 	groups = utility.dig_groups("hardmineral"),
 	drop = 'default:diamond',
-	silverpick_drop = "default:desert_stone_with_diamond_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:desert_stone_with_diamond_mined", {
-	description = "Redstone Diamond Deposit",
-	-- Use old diamond image, the pattern looks nicer.
-	tiles = {"default_desert_stone.png^default_mineral_diamond2.png"},
-	groups = utility.dig_groups("hardmineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:copperblock", {
@@ -1228,15 +1178,9 @@ minetest.register_node("default:stone_with_gold", {
 	tiles = {"default_stone.png^default_mineral_gold.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = "default:gold_lump",
-	silverpick_drop = "default:stone_with_gold_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:stone_with_gold_mined", {
-	description = "Gold Ore",
-	tiles = {"default_stone.png^default_mineral_gold.png"},
-	groups = utility.dig_groups("mineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:goldblock", {
@@ -1254,16 +1198,9 @@ minetest.register_node("default:stone_with_diamond", {
 	-- Player has to get mese pick or similar before they can get diamond.
 	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
-	silverpick_drop = "default:stone_with_diamond_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:stone_with_diamond_mined", {
-	description = "Diamond Deposit",
-	tiles = {"default_stone.png^default_mineral_diamond.png"},
-	-- Player has to get mese pick or similar before they can get diamond.
-	groups = utility.dig_groups("hardmineral"),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 minetest.register_node("default:diamondblock", {

@@ -4,15 +4,9 @@ minetest.register_node("chromium:ore", {
   tiles = {"default_stone.png^technic_chromium_mineral.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "chromium:lump",
-	silverpick_drop = "chromium:ore_mined",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("chromium:ore_mined", {
-  description = "Chromium Ore",
-  tiles = {"default_stone.png^technic_chromium_mineral.png"},
-  groups = utility.dig_groups("mineral"),
-  sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 oregen.register_ore({

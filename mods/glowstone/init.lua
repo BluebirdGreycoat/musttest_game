@@ -18,17 +18,9 @@ minetest.register_node("glowstone:luxore", {
 	light_source = 14,
 	groups = utility.dig_groups("mineral", {glowmineral = 1}),
 	drop = "glowstone:glowing_dust 2",
-	silverpick_drop = "glowstone:luxore_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("glowstone:luxore_mined", {
-	description = "Lux Ore",
-	tiles = {"default_stone.png^glowstone_glowore.png"},
-	paramtype = "light",
-	light_source = 14,
-	groups = utility.dig_groups("mineral", {glowmineral = 1}),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 -- Note: this spawns ONLY in the Outback realm!
@@ -53,17 +45,9 @@ minetest.register_node("glowstone:minerals", {
 	light_source = 14,
 	groups = utility.dig_groups("mineral", {glowmineral = 1}),
 	drop = "glowstone:glowing_dust 2",
-	silverpick_drop = "glowstone:minerals_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("glowstone:minerals_mined", {
-	description = "Radiant Minerals",
-	tiles = {"glowstone_minerals.png"},
-	paramtype = "light",
-	light_source = 14,
-	groups = utility.dig_groups("mineral", {glowmineral = 1}),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 
@@ -101,32 +85,9 @@ minetest.register_node("glowstone:glowstone", {
 	light_source = 14,
 	groups = utility.dig_groups("mineral", {glowmineral = 1}),
 	drop = "glowstone:glowing_dust 2",
-	silverpick_drop = "glowstone:glowstone_mined",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-
-	-- Poison players who come into direct contact.
-	on_player_walk_over = function(pos, player)
-		if not player or not player:is_player() then
-			return
-		end
-		return walk_glowstone(player)
-	end,
-
-	on_punch = function(pos, node, puncher, pt)
-		if not puncher or not puncher:is_player() then
-			return
-		end
-		return punch_glowstone(puncher)
-	end,
-})
-
-minetest.register_node("glowstone:glowstone_mined", {
-	description = "Toxic Glowstone",
-	tiles = {"glowstone_glowstone.png"},
-	paramtype = "light",
-	light_source = 14,
-	groups = utility.dig_groups("mineral", {glowmineral = 1}),
-	sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 
 	-- Poison players who come into direct contact.
 	on_player_walk_over = function(pos, player)

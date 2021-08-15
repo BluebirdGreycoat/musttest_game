@@ -4,15 +4,9 @@ minetest.register_node("arol:ore", {
   tiles = {"default_stone.png^gloopores_mineral_arol.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "arol:lump",
-	silverpick_drop = "arol:ore_mined",
+	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("arol:ore_mined", {
-  description = "Arol Ore",
-  tiles = {"default_stone.png^gloopores_mineral_arol.png"},
-  groups = utility.dig_groups("mineral"),
-  sounds = default.node_sound_stone_defaults(),
+	place_param2 = 10,
 })
 
 oregen.register_ore({

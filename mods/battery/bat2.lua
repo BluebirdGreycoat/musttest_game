@@ -39,7 +39,7 @@ for k, v in ipairs({
 		-- Decay happens slowly while the battery bank is holding the max amount
 		-- of energy. This sort of simulates batteries becoming weaker over time
 		-- and needing replacing.
-		if timeout and maxstorage and math.random(1, 100) == 1 then
+		if timeout and maxstorage and math.random(1, 20) == 1 then
 			local inv = meta:get_inventory()
 			local size = inv:get_size("batteries")
 			local idx = math.random(1, size)

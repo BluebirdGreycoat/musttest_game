@@ -72,6 +72,7 @@ function status.chat_status(user, param)
   if p1 and p2 then
     uptime = string.sub(status_str, p1, p2)
     uptime = string.gsub(uptime, "uptime: ", "Uptime: ")
+		uptime = string.trim(uptime)
   end
   
   p1, p2 = string.find(status_str, "max lag:[^|]+")
@@ -79,6 +80,7 @@ function status.chat_status(user, param)
   if p1 and p2 then
     max_lag = string.sub(status_str, p1, p2)
     max_lag = string.gsub(max_lag, "max lag: ", "Max Lag: ")
+		max_lag = string.trim(max_lag)
   end
 
   -- Get MoTD.
@@ -91,7 +93,8 @@ function status.chat_status(user, param)
   local version = "version: unknown"
   p1, p2 = string.find(status_str, "version:[^|]+")
   if p1 and p2 then
-      version = string.sub(status_str, p1, p2)
+		version = string.sub(status_str, p1, p2)
+		version = string.trim(version)
   end
   version = string.gsub(version, "version: ", "Version: ")
   version = string.gsub(version, "-dev", "-DEV")

@@ -67,18 +67,18 @@ function status.chat_status(user, param)
   
   -- Get uptime.
   local status_str = status.original_status()
-  p1, p2 = string.find(status_str, "uptime=[^,]+")
-  local uptime = "uptime=unknown"
+  p1, p2 = string.find(status_str, "uptime:[^|]+")
+  local uptime = "uptime: unknown"
   if p1 and p2 then
     uptime = string.sub(status_str, p1, p2)
-    uptime = string.gsub(uptime, "uptime=", "Uptime: ")
+    uptime = string.gsub(uptime, "uptime: ", "Uptime: ")
   end
   
-  p1, p2 = string.find(status_str, "max_lag=[^,]+")
-  local max_lag = "max_lag=unknown"
+  p1, p2 = string.find(status_str, "max lag:[^|]+")
+  local max_lag = "max lag: unknown"
   if p1 and p2 then
     max_lag = string.sub(status_str, p1, p2)
-    max_lag = string.gsub(max_lag, "max_lag=", "Max Lag: ")
+    max_lag = string.gsub(max_lag, "max lag: ", "Max Lag: ")
   end
 
   -- Get MoTD.
@@ -88,12 +88,12 @@ function status.chat_status(user, param)
   end
   
   -- Get version string.
-  local version = "version=unknown"
-  p1, p2 = string.find(status_str, "version=[^,]+")
+  local version = "version: unknown"
+  p1, p2 = string.find(status_str, "version:[^|]+")
   if p1 and p2 then
       version = string.sub(status_str, p1, p2)
   end
-  version = string.gsub(version, "version=", "Version: ")
+  version = string.gsub(version, "version: ", "Version: ")
   version = string.gsub(version, "-dev", "-DEV")
   
   -- Build status string.

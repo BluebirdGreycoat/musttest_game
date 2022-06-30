@@ -438,7 +438,7 @@ zcg.on_receive_fields = function(player, formname, fields)
       zcg.users[pn].searchlist = {}
 			zcg.users[pn].searchtext = ""
       inventory_plus.set_inventory_formspec(player,zcg.formspec(pn))
-    elseif (k == "zcg_search") then
+    elseif (fields.key_enter_field == "zcg_sbox" or k == "zcg_search") then
 			local newtext = fields.zcg_sbox or "<INVAL>"
 			if newtext ~= zcg.users[pn].searchtext then -- Don't update if same.
 				zcg.users[pn].searchlist = {}

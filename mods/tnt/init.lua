@@ -10,7 +10,14 @@ function tnt.burn(pos)
 	local group = minetest.get_item_group(name, "tnt")
 	if group > 0 then
 		minetest.sound_play("tnt_ignite", {pos = pos})
-		minetest.add_node(pos, {name = name .. "_burning"})
+
+		-- Some nodes in group 'tnt' don't have a "_burning" variant.
+		local bnam = name .. "_burning"
+		local ndef = minetest.registered_nodes[bnam]
+		if ndef then
+			minetest.add_node(pos, {name = bnam})
+		end
+
 		minetest.get_node_timer(pos):start(1)
 	elseif name == "tnt:gunpowder" then
 		minetest.add_node(pos, {name = "tnt:gunpowder_burning"})

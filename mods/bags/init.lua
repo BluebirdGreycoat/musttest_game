@@ -160,7 +160,7 @@ minetest.register_tool("bags:trolley", {
 minetest.register_craft({
 	output = "bags:small",
 	recipe = {
-		{"", "group:stick", ""},
+		{"farming:string", "group:stick", "farming:string"},
 		{"group:leather", "group:leather", "group:leather"},
 		{"group:leather", "group:leather", "group:leather"},
 	},
@@ -169,7 +169,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "bags:medium",
 	recipe = {
-		{"", "group:stick", ""},
+		{"farming:string", "group:stick", "farming:string"},
 		{"bags:small", "bags:small", "bags:small"},
 	},
 })
@@ -177,7 +177,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "bags:large",
 	recipe = {
-		{"", "group:stick", ""},
+		{"farming:string", "group:stick", "farming:string"},
 		{"bags:medium", "bags:medium", "bags:medium"},
 	},
 })

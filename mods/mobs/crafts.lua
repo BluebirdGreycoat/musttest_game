@@ -119,3 +119,24 @@ minetest.register_craft({
 	recipe = "mobs:nametag",
 	burntime = 3,
 })
+
+
+
+--------------------------------------------------------------------------------
+minetest.register_craftitem("mobs:leather_padding", {
+	description = "Sewn Leather Padding",
+	inventory_image = "mobs_leather_padding.png",
+	groups = {flammable = 2, leather_padding = 1},
+})
+
+minetest.register_craft({
+	output = "mobs:leather_padding",
+	type = "shapeless",
+	recipe = {"group:leather", "farming:string", "farming:cotton"},
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "mobs:leather_padding",
+	burntime = 6,
+})

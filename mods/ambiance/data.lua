@@ -40,7 +40,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	-- Wind: surface sound only, any time of day (but more common at night).
@@ -140,7 +140,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	{
@@ -155,7 +155,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	{name="craw",           gain=1.0, miny=3000,   maxy=3300,   time="day"  ,   indoors=false, },
@@ -174,7 +174,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.5,
+		noise_threshold = -0.5,
 	},
 
 	-- Owl in Channelwood.
@@ -190,7 +190,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.2,
+		noise_threshold = -0.2,
 	},
 
 	-- Continuous lava rumble in the nether.
@@ -221,7 +221,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	-- Rare deep cave sounds.
@@ -237,7 +237,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	{
@@ -252,7 +252,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	{
@@ -267,7 +267,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	-- Nether yuck.
@@ -283,7 +283,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = 0.3,
+		noise_threshold = -0.3,
 	},
 
 	-- Continuous wind on Jarkati surface.

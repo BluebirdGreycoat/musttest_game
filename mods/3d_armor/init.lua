@@ -251,29 +251,30 @@ for k, v in pairs(ARMOR_MATERIALS) do
 		output = "3d_armor:helmet_"..k,
 		recipe = {
 			{v, v, v},
-			{v, "", v},
-			{"", "", ""},
+			{v, "group:leather_padding", v},
+			{"group:leather_padding", "", "group:leather_padding"},
 		},
 	})
 	minetest.register_craft({
 		output = "3d_armor:chestplate_"..k,
 		recipe = {
-			{v, "", v},
-			{v, v, v},
+			{v, "group:leather_padding", v},
+			{v, "group:leather_padding", v},
 			{v, v, v},
 		},
 	})
 	minetest.register_craft({
 		output = "3d_armor:leggings_"..k,
 		recipe = {
-			{v, v, v},
-			{v, "", v},
-			{v, "", v},
+			{v, "group:leather_padding", v},
+			{v, "group:leather_padding", v},
+			{v, "group:leather_padding", v},
 		},
 	})
 	minetest.register_craft({
 		output = "3d_armor:boots_"..k,
 		recipe = {
+			{"group:leather_padding", "", "group:leather_padding"},
 			{v, "", v},
 			{v, "", v},
 		},

@@ -1,9 +1,16 @@
 --non eatable craftitems
 
 minetest.register_craftitem("nssm:white_wolf_fur", {
-	description = "White Wolf Fur",
+	description = "White Wolf Pelt",
 	image = "white_wolf_fur.png",
-	groups = {flammable = 2, leather = 1},
+	groups = {flammable = 2},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "mobs:leather 6",
+	recipe = {"nssm:white_wolf_fur", "farming:cutting_board"},
+	replacements = {{"farming:cutting_board", "farming:cutting_board"}},
 })
 
 --[[

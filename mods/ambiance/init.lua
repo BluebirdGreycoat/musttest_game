@@ -62,17 +62,17 @@ ambiance.globalstep = function(dtime)
 							-- Note: player's underwater status is modified by the scuba code.
 							local underwater = ambiance.players[name].underwater
 							if underwater == nil then
-								local nospawn = false
+								local spawnsound = true
 
 								-- If have perlin object, then check if sound can spawn in this location.
 								if v.perlin and v.noise_threshold then
 									local noise = v.perlin:get_3d(pos)
-									if noise < v.noise_threshold then
-										nospawn = true
+									if noise > v.noise_threshold then
+										spawnsound = false
 									end
 								end
 
-								if not nospawn then
+								if spawnsound then
 									-- Only play sound if sound can be played indoors or out-of-doors.
 									-- If sound doesn't care whether indoors or out-of-doors, then play it.
 

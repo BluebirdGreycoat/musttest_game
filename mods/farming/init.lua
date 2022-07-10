@@ -72,8 +72,9 @@ farming.register_plant("farming:cotton", {
 minetest.register_craft({
 	output = "wool:white",
 	recipe = {
-		{"farming:cotton", "farming:cotton"},
-		{"farming:cotton", "farming:cotton"},
+		{"farming:cloth", "farming:cloth", "farming:cloth"},
+		{"farming:cloth", "farming:cloth", "farming:cloth"},
+		{"farming:cloth", "farming:cloth", "farming:cloth"},
 	}
 })
 
@@ -100,4 +101,24 @@ minetest.register_craft({
 	recipe = {
 		{"farming:straw"},
 	}
+})
+
+--------------------------------------------------------------------------------
+minetest.register_craftitem("farming:cloth", {
+	description = "Cloth",
+	inventory_image = "farming_cloth.png",
+	groups = {flammable = 3, cloth = 1},
+})
+
+minetest.register_craft({
+	output = "farming:cloth",
+	recipe = {
+		{"farming:cotton", "farming:string", "farming:cotton"},
+	},
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "farming:cloth",
+	burntime = 3,
 })

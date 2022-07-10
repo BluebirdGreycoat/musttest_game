@@ -91,7 +91,8 @@ for _, row in ipairs(dyes) do
 	minetest.register_craft({
 		type = "shapeless",
 		output = item_name .. " 1",
-		recipe = {"group:flower,color_" .. name},
+		recipe = {"group:flower,color_" .. name, "farming:mortar_pestle"},
+		replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 	})
 end
 
@@ -99,7 +100,8 @@ end
 minetest.register_craft({
   type = "shapeless",
   output = "dye:black",
-  recipe = {"default:coal_lump", "default:clay_lump"},
+  recipe = {"default:coal_lump", "default:clay_lump", "farming:mortar_pestle"},
+	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
   
 -- Mix recipes.

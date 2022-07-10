@@ -10,8 +10,6 @@ gem_tools.modpath = minetest.get_modpath("gem_tools")
 
 -- This code is executed only once.
 if not gem_tools.registered then
-	local REINFORCED_HANDLE = "carbon_steel:ingot"
-
 	local function register_sword(material, result, reinforced)
 		minetest.register_craft({
 			output = result,

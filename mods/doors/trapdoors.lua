@@ -143,3 +143,38 @@ doors.register_trapdoor("trapdoor_glass", {
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:glass",
 })
+
+doors.register_trapdoor("trapdoor_glass_locked", {
+	description = "Locked Glass Trapdoor",
+	inventory_image = "default_glass.png",
+	wield_image = "default_glass.png",
+	tile_front = "default_glass.png",
+	tile_side = "default_glass.png",
+	protected = true,
+	sounds = default.node_sound_glass_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:glass",
+})
+
+doors.register_trapdoor("trapdoor_obsidian_glass", {
+	description = "Obsidian Glass Trapdoor",
+	inventory_image = "default_obsidian_glass.png",
+	wield_image = "default_obsidian_glass.png",
+	tile_front = "default_obsidian_glass.png",
+	tile_side = "default_obsidian_glass.png",
+	sounds = default.node_sound_glass_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:obsidian_glass",
+})
+
+doors.register_trapdoor("trapdoor_obsidian_glass_locked", {
+	description = "Locked Obsidian Glass Trapdoor",
+	inventory_image = "default_obsidian_glass.png",
+	wield_image = "default_obsidian_glass.png",
+	tile_front = "default_obsidian_glass.png",
+	tile_side = "default_obsidian_glass.png",
+	protected = true,
+	sounds = default.node_sound_glass_defaults(),
+	groups = utility.dig_groups("door_stone", {door = 1}),
+	recipeitem = "default:obsidian_glass",
+})

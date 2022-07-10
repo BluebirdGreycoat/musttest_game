@@ -18,7 +18,7 @@ function cavestuff.hotcobble.after_place_node(pos, placer, itemstack, pointed_th
 	if not heatdamage.is_immune(placer:get_player_name()) then
 		placer:set_hp(placer:get_hp() - 2)
 	end
-	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25})
+	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 	if pos.y < -20 then
 		-- Underground, placing hot cobble is the same as placing a lava source.
 		-- The action of placing it destabilizes it enough to become fully melted.
@@ -39,7 +39,7 @@ function cavestuff.hotcobble.after_dig_node(pos, oldnode, oldmetadata, digger)
 	if not heatdamage.is_immune(digger:get_player_name()) then
 		digger:set_hp(digger:get_hp() - 2)
 	end
-	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25})
+	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
 	-- Rockmelt always turns back to lava when dug if there is lava beside it.
 	-- This makes it possible to farm lava above -20.

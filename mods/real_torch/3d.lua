@@ -32,7 +32,7 @@ minetest.register_node("real_torch:torch", {
 
   on_flood = function(pos, oldnode, newnode)
     minetest.add_node(pos, {name="air"})
-    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
+    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1}, true)
     return true
   end,
 
@@ -75,7 +75,7 @@ minetest.register_node("real_torch:torch_wall", {
 	end,
   on_flood = function(pos, oldnode, newnode)
     minetest.add_node(pos, {name="air"})
-    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
+    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1}, true)
     return true
   end,
 })
@@ -109,7 +109,7 @@ minetest.register_node("real_torch:torch_ceiling", {
 	end,
   on_flood = function(pos, oldnode, newnode)
     minetest.add_node(pos, {name="air"})
-    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1})
+    minetest.sound_play("real_torch_extinguish", {pos=pos, max_hear_distance=16, gain=1}, true)
     return true
   end,
 })

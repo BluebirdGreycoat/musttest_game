@@ -9,7 +9,7 @@ function cdp.on_ignite(pos)
 		return
 	end
 
-	minetest.sound_play("tnt_ignite", {pos = pos})
+	minetest.sound_play("tnt_ignite", {pos = pos}, true)
 	timer:start(5)
 end
 

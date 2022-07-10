@@ -239,10 +239,10 @@ function _doors.door_toggle(pos, node, clicker)
 	if (os.time() - last_oiled) > math_random(0, 60*60*24*7) then
 		if state % 2 == 0 then
 			minetest.sound_play(def.door.sounds[1],
-				{pos = pos, gain = 0.3, max_hear_distance = 20})
+				{pos = pos, gain = 0.3, max_hear_distance = 20}, true)
 		else
 			minetest.sound_play(def.door.sounds[2],
-				{pos = pos, gain = 0.3, max_hear_distance = 20})
+				{pos = pos, gain = 0.3, max_hear_distance = 20}, true)
 		end
 	end
 
@@ -588,7 +588,7 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 	if string.sub(node.name, -5) == "_open" then
 		if play_sound then
 			minetest.sound_play(def.sound_close,
-				{pos = pos, gain = 0.3, max_hear_distance = 20})
+				{pos = pos, gain = 0.3, max_hear_distance = 20}, true)
 		end
 
 		minetest.swap_node(pos, {name = string.sub(node.name, 1,
@@ -596,7 +596,7 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 	else
 		if play_sound then
 			minetest.sound_play(def.sound_open,
-				{pos = pos, gain = 0.3, max_hear_distance = 20})
+				{pos = pos, gain = 0.3, max_hear_distance = 20}, true)
 		end
 
 		minetest.swap_node(pos, {name = node.name .. "_open",
@@ -968,7 +968,7 @@ function doors.register_fencegate(name, def)
 			local node_def = minetest.reg_ns_nodes[node.name]
 			minetest.swap_node(pos, {name = node_def.gate, param2 = node.param2})
 			minetest.sound_play(node_def.sound, {pos = pos, gain = 0.3,
-				max_hear_distance = 20})
+				max_hear_distance = 20}, true)
 			return itemstack
 		end,
 		selection_box = {

@@ -408,12 +408,12 @@ end
 function chat_core.alert_player_sound(to)
 	if chat_controls.beep_enabled(to) then
 		if afk_removal.is_afk(to) then
-			minetest.sound_play("chat_alert", {to_player = to, gain = 1})
+			minetest.sound_play("chat_alert", {to_player = to, gain = 1}, true)
 		else
 			if afk_removal.seconds_since_action(to) > 60*2 then
-				minetest.sound_play("chat_alert", {to_player = to, gain = 1})
+				minetest.sound_play("chat_alert", {to_player = to, gain = 1}, true)
 			else
-				minetest.sound_play("chat_alert", {to_player = to, gain = 0.4})
+				minetest.sound_play("chat_alert", {to_player = to, gain = 0.4}, true)
 			end
 		end
 		local pref = minetest.get_player_by_name(to)

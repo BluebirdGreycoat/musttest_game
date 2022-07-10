@@ -131,7 +131,7 @@ if not ambiance.tree_sounds_registered then
 												if gain < 0.0 then gain = 0.0 end
 												if gain > 2.0 then gain = 2.0 end
 												local md = ambiance.compute_gain(pdist, v.range)
-												minetest.sound_play(v.name, {to_player=pname, gain=gain*md})
+												minetest.sound_play(v.name, {to_player=pname, gain=gain*md}, true)
 											end
 										end
 									end

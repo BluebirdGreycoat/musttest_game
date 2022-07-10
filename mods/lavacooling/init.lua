@@ -83,7 +83,7 @@ local function do_lavasource_cooling(pos, node)
 		sfn.drop_node(pos)
 	end
 
-	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25})
+	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
 	-- Add flames above cooled lava.
 	pos.y = pos.y + 1
@@ -99,7 +99,7 @@ local function do_flowinglava_flowingwater_cooling(pos, node)
 		sfn.drop_node(pos)
 	end
 
-	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25})
+	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
 	-- Add flames above cooled lava.
 	pos.y = pos.y + 1
@@ -115,7 +115,7 @@ local function do_flowinglava_watersource_cooling(pos, node)
 		sfn.drop_node(pos)
 	end
 
-	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25})
+	play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
 	-- Add flames above cooled lava.
 	pos.y = pos.y + 1

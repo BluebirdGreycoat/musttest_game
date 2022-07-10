@@ -77,7 +77,7 @@ function flowerpot.on_rightclick(pos, node, clicker, itemstack, pointed_thing)
 		return itemstack
 	end
 
-	minetest.sound_play(def.sounds.place, {pos = pos})
+	minetest.sound_play(def.sounds.place, {pos = pos}, true)
 	minetest.swap_node(pos, {name = name})
 	itemstack:take_item()
 	return itemstack

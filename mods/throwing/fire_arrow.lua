@@ -81,7 +81,7 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
           minetest.add_node(fpos, {name="fire:basic_flame"})
         end
       end
-      minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.0, max_hear_distance=2*64})
+      minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.0, max_hear_distance=2*64}, true)
 			self.object:remove()
 		end
 		if math_floor(self.lastpos.x+0.5) ~= math_floor(pos.x+0.5) or

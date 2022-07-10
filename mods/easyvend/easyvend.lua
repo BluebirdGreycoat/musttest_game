@@ -1013,23 +1013,23 @@ easyvend.on_receive_fields = function(pos, formname, fields, sender)
 end
 
 easyvend.sound_error = function(playername) 
-	minetest.sound_play("easyvend_error", {to_player = playername, gain = 0.25})
+	minetest.sound_play("easyvend_error", {to_player = playername, gain = 0.25}, true)
 end
 
 easyvend.sound_setup = function(pos)
-	minetest.sound_play("easyvend_activate", {pos = pos, gain = 0.5, max_hear_distance = 12,})
+	minetest.sound_play("easyvend_activate", {pos = pos, gain = 0.5, max_hear_distance = 12}, true)
 end
 
 easyvend.sound_disable = function(pos)
-	minetest.sound_play("easyvend_disable", {pos = pos, gain = 0.9, max_hear_distance = 12,})
+	minetest.sound_play("easyvend_disable", {pos = pos, gain = 0.9, max_hear_distance = 12}, true)
 end
 
 easyvend.sound_vend = function(pos)
-	minetest.sound_play("easyvend_vend", {pos = pos, gain = 0.4, max_hear_distance = 5,})
+	minetest.sound_play("easyvend_vend", {pos = pos, gain = 0.4, max_hear_distance = 5}, true)
 end
 
 easyvend.sound_deposit = function(pos)
-	minetest.sound_play("easyvend_deposit", {pos = pos, gain = 0.4, max_hear_distance = 5,})
+	minetest.sound_play("easyvend_deposit", {pos = pos, gain = 0.4, max_hear_distance = 5}, true)
 end
 
 --[[ Tower building ]]

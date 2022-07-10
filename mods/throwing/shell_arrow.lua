@@ -62,7 +62,7 @@ end
 
 
 local function boom(pos)
-	minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.5, max_hear_distance=2*64})
+	minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.5, max_hear_distance=2*64}, true)
 	
   -- Don't destroy things.
   if minetest.get_node(pos).name == "air" then

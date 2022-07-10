@@ -194,7 +194,7 @@ local function add_effects(pos, radius)
 		texture = "tnt_smoke.png",
 	})
 
-	minetest.sound_play("tnt_explode", {pos = pos, gain = 0.1, max_hear_distance = 5})
+	minetest.sound_play("tnt_explode", {pos = pos, gain = 0.1, max_hear_distance = 5}, true)
 end
 
 

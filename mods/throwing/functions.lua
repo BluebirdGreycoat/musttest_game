@@ -72,9 +72,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	obj:setacceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
 	obj:setyaw(player:get_look_yaw()+math.pi)
 	if is_cross then
-		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos})
+		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos}, true)
 	else
-		minetest.sound_play("throwing_bow_sound", {pos=playerpos})
+		minetest.sound_play("throwing_bow_sound", {pos=playerpos}, true)
 	end
 	obj:get_luaentity().player = player
   obj:get_luaentity().player_name = player:get_player_name()

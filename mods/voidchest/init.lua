@@ -145,7 +145,7 @@ local VOIDCHEST_DEF = {
   
   -- After digging chest, sometimes, a nasty surprise.
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
-    minetest.sound_play("tnt_gunpowder_burning", {pos=pos, gain=2})
+    minetest.sound_play("tnt_gunpowder_burning", {pos=pos, gain=2}, true)
     if math_random(1, 10) == 1 then
       minetest.after(math_random(1, 5), function()
         tnt.boom(pos, {

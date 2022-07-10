@@ -295,7 +295,7 @@ minetest.register_tool("handholds:climbing_pick", {
 			itemstack:add_wear(256)
 			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
 				minetest.sound_play(wdef.sound.breaks,
-					{pos = pointed_thing.above, gain = 0.5})
+					{pos = pointed_thing.above, gain = 0.5}, true)
 			end
 			return itemstack
 		end

@@ -47,7 +47,7 @@ function trash.on_put(inv, to_list, to_index, stack, player)
 			gain=1.0,
 			pos=pos,
 			max_hear_distance=16,
-		})
+		}, true)
 
 		minetest.log("action", player:get_player_name() .. " trashes " ..
 			"\"" .. stack:get_name() .. " " .. stack:get_count() .. "\"" ..

@@ -2629,7 +2629,7 @@ local function do_states(self, dtime)
 							pos = pos,
 							gain = 1.0,
 							max_hear_distance = self.sounds.distance or 32
-						})
+						}, true)
 
 						entity_physics(pos, entity_damage_radius)
 						effect(pos, 32, "tnt_smoke.png", nil, nil, node_break_radius, 1, 0)
@@ -3107,12 +3107,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 			minetest.sound_play(weapon:get_definition().sounds[s], {
 				object = self.object, --hitter,
 				max_hear_distance = 20
-			})
+			}, true)
 		else
 			minetest.sound_play("default_punch", {
 				object = self.object, --hitter,
 				max_hear_distance = 20
-			})
+			}, true)
 		end
 
 		-- blood_particles

@@ -63,7 +63,7 @@ local function throwing_register_fireworks(color, desc)
 	
 	
 	local function boom(pos)
-		minetest.sound_play("throwing_firework_boom", {pos=pos, gain=1, max_hear_distance=2*64})
+		minetest.sound_play("throwing_firework_boom", {pos=pos, gain=1, max_hear_distance=2*64}, true)
 		if minetest.get_node(pos).name == 'air' or minetest.get_node(pos).name == 'throwing:firework_trail' then
 			minetest.add_node(pos, {name="throwing:firework_boom"})
 			minetest.get_node_timer(pos):start(0.2)

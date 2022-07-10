@@ -37,7 +37,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 	    --warn players bellow
             local pos = self.object:getpos();
             pos.y = pos.y - 10;
-            minetest.sound_play("rolling_test", {pos=pos, gain=1.0, max_hear_distance=20});
+            minetest.sound_play("rolling_test", {pos=pos, gain=1.0, max_hear_distance=20}, true);
             self.bomb_inertion = 0;
         end
         --bounce around, inertion slowly fades
@@ -84,7 +84,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 		--[[
 		pos = vector_round(pos);
 
-		minetest.sound_play("tnt_explode", {pos=pos, gain=1.5, max_hear_distance=30});
+		minetest.sound_play("tnt_explode", {pos=pos, gain=1.5, max_hear_distance=30}, true);
 		entity_physics(pos, 4);
 		add_effects(pos, 2);
 
@@ -115,7 +115,7 @@ minetest.register_craftitem("cobble_bomb:cobblebomb", {
         --    return;
         --end
 		pos = vector.add( vector.add(pos, dir), {x=0, y=1, z=0})
-        minetest.sound_play("rolling_test", {pos=pos, gain=1.5, max_hear_distance=20});
+        minetest.sound_play("rolling_test", {pos=pos, gain=1.5, max_hear_distance=20}, true);
         local tmp_bomb = minetest.add_entity(pos, "cobble_bomb:cobblebomb");
         tmp_bomb:setvelocity( vector.add(vector.multiply(dir, 5), {x=0,y=2.5,z=0}) );
         itemstack:take_item();

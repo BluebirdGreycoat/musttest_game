@@ -231,7 +231,7 @@ minetest.register_abm({
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		minetest.remove_node(pos)
 		minetest.sound_play("fire_extinguish_flame",
-			{pos = pos, max_hear_distance = 16, gain = 0.25})
+			{pos = pos, max_hear_distance = 16, gain = 0.25}, true)
 	end,
 })
 

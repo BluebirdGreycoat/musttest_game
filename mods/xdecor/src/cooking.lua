@@ -30,7 +30,7 @@ function cauldron.boiling_construct(pos)
 	local spos = minetest.hash_node_position(pos)
 	sounds[spos] = minetest.sound_play("xdecor_boiling_water", {
 		pos=pos, max_hear_distance=5, gain=0.8, loop=true
-	})
+	}, true)
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext", "Cauldron (Active)\nDrop some foods inside to make a soup.")

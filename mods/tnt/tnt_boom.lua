@@ -526,7 +526,7 @@ end
 -- Not to be called externally.
 function tnt.boom_impl(pos, def)
 	if def.make_sound == nil or def.make_sound == true then
-		minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = 2*64})
+		minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = 2*64}, true)
 	end
 
 	-- Make sure TNT never somehow gets keyed to the admin!

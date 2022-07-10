@@ -9,7 +9,7 @@ function tnt.burn(pos)
 	local name = minetest.get_node(pos).name
 	local group = minetest.get_item_group(name, "tnt")
 	if group > 0 then
-		minetest.sound_play("tnt_ignite", {pos = pos})
+		minetest.sound_play("tnt_ignite", {pos = pos}, true)
 
 		-- Some nodes in group 'tnt' don't have a "_burning" variant.
 		local bnam = name .. "_burning"
@@ -164,7 +164,7 @@ minetest.register_node("tnt:gunpowder_burning", {
   end,
           
 	on_construct = function(pos)
-		minetest.sound_play("tnt_gunpowder_burning", {pos = pos, gain = 2})
+		minetest.sound_play("tnt_gunpowder_burning", {pos = pos, gain = 2}, true)
 		minetest.get_node_timer(pos):start(1)
 	end,
 })
@@ -287,7 +287,7 @@ function tnt.register_tnt(def)
     end,
     
 		on_construct = function(pos)
-			minetest.sound_play("tnt_ignite", {pos = pos})
+			minetest.sound_play("tnt_ignite", {pos = pos}, true)
 			minetest.get_node_timer(pos):start(5)
 			minetest.check_for_falling(pos)
 		end,

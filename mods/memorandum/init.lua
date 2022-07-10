@@ -655,7 +655,7 @@ function memorandum.check_explosive_runes(pname, pos, author, text)
 			ignore_on_blast = false,
 		}
 		local t = math_floor(text:len() / 10)
-		minetest.after((t / 2.0), function() minetest.sound_play("tnt_ignite", {pos = pos}) end)
+		minetest.after((t / 2.0), function() minetest.sound_play("tnt_ignite", {pos = pos}, true) end)
 		minetest.after(t, function() tnt.boom(p, d) end)
 
 		-- Indicates the memorandum should be removed.

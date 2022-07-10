@@ -147,7 +147,7 @@ if not diving_equipment.registered then
     recipe = {
       {"default:steel_ingot", "plastic:plastic_sheeting", "default:steel_ingot"},
       {"default:steel_ingot", "default:glass", "default:steel_ingot"},
-      {"", "vessels:steel_bottle", ""},
+      {"group:leather_padding", "vessels:steel_bottle", "group:leather_padding"},
     },
   })
 

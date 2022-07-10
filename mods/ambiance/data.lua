@@ -57,7 +57,7 @@ ambiance.tmpsounds = {
 
 		-- These parameters match the mapgen.
 		noise_params = {
-			flags = "defaults,absvalue",
+			flags = "defaults",
 			lacunarity = 2,
 			offset = 0,
 			scale = 1,
@@ -81,7 +81,7 @@ ambiance.tmpsounds = {
 
 		-- These parameters match the mapgen.
 		noise_params = {
-			flags = "defaults,absvalue",
+			flags = "defaults",
 			lacunarity = 2,
 			offset = 0,
 			scale = 1,
@@ -105,7 +105,7 @@ ambiance.tmpsounds = {
 
 		-- These parameters match the mapgen.
 		noise_params = {
-			flags = "defaults,absvalue",
+			flags = "defaults",
 			lacunarity = 2,
 			offset = 0,
 			scale = 1,

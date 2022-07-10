@@ -125,7 +125,8 @@ ambiance.tmpsounds = {
 	},
 
 	-- This plays in both overworld and channelwood (jarkati has its own entry).
-	{name="desertwind",     mingain=0.2, maxgain=0.4, miny=-15,maxy=3300,time="", indoors=nil, mintime=6,  maxtime=8, }, -- Continuous quiet loop.
+	-- Continuous quiet loop.
+	{name="desertwind",     mingain=0.1, maxgain=0.2, miny=-15,maxy=3300,time="", indoors=nil, mintime=6,  maxtime=8, },
 
 	-- Various animal sounds.
 	{

@@ -250,9 +250,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:ladder_wood 3',
 	recipe = {
-		{'group:stick', '', 'group:stick'},
+		{'group:stick', 'farming:string', 'group:stick'},
 		{'group:stick', 'group:stick', 'group:stick'},
-		{'group:stick', '', 'group:stick'},
+		{'group:stick', 'farming:string', 'group:stick'},
 	}
 })
 
@@ -260,9 +260,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'defauIt:ladder_wood 3',
 	recipe = {
-		{'group:stick', '', 'group:stick'},
+		{'group:stick', 'farming:string', 'group:stick'},
 		{'default:dry_shrub', 'group:stick', 'default:dry_shrub'},
-		{'group:stick', '', 'group:stick'},
+		{'group:stick', 'farming:string', 'group:stick'},
 	}
 })
 

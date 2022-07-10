@@ -250,8 +250,8 @@ minetest.register_craft({
 	output = 'default:pick_diamond',
 	recipe = {
 		{'default:diamond', 'default:diamond', 'default:diamond'},
-		{'', 'group:stick', ''},
-		{'', 'group:stick', ''},
+		{'', 'farming:string', ''},
+		{'', 'default:pick_steel', ''},
 	}
 })
 
@@ -304,8 +304,8 @@ minetest.register_craft({
 	output = 'default:shovel_diamond',
 	recipe = {
 		{'default:diamond'},
-		{'group:stick'},
-		{'group:stick'},
+		{'farming:string'},
+		{'default:shovel_steel'},
 	}
 })
 
@@ -358,8 +358,8 @@ minetest.register_craft({
 	output = 'default:axe_diamond',
 	recipe = {
 		{'default:diamond', 'default:diamond'},
-		{'default:diamond', 'group:stick'},
-		{'', 'group:stick'},
+		{'default:diamond', 'farming:string'},
+		{'', 'default:axe_steel'},
 	}
 })
 
@@ -412,8 +412,8 @@ minetest.register_craft({
 	output = 'default:axe_diamond',
 	recipe = {
 		{'default:diamond', 'default:diamond'},
-		{'group:stick', 'default:diamond'},
-		{'group:stick', ''},
+		{'farming:string', 'default:diamond'},
+		{'default:axe_steel', ''},
 	}
 })
 
@@ -465,8 +465,8 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:sword_diamond',
 	recipe = {
-		{'default:diamond'},
-		{'default:diamond'},
-		{'default:sword_steel'},
+		{'', 'default:diamond', ''},
+		{'farming:string', 'default:diamond', 'farming:string'},
+		{'', 'default:sword_steel', ''},
 	}
 })

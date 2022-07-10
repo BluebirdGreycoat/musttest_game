@@ -18,16 +18,16 @@ if not gem_tools.registered then
 			recipe = {
 				{material},
 				{material},
-				{'default:stick'},
+				{'default:sword_steel'},
 			}
 		})
 
 		minetest.register_craft({
 			output = reinforced,
 			recipe = {
-				{material},
-				{material},
-				{REINFORCED_HANDLE},
+				{'', material, ''},
+				{'farming:string', material, 'farming:string'},
+				{'', 'titanium:sword', ''},
 			}
 		})
 	end
@@ -37,8 +37,8 @@ if not gem_tools.registered then
 			output = result,
 			recipe = {
 				{material, material, material},
-				{'', 'default:stick', ''},
-				{'', 'default:stick', ''},
+				{'', 'farming:string', ''},
+				{'', 'default:pick_steel', ''},
 			}
 		})
 
@@ -46,8 +46,8 @@ if not gem_tools.registered then
 			output = reinforced,
 			recipe = {
 				{material, material, material},
-				{'', REINFORCED_HANDLE, ''},
-				{'', REINFORCED_HANDLE, ''},
+				{'', 'farming:string', ''},
+				{'', 'titanium:pick', ''},
 			}
 		})
 	end
@@ -57,8 +57,8 @@ if not gem_tools.registered then
 			output = result,
 			recipe = {
 				{material, material, ''},
-				{material, 'default:stick', ''},
-				{'', 'default:stick', ''},
+				{material, 'farming:string', ''},
+				{'', 'default:axe_steel', ''},
 			}
 		})
 
@@ -66,8 +66,8 @@ if not gem_tools.registered then
 			output = result,
 			recipe = {
 				{'', material, material},
-				{'', 'default:stick', material},
-				{'', 'default:stick', ''},
+				{'', 'farming:string', material},
+				{'', 'default:axe_steel', ''},
 			}
 		})
 
@@ -75,8 +75,8 @@ if not gem_tools.registered then
 			output = reinforced,
 			recipe = {
 				{material, material, ''},
-				{material, REINFORCED_HANDLE, ''},
-				{'', REINFORCED_HANDLE, ''},
+				{material, 'farming:string', ''},
+				{'', 'titanium:axe', ''},
 			}
 		})
 
@@ -84,8 +84,8 @@ if not gem_tools.registered then
 			output = reinforced,
 			recipe = {
 				{'', material, material},
-				{'', REINFORCED_HANDLE, material},
-				{'', REINFORCED_HANDLE, ''},
+				{'', 'farming:string', material},
+				{'', 'titanium:axe', ''},
 			}
 		})
 	end
@@ -95,8 +95,8 @@ if not gem_tools.registered then
 			output = result,
 			recipe = {
 				{material},
-				{'default:stick'},
-				{'default:stick'},
+				{'farming:string'},
+				{'default:shovel_steel'},
 			}
 		})
 
@@ -104,8 +104,8 @@ if not gem_tools.registered then
 			output = reinforced,
 			recipe = {
 				{material},
-				{REINFORCED_HANDLE},
-				{REINFORCED_HANDLE},
+				{'farming:string'},
+				{'titanium:shovel'},
 			}
 		})
 	end

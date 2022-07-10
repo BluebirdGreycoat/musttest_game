@@ -467,6 +467,6 @@ minetest.register_craft({
 	recipe = {
 		{'default:diamond'},
 		{'default:diamond'},
-		{'group:stick'},
+		{'default:sword_steel'},
 	}
 })

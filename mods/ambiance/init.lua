@@ -67,6 +67,9 @@ ambiance.globalstep = function(dtime)
 								-- If have perlin object, then check if sound can spawn in this location.
 								if v.perlin and v.noise_threshold then
 									local noise = v.perlin:get_3d(pos)
+									if v.absvalue then
+										noise = math.abs(noise)
+									end
 									if noise < v.noise_threshold then
 										spawnsound = false
 									end

@@ -74,6 +74,7 @@ ambiance.tmpsounds = {
    -- So we need to get the engine to calculate it against the world seed,
    -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
+   absvalue = true,
 	},
 
 	{
@@ -98,6 +99,7 @@ ambiance.tmpsounds = {
    -- So we need to get the engine to calculate it against the world seed,
    -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
+   absvalue = true,
 	},
 
 	{
@@ -122,6 +124,7 @@ ambiance.tmpsounds = {
    -- So we need to get the engine to calculate it against the world seed,
    -- in order to ensure we use the same final seed the engine uses.
    include_world_seed = true,
+   absvalue = true,
 	},
 
 	-- This plays in both overworld and channelwood (jarkati has its own entry).

@@ -16,9 +16,9 @@ if not gem_tools.registered then
 		minetest.register_craft({
 			output = result,
 			recipe = {
-				{material},
+				{'', material, ''},
 				{'farming:string', material, 'farming:string'},
-				{'default:sword_steel'},
+				{'', 'default:sword_steel', ''},
 			}
 		})
 

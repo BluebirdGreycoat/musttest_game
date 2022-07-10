@@ -301,14 +301,14 @@ armor.get_valid_player = function(self, player, msg)
 		minetest.log("error", "3d_armor: Player reference is nil "..msg)
 		return
 	end
-	local name = player:get_player_name()
-	if not name then
+	local pname = player:get_player_name()
+	if not pname then
 		minetest.log("error", "3d_armor: Player name is nil "..msg)
 		return
 	end
 	local pos = player:getpos()
 	local player_inv = player:get_inventory()
-	local armor_inv = minetest.get_inventory({type="detached", name=name.."_armor"})
+	local armor_inv = minetest.get_inventory({type="detached", name=pname.."_armor"})
 	if not pos then
 		minetest.log("error", "3d_armor: Player position is nil "..msg)
 		return
@@ -319,7 +319,7 @@ armor.get_valid_player = function(self, player, msg)
 		minetest.log("error", "3d_armor: Detached armor inventory is nil "..msg)
 		return
 	end
-	return name, player_inv, armor_inv, pos
+	return pname, player_inv, armor_inv, pos
 end
 
 -- Register Player Model
@@ -527,8 +527,13 @@ if ARMOR_DROP == true or ARMOR_DESTROY == true then
 end
 
 minetest.register_on_player_hpchange(function(player, hp_change)
-	local name, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
-	if name and hp_change < 0 then
+	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
+	if pname and hp_change < 0 then
+
+		-- Admin does not take damage.
+		if gdac.player_is_admin(player) then
+			return 0
+		end
 
 		-- used for insta kill tools/commands like /kill (doesnt damage armor)
 		if hp_change < -100 then
@@ -538,6 +543,7 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 		local heal_max = 0
 		local state = 0
 		local items = 0
+
 		for i=1, 6 do
 			local stack = player_inv:get_stack("armor", i)
 			if stack:get_count() > 0 then
@@ -552,7 +558,7 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 				if stack:get_count() == 0 then
 					local desc = minetest.registered_items[item].description
 					if desc then
-						minetest.chat_send_player(name, "# Server: Your " .. desc .. " got destroyed!")
+						minetest.chat_send_player(pname, "# Server: Your " .. desc .. " got destroyed!")
 						ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 					end
 					armor:set_player_armor(player)
@@ -561,14 +567,18 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 				heal_max = heal_max + heal
 			end
 		end
-		armor.def[name].state = state
-		armor.def[name].count = items
+
+		armor.def[pname].state = state
+		armor.def[pname].count = items
 		heal_max = heal_max * ARMOR_HEAL_MULTIPLIER
+
 		if heal_max > math_random(100) then
 			hp_change = 0
 		end
+
 		armor:update_armor(player)
 	end
+
 	return hp_change
 end, true)
 

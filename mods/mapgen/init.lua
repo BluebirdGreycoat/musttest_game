@@ -98,13 +98,13 @@ if not mapgen.files_registered then
 	local mp = mapgen.modpath
 
 	-- These files are reloadable. Their functions can be changed at runtime.
-	reload_or_dofile("mapgen:shrubs",	    mp .. "/shrubs.lua")
-	reload_or_dofile("mapgen:papyrus",		mp .. "/papyrus.lua")
-	reload_or_dofile("mapgen:grass",		mp .. "/grass.lua")
+	reload_or_dofile("mapgen:shrubs", mp .. "/shrubs.lua")
+	reload_or_dofile("mapgen:papyrus", mp .. "/papyrus.lua")
+	reload_or_dofile("mapgen:grass", mp .. "/grass.lua")
 
 	if minetest.get_modpath("flowers") then
-			reload_or_dofile("mapgen:flowers",		mp .. "/flowers.lua")
-			reload_or_dofile("mapgen:mushrooms",	mp .. "/mushrooms.lua")
+		reload_or_dofile("mapgen:flowers", mp .. "/flowers.lua")
+		reload_or_dofile("mapgen:mushrooms", mp .. "/mushrooms.lua")
 	end
 
 	-- Ore and biome registration.

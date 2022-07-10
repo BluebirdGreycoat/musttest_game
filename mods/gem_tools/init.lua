@@ -17,7 +17,7 @@ if not gem_tools.registered then
 			output = result,
 			recipe = {
 				{material},
-				{material},
+				{'farming:string', material, 'farming:string'},
 				{'default:sword_steel'},
 			}
 		})

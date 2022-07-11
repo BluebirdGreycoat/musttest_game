@@ -27,47 +27,49 @@ minetest.register_craft( {
 
 -- Helper function to reduce code duplication.
 local register_metal_chest = function(ingot, chestpublic, chestlocked)
-    minetest.register_craft({
-        output = chestpublic,
-        recipe = {
-            {ingot,    ingot,                           ingot},
-            {ingot,    "morechests:woodchest_public",   ingot},
-            {ingot,    ingot,                           ingot},
-        }
-    })
+	local hinge = "techcrafts:hinge"
 
-    minetest.register_craft({
-        output = chestpublic,
-        recipe = {
-            {ingot,    ingot,                   ingot},
-            {ingot,    "chests:chest_public",   ingot},
-            {ingot,    ingot,                   ingot},
-        }
-    })
+	minetest.register_craft({
+		output = chestpublic,
+		recipe = {
+			{ingot,    ingot,                           ingot},
+			{ingot,    "morechests:woodchest_public",   hinge},
+			{ingot,    ingot,                           ingot},
+		}
+	})
 
-    minetest.register_craft({
-        output = chestlocked,
-        recipe = {
-            {ingot,    ingot,                           ingot},
-            {ingot,    "morechests:woodchest_locked",   ingot},
-            {ingot,    ingot,                           ingot},
-        }
-    })
+	minetest.register_craft({
+		output = chestpublic,
+		recipe = {
+			{ingot,    ingot,                   ingot},
+			{ingot,    "chests:chest_public",   hinge},
+			{ingot,    ingot,                   ingot},
+		}
+	})
 
-    minetest.register_craft({
-        output = chestlocked,
-        recipe = {
-            {ingot,    ingot,                   ingot},
-            {ingot,    "chests:chest_locked",   ingot},
-            {ingot,    ingot,                   ingot},
-        }
-    })
+	minetest.register_craft({
+		output = chestlocked,
+		recipe = {
+			{ingot,    ingot,                           ingot},
+			{ingot,    "morechests:woodchest_locked",   hinge},
+			{ingot,    ingot,                           ingot},
+		}
+	})
 
-    minetest.register_craft( {
-        type = "shapeless",
-        output = chestlocked,
-        recipe = {chestpublic, "default:padlock"},
-    })
+	minetest.register_craft({
+		output = chestlocked,
+		recipe = {
+			{ingot,    ingot,                   ingot},
+			{ingot,    "chests:chest_locked",   hinge},
+			{ingot,    ingot,                   ingot},
+		}
+	})
+
+	minetest.register_craft( {
+		type = "shapeless",
+		output = chestlocked,
+		recipe = {chestpublic, "default:padlock"},
+	})
 end
 
 

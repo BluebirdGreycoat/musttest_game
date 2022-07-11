@@ -30,7 +30,7 @@ minetest.register_node("griefer:grieferstone", {
 minetest.register_craft({
 	output = 'griefer:grieferstone',
 	recipe = {
-		{'default:obsidian', 'starpearl:pearl', 'default:obsidian'},
+		{'default:obsidian', 'default:obsidian', 'default:obsidian'},
 		{'default:obsidian', 'default:goldblock', 'default:obsidian'},
 		{'default:obsidian', 'default:obsidian', 'default:obsidian'},
 	}

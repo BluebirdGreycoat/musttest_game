@@ -531,6 +531,7 @@ minetest.register_node("circular_saw:circular_saw",  {
   sounds = default.node_sound_wood_defaults(),
   on_construct = circular_saw.on_construct,
   can_dig = circular_saw.can_dig,
+	stack_max = 1,
 
   -- Set the owner of this circular saw.
   after_place_node = function(pos, placer)

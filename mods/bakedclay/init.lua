@@ -31,6 +31,15 @@ do
 		groups = utility.dig_groups("hardclay", {bakedclay = 1}),
 		sounds = default.node_sound_stone_defaults(),
 	})
+
+	stairs.register_stair_and_slab(
+		"bakedclay_".. v[1],
+		"bakedclay:".. v[1],
+		utility.dig_groups("hardclay"),
+		{"baked_clay_" .. v[1] .. ".png"},
+		v[2] .. " Baked Clay",
+		default.node_sound_stone_defaults()
+	)
 end
 
 for _, clay in ipairs(clay) do
@@ -96,6 +105,15 @@ for k, v in ipairs(clay) do
 		recipe = "bakedclay:" .. v[1],
 		cooktime = 10,
 	})
+
+	stairs.register_stair_and_slab(
+		"bakedclay_terracotta_".. v[1],
+		"bakedclay:terracotta_".. v[1],
+		utility.dig_groups("hardclay"),
+		{"baked_clay_terracotta_" .. v[1] .. ".png"},
+		v[2] .. " Baked Clay",
+		default.node_sound_stone_defaults()
+	)
 end
 
 -- Need to handle "light_blue" specifically because not present in clay list.
@@ -125,6 +143,15 @@ do
 		recipe = "bakedclay:terracotta_cyan",
 		cooktime = 10,
 	})
+
+	stairs.register_stair_and_slab(
+		"bakedclay_terracotta_".. v[1],
+		"bakedclay:terracotta_".. v[1],
+		utility.dig_groups("hardclay"),
+		{"baked_clay_terracotta_" .. v[1] .. ".png"},
+		v[2] .. " Baked Clay",
+		default.node_sound_stone_defaults()
+	)
 end
 
 -- cook clay block into natural baked clay

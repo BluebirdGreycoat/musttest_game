@@ -1,14 +1,14 @@
 
 minetest.register_craftitem("techcrafts:hinge", {
-  description = "Hinge And Pin",
+  description = "Iron Hinge And Pin",
   inventory_image = "technic_hinge.png",
 })
 
 minetest.register_craft({
-  output = 'techcrafts:hinge 4',
+  output = 'techcrafts:hinge 2',
   recipe = {
-    {'default:steel_ingot', 'moreores:tin_ingot', 'default:steel_ingot'},
-    {'default:steel_ingot', 'moreores:tin_ingot', 'default:steel_ingot'},
+    {'default:steel_ingot', 'darkage:iron_stick', ''},
+    {'', '', 'default:steel_ingot'},
   }
 })
 

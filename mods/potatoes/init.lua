@@ -58,7 +58,7 @@ minetest.register_craftitem("potatoes:baked_potato", {
 
 minetest.register_craft({
 	type = "cooking",
-	cooktime = 10,
+	cooktime = 7,
 	output = "potatoes:baked_potato",
 	recipe = "potatoes:potato"
 })

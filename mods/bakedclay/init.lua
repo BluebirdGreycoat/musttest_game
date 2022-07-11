@@ -1,6 +1,6 @@
 
 -- Baked Clay by TenPlus1
--- Modified for _Must Test_ server by MustTest
+-- Modified for "Must Test" server by MustTest
 
 -- Note: must match the colors defined by the 'dye' mod.
 local clay = {
@@ -21,6 +21,18 @@ local clay = {
 	{"dark_green", "Dark Green"},
 }
 
+-- Register "natural" baked clay.
+do
+	local v = {"natural", "Natural"}
+
+	minetest.register_node("bakedclay:" .. v[1], {
+		description = v[2] .. " Baked Clay",
+		tiles = {"baked_clay_" .. v[1] ..".png"},
+		groups = utility.dig_groups("hardclay", {bakedclay = 1}),
+		sounds = default.node_sound_stone_defaults(),
+	})
+end
+
 for _, clay in ipairs(clay) do
 
 	-- node definition
@@ -32,15 +44,19 @@ for _, clay in ipairs(clay) do
 		sounds = default.node_sound_stone_defaults(),
 	})
 
-	-- craft from dye and white baked clay
+	-- craft from dye and natural baked clay
 
 	minetest.register_craft({
-		output = "bakedclay:" .. clay[1] .. " 8",
-		recipe = {
-			{"bakedclay:white", "bakedclay:white", "bakedclay:white"},
-			{"bakedclay:white", "dye:" .. clay[1], "bakedclay:white"},
-			{"bakedclay:white", "bakedclay:white", "bakedclay:white"},
-		},
+		type = "shapeless",
+		output = "bakedclay:" .. clay[1],
+		recipe = {"bakedclay:natural", "dye:" .. clay[1]},
+	})
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "bakedclay:natural",
+		recipe = "bakedclay:" .. clay[1],
+		cooktime = 10,
 	})
 
 	-- register stair and slab
@@ -54,20 +70,70 @@ for _, clay in ipairs(clay) do
 	)
 end
 
--- cook clay block into white baked clay
+-- Terracotta blocks (textures by D3monPixel, thanks for use :)
+for k, v in ipairs(clay) do
+	local texture = "baked_clay_terracotta_" .. v[1] ..".png"
+
+	minetest.register_node("bakedclay:terracotta_" .. v[1], {
+		description = v[2] .. " Glazed Terracotta",
+		tiles = {
+			texture .. "",
+			texture .. "",
+			texture .. "^[transformR180",
+			texture .. "",
+			texture .. "^[transformR270",
+			texture .. "^[transformR90",
+		},
+		paramtype2 = "facedir",
+		groups = utility.dig_groups("hardclay", {terracotta = 1}),
+		sounds = default.node_sound_stone_defaults(),
+		on_place = minetest.rotate_node,
+	})
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "bakedclay:terracotta_" .. v[1],
+		recipe = "bakedclay:" .. v[1],
+		cooktime = 10,
+	})
+end
+
+-- Need to handle "light_blue" specifically because not present in clay list.
+do
+	local v = {"light_blue", "Light Blue"}
+	local texture = "baked_clay_terracotta_" .. v[1] ..".png"
+
+	minetest.register_node("bakedclay:terracotta_" .. v[1], {
+		description = v[2] .. " Glazed Terracotta",
+		tiles = {
+			texture .. "",
+			texture .. "",
+			texture .. "^[transformR180",
+			texture .. "",
+			texture .. "^[transformR270",
+			texture .. "^[transformR90",
+		},
+		paramtype2 = "facedir",
+		groups = utility.dig_groups("hardclay", {terracotta = 1}),
+		sounds = default.node_sound_stone_defaults(),
+		on_place = minetest.rotate_node,
+	})
+
+	minetest.register_craft({
+		type = "cooking",
+		output = "bakedclay:terracotta_" .. v[1],
+		recipe = "bakedclay:terracotta_cyan",
+		cooktime = 10,
+	})
+end
+
+-- cook clay block into natural baked clay
 
 minetest.register_craft({
 	type = "cooking",
-	output = "bakedclay:white",
+	output = "bakedclay:natural",
 	recipe = "default:clay",
-})
-
--- any clay cook back into default clay
-
-minetest.register_craft({
-	type = "cooking",
-	output = "default:clay",
-	recipe = "group:bakedclay",
+	cooktime = 10,
 })
 
 -- register a few extra dye colour options
@@ -147,13 +213,25 @@ local function add_simple_flower(name, desc, box, f_groups)
 end
 
 local flowers = {
-	{"delphinium", "Blue Delphinium", {-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
-        {color_cyan = 1}},
-	{"thistle", "Thistle", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_magenta = 1}},
-	{"lazarus", "Lazarus Bell", {-0.15, -0.5, -0.15, 0.15, 0.2, 0.15}, {color_pink = 1}},
-	{"mannagrass", "Reed Mannagrass", {-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
-        {color_dark_green = 1}},
-	{"lockspur", "Lockspur", {-0.15, -0.5, -0.15, 0.15, 0.3, 0.15}, {color_cyan = 1}},
+	{"delphinium", "Blue Delphinium",
+	{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
+	{color_cyan = 1}},
+
+	{"thistle", "Thistle",
+	{-0.15, -0.5, -0.15, 0.15, 0.2, 0.15},
+	{color_magenta = 1}},
+
+	{"lazarus", "Lazarus Bell",
+	{-0.15, -0.5, -0.15, 0.15, 0.2, 0.15},
+	{color_pink = 1}},
+
+	{"mannagrass", "Reed Mannagrass",
+	{-5 / 16, -0.5, -5 / 16, 5 / 16, 5 / 16, 5 / 16},
+	{color_dark_green = 1}},
+
+	{"lockspur", "Lockspur",
+	{-0.15, -0.5, -0.15, 0.15, 0.3, 0.15},
+	{color_cyan = 1}},
 }
 
 for _,item in pairs(flowers) do

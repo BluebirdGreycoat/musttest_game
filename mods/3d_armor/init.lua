@@ -247,19 +247,26 @@ end
 --]]
 
 for k, v in pairs(ARMOR_MATERIALS) do
+	local padding = "group:leather_padding"
+	if minetest.get_item_group(v, "wood") ~= 0 then
+		padding = "farming:cotton"
+	elseif minetest.get_item_group(v, "gem") ~= 0 then
+		padding = "farming:cloth"
+	end
+
 	minetest.register_craft({
 		output = "3d_armor:helmet_"..k,
 		recipe = {
 			{v, v, v},
-			{v, "group:leather_padding", v},
-			{"group:leather_padding", "farming:string", "group:leather_padding"},
+			{v, padding, v},
+			{padding, "farming:string", padding},
 		},
 	})
 	minetest.register_craft({
 		output = "3d_armor:chestplate_"..k,
 		recipe = {
-			{v, "group:leather_padding", v},
-			{v, "group:leather_padding", v},
+			{v, padding, v},
+			{v, padding, v},
 			{v, v, v},
 		},
 	})
@@ -267,14 +274,14 @@ for k, v in pairs(ARMOR_MATERIALS) do
 		output = "3d_armor:leggings_"..k,
 		recipe = {
 			{v, "farming:string", v},
-			{v, "group:leather_padding", v},
-			{v, "group:leather_padding", v},
+			{v, padding, v},
+			{v, padding, v},
 		},
 	})
 	minetest.register_craft({
 		output = "3d_armor:boots_"..k,
 		recipe = {
-			{"group:leather_padding", "", "group:leather_padding"},
+			{padding, "", padding},
 			{v, "farming:string", v},
 			{v, "farming:string", v},
 		},

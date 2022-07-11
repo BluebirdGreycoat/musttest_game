@@ -487,6 +487,52 @@ end
 
 
 
+-- To be called inside node's 'after_destruct' callback.
+function obsidian_gateway.after_damage_gate(pos)
+	local minp = vector.add(pos, {x=-4, y=-4, z=-4})
+	local maxp = vector.add(pos, {x=4, y=4, z=4})
+	local names = {
+		"default:obsidian",
+		"cavestuff:dark_obsidian",
+		"cavestuff:glow_obsidian",
+		"griefer:grieferstone",
+	}
+
+	local points, counts = minetest.find_nodes_in_area(minp, maxp, names)
+	if #points == 0 then
+		return
+	end
+
+	-- A valid gate requires at least 2 oerkki stone.
+	-- But one might have been removed by the player.
+	if counts["griefer:grieferstone"] < 1 then
+		return
+	end
+
+	do
+		local o = counts["default:obsidian"] or 0
+		local d = counts["cavestuff:dark_obsidian"] or 0
+		local c = counts["cavestuff:glow_obsidian"] or 0
+
+		-- Not counting the node that was just removed (we should have been called
+		-- inside of 'after_destruct' for a given node), there should be 11 obsidian
+		-- remaining, otherwise cannot be a valid gate.
+		if (o + d + c) < 11 then
+			return
+		end
+	end
+
+	local idx = math.random(1, #points)
+	local tar = points[idx]
+	-- Using 'swap_node' to avoid triggering a callback cascade.
+	minetest.swap_node(tar, {name="default:lava_source"})
+	local meta = minetest.get_meta(tar)
+	meta:from_table(nil) -- Clear metadata.
+	ambiance.sound_play("nether_portal_usual", pos, 1.0, 64)
+end
+
+
+
 if not obsidian_gateway.run_once then
 	local c = "obsidian_gateway:core"
 	local f = obsidian_gateway.modpath .. "/init.lua"

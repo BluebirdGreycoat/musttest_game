@@ -164,7 +164,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "default:fence_junglewood 4",
 	recipe = {
-		{"moretrees:jungletree_wood", 'group:stick', "moretrees:jungletree_wood"},
+		{"techcrafts:hinge_wood", 'group:stick', "moretrees:jungletree_wood"},
 		{"moretrees:jungletree_wood", 'group:stick', "moretrees:jungletree_wood"},
 	}
 })
@@ -174,7 +174,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "doors:gate_junglewood_closed",
 	recipe = {
-		{"group:stick", "moretrees:jungletree_wood", "group:stick"},
+		{"techcrafts:hinge_wood", "moretrees:jungletree_wood", "group:stick"},
 		{"group:stick", "moretrees:jungletree_wood", "group:stick"}
 	}
 })

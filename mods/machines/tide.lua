@@ -483,7 +483,7 @@ if not tide.run_once then
 		output = 'tide:tide',
 		recipe = {
 			{'', 'cb2:mv', ''},
-			{'carbon_steel:ingot', 'carbon_steel:block', 'carbon_steel:ingot'},
+			{'carbon_steel:ingot', 'techcrafts:machine_casing', 'carbon_steel:ingot'},
 			{'', 'techcrafts:electric_motor', ''},
 		}
 	})

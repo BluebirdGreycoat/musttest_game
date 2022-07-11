@@ -112,7 +112,7 @@ for k, v in pairs(ARMOR_MATERIALS) do
 		output = "shields:shield_"..k,
 		recipe = {
 			{v, v, v},
-			{v, v, v},
+			{v, "techcrafts:composite_plate", v},
 			{"", v, ""},
 		},
 	})

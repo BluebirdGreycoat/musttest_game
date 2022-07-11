@@ -52,8 +52,8 @@ carts:register_rail("carts:brakerail", {
 minetest.register_craft({
 	output = "carts:brakerail 8",
 	recipe = {
-		{"default:steel_ingot", "default:coal_lump", "default:steel_ingot"},
+		{"default:steel_ingot", "rubber:rubber_fiber", "default:steel_ingot"},
 		{"default:steel_ingot", "group:stick", "default:steel_ingot"},
-		{"default:steel_ingot", "default:coal_lump", "default:steel_ingot"},
+		{"default:steel_ingot", "rubber:rubber_fiber", "default:steel_ingot"},
 	}
 })

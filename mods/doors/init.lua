@@ -1016,13 +1016,20 @@ function doors.register_fencegate(name, def)
 	minetest.register_node(":" .. name .. "_closed", fence_closed)
 	minetest.register_node(":" .. name .. "_open", fence_open)
 
-	minetest.register_craft({
-		output = name .. "_closed",
-		recipe = {
-			{"group:stick", def.material, "group:stick"},
-			{"group:stick", def.material, "techcrafts:hinge"}
-		}
-	})
+	do
+		local hinge = "techcrafts:hinge"
+		if minetest.get_item_group(def.material, "wood") ~= 0 then
+			hinge = "techcrafts:hinge_wood"
+		end
+
+		minetest.register_craft({
+			output = name .. "_closed",
+			recipe = {
+				{hinge, def.material, "group:stick"},
+				{"group:stick", def.material, "group:stick"},
+			}
+		})
+	end
 end
 
 dofile(doors.modpath .. "/doors.lua")

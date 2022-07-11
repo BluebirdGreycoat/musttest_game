@@ -3,7 +3,7 @@ minetest.register_craft({
     output = "morechests:woodchest_public",
     recipe = {
         {"group:wood_dark", "group:wood_dark", "group:wood_dark"},
-        {"group:wood_dark", "",                "group:wood_dark"},
+        {"group:wood_dark", "",                "techcrafts:hinge"},
         {"group:wood_dark", "group:wood_dark", "group:wood_dark"},
     }
 })
@@ -12,7 +12,7 @@ minetest.register_craft({
     output = "morechests:woodchest_locked",
     recipe = {
         {"group:wood_dark", "group:wood_dark",    "group:wood_dark"},
-        {"group:wood_dark", "default:padlock",    "group:wood_dark"},
+        {"group:wood_dark", "default:padlock",    "techcrafts:hinge"},
         {"group:wood_dark", "group:wood_dark",    "group:wood_dark"},
     }
 })

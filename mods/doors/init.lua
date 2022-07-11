@@ -755,7 +755,7 @@ function doors.register_trapdoor(name, def)
 				recipe = {
 					{'', 'default:padlock', ''},
 					{def.recipeitem, def.recipeitem, 'group:stick'},
-					{def.recipeitem, def.recipeitem, 'group:stick'},
+					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
 				}
 			})
 		else
@@ -763,7 +763,7 @@ function doors.register_trapdoor(name, def)
 				output = name,
 				recipe = {
 					{def.recipeitem, def.recipeitem, 'group:stick'},
-					{def.recipeitem, def.recipeitem, 'group:stick'},
+					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
 				}
 			})
 		end
@@ -929,7 +929,7 @@ function doors.register_trapdoor_climbable(name, def)
 				recipe = {
 					{'', 'default:padlock', ''},
 					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
-					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
+					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
 				}
 			})
 		else
@@ -937,7 +937,7 @@ function doors.register_trapdoor_climbable(name, def)
 				output = name,
 				recipe = {
 					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
-					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
+					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
 				}
 			})
 		end
@@ -1010,7 +1010,7 @@ function doors.register_fencegate(name, def)
 		output = name .. "_closed",
 		recipe = {
 			{"group:stick", def.material, "group:stick"},
-			{"group:stick", def.material, "group:stick"}
+			{"group:stick", def.material, "techcrafts:hinge"}
 		}
 	})
 end

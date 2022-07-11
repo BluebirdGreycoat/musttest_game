@@ -5,9 +5,9 @@ doors.register("door_wood", {
     inventory_image = "doors_item_wood.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
+        {"group:wood_light", "techcrafts:hinge"},
         {"group:wood_light", "group:stick"},
-        {"group:wood_light", "group:wood_light"},
-        {"group:wood_light", "group:wood_light"},
+        {"group:wood_light", "techcrafts:hinge"},
     }
 })
 
@@ -18,9 +18,9 @@ doors.register("door_wood_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "group:stick", ""},
-        {"group:wood_light", "group:wood_light", "default:padlock"},
-        {"group:wood_light", "group:wood_light", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
+        {"group:wood_light", "group:stick", "default:padlock"},
+        {"group:wood_light", "techcrafts:hinge", ""},
     }
 })
 
@@ -28,9 +28,9 @@ doors.register("door_wood_locked", {
 minetest.register_craft({
   output = "doors:door_wood",
   recipe = {
+    {"firetree:firewood", "techcrafts:hinge"},
     {"firetree:firewood", "group:stick"},
-    {"firetree:firewood", "firetree:firewood"},
-    {"firetree:firewood", "firetree:firewood"},
+    {"firetree:firewood", "techcrafts:hinge"},
   },
 })
 
@@ -38,9 +38,9 @@ minetest.register_craft({
 minetest.register_craft({
   output = "doors:door_wood_locked",
   recipe = {
-    {"firetree:firewood", "group:stick", ""},
-    {"firetree:firewood", "firetree:firewood", "default:padlock"},
-    {"firetree:firewood", "firetree:firewood", ""},
+    {"firetree:firewood", "techcrafts:hinge", ""},
+    {"firetree:firewood", "group:stick", "default:padlock"},
+    {"firetree:firewood", "techcrafts:hinge", ""},
   },
 })
 
@@ -54,9 +54,9 @@ doors.register("door_steel", {
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
     recipe = {
-        {"default:steel_ingot", "default:steel_ingot", ""},
+        {"default:steel_ingot", "techcrafts:hinge", ""},
         {"default:steel_ingot", "default:steel_ingot", "default:padlock"},
-        {"default:steel_ingot", "default:steel_ingot", ""},
+        {"default:steel_ingot", "techcrafts:hinge", ""},
     }
 })
 
@@ -69,9 +69,9 @@ doors.register("door_steel_unlocked", {
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
     recipe = {
+        {"default:steel_ingot", "techcrafts:hinge"},
         {"default:steel_ingot", "default:steel_ingot"},
-        {"default:steel_ingot", "default:steel_ingot"},
-        {"default:steel_ingot", "default:steel_ingot"},
+        {"default:steel_ingot", "techcrafts:hinge"},
     }
 })
 
@@ -84,9 +84,9 @@ doors.register("door_iron", {
 		sound_open = "doors_iron_door_open",
 		sound_close = "doors_iron_door_close",
 		recipe = {
+			{"default:iron_lump", "techcrafts:hinge"},
 			{"default:iron_lump", "default:iron_lump"},
-			{"default:iron_lump", "default:iron_lump"},
-			{"default:iron_lump", "default:iron_lump"},
+			{"default:iron_lump", "techcrafts:hinge"},
 		}
 })
 
@@ -100,9 +100,9 @@ doors.register("door_iron_locked", {
 		sound_open = "doors_iron_door_open",
 		sound_close = "doors_iron_door_close",
 		recipe = {
-			{"default:iron_lump", "default:iron_lump", ""},
+			{"default:iron_lump", "techcrafts:hinge", ""},
 			{"default:iron_lump", "default:iron_lump", "default:padlock"},
-			{"default:iron_lump", "default:iron_lump", ""},
+			{"default:iron_lump", "techcrafts:hinge", ""},
 		}
 })
 
@@ -115,9 +115,9 @@ doors.register("door_glass", {
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
 		recipe = {
+			{"default:glass", "techcrafts:hinge"},
 			{"default:glass", "default:glass"},
-			{"default:glass", "default:glass"},
-			{"default:glass", "default:glass"},
+			{"default:glass", "techcrafts:hinge"},
 		}
 })
 
@@ -131,9 +131,9 @@ doors.register("door_glass_locked", {
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
 		recipe = {
-			{"default:glass", "default:glass", ""},
+			{"default:glass", "techcrafts:hinge", ""},
 			{"default:glass", "default:glass", "default:padlock"},
-			{"default:glass", "default:glass", ""},
+			{"default:glass", "techcrafts:hinge", ""},
 		}
 })
 
@@ -146,9 +146,9 @@ doors.register("door_obsidian_glass", {
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
 		recipe = {
+			{"default:obsidian_glass", "techcrafts:hinge"},
 			{"default:obsidian_glass", "default:obsidian_glass"},
-			{"default:obsidian_glass", "default:obsidian_glass"},
-			{"default:obsidian_glass", "default:obsidian_glass"},
+			{"default:obsidian_glass", "techcrafts:hinge"},
 		},
 })
 
@@ -162,9 +162,9 @@ doors.register("door_obsidian_glass_locked", {
     sound_open = "doors_glass_door_open",
     sound_close = "doors_glass_door_close",
     recipe = {
-        {"default:obsidian_glass", "default:obsidian_glass", ""},
+        {"default:obsidian_glass", "techcrafts:hinge", ""},
         {"default:obsidian_glass", "default:obsidian_glass", "default:padlock"},
-        {"default:obsidian_glass", "default:obsidian_glass", ""},
+        {"default:obsidian_glass", "techcrafts:hinge", ""},
     },
 })
 
@@ -174,9 +174,9 @@ doors.register("door_wood_solid", {
     inventory_image = "doors_item_woodsolid.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
+        {"group:wood_light", "techcrafts:hinge"},
         {"group:wood_light", "group:wood_light"},
-        {"group:wood_light", "group:wood_light"},
-        {"group:wood_light", "group:wood_light"},
+        {"group:wood_light", "techcrafts:hinge"},
     },
 })
 
@@ -187,9 +187,9 @@ doors.register("door_wood_solid_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "group:wood_light", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
         {"group:wood_light", "group:wood_light", "default:padlock"},
-        {"group:wood_light", "group:wood_light", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
     },
 })
 
@@ -199,9 +199,9 @@ doors.register("door_steel_glass", {
     inventory_image = "doors_item_steelglass.png",
     groups = utility.dig_groups("door_metal"),
     recipe = {
-        {"default:steel_ingot", "default:glass"},
-        {"default:glass", "default:steel_ingot"},
-        {"default:steel_ingot", "default:glass"},
+        {"default:steel_ingot", "techcrafts:hinge"},
+        {"default:glass", "default:glass"},
+        {"default:steel_ingot", "techcrafts:hinge"},
     },
 })
 
@@ -212,9 +212,9 @@ doors.register("door_steel_glass_locked", {
     protected = true,
     groups = utility.dig_groups("door_metal"),
     recipe = {
-        {"default:steel_ingot", "default:glass", ""},
-        {"default:glass", "default:steel_ingot", "default:padlock"},
-        {"default:steel_ingot", "default:glass", ""},
+        {"default:steel_ingot", "techcrafts:hinge", ""},
+        {"default:glass", "default:glass", "default:padlock"},
+        {"default:steel_ingot", "techcrafts:hinge", ""},
     },
 })
 
@@ -224,9 +224,9 @@ doors.register("door_wood_glass", {
     inventory_image = "doors_item_woodglass.png",
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_dark", "default:glass"},
-        {"default:glass", "group:wood_dark"},
-        {"group:wood_dark", "default:glass"},
+        {"group:wood_dark", "techcrafts:hinge"},
+        {"default:glass", "default:glass"},
+        {"group:wood_dark", "techcrafts:hinge"},
     },
 })
 
@@ -237,9 +237,9 @@ doors.register("door_wood_glass_locked", {
     protected = true,
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_dark", "default:glass", ""},
-        {"default:glass", "group:wood_dark", "default:padlock"},
-        {"group:wood_dark", "default:glass", ""},
+        {"group:wood_dark", "techcrafts:hinge", ""},
+        {"default:glass", "default:glass", "default:padlock"},
+        {"group:wood_dark", "techcrafts:hinge", ""},
     },
 })
 
@@ -249,9 +249,9 @@ doors.register("door_lightwood_glass", {
     inventory_image = "doors_item_lightwoodglass.png",
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "default:glass"},
-        {"default:glass", "group:wood_light"},
-        {"group:wood_light", "default:glass"},
+        {"group:wood_light", "techcrafts:hinge"},
+        {"default:glass", "default:glass"},
+        {"group:wood_light", "techcrafts:hinge"},
     },
 })
 
@@ -262,9 +262,9 @@ doors.register("door_lightwood_glass_locked", {
     protected = true,
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "default:glass", ""},
-        {"default:glass", "group:wood_light", "default:padlock"},
-        {"group:wood_light", "default:glass", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
+        {"default:glass", "default:glass", "default:padlock"},
+        {"group:wood_light", "techcrafts:hinge", ""},
     },
 })
 
@@ -274,9 +274,9 @@ doors.register("door_fancy_ext1", {
     inventory_image = "doors_item_ext_fancy1.png",
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
+        {"group:wood_light", "techcrafts:hinge"},
         {"group:wood_light", "default:glass"},
-        {"group:wood_light", "default:glass"},
-        {"group:wood_light", "group:wood_light"},
+        {"group:wood_light", "techcrafts:hinge"},
     },
 })
 
@@ -287,9 +287,9 @@ doors.register("door_fancy_ext1_locked", {
 		protected = true,
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "default:glass", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
         {"group:wood_light", "default:glass", "default:padlock"},
-        {"group:wood_light", "group:wood_light", ""},
+        {"group:wood_light", "techcrafts:hinge", ""},
     },
 })
 
@@ -299,9 +299,9 @@ doors.register("door_fancy_ext2", {
     inventory_image = "doors_item_ext_fancy2.png",
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_dark", "default:glass"},
-        {"group:wood_dark", "brass:ingot"},
-        {"group:wood_dark", "group:wood_dark"},
+        {"group:wood_dark", "techcrafts:hinge"},
+        {"default:glass", "brass:ingot"},
+        {"group:wood_dark", "techcrafts:hinge"},
     },
 })
 
@@ -312,9 +312,9 @@ doors.register("door_fancy_ext2_locked", {
 		protected = true,
     groups = utility.dig_groups("door_woodglass", {flammable = 2}),
     recipe = {
-        {"group:wood_dark", "default:glass", ""},
-        {"group:wood_dark", "brass:ingot", "default:padlock"},
-        {"group:wood_dark", "group:wood_dark", ""},
+        {"group:wood_dark", "techcrafts:hinge", ""},
+        {"default:glass", "brass:ingot", "default:padlock"},
+        {"group:wood_dark", "techcrafts:hinge", ""},
     },
 })
 
@@ -324,9 +324,9 @@ doors.register("door_wood2", {
     inventory_image = "doors_item_wood2.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:tree_wood"},
+        {"group:stick", "techcrafts:hinge"},
         {"basictrees:tree_wood", "basictrees:tree_wood"},
-        {"basictrees:tree_wood", "basictrees:tree_wood"},
+        {"basictrees:tree_wood", "techcrafts:hinge"},
     }
 })
 
@@ -337,9 +337,9 @@ doors.register("door_wood2_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:tree_wood", ""},
+        {"group:stick", "techcrafts:hinge", ""},
         {"basictrees:tree_wood", "basictrees:tree_wood", "default:padlock"},
-        {"basictrees:tree_wood", "basictrees:tree_wood", ""},
+        {"basictrees:tree_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -352,9 +352,9 @@ doors.register("door_obsidian_glass2", {
 		sound_open = "doors_glass_door_open",
 		sound_close = "doors_glass_door_close",
 		recipe = {
+			{"default:obsidian_glass", "techcrafts:hinge"},
 			{"default:obsidian_shard", "default:obsidian_shard"},
-			{"default:obsidian_glass", "default:obsidian_glass"},
-			{"default:obsidian_glass", "default:obsidian_glass"},
+			{"default:obsidian_glass", "techcrafts:hinge"},
 		},
 })
 
@@ -368,9 +368,9 @@ doors.register("door_obsidian_glass2_locked", {
     sound_open = "doors_glass_door_open",
     sound_close = "doors_glass_door_close",
     recipe = {
-        {"default:obsidian_shard", "default:obsidian_shard", ""},
-        {"default:obsidian_glass", "default:obsidian_glass", "default:padlock"},
-        {"default:obsidian_glass", "default:obsidian_glass", ""},
+        {"default:obsidian_glass", "techcrafts:hinge", ""},
+        {"default:obsidian_shard", "default:obsidian_shard", "default:padlock"},
+        {"default:obsidian_glass", "techcrafts:hinge", ""},
     },
 })
 
@@ -383,9 +383,9 @@ doors.register("door_steel2", {
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
     recipe = {
+        {"cast_iron:ingot", "techcrafts:hinge"},
         {"cast_iron:ingot", "cast_iron:ingot"},
-        {"cast_iron:ingot", "cast_iron:ingot"},
-        {"cast_iron:ingot", "cast_iron:ingot"},
+        {"cast_iron:ingot", "techcrafts:hinge"},
     }
 })
 
@@ -399,9 +399,9 @@ doors.register("door_steel2_locked", {
     sound_open = "doors_steel_door_open",
     sound_close = "doors_steel_door_close",
     recipe = {
-        {"cast_iron:ingot", "cast_iron:ingot", ""},
+        {"cast_iron:ingot", "techcrafts:hinge", ""},
         {"cast_iron:ingot", "cast_iron:ingot", "default:padlock"},
-        {"cast_iron:ingot", "cast_iron:ingot", ""},
+        {"cast_iron:ingot", "techcrafts:hinge", ""},
     }
 })
 
@@ -411,9 +411,9 @@ doors.register("door_acacia", {
     inventory_image = "doors_item_acacia.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:acacia_wood"},
+        {"group:stick", "techcrafts:hinge"},
         {"basictrees:acacia_wood", "basictrees:acacia_wood"},
-        {"basictrees:acacia_wood", "basictrees:acacia_wood"},
+        {"basictrees:acacia_wood", "techcrafts:hinge"},
     }
 })
 
@@ -424,9 +424,9 @@ doors.register("door_acacia_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:acacia_wood", ""},
+        {"group:stick", "techcrafts:hinge", ""},
         {"basictrees:acacia_wood", "basictrees:acacia_wood", "default:padlock"},
-        {"basictrees:acacia_wood", "basictrees:acacia_wood", ""},
+        {"basictrees:acacia_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -436,9 +436,9 @@ doors.register("door_pine", {
     inventory_image = "doors_item_pine.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:pine_wood"},
+        {"group:stick", "techcrafts:hinge"},
         {"basictrees:pine_wood", "basictrees:pine_wood"},
-        {"basictrees:pine_wood", "basictrees:pine_wood"},
+        {"basictrees:pine_wood", "techcrafts:hinge"},
     }
 })
 
@@ -449,9 +449,9 @@ doors.register("door_pine_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:pine_wood", ""},
+        {"group:stick", "techcrafts:hinge", ""},
         {"basictrees:pine_wood", "basictrees:pine_wood", "default:padlock"},
-        {"basictrees:pine_wood", "basictrees:pine_wood", ""},
+        {"basictrees:pine_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -461,9 +461,9 @@ doors.register("door_jungle", {
     inventory_image = "doors_item_jungle.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:jungletree_wood"},
+        {"group:stick", "techcrafts:hinge"},
         {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+        {"basictrees:jungletree_wood", "techcrafts:hinge"},
     }
 })
 
@@ -474,9 +474,9 @@ doors.register("door_jungle_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:jungletree_wood", ""},
+        {"group:stick", "techcrafts:hinge", ""},
         {"basictrees:jungletree_wood", "basictrees:jungletree_wood", "default:padlock"},
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+        {"basictrees:jungletree_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -486,9 +486,9 @@ doors.register("door_aspen", {
     inventory_image = "doors_item_aspen.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:aspen_wood"},
+        {"group:stick", "techcrafts:hinge"},
         {"basictrees:aspen_wood", "basictrees:aspen_wood"},
-        {"basictrees:aspen_wood", "basictrees:aspen_wood"},
+        {"basictrees:aspen_wood", "techcrafts:hinge"},
     }
 })
 
@@ -499,9 +499,9 @@ doors.register("door_aspen_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "basictrees:aspen_wood", ""},
+        {"group:stick", "techcrafts:hinge", ""},
         {"basictrees:aspen_wood", "basictrees:aspen_wood", "default:padlock"},
-        {"basictrees:aspen_wood", "basictrees:aspen_wood", ""},
+        {"basictrees:aspen_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -511,9 +511,9 @@ doors.register("door_woodsteel", {
     inventory_image = "doors_item_woodsteel.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+        {"basictrees:jungletree_wood", "techcrafts:hinge"},
         {"default:steel_ingot", "default:steel_ingot"},
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
+        {"basictrees:jungletree_wood", "techcrafts:hinge"},
     }
 })
 
@@ -524,9 +524,9 @@ doors.register("door_woodsteel_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+        {"basictrees:jungletree_wood", "techcrafts:hinge", ""},
         {"default:steel_ingot", "default:steel_ingot", "default:padlock"},
-        {"basictrees:jungletree_wood", "basictrees:jungletree_wood", ""},
+        {"basictrees:jungletree_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -536,9 +536,9 @@ doors.register("door_wood3", {
     inventory_image = "doors_item_wood3.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
+        {"basictrees:tree_wood", "techcrafts:hinge"},
         {"group:stick", "group:stick"},
-        {"basictrees:tree_wood", "basictrees:tree_wood"},
-        {"basictrees:tree_wood", "basictrees:tree_wood"},
+        {"basictrees:tree_wood", "techcrafts:hinge"},
     }
 })
 
@@ -549,9 +549,9 @@ doors.register("door_wood3_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "group:stick", ""},
-        {"basictrees:tree_wood", "basictrees:tree_wood", "default:padlock"},
-        {"basictrees:tree_wood", "basictrees:tree_wood", ""},
+        {"basictrees:tree_wood", "techcrafts:hinge", ""},
+        {"group:stick", "group:stick", "default:padlock"},
+        {"basictrees:tree_wood", "techcrafts:hinge", ""},
     }
 })
 
@@ -559,13 +559,13 @@ doors.register("door_wood3_locked", {
 -- you only use it for camouflage.
 doors.register("door_desertstone", {
     tiles = {{ name = "doors_door_redstone.png", backface_culling = true }},
-    description = "Desert Stone Door",
+    description = "Desert Stone Slab Door (No Hinges)",
     inventory_image = "doors_item_redstone.png",
     groups = utility.dig_groups("door_stone"),
     recipe = {
+        {"default:desert_stone", "techcrafts:hinge"},
         {"default:desert_stone", "default:desert_stone"},
-        {"default:desert_stone", "default:desert_stone"},
-        {"default:desert_stone", "default:desert_stone"},
+        {"default:desert_stone", "techcrafts:hinge"},
     }
 })
 
@@ -575,9 +575,9 @@ doors.register("door_sandstone", {
     inventory_image = "doors_item_sandstone.png",
     groups = utility.dig_groups("door_stone"),
     recipe = {
+        {"default:sandstone", "techcrafts:hinge"},
         {"default:sandstone", "default:sandstone"},
-        {"default:sandstone", "default:sandstone"},
-        {"default:sandstone", "default:sandstone"},
+        {"default:sandstone", "techcrafts:hinge"},
     }
 })
 
@@ -588,8 +588,8 @@ doors.register("door_sandstone_locked", {
     groups = utility.dig_groups("door_stone"),
     protected = true,
     recipe = {
-        {"default:sandstone", "default:sandstone", ""},
+        {"default:sandstone", "techcrafts:hinge", ""},
         {"default:sandstone", "default:sandstone", "default:padlock"},
-        {"default:sandstone", "default:sandstone", ""},
+        {"default:sandstone", "techcrafts:hinge", ""},
     }
 })

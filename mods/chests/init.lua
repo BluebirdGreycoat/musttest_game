@@ -8,7 +8,7 @@ minetest.register_craft({
 	output = 'chests:chest_public_closed',
 	recipe = {
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
-		{'group:wood_light', '',                  'group:wood_light'},
+		{'group:wood_light', '',                  'techcrafts:hinge'},
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
 	}
 })
@@ -19,7 +19,7 @@ minetest.register_craft({
 	output = 'chests:chest_locked_closed',
 	recipe = {
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
-		{'group:wood_light', 'default:padlock',   'group:wood_light'},
+		{'group:wood_light', 'default:padlock',   'techcrafts:hinge'},
 		{'group:wood_light', 'group:wood_light',  'group:wood_light'},
 	}
 })

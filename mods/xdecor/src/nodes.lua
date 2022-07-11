@@ -301,16 +301,16 @@ local xdecor_doors = {
 	-- No locked version. This is intentional,
 	-- you only use it for camouflage.
 	stone = { recipe = {
+		{"default:stone", "techcrafts:hinge"},
 		{"default:stone", "default:stone"},
-		{"default:stone", "default:stone"},
-		{"default:stone", "default:stone"}}, groups=utility.dig_groups("door_stone") },
+		{"default:stone", "techcrafts:hinge"}}, groups=utility.dig_groups("door_stone") },
 
 	-- No locked version. This is intentional,
 	-- you only use it for camouflage.
 	redstone = { recipe = {
+		{"rackstone:rackstone", "techcrafts:hinge"},
 		{"rackstone:rackstone", "rackstone:rackstone"},
-		{"rackstone:rackstone", "rackstone:rackstone"},
-		{"rackstone:rackstone", "rackstone:rackstone"}}, groups=utility.dig_groups("door_stone") },
+		{"rackstone:rackstone", "techcrafts:hinge"}}, groups=utility.dig_groups("door_stone") },
 }
 
 for name, entry in pairs(xdecor_doors) do

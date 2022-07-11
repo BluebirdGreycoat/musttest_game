@@ -749,13 +749,18 @@ function doors.register_trapdoor(name, def)
 	minetest.register_node(name_closed, def_closed)
 
 	if def.recipeitem then
+		local hinge = "techcrafts:hinge"
+		if minetest.get_item_group(def.recipeitem, "wood") ~= 0 then
+			hinge = "techcrafts:hinge_wood"
+		end
+
 		if def.protected then
 			minetest.register_craft({
 				output = name,
 				recipe = {
 					{'', 'default:padlock', ''},
 					{def.recipeitem, def.recipeitem, 'group:stick'},
-					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
+					{def.recipeitem, def.recipeitem, hinge},
 				}
 			})
 		else
@@ -763,7 +768,7 @@ function doors.register_trapdoor(name, def)
 				output = name,
 				recipe = {
 					{def.recipeitem, def.recipeitem, 'group:stick'},
-					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
+					{def.recipeitem, def.recipeitem, hinge},
 				}
 			})
 		end
@@ -923,13 +928,18 @@ function doors.register_trapdoor_climbable(name, def)
 	minetest.register_node(name_closed, def_closed)
 
 	if def.recipeitem then
+		local hinge = "techcrafts:hinge"
+		if minetest.get_item_group(def.recipeitem, "wood") ~= 0 then
+			hinge = "techcrafts:hinge_wood"
+		end
+
 		if def.protected then
 			minetest.register_craft({
 				output = name,
 				recipe = {
 					{'', 'default:padlock', ''},
 					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
-					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
+					{def.recipeitem, def.recipeitem, hinge},
 				}
 			})
 		else
@@ -937,7 +947,7 @@ function doors.register_trapdoor_climbable(name, def)
 				output = name,
 				recipe = {
 					{def.recipeitem, def.recipeitem, 'default:ladder_wood'},
-					{def.recipeitem, def.recipeitem, 'techcrafts:hinge'},
+					{def.recipeitem, def.recipeitem, hinge},
 				}
 			})
 		end

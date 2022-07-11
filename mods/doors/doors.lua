@@ -5,9 +5,9 @@ doors.register("door_wood", {
     inventory_image = "doors_item_wood.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "techcrafts:hinge"},
+        {"group:wood_light", "techcrafts:hinge_wood"},
         {"group:wood_light", "group:stick"},
-        {"group:wood_light", "techcrafts:hinge"},
+        {"group:wood_light", "techcrafts:hinge_wood"},
     }
 })
 
@@ -18,9 +18,9 @@ doors.register("door_wood_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "techcrafts:hinge", ""},
+        {"group:wood_light", "techcrafts:hinge_wood", ""},
         {"group:wood_light", "group:stick", "default:padlock"},
-        {"group:wood_light", "techcrafts:hinge", ""},
+        {"group:wood_light", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -28,9 +28,9 @@ doors.register("door_wood_locked", {
 minetest.register_craft({
   output = "doors:door_wood",
   recipe = {
-    {"firetree:firewood", "techcrafts:hinge"},
+    {"firetree:firewood", "techcrafts:hinge_wood"},
     {"firetree:firewood", "group:stick"},
-    {"firetree:firewood", "techcrafts:hinge"},
+    {"firetree:firewood", "techcrafts:hinge_wood"},
   },
 })
 
@@ -38,9 +38,9 @@ minetest.register_craft({
 minetest.register_craft({
   output = "doors:door_wood_locked",
   recipe = {
-    {"firetree:firewood", "techcrafts:hinge", ""},
+    {"firetree:firewood", "techcrafts:hinge_wood", ""},
     {"firetree:firewood", "group:stick", "default:padlock"},
-    {"firetree:firewood", "techcrafts:hinge", ""},
+    {"firetree:firewood", "techcrafts:hinge_wood", ""},
   },
 })
 
@@ -174,9 +174,9 @@ doors.register("door_wood_solid", {
     inventory_image = "doors_item_woodsolid.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "techcrafts:hinge"},
+        {"group:wood_light", "techcrafts:hinge_wood"},
         {"group:wood_light", "group:wood_light"},
-        {"group:wood_light", "techcrafts:hinge"},
+        {"group:wood_light", "techcrafts:hinge_wood"},
     },
 })
 
@@ -187,9 +187,9 @@ doors.register("door_wood_solid_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:wood_light", "techcrafts:hinge", ""},
+        {"group:wood_light", "techcrafts:hinge_wood", ""},
         {"group:wood_light", "group:wood_light", "default:padlock"},
-        {"group:wood_light", "techcrafts:hinge", ""},
+        {"group:wood_light", "techcrafts:hinge_wood", ""},
     },
 })
 
@@ -324,9 +324,9 @@ doors.register("door_wood2", {
     inventory_image = "doors_item_wood2.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge"},
+        {"group:stick", "techcrafts:hinge_wood"},
         {"basictrees:tree_wood", "basictrees:tree_wood"},
-        {"basictrees:tree_wood", "techcrafts:hinge"},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -337,9 +337,9 @@ doors.register("door_wood2_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge", ""},
+        {"group:stick", "techcrafts:hinge_wood", ""},
         {"basictrees:tree_wood", "basictrees:tree_wood", "default:padlock"},
-        {"basictrees:tree_wood", "techcrafts:hinge", ""},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -411,9 +411,9 @@ doors.register("door_acacia", {
     inventory_image = "doors_item_acacia.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge"},
+        {"group:stick", "techcrafts:hinge_wood"},
         {"basictrees:acacia_wood", "basictrees:acacia_wood"},
-        {"basictrees:acacia_wood", "techcrafts:hinge"},
+        {"basictrees:acacia_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -424,9 +424,9 @@ doors.register("door_acacia_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge", ""},
+        {"group:stick", "techcrafts:hinge_wood", ""},
         {"basictrees:acacia_wood", "basictrees:acacia_wood", "default:padlock"},
-        {"basictrees:acacia_wood", "techcrafts:hinge", ""},
+        {"basictrees:acacia_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -436,9 +436,9 @@ doors.register("door_pine", {
     inventory_image = "doors_item_pine.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge"},
+        {"group:stick", "techcrafts:hinge_wood"},
         {"basictrees:pine_wood", "basictrees:pine_wood"},
-        {"basictrees:pine_wood", "techcrafts:hinge"},
+        {"basictrees:pine_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -449,9 +449,9 @@ doors.register("door_pine_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge", ""},
+        {"group:stick", "techcrafts:hinge_wood", ""},
         {"basictrees:pine_wood", "basictrees:pine_wood", "default:padlock"},
-        {"basictrees:pine_wood", "techcrafts:hinge", ""},
+        {"basictrees:pine_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -461,9 +461,9 @@ doors.register("door_jungle", {
     inventory_image = "doors_item_jungle.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge"},
+        {"group:stick", "techcrafts:hinge_wood"},
         {"basictrees:jungletree_wood", "basictrees:jungletree_wood"},
-        {"basictrees:jungletree_wood", "techcrafts:hinge"},
+        {"basictrees:jungletree_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -474,9 +474,9 @@ doors.register("door_jungle_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge", ""},
+        {"group:stick", "techcrafts:hinge_wood", ""},
         {"basictrees:jungletree_wood", "basictrees:jungletree_wood", "default:padlock"},
-        {"basictrees:jungletree_wood", "techcrafts:hinge", ""},
+        {"basictrees:jungletree_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -486,9 +486,9 @@ doors.register("door_aspen", {
     inventory_image = "doors_item_aspen.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge"},
+        {"group:stick", "techcrafts:hinge_wood"},
         {"basictrees:aspen_wood", "basictrees:aspen_wood"},
-        {"basictrees:aspen_wood", "techcrafts:hinge"},
+        {"basictrees:aspen_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -499,9 +499,9 @@ doors.register("door_aspen_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"group:stick", "techcrafts:hinge", ""},
+        {"group:stick", "techcrafts:hinge_wood", ""},
         {"basictrees:aspen_wood", "basictrees:aspen_wood", "default:padlock"},
-        {"basictrees:aspen_wood", "techcrafts:hinge", ""},
+        {"basictrees:aspen_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -536,9 +536,9 @@ doors.register("door_wood3", {
     inventory_image = "doors_item_wood3.png",
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"basictrees:tree_wood", "techcrafts:hinge"},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood"},
         {"group:stick", "group:stick"},
-        {"basictrees:tree_wood", "techcrafts:hinge"},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood"},
     }
 })
 
@@ -549,9 +549,9 @@ doors.register("door_wood3_locked", {
     protected = true,
     groups = utility.dig_groups("door_wood", {flammable = 2}),
     recipe = {
-        {"basictrees:tree_wood", "techcrafts:hinge", ""},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood", ""},
         {"group:stick", "group:stick", "default:padlock"},
-        {"basictrees:tree_wood", "techcrafts:hinge", ""},
+        {"basictrees:tree_wood", "techcrafts:hinge_wood", ""},
     }
 })
 
@@ -559,7 +559,7 @@ doors.register("door_wood3_locked", {
 -- you only use it for camouflage.
 doors.register("door_desertstone", {
     tiles = {{ name = "doors_door_redstone.png", backface_culling = true }},
-    description = "Desert Stone Slab Door (No Hinges)",
+    description = "Desert Stone Door",
     inventory_image = "doors_item_redstone.png",
     groups = utility.dig_groups("door_stone"),
     recipe = {

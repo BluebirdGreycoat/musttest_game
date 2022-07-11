@@ -55,7 +55,7 @@ beds.register_bed("papyrus_bed:bed", {
 	nodebox = nodebox,
 	selectionbox = selectionbox,
 	recipe = {
-		{"default:paper", "default:papyrus", "default:papyrus"},
+		{"wool:white", "default:papyrus", "default:papyrus"},
 		{"default:wood", "default:wood", "default:wood"},
 		{"group:stick", "", "group:stick"},
 	},

@@ -138,20 +138,6 @@ minetest.register_node("basictrees:tree_leaves", {
 
 
 
-
-
--- Sappling crafts.
-minetest.register_craft({
-	output = 'basictrees:tree_sapling',
-	recipe = {
-		{'default:mossycobble',	'default:sand',	          'default:gravel'        },
-        {'default:dirt',		'default:junglegrass',    'default:dirt'          },
-		{'default:gravel',		'default:sand',	          'default:mossycobble'   },
-	}
-})
-
-
-
 minetest.register_craft({
 	output = 'basictrees:tree_wood 4',
 	recipe = {

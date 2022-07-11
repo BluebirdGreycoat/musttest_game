@@ -12,6 +12,19 @@ minetest.register_craft({
   }
 })
 
+minetest.register_craftitem("techcrafts:hinge_wood", {
+  description = "Wooden Hinge And Dowel",
+  inventory_image = "technic_hinge_wood.png",
+})
+
+minetest.register_craft({
+  output = 'techcrafts:hinge_wood 2',
+  recipe = {
+    {'group:wood', 'default:stick', ''},
+    {'', '', 'group:wood'},
+  }
+})
+
 minetest.register_craftitem("techcrafts:copper_coil", {
   description = "Copper Coil",
   inventory_image = "technic_copper_coil.png",

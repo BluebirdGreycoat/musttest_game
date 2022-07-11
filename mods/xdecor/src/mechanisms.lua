@@ -122,13 +122,13 @@ xdecor.register("lever_on", {
 minetest.register_craft({
 	output = "xdecor:pressure_stone_off",
 	type = "shapeless",
-	recipe = {"default:stone", "default:stone"}
+	recipe = {"default:stone", "default:stone", "xdecor:lever_off"}
 })
 
 minetest.register_craft({
 	output = "xdecor:pressure_wood_off",
 	type = "shapeless",
-	recipe = {"basictrees:tree_wood", "basictrees:tree_wood"}
+	recipe = {"basictrees:tree_wood", "basictrees:tree_wood", "xdecor:lever_off"}
 })
 
 minetest.register_craft({
@@ -191,7 +191,7 @@ xdecor.register("explosive_plate", {
 minetest.register_craft({
 	output = "xdecor:explosive_plate",
 	type = "shapeless",
-	recipe = {"tnt:tnt", "xdecor:pressure_stone_off"}
+	recipe = {"tnt:tnt", "xdecor:pressure_stone_off", "xdecor:lever_off"}
 })
 
 -- Unstable pressure plate.
@@ -235,6 +235,6 @@ xdecor.register("break_plate", {
 minetest.register_craft({
 	output = "xdecor:break_plate",
 	type = "shapeless",
-	recipe = {"doors:trapdoor", "xdecor:pressure_wood_off"}
+	recipe = {"doors:trapdoor", "xdecor:pressure_wood_off", "xdecor:lever_off"}
 })
 

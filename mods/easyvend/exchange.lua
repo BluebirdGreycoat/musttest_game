@@ -4,15 +4,15 @@ exchange.modpath = minetest.get_modpath("easyvend")
 
 -- Note: exchange rate is doubled because only lumps are accepted now, not ingots.
 -- (Previously most folks would double their ingots before exchanging them.)
+-- Note: must not include infinitely-renewable commodities, like mese.
 exchange.types = {
 	{name = "Gold", key = "gold", rate = 62, image = "default_gold_lump.png", item = "default:gold_lump", block = "default:goldblock"},
 	{name = "Silver", key = "silver", rate = 25, image = "moreores_silver_lump.png", item = "moreores:silver_lump", block = "moreores:silver_block"},
 	{name = "Copper", key = "copper", rate = 16, image = "default_copper_lump.png", item = "default:copper_lump", block = "default:copperblock"},
 	{name = "Iron", key = "iron", rate = 20, image = "default_iron_lump.png", item = "default:iron_lump", block = "default:steelblock"},
 	{name = "Coal", key = "coal", rate = 10, image = "default_coal_lump.png", item = "default:coal_lump", block = "default:coalblock"},
-	{name = "Mese", key = "mese", rate = 75, image = "default_mese_crystal.png", item = "default:mese_crystal", block = "default:mese"},
 	{name = "Pearl", key = "pearl", rate = 700, image = "starpearl_pearl.png", item = "starpearl:pearl", block = "starpearl:pearl"},
-	{name = "Rack", key = "rack", rate = 650, image = "rackstone_bluerack.png", item = "rackstone:bluerack", block = "rackstone:bluerack"},
+	{name = "Rack", key = "rack", rate = 650, image = "moreores_mithril_lump.png", item = "rackstone:bluerack", block = "rackstone:bluerack"},
 }
 
 for k, v in ipairs(exchange.types) do
@@ -82,6 +82,8 @@ for k, v in ipairs(exchange.types) do
 end
 
 if not exchange.run_once then
+	minetest.register_alias("exchange:kiosk_mese", "exchange:kiosk_gold")
+
 	for k, v in ipairs(exchange.types) do
 		minetest.register_node(":exchange:kiosk_" .. v.key, {
 			description = v.name .. " Commodity Exchange\n\nPunch to obtain MG in exchange for commodities.\nShift-punch to redeem commodities for money.\nHold 'E' to multiply exchange by 10.",

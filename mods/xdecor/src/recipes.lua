@@ -257,8 +257,8 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:trampoline",
 	recipe = {
-		{"farming:string", "farming:string", "farming:string"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"farming:cloth", "farming:string", "farming:cloth"},
+		{"default:steel_ingot", "farming:cloth", "default:steel_ingot"},
 		{"default:steel_ingot", "", "default:steel_ingot"}
 	}
 })
@@ -268,7 +268,7 @@ minetest.register_craft({
 	recipe = {
 		{"default:steel_ingot", "default:copper_ingot", "default:steel_ingot"},
 		{"default:steel_ingot", "default:glass", "default:steel_ingot"},
-		{"default:steel_ingot", "default:copper_ingot", "default:steel_ingot"}
+		{"transformer:lv", "techcrafts:copper_coil", "techcrafts:control_logic_unit"}
 	}
 })
 

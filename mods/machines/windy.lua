@@ -465,7 +465,7 @@ if not windy.run_once then
 		output = 'windy:winder',
 		recipe = {
 			{'techcrafts:electric_motor', '', 'techcrafts:electric_motor'},
-			{'carbon_steel:ingot', 'carbon_steel:block', 'carbon_steel:ingot'},
+			{'carbon_steel:ingot', 'techcrafts:machine_casing', 'carbon_steel:ingot'},
 			{'', 'cb2:mv', ''},
 		}
 	})

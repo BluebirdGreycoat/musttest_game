@@ -240,9 +240,11 @@ for _, c in pairs(curtain_colors) do
 	})
 
 	minetest.register_craft({
-		output = "xdecor:curtain_"..c.." 4",
-		recipe = {{"", "wool:"..c, ""},
-			  {"", "wool:"..c, ""}}
+		output = "xdecor:curtain_" .. c .. " 4",
+		recipe = {
+			{"wool:" .. c, "wool:" .. c},
+			{"farming:cloth", "farming:cloth"},
+		}
 	})
 end
 

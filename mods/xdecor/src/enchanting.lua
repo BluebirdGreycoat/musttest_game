@@ -15,8 +15,7 @@ xdecor.register("booktable", {
 minetest.register_craft({
 	output = "xdecor:booktable",
 	recipe = {
-		{"wool:red", "default:book", "dye:yellow"},
+		{"wool:red", "farming:cloth", "xdecor:curtain_yellow"},
 		{"default:diamond", "default:obsidian", "default:diamond"},
-		{"default:obsidian", "default:obsidian", "default:obsidian"}
 	}
 })

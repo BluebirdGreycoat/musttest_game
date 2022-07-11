@@ -76,9 +76,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:cushion 3",
 	recipe = {
-		{"wool:red"},
-		{"wool:red"},
-		{"wool:red"},
+		{"farming:cloth", "farming:cloth", "farming:cloth"},
+		{"farming:cloth", "wool:red", "farming:cloth"},
+		{"farming:cloth", "farming:cloth", "farming:cloth"},
 	}
 })
 
@@ -266,7 +266,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:tv",
 	recipe = {
-		{"default:steel_ingot", "default:copper_ingot", "default:steel_ingot"},
+		{"default:steel_ingot", "plastic:plastic_sheeting", "default:steel_ingot"},
 		{"default:steel_ingot", "default:glass", "default:steel_ingot"},
 		{"transformer:lv", "techcrafts:copper_coil", "techcrafts:control_logic_unit"}
 	}

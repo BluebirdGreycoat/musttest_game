@@ -51,12 +51,14 @@ if not gem_minerals.registered then
 		minetest.register_craftitem(":" .. gem, {
 			description = v.desc .. " Gem",
 			inventory_image = "gem_minerals_" .. v.name .. "_gem.png",
+			groups = {gem = 1, crystal = 1},
 		})
 
 		-- Raw gem.
 		minetest.register_craftitem(":" .. raw, {
 			description = "Uncut " .. v.desc .. " Gem",
 			inventory_image = "gem_minerals_raw_" .. v.name .. ".png",
+			groups = {gem = 1, crystal = 1},
 		})
 
 		-- Block craft.

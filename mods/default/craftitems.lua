@@ -73,6 +73,7 @@ minetest.register_craftitem("default:gold_lump", {
 minetest.register_craftitem("default:diamond", {
 	description = "Diamond",
 	inventory_image = "default_diamond.png",
+	groups = {gem = 1, crystal = 1},
 })
 
 minetest.register_craftitem("default:clay_lump", {

@@ -54,7 +54,7 @@ gdac_invis.toggle_invisibility = function(name, param)
 				show_on_minimap = false,
       })
       
-      minetest.chat_send_player(name, "# Server: You become invisible!")
+      minetest.chat_send_player(name, "# Server: Administrative cloak enabled.")
     else
       player_labels.enable_nametag(name)
 
@@ -68,7 +68,7 @@ gdac_invis.toggle_invisibility = function(name, param)
 			})
       gdac_invis.players[name] = nil
       
-      minetest.chat_send_player(name, "# Server: You are now visible.")
+      minetest.chat_send_player(name, "# Server: Invisibility cloak disabled.")
     end
   end
   return true
@@ -78,7 +78,7 @@ end
 
 if not gdac_invis.run_once then
   minetest.register_privilege("gdac_invis", {
-    description = "Permits an admin to be invisible to other players.",
+    description = "Administrative invisibility mode.",
     give_to_singleplayer = false,
   })
   

@@ -219,6 +219,42 @@ register({
 	noise_threshold = 0.3,
 })
 
+-- Night Master.
+register({
+	name = "oerkki:night_master",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 0,
+	min_height = -25000,
+	max_height = -10000,
+	clearance = 3,
+	flyswim = "flyswim",
+
+	mob_limit = 1,
+	absolute_mob_limit = 100,
+	mob_range = 100,
+
+	-- After a successful spawn, wait a lot of time before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 1,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 27192,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 register({
 	name = "rat:rat",
 	nodes = {"default:stone"},

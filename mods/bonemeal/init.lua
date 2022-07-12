@@ -34,7 +34,6 @@ function bonemeal.on_use(itemstack, user, pt)
 			return
 		end
 
-		minetest.punch_node(pos)
 		local node = minetest.get_node(pos)
 		local def = minetest.registered_items[node.name]
 

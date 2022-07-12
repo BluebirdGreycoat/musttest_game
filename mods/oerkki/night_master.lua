@@ -92,7 +92,7 @@ mobs.register_mob("oerkki:night_master_2", {
 		{"moonherontrio.png"}
 	},
 	visual_size = {x = 18, y = 18},
-	view_range = 40,
+	view_range = 30,
 	rotate = 270,
 	lifetimer = 500,
 	floats = 1,
@@ -163,7 +163,7 @@ mobs.register_mob("oerkki:night_master_1", {
 		{"moonherontrio.png"}
 	},
 	visual_size = {x = 18, y = 18},
-	view_range = 40,
+	view_range = 20,
 	rotate = 270,
 	lifetimer = 500,
 	floats=1,

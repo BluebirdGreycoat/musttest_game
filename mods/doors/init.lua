@@ -750,8 +750,8 @@ function doors.register_trapdoor(name, def)
 
 	if def.recipeitem then
 		local hinge = "techcrafts:hinge"
-		if minetest.get_item_group(def.recipeitem, "wood") ~= 0 then
-			hinge = "techcrafts:hinge_wood"
+		if def.recipehinge then
+			hinge = def.recipehinge
 		end
 
 		if def.protected then
@@ -929,8 +929,8 @@ function doors.register_trapdoor_climbable(name, def)
 
 	if def.recipeitem then
 		local hinge = "techcrafts:hinge"
-		if minetest.get_item_group(def.recipeitem, "wood") ~= 0 then
-			hinge = "techcrafts:hinge_wood"
+		if def.recipehinge then
+			hinge = def.recipehinge
 		end
 
 		if def.protected then

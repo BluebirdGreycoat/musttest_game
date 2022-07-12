@@ -7,6 +7,7 @@ doors.register_trapdoor("trapdoor", {
 	tile_side = "doors_trapdoor_side.png",
 	groups = utility.dig_groups("door_wood", {flammable = 2, door = 1}),
 	recipeitem = "default:wood",
+	recipehinge = "techcrafts:hinge_wood",
 })
 
 doors.register_trapdoor("trapdoor_locked", {
@@ -18,6 +19,7 @@ doors.register_trapdoor("trapdoor_locked", {
 	protected = true,
 	groups = utility.dig_groups("door_wood", {flammable = 2, door = 1}),
 	recipeitem = "default:wood",
+	recipehinge = "techcrafts:hinge_wood",
 })
 
 doors.register_trapdoor("trapdoor_steel", {

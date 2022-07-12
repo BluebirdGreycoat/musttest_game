@@ -3,11 +3,12 @@
 -- Global namespace for functions
 
 fire = {}
+fire.modpath = minetest.get_modpath("fire")
 
 -- Localize for performance.
 local math_random = math.random
 
-
+reload.register_file("fire:fire_scatter", fire.modpath .. "/fire_scatter.lua")
 
 -- Register flame nodes
 

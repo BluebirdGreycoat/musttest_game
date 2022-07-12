@@ -522,6 +522,8 @@ function obsidian_gateway.after_damage_gate(pos)
 		end
 	end
 
+	-- Don't spawn lava in overworld (reported by player).
+
 	local idx = math.random(1, #points)
 	local tar = points[idx]
 	-- Using 'swap_node' to avoid triggering a callback cascade.

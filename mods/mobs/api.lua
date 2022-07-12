@@ -3901,13 +3901,16 @@ local function arrow_step(self, dtime, def)
 	end
 
 	if self.hit_node then
-
-		local node = node_ok(pos).name
+		-- Always round node position before passing it to code that probably
+		-- assumes that position is an integer (failure to do this can result in
+		-- coordinate problems in the engine)!
+		local rpos = v_round(pos)
+		local node = node_ok(rpos).name
 
 		local ndef = minetest.reg_ns_nodes[node]
 		if not ndef or ndef.walkable then
 
-			self.hit_node(self, pos, node)
+			self.hit_node(self, rpos, node)
 
 			if self.drop == true then
 

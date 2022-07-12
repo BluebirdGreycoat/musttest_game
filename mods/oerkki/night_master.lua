@@ -1,4 +1,6 @@
 
+local math_random = math.random
+
 mobs.register_mob("oerkki:night_master", {
 	type = "monster",
 	description = "Night Master",
@@ -225,19 +227,12 @@ mobs.register_arrow("oerkki:flame_bolt", {
 
 	-- Node hit, bursts into flame.
 	hit_node = function(self, pos, node)
-		-- The tnt explosion function respects protection perfectly (MustTest).
-		tnt.boom(pos, {
-			radius = math.random(1, 2),
-			ignore_protection = false,
-			ignore_on_blast = false,
-			damage_radius = 3,
-			disable_drops = true,
-
-			-- Launched by this mob type. Blast will not damage mobs of this type.
-			mob = "oerkki:night_master",
-		})
-
-		minetest.add_item(pos, "mobs:flame_bolt")
+		local flames = fire.scatter_flame_around_over_ground(pos, 2, 5)
+		for k = 1, #flames, 1 do
+			local p = flames[k]
+			-- Note: item is flammable, so will burn up if fire not put out.
+			minetest.add_item(p, "mobs:flame_bolt")
+		end
 	end
 })
 

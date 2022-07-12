@@ -241,8 +241,8 @@ minetest.register_craft({
 	output = 'default:pick_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal', 'default:mese_crystal'},
-		{'', 'group:stick', ''},
-		{'', 'group:stick', ''},
+		{'', 'darkage:iron_stick', ''},
+		{'', 'darkage:iron_stick', ''},
 	}
 })
 
@@ -295,8 +295,8 @@ minetest.register_craft({
 	output = 'default:shovel_mese',
 	recipe = {
 		{'default:mese_crystal'},
-		{'group:stick'},
-		{'group:stick'},
+		{'darkage:iron_stick'},
+		{'darkage:iron_stick'},
 	}
 })
 
@@ -349,8 +349,8 @@ minetest.register_craft({
 	output = 'default:axe_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal'},
-		{'default:mese_crystal', 'group:stick'},
-		{'', 'group:stick'},
+		{'default:mese_crystal', 'darkage:iron_stick'},
+		{'', 'darkage:iron_stick'},
 	}
 })
 
@@ -403,8 +403,8 @@ minetest.register_craft({
 	output = 'default:axe_mese',
 	recipe = {
 		{'default:mese_crystal', 'default:mese_crystal'},
-		{'group:stick', 'default:mese_crystal'},
-		{'group:stick', ''},
+		{'darkage:iron_stick', 'default:mese_crystal'},
+		{'darkage:iron_stick', ''},
 	}
 })
 
@@ -458,7 +458,7 @@ minetest.register_craft({
 	recipe = {
 		{'default:mese_crystal'},
 		{'default:mese_crystal'},
-		{'group:stick'},
+		{'darkage:iron_stick'},
 	}
 })
 

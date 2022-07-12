@@ -152,12 +152,17 @@ farming.register_hoe = function(name, def)
 			recipe = def.recipe
 		})
 	else
+		local handle = "group:stick"
+		if def.handle then
+			handle = def.handle
+		end
+
 		minetest.register_craft({
 			output = name:sub(2),
 			recipe = {
 				{def.material, def.material, ""},
-				{"", "group:stick", ""},
-				{"", "group:stick", ""}
+				{"", handle, ""},
+				{"", handle, ""}
 			}
 		})
 		-- Reverse Recipe
@@ -165,8 +170,8 @@ farming.register_hoe = function(name, def)
 			output = name:sub(2),
 			recipe = {
 				{"", def.material, def.material},
-				{"", "group:stick", ""},
-				{"", "group:stick", ""}
+				{"", handle, ""},
+				{"", handle, ""}
 			}
 		})
 	end

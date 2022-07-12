@@ -35,7 +35,8 @@ farming.register_hoe(":farming:hoe_mese", {
 	description = "Mese Hoe",
 	inventory_image = "farming_tool_mesehoe.png",
 	max_uses = 350,
-	material = "default:mese_crystal"
+	material = "default:mese_crystal",
+	handle = "darkage:iron_stick"
 })
 
 farming.register_hoe(":farming:hoe_diamond", {

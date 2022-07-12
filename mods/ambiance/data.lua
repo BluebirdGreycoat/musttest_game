@@ -144,7 +144,7 @@ ambiance.tmpsounds = {
 			lacunarity = 1.5,
 			flags = "",
 		},
-		noise_threshold = -0.3,
+		noise_threshold = 0.5,
 	},
 
 	{

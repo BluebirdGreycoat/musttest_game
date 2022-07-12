@@ -260,15 +260,17 @@ end
 function sprint.set_sprinting(playerName, sprinting) --Sets the state of a player (0=stopped/moving, 1=sprinting)
 	local player = minetest.get_player_by_name(playerName)
 	
-	-- Speed multiplier based on player's health.
+	-- Speed multiplier based on player's health relative to max.
 	-- This is as good a place as any to run this computation.
 	local hp = player:get_hp()
+	local max_hp = player:get_properties().hp_max
+
 	local hp_mult = 1
-	if hp <= 4 then
+	if hp <= (max_hp * 0.2) then
 		hp_mult = 0.8
-	elseif hp <= 10 then
+	elseif hp <= (max_hp * 0.5) then
 		hp_mult = 0.9
-	elseif hp >= 20 then
+	elseif hp >= (max_hp * 0.95) then
 		hp_mult = 1.1
 	end
 

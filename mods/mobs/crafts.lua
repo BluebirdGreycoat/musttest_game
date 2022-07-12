@@ -140,3 +140,28 @@ minetest.register_craft({
 	recipe = "mobs:leather_padding",
 	burntime = 6,
 })
+
+
+
+--------------------------------------------------------------------------------
+minetest.register_craftitem("mobs:flame_bolt", {
+	description = "Flame Bolt",
+	inventory_image = "mobs_flame_bolt.png",
+	groups = {flammable = 3},
+})
+
+minetest.register_craftitem("mobs:flame_staff", {
+	description = "Flame Staff",
+	inventory_image = "mobs_flame_staff.png",
+	groups = {flammable = 3},
+	stack_max = 1, -- Stores metadata.
+})
+
+minetest.register_craft({
+	output = "mobs:flame_staff",
+	recipe = {
+		{"", "mobs:flame_bolt", ""},
+		{"", "mobs:flame_bolt", ""},
+		{"farming:cloth", "mobs:flame_bolt", "farming:cloth"},
+	},
+})

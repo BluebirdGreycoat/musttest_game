@@ -408,7 +408,8 @@ minetest.register_craftitem("carts:cart", {
 minetest.register_craft({
 	output = "carts:cart",
 	recipe = {
-		{"default:steel_ingot", "", "default:steel_ingot"},
+		{"default:steel_ingot", "xdecor:lever_off", "group:leather_padding"},
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		{"carbon_steel:ingot", "techcrafts:electric_motor", "carbon_steel:ingot"},
 	},
 })

@@ -96,23 +96,34 @@ local function get_item_and_amount(list_item, actual_depth)
 	if list_item.chance < math_random() then
 		return nil, 0
 	end
-	-- Suspicious trickery
-	list_name = nil
+
+	-- This must point to a table.
+	local list_key = list_item.name .. "_list"
+	local list_name = dungeon_loot[list_key]
+
+	-- Suspicious trickery.
+	--[[
 	list_name_string = "dungeon_loot." .. list_item.name .. "_list"
 -- 	list_name = _G[list_name_string]
 	lsf = loadstring("list_name = " .. list_name_string)
 	lsf()
+	--]]
+	-- ^ What the H. - MustTest.
+
 	if list_name == nil then
-		error("Unable to connect " .. list_name_string .. " to actual table")
+		error("Unable to connect \"" .. list_key .. "\" to actual table")
 		return nil, 0
 	end
+
 	local amount = 0
 	local loot_type = ""
 	local loot_depth = 0
 	local max_depth = 1
+
 	if actual_depth < 0 then
 		max_depth = math.ceil(math.abs(actual_depth))
 	end
+
 	if list_item.type == "depth_cutoff" then
 		local rnd_depth = math_random(1,max_depth)
  		loot_type, loot_depth = get_max_loot(list_name, rnd_depth)

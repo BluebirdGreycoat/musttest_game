@@ -274,29 +274,29 @@ end
 
 local xdecor_doors = {
 	japanese = { recipe = {
-		{"group:wood", "default:paper"},
+		{"group:wood", "techcrafts:hinge_wood"},
 		{"default:paper", "group:wood"},
-		{"group:wood", "default:paper"}}, groups=utility.dig_groups("door_wood") },
+		{"group:wood", "techcrafts:hinge_wood"}}, groups=utility.dig_groups("door_wood") },
 	prison = { recipe = {
-		{"xpanes:bar_flat", "xpanes:bar_flat", ""},
+		{"xpanes:bar_flat", "techcrafts:hinge", ""},
 		{"xpanes:bar_flat", "xpanes:bar_flat", "default:padlock"},
-		{"xpanes:bar_flat", "xpanes:bar_flat", ""}}, groups=utility.dig_groups("door_metal") },
+		{"xpanes:bar_flat", "techcrafts:hinge", ""}}, groups=utility.dig_groups("door_metal") },
 	rusty_prison = { recipe = {
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", ""},
+		{"xpanes:rusty_bar_flat", "techcrafts:hinge", ""},
 		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", "default:padlock"},
-		{"xpanes:rusty_bar_flat", "xpanes:rusty_bar_flat", ""}}, groups=utility.dig_groups("door_metal") },
+		{"xpanes:rusty_bar_flat", "techcrafts:hinge", ""}}, groups=utility.dig_groups("door_metal") },
 	screen = { recipe = {
-		{"group:wood", "group:wood"},
+		{"group:wood", "techcrafts:hinge_wood"},
 		{"xpanes:chainlink_flat", "xpanes:chainlink_flat"},
-		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+		{"group:wood", "techcrafts:hinge_wood"}}, groups=utility.dig_groups("door_wood") },
 	slide = { recipe = {
-		{"default:paper", "default:paper"},
-		{"default:paper", "default:paper"},
-		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+		{"default:paper", "techcrafts:hinge_wood"},
+		{"default:paper", "group:wood"},
+		{"group:wood", "techcrafts:hinge_wood"}}, groups=utility.dig_groups("door_wood") },
 	woodglass = { recipe = {
-		{"default:glass", "default:glass"},
+		{"default:glass", "techcrafts:hinge"},
 		{"group:wood", "group:wood"},
-		{"group:wood", "group:wood"}}, groups=utility.dig_groups("door_wood") },
+		{"group:wood", "techcrafts:hinge"}}, groups=utility.dig_groups("door_wood") },
 
 	-- No locked version. This is intentional,
 	-- you only use it for camouflage.

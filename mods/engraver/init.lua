@@ -507,7 +507,7 @@ minetest.register_craft({
 	output = "engraver:bench",
 	recipe = {
 		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
-		{'basictrees:tree_wood', '', 'basictrees:tree_wood'},
+		{'basictrees:tree_wood', 'default:stone', 'basictrees:tree_wood'},
 		{'basictrees:tree_wood', '', 'basictrees:tree_wood'},
 	}
 })

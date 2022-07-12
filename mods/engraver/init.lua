@@ -240,7 +240,7 @@ minetest.register_craft({
 	output = "engraver:chisel",
 	recipe = {
 		{"carbon_steel:ingot"},
-		{"default:stick"},
+		{"darkage:iron_stick"},
 	},
 })
 

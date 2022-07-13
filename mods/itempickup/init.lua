@@ -109,13 +109,18 @@ itempickup.update = function(dtime)
 						local item = ItemStack(name)
 						local ndef = minetest.registered_items[item:get_name()]
 						if ndef and (not ndef._no_auto_pop or control.aux1) then
+							-- Disable pickup for items inside fire.
+							local ip = vector.round(n:get_pos())
+							local np = minetest.get_node(ip).name
 
-							-- Ensure player's inventory has enough room.
-							if inv and inv:room_for_item("main", item) then
-								inv:add_item("main", item)
-								itempickup.sound(pos)
-								luaent.itemstring = "" -- Prevents item duplication.
-								n:remove()
+							if minetest.get_item_group(np, "fire") == 0 then
+								-- Ensure player's inventory has enough room.
+								if inv and inv:room_for_item("main", item) then
+									inv:add_item("main", item)
+									itempickup.sound(pos)
+									luaent.itemstring = "" -- Prevents item duplication.
+									n:remove()
+								end
 							end
 
 						end

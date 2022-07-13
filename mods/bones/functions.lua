@@ -336,12 +336,15 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	local meta = minetest.get_meta(pos)
 	meta:set_float("digxp", xp_for_bones)
+
 	meta:set_string("diedate", get_public_time())
 	local inv = meta:get_inventory()
 	inv:set_size("main", 200) -- Enuf space for everything!
 	-- Keep track of how many stacks are stored in bones.
 	local location = minetest.pos_to_string(pos)
 	local num_stacks = 0
+
+	minetest.log("action", "Put " .. xp_for_bones .. " XP in bones @ " .. location .. ".")
 
 	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC/KoC items.
 	-- Empty the player's main inv. We must not to clobber any passports.

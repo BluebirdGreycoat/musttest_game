@@ -71,24 +71,24 @@ minetest.register_node("moretrees:rubber_tree_trunk_empty", {
 
 
 minetest.register_node("moretrees:rubber_tree_leaves", {
-    description = "Rubber Tree Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_rubber_tree_leaves.png"},
-    paramtype = "light",
-		waving = 1,
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:rubber_tree_sapling", "moretrees:rubber_tree_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	description = "Rubber Tree Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_rubber_tree_leaves.png"},
+	paramtype = "light",
+	waving = 1,
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:rubber_tree_sapling", "moretrees:rubber_tree_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({
-    tree = {
-      "moretrees:rubber_tree_tree",
-      "moretrees:rubber_tree_trunk_empty",
-    },
-  }),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({
+		tree = {
+			"moretrees:rubber_tree_tree",
+			"moretrees:rubber_tree_trunk_empty",
+		},
+	}),
 })
 
 
@@ -107,7 +107,7 @@ minetest.register_node("moretrees:rubber_tree_wood", {
 minetest.register_node("moretrees:rubber_tree_sapling", {
     description = "Rubber Tree Sapling\n\nWill not grow in deep caves.\nGives raw latex.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_rubber_tree_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

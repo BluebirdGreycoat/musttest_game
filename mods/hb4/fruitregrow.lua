@@ -105,7 +105,7 @@ if not hb4.fruitregrow.registered then
 	minetest.register_node(":basictrees:tree_apple", {
 		description = "Apple",
 		drawtype = "plantlike",
-		--visual_scale = 1.0,
+
 		tiles = {"default_apple.png"},
 		inventory_image = "default_apple.png",
 		paramtype = "light",

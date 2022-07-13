@@ -1397,7 +1397,7 @@ minetest.register_node("default:dry_shrub", {
 	description = "Dry Shrub",
 	drawtype = "plantlike",
 	waving = 1,
-	--visual_scale = 1.0,
+
 	tiles = {"default_dry_shrub.png"},
 	inventory_image = "default_dry_shrub.png",
 	wield_image = "default_dry_shrub.png",
@@ -1472,7 +1472,7 @@ minetest.register_node("default:coarsegrass", {
 	description = "Coarse Grass",
 	drawtype = "plantlike",
 	waving = 1,
-	visual_scale = 1.0,
+
 	tiles = {"default_junglegrass_newstyle.png"},
 	inventory_image = "default_junglegrass_newstyle.png",
 	wield_image = "default_junglegrass_newstyle.png",

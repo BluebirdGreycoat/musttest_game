@@ -27,7 +27,7 @@ for k, v in pairs(leafcolors) do
 	minetest.register_node("moretrees:jungletree_leaves_" .. name, {
 		description = capitalized .. " Jungletree Leaves",
 		drawtype = "allfaces_optional",
-		visual_scale = 1.3,
+
 		tiles = {"moretrees_jungletree_leaves_" .. name .. ".png"},
 		paramtype = "light",
 		groups = moretrees.leaves_groups,
@@ -78,7 +78,7 @@ minetest.register_node("moretrees:jungletree_tree", {
 minetest.register_node("moretrees:jungletree_sapling", {
 	description = "Jungletree Sapling\n\nWill not grow in deep caves.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"moretrees_jungletree_sapling.png"},
 	paramtype = "light",
 	sunlight_propagates = true,

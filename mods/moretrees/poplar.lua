@@ -43,19 +43,19 @@ minetest.register_node("moretrees:poplar_tree", {
 
 
 minetest.register_node("moretrees:poplar_leaves", {
-    description = "Poplar Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_poplar_leaves.png"},
-    paramtype = "light",
+	description = "Poplar Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_poplar_leaves.png"},
+	paramtype = "light",
 	waving = 1,
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:poplar_sapling", "moretrees:poplar_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:poplar_sapling", "moretrees:poplar_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:poplar_tree"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:poplar_tree"}),
 })
 
 
@@ -74,7 +74,7 @@ minetest.register_node("moretrees:poplar_wood", {
 minetest.register_node("moretrees:poplar_sapling", {
     description = "Poplar Sapling\n\nWill not grow in deep caves.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_poplar_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

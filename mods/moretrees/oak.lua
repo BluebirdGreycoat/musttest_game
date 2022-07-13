@@ -44,19 +44,19 @@ minetest.register_node("moretrees:oak_tree", {
 
 
 minetest.register_node("moretrees:oak_leaves", {
-    description = "Oak Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
+	description = "Oak Leaves",
+	drawtype = "allfaces_optional",
+
 	waving = 1,
-    tiles = {"moretrees_oak_leaves.png"},
-    paramtype = "light",
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:oak_sapling", "moretrees:oak_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	tiles = {"moretrees_oak_leaves.png"},
+	paramtype = "light",
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:oak_sapling", "moretrees:oak_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:oak_tree"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:oak_tree"}),
 })
 
 
@@ -75,7 +75,7 @@ minetest.register_node("moretrees:oak_wood", {
 minetest.register_node("moretrees:oak_sapling", {
     description = "Oak Sapling\n\nWill not grow in deep caves.\nGrows acorns.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_oak_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

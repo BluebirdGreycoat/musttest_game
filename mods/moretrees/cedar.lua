@@ -44,21 +44,21 @@ minetest.register_node("moretrees:cedar_tree", {
 
 
 minetest.register_node("moretrees:cedar_leaves", {
-    description = "Cedar Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_cedar_leaves.png"},
-    paramtype = "light",
+	description = "Cedar Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_cedar_leaves.png"},
+	paramtype = "light",
 	waving = 1,
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:cedar_sapling", "moretrees:cedar_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:cedar_sapling", "moretrees:cedar_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({
-    tree = "moretrees:cedar_tree",
-  }),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({
+		tree = "moretrees:cedar_tree",
+	}),
 })
 
 
@@ -77,7 +77,7 @@ minetest.register_node("moretrees:cedar_wood", {
 minetest.register_node("moretrees:cedar_sapling", {
     description = "Cedar Sapling\n\nWill not grow in deep caves.\nGrows nuts.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_cedar_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

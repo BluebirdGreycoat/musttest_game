@@ -53,7 +53,7 @@ minetest.register_node("basictrees:pine_wood", {
 minetest.register_node("basictrees:pine_needles",{
 	description = "Pine Needles",
 	drawtype = "allfaces_optional",
-	visual_scale = 1.3,
+
 	tiles = {"default_pine_needles.png"},
 	waving = 1,
 	paramtype = "light",
@@ -72,7 +72,7 @@ minetest.register_node("basictrees:pine_needles",{
 minetest.register_node("basictrees:pine_sapling", {
 	description = "Pine Tree Sapling\n\nWill not grow in deep caves.\nGrows nuts.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"default_pine_sapling.png"},
 	inventory_image = "default_pine_sapling.png",
 	wield_image = "default_pine_sapling.png",

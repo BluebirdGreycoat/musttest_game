@@ -117,7 +117,7 @@ minetest.register_node("jungletree:jungletree_tree", {
 minetest.register_node("jungletree:jungletree_leaves", {
   description = "Jungletree Leaves",
   drawtype = "allfaces_optional",
-  visual_scale = 1.3,
+
   tiles = {"jungletree_jungletree_leaves.png"},
   paramtype = "light",
 	waving = 1,
@@ -146,7 +146,7 @@ minetest.register_node("jungletree:jungletree_wood", {
 minetest.register_node("jungletree:jungletree_sapling", {
     description = "White Jungletree Sapling\n\nWill not grow in deep caves.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"jungletree_jungletree_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

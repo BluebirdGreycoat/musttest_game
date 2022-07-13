@@ -669,7 +669,7 @@ minetest.register_node("cavestuff:fungus", {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
   buildable_to = true,
-  --visual_scale = 1.0,
+
   selection_box = {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
@@ -718,7 +718,7 @@ minetest.register_node("cavestuff:icicle_up", {
   drawtype = "plantlike",
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
-  --visual_scale = 1.0,
+
   selection_box = {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
@@ -744,7 +744,7 @@ minetest.register_node("cavestuff:icicle_up_glowing", {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
   light_source = 7,
-  --visual_scale = 1.0,
+
   selection_box = {
     type = "fixed",
     fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
@@ -769,7 +769,7 @@ minetest.register_node("cavestuff:icicle_down", {
   drawtype = "plantlike",
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
-  --visual_scale = 1.0,
+
   selection_box = {
     type = "fixed",
     fixed = {-0.5, 5/16, -0.5, 0.5, 0.5, 0.5},
@@ -795,7 +795,7 @@ minetest.register_node("cavestuff:icicle_down_glowing", {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
   light_source = 7,
-  --visual_scale = 1.0,
+
   selection_box = {
     type = "fixed",
     fixed = {-0.5, 5/16, -0.5, 0.5, 0.5, 0.5},

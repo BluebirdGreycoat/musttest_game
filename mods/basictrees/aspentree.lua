@@ -70,7 +70,7 @@ minetest.register_node("basictrees:aspen_leaves", {
 minetest.register_node("basictrees:aspen_sapling", {
 	description = "Aspen Tree Sapling\n\nWill not grow in deep caves.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"default_aspen_sapling.png"},
 	inventory_image = "default_aspen_sapling.png",
 	wield_image = "default_aspen_sapling.png",

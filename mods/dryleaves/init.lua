@@ -8,7 +8,7 @@ minetest.register_node("dryleaves:leaves", {
 	description = "Dried Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
-	visual_scale = 1.3,
+
 	tiles = {"dryleaves_leaves.png"},
 	paramtype = "light",
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
@@ -24,7 +24,7 @@ minetest.register_node("dryleaves:jungleleaves", {
 	description = "Damp Old Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
-	visual_scale = 1.3,
+
 	tiles = {"dryleaves_jungleleaves.png"},
 	paramtype = "light",
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),

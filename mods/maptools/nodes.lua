@@ -423,7 +423,7 @@ minetest.register_node("maptools:superapple", {
 	range = 12,
 	stack_max = 10000,
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"maptools_superapple.png"},
 	inventory_image = "maptools_superapple.png",
 	paramtype = "light",

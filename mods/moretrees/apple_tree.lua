@@ -47,7 +47,7 @@ minetest.register_node("moretrees:apple_tree_tree", {
 minetest.register_node("moretrees:apple_tree_leaves", {
 	description = "Apple Tree Leaves",
 	drawtype = "allfaces_optional",
-	visual_scale = 1.3,
+
 	waving = 1,
 	tiles = {"moretrees_apple_tree_leaves.png"},
 	paramtype = "light",
@@ -76,7 +76,7 @@ minetest.register_node("moretrees:apple_tree_wood", {
 minetest.register_node("moretrees:apple_tree_sapling", {
 	description = "Apple Tree Sapling\n\nWill not grow in deep caves.\nGrows lots of apples.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"moretrees_apple_tree_sapling.png"},
 	paramtype = "light",
 	sunlight_propagates = true,

@@ -123,7 +123,7 @@ minetest.register_node("basictrees:tree_leaves", {
 	description = "Tree Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
-	visual_scale = 1.3,
+
 	tiles = {"default_leaves.png"},
 	--special_tiles = {"default_leaves_simple.png"},
 	paramtype = "light",

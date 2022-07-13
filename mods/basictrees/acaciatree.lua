@@ -52,7 +52,7 @@ minetest.register_node("basictrees:acacia_wood", {
 minetest.register_node("basictrees:acacia_leaves", {
 	description = "Acacia Tree Leaves",
 	drawtype = "allfaces_optional",
-	visual_scale = 1.3,
+
 	tiles = {"default_acacia_leaves.png"},
 	waving = 1,
 	paramtype = "light",
@@ -70,7 +70,7 @@ minetest.register_node("basictrees:acacia_leaves", {
 minetest.register_node("basictrees:acacia_sapling", {
 	description = "Acacia Tree Sapling\n\nWill not grow in deep caves.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"default_acacia_sapling.png"},
 	inventory_image = "default_acacia_sapling.png",
 	wield_image = "default_acacia_sapling.png",

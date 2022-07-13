@@ -72,7 +72,7 @@ minetest.register_node("basictrees:jungletree_leaves", {
 	description = "Jungle Tree Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
-	visual_scale = 1.3,
+
 	tiles = {"default_jungleleaves.png"},
 	--special_tiles = {"default_jungleleaves_simple.png"},
 	paramtype = "light",
@@ -106,7 +106,7 @@ minetest.register_node("basictrees:jungletree_leaves2", {
 minetest.register_node("basictrees:jungletree_sapling", {
 	description = "Jungle Tree Sapling\n\nWill not grow in deep caves.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"default_junglesapling.png"},
 	inventory_image = "default_junglesapling.png",
 	wield_image = "default_junglesapling.png",

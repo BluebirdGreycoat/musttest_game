@@ -43,19 +43,19 @@ minetest.register_node("moretrees:sequoia_tree", {
 
 
 minetest.register_node("moretrees:sequoia_leaves", {
-    description = "Sequoia Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_sequoia_leaves.png"},
-    paramtype = "light",
+	description = "Sequoia Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_sequoia_leaves.png"},
+	paramtype = "light",
 	waving = 1,
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:sequoia_sapling", "moretrees:sequoia_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:sequoia_sapling", "moretrees:sequoia_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:sequoia_tree"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:sequoia_tree"}),
 })
 
 
@@ -74,7 +74,7 @@ minetest.register_node("moretrees:sequoia_wood", {
 minetest.register_node("moretrees:sequoia_sapling", {
     description = "Sequoia Sapling\n\nWill not grow in deep caves.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_sequoia_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

@@ -24,7 +24,7 @@ minetest.register_node("firetree:leaves", {
 	description = "Firetree Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
-	visual_scale = 1.3,
+
 	tiles = {"firetree_leaves.png"},
 	paramtype = "light",
 	groups = utility.dig_groups("leaves", {
@@ -117,7 +117,7 @@ minetest.register_craft({
 minetest.register_node("firetree:fruit", {
 	description = "Fruit of the Firetree\n\nProtects from extreme heat when consumed.",
 	drawtype = "plantlike",
-	--visual_scale = 1.0,
+
 	tiles = {"firetree_fruit.png"},
 	inventory_image = "firetree_fruit.png",
 	paramtype = "light",
@@ -240,7 +240,7 @@ end
 minetest.register_node("firetree:sapling", {
 	description = "Firetree Seedling\n\nMay grow in deep or hot places.\nWill also grow on the surface.\nGrows firefruit.",
 	drawtype = "plantlike",
-	visual_scale = 1.0,
+
 	tiles = {"firetree_sapling.png"},
 	inventory_image = "firetree_sapling.png",
 	wield_image = "firetree_sapling.png",

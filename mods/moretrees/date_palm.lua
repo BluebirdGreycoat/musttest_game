@@ -43,19 +43,19 @@ minetest.register_node("moretrees:date_palm_tree", {
 
 
 minetest.register_node("moretrees:date_palm_leaves", {
-    description = "Date Palm Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_date_palm_leaves.png"},
-    paramtype = "light",
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:date_palm_sapling", "moretrees:date_palm_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	description = "Date Palm Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_date_palm_leaves.png"},
+	paramtype = "light",
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:date_palm_sapling", "moretrees:date_palm_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	waving = 1,
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:date_palm_tree"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:date_palm_tree"}),
 })
 
 
@@ -74,7 +74,7 @@ minetest.register_node("moretrees:date_palm_wood", {
 minetest.register_node("moretrees:date_palm_sapling", {
     description = "Date Palm Sapling\n\nWill not grow in deep caves.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_date_palm_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

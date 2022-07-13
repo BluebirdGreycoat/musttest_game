@@ -44,19 +44,19 @@ minetest.register_node("moretrees:palm_tree", {
 
 
 minetest.register_node("moretrees:palm_leaves", {
-    description = "Palm Leaves",
-    drawtype = "allfaces_optional",
-    visual_scale = 1.3,
-    tiles = {"moretrees_palm_leaves.png"},
-    paramtype = "light",
+	description = "Palm Leaves",
+	drawtype = "allfaces_optional",
+
+	tiles = {"moretrees_palm_leaves.png"},
+	paramtype = "light",
 	waving = 1,
-    groups = moretrees.leaves_groups,
-    drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:palm_sapling", "moretrees:palm_leaves"),
-    sounds = default.node_sound_leaves_defaults(),
+	groups = moretrees.leaves_groups,
+	drop = moretrees.get_leafdrop_table(SAPLING_CHANCE, "moretrees:palm_sapling", "moretrees:palm_leaves"),
+	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:palm_tree"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="moretrees:palm_tree"}),
 })
 
 
@@ -75,7 +75,7 @@ minetest.register_node("moretrees:palm_wood", {
 minetest.register_node("moretrees:palm_sapling", {
     description = "Palm Sapling\n\nWill not grow in deep caves.\nGrows coconuts.",
     drawtype = "plantlike",
-    --visual_scale = 1.0,
+
     tiles = {"moretrees_palm_sapling.png"},
     paramtype = "light",
     sunlight_propagates = true,

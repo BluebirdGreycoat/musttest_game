@@ -4,7 +4,7 @@ moretrees = moretrees or {}
 minetest.register_node("moretrees:apple_tree_blossoms", {
 	description = "Apple Tree Blossoms",
 	drawtype = "allfaces_optional",
-	visual_scale = 1.3,
+
 	tiles = {"moretrees_apple_tree_leaves.png^moretrees_apple_tree_blossoms.png"},
 	paramtype = "light",
 	waving = 1,

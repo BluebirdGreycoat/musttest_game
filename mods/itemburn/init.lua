@@ -158,6 +158,14 @@ local item = {
 			return
 		end
 
+		-- Do not allow pickup of items inside fire.
+		do
+			local nn = minetest.get_node(vector.round(self.object:get_pos())).name
+			if minetest.get_item_group(nn, "fire") ~= 0 then
+				return
+			end
+		end
+
 		local clear = true
 
 		if self.itemstring ~= "" then

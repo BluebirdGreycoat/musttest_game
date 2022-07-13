@@ -239,19 +239,17 @@ register({
 	min_count = 1,
 	max_count = 1,
 
-	--[[
 	noise_params = {
 		offset = 0,
 		scale = 1,
 		spread = {x=512, y=512, z=512},
-		seed = 27192,
-		octaves = 3,
+		seed = 2852,
+		octaves = 5,
 		persist = 0.5,
 		lacunarity = 1.5,
 		flags = "",
 	},
 	noise_threshold = 0.3,
-	--]]
 })
 
 register({

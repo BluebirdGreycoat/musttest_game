@@ -198,16 +198,16 @@ end
 -- player had died, including any side-effects. The sole exception is that the
 -- player's health is not actually changed. You might need to update a few other
 -- datums too, to get exactly the right result.
-function bones.dump_bones(pname)
+function bones.dump_bones(pname, preserve_xp)
 	local player = minetest.get_player_by_name(pname)
 	if player then
-		bones.on_dieplayer(player)
+		bones.on_dieplayer(player, {}, preserve_xp)
 	end
 end
 
 
 
-bones.on_dieplayer = function(player)
+bones.on_dieplayer = function(player, reason, preserve_xp)
 	local bones_mode = "bones"
 	local player_inv = player:get_inventory()
   local pname = player:get_player_name()
@@ -276,22 +276,28 @@ bones.on_dieplayer = function(player)
 		-- Cannot create bones, therefore we don't modify player inventories.
 		minetest.log("action", "Player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos) .. ", but cannot create bones!")
 
-		-- Reduce player's mining XP without storing it anywhere.
-		-- Prevents player from being able to use this as an exploit.
-		-- Death should always have a cost!
-		local xp_amount = xp.get_xp(pname, "digxp")
-		xp_amount = (xp_amount / 3) * 2
-		xp.set_xp(pname, "digxp", xp_amount)
-		hud_clock.update_xp(pname)
+		if not preserve_xp then
+			-- Reduce player's mining XP without storing it anywhere.
+			-- Prevents player from being able to use this as an exploit.
+			-- Death should always have a cost!
+			local xp_amount = xp.get_xp(pname, "digxp")
+			xp_amount = (xp_amount / 3) * 2
+			xp.set_xp(pname, "digxp", xp_amount)
+			hud_clock.update_xp(pname)
+		end
 
 		return
 	end
 
+	local xp_for_bones = 0.0
+
 	-- Halve player XP!
-	local xp_amount = xp.get_xp(pname, "digxp")
-	xp_amount = xp_amount/2
-	local xp_for_bones = (xp_amount/3)*2
-	xp.set_xp(pname, "digxp", xp_amount)
+	if not preserve_xp then
+		local xp_amount = xp.get_xp(pname, "digxp")
+		xp_amount = xp_amount/2
+		xp_for_bones = (xp_amount/3)*2
+		xp.set_xp(pname, "digxp", xp_amount)
+	end
 
 	-- Note: portal sickness only removed if player would leave bones.
 	portal_sickness.on_die_player(pname)

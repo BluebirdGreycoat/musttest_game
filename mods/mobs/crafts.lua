@@ -157,6 +157,9 @@ minetest.register_craftitem("mobs:flame_staff", {
 	groups = {flammable = 1},
 	stack_max = 1, -- Stores metadata.
 	light_source = 14,
+	on_use = function(...)
+		return obsidian_gateway.on_flamestaff_use(...)
+	end,
 })
 
 minetest.register_craft({

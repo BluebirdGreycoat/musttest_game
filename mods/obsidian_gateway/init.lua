@@ -182,7 +182,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 	-- Player must be standing on one of these.
 	if nodeunder ~= "default:obsidian" and
 			nodeunder ~= "griefer:grieferstone" and
-			nodeunder ~= "cavestuff:dark_obsidian" then
+			nodeunder ~= "cavestuff:dark_obsidian" and
+			nodeunder ~= "cavestuff:glow_obsidian" then
 		-- This triggers when other types of portals are used, so is incorrect to display this chat.
 		--minetest.chat_send_player(pname, "# Server: You need to be standing in the gateway for it to work!")
 		return
@@ -230,6 +231,23 @@ function obsidian_gateway.attempt_activation(pos, player)
 	--	minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
 	--	return
 	--end
+
+	-- Gates CANNOT be initialized in the Abyss!
+	-- (Only the outgoing realm-gate is useable.)
+	-- This prevents players from building their own gates in the Abyss.
+	if not target and rc.current_realm_at_pos(origin) == "abyss" then
+		minetest.after(0, function()
+			-- Detonate some TNT!
+			tnt.boom(vector.add(ppos, {x=math_random(-3, 3), y=0, z=math_random(-3, 3)}), {
+				radius = 3,
+				ignore_protection = false,
+				ignore_on_blast = false,
+				damage_radius = 5,
+				disable_drops = true,
+			})
+		end)
+		return
+	end
 
 	local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. ns_key) == 1)
 	local actual_owner = meta:get_string("obsidian_gateway_owner_" .. ns_key)
@@ -422,7 +440,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				-- Dump player bones, as if they died.
 				-- This should behave exactly as if the player died, with the exception of
 				-- setting the player's health to 0.
-				bones.dump_bones(pname)
+				bones.dump_bones(pname, true)
 				bones.last_known_death_locations[pname] = nil -- Fake death.
 				local pref = minetest.get_player_by_name(pname)
 				pref:set_hp(pref:get_properties().hp_max)
@@ -451,7 +469,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 								-- Dump player bones, as if they died.
 								-- This should behave exactly as if the player died, with the exception of
 								-- setting the player's health to 0.
-								bones.dump_bones(fname)
+								bones.dump_bones(fname, true)
 								bones.last_known_death_locations[fname] = nil -- Fake death.
 
 								local pref = minetest.get_player_by_name(fname)
@@ -526,12 +544,13 @@ function obsidian_gateway.after_damage_gate(pos)
 
 	local idx = math.random(1, #points)
 	local tar = points[idx]
-	-- Using 'swap_node' to avoid triggering a callback cascade.
-	minetest.swap_node(tar, {name="default:lava_source"})
-	local meta = minetest.get_meta(tar)
-	meta:from_table(nil) -- Clear metadata.
+	minetest.set_node(tar, {name="fire:basic_flame"})
 	ambiance.sound_play("nether_portal_usual", pos, 1.0, 64)
 end
+
+
+
+dofile(obsidian_gateway.modpath .. "/flame_staff.lua")
 
 
 

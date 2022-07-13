@@ -15,7 +15,7 @@ mobs.register_mob("oerkki:night_master", {
 	visual_size = {x = 18, y = 18},
 	view_range = 40,
 	rotate = 270,
-	lifetimer = 500,
+	lifetimer = 5000,
 	floats=1,
 	walk_velocity = 3,
 	run_velocity = 4,
@@ -94,7 +94,7 @@ mobs.register_mob("oerkki:night_master_2", {
 	visual_size = {x = 18, y = 18},
 	view_range = 30,
 	rotate = 270,
-	lifetimer = 500,
+	lifetimer = 5000,
 	floats = 1,
 	walk_velocity = 3,
 	run_velocity = 4,
@@ -165,7 +165,7 @@ mobs.register_mob("oerkki:night_master_1", {
 	visual_size = {x = 18, y = 18},
 	view_range = 20,
 	rotate = 270,
-	lifetimer = 500,
+	lifetimer = 5000,
 	floats=1,
 	walk_velocity = 3,
 	run_velocity = 4,
@@ -204,35 +204,41 @@ mobs.register_mob("oerkki:night_master_1", {
 	}
 })
 
+local function arrow_effect(pos, radius, coverage)
+	-- Note: only spawning flames over ground to prevent the flame bolt entity
+	-- from falling out.
+	local flames = fire.scatter_flame_around_over_ground(pos, radius, coverage)
+	for k = 1, #flames, 1 do
+		local p = flames[k]
+		-- Note: item is flammable, so will burn up if fire not put out.
+		-- I have to manually set the ignite timer in order to prevent the item from
+		-- disappearing instantly.
+		local ent = minetest.add_item(p, "mobs:flame_bolt")
+		if ent then
+			local lua = ent:get_luaentity()
+			lua.ignite_timer = math.random(20, 40)
+		end
+	end
+end
+
 mobs.register_arrow("oerkki:flame_bolt", {
 	visual = "sprite",
 	visual_size = {x = 0.5, y = 0.5},
 	textures = {"dm_fireball.png"},
-	velocity = 16,
+	velocity = 8,
 
-	-- Direct hit, no fire ... just plenty of pain.
+	-- Player hit, plenty of pain and a lot more flame.
 	hit_player = function(self, player)
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {fleshy = 2},
 		}, nil)
-	end,
-
-	hit_mob = function(self, player)
-		player:punch(self.object, 1.0, {
-			full_punch_interval = 1.0,
-			damage_groups = {fleshy = 8},
-		}, nil)
+		arrow_effect(vector.round(player:get_pos()), 3, 10)
 	end,
 
 	-- Node hit, bursts into flame.
 	hit_node = function(self, pos, node)
-		local flames = fire.scatter_flame_around_over_ground(pos, 2, 5)
-		for k = 1, #flames, 1 do
-			local p = flames[k]
-			-- Note: item is flammable, so will burn up if fire not put out.
-			minetest.add_item(p, "mobs:flame_bolt")
-		end
+		arrow_effect(pos, 2, 5)
 	end
 })
 

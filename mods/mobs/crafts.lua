@@ -154,7 +154,7 @@ minetest.register_craftitem("mobs:flame_bolt", {
 minetest.register_craftitem("mobs:flame_staff", {
 	description = "Flame Staff",
 	inventory_image = "mobs_flame_staff.png",
-	groups = {flammable = 3},
+	groups = {flammable = 1},
 	stack_max = 1, -- Stores metadata.
 	light_source = 14,
 })

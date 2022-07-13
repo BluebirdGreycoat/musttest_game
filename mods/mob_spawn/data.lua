@@ -224,24 +224,22 @@ register({
 	name = "oerkki:night_master",
 	nodes = {"air"},
 	min_light = 0,
-	max_light = 0,
-	min_height = -25000,
-	max_height = -10000,
+	max_light = 14,
+	day_toggle = false,
+	min_height = 3080,
+	max_height = 3280,
 	clearance = 3,
 	flyswim = "flyswim",
 
-	mob_limit = 1,
-	absolute_mob_limit = 100,
-	mob_range = 100,
-
-	-- After a successful spawn, wait a lot of time before spawning another one.
-	success_time_min = 60*5,
-	success_time_max = 60*10,
+	mob_limit = 2,
+	absolute_mob_limit = 10,
+	mob_range = 50,
 
 	-- Never spawn more than 1 mob at a time.
 	min_count = 1,
 	max_count = 1,
 
+	--[[
 	noise_params = {
 		offset = 0,
 		scale = 1,
@@ -253,6 +251,7 @@ register({
 		flags = "",
 	},
 	noise_threshold = 0.3,
+	--]]
 })
 
 register({

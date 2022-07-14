@@ -450,6 +450,9 @@ cw.generate_realm = function(minp, maxp, seed)
 	vm:write_to_map()
 
 	for k, v in ipairs(tree_positions1) do
+		local bottom = v.y
+		local orig_x = v.x
+		local orig_z = v.z
 		local w = v.w
 		if w > 1.0 then
 			w = 1.0
@@ -505,6 +508,15 @@ cw.generate_realm = function(minp, maxp, seed)
 					end
 				end
 			end
+		end
+
+		local top = v.y + 17
+
+		-- This is somewhat intensive, so don't run for every single tree.
+		if math_random(1, 5) == 1 then
+			local minp = {x=orig_x - 2, y=bottom, z=orig_z - 2}
+			local maxp = {x=orig_x + 2, y=top, z=orig_z + 2}
+			dryleaves.replace_leaves(minp, maxp, 5)
 		end
 	end
 end

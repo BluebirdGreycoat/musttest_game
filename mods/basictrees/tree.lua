@@ -119,21 +119,25 @@ minetest.register_node("basictrees:tree_wood", {
 
 
 
+-- drawtype = "plantlike"
+-- visual_scale = 1.4
+-- walkable = false ?
+-- climbable = true ?
 minetest.register_node("basictrees:tree_leaves", {
 	description = "Tree Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
 
 	tiles = {"default_leaves.png"},
-	--special_tiles = {"default_leaves_simple.png"},
+
 	paramtype = "light",
 	groups = basictrees.leaves_groups,
 	drop = basictrees.get_leafdrop_table(SAPLING_CHANCE, "basictrees:tree_sapling", "basictrees:tree_leaves"),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED,
-  
-  on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:tree_trunk"}),
+
+	on_construct = enhanced_leafdecay.make_leaf_constructor({}),
+	on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:tree_trunk"}),
 })
 
 
@@ -160,6 +164,4 @@ minetest.register_alias("default:sapling",  "basictrees:tree_sapling")
 minetest.register_alias("default:wood",     "basictrees:tree_wood")
 minetest.register_alias("default:leaves",   "basictrees:tree_leaves")
 minetest.register_alias("default:apple",    "basictrees:tree_apple")
-
-
 

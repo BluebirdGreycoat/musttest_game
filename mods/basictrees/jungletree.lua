@@ -85,12 +85,15 @@ minetest.register_node("basictrees:jungletree_leaves", {
   on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:jungletree_trunk"}),
 })
 
+
+
+-- Non-flammable version for Channelwood.
 minetest.register_node("basictrees:jungletree_leaves2", {
 	description = "Jungle Tree Leaves",
 	drawtype = "allfaces_optional",
 	waving = 1,
 	tiles = {"default_jungleleaves.png"},
-	--special_tiles = {"default_jungleleaves_simple.png"},
+
 	paramtype = "light",
 	groups = basictrees.cw_leaves_groups,
 	drop = basictrees.get_leafdrop_table(SAPLING_CHANCE, "basictrees:jungletree_sapling", "basictrees:jungletree_leaves"),

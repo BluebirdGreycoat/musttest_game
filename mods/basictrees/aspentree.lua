@@ -52,7 +52,7 @@ minetest.register_node("basictrees:aspen_wood", {
 minetest.register_node("basictrees:aspen_leaves", {
 	description = "Aspen Leaves",
 	drawtype = "allfaces_optional",
-	visual_scale = 1.3,
+
 	tiles = {"default_aspen_leaves.png"},
 	waving = 1,
 	paramtype = "light",

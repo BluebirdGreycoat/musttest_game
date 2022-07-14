@@ -526,13 +526,16 @@ if ARMOR_DROP == true or ARMOR_DESTROY == true then
 
 end
 
+local singleplayer = minetest.is_singleplayer()
 minetest.register_on_player_hpchange(function(player, hp_change)
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
 	if pname and hp_change < 0 then
 
 		-- Admin does not take damage.
-		if gdac.player_is_admin(player) then
-			return 0
+		if not singleplayer then
+			if gdac.player_is_admin(player) then
+				return 0
+			end
 		end
 
 		-- used for insta kill tools/commands like /kill (doesnt damage armor)

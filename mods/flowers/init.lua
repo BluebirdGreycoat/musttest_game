@@ -289,6 +289,12 @@ if not flowers.registered then
 			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
 			{color_pink = 1, flammable = 1}
 		},
+		{
+			"thornstalk",
+			"Thornstalk",
+			{-0.15, -0.5, -0.15, 0.15, 7 / 16, 0.15},
+			{flammable = 1} -- No dye.
+		},
 	}
 
 	for _,item in pairs(flowers.datas) do
@@ -297,6 +303,12 @@ if not flowers.registered then
 
 	flowers.registered = true
 end
+
+
+-- Ouch.
+minetest.override_item("flowers:thornstalk", {
+	damage_per_second = 2,
+})
 
 
 -- Flower spread

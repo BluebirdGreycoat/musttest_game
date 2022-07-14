@@ -173,6 +173,14 @@ jarkati.register_decoration({
 	chunk_chance = 100,
 })
 
+jarkati.register_decoration({
+	nodes = "flowers:thornstalk",
+	probability = 3000,
+	place_on = {"default:desert_sand"},
+	replace_surface = "default:dirt_with_dry_grass",
+	chunk_chance = 1,
+})
+
 
 jarkati.register_decoration({
 	nodes = {

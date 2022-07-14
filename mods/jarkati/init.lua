@@ -92,6 +92,7 @@ function jarkati.register_decoration(data)
 
 	td.y_min = data.y_min or -31000
 	td.y_max = data.y_max or 31000
+	td.chunk_chance = data.chunk_chance or 1
 
 	jarkati.decorations[#jarkati.decorations + 1] = td
 end
@@ -139,6 +140,7 @@ jarkati.register_decoration({
 	probability = 1500,
 	place_on = {"default:desert_sand"},
 	replace_surface = "default:dirt_with_dry_grass",
+	chunk_chance = 1,
 })
 
 -- Scatter "rubble" around the bases of cliffs.
@@ -155,21 +157,21 @@ jarkati.register_decoration({
 	place_on = {"default:desert_sand"},
 })
 
--- These should add a decoration to the Jarkati landscape but couldn't get it to work. I modified the depends to use flowers but the way the flowers mod is set up seems to conflict with the way the jarkati mod interprets "nodes". Maybe you can look into it? I added these two items to flowers but did not otherwise put them in the mapgen. They will show up in the craftguide.
-        
---jarkati.register_decoration({
---	nodes = "flowers:desertrose_red",
---	probability = 100,
---	place_on = {"default:desert_sand"},
---        replace_surface = "default:dirt_with_dry_grass",
---})
+jarkati.register_decoration({
+	nodes = "flowers:desertrose_red",
+	probability = 3000,
+	place_on = {"default:desert_sand"},
+	replace_surface = "default:dirt_with_dry_grass",
+	chunk_chance = 100,
+})
 
---jarkati.register_decoration({
---	nodes = "flowers:desertrose_pink",
---	probability = 100,
---	place_on = {"default:desert_sand"},
---        replace_surface = "default:dirt_with_dry_grass",
---})
+jarkati.register_decoration({
+	nodes = "flowers:desertrose_pink",
+	probability = 3000,
+	place_on = {"default:desert_sand"},
+	replace_surface = "default:dirt_with_dry_grass",
+	chunk_chance = 100,
+})
 
 
 jarkati.register_decoration({
@@ -975,7 +977,7 @@ jarkati.generate_realm = function(minp, maxp, seed)
 			for k, v in ipairs(all_decorations) do
 
 				if not (y0 > v.y_max or y1 < v.y_min) then
-					if dpr:next(1, v.probability) == 1 then
+					if dpr:next(1, v.chunk_chance) == 1 and dpr:next(1, v.probability) == 1 then
 						-- Don't bother with ground-level placement if 'all_floors' was specified.
 						if (v.ground_level and not v.all_floors) then
 							local g0 = heightmap[max_area:index(x, 0, z)]

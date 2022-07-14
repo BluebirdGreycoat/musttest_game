@@ -34,19 +34,19 @@ minetest.register_craft({
   time = 3,
 })
 
---minetest.register_craft({
---  type = "extracting",
---  output = 'dye:red 5',
---  recipe = 'flowers:desertrose_red',
---  time = 3,
---})
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:red 5',
+  recipe = 'flowers:desertrose_red',
+  time = 3,
+})
 
---minetest.register_craft({
---  type = "extracting",
---  output = 'dye:pink 5',
---  recipe = 'flowers:desertrose_pink',
---  time = 3,
---})
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:pink 5',
+  recipe = 'flowers:desertrose_pink',
+  time = 3,
+})
 
 
 minetest.register_craft({

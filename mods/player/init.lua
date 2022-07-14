@@ -1,22 +1,17 @@
 
-default = default or {}
-player = player or {}
-player.modpath = minetest.get_modpath("player")
-
-
-
-
 -- Minetest 0.4 mod: player
 -- See README.txt for licensing and other information.
+player = player or {}
+player.modpath = minetest.get_modpath("player")
 
 -- Player animation blending
 -- Note: This is currently broken due to a bug in Irrlicht, leave at 0
 local animation_blend = 0
 
-default.registered_player_models = { }
+player.registered_player_models = { }
 
 -- Local for speed.
-local models = default.registered_player_models
+local models = player.registered_player_models
 
 function default.player_register_model(name, def)
 	models[name] = def
@@ -47,6 +42,7 @@ local player_model = {}
 local player_textures = {}
 local player_anim = {}
 local player_sneak = {}
+local player_velocity = {}
 default.player_attached = {}
 
 function default.player_get_animation(player)
@@ -125,6 +121,12 @@ minetest.register_on_joinplayer(function(player)
   end
   
 	player:hud_set_hotbar_selected_image("hud_hotbar_selected.png")
+
+	-- Update player velocity if available.
+	if player_velocity[pname] then
+		player:add_velocity(player_velocity[pname])
+		player_velocity[pname] = nil
+	end
 end)
 
 minetest.register_chatcommand("hotbar", {
@@ -151,6 +153,9 @@ minetest.register_on_leaveplayer(function(player)
 	player_model[name] = nil
 	player_anim[name] = nil
 	player_textures[name] = nil
+
+	-- Save player velocity. If they login again, I will be able to restore it.
+	player_velocity[name] = player:get_velocity()
 end)
 
 -- Localize for better performance.

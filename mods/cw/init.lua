@@ -298,6 +298,7 @@ local c_dirt            = minetest.get_content_id("darkage:darkdirt")
 local c_silt            = minetest.get_content_id("darkage:silt")
 local c_mud             = minetest.get_content_id("darkage:mud")
 local c_clay            = minetest.get_content_id("default:clay")
+local c_lily            = minetest.get_content_id("flowers:waterlily")
 
 -- Externally located tables for performance.
 local data = {}
@@ -323,6 +324,8 @@ local RANDPOS = {
 
 cw.generate_realm = function(minp, maxp, seed)
 	local nstart = cw.REALM_START
+	minp = table.copy(minp)
+	maxp = table.copy(maxp)
 
 	-- Don't run for out-of-bounds mapchunks.
 	local nfinish = nstart + 100
@@ -330,11 +333,21 @@ cw.generate_realm = function(minp, maxp, seed)
 		return
 	end
 
+	-- Generate the full column all at once.
+	if minp.y > nstart then
+		minp.y = nstart
+	end
+	if maxp.y < nfinish then
+		maxp.y = nfinish
+	end
+
 	-- Grab the voxel manipulator.
 	-- Read current map data.
-	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+	local vm = VoxelManip()
+	vm:read_from_map(vector.subtract(minp, 16), vector.add(maxp, 16))
+	local emin, emax = vm:get_emerged_area()
 	vm:get_data(data)
-	local area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 
 	local pr = PseudoRandom(seed + 381)
 
@@ -368,6 +381,7 @@ cw.generate_realm = function(minp, maxp, seed)
 	local ghv = cw.GROUND_HEIGHT_VARIATION
 
 	local tree_positions1 = {}
+	local lily_positions1 = {}
 
 	-- First mapgen pass.
 	for z = z0, z1 do
@@ -388,24 +402,35 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			-- Fixed ocean height.
 			local ocean_depth = (nstart + od)
+			local ocean_surface = ocean_depth + 1
 
 			-- Ground height.
 			local an1 = abs(n1)
 			local ground_depth = (nstart + gd + floor(an1 * ghv))
 			local water_depth = (ocean_depth - ground_depth)
+			local lily_chance = 1000
 
 			if water_depth <= 2 then
 				if pr:next(1, 16) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
+				lily_chance = 50
 			elseif water_depth == 3 then
 				if pr:next(1, 40) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
+				lily_chance = 150
 			elseif water_depth == 4 then
 				if pr:next(1, 300) == 1 then
 					tree_positions1[#tree_positions1+1] = {x=x, y=ground_depth, z=z, w=an1}
 				end
+				lily_chance = 200
+			end
+
+			-- Enable waterlilies.
+			local want_waterlily = false
+			if pr:next(1, lily_chance) == 1 then
+				want_waterlily = true
 			end
 
 			-- First pass through column.
@@ -432,6 +457,10 @@ cw.generate_realm = function(minp, maxp, seed)
 							end
 						elseif y <= ocean_depth then
 							data[vp] = c_water
+						elseif y == ocean_surface then
+							if want_waterlily then
+								data[vp] = c_lily
+							end
 						end
 					end
 				end
@@ -440,19 +469,11 @@ cw.generate_realm = function(minp, maxp, seed)
 		end
 	end
 
-	-- Finalize voxel manipulator.
-	-- Note: we specifically do not generate ores! The value of this realm is in
-	-- its trees.
 	vm:set_data(data)
-	vm:set_lighting({day=0, night=0})
-	vm:calc_lighting()
-	vm:update_liquids()
-	vm:write_to_map()
 
-	for k, v in ipairs(tree_positions1) do
+	for k, v_orig in ipairs(tree_positions1) do
+		local v = table.copy(v_orig)
 		local bottom = v.y
-		local orig_x = v.x
-		local orig_z = v.z
 		local w = v.w
 		if w > 1.0 then
 			w = 1.0
@@ -473,49 +494,65 @@ cw.generate_realm = function(minp, maxp, seed)
 		end
 
 		local force_place = false
-		minetest.place_schematic(v, path, "random", JUNGLETREE_REPLACEMENTS, force_place)
+		minetest.place_schematic_on_vmanip(vm, v, path, "random", JUNGLETREE_REPLACEMENTS, force_place)
 
 		if pr:next(1, 5) <= 4 then
 			v.y = v.y + h
 			if h > 10 then
-				minetest.place_schematic(vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				minetest.place_schematic_on_vmanip(vm, vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
 			else
-				minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				minetest.place_schematic_on_vmanip(vm, v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
 			end
 
 			if pr:next(1, 3) <= 2 then
 				v.y = v.y + h
 				if h > 10 then
-					minetest.place_schematic(vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+					minetest.place_schematic_on_vmanip(vm, vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
 				else
-					minetest.place_schematic(v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+					minetest.place_schematic_on_vmanip(vm, v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
 				end
 
 				if h >= 10 then
 					if pr:next(1, 2) == 1 then
 						v.y = v.y + 13
-						minetest.place_schematic(v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+						minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
 
 						if h > 10 and pr:next(1, 3) == 1 then
 							v.y = v.y + 13
-							minetest.place_schematic(v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+							minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
 						end
 					end
 				elseif h >= 8 then
 					if pr:next(1, 3) == 1 then
 						v.y = v.y + 12
-						minetest.place_schematic(v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+						minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
 					end
 				end
 			end
 		end
 
-		local top = v.y + 17
+		-- Store tree bottom/top.
+		v_orig.b = bottom
+		v_orig.t = v.y + 17
+	end
+
+	-- Finalize voxel manipulator.
+	-- Note: we specifically do not generate ores! The value of this realm is in
+	-- its trees.
+	vm:set_lighting({day=0, night=0})
+	vm:calc_lighting()
+	-- Liquid is never added in a way that would require flowing update.
+	--vm:update_liquids()
+	vm:write_to_map()
+
+	for k, v in ipairs(tree_positions1) do
+		local bottom = v.y
+		local top = v.t
 
 		-- This is somewhat intensive, so don't run for every single tree.
 		if math_random(1, 5) == 1 then
-			local minp = {x=orig_x - 2, y=bottom, z=orig_z - 2}
-			local maxp = {x=orig_x + 2, y=top, z=orig_z + 2}
+			local minp = {x=v.x - 2, y=bottom, z=v.z - 2}
+			local maxp = {x=v.x + 2, y=top, z=v.z + 2}
 			dryleaves.replace_leaves(minp, maxp, 5)
 		end
 	end

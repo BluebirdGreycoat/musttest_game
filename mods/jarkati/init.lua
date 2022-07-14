@@ -178,7 +178,7 @@ jarkati.register_decoration({
 	probability = 3000,
 	place_on = {"default:desert_sand"},
 	replace_surface = "default:dirt_with_dry_grass",
-	chunk_chance = 1,
+	chunk_chance = 5,
 })
 
 

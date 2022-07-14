@@ -12,7 +12,7 @@ tech = {
 
 	breeder={power=10000, time=10, totaltime=60*60*24*10, buffer=30000},
 	reactor={power=10000, time=5, totaltime=60*60*24*7, buffer=60000},
-	converter={power=1000, buffer=50000},
+	converter={power=1000, buffer=10000},
 
 	-- Leecher power usage is per water node.
 	leecher={power=10, buffer=60000},

@@ -165,6 +165,9 @@ minetest.register_node("rackstone:redrack", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	-- Otherwise the nether will be pitch black.
+	light_source = 2,
   
   after_destruct = function(...)
     after_redrack_remove(...)

@@ -1,6 +1,8 @@
 
 local math_random = math.random
 
+-- Note: this function assumes it is only executed at mapgen time. It bypasses
+-- node callbacks!
 function dryleaves.replace_leaves(minp, maxp, coverage)
 	local leaves = {}
 	if #dryleaves.list == 0 then
@@ -16,7 +18,8 @@ function dryleaves.replace_leaves(minp, maxp, coverage)
 		if math_random(0, 100) < coverage then
 			local pos = targets[idx]
 			local leaf = dryleaves.list[math_random(1, #dryleaves.list)]
-			minetest.set_node(pos, {name=leaf})
+			-- There is no need to run callbacks.
+			minetest.swap_node(pos, {name=leaf})
 			leaves[#leaves + 1] = pos
 		end
 	end

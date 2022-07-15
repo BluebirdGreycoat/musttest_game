@@ -208,6 +208,7 @@ ambiance.tmpsounds = {
 	{name="crestedlark",    gain=1.0, miny=3000,    maxy=3300,   time="day",     indoors=false, mintime=20, maxtime=60, },
 	{name="deer",           gain=1.0, miny=3000,    maxy=3300,   time="night",   indoors=false, mintime=20, maxtime=120, },
 	{name="frog",           gain=0.7, miny=3000,    maxy=3300,   time="liminal", indoors=false, },
+	{name="frog",           gain=0.1, miny=3000,    maxy=3070,   time="night",   indoors=false, mintime=5, maxtime=15},
 	{name="robin",          gain=1.0, miny=3000,    maxy=3300,   time="day",     indoors=false, },
 	{name="bluejay",        gain=1.0, miny=3000,    maxy=3300,   time="liminal", indoors=false, },
 	{name="gull",           gain=1.0, miny=3000,    maxy=3300,   time="day",     indoors=false, },

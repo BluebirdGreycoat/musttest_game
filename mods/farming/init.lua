@@ -72,9 +72,8 @@ farming.register_plant("farming:cotton", {
 minetest.register_craft({
 	output = "wool:white",
 	recipe = {
-		{"farming:cloth", "farming:cloth", "farming:cloth"},
-		{"farming:cloth", "farming:cloth", "farming:cloth"},
-		{"farming:cloth", "farming:cloth", "farming:cloth"},
+		{"farming:cloth", "farming:cloth"},
+		{"farming:cloth", "farming:cloth"},
 	}
 })
 

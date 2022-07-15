@@ -224,7 +224,7 @@ register({
 	name = "oerkki:night_master",
 	nodes = {"air"},
 	min_light = 0,
-	max_light = 14,
+	max_light = 15,
 	day_toggle = false,
 	min_height = 3080,
 	max_height = 3280,
@@ -239,6 +239,7 @@ register({
 	min_count = 1,
 	max_count = 1,
 
+	-- Same as moonheron, with higher threshold.
 	noise_params = {
 		offset = 0,
 		scale = 1,
@@ -249,7 +250,40 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.3,
+	noise_threshold = 0.4,
+})
+
+register({
+	name = "nssm:moonheron",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 15,
+	day_toggle = false,
+	min_height = 3060,
+	max_height = 3280,
+	clearance = 3,
+	flyswim = "flyswim",
+
+	mob_limit = 10,
+	absolute_mob_limit = 20,
+	mob_range = 50,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 1,
+
+	-- Same as night master, with lower threshold.
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 2852,
+		octaves = 5,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.25,
 })
 
 register({

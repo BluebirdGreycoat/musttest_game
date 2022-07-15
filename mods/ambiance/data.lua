@@ -228,6 +228,22 @@ ambiance.tmpsounds = {
 		noise_threshold = -0.3,
 	},
 
+	-- Noise parameters match the spawning perlin for the moonheron mob.
+	{
+		name="night_master",  gain=1.0, miny=3000,    maxy=3300,   time="",   indoors=false, mintime=180, maxtime=360,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=512, y=512, z=512},
+			seed = 2852,
+			octaves = 5,
+			persist = 0.5,
+			lacunarity = 1.5,
+			flags = "",
+		},
+		noise_threshold = 0.4,
+	},
+
 	-- Rare deep cave sounds.
 	{
    name="obsidianmonster_obsidianmonster", gain=1.0, miny=-31000, maxy=-128, time="", indoors=false, mintime=280, maxtime=560,

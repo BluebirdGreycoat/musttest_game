@@ -40,14 +40,14 @@ minetest.register_node("aloevera:aloe_seed", {
 minetest.register_craftitem("aloevera:aloe_slice", {
 	description = S("Aloe Vera Slice"),
 	inventory_image = "aloe_vera_slice.png",
-        on_use = minetest.item_eat(3),
+	on_use = minetest.item_eat(3),
 	groups = {foodrot=1},
 	flowerpot_insert = {"aloevera:aloe_plant_01", "aloevera:aloe_plant_02", "aloevera:aloe_plant_03", "aloevera:aloe_plant_04"},
 })
 
 -- aloe gel
 minetest.register_craftitem("aloevera:aloe_gel", {
-	description = S("Aloe Vera Gel\nHopefully will have a use someday."),
+	description = S("Aloe Vera Gel"),
 	inventory_image = "aloe_vera_gel.png",
 })
 
@@ -56,6 +56,13 @@ minetest.register_craft({
   output = 'aloevera:aloe_gel 5',
   recipe = 'aloevera:aloe_slice',
   time = 3,
+})
+
+minetest.register_craft({
+  type = "shapeless",
+  output = 'aloevera:aloe_gel',
+  recipe = {'aloevera:aloe_slice', 'farming:mortar_pestle'},
+	replacements = {{'farming:mortar_pestle', 'farming:mortar_pestle'}},
 })
 
 -- aloe_slice definition
@@ -113,7 +120,7 @@ crop_def.drop = {
 		{items = {'aloevera:aloe_slice'}, rarity = 1},
 		{items = {'aloevera:aloe_slice 3'}, rarity = 3},
 		{items = {'aloevera:aloe_seed'}, rarity = 1},
-		{items = {'aloevera:aloe_seed'}, rarity = 2},
+		{items = {'aloevera:aloe_seed'}, rarity = 3},
 	}
 }
 minetest.register_node("aloevera:aloe_plant_04", table.copy(crop_def))

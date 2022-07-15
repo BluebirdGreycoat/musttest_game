@@ -474,6 +474,25 @@ register({
 	noise_threshold = 0.3,
 })
 
+register({
+	name = "animalworld:suboar",
+	nodes = {"rackstone:cobble"},
+	min_light = 0,
+	max_light = 15,
+	day_toggle = false,
+	min_height = 4160,
+	max_height = 4200,
+	clearance = 2,
+
+	mob_limit = 2,
+	absolute_mob_limit = 6,
+	mob_range = 30,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 1,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 local players = minetest.get_connected_players()

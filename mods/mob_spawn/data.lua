@@ -374,6 +374,72 @@ register({
 	spawn_chance = 1,
 })
 
+register({
+	name = "nssm:phoenix",
+	nodes = {"air"},
+	min_light = 12,
+	max_light = 15,
+	day_toggle = true,
+	min_height = 3735,
+	max_height = 3800,
+	clearance = 3,
+	flyswim = "flyswim",
+
+	mob_limit = 2,
+	absolute_mob_limit = 10,
+	mob_range = 40,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 1,
+
+	-- Same as scrausics, but higher threshold.
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 48727,
+		octaves = 5,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.5,
+})
+
+register({
+	name = "nssm:scrausics",
+	nodes = {"air"},
+	min_light = 12,
+	max_light = 15,
+	day_toggle = true,
+	min_height = 3735,
+	max_height = 3800,
+	clearance = 3,
+	flyswim = "flyswim",
+
+	mob_limit = 10,
+	absolute_mob_limit = 30,
+	mob_range = 40,
+
+	-- Never spawn more than 1 mob at a time.
+	min_count = 1,
+	max_count = 2,
+
+	-- Same as phoenix, but lower threshold.
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 48727,
+		octaves = 5,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 local players = minetest.get_connected_players()

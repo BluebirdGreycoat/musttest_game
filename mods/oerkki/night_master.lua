@@ -1,4 +1,5 @@
 
+local BOLT_CHANCE = 15
 local math_random = math.random
 
 mobs.register_mob("oerkki:night_master", {
@@ -209,14 +210,16 @@ local function arrow_effect(pos, radius, coverage)
 	-- from falling out.
 	local flames = fire.scatter_flame_around_over_ground(pos, radius, coverage)
 	for k = 1, #flames, 1 do
-		local p = flames[k]
-		-- Note: item is flammable, so will burn up if fire not put out.
-		-- I have to manually set the ignite timer in order to prevent the item from
-		-- disappearing instantly.
-		local ent = minetest.add_item(p, "mobs:flame_bolt")
-		if ent then
-			local lua = ent:get_luaentity()
-			lua.ignite_timer = math.random(20, 40)
+		if math_random(1, BOLT_CHANCE) == 1 then
+			local p = flames[k]
+			-- Note: item is flammable, so will burn up if fire not put out.
+			-- I have to manually set the ignite timer in order to prevent the item from
+			-- disappearing instantly.
+			local ent = minetest.add_item(p, "mobs:flame_bolt")
+			if ent then
+				local lua = ent:get_luaentity()
+				lua.ignite_timer = math_random(10, 40)
+			end
 		end
 	end
 end

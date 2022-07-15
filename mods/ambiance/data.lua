@@ -231,7 +231,7 @@ ambiance.tmpsounds = {
 
 	-- Noise parameters match the spawning perlin for the moonheron mob.
 	{
-		name="night_master",  gain=1.0, miny=3000,    maxy=3300,   time="",   indoors=false, mintime=180, maxtime=360,
+		name="night_master",  gain=1.0, miny=3000,    maxy=3300,   time="",   indoors=nil, mintime=180, maxtime=360,
 		noise_params = {
 			offset = 0,
 			scale = 1,

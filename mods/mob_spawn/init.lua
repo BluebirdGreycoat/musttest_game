@@ -113,6 +113,11 @@ function mob_spawn.register_spawn(data)
 		tb.perlin = PerlinNoise(tb.noise_params)
 	end
 
+	-- If specified, this causes the spawn logic to do an extra check to make sure
+	-- the final spawn coordinates are within the boundaries of ANY realm. Most
+	-- mobs won't need this, as their min/max Y-coords preclude spawning in void.
+	tb.realm_restriction = data.realm_restriction or nil
+
 	-- Store the data. We use an indexed array.
 	-- This allows the same mob to have multiple spawn registrations.
 	local registered = mob_spawn.registered
@@ -534,6 +539,13 @@ function mob_spawn.spawn_mobs(pname, index)
 		-- Pick a random point for each spawn attempt. Prevents bunching.
 		local pos = points[random(1, #points)]
 		report(mname, "Attempting to spawn mob @ " .. minetest.pos_to_string(pos) .. "!")
+
+		-- For spawns that require it, don't spawn outside of the world.
+		if mdef.realm_restriction then
+			if not rc.is_valid_realm_pos(pos) then
+				goto next_spawn
+			end
+		end
 
 		-- Count mobs in mob range.
 		-- Don't spawn mob if there are already too many mobs in area.

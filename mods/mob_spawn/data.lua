@@ -487,6 +487,7 @@ register({
 	mob_limit = 2,
 	absolute_mob_limit = 6,
 	mob_range = 30,
+	realm_restriction = true,
 
 	-- Never spawn more than 1 mob at a time.
 	min_count = 1,

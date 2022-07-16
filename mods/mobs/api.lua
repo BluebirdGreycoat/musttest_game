@@ -2158,16 +2158,16 @@ local function runaway_from(self)
 	local objs = minetest.get_objects_inside_radius(s, self.view_range)
 
 	for n = 1, #objs do
-
+		-- Ignore dead players.
 		if objs[n]:is_player() then
-
-			pname = objs[n]:get_player_name()
-
-			if mobs.is_invisible(pname) or self.owner == pname then
-				name = ""
-			else
-				player = objs[n]
-				name = "player"
+			if objs[n]:get_hp() > 0 then
+				pname = objs[n]:get_player_name()
+				if mobs.is_invisible(pname) or self.owner == pname then
+					name = ""
+				else
+					player = objs[n]
+					name = "player"
+				end
 			end
 		else
 			obj = objs[n]:get_luaentity()

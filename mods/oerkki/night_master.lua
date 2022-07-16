@@ -1,5 +1,5 @@
 
-local BOLT_CHANCE = 15
+local BOLT_CHANCE = 5
 local math_random = math.random
 
 mobs.register_mob("oerkki:night_master", {

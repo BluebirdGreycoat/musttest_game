@@ -16,7 +16,7 @@ mobs.register_mob("warthog:warthog", {
 	damage = 5,
 	hp_min = 35,
 	hp_max = 65,
-	armor = 200,
+	armor = 50,
 	armor_level = 2,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	visual = "mesh",

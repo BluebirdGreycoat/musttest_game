@@ -4,11 +4,12 @@ mobs.register_mob("animalworld:suboar", {
 	description = "Swinepig",
 	passive = false,
 	attack_type = "dogfight",
+	group_attack = true,
 	reach = 2,
-	damage = 2,
+	damage = 16,
 	hp_min = 5,
 	hp_max = 35,
-	armor = 200,
+	armor = 70,
 	collisionbox = {-0.5, -0.01, -0.5, 0.5, 0.95, 0.5},
 	visual = "mesh",
 	mesh = "animalworld_suboar.x",
@@ -24,6 +25,7 @@ mobs.register_mob("animalworld:suboar", {
 	walk_velocity = 1,
 	run_velocity = 3,
 	runaway = false,
+	runaway_from = {"player"},
 	jump = true,
 	jump_height = 6,
 	stepheight = 2,
@@ -34,7 +36,7 @@ mobs.register_mob("animalworld:suboar", {
 	water_damage = 0,
 	lava_damage = 4,
 	light_damage = 0,
-	fear_height = 4,
+	fear_height = 3,
 	animation = {
 		speed_normal = 15,
 		stand_start = 25,
@@ -44,7 +46,8 @@ mobs.register_mob("animalworld:suboar", {
 		punch_start = 70,
 		punch_end = 100,
 	},
-	view_range = 10,
+	view_range = 20,
+  makes_bones_in_lava = true,
 })
 
-mobs.register_egg("animalworld:suboar", "Suboar", "default_dirt.png", 1)
+mobs.register_egg("animalworld:suboar", "Swinepig", "default_dirt.png", 1)

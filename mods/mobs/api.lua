@@ -26,17 +26,17 @@ local atan = function(x)
 	end
 end
 
--- function to tell mob which direction to turn to face target
--- add pi to the returned yaw to face in the opposite direction
-local function compute_yaw_to_target(self, p, s)
+-- Function to tell mob which direction to turn to face target.
+-- Add pi to the returned yaw to face in the opposite direction.
+local function compute_yaw_to_target(self, target, pos)
 	local vec = {
-		x = p.x - s.x,
-		z = p.z - s.z
+		x = target.x - pos.x,
+		z = target.z - pos.z
 	}
 
 	local yaw = (atan(vec.z / vec.x) + pi / 2) - self.rotate
 
-	if p.x >= s.x then yaw = yaw + pi end
+	if target.x > pos.x then yaw = yaw + pi end
 
 	return yaw
 end
@@ -66,7 +66,7 @@ if not mobs.invis then
 end
 
 function mobs.is_invisible(pname)
-	return cloaking.is_cloaked(pname)
+	return (cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname))
 end
 
 -- creative check
@@ -2146,6 +2146,11 @@ local function runaway_from(self)
 		return
 	end
 
+	-- If non-passive mob is attacking, then it will not run away right now.
+	if self.state == "attack" and not self.passive then
+		return
+	end
+
 	local s = self.object:get_pos()
 	local p, sp, dist, pname
 	local player, obj, min_player, name
@@ -2158,9 +2163,7 @@ local function runaway_from(self)
 
 			pname = objs[n]:get_player_name()
 
-			if mobs.is_invisible(pname)
-			or self.owner == pname then
-
+			if mobs.is_invisible(pname) or self.owner == pname then
 				name = ""
 			else
 				player = objs[n]
@@ -2170,14 +2173,17 @@ local function runaway_from(self)
 			obj = objs[n]:get_luaentity()
 
 			if obj then
-				player = obj.object
-				name = obj.name or ""
+				-- Ignore entities which are not mobs.
+				if obj._cmi_is_mob then
+					player = obj.object
+					name = obj.name or ""
+				end
 			end
 		end
 
-		-- find specific mob to runaway from
-		if name ~= "" and name ~= self.name
-		and specific_runaway(self.runaway_from, name) then
+		-- Find specific mob to runaway from.
+		if name ~= "" and name ~= self.name and
+				specific_runaway(self.runaway_from, name) then
 
 			p = player:get_pos()
 			sp = s
@@ -2190,7 +2196,7 @@ local function runaway_from(self)
 
 			-- choose closest player/mob to runaway from
 			if dist < min_dist
-			and line_of_sight(self, sp, p, 2) == true then
+					and line_of_sight(self, sp, p, 2) == true then
 				min_dist = dist
 				min_player = player
 			end
@@ -2202,6 +2208,7 @@ local function runaway_from(self)
 		local lp = player:get_pos()
 
 		local yaw = compute_yaw_to_target(self, lp, s)
+		yaw = yaw + pi
 		yaw = set_yaw(self, yaw, 4)
 
 		self.state = "runaway"
@@ -3344,6 +3351,14 @@ local function mob_activate(self, staticdata, def, dtime)
 
 			return
 		end
+	end
+
+	-- Remove mob if outside realm dimensions.
+	if not rc.is_valid_realm_pos(self.object:get_pos()) then
+		-- Mark for removal as last action on mob_step().
+		self.mkrm = true
+
+		return
 	end
 
 	-- load entity variables

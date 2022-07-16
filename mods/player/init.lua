@@ -220,7 +220,13 @@ minetest.register_on_joinplayer(function(player)
 	
 	-- Disable the minimap. Cheaters will of course be able to enable it.
 	-- Can be reenabled via item in-game.
-	player:hud_set_flags({minimap=false, minimap_radar=false})
+	player:hud_set_flags({
+		minimap = false,
+		minimap_radar = false,
+
+		-- At last! The custom coordinate system is now First Class!
+		basic_debug = false,
+	})
 end)
 
 

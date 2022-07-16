@@ -1258,20 +1258,20 @@ local function do_jump(self)
 	local pos = self.object:get_pos()
 	local yaw = self.object:get_yaw()
 
-	-- what is mob standing on?
-	pos.y = pos.y + self.collisionbox[2] - 0.2
+	-- sanity check
+	if not yaw then return false end
 
-	local nod = node_ok(pos)
-
---print ("standing on:", nod.name, pos.y)
-
-	if minetest.registered_nodes[nod.name].walkable == false then
+	-- we can only jump if standing on solid node
+	if minetest.registered_nodes[self.standing_on].walkable == false then
 		return false
 	end
 
 	-- where is front
 	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
 	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
+
+	-- set y_pos to base of mob
+	pos.y = pos.y + self.collisionbox[2]
 
 	-- what is in front of mob?
 	local nod = node_ok({
@@ -1280,46 +1280,71 @@ local function do_jump(self)
 		z = pos.z + dir_z
 	})
 
-	-- thin blocks that do not need to be jumped
-	if nod.name == node_snow then
-		return false
+	-- what is above and in front?
+	local nodt = node_ok({
+		x = pos.x + dir_x, y = pos.y + 1.5, z = pos.z + dir_z
+	})
+
+	local blocked = minetest.registered_nodes[nodt.name].walkable
+
+	-- are we facing a fence or wall
+	if nod.name:find("fence") or nod.name:find("gate") or nod.name:find("wall") then
+		self.facing_fence = true
 	end
+--[[
+print("on: " .. self.standing_on
+	.. ", front: " .. nod.name
+	.. ", front above: " .. nodt.name
+	.. ", blocked: " .. (blocked and "yes" or "no")
+	.. ", fence: " .. (self.facing_fence and "yes" or "no")
+)
+]]
 
---print ("in front:", nod.name, pos.y + 0.5)
+	if (self.walk_chance == 0 or minetest.registered_items[nod.name].walkable)
+			and not blocked and not self.facing_fence and nod.name ~= node_snow then
 
-	if self.walk_chance == 0
-	or minetest.registered_items[nod.name].walkable then
+		local v = self.object:get_velocity()
 
-		if self.type == "monster" or (not nod.name:find("fence")
-		and not nod.name:find("gate")) then
+		v.y = self.jump_height
 
-			local v = self.object:get_velocity()
+		set_animation(self, "jump") -- only when defined
 
-			v.y = self.jump_height
+		self.object:set_velocity(v)
 
-			set_animation(self, "jump") -- only when defined
-
-			self.object:set_velocity(v)
-
-			-- when in air move forward
-			minetest.after(0.3, function(self, v)
-				if self.object:get_luaentity() then
-					self.object:set_acceleration({
-						x = v.x * 2,--1.5,
-						y = 0,
-						z = v.z * 2,--1.5
-					})
-				end
-			end, self, v)
-
-			if get_velocity(self) > 0 then
-				mob_sound(self, self.sounds.jump)
+		-- when in air move forward
+		minetest.after(0.3, function(self, v)
+			if self.object:get_luaentity() then
+				self.object:set_acceleration({
+					x = v.x * 2,--1.5,
+					y = 0,
+					z = v.z * 2,--1.5
+				})
 			end
-		else
-			self.facing_fence = true
+		end, self, v)
+
+		if get_velocity(self) > 0 then
+			mob_sound(self, self.sounds.jump)
 		end
 
+		self.jump_count = 0
+
 		return true
+	end
+
+	-- if blocked for 3 counts then turn
+	if not self.following and (self.facing_fence or blocked) then
+
+		self.jump_count = (self.jump_count or 0) + 1
+
+		if self.jump_count > 2 then
+
+			local yaw = self.object:get_yaw() or 0
+			local turn = random(0, 2) + 1.35
+
+			yaw = set_yaw(self, yaw + turn, 12)
+
+			self.jump_count = 0
+		end
 	end
 
 	return false
@@ -1344,7 +1369,7 @@ local function entity_physics(pos, radius)
 		local damage = floor((4 / dist) * radius)
 		local ent = objs[n]:get_luaentity()
 
-		-- punches work on entities AND players
+		-- punches work on entities and players
 		objs[n]:punch(objs[n], 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {fleshy = damage},
@@ -1701,7 +1726,8 @@ end
 local los_switcher = false
 local height_switcher = false
 
--- path finding and smart mob routine by rnd, line_of_sight and other edits by Elkien3
+-- path finding and smart mob routine by rnd,
+-- line_of_sight and other edits by Elkien3
 local function smart_mobs(self, s, p, dist, dtime)
 	--print('begin')
 
@@ -1977,7 +2003,12 @@ local function smart_mobs(self, s, p, dist, dtime)
 			end
 		else
 			-- yay i found path
-			mob_sound(self, self.sounds.war_cry)
+			if self.attack then
+				mob_sound(self, self.sounds.war_cry)
+			else
+				mob_sound(self, self.sounds.random)
+			end
+
 			set_velocity(self, self.walk_velocity)
 
 			-- follow path now that it has it

@@ -240,7 +240,7 @@ minetest.register_node("rackstone:redrack_cobble", {
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
   tiles = {"rackstone_redrack2.png"},
-  groups = utility.dig_groups("racksand", {falling_node=1}),
+  groups = utility.dig_groups("racksand", {falling_node=1, disable_jump=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	liquid_viscosity = 8,

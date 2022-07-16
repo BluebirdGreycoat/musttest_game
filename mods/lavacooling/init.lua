@@ -92,9 +92,9 @@ local function do_lavasource_cooling(pos, node)
 	end
 end
 
--- Flowing lava + flowing water = pumice.
+-- Flowing lava + flowing water = basalt.
 local function do_flowinglava_flowingwater_cooling(pos, node)
-	setn(pos, pumice_node)
+	setn(pos, basalt_node)
 	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end
@@ -108,9 +108,9 @@ local function do_flowinglava_flowingwater_cooling(pos, node)
 	end
 end
 
--- Flowing lava + water source = basalt.
+-- Flowing lava + water source = pumice.
 local function do_flowinglava_watersource_cooling(pos, node)
-	setn(pos, basalt_node)
+	setn(pos, pumice_node)
 	if math_random(1, 10) == 1 then
 		sfn.drop_node(pos)
 	end

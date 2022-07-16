@@ -65,8 +65,10 @@ if not mobs.invis then
 	mobs.invis = {}
 end
 
-function mobs.is_invisible(pname)
-	return (cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname))
+function mobs.is_invisible(self, pname)
+	if not self.ignore_invisibility then
+		return (cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname))
+	end
 end
 
 -- creative check
@@ -2045,7 +2047,7 @@ local function general_attack(self)
 			-- if player invisible or mob not setup to attack then remove from list
 			if self.attack_players == false
 			or (self.owner and self.type ~= "monster")
-			or mobs.is_invisible(pname)
+			or mobs.is_invisible(self, pname)
 			or not specific_attack(self.specific_attack, "player")
 			or minetest.check_player_privs(pname, {mob_respect=true}) then
 				objs[n] = nil
@@ -2162,7 +2164,7 @@ local function runaway_from(self)
 		if objs[n]:is_player() then
 			if objs[n]:get_hp() > 0 then
 				pname = objs[n]:get_player_name()
-				if mobs.is_invisible(pname) or self.owner == pname then
+				if mobs.is_invisible(self, pname) or self.owner == pname then
 					name = ""
 				else
 					player = objs[n]
@@ -2235,7 +2237,7 @@ local function follow_flop(self)
 		for n = 1, #players do
 
 			if get_distance(players[n]:get_pos(), s) < self.view_range
-			and not mobs.is_invisible( players[n]:get_player_name() ) then
+					and not mobs.is_invisible(self, players[n]:get_player_name()) then
 
 				self.following = players[n]
 
@@ -2530,7 +2532,7 @@ local function do_states(self, dtime)
 		or not self.attack
 		or not self.attack:get_pos()
 		or self.attack:get_hp() <= 0
-		or (self.attack:is_player() and mobs.is_invisible( self.attack:get_player_name() )) then
+		or (self.attack:is_player() and mobs.is_invisible(self, self.attack:get_player_name() )) then
 
 --			print(" ** stop attacking **", dist, self.view_range)
 			self.state = "stand"
@@ -3236,7 +3238,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	and self.state ~= "flop"
 	and self.child == false
 	and name ~= "" and name ~= self.owner
-	and not mobs.is_invisible( name ) then
+	and not mobs.is_invisible(self, name) then
 
 		--minetest.chat_send_player("MustTest", "Will really attack!")
 
@@ -3854,7 +3856,9 @@ if not mobs.registered then
 			runaway_from            = def.runaway_from,
 			owner_loyal             = def.owner_loyal,
 			facing_fence            = false,
+			ignore_invisibility     = def.ignore_invisibility,
 			_cmi_is_mob             = true,
+
 
 
 			on_spawn = def.on_spawn,

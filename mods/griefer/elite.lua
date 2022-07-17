@@ -23,7 +23,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	},
 	makes_footstep_sound = false,
 	sounds = {
-		random = "griefer_griefer",
+		random = "griefer_elite",
 	},
 	walk_velocity = 1,
 	run_velocity = 3,

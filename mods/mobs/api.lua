@@ -47,7 +47,7 @@ local function compute_yaw_to_target(self, target, pos)
 	}
 
 	local yaw = atan2(vec.z, vec.x) - self.rotate
-
+	yaw = yaw - (pi / 2)
 	return yaw
 end
 

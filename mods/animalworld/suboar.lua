@@ -6,7 +6,7 @@ mobs.register_mob("animalworld:suboar", {
 	attack_type = "dogfight",
 	group_attack = true,
 	reach = 2,
-	damage = 16,
+	damage = 8,
 	hp_min = 5,
 	hp_max = 35,
 	armor = 70,

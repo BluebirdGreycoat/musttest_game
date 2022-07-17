@@ -7,7 +7,8 @@ mobs.register_mob("griefer:elite_griefer", {
 	pathfinding = 2,
 	pathing_radius = 20,
 	max_node_dig_level = 2,
-	reach = 3,
+	reach = 2, -- Mob will try to move this close to target.
+	punch_reach = 3, -- Mob can hit from this far away.
 	damage = 8,
 	damage_min = 8,
 	damage_max = 16,

@@ -1237,6 +1237,7 @@ end
 
 
 
+-- Arrow shooting code extracted into its own function [MustTest].
 function mobs.shoot_arrow(self, vec)
 	-- play shoot attack sound
 	mob_sound(self, self.sounds.shoot_attack)
@@ -1264,6 +1265,63 @@ function mobs.shoot_arrow(self, vec)
 		vec.z = vec.z * (v / amount)
 
 		obj:set_velocity(vec)
+	end
+end
+
+
+
+-- Target punching code extracted into its own function [MustTest].
+function mobs.punch_target(self)
+	if not self.attack then
+		return
+	end
+
+	local s2 = self.object:get_pos()
+	local p2 = self.attack:get_pos()
+
+	p2.y = p2.y + 0.5
+	s2.y = s2.y + 0.5
+
+	if not line_of_sight(self, p2, s2) then
+		return
+	end
+
+	-- play attack sound
+	mob_sound(self, self.sounds.attack)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name() or "")
+
+	-- punch player (or what player is attached to)
+	local attached = self.attack:get_attach()
+	if attached or default.player_attached[targetname] then
+		-- Mob has a chance of removing the player from whatever they're attached to.
+		if self.attack:is_player() and random(1, 5) == 1 then
+			utility.detach_player_with_message(self.attack)
+		elseif attached then
+			self.attack = attached
+		end
+	end
+
+	-- Don't bother the admin.
+	if not gdac.player_is_admin(targetname) then
+		local dmg1 = self.damage or 0
+		local dmg2 = math_random(self.damage_min or 0, self.damage_max or 0)
+		local dmg = dmg1
+		if dmg2 > dmg1 then
+			dmg = dmg2
+		end
+
+		self.attack:punch(self.object, 1.0, {
+			full_punch_interval = 1.0,
+			damage_groups = {fleshy = dmg}
+		}, nil)
+
+		ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
+	end
+
+	-- Tell everyone about the death [MustTest].
+	if self.attack:is_player() and self.attack:get_hp() <= 0 then
+		mob_killed_player(self, self.attack)
+		self.attack = nil -- stop attacking
 	end
 end
 
@@ -2838,11 +2896,11 @@ local function do_states(self, dtime)
 			end
 
 		elseif self.attack_type == "dogfight"
-		or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
-		or (self.attack_type == "dogshoot" and dist <= self.reach and dogswitch(self) == 0) then
+				or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
+				or (self.attack_type == "dogshoot" and dist <= self.reach
+					and dogswitch(self) == 0) then
 
-			if self.fly
-			and dist > self.reach then
+			if self.fly and dist > self.reach then
 
 				local p1 = s
 				local me_y = floor(p1.y)
@@ -2986,6 +3044,11 @@ local function do_states(self, dtime)
 					end
 				end
 
+				-- Punch target if within punching range even while moving [MustTest].
+				if dist < (self.punch_reach or 0) then
+					mobs.punch_target(self)
+				end
+
 			else -- rnd: if inside reach range
 
 				self.path.stuck_timer = 0
@@ -3000,53 +3063,7 @@ local function do_states(self, dtime)
 						self.timer = 0
 						set_animation(self, "punch")
 
-						local p2 = p
-						local s2 = s
-
-						p2.y = p2.y + 0.5
-						s2.y = s2.y + 0.5
-
-						if line_of_sight(self, p2, s2) == true then
-
-							-- play attack sound
-							mob_sound(self, self.sounds.attack)
-							local targetname = (self.attack:is_player() and self.attack:get_player_name() or "")
-
-							-- punch player (or what player is attached to)
-							local attached = self.attack:get_attach()
-							if attached or default.player_attached[targetname] then
-								-- Mob has a chance of removing the player from whatever they're attached to.
-								if self.attack:is_player() and random(1, 5) == 1 then
-									utility.detach_player_with_message(self.attack)
-								elseif attached then
-									self.attack = attached
-								end
-							end
-
-							-- Don't bother the admin.
-							if not gdac.player_is_admin(targetname) then
-								local dmg1 = self.damage or 0
-								local dmg2 = math_random(self.damage_min or 0, self.damage_max or 0)
-								local dmg = dmg1
-								if dmg2 > dmg1 then
-									dmg = dmg2
-								end
-
-								self.attack:punch(self.object, 1.0, {
-									full_punch_interval = 1.0,
-									damage_groups = {fleshy = dmg}
-								}, nil)
-
-								ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
-							end
-
-							-- report death!
-							if self.attack:is_player() and self.attack:get_hp() <= 0 then
-								mob_killed_player(self, self.attack)
-								self.attack = nil -- stop attacking
-							end
-
-						end
+						mobs.punch_target(self)
 					end
 				end
 			end
@@ -4016,6 +4033,7 @@ if not mobs.registered then
 			gotten                  = false,
 			health                  = 0,
 			reach                   = def.reach or 3,
+			punch_reach             = def.punch_reach or def.reach or 3
 			htimer                  = 0,
 			texture_list            = def.textures,
 			child_texture           = def.child_texture,

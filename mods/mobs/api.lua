@@ -11,7 +11,6 @@ local abs = math.abs
 local min = math.min
 local max = math.max
 local ceil = math.ceil
-local atann = math.atan
 local atan2 = math.atan2
 local random = math.random
 local math_random = math.random
@@ -20,14 +19,6 @@ local v_round = vector.round
 local v_equals = vector.equals
 local vector_distance = vector.distance
 local v_distance = vector.distance
-
-local atan = function(x)
-	if not x or x ~= x then
-		return 0
-	else
-		return atann(x)
-	end
-end
 
 local function report(msg)
 	if minetest.is_singleplayer() then
@@ -40,13 +31,12 @@ end
 
 -- Function to tell mob which direction to turn to face target.
 -- Add pi to the returned yaw to face in the opposite direction.
+-- Fixed to use atan2 correctly by MustTest.
 local function compute_yaw_to_target(self, target, pos)
-	local vec = {
-		x = target.x - pos.x,
-		z = target.z - pos.z
-	}
+	local x = target.x - pos.x
+	local z = target.z - pos.z
 
-	local yaw = atan2(vec.z, vec.x) - self.rotate
+	local yaw = atan2(z, x) - self.rotate
 	yaw = yaw - (pi / 2)
 	return yaw
 end

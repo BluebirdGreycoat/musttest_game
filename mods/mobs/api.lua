@@ -4033,7 +4033,7 @@ if not mobs.registered then
 			gotten                  = false,
 			health                  = 0,
 			reach                   = def.reach or 3,
-			punch_reach             = def.punch_reach or def.reach or 3
+			punch_reach             = def.punch_reach or def.reach or 3,
 			htimer                  = 0,
 			texture_list            = def.textures,
 			child_texture           = def.child_texture,

@@ -36,7 +36,7 @@ See LICENSE.txt and http://www.gnu.org/licenses/lgpl-2.1.txt
 --]]
 
 minetest.register_node("torches:torch_floor", {
-  description = "Torch\n\nDon't stand on this, it's hot!\nWill stay lit for several hours.\nCan be relit from various sources.",
+  description = "Torch",
   drawtype = "mesh",
   mesh = "torch_floor.obj",
   inventory_image = "default_torch_on_floor.png",

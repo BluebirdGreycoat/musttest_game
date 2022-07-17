@@ -1,6 +1,6 @@
 
 minetest.register_node("griefer:grieferstone", {
-	description = "Oerkki Stone\n\nSummons Oerkki.\nGateway component.",
+	description = "Oerkki Stone",
 	tiles = {
 		"griefer_stonetop.png",
 		"griefer_stonetop.png",

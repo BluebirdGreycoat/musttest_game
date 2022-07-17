@@ -1,6 +1,6 @@
 
 minetest.register_node("torches:kalite_torch_floor", {
-  description = "Kalite Torch\n\nDon't stand on this, it's hot!\nCan burn for several days!\nCan be relit from various sources.",
+  description = "Kalite Torch",
   drawtype = "mesh",
   mesh = "torch_floor.obj",
   inventory_image = "gloopores_kalite_torch_on_floor.png",

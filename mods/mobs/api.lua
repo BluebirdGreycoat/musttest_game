@@ -1336,7 +1336,7 @@ local function try_break_block(self, s)
 
 	-- Don't destroy player's bones [MustTest]!
 	if (not ndef1) or node1 == "air" or node1 == "ignore" or node1 == "bones:bones" then
-		return
+		return false, "special"
 	end
 
 	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then
@@ -1854,13 +1854,30 @@ local function try_dig_doorway(self, s)
 		y = s.y,
 		z = s.z + sin(yaw1)
 	}
+	p1 = v_round(p1)
 
 	local b1 = try_break_block(self, p1)
 
 	p1.y = p1.y + 1
 
 	local b2 = try_break_block(self, p1)
-	return b1 or b2
+
+	p1.y = p1.y - 1
+
+	-- Sometimes, a mob is trying to path through a 1x1 hole, where the block
+	-- above is undiggable for some reason. I can do something clever here:
+	-- if the hole is air, I can close it up. This way, the next time the
+	-- pathfinder runs, it will not try to go through this hole. [MustTest]
+	if b1 and not b2 then
+		local nn = minetest.get_node(p1).name
+		if nn == "air" or nn == "default:snow" then
+			minetest.set_node(p1, {name = (self.place_node or node_pathfiner_place)})
+			local meta = minetest.get_meta(p1)
+			meta:set_int("protection_cancel", 1)
+		end
+	end
+
+	return (b1 and b2)
 end
 
 

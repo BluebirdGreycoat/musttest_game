@@ -2898,7 +2898,7 @@ local function do_states(self, dtime)
 			yaw = set_yaw(self, yaw)
 
 			-- move towards enemy if beyond mob reach
-			if dist > self.reach then
+			if dist > (self.reach + (self.reach_ext or 0)) then
 
 				-- path finding by rnd
 				if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
@@ -2906,24 +2906,33 @@ local function do_states(self, dtime)
 					local p = self.attack:get_pos()
 					smart_mobs(self, s, p, dist, dtime)
 				end
----[[
+
+				-- distance padding to stop spinning mob
+				local pad = abs(p.x - s.x) + abs(p.z - s.z)
+
+				self.reach_ext = 0 -- extended ready off by default
+
 				-- MustTest:
 				-- Very, very rarely, a mob may FALSELY get stuck (as if at the edge of
 				-- a cliff) while following a path. This is due to a slight error amount
 				-- in the 'is_at_cliff' function. So if the mob is set to follow a path,
 				-- we just ignore the cliff (the path should be safe anyway).
-				if is_at_cliff(self) and not self.path.following then
+				if (is_at_cliff(self) or pad < 0.2) and not self.path.following then
+					-- when on top of player extend reach slightly so player can
+					-- still be attacked.
+					self.reach_ext = 0.8
+
 					set_velocity(self, 0)
 					set_animation(self, "stand")
 				else
 
 					if self.path.stuck then
 						set_velocity(self, self.walk_velocity or 0)
-					else --]]
+					else
 						if overunder_waypoint then
-							set_velocity(self, 0.1) ---[[
+							set_velocity(self, 0.1)
 						else
-							set_velocity(self, self.run_velocity or 0) ---[[
+							set_velocity(self, self.run_velocity or 0)
 						end
 					end
 
@@ -2937,7 +2946,7 @@ local function do_states(self, dtime)
 						set_animation(self, "stand")
 					end
 				end
---]]
+
 			else -- rnd: if inside reach range
 
 				self.path.stuck = false

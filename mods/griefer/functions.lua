@@ -10,14 +10,17 @@ griefer.elite_do_custom = function(self, dtime)
 
 			-- Only shoot if Oerkki is not moving (stuck or something).
 			if vector.distance(s, old_s) < 0.25 and not self.path.following then
-				-- Don't shoot unless Oerkki has LOS to target.
-				local has_lineofsight = minetest.line_of_sight(
-					{x = s.x, y = (s.y + 0.5), z = s.z},
-					{x = p.x, y = (p.y + 1), z = p.z}, 0.2)
+				-- Don't shoot if within punching range.
+				if vector.distance(s, p) >= self.punch_reach then
+					-- Don't shoot unless Oerkki has LOS to target.
+					local has_lineofsight = minetest.line_of_sight(
+						{x = s.x, y = (s.y + 0.5), z = s.z},
+						{x = p.x, y = (p.y + 1), z = p.z}, 0.2)
 
-				if has_lineofsight then
-					local vec = vector.subtract(p, s)
-					mobs.shoot_arrow(self, vec)
+					if has_lineofsight then
+						local vec = vector.subtract(p, s)
+						mobs.shoot_arrow(self, vec)
+					end
 				end
 			end
 

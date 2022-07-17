@@ -1860,25 +1860,29 @@ local function try_dig_doorway(self, s)
 	}
 	p1 = v_round(p1)
 
-	local b1 = try_break_block(self, p1)
-
+	-- First, try to break the block above.
+	-- If we can't do this, there's no point in trying to break the bottom block.
+	-- That would also interfere with us closing the bottom hole up.
 	p1.y = p1.y + 1
 
+	local b1
 	local b2 = try_break_block(self, p1)
 
 	p1.y = p1.y - 1
 
 	-- Sometimes, a mob is trying to path through a 1x1 hole, where the block
 	-- above is undiggable for some reason. I can do something clever here:
-	-- if the hole is air, I can close it up. This way, the next time the
+	-- if the bottom hole is air, I can close it up. This way, the next time the
 	-- pathfinder runs, it will not try to go through this hole. [MustTest]
-	if b1 and not b2 then
+	if not b2 then
 		local nn = minetest.get_node(p1).name
 		if nn == "air" or nn == "default:snow" then
 			minetest.set_node(p1, {name = (self.place_node or node_pathfiner_place)})
 			local meta = minetest.get_meta(p1)
 			meta:set_int("protection_cancel", 1)
 		end
+	else
+		b1 = try_break_block(self, p1)
 	end
 
 	return (b1 and b2)

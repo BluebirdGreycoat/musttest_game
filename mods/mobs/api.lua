@@ -3046,7 +3046,11 @@ local function do_states(self, dtime)
 
 				-- Punch target if within punching range even while moving [MustTest].
 				if dist < (self.punch_reach or 0) then
-					mobs.punch_target(self)
+					if self.timer > 1 then
+						self.timer = 0
+
+						mobs.punch_target(self)
+					end
 				end
 
 			else -- rnd: if inside reach range

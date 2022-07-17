@@ -72,7 +72,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	knock_back = false,
 	hunt_players = true,
 	hunt_chance = 5,
-	arrow = "dm:fireball",
+	arrow = "oerkki:fireball",
 	shoot_offset = 1,
 
 	do_custom = function(...)

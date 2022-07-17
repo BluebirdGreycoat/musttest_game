@@ -1335,7 +1335,7 @@ local function try_break_block(self, s)
 	local ndef1 = minetest.registered_nodes[node1]
 
 	-- Don't destroy player's bones [MustTest]!
-	if (not ndef1) or node1 == "air" or node1 == "ignore" or node1 == "bones:bones" then
+	if (not ndef1) or node1 == "ignore" or node1 == "bones:bones" then
 		return false, "special"
 	end
 
@@ -1349,6 +1349,10 @@ local function try_break_block(self, s)
 
 	if node1 ~= "air" and minetest.test_protection(s, "") then
 		return false, "protected"
+	end
+
+	if node1 == "air" then
+		return true
 	end
 
 	-- Can't do this check, many, many nodes use these callbacks [MustTest].

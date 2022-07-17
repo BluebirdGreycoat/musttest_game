@@ -27,7 +27,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	},
 	walk_velocity = 1,
 	run_velocity = 3,
-	view_range = 20,
+	view_range = 30,
 	jump = true,
 
 	drops = {
@@ -68,6 +68,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	ignore_invisibility = true,
 	knock_back = false,
 	hunt_players = true,
+	hunt_chance = 5,
 })
 
 

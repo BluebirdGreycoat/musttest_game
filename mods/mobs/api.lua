@@ -12,6 +12,7 @@ local min = math.min
 local max = math.max
 local ceil = math.ceil
 local atann = math.atan
+local atan2 = math.atan2
 local random = math.random
 local math_random = math.random
 local floor = math.floor
@@ -45,9 +46,7 @@ local function compute_yaw_to_target(self, target, pos)
 		z = target.z - pos.z
 	}
 
-	local yaw = (atan(vec.z / vec.x) + pi / 2) - self.rotate
-
-	if target.x > pos.x then yaw = yaw + pi end
+	local yaw = atan2(vec.x, vec.z) - self.rotate
 
 	return yaw
 end

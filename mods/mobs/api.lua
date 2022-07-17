@@ -3334,8 +3334,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		end) ]]
 
 		-- knock back effect (only on full punch)
-		if self.knock_back
-		and tflp >= punch_interval then
+		if self.knock_back and tflp >= punch_interval then
 
 			local v = self.object:get_velocity()
 			local r = 1.4 - min(punch_interval, 1.4)
@@ -3840,7 +3839,7 @@ local function mob_step(self, dtime)
 
 	-- Allow jump routine to break blocks [MustTest].
 	local break_blocks = false
-	if self.path.following and (self.pathfinding or 0) == 2 then
+	if self.path.following and (self.pathfinding or 0) >= 2 then
 		break_blocks = true
 	end
 	do_jump(self, break_blocks)

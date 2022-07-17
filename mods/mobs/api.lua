@@ -2257,9 +2257,13 @@ local function general_attack(self)
 		end
 
 		-- Pick random target.
+		-- Note: this will often happen when target is not in LOS of the mob, so if
+		-- possible, we only want targets within the mob's pathfinding range.
 		if #candidates > 0 then
 			local target = candidates[random(1, #candidates)]
-			do_attack(self, target)
+			if v_distance(s, target:get_pos()) < (self.pathing_radius or self.view_range or 16) then
+				do_attack(self, target)
+			end
 		end
 	end
 end

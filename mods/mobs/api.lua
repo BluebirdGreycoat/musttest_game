@@ -1976,11 +1976,12 @@ local function smart_mobs(self, s, p, dist, dtime)
 				-- timer is used to prevent mob from spamming lots of blocks
 				s = v_round(s)
 
+				local canput = false
+
 				if self.path.putnode_timer <= 0 then
 					local node = minetest.get_node(s)
 					local ndef = minetest.registered_nodes[node.name]
 
-					local canput = false
 					local prot = minetest.test_protection(s, "")
 
 					if ndef and (ndef.buildable_to or ndef.groups.liquid) then
@@ -1991,22 +1992,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 					if prot and node.name ~= "air" then
 						canput = false
 					end
-
-					if canput then
-
-						-- Place node the mob likes, or use fallback.
-						-- Disable protection for this node via meta [MustTest].
-						minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
-						local meta = minetest.get_meta(s)
-						meta:set_int("protection_cancel", 1)
-
-						-- Note: do not force node to fall if it does not need to.
-						minetest.check_for_falling(s)
-					end
-
-					-- Block placement min time [MustTest].
-					self.path.putnode_timer = 1
-					self.path.stuck_timer = 0
 				end
 
 				local sheight = ceil(self.collisionbox[5]) + 1
@@ -2016,12 +2001,31 @@ local function smart_mobs(self, s, p, dist, dtime)
 
 				if try_break_block(self, s) then
 					self.path.putnode_timer = 1
+					self.path.stuck_timer = 0
+				else
+					-- I couldn't dig ceiling, so no point in trying to jump up!
+					canput = false
 				end
 
 				s.y = s.y - sheight
-				-- this causes mob to glitch
-				--self.object:set_pos({x = s.x, y = s.y + 1, z = s.z})
-				self.object:set_velocity({x = 0, y = 5, z = 0})
+
+				if canput then
+
+					-- Place node the mob likes, or use fallback.
+					-- Disable protection for this node via meta [MustTest].
+					minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
+					local meta = minetest.get_meta(s)
+					meta:set_int("protection_cancel", 1)
+
+					-- Note: do not force node to fall if it does not need to.
+					minetest.check_for_falling(s)
+
+					self.object:set_velocity({x = 0, y = 5, z = 0})
+
+					-- Block placement min time [MustTest].
+					self.path.putnode_timer = 1
+					self.path.stuck_timer = 0
+				end
 
 			-- target is directly under the mob -- dig through floor!
 			elseif abs(p1.x - s.x) < 0.2 and abs(p1.z - s.z) < 0.2 and p1.y < (s.y - 2) then

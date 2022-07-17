@@ -2953,24 +2953,18 @@ local function do_states(self, dtime)
 
 				set_velocity(self, 0)
 
-				if not self.custom_attack then
+				if not self.custom_attack or self.custom_attack(self, p) == true then
 
 					if self.timer > 1 then
 
 						self.timer = 0
-
---						if self.double_melee_attack
---						and random(1, 2) == 1 then
---							set_animation(self, "punch2")
---						else
-							set_animation(self, "punch")
---						end
+						set_animation(self, "punch")
 
 						local p2 = p
 						local s2 = s
 
-						p2.y = p2.y + .5
-						s2.y = s2.y + .5
+						p2.y = p2.y + 0.5
+						s2.y = s2.y + 0.5
 
 						if line_of_sight(self, p2, s2) == true then
 
@@ -3002,8 +2996,8 @@ local function do_states(self, dtime)
 									full_punch_interval = 1.0,
 									damage_groups = {fleshy = dmg}
 								}, nil)
+
 								ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
-								--mob_sound(self, "default_punch")
 							end
 
 							-- report death!
@@ -3011,15 +3005,8 @@ local function do_states(self, dtime)
 								mob_killed_player(self, self.attack)
 								self.attack = nil -- stop attacking
 							end
+
 						end
-					end
-				else	-- call custom attack every second
-					if self.custom_attack
-					and self.timer > 1 then
-
-						self.timer = 0
-
-						self.custom_attack(self, p)
 					end
 				end
 			end

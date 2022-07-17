@@ -1241,24 +1241,24 @@ end
 local function try_break_block(self, s)
 	s = v_round(s)
 
-	if minetest.test_protection(s, "") then
-		return
-	end
-
 	local node1 = node_ok(s, "air").name
 	local ndef1 = minetest.registered_nodes[node1]
 
 	-- Don't destroy player's bones [MustTest]!
 	if (not ndef1) or node1 == "air" or node1 == "ignore" or node1 == "bones:bones" then
-		return
+		return false, "unbreakable"
 	end
 
 	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then
-		return
+		return false, "unbreakable"
 	end
 
 	if ndef1.groups.unbreakable or ndef1.groups.liquid or ndef1.groups.immovable then
-		return
+		return false, "unbreakable"
+	end
+
+	if node1 ~= "air" and minetest.test_protection(s, "") then
+		return false, "protected"
 	end
 
 	-- Can't do this check, many, many nodes use these callbacks [MustTest].
@@ -1994,17 +1994,20 @@ local function smart_mobs(self, s, p, dist, dtime)
 					end
 				end
 
-				local sheight = ceil(self.collisionbox[5]) + 1
-
-				-- assume mob is 2 blocks high so it digs above its head
+				-- Assume mob is 2 blocks high so it digs above its head.
+				-- Position is rounded, so we use a fixed integer.
+				local sheight = 2
 				s.y = s.y + sheight
 
-				if try_break_block(self, s) then
+				local success, reason = try_break_block(self, s)
+				if success then
 					self.path.putnode_timer = 1
 					self.path.stuck_timer = 0
 				else
-					-- I couldn't dig ceiling, so no point in trying to jump up!
-					canput = false
+					if reason and (reason == "protected" or reason == "unbreakable") then
+						-- I couldn't dig ceiling, so no point in trying to jump up!
+						canput = false
+					end
 				end
 
 				s.y = s.y - sheight

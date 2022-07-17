@@ -10,6 +10,7 @@ local cos = math.cos
 local abs = math.abs
 local min = math.min
 local max = math.max
+local ceil = math.ceil
 local atann = math.atan
 local random = math.random
 local math_random = math.random
@@ -17,12 +18,22 @@ local floor = math.floor
 local v_round = vector.round
 local v_equals = vector.equals
 local vector_distance = vector.distance
+local v_distance = vector.distance
 
 local atan = function(x)
 	if not x or x ~= x then
 		return 0
 	else
 		return atann(x)
+	end
+end
+
+local function report(msg)
+	if minetest.is_singleplayer() then
+		minetest.chat_send_all(msg)
+	else
+		local pname = gdac.name_of_admin
+		minetest.chat_send_player(pname, msg)
 	end
 end
 
@@ -90,9 +101,11 @@ end
 local aoc_range = tonumber(minetest.settings:get("active_block_range")) * 16
 
 -- pathfinding settings
-local enable_pathfinding = false
+local enable_pathfinding = true
 local stuck_timeout = 3 -- how long before mob gets stuck in place and starts searching
-local stuck_path_timeout = 10 -- how long will mob follow path before giving up
+
+-- Note: stuck path timeout is determined based on the length of the path, and
+-- is a mob-internal property [MustTest].
 
 -- default nodes
 local node_fire = "fire:basic_flame"
@@ -1038,7 +1051,7 @@ local function is_at_cliff(self)
 		return false
 	end
 
-	local yaw = self.object:getyaw()
+	local yaw = self.object:get_yaw()
 	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
 	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
 	local pos = self.object:getpos()
@@ -1235,8 +1248,66 @@ end
 
 
 
+-- Remove block if possible [MustTest].
+local function try_break_block(self, s)
+	s = v_round(s)
+
+	if minetest.test_protection(s, "") then
+		return
+	end
+
+	local node1 = node_ok(s, "air").name
+	local ndef1 = minetest.registered_nodes[node1]
+
+	-- Don't destroy player's bones [MustTest]!
+	if (not ndef1) or node1 == "air" or node1 == "ignore" or node1 == "bones:bones" then
+		return
+	end
+
+	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then
+		return
+	end
+
+	if ndef1.groups.unbreakable or ndef1.groups.liquid or ndef1.groups.immovable then
+		return
+	end
+
+	-- Can't do this check, many, many nodes use these callbacks [MustTest].
+	--if ndef1.on_construct or ndef1.after_construct or ndef1.on_blast then
+	--	return
+	--end
+
+	local oldnode = minetest.get_node(s)
+	minetest.set_node(s, {name = "air"})
+
+	-- Run script hook
+	for _, callback in ipairs(minetest.registered_on_dignodes) do
+		-- Deepcopy pos, oldnode, because callback can modify them
+		callback(table.copy(s), table.copy(oldnode), self.object)
+	end
+
+	minetest.check_for_falling(s)
+
+	-- This function takes both nodetables and nodenames.
+	-- Pass node names, because passing a node table gives wrong results.
+	local drops = minetest.get_node_drops(oldnode.name, "")
+
+	for _, item in pairs(drops) do
+		local p = {
+			x = s.x + math_random()/2 - 0.25,
+			y = s.y + math_random()/2 - 0.25,
+			z = s.z + math_random()/2 - 0.25,
+		}
+		minetest.add_item(p, item)
+	end
+
+	return true -- success!
+end
+
+
+
 -- jump if facing a solid node (not fences or gates)
-local function do_jump(self)
+local function do_jump(self, break_blocks)
 
 	if not self.jump
 	or self.jump_height == 0
@@ -1302,6 +1373,30 @@ print("on: " .. self.standing_on
 
 	if (self.walk_chance == 0 or minetest.registered_items[nod.name].walkable)
 			and not blocked and not self.facing_fence and nod.name ~= node_snow then
+
+		if break_blocks then
+			-- What is above mob's head [MustTest]?
+			local pa = {x = pos.x, y = pos.y + 2.5, z = pos.z}
+			local noda = node_ok(pa)
+
+			-- Is mob prevented from jumping upward [MustTest]?
+			if minetest.registered_nodes[noda.name].walkable then
+				if try_break_block(self, pa) then
+					self.path.putnode_timer = 1
+				end
+			end
+
+			-- What is above and in front of mob's head [MustTest]?
+			local pa = {x = pos.x + dir_x, y = pos.y + 2.5, z = pos.z + dir_z}
+			local noda = node_ok(pa)
+
+			-- Is mob prevented from jumping upward [MustTest]?
+			if minetest.registered_nodes[noda.name].walkable then
+				if try_break_block(self, pa) then
+					self.path.putnode_timer = 1
+				end
+			end
+		end
 
 		local v = self.object:get_velocity()
 
@@ -1648,58 +1743,6 @@ end
 
 
 
-local function try_break_block(self, s)
-	s = v_round(s)
-
-	-- remove one block above to make room to jump
-	if not minetest.test_protection(s, "") then
-
-		local node1 = node_ok(s, "air").name
-		local ndef1 = minetest.registered_nodes[node1]
-
-		if node1 ~= "air"
-		and node1 ~= "ignore"
-		and node1 ~= "bones:bones" -- don't destroy player's bones!
-		and ndef1
-		and (not ndef1.groups.level or ndef1.groups.level <= 1)
-		and not ndef1.groups.unbreakable
-		and not ndef1.groups.liquid
-		and not ndef1.on_construct
-		and not ndef1.on_blast then
-
-			local oldnode = minetest.get_node(s)
-			minetest.add_node(s, {name = "air"})
-
-			-- Run script hook
-			for _, callback in ipairs(minetest.registered_on_dignodes) do
-				-- Deepcopy pos, oldnode, because callback can modify them
-				callback(table.copy(s), table.copy(oldnode), self.object)
-			end
-
-			--minetest.add_item(s, ItemStack(node1))
-			minetest.check_for_falling(s)
-
-			-- This function takes both nodetables and nodenames.
-			-- Pass node names, because passing a node table gives wrong results.
-			local drops = minetest.get_node_drops(oldnode.name, "")
-			--minetest.chat_send_player("MustTest", dump(drops))
-			for _, item in pairs(drops) do
-				local p = {
-					x = s.x + math_random()/2 - 0.25,
-					y = s.y + math_random()/2 - 0.25,
-					z = s.z + math_random()/2 - 0.25,
-				}
-				minetest.add_item(p, item)
-			end
-
-			return true -- success!
-
-		end
-	end
-end
-
-
-
 local function highlight_path(self)
 --[[
 		-- show path using particles
@@ -1723,306 +1766,370 @@ end
 
 
 
-local los_switcher = false
-local height_switcher = false
+local function try_dig_doorway(self, s)
+	local s = table.copy(s)
+	s.y = s.y + self.collisionbox[2] + 0.5
+	local yaw1 = self.object:get_yaw() + pi / 2
+	local p1 = {
+		x = s.x + cos(yaw1),
+		y = s.y,
+		z = s.z + sin(yaw1)
+	}
+
+	local b1 = try_break_block(self, p1)
+
+	p1.y = p1.y + 1
+
+	local b2 = try_break_block(self, p1)
+	return b1 or b2
+end
+
+
 
 -- path finding and smart mob routine by rnd,
--- line_of_sight and other edits by Elkien3
+-- line_of_sight and other edits by Elkien3,
+-- updated for Enyekala server by MustTest.
 local function smart_mobs(self, s, p, dist, dtime)
-	--print('begin')
 
-	self.path.putnode_timer = self.path.putnode_timer + dtime
+	-- Timer is required to prevent mob from spamming blocks [MustTest].
+	self.path.putnode_timer = (self.path.putnode_timer or 0) - dtime
 
-	do -- compartmentalize
-		local s1 = self.path.lastpos -- should be rounded to nearest node
-		local s2 = v_round(s)
+	-- Timer for preventing 'minetest.find_path' spam [MustTest].
+	self.path.find_path_timer = self.path.find_path_timer - dtime
 
-		-- is it becoming stuck?
-		if v_equals(s1, s2) then -- if rounded positions match, mob has not moved!
-			--print('i\'m stuck!')
-			--minetest.chat_send_player("MustTest", "Stuck1!")
-			self.path.stuck_timer = self.path.stuck_timer + dtime
-		else
-			--print('not stuck')
-			--minetest.chat_send_player("MustTest", "not stuck")
-			self.path.stuck_timer = 0
-		end
+	local s1 = self.path.lastpos
+	local target_pos = p
 
-		self.path.lastpos = s2
+	-- Record mob's last position once every second [MustTest].
+	self.path.pos_rec_timer = self.path.pos_rec_timer + dtime
+	if self.path.pos_rec_timer >= 1 then
+		self.path.lastpos = {x = s.x, y = s.y, z = s.z}
+		self.path.pos_rec_timer = 0
 	end
 
-	local target_pos = self.attack:get_pos()
-	local use_pathfind = false
-	local has_lineofsight = false
-
-	has_lineofsight = minetest.line_of_sight(
-		{x = s.x, y = (s.y) + .5, z = s.z},
-		{x = target_pos.x, y = (target_pos.y) + 1.5, z = target_pos.z}, .2)
-
-	--if has_lineofsight then
-	--	minetest.chat_send_player("MustTest", "LOS")
-	--end
-
-	-- im stuck, search for path
-	if not has_lineofsight then
-		--print('nosight')
-
-		if los_switcher == true then
-			use_pathfind = true
-			los_switcher = false
-		end -- cannot see target!
+	-- Is mob becoming stuck (i.e., has it not moved in the last 1 second)?
+	if (abs(s1.x - s.x) + abs(s1.z - s.z)) < 0.25 then
+		self.path.stuck_timer = self.path.stuck_timer + dtime
 	else
-		--print('sight')
-		if los_switcher == false then
-			los_switcher = true
-			use_pathfind = false
-			minetest.after(random(10, 30)/10, function(self)
-
-				if self.object:get_luaentity() then
-
-					if has_lineofsight then
-						self.path.following = false
-					end
-				end
-			end, self)
-		end -- can see target!
+		self.path.stuck_timer = 0
 	end
 
-	if self.attack and self.path.stuck_timer > stuck_timeout and not has_lineofsight then
-		--minetest.chat_send_player("MustTest", "giving up!")
-		self.attack = nil
-		self.state = "stand"
+	-- Perform the LOS test not more than once per 1/2 second [MustTest].
+	-- There is no reason to call this every globalstep.
+	local use_pathfind = false
+	local has_lineofsight = self.path.have_los
+
+	self.path.los_check = self.path.los_check - dtime
+	if self.path.los_check <= 0 then
+		has_lineofsight = minetest.line_of_sight(
+			{x = s.x, y = (s.y + 0.5), z = s.z},
+			{x = target_pos.x, y = (target_pos.y + 1), z = target_pos.z}, 0.2)
+
+		self.path.have_los = has_lineofsight
+		self.path.los_check = 0.5
+	end
+
+	-- I'm stuck, search for path.
+	if not has_lineofsight then
+		-- Cannot see target [MustTest]!
+		use_pathfind = true
+		self.path.los_counter = 0
+	else
+		self.path.los_counter = self.path.los_counter + dtime
+		if self.path.los_counter > 5 then
+			local y_dist = abs(s.y - target_pos.y)
+			-- I've been able to see the target for several consecutive seconds [MustTest].
+			if y_dist <= 0.5 then
+				-- Also, I'm on the same level as the target.
+				--report("have LOS - canceling pathfind")
+				use_pathfind = false
+				self.path.following = false
+				self.path.los_counter = 0
+			end
+
+			-- But if I'm stuck even though I have LOS, attempt pathfind.
+			if self.path.stuck_timer >= 2 then
+				--report("stuck with LOS - pathfinding")
+				use_pathfind = true
+			end
+		end
+	end
+
+	-- What do we do if the mob got stuck while following this path [MustTest]?
+	if self.path.stuck_timer > stuck_timeout then
+		if self.path.following then
+			--report("stuck timeout - was following path")
+			-- The mob got stuck while following a path. This can happen if the path
+			-- goes through a 1x1 node hole, which the mob is too big to fit through.
+			-- I can try to dig that block. [MustTest]
+			local removed_blockage = false
+			if (self.pathfinding or 0) >= 2 then
+				removed_blockage = try_dig_doorway(self, s)
+			end
+			if not removed_blockage then
+				use_pathfind = true
+				self.path.stuck_timer = 0
+				self.path.following = false
+			else
+				self.path.stuck_timer = 0
+				self.stuck_path_timeout = (((self.path.way and #self.path.way) or 0) * 0.75)
+			end
+		else
+			--report("stuck timeout - but not following a path")
+			-- Not currently following a path, but one exists which we recently abandoned?
+			if self.path.way and #self.path.way >= 5 then
+				local tar = self.path.way[1]
+				if v_distance(tar, s) <= 1.5 then
+					-- Continue following existing path.
+					--report("following existing path")
+					self.path.following = true
+					self.stuck_path_timeout = (#self.path.way * 0.75)
+					self.path.stuck_timer = 0
+					self.path.los_counter = 0
+				end
+			else
+				use_pathfind = true
+				self.path.stuck_timer = 0
+			end
+		end
+	end
+
+	-- What do we do if the mob has been following this path too long [MustTest]?
+	-- Note: the path timeout is based on the length of the path.
+	if (self.path.stuck_timer > (self.stuck_path_timeout or 0) and self.path.following) then
+		--report("path timeout")
+		use_pathfind = true
 		self.path.stuck_timer = 0
-		set_velocity(self, 0)
+		self.path.following = false
+	end
+
+	if not use_pathfind then
 		return
 	end
 
-	if (self.path.stuck_timer > stuck_timeout and not self.path.following) then
-		--print('stuck - not following')
-		--minetest.chat_send_player("MustTest", "stuck - not following")
-		use_pathfind = true
-		self.path.stuck_timer = 0
-
-		minetest.after(random(10, 30)/10, function(self)
-
-			if self.object:get_luaentity() then
-
-				if has_lineofsight then
-					self.path.following = false
-				end
-			end
-		end, self)
+	-- If already following a path, don't search for a new one [MustTest].
+	if self.path.following then
+		return
 	end
 
-	if (self.path.stuck_timer > stuck_path_timeout and self.path.following) then
-		--print('stuck - following')
-		--minetest.chat_send_player("MustTest", "REALLY Stuck!")
-		use_pathfind = true
-		self.path.stuck_timer = 0
+	-- lets try find a path, first take care of positions
+	-- since pathfinder is very sensitive
+	local sheight = self.collisionbox[5] - self.collisionbox[2]
 
-		minetest.after(random(10, 30)/10, function(self)
+	-- round position to center of node to avoid stuck in walls
+	-- also adjust height for player models!
+	s.x = floor(s.x + 0.5)
+	s.z = floor(s.z + 0.5)
 
-			if self.object:get_luaentity() then
-				-- mob got stuck while following path - could be badly formed path?
-				-- dunno why original code had a LOS check here
-				-- ok, need LOS check because otherwise mob follows path even when player is clear shot away. looks stupid
-				if has_lineofsight then
-					self.path.following = false
-				end
-			end
-		end, self)
+	local ssight, sground = minetest.line_of_sight(s, {
+		x = s.x, y = s.y - 4, z = s.z}, 1)
+
+	-- determine node above ground
+	if not ssight then
+		s.y = sground.y + 1
 	end
 
-	if abs(vector.subtract(s,target_pos).y) > self.stepheight then
-		--print('height difference')
-		if height_switcher then
-			if not has_lineofsight then
-				use_pathfind = true
-			end
-			height_switcher = false
+	local p1 = self.attack:get_pos()
+	p1 = v_round(p1)
+
+	local dropheight = 6
+
+	if self.fear_height ~= 0 then dropheight = (self.fear_height - 1) end
+
+	local jumpheight = 0
+
+	if self.jump and self.jump_height >= 4 then
+		jumpheight = min(ceil(self.jump_height / 4), 4)
+	elseif self.stepheight > 0.5 then
+		jumpheight = 1
+	end
+
+	if self.path.find_path_timer <= 0 then
+		--report("searching for path")
+		local radius = self.pathing_radius or 16
+		local pway = minetest.find_path(s, p1, radius, jumpheight, dropheight, "A*")
+
+		if not pway then
+			-- If I couldn't find path, don't try again for a few seconds.
+			--report("path not found")
+			self.path.way = nil
+			self.path.find_path_timer = 2
+			self.path.stuck_timer = 0
 		else
-			use_pathfind = false
-			height_switcher = true
-		end
-	else
-		--print('no height difference')
-		if not height_switcher then
-			use_pathfind = false
-			height_switcher = true
-		else
-			if not has_lineofsight then
-				use_pathfind = true
-			end
-			height_switcher = false
+			--report("path found")
+			self.path.way = pway
+			self.path.find_path_timer = 0
+			self.path.stuck_timer = 0
 		end
 	end
 
-	if use_pathfind and (not self.path.following or not self.path.way) then
-		--print('will pathfind!')
-		--minetest.chat_send_player("MustTest", "will pathfind!")
-		-- lets try find a path, first take care of positions
-		-- since pathfinder is very sensitive
-		local sheight = self.collisionbox[5] - self.collisionbox[2]
+	-- Show path using particles.
+	highlight_path(self)
 
-		-- round position to center of node to avoid stuck in walls
-		-- also adjust height for player models!
-		s.x = floor(s.x + 0.5)
---		s.y = floor(s.y + 0.5) - sheight
-		s.z = floor(s.z + 0.5)
+	self.state = ""
 
-		local ssight, sground = minetest.line_of_sight(s, {
-			x = s.x, y = s.y - 4, z = s.z}, 1)
-
-		-- determine node above ground
-		if not ssight then
-			s.y = sground.y + 1
-		end
-
-		local p1 = self.attack:get_pos()
-		p1 = v_round(p1)
-
-		local dropheight = 6
-		if self.fear_height > 0 then dropheight = (self.fear_height - 1) end
-			--print("trying to find path!")
-
-		--local air1 = minetest.find_node_near(s, 3, "air")
-		--local air2 = minetest.find_node_near(p1, 3, "air")
-		--if air1 and air2 then
-			--self.path.way = minetest.find_path(air1, air2, 16, self.stepheight, dropheight, "Dijkstra")
-			self.path.way = minetest.find_path(s, p1, 16, self.stepheight, dropheight, "Dijkstra")
-		--end
-
-		-- Show path using particles.
-		highlight_path(self)
-
-		self.state = ""
+	if self.attack then
 		do_attack(self, self.attack)
+	end
 
-		-- no path found, try something else
-		if not self.path.way then
+	-- no path found, try something else
+	if not self.path.way then
+		self.path.following = false
 
-			self.path.following = false
+		-- lets make way by digging/building if not accessible
+		if (self.pathfinding or 0) >= 2 and mobs_griefing and self.path.putnode_timer <= 0 then
 
-			 -- lets make way by digging/building if not accessible
-			if (self.pathfinding or 0) == 2 and mobs_griefing then
+			-- is player more than 1 block higher than mob?
+			if p1.y >= (s.y + 0.9) and not self.fly then
 
-				-- is player higher than mob?
-				if s.y < p1.y and not self.fly then
+				-- build upwards
+				-- not necessary to check protection if only placing nodes [MustTest]
+				-- timer is used to prevent mob from spamming lots of blocks
+				s = v_round(s)
 
-					-- build upwards
-					-- not necessary to check protection if only placing nodes
-					-- timer is used to prevent mob from spamming lots of blocks
-					s = v_round(s)
-					if self.path.putnode_timer > 1 then
-						local node = minetest.get_node(s)
-						local ndef = minetest.registered_nodes[node.name]
+				if self.path.putnode_timer <= 0 then
+					local node = minetest.get_node(s)
+					local ndef = minetest.registered_nodes[node.name]
 
-						local canput = false
-						local prot = minetest.test_protection(s, "")
+					local canput = false
+					local prot = minetest.test_protection(s, "")
 
-						if ndef and (ndef.buildable_to or ndef.groups.liquid) then
-							canput = true
-						end
-						if prot and node.name ~= "air" then
-							canput = false
-						end
-
-						if canput then
-
-							-- Place node the mob likes, or use fallback.
-							minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
-							local meta = minetest.get_meta(s)
-							meta:set_int("protection_cancel", 1)
-							sfn.drop_node(s)
-						end
-
-						self.path.putnode_timer = 0
+					if ndef and (ndef.buildable_to or ndef.groups.liquid) then
+						canput = true
 					end
 
-					local sheight = math.ceil(self.collisionbox[5]) + 1
-
-					-- assume mob is 2 blocks high so it digs above its head
-					s.y = s.y + sheight
-
-					try_break_block(self, s)
-
-					s.y = s.y - sheight
-					--self.object:set_pos({x = s.x, y = s.y + 1, z = s.z}) -- this causes mob to glitch
-					self.object:set_velocity({x = 0, y = 5, z = 0})
-
-				-- target is directly under the mob -- dig through floor!
-				elseif abs(p1.x - s.x) < 0.2 and abs(p1.z - s.z) < 0.2 and p1.y < (s.y - 2) then
-
-					s.y = s.y - 1
-					local res = try_break_block(self, s)
-					s.y = s.y + 1
-
-					if not res then
-						--minetest.chat_send_player("MustTest", "Cannot get target!")
-						-- cannot dig, stop trying to get target.
-						self.state = "stand"
-						set_velocity(self, 0)
-						set_animation(self, "stand")
-						self.attack = nil
-						self.v_start = false
-						self.timer = 0
-						self.blinktimer = 0
-						self.path.way = nil
+					-- If protected, do not replace non-air nodes [MustTest].
+					if prot and node.name ~= "air" then
+						canput = false
 					end
 
-					-- move to center of hole to try and fall down it
-					--local v = v_round(s)
-					--self.object:set_pos(v)
-					--self.path.way = {[1]={x=v.x, y=v.y, z=v.z}}
-					--self.path.following = true
-					--self.path.stuck_timer = 0
+					if canput then
 
-				else -- dig 2 blocks to make door toward player direction
+						-- Place node the mob likes, or use fallback.
+						-- Disable protection for this node via meta [MustTest].
+						minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
+						local meta = minetest.get_meta(s)
+						meta:set_int("protection_cancel", 1)
 
-					local yaw1 = self.object:get_yaw() + pi / 2
-					local p1 = {
-						x = s.x + cos(yaw1),
-						y = s.y,
-						z = s.z + sin(yaw1)
+						-- Note: do not force node to fall if it does not need to.
+						minetest.check_for_falling(s)
+					end
+
+					-- Block placement min time [MustTest].
+					self.path.putnode_timer = 1
+					self.path.stuck_timer = 0
+				end
+
+				local sheight = ceil(self.collisionbox[5]) + 1
+
+				-- assume mob is 2 blocks high so it digs above its head
+				s.y = s.y + sheight
+
+				if try_break_block(self, s) then
+					self.path.putnode_timer = 1
+				end
+
+				s.y = s.y - sheight
+				-- this causes mob to glitch
+				--self.object:set_pos({x = s.x, y = s.y + 1, z = s.z})
+				self.object:set_velocity({x = 0, y = 5, z = 0})
+
+			-- target is directly under the mob -- dig through floor!
+			elseif abs(p1.x - s.x) < 0.2 and abs(p1.z - s.z) < 0.2 and p1.y < (s.y - 2) then
+
+				s.y = s.y - 1
+				local res = try_break_block(self, s)
+				s.y = s.y + 1
+
+				if not res then
+					-- cannot dig, stop trying to get target.
+					self.state = "stand"
+					set_velocity(self, 0)
+					set_animation(self, "stand")
+					self.attack = nil
+					self.v_start = false
+					self.timer = 0
+					self.blinktimer = 0
+					self.path.way = nil
+				end
+
+				if res then
+					self.path.putnode_timer = 1
+					self.path.stuck_timer = 0
+				end
+
+				-- move to center of hole to try and fall down it
+				local v = v_round(s)
+				self.path.way = {
+					[1]={x=v.x, y=v.y, z=v.z},
+					[2]={x=v.x, y=v.y - 1, z=v.z},
+				}
+				self.path.following = true
+				self.path.stuck_timer = 0
+				self.path.los_counter = 0
+				highlight_path(self)
+
+			-- is player more than 1 block lower than mob
+			elseif p1.y < (s.y - 0.9) then
+				--report("digging down")
+				-- dig down
+				local s = self.object:get_pos()
+				s.y = s.y + self.collisionbox[2] - 0.5
+				s = v_round(s)
+				--report(minetest.get_node(s).name)
+
+				if try_break_block(self, s) then
+					self.path.putnode_timer = 1
+
+					-- Move toward the location supposedly dug.
+					self.path.way = {
+						[1]={x=s.x, y=s.y, z=s.z},
 					}
+					self.path.following = true
+					self.path.stuck_timer = 0
+					self.path.los_counter = 0
+				end
 
-					try_break_block(self, p1)
+				highlight_path(self)
 
-					p1.y = p1.y + 1
-
-					try_break_block(self, p1)
+			else -- dig 2 blocks to make door toward player direction
+				if try_dig_doorway(self, s) then
+					self.path.putnode_timer = 1
+					self.path.stuck_timer = 0
 				end
 			end
-
-			-- will try again in 2 second
-			self.path.stuck_timer = stuck_timeout - 2
-
-			-- frustration! cant find the damn path :(
-			if random(1, 20) == 1 then
-				mob_sound(self, self.sounds.random)
-			end
-		else
-			-- yay i found path
-			if self.attack then
-				mob_sound(self, self.sounds.war_cry)
-			else
-				mob_sound(self, self.sounds.random)
-			end
-
-			set_velocity(self, self.walk_velocity)
-
-			-- follow path now that it has it
-			self.path.following = true
 		end
+
+		-- Frustration! Cant find the path. :-(
+		if random(1, 20) == 1 then
+			mob_sound(self, self.sounds.random)
+		end
+	elseif s.y < p1.y and (not self.fly) then
+		-- Note: self.path.way is valid if we get here [MustTest].
+		-- Allow jump routine to break blocks [MustTest].
+		local break_blocks = (self.pathfinding or 0) >= 2
+		do_jump(self, break_blocks) -- Add jump to pathfinding.
+
+		-- follow path now that it has it.
+		self.path.following = true
+		self.stuck_path_timeout = (#self.path.way * 0.75)
+		self.path.stuck_timer = 0
+		self.path.los_counter = 0
 	else
-		if use_pathfind and self.path.way then
-			--print('already have path')
-			highlight_path(self)
-			if not self.path.following then
-				--print('following existing path')
-				self.path.following = true
-			end
+		-- yay i found path
+		if self.attack then
+			mob_sound(self, self.sounds.war_cry)
+		else
+			mob_sound(self, self.sounds.random)
 		end
+
+		set_velocity(self, self.walk_velocity)
+
+		-- follow path now that it has it
+		self.path.following = true
+		self.stuck_path_timeout = (#self.path.way * 0.75)
+		self.path.stuck_timer = 0
+		self.path.los_counter = 0
 	end
 end
 
@@ -2736,10 +2843,15 @@ local function do_states(self, dtime)
 			and self.path.way
 			and self.attack_type ~= "dogshoot" then
 
-				-- no paths longer than 50
-				if #self.path.way > 50
-				or dist < self.reach then
+				-- No very long paths [MustTest].
+				-- Note that the engine is now a lot better at pathfinding, so bad paths
+				-- aren't often generated anymore. I can leave the limit fairly high.
+				local max_len = (self.pathing_radius or 16) * 4
+				if #self.path.way > max_len or dist < self.reach then
+					--report("path too long: " .. #self.path.way)
 					self.path.following = false
+					self.path.way = nil
+					self.path.find_path_timer = 2
 					return
 				end
 
@@ -2777,14 +2889,18 @@ local function do_states(self, dtime)
 			if dist > self.reach then
 
 				-- path finding by rnd
-				if self.pathfinding and self.pathfinding ~= 0 -- only if mob has pathfinding enabled
-				and enable_pathfinding then
-
+				if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
+					-- Always pass the real position of the target to Smart Mobs function [MustTest].
+					local p = self.attack:get_pos()
 					smart_mobs(self, s, p, dist, dtime)
 				end
 ---[[
-				if is_at_cliff(self) then
-
+				-- MustTest:
+				-- Very, very rarely, a mob may FALSELY get stuck (as if at the edge of
+				-- a cliff) while following a path. This is due to a slight error amount
+				-- in the 'is_at_cliff' function. So if the mob is set to follow a path,
+				-- we just ignore the cliff (the path should be safe anyway).
+				if is_at_cliff(self) and not self.path.following then
 					set_velocity(self, 0)
 					set_animation(self, "stand")
 				else
@@ -3022,6 +3138,13 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	-- Record name of last attacker.
 	self.last_attacked_by = (hitter and hitter:is_player() and hitter:get_player_name()) or ""
+
+	-- Stop following path when hit [MustTest].
+	if self.last_attacked_by ~= "" then
+		self.path.following = false
+		self.path.stuck_timer = 0.0
+		self.path.los_counter = 0
+	end
 
 	-- custom punch function
 	if self.do_punch then
@@ -3482,7 +3605,11 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path.stuck = false
 	self.path.following = false -- currently following path?
 	self.path.stuck_timer = 0 -- if stuck for too long search for path
+	self.path.pos_rec_timer = 0
+	self.path.find_path_timer = 0
 	self.path.putnode_timer = 0
+	self.path.los_counter = 0
+	self.path.los_check = 0
 
 	-- mob defaults
 	self.object:set_armor_groups({immortal = 1, fleshy = self.armor})
@@ -3711,7 +3838,12 @@ local function mob_step(self, dtime)
 
 	do_states(self, dtime)
 
-	do_jump(self)
+	-- Allow jump routine to break blocks [MustTest].
+	local break_blocks = false
+	if self.path.following and (self.pathfinding or 0) == 2 then
+		break_blocks = true
+	end
+	do_jump(self, break_blocks)
 
 	runaway_from(self)
 end
@@ -3888,6 +4020,8 @@ if not mobs.registered then
 			owner_loyal             = def.owner_loyal,
 			facing_fence            = false,
 			ignore_invisibility     = def.ignore_invisibility,
+			pathing_radius          = def.pathing_radius,
+			max_node_dig_level      = def.max_node_dig_level,
 			_cmi_is_mob             = true,
 
 

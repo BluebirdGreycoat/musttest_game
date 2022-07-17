@@ -29,6 +29,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	},
 	walk_velocity = 1,
 	run_velocity = 3,
+	sprint_velocity = 4,
 	view_range = 30,
 	jump = true,
 

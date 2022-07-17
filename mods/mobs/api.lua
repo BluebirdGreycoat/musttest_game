@@ -2096,7 +2096,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 			end
 		end
 
-		-- Frustration! Cant find the path. :-(
+		-- Frustration! Can't find the path. :-(
 		if random(1, 20) == 1 then
 			mob_sound(self, self.sounds.random)
 		end
@@ -2933,11 +2933,11 @@ local function do_states(self, dtime)
 					set_animation(self, "stand")
 				else
 
-					if self.path.stuck then
-						set_velocity(self, self.walk_velocity or 0)
+					if overunder_waypoint then
+						set_velocity(self, 0.1)
 					else
-						if overunder_waypoint then
-							set_velocity(self, 0.1)
+						if not self.path.following then
+							set_velocity(self, self.sprint_velocity or 0)
 						else
 							set_velocity(self, self.run_velocity or 0)
 						end
@@ -2956,7 +2956,6 @@ local function do_states(self, dtime)
 
 			else -- rnd: if inside reach range
 
-				self.path.stuck = false
 				self.path.stuck_timer = 0
 				self.path.following = false -- not stuck anymore
 
@@ -3616,7 +3615,6 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path = {}
 	self.path.way = {} -- path to follow, table of positions
 	self.path.lastpos = {x = 0, y = 0, z = 0}
-	self.path.stuck = false
 	self.path.following = false -- currently following path?
 	self.path.stuck_timer = 0 -- if stuck for too long search for path
 	self.path.pos_rec_timer = 0
@@ -3948,6 +3946,7 @@ if not mobs.registered then
 			view_range              = def.view_range or 5,
 			walk_velocity           = def.walk_velocity or 1,
 			run_velocity            = def.run_velocity or 2,
+			sprint_velocity         = def.sprint_velocity or def.run_velocity or 2
 
 			-- Mob always does at least this amount of damage.
 			-- But if random damage between min and max would be greater,

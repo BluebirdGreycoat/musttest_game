@@ -67,6 +67,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	},
 	ignore_invisibility = true,
 	knock_back = false,
+	hunt_players = true,
 })
 
 

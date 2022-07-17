@@ -2229,7 +2229,8 @@ local function general_attack(self)
 	local p, sp, dist, min_player
 	local min_dist = self.view_range + 1
 
-	-- go through remaining entities and select closest
+	-- Go through remaining entities and select closest.
+	-- Have to use ipairs because array has holes [MustTest].
 	for _,player in pairs(objs) do
 
 		p = player:get_pos()
@@ -2242,16 +2243,16 @@ local function general_attack(self)
 		sp.y = sp.y + 1
 
 		-- choose closest player to attack that isnt self
-		if dist ~= 0
-		and dist < min_dist
-		and line_of_sight(self, sp, p, 0.5) == true then
+		if dist ~= 0 and dist < min_dist and line_of_sight(self, sp, p, 0.5) == true then
 			min_dist = dist
 			min_player = player
 		end
 	end
 
+	-- If mob is set up to hunt players, randomly select a nearby player.
+
 	-- attack closest player or mob
-	if min_player then
+	if min_player and random(1, 100) < (self.attack_chance or 95) then
 		do_attack(self, min_player)
 	end
 end
@@ -4021,6 +4022,10 @@ if not mobs.registered then
 			ignore_invisibility     = def.ignore_invisibility,
 			pathing_radius          = def.pathing_radius,
 			max_node_dig_level      = def.max_node_dig_level,
+			hunt_players            = def.hunt_players,
+			hunt_chance             = def.hunt_chance or 5
+			-- The meaning of 'attack_chance' is inverted in order to make more sense [MustTest].
+			attack_chance           = def.attack_chance or 95
 			_cmi_is_mob             = true,
 
 

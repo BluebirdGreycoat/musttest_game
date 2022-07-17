@@ -1246,7 +1246,7 @@ local function try_break_block(self, s)
 
 	-- Don't destroy player's bones [MustTest]!
 	if (not ndef1) or node1 == "air" or node1 == "ignore" or node1 == "bones:bones" then
-		return false, "unbreakable"
+		return
 	end
 
 	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then

@@ -2157,6 +2157,7 @@ end
 
 
 -- general attack function for all mobs ==========
+-- This function only executes once per second (per mob) [MustTest].
 local function general_attack(self)
 
 	-- return if already attacking, passive or docile during day
@@ -2249,11 +2250,28 @@ local function general_attack(self)
 		end
 	end
 
-	-- If mob is set up to hunt players, randomly select a nearby player.
-
 	-- attack closest player or mob
 	if min_player and random(1, 100) < (self.attack_chance or 95) then
 		do_attack(self, min_player)
+	elseif not min_player and random(1, 100) < (self.hunt_chance or 5) then
+		-- If mob is set up to hunt players, randomly select a nearby player.
+		-- Only do this if we didn't get a target the normal way [MustTest].
+
+		-- Build list of candidate targets.
+		local candidates = {}
+		for k, v in pairs(objs) do
+			if v:is_player() then
+				if not mobs.is_invisible(self, v:get_player_name()) then
+					candidates[#candidates + 1] = v
+				end
+			end
+		end
+
+		-- Pick random target.
+		if #candidates > 0 then
+			local target = candidates[random(1, #candidates)]
+			do_attack(self, target)
+		end
 	end
 end
 
@@ -3830,7 +3848,12 @@ local function mob_step(self, dtime)
 		replace(self, pos)
 	end
 
-	general_attack(self)
+	-- The 'general_attack' function only needs to run once a second.
+	self.general_attack_timer = (self.general_attack_timer or 0) + dtime
+	if self.general_attack_timer >= 1 then
+		general_attack(self)
+		self.general_attack_timer = 0
+	end
 
 	breed(self)
 

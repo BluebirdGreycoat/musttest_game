@@ -1237,6 +1237,38 @@ end
 
 
 
+function mobs.shoot_arrow(self, vec)
+	-- play shoot attack sound
+	mob_sound(self, self.sounds.shoot_attack)
+
+	local p = self.object:get_pos()
+
+	p.y = p.y + (self.collisionbox[2] + self.collisionbox[5]) / 2
+
+	if minetest.registered_entities[self.arrow] then
+
+		local obj = minetest.add_entity(p, self.arrow)
+		if not obj then return end -- Sanity check.
+
+		local ent = obj:get_luaentity()
+		local amount = (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z) ^ 0.5
+		local v = ent.velocity or 1 -- or set to default
+
+		ent.switch = 1
+		ent.owner_id = tostring(self.object) -- add unique owner id to arrow
+
+		-- offset makes shoot aim accurate
+		vec.y = vec.y + self.shoot_offset
+		vec.x = vec.x * (v / amount)
+		vec.y = vec.y * (v / amount)
+		vec.z = vec.z * (v / amount)
+
+		obj:set_velocity(vec)
+	end
+end
+
+
+
 -- Remove block if possible [MustTest].
 local function try_break_block(self, s)
 	s = v_round(s)
@@ -2672,7 +2704,7 @@ local function do_states(self, dtime)
 			self.state = "stand"
 			set_animation(self, "stand")
 		else
-			set_velocity(self, self.run_velocity or 0)
+			set_velocity(self, self.sprint_velocity or 0)
 			set_animation(self, "walk")
 		end
 
@@ -3044,31 +3076,7 @@ local function do_states(self, dtime)
 				self.timer = 0
 				set_animation(self, "shoot")
 
-				-- play shoot attack sound
-				mob_sound(self, self.sounds.shoot_attack)
-
-				local p = self.object:get_pos()
-
-				p.y = p.y + (self.collisionbox[2] + self.collisionbox[5]) / 2
-
-				if minetest.registered_entities[self.arrow] then
-
-					local obj = minetest.add_entity(p, self.arrow)
-					local ent = obj:get_luaentity()
-					local amount = (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z) ^ 0.5
-					local v = ent.velocity or 1 -- or set to default
-
-					ent.switch = 1
-					ent.owner_id = tostring(self.object) -- add unique owner id to arrow
-
-					 -- offset makes shoot aim accurate
-					vec.y = vec.y + self.shoot_offset
-					vec.x = vec.x * (v / amount)
-					vec.y = vec.y * (v / amount)
-					vec.z = vec.z * (v / amount)
-
-					obj:set_velocity(vec)
-				end
+				mobs.shoot_arrow(self, vec)
 			end
 		end
 	end

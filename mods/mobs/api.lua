@@ -3946,7 +3946,7 @@ if not mobs.registered then
 			view_range              = def.view_range or 5,
 			walk_velocity           = def.walk_velocity or 1,
 			run_velocity            = def.run_velocity or 2,
-			sprint_velocity         = def.sprint_velocity or def.run_velocity or 2
+			sprint_velocity         = def.sprint_velocity or def.run_velocity or 2,
 
 			-- Mob always does at least this amount of damage.
 			-- But if random damage between min and max would be greater,

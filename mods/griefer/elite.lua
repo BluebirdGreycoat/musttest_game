@@ -65,6 +65,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	immune_to = {
 		{"default:gold_lump", -10}, -- heals by 10 points
 	},
+	ignore_invisibility = true,
 })
 
 

@@ -181,6 +181,14 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				end,
 			})
 
+			-- If the staff was already used to teleport to the Abyss once, then a
+			-- second use breaks it.
+			if meta:get_int("times_used") >= 1 then
+				item:take_item()
+			else
+				meta:set_int("times_used", 1)
+			end
+
 			-- The metadata will have been updated if we swapped datums.
 			return item
 		end

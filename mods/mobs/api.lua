@@ -3155,9 +3155,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	-- Stop following path when hit [MustTest].
 	if self.last_attacked_by ~= "" then
-		self.path.following = false
-		self.path.stuck_timer = 0.0
-		self.path.los_counter = 0
+		-- Unless hitter is the mob's current target.
+		if self.attack ~= hitter then
+			self.path.following = false
+			self.path.stuck_timer = 0.0
+			self.path.los_counter = 0
+		end
 	end
 
 	-- custom punch function

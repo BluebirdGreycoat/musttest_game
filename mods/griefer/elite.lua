@@ -7,7 +7,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	pathfinding = 2,
 	pathing_radius = 20,
 	max_node_dig_level = 2,
-	reach = 2,
+	reach = 3,
 	damage = 8,
 	damage_min = 8,
 	damage_max = 16,

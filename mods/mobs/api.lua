@@ -20,6 +20,8 @@ local v_equals = vector.equals
 local vector_distance = vector.distance
 local v_distance = vector.distance
 
+mobs.debug_paths = false
+
 local function report(msg)
 	if minetest.is_singleplayer() then
 		minetest.chat_send_all(msg)
@@ -1827,12 +1829,21 @@ end
 
 
 local function highlight_path(self)
---[[
-		-- show path using particles
-		if self.path.way and #self.path.way > 0 then
-			--print ("-- path length:" .. tonumber(#self.path.way))
-			for _,pos in pairs(self.path.way) do
-				minetest.add_particle({
+	if not mobs.debug_paths then
+		return
+	end
+
+	-- show path using particles
+	if self.path.way and #self.path.way > 0 then
+		--print ("-- path length:" .. tonumber(#self.path.way))
+		local pname = "singleplayer"
+		if not minetest.is_singleplayer() then
+			pname = gdac.name_of_admin
+		end
+
+		for _,pos in pairs(self.path.way) do
+			minetest.add_particle({
+				playername = pname,
 				pos = pos,
 				velocity = {x=0, y=0, z=0},
 				acceleration = {x=0, y=0, z=0},
@@ -1841,10 +1852,9 @@ local function highlight_path(self)
 				collisiondetection = false,
 				vertical = false,
 				texture = "heart.png",
-				})
-			end
+			})
 		end
---]]
+	end
 end
 
 

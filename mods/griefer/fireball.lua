@@ -1,5 +1,5 @@
 
-mobs.register_arrow("oerkki:fireball", {
+mobs.register_arrow("griefer:fireball", {
 	visual = "sprite",
 	visual_size = {x = 1, y = 1},
 	textures = {"dm_fireball.png"},

@@ -14,6 +14,7 @@ barter.chest.formspec = {
 		"list[context;pl1;0,0;3,4;]"..
 		"list[context;pl2;5,0;3,4;]"..
 		"list[current_player;main;0,5;8,4;]",
+
 	pl1 = {
 		start = "button[3,1;1,1;pl1_start;Start]",
 		player = function(name) return "label[3,0;" .. rename.gpn(name) .. "]" end,
@@ -22,6 +23,7 @@ barter.chest.formspec = {
 		accept2 = "button[3,1;1,1;pl1_accept2;Exchange]"..
 				"button[3,2;1,1;pl1_cancel;Cancel]",
 	},
+
 	pl2 = {
 		start = "button[4,1;1,1;pl2_start;Start]",
 		player = function(name) return "label[4,0;" .. rename.gpn(name) .. "]" end,
@@ -52,7 +54,8 @@ end
 
 barter.chest.update_formspec = function(meta)
 	local formspec = barter.chest.formspec.main
-	local pl_formspec = function (n)
+
+	local pl_formspec = function(n)
 		if meta:get_int(n.."step")==0 then
 			formspec = formspec .. barter.chest.formspec[n].start
 		else
@@ -64,16 +67,21 @@ barter.chest.update_formspec = function(meta)
 			end
 		end
 	end
-	pl_formspec("pl1") pl_formspec("pl2")
+
+	pl_formspec("pl1")
+	pl_formspec("pl2")
 	meta:set_string("formspec", formspec)
 end
 
-barter.chest.give_inventory = function(inv,list,playername)
+barter.chest.give_inventory = function(inv, list, playername)
 	player = minetest.get_player_by_name(playername)
-	if player then
-		for k,v in ipairs(inv:get_list(list)) do
-			player:get_inventory():add_item("main",v)
-			inv:remove_item(list,v)
+	if inv and player then
+		local pinv = player:get_inventory()
+		if pinv then
+			for k, v in ipairs(inv:get_list(list)) do
+				pinv:add_item("main", v)
+				inv:remove_item(list, v)
+			end
 		end
 	end
 end
@@ -119,22 +127,28 @@ barter.chest.reset2 = function(pos, elapsed)
 end
 
 barter.chest.exchange = function(meta)
-	barter.chest.give_inventory(meta:get_inventory(),"pl1",meta:get_string("pl2"))
-	barter.chest.give_inventory(meta:get_inventory(),"pl2",meta:get_string("pl1"))
+	--minetest.chat_send_all('barter places items in inventory')
+	barter.chest.give_inventory(meta:get_inventory(), "pl1", meta:get_string("pl2"))
+	barter.chest.give_inventory(meta:get_inventory(), "pl2", meta:get_string("pl1"))
 	meta:set_string("pl1","")
 	meta:set_string("pl2","")
 	meta:set_int("pl1step",0)
 	meta:set_int("pl2step",0)
 end
 
+
+
 minetest.register_node("barter_table:barter", {
 	drawtype = "nodebox",
 	description = "Barter Table",
 	paramtype = "light",
 	paramtype2 = "facedir",
-	tiles = {"barter_top.png",
-	                "barter_base.png",
-	                "barter_side.png"},
+	tiles = {
+		"barter_top.png",
+		"barter_base.png",
+		"barter_side.png",
+	},
+
 	inventory_image = "barter_top.png",
 	node_box = {
 		type = "fixed",
@@ -149,6 +163,8 @@ minetest.register_node("barter_table:barter", {
 	groups = utility.dig_groups("furniture"),
 	sounds = default.node_sound_wood_defaults(),
 	on_timer = barter.chest.reset2,
+
+
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "Trade/Barter Table")
@@ -161,8 +177,12 @@ minetest.register_node("barter_table:barter", {
 		local timer = minetest.get_node_timer(pos)
 		timer:start(barter.long_delay)
 	end,
+
+
+
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.get_meta(pos)
+
 		local pl_receive_fields = function(n)
 			if fields[n.."_start"] and meta:get_string(n) == "" then
 				meta:set_string(n,sender:get_player_name())
@@ -201,22 +221,33 @@ minetest.register_node("barter_table:barter", {
 				if fields[n.."_cancel"] then barter.chest.cancel(meta) end
 			end
 		end
+
 		pl_receive_fields("pl1")
 		pl_receive_fields("pl2")
+
 		-- End
 		barter.chest.update_formspec(meta)
 	end,
+
+
+
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
 		local meta = minetest.get_meta(pos)
 		if not barter.chest.check_privilege(from_list,player:get_player_name(),meta) then return 0 end
 		if not barter.chest.check_privilege(to_list,player:get_player_name(),meta) then return 0 end
 		return count
 	end,
+
+
+
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		if not barter.chest.check_privilege(listname,player:get_player_name(),meta) then return 0 end
 		return stack:get_count()
 	end,
+
+
+
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		if not barter.chest.check_privilege(listname,player:get_player_name(),meta) then return 0 end

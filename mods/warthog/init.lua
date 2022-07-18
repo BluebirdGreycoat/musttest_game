@@ -13,6 +13,7 @@ mobs.register_mob("warthog:warthog", {
 	group_attack = true,
 	reach = 2,
 	pathfinding = 1,
+	pathfinding_chance = 20,
 	damage = 5,
 	hp_min = 35,
 	hp_max = 65,

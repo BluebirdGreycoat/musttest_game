@@ -15,7 +15,10 @@ mobs.register_mob("griefer:elite_griefer", {
 	hp_min = 160,
 	hp_max = 260,
 	armor = 100,
-	armor_level = 2,
+
+	-- Require level 3 weapon to get any drops.
+	armor_level = 3,
+
 	-- Slightly smaller collision box makes mob movement easier.
 	collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	--collisionbox = {-0.4, -1, -0.4, 0.4, 0.9, 0.4},

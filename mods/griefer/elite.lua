@@ -35,7 +35,13 @@ mobs.register_mob("griefer:elite_griefer", {
 	jump = true,
 
 	drops = {
+		{name = "default:goldblock", chance = 1, min = 1, max = 1},
+		{name = "cavestuff:dark_obsidian", chance = 1, min = 1, max = 5},
 	},
+
+	-- The node needs to be something the Oerkki can also dig,
+	-- otherwise it might trap itself.
+	place_node = "default:cobble",
 
 	water_damage = 0,
 	lava_damage = 4,

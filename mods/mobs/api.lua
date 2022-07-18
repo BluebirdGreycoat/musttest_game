@@ -20,8 +20,6 @@ local v_equals = vector.equals
 local vector_distance = vector.distance
 local v_distance = vector.distance
 
-mobs.debug_paths = false
-
 local function report(msg)
 	if minetest.is_singleplayer() then
 		minetest.chat_send_all(msg)
@@ -1333,7 +1331,7 @@ end
 local function try_break_block(self, s)
 	s = v_round(s)
 
-	local node1 = node_ok(s, "air").name
+	local node1 = minetest.get_node(s).name
 	local ndef1 = minetest.registered_nodes[node1]
 
 	-- Don't destroy player's bones [MustTest]!
@@ -1842,7 +1840,7 @@ local function highlight_path(self)
 		end
 
 		for _,pos in pairs(self.path.way) do
-			minetest.add_particle({
+			utility.original_add_particle({
 				playername = pname,
 				pos = pos,
 				velocity = {x=0, y=0, z=0},
@@ -1859,6 +1857,7 @@ end
 
 
 
+-- Shall return 'true' if blockage was fully removed [MustTest].
 local function try_dig_doorway(self, s)
 	local s = table.copy(s)
 	s.y = s.y + self.collisionbox[2] + 0.5
@@ -1870,10 +1869,14 @@ local function try_dig_doorway(self, s)
 	}
 	p1 = v_round(p1)
 
+	--report(minetest.get_node(p1).name)
+
 	-- First, try to break the block above.
 	-- If we can't do this, there's no point in trying to break the bottom block.
 	-- That would also interfere with us closing the bottom hole up.
 	p1.y = p1.y + 1
+
+	--report(minetest.get_node(p1).name)
 
 	local b1
 	local b2 = try_break_block(self, p1)
@@ -1895,6 +1898,7 @@ local function try_dig_doorway(self, s)
 		b1 = try_break_block(self, p1)
 	end
 
+	--report(tostring(b1) .. ", " .. tostring(b2))
 	return (b1 and b2)
 end
 
@@ -1973,6 +1977,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 	if self.path.stuck_timer > stuck_timeout then
 		if self.path.following then
 			--report("stuck timeout - was following path")
+			highlight_path(self)
 			-- The mob got stuck while following a path. This can happen if the path
 			-- goes through a 1x1 node hole, which the mob is too big to fit through.
 			-- I can try to dig that block. [MustTest]
@@ -1981,10 +1986,12 @@ local function smart_mobs(self, s, p, dist, dtime)
 				removed_blockage = try_dig_doorway(self, s)
 			end
 			if not removed_blockage then
+				--report("blockage not removed")
 				use_pathfind = true
 				self.path.stuck_timer = 0
 				self.path.following = false
 			else
+				--report("blockage removed")
 				self.path.stuck_timer = 0
 				self.stuck_path_timeout = (((self.path.way and #self.path.way) or 0) * 0.75)
 			end

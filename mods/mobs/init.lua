@@ -1,7 +1,7 @@
 
 mobs = mobs or {}
 mobs.modpath = minetest.get_modpath("mobs")
-
+mobs.debug_paths = false
 
 
 minetest.register_privilege("mob_respect", {

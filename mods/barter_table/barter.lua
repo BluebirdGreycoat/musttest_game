@@ -127,7 +127,6 @@ barter.chest.reset2 = function(pos, elapsed)
 end
 
 barter.chest.exchange = function(meta)
-	--minetest.chat_send_all('barter places items in inventory')
 	barter.chest.give_inventory(meta:get_inventory(), "pl1", meta:get_string("pl2"))
 	barter.chest.give_inventory(meta:get_inventory(), "pl2", meta:get_string("pl1"))
 	meta:set_string("pl1","")

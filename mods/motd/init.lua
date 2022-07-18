@@ -6,12 +6,12 @@ motd.modpath = minetest.get_modpath("motd")
 
 minetest.register_chatcommand("motd", {
 	params = "",
-	description = "Write current Message of the Day.",
+	description = "Show MoTD.",
 	privs = {},
 	func = function(name, text)
 		local motd = minetest.setting_get("motd")
 		if motd == nil or motd == "" then
-			minetest.chat_send_player(name, "# Server: Message of the day has not been set.")
+			minetest.chat_send_player(name, "# Server: MoTD not set.")
 			return false
 		end
 

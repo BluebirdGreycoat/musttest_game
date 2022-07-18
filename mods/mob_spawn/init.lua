@@ -591,17 +591,6 @@ function mob_spawn.spawn_mobs(pname, index)
 				if mob then
 					local ent = mob:get_luaentity()
 					if ent then
-						-- Adjust the chance to use pathfinding on a per-entity basis.
-						if ent.pathfinding and ent.pathfinding ~= 0 then
-							-- If pathfinding is enabled, by default chance is 100%.
-							local chance = ent.instance_pathfinding_chance or 100
-							local res = math_random(1, 100)
-
-							if res > chance then
-								ent.pathfinding = 0
-							end
-						end
-
 						mob:setyaw((random(0, 360) - 180) / 180 * pi)
 						mobs_spawned = mobs_spawned + 1
 						report(mname, "Successfully spawned a mob!")

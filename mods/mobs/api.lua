@@ -3580,7 +3580,7 @@ end
 
 
 
--- activate mob and reload settings
+-- Activate mob and reload settings.
 local function mob_activate(self, staticdata, def, dtime)
 
 	-- Remove mob if activated during daytime and has 'daytime_despawn'.
@@ -3696,6 +3696,17 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path.putnode_timer = 0
 	self.path.los_counter = 0
 	self.path.los_check = 0
+
+	-- Adjust the chance to use pathfinding on a per-entity basis.
+	if self.pathfinding and self.pathfinding ~= 0 then
+		-- If pathfinding is enabled, by default chance is 100%.
+		local chance = self.pathfinding_chance or 100
+		local res = math_random(1, 100)
+
+		if res > chance then
+			self.pathfinding = 0
+		end
+	end
 
 	-- mob defaults
 	self.object:set_armor_groups({immortal = 1, fleshy = self.armor})
@@ -4089,7 +4100,7 @@ if not mobs.registered then
 			runaway                 = def.runaway,
 			runaway_timer           = 0,
 			pathfinding             = def.pathfinding or 0,
-			instance_pathfinding_chance = def.instance_pathfinding_chance,
+			pathfinding_chance      = def.pathfinding_chance,
 			place_node              = def.place_node,
 			immune_to               = def.immune_to or {},
 			explosion_radius        = def.explosion_radius,

@@ -10,7 +10,7 @@ mobs.register_mob("iceman:iceman", {
 	armor_level = 1,
 
 	pathfinding = 1,
-	instance_pathfinding_chance = 10,
+	pathfinding_chance = 10,
 	place_node = "default:snowblock",
   despawns_in_dark_caves = true,
 	daytime_despawn = true,

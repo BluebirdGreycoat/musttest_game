@@ -9,8 +9,8 @@ mobs.register_mob("iceman:iceman", {
 	-- Require at least steel sword to get any drops.
 	armor_level = 1,
 
-	pathfinding = 2,
-	instance_pathfinding_chance = {10, 100},
+	pathfinding = 1,
+	instance_pathfinding_chance = 10,
 	place_node = "default:snowblock",
   despawns_in_dark_caves = true,
 	daytime_despawn = true,

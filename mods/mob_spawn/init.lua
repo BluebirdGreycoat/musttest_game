@@ -593,14 +593,15 @@ function mob_spawn.spawn_mobs(pname, index)
 					if ent then
 						-- Adjust the chance to use pathfinding on a per-entity basis.
 						if ent.pathfinding and ent.pathfinding ~= 0 then
-							local chance = ent.instance_pathfinding_chance or {100, 100}
-							local res = math_random(1, chance[2])
-							--minetest.chat_send_player("MustTest", "Chance: " .. res .. " of " .. chance[1] .. " in " .. chance[2])
-							if res > chance[1] then
-								--minetest.chat_send_player("MustTest", "Mob will not pathfind!")
+							-- If pathfinding is enabled, by default chance is 100%.
+							local chance = ent.instance_pathfinding_chance or 100
+							local res = math_random(1, 100)
+
+							if res > chance then
 								ent.pathfinding = 0
 							end
 						end
+
 						mob:setyaw((random(0, 360) - 180) / 180 * pi)
 						mobs_spawned = mobs_spawned + 1
 						report(mname, "Successfully spawned a mob!")

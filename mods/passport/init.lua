@@ -507,6 +507,12 @@ end
 
 
 function passport.exec_spawn(name, param)
+	if passport.player_has_key(name) then
+		minetest.chat_send_player(name, "# Server: This command is newbies-only.")
+		easyvend.sound_error(name)
+		return true
+	end
+
 	local player = minetest.get_player_by_name(name)
 	if not player then return false end
 	local pos = vector_round(player:get_pos())

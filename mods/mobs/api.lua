@@ -1034,27 +1034,77 @@ end
 
 
 
--- Is mob facing a cliff.
-local function is_at_cliff(self)
-	if self.fear_height == 0 then -- 0 for no falling protection!
-		return false
+-- Returns true is node can deal damage to self
+function mobs.is_node_dangerous(mob_object, nodename)
+
+	if mob_object.water_damage > 0
+			and minetest.get_item_group(nodename, "water") ~= 0 then
+		return true
 	end
 
-	local yaw = self.object:get_yaw()
-	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
-	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
-	local pos = self.object:getpos()
-	local ypos = pos.y + self.collisionbox[2] -- just above floor
+	if mob_object.lava_damage > 0
+			and minetest.get_item_group(nodename, "lava") ~= 0 then
+		return true
+	end
 
-	if minetest.line_of_sight(
-		{x = pos.x + dir_x, y = ypos, z = pos.z + dir_z},
-		{x = pos.x + dir_x, y = ypos - self.fear_height, z = pos.z + dir_z}
-	, 1) then
+	if mob_object.fire_damage > 0
+			and minetest.get_item_group(nodename, "fire") ~= 0 then
+		return true
+	end
 
+	if minetest.registered_nodes[nodename].damage_per_second > 0 then
 		return true
 	end
 
 	return false
+end
+
+local function is_node_dangerous(mob_object, nodename)
+	return mobs.is_node_dangerous(mob_object, nodename)
+end
+
+
+
+-- Is mob facing a cliff.
+local function is_at_cliff(self)
+	if self.driver or self.fear_height == 0 then -- 0 for no falling protection!
+		return false
+	end
+
+	-- get yaw but if nil returned object no longer exists
+	local yaw = self.object:get_yaw()
+
+	if not yaw then return false end
+
+	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
+	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
+	local pos = self.object:get_pos()
+	local ypos = pos.y + self.collisionbox[2] -- just above floor
+
+	local free_fall, blocker = minetest.line_of_sight(
+		{x = pos.x + dir_x, y = ypos, z = pos.z + dir_z},
+		{x = pos.x + dir_x, y = ypos - self.fear_height, z = pos.z + dir_z})
+
+	-- check for straight drop
+	if free_fall then
+		return true
+	end
+
+	local bnode = node_ok(blocker)
+
+	-- will we drop onto dangerous node?
+	if is_node_dangerous(self, bnode.name) then
+		return true
+	end
+
+	local def = minetest.registered_nodes[bnode.name]
+
+	-- is node not defined?
+	if not def then
+		return true
+	end
+
+	return (not def.walkable)
 end
 
 
@@ -1066,11 +1116,11 @@ local function node_ok(pos, fallback)
 
 	local node = minetest.get_node_or_nil(pos)
 
-	if node and minetest.reg_ns_nodes[node.name] then
+	if node and minetest.registered_nodes[node.name] then
 		return node
 	end
 
-	return minetest.reg_ns_nodes[fallback]
+	return minetest.registered_nodes[fallback]
 end
 
 

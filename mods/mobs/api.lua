@@ -1405,7 +1405,9 @@ function mobs.punch_target(self)
 	if not gdac.player_is_admin(targetname) then
 		local damage = self.damage or 0
 		if self.damage_min and self.damage_max then
-			damage = math_random(self.damage_min, self.damage_max)
+			if self.damage_min > damage and self.damage_max >= self.damage_min then
+				damage = math_random(self.damage_min, self.damage_max)
+			end
 		end
 
 		local dgroup = self.damage_group or "fleshy"
@@ -1655,10 +1657,13 @@ local function avoid_env_damage(self, yaw)
 		return
 	end
 
+	local timer = self.avoid_env_dmg_timeout
+	if timer > 0 then
+		return true
+	end
+
 	local minp = {x=s.x - 5, y=s.y - 2, z=s.z - 5}
 	local maxp = {x=s.x + 5, y=s.y + 3, z=s.z + 5}
-	report(minetest.pos_to_string(minp))
-	report(minetest.pos_to_string(maxp))
 	local lp = minetest.find_nodes_in_area_under_air(
 		minp, maxp, env_damage_nodes)
 
@@ -1674,14 +1679,24 @@ local function avoid_env_damage(self, yaw)
 		local yaw = compute_yaw_to_target(self, lp, s)
 
 		-- look towards land and jump/move in that direction
-		yaw = set_yaw(self, yaw, 6)
+		yaw = set_yaw(self, yaw)
 
 		do_jump(self)
-		set_velocity(self, self.run_velocity or 0)
+		set_velocity(self, self.walk_velocity or 0)
+		set_animation(self, "walk")
+
+		-- Mob is trying to escape.
+		self.avoid_env_dmg_timeout = 3
+		return true
 	else
 		yaw = yaw + random(-0.5, 0.5)
 		yaw = set_yaw(self, yaw, 6)
 		set_velocity(self, self.run_velocity or 0)
+		set_animation(self, "walk")
+
+		-- Mob is trying to escape.
+		self.avoid_env_dmg_timeout = 3
+		return true
 	end
 end
 
@@ -2820,6 +2835,7 @@ local function do_states(self, dtime)
 	end
 
 	if self.state == "stand" then
+		-- Mob should try to leave env damage [MustTest].
 		if avoid_env_damage(self, yaw) then
 			self.state = "walk"
 			return
@@ -2877,14 +2893,14 @@ local function do_states(self, dtime)
 		end
 
 	elseif self.state == "walk" then
-
+		-- Mob should try to leave env damage [MustTest].
 		if avoid_env_damage(self, yaw) then
-			-- Mob should try to leave env damage [MustTest].
-		elseif random(1, 100) <= 30 then
-			-- otherwise randomly turn
+			return
+		end
 
+		-- Otherwise randomly turn.
+		if random(1, 100) <= 30 then
 			yaw = yaw + random(-0.5, 0.5)
-
 			yaw = set_yaw(self, yaw, 8)
 		end
 
@@ -3645,11 +3661,11 @@ local function mob_staticdata(self)
 
 	-- remove mob when out of range unless tamed
 	if remove_far
-	and self.remove_ok
-	and self.type ~= "npc"
-	and self.state ~= "attack"
-	and not self.tamed
-	and self.lifetimer < 20000 then
+			and self.remove_ok
+			and self.type ~= "npc"
+			and self.state ~= "attack"
+			and not self.tamed
+			and self.lifetimer < 20000 then
 
 		--print ("REMOVED " .. self.name)
 
@@ -3665,8 +3681,7 @@ local function mob_staticdata(self)
 	self.state = "stand"
 
 	-- used to rotate older mobs
-	if self.drawtype
-	and self.drawtype == "side" then
+	if self.drawtype and self.drawtype == "side" then
 		self.rotate = math.rad(90)
 	end
 
@@ -3676,10 +3691,7 @@ local function mob_staticdata(self)
 
 		local t = type(stat)
 
-		if  t ~= "function"
-		and t ~= "nil"
-		and t ~= "userdata"
-		and _ ~= "_cmi_components" then
+		if  t ~= "function" and t ~= "nil" and t ~= "userdata" and _ ~= "_cmi_components" then
 			tmp[_] = self[_]
 		end
 	end
@@ -3701,7 +3713,7 @@ end
 local function mob_activate(self, staticdata, def, dtime)
 
 	-- Remove mob if activated during daytime and has 'daytime_despawn'.
-	if self.daytime_despawn then
+	if def.daytime_despawn then
 		local tod = (minetest.get_timeofday() or 0) * 24000
 		if tod > 4500 and tod < 19500 then
 			-- Daylight, but mob despawns at daytime.
@@ -3757,14 +3769,12 @@ local function mob_activate(self, staticdata, def, dtime)
 	local selbox = self.base_selbox
 
 	-- specific texture if gotten
-	if self.gotten == true
-	and def.gotten_texture then
+	if self.gotten == true and def.gotten_texture then
 		textures = def.gotten_texture
 	end
 
 	-- specific mesh if gotten
-	if self.gotten == true
-	and def.gotten_mesh then
+	if self.gotten == true and def.gotten_mesh then
 		mesh = def.gotten_mesh
 	end
 
@@ -4031,6 +4041,7 @@ local function mob_step(self, dtime)
 
 	-- environmental damage timer (every 1 second)
 	self.env_damage_timer = self.env_damage_timer + dtime
+	self.avoid_env_dmg_timeout = self.avoid_env_dmg_timeout - dtime
 
 	if (self.state == "attack" and self.env_damage_timer > 1)
 	or self.state ~= "attack" then
@@ -4151,7 +4162,8 @@ if not mobs.registered then
 			sprint_velocity         = def.sprint_velocity or def.run_velocity or 2,
 
 			-- Mob may do an exact amount of damage.
-			-- But if min/max damage values are set, those are used instead.
+			-- But if min/max damage values are set (non-nil, non-0), those are used
+			-- instead.
 			damage                  = (def.damage or 0) * difficulty,
 			damage_min              = (def.damage_min or 0) * difficulty,
 			damage_max              = (def.damage_max or 0) * difficulty,
@@ -4200,6 +4212,7 @@ if not mobs.registered then
 
 			timer                   = 0,
 			env_damage_timer        = 0, -- only used when state = "attack"
+			avoid_env_dmg_timeout   = 0,
 			tamed                   = false,
 			pause_timer             = 0,
 			horny                   = false,

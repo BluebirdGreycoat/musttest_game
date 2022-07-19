@@ -217,7 +217,7 @@ minetest.register_node("bluegrass:seed", {
   sunlight_propagates = true,
   selection_box = {
     type = "fixed",
-    fixed = {-0.5, 5/16, -0.5, 0.5, 0.5, 0.5},
+    fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
   },
   groups = utility.dig_groups("seeds", {seed = 1, seed_oil = 1, hanging_node = 1, flammable = 2}),
   on_place = function(itemstack, placer, pointed_thing)

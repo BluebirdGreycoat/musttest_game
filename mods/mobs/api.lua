@@ -1065,6 +1065,22 @@ end
 
 
 
+-- Get node but use fallback for nil or unknown.
+local function node_ok(pos, fallback)
+
+	fallback = fallback or mobs.fallback_node
+
+	local node = minetest.get_node_or_nil(pos)
+
+	if node and minetest.registered_nodes[node.name] then
+		return node
+	end
+
+	return minetest.registered_nodes[fallback]
+end
+
+
+
 -- Is mob facing a cliff.
 local function is_at_cliff(self)
 	if self.driver or self.fear_height == 0 then -- 0 for no falling protection!
@@ -1105,22 +1121,6 @@ local function is_at_cliff(self)
 	end
 
 	return (not def.walkable)
-end
-
-
-
--- Get node but use fallback for nil or unknown.
-local function node_ok(pos, fallback)
-
-	fallback = fallback or mobs.fallback_node
-
-	local node = minetest.get_node_or_nil(pos)
-
-	if node and minetest.registered_nodes[node.name] then
-		return node
-	end
-
-	return minetest.registered_nodes[fallback]
 end
 
 

@@ -62,6 +62,11 @@ local function register_node(name, def2)
 		def.groups.fall_damage_add_percent = 30
 	end
 
+	-- Any nodes dealing env damage get added to the 'env_damage' group.
+	if def.damage_per_second ~= 0 then
+		def.groups.env_damage = 1
+	end
+
 	if not def.movement_speed_multiplier then
 		if def.drawtype == "nodebox" or def.drawtype == "mesh" then
 			if not string.find(name, "^vines:") then

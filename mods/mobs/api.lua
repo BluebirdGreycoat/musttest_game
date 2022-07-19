@@ -777,7 +777,8 @@ end
 
 
 -- custom particle effects
-local function effect(pos, amount, texture, min_size, max_size, radius, gravity, glow)
+local function effect(
+	pos, amount, texture, min_size, max_size, radius, gravity, glow, fall)
 
 	radius = radius or 2
 	min_size = min_size or 0.5
@@ -785,12 +786,20 @@ local function effect(pos, amount, texture, min_size, max_size, radius, gravity,
 	gravity = gravity or -10
 	glow = glow or 0
 
+	if fall == true then
+		fall = 0
+	elseif fall == false then
+		fall = radius
+	else
+		fall = -radius
+	end
+
 	minetest.add_particlespawner({
 		amount = amount,
 		time = 0.25,
 		minpos = pos,
 		maxpos = pos,
-		minvel = {x = -radius, y = -radius, z = -radius},
+		minvel = {x = -radius, y = fall, z = -radius},
 		maxvel = {x = radius, y = radius, z = radius},
 		minacc = {x = 0, y = gravity, z = 0},
 		maxacc = {x = 0, y = gravity, z = 0},
@@ -1218,8 +1227,7 @@ local function do_env_damage(self)
 	pos.y = pos.y + 1 -- for particle effect position
 
 	-- water
-	if self.water_damage
-	and nodef.groups.water then
+	if self.water_damage ~= 0 and nodef.groups.water then
 
 		if self.water_damage ~= 0 then
 
@@ -1231,9 +1239,8 @@ local function do_env_damage(self)
 					pos = pos, node = self.standing_in}) then return end
 		end
 
-	-- lava or fire
-	elseif self.lava_damage
-	and (nodef.groups.lava or nodef.groups.fire) then
+	-- lava damage
+	elseif self.lava_damage ~= 0 and nodef.groups.lava then
 
 		if self.lava_damage ~= 0 then
 
@@ -1245,8 +1252,21 @@ local function do_env_damage(self)
 					pos = pos, node = self.standing_in}) then return end
 		end
 
+	-- fire damage
+	elseif self.fire_damage ~= 0 and nodef.groups.fire then
+
+		self.health = self.health - self.fire_damage
+
+		effect(py, 15, "fire_basic_flame.png", 1, 5, 1, 0.2, 15, true)
+
+		if self:check_for_death({type = "environment", pos = pos,
+				node = self.standing_in, hot = true}) then
+			return true
+		end
+
 	-- damage_per_second node check
-	elseif nodef.damage_per_second ~= 0 then
+	elseif nodef.damage_per_second ~= 0
+			and nodef.groups.lava == nil and nodef.groups.fire == nil then
 
 		self.health = self.health - nodef.damage_per_second
 
@@ -4127,6 +4147,7 @@ if not mobs.registered then
 			light_damage            = def.light_damage or 0,
 			water_damage            = def.water_damage or 0,
 			lava_damage             = def.lava_damage or 0,
+			fire_damage             = def.fire_damage or 0,
 			suffocation             = def.suffocation or 2,
 
 			lava_annihilates        = first_or_second(def.lava_annihilates, true),

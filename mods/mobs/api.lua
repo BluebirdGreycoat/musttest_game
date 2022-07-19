@@ -1294,10 +1294,39 @@ function mobs.punch_target(self)
 	local attached = self.attack:get_attach()
 	if attached or default.player_attached[targetname] then
 		-- Mob has a chance of removing the player from whatever they're attached to.
+		-- This chance only applies on the mob's first hit; if they fail to detach
+		-- the player, the mob's target is set to the entity the player is attached to.
 		if self.attack:is_player() and random(1, 5) == 1 then
 			utility.detach_player_with_message(self.attack)
 		elseif attached then
 			self.attack = attached
+		end
+	end
+
+	-- If attacking an entity that has no attached player, then stop attacking.
+	if targetname == "" then
+		local luaent = self.attack:get_luaentity()
+
+		if luaent then
+			local children = self.attack:get_children()
+
+			if not children or #children == 0 then
+				self.attack = nil
+				return
+			else
+				local has_player = false
+
+				for k, v in ipairs(children) do
+					if v:is_player() then
+						has_player = true
+					end
+				end
+
+				if not has_player then
+					self.attack = nil
+					return
+				end
+			end
 		end
 	end
 

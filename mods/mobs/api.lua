@@ -1140,6 +1140,7 @@ function mobs.node_ok(pos, fallback)
 end
 
 
+
 -- Environmental damage (water, lava, fire, light).
 local function do_env_damage(self)
 
@@ -1627,6 +1628,61 @@ print("on: " .. self.standing_on
 	end
 
 	return false
+end
+
+
+
+-- Env damage avoidance extracted into its own function [MustTest].
+local env_damage_nodes = {
+	"group:soil",
+	"group:stone",
+	"group:sand",
+	"group:rackstone",
+	"group:netherack",
+	node_ice,
+	node_snowblock,
+}
+
+local function avoid_env_damage(self, yaw)
+	local s = self.object:get_pos()
+	if not s then
+		return
+	end
+	s = v_round(s)
+
+	-- If mob in dangerous node then look for land.
+	if not is_node_dangerous(self, self.standing_in) then
+		return
+	end
+
+	local minp = {x=s.x - 5, y=s.y - 2, z=s.z - 5}
+	local maxp = {x=s.x + 5, y=s.y + 3, z=s.z + 5}
+	report(minetest.pos_to_string(minp))
+	report(minetest.pos_to_string(maxp))
+	local lp = minetest.find_nodes_in_area_under_air(
+		minp, maxp, env_damage_nodes)
+
+	-- select position of random block to climb onto
+	if #lp > 0 then
+		lp = lp[math_random(1, #lp)]
+	else
+		lp = false
+	end
+
+	-- did we find land?
+	if lp then
+		local yaw = compute_yaw_to_target(self, lp, s)
+
+		-- look towards land and jump/move in that direction
+		yaw = set_yaw(self, yaw, 6)
+
+		do_jump(self)
+		set_velocity(self, self.run_velocity or 0)
+	else
+		yaw = yaw + random(-0.5, 0.5)
+		yaw = set_yaw(self, yaw, 6)
+		set_velocity(self, self.run_velocity or 0)
+	end
 end
 
 
@@ -2764,6 +2820,10 @@ local function do_states(self, dtime)
 	end
 
 	if self.state == "stand" then
+		if avoid_env_damage(self, yaw) then
+			self.state = "walk"
+			return
+		end
 
 		if random(1, 4) == 1 then
 
@@ -2818,54 +2878,10 @@ local function do_states(self, dtime)
 
 	elseif self.state == "walk" then
 
-		local s = self.object:get_pos()
-		local lp = nil
-
-		-- is there something I need to avoid?
-		if self.water_damage > 0
-		and self.lava_damage > 0 then
-
-			lp = minetest.find_node_near(s, 1, {"group:water", "group:lava"})
-
-		elseif self.water_damage > 0 then
-
-			lp = minetest.find_node_near(s, 1, {"group:water"})
-
-		elseif self.lava_damage > 0 then
-
-			lp = minetest.find_node_near(s, 1, {"group:lava"})
-		end
-
-		if lp then
-
-			-- if mob in water or lava then look for land
-			local ndef = minetest.reg_ns_nodes[self.standing_in]
-			if (self.lava_damage and ndef and ndef.groups.lava)
-				or (self.water_damage and ndef and ndef.groups.water) then
-
-				lp = minetest.find_node_near(s, 5, {"group:soil", "group:stone",
-					"group:sand", node_ice, node_snowblock})
-
-				-- did we find land?
-				if lp then
-					local yaw = compute_yaw_to_target(self, lp, s)
-
-					-- look towards land and jump/move in that direction
-					yaw = set_yaw(self, yaw, 6)
-					do_jump(self)
-					set_velocity(self, self.walk_velocity or 0)
-				else
-					yaw = yaw + random(-0.5, 0.5)
-				end
-
-			else
-				local yaw = compute_yaw_to_target(self, lp, s)
-			end
-
-			yaw = set_yaw(self, yaw, 8)
-
-		-- otherwise randomly turn
+		if avoid_env_damage(self, yaw) then
+			-- Mob should try to leave env damage [MustTest].
 		elseif random(1, 100) <= 30 then
+			-- otherwise randomly turn
 
 			yaw = yaw + random(-0.5, 0.5)
 
@@ -2875,9 +2891,7 @@ local function do_states(self, dtime)
 		-- stand for great fall in front
 		local temp_is_cliff = is_at_cliff(self)
 
-		if self.facing_fence == true
-		or temp_is_cliff
-		or random(1, 100) <= 30 then
+		if self.facing_fence == true or temp_is_cliff or random(1, 100) <= 30 then
 
 			set_velocity(self, 0)
 			self.state = "stand"
@@ -2886,9 +2900,9 @@ local function do_states(self, dtime)
 			set_velocity(self, self.walk_velocity or 0)
 
 			if flight_check(self)
-			and self.animation
-			and self.animation.fly_start
-			and self.animation.fly_end then
+					and self.animation
+					and self.animation.fly_start
+					and self.animation.fly_end then
 				set_animation(self, "fly")
 			else
 				set_animation(self, "walk")
@@ -3094,9 +3108,8 @@ local function do_states(self, dtime)
 			end
 
 			-- rnd: new movement direction
-			if self.path.following
-			and self.path.way
-			and self.attack_type ~= "dogshoot" then
+			if self.path.following and self.path.way
+					and self.attack_type ~= "dogshoot" then
 
 				-- No very long paths [MustTest].
 				-- Note that the engine is now a lot better at pathfinding, so bad paths
@@ -3155,12 +3168,10 @@ local function do_states(self, dtime)
 
 				self.reach_ext = 0 -- extended ready off by default
 
-				-- MustTest:
-				-- Very, very rarely, a mob may FALSELY get stuck (as if at the edge of
-				-- a cliff) while following a path. This is due to a slight error amount
-				-- in the 'is_at_cliff' function. So if the mob is set to follow a path,
-				-- we just ignore the cliff (the path should be safe anyway).
-				if (is_at_cliff(self) or pad < 0.2) and not self.path.following then
+				-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
+				-- But some dangerious nodes are non-walkable, which means the pathfinder
+				-- would path through them.
+				if (is_at_cliff(self) or pad < 0.2) then
 					-- when on top of player extend reach slightly so player can
 					-- still be attacked.
 					self.reach_ext = 0.8

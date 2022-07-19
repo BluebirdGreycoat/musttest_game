@@ -1307,7 +1307,7 @@ function mobs.punch_target(self)
 	if targetname == "" then
 		local luaent = self.attack:get_luaentity()
 
-		if luaent then
+		if luaent and not luaent._cmi_is_mob then
 			local children = self.attack:get_children()
 
 			if not children or #children == 0 then

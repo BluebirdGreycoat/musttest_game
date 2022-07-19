@@ -1277,7 +1277,7 @@ function mobs.punch_target(self)
 	end
 
 	local s2 = self.object:get_pos()
-	local p2 = self.attack:get_pos()
+	local p2 = self.attack:get_pos() or s2
 
 	p2.y = p2.y + 0.5
 	s2.y = s2.y + 0.5

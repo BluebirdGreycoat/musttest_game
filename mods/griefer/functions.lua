@@ -4,8 +4,8 @@ griefer.elite_do_custom = function(self, dtime)
 
 	if self.state == "attack" and self.attack then
 		if self.range_attack_timer <= 0 then
-			local p = self.attack:get_pos()
 			local s = self.object:get_pos()
+			local p = self.attack:get_pos() or s
 			local old_s = self.last_known_pos or {x=0, y=0, z=0}
 
 			-- Only shoot if Oerkki is not moving (stuck or something).

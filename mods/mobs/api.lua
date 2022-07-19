@@ -1303,16 +1303,16 @@ function mobs.punch_target(self)
 
 	-- Don't bother the admin.
 	if not gdac.player_is_admin(targetname) then
-		local dmg1 = self.damage or 0
-		local dmg2 = math_random(self.damage_min or 0, self.damage_max or 0)
-		local dmg = dmg1
-		if dmg2 > dmg1 then
-			dmg = dmg2
+		local damage = self.damage or 0
+		if self.damage_min and self.damage_max then
+			damage = math_random(self.damage_min, self.damage_max)
 		end
+
+		local dgroup = self.damage_group or "fleshy"
 
 		self.attack:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {fleshy = dmg}
+			damage_groups = {[dgroup] = damage}
 		}, nil)
 
 		ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
@@ -1329,6 +1329,8 @@ end
 
 -- Remove block if possible [MustTest].
 local function try_break_block(self, s)
+	-- Must round position ourselves, otherwise we'll expose rounding
+	-- inconsistencies in the engine and possibly break protection.
 	s = v_round(s)
 
 	local node1 = minetest.get_node(s).name
@@ -4033,12 +4035,12 @@ if not mobs.registered then
 			run_velocity            = def.run_velocity or 2,
 			sprint_velocity         = def.sprint_velocity or def.run_velocity or 2,
 
-			-- Mob always does at least this amount of damage.
-			-- But if random damage between min and max would be greater,
-			-- then that damage is done instead.
+			-- Mob may do an exact amount of damage.
+			-- But if min/max damage values are set, those are used instead.
 			damage                  = (def.damage or 0) * difficulty,
 			damage_min              = (def.damage_min or 0) * difficulty,
 			damage_max              = (def.damage_max or 0) * difficulty,
+			damage_group            = def.damage_group,
 
 			daytime_despawn         = def.daytime_despawn,
 			on_despawn              = def.on_despawn,

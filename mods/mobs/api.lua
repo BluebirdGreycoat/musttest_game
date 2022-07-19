@@ -3251,6 +3251,20 @@ local tr = minetest.get_modpath("toolranks")
 -- deal damage and effects when mob punched
 local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
+	-- mob health check
+	if self.health <= 0 then
+		return
+	end
+
+	-- custom punch function
+	if self.do_punch then
+
+		-- when false skip going any further
+		if self.do_punch(self, hitter, tflp, tool_capabilities, dir) == false then
+			return
+		end
+	end
+
 	-- Record name of last attacker.
 	self.last_attacked_by = (hitter and hitter:is_player() and hitter:get_player_name()) or ""
 
@@ -3263,20 +3277,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 			self.path.los_counter = 0
 		end
 	end
-
-	-- custom punch function
-	if self.do_punch then
-
-		-- when false skip going any further
-		if self.do_punch(self, hitter, tflp, tool_capabilities, dir) == false then
-			return
-		end
-	end
-
-	-- mob health check
---	if self.health <= 0 then
---		return
---	end
 
 	-- error checking when mod profiling is enabled
 	if not tool_capabilities then
@@ -3504,12 +3504,14 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	
 	--minetest.chat_send_player("MustTest", "Attack!")
 
-	-- attack puncher and call other mobs for help
-	if (self.passive == false or self.attack_players == true)
-	and self.state ~= "flop"
-	and self.child == false
-	and name ~= "" and name ~= self.owner
-	and not mobs.is_invisible(self, name) then
+	-- Attack puncher and call other mobs for help.
+	if self.passive == false
+			and self.state ~= "flop"
+			and self.child == false
+			and self.attack_players == true
+			and name ~= self.owner
+			and not mobs.is_invisible(self, name)
+			and self.object ~= hitter then
 
 		--minetest.chat_send_player("MustTest", "Will really attack!")
 

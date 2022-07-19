@@ -1037,17 +1037,17 @@ end
 -- Returns true is node can deal damage to self
 function mobs.is_node_dangerous(mob_object, nodename)
 
-	if mob_object.water_damage > 0
+	if (mob_object.water_damage or 0) > 0
 			and minetest.get_item_group(nodename, "water") ~= 0 then
 		return true
 	end
 
-	if mob_object.lava_damage > 0
+	if (mob_object.lava_damage or 0) > 0
 			and minetest.get_item_group(nodename, "lava") ~= 0 then
 		return true
 	end
 
-	if mob_object.fire_damage > 0
+	if (mob_object.fire_damage or 0) > 0
 			and minetest.get_item_group(nodename, "fire") ~= 0 then
 		return true
 	end

@@ -2344,12 +2344,11 @@ local function general_attack(self)
 
 			-- if player invisible or mob not setup to attack then remove from list
 			if self.attack_players == false
-			or (self.owner and self.type ~= "monster")
-			or mobs.is_invisible(self, pname)
-			or not specific_attack(self.specific_attack, "player")
-			or minetest.check_player_privs(pname, {mob_respect=true}) then
+					or (self.owner and self.type ~= "monster")
+					or mobs.is_invisible(self, pname)
+					or not specific_attack(self.specific_attack, "player")
+					or minetest.check_player_privs(pname, {mob_respect=true}) then
 				objs[n] = nil
---print("- pla", n)
 			end
 
 			-- ignore dead players

@@ -2201,7 +2201,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 		-- lets make way by digging/building if not accessible
 		if (self.pathfinding or 0) >= 2 and mobs_griefing and self.path.putnode_timer <= 0 then
 
-			-- is player more than 1 block higher than mob?
+			-- is target more than 1 block higher than us?
 			if p1.y >= (s.y + 0.9) and not self.fly then
 
 				-- build upwards
@@ -2246,7 +2246,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 				s.y = s.y - sheight
 
 				if canput then
-
 					-- Place node the mob likes, or use fallback.
 					-- Disable protection for this node via meta [MustTest].
 					minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
@@ -2256,6 +2255,11 @@ local function smart_mobs(self, s, p, dist, dtime)
 					-- Note: do not force node to fall if it does not need to.
 					minetest.check_for_falling(s)
 
+					-- Move mob to center of node, and jump up.
+					local pos = self.object:get_pos()
+					pos.x = s.x
+					pos.z = s.z
+					self.object:set_pos(pos)
 					self.object:set_velocity({x = 0, y = 5, z = 0})
 
 					-- Block placement min time [MustTest].

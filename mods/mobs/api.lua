@@ -20,7 +20,10 @@ local v_equals = vector.equals
 local vector_distance = vector.distance
 local v_distance = vector.distance
 
-local function report(msg)
+local function report(self, msg)
+	if self.name ~= mobs.report_name then
+		return
+	end
 	if minetest.is_singleplayer() then
 		minetest.chat_send_all(msg)
 	else
@@ -32,7 +35,7 @@ end
 -- Function to tell mob which direction to turn to face target.
 -- Add pi to the returned yaw to face in the opposite direction.
 -- Fixed to use atan2 correctly by MustTest.
-local function compute_yaw_to_target(self, target, pos)
+local function yaw_to_pos(self, target, pos)
 	local x = target.x - pos.x
 	local z = target.z - pos.z
 
@@ -49,7 +52,7 @@ local mobs_drop_items = minetest.settings:get_bool("mobs_drop_items") ~= false
 local mobs_griefing =   minetest.settings:get_bool("mobs_griefing") ~= false
 local creative =        minetest.setting_getbool("creative_mode")
 local spawn_protected = minetest.settings:get_bool("mobs_spawn_protected") ~= false
-local remove_far =      minetest.setting_getbool("remove_far_mobs")
+local remove_far =      false
 local difficulty =      tonumber(minetest.setting_get("mob_difficulty")) or 1.0
 local show_health =     minetest.settings:get_bool("mob_show_health") ~= false
 local max_per_block =   tonumber(minetest.settings:get("max_objects_per_block") or 99)
@@ -121,6 +124,34 @@ local function mob_sound(self, sound)
 		--	max_hear_distance = self.sounds.distance
 		--})
 	end
+end
+
+
+
+-- State transition function [MustTest]. Do not set mob state designation
+-- manually, call this function instead. It handles state transitions, etc.
+local function transition_state(self, newstate)
+	local oldstate = self.state or ""
+	if newstate ~= oldstate then
+		local sm = mobs.state_machine
+
+		if sm[oldstate].exit then
+			sm[oldstate].exit(self)
+		end
+
+		self.state = newstate
+
+		if sm[newstate].enter then
+			sm[newstate].enter(self)
+		end
+
+		mobs.do_states(self, 0)
+	end
+end
+
+-- Export.
+mobs.transition_state = function(...)
+	transition_state(...)
 end
 
 
@@ -538,7 +569,7 @@ local function do_attack(self, player)
 		return
 	end
 
-	self.state = "attack"
+	transition_state(self, "attack")
 	self.attack = player
 
 	if random(0, 100) < 90 and self.sounds.war_cry then
@@ -613,7 +644,7 @@ end
 
 
 
-local function set_animation(self, anim)
+local function set_animation(self, anim, speed)
 	if not self.animation or not anim then
 		return
 	end
@@ -622,7 +653,7 @@ local function set_animation(self, anim)
 
 	-- only set different animation for attacks when setting to same set
 	if anim ~= "punch" and anim ~= "shoot"
-	and string.find(self.animation.current, anim) then
+			and string.find(self.animation.current, anim) then
 		return
 	end
 
@@ -644,17 +675,21 @@ local function set_animation(self, anim)
 	end
 
 	if anim == self.animation.current
-	or not self.animation[anim .. "_start"]
-	or not self.animation[anim .. "_end"] then
+			or not self.animation[anim .. "_start"]
+			or not self.animation[anim .. "_end"] then
 		return
 	end
 
 	self.animation.current = anim
 
+	local anim_speed = (speed or
+		self.animation[anim .. "_speed"] or
+		self.animation.speed_normal or 15)
+
 	self.object:set_animation({
 		x = self.animation[anim .. "_start"],
 		y = self.animation[anim .. "_end"]},
-		self.animation[anim .. "_speed"] or self.animation.speed_normal or 15,
+		anim_speed,
 		0, self.animation[anim .. "_loop"] ~= false)
 end
 
@@ -1004,10 +1039,9 @@ local function check_for_death(self, cause, cmi_cause)
 
 		self.attack = nil
 		self.v_start = false
-		self.timer = 0
 		self.blinktimer = 0
 		self.passive = true
-		self.state = "die"
+		transition_state(self, "die")
 		set_velocity(self, 0)
 		set_animation(self, "die")
 
@@ -1309,7 +1343,7 @@ end
 
 
 -- Arrow shooting code extracted into its own function [MustTest].
-function mobs.shoot_arrow(self, vec)
+local function shoot_arrow(self, vec)
 	-- play shoot attack sound
 	mob_sound(self, self.sounds.shoot_attack)
 
@@ -1339,13 +1373,25 @@ function mobs.shoot_arrow(self, vec)
 	end
 end
 
+-- Export.
+mobs.shoot_arrow = function(...)
+	shoot_arrow(...)
+end
+
 
 
 -- Target punching code extracted into its own function [MustTest].
-function mobs.punch_target(self)
+local function punch_target(self, dtime)
 	if not self.attack then
 		return
 	end
+
+	-- The mob may punch once per second.
+	self.punch_timer = (self.punch_timer or 0) + dtime
+	if self.punch_timer < 1 then
+		return
+	end
+	self.punch_timer = 0
 
 	local s2 = self.object:get_pos()
 	local p2 = self.attack:get_pos() or s2
@@ -1645,59 +1691,89 @@ local env_damage_nodes = {
 	node_snowblock,
 }
 
-local function avoid_env_damage(self, yaw)
+-- Executed when self.state == "avoid" [MustTest].
+-- Function assumes entity object exists (entity methods shall not return nil).
+local function avoid_env_damage(self, yaw, dtime)
+	-- Get rounded position of the node the mob is standing in.
 	local s = self.object:get_pos()
-	if not s then
-		return
-	end
+	s.y = s.y + self.collisionbox[2] + 0.5
 	s = v_round(s)
 
-	-- If mob in dangerous node then look for land.
-	if not is_node_dangerous(self, self.standing_in) then
-		return
+	self.avoid.timer = self.avoid.timer - dtime
+	if self.avoid.timer <= 0 then
+		self.avoid.timer = 0
+		self.avoid.target = nil
 	end
 
-	local timer = self.avoid_env_dmg_timeout
-	if timer > 0 then
-		return true
+	-- Current target's timeout has expired. Need to find a new safe spot.
+	if not self.avoid.target then
+		-- Get list of nearby safe nodes under air.
+		local minp = {x=s.x - 1, y=s.y - 0, z=s.z - 1}
+		local maxp = {x=s.x + 1, y=s.y + 1, z=s.z + 1}
+		local targets = minetest.find_nodes_in_area_under_air(
+			minp, maxp, env_damage_nodes)
+
+		-- Didn't find anything? Expand search area.
+		if #targets == 0 then
+			minp.x = minp.x - 2
+			minp.y = minp.y - 0
+			minp.z = minp.z - 2
+			maxp.x = maxp.x + 2
+			maxp.y = maxp.y + 1
+			maxp.z = maxp.z + 2
+
+			targets = minetest.find_nodes_in_area_under_air(
+				minp, maxp, env_damage_nodes)
+		end
+
+		-- Still didn't find anything? Expand search area again.
+		if #targets == 0 then
+			minp.x = minp.x - 2
+			minp.y = minp.y - 1
+			minp.z = minp.z - 2
+			maxp.x = maxp.x + 2
+			maxp.y = maxp.y + 1
+			maxp.z = maxp.z + 2
+
+			targets = minetest.find_nodes_in_area_under_air(
+				minp, maxp, env_damage_nodes)
+		end
+
+		-- Select position of random block to climb onto.
+		if #targets > 0 then
+			self.avoid.target = targets[math_random(1, #targets)]
+			self.avoid.timer = 3
+		end
 	end
 
-	local minp = {x=s.x - 5, y=s.y - 2, z=s.z - 5}
-	local maxp = {x=s.x + 5, y=s.y + 3, z=s.z + 5}
-	local lp = minetest.find_nodes_in_area_under_air(
-		minp, maxp, env_damage_nodes)
-
-	-- select position of random block to climb onto
-	if #lp > 0 then
-		lp = lp[math_random(1, #lp)]
-	else
-		lp = false
-	end
-
-	-- did we find land?
-	if lp then
-		local yaw = compute_yaw_to_target(self, lp, s)
-
-		-- look towards land and jump/move in that direction
-		yaw = set_yaw(self, yaw)
+	-- Do we have a safe position?
+	if self.avoid.target then
+		-- Look towards land and jump/move in that direction.
+		local yaw = yaw_to_pos(self, self.avoid.target, s)
+		set_yaw(self, yaw, 4)
 
 		do_jump(self)
 		set_velocity(self, self.walk_velocity or 0)
 		set_animation(self, "walk")
-
-		-- Mob is trying to escape.
-		self.avoid_env_dmg_timeout = 3
-		return true
 	else
-		yaw = yaw + random(-0.5, 0.5)
-		yaw = set_yaw(self, yaw, 6)
+		-- Mob panics, turns in random direction.
+		if self.avoid.timer <= 0 then
+			yaw = yaw + random(-pi, pi)
+			set_yaw(self, yaw, 6)
+			self.avoid.timer = 3
+		end
+
+		do_jump(self)
 		set_velocity(self, self.run_velocity or 0)
 		set_animation(self, "walk")
-
-		-- Mob is trying to escape.
-		self.avoid_env_dmg_timeout = 3
-		return true
 	end
+end
+
+
+
+local function do_avoid_enter(self)
+	self.avoid.target = nil
+	self.avoid.timer = 0
 end
 
 
@@ -1998,26 +2074,30 @@ end
 
 
 
+-- Debug path display function.
 local function highlight_path(self)
 	if not mobs.debug_paths then
 		return
 	end
 
-	-- show path using particles
+	if not self.path.following then
+		return
+	end
+
+	-- Show path using particles.
 	if self.path.way and #self.path.way > 0 then
-		--print ("-- path length:" .. tonumber(#self.path.way))
 		local pname = "singleplayer"
 		if not minetest.is_singleplayer() then
 			pname = gdac.name_of_admin
 		end
 
-		for _,pos in pairs(self.path.way) do
+		for _, pos in ipairs(self.path.way) do
 			utility.original_add_particle({
 				playername = pname,
 				pos = pos,
 				velocity = {x=0, y=0, z=0},
 				acceleration = {x=0, y=0, z=0},
-				expirationtime = 3,
+				expirationtime = 1.5,
 				size = 4,
 				collisiondetection = false,
 				vertical = false,
@@ -2041,14 +2121,10 @@ local function try_dig_doorway(self, s)
 	}
 	p1 = v_round(p1)
 
-	--report(minetest.get_node(p1).name)
-
 	-- First, try to break the block above.
 	-- If we can't do this, there's no point in trying to break the bottom block.
 	-- That would also interfere with us closing the bottom hole up.
 	p1.y = p1.y + 1
-
-	--report(minetest.get_node(p1).name)
 
 	local b1
 	local b2 = try_break_block(self, p1)
@@ -2070,7 +2146,6 @@ local function try_dig_doorway(self, s)
 		b1 = try_break_block(self, p1)
 	end
 
-	--report(tostring(b1) .. ", " .. tostring(b2))
 	return (b1 and b2)
 end
 
@@ -2131,7 +2206,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 			-- I've been able to see the target for several consecutive seconds [MustTest].
 			if y_dist <= 0.5 then
 				-- Also, I'm on the same level as the target.
-				--report("have LOS - canceling pathfind")
 				use_pathfind = false
 				self.path.following = false
 				self.path.los_counter = 0
@@ -2139,7 +2213,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 
 			-- But if I'm stuck even though I have LOS, attempt pathfind.
 			if self.path.stuck_timer >= 2 then
-				--report("stuck with LOS - pathfinding")
 				use_pathfind = true
 			end
 		end
@@ -2148,8 +2221,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 	-- What do we do if the mob got stuck while following this path [MustTest]?
 	if self.path.stuck_timer > stuck_timeout then
 		if self.path.following then
-			--report("stuck timeout - was following path")
-			highlight_path(self)
 			-- The mob got stuck while following a path. This can happen if the path
 			-- goes through a 1x1 node hole, which the mob is too big to fit through.
 			-- I can try to dig that block. [MustTest]
@@ -2158,17 +2229,14 @@ local function smart_mobs(self, s, p, dist, dtime)
 				removed_blockage = try_dig_doorway(self, s)
 			end
 			if not removed_blockage then
-				--report("blockage not removed")
 				use_pathfind = true
 				self.path.stuck_timer = 0
 				self.path.following = false
 			else
-				--report("blockage removed")
 				self.path.stuck_timer = 0
 				self.stuck_path_timeout = (((self.path.way and #self.path.way) or 0) * 0.75)
 			end
 		else
-			--report("stuck timeout - but not following a path")
 			-- Not currently following a path, but one exists which we recently abandoned?
 			if self.path.way and #self.path.way >= 5 then
 				local tar = self.path.way[1]
@@ -2190,7 +2258,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 	-- What do we do if the mob has been following this path too long [MustTest]?
 	-- Note: the path timeout is based on the length of the path.
 	if (self.path.stuck_timer > (self.stuck_path_timeout or 0) and self.path.following) then
-		--report("path timeout")
 		use_pathfind = true
 		self.path.stuck_timer = 0
 		self.path.following = false
@@ -2238,28 +2305,22 @@ local function smart_mobs(self, s, p, dist, dtime)
 	end
 
 	if self.path.find_path_timer <= 0 then
-		--report("searching for path")
 		local radius = self.pathing_radius or 16
 		local pway = minetest.find_path(s, p1, radius, jumpheight, dropheight, "A*")
 
 		if not pway then
 			-- If I couldn't find path, don't try again for a few seconds.
-			--report("path not found")
 			self.path.way = nil
 			self.path.find_path_timer = 2
 			self.path.stuck_timer = 0
 		else
-			--report("path found")
 			self.path.way = pway
 			self.path.find_path_timer = 0
 			self.path.stuck_timer = 0
 		end
 	end
 
-	-- Show path using particles.
-	highlight_path(self)
-
-	self.state = ""
+	transition_state(self, "")
 
 	if self.attack then
 		do_attack(self, self.attack)
@@ -2347,12 +2408,11 @@ local function smart_mobs(self, s, p, dist, dtime)
 
 				if not res then
 					-- cannot dig, stop trying to get target.
-					self.state = "stand"
+					transition_state(self, "stand")
 					set_velocity(self, 0)
 					set_animation(self, "stand")
 					self.attack = nil
 					self.v_start = false
-					self.timer = 0
 					self.blinktimer = 0
 					self.path.way = nil
 				end
@@ -2371,16 +2431,13 @@ local function smart_mobs(self, s, p, dist, dtime)
 				self.path.following = true
 				self.path.stuck_timer = 0
 				self.path.los_counter = 0
-				highlight_path(self)
 
 			-- is player more than 1 block lower than mob
 			elseif p1.y < (s.y - 0.9) then
-				--report("digging down")
 				-- dig down
 				local s = self.object:get_pos()
 				s.y = s.y + self.collisionbox[2] - 0.5
 				s = v_round(s)
-				--report(minetest.get_node(s).name)
 
 				if try_break_block(self, s) then
 					self.path.putnode_timer = 1
@@ -2393,9 +2450,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 					self.path.stuck_timer = 0
 					self.path.los_counter = 0
 				end
-
-				highlight_path(self)
-
 			else -- dig 2 blocks to make door toward player direction
 				if try_dig_doorway(self, s) then
 					self.path.putnode_timer = 1
@@ -2673,11 +2727,11 @@ local function runaway_from(self)
 
 		local lp = player:get_pos()
 
-		local yaw = compute_yaw_to_target(self, lp, s)
+		local yaw = yaw_to_pos(self, lp, s)
 		yaw = yaw + pi
 		yaw = set_yaw(self, yaw, 4)
 
-		self.state = "runaway"
+		transition_state(self, "runaway")
 		self.runaway_timer = 3
 		self.following = nil
 	end
@@ -2754,7 +2808,7 @@ local function follow_flop(self)
 			if dist > self.view_range then
 				self.following = nil
 			else
-				local yaw = compute_yaw_to_target(self, p, s)
+				local yaw = yaw_to_pos(self, p, s)
 				yaw = set_yaw(self, yaw, 6)
 
 				-- anyone but standing npc's can move along
@@ -2781,14 +2835,14 @@ local function follow_flop(self)
 		local s = self.object:get_pos()
 		if not flight_check(self, s) then
 
-			self.state = "flop"
+			transition_state(self, "flop")
 			self.object:set_velocity({x = 0, y = -5, z = 0})
 
 			set_animation(self, "stand")
 
 			return
 		elseif self.state == "flop" then
-			self.state = "stand"
+			transition_state(self, "stand")
 		end
 	end
 end
@@ -2824,456 +2878,499 @@ local function dogswitch(self, dtime)
 end
 
 
--- execute current state (stand, walk, run, attacks)
-local function do_states(self, dtime)
 
-	local yaw = self.object:get_yaw()
+local function do_stand_enter(self)
+	set_velocity(self, 0)
+	set_animation(self, "stand")
+end
 
-	-- Stupid spurious bugs.
-	if not yaw then
+
+
+-- State self.state == "stand" moved to its own function [MustTest].
+local function do_stand_state(self, dtime)
+	-- Avoid dangerious nodes.
+	if is_node_dangerous(self, self.standing_in) then
+		transition_state(self, "avoid")
 		return
 	end
 
-	if self.state == "stand" then
-		-- Mob should try to leave env damage [MustTest].
-		if avoid_env_damage(self, yaw) then
-			self.state = "walk"
-			return
+	local s = self.object:get_pos()
+	local c = vector.round(s)
+
+	-- Have mob position himself nearer the center of the node.
+	if (abs(s.x - c.x) + abs(s.z - c.z)) > 0.3 then
+		set_yaw(self, yaw_to_pos(self, c, s))
+		set_velocity(self, 0.2)
+		set_animation(self, "walk", 5)
+		return
+	end
+
+	-- Look at any players nearby, otherwise turn randomly.
+	if random(1, 4) == 1 then
+		local lp = nil
+		local objs = minetest.get_objects_inside_radius(s, 10)
+
+		for n = 1, #objs, 1 do
+			if objs[n]:is_player() then
+				lp = objs[n]:get_pos()
+				break
+			end
 		end
 
+		-- Small chance that player gets ignored.
 		if random(1, 4) == 1 then
-
-			local lp = nil
-			local s = self.object:get_pos()
-			local objs = minetest.get_objects_inside_radius(s, 3)
-
-			for n = 1, #objs do
-
-				if objs[n]:is_player() then
-					lp = objs[n]:get_pos()
-					break
-				end
-			end
-
-			-- look at any players nearby, otherwise turn randomly
-			if lp then
-				local yaw = compute_yaw_to_target(self, lp, s)
-			else
-				yaw = yaw + random(-0.5, 0.5)
-			end
-
-			yaw = set_yaw(self, yaw, 8)
+			lp = nil
 		end
 
-		set_velocity(self, 0)
-		set_animation(self, "stand")
+		local yaw = self.object:get_yaw()
 
-		-- npc's ordered to stand stay standing
-		--if self.type ~= "npc"
-		if self.order ~= "stand" then
+		if lp then
+			yaw = yaw_to_pos(self, lp, s)
+		else
+			yaw = yaw + random(-0.5, 0.5)
+		end
 
-			if self.walk_chance ~= 0
+		set_yaw(self, yaw, 8)
+	end
+
+	set_velocity(self, 0)
+	set_animation(self, "stand")
+
+	-- Mobs ordered to stand stay standing.
+	if self.order == "stand" then return end
+
+	if self.walk_chance ~= 0
 			and self.facing_fence ~= true
 			and random(1, 100) <= self.walk_chance
 			and is_at_cliff(self) == false then
 
-				set_velocity(self, self.walk_velocity or 0)
-				self.state = "walk"
-				set_animation(self, "walk")
+		transition_state(self, "walk")
 
-				--[[ fly up/down randomly for flying mobs
-				if self.fly and random(1, 100) <= self.walk_chance then
+		--[[ fly up/down randomly for flying mobs
+		if self.fly and random(1, 100) <= self.walk_chance then
 
-					local v = self.object:get_velocity()
-					local ud = random(-1, 2) / 9
+			local v = self.object:get_velocity()
+			local ud = random(-1, 2) / 9
 
-					self.object:set_velocity({x = v.x, y = ud, z = v.z})
-				end--]]
-			end
-		end
+			self.object:set_velocity({x = v.x, y = ud, z = v.z})
+		end--]]
+	end
+end
 
-	elseif self.state == "walk" then
-		-- Mob should try to leave env damage [MustTest].
-		if avoid_env_damage(self, yaw) then
-			return
-		end
 
-		-- Otherwise randomly turn.
-		if random(1, 100) <= 30 then
-			yaw = yaw + random(-0.5, 0.5)
-			yaw = set_yaw(self, yaw, 8)
-		end
 
-		-- stand for great fall in front
-		local temp_is_cliff = is_at_cliff(self)
+local function do_walk_enter(self)
+	set_velocity(self, self.walk_velocity or 0)
+	set_animation(self, "walk")
+end
 
-		if self.facing_fence == true or temp_is_cliff or random(1, 100) <= 30 then
 
-			set_velocity(self, 0)
-			self.state = "stand"
-			set_animation(self, "stand")
+
+-- State self.state == "walk" moved to its own function [MustTest].
+local function do_walk_state(self, dtime)
+	local yaw = self.object:get_yaw()
+
+	-- Randomly turn.
+	if random(1, 100) <= 30 then
+		yaw = yaw + random(-0.5, 0.5)
+		set_yaw(self, yaw, 8)
+	end
+
+	-- Stand for great fall in front.
+	local at_cliff = is_at_cliff(self)
+
+	if self.facing_fence == true or at_cliff or random(1, 100) <= 30 then
+		transition_state(self, "stand")
+	else
+		set_velocity(self, self.walk_velocity or 0)
+
+		if flight_check(self)
+				and self.animation
+				and self.animation.fly_start
+				and self.animation.fly_end then
+			set_animation(self, "fly")
 		else
-			set_velocity(self, self.walk_velocity or 0)
-
-			if flight_check(self)
-					and self.animation
-					and self.animation.fly_start
-					and self.animation.fly_end then
-				set_animation(self, "fly")
-			else
-				set_animation(self, "walk")
-			end
-		end
-
-	-- runaway when punched
-	elseif self.state == "runaway" then
-
-		self.runaway_timer = self.runaway_timer + 1
-
-		-- stop after 5 seconds or when at cliff
-		if self.runaway_timer > 5
-		or is_at_cliff(self) then
-			self.runaway_timer = 0
-			set_velocity(self, 0)
-			self.state = "stand"
-			set_animation(self, "stand")
-		else
-			set_velocity(self, self.sprint_velocity or 0)
 			set_animation(self, "walk")
 		end
+	end
+end
 
-	-- attack routines (explode, dogfight, shoot, dogshoot)
-	elseif self.state == "attack" then
 
-		-- calculate distance from mob and enemy
-		local s = self.object:get_pos()
-		local p = self.attack and self.attack:get_pos() or s
-		local dist = get_distance(p, s)
 
-		-- stop attacking if player invisible or out of range
-		if dist > self.view_range
-		or not self.attack
-		or not self.attack:get_pos()
-		or self.attack:get_hp() <= 0
-		or (self.attack:is_player() and mobs.is_invisible(self, self.attack:get_player_name() )) then
+-- Runaway (self.state == "runaway") moved to its own function [MustTest].
+local function do_runaway_state(self, dtime)
+	self.runaway_timer = (self.runaway_timer or 0) + dtime
 
---			print(" ** stop attacking **", dist, self.view_range)
-			self.state = "stand"
-			set_velocity(self, 0)
-			set_animation(self, "stand")
-			self.attack = nil
-			self.v_start = false
-			self.timer = 0
-			self.blinktimer = 0
-			self.path.way = nil
+	-- Stop after 5 seconds or when at cliff.
+	if self.runaway_timer > 5 or is_at_cliff(self) then
+		self.runaway_timer = 0
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+		transition_state(self, "stand")
+	else
+		set_velocity(self, self.sprint_velocity or 0)
+		set_animation(self, "walk")
+	end
+end
 
-			return
+
+
+local function do_avoid_state(self, dtime)
+	local yaw = self.object:get_yaw()
+
+	if is_node_dangerous(self, self.standing_in) then
+		avoid_env_damage(self, yaw, dtime)
+	else
+		transition_state(self, "stand")
+	end
+end
+
+
+
+-- State self.state == "attack" extracted to its own function [MustTest].
+-- The attack routines (explode, dogfight, shoot, dogshoot, etc.).
+local function do_attack_state(self, dtime)
+	-- Abort if we have no target!
+	if not self.attack then return end
+
+	-- Calculate distance from mob and enemy.
+	local s = self.object:get_pos()
+	local p = self.attack:get_pos()
+
+	-- Abort if target entity does not exist.
+	if not p then return end
+
+	local dist = get_distance(p, s)
+
+	-- stop attacking if player invisible or out of range
+	if dist > self.view_range
+	or not self.attack
+	or not self.attack:get_pos()
+	or self.attack:get_hp() <= 0
+	or (self.attack:is_player() and mobs.is_invisible(self, self.attack:get_player_name() )) then
+
+		transition_state(self, "stand")
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+
+		self.attack = nil
+		self.v_start = false
+		self.blinktimer = 0
+		self.path.way = nil
+
+		return
+	end
+
+	if self.attack_type == "dogfight"
+			or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
+			or (self.attack_type == "dogshoot" and dist <= self.reach
+				and dogswitch(self) == 0) then
+
+		if self.fly and dist > self.reach then
+
+			local p1 = s
+			local me_y = floor(p1.y)
+			local p2 = p
+			local p_y = floor(p2.y + 1)
+			local v = self.object:get_velocity()
+
+			if flight_check(self, s) then
+
+				if me_y < p_y then
+
+					self.object:set_velocity({
+						x = v.x,
+						y = 1 * self.walk_velocity,
+						z = v.z
+					})
+
+				elseif me_y > p_y then
+
+					self.object:set_velocity({
+						x = v.x,
+						y = -1 * self.walk_velocity,
+						z = v.z
+					})
+				end
+			else
+				if me_y < p_y then
+
+					self.object:set_velocity({
+						x = v.x,
+						y = 0.01,
+						z = v.z
+					})
+
+				elseif me_y > p_y then
+
+					self.object:set_velocity({
+						x = v.x,
+						y = -0.01,
+						z = v.z
+					})
+				end
+			end
+
 		end
 
-		if self.attack_type == "explode" then
-			local yaw = compute_yaw_to_target(self, p, s)
-			yaw = set_yaw(self, yaw)
+		-- rnd: new movement direction
+		if self.path.following and self.path.way
+				and self.attack_type ~= "dogshoot" then
 
-			local node_break_radius = self.explosion_radius or 1
-			local entity_damage_radius = self.explosion_damage_radius
-					or (node_break_radius * 2)
-
-			-- start timer when in reach and line of sight
-			if not self.v_start
-			and dist <= self.reach
-			and line_of_sight(self, s, p, 2) then
-
-				self.v_start = true
-				self.timer = 0
-				self.blinktimer = 0
-				mob_sound(self, self.sounds.fuse)
---				print ("=== explosion timer started", self.explosion_timer)
-
-			-- stop timer if out of reach or direct line of sight
-			elseif self.allow_fuse_reset
-			and self.v_start
-			and (dist > self.reach
-					or not line_of_sight(self, s, p, 2)) then
-				self.v_start = false
-				self.timer = 0
-				self.blinktimer = 0
-				self.blinkstatus = false
-				self.object:settexturemod("")
+			-- No very long paths [MustTest].
+			-- Note that the engine is now a lot better at pathfinding, so bad paths
+			-- aren't often generated anymore. I can leave the limit fairly high.
+			local max_len = (self.pathing_radius or 16) * 4
+			if #self.path.way > max_len or dist < self.reach then
+				self.path.following = false
+				self.path.way = nil
+				self.path.find_path_timer = 2
+				return
 			end
 
-			-- walk right up to player unless the timer is active
-			if self.v_start and (self.stop_to_explode or dist < 1.5) then
+			local p1 = self.path.way[1]
+
+			if not p1 then
+				self.path.following = false
+				return
+			end
+
+			--if abs(p1.x-s.x) + abs(p1.z - s.z) < 0.6 then
+			-- must use `get_distance' and not `abs' because waypoint may be vertical from mob
+			if get_distance(p1, s) < 0.6 then
+				-- reached waypoint, remove it from queue
+				table.remove(self.path.way, 1)
+			end
+
+			-- set new temporary target
+			p = {x = p1.x, y = p1.y, z = p1.z}
+		end
+
+		-- flag should be set if mob is directly over its target and therefore should move more slowly
+		local overunder_waypoint = false
+
+		-- is mob directly over or under the target?
+		if abs(p.x - s.x) < 0.2 and abs(p.z - s.z) < 0.2 and abs(p.y - s.y) > 0.5 then
+			-- mob is directly over or under its waypoint/target
+			overunder_waypoint = true
+		end
+
+		local yaw = yaw_to_pos(self, p, s)
+		yaw = set_yaw(self, yaw)
+
+		-- move towards enemy if beyond mob reach
+		if dist > (self.reach + (self.reach_ext or 0)) then
+
+			-- path finding by rnd
+			if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
+				-- Always pass the real position of the target to Smart Mobs function [MustTest].
+				local p = self.attack:get_pos()
+				smart_mobs(self, s, p, dist, dtime)
+			end
+
+			-- distance padding to stop spinning mob
+			local pad = abs(p.x - s.x) + abs(p.z - s.z)
+
+			self.reach_ext = 0 -- extended ready off by default
+
+			-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
+			-- But some dangerious nodes are non-walkable, which means the pathfinder
+			-- would path through them.
+			if (is_at_cliff(self) or pad < 0.2) then
+				-- when on top of player extend reach slightly so player can
+				-- still be attacked.
+				self.reach_ext = 0.8
+
 				set_velocity(self, 0)
+				set_animation(self, "stand")
 			else
-				set_velocity(self, self.run_velocity or 0)
-			end
 
-			if self.animation and self.animation.run_start then
-				set_animation(self, "run")
-			else
-				set_animation(self, "walk")
-			end
-
-			if self.v_start then
-
-				self.timer = self.timer + dtime
-				self.blinktimer = (self.blinktimer or 0) + dtime
-
-				if self.blinktimer > 0.2 then
-
-					self.blinktimer = 0
-
-					if self.blinkstatus then
-						self.object:settexturemod("")
+				if overunder_waypoint then
+					set_velocity(self, 0.1)
+				else
+					if not self.path.following then
+						set_velocity(self, self.sprint_velocity or 0)
 					else
-						self.object:settexturemod("^[brighten")
+						set_velocity(self, self.run_velocity or 0)
 					end
-
-					self.blinkstatus = not self.blinkstatus
 				end
 
---				print ("=== explosion timer", self.timer)
-
-				if self.timer > self.explosion_timer then
-
-					local pos = self.object:get_pos()
-
-					-- dont damage anything if area protected or next to water
-					if minetest.find_node_near(pos, 1, {"group:water"})
-					or minetest.test_protection(pos, "") then
-
-						node_break_radius = 1
-					end
-
-					-- Mark for removal as last action on mob_step().
-					self.mkrm = true
-
-					if minetest.get_modpath("tnt") and tnt and tnt.boom then
-
-						tnt.boom(pos, {
-							radius = node_break_radius,
-							damage_radius = entity_damage_radius,
-							sound = self.sounds.explode,
-						})
+				if not overunder_waypoint then
+					if self.animation and self.animation.run_start then
+						set_animation(self, "run")
 					else
-
-						minetest.sound_play(self.sounds.explode, {
-							pos = pos,
-							gain = 1.0,
-							max_hear_distance = self.sounds.distance or 32
-						}, true)
-
-						entity_physics(pos, entity_damage_radius)
-						effect(pos, 32, "tnt_smoke.png", nil, nil, node_break_radius, 1, 0)
-					end
-
-					return
-				end
-			end
-
-		elseif self.attack_type == "dogfight"
-				or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
-				or (self.attack_type == "dogshoot" and dist <= self.reach
-					and dogswitch(self) == 0) then
-
-			if self.fly and dist > self.reach then
-
-				local p1 = s
-				local me_y = floor(p1.y)
-				local p2 = p
-				local p_y = floor(p2.y + 1)
-				local v = self.object:get_velocity()
-
-				if flight_check(self, s) then
-
-					if me_y < p_y then
-
-						self.object:set_velocity({
-							x = v.x,
-							y = 1 * self.walk_velocity,
-							z = v.z
-						})
-
-					elseif me_y > p_y then
-
-						self.object:set_velocity({
-							x = v.x,
-							y = -1 * self.walk_velocity,
-							z = v.z
-						})
+						set_animation(self, "walk")
 					end
 				else
-					if me_y < p_y then
-
-						self.object:set_velocity({
-							x = v.x,
-							y = 0.01,
-							z = v.z
-						})
-
-					elseif me_y > p_y then
-
-						self.object:set_velocity({
-							x = v.x,
-							y = -0.01,
-							z = v.z
-						})
-					end
-				end
-
-			end
-
-			-- rnd: new movement direction
-			if self.path.following and self.path.way
-					and self.attack_type ~= "dogshoot" then
-
-				-- No very long paths [MustTest].
-				-- Note that the engine is now a lot better at pathfinding, so bad paths
-				-- aren't often generated anymore. I can leave the limit fairly high.
-				local max_len = (self.pathing_radius or 16) * 4
-				if #self.path.way > max_len or dist < self.reach then
-					--report("path too long: " .. #self.path.way)
-					self.path.following = false
-					self.path.way = nil
-					self.path.find_path_timer = 2
-					return
-				end
-
-				local p1 = self.path.way[1]
-
-				if not p1 then
-					self.path.following = false
-					return
-				end
-
-				--if abs(p1.x-s.x) + abs(p1.z - s.z) < 0.6 then
-				-- must use `get_distance' and not `abs' because waypoint may be vertical from mob
-				if get_distance(p1, s) < 0.6 then
-					-- reached waypoint, remove it from queue
-					table.remove(self.path.way, 1)
-				end
-
-				-- set new temporary target
-				p = {x = p1.x, y = p1.y, z = p1.z}
-			end
-
-			-- flag should be set if mob is directly over its target and therefore should move more slowly
-			local overunder_waypoint = false
-
-			-- is mob directly over or under the target?
-			if abs(p.x - s.x) < 0.2 and abs(p.z - s.z) < 0.2 and abs(p.y - s.y) > 0.5 then
-				-- mob is directly over or under its waypoint/target
-				overunder_waypoint = true
-			end
-
-			local yaw = compute_yaw_to_target(self, p, s)
-			yaw = set_yaw(self, yaw)
-
-			-- move towards enemy if beyond mob reach
-			if dist > (self.reach + (self.reach_ext or 0)) then
-
-				-- path finding by rnd
-				if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
-					-- Always pass the real position of the target to Smart Mobs function [MustTest].
-					local p = self.attack:get_pos()
-					smart_mobs(self, s, p, dist, dtime)
-				end
-
-				-- distance padding to stop spinning mob
-				local pad = abs(p.x - s.x) + abs(p.z - s.z)
-
-				self.reach_ext = 0 -- extended ready off by default
-
-				-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
-				-- But some dangerious nodes are non-walkable, which means the pathfinder
-				-- would path through them.
-				if (is_at_cliff(self) or pad < 0.2) then
-					-- when on top of player extend reach slightly so player can
-					-- still be attacked.
-					self.reach_ext = 0.8
-
-					set_velocity(self, 0)
 					set_animation(self, "stand")
-				else
-
-					if overunder_waypoint then
-						set_velocity(self, 0.1)
-					else
-						if not self.path.following then
-							set_velocity(self, self.sprint_velocity or 0)
-						else
-							set_velocity(self, self.run_velocity or 0)
-						end
-					end
-
-					if not overunder_waypoint then
-						if self.animation and self.animation.run_start then
-							set_animation(self, "run")
-						else
-							set_animation(self, "walk")
-						end
-					else
-						set_animation(self, "stand")
-					end
-				end
-
-				-- Punch target if within punching range even while moving [MustTest].
-				if dist < (self.punch_reach or 0) then
-					if self.timer > 1 then
-						self.timer = 0
-
-						mobs.punch_target(self)
-					end
-				end
-
-			else -- rnd: if inside reach range
-
-				self.path.stuck_timer = 0
-				self.path.following = false -- not stuck anymore
-
-				set_velocity(self, 0)
-
-				if not self.custom_attack or self.custom_attack(self, p) == true then
-
-					if self.timer > 1 then
-
-						self.timer = 0
-						set_animation(self, "punch")
-
-						mobs.punch_target(self)
-					end
 				end
 			end
 
-		elseif self.attack_type == "shoot"
-		or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 1)
-		or (self.attack_type == "dogshoot" and dist > self.reach and dogswitch(self) == 0) then
+			-- Punch target if within punching range even while moving [MustTest].
+			if dist < (self.punch_reach or 0) then
+				punch_target(self, dtime)
+			end
 
-			p.y = p.y - .5
-			s.y = s.y + .5
+		else -- rnd: if inside reach range
 
-			local dist = get_distance(p, s)
-			local yaw = compute_yaw_to_target(self, p, s)
-			local vec = { -- vec is needed elsewhere
-				x = p.x - s.x,
-				y = p.y - s.y,
-				z = p.z - s.z
-			}
-			yaw = set_yaw(self, yaw)
+			self.path.stuck_timer = 0
+			self.path.following = false -- not stuck anymore
 
 			set_velocity(self, 0)
 
-			if self.shoot_interval
-			and self.timer > self.shoot_interval
-			and random(1, 100) <= 60 then
-
-				self.timer = 0
-				set_animation(self, "shoot")
-
-				mobs.shoot_arrow(self, vec)
+			if not self.custom_attack or self.custom_attack(self, p) == true then
+				set_animation(self, "punch")
+				punch_target(self, dtime)
 			end
+		end
+
+	elseif self.attack_type == "shoot"
+	or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 1)
+	or (self.attack_type == "dogshoot" and dist > self.reach and dogswitch(self) == 0) then
+
+		p.y = p.y - 0.5
+		s.y = s.y + 0.5
+
+		local dist = get_distance(p, s)
+		local yaw = yaw_to_pos(self, p, s)
+		local vec = { -- vec is needed elsewhere
+			x = p.x - s.x,
+			y = p.y - s.y,
+			z = p.z - s.z
+		}
+
+		set_yaw(self, yaw)
+		set_velocity(self, 0)
+
+		self.shoot_timer = (self.shoot_timer or 0) + dtime
+
+		if self.shoot_timer > (self.shoot_interval or 1) then
+
+			self.shoot_timer = 0
+			set_animation(self, "shoot")
+
+			shoot_arrow(self, vec)
 		end
 	end
+end
+
+
+
+-- Code to handle mob's lifetimer extracted to own function [MustTest].
+local function do_lifetimer(self, pos)
+	if self.tamed then return end
+	if self.type == "npc" then return end
+	if self.state == "attack" then return end
+	if self.lifetimer > 20000 then return end
+	if not remove_far then return end
+
+	self.lifetimer = self.lifetimer - dtime
+	if self.lifetimer > 0 then return end
+
+	-- Only despawn away from player
+	local objs = minetest.get_objects_inside_radius(pos, 15)
+
+	for n = 1, #objs, 1 do
+		if objs[n]:is_player() then
+			self.lifetimer = 20
+			return
+		end
+	end
+
+	effect(pos, 15, "tnt_smoke.png", 2, 4, 2, 0)
+
+	-- Mark for removal as last action on mob_step().
+	self.mkrm = true
+end
+
+
+
+-- Code to get what mob is standing in/on extracted to own function [MustTest].
+local function update_foot_nodes(self, pos, dtime)
+	-- Get node at foot level every quarter second.
+	self.node_timer = (self.node_timer or 0) + dtime
+
+	if self.node_timer > 0.25 then
+		self.node_timer = 0
+
+		local y_level = self.collisionbox[2]
+
+		if self.child then
+			y_level = self.collisionbox[2] * 0.5
+		end
+
+		-- What is mob standing in?
+		self.standing_in = node_ok({
+			x = pos.x, y = pos.y + y_level + 0.25, z = pos.z}, "air").name
+
+		-- What is mob standing on?
+		self.standing_on = node_ok({
+			x = pos.x, y = ((pos.y + y_level) - 0.5), z = pos.z}, "air").name
+	end
+end
+
+
+
+-- This table contains all the individual state functions and their transitions.
+local state_machine = {
+	stand = {
+		enter = do_stand_enter,
+		main = do_stand_state,
+	},
+
+	walk = {
+		enter = do_walk_enter,
+		main = do_walk_state,
+	},
+
+	avoid = {
+		enter = do_avoid_enter,
+		main = do_avoid_state,
+	},
+
+	runaway = {
+		--main = do_runaway_state,
+	},
+
+	attack = {
+		--main = do_attack_state,
+	},
+}
+
+-- Export.
+mobs.state_machine = state_machine
+
+
+
+-- Execute current state (stand, walk, run, attacks). This function is rate
+-- limited to reduce server load; thus 'dtime' may be large, but should usually
+-- be within 1 second. [MustTest]
+local function do_states(self, dtime)
+	-- Stupid spurious bugs [MustTest]. Implies our object no longer exists.
+	local yaw = self.object:get_yaw()
+	if not yaw then return end
+
+	-- Deal with invalid states. Note: unknown state types (non-empty string) are
+	-- valid and we don't do anything with them; they can be used by some mobs.
+	if not self.state or self.state == "" then
+		-- Not calling 'transition_state' here because that function calls
+		-- 'do_states' if the new state is different from the old. We are already in
+		-- that function.
+		self.state = "stand"
+	end
+
+	--report(self, self.state)
+
+	-- Execute current state's main function.
+	local sm = mobs.state_machine
+	if sm[self.state].main then
+		sm[self.state].main(self, dtime)
+	end
+end
+
+-- Export.
+mobs.do_states = function(...)
+	do_states(...)
 end
 
 
@@ -3592,11 +3689,11 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		local lp = hitter:get_pos()
 		local s = self.object:get_pos()
 
-		local yaw = compute_yaw_to_target(self, lp, s)
+		local yaw = yaw_to_pos(self, lp, s)
 		yaw = yaw + pi -- go in reverse
 		yaw = set_yaw(self, yaw, 6)
 
-		self.state = "runaway"
+		transition_state(self, "runaway")
 		self.runaway_timer = 0
 		self.following = nil
 	end
@@ -3617,7 +3714,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		--minetest.chat_send_player("MustTest", "Will really attack!")
 
 		-- attack whoever punched mob
-		self.state = ""
+		transition_state(self, "")
 		do_attack(self, hitter)
 
 		-- alert others to the attack
@@ -3812,7 +3909,7 @@ local function mob_activate(self, staticdata, def, dtime)
 		self.health = random (self.hp_min, self.hp_max)
 	end
 
-	-- pathfinding init
+	-- Pathfinding init.
 	self.path = {}
 	self.path.way = {} -- path to follow, table of positions
 	self.path.lastpos = {x = 0, y = 0, z = 0}
@@ -3823,6 +3920,11 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path.putnode_timer = 0
 	self.path.los_counter = 0
 	self.path.los_check = 0
+
+	-- Avoidance "avoid" state init.
+	self.avoid = {}
+	self.avoid.target = nil
+	self.avoid.timer = 0
 
 	-- Adjust the chance to use pathfinding on a per-entity basis.
 	if self.pathfinding and self.pathfinding ~= 0 then
@@ -3927,88 +4029,36 @@ end
 
 -- main mob function
 local function mob_step(self, dtime)
-	-- The final (actually first) action of mob_step():
-	-- if the mob was marked for removal, we call :remove() here.
-	-- :remove() should not be called anywhere else!
-	if self.mkrm then
-		self.object:remove()
-		return
-	end
+	-- The final (actually first) action of mob_step().
+	-- If the mob was marked for removal, we call self.object:remove() here.
+	-- This: self.object:remove(), should not be called anywhere else!
+	if self.mkrm then self.object:remove(); return end
 
+	-- Stupid spurious errors [MustTest]. Implies our object does not exist.
 	local pos = self.object:get_pos()
-	if not pos then return end -- Stupid spurious errors.
-	local yaw = 0
+	if not pos then return end
 
-	-- when lifetimer expires remove mob (except npc and tamed)
-	if self.type ~= "npc"
-	and not self.tamed
-	and self.state ~= "attack"
-	and remove_far ~= true
-	and self.lifetimer < 20000 then
+	-- When lifetimer expires, remove mob.
+	do_lifetimer(self, pos)
 
-		self.lifetimer = self.lifetimer - dtime
+	-- Get what nodes the mob is standing in/on.
+	update_foot_nodes(self, pos, dtime)
 
-		if self.lifetimer <= 0 then
-
-			-- only despawn away from player
-			local objs = minetest.get_objects_inside_radius(pos, 15)
-
-			for n = 1, #objs do
-
-				if objs[n]:is_player() then
-
-					self.lifetimer = 20
-
-					return
-				end
-			end
-
-			effect(pos, 15, "tnt_smoke.png", 2, 4, 2, 0)
-
-			-- Mark for removal as last action on mob_step().
-			self.mkrm = true
-
-			return
-		end
-	end
-
-	-- get node at foot level every quarter second
-	self.node_timer = (self.node_timer or 0) + dtime
-
-	if self.node_timer > 0.25 then
-
-		self.node_timer = 0
-
-		local y_level = self.collisionbox[2]
-
-		if self.child then
-			y_level = self.collisionbox[2] * 0.5
-		end
-
-		-- what is mob standing in?
-		self.standing_in = node_ok({
-			x = pos.x, y = pos.y + y_level + 0.25, z = pos.z}, "air").name
---		print ("standing in " .. self.standing_in)
-		self.standing_on = node_ok({
-			x = pos.x, y = ((pos.y + y_level) - 0.5), z = pos.z}, "air").name
---		print ("standing on " .. self.standing_on)
-	end
-
-	-- check if falling, flying, floating
+	-- Check if falling, flying, floating.
 	falling(self, pos)
 
 	-- Do smooth rotation.
 	smooth_rotate(self)
 
-	-- knockback timer
+	-- Knockback timer. If set, the mob will do nothing until it expires!
+	-- Typically this would be set for something like a knockback effect.
 	if self.pause_timer > 0 then
-
 		self.pause_timer = self.pause_timer - dtime
 
 		return
 	end
 
-	-- run custom function (defined in mob lua file)
+	-- Run custom function (defined in mob's script file).
 	if self.do_custom then
 
 		-- when false skip going any further
@@ -4017,50 +4067,45 @@ local function mob_step(self, dtime)
 		end
 	end
 
-	-- attack timer
-	self.timer = self.timer + dtime
-
-	if self.state ~= "attack" then
-
-		if self.timer < 1 then
-			return
-		end
-
-		self.timer = 0
-	end
-
-	-- never go over 100
-	if self.timer > 100 then
-		self.timer = 1
-	end
-
-	-- mob plays random sound at times
-	if random(1, 100) == 1 then
-		mob_sound(self, self.sounds.random)
-	end
-
-	-- environmental damage timer (every 1 second)
+	-- Environmental damage timer (every 1 second).
 	self.env_damage_timer = self.env_damage_timer + dtime
-	self.avoid_env_dmg_timeout = self.avoid_env_dmg_timeout - dtime
 
-	if (self.state == "attack" and self.env_damage_timer > 1)
-	or self.state ~= "attack" then
-
+	if self.env_damage_timer >= 1 then
 		self.env_damage_timer = 0
 
-		-- check for environmental damage (water, fire, lava etc.)
+		-- Check for environmental damage (water, fire, lava, etc.).
 		do_env_damage(self)
 
-		-- node replace check (cow eats grass etc.)
+		-- Node replace check (cow eats grass, etc.).
 		replace(self, pos)
+
+		-- Debug path display.
+		highlight_path(self)
 	end
 
-	-- The 'general_attack' function only needs to run once a second.
-	self.general_attack_timer = (self.general_attack_timer or 0) + dtime
-	if self.general_attack_timer >= 1 then
-		general_attack(self)
-		self.general_attack_timer = 0
+	-- Mob plays random sound at times.
+	self.sound_timer = (self.sound_timer or 0) + dtime
+	if self.sound_timer >= 1 then
+		if random(1, 100) == 1 then
+			mob_sound(self, self.sounds.random)
+		end
+		self.sound_timer = 0
 	end
+
+	-- This code forces state logic to only run once per second, as long as the
+	-- current state is NOT self.state == "attack". Thus, all other states execute
+	-- slower. This reduces load on the server.
+	if self.state ~= "attack" then
+		self.logic_timer = (self.logic_timer or 0) + dtime
+		if self.logic_timer < 1 then return end
+		self.logic_timer = 0
+
+		-- Since we return early if time is less than 1 second, once timer fires,
+		-- we need to pass a 'dtime' of 1 to the logic that follows.
+		dtime = 1
+	end
+
+	--general_attack(self)
 
 	breed(self)
 
@@ -4212,7 +4257,6 @@ if not mobs.registered then
 
 			timer                   = 0,
 			env_damage_timer        = 0, -- only used when state = "attack"
-			avoid_env_dmg_timeout   = 0,
 			tamed                   = false,
 			pause_timer             = 0,
 			horny                   = false,

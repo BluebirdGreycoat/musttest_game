@@ -1748,6 +1748,7 @@ local function avoid_env_damage(self, yaw, dtime)
 	if self.avoid.target then
 		if (self.pathfinding or 0) >= 1 then
 			self.path.target = vector.add(self.avoid.target, {x=0, y=1, z=0})
+			self.path.dangerous_paths = true
 			transition_state(self, "pathfind")
 		else
 			-- Look towards land and jump/move in that direction.
@@ -2891,7 +2892,7 @@ end
 
 -- State self.state == "stand" moved to its own function [MustTest].
 local function do_stand_state(self, dtime)
-	-- Avoid dangerious nodes.
+	-- Avoid dangerous nodes.
 	if is_node_dangerous(self, self.standing_in) then
 		transition_state(self, "avoid")
 		return
@@ -3176,8 +3177,8 @@ local function do_attack_state(self, dtime)
 
 			self.reach_ext = 0 -- extended ready off by default
 
-			-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
-			-- But some dangerious nodes are non-walkable, which means the pathfinder
+			-- Note: the 'is_at_cliff' function also checks for dangerous nodes.
+			-- But some dangerous nodes are non-walkable, which means the pathfinder
 			-- would path through them.
 			if (is_at_cliff(self) or pad < 0.2) then
 				-- when on top of player extend reach slightly so player can
@@ -3398,13 +3399,15 @@ local function do_pathfind_state(self, dtime)
 		on_target = true
 	end
 
-	-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
-	-- But some dangerious nodes are non-walkable, which means the pathfinder
+	-- Note: the 'is_at_cliff' function also checks for dangerous nodes.
+	-- But some dangerous nodes are non-walkable, which means the pathfinder
 	-- would path through them.
-	--if is_at_cliff(self) then
-	--	transition_state(self, "stand")
-	--	return
-	--end
+	if not self.path.dangerous_paths then
+		if is_at_cliff(self) then
+			transition_state(self, "stand")
+			return
+		end
+	end
 
 	-- Get the mob moving in the right direction.
 	local yaw = yaw_to_pos(self, wp, s)
@@ -3433,6 +3436,7 @@ end
 local function do_pathfind_exit(self)
 	self.path.following = false
 	self.path.way = nil
+	self.path.dangerous_paths = false
 end
 
 

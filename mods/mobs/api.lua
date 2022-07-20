@@ -144,8 +144,6 @@ local function transition_state(self, newstate)
 		if sm[newstate].enter then
 			sm[newstate].enter(self)
 		end
-
-		mobs.do_states(self, 0)
 	end
 end
 
@@ -1748,13 +1746,18 @@ local function avoid_env_damage(self, yaw, dtime)
 
 	-- Do we have a safe position?
 	if self.avoid.target then
-		-- Look towards land and jump/move in that direction.
-		local yaw = yaw_to_pos(self, self.avoid.target, s)
-		set_yaw(self, yaw, 4)
+		if (self.pathfinding or 0) >= 1 then
+			self.path.target = vector.add(self.avoid.target, {x=0, y=1, z=0})
+			transition_state(self, "pathfind")
+		else
+			-- Look towards land and jump/move in that direction.
+			local yaw = yaw_to_pos(self, self.avoid.target, s)
+			set_yaw(self, yaw, 4)
 
-		do_jump(self)
-		set_velocity(self, self.walk_velocity or 0)
-		set_animation(self, "walk")
+			do_jump(self)
+			set_velocity(self, self.walk_velocity or 0)
+			set_animation(self, "walk")
+		end
 	else
 		-- Mob panics, turns in random direction.
 		if self.avoid.timer <= 0 then
@@ -3311,6 +3314,129 @@ end
 
 
 
+local function do_pathfind_enter(self)
+	-- The pathfinder requires a target. I assume the target is a rounded vector.
+	-- It should be inside an air node, or non-walkable, and walkable node under.
+	if not self.path.target then
+		transition_state(self, "stand")
+		return
+	end
+
+	local start = self.object:get_pos()
+	start.y = start.y + self.collisionbox[2] + 0.5
+	start = v_round(start)
+
+	local target = self.path.target
+	local radius = self.pathing_radius or 16
+
+	local dh = 6
+	local jh = 0
+
+	if self.fear_height ~= 0 then dh = (self.fear_height - 1) end
+
+	-- Do not generate paths with a jump-height above 4 nodes.
+	if self.jump and self.jump_height >= 4 then
+		jh = min(ceil(self.jump_height / 4), 4)
+	elseif self.stepheight > 0.5 then
+		jh = 1
+	end
+
+	local path = minetest.find_path(start, target, radius, jh, dh, "A*")
+
+	if path then
+		report(self, "found path")
+		self.path.way = path
+		self.path.following = true
+		self.path.stuck_timer = 0
+	else
+		report(self, "could not find path")
+	end
+end
+
+
+
+-- In order to correctly follow a path, this function requires to be called once
+-- per frame. This property is specified in the state machine table.
+local function do_pathfind_state(self, dtime)
+	if not self.path.following then return end
+	if not self.path.way then return end
+
+	-- No very long paths [MustTest]. Note that the engine is now a lot better at
+	-- pathfinding, so bad paths aren't often generated anymore. I can leave the
+	-- limit fairly high.
+	local max_len = (self.pathing_radius or 16) * 4
+	if #self.path.way > max_len then
+		transition_state(self, "stand")
+		return
+	end
+
+	local wp = self.path.way[1]
+
+	if not wp then
+		transition_state(self, "stand")
+		return
+	end
+
+	local s = self.object:get_pos()
+
+	-- Use 'get_distance' and not 'abs' because waypoint may be vertical from us.
+	if get_distance(wp, s) < 0.6 then
+		-- Reached waypoint, remove it from queue.
+		table.remove(self.path.way, 1)
+
+		-- Are we done following the path?
+		if #self.path.way == 0 then
+			transition_state(self, "stand")
+			return
+		end
+	end
+
+	-- Is mob directly over or under the target?
+	-- If so, mob should move more slowly so we don't miss the waypoint.
+	local on_target = false
+	if abs(wp.x - s.x) < 0.2 and abs(wp.z - s.z) < 0.2 then
+		on_target = true
+	end
+
+	-- Note: the 'is_at_cliff' function also checks for dangerious nodes.
+	-- But some dangerious nodes are non-walkable, which means the pathfinder
+	-- would path through them.
+	--if is_at_cliff(self) then
+	--	transition_state(self, "stand")
+	--	return
+	--end
+
+	-- Get the mob moving in the right direction.
+	local yaw = yaw_to_pos(self, wp, s)
+	set_yaw(self, yaw)
+
+	if on_target then
+		set_velocity(self, 0.1)
+	else
+		set_velocity(self, self.run_velocity or 0)
+	end
+
+	-- Set correct animation.
+	if not on_target then
+		if self.animation and self.animation.run_start then
+			set_animation(self, "run")
+		else
+			set_animation(self, "walk")
+		end
+	else
+		set_animation(self, "stand")
+	end
+end
+
+
+
+local function do_pathfind_exit(self)
+	self.path.following = false
+	self.path.way = nil
+end
+
+
+
 -- This table contains all the individual state functions and their transitions.
 local state_machine = {
 	stand = {
@@ -3334,6 +3460,14 @@ local state_machine = {
 
 	attack = {
 		--main = do_attack_state,
+		continuous = true,
+	},
+
+	pathfind = {
+		enter = do_pathfind_enter,
+		main = do_pathfind_state,
+		exit = do_pathfind_exit,
+		continuous = true,
 	},
 }
 
@@ -3920,6 +4054,7 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path.putnode_timer = 0
 	self.path.los_counter = 0
 	self.path.los_check = 0
+	self.path.target = nil
 
 	-- Avoidance "avoid" state init.
 	self.avoid = {}
@@ -4095,7 +4230,8 @@ local function mob_step(self, dtime)
 	-- This code forces state logic to only run once per second, as long as the
 	-- current state is NOT self.state == "attack". Thus, all other states execute
 	-- slower. This reduces load on the server.
-	if self.state ~= "attack" then
+	local sm = state_machine
+	if not sm[self.state].continuous then
 		self.logic_timer = (self.logic_timer or 0) + dtime
 		if self.logic_timer < 1 then return end
 		self.logic_timer = 0

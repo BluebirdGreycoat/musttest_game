@@ -140,6 +140,7 @@ local function transition_state(self, newstate)
 		end
 
 		self.state = newstate
+		self.substate = ""
 
 		if sm[newstate].enter then
 			sm[newstate].enter(self)
@@ -150,6 +151,18 @@ end
 -- Export.
 mobs.transition_state = function(...)
 	transition_state(...)
+end
+
+-- States can have "substates". This is basically just an alternate main()
+-- function, so states can swap between different main() functions as needed.
+-- There are no exit() or enter() calls here.
+local function transition_substate(self, newsub)
+	self.substate = newsub
+end
+
+-- Export.
+mobs.transition_substate = function(...)
+	transition_substate(...)
 end
 
 
@@ -1541,10 +1554,10 @@ end
 local function do_jump(self, break_blocks)
 
 	if not self.jump
-	or self.jump_height == 0
-	or self.fly
-	or self.child
-	or self.order == "stand" then
+			or self.jump_height == 0
+			or self.fly
+			or self.child
+			or self.order == "stand" then
 		return false
 	end
 
@@ -1552,16 +1565,13 @@ local function do_jump(self, break_blocks)
 
 	-- something stopping us while moving?
 	if self.state ~= "stand"
-	and get_velocity(self) > 0.5
-	and self.object:get_velocity().y ~= 0 then
+			and get_velocity(self) > 0.5
+			and self.object:get_velocity().y ~= 0 then
 		return false
 	end
 
 	local pos = self.object:get_pos()
 	local yaw = self.object:get_yaw()
-
-	-- sanity check
-	if not yaw then return false end
 
 	-- we can only jump if standing on solid node
 	if minetest.registered_nodes[self.standing_on].walkable == false then
@@ -1755,7 +1765,6 @@ local function avoid_env_damage(self, yaw, dtime)
 			local yaw = yaw_to_pos(self, self.avoid.target, s)
 			set_yaw(self, yaw, 4)
 
-			do_jump(self)
 			set_velocity(self, self.walk_velocity or 0)
 			set_animation(self, "walk")
 		end
@@ -1767,7 +1776,6 @@ local function avoid_env_damage(self, yaw, dtime)
 			self.avoid.timer = 3
 		end
 
-		do_jump(self)
 		set_velocity(self, self.run_velocity or 0)
 		set_animation(self, "walk")
 	end
@@ -2109,6 +2117,21 @@ local function highlight_path(self)
 			})
 		end
 	end
+end
+
+
+
+local function get_ahead_pos(self)
+	local s = self.object:get_pos()
+	s.y = s.y + self.collisionbox[2] + 0.5
+	local dir = self.object:get_yaw() + (pi / 2)
+	local p = {
+		x = s.x + cos(yaw),
+		y = s.y,
+		z = s.z + sin(yaw),
+	}
+	p = v_round(p)
+	return p
 end
 
 
@@ -3345,12 +3368,12 @@ local function do_pathfind_enter(self)
 	local path = minetest.find_path(start, target, radius, jh, dh, "A*")
 
 	if path then
-		report(self, "found path")
 		self.path.way = path
 		self.path.following = true
 		self.path.stuck_timer = 0
 	else
-		report(self, "could not find path")
+		transition_state(self, "stand")
+		return
 	end
 end
 
@@ -3359,8 +3382,10 @@ end
 -- In order to correctly follow a path, this function requires to be called once
 -- per frame. This property is specified in the state machine table.
 local function do_pathfind_state(self, dtime)
-	if not self.path.following then return end
-	if not self.path.way then return end
+	if not self.path.following or not self.path.way then
+		transition_state(self, "stand")
+		return
+	end
 
 	-- No very long paths [MustTest]. Note that the engine is now a lot better at
 	-- pathfinding, so bad paths aren't often generated anymore. I can leave the
@@ -3379,11 +3404,13 @@ local function do_pathfind_state(self, dtime)
 	end
 
 	local s = self.object:get_pos()
+	self.path.stuck_timer = (self.path.stuck_timer or 0) + dtime
 
 	-- Use 'get_distance' and not 'abs' because waypoint may be vertical from us.
 	if get_distance(wp, s) < 0.6 then
 		-- Reached waypoint, remove it from queue.
 		table.remove(self.path.way, 1)
+		self.path.stuck_timer = 0
 
 		-- Are we done following the path?
 		if #self.path.way == 0 then
@@ -3429,6 +3456,21 @@ local function do_pathfind_state(self, dtime)
 	else
 		set_animation(self, "stand")
 	end
+
+	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
+	if self.path.stuck_timer > stuck_timeout then
+		self.path.stuck_timer = 0
+		report(self, "path blocked")
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+		transition_substate(self, "blocked")
+		return
+	end
+end
+
+
+
+local function do_pathfind_blocked(self, dtime)
 end
 
 
@@ -3437,6 +3479,7 @@ local function do_pathfind_exit(self)
 	self.path.following = false
 	self.path.way = nil
 	self.path.dangerous_paths = false
+	self.path.stuck_timer = 0
 end
 
 
@@ -3470,6 +3513,7 @@ local state_machine = {
 	pathfind = {
 		enter = do_pathfind_enter,
 		main = do_pathfind_state,
+		blocked = do_pathfind_blocked,
 		exit = do_pathfind_exit,
 		continuous = true,
 	},
@@ -3495,14 +3539,18 @@ local function do_states(self, dtime)
 		-- 'do_states' if the new state is different from the old. We are already in
 		-- that function.
 		self.state = "stand"
+		self.substate = ""
 	end
 
 	--report(self, self.state)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine
-	if sm[self.state].main then
-		sm[self.state].main(self, dtime)
+	local state = sm[self.state]
+	if state[self.substate] then
+		state[self.substate](self, dtime)
+	elseif state.main then
+		state.main(self, dtime)
 	end
 end
 
@@ -3914,6 +3962,7 @@ local function mob_staticdata(self)
 	self.attack = nil
 	self.following = nil
 	self.state = "stand"
+	self.substate = ""
 
 	-- used to rotate older mobs
 	if self.drawtype and self.drawtype == "side" then
@@ -4247,20 +4296,26 @@ local function mob_step(self, dtime)
 
 	--general_attack(self)
 
-	breed(self)
+	-- TODO: this has to be part of state logic, not global!
+	--breed(self)
 
-	follow_flop(self)
+	-- TODO: this has to be part of state logic, not global!
+	--follow_flop(self)
 
 	do_states(self, dtime)
 
+	-- TODO: this has to be part of state logic, not global!
 	-- Allow jump routine to break blocks [MustTest].
+	--[[
 	local break_blocks = false
 	if self.path.following and (self.pathfinding or 0) >= 2 then
 		break_blocks = true
 	end
 	do_jump(self, break_blocks)
+	--]]
 
-	runaway_from(self)
+	-- TODO: this has to be part of state logic, not global!
+	--runaway_from(self)
 end
 
 

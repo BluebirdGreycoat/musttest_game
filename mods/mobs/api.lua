@@ -582,17 +582,13 @@ end
 
 
 
-local function do_attack(self, player)
+local function do_attack(self, target)
 	if self.state == "attack" then
 		return
 	end
 
+	self.attack = target
 	transition_state(self, "attack")
-	self.attack = player
-
-	if random(0, 100) < 90 and self.sounds.war_cry then
-		mob_sound(self, self.sounds.war_cry)
-	end
 end
 
 
@@ -711,16 +707,14 @@ local function set_animation(self, anim, speed)
 		0, self.animation[anim .. "_loop"] ~= false)
 end
 
-
-
--- above function exported for mount.lua
+-- Above function exported for "mount.lua".
 function mobs.set_animation(self, anim)
 	set_animation(self, anim)
 end
 
 
 
--- calculate distance
+-- Calculate distance.
 local function get_distance(a, b)
 	local x, y, z = a.x - b.x, a.y - b.y, a.z - b.z
 	return square(x * x + y * y + z * z)
@@ -728,53 +722,69 @@ end
 
 
 
--- check line of sight (by BrunoMine, tweaked by Astrobe)
+-- Check line of sight (by BrunoMine, tweaked by Astrobe).
 local function line_of_sight(self, pos1, pos2, stepsize)
-
-	if not pos1 or not pos2 then return end
 
 	stepsize = stepsize or 1
 
-	local stepv = vector.multiply(vector.direction(pos1, pos2), stepsize)
-
 	local s, pos = minetest.line_of_sight(pos1, pos2, stepsize)
 
-	-- normal walking and flying mobs can see you through air
-	if s == true then return true end
+	-- Normal walking and flying mobs can see you through air.
+	if s == true then
+		return true
+	end
 
-	-- New pos1 to be analyzed
+	-- New pos1 to be analyzed.
 	local npos1 = {x = pos1.x, y = pos1.y, z = pos1.z}
 
 	local r, pos = minetest.line_of_sight(npos1, pos2, stepsize)
 
-	-- Checks the return
+	-- Checks the return.
 	if r == true then return true end
 
-	-- Nodename found
+	-- Nodename found.
 	local nn = minetest.get_node(pos).name
 
+	-- Target Distance (td) to travel.
+	local td = get_distance(pos1, pos2)
+
+	-- Actual Distance (ad) traveled.
+	local ad = 0
+
 	-- It continues to advance in the line of sight in search of a real
-	-- obstruction which counts as 'normal' nodebox.
-	local registered = minetest.reg_ns_nodes
-	local ndef = registered[nn] or minetest.registered_nodes[nn]
+	-- obstruction which counts as 'walkable' nodebox.
+	while minetest.registered_nodes[nn]
+			and not minetest.registered_nodes[nn].walkable do
 
-	while ndef
-		and (ndef.walkable == false
-		or ndef.drawtype == "nodebox"
-		or ndef.drawtype:find("glasslike")) do
+		-- Check if you can still move forward.
+		if td < ad + stepsize then
+			return true -- Reached the target.
+		end
 
-		npos1 = v_add(npos1, stepv)
+		-- Moves the analyzed pos.
+		local d = get_distance(pos1, pos2)
 
-		if get_distance(npos1, pos2) < stepsize then return true end
+		npos1.x = ((pos2.x - pos1.x) / d * stepsize) + pos1.x
+		npos1.y = ((pos2.y - pos1.y) / d * stepsize) + pos1.y
+		npos1.z = ((pos2.z - pos1.z) / d * stepsize) + pos1.z
 
-		-- scan again
+		-- NaN checks.
+		if d == 0
+				or npos1.x ~= npos1.x
+				or npos1.y ~= npos1.y
+				or npos1.z ~= npos1.z then
+			return false
+		end
+
+		ad = ad + stepsize
+
+		-- Scan again.
 		r, pos = minetest.line_of_sight(npos1, pos2, stepsize)
 
 		if r == true then return true end
 
-		-- New Nodename found
+		-- New nodename found.
 		nn = minetest.get_node(pos).name
-		ndef = registered[nn] or minetest.registered_nodes[nn]
 	end
 
 	return false
@@ -2082,11 +2092,9 @@ end
 
 -- Check if daytime and also if mob is docile during daylight hours.
 local function day_docile(self)
-	if self.docile_by_day == false then
+	if not self.docile_by_day then
 		return false
-	elseif self.docile_by_day == true
-	and self.time_of_day > 0.2
-	and self.time_of_day < 0.8 then
+	elseif self.time_of_day > 0.2 and self.time_of_day < 0.8 then
 		return true
 	end
 end
@@ -2530,44 +2538,29 @@ end
 
 
 
--- general attack function for all mobs ==========
--- This function only executes once per second (per mob) [MustTest].
-local function general_attack(self)
-
-	-- return if already attacking, passive or docile during day
-	if self.passive
-	or self.state == "attack"
-	or day_docile(self) then
-		return
-	end
-
+-- Get list of targets in area that can be attacked.
+local function get_attackable_targets(self)
 	local s = self.object:get_pos()
-	-- Stupid spurious errors.
-	if not s then
-		return
-	end
 	local objs = minetest.get_objects_inside_radius(s, self.view_range)
 
-	-- remove entities we aren't interested in
-	for n = 1, #objs do
-
+	-- Scan found entities and remove entities we aren't interested in.
+	for n = 1, #objs, 1 do
 		local ent = objs[n]:get_luaentity()
 
-		-- are we a player?
+		-- Are we a player?
 		if objs[n]:is_player() then
 			local pname = objs[n]:get_player_name()
 
-			-- if player invisible or mob not setup to attack then remove from list
-			if self.attack_players == false
+			-- If player invisible or mob not setup to attack then remove from list
+			if not self.attack_players
 					or (self.owner and self.type ~= "monster")
 					or mobs.is_invisible(self, pname)
-					or not specific_attack(self.specific_attack, "player")
-					or minetest.check_player_privs(pname, {mob_respect=true}) then
+					or not specific_attack(self.specific_attack, "player") then
 				objs[n] = nil
 			end
 
-			-- ignore dead players
-			if objs[n] and objs[n]:get_hp() <= 0 then
+			-- Ignore dead players.
+			if objs[n]:get_hp() <= 0 then
 				objs[n] = nil
 			end
 
@@ -2580,75 +2573,92 @@ local function general_attack(self)
 				end
 			end
 
-		-- or are we a mob?
-		elseif ent and ent._cmi_is_mob then
-
-			-- remove mobs not to attack
-			if self.name == ent.name
-			or (not self.attack_animals and ent.type == "animal")
-			or (not self.attack_monsters and ent.type == "monster")
-			or (not self.attack_npcs and ent.type == "npc")
-			or not specific_attack(self.specific_attack, ent.name) then
+			-- Ignore players with the 'mob_respect' priv.
+			if minetest.check_player_privs(pname, {mob_respect=true}) then
 				objs[n] = nil
---print("- mob", n, self.name, ent.name)
 			end
 
-		-- remove all other entities
+		-- Or are we a mob?
+		elseif ent and ent._cmi_is_mob then
+
+			-- Remove mobs not to attack.
+			if self.name == ent.name
+					or (not self.attack_animals and ent.type == "animal")
+					or (not self.attack_monsters and ent.type == "monster")
+					or (not self.attack_npcs and ent.type == "npc")
+					or not specific_attack(self.specific_attack, ent.name) then
+				objs[n] = nil
+			end
+
+		-- Remove all other entities.
 		else
---print(" -obj", n)
 			objs[n] = nil
 		end
 	end
 
-	local p, sp, dist, min_player
+	-- Compact targets into an array.
+	local targets = {}
+	local index = 1
+
+	for k, v in pairs(objs) do
+		targets[index] = v
+		index = index + 1
+	end
+
+	return targets
+end
+
+
+
+-- General attack function for all mobs. Scan for targets and attack them.
+-- This function (usually) only executes once per second (per mob) [MustTest].
+local function general_attack(self, dtime)
+	-- Skip because mob is passive.
+	if self.passive then return end
+
+	-- Skip because already attacking something.
+	if self.state == "attack" then return end
+
+	-- Skip if mob is docile during day.
+	if day_docile(self) then return end
+
+	-- Get array list of targets to attack.
+	local objs = get_attackable_targets(self)
+
+	local s = self.object:get_pos()
+	s.y = s.y + 1 -- Make easier to look up hills.
+
+	local min_player
 	local min_dist = self.view_range + 1
 
 	-- Go through remaining entities and select closest.
-	-- Have to use ipairs because array has holes [MustTest].
-	for _,player in pairs(objs) do
+	for _, target in ipairs(objs) do
 
-		p = player:get_pos()
-		sp = s
+		local p = target:get_pos()
+		p.y = p.y + 1 -- Make easier to look up hills.
 
-		dist = get_distance(p, s)
+		local dist = get_distance(p, s)
 
-		-- aim higher to make looking up hills more realistic
-		p.y = p.y + 1
-		sp.y = sp.y + 1
-
-		-- choose closest player to attack that isnt self
-		if dist ~= 0 and dist < min_dist and line_of_sight(self, sp, p, 0.5) == true then
-			min_dist = dist
-			min_player = player
+		-- Choose closest target to attack that is not self.
+		if dist > 0 then
+			if dist < min_dist and line_of_sight(self, s, p, 0.5) then
+				min_dist = dist
+				min_player = target
+			end
 		end
 	end
 
-	-- attack closest player or mob
+	-- Attack closest target.
 	if min_player and random(1, 100) < (self.attack_chance or 95) then
 		do_attack(self, min_player)
-	elseif not min_player and random(1, 100) < (self.hunt_chance or 5) then
-		-- If mob is set up to hunt players, randomly select a nearby player.
-		-- Only do this if we didn't get a target the normal way [MustTest].
+		return
+	end
 
-		-- Build list of candidate targets.
-		local candidates = {}
-		for k, v in pairs(objs) do
-			if v:is_player() then
-				if not mobs.is_invisible(self, v:get_player_name()) then
-					candidates[#candidates + 1] = v
-				end
-			end
-		end
-
-		-- Pick random target.
-		-- Note: this will often happen when target is not in LOS of the mob, so if
-		-- possible, we only want targets within the mob's pathfinding range.
-		if #candidates > 0 then
-			local target = candidates[random(1, #candidates)]
-			if v_distance(s, target:get_pos()) < (self.pathing_radius or self.view_range or 16) then
-				do_attack(self, target)
-			end
-		end
+	-- Hunt random nearby target. (Allows targets outside of LOS.)
+	if not min_player and random(1, 100) < (self.hunt_chance or 5) then
+		local target = objs[random(1, #objs)]
+		do_attack(self, target)
+		return
 	end
 end
 
@@ -3061,6 +3071,7 @@ local function do_runaway_state(self, dtime)
 		return
 	end
 
+	try_jump(self, dtime)
 	set_velocity(self, self.sprint_velocity or 0)
 	set_animation(self, "run")
 end
@@ -3079,11 +3090,218 @@ end
 
 
 
+local function do_chase_attack(self, dtime)
+	if self.fly and dist > self.reach then
+
+		local p1 = s
+		local me_y = floor(p1.y)
+		local p2 = p
+		local p_y = floor(p2.y + 1)
+		local v = self.object:get_velocity()
+
+		if flight_check(self, s) then
+
+			if me_y < p_y then
+
+				self.object:set_velocity({
+					x = v.x,
+					y = 1 * self.walk_velocity,
+					z = v.z
+				})
+
+			elseif me_y > p_y then
+
+				self.object:set_velocity({
+					x = v.x,
+					y = -1 * self.walk_velocity,
+					z = v.z
+				})
+			end
+		else
+			if me_y < p_y then
+
+				self.object:set_velocity({
+					x = v.x,
+					y = 0.01,
+					z = v.z
+				})
+
+			elseif me_y > p_y then
+
+				self.object:set_velocity({
+					x = v.x,
+					y = -0.01,
+					z = v.z
+				})
+			end
+		end
+
+	end
+
+	-- rnd: new movement direction
+	if self.path.following and self.path.way
+			and self.attack_type ~= "dogshoot" then
+
+		-- No very long paths [MustTest].
+		-- Note that the engine is now a lot better at pathfinding, so bad paths
+		-- aren't often generated anymore. I can leave the limit fairly high.
+		local max_len = (self.pathing_radius or 16) * 4
+		if #self.path.way > max_len or dist < self.reach then
+			self.path.following = false
+			self.path.way = nil
+			self.path.find_path_timer = 2
+			return
+		end
+
+		local p1 = self.path.way[1]
+
+		if not p1 then
+			self.path.following = false
+			return
+		end
+
+		--if abs(p1.x-s.x) + abs(p1.z - s.z) < 0.6 then
+		-- must use `get_distance' and not `abs' because waypoint may be vertical from mob
+		if get_distance(p1, s) < 0.6 then
+			-- reached waypoint, remove it from queue
+			table.remove(self.path.way, 1)
+		end
+
+		-- set new temporary target
+		p = {x = p1.x, y = p1.y, z = p1.z}
+	end
+
+	-- flag should be set if mob is directly over its target and therefore should move more slowly
+	local overunder_waypoint = false
+
+	-- is mob directly over or under the target?
+	if abs(p.x - s.x) < 0.2 and abs(p.z - s.z) < 0.2 and abs(p.y - s.y) > 0.5 then
+		-- mob is directly over or under its waypoint/target
+		overunder_waypoint = true
+	end
+
+	local yaw = yaw_to_pos(self, p, s)
+	yaw = set_yaw(self, yaw)
+
+	-- move towards enemy if beyond mob reach
+	if dist > (self.reach + (self.reach_ext or 0)) then
+
+		-- path finding by rnd
+		if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
+			-- Always pass the real position of the target to Smart Mobs function [MustTest].
+			local p = self.attack:get_pos()
+			smart_mobs(self, s, p, dist, dtime)
+		end
+
+		-- distance padding to stop spinning mob
+		local pad = abs(p.x - s.x) + abs(p.z - s.z)
+
+		self.reach_ext = 0 -- extended ready off by default
+
+		-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
+		-- But some dangerous nodes are non-walkable, which means the pathfinder
+		-- would path through them.
+		if (facing_wall_or_pit(self) or pad < 0.2) then
+			-- when on top of player extend reach slightly so player can
+			-- still be attacked.
+			self.reach_ext = 0.8
+
+			set_velocity(self, 0)
+			set_animation(self, "stand")
+		else
+
+			if overunder_waypoint then
+				set_velocity(self, 0.1)
+			else
+				if not self.path.following then
+					set_velocity(self, self.sprint_velocity or 0)
+				else
+					set_velocity(self, self.run_velocity or 0)
+				end
+			end
+
+			if not overunder_waypoint then
+				if self.animation and self.animation.run_start then
+					set_animation(self, "run")
+				else
+					set_animation(self, "walk")
+				end
+			else
+				set_animation(self, "stand")
+			end
+		end
+
+		-- Punch target if within punching range even while moving [MustTest].
+		if dist < (self.punch_reach or 0) then
+			punch_target(self, dtime)
+		end
+
+	else -- rnd: if inside reach range
+
+		self.path.stuck_timer = 0
+		self.path.following = false -- not stuck anymore
+
+		set_velocity(self, 0)
+
+		if not self.custom_attack or self.custom_attack(self, p) == true then
+			set_animation(self, "punch")
+			punch_target(self, dtime)
+		end
+	end
+end
+
+
+
+local function do_shoot_attack(self, dtime)
+	p.y = p.y - 0.5
+	s.y = s.y + 0.5
+
+	local dist = get_distance(p, s)
+	local yaw = yaw_to_pos(self, p, s)
+	local vec = { -- vec is needed elsewhere
+		x = p.x - s.x,
+		y = p.y - s.y,
+		z = p.z - s.z
+	}
+
+	set_yaw(self, yaw)
+	set_velocity(self, 0)
+
+	self.shoot_timer = (self.shoot_timer or 0) + dtime
+
+	if self.shoot_timer > (self.shoot_interval or 1) then
+		self.shoot_timer = 0
+		set_animation(self, "shoot")
+
+		shoot_arrow(self, vec)
+	end
+end
+
+
+
+local function do_attack_enter(self)
+	if random(0, 100) < 90 and self.sounds.war_cry then
+		mob_sound(self, self.sounds.war_cry)
+	end
+end
+
+
+
+local function do_attack_exit(self)
+	self.attack = nil
+end
+
+
+
 -- State self.state == "attack" extracted to its own function [MustTest].
--- The attack routines (explode, dogfight, shoot, dogshoot, etc.).
+-- The attack routines (explode, dogfight, shoot, dogshoot, etc.). This function
+-- runs once per frame, while the "attack" state is active.
 local function do_attack_state(self, dtime)
 	-- Abort if we have no target!
-	if not self.attack then return end
+	if not self.attack then
+		transition_state(self, "stand")
+		return
+	end
 
 	-- Calculate distance from mob and enemy.
 	local s = self.object:get_pos()
@@ -3093,216 +3311,31 @@ local function do_attack_state(self, dtime)
 	if not p then return end
 
 	local dist = get_distance(p, s)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
 
-	-- stop attacking if player invisible or out of range
-	if dist > self.view_range
-	or not self.attack
-	or not self.attack:get_pos()
-	or self.attack:get_hp() <= 0
-	or (self.attack:is_player() and mobs.is_invisible(self, self.attack:get_player_name() )) then
-
+	-- Stop attacking if player invisible or out of range.
+	if dist > self.view_range	or self.attack:get_hp() <= 0
+			or mobs.is_invisible(self, targetname) then
 		transition_state(self, "stand")
-		set_velocity(self, 0)
-		set_animation(self, "stand")
-
-		self.attack = nil
-		self.v_start = false
-		self.blinktimer = 0
-		self.path.way = nil
-
 		return
 	end
 
-	if self.attack_type == "dogfight"
-			or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
-			or (self.attack_type == "dogshoot" and dist <= self.reach
-				and dogswitch(self) == 0) then
+	local attack_type = self.attack_type
 
-		if self.fly and dist > self.reach then
+	-- The special "dogshoot" attack type basically just swaps between "dogfight"
+	-- and "shoot" based on timers.
+	if attack_type == "dogshoot" then
+		dogswitch(self, dtime)
+	end
 
-			local p1 = s
-			local me_y = floor(p1.y)
-			local p2 = p
-			local p_y = floor(p2.y + 1)
-			local v = self.object:get_velocity()
-
-			if flight_check(self, s) then
-
-				if me_y < p_y then
-
-					self.object:set_velocity({
-						x = v.x,
-						y = 1 * self.walk_velocity,
-						z = v.z
-					})
-
-				elseif me_y > p_y then
-
-					self.object:set_velocity({
-						x = v.x,
-						y = -1 * self.walk_velocity,
-						z = v.z
-					})
-				end
-			else
-				if me_y < p_y then
-
-					self.object:set_velocity({
-						x = v.x,
-						y = 0.01,
-						z = v.z
-					})
-
-				elseif me_y > p_y then
-
-					self.object:set_velocity({
-						x = v.x,
-						y = -0.01,
-						z = v.z
-					})
-				end
-			end
-
-		end
-
-		-- rnd: new movement direction
-		if self.path.following and self.path.way
-				and self.attack_type ~= "dogshoot" then
-
-			-- No very long paths [MustTest].
-			-- Note that the engine is now a lot better at pathfinding, so bad paths
-			-- aren't often generated anymore. I can leave the limit fairly high.
-			local max_len = (self.pathing_radius or 16) * 4
-			if #self.path.way > max_len or dist < self.reach then
-				self.path.following = false
-				self.path.way = nil
-				self.path.find_path_timer = 2
-				return
-			end
-
-			local p1 = self.path.way[1]
-
-			if not p1 then
-				self.path.following = false
-				return
-			end
-
-			--if abs(p1.x-s.x) + abs(p1.z - s.z) < 0.6 then
-			-- must use `get_distance' and not `abs' because waypoint may be vertical from mob
-			if get_distance(p1, s) < 0.6 then
-				-- reached waypoint, remove it from queue
-				table.remove(self.path.way, 1)
-			end
-
-			-- set new temporary target
-			p = {x = p1.x, y = p1.y, z = p1.z}
-		end
-
-		-- flag should be set if mob is directly over its target and therefore should move more slowly
-		local overunder_waypoint = false
-
-		-- is mob directly over or under the target?
-		if abs(p.x - s.x) < 0.2 and abs(p.z - s.z) < 0.2 and abs(p.y - s.y) > 0.5 then
-			-- mob is directly over or under its waypoint/target
-			overunder_waypoint = true
-		end
-
-		local yaw = yaw_to_pos(self, p, s)
-		yaw = set_yaw(self, yaw)
-
-		-- move towards enemy if beyond mob reach
-		if dist > (self.reach + (self.reach_ext or 0)) then
-
-			-- path finding by rnd
-			if self.pathfinding and self.pathfinding ~= 0 and enable_pathfinding then
-				-- Always pass the real position of the target to Smart Mobs function [MustTest].
-				local p = self.attack:get_pos()
-				smart_mobs(self, s, p, dist, dtime)
-			end
-
-			-- distance padding to stop spinning mob
-			local pad = abs(p.x - s.x) + abs(p.z - s.z)
-
-			self.reach_ext = 0 -- extended ready off by default
-
-			-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
-			-- But some dangerous nodes are non-walkable, which means the pathfinder
-			-- would path through them.
-			if (facing_wall_or_pit(self) or pad < 0.2) then
-				-- when on top of player extend reach slightly so player can
-				-- still be attacked.
-				self.reach_ext = 0.8
-
-				set_velocity(self, 0)
-				set_animation(self, "stand")
-			else
-
-				if overunder_waypoint then
-					set_velocity(self, 0.1)
-				else
-					if not self.path.following then
-						set_velocity(self, self.sprint_velocity or 0)
-					else
-						set_velocity(self, self.run_velocity or 0)
-					end
-				end
-
-				if not overunder_waypoint then
-					if self.animation and self.animation.run_start then
-						set_animation(self, "run")
-					else
-						set_animation(self, "walk")
-					end
-				else
-					set_animation(self, "stand")
-				end
-			end
-
-			-- Punch target if within punching range even while moving [MustTest].
-			if dist < (self.punch_reach or 0) then
-				punch_target(self, dtime)
-			end
-
-		else -- rnd: if inside reach range
-
-			self.path.stuck_timer = 0
-			self.path.following = false -- not stuck anymore
-
-			set_velocity(self, 0)
-
-			if not self.custom_attack or self.custom_attack(self, p) == true then
-				set_animation(self, "punch")
-				punch_target(self, dtime)
-			end
-		end
-
-	elseif self.attack_type == "shoot"
-	or (self.attack_type == "dogshoot" and dogswitch(self, dtime) == 1)
-	or (self.attack_type == "dogshoot" and dist > self.reach and dogswitch(self) == 0) then
-
-		p.y = p.y - 0.5
-		s.y = s.y + 0.5
-
-		local dist = get_distance(p, s)
-		local yaw = yaw_to_pos(self, p, s)
-		local vec = { -- vec is needed elsewhere
-			x = p.x - s.x,
-			y = p.y - s.y,
-			z = p.z - s.z
-		}
-
-		set_yaw(self, yaw)
-		set_velocity(self, 0)
-
-		self.shoot_timer = (self.shoot_timer or 0) + dtime
-
-		if self.shoot_timer > (self.shoot_interval or 1) then
-
-			self.shoot_timer = 0
-			set_animation(self, "shoot")
-
-			shoot_arrow(self, vec)
-		end
+	if attack_type == "dogfight"
+			or (attack_type == "dogshoot" and dogswitch(self, dtime) == 2)
+			or (attack_type == "dogshoot" and dist <= self.reach) then
+		transition_substate(self, "chase")
+	elseif attack_type == "shoot"
+			or (attack_type == "dogshoot" and dogswitch(self, dtime) == 1)
+			or (attack_type == "dogshoot" and dist > self.reach) then
+		transition_substate(self, "shoot")
 	end
 end
 
@@ -3547,7 +3580,11 @@ local state_machine = {
 	},
 
 	attack = {
-		--main = do_attack_state,
+		enter = do_attack_enter,
+		exit = do_attack_exit,
+		main = do_attack_state,
+		chase = do_chase_attack,
+		shoot = do_shoot_attack,
 		continuous = true,
 	},
 
@@ -4320,9 +4357,9 @@ local function mob_step(self, dtime)
 		self.sound_timer = 0
 	end
 
-	-- This code forces state logic to only run once per second, as long as the
-	-- current state is NOT self.state == "attack". Thus, all other states execute
-	-- slower. This reduces load on the server.
+	-- This code forces state logic to only run once per second, unless the
+	-- current state is flagged to execute continuously. This reduces load on the
+	-- server.
 	local sm = state_machine
 	if not sm[self.state].continuous then
 		self.logic_timer = (self.logic_timer or 0) + dtime
@@ -4334,7 +4371,8 @@ local function mob_step(self, dtime)
 		dtime = 1
 	end
 
-	--general_attack(self)
+	-- For belligerent mobs, scan for victims to attack.
+	general_attack(self, dtime)
 
 	-- TODO: this has to be part of state logic, not global!
 	--breed(self)

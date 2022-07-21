@@ -1,9 +1,11 @@
 
 mobs.register_mob("griefer:griefer", {
 	description = "Black-Hearted Oerkki",
-	type = "monster",
+	type = "npc",
 	passive = false,
 	attack_type = "dogfight",
+	attack_animals = true,
+	attack_players = true,
 	pathfinding = 1,
 	pathing_radius = 16,
 	reach = 2,

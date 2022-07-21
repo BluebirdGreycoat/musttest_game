@@ -2,24 +2,26 @@
 -- File rewritten to be live-reloadable August 14, 2018 by MustTest.
 -- `mobs.registered' is checked throughout file, but only set `true' @ END!
 
--- localize functions
+-- Localize functions.
 local pi = math.pi
 local square = math.sqrt
 local sin = math.sin
 local cos = math.cos
+local atan2 = math.atan2
 local abs = math.abs
 local min = math.min
 local max = math.max
 local ceil = math.ceil
-local atan2 = math.atan2
-local random = math.random
-local math_random = math.random
 local floor = math.floor
+local random = math.random
 local v_round = vector.round
 local v_equals = vector.equals
-local vector_distance = vector.distance
 local v_distance = vector.distance
+local v_add = vector.add
 
+
+
+-- For debug reports.
 local function report(self, msg)
 	if self.name ~= mobs.report_name then
 		return
@@ -32,6 +34,8 @@ local function report(self, msg)
 	end
 end
 
+
+
 -- Function to tell mob which direction to turn to face target.
 -- Add pi to the returned yaw to face in the opposite direction.
 -- Fixed to use atan2 correctly by MustTest.
@@ -43,6 +47,8 @@ local function yaw_to_pos(self, target, pos)
 	yaw = yaw - (pi / 2)
 	return yaw
 end
+
+
 
 -- Load settings.
 local damage_enabled =  true --minetest.setting_getbool("enable_damage")
@@ -57,8 +63,9 @@ local difficulty =      tonumber(minetest.setting_get("mob_difficulty")) or 1.0
 local show_health =     minetest.settings:get_bool("mob_show_health") ~= false
 local max_per_block =   tonumber(minetest.settings:get("max_objects_per_block") or 99)
 local mob_chance_multiplier = tonumber(minetest.settings:get("mob_chance_multiplier") or 1)
-
 local default_knockback = 1
+
+
 
 -- Used by spawner function.
 mobs.spawn_protected = spawn_protected
@@ -352,12 +359,12 @@ local function mob_killed_player(self, player)
 
 	local pname = player:get_player_name()
 	local mname = utility.get_short_desc(self.description or "mob")
-	local adv = kill_adv[math_random(1, #kill_adv)]
+	local adv = kill_adv[random(1, #kill_adv)]
 	if adv ~= "" then
 		adv = adv .. " "
 	end
-	local adj = kill_adj[math_random(1, #kill_adj)]
-	local ang = kill_ang[math_random(1, #kill_ang)]
+	local adj = kill_adj[random(1, #kill_adj)]
+	local ang = kill_ang[random(1, #kill_ang)]
 	if ang ~= "" then
 		ang = ang .. " "
 	end
@@ -449,7 +456,7 @@ local function player_killed_mob(self, player)
 
 	local mname = utility.get_short_desc(self.description or "mob")
 
-	local msg = murder_messages[math_random(1, #murder_messages)]
+	local msg = murder_messages[random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", mname)
 
 	local ksex = skins.get_gender_strings(pname)
@@ -464,7 +471,7 @@ local function player_killed_mob(self, player)
 	msg = string.gsub(msg, "<v_he>", vsex.he)
 
 	if string.find(msg, "<brutally>") then
-		local adv = kill_adv[math_random(1, #kill_adv)]
+		local adv = kill_adv[random(1, #kill_adv)]
 		if adv ~= "" then
 			adv = adv .. " "
 		end
@@ -472,27 +479,27 @@ local function player_killed_mob(self, player)
 	end
 
 	if string.find(msg, "<slain>") then
-		local adj = kill_adj[math_random(1, #kill_adj)]
+		local adj = kill_adj[random(1, #kill_adj)]
 		msg = string.gsub(msg, "<slain>", adj)
 	end
 
 	if string.find(msg, "<slew>") then
-		local adj = kill_adj2[math_random(1, #kill_adj2)]
+		local adj = kill_adj2[random(1, #kill_adj2)]
 		msg = string.gsub(msg, "<slew>", adj)
 	end
 
 	if string.find(msg, "<slay>") then
-		local adj = kill_adj3[math_random(1, #kill_adj3)]
+		local adj = kill_adj3[random(1, #kill_adj3)]
 		msg = string.gsub(msg, "<slay>", adj)
 	end
 
 	if string.find(msg, "<pain>") then
-		local adj = pain_words[math_random(1, #pain_words)]
+		local adj = pain_words[random(1, #pain_words)]
 		msg = string.gsub(msg, "<pain>", adj)
 	end
 
 	if string.find(msg, "<angry>") then
-		local ang = kill_ang[math_random(1, #kill_ang)]
+		local ang = kill_ang[random(1, #kill_ang)]
 		if ang ~= "" then
 			ang = ang .. " "
 		end
@@ -502,7 +509,7 @@ local function player_killed_mob(self, player)
 	if string.find(msg, "<an_angry_k>") then
 		local replace = ""
 
-		local angry = kill_ang[math_random(1, #kill_ang)]
+		local angry = kill_ang[random(1, #kill_ang)]
 		if angry ~= "" then
 			local an = "a"
 
@@ -568,7 +575,7 @@ local function player_killed_mob(self, player)
 	minetest.chat_send_all("# Server: " .. msg)
 
 	message_spam_avoidance[pname] = {}
-	minetest.after(math_random(10, 60*2), function()
+	minetest.after(random(10, 60*2), function()
 		message_spam_avoidance[pname] = nil
 	end)
 end
@@ -620,8 +627,8 @@ end
 
 
 local function get_velocity(self)
-	local v = self.object:getvelocity()
-	return (v.x * v.x + v.z * v.z) ^ 0.5
+	local v = self.object:get_velocity()
+	return ((v.x * v.x) + (v.z * v.z)) ^ 0.5
 end
 
 
@@ -756,7 +763,7 @@ local function line_of_sight(self, pos1, pos2, stepsize)
 		or ndef.drawtype == "nodebox"
 		or ndef.drawtype:find("glasslike")) do
 
-		npos1 = vector.add(npos1, stepv)
+		npos1 = v_add(npos1, stepv)
 
 		if get_distance(npos1, pos2) < stepsize then return true end
 
@@ -1135,46 +1142,111 @@ end
 
 
 
--- Is mob facing a cliff.
-local function is_at_cliff(self)
-	if self.driver or self.fear_height == 0 then -- 0 for no falling protection!
-		return false
+-- This function computes the rounded position of the node in front of the mob.
+local function get_ahead_pos(self)
+	local s = self.object:get_pos()
+	s.y = s.y + self.collisionbox[2] + 0.5
+	local dir = self.object:get_yaw() + (pi / 2)
+	local fac = 1.2 -- Adjustment factor to improve accuracy.
+	local p = {
+		x = s.x + (cos(dir) * fac),
+		y = s.y,
+		z = s.z + (sin(dir) * fac),
+	}
+
+	-- Keep this particle code for debugging purposes [MustTest].
+	--[[
+	-- Spawn particle at actual computed position without rounding.
+	local pname = "singleplayer"
+	if not minetest.is_singleplayer() then
+		pname = gdac.name_of_admin
 	end
 
-	-- get yaw but if nil returned object no longer exists
-	local yaw = self.object:get_yaw()
+	utility.original_add_particle({
+		playername = pname,
+		pos = p,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 0.5,
+		size = 1,
+		collisiondetection = false,
+		vertical = false,
+		texture = "bubble.png",
+	})
+	--]]
 
-	if not yaw then return false end
+	p = v_round(p)
 
-	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
-	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
-	local pos = self.object:get_pos()
-	local ypos = pos.y + self.collisionbox[2] -- just above floor
+	--[[
+	-- Spawn particle at rounded node position.
+	utility.original_add_particle({
+		playername = pname,
+		pos = p,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 0.5,
+		size = 4,
+		collisiondetection = false,
+		vertical = false,
+		texture = "bubble.png",
+	})
+	--]]
+
+	return p
+end
+
+
+
+-- Is mob facing a wall or a pit/cliff.
+local function facing_wall_or_pit(self)
+	if self.driver then
+		return false, "driver"
+	end
+
+	local ahead = get_ahead_pos(self)
 
 	local free_fall, blocker = minetest.line_of_sight(
-		{x = pos.x + dir_x, y = ypos, z = pos.z + dir_z},
-		{x = pos.x + dir_x, y = ypos - self.fear_height, z = pos.z + dir_z})
+		v_add(ahead, {x=0, y=1, z=0}),
+		v_add(ahead, {x=0, y=-self.fear_height, z=0}))
 
-	-- check for straight drop
+	-- Check for straight drop.
 	if free_fall then
-		return true
+		if not self.fear_height or self.fear_height == 0 then
+			return false, "nofear"
+		end
+
+		return true, "pit"
 	end
 
 	local bnode = node_ok(blocker)
 
-	-- will we drop onto dangerous node?
+	-- Will we drop onto dangerous node?
 	if is_node_dangerous(self, bnode.name) then
-		return true
+		return true, "danger"
 	end
 
-	local def = minetest.registered_nodes[bnode.name]
-
-	-- is node not defined?
-	if not def then
-		return true
+	-- Is mob facing a 2-node high structure?
+	if blocker.y > ahead.y then
+		return true, "wall"
 	end
 
-	return (not def.walkable)
+	local ndef = minetest.registered_nodes[bnode.name]
+
+	-- Is node not defined? Regard undefined nodes as blocker/cliff.
+	if not ndef then return true, "undef" end
+
+	if ndef.walkable then
+		return false, "surface"
+	else
+		-- Check what's below the blocker.
+		local unod = node_ok(v_add(blocker, {x=0, y=-1, z=0})).name
+		local bdef = minetest.registered_nodes[unod]
+		if not bdef.walkable then
+			return true, "pit"
+		else
+			return false, "surface"
+		end
+	end
 end
 
 
@@ -1463,7 +1535,7 @@ local function punch_target(self, dtime)
 		local damage = self.damage or 0
 		if self.damage_min and self.damage_max then
 			if self.damage_min > damage and self.damage_max >= self.damage_min then
-				damage = math_random(self.damage_min, self.damage_max)
+				damage = random(self.damage_min, self.damage_max)
 			end
 		end
 
@@ -1538,9 +1610,9 @@ local function try_break_block(self, s)
 
 	for _, item in pairs(drops) do
 		local p = {
-			x = s.x + math_random()/2 - 0.25,
-			y = s.y + math_random()/2 - 0.25,
-			z = s.z + math_random()/2 - 0.25,
+			x = s.x + random()/2 - 0.25,
+			y = s.y + random()/2 - 0.25,
+			z = s.z + random()/2 - 0.25,
 		}
 		minetest.add_item(p, item)
 	end
@@ -1550,140 +1622,75 @@ end
 
 
 
--- jump if facing a solid node (not fences or gates)
-local function do_jump(self, break_blocks)
-
-	if not self.jump
-			or self.jump_height == 0
-			or self.fly
-			or self.child
-			or self.order == "stand" then
-		return false
+-- Jump if facing a solid node while moving forward (not fences or gates).
+-- This function returns true if mob jumped; otherwise 'false' + "reason".
+-- Notice: this func DOES NOT rotate the mob under any circumstances.
+local function try_jump(self, dtime)
+	-- Abort if mob does not have the ability to jump.
+	if not self.jump or self.jump_height == 0 or self.fly then
+		return false, "disabled"
 	end
 
-	self.facing_fence = false
+	-- Limit jump attempts to once per second.
+	self.jump_timer = (self.jump_timer or 0) - dtime
+	if self.jump_timer > 0 then
+		return false, "jumping"
+	end
+	self.jump_timer = 0
 
-	-- something stopping us while moving?
-	if self.state ~= "stand"
-			and get_velocity(self) > 0.5
-			and self.object:get_velocity().y ~= 0 then
-		return false
+	-- Something stopping us while moving?
+	if get_velocity(self) > 0.5 and self.object:get_velocity().y ~= 0 then
+		return false, "moving"
 	end
 
-	local pos = self.object:get_pos()
-	local yaw = self.object:get_yaw()
-
-	-- we can only jump if standing on solid node
-	if minetest.registered_nodes[self.standing_on].walkable == false then
-		return false
+	-- We can only jump if standing on solid node.
+	if not minetest.registered_nodes[self.standing_on].walkable then
+		return false, "unwalkable"
 	end
 
-	-- where is front
-	local dir_x = -sin(yaw) * (self.collisionbox[4] + 0.5)
-	local dir_z = cos(yaw) * (self.collisionbox[4] + 0.5)
+	-- What is in front of the mob?
+	local nodebot = self.facing_node
+	local nodetop = node_ok(v_add(self.facing_pos, {x=0, y=1, z=0}))
 
-	-- set y_pos to base of mob
-	pos.y = pos.y + self.collisionbox[2]
-
-	-- what is in front of mob?
-	local nod = node_ok({
-		x = pos.x + dir_x,
-		y = pos.y + 0.5,
-		z = pos.z + dir_z
-	})
-
-	-- what is above and in front?
-	local nodt = node_ok({
-		x = pos.x + dir_x, y = pos.y + 1.5, z = pos.z + dir_z
-	})
-
-	local blocked = minetest.registered_nodes[nodt.name].walkable
-
-	-- are we facing a fence or wall
-	if nod.name:find("fence") or nod.name:find("gate") or nod.name:find("wall") then
-		self.facing_fence = true
+	-- Is the mob facing a fence?
+	if self.facing_fence then
+		return false, "fence"
 	end
---[[
-print("on: " .. self.standing_on
-	.. ", front: " .. nod.name
-	.. ", front above: " .. nodt.name
-	.. ", blocked: " .. (blocked and "yes" or "no")
-	.. ", fence: " .. (self.facing_fence and "yes" or "no")
-)
-]]
 
-	if (self.walk_chance == 0 or minetest.registered_items[nod.name].walkable)
-			and not blocked and not self.facing_fence and nod.name ~= node_snow then
+	-- Is the node in front of the mob's head (assuming 2 node high mob) walkable?
+	local blocked = minetest.registered_nodes[nodetop.name].walkable
+	if self.blocked then
+		return false, "blocked"
+	end
 
-		if break_blocks then
-			-- What is above mob's head [MustTest]?
-			local pa = {x = pos.x, y = pos.y + 2.5, z = pos.z}
-			local noda = node_ok(pa)
+	-- Is the node ahead walkable? Something else is probably blocking us.
+	if not minetest.registered_nodes[nodebot].walkable then
+		return false, "walkable"
+	end
 
-			-- Is mob prevented from jumping upward [MustTest]?
-			if minetest.registered_nodes[noda.name].walkable then
-				if try_break_block(self, pa) then
-					self.path.putnode_timer = 1
-				end
-			end
+	local v = self.object:get_velocity()
+	v.y = self.jump_height
+	self.object:set_velocity(v)
 
-			-- What is above and in front of mob's head [MustTest]?
-			local pa = {x = pos.x + dir_x, y = pos.y + 2.5, z = pos.z + dir_z}
-			local noda = node_ok(pa)
+	set_animation(self, "jump")
 
-			-- Is mob prevented from jumping upward [MustTest]?
-			if minetest.registered_nodes[noda.name].walkable then
-				if try_break_block(self, pa) then
-					self.path.putnode_timer = 1
-				end
-			end
+	-- When in air move forward.
+	minetest.after(0.3, function(self, v)
+		if self.object:get_luaentity() then
+			self.object:set_acceleration({
+				x = v.x * 2,
+				y = 0,
+				z = v.z * 2,
+			})
 		end
+	end, self, v)
 
-		local v = self.object:get_velocity()
-
-		v.y = self.jump_height
-
-		set_animation(self, "jump") -- only when defined
-
-		self.object:set_velocity(v)
-
-		-- when in air move forward
-		minetest.after(0.3, function(self, v)
-			if self.object:get_luaentity() then
-				self.object:set_acceleration({
-					x = v.x * 2,--1.5,
-					y = 0,
-					z = v.z * 2,--1.5
-				})
-			end
-		end, self, v)
-
-		if get_velocity(self) > 0 then
-			mob_sound(self, self.sounds.jump)
-		end
-
-		self.jump_count = 0
-
-		return true
+	if get_velocity(self) > 0 then
+		mob_sound(self, self.sounds.jump)
 	end
 
-	-- if blocked for 3 counts then turn
-	if not self.following and (self.facing_fence or blocked) then
-
-		self.jump_count = (self.jump_count or 0) + 1
-
-		if self.jump_count > 2 then
-
-			local yaw = self.object:get_yaw() or 0
-			local turn = random(0, 2) + 1.35
-
-			yaw = set_yaw(self, yaw + turn, 12)
-
-			self.jump_count = 0
-		end
-	end
-
-	return false
+	self.jump_timer = 1
+	return true
 end
 
 
@@ -1749,7 +1756,7 @@ local function avoid_env_damage(self, yaw, dtime)
 
 		-- Select position of random block to climb onto.
 		if #targets > 0 then
-			self.avoid.target = targets[math_random(1, #targets)]
+			self.avoid.target = targets[random(1, #targets)]
 			self.avoid.timer = 3
 		end
 	end
@@ -1757,7 +1764,7 @@ local function avoid_env_damage(self, yaw, dtime)
 	-- Do we have a safe position?
 	if self.avoid.target then
 		if (self.pathfinding or 0) >= 1 then
-			self.path.target = vector.add(self.avoid.target, {x=0, y=1, z=0})
+			self.path.target = v_add(self.avoid.target, {x=0, y=1, z=0})
 			self.path.dangerous_paths = true
 			transition_state(self, "pathfind")
 		else
@@ -2121,22 +2128,7 @@ end
 
 
 
-local function get_ahead_pos(self)
-	local s = self.object:get_pos()
-	s.y = s.y + self.collisionbox[2] + 0.5
-	local dir = self.object:get_yaw() + (pi / 2)
-	local p = {
-		x = s.x + cos(yaw),
-		y = s.y,
-		z = s.z + sin(yaw),
-	}
-	p = v_round(p)
-	return p
-end
-
-
-
--- Shall return 'true' if blockage was fully removed [MustTest].
+-- Shall return true if blockage was fully removed [MustTest].
 local function try_dig_doorway(self, s)
 	local s = table.copy(s)
 	s.y = s.y + self.collisionbox[2] + 0.5
@@ -2490,10 +2482,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 			mob_sound(self, self.sounds.random)
 		end
 	elseif s.y < p1.y and (not self.fly) then
-		-- Note: self.path.way is valid if we get here [MustTest].
-		-- Allow jump routine to break blocks [MustTest].
-		local break_blocks = (self.pathfinding or 0) >= 2
-		do_jump(self, break_blocks) -- Add jump to pathfinding.
+		try_jump(self, dtime) -- Add jump to pathfinding.
 
 		-- follow path now that it has it.
 		self.path.following = true
@@ -2586,7 +2575,7 @@ local function general_attack(self)
 			if objs[n] and player_labels.query_nametag_onoff(pname) == false then
 				local r = self.view_range * 0.8
 				local p = objs[n]:get_pos()
-				if vector_distance(p, s) > r then
+				if v_distance(p, s) > r then
 					objs[n] = nil
 				end
 			end
@@ -2932,21 +2921,24 @@ local function do_stand_state(self, dtime)
 		return
 	end
 
-	-- Look at any players nearby, otherwise turn randomly.
+	-- NPCs look at any players nearby, otherwise turn randomly.
 	if random(1, 4) == 1 then
 		local lp = nil
-		local objs = minetest.get_objects_inside_radius(s, 10)
 
-		for n = 1, #objs, 1 do
-			if objs[n]:is_player() then
-				lp = objs[n]:get_pos()
-				break
+		if self.type == "npc" then
+			local objs = minetest.get_objects_inside_radius(s, 10)
+
+			for n = 1, #objs, 1 do
+				if objs[n]:is_player() then
+					lp = objs[n]:get_pos()
+					break
+				end
 			end
-		end
 
-		-- Small chance that player gets ignored.
-		if random(1, 4) == 1 then
-			lp = nil
+			-- Small chance that player gets ignored.
+			if random(1, 4) == 1 then
+				lp = nil
+			end
 		end
 
 		local yaw = self.object:get_yaw()
@@ -2966,22 +2958,29 @@ local function do_stand_state(self, dtime)
 	-- Mobs ordered to stand stay standing.
 	if self.order == "stand" then return end
 
-	if self.walk_chance ~= 0
-			and self.facing_fence ~= true
-			and random(1, 100) <= self.walk_chance
-			and is_at_cliff(self) == false then
+	-- Am I facing something dangerous?
+	local result, reason = facing_wall_or_pit(self)
+	if result then return end
 
-		transition_state(self, "walk")
-
-		--[[ fly up/down randomly for flying mobs
-		if self.fly and random(1, 100) <= self.walk_chance then
-
-			local v = self.object:get_velocity()
-			local ud = random(-1, 2) / 9
-
-			self.object:set_velocity({x = v.x, y = ud, z = v.z})
-		end--]]
+	-- Animals are restricted by fences.
+	if self.type == "animal" and self.facing_fence then
+		return
 	end
+
+	if random(1, 100) > (self.walk_chance or 0) then
+		return
+	end
+
+	transition_state(self, "walk")
+
+	--[[ fly up/down randomly for flying mobs
+	if self.fly and random(1, 100) <= self.walk_chance then
+
+		local v = self.object:get_velocity()
+		local ud = random(-1, 2) / 9
+
+		self.object:set_velocity({x = v.x, y = ud, z = v.z})
+	end--]]
 end
 
 
@@ -2995,49 +2994,75 @@ end
 
 -- State self.state == "walk" moved to its own function [MustTest].
 local function do_walk_state(self, dtime)
-	local yaw = self.object:get_yaw()
+	-- Avoid dangerous nodes.
+	if is_node_dangerous(self, self.standing_in) then
+		transition_state(self, "avoid")
+		return
+	end
+
+	-- Am I facing something dangerous?
+	local result, reason = facing_wall_or_pit(self)
+	if result then
+		transition_state(self, "stand")
+		return
+	end
+
+	if self.type == "animal" and self.facing_fence then
+		transition_state(self, "stand")
+		return
+	end
+
+	-- Chance to stop walking.
+	if random(1, 100) <= 30 then
+		transition_state(self, "stand")
+		return
+	end
 
 	-- Randomly turn.
 	if random(1, 100) <= 30 then
+		local yaw = self.object:get_yaw()
 		yaw = yaw + random(-0.5, 0.5)
 		set_yaw(self, yaw, 8)
 	end
 
-	-- Stand for great fall in front.
-	local at_cliff = is_at_cliff(self)
+	set_velocity(self, self.walk_velocity or 0)
 
-	if self.facing_fence == true or at_cliff or random(1, 100) <= 30 then
-		transition_state(self, "stand")
+	if flight_check(self)
+			and self.animation
+			and self.animation.fly_start
+			and self.animation.fly_end then
+		set_animation(self, "fly")
 	else
-		set_velocity(self, self.walk_velocity or 0)
-
-		if flight_check(self)
-				and self.animation
-				and self.animation.fly_start
-				and self.animation.fly_end then
-			set_animation(self, "fly")
-		else
-			set_animation(self, "walk")
-		end
+		set_animation(self, "walk")
 	end
 end
 
 
 
--- Runaway (self.state == "runaway") moved to its own function [MustTest].
-local function do_runaway_state(self, dtime)
-	self.runaway_timer = (self.runaway_timer or 0) + dtime
+local function do_runaway_enter(self)
+	self.runaway_timer = 5
+end
 
-	-- Stop after 5 seconds or when at cliff.
-	if self.runaway_timer > 5 or is_at_cliff(self) then
-		self.runaway_timer = 0
-		set_velocity(self, 0)
-		set_animation(self, "stand")
+
+
+-- Runaway (self.state == "runaway") moved to its own function [MustTest].
+-- Note: this function executes once per frame ('continuous is true').
+local function do_runaway_state(self, dtime)
+	self.runaway_timer = (self.runaway_timer or 0) - dtime
+	if self.runaway_timer <= 0 then
 		transition_state(self, "stand")
-	else
-		set_velocity(self, self.sprint_velocity or 0)
-		set_animation(self, "walk")
+		return
 	end
+
+	-- Stop fleeing if heading into obstacle.
+	local result, reason = facing_wall_or_pit(self)
+	if result then
+		transition_state(self, "stand")
+		return
+	end
+
+	set_velocity(self, self.sprint_velocity or 0)
+	set_animation(self, "run")
 end
 
 
@@ -3200,10 +3225,10 @@ local function do_attack_state(self, dtime)
 
 			self.reach_ext = 0 -- extended ready off by default
 
-			-- Note: the 'is_at_cliff' function also checks for dangerous nodes.
+			-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
 			-- But some dangerous nodes are non-walkable, which means the pathfinder
 			-- would path through them.
-			if (is_at_cliff(self) or pad < 0.2) then
+			if (facing_wall_or_pit(self) or pad < 0.2) then
 				-- when on top of player extend reach slightly so player can
 				-- still be attacked.
 				self.reach_ext = 0.8
@@ -3333,6 +3358,18 @@ local function update_foot_nodes(self, pos, dtime)
 		-- What is mob standing on?
 		self.standing_on = node_ok({
 			x = pos.x, y = ((pos.y + y_level) - 0.5), z = pos.z}, "air").name
+
+		-- What is mob facing?
+		self.facing_pos = get_ahead_pos(self)
+		self.facing_node = node_ok(self.facing_pos, "air").name
+
+		-- Are we facing a fence or wall.
+		local fn = self.facing_node
+		if fn:find("fence") or fn:find("gate") or fn:find("wall") then
+			self.facing_fence = true
+		else
+			self.facing_fence = false
+		end
 	end
 end
 
@@ -3426,11 +3463,11 @@ local function do_pathfind_state(self, dtime)
 		on_target = true
 	end
 
-	-- Note: the 'is_at_cliff' function also checks for dangerous nodes.
+	-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
 	-- But some dangerous nodes are non-walkable, which means the pathfinder
 	-- would path through them.
 	if not self.path.dangerous_paths then
-		if is_at_cliff(self) then
+		if facing_wall_or_pit(self) then
 			transition_state(self, "stand")
 			return
 		end
@@ -3456,6 +3493,8 @@ local function do_pathfind_state(self, dtime)
 	else
 		set_animation(self, "stand")
 	end
+
+	try_jump(self, dtime)
 
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
 	if self.path.stuck_timer > stuck_timeout then
@@ -3502,7 +3541,9 @@ local state_machine = {
 	},
 
 	runaway = {
-		--main = do_runaway_state,
+		enter = do_runaway_enter,
+		main = do_runaway_state,
+		continuous = true,
 	},
 
 	attack = {
@@ -3869,7 +3910,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		end
 	end -- END if damage
 
-	-- if skittish then run away
+	-- If skittish then run away.
 	if self.runaway == true then
 
 		local lp = hitter:get_pos()
@@ -3880,8 +3921,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		yaw = set_yaw(self, yaw, 6)
 
 		transition_state(self, "runaway")
-		self.runaway_timer = 0
-		self.following = nil
+		return
 	end
 
 	local name = (hitter:is_player() and hitter:get_player_name()) or ""
@@ -4118,7 +4158,7 @@ local function mob_activate(self, staticdata, def, dtime)
 	if self.pathfinding and self.pathfinding ~= 0 then
 		-- If pathfinding is enabled, by default chance is 100%.
 		local chance = self.pathfinding_chance or 100
-		local res = math_random(1, 100)
+		local res = random(1, 100)
 
 		if res > chance then
 			self.pathfinding = 0
@@ -4303,16 +4343,6 @@ local function mob_step(self, dtime)
 	--follow_flop(self)
 
 	do_states(self, dtime)
-
-	-- TODO: this has to be part of state logic, not global!
-	-- Allow jump routine to break blocks [MustTest].
-	--[[
-	local break_blocks = false
-	if self.path.following and (self.pathfinding or 0) >= 2 then
-		break_blocks = true
-	end
-	do_jump(self, break_blocks)
-	--]]
 
 	-- TODO: this has to be part of state logic, not global!
 	--runaway_from(self)

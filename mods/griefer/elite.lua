@@ -1,9 +1,10 @@
 
 mobs.register_mob("griefer:elite_griefer", {
 	description = "Elite Oerkki",
-	type = "monster",
+	type = "npc",
 	passive = false,
 	attack_animals = true,
+	attack_players = true,
 	attack_type = "dogfight",
 	pathfinding = 2,
 	pathing_radius = 20,

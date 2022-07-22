@@ -1467,19 +1467,16 @@ end
 
 -- Target punching code extracted into its own function [MustTest].
 local function punch_target(self, dtime)
-	if not self.attack then
-		return
-	end
+	if not self.attack then return end
+	if not self.attack:get_yaw() then return end
 
 	-- The mob may punch once per second.
 	self.punch_timer = (self.punch_timer or 0) + dtime
-	if self.punch_timer < 1 then
-		return
-	end
+	if self.punch_timer < 1 then return end
 	self.punch_timer = 0
 
 	local s2 = self.object:get_pos()
-	local p2 = self.attack:get_pos() or s2
+	local p2 = self.attack:get_pos()
 
 	p2.y = p2.y + 0.5
 	s2.y = s2.y + 0.5
@@ -1554,7 +1551,7 @@ local function punch_target(self, dtime)
 	-- Tell everyone about the death [MustTest].
 	if self.attack:is_player() and self.attack:get_hp() <= 0 then
 		mob_killed_player(self, self.attack)
-		self.attack = nil -- stop attacking
+		self.attack = nil
 	end
 end
 
@@ -2173,6 +2170,7 @@ end
 -- path finding and smart mob routine by rnd,
 -- line_of_sight and other edits by Elkien3,
 -- updated for Enyekala server by MustTest.
+-- NOTICE: DEPRECIATED.
 local function smart_mobs(self, s, p, dist, dtime)
 
 	-- Timer is required to prevent mob from spamming blocks [MustTest].
@@ -2261,7 +2259,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 				local tar = self.path.way[1]
 				if v_distance(tar, s) <= 1.5 then
 					-- Continue following existing path.
-					--report("following existing path")
 					self.path.following = true
 					self.stuck_path_timeout = (#self.path.way * 0.75)
 					self.path.stuck_timer = 0
@@ -2509,10 +2506,10 @@ end
 
 
 
--- specific attacks
+-- Specific attack.
 local function specific_attack(list, what)
 
-	-- no list so attack default (player, animals etc.)
+	-- No list so attack default (player, animals etc.)
 	if list == nil then
 		return true
 	end
@@ -2530,6 +2527,131 @@ end
 
 
 
+-- Select nearest target entity from an array of entities.
+local function select_nearest_entity(self, list)
+	local s = self.object:get_pos()
+	s.y = s.y + 1 -- Make easier to look up hills.
+
+	local closest_target
+	local current_distance = self.view_range + 1
+
+	-- Go through entities and select closest.
+	local size = #list -- Cache array length.
+	for n = 1, size, 1 do
+		local target = list[n]
+
+		local p = target:get_pos()
+		p.y = p.y + 1 -- Make easier to look up hills.
+
+		local dist = get_distance(p, s)
+
+		-- Choose closest target that is not self.
+		if dist > 0 then
+			if dist < current_distance and line_of_sight(self, s, p, 0.5) then
+				current_distance = dist
+				closest_target = target
+			end
+		end
+	end
+
+	return closest_target
+end
+
+
+
+-- Specific runaway.
+local function specific_runaway(list, what)
+	-- No list.
+	if not list then return end
+
+	-- Found entity on list to run away from?
+	for no = 1, #list, 1 do
+		if list[no] == what then
+			return true
+		end
+	end
+end
+
+
+
+-- Get list of targets in area that should be run away from.
+local function get_avoidable_targets(self)
+	local s = self.object:get_pos()
+	local objs = minetest.get_objects_inside_radius(s, self.view_range)
+
+	for n = 1, #objs, 1 do
+		local ent = objs[n]:get_luaentity()
+
+		-- Are we a player?
+		if objs[n]:is_player() then
+			local pname = objs[n]:get_player_name()
+
+			-- If player invisible them mob does not run away from them.
+			if mobs.is_invisible(self, pname) then
+				objs[n] = nil
+				goto continue
+			end
+
+			-- Ignore dead players.
+			if objs[n]:get_hp() <= 0 then
+				objs[n] = nil
+				goto continue
+			end
+
+			-- If player nametag is off, reduce range at which mob can see them.
+			if objs[n] and player_labels.query_nametag_onoff(pname) == false then
+				local r = self.view_range * 0.8
+				local p = objs[n]:get_pos()
+				if v_distance(p, s) > r then
+					objs[n] = nil
+					goto continue
+				end
+			end
+
+			-- Don't run from players with the 'mob_respect' priv.
+			if minetest.check_player_privs(pname, {mob_respect=true}) then
+				objs[n] = nil
+				goto continue
+			end
+
+		-- Or are we a mob?
+		elseif ent and ent._cmi_is_mob then
+
+			-- Don't run away from mobs of our own type, or unknown type.
+			if ent.name == "" or self.name == ent.name then
+				objs[n] = nil
+				goto continue
+			end
+
+			-- Ignore mobs we don't care about.
+			if not specific_runaway(self.runaway_from, ent.name) then
+				objs[n] = nil
+				goto continue
+			end
+
+		-- Remove all other entities.
+		else
+			objs[n] = nil
+			goto continue
+		end
+
+		::continue::
+	end
+
+	-- Compact targets into an array.
+	local targets = {}
+	local index = 1
+
+	for k, v in pairs(objs) do
+		targets[index] = v
+		index = index + 1
+	end
+
+	return targets
+end
+
+
+
 -- Get list of targets in area that can be attacked.
 local function get_attackable_targets(self)
 	local s = self.object:get_pos()
@@ -2543,14 +2665,30 @@ local function get_attackable_targets(self)
 		if objs[n]:is_player() then
 			local pname = objs[n]:get_player_name()
 
-			-- If player invisible or mob not setup to attack then remove from list
-			if not self.attack_players
-					or (self.owner and self.type ~= "monster")
-					or mobs.is_invisible(self, pname)
+			-- If mob does not attack players.
+			if not self.attack_players then
+				objs[n] = nil
+				goto continue
+			end
+
+			-- If player is invisible (some mobs can ignore invisibility).
+			if mobs.is_invisible(self, pname) then
+				objs[n] = nil
+				goto continue
+			end
+
+			if self.owner and self.type ~= "monster" then
+				objs[n] = nil
+				goto continue
+			end
+
+			--[[
+					or
 					or not specific_attack(self.specific_attack, "player") then
 				objs[n] = nil
 				goto continue
 			end
+			--]]
 
 			-- Ignore dead players.
 			if objs[n]:get_hp() <= 0 then
@@ -2559,7 +2697,7 @@ local function get_attackable_targets(self)
 			end
 
 			-- If player nametag is off, reduce range at which mob can see them.
-			if objs[n] and player_labels.query_nametag_onoff(pname) == false then
+			if player_labels.query_nametag_onoff(pname) == false then
 				local r = self.view_range * 0.8
 				local p = objs[n]:get_pos()
 				if v_distance(p, s) > r then
@@ -2612,154 +2750,57 @@ end
 
 -- General attack function for all mobs. Scan for targets and attack them.
 -- This function (usually) only executes once per second (per mob) [MustTest].
-local function general_attack(self, dtime)
+local function general_attack(self)
 	-- Skip because mob is passive.
 	if self.passive then return end
 
-	-- Skip because already attacking something.
+	-- Skip because already attacking something, or running away.
 	if self.state == "attack" then return end
+	if self.state == "runaway" then return end
 
 	-- Skip if mob is docile during day.
 	if day_docile(self) then return end
 
 	-- Get array list of targets to attack.
 	local objs = get_attackable_targets(self)
-
-	local s = self.object:get_pos()
-	s.y = s.y + 1 -- Make easier to look up hills.
-
-	local min_player
-	local min_dist = self.view_range + 1
-
-	-- Go through remaining entities and select closest.
-	for _, target in ipairs(objs) do
-
-		local p = target:get_pos()
-		p.y = p.y + 1 -- Make easier to look up hills.
-
-		local dist = get_distance(p, s)
-
-		-- Choose closest target to attack that is not self.
-		if dist > 0 then
-			if dist < min_dist and line_of_sight(self, s, p, 0.5) then
-				min_dist = dist
-				min_player = target
-			end
-		end
-	end
+	local target = select_nearest_entity(self, objs)
 
 	-- Attack closest target.
-	if min_player and random(1, 100) < (self.attack_chance or 95) then
-		do_attack(self, min_player)
+	if target and random(1, 100) < (self.attack_chance or 95) then
+		do_attack(self, target)
 		return
 	end
 
 	-- Hunt random nearby target. (Allows targets outside of LOS.)
-	if not min_player and random(1, 100) < (self.hunt_chance or 5) then
-		local target = objs[random(1, #objs)]
-		do_attack(self, target)
+	if not target and random(1, 100) < (self.hunt_chance or 5) then
+		local tarhunt = objs[random(1, #objs)]
+		do_attack(self, tarhunt)
 		return
 	end
 end
 
 
 
--- specific runaway
-local function specific_runaway(list, what)
-
-	-- no list so do not run
-	if list == nil then
-		return false
-	end
-
-	-- found entity on list to attack?
-	for no = 1, #list do
-
-		if list[no] == what then
-			return true
-		end
-	end
-
-	return false
-end
-
-
-
--- find someone to runaway from
+-- Find someone to runaway from.
 local function runaway_from(self)
-
-	if not self.runaway_from then
-		return
-	end
+	-- Abort if mob doesn't fear any particular enemies.
+	if not self.runaway_from then return end
 
 	-- If non-passive mob is attacking, then it will not run away right now.
-	if self.state == "attack" and not self.passive then
-		return
-	end
+	if self.state == "attack" and not self.passive then return end
 
-	local s = self.object:get_pos()
-	local p, sp, dist, pname
-	local player, obj, min_player, name
-	local min_dist = self.view_range + 1
-	local objs = minetest.get_objects_inside_radius(s, self.view_range)
+	-- Get array list of targets to run away from.
+	local objs = get_avoidable_targets(self)
+	local target = select_nearest_entity(self, objs)
 
-	for n = 1, #objs do
-		-- Ignore dead players.
-		if objs[n]:is_player() then
-			if objs[n]:get_hp() > 0 then
-				pname = objs[n]:get_player_name()
-				if mobs.is_invisible(self, pname) or self.owner == pname then
-					name = ""
-				else
-					player = objs[n]
-					name = "player"
-				end
-			end
-		else
-			obj = objs[n]:get_luaentity()
-
-			if obj then
-				-- Ignore entities which are not mobs.
-				if obj._cmi_is_mob then
-					player = obj.object
-					name = obj.name or ""
-				end
-			end
-		end
-
-		-- Find specific mob to runaway from.
-		if name ~= "" and name ~= self.name and
-				specific_runaway(self.runaway_from, name) then
-
-			p = player:get_pos()
-			sp = s
-
-			-- aim higher to make looking up hills more realistic
-			p.y = p.y + 1
-			sp.y = sp.y + 1
-
-			dist = get_distance(p, s)
-
-			-- choose closest player/mob to runaway from
-			if dist < min_dist
-					and line_of_sight(self, sp, p, 2) == true then
-				min_dist = dist
-				min_player = player
-			end
-		end
-	end
-
-	if min_player then
-
-		local lp = player:get_pos()
-
-		local yaw = yaw_to_pos(self, lp, s)
-		yaw = yaw + pi
-		yaw = set_yaw(self, yaw, 4)
+	if target then
+		local s = self.object:get_pos()
+		local p = target:get_pos()
+		local yaw = yaw_to_pos(self, p, s)
+		yaw = yaw + pi -- Face opposite.
+		set_yaw(self, yaw, 4)
 
 		transition_state(self, "runaway")
-		self.runaway_timer = 3
-		self.following = nil
 	end
 end
 
@@ -3065,8 +3106,16 @@ end
 local function do_runaway_state(self, dtime)
 	self.runaway_timer = (self.runaway_timer or 0) - dtime
 	if self.runaway_timer <= 0 then
-		transition_state(self, "stand")
-		return
+		-- Timer has expired. Should we keep running, or stop?
+		local objs = get_avoidable_targets(self)
+		local target = select_nearest_entity(self, objs)
+
+		if target then
+			self.runaway_timer = 5
+		else
+			transition_state(self, "stand")
+			return
+		end
 	end
 
 	-- Stop fleeing if heading into obstacle.
@@ -3099,6 +3148,12 @@ end
 local function do_caught_attack(self, dtime)
 	set_velocity(self, 0)
 
+	-- Target might not be valid anymore.
+	if not self.attack:get_yaw() then
+		transition_state(self, "stand")
+		return
+	end
+
 	if not self.custom_attack or self.custom_attack(self, p) == true then
 		set_animation(self, "punch")
 		punch_target(self, dtime)
@@ -3118,6 +3173,13 @@ end
 local function do_chase_attack(self, dtime)
 	local s = self.object:get_pos()
 	local p = self.attack:get_pos()
+
+	-- Target might not be valid anymore.
+	if not p then
+		transition_state(self, "stand")
+		return
+	end
+
 	local dist = get_distance(p, s)
 
 	if self.fly and dist > self.reach then
@@ -3207,6 +3269,12 @@ local function do_shoot_attack(self, dtime)
 	local s = self.object:get_pos()
 	local p = self.attack:get_pos()
 
+	-- Target might not be valid anymore.
+	if not p then
+		transition_state(self, "stand")
+		return
+	end
+
 	p.y = p.y - 0.5
 	s.y = s.y + 0.5
 
@@ -3263,7 +3331,10 @@ local function do_attack_state(self, dtime)
 	local p = self.attack:get_pos()
 
 	-- Abort if target entity does not exist.
-	if not p then return end
+	if not p then
+		transition_state(self, "stand")
+		return
+	end
 
 	local dist = get_distance(p, s)
 	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
@@ -3489,7 +3560,6 @@ local function do_pathfind_state(self, dtime)
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
 	if self.path.stuck_timer > stuck_timeout then
 		self.path.stuck_timer = 0
-		report(self, "path blocked")
 		set_velocity(self, 0)
 		set_animation(self, "stand")
 		transition_substate(self, "blocked")
@@ -3578,8 +3648,6 @@ local function do_states(self, dtime)
 		self.state = "stand"
 		self.substate = ""
 	end
-
-	--report(self, self.state)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine
@@ -4329,19 +4397,26 @@ local function mob_step(self, dtime)
 		dtime = 1
 	end
 
-	-- For belligerent mobs, scan for victims to attack.
-	general_attack(self, dtime)
+	-- Limit the general scanning functions to once per second.
+	self.scan_timer = (self.scan_timer or 0) + dtime
+	if self.scan_timer >= 1 then
+		self.scan_timer = 0
 
-	-- TODO: this has to be part of state logic, not global!
-	--breed(self)
+		-- For belligerent mobs, scan for victims to attack.
+		general_attack(self)
 
-	-- TODO: this has to be part of state logic, not global!
+		-- For skittish mobs, scan for things to run away from.
+		runaway_from(self)
+
+		-- Mob reproduction.
+		--breed(self)
+	end
+
+	-- TODO: This function mixes movement/physics behavior (flop) with logical
+	-- behavior (following a player who holds something). Fix this!
 	--follow_flop(self)
 
 	do_states(self, dtime)
-
-	-- TODO: this has to be part of state logic, not global!
-	--runaway_from(self)
 end
 
 

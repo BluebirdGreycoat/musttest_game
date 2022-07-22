@@ -1,3 +1,4 @@
+
 mobs.register_mob("animalworld:suboar", {
 	stepheight = 2,
 	type = "animal",
@@ -5,6 +6,11 @@ mobs.register_mob("animalworld:suboar", {
 	passive = false,
 	attack_type = "dogfight",
 	group_attack = true,
+
+	-- Mob should defend itself but does not attack first.
+	attack_players = false,
+	attack_npcs = false,
+
 	reach = 2,
 	damage = 8,
 	hp_min = 5,

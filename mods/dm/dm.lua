@@ -76,7 +76,15 @@ mobs.register_arrow("dm:fireball", {
 	end,
 
 	hit_mob = function(self, player)
-		player:punch(self.object, 1.0, {
+		local puncher
+
+		if self.owner_obj and self.owner_obj:get_pos() then
+			puncher = self.owner_obj
+		else
+			puncher = self.object
+		end
+
+		player:punch(puncher, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {fleshy = 8},
 		}, nil)

@@ -1262,6 +1262,21 @@ end
 
 
 
+-- This function is to be called by the pathfinder to determine if a waypoint
+-- would be dangerous for a mob to follow. Note that the pathfinder does not
+-- place waypoints over deep pits, cliffs, or walls, so we do not need to check
+-- for that kind of blockage. Note: pathfinder returns rounded positions.
+function waypoint_dangerous(self, waypoint)
+	local bnode = node_ok(waypoint)
+
+	-- Is waypoint inside a dangerous node?
+	if is_node_dangerous(self, bnode.name) then
+		return true
+	end
+end
+
+
+
 -- Global function.
 function mobs.node_ok(pos, fallback)
 	return node_ok(pos, fallback)
@@ -1438,26 +1453,30 @@ end
 
 -- Arrow shooting code extracted into its own function [MustTest].
 local function shoot_arrow(self, vec)
-	-- play shoot attack sound
+	-- Play shoot attack sound.
 	mob_sound(self, self.sounds.shoot_attack)
 
+	-- Spawn arrow comming from mid-height of mob.
 	local p = self.object:get_pos()
-
 	p.y = p.y + (self.collisionbox[2] + self.collisionbox[5]) / 2
 
 	if minetest.registered_entities[self.arrow] then
-
 		local obj = minetest.add_entity(p, self.arrow)
 		if not obj then return end -- Sanity check.
 
 		local ent = obj:get_luaentity()
+		if not ent then
+			obj:remove()
+			return
+		end -- Sanity check.
+
 		local amount = (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z) ^ 0.5
 		local v = ent.velocity or 1 -- or set to default
 
 		ent.switch = 1
-		ent.owner_id = tostring(self.object) -- add unique owner id to arrow
+		ent.owner_obj = self.object -- Add unique owner object ref to arrow.
 
-		-- offset makes shoot aim accurate
+		-- Offset makes shoot aim accurate.
 		vec.y = vec.y + self.shoot_offset
 		vec.x = vec.x * (v / amount)
 		vec.y = vec.y * (v / amount)
@@ -2686,18 +2705,10 @@ local function get_attackable_targets(self)
 				goto continue
 			end
 
-			--if self.owner and self.type ~= "monster" then
-			--	objs[n] = nil
-			--	goto continue
-			--end
-
-			--[[
-					or
-					or not specific_attack(self.specific_attack, "player") then
+			if not specific_attack(self.specific_attack, "player") then
 				objs[n] = nil
 				goto continue
 			end
-			--]]
 
 			-- Ignore dead players.
 			if objs[n]:get_hp() <= 0 then
@@ -2766,6 +2777,7 @@ local function general_attack(self)
 	-- Skip because already attacking something, or running away.
 	if self.state == "attack" then return end
 	if self.state == "runaway" then return end
+	if self.state == "pathfind" then return end
 
 	-- Skip if mob is docile during day.
 	if day_docile(self) then return end
@@ -3578,6 +3590,7 @@ local function do_pathfind_enter(self)
 	-- The pathfinder requires a target. I assume the target is a rounded vector.
 	-- It should be inside an air node, or non-walkable, and walkable node under.
 	if not self.path.target then
+		report(self, "no target")
 		transition_state(self, "stand")
 		return
 	end
@@ -3604,6 +3617,7 @@ local function do_pathfind_enter(self)
 	local path = minetest.find_path(start, target, radius, jh, dh, "A*")
 
 	if path then
+		report(self, "found path")
 		self.path.way = path
 		self.path.following = true
 		self.path.stuck_timer = 0
@@ -3619,7 +3633,9 @@ end
 -- In order to correctly follow a path, this function requires to be called once
 -- per frame. This property is specified in the state machine table.
 local function do_pathfind_state(self, dtime)
+	report(self, "in pathfind state")
 	if not self.path.following or not self.path.way then
+		report(self, "not following")
 		transition_state(self, "stand")
 		return
 	end
@@ -3629,6 +3645,7 @@ local function do_pathfind_state(self, dtime)
 	-- limit fairly high.
 	local max_len = (self.pathing_radius or 16) * 4
 	if #self.path.way > max_len then
+		report(self, "too long")
 		transition_state(self, "stand")
 		return
 	end
@@ -3636,9 +3653,13 @@ local function do_pathfind_state(self, dtime)
 	local wp = self.path.way[1]
 
 	if not wp then
+		report(self, "invalid path")
 		transition_state(self, "stand")
 		return
 	end
+
+	-- Debug path display.
+	highlight_path(self)
 
 	local s = self.object:get_pos()
 	self.path.stuck_timer = (self.path.stuck_timer or 0) + dtime
@@ -3651,6 +3672,7 @@ local function do_pathfind_state(self, dtime)
 
 		-- Are we done following the path?
 		if #self.path.way == 0 then
+			report(self, "done with path")
 			transition_state(self, "stand")
 			return
 		end
@@ -3666,38 +3688,49 @@ local function do_pathfind_state(self, dtime)
 	-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
 	-- But some dangerous nodes are non-walkable, which means the pathfinder
 	-- would path through them.
+	local path_careful = false
 	if not self.path.dangerous_paths then
 		if facing_wall_or_pit(self) then
+			--report(self, "facing danger")
+			--transition_state(self, "stand")
+			--return
+			path_careful = true
+		elseif waypoint_dangerous(self, wp) then
+			report(self, "dangerous waypoint")
 			transition_state(self, "stand")
 			return
 		end
 	end
 
-	-- Get the mob moving in the right direction.
+	-- Get the mob facing in the right direction.
 	local yaw = yaw_to_pos(self, wp, s)
 	set_yaw(self, yaw)
 
-	if on_target then
+	-- Start moving to next waypoint.
+	if on_target or path_careful then
+		-- Slow down so we don't overshoot or get into dangerous terrain.
 		set_velocity(self, 0.1)
 	else
 		set_velocity(self, self.run_velocity or 0)
 	end
 
 	-- Set correct animation.
-	if not on_target then
+	if not on_target and not path_careful then
 		if self.animation and self.animation.run_start then
 			set_animation(self, "run")
 		else
 			set_animation(self, "walk")
 		end
 	else
-		set_animation(self, "stand")
+		-- Slow.
+		set_animation(self, "walk", 5)
 	end
 
 	try_jump(self, dtime)
 
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
 	if self.path.stuck_timer > stuck_timeout then
+		report(self, "path stuck")
 		self.path.stuck_timer = 0
 		set_velocity(self, 0)
 		set_animation(self, "stand")
@@ -3787,6 +3820,8 @@ local function do_states(self, dtime)
 		self.state = "stand"
 		self.substate = ""
 	end
+
+	report(self, "current state: " .. self.state .. ", " .. self.substate)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine
@@ -3904,7 +3939,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		return
 	end
 
-
+	report(self, "punched")
 
 	-- weapon wear
 	local weapon = hitter:get_wielded_item()
@@ -3956,8 +3991,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		self.health = self.health - floor(damage)
 		return
 	end
-
---	print ("Mob Damage is", damage)
 
 	-- add weapon wear
 	if tool_capabilities then
@@ -4113,43 +4146,44 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		return
 	end
 
+	-- Ignore punches from self.
+	if self.object == hitter then return end
+
+	-- Ignore punches if mob is passive.
+	if self.passive then return end
+	if self.child then return end
+
+	-- Ignore punches from owner.
 	local name = (hitter:is_player() and hitter:get_player_name()) or ""
+	if name ~= "" and name == self.owner then
+		return
+	end
 
-	-- Attack puncher and call other mobs for help.
-	if not self.passive
-			and self.state ~= "flop"
-			and not self.child
-			and self.attack_players
-			and name ~= self.owner
-			and not mobs.is_invisible(self, name)
-			and self.object ~= hitter then
+	-- Note: mob can defend itself if punched by invisible players, so no
+	-- invisibility check here.
 
-		-- Attack whoever punched mob.
-		transition_state(self, "")
-		do_attack(self, hitter)
+	-- Attack whoever punched mob.
+	transition_state(self, "")
+	do_attack(self, hitter)
 
-		-- alert others to the attack
-		local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)
-		local obj = nil
+	-- Alert others to the attack.
+	local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)
 
-		for n = 1, #objs do
+	for n = 1, #objs, 1 do
+		local obj = objs[n]:get_luaentity()
 
-			obj = objs[n]:get_luaentity()
-
-			if obj and obj._cmi_is_mob then
-
-				-- only alert members of same mob
-				if obj.group_attack == true
-				and obj.state ~= "attack"
-				and obj.owner ~= name
-				and obj.name == self.name then
+		if obj and obj._cmi_is_mob then
+			-- Alert members of same mob if have 'group_attack'.
+			if obj.group_attack and obj.state ~= "attack" and obj.name == self.name then
+				-- But owned mobs will not attack their owners.
+				if not obj.owner or (obj.owner ~= "" and obj.owner ~= name) then
 					do_attack(obj, hitter)
 				end
+			end
 
-				-- have owned mobs attack player threat
-				if obj.owner == name and obj.owner_loyal then
-					do_attack(obj, self.object)
-				end
+			-- have owned mobs attack player threat
+			if name ~= "" and obj.owner == name and obj.owner_loyal then
+				do_attack(obj, self.object)
 			end
 		end
 	end
@@ -4655,7 +4689,6 @@ if not mobs.registered then
 			follow                  = def.follow,
 			jump                    = def.jump ~= false,
 			walk_chance             = def.walk_chance or 50,
-			attacks_monsters        = def.attacks_monsters or false,
 			--fov = def.fov or 120,
 			passive                 = def.passive or false,
 			knock_back              = def.knock_back ~= false,
@@ -4708,7 +4741,7 @@ if not mobs.registered then
 			dogshoot_count_max      = def.dogshoot_count_max or 5,
 			dogshoot_count2_max     = def.dogshoot_count2_max or (def.dogshoot_count_max or 5),
 			group_attack            = def.group_attack or false,
-			attack_monsters         = def.attacks_monsters or def.attack_monsters or false,
+			attack_monsters         = def.attack_monsters or false,
 			attack_animals          = def.attack_animals or false,
 			attack_players          = def.attack_players ~= false,
 			attack_npcs             = def.attack_npcs ~= false,
@@ -4759,12 +4792,12 @@ local function arrow_step(self, dtime, def)
 
 	local pos = self.object:get_pos()
 
+	-- Remove expired arrows.
 	if self.switch == 0
-	or self.timer > 150
-	or not within_limits(pos, 0) then
+			or self.timer > 150
+			or not within_limits(pos, 0) then
 
-		self.object:remove() ; -- print ("removed arrow")
-
+		self.object:remove()
 		return
 	end
 
@@ -4813,29 +4846,22 @@ local function arrow_step(self, dtime, def)
 	end
 
 	if self.hit_player or self.hit_mob then
-
-		for _,player in pairs(minetest.get_objects_inside_radius(pos, 1.5)) do
-
-			if self.hit_player
-			and player:is_player() then
-
-				self.hit_player(self, player)
-				self.object:remove() ; -- print ("hit player")
+		-- Find target that we hit.
+		for _, target in pairs(minetest.get_objects_inside_radius(pos, 1.5)) do
+			if self.hit_player and target:is_player() then
+				self.hit_player(self, target)
+				self.object:remove()
 				return
 			end
 
-			local entity = player:get_luaentity()
+			local entity = target:get_luaentity()
 
-			if entity
-			and self.hit_mob
-			and entity._cmi_is_mob == true
-			and tostring(player) ~= self.owner_id
-			and entity.name ~= self.object:get_luaentity().name then
+			if entity and self.hit_mob and entity._cmi_is_mob == true
+					and target ~= self.owner_obj
+					and entity.name ~= self.name then
 
-				self.hit_mob(self, player)
-
-				self.object:remove() ;  --print ("hit mob")
-
+				self.hit_mob(self, target)
+				self.object:remove()
 				return
 			end
 		end
@@ -4872,7 +4898,6 @@ if not mobs.registered then
 			collisionbox = {0, 0, 0, 0, 0, 0}, -- remove box around arrows
 			timer = 0,
 			switch = 0,
-			owner_id = def.owner_id,
 			rotate = def.rotate,
 
 			automatic_face_movement_dir = def.rotate
@@ -4880,7 +4905,9 @@ if not mobs.registered then
 
 			on_activate = def.on_activate,
 
-			on_step = def.on_step or function(self, dtime) return mobs.arrow_step(self, dtime, def) end,
+			on_step = def.on_step or function(self, dtime)
+				return mobs.arrow_step(self, dtime, def)
+			end,
 		})
 	end
 end

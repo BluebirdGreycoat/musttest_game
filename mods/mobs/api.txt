@@ -23,7 +23,6 @@ This functions registers a new mob as a Minetest entity.
         'type' the type of the mob ("monster", "animal" or "npc")
         'passive' will mob defend itself, set to false to attack
         'docile_by_day' when true, mob will not attack during daylight hours unless provoked
-        'attacks_monsters' usually for npc's to attack monsters in area
         'group_attack' true to defend same kind of mobs from attack in area
         'attack_animals' true for monster to attack animals as well as player and npc's
         'attack_specific' has a table of entity names that monsters can attack {"player", "mobs_animal:chicken"}

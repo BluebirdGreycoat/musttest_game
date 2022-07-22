@@ -138,6 +138,7 @@ end
 -- State transition function [MustTest]. Do not set mob state designation
 -- manually, call this function instead. It handles state transitions, etc.
 local function transition_state(self, newstate)
+	report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
 		local sm = mobs.state_machine
@@ -164,6 +165,7 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
+	report(self, "sub: " .. newsub)
 	self.substate = newsub
 end
 
@@ -1468,7 +1470,7 @@ end
 -- Target punching code extracted into its own function [MustTest].
 local function punch_target(self, dtime)
 	if not self.attack then return end
-	if not self.attack:get_yaw() then return end
+	if not self.attack:get_pos() then return end
 
 	-- The mob may punch once per second.
 	self.punch_timer = (self.punch_timer or 0) + dtime
@@ -3149,11 +3151,32 @@ local function do_caught_attack(self, dtime)
 	set_velocity(self, 0)
 
 	-- Target might not be valid anymore.
-	if not self.attack:get_yaw() then
+	if not self.attack or not self.attack:get_pos() then
 		transition_state(self, "stand")
 		return
 	end
 
+	local s = self.object:get_pos()
+	local p = self.attack:get_pos()
+
+	local dist = get_distance(p, s)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
+
+	-- Stop attacking if target invisible, dead, or out of range.
+	if dist > self.view_range	or self.attack:get_hp() <= 0
+			or mobs.is_invisible(self, targetname) then
+		transition_state(self, "stand")
+		return
+	end
+
+	-- Start chasing again if target moved beyond reach.
+	if dist > self.reach then
+		transition_substate(self, "chase")
+		return
+	end
+
+	-- If mob does not have a custom attack, or that function returns true, then
+	-- execute the default punch-attack code.
 	if not self.custom_attack or self.custom_attack(self, p) == true then
 		set_animation(self, "punch")
 		punch_target(self, dtime)
@@ -3164,20 +3187,86 @@ end
 
 -- Mob is blocked from reaching target by environment, etc.
 local function do_blocked_attack(self, dtime)
-	set_velocity(self, 0)
-	set_animation(self, "stand")
+	-- Target might not be valid anymore.
+	if not self.attack or not self.attack:get_pos() then
+		transition_state(self, "stand")
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.attack:get_pos()
+
+	local dist = get_distance(p, s)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
+
+	-- Stop attacking if target invisible, dead, or out of range.
+	if dist > self.view_range	or self.attack:get_hp() <= 0
+			or mobs.is_invisible(self, targetname) then
+		transition_state(self, "stand")
+		return
+	end
+
+	-- Turn to face target. If the target moves around we may eventually become
+	-- unblocked.
+	do
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+
+		local yaw = yaw_to_pos(self, p, s)
+		set_yaw(self, yaw)
+	end
+
+	-- Mob no longer stuck?
+	if not facing_wall_or_pit(self) then
+		transition_substate(self, "chase")
+		return
+	end
+
+	-- Punch target if within punching range even while stuck [MustTest].
+	if dist <= (self.punch_reach or self.reach or 0) then
+		punch_target(self, dtime)
+	end
+
+	-- If dogshooter, transition to shoot once dogshoot timer expires.
+	-- This attack works even while mob is stuck.
+	if self.attack_type == "dogshoot" then
+		local switch = dogswitch(self, dtime)
+		if switch == 1 then
+			transition_substate(self, "shoot")
+			return
+		end
+	end
 end
 
 
 
 local function do_chase_attack(self, dtime)
+	-- Target might not be valid anymore.
+	if not self.attack or not self.attack:get_pos() then
+		transition_state(self, "stand")
+		return
+	end
+
 	local s = self.object:get_pos()
 	local p = self.attack:get_pos()
 
-	-- Target might not be valid anymore.
-	if not p then
+	local dist = get_distance(p, s)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
+
+	-- Stop attacking if target invisible, dead, or out of range.
+	if dist > self.view_range	or self.attack:get_hp() <= 0
+			or mobs.is_invisible(self, targetname) then
 		transition_state(self, "stand")
 		return
+	end
+
+	-- If dogshooter, transition to shoot once dogshoot timer expires.
+	if self.attack_type == "dogshoot" then
+		local switch = dogswitch(self, dtime)
+		if switch == 1 then
+			transition_substate(self, "shoot")
+			return
+		end
 	end
 
 	local dist = get_distance(p, s)
@@ -3244,6 +3333,7 @@ local function do_chase_attack(self, dtime)
 		if facing_wall_or_pit(self) then
 			transition_substate(self, "blocked")
 		else
+			try_jump(self, dtime)
 			set_velocity(self, self.sprint_velocity or 0)
 
 			if self.animation and self.animation.run_start then
@@ -3254,7 +3344,7 @@ local function do_chase_attack(self, dtime)
 		end
 
 		-- Punch target if within punching range even while moving [MustTest].
-		if dist < (self.punch_reach or 0) then
+		if dist <= (self.punch_reach or self.reach or 0) then
 			punch_target(self, dtime)
 		end
 	else
@@ -3266,17 +3356,36 @@ end
 
 
 local function do_shoot_attack(self, dtime)
+	-- Target might not be valid anymore.
+	if not self.attack or not self.attack:get_pos() then
+		transition_state(self, "stand")
+		return
+	end
+
 	local s = self.object:get_pos()
 	local p = self.attack:get_pos()
 
-	-- Target might not be valid anymore.
-	if not p then
+	local dist = get_distance(p, s)
+	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
+
+	-- Stop attacking if target invisible, dead, or out of range.
+	if dist > self.view_range	or self.attack:get_hp() <= 0
+			or mobs.is_invisible(self, targetname) then
 		transition_state(self, "stand")
 		return
 	end
 
 	p.y = p.y - 0.5
 	s.y = s.y + 0.5
+
+	-- If dogshooter, transition to chase once dogshoot timer expires.
+	if self.attack_type == "dogshoot" then
+		local switch = dogswitch(self, dtime)
+		if switch ~= 1 then
+			transition_substate(self, "chase")
+			return
+		end
+	end
 
 	-- Face target and stand.
 	local yaw = yaw_to_pos(self, p, s)
@@ -3321,7 +3430,7 @@ end
 -- runs once per frame, while the "attack" state is active.
 local function do_attack_state(self, dtime)
 	-- Abort if we have no target!
-	if not self.attack then
+	if not self.attack or not self.attack:get_pos() then
 		transition_state(self, "stand")
 		return
 	end
@@ -3339,7 +3448,7 @@ local function do_attack_state(self, dtime)
 	local dist = get_distance(p, s)
 	local targetname = (self.attack:is_player() and self.attack:get_player_name()) or ""
 
-	-- Stop attacking if player invisible or out of range.
+	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
 		transition_state(self, "stand")

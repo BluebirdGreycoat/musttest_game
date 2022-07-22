@@ -10,6 +10,7 @@ mobs.register_mob("dm:dm", {
 	dogshoot_count_max = 10,
 	reach = 3,
 	shoot_interval = 2.5,
+	attack_animals = true,
 	arrow = "dm:fireball",
 	shoot_offset = 1,
 	hp_min = 12,

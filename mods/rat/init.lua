@@ -7,6 +7,7 @@ rat.modpath = minetest.get_modpath("rat")
 -- Rat by PilzAdam. Modified for MustTest by MustTest.
 mobs.register_mob("rat:rat", {
 	type = "animal",
+	description = "Sewer Rat",
 	passive = true,
 	hp_min = 1,
 	hp_max = 4,
@@ -28,7 +29,7 @@ mobs.register_mob("rat:rat", {
 	jump = true,
 	water_damage = 0,
 	lava_damage = 4,
-    makes_bones_in_lava = false,
+	makes_bones_in_lava = false,
 	light_damage = 0,
 	fear_height = 2,
     

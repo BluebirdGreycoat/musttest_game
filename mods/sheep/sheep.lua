@@ -4,6 +4,7 @@ local math_random = math.random
 
 mobs.register_mob("sheep:sheep", {
     type = "animal",
+		description = "Sheep",
     passive = true,
     hp_min = 8,
     hp_max = 10,

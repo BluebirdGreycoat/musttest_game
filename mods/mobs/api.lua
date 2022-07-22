@@ -50,13 +50,13 @@ end
 
 
 
--- Load settings.
-local damage_enabled =  true --minetest.setting_getbool("enable_damage")
-local peaceful_only =   false --minetest.setting_getbool("only_peaceful_mobs")
-local disable_blood =   false --minetest.setting_getbool("mobs_disable_blood")
+-- Settings.
+local damage_enabled =  true
+local peaceful_only =   false
+local disable_blood =   false
 local mobs_drop_items = minetest.settings:get_bool("mobs_drop_items") ~= false
-local mobs_griefing =   minetest.settings:get_bool("mobs_griefing") ~= false
-local creative =        minetest.setting_getbool("creative_mode")
+local mobs_griefing =   true
+local creative =        false
 local spawn_protected = minetest.settings:get_bool("mobs_spawn_protected") ~= false
 local remove_far =      false
 local difficulty =      tonumber(minetest.setting_get("mob_difficulty")) or 1.0
@@ -76,9 +76,16 @@ if not mobs.invis then
 end
 
 function mobs.is_invisible(self, pname)
-	if not self.ignore_invisibility then
-		return (cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname))
+	-- Administrative invisibility is paramount.
+	if gdac_invis.is_invisible(pname) then
+		return true
 	end
+
+	if self.ignore_invisibility then
+		return
+	end
+
+	return cloaking.is_cloaked(pname)
 end
 
 -- creative check
@@ -99,22 +106,22 @@ end
 -- calculate aoc range for mob count
 local aoc_range = tonumber(minetest.settings:get("active_block_range")) * 16
 
--- pathfinding settings
+-- Pathfinding settings.
 local enable_pathfinding = true
-local stuck_timeout = 3 -- how long before mob gets stuck in place and starts searching
+local stuck_timeout = 3
 
 -- Note: stuck path timeout is determined based on the length of the path, and
 -- is a mob-internal property [MustTest].
 
--- default nodes
+-- Default nodes:
 local node_fire = "fire:basic_flame"
 local node_permanent_flame = "fire:permanent_flame"
 local node_ice = "default:ice"
 local node_snowblock = "default:snowblock"
 local node_snow = "default:snow"
-local node_pathfiner_place = "default:cobble"
+local node_pathfinder_place = "default:cobble"
 
-mobs.fallback_node = minetest.registered_aliases["mapgen_dirt"] or "default:dirt"
+mobs.fallback_node = "default:cobble"
 
 
 
@@ -1851,10 +1858,10 @@ end
 
 
 
--- find two animals of same type and breed if nearby and horny
-local function breed(self)
-
-	-- child takes 240 seconds before growing into adult
+-- Find two animals of same type and breed if nearby and horny.
+-- Note: function is never called more than once per second. (No 'dtime' arg.)
+local function attempt_breed(self)
+	-- Child takes 240 seconds before growing into adult.
 	if self.child == true then
 
 		self.hornytimer = self.hornytimer + 1
@@ -2019,7 +2026,7 @@ end
 
 
 
--- find and replace what mob is looking for (grass, wheat etc.)
+-- Find and replace what mob is looking for (grass, wheat etc.).
 local function replace(self, pos)
 
 	if not mobs_griefing
@@ -2156,7 +2163,7 @@ local function try_dig_doorway(self, s)
 	if not b2 then
 		local nn = minetest.get_node(p1).name
 		if nn == "air" or nn == "default:snow" then
-			minetest.set_node(p1, {name = (self.place_node or node_pathfiner_place)})
+			minetest.set_node(p1, {name = (self.place_node or node_pathfinder_place)})
 			local meta = minetest.get_meta(p1)
 			meta:set_int("protection_cancel", 1)
 		end
@@ -2398,7 +2405,7 @@ local function smart_mobs(self, s, p, dist, dtime)
 				if canput then
 					-- Place node the mob likes, or use fallback.
 					-- Disable protection for this node via meta [MustTest].
-					minetest.add_node(s, {name = self.place_node or node_pathfiner_place})
+					minetest.add_node(s, {name = self.place_node or node_pathfinder_place})
 					local meta = minetest.get_meta(s)
 					meta:set_int("protection_cancel", 1)
 
@@ -2679,10 +2686,10 @@ local function get_attackable_targets(self)
 				goto continue
 			end
 
-			if self.owner and self.type ~= "monster" then
-				objs[n] = nil
-				goto continue
-			end
+			--if self.owner and self.type ~= "monster" then
+			--	objs[n] = nil
+			--	goto continue
+			--end
 
 			--[[
 					or
@@ -3148,8 +3155,6 @@ end
 
 -- Mob has caught up with target.
 local function do_caught_attack(self, dtime)
-	set_velocity(self, 0)
-
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
 		transition_state(self, "stand")
@@ -3175,6 +3180,13 @@ local function do_caught_attack(self, dtime)
 		return
 	end
 
+	-- Stop and face target.
+	do
+		set_velocity(self, 0)
+		local yaw = yaw_to_pos(self, p, s)
+		set_yaw(self, yaw)
+	end
+
 	-- If mob does not have a custom attack, or that function returns true, then
 	-- execute the default punch-attack code.
 	if not self.custom_attack or self.custom_attack(self, p) == true then
@@ -3190,6 +3202,12 @@ local function do_blocked_attack(self, dtime)
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
 		transition_state(self, "stand")
+		return
+	end
+
+	-- Avoid dangerous nodes.
+	if is_node_dangerous(self, self.standing_in) then
+		transition_state(self, "avoid")
 		return
 	end
 
@@ -3218,8 +3236,19 @@ local function do_blocked_attack(self, dtime)
 
 	-- Mob no longer stuck?
 	if not facing_wall_or_pit(self) then
+		self.stuck_timer = 0
 		transition_substate(self, "chase")
 		return
+	else
+		-- Mob is stuck.
+		self.stuck_timer = (self.stuck_timer or 0) + dtime
+		if self.stuck_timer > stuck_timeout then
+			self.stuck_timer = 0
+			self.path.dangerous_paths = false
+			self.path.target = v_round(self.attack:get_pos())
+			transition_state(self, "pathfind")
+			return
+		end
 	end
 
 	-- Punch target if within punching range even while stuck [MustTest].
@@ -3579,6 +3608,7 @@ local function do_pathfind_enter(self)
 		self.path.following = true
 		self.path.stuck_timer = 0
 	else
+		report(self, "could not find path")
 		transition_state(self, "stand")
 		return
 	end
@@ -3846,18 +3876,19 @@ end
 -- is Took Ranks mod active?
 local tr = minetest.get_modpath("toolranks")
 
--- deal damage and effects when mob punched
+
+
+-- Deal damage and effects when mob punched.
 local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
+	-- Mob health check.
+	if self.health <= 0 then return end
 
-	-- mob health check
-	if self.health <= 0 then
-		return
-	end
+	-- Sanity check.
+	if not tool_capabilities then return end
 
-	-- custom punch function
+	-- Custom punch function.
 	if self.do_punch then
-
-		-- when false skip going any further
+		-- When false skip going any further.
 		if self.do_punch(self, hitter, tflp, tool_capabilities, dir) == false then
 			return
 		end
@@ -3866,28 +3897,13 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- Record name of last attacker.
 	self.last_attacked_by = (hitter and hitter:is_player() and hitter:get_player_name()) or ""
 
-	-- Stop following path when hit [MustTest].
-	if self.last_attacked_by ~= "" then
-		-- Unless hitter is the mob's current target.
-		if self.attack ~= hitter then
-			self.path.following = false
-			self.path.stuck_timer = 0.0
-			self.path.los_counter = 0
-		end
-	end
-
-	-- error checking when mod profiling is enabled
-	if not tool_capabilities then
-		minetest.log("warning", "[mobs] Mod profiling enabled, damage not enabled")
-		return
-	end
-
-	-- is mob protected?
+	-- Is mob protected?
 	if self.protected and hitter:is_player()
-	and minetest.test_protection(v_round(self.object:get_pos()), hitter:get_player_name()) then
+			and minetest.test_protection(v_round(self.object:get_pos()), hitter:get_player_name()) then
 		minetest.chat_send_player(hitter:get_player_name(), "# Server: Mob has been protected!")
 		return
 	end
+
 
 
 	-- weapon wear
@@ -4098,21 +4114,18 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	local name = (hitter:is_player() and hitter:get_player_name()) or ""
-	
-	--minetest.chat_send_player("MustTest", "Attack!")
 
 	-- Attack puncher and call other mobs for help.
-	if self.passive == false
+	if not self.passive
 			and self.state ~= "flop"
-			and self.child == false
-			and self.attack_players == true
+			and not self.child
+			and self.attack_players
 			and name ~= self.owner
 			and not mobs.is_invisible(self, name)
 			and self.object ~= hitter then
 
-		--minetest.chat_send_player("MustTest", "Will really attack!")
-
-		-- attack whoever punched mob
+		-- Attack whoever punched mob.
+		transition_state(self, "")
 		do_attack(self, hitter)
 
 		-- alert others to the attack
@@ -4518,7 +4531,7 @@ local function mob_step(self, dtime)
 		runaway_from(self)
 
 		-- Mob reproduction.
-		--breed(self)
+		attempt_breed(self)
 	end
 
 	-- TODO: This function mixes movement/physics behavior (flop) with logical
@@ -4888,26 +4901,31 @@ if not mobs.registered then
 				invimg = background
 		end
 
-		-- register new spawn egg containing mob information
+		-- Register new spawn egg containing mob information
 		minetest.register_craftitem(mob .. "_set", {
 			description = desc .. " Spawn Egg (Tamed)",
 			inventory_image = invimg,
-			groups = {not_in_creative_inventory=1, not_in_craft_guide=1, spawn_egg=2},
+			groups = {
+				not_in_creative_inventory = 1,
+				not_in_craft_guide = 1,
+				spawn_egg = 2,
+			},
 			stack_max = 1,
 
 			on_place = function(itemstack, placer, pointed_thing)
 
 				local pos = pointed_thing.above
 
-				-- am I clicking on something with existing on_rightclick function?
+				-- Am I clicking on something with existing on_rightclick function?
 				local under = minetest.get_node(pointed_thing.under)
-				local def = minetest.reg_ns_nodes[under.name]
+				local def = minetest.registered_nodes[under.name]
 				if def and def.on_rightclick then
 					return def.on_rightclick(pointed_thing.under, under, placer, itemstack)
 				end
 
 				if pos and within_limits(pos, 0) then
 					if not minetest.registered_entities[mob] then
+						minetest.chat_send_player(name, "# Server: Creature type not defined!")
 						return
 					end
 
@@ -4918,17 +4936,17 @@ if not mobs.registered then
 					local ent = mob:get_luaentity()
 
 					if not ent then mob:remove()
-						minetest.chat_send_player(name, "# Server: Failed to retrieve creature!")
+						minetest.chat_send_player(name, "# Server: Failed to revive creature!")
 						return
 					end
 
-					-- set owner if not a monster
-					if ent.type ~= "monster" then
+					-- Set owner if not a monster or NPC.
+					if ent.type ~= "monster" and ent.type ~= "npc" then
 						ent.owner = placer:get_player_name()
 						ent.tamed = true
 					end
 
-					-- since mob is unique we remove egg once spawned
+					-- Since mob is unique we remove egg once spawned.
 					itemstack:take_item()
 				end
 
@@ -4936,13 +4954,15 @@ if not mobs.registered then
 			end,
 		})
 
-
-
-		-- register old stackable mob egg
+		-- Register old stackable mob egg.
 		minetest.register_craftitem(mob, {
 			description = desc .. " Spawn Egg",
 			inventory_image = invimg,
-			groups = {not_in_creative_inventory=1, not_in_craft_guide=1, spawn_egg=1},
+			groups = {
+				not_in_creative_inventory = 1,
+				not_in_craft_guide = 1,
+				spawn_egg = 1,
+			},
 
 			on_place = function(itemstack, placer, pointed_thing)
 				local pos = pointed_thing.above
@@ -4950,6 +4970,7 @@ if not mobs.registered then
 
 				if pos and within_limits(pos, 0) then
 					if not minetest.registered_entities[mob] then
+						minetest.chat_send_player(name, "# Server: Creature type not defined!")
 						return
 					end
 
@@ -4959,15 +4980,16 @@ if not mobs.registered then
 					local ent = mob:get_luaentity()
 
 					if not ent then mob:remove()
-						minetest.chat_send_player(name, "# Server: Failed to create mob!")
+						minetest.chat_send_player(name, "# Server: Failed to summon creature!")
 						return
 					end
 
-					-- don't set owner if monster or sneak pressed
-					if ent.type ~= "monster"
-					and not placer:get_player_control().sneak then
-						ent.owner = placer:get_player_name()
-						ent.tamed = true
+					-- Don't set owner if monster or NPC or sneak pressed.
+					if ent.type ~= "monster" and ent.type ~= "npc" then
+						if not placer:get_player_control().sneak then
+							ent.owner = placer:get_player_name()
+							ent.tamed = true
+						end
 					end
 				end
 

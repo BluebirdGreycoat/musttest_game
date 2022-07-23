@@ -1596,7 +1596,9 @@ end
 
 
 
--- Remove block if possible [MustTest].
+-- Remove block if possible [MustTest]. Note: this function does not necessarily
+-- have to break a node if it is non-walkable, but even if so (i.e., air) it
+-- MUST still return true in that case!
 local function try_break_block(self, s)
 	-- Must round position ourselves, otherwise we'll expose rounding
 	-- inconsistencies in the engine and possibly break protection.
@@ -1618,15 +1620,18 @@ local function try_break_block(self, s)
 		return false, "unbreakable"
 	end
 
+	-- Some liquids (like lava sources) are walkable. The liquid check must
+	-- therefore come first.
 	if ndef1.groups.liquid then
 		return false, "liquid"
 	end
 
-	if node1 ~= "air" and minetest.test_protection(s, "") then
+	if ndef1.walkable and minetest.test_protection(s, "") then
 		return false, "protected"
 	end
 
-	if node1 == "air" then
+	-- If node is air or non-walkable, it does not block mob or pathfinder.
+	if node1 == "air" or not ndef1.walkable then
 		return true
 	end
 
@@ -3921,6 +3926,47 @@ local function try_unblock_path(self)
 			else
 				return "newpath"
 			end
+		end
+	end
+
+	-- Is path obstructed by a mob or player?
+	if w1 then
+		-- Note: w1 is the obstructed waypoint, w2 is the waypoint beyond.
+		local obstructed = false
+		local can_move = false
+
+		local objs = minetest.get_objects_inside_radius(w1, 1.5)
+		for k, v in ipairs(objs) do
+			if v:is_player() then
+				obstructed = true
+			else
+				local ent = v:get_luaentity()
+				if ent and (ent.mob or ent._cmi_is_mob) then
+					if ent.object ~= self.object then
+						obstructed = true
+					end
+				end
+			end
+		end
+
+		-- Make sure nothing is obstructing the mob (assuming 2-node high mob).
+		if obstructed then
+			local p2 = v_add(w1, {x=0, y=1, z=0})
+			if try_break_block(self, p2) then
+				can_move = true
+			end
+		end
+
+		if obstructed and can_move then
+			-- If obstructed, I can deal with this by simply moving the mob by fiat.
+			-- Note: cannot use move_to(), it simply collides.
+			local t = vector.copy(w1)
+			t.y = (t.y - 0.5) + abs(self.collisionbox[2])
+			self.object:set_pos(t) -- Place mob exactly on ground.
+
+			-- Remove waypoint.
+			table.remove(self.path.way, 1)
+			return "continue"
 		end
 	end
 

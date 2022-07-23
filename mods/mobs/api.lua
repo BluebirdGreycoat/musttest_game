@@ -145,7 +145,7 @@ end
 -- State transition function [MustTest]. Do not set mob state designation
 -- manually, call this function instead. It handles state transitions, etc.
 local function transition_state(self, newstate)
-	report(self, "state: " .. newstate)
+	--report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
 		local sm = mobs.state_machine
@@ -172,7 +172,7 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
-	report(self, "sub: " .. newsub)
+	--report(self, "sub: " .. newsub)
 	self.substate = newsub
 end
 
@@ -1154,8 +1154,9 @@ end
 
 
 -- This function computes the rounded position of the node in front of the mob.
-local function get_ahead_pos(self)
-	local s = self.object:get_pos()
+local function get_ahead_pos(self, pos)
+	-- Copy position argument so we do not modify it.
+	local s = (pos and vector.copy(pos)) or self.object:get_pos()
 	s.y = s.y + self.collisionbox[2] + 0.5
 	local dir = self.object:get_yaw() + (pi / 2)
 	local fac = 1.2 -- Adjustment factor to improve accuracy.
@@ -1208,21 +1209,18 @@ end
 
 
 
--- Is mob facing a wall or a pit/cliff.
-local function facing_wall_or_pit(self)
-	if self.driver then
-		return false, "driver"
-	end
-
-	local ahead = get_ahead_pos(self)
-
+-- Check if a position is a wall or pit. You should pass the rounded position of
+-- the node which the mob wants to move INTO. Always returns two values,
+-- true/false, and a reason string.
+local function is_wall_or_pit(self, wp)
+	local drop = self.fear_height or 0
 	local free_fall, blocker = minetest.line_of_sight(
-		v_add(ahead, {x=0, y=1, z=0}),
-		v_add(ahead, {x=0, y=-self.fear_height, z=0}))
+		v_add(wp, {x=0, y=1, z=0}),
+		v_add(wp, {x=0, y=-drop, z=0}))
 
 	-- Check for straight drop.
 	if free_fall then
-		if not self.fear_height or self.fear_height == 0 then
+		if drop == 0 then
 			return false, "nofear"
 		end
 
@@ -1237,7 +1235,7 @@ local function facing_wall_or_pit(self)
 	end
 
 	-- Is mob facing a 2-node high structure?
-	if blocker.y > ahead.y then
+	if blocker.y > wp.y then
 		return true, "wall"
 	end
 
@@ -1258,6 +1256,19 @@ local function facing_wall_or_pit(self)
 			return false, "surface"
 		end
 	end
+end
+
+
+
+-- Is mob facing a wall or a pit/cliff. Always returns two values, true/false,
+-- and a reason string.
+local function facing_wall_or_pit(self)
+	if self.driver then
+		return false, "driver"
+	end
+
+	local ahead = get_ahead_pos(self)
+	return is_wall_or_pit(self, ahead)
 end
 
 
@@ -1603,8 +1614,12 @@ local function try_break_block(self, s)
 		return false, "unbreakable"
 	end
 
-	if ndef1.groups.unbreakable or ndef1.groups.liquid or ndef1.groups.immovable then
+	if ndef1.groups.unbreakable or ndef1.groups.immovable then
 		return false, "unbreakable"
+	end
+
+	if ndef1.groups.liquid then
+		return false, "liquid"
 	end
 
 	if node1 ~= "air" and minetest.test_protection(s, "") then
@@ -1614,11 +1629,6 @@ local function try_break_block(self, s)
 	if node1 == "air" then
 		return true
 	end
-
-	-- Can't do this check, many, many nodes use these callbacks [MustTest].
-	--if ndef1.on_construct or ndef1.after_construct or ndef1.on_blast then
-	--	return
-	--end
 
 	local oldnode = minetest.get_node(s)
 	minetest.set_node(s, {name = "air"})
@@ -1637,9 +1647,9 @@ local function try_break_block(self, s)
 
 	for _, item in pairs(drops) do
 		local p = {
-			x = s.x + random()/2 - 0.25,
-			y = s.y + random()/2 - 0.25,
-			z = s.z + random()/2 - 0.25,
+			x = s.x + random() / 2 - 0.25,
+			y = s.y + random() / 2 - 0.25,
+			z = s.z + random() / 2 - 0.25,
 		}
 		minetest.add_item(p, item)
 	end
@@ -1665,8 +1675,25 @@ local function try_jump(self, dtime)
 	end
 	self.jump_timer = 0
 
-	-- Something stopping us while moving?
-	if get_velocity(self) > 0.5 and self.object:get_velocity().y ~= 0 then
+	-- Check our position often to see if we are moving. Am I still moving?
+	-- Note: we have to check to see if the mob's absolute position changed.
+	-- Checking the velocity will not work, because it is often wrong/stale.
+	self.jump_tvel = (self.jump_tvel or 0) + dtime
+	if self.jump_tvel >= 0.25 then
+		local s = self.object:get_pos()
+		if v_distance(s, self.last_pos or s) < 0.1 then
+			self.jump_stuck = (self.jump_stuck or 0) + 0.25
+		else
+			self.jump_stuck = 0
+		end
+		self.last_pos = s
+		self.jump_tvel = 0
+	end
+
+	local velocity = get_velocity(self)
+
+	-- If we've only been stuck for less than a moment, we are still moving.
+	if (self.jump_stuck or 0) < 0.5 then
 		return false, "moving"
 	end
 
@@ -1686,11 +1713,14 @@ local function try_jump(self, dtime)
 
 	-- Is the node in front of the mob's head (assuming 2 node high mob) walkable?
 	local blocked = minetest.registered_nodes[nodetop.name].walkable
-	if self.blocked then
-		return false, "blocked"
+	if blocked then
+		-- If the mob's jump height is 7 or higher, the mob can jump 2-node walls.
+		if self.jump_height < 7 then
+			return false, "blocked"
+		end
 	end
 
-	-- Is the node ahead walkable? Something else is probably blocking us.
+	-- Is the node ahead NOT walkable? Something else is probably blocking us.
 	if not minetest.registered_nodes[nodebot].walkable then
 		return false, "walkable"
 	end
@@ -1716,6 +1746,7 @@ local function try_jump(self, dtime)
 		mob_sound(self, self.sounds.jump)
 	end
 
+	-- Cannot jump again for one second.
 	self.jump_timer = 1
 	return true
 end
@@ -2153,17 +2184,42 @@ end
 
 
 
+-- Place node, excluding it from protection.
+local function force_place_block(name, pos)
+	minetest.set_node(pos, {name=name})
+	local meta = minetest.get_meta(pos)
+	meta:set_int("protection_cancel", 1)
+	minetest.check_for_falling(pos)
+end
+
+
+
+-- Function shall attempt to place a node, exluding it from protection.
+local function try_place_block(self, target)
+	local pn = self.place_node or node_pathfinder_place
+	local nn = minetest.get_node(target).name
+
+	if nn == "air" or nn == "default:snow" then
+		force_place_block(pn, target)
+		return true
+	end
+
+	local ndef = minetest.registered_nodes[nn]
+	if not ndef or nn == "ignore" then
+		return false
+	end
+
+	if ndef.buildable_to and not minetest.test_protection(target, "") then
+		force_place_block(pn, target)
+		return true
+	end
+end
+
+
+
 -- Shall return true if blockage was fully removed [MustTest].
-local function try_dig_doorway(self, s)
-	local s = table.copy(s)
-	s.y = s.y + self.collisionbox[2] + 0.5
-	local yaw1 = self.object:get_yaw() + pi / 2
-	local p1 = {
-		x = s.x + cos(yaw1),
-		y = s.y,
-		z = s.z + sin(yaw1)
-	}
-	p1 = v_round(p1)
+local function try_dig_doorway(self)
+	local p1 = get_ahead_pos(self)
 
 	-- First, try to break the block above.
 	-- If we can't do this, there's no point in trying to break the bottom block.
@@ -2179,18 +2235,22 @@ local function try_dig_doorway(self, s)
 	-- above is undiggable for some reason. I can do something clever here:
 	-- if the bottom hole is air, I can close it up. This way, the next time the
 	-- pathfinder runs, it will not try to go through this hole. [MustTest]
+	local hole_closed = false
 	if not b2 then
-		local nn = minetest.get_node(p1).name
-		if nn == "air" or nn == "default:snow" then
-			minetest.set_node(p1, {name = (self.place_node or node_pathfinder_place)})
-			local meta = minetest.get_meta(p1)
-			meta:set_int("protection_cancel", 1)
+		if try_place_block(self, p1) then
+			hole_closed = true
 		end
 	else
 		b1 = try_break_block(self, p1)
 	end
 
-	return (b1 and b2)
+	if b1 and b2 then
+		return true
+	elseif hole_closed then
+		return false, "changed"
+	else
+		return false, "failed"
+	end
 end
 
 
@@ -3548,6 +3608,24 @@ end
 
 
 
+-- This function gets the position of the node the mob is standing IN.
+-- The node position around its feet, basically.
+local function get_standing_pos(self, pos)
+	-- Copy position argument so we do not modify it.
+	local p = (pos and vector.copy(pos)) or self.object:get_pos()
+	local y = self.collisionbox[2]
+
+	if self.child then
+		y = self.collisionbox[2] * 0.5
+	end
+
+	p.y = p.y + y + 0.25
+	p = v_round(p)
+	return p
+end
+
+
+
 -- Code to get what mob is standing in/on extracted to own function [MustTest].
 local function update_foot_nodes(self, pos, dtime)
 	-- Get node at foot level every quarter second.
@@ -3556,25 +3634,17 @@ local function update_foot_nodes(self, pos, dtime)
 	if self.node_timer > 0.25 then
 		self.node_timer = 0
 
-		local y_level = self.collisionbox[2]
-
-		if self.child then
-			y_level = self.collisionbox[2] * 0.5
-		end
-
-		-- What is mob standing in?
-		self.standing_in = node_ok({
-			x = pos.x, y = pos.y + y_level + 0.25, z = pos.z}, "air").name
-
-		-- What is mob standing on?
-		self.standing_on = node_ok({
-			x = pos.x, y = ((pos.y + y_level) - 0.5), z = pos.z}, "air").name
+		-- What is mob standing in and on?
+		local spos = get_standing_pos(self, pos)
+		self.standing_in = node_ok(spos, "air").name
+		spos.y = spos.y - 1
+		self.standing_on = node_ok(spos, "air").name
 
 		-- What is mob facing?
-		self.facing_pos = get_ahead_pos(self)
+		self.facing_pos = get_ahead_pos(self, pos)
 		self.facing_node = node_ok(self.facing_pos, "air").name
 
-		-- Are we facing a fence or wall.
+		-- Are we facing a fence or wall?
 		local fn = self.facing_node
 		if fn:find("fence") or fn:find("gate") or fn:find("wall") then
 			self.facing_fence = true
@@ -3586,15 +3656,68 @@ end
 
 
 
+-- Get the absolute delta angle between two yaw angles, in radians.
+function yaw_delta(y1, y2)
+	local y
+	-- First, get the difference between the two yaws.
+	if y1 > y2 then
+		y = y1 - y2
+	else
+		y = y2 - y1
+	end
+	-- Subtract PI if needed to get the smaller delta.
+	if y > pi then
+		y = y - (pi * 2)
+	end
+	return abs(y)
+end
+
+
+
+-- Detect whether a waypoint path contains sharp turns. This function checks the
+-- mob's current yaw against the next 3 waypoints. If its yaw to each waypoint
+-- is within a small tolerance, the path is straight; otherwise it is not.
+local function path_is_straight(self, pos)
+	local path = self.path.way
+	if not path then return end
+
+	local w1 = path[1]
+	local w2 = path[2]
+	local w3 = path[3]
+	if not w1 or not w2 or not w3 then
+		return
+	end
+
+	local y1 = self.object:get_yaw()
+	local y2 = yaw_to_pos(self, w1, pos)
+	local y3 = yaw_to_pos(self, w2, pos)
+	local y4 = yaw_to_pos(self, w3, pos)
+
+	local deg = math.deg
+
+	local d1 = deg(yaw_delta(y1, y2))
+	local d2 = deg(yaw_delta(y1, y3))
+	local d3 = deg(yaw_delta(y1, y4))
+
+	return (d1 < 15 and d2 < 10 and d3 < 5)
+end
+
+
+
 local function do_pathfind_enter(self)
 	-- The pathfinder requires a target. I assume the target is a rounded vector.
 	-- It should be inside an air node, or non-walkable, and walkable node under.
 	if not self.path.target then
-		report(self, "no target")
 		transition_state(self, "stand")
 		return
 	end
 
+	transition_substate(self, "newpath")
+end
+
+
+
+local function do_pathfind_newpath(self, dtime)
 	local start = self.object:get_pos()
 	start.y = start.y + self.collisionbox[2] + 0.5
 	start = v_round(start)
@@ -3606,23 +3729,35 @@ local function do_pathfind_enter(self)
 	local jh = 0
 
 	if self.fear_height ~= 0 then dh = (self.fear_height - 1) end
+	if self.stepheight > 1 then jh = 1 end
 
 	-- Do not generate paths with a jump-height above 4 nodes.
-	if self.jump and self.jump_height >= 4 then
-		jh = min(ceil(self.jump_height / 4), 4)
-	elseif self.stepheight > 0.5 then
-		jh = 1
+	-- Note: 'self.jump_height' is a velocity factor, NOT number of nodes jumped!
+	if self.jump then
+		if self.jump_height >= 7 then
+			jh = 2
+		elseif self.jump_height >= 5 then
+			jh = 1
+		end
 	end
 
+	-- Note: pathfinder is very sensitive to start and end positions.
 	local path = minetest.find_path(start, target, radius, jh, dh, "A*")
 
 	if path then
-		report(self, "found path")
+		-- Yay, I found path.
+		if self.attack and self.attack:get_pos() then
+			mob_sound(self, self.sounds.war_cry)
+		else
+			mob_sound(self, self.sounds.random)
+		end
+
 		self.path.way = path
 		self.path.following = true
 		self.path.stuck_timer = 0
+		self.path.blocked_count = 0
+		transition_substate(self, "")
 	else
-		report(self, "could not find path")
 		transition_state(self, "stand")
 		return
 	end
@@ -3633,9 +3768,7 @@ end
 -- In order to correctly follow a path, this function requires to be called once
 -- per frame. This property is specified in the state machine table.
 local function do_pathfind_state(self, dtime)
-	report(self, "in pathfind state")
 	if not self.path.following or not self.path.way then
-		report(self, "not following")
 		transition_state(self, "stand")
 		return
 	end
@@ -3645,7 +3778,6 @@ local function do_pathfind_state(self, dtime)
 	-- limit fairly high.
 	local max_len = (self.pathing_radius or 16) * 4
 	if #self.path.way > max_len then
-		report(self, "too long")
 		transition_state(self, "stand")
 		return
 	end
@@ -3653,7 +3785,6 @@ local function do_pathfind_state(self, dtime)
 	local wp = self.path.way[1]
 
 	if not wp then
-		report(self, "invalid path")
 		transition_state(self, "stand")
 		return
 	end
@@ -3672,7 +3803,6 @@ local function do_pathfind_state(self, dtime)
 
 		-- Are we done following the path?
 		if #self.path.way == 0 then
-			report(self, "done with path")
 			transition_state(self, "stand")
 			return
 		end
@@ -3690,48 +3820,61 @@ local function do_pathfind_state(self, dtime)
 	-- would path through them.
 	local path_careful = false
 	if not self.path.dangerous_paths then
-		if facing_wall_or_pit(self) then
-			--report(self, "facing danger")
-			--transition_state(self, "stand")
-			--return
+		local result, reason = facing_wall_or_pit(self)
+		if result and (reason == "pit" or reason == "danger") then
+			-- Path goes in the direction of something dangerous, like a cliff.
 			path_careful = true
 		elseif waypoint_dangerous(self, wp) then
-			report(self, "dangerous waypoint")
 			transition_state(self, "stand")
+			return
+		elseif is_wall_or_pit(self, wp) then
+			-- This can happen if the path environment changed (player dug pit?).
+			self.path.blocked_count = self.path.blocked_count + 1
+			transition_substate(self, "blocked")
 			return
 		end
 	end
+
+	-- Query whether path is straight. Note: do this BEFORE rotating mob.
+	-- The mob's initial yaw is taken into account.
+	local sharp_turn = (not path_is_straight(self, s))
 
 	-- Get the mob facing in the right direction.
 	local yaw = yaw_to_pos(self, wp, s)
 	set_yaw(self, yaw)
 
 	-- Start moving to next waypoint.
-	if on_target or path_careful then
-		-- Slow down so we don't overshoot or get into dangerous terrain.
+	if on_target then
+		-- Slow down so we don't overshoot waypoint.
 		set_velocity(self, 0.1)
-	else
-		set_velocity(self, self.run_velocity or 0)
-	end
-
-	-- Set correct animation.
-	if not on_target and not path_careful then
-		if self.animation and self.animation.run_start then
-			set_animation(self, "run")
-		else
-			set_animation(self, "walk")
-		end
-	else
-		-- Slow.
 		set_animation(self, "walk", 5)
+	elseif path_careful then
+		-- Slow down when near dangerous terrain.
+		set_velocity(self, self.walk_velocity or 0)
+		set_animation(self, "walk")
+	elseif sharp_turn then
+		-- Slow down (half-run) to execute turns.
+		local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
+		set_velocity(self, half_run)
+		set_animation(self, "run")
+	else
+		set_velocity(self, self.sprint_velocity or 0)
+		set_animation(self, "run")
 	end
 
-	try_jump(self, dtime)
+	-- Jump only if next waypoint is higher than us.
+	if wp.y > s.y then
+		report(self, "trying jump")
+		local result, reason = try_jump(self, dtime)
+		if not result then report(self, reason) end
+	end
 
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
+	-- Note that this can trigger if the mob just moves too slowly, so we should
+	-- avoid very-slow-moving behaviors when possible.
 	if self.path.stuck_timer > stuck_timeout then
-		report(self, "path stuck")
 		self.path.stuck_timer = 0
+		self.path.blocked_count = self.path.blocked_count + 1
 		set_velocity(self, 0)
 		set_animation(self, "stand")
 		transition_substate(self, "blocked")
@@ -3741,7 +3884,151 @@ end
 
 
 
+local function try_unblock_path(self)
+	local p = get_ahead_pos(self)
+
+	local w1 = self.path.way[1]
+	local w2 = self.path.way[2]
+
+	-- First, check if the waypoint is inside a walkable node. This would happen
+	-- if the player (or another mob) modified the environment through which the
+	-- path traveled, by placing a block on it.
+	if w1 then
+		local nn = minetest.get_node(w1).name
+		local ndef = minetest.registered_nodes[nn]
+		if ndef.walkable then
+			if try_break_block(self, w1) then
+				return "continue"
+			else
+				return "newpath"
+			end
+		end
+	end
+
+	-- Check if the waypoint floating in non-walkable (like air).
+	do
+		local p2 = v_add(w1, {x=0, y=-1, z=0})
+		local nn = minetest.get_node(p2).name
+		local ndef = minetest.registered_nodes[nn]
+		if not ndef.walkable then
+			if try_place_block(self, p2) then
+				return "continue"
+			else
+				return "newpath"
+			end
+		end
+	end
+
+	-- Path goes over a hump while ceiling prevents jumping.
+	-- (This function doesn't check for a ceiling, but we assume there is one,
+	-- otherwise the movement code would have just jumped over the hump.)
+	if w1 and w1.y == p.y + 1 then
+		if w2 and w2.y <= w1.y then
+			local result, reason = try_break_block(self, p)
+			if result then
+				-- Modify path slightly.
+				w1.y = w1.y - 1
+				return "continue"
+			else
+				-- Couldn't remove blockage (protected, unbreakable, etc.).
+				-- Try something else.
+				if try_place_block(self, w1) then
+					return "newpath"
+				end
+			end
+		end
+	end
+
+	-- Path's next waypoint is 2 nodes or higher from mob's ahead position.
+	-- Most mobs can't jump this high (neither can the player, usually).
+	if w1 and w1.y > p.y + 1 then
+		local p2 = v_add(w1, {x=0, y=-1, z=0})
+		local result, reason = try_break_block(self, p2)
+		if result then
+			-- Modify path slightly.
+			w1.y = w1.y - 1
+			return "continue"
+		else
+			-- Couldn't remove blockage (protected, unbreakable, etc.).
+			-- Try something else.
+			if try_place_block(self, w1) then
+				return "newpath"
+			end
+		end
+	end
+
+	-- Path goes straight ahead flat (or down). Mob is probably blocked by
+	-- blockage over a 1x1 hole or other space too low to fit its head through.
+	if w1 and w1.y <= p.y then
+		local p2 = v_add(p, {x=0, y=1, z=0})
+		local result, reason = try_break_block(self, p2)
+		if result then
+			-- Keep following path unmodified.
+			return "continue"
+		else
+			-- Couldn't remove blockage (protected, unbreakable, etc.).
+			-- Try something else.
+			if try_place_block(self, w1) then
+				return "newpath"
+			end
+		end
+	end
+
+	-- Path goes up stairs. In this case, we DON'T want to dig the stair node.
+	-- We have to dig the ceiling instead.
+	if w1 and w2 and w1.y > p.y and w2.y > w1.y then
+		local p2 = get_standing_pos(self)
+		p2.y = p2.y + 2
+		local result, reason = try_break_block(self, p2)
+		if result then
+			-- Keep following path.
+			return "continue"
+		else
+			-- Couldn't remove ceiling blockage (protected, unbreakable, etc.).
+			-- Try something else.
+			if try_place_block(self, w1) then
+				return "newpath"
+			end
+		end
+	end
+
+	return ""
+end
+
+
+
 local function do_pathfind_blocked(self, dtime)
+	-- Usually, mob should be facing whatever is blocking us. Generally, only
+	-- other entities (like mobs) and physical terrain are responsible for this.
+	if not self.path.following or not self.path.way then
+		transition_state(self, "stand")
+		return
+	end
+
+	-- Blocked too many times without successful unblocking? Give up.
+	if self.path.blocked_count > 3 then
+		transition_state(self, "stand")
+		return
+	end
+
+	local result = try_unblock_path(self)
+	report(self, "break block result: " .. result)
+
+	if result == "continue" then
+		-- Continue original path. (Note: path might have been modified slightly.)
+		self.path.blocked_count = 0
+		transition_substate(self, "")
+		return
+	elseif result == "newpath" then
+		-- The attempt resulted in the environment being changed; retry pathfinder.
+		self.path.blocked_count = 0
+		transition_substate(self, "newpath")
+		return
+	else
+		-- Couldn't remove blockage.
+		transition_state(self, "stand")
+		return
+	end
 end
 
 
@@ -3793,6 +4080,7 @@ local state_machine = {
 		enter = do_pathfind_enter,
 		main = do_pathfind_state,
 		blocked = do_pathfind_blocked,
+		newpath = do_pathfind_newpath,
 		exit = do_pathfind_exit,
 		continuous = true,
 	},
@@ -3821,7 +4109,7 @@ local function do_states(self, dtime)
 		self.substate = ""
 	end
 
-	report(self, "current state: " .. self.state .. ", " .. self.substate)
+	--report(self, "current state: " .. self.state .. ", " .. self.substate)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine
@@ -3938,8 +4226,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		minetest.chat_send_player(hitter:get_player_name(), "# Server: Mob has been protected!")
 		return
 	end
-
-	report(self, "punched")
 
 	-- weapon wear
 	local weapon = hitter:get_wielded_item()
@@ -4474,7 +4760,7 @@ end
 
 
 
--- main mob function
+-- Here is the main mob function.
 local function mob_step(self, dtime)
 	-- The final (actually first) action of mob_step().
 	-- If the mob was marked for removal, we call self.object:remove() here.
@@ -4627,11 +4913,11 @@ if not mobs.registered then
 			name                    = name,
 
 			_name                   = name,
-			mob                     = true, -- Object is a mob.
+			mob                     = true,
 			type                    = def.type,
 			armor_level             = def.armor_level or 0,
 			description             = def.description,
-			stepheight              = def.stepheight or 1.1, -- was 0.6
+			stepheight              = def.stepheight or 1.1,
 			attack_type             = def.attack_type,
 			fly                     = def.fly,
 			fly_in                  = def.fly_in or "air",
@@ -4639,7 +4925,11 @@ if not mobs.registered then
 			order                   = def.order or "",
 			on_die                  = def.on_die,
 			do_custom               = def.do_custom,
-			jump_height             = def.jump_height or 4, -- was 6
+
+			-- This is the upward jump velocity, NOT number of nodes!
+			-- A value of 5 is necessary for a mob to jump just over one node high.
+			-- If it would be 7, the mob could jump 2 nodes.
+			jump_height             = def.jump_height or 5,
 
 			drawtype                = def.drawtype, -- DEPRECATED, use rotate instead
 			rotate                  = math.rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2

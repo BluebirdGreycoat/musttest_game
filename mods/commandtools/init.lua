@@ -135,6 +135,7 @@ commandtools.hoe_on_use = function(itemstack, user, pointed_thing)
 			end
 		else
 			local owner = protector.get_node_owner(pos)
+			minetest.chat_send_player(user:get_player_name(), "# Server: Block position: " .. minetest.pos_to_string(pos) .. ".")
 			if owner then
 				minetest.chat_send_player(user:get_player_name(), "# Server: Block owned by <" .. rename.gpn(owner) .. ">. (Should be protected.)")
 			else

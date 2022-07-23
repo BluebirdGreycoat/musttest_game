@@ -1742,6 +1742,7 @@ local function try_jump(self, dtime)
 	else
 		v.y = 5
 	end
+	v.y = v.y + (random(-50, 50) / 100)
 	self.object:set_velocity(v)
 
 	set_animation(self, "jump")

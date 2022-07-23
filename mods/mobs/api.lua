@@ -1714,8 +1714,8 @@ local function try_jump(self, dtime)
 	-- Is the node in front of the mob's head (assuming 2 node high mob) walkable?
 	local blocked = minetest.registered_nodes[nodetop.name].walkable
 	if blocked then
-		-- If the mob's jump height is 7 or higher, the mob can jump 2-node walls.
-		if self.jump_height < 7 then
+		-- Only considered blocked if the mob can't jump 2 nodes high.
+		if self.jump_height < 2 then
 			return false, "blocked"
 		end
 	end
@@ -1725,8 +1725,18 @@ local function try_jump(self, dtime)
 		return false, "walkable"
 	end
 
+	-- Set upward velocity based on jump height, which is given in nodes to jump.
+	-- The velocities are carefully tuned based on observation tests.
 	local v = self.object:get_velocity()
-	v.y = self.jump_height
+	if self.jump_height == 1 then
+		v.y = 5 -- Jump a bit over one node.
+	elseif self.jump_height == 2 then
+		v.y = 6.8 -- Jump slightly over two nodes.
+	elseif self.jump_height == 3 then
+		v.y = 8.2 -- Jump over three nodes.
+	else
+		v.y = 5
+	end
 	self.object:set_velocity(v)
 
 	set_animation(self, "jump")
@@ -1936,7 +1946,7 @@ local function attempt_breed(self)
 				-- jump when fully grown so as not to fall into ground
 				self.object:set_velocity({
 					x = 0,
-					y = self.jump_height,
+					y = 5,
 					z = 0
 				})
 			end
@@ -2401,12 +2411,6 @@ local function smart_mobs(self, s, p, dist, dtime)
 	if self.fear_height ~= 0 then dropheight = (self.fear_height - 1) end
 
 	local jumpheight = 0
-
-	if self.jump and self.jump_height >= 4 then
-		jumpheight = min(ceil(self.jump_height / 4), 4)
-	elseif self.stepheight > 0.5 then
-		jumpheight = 1
-	end
 
 	if self.path.find_path_timer <= 0 then
 		local radius = self.pathing_radius or 16
@@ -3731,12 +3735,13 @@ local function do_pathfind_newpath(self, dtime)
 	if self.fear_height ~= 0 then dh = (self.fear_height - 1) end
 	if self.stepheight > 1 then jh = 1 end
 
-	-- Do not generate paths with a jump-height above 4 nodes.
-	-- Note: 'self.jump_height' is a velocity factor, NOT number of nodes jumped!
+	-- Do not generate paths with a jump-height above 3 nodes.
 	if self.jump then
-		if self.jump_height >= 7 then
+		if self.jump_height >= 3 then
+			jh = 3
+		elseif self.jump_height >= 2 then
 			jh = 2
-		elseif self.jump_height >= 5 then
+		elseif self.jump_height >= 1 then
 			jh = 1
 		end
 	end
@@ -4926,10 +4931,9 @@ if not mobs.registered then
 			on_die                  = def.on_die,
 			do_custom               = def.do_custom,
 
-			-- This is the upward jump velocity, NOT number of nodes!
-			-- A value of 5 is necessary for a mob to jump just over one node high.
-			-- If it would be 7, the mob could jump 2 nodes.
-			jump_height             = def.jump_height or 5,
+			-- The number of nodes a mob can jump over. Actual jump velocity is
+			-- calculated from this. Supported values are 1, 2, 3.
+			jump_height             = def.jump_height or 1,
 
 			drawtype                = def.drawtype, -- DEPRECATED, use rotate instead
 			rotate                  = math.rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2

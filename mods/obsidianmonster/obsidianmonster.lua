@@ -30,7 +30,6 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 	run_velocity = 2,
 	jump = false,
 	fly = true,
-	--jump_height = 8,
 	fall_damage = 0,
 	fall_speed = -6,
 	stepheight = 2.1,

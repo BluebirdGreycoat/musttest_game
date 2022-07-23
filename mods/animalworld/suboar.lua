@@ -33,8 +33,6 @@ mobs.register_mob("animalworld:suboar", {
 	runaway = false,
 	runaway_from = {"player"},
 	jump = true,
-	jump_height = 6,
-	stepheight = 2,
 	drops = {
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 1},
 		{name = "mobs:leather", chance = 1, min = 1, max = 1},

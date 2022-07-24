@@ -6,7 +6,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	attack_animals = true,
 	attack_players = true,
 	attack_type = "dogfight",
-	pathfinding = 2,
+	pathfinding = 3,
 	pathing_radius = 20,
 	max_node_dig_level = 2,
 	reach = 2, -- Mob will try to move this close to target.

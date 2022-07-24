@@ -189,10 +189,12 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
-	self.substate = newsub
+	if newsub ~= self.substate then
+		self.substate = newsub
 
-	report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " ..
-		table.concat(self.state_stack or {}, ","))
+		report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " ..
+			table.concat(self.state_stack or {}, ","))
+	end
 end
 
 -- Export.
@@ -1310,15 +1312,18 @@ local function try_break_block(self, s)
 	s = v_round(s)
 
 	local node1 = minetest.get_node(s).name
+
+	-- Shortcut.
+	if node1 == "air" then
+		return true
+	end
+
+	-- Checks must be performed in order of severity.
 	local ndef1 = minetest.registered_nodes[node1]
 
 	-- Don't destroy player's bones [MustTest]!
 	if (not ndef1) or node1 == "ignore" or node1 == "bones:bones" then
 		return false, "special"
-	end
-
-	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then
-		return false, "unbreakable"
 	end
 
 	if ndef1.groups.unbreakable or ndef1.groups.immovable then
@@ -1331,15 +1336,21 @@ local function try_break_block(self, s)
 		return false, "liquid"
 	end
 
+	-- Check node level against mob's max-dig-level.
+	if (ndef1.groups.level or 0) > (self.max_node_dig_level or 1) then
+		return false, "unbreakable"
+	end
+
 	if ndef1.walkable and minetest.test_protection(s, "") then
 		return false, "protected"
 	end
 
-	-- If node is air or non-walkable, it does not block mob or pathfinder.
-	if node1 == "air" or not ndef1.walkable then
+	-- If a non-walkable node is also NOT dangerous, it does not block pathfinder.
+	if not ndef1.walkable and not is_node_dangerous(node1) then
 		return true
 	end
 
+	-- If we reach here, node ought to be either walkable, either/or dangerous.
 	local oldnode = minetest.get_node(s)
 	minetest.set_node(s, {name = "air"})
 
@@ -3460,7 +3471,7 @@ local function do_pathfind_newpath(self, dtime)
 		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
 
 		if #positions == 0 then
-			pop_state(self)
+			transition_state(self, "")
 			return
 		else
 			start = positions[random(1, #positions)]
@@ -3480,7 +3491,7 @@ local function do_pathfind_newpath(self, dtime)
 		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
 
 		if #positions == 0 then
-			pop_state(self)
+			transition_state(self, "")
 			return
 		else
 			target = positions[random(1, #positions)]
@@ -3521,8 +3532,9 @@ local function do_pathfind_newpath(self, dtime)
 		self.path.blocked_count = 0
 		self.path.waypoints_gotten = 0
 		transition_substate(self, "")
+		return
 	else
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 end
@@ -3533,7 +3545,7 @@ end
 -- per frame. This property is specified in the state machine table.
 local function do_pathfind_state(self, dtime)
 	if not self.path.following or not self.path.way then
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 
@@ -3542,14 +3554,14 @@ local function do_pathfind_state(self, dtime)
 	-- limit fairly high.
 	local max_len = (self.pathing_radius or 16) * 4
 	if #self.path.way > max_len then
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 
 	local wp = self.path.way[1]
 
 	if not wp then
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 
@@ -3616,18 +3628,23 @@ local function do_pathfind_state(self, dtime)
 	-- would path through them.
 	local path_careful = false
 	if not self.path.dangerous_paths then
-		local result, reason = facing_wall_or_pit(self)
-		if result and (reason == "pit" or reason == "danger") then
-			-- Path goes in the direction of something dangerous, like a cliff.
-			path_careful = true
-		elseif waypoint_dangerous(self, wp) then
-			pop_state(self)
+		if waypoint_dangerous(self, wp) then
+			-- Usually happens due to paths through deadly liquid.
+			transition_substate(self, "blocked")
 			return
 		elseif is_wall_or_pit(self, wp) then
-			-- This can happen if the path environment changed (player dug pit?).
+			-- This can happen if the environment changed (player dug pit or wall?).
 			self.path.blocked_count = self.path.blocked_count + 1
 			transition_substate(self, "blocked")
 			return
+		else
+			-- Soft "slowdown" check has to be performed last.
+			local result, reason = facing_wall_or_pit(self)
+			if result and (reason == "pit" or reason == "danger") then
+				-- Path goes in the direction of something dangerous, like a cliff.
+				-- But we don't care if the path is next to a wall.
+				path_careful = true
+			end
 		end
 	end
 
@@ -3728,7 +3745,8 @@ end
 
 
 local function try_unblock_path(self)
-	report(self, "try unblock path")
+	--report(self, "try unblock path")
+	local s = get_standing_pos(self)
 	local p = get_ahead_pos(self)
 
 	local w1 = self.path.way[1]
@@ -3741,13 +3759,17 @@ local function try_unblock_path(self)
 		local nn = minetest.get_node(w1).name
 		local ndef = minetest.registered_nodes[nn]
 		if ndef.walkable or is_node_dangerous(self, nn, ndef) then
-			report(self, "floating in: " .. nn)
+			--report(self, "floating in: " .. nn)
 			if try_break_block(self, w1) then
 				return "continue"
 			elseif try_place_block(self, v_add(w1, {x=0, y=1, z=0})) then
 				-- Jump up to avoid getting stuck in placed node.
-				force_jump_up(self, 1)
-				return "newpath"
+				if w1.y + 1 >= p.y then
+					force_jump_up(self, 1)
+				end
+				-- Move waypoint 2 nodes up and try to continue the same path.
+				w1.y = w1.y + 2
+				return "continue"
 			else
 				return ""
 			end
@@ -3766,8 +3788,6 @@ local function try_unblock_path(self)
 				-- Waypoint goes over placed block; path not modified.
 				return "continue"
 			elseif try_place_block(self, w1) then
-				-- Jump up to avoid getting stuck in placed node.
-				force_jump_up(self, 1)
 				return "newpath"
 			else
 				return ""
@@ -3891,23 +3911,32 @@ end
 
 
 
+-- This pathfinding state attempts to remove (or place) blocks in order to get
+-- around blockages. It should only be entered if the mob's pathfinding value is
+-- 2 or greater.
 local function do_pathfind_blocked(self, dtime)
 	-- Usually, mob should be facing whatever is blocking us. Generally, only
 	-- other entities (like mobs) and physical terrain are responsible for this.
 	if not self.path.following or not self.path.way then
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 
 	-- Blocked too many times without successful unblocking? Give up.
 	if self.path.blocked_count > 3 then
-		pop_state(self)
+		transition_state(self, "")
+		return
+	end
+
+	-- Mob does not support this level of pathfinding?
+	if (self.pathfinding or 0) < 1 then
+		transition_state(self, "")
 		return
 	end
 
 	local wp = self.path.way[1]
 	if not wp then
-		pop_state(self)
+		transition_state(self, "")
 		return
 	end
 
@@ -3919,22 +3948,28 @@ local function do_pathfind_blocked(self, dtime)
 	local yaw = yaw_to_pos(self, wp, self.object:get_pos())
 	set_yaw(self, yaw)
 
-	local result = try_unblock_path(self)
+	-- Limit the rate at which blockage is removed.
+	self.path.blocked_timer = (self.path.blocked_timer or 0) + dtime
+	if self.path.blocked_timer > 1 then
+		self.path.blocked_timer = 0
 
-	if result == "continue" then
-		-- Continue original path. (Note: path might have been modified slightly.)
-		self.path.blocked_count = 0
-		transition_substate(self, "")
-		return
-	elseif result == "newpath" then
-		-- The attempt resulted in the environment being changed; retry pathfinder.
-		self.path.blocked_count = 0
-		transition_substate(self, "newpath")
-		return
-	else
-		-- Couldn't remove blockage.
-		pop_state(self)
-		return
+		local result = try_unblock_path(self)
+
+		if result == "continue" then
+			-- Continue original path. (Note: path might have been modified slightly.)
+			self.path.blocked_count = 0
+			transition_substate(self, "")
+			return
+		elseif result == "newpath" then
+			-- The attempt resulted in the environment being changed; retry pathfinder.
+			self.path.blocked_count = 0
+			transition_substate(self, "newpath")
+			return
+		else
+			-- Couldn't remove blockage.
+			pop_state(self)
+			return
+		end
 	end
 end
 

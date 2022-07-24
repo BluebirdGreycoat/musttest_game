@@ -19,7 +19,7 @@ griefer.elite_do_custom = function(self, dtime)
 
 					if has_lineofsight then
 						local vec = vector.subtract(p, s)
-						mobs.shoot_arrow(self, vec)
+						--mobs.shoot_arrow(self, vec)
 					end
 				end
 			end

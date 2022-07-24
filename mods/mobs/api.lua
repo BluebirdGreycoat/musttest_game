@@ -760,33 +760,42 @@ end
 
 
 
--- Returns true is node can deal damage to self
-function mobs.is_node_dangerous(mob_object, nodename)
+-- Returns true if node can deal damage to self.
+local function is_node_dangerous(self, nodename, ndef)
+	if nodename == "air" then
+		return false
+	end
 
-	if (mob_object.water_damage or 0) > 0
-			and minetest.get_item_group(nodename, "water") ~= 0 then
+	if not ndef then
+		ndef = minetest.registered_nodes[nodename]
+	end
+	if not ndef then
 		return true
 	end
 
-	if (mob_object.lava_damage or 0) > 0
-			and minetest.get_item_group(nodename, "lava") ~= 0 then
+	local groups = ndef.groups
+
+	local water = groups.water or 0
+	local lava = groups.lava or 0
+	local fire = groups.fire or 0
+
+	if (self.water_damage or 0) > 0 and water ~= 0 then
 		return true
 	end
 
-	if (mob_object.fire_damage or 0) > 0
-			and minetest.get_item_group(nodename, "fire") ~= 0 then
+	if (self.lava_damage or 0) > 0 and lava ~= 0 then
 		return true
 	end
 
-	if minetest.registered_nodes[nodename].damage_per_second > 0 then
+	if (self.fire_damage or 0) > 0 and fire ~= 0 then
+		return true
+	end
+
+	if ndef.damage_per_second > 0 then
 		return true
 	end
 
 	return false
-end
-
-local function is_node_dangerous(mob_object, nodename)
-	return mobs.is_node_dangerous(mob_object, nodename)
 end
 
 
@@ -867,48 +876,48 @@ end
 -- the node which the mob wants to move INTO. Always returns two values,
 -- true/false, and a reason string.
 local function is_wall_or_pit(self, wp)
-	local drop = self.fear_height or 0
-	local free_fall, blocker = minetest.line_of_sight(
-		v_add(wp, {x=0, y=1, z=0}),
-		v_add(wp, {x=0, y=-drop, z=0}))
+	local drop = (self.fear_height or 0)
+	local jump = (self.jump_height or 0)
 
-	-- Check for straight drop.
-	if free_fall then
-		if drop == 0 then
-			return false, "nofear"
+	-- Start the raycast from the top and go down.
+	local p1 = v_add(wp, {x=0, y=jump, z=0})
+	local p2 = v_add(wp, {x=0, y=-drop, z=0})
+	local ray = minetest.raycast(p1, p2, false, true)
+
+	local thing = ray:next()
+
+	while thing do
+		if thing.type == "node" then
+			local p = thing.under
+			local n = minetest.get_node(p).name
+			local d = minetest.registered_nodes[n]
+
+			if not d then
+				return true, "undef"
+			end
+
+			if is_node_dangerous(self, n, d) then
+				return true, "danger"
+			end
+
+			-- If the node is not walkable, skip these checks.
+			if d.walkable then
+				if p.y >= p1.y then
+					return true, "wall"
+				else
+					return false, "surface"
+				end
+			end
 		end
-
-		return true, "pit"
+		thing = ray:next()
 	end
 
-	local bnode = node_ok(blocker)
-	local ndef = minetest.registered_nodes[bnode.name]
-
-	-- Is node not defined? Regard undefined nodes as blocker/cliff.
-	if not ndef then return true, "undef" end
-
-	-- Will we drop onto dangerous node?
-	if is_node_dangerous(self, bnode.name) then
-		return true, "danger"
+	-- If we reach here, the raycast did not intersect any nodes.
+	if (self.fear_height or 0) == 0 then
+		return false, "nofear"
 	end
 
-	-- Is mob facing a 2-node high structure?
-	if ndef.walkable and blocker.y > wp.y then
-		return true, "wall"
-	end
-
-	if ndef.walkable then
-		return false, "surface"
-	else
-		-- Check what's below the blocker.
-		local unod = node_ok(v_add(blocker, {x=0, y=-1, z=0})).name
-		local bdef = minetest.registered_nodes[unod]
-		if not bdef.walkable then
-			return true, "pit"
-		else
-			return false, "surface"
-		end
-	end
+	return true, "pit"
 end
 
 
@@ -3115,6 +3124,7 @@ local function do_chase_attack(self, dtime)
 		-- But some dangerous nodes are non-walkable, which means the pathfinder
 		-- would path through them.
 		if facing_wall_or_pit(self) then
+			-- Chase blocked, NOT pathfind blocked.
 			transition_substate(self, "blocked")
 		else
 			try_jump(self, dtime)
@@ -3605,8 +3615,6 @@ local function do_pathfind_state(self, dtime)
 	if self.path.stuck_timer > stuck_timeout then
 		self.path.stuck_timer = 0
 		self.path.blocked_count = self.path.blocked_count + 1
-		set_velocity(self, 0)
-		set_animation(self, "stand")
 		transition_substate(self, "blocked")
 		return
 	end
@@ -3632,6 +3640,7 @@ local function do_pathfind_rondev(self, dtime)
 	-- If we've exceeded the time budget for this action, we must be blocked.
 	self.path.rondev_timeout = (self.path.rondev_timeout or 0) - dtime
 	if self.path.rondev_timeout < 0 then
+		self.path.blocked_count = self.path.blocked_count + 1
 		transition_substate(self, "blocked")
 		return
 	end
@@ -3835,6 +3844,11 @@ local function do_pathfind_blocked(self, dtime)
 		return
 	end
 
+	-- Halt mob's movement while we try to unblock the path.
+	set_velocity(self, 0)
+	set_animation(self, "stand")
+
+	-- Get mob facing the next waypoint (and the blockage, presumably).
 	local yaw = yaw_to_pos(self, wp, self.object:get_pos())
 	set_yaw(self, yaw)
 

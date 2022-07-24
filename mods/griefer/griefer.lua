@@ -44,7 +44,7 @@ mobs.register_mob("griefer:griefer", {
 	},
 	water_damage = 0,
 	lava_damage = 4,
-    makes_bones_in_lava = false,
+	makes_bones_in_lava = false,
 	light_damage = 0,
 	fear_height = 3,
 	animation = {

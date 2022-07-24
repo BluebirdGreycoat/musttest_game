@@ -15,5 +15,6 @@ minetest.register_privilege("mob_respect", {
 dofile(mobs.modpath .. "/api.lua")
 dofile(mobs.modpath .. "/crafts.lua")
 dofile(mobs.modpath .. "/spawner.lua")
+reload.register_file("mobs:chat", mobs.modpath .. "/chat.lua", true)
 
 

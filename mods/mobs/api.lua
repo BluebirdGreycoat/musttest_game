@@ -3952,15 +3952,15 @@ local function do_pathfind_state(self, dtime)
 		set_velocity(self, 0.1)
 		set_animation(self, "walk", 5)
 	elseif path_careful then
-		report(self, "walking")
-		-- Slow down when near dangerous terrain.
-		set_velocity(self, self.walk_velocity or 0)
-		set_animation(self, "walk")
-	elseif sharp_turn then
 		report(self, "half run")
-		-- Slow down (half-run) to execute turns.
+		-- Slow down when near dangerous terrain.
 		local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
 		set_velocity(self, half_run)
+		set_animation(self, "walk")
+	elseif sharp_turn then
+		report(self, "running")
+		-- Slow down to execute turns.
+		set_velocity(self, self.run_velocity or 0)
 		set_animation(self, "run")
 	else
 		report(self, "sprinting")

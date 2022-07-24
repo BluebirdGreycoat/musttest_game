@@ -882,6 +882,10 @@ local function is_wall_or_pit(self, wp)
 	end
 
 	local bnode = node_ok(blocker)
+	local ndef = minetest.registered_nodes[bnode.name]
+
+	-- Is node not defined? Regard undefined nodes as blocker/cliff.
+	if not ndef then return true, "undef" end
 
 	-- Will we drop onto dangerous node?
 	if is_node_dangerous(self, bnode.name) then
@@ -889,14 +893,9 @@ local function is_wall_or_pit(self, wp)
 	end
 
 	-- Is mob facing a 2-node high structure?
-	if blocker.y > wp.y then
+	if ndef.walkable and blocker.y > wp.y then
 		return true, "wall"
 	end
-
-	local ndef = minetest.registered_nodes[bnode.name]
-
-	-- Is node not defined? Regard undefined nodes as blocker/cliff.
-	if not ndef then return true, "undef" end
 
 	if ndef.walkable then
 		return false, "surface"
@@ -3829,6 +3828,15 @@ local function do_pathfind_blocked(self, dtime)
 		pop_state(self)
 		return
 	end
+
+	local wp = self.path.way[1]
+	if not wp then
+		pop_state(self)
+		return
+	end
+
+	local yaw = yaw_to_pos(self, wp, self.object:get_pos())
+	set_yaw(self, yaw)
 
 	local result = try_unblock_path(self)
 

@@ -145,7 +145,7 @@ end
 -- State transition function [MustTest]. Do not set mob state designation
 -- manually, call this function instead. It handles state transitions, etc.
 local function transition_state(self, newstate)
-	report(self, "state: " .. newstate)
+	--report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
 		local sm = mobs.state_machine
@@ -172,7 +172,7 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
-	report(self, "sub: " .. newsub)
+	--report(self, "sub: " .. newsub)
 	self.substate = newsub
 end
 
@@ -3488,13 +3488,9 @@ local function do_chase_attack(self, dtime)
 			transition_substate(self, "blocked")
 		else
 			try_jump(self, dtime)
-			set_velocity(self, self.sprint_velocity or 0)
 
-			if self.animation and self.animation.run_start then
-				set_animation(self, "run")
-			else
-				set_animation(self, "walk")
-			end
+			set_velocity(self, self.sprint_velocity or 0)
+			set_animation(self, "run")
 		end
 
 		-- Punch target if within punching range even while moving [MustTest].
@@ -3890,7 +3886,8 @@ local function do_pathfind_state(self, dtime)
 		-- rapid switching between the "main", "newpath", and "rondev" states.
 		-- Overall, taking shortcuts makes mob movement look a bit better, at the
 		-- cost that sometimes the mob walks into a trap and has to path out of it.
-		local fw = self.path.way[6]
+		local count = random(4, 8)
+		local fw = self.path.way[count]
 		if fw and abs(wp.y - fw.y) <= 2 and self.path.waypoints_gotten > 4 then
 			local y1 = self.object:get_yaw()
 			local y2 = yaw_to_pos(self, fw, s)
@@ -3898,7 +3895,7 @@ local function do_pathfind_state(self, dtime)
 
 			if d > math.rad(20) then
 				if raycast_los(self, s, fw) then
-					for i = 1, 5, 1 do
+					for i = 1, (count - 1), 1 do
 						table.remove(self.path.way, 1)
 					end
 					self.path.rondev_timeout = 5
@@ -3955,15 +3952,18 @@ local function do_pathfind_state(self, dtime)
 		set_velocity(self, 0.1)
 		set_animation(self, "walk", 5)
 	elseif path_careful then
+		report(self, "walking")
 		-- Slow down when near dangerous terrain.
 		set_velocity(self, self.walk_velocity or 0)
 		set_animation(self, "walk")
 	elseif sharp_turn then
+		report(self, "half run")
 		-- Slow down (half-run) to execute turns.
 		local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
 		set_velocity(self, half_run)
 		set_animation(self, "run")
 	else
+		report(self, "sprinting")
 		set_velocity(self, self.sprint_velocity or 0)
 		set_animation(self, "run")
 	end

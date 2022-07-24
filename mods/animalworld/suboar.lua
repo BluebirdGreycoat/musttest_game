@@ -10,6 +10,7 @@ mobs.register_mob("animalworld:suboar", {
 	-- Mob should defend itself but does not attack first.
 	attack_players = false,
 	attack_npcs = false,
+	pathfinding = 1,
 
 	reach = 2,
 	damage = 8,

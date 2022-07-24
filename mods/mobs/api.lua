@@ -22,15 +22,23 @@ local v_add = vector.add
 
 
 -- For debug reports.
-local function report(self, msg)
+local function report(self, msg, range)
 	if self.name ~= mobs.report_name then
 		return
 	end
+	local pname = gdac.name_of_admin
 	if minetest.is_singleplayer() then
-		minetest.chat_send_all(msg)
-	else
-		local pname = gdac.name_of_admin
-		minetest.chat_send_player(pname, msg)
+		pname = "singleplayer"
+	end
+	local player = minetest.get_player_by_name(pname)
+
+	-- Range limit so I only get reports from mobs nearby.
+	if player then
+		local s = self.object:get_pos()
+		local p = player:get_pos()
+		if vector.distance(s, p) < (range or 50) then
+			minetest.chat_send_player(pname, msg)
+		end
 	end
 end
 
@@ -143,7 +151,6 @@ end
 
 
 local function set_state(self, newstate)
-	--report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
 		local sm = mobs.state_machine
@@ -158,8 +165,10 @@ local function set_state(self, newstate)
 		if sm[newstate] and sm[newstate].enter then
 			sm[newstate].enter(self)
 		end
+
+		report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " ..
+			table.concat(self.state_stack or {}, ","))
 	end
-	report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " .. table.concat(self.state_stack or {}))
 end
 
 
@@ -180,8 +189,10 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
-	--report(self, "sub: " .. newsub)
 	self.substate = newsub
+
+	report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " ..
+		table.concat(self.state_stack or {}, ","))
 end
 
 -- Export.
@@ -229,6 +240,15 @@ local function do_attack(self, target)
 
 	self.attack = target
 	transition_state(self, "attack")
+end
+
+
+
+-- Check if the node at a position has 'walkable = true'.
+local function pos_walkable(pos)
+	local nn = minetest.get_node(pos).name
+	local dd = minetest.registered_nodes[nn]
+	return dd.walkable
 end
 
 
@@ -1306,8 +1326,8 @@ local function try_break_block(self, s)
 	end
 
 	-- Some liquids (like lava sources) are walkable. The liquid check must
-	-- therefore come first.
-	if ndef1.groups.liquid then
+	-- therefore come first. (Some fake liquids, like nether grit, are diggable.)
+	if ndef1.groups.liquid and not ndef1.diggable then
 		return false, "liquid"
 	end
 
@@ -1345,6 +1365,26 @@ local function try_break_block(self, s)
 	end
 
 	return true -- success!
+end
+
+
+
+local function force_jump_up(self, height)
+	height = height or self.jump_height or 0
+	local v = self.object:get_velocity()
+	if height == 1 then
+		v.y = 5 -- Jump a bit over one node.
+	elseif height == 2 then
+		v.y = 6.8 -- Jump slightly over two nodes.
+	elseif height == 3 then
+		v.y = 8.2 -- Jump over three nodes.
+	else
+		v.y = 5
+	end
+	v.y = v.y + (random(-50, 50) / 100)
+	self.object:set_velocity(v)
+
+	set_animation(self, "jump")
 end
 
 
@@ -1415,22 +1455,7 @@ local function try_jump(self, dtime)
 		return false, "walkable"
 	end
 
-	-- Set upward velocity based on jump height, which is given in nodes to jump.
-	-- The velocities are carefully tuned based on observation tests.
-	local v = self.object:get_velocity()
-	if self.jump_height == 1 then
-		v.y = 5 -- Jump a bit over one node.
-	elseif self.jump_height == 2 then
-		v.y = 6.8 -- Jump slightly over two nodes.
-	elseif self.jump_height == 3 then
-		v.y = 8.2 -- Jump over three nodes.
-	else
-		v.y = 5
-	end
-	v.y = v.y + (random(-50, 50) / 100)
-	self.object:set_velocity(v)
-
-	set_animation(self, "jump")
+	force_jump_up(self)
 
 	-- When in air move forward.
 	minetest.after(0.3, function(self, v)
@@ -1467,7 +1492,7 @@ local env_damage_nodes = {
 
 -- Executed when self.state == "avoid" [MustTest].
 -- Function assumes entity object exists (entity methods shall not return nil).
-local function avoid_env_damage(self, yaw, dtime)
+local function avoid_env_damage(self, dtime)
 	-- Get rounded position of the node the mob is standing in.
 	local s = self.object:get_pos()
 	s.y = s.y + self.collisionbox[2] + 0.5
@@ -1480,7 +1505,7 @@ local function avoid_env_damage(self, yaw, dtime)
 	end
 
 	-- Current target's timeout has expired. Need to find a new safe spot.
-	if not self.avoid.target then
+	if self.avoid.timer <= 0 then
 		-- Get list of nearby safe nodes under air.
 		local minp = {x=s.x - 1, y=s.y - 0, z=s.z - 1}
 		local maxp = {x=s.x + 1, y=s.y + 1, z=s.z + 1}
@@ -1526,24 +1551,27 @@ local function avoid_env_damage(self, yaw, dtime)
 			self.path.target = v_add(self.avoid.target, {x=0, y=1, z=0})
 			self.path.dangerous_paths = true
 			push_state(self, "pathfind")
+			return
 		else
 			-- Look towards land and jump/move in that direction.
 			local yaw = yaw_to_pos(self, self.avoid.target, s)
 			set_yaw(self, yaw, 4)
 
-			set_velocity(self, self.walk_velocity or 0)
-			set_animation(self, "walk")
+			set_velocity(self, self.run_velocity or 0)
+			set_animation(self, "run")
+			self.avoid.timer = 3
 		end
 	else
 		-- Mob panics, turns in random direction.
 		if self.avoid.timer <= 0 then
+			local yaw = self.object:get_yaw()
 			yaw = yaw + random(-pi, pi)
 			set_yaw(self, yaw, 6)
 			self.avoid.timer = 3
 		end
 
 		set_velocity(self, self.run_velocity or 0)
-		set_animation(self, "walk")
+		set_animation(self, "run")
 	end
 end
 
@@ -2533,6 +2561,7 @@ local function general_attack(self)
 	if self.state == "attack" then return end
 	if self.state == "runaway" then return end
 	if self.state == "pathfind" then return end
+	if self.state == "avoid" then return end
 
 	-- Skip if mob is docile during day.
 	if day_docile(self) then return end
@@ -2564,6 +2593,9 @@ local function runaway_from(self)
 
 	-- If non-passive mob is attacking, then it will not run away right now.
 	if self.state == "attack" and not self.passive then return end
+	if self.state == "runaway" then return end
+	if self.state == "pathfind" then return end
+	if self.state == "avoid" then return end
 
 	-- Get array list of targets to run away from.
 	local objs = get_avoidable_targets(self)
@@ -2738,7 +2770,7 @@ end
 local function do_stand_state(self, dtime)
 	-- Avoid dangerous nodes.
 	if is_node_dangerous(self, self.standing_in) then
-		transition_state(self, "avoid")
+		push_state(self, "avoid")
 		return
 	end
 
@@ -2828,7 +2860,7 @@ end
 local function do_walk_state(self, dtime)
 	-- Avoid dangerous nodes.
 	if is_node_dangerous(self, self.standing_in) then
-		transition_state(self, "avoid")
+		push_state(self, "avoid")
 		return
 	end
 
@@ -2889,15 +2921,21 @@ local function do_runaway_state(self, dtime)
 		if target then
 			self.runaway_timer = 5
 		else
-			transition_state(self, "stand")
+			pop_state(self)
 			return
 		end
+	end
+
+	-- Do evasion if inside dangerous node.
+	if is_node_dangerous(self, self.standing_in) then
+		push_state(self, "avoid")
+		return
 	end
 
 	-- Stop fleeing if heading into obstacle.
 	local result, reason = facing_wall_or_pit(self)
 	if result then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -2909,10 +2947,8 @@ end
 
 
 local function do_avoid_state(self, dtime)
-	local yaw = self.object:get_yaw()
-
 	if is_node_dangerous(self, self.standing_in) then
-		avoid_env_damage(self, yaw, dtime)
+		avoid_env_damage(self, dtime)
 	else
 		pop_state(self)
 	end
@@ -2974,7 +3010,7 @@ local function do_blocked_attack(self, dtime)
 
 	-- Avoid dangerous nodes.
 	if is_node_dangerous(self, self.standing_in) then
-		transition_state(self, "avoid")
+		push_state(self, "avoid")
 		return
 	end
 
@@ -3001,23 +3037,6 @@ local function do_blocked_attack(self, dtime)
 		set_yaw(self, yaw)
 	end
 
-	-- Mob no longer stuck?
-	if not facing_wall_or_pit(self) then
-		self.stuck_timer = 0
-		transition_substate(self, "chase")
-		return
-	else
-		-- Mob is stuck.
-		self.stuck_timer = (self.stuck_timer or 0) + dtime
-		if self.stuck_timer > stuck_timeout then
-			self.stuck_timer = 0
-			self.path.dangerous_paths = false
-			self.path.target = v_round(self.attack:get_pos())
-			push_state(self, "pathfind")
-			return
-		end
-	end
-
 	-- Punch target if within punching range even while stuck [MustTest].
 	if dist <= (self.punch_reach or self.reach or 0) then
 		punch_target(self, dtime)
@@ -3030,6 +3049,25 @@ local function do_blocked_attack(self, dtime)
 		if switch == 1 then
 			transition_substate(self, "shoot")
 			return
+		end
+	end
+
+	-- Mob no longer stuck?
+	if not facing_wall_or_pit(self) then
+		self.stuck_timer = 0
+		transition_substate(self, "chase")
+		return
+	else
+		-- Mob is stuck.
+		self.stuck_timer = (self.stuck_timer or 0) + dtime
+		if self.stuck_timer > stuck_timeout then
+			self.stuck_timer = 0
+			if (self.pathfinding or 0) >= 1 then
+				self.path.dangerous_paths = false
+				self.path.target = v_round(self.attack:get_pos())
+				push_state(self, "pathfind")
+				return
+			end
 		end
 	end
 end
@@ -3415,15 +3453,28 @@ local function do_pathfind_newpath(self, dtime)
 	start.y = start.y + self.collisionbox[2] + 0.5
 	start = v_round(start)
 
+	-- The mob might be clipped inside a node. Find a start position nearby.
+	if pos_walkable(start) then
+		local minp = v_add(start, {x=-1, y=0, z=-1})
+		local maxp = v_add(start, {x=1, y=0, z=1})
+		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
+
+		if #positions == 0 then
+			pop_state(self)
+			return
+		else
+			start = positions[random(1, #positions)]
+		end
+	end
+
 	local target = v_round(self.path.target)
 	local radius = self.pathing_radius or 16
 
 	-- The target might not always be reachable (e.g., the target is a player who
 	-- has sneak-moved off the edge of a node, and thus are "standing" in air). So
 	-- we choose a random valid position near the target instead of the target
-	-- itself.
-	local undername = minetest.get_node(v_add(target, {x=0, y=-1, z=0})).name
-	if not minetest.registered_nodes[undername].walkable then
+	-- itself. We also check if the player is slightly clipped inside walkable.
+	if pos_walkable(target) or not pos_walkable(v_add(target, {x=0, y=-1, z=0})) then
 		local minp = v_add(target, {x=-2, y=-1, z=-2})
 		local maxp = v_add(target, {x=2, y=1, z=2})
 		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
@@ -3677,36 +3728,49 @@ end
 
 
 local function try_unblock_path(self)
+	report(self, "try unblock path")
 	local p = get_ahead_pos(self)
 
 	local w1 = self.path.way[1]
 	local w2 = self.path.way[2]
 
-	-- First, check if the waypoint is inside a walkable node. This would happen
-	-- if the player (or another mob) modified the environment through which the
-	-- path traveled, by placing a block on it.
+	-- First, check if the waypoint is inside a walkable or dangerous node. This
+	-- would happen if the player (or another mob) modified the environment
+	-- through which the path traveled, by placing a block on it.
 	if w1 then
 		local nn = minetest.get_node(w1).name
 		local ndef = minetest.registered_nodes[nn]
-		if ndef.walkable then
+		if ndef.walkable or is_node_dangerous(self, nn, ndef) then
+			report(self, "floating in: " .. nn)
 			if try_break_block(self, w1) then
 				return "continue"
-			else
+			elseif try_place_block(self, v_add(w1, {x=0, y=1, z=0})) then
+				-- Jump up to avoid getting stuck in placed node.
+				force_jump_up(self, 1)
 				return "newpath"
+			else
+				return ""
 			end
 		end
 	end
 
-	-- Check if the waypoint floating in non-walkable (like air).
+	-- Check if the waypoint floating OVER non-walkable (like air). For example,
+	-- player might have dug a pit in the mob's path.
 	do
 		local p2 = v_add(w1, {x=0, y=-1, z=0})
 		local nn = minetest.get_node(p2).name
 		local ndef = minetest.registered_nodes[nn]
-		if not ndef.walkable then
+		if not ndef.walkable or is_node_dangerous(self, nn, ndef) then
+			report(self, "floating over")
 			if try_place_block(self, p2) then
+				-- Waypoint goes over placed block; path not modified.
 				return "continue"
-			else
+			elseif try_place_block(self, w1) then
+				-- Jump up to avoid getting stuck in placed node.
+				force_jump_up(self, 1)
 				return "newpath"
+			else
+				return ""
 			end
 		end
 	end
@@ -3955,7 +4019,7 @@ local function do_states(self, dtime)
 		transition_state(self, "stand")
 	end
 
-	--report(self, "current state: " .. self.state .. ", " .. self.substate)
+	report(self, "current state: " .. self.state .. " (" .. self.substate .. ")", 2)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine

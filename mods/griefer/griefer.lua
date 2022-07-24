@@ -29,7 +29,7 @@ mobs.register_mob("griefer:griefer", {
 	},
 	walk_velocity = 1,
 	run_velocity = 3,
-	sprint_velocity = 4,
+	sprint_velocity = 3.5,
 	view_range = 20,
 	jump = true,
 	drops = {

@@ -145,7 +145,7 @@ end
 -- State transition function [MustTest]. Do not set mob state designation
 -- manually, call this function instead. It handles state transitions, etc.
 local function transition_state(self, newstate)
-	--report(self, "state: " .. newstate)
+	report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
 		local sm = mobs.state_machine
@@ -172,7 +172,7 @@ end
 -- function, so states can swap between different main() functions as needed.
 -- There are no exit() or enter() calls here.
 local function transition_substate(self, newsub)
-	--report(self, "sub: " .. newsub)
+	report(self, "sub: " .. newsub)
 	self.substate = newsub
 end
 
@@ -808,6 +808,29 @@ end
 
 
 
+-- Check line of sight using raycasting (thanks Astrobe).
+local function raycast_los(self, pos1, pos2)
+	local ray = minetest.raycast(pos1, pos2, false, true)
+	local thing = ray:next()
+
+	while thing do
+		if thing.type == "node" then
+			local name = minetest.get_node(thing.under).name
+			local ndef = minetest.registered_nodes[name]
+
+			if ndef and ndef.walkable then
+				return false
+			end
+		end
+
+		thing = ray:next()
+	end
+
+	return true
+end
+
+
+
 -- Are we flying in what we are suppose to? (taikedz)
 local function flight_check(self, pos_w)
 	if type(self.fly_in) == "string" and self.standing_in == self.fly_in then
@@ -1035,7 +1058,7 @@ local function check_for_death(self, cause, cmi_cause)
 
 	if can_drop then
 		-- dropped cooked item if mob died in lava
-		if cause == "lava" then
+		if cause == "lava" or cause == "fire" then
 			item_drop(self, true)
 		else
 			item_drop(self, nil)
@@ -1295,6 +1318,28 @@ end
 
 
 
+-- Get list of players and mobs in radius. Note: all "actor" (player, mob) type
+-- targets are returned, irrespective of invisibility. Self is never included.
+local function get_targets_in_radius(self, pos, radius)
+	local list = {}
+	local objs = minetest.get_objects_inside_radius(pos, radius)
+	for k, v in ipairs(objs) do
+		if v:is_player() then
+			list[#list + 1] = v
+		else
+			local ent = v:get_luaentity()
+			if ent and (ent.mob or ent._cmi_is_mob) then
+				if ent.object ~= self.object then
+					list[#list + 1] = v
+				end
+			end
+		end
+	end
+	return list
+end
+
+
+
 -- Environmental damage (water, lava, fire, light).
 local function do_env_damage(self)
 
@@ -1412,12 +1457,10 @@ local function do_env_damage(self)
 
 		self.health = self.health - self.fire_damage
 
-		effect(py, 15, "fire_basic_flame.png", 1, 5, 1, 0.2, 15, true)
+		effect(pos, 15, "fire_basic_flame.png", 1, 5, 1, 0.2, 15, true)
 
-		if self:check_for_death({type = "environment", pos = pos,
-				node = self.standing_in, hot = true}) then
-			return true
-		end
+		if check_for_death(self, "fire", {type = "environment", pos = pos,
+				node = self.standing_in, hot = true}) then return end
 
 	-- damage_per_second node check
 	elseif nodef.damage_per_second ~= 0
@@ -3728,12 +3771,31 @@ end
 
 
 local function do_pathfind_newpath(self, dtime)
+	-- Make sure to round positions, because the pathfinder is very sensitive.
 	local start = self.object:get_pos()
 	start.y = start.y + self.collisionbox[2] + 0.5
 	start = v_round(start)
 
-	local target = self.path.target
+	local target = v_round(self.path.target)
 	local radius = self.pathing_radius or 16
+
+	-- The target might not always be reachable (e.g., the target is a player who
+	-- has sneak-moved off the edge of a node, and thus are "standing" in air). So
+	-- we choose a random valid position near the target instead of the target
+	-- itself.
+	local undername = minetest.get_node(v_add(target, {x=0, y=-1, z=0})).name
+	if not minetest.registered_nodes[undername].walkable then
+		local minp = v_add(target, {x=-2, y=-1, z=-2})
+		local maxp = v_add(target, {x=2, y=1, z=2})
+		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
+
+		if #positions == 0 then
+			transition_state(self, "stand")
+			return
+		else
+			target = positions[random(1, #positions)]
+		end
+	end
 
 	local dh = 6
 	local jh = 0
@@ -3767,8 +3829,10 @@ local function do_pathfind_newpath(self, dtime)
 		self.path.following = true
 		self.path.stuck_timer = 0
 		self.path.blocked_count = 0
+		self.path.waypoints_gotten = 0
 		transition_substate(self, "")
 	else
+		report(self, "did not find path!")
 		transition_state(self, "stand")
 		return
 	end
@@ -3806,17 +3870,48 @@ local function do_pathfind_state(self, dtime)
 	local s = self.object:get_pos()
 	self.path.stuck_timer = (self.path.stuck_timer or 0) + dtime
 
-	-- Use 'get_distance' and not 'abs' because waypoint may be vertical from us.
-	if get_distance(wp, s) < 0.6 then
+	local dist = get_distance(wp, s)
+
+	-- Note: waypoint may be vertical from us (above or below).
+	if dist < 0.6 then
 		-- Reached waypoint, remove it from queue.
 		table.remove(self.path.way, 1)
 		self.path.stuck_timer = 0
+		self.path.waypoints_gotten = (self.path.waypoints_gotten or 0) + 1
 
 		-- Are we done following the path?
 		if #self.path.way == 0 then
 			transition_state(self, "stand")
 			return
 		end
+
+		-- Take shortcuts only if we've gotten a few waypoints successfully already.
+		-- The requirement that we must first traverse at least 4 waypoints prevents
+		-- rapid switching between the "main", "newpath", and "rondev" states.
+		-- Overall, taking shortcuts makes mob movement look a bit better, at the
+		-- cost that sometimes the mob walks into a trap and has to path out of it.
+		local fw = self.path.way[6]
+		if fw and abs(wp.y - fw.y) <= 2 and self.path.waypoints_gotten > 4 then
+			local y1 = self.object:get_yaw()
+			local y2 = yaw_to_pos(self, fw, s)
+			local d = yaw_delta(y1, y2)
+
+			if d > math.rad(20) then
+				if raycast_los(self, s, fw) then
+					for i = 1, 5, 1 do
+						table.remove(self.path.way, 1)
+					end
+					self.path.rondev_timeout = 5
+					transition_substate(self, "rondev")
+				end
+			end
+		end
+	elseif dist > 3 then -- Dist factor is a bit arbitrary right now.
+		-- We are some distance to the waypoint. Transition to the "rondev" state,
+		-- which tries to walk the mob to the target in a direct line.
+		self.path.rondev_timeout = 5
+		transition_substate(self, "rondev")
+		return
 	end
 
 	-- Is mob directly over or under the target?
@@ -3895,6 +3990,56 @@ end
 
 
 
+-- In this state, the mob is some distance from the first waypoint in the path,
+-- and must move toward it in a direct line.
+local function do_pathfind_rondev(self, dtime)
+	if not self.path.following or not self.path.way then
+		transition_state(self, "stand")
+		return
+	end
+
+	local wp = self.path.way[1]
+
+	if not wp then
+		transition_state(self, "stand")
+		return
+	end
+
+	-- If we've exceeded the time budget for this action, we must be blocked.
+	self.path.rondev_timeout = (self.path.rondev_timeout or 0) - dtime
+	if self.path.rondev_timeout < 0 then
+		transition_substate(self, "blocked")
+		return
+	end
+
+	local s = self.object:get_pos()
+
+	-- Get the mob facing in the right direction.
+	local yaw = yaw_to_pos(self, wp, s)
+	set_yaw(self, yaw)
+
+	if facing_wall_or_pit(self) then
+		set_velocity(self, 0)
+		transition_substate(self, "newpath")
+		return
+	end
+
+	-- Slow down (half-run) to execute shortcuts.
+	local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
+
+	set_velocity(self, half_run)
+	set_animation(self, "run")
+
+	try_jump(self, dtime)
+
+	if get_distance(wp, s) < 1.0 then
+		transition_substate(self, "")
+		return
+	end
+end
+
+
+
 local function try_unblock_path(self)
 	local p = get_ahead_pos(self)
 
@@ -3936,18 +4081,15 @@ local function try_unblock_path(self)
 		local obstructed = false
 		local can_move = false
 
-		local objs = minetest.get_objects_inside_radius(w1, 1.5)
-		for k, v in ipairs(objs) do
-			if v:is_player() then
-				obstructed = true
-			else
-				local ent = v:get_luaentity()
-				if ent and (ent.mob or ent._cmi_is_mob) then
-					if ent.object ~= self.object then
-						obstructed = true
-					end
-				end
-			end
+		-- Check both the next waypoint AND the mob's "ahead" pos. They might be
+		-- separated by some distance, and thus one might be blocked while the other
+		-- is not.
+		local objs = get_targets_in_radius(self, w1, 1.5)
+		if #objs > 0 then
+			obstructed = true
+		else
+			objs = get_targets_in_radius(self, p, 1.5)
+			if #objs > 0 then obstructed = true end
 		end
 
 		-- Make sure nothing is obstructing the mob (assuming 2-node high mob).
@@ -4133,6 +4275,7 @@ local state_machine = {
 		main = do_pathfind_state,
 		blocked = do_pathfind_blocked,
 		newpath = do_pathfind_newpath,
+		rondev = do_pathfind_rondev,
 		exit = do_pathfind_exit,
 		continuous = true,
 	},

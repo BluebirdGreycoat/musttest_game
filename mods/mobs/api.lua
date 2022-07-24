@@ -142,9 +142,7 @@ end
 
 
 
--- State transition function [MustTest]. Do not set mob state designation
--- manually, call this function instead. It handles state transitions, etc.
-local function transition_state(self, newstate)
+local function set_state(self, newstate)
 	--report(self, "state: " .. newstate)
 	local oldstate = self.state or ""
 	if newstate ~= oldstate then
@@ -161,6 +159,16 @@ local function transition_state(self, newstate)
 			sm[newstate].enter(self)
 		end
 	end
+	report(self, "stack: " .. self.state .. " (" .. self.substate .. ") -> " .. table.concat(self.state_stack or {}))
+end
+
+
+
+-- State transition function [MustTest]. Do not set mob state designation
+-- manually, call this function instead. It handles state transitions, etc.
+local function transition_state(self, newstate)
+	self.state_stack = {}
+	set_state(self, newstate)
 end
 
 -- Export.
@@ -179,6 +187,37 @@ end
 -- Export.
 mobs.transition_substate = function(...)
 	transition_substate(...)
+end
+
+
+
+local function push_state(self, newstate)
+	if not self.state_stack then
+		self.state_stack = {}
+	end
+
+	if self.state and self.state ~= "" then
+		table.insert(self.state_stack, 1, self.state)
+	end
+
+	set_state(self, newstate)
+end
+
+
+
+local function pop_state(self)
+	if not self.state_stack then
+		self.state_stack = {}
+	end
+
+	local state = self.state_stack[1]
+	if state then
+		table.remove(self.state_stack, 1)
+		set_state(self, state)
+		return
+	end
+
+	set_state(self, "")
 end
 
 
@@ -1475,7 +1514,7 @@ local function avoid_env_damage(self, yaw, dtime)
 		if (self.pathfinding or 0) >= 1 then
 			self.path.target = v_add(self.avoid.target, {x=0, y=1, z=0})
 			self.path.dangerous_paths = true
-			transition_state(self, "pathfind")
+			push_state(self, "pathfind")
 		else
 			-- Look towards land and jump/move in that direction.
 			local yaw = yaw_to_pos(self, self.avoid.target, s)
@@ -2864,7 +2903,7 @@ local function do_avoid_state(self, dtime)
 	if is_node_dangerous(self, self.standing_in) then
 		avoid_env_damage(self, yaw, dtime)
 	else
-		transition_state(self, "stand")
+		pop_state(self)
 	end
 end
 
@@ -2874,7 +2913,7 @@ end
 local function do_caught_attack(self, dtime)
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -2887,7 +2926,7 @@ local function do_caught_attack(self, dtime)
 	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -2918,7 +2957,7 @@ end
 local function do_blocked_attack(self, dtime)
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -2937,7 +2976,7 @@ local function do_blocked_attack(self, dtime)
 	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -2963,7 +3002,7 @@ local function do_blocked_attack(self, dtime)
 			self.stuck_timer = 0
 			self.path.dangerous_paths = false
 			self.path.target = v_round(self.attack:get_pos())
-			transition_state(self, "pathfind")
+			push_state(self, "pathfind")
 			return
 		end
 	end
@@ -2989,7 +3028,7 @@ end
 local function do_chase_attack(self, dtime)
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3002,7 +3041,7 @@ local function do_chase_attack(self, dtime)
 	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3100,7 +3139,7 @@ end
 local function do_shoot_attack(self, dtime)
 	-- Target might not be valid anymore.
 	if not self.attack or not self.attack:get_pos() then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3113,7 +3152,7 @@ local function do_shoot_attack(self, dtime)
 	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3162,7 +3201,7 @@ end
 
 
 local function do_attack_exit(self)
-	self.attack = nil
+	--self.attack = nil
 end
 
 
@@ -3173,7 +3212,7 @@ end
 local function do_attack_state(self, dtime)
 	-- Abort if we have no target!
 	if not self.attack or not self.attack:get_pos() then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3183,7 +3222,7 @@ local function do_attack_state(self, dtime)
 
 	-- Abort if target entity does not exist.
 	if not p then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3193,7 +3232,7 @@ local function do_attack_state(self, dtime)
 	-- Stop attacking if target invisible, dead, or out of range.
 	if dist > self.view_range	or self.attack:get_hp() <= 0
 			or mobs.is_invisible(self, targetname) then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3349,7 +3388,7 @@ local function do_pathfind_enter(self)
 	-- The pathfinder requires a target. I assume the target is a rounded vector.
 	-- It should be inside an air node, or non-walkable, and walkable node under.
 	if not self.path.target then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3378,7 +3417,7 @@ local function do_pathfind_newpath(self, dtime)
 		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
 
 		if #positions == 0 then
-			transition_state(self, "stand")
+			pop_state(self)
 			return
 		else
 			target = positions[random(1, #positions)]
@@ -3420,8 +3459,7 @@ local function do_pathfind_newpath(self, dtime)
 		self.path.waypoints_gotten = 0
 		transition_substate(self, "")
 	else
-		report(self, "did not find path!")
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 end
@@ -3432,7 +3470,7 @@ end
 -- per frame. This property is specified in the state machine table.
 local function do_pathfind_state(self, dtime)
 	if not self.path.following or not self.path.way then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3441,14 +3479,14 @@ local function do_pathfind_state(self, dtime)
 	-- limit fairly high.
 	local max_len = (self.pathing_radius or 16) * 4
 	if #self.path.way > max_len then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
 	local wp = self.path.way[1]
 
 	if not wp then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3469,7 +3507,7 @@ local function do_pathfind_state(self, dtime)
 
 		-- Are we done following the path?
 		if #self.path.way == 0 then
-			transition_state(self, "stand")
+			pop_state(self)
 			return
 		end
 
@@ -3520,7 +3558,7 @@ local function do_pathfind_state(self, dtime)
 			-- Path goes in the direction of something dangerous, like a cliff.
 			path_careful = true
 		elseif waypoint_dangerous(self, wp) then
-			transition_state(self, "stand")
+			pop_state(self)
 			return
 		elseif is_wall_or_pit(self, wp) then
 			-- This can happen if the path environment changed (player dug pit?).
@@ -3544,27 +3582,22 @@ local function do_pathfind_state(self, dtime)
 		set_velocity(self, 0.1)
 		set_animation(self, "walk", 5)
 	elseif path_careful then
-		report(self, "half run")
 		-- Slow down when near dangerous terrain.
 		local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
 		set_velocity(self, half_run)
 		set_animation(self, "walk")
 	elseif sharp_turn then
-		report(self, "running")
 		-- Slow down to execute turns.
 		set_velocity(self, self.run_velocity or 0)
 		set_animation(self, "run")
 	else
-		report(self, "sprinting")
 		set_velocity(self, self.sprint_velocity or 0)
 		set_animation(self, "run")
 	end
 
 	-- Jump only if next waypoint is higher than us.
 	if wp.y > s.y then
-		report(self, "trying jump")
-		local result, reason = try_jump(self, dtime)
-		if not result then report(self, reason) end
+		try_jump(self, dtime)
 	end
 
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
@@ -3586,14 +3619,14 @@ end
 -- and must move toward it in a direct line.
 local function do_pathfind_rondev(self, dtime)
 	if not self.path.following or not self.path.way then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
 	local wp = self.path.way[1]
 
 	if not wp then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
@@ -3787,18 +3820,17 @@ local function do_pathfind_blocked(self, dtime)
 	-- Usually, mob should be facing whatever is blocking us. Generally, only
 	-- other entities (like mobs) and physical terrain are responsible for this.
 	if not self.path.following or not self.path.way then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
 	-- Blocked too many times without successful unblocking? Give up.
 	if self.path.blocked_count > 3 then
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 
 	local result = try_unblock_path(self)
-	report(self, "break block result: " .. result)
 
 	if result == "continue" then
 		-- Continue original path. (Note: path might have been modified slightly.)
@@ -3812,7 +3844,7 @@ local function do_pathfind_blocked(self, dtime)
 		return
 	else
 		-- Couldn't remove blockage.
-		transition_state(self, "stand")
+		pop_state(self)
 		return
 	end
 end
@@ -3830,6 +3862,12 @@ end
 
 -- This table contains all the individual state functions and their transitions.
 local state_machine = {
+	-- State with no name.
+	[""] = {
+		enter = do_stand_enter,
+		main = do_stand_state,
+	},
+
 	stand = {
 		enter = do_stand_enter,
 		main = do_stand_state,
@@ -3889,11 +3927,7 @@ local function do_states(self, dtime)
 	-- Deal with invalid states. Note: unknown state types (non-empty string) are
 	-- valid and we don't do anything with them; they can be used by some mobs.
 	if not self.state or self.state == "" then
-		-- Not calling 'transition_state' here because that function calls
-		-- 'do_states' if the new state is different from the old. We are already in
-		-- that function.
-		self.state = "stand"
-		self.substate = ""
+		transition_state(self, "stand")
 	end
 
 	--report(self, "current state: " .. self.state .. ", " .. self.substate)

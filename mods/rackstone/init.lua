@@ -249,7 +249,15 @@ minetest.register_node("rackstone:nether_grit", {
   liquid_alternative_source = "rackstone:nether_grit",
   liquid_renewable = false,
   liquid_range = 0,
+
   walkable = false,
+
+  -- This was an attempt to make the pathfinder avoid these nodes, but by making
+  -- the node walkable, the pathfinder just generates paths that go *over* them,
+  -- anyway.
+  --walkable = true,
+	--collision_box = {type="fixed", fixed={0,0,0, 0,0,0}},
+
 	drawtype = "glasslike",
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},

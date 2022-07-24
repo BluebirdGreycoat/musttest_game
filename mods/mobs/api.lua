@@ -890,22 +890,25 @@ local function is_wall_or_pit(self, wp)
 		if thing.type == "node" then
 			local p = thing.under
 			local n = minetest.get_node(p).name
-			local d = minetest.registered_nodes[n]
 
-			if not d then
-				return true, "undef"
-			end
+			if n ~= "air" then
+				local d = minetest.registered_nodes[n]
 
-			if is_node_dangerous(self, n, d) then
-				return true, "danger"
-			end
+				if not d then
+					return true, "undef"
+				end
 
-			-- If the node is not walkable, skip these checks.
-			if d.walkable then
-				if p.y >= p1.y then
-					return true, "wall"
-				else
-					return false, "surface"
+				if is_node_dangerous(self, n, d) then
+					return true, "danger"
+				end
+
+				-- If the node is not walkable, skip these checks.
+				if d.walkable then
+					if p.y >= p1.y then
+						return true, "wall"
+					else
+						return false, "surface"
+					end
 				end
 			end
 		end

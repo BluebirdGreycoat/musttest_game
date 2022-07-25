@@ -2023,30 +2023,32 @@ end
 
 
 -- Place node, excluding it from protection.
-local function force_place_block(name, pos)
+local function force_place_block(name, pos, bridge)
 	minetest.set_node(pos, {name=name})
 	local meta = minetest.get_meta(pos)
 	meta:set_int("protection_cancel", 1)
 
-	-- Drop node if the position underneath is not walkable.
-	if not pos_walkable(v_add(pos, {x=0, y=-1, z=0})) then
-		if not minetest.test_protection(pos, "") then
-			sfn.drop_node(pos)
+	-- Drop node if the position underneath is not walkable and NOT bridging.
+	if not bridge then
+		if not pos_walkable(v_add(pos, {x=0, y=-1, z=0})) then
+			if not minetest.test_protection(pos, "") then
+				sfn.drop_node(pos)
+			end
+		else
+			minetest.check_for_falling(pos)
 		end
-	else
-		minetest.check_for_falling(pos)
 	end
 end
 
 
 
 -- Function shall attempt to place a node, exluding it from protection.
-local function try_place_block(self, target)
+local function try_place_block(self, target, bridge)
 	local pn = self.place_node or node_pathfinder_place
 	local nn = minetest.get_node(target).name
 
 	if nn == "air" or nn == "default:snow" then
-		force_place_block(pn, target)
+		force_place_block(pn, target, bridge)
 		return true
 	end
 
@@ -2056,7 +2058,7 @@ local function try_place_block(self, target)
 	end
 
 	if ndef.buildable_to and not minetest.test_protection(target, "") then
-		force_place_block(pn, target)
+		force_place_block(pn, target, bridge)
 		return true
 	end
 end
@@ -3846,9 +3848,7 @@ local function do_pathfind_rondev(self, dtime)
 	end
 
 	-- Slow down (half-run) to execute shortcuts.
-	local half_run = ((self.walk_velocity or 0) + (self.run_velocity or 0)) / 2
-
-	set_velocity(self, half_run)
+	set_velocity(self, self.run_velocity)
 	set_animation(self, "run")
 
 	try_jump(self, dtime)
@@ -4163,8 +4163,7 @@ local function do_digbuild_state(self, dtime)
 			transition_substate(self, "pillar")
 			return
 		elseif is_stuck and face_reason == "pit" then
-			-- TODO: should transition to bridge-building state instead.
-			transition_substate(self, "dig")
+			transition_substate(self, "tunnel")
 			return
 		end
 
@@ -4197,25 +4196,18 @@ local function do_digbuild_state(self, dtime)
 		if is_stuck and face_reason == "pit" then
 			transition_substate(self, "dig")
 			return
+		elseif is_stuck and face_reason == "wall" then
+			transition_substate(self, "tunnel")
+			return
 		end
-
-		-- TODO: if 'face_reason' is 'wall', we should transition to dig tunnel.
 
 	-- Otherwise, we are (nearly) on the same level as the target.
 	else
 		-- Dig tunnel through rock, or build bridge through air.
-		--[[
-		if can_do then
-			local p1 = get_ahead_pos(self)
-			local p2 = v_add(p1, {x=0, y=1, z=0})
-			if try_break_block(self, p1) and try_break_block(self, p2) then
-			else
-				-- Cannot dig, stop trying to get target.
-				transition_state(self, "")
-				return
-			end
+		if is_stuck and (face_reason == "pit" or face_reason == "wall") then
+			transition_substate(self, "tunnel")
+			return
 		end
-		--]]
 	end
 end
 
@@ -4277,6 +4269,12 @@ local function do_digbuild_pillar(self, dtime)
 				self.path.target = self.digbuild.target
 				pop_state(self)
 				push_state(self, "pathfind")
+				return
+			end
+
+			-- If we are above our target, we should switch to bridge/tunnel.
+			if sps.y >= (self.digbuild.target.y + 1) then
+				transition_substate(self, "tunnel")
 				return
 			end
 		else
@@ -4344,6 +4342,99 @@ local function do_digbuild_dig(self, dtime)
 			push_state(self, "pathfind")
 			return
 		end
+
+		-- If we are below our target, we should switch to bridge/tunnel.
+		if sps.y <= (self.digbuild.target.y - 1) then
+			transition_substate(self, "tunnel")
+			return
+		end
+	else
+		-- Cannot dig, stop trying to get target.
+		transition_state(self, "")
+		return
+	end
+end
+
+
+
+local function do_digbuild_tunnel(self, dtime)
+	-- Do nothing until mob is centered in column. Otherwise might get stuck!
+	if keep_mob_centered(self) then
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.digbuild.target
+
+	-- Get mob facing in the right direction.
+	local yaw = yaw_to_pos(self, p, s)
+	set_yaw(self, yaw)
+	set_velocity(self, 0)
+
+	local face_result, face_reason = facing_wall_or_pit(self)
+
+	-- If we're no longer facing a wall or other obstacle, we can stop
+	-- tunneling/bridging operations (for now).
+	if face_reason == "surface" then
+		transition_substate(self, "")
+		return
+	end
+
+	show_position(self.digbuild.target)
+
+	-- Limit digging/building to once per second.
+	self.digbuild.node_timer = self.digbuild.node_timer + dtime
+	if self.digbuild.node_timer > 0.5 then
+		set_animation(self, "stand")
+	end
+	if self.digbuild.node_timer < 1 then return end
+	self.digbuild.node_timer = 0
+
+	-- Tunnel/bridge position. Assume mob is 2 blocks high, so it digs blocks for
+	-- its head. Position is rounded, so we use a fixed integer.
+	local p1 = get_ahead_pos(self)
+	local p2 = v_add(p1, {x=0, y=1, z=0})
+	local p0 = v_add(p1, {x=0, y=-1, z=0})
+
+	local bridge = false
+
+	-- Place bridge block if needed.
+	if not pos_walkable(p0) then
+		bridge = try_place_block(self, p0, true)
+	end
+
+	-- Try digging the doorway.
+	if try_break_block(self, p1) then
+		if try_break_block(self, p2) then
+			-- Both blocks facing forwards are successfully dug (or didn't exist).
+
+			-- If we reach an opening, we might be able to path from here.
+			-- Start with at least 2 due to self + path behind us.
+			local amount = 2
+			local decks = walkable_around(p0)
+			if #decks <= 2 then
+				-- In this case there shouldn't be more than 1 if there is no opening.
+				decks = walkable_around(p1)
+				amount = 1
+			end
+
+			if #decks > amount then
+				-- Try swapping back to the pathfinder.
+				-- Note: we assume that if the pathfinder cannot find a path, that it
+				-- does NOT move the mob!
+				self.path.target = self.digbuild.target
+				pop_state(self)
+				push_state(self, "pathfind")
+				return
+			end
+
+			-- Otherwise, swap back to the main state so we can move forward.
+			transition_substate(self, "")
+		else
+			-- Cannot dig, stop trying to get target.
+			transition_state(self, "")
+			return
+		end
 	else
 		-- Cannot dig, stop trying to get target.
 		transition_state(self, "")
@@ -4407,6 +4498,7 @@ local state_machine = {
 		main = do_digbuild_state,
 		pillar = do_digbuild_pillar,
 		dig = do_digbuild_dig,
+		tunnel = do_digbuild_tunnel,
 		continuous = true,
 	},
 }

@@ -838,13 +838,82 @@ end
 
 
 
+-- This function moves a mob to the center of the X,Z column.
+-- True is returned to indicate the mob is moving; otherwise false.
+-- Note: the point is to get the mob's collision box entirely inside the X,Z
+-- plain of the node it is standing on; if this can't be achieved, the
+-- pathfinder WILL exhibit bugs!
+local function keep_mob_centered(self, ss)
+	local s = ss or self.object:get_pos()
+	local c = vector.round(s)
+
+	-- Have mob position himself nearer the center of the node.
+	if abs(s.x - c.x) > 0.2 or abs(s.z - c.z) > 0.2 then
+		set_yaw(self, yaw_to_pos(self, c, s))
+		set_velocity(self, 0.2)
+		set_animation(self, "walk", 5)
+		return true
+	end
+end
+
+
+
+local function show_position(p)
+	-- Keep this particle code for debugging purposes [MustTest].
+	-- Spawn particle at actual computed position without rounding.
+	local pname = "singleplayer"
+	if not minetest.is_singleplayer() then
+		pname = gdac.name_of_admin
+	end
+
+	utility.original_add_particle({
+		playername = pname,
+		pos = p,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 0.5,
+		size = 1,
+		collisiondetection = false,
+		vertical = false,
+		texture = "bubble.png",
+	})
+end
+
+
+
 -- This function computes the rounded position of the node in front of the mob.
-local function get_ahead_pos(self, pos)
+-- The math must be such that the mob MUST be standing WITHIN the node's X,Z
+-- bounds, in order to get the position of the node ahead. If this is not the
+-- case, then the mob would detect obstacles either too soon or too late to
+-- correctly deal with them.
+local function get_ahead_pos(self, pos, yaw)
 	-- Copy position argument so we do not modify it.
 	local s = (pos and vector.copy(pos)) or self.object:get_pos()
 	s.y = s.y + self.collisionbox[2] + 0.5
-	local dir = self.object:get_yaw() + (pi / 2)
-	local fac = 1.2 -- Adjustment factor to improve accuracy.
+	local off = (pi / 2)
+	local cir = (pi * 2)
+	local dir = yaw or (self.object:get_yaw() + off)
+
+	-- Adjustment factor to improve accuracy.
+	local fac = 0.99
+	local ang = dir - off
+	if ang < 0 then ang = ang + cir end
+	if ang > cir then ang = ang - cir end
+	local dd = math.deg(ang)
+
+	--report(self, "angle: " .. dd)
+
+	-- Increase distance when facing corners.
+	if dd > 30 and dd < 60 then
+		fac = 1.4
+	elseif dd > 120 and dd < 150 then
+		fac = 1.4
+	elseif dd > 210 and dd < 240 then
+		fac = 1.4
+	elseif dd > 300 and dd < 330 then
+		fac = 1.4
+	end
+
 	local p = {
 		x = s.x + (cos(dir) * fac),
 		y = s.y,
@@ -894,6 +963,17 @@ end
 
 
 
+-- This function returns a list of walkable surfaces which are level with the
+-- position. The returned list contains positions *above* the walkable surfaces.
+-- The center position is also included, for a max total of 9 locations.
+local function walkable_around(pos)
+	local minp = v_add(pos, {x=-1, y=0, z=-1})
+	local maxp = v_add(pos, {x=1, y=0, z=1})
+	return hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
+end
+
+
+
 -- Check if a position is a wall or pit. You should pass the rounded position of
 -- the node which the mob wants to move INTO. Always returns two values,
 -- true/false, and a reason string.
@@ -901,36 +981,51 @@ local function is_wall_or_pit(self, wp)
 	local drop = (self.fear_height or 0)
 	local jump = (self.jump_height or 0)
 
+	-- Note: we need to add 1 to the jump height in order to take care of the case
+	-- that the wall has a hole in it near the top. The mob would not be able to
+	-- jump through such a wall because of the block above (assuming the mob is 2
+	-- blocks high).
+	jump = jump + 1
+
 	-- Start the raycast from the top and go down.
+	-- Note: the raycast ignores air nodes. So we do not need to do air checks.
+	-- Note: the raycast returns ALL nodes, not just those exposed to air.
 	local p1 = v_add(wp, {x=0, y=jump, z=0})
 	local p2 = v_add(wp, {x=0, y=-drop, z=0})
 	local ray = minetest.raycast(p1, p2, false, true)
 
 	local thing = ray:next()
+	local head_solid = false
 
 	while thing do
 		if thing.type == "node" then
 			local p = thing.under
 			local n = minetest.get_node(p).name
 
-			if n ~= "air" then
-				local d = minetest.registered_nodes[n]
+			local d = minetest.registered_nodes[n]
 
-				if not d then
-					return true, "undef"
-				end
+			if not d then
+				return true, "undef"
+			end
 
-				if is_node_dangerous(self, n, d) then
+			if is_node_dangerous(self, n, d) then
+				if head_solid then
+					return true, "wall"
+				else
 					return true, "danger"
 				end
+			end
 
-				-- If the node is not walkable, skip these checks.
-				if d.walkable then
-					if p.y >= p1.y then
-						return true, "wall"
-					else
-						return false, "surface"
-					end
+			-- If the node is not walkable, skip these checks.
+			if d.walkable then
+				if p.y == p1.y then
+					head_solid = true
+				elseif p.y == (p1.y - 1) then
+					return true, "wall"
+				elseif p.y == (p1.y - 2) and head_solid then
+					return true, "wall"
+				else
+					return false, "surface"
 				end
 			end
 		end
@@ -944,6 +1039,8 @@ local function is_wall_or_pit(self, wp)
 
 	return true, "pit"
 end
+
+mobs.is_wall_or_pit = is_wall_or_pit
 
 
 
@@ -1471,6 +1568,7 @@ local function try_jump(self, dtime)
 	-- When in air move forward.
 	minetest.after(0.3, function(self, v)
 		if self.object:get_luaentity() then
+			local v = self.object:get_velocity()
 			self.object:set_acceleration({
 				x = v.x * 2,
 				y = 0,
@@ -1929,7 +2027,15 @@ local function force_place_block(name, pos)
 	minetest.set_node(pos, {name=name})
 	local meta = minetest.get_meta(pos)
 	meta:set_int("protection_cancel", 1)
-	minetest.check_for_falling(pos)
+
+	-- Drop node if the position underneath is not walkable.
+	if not pos_walkable(v_add(pos, {x=0, y=-1, z=0})) then
+		if not minetest.test_protection(pos, "") then
+			sfn.drop_node(pos)
+		end
+	else
+		minetest.check_for_falling(pos)
+	end
 end
 
 
@@ -2573,6 +2679,7 @@ local function general_attack(self)
 	if self.state == "runaway" then return end
 	if self.state == "pathfind" then return end
 	if self.state == "avoid" then return end
+	if self.state == "digbuild" then return end
 
 	-- Skip if mob is docile during day.
 	if day_docile(self) then return end
@@ -2786,13 +2893,7 @@ local function do_stand_state(self, dtime)
 	end
 
 	local s = self.object:get_pos()
-	local c = vector.round(s)
-
-	-- Have mob position himself nearer the center of the node.
-	if (abs(s.x - c.x) + abs(s.z - c.z)) > 0.3 then
-		set_yaw(self, yaw_to_pos(self, c, s))
-		set_velocity(self, 0.2)
-		set_animation(self, "walk", 5)
+	if keep_mob_centered(self, s) then
 		return
 	end
 
@@ -3181,8 +3282,13 @@ local function do_chase_attack(self, dtime)
 		else
 			try_jump(self, dtime)
 
-			set_velocity(self, self.sprint_velocity or 0)
-			set_animation(self, "run")
+			if dist > self.punch_reach then
+				set_velocity(self, self.sprint_velocity or 0)
+				set_animation(self, "run")
+			else
+				set_velocity(self, self.run_velocity or 0)
+				set_animation(self, "run")
+			end
 		end
 
 		-- Punch target if within punching range even while moving [MustTest].
@@ -3515,7 +3621,7 @@ local function do_pathfind_newpath(self, dtime)
 		end
 	end
 
-	-- Note: pathfinder is very sensitive to start and end positions.
+	-- Note: pathfinder is very sensitive to start and finish positions.
 	local path = minetest.find_path(start, target, radius, jh, dh, "A*")
 
 	if path then
@@ -3534,6 +3640,15 @@ local function do_pathfind_newpath(self, dtime)
 		transition_substate(self, "")
 		return
 	else
+		if (self.pathfinding or 0) >= 3 then
+			-- Replace pathfinder with dig/build code.
+			-- The dig/build code should swap back to the pathfinder when ready.
+			self.digbuild.target = self.path.target
+			pop_state(self)
+			push_state(self, "digbuild")
+			return
+		end
+
 		transition_state(self, "")
 		return
 	end
@@ -3929,7 +4044,7 @@ local function do_pathfind_blocked(self, dtime)
 	end
 
 	-- Mob does not support this level of pathfinding?
-	if (self.pathfinding or 0) < 1 then
+	if (self.pathfinding or 0) < 2 then
 		transition_state(self, "")
 		return
 	end
@@ -3984,6 +4099,236 @@ end
 
 
 
+-- Pillar and tunnel to get to the target.
+local function do_digbuild_state(self, dtime)
+	-- Pathfinder does not have a target?
+	if not self.digbuild.target then
+		transition_state(self, "")
+		return
+	end
+
+	-- Mob does not support this level of pathfinding?
+	if (self.pathfinding or 0) < 3 then
+		transition_state(self, "")
+		return
+	end
+
+	-- Has mob reached its objective?
+	if v_distance(self.object:get_pos(), self.digbuild.target) < self.reach then
+		pop_state(self)
+		return
+	end
+
+	show_position(self.digbuild.target)
+
+	local s = self.object:get_pos()
+	local p = self.digbuild.target
+	local yaw = yaw_to_pos(self, p, s)
+
+	-- Start moving! The goal is to get as close to the target as possible in the
+	-- X,Z plane before we go up or down.
+	local face_result, face_reason = facing_wall_or_pit(self)
+	if face_result then
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+	else
+		-- Get mob moving in the right direction.
+		set_yaw(self, yaw)
+		set_velocity(self, self.run_velocity or 0)
+		set_animation(self, "run")
+		try_jump(self, dtime)
+	end
+
+	-- Determine whether we are getting stuck.
+	local is_stuck = false
+	self.digbuild.stuck_timer = self.digbuild.stuck_timer + dtime
+	if self.digbuild.stuck_timer > 0.25 then
+		local p = self.digbuild.last_pos or s
+		if v_distance(s, p) < 0.1 then
+			self.digbuild.move_stuck = self.digbuild.move_stuck + 0.25
+		end
+		self.digbuild.last_pos = s
+		self.digbuild.stuck_timer = 0
+	end
+	if self.digbuild.move_stuck >= 1 then
+		is_stuck = true
+		self.digbuild.move_stuck = 0
+	end
+
+	-- Is target more than 1 block higher than us, and we are facing a wall?
+	if p.y >= (s.y + 0.9) and not self.fly and face_reason == "wall" then
+		if is_stuck then
+			transition_substate(self, "pillar")
+			return
+		end
+		--[[
+		-- Do nothing until mob is centered in column. Otherwise might get stuck!
+		if keep_mob_centered(self) then
+			return
+		end
+
+		if can_do then
+			-- Ceiling position. Assume mob is 2 blocks high, so it digs above its
+			-- head. Position is rounded, so we use a fixed integer.
+			local cps = v_add(s, {x=0, y=2, z=0})
+
+			-- Try to dig ceiling first, then place floor block.
+			if try_break_block(self, cps) then
+				if try_place_block(self, s) then
+					set_velocity(self, 0)
+					set_animation(self, "punch")
+					force_jump_up(self, 1)
+				else
+					-- Cannot build, stop trying to get target.
+					transition_state(self, "")
+					return
+				end
+			else
+				-- Cannot dig, stop trying to get target.
+				transition_state(self, "")
+				return
+			end
+		end
+		--]]
+
+	-- Otherwise, is target directly under us?
+	elseif abs(p.x - s.x) < 0.3 and abs(p.z - s.z) < 0.3 and p.y < (s.y - 1) then
+
+		--[[
+		-- Do nothing until mob is centered in column. Otherwise might get stuck!
+		if keep_mob_centered(self) then
+			return
+		end
+
+		if can_do then
+			-- Floor position.
+			local fps = v_add(s, {x=0, y=-1, z=0})
+
+			if try_break_block(self, fps) then
+				set_velocity(self, 0)
+				set_animation(self, "punch")
+			else
+				-- Cannot dig, stop trying to get target.
+				transition_state(self, "")
+				return
+			end
+		end
+		--]]
+
+	-- Otherwise, is target more than 1 block lower than us?
+	elseif p.y < (s.y - 0.9) then
+
+		--[[
+		-- Do nothing until mob is centered in column. Otherwise might get stuck!
+		if keep_mob_centered(self) then
+			return
+		end
+
+		if can_do then
+			-- Floor position.
+			local fps = v_add(s, {x=0, y=-1, z=0})
+
+			if try_break_block(self, fps) then
+				set_velocity(self, 0)
+				set_animation(self, "punch")
+			else
+				-- Cannot dig, stop trying to get target.
+				transition_state(self, "")
+				return
+			end
+		end
+		--]]
+
+	-- Otherwise, we are (nearly) on the same level as the target.
+	else
+		--[[
+		if can_do then
+			local p1 = get_ahead_pos(self)
+			local p2 = v_add(p1, {x=0, y=1, z=0})
+			if try_break_block(self, p1) and try_break_block(self, p2) then
+			else
+				-- Cannot dig, stop trying to get target.
+				transition_state(self, "")
+				return
+			end
+		end
+		--]]
+	end
+end
+
+
+
+-- Dig up until we reach the top of a wall.
+local function do_digbuild_pillar(self, dtime)
+	-- Do nothing until mob is centered in column. Otherwise might get stuck!
+	if keep_mob_centered(self) then
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.digbuild.target
+
+	-- Get mob facing in the right direction.
+	local yaw = yaw_to_pos(self, p, s)
+	set_yaw(self, yaw)
+	set_velocity(self, 0)
+
+	local face_result, face_reason = facing_wall_or_pit(self)
+
+	-- If we're no longer facing a wall or other obstacle, we can stop pillaring
+	-- (for now).
+	if face_reason == "surface" then
+		transition_substate(self, "")
+		return
+	end
+
+	show_position(self.digbuild.target)
+
+	-- Limit upward building to once per second.
+	self.digbuild.node_timer = self.digbuild.node_timer + dtime
+	if self.digbuild.node_timer > 0.5 then
+		set_animation(self, "stand")
+	end
+	if self.digbuild.node_timer < 1 then return end
+	self.digbuild.node_timer = 0
+
+	-- Ceiling position. Assume mob is 2 blocks high, so it digs above its
+	-- head. Position is rounded, so we use a fixed integer.
+	local sps = get_standing_pos(self)
+	local cps = v_add(sps, {x=0, y=2, z=0})
+
+	-- Try to dig ceiling first, then place floor block. There is no point in
+	-- placing the floor block unless we can dig the ceiling. Otherwise mob would
+	-- just get stuck.
+	if try_break_block(self, cps) then
+		if try_place_block(self, sps) then
+			set_velocity(self, 0)
+			set_animation(self, "punch")
+			force_jump_up(self, 1)
+
+			-- If we reach a plateau, we might be able to path from here.
+			local decks = walkable_around(sps)
+			if #decks > 1 then -- Always at least 1 due to self.
+				-- Try swapping back to the pathfinder.
+				self.path.target = self.digbuild.target
+				pop_state(self)
+				push_state(self, "pathfind")
+				return
+			end
+		else
+			-- Cannot build, stop trying to get target.
+			transition_state(self, "")
+			return
+		end
+	else
+		-- Cannot dig, stop trying to get target.
+		transition_state(self, "")
+		return
+	end
+end
+
+
+
 -- This table contains all the individual state functions and their transitions.
 local state_machine = {
 	-- State with no name.
@@ -4031,6 +4376,12 @@ local state_machine = {
 		newpath = do_pathfind_newpath,
 		rondev = do_pathfind_rondev,
 		exit = do_pathfind_exit,
+		continuous = true,
+	},
+
+	digbuild = {
+		main = do_digbuild_state,
+		pillar = do_digbuild_pillar,
 		continuous = true,
 	},
 }
@@ -4603,6 +4954,14 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.avoid = {}
 	self.avoid.target = nil
 	self.avoid.timer = 0
+
+	-- Dig/build state init.
+	self.digbuild = {}
+	self.digbuild.target = nil
+	self.digbuild.last_pos = nil
+	self.digbuild.stuck_timer = 0
+	self.digbuild.move_stuck = 0
+	self.digbuild.node_timer = 0
 
 	-- Adjust the chance to use pathfinding on a per-entity basis.
 	if self.pathfinding and self.pathfinding ~= 0 then

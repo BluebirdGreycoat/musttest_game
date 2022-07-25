@@ -3714,7 +3714,9 @@ local function do_pathfind_state(self, dtime)
 			local d = yaw_delta(y1, y2)
 
 			if d > math.rad(20) then
-				if raycast_los(self, s, fw) then
+				-- Move raycast up a bit to improve behavior over rough terrain.
+				local a = {x=0, y=1, z=0}
+				if raycast_los(self, v_add(s, a), v_add(fw, a)) then
 					for i = 1, (count - 1), 1 do
 						table.remove(self.path.way, 1)
 					end
@@ -4156,40 +4158,15 @@ local function do_digbuild_state(self, dtime)
 	end
 
 	-- Is target more than 1 block higher than us, and we are facing a wall?
-	if p.y >= (s.y + 0.9) and not self.fly and face_reason == "wall" then
-		if is_stuck then
+	if p.y >= (s.y + 0.9) and not self.fly then
+		if is_stuck and face_reason == "wall" then
 			transition_substate(self, "pillar")
 			return
-		end
-		--[[
-		-- Do nothing until mob is centered in column. Otherwise might get stuck!
-		if keep_mob_centered(self) then
+		elseif is_stuck and face_reason == "pit" then
+			-- TODO: should transition to bridge-building state instead.
+			transition_substate(self, "dig")
 			return
 		end
-
-		if can_do then
-			-- Ceiling position. Assume mob is 2 blocks high, so it digs above its
-			-- head. Position is rounded, so we use a fixed integer.
-			local cps = v_add(s, {x=0, y=2, z=0})
-
-			-- Try to dig ceiling first, then place floor block.
-			if try_break_block(self, cps) then
-				if try_place_block(self, s) then
-					set_velocity(self, 0)
-					set_animation(self, "punch")
-					force_jump_up(self, 1)
-				else
-					-- Cannot build, stop trying to get target.
-					transition_state(self, "")
-					return
-				end
-			else
-				-- Cannot dig, stop trying to get target.
-				transition_state(self, "")
-				return
-			end
-		end
-		--]]
 
 	-- Otherwise, is target directly under us?
 	elseif abs(p.x - s.x) < 0.3 and abs(p.z - s.z) < 0.3 and p.y < (s.y - 1) then
@@ -4217,30 +4194,16 @@ local function do_digbuild_state(self, dtime)
 
 	-- Otherwise, is target more than 1 block lower than us?
 	elseif p.y < (s.y - 0.9) then
-
-		--[[
-		-- Do nothing until mob is centered in column. Otherwise might get stuck!
-		if keep_mob_centered(self) then
+		if is_stuck and face_reason == "pit" then
+			transition_substate(self, "dig")
 			return
 		end
 
-		if can_do then
-			-- Floor position.
-			local fps = v_add(s, {x=0, y=-1, z=0})
-
-			if try_break_block(self, fps) then
-				set_velocity(self, 0)
-				set_animation(self, "punch")
-			else
-				-- Cannot dig, stop trying to get target.
-				transition_state(self, "")
-				return
-			end
-		end
-		--]]
+		-- TODO: if 'face_reason' is 'wall', we should transition to dig tunnel.
 
 	-- Otherwise, we are (nearly) on the same level as the target.
 	else
+		-- Dig tunnel through rock, or build bridge through air.
 		--[[
 		if can_do then
 			local p1 = get_ahead_pos(self)
@@ -4302,7 +4265,6 @@ local function do_digbuild_pillar(self, dtime)
 	-- just get stuck.
 	if try_break_block(self, cps) then
 		if try_place_block(self, sps) then
-			set_velocity(self, 0)
 			set_animation(self, "punch")
 			force_jump_up(self, 1)
 
@@ -4310,6 +4272,8 @@ local function do_digbuild_pillar(self, dtime)
 			local decks = walkable_around(sps)
 			if #decks > 1 then -- Always at least 1 due to self.
 				-- Try swapping back to the pathfinder.
+				-- Note: we assume that if the pathfinder cannot find a path, that it
+				-- does NOT move the mob!
 				self.path.target = self.digbuild.target
 				pop_state(self)
 				push_state(self, "pathfind")
@@ -4318,6 +4282,66 @@ local function do_digbuild_pillar(self, dtime)
 		else
 			-- Cannot build, stop trying to get target.
 			transition_state(self, "")
+			return
+		end
+	else
+		-- Cannot dig, stop trying to get target.
+		transition_state(self, "")
+		return
+	end
+end
+
+
+
+local function do_digbuild_dig(self, dtime)
+	-- Do nothing until mob is centered in column. Otherwise might get stuck!
+	if keep_mob_centered(self) then
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.digbuild.target
+
+	-- Get mob facing in the right direction.
+	local yaw = yaw_to_pos(self, p, s)
+	set_yaw(self, yaw)
+	set_velocity(self, 0)
+
+	local face_result, face_reason = facing_wall_or_pit(self)
+
+	-- If we're no longer facing a pit or other obstacle, we can stop pillaring
+	-- (for now).
+	if face_reason == "surface" then
+		transition_substate(self, "")
+		return
+	end
+
+	show_position(self.digbuild.target)
+
+	-- Limit downward building to once per second.
+	self.digbuild.node_timer = self.digbuild.node_timer + dtime
+	if self.digbuild.node_timer > 0.5 then
+		set_animation(self, "stand")
+	end
+	if self.digbuild.node_timer < 1 then return end
+	self.digbuild.node_timer = 0
+
+	-- Ground position.
+	local sps = get_standing_pos(self)
+	local fps = v_add(sps, {x=0, y=-1, z=0})
+
+	if try_break_block(self, fps) then
+		set_animation(self, "punch")
+
+		-- If we reach a plateau, we might be able to path from here.
+		local decks = walkable_around(v_add(fps, {x=0, y=-1, z=0}))
+		if #decks > 1 then -- Always at least 1 due to self.
+			-- Try swapping back to the pathfinder.
+			-- Note: we assume that if the pathfinder cannot find a path, that it
+			-- does NOT move the mob!
+			self.path.target = self.digbuild.target
+			pop_state(self)
+			push_state(self, "pathfind")
 			return
 		end
 	else
@@ -4382,6 +4406,7 @@ local state_machine = {
 	digbuild = {
 		main = do_digbuild_state,
 		pillar = do_digbuild_pillar,
+		dig = do_digbuild_dig,
 		continuous = true,
 	},
 }

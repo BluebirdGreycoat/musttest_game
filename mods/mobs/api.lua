@@ -18,6 +18,8 @@ local v_round = vector.round
 local v_equals = vector.equals
 local v_distance = vector.distance
 local v_add = vector.add
+local rad = math.rad
+local deg = math.deg
 
 
 
@@ -54,6 +56,30 @@ local function yaw_to_pos(self, target, pos)
 	local yaw = atan2(z, x) - self.rotate
 	yaw = yaw - (pi / 2)
 	return yaw
+end
+
+
+
+-- Function which takes a yaw value and "squares" it so it points in one of the
+-- 4 cardinal directions. Used to make mobs face along one of the horizontal
+-- axes, instead of diagonally, for some special situations.
+local function square_yaw(yaw)
+	local pi2 = pi * 2
+	if yaw < 0 then yaw = yaw + pi2 end
+	if yaw > pi2 then yaw = yaw - pi2 end
+	yaw = deg(yaw)
+
+	if yaw <= 45 or yaw > 315 then
+		yaw = 0 -- North.
+	elseif yaw <= 315 and yaw > 225 then
+		yaw = 270 -- East.
+	elseif yaw <= 225 and yaw > 135 then
+		yaw = 180 -- South.
+	elseif yaw <= 135 and yaw > 45 then
+		yaw = 90 -- West.
+	end
+
+	return rad(yaw)
 end
 
 
@@ -858,6 +884,20 @@ end
 
 
 
+-- This function causes a mob to walk slowly toward its facing direction until
+-- it detects an obstacle (of any kind). It returns true to indicate the mob is
+-- moving.
+local function walk_mob_forward(self)
+	-- Function is not defined yet.
+	if not mobs.facing_wall_or_pit(self) then
+		set_velocity(self, 0.5)
+		set_animation(self, "walk", 5)
+		return true
+	end
+end
+
+
+
 local function show_position(p)
 	-- Keep this particle code for debugging purposes [MustTest].
 	-- Spawn particle at actual computed position without rounding.
@@ -899,19 +939,19 @@ local function get_ahead_pos(self, pos, yaw)
 	local ang = dir - off
 	if ang < 0 then ang = ang + cir end
 	if ang > cir then ang = ang - cir end
-	local dd = math.deg(ang)
+	local dd = deg(ang)
 
 	--report(self, "angle: " .. dd)
 
 	-- Increase distance when facing corners.
 	if dd > 30 and dd < 60 then
-		fac = 1.4
+		fac = 1.3
 	elseif dd > 120 and dd < 150 then
-		fac = 1.4
+		fac = 1.3
 	elseif dd > 210 and dd < 240 then
-		fac = 1.4
+		fac = 1.3
 	elseif dd > 300 and dd < 330 then
-		fac = 1.4
+		fac = 1.3
 	end
 
 	local p = {
@@ -1040,6 +1080,7 @@ local function is_wall_or_pit(self, wp)
 	return true, "pit"
 end
 
+-- Export function.
 mobs.is_wall_or_pit = is_wall_or_pit
 
 
@@ -1054,6 +1095,9 @@ local function facing_wall_or_pit(self)
 	local ahead = get_ahead_pos(self)
 	return is_wall_or_pit(self, ahead)
 end
+
+-- Export function.
+mobs.facing_wall_or_pit = facing_wall_or_pit
 
 
 
@@ -3542,8 +3586,6 @@ local function path_is_straight(self, pos)
 	local y3 = yaw_to_pos(self, w2, pos)
 	local y4 = yaw_to_pos(self, w3, pos)
 
-	local deg = math.deg
-
 	local d1 = deg(yaw_delta(y1, y2))
 	local d2 = deg(yaw_delta(y1, y3))
 	local d3 = deg(yaw_delta(y1, y4))
@@ -3599,6 +3641,15 @@ local function do_pathfind_newpath(self, dtime)
 		local positions = hb4.find_walkable_in_area_under_unwalkable(minp, maxp)
 
 		if #positions == 0 then
+			if (self.pathfinding or 0) >= 3 then
+				-- Replace pathfinder with dig/build code.
+				-- The dig/build code should swap back to the pathfinder when ready.
+				self.digbuild.target = self.path.target
+				pop_state(self)
+				push_state(self, "digbuild")
+				return
+			end
+
 			transition_state(self, "")
 			return
 		else
@@ -3708,14 +3759,15 @@ local function do_pathfind_state(self, dtime)
 		-- rapid switching between the "main", "newpath", and "rondev" states.
 		-- Overall, taking shortcuts makes mob movement look a bit better, at the
 		-- cost that sometimes the mob walks into a trap and has to path out of it.
+		-- A 50/50 random number helps to break up circular traps.
 		local count = random(4, 8)
 		local fw = self.path.way[count]
-		if fw and abs(wp.y - fw.y) <= 2 and self.path.waypoints_gotten > 4 then
+		if random(1, 2) == 1 and fw and abs(wp.y - fw.y) <= 2 and self.path.waypoints_gotten > 4 then
 			local y1 = self.object:get_yaw()
 			local y2 = yaw_to_pos(self, fw, s)
 			local d = yaw_delta(y1, y2)
 
-			if d > math.rad(20) then
+			if d > rad(20) then
 				-- Move raycast up a bit to improve behavior over rough terrain.
 				local a = {x=0, y=1, z=0}
 				if raycast_los(self, v_add(s, a), v_add(fw, a)) then
@@ -4126,6 +4178,7 @@ local function do_digbuild_state(self, dtime)
 	local s = self.object:get_pos()
 	local p = self.digbuild.target
 	local yaw = yaw_to_pos(self, p, s)
+	set_yaw(self, yaw)
 
 	-- Start moving! The goal is to get as close to the target as possible in the
 	-- X,Z plane before we go up or down.
@@ -4134,9 +4187,17 @@ local function do_digbuild_state(self, dtime)
 		set_velocity(self, 0)
 		set_animation(self, "stand")
 	else
+		local velocity = self.run_velocity or 0
+
+		-- If the mob is over or under the target, slow down.
+		if abs(s.x - p.x) < 0.5 and abs(s.z - p.z) < 0.5 then
+			velocity = self.walk_velocity or 0
+		elseif abs(s.x - p.x) < 0.2 and abs(s.z - p.z) < 0.2 then
+			velocity = 0.1
+		end
+
 		-- Get mob moving in the right direction.
-		set_yaw(self, yaw)
-		set_velocity(self, self.run_velocity or 0)
+		set_velocity(self, velocity)
 		set_animation(self, "run")
 		try_jump(self, dtime)
 	end
@@ -4164,6 +4225,12 @@ local function do_digbuild_state(self, dtime)
 			return
 		elseif is_stuck and face_reason == "pit" then
 			transition_substate(self, "tunnel")
+			return
+
+		-- This can happen if target is above mob and mob is bouncing back-n-forth
+		-- directly below.
+		elseif is_stuck and face_reason == "surface" then
+			transition_substate(self, "pillar")
 			return
 		end
 
@@ -4199,6 +4266,12 @@ local function do_digbuild_state(self, dtime)
 		elseif is_stuck and face_reason == "wall" then
 			transition_substate(self, "tunnel")
 			return
+
+		-- This can happen if target is below mob and mob is bounding back-n-forth
+		-- directly above.
+		elseif is_stuck and face_reason == "surface" then
+			transition_substate(self, "dig")
+			return
 		end
 
 	-- Otherwise, we are (nearly) on the same level as the target.
@@ -4222,20 +4295,12 @@ local function do_digbuild_pillar(self, dtime)
 
 	local s = self.object:get_pos()
 	local p = self.digbuild.target
+	local v = self.object:get_velocity()
 
 	-- Get mob facing in the right direction.
 	local yaw = yaw_to_pos(self, p, s)
 	set_yaw(self, yaw)
 	set_velocity(self, 0)
-
-	local face_result, face_reason = facing_wall_or_pit(self)
-
-	-- If we're no longer facing a wall or other obstacle, we can stop pillaring
-	-- (for now).
-	if face_reason == "surface" then
-		transition_substate(self, "")
-		return
-	end
 
 	show_position(self.digbuild.target)
 
@@ -4247,10 +4312,24 @@ local function do_digbuild_pillar(self, dtime)
 	if self.digbuild.node_timer < 1 then return end
 	self.digbuild.node_timer = 0
 
+	-- Obviosly we can't pillar if the mob is currently falling. We check this
+	-- only after checking the dig/build timer, otherwise it would run every frame
+	-- and we would immediately exit the pillaring function on every upward jump.
+	if v.y < 0 then
+		transition_state(self, "")
+		return
+	end
+
 	-- Ceiling position. Assume mob is 2 blocks high, so it digs above its
 	-- head. Position is rounded, so we use a fixed integer.
 	local sps = get_standing_pos(self)
 	local cps = v_add(sps, {x=0, y=2, z=0})
+
+	-- Cancel pillaring if we're above or near the target's X,Z level.
+	if sps.y >= self.digbuild.target.y then
+		transition_substate(self, "")
+		return
+	end
 
 	-- Try to dig ceiling first, then place floor block. There is no point in
 	-- placing the floor block unless we can dig the ceiling. Otherwise mob would
@@ -4273,7 +4352,7 @@ local function do_digbuild_pillar(self, dtime)
 			end
 
 			-- If we are above our target, we should switch to bridge/tunnel.
-			if sps.y >= (self.digbuild.target.y + 1) then
+			if sps.y >= self.digbuild.target.y then
 				transition_substate(self, "tunnel")
 				return
 			end
@@ -4305,15 +4384,6 @@ local function do_digbuild_dig(self, dtime)
 	set_yaw(self, yaw)
 	set_velocity(self, 0)
 
-	local face_result, face_reason = facing_wall_or_pit(self)
-
-	-- If we're no longer facing a pit or other obstacle, we can stop pillaring
-	-- (for now).
-	if face_reason == "surface" then
-		transition_substate(self, "")
-		return
-	end
-
 	show_position(self.digbuild.target)
 
 	-- Limit downward building to once per second.
@@ -4327,6 +4397,12 @@ local function do_digbuild_dig(self, dtime)
 	-- Ground position.
 	local sps = get_standing_pos(self)
 	local fps = v_add(sps, {x=0, y=-1, z=0})
+
+	-- Cancel digging if we're below or near the target's X,Z level.
+	if sps.y <= self.digbuild.target.y then
+		transition_substate(self, "")
+		return
+	end
 
 	if try_break_block(self, fps) then
 		set_animation(self, "punch")
@@ -4344,7 +4420,7 @@ local function do_digbuild_dig(self, dtime)
 		end
 
 		-- If we are below our target, we should switch to bridge/tunnel.
-		if sps.y <= (self.digbuild.target.y - 1) then
+		if sps.y <= self.digbuild.target.y then
 			transition_substate(self, "tunnel")
 			return
 		end
@@ -4380,6 +4456,16 @@ local function do_digbuild_tunnel(self, dtime)
 		return
 	end
 
+	-- Face one of the cardinal directions, and if that direction is a surface,
+	-- move to it.
+	set_yaw(self, square_yaw(yaw))
+	face_result, face_reason = facing_wall_or_pit(self)
+	if face_reason == "surface" then
+		self.digbuild.move_to = get_ahead_pos(self)
+		transition_substate(self, "move")
+		return
+	end
+
 	show_position(self.digbuild.target)
 
 	-- Limit digging/building to once per second.
@@ -4396,11 +4482,9 @@ local function do_digbuild_tunnel(self, dtime)
 	local p2 = v_add(p1, {x=0, y=1, z=0})
 	local p0 = v_add(p1, {x=0, y=-1, z=0})
 
-	local bridge = false
-
 	-- Place bridge block if needed.
 	if not pos_walkable(p0) then
-		bridge = try_place_block(self, p0, true)
+		try_place_block(self, p0, true)
 	end
 
 	-- Try digging the doorway.
@@ -4428,8 +4512,11 @@ local function do_digbuild_tunnel(self, dtime)
 				return
 			end
 
-			-- Otherwise, swap back to the main state so we can move forward.
-			transition_substate(self, "")
+			-- Move to the section we just built/dug.
+			self.digbuild.move_to = p1
+			self.digbuild.move_stuck = 1
+			self.digbuild.node_timer = 1
+			transition_substate(self, "move")
 		else
 			-- Cannot dig, stop trying to get target.
 			transition_state(self, "")
@@ -4440,6 +4527,32 @@ local function do_digbuild_tunnel(self, dtime)
 		transition_state(self, "")
 		return
 	end
+end
+
+
+
+-- Move the mob to the target location. We assume the distance to this location
+-- is no more than 1.5 nodes, more or less, and that there are NO obstacles.
+-- Once we've reached the target, we transition to the primary state.
+local function do_digbuild_move(self, dtime)
+	if not self.digbuild.move_to then
+		transition_state(self, "")
+		return
+	end
+
+	local s = self.object:get_pos()
+	local c = self.digbuild.move_to
+
+	-- Walk to target.
+	if abs(s.x - c.x) > 0.4 or abs(s.z - c.z) > 0.4 then
+		set_yaw(self, yaw_to_pos(self, c, s))
+		set_velocity(self, self.walk_velocity or 0)
+		try_jump(self, dtime)
+		set_animation(self, "walk")
+		return
+	end
+
+	transition_substate(self, "")
 end
 
 
@@ -4499,6 +4612,7 @@ local state_machine = {
 		pillar = do_digbuild_pillar,
 		dig = do_digbuild_dig,
 		tunnel = do_digbuild_tunnel,
+		move = do_digbuild_move,
 		continuous = true,
 	},
 }
@@ -4924,7 +5038,7 @@ local function mob_staticdata(self)
 
 	-- used to rotate older mobs
 	if self.drawtype and self.drawtype == "side" then
-		self.rotate = math.rad(90)
+		self.rotate = rad(90)
 	end
 
 	local tmp = {}
@@ -5352,7 +5466,7 @@ if not mobs.registered then
 			jump_height             = def.jump_height or 1,
 
 			drawtype                = def.drawtype, -- DEPRECATED, use rotate instead
-			rotate                  = math.rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2
+			rotate                  = rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2
 			lifetimer               = def.lifetimer or 180, -- 3 minutes
 			hp_min                  = (def.hp_min or 5) * difficulty,
 			hp_max                  = (def.hp_max or 10) * difficulty,

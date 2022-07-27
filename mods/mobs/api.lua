@@ -282,14 +282,9 @@ end
 
 
 local function set_velocity(self, v)
-	-- Do not move if mob has been ordered to stay.
-	if self.order == "stand" then
-		self.object:set_velocity({x = 0, y = 0, z = 0})
-		return
-	end
-
 	local yaw = (self.object:get_yaw() or 0) + (self.rotate or 0)
 	local vel = self.object:get_velocity()
+
 	local y = 0
 	if vel then
 		y = vel.y or 0
@@ -306,6 +301,16 @@ local function set_velocity(self, v)
 		y = y,
 		z = cos(yaw) * v
 	})
+
+	-- Store the requested velocity.
+	local o = self.wanted_velocity or 0
+	self.wanted_velocity = v
+	if v <= 0 and o > 0 then
+		self.stand_timer = 0
+	end
+	if v <= 0 then
+		self.stuck_timer = 0
+	end
 end
 
 
@@ -1557,25 +1562,8 @@ local function try_jump(self, dtime)
 	end
 	self.jump_timer = 0
 
-	-- Check our position often to see if we are moving. Am I still moving?
-	-- Note: we have to check to see if the mob's absolute position changed.
-	-- Checking the velocity will not work, because it is often wrong/stale.
-	self.jump_tvel = (self.jump_tvel or 0) + dtime
-	if self.jump_tvel >= 0.25 then
-		local s = self.object:get_pos()
-		if v_distance(s, self.last_pos or s) < 0.1 then
-			self.jump_stuck = (self.jump_stuck or 0) + 0.25
-		else
-			self.jump_stuck = 0
-		end
-		self.last_pos = s
-		self.jump_tvel = 0
-	end
-
-	local velocity = get_velocity(self)
-
 	-- If we've only been stuck for less than a moment, we are still moving.
-	if (self.jump_stuck or 0) < 0.5 then
+	if self.stuck_timer < 0.5 then
 		return false, "moving"
 	end
 
@@ -2142,339 +2130,6 @@ local function try_dig_doorway(self)
 		return false, "changed"
 	else
 		return false, "failed"
-	end
-end
-
-
-
--- path finding and smart mob routine by rnd,
--- line_of_sight and other edits by Elkien3,
--- updated for Enyekala server by MustTest.
--- NOTICE: DEPRECIATED.
-local function smart_mobs(self, s, p, dist, dtime)
-
-	-- Timer is required to prevent mob from spamming blocks [MustTest].
-	self.path.putnode_timer = (self.path.putnode_timer or 0) - dtime
-
-	-- Timer for preventing 'minetest.find_path' spam [MustTest].
-	self.path.find_path_timer = self.path.find_path_timer - dtime
-
-	local s1 = self.path.lastpos
-	local target_pos = p
-
-	-- Record mob's last position once every second [MustTest].
-	self.path.pos_rec_timer = self.path.pos_rec_timer + dtime
-	if self.path.pos_rec_timer >= 1 then
-		self.path.lastpos = {x = s.x, y = s.y, z = s.z}
-		self.path.pos_rec_timer = 0
-	end
-
-	-- Is mob becoming stuck (i.e., has it not moved in the last 1 second)?
-	if (abs(s1.x - s.x) + abs(s1.z - s.z)) < 0.25 then
-		self.path.stuck_timer = self.path.stuck_timer + dtime
-	else
-		self.path.stuck_timer = 0
-	end
-
-	-- Perform the LOS test not more than once per 1/2 second [MustTest].
-	-- There is no reason to call this every globalstep.
-	local use_pathfind = false
-	local has_lineofsight = self.path.have_los
-
-	self.path.los_check = self.path.los_check - dtime
-	if self.path.los_check <= 0 then
-		has_lineofsight = minetest.line_of_sight(
-			{x = s.x, y = (s.y + 0.5), z = s.z},
-			{x = target_pos.x, y = (target_pos.y + 1), z = target_pos.z}, 0.2)
-
-		self.path.have_los = has_lineofsight
-		self.path.los_check = 0.5
-	end
-
-	-- I'm stuck, search for path.
-	if not has_lineofsight then
-		-- Cannot see target [MustTest]!
-		use_pathfind = true
-		self.path.los_counter = 0
-	else
-		self.path.los_counter = self.path.los_counter + dtime
-		if self.path.los_counter > 5 then
-			local y_dist = abs(s.y - target_pos.y)
-			-- I've been able to see the target for several consecutive seconds [MustTest].
-			if y_dist <= 0.5 then
-				-- Also, I'm on the same level as the target.
-				use_pathfind = false
-				self.path.following = false
-				self.path.los_counter = 0
-			end
-
-			-- But if I'm stuck even though I have LOS, attempt pathfind.
-			if self.path.stuck_timer >= 2 then
-				use_pathfind = true
-			end
-		end
-	end
-
-	-- What do we do if the mob got stuck while following this path [MustTest]?
-	if self.path.stuck_timer > stuck_timeout then
-		if self.path.following then
-			-- The mob got stuck while following a path. This can happen if the path
-			-- goes through a 1x1 node hole, which the mob is too big to fit through.
-			-- I can try to dig that block. [MustTest]
-			local removed_blockage = false
-			if (self.pathfinding or 0) >= 2 then
-				removed_blockage = try_dig_doorway(self, s)
-			end
-			if not removed_blockage then
-				use_pathfind = true
-				self.path.stuck_timer = 0
-				self.path.following = false
-			else
-				self.path.stuck_timer = 0
-				self.stuck_path_timeout = (((self.path.way and #self.path.way) or 0) * 0.75)
-			end
-		else
-			-- Not currently following a path, but one exists which we recently abandoned?
-			if self.path.way and #self.path.way >= 5 then
-				local tar = self.path.way[1]
-				if v_distance(tar, s) <= 1.5 then
-					-- Continue following existing path.
-					self.path.following = true
-					self.stuck_path_timeout = (#self.path.way * 0.75)
-					self.path.stuck_timer = 0
-					self.path.los_counter = 0
-				end
-			else
-				use_pathfind = true
-				self.path.stuck_timer = 0
-			end
-		end
-	end
-
-	-- What do we do if the mob has been following this path too long [MustTest]?
-	-- Note: the path timeout is based on the length of the path.
-	if (self.path.stuck_timer > (self.stuck_path_timeout or 0) and self.path.following) then
-		use_pathfind = true
-		self.path.stuck_timer = 0
-		self.path.following = false
-	end
-
-	if not use_pathfind then
-		return
-	end
-
-	-- If already following a path, don't search for a new one [MustTest].
-	if self.path.following then
-		return
-	end
-
-	-- lets try find a path, first take care of positions
-	-- since pathfinder is very sensitive
-	local sheight = self.collisionbox[5] - self.collisionbox[2]
-
-	-- round position to center of node to avoid stuck in walls
-	-- also adjust height for player models!
-	s.x = floor(s.x + 0.5)
-	s.z = floor(s.z + 0.5)
-
-	local ssight, sground = minetest.line_of_sight(s, {
-		x = s.x, y = s.y - 4, z = s.z}, 1)
-
-	-- determine node above ground
-	if not ssight then
-		s.y = sground.y + 1
-	end
-
-	local p1 = self.attack:get_pos()
-	p1 = v_round(p1)
-
-	local dropheight = 6
-
-	if self.fear_height ~= 0 then dropheight = (self.fear_height - 1) end
-
-	local jumpheight = 0
-
-	if self.path.find_path_timer <= 0 then
-		local radius = self.pathing_radius or 16
-		local pway = minetest.find_path(s, p1, radius, jumpheight, dropheight, "A*")
-
-		if not pway then
-			-- If I couldn't find path, don't try again for a few seconds.
-			self.path.way = nil
-			self.path.find_path_timer = 2
-			self.path.stuck_timer = 0
-		else
-			self.path.way = pway
-			self.path.find_path_timer = 0
-			self.path.stuck_timer = 0
-		end
-	end
-
-	transition_state(self, "")
-
-	if self.attack then
-		do_attack(self, self.attack)
-	end
-
-	-- no path found, try something else
-	if not self.path.way then
-		self.path.following = false
-
-		-- lets make way by digging/building if not accessible
-		if (self.pathfinding or 0) >= 2 and mobs_griefing and self.path.putnode_timer <= 0 then
-
-			-- is target more than 1 block higher than us?
-			if p1.y >= (s.y + 0.9) and not self.fly then
-
-				-- build upwards
-				-- not necessary to check protection if only placing nodes [MustTest]
-				-- timer is used to prevent mob from spamming lots of blocks
-				s = v_round(s)
-
-				local canput = false
-
-				if self.path.putnode_timer <= 0 then
-					local node = minetest.get_node(s)
-					local ndef = minetest.registered_nodes[node.name]
-
-					local prot = minetest.test_protection(s, "")
-
-					if ndef and (ndef.buildable_to or ndef.groups.liquid) then
-						canput = true
-					end
-
-					-- If protected, do not replace non-air nodes [MustTest].
-					if prot and node.name ~= "air" then
-						canput = false
-					end
-				end
-
-				-- Assume mob is 2 blocks high so it digs above its head.
-				-- Position is rounded, so we use a fixed integer.
-				local sheight = 2
-				s.y = s.y + sheight
-
-				local success, reason = try_break_block(self, s)
-				if success then
-					self.path.putnode_timer = 1
-					self.path.stuck_timer = 0
-				else
-					if reason and (reason == "protected" or reason == "unbreakable") then
-						-- I couldn't dig ceiling, so no point in trying to jump up!
-						canput = false
-					end
-				end
-
-				s.y = s.y - sheight
-
-				if canput then
-					-- Place node the mob likes, or use fallback.
-					-- Disable protection for this node via meta [MustTest].
-					minetest.add_node(s, {name = self.place_node or node_pathfinder_place})
-					local meta = minetest.get_meta(s)
-					meta:set_int("protection_cancel", 1)
-
-					-- Note: do not force node to fall if it does not need to.
-					minetest.check_for_falling(s)
-
-					-- Move mob to center of node, and jump up.
-					local pos = self.object:get_pos()
-					pos.x = s.x
-					pos.z = s.z
-					self.object:set_pos(pos)
-					self.object:set_velocity({x = 0, y = 5, z = 0})
-
-					-- Block placement min time [MustTest].
-					self.path.putnode_timer = 1
-					self.path.stuck_timer = 0
-				end
-
-			-- target is directly under the mob -- dig through floor!
-			elseif abs(p1.x - s.x) < 0.2 and abs(p1.z - s.z) < 0.2 and p1.y < (s.y - 2) then
-
-				s.y = s.y - 1
-				local res = try_break_block(self, s)
-				s.y = s.y + 1
-
-				if not res then
-					-- cannot dig, stop trying to get target.
-					transition_state(self, "stand")
-					set_velocity(self, 0)
-					set_animation(self, "stand")
-					self.attack = nil
-					self.v_start = false
-					self.blinktimer = 0
-					self.path.way = nil
-				end
-
-				if res then
-					self.path.putnode_timer = 1
-					self.path.stuck_timer = 0
-				end
-
-				-- move to center of hole to try and fall down it
-				local v = v_round(s)
-				self.path.way = {
-					[1]={x=v.x, y=v.y, z=v.z},
-					[2]={x=v.x, y=v.y - 1, z=v.z},
-				}
-				self.path.following = true
-				self.path.stuck_timer = 0
-				self.path.los_counter = 0
-
-			-- is player more than 1 block lower than mob
-			elseif p1.y < (s.y - 0.9) then
-				-- dig down
-				local s = self.object:get_pos()
-				s.y = s.y + self.collisionbox[2] - 0.5
-				s = v_round(s)
-
-				if try_break_block(self, s) then
-					self.path.putnode_timer = 1
-
-					-- Move toward the location supposedly dug.
-					self.path.way = {
-						[1]={x=s.x, y=s.y, z=s.z},
-					}
-					self.path.following = true
-					self.path.stuck_timer = 0
-					self.path.los_counter = 0
-				end
-			else -- dig 2 blocks to make door toward player direction
-				if try_dig_doorway(self, s) then
-					self.path.putnode_timer = 1
-					self.path.stuck_timer = 0
-				end
-			end
-		end
-
-		-- Frustration! Can't find the path. :-(
-		if random(1, 20) == 1 then
-			mob_sound(self, self.sounds.random)
-		end
-	elseif s.y < p1.y and (not self.fly) then
-		try_jump(self, dtime) -- Add jump to pathfinding.
-
-		-- follow path now that it has it.
-		self.path.following = true
-		self.stuck_path_timeout = (#self.path.way * 0.75)
-		self.path.stuck_timer = 0
-		self.path.los_counter = 0
-	else
-		-- yay i found path
-		if self.attack then
-			mob_sound(self, self.sounds.war_cry)
-		else
-			mob_sound(self, self.sounds.random)
-		end
-
-		set_velocity(self, self.walk_velocity)
-
-		-- follow path now that it has it
-		self.path.following = true
-		self.stuck_path_timeout = (#self.path.way * 0.75)
-		self.path.stuck_timer = 0
-		self.path.los_counter = 0
 	end
 end
 
@@ -3210,23 +2865,31 @@ local function do_blocked_attack(self, dtime)
 		end
 	end
 
-	-- Mob no longer stuck?
-	if not facing_wall_or_pit(self) then
-		self.stuck_timer = 0
+	-- Flag set if mob is directly over or under player. If that is the case, but
+	-- we're still beyond the mob's reach, then we have to try something else ....
+	local overunder = false
+	if abs(s.x - p.x) < 0.5 and abs(s.z - p.z) < 0.5 then
+		overunder = true
+	end
+
+	if dist < self.reach then
 		transition_substate(self, "chase")
 		return
-	else
-		-- Mob is stuck.
-		self.stuck_timer = (self.stuck_timer or 0) + dtime
-		if self.stuck_timer > stuck_timeout then
-			self.stuck_timer = 0
-			if (self.pathfinding or 0) >= 1 then
-				self.path.dangerous_paths = false
-				self.path.target = v_round(self.attack:get_pos())
-				push_state(self, "pathfind")
-				return
-			end
+	end
+
+	-- If mob facing obstacle, or directly over/under target, then we're stuck.
+	if overunder or facing_wall_or_pit(self) then
+		-- Mob is stuck and has been standing for 3 seconds.
+		if (self.pathfinding or 0) >= 1 and self.stand_timer > 3 then
+			self.path.dangerous_paths = false
+			self.path.target = v_round(self.attack:get_pos())
+			push_state(self, "pathfind")
+			return
 		end
+	else
+		-- Otherwise, not facing obstacle and NOT over/under target. Chase!
+		transition_substate(self, "chase")
+		return
 	end
 end
 
@@ -3263,6 +2926,7 @@ local function do_chase_attack(self, dtime)
 
 	local dist = get_distance(p, s)
 
+	-- TODO: must use set_velocity (for fliers) here, not directly!
 	if self.fly and dist > self.reach then
 		local me_y = floor(s.y + 1)
 		local p_y = floor(p.y + 1)
@@ -3317,12 +2981,19 @@ local function do_chase_attack(self, dtime)
 		set_yaw(self, yaw)
 	end
 
+	-- Flag set if mob is directly over or under player. If that is the case, but
+	-- we're still beyond the mob's reach, then we have to try something else ....
+	local overunder = false
+	if abs(s.x - p.x) < 0.5 and abs(s.z - p.z) < 0.5 then
+		overunder = true
+	end
+
 	-- Move towards enemy if beyond mob reach.
 	if dist > self.reach then
 		-- Note: the 'facing_wall_or_pit' function also checks for dangerous nodes.
 		-- But some dangerous nodes are non-walkable, which means the pathfinder
 		-- would path through them.
-		if facing_wall_or_pit(self) then
+		if facing_wall_or_pit(self) or overunder or self.stuck_timer > 1 then
 			-- Chase blocked, NOT pathfind blocked.
 			transition_substate(self, "blocked")
 		else
@@ -3687,7 +3358,6 @@ local function do_pathfind_newpath(self, dtime)
 
 		self.path.way = path
 		self.path.following = true
-		self.path.stuck_timer = 0
 		self.path.blocked_count = 0
 		self.path.waypoints_gotten = 0
 		transition_substate(self, "")
@@ -3737,15 +3407,12 @@ local function do_pathfind_state(self, dtime)
 	highlight_path(self)
 
 	local s = self.object:get_pos()
-	self.path.stuck_timer = (self.path.stuck_timer or 0) + dtime
-
 	local dist = get_distance(wp, s)
 
 	-- Note: waypoint may be vertical from us (above or below).
 	if dist < 0.6 then
 		-- Reached waypoint, remove it from queue.
 		table.remove(self.path.way, 1)
-		self.path.stuck_timer = 0
 		self.path.waypoints_gotten = (self.path.waypoints_gotten or 0) + 1
 
 		-- Are we done following the path?
@@ -3854,8 +3521,7 @@ local function do_pathfind_state(self, dtime)
 	-- Is mob becoming stuck? (Haven't removed next waypoint in timely manner.)
 	-- Note that this can trigger if the mob just moves too slowly, so we should
 	-- avoid very-slow-moving behaviors when possible.
-	if self.path.stuck_timer > stuck_timeout then
-		self.path.stuck_timer = 0
+	if self.stuck_timer > 3 then
 		self.path.blocked_count = self.path.blocked_count + 1
 		transition_substate(self, "blocked")
 		return
@@ -4148,7 +3814,6 @@ local function do_pathfind_exit(self)
 	self.path.following = false
 	self.path.way = nil
 	self.path.dangerous_paths = false
-	self.path.stuck_timer = 0
 end
 
 
@@ -4168,7 +3833,7 @@ local function do_digbuild_state(self, dtime)
 	end
 
 	-- Has mob reached its objective?
-	if v_distance(self.object:get_pos(), self.digbuild.target) < self.reach then
+	if v_distance(self.object:get_pos(), self.digbuild.target) < 1 then
 		pop_state(self)
 		return
 	end
@@ -4183,104 +3848,38 @@ local function do_digbuild_state(self, dtime)
 	-- Start moving! The goal is to get as close to the target as possible in the
 	-- X,Z plane before we go up or down.
 	local face_result, face_reason = facing_wall_or_pit(self)
-	if face_result then
+
+	-- If the mob is over or under the target, slow down.
+	local overunder = false
+	if abs(s.x - p.x) < 0.5 and abs(s.z - p.z) < 0.5 then
+		velocity = self.walk_velocity or 0
+		overunder = true
+	elseif abs(s.x - p.x) < 0.2 and abs(s.z - p.z) < 0.2 then
+		overunder = true
+		velocity = 0.1
+	end
+
+	if face_result or overunder then
 		set_velocity(self, 0)
 		set_animation(self, "stand")
 	else
-		local velocity = self.run_velocity or 0
-
-		-- If the mob is over or under the target, slow down.
-		if abs(s.x - p.x) < 0.5 and abs(s.z - p.z) < 0.5 then
-			velocity = self.walk_velocity or 0
-		elseif abs(s.x - p.x) < 0.2 and abs(s.z - p.z) < 0.2 then
-			velocity = 0.1
-		end
-
 		-- Get mob moving in the right direction.
+		local velocity = self.run_velocity or 0
 		set_velocity(self, velocity)
 		set_animation(self, "run")
 		try_jump(self, dtime)
+		return
 	end
 
-	-- Determine whether we are getting stuck.
-	local is_stuck = false
-	self.digbuild.stuck_timer = self.digbuild.stuck_timer + dtime
-	if self.digbuild.stuck_timer > 0.25 then
-		local p = self.digbuild.last_pos or s
-		if v_distance(s, p) < 0.1 then
-			self.digbuild.move_stuck = self.digbuild.move_stuck + 0.25
-		end
-		self.digbuild.last_pos = s
-		self.digbuild.stuck_timer = 0
-	end
-	if self.digbuild.move_stuck >= 1 then
-		is_stuck = true
-		self.digbuild.move_stuck = 0
+	-- Another function handles the obstacle we (hopefully) just ran into.
+	if face_reason == "wall" or face_reason == "pit" or overunder then
+		transition_substate(self, "obstacle")
+		return
 	end
 
-	-- Is target more than 1 block higher than us, and we are facing a wall?
-	if p.y >= (s.y + 0.9) and not self.fly then
-		if is_stuck and face_reason == "wall" then
-			transition_substate(self, "pillar")
-			return
-		elseif is_stuck and face_reason == "pit" then
-			transition_substate(self, "tunnel")
-			return
-
-		-- This can happen if target is above mob and mob is bouncing back-n-forth
-		-- directly below.
-		elseif is_stuck and face_reason == "surface" then
-			transition_substate(self, "pillar")
-			return
-		end
-
-	-- Otherwise, is target directly under us?
-	elseif abs(p.x - s.x) < 0.3 and abs(p.z - s.z) < 0.3 and p.y < (s.y - 1) then
-
-		--[[
-		-- Do nothing until mob is centered in column. Otherwise might get stuck!
-		if keep_mob_centered(self) then
-			return
-		end
-
-		if can_do then
-			-- Floor position.
-			local fps = v_add(s, {x=0, y=-1, z=0})
-
-			if try_break_block(self, fps) then
-				set_velocity(self, 0)
-				set_animation(self, "punch")
-			else
-				-- Cannot dig, stop trying to get target.
-				transition_state(self, "")
-				return
-			end
-		end
-		--]]
-
-	-- Otherwise, is target more than 1 block lower than us?
-	elseif p.y < (s.y - 0.9) then
-		if is_stuck and face_reason == "pit" then
-			transition_substate(self, "dig")
-			return
-		elseif is_stuck and face_reason == "wall" then
-			transition_substate(self, "tunnel")
-			return
-
-		-- This can happen if target is below mob and mob is bounding back-n-forth
-		-- directly above.
-		elseif is_stuck and face_reason == "surface" then
-			transition_substate(self, "dig")
-			return
-		end
-
-	-- Otherwise, we are (nearly) on the same level as the target.
-	else
-		-- Dig tunnel through rock, or build bridge through air.
-		if is_stuck and (face_reason == "pit" or face_reason == "wall") then
-			transition_substate(self, "tunnel")
-			return
-		end
+	if self.stand_timer > 1 then
+		transition_substate(self, "obstacle")
+		return
 	end
 end
 
@@ -4397,10 +3996,17 @@ local function do_digbuild_dig(self, dtime)
 	-- Ground position.
 	local sps = get_standing_pos(self)
 	local fps = v_add(sps, {x=0, y=-1, z=0})
+	local ups = v_add(sps, {x=0, y=-2, z=0})
 
 	-- Cancel digging if we're below or near the target's X,Z level.
 	if sps.y <= self.digbuild.target.y then
 		transition_substate(self, "")
+		return
+	end
+
+	-- Don't dig block below if mob would fall.
+	if not pos_walkable(ups) then
+		transition_state(self, "")
 		return
 	end
 
@@ -4514,7 +4120,6 @@ local function do_digbuild_tunnel(self, dtime)
 
 			-- Move to the section we just built/dug.
 			self.digbuild.move_to = p1
-			self.digbuild.move_stuck = 1
 			self.digbuild.node_timer = 1
 			transition_substate(self, "move")
 		else
@@ -4553,6 +4158,97 @@ local function do_digbuild_move(self, dtime)
 	end
 
 	transition_substate(self, "")
+end
+
+
+
+-- This function expects that the mob is currently facing an obstacle, and NOT
+-- currently moving.
+local function do_digbuild_obstacle(self, dtime)
+	if keep_mob_centered(self) then
+		return
+	end
+
+	-- First, square the mob's yaw so we can accurately get the obstacle type.
+	set_velocity(self, 0)
+	set_yaw(self, square_yaw(self.object:get_yaw()))
+
+	-- Wait a moment. (Note: timer only increments when mob is standing still!)
+	--if self.stand_timer < 1 then
+	--	report(self, "waiting ...")
+	--	return
+	--end
+
+	local face_result, face_reason = facing_wall_or_pit(self)
+
+	local s = self.object:get_pos()
+	local p = self.digbuild.target
+
+	-- Is target directly over or under us?
+	if abs(p.x - s.x) < 0.3 and abs(p.z - s.z) < 0.3 then
+
+		if s.y < (p.y - 0.9) then
+			transition_substate(self, "pillar")
+			return
+		elseif s.y > (p.y + 0.9) then
+			transition_substate(self, "dig")
+			return
+		else
+			-- We have reached the target.
+			pop_state(self)
+			return
+		end
+
+	-- Is target more than 1 block higher, and we are facing a wall or pit?
+	elseif p.y >= (s.y + 0.9) then
+		if face_reason == "wall" then
+			transition_substate(self, "pillar")
+			return
+		elseif face_reason == "pit" then
+			transition_substate(self, "tunnel")
+			return
+		elseif face_reason == "surface" then
+			self.digbuild.move_to = get_ahead_pos(self)
+			show_position(self.digbuild.move_to)
+			transition_substate(self, "move")
+			return
+		else
+			transition_state(self, "")
+			return
+		end
+
+	-- Otherwise, is target more than 1 block lower than us?
+	elseif p.y < (s.y - 0.9) then
+		if face_reason == "pit" then
+			transition_substate(self, "dig")
+			return
+		elseif face_reason == "wall" then
+			transition_substate(self, "tunnel")
+			return
+		elseif face_reason == "surface" then
+			self.digbuild.move_to = get_ahead_pos(self)
+			transition_substate(self, "move")
+			return
+		else
+			transition_state(self, "")
+			return
+		end
+
+	-- Otherwise, we are (nearly) on the same level as the target.
+	else
+		-- Dig tunnel through rock, or build bridge through air.
+		if face_reason == "pit" or face_reason == "wall" then
+			transition_substate(self, "tunnel")
+			return
+		elseif face_reason == "surface" then
+			self.digbuild.move_to = get_ahead_pos(self)
+			transition_substate(self, "move")
+			return
+		end
+	end
+
+	-- Encountered a situation we don't know how to deal with. Cancel.
+	transition_state(self, "")
 end
 
 
@@ -4613,6 +4309,7 @@ local state_machine = {
 		dig = do_digbuild_dig,
 		tunnel = do_digbuild_tunnel,
 		move = do_digbuild_move,
+		obstacle = do_digbuild_obstacle,
 		continuous = true,
 	},
 }
@@ -5173,7 +4870,6 @@ local function mob_activate(self, staticdata, def, dtime)
 	self.path.way = {} -- path to follow, table of positions
 	self.path.lastpos = {x = 0, y = 0, z = 0}
 	self.path.following = false -- currently following path?
-	self.path.stuck_timer = 0 -- if stuck for too long search for path
 	self.path.pos_rec_timer = 0
 	self.path.find_path_timer = 0
 	self.path.putnode_timer = 0
@@ -5189,9 +4885,6 @@ local function mob_activate(self, staticdata, def, dtime)
 	-- Dig/build state init.
 	self.digbuild = {}
 	self.digbuild.target = nil
-	self.digbuild.last_pos = nil
-	self.digbuild.stuck_timer = 0
-	self.digbuild.move_stuck = 0
 	self.digbuild.node_timer = 0
 
 	-- Adjust the chance to use pathfinding on a per-entity basis.
@@ -5295,6 +4988,31 @@ end
 
 
 
+local function stuck_timer(self, dtime, pos)
+	-- Set up 'is_stuck' state flag/timer. This is a timer which clocks how long
+	-- the mob has not moved for. It is clamped whenever it exceeds 100 seconds,
+	-- and reset when the mob's position changes.
+	if (self.wanted_velocity or 0) > 0 then
+		self.stuck_timer = (self.stuck_timer or 0) + dtime
+		if self.stuck_timer > 100 then self.stuck_timer = 100 end
+		if v_distance(self.last_pos or pos, pos) > 0.001 then
+			self.stuck_timer = 0
+		end
+		self.last_pos = pos
+		self.stand_timer = 0
+	else
+		-- If the wanted velocity is zero, the stuck-timer does not run.
+		-- We are obviously not stuck in such a case!
+		self.last_pos = pos
+		self.stuck_timer = 0
+
+		self.stand_timer = (self.stand_timer or 0) + dtime
+		if self.stand_timer > 100 then self.stand_timer = 100 end
+	end
+end
+
+
+
 -- Here is the main mob function.
 local function mob_step(self, dtime)
 	-- The final (actually first) action of mob_step().
@@ -5305,6 +5023,9 @@ local function mob_step(self, dtime)
 	-- Stupid spurious errors [MustTest]. Implies our object does not exist.
 	local pos = self.object:get_pos()
 	if not pos then return end
+
+	-- Manage stuck-timer.
+	stuck_timer(self, dtime, pos)
 
 	-- When lifetimer expires, remove mob.
 	do_lifetimer(self, pos)

@@ -44,6 +44,9 @@ local function report(self, msg, range)
 	end
 end
 
+-- Export.
+mobs.report = report
+
 
 
 -- Function to tell mob which direction to turn to face target.
@@ -3085,7 +3088,6 @@ end
 
 
 local function do_attack_exit(self)
-	--self.attack = nil
 end
 
 
@@ -4045,6 +4047,13 @@ local function do_digbuild_tunnel(self, dtime)
 		return
 	end
 
+	-- Exit if falling.
+	local v = self.object:get_velocity()
+	if v.y < 0 then
+		transition_state(self, "")
+		return
+	end
+
 	local s = self.object:get_pos()
 	local p = self.digbuild.target
 
@@ -4147,6 +4156,12 @@ local function do_digbuild_move(self, dtime)
 
 	local s = self.object:get_pos()
 	local c = self.digbuild.move_to
+
+	-- Abort if stuck.
+	if self.stuck_timer > 5 then
+		transition_state(self, "")
+		return
+	end
 
 	-- Walk to target.
 	if abs(s.x - c.x) > 0.4 or abs(s.z - c.z) > 0.4 then

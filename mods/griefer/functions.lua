@@ -2,14 +2,15 @@
 griefer.elite_do_custom = function(self, dtime)
 	self.range_attack_timer = (self.range_attack_timer or 0) - dtime
 
-	if self.state == "attack" and self.attack and self.attack:get_pos() then
+	if self.attack and self.attack:get_pos() then
 		if self.range_attack_timer <= 0 then
 			local s = self.object:get_pos()
 			local p = self.attack:get_pos()
-			local old_s = self.last_known_pos or {x=0, y=0, z=0}
 
-			-- Only shoot if Oerkki is not moving (stuck or something).
-			if vector.distance(s, old_s) < 0.25 and not self.path.following then
+			mobs.report(self, self.stand_timer)
+
+			-- Only shoot if Oerkki is not currently trying to move.
+			if self.stand_timer >= 1 then
 				-- Don't shoot if within punching range.
 				if vector.distance(s, p) >= self.punch_reach then
 					-- Don't shoot unless Oerkki has LOS to target.
@@ -19,12 +20,11 @@ griefer.elite_do_custom = function(self, dtime)
 
 					if has_lineofsight then
 						local vec = vector.subtract(p, s)
-						--mobs.shoot_arrow(self, vec)
+						mobs.shoot_arrow(self, vec)
 					end
 				end
 			end
 
-			self.last_known_pos = s
 			self.range_attack_timer = 1
 		end
 	end

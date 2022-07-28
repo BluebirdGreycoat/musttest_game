@@ -3840,8 +3840,6 @@ local function do_digbuild_state(self, dtime)
 		return
 	end
 
-	show_position(self.digbuild.target)
-
 	local s = self.object:get_pos()
 	local p = self.digbuild.target
 	local yaw = yaw_to_pos(self, p, s)
@@ -3902,8 +3900,6 @@ local function do_digbuild_pillar(self, dtime)
 	local yaw = yaw_to_pos(self, p, s)
 	set_yaw(self, yaw)
 	set_velocity(self, 0)
-
-	show_position(self.digbuild.target)
 
 	-- Limit upward building to once per second.
 	self.digbuild.node_timer = self.digbuild.node_timer + dtime
@@ -3984,8 +3980,6 @@ local function do_digbuild_dig(self, dtime)
 	local yaw = yaw_to_pos(self, p, s)
 	set_yaw(self, yaw)
 	set_velocity(self, 0)
-
-	show_position(self.digbuild.target)
 
 	-- Limit downward building to once per second.
 	self.digbuild.node_timer = self.digbuild.node_timer + dtime
@@ -4080,8 +4074,6 @@ local function do_digbuild_tunnel(self, dtime)
 		transition_substate(self, "move")
 		return
 	end
-
-	show_position(self.digbuild.target)
 
 	-- Limit digging/building to once per second.
 	self.digbuild.node_timer = self.digbuild.node_timer + dtime
@@ -4224,7 +4216,6 @@ local function do_digbuild_obstacle(self, dtime)
 			return
 		elseif face_reason == "surface" then
 			self.digbuild.move_to = get_ahead_pos(self)
-			show_position(self.digbuild.move_to)
 			transition_substate(self, "move")
 			return
 		else

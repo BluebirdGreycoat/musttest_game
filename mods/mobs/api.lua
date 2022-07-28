@@ -418,83 +418,6 @@ end
 
 
 
--- Check line of sight (by BrunoMine, tweaked by Astrobe).
-local function line_of_sight(self, pos1, pos2, stepsize)
-
-	stepsize = stepsize or 1
-
-	local s, pos = minetest.line_of_sight(pos1, pos2, stepsize)
-
-	-- Normal walking and flying mobs can see you through air.
-	if s == true then
-		return true
-	end
-
-	-- New pos1 to be analyzed.
-	local npos1 = {x = pos1.x, y = pos1.y, z = pos1.z}
-
-	local r, pos = minetest.line_of_sight(npos1, pos2, stepsize)
-
-	-- Checks the return.
-	if r == true then return true end
-
-	-- Nodename found.
-	local nn = minetest.get_node(pos).name
-
-	-- Target Distance (td) to travel.
-	local td = get_distance(pos1, pos2)
-
-	-- Actual Distance (ad) traveled.
-	local ad = 0
-
-	-- It continues to advance in the line of sight in search of a real
-	-- obstruction which counts as 'walkable' nodebox.
-	while minetest.registered_nodes[nn]
-			and not minetest.registered_nodes[nn].walkable do
-
-		-- Check if you can still move forward.
-		if td < ad + stepsize then
-			return true -- Reached the target.
-		end
-
-		-- Moves the analyzed pos.
-		local d = get_distance(pos1, pos2)
-
-		npos1.x = ((pos2.x - pos1.x) / d * stepsize) + pos1.x
-		npos1.y = ((pos2.y - pos1.y) / d * stepsize) + pos1.y
-		npos1.z = ((pos2.z - pos1.z) / d * stepsize) + pos1.z
-
-		-- NaN checks.
-		if d == 0
-				or npos1.x ~= npos1.x
-				or npos1.y ~= npos1.y
-				or npos1.z ~= npos1.z then
-			return false
-		end
-
-		ad = ad + stepsize
-
-		-- Scan again.
-		r, pos = minetest.line_of_sight(npos1, pos2, stepsize)
-
-		if r == true then return true end
-
-		-- New nodename found.
-		nn = minetest.get_node(pos).name
-	end
-
-	return false
-end
-
-
-
--- Export.
-function mobs.line_of_sight(self, pos1, pos2, stepsize)
-	return line_of_sight(self, pos1, pos2, stepsize)
-end
-
-
-
 -- Check line of sight using raycasting (thanks Astrobe).
 local function raycast_los(self, pos1, pos2)
 	local ray = minetest.raycast(pos1, pos2, false, true)
@@ -514,6 +437,13 @@ local function raycast_los(self, pos1, pos2)
 	end
 
 	return true
+end
+
+
+
+-- Export.
+function mobs.line_of_sight(self, pos1, pos2)
+	return raycast_los(self, pos1, pos2)
 end
 
 
@@ -1376,7 +1306,7 @@ local function punch_target(self, dtime)
 	p2.y = p2.y + 0.5
 	s2.y = s2.y + 0.5
 
-	if not line_of_sight(self, p2, s2) then
+	if not raycast_los(self, p2, s2) then
 		return
 	end
 
@@ -2179,7 +2109,7 @@ local function select_nearest_entity(self, list)
 
 		-- Choose closest target that is not self.
 		if dist > 0 then
-			if dist < current_distance and line_of_sight(self, s, p, 0.5) then
+			if dist < current_distance and raycast_los(self, s, p) then
 				current_distance = dist
 				closest_target = target
 			end

@@ -7,8 +7,6 @@ griefer.elite_do_custom = function(self, dtime)
 			local s = self.object:get_pos()
 			local p = self.attack:get_pos()
 
-			mobs.report(self, self.stand_timer)
-
 			-- Only shoot if Oerkki is not currently trying to move.
 			if self.stand_timer >= 1 then
 				-- Don't shoot if within punching range.
@@ -25,7 +23,8 @@ griefer.elite_do_custom = function(self, dtime)
 				end
 			end
 
-			self.range_attack_timer = 1
+			-- Shoot once every 1.5 seconds.
+			self.range_attack_timer = 1.5
 		end
 	end
 

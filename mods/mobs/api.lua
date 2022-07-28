@@ -4056,19 +4056,19 @@ local function do_digbuild_tunnel(self, dtime)
 	set_yaw(self, yaw)
 	set_velocity(self, 0)
 
-	local face_result, face_reason = facing_wall_or_pit(self)
+	--local face_result, face_reason = facing_wall_or_pit(self)
 
 	-- If we're no longer facing a wall or other obstacle, we can stop
 	-- tunneling/bridging operations (for now).
-	if face_reason == "surface" then
-		transition_substate(self, "")
-		return
-	end
+	--if face_reason == "surface" then
+	--	transition_substate(self, "")
+	--	return
+	--end
 
 	-- Face one of the cardinal directions, and if that direction is a surface,
 	-- move to it.
 	set_yaw(self, square_yaw(yaw))
-	face_result, face_reason = facing_wall_or_pit(self)
+	local face_result, face_reason = facing_wall_or_pit(self)
 	if face_reason == "surface" then
 		self.digbuild.move_to = get_ahead_pos(self)
 		transition_substate(self, "move")

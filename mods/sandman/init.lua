@@ -126,6 +126,7 @@ mobs.register_mob("sandman:stoneman", {
 	attack_type = "dogfight",
   group_attack = true,
 	reach = 2,
+	pathfinding = 1,
 	damage = 2,
 	damage_min = 2,
 	damage_max = 3,

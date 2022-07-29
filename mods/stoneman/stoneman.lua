@@ -5,7 +5,6 @@ mobs.register_mob("stoneman:stoneman", {
 	passive = false,
 	attack_type = "dogfight",
 	pathfinding = 1,
-	pathfinding_chance = 10,
 	reach = 2,
 	damage = 3,
 	hp_min = 12,

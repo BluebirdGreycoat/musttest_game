@@ -494,7 +494,7 @@ register({
 
 	mob_limit = 2,
 	absolute_mob_limit = 3,
-	mob_range = 30,
+	mob_range = 70,
 	realm_restriction = true,
 
 	-- After a successful spawn, wait before spawning another one.

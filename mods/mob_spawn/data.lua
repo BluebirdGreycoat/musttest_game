@@ -231,13 +231,17 @@ register({
 	clearance = 3,
 	flyswim = "flyswim",
 
-	mob_limit = 2,
-	absolute_mob_limit = 10,
+	mob_limit = 1,
+	absolute_mob_limit = 5,
 	mob_range = 50,
 
 	-- Never spawn more than 1 mob at a time.
 	min_count = 1,
 	max_count = 1,
+
+	-- After a successful spawn, wait before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
 
 	-- Same as moonheron, with higher threshold.
 	noise_params = {
@@ -250,7 +254,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.4,
+	noise_threshold = 0.8,
 })
 
 register({
@@ -264,8 +268,8 @@ register({
 	clearance = 3,
 	flyswim = "flyswim",
 
-	mob_limit = 10,
-	absolute_mob_limit = 20,
+	mob_limit = 3,
+	absolute_mob_limit = 5,
 	mob_range = 50,
 
 	-- Never spawn more than 1 mob at a time.
@@ -283,7 +287,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.25,
+	noise_threshold = 0.7,
 })
 
 register({
@@ -419,13 +423,17 @@ register({
 	clearance = 3,
 	flyswim = "flyswim",
 
-	mob_limit = 2,
-	absolute_mob_limit = 10,
+	mob_limit = 1,
+	absolute_mob_limit = 5,
 	mob_range = 40,
 
 	-- Never spawn more than 1 mob at a time.
 	min_count = 1,
 	max_count = 1,
+
+	-- After a successful spawn, wait before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
 
 	-- Same as scrausics, but higher threshold.
 	noise_params = {
@@ -438,7 +446,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.5,
+	noise_threshold = 0.9,
 })
 
 register({
@@ -452,8 +460,8 @@ register({
 	clearance = 3,
 	flyswim = "flyswim",
 
-	mob_limit = 10,
-	absolute_mob_limit = 30,
+	mob_limit = 3,
+	absolute_mob_limit = 5,
 	mob_range = 40,
 
 	-- Never spawn more than 1 mob at a time.
@@ -471,7 +479,7 @@ register({
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.3,
+	noise_threshold = 0.8,
 })
 
 register({
@@ -485,9 +493,13 @@ register({
 	clearance = 2,
 
 	mob_limit = 2,
-	absolute_mob_limit = 6,
+	absolute_mob_limit = 3,
 	mob_range = 30,
 	realm_restriction = true,
+
+	-- After a successful spawn, wait before spawning another one.
+	success_time_min = 60*5,
+	success_time_max = 60*10,
 
 	-- Never spawn more than 1 mob at a time.
 	min_count = 1,

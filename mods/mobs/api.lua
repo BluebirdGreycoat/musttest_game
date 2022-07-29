@@ -2476,6 +2476,45 @@ end
 
 
 
+-- If the mob has a target, and LOS to target for time, then refocus attack!
+-- This function expects to run once per second.
+local function refocus_attack(self)
+	if not self.attack then
+		self.refocus_timer = 0
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.attack:get_pos()
+
+	if not p then
+		self.refocus_timer = 0
+		return
+	end
+
+	-- Make looking up hills easier.
+	s.y = s.y + 1
+	p.y = p.y + 1
+
+	local los = raycast_los(self, s, p)
+
+	-- Count consecutive seconds in which mob has LOS to active target.
+	if los then
+		self.refocus_timer = (self.refocus_timer or 0) + 1
+	else
+		self.refocus_timer = 0
+		return
+	end
+
+	-- The counter limit is arbitrary.
+	if self.refocus_timer >= 8 then
+		transition_state(self, "attack")
+		return
+	end
+end
+
+
+
 -- Dogshoot attack switch and counter function.
 local function dogswitch(self, dtime)
 
@@ -5044,6 +5083,9 @@ local function mob_step(self, dtime)
 
 		-- Mob reproduction.
 		attempt_breed(self)
+
+		-- Periodically refocus attacking mobs.
+		refocus_attack(self)
 	end
 
 	-- TODO: This function mixes movement/physics behavior (flop) with logical

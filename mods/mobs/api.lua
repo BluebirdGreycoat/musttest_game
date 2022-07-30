@@ -4718,8 +4718,10 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- invisibility check here.
 
 	-- Attack whoever punched mob.
-	transition_state(self, "")
-	do_attack(self, hitter)
+	if self.state ~= "attack" or self.attack ~= hitter then
+		transition_state(self, "")
+		do_attack(self, hitter)
+	end
 
 	-- Alert others to the attack.
 	local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)

@@ -622,7 +622,7 @@ end
 
 -- Load spawn secrets if present.
 do
-	local path = mob_spawn .. "/secrets.lua"
+	local path = mob_spawn.modpath .. "/secrets.lua"
 	local file = io.open(path)
 	if file then
 		dofile(path)

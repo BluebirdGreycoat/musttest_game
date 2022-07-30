@@ -621,7 +621,8 @@ end
 
 
 -- Load spawn secrets if present. This should be the last file loaded, in order
--- to allow it to override stuff.
+-- to allow it to override stuff. File must be excluded from source control!
+-- Otherwise it will not be secret. D'oh.
 do
 	local path = mob_spawn.modpath .. "/secrets.lua"
 	local file = io.open(path)

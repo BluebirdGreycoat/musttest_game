@@ -269,8 +269,14 @@ local function do_attack(self, target)
 		return
 	end
 
-	self.attack = target
-	transition_state(self, "attack")
+	if target and target:get_pos() then
+		self.attack = target
+		transition_state(self, "attack")
+		return
+	else
+		transition_state(self, "")
+		return
+	end
 end
 
 

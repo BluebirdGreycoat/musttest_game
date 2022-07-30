@@ -364,8 +364,12 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	local c_tnt_boom = minetest.get_content_id("tnt:boom")
 	local c_air = minetest.get_content_id("air")
 
+	-- Note: this can fail to find ALL the TNT used for an explosion, if some are
+	-- outside the 5x5x5 area around the initialization point. Not really a bug;
+	-- it just requires the player to have some knowledge of !!SCIENCE!!.
 	for z = pos.z - 2, pos.z + 2 do
 	for y = pos.y - 2, pos.y + 2 do
+		-- Note: this weird way of counting the X-index is just an optimization.
 		local vi = a:index(pos.x - 2, y, z)
 		for x = pos.x - 2, pos.x + 2 do
 			local cid = data[vi]
@@ -378,8 +382,9 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	end
 	end
 	
-	-- 'count' may be 0 if the bomb exploded in a protected area -- in which case no tnt boom
-	-- will have been created. Clamping 'count' to a minimum of 1 fixes the problem.
+	-- The variable 'count' may be 0 if the bomb exploded in a protected area. In
+	-- which case no "tnt boom" flash (node) will have been created. Clamping
+	-- 'count' to a minimum of 1 fixes the problem.
 	-- [MustTest]
 	if count < 1 then
 		count = 1
@@ -530,7 +535,7 @@ function tnt.boom_impl(pos, def)
 	end
 
 	-- Make sure TNT never somehow gets keyed to the admin!
-	if def.name and def.name == "MustTest" then
+	if def.name and gdac.player_is_admin(def.name) then
 		def.name = nil
 	end
 	

@@ -250,10 +250,13 @@ function(pos, listname, index, stack, player)
 	elseif listname == "upg" and not protected then
 		if minetest.get_item_group(stack:get_name(), "chest") > 0 then
 			return stack:get_count()
+
+		-- Note: battery and CLU don't do anything for this machine at this time.
 		elseif stack:get_name() == "battery:battery" then
 			return stack:get_count()
 		elseif stack:get_name() == "techcrafts:control_logic_unit" then
 			return stack:get_count()
+
 		end
 	end
 

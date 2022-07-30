@@ -4733,7 +4733,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 		if obj and obj._cmi_is_mob then
 			-- Alert members of same mob if have 'group_attack'.
-			if obj.group_attack and obj.state ~= "attack" and obj.name == self.name then
+			if obj.state ~= "attack" and obj.name == self.name then
 				-- But owned mobs will not attack their owners.
 				if not obj.owner or (obj.owner ~= "" and obj.owner ~= name) then
 					do_attack(obj, hitter)

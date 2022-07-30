@@ -8,7 +8,7 @@ mobs.register_mob("sheep:sheep", {
     passive = true,
     hp_min = 8,
     hp_max = 10,
-    armor = 200,
+    armor = 100,
     collisionbox = {-0.45, -1, -0.45, 0.45, 0.3, 0.45},
     visual = "mesh",
     mesh = "sheep_sheep.b3d",

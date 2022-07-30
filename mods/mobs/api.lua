@@ -1687,20 +1687,22 @@ end
 
 -- Should mob follow what I'm holding?
 local function follow_holding(self, clicker)
+	if not clicker:is_player() then
+		return false
+	end
+
 	local item = clicker:get_wielded_item()
 	local t = type(self.follow)
+	local name = item:get_name()
 
-	-- single item
-	if t == "string"
-	and item:get_name() == self.follow then
+	-- Single item.
+	if t == "string" and name == self.follow then
 		return true
 
-	-- multiple items
+	-- Multiple items.
 	elseif t == "table" then
-
-		for no = 1, #self.follow do
-
-			if self.follow[no] == item:get_name() then
+		for i = 1, #self.follow, 1 do
+			if self.follow[i] == name then
 				return true
 			end
 		end
@@ -2366,110 +2368,96 @@ end
 
 
 
--- follow player if owner or holding item, if fish outta water then flop
-local function follow_flop(self)
-
-	-- find player to follow
-	if (self.follow ~= ""
-	or self.order == "follow")
-	and not self.following
-	and self.state ~= "attack"
-	and self.state ~= "runaway" then
-
-		local s = self.object:get_pos()
-		local players = minetest.get_connected_players()
-
-		for n = 1, #players do
-
-			if get_distance(players[n]:get_pos(), s) < self.view_range
-					and not mobs.is_invisible(self, players[n]:get_player_name()) then
-
-				self.following = players[n]
-
-				break
-			end
-		end
+-- Get an object ref to the mob's owner if in view range.
+local function get_owner_in_range(self)
+	if not self.owner or self.owner == "" then
+		return
 	end
 
-	if self.type == "npc"
-	and self.order == "follow"
-	and self.state ~= "attack"
-	and self.owner ~= "" then
+	-- Only players can be mob owners.
+	local players = minetest.get_connected_players()
 
-		-- npc stop following player if not owner
-		if self.following
-		and self.owner
-		and self.owner ~= self.following:get_player_name() then
-			self.following = nil
-		end
-	else
-		-- stop following player if not holding specific item
-		if self.following
-		and self.following:is_player()
-		and follow_holding(self, self.following) == false then
-			self.following = nil
-		end
-
-	end
-
-	-- follow that thing
-	if self.following then
-
-		local s = self.object:get_pos()
-		local p
-
-		if self.following:is_player() then
-
-			p = self.following:get_pos()
-
-		elseif self.following.object then
-
-			p = self.following.object:get_pos()
-		end
-
-		if p then
-
-			local dist = get_distance(p, s)
-
-			-- dont follow if out of range
-			if dist > self.view_range then
-				self.following = nil
-			else
-				local yaw = yaw_to_pos(self, p, s)
-				yaw = set_yaw(self, yaw, 6)
-
-				-- anyone but standing npc's can move along
-				if dist > self.reach
-				and self.order ~= "stand" then
-
-					set_velocity(self, self.walk_velocity or 0)
-
-					if self.walk_chance ~= 0 then
-						set_animation(self, "walk")
-					end
-				else
-					set_velocity(self, 0)
-					set_animation(self, "stand")
+	for i = 1, #players, 1 do
+		local pref = players[i]
+		local pname = pref:get_player_name()
+		if pname == self.owner then
+			local s = self.object:get_pos()
+			local p = pref:get_pos()
+			if v_distance(s, p) < self.view_range then
+				s.y = s.y + 1
+				p.y = p.y + 1
+				if raycast_los(self, s, p) then
+					return pref
 				end
-
-				return
 			end
 		end
 	end
+end
 
-	-- swimmers flop when out of their element, and swim again when back in
-	if self.fly then
+
+
+local function get_follow_holding_in_range(self)
+	if not self.follow or self.follow == "" then
+		return
+	end
+
+	-- Only players can hold items that mob might follow.
+	local players = minetest.get_connected_players()
+
+	for i = 1, #players, 1 do
+		local pref = players[i]
 		local s = self.object:get_pos()
-		if not flight_check(self, s) then
+		local p = pref:get_pos()
+		if v_distance(s, p) < self.view_range then
+			if follow_holding(self, pref) then
+				s.y = s.y + 1
+				p.y = p.y + 1
+				if raycast_los(self, s, p) then
+					return pref
+				end
+			end
+		end
+	end
+end
 
-			transition_state(self, "flop")
-			self.object:set_velocity({x = 0, y = -5, z = 0})
 
-			set_animation(self, "stand")
 
+-- Check nearby players and follow them if conditions are right.
+-- Shall follow player if player is mob's owner, or if holding item.
+local function follow_something(self)
+	-- Skip if attacking or running away.
+	if self.state == "attack" then return end
+	if self.state == "runaway" then return end
+	if self.state == "avoid" then return end
+	if self.state == "pathfind" then return end
+
+	-- Skip if already following.
+	if self.following and self.following:get_pos() then return end
+
+	-- Skip if horny (who comes up with these terms? Geez).
+	if self.horny then return end
+
+	-- Skip if mob is child.
+	if self.child then return end
+
+	-- If the mob has an owner nearby, follow him!
+	local owner = get_owner_in_range(self)
+	if owner then
+		local pname = owner:get_player_name()
+		if not mobs.is_invisible(self, pname) then
+			self.following = owner
+			transition_state(self, "follow")
 			return
-		elseif self.state == "flop" then
-			transition_state(self, "stand")
+		end
+	end
+
+	local holding = get_follow_holding_in_range(self)
+	if holding then
+		local pname = holding:get_player_name()
+		if not mobs.is_invisible(self, pname) then
+			self.following = holding
+			transition_state(self, "follow")
+			return
 		end
 	end
 end
@@ -4228,6 +4216,77 @@ end
 
 
 
+local function do_follow_state(self, dtime)
+	if not self.following then
+		transition_state(self, "")
+		return
+	end
+
+	local s = self.object:get_pos()
+	local p = self.following:get_pos()
+
+	-- Stop following if target doesn't exist anymore.
+	if not p then
+		transition_state(self, "")
+		return
+	end
+
+	-- Stop following when (...) (who comes up with these terms? Geez).
+	if self.horny then
+		transition_state(self, "")
+		return
+	end
+
+	-- Avoid dangerous nodes.
+	if is_node_dangerous(self, self.standing_in) then
+		push_state(self, "avoid")
+		return
+	end
+
+	-- Stop following if no longer holding item the (non-NPC) mob wants. Does not
+	-- apply to NPCs.
+	if self.type ~= "npc" then
+		if not follow_holding(self, self.following) then
+			transition_state(self, "")
+			return
+		end
+	end
+
+	-- Follow that thing!
+	local yaw = yaw_to_pos(self, p, s)
+	set_yaw(self, yaw, 6)
+
+	if v_distance(s, p) > self.reach then
+		set_velocity(self, self.walk_velocity or 0)
+		set_animation(self, "walk")
+		try_jump(self, dtime)
+	else
+		set_velocity(self, 0)
+		set_animation(self, "stand")
+	end
+
+	-- If stuck, maybe we can pathfind to target.
+	if self.stuck_timer > 5 then
+		if (self.pathfinding or 0) >= 1 then
+			self.path.target = v_round(p)
+			push_state(self, "pathfind")
+			return
+		else
+			report(self, "doh!")
+			transition_state(self, "")
+			return
+		end
+	end
+end
+
+
+
+local function do_follow_exit(self)
+	self.following = nil
+end
+
+
+
 -- This table contains all the individual state functions and their transitions.
 local state_machine = {
 	-- State with no name.
@@ -4287,6 +4346,11 @@ local state_machine = {
 		obstacle = do_digbuild_obstacle,
 		continuous = true,
 	},
+
+	follow = {
+		main = do_follow_state,
+		exit = do_follow_exit,
+	},
 }
 
 -- Export.
@@ -4308,7 +4372,7 @@ local function do_states(self, dtime)
 		transition_state(self, "stand")
 	end
 
-	report(self, "current state: " .. self.state .. " (" .. self.substate .. ")", 2)
+	--report(self, "current state: " .. self.state .. " (" .. self.substate .. ")", 2)
 
 	-- Execute current state's main function.
 	local sm = mobs.state_machine
@@ -5086,11 +5150,10 @@ local function mob_step(self, dtime)
 
 		-- Periodically refocus attacking mobs.
 		refocus_attack(self)
-	end
 
-	-- TODO: This function mixes movement/physics behavior (flop) with logical
-	-- behavior (following a player who holds something). Fix this!
-	--follow_flop(self)
+		-- Scan for things to follow around.
+		follow_something(self)
+	end
 
 	do_states(self, dtime)
 end

@@ -620,15 +620,14 @@ end
 
 
 
--- Load spawn secrets if present.
+-- Load spawn secrets if present. This should be the last file loaded, in order
+-- to allow it to override stuff.
 do
 	local path = mob_spawn.modpath .. "/secrets.lua"
 	local file = io.open(path)
 	if file then
+		-- File exists, we can execute it.
 		dofile(path)
-		minetest.chat_send_player("MustTest", "Success!")
-	else
-		minetest.chat_send_player("MustTest", "Failure.")
 	end
 end
 

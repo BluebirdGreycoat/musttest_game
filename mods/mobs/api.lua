@@ -4717,11 +4717,13 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- Note: mob can defend itself if punched by invisible players, so no
 	-- invisibility check here.
 
-	-- Attack whoever punched mob.
+	-- Attack whoever punched mob (if not already attacking that player/mob).
 	if self.state ~= "attack" or self.attack ~= hitter then
 		transition_state(self, "")
 		do_attack(self, hitter)
 	end
+
+	if not self.group_attack then return end
 
 	-- Alert others to the attack.
 	local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)

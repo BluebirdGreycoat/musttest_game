@@ -1,20 +1,17 @@
 
 mobs = mobs or {}
 mobs.modpath = minetest.get_modpath("mobs")
-mobs.debug_paths = false
-mobs.report_name = ""
 
+-- Options.
+mobs.debug_paths = false -- Show paths to administrator?
+mobs.report_name = "" -- Name of mob for which to send reports to admin.
 
-minetest.register_privilege("mob_respect", {
-    description = "Mobs will respect player.",
-    give_to_singleplayer = false,
+minetest.register_privilege("mobs_ignore", {
+	description = "Mobs will ignore player.",
+	give_to_singleplayer = false,
 })
-
-
 
 dofile(mobs.modpath .. "/api.lua")
 dofile(mobs.modpath .. "/crafts.lua")
 dofile(mobs.modpath .. "/spawner.lua")
 reload.register_file("mobs:chat", mobs.modpath .. "/chat.lua", true)
-
-

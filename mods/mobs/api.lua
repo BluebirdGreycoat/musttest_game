@@ -2172,8 +2172,8 @@ local function get_avoidable_targets(self)
 				end
 			end
 
-			-- Don't run from players with the 'mob_respect' priv.
-			if minetest.check_player_privs(pname, {mob_respect=true}) then
+			-- Don't run from ignored players.
+			if minetest.check_player_privs(pname, {mobs_ignore=true}) then
 				objs[n] = nil
 				goto continue
 			end
@@ -2262,8 +2262,8 @@ local function get_attackable_targets(self)
 				end
 			end
 
-			-- Ignore players with the 'mob_respect' priv.
-			if minetest.check_player_privs(pname, {mob_respect=true}) then
+			-- Don't attack ignored players.
+			if minetest.check_player_privs(pname, {mobs_ignore=true}) then
 				objs[n] = nil
 				goto continue
 			end
@@ -2387,7 +2387,10 @@ local function get_owner_in_range(self)
 				s.y = s.y + 1
 				p.y = p.y + 1
 				if raycast_los(self, s, p) then
-					return pref
+					-- Do not return player ref if player is ignored.
+					if not minetest.check_player_privs(pname, {mobs_ignore=true}) then
+						return pref
+					end
 				end
 			end
 		end
@@ -2413,7 +2416,10 @@ local function get_follow_holding_in_range(self)
 				s.y = s.y + 1
 				p.y = p.y + 1
 				if raycast_los(self, s, p) then
-					return pref
+					local pname = pref:get_player_name()
+					if not minetest.check_player_privs(pname, {mobs_ignore=true}) then
+						return pref
+					end
 				end
 			end
 		end

@@ -35,6 +35,19 @@ end
 
 
 griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
+	-- Prevent infinite recursion.
+	if self.in_punch_callback then
+		return false
+	end
+
+	-- Do all normal punch activities.
+	self.in_punch_callback = true
+	mobs.mob_punch(self, hitter, tflp, tcaps, dir)
+	self.in_punch_callback = nil
+
+	if (self.health or 0) < 10 then
+		minetest.chat_send_player("MustTest", "Testing")
+	end
 end
 
 --[[

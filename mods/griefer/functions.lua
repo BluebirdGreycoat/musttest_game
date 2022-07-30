@@ -32,6 +32,11 @@ griefer.elite_do_custom = function(self, dtime)
 	return true
 end
 
+
+
+griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
+end
+
 --[[
 
 -- Localize for performance.

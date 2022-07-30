@@ -92,6 +92,10 @@ mobs.register_mob("griefer:elite_griefer", {
 	do_custom = function(...)
 		return griefer.elite_do_custom(...)
 	end,
+
+	do_punch = function(...)
+		return griefer.elite_do_punch(...)
+	end,
 })
 
 

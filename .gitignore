@@ -1,3 +1,5 @@
 # WorldEdit
 mods/worldedit
 
+# Secret files.
+*.sec

@@ -132,7 +132,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.reload(...) end,
+		func = function(...) reload.impl.reload(...) end,
 	})
 
 	minetest.register_chatcommand("exec", {
@@ -141,7 +141,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.execute(...) end,
+		func = function(...) reload.impl.execute(...) end,
 	})
 	
 	minetest.register_chatcommand("run", {
@@ -150,7 +150,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.execute(...) end,
+		func = function(...) reload.impl.execute(...) end,
 	})
 	
 	minetest.register_chatcommand("dofile", {
@@ -159,7 +159,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.execute(...) end,
+		func = function(...) reload.impl.execute(...) end,
 	})
 	
 	-- Alias name. Some people (like me) keep wanting to spell it out.
@@ -169,7 +169,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.execute(...) end,
+		func = function(...) reload.impl.execute(...) end,
 	})
 	
 	minetest.register_chatcommand("dostring", {
@@ -178,7 +178,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.dostring(...) end,
+		func = function(...) reload.impl.dostring(...) end,
 	})
 	
 	minetest.register_chatcommand("lua", {
@@ -187,7 +187,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.dostring(...) end,
+		func = function(...) reload.impl.dostring(...) end,
 	})
 	
 	minetest.register_chatcommand("dolua", {
@@ -196,7 +196,7 @@ if not reload.chat_registered then
 		
 		-- Player must have server priviliges.
 		privs = {server=true},
-		func = function(...) return reload.impl.dostring(...) end,
+		func = function(...) reload.impl.dostring(...) end,
 	})
 	
 	reload.chat_registered = true

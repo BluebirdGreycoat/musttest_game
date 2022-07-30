@@ -47,6 +47,14 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 
 	if (self.health or 0) < 10 then
 		-- Do something.
+		local dice = math.random(1, 100)
+		if dice >= 50 then
+			-- Despawn mob.
+			local pos = self.object:get_pos()
+			ambiance.sound_play("teleport", pos, 1.0, 20)
+			preload_tp.spawn_particles(pos)
+			self.mkrm = true
+		end
 	end
 end
 

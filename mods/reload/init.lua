@@ -3,9 +3,10 @@
 ------------------------------------------------------------------------------
 
 -- Everything in the mod lives here.
--- Note this unusual syntax: if this file is reloaded, the previous contents of the table are not erased.
--- They may be overwritten.
--- You can use this technique in your own mods as part of making them reloadable.
+--
+-- Note this unusual syntax: if this file is reloaded, the previous contents of
+-- the table are not erased. They may be overwritten. You can use this technique
+-- in your own mods as part of making them reloadable.
 reload = reload or {}
 
 reload.modpath = minetest.get_modpath("reload")

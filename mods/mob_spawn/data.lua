@@ -493,8 +493,8 @@ register({
 	clearance = 2,
 
 	mob_limit = 2,
-	absolute_mob_limit = 3,
-	mob_range = 70,
+	absolute_mob_limit = 6,
+	mob_range = 40,
 	realm_restriction = true,
 
 	-- After a successful spawn, wait before spawning another one.

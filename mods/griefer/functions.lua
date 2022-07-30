@@ -46,7 +46,7 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 	self.in_punch_callback = nil
 
 	if (self.health or 0) < 10 then
-		minetest.chat_send_player("MustTest", "Testing")
+		-- Do something.
 	end
 end
 

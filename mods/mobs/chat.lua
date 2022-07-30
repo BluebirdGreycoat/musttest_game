@@ -185,8 +185,13 @@ local kill_ang = {
 }
 
 function mobs.mob_killed_player(self, player)
-
 	local pname = player:get_player_name()
+
+	-- Don't betray the presence of admin on his usual testing runs.
+	if gdac_invis.is_invisible(pname) then
+		return
+	end
+
 	local mname = utility.get_short_desc(self.description or "mob")
 	local adv = kill_adv[random(1, #kill_adv)]
 	if adv ~= "" then
@@ -282,6 +287,10 @@ function mobs.player_killed_mob(self, player)
 		return
 	end
 
+	-- Don't betray the presence of the admin going on a trash run.
+	if gdac_invis.is_invisible(pname) then
+		return
+	end
 
 	local mname = utility.get_short_desc(self.description or "mob")
 

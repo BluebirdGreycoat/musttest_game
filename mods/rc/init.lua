@@ -356,7 +356,6 @@ function rc.get_random_realm_gate_position(pname, origin)
 				--end
 
 				if counts["default:stone"] > math_random(20000, 32000) then
-					--minetest.chat_send_player("MustTest", "# Server: Success! " .. counts["default:stone"])
 					return pos
 				end
 			end

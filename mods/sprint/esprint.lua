@@ -197,7 +197,6 @@ function sprint.globalstep(dtime)
 				if ndef and ndef.groups and ndef.groups.liquid then
 					hunger.increase_hunger(player, 1)
 					hunger.increase_exhaustion(player, 10)
-					--minetest.chat_send_player("MustTest", "Moving in water!")
 				elseif control.jump then
 					-- Player is probably climbing a ladder.
 					hunger.increase_exhaustion(player, 7)

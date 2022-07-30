@@ -75,7 +75,6 @@ vessels.on_blast = function(pos)
 end
 
 vessels.on_steel_bottle_dig = function(pos, node, digger)
-	--minetest.chat_send_player("MustTest", "# Server: Node dig!")
 	if not digger or not digger:is_player() then
 		return minetest.node_dig(pos, node, digger)
 	end

@@ -12,8 +12,6 @@ function tinderbox.on_use(itemstack, user, pt)
 	local fakestack = real_torch.relight(fakestack, user, pt)
 	if not fakestack or fakestack:get_count() ~= 0 then return end -- Tinderbox was not used.
 
-	--minetest.chat_send_player("MustTest", "Used tinderbox!")
-
 	if itemstack:get_name() == "tinderbox:tinderbox" and itemstack:get_count() > 1 then
 		-- Multiple tinderboxes are held. Must separate them and add wear.
 		itemstack:take_item()
@@ -38,8 +36,6 @@ function tinderbox.on_use(itemstack, user, pt)
 		itemstack:add_wear(65535/TINDERBOX_USES)
 		return itemstack
 	end
-
-	--minetest.chat_send_player("MustTest", "Adding wear!")
 
 	-- Player holds single tinderbox. Must check if it is item or tool.
 	if itemstack:get_name() == "tinderbox:tinderbox" then

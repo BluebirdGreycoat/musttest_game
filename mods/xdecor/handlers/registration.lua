@@ -112,8 +112,5 @@ function xdecor.register(name, def)
 
 	if xdecor.stairs_valid_def(def) then
 		xdecor_stairs_alternative("xdecor:"..name, def)
-		--minetest.after(40, minetest.chat_send_player, "MustTest", "Registered stairs for " .. name .. "!")
-	else
-		--minetest.after(40, minetest.chat_send_player, "MustTest", "Failed to register stairs for " .. name .. "!")
 	end
 end

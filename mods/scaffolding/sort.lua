@@ -5,7 +5,6 @@ scaffolding = scaffolding or {}
 
 function scaffolding.wrench_on_use(itemstack, user, pt)
 	if pt.type ~= "node" then
-		--minetest.chat_send_player("MustTest", "Bad!")
 		return
 	end
 	local pname = user:get_player_name()

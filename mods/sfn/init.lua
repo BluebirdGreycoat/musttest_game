@@ -68,14 +68,12 @@ function sfn.check_clump_fall_special(pos, node)
 		-- Back node.
 		local node2 = minetest.get_node(vector.add(pos, dir))
 		if node2.name == nodename and node2.param2 == node.param2 then
-			--minetest.chat_send_player("MustTest", "Test1")
 			return true
 		end
 
 		-- Front node.
 		node2 = minetest.get_node(vector.subtract(pos, dir))
 		if node2.name == nodename and node2.param2 == node.param2 then
-			--minetest.chat_send_player("MustTest", "Test2")
 			return true
 		end
 	end

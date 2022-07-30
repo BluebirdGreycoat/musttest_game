@@ -42,13 +42,9 @@ local function torch_melt(pos)
 end
 
 function torchmelt.on_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "# Server: Torchmelt @ " .. minetest.pos_to_string(pos) .. "!")
-
 	if torch_melt(pos) then
 		minetest.get_node_timer(pos):start(math_random(torchmelt.min_time, torchmelt.max_time))
 	else
-		--minetest.chat_send_player("MustTest", "# Server: Removed node @ " .. minetest.pos_to_string(pos) .. "!")
-
 		minetest.get_node_timer(pos):stop()
 		minetest.remove_node(pos) -- Remove the utility node.
 	end

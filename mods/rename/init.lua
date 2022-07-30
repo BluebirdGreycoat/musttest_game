@@ -417,43 +417,6 @@ if not rename.run_once then
     end,
   })
 
-	-- TODO: the rename algorithm should only be called on punch or access of a node.
-	--[==[
-	minetest.register_lbm({
-		label = "Rename Owned Nodes",
-		nodenames = {
-			"group:protector",
-			"city_block:cityblock",
-			"mailbox:mailbox",
-			"group:bed",
-			"group:chest",
-			"group:door",
-			"group:trapdoor",
-			"teleports:teleport",
-			"group:vending",
-			"circular_saw:circular_saw",
-			"itemframes:frame",
-			"itemframes:pedestal",
-		},
-		name = "rename:update_node_owner",
-		run_at_every_load = false,
-		--once_per_session = true,
-		action = function(pos)
-			-- Spread the action out over many frames.
-			minetest.after(math_random(10, 600) / 10, function()
-				-- Get the node anew.
-				local node = minetest.get_node(pos)
-				-- If it has a rename handler, execute it.
-				local def = minetest.registered_items[node.name]
-				if def and def._on_rename_check then
-					def._on_rename_check(pos)
-					--minetest.chat_send_player("MustTest", "# Server: Renaming '" .. node.name .. "' @ " .. minetest.pos_to_string(pos) .. "!")
-				end
-			end)
-		end,
-	})
-	--]==]
-
   -- GUI input handler.
   minetest.register_on_player_receive_fields(function(...)
     return rename.on_receive_fields(...)

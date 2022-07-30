@@ -463,7 +463,7 @@ teleports.calculate_range = function(pos)
 		local owner = minetest.get_meta(pos):get_string("owner")
 		-- There is an admin teleport pair between the Surface Colony and the City of Fire.
 		-- This special exception code makes it work.
-		if owner == "MustTest" then
+		if owner == gdac.name_of_admin then
 			return 31000, nyan
 		else
 			-- Range of nyan teleports is reduced if they're crowded.

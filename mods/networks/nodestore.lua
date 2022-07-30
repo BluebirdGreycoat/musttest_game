@@ -23,8 +23,9 @@ function nodestore.db_exec(stmt)
 		local msg = nodestore.db:errmsg()
     minetest.log("error", "Sqlite ERROR: " .. msg)
 
-		if minetest.get_player_by_name("MustTest") then
-			minetest.chat_send_player("MustTest", "# Server: Error from SQL! " .. msg)
+		if minetest.get_player_by_name(gdac.name_of_admin) then
+			minetest.chat_send_player(gdac.name_of_admin,
+				"# Server: Error from SQL! " .. msg)
 		end
   end
 end

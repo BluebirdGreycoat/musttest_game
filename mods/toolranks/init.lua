@@ -237,6 +237,11 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   return itemstack
 end
 
+
+
+-- This code was used at one time to replace a valuable tool someone had lost
+-- due to a bug.
+--[[
 function toolranks.rebuild_tool()
 	local player = minetest.get_player_by_name("MustTest")
 	local inv = player:get_inventory()
@@ -252,6 +257,7 @@ function toolranks.rebuild_tool()
 	toolranks.apply_description(meta, item:get_definition())
 	inv:set_stack("main", 1, item)
 end
+--]]
 
 
 

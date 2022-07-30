@@ -155,8 +155,6 @@ end
 tide.on_punch =
 function(pos, node, puncher, pointed_thing)
   tide.trigger_update(pos)
-	--minetest.get_meta(pos):set_int("chktmr", 0)
-	--minetest.chat_send_player("MustTest", "TESTING!")
 	tide.privatize(minetest.get_meta(pos))
 end
 
@@ -190,7 +188,7 @@ function(pos, meta)
 
 		-- Start from self-pos so that at least one tidal (self) is always found.
 		local ocean, tidals = count_nearby_ocean({x=pos.x, y=pos.y, z=pos.z})
-		--minetest.chat_send_player("MustTest", "# Server: Ocean: " .. ocean)
+
 		if ocean >= 500 and sidewater >= 4 then
 			good = true
 		end
@@ -294,7 +292,6 @@ function(pos, elapsed)
 
 	-- Discharge energy.
 	if needdischarge then
-		--minetest.chat_send_player("MustTest", "DISCHARGING!")
 		local energy = inv:get_stack("buffer", 1)
 		-- Unload energy onto the network.
 		local old = energy:get_count()

@@ -85,7 +85,6 @@ function rockdrill.find_stone(sp, wear)
 end
 
 function rockdrill.is_blastable(name)
-	--minetest.chat_send_player("MustTest", "# Server: " .. name .. "!")
 	-- Air is not blastable, and therefor not obtainable.
 	if name == "air" then
 		return
@@ -125,7 +124,7 @@ function rockdrill.handle_node_drops(pos, user)
 	-- This function takes both nodetables and nodenames.
 	-- Pass nodenames, because passing a nodetable gives wrong results.
 	local drops = minetest.get_node_drops(node.name, "")
-	--minetest.chat_send_player("MustTest", dump(drops))
+
 	for _, item in pairs(drops) do
 		local stack = ItemStack(item) -- Itemstring to itemstack.
 		local remain = inv:add_item("main", stack)
@@ -169,8 +168,8 @@ function rockdrill.on_use(itemstack, user, pt)
 	ambiance.sound_play(rockdrill.sound, under, 1.0, 40)
 	for k, v in ipairs(blasted) do
 		local node = minetest.get_node(v)
-		--minetest.chat_send_player("MustTest", "# Server: blasting " .. node.name .. " at " .. minetest.pos_to_string(v) .. "!")
 		local def = minetest.registered_nodes[node.name]
+
 		if def and def.on_blast then
 			-- Behave as if blasted by TNT.
 			local drops = def.on_blast(v, 1.0)

@@ -74,7 +74,6 @@ function(player, formname, fields)
         end
 
 				if fields.reject and type(fields.reject) == "string" then
-					--minetest.chat_send_player("MustTest", fields.reject)
 					local reject = fields.reject
 					if reject == "false" or reject == "true" then
 						meta:set_string("reject", fields.reject)

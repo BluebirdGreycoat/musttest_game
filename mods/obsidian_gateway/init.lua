@@ -227,7 +227,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	--end
 
 	-- Enable this if any serious problems occur.
-	--if pname ~= "MustTest" then
+	--if pname ~= gdac.name_of_admin then
 	--	minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
 	--	return
 	--end
@@ -336,7 +336,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	end
 
 	-- Let everyone use gates owned by the admin.
-	if actual_owner == "MustTest" then
+	if actual_owner == gdac.name_of_admin then
 		isowner = true
 	end
 

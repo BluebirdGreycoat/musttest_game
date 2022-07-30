@@ -37,7 +37,7 @@ function _nodeupdate.drop_node_as_entity(pos)
 	-- This function takes both nodetables and nodenames.
 	-- Pass nodenames, because passing a nodetable gives wrong results.
 	local drops = get_node_drops(node.name, "")
-	--minetest.chat_send_player("MustTest", dump(drops))
+
 	for _, item in pairs(drops) do
 		local p = {
 			x = pos.x + math_random()/2 - 0.25,
@@ -86,7 +86,6 @@ core.check_single_for_falling = function(p)
 	-- Fallback to builtin function.
 	local spawned = old_nodeupdate(p)
 	if spawned then
-		--minetest.chat_send_player("MustTest", "# Server: Spawned particles!")
 		spawn_particles(p, n)
 	end
 	return spawned

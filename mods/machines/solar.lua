@@ -165,14 +165,6 @@ for k, v in ipairs({
 		-- Note that this uses a caching algorithm.
 		local canrun = func.check_environment(pos, meta)
 
-		--if owner == "MustTest" then
-		--	if canrun then
-		--		minetest.chat_send_player("MustTest", "YES")
-		--	else
-		--		minetest.chat_send_player("MustTest", "NO")
-		--	end
-		--end
-
 		-- If environment is no longer producing energy,
 		-- unload the buffered energy.
 		if not canrun then

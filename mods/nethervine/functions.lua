@@ -54,8 +54,6 @@ function nethervine.on_flora_destruct(pos)
 end
 
 function nethervine.on_flora_timer(pos, elapsed)
-  --minetest.chat_send_player("MustTest", "Nether flora timer @ " .. minetest.pos_to_string(pos) .. "!")
-
   local node = minetest.get_node(pos)
   if nethervine.flora_spread(pos, node) then
     minetest.get_node_timer(pos):start(math_random(nethervine.flora_mintime, nethervine.flora_maxtime))

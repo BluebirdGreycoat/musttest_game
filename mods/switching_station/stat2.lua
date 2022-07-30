@@ -311,8 +311,6 @@ for k, v in ipairs({
 
   functable.on_punch =
   function(pos, node, puncher, pointed_thing)
-		--minetest.chat_send_player("MustTest", "# Server: Cable box @ " .. minetest.pos_to_string(pos) .. " punched!")
-
     functable.trigger_update(pos)
 		functable.update_infotext_and_formspec(pos)
 
@@ -387,7 +385,6 @@ for k, v in ipairs({
   end
 
 	functable.privatize = function(meta)
-		--minetest.chat_send_player("MustTest", "# Server: Privatizing!")
 		meta:mark_as_private({
 			"needupdate",
 			"owner",

@@ -265,8 +265,6 @@ function prospector.on_receive_fields(user, formname, fields)
 		return
 	end
 
-	--minetest.chat_send_player("MustTest", "Formspec control!")
-
 	local toolstack = user:get_wielded_item()
 	if toolstack:get_name() ~= "prospector:prospector" then
 		return true

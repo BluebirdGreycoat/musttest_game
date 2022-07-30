@@ -641,7 +641,7 @@ if not mob_spawn.run_once then
 	-- order to allow it to override stuff. File must be excluded from source
 	-- control! Otherwise it will not be secret. D'oh.
 	reload.register_optional("mob_spawn:secrets",
-		mob_spawn.modpath .. "/secrets.lua")
+		mob_spawn.modpath .. "/secrets.sec")
 
 	mob_spawn.run_once = true
 end

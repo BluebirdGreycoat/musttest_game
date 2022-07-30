@@ -2332,10 +2332,12 @@ local function general_attack(self)
 	end
 
 	-- Hunt random nearby target. (Allows targets outside of LOS.)
-	if not target and random(1, 100) < (self.hunt_chance or 5) then
-		local tarhunt = objs[random(1, #objs)]
-		do_attack(self, tarhunt)
-		return
+	if #objs > 0 then
+		if not target and random(1, 100) < (self.hunt_chance or 5) then
+			local tarhunt = objs[random(1, #objs)]
+			do_attack(self, tarhunt)
+			return
+		end
 	end
 end
 

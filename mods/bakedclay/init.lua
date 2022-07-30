@@ -61,13 +61,6 @@ for _, clay in ipairs(clay) do
 		recipe = {"bakedclay:natural", "dye:" .. clay[1]},
 	})
 
-	minetest.register_craft({
-		type = "cooking",
-		output = "bakedclay:natural",
-		recipe = "bakedclay:" .. clay[1],
-		cooktime = 10,
-	})
-
 	-- register stair and slab
 	stairs.register_stair_and_slab(
 		"bakedclay_".. clay[1],

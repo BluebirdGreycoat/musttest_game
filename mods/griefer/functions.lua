@@ -45,7 +45,10 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 	mobs.mob_punch(self, hitter, tflp, tcaps, dir)
 	self.in_punch_callback = nil
 
-	if (self.health or 0) < 20 then
+	local health = (self.health or 0)
+
+	-- Oerkki is about to die!
+	if health > 0 and health < 20 then
 		-- Do something.
 		local dice = math.random(1, 100)
 		if dice >= 50 then

@@ -620,6 +620,20 @@ end
 
 
 
+-- Load spawn secrets if present.
+do
+	local path = mob_spawn .. "/secrets.lua"
+	local file = io.open(path)
+	if file then
+		dofile(path)
+		minetest.chat_send_player("MustTest", "Success!")
+	else
+		minetest.chat_send_player("MustTest", "Failure.")
+	end
+end
+
+
+
 if not mob_spawn.run_once then
 	minetest.register_globalstep(function(...)
 		mob_spawn.on_globalstep(...)

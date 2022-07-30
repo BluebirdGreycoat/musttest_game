@@ -23,9 +23,9 @@ reload.register_file = function(id, file, noload)
 	-- This file cannot already have been registered.
 	assert(reload.impl.files[id] == nil)
 	
-	-- Execute the file once.
-	-- Registering the file also executes it, so doing this is the equivalent of using 'dofile',
-	-- but with the added benefit of being able to execute the file again and again as needed.
+	-- Execute the file once. Registering the file also executes it, so doing this
+	-- is the equivalent of using 'dofile', but with the added benefit of being
+	-- able to execute the file again and again as needed.
 	if noload == true or noload == nil then dofile(file) end
 	reload.impl.files[id] = file
 end

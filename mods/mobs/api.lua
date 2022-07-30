@@ -3045,6 +3045,7 @@ end
 
 local function do_attack_enter(self)
 	if random(0, 100) < 90 and self.sounds.war_cry then
+		report(self, "testing")
 		mob_sound(self, self.sounds.war_cry)
 	end
 end

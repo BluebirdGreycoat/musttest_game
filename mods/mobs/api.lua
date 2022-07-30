@@ -4272,7 +4272,6 @@ local function do_follow_state(self, dtime)
 			push_state(self, "pathfind")
 			return
 		else
-			report(self, "doh!")
 			transition_state(self, "")
 			return
 		end

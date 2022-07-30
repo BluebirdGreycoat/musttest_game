@@ -49,14 +49,8 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 
 	-- Oerkki is about to die!
 	if health > 0 and health < 20 then
-		-- Do something.
-		local dice = math.random(1, 100)
-		if dice >= 50 then
-			-- Despawn mob.
-			local pos = self.object:get_pos()
-			ambiance.sound_play("nether_portal_usual", pos, 1.0, 20)
-			preload_tp.spawn_particles(pos)
-			self.mkrm = true
+		if griefer.stupid_oerkki_trick then
+			griefer.stupid_oerkki_trick(self)
 		end
 	end
 end

@@ -31,3 +31,20 @@ reload.register_file = function(id, file, noload)
 end
 
 
+
+-- Check if file exists, and register/execute it only if it does.
+reload.register_optional = function(id, path)
+	-- Foolproof us!
+	assert(type(id) == "string")
+	assert(type(path) == "string")
+
+	-- This file cannot already have been registered.
+	assert(reload.impl.files[id] == nil)
+
+	local file = io.open(path)
+	if file then
+		-- File exists, we can execute it.
+		reload.impl.files[id] = path
+		dofile(path)
+	end
+end

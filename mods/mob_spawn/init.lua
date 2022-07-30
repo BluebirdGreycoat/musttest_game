@@ -620,20 +620,6 @@ end
 
 
 
--- Load spawn secrets if present. This should be the last file loaded, in order
--- to allow it to override stuff. File must be excluded from source control!
--- Otherwise it will not be secret. D'oh.
-do
-	local path = mob_spawn.modpath .. "/secrets.lua"
-	local file = io.open(path)
-	if file then
-		-- File exists, we can execute it.
-		dofile(path)
-	end
-end
-
-
-
 if not mob_spawn.run_once then
 	minetest.register_globalstep(function(...)
 		mob_spawn.on_globalstep(...)
@@ -650,6 +636,12 @@ if not mob_spawn.run_once then
 	local c = "mob_spawn:core"
 	local f = mob_spawn.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
+
+	-- Load spawn secrets if present. This should be the last file loaded, in
+	-- order to allow it to override stuff. File must be excluded from source
+	-- control! Otherwise it will not be secret. D'oh.
+	reload.register_optional("mob_spawn:secrets",
+		mob_spawn.modpath .. "/secrets.lua")
 
 	mob_spawn.run_once = true
 end

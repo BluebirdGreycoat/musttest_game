@@ -17,6 +17,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	hp_min = 160,
 	hp_max = 260,
 	armor = 100,
+	show_health = false,
 
 	-- Require level 3 weapon to get any drops.
 	armor_level = 3,

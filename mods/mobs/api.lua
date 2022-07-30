@@ -97,7 +97,7 @@ local creative =        false
 local spawn_protected = minetest.settings:get_bool("mobs_spawn_protected") ~= false
 local remove_far =      false
 local difficulty =      tonumber(minetest.setting_get("mob_difficulty")) or 1.0
-local show_health =     minetest.settings:get_bool("mob_show_health") ~= false
+local show_health =     true
 local max_per_block =   tonumber(minetest.settings:get("max_objects_per_block") or 99)
 local mob_chance_multiplier = tonumber(minetest.settings:get("mob_chance_multiplier") or 1)
 local default_knockback = 1
@@ -625,7 +625,8 @@ local function check_for_death(self, cause, cmi_cause)
 			self.nametag2 = self.nametag or ""
 		end
 
-		if show_health and (cmi_cause and cmi_cause.type == "punch") then
+		if show_health and self.show_health ~= false and
+				(cmi_cause and cmi_cause.type == "punch") then
 
 			self.htimer = 2
 			self.nametag = "♥ " .. self.health .. " / " .. self.hp_max
@@ -5347,6 +5348,7 @@ if not mobs.registered then
 			hunt_chance             = def.hunt_chance or 5,
 			-- The meaning of 'attack_chance' is inverted in order to make more sense [MustTest].
 			attack_chance           = def.attack_chance or 95,
+			show_health             = def.show_health,
 			_cmi_is_mob             = true,
 
 

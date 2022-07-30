@@ -54,7 +54,7 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 		if dice >= 50 then
 			-- Despawn mob.
 			local pos = self.object:get_pos()
-			ambiance.sound_play("teleport", pos, 1.0, 20)
+			ambiance.sound_play("nether_portal_usual", pos, 1.0, 20)
 			preload_tp.spawn_particles(pos)
 			self.mkrm = true
 		end

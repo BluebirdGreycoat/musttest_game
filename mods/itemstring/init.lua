@@ -7,7 +7,7 @@ minetest.register_privilege("item_info", {
 	give_to_singleplayer = false,
 })
 
-minetest.register_chatcommand("item_string", {
+minetest.register_chatcommand("item-string", {
 	params = "",
 	description = "Get the item-string of a wielded item.",
 	privs = {item_info=true},

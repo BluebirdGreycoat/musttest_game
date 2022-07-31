@@ -5,7 +5,7 @@ ap.players = ap.players or {}
 
 -- Number of seconds to keep track of player's reported positions.
 -- This must be at least 1 (though such a small value is NOT useful).
-ap.record_time = 60
+ap.record_time = 60*10
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

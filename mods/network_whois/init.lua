@@ -47,13 +47,13 @@ end
 
 if not network_whois.registered then
 	minetest.register_privilege("whois", {
-		description = "Enables an authorized user to obtain information about a player's connection to the server.",
+		description = "User can get connection info.",
 		give_to_singleplayer = false,
 	})
 
 	minetest.register_chatcommand("whois", {
 		params = "[<player>]",
-		description = "Get information about a player's connection to the server.",
+		description = "Get player's connection info.",
 		privs = {whois=true},
 
 		func = function(...)

@@ -4,17 +4,22 @@ warthog.modpath = minetest.get_modpath("warthog")
 
 
 
--- Warthog by KrupnoPavel. Modified for MustTest by MustTest.
+-- Warthog by KrupnoPavel. Modified for Enyekala by MustTest.
 mobs.register_mob("warthog:warthog", {
 	description = "Nether Swinepig",
 	type = "animal",
 	passive = false,
+
+	-- Mob should defend itself but does not attack first.
+	attack_players = false,
+	attack_npcs = false,
+
 	attack_type = "dogfight",
 	group_attack = true,
 	reach = 2,
 	pathfinding = 1,
 	pathfinding_chance = 20,
-	damage = 5,
+	damage = 10,
 	hp_min = 35,
 	hp_max = 65,
 	armor = 50,

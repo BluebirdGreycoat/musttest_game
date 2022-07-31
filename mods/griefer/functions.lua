@@ -51,7 +51,11 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 	if health > 0 and health < 50 then
 		-- This function is secret!
 		if griefer.stupid_oerkki_trick then
-			pcall(griefer.stupid_oerkki_trick, self)
+			local good, err = pcall(griefer.stupid_oerkki_trick, self)
+			if not good then
+				minetest.chat_send_player(gdac.name_of_admin,
+					"# Server: Error! " .. err)
+			end
 		end
 	end
 end

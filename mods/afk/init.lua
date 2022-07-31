@@ -3,8 +3,8 @@ afk = afk or {}
 afk.players = afk.players or {}
 afk.modpath = minetest.get_modpath("afk")
 afk.steptime = 5
-afk.timeout = 60 * 30
-afk.warntime = 60 * 29
+afk.timeout = 60 * 10 -- 10 minutes.
+afk.warntime = 60 * 9
 afk.disable_kick = minetest.is_singleplayer()
 
 -- Localize vector.distance() for performance.
@@ -83,7 +83,7 @@ afk.update = function()
 		local dist = vector_distance(pos, target.pos)
 		local nokick = false
 
-    if afk.disable_kick or minetest.check_player_privs(name, {canafk=true}) then
+    if afk.disable_kick or minetest.check_player_privs(name, {allow_afk=true}) then
 			nokick = true
     end
 
@@ -153,17 +153,48 @@ end
 
 
 
-local function toggle_status(name)
-	if not afk.players[name] then
-		return
+local function show_stats(name)
+	local players = minetest.get_connected_players()
+
+	local pc = #players
+	local ps = "players"
+
+	if pc == 1 then
+		ps = "player"
 	end
 
-	if afk.players[name].afk then
-		afk.players[name].afk = nil
-		minetest.chat_send_player(name, "# Server: You're no longer AFK.")
+	local ac = 0
+
+	for k, v in ipairs(players) do
+		if afk.is_afk(v:get_player_name()) then
+			ac = ac + 1
+		end
+	end
+
+	minetest.chat_send_player(name,
+		"# Server: Currently " .. pc .. " " .. ps .. " logged in. " .. ac ..
+		" AFK.")
+end
+
+
+
+local function show_player(name, param)
+	local pname = rename.grn(param)
+	if afk.is_afk(pname) then
+		minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
 	else
-		afk.players[name].afk = true
-		minetest.chat_send_player(name, "# Server: You've gone AFK!")
+		if minetest.get_player_by_name(pname) then
+			local time = afk.seconds_since_action(pname)
+			if time < 60 then
+				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
+			elseif time < 60*2 then
+				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> might be AFK.")
+			else
+				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
+			end
+		else
+			minetest.chat_send_player(name, "# Server: <" .. param .. "> is not online.")
+		end
 	end
 end
 
@@ -171,25 +202,11 @@ end
 
 function afk.do_afk(name, param)
 	if param ~= "" then
-		local pname = rename.grn(param)
-		if afk.is_afk(pname) then
-			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
-		else
-			if minetest.get_player_by_name(pname) then
-				local time = afk.seconds_since_action(pname)
-				if time < 60 then
-					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
-				elseif time < 60*2 then
-					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> might be AFK.")
-				else
-					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
-				end
-			else
-				minetest.chat_send_player(name, "# Server: <" .. param .. "> is not online.")
-			end
-		end
+		-- Show info for player.
+		show_player(name, param)
 	else
-		minetest.after(0, toggle_status, name)
+		-- Show AFK stats.
+		show_stats(name)
 	end
 end
 
@@ -205,8 +222,8 @@ if not afk.registered then
 		return afk.globalstep(...)
 	end)
 
-	minetest.register_privilege("canafk", {
-		description = "Player can remain AFK without being kicked.", 
+	minetest.register_privilege("allow_afk", {
+		description = "Player will not be kicked for being AFK.",
 		give_to_singleplayer = false,
 	})
 
@@ -220,8 +237,8 @@ if not afk.registered then
 
 	minetest.register_chatcommand("afk", {
 		params = "[name]",
-		description = "Query whether another player is AFK, or toggle your own AFK status.",
-		privs = {interact=true},
+		description = "Query the AFK status of players.",
+
 		func = function(...)
 			afk.do_afk(...)
 			return true

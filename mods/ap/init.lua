@@ -46,7 +46,9 @@ end
 -- or an empty table if that player wasn't loaded.
 -- Each entry is a table in the format {pos, time}.
 function ap.get_position_list(pname)
-	return ap.players[pname].positions or {}
+	local data = ap.players[pname]
+	if not data then return {} end
+	return data.positions or {}
 end
 
 function ap.on_joinplayer(pref)

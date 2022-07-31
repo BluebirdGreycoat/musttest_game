@@ -44,14 +44,15 @@ end
 
 if not refill.run_once then
 	minetest.register_privilege("refill", {
-		description = "Player is allowed infinite itemstacks.",
+		description = "User is allowed infinite item stacks.",
 		give_to_singleplayer = false,
 	})
 
 	minetest.register_chatcommand("refill", {
-		params = "",
-		description = "Refill all itemstacks to max capacity.",
+		params = "[all]",
+		description = "Refill item stacks to max capacity.",
 		privs = {refill = true},
+
 		func = function(pname, param)
 			param = string.trim(param)
 			if param == "all" then

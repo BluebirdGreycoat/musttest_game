@@ -11,7 +11,10 @@ local function wrap_commands()
 		v.func = function(...)
 			local result, message = old(...)
 			if message and message ~= "" then
-				message = "# Server: " .. message
+				-- But if the message already has a '#' symbol, pass it through.
+				if message:sub(1, 1) ~= "#" then
+					message = "# Server: " .. message
+				end
 			end
 			-- The *builtin* will send the message via core.chat_send_player.
 			return result, message

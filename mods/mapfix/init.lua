@@ -136,7 +136,7 @@ if not mapfix.registered then
 	-- Allow players to use command from chat console.
 	-- No privs required.
 	minetest.register_chatcommand("mapfix", {
-		params = "[<radius>]",
+		params = "[radius]",
 		description = "Request a recalculation of nearby liquids and light.",
 
 		func = function(...)

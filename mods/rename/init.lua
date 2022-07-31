@@ -387,29 +387,9 @@ if not rename.run_once then
 	-- Override engine functions.
 	dofile(rename.modpath .. "/overrides.lua")
 
-  minetest.register_chatcommand("nickname", {
-    params = "<new nickname>",
-    description = "Pay an in-game fee and change your own name.",
-    privs = {interact=true},
-    func = function(pname, param)
-      rename.purchase_rename(pname, param)
-      return true
-    end,
-  })
-
-  minetest.register_chatcommand("realnick", {
-    params = "",
-    description = "Find out the name the sever knows you by (not a nick).",
-    privs = {interact=true},
-    func = function(pname, param)
-      rename.execute_whoami(pname)
-      return true
-    end,
-  })
-
   minetest.register_chatcommand("whoami", {
     params = "",
-    description = "Find out the name the sever knows you by (not a nick).",
+    description = "Get your original login-name.",
     privs = {interact=true},
     func = function(pname, param)
       rename.execute_whoami(pname)

@@ -214,7 +214,8 @@ if not status.registered then
 		func = function(name, param)
 			local result, message = timefunc(name, param)
 			message = STATUS_COLOR .. "# Server: " .. message
-			return result, message
+			minetest.chat_send_player(name, message)
+			return true
 		end,
 	})
 
@@ -225,9 +226,10 @@ if not status.registered then
 		func = function(name, param)
 			local result, message = daysfunc(name, param)
 			message = STATUS_COLOR ..
-				"# Server: " .. message .. ". " ..
-				string.gsub(hud_clock.get_date_string(), "\n+", ", ") .. "."
-			return result, message
+				"# Server: " .. message .. " " ..
+				string.gsub(hud_clock.get_date_string(), "\n+", ", ")
+			minetest.chat_send_player(name, message)
+			return true
 		end,
 	})
 

@@ -139,7 +139,7 @@ function hud_clock.get_calendar_infotext()
 end
 
 minetest.register_node("clock:calendar", {
-	description = "Snowmelt Calendar",
+	description = "Calendar Of Enyekala",
 	tiles = {"calendar.png"},
 	wield_image = "calendar.png",
 	inventory_image = "calendar.png",

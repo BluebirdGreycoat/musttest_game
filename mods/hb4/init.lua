@@ -81,6 +81,29 @@ function hb4.delayed_harm(data)
 	minetest.after(0, hb4.delayed_harm2, data)
 end
 
+
+
+-- Return reference to nearest player, or nil.
+function hb4.nearest_player(pos)
+	local players = minetest.get_connected_players()
+
+	local pref
+	local dist = 100000
+
+	for i=1, #players, 1 do
+		local p = players[i]
+		local d = vector.distance(p:get_pos(), pos)
+		if d < dist then
+			dist = d
+			pref = p
+		end
+	end
+
+	return pref
+end
+
+
+
 if not hb4.reload_registered then
 	local c = "hb4:core"
 	local f = hb4.modpath .. "/init.lua"

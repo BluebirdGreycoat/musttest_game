@@ -10,7 +10,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return func(pos, from_list, from_index, to_list, to_index, count, player)
 		end
 	elseif def.on_metadata_inventory_move then
@@ -19,7 +19,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return count
 		end
 	end
@@ -30,7 +30,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return func(pos, listname, index, stack, player)
 		end
 	elseif def.on_metadata_inventory_put then
@@ -39,7 +39,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return stack:get_count()
 		end
 	end
@@ -50,7 +50,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return func(pos, listname, index, stack, player)
 		end
 	elseif def.on_metadata_inventory_take then
@@ -59,7 +59,7 @@ function falldamage.apply_range_checks(def)
 			if DIST(pos, OFFSET(player:get_pos(), player:get_properties().eye_height)) > RANGE then
 				return 0
 			end
-			afk_removal.reset_timeout(player:get_player_name())
+			afk.reset_timeout(player:get_player_name())
 			return stack:get_count()
 		end
 	end

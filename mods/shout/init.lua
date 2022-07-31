@@ -232,7 +232,7 @@ function shout.shout(name, param)
 		end
 	end
 
-	afk_removal.reset_timeout(name)
+	afk.reset_timeout(name)
 	chat_logging.log_public_shout(name, param, mk)
 end
 
@@ -365,7 +365,7 @@ function shout.x(name, param)
 	--chat_logging.log_public_shout(name, param, mk)
 
 	chat_logging.log_team_chat(name, param, channel)
-	afk_removal.reset_timeout(name)
+	afk.reset_timeout(name)
 end
 
 

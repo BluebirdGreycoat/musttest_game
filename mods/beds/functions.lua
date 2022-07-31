@@ -28,7 +28,7 @@ local count_players_in_bed = function()
         local nobeds = minetest.check_player_privs(k, {nobeds=true})
 
 				-- Ignore AFK folks.
-				if afk_removal.is_afk(k) then
+				if afk.is_afk(k) then
 					nobeds = true
 				end
 
@@ -50,7 +50,7 @@ local get_participating_players = function()
         local nobeds = minetest.check_player_privs(v, {nobeds=true})
 
 				-- Ignore AFK folks.
-				if afk_removal.is_afk(pname) then
+				if afk.is_afk(pname) then
 					nobeds = true
 				end
 

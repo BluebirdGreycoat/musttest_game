@@ -286,7 +286,7 @@ chat_core.on_chat_message = function(name, message)
 	player_labels.on_chat_message(name, message)
 	chat_core.send_all(name, "<", rename.gpn(name), coord_string .. "> ", message)
 	chat_logging.log_public_chat(name, message, coord_string)
-	afk_removal.reset_timeout(name)
+	afk.reset_timeout(name)
 end
 
 
@@ -314,7 +314,7 @@ chat_core.handle_command_me = function(name, param)
 	player_labels.on_chat_message(name, param)
 	chat_core.send_all(name, "* <", rename.gpn(name), coord_string .. "> ", param, true)
 	chat_logging.log_public_action(name, param, coord_string)
-	afk_removal.reset_timeout(name)
+	afk.reset_timeout(name)
 end
 
 
@@ -385,7 +385,7 @@ chat_core.handle_command_msg = function(name, param)
 			minetest.chat_send_player(name, color_dark_magenta .. "# PM: TO <" .. rename.gpn(to) .. coord_string .. ">: " .. newmsg)
 
 			chat_logging.log_private_message(name, to, newmsg)
-			afk_removal.reset_timeout(name)
+			afk.reset_timeout(name)
 		else minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not online.") end
 	else minetest.chat_send_player(name, "# Server: Usage: '/msg <playername> <message>'.") end
 end
@@ -407,10 +407,10 @@ end
 
 function chat_core.alert_player_sound(to)
 	if chat_controls.beep_enabled(to) then
-		if afk_removal.is_afk(to) then
+		if afk.is_afk(to) then
 			minetest.sound_play("chat_alert", {to_player = to, gain = 1}, true)
 		else
-			if afk_removal.seconds_since_action(to) > 60*2 then
+			if afk.seconds_since_action(to) > 60*2 then
 				minetest.sound_play("chat_alert", {to_player = to, gain = 1}, true)
 			else
 				minetest.sound_play("chat_alert", {to_player = to, gain = 0.4}, true)

@@ -1,11 +1,11 @@
 
-afk_removal = afk_removal or {}
-afk_removal.players = afk_removal.players or {}
-afk_removal.modpath = minetest.get_modpath("afk_removal")
-afk_removal.steptime = 5
-afk_removal.timeout = 60 * 30
-afk_removal.warntime = 60 * 29
-afk_removal.disable_kick = minetest.is_singleplayer()
+afk = afk or {}
+afk.players = afk.players or {}
+afk.modpath = minetest.get_modpath("afk")
+afk.steptime = 5
+afk.timeout = 60 * 30
+afk.warntime = 60 * 29
+afk.disable_kick = minetest.is_singleplayer()
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance
@@ -17,9 +17,9 @@ local math_floor = math.floor
 -- Public API function.
 -- This should be called from any mod that wishes to reset the kick timeout for a player.
 -- For example, a chat mod may call this when a player chats.
-afk_removal.reset_timeout = function(name)
+afk.reset_timeout = function(name)
 	-- localize
-	local players = afk_removal.players
+	local players = afk.players
 
 	-- Ensure an entry exists for this name.
 	local data = players[name]
@@ -34,14 +34,14 @@ end
 
 
 
-function afk_removal.on_joinplayer(player)
+function afk.on_joinplayer(player)
 	local name = player:get_player_name()
-	afk_removal.players[name] = {time=0, pos=player:get_pos()}
+	afk.players[name] = {time=0, pos=player:get_pos()}
 end
 
-function afk_removal.on_leaveplayer(player, timedout)
+function afk.on_leaveplayer(player, timedout)
 	local pname = player:get_player_name()
-	afk_removal.players[pname] = nil
+	afk.players[pname] = nil
 end
 
 
@@ -49,8 +49,8 @@ end
 -- API function to query whether a player is currently AFK.
 -- Note that this only has meaning for registered players.
 -- Unregistered players are kicked, so you generally won't encounter those.
-function afk_removal.is_afk(pname)
-	local p = afk_removal.players
+function afk.is_afk(pname)
+	local p = afk.players
 	local o = p[pname]
 	if o then
 		if o.afk then
@@ -62,8 +62,8 @@ end
 
 -- Returns the number of seconds since player's last action.
 -- Returns -1 if player data is not available (wrong player name?).
-function afk_removal.seconds_since_action(pname)
-	local p = afk_removal.players
+function afk.seconds_since_action(pname)
+	local p = afk.players
 	local o = p[pname]
 	if o then
 		return o.time
@@ -73,17 +73,17 @@ end
 
 
 
-afk_removal.update = function()
+afk.update = function()
   local allplayers = minetest.get_connected_players()
   for k, player in ipairs(allplayers) do
     local name = player:get_player_name()
-		local target = afk_removal.players[name]
+		local target = afk.players[name]
     
 		local pos = vector_round(player:getpos())
 		local dist = vector_distance(pos, target.pos)
 		local nokick = false
 
-    if afk_removal.disable_kick or minetest.check_player_privs(name, {canafk=true}) then
+    if afk.disable_kick or minetest.check_player_privs(name, {canafk=true}) then
 			nokick = true
     end
 
@@ -94,16 +94,16 @@ afk_removal.update = function()
 		else
 			-- Increase time since AFK started.
 			local time = target.time
-			time = time + afk_removal.steptime
+			time = time + afk.steptime
 			target.time = time
 
-			if not nokick and time >= afk_removal.warntime then
+			if not nokick and time >= afk.warntime then
 				-- Only ignore players who are registered and NOT dead.
 				if player:get_hp() > 0 and passport.player_registered(name) then
 					-- If player is registered and NOT dead, don't send message.
 					nokick = true
 				else
-					local remain = afk_removal.timeout - time
+					local remain = afk.timeout - time
 					minetest.chat_send_player(name, "# Server: You will be kicked for inactivity in " .. math_floor(remain) .. " seconds.")
 					easyvend.sound_error(name)
 				end
@@ -111,7 +111,7 @@ afk_removal.update = function()
 		end
 
 		-- Kick players who have done nothing for too long.
-		if target.time >= afk_removal.timeout then
+		if target.time >= afk.timeout then
 			if nokick then
 				-- If player is registered and NOT dead, then just mark them as AFK.
 				-- If player is registered but dead, they'll be kicked anyway.
@@ -128,55 +128,55 @@ end
 
 
 local timer = 0
-local delay = afk_removal.steptime
-function afk_removal.globalstep(dtime)
+local delay = afk.steptime
+function afk.globalstep(dtime)
 	timer = timer + dtime
 	if timer < delay then return end
 	timer = 0
-	afk_removal.update()
+	afk.update()
 end
 
 
 
-function afk_removal.on_craft(itemstack, player, old_craft_grid, craft_inv)
+function afk.on_craft(itemstack, player, old_craft_grid, craft_inv)
 	if not player then return end
 	if not player:is_player() then return end
 	
 	-- Ensure this player has an entry in the table.
 	local name = player:get_player_name()
-	if not afk_removal.players[name] then
-			afk_removal.players[name] = {time=0, pos={x=0, y=0, z=0}}
+	if not afk.players[name] then
+			afk.players[name] = {time=0, pos={x=0, y=0, z=0}}
 	end
 	
-	afk_removal.players[name].time = 0
+	afk.players[name].time = 0
 end
 
 
 
 local function toggle_status(name)
-	if not afk_removal.players[name] then
+	if not afk.players[name] then
 		return
 	end
 
-	if afk_removal.players[name].afk then
-		afk_removal.players[name].afk = nil
+	if afk.players[name].afk then
+		afk.players[name].afk = nil
 		minetest.chat_send_player(name, "# Server: You're no longer AFK.")
 	else
-		afk_removal.players[name].afk = true
+		afk.players[name].afk = true
 		minetest.chat_send_player(name, "# Server: You've gone AFK!")
 	end
 end
 
 
 
-function afk_removal.do_afk(name, param)
+function afk.do_afk(name, param)
 	if param ~= "" then
 		local pname = rename.grn(param)
-		if afk_removal.is_afk(pname) then
+		if afk.is_afk(pname) then
 			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
 		else
 			if minetest.get_player_by_name(pname) then
-				local time = afk_removal.seconds_since_action(pname)
+				local time = afk.seconds_since_action(pname)
 				if time < 60 then
 					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
 				elseif time < 60*2 then
@@ -195,14 +195,14 @@ end
 
 
 
-if not afk_removal.registered then
+if not afk.registered then
 	-- Crafting resets the player's AFK timeout.
 	minetest.register_on_craft(function(...)
-		return afk_removal.on_craft(...)
+		return afk.on_craft(...)
 	end)
 	
 	minetest.register_globalstep(function(...)
-		return afk_removal.globalstep(...)
+		return afk.globalstep(...)
 	end)
 
 	minetest.register_privilege("canafk", {
@@ -211,11 +211,11 @@ if not afk_removal.registered then
 	})
 
 	minetest.register_on_joinplayer(function(...)
-		return afk_removal.on_joinplayer(...)
+		return afk.on_joinplayer(...)
 	end)
 
 	minetest.register_on_leaveplayer(function(...)
-		return afk_removal.on_leaveplayer(...)
+		return afk.on_leaveplayer(...)
 	end)
 
 	minetest.register_chatcommand("afk", {
@@ -223,16 +223,16 @@ if not afk_removal.registered then
 		description = "Query whether another player is AFK, or toggle your own AFK status.",
 		privs = {interact=true},
 		func = function(...)
-			afk_removal.do_afk(...)
+			afk.do_afk(...)
 			return true
 		end,
 	})
 
-	local c = "afk_removal:core"
-	local f = afk_removal.modpath .. "/init.lua"
+	local c = "afk:core"
+	local f = afk.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
 
-	afk_removal.registered = true
+	afk.registered = true
 end
 
 

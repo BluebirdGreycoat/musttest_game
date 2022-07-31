@@ -129,25 +129,6 @@ minetest.register_on_joinplayer(function(player)
 	end
 end)
 
-minetest.register_chatcommand("hotbar", {
-  params = "",
-  description = "Hotbar test command.",
-  privs = {server = true},
-  func = function(user, param)
-    local player = minetest.get_player_by_name(user)
-    if not player or not player:is_player() then return true end
-    local count = player:hud_get_hotbar_itemcount()
-    if count == 8 then
-      player:hud_set_hotbar_image("gui_hotbar2.png")
-      player:hud_set_hotbar_itemcount(16)
-    else
-      player:hud_set_hotbar_image("gui_hotbar.png")
-      player:hud_set_hotbar_itemcount(8)
-    end
-    return true
-  end,
-})
-
 minetest.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
 	player_model[name] = nil

@@ -59,7 +59,7 @@ minetest.register_globalstep(function(dtime)
 			end
 		end
 
-		if timer > 5 then
+		if timer > 1 then
 			-- Player position has already been obtained.
 			local owner = protector.get_node_owner(pos)
 

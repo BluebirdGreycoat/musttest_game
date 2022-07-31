@@ -47,7 +47,7 @@ minetest.register_globalstep(function ( dtime )
 	timer = timer + dtime;
 	if os.time() >= last_time then
 		last_time = os.time() + 1
-		if (timer >= 10.0) then
+		if (timer >= 1.0) then
 			timer = 0
 			for _,player in ipairs(minetest.get_connected_players()) do
 				local name = player:get_player_name();

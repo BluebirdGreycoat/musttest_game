@@ -195,26 +195,6 @@ if not email.registered then
 		return email.on_shutdown(...)
 	end)
 
-	-- Depreciated command.
-	minetest.register_chatcommand("inbox", {
-		params = "",
-		description = "Depreciated command; use Key of Citizenship instead.",
-		func = function(name, param)
-			minetest.chat_send_player(name, "# Server: This command is unavailable; the functionality is accessed from the Key.")
-			easyvend.sound_error(name)
-		end
-	})
-
-	-- Depreciated command.
-	minetest.register_chatcommand("mail", {
-		params = "",
-		description = "Depreciated command; use KoC instead.",
-		func = function(name, param)
-			minetest.chat_send_player(name, "# Server: This command is unavailable; the functionality is accessed from the Key.")
-			easyvend.sound_error(name)
-		end,
-	})
-
 	minetest.register_on_joinplayer(function(...)
 		return email.on_joinplayer(...)
 	end)

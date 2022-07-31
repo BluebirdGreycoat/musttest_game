@@ -70,6 +70,30 @@ if not auth2.run_once then
 		return set_privileges(rename.grn(name), privileges)
 	end
 
+	minetest.register_chatcommand("last-login", {
+		params = "[name]",
+		description = "Get the last login time of a player or yourself.",
+
+		func = function(name, param)
+			if param == "" then
+				param = name
+			end
+
+			local pauth = minetest.get_auth_handler().get_auth(param)
+			if pauth and pauth.last_login and pauth.last_login ~= -1 then
+				-- Time in UTC, ISO 8601 format
+				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
+					">'s last login time was " ..
+					os.date("!%Y-%m-%dT%H:%M:%SZ", pauth.last_login) .. ".")
+				return true
+			end
+
+			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
+				">'s last login time is unknown.")
+			return true
+		end,
+	})
+
 	local c = "auth2:core"
 	local f = auth2.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

@@ -69,16 +69,34 @@ end
 
 
 
-chat_colorize.send_player = function(name, message)
+-- Must be careful not to trigger on chat sent by players.
+chat_colorize.send_player = function(name, msg)
   local color = ""
-  if string.sub(message, 1, 1) == "#" then
+  if msg:sub(1, 1) == "#" then
     color = chat_colorize.COLOR_OLIVE
-  elseif string.find(message, "^%-!%- Invalid command") then
-    message = "# Server: Invalid command. See '/help all' for a list of valid commands."
+  elseif msg:find("^-!-") and msg:find("Invalid command usage") then
+    msg = "# Server: Invalid command usage."
+		easyvend.sound_error(name)
+    color = chat_colorize.COLOR_OLIVE
+  elseif msg:find("^-!-") and msg:find("Invalid command:") then
+    msg = "# Server: Invalid command. See '/help' for a list of valid commands."
+		easyvend.sound_error(name)
+    color = chat_colorize.COLOR_OLIVE
+  elseif msg:find("^-!-") and msg:find("Empty command") then
+    msg = "# Server: Empty command. See '/help' for a list of valid commands."
+		easyvend.sound_error(name)
+    color = chat_colorize.COLOR_OLIVE
+  elseif msg:sub(1, 1) ~= "<" and msg:find("Command execution took") then
+		-- Not an error.
+    msg = "# Server: " .. minetest.strip_colors(msg)
+    color = chat_colorize.COLOR_OLIVE
+  elseif msg:sub(1, 1) ~= "<" and msg:find("You don't have permission to run this command") then
+    msg = "# Server: " .. minetest.strip_colors(msg)
 		easyvend.sound_error(name)
     color = chat_colorize.COLOR_OLIVE
   end
-  return chat_colorize.old_chat_send_player(name, color .. message)
+
+  return chat_colorize.old_chat_send_player(name, color .. msg)
 end
 
 

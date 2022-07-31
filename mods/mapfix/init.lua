@@ -141,6 +141,7 @@ if not mapfix.registered then
 
 		func = function(...)
 			mapfix.command(...)
+			return true
 		end,
 	})
 

@@ -48,7 +48,7 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 	local health = (self.health or 0)
 
 	-- Oerkki is about to die!
-	if health > 0 and health < 20 then
+	if health > 0 and health < 50 then
 		-- This function is secret!
 		if griefer.stupid_oerkki_trick then
 			pcall(griefer.stupid_oerkki_trick, self)

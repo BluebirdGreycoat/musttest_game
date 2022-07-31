@@ -25,6 +25,9 @@ local deg = math.deg
 
 -- For debug reports.
 local function report(self, msg, range)
+	if mobs.enable_reports then
+		return
+	end
 	if self.name ~= mobs.report_name then
 		return
 	end

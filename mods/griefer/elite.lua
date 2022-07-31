@@ -34,6 +34,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	sounds = {
 		random = "griefer_elite",
 		war_cry = "griefer_elite",
+		shoot_attack = "dm_fireball",
 	},
 	walk_velocity = 1,
 	run_velocity = 3,

@@ -39,9 +39,9 @@ minetest.register_on_player_receive_fields(function(...)
 	return beds.on_player_receive_fields(...)
 end)
 
-minetest.register_chatcommand("chkbed", {
+minetest.register_chatcommand("check_bed", {
 	params = "",
-	description = "Query the status of your own bed.",
+	description = "Check bed-respawn status.",
 	privs = {},
 	func = function(pname, param)
 		beds.report_respawn_status(pname)

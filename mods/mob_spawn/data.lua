@@ -506,6 +506,35 @@ register({
 	max_count = 1,
 })
 
+-- A very rare, very hard mob.
+register({
+	name = "griefer:elite_griefer",
+	nodes = {
+		"bedrock:bedrock",
+		"cavestuff:dark_obsidian",
+	},
+
+	min_height = -35000,
+	max_height = 35000,
+	clearance = 2,
+
+	mob_limit = 2,
+	absolute_mob_limit = 10,
+	mob_range = 70,
+
+	-- After a successful spawn, wait a lot of time before spawning another one.
+	-- Between 1 and 4 hours.
+	success_time_min = 60*60,
+	success_time_max = 60*60*4,
+
+	-- Min/max amount of mobs to spawn at one time.
+	min_count = 1,
+	max_count = 2,
+
+	-- Because it is allowed to spawn in the Abyss, at the bedrock layer.
+	realm_restriction = true,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 local players = minetest.get_connected_players()

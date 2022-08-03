@@ -244,11 +244,8 @@ for k, v in ipairs({
 			"label[1,0.5;Thorium Rod Compartment]" ..
 			"list[context;fuel;1,1;3,2;]" ..
 
-			"image[4,1.5;1,1;default_furnace_fire_bg.png^[lowpart:" ..
-			(fuel_percent) .. ":default_furnace_fire_fg.png]" ..
-
-			"image[5,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
-			(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
+			utility.progress_image(4, 1.5, "default_furnace_fire_bg.png", "default_furnace_fire_fg.png", fuel_percent) ..
+			utility.progress_image(5, 1.5, "gui_furnace_arrow_bg.png", "gui_furnace_arrow_fg.png", item_percent, "^[transformR270") ..
 
 			"label[6,1.0;Charge Buffer]" ..
 			"list[context;out;6,1.5;1,1;]" ..

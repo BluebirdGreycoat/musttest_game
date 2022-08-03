@@ -58,11 +58,10 @@ for j, t in ipairs({
 			"label[" .. x1 .. ",0;Fuel & Input]" ..
 			"list[context;src;" .. x1 .. ",0.5;1,1;]" ..
 			"list[context;fuel;" .. x1 .. ",2.5;1,1;]" ..
-			"image[" .. x1 .. ",1.5;1,1;machine_progress_bg.png^[lowpart:" ..
-			(fuel_percent) .. ":machine_progress_fg.png]" ..
 
-			"image[" .. x2 .. ",1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:" ..
-			(item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]" ..
+			utility.progress_image(x1, 1.5, "machine_progress_bg.png", "machine_progress_fg.png", fuel_percent) ..
+			utility.progress_image(x2, 1.5, "gui_furnace_arrow_bg.png", "gui_furnace_arrow_fg.png", item_percent, "^[transformR270") ..
+
 			"label[" .. x3 .. ",0.46;Destination]" ..
 			"list[context;dst;" .. x3 .. ",0.96;2,2;]" ..
 

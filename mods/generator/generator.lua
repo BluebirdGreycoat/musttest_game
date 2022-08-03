@@ -72,11 +72,8 @@ for k, v in ipairs({
 				"label[2,0.5;Fuel Supply]" ..
 				"list[context;fuel;2,1;1,1;]" ..
 
-				"image[3,1;1,1;default_furnace_fire_bg.png^[lowpart:" ..
-				(fuel_percent) .. ":default_furnace_fire_fg.png]" ..
-
-				"image[4,1;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
-				(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
+				utility.progress_image(3, 1, "default_furnace_fire_bg.png", "default_furnace_fire_fg.png", fuel_percent) ..
+				utility.progress_image(4, 1, "gui_furnace_arrow_bg.png", "gui_furnace_arrow_fg.png", item_percent, "^[transformR270") ..
 
 				"label[5,0.5;Charge Buffer]" ..
 				"list[context;out;5,1;1,1;]" ..
@@ -100,11 +97,8 @@ for k, v in ipairs({
 				"label[3,0.5;Fuel Supply]" ..
 				"list[context;fuel;3,1;1,1;]" ..
 
-				"image[4,1;1,1;default_furnace_fire_bg.png^[lowpart:" ..
-				(fuel_percent) .. ":default_furnace_fire_fg.png]" ..
-
-				"image[5,1;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
-				(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
+				utility.progress_image(4, 1, "default_furnace_fire_bg.png", "default_furnace_fire_fg.png", fuel_percent) ..
+				utility.progress_image(5, 1, "gui_furnace_arrow_bg.png", "gui_furnace_arrow_fg.png", item_percent, "^[transformR270") ..
 
 				"label[6,0.5;Charge Buffer]" ..
 				"list[context;out;6,1;1,1;]" ..

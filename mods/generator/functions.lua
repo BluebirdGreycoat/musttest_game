@@ -31,8 +31,9 @@ function(fuel_percent)
     default.formspec.get_slot_colors() ..
     "label[3.5,0;Fuel Supply]" ..
     "list[context;fuel;3.5,2;1,1;]" ..
-    "image[3.5,1;1,1;default_furnace_fire_bg.png^[lowpart:" ..
-    (fuel_percent) .. ":default_furnace_fire_fg.png]" ..
+
+		utility.progress_image(3.5, 1, "default_furnace_fire_bg.png", "default_furnace_fire_fg.png", fuel_percent) ..
+
     "label[1.5,0;Upgrades]" ..
     "list[context;upgrades;1.5,1;1,2]" ..
     "label[5.5,0;Configuration]" ..

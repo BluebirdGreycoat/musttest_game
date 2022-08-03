@@ -516,6 +516,28 @@ function table.shuffle(t, from, to, random)
 end
 
 
+
+-- A helper for formspecs which need to show a progress image.
+-- Note: percent value is assumed to be an integer, but if it's a float,
+-- anthing less than 1 will be treated as 0!
+function utility.progress_image(x, y, bg, fg, percent, modifier)
+	if not modifier then
+		modifier = ""
+	end
+
+	if percent < 1 then
+		-- Must handle this case specially, because otherwise Minetest will insist
+		-- on drawing at least 1 row of pixels from the FG image, even when percent
+		-- is zero!
+		return "image[" .. x .. "," .. y .. ";1,1;" .. bg .. modifier .. "]"
+	else
+		return "image[" .. x .. "," .. y .. ";1,1;" .. bg .. "^[lowpart:" ..
+			(percent) .. ":" .. fg .. modifier .. "]"
+	end
+end
+
+
+
 minetest.register_alias("akalin:ore_mined", "akalin:ore")
 minetest.register_alias("alatro:ore_mined", "alatro:ore")
 minetest.register_alias("arol:ore_mined", "arol:ore")

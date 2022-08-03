@@ -22,10 +22,10 @@ cobble_furnace.get_active_formspec = function(fuel_percent, item_percent)
     "label[2.75,0;Fuel & Input]" ..
     "list[context;src;2.75,0.5;1,1;]"..
     "list[context;fuel;2.75,2.5;1,1;]"..
-    "image[2.75,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
-    (100-fuel_percent)..":default_furnace_fire_fg.png]"..
-    "image[3.75,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
-    (item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
+
+		utility.progress_image(2.75, 1.5, "default_furnace_fire_bg.png", "default_furnace_fire_fg.png", fuel_percent) ..
+		utility.progress_image(3.75, 1.5, "gui_furnace_arrow_bg.png", "gui_furnace_arrow_fg.png", item_percent, "^[transformR270") ..
+
     "label[4.75,0.46;Destination]" ..
     "list[context;dst;4.75,0.96;2,2;]"..
     "list[current_player;main;0,4.25;8,1;]"..
@@ -48,7 +48,7 @@ end
 
 
 cobble_furnace.get_inactive_formspec = function()
-  return cobble_furnace.get_active_formspec(100, 0)
+  return cobble_furnace.get_active_formspec(0, 0)
 end
 
 
@@ -200,7 +200,7 @@ cobble_furnace.on_timer = function(pos, elapsed)
 
   if fuel_time <= fuel_totaltime and fuel_totaltime ~= 0 then
     active = "Active "
-    local fuel_percent = math_floor(fuel_time / fuel_totaltime * 100)
+    local fuel_percent = 100 - math_floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
     formspec = cobble_furnace.get_active_formspec(fuel_percent, item_percent)
 		local nnn = minetest.get_node(pos).name

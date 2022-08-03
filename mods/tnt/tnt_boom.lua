@@ -353,8 +353,8 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	pos = vector_round(pos)
 	-- scan for adjacent TNT nodes first, and enlarge the explosion
 	local vm1 = VoxelManip()
-	local p1 = vector.subtract(pos, 2)
-	local p2 = vector.add(pos, 2)
+	local p1 = vector.subtract(pos, 3)
+	local p2 = vector.add(pos, 3)
 	local minp, maxp = vm1:read_from_map(p1, p2)
 	local a = VoxelArea:new({MinEdge = minp, MaxEdge = maxp})
 	local data = vm1:get_data()
@@ -364,21 +364,16 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	local c_tnt_boom = minetest.get_content_id("tnt:boom")
 	local c_air = minetest.get_content_id("air")
 
-	-- Note: this can fail to find ALL the TNT used for an explosion, if some are
-	-- outside the 5x5x5 area around the initialization point. Not really a bug;
-	-- it just requires the player to have some knowledge of !!SCIENCE!!.
-	for z = pos.z - 2, pos.z + 2 do
-	for y = pos.y - 2, pos.y + 2 do
-		-- Note: this weird way of counting the X-index is just an optimization.
-		local vi = a:index(pos.x - 2, y, z)
-		for x = pos.x - 2, pos.x + 2 do
-			local cid = data[vi]
-			if cid == c_tnt or cid == c_tnt_boom or cid == c_tnt_burning then
-				count = count + 1
-				data[vi] = c_air
-			end
-			vi = vi + 1
+	for z = pos.z - 3, pos.z + 3 do
+	for y = pos.y - 3, pos.y + 3 do
+	for x = pos.x - 3, pos.x + 3 do
+		local vi = a:index(x, y, z)
+		local cid = data[vi]
+		if cid == c_tnt or cid == c_tnt_boom or cid == c_tnt_burning then
+			count = count + 1
+			data[vi] = c_air
 		end
+	end
 	end
 	end
 	

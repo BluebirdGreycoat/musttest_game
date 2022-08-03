@@ -42,10 +42,8 @@ minetest.register_node("tnt:boom", {
 		minetest.remove_node(pos)
 	end,
   
-  -- TNT chain-reactions cause slowness problems for the server.
-  on_blast = function(pos)
-    minetest.remove_node(pos)
-  end,
+  -- Unaffected by explosions.
+  on_blast = function() end,
 })
 
 -- overriden to add additional functionality in real_torch
@@ -86,9 +84,8 @@ minetest.register_node("tnt:gunpowder", {
     end
   end,
   
-  -- Chain-reactions cause slowness problems for the server.
   on_blast = function(pos)
-    minetest.remove_node(pos)
+		minetest.set_node(pos, {name = "tnt:gunpowder_burning"})
   end,
 })
 
@@ -158,15 +155,19 @@ minetest.register_node("tnt:gunpowder_burning", {
 		minetest.remove_node(pos)
 	end,
   
-  -- TNT chain-reactions cause slowness problems for the server.
-  on_blast = function(pos)
-    minetest.remove_node(pos)
-  end,
+	-- Unaffected by explosions.
+  on_blast = function() end,
           
 	on_construct = function(pos)
 		minetest.sound_play("tnt_gunpowder_burning", {pos = pos, gain = 2}, true)
 		minetest.get_node_timer(pos):start(1)
 	end,
+})
+
+minetest.register_craftitem("tnt:tnt_stick", {
+	description = "TNT Stick",
+	inventory_image = "tnt_tnt_stick.png",
+	groups = {flammable = 5},
 })
 
 minetest.register_craft({
@@ -177,11 +178,18 @@ minetest.register_craft({
 
 if enable_tnt then
 	minetest.register_craft({
+		output = "tnt:tnt_stick",
+		recipe = {
+			{"default:paper", "tnt:gunpowder", "default:paper"},
+		}
+	})
+
+	minetest.register_craft({
 		output = "tnt:tnt",
 		recipe = {
-			{"group:wood", "tnt:gunpowder", "group:wood"},
-			{"tnt:gunpowder", "tnt:gunpowder", "tnt:gunpowder"},
-			{"group:wood", "tnt:gunpowder", "group:wood"},
+			{"group:wood", "tnt:tnt_stick", "group:wood"},
+			{"tnt:tnt_stick", "tnt:tnt_stick", "tnt:tnt_stick"},
+			{"group:wood", "tnt:tnt_stick", "group:wood"},
 		}
 	})
 
@@ -232,10 +240,12 @@ function tnt.register_tnt(def)
             end
         end,
         
-        -- TNT chain-reactions cause slowness problems for the server.
-        on_blast = function(pos)
-          minetest.remove_node(pos)
-        end,
+				-- TNT chain reactions.
+				on_blast = function(pos)
+					minetest.after(0.3, function()
+						tnt.boom(pos, def)
+					end)
+				end,
 
 				on_place = function(itemstack, placer, pointed_thing)
 					local pos = pointed_thing.under
@@ -245,10 +255,17 @@ function tnt.register_tnt(def)
 
 					-- Players without the TNT priv go through checks.
 					if not minetest.check_player_privs(placer, {tnt=true}) then
+						-- 8/2/22: There's no in-game explanation for why one can't mine
+						-- with TNT at the surface level. Disable this code, and rely on
+						-- city blocks to prevent TNT mining.
+
+						--[[
 						if (pos.y > -100 and pos.y < 1000) then
 							minetest.chat_send_player(pname, "# Server: Use of TNT near the Overworld's ground level is forbidden.")
 							return itemstack
 						end
+						--]]
+
 						if city_block:in_no_tnt_zone(pos) then
 							minetest.chat_send_player(pname, "# Server: Too close to a residential zone for blasting!")
 							return itemstack
@@ -281,10 +298,8 @@ function tnt.register_tnt(def)
 			tnt.boom(pos, def)
 		end,
     
-    -- No chain-reactions.
-		on_blast = function(pos)
-      minetest.remove_node(pos)
-    end,
+    -- Unaffected by explosions.
+		on_blast = function() end,
     
 		on_construct = function(pos)
 			minetest.sound_play("tnt_ignite", {pos = pos}, true)

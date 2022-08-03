@@ -108,14 +108,20 @@ if ARMOR_MATERIALS.mithril then
 end
 
 for k, v in pairs(ARMOR_MATERIALS) do
+	local center = "techcrafts:composite_plate"
+	if string.find(v, "wood") then
+		center = "default:steel_ingot"
+	end
+
 	minetest.register_craft({
 		output = "shields:shield_"..k,
 		recipe = {
 			{v, "mobs:leather_padding", v},
-			{v, "techcrafts:composite_plate", v},
+			{v, center, v},
 			{"", v, ""},
 		},
 	})
+
 	-- Reverse cooking recipes for all shields except wood and diamond.
 	if not string.find(v, "wood") and not string.find(v, "diamond") and string.find(v, "ingot") then
 		minetest.register_craft({
@@ -125,6 +131,7 @@ for k, v in pairs(ARMOR_MATERIALS) do
 			cooktime = 15,
 		})
 	end
+
 	if string.find(v, "wood") then
 		minetest.register_craft({
 			type = "fuel",

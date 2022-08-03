@@ -1405,7 +1405,9 @@ minetest.register_node("default:dry_shrub", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
-	groups = utility.dig_groups("plant", {flammable = 3, attached_node = 1, dry_grass = 1}),
+	groups = utility.dig_groups("plant", {
+		flammable = 3, attached_node = 1, dry_grass = 1, dry_shrub = 1,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
 		type = "fixed",
@@ -1423,6 +1425,39 @@ minetest.register_node("default:dry_shrub", {
 	},
 	shears_drop = true,
 	flowerpot_drop = "default:dry_shrub",
+})
+
+minetest.register_node("default:dry_shrub2", {
+	description = "Dry Shrub",
+	drawtype = "plantlike",
+	waving = 1,
+	tiles = {"default_dry_shrub2.png"},
+	inventory_image = "default_dry_shrub2.png",
+	wield_image = "default_dry_shrub2.png",
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 4,
+	sunlight_propagates = true,
+	walkable = false,
+	buildable_to = true,
+	groups = utility.dig_groups("plant", {
+		flammable = 3, attached_node = 1, dry_grass = 1, dry_shrub = 1,
+	}),
+	sounds = default.node_sound_leaves_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-6 / 16, -0.5, -6 / 16, 6 / 16, 4 / 16, 6 / 16},
+	},
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {'default:stick 2'}, rarity = 2},
+			{items = {'default:stick'}},
+		}
+	},
+	shears_drop = true,
+	flowerpot_drop = "default:dry_shrub2",
 })
 
 minetest.register_node("default:junglegrass", {

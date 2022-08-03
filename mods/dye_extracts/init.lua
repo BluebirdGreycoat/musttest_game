@@ -185,6 +185,13 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "extracting",
+  output = 'dye:brown',
+  recipe = 'default:dry_shrub2',
+  time = 12,
+})
+
+minetest.register_craft({
+  type = "extracting",
   output = 'dye:green 2',
   recipe = 'default:junglegrass',
   time = 3,

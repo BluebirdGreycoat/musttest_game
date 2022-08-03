@@ -176,6 +176,12 @@ minetest.register_craft( {
 	recipe = "default:dry_shrub"
 })
 
+minetest.register_craft( {
+	type = "extracting",
+	output = "dye:brown 4",
+	recipe = "default:dry_shrub2"
+})
+
 -- 2x2 red bakedclay makes 16x clay brick
 minetest.register_craft( {
 	output = "default:clay_brick 16",

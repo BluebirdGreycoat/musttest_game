@@ -98,11 +98,11 @@ local INTERACTION_DATA = {
 		-- Shall return the nodename to set, or "" to leave unchanged.
 		-- Return boolean second parameter to indicate whether to wait.
 		when_flora_near = {
-			nodenames = {"group:flora", "default:dry_shrub"},
+			nodenames = {"group:flora", "default:dry_shrub", "default:dry_shrub2"},
 			require_not_covered = true,
 
 			if_above = function(pos, light, loc, name, def, groups)
-				if name == "default:dry_shrub" then
+				if name == "default:dry_shrub" or name == "default:dry_shrub2" then
 					return "default:dry_dirt"
 				end
 

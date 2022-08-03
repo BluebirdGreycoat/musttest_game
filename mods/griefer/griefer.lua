@@ -36,7 +36,8 @@ mobs.register_mob("griefer:griefer", {
 		{name = "default:junglegrass", chance = 10*3, min = 1, max = 2},
 		{name = "default:grass_dummy", chance = 6*3, min = 1, max = 2},
 		{name = "default:cactus", chance = 15*3, min = 1, max = 1},
-		{name = "default:dry_shrub", chance = 4, min = 1, max = 5},
+		{name = "default:dry_shrub", chance = 8, min = 1, max = 5},
+		{name = "default:dry_shrub2", chance = 8, min = 1, max = 5},
 		{name = "default:papyrus", chance = 15, min = 1, max = 3},
 
 		-- Required to make it possible to obtain more dirt in Caverealm survival.

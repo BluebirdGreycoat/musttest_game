@@ -30,7 +30,11 @@ mapgen.generate_dry_shrubs = function(minp, maxp, seed)
 		local xz = {x=pr:next(minp.x, maxp.x), z=pr:next(minp.z, maxp.z)}
 		local pos, posb = find_surface(xz, minp.y, maxp.y)
 		if pos then
-			minetest.set_node(pos, {name="default:dry_shrub"})
+			local name = "default:dry_shrub"
+			if math.random(1, 2) == 1 then
+				name = "default:dry_shrub2"
+			end
+			minetest.set_node(pos, {name=name})
 
 			if pr:next(1, 20) == 1 then
 				minetest.set_node(posb, {name="default:mossycobble"})

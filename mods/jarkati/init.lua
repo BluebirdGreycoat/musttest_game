@@ -153,8 +153,15 @@ jarkati.register_decoration({
 
 jarkati.register_decoration({
 	nodes = "default:dry_shrub",
-	probability = 110,
+	probability = 150,
 	place_on = {"default:desert_sand"},
+})
+
+jarkati.register_decoration({
+	nodes = "default:dry_shrub2",
+	probability = 400,
+	place_on = {"default:desert_sand"},
+	param2 = {4},
 })
 
 jarkati.register_decoration({

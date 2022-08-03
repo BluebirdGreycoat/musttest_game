@@ -324,7 +324,11 @@ function flowers.flower_spread(pos, node)
 	-- However, preserve grasses in sand dune biomes.
 	if minetest.get_item_group(under.name, "sand") == 1 and
 			under.name ~= "default:sand" then
-		minetest.add_node(pos, {name = "default:dry_shrub"})
+		local name = "default:dry_shrub"
+		if math.random(1, 2) == 1 then
+			name = "default:dry_shrub2"
+		end
+		minetest.add_node(pos, {name = name})
 		return false
 	end
 

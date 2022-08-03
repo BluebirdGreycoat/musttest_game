@@ -115,7 +115,11 @@ function bonemeal.on_use(itemstack, user, pt)
 							if math_random(1, 4) > 1 then
 								minetest.add_node(above, {name="default:dry_grass_" .. math_random(1, 5),  param2=2})
 							else
-								minetest.add_node(above, {name="default:dry_shrub"})
+								local name = "default:dry_shrub"
+								if math_random(1, 2) == 1 then
+									name = "default:dry_shrub2"
+								end
+								minetest.add_node(above, {name=name})
 							end
 						end
 					end

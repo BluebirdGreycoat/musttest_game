@@ -34,3 +34,9 @@ minetest.register_craft({
   output = {"farming:seed_wheat", "default:stick 5"},
   recipe = "default:dry_shrub",
 })
+
+minetest.register_craft({
+  type = "separating",
+  output = {"farming:seed_wheat", "default:stick 5"},
+  recipe = "default:dry_shrub2",
+})

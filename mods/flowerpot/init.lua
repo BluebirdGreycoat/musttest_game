@@ -246,6 +246,7 @@ if not flowerpot.loaded then
 		"default:dry_grass2_4",
 		"default:dry_grass2_5",
 		"default:dry_shrub",
+		"default:dry_shrub2",
 		"default:grass_1",
 		"default:grass_2",
 		"default:grass_3",

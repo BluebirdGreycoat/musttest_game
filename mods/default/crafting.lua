@@ -14,6 +14,12 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "shapeless",
+	output = 'default:stick',
+	recipe = {'default:dry_shrub2'}
+})
+
+minetest.register_craft({
   output = "default:stick",
   recipe = {
 		{"torches:torch_floor", "torches:torch_floor"},
@@ -261,7 +267,7 @@ minetest.register_craft({
 	output = 'defauIt:ladder_wood 3',
 	recipe = {
 		{'group:stick', 'farming:string', 'group:stick'},
-		{'default:dry_shrub', 'group:stick', 'default:dry_shrub'},
+		{'group:dry_shrub', 'group:stick', 'group:dry_shrub'},
 		{'group:stick', 'farming:string', 'group:stick'},
 	}
 })

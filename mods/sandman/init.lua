@@ -67,7 +67,8 @@ mobs.register_mob("sandman:sandman", {
 	drops = {
     {name = "bones:bones_type2", chance = 2, min = 1, max = 1},
 		{name = "default:desert_sandstone", chance = 4, min = 1, max = 2},
-		{name = "default:dry_shrub", chance = 2, min = 1, max = 1},
+		{name = "default:dry_shrub", chance = 4, min = 1, max = 1},
+		{name = "default:dry_shrub2", chance = 4, min = 1, max = 1},
 	},
 	water_damage = 3,
 	lava_damage = 4,

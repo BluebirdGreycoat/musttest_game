@@ -283,7 +283,7 @@ if not sleds.run_once then
 	minetest.register_entity("sleds:sled", sled)
 
 	minetest.register_craftitem("sleds:sled", {
-		description = "Sled\nUseable on snow.",
+		description = "Sled",
 		inventory_image = "snow_sled.png",
 		wield_image = "snow_sled.png",
 		wield_scale = {x=2, y=2, z=1},

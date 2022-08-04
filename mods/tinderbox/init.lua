@@ -51,7 +51,7 @@ function tinderbox.on_use(itemstack, user, pt)
 end
 
 if not tinderbox.registered then
-	local DESC = "Tinderbox\n\nUse this to efficiently relight burnt-out torches."
+	local DESC = "Tinderbox"
 
 	-- Tinderbox item (needed because only craftitems are stackable).
 	minetest.register_craftitem("tinderbox:tinderbox", {

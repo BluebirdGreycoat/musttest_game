@@ -98,7 +98,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
 
 		formspec = formspec ..
-			"label[0,2.1;Server: ‘Must Test’ @ minetest:arklegacy.duckdns.org:30000]"
+			"label[0,2.1;Server: ‘Enyekala’ @ minetest:arklegacy.duckdns.org:30000]"
 
 		formspec = formspec ..
 			"label[0,2.6;Greetings <" .. pname .. ">. Welcome back to the frontier!]"

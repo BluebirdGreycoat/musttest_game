@@ -1428,7 +1428,7 @@ minetest.register_node("default:dry_shrub", {
 })
 
 minetest.register_node("default:dry_shrub2", {
-	description = "Dry Shrub",
+	description = "Dead Bush",
 	drawtype = "plantlike",
 	waving = 1,
 	tiles = {"default_dry_shrub2.png"},

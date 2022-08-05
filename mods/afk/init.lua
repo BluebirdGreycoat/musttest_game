@@ -166,6 +166,7 @@ local function show_stats(name)
 		if not invis then
 			if afk.is_afk(pname) then
 				ac = ac + 1
+				pc = pc + 1
 			else
 				pc = pc + 1
 			end

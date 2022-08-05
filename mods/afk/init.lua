@@ -156,19 +156,25 @@ end
 local function show_stats(name)
 	local players = minetest.get_connected_players()
 
-	local pc = #players
-	local ps = "players"
-
-	if pc == 1 then
-		ps = "player"
-	end
-
+	local pc = 0
 	local ac = 0
 
+	-- Count AFK players, don't include invisible ones.
 	for k, v in ipairs(players) do
-		if afk.is_afk(v:get_player_name()) then
-			ac = ac + 1
+		local pname = v:get_player_name()
+		local invis = gdac_invis.is_invisible(pname)
+		if not invis then
+			if afk.is_afk(pname) then
+				ac = ac + 1
+			else
+				pc = pc + 1
+			end
 		end
+	end
+
+	local ps = "players"
+	if pc == 1 then
+		ps = "player"
 	end
 
 	minetest.chat_send_player(name,
@@ -180,22 +186,30 @@ end
 
 local function show_player(name, param)
 	local pname = rename.grn(param)
-	if afk.is_afk(pname) then
-		minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
-	else
-		if minetest.get_player_by_name(pname) then
-			local time = afk.seconds_since_action(pname)
-			if time < 60 then
-				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
-			elseif time < 60*2 then
-				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> might be AFK.")
-			else
-				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
-			end
+	local invis = gdac_invis.is_invisible(pname)
+
+	if not invis then
+		if afk.is_afk(pname) then
+			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is AFK!")
+			return
 		else
-			minetest.chat_send_player(name, "# Server: <" .. param .. "> is not online.")
+			-- If player logged in and not admin-invisible.
+			if minetest.get_player_by_name(pname) then
+				local time = afk.seconds_since_action(pname)
+				if time < 60 then
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is active.")
+				elseif time < 60*2 then
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> might be AFK.")
+				else
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(pname) .. "> is probably AFK.")
+				end
+
+				return
+			end
 		end
 	end
+
+	minetest.chat_send_player(name, "# Server: Status of <" .. param .. "> is unknown.")
 end
 
 

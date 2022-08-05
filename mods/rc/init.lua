@@ -399,10 +399,10 @@ function rc.get_random_realm_gate_position(pname, origin)
 
 	-- Player is in the Overworld or Nether. Use old Gateway behavior!
 	-- Not more than 3000 meters in any direction, and MUST stay in the Overworld
-	-- (or the Nether).
+	-- (or the Nether). Gate is more likely to go down rather than up.
 	local pos = {
 		x = math_random(-3000, 3000) + origin.x,
-		y = math_random(-300, 300) + origin.y,
+		y = math_random(-2000, 300) + origin.y,
 		z = math_random(-3000, 3000) + origin.z,
 	}
 

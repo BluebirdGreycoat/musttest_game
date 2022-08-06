@@ -13,7 +13,7 @@ minetest.register_chatcommand("defenestrate", {
 	func = function(pname, param)
 		local player = minetest.get_player_by_name(rename.grn(param))
 		if not player then
-			return false, "Cannot defenestrate uknown target <" .. param .. ">."
+			return false, "Cannot defenestrate unknown target <" .. param .. ">."
 		end
 
 		default.detach_player_if_attached(player)

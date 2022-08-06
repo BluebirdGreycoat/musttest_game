@@ -58,6 +58,8 @@ if not serveressentials.registered then
 	local f = serveressentials.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
 
+	dofile(serveressentials.modpath .. "/defenestrate.lua")
+
 	serveressentials.registered = true
 end
 

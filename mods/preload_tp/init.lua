@@ -140,7 +140,7 @@ function preload_tp.spawn_spinup_particles(pos, time)
 
 			-- Disabled for now due to causing older clients to hang.
 			--length = -1,
-			length = 6,
+			length = 0.3,
 		},
 
 		glow = 14,

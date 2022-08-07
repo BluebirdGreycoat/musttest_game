@@ -71,13 +71,13 @@ function cloaking.hud_effect(pname)
 				--maxpos = vector.add(pos, {x=0.1, y=0.1, z=0.1}),
 				minpos = {x=-r, y=-r/2, z=-r},
 				maxpos = {x=r, y=r/2, z=r},
-				minvel = vector.new(0, -3.5, 0),
-				maxvel = vector.new(0, 3.5, 0),
+				minvel = vector.new(0, -1.5, 0),
+				maxvel = vector.new(0, 1.5, 0),
 				minacc = {x=0, y=0, z=0},
 				maxacc = {x=0, y=0, z=0},
 				minexptime = 1.5,
 				maxexptime = 2.0,
-				minsize = 0.5,
+				minsize = 1.0,
 				maxsize = 1.0,
 				collisiondetection = false,
 				collision_removal = false,
@@ -92,7 +92,7 @@ function cloaking.hud_effect(pname)
 
 					-- Disabled for now due to causing older clients to hang.
 					--length = -1,
-					length = 0.3,
+					length = 1,
 				},
 
 				glow = 14,

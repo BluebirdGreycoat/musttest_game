@@ -305,6 +305,11 @@ end
 
 
 
+function map.on_dig(pos, node, digger)
+end
+
+
+
 -- Set HUD flags 'on joinplayer'
 if not map.run_once then
 	local desc = "Stone Mapper Uplink\n\nAllows viewing a map of your surroundings.\nKeep in your hotbar and use with the 'minimap' key (default F9).\nMust be charged to operate."
@@ -334,6 +339,10 @@ if not map.run_once then
 
 		on_use = function(...)
 			return map.on_use(...)
+		end,
+
+		on_dig = function(...)
+			return map.on_dig(...)
 		end,
 	})
 

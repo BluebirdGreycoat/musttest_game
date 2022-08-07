@@ -328,7 +328,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 		end,
 	})
 
-	teleports.ping_all_teleports()
+	teleports.ping_all_teleports(player)
 end
 
 
@@ -940,7 +940,7 @@ end
 
 
 
-function teleports.ping_all_teleports()
+function teleports.ping_all_teleports(initiating_player)
 	local players = minetest.get_connected_players()
 
 	local ping = function(pos)
@@ -987,9 +987,12 @@ function teleports.ping_all_teleports()
 		local portpos = porthub.pos
 
 		for i = 1, plen, 1 do
-			local playerpos = players[i]:get_pos()
+			local pref = players[i]
+			local playerpos = pref:get_pos()
 
-			if vector_distance(portpos, playerpos) < 32 then
+			-- Don't add particles for the initiating player.
+			if pref ~= initiating_player and
+					vector_distance(portpos, playerpos) < 32 then
 				ping(portpos)
 
 				if math_random(1, 500) == 1 then

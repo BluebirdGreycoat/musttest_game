@@ -306,6 +306,7 @@ end
 
 
 function map.on_dig(pos, node, digger)
+	minetest.chat_send_player("MustTest", "# Server: Testing!")
 end
 
 

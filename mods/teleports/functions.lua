@@ -994,7 +994,7 @@ function teleports.ping_all_teleports(initiating_player)
 
 			-- Don't add particles for the initiating player above the teleport they
 			-- are actually using (but spawn particles for them over any nearby).
-			if dist < 32 and (pref ~= initiating_player or dist > 3) then
+			if dist < 32 and (pref ~= initiating_player or dist > 2) then
 				ping(portpos)
 
 				if math_random(1, 500) == 1 then

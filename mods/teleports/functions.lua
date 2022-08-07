@@ -942,11 +942,6 @@ end
 
 function teleports.ping_all_teleports()
 	local players = minetest.get_connected_players()
-	local pp = {}
-
-	for k, v in ipairs(players) do
-		table.insert(pp, v:get_pos())
-	end
 
 	local ping = function(pos)
 		local xd = 1
@@ -972,14 +967,23 @@ function teleports.ping_all_teleports()
 	end
 
 	-- Spawn particles over every teleport that's near a player.
-	for k, v in ipairs(teleports.teleports) do
-		for i, j in ipairs(pp) do
-			if vector_distance(v.pos, j) < 32 then
-				ping(v.pos)
+	local ports = teleports.teleports
+	local tlen = #ports
+	local plen = #players
+
+	for k = 1, tlen, 1 do
+		local porthub = ports[k]
+		local portpos = porthub.pos
+
+		for i = 1, plen, 1 do
+			local playerpos = players[i]:get_pos()
+
+			if vector_distance(portpos, playerpos) < 32 then
+				ping(portpos)
 
 				if math_random(1, 1000) == 1 then
 					minetest.after(math_random(1, 5), function()
-						pm.spawn_random_wisp(vector_add(v.pos, {x=0, y=1, z=0}))
+						pm.spawn_random_wisp(vector_add(portpos, {x=0, y=1, z=0}))
 					end)
 				end
 			end

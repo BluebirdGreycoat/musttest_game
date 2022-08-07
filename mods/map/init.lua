@@ -287,6 +287,9 @@ function map.on_place(itemstack, placer, pt)
 	end
 
 	local fakestack = ItemStack("map:mapping_kit")
+	local meta = fakestack:get_meta()
+	meta:set_int("wear", itemstack:get_wear())
+
 	local retstack, success = minetest.item_place(fakestack, placer, pt)
 	if success then
 		itemstack:take_item()

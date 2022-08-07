@@ -460,6 +460,7 @@ if not pm.registered then
 		_name = "pm:follower",
 		description = "Seon",
 		mob = true,
+		_cmi_is_mob = true,
 
 		on_step = function(...) return pm.follower_on_step(...) end,
 		on_punch = function(...) return pm.follower_on_punch(...) end,

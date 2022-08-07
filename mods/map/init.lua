@@ -291,7 +291,7 @@ function map.on_place(itemstack, placer, pt)
 	local retstack, position = minetest.item_place(fakestack, placer, pt)
 	if position then
 		-- Store wear level in the node.
-		local meta = minetest.get_node_meta(position)
+		local meta = minetest.get_meta(position)
 		meta:set_int("wear", itemstack:get_wear())
 
 		itemstack:take_item()

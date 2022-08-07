@@ -981,7 +981,7 @@ function teleports.ping_all_teleports()
 			if vector_distance(portpos, playerpos) < 32 then
 				ping(portpos)
 
-				if math_random(1, 1000) == 1 then
+				if math_random(1, 500) == 1 then
 					minetest.after(math_random(1, 5), function()
 						pm.spawn_random_wisp(vector_add(portpos, {x=0, y=1, z=0}))
 					end)

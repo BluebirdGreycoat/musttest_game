@@ -282,7 +282,10 @@ local particles = {
 		type = "vertical_frames",
 		aspect_w = 7,
 		aspect_h = 7,
-		length = -1,
+
+		-- Disabled for now due to causing older clients to hang.
+		--length = -1,
+		length = 0.3,
 	},
 }
 

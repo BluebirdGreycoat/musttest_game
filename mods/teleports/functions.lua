@@ -958,10 +958,21 @@ function teleports.ping_all_teleports()
 			maxacc = {x=1, y=1, z=1},
 			minexptime = 0.5,
 			maxexptime = 1.5,
-			minsize = 0.5,
-			maxsize = 2,
+			minsize = 1,
+			maxsize = 1.5,
 			collisiondetection = false,
-			texture = "default_obsidian_shard.png",
+			texture = "nether_particle_anim4.png",
+
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 7,
+				aspect_h = 7,
+
+				-- Disabled for now due to causing older clients to hang.
+				--length = -1,
+				length = 0.3,
+			},
+
 			glow = 14,
 		})
 	end

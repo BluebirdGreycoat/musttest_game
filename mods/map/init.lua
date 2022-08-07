@@ -291,7 +291,8 @@ function map.on_place(itemstack, placer, pt)
 	if success then
 		itemstack:take_item()
 		if itemstack:get_count() == 0 then
-			map.update_inventory_info(pname)
+			-- Must take action *after* 'on_place' completes.
+			minetest.after(0, function() map.update_inventory_info(pname) end)
 		end
 		return itemstack
 	end

@@ -95,6 +95,9 @@ function toolranks.create_description(name, uses, level)
 end
 
 function toolranks.get_level(uses, max_uses, old_level)
+	-- Uncomment this to enable rapidly testing the tool-rank leveling function.
+	--max_uses = 5
+
 	local lvl = 1
 	-- subtract 1 from max_uses so that the tool levels up right before it is broken
   if uses <= max_uses-1 then

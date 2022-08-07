@@ -288,11 +288,11 @@ function map.on_place(itemstack, placer, pt)
 
 	local fakestack = ItemStack("map:mapping_kit")
 
-	local retstack, position = minetest.item_place(fakestack, placer, pt)
-	if position then
+	local retstack, success, position = minetest.item_place(fakestack, placer, pt)
+	if success then
 		-- Store wear level in the node.
-		--local meta = minetest.get_meta(position)
-		--meta:set_int("wear", itemstack:get_wear())
+		local meta = minetest.get_meta(position)
+		meta:set_int("wear", itemstack:get_wear())
 
 		itemstack:take_item()
 		if itemstack:get_count() == 0 then

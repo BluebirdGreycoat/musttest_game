@@ -306,7 +306,30 @@ end
 
 
 function map.on_dig(pos, node, digger)
-	minetest.chat_send_player("MustTest", "# Server: Testing!")
+	if not digger or not digger:is_player() then
+		return minetest.node_dig(pos, node, digger)
+	end
+	if minetest.is_protected(pos, digger:get_player_name()) then
+		return false
+	end
+
+	local meta = minetest.get_meta(pos)
+	local wear = meta:get_int("wear")
+
+	local inv = digger:get_inventory()
+	if inv then
+		local stack = ItemStack("map:mapping_tool")
+		stack:set_wear(wear)
+
+		local leftover = inv:add_item("main", stack)
+		minetest.item_drop(leftover, nil, pos)
+		minetest.remove_node(pos)
+
+		return true
+	end
+
+	-- In case of any failure, just dig normally.
+	return minetest.node_dig(pos, node, digger)
 end
 
 

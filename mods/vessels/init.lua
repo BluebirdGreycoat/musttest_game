@@ -88,7 +88,7 @@ vessels.on_steel_bottle_dig = function(pos, node, digger)
 		local def = minetest.registered_items[ntype]
 		if def then
 			local inv = digger:get_inventory()
-			local leftover =  inv:add_item("main", ItemStack(ntype))
+			local leftover = inv:add_item("main", ItemStack(ntype))
 			minetest.item_drop(leftover, nil, pos)
 			minetest.remove_node(pos)
 			-- Hmmm, it seems client plays a sound already and we don't need to.

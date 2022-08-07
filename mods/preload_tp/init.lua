@@ -111,6 +111,9 @@ function preload_tp.spawn_spinup_particles(pos, time)
 	local xd = 1
 	local zd = 1
 
+	-- We used to use the coal & mese textures (ew).
+	-- Now that we have better particles, we don't need multiple spawners.
+	-- Can animate the particles, too.
 	minetest.add_particlespawner({
 		amount = 160,
 		time = time,
@@ -120,30 +123,22 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		maxvel = {x=0, y=1, z=0},
 		minacc = {x=0, y=-1, z=0},
 		maxacc = {x=0, y=1, z=0},
-		minexptime = 0.5,
-		maxexptime = 1.5,
-		minsize = 0.5,
-		maxsize = 2,
-		collisiondetection = false,
-		vertical = true,
-		texture = "default_coal_lump.png",
-		glow = 14,
-	})
-	minetest.add_particlespawner({
-		amount = 160,
-		time = time,
-		minpos = {x=pos.x-xd, y=pos.y-0, z=pos.z-zd},
-		maxpos = {x=pos.x+xd, y=pos.y+2, z=pos.z+zd},
-		minvel = {x=-1, y=-1, z=-1},
-		maxvel = {x=1, y=1, z=1},
-		minacc = {x=-1, y=-1, z=-1},
-		maxacc = {x=1, y=1, z=1},
-		minexptime = 0.5,
-		maxexptime = 1.5,
-		minsize = 0.5,
-		maxsize = 2,
-		collisiondetection = false,
-		texture = "default_mese_crystal.png",
+		minexptime = 1.0,
+		maxexptime = 2.5,
+		minsize = 1.0,
+		maxsize = 1.0,
+		collisiondetection = true,
+		collision_removal = true,
+		vertical = false,
+
+		texture = "nether_particle_anim1.png",
+		animation = {
+			type = "vertical_frames",
+			aspect_w = 7,
+			aspect_h = 7,
+			length = -1,
+		},
+
 		glow = 14,
 	})
 end
@@ -262,8 +257,8 @@ local particles = {
 	maxacc = {x=0, y=4, z=0},
 	minexptime = 0.5,
 	maxexptime = 1,
-	minsize = 0.2,
-	maxsize = 0.8,
+	minsize = 1.0,
+	maxsize = 1.0,
 --  ^ The particle's properties are random values in between the bounds:
 --  ^ minpos/maxpos, minvel/maxvel (velocity), minacc/maxacc (acceleration),
 --  ^ minsize/maxsize, minexptime/maxexptime (expirationtime)
@@ -277,10 +272,14 @@ local particles = {
 --  ^ are relative to this object's position and yaw.
 	vertical = false,
 --  ^ vertical: if true faces player using y axis only
-	texture = "teleports_teleport_top.png",
---  ^ Uses texture (string)
-	--playername = "singleplayer"
---  ^ Playername is optional, if specified spawns particle only on the player's client
+
+	texture = "nether_particle_anim1.png",
+	animation = {
+		type = "vertical_frames",
+		aspect_w = 7,
+		aspect_h = 7,
+		length = -1,
+	},
 }
 
 function preload_tp.spawn_particles(pos)

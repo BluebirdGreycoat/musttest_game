@@ -208,6 +208,11 @@ minetest.register_on_joinplayer(function(player)
 		-- At last! The custom coordinate system is now First Class!
 		basic_debug = false,
 	})
+
+	-- Finally! Minetest has shadow support!
+	player:set_lighting({
+		shadows = {intensity=0.5},
+	})
 end)
 
 

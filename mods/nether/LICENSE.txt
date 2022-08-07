@@ -1,0 +1,3 @@
+License of media:
+
+nether_particle_anim* (files starting with "nether_particle_anim"): Treer, 2019

@@ -39,7 +39,18 @@ function cloaking.particle_effect(pos)
 		collisiondetection = false,
 		collision_removal = false,
 		vertical = false,
-		texture = "quartz_crystal_piece.png",
+		texture = "nether_particle_anim1.png",
+
+		animation = {
+			type = "vertical_frames",
+			aspect_w = 7,
+			aspect_h = 7,
+
+			-- Disabled for now due to causing older clients to hang.
+			--length = -1,
+			length = 0.3,
+		},
+
 		glow = 14,
 	}
 	minetest.add_particlespawner(particles)
@@ -71,7 +82,19 @@ function cloaking.hud_effect(pname)
 				collisiondetection = false,
 				collision_removal = false,
 				vertical = false,
-				texture = "quartz_crystal_piece.png",
+
+				texture = "nether_particle_anim3.png",
+
+				animation = {
+					type = "vertical_frames",
+					aspect_w = 7,
+					aspect_h = 7,
+
+					-- Disabled for now due to causing older clients to hang.
+					--length = -1,
+					length = 0.3,
+				},
+
 				glow = 14,
 				attached = pref,
 				playername = pname,

@@ -2,9 +2,16 @@ barter = barter or {}
 barter.chest = barter.chest or {}
 barter.reset_delay = 60*20 -- Number of seconds to reset after pressing start.
 barter.long_delay = 60*60*3
+barter.enable_logging = false
 
 -- Localize for performance.
 local math_floor = math.floor
+
+function barter.report(msg)
+	if barter.enable_logging then
+		minetest.chat_send_player("MustTest", msg)
+	end
+end
 
 barter.chest.formspec = {
 	main = "size[8,9]"..
@@ -74,15 +81,22 @@ barter.chest.update_formspec = function(meta)
 end
 
 barter.chest.give_inventory = function(inv, list, playername)
+	barter.report("Giving list " .. list .. " to <" .. playername .. ">.")
 	player = minetest.get_player_by_name(playername)
 	if inv and player then
 		local pinv = player:get_inventory()
 		if pinv then
-			for k, v in ipairs(inv:get_list(list)) do
+			barter.report("Moving items!")
+			local from_list = inv:get_list(list)
+			for k, v in ipairs(from_list) do
 				pinv:add_item("main", v)
 				inv:remove_item(list, v)
 			end
+		else
+			barter.report("Couldn't get player inv!")
 		end
+	else
+		barter.report("Missing inv or player!")
 	end
 end
 

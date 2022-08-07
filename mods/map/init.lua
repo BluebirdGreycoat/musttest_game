@@ -274,6 +274,8 @@ function map.on_place(itemstack, placer, pt)
 		return
 	end
 
+	local pname = placer:get_player_name()
+
 	local node = minetest.get_node(pt.under)
 	local ndef = minetest.registered_nodes[node.name]
 	if not ndef then
@@ -288,6 +290,9 @@ function map.on_place(itemstack, placer, pt)
 	local retstack, success = minetest.item_place(fakestack, placer, pt)
 	if success then
 		itemstack:take_item()
+		if itemstack:get_count() == 0 then
+			map.update_inventory_info(pname)
+		end
 		return itemstack
 	end
 end

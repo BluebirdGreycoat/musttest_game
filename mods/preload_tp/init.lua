@@ -132,12 +132,16 @@ function preload_tp.spawn_spinup_particles(pos, time)
 		vertical = false,
 
 		texture = "nether_particle_anim1.png",
+
+		-- Disabled for now due to causing older clients to hang.
+		--[[
 		animation = {
 			type = "vertical_frames",
 			aspect_w = 7,
 			aspect_h = 7,
 			length = -1,
 		},
+		--]]
 
 		glow = 14,
 	})

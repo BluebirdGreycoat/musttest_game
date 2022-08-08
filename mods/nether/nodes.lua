@@ -114,4 +114,8 @@ minetest.register_node("nether:portal_liquid", {
 		-- Keep running.
 		return true
   end,
+
+	-- Prevent obtaining this node by getting it to fall.
+	on_finish_collapse = function(pos, node) minetest.remove_node(pos) end,
+	on_collapse_to_entity = function() end,
 })

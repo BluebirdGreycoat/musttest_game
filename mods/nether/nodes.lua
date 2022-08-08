@@ -58,6 +58,8 @@ minetest.register_node("nether:portal_liquid", {
 	liquid_range = 0,
 
 	-- Timer function should execute once per second.
+	-- Note that the nodetimer is NOT started inside an 'on_construct' callback;
+	-- the timer must be started manually by whatever code places this node.
 	on_timer = function(pos, elapsed)
 		if math.random(1, 3) == 1 then
 			ambiance.sound_play("nether_portal_ambient", pos, 1.0, 10)

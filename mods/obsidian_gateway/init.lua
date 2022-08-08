@@ -18,7 +18,7 @@ local a = function(name)
 		return true
 	end
 
-	if name == "nether:portal_liquid" then
+	if name == "nether:portal_liquid" or name == "nether:portal_hidden" then
 		return true
 	end
 end
@@ -157,15 +157,15 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate)
 
 	local spawned = false
 
-	-- Need to use 'swap_node' because 'set_node' or 'bulk_set_node' run CBs,
-	-- which can interfere with this.
 	local count = #airpoints
 	for k = 1, count, 1 do
 		local p = airpoints[k]
+		-- Make sure node to be replaced is air. If we were to overwrite any
+		-- existing portal liquid, that would cause callbacks to run, which would
+		-- interfere with what we're doing here.
 		if minetest.get_node(p).name == "air" then
-			minetest.swap_node(p, node)
-			local timer = minetest.get_node_timer(p)
-			timer:start(1)
+			-- Run 'on_construct' callbacks, etc.
+			minetest.set_node(p, node)
 
 			-- This tells the particle code (inside node's on_timer) what color to use.
 			local meta = minetest.get_meta(p)
@@ -196,6 +196,9 @@ function obsidian_gateway.remove_liquid(pos, points)
 			-- portal liquid node (and nearby portal liquid nodes).
 			minetest.swap_node(v, node)
 			removed = true
+		elseif n.name == "nether:portal_hidden" then
+			minetest.swap_node(v, node)
+			-- Node is hidden, so do not set 'removed' flag (removal makes no sound).
 		end
 	end
 	if removed then
@@ -620,6 +623,7 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 		"cavestuff:glow_obsidian",
 		"griefer:grieferstone",
 		"nether:portal_liquid",
+		"nether:portal_hidden",
 	}
 
 	local points, counts = minetest.find_nodes_in_area(minp, maxp, names)

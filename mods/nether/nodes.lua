@@ -11,6 +11,10 @@ local anim = {
 	length = 0.9
 }
 
+
+
+-- Portal liquid. The event-horizon of a portal.
+-- Specifically designed with obsidian gates (4x5 vertical frames) in mind.
 minetest.register_node("nether:portal_liquid", {
 	description = 'Portal Liquid (You Hacker, You!)',
 	paramtype2 = "colorfacedir",
@@ -43,9 +47,17 @@ minetest.register_node("nether:portal_liquid", {
 	post_effect_color = {a = 160, r = 128, g = 0, b = 80},
 	on_rotate = false,
 
-	on_destruct = function(pos)
-		-- This is transient damage! The gate can be reactivated.
-		obsidian_gateway.on_damage_gate(pos, true)
+	-- No fixed functions.
+	on_construct = function(...)
+		return nether.liquid_on_construct(...)
+	end,
+
+	on_destruct = function(...)
+		return nether.liquid_on_destruct(...)
+	end,
+
+	on_timer = function(...)
+		return nether.liquid_on_timer(...)
 	end,
 
 	-- Slow down player movement.
@@ -57,64 +69,57 @@ minetest.register_node("nether:portal_liquid", {
 	liquid_renewable = false,
 	liquid_range = 0,
 
-	-- Timer function should execute once per second.
-	-- Note that the nodetimer is NOT started inside an 'on_construct' callback;
-	-- the timer must be started manually by whatever code places this node.
-	on_timer = function(pos, elapsed)
-		if math.random(1, 3) == 1 then
-			ambiance.sound_play("nether_portal_ambient", pos, 1.0, 10)
-		end
+	-- Prevent obtaining this node by getting it to fall.
+	on_finish_collapse = function(pos, node) minetest.remove_node(pos) end,
+	on_collapse_to_entity = function() end,
+})
 
-		local meta = minetest.get_meta(pos)
-		local color = meta:get_string("color")
 
-		if not color or color == "" then
-			color = "gold"
-		end
 
-		local image = "nether_particle_anim3.png"
-		local pref = hb4.nearest_player(pos)
-		if pref then
-			-- Player inside node? Show bubbles instead of sparks.
-			if vector.distance(pref:get_pos(), pos) < 1 then
-				image = "nether_particle_anim2.png"
-			end
-		end
+-- Invisible portal node. Must be as similar to the regular portal liquid as
+-- possible, to permit swapping without damage to metadata/param2 values.
+minetest.register_node("nether:portal_hidden", {
+	description = 'Portal Hidden (You Hacker, You!)',
+	paramtype2 = "colorfacedir",
+	groups = {unbreakable=1, immovable=1, not_in_creative_inventory=1},
+	drop = "",
+	drawtype = "airlike",
+	paramtype = "light",
+	palette = "nether_portals_palette.png",
+	tiles = {
+		'nether_transparent.png',
+		'nether_transparent.png',
+		'nether_transparent.png',
+		'nether_transparent.png',
+		'nether_transparent.png',
+		'nether_transparent.png',
+	},
+	node_box = box,
+	use_texture_alpha = "blend",
+	walkable = false,
+	pointable = false,
 
-		local d = 0.5
-		minetest.add_particlespawner({
-			amount = 5,
-			time = 1.1,
-			minpos = {x=pos.x-d, y=pos.y-d, z=pos.z-d},
-			maxpos = {x=pos.x+d, y=pos.y+d, z=pos.z+d},
-			minvel = {x=0, y=-d, z=0},
-			maxvel = {x=0, y=d, z=0},
-			minacc = {x=0, y=0, z=0},
-			maxacc = {x=0, y=0, z=0},
-			minexptime = 1.5,
-			maxexptime = 2.5,
-			minsize = 1,
-			maxsize = 1.5,
-			collisiondetection = true,
-			collision_removal = true,
-			texture = image .. "^[colorize:" .. color .. ":alpha",
-			vertical = false,
+	-- Necessary to allow bone placement, and to let players "pop" the portal by
+	-- e.g., placing a torch inside.
+	buildable_to = true,
 
-			animation = {
-				type = "vertical_frames",
-				aspect_w = 7,
-				aspect_h = 7,
+	is_ground_content = false,
+	diggable = false,
+	sunlight_propagates = true,
+	post_effect_color = {a = 0, r = 0, g = 0, b = 0},
+	on_rotate = false,
 
-				-- Disabled for now due to causing older clients to hang.
-				--length = -1,
-				length = 1.0,
-			},
+	-- No fixed functions.
+	on_construct = function(...)
+		return nether.hidden_on_construct(...)
+	end,
 
-			glow = 14,
-		})
+	on_destruct = function(...)
+		return nether.hidden_on_destruct(...)
+	end,
 
-		-- Keep running.
-		return true
+	on_timer = function(...)
+		return nether.hidden_on_timer(...)
 	end,
 
 	-- Prevent obtaining this node by getting it to fall.

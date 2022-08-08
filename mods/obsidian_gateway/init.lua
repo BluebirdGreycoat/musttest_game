@@ -112,7 +112,7 @@ end
 
 
 
-function obsidian_gateway.spawn_liquid(origin, northsouth, returngate)
+function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 	local color = 6
 	local rotation = 1
 
@@ -160,10 +160,12 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate)
 	local count = #airpoints
 	for k = 1, count, 1 do
 		local p = airpoints[k]
+		local oldnode = minetest.get_node(p)
+
 		-- Make sure node to be replaced is air. If we were to overwrite any
 		-- existing portal liquid, that would cause callbacks to run, which would
 		-- interfere with what we're doing here.
-		if minetest.get_node(p).name == "air" then
+		if oldnode.name == "air" then
 			-- Run 'on_construct' callbacks, etc.
 			minetest.set_node(p, node)
 
@@ -174,6 +176,16 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate)
 			else
 				meta:set_string("color", "gold")
 			end
+
+			spawned = true
+		elseif force and oldnode.name == "nether:portal_hidden" then
+			minetest.swap_node(p, node)
+
+			-- Manually execute callback.
+			local ndef = minetest.registered_nodes[node.name]
+			ndef.on_construct(p)
+
+			-- Do not need to set "color" meta here, the hidden node already has it.
 
 			spawned = true
 		end
@@ -485,6 +497,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 					end
 				end
 			end
+
 			-- Don't build return portal on top of someone's protected stuff.
 			if first_time_init then
 				if check_protection(vector.add(target, {x=0, y=3, z=0}), 5) then
@@ -500,6 +513,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 					return true
 				end
 			end
+
 			-- Build return portal (only if not already using a return portal).
 			-- Also, only build return portal on first use of the initial portal.
 			if not isreturngate and first_time_init then
@@ -512,7 +526,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
-					obsidian_gateway.spawn_liquid(gpos, true, true)
 				else
 					-- Place eastwest gateway.
 					local path = obsidian_gateway.modpath .. "/obsidian_gateway_eastwest.mts"
@@ -522,9 +535,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
-					obsidian_gateway.spawn_liquid(gpos, false, true)
 				end
 			end
+
 			-- Mark the initial gate as success.
 			-- If this is not done, then gate will assume it is not initialized
 			-- the next time it is used. This fixes a bug where the return gate is
@@ -550,6 +563,20 @@ function obsidian_gateway.attempt_activation(pos, player)
 				local pref = minetest.get_player_by_name(pname)
 				pref:set_hp(pref:get_properties().hp_max)
 				give_initial_stuff.give(pref)
+			end
+
+			-- Always regenerate portal liquid in the destination portal.
+			-- (It will often be missing since no one was near it.)
+			-- Note: need to force place liquid, here, because often the dest portal
+			-- will have "hidden" nodes in it!
+			if northsouth then
+				local gpos = vector.add(target, {x=-1, y=-1, z=0})
+				local isret = (not isreturngate)
+				obsidian_gateway.spawn_liquid(gpos, northsouth, isret, true)
+			else
+				local gpos = vector.add(target, {x=0, y=-1, z=-1})
+				local isret = (not isreturngate)
+				obsidian_gateway.spawn_liquid(gpos, northsouth, isret, true)
 			end
 		end,
 

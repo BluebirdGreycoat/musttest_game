@@ -90,7 +90,7 @@ function nether.liquid_on_timer(pos, elapsed)
 	local color = meta:get_string("color")
 
 	if not color or color == "" then
-		color = "gold"
+		color = "purple"
 	end
 
 	local image = "nether_particle_anim3.png"

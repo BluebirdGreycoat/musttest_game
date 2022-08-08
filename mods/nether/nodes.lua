@@ -12,14 +12,14 @@ local anim = {
 }
 
 minetest.register_node("nether:portal_liquid", {
-  description = 'Portal Liquid (You Hacker, You!)',
+	description = 'Portal Liquid (You Hacker, You!)',
 	paramtype2 = "colorfacedir",
-  groups = {unbreakable=1, immovable=1, not_in_creative_inventory=1},
-  drop = "",
-  drawtype = "nodebox",
-  paramtype = "light",
+	groups = {unbreakable=1, immovable=1, not_in_creative_inventory=1},
+	drop = "",
+	drawtype = "nodebox",
+	paramtype = "light",
 	palette = "nether_portals_palette.png",
-  tiles = {
+	tiles = {
 		'nether_transparent.png',
 		'nether_transparent.png',
 		'nether_transparent.png',
@@ -27,21 +27,21 @@ minetest.register_node("nether:portal_liquid", {
 		{name='nether_portal.png', animation=anim},
 		{name='nether_portal.png', animation=anim},
 	},
-  node_box = box,
-  use_texture_alpha = "blend",
-  walkable = false,
-  pointable = false,
+	node_box = box,
+	use_texture_alpha = "blend",
+	walkable = false,
+	pointable = false,
 
-  -- Necessary to allow bone placement, and to let players "pop" the portal by
-  -- e.g., placing a torch inside.
-  buildable_to = true,
+	-- Necessary to allow bone placement, and to let players "pop" the portal by
+	-- e.g., placing a torch inside.
+	buildable_to = true,
 
-  is_ground_content = false,
-  diggable = false,
-  light_source = 5,
-  sunlight_propagates = true,
-  post_effect_color = {a = 160, r = 128, g = 0, b = 80},
-  on_rotate = false,
+	is_ground_content = false,
+	diggable = false,
+	light_source = 5,
+	sunlight_propagates = true,
+	post_effect_color = {a = 160, r = 128, g = 0, b = 80},
+	on_rotate = false,
 
 	on_destruct = function(pos)
 		-- This is transient damage! The gate can be reactivated.
@@ -51,14 +51,14 @@ minetest.register_node("nether:portal_liquid", {
 	-- Slow down player movement.
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	liquid_viscosity = 8,
-  liquidtype = "source",
-  liquid_alternative_flowing = "nether:portal_liquid",
-  liquid_alternative_source = "nether:portal_liquid",
-  liquid_renewable = false,
-  liquid_range = 0,
+	liquidtype = "source",
+	liquid_alternative_flowing = "nether:portal_liquid",
+	liquid_alternative_source = "nether:portal_liquid",
+	liquid_renewable = false,
+	liquid_range = 0,
 
-  -- Timer function should execute once per second.
-  on_timer = function(pos, elapsed)
+	-- Timer function should execute once per second.
+	on_timer = function(pos, elapsed)
 		if math.random(1, 3) == 1 then
 			ambiance.sound_play("nether_portal_ambient", pos, 1.0, 10)
 		end
@@ -113,7 +113,7 @@ minetest.register_node("nether:portal_liquid", {
 
 		-- Keep running.
 		return true
-  end,
+	end,
 
 	-- Prevent obtaining this node by getting it to fall.
 	on_finish_collapse = function(pos, node) minetest.remove_node(pos) end,

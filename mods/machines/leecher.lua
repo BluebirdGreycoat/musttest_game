@@ -764,7 +764,6 @@ if not leecher.run_once then
 			return leecher.on_place(...) end,
 	})
 
-	---[[
 	minetest.register_craft({
 		output = "leecher:leecher",
 		recipe = {
@@ -772,7 +771,6 @@ if not leecher.run_once then
 			{"techcrafts:electric_motor", "techcrafts:machine_casing", "gem_cutter:blade"},
 			{"carbon_steel:block", "cb2:hv", "carbon_steel:block"}},
 	})
-	--]]
 
   local c = "leecher:core"
   local f = leecher.modpath .. "/leecher.lua"

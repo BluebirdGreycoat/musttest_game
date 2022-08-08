@@ -562,7 +562,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 						pre_teleport_callback = function()
 							-- If the destination is the Abyss, then kill player first.
-							-- This helps to prevent player from bringing any foreign items into this realm.
 							-- Note: this relies on the teleport code already checking all other preconditions
 							-- first. I.e., if this callback returns 'false', then the player absolutely
 							-- will be teleported.

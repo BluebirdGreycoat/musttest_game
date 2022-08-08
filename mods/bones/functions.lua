@@ -230,7 +230,8 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	chat_colorize.notify_death(pname)
 	jail.notify_player_death(player)
 
-	-- Special case for admin.
+	-- Special case for admin. This helps prevent accidentally leaving
+	-- admin/cheated stuff lying around.
 	if gdac.player_is_admin(pname) then
 		return
 	end

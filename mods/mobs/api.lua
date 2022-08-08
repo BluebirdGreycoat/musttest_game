@@ -1380,7 +1380,7 @@ local function punch_target(self, dtime)
 			damage_groups = {[dgroup] = damage}
 		}, nil)
 
-		ambiance.sound_play("default_punch", self.attack:get_pos(), 2.0, 30)
+		ambiance.sound_play("default_punch", p2, 2.0, 30)
 	end
 
 	-- Tell everyone about the death [MustTest].

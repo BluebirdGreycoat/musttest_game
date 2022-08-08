@@ -412,11 +412,15 @@ if not flameportal.run_once then
   minetest.override_item("default:obsidian", {
     after_destruct = function(pos, oldnode)
 			minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
-			obsidian_gateway.after_damage_gate(pos)
 			return flameportal.after_portal_destruct(pos, oldnode)
 		end,
-    -- Obsidian is blast resitant now.
-    --on_blast = function(pos) minetest.remove_node(pos) end,
+
+    on_destruct = function(pos, oldnode)
+			obsidian_gateway.on_damage_gate(pos)
+		end,
+
+		-- Note: default obsidian is blast resistent.
+		-- 'on_blast' is defined in the default mod.
   })
 
   minetest.override_item("voidstone:void", {

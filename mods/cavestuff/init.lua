@@ -432,9 +432,13 @@ minetest.register_node("cavestuff:glow_obsidian", {
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
+
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
-		obsidian_gateway.after_damage_gate(pos)
+	end,
+
+	on_destruct = function(pos)
+		obsidian_gateway.on_damage_gate(pos)
 	end,
 })
 
@@ -511,10 +515,15 @@ minetest.register_node("cavestuff:dark_obsidian", {
   }),
   sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
+
   on_blast = function(...) end, -- Blast resistant.
+
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
-		obsidian_gateway.after_damage_gate(pos)
+	end,
+
+	on_destruct = function(pos)
+		obsidian_gateway.on_damage_gate(pos)
 	end,
 })
 

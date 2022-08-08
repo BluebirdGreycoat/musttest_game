@@ -18,9 +18,13 @@ minetest.register_node("griefer:grieferstone", {
 		return griefer.on_stone_timer(...)
 	end,
 	--]]
+
+	on_destruct = function(pos)
+		obsidian_gateway.on_damage_gate(pos)
+  end,
+
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
-		obsidian_gateway.after_damage_gate(pos)
 		jail.notify_jail_destruct(pos)
 	end,
 })

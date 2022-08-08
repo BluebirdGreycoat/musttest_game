@@ -14,7 +14,11 @@ local o = {"default:obsidian", "griefer:grieferstone", "cavestuff:dark_obsidian"
 local a = function(name)
 	-- Bones check needed here to prevent players from blocking a gate by dying in
 	-- it. E.g., bones never decay while a hacker is online.
-	if name == "air" or name =="bones:bones" then
+	if name == "air" or name == "bones:bones" then
+		return true
+	end
+
+	if name == "nether:portal_liquid" then
 		return true
 	end
 end
@@ -104,6 +108,98 @@ local function check_protection(pos, radius)
 
 	-- Nothing in the area is protected.
 	return false
+end
+
+
+
+function obsidian_gateway.spawn_liquid(origin, northsouth, returngate)
+	local color = 6
+	local rotation = 1
+
+	if northsouth then
+		rotation = 0
+	end
+
+	if returngate then
+		color = 5
+	end
+
+	-- Node's drawtype is "colorfacedir".
+	local node = {
+		name = "nether:portal_liquid",
+		param2 = (color * 32 + rotation),
+	}
+
+	local vadd = vector.add
+
+	local airpoints
+	if northsouth then
+		local o = origin
+		airpoints = {
+			{x=o.x+1, y=o.y+1, z=o.z+0},
+			{x=o.x+2, y=o.y+1, z=o.z+0},
+			{x=o.x+1, y=o.y+2, z=o.z+0},
+			{x=o.x+2, y=o.y+2, z=o.z+0},
+			{x=o.x+1, y=o.y+3, z=o.z+0},
+			{x=o.x+2, y=o.y+3, z=o.z+0},
+		}
+	else
+		local o = origin
+		airpoints = {
+			{x=o.x+0, y=o.y+1, z=o.z+1},
+			{x=o.x+0, y=o.y+1, z=o.z+2},
+			{x=o.x+0, y=o.y+2, z=o.z+1},
+			{x=o.x+0, y=o.y+2, z=o.z+2},
+			{x=o.x+0, y=o.y+3, z=o.z+1},
+			{x=o.x+0, y=o.y+3, z=o.z+2},
+		}
+	end
+
+	local spawned = false
+
+	-- Need to use 'swap_node' because 'set_node' or 'bulk_set_node' run CBs,
+	-- which can interfere with this.
+	local count = #airpoints
+	for k = 1, count, 1 do
+		local p = airpoints[k]
+		if minetest.get_node(p).name == "air" then
+			minetest.swap_node(p, node)
+			local timer = minetest.get_node_timer(p)
+			timer:start(1)
+
+			-- This tells the particle code (inside node's on_timer) what color to use.
+			local meta = minetest.get_meta(p)
+			if returngate then
+				meta:set_string("color", "red")
+			else
+				meta:set_string("color", "gold")
+			end
+
+			spawned = true
+		end
+	end
+
+	if spawned then
+		ambiance.sound_play("nether_portal_ignite", origin, 1.0, 64)
+	end
+end
+
+
+
+function obsidian_gateway.remove_liquid(pos, points)
+	local node = {name="air"}
+	local removed = false
+	for k, v in ipairs(points) do
+		local n = minetest.get_node(v)
+		if n.name == "nether:portal_liquid" then
+			-- Must use 'swap_node' to avoid triggering further callbacks.
+			minetest.swap_node(v, node)
+			removed = true
+		end
+	end
+	if removed then
+		ambiance.sound_play("nether_portal_extinguish", pos, 1.0, 64)
+	end
 end
 
 
@@ -214,8 +310,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 		end
 	end
 
-	minetest.log("action", pname .. " activated gateway @ " .. minetest.pos_to_string(pos))
-
 	local target
 	local meta = minetest.get_meta(origin)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't
@@ -254,6 +348,11 @@ function obsidian_gateway.attempt_activation(pos, player)
 	local isowner = (actual_owner == pname)
 
 	local first_time_init = false
+
+	-- Event horizon color depends on whether we are a return gate.
+	obsidian_gateway.spawn_liquid(origin, northsouth, isreturngate)
+
+	minetest.log("action", pname .. " activated gateway @ " .. minetest.pos_to_string(pos))
 
 	-- Initialize gateway for the first time.
 	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
@@ -409,6 +508,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
+					obsidian_gateway.spawn_liquid(gpos, true, true)
 				else
 					-- Place eastwest gateway.
 					local path = obsidian_gateway.modpath .. "/obsidian_gateway_eastwest.mts"
@@ -418,6 +518,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
+					obsidian_gateway.spawn_liquid(gpos, false, true)
 				end
 			end
 			-- Mark the initial gate as success.
@@ -506,7 +607,10 @@ end
 
 
 -- To be called inside node's 'after_destruct' callback.
-function obsidian_gateway.after_damage_gate(pos)
+function obsidian_gateway.on_damage_gate(pos, transient)
+	-- First, perform some cheap checks to see if there could possibly be a gate
+	-- at this location. We only perform the expensive checks if the cheap checks
+	-- pass!
 	local minp = vector.add(pos, {x=-4, y=-4, z=-4})
 	local maxp = vector.add(pos, {x=4, y=4, z=4})
 	local names = {
@@ -514,6 +618,7 @@ function obsidian_gateway.after_damage_gate(pos)
 		"cavestuff:dark_obsidian",
 		"cavestuff:glow_obsidian",
 		"griefer:grieferstone",
+		"nether:portal_liquid",
 	}
 
 	local points, counts = minetest.find_nodes_in_area(minp, maxp, names)
@@ -521,9 +626,8 @@ function obsidian_gateway.after_damage_gate(pos)
 		return
 	end
 
-	-- A valid gate requires at least 2 oerkki stone.
-	-- But one might have been removed by the player.
-	if counts["griefer:grieferstone"] < 1 then
+	-- A valid gate requires exactly 2 oerkki stone.
+	if counts["griefer:grieferstone"] ~= 2 then
 		return
 	end
 
@@ -532,20 +636,41 @@ function obsidian_gateway.after_damage_gate(pos)
 		local d = counts["cavestuff:dark_obsidian"] or 0
 		local c = counts["cavestuff:glow_obsidian"] or 0
 
-		-- Not counting the node that was just removed (we should have been called
-		-- inside of 'after_destruct' for a given node), there should be 11 obsidian
+		-- Including the node that will be removed (we should have been called
+		-- inside of 'on_destruct' for a given node), there should be 12 obsidian
 		-- remaining, otherwise cannot be a valid gate.
-		if (o + d + c) < 11 then
+		if (o + d + c) ~= 12 then
 			return
 		end
 	end
 
-	-- Don't spawn lava in overworld (reported by player).
+	-- Cheap checks completed, now do the expensive check.
+	if not obsidian_gateway.find_gate(pos) then
+		return
+	end
 
+	-- If we reach here, we know we have a valid gate attached to this position.
+	-- We don't care if it is a NS or EW-facing gate.
+
+	-- Remove all portal-liquid nodes.
+	minetest.after(0, obsidian_gateway.remove_liquid, pos, points)
+
+	-- If transient "pop" of portal liquid nodes, then do not continue further to
+	-- actually damage the gate.
+	if transient then
+		return
+	end
+
+	-- This has a chance to destroy one of the oerkki stones, which costs some
+	-- resources to craft again. But don't spawn lava in overworld. The point of
+	-- this is to make it a bit more costly to constantly reset the gate if you
+	-- don't like where it goes. Note: using 'swap_node' first in order to prevent
+	-- calling additional callbacks.
 	local idx = math.random(1, #points)
 	local tar = points[idx]
+	minetest.swap_node(tar, {name="air"})
 	minetest.set_node(tar, {name="fire:basic_flame"})
-	ambiance.sound_play("nether_portal_usual", pos, 1.0, 64)
+	ambiance.sound_play("nether_rack_destroy", pos, 1.0, 64)
 end
 
 

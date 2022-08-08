@@ -1,3 +1,7 @@
-License of media:
+License:
 
-nether_particle_anim* (files starting with "nether_particle_anim"): Treer, 2019
+This directory includes resources (textures, sounds, whatever) which were copied
+from the "nether" mod by Treer. Their licenses are the same as in Treer's nether
+mod.
+
+All other stuff is MIT or CC, whatever you like.

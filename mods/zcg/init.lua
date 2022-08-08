@@ -484,6 +484,7 @@ if not zcg.registered then
 	-- We can't do this at craft-register time because the logic needs access to
 	-- the groups of the recipe output items, which may not be known by the engine
 	-- until after recipes for the items are registered.
+	if not minetest.is_singleplayer() then
 	minetest.register_on_mods_loaded(function()
 		local t1 = os.clock()
 		-- Must search through ALL registered items! Cannot use shortcut tables.
@@ -500,6 +501,7 @@ if not zcg.registered then
 		local t2 = os.clock()
 		minetest.log("action", "Loading craft recipes took " .. (t2 - t1) .. " seconds.")
 	end)
+	end -- Speed up singleplayer game testing.
 
 	-- Register button once.
 	inventory_plus.register_button("zcg", "Craft Journal")

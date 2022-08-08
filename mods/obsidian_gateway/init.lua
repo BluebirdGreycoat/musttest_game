@@ -627,7 +627,8 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 	end
 
 	-- A valid gate requires exactly 2 oerkki stone.
-	if counts["griefer:grieferstone"] ~= 2 then
+	-- (There may be additional oerkki stone not part of the gate.)
+	if counts["griefer:grieferstone"] < 2 then
 		return
 	end
 
@@ -639,7 +640,7 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 		-- Including the node that will be removed (we should have been called
 		-- inside of 'on_destruct' for a given node), there should be 12 obsidian
 		-- remaining, otherwise cannot be a valid gate.
-		if (o + d + c) ~= 12 then
+		if (o + d + c) < 12 then
 			return
 		end
 	end

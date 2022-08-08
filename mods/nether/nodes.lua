@@ -70,6 +70,15 @@ minetest.register_node("nether:portal_liquid", {
 			color = "gold"
 		end
 
+		local image = "nether_particle_anim3.png"
+		local pref = hb4.nearest_player(pos)
+		if pref then
+			-- Player inside node? Show bubbles instead of sparks.
+			if vector.distance(pref:get_pos(), pos) < 1 then
+				image = "nether_particle_anim2.png"
+			end
+		end
+
 		local d = 0.5
 		minetest.add_particlespawner({
 			amount = 5,
@@ -86,7 +95,7 @@ minetest.register_node("nether:portal_liquid", {
 			maxsize = 1.5,
 			collisiondetection = true,
 			collision_removal = true,
-			texture = "nether_particle_anim3.png^[colorize:" .. color .. ":alpha",
+			texture = image .. "^[colorize:" .. color .. ":alpha",
 			vertical = false,
 
 			animation = {

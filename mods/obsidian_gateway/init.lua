@@ -491,9 +491,10 @@ function obsidian_gateway.attempt_activation(pos, player)
 			if not isowner then
 				-- Grief portal if used by someone other than owner.
 				-- Note: 'airpoints' should always contain 6 entries!
+				-- Note #2: griefing should NOT have any chance of damaging the Gate in
+				-- any permanent fashion.
 				local p = airpoints[math_random(1, #airpoints)]
 				minetest.set_node(p, {name="fire:basic_flame"})
-				end
 			end
 
 			-- Don't build return portal on top of someone's protected stuff.

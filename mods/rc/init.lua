@@ -583,11 +583,10 @@ end
 function rc.check_position(player)
 	local p = vector_round(player:get_pos())
 	local n = player:get_player_name()
+	local data = rc.players[n]
 
 	-- Data not initialized yet.
-	if not rc.players[n] then
-		return
-	end
+	if not data then return end
 
 	local reset -- Table set if player out-of-bounds.
 
@@ -605,7 +604,7 @@ function rc.check_position(player)
 
 	-- Check if player is currently in the void.
 	if not reset then
-		if rc.players[n].realm == "" then
+		if data.realm == "" then
 			reset = {}
 			reset.spawn = rc.static_spawn("abyss")
 		end
@@ -613,9 +612,12 @@ function rc.check_position(player)
 
 	-- Do bounds checks for individual realms.
 	if not reset then
-		for k, v in ipairs(rc.realms) do
+		local lrem = #(rc.realms)
+		for k = 1, lrem, 1 do
+			local v = rc.realms[k]
+
 			-- Is player within boundaries of the realm they are supposed to be in?
-			if rc.players[n].realm == v.name then
+			if data.realm == v.name then
 				local minp = v.minp
 				local maxp = v.maxp
 
@@ -632,7 +634,7 @@ function rc.check_position(player)
 
 	if reset then
 		-- Player is out-of-bounds. Reset to last known good position.
-		if not gdac.player_is_admin(n) then
+		if not gdac.player_is_admin(n) and not data.new_arrival then
 			minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
 				"> was caught in the inter-dimensional void!")
 		end
@@ -641,9 +643,9 @@ function rc.check_position(player)
 		-- Wielded item entities don't like sudden movement.
 		wield3d.on_teleport()
 
-		if player:get_hp() > 0 and rc.players[n] then
+		if player:get_hp() > 0 then
 			-- Return player to last known good position.
-			player:set_pos(rc.players[n].pos)
+			player:set_pos(data.pos)
 		else
 			-- Return to realm's origin point.
 			player:set_pos(reset.spawn)
@@ -654,7 +656,7 @@ function rc.check_position(player)
 		end
 
 		-- Damage player. Prevents them triggering this indefinitely.
-		if player:get_hp() > 0 then
+		if player:get_hp() > 0 and not data.new_arrival then
 			player:set_hp(player:get_hp() - 2)
 			if player:get_hp() <= 0 then
 				if not gdac.player_is_admin(n) then
@@ -670,7 +672,7 @@ function rc.check_position(player)
 	-- If we got this far, the player is not out of bounds.
 	-- Record last known good position. Realm name should be same as before.
 	do
-		local ps = rc.players[n].pos
+		local ps = data.pos
 		ps.x = p.x
 		ps.y = p.y
 		ps.z = p.z
@@ -680,11 +682,20 @@ end
 function rc.on_joinplayer(player)
 	local n = player:get_player_name()
 	local p = player:get_pos()
+
 	-- Player's current dimension is determined from position on login.
 	rc.players[n] = {
 		pos = p,
 		realm = rc.current_realm(player),
+		new_arrival = true,
 	}
+
+	-- Remove the 'new_arrival' flag after a few seconds.
+	minetest.after(10, function()
+		local data = rc.players[n]
+		if not data then return end
+		data.new_arrival = nil
+	end)
 end
 
 function rc.on_leaveplayer(player, timeout)

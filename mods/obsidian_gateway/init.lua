@@ -255,11 +255,13 @@ function obsidian_gateway.find_gate(pos)
 		return
 	end
 
-	-- Store locations of air inside the portal gateway.
+	-- Store locations of air/portal-liquid inside the portal gateway.
 	local airpoints = {}
 	if result then
 		for k, v in ipairs(points) do
-			if minetest.get_node(v).name == "air" then
+			local nn = minetest.get_node(v).name
+			if nn == "air" or nn == "nether:portal_liquid" or
+					nn == "nether:portal_hidden" then
 				airpoints[#airpoints+1] = v
 			end
 		end
@@ -272,7 +274,8 @@ function obsidian_gateway.find_gate(pos)
 		local d = counts["cavestuff:dark_obsidian"] or 0
 		local c = counts["cavestuff:glow_obsidian"] or 0
 		local g = counts["griefer:grieferstone"] or 0
-		if (o + d + c) == 12 and g == 2 then
+		local a = (#airpoints == 6)
+		if (o + d + c) == 12 and g == 2 and a == true then
 			yes = true
 		end
 	end
@@ -487,14 +490,9 @@ function obsidian_gateway.attempt_activation(pos, player)
 		pre_teleport_callback = function()
 			if not isowner then
 				-- Grief portal if used by someone other than owner.
-				local plava = airpoints[math_random(1, #airpoints)]
-				--minetest.chat_send_all("# Server: Attempting to grief gateway @ " .. minetest.pos_to_string(plava) .. "!")
-				if minetest.get_node(plava).name == "air" then
-					if plava.y < -10 then
-						minetest.add_node(plava, {name="default:lava_source"})
-					else
-						minetest.add_node(plava, {name="fire:basic_flame"})
-					end
+				-- Note: 'airpoints' should always contain 6 entries!
+				local p = airpoints[math_random(1, #airpoints)]
+				minetest.set_node(p, {name="fire:basic_flame"})
 				end
 			end
 

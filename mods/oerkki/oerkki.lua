@@ -1,11 +1,11 @@
 
--- That flying thing.
+-- That flying thing. NOT supposed to be an oerkki, but not changing name now
+-- due to long usage.
 mobs.register_mob("oerkki:oerkki", {
 	type = "monster",
 	description = "Flying Menace",
 	passive = false,
 	attack_type = "dogfight",
-	pathfinding = 2,
 	reach = 2,
 	damage = 3,
 	hp_min = 8,

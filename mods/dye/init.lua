@@ -2,75 +2,24 @@
 
 dye = {}
 
-dye.basecolors = {
-	"white"   ,
-	"grey"    ,
-	"black"   ,
-	"red"     ,
-	"yellow"  ,
-	"green"   ,
-	"cyan"    ,
-	"blue"    ,
-	"magenta" ,
-}
-
-dye.excolors = {
-	"white"      ,
-	"lightgrey"  ,
-	"grey"       ,
-	"darkgrey"   ,
-	"black"      ,
-	"red"        ,
-	"orange"     ,
-	"yellow"     ,
-	"lime"       ,
-	"green"      ,
-	"aqua"       ,
-	"cyan"       ,
-	"sky_blue"   ,
-	"blue"       ,
-	"violet"     ,
-	"magenta"    ,
-	"red_violet" ,
-}
-
--- Make dye names and descriptions available globally.
--- Note: there is another color list in the bakedclay mod which must be same as this.
-dye.dyes = {
-	{"white",      "White"},
-	{"grey",       "Grey"},
-	{"dark_grey",  "Dark Grey"},
-	{"black",      "Black"},
-	{"violet",     "Violet"},
-	{"blue",       "Blue"},
-	{"cyan",       "Cyan"},
-	{"dark_green", "Dark Green"},
-	{"green",      "Green"},
-	{"yellow",     "Yellow"},
-	{"brown",      "Brown"},
-	{"orange",     "Orange"},
-	{"red",        "Red"},
-	{"magenta",    "Magenta"},
-	{"pink",       "Pink"},
-}
-
--- This collection of colors is partly a historic thing, partly something else.
+-- Note: there is another color list in the "bakedclay" mod which must be same
+-- as this. Also in the "wool" mod.
 local dyes = {
-	{"white",      "White Dye",      {dye=1, basecolor_white=1,   excolor_white=1,      unicolor_white=1}},
-	{"grey",       "Grey Dye",       {dye=1, basecolor_grey=1,    excolor_grey=1,       unicolor_grey=1}},
-	{"dark_grey",  "Dark Grey Dye",  {dye=1, basecolor_grey=1,    excolor_darkgrey=1,   unicolor_darkgrey=1}},
-	{"black",      "Black Dye",      {dye=1, basecolor_black=1,   excolor_black=1,      unicolor_black=1}},
-	{"violet",     "Violet Dye",     {dye=1, basecolor_magenta=1, excolor_violet=1,     unicolor_violet=1}},
-	{"blue",       "Blue Dye",       {dye=1, basecolor_blue=1,    excolor_blue=1,       unicolor_blue=1}},
-	{"cyan",       "Cyan Dye",       {dye=1, basecolor_cyan=1,    excolor_cyan=1,       unicolor_cyan=1}},
-	{"dark_green", "Dark Green Dye", {dye=1, basecolor_green=1,   excolor_green=1,      unicolor_dark_green=1}},
-	{"green",      "Green Dye",      {dye=1, basecolor_green=1,   excolor_green=1,      unicolor_green=1}},
-	{"yellow",     "Yellow Dye",     {dye=1, basecolor_yellow=1,  excolor_yellow=1,     unicolor_yellow=1}},
-	{"brown",      "Brown Dye",      {dye=1, basecolor_brown=1,   excolor_orange=1,     unicolor_dark_orange=1}},
-	{"orange",     "Orange Dye",     {dye=1, basecolor_orange=1,  excolor_orange=1,     unicolor_orange=1}},
-	{"red",        "Red Dye",        {dye=1, basecolor_red=1,     excolor_red=1,        unicolor_red=1}},
-	{"magenta",    "Magenta Dye",    {dye=1, basecolor_magenta=1, excolor_red_violet=1, unicolor_red_violet=1}},
-	{"pink",       "Pink Dye",       {dye=1, basecolor_red=1,     excolor_red=1,        unicolor_light_red=1}},
+	{"white",      "White Dye",      {dye=1}},
+	{"grey",       "Grey Dye",       {dye=1}},
+	{"dark_grey",  "Dark Grey Dye",  {dye=1}},
+	{"black",      "Black Dye",      {dye=1}},
+	{"violet",     "Violet Dye",     {dye=1}},
+	{"blue",       "Blue Dye",       {dye=1}},
+	{"cyan",       "Cyan Dye",       {dye=1}},
+	{"dark_green", "Dark Green Dye", {dye=1}},
+	{"green",      "Green Dye",      {dye=1}},
+	{"yellow",     "Yellow Dye",     {dye=1}},
+	{"brown",      "Brown Dye",      {dye=1}},
+	{"orange",     "Orange Dye",     {dye=1}},
+	{"red",        "Red Dye",        {dye=1}},
+	{"magenta",    "Magenta Dye",    {dye=1}},
+	{"pink",       "Pink Dye",       {dye=1}},
 }
 
 -- Define items.
@@ -104,31 +53,34 @@ minetest.register_craft({
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
   
--- Mix recipes.
+-- Mix recipes. Table params: color1, color2, result.
 local dye_recipes = {
-	-- Table params: color1, color2, result.
-
 	-- Basic RYB mixes.
-	{"red",     "blue",       "violet"    }, -- "purple"
+	{"red",     "blue",       "violet"    },
 	{"yellow",  "red",        "orange"    },
 	{"yellow",  "blue",       "green"     },
+
 	-- RYB complementary mixes.
 	{"yellow",  "violet",     "dark_grey" },
 	{"blue",    "orange",     "dark_grey" },
+
 	-- CMY mixes - approximation.
 	{"cyan",    "yellow",     "green"     },
 	{"cyan",    "magenta",    "blue"      },
 	{"yellow",  "magenta",    "red"       },
+
 	-- Other mixes that result in a color we have.
 	{"red",     "green",      "brown"     },
 	{"magenta", "blue",       "violet"    },
 	{"green",   "blue",       "cyan"      },
 	{"pink",    "violet",     "magenta"   },
+
 	-- Mixes with black.
 	{"white",   "black",      "grey"      },
 	{"grey",    "black",      "dark_grey" },
 	{"green",   "black",      "dark_green"},
 	{"orange",  "black",      "brown"     },
+
 	-- Mixes with white.
 	{"white",   "red",        "pink"      },
 	{"white",   "dark_grey",  "grey"      },

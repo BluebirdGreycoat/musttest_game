@@ -1,27 +1,26 @@
--- This uses a trick: you can first define the recipes using all of the base
--- colors, and then some recipes using more specific colors for a few non-base
--- colors available. When crafting, the last recipes will be checked first.
 
+-- No tricks! It confuses the craft guide (and me, too).
+-- This list must match the one in the "dye" mod.
 local dyes = {
-	{"white",      "White",      "basecolor_white"},
-	{"grey",       "Grey",       "basecolor_grey"},
-	{"black",      "Black",      "basecolor_black"},
-	{"red",        "Red",        "basecolor_red"},
-	{"yellow",     "Yellow",     "basecolor_yellow"},
-	{"green",      "Green",      "basecolor_green"},
-	{"cyan",       "Cyan",       "basecolor_cyan"},
-	{"blue",       "Blue",       "basecolor_blue"},
-	{"magenta",    "Magenta",    "basecolor_magenta"},
-	{"orange",     "Orange",     "excolor_orange"},
-	{"violet",     "Violet",     "excolor_violet"},
-	{"brown",      "Brown",      "unicolor_dark_orange"},
-	{"pink",       "Pink",       "unicolor_light_red"},
-	{"dark_grey",  "Dark Grey",  "unicolor_darkgrey"},
-	{"dark_green", "Dark Green", "unicolor_dark_green"},
+	{"white",      "White"     },
+	{"grey",       "Grey"      },
+	{"black",      "Black"     },
+	{"red",        "Red"       },
+	{"yellow",     "Yellow"    },
+	{"green",      "Green"     },
+	{"cyan",       "Cyan"      },
+	{"blue",       "Blue"      },
+	{"magenta",    "Magenta"   },
+	{"orange",     "Orange"    },
+	{"violet",     "Violet"    },
+	{"brown",      "Brown"     },
+	{"pink",       "Pink"      },
+	{"dark_grey",  "Dark Grey" },
+	{"dark_green", "Dark Green"},
 }
 
-for i = 1, #dyes do
-	local name, desc, craft_color_group = unpack(dyes[i])
+for i = 1, #dyes, 1 do
+	local name, desc = unpack(dyes[i])
 
 	minetest.register_node("wool:" .. name, {
 		description = desc .. " Wool",
@@ -38,14 +37,10 @@ for i = 1, #dyes do
 	minetest.register_craft{
 		type = "shapeless",
 		output = "wool:" .. name,
-		recipe = {"group:dye," .. craft_color_group, "group:wool_block"},
+		recipe = {"dye:" .. name, "group:wool_block"},
 	}
 end
-
-
--- legacy
 
 -- Backwards compatibility with jordach's 16-color wool mod
 minetest.register_alias("wool:dark_blue", "wool:blue")
 minetest.register_alias("wool:gold", "wool:yellow")
-

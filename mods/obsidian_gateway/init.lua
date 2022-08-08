@@ -220,7 +220,20 @@ end
 
 
 
-function obsidian_gateway.find_gate(pos)
+function obsidian_gateway.regenerate_liquid(target, northsouth, isret)
+	local success, so, ap, ns, key, po =
+		obsidian_gateway.find_gate(target, northsouth)
+
+	-- Spawn portal liquid only if there is a gate here with the expected
+	-- orientation. Force liquid placement over hidden portal nodes.
+	if success then
+		obsidian_gateway.spawn_liquid(so, ns, isret, true)
+	end
+end
+
+
+
+function obsidian_gateway.find_gate(pos, require_ns)
 	local result
 	local points
 	local counts
@@ -233,29 +246,40 @@ function obsidian_gateway.find_gate(pos)
 	-- Find the gateway (threshold under player)!
 	result, points, counts, origin =
 		schematic_find.detect_schematic(pos, gate_northsouth)
+
 	northsouth = true
 	ns_key = "ns"
+
 	if result then
 		playerorigin = vector.add(origin, {x=1, y=1, z=0})
 	end
+
 	if not result then
 		-- Couldn't find northsouth gateway, so try to find eastwest.
 		result, points, counts, origin =
 			schematic_find.detect_schematic(pos, gate_eastwest)
+
 		northsouth = false
 		ns_key = "ew"
+
 		if result then
 			playerorigin = vector.add(origin, {x=0, y=1, z=1})
 		end
 	end
 
-	-- Debugging.
+	-- Early exit.
 	if not result then
-		--minetest.chat_send_player(pname, "# Server: Bad gateway.")
 		return
 	end
 
-	-- Store locations of air/portal-liquid inside the portal gateway.
+	-- If a specific orientation is required, then check that.
+	if require_ns ~= nil then
+		if northsouth ~= require_ns then
+			return
+		end
+	end
+
+	-- Store locations of air/portal nodes inside the gateway.
 	local airpoints = {}
 	if result then
 		for k, v in ipairs(points) do
@@ -566,17 +590,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 			-- Always regenerate portal liquid in the destination portal.
 			-- (It will often be missing since no one was near it.)
-			-- Note: need to force place liquid, here, because often the dest portal
-			-- will have "hidden" nodes in it!
-			if northsouth then
-				local gpos = vector.add(target, {x=-1, y=-1, z=0})
-				local isret = (not isreturngate)
-				obsidian_gateway.spawn_liquid(gpos, northsouth, isret, true)
-			else
-				local gpos = vector.add(target, {x=0, y=-1, z=-1})
-				local isret = (not isreturngate)
-				obsidian_gateway.spawn_liquid(gpos, northsouth, isret, true)
-			end
+			-- This function will check if there actually is a gate, here.
+			obsidian_gateway.regenerate_liquid(target, northsouth, (not isreturngate))
 		end,
 
 		post_teleport_callback = function()

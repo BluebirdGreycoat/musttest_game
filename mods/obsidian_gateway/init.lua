@@ -192,7 +192,8 @@ function obsidian_gateway.remove_liquid(pos, points)
 	for k, v in ipairs(points) do
 		local n = minetest.get_node(v)
 		if n.name == "nether:portal_liquid" then
-			-- Must use 'swap_node' to avoid triggering further callbacks.
+			-- Must use 'swap_node' to avoid triggering further callbacks on the
+			-- portal liquid node (and nearby portal liquid nodes).
 			minetest.swap_node(v, node)
 			removed = true
 		end
@@ -605,7 +606,8 @@ end
 
 
 
--- To be called inside node's 'after_destruct' callback.
+-- To be called inside node's 'on_destruct' callback.
+-- Note: 'transient' is ONLY true when node to be destructed is portal liquid!
 function obsidian_gateway.on_damage_gate(pos, transient)
 	-- First, perform some cheap checks to see if there could possibly be a gate
 	-- at this location. We only perform the expensive checks if the cheap checks
@@ -625,6 +627,15 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 		return
 	end
 
+	-- Remove all portal-liquid nodes. (Will play sound if any removed.)
+	minetest.after(0, obsidian_gateway.remove_liquid, pos, points)
+
+	-- If transient "pop" of portal liquid nodes, then do not continue further to
+	-- actually damage the gate.
+	if transient then
+		return
+	end
+
 	-- A valid gate requires exactly 2 oerkki stone.
 	-- (There may be additional oerkki stone not part of the gate.)
 	if counts["griefer:grieferstone"] < 2 then
@@ -638,7 +649,8 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 
 		-- Including the node that will be removed (we should have been called
 		-- inside of 'on_destruct' for a given node), there should be 12 obsidian
-		-- remaining, otherwise cannot be a valid gate.
+		-- remaining, otherwise cannot be a valid gate. (There may be additional
+		-- obsidian nearby not part of the gate.)
 		if (o + d + c) < 12 then
 			return
 		end
@@ -651,15 +663,6 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 
 	-- If we reach here, we know we have a valid gate attached to this position.
 	-- We don't care if it is a NS or EW-facing gate.
-
-	-- Remove all portal-liquid nodes.
-	minetest.after(0, obsidian_gateway.remove_liquid, pos, points)
-
-	-- If transient "pop" of portal liquid nodes, then do not continue further to
-	-- actually damage the gate.
-	if transient then
-		return
-	end
 
 	-- This has a chance to destroy one of the oerkki stones, which costs some
 	-- resources to craft again. But don't spawn lava in overworld. The point of

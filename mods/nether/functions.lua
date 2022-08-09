@@ -1,7 +1,5 @@
 
 local function transform_visible(pos)
-	local node = minetest.get_node(pos)
-
 	local minp = vector.add(pos, {x=-2, y=-2, z=-2})
 	local maxp = vector.add(pos, {x=2, y=2, z=2})
 	local names = {"nether:portal_hidden"}
@@ -16,6 +14,9 @@ local function transform_visible(pos)
 
 	for k = 1, plen, 1 do
 		local tar = points[k]
+
+		-- Note: must get the original param2 value from the node at this pos!
+		local node = minetest.get_node(tar)
 
 		minetest.swap_node(tar, {
 			name = "nether:portal_liquid",
@@ -32,8 +33,6 @@ end
 
 
 local function transform_hidden(pos)
-	local node = minetest.get_node(pos)
-
 	local minp = vector.add(pos, {x=-2, y=-2, z=-2})
 	local maxp = vector.add(pos, {x=2, y=2, z=2})
 	local names = {"nether:portal_liquid"}
@@ -48,6 +47,9 @@ local function transform_hidden(pos)
 
 	for k = 1, plen, 1 do
 		local tar = points[k]
+
+		-- Note: must get the original param2 value from the node at this pos!
+		local node = minetest.get_node(tar)
 
 		minetest.swap_node(tar, {
 			name = "nether:portal_hidden",

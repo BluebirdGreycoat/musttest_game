@@ -5359,8 +5359,8 @@ if not mobs.registered then
 			ignore_invisibility     = def.ignore_invisibility,
 			pathing_radius          = def.pathing_radius,
 			max_node_dig_level      = def.max_node_dig_level,
-			hunt_players            = def.hunt_players,
-			hunt_chance             = def.hunt_chance or 5,
+			--hunt_players            = def.hunt_players,
+			hunt_chance             = def.hunt_chance or 0,
 			-- The meaning of 'attack_chance' is inverted in order to make more sense [MustTest].
 			attack_chance           = def.attack_chance or 95,
 			show_health             = def.show_health,

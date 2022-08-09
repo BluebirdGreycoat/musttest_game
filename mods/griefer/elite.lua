@@ -85,7 +85,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	},
 	ignore_invisibility = true,
 	knock_back = false,
-	hunt_players = true,
+	--hunt_players = true,
 	hunt_chance = 5,
 	arrow = "griefer:fireball",
 	shoot_offset = 1,

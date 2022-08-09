@@ -172,6 +172,7 @@ mobs.register_mob("sandman:stoneman", {
 		punch_start = 40,
 		punch_end = 63,
 	},
+	hunt_chance = 5,
 })
 
 

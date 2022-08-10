@@ -75,7 +75,7 @@ for k, v in ipairs(beds.bed_colors) do
 		selectionbox = beds.selectionbox,
 		recipe = {
 			{"", "", "group:stick"},
-			{"wool:" .. wool, "wool:" .. wool, "wool:white"},
+			{"farming:cloth", "farming:cloth", "wool:" .. wool},
 			{"group:wood", "group:wood", "group:wood"},
 		},
 	})
@@ -107,7 +107,7 @@ for k, v in ipairs(beds.bed_colors) do
 		nodebox = beds.nodebox_simple,
 		selectionbox = beds.selectionbox,
 		recipe = {
-			{"wool:" .. wool, "wool:" .. wool, "wool:white"},
+			{"farming:cloth", "farming:cloth", "wool:" .. wool},
 			{"group:wood", "group:wood", "group:wood"},
 		},
 	})

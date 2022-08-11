@@ -1,13 +1,7 @@
 
 local function transform_visible(pos)
-	local minp = vector.add(pos, {x=-2, y=-2, z=-2})
-	local maxp = vector.add(pos, {x=2, y=2, z=2})
-	local names = {"nether:portal_hidden"}
-
-	local points, counts = minetest.find_nodes_in_area(minp, maxp, names)
-	if #points == 0 then
-		return
-	end
+	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
+	local points = obsidian_gateway.door_positions(origin, northsouth)
 
 	local plen = #points
 	local ndef = minetest.registered_nodes["nether:portal_liquid"]
@@ -18,13 +12,15 @@ local function transform_visible(pos)
 		-- Note: must get the original param2 value from the node at this pos!
 		local node = minetest.get_node(tar)
 
-		minetest.swap_node(tar, {
-			name = "nether:portal_liquid",
-			param2 = node.param2,
-		})
+		if node.name == "nether:portal_hidden" then
+			minetest.swap_node(tar, {
+				name = "nether:portal_liquid",
+				param2 = node.param2,
+			})
 
-		-- Manually run callback.
-		ndef.on_construct(tar)
+			-- Manually run callback.
+			ndef.on_construct(tar)
+		end
 	end
 
 	ambiance.sound_play("nether_portal_ignite", pos, 1.0, 64)
@@ -33,14 +29,8 @@ end
 
 
 local function transform_hidden(pos)
-	local minp = vector.add(pos, {x=-2, y=-2, z=-2})
-	local maxp = vector.add(pos, {x=2, y=2, z=2})
-	local names = {"nether:portal_liquid"}
-
-	local points, counts = minetest.find_nodes_in_area(minp, maxp, names)
-	if #points == 0 then
-		return
-	end
+	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
+	local points = obsidian_gateway.door_positions(origin, northsouth)
 
 	local plen = #points
 	local ndef = minetest.registered_nodes["nether:portal_hidden"]
@@ -51,13 +41,15 @@ local function transform_hidden(pos)
 		-- Note: must get the original param2 value from the node at this pos!
 		local node = minetest.get_node(tar)
 
-		minetest.swap_node(tar, {
-			name = "nether:portal_hidden",
-			param2 = node.param2,
-		})
+		if node.name == "nether:portal_liquid" then
+			minetest.swap_node(tar, {
+				name = "nether:portal_hidden",
+				param2 = node.param2,
+			})
 
-		-- Manually run callback.
-		ndef.on_construct(tar)
+			-- Manually run callback.
+			ndef.on_construct(tar)
+		end
 	end
 
 	ambiance.sound_play("nether_portal_extinguish", pos, 1.0, 64)

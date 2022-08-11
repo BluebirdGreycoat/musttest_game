@@ -1,7 +1,23 @@
 
 local function transform_visible(pos)
+	local points
 	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
-	local points = obsidian_gateway.door_positions(origin, northsouth)
+
+	if origin then
+		points = obsidian_gateway.door_positions(origin, northsouth)
+	else
+		-- Fallback to old behavior.
+		local minp = vector.add(pos, {x=-2, y=-2, z=-2})
+		local maxp = vector.add(pos, {x=2, y=2, z=2})
+		local names = {"nether:portal_hidden"}
+
+		local p2, counts = minetest.find_nodes_in_area(minp, maxp, names)
+		if #points == 0 then
+			return
+		end
+
+		points = p2
+	end
 
 	local plen = #points
 	local ndef = minetest.registered_nodes["nether:portal_liquid"]
@@ -29,8 +45,24 @@ end
 
 
 local function transform_hidden(pos)
+	local points
 	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
-	local points = obsidian_gateway.door_positions(origin, northsouth)
+
+	if origin then
+		points = obsidian_gateway.door_positions(origin, northsouth)
+	else
+		-- Fallback to old behavior.
+		local minp = vector.add(pos, {x=-2, y=-2, z=-2})
+		local maxp = vector.add(pos, {x=2, y=2, z=2})
+		local names = {"nether:portal_liquid"}
+
+		local p2, counts = minetest.find_nodes_in_area(minp, maxp, names)
+		if #points == 0 then
+			return
+		end
+
+		points = p2
+	end
 
 	local plen = #points
 	local ndef = minetest.registered_nodes["nether:portal_hidden"]

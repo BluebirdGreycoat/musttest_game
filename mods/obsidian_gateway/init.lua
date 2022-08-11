@@ -256,7 +256,7 @@ function obsidian_gateway.remove_liquid(pos, points)
 		count = #points
 	end
 
-	for k = 1, #count, 1 do
+	for k = 1, count, 1 do
 		local v = points[k]
 		local n = minetest.get_node(v)
 

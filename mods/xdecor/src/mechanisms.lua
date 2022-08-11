@@ -191,7 +191,7 @@ xdecor.register("explosive_plate", {
 minetest.register_craft({
 	output = "xdecor:explosive_plate",
 	type = "shapeless",
-	recipe = {"tnt:tnt", "xdecor:pressure_stone_off", "xdecor:lever_off"}
+	recipe = {"tnt:tnt_stick", "xdecor:pressure_stone_off", "xdecor:lever_off"}
 })
 
 -- Unstable pressure plate.

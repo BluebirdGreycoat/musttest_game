@@ -112,26 +112,8 @@ end
 
 
 
-function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
-	local color = 6
-	local rotation = 1
-
-	if northsouth then
-		rotation = 0
-	end
-
-	if returngate then
-		color = 5
-	end
-
-	-- Node's drawtype is "colorfacedir".
-	local node = {
-		name = "nether:portal_liquid",
-		param2 = (color * 32 + rotation),
-	}
-
-	local vadd = vector.add
-
+-- Get a list of node positions inside the gate's frame.
+function obsidian_gateway.door_positions(origin, northsouth)
 	local airpoints
 	if northsouth then
 		local o = origin
@@ -154,7 +136,31 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 			{x=o.x+0, y=o.y+3, z=o.z+2},
 		}
 	end
+	return airpoints
+end
 
+
+
+function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
+	local color = 6
+	local rotation = 1
+
+	if northsouth then
+		rotation = 0
+	end
+
+	if returngate then
+		color = 5
+	end
+
+	-- Node's drawtype is "colorfacedir".
+	local node = {
+		name = "nether:portal_liquid",
+		param2 = (color * 32 + rotation),
+	}
+
+	local vadd = vector.add
+	local airpoints = obsidian_gateway.door_positions(origin, northsouth)
 	local spawned = false
 
 	local count = #airpoints
@@ -194,6 +200,26 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 	if spawned then
 		ambiance.sound_play("nether_portal_ignite", origin, 1.0, 64)
 	end
+end
+
+
+
+-- Determine whether the gateway has active portal liquid.
+function obsidian_gateway.have_liquid(origin, northsouth)
+	local airpoints = obsidian_gateway.door_positions(origin, northsouth)
+	local total = 0
+
+	local count = #airpoints
+	for k = 1, count, 1 do
+		local p = airpoints[k]
+		local node = minetest.get_node(p)
+
+		if node.name == "nether:portal_liquid" then
+			total = total + 1
+		end
+	end
+
+	return (total == 6)
 end
 
 
@@ -519,6 +545,12 @@ function obsidian_gateway.attempt_activation(pos, player)
 				-- any permanent fashion.
 				local p = airpoints[math_random(1, #airpoints)]
 				minetest.set_node(p, {name="fire:basic_flame"})
+			end
+
+			if not obsidian_gateway.have_liquid(origin, northsouth) then
+				minetest.chat_send_player(pname, "# Server: Portal disrupted.")
+				-- Cancel transport.
+				return true
 			end
 
 			-- Don't build return portal on top of someone's protected stuff.

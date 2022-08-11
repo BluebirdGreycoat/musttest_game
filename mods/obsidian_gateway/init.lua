@@ -248,14 +248,6 @@ function obsidian_gateway.remove_liquid(pos, points)
 	local removed = false
 	local count = #points
 
-	-- First, try to get gate origin from meta. If this fails, then we use the
-	-- 'points' array as a fallback (old behavior).
-	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
-	if origin then
-		points = obsidian_gateway.door_positions(origin, northsouth)
-		count = #points
-	end
-
 	for k = 1, count, 1 do
 		local v = points[k]
 		local n = minetest.get_node(v)
@@ -734,9 +726,16 @@ function obsidian_gateway.on_damage_gate(pos, transient)
 	if #points == 0 then
 		return
 	end
+	local doorpoints = points
 
 	-- Remove all portal-liquid nodes. (Will play sound if any removed.)
-	minetest.after(0, obsidian_gateway.remove_liquid, pos, points)
+	-- First, try to get gate origin from meta. If this fails, then we use the
+	-- 'points' array as a fallback (old behavior).
+	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
+	if origin then
+		doorpoints = obsidian_gateway.door_positions(origin, northsouth)
+	end
+	minetest.after(0, obsidian_gateway.remove_liquid, pos, doorpoints)
 
 	-- If transient "pop" of portal liquid nodes, then do not continue further to
 	-- actually damage the gate.

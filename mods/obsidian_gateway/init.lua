@@ -144,6 +144,7 @@ end
 function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 	local color = 6
 	local rotation = 1
+	local str_origin = minetest.pos_to_string(origin)
 
 	if northsouth then
 		rotation = 0
@@ -182,6 +183,8 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 			else
 				meta:set_string("color", "gold")
 			end
+			meta:set_string("gate_origin", str_origin)
+			meta:set_string("gate_northsouth", tostring(northsouth))
 
 			spawned = true
 		elseif force and oldnode.name == "nether:portal_hidden" then
@@ -192,6 +195,7 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 			ndef.on_construct(p)
 
 			-- Do not need to set "color" meta here, the hidden node already has it.
+			-- Same with 'gate_origin'.
 
 			spawned = true
 		end
@@ -224,11 +228,38 @@ end
 
 
 
+-- Get gate's origin and northsouth/eastwest orientation.
+function obsidian_gateway.get_origin_and_dir(pos)
+	local meta = minetest.get_meta(pos)
+	local str_origin = meta:get_string("gate_origin")
+	local str_northsouth = meta:get_string("gate_northsouth")
+
+	local origin = minetest.string_to_pos(str_origin)
+	if origin then
+		-- Returns origin, true/false.
+		return origin, (str_northsouth == "true")
+	end
+end
+
+
+
 function obsidian_gateway.remove_liquid(pos, points)
 	local node = {name="air"}
 	local removed = false
-	for k, v in ipairs(points) do
+	local count = #points
+
+	-- First, try to get gate origin from meta. If this fails, then we use the
+	-- 'points' array as a fallback (old behavior).
+	local origin, northsouth = obsidian_gateway.get_origin_and_dir(pos)
+	if origin then
+		points = obsidian_gateway.door_positions(origin, northsouth)
+		count = #points
+	end
+
+	for k = 1, #count, 1 do
+		local v = points[k]
 		local n = minetest.get_node(v)
+
 		if n.name == "nether:portal_liquid" then
 			-- Must use 'swap_node' to avoid triggering further callbacks on the
 			-- portal liquid node (and nearby portal liquid nodes).

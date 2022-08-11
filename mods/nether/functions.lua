@@ -12,7 +12,7 @@ local function transform_visible(pos)
 		local names = {"nether:portal_hidden"}
 
 		local p2, counts = minetest.find_nodes_in_area(minp, maxp, names)
-		if #points == 0 then
+		if #p2 == 0 then
 			return
 		end
 
@@ -57,7 +57,7 @@ local function transform_hidden(pos)
 		local names = {"nether:portal_liquid"}
 
 		local p2, counts = minetest.find_nodes_in_area(minp, maxp, names)
-		if #points == 0 then
+		if #p2 == 0 then
 			return
 		end
 

@@ -3,11 +3,6 @@ command_tokens = command_tokens or {}
 command_tokens.jail = command_tokens.jail or {}
 
 
-
-minetest.register_privilege("ignore_jail_token", {description="Player cannot be sent to jail.", give_to_singleplayer=false})
-
-
-
 local formspec = "size[4.1,2.0]" ..
 	default.gui_bg ..
 	default.gui_bg_img ..
@@ -187,6 +182,11 @@ end
 
 -- Register once only.
 if not command_tokens.jail.registered then
+	minetest.register_privilege("ignore_jail_token", {
+		description = "Player cannot be sent to jail.",
+		give_to_singleplayer = false,
+	})
+
 	minetest.register_on_player_receive_fields(function(...)
 		return command_tokens.jail_on_receive_fields(...)
 	end)

@@ -120,12 +120,9 @@ command_tokens.mark_on_receive_fields = function(player, formname, fields)
 				pname, fields.PLAYERNAME or "")
 
 			if success then
-				local ref = minetest.get_player_by_name(pname)
-				if ref and ref:is_player() then
-					local inv = ref:get_inventory()
-					if inv then
-						inv:remove_item("main", "command_tokens:mark_player")
-					end
+				local inv = player:get_inventory()
+				if inv then
+					inv:remove_item("main", "command_tokens:mark_player")
 				end
 			end
 		end

@@ -113,12 +113,14 @@ end
 command_tokens.mark_on_receive_fields = function(player, formname, fields)
 	if formname == "command_tokens:mark" then
 		if fields.OK then
+			local pname = player:get_player_name()
+
 			-- Attempt to mark the target, get success/failure.
 			local success = command_tokens.mark.execute(
-				player:get_player_name(), fields.PLAYERNAME or "")
+				pname, fields.PLAYERNAME or "")
 
 			if success then
-				local ref = minetest.get_player_by_name(player)
+				local ref = minetest.get_player_by_name(pname)
 				if ref and ref:is_player() then
 					local inv = ref:get_inventory()
 					if inv then

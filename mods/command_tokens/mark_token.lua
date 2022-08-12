@@ -41,8 +41,6 @@ command_tokens.mark.mark_player = function(itemstack, user, pointed)
 				if success then
 					itemstack:take_item()
 					return itemstack
-				else
-					minetest.chat_send_player(pname, "# Server: Error.")
 				end
 			else
 				minetest.chat_send_player(pname, "# Server: Target is not a player!")

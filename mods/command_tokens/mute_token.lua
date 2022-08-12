@@ -34,17 +34,24 @@ end
 -- Called when the player uses a marker token.
 command_tokens.mute.mute_player = function(itemstack, user, pointed)
 	if user and user:is_player() then
-        if pointed.type == "object" then
-            local object = pointed.ref
-            if object and object:is_player() then
-                command_tokens.mute.execute(user:get_player_name(), object:get_player_name())
-            else
-                minetest.chat_send_player(user:get_player_name(), "# Server: Target is not a player!")
-            end
-        else
-            local name = user:get_player_name()
-            minetest.show_formspec(name, "command_tokens:mute", formspec)
-        end
+		local pname = user:get_player_name()
+
+		if pointed.type == "object" then
+			local object = pointed.ref
+			if object and object:is_player() then
+				local success = command_tokens.mute.execute(
+					pname, object:get_player_name())
+
+				if success then
+					itemstack:take_item()
+					return itemstack
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: Target is not a player!")
+			end
+		else
+			minetest.show_formspec(pname, "command_tokens:mute", formspec)
+		end
 	end
 end
 
@@ -80,32 +87,35 @@ command_tokens.mute.execute = function(player, target)
 	local dname = rename.gpn(target)
 
 	if is_valid_target(target) then
-		-- Mute player if they wern't muted, unmute them if they were.
-		if not command_tokens.mute.players[target] then
-			-- Mark this occurance with an ID that isn't likely to be already in use.
-			local rng = math_random(0, 65000)
-			command_tokens.mute.players[target] = rng
-			minetest.after(mute_duration, unmute_on_timeout, target, rng)
-			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been duct-taped!")
+		-- Ensure player has a mute token in their inventory.
+		local pref = minetest.get_player_by_name(player)
+		local pinv = pref:get_inventory()
+		local stack = ItemStack("command_tokens:mute_player")
 
-			minetest.log("action", player .. " applies ducktape to " .. target)
+		if pinv:contains_item("main", stack) then
+			-- Mute player if they wern't muted, unmute them if they were.
+			if not command_tokens.mute.players[target] then
+				-- Mark this occurance with an ID that isn't likely to be already in use.
+				local rng = math_random(0, 65000)
+				command_tokens.mute.players[target] = rng
+				minetest.after(mute_duration, unmute_on_timeout, target, rng)
+				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been duct-taped!")
+
+				minetest.log("action", player .. " applies ducktape to " .. target)
+			else
+				command_tokens.mute.players[target] = nil
+				minetest.chat_send_all("# Server: Player <" .. dname .. "> was unmuted.")
+
+				minetest.log("action", player .. " unmutes " .. target)
+			end
+
+			-- Caller must consume token.
+			return true
 		else
-			command_tokens.mute.players[target] = nil
-			minetest.chat_send_all("# Server: Player <" .. dname .. "> was unmuted.")
-
-			minetest.log("action", player .. " unmutes " .. target)
+			minetest.chat_send_player(player, "# Server: Error. Invalid usage.")
 		end
-
-		-- Consume token.
-		minetest.after(0, function() -- Necessary because this code will not operate during the on_use callback.
-				local ref = minetest.get_player_by_name(player)
-				if ref and ref:is_player() then
-						local inv = ref:get_inventory()
-						inv:remove_item("main", "command_tokens:mute_player")
-				end
-		end)
 	else
-		-- Target not found. Restore the player's marker.
+		-- Target not found.
 		minetest.chat_send_player(player, "# Server: Player <" .. dname .. "> cannot be silenced.")
 	end
 end
@@ -115,7 +125,17 @@ end
 command_tokens.mute_on_receive_fields = function(player, formname, fields)
 	if formname == "command_tokens:mute" then
 		if fields.OK then
-			command_tokens.mute.execute(player:get_player_name(), fields.PLAYERNAME or "")
+			local pname = player:get_player_name()
+
+			local success = command_tokens.mute.execute(
+				pname, fields.PLAYERNAME or "")
+
+			if success then
+				local inv = player:get_inventory()
+				if inv then
+					inv:remove_item("main", "command_tokens:mute_player")
+				end
+			end
 		end
 	end
 end

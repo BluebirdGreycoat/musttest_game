@@ -23,17 +23,24 @@ local formspec = "size[4.1,2.0]" ..
 -- Called when the player uses a jail token.
 command_tokens.jail.jail_player = function(itemstack, user, pointed)
 	if user and user:is_player() then
-        if pointed.type == "object" then
-            local object = pointed.ref
-            if object and object:is_player() then
-                command_tokens.jail.execute(user:get_player_name(), object:get_player_name())
-            else
-                minetest.chat_send_player(user:get_player_name(), "# Server: Target is not a player!")
-            end
-        else
-            local name = user:get_player_name()
-            minetest.show_formspec(name, "command_tokens:jail", formspec)
-        end
+		local pname = user:get_player_name()
+
+		if pointed.type == "object" then
+			local object = pointed.ref
+			if object and object:is_player() then
+				local success = command_tokens.jail.execute(
+					pname, object:get_player_name())
+
+				if success then
+					itemstack:take_item()
+					return itemstack
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: Target is not a player!")
+			end
+		else
+			minetest.show_formspec(pname, "command_tokens:jail", formspec)
+		end
 	end
 end
 
@@ -59,7 +66,8 @@ command_tokens.jail.execute = function(player, target)
     return
   end
 
-	local p1 = minetest.get_player_by_name(player):get_pos()
+	local pref = minetest.get_player_by_name(player)
+	local p1 = pref:get_pos()
 	local p2 = minetest.get_player_by_name(target):get_pos()
 
 	if not rc.same_realm(p1, p2) then
@@ -99,6 +107,15 @@ command_tokens.jail.execute = function(player, target)
 		minetest.chat_send_player(player, "# Server: Player <" .. rename.gpn(target) .. "> is not in territory owned by you.")
 		return
 	end
+
+	-- Ensure player has a jail token in their inventory.
+	do
+		local pinv = pref:get_inventory()
+		local stack = ItemStack("command_tokens:jail_player")
+		if not pinv:contains_item("main", stack) then
+			return
+		end
+	end
   
 	-- Get player out of cart.
 	local kicktype = default.detach_player_if_attached(ent)
@@ -122,6 +139,7 @@ command_tokens.jail.execute = function(player, target)
 	if kicktype ~= "" then
 		jaildelay = 1
 	end
+
 	-- Not sure why the delay is necessary, but it may have to do with lag.
 	minetest.after(jaildelay, function()
 		if not default.player_attached[target] then
@@ -141,24 +159,26 @@ command_tokens.jail.execute = function(player, target)
 		end
 	end)
   
-  -- Consume token.
-  -- Necessary because this code will not operate during the on_use callback.
-  minetest.after(0, function()
-    local ref = minetest.get_player_by_name(player)
-    if ref and ref:is_player() then
-      local inv = ref:get_inventory()
-      inv:remove_item("main", "command_tokens:jail_player")
-    end
-  end)
+  -- Caller must consume token.
+	return true
 end
-
 
 
 
 command_tokens.jail_on_receive_fields = function(player, formname, fields)
 	if formname == "command_tokens:jail" then
 		if fields.OK then
-			command_tokens.jail.execute(player:get_player_name(), fields.PLAYERNAME)
+			local pname = player:get_player_name()
+
+			local success = command_tokens.jail.execute(
+				pname, fields.PLAYERNAME or "")
+
+			if success then
+				local inv = player:get_inventory()
+				if inv then
+					inv:remove_item("main", "command_tokens:jail_player")
+				end
+			end
 		end
 	end
 end

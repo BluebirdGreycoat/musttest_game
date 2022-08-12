@@ -52,6 +52,9 @@ function jail.on_player_escaped_jail(pref)
 			-- AFTER player has been teleported back, damage them.
 			pref:set_pos(jp)
 			pref:set_hp(pref:get_hp() - 1)
+
+			minetest.chat_send_player(
+				pname, "# Server: Nope. You go right back to jail, crook!")
 		end
 	end
 

@@ -152,7 +152,8 @@ local function plate_explode(pos, player)
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 
-	if owner == pname then
+	-- Quit blowing up the admin.
+	if owner == pname or gdac.player_is_admin(pname) then
 		return
 	end
 

@@ -519,9 +519,6 @@ function obsidian_gateway.attempt_activation(pos, player)
 		isowner = true
 	end
 
-		--minetest.chat_send_player(pname, "# Server: Safety ABORT #2.")
-		--do return end
-
 	if gdac.player_is_admin(pname) then
 		isowner = true
 	end
@@ -561,15 +558,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 		particle_effects = true,
 
 		pre_teleport_callback = function()
-			if not isowner then
-				-- Grief portal if used by someone other than owner.
-				-- Note: 'airpoints' should always contain 6 entries!
-				-- Note #2: griefing should NOT have any chance of damaging the Gate in
-				-- any permanent fashion.
-				local p = airpoints[math_random(1, #airpoints)]
-				minetest.set_node(p, {name="fire:basic_flame"})
-			end
-
+			-- Cancel teleport if origin gate does not have portal liquid.
 			if not obsidian_gateway.have_liquid(origin, northsouth) then
 				minetest.chat_send_player(pname, "# Server: Portal disrupted.")
 				-- Cancel transport.
@@ -647,6 +636,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 			-- (It will often be missing since no one was near it.)
 			-- This function will check if there actually is a gate, here.
 			obsidian_gateway.regenerate_liquid(target, northsouth, (not isreturngate))
+
+			-- If the player is someone other than the owner, using this Gate has consequences.
+			if not isowner then
+				-- This function is already called normally, when a Gate is used.
+				-- Calling it again here, effectively doubles the chance that the user
+				-- starts feeling rather ill.
+				portal_sickness.on_use_portal(pname)
+			end
 		end,
 
 		post_teleport_callback = function()

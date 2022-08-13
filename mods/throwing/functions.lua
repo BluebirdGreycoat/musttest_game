@@ -68,9 +68,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	toolranks.apply_description(imeta, itemstack:get_definition())
 
 	local dir = player:get_look_dir()
-	obj:setvelocity({x=dir.x*stiffness, y=dir.y*stiffness, z=dir.z*stiffness})
-	obj:setacceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
-	obj:setyaw(player:get_look_yaw()+math.pi)
+	obj:set_velocity({x=dir.x*stiffness, y=dir.y*stiffness, z=dir.z*stiffness})
+	obj:set_acceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
+	obj:set_yaw(player:get_look_horizontal() - (math.pi / 2))
 	if is_cross then
 		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos}, true)
 	else

@@ -181,7 +181,7 @@ xdecor.register("explosive_plate", {
 	tiles = {"default_cobble.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
-	groups = utility.dig_groups("bigitem"),
+	groups = utility.dig_groups("bigitem", {falling_node = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,

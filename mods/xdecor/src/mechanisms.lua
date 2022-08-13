@@ -177,7 +177,7 @@ local function plate_place(pos, placer, itemstack, pt)
 end
 
 xdecor.register("explosive_plate", {
-	description = "Booby-Trapped Pressure Plate (Land-Mine)\n\nExplosive! Use with care.\nNot triggered by placer.",
+	description = "Booby-Trapped Pressure Plate (Land-Mine)",
 	tiles = {"default_cobble.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
@@ -206,22 +206,43 @@ local function plate_break(pos, player)
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 
-	if owner == pname then
+	-- The admin is as light as a feather!
+	if owner == pname or gdac.player_is_admin(pname) then
 		return
 	end
 
 	-- Check if node has air below it.
-	if minetest.get_node(vector.add(pos, {x=0, y=-2, z=0})).name == "air" then
-		-- Collapse ground!
-		if sfn.drop_node(vector.add(pos, {x=0, y=-1, z=0})) then
-			-- Always remove, even if protected. Prevents infinite use.
-			minetest.remove_node(pos)
+	local function do_break(pos)
+		if minetest.get_node(vector.add(pos, {x=0, y=-2, z=0})).name == "air" then
+			-- Collapse ground!
+			if sfn.drop_node(vector.add(pos, {x=0, y=-1, z=0})) then
+			end
 		end
 	end
+
+	-- Smash blocks in 3x3 area under trap.
+	local targets = {
+		{x=pos.x-1, y=pos.y, z=pos.z},
+		{x=pos.x+1, y=pos.y, z=pos.z},
+		{x=pos.x, y=pos.y, z=pos.z-1},
+		{x=pos.x, y=pos.y, z=pos.z+1},
+		{x=pos.x-1, y=pos.y, z=pos.z-1},
+		{x=pos.x-1, y=pos.y, z=pos.z+1},
+		{x=pos.x+1, y=pos.y, z=pos.z-1},
+		{x=pos.x+1, y=pos.y, z=pos.z+1},
+	}
+
+	local ltars = #targets
+	for k = 1, ltars, 1 do
+		do_break(targets[k])
+	end
+
+	-- Always remove, even if protected. Prevents infinite use.
+	minetest.remove_node(pos)
 end
 
 xdecor.register("break_plate", {
-	description = "Booby-Trapped Pressure Plate (Block-Breaker)\n\nWill cause block below to collapse.\nNot triggered by placer.",
+	description = "Booby-Trapped Pressure Plate (Ground-Breaker)",
 	tiles = {"default_wood.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),

@@ -4,6 +4,41 @@ auth2.modpath = minetest.get_modpath("auth2")
 
 
 
+function auth2.last_login(name, param)
+	if param == "" then
+		param = name
+	end
+
+	-- Disallow getting the administrator's last login time.
+	if not gdac.player_is_admin(param) then
+		local pauth = minetest.get_auth_handler().get_auth(param)
+		if pauth and pauth.last_login and pauth.last_login ~= -1 then
+			local hours = math.floor((os.time() - pauth.last_login) / (60 * 60))
+			local time_since = ""
+
+			if hours == 1 then
+				time_since = "Was " .. hours .. " hour ago."
+			else
+				time_since = "Was " .. hours .. " hours ago."
+			end
+
+			-- Time in UTC, ISO 8601 format
+			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
+				">'s last login time was " ..
+				os.date("!%Y-%m-%dT%H:%M:%SZ", pauth.last_login) .. ". " .. time_since)
+
+			return true
+		end
+	end
+
+	minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
+		">'s last login time is unknown.")
+
+	return true
+end
+
+
+
 if not auth2.run_once then
 	-- Override this function before 'sauth' calls it.
 	-- Sauth must depend on this mod for this to work.
@@ -74,23 +109,8 @@ if not auth2.run_once then
 		params = "[name]",
 		description = "Get the last login time of a player or yourself.",
 
-		func = function(name, param)
-			if param == "" then
-				param = name
-			end
-
-			local pauth = minetest.get_auth_handler().get_auth(param)
-			if pauth and pauth.last_login and pauth.last_login ~= -1 then
-				-- Time in UTC, ISO 8601 format
-				minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
-					">'s last login time was " ..
-					os.date("!%Y-%m-%dT%H:%M:%SZ", pauth.last_login) .. ".")
-				return true
-			end
-
-			minetest.chat_send_player(name, "# Server: <" .. rename.gpn(param) ..
-				">'s last login time is unknown.")
-			return true
+		func = function(...)
+			return auth2.last_login(...)
 		end,
 	})
 

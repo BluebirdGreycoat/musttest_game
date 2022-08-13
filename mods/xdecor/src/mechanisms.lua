@@ -211,11 +211,15 @@ local function plate_break(pos, player)
 		return
 	end
 
-	-- Check if node has air below it.
+	-- Always remove, even if protected. Prevents infinite use.
+	minetest.remove_node(pos)
+
 	local function do_break(pos)
+		-- Check if node has air below it.
 		if minetest.get_node(vector.add(pos, {x=0, y=-2, z=0})).name == "air" then
 			-- Collapse ground!
 			if sfn.drop_node(vector.add(pos, {x=0, y=-1, z=0})) then
+				minetest.check_for_falling(pos)
 			end
 		end
 	end
@@ -230,15 +234,13 @@ local function plate_break(pos, player)
 		{x=pos.x-1, y=pos.y, z=pos.z+1},
 		{x=pos.x+1, y=pos.y, z=pos.z-1},
 		{x=pos.x+1, y=pos.y, z=pos.z+1},
+		{x=pos.x, y=pos.y, z=pos.z},
 	}
 
 	local ltars = #targets
 	for k = 1, ltars, 1 do
 		do_break(targets[k])
 	end
-
-	-- Always remove, even if protected. Prevents infinite use.
-	minetest.remove_node(pos)
 end
 
 xdecor.register("break_plate", {
@@ -246,7 +248,7 @@ xdecor.register("break_plate", {
 	tiles = {"default_wood.png"},
 	drawtype = "nodebox",
 	node_box = xdecor.pixelbox(16, {{1, 0, 1, 14, 1, 14}}),
-	groups = utility.dig_groups("bigitem"),
+	groups = utility.dig_groups("bigitem", {falling_node = 1}),
 	sounds = default.node_sound_wood_defaults(),
 	sunlight_propagates = true,
 	on_rotate = screwdriver.rotate_simple,

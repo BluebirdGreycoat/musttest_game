@@ -26,7 +26,7 @@ function ap.update_players()
 		local add = true
 		if #t > 0 then
 			local op = t[#t].pos
-			if vector_distance(op, p) < 5 then
+			if vector_distance(op, p) < 2 then
 				add = false
 			end
 		end

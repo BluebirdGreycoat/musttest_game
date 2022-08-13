@@ -101,7 +101,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"label[0,2.1;Server: ‘Enyekala’ @ minetest:arklegacy.duckdns.org:30000]"
 
 		formspec = formspec ..
-			"label[0,2.6;Greetings <" .. pname .. ">. Welcome back to the frontier!]"
+			"label[0,2.6;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the frontier!]"
 
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)

@@ -1,11 +1,12 @@
 
 jaunt = jaunt or {}
 jaunt.modpath = minetest.get_modpath("jaunt")
-jaunt.jump_range = 3000
 
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
+
+
 
 -- private: assemble a formspec string
 function jaunt.get_formspec(player)
@@ -28,11 +29,29 @@ function jaunt.get_formspec(player)
 	return formspec
 end
 
+
+
 -- api: show formspec to player
 function jaunt.show_formspec(player)
 	local formspec = jaunt.get_formspec(player)
 	minetest.show_formspec(player, "jaunt:fs", formspec)
 end
+
+
+
+-- Find nearby teleport, and return its range.
+function jaunt.valid_teleport(pos)
+	local tar = minetest.find_node_near(pos, 2, "teleports:teleport", true)
+	if tar then
+		-- Range is halved because when we're jaunting, there is no teleport at the
+		-- other end to receive us! Also, this means that when using a nyan TP, the
+		-- range is more-or-less the same as the original, hard-coded jaunt range.
+		local range = teleports.calculate_range(tar)
+		return true, (range * 0.5)
+	end
+end
+
+
 
 jaunt.on_receive_fields = function(player, formname, fields)
   if formname ~= "jaunt:fs" then return end
@@ -62,7 +81,9 @@ jaunt.on_receive_fields = function(player, formname, fields)
 	local uspos = vector_round(player:get_pos())
 
 	if fields.go then
-		if minetest.find_node_near(uspos, 2, "teleports:teleport", true) then
+		local success, tp_range = jaunt.valid_teleport(uspos)
+
+		if success then -- Teleport was found.
 			local target = rename.grn((fields.player or ""):trim())
 			if target ~= pname then
 				local other = minetest.get_player_by_name(target)
@@ -70,16 +91,16 @@ jaunt.on_receive_fields = function(player, formname, fields)
 					local marked = command_tokens.mark.player_marked(target)
 					local beacon = player_labels.query_nametag_onoff(target)
 
-					-- a player can be located if either they're marked or their beacon is activated
+					-- a player can be located if either they're marked or their beacon (nametag) is activated
 					if marked or beacon then
 						if passport.player_has_key(target) then
 							-- if a player is marked, but their beacon is off, then the range at which
 							-- they can be detected is halved
-							local range = jaunt.jump_range
+							local range = tp_range
 							if marked and not beacon then
-								range = range / 2
+								range = range * 0.5
 							elseif marked and beacon then
-								range = range * 2
+								range = range * 1.5
 							end
 
 							local tarpos = vector_round(other:get_pos())
@@ -143,6 +164,8 @@ jaunt.on_receive_fields = function(player, formname, fields)
 	jaunt.show_formspec(pname)
   return true
 end
+
+
 
 if not jaunt.registered then
   minetest.register_on_player_receive_fields(function(...)

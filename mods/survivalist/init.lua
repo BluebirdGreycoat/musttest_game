@@ -253,6 +253,13 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
     if calls_remaining ~= 0 then
       return
     end
+
+		-- Check for the presence of a city-block.
+		if city_block:in_city_suburbs(pos2) then
+			minetest.chat_send_player(pname, "# Server: Error: did not succeed in finding a suitable start location! If this happens, just try again.")
+			easyvend.sound_error(pname)
+			return
+		end
     
     -- Check for protections, and if there are none, create a dungeon.
     for x = dminp.x, dmaxp.x, 1 do
@@ -268,7 +275,7 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
       end
     end
     
-    -- Check if spawning in air.
+    -- Check if spawning in air (e.g., due to large cavern).
     if minetest.get_node(pos2).name == "air" then
       minetest.chat_send_player(pname, "# Server: Error: did not succeed in finding a suitable start location! If this happens, just try again.")
 			easyvend.sound_error(pname)

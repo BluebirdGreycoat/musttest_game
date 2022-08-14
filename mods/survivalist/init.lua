@@ -211,6 +211,9 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
 	-- Record the player's home position. Used when canceling a Challenge.
 	survivalist.modstorage:set_string(pname .. ":home", minetest.pos_to_string(homepos))
 
+	-- Record the amount of XP player has at the start of the Challenge.
+	survivalist.modstorage:set_string(pname .. ":xp", tostring(xp.get_xp(pname, "digxp")))
+
 	-- Record that this player is accepting groups.
 	survivalist.groups[pname] = survivalist.groups[pname] or {count=0}
 	survivalist.groups[pname].count = survivalist.groups[pname].count + 1
@@ -494,6 +497,25 @@ function survivalist.attempt_claim(pname)
 		easyvend.sound_error(pname)
     return
   end
+
+	-- Check if player has earned at least 3000 XP over the course of the Challenge.
+	-- This ensures player does not complete the Challenge too fast, and needs to actually
+	-- take some time, make a base/home, do some farming, etc!
+	do
+		local sxp = survivalist.modstorage:get_string(pname .. ":xp")
+		local oxp = math.floor(tonumber(sxp) or 0)
+		local cxp = math.floor(xp.get_xp(pname, "digxp"))
+
+		local dxp = (cxp - oxp)
+		if dxp < 3000 then
+			local nxp = math.floor(oxp + 3000)
+
+			minetest.chat_send_player(pname, "# Server: You need to obtain at least 3000 XP over the course of the Challenge, first.")
+			minetest.chat_send_player(pname, "# Server: You started with " .. oxp .. " XP. You must reach " .. nxp .. " XP!")
+			easyvend.sound_error(pname)
+			return
+		end
+	end
   
   -- Check if the player is in the city.
   local pos = player:get_pos()
@@ -567,6 +589,7 @@ function survivalist.attempt_claim(pname)
   survivalist.modstorage:set_string(pname .. ":mode", nil)
   survivalist.modstorage:set_string(pname .. ":pos", nil)
 	survivalist.modstorage:set_string(pname .. ":home", nil)
+	survivalist.modstorage:set_string(pname .. ":xp", nil)
   survivalist.players[pname].choice = nil
   
   -- Record total wins, win streaks, and win types.
@@ -680,6 +703,7 @@ function survivalist.on_dieplayer(player)
     survivalist.modstorage:set_string(pname .. ":mode", nil)
     survivalist.modstorage:set_string(pname .. ":pos", nil)
 		survivalist.modstorage:set_string(pname .. ":home", nil)
+		survivalist.modstorage:set_string(pname .. ":xp", nil)
     survivalist.modstorage:set_int(pname .. ":wins_streak", 0)
     
     -- Count loss.
@@ -731,6 +755,7 @@ function survivalist.abort_game(pname)
 			survivalist.modstorage:set_string(pname .. ":mode", nil)
 			survivalist.modstorage:set_string(pname .. ":pos", nil)
 			survivalist.modstorage:set_string(pname .. ":home", nil)
+			survivalist.modstorage:set_string(pname .. ":xp", nil)
 
 			flameportal.clear_return_location(pname)
 			beds.clear_player_spawn(pname)

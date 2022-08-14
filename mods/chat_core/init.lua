@@ -162,6 +162,14 @@ end
 function chat_core.check_language(name, message)
 	-- Players with anticurse bypass priv cannot be kicked by this mod.
 	local nokick = minetest.check_player_privs(name, {anticurse_bypass=true})
+
+	-- If player doesn't have priv, check if their XP is high enough.
+	-- (Remember, the AC mod is only intended to discourage "drive-by" pollution from people randomly joining.)
+	-- By the time someone gets to this amount of XP, they probably understand that we like clean air, here. :-)
+	if not nokick then
+		nokick = (xp.get_xp(name, "digxp") >= 5000)
+	end
+
 	if nokick then
 		if anticurse.check(name, message, "foul") then
 			anticurse.log(name, message)
@@ -170,6 +178,7 @@ function chat_core.check_language(name, message)
 		end
 		return false -- Has bypass.
 	end
+
 	if anticurse.check(name, message, "foul") then
 		anticurse.log(name, message)
 		-- Players who have registered (and therefore have probably played

@@ -61,6 +61,7 @@ function cans.register_can(d)
       if not node_in_group(node.name, data.liquid_source_name) then return end
       local charge = get_can_level(itemstack)
       if charge == data.can_capacity then return end
+
       if minetest.is_protected(pointed_thing.under, user:get_player_name()) then
         minetest.log("action", user:get_player_name().." tried to take "..node.name.." at protected position "..minetest.pos_to_string(pointed_thing.under).." with a "..data.can_name)
         minetest.chat_send_player(user:get_player_name(), "# Server: That is on someone else's land!")
@@ -88,6 +89,7 @@ function cans.register_can(d)
 			if not user or not user:is_player() then
 				return
 			end
+			local pname = user:get_player_name()
 
       if pointed_thing.type ~= "node" then return end
       local pos = pointed_thing.under
@@ -113,24 +115,33 @@ function cans.register_can(d)
 			-- Check against local ground level.
 			local success, ground_level = rc.get_ground_level_at_pos(pos)
 			if not success then
-				minetest.chat_send_player(user:get_player_name(), "# Server: That position is in the Void!")
+				minetest.chat_send_player(pname, "# Server: That position is in the Void!")
 				return
 			end
 
-      if pos.y > ground_level then
-        minetest.chat_send_player(user:get_player_name(), "# Server: Don't do that above ground!")
-				easyvend.sound_error(user:get_player_name())
-        return
-      end
-      if minetest.is_protected(pos, user:get_player_name()) then
-        minetest.log("action", user:get_player_name().." tried to place "..data.place_name.." at protected position "..minetest.pos_to_string(pos).." with a "..data.can_name)
-        minetest.chat_send_player(user:get_player_name(), "# Server: Not on somebody else's land!")
+			-- Above 10000 XP, player can use buckets.
+			-- Note: this will allow high-XP players to place lava (which ignores
+			-- protection) above ground. If such a player decides to grief somebody,
+			-- I guess you'll need to form a committee! (You can still use city blocks
+			-- to protect builds.)
+			local lxp = (xp.get_xp(pname, "digxp") >= 10000)
+			if not lxp then
+				if pos.y > ground_level then
+					minetest.chat_send_player(pname, "# Server: Don't do that above ground!")
+					easyvend.sound_error(pname)
+					return
+				end
+			end
+
+      if minetest.is_protected(pos, pname) then
+        minetest.log("action", pname .. " tried to place " .. data.place_name .. " at protected position " .. minetest.pos_to_string(pos) .. " with a "..data.can_name)
+        minetest.chat_send_player(pname, "# Server: Not on somebody else's land!")
         return
       end
 
 			if city_block:in_city(pos) then
-				minetest.chat_send_player(user:get_player_name(), "# Server: Don't do that in town!")
-				easyvend.sound_error(user:get_player_name())
+				minetest.chat_send_player(pname, "# Server: Don't do that in town!")
+				easyvend.sound_error(pname)
 				return
 			end
 

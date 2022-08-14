@@ -57,10 +57,18 @@ local function check_protection(pos, name, text)
 	-- Don't let players make huge liquid griefs. By MustTest.
 	-- But we allow river water to be placed above ground, because it does not spread.
 	if not string.find(text, "river_water_source") then
-		if pos.y > gl and string.find(text, "place") then
-			minetest.chat_send_player(name, "# Server: Don't do that above ground!")
-			easyvend.sound_error(name)
-			return true
+		-- Above 10000 XP, player can use buckets.
+		-- Note: this will allow high-XP players to place lava (which ignores
+		-- protection) above ground. If such a player decides to grief somebody,
+		-- I guess you'll need to form a committee! (You can still use city blocks
+		-- to protect builds.)
+		local lxp = (xp.get_xp(name, "digxp") >= 10000)
+		if not lxp then
+			if pos.y > gl and string.find(text, "place") then
+				minetest.chat_send_player(name, "# Server: Don't do that above ground!")
+				easyvend.sound_error(name)
+				return true
+			end
 		end
 	end
 
@@ -194,7 +202,7 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 					return itemstack
 				end
 
-				if check_protection(lpos, user:get_player_name(), "place "..placename) then
+				if check_protection(lpos, user:get_player_name(), "place " .. placename) then
 					return
 				end
 
@@ -231,7 +239,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 		local item_count = user:get_wielded_item():get_count()
 
 		if liquiddef ~= nil and liquiddef.itemname ~= nil and node_in_group(node.name, liquiddef.source) then
-			if check_protection(pointed_thing.under, user:get_player_name(), "take ".. node.name) then
+			if check_protection(pointed_thing.under, user:get_player_name(), "take " .. node.name) then
 				return
 			end
 
@@ -307,7 +315,7 @@ minetest.register_alias("corium:bucket", "bucket:bucket_lava")
 minetest.register_craft({
 	type = "fuel",
 	recipe = "bucket:bucket_lava",
-	burntime = 60,
+	burntime = 360,
 	replacements = {{"bucket:bucket_lava", "bucket:bucket_empty"}},
 })
 

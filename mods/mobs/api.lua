@@ -1366,21 +1366,25 @@ local function punch_target(self, dtime)
 
 	-- Don't bother the admin.
 	if not gdac.player_is_admin(targetname) then
-		local damage = self.damage or 0
-		if self.damage_min and self.damage_max then
-			if self.damage_min > damage and self.damage_max >= self.damage_min then
-				damage = random(self.damage_min, self.damage_max)
+		if self.punch_target and self.punch_target(self, self.object, self.attack) == true then
+			-- If 'true', skip default punch action.
+		else
+			local damage = self.damage or 0
+			if self.damage_min and self.damage_max then
+				if self.damage_min > damage and self.damage_max >= self.damage_min then
+					damage = random(self.damage_min, self.damage_max)
+				end
 			end
+
+			local dgroup = self.damage_group or "fleshy"
+
+			self.attack:punch(self.object, 1.0, {
+				full_punch_interval = 1.0,
+				damage_groups = {[dgroup] = damage}
+			}, nil)
+
+			ambiance.sound_play("default_punch", p2, 2.0, 30)
 		end
-
-		local dgroup = self.damage_group or "fleshy"
-
-		self.attack:punch(self.object, 1.0, {
-			full_punch_interval = 1.0,
-			damage_groups = {[dgroup] = damage}
-		}, nil)
-
-		ambiance.sound_play("default_punch", p2, 2.0, 30)
 	end
 
 	-- Tell everyone about the death [MustTest].
@@ -5366,7 +5370,7 @@ if not mobs.registered then
 			show_health             = def.show_health,
 			_cmi_is_mob             = true,
 
-
+			punch_target            = def.punch_target,
 
 			on_spawn = def.on_spawn,
 

@@ -7,6 +7,7 @@ mobs.register_mob("oerkki:oerkki", {
 	passive = false,
 	attack_type = "dogfight",
 	reach = 2,
+	punch_reach = 3,
 	damage = 3,
 	hp_min = 8,
 	hp_max = 34,
@@ -67,6 +68,37 @@ mobs.register_mob("oerkki:oerkki", {
 	immune_to = {
 		{"default:gold_lump", -10}, -- heals by 10 points
 	},
+
+	-- Throw player off things.
+	punch_target = function(self, object, attack)
+		if attack and attack:is_player() then
+			local p1 = object:get_pos()
+			local p2 = attack:get_pos()
+			p1.y = p2.y
+			local vel = vector.subtract(p2, p1)
+
+			-- Quick hack to fix problems with null vectors.
+			if vector.length(vel) < 0.01 then
+				vel.x = 1
+			end
+
+			vel = vector.normalize(vel)
+			vel = vector.add(vel, {x=0, y=0.5, z=0})
+			vel = vector.multiply(vel, 10)
+
+			-- The player needs to be kicked up 1 node manually, because otherwise
+			-- the collision box of the menace prevents them from being thrown, very
+			-- often.
+			p2.y = p2.y + 1
+			p1.y = p1.y - 1
+			object:set_pos(p1)
+			attack:set_pos(p2)
+
+			minetest.after(0.3, function()
+				attack:add_player_velocity(vel)
+			end)
+		end
+	end,
 })
 
 

@@ -4,6 +4,17 @@ survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}
 
+-- XP requirements.
+survivalist.xp_minimum = 1000
+survivalist.xp_surface = 1000
+survivalist.xp_cave = 3000
+survivalist.xp_nether = 6000
+
+function survivalist.have_xp(pname, ch)
+	local amount = (survivalist["xp_" .. ch]) or 0
+	return (xp.get_xp(pname, "digxp") >= amount)
+end
+
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
@@ -367,6 +378,13 @@ function survivalist.start_game(pname, gamemode)
 		easyvend.sound_error(pname)
     return
   end
+
+	-- Player must have minimum XP for this kind of Challenge.
+	if not survivalist.have_xp(pname, gamemode) then
+		minetest.chat_send_player(pname, "# Server: Insufficient XP to start this Challenge.")
+		easyvend.sound_error(pname)
+		return
+	end
   
   -- Player's inventories must be empty.
   if not survivalist.check_inventories_empty(pname) then
@@ -780,18 +798,29 @@ function survivalist.compose_formspec(pname)
     "textarea[0.3,0.5;8,4;rules;;" .. minetest.formspec_escape(survivalist.gamerules) .. "]"
     
 	-- Show challenge choices only if no challenge is in progress.
-	if not inchallenge then
-    formspec = formspec .. "label[0,4;Choose Your Challenge!]" ..
-			"checkbox[0,4.3;type_surface;Surface Survival (Copper Mark);" .. type_surface .. "]" ..
-			"checkbox[0,4.8;type_cave;Cave Survival (Silver Mark);" .. type_cave .. "]" ..
-			"checkbox[0,5.3;type_nether;Nether Survival (Gold Mark);" .. type_nether .. "]"
+	if not inchallenge and survivalist.have_xp(pname, "minimum") then
+		formspec = formspec .. "label[0,4;Choose Your Challenge!]"
+
+		if survivalist.have_xp(pname, "surface") then
+			formspec = formspec .. "checkbox[0,4.3;type_surface;Surface Survival (Copper Mark);" .. type_surface .. "]"
+		end
+
+		if survivalist.have_xp(pname, "cave") then
+			formspec = formspec .. "checkbox[0,4.8;type_cave;Cave Survival (Silver Mark);" .. type_cave .. "]"
+		end
+
+		if survivalist.have_xp(pname, "nether") then
+			formspec = formspec .. "checkbox[0,5.3;type_nether;Nether Survival (Gold Mark);" .. type_nether .. "]"
+		end
 	end
-    
+
 	-- Choose between start/abort buttons.
 	if inchallenge then
 		formspec = formspec .. "button[0,6.2;2,1;abort;Go Home]"
 	else
-		formspec = formspec .. "button[0,6.2;3,1;start;Begin Challenge]"
+		if survivalist.have_xp(pname, "minimum") then
+			formspec = formspec .. "button[0,6.2;3,1;start;Begin Challenge]"
+		end
 	end
 
 	-- Show `Claim Victory` only if a challenge is in progress.
@@ -801,7 +830,7 @@ function survivalist.compose_formspec(pname)
 
 	formspec = formspec .. "button[4,6.2;2,1;show_rankings;Rankings]" ..
     "button[6,6.2;2,1;close;Close]"
-  
+
   return formspec
 end
 
@@ -894,7 +923,7 @@ function survivalist.on_receive_fields(player, formname, fields)
   end
   
   -- Start game.
-  if fields.start then
+  if fields.start and survivalist.have_xp(pname, "minimum") then
     minetest.close_formspec(pname, "survivalist:survivalist")
     survivalist.start_game(pname, survivalist.players[pname].choice)
     return true

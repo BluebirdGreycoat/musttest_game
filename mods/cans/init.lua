@@ -125,7 +125,7 @@ function cans.register_can(d)
 			-- I guess you'll need to form a committee! (You can still use city blocks
 			-- to protect builds.)
 			local lxp = (xp.get_xp(pname, "digxp") >= 10000)
-			if not lxp then
+			if not lxp or sheriff.is_cheater(pname) then
 				if pos.y > ground_level then
 					minetest.chat_send_player(pname, "# Server: Don't do that above ground!")
 					easyvend.sound_error(pname)

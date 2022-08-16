@@ -63,7 +63,7 @@ local function check_protection(pos, name, text)
 		-- I guess you'll need to form a committee! (You can still use city blocks
 		-- to protect builds.)
 		local lxp = (xp.get_xp(name, "digxp") >= 10000)
-		if not lxp then
+		if not lxp or sheriff.is_cheater(name) then
 			if pos.y > gl and string.find(text, "place") then
 				minetest.chat_send_player(name, "# Server: Don't do that above ground!")
 				easyvend.sound_error(name)

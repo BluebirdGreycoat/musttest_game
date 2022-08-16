@@ -373,9 +373,21 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 	end
 
 	-- Registered cheaters lose locked chest privileges.
+	--
+	-- Note: disabled as of [8/15/22]: the consequences of an accidental false
+	-- positive include (but are not limited to): drama, emoting, rage-quitting,
+	-- misunderstanding, fake news, incorrect information, assumptions, "stolen"
+	-- items, returned items, banned items, items on fire, gossip, problems with
+	-- family members, tale-bearing, suspicions that the admin is taking sides,
+	-- unhelpful sisters, locked chests, unlocked chests, chests with stray pieces
+	-- of underwear, missing time, verbal combat and other general mayhem, etc.
+	-- etc. etc.
+	--
+	--[[
 	if sheriff.is_cheater(meta:get_string("owner")) then
 		return true
 	end
+	--]]
 
   -- Locked silver chests have sharing functionality. Remember to grandfather in old shared ironside chests.
 	if name:find("iron") or name:find("silver") then

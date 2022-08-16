@@ -34,7 +34,12 @@ function ap.update_players()
 		-- Insert position into player's record (for this session) and remove old
 		-- entries from the beginning.
 		if add then
-			table.insert(t, {pos=p, time=os.time()})
+			table.insert(t, {
+				pos = p,
+				time = os.time(),
+				node = minetest.get_node(p).name,
+			})
+
 			if #t > ap.record_time then
 				table.remove(t, 1)
 			end

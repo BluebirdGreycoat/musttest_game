@@ -18,8 +18,9 @@ function ap.update_players()
 	local players = minetest.get_connected_players()
 	for i=1, #players, 1 do
 		local pref = players[i]
+		local pname = pref:get_player_name()
 		local p = pref:get_pos() -- Note: position is NOT rounded.
-		local t = ap.players[pref:get_player_name()].positions
+		local t = ap.players[pname].positions
 
 		-- Don't add position to list of last recorded positions if the player
 		-- hasn't moved since last time.
@@ -37,7 +38,10 @@ function ap.update_players()
 			table.insert(t, {
 				pos = p,
 				time = os.time(),
-				node = minetest.get_node(p).name,
+
+				-- Node names.
+				snode = sky.get_last_walked_node(pname),
+				wnode = sky.get_last_walked_nodeabove(pname),
 			})
 
 			if #t > ap.record_time then

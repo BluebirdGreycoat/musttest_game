@@ -214,14 +214,24 @@ function ac.record_player_position(pname, pos)
 end
 
 -- This function is the main "brain" of the AC logic (for fly cheaters).
--- It must be as accurate as possible for a given position!
-function ac.is_flying(pos)
+-- It must be as accurate as possible for a given position! Note: second
+-- argument is nil unless checking prior path.
+function ac.is_flying(pos, data)
 	-- We assume that the input position is rounded to nearest integer.
 	local under = vector.add(pos, {x=0, y=-1, z=0})
-	local node = minetest.get_node(under)
+	local node = minetest.get_node(under).name
+
+	-- If we're checking prior path, then choose the OLD node-name for the foot
+	-- node position. This should be the name of the node at that location at the
+	-- time the record was made. We need to use this OLD name, instead of the most
+	-- recent map information, because player could have dug their supports out
+	-- (e.g., ladders or scaffolding)!
+	if data then
+		node = data.snode or ""
+	end
 
 	-- If non-air below this position, then player is probably not flying.
-	if node.name ~= "air" then return false end
+	if node ~= "air" then return false end
 
 	-- Check up to 2 meters below player, and 1 meter all around.
 	-- Fly cheaters tend to be pretty blatent in their cheating,
@@ -280,20 +290,30 @@ local is_solid_dt = function(dt)
 end
 
 -- This function is the main "brain" of the AC logic (for noclip cheaters).
--- It must be as accurate as possible for a given position!
-function ac.is_clipping(pos)
+-- It must be as accurate as possible for a given position! Note: second
+-- argument is nil unless checking prior path.
+function ac.is_clipping(pos, data)
 	-- We assume that the input position is rounded to nearest integer.
 	local under = vector.add(pos, {x=0, y=-1, z=0})
 	local above = vector.add(pos, {x=0, y=1, z=0})
 
-	local n1 = minetest.get_node(under)
-	local n2 = minetest.get_node(pos)
-	local n3 = minetest.get_node(above)
+	local n1 = minetest.get_node(under).name
+	local n2 = minetest.get_node(pos).name
+	local n3 = minetest.get_node(above).name
 
-	if n1.name ~= "air" and n2.name ~= "air" and n3.name ~= "air" then
-		local d1 = minetest.reg_ns_nodes[n1.name]
-		local d2 = minetest.reg_ns_nodes[n2.name]
-		local d3 = minetest.reg_ns_nodes[n3.name]
+	-- If we're checking prior path, then choose the OLD node-name for the middle
+	-- node position. This should be the name of the node at that location at the
+	-- time the record was made. We need to use this OLD name, instead of the most
+	-- recent map information, because player could have placed blocks on top of
+	-- their trail (e.g., when building tall walls)!
+	if data then
+		n2 = data.wnode or ""
+	end
+
+	if n1 ~= "air" and n2 ~= "air" and n3 ~= "air" then
+		local d1 = minetest.reg_ns_nodes[n1]
+		local d2 = minetest.reg_ns_nodes[n2]
+		local d3 = minetest.reg_ns_nodes[n3]
 
 		-- One of the nodes is a stairsplus node, or similar.
 		if not d1 or not d2 or not d3 then
@@ -315,13 +335,16 @@ function ac.is_clipping(pos)
 	return false
 end
 
-function ac.check_prior_position(pname, pos, time, act)
+function ac.check_prior_position(pname, data, act)
+	local pos = vector_round(data.pos)
+	local time = data.time
+
 	local cheat = false
 
 	if act == "fly" then
-		if ac.is_flying(pos) then cheat = true end
+		if ac.is_flying(pos, data) then cheat = true end
 	elseif act == "clip" then
-		if ac.is_clipping(pos) then cheat = true end
+		if ac.is_clipping(pos, data) then cheat = true end
 	end
 
 	if cheat then
@@ -338,9 +361,10 @@ function ac.check_prior_path(pname, act)
 
 	-- Spread checking of the path out over a few seconds.
 	for i=1, #path, 1 do
-		local t = path[i]
-		local delay = (math_random(1, 300) / 300) -- Get fractional random number.
-		minetest.after(delay, ac.check_prior_position, pname, vector_round(t.pos), t.time, act)
+		local data = path[i]
+		-- Get fractional random number between 1 and 10.
+		local delay = (math_random(1, 300) / 30)
+		minetest.after(delay, ac.check_prior_position, pname, data, act)
 	end
 end
 

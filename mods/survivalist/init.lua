@@ -4,16 +4,25 @@ survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}
 
--- XP requirements.
-survivalist.xp_minimum = 1000
-survivalist.xp_surface = 1000
-survivalist.xp_cave = 3000
-survivalist.xp_nether = 6000
+-- XP requirements. Amounts are somewhat arbitrary.
+survivalist.xp_minimum = 700
+survivalist.xp_surface = 700
+survivalist.xp_cave = 1500
+survivalist.xp_nether = 2400
+
+-- XP completion requirements. Amounts are somewhat arbitrary.
+survivalist.completion_xp_surface = 1100
+survivalist.completion_xp_cave = 2700
+survivalist.completion_xp_nether = 4500
+
+
 
 function survivalist.have_xp(pname, ch)
 	local amount = (survivalist["xp_" .. ch]) or 0
 	return (xp.get_xp(pname, "digxp") >= amount)
 end
+
+
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -498,19 +507,20 @@ function survivalist.attempt_claim(pname)
     return
   end
 
-	-- Check if player has earned at least 3000 XP over the course of the Challenge.
+	-- Check if player has earned the needed XP over the course of the Challenge.
 	-- This ensures player does not complete the Challenge too fast, and needs to actually
 	-- take some time, make a base/home, do some farming, etc!
 	do
 		local sxp = survivalist.modstorage:get_string(pname .. ":xp")
 		local oxp = math.floor(tonumber(sxp) or 0)
 		local cxp = math.floor(xp.get_xp(pname, "digxp"))
+		local wxp = (survivalist["completion_xp_" .. currentgame]) or 0
 
 		local dxp = (cxp - oxp)
-		if dxp < 3000 then
-			local nxp = math.floor(oxp + 3000)
+		if dxp < wxp then
+			local nxp = math.floor(oxp + wxp)
 
-			minetest.chat_send_player(pname, "# Server: You need to obtain at least 3000 XP over the course of the Challenge, first.")
+			minetest.chat_send_player(pname, "# Server: You need to obtain at least " .. wxp .. " XP over the course of the Challenge, first.")
 			minetest.chat_send_player(pname, "# Server: You started with " .. oxp .. " XP. You must reach " .. nxp .. " XP!")
 			easyvend.sound_error(pname)
 			return

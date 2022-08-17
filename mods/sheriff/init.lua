@@ -35,7 +35,7 @@ function sheriff.is_cheater(pname)
 	local data = sheriff.players[pname]
 	if data then
 		if data.is_cheater then
-			return true
+			return true, (data.cheater_time or 0)
 		end
 	else
 		-- Not in cache, load from mod storage.
@@ -45,7 +45,7 @@ function sheriff.is_cheater(pname)
 			if d then
 				sheriff.players[pname] = d
 				if d.is_cheater then
-					return true
+					return true, (d.cheater_time or 0)
 				end
 			end
 		end

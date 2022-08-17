@@ -217,6 +217,44 @@ function sheriff.random_gloat(pname)
 	end
 end
 
+
+
+function sheriff.command_register_cheater(pname, param)
+	param = param:trim()
+	if param and param ~= "" then
+		param = rename.grn(param)
+		if minetest.player_exists(param) then
+			sheriff.register_cheater(param)
+			minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
+		else
+			minetest.chat_send_player(pname, "# Server: Named player does not exist.")
+		end
+	else
+		minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
+	end
+	return true
+end
+
+
+
+function sheriff.command_unregister_cheater(pname, param)
+	param = param:trim()
+	if param and param ~= "" then
+		param = rename.grn(param)
+		if minetest.player_exists(param) then
+			sheriff.unregister_cheater(param)
+			minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> is not registered as a cheater.")
+		else
+			minetest.chat_send_player(pname, "# Server: Named player does not exist.")
+		end
+	else
+		minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
+	end
+	return true
+end
+
+
+
 if not sheriff.loaded then
 	-- Register reloadable mod.
 	local c = "sheriff:core"
@@ -225,43 +263,21 @@ if not sheriff.loaded then
 
 	minetest.register_chatcommand("register_cheater", {
 		params = "[name]",
-		description = "Register the named player as a confirmed cheater.",
+		description = "Register user as confirmed cheater.",
 		privs = {server=true},
-		func = function(pname, param)
-			param = param:trim()
-			if param and param ~= "" then
-				param = rename.grn(param)
-				if minetest.player_exists(param) then
-					sheriff.register_cheater(param)
-					minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> has been registered as a cheater.")
-				else
-					minetest.chat_send_player(pname, "# Server: Named player does not exist.")
-				end
-			else
-				minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
-			end
-			return true
+
+		func = function(...)
+			return sheriff.command_register_cheater(...)
 		end,
 	})
 
 	minetest.register_chatcommand("unregister_cheater", {
 		params = "[name]",
-		description = "Remove a player from being registered as a cheater.",
+		description = "Unregister user from being a cheater.",
 		privs = {server=true},
-		func = function(pname, param)
-			param = param:trim()
-			if param and param ~= "" then
-				param = rename.grn(param)
-				if minetest.player_exists(param) then
-					sheriff.unregister_cheater(param)
-					minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(param) .. "> is not registered as a cheater.")
-				else
-					minetest.chat_send_player(pname, "# Server: Named player does not exist.")
-				end
-			else
-				minetest.chat_send_player(pname, "# Server: You must provide the name of a player.")
-			end
-			return true
+
+		func = function(...)
+			return sheriff.command_unregister_cheater(...)
 		end,
 	})
 

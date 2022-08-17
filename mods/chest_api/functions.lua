@@ -383,11 +383,17 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 	-- of underwear, missing time, verbal combat and other general mayhem, etc.
 	-- etc. etc.
 	--
-	--[[
-	if sheriff.is_cheater(meta:get_string("owner")) then
-		return true
+	-- Update: re-enabled as of [8/16/22]: there is now a delay which allows the
+	-- admin time to correct a mistake in the event of a wrong cheat detection.
+	do
+		local cheater, time = sheriff.is_cheater(meta:get_string("owner"))
+		if cheater then
+			local week = 60*60*24*7
+			if os.time() > (time + week) then
+				return true
+			end
+		end
 	end
-	--]]
 
   -- Locked silver chests have sharing functionality. Remember to grandfather in old shared ironside chests.
 	if name:find("iron") or name:find("silver") then

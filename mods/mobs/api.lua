@@ -5472,9 +5472,12 @@ local function arrow_step(self, dtime, def)
 					and target ~= self.owner_obj
 					and entity.name ~= self.name then
 
-				self.hit_mob(self, target)
-				self.object:remove()
-				return
+				-- Check that target actually exists.
+				if target:get_pos() then
+					self.hit_mob(self, target)
+					self.object:remove()
+					return
+				end
 			end
 		end
 	end

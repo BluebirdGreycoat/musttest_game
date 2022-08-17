@@ -35,6 +35,8 @@ function sheriff.is_cheater(pname)
 	local data = sheriff.players[pname]
 	if data then
 		if data.is_cheater then
+			-- Cheater time may be nil (thus 0) if cheater was registered before
+			-- times started to be recorded.
 			return true, (data.cheater_time or 0)
 		end
 	else
@@ -45,6 +47,8 @@ function sheriff.is_cheater(pname)
 			if d then
 				sheriff.players[pname] = d
 				if d.is_cheater then
+					-- Cheater time may be nil (thus 0) if cheater was registered before
+					-- times started to be recorded.
 					return true, (d.cheater_time or 0)
 				end
 			end

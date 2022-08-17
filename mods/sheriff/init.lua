@@ -89,6 +89,16 @@ function sheriff.register_cheater(pname)
 
 	-- Notify the exile mod.
 	exile.notify_new_exile(pname)
+
+	-- Notify the administrator.
+	local from = "SERVER"
+	local to = gdac.name_of_admin or "singleplayer"
+	local subject = "CHEATER REGISTRATION"
+	local message = "Player <" .. rename.gpn(pname) ..
+		"> was registered as a cheater. Please check the cheat log, and use " ..
+		"/unregister_cheater if this was done in error."
+
+	email.send_mail_single(from, to, subject, message)
 end
 
 -- Call to unregister a player as a cheater.

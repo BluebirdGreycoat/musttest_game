@@ -255,7 +255,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	-- Calculate the direction for furnaces and chests and stuff
 	elseif (def.paramtype2 == "facedir" or
 			def.paramtype2 == "colorfacedir") and not param2 then
-		local placer_pos = placer and placer:getpos()
+		local placer_pos = placer and placer:get_pos()
 		if placer_pos then
 			local dir = {
 				x = above.x - placer_pos.x,

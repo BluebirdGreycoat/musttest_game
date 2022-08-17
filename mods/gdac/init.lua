@@ -175,7 +175,7 @@ check_fly_again = function(name, old_pos)
 	local player = minetest.get_player_by_name(name)
 	if player and player:is_player() then
 		if player:get_hp() <= 0 then return end -- Player is dead!
-		local new_pos = player:getpos()
+		local new_pos = player:get_pos()
 		local still_cheating = check_fly(new_pos)
 		if still_cheating == true then
 			local y1 = new_pos.y
@@ -225,12 +225,12 @@ gdac.antifly_globalstep = function(dtime)
 
 			-- Check for flying.
 			if check == true then
-				cheat = check_fly(v:getpos())
+				cheat = check_fly(v:get_pos())
 			end
 
 			if cheat == true then
 				-- If cheat detected, check again after a short delay in order to confirm.
-				minetest.after(1, check_fly_again, name, v:getpos())
+				minetest.after(1, check_fly_again, name, v:get_pos())
 			end
 		end -- If player does not have fly priv.
 	end
@@ -285,7 +285,7 @@ check_clip_again = function(name, old_pos)
 	local player = minetest.get_player_by_name(name)
 	if player and player:is_player() then
 		if player:get_hp() <= 0 then return end -- Player is dead!
-		local new_pos = player:getpos()
+		local new_pos = player:get_pos()
 		local still_cheating = check_clip(new_pos)
 		if still_cheating == true then
 			-- If player hasn't moved they may have just glitched accidentally.
@@ -330,12 +330,12 @@ gdac.anticlip_globalstep = function(dtime)
 
 			-- Check for noclipping.
 			if check == true then
-				cheat = check_clip(v:getpos())
+				cheat = check_clip(v:get_pos())
 			end
 
 			if cheat == true then
 				-- If cheat detected, check again after a short delay in order to confirm.
-				minetest.after(1, check_clip_again, name, v:getpos())
+				minetest.after(1, check_clip_again, name, v:get_pos())
 			end
 		end -- If player does not have noclip priv.
 	end
@@ -344,7 +344,7 @@ end
 
 
 gdac.check_long_range_interact = function(pos, node, digger, strpart)
-	local ppos = digger:getpos()
+	local ppos = digger:get_pos()
 	local d = vector_distance(pos, ppos)
 	if d > gdac.interact_range_limit then
 		local pname = digger:get_player_name()

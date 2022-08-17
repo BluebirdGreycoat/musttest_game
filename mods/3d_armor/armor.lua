@@ -306,7 +306,7 @@ armor.get_valid_player = function(self, player, msg)
 		minetest.log("error", "3d_armor: Player name is nil "..msg)
 		return
 	end
-	local pos = player:getpos()
+	local pos = player:get_pos()
 	local player_inv = player:get_inventory()
 	local armor_inv = minetest.get_inventory({type="detached", name=pname.."_armor"})
 	if not pos then

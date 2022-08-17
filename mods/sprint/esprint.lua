@@ -166,7 +166,7 @@ function sprint.globalstep(dtime)
 			--If the player is sprinting, create particles behind him/her 
 			if do_particle and playerInfo["sprinting"] == true then
 				local numParticles = math_random(1, 2)
-				local playerPos = player:getpos()
+				local playerPos = player:get_pos()
 				local playerNode = minetest.get_node({x=playerPos["x"], y=playerPos["y"]-1, z=playerPos["z"]})
 				if playerNode["name"] ~= "air" then
 					for i=1, numParticles, 1 do

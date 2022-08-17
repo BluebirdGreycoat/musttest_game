@@ -47,7 +47,7 @@ minetest.register_craftitem("carrot:gold", {
   inventory_image = "carrot_gold.png",
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-    --ambiance.sound_play("hunger_eat", user:getpos(), 0.7, 10)
+    --ambiance.sound_play("hunger_eat", user:get_pos(), 0.7, 10)
     user:set_hp(user:get_properties().hp_max)
 		sprint.set_stamina(user, SPRINT_STAMINA)
     return eat_function(itemstack, user, pointed_thing)

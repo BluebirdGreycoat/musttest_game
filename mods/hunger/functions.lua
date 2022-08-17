@@ -76,7 +76,7 @@ local update_hunger = hunger.update_hunger
 
 -- Function added by MustTest. Hunger only happens outside the city, where players are on their own.
 local function distance(player)
-	local p = player:getpos()
+	local p = player:get_pos()
 	local d = math.sqrt((p.x*p.x)+(p.y*p.y)+(p.z*p.z))
 	local r = 200 -- Radius of city
 	local o = d-r
@@ -387,7 +387,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 			sound = "hunger_eat"
 		end
 		--minetest.sound_play(sound, {to_player = name, gain = 0.7})
-		ambiance.sound_play(sound, user:getpos(), 0.7, 10)
+		ambiance.sound_play(sound, user:get_pos(), 0.7, 10)
 		ambiance.particles_eat_item(user, itemstack:get_name())
 
 		if replace_with_item then
@@ -398,7 +398,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 				if inv:room_for_item("main", {name=replace_with_item}) then
 					inv:add_item("main", replace_with_item)
 				else
-					local pos = user:getpos()
+					local pos = user:get_pos()
 					pos.y = math_floor(pos.y + 0.5)
 					core.add_item(pos, replace_with_item)
 				end

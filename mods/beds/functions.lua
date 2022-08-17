@@ -354,7 +354,7 @@ function beds.on_rightclick(pos, player)
 		return
 	end
   
-	local ppos = player:getpos()
+	local ppos = player:get_pos()
 	local tod = minetest.get_timeofday()
 
 	-- Player can sleep in bed anytime in the nether.

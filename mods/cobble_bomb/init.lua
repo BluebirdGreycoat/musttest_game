@@ -35,7 +35,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
             self.bomb_inertion = self.bomb_inertion + 1;
 	elseif vel.y <= -10 and self.bomb_inertion > 3 then
 	    --warn players bellow
-            local pos = self.object:getpos();
+            local pos = self.object:get_pos();
             pos.y = pos.y - 10;
             minetest.sound_play("rolling_test", {pos=pos, gain=1.0, max_hear_distance=20}, true);
             self.bomb_inertion = 0;
@@ -69,7 +69,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
     end,
 
     bomb_explode = function(self)
-		local pos = self.object:getpos();
+		local pos = self.object:get_pos();
 		local def = {
 			radius = 2,
 			damage_radius = 10,
@@ -107,7 +107,7 @@ minetest.register_craftitem("cobble_bomb:cobblebomb", {
 	inventory_image = "cobble_bomb.png",
  
 	on_use = function(itemstack, user, pointed_thing)
-		local pos = user:getpos();
+		local pos = user:get_pos();
         local dir = user:get_look_dir();
         --if minetest.get_node( vector.add( vector.add(pos, dir), {x=0, y=1, z=0}) ).name == "air" then
         --    pos = vector.add( vector.add(pos, dir), {x=0, y=1, z=0});

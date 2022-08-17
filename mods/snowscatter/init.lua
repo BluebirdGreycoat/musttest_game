@@ -80,7 +80,7 @@ end
 
 
 snowscatter.execute_chatcommand = function(name, param)
-    local p = vector_round(minetest.get_player_by_name(name):getpos())
+    local p = vector_round(minetest.get_player_by_name(name):get_pos())
     local r = 10
     snowscatter.dump_snowdust({x=p.x-r, y=p.y-r, z=p.z-r}, {x=p.x+r, y=p.y+r, z=p.z+r}, 5, nil)
     minetest.chat_send_player(name, "# Server: Scattered snow!")

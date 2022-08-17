@@ -64,7 +64,7 @@ local anticheat_routines = function(minetest,cheat, CHECK_AGAIN, punish_cheat)
 		local privs = minetest.get_player_privs(name).kick;if privs then return end -- dont check moderators
 		if cheat.watcher[name] then return end -- skip checking watchers while they watch
 
-		local pos = player:getpos(); -- feet position
+		local pos = player:get_pos(); -- feet position
 		pos.x = round(pos.x*10)/10;pos.z = round(pos.z*10)/10; -- less useless clutter
 		pos.y = round(pos.y*10)/10; -- minetest buggy collision - need to do this or it returns wrong materials for feet position: aka magic number 0.498?????228
 		if pos.y<0 then pos.y=pos.y+1 end -- weird, without this it fails to check feet block where y<0, it checks one below feet

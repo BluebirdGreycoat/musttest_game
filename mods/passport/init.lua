@@ -487,7 +487,7 @@ passport.do_teleport = function(name, start_pos, target_pos, func)
 			end
 		end
 
-    if vector_distance(player:getpos(), start_pos) < 0.1 then
+    if vector_distance(player:get_pos(), start_pos) < 0.1 then
 			preload_tp.execute({
 				player_name = name,
 				target_position = target_pos,

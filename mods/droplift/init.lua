@@ -44,7 +44,7 @@ end
 local function escape(ent,pos)
 	local q, p, ep, d, dd = pos
 	for _,player in ipairs(minetest.get_connected_players()) do
-		p = player:getpos(); p.y = p.y + 1
+		p = player:get_pos(); p.y = p.y + 1
 		d = dist(p,pos)
 		if not dd or (d < dd) then dd, q = d, {x=p.x,y=p.y,z=p.z} end
 	end
@@ -69,7 +69,7 @@ end
 -- ---------------- LIFT
 
 local function lift(obj)
-	local p = obj:getpos()
+	local p = obj:get_pos()
 	if p then
 		local ent = obj:get_luaentity()
 		if ent.is_entombed and obstructed(p) then
@@ -103,7 +103,7 @@ local function newhash()
 end
 
 local function async(obj, usync)
-	local p = obj:getpos()
+	local p = obj:get_pos()
 	if p then
 		local ent = obj:get_luaentity()
 		local hash = newhash()

@@ -65,7 +65,7 @@ function boat.on_rightclick(self, clicker)
 		clicker:set_detach()
 		default.player_attached[name] = false
 		default.player_set_animation(clicker, "stand" , 30)
-		local pos = clicker:getpos()
+		local pos = clicker:get_pos()
 		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
 		minetest.after(0.1, function()
 			clicker:set_pos(pos)
@@ -129,7 +129,7 @@ function boat.on_punch(self, puncher)
 			local leftover = inv:add_item("main", "boats:boat")
 			-- if no room in inventory add a replacement boat to the world
 			if not leftover:is_empty() then
-				minetest.add_item(self.object:getpos(), leftover)
+				minetest.add_item(self.object:get_pos(), leftover)
 			end
 		end
 		-- delay remove to ensure player is detached
@@ -166,7 +166,7 @@ function boat.on_step(self, dtime)
 	end
 	local velo = self.object:getvelocity()
 	if self.v == 0 and velo.x == 0 and velo.y == 0 and velo.z == 0 then
-		self.object:set_pos(self.object:getpos())
+		self.object:set_pos(self.object:get_pos())
 		return
 	end
 	local s = get_sign(self.v)
@@ -180,7 +180,7 @@ function boat.on_step(self, dtime)
 		self.v = 5 * get_sign(self.v)
 	end
 
-	local p = self.object:getpos()
+	local p = self.object:get_pos()
 	p.y = p.y - 0.5
 	local new_velo
 	local new_acce = {x = 0, y = 0, z = 0}
@@ -195,7 +195,7 @@ function boat.on_step(self, dtime)
 		end
 		new_velo = get_velocity(self.v, self.object:getyaw(),
 			self.object:getvelocity().y)
-		self.object:set_pos(self.object:getpos())
+		self.object:set_pos(self.object:get_pos())
 	else
 		p.y = p.y + 1
 		if is_water(p) then
@@ -208,18 +208,18 @@ function boat.on_step(self, dtime)
 				new_acce = {x = 0, y = 5, z = 0}
 			end
 			new_velo = get_velocity(self.v, self.object:getyaw(), y)
-			self.object:set_pos(self.object:getpos())
+			self.object:set_pos(self.object:get_pos())
 		else
 			new_acce = {x = 0, y = 0, z = 0}
 			if math.abs(self.object:getvelocity().y) < 1 then
-				local pos = self.object:getpos()
+				local pos = self.object:get_pos()
 				pos.y = math_floor(pos.y) + 0.5
 				self.object:set_pos(pos)
 				new_velo = get_velocity(self.v, self.object:getyaw(), 0)
 			else
 				new_velo = get_velocity(self.v, self.object:getyaw(),
 					self.object:getvelocity().y)
-				self.object:set_pos(self.object:getpos())
+				self.object:set_pos(self.object:get_pos())
 			end
 		end
 	end

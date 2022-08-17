@@ -60,7 +60,7 @@ local attempt_spawn_mob = function(pos, moblimit, mobrange, daynight, miny, maxy
     local players = minetest.get_connected_players()
     for n = 1, #players do
         local ref = players[n]
-        local p = ref:getpos()
+        local p = ref:get_pos()
         local d = vector_distance(pos, p)
         if d < neardist then neardist = d end
     end

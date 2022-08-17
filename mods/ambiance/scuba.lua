@@ -77,7 +77,7 @@ ambiance.globalstep_scuba = function(dtime)
     
     local players = minetest.get_connected_players()
     for k, v in ipairs(players) do
-        local pos = v:getpos()
+        local pos = v:get_pos()
         local name = v:get_player_name()
         local entry = ambiance.players[name]
         

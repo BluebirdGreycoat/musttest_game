@@ -63,7 +63,7 @@ function sleds.on_rightclick(self, clicker)
 		--clicker:set_properties({collisionbox = sleds.players[name].cb})
 		default.player_attached[name] = false
 		default.player_set_animation(clicker, "stand" , 30)
-		local pos = clicker:getpos()
+		local pos = clicker:get_pos()
 		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
 		minetest.after(0.1, function() clicker:set_pos(pos) end)
 	elseif not self.driver then
@@ -131,7 +131,7 @@ function sleds.on_punch(self, puncher, time_from_last_punch, tool_capabilities, 
 			local leftover = inv:add_item("main", "sleds:sled")
 			-- if no room in inventory add a replacement sled to the world
 			if not leftover:is_empty() then
-				minetest.add_item(self.object:getpos(), leftover)
+				minetest.add_item(self.object:get_pos(), leftover)
 			end
 		end
 		-- delay remove to ensure player is detached

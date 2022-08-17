@@ -254,7 +254,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 				if inv:room_for_item("main", {name=liquiddef.itemname}) then
 					inv:add_item("main", liquiddef.itemname)
 				else
-					local pos = user:getpos()
+					local pos = user:get_pos()
 					pos.y = math_floor(pos.y + 0.5)
 					minetest.add_item(pos, liquiddef.itemname)
 				end
@@ -266,7 +266,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 
 			if node.name == "default:lava_source" then
 				minetest.add_node(pointed_thing.under, {name="fire:basic_flame"})
-				local pos = user:getpos()
+				local pos = user:get_pos()
 				minetest.sound_play("default_cool_lava", {pos = pos, max_hear_distance = 16, gain = 0.25}, true)
 				if not heatdamage.is_immune(user:get_player_name()) then
 					bucket.harm_player_after(user:get_player_name(), 2)

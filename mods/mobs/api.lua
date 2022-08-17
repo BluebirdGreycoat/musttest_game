@@ -1110,7 +1110,7 @@ local function do_env_damage(self)
 		update_tag(self)
 	end
 
-	local pos = self.object:getpos()
+	local pos = self.object:get_pos()
 
 	self.time_of_day = minetest.get_timeofday()
 

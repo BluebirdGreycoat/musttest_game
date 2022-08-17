@@ -79,7 +79,7 @@ afk.update = function()
     local name = player:get_player_name()
 		local target = afk.players[name]
     
-		local pos = vector_round(player:getpos())
+		local pos = vector_round(player:get_pos())
 		local dist = vector_distance(pos, target.pos)
 		local nokick = false
 

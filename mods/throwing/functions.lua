@@ -168,7 +168,7 @@ function throwing_reload (index, indexname, pname, pos, is_cross, loaded)
 	end
 
 	if same_selected then
-		if (pos.x == player:getpos().x and pos.y == player:getpos().y and pos.z == player:getpos().z) or not is_cross then
+		if (pos.x == player:get_pos().x and pos.y == player:get_pos().y and pos.z == player:get_pos().z) or not is_cross then
 			local wear = itemstack:get_wear()
 			local bowdef = minetest.registered_items[itemstack:get_name()]
 			local bowname = bowdef.description

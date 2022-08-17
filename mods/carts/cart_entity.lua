@@ -70,7 +70,7 @@ function cart_entity:get_staticdata()
 end
 
 function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, direction)
-	local pos = self.object:getpos()
+	local pos = self.object:get_pos()
 	local vel = self.object:getvelocity()
 	if not self.railtype or vector.equals(vel, {x=0, y=0, z=0}) then
 		local node = minetest.get_node(pos).name
@@ -110,7 +110,7 @@ function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, 
 				or not inv:contains_item("main", "carts:cart") then
 			local leftover = inv:add_item("main", "carts:cart")
 			if not leftover:is_empty() then
-				minetest.add_item(self.object:getpos(), leftover)
+				minetest.add_item(self.object:get_pos(), leftover)
 			end
 		end
 		self.object:remove()
@@ -190,7 +190,7 @@ local function rail_on_step(self, dtime)
 		return
 	end
 
-	local pos = self.object:getpos()
+	local pos = self.object:get_pos()
 	local update = {}
 
 	-- stop cart if velocity vector flips

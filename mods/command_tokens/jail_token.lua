@@ -87,7 +87,7 @@ command_tokens.jail.execute = function(player, target)
   
   local ent = minetest.get_player_by_name(target)
   -- 'ent' should always be valid.
-  local pos = ent:getpos()
+  local pos = ent:get_pos()
   local owner = nil
   if minetest.get_modpath("protector") then
     owner = protector.get_node_owner(pos)

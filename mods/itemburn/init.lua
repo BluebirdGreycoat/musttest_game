@@ -37,7 +37,7 @@ local item = {
 		-- disappear in a smoke puff
 		self.itemstring = ""
 
-		local p = self.object:getpos()
+		local p = self.object:get_pos()
 		minetest.sound_play("default_item_smoke", {
 			pos = p,
 			max_hear_distance = 8,
@@ -67,7 +67,7 @@ local item = {
 	end,
 
 	melt_in_lava = function(self, lpos)
-		local p = self.object:getpos()
+		local p = self.object:get_pos()
 		ambiance.sound_play("default_cool_lava", p, 2.0, 16)
 
 		self.itemstring = ""
@@ -99,7 +99,7 @@ local item = {
 
 		if not is_falling and self.need_lava_check then
 			--minetest.chat_send_all("# Server: Lava check!")
-			local pos = self.object:getpos()
+			local pos = self.object:get_pos()
 			local node = minetest.get_node(pos)
 			--minetest.chat_send_all("# Server: A=" .. node.name)
 			if string.find(node.name, ":lava_") then
@@ -122,7 +122,7 @@ local item = {
 		if self.ignite_timer < 0 then
 			self.ignite_timer = math_random(10, 100)/10
 
-			local pos = self.object:getpos()
+			local pos = self.object:get_pos()
 			local node = minetest.get_node_or_nil(pos)
 			if not node then
 				return
@@ -216,7 +216,7 @@ local item = {
 
 			if inserted then
 				minetest.log("action", hitter:get_player_name() .. " picks item-entity " ..
-					stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector_round(self.object:getpos())))
+					stack:get_name() .. " " .. count .. " at " .. minetest.pos_to_string(vector_round(self.object:get_pos())))
 
 				-- Execute player inventory callbacks.
 				-- Note: inventory callbacks are called when player drops item (Q) so this

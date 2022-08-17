@@ -87,7 +87,7 @@ ambiance.sound_play = function(name, pos, gain, range, exempt_player, ephemeral)
     if v:is_player() then
       local n = v:get_player_name()
       if n ~= exempt then
-        local p1 = v:getpos()
+        local p1 = v:get_pos()
         local dist = vector_distance(p1, pos)
         local gn = compute_gain(dist, range)
 				-- Ephemeral sound.

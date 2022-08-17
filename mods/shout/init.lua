@@ -335,7 +335,7 @@ function shout.x(name, param)
 
 	local mk = ""
 	if command_tokens.mark.player_marked(name) then
-		local pos = minetest.get_player_by_name(name):getpos()
+		local pos = minetest.get_player_by_name(name):get_pos()
 		mk = " [" .. math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "]"
 	end
 

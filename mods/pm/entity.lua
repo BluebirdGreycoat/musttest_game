@@ -64,6 +64,10 @@ function pm.follower_on_step(self, dtime, moveresult)
 			return
 		end
 	end
+	if self._mkrm then
+		self.object:remove()
+		return
+	end
 
 	-- Cooldown timer for the pathfinder, since using it is intensive.
 	if self._failed_pathfind_cooldown then
@@ -562,5 +566,5 @@ function pm.follower_on_punch(self, puncher, time_from_last_punch, tool_capabili
 	local pos = self.object:get_pos()
 	pm.death_particle_effect(pos)
 	minetest.add_item(pos, "glowstone:glowing_dust " .. math_random(1, 3))
-	self.object:remove()
+	self._mkrm = true
 end

@@ -5403,6 +5403,9 @@ local function arrow_step(self, dtime, def)
 	self.timer = self.timer + 1
 
 	local pos = self.object:get_pos()
+	if not pos then
+		return
+	end
 
 	-- Remove expired arrows.
 	if self.switch == 0

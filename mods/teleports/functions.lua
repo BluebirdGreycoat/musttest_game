@@ -118,16 +118,21 @@ end
 
 
 teleports.save = function()
-    local datastring = xban.serialize(teleports.teleports)
-    if not datastring then
-        return
-    end
-    local file, err = io.open(teleports.datafile, "w")
-    if err then
-        return
-    end
-    file:write(datastring)
-    file:close()
+	local datastring = xban.serialize(teleports.teleports)
+	if not datastring then
+			return
+	end
+
+	minetest.safe_file_write(teleports.datafile, datastring)
+
+	--[[
+	local file, err = io.open(teleports.datafile, "w")
+	if err then
+			return
+	end
+	file:write(datastring)
+	file:close()
+	--]]
 end
 
 

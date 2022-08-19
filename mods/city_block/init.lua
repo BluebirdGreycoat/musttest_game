@@ -186,12 +186,17 @@ function city_block:save()
 	if not datastring then
 		return
 	end
+
+	minetest.safe_file_write(self.filename, datastring)
+
+	--[[
 	local file, err = io.open(self.filename, "w")
 	if err then
 		return
 	end
 	file:write(datastring)
 	file:close()
+	--]]
 end
 
 function city_block:load()
@@ -307,7 +312,11 @@ if not city_block.run_once then
 				meta:set_string("rename", dname)
 				meta:set_string("owner", pname)
 				meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
-				table.insert(city_block.blocks, {pos=vector_round(pos), owner=pname})
+				table.insert(city_block.blocks, {
+					pos = vector_round(pos),
+					owner = pname,
+					time = os.time(),
+				})
 				city_block:save()
 			end
 		end,

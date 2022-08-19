@@ -520,7 +520,7 @@ register({
 
 	mob_limit = 2,
 	absolute_mob_limit = 10,
-	mob_range = 70,
+	mob_range = 40,
 
 	-- After a successful spawn, wait a lot of time before spawning another one.
 	-- Between 1 and 4 hours.

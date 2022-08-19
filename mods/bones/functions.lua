@@ -14,8 +14,9 @@ local get_public_time = function()
   return os.date("!%Y/%m/%d, %H:%M:%S UTC")
 end
 
-local share_bones_time = tonumber(minetest.setting_get("share_bones_time")) or 1200
-local share_bones_time_early = tonumber(minetest.setting_get("share_bones_time_early")) or share_bones_time / 4
+local share_bones_time = 1200
+local share_bones_time_early = (share_bones_time * 0.75)
+local share_bones_time_city = (share_bones_time * 10.0)
 
 
 
@@ -447,12 +448,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 			">'s Undecayed Bones\nMineral XP: " .. string.format("%.2f", xp_for_bones) .. "\n" ..
 			"Died On " .. meta:get_string("diedate"))
 
-		if share_bones_time_early == 0 or not minetest.test_protection(pos, "") then
-			meta:set_int("time", 0)
-		else
-			meta:set_int("time", (share_bones_time - share_bones_time_early))
-		end
-
+		meta:set_int("time", 0)
 		minetest.get_node_timer(pos):start(10)
 	else
 		meta:set_string("infotext",
@@ -701,8 +697,19 @@ end
 bones.on_timer = function(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	local time = meta:get_int("time") + elapsed
+	local share_time = share_bones_time
 
-	if time >= share_bones_time then
+	-- If bones are in a protected area, they can be shared earlier than normal.
+	if minetest.test_protection(pos, "") then
+		share_time = share_bones_time_early
+	end
+
+	-- But if bones are in city, preserve them a lot longer.
+	if city_block:in_city(pos) then
+		share_time = share_bones_time_city
+	end
+
+	if time >= share_time then
 		-- Function may have been called twice or more. This prevents an issue.
 		if meta:get_string("owner") == "" then
 			return

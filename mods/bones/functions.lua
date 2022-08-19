@@ -700,8 +700,8 @@ end
 
 bones.on_timer = function(pos, elapsed)
 	local meta = minetest.get_meta(pos)
-	local digxp = string.format("%.2f", meta:get_float("digxp"))
 	local time = meta:get_int("time") + elapsed
+
 	if time >= share_bones_time then
 		-- Function may have been called twice or more. This prevents an issue.
 		if meta:get_string("owner") == "" then
@@ -714,12 +714,14 @@ bones.on_timer = function(pos, elapsed)
 		if not sheriff.is_cheater(meta:get_string("owner")) then
 			local cheaters_are_present = false
 			local all_players = minetest.get_connected_players()
+
 			for k, v in ipairs(all_players) do
 				if sheriff.is_cheater(v:get_player_name()) then
 					cheaters_are_present = true
 					break
 				end
 			end
+
 			if cheaters_are_present then
 				local timer = minetest.get_node_timer(pos)
 				timer:start(60*math_random(10, 60))
@@ -732,6 +734,7 @@ bones.on_timer = function(pos, elapsed)
 		if diedate == "" then
 			diedate = "An Unknown Date"
 		end
+		local digxp = string.format("%.2f", meta:get_float("digxp"))
 		meta:set_string("infotext",
 			"Unfortunate <" .. rename.gpn(meta:get_string("owner")) ..
 			">'s Old Bones\nMineral XP: " .. digxp .. "\n" ..

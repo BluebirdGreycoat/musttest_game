@@ -355,7 +355,9 @@ end
 -- One-time execution goes here.
 if not nodestore.run_once then
 	-- Obtain library for database access.
-	nodestore.sql = require("lsqlite3")
+	-- lsqlite3 loaded on init file for security
+	--nodestore.sql = require("lsqlite3")
+	nodestore.sql = networks.sql
 	assert(nodestore.sql)
 
 	-- Don't allow other mods to use this global library!

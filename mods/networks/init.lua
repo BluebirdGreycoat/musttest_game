@@ -1,6 +1,18 @@
 
-networks = networks or {}
-networks.modpath = minetest.get_modpath("networks")
+if not minetest.global_exists("networks") then
+	networks = {}
+	networks.modpath = minetest.get_modpath("networks")
+	
+	-- load insecure environment
+	local secenv = minetest.request_insecure_environment()
+	if secenv then
+		print("[networks] insecure environment loaded.")
+		networks.sql = secenv.require("lsqlite3")
+	else
+		minetest.log("error", "[networks] failed to load insecure" ..
+				" environment, please add this mod to the trusted mods list.")
+	end
+end
 
 
 

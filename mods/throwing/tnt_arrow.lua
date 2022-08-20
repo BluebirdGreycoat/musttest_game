@@ -42,7 +42,7 @@ local THROWING_ARROW_ENTITY={
 
 
 
-local function boom(pos)
+local function boom(pos, pname)
   -- Detonate some TNT!
   tnt.boom(pos, {
     radius = 2,
@@ -50,6 +50,8 @@ local function boom(pos)
     ignore_on_blast = false,
     damage_radius = 5,
     disable_drops = true,
+		name = pname,
+		from_arrow = true,
   })
 end
 
@@ -67,27 +69,35 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 				local oname = obj:get_luaentity().name
 				if not throwing.entity_blocks_arrow(oname) then
           local damage = 1
-          -- Alerts mobs who hit them.
+					local pname = self.player_name
+
+          -- Punch to alert mobs who hit them.
           throwing_arrow_punch_entity(obj, self, damage)
+
+          boom(pos, pname)
           self.object:remove()
-          boom(pos)
+					return
         end
       elseif obj:is_player() then
         local damage = 1
-        -- Just because.
-        throwing_arrow_punch_entity(obj, self, damage)
-        boom(pos)
+				local pname = self.player_name
+
+        boom(pos, pname)
         self.object:remove()
+				return
       end
     end
   end
 
 	if self.lastpos.x~=nil then
 		if throwing_node_should_block_arrow(node.name) then
+			local pname = self.player_name
+			boom(self.lastpos, pname)
 			self.object:remove()
-			boom(self.lastpos)
+			return
 		end
 	end
+
 	self.lastpos={x=pos.x, y=pos.y, z=pos.z}
 end
 

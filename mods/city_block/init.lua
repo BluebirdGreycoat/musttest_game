@@ -514,12 +514,13 @@ end
 
 
 function city_block.handle_consequences(player, hitter, damage)
-	local victim_pname = player:get_player_name();
-	local attacker_pname = hitter:get_player_name();
+	local victim_pname = player:get_player_name()
+	local attacker_pname = hitter:get_player_name()
 	local t = minetest.get_gametime() or 0;
-	city_block.attacker[victim_pname] = attacker_pname;
-	city_block.attack[victim_pname] = t;
-	local hp = player:get_hp();
+	city_block.attacker[victim_pname] = attacker_pname
+	city_block.attack[victim_pname] = t
+	local hp = player:get_hp()
+	local p2pos = utility.get_head_pos(player:get_pos())
 
 	if hp > 0 and (hp - damage) <= 0 then -- player will die because of this hit
 		default.detach_player_if_attached(player)
@@ -572,6 +573,12 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	if not player:is_player() then
 		return
 	end
+
+	minetest.chat_send_player("MustTest", "Punch!")
+
+	if tool_capabilities.damage_groups.from_arrow then
+		minetest.chat_send_player("MustTest", "Success!")
+	end
 	
 	if not hitter:is_player() then
 		return
@@ -616,6 +623,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
+	-- Stuff that happens when one player kills another.
 	city_block.handle_consequences(player, hitter, damage)
 end
 

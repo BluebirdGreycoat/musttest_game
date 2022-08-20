@@ -194,10 +194,23 @@ local function entity_physics(pos, radius, drops, boomdef)
 				-- needs to happen before any knockback effects. And knockback effects
 				-- should only be applied if the player does not actually die.
 				if obj:get_hp() > 0 then
+					local dg = {
+						fleshy = damage,
+					}
+
+					-- Hack used to signal to the city-block handler what happened.
+					-- This is ugly as Sin, but what else can I do? (Note: it will not
+					-- work to try to use the actual player responsible as the hitter,
+					-- because the city-block code enforces a range limit which arrows can
+					-- exceed.)
+					if boomdef.name and boomdef.name ~= "" and boomdef.from_arrow then
+						dg.from_arrow = 0
+					end
+
 					obj:punch(obj, 1.0, {
 						full_punch_interval = 1.0,
 						max_drop_level = 0,
-						damage_groups = {fleshy = damage},
+						damage_groups = dg,
 					}, nil)
 
 					if obj:get_hp() <= 0 then

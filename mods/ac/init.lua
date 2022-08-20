@@ -604,8 +604,8 @@ function ac.on_shutdown()
 	end
 end
 
-function ac.show_path(pname)
-	local path = ap.get_position_list(pname)
+function ac.show_path(user, target)
+	local path = ap.get_position_list(target)
 	if not path or #path == 0 then
 		return
 	end
@@ -616,7 +616,7 @@ function ac.show_path(pname)
 		local pos = data.pos
 
 		utility.original_add_particle({
-			playername = gdac.name_of_admin,
+			playername = user,
 			pos = pos,
 			velocity = {x=0, y=0, z=0},
 			acceleration = {x=0, y=0, z=0},
@@ -638,6 +638,16 @@ if not ac.registered then
 	minetest.register_on_shutdown(function(...)
 		ac.on_shutdown(...)
 	end)
+
+	minetest.register_chatcommand("show-path", {
+		params = "<player>",
+		description = "Show user path.",
+		privs = {server=true},
+
+		func = function(pname, param)
+			ac.show_path(pname, param)
+		end,
+	})
 
 	local c = "ac:core"
 	local f = ac.modpath .. "/init.lua"

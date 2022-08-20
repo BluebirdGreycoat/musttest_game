@@ -47,7 +47,7 @@ minetest.register_on_leaveplayer(function(player)
 	players[playerName] = nil
 end)
 
-function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
+function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if not player or not player:is_player() then return end
   
 	local arrow = itemstack:get_metadata()
@@ -60,7 +60,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	local playerpos = utility.get_foot_pos(player:get_pos())
 	local obj = minetest.add_entity({x=playerpos.x, y=playerpos.y+1.4, z=playerpos.z}, arrow)
   if not obj then return end
-  if not obj:get_luaentity() then return end
+
+	local luaent = obj:get_luaentity()
+  if not luaent then return end
 
 	itemstack:set_metadata("")
 	imeta:set_string("arrow", nil)
@@ -71,15 +73,17 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	obj:set_velocity({x=dir.x*stiffness, y=dir.y*stiffness, z=dir.z*stiffness})
 	obj:set_acceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
 	obj:set_yaw(player:get_look_horizontal() - (math.pi / 2))
+
 	if is_cross then
 		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos}, true)
 	else
 		minetest.sound_play("throwing_bow_sound", {pos=playerpos}, true)
 	end
-	obj:get_luaentity().player = player
-  obj:get_luaentity().player_name = player:get_player_name()
-	obj:get_luaentity().inventory = player:get_inventory()
-	obj:get_luaentity().stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
+
+	luaent.player = player
+  luaent.player_name = player:get_player_name()
+	luaent.inventory = player:get_inventory()
+	luaent.stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
 
 	-- Return the modified itemstack.
 	return itemstack

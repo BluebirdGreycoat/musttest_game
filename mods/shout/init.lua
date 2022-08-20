@@ -37,7 +37,6 @@ shout.BUILTIN_HINTS = {
 	"Most trees will refuse to grow underground. Firetrees do not suffer this limitation.",
 	"You can get information about a node using the node inspector tool.",
 	"To maintain your account, always keep a passport token (Proof or Key) in your main inventory.",
-	"Players are not sent to jail for kills committed with ranged weapons or other indirect munitions.",
 	"Prevent griefing by protecting your structures. Serious builders are advised to protect the land around their builds as well.",
 	"Protect your bases to prevent griefing by others.",
 	"Protection stops most types of environment damage, but does not prevent damage from lava.",

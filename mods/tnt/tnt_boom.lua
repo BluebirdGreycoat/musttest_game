@@ -188,6 +188,8 @@ local function entity_physics(pos, radius, drops, boomdef)
 		local damage = (8 / dist) * radius
 
 		if obj:is_player() then
+			local pname = obj:get_player_name()
+
 			-- Admin is exempt from TNT blasts.
 			if not gdac.player_is_admin(obj) then
 				-- Damage player. For reasons having to do with bone placement, this
@@ -204,7 +206,15 @@ local function entity_physics(pos, radius, drops, boomdef)
 					-- because the city-block code enforces a range limit which arrows can
 					-- exceed.)
 					if boomdef.name and boomdef.name ~= "" and boomdef.from_arrow then
-						dg.from_arrow = 0
+						-- But only if the target to be punched is NOT the target that fired
+						-- the weapon. This prevents an issue in the city-block code, which
+						-- cannot differentiate between someone killing another and someone
+						-- killing themselves. In other words, this causes the city-block
+						-- code to skip its arrow-handling routine if the player fired the
+						-- arrow at their own feet.
+						if pname ~= boomdef.name then
+							dg.from_arrow = 0
+						end
 					end
 
 					obj:punch(obj, 1.0, {
@@ -214,7 +224,6 @@ local function entity_physics(pos, radius, drops, boomdef)
 					}, nil)
 
 					if obj:get_hp() <= 0 then
-						local pname = obj:get_player_name()
 						if player_labels.query_nametag_onoff(pname) == true and not cloaking.is_cloaked(pname) then
 							minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> exploded.")
 						else

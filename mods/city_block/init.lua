@@ -487,7 +487,7 @@ end
 
 function city_block.hit_possible(p1pos, p2pos)
 	-- Range limit, stops hackers with long reach.
-	if vector_distance(p1pos, p2pos) > 5 then
+	if vector_distance(p1pos, p2pos) > 6 then
 		return false
 	end
 
@@ -574,10 +574,24 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
-	minetest.chat_send_player("MustTest", "Punch!")
-
+	local melee_hit = true
 	if tool_capabilities.damage_groups.from_arrow then
-		minetest.chat_send_player("MustTest", "Success!")
+		-- Someone launched this weapon. The hitter is most likely the nearest
+		-- player that isn't the player going to be hit.
+		melee_hit = false
+
+		-- We don't have enough information to know exactly who fired this weapon,
+		-- but it's probably a safe bet that it was the nearest player who is NOT
+		-- the player being hit.
+		local pos = player:get_pos()
+		local culprit = hb4.nearest_player_not(pos, player)
+		if culprit then
+			local cpos = culprit:get_pos()
+			-- Only if culprit is nearby.
+			if vector.distance(cpos, pos) < 50 then
+				hitter = culprit
+			end
+		end
 	end
 	
 	if not hitter:is_player() then
@@ -598,7 +612,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	local p2pos = utility.get_head_pos(player:get_pos())
 
 	-- Check if hit is physically possible (range, blockage, etc).
-	if not city_block.hit_possible(p1pos, p2pos) then
+	if melee_hit and not city_block.hit_possible(p1pos, p2pos) then
 		return true
 	end
 

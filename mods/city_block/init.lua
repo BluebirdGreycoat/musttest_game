@@ -516,7 +516,11 @@ city_block.attack = city_block.attack or {}
 
 -- Return `true' to prevent the default damage mechanism.
 function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
-	if not player:is_player() or not hitter:is_player() then
+	if not player:is_player() then
+		return
+	end
+
+	if not hitter:is_player() then
 		return
 	end
 

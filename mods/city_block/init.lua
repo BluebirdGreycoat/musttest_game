@@ -561,16 +561,16 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return true
 	end
 
+	if damage > 0 then
+		ambiance.sound_play("player_damage", p2pos, 2.0, 30)
+	end
+
 	local victim_pname = player:get_player_name();
 	local attacker_pname = hitter:get_player_name();
 	local t = minetest.get_gametime() or 0;
 	city_block.attacker[victim_pname] = attacker_pname;
 	city_block.attack[victim_pname] = t;
 	local hp = player:get_hp();
-
-	if damage > 0 then
-		ambiance.sound_play("player_damage", p2pos, 2.0, 30)
-	end
 
 	if hp > 0 and (hp - damage) <= 0 then -- player will die because of this hit
 		default.detach_player_if_attached(player)

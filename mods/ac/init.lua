@@ -625,6 +625,7 @@ function ac.show_path(pname)
 			collisiondetection = false,
 			vertical = false,
 			texture = "heart.png",
+			glow = 14,
 		})
 	end
 end

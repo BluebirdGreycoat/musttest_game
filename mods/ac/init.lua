@@ -616,7 +616,7 @@ function ac.show_path(pname)
 		local pos = data.pos
 
 		utility.original_add_particle({
-			playername = pname,
+			playername = gdac.name_of_admin,
 			pos = pos,
 			velocity = {x=0, y=0, z=0},
 			acceleration = {x=0, y=0, z=0},

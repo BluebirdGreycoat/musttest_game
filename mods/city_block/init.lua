@@ -527,11 +527,6 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
-	-- If hitter is self, punch was (most likely) due to game code.
-	if player == hitter then
-		return
-	end
-
 	-- Random accidents happen to punished players during PvP.
 	do
 		local attacker_pname = hitter:get_player_name()
@@ -564,6 +559,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	-- Let others hear sounds of nearby combat.
 	if damage > 0 then
 		ambiance.sound_play("player_damage", p2pos, 2.0, 30)
+	end
+
+	-- If hitter is self, punch was (most likely) due to game code.
+	if player == hitter then
+		return
 	end
 
 	local victim_pname = player:get_player_name();

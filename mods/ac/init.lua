@@ -604,6 +604,31 @@ function ac.on_shutdown()
 	end
 end
 
+function ac.show_path(pname)
+	local path = ap.get_position_list(pname)
+	if not path or #path == 0 then
+		return
+	end
+	local lpath = #path
+
+	for k = 1, lpath, 1 do
+		local data = path[k]
+		local pos = data.pos
+
+		utility.original_add_particle({
+			playername = pname,
+			pos = pos,
+			velocity = {x=0, y=0, z=0},
+			acceleration = {x=0, y=0, z=0},
+			expirationtime = 60,
+			size = 4,
+			collisiondetection = false,
+			vertical = false,
+			texture = "heart.png",
+		})
+	end
+end
+
 if not ac.registered then
 	minetest.register_on_joinplayer(function(...)
 		ac.on_joinplayer(...)

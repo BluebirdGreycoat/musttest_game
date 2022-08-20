@@ -519,7 +519,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	if not player:is_player() then
 		return
 	end
-
+	
 	if not hitter:is_player() then
 		return
 	end

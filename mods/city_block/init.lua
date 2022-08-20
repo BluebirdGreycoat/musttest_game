@@ -527,6 +527,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
+	-- If hitter is self, punch was (most likely) due to game code.
+	if player == hitter then
+		return
+	end
+
 	-- Random accidents happen to punished players during PvP.
 	do
 		local attacker_pname = hitter:get_player_name()

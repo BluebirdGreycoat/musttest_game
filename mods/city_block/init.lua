@@ -515,6 +515,9 @@ city_block.attacker = city_block.attacker or {}
 city_block.attack = city_block.attack or {}
 
 -- Return `true' to prevent the default damage mechanism.
+-- Note: player is sometimes the hitter (player punches self). This is sometimes
+-- necessary when a mod needs to punch a player, but has no entity that can do
+-- the actual punch.
 function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
 	if not player:is_player() then
 		return
@@ -544,7 +547,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	-- PvP is disabled for players in jail. This fixes a possible way to exploit jail.
 	if jail.is_player_in_jail(hitter) or jail.is_player_in_jail(player) then
-		minetest.chat_send_player(hitter:get_player_name(), "# Server: Brawling is not allowed in jail. This is colony law.")
+		minetest.chat_send_player(hitter:get_player_name(), "# Server: Brawling is not allowed in jail.")
 		return true
 	end
 

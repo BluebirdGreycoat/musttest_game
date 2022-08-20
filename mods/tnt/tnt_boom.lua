@@ -194,7 +194,12 @@ local function entity_physics(pos, radius, drops, boomdef)
 				-- needs to happen before any knockback effects. And knockback effects
 				-- should only be applied if the player does not actually die.
 				if obj:get_hp() > 0 then
-					obj:set_hp(obj:get_hp() - damage)
+					obj:punch(obj, 1.0, {
+						full_punch_interval = 1.0,
+						max_drop_level = 0,
+						damage_groups = {fleshy = damage},
+					}, nil)
+
 					if obj:get_hp() <= 0 then
 						local pname = obj:get_player_name()
 						if player_labels.query_nametag_onoff(pname) == true and not cloaking.is_cloaked(pname) then

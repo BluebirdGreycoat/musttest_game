@@ -546,6 +546,7 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 	local time = os.time()
 	local hp = player:get_hp()
 	local p2pos = utility.get_head_pos(player:get_pos())
+	local vpos = vector_round(p2pos)
 
 	city_block.attackers[victim_pname] = attack_pname
 	city_block.victims[victim_pname] = time
@@ -565,10 +566,11 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 			city_block.attackers[attack_pname] = ""
 		end
 
-		local landowner = protector.get_node_owner(p2pos) or ""
+		-- Victim is "landowner" if area is protected, but they have access.
+		local landowner = (minetest.test_protection(vpos, "") and
+			not minetest.test_protection(vpos, victim_pname))
 
-		-- Justified killing 10 seconds after provocation,
-		-- but not if the victim owns the land.
+		-- Killing justified after provocation, but not if victim owns the land.
 		if city_block.attackers[attack_pname] == victim_pname and
 				tdiff < 10 and victim_pname ~= landowner then
 			return

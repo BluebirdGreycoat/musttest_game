@@ -566,6 +566,29 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 			city_block.attackers[attack_pname] = ""
 		end
 
+		--[[
+			Behavior Table (obtained through testing):
+
+			In city-block area, no protection:
+				A kills B, B did not retaliate -> A goes to jail
+				A kills B, B had retaliated    -> Nobody jailed
+				(The table is the same if A and B are inverted)
+
+			In city-block area, protected by A:
+				A kills B, B did not retaliate -> A goes to jail
+				A kills B, B had retaliated    -> Nobody jailed
+				B kills A, A did not retaliate -> B goes to jail
+				B kills A, A had retaliated    -> B goes to jail
+				(The table is the same if A and B are inverted, and protection is B's)
+
+			Notes:
+				A hit from A or B is considered retaliation if it happens very soon
+				after the other player hit. Thus if both A and B are hitting, then both
+				are considered to be retaliating -- in that case, land ownership is used
+				to resolve who should go to jail.
+
+		--]]
+
 		-- Victim is "landowner" if area is protected, but they have access.
 		local landowner = (minetest.test_protection(vpos, "") and
 			not minetest.test_protection(vpos, victim_pname))

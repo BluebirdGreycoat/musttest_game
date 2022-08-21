@@ -559,7 +559,7 @@ function city_block.handle_consequences(player, hitter, damage)
 
 	if city_block:in_city(p2pos) then
 		local t0 = city_block.victims[attack_pname] or time
-		t0 = time - t0
+		local tdiff = (time - t0)
 
 		if not city_block.attackers[attack_pname] then
 			city_block.attackers[attack_pname] = ""
@@ -567,8 +567,10 @@ function city_block.handle_consequences(player, hitter, damage)
 
 		local landowner = protector.get_node_owner(p2pos) or ""
 
-		-- Justified killing 10 seconds after provocation, but not if the victim owns the land.
-		if city_block.attackers[attack_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
+		-- Justified killing 10 seconds after provocation,
+		-- but not if the victim owns the land.
+		if city_block.attackers[attack_pname] == victim_pname and
+				tdiff < 10 and victim_pname ~= landowner then
 			return
 		else
 			-- Go to jail! Do not pass Go. Do not collect $200.

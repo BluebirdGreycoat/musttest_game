@@ -527,9 +527,9 @@ end
 
 
 
-function city_block.handle_assassination(p2pos, victim_pname, attack_pname)
-	-- Bed position is only lost if player died outside city.
-	if not city_block:in_safebed_zone(p2pos) then
+function city_block.handle_assassination(p2pos, victim_pname, attack_pname, melee)
+	-- Bed position is only lost if player died outside city to a melee weapon.
+	if not city_block:in_safebed_zone(p2pos) and melee then
 		-- Victim doesn't lose their bed respawn if they were killed by a cheater.
 		if not sheriff.is_cheater(attack_pname) then
 			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated in the wilds.")
@@ -540,7 +540,7 @@ end
 
 
 
-function city_block.handle_consequences(player, hitter, damage)
+function city_block.handle_consequences(player, hitter, damage, melee)
 	local victim_pname = player:get_player_name()
 	local attack_pname = hitter:get_player_name()
 	local time = os.time()
@@ -578,7 +578,8 @@ function city_block.handle_consequences(player, hitter, damage)
 		end
 	else
 		-- Player killed outside town.
-		city_block.handle_assassination(p2pos, victim_pname, attack_pname)
+		-- This only does something if the attack was with a melee weapon!
+		city_block.handle_assassination(p2pos, victim_pname, attack_pname, melee)
 	end
 end
 
@@ -660,6 +661,6 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- Stuff that happens when one player kills another.
-	city_block.handle_consequences(player, hitter, damage)
+	city_block.handle_consequences(player, hitter, damage, melee_hit)
 end
 

@@ -88,17 +88,20 @@ command_tokens.jail.execute = function(player, target)
   local ent = minetest.get_player_by_name(target)
   -- 'ent' should always be valid.
   local pos = ent:get_pos()
-  local owner = nil
-  if minetest.get_modpath("protector") then
-    owner = protector.get_node_owner(pos)
+  local landowner = false
+
+	-- If position is protected, and player has access, then player owns the land.
+  if minetest.test_protection(pos, "") and
+			not minetest.test_protection(pos, player) then
+    landowner = true
   end
   
   if not city_block:in_city(pos) then
     minetest.chat_send_player(player, "# Server: Trespasser is not within city boundaries.")
     return
   end
- 
-	if not owner or owner ~= player or owner == "" then
+
+	if not landowner then
 		minetest.chat_send_player(player, "# Server: Player <" .. rename.gpn(target) .. "> is not in territory owned by you.")
 		return
 	end

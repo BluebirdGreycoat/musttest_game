@@ -572,7 +572,7 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 
 		-- Killing justified after provocation, but not if victim owns the land.
 		if city_block.attackers[attack_pname] == victim_pname and
-				tdiff < 10 and victim_pname ~= landowner then
+				tdiff < 30 and not landowner then
 			return
 		else
 			-- Go to jail! Do not pass Go. Do not collect $200.

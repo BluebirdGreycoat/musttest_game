@@ -124,6 +124,7 @@ local function make_fs(name)
 		"label[0,0.02;Filter]",
 		"field[1.5,0.33;12.8,1;filter;;"..ESC(filter).."]",
 		"button[14,0;2,1;search;Search]",
+		"field_close_on_enter[search;false]",
 	}
 	local fsn = #fs
 

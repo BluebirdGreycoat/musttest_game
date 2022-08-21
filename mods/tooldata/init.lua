@@ -964,7 +964,10 @@ function td_api.arrow_toolcaps(name, damage)
 	local tc = {
 		full_punch_interval = 1.0,
 		max_drop_level = 3,
-		damage_groups = {fleshy = damage},
+		damage_groups = {
+			fleshy = damage,
+			from_arrow = 0,
+		},
 	}
 	-- This table gets sent through the engine, so only builtin parameters work.
 	return tc

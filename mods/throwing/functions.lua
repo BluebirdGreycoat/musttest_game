@@ -128,19 +128,10 @@ function throwing_arrow_punch_entity (target, self, damage)
 
   local player = minetest.get_player_by_name(self.player_name or "")
   if player and player:is_player() then
-		if target:is_player() then
-			-- If target is a player, and not a mob, we can't use the shooter as the
-			-- attacker. This would only actually apply damage if the shooter was a
-			-- short distance from the target. So the puncher must be the arrow entity.
-			target:punch(self.object, 1.0, toolcaps, nil)
-		else
-			-- The target of the arrow (a mob) sees the shooter as the attacker,
-			-- *not* the arrow entity itself. If this were not so, players
-			-- could shoot mobs with arrows without retaliation.
-			target:punch(player, 1.0, toolcaps, nil)
-		end
+		target:punch(player, 1.0, toolcaps, nil)
   else
 		-- Shooter logged off game after firing arrow. Use basic fallback.
+		toolcaps.damage_groups.from_arrow = nil
     target:punch(self.object, 1.0, toolcaps, nil)
   end
 end

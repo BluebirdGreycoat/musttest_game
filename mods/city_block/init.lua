@@ -513,57 +513,77 @@ end
 
 
 
-function city_block.handle_consequences(player, hitter, damage)
-	local victim_pname = player:get_player_name()
-	local attacker_pname = hitter:get_player_name()
-	local t = minetest.get_gametime() or 0;
-	city_block.attacker[victim_pname] = attacker_pname
-	city_block.attack[victim_pname] = t
-	local hp = player:get_hp()
-	local p2pos = utility.get_head_pos(player:get_pos())
-
-	if hp > 0 and (hp - damage) <= 0 then -- player will die because of this hit
-		default.detach_player_if_attached(player)
-		city_block.murder_message(attacker_pname, victim_pname)
-
-		if city_block:in_city(p2pos) then
-			local t0 = city_block.attack[attacker_pname] or t;
-			t0 = t - t0;
-			if not city_block.attacker[attacker_pname] then
-				city_block.attacker[attacker_pname] = ""
-			end
-			local landowner = protector.get_node_owner(p2pos) or ""
-
-			-- Justified killing 10 seconds after provocation, but not if the victim owns the land.
-			if city_block.attacker[attacker_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
-				return
-			else -- go to jail
-				-- Killers don't go to jail if the victim is a registered cheater.
-				if not sheriff.is_cheater(victim_pname) then
-					if jail.go_to_jail(hitter, nil) then
-						minetest.chat_send_all(
-							"# Server: Criminal <" .. rename.gpn(attacker_pname) .. "> was sent to gaol for " ..
-							city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
-					end
-				end
-			end
-		else
-			-- Bed position is only lost if player died outside city.
-			if not city_block:in_safebed_zone(p2pos) then
-				-- Victim doesn't lose their bed respawn if they were killed by a cheater.
-				if not sheriff.is_cheater(attacker_pname) then
-					minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated outside of any town, city, or municipality.")
-					beds.clear_player_spawn(victim_pname)
-				end
-			end
+function city_block.send_to_jail(victim_pname, attack_pname)
+	-- Killers don't go to jail if the victim is a registered cheater.
+	if not sheriff.is_cheater(victim_pname) then
+		local hitter = minetest.get_player_by_name(attack_pname)
+		if hitter and jail.go_to_jail(hitter, nil) then
+			minetest.chat_send_all(
+				"# Server: Criminal <" .. rename.gpn(attack_pname) .. "> was sent to gaol for " ..
+				city_block:get_adjective() .. " <" .. rename.gpn(victim_pname) .. "> within city limits.")
 		end
 	end
 end
 
 
 
-city_block.attacker = city_block.attacker or {}
-city_block.attack = city_block.attack or {}
+function city_block.handle_assassination(p2pos, victim_pname, attack_pname)
+	-- Bed position is only lost if player died outside city.
+	if not city_block:in_safebed_zone(p2pos) then
+		-- Victim doesn't lose their bed respawn if they were killed by a cheater.
+		if not sheriff.is_cheater(attack_pname) then
+			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated in the wilds.")
+			beds.clear_player_spawn(victim_pname)
+		end
+	end
+end
+
+
+
+function city_block.handle_consequences(player, hitter, damage)
+	local victim_pname = player:get_player_name()
+	local attack_pname = hitter:get_player_name()
+	local time = os.time()
+	local hp = player:get_hp()
+	local p2pos = utility.get_head_pos(player:get_pos())
+
+	city_block.attackers[victim_pname] = attack_pname
+	city_block.victims[victim_pname] = time
+
+	if not (hp > 0 and (hp - damage) <= 0) then
+		return
+	end
+
+	default.detach_player_if_attached(player)
+	city_block.murder_message(attack_pname, victim_pname)
+
+	if city_block:in_city(p2pos) then
+		local t0 = city_block.victims[attack_pname] or time
+		t0 = time - t0
+
+		if not city_block.attackers[attack_pname] then
+			city_block.attackers[attack_pname] = ""
+		end
+
+		local landowner = protector.get_node_owner(p2pos) or ""
+
+		-- Justified killing 10 seconds after provocation, but not if the victim owns the land.
+		if city_block.attackers[attack_pname] == victim_pname and t0 < 10 and victim_pname ~= landowner then
+			return
+		else
+			-- Go to jail! Do not pass Go. Do not collect $200.
+			city_block.send_to_jail(victim_pname, attack_pname)
+		end
+	else
+		-- Player killed outside town.
+		city_block.handle_assassination(p2pos, victim_pname, attack_pname)
+	end
+end
+
+
+
+city_block.attackers = city_block.attackers or {}
+city_block.victims = city_block.victims or {}
 
 -- Return `true' to prevent the default damage mechanism.
 -- Note: player is sometimes the hitter (player punches self). This is sometimes
@@ -600,10 +620,10 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	-- Random accidents happen to punished players during PvP.
 	do
-		local attacker_pname = hitter:get_player_name()
-		if sheriff.is_cheater(attacker_pname) then
-			if sheriff.punish_probability(attacker_pname) then
-				sheriff.punish_player(attacker_pname)
+		local attacker = hitter:get_player_name()
+		if sheriff.is_cheater(attacker) then
+			if sheriff.punish_probability(attacker) then
+				sheriff.punish_player(attacker)
 			end
 		end
 	end

@@ -124,7 +124,7 @@ local function make_fs(name)
 		"label[0,0.02;Filter]",
 		"field[1.5,0.33;12.8,1;filter;;"..ESC(filter).."]",
 		"button[14,0;2,1;search;Search]",
-		"field_close_on_enter[search;false]",
+		"field_close_on_enter[filter;false]",
 	}
 	local fsn = #fs
 
@@ -269,7 +269,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		return true
 	end
 
-	if fields.search then
+	if fields.key_enter_field == "filter" or fields.search then
 		local filter = fields.filter or ""
 		state.filter = filter
 		state.list = make_list(filter)

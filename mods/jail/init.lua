@@ -150,6 +150,9 @@ function jail.notify_player_death(pref)
 end
 
 
+jail.discharge_pref = jail.notify_player_death
+
+
 
 if not jail.registered then
 	local c = "jail:core"

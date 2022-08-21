@@ -49,6 +49,7 @@ function serveressentials.do_teleport(name, param)
 		if teleportee then
 			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
+			jail.discharge_pref(teleportee)
 			teleportee:set_pos(p)
 			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
 		end
@@ -79,6 +80,7 @@ function serveressentials.do_teleport(name, param)
 		if teleportee then
 			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
+			jail.discharge_pref(teleportee)
 			teleportee:set_pos(p)
 			return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
 		end
@@ -102,6 +104,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
+		jail.discharge_pref(teleportee)
 		teleportee:set_pos(p)
 		return true, "Teleporting from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
 	end
@@ -125,6 +128,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
+		jail.discharge_pref(teleportee)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
 	end
@@ -148,6 +152,7 @@ function serveressentials.do_teleport(name, param)
 		end
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
+		jail.discharge_pref(teleportee)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
 	end
@@ -174,6 +179,7 @@ function serveressentials.do_teleport(name, param)
 		p = find_free_position_near(p)
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
+		jail.discharge_pref(teleportee)
 		teleportee:set_pos(p)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to <" .. rename.gpn(target_name) .. "> at " .. rc.pos_to_namestr(p) .. "."
 	end

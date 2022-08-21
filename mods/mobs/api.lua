@@ -4741,6 +4741,8 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		local obj = objs[n]:get_luaentity()
 
 		if obj and obj._cmi_is_mob then
+			minetest.chat_send_player("MustTest", obj.name .. ", " .. self.name)
+
 			-- Alert members of same mob if have 'group_attack'.
 			if obj.state ~= "attack" and obj.name == self.name then
 				-- But owned mobs will not attack their owners.

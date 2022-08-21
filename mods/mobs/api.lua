@@ -4528,7 +4528,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	do
 		for group,_ in pairs( (tool_capabilities.damage_groups or {}) ) do
-
 			tmp = tflp / (tool_capabilities.full_punch_interval or 1.4)
 
 			if tmp < 0 then
@@ -4544,7 +4543,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	-- check for tool immunity or special damage
 	for n = 1, #self.immune_to do
-
 		if self.immune_to[n][1] == weapon:get_name() then
 
 			damage = self.immune_to[n][2] or 0
@@ -4568,13 +4566,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	if weapon:get_definition()
-	and weapon:get_definition().tool_capabilities then
+			and weapon:get_definition().tool_capabilities then
 
 		-- toolrank support
 		local wear = floor((punch_interval / 75) * 9000)
 
 		if mobs.is_creative(hitter:get_player_name()) then
-
 			if tr then
 				wear = 1
 			else
@@ -4584,7 +4581,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 		if tr then
 			if weapon:get_definition()
-			and weapon:get_definition().original_description then
+					and weapon:get_definition().original_description then
 				weapon:add_wear(toolranks.new_afteruse(weapon, hitter, nil, {wear = wear}))
 			end
 		else
@@ -4614,18 +4611,14 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		end
 
 		-- blood_particles
-		if self.blood_amount > 0
-		and not disable_blood then
-
+		if self.blood_amount > 0 and not disable_blood then
 			local pos = self.object:get_pos()
 
 			pos.y = pos.y + (-self.collisionbox[2] + self.collisionbox[5]) * .5
 
 			-- do we have a single blood texture or multiple?
 			if type(self.blood_texture) == "table" then
-
 				local blood = self.blood_texture[random(1, #self.blood_texture)]
-
 				effect(pos, self.blood_amount, blood, nil, nil, 1, nil)
 			else
 				effect(pos, self.blood_amount, self.blood_texture, nil, nil, 1, nil)
@@ -4670,7 +4663,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 		-- knock back effect (only on full punch)
 		if self.knock_back and tflp >= punch_interval then
-
 			local v = self.object:get_velocity()
 			local r = 1.4 - min(punch_interval, 1.4)
 			local kb = r * 5
@@ -4739,6 +4731,8 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	if not self.group_attack then return end
+
+	minetest.chat_send_player("MustTest", "Group attack!")
 
 	-- Alert others to the attack.
 	local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)

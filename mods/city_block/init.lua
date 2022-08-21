@@ -574,7 +574,7 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 				A kills B, B had retaliated    -> Nobody jailed
 				(The table is the same if A and B are inverted)
 
-			In city-block area, protected by A:
+			In city-block area, protected by A (with nearby jail available):
 				A kills B, B did not retaliate -> A goes to jail
 				A kills B, B had retaliated    -> Nobody jailed
 				B kills A, A did not retaliate -> B goes to jail
@@ -583,9 +583,15 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 
 			Notes:
 				A hit from A or B is considered retaliation if it happens very soon
-				after the other player hit. Thus if both A and B are hitting, then both
+				after the other player hit. Thus, if both A and B are hitting, then both
 				are considered to be retaliating -- in that case, land ownership is used
 				to resolve who should go to jail.
+
+				It does not matter who hits first in a fight -- only who kills the other
+				player first.
+
+				If there is no jail available for a crook to be sent to, then nothing
+				happens in any case, regardless of who wins the fight or owns the land.
 
 		--]]
 

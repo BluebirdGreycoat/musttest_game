@@ -636,14 +636,21 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 		-- We don't have enough information to know exactly who fired this weapon,
 		-- but it's probably a safe bet that it was the nearest player who is NOT
-		-- the player being hit.
-		local pos = player:get_pos()
-		local culprit = hb4.nearest_player_not(pos, player)
-		if culprit then
-			local cpos = culprit:get_pos()
-			-- Only if culprit is nearby.
-			if vector.distance(cpos, pos) < 50 then
-				hitter = culprit
+		-- the player being hit. But if we were explicitly provided a player object
+		-- that is NOT self, then we don't need to do this.
+		if hitter == player or not hitter:is_player() then
+			-- If initial hitter is the player, or the hitter isn't a player, then
+			-- get the nearest other player to this position (who is not the initial
+			-- player) and use that player as the hitter.
+
+			local pos = player:get_pos()
+			local culprit = hb4.nearest_player_not(pos, player)
+			if culprit then
+				local cpos = culprit:get_pos()
+				-- Only if culprit is nearby.
+				if vector.distance(cpos, pos) < 50 then
+					hitter = culprit
+				end
 			end
 		end
 	end

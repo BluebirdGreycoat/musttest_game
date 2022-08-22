@@ -4732,8 +4732,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	if not self.group_attack then return end
 
-	minetest.chat_send_player("MustTest", "Group attack!")
-
 	-- Alert others to the attack.
 	local objs = minetest.get_objects_inside_radius(hitter:get_pos(), self.view_range)
 
@@ -4741,13 +4739,10 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		local obj = objs[n]:get_luaentity()
 
 		if obj and obj._cmi_is_mob then
-			minetest.chat_send_player("MustTest", obj.name .. ", " .. self.name)
-
 			-- Alert members of same mob if have 'group_attack'.
 			if obj.state ~= "attack" and obj.name == self.name then
 				-- But owned mobs will not attack their owners.
-				if not obj.owner or (obj.owner ~= "" and obj.owner ~= name) then
-					minetest.chat_send_player("MustTest", "Doing attack!")
+				if not (obj.owner == name) then
 					do_attack(obj, hitter)
 				end
 			end

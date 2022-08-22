@@ -21,6 +21,7 @@ function jaunt.get_formspec(player)
     "label[1,0.4;Requires teleport for anchor.]" ..
 		"field[0.3,1.3;2.9,1;player;;]" ..
 		"button[3.0,1.0;1.5,1;go;Jaunt]" ..
+		"field_close_on_enter[player;true]" ..
 		"button[1.25,2.0;2.25,1;cancel;Abort]" ..
     "label[0,3;Jaunt range is influenced by the status\nof the target's beacon. Marked players can\nbe found from farther.]" ..
 		"item_image[1.25,4.5;1,1;command_tokens:mark_player]" ..
@@ -80,7 +81,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 
 	local uspos = vector_round(player:get_pos())
 
-	if fields.go then
+	if fields.key_enter_field == "player" or fields.go then
 		local success, tp_range = jaunt.valid_teleport(uspos)
 
 		if success then -- Teleport was found.

@@ -655,6 +655,7 @@ marker.on_receive_fields = function(player, formname, fields)
 				else
 					-- this automatically adds the list if it doesn't exist
 					local pos = player:get_pos()
+					pos.y = pos.y + 1
 					marker.add_waypoint(pname, pos, name)
 					gui.index1 = #(marker.players[pname])
 					gui.index3 = -1
@@ -795,6 +796,7 @@ marker.on_receive_fields = function(player, formname, fields)
   elseif fields.mark then
 		if marker.list_size(pname, "default") < marker.max_waypoints then
 			local pos = player:get_pos()
+			pos.y = pos.y + 1
 			marker.add_waypoint(pname, pos, "default")
 			local deflist = marker.get_list(pname, "default")
 			gui.index2 = #deflist

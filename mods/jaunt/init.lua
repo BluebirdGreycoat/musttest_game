@@ -103,7 +103,10 @@ jaunt.on_receive_fields = function(player, formname, fields)
 								range = range * 1.5
 							end
 
-							local tarpos = vector_round(other:get_pos())
+							local tarpos = other:get_pos()
+							tarpos.y = tarpos.y + 1
+							tarpos = vector_round(tarpos)
+
 							if rc.current_realm_at_pos(tarpos) == rc.current_realm_at_pos(uspos) then
 								if vector_distance(tarpos, uspos) < range then
 									-- Alert player that someone's coming to them.

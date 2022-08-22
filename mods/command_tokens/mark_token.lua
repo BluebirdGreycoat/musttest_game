@@ -13,7 +13,7 @@ local formspec = "size[4.1,2.0]" ..
 	"field[0.30,0.75;4,1;PLAYERNAME;;]" ..
 	"button_exit[0,1.30;2,1;OK;Confirm]" ..
 	"button_exit[2,1.30;2,1;CANCEL;Cancel]" ..
-	"field_close_on_enter[PLAYERNAME;false]"
+	"field_close_on_enter[PLAYERNAME;true]"
 
 
 
@@ -110,7 +110,7 @@ end
 
 command_tokens.mark_on_receive_fields = function(player, formname, fields)
 	if formname == "command_tokens:mark" then
-		if fields.OK then
+		if fields.key_enter_field == "PLAYERNAME" or fields.OK then
 			local pname = player:get_player_name()
 
 			-- Attempt to mark the target, get success/failure.

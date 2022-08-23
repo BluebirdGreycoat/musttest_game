@@ -1305,10 +1305,9 @@ local function punch_target(self, dtime)
 	if not self.attack then return end
 	if not self.attack:get_pos() then return end
 
-	-- The mob may punch once per second.
-	self.punch_timer = (self.punch_timer or 0) + dtime
-	if self.punch_timer < 1 then return end
-	self.punch_timer = 0
+	-- If the punch timer is still running since the last successful punch, then
+	-- don't do anything.
+	if (self.punch_timer or 0) > 0 then return end
 
 	local s2 = self.object:get_pos()
 	local p2 = self.attack:get_pos()
@@ -1365,26 +1364,31 @@ local function punch_target(self, dtime)
 	end
 
 	-- Don't bother the admin.
-	if not gdac.player_is_admin(targetname) then
-		if self.punch_target and self.punch_target(self, self.object, self.attack) == true then
-			-- If 'true', skip default punch action.
-		else
-			local damage = self.damage or 0
-			if self.damage_min and self.damage_max then
-				if self.damage_min > damage and self.damage_max >= self.damage_min then
-					damage = random(self.damage_min, self.damage_max)
-				end
+	if gdac.player_is_admin(targetname) then
+		return
+	end
+
+	if self.punch_target and self.punch_target(self, self.object, self.attack) == true then
+		-- If 'true', skip default punch action.
+	else
+		local damage = self.damage or 0
+		if self.damage_min and self.damage_max then
+			if self.damage_min > damage and self.damage_max >= self.damage_min then
+				damage = random(self.damage_min, self.damage_max)
 			end
-
-			local dgroup = self.damage_group or "fleshy"
-
-			self.attack:punch(self.object, 1.0, {
-				full_punch_interval = 1.0,
-				damage_groups = {[dgroup] = damage}
-			}, nil)
-
-			ambiance.sound_play("default_punch", p2, 2.0, 30)
 		end
+
+		local dgroup = self.damage_group or "fleshy"
+
+		self.attack:punch(self.object, 1.0, {
+			full_punch_interval = 1.0,
+			damage_groups = {[dgroup] = damage}
+		}, nil)
+
+		-- Start punch timer; mob cannot punch again until timer reaches 0.
+		self.punch_timer = 1
+
+		ambiance.sound_play("default_punch", p2, 2.0, 30)
 	end
 
 	-- Tell everyone about the death [MustTest].
@@ -5069,6 +5073,15 @@ end
 
 
 
+local function do_punch_timer(self, dtime)
+	self.punch_timer = (self.punch_timer or 0) - dtime
+	if self.punch_timer < 0 then
+		self.punch_timer = 0
+	end
+end
+
+
+
 -- Here is the main mob function.
 local function mob_step(self, dtime)
 	-- The final (actually first) action of mob_step().
@@ -5094,6 +5107,9 @@ local function mob_step(self, dtime)
 
 	-- Do smooth rotation.
 	smooth_rotate(self)
+
+	-- Manage punch timer.
+	do_punch_timer(self, dtime)
 
 	-- Knockback timer. If set, the mob will do nothing until it expires!
 	-- Typically this would be set for something like a knockback effect.

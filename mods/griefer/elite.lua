@@ -19,6 +19,9 @@ mobs.register_mob("griefer:elite_griefer", {
 	armor = 100,
 	show_health = false,
 
+	-- Never expires.
+	lifetimer = 100000,
+
 	-- Require level 3 weapon to get any drops.
 	armor_level = 3,
 

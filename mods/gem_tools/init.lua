@@ -142,12 +142,14 @@ if not gem_tools.registered then
 				description = desc,
 				inventory_image = iimg,
 				tool_capabilities = tooldata[data],
+				groups = {gem_tool=1},
 			})
 
 			minetest.register_tool(":" .. tool_rf, {
 				description = desc_rf,
 				inventory_image = iimg_rf,
 				tool_capabilities = tooldata[data_rf],
+				groups = {gem_tool=1},
 			})
 
 			-- Register craft recipes.

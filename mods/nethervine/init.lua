@@ -248,7 +248,25 @@ if not nethervine.registered then
 		groups = utility.dig_groups("plant", {attached_node = 1, not_in_creative_inventory = 1, flammable = 3}),
 		light_source = 10,
 
-		drop = "farming:cotton", -- Drop string.
+		drop = {
+			max_items = 1,
+			items = {
+				{
+					rarity = 3,
+					tools = {"moreores:sword_silver"},
+					items = {"farming:cotton 4", "farming:string"},
+				},
+				{
+					rarity = 5,
+					items = {"farming:cotton 2"},
+				},
+				{
+					rarity = 1,
+					items = {"farming:cotton"},
+				},
+			},
+		},
+
 		shears_drop = true, -- Drop self.
 		flowerpot_drop = "nether:glowflower",
 

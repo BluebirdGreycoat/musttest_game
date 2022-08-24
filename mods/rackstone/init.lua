@@ -159,7 +159,23 @@ minetest.register_node("rackstone:redrack", {
 	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
-	drop = "rackstone:redrack_cobble",
+
+	drop = {
+		max_items = 1,
+		items = {
+			{
+				rarity = 2,
+				tool_groups = {
+					"gem_tool",
+				},
+				items = {},
+			},
+			{
+				rarity = 1,
+				items = {"rackstone:redrack_cobble"},
+			}
+		},
+	},
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -342,7 +358,7 @@ minetest.register_craft({
 })
 
 minetest.register_node("rackstone:redrack_with_coal", {
-  description = "Netherack With Coal",
+  description = "Netherack With Dauth",
   tiles = {
 		"rackstone_redrack.png",
 		"rackstone_redrack.png",

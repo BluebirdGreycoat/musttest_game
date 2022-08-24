@@ -418,7 +418,7 @@ function itempickup.handle_node_drops(pos, drops, digger)
 	end
 
 	--minetest.chat_send_all(dump(drops))
-	for _, item in pairs(drops) do
+	for _, item in ipairs(drops) do
 		local stack = ItemStack(item) -- Itemstring to itemstack.
 		local sname = stack:get_name()
 

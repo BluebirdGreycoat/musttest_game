@@ -261,6 +261,21 @@ function beds.report_respawn_status(name)
 	end
 end
 
+
+
+function beds.get_respawn_count(pname)
+	local pos = beds.spawn[pname]
+  if pos then
+		local spawncount = beds.storage:get_int(pname .. ":count")
+    if spawncount > 0 then
+			return spawncount
+		end
+	end
+	return 0
+end
+
+
+
 local function node_blocks_bed(nn)
   if nn == "air" then return false end
 

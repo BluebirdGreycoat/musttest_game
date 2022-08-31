@@ -4,11 +4,13 @@ protector.hud = protector.hud or {}
 
 -- Localize.
 local hud = protector.hud
-hud.players = {}
+hud.players = hud.players or {}
 
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
+
+
 
 function protector.update_nearby_players(pos)
 	local players = minetest.get_connected_players()
@@ -21,10 +23,12 @@ function protector.update_nearby_players(pos)
 	end
 end
 
+
+
 local gs_timer = 0.0
 local gs_timestep = 0.5
 
-minetest.register_globalstep(function(dtime)
+function hud.globalstep(dtime)
 	gs_timer = gs_timer + dtime
 	if gs_timer < gs_timestep then return end
 	gs_timer = 0.0
@@ -44,7 +48,7 @@ minetest.register_globalstep(function(dtime)
 			moving = true
 		end
 		hud.players[pname].pos = pos
-			
+
 		local owner_str = hud.players[pname].owner
 
 		-- Advance clock if player is not moving.
@@ -73,7 +77,9 @@ minetest.register_globalstep(function(dtime)
 			hud.players[pname].moved = false
 		end
 
-		local hud_text = "Realm: " .. rc.pos_to_name(pos) .. "\nPos: " .. rc.pos_to_string(pos):gsub(",", ", ") .. "\nOwner: " .. owner_str
+		local hud_text = "Realm: " .. rc.pos_to_name(pos) ..
+			"\nPos: " .. rc.pos_to_string(pos):gsub(",", ", ") ..
+			"\nClaim: " .. owner_str
 
 		if hud_text ~= hud.players[pname].text then
 			if not hud.players[pname].id then
@@ -141,9 +147,11 @@ minetest.register_globalstep(function(dtime)
 		-- Store timer.
 		hud.players[pname].timer = timer
 	end
-end)
+end
 
-minetest.register_on_joinplayer(function(player)
+
+
+function hud.joinplayer(player)
 	local pname = player:get_player_name()
 	hud.players[pname] = {
 		timer = 0,
@@ -153,11 +161,25 @@ minetest.register_on_joinplayer(function(player)
 		moved = true,
 		pos = {x=0, y=0, z=0},
 	}
-end)
+end
 
-minetest.register_on_leaveplayer(function(player, timedout)
+
+
+function hud.leaveplayer(player, timedout)
 	local pname = player:get_player_name()
 	hud.players[pname] = nil
-end)
+end
 
 
+
+if not hud.registered then
+	minetest.register_globalstep(function(...) return hud.globalstep(...) end)
+	minetest.register_on_joinplayer(function(...) return hud.joinplayer(...) end)
+	minetest.register_on_leaveplayer(function(...) return hud.leaveplayer(...) end)
+
+	local c = "protector:hud"
+	local f = protector.modpath .. "/hud.lua"
+	reload.register_file(c, f, false)
+
+	hud.registered = true
+end

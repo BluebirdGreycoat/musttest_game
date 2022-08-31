@@ -192,6 +192,45 @@ passport.compose_formspec = function(pname)
 		formspec = formspec .. "item_image[0," .. i-1 .. ";1,1;" .. name .. "]"
 		formspec = formspec .. "item_image[9," .. i-1 .. ";1,1;" .. name .. "]"
 	end
+
+	local status_info = {}
+
+	if pref then
+		local player_pos = pref:get_pos()
+		local city_info = city_block.city_info(player_pos)
+
+		if city_info then
+			status_info[#status_info + 1] = "Lawful Zone"
+
+			local count = 0
+			local targets = minetest.get_connected_players()
+			for k, v in ipairs(targets) do
+				-- Ignore admin, don't count self.
+				if not gdac.player_is_admin(v) and v ~= pref then
+					local tpos = v:get_pos()
+					-- Ignore far, ignore dead.
+					if vector_distance(player_pos, tpos) < 100 and v:get_hp() > 0 then
+						count = count + 1
+					end
+				end
+			end
+
+			status_info[#status_info + 1] = (count .. " nearby")
+		end
+	end
+
+	if cloaking.is_cloaked(pname) then
+		status_info[#status_info + 1] = "Cloaked"
+	elseif player_labels.query_nametag_onoff(pname) == false then
+		status_info[#status_info + 1] = "Name OFF"
+	end
+
+	status_info[#status_info + 1] = tostring(pref:get_hp() .. " HP")
+	status_info[#status_info + 1] = tostring("Respawns: " .. beds.get_respawn_count(pname))
+
+	-- Status info.
+	formspec = formspec .. "label[1,6.6;Status: " ..
+		minetest.formspec_escape(table.concat(status_info, " | ")) .. "]"
   
   return formspec
 end

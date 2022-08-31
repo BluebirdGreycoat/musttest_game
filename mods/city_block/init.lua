@@ -181,6 +181,23 @@ end
 
 
 
+-- Get city information for the given position.
+function city_block.city_info(pos)
+	local marker = city_block:nearest_blocks_to_position(pos, 1, 100)
+	if marker and marker[1] then
+		-- Covers a 45x45x45 area.
+		local r = 22
+		local vpos = marker[1].pos
+		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
+			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
+			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+			return marker[1]
+		end
+	end
+end
+
+
+
 function city_block:save()
 	local datastring = minetest.serialize(self.blocks)
 	if not datastring then

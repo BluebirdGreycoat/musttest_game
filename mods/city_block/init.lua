@@ -183,14 +183,15 @@ end
 
 -- Get city information for the given position.
 function city_block.city_info(pos)
+	pos = vector_round(pos)
 	local marker = city_block:nearest_blocks_to_position(pos, 1, 100)
 	if marker and marker[1] then
 		-- Covers a 45x45x45 area.
 		local r = 22
 		local vpos = marker[1].pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return marker[1]
 		end
 	end
@@ -230,15 +231,16 @@ function city_block:load()
 end
 
 function city_block:in_city(pos)
+	pos = vector_round(pos)
 	-- Covers a 45x45x45 area.
 	local r = 22
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return true
 		end
 	end
@@ -246,14 +248,15 @@ function city_block:in_city(pos)
 end
 
 function city_block:in_city_suburbs(pos)
+	pos = vector_round(pos)
 	local r = 44
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return true
 		end
 	end
@@ -262,14 +265,15 @@ end
 
 function city_block:in_safebed_zone(pos)
 	-- Covers a 111x111x111 area.
+	pos = vector_round(pos)
 	local r = 55
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return true
 		end
 	end
@@ -277,14 +281,15 @@ function city_block:in_safebed_zone(pos)
 end
 
 function city_block:in_no_tnt_zone(pos)
+	pos = vector_round(pos)
 	local r = 50
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return true
 		end
 	end
@@ -292,14 +297,15 @@ function city_block:in_no_tnt_zone(pos)
 end
 
 function city_block:in_no_leecher_zone(pos)
+	pos = vector_round(pos)
 	local r = 100
 	local blocks = self.blocks
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x > (vpos.x - r) and pos.x < (vpos.x + r) and
-			 pos.z > (vpos.z - r) and pos.z < (vpos.z + r) and
-			 pos.y > (vpos.y - r) and pos.y < (vpos.y + r) then
+		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
 			return true
 		end
 	end

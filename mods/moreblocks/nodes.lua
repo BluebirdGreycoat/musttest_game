@@ -220,6 +220,24 @@ local nodes = {
 		groups = utility.dig_groups("block"),
 		sounds = sound_metal,
 	},
+
+	["gold_tile"] = {
+		description = S("Etched Gold"),
+		groups = utility.dig_groups("block"),
+		sounds = sound_metal,
+	},
+
+	["mithril_tile"] = {
+		description = S("Etched Mithril"),
+		groups = utility.dig_groups("block"),
+		sounds = sound_metal,
+	},
+
+	["silver_tile"] = {
+		description = S("Etched Silver"),
+		groups = utility.dig_groups("block"),
+		sounds = sound_metal,
+	},
 }
 
 for name, def in pairs(nodes) do

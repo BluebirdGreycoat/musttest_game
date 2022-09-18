@@ -90,6 +90,51 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = "moreblocks:gold_tile 5",
+	recipe = {
+		{"", "default:goldblock", ""},
+		{"default:goldblock", "default:goldblock", "default:goldblock"},
+		{"", "default:goldblock", ""},
+	}
+})
+
+minetest.register_craft({
+	output = "default:goldblock",
+	type = "shapeless",
+	recipe = {"moreblocks:gold_tile"}
+})
+
+minetest.register_craft({
+	output = "moreblocks:silver_tile 5",
+	recipe = {
+		{"", "moreores:silver_block", ""},
+		{"moreores:silver_block", "moreores:silver_block", "moreores:silver_block"},
+		{"", "moreores:silver_block", ""},
+	}
+})
+
+minetest.register_craft({
+	output = "moreores:silver_block",
+	type = "shapeless",
+	recipe = {"moreblocks:silver_tile"}
+})
+
+minetest.register_craft({
+	output = "moreblocks:mithril_tile 5",
+	recipe = {
+		{"", "moreores:mithril_block", ""},
+		{"moreores:mithril_block", "moreores:mithril_block", "moreores:mithril_block"},
+		{"", "moreores:mithril_block", ""},
+	}
+})
+
+minetest.register_craft({
+	output = "moreores:mithril_block",
+	type = "shapeless",
+	recipe = {"moreblocks:mithril_tile"}
+})
+
+minetest.register_craft({
 	output = "moreblocks:circle_desert_stone_bricks 8",
 	recipe = {
 		{"default:desert_stone", "default:desert_stone", "default:desert_stone"},

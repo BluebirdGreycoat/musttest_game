@@ -211,7 +211,7 @@ if not rockdrill.run_once then
 		recipe = {
 			{'moreores:tin_ingot', 'gem_cutter:blade', 'moreores:tin_ingot'},
 			{'stainless_steel:ingot', 'techcrafts:electric_motor', 'stainless_steel:ingot'},
-			{'', 'default:mese', 'default:copper_ingot'},
+			{'', 'battery:battery', 'default:copper_ingot'},
 		}
 	})
 	--]]

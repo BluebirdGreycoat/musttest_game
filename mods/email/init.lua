@@ -187,7 +187,17 @@ end
 
 
 if not email.registered then
-	email.sql = require("lsqlite3")
+	-- load insecure environment
+	local secenv = minetest.request_insecure_environment()
+	if secenv then
+		print("[email] insecure environment loaded.")
+		email.sql = secenv.require("lsqlite3")
+		assert(email.sql, "lsqlite3 failed to load")
+	else
+		minetest.log("error", "[email] Failed to load insecure environment," ..
+				" please add this mod to the trusted mods list.")
+	end
+
   -- Don't allow other mods to use this global library!
   if sqlite3 then sqlite3 = nil end
 

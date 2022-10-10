@@ -530,7 +530,8 @@ function survivalist.attempt_claim(pname)
   -- Check if the player is in the city.
   local pos = player:get_pos()
   local cityname = ""
-  
+  local home_pos = minetest.string_to_pos(survivalist.modstorage:get_string(pname .. ":home"))
+
   -- The position and name of the city the player claims victory in.
   local finalcitypos
   if vector_distance(pos, surfacecitypos) <= 20 then
@@ -539,10 +540,13 @@ function survivalist.attempt_claim(pname)
   elseif vector_distance(pos, nethercitypos) <= 20 then
     finalcitypos = table.copy(nethercitypos)
     cityname = "Nether City"
+  elseif vector_distance(pos, home_pos) <= 20 then
+    finalcitypos = table.copy(home_pos)
+    cityname = "place they started"
   end
   
   if not finalcitypos then
-    minetest.chat_send_player(pname, "# Server: You must be within 20 meters of the main square of the Surface Colony or the Nether City in order to claim victory!")
+    minetest.chat_send_player(pname, "# Server: You must be within 20 meters of the main square of the Surface Colony or the Nether City or the place where you started the challenge in order to claim victory!")
 		easyvend.sound_error(pname)
     return
   end

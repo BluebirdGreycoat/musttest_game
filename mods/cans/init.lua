@@ -180,6 +180,28 @@ minetest.register_craft({
   }
 })
 
+cans.register_can({
+  can_name = "cans:river_water_can",
+  can_description = "Salt Water Can",
+  can_inventory_image = "technic_river_water_can.png",
+  can_capacity = 16,
+  liquid_source_name = "default:river_water_source",
+  liquid_flowing_name = "default:river_water_flowing",
+	place_name = "default:river_water_source",
+})
+
+minetest.register_craft({
+  type   = "shapeless",
+  output = "cans:river_water_can",
+  recipe = {"cans:water_can"},
+})
+
+minetest.register_craft({
+  type   = "shapeless",
+  output = "cans:water_can",
+  recipe = {"cans:river_water_can"},
+})
+
 
 
 cans.register_can({

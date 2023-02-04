@@ -494,7 +494,7 @@ function chat_controls.compose_formspec(pname)
 		"tooltip[dist;Min >= 0, max <= 30000.]" ..
 
 		"checkbox[0,4.2;chathide;Hide chat from non-whitelisted users farther than DISTANCE meters.;" .. chathide .. "]" ..
-		"checkbox[4,5.2;nopochide;Mute non-citizens.;" .. nopochide .. "]" ..
+		"checkbox[2,5.0;nopochide;Mute non-citizens (those not in whitelist).;" .. nopochide .. "]" ..
 		"checkbox[3,8.8;nobeep;Disable audio alerts.;" .. nobeep .. "]"
 
   return formspec

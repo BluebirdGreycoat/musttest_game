@@ -94,6 +94,10 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 				should_send = false
 			end
 
+			if chat_controls.non_citizen_ignored(pname, from) then
+				should_send = false
+			end
+
 			-- Whitelisted player chat can be see even if far away.
 			if chat_controls.player_whitelisted(pname, from) then
 				should_send = true

@@ -83,6 +83,21 @@ end
 
 
 
+function chat_controls.non_citizen_ignored(pname, from)
+	if not chat_controls.players[pname] then
+		return
+	end
+	local tb = chat_controls.players[pname]
+	if tb.nopochide ~= "true" then
+		return
+	end
+	if not passport.player_registered(from) then
+		return true
+	end
+end
+
+
+
 function chat_controls.player_whitelisted(pname, from)
 	if not chat_controls.players[pname] then
 		return
@@ -132,6 +147,7 @@ function chat_controls.load_lists_for_player(pname)
 	local filter = ms:get_string(pname .. ":f")
 	local white = ms:get_string(pname .. ":w")
 	local chathide = ms:get_string(pname .. ":h")
+	local nopochide = ms:get_string(pname .. ":n")
 	local nobeep = ms:get_string(pname .. ":b")
 	local distance = ms:get_int(pname .. ":d")
 	local pm = ms:get_string(pname .. ":p")
@@ -143,6 +159,9 @@ function chat_controls.load_lists_for_player(pname)
 	end
 	if nobeep == "" then
 		nobeep = "false"
+	end
+	if nopochide == "" then
+		nopochide = "false"
 	end
 
 	ignore = minetest.deserialize(ignore)
@@ -159,6 +178,7 @@ function chat_controls.load_lists_for_player(pname)
 	end
 
 	entry.chathide = chathide
+	entry.nopochide = nopochide
 	entry.distance = distance
 	entry.nobeep = nobeep
 
@@ -203,6 +223,7 @@ function chat_controls.save_lists_for_player(pname)
 
 	local tb = chat_controls.players[pname]
 	local chathide = tb.chathide
+	local nopochide = tb.nopochide
 	local distance = tb.distance
 	local nobeep = tb.nobeep
 
@@ -212,6 +233,9 @@ function chat_controls.save_lists_for_player(pname)
 	end
 	if nobeep == "" then
 		nobeep = "false"
+	end
+	if nopochide == "" then
+		nopochide = "false"
 	end
 
 	-- Clamp to prevent data corruption.
@@ -233,6 +257,7 @@ function chat_controls.save_lists_for_player(pname)
 	ms:set_string(pname .. ":f", filter)
 	ms:set_string(pname .. ":w", white)
 	ms:set_string(pname .. ":h", chathide)
+	ms:set_string(pname .. ":n", nopochide)
 	ms:set_string(pname .. ":b", nobeep)
 	ms:set_int(pname .. ":d", distance)
 	ms:set_string(pname .. ":p", pm)
@@ -425,9 +450,12 @@ function chat_controls.compose_formspec(pname)
 
 	local chathide = "false"
 	local nobeep = "false"
+	local nopochide = "false"
+
 	if chat_controls.players[pname] then
-		chathide = chat_controls.players[pname].chathide
-		nobeep = chat_controls.players[pname].nobeep
+		chathide = chat_controls.players[pname].chathide or "false"
+		nobeep = chat_controls.players[pname].nobeep or "false"
+		nopochide = chat_controls.players[pname].nopochide or "false"
 	end
 
   local formspec = ""
@@ -466,6 +494,7 @@ function chat_controls.compose_formspec(pname)
 		"tooltip[dist;Min >= 0, max <= 30000.]" ..
 
 		"checkbox[0,4.2;chathide;Hide chat from non-whitelisted users farther than DISTANCE meters.;" .. chathide .. "]" ..
+		"checkbox[4,5.2;nopochide;Mute non-citizens.;" .. nopochide .. "]" ..
 		"checkbox[3,8.8;nobeep;Disable audio alerts.;" .. nobeep .. "]"
 
   return formspec
@@ -501,6 +530,17 @@ function chat_controls.on_receive_fields(player, formname, fields)
 	if fields.chathide then
 		if chat_controls.players[pname] then
 			chat_controls.players[pname].chathide = fields.chathide
+		end
+		-- Clicking the checkbox so far, does the same thing as clicking apply.
+		chat_controls.set_lists_from_fields(pname, fields)
+		chat_controls.save_lists_for_player(pname)
+		chat_controls.show_formspec(pname)
+		return true
+	end
+
+	if fields.nopochide then
+		if chat_controls.players[pname] then
+			chat_controls.players[pname].nopochide = fields.nopochide
 		end
 		-- Clicking the checkbox so far, does the same thing as clicking apply.
 		chat_controls.set_lists_from_fields(pname, fields)

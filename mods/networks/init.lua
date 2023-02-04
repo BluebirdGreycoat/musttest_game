@@ -8,6 +8,7 @@ if not minetest.global_exists("networks") then
 	if secenv then
 		print("[networks] insecure environment loaded.")
 		networks.sql = secenv.require("lsqlite3")
+		assert(networks.sql)
 	else
 		minetest.log("error", "[networks] failed to load insecure" ..
 				" environment, please add this mod to the trusted mods list.")

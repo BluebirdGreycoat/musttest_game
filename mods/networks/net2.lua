@@ -274,6 +274,8 @@ net2.generators = {
 	"gen2:hv_inactive",
 	"gen2:hv_active",
 	"solar:hv",
+    "breeder:inactive",
+	"breeder:active",
 	"reactor:inactive",
 	"reactor:active",
 	"gen2:mv_inactive",

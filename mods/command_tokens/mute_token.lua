@@ -61,9 +61,23 @@ local function unmute_on_timeout(target, rng)
 	if command_tokens.mute.players[target] then
 		-- This delayed callback only works if rng number matches.
 		if command_tokens.mute.players[target] == rng then
-			local dname = rename.gpn(target)
-			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been restored.")
-			command_tokens.mute.players[target] = nil
+			if minetest.get_player_by_name(target) then
+				-- Player online.
+				local dname = rename.gpn(target)
+				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been restored.")
+				command_tokens.mute.players[target] = nil
+			else
+				-- Player offline.
+				if command_tokens.mute.players[target] ~= 0 then
+					local dname = rename.gpn(target)
+					local str = skins.get_gender_strings(target)
+					minetest.chat_send_all("# Server: Cannot remove ducktape from <" .. dname ..
+						"> because " .. str.he .. "'s offline.")
+				end
+
+				command_tokens.mute.players[target] = 0
+				minetest.after(mute_duration, unmute_on_timeout, target, 0)
+			end
 		end
 	end
 end
@@ -96,7 +110,8 @@ command_tokens.mute.execute = function(player, target)
 			-- Mute player if they wern't muted, unmute them if they were.
 			if not command_tokens.mute.players[target] then
 				-- Mark this occurance with an ID that isn't likely to be already in use.
-				local rng = math_random(0, 65000)
+				-- Note: 0 has special meaning, must not be used as a random ID!
+				local rng = math_random(1, 65000)
 				command_tokens.mute.players[target] = rng
 				minetest.after(mute_duration, unmute_on_timeout, target, rng)
 				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been duct-taped!")

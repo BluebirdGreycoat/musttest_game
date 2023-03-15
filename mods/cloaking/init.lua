@@ -62,6 +62,13 @@ function cloaking.hud_effect(pname)
 		if cloaking.is_cloaked(pname) then
 			--minetest.chat_send_all('testing')
 
+			local color = "white"
+
+			local pdata = cloaking.players[pname]
+			if (pdata.decloak_timer or 0) > 0 then
+				color = "red"
+			end
+
 			local pos = pref:get_pos()
 			local r = 10
 			local particles = {
@@ -83,7 +90,8 @@ function cloaking.hud_effect(pname)
 				collision_removal = false,
 				vertical = false,
 
-				texture = "nether_particle_anim3.png",
+				texture = "nether_particle_anim3.png" ..
+					"^[colorize:" .. color .. ":alpha",
 
 				animation = {
 					type = "vertical_frames",
@@ -136,7 +144,14 @@ function cloaking.do_scan(pname)
 
 			-- There will always be at least one player (themselves).
 			if player_count > 1 or mob_count > 0 then
-				cloaking.toggle_cloak(pname)
+				local pdata = cloaking.players[pname]
+				pdata.decloak_timer = (pdata.decloak_timer or 0) + 1
+				if pdata.decloak_timer > 7 then
+					cloaking.toggle_cloak(pname)
+				end
+			else
+				local pdata = cloaking.players[pname]
+				pdata.decloak_timer = 0
 			end
 
 			-- Randomly sometimes spawn wisps.
@@ -173,7 +188,7 @@ function cloaking.toggle_cloak(pname)
 
 	if not cloaking.players[pname] then
 		-- Enable cloak.
-		cloaking.players[pname] = true
+		cloaking.players[pname] = {}
 		player_labels.disable_nametag(pname)
 
 		-- Notify so health gauges can be removed.

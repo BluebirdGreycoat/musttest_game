@@ -227,6 +227,7 @@ local behaviors = {
 	"porter",
 	"pusher",
 	"nest_worker",
+	"loot_dropper",
 }
 
 function pm.choose_random_behavior(self)
@@ -355,6 +356,10 @@ local interests = {
 	pusher = function(self, pos)
 		return pm.seek_player(self, pos)
 	end,
+
+	loot_dropper = function(self, pos)
+		return pm.seek_node_with_meta(self, pos)
+	end,
 }
 
 -- Table of possible action functions to take on arriving at a target.
@@ -409,6 +414,10 @@ local actions = {
 
 	pusher = function(self, pos, target)
 		pm.shove_player(self, target)
+	end,
+
+	loot_dropper = function(self, pos, target)
+		pm.drop_loot(target)
 	end,
 }
 

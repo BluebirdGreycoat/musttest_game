@@ -124,7 +124,7 @@ end
 
 function pm.drop_loot(pos)
 	local p = vector_round(pos)
-	p = minetest.find_node_near(pos, 1, "air", true)
+	p = minetest.find_node_near(p, 1, "air", true)
 	if p then
 		minetest.add_item(p, "mobs:flame_bolt " .. math_random(1, 3))
 	end

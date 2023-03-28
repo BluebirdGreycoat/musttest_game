@@ -417,7 +417,7 @@ local actions = {
 	end,
 
 	loot_dropper = function(self, pos, target)
-		pm.drop_loot(target)
+		pm.drop_loot(pos)
 	end,
 }
 

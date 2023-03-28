@@ -13,6 +13,8 @@ local math_random = math.random
 
 
 dofile(gdac.modpath .. "/position_logger.lua")
+dofile(gdac.modpath .. "/anti_servspam.lua")
+dofile(gdac.modpath .. "/autokick.lua")
 
 
 

@@ -635,8 +635,12 @@ function rc.check_position(player)
 	if reset then
 		-- Player is out-of-bounds. Reset to last known good position.
 		if not gdac.player_is_admin(n) and not data.new_arrival then
-			minetest.chat_send_all("# Server: Player <" .. rename.gpn(n) ..
-				"> was caught in the inter-dimensional void!")
+			if not spam.test_key(58921) then
+				spam.mark_key(58921, 30)
+
+				minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
+					"> strayed from the path ....")
+			end
 		end
 
 		-- Notify wield3d we're adjusting the player position.
@@ -658,10 +662,17 @@ function rc.check_position(player)
 		-- Damage player. Prevents them triggering this indefinitely.
 		if player:get_hp() > 0 and not data.new_arrival then
 			player:set_hp(player:get_hp() - 2)
+
+			-- Note: per bones code, if position is not within any valid realm, bones
+			-- will not be spawned.
+
 			if player:get_hp() <= 0 then
 				if not gdac.player_is_admin(n) then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
-						"> found death in the void.")
+						"> took a flying leap off the Yggdrasill.")
+
+					spam.block_playerjoin(n, 60*2)
+					minetest.kick_player(n, "You found an end in the Void.")
 				end
 			end
 		end

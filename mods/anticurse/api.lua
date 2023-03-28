@@ -96,10 +96,12 @@ anticurse.kick = function(name, reason)
   if reason == "foul" then
 		local ext = anticurse.get_kick_message("foul")
     minetest.chat_send_all("# Server: <" .. dname .. ">, eeew, really? " .. ext)
+    spam.block_playerjoin(name, 30)
     minetest.kick_player(name, ext)
   elseif reason == "curse" then
 		local ext = anticurse.get_kick_message("curse")
     minetest.chat_send_all("# Server: Player <" .. dname .. "> cursed. " .. ext)
+    spam.block_playerjoin(name, 30)
     minetest.kick_player(name, ext)
   end
 end

@@ -151,7 +151,7 @@ local function append_to_core_defns()
 				minetest.after(0.1, lift, ent.object)
 			end
 		end
-		ent.object:setvelocity({x = 0, y = 0, z = 0})  -- Prevents resting-buried drops burrowing. 
+		ent.object:set_velocity({x = 0, y = 0, z = 0})  -- Prevents resting-buried drops burrowing.
 	end
 
 	-- Preserve state across reloads

@@ -29,6 +29,10 @@ end
 local spamips = spam.ips
 
 function spam.on_prejoinplayer(name, ip)
+  if name == "bobman" then
+    return "Go away please."
+  end
+
   local last = spamips[ip] or 0
 
   if os.time() < last then

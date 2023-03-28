@@ -427,7 +427,6 @@ register({
 	absolute_mob_limit = 5,
 	mob_range = 40,
 
-	-- Never spawn more than 1 mob at a time.
 	min_count = 1,
 	max_count = 1,
 
@@ -435,18 +434,17 @@ register({
 	success_time_min = 60*5,
 	success_time_max = 60*10,
 
-	-- Same as scrausics, but higher threshold.
 	noise_params = {
 		offset = 0,
 		scale = 1,
 		spread = {x=512, y=512, z=512},
-		seed = 48727,
+		seed = 10548,
 		octaves = 5,
 		persist = 0.5,
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.9,
+	noise_threshold = 0.8,
 })
 
 register({
@@ -464,11 +462,9 @@ register({
 	absolute_mob_limit = 5,
 	mob_range = 40,
 
-	-- Never spawn more than 1 mob at a time.
 	min_count = 1,
 	max_count = 2,
 
-	-- Same as phoenix, but lower threshold.
 	noise_params = {
 		offset = 0,
 		scale = 1,

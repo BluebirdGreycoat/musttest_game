@@ -11,7 +11,7 @@ mobs.register_mob("nssm:phoenix", {
 	},
 	visual_size = {x = 18, y = 18},
 	view_range = 35,
-	lifetimer = 5000,
+	lifetimer = 18000,
 	floats = 1,
 	rotate = 270,
 	walk_velocity = 2,

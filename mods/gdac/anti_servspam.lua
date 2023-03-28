@@ -49,7 +49,7 @@ function spam.block_playerjoin(pname, time)
     return
   end
 
-  local ip = minetest.get_player_ip(pref)
+  local ip = minetest.get_player_ip(pname)
   if not ip then
     return
   end

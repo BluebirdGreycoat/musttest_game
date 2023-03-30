@@ -61,6 +61,7 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		elseif meta:get_string("gate2") == "" then
 			meta:set_string("gate2", minetest.pos_to_string(playerorigin))
 			meta:set_string("description", "Flame Staff (Linked)")
+			item:set_wear(1)
 			do_effect = true
 		end
 	end
@@ -153,11 +154,12 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		-- Player has activated gate #1.
 		-- Send them to the Abyss!
 		if vector.equals(playerorigin, tar1) then
-			-- The fixed coordinates of a hidden cave tunnel which links to a dungeon.
 			local hidden_spawn = {
-				x = -9265,
-				y = 4076,
-				z = 5819,
+				-- Hidden cave tunnel.
+				x = -9265, y = 4076, z = 5819
+
+				-- Outback gate room.
+				--x = -9174, y = 4100, z = 5782
 			}
 
 			preload_tp.execute({
@@ -165,14 +167,10 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				target_position = hidden_spawn,
 				emerge_radius = 8,
 				particle_effects = true,
+				spinup_time = 2,
 
-				-- Don't let players bring foreign objects into the Abyss.
-				-- That could have consequences ....
 				pre_teleport_callback = function()
-					--bones.dump_bones(pname, true)
-					--bones.last_known_death_locations[pname] = nil -- Fake death.
-					--local pref = minetest.get_player_by_name(pname)
-					--pref:set_hp(pref:get_properties().hp_max)
+					-- Need better sound someday.
 					coresounds.play_death_sound(user, pname)
 				end,
 
@@ -181,15 +179,9 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				end,
 			})
 
-			-- If the staff was already used to teleport to the Abyss once, then a
-			-- second use breaks it.
-			if meta:get_int("times_used") >= 1 then
-				item:take_item()
-			else
-				meta:set_int("times_used", 1)
-			end
-
 			-- The metadata will have been updated if we swapped datums.
+			ambiance.sound_play("fire_flint_and_steel", pos, 0.7, 20)
+			item:add_wear_by_uses(20)
 			return item
 		end
 
@@ -201,8 +193,10 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				target_position = tar2,
 				emerge_radius = 16,
 				particle_effects = true,
+				spinup_time = 2,
 
 				pre_teleport_callback = function()
+					obsidian_gateway.regenerate_liquid(tar2, nil)
 				end,
 
 				post_teleport_callback = function()
@@ -210,8 +204,8 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				end,
 			})
 
-			ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
-			item:take_item()
+			ambiance.sound_play("fire_flint_and_steel", pos, 0.7, 20)
+			item:add_wear_by_uses(20)
 			return item
 		end
 	end

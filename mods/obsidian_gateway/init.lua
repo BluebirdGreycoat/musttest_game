@@ -269,14 +269,17 @@ end
 
 
 
-function obsidian_gateway.regenerate_liquid(target, northsouth, isret)
+function obsidian_gateway.regenerate_liquid(target, northsouth)
 	local success, so, ap, ns, key, po =
 		obsidian_gateway.find_gate(target, northsouth)
 
 	-- Spawn portal liquid only if there is a gate here with the expected
 	-- orientation. Force liquid placement over hidden portal nodes.
 	if success then
-		obsidian_gateway.spawn_liquid(so, ns, isret, true)
+		local meta = minetest.get_meta(so)
+		local isreturngate = (meta:get_int("obsidian_gateway_return_gate_" .. key) == 1)
+
+		obsidian_gateway.spawn_liquid(so, ns, isreturngate, true)
 	end
 end
 
@@ -635,7 +638,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 			-- Always regenerate portal liquid in the destination portal.
 			-- (It will often be missing since no one was near it.)
 			-- This function will check if there actually is a gate, here.
-			obsidian_gateway.regenerate_liquid(target, northsouth, (not isreturngate))
+			obsidian_gateway.regenerate_liquid(target, northsouth)
 
 			-- If the player is someone other than the owner, using this Gate has consequences.
 			if not isowner then

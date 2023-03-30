@@ -151,11 +151,12 @@ minetest.register_craftitem("mobs:flame_bolt", {
 	light_source = 14,
 })
 
-minetest.register_craftitem("mobs:flame_staff", {
+-- Stores metadata, needs wear bar.
+-- Note: this also makes the staff repairable by combining it with another.
+minetest.register_tool("mobs:flame_staff", {
 	description = "Flame Staff",
 	inventory_image = "mobs_flame_staff.png",
 	groups = {flammable = 1},
-	stack_max = 1, -- Stores metadata.
 	light_source = 14,
 	on_use = function(...)
 		return obsidian_gateway.on_flamestaff_use(...)

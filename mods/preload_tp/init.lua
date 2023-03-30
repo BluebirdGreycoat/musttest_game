@@ -189,7 +189,11 @@ function preload_tp.execute(parameters)
 	local start_time = os.time()
 
 	-- Time to teleport depends on distance.
+	-- But allow calling code to override this for special cases.
 	local total_time = math_floor(vector_distance(pp, tp) / 1000)
+	if parameters.spinup_time then
+		total_time = parameters.spinup_time
+	end
 	if total_time < 2 then
 		total_time = 2
 	end

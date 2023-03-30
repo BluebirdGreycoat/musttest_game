@@ -1131,7 +1131,13 @@ minetest.register_node("default:stone_with_mese", {
 	description = "Mese Ore",
 	tiles = {"default_stone.png^default_mineral_mese.png"},
 	groups = utility.dig_groups("hardmineral", {melts = 1}),
-	drop = "default:mese_crystal",
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {'mobs:flame_bolt'}, rarity = 16},
+			{items = {'default:mese_crystal'}}
+		}
+	},
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	

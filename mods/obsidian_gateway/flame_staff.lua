@@ -155,8 +155,11 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		-- Send them to the Abyss!
 		if vector.equals(playerorigin, tar1) then
 			local hidden_spawn = {
+				-- End of passage beyond gate room.
+				x = -9174, y = 4100, z = 5875
+
 				-- Hidden cave tunnel.
-				x = -9265, y = 4076, z = 5819
+				--x = -9265, y = 4076, z = 5819
 
 				-- Outback gate room.
 				--x = -9174, y = 4100, z = 5782

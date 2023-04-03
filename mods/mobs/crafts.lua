@@ -156,7 +156,7 @@ minetest.register_craftitem("mobs:flame_bolt", {
 minetest.register_tool("mobs:flame_staff", {
 	description = "Flame Staff",
 	inventory_image = "mobs_flame_staff.png",
-	groups = {flammable = 1},
+	groups = {flammable = 1, not_repaired_by_anvil = 1},
 	light_source = 14,
 	on_use = function(...)
 		return obsidian_gateway.on_flamestaff_use(...)

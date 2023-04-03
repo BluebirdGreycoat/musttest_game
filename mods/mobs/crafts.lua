@@ -158,6 +158,7 @@ minetest.register_tool("mobs:flame_staff", {
 	inventory_image = "mobs_flame_staff.png",
 	groups = {flammable = 1, not_repaired_by_anvil = 1},
 	light_source = 14,
+	wear_represents = "teleport_uses",
 	on_use = function(...)
 		return obsidian_gateway.on_flamestaff_use(...)
 	end,

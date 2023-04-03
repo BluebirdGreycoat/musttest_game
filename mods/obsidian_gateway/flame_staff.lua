@@ -203,7 +203,9 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 				end,
 
 				post_teleport_callback = function()
-					portal_sickness.on_use_portal(pname)
+					-- Only check for portal sickness ONCE!
+					-- Already checked on first gate use.
+					--portal_sickness.on_use_portal(pname)
 				end,
 			})
 

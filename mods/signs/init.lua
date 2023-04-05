@@ -2,6 +2,8 @@
 signs = signs or {}
 signs.modpath = minetest.get_modpath("signs")
 
+local MAX_SIGN_LENGTH = 256
+
 function signs.on_punch(pos, node, puncher, pt)
 	minetest.get_meta(pos):set_string("formspec", nil)
 end
@@ -43,7 +45,9 @@ function signs.on_receive_fields(pos, formname, fields, sender)
 		return
 	end
 
-	local message = utility.trim_remove_special_chars(fields.text)
+	-- Max sign length.
+	local the_text = fields.text:sub(1, MAX_SIGN_LENGTH)
+	local message = utility.trim_remove_special_chars(the_text)
 
 	if anticurse.check(pname, message, "foul") then
 		anticurse.log(pname, message)

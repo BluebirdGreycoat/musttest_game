@@ -2,6 +2,8 @@
 engraver = engraver or {}
 engraver.modpath = minetest.get_modpath("engraver")
 
+local MAX_SIGN_LENGTH = 256
+
 -- API function to allow caller to check if an item has a custom description.
 function engraver.item_has_custom_description(item)
 	if item:get_count() ~= 1 then
@@ -175,7 +177,9 @@ local function handle_engraver_use(player, formname, fields)
 		return true
 	end
 
-	local message = utility.trim_remove_special_chars(fields.text)
+	-- Max sign length.
+	local the_text = fields.text:sub(1, MAX_SIGN_LENGTH)
+	local message = utility.trim_remove_special_chars(the_text)
 
 	if anticurse.check(pname, message, "foul") then
 		anticurse.log(pname, message)
@@ -184,11 +188,6 @@ local function handle_engraver_use(player, formname, fields)
 	elseif anticurse.check(pname, message, "curse") then
 		anticurse.log(pname, message)
 		minetest.chat_send_player(pname, "# Server: Please do not curse with a chisel.")
-		return true
-	end
-
-	if string.len(message) > 256 then
-		minetest.chat_send_player(pname, "# Server: Message is too long. Put something shorter.")
 		return true
 	end
 

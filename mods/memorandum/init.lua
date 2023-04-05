@@ -3,6 +3,9 @@
 memorandum = memorandum or {}
 memorandum.modpath = minetest.get_modpath("memorandum")
 
+local MAX_LETTER_SIZE = 5000
+local MAX_AUTHOR_SIZE = 128
+
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
@@ -112,6 +115,10 @@ end
 memorandum.compose_metadata = function(data)
   local message = data.text or ""
   local author = data.signed or ""
+
+  message = message:sub(1, MAX_LETTER_SIZE)
+  author = author:sub(1, MAX_AUTHOR_SIZE)
+
   local serialized = minetest.write_json({message=message, author=author})
   serialized = serialized .. ":JSON"
   return serialized
@@ -295,8 +302,8 @@ memorandum.on_letter_empty_input = function(pos, fields, sender)
 	minetest.add_node(pos, {name="memorandum:letter_written", param2=facedir})
 
 	local meta = minetest.get_meta(pos)
-	meta:set_string("text", fields.text)
-	meta:set_string("signed", fields.signed)
+	meta:set_string("text", fields.text:sub(1, MAX_LETTER_SIZE))
+	meta:set_string("signed", fields.signed:sub(1, MAX_AUTHOR_SIZE))
 	meta:set_string("owner", sender:get_player_name()) -- Record REAL author.
 	meta:set_int("edit", 0)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
@@ -358,8 +365,8 @@ memorandum.on_letter_written_input = function(pos, fields, sender)
 		meta:set_int("edit", 0)
 	end
 
-	meta:set_string("text", fields.text)
-	meta:set_string("signed", fields.signed)
+	meta:set_string("text", fields.text:sub(1, MAX_LETTER_SIZE))
+	meta:set_string("signed", fields.signed:sub(1, MAX_AUTHOR_SIZE))
 	meta:set_string("owner", sendername)
 	meta:mark_as_private({"text", "signed", "edit"})
 

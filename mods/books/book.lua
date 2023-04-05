@@ -1,4 +1,9 @@
 
+local MAX_TEXT_SIZE = 10000
+local MAX_TITLE_SIZE = 80
+local SHORT_TITLE_SIZE = 35
+
+
 
 local lpp = 14 -- Lines per book's page
 function books.book_on_use(itemstack, user)
@@ -64,10 +69,6 @@ end
 
 
 
-local max_text_size = 10000
-local max_title_size = 80
-local short_title_size = 35
-
 books.on_player_receive_fields = function(player, formname, fields)
 	if formname ~= "books:book_formspec" then return end
 	local inv = player:get_inventory()
@@ -93,15 +94,15 @@ books.on_player_receive_fields = function(player, formname, fields)
 		end
 
 		if not data then data = {} end
-		data.title = fields.title:sub(1, max_title_size)
+		data.title = fields.title:sub(1, MAX_TITLE_SIZE)
 		data.owner = player:get_player_name()
 		local short_title = data.title
 		-- Don't bother triming the title if the trailing dots would make it longer
-		if #short_title > short_title_size + 3 then
-			short_title = short_title:sub(1, short_title_size) .. "..."
+		if #short_title > SHORT_TITLE_SIZE + 3 then
+			short_title = short_title:sub(1, SHORT_TITLE_SIZE) .. "..."
 		end
-		data.description = "\""..short_title.."\" By <"..rename.gpn(data.owner) .. ">"
-		data.text = fields.text:sub(1, max_text_size)
+		data.description = "\"" .. short_title .. "\" By <"..rename.gpn(data.owner) .. ">"
+		data.text = fields.text:sub(1, MAX_TEXT_SIZE)
 		data.page = 1
 		data.page_max = math.ceil((#data.text:gsub("[^\n]", "") + 1) / lpp)
 

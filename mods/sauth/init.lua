@@ -21,10 +21,9 @@ if sqlite3 then sqlite3 = nil end
 local singleplayer = minetest.is_singleplayer()
 
 -- Use conf setting to determine handler for singleplayer
-if not minetest.setting_get(MN .. '.enable_singleplayer')
-and singleplayer then
-	  minetest.log("info", "singleplayer game using builtin auth handler")
-	  return
+if not minetest.settings:get(MN .. '.enable_singleplayer') and singleplayer then
+	minetest.log("info", "singleplayer game using builtin auth handler")
+	return
 end
 
 local db = _sql.open(WP.."/sauth.sqlite") -- connection

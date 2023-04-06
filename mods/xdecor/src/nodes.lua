@@ -494,7 +494,7 @@ xdecor.register("painting_1", {
 		local leftover = minetest.item_place_node(
 			ItemStack("xdecor:painting_"..num), placer, pointed_thing)
 		if leftover:get_count() == 0 and
-				not minetest.setting_getbool("creative_mode") then
+				not minetest.settings:get_bool("creative_mode") then
 			itemstack:take_item()
 		end
 		return itemstack

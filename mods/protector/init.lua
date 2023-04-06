@@ -11,9 +11,6 @@ protector.max_share_count = 12
 local math_floor = math.floor
 local math_random = math.random
 
--- Tool drop is disabled because it is too easy to exploit this using lag.
---protector.drop = minetest.setting_getbool("protector_drop") or false
-
 protector.flip = minetest.settings:get_bool("protector_flip") or false
 protector.hurt = (tonumber(minetest.settings:get("protector_hurt")) or 0)
 protector.display_time = 60*2

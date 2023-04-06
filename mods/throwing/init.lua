@@ -51,6 +51,6 @@ if minetest.get_modpath('tnt') then
 	dofile(minetest.get_modpath("throwing").."/fireworks_arrows.lua")
 end
 
-if minetest.setting_get("log_mods") then
+if minetest.settings:get("log_mods") then
 	minetest.log("action", "throwing loaded")
 end

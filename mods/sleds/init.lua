@@ -126,7 +126,7 @@ function sleds.on_punch(self, puncher, time_from_last_punch, tool_capabilities, 
 	if not self.driver then
 		self.removed = true
 		local inv = puncher:get_inventory()
-		if not minetest.setting_getbool("creative_mode")
+		if not minetest.settings:get_bool("creative_mode")
 				or not inv:contains_item("main", "sleds:sled") then
 			local leftover = inv:add_item("main", "sleds:sled")
 			-- if no room in inventory add a replacement sled to the world
@@ -233,7 +233,7 @@ function sleds.on_place(itemstack, placer, pointed_thing)
 	local sled = minetest.add_entity(pointed_thing.under, "sleds:sled")
 	if sled then
 		sled:setyaw(placer:get_look_horizontal())
-		if not minetest.setting_getbool("creative_mode") then
+		if not minetest.settings:get_bool("creative_mode") then
 			itemstack:take_item()
 		end
 	end

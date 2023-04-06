@@ -106,7 +106,7 @@ function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, 
 		end
 
 		local inv = puncher:get_inventory()
-		if not minetest.setting_getbool("creative_mode")
+		if not minetest.settings:get_bool("creative_mode")
 				or not inv:contains_item("main", "carts:cart") then
 			local leftover = inv:add_item("main", "carts:cart")
 			if not leftover:is_empty() then
@@ -398,7 +398,7 @@ minetest.register_craftitem("carts:cart", {
 		minetest.sound_play({name = "default_place_node_metal", gain = 0.5},
 			{pos = pointed_thing.above})
 
-		if not minetest.setting_getbool("creative_mode") then
+		if not minetest.settings:get_bool("creative_mode") then
 			itemstack:take_item()
 		end
 		return itemstack

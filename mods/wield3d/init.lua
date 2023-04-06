@@ -4,7 +4,7 @@ wield3d.modpath = minetest.get_modpath("wield3d")
 
 dofile(wield3d.modpath .. "/location.lua")
 
-local update_time_conf = minetest.setting_get("wield3d_update_time") or 1
+local update_time_conf = minetest.settings:get("wield3d_update_time") or 1
 local update_time = tonumber(update_time_conf) or 1
 local timer = 0
 local periodic_reset = 0

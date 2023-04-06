@@ -9,7 +9,7 @@ minetest.register_chatcommand("motd", {
 	description = "Show MoTD.",
 	privs = {},
 	func = function(name, text)
-		local motd = minetest.setting_get("motd")
+		local motd = minetest.settings:get("motd")
 		if motd == nil or motd == "" then
 			minetest.chat_send_player(name, "# Server: MoTD not set.")
 			return false

@@ -12,7 +12,7 @@ reboot.do_reboot = function(name, param)
   end
 
   local request_reconnect = false
-  local sigpath = minetest.setting_get("reboot_signal_path")
+  local sigpath = minetest.settings:get("reboot_signal_path")
   
   if sigpath then
     -- Signal to the control script to restart the server.

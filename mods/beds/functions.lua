@@ -86,7 +86,7 @@ local function is_night_skip_enabled()
 		return false
 	end
 
-	local enable_night_skip = minetest.setting_getbool("enable_bed_night_skip")
+	local enable_night_skip = minetest.settings:get_bool("enable_bed_night_skip")
 	if enable_night_skip == nil then
 		enable_night_skip = true
 	end

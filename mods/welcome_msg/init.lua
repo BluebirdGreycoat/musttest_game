@@ -3,12 +3,12 @@ if not minetest.global_exists("welcome") then welcome = {} end
 welcome.modpath = minetest.get_modpath("welcome_msg")
 
 -- Timeout in seconds.
-welcome.timeout = tonumber(minetest.setting_get("welcome_msg_delay") or 15)
-welcome.timeout2 = tonumber(minetest.setting_get("welcome_msg_delay2") or 30)
+welcome.timeout = tonumber(minetest.settings:get("welcome_msg_delay") or 15)
+welcome.timeout2 = tonumber(minetest.settings:get("welcome_msg_delay2") or 30)
 
 -- The welcome message.
-welcome.message = minetest.setting_get("welcome_msg_string") or "Welcome!"
-welcome.message2 = minetest.setting_get("welcome_msg_string2")
+welcome.message = minetest.settings:get("welcome_msg_string") or "Welcome!"
+welcome.message2 = minetest.settings:get("welcome_msg_string2")
 
 welcome.color = core.get_color_escape_sequence("#ff00ff")
 

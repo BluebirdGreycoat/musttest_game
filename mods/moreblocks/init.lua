@@ -29,13 +29,6 @@ dofile(modpath .. "/nodes.lua")
 dofile(modpath .. "/crafting.lua")
 --dofile(modpath .. "/aliases.lua")
 
---[[
-if minetest.setting_getbool("log_mods") then
-	minetest.log("action", S("[moreblocks] loaded."))
-end
---]]
-
-
 
 
 minetest.register_node("moreblocks:red_coal_brick", {

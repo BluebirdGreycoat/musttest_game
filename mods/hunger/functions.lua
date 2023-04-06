@@ -260,7 +260,7 @@ local function hunger_globaltimer(dtime)
 	end
 end
 
-if minetest.setting_getbool("enable_damage") then
+if minetest.settings:get_bool("enable_damage") then
 	minetest.register_globalstep(hunger_globaltimer)
 end
 

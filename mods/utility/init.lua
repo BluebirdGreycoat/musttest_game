@@ -414,7 +414,7 @@ function default.sapling_on_place(itemstack, placer, pointed_thing,
 	minetest.log("action", player_name .. " places node "
 			.. sapling_name .. " at " .. minetest.pos_to_string(pos))
 
-	local take_item = not minetest.setting_getbool("creative_mode")
+	local take_item = not minetest.settings:get_bool("creative_mode")
 	local newnode = {name = sapling_name}
 	local ndef = minetest.reg_ns_nodes[sapling_name]
 	minetest.set_node(pos, newnode)

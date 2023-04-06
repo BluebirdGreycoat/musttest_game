@@ -1,7 +1,7 @@
 
 if not minetest.global_exists("status") then status = {} end
 status.modpath = minetest.get_modpath("status")
-status.motd = minetest.setting_get("motd") or ""
+status.motd = minetest.settings:get("motd") or ""
 
 -- Get text color.
 local STATUS_COLOR = core.get_color_escape_sequence("#0d9b7b")

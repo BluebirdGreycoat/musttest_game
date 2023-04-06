@@ -24,19 +24,6 @@ easyvend.VERSION.MINOR = 3
 easyvend.VERSION.PATCH = 0
 easyvend.VERSION.STRING = easyvend.VERSION.MAJOR .. "." .. easyvend.VERSION.MINOR .. "." .. easyvend.VERSION.PATCH
 
--- Set item which is used as payment for vending and depositing machines
---[[
-easyvend.currency = minetest.setting_get("easyvend_currency")
-if easyvend.currency == nil or minetest.registered_items[easyvend.currency] == nil then
-	-- Default currency
-	easyvend.currency = "default:gold_ingot"
-end
-easyvend.currency_desc = minetest.registered_items[easyvend.currency].description
-if easyvend.currency_desc == nil or easyvend.currency_desc == "" then
-	easyvend.currency_desc = easyvend.currency
-end
---]]
-
 easyvend.traversable_node_types = {
 	["easyvend:vendor"] = true,
 	["easyvend:depositor"] = true,

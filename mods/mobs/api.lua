@@ -99,7 +99,7 @@ local mobs_griefing =   true
 local creative =        false
 local spawn_protected = minetest.settings:get_bool("mobs_spawn_protected") ~= false
 local remove_far =      false
-local difficulty =      tonumber(minetest.setting_get("mob_difficulty")) or 1.0
+local difficulty =      tonumber(minetest.settings:get("mob_difficulty")) or 1.0
 local show_health =     true
 local max_per_block =   tonumber(minetest.settings:get("max_objects_per_block") or 99)
 local mob_chance_multiplier = tonumber(minetest.settings:get("mob_chance_multiplier") or 1)

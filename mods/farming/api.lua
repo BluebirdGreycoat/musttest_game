@@ -100,7 +100,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	}, true)
 	farming.notify_soil_single(pt.under)
 
-	if not minetest.setting_getbool("creative_mode") then
+	if not minetest.settings:get_bool("creative_mode") then
 		-- wear tool
 		local wdef = itemstack:get_definition()
 		itemstack:add_wear(65535/(uses-1))

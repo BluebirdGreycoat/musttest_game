@@ -131,7 +131,7 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		ambiance.sound_play("default_dug_metal", pos, 1, 30)
 	end
 
-	if not minetest.setting_getbool("creative_mode") then
+	if not minetest.settings:get_bool("creative_mode") then
 		itemstack:add_wear(65535 / ((uses or 200) - 1))
 	end
 

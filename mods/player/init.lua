@@ -104,12 +104,6 @@ minetest.register_on_joinplayer(function(player)
 	default.player_attached[pname] = false
 	--default.player_set_model(player, "character_musttest.b3d")
 	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
-	
-	-- set GUI
-	-- This is managed by the inventory mod.
-	--if not minetest.setting_getbool("creative_mode") then
-	--	player:set_inventory_formspec(default.formspec.get_default_form())
-	--end
 
 	-- Big hot-bar is revoked for cheaters.
   if minetest.check_player_privs(player, {big_hotbar=true}) and not sheriff.is_cheater(pname) then

@@ -290,7 +290,7 @@ minetest.register_tool("handholds:climbing_pick", {
 		minetest.add_node(pointed_thing.above, {name = "handholds:climbable_air"})
 		ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
 
-		if not minetest.setting_getbool("creative_mode") then
+		if not minetest.settings:get_bool("creative_mode") then
 			local wdef = itemstack:get_definition()
 			itemstack:add_wear(256)
 			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then

@@ -7,7 +7,7 @@ if not minetest.global_exists("reload") then reload = {} end
 reload.impl = reload.impl or {}
 
 reload.impl.setting_get = function(setting)
-	local str = minetest.setting_get(setting)
+	local str = minetest.settings:get(setting)
 	if str and string.len(str) >= 2 then
 		-- Strip quotes.
 		str = string.gsub(str, "^\"", "")

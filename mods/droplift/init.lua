@@ -14,7 +14,7 @@ http://www.gnu.org/licenses/lgpl-2.1.html
 --------------------------------------------------- Global
 
 droplift = {
-	invoke,
+	-- invoke,
 	-- function (dropobj, sync)
 	-- sync in [ false | 0 | seconds ]. See details.txt
 }

@@ -1,5 +1,0 @@
-default
-falldamage
-node_blackout
-oregen
-mapgen

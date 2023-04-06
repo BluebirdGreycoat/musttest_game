@@ -1,5 +1,0 @@
-coresounds
-guicolors
-utility
-reload
-default

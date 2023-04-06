@@ -1,5 +1,0 @@
-default
-reload
-ambiance
-utility
-stairs

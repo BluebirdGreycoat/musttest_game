@@ -1,4 +1,0 @@
-default
-fire
-reload
-droplift

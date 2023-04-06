@@ -1,6 +1,0 @@
-default
-coresounds
-mapgen
-oregen
-rackstone
-reload

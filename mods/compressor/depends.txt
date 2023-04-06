@@ -1,6 +1,0 @@
-default
-guicolors
-utility
-craft_register
-reload
-machines

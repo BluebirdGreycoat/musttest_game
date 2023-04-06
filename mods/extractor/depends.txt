@@ -1,6 +1,0 @@
-default
-coresounds
-guicolors
-craft_register
-reload
-machines

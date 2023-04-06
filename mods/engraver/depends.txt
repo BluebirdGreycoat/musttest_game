@@ -1,3 +1,0 @@
-coresounds
-default
-craft_register

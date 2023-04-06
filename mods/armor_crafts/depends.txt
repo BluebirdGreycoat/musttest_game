@@ -1,6 +1,0 @@
-default
-3d_armor
-basictrees
-moretrees
-farming
-mobs

@@ -1,3 +1,0 @@
-darkage
-craft_register
-

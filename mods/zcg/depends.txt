@@ -1,3 +1,0 @@
-inventory_plus
-craft_register
-reload

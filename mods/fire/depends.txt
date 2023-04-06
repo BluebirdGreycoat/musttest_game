@@ -1,4 +1,0 @@
-default
-falldamage
-rackstone
-reload

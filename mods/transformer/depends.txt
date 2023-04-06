@@ -1,2 +1,0 @@
-craft_register
-default

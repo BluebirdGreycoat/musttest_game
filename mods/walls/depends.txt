@@ -1,4 +1,0 @@
-default
-rackstone
-craft_register
-stairs

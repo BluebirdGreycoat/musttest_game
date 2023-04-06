@@ -1,6 +1,0 @@
-stairs
-basictrees
-moretrees
-jungletree
-firetree
-

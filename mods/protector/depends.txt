@@ -1,6 +1,0 @@
-default
-doors?
-mobs?
-intllib?
-coresounds
-reload

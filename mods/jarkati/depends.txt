@@ -1,9 +1,0 @@
-default
-mapgen
-oregen
-reload
-bedrock
-cavestuff
-pm
-aloevera
-flowers

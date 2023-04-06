@@ -1,4 +1,0 @@
-coresounds
-screwdriver
-guicolors
-reload

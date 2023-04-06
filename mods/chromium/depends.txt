@@ -1,6 +1,0 @@
-default
-grinder
-oregen
-mapgen
-coresounds
-stairs

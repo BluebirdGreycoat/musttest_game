@@ -1,6 +1,0 @@
-default
-basictools
-moreores
-titanium
-reload
-gem_tools

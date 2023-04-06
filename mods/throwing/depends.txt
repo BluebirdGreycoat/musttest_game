@@ -1,9 +1,0 @@
-default
-farming
-dye
-utility
-bucket?
-fire?
-tnt?
-falldamage
-craft_register

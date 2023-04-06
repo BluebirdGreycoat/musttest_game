@@ -1,5 +1,0 @@
-default
-dye
-reload
-coresounds
-creative?

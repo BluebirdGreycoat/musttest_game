@@ -1,4 +1,0 @@
-default
-darkage
-oregen
-mapgen

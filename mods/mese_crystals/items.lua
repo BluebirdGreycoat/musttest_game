@@ -23,7 +23,7 @@ if not mese_crystals.nodes_registered then
 			drawtype = "mesh",
 			groups = utility.dig_groups("crystal", {attached_node = 1, fall_damage_add_percent = 60}),
 			drop = "default:mese_crystal_fragment " .. i,
-			use_texture_alpha = true,
+			use_texture_alpha = "blend",
 			sounds = default.node_sound_stone_defaults(),
 			light_source = light[i],
 			selection_box = {

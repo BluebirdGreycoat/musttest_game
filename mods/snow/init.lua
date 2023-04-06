@@ -78,7 +78,7 @@ local origsnowdef = {
 	inventory_image = "default_snowball.png",
 	wield_image = "default_snowball.png",
 	buildable_to = true,
-	use_texture_alpha = true,
+	use_texture_alpha = "blend",
 	crushing_damage = 0,
 
 	-- These 2 cannot be changed dynamically without creating lighting issues.

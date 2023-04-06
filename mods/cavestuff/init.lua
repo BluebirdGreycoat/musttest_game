@@ -162,7 +162,7 @@ minetest.register_node("cavestuff:glow_sapphire", {
   sounds = default.node_sound_glass_defaults(),
   light_source = 13,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -191,7 +191,7 @@ minetest.register_node("cavestuff:glow_emerald", {
   sounds = default.node_sound_glass_defaults(),
   light_source = 10,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -220,7 +220,7 @@ minetest.register_node("cavestuff:glow_mese", {
   sounds = default.node_sound_glass_defaults(),
   light_source = 14,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -249,7 +249,7 @@ minetest.register_node("cavestuff:glow_ruby", {
   sounds = default.node_sound_glass_defaults(),
   light_source = 8,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -278,7 +278,7 @@ minetest.register_node("cavestuff:glow_amethyst", {
   sounds = default.node_sound_glass_defaults(),
   light_source = 7,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -609,7 +609,7 @@ minetest.register_node("cavestuff:salt_crystal", {
   sounds = default.node_sound_gravel_defaults(),
   light_source = 1,
   paramtype = "light",
-  use_texture_alpha = true,
+  use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
 })
@@ -828,7 +828,7 @@ for i=1, 4, 1 do
     groups = utility.dig_groups("crystal", {
 			attached_node = 1, fall_damage_add_percent = 100,
 		}),
-    use_texture_alpha = true,
+    use_texture_alpha = "blend",
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
     selection_box = {
@@ -865,7 +865,7 @@ for i=1, 4, 1 do
 			attached_node = 1,
 			fall_damage_add_percent = 100,
 		}),
-    use_texture_alpha = true,
+    use_texture_alpha = "blend",
     sounds = default.node_sound_glass_defaults(),
     light_source = 5,
     selection_box = {

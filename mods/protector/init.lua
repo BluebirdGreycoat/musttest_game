@@ -1177,7 +1177,7 @@ do
 	local x = protector.radius
 	minetest.register_node("protector:display_node", {
 		tiles = {"protector_display.png"},
-		use_texture_alpha = true,
+		use_texture_alpha = "blend",
 		walkable = false,
 		drawtype = "nodebox",
 		node_box = {
@@ -1211,7 +1211,7 @@ do
 	local x = protector.radius_small
 	minetest.register_node("protector:display_node_small", {
 		tiles = {"protector_display.png"},
-		use_texture_alpha = true,
+		use_texture_alpha = "blend",
 		walkable = false,
 		drawtype = "nodebox",
 		node_box = {

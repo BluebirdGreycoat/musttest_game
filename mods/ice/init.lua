@@ -70,7 +70,7 @@ if not ice.registered then
 		drawtype = "glasslike",
 		description = "Clear Ice\n\nThis can be made to melt.\nApply heat for results.",
 		tiles = {"ice_thin_ice.png"},
-		use_texture_alpha = true,
+		use_texture_alpha = "blend",
 		is_ground_content = true, -- Don't interfere with cavegen.
 		paramtype = "light",
 		groups = utility.dig_groups("ice", {

@@ -1,5 +1,5 @@
 
-jungletree = jungletree or {}
+if not minetest.global_exists("jungletree") then jungletree = {} end
 jungletree.modpath = minetest.get_modpath("jungletree")
 
 -- Localize for performance.

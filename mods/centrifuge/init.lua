@@ -1,5 +1,5 @@
 
-centrifuge = centrifuge or {}
+if not minetest.global_exists("centrifuge") then centrifuge = {} end
 centrifuge.modpath = minetest.get_modpath("centrifuge")
 
 

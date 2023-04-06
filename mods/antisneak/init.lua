@@ -1,5 +1,5 @@
 
-antisneak = antisneak or {}
+if not minetest.global_exists("antisneak") then antisneak = {} end
 antisneak.modpath = minetest.get_modpath("antisneak")
 
 

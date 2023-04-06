@@ -7,7 +7,7 @@
 -- Note this unusual syntax: if this file is reloaded, the previous contents of
 -- the table are not erased. They may be overwritten. You can use this technique
 -- in your own mods as part of making them reloadable.
-reload = reload or {}
+if not minetest.global_exists("reload") then reload = {} end
 
 reload.modpath = minetest.get_modpath("reload")
 dofile(reload.modpath .. "/config.lua")

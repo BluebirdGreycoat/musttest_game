@@ -7,7 +7,7 @@
 -- License as published by the Free Software Foundation; either
 -- version 2.1 of the License, or (at your option) any later version.
 
-city_block = city_block or {}
+if not minetest.global_exists("city_block") then city_block = {} end
 city_block.blocks = city_block.blocks or {}
 city_block.filename = minetest.get_worldpath() .. "/city_blocks.txt"
 city_block.modpath = minetest.get_modpath("city_block")

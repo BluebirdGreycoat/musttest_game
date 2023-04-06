@@ -1,5 +1,5 @@
 
-battery = battery or {}
+if not minetest.global_exists("battery") then battery = {} end
 battery.modpath = minetest.get_modpath("battery")
 
 dofile(battery.modpath .. "/functions.lua")

@@ -1,5 +1,5 @@
 
-hb4 = hb4 or {}
+if not minetest.global_exists("hb4") then hb4 = {} end
 hb4.floodfill = hb4.floodfill or {}
 
 

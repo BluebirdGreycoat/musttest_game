@@ -1,5 +1,5 @@
 
-protector = protector or {}
+if not minetest.global_exists("protector") then protector = {} end
 protector.hud = protector.hud or {}
 
 -- Localize.

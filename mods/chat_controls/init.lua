@@ -1,5 +1,5 @@
 
-chat_controls = chat_controls or {}
+if not minetest.global_exists("chat_controls") then chat_controls = {} end
 chat_controls.modpath = minetest.get_modpath("chat_controls")
 chat_controls.players = chat_controls.players or {}
 

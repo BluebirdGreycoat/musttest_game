@@ -1,5 +1,5 @@
 
-sand = sand or {}
+if not minetest.global_exists("sand") then sand = {} end
 sand.modpath = minetest.get_modpath("sand")
 
 

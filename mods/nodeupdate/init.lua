@@ -1,5 +1,5 @@
 
-_nodeupdate = _nodeupdate or {}
+if not minetest.global_exists("_nodeupdate") then _nodeupdate = {} end
 _nodeupdate.modpath = minetest.get_modpath("nodeupdate")
 
 -- Localize for performance.

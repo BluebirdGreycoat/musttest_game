@@ -1,5 +1,5 @@
 
-warthog = warthog or {}
+if not minetest.global_exists("warthog") then warthog = {} end
 warthog.modpath = minetest.get_modpath("warthog")
 
 

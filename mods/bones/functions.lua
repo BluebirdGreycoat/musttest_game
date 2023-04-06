@@ -1,5 +1,5 @@
 -- This file is reloadable.
-bones = bones or {}
+if not minetest.global_exists("bones") then bones = {} end
 
 -- Contains the positions of last known player deaths, indexed by player name.
 bones.last_known_death_locations = bones.last_known_death_locations or {}

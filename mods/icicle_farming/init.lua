@@ -1,5 +1,5 @@
 
-icicle_farming = icicle_farming or {}
+if not minetest.global_exists("icicle_farming") then icicle_farming = {} end
 icicle_farming.modpath = minetest.get_modpath("icicle_farming")
 
 

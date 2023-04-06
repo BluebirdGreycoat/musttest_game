@@ -1,5 +1,5 @@
 
-mtflower = mtflower or {}
+if not minetest.global_exists("mtflower") then mtflower = {} end
 mtflower.modpath = minetest.get_modpath("mtflower")
 
 -- Localize for performance.

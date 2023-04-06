@@ -1,5 +1,5 @@
 
-shears = shears or {}
+if not minetest.global_exists("shears") then shears = {} end
 shears.modpath = minetest.get_modpath("shears")
 
 

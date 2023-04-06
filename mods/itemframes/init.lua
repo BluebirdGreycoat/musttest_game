@@ -5,7 +5,7 @@
 --------------------------------------------------------------------------------
 
 local tmp = {}
-screwdriver = screwdriver or {}
+if not minetest.global_exists("screwdriver") then screwdriver = {} end
 
 local function on_rename_check(pos, nodename)
 	local meta = minetest.get_meta(pos)

@@ -1,5 +1,5 @@
 
-tinderbox = tinderbox or {}
+if not minetest.global_exists("tinderbox") then tinderbox = {} end
 tinderbox.modpath = minetest.get_modpath("tinderbox")
 
 local TINDERBOX_USES = 256

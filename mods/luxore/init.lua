@@ -1,5 +1,5 @@
 
-luxore = luxore or {}
+if not minetest.global_exists("luxore") then luxore = {} end
 luxore.modpath = minetest.get_modpath("luxore")
 
 

@@ -1,6 +1,6 @@
 
 -- File is reloadable.
-fruitscatter = fruitscatter or {}
+if not minetest.global_exists("fruitscatter") then fruitscatter = {} end
 fruitscatter.modpath = minetest.get_modpath("fruitscatter")
 
 

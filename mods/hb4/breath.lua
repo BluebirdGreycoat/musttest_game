@@ -1,5 +1,5 @@
 
-breath = breath or {}
+if not minetest.global_exists("breath") then breath = {} end
 breath.modpath = minetest.get_modpath("hb4")
 
 -- Localize for performance.

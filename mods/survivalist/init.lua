@@ -1,5 +1,5 @@
 
-survivalist = survivalist or {}
+if not minetest.global_exists("survivalist") then survivalist = {} end
 survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}

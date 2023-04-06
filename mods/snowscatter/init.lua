@@ -1,5 +1,5 @@
 
-snowscatter = snowscatter or {}
+if not minetest.global_exists("snowscatter") then snowscatter = {} end
 snowscatter.modpath = minetest.get_modpath("snowscatter")
 
 -- Localize for performance.

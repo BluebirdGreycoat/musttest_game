@@ -2,7 +2,7 @@
 -- We also inform the dead player where their bones are.
 -- We also write a message to the logfile.
 
-bones = bones or {}
+if not minetest.global_exists("bones") then bones = {} end
 bones.players = bones.players or {}
 
 -- Localize for performance.

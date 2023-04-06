@@ -1,5 +1,5 @@
 
-kickall = kickall or {}
+if not minetest.global_exists("kickall") then kickall = {} end
 kickall.modpath = minetest.get_modpath("kickall")
 
 

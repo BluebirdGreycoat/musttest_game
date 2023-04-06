@@ -1,5 +1,5 @@
 
-sky = sky or {}
+if not minetest.global_exists("sky") then sky = {} end
 sky.modpath = minetest.get_modpath("sky")
 sky.players = sky.players or {}
 

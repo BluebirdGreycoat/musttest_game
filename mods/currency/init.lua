@@ -1,5 +1,5 @@
 
-currency = currency or {}
+if not minetest.global_exists("currency") then currency = {} end
 currency.modpath = minetest.get_modpath("currency")
 currency.stackmax = 256
 currency.data = currency.data or {}

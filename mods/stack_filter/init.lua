@@ -1,5 +1,5 @@
 
-stack_filter = stack_filter or {}
+if not minetest.global_exists("stack_filter") then stack_filter = {} end
 stack_filter.modpath = minetest.get_modpath("stack_filter")
 
 

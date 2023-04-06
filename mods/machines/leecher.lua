@@ -1,5 +1,5 @@
 
-leecher = leecher or {}
+if not minetest.global_exists("leecher") then leecher = {} end
 leecher.data = leecher.data or {}
 leecher.modpath = minetest.get_modpath("machines")
 leecher.liquid_range = 20

@@ -1,5 +1,5 @@
 
-jaunt = jaunt or {}
+if not minetest.global_exists("jaunt") then jaunt = {} end
 jaunt.modpath = minetest.get_modpath("jaunt")
 
 -- Localize for performance.

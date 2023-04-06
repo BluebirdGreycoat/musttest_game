@@ -1,5 +1,5 @@
 
-dryleaves = dryleaves or {}
+if not minetest.global_exists("dryleaves") then dryleaves = {} end
 dryleaves.modpath = minetest.get_modpath("dryleaves")
 
 dryleaves.list = {

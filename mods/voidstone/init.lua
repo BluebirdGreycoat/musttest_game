@@ -1,5 +1,5 @@
 
-voidstone = voidstone or {}
+if not minetest.global_exists("voidstone") then voidstone = {} end
 voidstone.modpath = minetest.get_modpath("voidstone")
 
 

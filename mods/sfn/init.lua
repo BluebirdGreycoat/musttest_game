@@ -1,5 +1,5 @@
 
-sfn = sfn or {}
+if not minetest.global_exists("sfn") then sfn = {} end
 sfn.modpath = minetest.get_modpath("sfn")
 
 -- Localize for performance.

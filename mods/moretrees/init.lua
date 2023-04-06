@@ -1,6 +1,6 @@
 
 -- Everything in the mod is stored here.
-moretrees = moretrees or {}
+if not minetest.global_exists("moretrees") then moretrees = {} end
 moretrees.modpath = minetest.get_modpath("moretrees")
 
 

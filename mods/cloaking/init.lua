@@ -1,7 +1,7 @@
 
 -- Cloaking system for players.
 -- Note: admin has special invisibility system in gdac_invis directory.
-cloaking = cloaking or {}
+if not minetest.global_exists("cloaking") then cloaking = {} end
 cloaking.modpath = minetest.get_modpath("cloaking")
 cloaking.players = cloaking.players or {}
 

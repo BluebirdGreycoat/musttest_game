@@ -1,5 +1,5 @@
 
-cobble_furnace = cobble_furnace or {}
+if not minetest.global_exists("cobble_furnace") then cobble_furnace = {} end
 cobble_furnace.modpath = minetest.get_modpath("cobble_furnace")
 local FURNACE_SPEED = 3.0
 

@@ -1,6 +1,6 @@
 -- Mod global namespace
 
-binoculars = binoculars or {}
+if not minetest.global_exists("binoculars") then binoculars = {} end
 binoculars.modpath = minetest.get_modpath("binoculars")
 
 -- Update player property

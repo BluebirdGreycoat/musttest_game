@@ -1,5 +1,5 @@
 
-mobs = mobs or {}
+if not minetest.global_exists("mobs") then mobs = {} end
 mobs.modpath = minetest.get_modpath("mobs")
 
 -- Options.

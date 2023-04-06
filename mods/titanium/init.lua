@@ -3,7 +3,7 @@
 -- who made them for this server under the MIT license.
 -- They have been modified from the originals.
 
-titanium = titanium or {}
+if not minetest.global_exists("titanium") then titanium = {} end
 titanium.modpath = minetest.get_modpath("titanium")
 
 

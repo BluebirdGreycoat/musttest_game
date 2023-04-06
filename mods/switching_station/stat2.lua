@@ -1,8 +1,8 @@
 
-stat2 = stat2 or {}
-stat2_hv = stat2_hv or {}
-stat2_mv = stat2_mv or {}
-stat2_lv = stat2_lv or {}
+if not minetest.global_exists("stat2") then stat2 = {} end
+if not minetest.global_exists("stat2_hv") then stat2_hv = {} end
+if not minetest.global_exists("stat2_mv") then stat2_mv = {} end
+if not minetest.global_exists("stat2_lv") then stat2_lv = {} end
 
 
 

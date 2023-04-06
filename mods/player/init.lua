@@ -1,7 +1,7 @@
 
 -- Minetest 0.4 mod: player
 -- See README.txt for licensing and other information.
-player = player or {}
+if not minetest.global_exists("player") then player = {} end
 player.modpath = minetest.get_modpath("player")
 
 -- Player animation blending

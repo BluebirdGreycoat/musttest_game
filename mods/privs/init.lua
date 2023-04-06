@@ -1,5 +1,5 @@
 
-privs = privs or {}
+if not minetest.global_exists("privs") then privs = {} end
 privs.modpath = minetest.get_modpath("privs")
 
 

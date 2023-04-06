@@ -1,5 +1,5 @@
 
-nethermapgen = nethermapgen or {}
+if not minetest.global_exists("nethermapgen") then nethermapgen = {} end
 nethermapgen.modpath = minetest.get_modpath("nethermapgen")
 
 nethermapgen.NETHER_START = -25000

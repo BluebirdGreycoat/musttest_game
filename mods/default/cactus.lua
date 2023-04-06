@@ -1,5 +1,5 @@
 
-cactus = cactus or {}
+if not minetest.global_exists("cactus") then cactus = {} end
 cactus.modpath = minetest.get_modpath("default")
 cactus.steptime = {min=60, max=60*6}
 cactus.plantname = "default:cactus"

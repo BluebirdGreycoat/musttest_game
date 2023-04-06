@@ -1,5 +1,5 @@
 
-kill = kill or {}
+if not minetest.global_exists("kill") then kill = {} end
 kill.modpath = minetest.get_modpath("kill")
 
 

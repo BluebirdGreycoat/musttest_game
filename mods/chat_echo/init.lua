@@ -1,5 +1,5 @@
 
-chat_echo = chat_echo or {}
+if not minetest.global_exists("chat_echo") then chat_echo = {} end
 chat_echo.modpath = minetest.get_modpath("chat_echo")
 chat_echo.players = chat_echo.players or {}
 

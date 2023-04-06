@@ -1,6 +1,6 @@
 
 -- Customize the /help chat-command.
-help = help or {}
+if not minetest.global_exists("help") then help = {} end
 help.modpath = minetest.get_modpath("help")
 
 dofile(help.modpath .. "/formspecs.lua")

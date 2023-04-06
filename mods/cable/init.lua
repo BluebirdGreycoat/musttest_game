@@ -1,20 +1,20 @@
 
-cable = cable or {}
+if not minetest.global_exists("cable") then cable = {} end
 cable.modpath = minetest.get_modpath("cable")
 
-cable_hv = cable_hv or {}
-cable_mv = cable_mv or {}
-cable_lv = cable_lv or {}
+if not minetest.global_exists("cable_hv") then cable_hv = {} end
+if not minetest.global_exists("cable_mv") then cable_mv = {} end
+if not minetest.global_exists("cable_lv") then cable_lv = {} end
 
-cb2_hv = cb2_hv or {}
-cb2_mv = cb2_mv or {}
-cb2_lv = cb2_lv or {}
+if not minetest.global_exists("cb2_hv") then cb2_hv = {} end
+if not minetest.global_exists("cb2_mv") then cb2_mv = {} end
+if not minetest.global_exists("cb2_lv") then cb2_lv = {} end
 
 -- Ensure tables exist.
-stat2 = stat2 or {}
-stat2_hv = stat2_hv or {}
-stat2_mv = stat2_mv or {}
-stat2_lv = stat2_lv or {}
+if not minetest.global_exists("stat2") then stat2 = {} end
+if not minetest.global_exists("stat2_hv") then stat2_hv = {} end
+if not minetest.global_exists("stat2_mv") then stat2_mv = {} end
+if not minetest.global_exists("stat2_lv") then stat2_lv = {} end
 
 
 

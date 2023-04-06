@@ -1,5 +1,5 @@
 
-heatdamage = heatdamage or {}
+if not minetest.global_exists("heatdamage") then heatdamage = {} end
 heatdamage.modpath = minetest.get_modpath("heatdamage")
 
 -- Localize for performance.

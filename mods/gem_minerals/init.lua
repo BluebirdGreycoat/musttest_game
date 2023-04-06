@@ -5,7 +5,7 @@
 -- License of Media: CC BY-SA 3.0
 --------------------------------------------------------------------------------
 
-gem_minerals = gem_minerals or {}
+if not minetest.global_exists("gem_minerals") then gem_minerals = {} end
 gem_minerals.modpath = minetest.get_modpath("gem_minerals")
 
 local gems = {

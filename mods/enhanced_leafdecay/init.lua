@@ -1,5 +1,5 @@
 
-enhanced_leafdecay = enhanced_leafdecay or {}
+if not minetest.global_exists("enhanced_leafdecay") then enhanced_leafdecay = {} end
 enhanced_leafdecay.modpath = minetest.get_modpath("enhanced_leafdecay")
 
 -- Localize for performance.

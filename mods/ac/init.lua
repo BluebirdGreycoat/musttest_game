@@ -12,7 +12,7 @@
 
 -- This is Nakilashiva. I'm ganna lorn too.
 
-ac = ac or {}
+if not minetest.global_exists("ac") then ac = {} end
 ac.modpath = minetest.get_modpath("ac")
 ac.wpath = minetest.get_worldpath()
 ac.players = ac.players or {} -- Per-player data for this session ONLY.

@@ -1,5 +1,5 @@
 
-instability = instability or {}
+if not minetest.global_exists("instability") then instability = {} end
 instability.modpath = minetest.get_modpath("instability")
 
 -- Localize for speed.

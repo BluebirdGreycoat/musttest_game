@@ -1,6 +1,6 @@
 
 -- Controled Demolition Pack. An explosive for getting rid of locked chests, doors, etc. on unclaimed land.
-cdp = cdp or {}
+if not minetest.global_exists("cdp") then cdp = {} end
 cdp.modpath = minetest.get_modpath("tnt")
 
 function cdp.on_ignite(pos)

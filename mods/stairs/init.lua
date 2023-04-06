@@ -12,7 +12,7 @@ local math_random = math.random
 local S = function(str) return str end
 
 stairs = {}
-circular_saw = circular_saw or {}
+if not minetest.global_exists("circular_saw") then circular_saw = {} end
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
 -- Also used by walls.

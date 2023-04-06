@@ -1,5 +1,5 @@
 
-nethervine = nethervine or {}
+if not minetest.global_exists("nethervine") then nethervine = {} end
 nethervine.modpath = minetest.get_modpath("nethervine")
 
 -- Localize for performance.

@@ -1,5 +1,5 @@
 
-cent2 = cent2 or {}
+if not minetest.global_exists("cent2") then cent2 = {} end
 cent2.modpath = minetest.get_modpath("centrifuge")
 
 -- Localize for performance.
@@ -13,9 +13,9 @@ local MACHINE_DESC = "This spins things apart.\nCan burn mese for fuel when off-
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "separating"
 
---cent2_lv = cent2_lv or {}
-cent2_mv = cent2_mv or {}
---cent2_hv = cent2_hv or {}
+--if not minetest.global_exists("cent2_lv") then cent2_lv = {} end
+if not minetest.global_exists("cent2_mv") then cent2_mv = {} end
+--if not minetest.global_exists("cent2_hv") then cent2_hv = {} end
 
 
 

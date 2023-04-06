@@ -1,5 +1,5 @@
 
-chat_colorize = chat_colorize or {}
+if not minetest.global_exists("chat_colorize") then chat_colorize = {} end
 chat_colorize.player_just_died = chat_colorize.player_just_died or {}
 chat_colorize.modpath = minetest.get_modpath("chat_colorize")
 

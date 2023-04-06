@@ -1,5 +1,5 @@
 
-prospector = prospector or {}
+if not minetest.global_exists("prospector") then prospector = {} end
 prospector.modpath = minetest.get_modpath("silicon")
 
 -- Localize for performance.

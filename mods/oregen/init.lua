@@ -1,5 +1,5 @@
 
-oregen = oregen or {}
+if not minetest.global_exists("oregen") then oregen = {} end
 oregen.modpath = minetest.get_modpath("oregen")
 
 -- Localize for performance.

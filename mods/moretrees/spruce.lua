@@ -1,5 +1,5 @@
 
-moretrees = moretrees or {}
+if not minetest.global_exists("moretrees") then moretrees = {} end
 local SAPLING_TIME_MIN = 60*15
 local SAPLING_TIME_MAX = 60*20
 local SAPLING_CHANCE = 40

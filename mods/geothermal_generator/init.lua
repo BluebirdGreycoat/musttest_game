@@ -1,5 +1,5 @@
 
-geothermal_generator = geothermal_generator or {}
+if not minetest.global_exists("geothermal_generator") then geothermal_generator = {} end
 geothermal_generator.modpath = minetest.get_modpath("geothermal_generator")
 
 -- Localize for performance.

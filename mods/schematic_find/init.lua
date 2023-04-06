@@ -1,5 +1,5 @@
 
-schematic_find = schematic_find or {}
+if not minetest.global_exists("schematic_find") then schematic_find = {} end
 schematic_find.modpath = minetest.get_modpath("schematic_find")
 
 -- Test data.

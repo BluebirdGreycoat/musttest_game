@@ -2,7 +2,7 @@
 -- Use whenever you would use `minetest.registered_nodes' but don't need stairs.
 minetest.reg_ns_nodes = {}
 
-falldamage = falldamage or {}
+if not minetest.global_exists("falldamage") then falldamage = {} end
 falldamage.modpath = minetest.get_modpath("falldamage")
 dofile(falldamage.modpath .. "/tilesheet.lua")
 dofile(falldamage.modpath .. "/rangecheck.lua")

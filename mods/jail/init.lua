@@ -1,5 +1,5 @@
 
-jail = jail or {}
+if not minetest.global_exists("jail") then jail = {} end
 jail.modpath = minetest.get_modpath("jail")
 jail.noclip_radius = 15 -- Max distance of player from jail.
 

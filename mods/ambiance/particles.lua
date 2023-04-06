@@ -1,5 +1,5 @@
 
-particles = particles or {}
+if not minetest.global_exists("particles") then particles = {} end
 particles.modpath = minetest.get_modpath("ambiance")
 
 -- Localize for performance.

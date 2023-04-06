@@ -1,5 +1,5 @@
 
-bones = bones or {}
+if not minetest.global_exists("bones") then bones = {} end
 bones.nohack = bones.nohack or {}
 bones.nohack.players = bones.nohack.players or {}
 

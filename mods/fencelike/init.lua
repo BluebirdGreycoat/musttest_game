@@ -1,6 +1,6 @@
 
-default = default or {}
-fencelike = fencelike or {}
+if not minetest.global_exists("default") then default = {} end
+if not minetest.global_exists("fencelike") then fencelike = {} end
 fencelike.modpath = minetest.get_modpath("fencelike")
 
 

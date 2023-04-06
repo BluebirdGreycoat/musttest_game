@@ -1,6 +1,6 @@
 
 -- File shall be reloadable.
-memorandum = memorandum or {}
+if not minetest.global_exists("memorandum") then memorandum = {} end
 memorandum.modpath = minetest.get_modpath("memorandum")
 
 local MAX_LETTER_SIZE = 5000

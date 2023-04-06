@@ -1,5 +1,5 @@
 
-commandtools = commandtools or {}
+if not minetest.global_exists("commandtools") then commandtools = {} end
 commandtools.modpath = minetest.get_modpath("commandtools")
 
 -- Localize for performance.

@@ -1,5 +1,5 @@
 
-key = key or {}
+if not minetest.global_exists("key") then key = {} end
 key.modpath = minetest.get_modpath("key")
 
 -- Localize for performance.

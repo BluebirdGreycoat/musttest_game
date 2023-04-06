@@ -1,5 +1,5 @@
 
-bedrock = bedrock or {}
+if not minetest.global_exists("bedrock") then bedrock = {} end
 bedrock.modpath = minetest.get_modpath("bedrock")
 
 minetest.register_node("bedrock:bedrock", {

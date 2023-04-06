@@ -1,5 +1,5 @@
 
-moretrees = moretrees or {}
+if not minetest.global_exists("moretrees") then moretrees = {} end
 
 local find_surface = function(xz, b, t)
 	for j=t, b, -1 do

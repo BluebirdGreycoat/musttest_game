@@ -1,5 +1,5 @@
 
-shout = shout or {}
+if not minetest.global_exists("shout") then shout = {} end
 shout.modpath = minetest.get_modpath("shout")
 shout.worldpath = minetest.get_worldpath()
 shout.datafile = shout.worldpath .. "/hints.txt"

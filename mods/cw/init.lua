@@ -1,5 +1,5 @@
 
-cw = cw or {}
+if not minetest.global_exists("cw") then cw = {} end
 cw.modpath = minetest.get_modpath("cw")
 cw.worldpath = minetest.get_worldpath()
 

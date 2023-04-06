@@ -1,5 +1,5 @@
 
-scaffolding = scaffolding or {}
+if not minetest.global_exists("scaffolding") then scaffolding = {} end
 
 
 

@@ -5,7 +5,7 @@
 -- License of Media: CC BY-SA 3.0
 --------------------------------------------------------------------------------
 
-gem_tools = gem_tools or {}
+if not minetest.global_exists("gem_tools") then gem_tools = {} end
 gem_tools.modpath = minetest.get_modpath("gem_tools")
 
 -- This code is executed only once.

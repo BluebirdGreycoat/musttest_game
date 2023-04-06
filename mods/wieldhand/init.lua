@@ -1,5 +1,5 @@
 
-wieldhand = wieldhand or {}
+if not minetest.global_exists("wieldhand") then wieldhand = {} end
 wieldhand.modpath = minetest.get_modpath("wieldhand")
 
 

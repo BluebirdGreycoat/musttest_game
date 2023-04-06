@@ -1,5 +1,5 @@
 
-gemcut2 = gemcut2 or {}
+if not minetest.global_exists("gemcut2") then gemcut2 = {} end
 gemcut2.modpath = minetest.get_modpath("gem_cutter")
 
 local MACHINE_NAME = "Gem Cutter"
@@ -7,9 +7,9 @@ local MACHINE_DESC = "This cuts and shapes gems into a useable form.\nCan burn m
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "cutting"
 
-gemcut2_lv = gemcut2_lv or {}
---gemcut2_mv = gemcut2_mv or {}
---gemcut2_hv = gemcut2_hv or {}
+if not minetest.global_exists("gemcut2_lv") then gemcut2_lv = {} end
+--if not minetest.global_exists("gemcut2_mv") then gemcut2_mv = {} end
+--if not minetest.global_exists("gemcut2_hv") then gemcut2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

@@ -1,5 +1,5 @@
 
-anticurse = anticurse or {}
+if not minetest.global_exists("anticurse") then anticurse = {} end
 
 function anticurse.test(str, noreport)
 	if anticurse.check_string(anticurse.foul, str) then

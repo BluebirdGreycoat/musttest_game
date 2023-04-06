@@ -1,6 +1,6 @@
 
 -- Flint & Steel
-flint_and_steel = flint_and_steel or {}
+if not minetest.global_exists("flint_and_steel") then flint_and_steel = {} end
 flint_and_steel.modpath = minetest.get_modpath("flint_and_steel")
 
 -- Flint & steel on-use callback.

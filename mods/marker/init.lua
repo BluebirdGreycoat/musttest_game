@@ -1,5 +1,5 @@
 
-marker = marker or {}
+if not minetest.global_exists("marker") then marker = {} end
 marker.modpath = minetest.get_modpath("marker")
 marker.players = marker.players or {}
 marker.gui = marker.gui or {}

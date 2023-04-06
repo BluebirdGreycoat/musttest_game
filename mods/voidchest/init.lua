@@ -1,5 +1,5 @@
 
-voidchest = voidchest or {}
+if not minetest.global_exists("voidchest") then voidchest = {} end
 voidchest.modpath = minetest.get_modpath("voidchest")
 
 -- Localize for performance.

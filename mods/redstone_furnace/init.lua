@@ -1,5 +1,5 @@
 
-redstone_furnace = redstone_furnace or {}
+if not minetest.global_exists("redstone_furnace") then redstone_furnace = {} end
 redstone_furnace.modpath = minetest.get_modpath("redstone_furnace")
 local FURNACE_SPEED = 1.5
 

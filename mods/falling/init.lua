@@ -1,5 +1,5 @@
 
-falling = falling or {}
+if not minetest.global_exists("falling") then falling = {} end
 falling.modpath = minetest.get_modpath("falling")
 
 local get_node = core.get_node

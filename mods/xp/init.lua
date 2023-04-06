@@ -1,5 +1,5 @@
 
-xp = xp or {}
+if not minetest.global_exists("xp") then xp = {} end
 xp.modpath = minetest.get_modpath("xp")
 xp.digxp_max = 1000000
 xp.data = xp.data or {} -- Data is stored in string form.

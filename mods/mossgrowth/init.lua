@@ -1,5 +1,5 @@
 
-mossgrowth = mossgrowth or {}
+if not minetest.global_exists("mossgrowth") then mossgrowth = {} end
 mossgrowth.modpath = minetest.get_modpath("mossgrowth")
 
 

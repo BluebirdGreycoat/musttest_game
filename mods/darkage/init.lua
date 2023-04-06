@@ -1,6 +1,6 @@
 
 -- Mod is to be reloadable.
-darkage = darkage or {}
+if not minetest.global_exists("darkage") then darkage = {} end
 darkage.modpath = minetest.get_modpath("darkage")
 
 -- Functions.

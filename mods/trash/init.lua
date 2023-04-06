@@ -1,5 +1,5 @@
 
-trash = trash or {}
+if not minetest.global_exists("trash") then trash = {} end
 trash.modpath = minetest.get_modpath("trash")
 
 function trash.get_listname()

@@ -1,5 +1,5 @@
 
-converter = converter or {}
+if not minetest.global_exists("converter") then converter = {} end
 converter.modpath = minetest.get_modpath("converter")
 
 dofile(converter.modpath .. "/functions.lua")

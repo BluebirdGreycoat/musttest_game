@@ -1,10 +1,10 @@
 
-solar = solar or {}
+if not minetest.global_exists("solar") then solar = {} end
 solar.modpath = minetest.get_modpath("machines")
 
-solar_lv = solar_lv or {}
-solar_mv = solar_mv or {}
-solar_hv = solar_hv or {}
+if not minetest.global_exists("solar_lv") then solar_lv = {} end
+if not minetest.global_exists("solar_mv") then solar_mv = {} end
+if not minetest.global_exists("solar_hv") then solar_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

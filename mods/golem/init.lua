@@ -1,5 +1,5 @@
 
-golem = golem or {}
+if not minetest.global_exists("golem") then golem = {} end
 golem.modpath = minetest.get_modpath("golem")
 
 

@@ -1,5 +1,5 @@
 
-mailall = mailall or {}
+if not minetest.global_exists("mailall") then mailall = {} end
 mailall.modpath = minetest.get_modpath("hb4")
 mailall.worldpath = minetest.get_worldpath()
 

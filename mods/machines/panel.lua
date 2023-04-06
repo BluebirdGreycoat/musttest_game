@@ -1,5 +1,5 @@
 
-panel = panel or {}
+if not minetest.global_exists("panel") then panel = {} end
 panel.modpath = minetest.get_modpath("machines")
 
 local BUFFER_SIZE = tech.solar_panel.buffer

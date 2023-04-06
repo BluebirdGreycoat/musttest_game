@@ -1,5 +1,5 @@
 
-mob_spawn = mob_spawn or {}
+if not minetest.global_exists("mob_spawn") then mob_spawn = {} end
 mob_spawn.modpath = minetest.get_modpath("mob_spawn")
 mob_spawn.report_name = "MustTest"
 mob_spawn.report_mob = ""

@@ -1,5 +1,5 @@
 
-electric_screwdriver = electric_screwdriver or {}
+if not minetest.global_exists("electric_screwdriver") then electric_screwdriver = {} end
 electric_screwdriver.modpath = minetest.get_modpath("silicon")
 
 electric_screwdriver.image = "technic_sonic_screwdriver.png"

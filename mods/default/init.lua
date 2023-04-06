@@ -4,7 +4,7 @@
 -- The API documentation in here was moved into game_api.txt
 
 -- Definitions made by this mod that other mods can use too
-default = default or {}
+if not minetest.global_exists("default") then default = {} end
 default.modpath = minetest.get_modpath("default")
 default.LIGHT_MAX = 15
 

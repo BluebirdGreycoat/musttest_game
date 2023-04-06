@@ -1,7 +1,7 @@
 
-switching_station_hv = switching_station_hv or {}
-switching_station_mv = switching_station_mv or {}
-switching_station_lv = switching_station_lv or {}
+if not minetest.global_exists("switching_station_hv") then switching_station_hv = {} end
+if not minetest.global_exists("switching_station_mv") then switching_station_mv = {} end
+if not minetest.global_exists("switching_station_lv") then switching_station_lv = {} end
 
 -- Create copies of these functions by tier.
 for k, v in ipairs({

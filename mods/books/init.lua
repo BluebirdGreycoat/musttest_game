@@ -1,5 +1,5 @@
 
-books = books or {}
+if not minetest.global_exists("books") then books = {} end
 books.modpath = minetest.get_modpath("books")
 dofile(books.modpath .. "/book.lua")
 

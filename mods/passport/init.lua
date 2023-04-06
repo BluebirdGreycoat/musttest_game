@@ -2,7 +2,7 @@
 -- This mod provides an item which enables players to teleport to registered locations without the need of a teleporter.
 -- This item doubles as the means by which the server control scripts decide which playerfiles to delete and which to keep.
 
-passport = passport or {}
+if not minetest.global_exists("passport") then passport = {} end
 passport.recalls = passport.recalls or {}
 passport.players = passport.players or {}
 passport.player_recalls = passport.player_recalls or {}

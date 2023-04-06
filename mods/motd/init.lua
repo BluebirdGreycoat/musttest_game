@@ -1,5 +1,5 @@
 
-motd = motd or {}
+if not minetest.global_exists("motd") then motd = {} end
 motd.modpath = minetest.get_modpath("motd")
 
 

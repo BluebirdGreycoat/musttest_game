@@ -1,5 +1,5 @@
 
-geo2 = geo2 or {}
+if not minetest.global_exists("geo2") then geo2 = {} end
 geo2.modpath = minetest.get_modpath("geothermal_generator")
 
 local BUFFER_SIZE = tech.geothermal.buffer

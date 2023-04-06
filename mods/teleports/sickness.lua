@@ -1,5 +1,5 @@
 
-portal_sickness = portal_sickness or {}
+if not minetest.global_exists("portal_sickness") then portal_sickness = {} end
 portal_sickness.players = portal_sickness.players or {}
 portal_sickness.version = portal_sickness.version or 1
 

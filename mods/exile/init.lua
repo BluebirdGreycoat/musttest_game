@@ -1,5 +1,5 @@
 
-exile = exile or {}
+if not minetest.global_exists("exile") then exile = {} end
 exile.modpath = minetest.get_modpath("exile")
 exile.eviction_notices = exile.eviction_notices or {}
 

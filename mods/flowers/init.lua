@@ -5,7 +5,7 @@
 
 -- Namespace for functions
 
-flowers = flowers or {}
+if not minetest.global_exists("flowers") then flowers = {} end
 flowers.modpath = minetest.get_modpath("flowers")
 
 -- Localize for performance.

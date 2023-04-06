@@ -4,7 +4,7 @@
 -- License of Source Code: MIT
 --------------------------------------------------------------------------------
 
-gem_mapgen = gem_mapgen or {}
+if not minetest.global_exists("gem_mapgen") then gem_mapgen = {} end
 gem_mapgen.modpath = minetest.get_modpath("gem_mapgen")
 
 if not gem_mapgen.registered then

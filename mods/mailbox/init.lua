@@ -1,5 +1,5 @@
 
-mailbox = mailbox or {}
+if not minetest.global_exists("mailbox") then mailbox = {} end
 mailbox.modpath = minetest.get_modpath("mailbox")
 
 -- Stores mailbox information.

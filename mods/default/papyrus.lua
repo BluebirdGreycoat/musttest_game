@@ -1,5 +1,5 @@
 
-papyrus = papyrus or {}
+if not minetest.global_exists("papyrus") then papyrus = {} end
 papyrus.modpath = minetest.get_modpath("default")
 papyrus.steptime = {min=60*5, max=60*20}
 papyrus.plantname = "default:papyrus"

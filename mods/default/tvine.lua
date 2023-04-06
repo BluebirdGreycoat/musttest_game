@@ -3,7 +3,7 @@
 -- Idea and textures by alauer/Dresdan
 -- Code by MustTest
 
-tvine = tvine or {}
+if not minetest.global_exists("tvine") then tvine = {} end
 tvine.modpath = minetest.get_modpath("default")
 tvine.steptime = {min=60*5, max=60*20}
 --tvine.steptime = {min=1, max=1}

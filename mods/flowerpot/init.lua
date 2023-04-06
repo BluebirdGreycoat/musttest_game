@@ -10,7 +10,7 @@
 
 --]]
 
-flowerpot = flowerpot or {}
+if not minetest.global_exists("flowerpot") then flowerpot = {} end
 flowerpot.modpath = minetest.get_modpath("flowerpot")
 
 -- Localize for performance.

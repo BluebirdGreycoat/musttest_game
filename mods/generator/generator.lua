@@ -1,9 +1,9 @@
 
 -- Functions for the generator nodes.
-gen2 = gen2 or {}
-gen2_lv = gen2_lv or {}
-gen2_mv = gen2_mv or {}
-gen2_hv = gen2_hv or {}
+if not minetest.global_exists("gen2") then gen2 = {} end
+if not minetest.global_exists("gen2_lv") then gen2_lv = {} end
+if not minetest.global_exists("gen2_mv") then gen2_mv = {} end
+if not minetest.global_exists("gen2_hv") then gen2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

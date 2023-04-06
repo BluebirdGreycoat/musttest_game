@@ -1,5 +1,5 @@
 
-controler = controler or {}
+if not minetest.global_exists("controler") then controler = {} end
 controler.modpath = minetest.get_modpath("controler")
 
 

@@ -1,5 +1,5 @@
 
-itempickup = itempickup or {}
+if not minetest.global_exists("itempickup") then itempickup = {} end
 itempickup.modpath = minetest.get_modpath("itempickup")
 
 -- Localize vector.distance() for performance.

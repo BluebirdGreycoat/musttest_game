@@ -1,5 +1,5 @@
 
-basictrees = basictrees or {}
+if not minetest.global_exists("basictrees") then basictrees = {} end
 basictrees.modpath = minetest.get_modpath("basictrees")
 
 

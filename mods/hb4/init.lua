@@ -1,5 +1,5 @@
 
-hb4 = hb4 or {}
+if not minetest.global_exists("hb4") then hb4 = {} end
 hb4.modpath = minetest.get_modpath("hb4")
 
 -- Localize for performance.

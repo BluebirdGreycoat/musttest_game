@@ -3,7 +3,7 @@
 -- This avoides excessive code duplication. Machine tools include centrifuge,
 -- electric furnace, extractor, grinder, and others. These machines behave
 -- generally in similar ways.
-machines = machines or {}
+if not minetest.global_exists("machines") then machines = {} end
 machines.modpath = minetest.get_modpath("machines")
 
 local NEED_LOG = true

@@ -1,5 +1,5 @@
 
-distributer = distributer or {}
+if not minetest.global_exists("distributer") then distributer = {} end
 distributer.modpath = minetest.get_modpath("distributer")
 
 dofile(distributer.modpath .. "/functions.lua")

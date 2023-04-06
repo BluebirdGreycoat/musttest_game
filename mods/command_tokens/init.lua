@@ -1,5 +1,5 @@
 
-command_tokens = command_tokens or {}
+if not minetest.global_exists("command_tokens") then command_tokens = {} end
 command_tokens.modpath = minetest.get_modpath("command_tokens")
 
 local path = command_tokens.modpath

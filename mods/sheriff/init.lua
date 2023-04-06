@@ -1,5 +1,5 @@
 
-sheriff = sheriff or {}
+if not minetest.global_exists("sheriff") then sheriff = {} end
 sheriff.modpath = minetest.get_modpath("sheriff")
 sheriff.players = sheriff.players or {}
 

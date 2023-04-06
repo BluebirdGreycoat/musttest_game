@@ -1,7 +1,7 @@
 
 -- Walls/stairs registered in 'mr_extra'.
 -- This prevents potential deps load-order problems.
-morerocks = morerocks or {}
+if not minetest.global_exists("morerocks") then morerocks = {} end
 morerocks.modpath = minetest.get_modpath("morerocks")
 
 

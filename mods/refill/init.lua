@@ -1,5 +1,5 @@
 
-refill = refill or {}
+if not minetest.global_exists("refill") then refill = {} end
 refill.modpath = minetest.get_modpath("refill")
 
 

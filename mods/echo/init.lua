@@ -1,5 +1,5 @@
 
-echo = echo or {}
+if not minetest.global_exists("echo") then echo = {} end
 echo.modpath = minetest.get_modpath("echo")
 
 

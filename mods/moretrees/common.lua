@@ -1,5 +1,5 @@
 
-moretrees = moretrees or {}
+if not minetest.global_exists("moretrees") then moretrees = {} end
 
 
 

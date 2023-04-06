@@ -10,7 +10,7 @@
 --------------------------------------------------------------------------------
 
 -- Expose API.
-inventory_plus = inventory_plus or {}
+if not minetest.global_exists("inventory_plus") then inventory_plus = {} end
 inventory_plus.modpath = minetest.get_modpath("inventory_plus")
 
 -- Define buttons.

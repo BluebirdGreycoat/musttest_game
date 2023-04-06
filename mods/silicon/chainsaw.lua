@@ -1,5 +1,5 @@
 
-chainsaw = chainsaw or {}
+if not minetest.global_exists("chainsaw") then chainsaw = {} end
 chainsaw.modpath = minetest.get_modpath("silicon")
 
 -- Localize for performance.

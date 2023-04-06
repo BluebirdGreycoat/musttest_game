@@ -1,5 +1,5 @@
 
-compressor = compressor or {}
+if not minetest.global_exists("compressor") then compressor = {} end
 compressor.modpath = minetest.get_modpath("compressor")
 
 

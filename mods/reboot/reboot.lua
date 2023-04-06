@@ -1,6 +1,6 @@
 
 -- Mod API table.
-reboot = reboot or {}
+if not minetest.global_exists("reboot") then reboot = {} end
 
 
 

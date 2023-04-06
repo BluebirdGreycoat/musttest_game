@@ -1,5 +1,5 @@
 
-whitestone = whitestone or {}
+if not minetest.global_exists("whitestone") then whitestone = {} end
 whitestone.modpath = minetest.get_modpath("whitestone")
 
 

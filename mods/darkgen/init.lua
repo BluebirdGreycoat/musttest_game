@@ -1,5 +1,5 @@
 
-darkgen = darkgen or {}
+if not minetest.global_exists("darkgen") then darkgen = {} end
 darkgen.modpath = minetest.get_modpath("darkgen")
 
 darkgen.SHEET_HEIGHT = 20

@@ -1,5 +1,5 @@
 
-grinder = grinder or {}
+if not minetest.global_exists("grinder") then grinder = {} end
 grinder.crusher = grinder.crusher or {}
 local crusher = grinder.crusher
 

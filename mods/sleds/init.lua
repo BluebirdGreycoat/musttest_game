@@ -1,6 +1,6 @@
 -- Sled mod, copied from boat mod and modified.
 -- Mod is reloadable.
-sleds = sleds or {}
+if not minetest.global_exists("sleds") then sleds = {} end
 sleds.modpath = minetest.get_modpath("sleds")
 sleds.players = sleds.players or {}
 

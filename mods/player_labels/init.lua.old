@@ -1,5 +1,5 @@
 
-player_labels = player_labels or {}
+if not minetest.global_exists("player_labels") then player_labels = {} end
 player_labels.modpath = minetest.get_modpath("player_labels")
 player_labels.mark_timeout = 10
 player_labels.chat_timeout = 6

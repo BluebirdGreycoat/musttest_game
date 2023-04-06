@@ -1,5 +1,5 @@
 
-signs = signs or {}
+if not minetest.global_exists("signs") then signs = {} end
 signs.modpath = minetest.get_modpath("signs")
 
 local MAX_SIGN_LENGTH = 256

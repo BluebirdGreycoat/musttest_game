@@ -5,7 +5,7 @@ minetest.clear_registered_ores()
 minetest.clear_registered_biomes()
 minetest.clear_registered_decorations()
 
-mapgen = mapgen or {}
+if not minetest.global_exists("mapgen") then mapgen = {} end
 mapgen.modpath = minetest.get_modpath("mapgen")
 mapgen.blames = mapgen.blames or {}
 

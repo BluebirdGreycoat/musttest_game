@@ -1,7 +1,7 @@
 
 -- This file is designed to be reloadable.
 
-teleports = teleports or {}
+if not minetest.global_exists("teleports") then teleports = {} end
 teleports.teleports = teleports.teleports or {}
 teleports.min_range = 250
 teleports.datafile = minetest.get_worldpath() .. "/teleports.txt"

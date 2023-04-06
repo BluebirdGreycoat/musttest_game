@@ -1,5 +1,5 @@
 
-easyvend = easyvend or {}
+if not minetest.global_exists("easyvend") then easyvend = {} end
 easyvend.modpath = minetest.get_modpath("easyvend")
 
 -- Localize for performance.

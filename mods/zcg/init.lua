@@ -2,7 +2,7 @@
 -- See README for more information
 -- Released by Zeg9 under WTFPL
 
-zcg = zcg or {}
+if not minetest.global_exists("zcg") then zcg = {} end
 zcg.modpath = minetest.get_modpath("zcg")
 
 zcg.users = zcg.users or {}

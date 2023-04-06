@@ -1,7 +1,7 @@
 
 -- This file is reloadable.
 
-ambiance = ambiance or {}
+if not minetest.global_exists("ambiance") then ambiance = {} end
 ambiance.players = ambiance.players or {}
 ambiance.environment_cache = ambiance.environment_cache or {}
 ambiance.modpath = minetest.get_modpath("ambiance")

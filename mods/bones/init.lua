@@ -1,7 +1,7 @@
 -- Minetest 0.4 mod: bones
 -- See README.txt for licensing and other information.
 
-bones = bones or {}
+if not minetest.global_exists("bones") then bones = {} end
 
 
 

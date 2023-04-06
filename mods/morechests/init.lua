@@ -1,5 +1,5 @@
 
-morechests = morechests or {}
+if not minetest.global_exists("morechests") then morechests = {} end
 morechests.modpath = minetest.get_modpath("morechests")
 
 dofile(morechests.modpath .. "/nodes.lua")

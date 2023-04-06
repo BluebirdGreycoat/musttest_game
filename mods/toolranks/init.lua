@@ -4,7 +4,7 @@ local math_floor = math.floor
 
 
 
-toolranks = toolranks or {}
+if not minetest.global_exists("toolranks") then toolranks = {} end
 toolranks.modpath = minetest.get_modpath("toolranks")
 toolranks.players = toolranks.players or {}
 toolranks.tools = toolranks.tools or {}

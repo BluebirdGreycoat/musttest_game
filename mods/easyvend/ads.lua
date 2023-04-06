@@ -1,5 +1,5 @@
 
-ads = ads or {}
+if not minetest.global_exists("ads") then ads = {} end
 ads.modpath = minetest.get_modpath("easyvend")
 ads.worldpath = minetest.get_worldpath()
 ads.data = ads.data or {}

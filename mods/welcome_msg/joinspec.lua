@@ -1,5 +1,5 @@
 
-joinspec = joinspec or {}
+if not minetest.global_exists("joinspec") then joinspec = {} end
 joinspec.modpath = minetest.get_modpath("welcome_msg")
 
 -- Localize for performance.

@@ -1,5 +1,5 @@
 
-static_spawnpoint = static_spawnpoint or {}
+if not minetest.global_exists("static_spawnpoint") then static_spawnpoint = {} end
 static_spawnpoint.modpath = minetest.get_modpath("static_spawnpoint")
 
 -- Note: builtin includes this functionality, so we have to override it somehow.

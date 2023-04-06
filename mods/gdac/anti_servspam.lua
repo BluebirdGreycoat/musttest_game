@@ -1,5 +1,5 @@
 
-spam = spam or {}
+if not minetest.global_exists("spam") then spam = {} end
 spam.keys = spam.keys or {}
 spam.ips = spam.ips or {}
 

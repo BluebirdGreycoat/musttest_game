@@ -1,5 +1,5 @@
 
-skeleton = skeleton or {}
+if not minetest.global_exists("skeleton") then skeleton = {} end
 skeleton.modpath = minetest.get_modpath("skeleton")
 
 

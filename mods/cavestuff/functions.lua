@@ -1,5 +1,5 @@
 
-cavestuff = cavestuff or {}
+if not minetest.global_exists("cavestuff") then cavestuff = {} end
 cavestuff.modpath = minetest.get_modpath("cavestuff")
 
 -- Localize for performance.

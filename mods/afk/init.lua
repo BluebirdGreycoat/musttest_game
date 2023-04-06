@@ -1,5 +1,5 @@
 
-afk = afk or {}
+if not minetest.global_exists("afk") then afk = {} end
 afk.players = afk.players or {}
 afk.modpath = minetest.get_modpath("afk")
 afk.steptime = 5

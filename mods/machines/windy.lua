@@ -1,5 +1,5 @@
 
-windy = windy or {}
+if not minetest.global_exists("windy") then windy = {} end
 windy.modpath = minetest.get_modpath("machines")
 
 -- Localize for performance.

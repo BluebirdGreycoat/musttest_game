@@ -1,10 +1,10 @@
 
-distrib2 = distrib2 or {}
+if not minetest.global_exists("distrib2") then distrib2 = {} end
 distrib2.modpath = minetest.get_modpath("distributer")
 
-distrib2_lv = distrib2_lv or {}
-distrib2_mv = distrib2_mv or {}
-distrib2_hv = distrib2_hv or {}
+if not minetest.global_exists("distrib2_lv") then distrib2_lv = {} end
+if not minetest.global_exists("distrib2_mv") then distrib2_mv = {} end
+if not minetest.global_exists("distrib2_hv") then distrib2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

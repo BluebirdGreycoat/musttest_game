@@ -1,5 +1,5 @@
 
-xban = xban or {}
+if not minetest.global_exists("xban") then xban = {} end
 xban.db = xban.db or {}
 xban.tempbans = xban.tempbans or {}
 xban.MP = minetest.get_modpath("xban2")

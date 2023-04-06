@@ -1,5 +1,5 @@
 
-extract2 = extract2 or {}
+if not minetest.global_exists("extract2") then extract2 = {} end
 extract2.modpath = minetest.get_modpath("extractor")
 
 local MACHINE_NAME = "Extractor"
@@ -7,9 +7,9 @@ local MACHINE_DESC = "This extracts substances from things.\nCan burn mese for f
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "extracting"
 
-extract2_lv = extract2_lv or {}
-extract2_mv = extract2_mv or {}
---extract2_hv = extract2_hv or {}
+if not minetest.global_exists("extract2_lv") then extract2_lv = {} end
+if not minetest.global_exists("extract2_mv") then extract2_mv = {} end
+--if not minetest.global_exists("extract2_hv") then extract2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

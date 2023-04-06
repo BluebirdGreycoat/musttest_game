@@ -1,5 +1,5 @@
 
-alloyf2 = alloyf2 or {}
+if not minetest.global_exists("alloyf2") then alloyf2 = {} end
 alloyf2.modpath = minetest.get_modpath("electric_alloy_furnace")
 
 local MACHINE_NAME = "Alloy Furnace"
@@ -7,9 +7,9 @@ local MACHINE_DESC = "This alloys two things to make a third thing.\nCan burn me
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "alloying"
 
---alloyf2_lv = alloyf2_lv or {}
-alloyf2_mv = alloyf2_mv or {}
---alloyf2_hv = alloyf2_hv or {}
+--if not minetest.global_exists("alloyf2_lv") then alloyf2_lv = {} end
+if not minetest.global_exists("alloyf2_mv") then alloyf2_mv = {} end
+--if not minetest.global_exists("alloyf2_hv") then alloyf2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

@@ -61,8 +61,8 @@
 -- long swing time, so they're only good as first-strike weapons, then switching
 -- to a sword is better.
 
-tooldata = tooldata or {}
-td_api = td_api or {}
+if not minetest.global_exists("tooldata") then tooldata = {} end
+if not minetest.global_exists("td_api") then td_api = {} end
 local modpath = minetest.get_modpath("tooldata")
 td_api.modpath = modpath
 

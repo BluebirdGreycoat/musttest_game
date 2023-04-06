@@ -1,5 +1,5 @@
 
-command_tokens = command_tokens or {}
+if not minetest.global_exists("command_tokens") then command_tokens = {} end
 command_tokens.mute = command_tokens.mute or {}
 command_tokens.mute.players = command_tokens.mute.players or {}
 local mute_duration = 60*10 -- Time in seconds.

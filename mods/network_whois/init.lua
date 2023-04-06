@@ -1,5 +1,5 @@
 
-network_whois = network_whois or {}
+if not minetest.global_exists("network_whois") then network_whois = {} end
 network_whois.modpath = minetest.get_modpath("network_whois")
 
 

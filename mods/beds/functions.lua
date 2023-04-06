@@ -1,5 +1,5 @@
 
-beds = beds or {}
+if not minetest.global_exists("beds") then beds = {} end
 
 -- Localize for performance.
 local vector_round = vector.round

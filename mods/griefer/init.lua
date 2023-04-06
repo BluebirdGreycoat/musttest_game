@@ -1,5 +1,5 @@
 
-griefer = griefer or {}
+if not minetest.global_exists("griefer") then griefer = {} end
 griefer.modpath = minetest.get_modpath("griefer")
 
 

@@ -1,5 +1,5 @@
 
-lava_extras = lava_extras or {}
+if not minetest.global_exists("lava_extras") then lava_extras = {} end
 lava_extras.modpath = minetest.get_modpath("lava_extras")
 
 -- Register mod as reloadable.

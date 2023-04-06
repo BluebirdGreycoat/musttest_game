@@ -1,5 +1,5 @@
 
-ecfurn2 = ecfurn2 or {}
+if not minetest.global_exists("ecfurn2") then ecfurn2 = {} end
 ecfurn2.modpath = minetest.get_modpath("electric_furnace")
 
 local MACHINE_NAME = "Smelter"
@@ -7,9 +7,9 @@ local MACHINE_DESC = "This smelts or cooks things.\nCan burn mese for energy whe
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "cooking"
 
-ecfurn2_lv = ecfurn2_lv or {}
-ecfurn2_mv = ecfurn2_mv or {}
-ecfurn2_hv = ecfurn2_hv or {}
+if not minetest.global_exists("ecfurn2_lv") then ecfurn2_lv = {} end
+if not minetest.global_exists("ecfurn2_mv") then ecfurn2_mv = {} end
+if not minetest.global_exists("ecfurn2_hv") then ecfurn2_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

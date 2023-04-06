@@ -3,7 +3,7 @@
 local math_floor = math.floor
 
 -- Code API.
-hud_clock = hud_clock or {}
+if not minetest.global_exists("hud_clock") then hud_clock = {} end
 
 local player_hud = {}
 

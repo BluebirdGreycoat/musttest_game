@@ -1,5 +1,5 @@
 
-torchmelt = torchmelt or {}
+if not minetest.global_exists("torchmelt") then torchmelt = {} end
 torchmelt.modpath = minetest.get_modpath("torchmelt")
 
 -- Localize for performance.

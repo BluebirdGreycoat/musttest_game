@@ -1,6 +1,6 @@
 
-default = default or {}
-guicolors = guicolors or {}
+if not minetest.global_exists("default") then default = {} end
+if not minetest.global_exists("guicolors") then guicolors = {} end
 guicolors.modpath = minetest.get_modpath("guicolors")
 
 

@@ -1,5 +1,5 @@
 
-workshop = workshop or {}
+if not minetest.global_exists("workshop") then workshop = {} end
 workshop.modpath = minetest.get_modpath("machines")
 
 -- Localize for performance.

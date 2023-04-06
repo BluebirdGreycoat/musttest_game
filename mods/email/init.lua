@@ -1,6 +1,6 @@
 
 -- Mod is reloadable.
-email = email or {}
+if not minetest.global_exists("email") then email = {} end
 email.inboxes = email.inboxes or {}
 email.modpath = minetest.get_modpath("email")
 email.worldpath = minetest.get_worldpath()

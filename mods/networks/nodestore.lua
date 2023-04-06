@@ -1,5 +1,5 @@
 
-nodestore = nodestore or {}
+if not minetest.global_exists("nodestore") then nodestore = {} end
 nodestore.modpath = minetest.get_modpath("networks")
 nodestore.worldpath = minetest.get_worldpath()
 nodestore.database = nodestore.worldpath .. "/nodestore.sqlite"

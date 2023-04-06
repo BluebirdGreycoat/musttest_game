@@ -1,5 +1,5 @@
 
-oerkki = oerkki or {}
+if not minetest.global_exists("oerkki") then oerkki = {} end
 oerkki.modpath = minetest.get_modpath("oerkki")
 
 

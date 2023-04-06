@@ -1,5 +1,5 @@
 
-switching_station = switching_station or {}
+if not minetest.global_exists("switching_station") then switching_station = {} end
 switching_station.modpath = minetest.get_modpath("switching_station")
 
 dofile(switching_station.modpath .. "/shared.lua")

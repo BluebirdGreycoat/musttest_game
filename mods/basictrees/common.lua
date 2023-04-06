@@ -1,5 +1,5 @@
 
-basictrees = basictrees or {}
+if not minetest.global_exists("basictrees") then basictrees = {} end
 
 -- Localize for performance.
 local math_random = math.random

@@ -1,5 +1,5 @@
 
-bluegrass = bluegrass or {}
+if not minetest.global_exists("bluegrass") then bluegrass = {} end
 bluegrass.modpath = minetest.get_modpath("bluegrass")
 
 -- Localize for performance.

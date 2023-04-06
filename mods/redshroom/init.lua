@@ -1,5 +1,5 @@
 
-redshroom = redshroom or {}
+if not minetest.global_exists("redshroom") then redshroom = {} end
 redshroom.modpath = minetest.get_modpath("redshroom")
 
 -- Localize for performance.

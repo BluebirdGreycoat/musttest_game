@@ -1,5 +1,5 @@
 
-heal = heal or {}
+if not minetest.global_exists("heal") then heal = {} end
 heal.modpath = minetest.get_modpath("heal")
 
 

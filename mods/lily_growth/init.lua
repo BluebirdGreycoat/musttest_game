@@ -1,5 +1,5 @@
 
-lily_growth = lily_growth or {}
+if not minetest.global_exists("lily_growth") then lily_growth = {} end
 lily_growth.modpath = minetest.get_modpath("lily_growth")
 
 -- Grow water plants.

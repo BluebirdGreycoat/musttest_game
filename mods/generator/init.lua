@@ -1,5 +1,5 @@
 
-generator = generator or {}
+if not minetest.global_exists("generator") then generator = {} end
 generator.modpath = minetest.get_modpath("generator")
 
 dofile(generator.modpath .. "/functions.lua")

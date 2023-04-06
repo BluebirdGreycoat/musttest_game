@@ -1,5 +1,5 @@
 
-hb4 = hb4 or {}
+if not minetest.global_exists("hb4") then hb4 = {} end
 hb4.leafscatter = hb4.leafscatter or {}
 
 hb4.leafscatter.remove = function(pos, minp, maxp, leaf, chance)

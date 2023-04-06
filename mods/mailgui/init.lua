@@ -1,5 +1,5 @@
 
-mailgui = mailgui or {}
+if not minetest.global_exists("mailgui") then mailgui = {} end
 mailgui.modpath = minetest.get_modpath("mailgui")
 
 

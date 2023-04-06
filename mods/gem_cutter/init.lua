@@ -5,7 +5,7 @@
 -- License of Media: CC BY-SA 3.0
 --------------------------------------------------------------------------------
 
-gem_cutter = gem_cutter or {}
+if not minetest.global_exists("gem_cutter") then gem_cutter = {} end
 gem_cutter.modpath = minetest.get_modpath("gem_cutter")
 
 

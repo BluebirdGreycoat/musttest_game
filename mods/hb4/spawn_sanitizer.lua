@@ -1,5 +1,5 @@
 
-spawn_sanitizer = spawn_sanitizer or {}
+if not minetest.global_exists("spawn_sanitizer") then spawn_sanitizer = {} end
 spawn_sanitizer.modpath = minetest.get_modpath("hb4")
 
 spawn_sanitizer.areas = {

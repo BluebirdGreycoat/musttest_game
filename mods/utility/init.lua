@@ -1,6 +1,6 @@
 
-default = default or {}
-utility = utility or {}
+if not minetest.global_exists("default") then default = {} end
+if not minetest.global_exists("utility") then utility = {} end
 utility.modpath = minetest.get_modpath("utility")
 
 -- Localize for performance.

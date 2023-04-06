@@ -1,5 +1,5 @@
 
-coal_alloy_furnace = coal_alloy_furnace or {}
+if not minetest.global_exists("coal_alloy_furnace") then coal_alloy_furnace = {} end
 coal_alloy_furnace.modpath = minetest.get_modpath("coal_alloy_furnace")
 local FURNACE_SPEED = 3.0
 

@@ -1,5 +1,5 @@
 
-teleports = teleports or {}
+if not minetest.global_exists("teleports") then teleports = {} end
 
 
 

@@ -1,5 +1,5 @@
 
-grinder = grinder or {}
+if not minetest.global_exists("grinder") then grinder = {} end
 
 if not grinder.nodes_registered then
   for k, v in ipairs({

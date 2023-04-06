@@ -2,7 +2,7 @@
 
 -- Mod file disabled in preference for 'realchess' mod.
 ---[===[ -- Or NOT!
-realchess = realchess or {}
+if not minetest.global_exists("realchess") then realchess = {} end
 realchess.modpath = minetest.get_modpath("xdecor")
 
 -- Localize for performance.

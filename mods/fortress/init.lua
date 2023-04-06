@@ -2,7 +2,7 @@
 -- Todo:
 -- Allow fortress chunks to extend downward without limit until rock.
 
-fortress = fortress or {}
+if not minetest.global_exists("fortress") then fortress = {} end
 fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
 fortress.schempath = fortress.modpath .. "/schems"

@@ -12,7 +12,7 @@ local math_max = math.max
 
 local S = function(str) return str end
 
-circular_saw = circular_saw or {}
+if not minetest.global_exists("circular_saw") then circular_saw = {} end
 
 -- This is populated by stairsplus:register_all:
 circular_saw.known_nodes = circular_saw.known_nodes or {}

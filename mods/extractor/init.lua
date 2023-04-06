@@ -1,5 +1,5 @@
 
-extractor = extractor or {}
+if not minetest.global_exists("extractor") then extractor = {} end
 extractor.modpath = minetest.get_modpath("extractor")
 
 

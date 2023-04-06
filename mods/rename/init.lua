@@ -1,5 +1,5 @@
 
-rename = rename or {}
+if not minetest.global_exists("rename") then rename = {} end
 rename.modpath = minetest.get_modpath("rename")
 
 -- Localize for performance.

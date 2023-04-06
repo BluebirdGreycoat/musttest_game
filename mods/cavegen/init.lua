@@ -1,5 +1,5 @@
 
-cavegen = cavegen or {}
+if not minetest.global_exists("cavegen") then cavegen = {} end
 cavegen.modpath = minetest.get_modpath("cavegen")
 
 

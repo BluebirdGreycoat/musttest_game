@@ -1,8 +1,8 @@
 
 -- Function tables, per tier.
-battery_lv = battery_lv or {}
-battery_mv = battery_mv or {}
-battery_hv = battery_hv or {}
+if not minetest.global_exists("battery_lv") then battery_lv = {} end
+if not minetest.global_exists("battery_mv") then battery_mv = {} end
+if not minetest.global_exists("battery_hv") then battery_hv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

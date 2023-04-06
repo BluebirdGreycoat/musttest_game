@@ -1,5 +1,5 @@
 
-snow_bricks = snow_bricks or {}
+if not minetest.global_exists("snow_bricks") then snow_bricks = {} end
 snow_bricks.modpath = minetest.get_modpath("snow_bricks")
 
 -- Localize for performance.

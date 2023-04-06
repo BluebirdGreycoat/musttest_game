@@ -1,5 +1,5 @@
 
-grind2 = grind2 or {}
+if not minetest.global_exists("grind2") then grind2 = {} end
 grind2.modpath = minetest.get_modpath("grinder")
 
 local MACHINE_NAME = "Grinder"
@@ -7,8 +7,8 @@ local MACHINE_DESC = "This grinds things.\nCan burn mese for fuel when off-grid.
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "grinding"
 
-grind2_lv = grind2_lv or {}
-grind2_mv = grind2_mv or {}
+if not minetest.global_exists("grind2_lv") then grind2_lv = {} end
+if not minetest.global_exists("grind2_mv") then grind2_mv = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

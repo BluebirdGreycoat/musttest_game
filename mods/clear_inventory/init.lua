@@ -1,5 +1,5 @@
 
-clear_inventory = clear_inventory or {}
+if not minetest.global_exists("clear_inventory") then clear_inventory = {} end
 clear_inventory.modpath = minetest.get_modpath("clear_inventory")
 
 function clear_inventory.clear_primary_inventories(player)

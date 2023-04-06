@@ -1,5 +1,5 @@
 
-engraver = engraver or {}
+if not minetest.global_exists("engraver") then engraver = {} end
 engraver.modpath = minetest.get_modpath("engraver")
 
 local MAX_SIGN_LENGTH = 256

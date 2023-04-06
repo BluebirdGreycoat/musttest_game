@@ -1,4 +1,4 @@
-barter = barter or {}
+if not minetest.global_exists("barter") then barter = {} end
 barter.chest = barter.chest or {}
 barter.reset_delay = 60*20 -- Number of seconds to reset after pressing start.
 barter.long_delay = 60*60*3

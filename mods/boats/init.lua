@@ -1,7 +1,7 @@
 --
 -- Helper functions
 --
-boats = boats or {}
+if not minetest.global_exists("boats") then boats = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

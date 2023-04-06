@@ -1,5 +1,5 @@
 
-electric_alloy_furnace = electric_alloy_furnace or {}
+if not minetest.global_exists("electric_alloy_furnace") then electric_alloy_furnace = {} end
 electric_alloy_furnace.modpath = minetest.get_modpath("electric_alloy_furnace")
 
 

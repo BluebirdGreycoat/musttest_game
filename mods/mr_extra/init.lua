@@ -1,5 +1,5 @@
 
-mr_extra = mr_extra or {}
+if not minetest.global_exists("mr_extra") then mr_extra = {} end
 mr_extra.modpath = minetest.get_modpath("mr_extra")
 
 local rocks = {

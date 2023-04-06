@@ -1,5 +1,5 @@
 
-welcome = welcome or {}
+if not minetest.global_exists("welcome") then welcome = {} end
 welcome.modpath = minetest.get_modpath("welcome_msg")
 
 -- Timeout in seconds.

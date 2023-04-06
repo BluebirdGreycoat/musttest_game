@@ -1,5 +1,5 @@
 
-notify = notify or {}
+if not minetest.global_exists("notify") then notify = {} end
 
 local sub = vector.subtract
 local add = vector.add

@@ -4,7 +4,7 @@
 -- * can be used to repair tools
 -- * the hammer gets dammaged a bit at each repair step
 ---------------------------------------------------------------------------------------
-anvil = anvil or {}
+if not minetest.global_exists("anvil") then anvil = {} end
 anvil.modpath = minetest.get_modpath("anvil")
 
 -- Localize for performance.

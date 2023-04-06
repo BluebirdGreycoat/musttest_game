@@ -1,6 +1,6 @@
 
 -- Mod is reloadable.
-jumping = jumping or {}
+if not minetest.global_exists("jumping") then jumping = {} end
 jumping.modpath = minetest.get_modpath("jumping")
 
 local next_node = {

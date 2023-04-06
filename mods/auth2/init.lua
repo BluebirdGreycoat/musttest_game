@@ -1,5 +1,5 @@
 
-auth2 = auth2 or {}
+if not minetest.global_exists("auth2") then auth2 = {} end
 auth2.modpath = minetest.get_modpath("auth2")
 
 

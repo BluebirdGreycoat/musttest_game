@@ -1,5 +1,5 @@
 
-itemstring = itemstring or {}
+if not minetest.global_exists("itemstring") then itemstring = {} end
 itemstring.modpath = minetest.get_modpath("itemstring")
 
 minetest.register_privilege("item_info", {

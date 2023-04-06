@@ -1,5 +1,5 @@
 
-bandages = bandages or {}
+if not minetest.global_exists("bandages") then bandages = {} end
 bandages.modpath = minetest.get_modpath("bandages")
 bandages.players = bandages.players or {}
 

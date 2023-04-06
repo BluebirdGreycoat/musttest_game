@@ -2,7 +2,7 @@
 -- Realm Control Mod.
 -- This mod manages realm boundaries and prevents players from moving freely
 -- between realms/dimensions without programmatic intervention.
-rc = rc or {}
+if not minetest.global_exists("rc") then rc = {} end
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 

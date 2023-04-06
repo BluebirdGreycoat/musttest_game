@@ -1,5 +1,5 @@
 
-gdac_invis = gdac_invis or {}
+if not minetest.global_exists("gdac_invis") then gdac_invis = {} end
 gdac_invis.modpath = minetest.get_modpath("gdac_invis")
 gdac_invis.players = gdac_invis.players or {}
 

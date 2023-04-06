@@ -1,5 +1,5 @@
 
-recall = recall or {}
+if not minetest.global_exists("recall") then recall = {} end
 recall.modpath = minetest.get_modpath("recall")
 
 -- Recalls are now constructed/managed by players.

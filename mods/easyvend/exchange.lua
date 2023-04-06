@@ -1,5 +1,5 @@
 
-exchange = exchange or {}
+if not minetest.global_exists("exchange") then exchange = {} end
 exchange.modpath = minetest.get_modpath("easyvend")
 
 -- Note: exchange rate is doubled because only lumps are accepted now, not ingots.

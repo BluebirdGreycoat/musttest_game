@@ -1,5 +1,5 @@
 
-itemburn = itemburn or {}
+if not minetest.global_exists("itemburn") then itemburn = {} end
 itemburn.modpath = minetest.get_modpath("itemburn")
 
 -- Localize for performance.

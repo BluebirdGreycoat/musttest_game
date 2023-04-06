@@ -1,5 +1,5 @@
 
-lbrim = lbrim or {}
+if not minetest.global_exists("lbrim") then lbrim = {} end
 lbrim.modpath = minetest.get_modpath("lbrim")
 
 

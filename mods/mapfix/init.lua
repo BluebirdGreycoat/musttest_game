@@ -5,7 +5,7 @@
 --------------------------------------------------------------------------------
 
 -- Mod is reloadable.
-mapfix = mapfix or {}
+if not minetest.global_exists("mapfix") then mapfix = {} end
 mapfix.players = mapfix.players or {}
 mapfix.modpath = minetest.get_modpath("mapfix")
 

@@ -1,6 +1,6 @@
 -- mods/default/craftitems.lua
 
-default = default or {}
+if not minetest.global_exists("default") then default = {} end
 function default.strike_protection(itemstack, user, pt)
 	if not user or not user:is_player() then
 		return

@@ -1,5 +1,5 @@
 
-preload_tp = preload_tp or {}
+if not minetest.global_exists("preload_tp") then preload_tp = {} end
 preload_tp.modpath = minetest.get_modpath("preload_tp")
 
 -- Localize for performance.

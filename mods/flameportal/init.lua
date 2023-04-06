@@ -1,5 +1,5 @@
 
-flameportal = flameportal or {}
+if not minetest.global_exists("flameportal") then flameportal = {} end
 flameportal.modpath = minetest.get_modpath("flameportal")
 
 -- Localize for performance.

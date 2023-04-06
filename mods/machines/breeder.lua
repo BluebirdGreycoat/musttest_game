@@ -1,8 +1,8 @@
 
 -- Functions for the generator nodes.
-breeder = breeder or {}
-breeder_inactive = breeder_inactive or {}
-breeder_active = breeder_active or {}
+if not minetest.global_exists("breeder") then breeder = {} end
+if not minetest.global_exists("breeder_inactive") then breeder_inactive = {} end
+if not minetest.global_exists("breeder_active") then breeder_active = {} end
 breeder.siren = breeder.siren or {}
 
 local BUFFER_SIZE = tech.breeder.buffer

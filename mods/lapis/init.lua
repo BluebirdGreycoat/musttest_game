@@ -1,5 +1,5 @@
 
-lapis = lapis or {}
+if not minetest.global_exists("lapis") then lapis = {} end
 
 dofile(minetest.get_modpath("lapis").."/columns.lua")
 

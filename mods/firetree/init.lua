@@ -1,5 +1,5 @@
 
-firetree = firetree or {}
+if not minetest.global_exists("firetree") then firetree = {} end
 firetree.modpath = minetest.get_modpath("firetree")
 local SAPLING_TIME_MIN = 5*60
 local SAPLING_TIME_MAX = 10*60

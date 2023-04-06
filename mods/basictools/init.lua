@@ -1,5 +1,5 @@
 
-basictools = basictools or {}
+if not minetest.global_exists("basictools") then basictools = {} end
 basictools.modpath = minetest.get_modpath("basictools")
 
 

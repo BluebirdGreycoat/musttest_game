@@ -1,5 +1,5 @@
 
-rat = rat or {}
+if not minetest.global_exists("rat") then rat = {} end
 rat.modpath = minetest.get_modpath("rat")
 
 

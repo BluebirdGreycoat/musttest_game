@@ -1,5 +1,5 @@
 
-rackstone = rackstone or {}
+if not minetest.global_exists("rackstone") then rackstone = {} end
 rackstone.modpath = minetest.get_modpath("rackstone")
 -- group:rackstone is being used to check if a node should be considered naturally occuring for ambiance purposes.
 

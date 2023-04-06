@@ -1,5 +1,5 @@
 
-cans = cans or {}
+if not minetest.global_exists("cans") then cans = {} end
 
 -- Localize for performance.
 local math_floor = math.floor

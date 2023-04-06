@@ -1,5 +1,5 @@
 
-conv2 = conv2 or {}
+if not minetest.global_exists("conv2") then conv2 = {} end
 conv2.modpath = minetest.get_modpath("converter")
 
 local BUFFER_SIZE = tech.converter.buffer

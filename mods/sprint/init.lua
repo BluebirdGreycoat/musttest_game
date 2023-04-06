@@ -7,7 +7,7 @@ to this software to the public domain worldwide. This software is
 distributed without any warranty. 
 ]]
 
-sprint = sprint or {}
+if not minetest.global_exists("sprint") then sprint = {} end
 sprint.modpath = minetest.get_modpath("sprint")
 
 -- Configuration variables, these are all explained in README.md

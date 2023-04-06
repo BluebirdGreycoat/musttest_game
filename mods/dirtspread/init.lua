@@ -5,7 +5,7 @@
 -- If the node's logic changes it, make sure to use `minetest.add_node` in order
 -- to make the update logic cascade.
 
-dirtspread = dirtspread or {}
+if not minetest.global_exists("dirtspread") then dirtspread = {} end
 dirtspread.modpath = minetest.get_modpath("dirtspread")
 dirtspread.delay = 1.5
 dirtspread.index = dirtspread.index or 0

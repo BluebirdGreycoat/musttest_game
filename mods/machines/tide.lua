@@ -1,5 +1,5 @@
 
-tide = tide or {}
+if not minetest.global_exists("tide") then tide = {} end
 tide.modpath = minetest.get_modpath("machines")
 
 -- Localize for performance.

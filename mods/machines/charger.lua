@@ -1,5 +1,5 @@
 
-charger = charger or {}
+if not minetest.global_exists("charger") then charger = {} end
 charger.modpath = minetest.get_modpath("machines")
 
 -- Localize for performance.

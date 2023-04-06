@@ -1,5 +1,5 @@
 
-trunkgen = trunkgen or {}
+if not minetest.global_exists("trunkgen") then trunkgen = {} end
 trunkgen.modpath = minetest.get_modpath("trunkgen")
 
 -- Localize for performance.

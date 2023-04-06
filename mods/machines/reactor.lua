@@ -1,8 +1,8 @@
 
 -- Functions for the generator nodes.
-reactor = reactor or {}
-reactor_inactive = reactor_inactive or {}
-reactor_active = reactor_active or {}
+if not minetest.global_exists("reactor") then reactor = {} end
+if not minetest.global_exists("reactor_inactive") then reactor_inactive = {} end
+if not minetest.global_exists("reactor_active") then reactor_active = {} end
 reactor.siren = reactor.siren or {}
 
 local BUFFER_SIZE = tech.reactor.buffer

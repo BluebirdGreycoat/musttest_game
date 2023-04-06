@@ -1,5 +1,5 @@
 
-randspawn = randspawn or {}
+if not minetest.global_exists("randspawn") then randspawn = {} end
 randspawn.modpath = minetest.get_modpath("randspawn")
 
 -- Localize for performance.

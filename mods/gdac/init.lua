@@ -1,7 +1,7 @@
 
 -- Anticheat module.
 -- This file is reloadable.
-gdac = gdac or {}
+if not minetest.global_exists("gdac") then gdac = {} end
 gdac.session_violations = gdac.session_violations or {}
 gdac.modpath = minetest.get_modpath("gdac")
 

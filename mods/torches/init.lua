@@ -1,5 +1,5 @@
 
-torches = torches or {}
+if not minetest.global_exists("torches") then torches = {} end
 torches.modpath = minetest.get_modpath("torches")
 
 

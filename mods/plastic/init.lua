@@ -1,5 +1,5 @@
 
-plastic = plastic or {}
+if not minetest.global_exists("plastic") then plastic = {} end
 plastic.modpath = minetest.get_modpath("plastic")
 
 -- Important: the ability to oil door/chest hinges does NOT require protection access.

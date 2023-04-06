@@ -1,6 +1,6 @@
 -- Mod global namespace
 
-map = map or {}
+if not minetest.global_exists("map") then map = {} end
 map.modpath = minetest.get_modpath("map")
 map.players = map.players or {}
 map.time_step = 10

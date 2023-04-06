@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 
 -- This file obtains options for the mod.
-reload = reload or {}
+if not minetest.global_exists("reload") then reload = {} end
 reload.impl = reload.impl or {}
 
 reload.impl.setting_get = function(setting)

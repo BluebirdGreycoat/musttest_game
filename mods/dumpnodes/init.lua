@@ -1,5 +1,5 @@
 
-dumpnodes = dumpnodes or {}
+if not minetest.global_exists("dumpnodes") then dumpnodes = {} end
 dumpnodes.modpath = minetest.get_modpath("dumpnodes")
 
 

@@ -1,5 +1,5 @@
 
-ice = ice or {}
+if not minetest.global_exists("ice") then ice = {} end
 ice.modpath = minetest.get_modpath("ice")
 
 -- Localize for performance.

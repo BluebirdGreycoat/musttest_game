@@ -1,5 +1,5 @@
 
-status = status or {}
+if not minetest.global_exists("status") then status = {} end
 status.modpath = minetest.get_modpath("status")
 status.motd = minetest.setting_get("motd") or ""
 

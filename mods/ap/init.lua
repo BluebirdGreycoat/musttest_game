@@ -1,5 +1,5 @@
 
-ap = ap or {}
+if not minetest.global_exists("ap") then ap = {} end
 ap.modpath = ap.modpath or minetest.get_modpath("ap")
 ap.players = ap.players or {}
 

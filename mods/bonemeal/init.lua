@@ -1,5 +1,5 @@
 
-bonemeal = bonemeal or {}
+if not minetest.global_exists("bonemeal") then bonemeal = {} end
 bonemeal.modpath = minetest.get_modpath("bonemeal")
 
 -- Localize for performance.

@@ -1,5 +1,5 @@
 
-depositor = depositor or {}
+if not minetest.global_exists("depositor") then depositor = {} end
 depositor.modpath = minetest.get_modpath("depositor")
 depositor.datafile = minetest.get_worldpath() .. "/shops.txt"
 depositor.dropfile = minetest.get_worldpath() .. "/drops.txt"

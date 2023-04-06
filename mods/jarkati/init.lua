@@ -1,5 +1,5 @@
 
-jarkati = jarkati or {}
+if not minetest.global_exists("jarkati") then jarkati = {} end
 jarkati.modpath = minetest.get_modpath("jarkati")
 
 -- These match values in the realm-control mod.

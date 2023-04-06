@@ -1,4 +1,4 @@
-screwdriver = screwdriver or {}
+if not minetest.global_exists("screwdriver") then screwdriver = {} end
 
 -- Localize for performance.
 local math_random = math.random

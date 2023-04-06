@@ -1,5 +1,5 @@
 
-lavacooling = lavacooling or {}
+if not minetest.global_exists("lavacooling") then lavacooling = {} end
 lavacooling.modpath = minetest.get_modpath("lavacooling")
 
 local fire_node = 						{name="fire:basic_flame"}

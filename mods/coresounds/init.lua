@@ -1,6 +1,6 @@
 
-default = default or {}
-coresounds = coresounds or {}
+if not minetest.global_exists("default") then default = {} end
+if not minetest.global_exists("coresounds") then coresounds = {} end
 coresounds.modpath = minetest.get_modpath("coresounds")
 
 -- Currently used by both death and teleport-sickness code.

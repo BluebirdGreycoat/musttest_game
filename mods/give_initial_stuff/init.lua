@@ -1,5 +1,5 @@
 
-give_initial_stuff = give_initial_stuff or {}
+if not minetest.global_exists("give_initial_stuff") then give_initial_stuff = {} end
 give_initial_stuff.modpath = minetest.get_modpath("give_initial_stuff")
 give_initial_stuff.items = give_initial_stuff.items or {}
 

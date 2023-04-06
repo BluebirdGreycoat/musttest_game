@@ -2,7 +2,7 @@
 -- This file is registered as reloadable.
 ------------------------------------------------------------------------------
 
-reload = reload or {}
+if not minetest.global_exists("reload") then reload = {} end
 reload.impl = reload.impl or {}
 
 

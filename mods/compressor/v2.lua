@@ -1,5 +1,5 @@
 
-comp2 = comp2 or {}
+if not minetest.global_exists("comp2") then comp2 = {} end
 comp2.modpath = minetest.get_modpath("compressor")
 
 -- Localize for performance.
@@ -13,9 +13,9 @@ local MACHINE_DESC = "This smashes things together.\nCan burn mese for fuel when
 local MACHINE_FUEL_EU_PER_SEC = 80
 local RECIPE_TYPE = "compressing"
 
-comp2_lv = comp2_lv or {}
-comp2_mv = comp2_mv or {}
---comp2_hv = comp2_hv or {}
+if not minetest.global_exists("comp2_lv") then comp2_lv = {} end
+if not minetest.global_exists("comp2_mv") then comp2_mv = {} end
+--if not minetest.global_exists("comp2_hv") then comp2_hv = {} end
 
 
 

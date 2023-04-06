@@ -1,5 +1,5 @@
 
-banned_names = banned_names or {}
+if not minetest.global_exists("banned_names") then banned_names = {} end
 banned_names.modpath = minetest.get_modpath("banned_names")
 
 

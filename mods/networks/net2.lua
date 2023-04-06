@@ -1,5 +1,5 @@
 
-net2 = net2 or {}
+if not minetest.global_exists("net2") then net2 = {} end
 net2.modpath = minetest.get_modpath("networks")
 
 -- Localize vector.distance() for performance.

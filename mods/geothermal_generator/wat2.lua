@@ -1,5 +1,5 @@
 
-wat2 = wat2 or {}
+if not minetest.global_exists("wat2") then wat2 = {} end
 wat2.modpath = minetest.get_modpath("geothermal_generator")
 
 local BUFFER_SIZE = tech.hydroturbine.buffer

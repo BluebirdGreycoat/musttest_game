@@ -1,5 +1,5 @@
 
-reboot = reboot or {}
+if not minetest.global_exists("reboot") then reboot = {} end
 reboot.modpath = minetest.get_modpath("reboot")
 
 

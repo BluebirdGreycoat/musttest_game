@@ -1,5 +1,5 @@
 
-countdown = countdown or {}
+if not minetest.global_exists("countdown") then countdown = {} end
 countdown.modpath = minetest.get_modpath("hb4")
 countdown.quit = false
 

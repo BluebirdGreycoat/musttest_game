@@ -1,5 +1,5 @@
 
-obsidian_gateway = obsidian_gateway or {}
+if not minetest.global_exists("obsidian_gateway") then obsidian_gateway = {} end
 obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
 
 -- Localize for performance.

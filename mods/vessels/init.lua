@@ -1,7 +1,7 @@
 -- Minetest 0.4 mod: vessels
 -- See README.txt for licensing and other information.
 
-vessels = vessels or {}
+if not minetest.global_exists("vessels") then vessels = {} end
 vessels.modpath = minetest.get_modpath("vessels")
 
 

@@ -1,5 +1,5 @@
 
-grinder = grinder or {}
+if not minetest.global_exists("grinder") then grinder = {} end
 grinder.modpath = minetest.get_modpath("grinder")
 
 if minetest.get_modpath("reload") and reload then

@@ -1,5 +1,5 @@
 
-nodeinspector = nodeinspector or {}
+if not minetest.global_exists("nodeinspector") then nodeinspector = {} end
 nodeinspector.modpath = minetest.get_modpath("hb4")
 
 COLOR_RED = core.get_color_escape_sequence("#ff0000")

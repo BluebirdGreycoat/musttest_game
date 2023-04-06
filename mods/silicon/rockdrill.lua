@@ -1,5 +1,5 @@
 
-rockdrill = rockdrill or {}
+if not minetest.global_exists("rockdrill") then rockdrill = {} end
 rockdrill.modpath = minetest.get_modpath("silicon")
 
 rockdrill.image = "rockdrill_rockdrill.png"

@@ -1,5 +1,5 @@
 
-chat_logging = chat_logging or {}
+if not minetest.global_exists("chat_logging") then chat_logging = {} end
 chat_logging.modpath = minetest.get_modpath("chat_logging")
 chat_logging.worldpath = minetest.get_worldpath()
 

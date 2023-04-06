@@ -1,5 +1,5 @@
 
-diving_equipment = diving_equipment or {}
+if not minetest.global_exists("diving_equipment") then diving_equipment = {} end
 diving_equipment.modpath = minetest.get_modpath("hb4")
 diving_equipment.airtime = 60
 diving_equipment.steptime = 5

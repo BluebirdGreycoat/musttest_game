@@ -1,5 +1,5 @@
 
-configurator = configurator or {}
+if not minetest.global_exists("configurator") then configurator = {} end
 configurator.modpath = minetest.get_modpath("configurator")
 
 local SHORT_DESCRIPTION = "WR Config Device (Unconfigured)\n\nPunch node to set primary target.\nShift-punch node to set secondary target.\nRightclick node to set tertiary target."

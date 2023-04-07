@@ -98,7 +98,7 @@ local tool_capabilities = {
 			crumbly =     {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 			snappy =      {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 	},
-	damage_groups = {fleshy = mharm},
+	damage_groups = {fleshy = 1},
 }
 
 local entity_physics = function(pos, node, pharm, mharm)
@@ -127,6 +127,7 @@ local entity_physics = function(pos, node, pharm, mharm)
       local l = r:get_luaentity()
 			if l then
 				if l.mob and l.mob == true then
+					tool_capabilities.damage_groups.fleshy = mharm
 					r:punch(r, 1, tool_capabilities, nil)
 				elseif l.name == "__builtin:item" then
 					droplift.invoke(r)

@@ -10,10 +10,10 @@ rc.modpath = minetest.get_modpath("rc")
 local vector_round = vector.round
 local math_random = math.random
 
-local default_sky = {type="regular", clouds=true}
+local default_sky = {type="regular", clouds=true, body_orbit_tilt=0.0}
 local default_sun = {visible=true, sunrise_visible=true, scale=1}
 local default_moon = {visible=true, scale=1}
-local default_stars = {visible=true, count=1000}
+local default_stars = {visible=true, count=1000, day_opacity=0.0}
 local default_clouds = {
 	height = 120,
 	density = 0.4,
@@ -43,6 +43,8 @@ rc.realms = {
 			-- Overworld clouds change direction of travel on every restart.
 			speed = {x = math_random(-200, 200)/200, z = math_random(-200, 200)/200},
 		},
+		sky_data = {body_orbit_tilt = snow.body_orbit_tilt()},
+    star_data = {day_opacity = snow.star_opacity()},
 	},
 	{
 		id = 2, -- REALM ID. Code relies on this.
@@ -61,6 +63,7 @@ rc.realms = {
 		disabled = false, -- Whether realm can be "gated" to.
 		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}, thickness=4},
 		moon_data={scale=2.5},
+		sky_data = {body_orbit_tilt = -10.0},
 	},
 	{
 		id = 3, -- REALM ID. Code relies on this.
@@ -97,8 +100,8 @@ rc.realms = {
 		realm_origin = {x=-9174, y=4100, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
     sky_data = {clouds=false},
-    sun_data = {},
-    moon_data = {},
+    sun_data = {visible=false},
+    moon_data = {visible=true},
     star_data = {visible=true, count=50},
 	},
 }

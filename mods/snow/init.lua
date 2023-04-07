@@ -283,6 +283,96 @@ function snow.get_day()
 	return day .. "/34 (" .. season .. ")"
 end
 
+local body_orbit_tilt = {
+	-- 1 .. 17
+	10,
+	13,
+	16,
+	19,
+	22,
+	25,
+	28,
+	31,
+	34,
+	37,
+	40,
+	43,
+	46,
+	49,
+	52,
+	55,
+	58,
+
+	-- 18 .. 34
+	58,
+	55,
+	52,
+	49,
+	46,
+	43,
+	40,
+	37,
+	34,
+	31,
+	28,
+	25,
+	22,
+	19,
+	16,
+	13,
+	10,
+}
+
+function snow.body_orbit_tilt()
+	local day = snow.choose_level()
+	return body_orbit_tilt[day]
+end
+
+local star_opacity = {
+	-- 1 .. 17
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.1,
+	0.2,
+	0.25,
+	0.35,
+	0.55,
+	0.8,
+	1.0,
+
+	-- 18 .. 34
+	1.0,
+	0.8,
+	0.55,
+	0.35,
+	0.25,
+	0.2,
+	0.1,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+}
+
+function snow.star_opacity()
+	local day = snow.choose_level()
+	return star_opacity[day]
+end
+
 function snow.get_snowdef()
 	if snow.snowdef[snow.snowlevel] then
 		return snow.snowdef[snow.snowlevel]

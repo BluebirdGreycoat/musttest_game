@@ -1,5 +1,5 @@
 
-chests = chest or {}
+if not minetest.global_exists("chests") then chests = {} end
 chests.modpath = minetest.get_modpath("chests")
 
 

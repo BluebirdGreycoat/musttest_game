@@ -533,9 +533,14 @@ register({
 
 -- Reinit per-player data.
 mob_spawn.players = {}
-local players = minetest.get_connected_players()
-for k, v in ipairs(players) do
-	-- This is an indexed array.
-	local pname = v:get_player_name()
-	mob_spawn.reinit_player(pname)
+
+local function re_init()
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		-- This is an indexed array.
+		local pname = v:get_player_name()
+		mob_spawn.reinit_player(pname)
+	end
 end
+
+minetest.after(1, re_init)

@@ -1,5 +1,0 @@
-default
-tnt
-dusts
-torches
-

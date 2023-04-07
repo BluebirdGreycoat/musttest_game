@@ -1,7 +1,0 @@
-default
-grinder
-chests
-coresounds
-screwdriver?
-reload
-currency

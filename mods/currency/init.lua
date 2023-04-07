@@ -577,7 +577,9 @@ function currency.load()
 	currency.data = {}
 	local file, err = io.open(currency.filename, "r")
 	if err then
-		minetest.log("error", "Failed to open " .. currency.filename .. " for reading: " .. err)
+		if not err:find("No such file") then
+			minetest.log("error", "Failed to open " .. currency.filename .. " for reading: " .. err)
+		end
 	else
 		local datastring = file:read("*all")
 		if datastring and datastring ~= "" then

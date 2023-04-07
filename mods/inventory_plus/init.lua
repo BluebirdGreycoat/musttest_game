@@ -108,7 +108,7 @@ local function rebuild_all()
 end
 
 -- Execute!
-rebuild_all()
+minetest.after(1, rebuild_all)
 
 if not inventory_plus.registered then
 	minetest.register_on_joinplayer(function(...)

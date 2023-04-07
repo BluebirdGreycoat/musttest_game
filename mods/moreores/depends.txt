@@ -1,8 +1,0 @@
-default
-stairs
-oregen
-mapgen
-carts
-coresounds
-tooldata
-farming

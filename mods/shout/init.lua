@@ -159,7 +159,9 @@ do
 	-- Load all hints from world datafile.
 	local file, err = io.open(shout.datafile, "r")
 	if err then
-		minetest.log("error", "Failed to open " .. shout.datafile .. " for reading: " .. err)
+		if not err:find("No such file") then
+			minetest.log("error", "Failed to open " .. shout.datafile .. " for reading: " .. err)
+		end
 	else
 		local datastring = file:read("*all")
 		if datastring and datastring ~= "" then

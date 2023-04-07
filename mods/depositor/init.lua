@@ -254,7 +254,9 @@ function depositor.load()
 	depositor.shops = {}
 	local file, err = io.open(depositor.datafile, "r")
 	if err then
-		minetest.log("error", "Failed to open " .. depositor.datafile .. " for reading: " .. err)
+		if not err:find("No such file") then
+			minetest.log("error", "Failed to open " .. depositor.datafile .. " for reading: " .. err)
+		end
 	else
 		local datastring = file:read("*all")
 		if datastring and datastring ~= "" then
@@ -296,7 +298,9 @@ function depositor.load()
 	depositor.drops = {}
 	local file, err = io.open(depositor.dropfile, "r")
 	if err then
-		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for reading: " .. err)
+		if not err:find("No such file") then
+			minetest.log("error", "Failed to open " .. depositor.dropfile .. " for reading: " .. err)
+		end
 	else
 		local datastring = file:read("*all")
 		if datastring and datastring ~= "" then

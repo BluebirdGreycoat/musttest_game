@@ -25,6 +25,8 @@ function hunger.read(player)
 	return hgp - 1
 end
 
+
+
 function hunger.save(player)
 	local inv = player:get_inventory()
 	local name = player:get_player_name()
@@ -42,6 +44,8 @@ function hunger.save(player)
 	return true
 end
 
+
+
 function hunger.get_hunger(player)
 	local pname = player:get_player_name()
 	local data = hunger.players[pname]
@@ -50,6 +54,8 @@ function hunger.get_hunger(player)
 	end
 	return data.lvl
 end
+
+
 
 function hunger.update_hunger(player, new_lvl)
 	local name = player:get_player_name() or nil
@@ -74,15 +80,13 @@ end
 local update_hunger = hunger.update_hunger
 
 
--- Function added by MustTest. Hunger only happens outside the city, where players are on their own.
-local function distance(player)
-	local p = player:get_pos()
-	local d = math.sqrt((p.x*p.x)+(p.y*p.y)+(p.z*p.z))
-	local r = 200 -- Radius of city
-	local o = d-r
-	if o < 0 then o = 0 end
-	return o -- Number of meters player is outside the city radius.
+
+-- Hunger only calculated outside city areas.
+local function within_city(player)
+	return city_block:in_city(player:get_pos())
 end
+
+
 
 local function get_dig_exhaustion(player)
 	-- Note: this code will skip obtaining the 'hand' tool capabilities whenever
@@ -97,6 +101,8 @@ local function get_dig_exhaustion(player)
 	end
 	return HUNGER_EXHAUST_DIG
 end
+
+
 
 -- player-action based hunger changes
 function hunger.handle_node_actions(pos, oldnode, player, ext)
@@ -140,7 +146,8 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 	if exhaus > HUNGER_EXHAUST_LVL then
 		exhaus = 0
 		local h = tonumber(hunger.players[name].lvl)
-		if h > 0 and distance(player) > 0 then
+
+		if h > 0 and within_city(player) then
 			-- Player gets hungrier faster when away from their support base.
 			local loss = -1
 			local owner = protector.get_node_owner(vector_round(player:get_pos())) or ""
@@ -197,7 +204,8 @@ local function hunger_globaltimer(dtime)
 		for _,player in ipairs(minetest.get_connected_players()) do
 			local controls = player:get_player_control()
 			-- Determine if the player is walking
-			if (controls.up or controls.down or controls.left or controls.right) and distance(player) > 0 then
+			if (controls.up or controls.down or controls.left or controls.right)
+					and within_city(player) then
 				hunger.handle_node_actions(nil, nil, player)
 			end
 		end
@@ -211,7 +219,7 @@ local function hunger_globaltimer(dtime)
 			local tab = hunger.players[name]
 			if tab then
 				local hunger = tab.lvl
-				if hunger > 0 and distance(player) > 0 then
+				if hunger > 0 and within_city(player) then
 					update_hunger(player, hunger - 1)
 				end
 			end
@@ -260,13 +268,14 @@ local function hunger_globaltimer(dtime)
 	end
 end
 
-if minetest.settings:get_bool("enable_damage") then
-	minetest.register_globalstep(hunger_globaltimer)
-end
+minetest.register_globalstep(hunger_globaltimer)
+
 
 
 -- food functions
 local food = hunger.food
+
+
 
 function hunger.register_food(name, hunger_change, replace_with_item, poisen, heal, sound)
 	food[name] = {}
@@ -276,6 +285,8 @@ function hunger.register_food(name, hunger_change, replace_with_item, poisen, he
 	food[name].healing = heal				-- amount of HP
 	food[name].sound = sound				-- special sound that is played when eating
 end
+
+
 
 -- Poison player
 local function poisenp(tick, time, time_left, player, gorged)
@@ -301,6 +312,8 @@ local function poisenp(tick, time, time_left, player, gorged)
 	hb4.delayed_harm2(data)
 end
 
+
+
 -- wrapper for minetest.item_eat (this way we make sure other mods can't break this one)
 local org_eat = core.do_item_eat
 core.do_item_eat = function(hp_change, replace_with_item, itemstack, user, pointed_thing)
@@ -321,9 +334,12 @@ core.do_item_eat = function(hp_change, replace_with_item, itemstack, user, point
 	return itemstack
 end
 
+
+
 function hunger.eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 	local item = itemstack:get_name()
 	local def = food[item]
+
 	if not def then
 		def = {}
 		if type(hp_change) ~= "number" then
@@ -333,9 +349,12 @@ function hunger.eat(hp_change, replace_with_item, itemstack, user, pointed_thing
 		def.saturation = hp_change * 1.3
 		def.replace = replace_with_item
 	end
+
 	local func = hunger.item_eat(def.saturation, def.replace, def.poisen, def.healing, def.sound)
 	return func(itemstack, user, pointed_thing)
 end
+
+
 
 function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 	return function(itemstack, user, pointed_thing)
@@ -361,11 +380,13 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 
 		local hp = user:get_hp()
 		local hp_max = user:get_properties().hp_max
+
 		-- Saturation
 		if sat < HUNGER_MAX and hunger_change then
 			sat = sat + hunger_change
 			hunger.update_hunger(user, sat)
 		end
+
 		-- Healing
 		if hp < hp_max and heal then
 			hp = hp + heal
@@ -374,6 +395,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 			end
 			user:set_hp(hp)
 		end
+
 		-- Poison
 		if poisen then
 			if gorged then
@@ -386,6 +408,7 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 		if not sound then
 			sound = "hunger_eat"
 		end
+
 		--minetest.sound_play(sound, {to_player = name, gain = 0.7})
 		ambiance.sound_play(sound, user:get_pos(), 0.7, 10)
 		ambiance.particles_eat_item(user, itemstack:get_name())

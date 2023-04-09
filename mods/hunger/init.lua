@@ -6,21 +6,21 @@ hunger.food = hunger.food or {}
 
 
 
-HUNGER_TICK = 60*3        -- time in seconds after that 1 hunger point is taken
-HUNGER_HEALTH_TICK = 30   -- time in seconds after player gets healed/damaged
-HUNGER_MOVE_TICK = 5      -- time in seconds after the movement is checked
+HUNGER_TICK = 60         -- time in seconds after that 1 hunger point is taken
+HUNGER_HEALTH_TICK = 10  -- time in seconds after player gets healed/damaged
+HUNGER_MOVE_TICK = 2     -- time in seconds after the movement is checked
 
-HUNGER_EXHAUST_DIG = 6    -- exhaustion increased this value after digged node
-HUNGER_EXHAUST_PLACE = 3  -- exhaustion increased this value after placed
-HUNGER_EXHAUST_MOVE = 0.5 -- exhaustion increased this value if player movement detected
-HUNGER_EXHAUST_LVL = 160  -- at what exhaustion player saturation gets lowered
+HUNGER_EXHAUST_DIG = 10   -- exhaustion increased this value after digged node
+HUNGER_EXHAUST_PLACE = 5 -- exhaustion increased this value after placed
+HUNGER_EXHAUST_MOVE = 2  -- exhaustion increased this value if player movement detected
+HUNGER_EXHAUST_LVL = 300 -- at what exhaustion player saturation gets lowered
 
-HUNGER_HEAL = 1           -- number of HP player gets healed after HUNGER_HEALTH_TICK
-HUNGER_HEAL_LVL = 10      -- lower level of saturation needed to get healed
-HUNGER_STARVE = 1         -- number of HP player gets damaged by hunger after HUNGER_HEALTH_TICK
-HUNGER_STARVE_LVL = 3     -- level of staturation that causes starving
+HUNGER_HEAL = 0.05       -- percentage of HP player gets healed after HUNGER_HEALTH_TICK
+HUNGER_HEAL_LVL = 15     -- lower level of saturation needed to get healed
+HUNGER_STARVE = 0.05     -- percentage of HP player gets damaged by hunger after HUNGER_HEALTH_TICK
+HUNGER_STARVE_LVL = 4    -- level of staturation that causes starving
 
-HUNGER_MAX = 30           -- maximum level of saturation
+HUNGER_MAX = 30          -- maximum level of saturation
 
 
 

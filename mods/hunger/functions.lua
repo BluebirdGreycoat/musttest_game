@@ -272,17 +272,19 @@ function hunger.on_globalstep(dtime)
 				local air = player:get_breath() or 0
 				local hp = player:get_hp()
 				local hp_max = player:get_properties().hp_max
+				local hp_heal = math.floor(HUNGER_HEAL * hp_max)
+				local hp_stav = math.floor(HUNGER_STARVE * hp_max)
 
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30) player is not drowning
 				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
 					-- If player's health is >= 2/3rds, they may passively heal completely.
 					if hp >= (hp_max/3)*2 then
-						local new_hp = hp + HUNGER_HEAL
+						local new_hp = hp + hp_heal
 						player:set_hp(new_hp)
 					else
 						-- Otherwise (if player's heath < 2/3rds), then player's passive healing is capped to 1/3 of full health.
 						local heal_cap = math_floor(hp_max / 3)
-						local new_hp = math_min((hp + HUNGER_HEAL), heal_cap)
+						local new_hp = math_min((hp + hp_heal), heal_cap)
 
 						-- But don't reduce player's health, only increase it.
 						if new_hp > hp then
@@ -294,8 +296,8 @@ function hunger.on_globalstep(dtime)
 				-- or damage player by 1 hp if saturation is < 2 (of 30)
 				if tonumber(tab.lvl) < HUNGER_STARVE_LVL then
 					-- but don't kill player
-					if hp > HUNGER_STARVE then
-						player:set_hp(hp - HUNGER_STARVE)
+					if hp > hp_stav then
+						player:set_hp(hp - hp_stav)
 					end
 				end
 			end

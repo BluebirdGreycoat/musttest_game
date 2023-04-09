@@ -186,7 +186,9 @@ function hunger.on_dignode(pos, oldnode, player)
 	local pinfo = hunger.players[pname]
 
 	-- Enforce rate limit of once per second, as otherwise this would trigger many
-	-- many times for certain actions, like digging papyrus or scaffolding.
+	-- many times for certain actions, like digging papyrus or scaffolding. This
+	-- bug was, I think, actually present in the original old code, but harder to
+	-- notice because the effect was not immediately apparent.
 	if os.time() > (pinfo.dig_time or 0) then
 		pinfo.dig_time = os.time()
 
@@ -215,7 +217,9 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 	local pinfo = hunger.players[pname]
 
 	-- Enforce rate limit of once per second, as otherwise this would trigger many
-	-- many times for certain actions, like digging papyrus or scaffolding.
+	-- many times for certain actions, like digging papyrus or scaffolding. This
+	-- bug was, I think, actually present in the original old code, but harder to
+	-- notice because the effect was not immediately apparent.
 	if os.time() > (pinfo.place_time or 0) then
 		pinfo.place_time = os.time()
 

@@ -182,16 +182,25 @@ function hunger.on_dignode(pos, oldnode, player)
 		return
 	end
 
-	-- The amount of exhaustion added is based the percentage of stamina.
-	local maxsta = SPRINT_STAMINA
-	local cursta = sprint.get_stamina(player)
-	local pccsta = (cursta / maxsta)
-	local invsta = (1.0 - pccsta)
+	local pname = player:get_player_name()
+	local pinfo = hunger.players[pname]
 
-	sprint.add_stamina(player, -3)
+	-- Enforce rate limit of once per second, as otherwise this would trigger many
+	-- many times for certain actions, like digging papyrus or scaffolding.
+	if os.time() > (pinfo.dig_time or 0) then
+		pinfo.dig_time = os.time()
 
-	local new = get_dig_exhaustion(player) * invsta
-	hunger.handle_action_event(player, new)
+		-- The amount of exhaustion added is based the percentage of stamina.
+		local maxsta = SPRINT_STAMINA
+		local cursta = sprint.get_stamina(player)
+		local pccsta = (cursta / maxsta)
+		local invsta = (1.0 - pccsta)
+
+		sprint.add_stamina(player, -3)
+
+		local new = get_dig_exhaustion(player) * invsta
+		hunger.handle_action_event(player, new)
+	end
 end
 
 
@@ -202,16 +211,25 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 		return
 	end
 
-	-- The amount of exhaustion added is based the percentage of stamina.
-	local maxsta = SPRINT_STAMINA
-	local cursta = sprint.get_stamina(player)
-	local pccsta = (cursta / maxsta)
-	local invsta = (1.0 - pccsta)
+	local pname = player:get_player_name()
+	local pinfo = hunger.players[pname]
 
-	sprint.add_stamina(player, -1)
+	-- Enforce rate limit of once per second, as otherwise this would trigger many
+	-- many times for certain actions, like digging papyrus or scaffolding.
+	if os.time() > (pinfo.place_time or 0) then
+		pinfo.place_time = os.time()
 
-	local new = HUNGER_EXHAUST_PLACE * invsta
-	hunger.handle_action_event(player, new)
+		-- The amount of exhaustion added is based the percentage of stamina.
+		local maxsta = SPRINT_STAMINA
+		local cursta = sprint.get_stamina(player)
+		local pccsta = (cursta / maxsta)
+		local invsta = (1.0 - pccsta)
+
+		sprint.add_stamina(player, -1)
+
+		local new = HUNGER_EXHAUST_PLACE * invsta
+		hunger.handle_action_event(player, new)
+	end
 end
 
 

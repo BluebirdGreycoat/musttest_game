@@ -182,9 +182,15 @@ function hunger.on_dignode(pos, oldnode, player)
 		return
 	end
 
+	-- The amount of exhaustion added is based the percentage of stamina.
+	local maxsta = SPRINT_STAMINA
+	local cursta = sprint.get_stamina(player)
+	local pccsta = (cursta / maxsta)
+	local invsta = (1.0 - pccsta)
+
 	sprint.add_stamina(player, -3)
 
-	local new = get_dig_exhaustion(player)
+	local new = get_dig_exhaustion(player) * invsta
 	hunger.handle_action_event(player, new)
 end
 
@@ -192,9 +198,19 @@ end
 
 -- Placenode event.
 function hunger.on_placenode(pos, newnode, player, oldnode)
+	if not player or not player:is_player() then
+		return
+	end
+
+	-- The amount of exhaustion added is based the percentage of stamina.
+	local maxsta = SPRINT_STAMINA
+	local cursta = sprint.get_stamina(player)
+	local pccsta = (cursta / maxsta)
+	local invsta = (1.0 - pccsta)
+
 	sprint.add_stamina(player, -1)
 
-	local new = HUNGER_EXHAUST_PLACE
+	local new = HUNGER_EXHAUST_PLACE * invsta
 	hunger.handle_action_event(player, new)
 end
 

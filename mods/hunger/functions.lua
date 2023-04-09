@@ -428,6 +428,8 @@ function hunger.eat(hp_change, replace_with_item, itemstack, user, pointed_thing
 		def.replace = replace_with_item
 	end
 
+	def = hunger.adjust_from_diet(user:get_player_name(), item, def)
+
 	local func = hunger.item_eat(def.saturation, def.replace, def.poisen, def.healing, def.sound)
 	return func(itemstack, user, pointed_thing)
 end
@@ -469,18 +471,19 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 
 		-- Healing (or damage!)
 		if hp <= hp_max and heal then
-			hp = hp + heal
-
-			if hp > hp_max then hp = hp_max end
-			if hp < 0 then hp = 0 end
-
 			-- Warning: this might kill the player, causing other code to do
 			-- who-knows-what to the player inventory. Consequently this must be
 			-- executed out-of-band.
 			minetest.after(0, function()
 				local user = minetest.get_player_by_name(name)
 				if user then
-					user:set_hp(hp)
+					local hp = user:get_hp()
+					local newhp = hp + heal
+
+					if newhp > hp_max then newhp = hp_max end
+					if newhp < 0 then newhp = 0 end
+
+					user:set_hp(newhp)
 				end
 			end)
 		end
@@ -498,7 +501,6 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 			sound = "hunger_eat"
 		end
 
-		--minetest.sound_play(sound, {to_player = name, gain = 0.7})
 		ambiance.sound_play(sound, user:get_pos(), 0.7, 10)
 		ambiance.particles_eat_item(user, itemstack:get_name())
 

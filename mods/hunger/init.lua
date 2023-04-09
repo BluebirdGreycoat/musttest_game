@@ -25,6 +25,7 @@ HUNGER_MAX = 30          -- maximum level of saturation
 
 
 dofile(hunger.modpath .. "/functions.lua")
+dofile(hunger.modpath .. "/diet.lua")
 
 -- Putting this inside minetest.after() avoids having to declare dependencies.
 minetest.after(0, function()

@@ -1,3 +1,6 @@
+
+-- Unregister all foods first.
+hunger.food = {}
 local register_food = hunger.register_food
 
 register_food("basictrees:tree_apple", 2)
@@ -7,9 +10,10 @@ if minetest.get_modpath("farming") ~= nil then
 end
 
 if minetest.get_modpath("flowers") ~= nil then
-		register_food("flowers:mushroom_brown", 1)
-		-- Mushroom poisoning is handled in the flowers mod.
-		--register_food("flowers:mushroom_red", 1, "", 3)
+	register_food("flowers:mushroom_brown", 1)
+
+	-- Mushroom poisoning is handled in the flowers mod.
+	-- register_food("flowers:mushroom_red", 1, "", 3)
 end
 
 if minetest.get_modpath("mobs") ~= nil then
@@ -92,16 +96,19 @@ end
 if minetest.get_modpath("bushes_classic") then
 	-- bushes_classic mod, as found in the plantlife modpack
 	local berries = {
-	    "strawberry",
+		"strawberry",
 		"blackberry",
 		"blueberry",
 		"raspberry",
 		"gooseberry",
-		"mixed_berry"}
+		"mixed_berry",
+	}
+
 	for _, berry in ipairs(berries) do
 		if berry ~= "mixed_berry" then
 			register_food("bushes:"..berry, 1)
 		end
+
 		register_food("bushes:"..berry.."_pie_raw", 2)
 		register_food("bushes:"..berry.."_pie_cooked", 5)
 		register_food("bushes:basket_"..berry, 15)
@@ -111,6 +118,7 @@ end
 if minetest.get_modpath("mushroom") ~= nil then
 	register_food("mushroom:brown", 1)
 	register_food("mushroom:red", 1, "", 3)
+
 	-- mushroom potions: red = strong poison, brown = light restorative
 	if minetest.get_modpath("vessels") then
 		register_food("mushroom:brown_essence", 1, "vessels:glass_bottle", nil, 4)

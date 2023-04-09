@@ -1,7 +1,8 @@
 
 if not minetest.global_exists("hunger") then hunger = {} end
-hunger.players = {}
-hunger.food = {}
+hunger.modpath = minetest.get_modpath("hunger")
+hunger.players = hunger.players or {}
+hunger.food = hunger.food or {}
 
 
 
@@ -23,45 +24,28 @@ HUNGER_MAX = 30           -- maximum level of saturation
 
 
 
-local modpath = minetest.get_modpath("hunger")
-dofile(modpath .. "/functions.lua")
-dofile(modpath .. "/food.lua")
+dofile(hunger.modpath .. "/functions.lua")
 
-
-
--- Callbacks
-
--- initialization
-minetest.register_on_joinplayer(function(player)
-	local inv = player:get_inventory()
-	inv:set_size("hunger", 1)
-
-	local name = player:get_player_name()
-	hunger.players[name] = {}
-	hunger.players[name].lvl = hunger.read(player)
-	hunger.players[name].exhaus = 0
-	local lvl = hunger.players[name].lvl
-	if lvl > 30 then
-		lvl = 30
-	end
-
-	minetest.after(0.8, function()
-		hud.change_item(player, "hunger", {number = lvl, max = HUNGER_MAX})
-	end)
-end)
-
--- for exhaustion
-minetest.register_on_placenode(hunger.handle_node_actions)
-minetest.register_on_dignode(hunger.handle_node_actions)
-minetest.register_on_respawnplayer(function(player)
-	hunger.update_hunger(player, 20)
-	return true
-end)
-
--- clean up
-minetest.register_on_leaveplayer(function(player, timeout)
-	local pname = player:get_player_name()
-	hunger.players[pname] = nil
+-- Putting this inside minetest.after() avoids having to declare dependencies.
+minetest.after(0, function()
+	dofile(hunger.modpath .. "/food.lua")
 end)
 
 
+
+if not hunger.run_once then
+	hunger.run_once = true
+
+	core.do_item_eat = function(...) return hunger.do_item_eat(...) end
+
+	minetest.register_on_joinplayer(function(...) return hunger.on_joinplayer(...) end)
+	minetest.register_on_respawnplayer(function(...) return hunger.on_respawnplayer(...) end)
+	minetest.register_on_leaveplayer(function(...) return hunger.on_leaveplayer(...) end)
+	minetest.register_on_placenode(function(...) return hunger.handle_node_actions(...) end)
+	minetest.register_on_dignode(function(...) return hunger.handle_node_actions(...) end)
+	minetest.register_globalstep(function(...) return hunger.on_globalstep(...) end)
+
+	local c = "hunger:core"
+	local f = hunger.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+end

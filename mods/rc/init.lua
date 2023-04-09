@@ -100,7 +100,7 @@ rc.realms = {
 		realm_origin = {x=-9174, y=4100, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
     sky_data = {clouds=false},
-    sun_data = {visible=false},
+    sun_data = {visible=true},
     moon_data = {visible=true},
     star_data = {visible=true, count=50},
 	},

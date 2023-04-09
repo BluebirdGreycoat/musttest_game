@@ -6,6 +6,40 @@ local math_min = math.min
 
 
 
+function hunger.on_joinplayer(player)
+	local inv = player:get_inventory()
+	inv:set_size("hunger", 1)
+
+	local name = player:get_player_name()
+	hunger.players[name] = {}
+	hunger.players[name].lvl = hunger.read(player)
+	hunger.players[name].exhaus = 0
+	local lvl = hunger.players[name].lvl
+	if lvl > 30 then
+		lvl = 30
+	end
+
+	minetest.after(0.8, function()
+		hud.change_item(player, "hunger", {number = lvl, max = HUNGER_MAX})
+	end)
+end
+
+
+
+function hunger.on_respawnplayer(player)
+	hunger.update_hunger(player, 20)
+	return true
+end
+
+
+
+function hunger.on_leaveplayer(player, timeout)
+	local pname = player:get_player_name()
+	hunger.players[pname] = nil
+end
+
+
+
 -- read/write
 function hunger.read(player)
 	local inv = player:get_inventory()
@@ -138,7 +172,8 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 	end
 
 	-- Player doesn't get exhausted as quickly if fit and in good health.
-	if player:get_hp() >= 18 then
+	local max_hp = player:get_properties().hp_max
+	if player:get_hp() >= (max_hp * 0.9) then
 		new = math_floor(new / 2.0)
 	end
 	exhaus = exhaus + new
@@ -181,7 +216,8 @@ function hunger.increase_exhaustion(player, amount)
 			hunger.players[pname].exhaus = 0
 		end
 		-- Player doesn't get exhausted as quickly if fit and in good health.
-		if player:get_hp() >= 18 then
+		local max_hp = player:get_properties().hp_max
+		if player:get_hp() >= (max_hp * 0.9) then
 			amount = math_floor(amount / 3.0)
 		end
 		hunger.players[pname].exhaus = hunger.players[pname].exhaus + amount
@@ -195,7 +231,7 @@ local hunger_timer = 0
 local health_timer = 0
 local action_timer = 0
 
-local function hunger_globaltimer(dtime)
+function hunger.on_globalstep(dtime)
 	hunger_timer = hunger_timer + dtime
 	health_timer = health_timer + dtime
 	action_timer = action_timer + dtime
@@ -257,7 +293,8 @@ local function hunger_globaltimer(dtime)
 
 				-- or damage player by 1 hp if saturation is < 2 (of 30)
 				if tonumber(tab.lvl) < HUNGER_STARVE_LVL then
-					if player:get_hp() > 2 then -- Hunger doesn't kill players. Mobs do. By MustTest.
+					-- but don't kill player
+					if hp > HUNGER_STARVE then
 						player:set_hp(hp - HUNGER_STARVE)
 					end
 				end
@@ -268,22 +305,17 @@ local function hunger_globaltimer(dtime)
 	end
 end
 
-minetest.register_globalstep(hunger_globaltimer)
-
 
 
 -- food functions
-local food = hunger.food
-
-
-
 function hunger.register_food(name, hunger_change, replace_with_item, poisen, heal, sound)
+	local food = hunger.food
 	food[name] = {}
-	food[name].saturation = hunger_change	-- hunger points added
-	food[name].replace = replace_with_item	-- what item is given back after eating
-	food[name].poisen = poisen				-- time its poisening
-	food[name].healing = heal				-- amount of HP
-	food[name].sound = sound				-- special sound that is played when eating
+	food[name].saturation = hunger_change  -- hunger points added
+	food[name].replace = replace_with_item -- what item is given back after eating
+	food[name].poisen = poisen             -- time its poisening
+	food[name].healing = heal              -- amount of HP
+	food[name].sound = sound               -- special sound that is played when eating
 end
 
 
@@ -302,6 +334,7 @@ local function poisenp(tick, time, time_left, player, gorged)
 		poison = true,
 	}
 	data.msg = "# Server: <" .. rename.gpn(name) .. "> was poisoned!"
+
 	if gorged then
 		local sex = skins.get_gender_strings(name)
 		data.msg = "# Server: <" .. rename.gpn(name) .. "> gorged " .. sex.himself .. " to death."
@@ -309,14 +342,14 @@ local function poisenp(tick, time, time_left, player, gorged)
 		-- Overeating will not damage player below 2 hp!
 		data.hp_min = 2
 	end
+
 	hb4.delayed_harm2(data)
 end
 
 
 
 -- wrapper for minetest.item_eat (this way we make sure other mods can't break this one)
-local org_eat = core.do_item_eat
-core.do_item_eat = function(hp_change, replace_with_item, itemstack, user, pointed_thing)
+function hunger.do_item_eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 	local old_itemstack = itemstack
 	itemstack = hunger.eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 
@@ -325,12 +358,13 @@ core.do_item_eat = function(hp_change, replace_with_item, itemstack, user, point
 		return itemstack
 	end
 
-	for _, callback in pairs(core.registered_on_item_eats) do
+	for _, callback in ipairs(core.registered_on_item_eats) do
 		local result = callback(hp_change, replace_with_item, itemstack, user, pointed_thing, old_itemstack)
 		if result then
 			return result
 		end
 	end
+
 	return itemstack
 end
 
@@ -338,8 +372,9 @@ end
 
 function hunger.eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 	local item = itemstack:get_name()
-	local def = food[item]
+	local def = hunger.food[item]
 
+	-- In case food isn't defined at this time.
 	if not def then
 		def = {}
 		if type(hp_change) ~= "number" then
@@ -356,7 +391,9 @@ end
 
 
 
+-- Public API function, to be used in place of 'minetest.item_eat' where needed.
 function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
+	-- Returns 'on_use' callback closure.
 	return function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end
 
@@ -387,13 +424,22 @@ function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
 			hunger.update_hunger(user, sat)
 		end
 
-		-- Healing
-		if hp < hp_max and heal then
+		-- Healing (or damage!)
+		if hp <= hp_max and heal then
 			hp = hp + heal
-			if hp > hp_max then
-				hp = hp_max
-			end
-			user:set_hp(hp)
+
+			if hp > hp_max then hp = hp_max end
+			if hp < 0 then hp = 0 end
+
+			-- Warning: this might kill the player, causing other code to do
+			-- who-knows-what to the player inventory. Consequently this must be
+			-- executed out-of-band.
+			minetest.after(0, function()
+				local user = minetest.get_player_by_name(name)
+				if user then
+					user:set_hp(hp)
+				end
+			end)
 		end
 
 		-- Poison

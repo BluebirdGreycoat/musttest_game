@@ -192,13 +192,29 @@ function hunger.on_dignode(pos, oldnode, player)
 	if os.time() > (pinfo.dig_time or 0) then
 		pinfo.dig_time = os.time()
 
+		-- Use drawtype to guess how costly this node should be to dig.
+		-- Just need a quick approximation.
+		local cost = -2
+		local ndef = minetest.registered_nodes[oldnode.name]
+		if ndef then
+			local dt = ndef.drawtype or ""
+			if dt == "normal" then
+				cost = -3
+			elseif dt == "torchlike" or dt == "signlike" or dt == "plantlike"
+					or dt == "firelike" or dt == "nodebox" or dt == "mesh" then
+				cost = -1
+			elseif dt == "airlike" then
+				cost = 0
+			end
+		end
+
 		-- The amount of exhaustion added is based the percentage of stamina.
 		local maxsta = SPRINT_STAMINA
 		local cursta = sprint.get_stamina(player)
 		local pccsta = (cursta / maxsta)
 		local invsta = (1.0 - pccsta)
 
-		sprint.add_stamina(player, -3)
+		sprint.add_stamina(player, cost)
 
 		local new = get_dig_exhaustion(player) * invsta
 		hunger.handle_action_event(player, new)

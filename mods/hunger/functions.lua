@@ -116,8 +116,8 @@ local update_hunger = hunger.update_hunger
 
 
 -- Hunger only calculated outside city areas.
-local function within_city(player)
-	return city_block:in_city(player:get_pos())
+local function outside_city(player)
+	return not city_block:in_city(player:get_pos())
 end
 
 
@@ -138,37 +138,15 @@ end
 
 
 
--- player-action based hunger changes
-function hunger.handle_node_actions(pos, oldnode, player, ext)
-	if not player or not player:is_player() then
-		return
-	end
-	local name = player:get_player_name()
-	if not hunger.players[name] then
+function hunger.handle_action_event(player, new)
+	local pname = player:get_player_name()
+	if not hunger.players[pname] then
 		return
 	end
 
-	local exhaus = hunger.players[name].exhaus
+	local exhaus = hunger.players[pname].exhaus
 	if not exhaus then
-		hunger.players[name].exhaus = 0
-		--return
-	end
-
-	local new = HUNGER_EXHAUST_PLACE
-
-	-- placenode event
-	if not ext then
-		new = get_dig_exhaustion(player)
-	end
-
-	-- assume its send by action_timer(globalstep)
-	if not pos and not oldnode then
-		new = HUNGER_EXHAUST_MOVE
-		-- If player is walking through tough material, they get exhausted faster.
-		if sprint.get_speed_multiplier(name) < default.NORM_SPEED then
-			--minetest.chat_send_all(name .. " hungers faster b/c of slow movement!")
-			new = HUNGER_EXHAUST_MOVE * 4
-		end
+		hunger.players[pname].exhaus = 0
 	end
 
 	-- Player doesn't get exhausted as quickly if fit and in good health.
@@ -180,20 +158,64 @@ function hunger.handle_node_actions(pos, oldnode, player, ext)
 
 	if exhaus > HUNGER_EXHAUST_LVL then
 		exhaus = 0
-		local h = tonumber(hunger.players[name].lvl)
+		local h = tonumber(hunger.players[pname].lvl)
 
-		if h > 0 and within_city(player) then
+		if h > 0 and outside_city(player) then
 			-- Player gets hungrier faster when away from their support base.
 			local loss = -1
 			local owner = protector.get_node_owner(vector_round(player:get_pos())) or ""
-			if owner ~= name then
+			if owner ~= pname then
 				loss = -2
 			end
 			update_hunger(player, h + loss)
 		end
 	end
 
-	hunger.players[name].exhaus = exhaus
+	hunger.players[pname].exhaus = exhaus
+end
+
+
+
+-- Dignode event.
+function hunger.on_dignode(pos, oldnode, player)
+	if not player or not player:is_player() then
+		return
+	end
+
+	sprint.add_stamina(player, -3)
+
+	local new = get_dig_exhaustion(player)
+	hunger.handle_action_event(player, new)
+end
+
+
+
+-- Placenode event.
+function hunger.on_placenode(pos, newnode, player, oldnode)
+	sprint.add_stamina(player, -1)
+
+	local new = HUNGER_EXHAUST_PLACE
+	hunger.handle_action_event(player, new)
+end
+
+
+
+-- Player moving event.
+function hunger.on_move(player)
+	if not player or not player:is_player() then
+		return
+	end
+
+	local name = player:get_player_name()
+	local new = HUNGER_EXHAUST_MOVE
+
+	-- If player is walking through tough material, they get exhausted faster.
+	if sprint.get_speed_multiplier(name) < default.NORM_SPEED then
+		--minetest.chat_send_all(name .. " hungers faster b/c of slow movement!")
+		new = HUNGER_EXHAUST_MOVE * 4
+	end
+
+	hunger.handle_action_event(player, new)
 end
 
 
@@ -240,11 +262,11 @@ function hunger.on_globalstep(dtime)
 		for _,player in ipairs(minetest.get_connected_players()) do
 			local controls = player:get_player_control()
 			-- Determine if the player is walking
-			if (controls.up or controls.down or controls.left or controls.right)
-					and within_city(player) then
-				hunger.handle_node_actions(nil, nil, player)
+			if (controls.up or controls.down or controls.left or controls.right) then
+				hunger.on_move(player)
 			end
 		end
+
 		action_timer = 0
 	end
 
@@ -255,11 +277,12 @@ function hunger.on_globalstep(dtime)
 			local tab = hunger.players[name]
 			if tab then
 				local hunger = tab.lvl
-				if hunger > 0 and within_city(player) then
+				if hunger > 0 and outside_city(player) then
 					update_hunger(player, hunger - 1)
 				end
 			end
 		end
+
 		hunger_timer = 0
 	end
 
@@ -272,6 +295,8 @@ function hunger.on_globalstep(dtime)
 				local air = player:get_breath() or 0
 				local hp = player:get_hp()
 				local hp_max = player:get_properties().hp_max
+
+				-- Treat these as percentages.
 				local hp_heal = math.floor(HUNGER_HEAL * hp_max)
 				local hp_stav = math.floor(HUNGER_STARVE * hp_max)
 

@@ -16,6 +16,7 @@ SPRINT_SPEED = 1.45
 SPRINT_JUMP = 1.2
 SPRINT_STAMINA = 60
 SPRINT_HUD_ICONS = 46
+SPRINT_USE_RATE = 3
 
 dofile(sprint.modpath .. "/esprint.lua")
 

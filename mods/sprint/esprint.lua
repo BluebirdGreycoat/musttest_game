@@ -212,7 +212,7 @@ function sprint.globalstep(dtime)
 			
 			--Lower the player's stamina by dtime if he/she is sprinting and set his/her state to 0 if stamina is zero
 			if playerInfo["sprinting"] == true then 
-				playerInfo["stamina"] = playerInfo["stamina"] - dtime
+				playerInfo["stamina"] = playerInfo["stamina"] - (dtime * SPRINT_USE_RATE)
 				if playerInfo["stamina"] <= 0 then
 					playerInfo["stamina"] = 0
 					sprint.set_sprinting(playerName, false)
@@ -221,18 +221,27 @@ function sprint.globalstep(dtime)
 			--Increase player's stamina if he/she is not sprinting and his/her stamina is less than SPRINT_STAMINA
 			elseif playerInfo["sprinting"] == false and playerInfo["stamina"] < SPRINT_STAMINA then
 				if hunger.get_hunger(player) >= 10 then
-					local div = 3
+					local mult = 0.4
+
+					-- If moving, stamina comes back more slowly.
 					if control.up or control.left or control.right or control.down then
-						-- If moving, stamina comes back more slowly.
-						div = 6
+						mult = 0.01
 					end
+
+					-- If player is not hungry, they get stamina quicker.
+					if hunger.get_hunger(player) >= 30 then
+						mult = mult + 0.5
+					end
+
 					-- If player is in good health, they regain stamina more quickly.
-					if player:get_hp() >= 20 then
-						div = div - 2
-					elseif player:get_hp() >= 18 then
-						div = div - 1
+					local max_hp = player:get_properties().hp_max
+					if player:get_hp() >= max_hp then
+						mult = mult + 0.3
+					elseif player:get_hp() >= (max_hp * 0.9) then
+						mult = mult + 0.2
 					end
-					playerInfo["stamina"] = playerInfo["stamina"] + (dtime / div)
+
+					playerInfo["stamina"] = playerInfo["stamina"] + (dtime * mult)
 				end
 			end
 			-- Cap stamina at SPRINT_STAMINA

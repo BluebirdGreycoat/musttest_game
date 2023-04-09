@@ -10,7 +10,7 @@ HUNGER_TICK = 60         -- time in seconds after that 1 hunger point is taken
 HUNGER_HEALTH_TICK = 10  -- time in seconds after player gets healed/damaged
 HUNGER_MOVE_TICK = 2     -- time in seconds after the movement is checked
 
-HUNGER_EXHAUST_DIG = 10   -- exhaustion increased this value after digged node
+HUNGER_EXHAUST_DIG = 10  -- exhaustion increased this value after digged node
 HUNGER_EXHAUST_PLACE = 5 -- exhaustion increased this value after placed
 HUNGER_EXHAUST_MOVE = 2  -- exhaustion increased this value if player movement detected
 HUNGER_EXHAUST_LVL = 300 -- at what exhaustion player saturation gets lowered
@@ -41,8 +41,8 @@ if not hunger.run_once then
 	minetest.register_on_joinplayer(function(...) return hunger.on_joinplayer(...) end)
 	minetest.register_on_respawnplayer(function(...) return hunger.on_respawnplayer(...) end)
 	minetest.register_on_leaveplayer(function(...) return hunger.on_leaveplayer(...) end)
-	minetest.register_on_placenode(function(...) return hunger.handle_node_actions(...) end)
-	minetest.register_on_dignode(function(...) return hunger.handle_node_actions(...) end)
+	minetest.register_on_placenode(function(...) return hunger.on_placenode(...) end)
+	minetest.register_on_dignode(function(...) return hunger.on_dignode(...) end)
 	minetest.register_globalstep(function(...) return hunger.on_globalstep(...) end)
 
 	local c = "hunger:core"

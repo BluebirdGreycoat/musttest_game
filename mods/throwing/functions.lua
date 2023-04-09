@@ -19,7 +19,7 @@ function throwing.entity_blocks_arrow(entity_name)
 		return true
 	end
 
-	-- Ignore sound beacones.
+	-- Ignore sound beacons.
 	if entity_name:find("^soundbeacon:") then
 		return true
 	end

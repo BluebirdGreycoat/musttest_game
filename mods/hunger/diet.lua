@@ -16,7 +16,7 @@ function hunger.adjust_from_diet(pname, item, def)
   info[item] = ctime
 
   -- Barf. You ate too quickly.
-  if (ctime - ltime) <= 1 then
+  if (ctime - ltime) < 1 then
     ndef.healing = -1
   end
 

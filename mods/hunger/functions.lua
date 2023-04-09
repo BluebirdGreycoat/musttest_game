@@ -200,6 +200,12 @@ function hunger.on_dignode(pos, oldnode, player)
 			local dt = ndef.drawtype or ""
 			if dt == "normal" then
 				cost = -3
+
+				-- Special: anything that could be an ore should be a little bit harder.
+				local nn = oldnode.name
+				if nn:find("ore") or nn:find("_with_") or nn:find("mineral") then
+					cost = -5
+				end
 			elseif dt == "torchlike" or dt == "signlike" or dt == "plantlike"
 					or dt == "firelike" or dt == "nodebox" or dt == "mesh" then
 				cost = -1

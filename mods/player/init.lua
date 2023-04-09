@@ -204,9 +204,14 @@ minetest.register_on_joinplayer(function(player)
 	})
 
 	-- Finally! Minetest has shadow support!
-	player:set_lighting({
-		shadows = {intensity=0.5},
-	})
+	-- check if function is supported by server (old versions 5.5.0)
+	if player["set_lighting"] ~= nil then
+		player:set_lighting({
+			shadows = {intensity=0.5},
+		})
+	else
+		minetest.log("WARNING", "This server does not support player:lighting !");
+	end
 end)
 
 

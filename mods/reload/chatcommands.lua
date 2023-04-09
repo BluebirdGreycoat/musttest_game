@@ -54,16 +54,39 @@ reload.impl.reload = function(name, param)
 	local PREFIX = reload.chat_prefix
 	local ROOT = reload.root_path .. "/"
 	
-	if param == "list" then
-		for k, v in pairs(reload.impl.files) do
-			local count = 30
-			count = count - string.len(k)
-			if count < 0 then count = 0 end
-			local spaces = string.rep(" ", count)
-			local len = string.len(ROOT)
-			local p = string.sub(v, len+1)
-			reload.chat_send_player(name, PREFIX .. "<" .. k .. ">, " .. spaces .. "'" .. p .. "'.")
+	local sparams = string.split(param, " ")
+	local sfind = nil
+	-- total files count
+	local itotal = 0
+	-- search result count
+	local ifound = 0
+
+	if sparams[1] == "list" then
+		if type(sparams[2]) == "string" then
+			sfind = sparams[2]
 		end
+		for k, v in pairs(reload.impl.files) do
+			-- counting reloadable files
+			itotal = itotal + 1
+			local found = true
+			if sfind then
+				found = string.find(k, sfind, 1, false)
+			end
+			if found then
+				-- counting search results
+				ifound = ifound + 1
+				
+				-- get root relative path
+				local srelpath = string.gsub(v, "^" .. ROOT, "")
+				local sfmt = "%s %-32s '%s'."
+				local sfileid = "<" .. k .. ">"
+				local smsg = string.format(sfmt, PREFIX, sfileid, srelpath)
+				reload.chat_send_player(name, smsg)
+			end
+		end
+		local smsg = string.format("%s Listed %d of %d reloadable files.",
+				PREFIX, ifound, itotal)
+		reload.chat_send_player(name, smsg)
 		reload.chat_send_player(name, PREFIX .. "End of list.")
 		return true
 	else
@@ -127,7 +150,7 @@ end
 -- Don't register the chat commands more than once, even if this file is reloaded.
 if not reload.chat_registered then
 	minetest.register_chatcommand("reload", {
-		params = "<fileid> | list",
+		params = "<fileid> | list [search]",
 		description = "Reload a registered source file at runtime.",
 		
 		-- Player must have server priviliges.

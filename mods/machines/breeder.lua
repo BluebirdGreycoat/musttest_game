@@ -675,7 +675,7 @@ if not breeder.run_once then
 			light_source = v.light,
 
 			on_energy_get = function(...)
-				return breeder.on_energy_get(...) end,
+				return func.on_energy_get(...) end,
 			on_rotate = function(...)
 				return screwdriver.rotate_simple(...) end,
 			on_punch = function(...)

@@ -106,6 +106,8 @@ function armor.set_player_armor(self, player)
 							material.type = mat
 						end
 
+						-- Mark this type/peice of armor as handled.
+						-- This avoids letting players use duplicate armor peices.
 						elements[k] = true
 					end
 				end

@@ -127,6 +127,7 @@ reload.impl.dostring = function(name, str)
 		"local me=minetest.get_player_by_name(\"" .. name .. "\") " ..
 		"local mypos=me:get_pos() " ..
 		"local myname=me:get_player_name() " ..
+		"local held=me:get_wielded_item()" ..
 		"local function player(pname) return minetest.get_player_by_name(pname) end " ..
 		"local function print(text) minetest.chat_send_player(\"" .. name .. "\", \"# Server: \" .. text) end " ..
 		str .. " end" -- User code & end of block.

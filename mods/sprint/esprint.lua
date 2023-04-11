@@ -265,6 +265,8 @@ function sprint.globalstep(dtime)
 	end
 end
 
+
+
 function sprint.set_sprinting(playerName, sprinting) --Sets the state of a player (0=stopped/moving, 1=sprinting)
 	local player = minetest.get_player_by_name(playerName)
 	
@@ -284,14 +286,22 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 
 	if players[playerName] then
 		players[playerName]["sprinting"] = sprinting
+
 		if sprinting == true then
-			player:set_physics_override({speed=speedmults[playerName]*SPRINT_SPEED*hp_mult,jump=jumpmults[playerName]*SPRINT_JUMP*hp_mult})
+			player:set_physics_override({
+				speed = speedmults[playerName] * SPRINT_SPEED * hp_mult,
+				jump = jumpmults[playerName] * SPRINT_JUMP * hp_mult,
+			})
 		elseif sprinting == false then
-			player:set_physics_override({speed=speedmults[playerName]*hp_mult, jump=jumpmults[playerName]*hp_mult})
+			player:set_physics_override({
+				speed = speedmults[playerName] * hp_mult,
+				jump = jumpmults[playerName] * hp_mult,
+			})
 		end
+
 		return true
 	end
+
 	return false
 end
-setSprinting = sprint.set_sprinting
 

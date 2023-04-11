@@ -440,65 +440,70 @@ end
 
 
 
-function armor.on_player_hp_change(player, hp_change)
+function armor.on_player_hp_change(player, hp_change, reason)
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
-	if pname and hp_change < 0 then
-
-		-- Admin does not take damage.
-		local singleplayer = minetest.is_singleplayer()
-		if not singleplayer then
-			if gdac.player_is_admin(player) then
-				return 0
-			end
-		end
-
-		-- used for insta kill tools/commands like /kill (doesnt damage armor)
-		if hp_change < -100 then
-			return hp_change
-		end
-
-		local heal_max = 0
-		local state = 0
-		local items = 0
-
-		for i=1, 6 do
-			local stack = player_inv:get_stack("armor", i)
-			if stack:get_count() > 0 then
-				local use = stack:get_definition().groups["armor_use"] or 0
-				local heal = stack:get_definition().groups["armor_heal"] or 0
-				local item = stack:get_name()
-				stack:add_wear(use)
-				armor_inv:set_stack("armor", i, stack)
-				player_inv:set_stack("armor", i, stack)
-				state = state + stack:get_wear()
-				items = items + 1
-
-				if stack:get_count() == 0 then
-					local desc = minetest.registered_items[item].description
-
-					if desc then
-						minetest.chat_send_player(pname, "# Server: Your " .. desc .. " got destroyed!")
-						ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
-					end
-
-					armor:set_player_armor(player)
-					armor:update_inventory(player)
-				end
-
-				heal_max = heal_max + heal
-			end
-		end
-
-		armor.def[pname].state = state
-		armor.def[pname].count = items
-		heal_max = heal_max * ARMOR_HEAL_MULTIPLIER
-
-		if heal_max > math_random(100) then
-			hp_change = 0
-		end
-
-		armor:update_armor(player)
+	if not (pname and hp_change < 0) then
+		return hp_change
 	end
 
+	-- Admin does not take damage.
+	local singleplayer = minetest.is_singleplayer()
+	if not singleplayer then
+		if gdac.player_is_admin(player) then
+			return 0
+		end
+	end
+
+	-- used for insta kill tools/commands like /kill (doesnt damage armor)
+	if hp_change < -100 then
+		return hp_change
+	end
+
+	local heal_max = 0
+	local state = 0
+	local items = 0
+
+	for i = 1, 6 do
+		local stack = player_inv:get_stack("armor", i)
+
+		if stack:get_count() > 0 then
+			local use = stack:get_definition().groups["armor_use"] or 0
+			local heal = stack:get_definition().groups["armor_heal"] or 0
+			local item = stack:get_name()
+
+			stack:add_wear(use)
+
+			armor_inv:set_stack("armor", i, stack)
+			player_inv:set_stack("armor", i, stack)
+
+			state = state + stack:get_wear()
+			items = items + 1
+
+			if stack:get_count() == 0 then
+				local desc = minetest.registered_items[item].description
+
+				if desc then
+					minetest.chat_send_player(pname, "# Server: Your " .. desc .. " got destroyed!")
+					ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
+				end
+
+				armor:set_player_armor(player)
+				armor:update_inventory(player)
+			end
+
+			heal_max = heal_max + heal
+		end
+	end
+
+	armor.def[pname].state = state
+	armor.def[pname].count = items
+
+	heal_max = heal_max * ARMOR_HEAL_MULTIPLIER
+
+	if heal_max > math_random(100) then
+		hp_change = 0
+	end
+
+	armor:update_armor(player)
 	return hp_change
 end

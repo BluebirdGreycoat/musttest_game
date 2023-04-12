@@ -30,6 +30,27 @@ armor.textures = armor.textures or {}
 
 
 
+-- Use this function (just before) you call player:punch(), to notify the armor
+-- mod what the reason info for the punch is. Because as of this writing, you
+-- can't pass the PlayerHPChangeReason table directly to the :punch() method.
+-- Silly Minetest!
+function armor.notify_punch_reason(reason)
+	armor.hp_change_reason = reason
+	armor.hp_change_reason.type = "punch"
+end
+
+
+
+-- May return nil.
+function armor.get_punch_reason(engine_reason)
+	local reason = armor.hp_change_reason
+	armor.hp_change_reason = nil
+	reason.object = engine_reason.object
+	return reason
+end
+
+
+
 function armor.update_player_visuals(self, player)
 	if not player then
 		return
@@ -440,6 +461,43 @@ end
 
 
 
+-- Calc wear multiplier based on reason and armor piece.
+-- Notes: 'type' will be "set_hp" if from player:set_hp().
+-- Must use 'reason' field in that case.
+--
+-- Reason types are:
+--   fall (fall damage, duh)
+--   punch (punched by something)
+--   drown (drowning, duh)
+--   heat (caused by quite a few sources of heat, including lava)
+--   pressure (water pressure, usually)
+--   ground (ground/floor hazard, spikes, etc)
+--   sharp (like cactus)
+--   crush (by falling node/object)
+--   portal (arcane damage by teleporting)
+--   poison (mushrooms, rotten meat)
+--   hunger (starvation)
+--   kill (kill command)
+--   radiation (reactors, etc)
+--   electrocute (solar panels)
+function armor.wear_from_reason(item, def, reason)
+	local rs = reason.type
+	if rs == "set_hp" then
+		rs = reason.reason or ""
+	end
+
+	if rs == "" then
+		return 1
+	end
+
+	minetest.log('Reason: ' .. rs)
+
+	local mult = def["_armor_wear_from_" .. rs] or 1
+	return mult
+end
+
+
+
 function armor.on_player_hp_change(player, hp_change, reason)
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
 	if not (pname and hp_change < 0) then
@@ -463,15 +521,25 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	local state = 0
 	local items = 0
 
+	-- If a notified reason is available, use that instead.
+	-- Note that 'get_punch_reason' clears the reason when it is called.
+	if reason.type == "punch" then
+		local huh = armor.get_punch_reason(reason)
+		if huh then
+			reason = huh
+		end
+	end
+
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
 
 		if stack:get_count() > 0 then
-			local use = stack:get_definition().groups["armor_use"] or 0
-			local heal = stack:get_definition().groups["armor_heal"] or 0
+			local idef = stack:get_definition()
+			local use = idef.groups["armor_use"] or 0
+			local heal = idef.groups["armor_heal"] or 0
 			local item = stack:get_name()
 
-			stack:add_wear(use)
+			stack:add_wear(use * armor.wear_from_reason(item, idef, reason))
 
 			armor_inv:set_stack("armor", i, stack)
 			player_inv:set_stack("armor", i, stack)

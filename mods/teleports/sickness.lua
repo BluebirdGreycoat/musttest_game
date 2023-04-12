@@ -110,7 +110,7 @@ function portal_sickness.on_use_portal(pname)
 			return
 		elseif players[pname].sick >= 3 then
 			-- Teleporting while throwing up? Just die already!
-			player:set_hp(0)
+			player:set_hp(0, {reason="portal"})
 			minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> succumbed to PORTAL SICKNESS.")
 			return
 		end

@@ -1272,12 +1272,12 @@ do
 			local stack = puncher:get_wielded_item()
 			local name = stack:get_name() or ""
 			if not string.find(name, "axe") then
-				puncher:set_hp(puncher:get_hp() - 1)
+				puncher:set_hp(puncher:get_hp() - 1, {reason="sharp"})
 			end
 		end,
 
 		on_player_walk_over = function(pos, player)
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="ground"})
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on cactus. Noob!")
 			end

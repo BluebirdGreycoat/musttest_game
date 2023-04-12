@@ -241,7 +241,7 @@ flameportal.teleport_player = function(name, voidpos)
 								minetest.after(0.5, function()
 									local pref = minetest.get_player_by_name(pname)
 									if pref and pref:is_player() then
-										pref:set_hp(pref:get_hp() - math_random(2, 15))
+										pref:set_hp(pref:get_hp() - math_random(2, 15), {reason="portal"})
 									end
 								end)
 							end

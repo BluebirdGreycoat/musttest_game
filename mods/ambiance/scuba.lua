@@ -55,7 +55,7 @@ function ambiance.check_water_pressure(pos, player)
 
 	if damage > 0 then
 		if player:get_hp() > 0 then
-			player:set_hp(player:get_hp() - damage)
+			player:set_hp(player:get_hp() - damage, {reason="pressure"})
 			if player:get_hp() <= 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> was wrecked by water pressure.")
 			end

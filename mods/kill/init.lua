@@ -28,7 +28,7 @@ minetest.register_chatcommand("kill", {
 			return false
 		end
 
-		player:set_hp(0)
+		player:set_hp(0, {reason="kill"})
 		return true
 	end
 })
@@ -41,7 +41,7 @@ minetest.register_chatcommand("killme", {
 	privs = {killme=true},
 	func = function(name, param)
 		minetest.chat_send_player(name, "# Server: Killing player <" .. rename.gpn(name) ..">.")
-		minetest.get_player_by_name(name):set_hp(0)
+		minetest.get_player_by_name(name):set_hp(0, {reason="kill"})
 		return true
 	end
 })

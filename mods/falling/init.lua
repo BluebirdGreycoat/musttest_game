@@ -116,7 +116,7 @@ local entity_physics = function(pos, node, pharm, mharm)
 			if not gdac.player_is_admin(r) then
 				local hp = r:get_hp()
 				if hp > 0 then
-					r:set_hp(hp - pharm) -- Damage players.
+					r:set_hp(hp - pharm, {reason="crush"}) -- Damage players.
 					if r:get_hp() <= 0 then
 						-- Player will die.
 						minetest.chat_send_all("# Server: Player <" .. rename.gpn(r:get_player_name()) .. "> was crushed to death.")

@@ -80,7 +80,7 @@ local attempt_spawn_mob = function(pos, moblimit, mobrange, daynight, miny, maxy
     for i = minc, maxc do
         local mob = minetest.add_entity(pos, name)
         if mob then
-            mob:setyaw((random(0, 360) - 180) / 180 * pi)
+            mob:set_yaw((random(0, 360) - 180) / 180 * pi)
         end
     end
 end

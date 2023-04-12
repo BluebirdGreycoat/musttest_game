@@ -188,7 +188,7 @@ function teleports.kill_players_at_pos(teleport_pos, pname)
 						if node.name == "air" then
 							minetest.add_node(dp, {name="fire:basic_flame"})
 						end
-						v:set_hp(0)
+						v:set_hp(0, {reason="portal"})
 						minetest.chat_send_all("# Server: <" .. rename.gpn(v:get_player_name()) .. "> was killed by a teleport. Noob!")
 					end
 				end

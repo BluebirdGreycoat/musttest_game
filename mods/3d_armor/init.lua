@@ -66,24 +66,57 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_wood.png",
 			groups = {armor_head=5, armor_heal=0, armor_use=2000},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_heat = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_wood", {
 			description = "Wood Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_wood.png",
 			groups = {armor_torso=10, armor_heal=0, armor_use=2000},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_heat = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_wood", {
 			description = "Wood Leggings",
 			inventory_image = "3d_armor_inv_leggings_wood.png",
 			groups = {armor_legs=5, armor_heal=0, armor_use=2000},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_heat = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_wood", {
 			description = "Wood Boots",
 			inventory_image = "3d_armor_inv_boots_wood.png",
 			groups = {armor_feet=5, armor_heal=0, armor_use=2000},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_heat = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -93,24 +126,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_steel.png",
 			groups = {armor_head=10, armor_heal=0, armor_use=500},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_steel", {
 			description = "Wrought Iron Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_steel.png",
 			groups = {armor_torso=15, armor_heal=0, armor_use=500},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_steel", {
 			description = "Wrought Iron Leggings",
 			inventory_image = "3d_armor_inv_leggings_steel.png",
 			groups = {armor_legs=15, armor_heal=0, armor_use=500},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_steel", {
 			description = "Wrought Iron Boots",
 			inventory_image = "3d_armor_inv_boots_steel.png",
 			groups = {armor_feet=10, armor_heal=0, armor_use=500},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -120,24 +182,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_carbon.png",
 			groups = {armor_head=12, armor_heal=0, armor_use=200},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_carbon", {
 			description = "Carbon Steel Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_carbon.png",
 			groups = {armor_torso=17, armor_heal=0, armor_use=200},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_carbon", {
 			description = "Carbon Steel Leggings",
 			inventory_image = "3d_armor_inv_leggings_carbon.png",
 			groups = {armor_legs=17, armor_heal=0, armor_use=200},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_carbon", {
 			description = "Carbon Steel Boots",
 			inventory_image = "3d_armor_inv_boots_carbon.png",
 			groups = {armor_feet=12, armor_heal=0, armor_use=200},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -147,24 +238,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_bronze.png",
 			groups = {armor_head=10, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_bronze", {
 			description = "Bronze Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_bronze.png",
 			groups = {armor_torso=15, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_bronze", {
 			description = "Bronze Leggings",
 			inventory_image = "3d_armor_inv_leggings_bronze.png",
 			groups = {armor_legs=15, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_bronze", {
 			description = "Bronze Boots",
 			inventory_image = "3d_armor_inv_boots_bronze.png",
 			groups = {armor_feet=10, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -174,24 +294,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_diamond.png",
 			groups = {armor_head=15, armor_heal=12, armor_use=100},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_diamond", {
 			description = "Diamond Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_diamond.png",
 			groups = {armor_torso=20, armor_heal=12, armor_use=100},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_diamond", {
 			description = "Diamond Leggings",
 			inventory_image = "3d_armor_inv_leggings_diamond.png",
 			groups = {armor_legs=20, armor_heal=12, armor_use=100},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_diamond", {
 			description = "Diamond Boots",
 			inventory_image = "3d_armor_inv_boots_diamond.png",
 			groups = {armor_feet=15, armor_heal=12, armor_use=100},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -201,24 +350,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_gold.png",
 			groups = {armor_head=10, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_gold", {
 			description = "Gold Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_gold.png",
 			groups = {armor_torso=15, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_gold", {
 			description = "Gold Leggings",
 			inventory_image = "3d_armor_inv_leggings_gold.png",
 			groups = {armor_legs=15, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.25,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_gold", {
 			description = "Gold Boots",
 			inventory_image = "3d_armor_inv_boots_gold.png",
 			groups = {armor_feet=10, armor_heal=6, armor_use=250},
 			wear = 0,
+
+			_armor_wear_from_fall = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 
@@ -228,24 +406,53 @@ if not armor.run_once then
 			inventory_image = "3d_armor_inv_helmet_mithril.png",
 			groups = {armor_head=20, armor_heal=12, armor_use=50},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_crush = 3.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:chestplate_mithril", {
 			description = "Mithril Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_mithril.png",
 			groups = {armor_torso=25, armor_heal=12, armor_use=50},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.5,
+			_armor_wear_from_punch = 1.5,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 0.0,
+			_armor_wear_from_boom = 4.0,
 		})
+
 		minetest.register_tool("3d_armor:leggings_mithril", {
 			description = "Mithril Leggings",
 			inventory_image = "3d_armor_inv_leggings_mithril.png",
 			groups = {armor_legs=25, armor_heal=12, armor_use=50},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.8,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
 		})
+
 		minetest.register_tool("3d_armor:boots_mithril", {
 			description = "Mithril Boots",
 			inventory_image = "3d_armor_inv_boots_mithril.png",
 			groups = {armor_feet=20, armor_heal=12, armor_use=50},
 			wear = 0,
+
+			_armor_wear_from_fall = 0.9,
+			_armor_wear_from_drown = 0.0,
+			_armor_wear_from_poison = 0.0,
+			_armor_wear_from_hunger = 0.0,
+			_armor_wear_from_ground = 2.0,
 		})
 	end
 

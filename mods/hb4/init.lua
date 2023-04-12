@@ -49,7 +49,11 @@ function hb4.delayed_harm2(data)
 		if hp > (data.hp_min or 0) then
 			local new_hp = hp - damage
 			new_hp = math_max(new_hp, (data.hp_min or 0))
-			player:set_hp(new_hp)
+			local reason = {}
+			if data.poison then
+				reason.reason = "poison"
+			end
+			player:set_hp(new_hp, reason)
 		end
 
 		-- Message is printed only if player died. Return if we killed them.

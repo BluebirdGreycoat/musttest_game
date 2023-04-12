@@ -1549,7 +1549,7 @@ local function try_jump(self, dtime)
 	force_jump_up(self)
 
 	-- When in air move forward.
-	minetest.after(0.3, function(self, v)
+	minetest.after(0.3, function(self)
 		if self.object:get_luaentity() then
 			local v = self.object:get_velocity()
 			self.object:set_acceleration({
@@ -1558,7 +1558,7 @@ local function try_jump(self, dtime)
 				z = v.z * 2,
 			})
 		end
-	end, self, v)
+	end, self)
 
 	if get_velocity(self) > 0 then
 		mob_sound(self, self.sounds.jump)

@@ -845,7 +845,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="ground"})
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a moon spike.")
 			end
@@ -881,7 +881,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="ground"})
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a salt spike.")
 			end
@@ -914,7 +914,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="ground"})
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
 			end
@@ -947,7 +947,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="ground"})
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
 			end

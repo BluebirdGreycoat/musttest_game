@@ -8,13 +8,33 @@ if ARMOR_MATERIALS.wood then
 		inventory_image = "shields_inv_shield_wood.png",
 		groups = {armor_shield=5, armor_heal=0, armor_use=2000},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_heat = 3.0,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
+
 	minetest.register_tool("shields:shield_enhanced_wood", {
 		description = "Enhanced Wood Shield",
 		inventory_image = "shields_inv_shield_enhanced_wood.png",
 		groups = {armor_shield=8, armor_heal=0, armor_use=1000},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_heat = 3.0,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
+
 	minetest.register_craft({
 		output = "shields:shield_enhanced_wood",
 		recipe = {
@@ -23,42 +43,28 @@ if ARMOR_MATERIALS.wood then
 			{"default:steel_ingot"},
 		},
 	})
+
 	minetest.register_craft({
 		type = "cooking",
 		output = "default:steel_ingot 2",
 		recipe = "shields:shield_enhanced_wood",
 	})
 end
---[[
-if ARMOR_MATERIALS.cactus then
-	minetest.register_tool("shields:shield_cactus", {
-		description = "Cactus Shield",
-		inventory_image = "shields_inv_shield_cactus.png",
-		groups = {armor_shield=5, armor_heal=0, armor_use=2000},
-		wear = 0,
-	})
-	minetest.register_tool("shields:shield_enhanced_cactus", {
-		description = "Enhanced Cactus Shield",
-		inventory_image = "shields_inv_shield_enhanced_cactus.png",
-		groups = {armor_shield=8, armor_heal=0, armor_use=1000},
-		wear = 0,
-	})
-	minetest.register_craft({
-		output = "shields:shield_enhanced_cactus",
-		recipe = {
-			{"default:steel_ingot"},
-			{"shields:shield_cactus"},
-			{"default:steel_ingot"},
-		},
-	})
-end
---]]
+
 if ARMOR_MATERIALS.steel then
 	minetest.register_tool("shields:shield_steel", {
 		description = "Wrought Iron Shield",
 		inventory_image = "shields_inv_shield_steel.png",
 		groups = {armor_shield=10, armor_heal=0, armor_use=500},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
 
@@ -68,6 +74,14 @@ if ARMOR_MATERIALS.carbon then
 		inventory_image = "shields_inv_shield_carbon.png",
 		groups = {armor_shield=12, armor_heal=0, armor_use=200},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
 
@@ -77,6 +91,14 @@ if ARMOR_MATERIALS.bronze then
 		inventory_image = "shields_inv_shield_bronze.png",
 		groups = {armor_shield=10, armor_heal=6, armor_use=250},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
 
@@ -86,6 +108,14 @@ if ARMOR_MATERIALS.diamond then
 		inventory_image = "shields_inv_shield_diamond.png",
 		groups = {armor_shield=15, armor_heal=12, armor_use=100},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
 
@@ -95,6 +125,14 @@ if ARMOR_MATERIALS.gold then
 		inventory_image = "shields_inv_shield_gold.png",
 		groups = {armor_shield=10, armor_heal=6, armor_use=250},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
 
@@ -104,8 +142,18 @@ if ARMOR_MATERIALS.mithril then
 		inventory_image = "shields_inv_shield_mithril.png",
 		groups = {armor_shield=15, armor_heal=12, armor_use=50},
 		wear = 0,
+
+		_armor_wear_from_drown = 0.0,
+		_armor_wear_from_fall = 0.5,
+		_armor_wear_from_punch = 1.25,
+		_armor_wear_from_poison = 0.0,
+		_armor_wear_from_hunger = 0.0,
+		_armor_wear_from_ground = 0.0,
+		_armor_wear_from_boom = 3.0,
 	})
 end
+
+
 
 for k, v in pairs(ARMOR_MATERIALS) do
 	local center = "techcrafts:composite_plate"

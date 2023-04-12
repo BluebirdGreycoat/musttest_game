@@ -73,7 +73,7 @@ minetest.register_node("lbrim:lava_source", {
 					minetest.add_node(pa, {name="fire:basic_flame"})
 				end
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-				player:set_hp(0)
+				player:set_hp(0, {reason="heat"})
 			end
 		end
 	end,
@@ -153,7 +153,7 @@ minetest.register_node("lbrim:lava_flowing", {
 					minetest.add_node(pa, {name="fire:basic_flame"})
 				end
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-				player:set_hp(0)
+				player:set_hp(0, {reason="heat"})
 			end
 		end
 	end,

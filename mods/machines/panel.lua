@@ -31,7 +31,7 @@ end
 
 panel.on_player_walk_over =
 function(pos, player)
-	player:set_hp(player:get_hp() - 1)
+	player:set_hp(player:get_hp() - 1, {reason="electrocute"})
 end
 
 

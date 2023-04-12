@@ -135,7 +135,7 @@ minetest.register_node("castle_lighting:brasier_floor", {
 	on_player_walk_over = function(pos, player)
 		local pname = player:get_player_name()
 		if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
-			player:set_hp(player:get_hp() - 1)
+			player:set_hp(player:get_hp() - 1, {reason="heat"})
 			if player:get_hp() <= 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> tripped on hot coals!")
 			end
@@ -262,7 +262,7 @@ castle_lighting.register_pillar_brasier = function(material)
 		on_player_walk_over = function(pos, player)
 			local pname = player:get_player_name()
 			if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
-				player:set_hp(player:get_hp() - 1)
+				player:set_hp(player:get_hp() - 1, {reason="heat"})
 				if player:get_hp() <= 0 then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> tripped on hot coals!")
 				end

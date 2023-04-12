@@ -266,7 +266,7 @@ minetest.override_item("tnt:gunpowder", {
 			minetest.after(0, function()
 				local user = minetest.get_player_by_name(pname)
 				if not user or not user:is_player() then return end
-				user:set_hp(user:get_hp() - 2)
+				user:set_hp(user:get_hp() - 2, {reason="heat"})
 			end)
 
 			add_effects(pos, 1)

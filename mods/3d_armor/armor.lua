@@ -490,7 +490,7 @@ function armor.wear_from_reason(item, def, reason)
 		return 1
 	end
 
-	minetest.log('Reason: ' .. rs)
+	--minetest.log('Reason: ' .. rs)
 
 	local mult = def["_armor_wear_from_" .. rs] or 1
 	return mult

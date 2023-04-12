@@ -43,10 +43,14 @@ end
 
 -- May return nil.
 function armor.get_punch_reason(engine_reason)
-	local reason = armor.hp_change_reason
-	armor.hp_change_reason = nil
-	reason.object = engine_reason.object
-	return reason
+	if armor.hp_change_reason then
+		local reason = armor.hp_change_reason
+		armor.hp_change_reason = nil
+		reason.object = engine_reason.object
+		return reason
+	end
+
+	return nil
 end
 
 

@@ -157,7 +157,7 @@ if not breath.run_once then
 		floodable = true,
 		drop = "",
 		post_effect_color = {a = 80, r = 127, g = 127, b = 127},
-		drowning = 1*500,
+		drowning = 1,
 
 		groups = {immovable=1, gas=1, flammable=3},
 

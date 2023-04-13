@@ -532,6 +532,11 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	if reason.type == "fall" then
 		--minetest.log('fall: ' .. hp_change)
 		hp_change = hp_change * 500
+	elseif reason.type == "drown" then
+		-- In the case of drowning damage, we HAVE to do it this way, because
+		-- Minetest does NOT, apparently, correctly apply drowning damage itself
+		-- when the value is very high!
+		hp_change = hp_change * 500
 	end
 
 	-- If a notified reason is available, use that instead.

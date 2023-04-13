@@ -51,7 +51,7 @@ if not lava.run_once then
 
 		is_ground_content = false,
 		drop = "",
-		drowning = 1*500,
+		drowning = 1,
 		liquidtype = "source",
 		liquid_alternative_flowing = "default:lava_flowing",
 		liquid_alternative_source = "default:lava_source",
@@ -131,7 +131,7 @@ if not lava.run_once then
 
 		is_ground_content = false,
 		drop = "",
-		drowning = 1*500,
+		drowning = 1,
 		liquidtype = "flowing",
 		liquid_alternative_flowing = "default:lava_flowing",
 		liquid_alternative_source = "default:lava_source",

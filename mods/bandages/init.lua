@@ -5,6 +5,7 @@ bandages.players = bandages.players or {}
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance
+local math_floor = math.floor
 
 
 
@@ -29,14 +30,15 @@ bandages.movement_limit_from_level = function(level)
 	return 0
 end
 
-bandages.hp_from_level = function(level)
+bandages.hp_from_level = function(level, hp_max)
   if level == 1 then
-    return 2
+    return hp_max * 0.1
   elseif level == 2 then
-    return 3
+    return hp_max * 0.15
   elseif level == 3 then
-    return 6
+    return hp_max * 0.3
   end
+
   return 0
 end
 
@@ -62,7 +64,8 @@ bandages.player_not_hurt = function(pname)
 end
 
 bandages.player_bandages_self = function(pname, hp, hp_max)
-  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is now " .. hp .. "/" .. hp_max .. " HP.")
+  local pc = math_floor((hp / hp_max) * 100)
+  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is at " .. pc .. "%.")
 end
 
 bandages.target_is_dead = function(pname, tname)
@@ -76,8 +79,10 @@ bandages.player_is_dead = function(pname)
 end
 
 bandages.player_bandages_target = function(pname, tname, hp, hp_max)
+  local pc = math_floor((hp / hp_max) * 100)
+
   minetest.chat_send_player(tname, "# Server: Player <" .. rename.gpn(pname) .. "> used a bandage on you.")
-  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. ">'s health improves to " .. hp .. "/" .. hp_max .. " HP.")
+  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. ">'s health improves to " .. pc .. "%.")
 end
 
 bandages.medkit_already_in_use = function(pname)
@@ -190,10 +195,11 @@ function bandages.heal_target(itemstack, user, target, level)
 		if vector_distance(target:get_pos(), pos) > bandages.movement_limit_from_level(level) then
 			return bandages.target_moved_too_much(pname, tname)
 		end
+
 		-- Don't heal target if already dead.
 		-- This solves an exploit people have found.
 		if target:get_hp() == 0 then return end
-		target:set_hp(hp + bandages.hp_from_level(level))
+		target:set_hp(hp + bandages.hp_from_level(level, hp_max))
 		bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
 	end)
 
@@ -232,10 +238,11 @@ function bandages.heal_self(itemstack, user, level)
 		if vector_distance(user:get_pos(), pos) > bandages.movement_limit_from_level(level) then
 			return bandages.player_moved_too_much(pname)
 		end
+
 		-- Don't heal user if already dead.
 		-- This solves an exploit people have found.
 		if user:get_hp() == 0 then return end
-		user:set_hp(hp + bandages.hp_from_level(level))
+		user:set_hp(hp + bandages.hp_from_level(level, hp_max))
 		bandages.player_bandages_self(pname, user:get_hp(), hp_max)
 	end)
 

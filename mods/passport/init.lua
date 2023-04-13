@@ -225,7 +225,9 @@ passport.compose_formspec = function(pname)
 		status_info[#status_info + 1] = "Name OFF"
 	end
 
-	status_info[#status_info + 1] = tostring(pref:get_hp() .. " HP")
+	local scale = 500
+
+	status_info[#status_info + 1] = tostring(math_floor(pref:get_hp() / scale) .. " HP")
 	status_info[#status_info + 1] = tostring("Respawns: " .. beds.get_respawn_count(pname))
 
 	-- Status info.
@@ -799,7 +801,7 @@ passport.player_has_key = function(pname, player)
     end
   end
 
-	-- Return false, but don't cache the value -- we could not confirm it!
+-- 	-- Return false, but don't cache the value -- we could not confirm it!
   return false
 end
 

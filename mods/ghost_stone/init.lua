@@ -20,7 +20,7 @@ if not ghost_stone.run_once then
     sounds = rackstone.rackstone_sounds(),
     walkable = false, -- Player can hide inside/walk through/fall through.
     post_effect_color = {a = 100, r = 255, g = 0, b = 40},
-    drowning = 8,
+    drowning = 8*500,
   })
     
   minetest.register_craft({

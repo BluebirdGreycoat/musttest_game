@@ -44,7 +44,7 @@ minetest.register_node("lbrim:lava_source", {
 
   is_ground_content = false,
   drop = "",
-  drowning = 1,
+  drowning = 1*500,
   liquidtype = "source",
   liquid_alternative_flowing = "lbrim:lava_flowing",
   liquid_alternative_source = "lbrim:lava_source",
@@ -123,7 +123,7 @@ minetest.register_node("lbrim:lava_flowing", {
 
   is_ground_content = false,
   drop = "",
-  drowning = 1,
+  drowning = 1*500,
   liquidtype = "flowing",
   liquid_alternative_flowing = "lbrim:lava_flowing",
   liquid_alternative_source = "lbrim:lava_source",

@@ -518,13 +518,21 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	-- used for insta kill tools/commands like /kill (doesnt damage armor)
-	if hp_change < -100 then
+	if hp_change <= -60000 then
 		return hp_change
 	end
 
 	local heal_max = 0
 	local state = 0
 	local items = 0
+
+	-- Need to scale fall damage since players' HP is very high.
+	-- AFAIK, the only other way to adjust this would be to change every node's
+	-- 'fall_damage_add_percent', but that would NOT be a good idea.
+	if reason.type == "fall" then
+		--minetest.log('fall: ' .. hp_change)
+		hp_change = hp_change * 500
+	end
 
 	-- If a notified reason is available, use that instead.
 	-- Note that 'get_punch_reason' clears the reason when it is called.

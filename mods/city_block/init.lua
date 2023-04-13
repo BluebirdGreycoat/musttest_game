@@ -707,7 +707,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- Admins cannot be punched.
-	if minetest.check_player_privs(player:get_player_name(), {disable_pvp=true}) then
+	if gdac.player_is_admin(player) then
 		return true
 	end
 

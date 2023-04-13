@@ -102,13 +102,13 @@ local function throwing_register_fireworks(color, desc)
 				if obj:get_luaentity() ~= nil then
 					local oname = obj:get_luaentity().name
 					if not throwing.entity_blocks_arrow(oname) then
-						local damage = 2
+						local damage = 2*500
 						throwing_arrow_punch_entity(obj, self, damage)
 						self.object:remove()
 						boom(pos)
 					end
         elseif obj:is_player() then
-          local damage = 2
+          local damage = 2*500
           throwing_arrow_punch_entity(obj, self, damage)
           self.object:remove()
           boom(pos)

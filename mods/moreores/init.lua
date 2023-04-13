@@ -163,7 +163,7 @@ local oredefs = {
 			},
 		},
 		full_punch_interval = 1.0,
-		damage_groups = {fleshy = 6},
+		damage_groups = {fleshy = 6*500},
 	},
 	tin = {
 		description = "Tin",
@@ -206,7 +206,7 @@ local oredefs = {
 			}
 		},
 		full_punch_interval = 0.45,
-		damage_groups = {fleshy = 9},
+		damage_groups = {fleshy = 9*500},
 	}
 }
 

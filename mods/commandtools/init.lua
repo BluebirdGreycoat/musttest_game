@@ -43,7 +43,7 @@ commandtools.pick_on_use = function(itemstack, user, pointed_thing)
 					crumbly =     {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 					snappy =      {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 				},
-				damage_groups = {fleshy = 1000},
+				damage_groups = {fleshy = 65535},
 			}
 			ref:punch(user, 1, tool_capabilities, nil)
 		end

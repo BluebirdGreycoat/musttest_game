@@ -43,9 +43,15 @@ local old_register_tool = minetest.register_tool
 function minetest.register_tool(name, def)
 	local ndef = table.copy(def)
 	if ndef.tool_capabilities then
-		if ndef.tool_capabilities.range_modifier then
-			ndef.range = (ndef.range or 4.0) * ndef.tool_capabilities.range_modifier
+		local rangemod = (ndef.tool_capabilities.range_modifier or 1)
+		local defrange = 4
+
+		-- Swords have less range, should make fighting the mobs a bit more challenging.
+		if name:find("sword") then
+			defrange = 3
 		end
+
+		ndef.range = (ndef.range or defrange) * rangemod
 	end
 	return old_register_tool(name, ndef)
 end

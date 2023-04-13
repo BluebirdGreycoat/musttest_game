@@ -454,6 +454,7 @@ minetest.register_node("default:obsidian", {
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
 
 	-- Callbacks are overridden in flameportal mod!
+	crushing_damage = 5000,
 })
 
 minetest.register_node("default:obsidianbrick", {
@@ -465,6 +466,7 @@ minetest.register_node("default:obsidianbrick", {
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("brick", {stone=1, brick=1}),
   on_blast = function(...) end, -- Blast resistant.
+	crushing_damage = 5000,
 })
 
 minetest.register_node("default:obsidian_block", {
@@ -474,6 +476,7 @@ minetest.register_node("default:obsidian_block", {
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("block", {stone=1, block=1}),
   on_blast = function(...) end, -- Blast resistant.
+	crushing_damage = 5000,
 })
 
 --

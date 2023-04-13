@@ -45,7 +45,7 @@ local function node_harm(name)
 		if ndef.groups then
 			local lg = (ndef.groups.leaves or 0)
 			if lg > 0 then
-				return 1, 1
+				return 100, 100
 			end
 		end
 
@@ -58,7 +58,7 @@ local function node_harm(name)
 	end
 
 	-- Default amount of harm to: player, mobs.
-	return 4, 20
+	return 4*500, 20*500
 end
 
 

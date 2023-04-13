@@ -68,7 +68,7 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
       if obj:get_luaentity() ~= nil then
 				local oname = obj:get_luaentity().name
 				if not throwing.entity_blocks_arrow(oname) then
-          local damage = 1
+          local damage = 1*500
 					local pname = self.player_name
 
           -- Punch to alert mobs who hit them.

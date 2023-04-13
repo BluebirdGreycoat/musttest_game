@@ -1696,7 +1696,7 @@ local function entity_physics(pos, radius)
 		-- punches work on entities and players
 		objs[n]:punch(objs[n], 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {fleshy = damage},
+			damage_groups = {fleshy = damage*500},
 		}, pos)
 	end
 end

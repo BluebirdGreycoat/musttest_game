@@ -185,7 +185,8 @@ local function entity_physics(pos, radius, drops, boomdef)
 		local dist = math_max(1, vector_distance(pos, obj_pos))
 
 		-- Calculate damage to be applied to player or mob.
-		local damage = (8 / dist) * radius
+		local SCALE = 500
+		local damage = ((8 / dist) * radius) * SCALE
 
 		if obj:is_player() then
 			local pname = obj:get_player_name()

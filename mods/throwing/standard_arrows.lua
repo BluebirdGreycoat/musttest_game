@@ -61,13 +61,13 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 					if not throwing.entity_blocks_arrow(oname) then
 						local speed = vector.length(vel)
 						local damage = ((speed + eq)^1.2)/10
-            throwing_arrow_punch_entity(obj, self, damage)
+            throwing_arrow_punch_entity(obj, self, damage*500)
 						self.object:remove()
 					end
         elseif obj:is_player() then
           local speed = vector.length(vel)
           local damage = ((speed + eq)^1.2)/10
-          throwing_arrow_punch_entity(obj, self, damage)
+          throwing_arrow_punch_entity(obj, self, damage*500)
           self.object:remove()
         end
 			end

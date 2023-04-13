@@ -57,13 +57,13 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 			if obj:get_luaentity() ~= nil then
 				local oname = obj:get_luaentity().name
 				if not throwing.entity_blocks_arrow(oname) then
-					local damage = 4
+					local damage = 4*500
 					throwing_arrow_punch_entity(obj, self, damage)
 					self.object:remove()
 					minetest.add_item(self.lastpos, 'default:stick')
 				end
       elseif obj:is_player() then
-        local damage = 4
+        local damage = 4*500
         throwing_arrow_punch_entity(obj, self, damage)
         self.object:remove()
         minetest.add_item(self.lastpos, 'default:stick')

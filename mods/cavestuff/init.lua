@@ -525,6 +525,7 @@ minetest.register_node("cavestuff:dark_obsidian", {
 	on_destruct = function(pos)
 		obsidian_gateway.on_damage_gate(pos)
 	end,
+	crushing_damage = 5000,
 })
 
 stairs.register_stair_and_slab(
@@ -541,6 +542,7 @@ minetest.register_node("cavestuff:dark_obsidian_brick", {
   groups = utility.dig_groups("obsidian"),
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
+	crushing_damage = 5000,
 })
 
 stairs.register_stair_and_slab(
@@ -557,6 +559,7 @@ minetest.register_node("cavestuff:dark_obsidian_block", {
   groups = utility.dig_groups("obsidian"),
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
+	crushing_damage = 5000,
 })
 
 stairs.register_stair_and_slab(

@@ -234,7 +234,7 @@ mobs.register_arrow("oerkki:flame_bolt", {
 	hit_player = function(self, player)
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {fleshy = 2},
+			damage_groups = {fleshy = 2*500},
 		}, nil)
 		arrow_effect(vector.round(player:get_pos()), 3, 10)
 	end,

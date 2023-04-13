@@ -89,14 +89,14 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 				if not throwing.entity_blocks_arrow(oname) then
 					local speed = vector.length(vel)
 					local damage = (((speed + 5)^1.2)/10 + 12) * 1
-					throwing_arrow_punch_entity(obj, self, damage)
+					throwing_arrow_punch_entity(obj, self, damage*500)
 					self.object:remove()
 					boom(pos)
 				end
       elseif obj:is_player() then
         local speed = vector.length(vel)
         local damage = ((speed + 5)^1.2)/10 + 12
-        throwing_arrow_punch_entity(obj, self, damage)
+        throwing_arrow_punch_entity(obj, self, damage*500)
         self.object:remove()
         boom(pos)
 			end

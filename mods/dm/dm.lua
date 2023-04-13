@@ -71,7 +71,7 @@ mobs.register_arrow("dm:fireball", {
 	hit_player = function(self, player)
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {fleshy = 8},
+			damage_groups = {fleshy = 8*500},
 		}, nil)
 	end,
 
@@ -86,7 +86,7 @@ mobs.register_arrow("dm:fireball", {
 
 		player:punch(puncher, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {fleshy = 8},
+			damage_groups = {fleshy = 8*500},
 		}, nil)
 	end,
 

@@ -167,8 +167,8 @@ local accidents = {
 			hb4.delayed_harm({
 				name = player:get_player_name(),
 				step = 10,
-				min = 1,
-				max = math_random(1, 2),
+				min = 1*500,
+				max = math_random(1, 2)*500,
 				msg = "# Server: Someone got poisoned!",
 				poison = true,
 			})

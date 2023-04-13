@@ -57,8 +57,8 @@ local function walk_glowstone(player)
 	hb4.delayed_harm({
 		name = pname,
 		step = 10,
-		min = 1,
-		max = 2,
+		min = 1*500,
+		max = 2*500,
 		msg = "# Server: <" .. rename.gpn(pname) .. "> was poisoned by glowstone.",
 		poison = true,
 	})
@@ -69,8 +69,8 @@ local function punch_glowstone(player)
 	hb4.delayed_harm({
 		name = pname,
 		step = 3,
-		min = 1,
-		max = 2,
+		min = 1*500,
+		max = 2*500,
 		msg = "# Server: <" .. rename.gpn(pname) .. "> was poisoned by glowstone.",
 		poison = true,
 	})

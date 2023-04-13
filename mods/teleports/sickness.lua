@@ -23,8 +23,8 @@ local function portal_sicken(pname, count)
 	hb4.delayed_harm({
 		name = pname,
 		step = step,
-		min = 1,
-		max = 3,
+		min = 1*500,
+		max = 3*500,
 		msg = msg,
 		poison = true,
 

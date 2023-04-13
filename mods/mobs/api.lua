@@ -637,8 +637,10 @@ local function check_for_death(self, cause, cmi_cause)
 		if show_health and self.show_health ~= false and
 				(cmi_cause and cmi_cause.type == "punch") then
 
+			local pc = floor((self.health / self.hp_max) * 100)
+
 			self.htimer = 2
-			self.nametag = "♥ " .. self.health .. " / " .. self.hp_max
+			self.nametag = "♥ " .. pc .. "%"
 
 			update_tag(self)
 		end

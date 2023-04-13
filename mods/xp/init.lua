@@ -47,8 +47,11 @@ function xp.update_players_max_hp(pname)
 	local max_hp = pref:get_properties().hp_max
 	local hp = pref:get_hp()
 	local percent = (hp / max_hp)
-	local new_max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc)
-	local new_hp = math_min((percent * new_max_hp), new_max_hp)
+
+	local scale = 500
+
+	local new_max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc) * scale
+	local new_hp = math_min((percent * new_max_hp), new_max_hp) * scale
 
 	--minetest.chat_send_all('new max hp: ' .. new_max_hp .. ', new hp: ' .. new_hp)
 
@@ -59,7 +62,7 @@ end
 
 
 function xp.on_joinplayer(player)
-	minetest.after(10, xp.update_players_max_hp, player:get_player_name())
+	minetest.after(1, xp.update_players_max_hp, player:get_player_name())
 end
 
 

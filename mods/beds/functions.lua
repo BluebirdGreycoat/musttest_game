@@ -225,8 +225,10 @@ function beds.skip_night()
       if player then
         -- Heal player 4 HP, but not if the player is dead.
         if player:get_hp() > 0 then
-          player:set_hp(player:get_hp() + 4)
+					local hp_max = player:get_properties().hp_max
+          player:set_hp(player:get_hp() + (hp_max * 0.2))
         end
+
         -- Increase player's hunger.
         hunger.increase_hunger(player, 6)
 

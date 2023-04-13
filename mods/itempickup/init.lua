@@ -280,7 +280,7 @@ function itempickup.drop_an_item(pos, stack, digger, tool_capabilities)
 			if not stack:is_empty() and math_random(0, 3) == 0 then
 				-- Don't drop anything on the ground, 25% chance.
 				-- Give particle feedback to player.
-				digger:set_hp(digger:get_hp() - 1)
+				digger:set_hp(digger:get_hp() - (1*500))
 				effect(pos, math_random(2, 5), "tnt_smoke.png")
 				return
 			end

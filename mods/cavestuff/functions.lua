@@ -16,7 +16,7 @@ function cavestuff.hotcobble.after_place_node(pos, placer, itemstack, pointed_th
 	end
 	-- Prevent players from placing hot cobble.
 	if not heatdamage.is_immune(placer:get_player_name()) then
-		placer:set_hp(placer:get_hp() - 2, {reason="heat"})
+		placer:set_hp(placer:get_hp() - (2*500), {reason="heat"})
 	end
 	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 	if pos.y < -20 then
@@ -37,7 +37,7 @@ function cavestuff.hotcobble.after_dig_node(pos, oldnode, oldmetadata, digger)
 	end
 	-- Damage player when digging.
 	if not heatdamage.is_immune(digger:get_player_name()) then
-		digger:set_hp(digger:get_hp() - 2, {reason="heat"})
+		digger:set_hp(digger:get_hp() - (2*500), {reason="heat"})
 	end
 	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
@@ -71,7 +71,7 @@ end
 function cavestuff.hotcobble.on_player_walk_over(pos, player)
 	-- Damage players who walk on hot cobble.
 	if not heatdamage.is_immune(player:get_player_name()) then
-		player:set_hp(player:get_hp() - 1, {reason="heat"})
+		player:set_hp(player:get_hp() - (1*500), {reason="heat"})
 	end
 end
 

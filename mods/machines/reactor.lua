@@ -433,7 +433,7 @@ for k, v in ipairs({
 			local entities = minetest.get_objects_inside_radius(pos, 4.5)
 			for k, v in ipairs(entities) do
 				if v:is_player() then
-					v:set_hp(v:get_hp() - 1, {reason="radiation"})
+					v:set_hp(v:get_hp() - (1*500), {reason="radiation"})
 					-- Radiation exhausts player.
 					sprint.set_stamina(v, 0)
 				end

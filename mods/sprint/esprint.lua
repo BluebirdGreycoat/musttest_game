@@ -90,7 +90,8 @@ function sprint.set_stamina(player, sta)
 	local pname = player:get_player_name()
 	if players[pname] then
 		if sta > SPRINT_STAMINA then sta = SPRINT_STAMINA end
-		local maxstamina = floor((player:get_hp()/20)*SPRINT_STAMINA)
+		local hp_max = player:get_properties().hp_max
+		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 		if sta > maxstamina then
 			sta = maxstamina
 		end
@@ -108,7 +109,8 @@ function sprint.add_stamina(player, sta)
 		stamina = stamina + sta
 		if stamina > SPRINT_STAMINA then stamina = SPRINT_STAMINA end
 		if stamina < 0 then stamina = 0 end
-		local maxstamina = floor((player:get_hp()/20)*SPRINT_STAMINA)
+		local hp_max = player:get_properties().hp_max
+		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 		if stamina > maxstamina then
 			stamina = maxstamina
 		end
@@ -248,7 +250,8 @@ function sprint.globalstep(dtime)
 			if playerInfo["stamina"] > SPRINT_STAMINA then
 				playerInfo["stamina"] = SPRINT_STAMINA
 			end
-			local maxstamina = floor((player:get_hp()/20)*SPRINT_STAMINA)
+			local hp_max = player:get_properties().hp_max
+			local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 			if playerInfo["stamina"] > maxstamina then
 				playerInfo["stamina"] = maxstamina
 			end

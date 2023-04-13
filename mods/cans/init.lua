@@ -73,7 +73,7 @@ function cans.register_can(d)
         local pos = user:get_pos()
         minetest.sound_play("default_cool_lava", {pos = pos, max_hear_distance = 16, gain = 0.25}, true)
         if not heatdamage.is_immune(user:get_player_name()) then
-          bucket.harm_player_after(user:get_player_name(), 2)
+          bucket.harm_player_after(user:get_player_name(), 2*500)
         end
       else
         minetest.remove_node(pointed_thing.under)

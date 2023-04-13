@@ -161,7 +161,7 @@ heatdamage.globalstep = function(dtime)
             
             if total > 0 then
 							sprint.set_stamina(v, 0)
-							v:set_hp(v:get_hp() - total * serverstep, {reason="heat"})
+							v:set_hp(v:get_hp() - (total * serverstep * 500), {reason="heat"})
 
 							if lava and lava > 2 then
 								local p = minetest.find_node_near(v:get_pos(), 1, "air", true)

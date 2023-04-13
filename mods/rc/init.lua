@@ -664,7 +664,7 @@ function rc.check_position(player)
 
 		-- Damage player. Prevents them triggering this indefinitely.
 		if player:get_hp() > 0 and not data.new_arrival then
-			player:set_hp(player:get_hp() - 2)
+			player:set_hp(player:get_hp() - (2*500))
 
 			-- Note: per bones code, if position is not within any valid realm, bones
 			-- will not be spawned.

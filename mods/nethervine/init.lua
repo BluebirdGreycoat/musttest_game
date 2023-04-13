@@ -76,7 +76,7 @@ local eat_function = minetest.item_eat(0)
 function nethervine.eat_dried_grass(itemstack, user, pt)
 	if not user or not user:is_player() then return end
 	if user:get_hp() == 0 then return end
-	user:set_hp(user:get_hp() + 4)
+	user:set_hp(user:get_hp() + (4*500))
 	return eat_function(itemstack, user, pt)
 end
 

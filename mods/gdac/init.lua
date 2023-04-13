@@ -205,7 +205,7 @@ gdac.antifly_globalstep = function(dtime)
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
 		if not minetest.check_player_privs(v, {fly=true}) and
-			v:get_hp() > 0 then -- Dead players tend to trigger this.
+				v:get_hp() > 0 then -- Dead players tend to trigger this.
 			local name = v:get_player_name()
 			local data = gdac.players[name]
 			assert(data ~= nil)
@@ -310,7 +310,7 @@ gdac.anticlip_globalstep = function(dtime)
 	local players = minetest.get_connected_players()
 	for k, v in ipairs(players) do
 		if not minetest.check_player_privs(v, {noclip=true}) and
-			v:get_hp() > 0 then -- Dead players tend to trigger this.
+				v:get_hp() > 0 then -- Dead players tend to trigger this.
 			local name = v:get_player_name()
 			local data = gdac.players[name]
 			assert(data ~= nil)

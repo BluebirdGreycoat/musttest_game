@@ -22,7 +22,7 @@ mobs.register_mob("nssm:phoenix", {
 		random = "phoenix",
 		distance = 45,
 	},
-	damage = 2,
+	damage = 2*500,
 	jump = false,
 	drops = {
 		--{name = "nssm:life_energy", chance = 1, min = 7, max = 8},
@@ -32,7 +32,7 @@ mobs.register_mob("nssm:phoenix", {
 	},
 	armor = 40,
 	drawtype = "front",
-	water_damage = 5,
+	water_damage = 5*500,
 	lava_damage = 0,
 	fire_damage = 0,
 	light_damage = 0,

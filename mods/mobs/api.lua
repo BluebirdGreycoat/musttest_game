@@ -5296,7 +5296,7 @@ if not mobs.registered then
 			lava_annihilates        = first_or_second(def.lava_annihilates, true),
 			makes_bones_in_lava     = first_or_second(def.makes_bones_in_lava, true),
 
-			fall_damage             = def.fall_damage or 1,
+			fall_damage             = def.fall_damage or (1*500),
 			fall_speed              = def.fall_speed or -10, -- must be lower than -2 (default: -10)
 			drops                   = def.drops or {},
 			armor                   = def.armor or 100,

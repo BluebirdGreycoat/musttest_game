@@ -13,7 +13,7 @@ mobs.register_mob("animalworld:suboar", {
 	pathfinding = 1,
 
 	reach = 2,
-	damage = 8,
+	damage = 8*500,
 	hp_min = 5,
 	hp_max = 35,
 	armor = 70,
@@ -39,7 +39,7 @@ mobs.register_mob("animalworld:suboar", {
 		{name = "mobs:leather", chance = 1, min = 1, max = 1},
 	},
 	water_damage = 0,
-	lava_damage = 4,
+	lava_damage = 4*500,
 	light_damage = 0,
 	fear_height = 3,
 	animation = {

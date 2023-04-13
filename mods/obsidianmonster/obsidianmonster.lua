@@ -5,7 +5,7 @@ local vector_round = vector.round
 mobs.register_mob("obsidianmonster:obsidianmonster", {
 	type = "monster",
 	passive = false,
-	damage = 3,
+	damage = 3*500,
 	attack_type = "shoot",
 	shoot_interval = 1.0,
 	arrow = "obsidianmonster:arrow",
@@ -37,8 +37,8 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 		{name = "default:obsidian", chance = 2, min = 1, max = 6},
 		{name = "default:obsidian_shard", chance = 2, min = 1, max = 9},
 	},
-	water_damage = 1,
-	lava_damage = 1,
+	water_damage = 1*500,
+	lava_damage = 1*500,
 	light_damage = 0,
 	animation = {
 		speed_normal = 15,

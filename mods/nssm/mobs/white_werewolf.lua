@@ -23,7 +23,7 @@ mobs.register_mob("nssm:white_werewolf", {
 	sounds = {
 		random = "werewolf",
 	},
-	damage = 10,
+	damage = 10*500,
 	jump = true,
 	drops = {
 		{name = "nssm:white_wolf_leg", chance = 2, min = 1, max = 2},
@@ -31,8 +31,8 @@ mobs.register_mob("nssm:white_werewolf", {
 	},
 	armor = 80,
 	drawtype = "front",
-	water_damage = 2,
-	lava_damage = 5,
+	water_damage = 2*500,
+	lava_damage = 5*500,
 	light_damage = 0,
 	group_attack = true,
 	attack_animals = true,

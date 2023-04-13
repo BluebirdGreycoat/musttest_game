@@ -28,7 +28,7 @@ mobs.register_mob("rat:rat", {
 	runaway = true,
 	jump = true,
 	water_damage = 0,
-	lava_damage = 4,
+	lava_damage = 4*500,
 	makes_bones_in_lava = false,
 	light_damage = 0,
 	fear_height = 2,

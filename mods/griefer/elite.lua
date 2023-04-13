@@ -11,9 +11,9 @@ mobs.register_mob("griefer:elite_griefer", {
 	max_node_dig_level = 2,
 	reach = 2, -- Mob will try to move this close to target.
 	punch_reach = 3, -- Mob can hit from this far away.
-	damage = 8,
-	damage_min = 8,
-	damage_max = 16,
+	damage = 8*500,
+	damage_min = 8*500,
+	damage_max = 16*500,
 	hp_min = 160,
 	hp_max = 260,
 	armor = 100,
@@ -55,7 +55,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	place_node = "default:cobble",
 
 	water_damage = 0,
-	lava_damage = 4,
+	lava_damage = 4*500,
 	makes_bones_in_lava = false,
 	light_damage = 0,
 	fear_height = 3,

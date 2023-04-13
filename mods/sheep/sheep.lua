@@ -29,8 +29,8 @@ mobs.register_mob("sheep:sheep", {
     drops = {
         {name = "mobs:meat_raw_mutton", chance = 1, min = 1, max = 1}, -- Killing sheep doesn't yield much meat.
     },
-    water_damage = 1,
-    lava_damage = 100,
+    water_damage = 1*500,
+    lava_damage = 100*500,
     light_damage = 0,
     animation = {
         speed_normal = 15,

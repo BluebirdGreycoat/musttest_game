@@ -8,7 +8,7 @@ mobs.register_mob("oerkki:oerkki", {
 	attack_type = "dogfight",
 	reach = 2,
 	punch_reach = 3,
-	damage = 3,
+	damage = 3*500,
 	hp_min = 8,
 	hp_max = 34,
 	armor = 100,
@@ -35,9 +35,9 @@ mobs.register_mob("oerkki:oerkki", {
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2},
 		{name = "mobs:leather", chance = 2, min = 1, max = 1},
 	},
-	water_damage = 1,
-	lava_damage = 100,
-	light_damage = 1,
+	water_damage = 1*500,
+	lava_damage = 100*500,
+	light_damage = 1*500,
 	fear_height = 0,
 	
 	animation = {

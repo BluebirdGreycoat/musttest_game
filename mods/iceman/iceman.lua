@@ -16,7 +16,7 @@ mobs.register_mob("iceman:iceman", {
 	daytime_despawn = true,
 
 	reach = 2,
-	damage = 3,
+	damage = 3*500,
 	damage_min = 2,
 	damage_max = 5,
 	hp_min = 12,
@@ -48,7 +48,7 @@ mobs.register_mob("iceman:iceman", {
     {name = "bones:bones_type2", chance = 2, min = 1, max = 1},
 	},
 	water_damage = 1,
-	lava_damage = 100,
+	lava_damage = 100*500,
   makes_bones_in_lava = false,
 	light_damage = 2,
 	animation = {

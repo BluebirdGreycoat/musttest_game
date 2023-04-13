@@ -6,7 +6,7 @@ mobs.register_mob("stoneman:stoneman", {
 	attack_type = "dogfight",
 	pathfinding = 1,
 	reach = 2,
-	damage = 3,
+	damage = 3*500,
 	hp_min = 12,
 	hp_max = 35,
 	armor = 80,
@@ -31,7 +31,7 @@ mobs.register_mob("stoneman:stoneman", {
         {name = "whitestone:cobble",    chance = 10,    min = 5,    max = 15},
 	},
 	water_damage = 0,
-	lava_damage = 1,
+	lava_damage = 1*500,
 	makes_bones_in_lava = false,
 	light_damage = 0,
 	animation = {

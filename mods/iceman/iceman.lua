@@ -47,10 +47,10 @@ mobs.register_mob("iceman:iceman", {
 		{name = "default:snow", chance = 4, min = 1, max = 2},
     {name = "bones:bones_type2", chance = 2, min = 1, max = 1},
 	},
-	water_damage = 1,
+	water_damage = 1*500,
 	lava_damage = 100*500,
   makes_bones_in_lava = false,
-	light_damage = 2,
+	light_damage = 2*500,
 	animation = {
 		speed_normal = 15,
 		speed_run = 15,

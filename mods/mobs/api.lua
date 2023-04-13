@@ -4924,7 +4924,10 @@ local function mob_activate(self, staticdata, def, dtime)
 	end
 
 	if self.health == 0 then
+		-- Choose full health from min/max HP.
+		-- Then, set max HP to chosen value.
 		self.health = random (self.hp_min, self.hp_max)
+		self.hp_max = self.health
 	end
 
 	-- Pathfinding init.

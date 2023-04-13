@@ -801,8 +801,8 @@ passport.player_has_key = function(pname, player)
     end
   end
 
--- 	-- Return false, but don't cache the value -- we could not confirm it!
-  return false
+	-- Return false, but don't cache the value -- we could not confirm it!
+	return false
 end
 
 

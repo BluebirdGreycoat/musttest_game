@@ -16,8 +16,9 @@ heatdamage.cache_hit = heatdamage.cache_hit or 0
 heatdamage.cache_miss = heatdamage.cache_miss or 0
 heatdamage.cache_clean = 20
 
-heatdamage.immune_players["MustTest"] = {timer=-1}
-heatdamage.immune_players["singleplayer"] = {timer=-1}
+-- This no longer needed, admin invulnerability is handled elsewhere.
+--heatdamage.immune_players["MustTest"] = {timer=-1}
+--heatdamage.immune_players["singleplayer"] = {timer=-1}
 
 heatdamage.is_immune = function(pname)
   if heatdamage.immune_players[pname] then

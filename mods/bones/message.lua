@@ -105,21 +105,39 @@ local send_chat_world = function(pos, player)
 			"<" .. dname .. "> " .. random_str(msg_str2) .. " at " .. rc.pos_to_namestr(pos) .. ".")
 	else
 		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. ID and location unknown.")
-		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ". The locator beacon was SUPPRESSED.")
 	end
 
-	minetest.chat_send_player(player, "# Server: <" .. rename.gpn(player) .. ">, you may find your bonebox at the above coordinates.")
+	-- Print this on the next server step, to ensure it is printed AFTER any other
+	-- messages that should be printed first.
+	minetest.after(0, function()
+		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ".")
+		minetest.chat_send_player(player, "# Server: Find your bone-loot at the above coordinates.")
+	end)
 
 	-- The player can't trigger any more chat messages until released.
 	bones.players[player] = true
 	minetest.after(60, release_player, player)
+
+	return show_everyone
 end
 
 
 
 bones.do_messages = function(pos, player, num_stacks)
-	send_chat_world(pos, player)
 	minetest.log("action", "Player <" .. player .. "> died at (" .. pos.x .. "," .. pos.y .. "," .. pos.z .. "): stackcount=" .. num_stacks)
+	return send_chat_world(pos, player)
+end
+
+
+
+function bones.death_reason(pname, reason)
+	local dname = rename.gpn(pname)
+
+	if reason.type == "fall" then
+		minetest.chat_send_all("# Server: <" .. dname .. "> fell.")
+	elseif reason.type == "drown" then
+		minetest.chat_send_all("# Server: <" .. dname .. "> drowned.")
+	end
 end
 
 

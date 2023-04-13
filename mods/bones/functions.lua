@@ -202,7 +202,7 @@ end
 function bones.dump_bones(pname, preserve_xp)
 	local player = minetest.get_player_by_name(pname)
 	if player then
-		bones.on_dieplayer(player, {}, preserve_xp)
+		bones.on_dieplayer(player, {type="none"}, preserve_xp)
 	end
 end
 
@@ -460,9 +460,11 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	hud_clock.update_xp(pname)
 
   if bones_mode == "bones" then
-    if bones and bones.do_messages then
-      bones.do_messages(pos, pname, num_stacks)
-    end
+		local print_reason = bones.do_messages(pos, pname, num_stacks)
+		if print_reason then
+			bones.death_reason(pname, reason)
+		end
+
 		if minetest.get_node(pos).name == "bones:bones" then
 			minetest.log("action", "Successfully spawned bones @ " .. minetest.pos_to_string(pos) .. "!")
 		end

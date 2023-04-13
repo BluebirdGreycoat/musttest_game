@@ -291,7 +291,7 @@ minetest.register_node("maptools:damage_" .. damage_num, {
 	drawtype = "airlike",
 	walkable = false,
 	pointable = false,
-	damage_per_second = damage_num,
+	damage_per_second = damage_num*500,
 	paramtype = "light",
 	sunlight_propagates = true,
 	drop = "",
@@ -307,7 +307,7 @@ minetest.register_node("maptools:kill", {
 	drawtype = "airlike",
 	walkable = false,
 	pointable = false,
-	damage_per_second = 20,
+	damage_per_second = 20*500,
 	paramtype = "light",
 	sunlight_propagates = true,
 	drop = "",
@@ -364,7 +364,7 @@ minetest.register_node("maptools:permanent_fire", {
 	sunlight_propagates = true,
 	walkable = false,
     pointable = false,
-	damage_per_second = 4,
+	damage_per_second = 4*500,
     
 	on_construct = function(pos)
 		fireambiance.on_flame_addremove(pos)

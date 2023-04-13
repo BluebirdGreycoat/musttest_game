@@ -31,7 +31,7 @@ minetest.register_node("bones:bones_type2", {
 		-- Enables mob bones to burn up in lava eventually.
 		flammable = 1,
   }),
-    --damage_per_second = 2,
+    --damage_per_second = 2*500,
 
 	sounds = default.node_sound_gravel_defaults(),
 })

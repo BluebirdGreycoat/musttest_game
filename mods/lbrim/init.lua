@@ -50,7 +50,7 @@ minetest.register_node("lbrim:lava_source", {
   liquid_alternative_source = "lbrim:lava_source",
   liquid_viscosity = 7,
   liquid_renewable = true,
-  damage_per_second = 16,
+  damage_per_second = 16*500,
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
   groups = -- comment
@@ -129,7 +129,7 @@ minetest.register_node("lbrim:lava_flowing", {
   liquid_alternative_source = "lbrim:lava_source",
   liquid_viscosity = 7,
   liquid_renewable = true,
-  damage_per_second = 16,
+  damage_per_second = 16*500,
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
   groups = -- comment

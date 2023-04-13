@@ -277,7 +277,7 @@ minetest.register_node("rackstone:nether_grit", {
 	drawtype = "glasslike",
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
-	damage_per_second = 1,
+	damage_per_second = 1*500,
 
 	drop = {
 		max_items = 1,
@@ -298,7 +298,7 @@ minetest.register_node("rackstone:void", {
 	drawtype = "glasslike",
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
-	damage_per_second = 1,
+	damage_per_second = 1*500,
 	drop = "",
 })
 
@@ -535,7 +535,7 @@ minetest.register_node("rackstone:dauthsand", {
   description = "Dauthsand",
   tiles = {"rackstone_dauthsand.png"},
   groups = utility.dig_groups("racksand", {falling_node=1, racksand=1, nether_soil=1}),
-    --damage_per_second = 4,
+    --damage_per_second = 4*500,
     post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),
   drop = {
@@ -568,7 +568,7 @@ minetest.register_node("rackstone:dauthsand_stable", {
   description = "Dauthsand",
   tiles = {"rackstone_dauthsand.png"},
   groups = utility.dig_groups("gravel", {racksand=1, nether_soil=1}),
-    --damage_per_second = 4,
+    --damage_per_second = 4*500,
     post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),
   drop = 'rackstone:dauthsand',

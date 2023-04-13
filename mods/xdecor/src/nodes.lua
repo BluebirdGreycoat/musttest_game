@@ -57,7 +57,7 @@ xdecor.register("baricade", {
 	inventory_image = "xdecor_baricade.png",
 	tiles = {"xdecor_baricade.png"},
 	groups = utility.dig_groups("wood", {flammable=2}),
-	damage_per_second = 4,
+	damage_per_second = 4*500,
 	selection_box = xdecor.nodebox.slab_y(0.3),
 	collision_box = xdecor.pixelbox(2, {{0, 0, 1, 2, 2, 0}})
 })

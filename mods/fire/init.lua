@@ -32,7 +32,7 @@ minetest.register_node("fire:basic_flame", {
 	buildable_to = false, -- Player must remove fire before building.
 	not_buildable_against = true,
 	sunlight_propagates = true,
-	damage_per_second = 4,
+	damage_per_second = 4*500,
 	drop = "",
 
 	groups = utility.dig_groups("bigitem", {
@@ -117,7 +117,7 @@ minetest.register_node("fire:permanent_flame", {
 	buildable_to = false, -- Player must remove fire before building.
 	not_buildable_against = true,
 	sunlight_propagates = true,
-	damage_per_second = 4,
+	damage_per_second = 4*500,
 	groups = {igniter = 2, dig_immediate = 2, melt_around = 3, flame = 1, flame_sound = 1, fire = 1, notify_construct = 1},
 	drop = "",
 
@@ -169,7 +169,7 @@ minetest.register_node("fire:nether_flame", {
 	buildable_to = false,
 	not_buildable_against = true,
 	sunlight_propagates = true,
-	damage_per_second = 4,
+	damage_per_second = 4*500,
 	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, fire = 1, flame_sound = 1, notify_construct = 1}),
 	drop = "",
     

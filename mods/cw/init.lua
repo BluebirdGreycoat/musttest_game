@@ -248,8 +248,8 @@ if not cw.registered then
 	local sdef = table.copy(minetest.registered_nodes["default:water_source"])
 	local fdef = table.copy(minetest.registered_nodes["default:water_flowing"])
 
-	sdef.damage_per_second = 1
-	fdef.damage_per_second = 1
+	sdef.damage_per_second = 1*500
+	fdef.damage_per_second = 1*500
 
 	sdef.liquid_alternative_flowing = "cw:water_flowing"
 	sdef.liquid_alternative_source = "cw:water_source"

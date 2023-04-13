@@ -932,7 +932,7 @@ minetest.register_node("default:snowblock", {
 
 	_melts_to = "default:water_flowing",
 
-	--damage_per_second = 2,
+	--damage_per_second = 2*500,
 	post_effect_color = {a=255, r=255, g=255, b=255},
     
 	sounds = default.node_sound_snow_defaults(),
@@ -1268,7 +1268,7 @@ do
 		groups = utility.dig_groups("softwood", {flammable = 1, fall_damage_add_percent = 100}),
 		sounds = default.node_sound_wood_defaults(),
 		on_place = minetest.rotate_node,
-		damage_per_second = 1,
+		damage_per_second = 1*500,
 
 		on_punch = function(pos, node, puncher, pt)
 			if not puncher or not puncher:is_player() then return end

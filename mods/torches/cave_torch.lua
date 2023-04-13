@@ -61,7 +61,7 @@ minetest.register_node("torches:torch_floor", {
 		want_notify=1,
   }),
   drop = "torches:torch_floor",
-  damage_per_second = 1, -- Torches damage if you stand on top of them.
+  damage_per_second = 1*500, -- Torches damage if you stand on top of them.
   selection_box = {
     type = "wallmounted",
     wall_bottom = {-1/16, -0.5, -1/16, 1/16, 2/16, 1/16},

@@ -57,7 +57,7 @@ if not lava.run_once then
 		liquid_alternative_source = "default:lava_source",
 		liquid_viscosity = 7,
 		liquid_renewable = false,
-		damage_per_second = 4 * 2,
+		damage_per_second = 4 * 2 * 500,
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 		groups = -- comment
 		{
@@ -137,7 +137,7 @@ if not lava.run_once then
 		liquid_alternative_source = "default:lava_source",
 		liquid_viscosity = 7,
 		liquid_renewable = false,
-		damage_per_second = 4 * 2,
+		damage_per_second = 4 * 2 * 500,
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 
 		groups = -- comment

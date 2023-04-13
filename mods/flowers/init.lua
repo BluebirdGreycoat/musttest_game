@@ -307,7 +307,7 @@ end
 
 -- Ouch.
 minetest.override_item("flowers:thornstalk", {
-	damage_per_second = 2,
+	damage_per_second = 2*500,
 })
 
 

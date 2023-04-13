@@ -5265,8 +5265,8 @@ if not mobs.registered then
 			drawtype                = def.drawtype, -- DEPRECATED, use rotate instead
 			rotate                  = rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2
 			lifetimer               = def.lifetimer or 180, -- 3 minutes
-			hp_min                  = (def.hp_min or 5) * difficulty,
-			hp_max                  = (def.hp_max or 10) * difficulty,
+			hp_min                  = (def.hp_min or (5*500)) * difficulty,
+			hp_max                  = (def.hp_max or (10*500)) * difficulty,
 			physical                = true,
 			collisionbox            = def.collisionbox or {-0.25, -0.25, -0.25, 0.25, 0.25, 0.25},
 			selectionbox            = def.selectionbox or def.collisionbox,

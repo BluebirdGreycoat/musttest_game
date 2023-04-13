@@ -14,8 +14,8 @@ mobs.register_mob("griefer:elite_griefer", {
 	damage = 8*500,
 	damage_min = 8*500,
 	damage_max = 16*500,
-	hp_min = 160,
-	hp_max = 260,
+	hp_min = 160*500,
+	hp_max = 260*500,
 	armor = 100,
 	show_health = false,
 

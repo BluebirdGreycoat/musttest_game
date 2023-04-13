@@ -10,8 +10,8 @@ mobs.register_mob("griefer:griefer", {
 	pathing_radius = 16,
 	reach = 2,
 	damage = 4*500,
-	hp_min = 8,
-	hp_max = 34,
+	hp_min = 8*500,
+	hp_max = 34*500,
 	armor = 100,
 	armor_level = 2,
 	-- Slightly smaller collision box makes mob movement easier.

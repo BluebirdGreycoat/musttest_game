@@ -1,8 +1,8 @@
 mobs.register_mob("nssm:moonheron", {
 	type = "monster",
 	description = "Moonheron",
-	hp_max = 33,
-	hp_min = 22,
+	hp_max = 33*500,
+	hp_min = 22*500,
 	collisionbox = {-0.45, -0.3, -0.45, 0.45, 0.3, 0.45},
 	visual = "mesh",
 	mesh = "moonheron.x",

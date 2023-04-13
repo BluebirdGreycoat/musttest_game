@@ -1,8 +1,8 @@
 mobs.register_mob("nssm:phoenix", {
 	type = "monster",
 	description = "Phoenix",
-	hp_max = 260,
-	hp_min = 160,
+	hp_max = 260*500,
+	hp_min = 160*500,
 	collisionbox = {-0.65, -0.4, -0.65, 0.65, 0.4, 0.65},
 	visual = "mesh",
 	mesh = "phoenix.x",

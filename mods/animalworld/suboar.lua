@@ -14,8 +14,8 @@ mobs.register_mob("animalworld:suboar", {
 
 	reach = 2,
 	damage = 8*500,
-	hp_min = 5,
-	hp_max = 35,
+	hp_min = 5*500,
+	hp_max = 35*500,
 	armor = 70,
 	collisionbox = {-0.5, -0.01, -0.5, 0.5, 0.95, 0.5},
 	visual = "mesh",

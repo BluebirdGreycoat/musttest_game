@@ -5,8 +5,8 @@ local math_random = math.random
 mobs.register_mob("oerkki:night_master", {
 	type = "monster",
 	description = "Night Master",
-	hp_max = 260,
-	hp_min = 60,
+	hp_max = 260*500,
+	hp_min = 60*500,
 	collisionbox = {-0.65, -0.4, -0.65, 0.65, 0.4, 0.65},
 	visual = "mesh",
 	mesh = "moonherontrio.x",
@@ -84,8 +84,8 @@ mobs.register_mob("oerkki:night_master", {
 mobs.register_mob("oerkki:night_master_2", {
 	type = "monster",
 	description = "Night Master",
-	hp_max = 260,
-	hp_min = 60,
+	hp_max = 260*500,
+	hp_min = 60*500,
 	collisionbox = {-0.65, -0.4, -0.65, 0.65, 0.4, 0.65},
 	visual = "mesh",
 	mesh = "night_master_2.x",
@@ -155,8 +155,8 @@ mobs.register_mob("oerkki:night_master_2", {
 mobs.register_mob("oerkki:night_master_1", {
 	type = "monster",
 	description = "Night Master",
-	hp_max = 270,
-	hp_min = 70,
+	hp_max = 270*500,
+	hp_min = 70*500,
 	collisionbox = {-0.65, -0.4, -0.65, 0.65, 0.4, 0.65},
 	visual = "mesh",
 	mesh = "night_master_1.x",

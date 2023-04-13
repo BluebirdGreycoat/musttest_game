@@ -1,8 +1,8 @@
 mobs.register_mob("nssm:scrausics", {
 	type = "monster",
 	description = "Scrausics",
-	hp_max = 33,
-	hp_min = 22,
+	hp_max = 33*500,
+	hp_min = 22*500,
 	collisionbox = {-0.4, -0.3, -0.4, 0.4, 0.3, 0.4},
 	visual = "mesh",
 	mesh = "scrausics.x",

@@ -365,6 +365,7 @@ minetest.register_node("maptools:permanent_fire", {
 	walkable = false,
     pointable = false,
 	damage_per_second = 4*500,
+	_death_message = "<player> burned by unnatural fire.",
     
 	on_construct = function(pos)
 		fireambiance.on_flame_addremove(pos)

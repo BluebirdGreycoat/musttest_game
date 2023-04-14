@@ -51,6 +51,7 @@ minetest.register_node("lbrim:lava_source", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
+  _death_message = "<player> melted into a crisp.",
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
   groups = -- comment
@@ -130,6 +131,7 @@ minetest.register_node("lbrim:lava_flowing", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
+  _death_message = "<player> melted into a crisp.",
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
   groups = -- comment

@@ -26,6 +26,10 @@ minetest.register_node("torches:kalite_torch_floor", {
   }),
   drop = "torches:kalite_torch_floor",
   damage_per_second = 1*500, -- Torches damage if you stand on top of them.
+  _death_message = {
+    "<player> stepped on a red torch.",
+    "<player> stepped on burning kalite.",
+  },
   selection_box = {
     type = "wallmounted",
     wall_bottom = {-1/16, -0.5, -1/16, 1/16, 2/16, 1/16},

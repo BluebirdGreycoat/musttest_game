@@ -278,6 +278,7 @@ minetest.register_node("rackstone:nether_grit", {
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
 	damage_per_second = 1*500,
+	_death_message = function() return "Nether tar ate a new hole in <player>." end,
 
 	drop = {
 		max_items = 1,
@@ -299,6 +300,7 @@ minetest.register_node("rackstone:void", {
   paramtype = "light",
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
 	damage_per_second = 1*500,
+	_death_message = "<player> found a void pocket.",
 	drop = "",
 })
 

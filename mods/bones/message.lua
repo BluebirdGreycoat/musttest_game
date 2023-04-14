@@ -137,6 +137,25 @@ function bones.death_reason(pname, reason)
 		minetest.chat_send_all("# Server: <" .. dname .. "> fell.")
 	elseif reason.type == "drown" then
 		minetest.chat_send_all("# Server: <" .. dname .. "> drowned.")
+	elseif reason.type == "node_damage" then
+		if reason.node then
+			local ndef = minetest.registered_nodes[reason.node]
+			if ndef and ndef._death_message then
+				local msg = ndef._death_message
+
+				if type(msg) == "table" then
+					msg = msg[math.random(1, #msg)]
+				elseif type(msg) == "function" then
+					msg = msg()
+				end
+
+				-- Assume message is string.
+				if type(msg) == "string" then
+					msg = msg:gsub("<player>", "<" .. dname .. ">")
+					minetest.chat_send_all("# Server: " .. msg)
+				end
+			end
+		end
 	end
 end
 

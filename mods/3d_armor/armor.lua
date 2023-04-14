@@ -15,11 +15,10 @@ armor.formspec =
 	default.gui_slots ..
 	"button[0,0.5;2,0.5;main;Back]" ..
 	"image[4,0.25;2,4;armor_preview]" ..
-	"label[6,0.5;HP Max: hp_max]" ..
+	"label[6,0.5;Health: hp_max]" ..
 	"label[6,1;Level: armor_level]" ..
-	"label[6,1.4;Heal:  armor_heal]" ..
-	--"label[6,1.8;Fire:  armor_fire]" ..
-	--"label[6,2.2;Radiation:  armor_radiation]" ..
+	"label[6,1.4;Heal: armor_heal]" ..
+	--"label[6,2.2;Rads: armor_radiation]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -78,11 +77,12 @@ function armor.set_player_armor(self, player)
 	end
 
 	local armor_texture = "3d_armor_trans.png"
+
+	-- Armor groups.
 	local armor_level = 0
 	local armor_heal = 0
-	local armor_fire = 0
-	local armor_water = 0
 	local armor_radiation = 0
+
 	local state = 0
 	local items = 0
 	local elements = {}
@@ -95,7 +95,7 @@ function armor.set_player_armor(self, player)
 		elements[v] = false
 	end
 
-	for i=1, 6 do
+	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
 		local item = stack:get_name()
 		if stack:get_count() == 1 then
@@ -107,12 +107,13 @@ function armor.set_player_armor(self, player)
 						local texture = def.texture or item:gsub("%:", "_")
 						table.insert(textures, texture..".png")
 						preview = preview.."^"..texture.."_preview.png"
-						armor_level = armor_level + level
+
 						state = state + stack:get_wear()
 						items = items + 1
+
+						-- Armor groups.
+						armor_level = armor_level + level
 						armor_heal = armor_heal + (def.groups["armor_heal"] or 0)
-						armor_fire = armor_fire + (def.groups["armor_fire"] or 0)
-						armor_water = armor_water + (def.groups["armor_water"] or 0)
 						armor_radiation = armor_radiation + (def.groups["armor_radiation"] or 0)
 
 						for kk,vv in ipairs(self.physics) do
@@ -173,8 +174,6 @@ function armor.set_player_armor(self, player)
 	self.def[name].jump = physics_o.jump
 	self.def[name].speed = physics_o.speed
 	self.def[name].gravity = physics_o.gravity
-	self.def[name].fire = armor_fire
-	self.def[name].water = armor_water
 	self.def[name].radiation = armor_radiation
 	self:update_player_visuals(player)
 end
@@ -224,10 +223,9 @@ function armor.get_armor_formspec(self, name)
 
 	local formspec = armor.formspec .. "list[detached:"..name.."_armor;armor;0,1.5;3,2;]"
 	formspec = formspec:gsub("armor_preview", armor.textures[name].preview)
-	formspec = formspec:gsub("armor_level", armor.def[name].level)
-	formspec = formspec:gsub("armor_heal", armor.def[name].heal)
-	formspec = formspec:gsub("armor_fire", armor.def[name].fire)
-	formspec = formspec:gsub("armor_radiation", armor.def[name].radiation)
+	formspec = formspec:gsub("armor_level", math_floor(armor.def[name].level))
+	formspec = formspec:gsub("armor_heal", math_floor(armor.def[name].heal))
+	formspec = formspec:gsub("armor_radiation", math_floor(armor.def[name].radiation))
 	formspec = formspec:gsub("hp_max", tostring(get_player_max_hp(name)))
 
 	return formspec

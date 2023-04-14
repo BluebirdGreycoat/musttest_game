@@ -216,7 +216,7 @@ end
 
 -- Pair internal armor group keys to human-readable names.
 local formspec_keysubs = {
-	fleshy = "level",
+	fleshy = "defence",
 	boom = "blast",
 	cracky = "fibrous",
 }

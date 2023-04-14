@@ -118,6 +118,8 @@ if ARMOR_MATERIALS.bronze then
 
 		_armor_resist_groups = {
 			fleshy = 10,
+			fireball = 50,
+			boom = 20,
 		},
 	})
 end
@@ -139,6 +141,7 @@ if ARMOR_MATERIALS.diamond then
 
 		_armor_resist_groups = {
 			fleshy = 15,
+			arrow = 20,
 		},
 	})
 end

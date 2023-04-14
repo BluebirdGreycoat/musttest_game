@@ -501,6 +501,8 @@ end
 --   fireball (DM artillery, etc)
 --   arrow (player weapon or mob)
 --   boom (explosions)
+--
+-- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
 	local rs = reason.type
 	if rs == "set_hp" then

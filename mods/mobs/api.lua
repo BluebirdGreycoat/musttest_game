@@ -5184,7 +5184,7 @@ local function do_tnt(obj, damage)
 
 	obj.object:punch(obj.object, 1.0, {
 		full_punch_interval = 1.0,
-		damage_groups = {fleshy = damage},
+		damage_groups = {boom = damage},
 	}, nil)
 
 	return false, true, {}

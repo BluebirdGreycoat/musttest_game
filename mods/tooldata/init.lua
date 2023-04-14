@@ -967,7 +967,7 @@ function td_api.arrow_toolcaps(name, damage)
 		full_punch_interval = 1.0,
 		max_drop_level = 3,
 		damage_groups = {
-			fleshy = damage,
+			arrow = damage,
 			from_arrow = 0,
 		},
 	}

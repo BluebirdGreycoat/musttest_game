@@ -162,6 +162,11 @@ function armor.set_player_armor(self, player)
 	for k, v in pairs(loc_arm_grps) do
 		armor_groups[k] = 100 - (loc_arm_grps[k] * ARMOR_LEVEL_MULTIPLIER)
 		--minetest.log('armor: ' .. k .. '=' .. armor_groups[k])
+
+		-- Damage mitigation cannot go above 90%.
+		if armor_groups[k] < 10 then
+			armor_groups[k] = 10
+		end
 	end
 
 	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
@@ -170,7 +175,7 @@ function armor.set_player_armor(self, player)
 	self.textures[name].preview = preview
 	self.def[name].state = state
 	self.def[name].count = items
-	self.def[name].level = (loc_arm_grps.fleshy or 0)
+	self.def[name].level = math_floor((loc_arm_grps.fleshy or 0) * ARMOR_LEVEL_MULTIPLIER)
 	self.def[name].heal = armor_heal
 	self.def[name].jump = physics_o.jump
 	self.def[name].speed = physics_o.speed

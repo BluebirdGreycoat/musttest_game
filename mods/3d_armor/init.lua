@@ -25,11 +25,6 @@ ARMOR_LEVEL_MULTIPLIER = 0.5
 -- eg: ARMOR_HEAL_MULTIPLIER = 0 will disable healing altogether.
 ARMOR_HEAL_MULTIPLIER = 0.5
 
--- You can use this to increase or decrease overall armor radiation protection,
--- eg: ARMOR_RADIATION_MULTIPLIER = 0 will completely disable radiation protection.
--- Note: patched technic mod is required
-ARMOR_RADIATION_MULTIPLIER = 0
-
 dofile(armor.modpath .. "/armor.lua")
 
 if not armor.run_once then
@@ -60,6 +55,8 @@ if not armor.run_once then
 			_armor_wear_from_poison = 0.0,
 			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
+
+			_armor_resist_groups = {fleshy=5},
 		})
 
 		minetest.register_tool("3d_armor:chestplate_wood", {

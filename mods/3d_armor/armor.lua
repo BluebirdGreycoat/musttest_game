@@ -79,6 +79,7 @@ function armor.set_player_armor(self, player)
 	local armor_texture = "3d_armor_trans.png"
 
 	-- Armor groups.
+	local loc_arm_grps = {}
 	local armor_level = 0
 	local armor_heal = 0
 	local armor_radiation = 0
@@ -102,19 +103,22 @@ function armor.set_player_armor(self, player)
 			local def = stack:get_definition()
 			for k, v in pairs(elements) do
 				if v == false then
-					local level = def.groups["armor_"..k]
-					if level then
+					local level = def.groups["armor_" .. k]
+					if level and level > 0 then
 						local texture = def.texture or item:gsub("%:", "_")
 						table.insert(textures, texture..".png")
 						preview = preview.."^"..texture.."_preview.png"
 
 						state = state + stack:get_wear()
 						items = items + 1
-
-						-- Armor groups.
-						armor_level = armor_level + level
 						armor_heal = armor_heal + (def.groups["armor_heal"] or 0)
-						armor_radiation = armor_radiation + (def.groups["armor_radiation"] or 0)
+
+						-- Local armor groups.
+						local lag = def._armor_resist_groups or {}
+						for k, v in pairs(lag) do
+							--minetest.log('group: ' .. k)
+							loc_arm_grps[k] = (loc_arm_grps[k] or 0) + lag[k]
+						end
 
 						for kk,vv in ipairs(self.physics) do
 							local o_value = def.groups["physics_"..vv]
@@ -144,23 +148,20 @@ function armor.set_player_armor(self, player)
 	-- I guess this gives an armor bonus if all armors are the same material?
 	-- MustTest.
 	if material.type and material.count == #self.elements then
-		armor_level = armor_level * 1.1
+		loc_arm_grps.fleshy = (loc_arm_grps.fleshy or 0) * 1.1
 	end
 
-	armor_level = armor_level * ARMOR_LEVEL_MULTIPLIER
 	armor_heal = armor_heal * ARMOR_HEAL_MULTIPLIER
-	armor_radiation = armor_radiation * ARMOR_RADIATION_MULTIPLIER
 
 	if #textures > 0 then
 		armor_texture = table.concat(textures, "^")
 	end
 
-	local armor_groups = {fleshy=100}
+	local armor_groups = {}
 
-	if armor_level > 0 then
-		armor_groups.level = math_floor(armor_level / 20)
-		armor_groups.fleshy = 100 - armor_level
-		armor_groups.radiation = 100 - armor_radiation
+	for k, v in pairs(loc_arm_grps) do
+		armor_groups[k] = 100 - (loc_arm_grps[k] * ARMOR_LEVEL_MULTIPLIER)
+		--minetest.log('armor: ' .. k .. '=' .. armor_groups[k])
 	end
 
 	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
@@ -169,7 +170,7 @@ function armor.set_player_armor(self, player)
 	self.textures[name].preview = preview
 	self.def[name].state = state
 	self.def[name].count = items
-	self.def[name].level = armor_level
+	self.def[name].level = (loc_arm_grps.fleshy or 0)
 	self.def[name].heal = armor_heal
 	self.def[name].jump = physics_o.jump
 	self.def[name].speed = physics_o.speed

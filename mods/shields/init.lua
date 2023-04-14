@@ -20,6 +20,7 @@ if ARMOR_MATERIALS.wood then
 
 		_armor_resist_groups = {
 			fleshy = 5,
+			cracky = 5,
 		},
 	})
 
@@ -40,6 +41,7 @@ if ARMOR_MATERIALS.wood then
 
 		_armor_resist_groups = {
 			fleshy = 8,
+			cracky = 25,
 		},
 	})
 
@@ -76,6 +78,9 @@ if ARMOR_MATERIALS.steel then
 
 		_armor_resist_groups = {
 			fleshy = 10,
+			crush = 10,
+			arrow = 15,
+			boom = 8,
 		},
 	})
 end
@@ -97,6 +102,8 @@ if ARMOR_MATERIALS.carbon then
 
 		_armor_resist_groups = {
 			fleshy = 12,
+			arrow = 18,
+			boom = 10,
 		},
 	})
 end
@@ -163,6 +170,7 @@ if ARMOR_MATERIALS.gold then
 
 		_armor_resist_groups = {
 			fleshy = 10,
+			crumbly = 25,
 		},
 	})
 end
@@ -184,7 +192,6 @@ if ARMOR_MATERIALS.mithril then
 
 		_armor_resist_groups = {
 			fleshy = 15,
-			boom = 40,
 		},
 	})
 end

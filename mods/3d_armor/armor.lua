@@ -17,6 +17,7 @@ armor.formspec =
 	"image[4,0.25;2,4;armor_preview]" ..
 	"label[6,0.5;Health: hp_max]" ..
 	"label[6,0.8;Heal: armor_heal]" ..
+	"label[6,3.5;All stats are WiP!]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -217,6 +218,7 @@ end
 local formspec_keysubs = {
 	fleshy = "level",
 	boom = "blast",
+	cracky = "fibrous",
 }
 
 function armor.get_armor_formspec(self, name)

@@ -19,6 +19,7 @@ mobs.register_mob("iceman:iceman", {
 	damage = 3*500,
 	damage_min = 2*500,
 	damage_max = 5*500,
+	damage_group = "cracky",
 	hp_min = 12*500,
 	hp_max = 25*500,
 	armor = 80,

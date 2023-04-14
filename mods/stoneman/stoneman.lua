@@ -7,6 +7,7 @@ mobs.register_mob("stoneman:stoneman", {
 	pathfinding = 1,
 	reach = 2,
 	damage = 3*500,
+	damage_group = "cracky",
 	hp_min = 12*500,
 	hp_max = 35*500,
 	armor = 80,

@@ -58,6 +58,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 5,
+				cracky = 10,
 			},
 		})
 
@@ -78,6 +79,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 10,
+				cracky = 15,
 			},
 		})
 
@@ -95,6 +97,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 5,
+				cracky = 10,
 			},
 		})
 
@@ -113,6 +116,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 5,
+				cracky = 5,
 			},
 		})
 	end
@@ -133,6 +137,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 10,
+				crush = 10,
+				arrow = 15,
+				boom = 5,
 			},
 		})
 
@@ -152,6 +159,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 15,
+				crush = 15,
+				arrow = 20,
+				boom = 10,
 			},
 		})
 
@@ -168,6 +178,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 15,
+				crush = 15,
+				arrow = 15,
+				boom = 5,
 			},
 		})
 
@@ -185,6 +198,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 10,
+				crush = 10,
+				arrow = 10,
+				boom = 5,
 			},
 		})
 	end
@@ -205,6 +221,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 12,
+				crush = 12,
+				arrow = 15,
+				boom = 8,
 			},
 		})
 
@@ -224,6 +243,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 17,
+				crush = 17,
+				arrow = 20,
+				boom = 15,
 			},
 		})
 
@@ -240,6 +262,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 17,
+				crush = 10,
+				arrow = 15,
+				boom = 10,
 			},
 		})
 
@@ -257,6 +282,9 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 12,
+				crush = 8,
+				arrow = 12,
+				boom = 5,
 			},
 		})
 	end
@@ -277,6 +305,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 10,
+				crumbly = 12,
 			},
 		})
 
@@ -296,6 +325,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 15,
+				crumbly = 20,
 			},
 		})
 
@@ -312,6 +342,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 15,
+				crumbly = 12,
 			},
 		})
 
@@ -329,6 +360,7 @@ if not armor.run_once then
 
 			_armor_resist_groups = {
 				fleshy = 10,
+				crumbly = 8,
 			},
 		})
 	end

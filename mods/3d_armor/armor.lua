@@ -3,8 +3,8 @@
 local math_floor = math.floor
 local math_random = math.random
 
-armor.elements = {"head", "torso", "legs", "feet"}
-armor.physics = {"jump", "speed", "gravity"}
+armor.elements = armor.elements or {"head", "torso", "legs", "feet"}
+armor.physics = armor.physics or {"jump", "speed", "gravity"}
 armor.default_skin = "character"
 armor.version = "MustTest"
 
@@ -16,9 +16,7 @@ armor.formspec =
 	"button[0,0.5;2,0.5;main;Back]" ..
 	"image[4,0.25;2,4;armor_preview]" ..
 	"label[6,0.5;Health: hp_max]" ..
-	"label[6,1;Level: armor_level]" ..
-	"label[6,1.4;Heal: armor_heal]" ..
-	--"label[6,2.2;Rads: armor_radiation]" ..
+	"label[6,0.8;Heal: armor_heal]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -80,9 +78,7 @@ function armor.set_player_armor(self, player)
 
 	-- Armor groups.
 	local loc_arm_grps = {}
-	local armor_level = 0
 	local armor_heal = 0
-	local armor_radiation = 0
 
 	local state = 0
 	local items = 0
@@ -105,6 +101,8 @@ function armor.set_player_armor(self, player)
 				if v == false then
 					local level = def.groups["armor_" .. k]
 					if level and level > 0 then
+						--minetest.log('armor piece: ' .. k)
+
 						local texture = def.texture or item:gsub("%:", "_")
 						table.insert(textures, texture..".png")
 						preview = preview.."^"..texture.."_preview.png"
@@ -175,12 +173,11 @@ function armor.set_player_armor(self, player)
 	self.textures[name].preview = preview
 	self.def[name].state = state
 	self.def[name].count = items
-	self.def[name].level = math_floor((loc_arm_grps.fleshy or 0) * ARMOR_LEVEL_MULTIPLIER)
 	self.def[name].heal = armor_heal
 	self.def[name].jump = physics_o.jump
 	self.def[name].speed = physics_o.speed
 	self.def[name].gravity = physics_o.gravity
-	self.def[name].radiation = armor_radiation
+	self.def[name].resistances = loc_arm_grps
 	self:update_player_visuals(player)
 end
 
@@ -216,6 +213,12 @@ end
 
 
 
+-- Pair internal armor group keys to human-readable names.
+local formspec_keysubs = {
+	fleshy = "level",
+	boom = "blast",
+}
+
 function armor.get_armor_formspec(self, name)
 	if not armor.textures[name] then
 		minetest.log("error", "3d_armor: Player texture["..name.."] is nil [get_armor_formspec]")
@@ -229,10 +232,24 @@ function armor.get_armor_formspec(self, name)
 
 	local formspec = armor.formspec .. "list[detached:"..name.."_armor;armor;0,1.5;3,2;]"
 	formspec = formspec:gsub("armor_preview", armor.textures[name].preview)
-	formspec = formspec:gsub("armor_level", math_floor(armor.def[name].level))
 	formspec = formspec:gsub("armor_heal", math_floor(armor.def[name].heal))
-	formspec = formspec:gsub("armor_radiation", math_floor(armor.def[name].radiation))
 	formspec = formspec:gsub("hp_max", tostring(get_player_max_hp(name)))
+
+	--minetest.log('testing: ' .. type(armor.def[name].resistances))
+
+	-- Print out armor stats, whatever they are.
+	local y = 1.3
+	for k, v in pairs(armor.def[name].resistances) do
+		--minetest.log('k=' .. k .. ', v=' .. v)
+
+		if formspec_keysubs[k] then
+			k = formspec_keysubs[k]
+		end
+
+		local s = k:sub(1, 1):upper() .. k:sub(2)
+		formspec = formspec .. "label[6," .. y .. ";" .. s .. ": " .. math_floor(v) .. "]"
+		y = y + 0.3
+	end
 
 	return formspec
 end
@@ -368,14 +385,10 @@ function armor.on_joinplayer(player)
 	armor.def[name] = {
 		state = 0,
 		count = 0,
-		level = 0,
 		heal = 0,
 		jump = 1,
 		speed = 1,
 		gravity = 1,
-		fire = 0,
-		water = 0,
-		radiation = 0,
 	}
 
 	armor.textures[name] = {

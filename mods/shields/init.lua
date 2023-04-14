@@ -181,6 +181,7 @@ if ARMOR_MATERIALS.mithril then
 
 		_armor_resist_groups = {
 			fleshy = 15,
+			boom = 40,
 		},
 	})
 end

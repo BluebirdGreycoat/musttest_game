@@ -29,7 +29,7 @@ function armor.set_player_armor(self, player)
 	local name = player:get_player_name()
 	local def = self.def
 	local armor_lvl = 0
-	if def[name] and def[name].level then
+	if def[name] then
 		armor_lvl = get_armor_lvl(def[name])
 	end
 	hud.change_item(player, "armor", {number = armor_lvl, max = 20})

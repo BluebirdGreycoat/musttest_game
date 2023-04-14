@@ -25,6 +25,38 @@ function utility.trim_remove_special_chars(msg)
 	return msg
 end
 
+-- Minetest's armor resistance calculation assumes that if an armor group is NOT
+-- specified, then all damage that WOULD have been applied through that kind of
+-- armor is completely nullified. This is stupid ... if an entity doesn't specify
+-- an armor group, then for purposes of damage calculation, the code SHOULD behave
+-- as if all damage for that damage group is applied. But whatever. This function
+-- fixes that by pre-defining all damage groups used in Enyekala, and setting them
+-- to 100 (means 100% of damage passes through that type of armor, without being
+-- mitigated).
+function utility.builtin_armor_groups(groups)
+	local tb = {
+		-- Default groups.
+		fleshy = 100,
+		cracky = 100,
+		crumbly = 100,
+		snappy = 100,
+
+		-- Gamemode-specific.
+		radiation = 100,
+		boom = 100,
+		poison = 100,
+		electrocute = 100,
+		arrow = 100,
+		fireball = 100,
+		pressure = 100,
+		crush = 100,
+	}
+	for k, v in pairs(groups) do
+		tb[k] = v
+	end
+	return tb
+end
+
 -- `level = 0/1, snappy = 3` enables quick digging via shears.
 -- Otherwise item cannot be dug by shears at all.
 --

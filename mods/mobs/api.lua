@@ -99,7 +99,7 @@ local mobs_griefing =   true
 local creative =        false
 local spawn_protected = minetest.settings:get_bool("mobs_spawn_protected") ~= false
 local remove_far =      false
-local difficulty =      tonumber(minetest.settings:get("mob_difficulty")) or 1.0
+local difficulty =      1.0
 local show_health =     true
 local max_per_block =   tonumber(minetest.settings:get("max_objects_per_block") or 99)
 local mob_chance_multiplier = tonumber(minetest.settings:get("mob_chance_multiplier") or 1)
@@ -4937,7 +4937,8 @@ local function mob_activate(self, staticdata, def, dtime)
 	end
 
 	-- mob defaults
-	self.object:set_armor_groups({immortal = 1, fleshy = self.armor})
+	-- Hmmm ... setting 'immortal' prevents Minetest's default damage calculation.
+	self.object:set_armor_groups(utility.builtin_armor_groups({immortal = 1, fleshy = self.armor}))
 	self.old_y = self.object:get_pos().y
 	self.old_health = self.health
 	self.sounds.distance = self.sounds.distance or 10

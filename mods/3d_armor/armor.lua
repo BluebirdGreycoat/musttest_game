@@ -162,7 +162,7 @@ function armor.set_player_armor(self, player)
 		armor_groups.radiation = 100 - armor_radiation
 	end
 
-	player:set_armor_groups(armor_groups)
+	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
 	player:set_physics_override(physics_o)
 	self.textures[name].armor = armor_texture
 	self.textures[name].preview = preview
@@ -483,6 +483,7 @@ end
 --   electrocute (solar panels)
 --   fireball (DM artillery, etc)
 --   arrow (player weapon or mob)
+--   boom (explosions)
 function armor.wear_from_reason(item, def, reason)
 	local rs = reason.type
 	if rs == "set_hp" then

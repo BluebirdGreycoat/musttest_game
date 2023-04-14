@@ -198,7 +198,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 				-- should only be applied if the player does not actually die.
 				if obj:get_hp() > 0 then
 					local dg = {
-						fleshy = damage,
+						boom = damage,
 					}
 
 					local hitter = obj
@@ -285,7 +285,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 					if not obj:get_armor_groups().immortal then
 						obj:punch(obj, 1.0, {
 							full_punch_interval = 1.0,
-							damage_groups = {fleshy = damage},
+							damage_groups = {boom = damage},
 						}, nil)
 					end
 				end

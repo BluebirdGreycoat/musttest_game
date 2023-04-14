@@ -69,6 +69,7 @@ mobs.register_arrow("dm:fireball", {
 
 	-- Direct hit, no fire ... just plenty of pain.
 	hit_player = function(self, player)
+		armor.notify_punch_reason({reason="fireball"})
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {fleshy = 8*500},

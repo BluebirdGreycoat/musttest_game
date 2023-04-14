@@ -140,10 +140,6 @@ function armor.set_player_armor(self, player)
 		end
 	end
 
-	if minetest.get_modpath("shields") then
-		armor_level = armor_level * 0.9
-	end
-
 	-- I guess this gives an armor bonus if all armors are the same material?
 	-- MustTest.
 	if material.type and material.count == #self.elements then
@@ -485,6 +481,8 @@ end
 --   kill (kill command)
 --   radiation (reactors, etc)
 --   electrocute (solar panels)
+--   fireball (DM artillery, etc)
+--   arrow (player weapon or mob)
 function armor.wear_from_reason(item, def, reason)
 	local rs = reason.type
 	if rs == "set_hp" then

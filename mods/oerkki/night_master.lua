@@ -232,6 +232,7 @@ mobs.register_arrow("oerkki:flame_bolt", {
 
 	-- Player hit, plenty of pain and a lot more flame.
 	hit_player = function(self, player)
+		armor.notify_punch_reason({reason="fireball"})
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {fleshy = 2*500},

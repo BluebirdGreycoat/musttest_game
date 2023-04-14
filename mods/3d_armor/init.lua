@@ -4,20 +4,6 @@ armor.modname = armor.modname or minetest.get_current_modname()
 armor.modpath = minetest.get_modpath(armor.modname)
 armor.worldpath = minetest.get_worldpath()
 
--- Enable fire protection (defaults true if using ethereal mod)
-ARMOR_FIRE_PROTECT = false
-
--- Fire protection nodes, (name, protection level, damage)
-ARMOR_FIRE_NODES = {
-	--{"default:lava_source",     5, 4},
-	--{"default:lava_flowing",    5, 4},
-	--{"fire:basic_flame",        3, 4},
-	--{"fire:permanent_flame",    3, 4},
-	--{"ethereal:crystal_spike",  2, 1},
-	--{"ethereal:fire_flower",    2, 1},
-	--{"default:torch",           1, 1},
-}
-
 -- Increase this if you get initialization glitches when a player first joins.
 ARMOR_INIT_DELAY = 1
 
@@ -37,7 +23,7 @@ ARMOR_LEVEL_MULTIPLIER = 0.5
 
 -- You can use this to increase or decrease overall armor healing,
 -- eg: ARMOR_HEAL_MULTIPLIER = 0 will disable healing altogether.
-ARMOR_HEAL_MULTIPLIER = 0.25
+ARMOR_HEAL_MULTIPLIER = 0.5
 
 -- You can use this to increase or decrease overall armor radiation protection,
 -- eg: ARMOR_RADIATION_MULTIPLIER = 0 will completely disable radiation protection.

@@ -128,10 +128,12 @@ function throwing_arrow_punch_entity (target, self, damage)
 
   local player = minetest.get_player_by_name(self.player_name or "")
   if player and player:is_player() then
+		armor.notify_punch_reason({reason="arrow"})
 		target:punch(player, 1.0, toolcaps, nil)
   else
 		-- Shooter logged off game after firing arrow. Use basic fallback.
 		toolcaps.damage_groups.from_arrow = nil
+		armor.notify_punch_reason({reason="arrow"})
     target:punch(self.object, 1.0, toolcaps, nil)
   end
 end

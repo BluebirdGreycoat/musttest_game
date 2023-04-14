@@ -1678,33 +1678,6 @@ end
 
 
 
--- Blast damage to entities nearby (modified from TNT mod).
-local function entity_physics(pos, radius)
-	radius = radius * 2
-
-	local objs = minetest.get_objects_inside_radius(pos, radius)
-	local obj_pos, dist
-
-	for n = 1, #objs do
-
-		obj_pos = objs[n]:get_pos()
-
-		dist = get_distance(pos, obj_pos)
-		if dist < 1 then dist = 1 end
-
-		local damage = floor((4 / dist) * radius)
-		local ent = objs[n]:get_luaentity()
-
-		-- punches work on entities and players
-		objs[n]:punch(objs[n], 1.0, {
-			full_punch_interval = 1.0,
-			damage_groups = {fleshy = damage*500},
-		}, pos)
-	end
-end
-
-
-
 -- Should mob follow what I'm holding?
 local function follow_holding(self, clicker)
 	if not clicker:is_player() then

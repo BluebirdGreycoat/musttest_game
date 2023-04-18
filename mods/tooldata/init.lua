@@ -170,7 +170,7 @@ tooldata["pick_steel"] = {
 	groupcaps = {
 		cracky = {times={[1]=4.00, [2]=1.20, [3]=1.10}, uses=150, maxlevel=2},
 	},
-	damage_groups = {fleshy=13*SCALE, cracky=1*SCALE, crumbly=1*SCALE, knockback=6*SCALE},
+	damage_groups = {fleshy=13*SCALE, cracky=1*SCALE, crumbly=1*SCALE, knockback=6},
 	dig_exhaustion_modifier = 0.8,
 }
 

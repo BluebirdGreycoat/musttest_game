@@ -200,3 +200,10 @@ function nether.hidden_on_timer(pos, elapsed)
 	-- Keep running.
 	return true
 end
+
+
+
+function nether.liquid_on_flood(pos)
+	--minetest.log('on flood!')
+	nether.liquid_on_destruct(pos)
+end

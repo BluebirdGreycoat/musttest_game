@@ -35,6 +35,7 @@ minetest.register_node("nether:portal_liquid", {
 	use_texture_alpha = "blend",
 	walkable = false,
 	pointable = false,
+	floodable = true,
 
 	-- Necessary to allow bone placement, and to let players "pop" the portal by
 	-- e.g., placing a torch inside.
@@ -60,14 +61,13 @@ minetest.register_node("nether:portal_liquid", {
 		return nether.liquid_on_timer(...)
 	end,
 
+	on_flood = function(...)
+		return nether.liquid_on_flood(...)
+	end,
+
 	-- Slow down player movement.
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
-	liquid_viscosity = 8,
-	liquidtype = "source",
-	liquid_alternative_flowing = "nether:portal_liquid",
-	liquid_alternative_source = "nether:portal_liquid",
-	liquid_renewable = false,
-	liquid_range = 0,
+	move_resistance = 3,
 
 	-- Prevent obtaining this node by getting it to fall.
 	on_finish_collapse = function(pos, node) minetest.remove_node(pos) end,
@@ -98,6 +98,7 @@ minetest.register_node("nether:portal_hidden", {
 	use_texture_alpha = "blend",
 	walkable = false,
 	pointable = false,
+	floodable = true,
 
 	-- Necessary to allow bone placement, and to let players "pop" the portal by
 	-- e.g., placing a torch inside.
@@ -120,6 +121,10 @@ minetest.register_node("nether:portal_hidden", {
 
 	on_timer = function(...)
 		return nether.hidden_on_timer(...)
+	end,
+
+	on_flood = function(...)
+		return nether.liquid_on_flood(...)
 	end,
 
 	-- Prevent obtaining this node by getting it to fall.

@@ -107,10 +107,12 @@ if not help.registered then
 	end
 
 	-- Note: can only override *builtin* chat-commands without needing dependency.
-	add_required_priv("revoke", "server")
-	add_required_priv("revokeme", "server")
-	add_required_priv("grant", "server")
-	add_required_priv("grantme", "server")
+	if not minetest.is_singleplayer() then
+		add_required_priv("revoke", "server")
+		add_required_priv("revokeme", "server")
+		add_required_priv("grant", "server")
+		add_required_priv("grantme", "server")
+	end
 
 	local c = "help:core"
 	local f = help.modpath .. "/init.lua"

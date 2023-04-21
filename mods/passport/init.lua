@@ -554,6 +554,12 @@ function passport.exec_spawn(name, param)
 		return true
 	end
 
+	if default.player_attached[name] then
+		minetest.chat_send_player(name, "# Server: Cannot teleport to spawn while attached.")
+		easyvend.sound_error(name)
+		return true
+	end
+
 	local player = minetest.get_player_by_name(name)
 	if not player then return false end
 	local pos = vector_round(player:get_pos())

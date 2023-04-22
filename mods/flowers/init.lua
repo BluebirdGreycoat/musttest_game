@@ -308,7 +308,10 @@ end
 -- Ouch.
 minetest.override_item("flowers:thornstalk", {
 	damage_per_second = 2*500,
-	_death_message = "<player> didn't realize why the thornstalk is so named.",
+	_death_message = {
+		"<player> didn't realize why the thornstalk is so named.",
+		"A thornstalk lived up to its name.",
+	},
 })
 
 

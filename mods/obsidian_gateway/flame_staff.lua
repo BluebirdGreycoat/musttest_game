@@ -149,9 +149,21 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		return item
 	end
 
-	-- If user is not staff owner, do nothing.
-	if item:get_meta():get_string("owner") ~= pname then
-		return
+	-- If user is not staff owner, do nothing. But if staff doesn't yet have an
+	-- owner (old staff), then set owner to first user.
+	do
+		local meta = item:get_meta()
+		local owner = meta:get_string("owner")
+
+		if owner == "" then
+			owner = pname
+			meta:set_string("owner", pname)
+			-- Meta changes do not take effect until we return the itemstack.
+		end
+
+		if owner ~= pname then
+			return
+		end
 	end
 
 	-- Player must be standing in the gate.

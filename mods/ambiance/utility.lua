@@ -102,7 +102,7 @@ end
 -- Check if the given position is in-doors, or out in the open.
 ambiance.check_indoors = function(pname, pos)
 	-- Check for sunlight if on the surface. This is a fast, quick hack that works.
-	if pos.y > -20 then
+	if not rc.position_underground(pos) then
 		-- Is position indoors?
 		-- The brightest lamp gives light-level 13 on its 8 adjacent nodes.
 		-- This means light-level 14 and 15 represent sunlight.

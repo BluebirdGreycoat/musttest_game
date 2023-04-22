@@ -287,5 +287,9 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			item:add_wear_by_uses(20)
 			return item
 		end
+
+		-- Implicit is this: if player uses a linked flamestaff on a third-party
+		-- gate located NOT in MIDFELD, then nothing shall happen. Stuff happens
+		-- only if player uses flamestaff on gate #1, #2, or any gate in MIDFELD.
 	end
 end

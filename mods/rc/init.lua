@@ -109,7 +109,7 @@ rc.realms = {
 
 			-- Notes:
 			--
-			-- If you got into the Outback by dieing in Midfeld (and your bed wasn't
+			-- If you got into the Outback by dying in Midfeld (and your bed wasn't
 			-- in Midfeld), then using the Outback portal shall always send you back
 			-- to Midfeld, even if you subseqently died in the Outback as well.
 			--
@@ -152,9 +152,9 @@ rc.realms = {
 			--  a) if you have a bed IN Midfeld, you respawn in your bed,
 			--  b) otherwise (even if you have a bed elsewhere), you respawn in the Outback.
 			--
-			-- Dieing in Midfeld is the canonical way to get into the Outback without
+			-- Dying in Midfeld is the canonical way to get into the Outback without
 			-- needing to lose your bed respawn position (the dumb way, is to lose your
-			-- bed's respawn position by dieing multiple times).
+			-- bed's respawn position by dying multiple times).
 
 		--]]
 	},

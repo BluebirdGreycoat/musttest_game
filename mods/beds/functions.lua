@@ -457,7 +457,7 @@ function beds.on_respawnplayer(player)
 	--
 	-- Note: the point of this convoluted logic is to prevent player from being
 	-- able to use flame staffs to cheese their way out of a Survival Challenge.
-	-- The issue is that dieing in MIDFELD is supposed to be an official means of
+	-- The issue is that dying in MIDFELD is supposed to be an official means of
 	-- re-entering the Outback (without losing your bed). But since that is the
 	-- case, I need to make sure that if the player enters the Outback in that way,
 	-- that they cannot leave the Outback EXCEPT by returning to MIDFELD.

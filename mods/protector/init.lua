@@ -573,34 +573,57 @@ end
 
 
 
--- Called in the `after_place_node` of protector:protect3 and protector:protect4.
+-- Called in the `after_place_node` of protector node.
 function protector.timed_setup(pos, placer, meta)
 	local pname = placer:get_player_name()
 
+	local is_temp_prot = false
+
 	-- If protector was placed by someone without a Key, then it is a temporary protector.
-	-- Set up timer stuff if needed.
 	if not passport.player_has_key(pname, placer) then
+		is_temp_prot = true
+	end
+
+	-- Check if realm restricts protection to temporary mode only.
+	local realmdata = rc.get_realm_data(rc.current_realm_at_pos(pos))
+	if realmdata then
+		if realmdata.protection_temporary then
+			is_temp_prot = true
+			meta:set_int("realmdisable", 1)
+		end
+	end
+
+	-- Set up timer stuff if needed.
+	if is_temp_prot then
 		local timer = minetest.get_node_timer(pos)
 		timer:start(60) -- Run once a minute.
 
+		-- Determining how soon a protector should expire is tricky. On the one
+		-- wing, if protection expires too quickly, players feel like they HAVE to
+		-- login and do work often in order to save their claims. On the other wing,
+		-- if protection lasts too long, it becomes too easy to deny land to other
+		-- players, if someone decides to mass-protect some spot. This can be
+		-- particularlly troublesome if the amount of land available is small (e.g.,
+		-- certain small realms).
+
 		local hours = 720 -- 1 month, or 30 days.
 		local minutes = hours * 60
+		local seconds = minutes * 60
 
+		-- Set "timerot" to a date in the future (in seconds).
 		meta:set_int("temprot", 1)
-		meta:set_int("timerot", minutes)
-		meta:mark_as_private({"temprot", "timerot"})
+		meta:set_int("timerot", (os.time() + seconds))
+		meta:mark_as_private({"temprot", "timerot", "realmdisable"})
 	end
 end
 
--- Called in the `on_timer` of protector:protect3 and protector:protect4.
+-- Called in the `on_timer` of protector node.
 function protector.on_timer(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("temprot") == 1 then
-		local minutes = meta:get_int("timerot")
-		minutes = minutes - math_floor(elapsed / 60)
+		local timefut = meta:get_int("timerot")
 
-		if minutes >= 0 then
-			meta:set_int("timerot", minutes)
+		if (timefut - os.time()) > 0 then
 			meta:set_string("infotext", protector.get_infotext(meta))
 
 			-- Rerun timer for same timeout.
@@ -629,10 +652,16 @@ function protector.get_infotext(meta)
 
 	local timeout = ""
 	if meta:get_int("temprot") == 1 then
-		local minutes = meta:get_int("timerot")
-		if minutes < 0 then minutes = 0 end
-		local hours = math_floor(minutes / 60)
-		timeout = "\n------------------------------------------\nExpires in " .. hours .. " hours\nGet KEY to make permanent claims"
+		local timefut = meta:get_int("timerot")
+		local seconds = (timefut - os.time())
+		if seconds < 0 then seconds = 0 end
+		local hours = math_floor((seconds / 60) / 60)
+		timeout = "\n------------------------------------------\nExpires in " .. hours .. " hours"
+		if meta:get_int("realmdisable") ~= 1 then
+			timeout = timeout .. "\nGet KEY to make permanent claims"
+		else
+			timeout = timeout .. "\nRealm disallows perpetual claims"
+		end
 	end
 
 	return "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. pdate .. timeout
@@ -671,8 +700,14 @@ minetest.register_node("protector:protect", {
 
 	on_place = protector.check_overlap,
 
+	_expired_protector_name = "protector:expired1",
+
+	on_timer = protector.on_timer,
+
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		protector.timed_setup(pos, placer, meta)
+
 		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""
@@ -873,10 +908,16 @@ minetest.register_node("protector:protect2", {
 	},
 	selection_box = {type = "wallmounted"},
 
+	_expired_protector_name = "protector:expired2",
+
+	on_timer = protector.on_timer,
+
 	on_place = protector.check_overlap,
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
+		protector.timed_setup(pos, placer, meta)
+
 		local placedate = get_public_time()
 
 		local pname = placer:get_player_name() or ""

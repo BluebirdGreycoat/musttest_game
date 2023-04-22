@@ -43,6 +43,33 @@ teleports.charge_blocks = {
 
 
 
+-- Build list of all teleports in same realm as 'origin', then return a random
+-- TP from that list, or nil.
+function teleports.get_random_teleport(origin)
+	if #(teleports.teleports) == 0 then
+		return
+	end
+
+	local realm = rc.current_realm_at_pos(origin)
+	local ports = teleports.teleports
+	local caned = {}
+
+	for i = 1, #ports do
+		local p = ports[i]
+		if not vector_equals(p.pos, origin) then
+			if rc.current_realm_at_pos(p.pos) == realm then
+				caned[#caned + 1] = p
+			end
+		end
+	end
+
+	if #caned > 0 then
+		return caned[math_random(1, #caned)]
+	end
+end
+
+
+
 function teleports.nearest_beacons_to_position(pos, num, rangelim)
 	local get_rn = rc.current_realm_at_pos
 	local realm = get_rn(pos)
@@ -263,15 +290,15 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 
 	--minetest.chat_send_all('chance: ' .. random_chance)
 	if math_random(1, random_chance) == 1 then
-		if #(teleports.teleports) > 0 then
-			local tp = teleports.teleports[math_random(1, #(teleports.teleports))]
-			if not tp then
-				minetest.chat_send_player(pname, "# Server: Transport error! Aborted.")
-				return
-			end
-			teleport_pos = tp.pos
-			use_random = true
+		local tp = teleports.get_random_teleport(origin_pos)
+
+		if not tp then
+			minetest.chat_send_player(pname, "# Server: Transport error! Aborted.")
+			return
 		end
+
+		teleport_pos = tp.pos
+		use_random = true
 	end
 
 	local p = vector_round(teleport_pos)
@@ -280,14 +307,11 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 	local target = {x=p.x-1+math_random(0, 2), y=p.y+1, z=p.z-1+math_random(0, 2)}
 	local pos = vector_round(target)
 
-	-- Perform this check only if teleport target wasn't randomized.
-	if not use_random then
-		local start_realm = rc.current_realm_at_pos(origin_pos)
-		local target_realm = rc.current_realm_at_pos(pos)
-		if target_realm == "" or start_realm == "" or start_realm ~= target_realm then
-			minetest.chat_send_player(pname, "# Server: Target location is in a different realm! Aborting.")
-			return
-		end
+	local start_realm = rc.current_realm_at_pos(origin_pos)
+	local target_realm = rc.current_realm_at_pos(pos)
+	if target_realm == "" or start_realm == "" or start_realm ~= target_realm then
+		minetest.chat_send_player(pname, "# Server: Target location is in a different realm! Aborting.")
+		return
 	end
 
 	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
@@ -343,6 +367,7 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 	local trange, isnyan = teleports.calculate_range(pos)
 	local start_realm = rc.current_realm_at_pos(pos)
 
+	-- Why am I iterating backwards here?
 	for i = #teleports.teleports, 1, -1 do
 		local tp = teleports.teleports[i]
 		if not vector_equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then

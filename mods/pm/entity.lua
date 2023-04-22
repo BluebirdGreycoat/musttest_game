@@ -292,8 +292,11 @@ function pm.follower_on_step(self, dtime, moveresult)
 					local d = vector_distance(a1, a2)
 					local r = math_max(10, math_floor(pm.sight_range - d))
 
+					-- Distance limit paths, disallow large search regions.
 					pm.debug_chat("trying to find path")
-					self._path = minetest.find_path(a1, a2, r, 1, 1, "A*_noprefetch")
+					if vector_distance(a1, a2) < 75 then
+						self._path = minetest.find_path(a1, a2, r, 1, 1, "A*_noprefetch")
+					end
 
 					if not self._path then
 						pm.debug_chat('no path found')

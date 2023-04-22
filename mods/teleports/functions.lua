@@ -371,13 +371,17 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 	local trange, isnyan = teleports.calculate_range(pos)
 	local start_realm = rc.current_realm_at_pos(pos)
 
+	if start_realm == "" then
+		return nearby
+	end
+
 	-- Why am I iterating backwards here?
 	for i = #teleports.teleports, 1, -1 do
 		local tp = teleports.teleports[i]
 		if not vector_equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then
 			local target_realm = rc.current_realm_at_pos(tp.pos)
 			-- Only find teleports in the same dimension.
-			if start_realm ~= "" and start_realm == target_realm then
+			if start_realm == target_realm then
 				local othernet = tp.channel or ""
 
 				if othernet == network or (othernet == "" and yespublic == 'true') then

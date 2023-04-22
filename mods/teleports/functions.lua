@@ -54,6 +54,10 @@ function teleports.get_random_teleport(origin)
 	local ports = teleports.teleports
 	local caned = {}
 
+	if realm == "" then
+		return
+	end
+
 	for i = 1, #ports do
 		local p = ports[i]
 		if not vector_equals(p.pos, origin) then

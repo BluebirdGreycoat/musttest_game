@@ -448,6 +448,34 @@ end
 function beds.on_respawnplayer(player)
 	local name = player:get_player_name()
 	local pos = beds.spawn[name]
+
+	-- If the player died in MIDFELD, behave as if they don't have a bed, and send
+	-- them to the OUTBACK. If they die in the outback after this flag is set, they'll
+	-- keep respawning in the outback until they use the gate (bypassing their bed),
+	-- at which point the outback gate will send them back to MIDFELD instead of the
+	-- overworld.
+	--
+	-- Note: the point of this convoluted logic is to prevent player from being
+	-- able to use flame staffs to cheese their way out of a Survival Challenge.
+	-- The issue is that dieing in MIDFELD is supposed to be an official means of
+	-- re-entering the Outback (without losing your bed). But since that is the
+	-- case, I need to make sure that if the player enters the Outback in that way,
+	-- that they cannot leave the Outback EXCEPT by returning to MIDFELD.
+	if player:get_meta():get_int("abyss_return_midfeld") == 1 then
+		-- Unless player's bed is actually IN MIDFELD, in which case just clear the
+		-- flag and respawn in their bed.
+		if pos and rc.current_realm_at_pos(pos) == "midfeld" then
+			-- Respawn in your bed in Midfeld, and clear the flag.
+			player:get_meta():set_int("abyss_return_midfeld", 0)
+		elseif pos and rc.current_realm_at_pos(pos) == "abyss" then
+			-- Do nothing, respawn in the Outback in your bed.
+			-- But don't clear the flag.
+		else
+			-- Respawn in the Outback as if a new player.
+			pos = nil
+		end
+	end
+
 	if pos then
 		-- Don't preload area, that could allow a cheat.
 		-- Update player's position immediately, without delay.

@@ -135,7 +135,8 @@ function hud_clock.get_calendar_infotext()
 	return hud_clock.get_date_string() ..
 		"\nSpawn: " .. randspawn.get_spawn_name() ..
 		"\nOutback Winds: " .. math_floor(serveressentials.get_outback_timeout() / (60*60*24)) .. " Days" ..
-		"\nOutback Gate: " .. math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24)) .. " Days"
+		"\nOutback Gate: " .. math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24)) .. " Days" ..
+		"\nMidfeld Fog: " .. math_floor(serveressentials.get_midfeld_timeout() / (60*60*24)) .. " Days"
 end
 
 minetest.register_node("clock:calendar", {

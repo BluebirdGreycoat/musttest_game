@@ -75,6 +75,11 @@ ambiance.globalstep = function(dtime)
 									end
 								end
 
+								-- If sound may only play in a particular realm ...
+								if v.realm and rc.current_realm_at_pos(pos) ~= v.realm then
+									spawnsound = false
+								end
+
 								if spawnsound then
 									-- Only play sound if sound can be played indoors or out-of-doors.
 									-- If sound doesn't care whether indoors or out-of-doors, then play it.

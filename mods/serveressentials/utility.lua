@@ -23,7 +23,26 @@ function serveressentials.get_outback_timeout()
 	end
 
 	local time = tonumber(stime) -- Time of last reset (or initialization).
-	local days = 30 -- Timeout in days.
+	local days = serveressentials.reset_timeout
+	local timeout = 60 * 60 * 24 * days
+	local now = os.time() -- Current time.
+	local later = time + timeout -- Time of next reset.
+
+	return (later - now)
+end
+
+function serveressentials.get_midfeld_timeout()
+	local meta = serveressentials.modstorage
+	local stime = meta:get_string("midfeld_reset_time")
+
+	-- If timestamp is missing, then initialize it to the current time.
+	if not stime or stime == "" then
+		stime = tostring(os.time())
+		meta:set_string("midfeld_reset_time", stime)
+	end
+
+	local time = tonumber(stime) -- Time of last reset (or initialization).
+	local days = serveressentials.midfeld_reset_timeout
 	local timeout = 60 * 60 * 24 * days
 	local now = os.time() -- Current time.
 	local later = time + timeout -- Time of next reset.

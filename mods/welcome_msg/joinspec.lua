@@ -60,7 +60,9 @@ function joinspec.on_joinplayer(player)
 		randspawn.reposition_player(pname, pos)
 	end
 
-	if rc.current_realm_at_pos(pos) == "abyss" then
+	local currealmname = rc.current_realm_at_pos(pos)
+
+	if currealmname == "abyss" then
 		-- If player logs in (or spawns) in the Outback, then show them the reset
 		-- timeout after 30 seconds.
 		minetest.after(30, function()
@@ -75,7 +77,20 @@ function joinspec.on_joinplayer(player)
 				"# Server: In " .. days1 .. " day" .. s1 ..", the dry winds of the Outback will cease. Then all begins again.")
 			minetest.chat_send_player(pname,
 				core.get_color_escape_sequence("#ffff00") ..
-				"# Server: The unstable Dimensional Gate will shift its exit location in " .. days2 .. " day" .. s2 .. ".")
+				"# Server: The unstable Dimensional Gate shifts in " .. days2 .. " day" .. s2 .. ".")
+		end)
+	end
+
+	if currealmname == "midfeld" then
+		-- If player logs in (or spawns) in Midfeld, then show them the reset
+		-- timeout after 30 seconds.
+		minetest.after(30, function()
+			local days1 = math_floor(serveressentials.get_midfeld_timeout() / (60*60*24))
+			local s1 = "s"
+			if days1 == 1 then s1 = "" end
+			minetest.chat_send_player(pname,
+				core.get_color_escape_sequence("#ffff00") ..
+				"# Server: Midfeld's fog falls in " .. days1 .. " day" .. s1 ..".")
 		end)
 	end
 end

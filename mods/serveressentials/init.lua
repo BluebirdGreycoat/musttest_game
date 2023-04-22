@@ -4,6 +4,7 @@ serveressentials.modpath = minetest.get_modpath("serveressentials")
 
 -- Outback's reset timeout in realtime days.
 serveressentials.reset_timeout = 30
+serveressentials.midfeld_reset_timeout = 30*2
 
 -- Can be gotten once only, at load time.
 if not serveressentials.modstorage then
@@ -13,6 +14,7 @@ end
 
 
 dofile(serveressentials.modpath .. "/outback.lua")
+dofile(serveressentials.modpath .. "/gaterealm.lua")
 dofile(serveressentials.modpath .. "/rebuild.lua")
 dofile(serveressentials.modpath .. "/acacia.lua")
 dofile(serveressentials.modpath .. "/utility.lua")

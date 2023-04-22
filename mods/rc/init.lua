@@ -31,7 +31,7 @@ rc.realms = {
 		maxp = {x=30927, y=500, z=30927},
 		gate_minp = {x=-30000, y=-30800, z=-30000},
 		gate_maxp = {x=30000, y=-10, z=30000},
-		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
 		ground = -10,
 		underground = -32, -- Affects sky color, see sky mod.
 		sealevel = 0,
@@ -54,7 +54,7 @@ rc.realms = {
 		maxp = {x=30927, y=3300, z=30927},
 		gate_minp = {x=-30000, y=3065, z=-30000},
 		gate_maxp = {x=30000, y=3067, z=30000},
-		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
 		ground = 3066,
 		underground = 3050,
 		sealevel = 3066,
@@ -73,7 +73,7 @@ rc.realms = {
 		maxp = {x=30927, y=3900, z=30927},
 		gate_minp = {x=-30000, y=3620, z=-30000},
 		gate_maxp = {x=30000, y=3640, z=30000},
-		orig = {x=0, y=-7, z=0}, -- Respawn point, if necessary.
+		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
 		ground = 3740,
 		underground = 3730,
 		sealevel = 3740,
@@ -85,6 +85,7 @@ rc.realms = {
 		sun_data={scale=0.4},
 	},
 	{
+		-- The OUTBACK. Starting realm for new players.
 		id = 4, -- REALM ID. Code relies on this.
 		name = "abyss",
 		description = "Outback",
@@ -103,6 +104,59 @@ rc.realms = {
     sun_data = {visible=true},
     moon_data = {visible=true},
     star_data = {visible=true, count=50},
+
+    --[[
+
+			-- Notes:
+			--
+			-- If you got into the Outback by dieing in Midfeld (and your bed wasn't
+			-- in Midfeld), then using the Outback portal shall always send you back
+			-- to Midfeld, even if you subseqently died in the Outback as well.
+			--
+			-- Otherwise, using the Outback portal sends you to the Overworld.
+
+    --]]
+	},
+	{
+		-- The MIDFELD. In-between place; travel realm.
+		id = 5, -- REALM ID. Code relies on this.
+		name = "midfeld",
+		description = "Midfeld",
+		minp = vector.add({x=-12174, y=4100, z=5782}, {x=-132, y=-50, z=-132}),
+		maxp = vector.add({x=-12174, y=4100, z=5782}, {x=132, y=150, z=132}),
+		gate_minp = vector.add({x=-12174, y=4100, z=5782}, {x=-116, y=-34, z=-116}),
+		gate_maxp = vector.add({x=-12174, y=4100, z=5782}, {x=116, y=-10, z=116}),
+		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
+		ground = 4200,
+		underground = 4085, -- Affects sky color, see sky mod.
+		sealevel = 4100,
+		windlevel = 4125,
+		realm_origin = {x=-12174, y=4097, z=5782},
+		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
+		moon_data = {scale=2.5},
+		sun_data = {scale=2.5},
+		cloud_data = {height=4250, density=0.2, speed={x=-6, z=1}},
+		protection_temporary = true,
+		protection_time = 60*60*24*14,
+
+		--[[
+
+			//fixedpos set1 -11967 4050 5989
+			//fixedpos set2 -12381 4250 5575
+
+			-- Schempos: -12381,4050,5575
+
+			-- Notes:
+			--
+			-- If you die in Midfeld for any reason,
+			--  a) if you have a bed IN Midfeld, you respawn in your bed,
+			--  b) otherwise (even if you have a bed elsewhere), you respawn in the Outback.
+			--
+			-- Dieing in Midfeld is the canonical way to get into the Outback without
+			-- needing to lose your bed respawn position (the dumb way, is to lose your
+			-- bed's respawn position by dieing multiple times).
+
+		--]]
 	},
 }
 
@@ -524,7 +578,7 @@ function rc.current_realm_at_pos(p)
 		local minp = v.minp
 		local maxp = v.maxp
 
-		-- Is player within realm boundaries?
+		-- Is pos within realm boundaries?
 		if p.x >= minp.x and p.x <= maxp.x and
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then

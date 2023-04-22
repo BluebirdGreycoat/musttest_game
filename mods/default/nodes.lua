@@ -1135,7 +1135,7 @@ minetest.register_node("default:stone_with_mese", {
 	tiles = {"default_stone.png^default_mineral_mese.png"},
 	groups = utility.dig_groups("hardmineral", {melts = 1}),
 	drop = {
-		max_items = 1,
+		max_items = 2,
 		items = {
 			{items = {'mobs:flame_bolt'}, rarity = 16},
 			{items = {'default:mese_crystal'}}

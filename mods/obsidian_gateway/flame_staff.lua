@@ -1,4 +1,45 @@
 
+local function get_midfeld_spawn(realm)
+	local tries = 0
+	::try_again::
+
+	tries = tries + 1
+	local pos = {
+		x = math.random(realm.gate_minp.x, realm.gate_maxp.x),
+		y = math.random(realm.gate_minp.y, realm.gate_maxp.y),
+		z = math.random(realm.gate_minp.z, realm.gate_maxp.z),
+	}
+
+	-- Need to load the area otherwise 'find_node_near' will usually fail.
+	minetest.load_area(
+		vector.add(pos, {x=-16, y=-16, z=-16}),
+		vector.add(pos, {x=16, y=16, z=16}))
+
+	pos = minetest.find_node_near(pos, 16, "air", true)
+	if pos and minetest.get_node(vector.add(pos, {x=0, y=1, z=0})).name == "air" then
+		local minp = realm.minp
+		local maxp = realm.maxp
+		if pos.x >= minp.x and pos.x <= maxp.x and
+				pos.y >= minp.y and pos.y <= maxp.y and
+				pos.z >= minp.z and pos.z <= maxp.z then
+			return pos
+		end
+	end
+
+	if tries < 10 then
+		goto try_again
+	end
+
+	return realm.realm_origin
+end
+
+function obsidian_gateway.get_midfeld_spawn()
+	local realm = rc.get_realm_data("midfeld")
+	return get_midfeld_spawn(realm)
+end
+
+
+
 function obsidian_gateway.on_flamestaff_use(item, user, pt)
 	if pt.type ~= "node" then
 		return
@@ -55,12 +96,25 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 	do
 		local meta = item:get_meta()
 		if meta:get_string("gate1") == "" then
+			-- Punch first gate.
+
 			meta:set_string("gate1", minetest.pos_to_string(playerorigin))
 			meta:set_string("description", "Flame Staff (Partially Linked)")
+			meta:set_string("owner", pname)
 			do_effect = true
 		elseif meta:get_string("gate2") == "" then
+			-- Punch second gate.
+			if meta:get_string("owner") ~= pname then
+				return
+			end
+
 			meta:set_string("gate2", minetest.pos_to_string(playerorigin))
-			meta:set_string("description", "Flame Staff (Linked)")
+
+			local info = "\n" ..
+				rc.pos_to_namestr(minetest.string_to_pos(meta:get_string("gate1"))) .. "\n" ..
+				rc.pos_to_namestr(minetest.string_to_pos(meta:get_string("gate2")))
+
+			meta:set_string("description", "Flame Staff (Linked)" .. info)
 			item:set_wear(1)
 			do_effect = true
 		end
@@ -95,6 +149,11 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		return item
 	end
 
+	-- If user is not staff owner, do nothing.
+	if item:get_meta():get_string("owner") ~= pname then
+		return
+	end
+
 	-- Player must be standing in the gate.
 	do
 		local posunder = utility.node_under_pos(user:get_pos())
@@ -126,10 +185,13 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			return
 		end
 
-		-- If either target is in the Abyss, nothing happens.
-		if rc.current_realm_at_pos(tar1) == "abyss" or
-				rc.current_realm_at_pos(tar2) == "abyss" then
-			return
+		-- If either target is in a realm which disallows incoming gates ...
+		do
+			local d1 = rc.get_realm_data(rc.current_realm_at_pos(tar1)) or {}
+			local d2 = rc.get_realm_data(rc.current_realm_at_pos(tar2)) or {}
+			if d1.disabled or d2.disabled then
+				return
+			end
 		end
 
 		-- If player activates gate #2 first, then pretend we didn't notice and just
@@ -152,18 +214,12 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 		end
 
 		-- Player has activated gate #1.
-		-- Send them to the Abyss!
+		-- Send them to the MIDFELD!
 		if vector.equals(playerorigin, tar1) then
-			local hidden_spawn = {
-				-- End of passage beyond gate room.
-				x = -9174, y = 4100, z = 5875
+			local realmdata = rc.get_realm_data("midfeld")
+			assert(realmdata)
 
-				-- Hidden cave tunnel.
-				--x = -9265, y = 4076, z = 5819
-
-				-- Outback gate room.
-				--x = -9174, y = 4100, z = 5782
-			}
+			local hidden_spawn = get_midfeld_spawn(realmdata)
 
 			preload_tp.execute({
 				player_name = pname,
@@ -174,12 +230,15 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 
 				pre_teleport_callback = function()
 					-- Need better sound someday.
-					coresounds.play_death_sound(user, pname)
+					--coresounds.play_death_sound(user, pname)
 				end,
 
 				post_teleport_callback = function()
 					portal_sickness.on_use_portal(pname)
 				end,
+
+				teleport_sound = "nether_portal_usual",
+				send_blocks = true,
 			})
 
 			-- The metadata will have been updated if we swapped datums.
@@ -188,9 +247,9 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			return item
 		end
 
-		-- Player has activated a gate in the Abyss. Send then back.
+		-- Player has activated a gate in Midfeld. Send then back.
 		-- Also destroy the flame staff.
-		if rc.current_realm_at_pos(origin) == "abyss" then
+		if rc.current_realm_at_pos(origin) == "midfeld" then
 			preload_tp.execute({
 				player_name = pname,
 				target_position = tar2,
@@ -207,6 +266,9 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 					-- Already checked on first gate use.
 					--portal_sickness.on_use_portal(pname)
 				end,
+
+				teleport_sound = "nether_portal_usual",
+				send_blocks = true,
 			})
 
 			ambiance.sound_play("fire_flint_and_steel", pos, 0.7, 20)

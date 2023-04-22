@@ -221,6 +221,13 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	-- We must record this info *always*, even if player does not leave bones.
 	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
 
+	-- If the player died in MIDFELD, record that fact with a flag.
+	-- Note: flag is NOT cleared until player returns to MIDFELD via OUTBACK gate.
+	-- (It is also cleared on respawn if player had a bed in MIDFELD.)
+	if rc.current_realm_at_pos(bones.last_known_death_locations[pname]) == "midfeld" then
+		player:get_meta():set_int("abyss_return_midfeld", 1)
+	end
+
 	-- Record all player deaths, whether they leave bones or not.
 	minetest.log("action", "player <" .. pname .. "> died @ " .. minetest.pos_to_string(player:get_pos()))
 

@@ -421,6 +421,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 	--	return
 	--end
 
+	-- If activating the gate in the OUTBACK, and player previously died in
+	-- MIDFELD, send them back to MIDFELD, do NOT send them to the overworld.
+	if rc.current_realm_at_pos(origin) == "abyss" then
+		if player:get_meta():get_int("abyss_return_midfeld") == 1 then
+			target = obsidian_gateway.get_midfeld_spawn()
+		end
+	end
+
 	-- Gates CANNOT be initialized in the Abyss!
 	-- (Only the outgoing realm-gate is useable.)
 	-- This prevents players from building their own gates in the Abyss.
@@ -696,6 +704,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 			ambiance.spawn_sound_beacon("soundbeacon:gate", target, 20, 1)
 			ambiance.replay_nearby_sound_beacons(target, 6)
 			portal_sickness.on_use_portal(pname)
+
+			-- Clear player's "died in MIDFELD" flag, once transport to MIDFELD succeeded.
+			if rc.current_realm_at_pos(target) == "midfeld" then
+				local pref = minetest.get_player_by_name(pname)
+				if pref then
+					pref:get_meta():set_int("abyss_return_midfeld", 0)
+				end
+			end
 		end,
 
 		teleport_sound = "nether_portal_usual",

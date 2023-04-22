@@ -85,7 +85,7 @@ function status.chat_status(user, param)
 
   -- Get MoTD.
   local motd2 = status.motd
-  if not motd2 then
+  if not motd2 or motd2 == "" then
 		motd2 = "Daily message has not been set!"
   end
   

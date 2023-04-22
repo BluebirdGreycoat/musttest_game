@@ -584,12 +584,25 @@ function protector.timed_setup(pos, placer, meta)
 		is_temp_prot = true
 	end
 
+	-- Determining how soon a protector should expire is tricky. On the one
+	-- wing, if protection expires too quickly, players feel like they HAVE to
+	-- login and do work often in order to save their claims. On the other wing,
+	-- if protection lasts too long, it becomes too easy to deny land to other
+	-- players, if someone decides to mass-protect some spot. This can be
+	-- particularlly troublesome if the amount of land available is small (e.g.,
+	-- certain small realms).
+	local protection_time = 60*60*24*30
+
 	-- Check if realm restricts protection to temporary mode only.
 	local realmdata = rc.get_realm_data(rc.current_realm_at_pos(pos))
 	if realmdata then
 		if realmdata.protection_temporary then
 			is_temp_prot = true
 			meta:set_int("realmdisable", 1)
+		end
+
+		if realmdata.protection_time then
+			protection_time = realmdata.protection_time
 		end
 	end
 
@@ -598,21 +611,9 @@ function protector.timed_setup(pos, placer, meta)
 		local timer = minetest.get_node_timer(pos)
 		timer:start(60) -- Run once a minute.
 
-		-- Determining how soon a protector should expire is tricky. On the one
-		-- wing, if protection expires too quickly, players feel like they HAVE to
-		-- login and do work often in order to save their claims. On the other wing,
-		-- if protection lasts too long, it becomes too easy to deny land to other
-		-- players, if someone decides to mass-protect some spot. This can be
-		-- particularlly troublesome if the amount of land available is small (e.g.,
-		-- certain small realms).
-
-		local hours = 720 -- 1 month, or 30 days.
-		local minutes = hours * 60
-		local seconds = minutes * 60
-
 		-- Set "timerot" to a date in the future (in seconds).
 		meta:set_int("temprot", 1)
-		meta:set_int("timerot", (os.time() + seconds))
+		meta:set_int("timerot", (os.time() + protection_time))
 		meta:mark_as_private({"temprot", "timerot", "realmdisable"})
 	end
 end
@@ -656,7 +657,15 @@ function protector.get_infotext(meta)
 		local seconds = (timefut - os.time())
 		if seconds < 0 then seconds = 0 end
 		local hours = math_floor((seconds / 60) / 60)
-		timeout = "\n------------------------------------------\nExpires in " .. hours .. " hours"
+
+		timeout = "\n------------------------------------------\n"
+
+		if hours <= 24 then
+			timeout = timeout .. "Expires in " .. hours .. " hours"
+		else
+			timeout = timeout .. "Expires in " .. math_floor(hours / 24) .. " days"
+		end
+
 		if meta:get_int("realmdisable") ~= 1 then
 			timeout = timeout .. "\nGet KEY to make permanent claims"
 		else

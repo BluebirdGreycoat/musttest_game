@@ -103,9 +103,9 @@ function city_block:nearest_blocks_to_position(pos, num, rangelim)
 
 	-- Return N-nearest blocks (should be at the front of the sorted table).
 	local ret = {}
-	for i=1, num, 1 do
+	for i = 1, num, 1 do
 		if i <= #blocks then
-			ret[#ret+1] = blocks[i]
+			ret[#ret + 1] = blocks[i]
 		else
 			break
 		end

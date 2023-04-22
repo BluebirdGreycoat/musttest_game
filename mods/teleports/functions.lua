@@ -366,6 +366,7 @@ end
 
 
 
+-- Find N nearest teleports.
 teleports.find_nearby = function(pos, count, network, yespublic)
 	local nearby = {}
 	local trange, isnyan = teleports.calculate_range(pos)
@@ -385,16 +386,30 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 				local othernet = tp.channel or ""
 
 				if othernet == network or (othernet == "" and yespublic == 'true') then
-					table.insert(nearby, tp)
-					if #nearby >= count then
-						break
-					end
+					nearby[#nearby + 1] = tp
 				end
 			end
 		end
 	end
 
-	return nearby
+	-- Sort blocks, nearest blocks first.
+	table.sort(nearby,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest blocks (should be at the front of the sorted table).
+	local ret = {}
+	for i = 1, count, 1 do
+		if i <= #nearby then
+			ret[#ret + 1] = nearby[i]
+		else
+			break
+		end
+	end
+	return ret
 end
 
 

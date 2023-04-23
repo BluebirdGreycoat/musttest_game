@@ -37,7 +37,8 @@ function(pname, harm)
   minetest.after(0, function()
     local player = minetest.get_player_by_name(pname)
     if player and player:is_player() then
-      player:set_hp(player:get_hp() - harm, {reason="heat"})
+			utility.damage_player(player, "heat", harm)
+
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> died while bucketing something hot!")
 			end

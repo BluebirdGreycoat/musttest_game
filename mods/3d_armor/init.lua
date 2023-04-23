@@ -59,6 +59,7 @@ if not armor.run_once then
 			_armor_resist_groups = {
 				fleshy = 5,
 				cracky = 10,
+				heat = 15,
 			},
 		})
 
@@ -80,6 +81,7 @@ if not armor.run_once then
 			_armor_resist_groups = {
 				fleshy = 10,
 				cracky = 15,
+				heat = 25,
 			},
 		})
 
@@ -98,6 +100,7 @@ if not armor.run_once then
 			_armor_resist_groups = {
 				fleshy = 5,
 				cracky = 10,
+				heat = 10,
 			},
 		})
 
@@ -117,6 +120,7 @@ if not armor.run_once then
 			_armor_resist_groups = {
 				fleshy = 5,
 				cracky = 5,
+				heat = 15,
 			},
 		})
 	end

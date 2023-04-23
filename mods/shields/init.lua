@@ -21,6 +21,7 @@ if ARMOR_MATERIALS.wood then
 		_armor_resist_groups = {
 			fleshy = 5,
 			cracky = 5,
+			heat = 10,
 		},
 	})
 
@@ -42,6 +43,7 @@ if ARMOR_MATERIALS.wood then
 		_armor_resist_groups = {
 			fleshy = 8,
 			cracky = 25,
+			heat = 20,
 		},
 	})
 

@@ -6,6 +6,8 @@ local math_max = math.max
 
 
 
+-- Use this to damage a player, instead of player:set_hp(), because this takes
+-- player's current armor groups into account.
 function utility.damage_player(player, damage_type, damage)
 	player:punch(player, 1.0, {
 		full_punch_interval = 1.0,

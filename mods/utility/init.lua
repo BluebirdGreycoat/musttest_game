@@ -50,6 +50,7 @@ function utility.builtin_armor_groups(groups)
 		fireball = 100,
 		pressure = 100,
 		crush = 100,
+		heat = 100,
 	}
 	for k, v in pairs(groups) do
 		tb[k] = v

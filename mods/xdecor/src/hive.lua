@@ -131,7 +131,8 @@ xdecor.register("hive", {
 
 	on_punch = function(pos, node, puncher)
 		if puncher:get_hp() > 0 then
-			puncher:set_hp(puncher:get_hp() - (2*500), {reason="poison"})
+			utility.damage_player(puncher, "poison", 2*500)
+
 			if puncher:get_hp() <= 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(puncher:get_player_name()) .. "> was stung by a swarm of angry bees.")
 			end
@@ -156,7 +157,8 @@ xdecor.register("hive", {
 		-- Sting the player if they don't own this land.
 		if player and minetest.test_protection(pos, player:get_player_name()) then
 			if player:get_hp() > 0 then
-				player:set_hp(player:get_hp() - (1*500), {reason="poison"})
+				utility.damage_player(player, "poison", 1*500)
+
 				if player:get_hp() <= 0 then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> was stung by a swarm of angry bees.")
 				end

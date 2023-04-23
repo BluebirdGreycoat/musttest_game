@@ -50,6 +50,7 @@ function jail.on_player_escaped_jail(pref)
 		local pref = minetest.get_player_by_name(pname)
 		if pref then
 			-- AFTER player has been teleported back, damage them.
+			-- Bypass armor processing.
 			pref:set_pos(jp)
 			pref:set_hp(pref:get_hp() - (1*500))
 

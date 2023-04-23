@@ -266,7 +266,7 @@ end
 
 coal_alloy_furnace.burn_feet = function(pos, player)
 	if not heatdamage.is_immune(player:get_player_name()) then
-		player:set_hp(player:get_hp() - (1*500), {reason="heat"})
+    utility.damage_player(player, "heat", 1*500)
 	end
 end
 

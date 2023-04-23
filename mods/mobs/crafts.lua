@@ -41,8 +41,8 @@ for k, v in ipairs(meat_types) do
 			-- Damage player only if meat was raw.
 			if v.is_raw then
 				-- Do not kill player.
-				if user:get_hp() > 1 then
-					user:set_hp(user:get_hp() - (1*500), {reason="poison"})
+				if user:get_hp() > 1*500 then
+					utility.damage_player(user, "poison", 1*500)
 				end
 			end
 			-- Send message if meat was raw or gross.

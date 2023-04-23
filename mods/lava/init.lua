@@ -78,8 +78,12 @@ if not lava.run_once then
 					if minetest.get_node(pa).name == "air" then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
-					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-					player:set_hp(0, {reason="heat"})
+
+					utility.damage_player(player, "heat", 20*500)
+
+					if player:get_hp() == 0 then
+						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
+					end
 				end
 			end
 		end,
@@ -162,8 +166,12 @@ if not lava.run_once then
 					if minetest.get_node(pa).name == "air" then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
-					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-					player:set_hp(0, {reason="heat"})
+
+					utility.damage_player(player, "heat", 20*500)
+
+					if player:get_hp() == 0 then
+						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
+					end
 				end
 			end
 		end,

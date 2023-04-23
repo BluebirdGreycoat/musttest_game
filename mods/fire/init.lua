@@ -87,7 +87,7 @@ minetest.register_node("fire:basic_flame", {
 			minetest.after(0, function() 
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
-					player:set_hp(player:get_hp() - (1*500), {reason="heat"})
+					utility.damage_player(player, "heat", 1*500)
 				end
 			end)
 		end
@@ -141,7 +141,7 @@ minetest.register_node("fire:permanent_flame", {
 			minetest.after(0, function() 
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
-					player:set_hp(player:get_hp() - (1*500), {reason="heat"})
+					utility.damage_player(player, "heat", 1*500)
 				end
 			end)
 		end
@@ -194,7 +194,7 @@ minetest.register_node("fire:nether_flame", {
 			minetest.after(0, function() 
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
-					player:set_hp(player:get_hp() - (1*500), {reason="heat"})
+					utility.damage_player(player, "heat", 1*500)
 				end
 			end)
 		end

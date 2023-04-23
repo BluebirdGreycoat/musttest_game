@@ -29,7 +29,7 @@ function pm.hurt_nearby_players(self)
 	for k, v in ipairs(players) do
 		if vector_distance(pos, v:get_pos()) < 2 then
 			throw_player(self.object, v)
-			v:set_hp(v:get_hp() - (1*500), {reason="electrocute"})
+			utility.damage_player(v, "electrocute", 1*500)
 		end
 	end
 end
@@ -40,7 +40,7 @@ function pm.hurt_nearby_player_or_mob_not_wisp(self)
 	for k, v in ipairs(objects) do
 		if v:is_player() then
 			throw_player(self.object, v)
-			v:set_hp(v:get_hp() - (1*500), {reason="electrocute"})
+			utility.damage_player(v, "electrocute", 1*500)
 		else
 			local ent = v:get_luaentity()
 			if ent.mob and ent.name ~= "pm:follower" then

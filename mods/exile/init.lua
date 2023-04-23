@@ -173,6 +173,8 @@ function exile.send_to_exile(pname)
 		-- Only if we wouldn't cause player to change realms, or enter the void.
 		if rn2 ~= "" and rn1 == rn2 then
 			move_player_to_exile(pname, gpos)
+
+			-- Damage caused by system/server/cheat, bypass regular processing.
 			pref:set_hp(pref:get_hp() - (1*500))
 		end
 	end

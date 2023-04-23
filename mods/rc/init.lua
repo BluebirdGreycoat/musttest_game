@@ -94,10 +94,10 @@ rc.realms = {
 		gate_minp = vector.add({x=-9174, y=4100, z=5782}, {x=-80, y=-80, z=-80}),
 		gate_maxp = vector.add({x=-9174, y=4100, z=5782}, {x=80, y=80, z=80}),
 		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
-		ground = 4200,
+		ground = 4170,
 		underground = 4160, -- Affects sky color, see sky mod.
-		sealevel = 4200,
-		windlevel = 4200,
+		sealevel = 4160,
+		windlevel = 4150,
 		realm_origin = {x=-9174, y=4100, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
     sky_data = {clouds=false},
@@ -127,9 +127,9 @@ rc.realms = {
 		gate_minp = vector.add({x=-12174, y=4100, z=5782}, {x=-116, y=-34, z=-116}),
 		gate_maxp = vector.add({x=-12174, y=4100, z=5782}, {x=116, y=-10, z=116}),
 		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
-		ground = 4200,
+		ground = 4096,
 		underground = 4085, -- Affects sky color, see sky mod.
-		sealevel = 4100,
+		sealevel = 4095,
 		windlevel = 4125,
 		realm_origin = {x=-12174, y=4097, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
@@ -718,6 +718,7 @@ function rc.check_position(player)
 
 		-- Damage player. Prevents them triggering this indefinitely.
 		if player:get_hp() > 0 and not data.new_arrival then
+			-- Bypass armor code.
 			player:set_hp(player:get_hp() - (2*500))
 
 			-- Note: per bones code, if position is not within any valid realm, bones

@@ -8,11 +8,11 @@ local math_max = math.max
 
 -- Use this to damage a player, instead of player:set_hp(), because this takes
 -- player's current armor groups into account.
-function utility.damage_player(player, damage_type, damage)
+function utility.damage_player(player, damage_type, damage, reason)
 	-- Inform 3D armor what the reason for this punch is.
 	-- Cannot pass the PlayerHPChangeReason table through :punch()!
 	-- Note: reason.type will be "punch", per 3D armor code.
-	armor.notify_punch_reason({reason=damage_type})
+	armor.notify_punch_reason({reason = reason or damage_type})
 
 	player:punch(player, 1.0, {
 		full_punch_interval = 1.0,

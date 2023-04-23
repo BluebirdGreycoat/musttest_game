@@ -389,7 +389,9 @@ function protector.punish_player(pos, pname)
 	if protector.hurt > 0 then
 		local hp = player:get_hp()
 		if hp > 0 then -- Avoid writing message twice.
+			-- Bypass armor processing.
 			player:set_hp(hp - (protector.hurt*500))
+
 			if player:get_hp() <= 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was killed by a protection block.")
 			end

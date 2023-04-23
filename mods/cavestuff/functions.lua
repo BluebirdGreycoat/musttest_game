@@ -16,10 +16,12 @@ function cavestuff.hotcobble.after_place_node(pos, placer, itemstack, pointed_th
 	end
 	-- Prevent players from placing hot cobble.
 	if not heatdamage.is_immune(placer:get_player_name()) then
-		placer:set_hp(placer:get_hp() - (2*500), {reason="heat"})
+		utility.damage_player(placer, "heat", (2*500))
 	end
+
 	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
-	if pos.y < -20 then
+
+	if rc.position_underground(pos) then
 		-- Underground, placing hot cobble is the same as placing a lava source.
 		-- The action of placing it destabilizes it enough to become fully melted.
 		minetest.add_node(pos, {name="default:lava_flowing"})
@@ -37,7 +39,7 @@ function cavestuff.hotcobble.after_dig_node(pos, oldnode, oldmetadata, digger)
 	end
 	-- Damage player when digging.
 	if not heatdamage.is_immune(digger:get_player_name()) then
-		digger:set_hp(digger:get_hp() - (2*500), {reason="heat"})
+		utility.damage_player(digger, "heat", (2*500))
 	end
 	minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
 
@@ -57,7 +59,7 @@ function cavestuff.hotcobble.after_dig_node(pos, oldnode, oldmetadata, digger)
 		end
 	end
 
-	if pos.y < -20 then
+	if rc.position_underground(pos) then
 		-- Underground, digging hot cobble is enough to destabilize it and turn it into a lava source.
 		minetest.add_node(pos, {name="default:lava_source"})
 	else
@@ -71,7 +73,7 @@ end
 function cavestuff.hotcobble.on_player_walk_over(pos, player)
 	-- Damage players who walk on hot cobble.
 	if not heatdamage.is_immune(player:get_player_name()) then
-		player:set_hp(player:get_hp() - (1*500), {reason="heat"})
+		utility.damage_player(player, "heat", (1*500))
 	end
 end
 

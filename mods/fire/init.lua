@@ -33,6 +33,7 @@ minetest.register_node("fire:basic_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4*500,
+  _damage_per_second_type = "heat",
 	_death_message = "<player> jumped into the fire!",
 	drop = "",
 
@@ -119,6 +120,7 @@ minetest.register_node("fire:permanent_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4*500,
+  _damage_per_second_type = "heat",
 	_death_message = "<player> jumped into the fire!",
 	groups = {igniter = 2, dig_immediate = 2, melt_around = 3, flame = 1, flame_sound = 1, fire = 1, notify_construct = 1},
 	drop = "",
@@ -172,6 +174,7 @@ minetest.register_node("fire:nether_flame", {
 	not_buildable_against = true,
 	sunlight_propagates = true,
 	damage_per_second = 4*500,
+  _damage_per_second_type = "heat",
 	_death_message = "Nether fire burnt <player> to ashes.",
 	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, fire = 1, flame_sound = 1, notify_construct = 1}),
 	drop = "",

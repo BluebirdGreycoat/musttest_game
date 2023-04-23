@@ -1269,6 +1269,7 @@ do
 		sounds = default.node_sound_wood_defaults(),
 		on_place = minetest.rotate_node,
 		damage_per_second = 1*500,
+		_damage_per_second_type = "fleshy",
 		_death_message = "They impaled themself on a cactus.",
 
 		on_punch = function(pos, node, puncher, pt)

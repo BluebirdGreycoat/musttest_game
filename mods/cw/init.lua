@@ -251,6 +251,9 @@ if not cw.registered then
 	sdef.damage_per_second = 1*500
 	fdef.damage_per_second = 1*500
 
+  sdef._damage_per_second_type = "fleshy"
+  fdef._damage_per_second_type = "fleshy"
+
 	sdef._death_message = "the piranha got <player>."
 	fdef._death_message = "the piranha got <player>."
 

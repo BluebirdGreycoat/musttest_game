@@ -507,7 +507,7 @@ end
 -- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
 	local rs = reason.type
-	if rs == "set_hp" then
+	if rs == "set_hp" or rs == "punch" then
 		rs = reason.reason or ""
 	end
 
@@ -567,6 +567,36 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			reason = huh
 		end
 	end
+
+	-- Why do I have to do this ugly hack? Because Minetest!!!!11111!!!11
+	-- Note: purpose of this hack is to ensure that the node's 'damage_per_second'
+	-- can be mitigated by player's current armor stats. As of this writing, by
+	-- default in Minetest, 'damage_per_second' behaves like :set_hp(), bypassing
+	-- armor groups.
+	if reason.type == "node_damage" and reason.node and reason.node ~= "" then
+		local ndef = minetest.registered_nodes[reason.node]
+		if ndef and ndef._damage_per_second_type then
+			local dtp = ndef._damage_per_second_type
+			local dps = ndef.damage_per_second or 0
+
+			-- Do NOT execute the following code within this function's call-stack.
+			-- That's just asking for trouble because of possible recursion.
+			minetest.after(0, function()
+				local pref = minetest.get_player_by_name(pname)
+				if pref then
+					-- PlayerHPChangeReason.type will be 'punch'.
+					utility.damage_player(pref, dtp, dps)
+				end
+			end)
+
+			-- Do not apply damage from this point. Damage will be applied via 'punch'
+			-- on the next server step.
+			return 0
+		end
+	end
+
+	-- Test code to check that I know what I'm doing.
+	--minetest.log('hpchange reason: ' .. (reason.reason or reason.type))
 
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)

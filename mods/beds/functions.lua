@@ -338,7 +338,7 @@ function beds.on_rightclick(pos, player)
 
 	-- Check if player is moving.
 	if vector.length(player:get_velocity()) > 0.001 then
-		minetest.chat_send_player(name, "You have to stop moving before going to bed!")
+		minetest.chat_send_player(name, "# Server: Stop moving before going to bed!")
 		return
 	end
 

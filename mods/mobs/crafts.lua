@@ -156,6 +156,7 @@ minetest.register_craftitem("mobs:flame_bolt", {
 minetest.register_tool("mobs:flame_staff", {
 	description = "Flame Staff",
 	inventory_image = "mobs_flame_staff.png",
+	wield_image = "mobs_flame_staff.png^[transformR270",
 	groups = {flammable = 1, not_repaired_by_anvil = 1},
 	light_source = 14,
 	wear_represents = "teleport_uses",

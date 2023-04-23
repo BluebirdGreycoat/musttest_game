@@ -329,13 +329,19 @@ function beds.on_rightclick(pos, player)
   local owner = meta:get_string("owner") or ""
 
 	-- Not while attached to something else!
-	if default.player_attached[name] then
+	if default.player_attached[name] or player:get_attach() then
 		return
 	end
 	if player:get_hp() == 0 then
 		return
 	end
-  
+
+	-- Check if player is moving.
+	if vector.length(player:get_velocity()) > 0.001 then
+		minetest.chat_send_player(name, "You have to stop moving before going to bed!")
+		return
+	end
+
   if owner == "" then
 		-- If bed has no owner, and pos is not protected, player takes ownership.
 		-- Note: this is to prevent player from taking ownership of an unowned bed

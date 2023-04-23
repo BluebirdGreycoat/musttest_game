@@ -234,6 +234,7 @@ local pain_words = {
 
 local murder_messages = {
 	"<n> <v> collapsed from <an_angry_k>'s <angry>attack.",
+	"<n> <v> fell apart under <an_angry_k>'s <angry>attack.",
 	"<an_angry_k>'s <w> apparently wasn't such an unusual weapon after all, as <n> <v> found out.",
 	"<an_angry_k> <brutally><slew> <n> <v> with great prejudice.",
 	"<n> <v> died from <an_angry_k>'s horrid slaying.",

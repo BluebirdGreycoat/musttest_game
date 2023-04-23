@@ -357,9 +357,19 @@ function beds.on_rightclick(pos, player)
 			meta:set_string("infotext", "Bed (Owned by <" .. dname .. ">!)")
 		end
 	elseif owner == "server" then
-		-- No code needed here so far.
 		-- If owner is server, then bed is public and player may sleep here.
 		-- But respawn position must not be set here.
+		local others = minetest.get_connected_players()
+
+		-- Check if bed is occupied.
+		for k, v in ipairs(others) do
+			if v:get_player_name() ~= name then
+				if vector.distance(v:get_pos(), pos) < 0.75 then
+					minetest.chat_send_player(name, "# Server: This bed is already occupied!")
+					return
+				end
+			end
+		end
   elseif owner ~= name then
     minetest.chat_send_player(name, "# Server: You cannot sleep here, this bed is not yours!")
     return

@@ -10,7 +10,8 @@ local math_random = math.random
 
 function snow.on_player_walk_over(pos, player)
 	local facedir = minetest.dir_to_facedir(player:get_look_dir())
-	minetest.swap_node(pos, {name = "snow:footprints", param2 = facedir})
+	-- Use 'set_node' to ensure 'on_construct' is run.
+	minetest.set_node(pos, {name = "snow:footprints", param2 = facedir})
 end
 
 function snow.on_dig(pos, node, digger)
@@ -442,26 +443,37 @@ function snow.get_snowfootdef()
 			minetest.remove_node(pos)
 			return
 		end
-		local time = 60*60*24*7
-		local rand = math_random(60*60*1, 60*60*24)
-		minetest.get_node_timer(pos):start(time+rand)
+
+		-- Run timer every 15 minutes, and compare curtime with abstime.
+		local meta = minetest.get_meta(pos)
+		meta:set_int("foottime", (os.time() + 60*60*24*3))
+		meta:mark_as_private("foottime")
+		minetest.get_node_timer(pos):start(60*15)
 	end
+
 	def.on_timer = function(pos, elapsed)
-		minetest.set_node(pos, {name="default:snow"})
+		local meta = minetest.get_meta(pos)
+		if os.time() > meta:get_int("foottime") then
+			minetest.set_node(pos, {name="default:snow"})
+		else
+			-- Continue timer with the same timeout.
+			return true
+		end
 	end
+
 	def.on_player_walk_over = function(pos, player)
-		local time = 60*60*24*7
-		local rand = math_random(60*60*1, 60*60*24)
-		minetest.get_node_timer(pos):start(time+rand)
 		return snow.on_player_walk_over(pos, player)
 	end
+
 	-- Snow with footprints turns back to snow if it falls.
 	def.on_finish_collapse = function(pos, node)
 		minetest.swap_node(pos, {name="default:snow"})
 	end
+
 	def.on_collapse_to_entity = function(pos, node)
 		core.add_item(pos, {name="default:snow"})
 	end
+
 	return def
 end
 

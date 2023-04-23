@@ -774,6 +774,7 @@ end
 -- API function. Call this whenever a player teleports,
 -- or lawfully changes realm. You can pass a player object or a name.
 -- Note: this must be called *before* you call :set_pos() on the player!
+-- Note #2: read the above note again! I really mean it!
 function rc.notify_realm_update(player, pos)
 	local p = vector_round(pos)
 	local n = ""

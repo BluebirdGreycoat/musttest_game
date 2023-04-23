@@ -790,6 +790,7 @@ function rc.notify_realm_update(player, pos)
 		return
 	end
 
+	-- Print plane-shift message.
 	if pref and tb.realm then
 		local pp = vector_round(pref:get_pos())
 		local rr = rc.current_realm_at_pos(pp)
@@ -809,9 +810,22 @@ function rc.notify_realm_update(player, pos)
 		end
 	end
 
+	-- Set 'new_arrival' flag to avoid complaining about them straying from the path ....
+	tb.new_arrival = true
 	tb.pos = p
 	tb.realm = rc.current_realm_at_pos(p)
 	sky.notify_sky_update_needed(n)
+
+	-- Remove the 'new_arrival' flag after a few seconds.
+	-- Note: this flag was set in order to suppress the 'strayed from path' message
+	-- that gets printed if the player is caught outside the correct realm. This
+	-- can happen because player position is controled by the client. Give the
+	-- player's client a few seconds to get its feet in gear.
+	minetest.after(5, function()
+		local data = rc.players[n]
+		if not data then return end
+		data.new_arrival = nil
+	end)
 end
 
 if not rc.registered then

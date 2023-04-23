@@ -771,6 +771,27 @@ function rc.on_leaveplayer(player, timeout)
 	rc.players[n] = nil
 end
 
+function rc.plane_shift_message(pref, p, n)
+	local pp = vector_round(pref:get_pos())
+	local rr = rc.current_realm_at_pos(pp)
+	local rr2 = rc.current_realm_at_pos(p)
+
+	-- Only if new realm is different from old.
+	if rr ~= rr2 then
+		if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
+			if not gdac.player_is_admin(n) then
+				minetest.chat_send_all("# Server: Someone has plane shifted.")
+			end
+		else
+			local d = rc.get_realm_data(rr2)
+			if d and d.description then
+				local realm_name = d.description
+				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. ".")
+			end
+		end
+	end
+end
+
 -- API function. Call this whenever a player teleports,
 -- or lawfully changes realm. You can pass a player object or a name.
 -- Note: this must be called *before* you call :set_pos() on the player!
@@ -793,22 +814,7 @@ function rc.notify_realm_update(player, pos)
 
 	-- Print plane-shift message.
 	if pref and tb.realm then
-		local pp = vector_round(pref:get_pos())
-		local rr = rc.current_realm_at_pos(pp)
-		local rr2 = rc.current_realm_at_pos(p)
-		if rr ~= rr2 then
-			if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
-				if not gdac.player_is_admin(n) then
-					minetest.chat_send_all("# Server: Someone has plane shifted.")
-				end
-			else
-				local d = rc.get_realm_data(rr2)
-				if d and d.description then
-					local realm_name = d.description
-					minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. ".")
-				end
-			end
-		end
+		rc.plane_shift_message(pref, p, n)
 	end
 
 	-- Set 'new_arrival' flag to avoid complaining about them straying from the path ....

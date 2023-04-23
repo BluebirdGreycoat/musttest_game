@@ -4,6 +4,19 @@ local math_random = math.random
 local math_min = math.min
 local math_max = math.max
 
+
+
+function utility.damage_player(player, damage_type, damage)
+	player:punch(player, 1.0, {
+		full_punch_interval = 1.0,
+		damage_groups = {[damage_type] = damage},
+	}, nil)
+	-- Note: never set 'damage_groups.from_arrow' here.
+	-- That has special meaning to the cityblock code!
+end
+
+
+
 function utility.detach_player_with_message(player)
 	local k = default.detach_player_if_attached(player)
 	if k then

@@ -290,8 +290,8 @@ function xban.gui.on_receive_fields(player, formname, fields)
 				minetest.chat_send_player(name,
 					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
 					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")
-				player:set_pos(pos)
 				rc.notify_realm_update(name, pos)
+				player:set_pos(pos)
 			end
 		end
 	end

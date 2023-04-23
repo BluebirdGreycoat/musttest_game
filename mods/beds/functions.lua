@@ -500,11 +500,11 @@ function beds.on_respawnplayer(player)
 		-- Don't preload area, that could allow a cheat.
 		-- Update player's position immediately, without delay.
 		wield3d.on_teleport()
-		player:set_pos(pos)
 
 		-- If player dies in a realm and their bed is in another, then they may
 		-- change realms that way.
 		rc.notify_realm_update(player, pos)
+		player:set_pos(pos)
 
 		local spawncount = beds.storage:get_int(name .. ":count")
 		if spawncount <= 1 then

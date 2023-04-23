@@ -708,12 +708,12 @@ function rc.check_position(player)
 			-- Return player to last known good position.
 			player:set_pos(data.pos)
 		else
-			-- Return to realm's origin point.
-			player:set_pos(reset.spawn)
-
 			-- Update which realm the player is supposed to be in.
 			-- (We might have crossed realms depending on what happened above.)
 			rc.notify_realm_update(player, reset.spawn)
+
+			-- Return to realm's origin point.
+			player:set_pos(reset.spawn)
 		end
 
 		-- Damage player. Prevents them triggering this indefinitely.

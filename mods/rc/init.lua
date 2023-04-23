@@ -786,7 +786,13 @@ function rc.plane_shift_message(pref, p, n)
 			local d = rc.get_realm_data(rr2)
 			if d and d.description then
 				local realm_name = d.description
-				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. ".")
+				local insult = ""
+
+				if rr ~= "abyss" and rr2 == "abyss" then
+					insult = " Noob!"
+				end
+
+				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. "." .. insult)
 			end
 		end
 	end

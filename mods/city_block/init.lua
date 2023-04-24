@@ -429,6 +429,12 @@ function city_block.on_receive_fields(player, formname, fields)
 			is_valid = false
 		end
 
+		if anticurse.check(pname, area_name, "foul") then
+			is_valid = false
+		elseif anticurse.check(pname, area_name, "curse") then
+			is_valid = false
+		end
+
 		if not is_valid then
 			minetest.chat_send_player(pname, "# Server: Region name not valid.")
 			return

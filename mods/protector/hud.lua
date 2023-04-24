@@ -66,11 +66,17 @@ function hud.globalstep(dtime)
 		if timer > 1 then
 			-- Player position has already been obtained.
 			local owner = protector.get_node_owner(pos)
+			local cblock = city_block:nearest_named_region(pos)
+
+			local city = ""
+			if cblock and cblock[1] and cblock[1].area_name then
+				city = "\"" .. cblock[1].area_name .. "\" / "
+			end
 
 			if owner and owner ~= "" then
-				owner_str = "<" .. rename.gpn(owner) .. ">"
+				owner_str = city .. "<" .. rename.gpn(owner) .. ">"
 			else
-				owner_str = "Nobody"
+				owner_str = city .. "Nobody"
 			end
 
 			timer = 0
@@ -78,7 +84,7 @@ function hud.globalstep(dtime)
 		end
 
 		local hud_text = "Realm: " .. rc.pos_to_name(pos) ..
-			"\nPos: " .. rc.pos_to_string(pos):gsub(",", ", ") ..
+			"\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ") ..
 			"\nClaim: " .. owner_str
 
 		if hud_text ~= hud.players[pname].text then

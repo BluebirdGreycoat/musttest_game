@@ -245,6 +245,8 @@ chat_core.generate_coord_string = generate_coord_string
 
 
 function chat_core.player_status(pname)
+	-- He's probably right, you know.
+	--[[
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
 		local pos = pref:get_pos()
@@ -261,6 +263,7 @@ function chat_core.player_status(pname)
 		local xper = math.floor(xp.get_xp(pname, "digxp") / xpmax)
 		return "[" .. info .. " - Lvl: " .. xper .. "] "
 	end
+	--]]
 	return ""
 end
 

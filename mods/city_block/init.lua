@@ -11,6 +11,7 @@ if not minetest.global_exists("city_block") then city_block = {} end
 city_block.blocks = city_block.blocks or {}
 city_block.filename = minetest.get_worldpath() .. "/city_blocks.txt"
 city_block.modpath = minetest.get_modpath("city_block")
+city_block.formspecs = city_block.formspecs or {}
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -314,8 +315,140 @@ end
 
 
 
+function city_block.on_rightclick(pos, node, clicker, itemstack)
+	if not clicker or not clicker:is_player() then
+		return
+	end
+
+	local pname = clicker:get_player_name()
+	local meta = minetest.get_meta(pos)
+
+	-- Player must be owner of city block.
+	if meta:get_string("owner") ~= pname then
+		return
+	end
+
+	-- Create formspec context.
+	city_block.formspecs[pname] = pos
+
+	local formspec = city_block.create_formspec(pos, pname)
+	minetest.show_formspec(pname, "city_block:main", formspec)
+end
+
+
+
+function city_block.create_formspec(pos, pname)
+	local formspec = "size[4.1,2.0]" ..
+		default.gui_bg ..
+		default.gui_bg_img ..
+		default.gui_slots ..
+		"label[0,0;Enter city/area region name:]" ..
+		"field[0.30,0.75;4,1;CITYNAME;;]" ..
+		"button_exit[0,1.30;2,1;OK;Confirm]" ..
+		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
+		"field_close_on_enter[CITYNAME;true]"
+
+	return formspec
+end
+
+
+
+function check_cityname(cityname)
+  return not string.match(cityname, "[^%a%s]")
+end
+
+
+
+function city_block.on_receive_fields(player, formname, fields)
+	if formname ~= "city_block:main" then
+		return
+	end
+	if not player or not player:is_player() then
+		return
+	end
+
+	local pname = player:get_player_name()
+	local pos = city_block.formspecs[pname]
+
+	-- Context should have been created in 'on_rightclick'. CSM protection.
+	if not pos then
+		return true
+	end
+
+	local meta = minetest.get_meta(pos)
+
+	if fields.key_enter_field == "CITYNAME" or fields.OK then
+		local area_name = (fields.CITYNAME or ""):trim()
+		area_name = area_name:gsub("%s+", " ")
+
+		-- Ensure city name is valid.
+		local is_valid = true
+		if #area_name == 0 then
+			is_valid = false
+		end
+		if #area_name > 20 then
+			is_valid = false
+		end
+		if not check_cityname(area_name) then
+			is_valid = false
+		end
+
+		if not is_valid then
+			minetest.chat_send_player(pname, "# Server: Region name not valid.")
+			return
+		end
+
+		local allblocks = city_block.blocks
+		local numblocks = #(city_block.blocks)
+		local block
+
+		for i = 1, numblocks do
+			local entry = allblocks[i]
+			if vector_equals(entry.pos, pos) then
+				block = entry
+				break
+			end
+		end
+
+		-- Ensure we got the city block data.
+		if not block then
+			return
+		end
+
+		-- Write out.
+		meta:set_string("cityname", area_name)
+		meta:set_string("infotext", city_block.get_infotext(pos))
+		block.area_name = area_name
+		city_block:save()
+	end
+
+	return true
+end
+
+
+
+function city_block.get_infotext(pos)
+	local meta = minetest.get_meta(pos)
+	local pname = meta:get_string("owner")
+	local cityname = meta:get_string("cityname")
+	local dname = rename.gpn(pname)
+
+	local text = "City Marker (Placed by <" .. dname .. ">!)"
+
+	if cityname ~= "" then
+		text = text .. "\nRegion Designate: \"" .. cityname .. "\""
+	end
+
+	return text
+end
+
+
+
 if not city_block.run_once then
 	city_block:load()
+
+	minetest.register_on_player_receive_fields(function(...)
+		return city_block.on_receive_fields(...) end)
 
 	minetest.register_node("city_block:cityblock", {
 		description = "Lawful Zone Marker [Marks a 45x45x45 area as a city.]\n\nSaves your bed respawn position, if someone killed you within the city area.\nMurderers and trespassers will be sent to jail if caught in a city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
@@ -327,6 +460,10 @@ if not city_block.run_once then
 		is_ground_content = false,
 		sounds = default.node_sound_stone_defaults(),
 
+		on_rightclick = function(...)
+			return city_block.on_rightclick(...)
+		end,
+
 		after_place_node = function(pos, placer)
 			if placer and placer:is_player() then
 				local pname = placer:get_player_name()
@@ -334,7 +471,7 @@ if not city_block.run_once then
 				local dname = rename.gpn(pname)
 				meta:set_string("rename", dname)
 				meta:set_string("owner", pname)
-				meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
+				meta:set_string("infotext", city_block.get_infotext(pos))
 				table.insert(city_block.blocks, {
 					pos = vector_round(pos),
 					owner = pname,

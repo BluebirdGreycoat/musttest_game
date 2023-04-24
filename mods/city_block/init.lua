@@ -189,7 +189,7 @@ end
 
 
 
-function city_block:nearest_named_region(pos)
+function city_block:nearest_named_region(pos, owner)
 	local get_rn = rc.current_realm_at_pos
 	local realm = get_rn(pos)
 
@@ -201,7 +201,8 @@ function city_block:nearest_named_region(pos)
 	for i=1, #sblocks, 1 do
 		local b = sblocks[i]
 		local p = b.pos
-		if b.area_name and vector_distance(p, pos) < 100 then
+		if b.area_name and vector_distance(p, pos) < 100 and
+				(not owner or b.owner == owner) then
 			if get_rn(p) == realm then
 				blocks[#blocks+1] = sblocks[i]
 			end

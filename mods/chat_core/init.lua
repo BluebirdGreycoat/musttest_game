@@ -235,6 +235,8 @@ local generate_coord_string = function(name)
 		if cityblock and cityblock[1] and cityblock[1].area_name then
 			if nodeowner and nodeowner ~= "" then
 				cityinfo = "/" .. cityblock[1].area_name
+			else
+				cityinfo = "/Nearby - " .. cityblock[1].area_name
 			end
 		end
 

@@ -235,7 +235,7 @@ function shout.shout(name, param)
 	end
 
 	afk.reset_timeout(name)
-	chat_logging.log_public_shout(name, param, mk)
+	chat_logging.log_public_shout(name, stats, param, mk)
 end
 
 

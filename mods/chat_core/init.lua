@@ -312,7 +312,7 @@ chat_core.on_chat_message = function(name, message)
 
 	player_labels.on_chat_message(name, message)
 	chat_core.send_all(name, stats .. "<", rename.gpn(name), coord_string .. "> ", message)
-	chat_logging.log_public_chat(name, message, coord_string)
+	chat_logging.log_public_chat(name, stats, message, coord_string)
 	afk.reset_timeout(name)
 end
 

@@ -161,26 +161,26 @@ end
 
 -- Public API functions.
 
-chat_logging.log_public_shout = function(pname, msg, loc)
+chat_logging.log_public_shout = function(pname, stats, msg, loc)
   local prefix = "[" .. get_time_and_place(pname) .. "] "
   local prefix2 = "[" .. get_public_time() .. "] "
   local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
-	prefix2 = prefix2 .. wspace2 .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
+  prefix = prefix .. wspace .. stats .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
+	prefix2 = prefix2 .. wspace2 .. stats .. "<!" .. rename.gpn(pname) .. loc .. "!> " .. msg .. "\n"
   chat_logging.logfile:write(prefix)
 	chat_logging.logfile2:write(prefix2)
   chat_logging.logfile:flush()
 	chat_logging.logfile2:flush()
 end
 
-chat_logging.log_public_chat = function(pname, msg, loc)
+chat_logging.log_public_chat = function(pname, stats, msg, loc)
   local prefix = "[" .. get_time_and_place(pname) .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
   local wspace = generate_whitespace(prefix)
 	local wspace2 = generate_shortspace(prefix2)
-  prefix = prefix .. wspace .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
-	prefix2 = prefix2 .. wspace2 .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
+  prefix = prefix .. wspace .. stats .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
+	prefix2 = prefix2 .. wspace2 .. stats .. "<" .. rename.gpn(pname) .. loc .. "> " .. msg .. "\n"
   chat_logging.logfile:write(prefix)
 	chat_logging.logfile2:write(prefix2)
   chat_logging.logfile:flush()

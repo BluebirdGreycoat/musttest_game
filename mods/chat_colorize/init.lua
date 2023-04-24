@@ -96,6 +96,13 @@ chat_colorize.send_player = function(name, msg)
     color = chat_colorize.COLOR_OLIVE
   end
 
+  --[[
+  -- Make it less verbose.
+  if msg:find("^# Server: ") then
+		msg = "#" .. msg:sub(10)
+  end
+  --]]
+
   return chat_colorize.old_chat_send_player(name, color .. msg)
 end
 
@@ -144,6 +151,13 @@ chat_colorize.send_all = function(message)
     is_server_message = true
   end
   
+  --[[
+  -- Make it less verbose.
+  if message:find("^# Server: ") then
+		message = "#" .. message:sub(10)
+  end
+  --]]
+
   if is_server_message then
     chat_logging.log_server_message(message)
   end

@@ -244,6 +244,19 @@ chat_core.generate_coord_string = generate_coord_string
 
 
 
+function chat_core.player_status(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
+		local info = rc.realm_description_at_pos(pref:get_pos())
+		local xpmax = math.floor(xp.digxp_max / 20)
+		local xper = math.floor(xp.get_xp(pname, "digxp") / xpmax)
+		return "[" .. info .. " - Lvl: " .. xper .. "] "
+	end
+	return ""
+end
+
+
+
 chat_core.on_chat_message = function(name, message)
 	-- Trim input.
 	message = string.trim(message)
@@ -295,9 +308,10 @@ chat_core.on_chat_message = function(name, message)
 
 	if chat_core.check_language(name, message) then return end
 	local coord_string = generate_coord_string(name)
+	local stats = chat_core.player_status(name)
 
 	player_labels.on_chat_message(name, message)
-	chat_core.send_all(name, "<", rename.gpn(name), coord_string .. "> ", message)
+	chat_core.send_all(name, stats .. "<", rename.gpn(name), coord_string .. "> ", message)
 	chat_logging.log_public_chat(name, message, coord_string)
 	afk.reset_timeout(name)
 end

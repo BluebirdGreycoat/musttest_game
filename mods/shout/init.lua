@@ -222,6 +222,7 @@ function shout.shout(name, param)
 	if chat_core.check_language(name, param) then return end
 
 	local mk = chat_core.generate_coord_string(name)
+	local stats = chat_core.player_status(name)
 	local dname = rename.gpn(name)
 	local players = minetest.get_connected_players()
 
@@ -229,7 +230,7 @@ function shout.shout(name, param)
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then
 			chat_core.alert_player_sound(target_name)
-			minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
+			minetest.chat_send_player(target_name, stats .. "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
 		end
 	end
 

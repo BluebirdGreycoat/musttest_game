@@ -2,6 +2,7 @@
 if not minetest.global_exists("xp") then xp = {} end
 xp.modpath = minetest.get_modpath("xp")
 xp.digxp_max = 1000000
+xp.digxp_hp_max = 50000
 xp.data = xp.data or {} -- Data is stored in string form.
 xp.dirty = true
 xp.dirty_players = xp.dirty_players or {}
@@ -40,7 +41,7 @@ function xp.update_players_max_hp(pname)
 		return
 	end
 
-	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), 50000), 0)
+	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), xp.digxp_hp_max), 0)
 	local kilos = (amount / 1000)
 	local hpinc = math_floor(kilos * 2)
 

@@ -257,7 +257,7 @@ function chat_core.player_status(pname)
 			info = rc.realm_description_at_pos(pos)
 		end
 
-		local xpmax = math.floor(xp.digxp_max / 20)
+		local xpmax = math.floor(xp.digxp_hp_max / 20)
 		local xper = math.floor(xp.get_xp(pname, "digxp") / xpmax)
 		return "[" .. info .. " - Lvl: " .. xper .. "] "
 	end

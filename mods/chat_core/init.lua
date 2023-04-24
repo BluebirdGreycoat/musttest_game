@@ -219,18 +219,23 @@ local generate_coord_string = function(name)
 	if not entity then
 		return coord_string
 	end
-	local pos = entity:get_pos()
+	local pos = vector_round(entity:get_pos())
 
 	if command_tokens.mark.player_marked(name) or
 			(sheriff.is_suspected_cheater(name) and city_block:in_city(pos)) then
 
-		local pstr = rc.pos_to_string(vector_round(pos))
+		local pstr = rc.pos_to_string(pos)
 		pstr = string.gsub(pstr, "[%(%)]", "")
 
+		-- Note: 'nodeowner
+		local nodeowner = protector.get_node_owner(pos)
+
 		local cityinfo = ""
-		local cityblock = city_block:nearest_named_region(pos)
+		local cityblock = city_block:nearest_named_region(pos, nodeowner)
 		if cityblock and cityblock[1] and cityblock[1].area_name then
-			cityinfo = "/" .. cityblock[1].area_name
+			if nodeowner and nodeowner ~= "" then
+				cityinfo = "/" .. cityblock[1].area_name
+			end
 		end
 
 		-- Remember to include leading space!

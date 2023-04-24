@@ -227,8 +227,14 @@ local generate_coord_string = function(name)
 		local pstr = rc.pos_to_string(vector_round(pos))
 		pstr = string.gsub(pstr, "[%(%)]", "")
 
+		local cityinfo = ""
+		local cityblock = city_block:nearest_named_region(pos)
+		if cityblock and cityblock[1] and cityblock[1].area_name then
+			cityinfo = "/" .. cityblock[1].area_name
+		end
+
 		-- Remember to include leading space!
-		coord_string = " [" .. rc.realm_description_at_pos(pos) .. ": " .. pstr .. "]"
+		coord_string = " [" .. rc.realm_description_at_pos(pos) .. cityinfo .. ": " .. pstr .. "]"
 
 		-- If server is not echoing player's chat back to the player, then their
 		-- client is old (or they have chat-echo turned off). In this case, the

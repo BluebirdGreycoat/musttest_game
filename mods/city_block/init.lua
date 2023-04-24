@@ -189,6 +189,8 @@ end
 
 
 
+-- Get nearest named cityblock to position which is owned by 'owner'. If 'owner'
+-- is nil or an empty string, returns any nearest named cityblock.
 function city_block:nearest_named_region(pos, owner)
 	local get_rn = rc.current_realm_at_pos
 	local realm = get_rn(pos)
@@ -202,7 +204,7 @@ function city_block:nearest_named_region(pos, owner)
 		local b = sblocks[i]
 		local p = b.pos
 		if b.area_name and vector_distance(p, pos) < 100 and
-				(not owner or b.owner == owner) then
+				(not owner or owner == "" or b.owner == owner) then
 			if get_rn(p) == realm then
 				blocks[#blocks+1] = sblocks[i]
 			end

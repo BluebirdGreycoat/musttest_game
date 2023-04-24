@@ -208,10 +208,10 @@ chat_logging.log_private_message = function(from, to, message)
   chat_logging.logfile:flush()
 end
 
-chat_logging.log_team_chat = function(from, message, team)
+chat_logging.log_team_chat = function(from, stats, message, team)
   local prefix = "[" .. get_time_and_place(from) .. "] "
   local wspace = generate_whitespace(prefix)
-  prefix = prefix .. wspace .. "<" .. rename.gpn(from) .. " x:" .. team .. "> " .. message .. "\n"
+  prefix = prefix .. wspace .. stats .. "<" .. rename.gpn(from) .. " x:" .. team .. "> " .. message .. "\n"
   chat_logging.logfile:write(prefix)
   chat_logging.logfile:flush()
 end

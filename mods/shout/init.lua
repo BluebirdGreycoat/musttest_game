@@ -368,7 +368,7 @@ function shout.x(name, param)
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)
 	--chat_logging.log_public_shout(name, param, mk)
 
-	chat_logging.log_team_chat(name, param, channel)
+	chat_logging.log_team_chat(name, stats, param, channel)
 	afk.reset_timeout(name)
 end
 

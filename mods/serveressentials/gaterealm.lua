@@ -259,6 +259,9 @@ local function callback(blockpos, action, calls_remaining, param)
 		meta:from_table(nil)
 	end
 
+	teleports.delete_blocks_from_area(minp, maxp)
+	city_block.delete_blocks_from_area(minp, maxp)
+
 	-- Restore all bones.
 	for k, v in ipairs(bones) do
 		minetest.set_node(v.pos, v.node)
@@ -275,8 +278,8 @@ end
 -- This API may be called to completely reset the Outback realm.
 -- It will restore the realm's map and metadata.
 function serveressentials.rebuild_gaterealm()
-	local p1 = table.copy(rc.realms[4].minp)
-	local p2 = table.copy(rc.realms[4].maxp)
+	local p1 = table.copy(rc.get_realm_data("midfeld").minp)
+	local p2 = table.copy(rc.get_realm_data("midfeld").maxp)
 
 	minetest.emerge_area(p1, p2, callback, {})
 end

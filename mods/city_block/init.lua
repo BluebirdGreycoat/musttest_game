@@ -22,6 +22,32 @@ local math_random = math.random
 
 
 
+function city_block.delete_blocks_from_area(minp, maxp)
+	local i = 1
+	local blocks = city_block.blocks
+
+	::do_next::
+	if i > #blocks then
+		return
+	end
+	local p = blocks[i].pos
+
+	if p.x >= minp.x and p.x <= maxp.x and
+			p.y >= minp.y and p.y <= maxp.y and
+			p.z >= minp.z and p.z <= maxp.z then
+		-- Don't need to worry about relative ordering.
+		-- This is your standard swap'n'pop.
+		blocks[i] = blocks[#blocks]
+		blocks[#blocks] = nil
+		goto do_next
+	end
+
+	i = i + 1
+	goto do_next
+end
+
+
+
 function city_block.on_punch(pos, node, puncher, pt)
 	if not pos or not node or not puncher or not pt then
 		return

@@ -43,6 +43,32 @@ teleports.charge_blocks = {
 
 
 
+function teleports.delete_blocks_from_area(minp, maxp)
+	local i = 1
+	local blocks = teleports.teleports
+
+	::do_next::
+	if i > #blocks then
+		return
+	end
+	local p = blocks[i].pos
+
+	if p.x >= minp.x and p.x <= maxp.x and
+			p.y >= minp.y and p.y <= maxp.y and
+			p.z >= minp.z and p.z <= maxp.z then
+		-- Don't need to worry about relative ordering.
+		-- This is your standard swap'n'pop.
+		blocks[i] = blocks[#blocks]
+		blocks[#blocks] = nil
+		goto do_next
+	end
+
+	i = i + 1
+	goto do_next
+end
+
+
+
 -- Build list of all teleports in same realm as 'origin', then return a random
 -- TP from that list, or nil.
 function teleports.get_random_teleport(origin)

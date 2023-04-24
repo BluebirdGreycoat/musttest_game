@@ -23,23 +23,59 @@ bandages.movement_limit_from_level = function(level)
 	if level == 1 then
 		return 20
 	elseif level == 2 then
-		return 5
+		return 6
 	elseif level == 3 then
-		return 2
+		return 1
 	end
 	return 0
 end
 
-bandages.hp_from_level = function(level, hp_max)
-  if level == 1 then
-    return hp_max * 0.1
-  elseif level == 2 then
-    return hp_max * 0.15
-  elseif level == 3 then
-    return hp_max * 0.3
+bandages.hp_from_level = function(level, hp, hp_max)
+  local heal = 0
+
+  -- Hmm hmm hmmm, I'm a genius.
+  local function mod1(hp, max)
+    local a = (hp / hp_max)
+    return a * a
   end
 
-  return 0
+  -- This function is proof that I failed algebra.
+  -- There's a way to do this in one line with no conditional, I just can't
+  -- figure out what it is.
+  local function mod2(hp, max)
+    local a = hp / max
+    local b
+
+    if a <= 0.5 then
+      b = a / 0.5
+    else
+      b = ((a - 0.5) / 0.5) * -1 + 1
+    end
+
+    return b * b
+  end
+
+  -- But this function makes me feel better.
+  local function mod3(hp, max)
+    local a = ((hp / hp_max) * -1 + 1)
+    return a * a
+  end
+
+  if level == 1 then
+    -- You receive the maximum heal bonus if you are only slightly hurt.
+    -- Simple bandages become worse for the job the more hurt you are.
+    heal = hp_max * 0.1 * mod1(hp, hp_max)
+  elseif level == 2 then
+    -- You get the most benefit from the basic medkit when used to heal
+    -- non-lifethreatening wounds which need more care than a simple bandaging.
+    heal = hp_max * 0.15 * mod2(hp, hp_max)
+  elseif level == 3 then
+    -- Trama medkits are best used on severe injuries. Using them for light
+    -- scrapes is wasteful, and provides little benefit.
+    heal = hp_max * 0.3 * mod3(hp, hp_max)
+  end
+
+  return heal
 end
 
 bandages.delay_from_level = function(level)
@@ -54,22 +90,22 @@ bandages.delay_from_level = function(level)
 end
 
 bandages.target_not_hurt = function(pname, tname)
-  minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(tname) .. "> is not wounded.")
+  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. "> is not wounded.")
 	--easyvend.sound_error(pname)
 end
 
 bandages.player_not_hurt = function(pname)
-  minetest.chat_send_player(pname, "# Server: You are not harmed.")
+  minetest.chat_send_player(pname, "# Server: You are not wounded.")
 	--easyvend.sound_error(pname)
 end
 
 bandages.player_bandages_self = function(pname, hp, hp_max)
   local pc = math_floor((hp / hp_max) * 100)
-  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is at " .. pc .. "%.")
+  minetest.chat_send_player(pname, "# Server: You use bandages on yourself. Your health is now " .. pc .. "%.")
 end
 
 bandages.target_is_dead = function(pname, tname)
-  minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(tname) .. "> is dead!")
+  minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tname) .. "> is dead!")
 	--easyvend.sound_error(pname)
 end
 
@@ -107,7 +143,7 @@ bandages.get_sound_range_from_level = function(level)
   elseif level == 2 then
     return 16
   elseif level == 3 then
-    return 24
+    return 32
   end
   return 0
 end
@@ -140,27 +176,6 @@ bandages.play_sound_effects = function(pos, level)
   end
 end
 
-bandages.get_max_damage_for_level = function(level, hp, hp_max)
-	if level == 3 then
-		return 1
-	elseif level == 2 then
-		return (hp_max / 3)
-	elseif level == 1 then
-		return (hp_max / 5) * 4
-	end
-	return 0
-end
-
-bandages.target_too_hurt = function(pname, tname, level)
-  minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(tname) .. "> is too severely hurt for a level " .. level .. " medkit.")
-	--easyvend.sound_error(pname)
-end
-
-bandages.player_too_hurt = function(pname, level)
-  minetest.chat_send_player(pname, "# Server: You are too severely hurt for a level " .. level .. " medkit.")
-	--easyvend.sound_error(pname)
-end
-
 
 
 function bandages.heal_target(itemstack, user, target, level)
@@ -174,9 +189,6 @@ function bandages.heal_target(itemstack, user, target, level)
 	end
 	if hp <= 0 then
 		return bandages.target_is_dead(pname, tname)
-	end
-	if hp < bandages.get_max_damage_for_level(level, hp, hp_max) then
-		return bandages.target_too_hurt(pname, tname, level)
 	end
 	if bandages.players[pname] or bandages.players[tname] then
 		return bandages.medkit_already_in_use(pname)
@@ -198,8 +210,8 @@ function bandages.heal_target(itemstack, user, target, level)
 
 		-- Don't heal target if already dead.
 		-- This solves an exploit people have found.
-		if target:get_hp() == 0 then return end
-		target:set_hp(hp + bandages.hp_from_level(level, hp_max))
+		if hp == 0 then return end
+		target:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
 	end)
 
@@ -220,9 +232,6 @@ function bandages.heal_self(itemstack, user, level)
 	if hp <= 0 then
 		return bandages.player_is_dead(pname)
 	end
-	if hp < bandages.get_max_damage_for_level(level, hp, hp_max) then
-		return bandages.player_too_hurt(pname, level)
-	end
 	if bandages.players[pname] then
 		return bandages.medkit_already_in_use(pname)
 	end
@@ -241,8 +250,8 @@ function bandages.heal_self(itemstack, user, level)
 
 		-- Don't heal user if already dead.
 		-- This solves an exploit people have found.
-		if user:get_hp() == 0 then return end
-		user:set_hp(hp + bandages.hp_from_level(level, hp_max))
+		if hp == 0 then return end
+		user:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_self(pname, user:get_hp(), hp_max)
 	end)
 

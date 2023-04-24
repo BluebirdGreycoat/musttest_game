@@ -341,6 +341,7 @@ function shout.x(name, param)
 		mk = " [" .. math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "]"
 	end
 
+	local stats = chat_core.player_status(name)
 	local dname = rename.gpn(name)
 	local channel = shout.players[name]
 	local players = minetest.get_connected_players()
@@ -358,7 +359,8 @@ function shout.x(name, param)
 			end
 
 			if not ignored then
-				minetest.chat_send_player(n, "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
+
+				minetest.chat_send_player(n, stats .. "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
 			end
 		end
 	end

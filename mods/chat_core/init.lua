@@ -247,7 +247,16 @@ chat_core.generate_coord_string = generate_coord_string
 function chat_core.player_status(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
-		local info = rc.realm_description_at_pos(pref:get_pos())
+		local pos = pref:get_pos()
+		local cblock = city_block:nearest_named_region(pos)
+		local info
+
+		if cblock[1] and cblock[1].area_name then
+			info = cblock[1].area_name
+		else
+			info = rc.realm_description_at_pos(pos)
+		end
+
 		local xpmax = math.floor(xp.digxp_max / 20)
 		local xper = math.floor(xp.get_xp(pname, "digxp") / xpmax)
 		return "[" .. info .. " - Lvl: " .. xper .. "] "

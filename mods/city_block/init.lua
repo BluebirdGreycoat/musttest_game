@@ -163,6 +163,42 @@ end
 
 
 
+function city_block:nearest_named_region(pos)
+	local get_rn = rc.current_realm_at_pos
+	local realm = get_rn(pos)
+
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	-- Only copy over blocks in the same realm, too.
+	local blocks = {}
+	local sblocks = self.blocks
+	for i=1, #sblocks, 1 do
+		local b = sblocks[i]
+		local p = b.pos
+		if b.area_name and vector_distance(p, pos) < 100 then
+			if get_rn(p) == realm then
+				blocks[#blocks+1] = sblocks[i]
+			end
+		end
+	end
+
+	-- Sort blocks, nearest blocks first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest blocks (should be at the front of the sorted table).
+	if #blocks > 0 then
+		return {blocks[1]}
+	end
+	return {}
+end
+
+
+
 function city_block.erase_jail(pos)
 	pos = vector_round(pos)
 	local b = city_block.blocks

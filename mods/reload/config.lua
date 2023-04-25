@@ -19,7 +19,7 @@ end
 
 
 -- Prefix for chat messages.
-reload.chat_prefix = reload.impl.setting_get("reload_chat_prefix") or "[Reload] "
+reload.chat_prefix = reload.impl.setting_get("reload_chat_prefix") or "# Server: "
 
 -- Path to the root directory when executing arbitrary Lua files.
 -- Executing files outside this directory (via the chatcommands) is forbidden.

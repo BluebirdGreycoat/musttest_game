@@ -29,4 +29,5 @@ function hud.player_event(player, event)
 	end)
 end
 
+-- 'Da ****? This function isn't documented in MT's Lua API?
 core.register_playerevent(hud.player_event)

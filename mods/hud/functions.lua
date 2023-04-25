@@ -28,6 +28,11 @@ function hud.player_event(player, event)
 
 		if event == "hud_changed" then --called when flags changed
 		end
+
+		-- Tested, works.
+		if event == "properties_changed" then
+			--minetest.log('properties changed!')
+		end
 	end)
 end
 

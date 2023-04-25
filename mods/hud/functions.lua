@@ -9,6 +9,8 @@ function hud.player_event(player, event)
 		if not plr then return end
 
 		if event == "health_changed" then
+			--minetest.log('health_changed_event')
+
 			for _,v in pairs(hud.damage_events) do
 				if v.func then
 					v.func(plr)

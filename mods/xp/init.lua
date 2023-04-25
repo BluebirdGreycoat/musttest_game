@@ -66,12 +66,15 @@ function xp.update_players_max_hp(pname)
 	pref:set_properties({hp_max = new_max_hp})
 	pref:set_hp(new_hp)
 	pmeta:set_int("hp_max", new_max_hp)
+
+	-- Manually update HUD.
+	hud.player_event(pref, "health_changed")
 end
 
 
 
 function xp.on_joinplayer(player)
-	minetest.after(1, xp.update_players_max_hp, player:get_player_name())
+	minetest.after(0, xp.update_players_max_hp, player:get_player_name())
 end
 
 

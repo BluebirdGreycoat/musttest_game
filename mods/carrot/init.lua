@@ -40,26 +40,44 @@ minetest.register_craftitem("carrot:regular", {
 
 
 
--- Edible!
-local eat_function = minetest.item_eat(6)
 minetest.register_craftitem("carrot:gold", {
   description = "Golden Carrot",
   inventory_image = "carrot_gold.png",
+
+  -- Definitely not something you wanna eat.
+  on_use = hunger.item_eat(-1, nil, 6),
+})
+
+minetest.register_craft({
+  output = "carrot:gold",
+  type = "shapeless",
+  recipe = {"default:gold_lump", "carrot:regular"},
+})
+
+
+
+local eat_function = minetest.item_eat(6, "vessels:drinking_glass")
+minetest.register_craftitem("carrot:health_boost_drink", {
+  description = "Health Boost Potion\n\nBoosts current and max HP beyond normal for a short time.",
+  inventory_image = "farming_carrot_juice_boost.png",
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
     --ambiance.sound_play("hunger_eat", user:get_pos(), 0.7, 10)
-    user:set_hp(user:get_properties().hp_max)
-		sprint.set_stamina(user, SPRINT_STAMINA)
+    --user:set_hp(user:get_properties().hp_max)
+		--sprint.set_stamina(user, SPRINT_STAMINA)
+		hunger.apply_health_boost(user:get_player_name())
     return eat_function(itemstack, user, pointed_thing)
   end,
 })
 
 minetest.register_craft({
-  output = "carrot:gold",
-  recipe = {
-		{"", "default:gold_lump", ""},
-		{"default:gold_lump", "carrot:regular", "default:gold_lump"},
-		{"", "default:gold_lump", ""},
+  output = "carrot:health_boost_drink",
+  type = "shapeless",
+	recipe = {
+		"vessels:drinking_glass", "carrot:gold", "farming:juicer"
+	},
+	replacements = {
+		{"farming:juicer", "farming:juicer"},
 	},
 })
 

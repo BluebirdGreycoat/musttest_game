@@ -35,34 +35,45 @@ end
 
 
 
+function xp.get_hp_max(pname)
+	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), xp.digxp_hp_max), 0)
+	local kilos = (amount / 1000)
+	local hpinc = math_floor(kilos * 2)
+	local scale = 500
+	local max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc) * scale
+	return max_hp
+end
+
+
+
 function xp.update_players_max_hp(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
 	end
 
-	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), xp.digxp_hp_max), 0)
-	local kilos = (amount / 1000)
-	local hpinc = math_floor(kilos * 2)
-
-	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
-	-- does not store this itself, and reverts to HP_MAX=20 on every login.
 	local pmeta = pref:get_meta()
-	local max_hp = pmeta:get_int("hp_max")
+	local boost_hp = hunger.get_health_boost(pname)
+	local max_hp = (pmeta:get_int("hp_max") + boost_hp)
+
+	-- Should only happen for new players (and existing that don't have 'hp_max'
+	-- in their meta info yet).
 	if max_hp == 0 then max_hp = minetest.PLAYER_MAX_HP_DEFAULT end
+
+	-- Note: this relies on us getting the same HP that the player last logged out with.
 	local hp = pref:get_hp()
 	local percent = (hp / max_hp)
 	if percent > 1 then percent = 1 end
 
 	--minetest.log('max hp=' .. max_hp .. ', hp=' .. hp .. ', percent=' .. percent)
 
-	local scale = 500
-
-	local new_max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc) * scale
+	local new_max_hp = (xp.get_hp_max(pname) + boost_hp)
 	local new_hp = math_min((percent * new_max_hp), new_max_hp)
 
 	--minetest.chat_send_all('new max hp: ' .. new_max_hp .. ', new hp: ' .. new_hp)
 
+	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
+	-- does not store this itself, and reverts to HP_MAX=20 on every login.
 	pref:set_properties({hp_max = new_max_hp})
 	pref:set_hp(new_hp)
 	pmeta:set_int("hp_max", new_max_hp)

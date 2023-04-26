@@ -49,6 +49,7 @@ end)
 
 function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if not player or not player:is_player() then return end
+  local pname = player:get_player_name()
   
 	local arrow = itemstack:get_metadata()
 	local imeta = itemstack:get_meta()
@@ -81,9 +82,12 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	end
 
 	luaent.player = player
-  luaent.player_name = player:get_player_name()
+  luaent.player_name = pname
 	luaent.inventory = player:get_inventory()
 	luaent.stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
+
+	-- Firing anything disables your cloak.
+	cloaking.disable_if_enabled(pname, true)
 
 	-- Return the modified itemstack.
 	return itemstack

@@ -640,6 +640,10 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		hp_change = 0
 	end
 
+	-- Any damage not caused by falling or drowning is *probably* some kind of
+	-- combat, or some other kind of environmental hazard.
+	cloaking.disable_if_enabled(pname, true)
+
 	armor:update_armor(player)
 	return hp_change
 end

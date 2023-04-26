@@ -143,8 +143,11 @@ function cloaking.do_scan(pname)
 				end
 			end
 
+			local cursta = sprint.get_stamina(pref)
+
 			-- There will always be at least one player (themselves).
-			if player_count > 1 or mob_count > 0 or sprint.get_stamina(pref) <= 0 then
+			if player_count > 1 or mob_count > 0 or
+					cursta <= (SPRINT_STAMINA * 0.1) then
 				pdata.decloak_timer = pdata.decloak_timer + 1
 			else
 				if pdata.decloak_timer > 0 then
@@ -152,8 +155,8 @@ function cloaking.do_scan(pname)
 				end
 			end
 
-			-- Decloak if problem persists too long.
-			if pdata.decloak_timer > 7 then
+			-- Decloak if problem persists too long or totally out of energy.
+			if pdata.decloak_timer > 7 or cursta == 0 then
 				cloaking.toggle_cloak(pname)
 			end
 
@@ -179,6 +182,21 @@ function cloaking.is_cloaked(pname)
 	return false
 end
 
+function cloaking.disable_if_enabled(pname, combat)
+	if cloaking.is_cloaked(pname) then
+		cloaking.toggle_cloak(pname)
+
+		-- If the cloak is violently broken due to combat, remaining energy is used
+		-- up at once.
+		if combat then
+			local pref = minetest.get_player_by_name(pname)
+			if pref then
+				sprint.set_stamina(pref, 0)
+			end
+		end
+	end
+end
+
 function cloaking.toggle_cloak(pname)
   local player = minetest.get_player_by_name(pname)
   if not player or not player:is_player() then
@@ -192,6 +210,11 @@ function cloaking.toggle_cloak(pname)
 	end
 
 	if not cloaking.players[pname] then
+		if sprint.get_stamina(player) < (SPRINT_STAMINA / 2) then
+			minetest.chat_send_player(pname, "# Server: Cloak requires minimum 50% energy to activate.")
+			return
+		end
+
 		-- Enable cloak.
 		cloaking.players[pname] = {
 			decloak_timer = 0,

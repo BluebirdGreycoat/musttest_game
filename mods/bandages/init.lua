@@ -281,7 +281,7 @@ end
 -- Execute registrations once only.
 if not bandages.registered then
   minetest.register_craftitem("bandages:bandage_1", {
-    description = "Simple Bandage\n\nHeals light scrapes and scratches.\nUse on yourself or another.",
+    description = "Simple Bandage\n\nBest used for light scrapes and scratches.\nUse on yourself or another.",
     inventory_image = "bandage_1.png",
     on_use = function(itemstack, user, pointed_thing) 
       return bandages.use_bandage(itemstack, user, pointed_thing, 1) 
@@ -289,7 +289,7 @@ if not bandages.registered then
   })
 
   minetest.register_craftitem("bandages:bandage_2", {
-    description = "Basic Medkit\n\nHeals wounds.\nUse on yourself or another.",
+    description = "Basic Medkit\n\nHeals moderate wounds (best around 50% health).\nUse on yourself or another.",
     inventory_image = "bandage_2.png",
     on_use = function(itemstack, user, pointed_thing) 
       return bandages.use_bandage(itemstack, user, pointed_thing, 2) 
@@ -297,7 +297,7 @@ if not bandages.registered then
   })
 
   minetest.register_craftitem("bandages:bandage_3", {
-    description = "Trauma Medkit\n\nHeals player from severe wounds.\nUse on yourself or another.",
+    description = "Trauma Medkit\n\nAids in recovery from severe, debilitating injuries.\nUse on yourself or another.",
     inventory_image = "bandage_3.png",
     on_use = function(itemstack, user, pointed_thing) 
       return bandages.use_bandage(itemstack, user, pointed_thing, 3) 

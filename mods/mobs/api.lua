@@ -4483,6 +4483,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- Record name of last attacker.
 	self.last_attacked_by = (hitter and hitter:is_player() and hitter:get_player_name()) or ""
 
+	if hitter then
+		if hitter:is_player() then
+			cloaking.disable_if_enabled(hitter:get_player_name(), true)
+		end
+	end
+
 	-- Is mob protected?
 	if self.protected and hitter:is_player()
 			and minetest.test_protection(v_round(self.object:get_pos()), hitter:get_player_name()) then

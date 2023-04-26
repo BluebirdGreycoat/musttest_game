@@ -481,6 +481,29 @@ end
 
 
 
+function armor.get_reason(reason)
+	local rs = reason.type or ""
+	if rs == "set_hp" or rs == "punch" then
+		-- Use custom reason only if available, otherwise use engine-defined reason,
+		-- which will just be 'set_hp' or 'punch'.
+		if reason.reason and reason.reason ~= "" then
+			rs = reason.reason
+		end
+	end
+	return rs
+end
+
+
+
+function armor.reason_disables_cloak(rstr)
+	if rstr == "punch" or rstr == "arrow" or rstr == "boom" or rstr == "fireball" then
+		return true
+	end
+	return false
+end
+
+
+
 -- Calc wear multiplier based on reason and armor piece.
 -- Notes: 'type' will be "set_hp" if from player:set_hp().
 -- Must use 'reason' field in that case.
@@ -506,10 +529,7 @@ end
 --
 -- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
-	local rs = reason.type
-	if rs == "set_hp" or rs == "punch" then
-		rs = reason.reason or ""
-	end
+	local rs = armor.get_reason(reason)
 
 	if rs == "" then
 		return 1
@@ -595,8 +615,9 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		end
 	end
 
+	local reason_str = armor.get_reason(reason)
 	-- Test code to check that I know what I'm doing.
-	--minetest.log('hpchange reason: ' .. (reason.reason or reason.type))
+	--minetest.log('hpchange reason: ' .. reason_str)
 
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
@@ -640,9 +661,10 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		hp_change = 0
 	end
 
-	-- Any damage not caused by falling or drowning is *probably* some kind of
-	-- combat, or some other kind of environmental hazard.
-	cloaking.disable_if_enabled(pname, true)
+	-- Check for combat-related reasons.
+	if armor.reason_disables_cloak(reason_str) then
+		cloaking.disable_if_enabled(pname, true)
+	end
 
 	armor:update_armor(player)
 	return hp_change

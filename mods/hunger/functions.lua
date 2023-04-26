@@ -569,6 +569,8 @@ end
 
 
 
+-- Note: due to the way this function works, changes to it require a server
+-- restart; reloading the hunger mod WILL NOT work!
 function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 	-- Returns 'on_use' callback closure.
 	return function(itemstack, user, pointed_thing)

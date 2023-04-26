@@ -129,10 +129,28 @@ end
 
 
 
+function command_tokens.warn_marked(pref)
+	local pname = pref:get_player_name()
+	minetest.after(0, function()
+		local player = minetest.get_player_by_name(pname)
+		if not player then
+			return
+		end
+		if command_tokens.mark.player_marked(pname) then
+			minetest.chat_send_player(pname, "# Server: Warning - you are marked, at present.")
+		end
+	end)
+end
+
+
+
 -- Register once only.
 if not command_tokens.mark.registered then
 	minetest.register_on_player_receive_fields(function(...)
 		return command_tokens.mark_on_receive_fields(...)
+	end)
+	minetest.register_on_joinplayer(function(...)
+		return command_tokens.warn_marked(...)
 	end)
 	command_tokens.mark.registered = true
 end

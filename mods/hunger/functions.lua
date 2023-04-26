@@ -505,8 +505,8 @@ local function poisenp(tick, time, time_left, player, gorged)
 	local data = {
 		name = name,
 		step = time,
-		min = 1,
-		max = 1,
+		min = 1*100,
+		max = 1*500,
 		poison = true,
 	}
 	data.msg = "# Server: <" .. rename.gpn(name) .. "> was poisoned!"
@@ -569,8 +569,7 @@ end
 
 
 
--- Public API function, to be used in place of 'minetest.item_eat' where needed.
-function hunger.item_eat(hunger_change, replace_with_item, poisen, heal, sound)
+function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 	-- Returns 'on_use' callback closure.
 	return function(itemstack, user, pointed_thing)
 		if not user or not user:is_player() then return end

@@ -39,6 +39,9 @@ if not hunger.run_once then
 
 	core.do_item_eat = function(...) return hunger.do_item_eat(...) end
 
+	-- Public API function, to be used in place of 'minetest.item_eat' where needed.
+	function hunger.item_eat(...) return hunger.item_eat2(...) end
+
 	minetest.register_on_joinplayer(function(...) return hunger.on_joinplayer(...) end)
 	minetest.register_on_respawnplayer(function(...) return hunger.on_respawnplayer(...) end)
 	minetest.register_on_leaveplayer(function(...) return hunger.on_leaveplayer(...) end)

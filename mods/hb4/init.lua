@@ -45,6 +45,7 @@ function hb4.delayed_harm2(data)
 		end
 
 		local damage = math_random(data.min, data.max)
+		--minetest.log('damage2: ' .. damage)
 		local hp = player:get_hp()
 		if hp > (data.hp_min or 0) then
 			local new_hp = hp - damage
@@ -52,6 +53,7 @@ function hb4.delayed_harm2(data)
 
 			-- Ensure damage is not greater than would cause player to go under 'hp_min'.
 			local hpdiff = (hp - new_hp)
+			--minetest.log('damage: ' .. hpdiff)
 			local dtype = "fleshy"
 			if data.poison then
 				dtype = "poison"

@@ -45,7 +45,7 @@ minetest.register_craftitem("carrot:gold", {
   inventory_image = "carrot_gold.png",
 
   -- Definitely not something you wanna eat.
-  on_use = hunger.item_eat(-1, nil, 6),
+  on_use = hunger.item_eat(-2, nil, 6),
 })
 
 minetest.register_craft({

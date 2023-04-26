@@ -154,7 +154,7 @@ function sprint.globalstep(dtime)
 	end
 
 	--Loop through all connected players
-	for playerName,playerInfo in pairs(players) do
+	for playerName, playerInfo in pairs(players) do
 		local player = minetest.get_player_by_name(playerName)
 		if player ~= nil then
 			--Check if the player should be sprinting
@@ -243,13 +243,21 @@ function sprint.globalstep(dtime)
 						mult = mult + 0.2
 					end
 
+					-- Cloaking device uses energy from YOU.
+					-- Rate is equal to whatever your stamina-regain rate is.
+					if cloaking.is_cloaked(playerName) then
+						mult = 0
+					end
+
 					playerInfo["stamina"] = playerInfo["stamina"] + (dtime * mult)
 				end
 			end
+
 			-- Cap stamina at SPRINT_STAMINA
 			if playerInfo["stamina"] > SPRINT_STAMINA then
 				playerInfo["stamina"] = SPRINT_STAMINA
 			end
+
 			local hp_max = player:get_properties().hp_max
 			local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 			if playerInfo["stamina"] > maxstamina then
@@ -258,6 +266,7 @@ function sprint.globalstep(dtime)
 			
 			-- Update the players's hud sprint stamina bar
 			local numBars = floor((playerInfo["stamina"]/SPRINT_STAMINA)*SPRINT_HUD_ICONS)
+
 			-- Don't send hud update every frame.
 			if numBars ~= playerInfo["bars"] then
 				player:hud_change(playerInfo["hud"], "number", numBars)

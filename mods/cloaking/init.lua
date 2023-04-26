@@ -65,7 +65,7 @@ function cloaking.hud_effect(pname)
 			local color = "white"
 
 			local pdata = cloaking.players[pname]
-			if (pdata.decloak_timer or 0) > 0 then
+			if pdata.decloak_timer > 0 then
 				color = "red"
 			end
 
@@ -123,6 +123,7 @@ function cloaking.do_scan(pname)
 		local pref = minetest.get_player_by_name(pname)
 		if pref then
 			local pos = pref:get_pos()
+			local pdata = cloaking.players[pname]
 
 			local player_count = 0
 			local mob_count = 0
@@ -143,18 +144,22 @@ function cloaking.do_scan(pname)
 			end
 
 			-- There will always be at least one player (themselves).
-			if player_count > 1 or mob_count > 0 then
-				local pdata = cloaking.players[pname]
-				pdata.decloak_timer = (pdata.decloak_timer or 0) + 1
-				if pdata.decloak_timer > 7 then
-					cloaking.toggle_cloak(pname)
-				end
+			if player_count > 1 or mob_count > 0 or sprint.get_stamina(pref) <= 0 then
+				pdata.decloak_timer = pdata.decloak_timer + 1
 			else
-				local pdata = cloaking.players[pname]
-				pdata.decloak_timer = 0
+				if pdata.decloak_timer > 0 then
+					pdata.decloak_timer = pdata.decloak_timer - 1
+				end
 			end
 
-			-- Randomly sometimes spawn wisps.
+			-- Decloak if problem persists too long.
+			if pdata.decloak_timer > 7 then
+				cloaking.toggle_cloak(pname)
+			end
+
+			-- Randomly sometimes spawn wisps. Your cloaking device works by partly
+			-- moving you into a parallel dimension. Unfortunately that means stuff
+			-- from the other side sometimes gets through ....
 			if math_random(1, 1000) == 1 then
 				cloaking.spawn_wisp(vector_round(pos))
 			end
@@ -188,7 +193,9 @@ function cloaking.toggle_cloak(pname)
 
 	if not cloaking.players[pname] then
 		-- Enable cloak.
-		cloaking.players[pname] = {}
+		cloaking.players[pname] = {
+			decloak_timer = 0,
+		}
 		player_labels.disable_nametag(pname)
 
 		-- Notify so health gauges can be removed.

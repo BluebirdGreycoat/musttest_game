@@ -36,7 +36,7 @@ minetest.register_node("raspberries:fruit", {
 
 
 minetest.register_craftitem("raspberries:smoothie", {
-  description = "Raspberry Smoothie\n\nAn energy drink.\nConsume to refresh stamina.",
+  description = "Raspberry Smoothie\n\nEnergy drink. Quaff to improve stamina.",
   inventory_image = "raspberries_smoothie.png",
 	on_use = function(itemstack, user, pointed_thing)
 		sprint.add_stamina(user, 4)

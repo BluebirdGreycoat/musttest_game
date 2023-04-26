@@ -67,7 +67,7 @@ minetest.register_craft({
 
 local eat_function = minetest.item_eat(6, "vessels:drinking_glass")
 minetest.register_craftitem("carrot:health_boost_drink", {
-  description = "Health Boost Potion\n\nBoosts current and max HP beyond normal for a short time.",
+  description = "Apple Carrot Juice\n\nBoosts current and max HP beyond normal for a short time.",
   inventory_image = "farming_carrot_juice_boost.png",
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end

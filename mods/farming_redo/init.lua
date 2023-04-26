@@ -67,11 +67,17 @@ minetest.register_craft({
 
 -- carrot cake
 
+local eat_carrot_cake = minetest.item_eat(4)
 minetest.register_craftitem(":farming:carrot_cake", {
-	description = "Carrot Cake",
+	description = "Carrot Cake\n\nImproves health regeneration for a period of time.",
 	inventory_image = "farming_carrot_cake.png",
-	on_use = minetest.item_eat(4),
 	groups = {flammable = 2},
+
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_hpgen_boost(user:get_player_name())
+    return eat_carrot_cake(itemstack, user, pointed_thing)
+  end,
 })
 
 minetest.register_craft({

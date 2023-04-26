@@ -585,7 +585,9 @@ function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 		if sat >= HUNGER_MAX then
 			gorged = true
 			heal = nil
-			poisen = 3 -- 3 seconds?
+			if not poisen then
+				poisen = 3 -- 3 seconds?
+			end
 		end
 
 		-- Remove food from itemstack only if eating was successful.

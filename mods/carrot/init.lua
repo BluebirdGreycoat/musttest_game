@@ -40,12 +40,21 @@ minetest.register_craftitem("carrot:regular", {
 
 
 
+-- Definitely not something you wanna eat.
+-- Gives back a bunch of health, but takes some of that away again over time via poison.
+-- Use with care!
+local eat_func2 = hunger.item_eat(0, nil, 10)
 minetest.register_craftitem("carrot:gold", {
   description = "Golden Carrot",
   inventory_image = "carrot_gold.png",
 
-  -- Definitely not something you wanna eat.
-  on_use = hunger.item_eat(-2, nil, 6),
+  -- Give user 1/4 energy, health back.
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+    user:set_hp(user:get_hp() + (user:get_properties().hp_max / 2))
+		sprint.add_stamina(user, (SPRINT_STAMINA / 4))
+    return eat_func2(itemstack, user, pointed_thing)
+  end,
 })
 
 minetest.register_craft({
@@ -74,7 +83,8 @@ minetest.register_craft({
   output = "carrot:health_boost_drink",
   type = "shapeless",
 	recipe = {
-		"vessels:drinking_glass", "carrot:gold", "farming:juicer"
+		"vessels:drinking_glass", "carrot:regular", "farming:juicer",
+		"basictrees:tree_apple",
 	},
 	replacements = {
 		{"farming:juicer", "farming:juicer"},

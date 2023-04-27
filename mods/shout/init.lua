@@ -194,7 +194,11 @@ function shout.print_hint()
 
 	-- Only if hints are available.
 	if #HINTS > 0 then
-		minetest.chat_send_all("# Server: " .. HINTS[math_random(1, #HINTS)])
+		-- Don't speak to an empty room.
+		local players = minetest.get_connected_players()
+		if #players > 0 then
+			minetest.chat_send_all("# Server: " .. HINTS[math_random(1, #HINTS)])
+		end
 	end
 
 	-- Print another hint after some delay.
@@ -377,7 +381,7 @@ end
 if not shout.run_once then
 	-- Post 'startup complete' message only in multiplayer.
 	if not minetest.is_singleplayer() then
-		minetest.after(10, function()
+		minetest.after(0, function()
 			minetest.chat_send_all("# Server: Startup complete.")
 		end)
 	end

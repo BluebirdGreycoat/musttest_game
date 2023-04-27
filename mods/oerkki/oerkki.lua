@@ -84,7 +84,7 @@ mobs.register_mob("oerkki:oerkki", {
 
 			vel = vector.normalize(vel)
 			vel = vector.add(vel, {x=0, y=0.5, z=0})
-			vel = vector.multiply(vel, 10)
+			vel = vector.multiply(vel, 7)
 
 			-- The player needs to be kicked up 1 node manually, because otherwise
 			-- the collision box of the menace prevents them from being thrown, very

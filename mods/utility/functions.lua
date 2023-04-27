@@ -132,3 +132,25 @@ function default.detach_player_if_attached(player)
 	return result
 end
 
+
+
+-- Override Minetest's builtin knockback calculation.
+function minetest.calculate_knockback(player, hitter, time_from_last_punch, tool_capabilities, dir, distance, damage)
+	damage = math.floor(damage / 250)
+
+	if damage == 0 or player:get_armor_groups().immortal then
+		return 0.0
+	end
+
+	local m = 8
+	-- solve m - m*e^(k*4) = 4 for k
+	local k = -0.17328
+	local res = m - m * math.exp(k * damage)
+
+	if distance < 2.0 then
+		res = res * 1.1 -- more knockback when closer
+	elseif distance > 4.0 then
+		res = res * 0.9 -- less when far away
+	end
+	return res
+end

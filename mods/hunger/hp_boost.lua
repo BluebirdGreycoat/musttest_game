@@ -48,7 +48,7 @@ function hunger.apply_health_boost(pname)
 	end
 
 	local hp = pref:get_hp()
-	local hp_max = pref:get_properties().hp_max
+	local hp_max = xp.get_hp_max(pname)
 	local perc = (hp / hp_max)
 
 	hp_max = hp_max + tab.health_boost
@@ -83,16 +83,18 @@ function hunger.time_health_boost(pname)
       minetest.chat_send_player(pname, "# Server: Max health boost expired.")
     end
 
+    local boost = tab.health_boost
+
 		hud.change_item(pref, "health", {text="hud_heart_fg.png"})
 		tab.health_boost_time = nil
 		tab.health_boost = nil
 
+		local nmax = xp.get_hp_max(pname)
 		local hp = pref:get_hp()
-		local hp_max = pref:get_properties().hp_max
+		local hp_max = nmax + boost
 		local perc = (hp / hp_max)
 
 		-- Restore baseline HP level.
-		local nmax = xp.get_hp_max(pname)
 		local nhp = perc * nmax
 		pref:set_properties({hp_max = nmax})
 		pref:set_hp(nhp)

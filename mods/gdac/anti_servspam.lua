@@ -27,6 +27,7 @@ end
 
 
 function spam.should_block_player(pname, ip)
+  -- Don't slow dev testing down. I'm on the clock, here!
   if ip == "127.0.0.1" or ip == "0.0.0.0" then
     return false
   end

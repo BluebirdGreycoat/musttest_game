@@ -23,7 +23,8 @@ function hunger.apply_hot(pname, key, data)
 		return
 	end
 
-	local hotname = "hot_time_" .. key
+	local hotname = "effect_time_hot_" .. key
+	local datname = "effect_data_hot_" .. key
 
 	local already_boosted = false
 	if tab[hotname] then
@@ -32,19 +33,20 @@ function hunger.apply_hot(pname, key, data)
 
 	-- HOT for several seconds, time-additive.
 	tab[hotname] = (tab[hotname] or 0) + data.time
+	tab[datname] = tab[datname] or data
 
 	-- Don't stack 'minetest.after' chains.
-	-- Also don't stack 'hp_max'.
 	if already_boosted then
 		return
 	end
 
-	hunger.time_hot(pname, key, data)
+	hunger.time_hot(pname, key)
 end
 
 
 
-function hunger.time_hot(pname, key, data)
+-- Private function!
+function hunger.time_hot(pname, key)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
@@ -55,22 +57,26 @@ function hunger.time_hot(pname, key, data)
 		return
 	end
 
-	local hotname = "hot_time_" .. key
+	local hotname = "effect_time_hot_" .. key
+	local datname = "effect_data_hot_" .. key
 
-	tab[hotname] = tab[hotname] - 1
-	pref:set_hp(pref:get_hp() + data.heal)
+	if tab[hotname] <= 0 then
+		tab[hotname] = nil
+		tab[datname] = nil
+		return
+	end
 
 	-- Cancel if health reached full
 	if pref:get_hp() == pref:get_properties().hp_max then
     tab[hotname] = nil
+		tab[datname] = nil
     return
   end
 
-	if tab[hotname] <= 0 then
-		tab[hotname] = nil
-		return
-	end
+  local data = tab[datname]
+	pref:set_hp(pref:get_hp() + data.heal)
 
 	-- Check again soon.
-	minetest.after(1, hunger.time_hot, pname, key, data)
+	tab[hotname] = tab[hotname] - 1
+	minetest.after(1, hunger.time_hot, pname, key)
 end

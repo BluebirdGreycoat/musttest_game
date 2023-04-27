@@ -575,29 +575,19 @@ function hunger.on_dieplayer(player)
 		return
 	end
 
-	if tab.damage_resistance_time then
-		tab.damage_resistance_time = 0
-	end
+	-- Set timers on all active effects to 0.
+	local timers = {}
 
-	if tab.hpgen_boost_time then
-		tab.hpgen_boost_time = 0
-	end
-
-	if tab.health_boost_time then
-		tab.health_boost_time = 0
-	end
-
-	if tab.stamina_boost_time then
-		tab.stamina_boost_time = 0
-	end
-
-	for k, v in ipairs({
-		"avysium",
-	}) do
-		local hotname = "hot_time_" .. v
-		if tab[hotname] then
-			tab[hotname] = 0
+	-- Collect timers.
+	for k, v in pairs(tab) do
+		if k:find("^effect_time_") then
+			timers[#timers + 1] = k
 		end
+	end
+
+	-- Zero timers.
+	for k, v in ipairs(timers) do
+		tab[v] = 0
 	end
 end
 

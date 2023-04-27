@@ -21,7 +21,7 @@ local meat_types = {
 
 	-- Mutton.
 	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_mutton_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},
-	{name="mobs:meat_mutton", desc="Cooked Mutton", image="mobs_mutton.png", food=10},
+	{name="mobs:meat_mutton", desc="Cooked Mutton\n\nEat to improve resistance to certain kinds of damage, for a time.", image="mobs_mutton.png", food=10},
 
 	-- Pork.
 	{name="mobs:meat_raw_pork", desc="Raw Pork (Yuck)", image="mobs_pork_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},
@@ -34,21 +34,33 @@ local meat_types = {
 
 for k, v in ipairs(meat_types) do
 	local eat_meat = minetest.item_eat(v.food)
-	local do_eat_meat = eat_meat
-
-	if v.is_raw or v.is_gross then
-		do_eat_meat = function(itemstack, user, pointed_thing)
-			-- Damage player only if meat was raw.
-			if v.is_raw then
-				-- Do not kill player.
-				if user:get_hp() > 1*500 then
-					utility.damage_player(user, "poison", 1*500)
-				end
+	local do_eat_meat = function(itemstack, user, pointed_thing)
+		-- Damage player only if meat was raw.
+		if v.is_raw then
+			-- Do not kill player.
+			if user:get_hp() > 1*500 then
+				-- Light poisoning that lasts awhile.
+				hb4.delayed_harm({
+					name = user:get_player_name(),
+					step = 15,
+					min = 50,
+					max = 100,
+					hp_min = 1,
+					poison = true,
+				})
 			end
-			-- Send message if meat was raw or gross.
-			minetest.chat_send_player(user:get_player_name(), "# Server: You eat " .. v.desc .. "? Eww, gross!")
-			return eat_meat(itemstack, user, pointed_thing)
 		end
+
+		if v.name == "mobs:meat_mutton" then
+			hunger.apply_damage_resistance(user:get_player_name())
+		end
+
+		-- Send message if meat was raw or gross.
+		if v.is_gross or v.is_raw then
+			minetest.chat_send_player(user:get_player_name(), "# Server: You eat " .. v.desc .. "? Eww, gross!")
+		end
+
+		return eat_meat(itemstack, user, pointed_thing)
 	end
 
 	local groups = {food_meat = 1, flammable = 3}

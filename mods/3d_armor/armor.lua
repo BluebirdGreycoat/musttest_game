@@ -619,6 +619,10 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- Test code to check that I know what I'm doing.
 	--minetest.log('hpchange reason: ' .. reason_str)
 
+	if reason_str == "punch" or reason_str == "arrow" then
+		hp_change = hp_change * hunger.get_damage_resistance(pname)
+	end
+
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
 

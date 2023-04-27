@@ -26,6 +26,16 @@ end
 
 
 
+function spam.should_block_player(pname, ip)
+  if ip == "127.0.0.1" or ip == "0.0.0.0" then
+    return false
+  end
+
+  return true
+end
+
+
+
 local spamips = spam.ips
 
 function spam.on_prejoinplayer(name, ip)
@@ -36,7 +46,7 @@ function spam.on_prejoinplayer(name, ip)
 
   local last = spamips[ip] or 0
 
-  if os.time() < last then
+  if os.time() < last and spam.should_block_player(name, ip) then
     return "The path is narrow and crowded. Perhaps you should wait awhile ..."
   end
 

@@ -48,7 +48,8 @@ function minetest.register_tool(name, def)
 
 		-- Swords have less range, should make fighting the mobs a bit more challenging.
 		if name:find("sword") then
-			defrange = 3
+			-- Note: not really a good idea.
+			defrange = 4
 		end
 
 		ndef.range = (ndef.range or defrange) * rangemod

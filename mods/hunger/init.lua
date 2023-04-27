@@ -52,6 +52,7 @@ if not hunger.run_once then
 	minetest.register_on_placenode(function(...) return hunger.on_placenode(...) end)
 	minetest.register_on_dignode(function(...) return hunger.on_dignode(...) end)
 	minetest.register_globalstep(function(...) return hunger.on_globalstep(...) end)
+	minetest.register_on_dieplayer(function(...) return hunger.on_dieplayer(...) end)
 
 	local c = "hunger:core"
 	local f = hunger.modpath .. "/init.lua"

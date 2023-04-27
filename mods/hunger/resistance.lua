@@ -35,7 +35,8 @@ function hunger.apply_damage_resistance(pname)
 	end
 
 	-- Boost damage resistance, time-additive.
-	tab.damage_resistance = 0.8
+	-- This is a multiplier to regular punch/arrow damage.
+	tab.damage_resistance = 0.7
 	tab.damage_resistance_time = (tab.damage_resistance_time or 0) + 30
 
 	-- Don't stack 'minetest.after' chains.
@@ -71,7 +72,9 @@ function hunger.time_damage_resistance(pname)
 	tab.damage_resistance_time = tab.damage_resistance_time - 1
 
 	if tab.damage_resistance_time <= 0 then
-    minetest.chat_send_player(pname, "# Server: Damage resistance expired.")
+    if pref:get_hp() > 0 then
+      minetest.chat_send_player(pname, "# Server: Damage resistance expired.")
+    end
 
     pref:hud_remove(tab.damage_resistance_hud)
     tab.damage_resistance_hud = nil

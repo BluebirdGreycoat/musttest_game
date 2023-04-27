@@ -57,6 +57,7 @@ function hunger.apply_health_boost(pname)
 	pref:set_properties({hp_max=hp_max})
 	pref:set_hp(hp)
 
+	minetest.chat_send_player(pname, "# Server: Max health boosted for " .. tab.health_boost_time .. " seconds.")
 	hud.change_item(pref, "health", {text="hud_heart_fg_boost.png"})
 	armor:update_inventory(pref)
 	hunger.time_health_boost(pname)
@@ -78,6 +79,10 @@ function hunger.time_health_boost(pname)
 	tab.health_boost_time = tab.health_boost_time - 1
 
 	if tab.health_boost_time <= 0 then
+    if pref:get_hp() > 0 then
+      minetest.chat_send_player(pname, "# Server: Max health boost expired.")
+    end
+
 		hud.change_item(pref, "health", {text="hud_heart_fg.png"})
 		tab.health_boost_time = nil
 		tab.health_boost = nil

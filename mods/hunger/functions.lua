@@ -367,8 +367,10 @@ function hunger.on_globalstep(dtime)
 
 				-- heal player
 				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
-					local new_hp = hp + hp_heal
-					player:set_hp(new_hp)
+					if hp < hp_max then
+						local new_hp = hp + hp_heal
+						player:set_hp(new_hp)
+					end
 				end
 
 				-- or damage player
@@ -562,5 +564,33 @@ function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 		return itemstack
 	end -- End of function.
 end
+
+
+
+function hunger.on_dieplayer(player)
+	local pname = player:get_player_name()
+
+	local tab = hunger.players[pname]
+	if not tab then
+		return
+	end
+
+	if tab.damage_resistance_time then
+		tab.damage_resistance_time = 0
+	end
+
+	if tab.hpgen_boost_time then
+		tab.hpgen_boost_time = 0
+	end
+
+	if tab.health_boost_time then
+		tab.health_boost_time = 0
+	end
+
+	if tab.stamina_boost_time then
+		tab.stamina_boost_time = 0
+	end
+end
+
 
 

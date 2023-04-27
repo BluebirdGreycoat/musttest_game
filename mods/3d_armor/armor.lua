@@ -557,6 +557,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		end
 	end
 
+	--minetest.log('on_player_hp_change: ' .. hp_change)
+
 	-- used for insta kill tools/commands like /kill (doesnt damage armor)
 	if hp_change <= -60000 then
 		return hp_change
@@ -620,8 +622,14 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	--minetest.log('hpchange reason: ' .. reason_str)
 
 	if reason_str == "punch" or reason_str == "arrow" then
-		hp_change = hp_change * hunger.get_damage_resistance(pname)
+		-- If HP change would kill player, do NOT scale it!
+		-- That results in misbehavior.
+		if math.abs(hp_change) < player:get_hp() then
+			hp_change = hp_change * hunger.get_damage_resistance(pname)
+		end
 	end
+
+	--minetest.log('scaled hp change: ' .. hp_change)
 
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)

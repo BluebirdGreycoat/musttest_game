@@ -71,7 +71,9 @@ function hunger.time_stamina_boost(pname)
 	tab.stamina_boost_time = tab.stamina_boost_time - 1
 
 	if tab.stamina_boost_time <= 0 then
-    minetest.chat_send_player(pname, "# Server: Strength regen boost expired.")
+    if pref:get_hp() > 0 then
+      minetest.chat_send_player(pname, "# Server: Strength regen boost expired.")
+    end
 
     pref:hud_remove(tab.stamina_boost_hud)
     tab.stamina_boost_hud = nil

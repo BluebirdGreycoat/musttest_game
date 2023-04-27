@@ -71,7 +71,9 @@ function hunger.time_hpgen_boost(pname)
 	tab.hpgen_boost_time = tab.hpgen_boost_time - 1
 
 	if tab.hpgen_boost_time <= 0 then
-    minetest.chat_send_player(pname, "# Server: HP regen boost expired.")
+    if pref:get_hp() > 0 then
+      minetest.chat_send_player(pname, "# Server: HP regen boost expired.")
+    end
 
     pref:hud_remove(tab.hpgen_boost_hud)
     tab.hpgen_boost_hud = nil

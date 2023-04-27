@@ -771,7 +771,9 @@ end
 
 
 
-function city_block.handle_consequences(player, hitter, damage, melee)
+function city_block.handle_consequences(player, hitter, melee)
+	--minetest.log('handle_consequences')
+
 	local victim_pname = player:get_player_name()
 	local attack_pname = hitter:get_player_name()
 	local time = os.time()
@@ -782,7 +784,8 @@ function city_block.handle_consequences(player, hitter, damage, melee)
 	city_block.attackers[victim_pname] = attack_pname
 	city_block.victims[victim_pname] = time
 
-	if not (hp > 0 and (hp - damage) <= 0) then
+	-- Victim didn't die yet.
+	if hp > 0 then
 		return
 	end
 
@@ -859,6 +862,13 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return
 	end
 
+	-- Callback is called even if player is dead. Shortcut.
+	if player:get_hp() <= 0 or hitter:get_hp() <= 0 then
+		return
+	end
+
+	--minetest.log('on_punchplayer')
+
 	local melee_hit = true
 	if tool_capabilities.damage_groups.from_arrow then
 		-- Someone launched this weapon. The hitter is most likely the nearest
@@ -930,6 +940,16 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- Stuff that happens when one player kills another.
-	city_block.handle_consequences(player, hitter, damage, melee_hit)
+	-- Must be executed on the next server step, so we can determine if victim
+	-- really died! (This is because damage will often be modified.)
+	local pname = player:get_player_name()
+	local hname = hitter:get_player_name()
+	minetest.after(0, function()
+		local pref = minetest.get_player_by_name(pname)
+		local href = minetest.get_player_by_name(hname)
+		if pref and href then
+			city_block.handle_consequences(pref, href, melee_hit)
+		end
+	end)
 end
 

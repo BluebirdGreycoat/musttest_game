@@ -35,12 +35,23 @@ end
 
 
 
+-- 500 internal hp = 1 player-visible HP.
+--
+-- Note: max hp gain from XP must be no greater than 40000.
+-- Add 10000 which is the base hp, and we get 50000 hp, which is 100 HP.
+-- Adding 15000 to that brings us to 65000 hp, which is near the maximum the
+-- engine allows us; a total of 130 HP, obtainable with the health boost item.
+-- Unfortunately, this means that a bunch of people who used to have 120 HP
+-- just from the XP are now suddenly down 20 HP ... and they're probably not
+-- going to be happy.
+--
+-- The upside is that the health boost drink gives a fixed amount of HP, and is
+-- available much sooner than high XP normally is. Hope it's worth it.
 function xp.get_hp_max(pname)
 	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), xp.digxp_hp_max), 0)
-	local kilos = (amount / 1000)
-	local hpinc = math_floor(kilos * 2)
+	local hpinc = math_floor(amount / 620)
 	local scale = 500
-	local max_hp = (minetest.PLAYER_MAX_HP_DEFAULT + hpinc) * scale
+	local max_hp = math_floor((minetest.PLAYER_MAX_HP_DEFAULT + hpinc) * scale)
 	return max_hp
 end
 

@@ -76,14 +76,15 @@ local eat_function = minetest.item_eat(0)
 function nethervine.eat_dried_grass(itemstack, user, pt)
 	if not user or not user:is_player() then return end
 	if user:get_hp() == 0 then return end
-	user:set_hp(user:get_hp() + (4*500))
+	-- Heal 2000 hp total.
+	hunger.apply_hot(user:get_player_name(), "avysium", {heal=400, time=5})
 	return eat_function(itemstack, user, pt)
 end
 
 function nethervine.eat_grass(itemstack, user, pt)
 	if not user or not user:is_player() then return end
 	local pname = user:get_player_name()
-	local msg = "# Server: <" .. rename.gpn(pname) .. "> ate forbidden grass. Desperate!"
+	local msg = "# Server: <" .. rename.gpn(pname) .. "> ate Avysium. Desperate!"
   hb4.delayed_harm({name=pname, step=2, min=1*500, max=3*500, msg=msg, poison=true})
 	return eat_function(itemstack, user, pt)
 end
@@ -129,7 +130,7 @@ if not nethervine.registered then
 
 	for i = 1, 3 do
 		minetest.register_node(":nether:grass_" .. i, {
-			description = "Nether Grass",
+			description = "Avysium Herb",
 			drawtype = "plantlike",
 			waving = 1,
 			tiles = {"nethergrass_" .. i .. ".png"},
@@ -173,7 +174,7 @@ if not nethervine.registered then
 	-- This node is not meant to be placed in the world.
 	-- Instead, placing it causes 1 of several other nodetypes to be placed instead.
 	minetest.register_node(":nether:grass", {
-		description = "Forbidden Grass",
+		description = "Avysium Herb",
 		drawtype = "plantlike",
 		waving = 1,
 		tiles = {"nethergrass_3.png"},
@@ -208,7 +209,7 @@ if not nethervine.registered then
 
 	-- Dried nethergrass has edible property!
 	minetest.register_node(":nether:grass_dried", {
-		description = "Saltified Forbidden Grass",
+		description = "Clarified Avysium Herb",
 		drawtype = "plantlike",
 		waving = 1,
 		tiles = {"nethergrass_dried.png"},

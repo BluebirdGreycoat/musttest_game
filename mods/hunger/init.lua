@@ -29,6 +29,7 @@ dofile(hunger.modpath .. "/hp_boost.lua")
 dofile(hunger.modpath .. "/hp_regen_boost.lua")
 dofile(hunger.modpath .. "/sta_regen_boost.lua")
 dofile(hunger.modpath .. "/resistance.lua")
+dofile(hunger.modpath .. "/hot.lua")
 dofile(hunger.modpath .. "/diet.lua")
 
 -- Putting this inside minetest.after() avoids having to declare dependencies.

@@ -590,6 +590,15 @@ function hunger.on_dieplayer(player)
 	if tab.stamina_boost_time then
 		tab.stamina_boost_time = 0
 	end
+
+	for k, v in ipairs({
+		"avysium",
+	}) do
+		local hotname = "hot_time_" .. v
+		if tab[hotname] then
+			tab[hotname] = 0
+		end
+	end
 end
 
 

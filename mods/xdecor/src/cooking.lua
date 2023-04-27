@@ -211,13 +211,18 @@ minetest.register_craftitem("xdecor:bowl", {
 	groups = {food_bowl = 1, flammable = 2},
 })
 
+local eat_soup = minetest.item_eat(5, "xdecor:bowl")
 minetest.register_craftitem("xdecor:bowl_soup", {
-	description = "Bowl Of Soup",
+	description = "Bowl Of Soup\n\nIncreases stamina regen for a time.",
 	inventory_image = "xdecor_bowl_soup.png",
 	wield_image = "xdecor_bowl_soup.png",
 	groups = {not_in_creative_inventory=1},
-	stack_max = 1, -- Stack limit prevents this food item from being overpowering.
-	on_use = minetest.item_eat(20, "xdecor:bowl")
+
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_stamina_boost(user:get_player_name())
+    return eat_soup(itemstack, user, pointed_thing)
+  end,
 })
 
 -- Recipes

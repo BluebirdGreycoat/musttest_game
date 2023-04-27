@@ -249,6 +249,8 @@ function sprint.globalstep(dtime)
 						mult = 0
 					end
 
+					mult = mult * hunger.get_stamina_boost(playerName)
+
 					playerInfo["stamina"] = playerInfo["stamina"] + (dtime * mult)
 				end
 			end

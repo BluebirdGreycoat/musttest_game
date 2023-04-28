@@ -53,7 +53,7 @@ for k, v in ipairs(meat_types) do
 
 		if v.name == "mobs:meat_mutton" then
 			hunger.apply_damage_resistance(user:get_player_name(), "mutton", {resistance=0.8, time=30})
-		elseif v.name == "mobs:roasted_white_wolf_leg" then
+		elseif v.name == "nssm:roasted_white_wolf_leg" then
 			hunger.apply_damage_resistance(user:get_player_name(), "wolf", {resistance=0.3, time=360})
 		elseif v.name == "mobs:meat_pork" then
 			hunger.apply_damage_resistance(user:get_player_name(), "pork", {resistance=0.7, time=10})

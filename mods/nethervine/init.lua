@@ -76,8 +76,8 @@ local eat_function = minetest.item_eat(0)
 function nethervine.eat_dried_grass(itemstack, user, pt)
 	if not user or not user:is_player() then return end
 	if user:get_hp() == 0 then return end
-	-- Heal 2000 hp total.
-	hunger.apply_hot(user:get_player_name(), "avysium", {heal=400, time=5})
+	-- Heal 5000 hp total.
+	hunger.apply_hot(user:get_player_name(), "avysium", {heal=1000, time=5})
 	return eat_function(itemstack, user, pt)
 end
 

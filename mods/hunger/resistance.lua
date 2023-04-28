@@ -49,7 +49,7 @@ function hunger.apply_damage_resistance(pname, key, data)
 	-- Boost damage resistance, time-additive.
 	-- This is a multiplier to regular punch/arrow damage.
 	tab[keyname] = (tab[keyname] or 0) + 30
-	tab[datname] = tab[datname] or 0.7
+	tab[datname] = tab[datname] or data
 
 	-- Don't stack 'minetest.after' chains.
 	-- Also don't stack 'hp_max'.

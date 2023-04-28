@@ -48,7 +48,7 @@ function hunger.apply_hpgen_boost(pname, key, data)
 
 	-- Boost HP-regen for several health-regain-timer ticks, time-additive.
 	tab[keyname] = (tab[keyname] or 0) + data.time
-	tab[datname] = tab[datname] or data.regen
+	tab[datname] = tab[datname] or data
 
 	-- Don't stack 'minetest.after' chains.
 	-- Also don't stack 'hp_max'.

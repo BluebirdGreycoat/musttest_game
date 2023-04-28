@@ -679,8 +679,8 @@ if not passport.registered then
   minetest.register_craftitem("passport:passport", {
     description = "Proof Of Citizenship\n\n" ..
 			"Keep this in your MAIN inventory at ALL times!\n" ..
-			"This preserves your Account during server purge - it cannot be stolen or lost by dying.\n\n" ..
-			"Note: Can be later upgraded into the KEY, which grants many abilities.",
+			"This preserves your Account during server purge - it cannot be stolen or lost by dying.\n" ..
+			"Can be later upgraded into the KEY, which grants many abilities.",
     inventory_image = "default_bronze_block.png^default_tool_steelpick.png",
 		stack_max = 1,
     on_use = function(...) return passport.on_use_simple(...) end,

@@ -47,6 +47,9 @@ end
 --
 -- The upside is that the health boost drink gives a fixed amount of HP, and is
 -- available much sooner than high XP normally is. Hope it's worth it.
+--
+-- Note: this function must return HP from XP ONLY, without taking any other
+-- factors into account, esp. NOT health boosts.
 function xp.get_hp_max(pname)
 	local amount = math_max(math_min(xp.get_xp(pname, "digxp"), xp.digxp_hp_max), 0)
 	local hpinc = math_floor(amount / 620)

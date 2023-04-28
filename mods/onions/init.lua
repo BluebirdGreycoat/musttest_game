@@ -62,10 +62,15 @@ minetest.register_craft({
 })
 
 -- onion_potato salad recipe
+local eat_function = minetest.item_eat(10, "xdecor:bowl")
 minetest.register_craftitem("onions:onion_potato_salad", {
 	description = "Potato And Wild Onion Salad",
 	inventory_image = "onion_potato_salad.png",
-	on_use = minetest.item_eat(10, "xdecor:bowl"),
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_health_boost(user:get_player_name(), "onions", {health=10*500, time=30})
+    return eat_function(itemstack, user, pointed_thing)
+  end,
 })
 
 minetest.register_craft({

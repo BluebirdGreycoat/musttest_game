@@ -4,12 +4,15 @@
 	https://forum.minetest.net/viewtopic.php?id=3948
 ]]
 
+local eat_function = minetest.item_eat(10, "xdecor:bowl")
 minetest.register_craftitem(":farming:potato_salad", {
 	description = "Cucumber and Potato Salad",
 	inventory_image = "farming_potato_salad.png",
-	on_use = minetest.item_eat(10, "xdecor:bowl"),
-        
-        
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_health_boost(user:get_player_name(), "salad", {health=10*500, time=30})
+    return eat_function(itemstack, user, pointed_thing)
+  end,
 })
 
 minetest.register_craft({

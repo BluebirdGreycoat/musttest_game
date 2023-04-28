@@ -71,10 +71,8 @@ minetest.register_craftitem("carrot:health_boost_drink", {
   inventory_image = "farming_carrot_juice_boost.png",
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-    --ambiance.sound_play("hunger_eat", user:get_pos(), 0.7, 10)
-    --user:set_hp(user:get_properties().hp_max)
-		--sprint.set_stamina(user, SPRINT_STAMINA)
-		hunger.apply_health_boost(user:get_player_name())
+    -- Health boost drink.
+		hunger.apply_health_boost(user:get_player_name(), "drink", {health=10*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
 })

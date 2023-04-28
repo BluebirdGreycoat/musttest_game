@@ -610,10 +610,6 @@ function passport.award_cash(pname, player)
 		core.get_color_escape_sequence("#ffff00") ..
 		"# Server: Bank notice - As this is the first recorded time you have obtained a PoC, the Colony grants you 200 minegeld.")
 
-	minetest.chat_send_player(pname,
-		core.get_color_escape_sequence("#ffff00") ..
-		"# Server: This is roughly equivalent to 8 gold ingots according to the Guild of Weights and Measures.")
-
 	if cash_left:is_empty() and prot_left:is_empty() then
 		minetest.chat_send_player(pname,
 			core.get_color_escape_sequence("#ffff00") ..

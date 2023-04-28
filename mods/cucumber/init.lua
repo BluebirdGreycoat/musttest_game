@@ -6,11 +6,11 @@
 
 local eat_function = minetest.item_eat(10, "xdecor:bowl")
 minetest.register_craftitem(":farming:potato_salad", {
-	description = "Cucumber and Potato Salad",
+	description = "Cucumber and Potato Salad\n\nBoosts current and max HP beyond normal for a short time.",
 	inventory_image = "farming_potato_salad.png",
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-		hunger.apply_health_boost(user:get_player_name(), "salad", {health=10*500, time=30})
+		hunger.apply_health_boost(user:get_player_name(), "salad", {health=30*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
 })

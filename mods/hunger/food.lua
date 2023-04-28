@@ -39,12 +39,15 @@ if minetest.get_modpath("mobs") ~= nil then
 end
 
 if minetest.get_modpath("moretrees") ~= nil then
+-- Prevent interference.
+--[[
 	register_food("moretrees:coconut_milk", 0)
 	register_food("moretrees:raw_coconut", 3)
 	register_food("moretrees:acorn_muffin", 8)
 	register_food("moretrees:spruce_nuts", 1)
 	register_food("moretrees:pine_nuts", 3)
 	register_food("moretrees:fir_nuts", 3)
+	--]]
 end
 
 if minetest.get_modpath("dwarves") ~= nil then

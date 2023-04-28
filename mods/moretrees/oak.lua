@@ -165,11 +165,17 @@ minetest.register_craftitem("moretrees:acorn_muffin_batter", {
 
 
 
+local eat_function = minetest.item_eat(4)
 minetest.register_craftitem("moretrees:acorn_muffin", {
-	description = "Acorn Muffin",
+	description = "Acorn Muffin\n\nImproves health regeneration for a period of time.",
 	inventory_image = "moretrees_acorn_muffin.png",
-	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
+
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_hpgen_boost(user:get_player_name(), "muffin", {regen=3, time=(HUNGER_HEALTH_TICK * 30)})
+    return eat_function(itemstack, user, pointed_thing)
+  end,
 })
 
 

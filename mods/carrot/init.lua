@@ -72,7 +72,7 @@ minetest.register_craftitem("carrot:health_boost_drink", {
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
     -- Health boost drink.
-		hunger.apply_health_boost(user:get_player_name(), "drink", {health=10*500, time=30})
+		hunger.apply_health_boost(user:get_player_name(), "drink", {health=30*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
 })

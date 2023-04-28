@@ -10,7 +10,14 @@ local math_min = math.min
 function hunger.get_hpgen_boost(pname)
 	local tab = hunger.players[pname]
 	if tab and tab.effect_data_hpgen_boost then
-		return tab.effect_data_hpgen_boost
+		-- Calc sum of all active modifiers.
+		local total = 0
+		for k, v in pairs(tab) do
+			if k:find("^effect_data_hpgen_boost_") then
+				total = total + v.regen
+			end
+		end
+		return total
 	end
 	return 1
 end
@@ -18,7 +25,8 @@ end
 
 
 -- Apply a health boost to player.
-function hunger.apply_hpgen_boost(pname)
+-- 'data' = {regen=2, time=60}
+function hunger.apply_hpgen_boost(pname, key, data)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
@@ -29,14 +37,17 @@ function hunger.apply_hpgen_boost(pname)
 		return
 	end
 
+	local keyname = "effect_time_hpgen_boost_" .. key
+	local datname = "effect_data_hpgen_boost_" .. key
+
 	local already_boosted = false
-	if tab.effect_time_hpgen_boost then
+	if tab[keyname] then
 		already_boosted = true
 	end
 
 	-- Boost HP-regen for several health-regain-timer ticks, time-additive.
-	tab.effect_data_hpgen_boost = 3
-	tab.effect_time_hpgen_boost = (tab.effect_time_hpgen_boost or 0) + (HUNGER_HEALTH_TICK * 10)
+	tab[keyname] = (tab[keyname] or 0) + data.time
+	tab[datname] = tab[datname] or data.regen
 
 	-- Don't stack 'minetest.after' chains.
 	-- Also don't stack 'hp_max'.
@@ -44,21 +55,22 @@ function hunger.apply_hpgen_boost(pname)
 		return
 	end
 
-	tab.effect_data_hpgen_boost_hud = pref:hud_add({
+	tab[datname].hud = pref:hud_add({
     hud_elem_type = "image",
     scale = {x = -100, y = -100},
     alignment = {x = 1, y = 1},
     text = "hp_boost_effect.png",
     z_index = -350,
 	})
-	minetest.chat_send_player(pname, "# Server: Health regen rate boosted for " .. tab.effect_time_hpgen_boost .. " seconds.")
-	hunger.time_hpgen_boost(pname)
+	minetest.chat_send_player(pname, "# Server: Health regen rate boosted for " .. tab[keyname] .. " seconds.")
+
+	hunger.time_hpgen_boost(pname, key)
 end
 
 
 
 -- Private function!
-function hunger.time_hpgen_boost(pname)
+function hunger.time_hpgen_boost(pname, key)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
@@ -69,19 +81,21 @@ function hunger.time_hpgen_boost(pname)
 		return
 	end
 
-	if tab.effect_time_hpgen_boost <= 0 then
+	local keyname = "effect_time_hpgen_boost_" .. key
+	local datname = "effect_data_hpgen_boost_" .. key
+
+	if tab[keyname] <= 0 then
     if pref:get_hp() > 0 then
       minetest.chat_send_player(pname, "# Server: HP regen boost expired.")
     end
 
-    pref:hud_remove(tab.effect_data_hpgen_boost_hud)
-    tab.effect_data_hpgen_boost_hud = nil
-		tab.effect_time_hpgen_boost = nil
-		tab.effect_data_hpgen_boost = nil
+    pref:hud_remove(tabtab[datname].hud)
+		tab[keyname] = nil
+		tab[datname] = nil
 		return
 	end
 
 	-- Check again soon.
-	tab.effect_time_hpgen_boost = tab.effect_time_hpgen_boost - 1
-	minetest.after(1, hunger.time_hpgen_boost, pname)
+	tab[keyname] = tab[keyname] - 1
+	minetest.after(1, hunger.time_hpgen_boost, pname, key)
 end

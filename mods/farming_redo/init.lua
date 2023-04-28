@@ -325,10 +325,17 @@ minetest.register_craft({
 	replacements = {{"bucket:bucket_river_water", "bucket:bucket_empty"}}
 })
 
+local eat_function = minetest.item_eat(4, "vessels:drinking_glass")
 minetest.register_craftitem(":farming:carrot_juice", {
-	description = "Carrot Juice",
+	description = "Carrot Juice\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_carrot_juice.png",
-	on_use = minetest.item_eat(4, "vessels:drinking_glass"),
+
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=1.5, time=30})
+    return eat_function(itemstack, user, pointed_thing)
+  end,
+
 	groups = {vessel = 1},
 })
 

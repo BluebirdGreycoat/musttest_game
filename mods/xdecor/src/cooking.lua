@@ -220,7 +220,7 @@ minetest.register_craftitem("xdecor:bowl_soup", {
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-		hunger.apply_stamina_boost(user:get_player_name())
+		hunger.apply_stamina_boost(user:get_player_name(), "soup", {regen=3, time=30})
     return eat_soup(itemstack, user, pointed_thing)
   end,
 })

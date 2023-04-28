@@ -11,10 +11,10 @@ function hunger.get_stamina_boost(pname)
 	local tab = hunger.players[pname]
 	if tab then
 		-- Calc sum of all active modifiers.
-		local total = 0
+		local total = 1
 		for k, v in pairs(tab) do
 			if k:find("^effect_data_stamina_boost_") then
-				total = total + v.regen
+				total = total * v.regen
 			end
 		end
 		return total
@@ -26,6 +26,7 @@ end
 
 -- Apply a stamina boost to player.
 -- 'data' = {regen=2, time=60}
+-- 'regen' is a multiplier. 1 is 100%, no change.
 function hunger.apply_stamina_boost(pname, key, data)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then

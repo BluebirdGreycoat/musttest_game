@@ -17,7 +17,7 @@ minetest.register_craft({
 local meat_types = {
 	-- Regular meat, creature type not defined.
 	{name="mobs:meat_raw", desc="Raw Meat (Unidentified)", image="mobs_meat_raw.png", food=3, cooked="mobs:meat", is_raw=true},
-	{name="mobs:meat", desc="Cooked Meat (Unidentified)", image="mobs_meat.png", food=6},
+	{name="mobs:meat", desc="Cooked Meat (Unidentified)\n\nEat to improve resistance to certain kinds of damage, for a time.", image="mobs_meat.png", food=6},
 
 	-- Mutton.
 	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_mutton_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},
@@ -25,11 +25,11 @@ local meat_types = {
 
 	-- Pork.
 	{name="mobs:meat_raw_pork", desc="Raw Pork (Yuck)", image="mobs_pork_raw.png", food=4, cooked="mobs:meat_pork", is_raw=true, is_gross=true},
-	{name="mobs:meat_pork", desc="Cooked Pork (Yuck)", image="mobs_pork.png", food=7, is_gross=true},
+	{name="mobs:meat_pork", desc="Cooked Pork (Yuck)\n\nEat to improve resistance to certain kinds of damage, for a time.", image="mobs_pork.png", food=7, is_gross=true},
 
 	-- White Wolf.
 	{name="nssm:white_wolf_leg", desc="White Wolf Leg", image="werewolf_leg.png", food=3, cooked="nssm:roasted_white_wolf_leg", is_raw=true},
-	{name="nssm:roasted_white_wolf_leg", desc="Roasted White Wolf Leg", image="roasted_werewolf_leg.png", food=6},
+	{name="nssm:roasted_white_wolf_leg", desc="Roasted White Wolf Leg\n\nEat to improve resistance to certain kinds of damage, for a time.", image="roasted_werewolf_leg.png", food=6},
 }
 
 for k, v in ipairs(meat_types) do
@@ -52,7 +52,13 @@ for k, v in ipairs(meat_types) do
 		end
 
 		if v.name == "mobs:meat_mutton" then
-			hunger.apply_damage_resistance(user:get_player_name())
+			hunger.apply_damage_resistance(user:get_player_name(), "mutton", {resistance=0.8, time=30})
+		elseif v.name == "mobs:roasted_white_wolf_leg" then
+			hunger.apply_damage_resistance(user:get_player_name(), "wolf", {resistance=0.3, time=360})
+		elseif v.name == "mobs:meat_pork" then
+			hunger.apply_damage_resistance(user:get_player_name(), "pork", {resistance=0.7, time=10})
+		elseif v.name == "mobs:meat" then
+			hunger.apply_damage_resistance(user:get_player_name(), "pork", {resistance=0.5, time=7})
 		end
 
 		-- Send message if meat was raw or gross.

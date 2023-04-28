@@ -1,4 +1,8 @@
 
+-- Max HP boost.
+-- Note: HP boost does not admit multiplier modifiers; HP boost always uses
+-- fixed values!
+
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
@@ -29,6 +33,7 @@ end
 
 -- Apply a health boost to player.
 -- 'data' = {health=10000, time=60}
+-- 'health' is additive. Must not exceed 30*500.
 function hunger.apply_health_boost(pname, key, data)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then

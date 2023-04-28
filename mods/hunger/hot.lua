@@ -12,6 +12,9 @@ local math_min = math.min
 -- HOT modifier shall have a name ('key') which keeps separate from other HOTs.
 -- A HoT with particular name can only have one active instance per player, so
 -- they don't stack, UNLESS they are different types.
+--
+-- 'data' = {heal=500, time=60}
+-- 'heal' is amount of HP to heal per second.
 function hunger.apply_hot(pname, key, data)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then

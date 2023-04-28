@@ -75,6 +75,7 @@ minetest.register_craftitem(":farming:carrot_cake", {
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
+    -- 2 times (200%) faster than normal.
 		hunger.apply_hpgen_boost(user:get_player_name(), "cake", {regen=2, time=(HUNGER_HEALTH_TICK * 10)})
     return eat_carrot_cake(itemstack, user, pointed_thing)
   end,

@@ -173,7 +173,8 @@ minetest.register_craftitem("moretrees:acorn_muffin", {
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-		hunger.apply_hpgen_boost(user:get_player_name(), "muffin", {regen=3, time=(HUNGER_HEALTH_TICK * 30)})
+    -- 3 times (300%) faster than normal.
+		hunger.apply_hpgen_boost(user:get_player_name(), "muffin", {regen=3, time=(HUNGER_HEALTH_TICK * 10)})
     return eat_function(itemstack, user, pointed_thing)
   end,
 })

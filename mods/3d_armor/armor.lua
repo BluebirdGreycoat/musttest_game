@@ -623,7 +623,9 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	if reason_str == "punch" or reason_str == "arrow" then
 		-- If HP change would kill player, do NOT scale it!
-		-- That results in misbehavior.
+		-- That results in misbehavior. This does have the result that damage
+		-- scaling behaves weird on the final hit before a player dies, as in that
+		-- case damage isn't scaled.
 		if math.abs(hp_change) < player:get_hp() then
 			hp_change = hp_change * hunger.get_damage_resistance(pname)
 		end

@@ -52,6 +52,7 @@ function bonemeal.on_use(itemstack, user, pt)
 						timer:set(newtime, elapsed)
 					end
 				else -- Timer not running?
+					--minetest.log('not running')
 					farming.restart_timer(pos)
 				end
 				take = true

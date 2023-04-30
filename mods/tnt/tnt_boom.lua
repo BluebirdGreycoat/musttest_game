@@ -276,7 +276,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 				end
 
 				if do_knockback then
-					local obj_vel = obj:getvelocity()
+					local obj_vel = obj:get_velocity()
 					obj:setvelocity(calc_velocity(pos, obj_pos,
 							obj_vel, radius * 10))
 				end

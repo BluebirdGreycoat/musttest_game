@@ -141,7 +141,7 @@ end
 
 
 function boat.on_step(self, dtime)
-	self.v = get_v(self.object:getvelocity()) * get_sign(self.v)
+	self.v = get_v(self.object:get_velocity()) * get_sign(self.v)
 	if self.driver then
 		local ctrl = self.driver:get_player_control()
 		local yaw = self.object:getyaw()
@@ -164,7 +164,7 @@ function boat.on_step(self, dtime)
 			end
 		end
 	end
-	local velo = self.object:getvelocity()
+	local velo = self.object:get_velocity()
 	if self.v == 0 and velo.x == 0 and velo.y == 0 and velo.z == 0 then
 		self.object:set_pos(self.object:get_pos())
 		return
@@ -194,12 +194,12 @@ function boat.on_step(self, dtime)
 			new_acce = {x = 0, y = -9.8, z = 0}
 		end
 		new_velo = get_velocity(self.v, self.object:getyaw(),
-			self.object:getvelocity().y)
+			self.object:get_velocity().y)
 		self.object:set_pos(self.object:get_pos())
 	else
 		p.y = p.y + 1
 		if is_water(p) then
-			local y = self.object:getvelocity().y
+			local y = self.object:get_velocity().y
 			if y >= 5 then
 				y = 5
 			elseif y < 0 then
@@ -211,14 +211,14 @@ function boat.on_step(self, dtime)
 			self.object:set_pos(self.object:get_pos())
 		else
 			new_acce = {x = 0, y = 0, z = 0}
-			if math.abs(self.object:getvelocity().y) < 1 then
+			if math.abs(self.object:get_velocity().y) < 1 then
 				local pos = self.object:get_pos()
 				pos.y = math_floor(pos.y) + 0.5
 				self.object:set_pos(pos)
 				new_velo = get_velocity(self.v, self.object:getyaw(), 0)
 			else
 				new_velo = get_velocity(self.v, self.object:getyaw(),
-					self.object:getvelocity().y)
+					self.object:get_velocity().y)
 				self.object:set_pos(self.object:get_pos())
 			end
 		end

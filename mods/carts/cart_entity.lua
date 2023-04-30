@@ -71,7 +71,7 @@ end
 
 function cart_entity:on_punch(puncher, time_from_last_punch, tool_capabilities, direction)
 	local pos = self.object:get_pos()
-	local vel = self.object:getvelocity()
+	local vel = self.object:get_velocity()
 	if not self.railtype or vector.equals(vel, {x=0, y=0, z=0}) then
 		local node = minetest.get_node(pos).name
 		self.railtype = minetest.get_item_group(node, "connect_to_raillike")
@@ -163,7 +163,7 @@ local function rail_sound(self, dtime)
 		self.sound_handle = nil
 		minetest.after(0.2, minetest.sound_stop, handle)
 	end
-	local vel = self.object:getvelocity()
+	local vel = self.object:get_velocity()
 	local speed = vector.length(vel)
 	if speed > 0 then
 		self.sound_handle = minetest.sound_play(
@@ -181,7 +181,7 @@ local function get_railparams(pos)
 end
 
 local function rail_on_step(self, dtime)
-	local vel = self.object:getvelocity()
+	local vel = self.object:get_velocity()
 	if self.punched then
 		vel = vector.add(vel, self.velocity)
 		self.object:setvelocity(vel)

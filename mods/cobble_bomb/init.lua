@@ -30,7 +30,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 			self.bomb_timer = self.bomb_timer + dtime;
 		end
 		--falling give more inertion. may explode if fall to hard.
-		local vel = self.object:getvelocity();
+		local vel = self.object:get_velocity();
 		if self.bomb_inertion < 20 and vel.y < -0.1 and vel.y > -3 then
 			self.bomb_inertion = self.bomb_inertion + 1;
 		elseif vel.y <= -10 and self.bomb_inertion > 3 then

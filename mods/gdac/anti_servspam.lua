@@ -30,9 +30,9 @@ local spamips = spam.ips
 
 function spam.should_block_player(pname, ip)
   -- Don't slow dev testing down. I'm on the clock, here!
-  --if ip == "127.0.0.1" or ip == "0.0.0.0" then
-  --  return false
-  --end
+  if ip == "127.0.0.1" or ip == "0.0.0.0" then
+    return false
+  end
 
   -- Should block from joining too quick only if someone else logged in with same IP already.
   if spamips[ip] then

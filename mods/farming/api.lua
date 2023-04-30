@@ -432,7 +432,12 @@ farming.register_plant = function(name, def)
 	for k, v in pairs(def.fertility) do
 		g[v] = 1
 	end
-	minetest.register_node(":" .. mname .. ":seed_" .. pname, {
+
+	local seed_node_name = mname .. ":seed_" .. pname
+	local craft_item_name = mname .. ":" .. pname
+	local plant_node_prefix = mname .. ":" .. pname
+
+	minetest.register_node(":" .. seed_node_name, {
 		description = def.description,
 		tiles = {def.inventory_image},
 		inventory_image = def.inventory_image,
@@ -464,16 +469,17 @@ farming.register_plant = function(name, def)
 					pointed_thing) or itemstack
 			end
 
-			return farming.place_seed(itemstack, placer, pointed_thing, mname .. ":seed_" .. pname)
+			return farming.place_seed(itemstack, placer, pointed_thing, seed_node_name)
 		end,
-		_farming_next_plant = mname .. ":" .. pname .. "_1",
+
+		_farming_next_plant = plant_node_prefix .. "_1",
 		on_timer = farming.grow_plant,
 		minlight = def.minlight,
 		maxlight = def.maxlight,
 	})
 
 	-- Register harvest
-	minetest.register_craftitem(":" .. mname .. ":" .. pname, {
+	minetest.register_craftitem(":" .. craft_item_name, {
 		description = pname:gsub("^%l", string.upper),
 		inventory_image = mname .. "_" .. pname .. ".png",
 		groups = {flammable = 2},
@@ -486,22 +492,32 @@ farming.register_plant = function(name, def)
 	for i = 1, def.steps do
 		local drop = {
 			items = {
-				{items = {mname .. ":" .. pname}, rarity = 9 - i},
-				{items = {mname .. ":" .. pname}, rarity= 18 - i * 2},
-				{items = {mname .. ":seed_" .. pname}, rarity = 9 - i},
-				{items = {mname .. ":seed_" .. pname}, rarity = 18 - i * 2},
+				{items = {craft_item_name}, rarity = 9 - i},
+				{items = {craft_item_name}, rarity= 18 - i * 2},
+				{items = {seed_node_name}, rarity = 9 - i},
+				{items = {seed_node_name}, rarity = 18 - i * 2},
 			}
 		}
 		local nodegroups = utility.dig_groups("crop", {flammable = 2, plant = 1, not_in_creative_inventory = 1, attached_node = 1, notify_destruct = 1})
 		nodegroups[pname] = i
 
 		local next_plant = nil
+		local prev_plant = nil
+		local prev_seed = nil
 
-		if i < def.steps then
-			next_plant = mname .. ":" .. pname .. "_" .. (i + 1)
+		if i == 1 then
+			prev_seed = seed_node_name
 		end
 
-		minetest.register_node(mname .. ":" .. pname .. "_" .. i, {
+		if i < def.steps then
+			next_plant = plant_node_prefix .. "_" .. (i + 1)
+		end
+
+		if i > 1 then
+			prev_plant = plant_node_prefix .. "_" .. (i - 1)
+		end
+
+		minetest.register_node(":" .. plant_node_prefix .. "_" .. i, {
 			drawtype = "plantlike",
 			waving = 1,
 			tiles = {mname .. "_" .. pname .. "_" .. i .. ".png"},
@@ -518,6 +534,8 @@ farming.register_plant = function(name, def)
 			groups = nodegroups,
 			sounds = default.node_sound_leaves_defaults(),
 			_farming_next_plant = next_plant,
+			_farming_prev_plant = prev_plant,
+			_farming_prev_seed = prev_seed,
 			on_timer = farming.grow_plant,
 			minlight = def.minlight,
 			maxlight = def.maxlight,
@@ -530,8 +548,8 @@ farming.register_plant = function(name, def)
 
 	-- Return
 	local r = {
-		seed = mname .. ":seed_" .. pname,
-		harvest = mname .. ":" .. pname
+		seed = seed_node_name,
+		harvest = craft_item_name
 	}
 	return r
 end

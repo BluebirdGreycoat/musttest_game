@@ -93,15 +93,18 @@ local crop_def = {
 
 -- stage 1
 crop_def._farming_next_plant = "aloevera:aloe_plant_02"
+crop_def._farming_prev_seed = "aloevera:aloe_seed"
 minetest.register_node("aloevera:aloe_plant_01", table.copy(crop_def))
 
 -- stage 2
 crop_def._farming_next_plant = "aloevera:aloe_plant_03"
+crop_def._farming_prev_plant = "aloevera:aloe_plant_01"
 crop_def.tiles = {"aloe_plant_02.png"}
 minetest.register_node("aloevera:aloe_plant_02", table.copy(crop_def))
 
 -- stage 3
 crop_def._farming_next_plant = "aloevera:aloe_plant_04"
+crop_def._farming_prev_plant = "aloevera:aloe_plant_02"
 crop_def.tiles = {"aloe_plant_03.png"}
 crop_def.drop = {
 	items = {
@@ -113,6 +116,7 @@ minetest.register_node("aloevera:aloe_plant_03", table.copy(crop_def))
 
 -- stage 4
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "aloevera:aloe_plant_03"
 crop_def.tiles = {"aloe_plant_04.png"}
 crop_def.groups.growing = 0
 crop_def.drop = {

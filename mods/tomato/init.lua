@@ -67,29 +67,36 @@ local crop_def = {
 }
 
 crop_def._farming_next_plant = "tomato:plant_2"
+crop_def._farming_prev_seed = "tomato:seed"
 minetest.register_node("tomato:plant_1", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_3"
+crop_def._farming_prev_plant = "tomato:plant_1"
 crop_def.tiles = {"tomato_plant_2.png"}
 minetest.register_node("tomato:plant_2", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_4"
+crop_def._farming_prev_plant = "tomato:plant_2"
 crop_def.tiles = {"tomato_plant_3.png"}
 minetest.register_node("tomato:plant_3", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_5"
+crop_def._farming_prev_plant = "tomato:plant_3"
 crop_def.tiles = {"tomato_plant_4.png"}
 minetest.register_node("tomato:plant_4", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_6"
+crop_def._farming_prev_plant = "tomato:plant_4"
 crop_def.tiles = {"tomato_plant_5.png"}
 minetest.register_node("tomato:plant_5", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_7"
+crop_def._farming_prev_plant = "tomato:plant_5"
 crop_def.tiles = {"tomato_plant_6.png"}
 minetest.register_node("tomato:plant_6", table.copy(crop_def))
 
 crop_def._farming_next_plant = "tomato:plant_8"
+crop_def._farming_prev_plant = "tomato:plant_6"
 crop_def.tiles = {"tomato_plant_7.png"}
 -- Not ready yet. Wait longer for best harvest.
 -- Note: this is the plant level placed by the mapgen.
@@ -117,5 +124,6 @@ crop_def.drop = {
   }
 }
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "tomato:plant_7"
 minetest.register_node("tomato:plant_8", table.copy(crop_def))
 

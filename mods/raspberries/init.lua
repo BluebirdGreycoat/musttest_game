@@ -86,10 +86,12 @@ local crop_def = {
 }
 
 crop_def._farming_next_plant = "raspberries:plant_2"
+crop_def._farming_prev_plant = "raspberries:plant_1" -- No specific seed.
 crop_def.tiles = {"raspberries_plant_1.png"}
 minetest.register_node("raspberries:plant_1", table.copy(crop_def))
 
 crop_def._farming_next_plant = "raspberries:plant_3"
+crop_def._farming_prev_plant = "raspberries:plant_1"
 crop_def.tiles = {"raspberries_plant_2.png"}
 crop_def.description = "Raspberry Bush"
 crop_def.inventory_image = "raspberries_plant_2.png"
@@ -118,12 +120,14 @@ minetest.register_node("raspberries:plant_2", table.copy(crop_def))
 crop_def.description = "Raspberry Bush with Blossoms"
 crop_def.inventory_image = "raspberries_plant_3.png"
 crop_def._farming_next_plant = "raspberries:plant_4"
+crop_def._farming_prev_plant = "raspberries:plant_2"
 crop_def.tiles = {"raspberries_plant_3.png"}
 minetest.register_node("raspberries:plant_3", table.copy(crop_def))
 
 crop_def.description = "Raspberry Bush with Raspberries"
 crop_def.inventory_image = "raspberries_plant_4.png"
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "raspberries:plant_3"
 crop_def.tiles = {"raspberries_plant_4.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)

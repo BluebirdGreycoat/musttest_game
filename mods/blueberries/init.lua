@@ -81,12 +81,14 @@ local crop_def = {
 }
 
 crop_def._farming_next_plant = "blueberries:plant_2"
+crop_def._farming_prev_plant = "blueberries:plant_1" -- No "seed" node really.
 crop_def.tiles = {"blueberries_plant_1.png"}
 minetest.register_node("blueberries:plant_1", table.copy(crop_def))
 
 crop_def.description = "Blueberry Bush"
 crop_def.inventory_image = "blueberries_plant_2.png"
 crop_def._farming_next_plant = "blueberries:plant_3"
+crop_def._farming_prev_plant = "blueberries:plant_1"
 crop_def.tiles = {"blueberries_plant_2.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)
@@ -113,12 +115,14 @@ minetest.register_node("blueberries:plant_2", table.copy(crop_def))
 crop_def.description = "Blueberry Bush with Blossoms"
 crop_def.inventory_image = "blueberries_plant_3.png"
 crop_def._farming_next_plant = "blueberries:plant_4"
+crop_def._farming_prev_plant = "blueberries:plant_2"
 crop_def.tiles = {"blueberries_plant_3.png"}
 minetest.register_node("blueberries:plant_3", table.copy(crop_def))
 
 crop_def.description = "Blueberry Bush with Blueberries"
 crop_def.inventory_image = "blueberries_plant_4.png"
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "blueberries:plant_3"
 crop_def.tiles = {"blueberries_plant_4.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)

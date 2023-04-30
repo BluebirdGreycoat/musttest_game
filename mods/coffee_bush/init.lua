@@ -59,12 +59,14 @@ local crop_def = {
 }
 
 crop_def._farming_next_plant = "coffee_bush:plant_2"
+crop_def._farming_prev_seed = "coffee_bush:seeds"
 crop_def.tiles = {"coffee_bush1.png"}
 minetest.register_node("coffee_bush:plant_1", table.copy(crop_def))
 
 crop_def.description = "Coffee Bush"
 crop_def.inventory_image = "coffee_bush2.png"
 crop_def._farming_next_plant = "coffee_bush:plant_3"
+crop_def._farming_prev_plant = "coffee_bush:plant_1"
 crop_def.tiles = {"coffee_bush2.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)
@@ -91,12 +93,14 @@ minetest.register_node("coffee_bush:plant_2", table.copy(crop_def))
 crop_def.description = "Coffee Bush With Blossoms"
 crop_def.inventory_image = "coffee_bush3.png"
 crop_def._farming_next_plant = "coffee_bush:plant_4"
+crop_def._farming_prev_plant = "coffee_bush:plant_2"
 crop_def.tiles = {"coffee_bush3.png"}
 minetest.register_node("coffee_bush:plant_3", table.copy(crop_def))
 
 crop_def.description = "Coffee Bush With Beans"
 crop_def.inventory_image = "coffee_bush4.png"
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "coffee_bush:plant_3"
 crop_def.tiles = {"coffee_bush4.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)

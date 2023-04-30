@@ -84,15 +84,18 @@ local crop_def = {
 
 -- stage 1
 crop_def._farming_next_plant = "cucumber:cucumber_2"
+crop_def._farming_prev_seed = "cucumber:seed"
 minetest.register_node("cucumber:cucumber_1", table.copy(crop_def))
 
 -- stage 2
 crop_def._farming_next_plant = "cucumber:cucumber_3"
+crop_def._farming_prev_plant = "cucumber:cucumber_1"
 crop_def.tiles = {"farming_cucumber_2.png"}
 minetest.register_node("cucumber:cucumber_2", table.copy(crop_def))
 
 -- stage 3
 crop_def._farming_next_plant = "cucumber:cucumber_4"
+crop_def._farming_prev_plant = "cucumber:cucumber_2"
 crop_def.tiles = {"farming_cucumber_3.png"}
 minetest.register_node("cucumber:cucumber_3", table.copy(crop_def))
 
@@ -107,4 +110,5 @@ crop_def.drop = {
 	}
 }
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "cucumber:cucumber_3"
 minetest.register_node("cucumber:cucumber_4", table.copy(crop_def))

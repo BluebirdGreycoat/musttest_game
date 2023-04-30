@@ -117,29 +117,36 @@ local crop_def = {
 }
 
 crop_def._farming_next_plant = "carrot:plant_2"
+crop_def._farming_prev_seed = "carrot:seed"
 minetest.register_node("carrot:plant_1", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_3"
+crop_def._farming_prev_plant = "carrot:plant_1"
 crop_def.tiles = {"carrot_plant_2.png"}
 minetest.register_node("carrot:plant_2", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_4"
+crop_def._farming_prev_plant = "carrot:plant_2"
 crop_def.tiles = {"carrot_plant_3.png"}
 minetest.register_node("carrot:plant_3", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_5"
+crop_def._farming_prev_plant = "carrot:plant_3"
 crop_def.tiles = {"carrot_plant_4.png"}
 minetest.register_node("carrot:plant_4", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_6"
+crop_def._farming_prev_plant = "carrot:plant_4"
 crop_def.tiles = {"carrot_plant_5.png"}
 minetest.register_node("carrot:plant_5", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_7"
+crop_def._farming_prev_plant = "carrot:plant_5"
 crop_def.tiles = {"carrot_plant_6.png"}
 minetest.register_node("carrot:plant_6", table.copy(crop_def))
 
 crop_def._farming_next_plant = "carrot:plant_8"
+crop_def._farming_prev_plant = "carrot:plant_6"
 crop_def.tiles = {"carrot_plant_7.png"}
 minetest.register_node("carrot:plant_7", table.copy(crop_def))
 
@@ -154,5 +161,6 @@ crop_def.drop = {
   }
 }
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "carrot:plant_7"
 minetest.register_node("carrot:plant_8", table.copy(crop_def))
 

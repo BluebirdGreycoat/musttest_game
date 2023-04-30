@@ -261,35 +261,42 @@ local crop_def = {
   
 -- Stage 1.
 crop_def._farming_next_plant = "bluegrass:plant_2"
+crop_def._farming_prev_seed = "bluegrass:seed"
 minetest.register_node("bluegrass:plant_1", table.copy(crop_def))
 
 -- Stage 2.
 crop_def._farming_next_plant = "bluegrass:plant_3"
+crop_def._farming_prev_plant = "bluegrass:plant_1"
 crop_def.tiles = {"bluegrass_plant_2.png"}
 minetest.register_node("bluegrass:plant_2", table.copy(crop_def))
 
 -- Stage 3.
 crop_def._farming_next_plant = "bluegrass:plant_4"
+crop_def._farming_prev_plant = "bluegrass:plant_2"
 crop_def.tiles = {"bluegrass_plant_3.png"}
 minetest.register_node("bluegrass:plant_3", table.copy(crop_def))
 
 -- Stage 4.
 crop_def._farming_next_plant = "bluegrass:plant_5"
+crop_def._farming_prev_plant = "bluegrass:plant_3"
 crop_def.tiles = {"bluegrass_plant_4.png"}
 minetest.register_node("bluegrass:plant_4", table.copy(crop_def))
 
 -- Stage 5.
 crop_def._farming_next_plant = "bluegrass:plant_6"
+crop_def._farming_prev_plant = "bluegrass:plant_4"
 crop_def.tiles = {"bluegrass_plant_5.png"}
 minetest.register_node("bluegrass:plant_5", table.copy(crop_def))
 
 -- Stage 6.
 crop_def._farming_next_plant = "bluegrass:plant_7"
+crop_def._farming_prev_plant = "bluegrass:plant_5"
 crop_def.tiles = {"bluegrass_plant_6.png"}
 minetest.register_node("bluegrass:plant_6", table.copy(crop_def))
 
 -- Stage 7.
 crop_def._farming_next_plant = nil
+crop_def._farming_prev_plant = "bluegrass:plant_6"
 crop_def.tiles = {"bluegrass_plant_7.png"}
 crop_def.drop = {
   items = {

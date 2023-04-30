@@ -51,6 +51,8 @@ function bonemeal.on_use(itemstack, user, pt)
 						local newtime = (remain / 3)
 						timer:set(newtime, elapsed)
 					end
+				else -- Timer not running?
+					farming.restart_timer(pos)
 				end
 				take = true
 			elseif def.groups and def.groups.flora and def.groups.flora > 0 then

@@ -220,6 +220,14 @@ local function tick_again(pos, def)
   --minetest.get_node_timer(pos):start(1.0) -- Debug
 end
 
+function farming.restart_timer(pos)
+	local node = minetest.get_node(pos)
+	local ndef = minetest.registered_nodes[node.name]
+	if ndef and ndef._farming_next_plant and ndef.on_timer then
+		tick(pos, ndef)
+	end
+end
+
 -- Seed placement
 farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	local pt = pointed_thing

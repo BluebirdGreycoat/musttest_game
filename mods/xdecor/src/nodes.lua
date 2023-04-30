@@ -68,7 +68,7 @@ xdecor.register("barrel", {
 	description = "Barrel",
 	tiles = {"xdecor_barrel_top.png", "xdecor_barrel_top.png", "xdecor_barrel_sides.png"},
 	on_place = minetest.rotate_node,
-	groups = utility.dig_groups("wood", {flammable=2}),
+	groups = utility.dig_groups("wood", {flammable=2, falling_node=1}),
 	sounds = default.node_sound_wood_defaults(),
 	nostairs = true,
 })
@@ -155,7 +155,7 @@ xdecor.register("chair", {
 	description = "Chair",
 	tiles = {"xdecor_wood.png"},
 	sounds = default.node_sound_wood_defaults(),
-	groups = utility.dig_groups("furniture", {flammable=2}),
+	groups = utility.dig_groups("furniture", {flammable=2, falling_node=1}),
 	on_rotate = screwdriver.rotate_simple,
 	node_box = xdecor.pixelbox(16, {
 		{3,  0, 11,   2, 16, 2}, {11, 0, 11,  2, 16, 2},
@@ -520,7 +520,7 @@ end
 xdecor.register("stonepath", {
 	description = "Garden Stone Path",
 	tiles = {"default_stone.png"},
-	groups = utility.dig_groups("bigitem"),
+	groups = utility.dig_groups("bigitem", {falling_node=1}),
 	on_rotate = screwdriver.rotate_simple,
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,
@@ -566,7 +566,7 @@ register_hard_node("wood_tile", "Wooden Tile", {
 xdecor.register("table", {
 	description = "Table",
 	tiles = {"xdecor_wood.png"},
-	groups = utility.dig_groups("furniture", {flammable=2}),
+	groups = utility.dig_groups("furniture", {flammable=2, falling_node=1}),
 	sounds = default.node_sound_wood_defaults(),
 	node_box = xdecor.pixelbox(16, {
 		{0, 14, 0, 16, 2, 16}, {5.5, 0, 5.5, 5, 14, 6}
@@ -577,7 +577,7 @@ xdecor.register("tatami", {
 	description = "Tatami",
 	tiles = {"xdecor_tatami.png"},
 	wield_image = "xdecor_tatami.png",
-	groups = utility.dig_groups("bigitem", {flammable=3}),
+	groups = utility.dig_groups("bigitem", {flammable=3, falling_node=1}),
 	sunlight_propagates = true,
 	node_box = xdecor.nodebox.slab_y(0.0625)
 })
@@ -585,7 +585,7 @@ xdecor.register("tatami", {
 xdecor.register("trampoline", {
 	description = "Trampoline",
 	tiles = {"xdecor_trampoline.png", "mailbox_blank16.png", "xdecor_trampoline_sides.png"},
-	groups = utility.dig_groups("furniture", {fall_damage_add_percent=-80, bouncy=90}),
+	groups = utility.dig_groups("furniture", {fall_damage_add_percent=-80, bouncy=90, falling_node=1}),
 	node_box = xdecor.nodebox.slab_y(0.5),
 	sounds = {footstep = {name="xdecor_bouncy", gain=0.8}}
 })

@@ -74,11 +74,14 @@ function joinspec.on_joinplayer(player)
 
 			local s1 = "s"
 			local s2 = "s"
+
 			if days1 == 1 then s1 = "" end
 			if days2 == 1 then s2 = "" end
+
 			minetest.chat_send_player(pname,
 				core.get_color_escape_sequence("#ffff00") ..
 				"# Server: In " .. days1 .. " day" .. s1 ..", the dry winds of the Outback will cease. Then all begins again.")
+
 			minetest.chat_send_player(pname,
 				core.get_color_escape_sequence("#ffff00") ..
 				"# Server: The unstable Dimensional Gate shifts in " .. days2 .. " day" .. s2 .. ".")
@@ -93,7 +96,9 @@ function joinspec.on_joinplayer(player)
 			days1 = math.max(days1, 0)
 
 			local s1 = "s"
+
 			if days1 == 1 then s1 = "" end
+
 			minetest.chat_send_player(pname,
 				core.get_color_escape_sequence("#ffff00") ..
 				"# Server: Midfeld's fog falls in " .. days1 .. " day" .. s1 ..".")

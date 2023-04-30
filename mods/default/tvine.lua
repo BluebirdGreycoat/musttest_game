@@ -365,7 +365,7 @@ if not tvine.run_once then
 		on_timer = function(...) return farming.grow_plant(...) end,
 		minlight = tvine.minlight,
 		maxlight = tvine.maxlight,
-		next_plant = {"default:tvine_stunted"},
+		_farming_next_plant = {"default:tvine_stunted"},
 		sounds = default.node_sound_dirt_defaults({
 			dug = {name = "default_grass_footstep", gain = 0.2},
 			place = {name = "default_place_node", gain = 0.25},
@@ -396,7 +396,7 @@ if not tvine.run_once then
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 
-		next_plant = {"default:tvine_top", "default:tvine_top_alt"},
+		_farming_next_plant = {"default:tvine_top", "default:tvine_top_alt"},
 		on_timer = function(...) return farming.grow_plant(...) end,
 		minlight = tvine.minlight,
 		maxlight = tvine.maxlight,

@@ -315,14 +315,14 @@ farming.grow_plant = function(pos, elapsed)
 		return
 	end
   
-	if not def.next_plant then
+	if not def._farming_next_plant then
 		-- disable timer for fully grown plant
 		--minetest.chat_send_all('fail 2')
 		return
 	end
     
 	-- Allow to randomly choose the next plant from a variety.
-	local next_plant = def.next_plant
+	local next_plant = def._farming_next_plant
 	if type(next_plant) == "table" then
 		next_plant = next_plant[math.random(1, #next_plant)]
 	end
@@ -348,7 +348,7 @@ farming.grow_plant = function(pos, elapsed)
 						placenode.param2 = def.place_param2
 					end
 					minetest.swap_node(pos, placenode)
-					if minetest.reg_ns_nodes[next_plant].next_plant then
+					if minetest.reg_ns_nodes[next_plant]._farming_next_plant then
 						tick(pos, def)
 						--minetest.chat_send_all('fail 4')
 						return
@@ -390,7 +390,7 @@ farming.grow_plant = function(pos, elapsed)
 	minetest.swap_node(pos, placenode)
   
 	-- new timer needed?
-	if npdef.next_plant then
+	if npdef._farming_next_plant then
 		tick(pos, npdef)
 	elseif npdef.farming_restart_timer then
 		-- Allow the last plant in a growing
@@ -466,7 +466,7 @@ farming.register_plant = function(name, def)
 
 			return farming.place_seed(itemstack, placer, pointed_thing, mname .. ":seed_" .. pname)
 		end,
-		next_plant = mname .. ":" .. pname .. "_1",
+		_farming_next_plant = mname .. ":" .. pname .. "_1",
 		on_timer = farming.grow_plant,
 		minlight = def.minlight,
 		maxlight = def.maxlight,
@@ -517,7 +517,7 @@ farming.register_plant = function(name, def)
 			},
 			groups = nodegroups,
 			sounds = default.node_sound_leaves_defaults(),
-			next_plant = next_plant,
+			_farming_next_plant = next_plant,
 			on_timer = farming.grow_plant,
 			minlight = def.minlight,
 			maxlight = def.maxlight,

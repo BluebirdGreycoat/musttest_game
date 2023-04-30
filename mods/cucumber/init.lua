@@ -42,7 +42,7 @@ minetest.register_node("cucumber:seed", {
   on_timer = farming.grow_plant,
   minlight = 13,
   maxlight = default.LIGHT_MAX,
-  next_plant = "cucumber:cucumber_1",
+  _farming_next_plant = "cucumber:cucumber_1",
   fertility = {"grassland"},
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},
@@ -83,16 +83,16 @@ local crop_def = {
 }
 
 -- stage 1
-crop_def.next_plant = "cucumber:cucumber_2"
+crop_def._farming_next_plant = "cucumber:cucumber_2"
 minetest.register_node("cucumber:cucumber_1", table.copy(crop_def))
 
 -- stage 2
-crop_def.next_plant = "cucumber:cucumber_3"
+crop_def._farming_next_plant = "cucumber:cucumber_3"
 crop_def.tiles = {"farming_cucumber_2.png"}
 minetest.register_node("cucumber:cucumber_2", table.copy(crop_def))
 
 -- stage 3
-crop_def.next_plant = "cucumber:cucumber_4"
+crop_def._farming_next_plant = "cucumber:cucumber_4"
 crop_def.tiles = {"farming_cucumber_3.png"}
 minetest.register_node("cucumber:cucumber_3", table.copy(crop_def))
 
@@ -106,5 +106,5 @@ crop_def.drop = {
 		{items = {'cucumber:cucumber'}, rarity = 3},
 	}
 }
-crop_def.next_plant = nil
+crop_def._farming_next_plant = nil
 minetest.register_node("cucumber:cucumber_4", table.copy(crop_def))

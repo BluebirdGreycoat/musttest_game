@@ -28,7 +28,7 @@ minetest.register_node("blueberries:fruit", {
   on_timer = farming.grow_plant,
   minlight = 13,
   maxlight = 15,
-  next_plant = "blueberries:plant_1",
+  _farming_next_plant = "blueberries:plant_1",
   fertility = {"grassland"},
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},
@@ -80,13 +80,13 @@ local crop_def = {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 }
 
-crop_def.next_plant = "blueberries:plant_2"
+crop_def._farming_next_plant = "blueberries:plant_2"
 crop_def.tiles = {"blueberries_plant_1.png"}
 minetest.register_node("blueberries:plant_1", table.copy(crop_def))
 
 crop_def.description = "Blueberry Bush"
 crop_def.inventory_image = "blueberries_plant_2.png"
-crop_def.next_plant = "blueberries:plant_3"
+crop_def._farming_next_plant = "blueberries:plant_3"
 crop_def.tiles = {"blueberries_plant_2.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)
@@ -112,13 +112,13 @@ minetest.register_node("blueberries:plant_2", table.copy(crop_def))
 
 crop_def.description = "Blueberry Bush with Blossoms"
 crop_def.inventory_image = "blueberries_plant_3.png"
-crop_def.next_plant = "blueberries:plant_4"
+crop_def._farming_next_plant = "blueberries:plant_4"
 crop_def.tiles = {"blueberries_plant_3.png"}
 minetest.register_node("blueberries:plant_3", table.copy(crop_def))
 
 crop_def.description = "Blueberry Bush with Blueberries"
 crop_def.inventory_image = "blueberries_plant_4.png"
-crop_def.next_plant = nil
+crop_def._farming_next_plant = nil
 crop_def.tiles = {"blueberries_plant_4.png"}
 crop_def.after_dig_node =
 function(pos, oldnode, oldmetadata, digger)

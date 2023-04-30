@@ -40,7 +40,7 @@ function bonemeal.on_use(itemstack, user, pt)
 		local take = false
 
 		if def then
-			if def.next_plant and def.on_timer then
+			if def._farming_next_plant and def.on_timer then
 				local timer = minetest.get_node_timer(pos)
 				if timer:is_started() then
 					local timeout = timer:get_timeout()

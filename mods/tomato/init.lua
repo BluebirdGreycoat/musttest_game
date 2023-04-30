@@ -20,7 +20,7 @@ minetest.register_node("tomato:seed", {
   on_timer = farming.grow_plant,
   minlight = 13,
   maxlight = 15,
-  next_plant = "tomato:plant_1",
+  _farming_next_plant = "tomato:plant_1",
   fertility = {"grassland"},
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},
@@ -66,30 +66,30 @@ local crop_def = {
 	flowerpot_drop = "tomato:tomato",
 }
 
-crop_def.next_plant = "tomato:plant_2"
+crop_def._farming_next_plant = "tomato:plant_2"
 minetest.register_node("tomato:plant_1", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_3"
+crop_def._farming_next_plant = "tomato:plant_3"
 crop_def.tiles = {"tomato_plant_2.png"}
 minetest.register_node("tomato:plant_2", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_4"
+crop_def._farming_next_plant = "tomato:plant_4"
 crop_def.tiles = {"tomato_plant_3.png"}
 minetest.register_node("tomato:plant_3", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_5"
+crop_def._farming_next_plant = "tomato:plant_5"
 crop_def.tiles = {"tomato_plant_4.png"}
 minetest.register_node("tomato:plant_4", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_6"
+crop_def._farming_next_plant = "tomato:plant_6"
 crop_def.tiles = {"tomato_plant_5.png"}
 minetest.register_node("tomato:plant_5", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_7"
+crop_def._farming_next_plant = "tomato:plant_7"
 crop_def.tiles = {"tomato_plant_6.png"}
 minetest.register_node("tomato:plant_6", table.copy(crop_def))
 
-crop_def.next_plant = "tomato:plant_8"
+crop_def._farming_next_plant = "tomato:plant_8"
 crop_def.tiles = {"tomato_plant_7.png"}
 -- Not ready yet. Wait longer for best harvest.
 -- Note: this is the plant level placed by the mapgen.
@@ -116,6 +116,6 @@ crop_def.drop = {
     {items = {"tomato:seed"}, rarity = 3},
   }
 }
-crop_def.next_plant = nil
+crop_def._farming_next_plant = nil
 minetest.register_node("tomato:plant_8", table.copy(crop_def))
 

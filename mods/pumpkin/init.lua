@@ -25,7 +25,7 @@ minetest.register_node("pumpkin:seed", {
   on_timer = farming.grow_plant,
   minlight = 13,
   maxlight = 15,
-  next_plant = "pumpkin:plant_1",
+  _farming_next_plant = "pumpkin:plant_1",
   fertility = {"grassland"},
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},
@@ -196,36 +196,36 @@ local crop_def = {
 }
 
 -- Stage 1.
-crop_def.next_plant = "pumpkin:plant_2"
+crop_def._farming_next_plant = "pumpkin:plant_2"
 minetest.register_node("pumpkin:plant_1", table.copy(crop_def))
 
 -- Stage 2.
-crop_def.next_plant = "pumpkin:plant_3"
+crop_def._farming_next_plant = "pumpkin:plant_3"
 crop_def.tiles = {"farming_pumpkin_2.png"}
 minetest.register_node("pumpkin:plant_2", table.copy(crop_def))
 
 -- Stage 3.
-crop_def.next_plant = "pumpkin:plant_4"
+crop_def._farming_next_plant = "pumpkin:plant_4"
 crop_def.tiles = {"farming_pumpkin_3.png"}
 minetest.register_node("pumpkin:plant_3", table.copy(crop_def))
 
 -- Stage 4.
-crop_def.next_plant = "pumpkin:plant_5"
+crop_def._farming_next_plant = "pumpkin:plant_5"
 crop_def.tiles = {"farming_pumpkin_4.png"}
 minetest.register_node("pumpkin:plant_4", table.copy(crop_def))
 
 -- Stage 5.
-crop_def.next_plant = "pumpkin:plant_6"
+crop_def._farming_next_plant = "pumpkin:plant_6"
 crop_def.tiles = {"farming_pumpkin_5.png"}
 minetest.register_node("pumpkin:plant_5", table.copy(crop_def))
 
 -- Stage 6.
-crop_def.next_plant = "pumpkin:plant_7"
+crop_def._farming_next_plant = "pumpkin:plant_7"
 crop_def.tiles = {"farming_pumpkin_6.png"}
 minetest.register_node("pumpkin:plant_6", table.copy(crop_def))
 
 -- Stage 7.
-crop_def.next_plant = "pumpkin:plant_8"
+crop_def._farming_next_plant = "pumpkin:plant_8"
 crop_def.tiles = {"farming_pumpkin_7.png"}
 minetest.register_node("pumpkin:plant_7", table.copy(crop_def))
 
@@ -239,6 +239,6 @@ crop_def.drop = {
     {items = {"pumpkin:seed"}, rarity = 2},
   }
 }
-crop_def.next_plant = nil
+crop_def._farming_next_plant = nil
 minetest.register_node("pumpkin:plant_8", table.copy(crop_def))
 

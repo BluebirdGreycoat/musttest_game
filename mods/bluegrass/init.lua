@@ -98,7 +98,7 @@ bluegrass.grow_plant = function(pos, elapsed)
   local name = node.name
   local def = minetest.reg_ns_nodes[name]
 
-  if not def.next_plant then
+  if not def._farming_next_plant then
     -- disable timer for fully grown plant
     return
   end
@@ -113,12 +113,12 @@ bluegrass.grow_plant = function(pos, elapsed)
     -- omitted is a check for light, we assume seeds can germinate in the dark.
     for _, v in pairs(def.fertility) do
       if minetest.get_item_group(soil_node.name, v) ~= 0 then
-        local placenode = {name = def.next_plant}
+        local placenode = {name = def._farming_next_plant}
         if def.place_param2 then
           placenode.param2 = def.place_param2
         end
         minetest.swap_node(pos, placenode)
-        if minetest.reg_ns_nodes[def.next_plant].next_plant then
+        if minetest.reg_ns_nodes[def._farming_next_plant]._farming_next_plant then
           tick(pos)
           return
         end
@@ -163,14 +163,14 @@ bluegrass.grow_plant = function(pos, elapsed)
   end
 
   -- grow
-  local placenode = {name = def.next_plant}
+  local placenode = {name = def._farming_next_plant}
   if def.place_param2 then
     placenode.param2 = def.place_param2
   end
   minetest.swap_node(pos, placenode)
   
   -- new timer needed?
-  if minetest.reg_ns_nodes[def.next_plant].next_plant then
+  if minetest.reg_ns_nodes[def._farming_next_plant]._farming_next_plant then
     tick(pos, tick_data)
   end
   
@@ -224,7 +224,7 @@ minetest.register_node("bluegrass:seed", {
     return bluegrass.place_seed(itemstack, placer, pointed_thing, "bluegrass:seed")
   end,
   on_timer = bluegrass.grow_plant,
-  next_plant = "bluegrass:plant_1",
+  _farming_next_plant = "bluegrass:plant_1",
   sounds = default.node_sound_dirt_defaults({
     dug = {name = "default_grass_footstep", gain = 0.2},
     place = {name = "default_place_node", gain = 0.25},
@@ -260,36 +260,36 @@ local crop_def = {
   
   
 -- Stage 1.
-crop_def.next_plant = "bluegrass:plant_2"
+crop_def._farming_next_plant = "bluegrass:plant_2"
 minetest.register_node("bluegrass:plant_1", table.copy(crop_def))
 
 -- Stage 2.
-crop_def.next_plant = "bluegrass:plant_3"
+crop_def._farming_next_plant = "bluegrass:plant_3"
 crop_def.tiles = {"bluegrass_plant_2.png"}
 minetest.register_node("bluegrass:plant_2", table.copy(crop_def))
 
 -- Stage 3.
-crop_def.next_plant = "bluegrass:plant_4"
+crop_def._farming_next_plant = "bluegrass:plant_4"
 crop_def.tiles = {"bluegrass_plant_3.png"}
 minetest.register_node("bluegrass:plant_3", table.copy(crop_def))
 
 -- Stage 4.
-crop_def.next_plant = "bluegrass:plant_5"
+crop_def._farming_next_plant = "bluegrass:plant_5"
 crop_def.tiles = {"bluegrass_plant_4.png"}
 minetest.register_node("bluegrass:plant_4", table.copy(crop_def))
 
 -- Stage 5.
-crop_def.next_plant = "bluegrass:plant_6"
+crop_def._farming_next_plant = "bluegrass:plant_6"
 crop_def.tiles = {"bluegrass_plant_5.png"}
 minetest.register_node("bluegrass:plant_5", table.copy(crop_def))
 
 -- Stage 6.
-crop_def.next_plant = "bluegrass:plant_7"
+crop_def._farming_next_plant = "bluegrass:plant_7"
 crop_def.tiles = {"bluegrass_plant_6.png"}
 minetest.register_node("bluegrass:plant_6", table.copy(crop_def))
 
 -- Stage 7.
-crop_def.next_plant = nil
+crop_def._farming_next_plant = nil
 crop_def.tiles = {"bluegrass_plant_7.png"}
 crop_def.drop = {
   items = {

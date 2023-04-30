@@ -571,7 +571,7 @@ if not tvine.run_once then
 
 		-- Instruct farming mod to restart the timer.
 		-- Otherwise, after growing the last plant, the timer would halt.
-		farming_restart_timer = true,
+		_farming_restart_timer = true,
 		farming_growing_time_min = tvine.steptime.min,
 		farming_growing_time_max = tvine.steptime.max,
 	})
@@ -623,7 +623,7 @@ if not tvine.run_once then
 
 		-- Instruct farming mod to restart the timer.
 		-- Otherwise, after growing the last plant, the timer would halt.
-		farming_restart_timer = true,
+		_farming_restart_timer = true,
 		farming_growing_time_min = tvine.steptime.min,
 		farming_growing_time_max = tvine.steptime.max,
 	})

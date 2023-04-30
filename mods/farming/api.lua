@@ -392,7 +392,7 @@ farming.grow_plant = function(pos, elapsed)
 	-- new timer needed?
 	if npdef._farming_next_plant then
 		tick(pos, npdef)
-	elseif npdef.farming_restart_timer then
+	elseif npdef._farming_restart_timer then
 		-- Allow the last plant in a growing
 		-- sequence to request a timer restart.
 		tick(pos, npdef)

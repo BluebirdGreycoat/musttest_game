@@ -9,14 +9,25 @@ local function trample_dirt(pos, player)
 	local count = meta:get_int("trampled")
 
 	if count >= 3 then
+		local node_above = minetest.get_node(vector.add(pos, {x=0, y=1, z=0}))
+
 		-- Only if no plant above.
-		if minetest.get_node(vector.add(pos, {x=0, y=1, z=0})).name == "air" then
+		if node_above.name == "air" then
 			local node = minetest.get_node(pos)
 			local ndef = minetest.registered_nodes[node.name]
 
 			if ndef and ndef.soil and ndef.soil.base then
 				node.name = ndef.soil.base
 				minetest.set_node(pos, node)
+			end
+		else
+			-- Something above? Let's check if it's a plant, BWHAHAHA.
+			local ndef = minetest.registered_nodes[node_above]
+			if ndef and ndef._farming_prev_plant then
+				local node = minetest.get_node(pos)
+				node.name = ndef._farming_prev_plant
+				minetest.set_node(pos, node)
+				-- Not restarting node timer, this also stops plant from growing further.
 			end
 		end
 

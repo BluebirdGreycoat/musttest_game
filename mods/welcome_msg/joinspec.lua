@@ -69,8 +69,8 @@ function joinspec.on_joinplayer(player)
 			local days1 = math_floor(serveressentials.get_outback_timeout() / (60*60*24))
 			local days2 = math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24))
 
-			days1 = math.min(days1, 0)
-			days2 = math.min(days2, 0)
+			days1 = math.max(days1, 0)
+			days2 = math.max(days2, 0)
 
 			local s1 = "s"
 			local s2 = "s"
@@ -90,6 +90,8 @@ function joinspec.on_joinplayer(player)
 		-- timeout after 30 seconds.
 		minetest.after(30, function()
 			local days1 = math_floor(serveressentials.get_midfeld_timeout() / (60*60*24))
+			days1 = math.max(days1, 0)
+
 			local s1 = "s"
 			if days1 == 1 then s1 = "" end
 			minetest.chat_send_player(pname,

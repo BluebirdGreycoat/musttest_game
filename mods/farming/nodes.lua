@@ -7,15 +7,22 @@
 local function trample_dirt(pos, player)
 	local meta = minetest.get_meta(pos)
 	local count = meta:get_int("trampled")
+
 	if count >= 3 then
-		local node = minetest.get_node(pos)
-		local ndef = minetest.registered_nodes[node.name]
-		if ndef and ndef.soil and ndef.soil.base then
-			node.name = ndef.soil.base
-			minetest.set_node(pos, node)
+		-- Only if no plant above.
+		if minetest.get_node(vector.add(pos, {x=0, y=1, z=0})).name == "air" then
+			local node = minetest.get_node(pos)
+			local ndef = minetest.registered_nodes[node.name]
+
+			if ndef and ndef.soil and ndef.soil.base then
+				node.name = ndef.soil.base
+				minetest.set_node(pos, node)
+			end
 		end
+
 		return
 	end
+
 	meta:set_int("trampled", count + 1)
 	meta:mark_as_private("trampled")
 end

@@ -1,4 +1,27 @@
 
+-- It actually makes sense to build paths in your fields now, otherwise
+-- you'll have to constantly hoe where you step!
+--
+-- Note: not checking protection here. Griefing someone's field this way is
+-- "non-destructive", easy to restore.
+local function trample_dirt(pos, player)
+	local meta = minetest.get_meta(pos)
+	local count = meta:get_int("trampled")
+	if count >= 3 then
+		local node = minetest.get_node(pos)
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef and ndef.soil and ndef.soil.base then
+			node.name = ndef.soil.base
+			minetest.set_node(pos, node)
+		end
+		return
+	end
+	meta:set_int("trampled", count + 1)
+	meta:mark_as_private("trampled")
+end
+
+
+
 local nodebox_hoedsoil = {
 	{0, 0, 0, 16, 15, 16},
 	{0, 15, 2, 16, 15.5, 7},
@@ -84,6 +107,8 @@ minetest.register_node("farming:soil", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_player_walk_over = trample_dirt,
 })
 
 minetest.register_node("farming:soil_wet", {
@@ -124,6 +149,8 @@ minetest.register_node("farming:soil_wet", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_player_walk_over = trample_dirt,
 })
 
 minetest.override_item("default:desert_sand", {
@@ -172,6 +199,8 @@ minetest.register_node("farming:desert_sand_soil", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:desert_sand"})
   end,
+
+	on_player_walk_over = trample_dirt,
 })
 
 minetest.register_node("farming:desert_sand_soil_wet", {
@@ -212,6 +241,8 @@ minetest.register_node("farming:desert_sand_soil_wet", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:desert_sand"})
   end,
+
+	on_player_walk_over = trample_dirt,
 })
 
 minetest.register_node("farming:straw", {

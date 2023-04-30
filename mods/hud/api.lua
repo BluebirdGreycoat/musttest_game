@@ -10,8 +10,12 @@ local math_floor = math.floor
 
 
 -- keep id handling internal
-local hud_id = {}	-- hud item ids
-local sb_bg = {}	-- statbar background ids
+-- Actually no, allow external access for debugging purposes.
+-- HUD bugs are a pain >:(
+hud.all_hud_ids = {}
+hud.all_sb_bgs = {}
+local hud_id = hud.all_hud_ids	-- hud item ids
+local sb_bg = hud.all_sb_bgs	-- statbar background ids
 
 -- localize often used table
 local items = hud.registered_items
@@ -140,8 +144,12 @@ local function add_hud_item(player, name, def)
 		return false
 	end
 
+	-- Every player must have their own copy of the HUD element definition table,
+	-- otherwise modifications to the table will leak to other players, and to
+	-- the default global state. How this got missed in the original mod, I'll
+	-- never know.
 	local i_name = player:get_player_name() .. "_" .. name
-	hud_id[i_name] = def
+	hud_id[i_name] = table.copy(def) -- Copy that table!
 	hud_id[i_name].id = player:hud_add(def)
 end
 

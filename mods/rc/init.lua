@@ -46,12 +46,13 @@ rc.realms = {
 		sky_data = {body_orbit_tilt = snow.body_orbit_tilt()},
     star_data = {day_opacity = snow.star_opacity()},
 	},
+	-- Distance to channelwood: 2500
 	{
 		id = 2, -- REALM ID. Code relies on this.
 		name = "channelwood", -- Forest realm. 250 meters high.
 		description = "Channelwood",
 		minp = {x=-30912, y=3050, z=-30912},
-		maxp = {x=30927, y=3300, z=30927},
+		maxp = {x=30927, y=3150, z=30927},
 		gate_minp = {x=-30000, y=3065, z=-30000},
 		gate_maxp = {x=30000, y=3067, z=30000},
 		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
@@ -65,12 +66,13 @@ rc.realms = {
 		moon_data={scale=2.5},
 		sky_data = {body_orbit_tilt = -10.0},
 	},
+	-- Distance to jarkati: 450
 	{
 		id = 3, -- REALM ID. Code relies on this.
 		name = "jarkati",
 		description = "Jarkati",
 		minp = {x=-30912, y=3600, z=-30912},
-		maxp = {x=30927, y=3900, z=30927},
+		maxp = {x=30927, y=3800, z=30927},
 		gate_minp = {x=-30000, y=3620, z=-30000},
 		gate_maxp = {x=30000, y=3640, z=30000},
 		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
@@ -84,6 +86,7 @@ rc.realms = {
 		moon_data={scale=0.4},
 		sun_data={scale=0.4},
 	},
+	-- Distance to utilities (abyss and midfeld): 200
 	{
 		-- The OUTBACK. Starting realm for new players.
 		id = 4, -- REALM ID. Code relies on this.
@@ -104,6 +107,7 @@ rc.realms = {
     sun_data = {visible=true},
     moon_data = {visible=true},
     star_data = {visible=true, count=50},
+    realm_resets = true,
 
     --[[
 
@@ -138,6 +142,7 @@ rc.realms = {
 		cloud_data = {height=4250, density=0.2, speed={x=-6, z=1}},
 		protection_temporary = true,
 		protection_time = 60*60*24*14,
+    realm_resets = true,
 
 		--[[
 
@@ -752,10 +757,12 @@ function rc.on_joinplayer(player)
 	local n = player:get_player_name()
 	local p = player:get_pos()
 
+	local crealm = rc.current_realm(player)
+
 	-- Player's current dimension is determined from position on login.
 	rc.players[n] = {
 		pos = p,
-		realm = rc.current_realm(player),
+		realm = crealm,
 		new_arrival = true,
 	}
 

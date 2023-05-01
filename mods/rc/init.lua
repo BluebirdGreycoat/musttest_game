@@ -68,6 +68,7 @@ rc.realms = {
 		sky_data = {body_orbit_tilt = -10.0},
 	},
 	-- Distance to jarkati: 450
+	-- This breaks our minimum distance rule. Not much I can do about it now.
 	{
 		id = 3, -- REALM ID. Code relies on this.
 		name = "jarkati",

@@ -214,7 +214,11 @@ local function tick_multiplier(pos, def)
 		mult = mult - (#minerals / 4)
 	end
 
-	-- Multiplier cannot be less than 0.3.
+	-- Sand is very poor soil!
+	local sand = minetest.find_nodes_in_area(minp, maxp, "group:sand")
+	mult = mult + (#sand / 2)
+
+	-- Clamp time-tick multiplier to minimum value.
 	if mult < 0.2 then mult = 0.2 end
 	return mult
 end
@@ -222,9 +226,12 @@ end
 -- how often node timers for plants will tick, +/- some random value
 local function tick(pos, def)
 	local mult = tick_multiplier(pos, def)
+
 	local min = (def.farming_growing_time_min or 200) * mult
 	local max = (def.farming_growing_time_max or 350) * mult
-  minetest.get_node_timer(pos):start(math_random(min, max))
+
+	local time = math_random(min, max)
+  minetest.get_node_timer(pos):start(time)
 
   --minetest.get_node_timer(pos):start(1.0) -- Debug
 end

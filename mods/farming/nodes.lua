@@ -25,11 +25,14 @@ local function trample_dirt(pos, player)
 			-- Something above? Let's check if it's a plant, BWHAHAHA.
 			local ndef = minetest.registered_nodes[node_above.name]
 			if ndef and ndef._farming_prev_plant then
-				if minetest.registered_nodes[ndef._farming_prev_plant] then
+				local pdef = minetest.registered_nodes[ndef._farming_prev_plant]
+				if pdef then
 					local node = minetest.get_node(pos_above)
 					node.name = ndef._farming_prev_plant
 					minetest.set_node(pos_above, node)
-					-- Not restarting node timer, this also stops plant from growing further.
+
+					-- Restart plant timer.
+					farming.restart_timer(pos_above)
 				end
 			end
 		end

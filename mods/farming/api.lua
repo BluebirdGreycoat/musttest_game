@@ -23,8 +23,10 @@ function farming.notify_soil_single(pos)
 	end
 end
 
+
+
 -- Wear out hoes, place soil
--- TODO Ignore group:flower
+-- TODO Ignore group:flower (note to self: why?)
 farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	local pt = pointed_thing
 	-- check if pointing at a node
@@ -35,27 +37,8 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 		return
 	end
 
+	local pname = user:get_player_name()
 	local under = minetest.get_node(pt.under)
-  
-  -- Let hoes be used to get resources back from planted mese crystals.
-  -- Note that harvesting a crystal completely yeilds more fragments,
-  -- but there is a risk that the you won't be able to restore the plant when you're done.
-  if string.find(under.name, "^mese_crystals:mese_crystal_ore%d") then
-    user:get_inventory():add_item("main", "default:mese_crystal_fragment 3")
-    ambiance.sound_play("default_break_glass", pt.under, 0.3, 10)
-    minetest.remove_node(pt.under)
-    -- 1/2 chance to get bluerack back; this is because 1 bluerack makes 2 seeds.
-    -- This way, we don't make it possible to magically duplicate resources.
-    if math_random(1, 2) == 1 then
-      local p = {x=pt.under.x, y=pt.under.y-1, z=pt.under.z}
-      if minetest.get_node(p).name == "default:obsidian" then
-        minetest.add_node(p, {name="rackstone:bluerack"})
-        ambiance.sound_play("default_dig_cracky", pt.under, 1.0, 10)
-      end
-    end
-    return
-  end
-  
 	local p = {x=pt.under.x, y=pt.under.y+1, z=pt.under.z}
 	local above = minetest.get_node(p)
 
@@ -66,6 +49,43 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	if not minetest.reg_ns_nodes[above.name] then
 		return
 	end
+
+	-- Allow 'default:dirt' and 'default:desert_sand' to be hoed, bypassing protection.
+	-- This is needed because the hoed/soil versions of these two nodes can be
+	-- trampled bypassing protection, causing them to revert to their base dirt form.
+	-- Note that hoed dirt/sand can only be trampled if nothing is growing on it.
+	-- Important: do NOT allow any kind of grass to be hoed without protection permission.
+	if not (under.name == "default:dirt" or under.name == "default:desert_sand") then
+		if minetest.is_protected(pt.under, pname) then
+			return
+		end
+		if minetest.is_protected(pt.above, pname) then
+			return
+		end
+	end
+
+  -- Let hoes be used to get resources back from planted mese crystals.
+  -- Note that harvesting a crystal completely yeilds more fragments,
+  -- but there is a risk that the you won't be able to restore the plant when you're done.
+  if string.find(under.name, "^mese_crystals:mese_crystal_ore%d") then
+    user:get_inventory():add_item("main", "default:mese_crystal_fragment 3")
+    ambiance.sound_play("default_break_glass", pt.under, 0.3, 10)
+    minetest.remove_node(pt.under)
+
+    -- 1/2 chance to get bluerack back; this is because 1 bluerack makes 2 seeds.
+    -- This way, we don't make it possible to magically duplicate resources.
+		local p = {x=pt.under.x, y=pt.under.y-1, z=pt.under.z}
+    if not minetest.test_protection(p, pname) then
+			if math_random(1, 2) == 1 then
+				if minetest.get_node(p).name == "default:obsidian" then
+					minetest.add_node(p, {name="rackstone:bluerack"})
+					ambiance.sound_play("default_dig_cracky", pt.under, 1.0, 10)
+				end
+			end
+		end
+
+    return
+  end
 
 	-- check if the node above the pointed thing is air
 	if above.name ~= "air" then
@@ -83,15 +103,6 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 		return
 	end
 
-	if minetest.is_protected(pt.under, user:get_player_name()) then
-		minetest.record_protection_violation(pt.under, user:get_player_name())
-		return
-	end
-	if minetest.is_protected(pt.above, user:get_player_name()) then
-		minetest.record_protection_violation(pt.above, user:get_player_name())
-		return
-	end
-
 	-- turn the node into soil and play sound
 	minetest.add_node(pt.under, {name = ndef.soil.dry})
 	minetest.sound_play("default_dig_crumbly", {
@@ -100,17 +111,19 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	}, true)
 	farming.notify_soil_single(pt.under)
 
-	if not minetest.settings:get_bool("creative_mode") then
-		-- wear tool
-		local wdef = itemstack:get_definition()
-		itemstack:add_wear(65535/(uses-1))
-        -- tool break sound
-		if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
-			minetest.sound_play(wdef.sound.breaks, {pos = pt.above, gain = 0.5}, true)
-		end
+	-- wear tool
+	local wdef = itemstack:get_definition()
+	itemstack:add_wear(65535/(uses-1))
+
+	-- tool break sound
+	if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+		minetest.sound_play(wdef.sound.breaks, {pos = pt.above, gain = 0.5}, true)
 	end
+
 	return itemstack
 end
+
+
 
 -- Register new hoes
 farming.register_hoe = function(name, def)
@@ -118,6 +131,7 @@ farming.register_hoe = function(name, def)
 	if name:sub(1,1) ~= ":" then
 		name = ":" .. name
 	end
+
 	-- Check def table
 	if def.description == nil then
 		def.description = "Hoe"
@@ -135,16 +149,20 @@ farming.register_hoe = function(name, def)
 	if def.max_uses == nil then
 		def.max_uses = 30
 	end
+
 	-- Register the tool
 	minetest.register_tool(name, {
 		description = def.description,
 		inventory_image = def.inventory_image,
+
 		on_use = function(itemstack, user, pointed_thing)
 			return farming.hoe_on_use(itemstack, user, pointed_thing, def.max_uses)
 		end,
-        groups = def.groups,
-        sound = {breaks = "default_tool_breaks"},
+
+		groups = def.groups,
+		sound = {breaks = "default_tool_breaks"},
 	})
+
 	-- Register its recipe
 	if def.material == nil then
 		minetest.register_craft({

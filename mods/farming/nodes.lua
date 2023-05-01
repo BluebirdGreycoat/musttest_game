@@ -58,6 +58,8 @@ for k, v in ipairs(nodebox_hoedsoil) do
 end
 
 
+
+-- Can be hoed bypassing protection.
 minetest.override_item("default:dirt", {
 	soil = {
 		base = "default:dirt",
@@ -66,6 +68,7 @@ minetest.override_item("default:dirt", {
 	}
 })
 
+-- Cannot be hoed if protected.
 minetest.override_item("default:dirt_with_grass", {
 	soil = {
 		base = "default:dirt_with_grass",
@@ -74,6 +77,7 @@ minetest.override_item("default:dirt_with_grass", {
 	}
 })
 
+-- Cannot be hoed if protected.
 minetest.override_item("moregrass:darkgrass", {
 	soil = {
 		base = "moregrass:darkgrass",
@@ -82,6 +86,7 @@ minetest.override_item("moregrass:darkgrass", {
 	}
 })
 
+-- Cannot be hoed if protected.
 minetest.override_item("default:dirt_with_dry_grass", {
 	soil = {
 		base = "default:dirt_with_dry_grass",
@@ -174,6 +179,9 @@ minetest.register_node("farming:soil_wet", {
 	on_player_walk_over = trample_dirt,
 })
 
+
+
+-- Can be hoed bypassing protection.
 minetest.override_item("default:desert_sand", {
 	soil = {
 		base = "default:desert_sand",
@@ -181,6 +189,8 @@ minetest.override_item("default:desert_sand", {
 		wet = "farming:desert_sand_soil_wet"
 	}
 })
+
+
 
 minetest.register_node("farming:desert_sand_soil", {
 	paramtype = "light",

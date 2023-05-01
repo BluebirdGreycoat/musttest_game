@@ -22,6 +22,7 @@ local default_clouds = {
 }
 
 -- Known realms. Min/max area positions should not overlap!
+-- WARNING: ABSOLUTE MINIMUM GAP BETWEEN REALMS MUST BE 500 BLOCKS!
 rc.realms = {
 	{
 		id = 1, -- REALM ID. Code relies on this.
@@ -711,7 +712,14 @@ function rc.check_position(player)
 
 		if player:get_hp() > 0 then
 			-- Return player to last known good position.
-			player:set_pos(data.pos)
+			local nrealm = rc.current_realm_at_pos(data.pos)
+			if nrealm ~= "" and nrealm == data.realm then
+				player:set_pos(data.pos)
+			else
+				-- This can happen if player joins the server outside of any realm.
+				rc.notify_realm_update(player, reset.spawn)
+				player:set_pos(reset.spawn)
+			end
 		else
 			-- Update which realm the player is supposed to be in.
 			-- (We might have crossed realms depending on what happened above.)

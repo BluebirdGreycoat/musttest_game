@@ -216,7 +216,7 @@ local function tick_multiplier(pos, def)
 
 	-- Sand is very poor soil!
 	local sand = minetest.find_nodes_in_area(minp, maxp, "group:sand")
-	mult = mult + (#sand / 2)
+	mult = mult + (#sand / 4)
 
 	-- Clamp time-tick multiplier to minimum value.
 	if mult < 0.2 then mult = 0.2 end

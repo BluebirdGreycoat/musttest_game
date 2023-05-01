@@ -507,6 +507,13 @@ minetest.register_node("rackstone:blackrack", {
       -- Only drop them rarely.
       -- Only drop if blackrack was placed by mapgen.
       -- This prevents place-harvest-place-harvest exploit.
+      -- Only if realm does NOT reset.
+      local realm = rc.current_realm_at_pos(pos)
+      local rdata = rc.get_realm_data(realm)
+      if rdata and rdata.realm_resets then
+				return
+			end
+
       local chance = 80
       local tool = digger:get_wielded_item():get_name()
 

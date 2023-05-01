@@ -208,7 +208,7 @@ minetest.register_node("farming:desert_sand_soil", {
 	description = "Desert Sand Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
-	tiles = {"farming_desert_sand_soil.png", "default_desert_sand.png"},
+	tiles = {"farming_desert_sand_soil.png^[transformR90", "default_desert_sand.png"},
 	groups = utility.dig_groups("sand", {not_in_creative_inventory = 1, falling_node = 1, sand = 1, soil = 2, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {
@@ -250,7 +250,7 @@ minetest.register_node("farming:desert_sand_soil_wet", {
 	description = "Wet Desert Sand Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
-	tiles = {"farming_desert_sand_soil_wet.png", "farming_desert_sand_soil_wet_side.png"},
+	tiles = {"farming_desert_sand_soil_wet.png^[transformR90", "farming_desert_sand_soil_wet_side.png"},
 	groups = utility.dig_groups("sand", {falling_node = 1, sand = 1, not_in_creative_inventory = 1, soil = 3, wet = 1, desert = 1, field = 1, fall_damage_add_percent=-20, want_notify = 1}),
 	sounds = default.node_sound_sand_defaults(),
 	soil = {

@@ -652,6 +652,9 @@ function rc.check_position(player)
 	-- Data not initialized yet.
 	if not data then return end
 
+	-- Admin may fly around in the void.
+	if gdac.player_is_admin(player) then return end
+
 	local reset -- Table set if player out-of-bounds.
 
 	-- Bounds check to avoid an engine bug. These coordinates should be the last

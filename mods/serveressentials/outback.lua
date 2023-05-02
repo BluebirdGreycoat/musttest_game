@@ -279,11 +279,6 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- Locate all nodes with metadata.
 	local minp = table.copy(rc.get_realm_data("abyss").minp)
 	local maxp = table.copy(rc.get_realm_data("abyss").maxp)
-
-	-- TODO: delete me
-	minp.y = minp.y - 400
-	maxp.y = maxp.y - 400
-
 	local pos_metas = minetest.find_nodes_with_meta(minp, maxp)
 
 	-- Locate all bones and load their meta into memory.
@@ -327,8 +322,7 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Restore all bones.
 	for k, v in ipairs(bones) do
-		-- TODO: zero me.
-		local np = vector.add(v.pos, {x=0, y=400, z=0})
+		local np = vector.add(v.pos, {x=0, y=0, z=0})
 		minetest.set_node(np, v.node)
 		minetest.get_meta(np):from_table(v.meta)
 		minetest.get_node_timer(np):start(10)
@@ -345,9 +339,6 @@ end
 function serveressentials.rebuild_outback()
 	local p1 = table.copy(rc.get_realm_data("abyss").minp)
 	local p2 = table.copy(rc.get_realm_data("abyss").maxp)
-
-	-- TODO: delete me
-	p1.y = p1.y - 400
 
 	minetest.emerge_area(p1, p2, callback, {})
 end

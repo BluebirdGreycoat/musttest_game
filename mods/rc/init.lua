@@ -88,7 +88,7 @@ rc.realms = {
 		moon_data={scale=0.4},
 		sun_data={scale=0.4},
 	},
-	-- Distance to utilities (abyss and midfeld): 200
+	-- Distance to utilities (pocket realms): 200
 	{
 		-- The OUTBACK. Starting realm for new players.
 		id = 4, -- REALM ID. Code relies on this.

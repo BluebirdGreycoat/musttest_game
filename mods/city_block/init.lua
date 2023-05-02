@@ -575,7 +575,7 @@ if not city_block.run_once then
 			local dname = rename.gpn(owner)
 
 			meta:set_string("rename", dname)
-			meta:set_string("infotext", "City Marker (Placed by <" .. dname .. ">!)")
+			meta:set_string("infotext", city_block.get_infotext(pos))
 		end,
 
 		on_punch = function(...)

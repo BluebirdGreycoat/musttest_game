@@ -32,7 +32,7 @@ rc.realms = {
 		maxp = {x=30927, y=500, z=30927},
 		gate_minp = {x=-30000, y=-30800, z=-30000},
 		gate_maxp = {x=30000, y=-10, z=30000},
-		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
 		ground = -10,
 		underground = -32, -- Affects sky color, see sky mod.
 		sealevel = 0,
@@ -56,7 +56,7 @@ rc.realms = {
 		maxp = {x=30927, y=3150, z=30927},
 		gate_minp = {x=-30000, y=3065, z=-30000},
 		gate_maxp = {x=30000, y=3067, z=30000},
-		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
 		ground = 3066,
 		underground = 3050,
 		sealevel = 3066,
@@ -77,7 +77,7 @@ rc.realms = {
 		maxp = {x=30927, y=3800, z=30927},
 		gate_minp = {x=-30000, y=3620, z=-30000},
 		gate_maxp = {x=30000, y=3640, z=30000},
-		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
 		ground = 3740,
 		underground = 3730,
 		sealevel = 3740,
@@ -88,22 +88,22 @@ rc.realms = {
 		moon_data={scale=0.4},
 		sun_data={scale=0.4},
 	},
-	-- Distance to utilities (pocket realms): 200
+	-- Distance to utilities (pocket realms): 600
 	{
 		-- The OUTBACK. Starting realm for new players.
 		id = 4, -- REALM ID. Code relies on this.
 		name = "abyss",
 		description = "Outback",
-		minp = vector.add({x=-9174, y=4100, z=5782}, {x=-100, y=-100, z=-100}),
-		maxp = vector.add({x=-9174, y=4100, z=5782}, {x=100, y=100, z=100}),
-		gate_minp = vector.add({x=-9174, y=4100, z=5782}, {x=-80, y=-80, z=-80}),
-		gate_maxp = vector.add({x=-9174, y=4100, z=5782}, {x=80, y=80, z=80}),
-		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
-		ground = 4170,
-		underground = 4160, -- Affects sky color, see sky mod.
-		sealevel = 4160,
-		windlevel = 4150,
-		realm_origin = {x=-9174, y=4100, z=5782},
+		minp = vector.add({x=-9174, y=4100+400, z=5782}, {x=-100, y=-100, z=-100}),
+		maxp = vector.add({x=-9174, y=4100+400, z=5782}, {x=100, y=100, z=100}),
+		gate_minp = vector.add({x=-9174, y=4100+400, z=5782}, {x=-80, y=-80, z=-80}),
+		gate_maxp = vector.add({x=-9174, y=4100+400, z=5782}, {x=80, y=80, z=80}),
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		ground = 4170+400,
+		underground = 4160+400, -- Affects sky color, see sky mod.
+		sealevel = 4160+400,
+		windlevel = 4150+400,
+		realm_origin = {x=-9174, y=4100+400, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
     sky_data = {clouds=false},
     sun_data = {visible=true},
@@ -128,30 +128,30 @@ rc.realms = {
 		id = 5, -- REALM ID. Code relies on this.
 		name = "midfeld",
 		description = "Midfeld",
-		minp = vector.add({x=-12174, y=4100, z=5782}, {x=-132, y=-50, z=-132}),
-		maxp = vector.add({x=-12174, y=4100, z=5782}, {x=132, y=150, z=132}),
-		gate_minp = vector.add({x=-12174, y=4100, z=5782}, {x=-116, y=-34, z=-116}),
-		gate_maxp = vector.add({x=-12174, y=4100, z=5782}, {x=116, y=-10, z=116}),
-		orig = {x=-9223, y=4169, z=5861}, -- Same as server's static spawnpoint!
-		ground = 4096,
-		underground = 4085, -- Affects sky color, see sky mod.
-		sealevel = 4095,
-		windlevel = 4125,
-		realm_origin = {x=-12174, y=4097, z=5782},
+		minp = vector.add({x=-12174, y=4100+400, z=5782}, {x=-132, y=-50, z=-132}),
+		maxp = vector.add({x=-12174, y=4100+400, z=5782}, {x=132, y=150, z=132}),
+		gate_minp = vector.add({x=-12174, y=4100+400, z=5782}, {x=-116, y=-34, z=-116}),
+		gate_maxp = vector.add({x=-12174, y=4100+400, z=5782}, {x=116, y=-10, z=116}),
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		ground = 4096+400,
+		underground = 4085+400, -- Affects sky color, see sky mod.
+		sealevel = 4095+400,
+		windlevel = 4125+400,
+		realm_origin = {x=-12174, y=4097+400, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
 		moon_data = {scale=2.5},
 		sun_data = {scale=2.5},
-		cloud_data = {height=4250, density=0.2, speed={x=-6, z=1}},
+		cloud_data = {height=4250+400, density=0.2, speed={x=-6, z=1}},
 		protection_temporary = true,
 		protection_time = 60*60*24*14,
     realm_resets = true,
 
 		--[[
 
-			//fixedpos set1 -11967 4050 5989
-			//fixedpos set2 -12381 4250 5575
+			//fixedpos set1 -11967 4450 5989
+			//fixedpos set2 -12381 4650 5575
 
-			-- Schempos: -12381,4050,5575
+			-- Schempos: -12381,4450,5575
 
 			-- Notes:
 			--

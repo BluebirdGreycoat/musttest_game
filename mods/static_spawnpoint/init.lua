@@ -4,7 +4,7 @@ static_spawnpoint.modpath = minetest.get_modpath("static_spawnpoint")
 
 -- Note: builtin includes this functionality, so we have to override it somehow.
 
-local spawn = {x=-9223, y=4169, z=5861}
+local spawn = {x=-9223, y=4169+400, z=5861}
 
 function static_spawnpoint.put_player_in_spawn(pref)
 	pref:set_pos(spawn)

@@ -227,6 +227,11 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- Locate all nodes with metadata.
 	local minp = table.copy(rc.get_realm_data("midfeld").minp)
 	local maxp = table.copy(rc.get_realm_data("midfeld").maxp)
+
+	-- TODO: delete me
+	minp.y = minp.y - 400
+	maxp.y = maxp.y - 400
+
 	local pos_metas = minetest.find_nodes_with_meta(minp, maxp)
 
 	-- Locate all bones and load their meta into memory.
@@ -245,7 +250,7 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
 	local schematic = rc.modpath .. "/midfeld.mts"
-	local pos = {x=-12381, y=4050, z=5575}
+	local pos = {x=-12381, y=4050+400, z=5575}
 
 	local replacements = {
     --["default:stone_with_tin"] = "moreores:mineral_tin",
@@ -264,9 +269,11 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Restore all bones.
 	for k, v in ipairs(bones) do
-		minetest.set_node(v.pos, v.node)
-		minetest.get_meta(v.pos):from_table(v.meta)
-		minetest.get_node_timer(v.pos):start(10)
+		-- TODO: zero me.
+		local np = vector.add(v.pos, {x=0, y=400, z=0})
+		minetest.set_node(np, v.node)
+		minetest.get_meta(np):from_table(v.meta)
+		minetest.get_node_timer(np):start(10)
 	end
 
 	-- Finally, rebuild the core metadata and node structure.
@@ -280,6 +287,9 @@ end
 function serveressentials.rebuild_gaterealm()
 	local p1 = table.copy(rc.get_realm_data("midfeld").minp)
 	local p2 = table.copy(rc.get_realm_data("midfeld").maxp)
+
+	-- TODO: delete me
+	p1.y = p1.y - 400
 
 	minetest.emerge_area(p1, p2, callback, {})
 end

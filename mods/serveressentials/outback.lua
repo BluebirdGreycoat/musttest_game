@@ -37,7 +37,7 @@ serveressentials.gateway_exit_position = minetest.string_to_pos(get_exit_locatio
 
 function serveressentials.get_current_exit_location()
 	-- Also need to update the gate itself, right away.
-	local m2 = minetest.get_meta({x=-9164, y=4101, z=5780})
+	local m2 = minetest.get_meta({x=-9164, y=4101+400, z=5780})
 	local s2 = m2:get_string("obsidian_gateway_destination_ew")
 	return s2
 end
@@ -57,7 +57,7 @@ function serveressentials.update_exit_location(pos)
 	meta:set_string("outback_exit_location", s)
 
 	-- Also need to update the gate itself, right away.
-	local m2 = minetest.get_meta({x=-9164, y=4101, z=5780})
+	local m2 = minetest.get_meta({x=-9164, y=4101+400, z=5780})
 	m2:set_string("obsidian_gateway_destination_ew", s)
 end
 
@@ -97,7 +97,7 @@ local nodes = {
 
 local function rebuild_nodes()
 	for k, v in ipairs(nodes) do
-		minetest.set_node(v.pos, v.node)
+		minetest.set_node(vector.add(v.pos, {x=0, y=400, z=0}), v.node)
 	end
 end
 
@@ -237,7 +237,7 @@ local metadata = {
 
 local function rebuild_metadata()
 	for k, v in ipairs(metadata) do
-		local meta = minetest.get_meta(v.pos)
+		local meta = minetest.get_meta(vector.add(v.pos, {x=0, y=400, z=0}))
 		meta:from_table(v.meta)
 	end
 end
@@ -258,7 +258,7 @@ local timers = {
 
 local function restart_timers()
 	for k, v in ipairs(timers) do
-		local timer = minetest.get_node_timer(v)
+		local timer = minetest.get_node_timer(vector.add(v, {x=0, y=400, z=0}))
 		timer:start(1)
 	end
 end
@@ -279,6 +279,11 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- Locate all nodes with metadata.
 	local minp = table.copy(rc.get_realm_data("abyss").minp)
 	local maxp = table.copy(rc.get_realm_data("abyss").maxp)
+
+	-- TODO: delete me
+	minp.y = minp.y - 400
+	maxp.y = maxp.y - 400
+
 	local pos_metas = minetest.find_nodes_with_meta(minp, maxp)
 
 	-- Locate all bones and load their meta into memory.
@@ -298,8 +303,8 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
 	local schematic = rc.modpath .. "/outback_map.mts"
 	local apron_schematic = rc.modpath .. "/outback_apron.mts"
-	local pos = {x=-9274, y=4000, z=5682}
-	local apron_pos = {x=-9314, y=4141, z=5642}
+	local pos = {x=-9274, y=4000+400, z=5682}
+	local apron_pos = {x=-9314, y=4141+400, z=5642}
 	local replacements = {}
 
 	if minetest.registered_nodes["basictrees:acacia_branch"] then
@@ -322,9 +327,11 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Restore all bones.
 	for k, v in ipairs(bones) do
-		minetest.set_node(v.pos, v.node)
-		minetest.get_meta(v.pos):from_table(v.meta)
-		minetest.get_node_timer(v.pos):start(10)
+		-- TODO: zero me.
+		local np = vector.add(v.pos, {x=0, y=400, z=0})
+		minetest.set_node(np, v.node)
+		minetest.get_meta(np):from_table(v.meta)
+		minetest.get_node_timer(np):start(10)
 	end
 
 	-- Finally, rebuild the core metadata and node structure.
@@ -338,6 +345,9 @@ end
 function serveressentials.rebuild_outback()
 	local p1 = table.copy(rc.get_realm_data("abyss").minp)
 	local p2 = table.copy(rc.get_realm_data("abyss").maxp)
+
+	-- TODO: delete me
+	p1.y = p1.y - 400
 
 	minetest.emerge_area(p1, p2, callback, {})
 end

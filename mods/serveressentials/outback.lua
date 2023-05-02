@@ -297,7 +297,9 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
 	local schematic = rc.modpath .. "/outback_map.mts"
+	local apron_schematic = rc.modpath .. "/outback_apron.mts"
 	local pos = {x=-9274, y=4000, z=5682}
+	local apron_pos = {x=-9314, y=4141, z=5642}
 	local replacements = {}
 
 	if minetest.registered_nodes["basictrees:acacia_branch"] then
@@ -306,6 +308,7 @@ local function callback(blockpos, action, calls_remaining, param)
 		}
 	end
 
+	minetest.place_schematic(apron_pos, apron_schematic, "0", replacements, true, "")
 	minetest.place_schematic(pos, schematic, "0", replacements, true, "")
 
 	-- Erase all stale metadata.

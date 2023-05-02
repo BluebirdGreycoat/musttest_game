@@ -441,6 +441,12 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+
+	-- Form sender must be owner.
+	if pname ~= owner then
+		return true
+	end
 
 	if fields.key_enter_field == "CITYNAME" or fields.OK then
 		local area_name = (fields.CITYNAME or ""):trim()

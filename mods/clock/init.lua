@@ -153,7 +153,7 @@ minetest.register_node("clock:calendar", {
 	wield_image = "calendar.png",
 	inventory_image = "calendar.png",
 	sounds = default.node_sound_leaves_defaults(),
-	groups = utility.dig_groups("bigitem"),
+	groups = utility.dig_groups("bigitem", {flammable = 1}),
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
 	drawtype = "nodebox",

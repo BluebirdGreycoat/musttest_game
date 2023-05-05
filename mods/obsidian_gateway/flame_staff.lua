@@ -225,6 +225,15 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			-- Meta changes do not take effect until we return the itemstack.
 		end
 
+		-- Don't allow player to teleport into Void, we cannot have chunks generated
+		-- there!
+		if not rc.is_valid_realm_pos(tar1) then
+			return
+		end
+		if not rc.is_valid_realm_pos(tar2) then
+			return
+		end
+
 		-- Player has activated gate #1.
 		-- Send them to the MIDFELD!
 		if vector.equals(playerorigin, tar1) then

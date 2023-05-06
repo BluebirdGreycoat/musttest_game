@@ -119,10 +119,16 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
-		-- does a protector already exist ?
+		-- Does location already have a protector?
+		if minetest.get_node(pos).name:find("^protector:protect") then
+			minetest.chat_send_player(name, "# Server: Protector already in place!")
+			return
+		end
+
+		-- does a protector already exist nearby?
 		if #minetest.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1),
 				{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"}) > 0 then
-			minetest.chat_send_player(name, "# Server: Protector already in place!")
+			minetest.chat_send_player(name, "# Server: Protector already near target!")
 			return
 		end
 
@@ -180,27 +186,27 @@ minetest.register_craftitem("protector:tool", {
 		-- place protector
 		minetest.set_node(pos, {name = nod, param2 = 1})
 
-		-- set protector metadata
-		local meta = minetest.get_meta(pos)
-		local dname = rename.gpn(name)
-		local placedate = get_public_time()
+		-- We are going to execute callbacks.
+		local protdef = minetest.registered_nodes[nod]
 
-		meta:set_string("placedate", placedate)
-		meta:set_string("owner", name)
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
+		if protdef.on_construct then
+			protdef.on_construct(pos)
+		end
+		if protdef.after_place_node then
+			-- Assume callback only requires 'pos' and 'user'.
+			protdef.after_place_node(pos, user)
+		end
 
-		-- copy members across if holding sneak when using tool
+		-- Copy members across if holding sneak when using tool.
 		local members_copied = false
 		if user:get_player_control().sneak then
+			local meta = minetest.get_meta(pos)
 			meta:set_string("members", members)
 			members_copied = true
 		else
+			local meta = minetest.get_meta(pos)
 			meta:set_string("members", "")
 		end
-
-		-- Notify nearby players.
-		protector.update_nearby_players(pos)
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
@@ -223,6 +229,8 @@ minetest.register_craft({
 
 
 
+-- This tool is useful if you just want to move a protector without resetting
+-- some of its meta, e.g., placement date.
 minetest.register_craftitem("protector:tool2", {
 	description = "Protector Mover Tool\n\nStand near protector, face direction and use.",
 	inventory_image = "nodeinspector.png^protector_lock.png",
@@ -348,18 +356,24 @@ minetest.register_craftitem("protector:tool2", {
 		minetest.set_node(pos, {name = nod, param2 = 1})
 		minetest.remove_node(oldpos)
 
+		-- We are going to execute callbacks.
+		local protdef = minetest.registered_nodes[nod]
+
+		if protdef.on_construct then
+			protdef.on_construct(pos)
+		end
+		if protdef.after_place_node then
+			-- Assume callback only requires 'pos' and 'user'.
+			protdef.after_place_node(pos, user)
+		end
+
 		-- set protector metadata
 		local meta = minetest.get_meta(pos)
 		local dname = rename.gpn(owner)
 
+		-- Restore original placement date and members list.
 		meta:set_string("placedate", placedate)
-		meta:set_string("owner", owner)
-		meta:set_string("rename", dname)
-		meta:set_string("infotext", "Protection (Owned by <" .. dname .. ">!)\nPlaced on " .. placedate)
 		meta:set_string("members", members)
-
-		-- Notify nearby players.
-		protector.update_nearby_players(pos)
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 		minetest.chat_send_player(name, "# Server: Protector moved to " .. rc.pos_to_namestr(pos) .. ".")

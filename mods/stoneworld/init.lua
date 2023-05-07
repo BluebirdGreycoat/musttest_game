@@ -166,7 +166,7 @@ stoneworld.noise4param3d = {
 	scale = 1,
 	spread = {x=64, y=64, z=64},
 	seed = 1762,
-	octaves = 4,
+	octaves = 5,
 	persist = 0.7,
 	lacunarity = 1.5,
 }
@@ -321,7 +321,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 					local n1 = noisemap1[n2d]
 					local n2 = noisemap3[n2d]
 
-					-- Carve caves.
+					-- Carve long winding caves.
 					local caves = stoneworld.caves
 					for k = 1, #caves do
 						-- Skip caves which aren't part of this map chunk.
@@ -338,7 +338,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local cheight = 5 + abs(floor(n1 * 3))
 
 							-- Modify cave height.
-							cheight = cheight + noisemap4[n3d]
+							cheight = cheight + floor(noisemap4[n3d] * 2)
 
 							-- Modifiers for roughening the rounding and making it less predictable.
 							local z1 = abs(floor(n1))

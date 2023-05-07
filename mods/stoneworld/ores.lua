@@ -113,3 +113,91 @@ oregen.register_ore({
     persist = 0.0
   },
 })
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_gold",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 13*13*13,
+  clust_num_ores = 5,
+  clust_size = 3,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type       = "scatter",
+  ore            = "stoneworld:basalt_with_diamond",
+  wherein        = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 15 * 15 * 15,
+  clust_num_ores = 4,
+  clust_size     = 3,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_mese",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 14*14*14,
+  clust_num_ores = 5,
+  clust_size = 3,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_iron",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 24*24*24,
+  clust_num_ores = 27,
+  clust_size = 6,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_coal",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 24*24*24,
+  clust_num_ores = 27,
+  clust_size = 6,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_dauth",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 24*24*24,
+  clust_num_ores = 27,
+  clust_size = 6,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_copper",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 7 * 7 * 7,
+  clust_num_ores = 5,
+  clust_size     = 3,
+  y_min = ore_min,
+  y_max = ore_max,
+})
+
+oregen.register_ore({
+  ore_type = "scatter",
+  ore = "stoneworld:basalt_with_tin",
+  wherein = {"darkage:basaltic", "darkage:basaltic_rubble"},
+  clust_scarcity = 7 * 7 * 7,
+  clust_num_ores = 5,
+  clust_size     = 3,
+  y_min = ore_min,
+  y_max = ore_max,
+})

@@ -79,7 +79,7 @@ minetest.register_node("stoneworld:basalt_with_iron", {
 
 minetest.register_node("stoneworld:basalt_with_coal", {
 	description = "Coal Deposit",
-	tiles = {"darkage_basalt.png^default_mineral_coal.png"},
+	tiles = {"darkage_basalt.png^stoneworld_mineral_coal.png"},
   -- Cannot be flammable (although I would like it to be)
   -- because that interferes with TNT mining (the TNT replaces
   -- all coal with flame instead of dropping it).
@@ -92,7 +92,7 @@ minetest.register_node("stoneworld:basalt_with_coal", {
 
 minetest.register_node("stoneworld:basalt_with_dauth", {
 	description = "Dauth Deposit",
-	tiles = {"darkage_basalt.png^default_mineral_coal.png"},
+	tiles = {"darkage_basalt.png^stoneworld_mineral_coal.png"},
   -- Cannot be flammable (although I would like it to be)
   -- because that interferes with TNT mining (the TNT replaces
   -- all coal with flame instead of dropping it).

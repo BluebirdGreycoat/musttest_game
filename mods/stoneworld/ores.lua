@@ -201,3 +201,21 @@ oregen.register_ore({
   y_min = ore_min,
   y_max = ore_max,
 })
+
+oregen.register_ore({
+  ore_type        = "standard_blob",
+  ore             = "rackstone:blackrack",
+  wherein = {"darkage:basaltic"},
+  clust_scarcity  = 20*20*20,
+  clust_size      = 4,
+  y_min = ore_min,
+  y_max = ore_max,
+  noise_threshold = -1.0,
+  noise_params    = {
+    offset = 0.5,
+    scale = 0.2,
+    spread = {x=5, y=5, z=5},
+    octaves = 1,
+    persist = 0.0
+  },
+})

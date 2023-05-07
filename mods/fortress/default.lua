@@ -40,6 +40,20 @@ fortress.default = {
 	-- Fortress section definitions.
 	-- Each chunk has a name, and its table defines which other chunks may be
 	-- spawned off it.
+	--
+	-- Note: for each chunk, 'offset' and 'size' are given in terms of 'step',
+	-- these are NOT actual pos/size coordinates. The fortress spawner multiplies
+	-- 'offset' and 'size' by 'step' value and uses the result to detect whether
+	-- a particular location has already spawned a section of fortress.
+	--
+	-- You typically only need to specify 'offset' and 'size' for sections of
+	-- fortress that are larger than 'step' size. The default offset is {0, 0, 0}
+	-- and the default size is {1, 1, 1}.
+	--
+	-- The 'adjust' schematic variable is for slightly adjusting the precise
+	-- positioning of an individual schematic file. Chunks can have multiple
+	-- schematic files, and often each one must have its position adjusted a bit
+	-- to prevent overlaps.
 	chunks = {
 		-- Corridor sections.
 		junction = {

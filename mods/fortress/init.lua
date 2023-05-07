@@ -120,14 +120,17 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		local thischunk = info.schem
 		for k, v in ipairs(thischunk) do
 			local chance = v.chance or 100
+
 			if math_random(1, 100) <= chance then
 				local file = v.file
 				local path = fortress.schempath .. "/" .. file .. ".mts"
 				local adjust = v.adjust or {x=0, y=0, z=0}
 				local force = true
+
 				if type(v.force) == "boolean" then
 					force = v.force
 				end
+
 				local rotation = v.rotation or "0"
 				local schempos = vector.add(pos, adjust)
 
@@ -185,7 +188,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				local loc = vector_round(vector.add(p3, p2))
 
 				internal.depth = internal.depth + 1
-				minetest.log("action", "depth " .. internal.depth .. "!")
+				--minetest.log("action", "depth " .. internal.depth .. "!")
 
 				-- Using minetest.after() to avoid stack overflow.
 				minetest.after(0, function()
@@ -206,12 +209,51 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Check if all build-data is gathered yet.
 	::checkdone::
 	if internal.depth == 0 then
+		local minp = table.copy(internal.pos)
+		local maxp = table.copy(internal.pos)
+
+		for k, v in ipairs(build) do
+			if v.pos.x < minp.x then
+				minp.x = v.pos.x
+			end
+			if v.pos.x + v.size.x > maxp.x then
+				maxp.x = v.pos.x + v.size.x
+			end
+
+			if v.pos.y < minp.y then
+				minp.y = v.pos.y
+			end
+			if v.pos.y + v.size.y > maxp.y then
+				maxp.y = v.pos.y + v.size.y
+			end
+
+			if v.pos.z < minp.z then
+				minp.z = v.pos.z
+			end
+			if v.pos.z + v.size.z > maxp.z then
+				maxp.z = v.pos.z + v.size.z
+			end
+		end
+
+		--minetest.log("action", minetest.pos_to_string(minp))
+		--minetest.log("action", minetest.pos_to_string(maxp))
+
+		local vm = minetest.get_voxel_manip(minp, maxp)
+
+		for k, v in ipairs(build) do
+			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, {}, v.force)
+		end
+
+		vm:write_to_map()
 		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 
-		-- TODO: spawn schematics on vmanip.
-		for k, v in ipairs(build) do
-			minetest.place_schematic(v.pos, v.file, v.rotation, {}, v.force)
+		-- Display hash locations.
+		--[[
+		for k, v in pairs(traversal) do
+			local p = minetest.get_position_from_hash(k)
+			minetest.set_node(p, {name="wool:red"})
 		end
+		--]]
 	end
 end
 

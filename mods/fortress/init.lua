@@ -26,6 +26,8 @@ local keydirs = {
 -- Spawn a fortress starting at a position.
 -- Public API function. Pass valid values for `pos` and `data`.
 function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
+	local exceeding_soft_extent = false
+
 	-- Build traversal table if not provided. The traversal table allows us to
 	-- know if a section of fortress was already generated at a cell location. The
 	-- table contains the hashes of locations where fortress was generated.
@@ -33,9 +35,16 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	if not build then build = {} end
 	if not internal then
 		internal = {
+			-- Recursion depth.
 			depth = 0,
+
+			-- Algorithm start time.
 			time = os.time(),
+
+			-- Storage for limits information.
 			limit = {},
+
+			-- Initial starting position.
 			pos = {x=pos.x, y=pos.y, z=pos.z},
 		}
 		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector_round(pos)) .. "!")
@@ -54,10 +63,16 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 	-- Distance from inital pos must not be too large! Hard abort.
 	-- This prevents trying to generate HUGE fortresses that would slow things.
-	if pos.x < (internal.pos.x - 100) or pos.x > (internal.pos.x + 100) or
-			pos.y < (internal.pos.y - 30) or pos.y > (internal.pos.y + 30) or
-			pos.z < (internal.pos.z - 100) or pos.z > (internal.pos.z + 100) then
+	if pos.x < (internal.pos.x - data.max_extent.x) or pos.x > (internal.pos.x + data.max_extent.x) or
+			pos.y < (internal.pos.y - data.max_extent.y) or pos.y > (internal.pos.y + data.max_extent.y) or
+			pos.z < (internal.pos.z - data.max_extent.z) or pos.z > (internal.pos.z + data.max_extent.z) then
 		goto checkdone
+	end
+
+	if pos.x < (internal.pos.x - data.soft_extent.x) or pos.x > (internal.pos.x + data.soft_extent.x) or
+			pos.y < (internal.pos.y - data.soft_extent.y) or pos.y > (internal.pos.y + data.soft_extent.y) or
+			pos.z < (internal.pos.z - data.soft_extent.z) or pos.z > (internal.pos.z + data.soft_extent.z) then
+		exceeding_soft_extent = true
 	end
 
 	-- Use default offset if none specified.
@@ -67,9 +82,9 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	end
 
 	-- Calculate all positions this chunk will potentially occupy.
-	-- TODO: this is a really dumb, slow way to do this. The point is to ensure
-	-- that fortress sections don't overwrite each other, but there is a better way.
-	---[[
+	-- This adds a position hash for each possible location from 'offset' to
+	-- 'size'. The position hashes are sparse, so this is more efficient than it
+	-- looks.
 	do
 		local hash = minetest.hash_node_position(pos)
 		local hashes = {}
@@ -96,7 +111,6 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			traversal[v] = true
 		end
 	end
-	--]]
 
 	-- Obtain relevant parameters for this section of fortress.
 	-- A chunk may contain multiple schematics to place, each with their own
@@ -156,6 +170,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	for dir, chunks in pairs(info.next) do
 		local dirvec = keydirs[dir]
 		local p2 = vector_round(vector.add(vector.multiply(dirvec, data.step), pos))
+
 		for index, chunk in ipairs(chunks) do
 			local info = data.chunks[chunk.chunk]
 			-- Current chunk must have associated data.
@@ -178,8 +193,14 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				end
 			end
 
+			-- If exceeding max soft extents, then chunk chances are always zero,
+			-- and only 'fallback' chunks may be placed, if any are available.
+			if exceeding_soft_extent then
+				chance = 0
+			end
+
 			-- Add chunk data to fortress pattern if chance test succeeds.
-			if math_random(1, 100) <= chance then
+			if math_random(1, 100) <= chance or chunk.fallback then
 				local continue = false
 				if type(chunk.continue) == "boolean" then
 					continue = chunk.continue
@@ -202,6 +223,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 					break
 				end
 			end
+
 			::skipme::
 		end
 	end

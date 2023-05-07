@@ -237,8 +237,8 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 		end
 
 		if good then
-			v.perlin_route:get2dMap_flat(bp2d, v.route_map)
-			v.perlin_height:get2dMap_flat(bp2d, v.height_map)
+			v.perlin_route:get_2d_map_flat(bp2d, v.route_map)
+			v.perlin_height:get_2d_map_flat(bp2d, v.height_map)
 			v.good = true
 		else
 			v.good = false
@@ -265,9 +265,9 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 		end
 
 		if good then
-			v.perlin_ceiling:get2dMap_flat(bp2d, v.ceiling_map)
-			v.perlin_floor:get2dMap_flat(bp2d, v.floor_map)
-			v.perlin_level:get2dMap_flat(bp2d, v.level_map)
+			v.perlin_ceiling:get_2d_map_flat(bp2d, v.ceiling_map)
+			v.perlin_floor:get_2d_map_flat(bp2d, v.floor_map)
+			v.perlin_level:get_2d_map_flat(bp2d, v.level_map)
 			v.good = true
 		else
 			v.good = false
@@ -278,13 +278,13 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 	-- Get noisemaps.
 	perlin1 = perlin1 or minetest.get_perlin_map(stoneworld.noise1param2d, sides2D)
-	perlin1:get2dMap_flat(bp2d, noisemap1)
+	perlin1:get_2d_map_flat(bp2d, noisemap1)
 
 	perlin3 = perlin3 or minetest.get_perlin_map(stoneworld.noise3param2d, sides2D)
-	perlin3:get2dMap_flat(bp2d, noisemap3)
+	perlin3:get_2d_map_flat(bp2d, noisemap3)
 
 	perlin4 = perlin4 or minetest.get_perlin_map(stoneworld.noise4param3d, sides3D)
-	perlin4:get3dMap_flat(bp3d, noisemap4)
+	perlin4:get_3d_map_flat(bp3d, noisemap4)
 
 	-- Localize commonly used functions for speed.
 	local floor = math.floor

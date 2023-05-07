@@ -37,6 +37,15 @@ fortress.default = {
 	-- next chunk of fortress.
 	step = {x=11, y=11, z=11},
 
+	-- Maximum fortress extent.
+	-- The fortress spawner will not spawn any chunks farther than this distance
+	-- from the starting position.
+	max_extent = {x=120, y=40, z=120},
+
+	-- If chunk position would exceed the soft extent, then the chance for all
+	-- sub-chunks becomes 0, and fallback chunks (if any) are used ONLY.
+	soft_extent = {x=100, y=30, z=100},
+
 	-- Fortress section definitions.
 	-- Each chunk has a name, and its table defines which other chunks may be
 	-- spawned off it.
@@ -54,6 +63,14 @@ fortress.default = {
 	-- positioning of an individual schematic file. Chunks can have multiple
 	-- schematic files, and often each one must have its position adjusted a bit
 	-- to prevent overlaps.
+	--
+	-- The 'fallback' flag indicates that a chunk should be placed if no other
+	-- chunk was chosen. E.g., if several possible neighbors are specified in a
+	-- particular chunk's data, but none of those neighbors pass the 'chance'
+	-- test, then the first neighbor with 'fallback' set will be used instead.
+	-- Any single neighbor with 'fallback' must be the LAST entry in the neighbors
+	-- list, but there may be multiple neighbors thus flagged -- they will be
+	-- added in order.
 	chunks = {
 		-- Corridor sections.
 		junction = {
@@ -61,22 +78,22 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=90, shift={x=0, y=0, z=0}},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
 				["+z"] = {
 					{chunk="ns", chance=90},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew", chance=90},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
 				["-z"] = {
 					{chunk="ns", chance=90},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="junction_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="junction_walk", fallback=true}},
 			}
 		},
 		ew = {
@@ -92,7 +109,7 @@ fortress.default = {
 					{chunk="esw_t", chance=10},
 					{chunk="wne_t", chance=10},
 					{chunk="junction", chance=20},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew", chance=80},
@@ -104,10 +121,10 @@ fortress.default = {
 					{chunk="esw_t", chance=10},
 					{chunk="nes_t", chance=10},
 					{chunk="junction", chance=20},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="ew_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="ew_walk", fallback=true}},
 			},
 		},
 		ns = {
@@ -123,7 +140,7 @@ fortress.default = {
 					{chunk="esw_t", chance=10},
 					{chunk="swn_t", chance=10},
 					{chunk="junction", chance=20},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
 				["-z"] = {
 					{chunk="ns", chance=60},
@@ -135,38 +152,38 @@ fortress.default = {
 					{chunk="wne_t", chance=10},
 					{chunk="swn_t", chance=10},
 					{chunk="junction", chance=20},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="ns_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="ns_walk", fallback=true}},
 			},
 		},
 		n_capped = {
 			schem = {{file="nf_passage_n_capped"}},
 			next = {
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="n_capped_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="n_capped_walk", fallback=true}},
 			},
 		},
 		s_capped = {
 			schem = {{file="nf_passage_s_capped"}},
 			next = {
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="s_capped_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="s_capped_walk", fallback=true}},
 			},
 		},
 		e_capped = {
 			schem = {{file="nf_passage_e_capped"}},
 			next = {
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="e_capped_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="e_capped_walk", fallback=true}},
 			},
 		},
 		w_capped = {
 			schem = {{file="nf_passage_w_capped"}},
 			next = {
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="w_capped_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="w_capped_walk", fallback=true}},
 			},
 		},
 		ne_corner = {
@@ -174,14 +191,14 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns", chance=50},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
 				["+x"] = {
 					{chunk="ew", chance=70},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="ne_corner_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="ne_corner_walk", fallback=true}},
 			},
 		},
 		nw_corner = {
@@ -189,14 +206,14 @@ fortress.default = {
 			next = {
 				["-x"] = {
 					{chunk="ew", chance=70},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
 				["+z"] = {
 					{chunk="ns", chance=50},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="nw_corner_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="nw_corner_walk", fallback=true}},
 			},
 		},
 		sw_corner = {
@@ -204,14 +221,14 @@ fortress.default = {
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew", chance=70},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="sw_corner_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="sw_corner_walk", fallback=true}},
 			},
 		},
 		se_corner = {
@@ -219,14 +236,14 @@ fortress.default = {
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
 				["+x"] = {
 					{chunk="ew", chance=70},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="se_corner_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="se_corner_walk", fallback=true}},
 			},
 		},
 		esw_t = {
@@ -234,18 +251,18 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=70},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew", chance=70},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
 				["-z"] = {
 					{chunk="ns", chance=50},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="esw_t_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="esw_t_walk", fallback=true}},
 			},
 		},
 		nes_t = {
@@ -253,18 +270,18 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns", chance=50},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
 				["-z"] = {
 					{chunk="ns", chance=50},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
 				["+x"] = {
 					{chunk="ew", chance=70},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="nes_t_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="nes_t_walk", fallback=true}},
 			},
 		},
 		swn_t = {
@@ -272,18 +289,18 @@ fortress.default = {
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
-					{chunk="n_capped"},
+					{chunk="n_capped", fallback=true},
 				},
 				["+z"] = {
 					{chunk="ns", chance=50},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew", chance=70},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="swn_t_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="swn_t_walk", fallback=true}},
 			},
 		},
 		wne_t = {
@@ -291,18 +308,18 @@ fortress.default = {
 			next = {
 				["-x"] = {
 					{chunk="ew", chance=70},
-					{chunk="e_capped"},
+					{chunk="e_capped", fallback=true},
 				},
 				["+x"] = {
 					{chunk="ew", chance=70},
-					{chunk="w_capped"},
+					{chunk="w_capped", fallback=true},
 				},
 				["+z"] = {
 					{chunk="ns", chance=50},
-					{chunk="s_capped"},
+					{chunk="s_capped", fallback=true},
 				},
-				["-y"] = {{chunk="solid"}},
-				["+y"] = {{chunk="wne_t_walk"}},
+				["-y"] = {{chunk="solid", fallback=true}},
+				["+y"] = {{chunk="wne_t_walk", fallback=true}},
 			},
 		},
 
@@ -322,7 +339,7 @@ fortress.default = {
 					{chunk="bridge_arch_ew", shift={x=2, y=0, z=0}, continue=true},
 					{chunk="solid", shift={x=1, y=0, z=0}},
 				},
-				["+y"] = {{chunk="ns_walk", shift={x=1, y=0, z=0}}},
+				["+y"] = {{chunk="ns_walk", shift={x=1, y=0, z=0}, fallback=true}},
 			},
 		},
 		ew_bridge_passage = {
@@ -340,7 +357,7 @@ fortress.default = {
 					{chunk="bridge_arch_ns", shift={x=0, y=0, z=2}, continue=true},
 					{chunk="solid", shift={x=0, y=0, z=1}},
 				},
-				["+y"] = {{chunk="ew_walk", shift={x=0, y=0, z=1}}},
+				["+y"] = {{chunk="ew_walk", shift={x=0, y=0, z=1}, fallback=true}},
 			},
 		},
 
@@ -352,22 +369,22 @@ fortress.default = {
 			-- all chunks which have this chunk as a possible follow-up.
 			limit = 3,
 			next = {
-				["-y"] = {{chunk="bridge_pillar_top"}},
+				["-y"] = {{chunk="bridge_pillar_top", fallback=true}},
 				["+x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="w_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="e_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="s_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="n_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -382,16 +399,16 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew_walk_bridge_short", chance=50, shift={x=2, y=0, z=0}},
-					{chunk="w_broken_walk", shift={x=2, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true, shift={x=2, y=0, z=0}},
 				},
 				["-x"] = {
 					{chunk="ew_walk_bridge_short", chance=50, shift={x=0, y=0, z=0}},
-					{chunk="e_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-y"] = {
-					{chunk="bridge_arch_pillar_ew", shift={x=0, y=0, z=0}, continue=true},
-					{chunk="bridge_arch_ew", shift={x=1, y=0, z=0}, continue=true},
-					{chunk="bridge_arch_pillar_ew", shift={x=2, y=0, z=0}, continue=true},
+					{chunk="bridge_arch_pillar_ew", shift={x=0, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_ew", shift={x=1, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ew", shift={x=2, y=0, z=0}, continue=true, fallback=true},
 				},
 			},
 		},
@@ -406,16 +423,16 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=2}},
-					{chunk="s_broken_walk", shift={x=0, y=0, z=2}},
+					{chunk="s_broken_walk", fallback=true, shift={x=0, y=0, z=2}},
 				},
 				["-z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="n_broken_walk", shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-y"] = {
-					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=0}, continue=true},
-					{chunk="bridge_arch_ns", shift={x=0, y=0, z=1}, continue=true},
-					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=2}, continue=true},
+					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_ns", shift={x=0, y=0, z=1}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=2}, continue=true, fallback=true},
 				},
 			},
 		},
@@ -436,7 +453,7 @@ fortress.default = {
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ew_walk_bridge", shift={x=-2, y=0, z=0}},
 				},
-				["-y"] = {{chunk="bridge_arch_ew"}},
+				["-y"] = {{chunk="bridge_arch_ew", fallback=true}},
 			},
 		},
 		ns_walk_bridge_short = {
@@ -456,7 +473,7 @@ fortress.default = {
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ns_walk_bridge", shift={x=0, y=0, z=-2}},
 				},
-				["-y"] = {{chunk="bridge_arch_ns"}},
+				["-y"] = {{chunk="bridge_arch_ns", fallback=true}},
 			},
 		},
 
@@ -491,28 +508,30 @@ fortress.default = {
 		},
 
 		-- Broken causeway ends.
+		-- Need to set 'fallback' on the arch-undersides, otherwise they won't be
+		-- placed if we're past the soft extent.
 		n_broken_walk = {
 			schem = {{file="nf_walkway_n_broken", force=false}},
 			next = {
-				["-y"] = {{chunk="bridge_broken_walk_arch_n"}},
+				["-y"] = {{chunk="bridge_broken_walk_arch_n", fallback=true}},
 			},
 		},
 		s_broken_walk = {
 			schem = {{file="nf_walkway_s_broken", force=false}},
 			next = {
-				["-y"] = {{chunk="bridge_broken_walk_arch_s"}},
+				["-y"] = {{chunk="bridge_broken_walk_arch_s", fallback=true}},
 			},
 		},
 		e_broken_walk = {
 			schem = {{file="nf_walkway_e_broken", force=false}},
 			next = {
-				["-y"] = {{chunk="bridge_broken_walk_arch_e"}},
+				["-y"] = {{chunk="bridge_broken_walk_arch_e", fallback=true}},
 			},
 		},
 		w_broken_walk = {
 			schem = {{file="nf_walkway_w_broken", force=false}},
 			next = {
-				["-y"] = {{chunk="bridge_broken_walk_arch_w"}},
+				["-y"] = {{chunk="bridge_broken_walk_arch_w", fallback=true}},
 			},
 		},
 
@@ -538,8 +557,8 @@ fortress.default = {
 					{chunk="esw_t", chance=20},
 					{chunk="nes_t"},
 				},
-				["+y"] = {{chunk="ew_walk_stair"}},
-				["-y"] = {{chunk="solid"}},
+				["+y"] = {{chunk="ew_walk_stair", fallback=true}},
+				["-y"] = {{chunk="solid", fallback=true}},
 			},
 		},
 		ew_walk_stair = {
@@ -558,8 +577,8 @@ fortress.default = {
 					{chunk="swn_t", chance=10},
 					{chunk="wne_t"},
 				},
-				["+y"] = {{chunk="ns_walk_stair"}},
-				["-y"] = {{chunk="solid"}},
+				["+y"] = {{chunk="ns_walk_stair", fallback=true}},
+				["-y"] = {{chunk="solid", fallback=true}},
 			},
 		},
 		ns_walk_stair = {
@@ -582,13 +601,13 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=1, y=0, z=1}},
-					{chunk="w_broken_walk", shift={x=1, y=0, z=1}},
+					{chunk="w_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
 				},
 				["-x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=1}},
-					{chunk="e_broken_walk", shift={x=1, y=0, z=1}},
+					{chunk="e_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
 				},
-				["-y"] = {{chunk="gatehouse_pillar_ew", shift={x=0, y=0, z=0}}},
+				["-y"] = {{chunk="gatehouse_pillar_ew", shift={x=0, y=0, z=0}, fallback=true}},
 			},
 		},
 		ns_gatehouse = {
@@ -603,13 +622,13 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=1, y=0, z=1}},
-					{chunk="s_broken_walk", shift={x=1, y=0, z=1}},
+					{chunk="s_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
 				},
 				["-z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=1, y=0, z=0}},
-					{chunk="n_broken_walk", shift={x=1, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true, shift={x=1, y=0, z=0}},
 				},
-				["-y"] = {{chunk="gatehouse_pillar_ns", shift={x=0, y=0, z=0}}},
+				["-y"] = {{chunk="gatehouse_pillar_ns", shift={x=0, y=0, z=0}, fallback=true}},
 			},
 		},
 		gatehouse_pillar_ew = {
@@ -636,7 +655,7 @@ fortress.default = {
 		pillar = {
 			schem = {{file="nf_pillar", force=false}},
 			next = {
-				["-y"] = {{chunk="pillar_straight"}},
+				["-y"] = {{chunk="pillar_straight", fallback=true}},
 			},
 		},
 		pillar_straight = {
@@ -653,7 +672,7 @@ fortress.default = {
 			offset = {x=0, y=0, z=0},
 			size = {x=1, y=1, z=1},
 			next = {
-				["-y"] = {{chunk="pillar"}},
+				["-y"] = {{chunk="pillar", fallback=true}},
 			},
 		},
 

@@ -23,10 +23,6 @@ minetest.register_node("glowstone:luxore", {
 	place_param2 = 10,
 })
 
--- Note: this spawns ONLY in the Outback realm!
--- Silver picks cannot be obtained there (no silver).
--- Therefore node must drop itself when dug.
--- Shall have no crafting recipe. Only obtained in the Outback.
 minetest.register_node("glowstone:cobble", {
 	description = "Sunstone Deposit",
 	tiles = {"glowstone_cobble.png"},

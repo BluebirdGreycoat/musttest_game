@@ -14,8 +14,9 @@ local c_cobble          = minetest.get_content_id("darkage:basaltic_rubble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_lava            = minetest.get_content_id("lbrim:lava_source")
 local c_melt            = minetest.get_content_id("cavestuff:cobble_with_rockmelt")
-local c_glow            = minetest.get_content_id("glowstone:luxore")
+local c_glow            = minetest.get_content_id("glowstone:cobble")
 local c_obsidian        = minetest.get_content_id("cavestuff:dark_obsidian")
+local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -214,6 +215,8 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
 	local bp2d = {x=x0, y=z0}
 	local bp3d = {x=x0, y=y0, z=z0}
+
+	local pr = PseudoRandom(seed + 7114)
 
 	------------------------------------------------------------------------------
 
@@ -436,6 +439,8 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 			miny = max(miny, nbeg)
 			maxy = min(maxy, nend)
 
+			local worm = pr:next(1, 100) < 15
+
 			for y = miny, maxy do
 				local vd = max_area:index(x, y - 1, z)
 				local vp = max_area:index(x, y, z)
@@ -469,16 +474,31 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 					nid = c_air
 				end
 
-				-- Stone next to lava becomes obsidian.
-				if cp == c_stone and (cd == c_lava or cn == c_lava or cs == c_lava or
+				-- Stone next to lava becomes obsidian, but requires stone below.
+				if cp == c_stone and cd == c_stone and (cn == c_lava or cs == c_lava or
 						cw == c_lava or ce == c_lava or cnw == c_lava or cne == c_lava or
-						csw == c_lava or cse == c_lava) then
+						csw == c_lava or cse == c_lava or cu == c_lava) then
 					nid = c_obsidian
 				end
 
 				-- Stone with air above and more stone below becomes rubble.
-				if cp == c_stone and cu == c_air and cd == c_stone then
-					nid = c_cobble
+				-- But not if already turned to obsidian.
+				if nid ~= c_obsidian then
+					if cp == c_stone and cu == c_air and cd == c_stone then
+						nid = c_cobble
+
+						-- Sometimes place sunstone.
+						if pr:next(1, 300) == 1 then
+							nid = c_glow
+						end
+					end
+				end
+
+				-- Place glow worms on ceilings.
+				if worm then
+					if cp == c_air and cu == c_stone then
+						nid = c_worm
+					end
 				end
 
 				-- Write content ID.
@@ -499,9 +519,11 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 	-- Finalize voxel manipulator.
 	vm:set_data(vm_data)
+	minetest.generate_ores(vm)
 	vm:set_light_data(vm_light)
 	vm:calc_lighting({x=emin.x, y=emin.y, z=emin.z}, {x=emax.x, y=maxp.y, z=emax.z}, true)
 	vm:write_to_map()
+	vm:update_liquids()
 end
 
 

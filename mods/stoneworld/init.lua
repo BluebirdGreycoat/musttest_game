@@ -394,6 +394,12 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local top = floor(clevel + 15 + (c1 * 15) + n1 * 6)
 							local lava = (nbeg + yl - 20)
 
+							-- Raise cavern ceiling over the lava ocean.
+							-- Need to make room for the fortress spawner.
+							if bot < lava then
+								top = top + (lava - bot) * 3
+							end
+
 							if y >= bot and y <= top then
 								nid = c_air
 							end

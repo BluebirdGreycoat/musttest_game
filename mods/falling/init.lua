@@ -262,9 +262,9 @@ minetest.register_entity(":__builtin:falling_node", {
 
   on_step = function(self, dtime)
     -- Set gravity
-    local acceleration = self.object:getacceleration()
+    local acceleration = self.object:get_acceleration()
     if not vector_equals(acceleration, {x = 0, y = -8, z = 0}) then
-      self.object:setacceleration({x = 0, y = -8, z = 0})
+      self.object:set_acceleration({x = 0, y = -8, z = 0})
     end
     -- Turn to actual node when colliding with ground, or continue to move
     local pos = self.object:get_pos()

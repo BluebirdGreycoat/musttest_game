@@ -1,22 +1,15 @@
 
--- Todo:
--- Allow fortress chunks to extend downward without limit until rock.
-
 if not minetest.global_exists("fortress") then fortress = {} end
 fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
 fortress.schempath = fortress.modpath .. "/schems"
-fortress.pending = fortress.pending or {}
-fortress.active = fortress.active or {}
-fortress.dirty = true
 
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
 local math_random = math.random
 
-
-
+-- Default fortress definition.
 dofile(fortress.modpath .. "/default.lua")
 
 
@@ -41,7 +34,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	if not internal then
 		internal = {
 			depth = 0,
-			time = os.clock(),
+			time = os.time(),
 			limit = {},
 			pos = {x=pos.x, y=pos.y, z=pos.z},
 		}
@@ -59,6 +52,14 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	local info = data.chunks[start]
 	if not info then goto checkdone end
 
+	-- Distance from inital pos must not be too large! Hard abort.
+	-- This prevents trying to generate HUGE fortresses that would slow things.
+	if pos.x < (internal.pos.x - 100) or pos.x > (internal.pos.x + 100) or
+			pos.y < (internal.pos.y - 30) or pos.y > (internal.pos.y + 30) or
+			pos.z < (internal.pos.z - 100) or pos.z > (internal.pos.z + 100) then
+		goto checkdone
+	end
+
 	-- Use default offset if none specified.
 	do
 		local offset = info.offset or {x=0, y=0, z=0}
@@ -66,6 +67,9 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	end
 
 	-- Calculate all positions this chunk will potentially occupy.
+	-- TODO: this is a really dumb, slow way to do this. The point is to ensure
+	-- that fortress sections don't overwrite each other, but there is a better way.
+	---[[
 	do
 		local hash = minetest.hash_node_position(pos)
 		local hashes = {}
@@ -92,6 +96,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			traversal[v] = true
 		end
 	end
+	--]]
 
 	-- Obtain relevant parameters for this section of fortress.
 	-- A chunk may contain multiple schematics to place, each with their own
@@ -178,14 +183,17 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				end
 				local p3 = vector.multiply(chunk.shift or {x=0, y=0, z=0}, data.step)
 				local loc = vector_round(vector.add(p3, p2))
-				local delay = (math_random(1, 10)/10)+1.0
+
 				internal.depth = internal.depth + 1
-				--minetest.chat_send_all("# Server: Depth " .. internal.depth .. "!")
-				minetest.after(delay, function()
+				minetest.log("action", "depth " .. internal.depth .. "!")
+
+				-- Using minetest.after() to avoid stack overflow.
+				minetest.after(0, function()
 					internal.depth = internal.depth - 1
 					assert(internal.depth >= 0)
 					fortress.spawn_fortress(loc, data, chunk.chunk, traversal, build, internal)
 				end)
+
 				-- Generated chunk. Don't need to continue through chunks for this dir.
 				if not continue then
 					break
@@ -198,106 +206,12 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Check if all build-data is gathered yet.
 	::checkdone::
 	if internal.depth == 0 then
-		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.clock()-internal.time) .. " seconds!")
+		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 
-		-- Push build data to pending queue.
+		-- TODO: spawn schematics on vmanip.
 		for k, v in ipairs(build) do
-			(fortress.pending)[#(fortress.pending)+1] = v
+			minetest.place_schematic(v.pos, v.file, v.rotation, {}, v.force)
 		end
-		fortress.dirty = true
-
-		-- Save data for later, perhaps after a restart.
-		-- But more commonly, fortress will be generated this session.
-		fortress.save_data()
-	end
-end
-
-
-
--- Using data in the pending table, construct a fortress.
--- This data is created by attempting to spawn a fortress,
--- and is saved on shutdown to allow resuming after restart.
--- This function is called once a second.
-function fortress.resume_construction()
-	if #fortress.pending == 0 then
-		-- Nothing to write!
-		return
-	end
-	-- Count entries in active list (starts out contigious, may have holes).
-	local count = 0
-	for k, v in pairs(fortress.active) do
-		count = count + 1
-	end
-	if count > 0 then
-		-- Write already in progress!
-		return
-	end
-
-	-- Swap buffers.
-	fortress.active = fortress.pending
-	fortress.pending = {}
-	fortress.dirty = true
-
-	local internal = {
-		depth = 0,
-		time = os.clock(),
-	}
-	minetest.log("action", "Generating fortress structure!")
-
-	-- The first time we iterate over the active list it is a contigious
-	-- array. During the process that this starts, the array gains holes.
-	local timer = 1
-	for k, v in pairs(fortress.active) do
-		internal.depth = internal.depth + 1
-		minetest.after(timer, function()
-			-- Positions to preload. Need a larger area in order to make sure any protections are discovered.
-			local minp = vector.add(v.pos, vector.new(-16, -16, -16))
-			local maxp = vector.add(v.pos, vector.add(v.size, vector.new(16, 16, 16)))
-
-			local tbparam = {}
-
-			-- Callback function. Will be called when area is emerged.
-			local cb = function(blockpos, action, calls_remaining, param)
-				-- We don't do anything until the last callback.
-				if calls_remaining ~= 0 then
-					-- Don't decrement the depth counter.
-					-- We haven't actually done anything.
-					goto checkdone
-				end
-
-				if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-					minetest.log("error", "Failed to emerge area for fortress chunk at " .. minetest.pos_to_string(v.pos) .. "!")
-					-- Don't decrement the depth counter.
-					-- We haven't actually done anything.
-					goto checkdone
-				end
-
-				internal.depth = internal.depth - 1
-
-				if fortress.is_protected(minp, maxp) then
-					minetest.log("error", "Cannot place fortress chunk at " .. minetest.pos_to_string(v.pos) .. " due to protection!")
-					fortress.active[k] = nil
-					fortress.dirty = true
-					goto checkdone
-				end
-
-				minetest.place_schematic(v.pos, v.file, v.rotation, {}, v.force)
-				fortress.active[k] = nil
-				fortress.dirty = true
-				minetest.log("action", "Placed fortress section @ " .. minetest.pos_to_string(v.pos) .. "!")
-
-				::checkdone::
-				if internal.depth == 0 then
-					minetest.log("action", "Fortress fully generated in " .. math_floor(os.clock()-internal.time) .. " seconds!")
-					fortress.save_data()
-				end
-			end
-
-			-- The fortress chunk is placed after generating map.
-			minetest.emerge_area(minp, maxp, cb, tbparam)
-		end)
-		-- Separate calls to build fortress sections by random time, sequentially.
-		timer = timer + (math_random(1, 100)/20)
 	end
 end
 
@@ -327,48 +241,6 @@ end
 
 
 
-function fortress.save_data()
-	if not fortress.dirty then
-		return
-	end
-	local data = {}
-	for k, v in ipairs(fortress.pending) do
-		data[#data+1] = v
-	end
-	for k, v in pairs(fortress.active) do
-		data[#data+1] = v
-	end
-	local str = minetest.serialize(data)
-	if type(str) ~= "string" then
-		return
-	end
-	local file = io.open(fortress.worldpath .. "/fortress.dat", "w")
-	if file then
-		file:write(str)
-		file:close()
-		minetest.log("action", "Saved " .. #data .. " pending fortress sections!")
-		fortress.dirty = false
-	end
-end
-
-
-
-function fortress.load_data()
-	local file = io.open(fortress.worldpath .. "/fortress.dat", "r")
-	if file then
-		-- Data should always be a contigious array.
-		local data = minetest.deserialize(file:read("*all"))
-		if type(data) == "table" then
-			fortress.pending = data
-			fortress.dirty = false
-		end
-		file:close()
-		minetest.log("action", "Loaded " .. #data .. " pending fortress sections!")
-	end
-end
-
-
-
 function fortress.chat_command(name, param)
 	local player = minetest.get_player_by_name(name)
 	if not player or not player:is_player() then
@@ -382,26 +254,6 @@ end
 
 
 if not fortress.run_once then
-	fortress.load_data()
-
-	local delay = 1
-	local timer = 0
-	minetest.register_globalstep(function(dtime)
-		timer = timer + dtime
-		if timer < delay then
-			return
-		end
-		timer = 0
-		return fortress.resume_construction()
-	end)
-
-	minetest.register_on_shutdown(function()
-		return fortress.save_data()
-	end)
-	minetest.register_on_mapsave(function()
-		return fortress.save_data()
-	end)
-
 	minetest.register_chatcommand("spawn_fortress", {
 		params = "",
 		description = "Spawn a fortress starting at your current location.",

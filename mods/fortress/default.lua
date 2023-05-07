@@ -37,6 +37,9 @@ fortress.default = {
 	-- next chunk of fortress.
 	step = {x=11, y=11, z=11},
 
+	-- Fortress section definitions.
+	-- Each chunk has a name, and its table defines which other chunks may be
+	-- spawned off it.
 	chunks = {
 		-- Corridor sections.
 		junction = {

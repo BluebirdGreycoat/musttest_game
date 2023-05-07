@@ -527,7 +527,7 @@ if not darkage.run_once then
 	})
 
 	minetest.register_node("darkage:basaltic", {
-		description = "Dark Basaltic Rock",
+		description = "Basaltic Rock",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",
 		groups = utility.dig_groups("hardstone", {stone = 1}),
@@ -536,14 +536,14 @@ if not darkage.run_once then
 	})
 
 	minetest.register_node("darkage:basaltic_rubble", {
-		description = "Dark Basaltic Rubble",
+		description = "Basaltic Rubble",
 		tiles = {"darkage_basalt_rubble.png"},
 		groups = utility.dig_groups("cobble", {stone = 1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 
 	minetest.register_node("darkage:basaltic_brick", {
-		description = "Dark Basaltic Brick",
+		description = "Basaltic Brick",
 		tiles = {"darkage_basalt_brick.png"},
 		paramtype2 = "facedir",
 		groups = utility.dig_groups("brick", {brick=1}),
@@ -551,7 +551,7 @@ if not darkage.run_once then
 	})
 
 	minetest.register_node("darkage:basaltic_block", {
-		description = "Dark Basaltic Block",
+		description = "Basaltic Block",
 		tiles = {"darkage_basalt_block.png"},
 		groups = utility.dig_groups("block", {block=1}),
 		sounds = default.node_sound_stone_defaults()

@@ -165,6 +165,27 @@ rc.realms = {
 
 		--]]
 	},
+	-- Distance to stoneworld: 500
+	{
+		-- Stoneworld. Tartarus. Place of evildoers. 3000 blocks high, all stone.
+		id = 6, -- REALM ID. Code relies on this.
+		name = "naraxen",
+		description = "Naraxen",
+		minp = {x=-30912, y=5150, z=-30912},
+		maxp = {x=30927, y=8150, z=30927},
+		gate_minp = {x=-30000, y=5350, z=-30000},
+		gate_maxp = {x=30000, y=7950, z=30000},
+		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		ground = 8150,
+		underground = 8150, -- Affects sky color, see sky mod.
+		sealevel = 8150,
+		windlevel = 8150,
+		realm_origin = {x=2382, y=6650, z=-3721},
+		moon_data = {visible=false},
+		sun_data = {visible=false},
+		sky_data = {clouds=false},
+		star_data = {visible=false},
+	},
 }
 
 -- Return true if a position is underground in some realm.
@@ -655,7 +676,7 @@ function rc.check_position(player)
 	-- Admin may fly around in the void.
 	-- WARNING: use only when needed!
 	-- Careless flying+mapgen WILL cause lighting issues!
-	--if gdac.player_is_admin(player) then return end
+	if gdac.player_is_admin(player) then return end
 
 	local reset -- Table set if player out-of-bounds.
 

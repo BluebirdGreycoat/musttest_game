@@ -1,6 +1,6 @@
 
 minetest.register_node(":gloopblocks:basalt", {
-	description = "Basalt",
+	description = "Light Basalt",
 	tiles = {"gloopblocks_basalt.png"},
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("hardstone"),
@@ -23,7 +23,7 @@ stairs.register_stair_and_slab(
 	"gloopblocks:basalt",
 	utility.dig_groups("stone"),
 	{"gloopblocks_basalt.png"},
-	"Basalt",
+	"Light Basalt",
 	default.node_sound_stone_defaults()
 )
 

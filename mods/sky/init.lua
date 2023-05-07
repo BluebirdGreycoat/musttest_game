@@ -3,6 +3,10 @@ if not minetest.global_exists("sky") then sky = {} end
 sky.modpath = minetest.get_modpath("sky")
 sky.players = sky.players or {}
 
+-- Disable underground skycolors in singleplayer -- black sky gets in the way of
+-- mapgen development, esp regarding caves.
+local IS_SINGLEPLAYER = minetest.is_singleplayer()
+
 
 
 -- Localize for speed.
@@ -198,20 +202,22 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 	-- Update player's sky colors. Use flags to avoid extra calls.
 	if vector_distance(playerpos, pdata.ppos) > 5 or pdata.sky == -1 then
 		if rc.position_underground(playerpos) and pdata.sky <= 0 then
-			if playerpos.y > -25000 and pdata.sky ~= 1 then
-				-- Cave (natural) background.
-				player:set_sky({base_color={a=255, r=0, g=0, b=0}, type="plain", clouds=false})
-				player:set_sun({visible=false, sunrise_visible=false})
-				player:set_moon({visible=false})
-				player:set_stars({visible=false})
-				pdata.sky = 1
-			elseif pdata.sky ~= 2 then
-				-- Nether (cave) background.
-				player:set_sky({base_color={a=255, r=10, g=0, b=0}, type="plain", clouds=false})
-				player:set_sun({visible=false, sunrise_visible=false})
-				player:set_moon({visible=false})
-				player:set_stars({visible=false})
-				pdata.sky = 2
+			if not IS_SINGLEPLAYER then
+				if playerpos.y > -25000 and pdata.sky ~= 1 then
+					-- Cave (natural) background.
+					player:set_sky({base_color={a=255, r=0, g=0, b=0}, type="plain", clouds=false})
+					player:set_sun({visible=false, sunrise_visible=false})
+					player:set_moon({visible=false})
+					player:set_stars({visible=false})
+					pdata.sky = 1
+				elseif pdata.sky ~= 2 then
+					-- Nether (cave) background.
+					player:set_sky({base_color={a=255, r=10, g=0, b=0}, type="plain", clouds=false})
+					player:set_sun({visible=false, sunrise_visible=false})
+					player:set_moon({visible=false})
+					player:set_stars({visible=false})
+					pdata.sky = 2
+				end
 			end
 		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
 			player:set_sky(rc.get_realm_sky(playerpos))

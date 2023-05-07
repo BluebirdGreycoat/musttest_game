@@ -15,6 +15,7 @@ local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_lava            = minetest.get_content_id("lbrim:lava_source")
 local c_melt            = minetest.get_content_id("cavestuff:cobble_with_rockmelt")
 local c_glow            = minetest.get_content_id("glowstone:luxore")
+local c_obsidian        = minetest.get_content_id("cavestuff:dark_obsidian")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -101,6 +102,7 @@ stoneworld.cavernfloornoise = {
 	octaves = 7,
 	persist = 0.5,
 	lacunarity = 1.6,
+	flags = "eased",
 }
 
 stoneworld.cavernlevelnoise = {
@@ -188,19 +190,21 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	vm:get_data(vm_data)
 	vm:get_light_data(vm_light)
-	local max_area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
-	local min_area = VoxelArea:new {MinEdge=minp, MaxEdge=maxp}
 
 	-- Actual emerged area should be bigger than the chunk we're generating!
 	assert(emin.y < minp.y and emin.x < minp.x and emin.z < minp.z)
 	assert(emax.y > maxp.y and emax.x > maxp.x and emax.z > maxp.z)
 
-	local x1 = maxp.x
-	local y1 = maxp.y
-	local z1 = maxp.z
-	local x0 = minp.x
-	local y0 = minp.y
-	local z0 = minp.z
+	-- Start out by overgenerating by 1 node.
+	local x1 = maxp.x + 1
+	local y1 = maxp.y + 1
+	local z1 = maxp.z + 1
+	local x0 = minp.x - 1
+	local y0 = minp.y - 1
+	local z0 = minp.z - 1
+
+	local max_area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+	local min_area = VoxelArea:new {MinEdge={x=x0, y=y0, z=z0}, MaxEdge={x=x1, y=y1, z=z1}}
 
 	-- Compute side lengths.
 	local side_len_x = ((x1-x0)+1)
@@ -286,8 +290,10 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	local min = math.min
 	local max = math.max
 
-	-- First mapgen pass. Generate stone terrain shape, fill rest with air (critical).
-	-- This also constructs the heightmap, which caches the height values.
+	-- First mapgen pass. Generate stone, passages, caverns, lava, and bedrock.
+	-- Use slightly overgenerated coordinates to generate material 1 node outside
+	-- the normal minp/maxp bounds. This makes it possible for the second mapgen
+	-- pass (decorations) to get what is at the edge of a neighbor chunk.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			-- Get index into 2D noise arrays.
@@ -297,15 +303,15 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 			-- Lua arrays start indexing at 1, not 0. Urrrrgh.
 			n2d = n2d + 1
 
-			local miny = (y0 - 0)
-			local maxy = (y1 + 0)
+			local miny = y0
+			local maxy = y1
 
 			-- Clamp realm end/start Y-values.
 			miny = max(miny, nbeg)
 			maxy = min(maxy, nend)
 
 			-- Pass through column.
-			for y = miny, maxy, 1 do
+			for y = miny, maxy do
 				local vp = max_area:index(x, y, z)
 				local cid = vm_data[vp]
 				local nid = c_stone
@@ -364,11 +370,6 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 								if y >= bot and y <= top then
 									nid = c_air
 								end
-								if y == (bot - 1) then
-									if nid == c_stone then
-										nid = c_cobble
-									end
-								end
 							end
 						end
 					end
@@ -386,19 +387,15 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 							-- Basic cavern parameters.
 							local clevel = (nbeg + yl + floor(c3 * 15))
-							local bot = floor(clevel - 15 + (c2 * 5))
-							local top = floor(clevel + 15 + (c1 * 15) - abs(n1) * 6)
+							local bot = floor(clevel - 15 + (c2 * 5) + n2 * 6)
+							local top = floor(clevel + 15 + (c1 * 15) + n1 * 6)
+							local lava = (nbeg + yl - 20)
 
 							if y >= bot and y <= top then
 								nid = c_air
 							end
-							if y >= bot and y <= (nbeg + yl - 20) then
+							if y >= bot and y <= lava then
 								nid = c_lava
-							end
-							if y == (bot - 1) then
-								if nid == c_stone then
-									nid = c_cobble
-								end
 							end
 						end
 					end
@@ -428,11 +425,74 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 		end
 	end
 
+	-- Second mapgen pass. Add context-specific modifications and decorations.
+	-- No overgeneration, stay within minp/maxp bounds.
+	for z = z0 + 1, z1 - 1 do
+		for x = x0 + 1, x1 - 1 do
+			local miny = (y0 + 1)
+			local maxy = (y1 - 1)
+
+			-- Clamp realm end/start Y-values.
+			miny = max(miny, nbeg)
+			maxy = min(maxy, nend)
+
+			for y = miny, maxy do
+				local vd = max_area:index(x, y - 1, z)
+				local vp = max_area:index(x, y, z)
+				local vu = max_area:index(x, y + 1, z)
+				local vn = max_area:index(x, y, z + 1)
+				local vs = max_area:index(x, y, z - 1)
+				local vw = max_area:index(x - 1, y, z)
+				local ve = max_area:index(x + 1, y, z)
+				local vne = max_area:index(x + 1, y, z + 1)
+				local vnw = max_area:index(x - 1, y, z + 1)
+				local vse = max_area:index(x + 1, y, z - 1)
+				local vsw = max_area:index(x - 1, y, z - 1)
+
+				-- Get what's here already.
+				local cd = vm_data[vd]
+				local cp = vm_data[vp]
+				local cu = vm_data[vu]
+				local cn = vm_data[vn]
+				local cs = vm_data[vs]
+				local cw = vm_data[vw]
+				local ce = vm_data[ve]
+				local cne = vm_data[vne]
+				local cnw = vm_data[vnw]
+				local cse = vm_data[vse]
+				local csw = vm_data[vsw]
+
+				local nid = cp
+
+				-- Stone with air both above and below becomes air.
+				if cp == c_stone and cu == c_air and cd == c_air then
+					nid = c_air
+				end
+
+				-- Stone next to lava becomes obsidian.
+				if cp == c_stone and (cd == c_lava or cn == c_lava or cs == c_lava or
+						cw == c_lava or ce == c_lava or cnw == c_lava or cne == c_lava or
+						csw == c_lava or cse == c_lava) then
+					nid = c_obsidian
+				end
+
+				-- Stone with air above and more stone below becomes rubble.
+				if cp == c_stone and cu == c_air and cd == c_stone then
+					nid = c_cobble
+				end
+
+				-- Write content ID.
+				vm_data[vp] = nid
+			end
+		end
+	end
+
+	-- Lighting pass. Set everything dark.
 	for z = emin.z, emax.z do
 		for x = emin.x, emax.x do
 			for y = emin.y, emax.y do
 				local vp = max_area:index(x, y, z)
-				vm_light[vp] = 0
+				vm_light[vp] = 255
 			end
 		end
 	end

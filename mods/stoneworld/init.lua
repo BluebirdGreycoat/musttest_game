@@ -535,6 +535,9 @@ if not stoneworld.registered then
 		stoneworld.generate_realm(...)
 	end)
 
+	dofile(stoneworld.modpath .. "/nodes.lua")
+	dofile(stoneworld.modpath .. "/ores.lua")
+
 	local c = "stoneworld:core"
 	local f = stoneworld.modpath .. "/init.lua"
 	reload.register_file(c, f, false)

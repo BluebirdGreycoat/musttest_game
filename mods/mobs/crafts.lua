@@ -19,6 +19,10 @@ local meat_types = {
 	{name="mobs:meat_raw", desc="Raw Meat (Unidentified)", image="mobs_meat_raw.png", food=3, cooked="mobs:meat", is_raw=true},
 	{name="mobs:meat", desc="Cooked Meat (Unidentified)\n\nEat to improve resistance to certain kinds of damage, for a time.", image="mobs_meat.png", food=6},
 
+	-- Naraxen meat.
+	{name="mobs:naraxen_meat_raw", desc="Raw Naraxen Meat (Unidentified)", image="mobs_meat_raw.png", food=3, cooked="mobs:naraxen_meat", is_raw=true},
+	{name="mobs:naraxen_meat", desc="Naraxen Meat (Unidentified)", image="mobs_meat.png", food=6},
+
 	-- Mutton.
 	{name="mobs:meat_raw_mutton", desc="Raw Mutton", image="mobs_mutton_raw.png", food=4, cooked="mobs:meat_mutton", is_raw=true},
 	{name="mobs:meat_mutton", desc="Cooked Mutton\n\nEat to improve resistance to certain kinds of damage, for a time.", image="mobs_mutton.png", food=10},

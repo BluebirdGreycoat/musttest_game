@@ -13,13 +13,20 @@ minetest.register_node("moregrass:darkgrass", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
+
 	-- Depreciated.
 	--on_timer = function(...)
 	--	return dirtspread.dirt_on_timer(...)
 	--end,
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 })
 

@@ -533,6 +533,38 @@ if not darkage.run_once then
 		groups = utility.dig_groups("hardstone", {stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
 		movement_speed_multiplier = default.ROAD_SPEED,
+
+		-- Collapsed stone breaks up into cobble.
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="darkage:basaltic_rubble"})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="darkage:basaltic_rubble"})
+		end,
+	})
+
+	minetest.register_node("darkage:unstable_basalt", {
+		description = "Basaltic Rock (Please Report To Admin)",
+		tiles = {"darkage_basalt.png"},
+		drop = "darkage:basaltic_rubble",
+		groups = utility.dig_groups("hardstone", {stone = 1, falling_node = 1}),
+		sounds = default.node_sound_stone_defaults(),
+		movement_speed_multiplier = default.ROAD_SPEED,
+
+		-- Collapsed stone breaks up into cobble.
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name="darkage:basaltic_rubble"})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name="darkage:basaltic_rubble"})
+		end,
+
+		-- Player walking on it causes collapse.
+		on_player_walk_over = function(pos, player)
+			minetest.check_for_falling(pos)
+		end,
 	})
 
 	minetest.register_node("darkage:basaltic_rubble", {

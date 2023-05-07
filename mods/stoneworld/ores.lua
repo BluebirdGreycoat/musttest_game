@@ -75,3 +75,41 @@ oregen.register_ore({
     persist = 0.0
   },
 })
+
+oregen.register_ore({
+  ore_type        = "blob",
+  ore             = "darkage:unstable_basalt",
+  wherein         = {"darkage:basaltic"},
+  clust_scarcity  = 10 * 10 * 10,
+  clust_size      = 5,
+  y_min = ore_min,
+  y_max = ore_max,
+  noise_threshold = 0.0,
+  noise_params    = {
+    offset = 0.5,
+    scale = 0.2,
+    spread = {x = 5, y = 5, z = 5},
+    seed = 48719,
+    octaves = 1,
+    persist = 0.0
+  },
+})
+
+oregen.register_ore({
+  ore_type        = "blob",
+  ore             = "darkage:unstable_basalt",
+  wherein         = {"darkage:basaltic"},
+  clust_scarcity  = 10 * 10 * 10,
+  clust_size      = 5,
+  y_min = ore_min,
+  y_max = ore_max,
+  noise_threshold = 0.0,
+  noise_params    = {
+    offset = 0.5,
+    scale = 0.2,
+    spread = {x = 5, y = 5, z = 5},
+    seed = 5103,
+    octaves = 1,
+    persist = 0.0
+  },
+})

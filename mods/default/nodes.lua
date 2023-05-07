@@ -512,6 +512,11 @@ minetest.register_node("default:dirt_with_grass", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 })
 
@@ -536,6 +541,11 @@ minetest.register_node("default:dirt_with_grass_footsteps", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 })
 
@@ -559,6 +569,11 @@ minetest.register_node("default:dirt_with_dry_grass", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED_GRASS,
 })
 
@@ -584,6 +599,10 @@ minetest.register_node("default:dirt_with_snow", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -610,6 +629,10 @@ minetest.register_node("default:dark_dirt_with_snow", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="darkage:darkdirt"})
+	end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -636,6 +659,10 @@ minetest.register_node("default:dry_dirt_with_snow", {
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dry_dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dry_dirt"})
+	end,
 	--]]
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
@@ -653,9 +680,15 @@ minetest.register_node("default:dirt_with_rainforest_litter", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -672,9 +705,15 @@ minetest.register_node("default:dark_dirt_with_rainforest_litter", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="darkage:darkdirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -689,9 +728,15 @@ minetest.register_node("default:dry_dirt_with_rainforest_litter", {
 	drop = "default:dry_dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
+
 	on_finish_collapse = function(pos, node)
 		minetest.swap_node(pos, {name="default:dry_dirt"})
 	end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dry_dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -708,9 +753,15 @@ minetest.register_node("default:dirt_with_coniferous_litter", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -727,9 +778,15 @@ minetest.register_node("default:dark_dirt_with_coniferous_litter", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="darkage:darkdirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="darkage:darkdirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -744,9 +801,15 @@ minetest.register_node("default:dry_dirt_with_coniferous_litter", {
 	drop = "default:dry_dirt",
 	post_effect_color = {a=255, r=0, g=0, b=0},
 	sounds = default.node_sound_dirt_defaults(),
+
 	on_finish_collapse = function(pos, node)
 		minetest.swap_node(pos, {name="default:dry_dirt"})
 	end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dry_dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -772,9 +835,15 @@ minetest.register_node("default:dry_dirt_with_dry_grass", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.4},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:dry_dirt"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:dry_dirt"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -834,9 +903,15 @@ minetest.register_node("default:permafrost_with_moss", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:permafrost"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:permafrost"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 
@@ -852,9 +927,15 @@ minetest.register_node("default:permafrost_with_moss_and_stones", {
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
+
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:permafrost_with_stones"})
   end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:permafrost_with_stones"})
+	end,
+
 	movement_speed_multiplier = default.SLOW_SPEED,
 })
 

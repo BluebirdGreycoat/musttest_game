@@ -40,7 +40,7 @@ fortress.default = {
 	-- Maximum fortress extent.
 	-- The fortress spawner will not spawn any chunks farther than this distance
 	-- from the starting position.
-	max_extent = {x=120, y=40, z=120},
+	max_extent = {x=150, y=100, z=150},
 
 	-- If chunk position would exceed the soft extent, then the chance for all
 	-- sub-chunks becomes 0, and fallback chunks (if any) are used ONLY.
@@ -50,14 +50,13 @@ fortress.default = {
 	-- Each chunk has a name, and its table defines which other chunks may be
 	-- spawned off it.
 	--
-	-- Note: for each chunk, 'offset' and 'size' are given in terms of 'step',
-	-- these are NOT actual pos/size coordinates. The fortress spawner multiplies
-	-- 'offset' and 'size' by 'step' value and uses the result to detect whether
-	-- a particular location has already spawned a section of fortress.
+	-- Note: for each chunk, 'size' is given in terms of 'step', this is NOT
+	-- actual size coordinates. The fortress spawner multiplies 'size' by 'step'
+	-- value and uses the result to detect whether a particular location has
+	-- already spawned a section of fortress.
 	--
-	-- You typically only need to specify 'offset' and 'size' for sections of
-	-- fortress that are larger than 'step' size. The default offset is {0, 0, 0}
-	-- and the default size is {1, 1, 1}.
+	-- You typically only need to specify 'size' for sections of fortress that are
+	-- larger than 'step' size. The default size is {1, 1, 1}.
 	--
 	-- The 'adjust' schematic variable is for slightly adjusting the precise
 	-- positioning of an individual schematic file. Chunks can have multiple
@@ -77,32 +76,33 @@ fortress.default = {
 			schem = {{file="nf_passage_4x_junction"}},
 			next = {
 				["+x"] = {
-					{chunk="ew", chance=90, shift={x=0, y=0, z=0}},
+					{chunk="ew", chance=80, shift={x=0, y=0, z=0}},
 					{chunk="w_capped", fallback=true},
 				},
 				["+z"] = {
-					{chunk="ns", chance=90},
+					{chunk="ns", chance=80},
 					{chunk="s_capped", fallback=true},
 				},
 				["-x"] = {
-					{chunk="ew", chance=90},
+					{chunk="ew", chance=80},
 					{chunk="e_capped", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns", chance=90},
+					{chunk="ns", chance=80},
 					{chunk="n_capped", fallback=true},
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="junction_walk", fallback=true}},
 			}
 		},
+
 		ew = {
 			schem = {{file="nf_passage_ew"}},
 			next = {
 				["+x"] = {
-					{chunk="ew", chance=80},
-					{chunk="ew_stair", chance=40},
-					{chunk="ew_bridge_passage", chance=30},
+					{chunk="ew", chance=20},
+					{chunk="ew_stair", chance=20},
+					{chunk="ew_bridge_passage", chance=30, shift={x=0, y=0, z=-1}},
 					{chunk="sw_corner", chance=20},
 					{chunk="nw_corner", chance=20},
 					{chunk="swn_t", chance=10},
@@ -112,9 +112,9 @@ fortress.default = {
 					{chunk="w_capped", fallback=true},
 				},
 				["-x"] = {
-					{chunk="ew", chance=80},
-					{chunk="ew_stair", chance=40},
-					{chunk="ew_bridge_passage", chance=30},
+					{chunk="ew", chance=20},
+					{chunk="ew_stair", chance=20},
+					{chunk="ew_bridge_passage", chance=30, shift={x=0, y=0, z=-1}},
 					{chunk="se_corner", chance=20},
 					{chunk="ne_corner", chance=20},
 					{chunk="wne_t", chance=10},
@@ -127,13 +127,14 @@ fortress.default = {
 				["+y"] = {{chunk="ew_walk", fallback=true}},
 			},
 		},
+
 		ns = {
 			schem = {{file="nf_passage_ns"}},
 			next = {
 				["+z"] = {
-					{chunk="ns", chance=60},
-					{chunk="ns_stair", chance=40},
-					{chunk="ns_bridge_passage", chance=20},
+					{chunk="ns", chance=20},
+					{chunk="ns_stair", chance=20},
+					{chunk="ns_bridge_passage", chance=30, shift={x=-1, y=0, z=0}},
 					{chunk="se_corner", chance=20},
 					{chunk="sw_corner", chance=20},
 					{chunk="nes_t", chance=10},
@@ -143,9 +144,9 @@ fortress.default = {
 					{chunk="s_capped", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns", chance=60},
-					{chunk="ns_stair", chance=40},
-					{chunk="ns_bridge_passage", chance=20},
+					{chunk="ns", chance=20},
+					{chunk="ns_stair", chance=20},
+					{chunk="ns_bridge_passage", chance=30, shift={x=-1, y=0, z=0}},
 					{chunk="ne_corner", chance=20},
 					{chunk="nw_corner", chance=20},
 					{chunk="nes_t", chance=10},
@@ -158,6 +159,7 @@ fortress.default = {
 				["+y"] = {{chunk="ns_walk", fallback=true}},
 			},
 		},
+
 		n_capped = {
 			schem = {{file="nf_passage_n_capped"}},
 			next = {
@@ -165,6 +167,7 @@ fortress.default = {
 				["+y"] = {{chunk="n_capped_walk", fallback=true}},
 			},
 		},
+
 		s_capped = {
 			schem = {{file="nf_passage_s_capped"}},
 			next = {
@@ -172,6 +175,7 @@ fortress.default = {
 				["+y"] = {{chunk="s_capped_walk", fallback=true}},
 			},
 		},
+
 		e_capped = {
 			schem = {{file="nf_passage_e_capped"}},
 			next = {
@@ -179,6 +183,7 @@ fortress.default = {
 				["+y"] = {{chunk="e_capped_walk", fallback=true}},
 			},
 		},
+
 		w_capped = {
 			schem = {{file="nf_passage_w_capped"}},
 			next = {
@@ -186,6 +191,7 @@ fortress.default = {
 				["+y"] = {{chunk="w_capped_walk", fallback=true}},
 			},
 		},
+
 		ne_corner = {
 			schem = {{file="nf_passage_ne_corner"}},
 			next = {
@@ -201,6 +207,7 @@ fortress.default = {
 				["+y"] = {{chunk="ne_corner_walk", fallback=true}},
 			},
 		},
+
 		nw_corner = {
 			schem = {{file="nf_passage_nw_corner"}},
 			next = {
@@ -216,6 +223,7 @@ fortress.default = {
 				["+y"] = {{chunk="nw_corner_walk", fallback=true}},
 			},
 		},
+
 		sw_corner = {
 			schem = {{file="nf_passage_sw_corner"}},
 			next = {
@@ -231,6 +239,7 @@ fortress.default = {
 				["+y"] = {{chunk="sw_corner_walk", fallback=true}},
 			},
 		},
+
 		se_corner = {
 			schem = {{file="nf_passage_se_corner"}},
 			next = {
@@ -246,6 +255,7 @@ fortress.default = {
 				["+y"] = {{chunk="se_corner_walk", fallback=true}},
 			},
 		},
+
 		esw_t = {
 			schem = {{file="nf_passage_esw_t"}},
 			next = {
@@ -265,6 +275,7 @@ fortress.default = {
 				["+y"] = {{chunk="esw_t_walk", fallback=true}},
 			},
 		},
+
 		nes_t = {
 			schem = {{file="nf_passage_nes_t"}},
 			next = {
@@ -284,6 +295,7 @@ fortress.default = {
 				["+y"] = {{chunk="nes_t_walk", fallback=true}},
 			},
 		},
+
 		swn_t = {
 			schem = {{file="nf_passage_swn_t"}},
 			next = {
@@ -303,6 +315,7 @@ fortress.default = {
 				["+y"] = {{chunk="swn_t_walk", fallback=true}},
 			},
 		},
+
 		wne_t = {
 			schem = {{file="nf_passage_wne_t"}},
 			next = {
@@ -326,14 +339,19 @@ fortress.default = {
 		-- Bridge/passage connections.
 		ns_bridge_passage = {
 			schem = {{file="nf_ns_passage_ew_bridge_access"}},
-			offset = {x=-1, y=0, z=0},
 			size = {x=3, y=1, z=1},
 			limit = 4,
 			next = {
 				["+z"] = {{chunk="ns", shift={x=1, y=0, z=0}}},
 				["-z"] = {{chunk="ns", shift={x=1, y=0, z=0}}},
-				["+x"] = {{chunk="ew_walk_bridge", shift={x=2, y=0, z=0}}},
-				["-x"] = {{chunk="ew_walk_bridge", shift={x=-2, y=0, z=0}}},
+				["+x"] = {
+					{chunk="ew_walk_bridge", chance=70, shift={x=2, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true, shift={x=2, y=0, z=0}},
+				},
+				["-x"] = {
+					{chunk="ew_walk_bridge", chance=70, shift={x=-2, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
+				},
 				["-y"] = {
 					{chunk="bridge_arch_ew", shift={x=0, y=0, z=0}, continue=true},
 					{chunk="bridge_arch_ew", shift={x=2, y=0, z=0}, continue=true},
@@ -342,16 +360,22 @@ fortress.default = {
 				["+y"] = {{chunk="ns_walk", shift={x=1, y=0, z=0}, fallback=true}},
 			},
 		},
+
 		ew_bridge_passage = {
 			schem = {{file="nf_ew_passage_ns_bridge_access"}},
-			offset = {x=0, y=0, z=-1},
 			size = {x=1, y=1, z=3},
 			limit = 4,
 			next = {
 				["+x"] = {{chunk="ew", shift={x=0, y=0, z=1}}},
 				["-x"] = {{chunk="ew", shift={x=0, y=0, z=1}}},
-				["+z"] = {{chunk="ns_walk_bridge", shift={x=0, y=0, z=2}}},
-				["-z"] = {{chunk="ns_walk_bridge", shift={x=0, y=0, z=-2}}},
+				["+z"] = {
+					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=2}},
+					{chunk="s_broken_walk", shift={x=0, y=0, z=2}},
+				},
+				["-z"] = {
+					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=-2}},
+					{chunk="n_broken_walk", shift={x=0, y=0, z=0}},
+				},
 				["-y"] = {
 					{chunk="bridge_arch_ns", shift={x=0, y=0, z=0}, continue=true},
 					{chunk="bridge_arch_ns", shift={x=0, y=0, z=2}, continue=true},
@@ -369,32 +393,32 @@ fortress.default = {
 			-- all chunks which have this chunk as a possible follow-up.
 			limit = 3,
 			next = {
-				["-y"] = {{chunk="bridge_pillar_top", fallback=true}},
+				["-y"] = {{chunk="bridge_pillar_top", fallback=true, shift={x=0, y=-1, z=0}}},
 				["+x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="w_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true},
 				},
 				["-x"] = {
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true},
 				},
 				["+z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="s_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true},
 				},
 				["-z"] = {
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
-					{chunk="n_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true},
 				},
 			},
 		},
+
 		ew_walk_bridge = {
 			schem = {
 				{file="nf_walkway_ew", force=false, adjust={x=0, y=0, z=0}},
 				{file="nf_walkway_ew", force=false, adjust={x=11, y=0, z=0}},
 				{file="nf_walkway_ew", force=false, adjust={x=22, y=0, z=0}},
 			},
-			offset = {x=0, y=0, z=0},
 			size = {x=3, y=1, z=1},
 			next = {
 				["+x"] = {
@@ -406,19 +430,19 @@ fortress.default = {
 					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-y"] = {
-					{chunk="bridge_arch_pillar_ew", shift={x=0, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ew", shift={x=0, y=-1, z=0}, continue=true, fallback=true},
 					{chunk="bridge_arch_ew", shift={x=1, y=0, z=0}, continue=true, fallback=true},
-					{chunk="bridge_arch_pillar_ew", shift={x=2, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ew", shift={x=2, y=-1, z=0}, continue=true, fallback=true},
 				},
 			},
 		},
+
 		ns_walk_bridge = {
 			schem = {
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=0}},
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=11}},
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=22}},
 			},
-			offset = {x=0, y=0, z=0},
 			size = {x=1, y=1, z=3},
 			next = {
 				["+z"] = {
@@ -430,48 +454,54 @@ fortress.default = {
 					{chunk="n_broken_walk", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-y"] = {
-					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=0}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ns", shift={x=0, y=-1, z=0}, continue=true, fallback=true},
 					{chunk="bridge_arch_ns", shift={x=0, y=0, z=1}, continue=true, fallback=true},
-					{chunk="bridge_arch_pillar_ns", shift={x=0, y=0, z=2}, continue=true, fallback=true},
+					{chunk="bridge_arch_pillar_ns", shift={x=0, y=-1, z=2}, continue=true, fallback=true},
 				},
 			},
 		},
+
 		ew_walk_bridge_short = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
 			},
 			next = {
 				["+x"] = {
-					{chunk="ew_gatehouse", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="ew_gatehouse", chance=100, shift={x=0, y=0, z=-1}},
 					{chunk="ns_bridge_passage", chance=20},
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ew_walk_bridge", shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true},
 				},
 				["-x"] = {
-					{chunk="ew_gatehouse", chance=10, shift={x=-1, y=0, z=0}},
+					{chunk="ew_gatehouse", chance=100, shift={x=-1, y=0, z=-1}},
 					{chunk="ns_bridge_passage", chance=20},
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ew_walk_bridge", shift={x=-2, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true},
 				},
 				["-y"] = {{chunk="bridge_arch_ew", fallback=true}},
 			},
 		},
+
 		ns_walk_bridge_short = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
 			},
 			next = {
 				["+z"] = {
-					{chunk="ns_gatehouse", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="ns_gatehouse", chance=10, shift={x=-1, y=0, z=0}},
 					{chunk="ew_bridge_passage", chance=20},
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ns_walk_bridge", shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns_gatehouse", chance=10, shift={x=0, y=0, z=-1}},
+					{chunk="ns_gatehouse", chance=10, shift={x=-1, y=0, z=-1}},
 					{chunk="ew_bridge_passage", chance=20},
 					{chunk="junction_walk_bridge", chance=20},
 					{chunk="ns_walk_bridge", shift={x=0, y=0, z=-2}},
+					{chunk="n_broken_walk", fallback=true},
 				},
 				["-y"] = {{chunk="bridge_arch_ns", fallback=true}},
 			},
@@ -488,18 +518,21 @@ fortress.default = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
+
 		s_capped_walk = {
 			schem = {{file="nf_walkway_s_capped", force=false}},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
+
 		e_capped_walk = {
 			schem = {{file="nf_walkway_e_capped", force=false}},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
+
 		w_capped_walk = {
 			schem = {{file="nf_walkway_w_capped", force=false}},
 			next = {
@@ -516,18 +549,21 @@ fortress.default = {
 				["-y"] = {{chunk="bridge_broken_walk_arch_n", fallback=true}},
 			},
 		},
+
 		s_broken_walk = {
 			schem = {{file="nf_walkway_s_broken", force=false}},
 			next = {
 				["-y"] = {{chunk="bridge_broken_walk_arch_s", fallback=true}},
 			},
 		},
+
 		e_broken_walk = {
 			schem = {{file="nf_walkway_e_broken", force=false}},
 			next = {
 				["-y"] = {{chunk="bridge_broken_walk_arch_e", fallback=true}},
 			},
 		},
+
 		w_broken_walk = {
 			schem = {{file="nf_walkway_w_broken", force=false}},
 			next = {
@@ -550,40 +586,44 @@ fortress.default = {
 				["+x"] = {
 					{chunk="swn_t", chance=20},
 					{chunk="wne_t", chance=20},
-					{chunk="esw_t"},
+					{chunk="esw_t", fallback=true},
 				},
 				["-x"] = {
 					{chunk="wne_t", chance=20},
 					{chunk="esw_t", chance=20},
-					{chunk="nes_t"},
+					{chunk="nes_t", fallback=true},
 				},
 				["+y"] = {{chunk="ew_walk_stair", fallback=true}},
 				["-y"] = {{chunk="solid", fallback=true}},
 			},
 		},
+
 		ew_walk_stair = {
 			schem = {{file="nf_walkway_ew_stair"}},
 		},
+
 		ns_stair = {
 			schem = {{file="nf_passage_ew_stair", rotation="90"}},
 			next = {
 				["+z"] = {
 					{chunk="nes_t", chance=20},
 					{chunk="swn_t", chance=20},
-					{chunk="esw_t"},
+					{chunk="esw_t", fallback=true},
 				},
 				["-z"] = {
 					{chunk="nes_t", chance=10},
 					{chunk="swn_t", chance=10},
-					{chunk="wne_t"},
+					{chunk="wne_t", fallback=true},
 				},
 				["+y"] = {{chunk="ns_walk_stair", fallback=true}},
 				["-y"] = {{chunk="solid", fallback=true}},
 			},
 		},
+
 		ns_walk_stair = {
 			schem = {{file="nf_walkway_ew_stair", rotation="90", force=false}},
 		},
+
 		tower = {
 			schem = {{file="nf_tower", force=false, adjust={x=3, y=-10, z=3}}},
 		},
@@ -595,42 +635,46 @@ fortress.default = {
 				{file="nf_gatehouse_bridge_shim_w", force=false, adjust={x=0, y=-11, z=11}},
 				{file="nf_gatehouse_bridge_shim_e", force=false, adjust={x=20, y=-11, z=11}},
 			},
-			offset = {x=0, y=0, z=-1},
 			size = {x=2, y=1, z=3},
 			limit = 2,
 			next = {
 				["+x"] = {
-					{chunk="ew_walk_bridge_short", chance=80, shift={x=1, y=0, z=1}},
+					{chunk="ew_walk_bridge_short", chance=20, shift={x=1, y=0, z=1}},
+					{chunk="ew_walk_bridge", chance=80, shift={x=1, y=0, z=1}},
 					{chunk="w_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
 				},
 				["-x"] = {
-					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=1}},
-					{chunk="e_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
+					{chunk="ew_walk_bridge_short", chance=20, shift={x=0, y=0, z=1}},
+					{chunk="ew_walk_bridge", chance=80, shift={x=-2, y=0, z=1}},
+					{chunk="e_broken_walk", fallback=true, shift={x=0, y=0, z=1}},
 				},
-				["-y"] = {{chunk="gatehouse_pillar_ew", shift={x=0, y=0, z=0}, fallback=true}},
+				["-y"] = {{chunk="gatehouse_pillar_ew", shift={x=0, y=-3, z=0}, fallback=true}},
 			},
 		},
+
 		ns_gatehouse = {
 			schem = {
 				{file="nf_gatehouse_ns", adjust={x=7, y=0, z=0}},
 				{file="nf_gatehouse_bridge_shim_s", force=false, adjust={x=11, y=-11, z=0}},
 				{file="nf_gatehouse_bridge_shim_n", force=false, adjust={x=11, y=-11, z=20}},
 			},
-			offset = {x=-1, y=0, z=0},
 			size = {x=3, y=1, z=2},
 			limit = 2,
 			next = {
 				["+z"] = {
-					{chunk="ns_walk_bridge_short", chance=80, shift={x=1, y=0, z=1}},
+					{chunk="ns_walk_bridge_short", chance=20, shift={x=1, y=0, z=1}},
+					{chunk="ns_walk_bridge", chance=100, shift={x=1, y=0, z=1}},
 					{chunk="s_broken_walk", fallback=true, shift={x=1, y=0, z=1}},
 				},
 				["-z"] = {
-					{chunk="ns_walk_bridge_short", chance=80, shift={x=1, y=0, z=0}},
+					{chunk="ns_walk_bridge_short", chance=20, shift={x=1, y=0, z=0}},
+					{chunk="ns_walk_bridge", chance=100, shift={x=1, y=0, z=-2}},
 					{chunk="n_broken_walk", fallback=true, shift={x=1, y=0, z=0}},
 				},
-				["-y"] = {{chunk="gatehouse_pillar_ns", shift={x=0, y=0, z=0}, fallback=true}},
+				["-y"] = {{chunk="gatehouse_pillar_ns", shift={x=0, y=-3, z=0}, fallback=true}},
 			},
 		},
+
 		gatehouse_pillar_ew = {
 			schem = {
 				{file="nf_gatehouse_tower_ew", force=false, adjust={x=2, y=0, z=7}},
@@ -638,9 +682,9 @@ fortress.default = {
 				{file="nf_gatehouse_tower_ew", force=false, adjust={x=2, y=22, z=7}},
 				{file="nf_gatehouse_tower_ew", force=false, adjust={x=2, y=33, z=7}},
 			},
-			offset = {x=0, y=-3, z=0},
 			size = {x=2, y=4, z=3},
 		},
+
 		gatehouse_pillar_ns = {
 			schem = {
 				{file="nf_gatehouse_tower_ns", force=false, adjust={x=7, y=0, z=2}},
@@ -648,16 +692,19 @@ fortress.default = {
 				{file="nf_gatehouse_tower_ns", force=false, adjust={x=7, y=22, z=2}},
 				{file="nf_gatehouse_tower_ns", force=false, adjust={x=7, y=33, z=2}},
 			},
-			offset = {x=0, y=-3, z=0},
 			size = {x=3, y=4, z=2},
 		},
 
 		pillar = {
 			schem = {{file="nf_pillar", force=false}},
+			--[[
 			next = {
-				["-y"] = {{chunk="pillar_straight", fallback=true}},
+				["-y"] = {{chunk="pillar_straight", fallback=true, shift={x=0, y=-2, z=0}}},
 			},
+			--]]
 		},
+
+		--[[
 		pillar_straight = {
 			schem = {
 				{file="nf_pillar_straight", force=false, adjust={x=3, y=0, z=3}},
@@ -665,72 +712,83 @@ fortress.default = {
 				{file="nf_pillar_straight", force=false, adjust={x=3, y=22, z=3}},
 			},
 			size = {x=1, y=3, z=1},
-			offset = {x=0, y=-2, z=0},
 		},
+		--]]
+
 		solid = {
 			schem = {{file="nf_building_solid", force=false, adjust={x=0, y=0, z=0}}},
-			offset = {x=0, y=0, z=0},
 			size = {x=1, y=1, z=1},
+			--[[
 			next = {
 				["-y"] = {{chunk="pillar", fallback=true}},
 			},
+			--]]
 		},
 
 		-- Bridge arches & pillars.
 		bridge_arch_ns = {
 			schem = {{file="nf_bridge_arch_ns", force=false, adjust={x=0, y=6, z=0}}},
 		},
+
 		bridge_arch_ew = {
 			schem = {{file="nf_bridge_arch_ew", force=false, adjust={x=0, y=6, z=0}}},
 		},
+
 		bridge_arch_pillar_ns = {
 			schem = {{file="nf_bridge_arch_pillar_ns", force=false}},
-			offset = {x=0, y=-1, z=0},
 			size = {x=1, y=2, z=1},
+			--[[
 			next = {
-				["-y"] = {{chunk="bridge_arch_pillar_bottom_ns"}},
+				["-y"] = {{chunk="bridge_arch_pillar_bottom_ns", fallback=true, shift={x=0, y=-3, z=0}}},
 			},
+			--]]
 		},
+
 		bridge_arch_pillar_ew = {
 			schem = {{file="nf_bridge_arch_pillar_ew", force=false}},
-			offset = {x=0, y=-1, z=0},
 			size = {x=1, y=2, z=1},
+			--[[
 			next = {
-				["-y"] = {{chunk="bridge_arch_pillar_bottom_ew"}},
+				["-y"] = {{chunk="bridge_arch_pillar_bottom_ew", fallback=true, shift={x=0, y=-3, z=0}}},
 			},
+			--]]
 		},
+
 		bridge_arch_pillar_bottom_ns = {
 			schem = {
 				{file="nf_bridge_arch_pillar_bottom_ns", force=false, adjust={x=0, y=0, z=3}},
 				{file="nf_bridge_arch_pillar_bottom_ns", force=false, adjust={x=0, y=22, z=3}},
 			},
-			offset = {x=0, y=-3, z=0},
 			size = {x=1, y=4, z=1},
 		},
+
 		bridge_arch_pillar_bottom_ew = {
 			schem = {
 				{file="nf_bridge_arch_pillar_bottom_ew", force=false, adjust={x=3, y=0, z=0}},
 				{file="nf_bridge_arch_pillar_bottom_ew", force=false, adjust={x=3, y=22, z=0}},
 			},
-			offset = {x=0, y=-3, z=0},
 			size = {x=1, y=4, z=1},
 		},
+
 		bridge_pillar_top = {
 			schem = {{file="nf_center_pillar_top", force=false}},
-			offset = {x=0, y=-1, z=0},
 			size = {x=1, y=2, z=1},
+			--[[
 			next = {
-				["-y"] = {{chunk="bridge_pillar_bottom"}},
+				["-y"] = {{chunk="bridge_pillar_bottom", fallback=true, shift={x=0, y=-3, z=0}}},
 			},
+			--]]
 		},
+
+		--[[
 		bridge_pillar_bottom = {
 			schem = {
 				{file="nf_center_pillar_bottom", force=false, adjust={x=1, y=0, z=1}},
 				{file="nf_center_pillar_bottom", force=false, adjust={x=1, y=22, z=1}},
 			},
-			offset = {x=0, y=-3, z=0},
 			size = {x=1, y=4, z=1},
 		},
+		--]]
 
 		-- Broken bits of arch underneath broken causeway ends.
 		bridge_broken_walk_arch_n = {

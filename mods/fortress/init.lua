@@ -28,6 +28,9 @@ local keydirs = {
 function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	local exceeding_soft_extent = false
 
+	-- For debugging.
+	--exceeding_soft_extent = true
+
 	-- Build traversal table if not provided. The traversal table allows us to
 	-- know if a section of fortress was already generated at a cell location. The
 	-- table contains the hashes of locations where fortress was generated.
@@ -75,12 +78,6 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		exceeding_soft_extent = true
 	end
 
-	-- Use default offset if none specified.
-	do
-		local offset = info.offset or {x=0, y=0, z=0}
-		pos = vector_round(vector.add(pos, vector.multiply(offset, data.step)))
-	end
-
 	-- Calculate all positions this chunk will potentially occupy.
 	-- This adds a position hash for each possible location from 'offset' to
 	-- 'size'. The position hashes are sparse, so this is more efficient than it
@@ -108,7 +105,11 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 		-- Occupy this chunk!
 		for k, v in ipairs(hashes) do
-			traversal[v] = true
+			traversal[v] = {
+				-- Store chunk name for debugging.
+				-- It will be stored in "infotext" metadata for manual inspection.
+				chunk = start,
+			}
 		end
 	end
 
@@ -201,6 +202,12 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 			-- Add chunk data to fortress pattern if chance test succeeds.
 			if math_random(1, 100) <= chance or chunk.fallback then
+				--if exceeding_soft_extent and chunk.fallback then
+				--	minetest.log("action", "Exceeding soft extent.")
+				--	minetest.log("action", "Current chunk is: " .. start)
+				--	minetest.log("action", "Next chunk would be: " .. chunk.chunk)
+				--end
+
 				local continue = false
 				if type(chunk.continue) == "boolean" then
 					continue = chunk.continue
@@ -274,6 +281,8 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		for k, v in pairs(traversal) do
 			local p = minetest.get_position_from_hash(k)
 			minetest.set_node(p, {name="wool:red"})
+			local meta = minetest.get_meta(p)
+			meta:set_string("infotext", "Chunk: " .. v.chunk)
 		end
 		--]]
 	end

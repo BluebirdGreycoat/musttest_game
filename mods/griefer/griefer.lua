@@ -100,6 +100,28 @@ mobs.register_spawn_abm({
 
 
 
+mobs.register_spawn_abm({
+  name = "griefer:griefer",
+  nodes = {"griefer:naraxen"},
+  interval = 3,
+  chance = 10,
+
+  -- Warning, do NOT change! Required for Naraxen lava fortresses.
+  min_light = 0,
+  max_light = 10,
+
+  player_min_range = 4,
+  player_max_range = 30,
+
+  mob_limit = 3,
+  absolute_mob_limit = 16,
+  mob_range = 20,
+  min_count = 1,
+  max_count = 3,
+})
+
+
+
 mobs.register_egg("griefer:griefer", "Black Hearted Griefer", "default_obsidian.png", 1)
 
 

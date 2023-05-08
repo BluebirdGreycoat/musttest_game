@@ -25,10 +25,12 @@ local vm_light = {}
 local noisemap1 = {}
 local noisemap3 = {}
 local noisemap4 = {}
+local noisemap5 = {}
 
 local perlin1
 local perlin3
 local perlin4
+local perlin5
 
 
 
@@ -174,6 +176,17 @@ stoneworld.noise4param3d = {
 	lacunarity = 1.5,
 }
 
+-- Used to limit where lava fortresses may spawn.
+stoneworld.noise5param3d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=1024, y=128, z=1024},
+	seed = 7218,
+	octaves = 6,
+	persist = 0.5,
+	lacunarity = 2.0,
+}
+
 
 
 --------------------------------------------------------------------------------
@@ -286,6 +299,9 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	perlin4 = perlin4 or minetest.get_perlin_map(stoneworld.noise4param3d, sides3D)
 	perlin4:get_3d_map_flat(bp3d, noisemap4)
 
+	perlin5 = perlin5 or minetest.get_perlin_map(stoneworld.noise5param3d, sides3D)
+	perlin5:get_3d_map_flat(bp3d, noisemap5)
+
 	-- Localize commonly used functions for speed.
 	local floor = math.floor
 	local ceil = math.ceil
@@ -334,6 +350,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 					-- Get noise values.
 					local n1 = noisemap1[n2d]
 					local n2 = noisemap3[n2d]
+					local n3 = noisemap5[n3d]
 
 					-- Carve long winding caves.
 					local caves = stoneworld.caves
@@ -403,8 +420,12 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							-- ocean, then we have a chance to spawn a lava fortress here.
 							if not spawn_fortress then
 								if (top - bot) >= 50 and bot <= (lava - 5) then
-									spawn_fortress = true
-									fortress_y = lava + 10
+									-- Use perlin noise to limit fortress spawning to regions.
+									-- Using abs() will cause fortresses to spawn in winding strings.
+									if abs(n3) < 0.1 then
+										spawn_fortress = true
+										fortress_y = lava + 10
+									end
 								end
 							end
 
@@ -547,12 +568,17 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 	-- A chance to spawn a fortress. Do NOT spawn a fortress in every mapchunk
 	-- that's eligible, that will crowd everything else out!
-	if spawn_fortress and pr:next(1, 20) == 1 then
+	if spawn_fortress and pr:next(1, 10) == 1 then
 		local p = vector.round({
 			x = floor((x0 + x1) / 2),
 			y = fortress_y,
 			z = floor((z0 + z1) / 2),
 		})
+
+		-- Lock X,Z coords to values divisible by 11. This is the fortress step size
+		-- for "default". Doing this ensures fortresses in adjacent chunks line up.
+		p.x = p.x - (p.x % 11)
+		p.z = p.z - (p.z % 11)
 
 		minetest.after(0, function()
 			fortress.generate(p, "default")

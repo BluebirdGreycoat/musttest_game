@@ -97,7 +97,13 @@ fortress.default = {
 		},
 
 		ew = {
-			schem = {{file="nf_passage_ew"}},
+			schem = {
+				{file="nf_passage_ew"},
+				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_room1", chance=15, force=true, adjust={x=3, y=3, z=3}},
+			},
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=20},
@@ -129,7 +135,13 @@ fortress.default = {
 		},
 
 		ns = {
-			schem = {{file="nf_passage_ns"}},
+			schem = {
+				{file="nf_passage_ns"},
+				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_room1", chance=15, rotation="90", force=true, adjust={x=3, y=3, z=3}},
+			},
 			next = {
 				["+z"] = {
 					{chunk="ns", chance=20},
@@ -464,6 +476,8 @@ fortress.default = {
 		ew_walk_bridge_short = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=0, z=3}},
 			},
 			next = {
 				["+x"] = {
@@ -487,6 +501,8 @@ fortress.default = {
 		ns_walk_bridge_short = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=0, z=3}},
 			},
 			next = {
 				["+z"] = {
@@ -509,32 +525,60 @@ fortress.default = {
 
 		-- Walkways.
 		junction_walk = {schem = {{file="nf_walkway_4x_junction", force=false}}},
-		ew_walk = {schem = {{file="nf_walkway_ew", force=false}}},
-		ns_walk = {schem = {{file="nf_walkway_ns", force=false}}},
+
+		ew_walk = {
+			schem = {
+				{file="nf_walkway_ew", force=false},
+				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
+		},
+
+		ns_walk = {
+			schem = {
+				{file="nf_walkway_ns", force=false},
+				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
+		},
 
 		n_capped_walk = {
-			schem = {{file="nf_walkway_n_capped", force=false}},
+			schem = {
+				{file="nf_walkway_n_capped", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
 
 		s_capped_walk = {
-			schem = {{file="nf_walkway_s_capped", force=false}},
+			schem = {
+				{file="nf_walkway_s_capped", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
 
 		e_capped_walk = {
-			schem = {{file="nf_walkway_e_capped", force=false}},
+			schem = {
+				{file="nf_walkway_e_capped", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},
 		},
 
 		w_capped_walk = {
-			schem = {{file="nf_walkway_w_capped", force=false}},
+			schem = {
+				{file="nf_walkway_w_capped", force=false},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
 			},

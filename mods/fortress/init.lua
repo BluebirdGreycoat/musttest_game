@@ -277,7 +277,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 
 		-- Display hash locations.
-		--[[
+		---[[
 		for k, v in pairs(traversal) do
 			local p = minetest.get_position_from_hash(k)
 			minetest.set_node(p, {name="wool:red"})

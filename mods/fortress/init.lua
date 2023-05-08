@@ -219,6 +219,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				--minetest.log("action", "depth " .. internal.depth .. "!")
 
 				-- Using minetest.after() to avoid stack overflow.
+				-- Instead of doing recusion on the stack, we do recursion through time.
 				minetest.after(0, function()
 					internal.depth = internal.depth - 1
 					assert(internal.depth >= 0)
@@ -241,6 +242,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		local minp = table.copy(internal.pos)
 		local maxp = table.copy(internal.pos)
 
+		-- Calculate voxelmanip area bounds.
 		for k, v in ipairs(build) do
 			if v.pos.x < minp.x then
 				minp.x = v.pos.x
@@ -264,28 +266,65 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			end
 		end
 
-		--minetest.log("action", minetest.pos_to_string(minp))
-		--minetest.log("action", minetest.pos_to_string(maxp))
+		minetest.log("action", "Fortress pos: " .. minetest.pos_to_string(internal.pos))
+		minetest.log("action", "Fortress minp: " .. minetest.pos_to_string(minp))
+		minetest.log("action", "Fortress maxp: " .. minetest.pos_to_string(maxp))
 
-		local vm = minetest.get_voxel_manip(minp, maxp)
+		internal.vm_minp = minp
+		internal.vm_maxp = maxp
 
-		for k, v in ipairs(build) do
-			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, {}, v.force)
+		-- Build callback function. When the map is loaded, we can spawn the fortress.
+		local cb = function(blockpos, action, calls_remaining)
+			-- Check if there was an error.
+			if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+				minetest.log("error", "Failed to emerge area to spawn fortress.")
+				return
+			end
+
+			-- We don't do anything until the last callback.
+			if calls_remaining ~= 0 then
+				return
+			end
+
+			-- Actually spawn the fortress once map completely loaded.
+			fortress.apply_design(internal, traversal, build)
 		end
 
-		vm:write_to_map()
-		minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
-
-		-- Display hash locations.
-		---[[
-		for k, v in pairs(traversal) do
-			local p = minetest.get_position_from_hash(k)
-			minetest.set_node(p, {name="wool:red"})
-			local meta = minetest.get_meta(p)
-			meta:set_string("infotext", "Chunk: " .. v.chunk)
-		end
-		--]]
+		minetest.emerge_area(minp, maxp, cb)
 	end
+end
+
+
+
+-- To be called once map region fully loaded.
+function fortress.apply_design(internal, traversal, build)
+	local minp = table.copy(internal.vm_minp)
+	local maxp = table.copy(internal.vm_maxp)
+
+	if fortress.is_protected(minp, maxp) then
+		minetest.log("error", "Cannot spawn fortress, protection is present.")
+		return
+	end
+
+	local vm = minetest.get_voxel_manip(minp, maxp)
+	local replacements = {}
+
+	for k, v in ipairs(build) do
+		minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, replacements, v.force)
+	end
+
+	vm:write_to_map()
+	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
+
+	-- Display hash locations.
+	---[[
+	for k, v in pairs(traversal) do
+		local p = minetest.get_position_from_hash(k)
+		minetest.set_node(p, {name="wool:red"})
+		local meta = minetest.get_meta(p)
+		meta:set_string("infotext", "Chunk: " .. v.chunk)
+	end
+	--]]
 end
 
 

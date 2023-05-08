@@ -314,6 +314,16 @@ end
 
 
 
+-- Public API function.
+-- Name must be a fortress data sheet.
+function fortress.generate(pos, name)
+	if fortress[name] then
+		fortress.spawn_fortress(pos, fortress[name])
+	end
+end
+
+
+
 function fortress.chat_command(name, param)
 	local player = minetest.get_player_by_name(name)
 	if not player or not player:is_player() then

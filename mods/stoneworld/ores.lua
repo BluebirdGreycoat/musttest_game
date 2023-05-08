@@ -44,7 +44,7 @@ oregen.register_ore({
   clust_size = 20,
   y_min = ore_min,
   y_max = ore_max,
-  noise_threshold = -0.3,
+  noise_threshold = -0.5,
 })
 
 oregen.register_ore({

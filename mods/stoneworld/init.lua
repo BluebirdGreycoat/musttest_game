@@ -293,6 +293,11 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	local min = math.min
 	local max = math.max
 
+	-- Flat set if we are to spawn a fortress in this mapchunk.
+	-- Note: fortress WILL extend outside the mapchunk!
+	local spawn_fortress = false
+	local fortress_y = 0
+
 	-- First mapgen pass. Generate stone, passages, caverns, lava, and bedrock.
 	-- Use slightly overgenerated coordinates to generate material 1 node outside
 	-- the normal minp/maxp bounds. This makes it possible for the second mapgen
@@ -389,15 +394,24 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local yl = caverns[k].y_level
 
 							-- Basic cavern parameters.
-							local clevel = (nbeg + yl + floor(c3 * 15))
+							local clevel = (nbeg + yl + floor(c3 * 40))
 							local bot = floor(clevel - 15 + (c2 * 5) + n2 * 6)
 							local top = floor(clevel + 15 + (c1 * 15) + n1 * 6)
 							local lava = (nbeg + yl - 20)
 
+							-- If ceiling is far enough up, and bottom is below the lava
+							-- ocean, then we have a chance to spawn a lava fortress here.
+							if not spawn_fortress then
+								if (top - bot) >= 50 and bot <= (lava - 5) then
+									spawn_fortress = true
+									fortress_y = lava + 10
+								end
+							end
+
 							-- Raise cavern ceiling over the lava ocean.
 							-- Need to make room for the fortress spawner.
-							if bot < lava then
-								top = top + (lava - bot) * 3
+							if bot < (lava + 5) then
+								top = top + ((lava + 5) - bot) * 2
 							end
 
 							if y >= bot and y <= top then
@@ -518,7 +532,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 		for x = emin.x, emax.x do
 			for y = emin.y, emax.y do
 				local vp = max_area:index(x, y, z)
-				vm_light[vp] = 255
+				vm_light[vp] = 0
 			end
 		end
 	end
@@ -530,6 +544,20 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	vm:calc_lighting({x=emin.x, y=emin.y, z=emin.z}, {x=emax.x, y=maxp.y, z=emax.z}, true)
 	vm:write_to_map()
 	vm:update_liquids()
+
+	-- A chance to spawn a fortress. Do NOT spawn a fortress in every mapchunk
+	-- that's eligible, that will crowd everything else out!
+	if spawn_fortress and pr:next(1, 20) == 1 then
+		local p = vector.round({
+			x = floor((x0 + x1) / 2),
+			y = fortress_y,
+			z = floor((z0 + z1) / 2),
+		})
+
+		minetest.after(0, function()
+			fortress.generate(p, "default")
+		end)
+	end
 end
 
 

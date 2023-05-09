@@ -90,7 +90,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	if pos.x < (internal.pos.x - internal.max_extent.x) or pos.x > (internal.pos.x + internal.max_extent.x) or
 			pos.y < (internal.pos.y - internal.max_extent.y) or pos.y > (internal.pos.y + internal.max_extent.y) or
 			pos.z < (internal.pos.z - internal.max_extent.z) or pos.z > (internal.pos.z + internal.max_extent.z) then
-		minetest.log('action', 'stopping placement of ' .. start)
+		--minetest.log('action', 'stopping placement of ' .. start)
 		goto checkdone
 	end
 
@@ -191,7 +191,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	end
 
 	-- Recursively generate further chunks.
-	for dir, chunks in pairs(info.next) do
+	for dir, chunks4dir in pairs(info.next) do
 		local dirvec = keydirs[dir]
 		local p2 = vector_round(vector.add(vector.multiply(dirvec, internal.step), pos))
 
@@ -208,10 +208,10 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		-- The average chance becomes the default chance for any chunks not having their
 		-- chance specified, in later calculations.
 		local chunks_with_chance = 0
-		for index, chunk in ipairs(chunks) do
-			if chunk.chance and not chunk.fallback then
-				if chunk.chance > 0 then
-					avg_chance = avg_chance + chunk.chance
+		for index, neighbor in ipairs(chunks4dir) do
+			if neighbor.chance and not neighbor.fallback then
+				if neighbor.chance > 0 then
+					avg_chance = avg_chance + neighbor.chance
 					chunks_with_chance = chunks_with_chance + 1
 				end
 			end
@@ -224,20 +224,20 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		end
 
 		-- Calculate each chunk's chance range (min, max).
-		for index, chunk in ipairs(chunks) do
+		for index, neighbor in ipairs(chunks4dir) do
 			-- Chunk's info table must exist in the main data sheet.
-			local info = data.chunks[chunk.chunk]
+			local info = data.chunks[neighbor.chunk]
 
 			-- If chunk has the 'fallback' flag set, do not include it in chance ranges.
 			-- Such chunks should be used ONLY if no other chunk passes the chance test.
-			if not chunk.fallback and info then
-				local chunk_chance = chunk.chance or avg_chance
+			if not neighbor.fallback and info then
+				local chunk_chance = neighbor.chance or avg_chance
 				local chunk_limit = info.limit or 0
 
 				-- Zeroize chance if chosen chunk is over the limit for this chunk,
 				-- and the chunk is limited (has a positive, non-zero limit).
 				if chunk_limit > 0 then
-					local count = internal.limit[chunk.chunk] or 0
+					local count = internal.limit[neighbor.chunk] or 0
 					if count > chunk_limit then
 						chunk_chance = 0
 					end
@@ -252,15 +252,16 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				if chunk_chance > 0 then
 					local cur_chance = max_chance + 1
 					max_chance = max_chance + chunk_chance
-					all_chance[chunk.chunk] = {min=cur_chance, max=max_chance}
+					all_chance[neighbor.chunk] = {min=cur_chance, max=max_chance}
 
 					-- Check that the 'chance ranges' are in consecutive order with no gaps.
-					--minetest.log('action', chunk.chunk .. " CHANCE: min=" .. all_chance[chunk.chunk].min .. ", max=" .. all_chance[chunk.chunk].max)
+					--minetest.log('action', neighbor.chunk .. " CHANCE: min=" .. all_chance[neighbor.chunk].min .. ", max=" .. all_chance[neighbor.chunk].max)
 				end
 			end
 		end
 
 		-- Get a random number between 1 and max chance value.
+		-- If 0, then random chance was NOT chosen!
 		local random_chance = 0
 		if max_chance >= 1 then
 			random_chance = math.random(1, max_chance)
@@ -276,41 +277,44 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		local fallback_range = {min=0, max=0}
 
 		-- For all chunks in direction-specific neighbor list (+/-X, +/-Y, +/-Z).
-		for index, chunk in ipairs(chunks) do
+		for index, neighbor in ipairs(chunks4dir) do
 			-- Chunk's chance range, or null range if not present.
-			local chance_range = all_chance[chunk.chunk] or fallback_range
-			--minetest.log('action', chunk.chunk .. " chance: min=" .. chance_range.min .. ", max=" .. chance_range.max)
+			local chance_range = all_chance[neighbor.chunk] or fallback_range
+			--minetest.log('action', neighbor.chunk .. " chance: min=" .. chance_range.min .. ", max=" .. chance_range.max)
 
 			-- Add chunk data to fortress pattern if chance test succeeds.
 			-- Note that once a chunk passes the 'chance test', no further chunk will
 			-- be checked/added, UNLESS the 'continue' flag was set on the successful chunk.
-			if (random_chance >= chance_range.min and random_chance <= chance_range.max)
-					or chunk.fallback then
+			if (random_chance > 0 and random_chance >= chance_range.min and random_chance <= chance_range.max)
+					or neighbor.fallback then
 				-- If chunk had the 'fallback' flag set, it is ALWAYS permitted.
 				-- For this reason you should ensure that 'fallback' chunks always come
 				-- last in their list, otherwise you WILL get overlaps. Multiple fallback
 				-- chunks will overlap. This may or may not be a problem for you.
 
+				--[[
+				if dir == "+x" or dir == "-x" or dir == "+z" or dir == "-z" then
+					minetest.log('action', 'looking at: ' .. neighbor.chunk)
+				end
+				--]]
+
 				local continue = false
-				if type(chunk.continue) == "boolean" then
-					continue = chunk.continue
+				if type(neighbor.continue) == "boolean" then
+					continue = neighbor.continue
 				end
 
-				local p3 = vector.multiply(chunk.shift or {x=0, y=0, z=0}, internal.step)
+				local p3 = vector.multiply(neighbor.shift or {x=0, y=0, z=0}, internal.step)
 				local loc = vector_round(vector.add(p3, p2))
 
 				internal.depth = internal.depth + 1
 				--minetest.log("action", "depth " .. internal.depth .. "!")
-				if chunk.fallback then
-					minetest.log('action', "placing " .. chunk.chunk)
-				end
 
 				-- Using minetest.after() to avoid stack overflow.
 				-- Instead of doing recusion on the stack, we do recursion through time.
 				minetest.after(0, function()
 					internal.depth = internal.depth - 1
 					assert(internal.depth >= 0)
-					fortress.spawn_fortress(loc, data, chunk.chunk, traversal, build, internal)
+					fortress.spawn_fortress(loc, data, neighbor.chunk, traversal, build, internal)
 				end)
 
 				-- Generated chunk. Don't need to continue through chunks for this dir.

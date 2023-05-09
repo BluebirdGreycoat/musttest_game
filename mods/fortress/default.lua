@@ -359,8 +359,12 @@ fortress.default = {
 			size = {x=3, y=1, z=1},
 			limit = 4,
 			next = {
-				["+z"] = {{chunk="ns", shift={x=1, y=0, z=0}}},
-				["-z"] = {{chunk="ns", shift={x=1, y=0, z=0}}},
+				["+z"] = {
+					{chunk="ns", shift={x=1, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="ns", shift={x=1, y=0, z=0}},
+				},
 				["+x"] = {
 					{chunk="ew_walk_bridge", chance=70, shift={x=2, y=0, z=0}},
 					{chunk="w_broken_walk", fallback=true, shift={x=2, y=0, z=0}},
@@ -374,7 +378,9 @@ fortress.default = {
 					{chunk="bridge_arch_ew", shift={x=2, y=0, z=0}, continue=true},
 					{chunk="solid", shift={x=1, y=0, z=0}},
 				},
-				["+y"] = {{chunk="ns_walk", shift={x=1, y=0, z=0}, fallback=true}},
+				["+y"] = {
+					{chunk="ns_walk", shift={x=1, y=0, z=0}, fallback=true},
+				},
 			},
 		},
 
@@ -383,8 +389,12 @@ fortress.default = {
 			size = {x=1, y=1, z=3},
 			limit = 4,
 			next = {
-				["+x"] = {{chunk="ew", shift={x=0, y=0, z=1}}},
-				["-x"] = {{chunk="ew", shift={x=0, y=0, z=1}}},
+				["+x"] = {
+					{chunk="ew", shift={x=0, y=0, z=1}},
+				},
+				["-x"] = {
+					{chunk="ew", shift={x=0, y=0, z=1}},
+				},
 				["+z"] = {
 					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=2}},
 					{chunk="s_broken_walk", shift={x=0, y=0, z=2}},
@@ -398,7 +408,9 @@ fortress.default = {
 					{chunk="bridge_arch_ns", shift={x=0, y=0, z=2}, continue=true},
 					{chunk="solid", shift={x=0, y=0, z=1}},
 				},
-				["+y"] = {{chunk="ew_walk", shift={x=0, y=0, z=1}, fallback=true}},
+				["+y"] = {
+					{chunk="ew_walk", shift={x=0, y=0, z=1}, fallback=true},
+				},
 			},
 		},
 

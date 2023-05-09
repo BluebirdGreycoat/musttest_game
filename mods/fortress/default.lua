@@ -369,9 +369,11 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns", shift={x=1, y=0, z=0}},
+					{chunk="s_capped", fallback=true, shift={x=1, y=0, z=0}},
 				},
 				["-z"] = {
 					{chunk="ns", shift={x=1, y=0, z=0}},
+					{chunk="n_capped", fallback=true, shift={x=1, y=0, z=0}},
 				},
 				["+x"] = {
 					{chunk="ew_walk_bridge", chance=70, shift={x=2, y=0, z=0}},
@@ -399,9 +401,11 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns", shift={x=1, y=0, z=0}},
+					{chunk="s_capped", fallback=true, shift={x=1, y=0, z=0}},
 				},
 				["-z"] = {
 					{chunk="ns", shift={x=1, y=0, z=0}},
+					{chunk="n_capped", fallback=true, shift={x=1, y=0, z=0}},
 				},
 				["-x"] = {
 					{chunk="ew_walk_bridge", chance=70, shift={x=-2, y=0, z=0}},
@@ -424,9 +428,11 @@ fortress.default = {
 			next = {
 				["+z"] = {
 					{chunk="ns", shift={x=0, y=0, z=0}},
+					{chunk="s_capped", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
 					{chunk="ns", shift={x=0, y=0, z=0}},
+					{chunk="n_capped", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+x"] = {
 					{chunk="ew_walk_bridge", chance=70, shift={x=1, y=0, z=0}},
@@ -449,9 +455,11 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew", shift={x=0, y=0, z=1}},
+					{chunk="w_capped", fallback=true, shift={x=0, y=0, z=1}},
 				},
 				["-x"] = {
 					{chunk="ew", shift={x=0, y=0, z=1}},
+					{chunk="e_capped", fallback=true, shift={x=0, y=0, z=1}},
 				},
 				["+z"] = {
 					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=2}},
@@ -479,9 +487,11 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew", shift={x=0, y=0, z=0}},
+					{chunk="w_capped", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-x"] = {
 					{chunk="ew", shift={x=0, y=0, z=0}},
+					{chunk="e_capped", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
 					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=1}},
@@ -504,9 +514,11 @@ fortress.default = {
 			next = {
 				["+x"] = {
 					{chunk="ew", shift={x=0, y=0, z=1}},
+					{chunk="w_capped", fallback=true, shift={x=0, y=0, z=1}},
 				},
 				["-x"] = {
 					{chunk="ew", shift={x=0, y=0, z=1}},
+					{chunk="e_capped", fallback=true, shift={x=0, y=0, z=1}},
 				},
 				["-z"] = {
 					{chunk="ns_walk_bridge", chance=70, shift={x=0, y=0, z=-2}},

@@ -209,7 +209,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		-- chance specified, in later calculations.
 		local chunks_with_chance = 0
 		for index, neighbor in ipairs(chunks4dir) do
-			if neighbor.chance and not neighbor.fallback then
+			if neighbor.chance then
 				if neighbor.chance > 0 then
 					avg_chance = avg_chance + neighbor.chance
 					chunks_with_chance = chunks_with_chance + 1
@@ -224,39 +224,34 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		end
 
 		-- Calculate each chunk's chance range (min, max).
+		-- If the neighbor is a fallback, and its chance is not specified, then by
+		-- default its chance is 1/4 the average chance of all other chunks.
 		for index, neighbor in ipairs(chunks4dir) do
-			-- Chunk's info table must exist in the main data sheet.
-			local info = data.chunks[neighbor.chunk]
+			local chunk_chance = math.floor(neighbor.chance or ((neighbor.fallback and (avg_chance / 4)) or avg_chance))
+			local chunk_limit = (info and info.limit) or 0
 
-			-- If chunk has the 'fallback' flag set, do not include it in chance ranges.
-			-- Such chunks should be used ONLY if no other chunk passes the chance test.
-			if not neighbor.fallback and info then
-				local chunk_chance = neighbor.chance or avg_chance
-				local chunk_limit = info.limit or 0
-
-				-- Zeroize chance if chosen chunk is over the limit for this chunk,
-				-- and the chunk is limited (has a positive, non-zero limit).
-				if chunk_limit > 0 then
-					local count = internal.limit[neighbor.chunk] or 0
-					if count > chunk_limit then
-						chunk_chance = 0
-					end
-				end
-
-				-- If exceeding max soft extents, then chunk chances are always zero,
-				-- and only 'fallback' chunks may be placed, if any are available.
-				if exceeding_soft_extent then
+			-- Zeroize chance if chosen chunk is over the limit for this chunk,
+			-- and the chunk is limited (has a positive, non-zero limit).
+			if chunk_limit > 0 then
+				local count = internal.limit[neighbor.chunk] or 0
+				if count > chunk_limit then
 					chunk_chance = 0
 				end
+			end
 
-				if chunk_chance > 0 then
-					local cur_chance = max_chance + 1
-					max_chance = max_chance + chunk_chance
-					all_chance[neighbor.chunk] = {min=cur_chance, max=max_chance}
+			-- If exceeding max soft extents, then chunk chances are always zero,
+			-- and only 'fallback' chunks may be placed, if any are available.
+			if exceeding_soft_extent then
+				chunk_chance = 0
+			end
 
-					-- Check that the 'chance ranges' are in consecutive order with no gaps.
-					--minetest.log('action', neighbor.chunk .. " CHANCE: min=" .. all_chance[neighbor.chunk].min .. ", max=" .. all_chance[neighbor.chunk].max)
-				end
+			if chunk_chance > 0 then
+				local cur_chance = max_chance + 1
+				max_chance = max_chance + chunk_chance
+				all_chance[neighbor.chunk] = {min=cur_chance, max=max_chance}
+
+				-- Check that the 'chance ranges' are in consecutive order with no gaps.
+				--minetest.log('action', neighbor.chunk .. " CHANCE: min=" .. all_chance[neighbor.chunk].min .. ", max=" .. all_chance[neighbor.chunk].max)
 			end
 		end
 

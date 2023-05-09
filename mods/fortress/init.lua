@@ -90,6 +90,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	if pos.x < (internal.pos.x - internal.max_extent.x) or pos.x > (internal.pos.x + internal.max_extent.x) or
 			pos.y < (internal.pos.y - internal.max_extent.y) or pos.y > (internal.pos.y + internal.max_extent.y) or
 			pos.z < (internal.pos.z - internal.max_extent.z) or pos.z > (internal.pos.z + internal.max_extent.z) then
+		minetest.log('action', 'stopping placement of ' .. start)
 		goto checkdone
 	end
 
@@ -300,6 +301,9 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 				internal.depth = internal.depth + 1
 				--minetest.log("action", "depth " .. internal.depth .. "!")
+				if chunk.fallback then
+					minetest.log('action', "placing " .. chunk.chunk)
+				end
 
 				-- Using minetest.after() to avoid stack overflow.
 				-- Instead of doing recusion on the stack, we do recursion through time.

@@ -534,9 +534,12 @@ fortress.default = {
 			},
 		},
 
-		-- Bridges.
+		-- Bridge junctions.
 		junction_walk_bridge = {
-			schem = {{file="nf_walkway_4x_junction", force=false}},
+			schem = {
+				{file="nf_walkway_4x_junction", force=false},
+				{file="bridge_junction_house", chance=50, force=true},
+			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
 			-- all chunks which have this chunk as a possible follow-up.
@@ -568,6 +571,119 @@ fortress.default = {
 			},
 		},
 
+		walk_bridge_nse = {
+			schem = {{file="walk_bridge_nse", force=false}},
+			-- If number of chunks excees this limit, then algorithm reduces
+			-- the chance by 10% for every unit over the limit. This affects
+			-- all chunks which have this chunk as a possible follow-up.
+			limit = 5,
+			next = {
+				["-y"] = {
+					{chunk="bridge_pillar_top", fallback=true, shift={x=0, y=-1, z=0}},
+				},
+				["+x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true},
+				},
+				["+z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true},
+				},
+				["-z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=-2}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true},
+				},
+			},
+		},
+
+		walk_bridge_nsw = {
+			schem = {{file="walk_bridge_nsw", force=false}},
+			-- If number of chunks excees this limit, then algorithm reduces
+			-- the chance by 10% for every unit over the limit. This affects
+			-- all chunks which have this chunk as a possible follow-up.
+			limit = 5,
+			next = {
+				["-y"] = {
+					{chunk="bridge_pillar_top", fallback=true, shift={x=0, y=-1, z=0}},
+				},
+				["-x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=-2, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true},
+				},
+				["+z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true},
+				},
+				["-z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=-2}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true},
+				},
+			},
+		},
+
+		walk_bridge_swe = {
+			schem = {{file="walk_bridge_swe", force=false}},
+			-- If number of chunks excees this limit, then algorithm reduces
+			-- the chance by 10% for every unit over the limit. This affects
+			-- all chunks which have this chunk as a possible follow-up.
+			limit = 5,
+			next = {
+				["-y"] = {
+					{chunk="bridge_pillar_top", fallback=true, shift={x=0, y=-1, z=0}},
+				},
+				["+x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true},
+				},
+				["-x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=-2, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true},
+				},
+				["-z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=-2}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="n_broken_walk", fallback=true},
+				},
+			},
+		},
+
+		walk_bridge_nwe = {
+			schem = {{file="walk_bridge_nwe", force=false}},
+			-- If number of chunks excees this limit, then algorithm reduces
+			-- the chance by 10% for every unit over the limit. This affects
+			-- all chunks which have this chunk as a possible follow-up.
+			limit = 5,
+			next = {
+				["-y"] = {
+					{chunk="bridge_pillar_top", fallback=true, shift={x=0, y=-1, z=0}},
+				},
+				["+x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="w_broken_walk", fallback=true},
+				},
+				["-x"] = {
+					{chunk="ew_walk_bridge", chance=80, shift={x=-2, y=0, z=0}},
+					{chunk="ew_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="e_broken_walk", fallback=true},
+				},
+				["+z"] = {
+					{chunk="ns_walk_bridge", chance=80, shift={x=0, y=0, z=0}},
+					{chunk="ns_walk_bridge_short", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="s_broken_walk", fallback=true},
+				},
+			},
+		},
+
+		-- Bridges.
 		ew_walk_bridge = {
 			schem = {
 				{file="nf_walkway_ew", force=false, adjust={x=0, y=0, z=0}},
@@ -577,14 +693,20 @@ fortress.default = {
 			size = {x=3, y=1, z=1},
 			next = {
 				["+x"] = {
-					{chunk="junction_walk_bridge", chance=20, shift={x=2, y=0, z=0}},
+					{chunk="junction_walk_bridge", chance=10, shift={x=2, y=0, z=0}},
+					{chunk="walk_bridge_nsw", chance=10, shift={x=2, y=0, z=0}},
+					{chunk="walk_bridge_nwe", chance=10, shift={x=2, y=0, z=0}},
+					{chunk="walk_bridge_swe", chance=10, shift={x=2, y=0, z=0}},
 					{chunk="ns_bridge_passage", chance=10, shift={x=2, y=0, z=0}},
 					{chunk="ns_bridge_passage_w", chance=20, shift={x=2, y=0, z=0}},
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=2, y=0, z=0}},
 					{chunk="w_broken_walk", fallback=true, shift={x=2, y=0, z=0}},
 				},
 				["-x"] = {
-					{chunk="junction_walk_bridge", chance=20, shift={x=0, y=0, z=0}},
+					{chunk="junction_walk_bridge", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_nse", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_swe", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_nwe", chance=10, shift={x=0, y=0, z=0}},
 					{chunk="ns_bridge_passage", chance=10, shift={x=-2, y=0, z=0}},
 					{chunk="ns_bridge_passage_e", chance=20, shift={x=-1, y=0, z=0}},
 					{chunk="ew_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},
@@ -607,14 +729,20 @@ fortress.default = {
 			size = {x=1, y=1, z=3},
 			next = {
 				["+z"] = {
-					{chunk="junction_walk_bridge", chance=20, shift={x=0, y=0, z=2}},
+					{chunk="junction_walk_bridge", chance=10, shift={x=0, y=0, z=2}},
+					{chunk="walk_bridge_nse", chance=10, shift={x=0, y=0, z=2}},
+					{chunk="walk_bridge_swe", chance=10, shift={x=0, y=0, z=2}},
+					{chunk="walk_bridge_nsw", chance=10, shift={x=0, y=0, z=2}},
 					{chunk="ew_bridge_passage", chance=10, shift={x=0, y=0, z=2}},
 					{chunk="ew_bridge_passage_s", chance=20, shift={x=0, y=0, z=2}},
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=2}},
 					{chunk="s_broken_walk", fallback=true, shift={x=0, y=0, z=2}},
 				},
 				["-z"] = {
-					{chunk="junction_walk_bridge", chance=20, shift={x=0, y=0, z=0}},
+					{chunk="junction_walk_bridge", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_nse", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_nsw", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="walk_bridge_nwe", chance=10, shift={x=0, y=0, z=0}},
 					{chunk="ew_bridge_passage", chance=10, shift={x=0, y=0, z=-2}},
 					{chunk="ew_bridge_passage_n", chance=20, shift={x=0, y=0, z=-1}},
 					{chunk="ns_walk_bridge_short", chance=80, shift={x=0, y=0, z=0}},

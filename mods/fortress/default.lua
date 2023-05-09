@@ -46,6 +46,11 @@ fortress.default = {
 	-- sub-chunks becomes 0, and fallback chunks (if any) are used ONLY.
 	soft_extent = {x=100, y=30, z=100},
 
+	-- List of node replacements.
+	replacements = {
+		["torches:torch_wall"] = "torches:iron_torch",
+	},
+
 	-- Fortress section definitions.
 	-- Each chunk has a name, and its table defines which other chunks may be
 	-- spawned off it.

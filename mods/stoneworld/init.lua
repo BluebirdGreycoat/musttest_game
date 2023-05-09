@@ -60,15 +60,20 @@ stoneworld.caveheightnoise = {
 stoneworld.caves = stoneworld.caves or {}
 
 if not stoneworld.registered then
-	-- Construct 2 cave levels every 50 meters for 3000 meters height.
+	-- Construct a few cave levels every 50 meters for 3000 meters height.
+	-- Multiple overlapping cave networks ensures a probability of intersection.
 	for k = 1, 60 do
 		-- Cave network 1.
 		stoneworld.caves[#stoneworld.caves + 1] = {}
-		stoneworld.caves[#stoneworld.caves].y_level = k * 50
+		stoneworld.caves[#stoneworld.caves].y_level = k * 50 - 10
 
 		-- Cave network 2.
 		stoneworld.caves[#stoneworld.caves + 1] = {}
 		stoneworld.caves[#stoneworld.caves].y_level = k * 50
+
+		-- Cave network 3.
+		stoneworld.caves[#stoneworld.caves + 1] = {}
+		stoneworld.caves[#stoneworld.caves].y_level = k * 50 + 10
 	end
 
 	for k, v in ipairs(stoneworld.caves) do
@@ -105,7 +110,6 @@ stoneworld.cavernfloornoise = {
 	octaves = 7,
 	persist = 0.5,
 	lacunarity = 1.6,
-	flags = "eased",
 }
 
 stoneworld.cavernlevelnoise = {
@@ -182,7 +186,7 @@ stoneworld.noise5param3d = {
 	scale = 1,
 	spread = {x=1024, y=128, z=1024},
 	seed = 7218,
-	octaves = 6,
+	octaves = 4,
 	persist = 0.5,
 	lacunarity = 2.0,
 }
@@ -414,7 +418,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local clevel = (nbeg + yl + floor(c3 * 40))
 							local bot = floor(clevel - 15 + (c2 * 5) + n2 * 6)
 							local top = floor(clevel + 15 + (c1 * 15) + n1 * 6)
-							local lava = (nbeg + yl - 20)
+							local lava = (nbeg + yl - 30)
 
 							-- If ceiling is far enough up, and bottom is below the lava
 							-- ocean, then we have a chance to spawn a lava fortress here.
@@ -423,16 +427,23 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 									-- Use perlin noise to limit fortress spawning to regions.
 									-- Using abs() will cause fortresses to spawn in winding strings.
 									if abs(n3) < 0.1 then
-										spawn_fortress = true
-										fortress_y = lava + 10
+										-- Only for the mapchunk intersecting the lava ocean.
+										-- If we didn't do this check, it would be possible that the
+										-- mapchunk ABOVE (or below) could also cause a fortress to
+										-- spawn, causing a high probability of overlapping fortresses.
+										if y == lava then
+											spawn_fortress = true
+											fortress_y = lava + 10
+										end
 									end
 								end
 							end
 
 							-- Raise cavern ceiling over the lava ocean.
 							-- Need to make room for the fortress spawner.
-							if bot < (lava + 5) then
-								top = top + ((lava + 5) - bot) * 2
+							local expanse_y = (lava + 15)
+							if bot < expanse_y then
+								top = top + (expanse_y - bot) * 2
 							end
 
 							if y >= bot and y <= top then
@@ -568,7 +579,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 	-- A chance to spawn a fortress. Do NOT spawn a fortress in every mapchunk
 	-- that's eligible, that will crowd everything else out!
-	if spawn_fortress and pr:next(1, 10) == 1 then
+	if spawn_fortress and pr:next(1, 5) == 1 then
 		local p = vector.round({
 			x = floor((x0 + x1) / 2),
 			y = fortress_y,

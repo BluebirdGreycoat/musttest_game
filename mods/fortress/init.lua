@@ -49,6 +49,9 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 			-- Initial starting position.
 			pos = {x=pos.x, y=pos.y, z=pos.z},
+
+			-- Reference to the fortress data sheet.
+			data = data,
 		}
 		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector_round(pos)) .. "!")
 	end
@@ -156,6 +159,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 					size = size,
 					rotation = rotation,
 					force = force,
+					replacements = data.replacements,
 				}
 			end
 		end
@@ -307,17 +311,21 @@ function fortress.apply_design(internal, traversal, build)
 	end
 
 	local vm = minetest.get_voxel_manip(minp, maxp)
-	local replacements = {}
+
+	-- Note: replacements can only be sensibly defined for the entire fortress
+	-- sheet as a whole. Defining custom replacement lists for individual fortress
+	-- sections would NOT work the way you expect! Blame Minetest.
+	local rp = internal.data.replacements or {}
 
 	for k, v in ipairs(build) do
-		minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, replacements, v.force)
+		minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)
 	end
 
 	vm:write_to_map()
 	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 
 	-- Display hash locations.
-	---[[
+	--[[
 	for k, v in pairs(traversal) do
 		local p = minetest.get_position_from_hash(k)
 		minetest.set_node(p, {name="wool:red"})

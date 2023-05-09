@@ -4,6 +4,10 @@ fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
 fortress.schempath = fortress.modpath .. "/schems"
 
+if fortress.debug_layout == nil then
+	fortress.debug_layout = false
+end
+
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
@@ -48,14 +52,28 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			limit = {},
 
 			-- Initial starting position.
-			pos = {x=pos.x, y=pos.y, z=pos.z},
+			pos = vector.round({x=pos.x, y=pos.y, z=pos.z}),
 
 			-- Reference to the fortress data sheet.
 			data = data,
+
+			-- Step size.
+			step = table.copy(data.step),
+
+			-- Max/soft extents.
+			max_extent = table.copy(data.max_extent),
+			soft_extent = table.copy(data.soft_extent),
 		}
 		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector_round(pos)) .. "!")
 	end
 	pos = vector_round(pos)
+
+	-- In debug layout mode, make SMALLER fortresses.
+	if fortress.debug_layout then
+		internal.step = {x=1, y=1, z=1}
+		internal.max_extent = vector.round(vector.divide(data.max_extent, data.step))
+		internal.soft_extent = vector.round(vector.divide(data.soft_extent, data.step))
+	end
 
 	-- Use `initial` if not specified.
 	-- Multiple initial start-points may be specified, pick a random one.
@@ -69,15 +87,15 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 	-- Distance from inital pos must not be too large! Hard abort.
 	-- This prevents trying to generate HUGE fortresses that would slow things.
-	if pos.x < (internal.pos.x - data.max_extent.x) or pos.x > (internal.pos.x + data.max_extent.x) or
-			pos.y < (internal.pos.y - data.max_extent.y) or pos.y > (internal.pos.y + data.max_extent.y) or
-			pos.z < (internal.pos.z - data.max_extent.z) or pos.z > (internal.pos.z + data.max_extent.z) then
+	if pos.x < (internal.pos.x - internal.max_extent.x) or pos.x > (internal.pos.x + internal.max_extent.x) or
+			pos.y < (internal.pos.y - internal.max_extent.y) or pos.y > (internal.pos.y + internal.max_extent.y) or
+			pos.z < (internal.pos.z - internal.max_extent.z) or pos.z > (internal.pos.z + internal.max_extent.z) then
 		goto checkdone
 	end
 
-	if pos.x < (internal.pos.x - data.soft_extent.x) or pos.x > (internal.pos.x + data.soft_extent.x) or
-			pos.y < (internal.pos.y - data.soft_extent.y) or pos.y > (internal.pos.y + data.soft_extent.y) or
-			pos.z < (internal.pos.z - data.soft_extent.z) or pos.z > (internal.pos.z + data.soft_extent.z) then
+	if pos.x < (internal.pos.x - internal.soft_extent.x) or pos.x > (internal.pos.x + internal.soft_extent.x) or
+			pos.y < (internal.pos.y - internal.soft_extent.y) or pos.y > (internal.pos.y + internal.soft_extent.y) or
+			pos.z < (internal.pos.z - internal.soft_extent.z) or pos.z > (internal.pos.z + internal.soft_extent.z) then
 		exceeding_soft_extent = true
 	end
 
@@ -92,7 +110,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		for x = 0, size.x-1, 1 do
 			for y = 0, size.y-1, 1 do
 				for z = 0, size.z-1, 1 do
-					local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, data.step)))
+					local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, internal.step)))
 					local hash = minetest.hash_node_position(p3)
 					hashes[#hashes+1] = hash
 				end
@@ -131,7 +149,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		end
 
 		-- Calculate size of chunk.
-		local size = vector.multiply(info.size or {x=1, y=1, z=1}, data.step)
+		local size = vector.multiply(info.size or {x=1, y=1, z=1}, internal.step)
 
 		-- Add schems which are part of this chunk.
 		-- A chunk may have multiple schems with different parameters.
@@ -174,49 +192,110 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 	-- Recursively generate further chunks.
 	for dir, chunks in pairs(info.next) do
 		local dirvec = keydirs[dir]
-		local p2 = vector_round(vector.add(vector.multiply(dirvec, data.step), pos))
+		local p2 = vector_round(vector.add(vector.multiply(dirvec, internal.step), pos))
 
+		-- We're looking at the direction-specific neighbor list.
+		-- Add up the max chance value by accumulating each chunk's individual chance.
+		-- This complicated chance-calculation code is simply to give all chunks a
+		-- relatively fair chance to be chosen, regardless of their absolute chance
+		-- values.
+		local all_chance = {}
+		local max_chance = 0
+		local avg_chance = 0
+
+		-- First, calculate the average chance of all chunks having a chance specified.
+		-- The average chance becomes the default chance for any chunks not having their
+		-- chance specified, in later calculations.
+		local chunks_with_chance = 0
 		for index, chunk in ipairs(chunks) do
-			local info = data.chunks[chunk.chunk]
-			-- Current chunk must have associated data.
-			if not info then
-				goto skipme
-			end
-
-			--minetest.chat_send_all(dump(chunk))
-			local chance = chunk.chance or 100
-			local limit = info.limit or 0
-
-			-- Adjust chance if chosen chunk is over the limit for this chunk,
-			-- and the chunk is limited (has a positive, non-zero limit).
-			if limit > 0 then
-				local limit2 = internal.limit[chunk.chunk] or 0
-				if limit2 > limit then
-					local diff = math_floor(limit2 - limit)
-					-- Every 1 count past the limit reduces chance by 10.
-					chance = chance - diff * 10
+			if chunk.chance and not chunk.fallback then
+				if chunk.chance > 0 then
+					avg_chance = avg_chance + chunk.chance
+					chunks_with_chance = chunks_with_chance + 1
 				end
 			end
+		end
+		if chunks_with_chance > 0 then
+			avg_chance = math.floor(avg_chance / chunks_with_chance)
+		end
+		if avg_chance == 0 then
+			avg_chance = 1
+		end
 
-			-- If exceeding max soft extents, then chunk chances are always zero,
-			-- and only 'fallback' chunks may be placed, if any are available.
-			if exceeding_soft_extent then
-				chance = 0
+		-- Calculate each chunk's chance range (min, max).
+		for index, chunk in ipairs(chunks) do
+			-- Chunk's info table must exist in the main data sheet.
+			local info = data.chunks[chunk.chunk]
+
+			-- If chunk has the 'fallback' flag set, do not include it in chance ranges.
+			-- Such chunks should be used ONLY if no other chunk passes the chance test.
+			if not chunk.fallback and info then
+				local chunk_chance = chunk.chance or avg_chance
+				local chunk_limit = info.limit or 0
+
+				-- Zeroize chance if chosen chunk is over the limit for this chunk,
+				-- and the chunk is limited (has a positive, non-zero limit).
+				if chunk_limit > 0 then
+					local count = internal.limit[chunk.chunk] or 0
+					if count > chunk_limit then
+						chunk_chance = 0
+					end
+				end
+
+				-- If exceeding max soft extents, then chunk chances are always zero,
+				-- and only 'fallback' chunks may be placed, if any are available.
+				if exceeding_soft_extent then
+					chunk_chance = 0
+				end
+
+				if chunk_chance > 0 then
+					local cur_chance = max_chance + 1
+					max_chance = max_chance + chunk_chance
+					all_chance[chunk.chunk] = {min=cur_chance, max=max_chance}
+
+					-- Check that the 'chance ranges' are in consecutive order with no gaps.
+					--minetest.log('action', chunk.chunk .. " CHANCE: min=" .. all_chance[chunk.chunk].min .. ", max=" .. all_chance[chunk.chunk].max)
+				end
 			end
+		end
+
+		-- Get a random number between 1 and max chance value.
+		local random_chance = 0
+		if max_chance >= 1 then
+			random_chance = math.random(1, max_chance)
+		end
+
+		--[[
+		minetest.log('action', start .. ":" .. dir .. ": avg chance is " .. avg_chance)
+		minetest.log('action', start .. ":" .. dir .. ": max chance is " .. max_chance)
+		minetest.log('action', start .. ":" .. dir .. ": rnd chance is " .. random_chance)
+		--]]
+
+		-- Null chance range.
+		local fallback_range = {min=0, max=0}
+
+		-- For all chunks in direction-specific neighbor list (+/-X, +/-Y, +/-Z).
+		for index, chunk in ipairs(chunks) do
+			-- Chunk's chance range, or null range if not present.
+			local chance_range = all_chance[chunk.chunk] or fallback_range
+			--minetest.log('action', chunk.chunk .. " chance: min=" .. chance_range.min .. ", max=" .. chance_range.max)
 
 			-- Add chunk data to fortress pattern if chance test succeeds.
-			if math_random(1, 100) <= chance or chunk.fallback then
-				--if exceeding_soft_extent and chunk.fallback then
-				--	minetest.log("action", "Exceeding soft extent.")
-				--	minetest.log("action", "Current chunk is: " .. start)
-				--	minetest.log("action", "Next chunk would be: " .. chunk.chunk)
-				--end
+			-- Note that once a chunk passes the 'chance test', no further chunk will
+			-- be checked/added, UNLESS the 'continue' flag was set on the successful chunk.
+			if (random_chance >= chance_range.min and random_chance <= chance_range.max)
+					or chunk.fallback then
+				-- If chunk had the 'fallback' flag set, it is ALWAYS permitted.
+				-- For this reason you should ensure that 'fallback' chunks always come
+				-- last in their list, otherwise you WILL get overlaps. Multiple fallback
+				-- chunks will overlap. This may or may not be a problem for you.
 
 				local continue = false
 				if type(chunk.continue) == "boolean" then
 					continue = chunk.continue
 				end
-				local p3 = vector.multiply(chunk.shift or {x=0, y=0, z=0}, data.step)
+
+				local p3 = vector.multiply(chunk.shift or {x=0, y=0, z=0}, internal.step)
 				local loc = vector_round(vector.add(p3, p2))
 
 				internal.depth = internal.depth + 1
@@ -235,8 +314,6 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 					break
 				end
 			end
-
-			::skipme::
 		end
 	end
 
@@ -310,29 +387,32 @@ function fortress.apply_design(internal, traversal, build)
 		return
 	end
 
-	local vm = minetest.get_voxel_manip(minp, maxp)
+	if not fortress.debug_layout then
+		local vm = minetest.get_voxel_manip(minp, maxp)
 
-	-- Note: replacements can only be sensibly defined for the entire fortress
-	-- sheet as a whole. Defining custom replacement lists for individual fortress
-	-- sections would NOT work the way you expect! Blame Minetest.
-	local rp = internal.data.replacements or {}
+		-- Note: replacements can only be sensibly defined for the entire fortress
+		-- sheet as a whole. Defining custom replacement lists for individual fortress
+		-- sections would NOT work the way you expect! Blame Minetest.
+		local rp = internal.data.replacements or {}
 
-	for k, v in ipairs(build) do
-		minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)
+		for k, v in ipairs(build) do
+			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)
+		end
+
+		vm:write_to_map()
 	end
-
-	vm:write_to_map()
-	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 
 	-- Display hash locations.
-	--[[
-	for k, v in pairs(traversal) do
-		local p = minetest.get_position_from_hash(k)
-		minetest.set_node(p, {name="wool:red"})
-		local meta = minetest.get_meta(p)
-		meta:set_string("infotext", "Chunk: " .. v.chunk)
+	if fortress.debug_layout then
+		for k, v in pairs(traversal) do
+			local p = minetest.get_position_from_hash(k)
+			minetest.set_node(p, {name="wool:red"})
+			local meta = minetest.get_meta(p)
+			meta:set_string("infotext", "Chunk: " .. v.chunk)
+		end
 	end
-	--]]
+
+	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 end
 
 

@@ -1,16 +1,12 @@
 
 -- Todo:
--- Add T-junctions & corners for bridge causeways.
--- Add 3-length passage chunks; alternate between 3 and 1-length chunks.
 -- Add grand staircases (bridge and passage variants). (Note: maybe we don't want these? Fortresses should be 2D only ....)
 -- Add connections between sections of gatehouse tower.
 -- Allow fortress to generate off of gatehouse tower sections.
--- Add thicker pillar variants.
 -- Add raised plaza.
 -- Add lava-well room.
 -- Add throne room.
 -- Add balconies.
--- Add large plazas.
 -- Add lava aquaducts.
 -- Add bluegrass farm.
 -- Add single-room chambers.
@@ -1292,6 +1288,211 @@ fortress.default = {
 		},
 		bridge_broken_walk_arch_w = {
 			schem = {{file="nf_bridge_walk_broken_arch_w", force=false}},
+		},
+
+		-- Narrow bridges.
+		bridge_narrow_junction = {
+			schem = {
+				{file="bridge_narrow_junction", force=false, adjust={x=0, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["+x"] = {
+					{chunk="bridge_narrow_ew"},
+				},
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns"},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+			},
+		},
+
+		bridge_narrow_sw = {
+			schem = {
+				{file="bridge_narrow_sw", force=false, adjust={x=0, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+			},
+		},
+
+		bridge_narrow_se = {
+			schem = {
+				{file="bridge_narrow_se", force=false, adjust={x=3, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["+x"] = {
+					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+			},
+		},
+
+		bridge_narrow_ne = {
+			schem = {
+				{file="bridge_narrow_ne", force=false, adjust={x=3, y=7, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["+x"] = {
+					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_nw = {
+			schem = {
+				{file="bridge_narrow_nw", force=false, adjust={x=0, y=7, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_nsw = {
+			schem = {
+				{file="bridge_narrow_nsw", force=false, adjust={x=0, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_nse = {
+			schem = {
+				{file="bridge_narrow_nse", force=false, adjust={x=3, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["+x"] = {
+					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_swe = {
+			schem = {
+				{file="bridge_narrow_swe", force=false, adjust={x=0, y=7, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
+				},
+				["+x"] = {
+					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_nwe = {
+			schem = {
+				{file="bridge_narrow_nwe", force=false, adjust={x=0, y=7, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+			},
+			size = {x=1, y=2, z=1},
+			next = {
+				["-x"] = {
+					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
+				},
+				["+z"] = {
+					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
+				},
+				["+x"] = {
+					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_ns = {
+			schem = {
+				{file="ns_bridge_narrow", force=false, adjust={x=3, y=0, z=0}},
+			},
+			size = {x=1, y=2, z=3},
+			next = {
+				["+z"] = {
+					{chunk="bridge_narrow_junction", shift={x=0, y=0, z=2}},
+					{chunk="bridge_narrow_se", shift={x=0, y=0, z=2}},
+					{chunk="bridge_narrow_sw", shift={x=0, y=0, z=2}},
+					{chunk="bridge_narrow_swe", shift={x=0, y=0, z=2}},
+				},
+				["-z"] = {
+					{chunk="bridge_narrow_junction", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ne", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_nw", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_nwe", shift={x=0, y=0, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_ew = {
+			schem = {
+				{file="ew_bridge_narrow", force=false, adjust={x=0, y=0, z=3}},
+			},
+			size = {x=3, y=2, z=1},
+			next = {
+				["+x"] = {
+					{chunk="bridge_narrow_junction", shift={x=2, y=0, z=0}},
+					{chunk="bridge_narrow_nw", shift={x=2, y=0, z=0}},
+					{chunk="bridge_narrow_sw", shift={x=2, y=0, z=0}},
+					{chunk="bridge_narrow_nsw", shift={x=2, y=0, z=0}},
+				},
+				["-x"] = {
+					{chunk="bridge_narrow_junction", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ne", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_se", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_nse", shift={x=0, y=0, z=0}},
+				},
+			},
 		},
 	},
 }

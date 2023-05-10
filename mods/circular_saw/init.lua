@@ -138,7 +138,6 @@ function circular_saw:get_output_inv(modname, material, amount, max)
   if (not max or max < 1 or max > 64) then max = 64 end
 
   local list = {}
-  local pos = #list
 
   -- If there is nothing inside, display empty inventory:
   if amount < 1 then
@@ -151,10 +150,10 @@ function circular_saw:get_output_inv(modname, material, amount, max)
     local balance = math_min(math_floor(amount/cost), max)
     local nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
     if minetest.registered_nodes[nodename] then
-      pos = pos + 1
-      list[pos] = nodename .. " " .. balance
+      list[#list + 1] = nodename .. " " .. balance
     end
   end
+
   return list
 end
 
@@ -168,8 +167,8 @@ function circular_saw:reset(pos)
 	local owner = meta:get_string("owner")
 	local dname = rename.gpn(owner)
 
-  inv:set_list("input",  {})
-  inv:set_list("micro",  {})
+  inv:set_stack("input", 1, "")
+  inv:set_stack("micro", 1, "")
   inv:set_list("output", {})
   meta:set_int("anz", 0)
 
@@ -179,39 +178,44 @@ function circular_saw:reset(pos)
 end
 
 
+
 -- Player has taken something out of the box or placed something inside
--- that amounts to count microblocks:
+-- that amounts to 'amount' microblocks (full block count * 8):
 function circular_saw:update_inventory(pos, amount)
   local meta          = minetest.get_meta(pos)
   local inv           = meta:get_inventory()
 
   amount = meta:get_int("anz") + amount
 
-  -- The material is recycled automaticly.
-  inv:set_list("recycle",  {})
+  -- The material is recycled automatically
+  inv:set_stack("recycle", 1, ItemStack())
 
   if amount < 1 then -- If the last block is taken out.
+    --minetest.log('action', 'amount is zero!')
     self:reset(pos)
     return
   end
 
-  local stack = inv:get_stack("input",  1)
+  local stack = inv:get_stack("input", 1)
   -- At least one "normal" block is necessary to see what kind of stairs are requested.
   if stack:is_empty() then
+    --minetest.log('action', 'stack is empty!')
     -- Any microblocks not taken out yet are now lost.
     -- (covers material loss in the machine)
     self:reset(pos)
     return
-
   end
+
   local node_name = stack:get_name() or ""
   local name_parts = circular_saw.known_nodes[node_name] or ""
   local modname  = name_parts[1] or ""
   local material = name_parts[2] or ""
+  local input_count = math_floor(amount / 8)
+  local input_item = node_name .. " " .. input_count
 
-  inv:set_list("input", { -- Display as many full blocks as possible:
-    node_name.. " " .. math_floor(amount / 8)
-  })
+  -- Display as many full blocks as possible.
+  --minetest.log('action', 'adding to input! ' .. input_item)
+  inv:set_stack("input", 1, input_item)
 
   -- The stairnodes made of default nodes use moreblocks namespace, other mods keep own:
   if modname == "default" then
@@ -221,13 +225,28 @@ function circular_saw:update_inventory(pos, amount)
   --	.. material .. " with " .. (amount) .. " microblocks.")
 
   -- 0-7 microblocks may remain left-over:
-  inv:set_list("micro", {
-    modname .. ":micro_" .. material .. "_bottom " .. (amount % 8)
-  })
+  local leftover_item = modname .. ":micro_" .. material .. "_bottom " .. (amount % 8)
+  inv:set_stack("micro", 1, leftover_item)
+
   -- Display:
-  inv:set_list("output",
-		self:get_output_inv(modname, material, amount,
-				meta:get_int("max_offered")))
+  local noutlist = self:get_output_inv(modname, material, amount, meta:get_int("max_offered"))
+  --minetest.log('circular_saw: old inv size: ' .. inv:get_size("output"))
+  --minetest.log('circular_saw: new inv size: ' .. #noutlist)
+
+  ------------------------------------------------------------------------------
+  -- So the devs broke the engine again.
+  --inv:set_list("output", noutlist)
+
+  local output_size = inv:get_size("output")
+  for k = 1, output_size do
+    if noutlist[k] then
+      inv:set_stack("output", k, noutlist[k])
+    else
+      inv:set_stack("output", k, ItemStack())
+    end
+  end
+  ------------------------------------------------------------------------------
+
   -- Store how many microblocks are available:
   meta:set_int("anz", amount)
 

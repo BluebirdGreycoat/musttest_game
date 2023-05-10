@@ -1456,6 +1456,9 @@ fortress.default = {
 		bridge_narrow_ns = {
 			schem = {
 				{file="ns_bridge_narrow", force=false, adjust={x=3, y=0, z=0}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z_min=0, z_max=3*11-4}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z_min=0, z_max=3*11-4}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z_min=0, z_max=3*11-4}},
 			},
 			size = {x=1, y=2, z=3},
 			next = {
@@ -1477,6 +1480,9 @@ fortress.default = {
 		bridge_narrow_ew = {
 			schem = {
 				{file="ew_bridge_narrow", force=false, adjust={x=0, y=0, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x_min=0, x_max=3*11-4, y=11, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x_min=0, x_max=3*11-4, y=11, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x_min=0, x_max=3*11-4, y=11, z=3}},
 			},
 			size = {x=3, y=2, z=1},
 			next = {

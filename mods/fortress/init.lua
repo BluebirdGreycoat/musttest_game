@@ -161,8 +161,26 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			if math_random(1, 100) <= chance then
 				local file = v.file
 				local path = fortress.schempath .. "/" .. file .. ".mts"
-				local adjust = v.adjust or {x=0, y=0, z=0}
+				local adjust = table.copy(v.adjust or {x=0, y=0, z=0})
 				local force = true
+
+				-- The position adjustment setting may specify min/max values for each
+				-- dimension coordinate.
+				if adjust.x_min then
+					adjust.x = math_random(adjust.x_min, adjust.x_max)
+					adjust.x_min = nil
+					adjust.x_max = nil
+				end
+				if adjust.y_min then
+					adjust.y = math_random(adjust.y_min, adjust.y_max)
+					adjust.y_min = nil
+					adjust.y_max = nil
+				end
+				if adjust.z_min then
+					adjust.z = math_random(adjust.z_min, adjust.z_max)
+					adjust.z_min = nil
+					adjust.z_max = nil
+				end
 
 				if type(v.force) == "boolean" then
 					force = v.force

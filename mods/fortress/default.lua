@@ -108,6 +108,8 @@ fortress.default = {
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_room1", chance=15, force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_room2", chance=15, force=true, adjust={x=3, y=4, z=3}},
+				{file="nf_detail_room3", chance=15, rotation="90", force=false, adjust={x=0, y=4, z=3}},
 			},
 			next = {
 				["+x"] = {
@@ -150,6 +152,8 @@ fortress.default = {
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_room1", chance=15, rotation="90", force=true, adjust={x=3, y=3, z=3}},
+				{file="nf_detail_room2", chance=15, rotation="90", force=true, adjust={x=3, y=4, z=3}},
+				{file="nf_detail_room3", chance=15, force=false, adjust={x=3, y=4, z=0}},
 			},
 			next = {
 				["+z"] = {
@@ -539,6 +543,7 @@ fortress.default = {
 			schem = {
 				{file="nf_walkway_4x_junction", force=false},
 				{file="bridge_junction_house", chance=50, force=true},
+				{file="nf_detail_lava_well1", chance=50, force=true, adjust={x=3, y=1, z=3}},
 			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
@@ -572,7 +577,9 @@ fortress.default = {
 		},
 
 		walk_bridge_nse = {
-			schem = {{file="walk_bridge_nse", force=false}},
+			schem = {
+				{file="walk_bridge_nse", force=false},
+			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
 			-- all chunks which have this chunk as a possible follow-up.
@@ -600,7 +607,9 @@ fortress.default = {
 		},
 
 		walk_bridge_nsw = {
-			schem = {{file="walk_bridge_nsw", force=false}},
+			schem = {
+				{file="walk_bridge_nsw", force=false},
+			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
 			-- all chunks which have this chunk as a possible follow-up.
@@ -628,7 +637,9 @@ fortress.default = {
 		},
 
 		walk_bridge_swe = {
-			schem = {{file="walk_bridge_swe", force=false}},
+			schem = {
+				{file="walk_bridge_swe", force=false},
+			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
 			-- all chunks which have this chunk as a possible follow-up.
@@ -656,7 +667,9 @@ fortress.default = {
 		},
 
 		walk_bridge_nwe = {
-			schem = {{file="walk_bridge_nwe", force=false}},
+			schem = {
+				{file="walk_bridge_nwe", force=false},
+			},
 			-- If number of chunks excees this limit, then algorithm reduces
 			-- the chance by 10% for every unit over the limit. This affects
 			-- all chunks which have this chunk as a possible follow-up.
@@ -689,6 +702,9 @@ fortress.default = {
 				{file="nf_walkway_ew", force=false, adjust={x=0, y=0, z=0}},
 				{file="nf_walkway_ew", force=false, adjust={x=11, y=0, z=0}},
 				{file="nf_walkway_ew", force=false, adjust={x=22, y=0, z=0}},
+				{file="bridge_house_ew", chance=20, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_ew", chance=10, force=true, adjust={x=11, y=3, z=0}},
+				{file="bridge_house_ew", chance=20, force=true, adjust={x=22, y=3, z=0}},
 			},
 			size = {x=3, y=1, z=1},
 			next = {
@@ -725,6 +741,9 @@ fortress.default = {
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=0}},
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=11}},
 				{file="nf_walkway_ns", force=false, adjust={x=0, y=0, z=22}},
+				{file="bridge_house_ns", chance=20, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_ns", chance=10, force=true, adjust={x=0, y=3, z=11}},
+				{file="bridge_house_ns", chance=20, force=true, adjust={x=0, y=3, z=22}},
 			},
 			size = {x=1, y=1, z=3},
 			next = {
@@ -761,6 +780,7 @@ fortress.default = {
 				{file="nf_walkway_ew", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_ew", chance=20, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+x"] = {
@@ -786,6 +806,7 @@ fortress.default = {
 				{file="nf_walkway_ns", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_ns", chance=20, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+z"] = {
@@ -815,6 +836,7 @@ fortress.default = {
 				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_ew", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 		},
 
@@ -824,6 +846,7 @@ fortress.default = {
 				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_ns", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 		},
 
@@ -831,6 +854,7 @@ fortress.default = {
 			schem = {
 				{file="nf_walkway_n_capped", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_n", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -841,6 +865,7 @@ fortress.default = {
 			schem = {
 				{file="nf_walkway_s_capped", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_s", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -851,6 +876,7 @@ fortress.default = {
 			schem = {
 				{file="nf_walkway_e_capped", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_e", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -861,6 +887,7 @@ fortress.default = {
 			schem = {
 				{file="nf_walkway_w_capped", force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
+				{file="bridge_house_w", chance=30, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -1048,11 +1075,17 @@ fortress.default = {
 
 		-- Bridge arches & pillars.
 		bridge_arch_ns = {
-			schem = {{file="nf_bridge_arch_ns", force=false, adjust={x=0, y=6, z=0}}},
+			schem = {
+				{file="nf_bridge_arch_ns", force=false, adjust={x=0, y=6, z=0}},
+				{file="bridge_pit", chance=5, force=true, adjust={x=3, y=8, z=3}},
+			},
 		},
 
 		bridge_arch_ew = {
-			schem = {{file="nf_bridge_arch_ew", force=false, adjust={x=0, y=6, z=0}}},
+			schem = {
+				{file="nf_bridge_arch_ew", force=false, adjust={x=0, y=6, z=0}},
+				{file="bridge_pit", chance=5, force=true, adjust={x=3, y=8, z=3}},
+			},
 		},
 
 		bridge_arch_pillar_ns = {

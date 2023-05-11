@@ -237,7 +237,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		if chunks_with_chance > 0 then
 			avg_chance = math.floor(avg_chance / chunks_with_chance)
 		end
-		if avg_chance == 0 then
+		if avg_chance <= 0 then
 			avg_chance = 1
 		end
 
@@ -245,7 +245,10 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		-- If the neighbor is a fallback, and its chance is not specified, then by
 		-- default its chance is 1/4 the average chance of all other chunks.
 		for index, neighbor in ipairs(chunks4dir) do
-			local chunk_chance = math.floor(neighbor.chance or ((neighbor.fallback and (avg_chance / 4)) or avg_chance))
+			-- Default fallback chance is 1/4 the average chance, but can't be less than 1.
+			-- To make the chance for a fallback section 0, you must explicitly set the chance.
+			local def_fb_chance = math.max(math.floor(avg_chance / 4), 1)
+			local chunk_chance = math.floor(neighbor.chance or ((neighbor.fallback and def_fb_chance) or avg_chance))
 			local chunk_limit = (info and info.limit) or 0
 
 			-- Zeroize chance if chosen chunk is over the limit for this chunk,

@@ -163,6 +163,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				local path = fortress.schempath .. "/" .. file .. ".mts"
 				local adjust = table.copy(v.adjust or {x=0, y=0, z=0})
 				local force = true
+				local priority = v.priority or 0
 
 				-- The position adjustment setting may specify min/max values for each
 				-- dimension coordinate.
@@ -197,6 +198,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 					rotation = rotation,
 					force = force,
 					replacements = data.replacements,
+					priority = priority,
 				}
 			end
 		end
@@ -418,6 +420,12 @@ function fortress.apply_design(internal, traversal, build)
 		-- sheet as a whole. Defining custom replacement lists for individual fortress
 		-- sections would NOT work the way you expect! Blame Minetest.
 		local rp = internal.data.replacements or {}
+
+		-- Sort chunks by priority. Lowest priority first.
+		table.sort(build,
+			function(a, b)
+				return a.priority > b.priority
+			end)
 
 		for k, v in ipairs(build) do
 			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)

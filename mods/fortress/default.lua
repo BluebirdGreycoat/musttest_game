@@ -122,7 +122,13 @@ fortress.default = {
 
 		-- Corridor sections.
 		junction = {
-			schem = {{file="nf_passage_4x_junction"}},
+			schem = {
+				{file="nf_passage_4x_junction"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+			},
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=80, shift={x=0, y=0, z=0}},
@@ -142,12 +148,14 @@ fortress.default = {
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="junction_walk", fallback=true}},
-			}
+			},
 		},
 
 		ew = {
 			schem = {
 				{file="nf_passage_ew"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
 				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
@@ -192,6 +200,8 @@ fortress.default = {
 		ns = {
 			schem = {
 				{file="nf_passage_ns"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
 				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
@@ -362,7 +372,11 @@ fortress.default = {
 		},
 
 		ne_corner = {
-			schem = {{file="nf_passage_ne_corner"}},
+			schem = {
+				{file="nf_passage_ne_corner"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+			},
 			next = {
 				["+z"] = {
 					{chunk="ns", chance=50},
@@ -378,7 +392,11 @@ fortress.default = {
 		},
 
 		nw_corner = {
-			schem = {{file="nf_passage_nw_corner"}},
+			schem = {
+				{file="nf_passage_nw_corner"},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+			},
 			next = {
 				["-x"] = {
 					{chunk="ew", chance=70},
@@ -394,7 +412,11 @@ fortress.default = {
 		},
 
 		sw_corner = {
-			schem = {{file="nf_passage_sw_corner"}},
+			schem = {
+				{file="nf_passage_sw_corner"},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+			},
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
@@ -410,7 +432,11 @@ fortress.default = {
 		},
 
 		se_corner = {
-			schem = {{file="nf_passage_se_corner"}},
+			schem = {
+				{file="nf_passage_se_corner"},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+			},
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
@@ -426,7 +452,12 @@ fortress.default = {
 		},
 
 		esw_t = {
-			schem = {{file="nf_passage_esw_t"}},
+			schem = {
+				{file="nf_passage_esw_t"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+			},
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=70},
@@ -446,7 +477,12 @@ fortress.default = {
 		},
 
 		nes_t = {
-			schem = {{file="nf_passage_nes_t"}},
+			schem = {
+				{file="nf_passage_nes_t"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+			},
 			next = {
 				["+z"] = {
 					{chunk="ns", chance=50},
@@ -466,7 +502,12 @@ fortress.default = {
 		},
 
 		swn_t = {
-			schem = {{file="nf_passage_swn_t"}},
+			schem = {
+				{file="nf_passage_swn_t"},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+			},
 			next = {
 				["-z"] = {
 					{chunk="ns", chance=50},
@@ -486,7 +527,12 @@ fortress.default = {
 		},
 
 		wne_t = {
-			schem = {{file="nf_passage_wne_t"}},
+			schem = {
+				{file="nf_passage_wne_t"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+			},
 			next = {
 				["-x"] = {
 					{chunk="ew", chance=70},
@@ -507,7 +553,11 @@ fortress.default = {
 
 		-- Bridge/passage connections.
 		ns_bridge_passage = {
-			schem = {{file="nf_ns_passage_ew_bridge_access"}},
+			schem = {
+				{file="nf_ns_passage_ew_bridge_access"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=13, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=13, y=3, z=-3}},
+			},
 			size = {x=3, y=1, z=1},
 			limit = 4,
 			next = {
@@ -539,7 +589,11 @@ fortress.default = {
 		},
 
 		ns_bridge_passage_w = {
-			schem = {{file="ns_bridge_passage_w"}},
+			schem = {
+				{file="ns_bridge_passage_w"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=13, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=13, y=3, z=-3}},
+			},
 			size = {x=2, y=1, z=1},
 			limit = 4,
 			next = {
@@ -566,7 +620,11 @@ fortress.default = {
 		},
 
 		ns_bridge_passage_e = {
-			schem = {{file="ns_bridge_passage_e"}},
+			schem = {
+				{file="ns_bridge_passage_e"},
+				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+			},
 			size = {x=2, y=1, z=1},
 			limit = 4,
 			next = {
@@ -593,7 +651,11 @@ fortress.default = {
 		},
 
 		ew_bridge_passage = {
-			schem = {{file="nf_ew_passage_ns_bridge_access"}},
+			schem = {
+				{file="nf_ew_passage_ns_bridge_access"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=13}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=13}},
+			},
 			size = {x=1, y=1, z=3},
 			limit = 4,
 			next = {
@@ -625,7 +687,11 @@ fortress.default = {
 		},
 
 		ew_bridge_passage_n = {
-			schem = {{file="ew_bridge_passage_n"}},
+			schem = {
+				{file="ew_bridge_passage_n"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+			},
 			size = {x=1, y=1, z=2},
 			limit = 4,
 			next = {
@@ -652,7 +718,11 @@ fortress.default = {
 		},
 
 		ew_bridge_passage_s = {
-			schem = {{file="ew_bridge_passage_s"}},
+			schem = {
+				{file="ew_bridge_passage_s"},
+				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=13}},
+				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=13}},
+			},
 			size = {x=1, y=1, z=2},
 			limit = 4,
 			next = {

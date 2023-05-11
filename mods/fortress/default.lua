@@ -154,8 +154,8 @@ fortress.default = {
 		ew = {
 			schem = {
 				{file="nf_passage_ew"},
-				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
-				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ew_hall_end_stair_e", priority=100, adjust={x=11, y=1, z=2}},
+				{file="ew_hall_end_stair_w", priority=100, adjust={x=-3, y=1, z=2}},
 				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
@@ -200,8 +200,8 @@ fortress.default = {
 		ns = {
 			schem = {
 				{file="nf_passage_ns"},
-				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
-				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+				{file="ns_hall_end_stair_n", priority=100, adjust={x=2, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=100, adjust={x=2, y=1, z=-3}},
 				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
@@ -555,8 +555,8 @@ fortress.default = {
 		ns_bridge_passage = {
 			schem = {
 				{file="nf_ns_passage_ew_bridge_access"},
-				{file="ns_hall_end_n", priority=1000, adjust={x=13, y=3, z=11}},
-				{file="ns_hall_end_s", priority=1000, adjust={x=13, y=3, z=-3}},
+				{file="ns_hall_end_stair_n", priority=1000, adjust={x=13, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=1000, adjust={x=13, y=1, z=-3}},
 			},
 			size = {x=3, y=1, z=1},
 			limit = 4,
@@ -591,8 +591,8 @@ fortress.default = {
 		ns_bridge_passage_w = {
 			schem = {
 				{file="ns_bridge_passage_w"},
-				{file="ns_hall_end_n", priority=1000, adjust={x=13, y=3, z=11}},
-				{file="ns_hall_end_s", priority=1000, adjust={x=13, y=3, z=-3}},
+				{file="ns_hall_end_stair_n", priority=1000, adjust={x=13, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=1000, adjust={x=13, y=1, z=-3}},
 			},
 			size = {x=2, y=1, z=1},
 			limit = 4,
@@ -622,8 +622,8 @@ fortress.default = {
 		ns_bridge_passage_e = {
 			schem = {
 				{file="ns_bridge_passage_e"},
-				{file="ns_hall_end_n", priority=1000, adjust={x=2, y=3, z=11}},
-				{file="ns_hall_end_s", priority=1000, adjust={x=2, y=3, z=-3}},
+				{file="ns_hall_end_stair_n", priority=1000, adjust={x=2, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=1000, adjust={x=2, y=1, z=-3}},
 			},
 			size = {x=2, y=1, z=1},
 			limit = 4,
@@ -653,8 +653,8 @@ fortress.default = {
 		ew_bridge_passage = {
 			schem = {
 				{file="nf_ew_passage_ns_bridge_access"},
-				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=13}},
-				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=13}},
+				{file="ew_hall_end_stair_e", priority=1000, adjust={x=11, y=1, z=13}},
+				{file="ew_hall_end_stair_w", priority=1000, adjust={x=-3, y=1, z=13}},
 			},
 			size = {x=1, y=1, z=3},
 			limit = 4,
@@ -689,8 +689,8 @@ fortress.default = {
 		ew_bridge_passage_n = {
 			schem = {
 				{file="ew_bridge_passage_n"},
-				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=2}},
-				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=2}},
+				{file="ew_hall_end_stair_e", priority=1000, adjust={x=11, y=1, z=2}},
+				{file="ew_hall_end_stair_w", priority=1000, adjust={x=-3, y=1, z=2}},
 			},
 			size = {x=1, y=1, z=2},
 			limit = 4,
@@ -720,8 +720,8 @@ fortress.default = {
 		ew_bridge_passage_s = {
 			schem = {
 				{file="ew_bridge_passage_s"},
-				{file="ew_hall_end_e", priority=1000, adjust={x=11, y=3, z=13}},
-				{file="ew_hall_end_w", priority=1000, adjust={x=-3, y=3, z=13}},
+				{file="ew_hall_end_stair_e", priority=1000, adjust={x=11, y=1, z=13}},
+				{file="ew_hall_end_stair_w", priority=1000, adjust={x=-3, y=1, z=13}},
 			},
 			size = {x=1, y=1, z=2},
 			limit = 4,
@@ -1042,29 +1042,29 @@ fortress.default = {
 
 		ew_walk = {
 			schem = {
-				{file="nf_walkway_ew", force=false},
+				{file="nf_walkway_ew", priority=101, force=false},
 				{file="nf_detail_lava1", chance=10, force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_ew", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_ew", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 		},
 
 		ns_walk = {
 			schem = {
-				{file="nf_walkway_ns", force=false},
+				{file="nf_walkway_ns", priority=101, force=false},
 				{file="nf_detail_lava1", chance=10, rotation="90", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_lava1", chance=2, rotation="random", force=true, adjust={x=3, y=0, z=3}},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_ns", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_ns", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 		},
 
 		n_capped_walk = {
 			schem = {
-				{file="nf_walkway_n_capped", force=false},
+				{file="nf_walkway_n_capped", priority=101, force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_n", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_n", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -1073,9 +1073,9 @@ fortress.default = {
 
 		s_capped_walk = {
 			schem = {
-				{file="nf_walkway_s_capped", force=false},
+				{file="nf_walkway_s_capped", priority=101, force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_s", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_s", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -1084,9 +1084,9 @@ fortress.default = {
 
 		e_capped_walk = {
 			schem = {
-				{file="nf_walkway_e_capped", force=false},
+				{file="nf_walkway_e_capped", priority=101, force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_e", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_e", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -1095,9 +1095,9 @@ fortress.default = {
 
 		w_capped_walk = {
 			schem = {
-				{file="nf_walkway_w_capped", force=false},
+				{file="nf_walkway_w_capped", priority=101, force=false},
 				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=0, z=3}},
-				{file="bridge_house_w", chance=30, force=true, adjust={x=0, y=3, z=0}},
+				{file="bridge_house_w", chance=15, force=true, adjust={x=0, y=3, z=0}},
 			},
 			next = {
 				["+y"] = {{chunk="tower", chance=50}},
@@ -1135,17 +1135,21 @@ fortress.default = {
 			},
 		},
 
-		ne_corner_walk = {schem = {{file="nf_walkway_ne_corner", force=false}}},
-		nw_corner_walk = {schem = {{file="nf_walkway_nw_corner", force=false}}},
-		sw_corner_walk = {schem = {{file="nf_walkway_sw_corner", force=false}}},
-		se_corner_walk = {schem = {{file="nf_walkway_se_corner", force=false}}},
-		esw_t_walk = {schem = {{file="nf_walkway_esw_t", force=false}}},
-		nes_t_walk = {schem = {{file="nf_walkway_nes_t", force=false}}},
-		swn_t_walk = {schem = {{file="nf_walkway_swn_t", force=false}}},
-		wne_t_walk = {schem = {{file="nf_walkway_wne_t", force=false}}},
+		ne_corner_walk = {schem = {{file="nf_walkway_ne_corner", priority=101, force=false}}},
+		nw_corner_walk = {schem = {{file="nf_walkway_nw_corner", priority=101, force=false}}},
+		sw_corner_walk = {schem = {{file="nf_walkway_sw_corner", priority=101, force=false}}},
+		se_corner_walk = {schem = {{file="nf_walkway_se_corner", priority=101, force=false}}},
+		esw_t_walk = {schem = {{file="nf_walkway_esw_t", priority=101, force=false}}},
+		nes_t_walk = {schem = {{file="nf_walkway_nes_t", priority=101, force=false}}},
+		swn_t_walk = {schem = {{file="nf_walkway_swn_t", priority=101, force=false}}},
+		wne_t_walk = {schem = {{file="nf_walkway_wne_t", priority=101, force=false}}},
 
 		ew_stair = {
-			schem = {{file="nf_passage_ew_stair"}},
+			schem = {
+				{file="nf_passage_ew_stair"},
+				{file="ew_hall_end_stair_e", priority=1000, adjust={x=11, y=1, z=2}},
+				{file="ew_hall_end_stair_w", priority=1000, adjust={x=-3, y=1, z=2}},
+			},
 			next = {
 				["+x"] = {
 					{chunk="swn_t", chance=20},
@@ -1167,7 +1171,11 @@ fortress.default = {
 		},
 
 		ns_stair = {
-			schem = {{file="nf_passage_ew_stair", rotation="90"}},
+			schem = {
+				{file="nf_passage_ew_stair", rotation="90"},
+				{file="ns_hall_end_stair_n", priority=1000, adjust={x=2, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=1000, adjust={x=2, y=1, z=-3}},
+			},
 			next = {
 				["+z"] = {
 					{chunk="nes_t", chance=20},
@@ -1190,6 +1198,7 @@ fortress.default = {
 
 		tower = {
 			schem = {{file="nf_tower", force=false, adjust={x=3, y=-10, z=3}}},
+			limit = 4,
 		},
 
 		-- Gatehouses.

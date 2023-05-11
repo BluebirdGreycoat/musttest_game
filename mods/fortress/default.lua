@@ -1295,28 +1295,29 @@ fortress.default = {
 			schem = {
 				{file="bridge_narrow_junction", force=false, adjust={x=0, y=7, z=0}},
 				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
+				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3}},
 			},
 			size = {x=1, y=2, z=1},
 			next = {
 				["+x"] = {
-					{chunk="bridge_narrow_ew"},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns"},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1329,14 +1330,16 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1349,14 +1352,16 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["+x"] = {
-					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1369,14 +1374,16 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["+x"] = {
-					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1389,14 +1396,16 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1409,19 +1418,22 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1434,19 +1446,22 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["+x"] = {
-					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1459,19 +1474,22 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken_s", shift={x=0, y=0, z=-2}},
-					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_s", chance=10, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_broken2_s", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+x"] = {
-					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1484,19 +1502,22 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["-x"] = {
-					{chunk="bridge_narrow_ew", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken_w", shift={x=-2, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_w", chance=10, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+z"] = {
-					{chunk="bridge_narrow_ns", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_n", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_n", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["+x"] = {
-					{chunk="bridge_narrow_ew", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken_e", shift={x=0, y=0, z=0}},
-					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken_e", chance=10, shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", chance=10, fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1516,6 +1537,7 @@ fortress.default = {
 					{chunk="bridge_narrow_se", shift={x=0, y=0, z=2}},
 					{chunk="bridge_narrow_sw", shift={x=0, y=0, z=2}},
 					{chunk="bridge_narrow_swe", shift={x=0, y=0, z=2}},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=2}},
 					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
@@ -1524,7 +1546,11 @@ fortress.default = {
 					{chunk="bridge_narrow_ne", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_nw", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_nwe", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
+				},
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ns", fallback=true, shift={x=0, y=-3, z=1}},
 				},
 			},
 		},
@@ -1544,6 +1570,7 @@ fortress.default = {
 					{chunk="bridge_narrow_nw", shift={x=2, y=0, z=0}},
 					{chunk="bridge_narrow_sw", shift={x=2, y=0, z=0}},
 					{chunk="bridge_narrow_nsw", shift={x=2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_w", shift={x=2, y=0, z=0}},
 					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-x"] = {
@@ -1552,7 +1579,11 @@ fortress.default = {
 					{chunk="bridge_narrow_ne", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_se", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_nse", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
 					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
+				},
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ew", fallback=true, shift={x=1, y=-3, z=0}},
 				},
 			},
 		},
@@ -1563,6 +1594,11 @@ fortress.default = {
 				{file="bridge_narrow_house", force=false, chance=20, adjust={x=0, y=11, z=3}},
 			},
 			size = {x=3, y=2, z=1},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ew", fallback=true, shift={x=1, y=-3, z=0}},
+				},
+			},
 		},
 
 		bridge_narrow_broken_w = {
@@ -1571,6 +1607,11 @@ fortress.default = {
 				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3*11-4, y=11, z=3}},
 			},
 			size = {x=3, y=2, z=1},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ew", fallback=true, shift={x=1, y=-3, z=0}},
+				},
+			},
 		},
 
 		bridge_narrow_broken_n = {
@@ -1579,6 +1620,11 @@ fortress.default = {
 				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=0}},
 			},
 			size = {x=1, y=2, z=3},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ns", fallback=true, shift={x=0, y=-3, z=1}},
+				},
+			},
 		},
 
 		bridge_narrow_broken_s = {
@@ -1587,6 +1633,11 @@ fortress.default = {
 				{file="bridge_narrow_house", force=false, chance=20, adjust={x=3, y=11, z=3*11-4}},
 			},
 			size = {x=1, y=2, z=3},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_pillar_ns", fallback=true, shift={x=0, y=-3, z=1}},
+				},
+			},
 		},
 
 		bridge_narrow_broken2_e = {
@@ -1625,10 +1676,14 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["+z"] = {
-					{chunk="bridge_narrow_ns", fallback=true},
+					{chunk="bridge_narrow_ns", chance=100},
+					{chunk="bridge_narrow_platform_s", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_n", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-z"] = {
-					{chunk="bridge_narrow_ns", fallback=true, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_ns", chance=100, shift={x=0, y=0, z=-2}},
+					{chunk="bridge_narrow_platform_n", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_s", fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
 		},
@@ -1641,12 +1696,90 @@ fortress.default = {
 			size = {x=1, y=2, z=1},
 			next = {
 				["+x"] = {
-					{chunk="bridge_narrow_ew", fallback=true},
+					{chunk="bridge_narrow_ew", chance=100},
+					{chunk="bridge_narrow_platform_w", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_e", fallback=true, shift={x=0, y=0, z=0}},
 				},
 				["-x"] = {
-					{chunk="bridge_narrow_ew", fallback=true, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_ew", chance=100, shift={x=-2, y=0, z=0}},
+					{chunk="bridge_narrow_platform_e", shift={x=0, y=0, z=0}},
+					{chunk="bridge_narrow_broken2_w", fallback=true, shift={x=0, y=0, z=0}},
 				},
 			},
+		},
+
+		bridge_narrow_pillar_ns = {
+			schem = {
+				{file="bridge_narrow_pillar_ns", force=false, adjust={x=3, y=0, z=3}},
+				{file="bridge_narrow_pillar_ns", force=false, adjust={x=3, y=11, z=3}},
+				{file="bridge_narrow_pillar_ns", force=false, adjust={x=3, y=22, z=3}},
+				{file="bridge_narrow_pillar_ns", force=false, adjust={x=3, y=33, z=3}},
+			},
+			size = {x=1, y=4, z=1},
+		},
+
+		bridge_narrow_pillar_ew = {
+			schem = {
+				{file="bridge_narrow_pillar_ew", force=false, adjust={x=3, y=0, z=3}},
+				{file="bridge_narrow_pillar_ew", force=false, adjust={x=3, y=11, z=3}},
+				{file="bridge_narrow_pillar_ew", force=false, adjust={x=3, y=22, z=3}},
+				{file="bridge_narrow_pillar_ew", force=false, adjust={x=3, y=33, z=3}},
+			},
+			size = {x=1, y=4, z=1},
+		},
+
+		bridge_narrow_platform_w = {
+			schem = {
+				{file="bridge_narrow_platform", rotation="0", force=false, adjust={x=0, y=0, z=0}},
+			},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_platform_pillar", fallback=true, shift={x=0, y=-3, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_platform_n = {
+			schem = {
+				{file="bridge_narrow_platform", rotation="90", force=false, adjust={x=0, y=0, z=0}},
+			},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_platform_pillar", fallback=true, shift={x=0, y=-3, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_platform_e = {
+			schem = {
+				{file="bridge_narrow_platform", rotation="180", force=false, adjust={x=0, y=0, z=0}},
+			},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_platform_pillar", fallback=true, shift={x=0, y=-3, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_platform_s = {
+			schem = {
+				{file="bridge_narrow_platform", rotation="270", force=false, adjust={x=0, y=0, z=0}},
+			},
+			next = {
+				["-y"] = {
+					{chunk="bridge_narrow_platform_pillar", fallback=true, shift={x=0, y=-3, z=0}},
+				},
+			},
+		},
+
+		bridge_narrow_platform_pillar = {
+			schem = {
+				{file="bridge_narrow_platform_pillar", force=false, adjust={x=2, y=0, z=2}},
+				{file="bridge_narrow_platform_pillar", force=false, adjust={x=2, y=11, z=2}},
+				{file="bridge_narrow_platform_pillar", force=false, adjust={x=2, y=22, z=2}},
+				{file="bridge_narrow_platform_pillar", force=false, adjust={x=2, y=33, z=2}},
+			},
+			size = {x=1, y=4, z=1},
 		},
 	},
 }

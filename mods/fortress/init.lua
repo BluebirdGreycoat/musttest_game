@@ -160,6 +160,42 @@ end
 
 
 
+function fortress.add_loot(pos, info, build)
+	if not info.chests then
+		return
+	end
+
+	for k, v in ipairs(info.chests) do
+		local p2 = table.copy(v.pos)
+
+		-- The position adjustment setting may specify min/max values for each
+		-- dimension coordinate.
+		if p2.x_min then
+			p2.x = math_random(p2.x_min, p2.x_max)
+			p2.x_min = nil
+			p2.x_max = nil
+		end
+		if p2.y_min then
+			p2.y = math_random(p2.y_min, p2.y_max)
+			p2.y_min = nil
+			p2.y_max = nil
+		end
+		if p2.z_min then
+			p2.z = math_random(p2.z_min, p2.z_max)
+			p2.z_min = nil
+			p2.z_max = nil
+		end
+
+		local loc = vector.add(pos, p2)
+
+		build.chests[(#build.chests)+1] = {
+			pos = loc,
+		}
+	end
+end
+
+
+
 function fortress.add_schematics(pos, start, info, internal, traversal, build)
 	-- Obtain relevant parameters for this section of fortress.
 	-- A chunk may contain multiple schematics to place, each with their own
@@ -424,6 +460,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 
 	if fortress.claim_space(pos, start, info, internal, traversal) then
 		fortress.add_schematics(pos, start, info, internal, traversal, build)
+		fortress.add_loot(pos, info, build)
 		fortress.add_next(pos, info, internal, traversal, build)
 	end
 
@@ -527,6 +564,19 @@ function fortress.apply_design(internal, traversal, build)
 		vm:write_to_map()
 	end
 
+	-- Add loot chests.
+	for k, v in ipairs(build.chests) do
+		local p = v.pos
+		local n = minetest.get_node(p)
+
+		-- Only if location not already occupied.
+		if n.name == "air" then
+			local param2 = math_random(0, 3)
+			minetest.set_node(p, {name="morechests:woodchest_public_closed", param2=param2})
+			fortress.add_loot_items(p)
+		end
+	end
+
 	-- Display hash locations.
 	if fortress.debug_layout then
 		for k, v in pairs(traversal) do
@@ -538,6 +588,21 @@ function fortress.apply_design(internal, traversal, build)
 	end
 
 	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
+end
+
+
+
+function fortress.add_loot_items(pos)
+	local meta = minetest.get_meta(pos)
+	if not meta then return end
+	local inv = meta:get_inventory()
+	if not inv then return end
+	local list = inv:get_list("main")
+	if not list then return end
+
+	list[5] = 'default:gold_ingot 5'
+
+	inv:set_list("main", list)
 end
 
 

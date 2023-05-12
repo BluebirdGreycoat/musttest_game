@@ -379,6 +379,9 @@ fortress.default = {
 				{file="nf_passage_w_capped"},
 				{file="hall_end_stair", rotation="90", chance=20, force=true, priority=1000, adjust={x=-2, y=4, z=4}},
 			},
+			chests = {
+				{pos={x=4, y=4, z=3}},
+			},
 			next = {
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="w_capped_walk", fallback=true}},

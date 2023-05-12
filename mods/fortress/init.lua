@@ -569,16 +569,25 @@ function fortress.apply_design(internal, traversal, build)
 		vm:write_to_map()
 	end
 
-	-- Add loot chests.
-	for k, v in ipairs(build.chests) do
-		local p = v.pos
-		local n = minetest.get_node(p)
+	-- Add loot chests, but only when not in debug-layout mode.
+	if not fortress.debug_layout then
+		local chest_names = {
+			"morechests:woodchest_public_closed",
+			"chests:chest_public_closed",
+			"morechests:ironchest_public_closed",
+		}
 
-		-- Only if location not already occupied.
-		if n.name == "air" then
-			local param2 = math_random(0, 3)
-			minetest.set_node(p, {name="morechests:woodchest_public_closed", param2=param2})
-			fortress.add_loot_items(p, v.loot)
+		for k, v in ipairs(build.chests) do
+			local p = v.pos
+			local n = minetest.get_node(p)
+
+			-- Only if location not already occupied.
+			if n.name == "air" then
+				local param2 = math_random(0, 3)
+				local cname = chest_names[math_random(1, #chest_names)]
+				minetest.set_node(p, {name=cname, param2=param2})
+				fortress.add_loot_items(p, v.loot)
+			end
 		end
 	end
 
@@ -612,7 +621,8 @@ function fortress.add_loot_items(pos, loot)
 	local chosen_positions = {}
 
 	-- Size of chest inventory.
-	for i = 1, 3*8 do
+	local inv_size = inv:get_size("main")
+	for i = 1, inv_size do
 		chosen_positions[i] = i
 	end
 	table.shuffle(chosen_positions)
@@ -623,8 +633,11 @@ function fortress.add_loot_items(pos, loot)
 		local chance = v.chance or 100
 
 		if math_random(1, 100) <= chance then
-			local itemstr = (v.item .. " " .. math_random(min, max))
-			chosen_items[#chosen_items+1] = itemstr
+			-- Only if named item actually exists.
+			if minetest.registered_items[v.item] then
+				local itemstr = (v.item .. " " .. math_random(min, max))
+				chosen_items[#chosen_items+1] = itemstr
+			end
 		end
 	end
 
@@ -633,9 +646,12 @@ function fortress.add_loot_items(pos, loot)
 	table.shuffle(chosen_items)
 
 	for k, v in ipairs(chosen_items) do
-		if k <= 3*8 then
+		-- Don't add more items than would actually fit, if for some reason the
+		-- number of chosen items is larger than the inventory size.
+		if k <= inv_size then
 			list[chosen_positions[k]] = v
 
+			-- Stop once max-items is reached.
 			if k >= lootdef.max_items then
 				break
 			end

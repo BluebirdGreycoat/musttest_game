@@ -166,6 +166,12 @@ fortress.default = {
 				{file="nf_detail_room2", chance=15, force=true, adjust={x=3, y=4, z=3}},
 				{file="nf_detail_room3", chance=15, rotation="90", force=false, adjust={x=0, y=4, z=3}},
 			},
+			chests = {
+				{pos={x_min=0, x_max=10, y=4, z=3}, chance=10, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=7}, chance=10, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=3}, chance=5, loot="rare"},
+				{pos={x_min=0, x_max=10, y=4, z=7}, chance=5, loot="rare"},
+			},
 			next = {
 				["+x"] = {
 					{chunk="ew", chance=50},
@@ -211,6 +217,12 @@ fortress.default = {
 				{file="nf_detail_room1", chance=15, rotation="90", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_room2", chance=15, rotation="90", force=true, adjust={x=3, y=4, z=3}},
 				{file="nf_detail_room3", chance=15, force=false, adjust={x=3, y=4, z=0}},
+			},
+			chests = {
+				{pos={x=3, y=4, z_min=0, z_max=10}, chance=10, loot="common"},
+				{pos={x=7, y=4, z_min=0, z_max=10}, chance=10, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=10}, chance=5, loot="rare"},
+				{pos={x=7, y=4, z_min=0, z_max=10}, chance=5, loot="rare"},
 			},
 			next = {
 				["+z"] = {

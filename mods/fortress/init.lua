@@ -512,7 +512,7 @@ function fortress.apply_design(internal, traversal, build)
 		-- Sort chunks by priority. Lowest priority first.
 		table.sort(build,
 			function(a, b)
-				return a.priority > b.priority
+				return a.priority < b.priority
 			end)
 
 		for k, v in ipairs(build) do

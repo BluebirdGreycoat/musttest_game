@@ -608,6 +608,15 @@ function fortress.add_loot_items(pos, loot)
 	local lootdef = fortress.loot[loot]
 	if not lootdef then return end
 
+	local chosen_items = {}
+	local chosen_positions = {}
+
+	-- Size of chest inventory.
+	for i = 1, 3*8 do
+		chosen_positions[i] = i
+	end
+	table.shuffle(chosen_positions)
+
 	for k, v in ipairs(lootdef.item_list) do
 		local min = v.min or 1
 		local max = v.max or 1
@@ -615,7 +624,21 @@ function fortress.add_loot_items(pos, loot)
 
 		if math_random(1, 100) <= chance then
 			local itemstr = (v.item .. " " .. math_random(min, max))
-			list[k] = itemstr
+			chosen_items[#chosen_items+1] = itemstr
+		end
+	end
+
+	-- Randomize the order of items, and we will chose the first few up to
+	-- 'max_items' allowed.
+	table.shuffle(chosen_items)
+
+	for k, v in ipairs(chosen_items) do
+		if k <= 3*8 then
+			list[chosen_positions[k]] = v
+
+			if k >= lootdef.max_items then
+				break
+			end
 		end
 	end
 

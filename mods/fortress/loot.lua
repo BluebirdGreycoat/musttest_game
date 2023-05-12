@@ -2,6 +2,7 @@
 
 fortress.loot = {
   common = {
+    max_items = 10,
     item_list = {
       {item="default:steel_ingot", min=1, max=6, chance=80},
       {item="default:copper_ingot", min=1, max=6, chance=80},
@@ -18,6 +19,7 @@ fortress.loot = {
   },
 
   rare = {
+    max_items = 6,
     item_list = {
       {item="bucket:bucket_water", min=1, max=1, chance=50},
       {item="default:dirt", min=1, max=16, chance=20},
@@ -61,6 +63,7 @@ fortress.loot = {
   },
 
   exceptional = {
+    max_items = 4,
     item_list = {
       {item="3d_armor:helmet_mithril", min=1, max=1, chance=80},
       {item="3d_armor:chestplate_mithril", min=1, max=1, chance=80},

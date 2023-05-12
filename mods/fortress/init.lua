@@ -15,6 +15,7 @@ local math_random = math.random
 
 -- Default fortress definition.
 dofile(fortress.modpath .. "/default.lua")
+dofile(fortress.modpath .. "/loot.lua")
 
 
 
@@ -192,6 +193,7 @@ function fortress.add_loot(pos, info, build)
 
 			build.chests[(#build.chests)+1] = {
 				pos = loc,
+				loot = v.loot,
 			}
 		end
 	end
@@ -576,7 +578,7 @@ function fortress.apply_design(internal, traversal, build)
 		if n.name == "air" then
 			local param2 = math_random(0, 3)
 			minetest.set_node(p, {name="morechests:woodchest_public_closed", param2=param2})
-			fortress.add_loot_items(p)
+			fortress.add_loot_items(p, v.loot)
 		end
 	end
 
@@ -595,7 +597,7 @@ end
 
 
 
-function fortress.add_loot_items(pos)
+function fortress.add_loot_items(pos, loot)
 	local meta = minetest.get_meta(pos)
 	if not meta then return end
 	local inv = meta:get_inventory()
@@ -603,7 +605,19 @@ function fortress.add_loot_items(pos)
 	local list = inv:get_list("main")
 	if not list then return end
 
-	list[5] = 'default:gold_ingot 5'
+	local lootdef = fortress.loot[loot]
+	if not lootdef then return end
+
+	for k, v in ipairs(lootdef.item_list) do
+		local min = v.min or 1
+		local max = v.max or 1
+		local chance = v.chance or 100
+
+		if math_random(1, 100) <= chance then
+			local itemstr = (v.item .. " " .. math_random(min, max))
+			list[k] = itemstr
+		end
+	end
 
 	inv:set_list("main", list)
 end

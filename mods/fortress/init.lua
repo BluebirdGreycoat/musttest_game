@@ -27,19 +27,19 @@ local keydirs = {
 	["-z"] = {x=0, y=0, z=-1},
 }
 
--- Spawn a fortress starting at a position.
--- Public API function. Pass valid values for `pos` and `data`.
-function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
-	local exceeding_soft_extent = false
 
-	-- For debugging.
-	--exceeding_soft_extent = true
 
+function fortress.initialize(pos, data, start, traversal, build, internal)
 	-- Build traversal table if not provided. The traversal table allows us to
 	-- know if a section of fortress was already generated at a cell location. The
 	-- table contains the hashes of locations where fortress was generated.
 	if not traversal then traversal = {} end
+
+	-- Initialize build table to an empty array. This array describes all schems
+	-- which must be placed, and their parameters, once the fortress generation
+	-- algorithm is complete.
 	if not build then build = {} end
+
 	if not internal then
 		internal = {
 			-- Recursion depth.
@@ -52,7 +52,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			limit = {},
 
 			-- Initial starting position.
-			pos = vector.round({x=pos.x, y=pos.y, z=pos.z}),
+			spawn_pos = vector.round({x=pos.x, y=pos.y, z=pos.z}),
 
 			-- Reference to the fortress data sheet.
 			data = data,
@@ -66,6 +66,8 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		}
 		minetest.log("action", "Computing fortress pattern @ " .. minetest.pos_to_string(vector_round(pos)) .. "!")
 	end
+
+	-- Ensure the start position is rounded. Floating positions can screw us up!
 	pos = vector_round(pos)
 
 	-- In debug layout mode, make SMALLER fortresses.
@@ -81,133 +83,138 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 		start = data.initial[math_random(1, #data.initial)]
 	end
 
-	-- Chosen chunk must have associated data.
-	local info = data.chunks[start]
-	if not info then goto checkdone end
+	return pos, data, start, traversal, build, internal
+end
 
-	-- Distance from inital pos must not be too large! Hard abort.
-	-- This prevents trying to generate HUGE fortresses that would slow things.
-	if pos.x < (internal.pos.x - internal.max_extent.x) or pos.x > (internal.pos.x + internal.max_extent.x) or
-			pos.y < (internal.pos.y - internal.max_extent.y) or pos.y > (internal.pos.y + internal.max_extent.y) or
-			pos.z < (internal.pos.z - internal.max_extent.z) or pos.z > (internal.pos.z + internal.max_extent.z) then
-		--minetest.log('action', 'stopping placement of ' .. start)
-		goto checkdone
-	end
 
-	if pos.x < (internal.pos.x - internal.soft_extent.x) or pos.x > (internal.pos.x + internal.soft_extent.x) or
-			pos.y < (internal.pos.y - internal.soft_extent.y) or pos.y > (internal.pos.y + internal.soft_extent.y) or
-			pos.z < (internal.pos.z - internal.soft_extent.z) or pos.z > (internal.pos.z + internal.soft_extent.z) then
-		exceeding_soft_extent = true
-	end
 
+function fortress.claim_space(pos, start, info, internal, traversal)
 	-- Calculate all positions this chunk will potentially occupy.
 	-- This adds a position hash for each possible location from 'offset' to
 	-- 'size'. The position hashes are sparse, so this is more efficient than it
 	-- looks.
-	do
-		local hash = minetest.hash_node_position(pos)
-		local hashes = {}
-		local size = info.size or {x=1, y=1, z=1}
-		for x = 0, size.x-1, 1 do
-			for y = 0, size.y-1, 1 do
-				for z = 0, size.z-1, 1 do
-					local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, internal.step)))
-					local hash = minetest.hash_node_position(p3)
-					hashes[#hashes+1] = hash
-				end
+	local hashes = {}
+	local size = info.size or {x=1, y=1, z=1}
+	for x = 0, size.x-1, 1 do
+		for y = 0, size.y-1, 1 do
+			for z = 0, size.z-1, 1 do
+				local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, internal.step)))
+				local hash = minetest.hash_node_position(p3)
+				hashes[#hashes+1] = hash
 			end
-		end
-
-		-- Do nothing if this chunk already occupied.
-		for k, v in ipairs(hashes) do
-			if traversal[v] then
-				goto checkdone
-			end
-		end
-
-		-- Occupy this chunk!
-		for k, v in ipairs(hashes) do
-			traversal[v] = {
-				-- Store chunk name for debugging.
-				-- It will be stored in "infotext" metadata for manual inspection.
-				chunk = start,
-			}
 		end
 	end
 
+	-- Do nothing if this chunk already occupied.
+	for k, v in ipairs(hashes) do
+		if traversal[v] then
+			return false
+		end
+	end
+
+	-- Occupy this chunk!
+	for k, v in ipairs(hashes) do
+		traversal[v] = {
+			-- Store chunk name for debugging.
+			-- It will be stored in "infotext" metadata for manual inspection.
+			chunk = start,
+		}
+	end
+
+	return true
+end
+
+
+
+function fortress.add_schematics(pos, start, info, internal, traversal, build)
 	-- Obtain relevant parameters for this section of fortress.
 	-- A chunk may contain multiple schematics to place, each with their own
 	-- parameters and chance to spawn.
-	do
-		-- Chunks may be limited how often they can be used in the fortress pattern.
-		-- Here, we increment limit if limit is finite (non-zero).
-		-- Elsewhere in code we read the current limit and reduce chance of
-		-- chunk being chosen accordingly. Zero means no limit imposed.
-		local limit = info.limit or 0
-		internal.limit[start] = internal.limit[start] or 0
-		if limit > 0 then
-			internal.limit[start] = internal.limit[start] + 1
-		end
-
-		-- Calculate size of chunk.
-		local size = vector.multiply(info.size or {x=1, y=1, z=1}, internal.step)
-
-		-- Add schems which are part of this chunk.
-		-- A chunk may have multiple schems with different parameters.
-		local thischunk = info.schem
-		for k, v in ipairs(thischunk) do
-			local chance = v.chance or 100
-
-			if math_random(1, 100) <= chance then
-				local file = v.file
-				local path = fortress.schempath .. "/" .. file .. ".mts"
-				local adjust = table.copy(v.adjust or {x=0, y=0, z=0})
-				local force = true
-				local priority = v.priority or 0
-
-				-- The position adjustment setting may specify min/max values for each
-				-- dimension coordinate.
-				if adjust.x_min then
-					adjust.x = math_random(adjust.x_min, adjust.x_max)
-					adjust.x_min = nil
-					adjust.x_max = nil
-				end
-				if adjust.y_min then
-					adjust.y = math_random(adjust.y_min, adjust.y_max)
-					adjust.y_min = nil
-					adjust.y_max = nil
-				end
-				if adjust.z_min then
-					adjust.z = math_random(adjust.z_min, adjust.z_max)
-					adjust.z_min = nil
-					adjust.z_max = nil
-				end
-
-				if type(v.force) == "boolean" then
-					force = v.force
-				end
-
-				local rotation = v.rotation or "0"
-				local schempos = vector.add(pos, adjust)
-
-				-- Add fortress section to construction queue.
-				build[#build+1] = {
-					file = path,
-					pos = vector.new(schempos),
-					size = size,
-					rotation = rotation,
-					force = force,
-					replacements = data.replacements,
-					priority = priority,
-				}
-			end
-		end
+	--
+	-- Chunks may be limited how often they can be used in the fortress pattern.
+	-- Here, we increment the limit-counter if limit is finite (non-zero).
+	-- Elsewhere in code we read the current limit and stop chunk from being
+	-- chosen accordingly. Zero means no limit imposed.
+	local limit = info.limit or 0
+	internal.limit[start] = internal.limit[start] or 0
+	if limit > 0 then
+		internal.limit[start] = internal.limit[start] + 1
 	end
 
+	-- Calculate size of chunk.
+	local size = vector.multiply(info.size or {x=1, y=1, z=1}, internal.step)
+
+	-- Add schems which are part of this chunk.
+	-- A chunk may have multiple schems with different parameters.
+	local thischunk = info.schem
+	for k, v in ipairs(thischunk) do
+		local chance = v.chance or 100
+
+		if math_random(1, 100) <= chance then
+			local file = v.file
+			local path = fortress.schempath .. "/" .. file .. ".mts"
+			local adjust = table.copy(v.adjust or {x=0, y=0, z=0})
+			local force = true
+			local priority = v.priority or 0
+
+			-- The position adjustment setting may specify min/max values for each
+			-- dimension coordinate.
+			if adjust.x_min then
+				adjust.x = math_random(adjust.x_min, adjust.x_max)
+				adjust.x_min = nil
+				adjust.x_max = nil
+			end
+			if adjust.y_min then
+				adjust.y = math_random(adjust.y_min, adjust.y_max)
+				adjust.y_min = nil
+				adjust.y_max = nil
+			end
+			if adjust.z_min then
+				adjust.z = math_random(adjust.z_min, adjust.z_max)
+				adjust.z_min = nil
+				adjust.z_max = nil
+			end
+
+			if type(v.force) == "boolean" then
+				force = v.force
+			end
+
+			local rotation = v.rotation or "0"
+			local schempos = vector.add(pos, adjust)
+
+			-- Add fortress section to construction queue.
+			build[#build+1] = {
+				file = path,
+				pos = vector.new(schempos),
+				size = size,
+				rotation = rotation,
+				force = force,
+				replacements = internal.data.replacements,
+				priority = priority,
+			}
+		end
+	end
+end
+
+
+
+function fortress.add_next(pos, info, internal, traversal, build)
 	-- Current chunk may not have next chunks defined.
 	-- Thus we have reached a dead-end.
 	if not info.next then
-		goto checkdone
+		return
+	end
+
+	local exceeding_soft_extent = false
+
+	-- For debugging.
+	--exceeding_soft_extent = true
+
+	local sp = internal.spawn_pos
+	if pos.x < (sp.x - internal.soft_extent.x) or pos.x > (sp.x + internal.soft_extent.x) or
+			pos.y < (sp.y - internal.soft_extent.y) or pos.y > (sp.y + internal.soft_extent.y) or
+			pos.z < (sp.z - internal.soft_extent.z) or pos.z > (sp.z + internal.soft_extent.z) then
+		exceeding_soft_extent = true
 	end
 
 	-- Recursively generate further chunks.
@@ -285,12 +292,6 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			random_chance = math.random(1, max_chance)
 		end
 
-		--[[
-		minetest.log('action', start .. ":" .. dir .. ": avg chance is " .. avg_chance)
-		minetest.log('action', start .. ":" .. dir .. ": max chance is " .. max_chance)
-		minetest.log('action', start .. ":" .. dir .. ": rnd chance is " .. random_chance)
-		--]]
-
 		-- Null chance range.
 		local fallback_range = {min=0, max=0}
 
@@ -332,7 +333,7 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 				minetest.after(0, function()
 					internal.depth = internal.depth - 1
 					assert(internal.depth >= 0)
-					fortress.spawn_fortress(loc, data, neighbor.chunk, traversal, build, internal)
+					fortress.spawn_fortress(loc, internal.data, neighbor.chunk, traversal, build, internal)
 				end)
 
 				-- Generated chunk. Don't need to continue through chunks for this dir.
@@ -342,63 +343,106 @@ function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
 			end
 		end
 	end
+end
 
-	-- Check if all build-data is gathered yet.
-	::checkdone::
-	if internal.depth == 0 then
-		local minp = table.copy(internal.pos)
-		local maxp = table.copy(internal.pos)
 
-		-- Calculate voxelmanip area bounds.
-		for k, v in ipairs(build) do
-			if v.pos.x < minp.x then
-				minp.x = v.pos.x
-			end
-			if v.pos.x + v.size.x > maxp.x then
-				maxp.x = v.pos.x + v.size.x
-			end
 
-			if v.pos.y < minp.y then
-				minp.y = v.pos.y
-			end
-			if v.pos.y + v.size.y > maxp.y then
-				maxp.y = v.pos.y + v.size.y
-			end
+-- Spawn a fortress starting at a position.
+-- Public API function. Pass valid values for `pos` and `data`.
+function fortress.spawn_fortress(pos, data, start, traversal, build, internal)
+	-- Initialize if needed.
+	pos, data, start, traversal, build, internal =
+		fortress.initialize(pos, data, start, traversal, build, internal)
 
-			if v.pos.z < minp.z then
-				minp.z = v.pos.z
-			end
-			if v.pos.z + v.size.z > maxp.z then
-				maxp.z = v.pos.z + v.size.z
-			end
-		end
-
-		minetest.log("action", "Fortress pos: " .. minetest.pos_to_string(internal.pos))
-		minetest.log("action", "Fortress minp: " .. minetest.pos_to_string(minp))
-		minetest.log("action", "Fortress maxp: " .. minetest.pos_to_string(maxp))
-
-		internal.vm_minp = minp
-		internal.vm_maxp = maxp
-
-		-- Build callback function. When the map is loaded, we can spawn the fortress.
-		local cb = function(blockpos, action, calls_remaining)
-			-- Check if there was an error.
-			if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-				minetest.log("error", "Failed to emerge area to spawn fortress.")
-				return
-			end
-
-			-- We don't do anything until the last callback.
-			if calls_remaining ~= 0 then
-				return
-			end
-
-			-- Actually spawn the fortress once map completely loaded.
-			fortress.apply_design(internal, traversal, build)
-		end
-
-		minetest.emerge_area(minp, maxp, cb)
+	-- Chosen chunk must have associated data.
+	local info = data.chunks[start]
+	if not info then
+		fortress.check_done(internal, traversal, build)
+		return
 	end
+
+	local sp = internal.spawn_pos
+
+	-- Distance from inital pos must not be too large! Hard abort.
+	-- This prevents trying to generate HUGE fortresses that would slow things.
+	if pos.x < (sp.x - internal.max_extent.x) or pos.x > (sp.x + internal.max_extent.x) or
+			pos.y < (sp.y - internal.max_extent.y) or pos.y > (sp.y + internal.max_extent.y) or
+			pos.z < (sp.z - internal.max_extent.z) or pos.z > (sp.z + internal.max_extent.z) then
+		--minetest.log('action', 'stopping placement of ' .. start)
+		fortress.check_done(internal, traversal, build)
+		return
+	end
+
+	if fortress.claim_space(pos, start, info, internal, traversal) then
+		fortress.add_schematics(pos, start, info, internal, traversal, build)
+		fortress.add_next(pos, info, internal, traversal, build)
+	end
+
+	fortress.check_done(internal, traversal, build)
+end
+
+
+
+-- To be called whenever we need to check if we're done preparing the fortress design.
+-- If no further design is to be generated, then start the actual mapgen/build process.
+function fortress.check_done(internal, traversal, build)
+	if internal.depth > 0 then
+		return
+	end
+
+	local minp = table.copy(internal.spawn_pos)
+	local maxp = table.copy(internal.spawn_pos)
+
+	-- Calculate voxelmanip area bounds.
+	for k, v in ipairs(build) do
+		if v.pos.x < minp.x then
+			minp.x = v.pos.x
+		end
+		if v.pos.x + v.size.x > maxp.x then
+			maxp.x = v.pos.x + v.size.x
+		end
+
+		if v.pos.y < minp.y then
+			minp.y = v.pos.y
+		end
+		if v.pos.y + v.size.y > maxp.y then
+			maxp.y = v.pos.y + v.size.y
+		end
+
+		if v.pos.z < minp.z then
+			minp.z = v.pos.z
+		end
+		if v.pos.z + v.size.z > maxp.z then
+			maxp.z = v.pos.z + v.size.z
+		end
+	end
+
+	minetest.log("action", "Fortress pos: " .. minetest.pos_to_string(internal.spawn_pos))
+	minetest.log("action", "Fortress minp: " .. minetest.pos_to_string(minp))
+	minetest.log("action", "Fortress maxp: " .. minetest.pos_to_string(maxp))
+
+	internal.vm_minp = minp
+	internal.vm_maxp = maxp
+
+	-- Build callback function. When the map is loaded, we can spawn the fortress.
+	local cb = function(blockpos, action, calls_remaining)
+		-- Check if there was an error.
+		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+			minetest.log("error", "Failed to emerge area to spawn fortress.")
+			return
+		end
+
+		-- We don't do anything until the last callback.
+		if calls_remaining ~= 0 then
+			return
+		end
+
+		-- Actually spawn the fortress once map completely loaded.
+		fortress.apply_design(internal, traversal, build)
+	end
+
+	-- Load entire map region, generating chunks as needed.
+	minetest.emerge_area(minp, maxp, cb)
 end
 
 

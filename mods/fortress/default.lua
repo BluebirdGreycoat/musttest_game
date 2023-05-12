@@ -46,6 +46,8 @@ fortress.default = {
 	-- List of node replacements.
 	replacements = {
 		["torches:torch_wall"] = "torches:iron_torch",
+		["rackstone:brick"] = "rackstone:brick_black",
+		["stairs:slab_rackstone_brick"] = "stairs:slab_rackstone_brick_black",
 	},
 
 	-- Fortress section definitions.

@@ -70,6 +70,8 @@ fortress.loot = {
       {item="farming:string", min=1, max=64, chance=50},
       {item="farming:cotton", min=1, max=64, chance=20},
       {item="farming:wheat", min=1, max=64, chance=20},
+
+      {item="anvil:anvil", min=1, max=1, chance=10},
     },
   },
 

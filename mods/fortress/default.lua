@@ -48,6 +48,7 @@ fortress.default = {
 		["torches:torch_wall"] = "torches:iron_torch",
 		["rackstone:brick"] = "rackstone:brick_black",
 		["stairs:slab_rackstone_brick"] = "stairs:slab_rackstone_brick_black",
+		["stairs:stair_rackstone_brick"] = "stairs:stair_basaltic_rubble",
 	},
 
 	-- Fortress section definitions.

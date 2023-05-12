@@ -93,13 +93,13 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   
   -- Get noisemaps.
   local perlin1 = minetest.get_perlin_map(nethermapgen.noise1param2d, sides2D)
-  perlin1:get2dMap_flat(bp2d, noisemap1)
+  perlin1:get_2d_map_flat(bp2d, noisemap1)
   local perlin2 = minetest.get_perlin_map(nethermapgen.noise2param2d, sides2D)
-  perlin2:get2dMap_flat(bp2d, noisemap2)
+  perlin2:get_2d_map_flat(bp2d, noisemap2)
   local perlin3 = minetest.get_perlin_map(nethermapgen.noise3param2d, sides2D)
-  perlin3:get2dMap_flat(bp2d, noisemap3)
+  perlin3:get_2d_map_flat(bp2d, noisemap3)
   local perlin4 = minetest.get_perlin_map(nethermapgen.noise4param2d, sides2D)
-  perlin4:get2dMap_flat(bp2d, noisemap4)
+  perlin4:get_2d_map_flat(bp2d, noisemap4)
   local perlin5 = minetest.get_perlin_map(nethermapgen.noise5param3d, sides3D)
   perlin5:get3dMap_flat(bp3d, noisemap5)
   

@@ -595,19 +595,19 @@ jarkati.generate_realm = function(minp, maxp, seed)
 
 	-- Get noisemaps.
 	perlin1 = perlin1 or minetest.get_perlin_map(jarkati.noise1param2d, sides2D)
-	perlin1:get2dMap_flat(bp2d, noisemap1)
+	perlin1:get_2d_map_flat(bp2d, noisemap1)
 
 	perlin2 = perlin2 or minetest.get_perlin_map(jarkati.noise2param2d, sides2D)
-	perlin2:get2dMap_flat(bp2d, noisemap2)
+	perlin2:get_2d_map_flat(bp2d, noisemap2)
 
 	perlin3 = perlin3 or minetest.get_perlin_map(jarkati.noise3param2d, sides2D)
-	perlin3:get2dMap_flat(bp2d, noisemap3)
+	perlin3:get_2d_map_flat(bp2d, noisemap3)
 
 	perlin4 = perlin4 or minetest.get_perlin_map(jarkati.noise4param2d, sides2D)
-	perlin4:get2dMap_flat(bp2d, noisemap4)
+	perlin4:get_2d_map_flat(bp2d, noisemap4)
 
 	perlin5 = perlin5 or minetest.get_perlin_map(jarkati.noise5param2d, sides2D)
-	perlin5:get2dMap_flat(bp2d, noisemap5)
+	perlin5:get_2d_map_flat(bp2d, noisemap5)
 
 	perlin6 = perlin6 or minetest.get_perlin_map(jarkati.noise6param3d, sides3D)
 	perlin6:get3dMap_flat(bp3d, noisemap6)

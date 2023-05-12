@@ -372,9 +372,9 @@ cw.generate_realm = function(minp, maxp, seed)
 
 	-- Get noisemaps.
 	local perlin1 = minetest.get_perlin_map(cw.noise1param2d, sides2D)
-	perlin1:get2dMap_flat(bp2d, noisemap1)
+	perlin1:get_2d_map_flat(bp2d, noisemap1)
 	local perlin2 = minetest.get_perlin_map(cw.noise2param2d, sides2D)
-	perlin2:get2dMap_flat(bp2d, noisemap2)
+	perlin2:get_2d_map_flat(bp2d, noisemap2)
 
 	-- Localize commonly used functions.
 	local floor = math.floor

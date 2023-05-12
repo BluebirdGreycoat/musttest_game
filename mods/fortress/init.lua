@@ -38,7 +38,12 @@ function fortress.initialize(pos, data, start, traversal, build, internal)
 	-- Initialize build table to an empty array. This array describes all schems
 	-- which must be placed, and their parameters, once the fortress generation
 	-- algorithm is complete.
-	if not build then build = {} end
+	if not build then
+		build = {
+			schems = {},
+			chests = {},
+		}
+	end
 
 	if not internal then
 		internal = {
@@ -212,7 +217,7 @@ function fortress.add_schematics(pos, start, info, internal, traversal, build)
 			local schempos = vector.add(pos, adjust)
 
 			-- Add fortress section to construction queue.
-			build[#build+1] = {
+			build.schems[(#build.schems)+1] = {
 				file = path,
 				pos = vector.new(schempos),
 				size = size,
@@ -438,7 +443,7 @@ function fortress.check_done(internal, traversal, build)
 	local maxp = table.copy(internal.spawn_pos)
 
 	-- Calculate voxelmanip area bounds.
-	for k, v in ipairs(build) do
+	for k, v in ipairs(build.schems) do
 		if v.pos.x < minp.x then
 			minp.x = v.pos.x
 		end
@@ -510,12 +515,12 @@ function fortress.apply_design(internal, traversal, build)
 		local rp = internal.data.replacements or {}
 
 		-- Sort chunks by priority. Lowest priority first.
-		table.sort(build,
+		table.sort(build.schems,
 			function(a, b)
 				return a.priority < b.priority
 			end)
 
-		for k, v in ipairs(build) do
+		for k, v in ipairs(build.schems) do
 			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)
 		end
 

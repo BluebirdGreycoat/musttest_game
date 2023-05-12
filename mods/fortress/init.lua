@@ -166,31 +166,34 @@ function fortress.add_loot(pos, info, build)
 	end
 
 	for k, v in ipairs(info.chests) do
-		local p2 = table.copy(v.pos)
+		-- Spawn loot chest only if chance succeeds.
+		if math_random(1, 100) <= v.chance then
+			local p2 = table.copy(v.pos)
 
-		-- The position adjustment setting may specify min/max values for each
-		-- dimension coordinate.
-		if p2.x_min then
-			p2.x = math_random(p2.x_min, p2.x_max)
-			p2.x_min = nil
-			p2.x_max = nil
-		end
-		if p2.y_min then
-			p2.y = math_random(p2.y_min, p2.y_max)
-			p2.y_min = nil
-			p2.y_max = nil
-		end
-		if p2.z_min then
-			p2.z = math_random(p2.z_min, p2.z_max)
-			p2.z_min = nil
-			p2.z_max = nil
-		end
+			-- The position adjustment setting may specify min/max values for each
+			-- dimension coordinate.
+			if p2.x_min then
+				p2.x = math_random(p2.x_min, p2.x_max)
+				p2.x_min = nil
+				p2.x_max = nil
+			end
+			if p2.y_min then
+				p2.y = math_random(p2.y_min, p2.y_max)
+				p2.y_min = nil
+				p2.y_max = nil
+			end
+			if p2.z_min then
+				p2.z = math_random(p2.z_min, p2.z_max)
+				p2.z_min = nil
+				p2.z_max = nil
+			end
 
-		local loc = vector.add(pos, p2)
+			local loc = vector.add(pos, p2)
 
-		build.chests[(#build.chests)+1] = {
-			pos = loc,
-		}
+			build.chests[(#build.chests)+1] = {
+				pos = loc,
+			}
+		end
 	end
 end
 

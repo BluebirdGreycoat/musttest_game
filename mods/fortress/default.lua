@@ -346,6 +346,11 @@ fortress.default = {
 				{file="nf_passage_n_capped"},
 				{file="hall_end_stair", rotation="180", chance=20, force=true, priority=1000, adjust={x=4, y=4, z=5}},
 			},
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=3}, chance=50},
+				{pos={x=3, y=4, z_min=3, z_max=10}, chance=30},
+				{pos={x=7, y=4, z_min=3, z_max=10}, chance=20},
+			},
 			next = {
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="n_capped_walk", fallback=true}},
@@ -357,6 +362,11 @@ fortress.default = {
 				{file="nf_passage_s_capped"},
 				{file="hall_end_stair", rotation="0", chance=20, force=true, priority=1000, adjust={x=4, y=4, z=-2}},
 			},
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=7}, chance=50},
+				{pos={x=3, y=4, z_min=0, z_max=7}, chance=30},
+				{pos={x=7, y=4, z_min=0, z_max=7}, chance=20},
+			},
 			next = {
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="s_capped_walk", fallback=true}},
@@ -367,6 +377,11 @@ fortress.default = {
 			schem = {
 				{file="nf_passage_e_capped"},
 				{file="hall_end_stair", rotation="270", chance=20, force=true, priority=1000, adjust={x=5, y=4, z=4}},
+			},
+			chests = {
+				{pos={x_min=3, x_max=10, y=4, z=3}, chance=50},
+				{pos={x_min=3, x_max=10, y=4, z=7}, chance=30},
+				{pos={x=3, y=4, z_min=3, z_max=7}, chance=20},
 			},
 			next = {
 				["-y"] = {{chunk="solid", fallback=true}},
@@ -380,7 +395,9 @@ fortress.default = {
 				{file="hall_end_stair", rotation="90", chance=20, force=true, priority=1000, adjust={x=-2, y=4, z=4}},
 			},
 			chests = {
-				{pos={x=4, y=4, z=3}},
+				{pos={x_min=0, x_max=7, y=4, z=3}, chance=50},
+				{pos={x_min=0, x_max=7, y=4, z=7}, chance=30},
+				{pos={x=7, y=4, z_min=3, z_max=7}, chance=20},
 			},
 			next = {
 				["-y"] = {{chunk="solid", fallback=true}},

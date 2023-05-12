@@ -88,6 +88,35 @@ end
 
 
 
+function fortress.space_free(pos, info, internal, traversal)
+	-- Calculate all positions this chunk will potentially occupy.
+	-- This adds a position hash for each possible location from 'offset' to
+	-- 'size'. The position hashes are sparse, so this is more efficient than it
+	-- looks.
+	local hashes = {}
+	local size = info.size or {x=1, y=1, z=1}
+	for x = 0, size.x-1, 1 do
+		for y = 0, size.y-1, 1 do
+			for z = 0, size.z-1, 1 do
+				local p3 = vector_round(vector.add(pos, vector.multiply({x=x, y=y, z=z}, internal.step)))
+				local hash = minetest.hash_node_position(p3)
+				hashes[#hashes+1] = hash
+			end
+		end
+	end
+
+	-- Do nothing if this chunk already occupied.
+	for k, v in ipairs(hashes) do
+		if traversal[v] then
+			return false
+		end
+	end
+
+	return true
+end
+
+
+
 function fortress.claim_space(pos, start, info, internal, traversal)
 	-- Calculate all positions this chunk will potentially occupy.
 	-- This adds a position hash for each possible location from 'offset' to
@@ -260,6 +289,10 @@ function fortress.add_next(pos, info, internal, traversal, build)
 			local chunk_chance = math.floor(neighbor.chance or ((neighbor.fallback and def_fb_chance) or avg_chance))
 			local chunk_limit = (info and info.limit) or 0
 
+			-- Calculate the position that would be occupied by the next chunk.
+			local p3 = vector.multiply(neighbor.shift or {x=0, y=0, z=0}, internal.step)
+			local loc = vector_round(vector.add(p3, p2))
+
 			-- Zeroize chance if chosen chunk is over the limit for this chunk,
 			-- and the chunk is limited (has a positive, non-zero limit).
 			if chunk_limit > 0 then
@@ -273,6 +306,16 @@ function fortress.add_next(pos, info, internal, traversal, build)
 			-- and only 'fallback' chunks may be placed, if any are available.
 			if exceeding_soft_extent then
 				chunk_chance = 0
+			end
+
+			-- Data must exist for this chunk.
+			if not internal.data.chunks[neighbor.chunk] then
+				chunk_chance = 0
+			else
+				-- Don't give this section a chance if there would be no room for it anyway.
+				if not fortress.space_free(loc, internal.data.chunks[neighbor.chunk], internal, traversal) then
+					chunk_chance = 0
+				end
 			end
 
 			if chunk_chance > 0 then
@@ -322,6 +365,7 @@ function fortress.add_next(pos, info, internal, traversal, build)
 					continue = neighbor.continue
 				end
 
+				-- Calculate position to spawn the next chunk.
 				local p3 = vector.multiply(neighbor.shift or {x=0, y=0, z=0}, internal.step)
 				local loc = vector_round(vector.add(p3, p2))
 

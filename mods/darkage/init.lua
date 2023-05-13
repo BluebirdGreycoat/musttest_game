@@ -530,7 +530,7 @@ if not darkage.run_once then
 		description = "Basaltic Rock",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",
-		groups = utility.dig_groups("hardstone", {stone = 1}),
+		groups = utility.dig_groups("hardstone", {stone = 1, native_stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
 		movement_speed_multiplier = default.ROAD_SPEED,
 
@@ -570,7 +570,7 @@ if not darkage.run_once then
 	minetest.register_node("darkage:basaltic_rubble", {
 		description = "Basaltic Rubble",
 		tiles = {"darkage_basalt_rubble.png"},
-		groups = utility.dig_groups("cobble", {stone = 1}),
+		groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
 		sounds = default.node_sound_stone_defaults()
 	})
 

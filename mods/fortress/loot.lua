@@ -70,6 +70,7 @@ fortress.loot = {
       {item="farming:string", min=1, max=64, chance=50},
       {item="farming:cotton", min=1, max=64, chance=20},
       {item="farming:wheat", min=1, max=64, chance=20},
+      {item="default:diamond", min=1, max=16, chance=10},
 
       {item="anvil:anvil", min=1, max=1, chance=10},
     },
@@ -103,6 +104,8 @@ fortress.loot = {
       {item="default:sword_diamond", min=1, max=1, chance=10},
       {item="default:sword_mese", min=1, max=1, chance=10},
       {item="moreores:pick_silver", min=1, max=1, chance=10},
+
+      {item="default:diamond", min=1, max=32, chance=10},
     },
   },
 }

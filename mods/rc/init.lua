@@ -676,7 +676,7 @@ function rc.check_position(player)
 	-- Admin may fly around in the void.
 	-- WARNING: use only when needed!
 	-- Careless flying+mapgen WILL cause lighting issues!
-	if gdac.player_is_admin(player) then return end
+	--if gdac.player_is_admin(player) then return end
 
 	local reset -- Table set if player out-of-bounds.
 

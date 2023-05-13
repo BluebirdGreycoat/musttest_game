@@ -209,16 +209,14 @@ end
 
 
 
-teleports.clear_area = function(blockpos, action, calls_remaining, param)
-	if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-		return
-	end
+teleports.clear_area = function(minp, maxp)
+	for x = minp.x, maxp.x, 1 do
+		for y = minp.y, maxp.y, 1 do
+			for z = minp.z, maxp.z, 1 do
 
-	for x = param.minp.x, param.maxp.x, 1 do
-		for y = param.minp.y, param.maxp.y, 1 do
-			for z = param.minp.z, param.maxp.z, 1 do
 				local pos = {x=x, y=y, z=z}
 				local node = minetest.get_node(pos)
+
 				if node.name ~= "ignore" then
 					if node.name ~= "air" and node.name ~= "bones:bones" and
 						node.name ~= "bedrock:bedrock" then
@@ -364,20 +362,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 			teleports.kill_players_at_pos(teleport_pos, pname)
 
 			-- Delete 3x3x3 area above teleport.
-			for x=minp.x, maxp.x do
-				for y=minp.y, maxp.y do
-					for z=minp.z, maxp.z do
-						local pos = {x=x, y=y, z=z}
-						local node = minetest.get_node(pos)
-						if node.name ~= "ignore" then
-							-- Do not destroy players' bones.
-							if node.name ~= "air" and node.name ~= "bones:bones" then
-								minetest.add_node(pos, {name="fire:basic_flame"})
-							end
-						end
-					end
-				end
-			end
+			teleports.clear_area(minp, maxp)
 		end,
 
 		post_teleport_callback = function()

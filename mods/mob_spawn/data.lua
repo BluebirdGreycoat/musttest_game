@@ -128,6 +128,29 @@ register({
 	clearance = 3,
 })
 
+-- Naraxen.
+register({
+	name = "golem:stone_golem",
+	nodes = {"darkage:basaltic_rubble", "darkage:basaltic"},
+	min_light = 0,
+	max_light = 6,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 25206,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
+})
+
 -- Caverealm griefer mob.
 -- Spawning behavior is similar to icemen on the surface.
 register({
@@ -195,6 +218,30 @@ register({
 	noise_threshold = 0.3,
 })
 
+-- Naraxen.
+register({
+	name = "obsidianmonster:obsidianmonster",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 0,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 25206,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
+})
+
 -- That flying thing.
 register({
 	name = "oerkki:oerkki",
@@ -217,6 +264,30 @@ register({
 		flags = "",
 	},
 	noise_threshold = 0.3,
+})
+
+-- Naraxen.
+register({
+	name = "oerkki:oerkki",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 0,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 25206,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
 })
 
 -- Night Master.
@@ -337,6 +408,29 @@ register({
 	noise_threshold = 0.3,
 })
 
+-- Naraxen.
+register({
+	name = "skeleton:skeleton",
+	nodes = {"darkage:basaltic_rubble", "darkage:basaltic"},
+	min_light = 0,
+	max_light = 0,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 25206,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
+})
+
 register({
 	name = "stoneman:stoneman",
 	nodes = {"default:stone", "default:cobble"},
@@ -344,6 +438,29 @@ register({
 	max_light = 1,
 	mob_limit = 10,
 	max_height = -128,
+})
+
+-- Naraxen.
+register({
+	name = "stoneman:stoneman",
+	nodes = {"darkage:basaltic_rubble", "darkage:basaltic"},
+	min_light = 0,
+	max_light = 1,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 25206,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
 })
 
 register({

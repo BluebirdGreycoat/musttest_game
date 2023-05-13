@@ -210,23 +210,24 @@ end
 
 
 teleports.clear_area = function(blockpos, action, calls_remaining, param)
-    if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-        return
-    end
-    
-    for x = param.minp.x, param.maxp.x, 1 do
-        for y = param.minp.y, param.maxp.y, 1 do
-            for z = param.minp.z, param.maxp.z, 1 do
-                local pos = {x=x, y=y, z=z}
-                local node = minetest.get_node(pos)
-                if node.name ~= "ignore" then
-                    if node.name ~= "air" and node.name ~= "bones:bones" then
-                        minetest.remove_node(pos)
-                    end
-                end
-            end
-        end
-    end
+	if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+		return
+	end
+
+	for x = param.minp.x, param.maxp.x, 1 do
+		for y = param.minp.y, param.maxp.y, 1 do
+			for z = param.minp.z, param.maxp.z, 1 do
+				local pos = {x=x, y=y, z=z}
+				local node = minetest.get_node(pos)
+				if node.name ~= "ignore" then
+					if node.name ~= "air" and node.name ~= "bones:bones" and
+						node.name ~= "bedrock:bedrock" then
+						minetest.remove_node(pos)
+					end
+				end
+			end
+		end
+	end
 end
 
 

@@ -2011,6 +2011,25 @@ end
 -- Liquids
 --
 
+local function add_steam_particles(p)
+	minetest.add_particlespawner({
+		amount = 15,
+		time = 0.3,
+		minpos = {x = p.x - 0.5, y = p.y + 0.5, z = p.z - 0.5 },
+		maxpos = {x = p.x + 0.5, y = p.y + 0.5, z = p.z + 0.5 },
+		minvel = {x = -0.2, y = 0.3, z = -0.2},
+		maxvel = {x = 0.2, y = 0.4, z = 0.2},
+		minacc = {x = -0.15, y = -0.02, z = -0.15},
+		maxacc = {x = 0.15, y = -0.01, z = 0.15},
+		minexptime = 4,
+		maxexptime = 6,
+		minsize = 3,
+		maxsize = 5,
+		collisiondetection = true,
+		texture = "default_item_smoke.png"
+	})
+end
+
 minetest.register_node("default:water_source", {
 	description = "Water Source",
 	drawtype = "liquid",
@@ -2068,6 +2087,8 @@ minetest.register_node("default:water_source", {
 			return
 		end
 		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
+			ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+			add_steam_particles(pos)
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
@@ -2139,6 +2160,8 @@ minetest.register_node("default:water_flowing", {
 			return
 		end
 		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
+			ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+			add_steam_particles(pos)
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,

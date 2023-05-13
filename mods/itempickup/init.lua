@@ -166,6 +166,12 @@ local drop_xp_list = {
 	["uranium:lump"] = 1.0,
 	["zinc:lump"] = 1.0,
 	["sulfur:lump"] = 0.1,
+
+	-- Naraxen resources.
+	["xtraores:nickel_ore"] = 7.0,
+	["xtraores:platinum_ore"] = 7.0,
+	["xtraores:palladium_ore"] = 7.0,
+	["xtraores:cobalt_ore"] = 7.0,
 }
 local drop_xp_multiplier = 1.0
 for k, v in pairs(drop_xp_list) do
@@ -206,6 +212,12 @@ local drop_extra_item_list = {
 	["uranium:lump"] = true,
 	["zinc:lump"] = true,
 	["sulfur:lump"] = true,
+
+	-- Naraxen resources.
+	["xtraores:nickel_ore"] = true,
+	["xtraores:platinum_ore"] = true,
+	["xtraores:palladium_ore"] = true,
+	["xtraores:cobalt_ore"] = true,
 }
 
 -- List of nodes capable of providing extra drops.
@@ -260,6 +272,20 @@ local drop_node_list = {
 	["mese_crystals:mese_crystal_ore4"] = true,
 
 	["quartz:quartz_ore"] = true,
+
+	-- Naraxen ores.
+	["xtraores:basalt_with_nickel"] = true,
+	["xtraores:basalt_with_platinum"] = true,
+	["xtraores:basalt_with_palladium"] = true,
+	["xtraores:basalt_with_cobalt"] = true,
+
+	["stoneworld:basalt_with_gold"] = true,
+	["stoneworld:basalt_with_diamond"] = true,
+	["stoneworld:basalt_with_mese"] = true,
+	["stoneworld:basalt_with_iron"] = true,
+	["stoneworld:basalt_with_coal"] = true,
+	["stoneworld:basalt_with_copper"] = true,
+	["stoneworld:basalt_with_tin"] = true,
 }
 
 

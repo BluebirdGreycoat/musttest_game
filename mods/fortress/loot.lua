@@ -22,6 +22,7 @@ fortress.loot = {
       {item="farming:bread", min=1, max=32, chance=40},
       {item="default:flint", min=1, max=6, chance=30},
       {item="chests:chest_public_closed", min=1, max=6, chance=10},
+      {item="bandages:bandage_1", min=1, max=32, chance=30},
     },
   },
 
@@ -73,6 +74,7 @@ fortress.loot = {
       {item="default:diamond", min=1, max=16, chance=10},
 
       {item="anvil:anvil", min=1, max=1, chance=10},
+      {item="bandages:bandage_2", min=1, max=32, chance=20},
     },
   },
 
@@ -106,6 +108,7 @@ fortress.loot = {
       {item="moreores:pick_silver", min=1, max=1, chance=10},
 
       {item="default:diamond", min=1, max=32, chance=10},
+      {item="bandages:bandage_3", min=1, max=32, chance=10},
     },
   },
 }

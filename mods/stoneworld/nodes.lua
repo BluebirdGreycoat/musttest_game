@@ -117,7 +117,7 @@ minetest.register_node("stoneworld:basalt_with_tin", {
   description = "Tin Ore",
 	tiles = {"darkage_basalt.png^moreores_mineral_tin2.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
-  sounds = rackstone.rackstone_sounds(),
+  sounds = default.node_sound_stone_defaults(),
   drop = "moreores:tin_lump",
 	silverpick_drop = true,
 	place_param2 = 10,

@@ -2067,7 +2067,7 @@ minetest.register_node("default:water_source", {
 			minetest.swap_node(pos, {name="cw:water_source"})
 			return
 		end
-		if pos.y < -25000 then
+		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
@@ -2138,7 +2138,7 @@ minetest.register_node("default:water_flowing", {
 			minetest.swap_node(pos, {name="cw:water_flowing"})
 			return
 		end
-		if pos.y < -25000 then
+		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,

@@ -2223,7 +2223,9 @@ minetest.register_node("default:river_water_source", {
 			return
 		end
 
-		if pos.y < -25000 then
+		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
+			ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+			add_steam_particles(pos)
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
@@ -2293,8 +2295,11 @@ minetest.register_node("default:river_water_flowing", {
 			minetest.set_node(pos, {name="fire:basic_flame"})
 			return
 		end
-		if pos.y < -25000 then
-			minetest.set_node(pos, {name="fire:basic_flame"})
+
+		if pos.y < -25000 or rc.current_realm_at_pos(pos) == "naraxen" then
+			ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+			add_steam_particles(pos)
+			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
 	end,
 })

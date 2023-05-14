@@ -18,6 +18,10 @@ function stoneworld.oerkki_scepter(itemstack, user, pt)
         ambiance.sound_play("default_cool_lava", pref:get_pos(), 1.0, 32)
         minetest.chat_send_player(pname, "# Server: You revived <" .. rename.gpn(tname) .. ">.")
         minetest.chat_send_player(tname, "# Server: You were revived by <" .. rename.gpn(pname) .. ">.")
+      elseif pname ~= tname then
+        -- Using it on a live player? >:)
+        utility.damage_player(pref, "heat", 4*500)
+        ambiance.sound_play("default_cool_lava", pref:get_pos(), 1.0, 32)
       end
     end
   end

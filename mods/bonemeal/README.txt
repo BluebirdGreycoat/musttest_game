@@ -30,3 +30,6 @@ in survival and build games are useable).
 
 Furthermore it lets trees grow instantly and supports PilzAdam's farming mod. The wheat, cotton and pumpkin need
 a random number of bonemeal to get full grown.
+
+--------------------------------------------------------------------------------
+particle texture by TenPlus1 (CC0)

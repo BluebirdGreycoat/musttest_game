@@ -44,11 +44,13 @@ function bonemeal.particles(pos)
 		maxacc = {x = 0.15, y = -0.01, z = 0.15},
 		minexptime = 0.5,
 		maxexptime = 0.8,
-		minsize = 1.0,
-		maxsize = 1.5,
+		minsize = 1.5,
+		maxsize = 2.0,
 		collisiondetection = true,
-		texture = "default_item_smoke.png"
+		texture = "bonemeal_particle.png"
 	})
+
+	ambiance.sound_play("default_dirt_footstep", pos, 1.0, 16)
 end
 
 

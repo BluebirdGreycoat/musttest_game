@@ -35,22 +35,46 @@ end
 -- mitigated).
 function utility.builtin_armor_groups(groups)
 	local tb = {
-		-- Default groups.
+		-- Slashing.
 		fleshy = 100,
+
+		-- Bashing.
 		cracky = 100,
+
+		-- Withering.
 		crumbly = 100,
+
+		-- Piercing.
 		snappy = 100,
 
-		-- Gamemode-specific.
+		-- Aura/magic.
 		radiation = 100,
+
+		-- Explosives.
 		boom = 100,
+
+		-- Poison.
 		poison = 100,
+
+		-- Magic I guess.
 		electrocute = 100,
+
+		-- Ranged.
 		arrow = 100,
+
+		-- Ranged fire.
 		fireball = 100,
+
+		-- Water, usually.
 		pressure = 100,
+
+		-- Falling stuff. Or being hugged by a golem.
 		crush = 100,
+
+		-- Heat sources.
 		heat = 100,
+
+		-- Extreme heat from lava.
 		lava = 100,
 	}
 	for k, v in pairs(groups) do

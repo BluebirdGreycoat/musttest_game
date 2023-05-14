@@ -48,9 +48,14 @@ function minetest.register_tool(name, def)
 
 		-- Swords have less range, should make fighting the mobs a bit more challenging.
 		if name:find("sword") then
-			-- Note: not really a good idea.
+			-- Note: not really a good idea. Leave at 4.
+			-- Too many player expectations would break.
 			defrange = 4
 		end
+
+		-- Get the damage groups from centralized source.
+		ndef.tool_capabilities.damage_groups =
+			sysdmg.get_damage_groups_for(name, ndef.tool_capabilities.damage_groups)
 
 		ndef.range = (ndef.range or defrange) * rangemod
 	end

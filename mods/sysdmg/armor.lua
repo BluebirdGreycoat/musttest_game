@@ -150,7 +150,12 @@ sysdmg.resist_groups = {
 
 -- Shall return an armor resist-groups table.
 -- To be called at load-time only; shall NOT return nil.
-function sysdmg.get_armor_resist_for(name)
+function sysdmg.get_armor_resist_for(name2)
+  local name = name2
+  if name:sub(1, 1) == ":" then
+    name = name:sub(2)
+  end
+
   if sysdmg.resist_groups[name] then
     return table.copy(sysdmg.resist_groups[name])
   end
@@ -159,7 +164,12 @@ end
 
 -- Shall return an armor wear-groups table.
 -- To be called at load-time only; shall NOT return nil.
-function sysdmg.get_armor_wear_for(name)
+function sysdmg.get_armor_wear_for(name2)
+  local name = name2
+  if name:sub(1, 1) == ":" then
+    name = name:sub(2)
+  end
+
   if sysdmg.wear_groups[name] then
     return table.copy(sysdmg.wear_groups[name])
   end
@@ -168,7 +178,12 @@ end
 
 -- Shall return armor's default groups table.
 -- To be called at load-time only; shall NOT return nil.
-function sysdmg.get_armor_groups_for(name, groups)
+function sysdmg.get_armor_groups_for(name2, groups)
+  local name = name2
+  if name:sub(1, 1) == ":" then
+    name = name:sub(2)
+  end
+
   if sysdmg.default_groups[name] then
     local g = table.copy(sysdmg.default_groups[name])
     if groups then

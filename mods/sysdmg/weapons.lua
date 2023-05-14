@@ -80,6 +80,8 @@ sysdmg.damage_groups = {
   ["gems:rf_sword_sapphire"]  = {fleshy= 7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
   ["gems:sword_emerald"]      = {fleshy= 7.1*SCALE, snappy=0.3*SCALE, knockback=1},
   ["gems:rf_sword_emerald"]   = {fleshy= 7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
+
+  ["stoneworld:oerkki_scepter"] = {heat=4*SCALE, knockback=4, lava=1*SCALE},
 }
 
 -- Make calculating the "hard meta" rather difficult.

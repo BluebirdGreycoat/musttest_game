@@ -18,10 +18,6 @@ function stoneworld.oerkki_scepter(itemstack, user, pt)
         ambiance.sound_play("default_cool_lava", pref:get_pos(), 1.0, 32)
         minetest.chat_send_player(pname, "# Server: You revived <" .. rename.gpn(tname) .. ">.")
         minetest.chat_send_player(tname, "# Server: You were revived by <" .. rename.gpn(pname) .. ">.")
-      elseif pname ~= tname then
-        -- Using it on a live player? >:)
-        utility.damage_player(pref, "heat", 4*500)
-        ambiance.sound_play("default_cool_lava", pref:get_pos(), 1.0, 32)
       end
     end
   end
@@ -29,11 +25,16 @@ end
 
 -- They say the elite oerkki used it when they wanted to interrogate a prisoner
 -- harshly. But it can be repurposed for teamwork assistance.
-minetest.register_craftitem("stoneworld:oerkki_scepter", {
+minetest.register_tool("stoneworld:oerkki_scepter", {
 	description = "Interrogation Prod",
 	inventory_image = "stoneworld_oerkki_staff.png",
-	on_use = stoneworld.oerkki_scepter,
-	stack_max = 1,
+	on_secondary_use = stoneworld.oerkki_scepter,
+
+  -- Using it on a live player? >:)
+  -- Damage info is stored by sysdmg.
+	tool_capabilities = {
+    full_punch_interval = 3.0,
+  },
 })
 
 -- Not craftable. Item is loot ONLY.

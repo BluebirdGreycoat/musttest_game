@@ -14,7 +14,7 @@ function stoneworld.oerkki_scepter(itemstack, user, pt)
         -- Target is another player and player is dead. Revive player.
         -- This will bypass the respawn code, and player should revive in place.
         local hp_max = pref:get_properties().hp_max
-        pref:set_hp(hp_max * 0.01)
+        pref:set_hp(math.max(1, math.floor(hp_max * 0.01)))
         ambiance.sound_play("default_cool_lava", pref:get_pos(), 1.0, 32)
         minetest.chat_send_player(pname, "# Server: You revived <" .. rename.gpn(tname) .. ">.")
         minetest.chat_send_player(tname, "# Server: You were revived by <" .. rename.gpn(pname) .. ">.")

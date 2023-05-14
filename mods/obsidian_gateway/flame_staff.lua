@@ -234,6 +234,11 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			return
 		end
 
+		-- Just in case someone managed to link a flamestaff to the Outback gate.
+		if rc.current_realm_at_pos(tar1) == "abyss" or rc.current_realm_at_pos(tar2) == "abyss" then
+			return
+		end
+
 		-- Player has activated gate #1.
 		-- Send them to the MIDFELD!
 		if vector.equals(playerorigin, tar1) then

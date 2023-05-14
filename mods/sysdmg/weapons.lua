@@ -178,5 +178,5 @@ function sysdmg.get_armor_groups_for(name, groups)
     end
     return g
   end
-  return groups
+  return groups or {}
 end

@@ -27,6 +27,12 @@ end
 
 function bonemeal.particles(pos)
 	local p = vector.add(pos, {x=0, y=0.5, z=0})
+
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+	if ndef.drawtype == "plantlike" then
+		p = vector.add(pos, {x=0, y=-0.4, z=0})
+	end
+
 	minetest.add_particlespawner({
 		amount = 5,
 		time = 0.3,
@@ -64,6 +70,8 @@ function bonemeal.on_use(itemstack, user, pt)
 		local take = false
 
 		if def then
+			-- Note: prefer to define this callback on your node whenever possible!
+			-- Hardcoding bonemeal function here is NOT a good idea.
 			if def._on_bonemeal_use then
 				local itemcount = itemstack:get_count()
 				local itemname = itemstack:get_name()
@@ -204,6 +212,7 @@ function bonemeal.on_use(itemstack, user, pt)
 		end
 
 		if take then
+			bonemeal.particles(pos)
 			itemstack:take_item()
 		end
 		return itemstack

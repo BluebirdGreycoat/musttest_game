@@ -28,6 +28,9 @@ end
 minetest.register_tool("stoneworld:oerkki_scepter", {
 	description = "Interrogation Prod",
 	inventory_image = "stoneworld_oerkki_staff.png",
+
+	-- Tools with dual-use functions MUST put the secondary use in this callback,
+	-- otherwise normal punches do not work!
 	on_secondary_use = stoneworld.oerkki_scepter,
 
   -- Using it on a live player? >:)

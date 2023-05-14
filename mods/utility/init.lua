@@ -47,6 +47,9 @@ function utility.builtin_armor_groups(groups)
 		-- Piercing/striking.
 		snappy = 100,
 
+		-- Cleaving.
+		choppy = 100,
+
 		-- Aura/magic.
 		radiation = 100,
 

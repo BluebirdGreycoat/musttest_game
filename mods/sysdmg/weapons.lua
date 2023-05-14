@@ -45,23 +45,23 @@ sysdmg.damage_groups = {
   ["gems:shovel_emerald"]     = {cracky=6.1*SCALE, fleshy=0.1*SCALE, crush=0.2*SCALE, knockback=10},
   ["gems:rf_shovel_emerald"]  = {cracky=6.0*SCALE, fleshy=0.05*SCALE, crush=0.2*SCALE, knockback= 7},
 
-  ["default:axe_stone"]       = {fleshy=1.0*SCALE, crush=0.2*SCALE, snappy=0.2*SCALE, knockback=4},
-  ["default:axe_steel"]       = {fleshy=5.0*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["default:axe_bronze"]      = {fleshy=4.0*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["default:axe_bronze2"]     = {fleshy=4.0*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["default:axe_mese"]        = {crumbly=6.0*SCALE, fleshy=0.2*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["default:axe_diamond"]     = {fleshy=7.0*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["moreores:axe_silver"]     = {electrocute=2.0*SCALE, fleshy=0.2*SCALE, crumbly=0.2*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["moreores:axe_mithril"]    = {fleshy=9.0*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["titanium:axe"]            = {fleshy=5.0*SCALE, snappy=0.2*SCALE, knockback=4},
-  ["gems:axe_ruby"]           = {fleshy=6.1*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["gems:rf_axe_ruby"]        = {fleshy=6.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
-  ["gems:axe_amethyst"]       = {fleshy=6.1*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["gems:rf_axe_amethyst"]    = {fleshy=6.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
-  ["gems:axe_sapphire"]       = {fleshy=7.1*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["gems:rf_axe_sapphire"]    = {fleshy=7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
-  ["gems:axe_emerald"]        = {fleshy=7.1*SCALE, snappy=0.2*SCALE, knockback=1},
-  ["gems:rf_axe_emerald"]     = {fleshy=7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
+  ["default:axe_stone"]       = {choppy=1.0*SCALE, crush=0.2*SCALE, snappy=0.2*SCALE, knockback=4},
+  ["default:axe_steel"]       = {choppy=5.0*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["default:axe_bronze"]      = {choppy=4.0*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["default:axe_bronze2"]     = {choppy=4.0*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["default:axe_mese"]        = {crumbly=6.0*SCALE, choppy=0.2*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["default:axe_diamond"]     = {choppy=7.0*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["moreores:axe_silver"]     = {electrocute=2.0*SCALE, choppy=0.2*SCALE, crumbly=0.2*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["moreores:axe_mithril"]    = {choppy=9.0*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["titanium:axe"]            = {choppy=5.0*SCALE, snappy=0.2*SCALE, knockback=4},
+  ["gems:axe_ruby"]           = {choppy=6.1*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["gems:rf_axe_ruby"]        = {choppy=6.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
+  ["gems:axe_amethyst"]       = {choppy=6.1*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["gems:rf_axe_amethyst"]    = {choppy=6.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
+  ["gems:axe_sapphire"]       = {choppy=7.1*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["gems:rf_axe_sapphire"]    = {choppy=7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
+  ["gems:axe_emerald"]        = {choppy=7.1*SCALE, snappy=0.2*SCALE, knockback=1},
+  ["gems:rf_axe_emerald"]     = {choppy=7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
 
   ["default:sword_stone"]     = {cracky= 4.0*SCALE, crush=0.2*SCALE, fleshy=0.2*SCALE, knockback=6},
   ["default:sword_steel"]     = {fleshy= 6.0*SCALE, snappy=0.2*SCALE, knockback=1},
@@ -82,7 +82,7 @@ sysdmg.damage_groups = {
   ["gems:rf_sword_emerald"]   = {fleshy= 7.0*SCALE, snappy=0.1*SCALE, knockback=0.5},
 }
 
--- Make calculating a hard meta rather difficult.
+-- Make calculating the "hard meta" rather difficult.
 do
   local pr = PcgRandom(os.time())
   for weapon, groups in pairs(sysdmg.damage_groups) do

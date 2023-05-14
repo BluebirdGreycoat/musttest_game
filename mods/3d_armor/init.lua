@@ -19,11 +19,11 @@ ARMOR_UPDATE_TIME = 1
 
 -- You can use this to increase or decrease overall armor effectiveness,
 -- eg: ARMOR_LEVEL_MULTIPLIER = 0.5 will reduce armor level by half.
-ARMOR_LEVEL_MULTIPLIER = 0.5
+ARMOR_LEVEL_MULTIPLIER = 1.0
 
 -- You can use this to increase or decrease overall armor healing,
 -- eg: ARMOR_HEAL_MULTIPLIER = 0 will disable healing altogether.
-ARMOR_HEAL_MULTIPLIER = 0.5
+ARMOR_HEAL_MULTIPLIER = 1.0
 
 dofile(armor.modpath .. "/armor.lua")
 
@@ -180,25 +180,25 @@ if not armor.run_once then
 
 	if ARMOR_MATERIALS.gold then
 		register_piece("3d_armor:helmet_gold", {
-			description = "Gold Helmet",
+			description = "Golden Helmet",
 			inventory_image = "3d_armor_inv_helmet_gold.png",
 			groups = {armor_head=1},
 		})
 
 		register_piece("3d_armor:chestplate_gold", {
-			description = "Gold Chestplate",
+			description = "Golden Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_gold.png",
 			groups = {armor_torso=1},
 		})
 
 		register_piece("3d_armor:leggings_gold", {
-			description = "Gold Leggings",
+			description = "Golden Leggings",
 			inventory_image = "3d_armor_inv_leggings_gold.png",
 			groups = {armor_legs=1},
 		})
 
 		register_piece("3d_armor:boots_gold", {
-			description = "Gold Boots",
+			description = "Golden Boots",
 			inventory_image = "3d_armor_inv_boots_gold.png",
 			groups = {armor_feet=1},
 		})

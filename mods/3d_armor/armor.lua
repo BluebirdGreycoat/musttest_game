@@ -15,9 +15,8 @@ armor.formspec =
 	default.gui_slots ..
 	"button[0,0.5;2,0.5;main;Back]" ..
 	"image[4,0.25;2,4;armor_preview]" ..
-	"label[6,0.5;Health: hp_max]" ..
-	"label[6,0.8;Block: armor_heal]" ..
-	"label[6,3.5;All stats are WiP!]" ..
+	"label[6,0.1;Health: hp_max]" ..
+	"label[6,0.4;Block: armor_heal]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -216,13 +215,16 @@ end
 
 -- Pair internal armor group keys to human-readable names.
 local formspec_keysubs = {
-	fleshy = "cutting",
-	boom = "explosives",
-	cracky = "bashing",
-	crumbly = "withering",
-	snappy = "piercing",
-	choppy = "slashing",
+	fleshy = "slash",
+	boom = "explosive",
+	cracky = "bash",
+	crumbly = "wither",
+	snappy = "pierce",
+	choppy = "cleave",
 	arrow = "ranged",
+	lava = "molten",
+	heat = "fire",
+	electrocute = "arcane",
 }
 
 function armor.get_armor_formspec(self, name)
@@ -244,7 +246,7 @@ function armor.get_armor_formspec(self, name)
 	--minetest.log('testing: ' .. type(armor.def[name].resistances))
 
 	-- Print out armor stats, whatever they are.
-	local y = 1.3
+	local y = 0.7
 	for k, v in pairs(armor.def[name].resistances) do
 		--minetest.log('k=' .. k .. ', v=' .. v)
 
@@ -694,13 +696,15 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	armor.def[pname].count = items
 
 	heal_max = heal_max * ARMOR_HEAL_MULTIPLIER
+	heal_max = math.min(heal_max, 90)
 
-	if heal_max > math_random(100) then
+	if math_random(100) < heal_max then
 		hp_change = 0
 	end
 
 	-- Check for combat-related reasons.
-	if armor.reason_disables_cloak(reason_str) then
+	-- (Ignore this if damage was blocked by the heal chance.)
+	if hp_change > 0 and armor.reason_disables_cloak(reason_str) then
 		cloaking.disable_if_enabled(pname, true)
 	end
 

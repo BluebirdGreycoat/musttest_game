@@ -222,6 +222,7 @@ local formspec_keysubs = {
 	crumbly = "withering",
 	snappy = "piercing",
 	choppy = "slashing",
+	arrow = "ranged",
 }
 
 function armor.get_armor_formspec(self, name)

@@ -9,6 +9,7 @@ mobs.register_mob("oerkki:oerkki", {
 	reach = 2,
 	punch_reach = 3,
 	damage = 3*500,
+	damage_group = "snappy",
 	hp_min = 8*500,
 	hp_max = 34*500,
 	armor = 100,

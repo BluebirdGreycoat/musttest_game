@@ -58,7 +58,7 @@ if not lava.run_once then
 		liquid_viscosity = 7,
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
-		_damage_per_second_type = "heat",
+		_damage_per_second_type = "lava",
 		_death_message = "<player> melted into a crisp.",
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 		groups = -- comment
@@ -79,7 +79,7 @@ if not lava.run_once then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 
-					utility.damage_player(player, "heat", 20*500)
+					utility.damage_player(player, "lava", 20*500)
 
 					if player:get_hp() == 0 then
 						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
@@ -144,7 +144,7 @@ if not lava.run_once then
 		liquid_viscosity = 7,
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
-		_damage_per_second_type = "heat",
+		_damage_per_second_type = "lava",
 		_death_message = "<player> melted into a crisp.",
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 
@@ -167,7 +167,7 @@ if not lava.run_once then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 
-					utility.damage_player(player, "heat", 20*500)
+					utility.damage_player(player, "lava", 20*500)
 
 					if player:get_hp() == 0 then
 						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")

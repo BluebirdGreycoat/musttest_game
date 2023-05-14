@@ -51,6 +51,7 @@ function utility.builtin_armor_groups(groups)
 		pressure = 100,
 		crush = 100,
 		heat = 100,
+		lava = 100,
 	}
 	for k, v in pairs(groups) do
 		tb[k] = v

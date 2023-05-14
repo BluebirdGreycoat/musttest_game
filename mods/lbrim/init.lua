@@ -51,7 +51,7 @@ minetest.register_node("lbrim:lava_source", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
-  _damage_per_second_type = "heat",
+  _damage_per_second_type = "lava",
   _death_message = "<player> melted into a crisp.",
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
@@ -75,7 +75,7 @@ minetest.register_node("lbrim:lava_source", {
 					minetest.add_node(pa, {name="fire:basic_flame"})
 				end
 
-				utility.damage_player(player, "heat", 20*500)
+				utility.damage_player(player, "lava", 20*500)
 
 				if player:get_hp() == 0 then
           minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
@@ -136,7 +136,7 @@ minetest.register_node("lbrim:lava_flowing", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
-  _damage_per_second_type = "heat",
+  _damage_per_second_type = "lava",
   _death_message = "<player> melted into a crisp.",
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
   
@@ -161,7 +161,7 @@ minetest.register_node("lbrim:lava_flowing", {
 					minetest.add_node(pa, {name="fire:basic_flame"})
 				end
 
-				utility.damage_player(player, "heat", 20*500)
+				utility.damage_player(player, "lava", 20*500)
 
 				if player:get_hp() == 0 then
           minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")

@@ -6,6 +6,7 @@ itemburn.modpath = minetest.get_modpath("itemburn")
 local vector_round = vector.round
 local math_random = math.random
 local math_min = math.min
+local abs = math.abs
 
 
 
@@ -159,9 +160,15 @@ local item = {
 		end
 
 		-- Do not allow pickup of items inside fire.
+		-- Do not allow pickup of moving items.
 		do
 			local nn = minetest.get_node(vector.round(self.object:get_pos())).name
 			if minetest.get_item_group(nn, "fire") ~= 0 then
+				return
+			end
+
+			local vel = self.object:get_velocity()
+			if abs(vel.x) > 0.01 or abs(vel.y) > 0.01 or abs(vel.z) > 0.01 then
 				return
 			end
 		end

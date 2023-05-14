@@ -7,6 +7,7 @@ local vector_distance = vector.distance
 local math_random = math.random
 local math_min = math.min
 local math_max = math.max
+local abs = math.abs
 
 
 
@@ -98,6 +99,8 @@ itempickup.update = function(dtime)
         if not n:is_player() and luaent and luaent.name == "__builtin:item" then
           local name = luaent.itemstring
           if name ~= "" then -- Some itemstacks have empty names.
+						-- Don't pick up drops which were dropped by the picking player,
+						-- unless the player is holding their 'E' key.
 						if not control.aux1 then
 							if luaent.dropped_by and type(luaent.dropped_by) == "string" then
 								if luaent.dropped_by == pname then
@@ -108,12 +111,20 @@ itempickup.update = function(dtime)
 
 						local item = ItemStack(name)
 						local ndef = minetest.registered_items[item:get_name()]
+
 						if ndef and (not ndef._no_auto_pop or control.aux1) then
 							-- Disable pickup for items inside fire.
+							-- Disable pickup for moving items.
 							local ip = vector.round(n:get_pos())
 							local np = minetest.get_node(ip).name
+							local moving = false
 
-							if minetest.get_item_group(np, "fire") == 0 then
+							local vel = n:get_velocity()
+							if abs(vel.x) > 0.01 or abs(vel.y) > 0.01 or abs(vel.z) > 0.01 then
+								moving = true
+							end
+
+							if minetest.get_item_group(np, "fire") == 0 and not moving then
 								-- Ensure player's inventory has enough room.
 								if inv and inv:room_for_item("main", item) then
 									inv:add_item("main", item)

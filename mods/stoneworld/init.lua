@@ -608,6 +608,7 @@ if not stoneworld.registered then
 
 	dofile(stoneworld.modpath .. "/nodes.lua")
 	dofile(stoneworld.modpath .. "/ores.lua")
+	dofile(stoneworld.modpath .. "/items.lua")
 
 	local c = "stoneworld:core"
 	local f = stoneworld.modpath .. "/init.lua"

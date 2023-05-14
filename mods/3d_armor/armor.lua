@@ -16,7 +16,7 @@ armor.formspec =
 	"button[0,0.5;2,0.5;main;Back]" ..
 	"image[4,0.25;2,4;armor_preview]" ..
 	"label[6,0.5;Health: hp_max]" ..
-	"label[6,0.8;Heal: armor_heal]" ..
+	"label[6,0.8;Block: armor_heal]" ..
 	"label[6,3.5;All stats are WiP!]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
@@ -216,9 +216,12 @@ end
 
 -- Pair internal armor group keys to human-readable names.
 local formspec_keysubs = {
-	fleshy = "defence",
-	boom = "blast",
-	cracky = "fibrous",
+	fleshy = "cutting",
+	boom = "explosives",
+	cracky = "bashing",
+	crumbly = "withering",
+	snappy = "piercing",
+	choppy = "slashing",
 }
 
 function armor.get_armor_formspec(self, name)
@@ -539,14 +542,21 @@ end
 function armor.wear_from_reason(item, def, reason)
 	local rs = armor.get_reason(reason)
 
+	--minetest.log('Reason: ' .. rs)
+
+	-- If reason not known, just return default wear multiplier.
 	if rs == "" then
 		return 1
 	end
 
-	--minetest.log('Reason: ' .. rs)
+	if def._armor_wear_groups then
+		local mult = def._armor_wear_groups[rs] or 1
+		--minetest.log('wear multiplier: ' .. mult)
+		return mult
+	end
 
-	local mult = def["_armor_wear_from_" .. rs] or 1
-	return mult
+	-- Default, if wear modifier not found.
+	return 1
 end
 
 

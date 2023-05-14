@@ -30,6 +30,13 @@ dofile(armor.modpath .. "/armor.lua")
 if not armor.run_once then
 	armor.run_once = true
 
+	local function register_piece(name, data)
+		data._armor_resist_groups = sysdmg.get_armor_resist_for(name)
+		data._armor_wear_groups = sysdmg.get_armor_wear_for(name)
+		data.groups = sysdmg.get_armor_groups_for(name, data.groups)
+		minetest.register_tool(name, data)
+	end
+
 	-- Materials can only be loaded once, obviously.
 	ARMOR_MATERIALS = {
 		wood = "group:wood",
@@ -42,462 +49,184 @@ if not armor.run_once then
 	}
 
 	if ARMOR_MATERIALS.wood then
-		minetest.register_tool("3d_armor:helmet_wood", {
+		register_piece("3d_armor:helmet_wood", {
 			description = "Wood Helmet",
 			inventory_image = "3d_armor_inv_helmet_wood.png",
-			groups = {armor_head=1, armor_heal=0, armor_use=2000},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 5,
-				cracky = 10,
-				heat = 15,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_wood", {
+		register_piece("3d_armor:chestplate_wood", {
 			description = "Wood Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_wood.png",
-			groups = {armor_torso=1, armor_heal=0, armor_use=2000},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-				cracky = 15,
-				heat = 25,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_wood", {
+		register_piece("3d_armor:leggings_wood", {
 			description = "Wood Leggings",
 			inventory_image = "3d_armor_inv_leggings_wood.png",
-			groups = {armor_legs=1, armor_heal=0, armor_use=2000},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_heat = 3.0,
-
-			_armor_resist_groups = {
-				fleshy = 5,
-				cracky = 10,
-				heat = 10,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_wood", {
+		register_piece("3d_armor:boots_wood", {
 			description = "Wood Boots",
 			inventory_image = "3d_armor_inv_boots_wood.png",
-			groups = {armor_feet=1, armor_heal=0, armor_use=2000},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 5,
-				cracky = 5,
-				heat = 15,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.steel then
-		minetest.register_tool("3d_armor:helmet_steel", {
+		register_piece("3d_armor:helmet_steel", {
 			description = "Wrought Iron Helmet",
 			inventory_image = "3d_armor_inv_helmet_steel.png",
-			groups = {armor_head=1, armor_heal=0, armor_use=500},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-				crush = 10,
-				arrow = 15,
-				boom = 5,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_steel", {
+		register_piece("3d_armor:chestplate_steel", {
 			description = "Wrought Iron Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_steel.png",
-			groups = {armor_torso=1, armor_heal=0, armor_use=500},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-				crush = 15,
-				arrow = 20,
-				boom = 10,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_steel", {
+		register_piece("3d_armor:leggings_steel", {
 			description = "Wrought Iron Leggings",
 			inventory_image = "3d_armor_inv_leggings_steel.png",
-			groups = {armor_legs=1, armor_heal=0, armor_use=500},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-				crush = 15,
-				arrow = 15,
-				boom = 5,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_steel", {
+		register_piece("3d_armor:boots_steel", {
 			description = "Wrought Iron Boots",
 			inventory_image = "3d_armor_inv_boots_steel.png",
-			groups = {armor_feet=1, armor_heal=0, armor_use=500},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-				crush = 10,
-				arrow = 10,
-				boom = 5,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.carbon then
-		minetest.register_tool("3d_armor:helmet_carbon", {
+		register_piece("3d_armor:helmet_carbon", {
 			description = "Carbon Steel Helmet",
 			inventory_image = "3d_armor_inv_helmet_carbon.png",
-			groups = {armor_head=1, armor_heal=0, armor_use=200},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 12,
-				crush = 12,
-				arrow = 15,
-				boom = 8,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_carbon", {
+		register_piece("3d_armor:chestplate_carbon", {
 			description = "Carbon Steel Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_carbon.png",
-			groups = {armor_torso=1, armor_heal=0, armor_use=200},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 17,
-				crush = 17,
-				arrow = 20,
-				boom = 15,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_carbon", {
+		register_piece("3d_armor:leggings_carbon", {
 			description = "Carbon Steel Leggings",
 			inventory_image = "3d_armor_inv_leggings_carbon.png",
-			groups = {armor_legs=1, armor_heal=0, armor_use=200},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-
-			_armor_resist_groups = {
-				fleshy = 17,
-				crush = 10,
-				arrow = 15,
-				boom = 10,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_carbon", {
+		register_piece("3d_armor:boots_carbon", {
 			description = "Carbon Steel Boots",
 			inventory_image = "3d_armor_inv_boots_carbon.png",
-			groups = {armor_feet=1, armor_heal=0, armor_use=200},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 12,
-				crush = 8,
-				arrow = 12,
-				boom = 5,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.bronze then
-		minetest.register_tool("3d_armor:helmet_bronze", {
+		register_piece("3d_armor:helmet_bronze", {
 			description = "Bronze Helmet",
 			inventory_image = "3d_armor_inv_helmet_bronze.png",
-			groups = {armor_head=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-				crumbly = 12,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_bronze", {
+		register_piece("3d_armor:chestplate_bronze", {
 			description = "Bronze Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_bronze.png",
-			groups = {armor_torso=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-				crumbly = 20,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_bronze", {
+		register_piece("3d_armor:leggings_bronze", {
 			description = "Bronze Leggings",
 			inventory_image = "3d_armor_inv_leggings_bronze.png",
-			groups = {armor_legs=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-				crumbly = 12,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_bronze", {
+		register_piece("3d_armor:boots_bronze", {
 			description = "Bronze Boots",
 			inventory_image = "3d_armor_inv_boots_bronze.png",
-			groups = {armor_feet=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-				crumbly = 8,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.diamond then
-		minetest.register_tool("3d_armor:helmet_diamond", {
+		register_piece("3d_armor:helmet_diamond", {
 			description = "Diamond Helmet",
 			inventory_image = "3d_armor_inv_helmet_diamond.png",
-			groups = {armor_head=1, armor_heal=12, armor_use=100},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_diamond", {
+		register_piece("3d_armor:chestplate_diamond", {
 			description = "Diamond Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_diamond.png",
-			groups = {armor_torso=1, armor_heal=12, armor_use=100},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 20,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_diamond", {
+		register_piece("3d_armor:leggings_diamond", {
 			description = "Diamond Leggings",
 			inventory_image = "3d_armor_inv_leggings_diamond.png",
-			groups = {armor_legs=1, armor_heal=12, armor_use=100},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-
-			_armor_resist_groups = {
-				fleshy = 20,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_diamond", {
+		register_piece("3d_armor:boots_diamond", {
 			description = "Diamond Boots",
 			inventory_image = "3d_armor_inv_boots_diamond.png",
-			groups = {armor_feet=1, armor_heal=12, armor_use=100},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.gold then
-		minetest.register_tool("3d_armor:helmet_gold", {
+		register_piece("3d_armor:helmet_gold", {
 			description = "Gold Helmet",
 			inventory_image = "3d_armor_inv_helmet_gold.png",
-			groups = {armor_head=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_gold", {
+		register_piece("3d_armor:chestplate_gold", {
 			description = "Gold Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_gold.png",
-			groups = {armor_torso=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_gold", {
+		register_piece("3d_armor:leggings_gold", {
 			description = "Gold Leggings",
 			inventory_image = "3d_armor_inv_leggings_gold.png",
-			groups = {armor_legs=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.25,
-
-			_armor_resist_groups = {
-				fleshy = 15,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_gold", {
+		register_piece("3d_armor:boots_gold", {
 			description = "Gold Boots",
 			inventory_image = "3d_armor_inv_boots_gold.png",
-			groups = {armor_feet=1, armor_heal=6, armor_use=250},
-			wear = 0,
-
-			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 10,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 
 	if ARMOR_MATERIALS.mithril then
-		minetest.register_tool("3d_armor:helmet_mithril", {
+		register_piece("3d_armor:helmet_mithril", {
 			description = "Mithril Helmet",
 			inventory_image = "3d_armor_inv_helmet_mithril.png",
-			groups = {armor_head=1, armor_heal=12, armor_use=50},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_ground = 0.0,
-
-			_armor_resist_groups = {
-				fleshy = 20,
-			},
+			groups = {armor_head=1},
 		})
 
-		minetest.register_tool("3d_armor:chestplate_mithril", {
+		register_piece("3d_armor:chestplate_mithril", {
 			description = "Mithril Chestplate",
 			inventory_image = "3d_armor_inv_chestplate_mithril.png",
-			groups = {armor_torso=1, armor_heal=12, armor_use=50},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_ground = 0.0,
-			_armor_wear_from_boom = 4.0,
-
-			_armor_resist_groups = {
-				fleshy = 25,
-			},
+			groups = {armor_torso=1},
 		})
 
-		minetest.register_tool("3d_armor:leggings_mithril", {
+		register_piece("3d_armor:leggings_mithril", {
 			description = "Mithril Leggings",
 			inventory_image = "3d_armor_inv_leggings_mithril.png",
-			groups = {armor_legs=1, armor_heal=12, armor_use=50},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.8,
-
-			_armor_resist_groups = {
-				fleshy = 25,
-			},
+			groups = {armor_legs=1},
 		})
 
-		minetest.register_tool("3d_armor:boots_mithril", {
+		register_piece("3d_armor:boots_mithril", {
 			description = "Mithril Boots",
 			inventory_image = "3d_armor_inv_boots_mithril.png",
-			groups = {armor_feet=1, armor_heal=12, armor_use=50},
-			wear = 0,
-
-			_armor_wear_from_fall = 0.9,
-			_armor_wear_from_ground = 2.0,
-
-			_armor_resist_groups = {
-				fleshy = 20,
-			},
+			groups = {armor_feet=1},
 		})
 	end
 

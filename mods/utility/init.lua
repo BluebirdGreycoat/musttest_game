@@ -35,7 +35,7 @@ end
 -- mitigated).
 function utility.builtin_armor_groups(groups)
 	local tb = {
-		-- Slashing.
+		-- Slashing/cutting.
 		fleshy = 100,
 
 		-- Bashing.
@@ -44,7 +44,7 @@ function utility.builtin_armor_groups(groups)
 		-- Withering.
 		crumbly = 100,
 
-		-- Piercing.
+		-- Piercing/striking.
 		snappy = 100,
 
 		-- Aura/magic.

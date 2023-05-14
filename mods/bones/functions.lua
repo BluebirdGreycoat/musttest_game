@@ -228,8 +228,10 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		player:get_meta():set_int("abyss_return_midfeld", 1)
 	end
 
+	local pos = vector_round(utility.get_middle_pos(player:get_pos()))
+
 	-- Record all player deaths, whether they leave bones or not.
-	minetest.log("action", "player <" .. pname .. "> died @ " .. minetest.pos_to_string(player:get_pos()))
+	minetest.log("action", "player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos))
 
 	-- Death sound.
 	coresounds.play_death_sound(player, pname)
@@ -259,8 +261,6 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		player_inventory_empty(player_inv, "armor") then
 		return
 	end
-
-	local pos = vector_round(utility.get_middle_pos(player:get_pos()))
 
 	-- Check if it's possible to place bones, if not find space near player.
 	if bones_mode == "bones" then

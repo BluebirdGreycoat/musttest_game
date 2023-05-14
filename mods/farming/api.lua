@@ -198,6 +198,8 @@ end
 local function tick_multiplier(pos, def)
 	local minp = vector.subtract(pos, 2)
 	local maxp = vector.add(pos, 2)
+	local soil_pos = vector.add(pos, {x=0, y=-1, z=0})
+	local soil_meta = minetest.get_meta(soil_pos)
 
 	local mult = 1
 
@@ -217,6 +219,14 @@ local function tick_multiplier(pos, def)
 	-- Sand is very poor soil!
 	local sand = minetest.find_nodes_in_area(minp, maxp, "group:sand")
 	mult = mult + (#sand / 4)
+
+	-- Soil may be drained of nutrients from growing the same crop over and over again.
+	mult = mult + (soil_meta:get_int("soil_fatigue") / 10)
+
+	-- Trampled soil retards growth a little bit more.
+	if soil_meta:get_int("trampled") > 0 then
+		mult = mult + 0.1
+	end
 
 	-- Clamp time-tick multiplier to minimum value.
 	if mult < 0.2 then mult = 0.2 end
@@ -335,12 +345,50 @@ farming.place_seed = function(itemstack, placer, pointed_thing, plantname)
 	return itemstack
 end
 
+
+
+function farming.update_soil_fatigue(soil_pos, seed)
+	-- Wear out soil if used to grow the same thing many times.
+	-- Worn soil grows plants slower.
+	-- Growing different plants each time stops the increase of this
+	-- counter, but does not reduce it.
+	local soil_meta = minetest.get_meta(soil_pos)
+	local fatigue_count = soil_meta:get_int("soil_fatigue")
+	local last_seed = soil_meta:get_string("last_seed")
+	local seed_table = minetest.deserialize(last_seed) or {}
+
+	-- If seed was grown on this soil previously, increase soil fatigue.
+	for seed_entry, growth_count in pairs(seed_table) do
+		if seed_entry == seed then
+			-- Fatigue is increased by the number of times this seed was grown.
+			fatigue_count = fatigue_count + growth_count
+			break
+		end
+	end
+
+	-- Record how many times this particular plant has been grown.
+	if not seed_table[seed] then
+		seed_table[seed] = 1
+	else
+		seed_table[seed] = seed_table[seed] + 1
+	end
+
+	-- You can of course clear this metadata by spading the dirt, just like you
+	-- can aerate soil in real life.
+	soil_meta:set_int("soil_fatigue", fatigue_count)
+	soil_meta:set_string("last_seed", minetest.serialize(seed_table))
+	soil_meta:mark_as_private({"soil_fatigue", "last_seed"})
+end
+
+
+
 -- This should only ever be called from the `on_timer' callback of a node.
 farming.grow_plant = function(pos, elapsed)
 	local node = minetest.get_node(pos)
 	local name = node.name
 	local def = minetest.reg_ns_nodes[name]
-	local soil_node = minetest.get_node_or_nil({x = pos.x, y = pos.y - 1, z = pos.z})
+	local soil_pos = {x = pos.x, y = pos.y - 1, z = pos.z}
+	local soil_node = minetest.get_node_or_nil(soil_pos)
 
 	if not soil_node then
 		tick_again(pos, def)
@@ -360,6 +408,8 @@ farming.grow_plant = function(pos, elapsed)
 		next_plant = next_plant[math.random(1, #next_plant)]
 	end
 
+	-- I have no idea what this code is supposed to do.
+	-- Probably a bug waiting to happen. >:(
 	local have_soil = false
 	if def.soil_nodes then
 		for k, v in ipairs(def.soil_nodes) do
@@ -374,13 +424,16 @@ farming.grow_plant = function(pos, elapsed)
 	if not have_soil then
 		if minetest.get_item_group(node.name, "seed") ~= 0 and def.fertility then
 			-- omitted is a check for light, we assume seeds can germinate in the dark.
-			for _, v in pairs(def.fertility) do
-				if minetest.get_item_group(soil_node.name, v) ~= 0 then
+			for _, fertility_group in pairs(def.fertility) do
+				if minetest.get_item_group(soil_node.name, fertility_group) ~= 0 then
 					local placenode = {name = next_plant}
 					if def.place_param2 then
 						placenode.param2 = def.place_param2
 					end
+
 					minetest.swap_node(pos, placenode)
+					farming.update_soil_fatigue(soil_pos, node.name)
+
 					if minetest.reg_ns_nodes[next_plant]._farming_next_plant then
 						tick(pos, def)
 						--minetest.chat_send_all('fail 4')

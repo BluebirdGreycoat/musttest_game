@@ -23,6 +23,30 @@ function bonemeal.do_dirtspread(pos)
 	end
 end
 
+
+
+function bonemeal.particles(pos)
+	local p = vector.add(pos, {x=0, y=0.5, z=0})
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 0.3,
+		minpos = {x = p.x - 0.5, y = p.y + 0.1, z = p.z - 0.5 },
+		maxpos = {x = p.x + 0.5, y = p.y + 0.2, z = p.z + 0.5 },
+		minvel = {x = -0.2, y = 0.1, z = -0.2},
+		maxvel = {x = 0.2, y = 0.2, z = 0.2},
+		minacc = {x = -0.15, y = -0.02, z = -0.15},
+		maxacc = {x = 0.15, y = -0.01, z = 0.15},
+		minexptime = 0.5,
+		maxexptime = 0.8,
+		minsize = 1.0,
+		maxsize = 1.5,
+		collisiondetection = true,
+		texture = "default_item_smoke.png"
+	})
+end
+
+
+
 function bonemeal.on_use(itemstack, user, pt)
 	if not user or not user:is_player() then
 		return
@@ -40,7 +64,18 @@ function bonemeal.on_use(itemstack, user, pt)
 		local take = false
 
 		if def then
-			if def._farming_next_plant and def.on_timer then
+			if def._on_bonemeal_use then
+				local itemcount = itemstack:get_count()
+				local itemname = itemstack:get_name()
+				local itemstack = def._on_bonemeal_use(pos, node, user, itemstack)
+				if itemstack then
+					local newcount = itemstack:get_count()
+					if newcount < itemcount and itemstack:get_name() == itemname then
+						bonemeal.particles(pos)
+					end
+					return itemstack
+				end
+			elseif def._farming_next_plant and def.on_timer then
 				local timer = minetest.get_node_timer(pos)
 				if timer:is_started() then
 					local timeout = timer:get_timeout()

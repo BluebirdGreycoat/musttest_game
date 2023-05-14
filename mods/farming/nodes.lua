@@ -138,6 +138,14 @@ minetest.register_node("farming:soil", {
   end,
 
 	on_player_walk_over = trample_dirt,
+
+	_on_bonemeal_use = function(pos, node, user, itemstack)
+		local meta = minetest.get_meta(pos)
+		meta:set_int("soil_fatigue", 0)
+		meta:set_string("last_seed", "")
+		itemstack:take_item()
+		return itemstack
+	end,
 })
 
 minetest.register_node("farming:soil_wet", {
@@ -180,6 +188,14 @@ minetest.register_node("farming:soil_wet", {
   end,
 
 	on_player_walk_over = trample_dirt,
+
+	_on_bonemeal_use = function(pos, node, user, itemstack)
+		local meta = minetest.get_meta(pos)
+		meta:set_int("soil_fatigue", 0)
+		meta:set_string("last_seed", "")
+		itemstack:take_item()
+		return itemstack
+	end,
 })
 
 
@@ -235,6 +251,14 @@ minetest.register_node("farming:desert_sand_soil", {
   end,
 
 	on_player_walk_over = trample_dirt,
+
+	_on_bonemeal_use = function(pos, node, user, itemstack)
+		local meta = minetest.get_meta(pos)
+		meta:set_int("soil_fatigue", 0)
+		meta:set_string("last_seed", "")
+		itemstack:take_item()
+		return itemstack
+	end,
 })
 
 minetest.register_node("farming:desert_sand_soil_wet", {
@@ -277,6 +301,14 @@ minetest.register_node("farming:desert_sand_soil_wet", {
   end,
 
 	on_player_walk_over = trample_dirt,
+
+	_on_bonemeal_use = function(pos, node, user, itemstack)
+		local meta = minetest.get_meta(pos)
+		meta:set_int("soil_fatigue", 0)
+		meta:set_string("last_seed", "")
+		itemstack:take_item()
+		return itemstack
+	end,
 })
 
 minetest.register_node("farming:straw", {

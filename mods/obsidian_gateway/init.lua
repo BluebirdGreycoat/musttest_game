@@ -547,6 +547,12 @@ function obsidian_gateway.attempt_activation(pos, player)
 	else
 		pdest = vector.add(target, {x=0, y=0, z=math_random(0, 1)})
 	end
+	pdest = vector_round(pdest)
+
+	-- Make sure target is within some realm.
+	if not rc.is_valid_realm_pos(pdest) then
+		return
+	end
 
 	-- Collect any friends to bring along.
 	local friendstobring = {}

@@ -502,6 +502,14 @@ function armor.reason_disables_cloak(rstr)
 	return false
 end
 
+function armor.armor_wear_ignores_reason(rstr)
+	if rstr == "xp_update" or rstr == "hp_boost_end" or rstr == "hunger"
+			or rstr == "drown" or rstr == "poison" then
+		return true
+	end
+	return false
+end
+
 
 
 -- Calc wear multiplier based on reason and armor piece.
@@ -557,6 +565,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		end
 	end
 
+	--minetest.log('reason: ' .. (reason.type or reason.reason or "N/A"))
+	--minetest.log('dump: ' .. dump(reason))
 	--minetest.log('on_player_hp_change: ' .. hp_change)
 
 	-- used for insta kill tools/commands like /kill (doesnt damage armor)
@@ -632,6 +642,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	--minetest.log('scaled hp change: ' .. hp_change)
+	local ignore_wear = armor.armor_wear_ignores_reason(reason_str)
 
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
@@ -642,7 +653,9 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			local heal = idef.groups["armor_heal"] or 0
 			local item = stack:get_name()
 
-			stack:add_wear(use * armor.wear_from_reason(item, idef, reason))
+			if not ignore_wear then
+				stack:add_wear(use * armor.wear_from_reason(item, idef, reason))
+			end
 
 			armor_inv:set_stack("armor", i, stack)
 			player_inv:set_stack("armor", i, stack)

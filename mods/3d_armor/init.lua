@@ -49,11 +49,8 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
 			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -71,10 +68,7 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -92,10 +86,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 5,
@@ -111,10 +102,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_heat = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -133,10 +121,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -155,9 +140,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -176,9 +158,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 15,
@@ -195,9 +174,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -217,10 +193,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -239,9 +212,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -260,9 +230,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 17,
@@ -279,9 +246,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -301,10 +265,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -321,9 +282,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -340,9 +298,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 15,
@@ -357,9 +312,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -377,10 +329,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -396,9 +345,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -414,9 +360,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 20,
@@ -430,9 +373,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -449,10 +389,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -468,9 +405,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -486,9 +420,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.25,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 15,
@@ -502,9 +433,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {
@@ -521,10 +449,7 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.5,
-			_armor_wear_from_drown = 0.0,
 			_armor_wear_from_crush = 3.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 
 			_armor_resist_groups = {
@@ -540,9 +465,6 @@ if not armor.run_once then
 
 			_armor_wear_from_fall = 0.5,
 			_armor_wear_from_punch = 1.5,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 0.0,
 			_armor_wear_from_boom = 4.0,
 
@@ -558,9 +480,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.8,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 
 			_armor_resist_groups = {
 				fleshy = 25,
@@ -574,9 +493,6 @@ if not armor.run_once then
 			wear = 0,
 
 			_armor_wear_from_fall = 0.9,
-			_armor_wear_from_drown = 0.0,
-			_armor_wear_from_poison = 0.0,
-			_armor_wear_from_hunger = 0.0,
 			_armor_wear_from_ground = 2.0,
 
 			_armor_resist_groups = {

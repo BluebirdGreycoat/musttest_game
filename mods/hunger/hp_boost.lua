@@ -77,7 +77,7 @@ function hunger.apply_health_boost(pname, key, data)
 	hp = hp_max * perc
 
 	pref:set_properties({hp_max=hp_max})
-	pref:set_hp(hp)
+	pref:set_hp(hp, {reason="hp_boost_start"})
 
 	if oldboost == 0 then
 		minetest.chat_send_player(pname, "# Server: Max health boosted for " .. tab[keyname] .. " seconds.")
@@ -130,8 +130,11 @@ function hunger.time_health_boost(pname, key)
 		-- Restore baseline HP level.
 		local nmax = nmax + nboost
 		local nhp = perc * nmax
+
+		-- Note: HP must be set *before* properties update!
+		-- Otherwise "reason" will NOT be propagated through the engine.
+		pref:set_hp(nhp, {reason="hp_boost_end"})
 		pref:set_properties({hp_max = nmax})
-		pref:set_hp(nhp)
 
 		armor:update_inventory(pref)
 		return

@@ -9,12 +9,9 @@ if ARMOR_MATERIALS.wood then
 		groups = {armor_shield=1, armor_heal=0, armor_use=2000},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
 		_armor_wear_from_heat = 3.0,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -31,12 +28,9 @@ if ARMOR_MATERIALS.wood then
 		groups = {armor_shield=1, armor_heal=0, armor_use=1000},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
 		_armor_wear_from_heat = 3.0,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -70,11 +64,8 @@ if ARMOR_MATERIALS.steel then
 		groups = {armor_shield=1, armor_heal=0, armor_use=500},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -94,11 +85,8 @@ if ARMOR_MATERIALS.carbon then
 		groups = {armor_shield=1, armor_heal=0, armor_use=200},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -117,11 +105,8 @@ if ARMOR_MATERIALS.bronze then
 		groups = {armor_shield=1, armor_heal=6, armor_use=250},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -140,11 +125,8 @@ if ARMOR_MATERIALS.diamond then
 		groups = {armor_shield=1, armor_heal=12, armor_use=100},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -162,11 +144,8 @@ if ARMOR_MATERIALS.gold then
 		groups = {armor_shield=1, armor_heal=6, armor_use=250},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 
@@ -184,11 +163,8 @@ if ARMOR_MATERIALS.mithril then
 		groups = {armor_shield=1, armor_heal=12, armor_use=50},
 		wear = 0,
 
-		_armor_wear_from_drown = 0.0,
 		_armor_wear_from_fall = 0.5,
 		_armor_wear_from_punch = 1.25,
-		_armor_wear_from_poison = 0.0,
-		_armor_wear_from_hunger = 0.0,
 		_armor_wear_from_ground = 0.0,
 		_armor_wear_from_boom = 3.0,
 

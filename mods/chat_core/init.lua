@@ -163,7 +163,7 @@ end
 -- Check player's language, and kick them if they are not protected by the PoC/KoC.
 -- Or, mute them and send a message to other players that they were muted.
 -- This function can be called from other mods.
-function chat_core.check_language(name, message)
+function chat_core.check_language(name, message, channel)
 	-- Players with anticurse bypass priv cannot be kicked by this mod.
 	local nokick = minetest.check_player_privs(name, {anticurse_bypass=true})
 
@@ -189,7 +189,11 @@ function chat_core.check_language(name, message)
 		-- on the server more than a few days) are warned but not kicked.
 		if passport.player_registered(name) then
 			local ext = anticurse.get_kick_message("foul")
-			minetest.chat_send_all("# Server: Talk from someone hidden in case of uninteresting language.")
+			if channel then
+				shout.notify_channel(channel, "# Server: Talk from someone hidden in case of uninteresting language.")
+			else
+				minetest.chat_send_all("# Server: Talk from someone hidden in case of uninteresting language.")
+			end
 			minetest.chat_send_player(name, "# Server: " .. ext)
 		else
 			anticurse.kick(name, "foul")
@@ -201,7 +205,11 @@ function chat_core.check_language(name, message)
 		-- on the server more than a few days) are warned but not kicked.
 		if passport.player_registered(name) then
 			local ext = anticurse.get_kick_message("curse")
-			minetest.chat_send_all("# Server: Talk from someone hidden in case of uninteresting language.")
+			if channel then
+				shout.notify_channel(channel, "# Server: Talk from someone hidden in case of uninteresting language.")
+			else
+				minetest.chat_send_all("# Server: Talk from someone hidden in case of uninteresting language.")
+			end
 			minetest.chat_send_player(name, "# Server: " .. ext)
 		else
 			anticurse.kick(name, "foul")

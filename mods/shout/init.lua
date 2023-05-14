@@ -261,6 +261,8 @@ function shout.channel_players(channel)
 	return result
 end
 
+-- Use this only to send server messages to all players in a channel.
+-- This bypasses players' chat filters.
 function shout.notify_channel(channel, message)
 	local players = minetest.get_connected_players()
 
@@ -336,19 +338,19 @@ function shout.x(name, param)
 	end
 	--]]
 
+	local stats = chat_core.player_status(name)
+	local dname = rename.gpn(name)
+	local channel = shout.players[name]
+	local players = minetest.get_connected_players()
+
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-	if chat_core.check_language(name, param) then return end
+	if chat_core.check_language(name, param, channel) then return end
 
 	local mk = ""
 	if command_tokens.mark.player_marked(name) then
 		local pos = minetest.get_player_by_name(name):get_pos()
 		mk = " [" .. math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "]"
 	end
-
-	local stats = chat_core.player_status(name)
-	local dname = rename.gpn(name)
-	local channel = shout.players[name]
-	local players = minetest.get_connected_players()
 
 	-- Send message to all players in the same channel.
 	-- The player who sent the message always receives it.
@@ -363,7 +365,6 @@ function shout.x(name, param)
 			end
 
 			if not ignored then
-
 				minetest.chat_send_player(n, stats .. "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
 			end
 		end

@@ -47,7 +47,8 @@ function bonemeal.particles(pos)
 		minsize = 1.5,
 		maxsize = 2.0,
 		collisiondetection = true,
-		texture = "bonemeal_particle.png"
+		texture = "bonemeal_particle.png",
+		glow = 5,
 	})
 
 	ambiance.sound_play("default_dirt_footstep", pos, 1.0, 16)

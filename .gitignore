@@ -6,3 +6,7 @@ mods/worldedit
 
 # Vim swap files.
 *.swp
+
+# Kate swap files.
+*.kate-swp
+

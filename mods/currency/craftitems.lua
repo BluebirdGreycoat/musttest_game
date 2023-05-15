@@ -49,7 +49,7 @@ minetest.register_craftitem("currency:minegeld_100", {
 })
 
 minetest.register_craftitem("currency:minegeld_bundle", {
-	description = "Bundle Of Random Minegeld Notes",
+	description = "Bundle of Random Minegeld Notes",
 	inventory_image = "minegeld_bundle.png",
 	groups = {flammable = 3},
 })

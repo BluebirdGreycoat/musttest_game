@@ -213,7 +213,7 @@ minetest.register_craftitem("xdecor:bowl", {
 
 local eat_soup = minetest.item_eat(5, "xdecor:bowl")
 minetest.register_craftitem("xdecor:bowl_soup", {
-	description = "Bowl Of Soup\n\nIncreases stamina regen for a time.",
+	description = "Bowl of Soup\n\nIncreases stamina regen for a time.",
 	inventory_image = "xdecor_bowl_soup.png",
 	wield_image = "xdecor_bowl_soup.png",
 	groups = {not_in_creative_inventory=1},

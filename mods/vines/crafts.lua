@@ -10,6 +10,6 @@ minetest.register_craft({
 })
 
 minetest.register_craftitem("vines:ropesegment", {
-  description = "A Length Of Strong Rope",
+  description = "A Length of Strong Rope",
   inventory_image = "vines_rope.png",
 })

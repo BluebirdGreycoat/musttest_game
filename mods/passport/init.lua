@@ -137,7 +137,7 @@ passport.compose_formspec = function(pname)
     default.gui_bg_img ..
     default.gui_slots ..
 		"label[1,0.0;" ..
-			minetest.formspec_escape("Key Of Citizenship Interface") .. "]" ..
+			minetest.formspec_escape("Key of Citizenship Interface") .. "]" ..
 		"label[6,0.0;" ..
 			minetest.formspec_escape("Recalls Nearby (" .. #beacons .. ")") .. "]" ..
     buttons ..
@@ -677,7 +677,7 @@ if not passport.registered then
   
   -- Keep this in inventory to prevent deletion.
   minetest.register_craftitem("passport:passport", {
-    description = "Proof Of Citizenship\n\n" ..
+    description = "Proof of Citizenship\n\n" ..
 			"Keep this in your MAIN inventory at ALL times!\n" ..
 			"This preserves your Account during server purge - it cannot be stolen or lost by dying.\n" ..
 			"Can be later upgraded into the KEY, which grants many abilities.",
@@ -689,7 +689,7 @@ if not passport.registered then
 
   -- Keep this in inventory to prevent deletion.
   minetest.register_craftitem("passport:passport_adv", {
-    description = "Key Of Citizenship\n\n" ..
+    description = "Key of Citizenship\n\n" ..
 			"Keep this in your MAIN inventory at ALL times!\n" ..
 			"This preserves your Account during server purge.\n" ..
 			"It cannot be stolen or lost by dying.",

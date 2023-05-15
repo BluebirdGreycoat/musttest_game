@@ -71,3 +71,24 @@ minetest.register_node("griefer:naraxen", {
 		minetest.add_item(pos, {name="default:goldblock"})
 	end,
 })
+
+
+
+-- Spawner for elite oerkkis. Not to be craftable, can be looted from fortresses.
+minetest.register_node("griefer:elitestone", {
+	description = "Wrath Obsidian",
+	tiles = {
+		"caverealms_glow_obsidian.png",
+		"caverealms_glow_obsidian.png",
+		"caverealms_glow_obsidian.png^griefer_stoneside2.png",
+	},
+  light_source = 7,
+	sounds = default.node_sound_stone_defaults(),
+	groups = utility.dig_groups("obsidian"),
+	drop = "default:goldblock",
+	silverpick_drop = true,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="default:goldblock"})
+	end,
+})

@@ -109,7 +109,10 @@ fortress.loot = {
 
       {item="default:diamond", min=1, max=32, chance=10},
       {item="bandages:bandage_3", min=1, max=32, chance=10},
+
+      -- Special (non-craftable) loot.
       {item="stoneworld:oerkki_scepter", min=1, max=1, chance=5},
+      {item="griefer:elitestone", min=1, max=1, chance=5},
     },
   },
 }

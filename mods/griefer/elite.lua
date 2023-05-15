@@ -107,3 +107,21 @@ mobs.register_mob("griefer:elite_griefer", {
 
 
 mobs.register_egg("griefer:elite_griefer", "Elite Griefer", "default_gold_block.png", 1)
+
+mobs.register_spawn_abm({
+  name = "griefer:elite_griefer",
+  nodes = {"griefer:elitestone"},
+  interval = 3,
+  chance = 30,
+
+  min_light = 0,
+  max_light = 10,
+  player_min_range = 10,
+  player_max_range = 60,
+
+  mob_limit = 2,
+  absolute_mob_limit = 32,
+  mob_range = 40,
+  min_count = 1,
+  max_count = 1,
+})

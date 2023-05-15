@@ -3,6 +3,7 @@
 -- Normal damage scaling would be 500.
 local SCALE = 250
 
+-- Damage groups for all weapons.
 sysdmg.damage_groups = {
   ["anvil:hammer"]            = {cracky=6.0*SCALE, fleshy=0.2*SCALE},
   ["xdecor:hammer"]           = {cracky=6.0*SCALE, fleshy=0.2*SCALE},

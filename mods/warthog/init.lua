@@ -20,6 +20,7 @@ mobs.register_mob("warthog:warthog", {
 	pathfinding = 1,
 	pathfinding_chance = 20,
 	damage = 10*500,
+	damage_group = "snappy",
 	hp_min = 35*500,
 	hp_max = 65*500,
 	armor = 50,

@@ -463,6 +463,30 @@ register({
 	noise_threshold = -0.3,
 })
 
+-- Naraxen.
+-- Disgusting eldritch.
+register({
+	name = "nssm:morde",
+	nodes = {"darkage:basaltic_rubble", "darkage:basaltic"},
+	min_light = 0,
+	max_light = 1,
+  min_height = 5150,
+  max_height = 8150,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 16804,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 register({
 	name = "warthog:warthog",
 	nodes = {

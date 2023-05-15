@@ -6,6 +6,10 @@ mobs.register_mob("griefer:elite_griefer", {
 	attack_animals = true,
 	attack_players = true,
 	attack_type = "dogfight",
+	specific_allies = {
+		["griefer:griefer"] = true,
+		["dm:dm"] = true,
+	},
 	pathfinding = 3,
 	pathing_radius = 20,
 	max_node_dig_level = 2,

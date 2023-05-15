@@ -7,6 +7,10 @@ mobs.register_mob("dm:dm", {
 	damage_group = "crush",
 	armor_level = 3,
 	attack_type = "dogshoot",
+	specific_allies = {
+		["griefer:griefer"] = true,
+		["griefer:elite_griefer"] = true,
+	},
 	dogshoot_switch = 1,
 	dogshoot_count_max = 10,
 	reach = 3,

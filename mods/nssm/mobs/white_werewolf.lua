@@ -1,6 +1,6 @@
 
 local scale = 0.5
-local hpmul = 10.0
+local hpmul = 2.0
 
 mobs.register_mob("nssm:white_werewolf", {
 	type = "monster",

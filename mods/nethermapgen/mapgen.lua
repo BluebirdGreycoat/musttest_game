@@ -101,7 +101,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   local perlin4 = minetest.get_perlin_map(nethermapgen.noise4param2d, sides2D)
   perlin4:get_2d_map_flat(bp2d, noisemap4)
   local perlin5 = minetest.get_perlin_map(nethermapgen.noise5param3d, sides3D)
-  perlin5:get3dMap_flat(bp3d, noisemap5)
+  perlin5:get_3d_map_flat(bp3d, noisemap5)
   
   -- Localize commonly used functions.
   local floor = math.floor

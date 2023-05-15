@@ -5941,7 +5941,7 @@ if not mobs.registered then
 				end
 
 				-- Remove mob immediately, as last step of this function.
-				-- Controls returns to engine.
+				-- Control returns to engine.
 				self.object:remove()
 				self.mkrm = true
 			end

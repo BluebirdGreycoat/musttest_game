@@ -610,10 +610,10 @@ jarkati.generate_realm = function(minp, maxp, seed)
 	perlin5:get_2d_map_flat(bp2d, noisemap5)
 
 	perlin6 = perlin6 or minetest.get_perlin_map(jarkati.noise6param3d, sides3D)
-	perlin6:get3dMap_flat(bp3d, noisemap6)
+	perlin6:get_3d_map_flat(bp3d, noisemap6)
 
 	perlin7 = perlin7 or minetest.get_perlin_map(jarkati.noise7param3d, sides3D)
-	perlin7:get3dMap_flat(bp3d, noisemap7)
+	perlin7:get_3d_map_flat(bp3d, noisemap7)
 
 	-- Localize commonly used functions for speed.
 	local floor = math.floor

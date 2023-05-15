@@ -86,13 +86,13 @@ cavegen.generate = function(minp, maxp, seed)
   local bp3d = {x=x0, y=y0, z=z0}
   
   local perlin1 = minetest.get_perlin_map(noise1param3d, sides3D)
-  perlin1:get3dMap_flat(bp3d, noisemap1)
+  perlin1:get_3d_map_flat(bp3d, noisemap1)
   
   local perlin2 = minetest.get_perlin_map(noise2param3d, sides3D)
-  perlin2:get3dMap_flat(bp3d, noisemap2)
+  perlin2:get_3d_map_flat(bp3d, noisemap2)
   
   local perlin3 = minetest.get_perlin_map(noise3param3d, sides3D)
-  perlin3:get3dMap_flat(bp3d, noisemap3)
+  perlin3:get_3d_map_flat(bp3d, noisemap3)
   
   local floor = math.floor
   local ceil = math.ceil

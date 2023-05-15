@@ -89,10 +89,13 @@ function xp.update_players_max_hp(pname)
 	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
 	-- does not store this itself, and reverts to HP_MAX=20 on every login.
 	--
-	-- Note: HP must be set *before* properties update!
-	-- Otherwise "reason" will NOT be propagated through the engine.
-	pref:set_hp(new_hp, {reason="xp_update"})
+	-- Note: HP max must be set *before* HP update!
+	-- Otherwise set_hp() will be ignored if hp is higher than existing max!
+	--
+	-- Note: must manually notify the HP change reason, here.
+	armor.notify_set_hp_reason({reason="xp_update"})
 	pref:set_properties({hp_max = new_max_hp})
+	pref:set_hp(new_hp)
 	pmeta:set_int("hp_max", new_max_hp)
 
 	-- Manually update HUD.

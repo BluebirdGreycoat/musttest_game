@@ -36,14 +36,32 @@ function armor.notify_punch_reason(reason)
 	armor.hp_change_reason.type = "punch"
 end
 
+-- Same as above, but use if you're calling :set_hp() on the player, and need to
+-- notify the armor code what the HP change is for. Note that this is especially
+-- important if you're changing the players 'hp_max' as well. In such cases, the
+-- reason object often DOES NOT propogate through the engine, and thus this has
+-- to be done manually and entirely in Lua. Silly Minetest!
+function armor.notify_set_hp_reason(reason)
+	armor.hp_change_reason = reason
+	armor.hp_change_reason.type = "set_hp"
+end
+
 
 
 -- May return nil.
-function armor.get_punch_reason(engine_reason)
+function armor.get_hp_change_reason(engine_reason)
 	if armor.hp_change_reason then
 		local reason = armor.hp_change_reason
 		armor.hp_change_reason = nil
-		reason.object = engine_reason.object
+
+		-- Copy everything from the engine's reason, but don't clobber our special
+		-- 'reason' key.
+		for k, v in pairs(engine_reason) do
+			if k ~= "reason" then
+				reason[k] = v
+			end
+		end
+
 		return reason
 	end
 
@@ -565,6 +583,15 @@ end
 
 
 function armor.on_player_hp_change(player, hp_change, reason)
+	-- If a notified reason is available, use that instead.
+	-- Note that 'armor.get_hp_change_reason' clears the reason when it is called.
+	if reason.type == "punch" or reason.type == "set_hp" then
+		local huh = armor.get_hp_change_reason(reason)
+		if huh then
+			reason = huh
+		end
+	end
+
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
 	if not (pname and hp_change < 0) then
 		return hp_change
@@ -602,15 +629,6 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		-- Minetest does NOT, apparently, correctly apply drowning damage itself
 		-- when the value is very high!
 		hp_change = hp_change * 500
-	end
-
-	-- If a notified reason is available, use that instead.
-	-- Note that 'get_punch_reason' clears the reason when it is called.
-	if reason.type == "punch" then
-		local huh = armor.get_punch_reason(reason)
-		if huh then
-			reason = huh
-		end
 	end
 
 	-- Why do I have to do this ugly hack? Because Minetest!!!!11111!!!11

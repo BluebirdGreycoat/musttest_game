@@ -76,8 +76,10 @@ function hunger.apply_health_boost(pname, key, data)
 	hp_max = hp_max + cboost
 	hp = hp_max * perc
 
+	-- Note: must manually notify HP change reason here.
+	armor.notify_set_hp_reason({reason="hp_boost_start"})
 	pref:set_properties({hp_max=hp_max})
-	pref:set_hp(hp, {reason="hp_boost_start"})
+	pref:set_hp(hp)
 
 	if oldboost == 0 then
 		minetest.chat_send_player(pname, "# Server: Max health boosted for " .. tab[keyname] .. " seconds.")
@@ -131,12 +133,15 @@ function hunger.time_health_boost(pname, key)
 		local nmax = nmax + nboost
 		local nhp = perc * nmax
 
-		-- Note: HP must be set *before* properties update!
-		-- Otherwise "reason" will NOT be propagated through the engine.
-		pref:set_hp(nhp, {reason="hp_boost_end"})
+		-- Note: must manually notify HP change reason here.
+		armor.notify_set_hp_reason({reason="hp_boost_end"})
+		pref:set_hp(nhp)
 		pref:set_properties({hp_max = nmax})
 
 		armor:update_inventory(pref)
+
+		-- Manually update HUD.
+		hud.player_event(pref, "health_changed")
 		return
 	end
 

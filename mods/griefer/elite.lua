@@ -30,6 +30,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	--collisionbox = {-0.4, -1, -0.4, 0.4, 0.9, 0.4},
 	visual = "mesh",
+	visual_size = {x=1.3, y=1.1, z=1.3},
 	mesh = "griefer_elite.b3d",
 	textures = {
 		{"griefer_griefer3.png"},

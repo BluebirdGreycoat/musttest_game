@@ -42,7 +42,7 @@ shout.BUILTIN_HINTS = {
 	"Protection stops most types of environment damage, but does not prevent damage from lava.",
 	"Certain blocks are vulnerable to lava griefing even when protected, such as stone and cobble.",
 	"Certain foods refresh stamina, and can be used to give your avatar an extra endurance boost.",
-	"A hurt player will usually heal slowly, up to the last two hearts. Use bandages to speed this up.",
+	"Passive healing is very slow for serious injuries, but quick for light wounds.",
 	"Travel speed is affected by the surfaces you travel on. Prefer using roads and avoid deep snow.",
 	"Flowers, plants, and saplings can be found in the deep wastes far from the city.",
 	"Use the /mapfix command to correct issues with lighting or liquid flow. See /help mapfix.",

@@ -31,6 +31,9 @@ commandtools.pick_on_use = function(itemstack, user, pointed_thing)
 	elseif pointed_thing.type == "object" then
 		local ref = pointed_thing.ref
 		if ref then
+			-- Get all armor/damage groups.
+			local groups = utility.builtin_armor_groups()
+
 			local tool_capabilities = {
 				full_punch_interval = 0.1,
 				max_drop_level = 3,
@@ -43,8 +46,14 @@ commandtools.pick_on_use = function(itemstack, user, pointed_thing)
 					crumbly =     {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 					snappy =      {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 				},
-				damage_groups = {fleshy = 65535},
+				damage_groups = {},
 			}
+
+			-- The pick does maximum possible damage for all possible damage groups.
+			for k, v in pairs(groups) do
+				tool_capabilities.damage_groups[k] = 32767
+			end
+
 			ref:punch(user, 1, tool_capabilities, nil)
 		end
 	end

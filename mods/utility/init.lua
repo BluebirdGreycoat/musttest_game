@@ -80,9 +80,13 @@ function utility.builtin_armor_groups(groups)
 		-- Extreme heat from lava.
 		lava = 100,
 	}
-	for k, v in pairs(groups) do
-		tb[k] = v
+
+	if groups then
+		for k, v in pairs(groups) do
+			tb[k] = v
+		end
 	end
+
 	return tb
 end
 

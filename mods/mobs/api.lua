@@ -168,7 +168,7 @@ mobs.fallback_node = "default:cobble"
 -- play sound
 local function mob_sound(self, sound)
 	if sound then
-		local dist = self.sounds.distance or 20
+		local dist = self.sounds.distance or 30
 		ambiance.sound_play(sound, self.object:get_pos(), 1.0, dist)
 
 		-- This isn't working!

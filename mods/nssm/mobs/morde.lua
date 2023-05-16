@@ -114,65 +114,52 @@ minetest.register_entity("nssm:mortick", {
 	textures = {"mortick.png"},
 	hp_min = 10000,
 	hp_max = 10000,
-	armor = 100,
+	armor = 1,
 	visual = "mesh",
 	mesh = "mortick.x",
 	visual_size = {x=3, y=3},
-	--lifetime = 10,
+
+	-- Thus much damage is a nuisance if the player is healthy, but can quickly
+	-- overwhelm them if they become so damaged that passive healing can no longer
+	-- keep up.
 	damage = 1*SCALE,
 
 	on_step = function(self, dtime)
 		self.mortick_timer = self.mortick_timer or os.time()
 		self.timer = self.timer or 0
-		self.timer = self.timer+dtime
+		self.timer = self.timer + dtime
 		local s = self.object:get_pos()
 		local s1 = vector.round({x=s.x, y = s.y, z = s.z})
 
-		--[[
-		if (os.time()-self.mortick_timer > self.lifetime) then
-			self.object:remove()
-		end
-		--]]
-
-		-- The mortick dies when he finds himself in the fire.
+		-- The mortick dies when he finds himself in the water.
+		-- It has to be *really* water (group level 3).
 		local name = minetest.get_node(s1).name
-		if minetest.get_item_group(name, "fire") ~= 0 then
+		if minetest.get_item_group(name, "water") == 3 then
 			self.object:remove()
+			return
 		end
 
-		-- Find player to attack:
-		-- Note: this is player's name! Do not store player reference.
-		self.attack = (self.attack or "")
-
-		local objects = minetest.get_objects_inside_radius(s, 8)
-		for _, obj in ipairs(objects) do
-			if obj:is_player() then
-				self.attack = obj:get_player_name()
-				self.object:set_attach(obj, "", {x=0, y=9, z=-4}, {x=0, y=90, z=0})
+		-- Find player to attack, if we don't have a target named already.
+		if not self.attack or self.attack == "" then
+			-- Chose target for the first time, once only.
+			local objects = minetest.get_objects_inside_radius(s, 8)
+			for _, obj in ipairs(objects) do
+				if obj:is_player() and not gdac.player_is_admin(obj) then
+					-- Note: this is player's name! Do not store player reference.
+					self.attack = obj:get_player_name()
+					break
+				end
 			end
 		end
 
 		-- If found a player follow him.
-		if self.attack ~= "" then
+		if self.attack and self.attack ~= "" then
 			local target = minetest.get_player_by_name(self.attack)
 			if target then
-				-- This *should* be automatic due to using :set_attach() above.
-				--[[
-				local p = self.attack:get_pos()
-				local yawp = self.attack:get_look_yaw()
-				local pi = math.pi
-
-				p.y = p.y + 1
-				p.x = p.x-math.cos(yawp)/2.5
-				p.z = p.z-math.sin(yawp)/2.5
-				local m = 10
-				local v = {x=-(s.x-p.x)*m, y=-(s.y-p.y)*m, z=-(s.z-p.z)*m}
-				local yaws = yawp +pi
-
-				-- Stay attached to players back:
-				self.object:set_velocity(v)
-				self.object:set_yaw(yaws)
-				--]]
+				-- Attach to target if not currently attached.
+				if not self.object:get_attach() then
+					self.object:set_attach(target, "", {x=0, y=9, z=-4}, {x=0, y=90, z=0})
+				end
 
 				-- Damage player every ten seconds:
 				if self.timer > 10 then

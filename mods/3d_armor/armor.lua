@@ -660,9 +660,9 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	local reason_str = armor.get_reason(reason)
 	-- Test code to check that I know what I'm doing.
-	--minetest.log('hpchange reason: ' .. reason_str)
+	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. reason_str)
 
-	if reason_str == "punch" or reason_str == "arrow" then
+	if reason.type == "punch" or reason_str == "arrow" then
 		-- If HP change would kill player, do NOT scale it!
 		-- That results in misbehavior. This does have the result that damage
 		-- scaling behaves weird on the final hit before a player dies, as in that

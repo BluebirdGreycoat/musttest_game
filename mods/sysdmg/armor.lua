@@ -13,19 +13,19 @@ sysdmg.default_groups = {
   ["shields:shield_wood"] =          {armor_heal= 5*BLOCK_MULT, armor_use=2000},
   ["shields:shield_enhanced_wood"] = {armor_heal=10*BLOCK_MULT, armor_use=1000},
   ["3d_armor:helmet_wood"]         = {armor_heal= 0*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:chestplate_wood"]     = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
+  ["3d_armor:chestplate_wood"]     = {armor_heal= 5*BLOCK_MULT, armor_use=1500},
   ["3d_armor:leggings_wood"]       = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
   ["3d_armor:boots_wood"]          = {armor_heal= 0*BLOCK_MULT, armor_use=2000},
 
   ["shields:shield_steel"]         = {armor_heal=10*BLOCK_MULT, armor_use=500},
   ["3d_armor:helmet_steel"]        = {armor_heal= 0*BLOCK_MULT, armor_use=500},
-  ["3d_armor:chestplate_steel"]    = {armor_heal= 0*BLOCK_MULT, armor_use=500},
+  ["3d_armor:chestplate_steel"]    = {armor_heal=10*BLOCK_MULT, armor_use=500},
   ["3d_armor:leggings_steel"]      = {armor_heal= 0*BLOCK_MULT, armor_use=500},
   ["3d_armor:boots_steel"]         = {armor_heal= 0*BLOCK_MULT, armor_use=500},
 
   ["shields:shield_carbon"]        = {armor_heal=20*BLOCK_MULT, armor_use=200},
   ["3d_armor:helmet_carbon"]       = {armor_heal= 0*BLOCK_MULT, armor_use=200},
-  ["3d_armor:chestplate_carbon"]   = {armor_heal= 0*BLOCK_MULT, armor_use=200},
+  ["3d_armor:chestplate_carbon"]   = {armor_heal=10*BLOCK_MULT, armor_use=200},
   ["3d_armor:leggings_carbon"]     = {armor_heal= 0*BLOCK_MULT, armor_use=200},
   ["3d_armor:boots_carbon"]        = {armor_heal= 0*BLOCK_MULT, armor_use=200},
 
@@ -36,8 +36,8 @@ sysdmg.default_groups = {
   ["3d_armor:boots_bronze"]        = {armor_heal= 6*BLOCK_MULT, armor_use=250},
 
   ["shields:shield_diamond"]       = {armor_heal=15*BLOCK_MULT, armor_use=100},
-  ["3d_armor:helmet_diamond"]      = {armor_heal= 0*BLOCK_MULT, armor_use=100},
-  ["3d_armor:chestplate_diamond"]  = {armor_heal= 0*BLOCK_MULT, armor_use=100},
+  ["3d_armor:helmet_diamond"]      = {armor_heal=20*BLOCK_MULT, armor_use=100},
+  ["3d_armor:chestplate_diamond"]  = {armor_heal=10*BLOCK_MULT, armor_use=100},
   ["3d_armor:leggings_diamond"]    = {armor_heal= 0*BLOCK_MULT, armor_use=100},
   ["3d_armor:boots_diamond"]       = {armor_heal= 0*BLOCK_MULT, armor_use=100},
 

@@ -47,16 +47,17 @@ local get_formspec = function(player, page)
 				.."list[current_player;bag" .. i .. "contents;0,1;8,4;]"
 --]]
 			return "size[8,9.5]"
-				..default.gui_bg..default.gui_bg_img..default.gui_slots
-				.."list[current_player;bag" .. i .. "contents;0,0;8,4;]"
-				.."button[0,4.2.2;2,0.5;main;Main]"
-				.."button[6,4.2.2;2,0.5;bags;Bags]"
-				.."image[3.5,4;1,1;" .. image .. "]"
-				.."list[current_player;main;0,5.5;8,1;]"
-				.."list[current_player;main;0,6.75;8,3;8]"
+				.. default.gui_bg .. default.gui_bg_img .. default.gui_slots
+				.. "list[current_player;bag" .. i .. "contents;0,0;8,4;]"
+				.. "button[0,4.2.2;2,0.5;main;Main]"
+				.. "label[2,4.2;" .. minetest.formspec_escape("Bag #" .. i .. "") .. "]"
+				.. "button[6,4.2.2;2,0.5;bags;Bags]"
+				.. "image[3.5,4;1,1;" .. image .. "]"
+				.. "list[current_player;main;0,5.5;8,1;]"
+				.. "list[current_player;main;0,6.75;8,3;8]"
 				.. "listring[current_player;main]"
 				.. "listring[current_player;bag" .. i .. "contents]"
-				..default.get_hotbar_bg(0, 5.5)
+				.. default.get_hotbar_bg(0, 5.5)
 		end
 	end
 end

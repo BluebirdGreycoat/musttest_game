@@ -118,6 +118,7 @@ minetest.register_entity("nssm:mortick", {
 	visual = "mesh",
 	mesh = "mortick.x",
 	visual_size = {x=3, y=3},
+	pointable = false,
 
 	-- Thus much damage is a nuisance if the player is healthy, but can quickly
 	-- overwhelm them if they become so damaged that passive healing can no longer
@@ -126,28 +127,33 @@ minetest.register_entity("nssm:mortick", {
 
 	on_step = function(self, dtime)
 		self.mortick_timer = self.mortick_timer or os.time()
-		self.timer = self.timer or 0
-		self.timer = self.timer + dtime
-		local s = self.object:get_pos()
-		local s1 = vector.round({x=s.x, y = s.y, z = s.z})
+		self.timer = (self.timer or 0) + dtime
+		self.timer2 = (self.timer2 or 0) + dtime
 
-		-- The mortick dies when he finds himself in the water.
-		-- It has to be *really* water (group level 3).
-		local name = minetest.get_node(s1).name
-		if minetest.get_item_group(name, "water") == 3 then
-			self.object:remove()
-			return
-		end
+		if self.timer2 >= 1 then
+			self.timer2 = 0
 
-		-- Find player to attack, if we don't have a target named already.
-		if not self.attack or self.attack == "" then
-			-- Chose target for the first time, once only.
-			local objects = minetest.get_objects_inside_radius(s, 8)
-			for _, obj in ipairs(objects) do
-				if obj:is_player() and not gdac.player_is_admin(obj) then
-					-- Note: this is player's name! Do not store player reference.
-					self.attack = obj:get_player_name()
-					break
+			local s = self.object:get_pos()
+			local s1 = vector.round({x=s.x, y = s.y, z = s.z})
+
+			-- The mortick dies when he finds himself in the water.
+			-- It has to be *really* water (group level 3).
+			local name = minetest.get_node(s1).name
+			if minetest.get_item_group(name, "water") == 3 then
+				self.object:remove()
+				return
+			end
+
+			-- Find player to attack, if we don't have a target named already.
+			if not self.attack or self.attack == "" then
+				-- Chose target for the first time, once only.
+				local objects = minetest.get_objects_inside_radius(s, 8)
+				for _, obj in ipairs(objects) do
+					if obj:is_player() and not gdac.player_is_admin(obj) then
+						-- Note: this is player's name! Do not store player reference.
+						self.attack = obj:get_player_name()
+						break
+					end
 				end
 			end
 		end
@@ -156,9 +162,18 @@ minetest.register_entity("nssm:mortick", {
 		if self.attack and self.attack ~= "" then
 			local target = minetest.get_player_by_name(self.attack)
 			if target then
+				local cur_hp = target:get_hp()
+
 				-- Attach to target if not currently attached.
-				if not self.object:get_attach() then
-					self.object:set_attach(target, "", {x=0, y=9, z=-4}, {x=0, y=90, z=0})
+				if not self.object:get_attach() or (self.target_hp or 0) ~= cur_hp then
+					self.target_hp = cur_hp
+					if cur_hp > 0 then
+						-- Attach to back.
+						self.object:set_attach(target, "", {x=0, y=9, z=-4}, {x=0, y=90, z=0})
+					else
+						-- Attach to front.
+						self.object:set_attach(target, "", {x=0, y=4, z=-3}, {x=90, y=0, z=90})
+					end
 				end
 
 				-- Damage player every ten seconds:

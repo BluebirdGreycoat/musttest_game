@@ -65,6 +65,8 @@ minetest.register_entity("wield3d:wield_entity", {
 -- Shall be called whenever someone teleports.
 -- This mod requires to be able to reset the wield entities.
 function wield3d.on_teleport()
+	-- Disabled, let's see if the devs finally fixed the entity attachment problems.
+	--[[
 	local players = minetest.get_connected_players()
 	-- Just clear all the wield entities. They will be restored shortly.
 	for k, v in ipairs(players) do
@@ -77,6 +79,7 @@ function wield3d.on_teleport()
 		player_wielding[name] = nil
 	end
 	gauges.on_teleport()
+	--]]
 end
 
 

@@ -108,12 +108,12 @@ sysdmg.wear_groups = {
 -- Higher values give more resistance.
 -- Note that the total resistance for a particular group cannot exceed 90.
 sysdmg.resist_groups = {
-  ["shields:shield_wood"]          = {fleshy=5,  crumbly=10, electrocute=5},
-  ["shields:shield_enhanced_wood"] = {fleshy=8,  crumbly=20, electrocute=10},
-  ["3d_armor:helmet_wood"]         = {fleshy=5,  crumbly=15, electrocute=15},
-  ["3d_armor:chestplate_wood"]     = {fleshy=10, crumbly=25, electrocute=5},
-  ["3d_armor:leggings_wood"]       = {fleshy=5,  crumbly=10, electrocute=5},
-  ["3d_armor:boots_wood"]          = {fleshy=5,  crumbly=15, electrocute=15},
+  ["shields:shield_wood"]          = {fleshy=5,  crumbly=10, },
+  ["shields:shield_enhanced_wood"] = {fleshy=8,  crumbly=20, },
+  ["3d_armor:helmet_wood"]         = {fleshy=5,  crumbly=15, },
+  ["3d_armor:chestplate_wood"]     = {fleshy=10, crumbly=25, },
+  ["3d_armor:leggings_wood"]       = {fleshy=5,  crumbly=10, },
+  ["3d_armor:boots_wood"]          = {fleshy=5,  crumbly=15, },
 
   ["shields:shield_steel"]         = {fleshy=10, cracky=15, snappy=10, crumbly=5},
   ["3d_armor:helmet_steel"]        = {fleshy=10, cracky=15, snappy=10, crumbly=5},

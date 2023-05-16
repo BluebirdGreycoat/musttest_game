@@ -210,6 +210,7 @@ function bandages.heal_target(itemstack, user, target, level)
 
 		-- Don't heal target if already dead.
 		-- This solves an exploit people have found.
+		local hp = target:get_hp()
 		if hp == 0 then return end
 		target:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
@@ -250,6 +251,7 @@ function bandages.heal_self(itemstack, user, level)
 
 		-- Don't heal user if already dead.
 		-- This solves an exploit people have found.
+		local hp = user:get_hp()
 		if hp == 0 then return end
 		user:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_self(pname, user:get_hp(), hp_max)

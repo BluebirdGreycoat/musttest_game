@@ -133,16 +133,6 @@ end
 function bones.death_reason(pname, reason)
 	local dname = rename.gpn(pname)
 
-	-- If a notified reason is available, use that instead.
-	if reason.type == "punch" or reason.type == "set_hp" then
-		local huh = armor.get_hp_change_reason(reason)
-		if huh then
-			reason = huh
-		end
-	end
-
-	minetest.log(dump(reason))
-
 	if reason.type == "fall" then
 		minetest.chat_send_all("# Server: <" .. dname .. "> fell.")
 	elseif reason.type == "drown" then

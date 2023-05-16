@@ -1397,6 +1397,8 @@ local function punch_target(self, dtime)
 		ambiance.sound_play("default_punch", p2, 2.0, 30)
 	end
 
+	--minetest.log('hp post punch: ' .. self.attack:get_hp())
+
 	-- Tell everyone about the death [MustTest].
 	if self.attack:is_player() and self.attack:get_hp() <= 0 then
 		mobs.mob_killed_player(self, self.attack)

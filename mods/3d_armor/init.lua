@@ -255,6 +255,7 @@ if not armor.run_once then
 	minetest.register_on_joinplayer(function(...)
 		return armor.on_joinplayer(...) end)
 
+	-- Warning: this must be the ONLY hp-change-modifier in the entire Lua code!
 	minetest.register_on_player_hpchange(function(...)
 		return armor.on_player_hp_change(...) end, true)
 

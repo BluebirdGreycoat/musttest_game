@@ -26,7 +26,7 @@ armor.def = armor.def or {}
 armor.textures = armor.textures or {}
 
 
-
+--------------------------------------------------------------------------------
 -- Use this function (just before) you call player:punch(), to notify the armor
 -- mod what the reason info for the punch is. Because as of this writing, you
 -- can't pass the PlayerHPChangeReason table directly to the :punch() method.
@@ -45,13 +45,45 @@ function armor.notify_set_hp_reason(reason)
 	armor.hp_change_reason = reason
 	armor.hp_change_reason.type = "set_hp"
 end
+--------------------------------------------------------------------------------
 
 
 
--- May return nil.
+-- To be called by armor code only.
+function armor.notify_death_reason(reason)
+	armor.death_reason = reason
+end
+
+
+-- May return nil. Note: this function also clears the reason data, to ensure it
+-- is only used once!
 function armor.get_hp_change_reason(engine_reason)
 	if armor.hp_change_reason then
-		local reason = table.copy(armor.hp_change_reason)
+		local reason = armor.hp_change_reason
+		armor.hp_change_reason = nil
+
+		-- Copy everything from the engine's reason, but don't clobber our special
+		-- 'reason' key.
+		for k, v in pairs(engine_reason) do
+			if k ~= "reason" then
+				reason[k] = v
+			end
+		end
+
+		return reason
+	end
+
+	return nil
+end
+
+
+
+-- To be called in one place only (the bones code) as it clears the reason
+-- at the same time.
+function armor.get_death_reason(engine_reason)
+	if armor.death_reason then
+		local reason = armor.death_reason
+		armor.death_reason = nil
 
 		-- Copy everything from the engine's reason, but don't clobber our special
 		-- 'reason' key.
@@ -688,7 +720,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	local ignore_wear = armor.armor_wear_ignores_damage(damage_type)
 
 	-- Test code to check that I know what I'm doing.
-	minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_type)
+	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_type)
 	--minetest.log('scaled hp change: ' .. hp_change)
 
 	-- Do not scale damage if the engine type is 'set_hp'.
@@ -754,5 +786,18 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	armor:update_armor(player)
+
+	-- Critical: the hp change must be an integer; floating-point comparisons are
+	-- deadly.
+	hp_change = math_floor(hp_change)
+
+	-- If this change would kill the player, set the death reason.
+	-- Note: this RELIES on the bones code getting called after this returns, on
+	-- the SAME server step, such that no other death reason could intervene for
+	-- any other player that is currently logged in.
+	if hp_change <= player:get_hp() then
+		armor.notify_death_reason(reason)
+	end
+
 	return hp_change
 end

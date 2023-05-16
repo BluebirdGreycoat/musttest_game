@@ -213,6 +213,16 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	local player_inv = player:get_inventory()
   local pname = player:get_player_name()
 
+	-- If a notified reason is available, use that instead.
+	if reason.type == "punch" or reason.type == "set_hp" then
+		local huh = armor.get_death_reason(reason)
+		if huh then
+			reason = huh
+		end
+	end
+
+	--minetest.log(dump(reason))
+
 	-- If player died while attached to cart/boat/etc, they must be detached.
 	default.detach_player_if_attached(player)
 

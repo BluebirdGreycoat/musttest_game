@@ -212,6 +212,7 @@ function bandages.heal_target(itemstack, user, target, level)
 		-- This solves an exploit people have found.
 		local hp = target:get_hp()
 		if hp == 0 then return end
+		armor.notify_set_hp_reason({reason="bandage"})
 		target:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
 	end)

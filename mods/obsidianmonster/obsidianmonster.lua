@@ -79,7 +79,7 @@ mobs.register_arrow("obsidianmonster:arrow", {
 			full_punch_interval = 1.0,
 			damage_groups = {snappy=1*500, arrow=1*500},
 		}, nil)
-		ambiance.sound_play("default_punch", player:get_pos(), 1.0, 20)
+		ambiance.sound_play("default_punch", player:get_pos(), 1.0, 30)
 	end,
 
 	hit_mob = function(self, player)
@@ -87,7 +87,7 @@ mobs.register_arrow("obsidianmonster:arrow", {
 			full_punch_interval = 1.0,
 			damage_groups = {snappy=1*500, arrow=1*500},
 		}, nil)
-		ambiance.sound_play("default_punch", player:get_pos(), 1.0, 20)
+		ambiance.sound_play("default_punch", player:get_pos(), 1.0, 30)
 	end,
 
 	hit_node = function(self, pos, node)

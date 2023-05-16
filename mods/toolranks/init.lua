@@ -78,13 +78,13 @@ function toolranks.create_description(name, uses, level)
 
 	local strpart = "Nodes dug"
 	if tooltype == "sword" then
-		strpart = "Weapon strikes"
+		strpart = "Blows struck"
 	elseif tooltype == "pickaxe" then
-		strpart = "Nodes picked"
+		strpart = "Resources picked"
 	elseif tooltype == "axe" then
-		strpart = "Nodes chopped"
+		strpart = "Resources chopped"
 	elseif tooltype == "shovel" then
-		strpart = "Nodes shoveled"
+		strpart = "Resources shoveled"
 	end
 
   local newdesc = toolranks.colors.green .. description .. "\n" ..

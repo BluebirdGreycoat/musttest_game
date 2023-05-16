@@ -532,6 +532,13 @@ if not gdac.registered then
 	--  }
 	--end)
 
+	-- Admin starts invisible on join, can drop cloak later.
+	minetest.register_on_joinplayer(function(player)
+		if gdac.player_is_admin(player) then
+			gdac_invis.toggle_invisibility(player:get_player_name(), "")
+		end
+	end)
+
 	-- Reloadable.
 	local name = "gdac:core"
 	local file = gdac.modpath .. "/init.lua"

@@ -779,23 +779,23 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		hp_change = 0
 	end
 
-	-- Check for combat-related reasons.
-	-- (Ignore this if damage was blocked by the heal chance.)
-	if hp_change > 0 and armor.damage_type_disables_cloak(damage_type) then
-		cloaking.disable_if_enabled(pname, true)
-	end
-
 	armor:update_armor(player)
 
 	-- Critical: the hp change must be an integer; floating-point comparisons are
 	-- deadly.
 	hp_change = math_floor(hp_change)
 
+	-- Check for combat-related reasons.
+	-- (Ignore this if damage was blocked by the heal chance.)
+	if math.abs(hp_change) > 0 and armor.damage_type_disables_cloak(damage_type) then
+		cloaking.disable_if_enabled(pname, true)
+	end
+
 	-- If this change would kill the player, set the death reason.
 	-- Note: this RELIES on the bones code getting called after this returns, on
 	-- the SAME server step, such that no other death reason could intervene for
 	-- any other player that is currently logged in.
-	if hp_change <= player:get_hp() then
+	if math.abs(hp_change) >= player:get_hp() then
 		armor.notify_death_reason(reason)
 	end
 

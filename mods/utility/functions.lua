@@ -12,7 +12,17 @@ function utility.damage_player(player, damage_type, damage, reason)
 	-- Inform 3D armor what the reason for this punch is.
 	-- Cannot pass the PlayerHPChangeReason table through :punch()!
 	-- Note: reason.type will be "punch", per 3D armor code.
-	armor.notify_punch_reason({reason = reason or damage_type})
+	local rt = type(reason)
+
+	if rt == "string" or rt == nil then
+		armor.notify_punch_reason({reason = reason or damage_type})
+	elseif rt == "table" then
+		local nr = {reason = reason.reason or ""}
+		for k, v in pairs(reason) do
+			nr[k] = v
+		end
+		armor.notify_punch_reason(nr)
+	end
 
 	player:punch(player, 1.0, {
 		full_punch_interval = 1.0,

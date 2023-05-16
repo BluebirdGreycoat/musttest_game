@@ -51,8 +51,7 @@ end
 -- May return nil.
 function armor.get_hp_change_reason(engine_reason)
 	if armor.hp_change_reason then
-		local reason = armor.hp_change_reason
-		armor.hp_change_reason = nil
+		local reason = table.copy(armor.hp_change_reason)
 
 		-- Copy everything from the engine's reason, but don't clobber our special
 		-- 'reason' key.
@@ -522,13 +521,20 @@ end
 
 
 
-function armor.get_reason(reason)
+function armor.get_damage_type_from_reason(reason)
 	local rs = reason.type or ""
 	if rs == "set_hp" or rs == "punch" then
 		-- Use custom reason only if available, otherwise use engine-defined reason,
 		-- which will just be 'set_hp' or 'punch'.
 		if reason.reason and reason.reason ~= "" then
-			rs = reason.reason
+			if reason.reason == "node_damage" then
+				-- If the notification reason is 'node_damage', then 'damage_group'
+				-- should store the actual damage type.
+				rs = reason.damage_group
+			else
+				-- Otherwise the reason itself is usually the damage type.
+				rs = reason.reason
+			end
 		end
 	end
 	return rs
@@ -536,16 +542,19 @@ end
 
 
 
-function armor.reason_disables_cloak(rstr)
-	if rstr == "punch" or rstr == "arrow" or rstr == "boom" or rstr == "fireball" then
+function armor.damage_type_disables_cloak(rstr)
+	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom" or rstr == "fireball"
+			or rstr == "cracky" or rstr == "crumbly" or rstr == "snappy" or rstr == "choppy"
+			or rstr == "crush" then
 		return true
 	end
 	return false
 end
 
-function armor.armor_wear_ignores_reason(rstr)
-	if rstr == "xp_update" or rstr == "hp_boost_end" or rstr == "hunger"
-			or rstr == "drown" or rstr == "poison" then
+function armor.armor_wear_ignores_damage(rstr)
+	if rstr == "" or rstr == "xp_update" or rstr == "hp_boost_end"
+			or rstr == "hunger" or rstr == "drown" or rstr == "poison"
+			or rstr == "pressure" then
 		return true
 	end
 	return false
@@ -578,7 +587,7 @@ end
 --
 -- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
-	local rs = armor.get_reason(reason)
+	local rs = armor.get_damage_type_from_reason(reason)
 
 	--minetest.log('Reason: ' .. rs)
 
@@ -601,7 +610,6 @@ end
 
 function armor.on_player_hp_change(player, hp_change, reason)
 	-- If a notified reason is available, use that instead.
-	-- Note that 'armor.get_hp_change_reason' clears the reason when it is called.
 	if reason.type == "punch" or reason.type == "set_hp" then
 		local huh = armor.get_hp_change_reason(reason)
 		if huh then
@@ -665,7 +673,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 				local pref = minetest.get_player_by_name(pname)
 				if pref then
 					-- PlayerHPChangeReason.type will be 'punch'.
-					utility.damage_player(pref, dtp, dps)
+					utility.damage_player(pref, dtp, dps,
+						{reason="node_damage", damage_group=dtp, source_node=reason.node})
 				end
 			end)
 
@@ -675,11 +684,15 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		end
 	end
 
-	local reason_str = armor.get_reason(reason)
-	-- Test code to check that I know what I'm doing.
-	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. reason_str)
+	local damage_type = armor.get_damage_type_from_reason(reason)
+	local ignore_wear = armor.armor_wear_ignores_damage(damage_type)
 
-	if reason.type == "punch" or reason_str == "arrow" then
+	-- Test code to check that I know what I'm doing.
+	minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_type)
+	--minetest.log('scaled hp change: ' .. hp_change)
+
+	-- Do not scale damage if the engine type is 'set_hp'.
+	if reason.type == "punch" then
 		-- If HP change would kill player, do NOT scale it!
 		-- That results in misbehavior. This does have the result that damage
 		-- scaling behaves weird on the final hit before a player dies, as in that
@@ -688,9 +701,6 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			hp_change = hp_change * hunger.get_damage_resistance(pname)
 		end
 	end
-
-	--minetest.log('scaled hp change: ' .. hp_change)
-	local ignore_wear = armor.armor_wear_ignores_reason(reason_str)
 
 	for i = 1, 6 do
 		local stack = player_inv:get_stack("armor", i)
@@ -739,7 +749,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	-- Check for combat-related reasons.
 	-- (Ignore this if damage was blocked by the heal chance.)
-	if hp_change > 0 and armor.reason_disables_cloak(reason_str) then
+	if hp_change > 0 and armor.damage_type_disables_cloak(damage_type) then
 		cloaking.disable_if_enabled(pname, true)
 	end
 

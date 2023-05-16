@@ -133,13 +133,26 @@ end
 function bones.death_reason(pname, reason)
 	local dname = rename.gpn(pname)
 
+	-- If a notified reason is available, use that instead.
+	if reason.type == "punch" or reason.type == "set_hp" then
+		local huh = armor.get_hp_change_reason(reason)
+		if huh then
+			reason = huh
+		end
+	end
+
+	minetest.log(dump(reason))
+
 	if reason.type == "fall" then
 		minetest.chat_send_all("# Server: <" .. dname .. "> fell.")
 	elseif reason.type == "drown" then
 		minetest.chat_send_all("# Server: <" .. dname .. "> drowned.")
-	elseif reason.type == "node_damage" then
-		if reason.node then
-			local ndef = minetest.registered_nodes[reason.node]
+	elseif reason.reason == "node_damage" then
+		-- Note: the engine's builtin 'reason.type' is not used here, because the
+		-- armor code nulifies it and converts it to a punch.
+
+		if reason.source_node then
+			local ndef = minetest.registered_nodes[reason.source_node]
 			if ndef and ndef._death_message then
 				local msg = ndef._death_message
 

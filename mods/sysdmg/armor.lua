@@ -77,7 +77,7 @@ sysdmg.wear_groups = {
   ["3d_armor:leggings_carbon"]     = {fall=1.25,snappy=0.6, fleshy=0.4, lava=1.5, crumbly=1.25, },
   ["3d_armor:boots_carbon"]        = {fall=1.5, snappy=0.6, fleshy=0.4, lava=1.5, crumbly=1.25, ground=2.0},
 
-  ["shields:shield_bronze"]        = {fall=0.5, cruch=1.25, ground=0.0, boom=0.5},
+  ["shields:shield_bronze"]        = {fall=0.5, crush=1.25, ground=0.0, boom=0.5},
   ["3d_armor:helmet_bronze"]       = {fall=0.5, crush=3.0, ground=0.0,  boom=0.5},
   ["3d_armor:chestplate_bronze"]   = {fall=0.5, crush=1.5, ground=0.0,  boom=0.5},
   ["3d_armor:leggings_bronze"]     = {fall=1.25, crush=1.25,            boom=0.5},

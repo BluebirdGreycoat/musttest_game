@@ -104,7 +104,10 @@ function armor.set_player_armor(self, player)
 	local textures = {}
 	local physics_o = {speed=1,gravity=1,jump=1}
 	local material = {type=nil, count=1}
-	local preview = armor:get_preview(name) or "character_preview.png"
+	local preview_string = armor:get_preview(name) or "character_preview.png"
+
+	-- List of textures to be applied to the character preview.
+	local preview_table = {}
 
 	for _,v in ipairs(self.elements) do
 		elements[v] = false
@@ -121,9 +124,9 @@ function armor.set_player_armor(self, player)
 					if level and level > 0 then
 						--minetest.log('armor piece: ' .. k)
 
-						local texture = def.texture or item:gsub("%:", "_")
-						table.insert(textures, texture..".png")
-						preview = preview.."^"..texture.."_preview.png"
+						local tex = def.texture or item:gsub("%:", "_")
+						textures[#textures+1] = (tex .. ".png")
+						preview_table[#preview_table+1] = (tex .. "_preview.png")
 
 						state = state + stack:get_wear()
 						items = items + 1
@@ -185,10 +188,24 @@ function armor.set_player_armor(self, player)
 		end
 	end
 
+	-- Sort preview texture list so that the shield is always on top.
+	-- This looks better.
+	table.sort(preview_table, function(a, b)
+		if not a:find("shield") and b:find("shield") then
+			return true
+		end
+		return false
+	end)
+
+	-- Generate character preview (a list of textures applied on top of each other).
+	for k, v in ipairs(preview_table) do
+		preview_string = preview_string .. "^" .. v
+	end
+
 	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
 	player:set_physics_override(physics_o)
 	self.textures[name].armor = armor_texture
-	self.textures[name].preview = preview
+	self.textures[name].preview = preview_string
 	self.def[name].state = state
 	self.def[name].count = items
 	self.def[name].heal = armor_heal

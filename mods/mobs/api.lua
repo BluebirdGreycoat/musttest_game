@@ -1382,6 +1382,10 @@ local function punch_target(self, dtime)
 
 		local dgroup = self.damage_group or "fleshy"
 
+		if self.attack:is_player() then
+			armor.notify_punch_reason({reason=dgroup})
+		end
+
 		self.attack:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {[dgroup] = damage}

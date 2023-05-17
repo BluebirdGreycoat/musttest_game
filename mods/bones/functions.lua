@@ -358,6 +358,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	meta:set_float("digxp", xp_for_bones)
 
 	meta:set_string("diedate", get_public_time())
+	meta:set_string("death_time", tostring(death_time))
 	local inv = meta:get_inventory()
 	inv:set_size("main", 200) -- Enuf space for everything!
 	-- Keep track of how many stacks are stored in bones.

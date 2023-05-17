@@ -788,6 +788,8 @@ function rc.check_position(player)
 	end
 end
 
+
+
 function rc.on_joinplayer(player)
 	local n = player:get_player_name()
 	local p = player:get_pos()
@@ -809,10 +811,14 @@ function rc.on_joinplayer(player)
 	end)
 end
 
+
+
 function rc.on_leaveplayer(player, timeout)
 	local n = player:get_player_name()
 	rc.players[n] = nil
 end
+
+
 
 function rc.plane_shift_message(pref, p, n)
 	local pp = vector_round(pref:get_pos())
@@ -840,6 +846,8 @@ function rc.plane_shift_message(pref, p, n)
 		end
 	end
 end
+
+
 
 -- API function. Call this whenever a player teleports,
 -- or lawfully changes realm. You can pass a player object or a name.

@@ -7,7 +7,10 @@ local function scepter_revive_player(tref, tname, pname, pos)
   if pos then
     rc.notify_realm_update(tref, pos)
     tref:set_pos(pos)
+    preload_tp.spawn_spinup_particles(pos, 1)
   end
+
+  ambiance.sound_play("nether_portal_usual", tref:get_pos(), 1.0, 30)
 
   local hp_max = tref:get_properties().hp_max
   tref:set_hp(math.max(1, math.floor(hp_max * 0.01)), {reason="revive"})
@@ -30,6 +33,8 @@ local function scepter_hit_bones(itemstack, user, pt)
   local owner = meta:get_string("owner")
   local tref = minetest.get_player_by_name(owner)
   local bones_death_time = tonumber(meta:get_string("death_time")) or 0
+
+  ambiance.sound_play("nether_extract_blood", pos, 1.0, 30)
 
   -- Player must be logged in.
   if not tref or not tref:is_player() then
@@ -103,6 +108,8 @@ end
 local function scepter_hit_player(itemstack, user, pt)
   local pname = user:get_player_name()
   local tref = pt.ref
+
+  ambiance.sound_play("nether_extract_blood", tref:get_pos(), 1.0, 30)
 
   local hp = tref:get_hp()
   local tname = tref:get_player_name()

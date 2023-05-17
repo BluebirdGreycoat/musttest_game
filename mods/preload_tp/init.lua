@@ -291,6 +291,7 @@ local particles = {
 		--length = -1,
 		length = 0.3,
 	},
+	glow = 14,
 }
 
 function preload_tp.spawn_particles(pos)

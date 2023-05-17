@@ -116,7 +116,7 @@ mobs.register_spawn_abm({
   name = "griefer:elite_griefer",
   nodes = {"griefer:elitestone"},
   interval = 3,
-  chance = 300,
+  chance = 100,
 
   min_light = 0,
   max_light = 10,

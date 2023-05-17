@@ -474,6 +474,11 @@ register({
   max_height = 8150,
 	clearance = 3,
 
+	mob_limit = 1,
+	min_count = 1,
+	max_count = 1,
+	mob_range = 40,
+
 	noise_params = {
 		offset = 0,
 		scale = 1,

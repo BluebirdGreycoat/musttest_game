@@ -210,6 +210,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	local player_inv = player:get_inventory()
 	local player_meta = player:get_meta()
   local pname = player:get_player_name()
+  local death_time = os.time()
 
 	-- If a notified reason is available, use that instead.
 	if reason.type == "punch" or reason.type == "set_hp" then
@@ -229,7 +230,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	-- We must record this info *always*, even if player does not leave bones.
 	local death_pos = vector.round(player:get_pos())
 	player_meta:set_string("last_death_pos", minetest.pos_to_string(death_pos))
-	player_meta:set_string("last_death_time", tostring(os.time()))
+	player_meta:set_string("last_death_time", tostring(death_time))
 
 	-- If the player died in MIDFELD, record that fact with a flag.
 	-- Note: flag is NOT cleared until player returns to MIDFELD via OUTBACK gate.
@@ -367,7 +368,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	-- Set player information.
 	player_meta:set_string("last_bones_pos", minetest.pos_to_string(pos))
-	player_meta:set_string("last_bones_time", tostring(os.time()))
+	player_meta:set_string("last_bones_time", tostring(death_time))
 
 	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC/KoC items.
 	-- Empty the player's main inv. We must not to clobber any passports.

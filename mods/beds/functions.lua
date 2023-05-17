@@ -470,6 +470,9 @@ function beds.on_respawnplayer(player)
 	local player_meta = player:get_meta()
 	local pos = beds.spawn[name]
 
+	-- Record the last respawn time.
+	player_meta:set_string("last_respawn_time", tostring(os.time()))
+
 	-- If the player died in MIDFELD, behave as if they don't have a bed, and send
 	-- them to the OUTBACK. If they die in the outback after this flag is set, they'll
 	-- keep respawning in the outback until they use the gate (bypassing their bed),

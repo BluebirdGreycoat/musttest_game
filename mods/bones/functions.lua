@@ -1,9 +1,6 @@
 -- This file is reloadable.
 if not minetest.global_exists("bones") then bones = {} end
 
--- Contains the positions of last known player deaths, indexed by player name.
-bones.last_known_death_locations = bones.last_known_death_locations or {}
-
 -- Localize for performance.
 local vector_round = vector.round
 local math_random = math.random
@@ -211,6 +208,7 @@ end
 bones.on_dieplayer = function(player, reason, preserve_xp)
 	local bones_mode = "bones"
 	local player_inv = player:get_inventory()
+	local player_meta = player:get_meta()
   local pname = player:get_player_name()
 
 	-- If a notified reason is available, use that instead.
@@ -229,12 +227,14 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	-- Record position of player on death.
 	-- This is needed because this information is lost on respawn.
 	-- We must record this info *always*, even if player does not leave bones.
-	bones.last_known_death_locations[pname] = utility.get_foot_pos(player:get_pos())
+	local death_pos = vector.round(player:get_pos())
+	player_meta:set_string("last_death_pos", minetest.pos_to_string(death_pos))
+	player_meta:set_string("last_death_time", tostring(os.time()))
 
 	-- If the player died in MIDFELD, record that fact with a flag.
 	-- Note: flag is NOT cleared until player returns to MIDFELD via OUTBACK gate.
 	-- (It is also cleared on respawn if player had a bed in MIDFELD.)
-	if rc.current_realm_at_pos(bones.last_known_death_locations[pname]) == "midfeld" then
+	if rc.current_realm_at_pos(death_pos) == "midfeld" then
 		player:get_meta():set_int("abyss_return_midfeld", 1)
 	end
 

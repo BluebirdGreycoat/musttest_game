@@ -467,6 +467,7 @@ end
 -- respawn player at bed if enabled and valid position is found
 function beds.on_respawnplayer(player)
 	local name = player:get_player_name()
+	local player_meta = player:get_meta()
 	local pos = beds.spawn[name]
 
 	-- If the player died in MIDFELD, behave as if they don't have a bed, and send
@@ -529,14 +530,16 @@ function beds.on_respawnplayer(player)
 
 		ambiance.sound_play("respawn", pos, 1.0, 10)
 	else
+		local death_pos = minetest.string_to_pos(player_meta:get_string("last_death_pos"))
+
 		-- If the death position is not known, assume they died in the Abyss.
-		local death_pos = rc.static_spawn("abyss")
-		if bones.last_known_death_locations[name] then
-			death_pos = bones.last_known_death_locations[name]
+		-- This should normally never happen.
+		if not death_pos then
+			death_pos = rc.static_spawn("abyss")
 		end
+
 		-- Tests show that `on_respawnplayer` is only called for existing players
 		-- that die and respawn, NOT for newly-joined players!
-
 		--minetest.chat_send_all("death at " .. minetest.pos_to_string(death_pos))
 		--minetest.after(1, function() minetest.chat_send_all("on_respawnplayer was called!") end)
 

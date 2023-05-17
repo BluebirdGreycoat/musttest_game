@@ -365,6 +365,10 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	minetest.log("action", "Put " .. xp_for_bones .. " XP in bones @ " .. location .. ".")
 
+	-- Set player information.
+	player_meta:set_string("last_bones_pos", minetest.pos_to_string(pos))
+	player_meta:set_string("last_bones_time", tostring(os.time()))
+
 	-- Note: clear player inventory slot-by-slot to avoid clobbering PoC/KoC items.
 	-- Empty the player's main inv. We must not to clobber any passports.
 	do

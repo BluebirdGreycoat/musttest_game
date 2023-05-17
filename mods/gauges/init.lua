@@ -50,6 +50,8 @@ local function add_gauge(player)
 	end
 end
 
+--------------------------------------------------------------------------------
+-- Note: this is only to be called inside wield3d.on_teleport().
 function gauges.on_teleport()
 	local plyrs = minetest.get_connected_players()
 	-- Just clear all the wield entities. They will be restored shortly.
@@ -63,6 +65,7 @@ function gauges.on_teleport()
 		player_wielding[name] = nil
 	end
 end
+--------------------------------------------------------------------------------
 
 function gauges.on_global_step()
 	local active_players = {}

@@ -7,9 +7,9 @@ local function scepter_revive_player(tref, tname, pname, pos)
   if pos then
     rc.notify_realm_update(tref, pos)
     tref:set_pos(pos)
-    preload_tp.spawn_spinup_particles(pos, 1)
   end
 
+  preload_tp.spawn_spinup_particles(tref:get_pos(), 1)
   ambiance.sound_play("nether_portal_usual", tref:get_pos(), 1.0, 30)
 
   local hp_max = tref:get_properties().hp_max

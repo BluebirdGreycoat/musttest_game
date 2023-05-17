@@ -680,7 +680,15 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- 'fall_damage_add_percent', but that would NOT be a good idea.
 	if reason.type == "fall" then
 		--minetest.log('fall: ' .. hp_change)
-		hp_change = hp_change * 500
+
+		-- Kids, don't get bit like I did. I just spend 1 hr trying to debug this
+		-- code, and it turned out the problem was passing a negative value to this
+		-- function for the amount of damage. Facepalm. Why do they let me code!?
+		if armor.stomp_at(player, player:get_pos(), math.abs(hp_change * 1000)) then
+			hp_change = hp_change * 100
+		else
+			hp_change = hp_change * 500
+		end
 	elseif reason.type == "drown" then
 		-- In the case of drowning damage, we HAVE to do it this way, because
 		-- Minetest does NOT, apparently, correctly apply drowning damage itself

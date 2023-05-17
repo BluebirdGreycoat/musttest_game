@@ -15,10 +15,20 @@ minetest.register_privilege("heal", {
 function heal.heal_health_and_hunger(pname)
   local player = minetest.get_player_by_name(pname)
   if not player then return end
-  player:set_hp(player:get_properties().hp_max)
+
+  local was_dead = false
+  if player:get_hp() == 0 then
+    was_dead = true
+  end
+
+  player:set_hp(player:get_properties().hp_max, {reason="heal_command"})
   hunger.update_hunger(player, 30)
 	sprint.set_stamina(player, SPRINT_STAMINA)
 	portal_sickness.reset(pname)
+
+	if was_dead then
+    minetest.close_formspec(pname, "")
+  end
 end
 
 

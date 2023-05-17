@@ -777,7 +777,9 @@ end
 
 
 
-function city_block.handle_consequences(player, hitter, melee)
+-- Note: this is called on the next server step after the punch, otherwise we
+-- cannot know if the player died as a result.
+function city_block.handle_consequences(player, hitter, melee, stomp)
 	--minetest.log('handle_consequences')
 
 	local victim_pname = player:get_player_name()
@@ -796,7 +798,11 @@ function city_block.handle_consequences(player, hitter, melee)
 	end
 
 	default.detach_player_if_attached(player)
-	city_block.murder_message(attack_pname, victim_pname)
+
+	-- Stomp messages are handled elsewhere.
+	if not stomp then
+		city_block.murder_message(attack_pname, victim_pname)
+	end
 
 	if city_block:in_city(p2pos) then
 		local t0 = city_block.victims[attack_pname] or time
@@ -876,6 +882,12 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	--minetest.log('on_punchplayer')
 
 	local melee_hit = true
+	local stomp_hit = false
+
+	if tool_capabilities.damage_groups.from_stomp then
+		stomp_hit = true
+	end
+
 	if tool_capabilities.damage_groups.from_arrow then
 		-- Someone launched this weapon. The hitter is most likely the nearest
 		-- player that isn't the player going to be hit.
@@ -954,7 +966,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		local pref = minetest.get_player_by_name(pname)
 		local href = minetest.get_player_by_name(hname)
 		if pref and href then
-			city_block.handle_consequences(pref, href, melee_hit)
+			city_block.handle_consequences(pref, href, melee_hit, stomp_hit)
 		end
 	end)
 end

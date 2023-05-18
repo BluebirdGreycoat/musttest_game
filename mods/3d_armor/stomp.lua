@@ -5,6 +5,10 @@ local stomp_radius = 1.5
 
 local function boast(stomper, target)
   local pname = stomper:get_player_name()
+	if spam.test_key("stomper" .. pname .. "9353") then
+		return
+	end
+	spam.mark_key("stomper" .. pname .. "9353", 30)
 
   if target:is_player() then
     local tname = target:get_player_name()

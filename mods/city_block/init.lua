@@ -679,6 +679,11 @@ local murder_messages = {
 }
 
 function city_block.murder_message(killer, victim, sendto)
+	if spam.test_key("kill" .. victim .. "15662") then
+		return
+	end
+	spam.mark_key("kill" .. victim .. "15662", 30)
+
 	local msg = murder_messages[math_random(1, #murder_messages)]
 	msg = string.gsub(msg, "<v>", "<" .. rename.gpn(victim) .. ">")
 	msg = string.gsub(msg, "<k>", "<" .. rename.gpn(killer) .. ">")

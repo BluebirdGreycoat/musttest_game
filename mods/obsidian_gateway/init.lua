@@ -565,6 +565,13 @@ function obsidian_gateway.attempt_activation(pos, player)
 		end
 	end
 
+	portal_cb.call_before_use({
+		gate_origin = origin,
+		gate_orientation = ns_key, -- "ns" or "ew"
+		player_name = pname,
+		teleport_destination = table.copy(pdest),
+	})
+
 	-- Create a gateway at the player's destination.
 	-- This gateway links back to the first.
 	-- If it is destroyed, the player is stuck!
@@ -664,6 +671,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 		end,
 
 		post_teleport_callback = function()
+			portal_cb.call_after_use({
+				gate_origin = origin,
+				gate_orientation = ns_key, -- "ns" or "ew"
+				player_name = pname,
+				teleport_destination = table.copy(pdest),
+			})
+
+			-- Any others in area get brought along, too.
 			for k, v in ipairs(friendstobring) do
 				local friend = minetest.get_player_by_name(v)
 				if friend then

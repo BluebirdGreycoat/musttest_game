@@ -46,20 +46,20 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 				self:bomb_explode();
 				return;
 			else
-				--self.object:setacceleration({x=math_random(-1, 1)*self.bomb_inertion*10, y=-10, z=math_random(-1, 1)*self.bomb_inertion*10});
+				--self.object:set_acceleration({x=math_random(-1, 1)*self.bomb_inertion*10, y=-10, z=math_random(-1, 1)*self.bomb_inertion*10});
 				--self.bomb_inertion = self.bomb_inertion - 1;
 			end
 		elseif self.bomb_punched ~= nil then
-			self.object:setacceleration( self.bomb_punched );
+			self.object:set_acceleration( self.bomb_punched );
 			self.bomb_punched = nil;
 		elseif self.object:getacceleration() ~= {x=0, y=-10, z=0} then
-			self.object:setacceleration({x=0, y=-10, z=0});
+			self.object:set_acceleration({x=0, y=-10, z=0});
 		end
 	end,
 
 	on_activate = function(self, staticdata, dtime_s)
-		self.object:setvelocity({x=0, y=0, z=0});
-		self.object:setacceleration({x=0, y=-5, z=0});
+		self.object:set_velocity({x=0, y=0, z=0});
+		self.object:set_acceleration({x=0, y=-5, z=0});
 	end,
 
 	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
@@ -124,7 +124,7 @@ minetest.register_craftitem("cobble_bomb:cobblebomb", {
 		pos = vector.add( vector.add(pos, dir), {x=0, y=1, z=0})
 		minetest.sound_play("rolling_test", {pos=pos, gain=1.5, max_hear_distance=20}, true);
 		local tmp_bomb = minetest.add_entity(pos, "cobble_bomb:cobblebomb");
-		tmp_bomb:setvelocity( vector.add(vector.multiply(dir, 5), {x=0,y=2.5,z=0}) );
+		tmp_bomb:set_velocity( vector.add(vector.multiply(dir, 5), {x=0,y=2.5,z=0}) );
 
 		local luaent = tmp_bomb:get_luaentity()
 		if luaent then

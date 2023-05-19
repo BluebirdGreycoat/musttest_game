@@ -4519,8 +4519,10 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	local tmp
 
 	-- quick error check incase it ends up 0 (serialize.h check test)
-	if tflp == 0 then
-		tflp = 0.2
+	if tflp <= 0 then
+		-- This used to be 0.2
+		-- Pretty sure that doesn't make sense.
+		tflp = 0
 	end
 
 	do

@@ -33,6 +33,9 @@ end
 -- fixes that by pre-defining all damage groups used in Enyekala, and setting them
 -- to 100 (means 100% of damage passes through that type of armor, without being
 -- mitigated).
+--
+-- Note: many weapons use a special damage_group, 'knockback', which should NOT
+-- have a corresponding armor group, because it is treated specially.
 function utility.builtin_armor_groups(groups)
 	local tb = {
 		-- Slashing/cutting.

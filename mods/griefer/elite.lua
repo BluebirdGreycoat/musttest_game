@@ -93,7 +93,7 @@ mobs.register_mob("griefer:elite_griefer", {
 		{"default:gold_lump", -10}, -- heals by 10 points
 	},
 	ignore_invisibility = true,
-	knock_back = false,
+	--knock_back = false,
 	--hunt_players = true,
 	hunt_chance = 5,
 	arrow = "griefer:fireball",

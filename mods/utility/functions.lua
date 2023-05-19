@@ -145,22 +145,31 @@ end
 
 
 -- Override Minetest's builtin knockback calculation.
-function minetest.calculate_knockback(player, hitter, time_from_last_punch, tool_capabilities, dir, distance, damage)
-	damage = math.floor(damage / 250)
+-- Warning: 'player' can also be any other entity, including a mob.
+function minetest.calculate_knockback(player, hitter, tflp, tcaps, dir, distance, damage)
+	-- Get knockback value from weapon capabilities.
+	local knockback = (tcaps.damage_groups and tcaps.damage_groups.knockback) or 0
+	tflp = math.min(4.0, math.max(tflp, 0))
 
-	if damage == 0 or player:get_armor_groups().immortal then
+	--minetest.log('knockback: ' .. knockback .. ', tflp: ' .. tflp)
+
+	if knockback <= 0 then
 		return 0.0
 	end
 
-	local m = 8
-	-- solve m - m*e^(k*4) = 4 for k
-	local k = -0.17328
-	local res = m - m * math.exp(k * damage)
+	-- Only on full punch.
+	--if tflp < 4.0 then
+	--	return 0.0
+	--end
+
+	-- Divide by 100 to get meters per second.
+	local res = knockback / 100
 
 	if distance < 2.0 then
 		res = res * 1.1 -- more knockback when closer
 	elseif distance > 4.0 then
 		res = res * 0.9 -- less when far away
 	end
-	return res
+
+	return res * 5 * (tflp / 4)
 end

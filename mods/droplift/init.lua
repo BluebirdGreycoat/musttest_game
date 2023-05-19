@@ -147,7 +147,7 @@ local function append_to_core_defns()
 		if staticdata ~= "" then 
 			if minetest.deserialize(staticdata).is_entombed then
 				ent.is_entombed = true
-				ent.object:setacceleration({x = 0, y = 0, z = 0})  -- Prevents 0.18m reload slippage. Not critical.
+				ent.object:set_acceleration({x = 0, y = 0, z = 0})  -- Prevents 0.18m reload slippage. Not critical.
 				minetest.after(0.1, lift, ent.object)
 			end
 		end

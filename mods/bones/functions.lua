@@ -68,7 +68,7 @@ end
 local drop = function(pos, itemstack)
 	local obj = minetest.add_item(pos, itemstack:take_item(itemstack:get_count()))
 	if obj then
-		obj:setvelocity({
+		obj:set_velocity({
 			x = math_random(-10, 10) / 9,
 			y = 5,
 			z = math_random(-10, 10) / 9,

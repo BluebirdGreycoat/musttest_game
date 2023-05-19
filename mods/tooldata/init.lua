@@ -74,7 +74,7 @@ local SCALE = 500
 
 -- Hammer (usually an anvil-repair tool).
 tooldata["hammer_hammer"] = {
-	full_punch_interval = 1.5,
+	full_punch_interval = 3.5,
 	max_drop_level = 0,
 	groupcaps = {
 		cracky = {times={[3]=3.00}, uses=500, maxlevel=1},
@@ -103,7 +103,7 @@ tooldata["hand_hand"] = {
 
 	-- Note: bypassing sysdmg code due to use of 'minetest.register_item()' for
 	-- the Hand.
-	damage_groups = {fleshy=1*(SCALE/2)},
+	damage_groups = {fleshy=1*(SCALE/2), knockback=100},
 }
 
 --------------------------------------------------------------------------------

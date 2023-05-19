@@ -86,7 +86,7 @@ mobs.register_mob("sheep:sheep", {
             )
 
             if obj then
-                obj:setvelocity({
+                obj:set_velocity({
                     x = math_random(-1, 1),
                     y = 5,
                     z = math_random(-1, 1)

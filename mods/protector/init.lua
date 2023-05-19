@@ -445,7 +445,7 @@ function protector.punish_player(pos, pname)
 				-- drop stack
 				local obj = minetest.add_item(player:get_pos(), sta)
 				if obj then
-					obj:setvelocity({x = math_random(-5, 5), y = 5, z = math_random(-5, 5)})
+					obj:set_velocity({x = math_random(-5, 5), y = 5, z = math_random(-5, 5)})
 				end
 			end)
 

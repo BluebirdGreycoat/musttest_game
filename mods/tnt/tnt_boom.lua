@@ -63,8 +63,8 @@ local function eject_drops(drops, pos, radius)
 				local obj = minetest.add_item(drop_pos, dropitem)
 				if obj then
 					obj:get_luaentity().collect = true
-					obj:setacceleration({x = 0, y = -10, z = 0})
-					obj:setvelocity({x = math_random(-3, 3), y = math_random(0, 10), z = math_random(-3, 3)})
+					obj:set_acceleration({x = 0, y = -10, z = 0})
+					obj:set_velocity({x = math_random(-3, 3), y = math_random(0, 10), z = math_random(-3, 3)})
 					droplift.invoke(obj, math_random(3, 10))
 				end
 
@@ -277,7 +277,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 
 				if do_knockback then
 					local obj_vel = obj:get_velocity()
-					obj:setvelocity(calc_velocity(pos, obj_pos,
+					obj:set_velocity(calc_velocity(pos, obj_pos,
 							obj_vel, radius * 10))
 				end
 

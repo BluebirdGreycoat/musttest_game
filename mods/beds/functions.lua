@@ -554,7 +554,13 @@ function beds.on_respawnplayer(player)
 		--
 		-- Update: no, this allows an exploit to get lots of noob stuff quickly.
 		-- Make them work for their keep!
-		--[[
+		--
+		-- Update #2: I obviously can't read my own code; this only applied if
+		-- player died OUTSIDE the Outback. Putting it back. If you die OUTSIDE the
+		-- outback, of course you should get the initial stuff. Initial stuff is
+		-- only to be withheld from players who die INSIDE the Outback (b/c in that
+		-- case it would be very easy to stack noob items).
+		---[[
 		if rc.current_realm_at_pos(death_pos) ~= "abyss" then
 			give_initial_stuff.give(player)
 		end

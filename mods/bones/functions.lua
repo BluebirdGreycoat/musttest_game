@@ -162,11 +162,13 @@ local function find_suitable_bone_location(pos, player)
 	-- and include liquid/fire/etc nodes that player can die in.
 	if not air then
 		-- If we couldn't find air, fallback to finding a location in these
-		-- substances. Search 1 meter farther than at first.
-		air = minetest.find_node_near(pos, 3, {
+		-- substances. Search several meters farther than at first.
+		air = minetest.find_node_near(pos, 5, {
 			"air",
 			"default:water_source",
 			"default:water_flowing",
+			"cw:water_source",
+			"cw:water_flowing",
 			"default:river_water_source",
 			"default:river_water_flowing",
 			"default:lava_source",

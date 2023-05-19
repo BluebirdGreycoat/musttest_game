@@ -99,6 +99,41 @@ end
 
 
 
+local clear_player_inventory = function(inv, name)
+	local list = inv:get_list(name)
+	-- Nil check.
+	if not list then
+		-- Could not get list, list does not exist.
+		-- This is true in the case of bags.
+		return -- Inventory list doesn't exist.
+	end
+	for i = 1, #list do
+		local stack = list[i]
+		if not stack:is_empty() then
+			if not passport.is_passport(stack:get_name()) then
+				local newstack = ItemStack()
+				list[i] = newstack
+			end
+		end
+	end
+	inv:set_list(name, list)
+end
+
+
+
+local clear_hand_after = function(pname)
+  minetest.after(0, function()
+    local ply = minetest.get_player_by_name(pname)
+    if not ply then return end
+    local inv = ply:get_inventory()
+    if not inv then return end
+    if inv:is_empty("hand") then return end
+    inv:set_list("hand", {}) -- Fixes a bug if the player dies while holding something.
+  end)
+end
+
+
+
 local find_ground = function(pos, player)
 	local p = {x=pos.x, y=pos.y, z=pos.z}
   local count = 0
@@ -171,14 +206,18 @@ local function find_suitable_bone_location(pos, player)
 			"cw:water_flowing",
 			"default:river_water_source",
 			"default:river_water_flowing",
-			"default:lava_source",
 			"default:lava_flowing",
-			"lbrim:lava_source",
 			"lbrim:lava_flowing",
 			"group:gas",
 			"rackstone:nether_grit",
 			"rackstone:void",
 			"fire:basic_flame",
+			"handholds:climbable_air",
+
+			-- Note: these two are excluded due to being solid nodes.
+			-- Don't try to place bones here.
+			--"default:lava_source",
+			--"lbrim:lava_source",
 		})
 	end
 
@@ -291,9 +330,10 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	-- If player died and ought to leave bones because they have stuff in their
 	-- inventory, BUT we cannot actually place bones (no suitable location found),
-	-- then player doesn't lose their items. This is a safety feature since it is
-	-- possible to die in locations where bones cannot physically be placed.
-	-- E.g., player dies in a 1x1 mineshaft occupied by ladder nodes.
+	-- AND PLAYER HAS A BED, then player doesn't lose their items. This is a
+	-- safety feature since it is sometimes possible to die in locations where
+	-- bones cannot physically be placed. E.g., player dies in a 1x1 mineshaft
+	-- occupied by ladder nodes.
 	if bones_mode ~= "bones" then
 		-- Cannot create bones, therefore we don't modify player inventories.
 		minetest.log("action", "Player <" .. pname .. "> died @ " .. minetest.pos_to_string(pos) .. ", but cannot create bones!")
@@ -306,6 +346,36 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 			xp_amount = (xp_amount / 3) * 2
 			xp.set_xp(pname, "digxp", xp_amount)
 			hud_clock.update_xp(pname)
+		end
+
+		-- If player died without a bed, they will return to the Outback when they
+		-- respawn. Since we cannot allow this exploit, there is only one option.
+		-- The inventory must be erased WITHOUT moving the items into bones.
+		if beds.get_respawn_count(pname) == 0 then
+			minetest.log("Player <" .. pname .. "> lost their bones due to dying in solid nodes.")
+
+			clear_player_inventory(player_inv, "main")
+			clear_player_inventory(player_inv, "craft")
+			clear_player_inventory(player_inv, "bag1contents")
+			clear_player_inventory(player_inv, "bag2contents")
+			clear_player_inventory(player_inv, "bag3contents")
+			clear_player_inventory(player_inv, "bag4contents")
+			clear_player_inventory(player_inv, "bag1")
+			clear_player_inventory(player_inv, "bag2")
+			clear_player_inventory(player_inv, "bag3")
+			clear_player_inventory(player_inv, "bag4")
+			clear_player_inventory(player_inv, "armor")
+
+			player_inv:set_list("craftpreview", {})
+			player_inv:set_list("craftresult", {})
+
+			local bags_inv = minetest.get_inventory({type="detached", name=pname .. "_bags"})
+			bags_inv:set_list("bag1", {})
+			bags_inv:set_list("bag2", {})
+			bags_inv:set_list("bag3", {})
+			bags_inv:set_list("bag4", {})
+
+			clear_hand_after(pname)
 		end
 
 		return
@@ -338,15 +408,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	end
 
 	-- The player can die while holding something. Remove it.
-  minetest.after(0.1, function()
-    local ply = minetest.get_player_by_name(pname)
-    if not ply then return end
-    local inv = ply:get_inventory()
-    if not inv then return end
-    if inv:is_empty("hand") then return end
-    inv:set_list("hand", {}) -- Fixes a bug if the player dies while holding something.
-  end)
-
+	clear_hand_after(pname)
 
 	-- Preload map just in case.
 	local minp = vector.add(pos, -16)
@@ -484,16 +546,14 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
   
 	hud_clock.update_xp(pname)
 
-  if bones_mode == "bones" then
-		local print_reason = bones.do_messages(pos, pname, num_stacks)
-		if print_reason then
-			bones.death_reason(pname, reason)
-		end
+	local print_reason = bones.do_messages(pos, pname, num_stacks)
+	if print_reason then
+		bones.death_reason(pname, reason)
+	end
 
-		if minetest.get_node(pos).name == "bones:bones" then
-			minetest.log("action", "Successfully spawned bones @ " .. minetest.pos_to_string(pos) .. "!")
-		end
-  end
+	if minetest.get_node(pos).name == "bones:bones" then
+		minetest.log("action", "Successfully spawned bones @ " .. minetest.pos_to_string(pos) .. "!")
+	end
 
 	-- Check if bones still exist after 1 second.
 	minetest.after(1, function()

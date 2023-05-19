@@ -551,9 +551,14 @@ function beds.on_respawnplayer(player)
 
 		-- If player died in a realm other than the abyss, then give them initial
 		-- stuff upon respawning there.
+		--
+		-- Update: no, this allows an exploit to get lots of noob stuff quickly.
+		-- Make them work for their keep!
+		--[[
 		if rc.current_realm_at_pos(death_pos) ~= "abyss" then
 			give_initial_stuff.give(player)
 		end
+		--]]
 	end
 
 	return true -- Disable regular player placement.

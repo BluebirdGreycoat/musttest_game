@@ -40,7 +40,7 @@ oregen.register_ore({
   ore = "default:lava_source",
   wherein = {"darkage:basaltic"},
   clust_scarcity = 24*24*24,
-  clust_num_ores = 3,
+  clust_num_ores = 1,
   clust_size = 20,
   y_min = ore_min,
   y_max = ore_max,

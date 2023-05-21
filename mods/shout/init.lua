@@ -88,6 +88,8 @@ shout.BUILTIN_HINTS = {
 	"You can use a trade booth to buy and sell items remotely, for shops set up to support it.",
 }
 
+
+
 function shout.hint_add(name, param)
 	name = name:trim()
 	param = param:trim()
@@ -151,6 +153,8 @@ function shout.hint_add(name, param)
 	end
 end
 
+
+
 -- Load any saved hints whenever mod is reloaded or server starts.
 do
 	-- Will store all hints loaded from file.
@@ -185,6 +189,8 @@ do
 		table.insert(shout.HINTS, v)
 	end
 end
+
+
 
 local HINT_DELAY_MIN = 60*45
 local HINT_DELAY_MAX = 60*90
@@ -243,12 +249,17 @@ function shout.shout(name, param)
 end
 
 
+
+-- Get player's current "in-memory" channel name, or nil.
 function shout.player_channel(pname)
 	if shout.players[pname] and shout.players[pname] ~= "" then
 		return shout.players[pname]
 	end
 end
 
+
+
+-- Get list of all players in a channel.
 function shout.channel_players(channel)
 	local players = minetest.get_connected_players()
 	local result = {}
@@ -260,6 +271,8 @@ function shout.channel_players(channel)
 	end
 	return result
 end
+
+
 
 -- Use this only to send server messages to all players in a channel.
 -- This bypasses players' chat filters.
@@ -275,41 +288,67 @@ function shout.notify_channel(channel, message)
 	end
 end
 
--- let player join, leave channels
-function shout.channel(name, param)
-	param = string.trim(param)
 
-	if param == "" then
-		if shout.players[name] then
-			shout.notify_channel(shout.players[name],
-				"# Server: Player <" .. rename.gpn(name) .. "> has left channel '" .. shout.players[name] .. "'.")
-		end
-		minetest.chat_send_player(name, "# Server: Channel cleared.")
-		shout.players[name] = nil
+
+-- let player join, leave channels
+function shout.channel(name, param, on_join, on_leave)
+	param = string.trim(param)
+	local player = minetest.get_player_by_name(name)
+	if not player or not player:is_player() then
 		return
 	end
 
-	if shout.players[name] and shout.players[name] == param then
-		minetest.chat_send_player(name, "# Server: You are already on channel '" .. param .. "'.")
+	if shout.players[name] and shout.players[name] ~= "" and param ~= shout.players[name] then
+		shout.notify_channel(shout.players[name],
+			"# Server: User <" .. rename.gpn(name) .. "> has left channel '" ..
+			shout.players[name] .. "'.")
+	end
+
+	if param == "" then
+		if not on_join then
+			if shout.players[name] then
+				minetest.chat_send_player(name, "# Server: Channel cleared.")
+			else
+				minetest.chat_send_player(name, "# Server: Not on any channel.")
+			end
+		end
+
+		shout.players[name] = nil
+		if not on_leave then
+			player:get_meta():set_string("active_channel", "")
+		end
 		return
+	end
+
+	if not on_join then
+		if shout.players[name] and shout.players[name] == param then
+			minetest.chat_send_player(name,
+				"# Server: Already on channel '" .. param .. "'.")
+			return
+		end
 	end
 
 	-- Require channel names to match specific format.
 	if not string.find(param, "^[_%w]+$") then
-		minetest.chat_send_player(name, "# Server: Invalid channel name! Use only alphanumeric characters and underscores.")
+		minetest.chat_send_player(name,
+			"# Server: Invalid channel name! Use only alphanumeric characters and underscores.")
 		easyvend.sound_error(name)
 		return
 	end
 
-	if shout.players[name] and param ~= shout.players[name] then
-		shout.notify_channel(shout.players[name],
-			"# Server: Player <" .. rename.gpn(name) .. "> has left channel '" .. shout.players[name] .. "'.")
+	-- Only print this if called by explicit chatcommand.
+	if not on_join then
+		minetest.chat_send_player(name, "# Server: Chat channel set to '" .. param .. "'.")
 	end
 
-	minetest.chat_send_player(name, "# Server: Chat channel set to '" .. param .. "'.")
 	shout.players[name] = param
-	shout.notify_channel(shout.players[name], "# Server: Player <" .. rename.gpn(name) .. "> has joined channel '" .. shout.players[name] .. "'.")
+	player:get_meta():set_string("active_channel", param)
+	shout.notify_channel(shout.players[name],
+		"# Server: User <" .. rename.gpn(name) .. "> has joined channel '" ..
+		shout.players[name] .. "'.")
 end
+
+
 
 -- let player put a message onto a channel
 function shout.x(name, param)
@@ -371,10 +410,34 @@ function shout.x(name, param)
 	end
 
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)
-	--chat_logging.log_public_shout(name, param, mk)
+	--chat_logging.log_public_shout(name, param, shout.channelmk)
 
 	chat_logging.log_team_chat(name, stats, param, channel)
 	afk.reset_timeout(name)
+end
+
+
+
+-- Join channel on login, if no channel currently set.
+function shout.join_channel(player)
+	local pname = player:get_player_name()
+	if not shout.player_channel(pname) then
+		local channel = player:get_meta():get_string("active_channel")
+		if channel and channel ~= "" then
+			minetest.after(0, function() shout.channel(pname, channel, true) end)
+		end
+	end
+end
+
+
+
+-- Leave channel on logout, if a channel is currently set.
+function shout.leave_channel(player)
+	local pname = player:get_player_name()
+	local curchan = shout.player_channel(pname)
+	if curchan and curchan ~= "" then
+		shout.channel(pname, "", false, true)
+	end
 end
 
 
@@ -430,6 +493,12 @@ if not shout.run_once then
 	-- Start hints. A hint is written into public chat every so often.
 	-- But not too often, or it becomes annoying.
 	minetest.after(math_random(HINT_DELAY_MIN, HINT_DELAY_MAX), function() shout.print_hint() end)
+
+	minetest.register_on_joinplayer(function(...)
+		return shout.join_channel(...) end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return shout.leave_channel(...) end)
 
 	local c = "shout:core"
 	local f = shout.modpath .. "/init.lua"

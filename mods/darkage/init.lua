@@ -625,7 +625,7 @@ if not darkage.run_once then
 
 	minetest.register_node("darkage:basaltic_rubble", {
 		description = "Basaltic Rubble",
-		tiles = {"darkage_basalt_rubble.png"},
+		tiles = {{name="darkage_basalt_rubble_32x32.png", align_style="world", scale=2}},
 		groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
 

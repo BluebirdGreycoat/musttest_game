@@ -421,7 +421,33 @@ minetest.register_node("cavestuff:glow_worm", {
   -- hanging node group from working properly.
   selection_box = {
     type = "fixed",
-    fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+    fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3},
+  },
+})
+
+minetest.register_node("cavestuff:glow_fungus", {
+  description = "Glow Fungus",
+  tiles = {"caverealms_glow_fungus.png"},
+  inventory_image = "caverealms_glow_fungus.png",
+  wield_image = "caverealms_glow_fungus.png",
+  groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
+  light_source = 5,
+  paramtype = "light",
+  drawtype = "firelike",
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+  walkable = false,
+
+	drop = "",
+	shears_drop = true,
+
+  -- Selection box interferes with hanging node group?
+  -- Making the selection box smaller seems to prevent the
+  -- hanging node group from working properly.
+  selection_box = {
+    type = "fixed",
+    fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
   },
 })
 

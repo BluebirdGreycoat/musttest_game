@@ -17,6 +17,7 @@ local c_melt            = minetest.get_content_id("cavestuff:cobble_with_rockmel
 local c_glow            = minetest.get_content_id("glowstone:cobble")
 local c_obsidian        = minetest.get_content_id("cavestuff:dark_obsidian")
 local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
+local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -492,6 +493,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 			maxy = min(maxy, nend)
 
 			local worm = pr:next(1, 100) < 15
+			local fungus = pr:next(1, 100) < 15
 
 			for y = miny, maxy do
 				local vd = max_area:index(x, y - 1, z)
@@ -550,6 +552,13 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 				if worm then
 					if cp == c_air and cu == c_stone then
 						nid = c_worm
+					end
+				end
+
+				-- Place fungus on floors.
+				if fungus then
+					if cp == c_air and (cd == c_stone or cd == c_cobble) then
+						nid = c_fungus
 					end
 				end
 

@@ -452,6 +452,7 @@ minetest.register_node("default:obsidian", {
 	groups = utility.dig_groups("obsidian", {stone=1}),
   on_blast = function(...) end, -- Blast resistant.
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
+	node_dig_prediction = "",
 
 	-- Callbacks are overridden in flameportal mod!
 	crushing_damage = 5000,
@@ -467,6 +468,7 @@ minetest.register_node("default:obsidianbrick", {
 	groups = utility.dig_groups("brick", {stone=1, brick=1}),
   on_blast = function(...) end, -- Blast resistant.
 	crushing_damage = 5000,
+	node_dig_prediction = "",
 })
 
 minetest.register_node("default:obsidian_block", {
@@ -477,6 +479,7 @@ minetest.register_node("default:obsidian_block", {
 	groups = utility.dig_groups("block", {stone=1, block=1}),
   on_blast = function(...) end, -- Blast resistant.
 	crushing_damage = 5000,
+	node_dig_prediction = "",
 })
 
 --
@@ -1299,6 +1302,20 @@ minetest.register_node("default:diamondblock", {
 	is_ground_content = false,
 	groups = utility.dig_groups("obsidian"),
 	sounds = default.node_sound_stone_defaults(),
+})
+
+-- 'default_adamant.png' texture by 'WintersKnight94', CC0 1.0 Universal
+minetest.register_node("default:adamant", {
+	description = "Adamant",
+	tiles = {"default_adamant.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("obsidian"),
+	sounds = default.node_sound_stone_defaults(),
+	drop = "default:adamant_shard",
+	silverpick_drop = true,
+	light_source = 6,
+	node_dig_prediction = "",
+  on_blast = function(...) end, -- Blast resistant.
 })
 
 --

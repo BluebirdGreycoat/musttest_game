@@ -16,7 +16,8 @@ minetest.register_node("concrete:brc", {
   tiles = {"technic_blast_resistant_concrete_block.png",},
   groups = utility.dig_groups("obsidian"),
   sounds = default.node_sound_stone_defaults(),
-  on_blast = function() end, -- TNT-proof.
+  on_blast = function(...) end, -- TNT-proof.
+	node_dig_prediction = "",
 })
 
 minetest.register_craft({

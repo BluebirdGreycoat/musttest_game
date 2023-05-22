@@ -76,6 +76,13 @@ minetest.register_craftitem("default:diamond", {
 	groups = {gem = 1, crystal = 1},
 })
 
+-- 'default_adamant_shard.png' texture by 'WintersKnight94', CC0 1.0 Universal
+minetest.register_craftitem("default:adamant_shard", {
+	description = "Adamant Shard",
+	inventory_image = "default_adamant_shard.png",
+	groups = {gem = 1, crystal = 1},
+})
+
 minetest.register_craftitem("default:clay_lump", {
 	description = "Clay Lump",
 	inventory_image = "default_clay_lump.png",

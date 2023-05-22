@@ -13,11 +13,14 @@ local c_stone           = minetest.get_content_id("darkage:basaltic")
 local c_cobble          = minetest.get_content_id("darkage:basaltic_rubble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_lava            = minetest.get_content_id("lbrim:lava_source")
+local c_lava2           = minetest.get_content_id("default:lava_source")
 local c_melt            = minetest.get_content_id("cavestuff:cobble_with_rockmelt")
 local c_glow            = minetest.get_content_id("glowstone:cobble")
 local c_obsidian        = minetest.get_content_id("cavestuff:dark_obsidian")
+local c_obsidian2       = minetest.get_content_id("default:obsidian")
 local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
+local c_adamant         = minetest.get_content_id("default:adamant")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -27,11 +30,13 @@ local noisemap1 = {}
 local noisemap3 = {}
 local noisemap4 = {}
 local noisemap5 = {}
+local noisemap6 = {}
 
 local perlin1
 local perlin3
 local perlin4
 local perlin5
+local perlin6
 
 
 
@@ -192,6 +197,19 @@ stoneworld.noise5param3d = {
 	lacunarity = 2.0,
 }
 
+-- Adamantine spires.
+stoneworld.noise6param2d = {
+	-- Applying offset makes the spires rare, without messing with their size,
+	-- as adjusting 'spread' would do.
+	offset = -0.200,
+	scale = 1,
+	spread = {x=128, y=128, z=128},
+	seed = 17355,
+	octaves = 7,
+	persist = 0.5,
+	lacunarity = 1.9,
+}
+
 
 
 --------------------------------------------------------------------------------
@@ -307,6 +325,9 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 	perlin5 = perlin5 or minetest.get_perlin_map(stoneworld.noise5param3d, sides3D)
 	perlin5:get_3d_map_flat(bp3d, noisemap5)
 
+	perlin6 = perlin6 or minetest.get_perlin_map(stoneworld.noise6param2d, sides2D)
+	perlin6:get_2d_map_flat(bp2d, noisemap6)
+
 	-- Localize commonly used functions for speed.
 	local floor = math.floor
 	local ceil = math.ceil
@@ -339,6 +360,11 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 			miny = max(miny, nbeg)
 			maxy = min(maxy, nend)
 
+			-- Get 2D noise values.
+			local n1 = noisemap1[n2d]
+			local n2 = noisemap3[n2d]
+			local n6 = noisemap6[n2d]
+
 			-- Pass through column.
 			for y = miny, maxy do
 				local vp = max_area:index(x, y, z)
@@ -352,10 +378,8 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 					-- Get index into 3D noise arrays.
 					local n3d = min_area:index(x, y, z)
 
-					-- Get noise values.
-					local n1 = noisemap1[n2d]
-					local n2 = noisemap3[n2d]
 					local n3 = noisemap5[n3d]
+					local n4 = noisemap4[n3d]
 
 					-- Carve long winding caves.
 					local caves = stoneworld.caves
@@ -374,7 +398,7 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local cheight = 5 + abs(floor(n1 * 3))
 
 							-- Modify cave height.
-							cheight = cheight + floor(noisemap4[n3d] * 2)
+							cheight = cheight + floor(n4 * 2)
 
 							-- Modifiers for roughening the rounding and making it less predictable.
 							local z1 = abs(floor(n1))
@@ -404,6 +428,10 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 						end
 					end
 
+					-- Adamantine noise-level trigger.
+					local spn = n6 + (n4 / 15)
+					local spire_start = 1.080
+
 					-- Carve caverns.
 					local caverns = stoneworld.caverns
 					for k = 1, #caverns do
@@ -420,6 +448,15 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 							local bot = floor(clevel - 15 + (c2 * 5) + n2 * 6)
 							local top = floor(clevel + 15 + (c1 * 15) + n1 * 6)
 							local lava = (nbeg + yl - 30)
+
+							-- Pinch together floor and ceiling in the vicinity of spires.
+							local shell_start = (spire_start - 0.200)
+							if spn > shell_start then
+								local tpinch = (spn - shell_start) * 50
+								local bpinch = (spn - shell_start) * 70
+								top = top - tpinch
+								bot = bot + bpinch
+							end
 
 							-- If ceiling is far enough up, and bottom is below the lava
 							-- ocean, then we have a chance to spawn a lava fortress here.
@@ -467,6 +504,24 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 					-- Rubble layer between bedrock and basalt.
 					if y <= (nbeg + l1 + l2) or y >= (nend - l1 - l2) then
 						nid = c_cobble
+					end
+
+					-- Adamantine spires.
+					if spn > (spire_start + 0.070) then
+						local m = floor(y + n4 * 6) % 10
+						if m >= 0 and m <= 2 then
+							nid = c_adamant
+						elseif m == 3 then
+							nid = c_lava2
+						else
+							nid = c_air
+						end
+					elseif spn > (spire_start + 0.040) then
+						nid = c_adamant
+					elseif spn > (spire_start + 0.020) then
+						nid = c_obsidian2
+					elseif spn > (spire_start + 0.000) then
+						nid = c_obsidian
 					end
 
 					-- Generate bedrock floor and ceiling. Highest priority.

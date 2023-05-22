@@ -460,6 +460,7 @@ minetest.register_node("cavestuff:glow_obsidian", {
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
+	node_dig_prediction = "",
 
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)
@@ -490,6 +491,7 @@ minetest.register_node("cavestuff:glow_obsidian_brick", {
   }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
+	node_dig_prediction = "",
 })
 
 minetest.register_craft({
@@ -516,6 +518,7 @@ minetest.register_node("cavestuff:glow_obsidian_block", {
   }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
+	node_dig_prediction = "",
 })
 
 minetest.register_craft({
@@ -543,6 +546,7 @@ minetest.register_node("cavestuff:dark_obsidian", {
   }),
   sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
+	node_dig_prediction = "",
 
   on_blast = function(...) end, -- Blast resistant.
 
@@ -571,6 +575,7 @@ minetest.register_node("cavestuff:dark_obsidian_brick", {
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 	crushing_damage = 5000,
+	node_dig_prediction = "",
 })
 
 stairs.register_stair_and_slab(
@@ -588,6 +593,7 @@ minetest.register_node("cavestuff:dark_obsidian_block", {
   sounds = default.node_sound_stone_defaults(),
   on_blast = function(...) end, -- Blast resistant.
 	crushing_damage = 5000,
+	node_dig_prediction = "",
 })
 
 stairs.register_stair_and_slab(

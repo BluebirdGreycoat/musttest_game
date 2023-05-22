@@ -1305,9 +1305,10 @@ minetest.register_node("default:diamondblock", {
 })
 
 -- 'default_adamant.png' texture by 'WintersKnight94', CC0 1.0 Universal
+-- world-align version by MustTest.
 minetest.register_node("default:adamant", {
 	description = "Adamant",
-	tiles = {"default_adamant.png"},
+	tiles = {{name="default_adamant_32x32.png", align_style="world", scale=2}},
 	is_ground_content = false,
 	groups = utility.dig_groups("obsidian"),
 	sounds = default.node_sound_stone_defaults(),

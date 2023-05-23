@@ -52,6 +52,7 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 		punch_start = 40,
 		punch_end = 63,
 	},
+	glow = 5,
 })
 
 

@@ -5373,6 +5373,7 @@ if not mobs.registered then
 			attack_chance           = def.attack_chance or 95,
 			show_health             = def.show_health,
 			_cmi_is_mob             = true,
+			glow                    = def.glow,
 
 			punch_target            = def.punch_target,
 

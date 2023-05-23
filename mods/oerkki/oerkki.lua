@@ -69,6 +69,7 @@ mobs.register_mob("oerkki:oerkki", {
 	immune_to = {
 		{"default:gold_lump", -10}, -- heals by 10 points
 	},
+	glow = 3,
 
 	-- Throw player off things.
 	punch_target = function(self, object, attack)

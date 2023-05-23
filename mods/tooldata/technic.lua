@@ -19,8 +19,8 @@ tech = {
 	charger={power=100, buffer=5000},
 	workshop={power=160, buffer=5000, repair=70},
 
-	distributer_lv={power=50, buffer=1000},
-	distributer_mv={power=100, buffer=5000},
+	distributer_lv={power=200, buffer=2000},
+	distributer_mv={power=600, buffer=6000},
 	distributer_hv={power=1000, buffer=10000},
 
 	-- Buffer size is scaled by number of battery units in the array.

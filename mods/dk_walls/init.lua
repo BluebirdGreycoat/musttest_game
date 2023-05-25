@@ -4,7 +4,7 @@ local register_wall = function(basename)
 	local ndef = minetest.registered_nodes["darkage:" .. basename]
 	if ndef then
 		local image = ndef.tiles[1]
-		if type(image) == "string" then
+		if type(image) == "string" or type(image) == "table" then
 			walls.register(
 				basename,
 				ndef.description,

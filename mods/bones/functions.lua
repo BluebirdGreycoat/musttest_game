@@ -551,21 +551,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		bones.death_reason(pname, reason)
 	end
 
-	if minetest.get_node(pos).name == "bones:bones" then
-		minetest.log("action", "Successfully spawned bones @ " .. minetest.pos_to_string(pos) .. "!")
-	end
-
-	-- Check if bones still exist after 1 second.
-	minetest.after(1, function()
-		local name = minetest.get_node(pos).name
-		if name == "bones:bones" then
-			minetest.log("action", "Bones exist @ " .. minetest.pos_to_string(pos) .. " after 1 second check!")
-		elseif name == "ignore" then
-			minetest.log("action", "Got ignore @ " .. minetest.pos_to_string(pos) .. " after 1 second bone check!")
-		else
-			minetest.log("action", "Got " .. name .. " @ " .. minetest.pos_to_string(pos) .. " after 1 second bone check!")
-		end
-	end)
+	minetest.log("action", "Successfully spawned bones @ " .. minetest.pos_to_string(pos) .. "!")
 end
 
 

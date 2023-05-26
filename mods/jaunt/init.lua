@@ -144,6 +144,12 @@ jaunt.on_receive_fields = function(player, formname, fields)
 
 										-- Pre-teleport callback.
 										pre_teleport_callback = function()
+											-- Abort teleport if player logged off.
+											if not minetest.get_player_by_name(target) then
+												minetest.chat_send_player(pname, "# Server: Lost link to target beacon.")
+												return true -- Abort transport.
+											end
+
 											-- Abort teleport if target player cloaked themselves.
 											if cloaking.is_cloaked(target) then
 												minetest.chat_send_player(pname, "# Server: Lost link to target beacon.")

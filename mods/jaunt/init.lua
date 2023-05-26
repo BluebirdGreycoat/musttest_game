@@ -98,18 +98,35 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							-- if a player is marked, but their beacon is off, then the range at which
 							-- they can be detected is halved
 							local range = tp_range
-							if marked and not beacon then
+
+							if not marked and not beacon then
+								-- Not marked, nametag off.
+								range = range * 0.25
+							elseif marked and not beacon then
+								-- Nametag off, but marked.
 								range = range * 0.5
 							elseif marked and beacon then
+								-- Nametag on and marked.
 								range = range * 1.5
 							end
 
 							local tarpos = other:get_pos()
 							tarpos.y = tarpos.y + 1
 							tarpos = vector_round(tarpos)
+							local total_dist = vector_distance(tarpos, uspos)
 
-							if rc.current_realm_at_pos(tarpos) == rc.current_realm_at_pos(uspos) then
-								if vector_distance(tarpos, uspos) < range then
+							-- Take 1 second per 100 meters traveled.
+							local spinup_time = math.floor(total_dist / 100)
+
+							-- Randomize target position a bit.
+							tarpos.x = tarpos.x + math.random(-1, 1)
+							tarpos.z = tarpos.z + math.random(-1, 1)
+
+							-- Make sure it's air.
+							local finpos = minetest.find_node_near(tarpos, 2, "air", true)
+
+							if finpos and rc.current_realm_at_pos(finpos) == rc.current_realm_at_pos(uspos) then
+								if total_dist < range then
 									-- Alert player that someone's coming to them.
 									local RED = core.get_color_escape_sequence("#ff0000")
 									minetest.chat_send_player(target,
@@ -120,9 +137,10 @@ jaunt.on_receive_fields = function(player, formname, fields)
 									-- Teleport player to chosen location.
 									preload_tp.execute({
 										player_name = pname,
-										target_position = tarpos,
+										target_position = finpos,
 										send_blocks = true,
 										particle_effects = true,
+										spinup_time = spinup_time,
 
 										-- Pre-teleport callback.
 										pre_teleport_callback = function()
@@ -146,10 +164,10 @@ jaunt.on_receive_fields = function(player, formname, fields)
 									minetest.chat_send_player(pname, "# Server: Target Key's signal origin is too weak to accurately triangulate!")
 								end
 							else
-								minetest.chat_send_player(pname, "# Server: Target's Key is not located in this realm!")
+								minetest.chat_send_player(pname, "# Server: Could not detect evidence of a Key's beacon signal.")
 							end
 						else
-							minetest.chat_send_player(pname, "# Server: Target's beacon signal does not originate from an authentic Key device.")
+							minetest.chat_send_player(pname, "# Server: Could not detect evidence of a Key's beacon signal.")
 						end
 					else
 						minetest.chat_send_player(pname, "# Server: Could not detect evidence of a Key's beacon signal.")
@@ -161,7 +179,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 				minetest.chat_send_player(pname, "# Server: Cleverly refusing to scan for your own Key's beacon signal.")
 			end
 		else
-			minetest.chat_send_player(pname, "# Server: Your Key requires access to a proximate teleport to deploy this function.")
+			minetest.chat_send_player(pname, "# Server: Key requires access to proximate teleport to deploy this function.")
 		end
 	end
 

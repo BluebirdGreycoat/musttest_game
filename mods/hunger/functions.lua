@@ -115,13 +115,6 @@ local update_hunger = hunger.update_hunger
 
 
 
--- Hunger only calculated outside city areas.
-local function outside_city(player)
-	return not city_block:in_city(player:get_pos())
-end
-
-
-
 local function get_dig_exhaustion(player)
 	-- Note: this code will skip obtaining the 'hand' tool capabilities whenever
 	-- the player is wielding a non-tool, but since the hand doesn't have a dig
@@ -160,7 +153,7 @@ function hunger.handle_action_event(player, new)
 		exhaus = 0
 		local h = tonumber(hunger.players[pname].lvl)
 
-		if h > 0 and outside_city(player) then
+		if h > 0 then
 			-- Player gets hungrier faster when away from their support base.
 			local loss = -1
 			local owner = protector.get_node_owner(vector_round(player:get_pos())) or ""
@@ -337,7 +330,7 @@ function hunger.on_globalstep(dtime)
 			local tab = hunger.players[name]
 			if tab then
 				local hunger = tab.lvl
-				if hunger > 0 and outside_city(player) then
+				if hunger > 0 then
 					update_hunger(player, hunger - 1)
 				end
 			end

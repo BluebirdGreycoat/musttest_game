@@ -519,30 +519,24 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		end
 	end
 
+	-- Not setting formspec string.
 	-- We use on_rightclick instead.
-	--meta:set_string("formspec", bones_formspec)
 	meta:set_string("owner", pname)
 	meta:set_int("numstacks", num_stacks)
 
 	-- Notify the mapping code it needs to recalculate the mapkit cache.
+	-- Do it on the next server step.
 	minetest.after(0, function()
 		map.clear_inventory_info(pname)
 	end)
 
-	if share_bones_time ~= 0 then
-		meta:set_string("infotext",
-			"Unfortunate <" .. rename.gpn(pname) ..
-			">'s Undecayed Bones\nMineral XP: " .. string.format("%.2f", xp_for_bones) .. "\n" ..
-			"Died On " .. meta:get_string("diedate"))
+	meta:set_string("infotext",
+		"Unfortunate <" .. rename.gpn(pname) ..
+		">'s Undecayed Bones\nMineral XP: " .. string.format("%.2f", xp_for_bones) .. "\n" ..
+		"Died On " .. meta:get_string("diedate"))
 
-		meta:set_int("time", 0)
-		minetest.get_node_timer(pos):start(10)
-	else
-		meta:set_string("infotext",
-			"Unfortunate <" .. rename.gpn(pname) ..
-			">'s Bones\nMineral XP: " .. string.format("%.2f", xp_for_bones) .. "\n" ..
-			"Died On " .. meta:get_string("diedate"))
-	end
+	meta:set_int("time", 0)
+	minetest.get_node_timer(pos):start(10)
   
 	hud_clock.update_xp(pname)
 
@@ -814,11 +808,13 @@ bones.on_timer = function(pos, elapsed)
 		if diedate == "" then
 			diedate = "An Unknown Date"
 		end
+
 		local digxp = string.format("%.2f", meta:get_float("digxp"))
 		meta:set_string("infotext",
 			"Unfortunate <" .. rename.gpn(meta:get_string("owner")) ..
 			">'s Old Bones\nMineral XP: " .. digxp .. "\n" ..
 			"Died On " .. diedate)
+
 		meta:set_string("oldowner", meta:get_string("owner"))
 		meta:set_string("owner", "")
 	else
@@ -860,10 +856,13 @@ bones.on_destruct = function(pos)
 	minetest.after(0, function()
 		minetest.log("action", "Bones @ " .. minetest.pos_to_string(pos) .. " were not empty! Attempting to restore bones.")
 		minetest.set_node(pos, {name="bones:bones", param2=node.param2})
+
 		local meta2 = minetest.get_meta(pos)
 		local inv2 = meta2:get_inventory()
+
 		inv2:set_size("main", 200)
 		inv2:set_list("main", list)
+
 		meta2:set_string("infotext", infotext)
 		meta2:set_string("owner", owner)
 		meta2:set_string("oldowner", oldowner)
@@ -871,9 +870,8 @@ bones.on_destruct = function(pos)
 		meta2:set_int("time", time)
 		meta2:set_float("digxp", digxp)
 		meta2:set_string("diedate", diedate)
-		if time < share_bones_time then
-			minetest.get_node_timer(pos):start(10)
-		end
+
+		minetest.get_node_timer(pos):start(10)
 	end)
 end
 

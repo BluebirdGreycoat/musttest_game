@@ -29,7 +29,7 @@ minetest.register_node("coffee_bush:seeds", {
     dug = {name = "default_grass_footstep", gain = 0.2},
     place = {name = "default_place_node", gain = 0.25},
   }),
-  on_use = minetest.item_eat(4),
+  on_use = minetest.item_eat(1),
 })
 
 
@@ -114,7 +114,7 @@ function(pos, oldnode, oldmetadata, digger)
       minetest.add_item(pos, leftover)
     else
       local inv = digger:get_inventory()
-      local leftover = inv:add_item("main", ItemStack("coffee_bush:seeds " .. math_random(1, 5)))
+      local leftover = inv:add_item("main", ItemStack("coffee_bush:seeds " .. math_random(1, 3)))
       minetest.add_item(pos, leftover)
       
       -- Restore bush. Player did not actually dig it up.

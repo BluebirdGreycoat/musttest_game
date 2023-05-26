@@ -765,6 +765,12 @@ bones.on_timer = function(pos, elapsed)
 	local meta = minetest.get_meta(pos)
 	local time = meta:get_int("time") + elapsed
 	local share_time = share_bones_time
+	local owner = meta:get_string("owner")
+
+	-- Function may have been called twice or more. This prevents an issue.
+	if owner == "" then
+		return
+	end
 
 	-- If bones are in a protected area, they can be shared earlier than normal.
 	if minetest.test_protection(pos, "") then
@@ -777,15 +783,10 @@ bones.on_timer = function(pos, elapsed)
 	end
 
 	if time >= share_time then
-		-- Function may have been called twice or more. This prevents an issue.
-		if meta:get_string("owner") == "" then
-			return
-		end
-
 		-- Bones will NOT decay as long as cheaters are present on the server. This
 		-- prevents cheaters from being able to steal other player's stuff. If the
 		-- player that died is themself a cheater, they don't get this protection.
-		if not sheriff.is_cheater(meta:get_string("owner")) then
+		if not sheriff.is_cheater(owner) then
 			local cheaters_are_present = false
 			local all_players = minetest.get_connected_players()
 
@@ -797,9 +798,8 @@ bones.on_timer = function(pos, elapsed)
 			end
 
 			if cheaters_are_present then
-				local timer = minetest.get_node_timer(pos)
-				timer:start(60*math_random(10, 60))
-				return
+				-- Not updating "time" here, so decay time is effectively paused.
+				return true
 			end
 		end
 
@@ -811,16 +811,17 @@ bones.on_timer = function(pos, elapsed)
 
 		local digxp = string.format("%.2f", meta:get_float("digxp"))
 		meta:set_string("infotext",
-			"Unfortunate <" .. rename.gpn(meta:get_string("owner")) ..
+			"Unfortunate <" .. rename.gpn(owner) ..
 			">'s Old Bones\nMineral XP: " .. digxp .. "\n" ..
 			"Died On " .. diedate)
 
-		meta:set_string("oldowner", meta:get_string("owner"))
+		meta:set_string("oldowner", owner)
 		meta:set_string("owner", "")
-	else
-		meta:set_int("time", time)
-		return true
+		return
 	end
+
+	meta:set_int("time", time)
+	return true
 end
 
 

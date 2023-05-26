@@ -1,4 +1,7 @@
 
+local FARMING_DEFTIME_MIN = 60*10
+local FARMING_DEFTIME_MAX = 60*15
+
 -- Localize for performance.
 local math_random = math.random
 
@@ -237,8 +240,8 @@ end
 local function tick(pos, def)
 	local mult = tick_multiplier(pos, def)
 
-	local min = (def.farming_growing_time_min or 200) * mult
-	local max = (def.farming_growing_time_max or 350) * mult
+	local min = (def.farming_growing_time_min or FARMING_DEFTIME_MIN) * mult
+	local max = (def.farming_growing_time_max or FARMING_DEFTIME_MAX) * mult
 
 	local time = math_random(min, max)
   minetest.get_node_timer(pos):start(time)

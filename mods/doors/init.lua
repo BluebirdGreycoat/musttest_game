@@ -35,7 +35,10 @@ function doors.get(pos)
 			state = function(self)
 				local state = minetest.get_meta(self.pos):get_int("state")
 				return state %2 == 1
-			end
+			end,
+			owner = function(self)
+				return minetest.get_meta(self.pos):get_string("doors_owner")
+			end,
 		}
 	elseif _doors.registered_trapdoors[node_name] then
 		-- A trapdoor
@@ -58,7 +61,10 @@ function doors.get(pos)
 			end,
 			state = function(self)
 				return minetest.get_node(self.pos).name:sub(-5) == "_open"
-			end
+			end,
+			owner = function(self)
+				return minetest.get_meta(self.pos):get_string("doors_owner")
+			end,
 		}
 	else
 		return nil

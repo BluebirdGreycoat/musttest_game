@@ -57,7 +57,7 @@ key.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 				idata = {}
 				idesc = ""
 			end
-			if #idata >= 18 then -- Fit 18 keys exactly. >= determined by testing. Darn Lua arrays >:|
+			if #idata >= 128 then -- Fit 128 keys exactly. >= determined by testing. Darn Lua arrays >:|
 				-- Just copy data to new itemstack without adding the key secret.
 				minetest.chat_send_player(pname, "# Server: Keychain is stuffed! No more keys can fit.")
 				itemstack:get_meta():from_table(chain_original:get_meta():to_table())

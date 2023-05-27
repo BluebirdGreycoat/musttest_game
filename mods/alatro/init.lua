@@ -2,7 +2,7 @@
 minetest.register_node("alatro:ore", {
   description = "Alatro Ore",
   tiles = {"default_stone.png^gloopores_mineral_alatro.png"},
-  groups = utility.dig_groups("mineral", {ore=1}),
+  groups = utility.dig_groups("hardmineral", {ore=1}),
   drop = "alatro:lump",
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),

@@ -2,7 +2,7 @@
 minetest.register_node("akalin:ore", {
   description = "Akalin Ore",
   tiles = {"default_stone.png^gloopores_mineral_akalin.png"},
-  groups = utility.dig_groups("mineral", {ore = 1}),
+  groups = utility.dig_groups("hardmineral", {ore = 1}),
   drop = "akalin:lump",
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),

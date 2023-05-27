@@ -7,6 +7,7 @@ if not minetest.global_exists("screwdriver") then screwdriver = {} end
 local math_random = math.random
 
 local function door_toggle(pos_actuator, pos_door, player)
+	local pname = player:get_player_name()
 	local actuator = minetest.get_node(pos_actuator)
 	local door = doors.get(pos_door)
 
@@ -14,14 +15,14 @@ local function door_toggle(pos_actuator, pos_door, player)
 		minetest.add_node(pos_actuator,
 			{name=actuator.name:gsub("_off", "_on"), param2=actuator.param2})
 	end
-	door:open(player)
+	door:open(pname)
 
 	minetest.after(2, function()
 		if minetest.get_node(pos_actuator).name:sub(-3) == "_on" then
 			minetest.add_node(pos_actuator,
 				{name=actuator.name, param2=actuator.param2})
 		end
-		door:close(player)
+		door:close(pname)
 	end)
 end
 

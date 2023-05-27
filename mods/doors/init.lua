@@ -17,20 +17,20 @@ function doors.get(pos)
 		-- A normal upright door
 		return {
 			pos = pos,
-			open = function(self, player)
+			open = function(self, pname)
 				if self:state() then
 					return false
 				end
-				return _doors.door_toggle(self.pos, nil, player)
+				return _doors.door_toggle(self.pos, nil, pname)
 			end,
-			close = function(self, player)
+			close = function(self, pname)
 				if not self:state() then
 					return false
 				end
-				return _doors.door_toggle(self.pos, nil, player)
+				return _doors.door_toggle(self.pos, nil, pname)
 			end,
-			toggle = function(self, player)
-				return _doors.door_toggle(self.pos, nil, player)
+			toggle = function(self, pname)
+				return _doors.door_toggle(self.pos, nil, pname)
 			end,
 			state = function(self)
 				local state = minetest.get_meta(self.pos):get_int("state")
@@ -41,20 +41,20 @@ function doors.get(pos)
 		-- A trapdoor
 		return {
 			pos = pos,
-			open = function(self, player)
+			open = function(self, pname)
 				if self:state() then
 					return false
 				end
-				return _doors.trapdoor_toggle(self.pos, nil, player)
+				return _doors.trapdoor_toggle(self.pos, nil, pname)
 			end,
-			close = function(self, player)
+			close = function(self, pname)
 				if not self:state() then
 					return false
 				end
-				return _doors.trapdoor_toggle(self.pos, nil, player)
+				return _doors.trapdoor_toggle(self.pos, nil, pname)
 			end,
-			toggle = function(self, player)
-				return _doors.trapdoor_toggle(self.pos, nil, player)
+			toggle = function(self, pname)
+				return _doors.trapdoor_toggle(self.pos, nil, pname)
 			end,
 			state = function(self)
 				return minetest.get_node(self.pos).name:sub(-5) == "_open"
@@ -171,7 +171,7 @@ end
 
 
 -- The OFFICIAL door toggle function.
-function _doors.door_toggle(pos, node, clicker)
+function _doors.door_toggle(pos, node, clickername)
 	local meta = minetest.get_meta(pos)
 	node = node or minetest.get_node(pos)
 	local def = minetest.reg_ns_nodes[node.name]
@@ -189,11 +189,13 @@ function _doors.door_toggle(pos, node, clicker)
 		state = tonumber(state)
 	end
 
-  if clicker and not minetest.check_player_privs(clicker, "protection_bypass") then
+  if not minetest.check_player_privs(clickername, "protection_bypass") then
     -- is player wielding the right key?
-    local item = clicker:get_wielded_item()
+    local clicker = minetest.get_player_by_name(clickername)
+    local item = clicker and clicker:get_wielded_item()
     local owner = meta:get_string("doors_owner")
-    if item:get_name() == "key:key" or item:get_name() == "key:chain" then
+
+    if (clicker and item) and (item:get_name() == "key:key" or item:get_name() == "key:chain") then
       local key_meta = item:get_meta()
       local secret = meta:get_string("key_lock_secret")
 
@@ -209,13 +211,13 @@ function _doors.door_toggle(pos, node, clicker)
       end
 
       if secret ~= key_meta:get_string("secret") then
-        minetest.chat_send_player(clicker:get_player_name(), "# Server: Key does not fit lock!")
+        minetest.chat_send_player(clickername, "# Server: Key does not fit lock!")
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
         return false
       end
 
     elseif owner ~= "" then
-      if clicker:get_player_name() ~= owner then
+      if clickername ~= owner then
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
         return false
       end
@@ -422,7 +424,9 @@ function doors.register(name, def)
 	}
 
 	def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		_doors.door_toggle(pos, node, clicker)
+		if clicker then
+			_doors.door_toggle(pos, node, clicker:get_player_name())
+		end
 		return itemstack
 	end
 	def.after_dig_node = function(pos, node, meta, digger)
@@ -539,15 +543,17 @@ end
 
 ----trapdoor----
 
-function _doors.trapdoor_toggle(pos, node, clicker)
+function _doors.trapdoor_toggle(pos, node, clickername)
 	node = node or minetest.get_node(pos)
 	local meta = minetest.get_meta(pos)
 
-	if clicker and not minetest.check_player_privs(clicker, "protection_bypass") then
+	if not minetest.check_player_privs(clickername, "protection_bypass") then
 		-- is player wielding the right key?
-		local item = clicker:get_wielded_item()
+		local clicker = minetest.get_player_by_name(clickername)
+		local item = clicker and clicker:get_wielded_item()
 		local owner = meta:get_string("doors_owner")
-		if item:get_name() == "key:key" or item:get_name() == "key:chain" then
+
+		if (clicker and item) and (item:get_name() == "key:key" or item:get_name() == "key:chain") then
 			local key_meta = item:get_meta()
 			local secret = meta:get_string("key_lock_secret")
 
@@ -563,13 +569,13 @@ function _doors.trapdoor_toggle(pos, node, clicker)
 			end
 
 			if secret ~= key_meta:get_string("secret") then
-				minetest.chat_send_player(clicker:get_player_name(), "# Server: Key does not fit lock!")
+				minetest.chat_send_player(clickername, "# Server: Key does not fit lock!")
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
 				return false
 			end
 
 		elseif owner ~= "" then
-			if clicker:get_player_name() ~= owner then
+			if clickername ~= owner then
 				ambiance.sound_play("doors_locked", pos, 1.0, 20)
 				return false
 			end
@@ -621,7 +627,9 @@ function doors.register_trapdoor(name, def)
 	local name_opened = name.."_open"
 
 	def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		_doors.trapdoor_toggle(pos, node, clicker)
+		if clicker then
+			_doors.trapdoor_toggle(pos, node, clicker:get_player_name())
+		end
 		return itemstack
 	end
 
@@ -797,7 +805,9 @@ function doors.register_trapdoor_climbable(name, def)
 	def.description = def.description .. " With Ladder"
 
 	def.on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		_doors.trapdoor_toggle(pos, node, clicker)
+		if clicker then
+			_doors.trapdoor_toggle(pos, node, clicker:get_player_name())
+		end
 		return itemstack
 	end
 

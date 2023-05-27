@@ -249,6 +249,19 @@ protector.get_node_owner = function(pos)
 	end
 end
 
+-- Shall return true if 'pname' is owner or member of protected area.
+protector.is_owner_or_member = function(pos, pname)
+	local r = protector.radius
+	local positions = protector.find_protector_nodes(pos, r, 1, "")
+	for n = 1, #positions do
+		local meta = minetest.get_meta(positions[n])
+		local owner = meta:get_string("owner")
+		if owner == pname or protector.is_member(meta, pname) then
+			return true
+		end
+	end
+end
+
 -- This is called by the node inspector tool to toggle display entities for buried protectors.
 protector.toggle_protector_entities_in_area = function(pname, pos)
 	local r = protector.radius

@@ -11,18 +11,32 @@ local function door_toggle(pos_actuator, pos_door, player)
 	local actuator = minetest.get_node(pos_actuator)
 	local door = doors.get(pos_door)
 
+	local door_owner = doors:owner()
+	local name_to_use = pname
+
+	-- If door has owner, and player is on the protection, then allow player to
+	-- use this lever to open the door.
+	--
+	-- Note: if you want to give someone access to a door without adding them to
+	-- the protection, you need to use keys/keychains!
+	if door_owner ~= "" and door_owner ~= name_to_use then
+		if protector.is_owner_or_member(pos_door, pname) then
+			name_to_use = door_owner
+		end
+	end
+
 	if actuator.name:sub(-4) == "_off" then
 		minetest.add_node(pos_actuator,
 			{name=actuator.name:gsub("_off", "_on"), param2=actuator.param2})
 	end
-	door:open(pname)
+	door:open(name_to_use)
 
 	minetest.after(2, function()
 		if minetest.get_node(pos_actuator).name:sub(-3) == "_on" then
 			minetest.add_node(pos_actuator,
 				{name=actuator.name, param2=actuator.param2})
 		end
-		door:close(pname)
+		door:close(name_to_use)
 	end)
 end
 

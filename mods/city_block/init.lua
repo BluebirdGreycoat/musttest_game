@@ -20,6 +20,16 @@ local vector_add = vector.add
 local vector_equals = vector.equals
 local math_random = math.random
 
+-- Cityblocks take 6 hours to become "active".
+-- This prevents certain classes of exploits (such as using them offensively
+-- during PvP). This also strongly discourages constantly moving them around
+-- for trivial reasons.
+local CITYBLOCK_DELAY_TIME = 60*60*6
+
+local function time_active(t1, t2)
+	return (math.abs(t2 - t1) > CITYBLOCK_DELAY_TIME)
+end
+
 
 
 function city_block.delete_blocks_from_area(minp, maxp)
@@ -105,17 +115,23 @@ function city_block:nearest_blocks_to_position(pos, num, rangelim)
 	-- Only copy over blocks in the same realm, too.
 	local blocks = {}
 	local sblocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #sblocks, 1 do
 		local p = sblocks[i].pos
-		if rangelim then
-			if vector_distance(p, pos) < rangelim then
+		local t1 = sblocks[i].time or 0
+
+		if time_active(t1, t2) then
+			if rangelim then
+				if vector_distance(p, pos) < rangelim then
+					if get_rn(p) == realm then
+						blocks[#blocks+1] = sblocks[i]
+					end
+				end
+			else
 				if get_rn(p) == realm then
 					blocks[#blocks+1] = sblocks[i]
 				end
-			end
-		else
-			if get_rn(p) == realm then
-				blocks[#blocks+1] = sblocks[i]
 			end
 		end
 	end
@@ -149,10 +165,14 @@ function city_block:nearest_jails_to_position(pos, num, rangelim)
 	-- Only copy over blocks in the same realm, too.
 	local blocks = {}
 	local sblocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #sblocks, 1 do
 		local v = sblocks[i]
 		local p = v.pos
-		if v.is_jail then
+		local t1 = v.time or 0
+
+		if v.is_jail and time_active(t1, t2) then
 			if rangelim then
 				if vector_distance(p, pos) < rangelim then
 					if get_rn(p) == realm then
@@ -200,13 +220,19 @@ function city_block:nearest_named_region(pos, owner)
 	-- Only copy over blocks in the same realm, too.
 	local blocks = {}
 	local sblocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #sblocks, 1 do
 		local b = sblocks[i]
 		local p = b.pos
-		if b.area_name and vector_distance(p, pos) < 100 and
-				(not owner or owner == "" or b.owner == owner) then
-			if get_rn(p) == realm then
-				blocks[#blocks+1] = sblocks[i]
+		local t1 = b.time or 0
+
+		if time_active(t1, t2) then
+			if b.area_name and vector_distance(p, pos) < 100 and
+					(not owner or owner == "" or b.owner == owner) then
+				if get_rn(p) == realm then
+					blocks[#blocks+1] = sblocks[i]
+				end
 			end
 		end
 	end
@@ -301,13 +327,19 @@ function city_block:in_city(pos)
 	-- Covers a 45x45x45 area.
 	local r = 22
 	local blocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
-			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-			return true
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
 		end
 	end
 	return false
@@ -317,13 +349,19 @@ function city_block:in_city_suburbs(pos)
 	pos = vector_round(pos)
 	local r = 44
 	local blocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
-			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-			return true
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
 		end
 	end
 	return false
@@ -334,13 +372,19 @@ function city_block:in_safebed_zone(pos)
 	pos = vector_round(pos)
 	local r = 55
 	local blocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
-			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-			return true
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
 		end
 	end
 	return false
@@ -350,13 +394,19 @@ function city_block:in_no_tnt_zone(pos)
 	pos = vector_round(pos)
 	local r = 50
 	local blocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
-			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-			return true
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
 		end
 	end
 	return false
@@ -366,13 +416,19 @@ function city_block:in_no_leecher_zone(pos)
 	pos = vector_round(pos)
 	local r = 100
 	local blocks = self.blocks
+	local t2 = os.time()
+
 	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
 		local v = blocks[i]
 		local vpos = v.pos
-		if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
-			 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
-			 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-			return true
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
 		end
 	end
 	return false

@@ -11,7 +11,7 @@ local function door_toggle(pos_actuator, pos_door, player)
 	local actuator = minetest.get_node(pos_actuator)
 	local door = doors.get(pos_door)
 
-	local door_owner = doors:owner()
+	local door_owner = door:owner()
 	local name_to_use = pname
 
 	-- If door has owner, and player is on the protection, then allow player to

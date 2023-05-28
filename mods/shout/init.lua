@@ -385,11 +385,7 @@ function shout.x(name, param)
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
 	if chat_core.check_language(name, param, channel) then return end
 
-	local mk = ""
-	if command_tokens.mark.player_marked(name) then
-		local pos = minetest.get_player_by_name(name):get_pos()
-		mk = " [" .. math_floor(pos.x) .. "," .. math_floor(pos.y) .. "," .. math_floor(pos.z) .. "]"
-	end
+	local mk = chat_core.generate_coord_string(name)
 
 	-- Send message to all players in the same channel.
 	-- The player who sent the message always receives it.

@@ -105,6 +105,7 @@ minetest.register_node("lattice:obsidian_glass_pane", {
 	inventory_image = "default_obsidian_glass.png",
 	wield_image = "default_obsidian_glass.png",
 	paramtype2 = "facedir",
+	node_dig_prediction = "",
 
 	-- Use `default:obsidian_glass` movement if in flat position.
 	movement_speed_depends = "default:obsidian_glass",
@@ -149,6 +150,7 @@ minetest.register_node("lattice:wrought_iron", {
 	inventory_image = "doors_trapdoor_iron.png",
 	wield_image = "doors_trapdoor_iron.png",
 	paramtype2 = "facedir",
+	node_dig_prediction = "",
 
 	-- Use `default:steelblock` movement if in flat position.
 	movement_speed_depends = "default:steelblock",

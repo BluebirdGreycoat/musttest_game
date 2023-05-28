@@ -69,7 +69,9 @@ local old_register_node = minetest.register_node;
 local function register_node(name, def2)
 	local def = table.copy(def2)
 
+	-- Make sure groups table exists (even if its empty).
 	if not def.groups then def.groups = {} end
+
 	if not def.groups.fall_damage_add_percent then
 		def.groups.fall_damage_add_percent = 30
 	end
@@ -77,6 +79,11 @@ local function register_node(name, def2)
 	-- Any nodes dealing env damage get added to the 'env_damage' group.
 	if def.damage_per_second ~= 0 then
 		def.groups.env_damage = 1
+	end
+
+	-- Any airlike drawtype nodes get added to the 'airlike' group.
+	if def.drawtype == "airlike" then
+		def.groups.airlike = 1
 	end
 
 	if not def.movement_speed_multiplier then

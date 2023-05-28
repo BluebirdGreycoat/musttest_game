@@ -36,45 +36,74 @@ local THROWING_ARROW_ENTITY={
 	visual = "wielditem",
 	visual_size = {x=0.1, y=0.1},
 	textures = {"throwing:arrow_teleport_box"},
-	lastpos={},
+	lastpos = {},
 	collisionbox = {0,0,0,0,0,0},
 	player = "",
 }
 
+local air_nodes = {"air", "group:airlike"}
+
 THROWING_ARROW_ENTITY.on_step = function(self, dtime)
-	self.timer=self.timer+dtime
+	self.timer = self.timer + dtime
 	local pos = self.object:get_pos()
-	local node = minetest.get_node(pos)
-	if not self.player then
+	local rpos = vector.round(pos)
+	local node = minetest.get_node(rpos)
+
+	-- Player may have logged off after firing the arrow.
+	if not self.player_name then
 		self.object:remove()
+		return
 	end
 
-	if self.timer>0.2 then
-		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
+	local player = minetest.get_player_by_name(self.player_name)
+
+	if not player then
+		self.object:remove()
+		return
+	end
+
+	-- Collide with entities.
+	if self.timer > 0.2 then
+		local objs = minetest.get_objects_inside_radius({x=pos.x, y=pos.y, z=pos.z}, 2)
+
 		for k, obj in pairs(objs) do
 			if obj:get_luaentity() ~= nil then
 				local oname = obj:get_luaentity().name
+
 				if not throwing.entity_blocks_arrow(oname) then
-					self.object:remove()
-					if self.player ~= "" then
-						self.player:set_pos(pos)
-						self.player:get_inventory():add_item("main", ItemStack("default:stick 2"))
+
+					-- Do not TP player unless we find air.
+					local tpos = minetest.find_node_near(rpos, 1, air_nodes, true)
+					if tpos then
+						player:set_pos(tpos)
 					end
+
+					self.object:remove()
+					return
 				end
 			end
 		end
 	end
 
-	if self.lastpos.x~=nil then
-		if throwing_node_should_block_arrow(node.name) then
-			self.object:remove()
-			if self.player ~= "" then
-				self.player:set_pos(self.lastpos)
-				self.player:get_inventory():add_item("main", ItemStack("default:stick 2"))
+	-- Collide with nodes.
+	-- (Note: 'lastpos' table is never nil because it is part of entity definition.)
+	if self.lastpos.x ~= nil then
+		local prevnode = minetest.get_node(vector.round(self.lastpos))
+		if not throwing_node_should_block_arrow(prevnode.name) then
+			if throwing_node_should_block_arrow(node.name) then
+
+				local tpos = minetest.find_node_near(vector.round(self.lastpos), 1, air_nodes, true)
+				if tpos then
+					player:set_pos(tpos)
+				end
+
+				self.object:remove()
+				return
 			end
 		end
 	end
-	self.lastpos={x=pos.x, y=pos.y, z=pos.z}
+
+	self.lastpos = {x=pos.x, y=pos.y, z=pos.z}
 end
 
 minetest.register_entity("throwing:arrow_teleport_entity", THROWING_ARROW_ENTITY)

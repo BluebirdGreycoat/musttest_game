@@ -104,6 +104,32 @@ function rockdrill.is_blastable(name)
 	return true
 end
 
+local function effect(pos, amount, texture, min_size, max_size, radius, gravity, glow)
+
+	radius = radius or 2
+	min_size = min_size or 2.0
+	max_size = max_size or 6.0
+	gravity = gravity or -10
+	glow = glow or 0
+
+	minetest.add_particlespawner({
+		amount = amount,
+		time = 0.25,
+		minpos = pos,
+		maxpos = pos,
+		minvel = {x = -radius, y = -radius, z = -radius},
+		maxvel = {x = radius, y = radius, z = radius},
+		minacc = {x = 0, y = gravity, z = 0},
+		maxacc = {x = 0, y = gravity, z = 0},
+		minexptime = 0.1,
+		maxexptime = 1,
+		minsize = min_size,
+		maxsize = max_size,
+		texture = texture,
+		glow = glow,
+	})
+end
+
 function rockdrill.handle_node_drops(pos, user)
 	---[[
 	local node = minetest.get_node(pos)
@@ -136,6 +162,10 @@ function rockdrill.handle_node_drops(pos, user)
 			}
 			minetest.add_item(p, remain)
 		end
+	end
+
+	if math.random(1, 5) == 1 then
+		effect(pos, math_random(2, 5), "tnt_smoke.png")
 	end
 	minetest.remove_node(pos)
 	--]]

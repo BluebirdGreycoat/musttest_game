@@ -1310,13 +1310,13 @@ minetest.register_node("default:adamant", {
 	description = "Adamant",
 	tiles = {{name="default_adamant_32x32.png", align_style="world", scale=2}},
 	is_ground_content = false,
-	groups = utility.dig_groups("obsidian"),
+	groups = {}, -- No valid digging groups for this node.
 	sounds = default.node_sound_stone_defaults(),
 	drop = "default:adamant_shard",
 	silverpick_drop = true,
 	light_source = 6,
 	node_dig_prediction = "",
-  on_blast = function(...) end, -- Blast resistant.
+	-- Note: NOT blast resistant. May be TNT mined.
 })
 
 --

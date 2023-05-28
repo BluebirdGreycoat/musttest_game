@@ -59,7 +59,8 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if arrow == "" then return end
   
 	local playerpos = utility.get_foot_pos(player:get_pos())
-	local obj = minetest.add_entity({x=playerpos.x, y=playerpos.y+1.4, z=playerpos.z}, arrow)
+	local spawnpos = {x=playerpos.x, y=playerpos.y+1.4, z=playerpos.z}
+	local obj = minetest.add_entity(spawnpos, arrow)
   if not obj then return end
 
 	local luaent = obj:get_luaentity()
@@ -85,6 +86,7 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   luaent.player_name = pname
 	luaent.inventory = player:get_inventory()
 	luaent.stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
+	luaent.lastpos = table.copy(spawnpos)
 
 	-- Firing anything disables your cloak.
 	cloaking.disable_if_enabled(pname, true)

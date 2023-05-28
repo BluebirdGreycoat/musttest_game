@@ -46,8 +46,6 @@ local air_nodes = {"air", "group:airlike"}
 THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 	self.timer = self.timer + dtime
 	local pos = self.object:get_pos()
-	local rpos = vector.round(pos)
-	local node = minetest.get_node(rpos)
 
 	-- Player may have logged off after firing the arrow.
 	if not self.player_name then
@@ -62,43 +60,38 @@ THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		return
 	end
 
-	-- Collide with entities.
-	if self.timer > 0.2 then
-		local objs = minetest.get_objects_inside_radius({x=pos.x, y=pos.y, z=pos.z}, 2)
+	-- Raycast collisions with nodes. Ignore entities, they're not really useful.
+	-- (Note: 'lastpos' table is never nil because it is part of entity definition.
+	-- This is why test is against 'x' key here.)
+	--
+	-- Update: arrow throwing function now always sets 'lastpos' when the arrow
+	-- entity is spawned (to solve problems where the arrow has moved some distance
+	-- before the 'on_step' function gets called). Still checking this to avoid
+	-- problems with old arrow entities in the world.
+	if self.lastpos.x ~= nil then
+		local ray = minetest.raycast(self.lastpos, pos, false, true)
 
-		for k, obj in pairs(objs) do
-			if obj:get_luaentity() ~= nil then
-				local oname = obj:get_luaentity().name
+		for thing in ray do
+			if thing.type == "node" then
+				local nodeu = minetest.get_node(thing.under)
+				local nodea = minetest.get_node(thing.above)
 
-				if not throwing.entity_blocks_arrow(oname) then
+				local blocku = throwing_node_should_block_arrow(nodeu.name)
+				local blocka = throwing_node_should_block_arrow(nodea.name)
 
-					-- Do not TP player unless we find air.
-					local tpos = minetest.find_node_near(rpos, 1, air_nodes, true)
+				if not blocka and blocku then
+					local tpos = minetest.find_node_near(thing.above, 1, air_nodes, true)
 					if tpos then
 						player:set_pos(tpos)
 					end
 
 					self.object:remove()
 					return
+				elseif (blocka and blocku) or (blocka and not blocku) then
+					-- Arrow was fired from inside solid nodes.
+					self.object:remove()
+					return
 				end
-			end
-		end
-	end
-
-	-- Collide with nodes.
-	-- (Note: 'lastpos' table is never nil because it is part of entity definition.)
-	if self.lastpos.x ~= nil then
-		local prevnode = minetest.get_node(vector.round(self.lastpos))
-		if not throwing_node_should_block_arrow(prevnode.name) then
-			if throwing_node_should_block_arrow(node.name) then
-
-				local tpos = minetest.find_node_near(vector.round(self.lastpos), 1, air_nodes, true)
-				if tpos then
-					player:set_pos(tpos)
-				end
-
-				self.object:remove()
-				return
 			end
 		end
 	end

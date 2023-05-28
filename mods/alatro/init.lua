@@ -110,6 +110,7 @@ minetest.register_node("alatro:glass", {
   groups = utility.dig_groups("glass"),
   sounds = default.node_sound_glass_defaults(),
 	silverpick_drop = true,
+	node_dig_prediction = "",
 
 	drop = {
 		max_items = 2,

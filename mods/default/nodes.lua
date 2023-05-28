@@ -2533,6 +2533,7 @@ minetest.register_node("default:obsidian_glass", {
 	groups = utility.dig_groups("glass", {glass=1}),
 	drop = "default:obsidian_shard",
 	silverpick_drop = true,
+	node_dig_prediction = "",
 })
 
 

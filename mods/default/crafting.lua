@@ -372,7 +372,7 @@ minetest.register_craft({
 
 minetest.register_craft({
   type = "anvil",
-	output = 'default:obsidian_shard 9',
+	output = 'default:obsidian_shard 4',
 	recipe = 'default:obsidian',
 })
 

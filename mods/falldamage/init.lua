@@ -86,6 +86,14 @@ local function register_node(name, def2)
 		def.groups.airlike = 1
 	end
 
+	-- Any nodes with "brick" or "block" in the name have dig prediction disabled.
+	-- This makes them "glitch proof" to normal clients.
+	if name:find("brick$") or name:find("block$") then
+		if not def.node_dig_prediction then
+			def.node_dig_prediction = ""
+		end
+	end
+
 	if not def.movement_speed_multiplier then
 		if def.drawtype == "nodebox" or def.drawtype == "mesh" then
 			if not string.find(name, "^vines:") then

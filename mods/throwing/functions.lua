@@ -47,6 +47,40 @@ minetest.register_on_leaveplayer(function(player)
 	players[playerName] = nil
 end)
 
+-- This function copied and translated from C++, from one of my C++ projects.
+local function rotate_point_2d(p, r)
+	local x = p.x
+	local y = p.y
+
+	-- Rotate.
+	local s = math.sin(r)
+	local c = math.cos(r)
+
+	-- Temp vars required to avoid clobbering the equation.
+	-- This mistake caused me quite a bit of wasted time!
+	local nx = x*c - y*s
+	local ny = x*s + y*c
+
+	x = nx
+	y = ny
+
+	return {x=x, y=y}
+end
+
+local function get_shoot_position(player)
+	local yaw = player:get_look_horizontal()
+	local pos = player:get_pos()
+
+	local off = {x=0.24, y=0}
+	--local off = {x=0, y=0}
+	off = rotate_point_2d(off, yaw)
+
+	pos.x = pos.x + off.x
+	pos.y = pos.y + 1.3
+	pos.z = pos.z + off.y
+	return pos
+end
+
 function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if not player or not player:is_player() then return end
   local pname = player:get_player_name()
@@ -58,8 +92,8 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	end
   if arrow == "" then return end
   
-	local playerpos = utility.get_foot_pos(player:get_pos())
-	local spawnpos = {x=playerpos.x, y=playerpos.y+1.4, z=playerpos.z}
+	local playerpos = player:get_pos()
+	local spawnpos = get_shoot_position(player)
 	local obj = minetest.add_entity(spawnpos, arrow)
   if not obj then return end
 
@@ -93,6 +127,27 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 
 	-- Return the modified itemstack.
 	return itemstack
+end
+
+
+
+function throwing.flight_particle(pos)
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 0.1,
+		minpos = pos,
+		maxpos = pos,
+		minvel = {x=-0.1, y=-0.1, z=-0.1},
+		maxvel = {x=0.1,  y=0.1,  z=0.1},
+		minacc = vector.new(),
+		maxacc = vector.new(),
+		minexptime = 1.5,
+		maxexptime = 1.5,
+		minsize = 0.5,
+		maxsize = 1,
+		texture = "throwing_sparkle.png",
+		glow = 8,
+	})
 end
 
 
@@ -178,6 +233,12 @@ function throwing.do_fly(self, dtime)
 	end
 
 	self.lastpos = {x=cpos.x, y=cpos.y, z=cpos.z}
+
+	if self.flight_particle then
+		self:flight_particle(cpos)
+	else
+		throwing.flight_particle(cpos)
+	end
 end
 
 

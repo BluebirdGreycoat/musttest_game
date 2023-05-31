@@ -65,7 +65,7 @@ function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
 	do_teleport(self, intersection_point)
 end
 
-function THROWING_ARROW_ENTITY.hit_node(self, above, under, intersection_point)
+function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
 	do_teleport(self, above)
 end
 

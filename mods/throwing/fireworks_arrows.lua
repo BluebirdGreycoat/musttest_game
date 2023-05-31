@@ -90,17 +90,8 @@ local function throwing_register_fireworks(color, desc)
 	function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
 		boom(above)
 	end
-	
-	THROWING_ARROW_ENTITY.on_step = function(self, dtime)
-		self.timer = self.timer + dtime
-		local pos = self.object:get_pos()
-		local node = minetest.get_node(pos)
 
-		if not self.played_launch_sound then
-			ambiance.sound_play("throwing_firework_launch", pos, 0.8, 2*64)
-      self.played_launch_sound = true
-		end
-
+	function THROWING_ARROW_ENTITY.flight_particle(self, pos)
 		minetest.add_particlespawner({
 			amount = 16,
 			time = 0.1,
@@ -115,7 +106,19 @@ local function throwing_register_fireworks(color, desc)
 			minsize = 0.5,
 			maxsize = 1,
 			texture = "throwing_sparkle.png",
+			glow = 13,
 		})
+	end
+	
+	THROWING_ARROW_ENTITY.on_step = function(self, dtime)
+		self.timer = self.timer + dtime
+		local pos = self.object:get_pos()
+		local node = minetest.get_node(pos)
+
+		if not self.played_launch_sound then
+			ambiance.sound_play("throwing_firework_launch", pos, 0.8, 2*64)
+      self.played_launch_sound = true
+		end
 
 		-- Flight max timelimit.
 		if self.timer > 2 then

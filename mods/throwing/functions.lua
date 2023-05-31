@@ -259,6 +259,7 @@ function throwing_unload (itemstack, player, unloaded, wear)
 			end
 		end
 	end
+
 	if wear >= 65535 then
 		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
 		itemstack:take_item(itemstack:get_count())
@@ -292,7 +293,7 @@ function throwing_arrow_punch_entity (target, self, damage)
   end
 end
 
-function throwing_reload (index, indexname, pname, pos, is_cross, loaded)
+function throwing_reload (index, indexname, controls, pname, pos, is_cross, loaded)
 	-- This function is called after some delay.
 	local player = minetest.get_player_by_name(pname)
 
@@ -322,13 +323,25 @@ function throwing_reload (index, indexname, pname, pos, is_cross, loaded)
 			local wear = itemstack:get_wear()
 			local bowdef = minetest.registered_items[itemstack:get_name()]
 			local bowname = bowdef.description
-			local arrow_stack = playerinv:get_stack("main", index + 1)
+			local arrow_index = 1
+
+			-- The selected arrow can come from 1 of 4 places to the right of the bow,
+			-- depending on player's controls at the time the load operation was started.
+			if controls.sneak and not controls.aux1 then
+				arrow_index = 2
+			elseif not controls.sneak and controls.aux1 then
+				arrow_index = 3
+			elseif controls.sneak and controls.aux1 then
+				arrow_index = 4
+			end
+
+			local arrow_stack = playerinv:get_stack("main", index + arrow_index)
 
 			for _, arrow in ipairs(throwing_arrows) do
 				if arrow_stack:get_name() == arrow[1] then
 					-- Remove arrow from beside bow.
 					arrow_stack:take_item()
-					playerinv:set_stack("main", index + 1, arrow_stack)
+					playerinv:set_stack("main", index + arrow_index, arrow_stack)
 
 					local name = arrow[1]
 					local arrowdesc = utility.get_short_desc(minetest.registered_items[name].description or "")
@@ -384,7 +397,8 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			-- Reload bow after some delay.
 			if not players[pname].reloading then
 				players[pname].reloading = true
-				minetest.after(reload_time, throwing_reload, index, indexname, pname, pos, is_cross, "throwing:" .. name .. "_loaded")
+				local controls = user:get_player_control()
+				minetest.after(reload_time, throwing_reload, index, indexname, controls, pname, pos, is_cross, "throwing:" .. name .. "_loaded")
 			end
 		end,
 	})

@@ -2,7 +2,7 @@
 -- Function is badly named! Should be 'entity_ignores_arrow'.
 -- Return 'true' if the entity cannot be hit, otherwise return 'false' if the entity should be punched.
 -- Note: 'entity_name' is the registered name of the entity to be checked for hit.
-function throwing.entity_blocks_arrow(entity_name)
+function throwing.entity_ignores_arrow(entity_name)
 	-- Dropped itemstacks don't take damage.
 	if entity_name == "__builtin:item" then
 		return true
@@ -94,6 +94,93 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	-- Return the modified itemstack.
 	return itemstack
 end
+
+
+
+-- Do flying/collision logic, and execute entity callbacks.
+-- This should be called inside of the entity's on_step() function.
+-- Returns 'true' if the entity was removed and should no longer be used.
+function throwing.do_fly(self, dtime)
+	-- Get arrow's current and previous position.
+	local cpos = self.object:get_pos()
+	local lpos = self.lastpos
+
+	-- Detect collisions: raycast from last position to current. (Note: 'lastpos'
+	-- table is never nil because it is part of entity definition. This is why
+	-- test is against 'x' key here.)
+	--
+	-- Update: arrow throwing function now always sets 'lastpos' when the arrow
+	-- entity is spawned (to solve problems where the arrow has moved some distance
+	-- before the 'on_step' function gets called). Still checking this to avoid
+	-- problems with old arrow entities in the world.
+	if lpos.x ~= nil then
+		local ray = minetest.raycast(lpos, cpos, true, true)
+
+		for thing in ray do
+			if thing.type == "node" then
+				local nodeu = minetest.get_node(thing.under)
+				local nodea = minetest.get_node(thing.above)
+
+				local blocku = throwing_node_should_block_arrow(nodeu.name)
+				local blocka = throwing_node_should_block_arrow(nodea.name)
+
+				if not blocka and blocku then
+					if self.hit_node then
+						self:hit_node(thing.under, thing.above, thing.intersection_point)
+					end
+
+					self.object:remove()
+					return true
+				elseif (blocka and blocku) or (blocka and not blocku) then
+					-- Arrow was fired from inside solid nodes.
+					self.object:remove()
+					return true
+				end
+			elseif thing.type == "object" and thing.ref then
+				local obj = thing.ref
+				if obj:is_player() then
+					-- Not permitted to hit the player that fired it.
+					if obj:get_player_name() ~= self.player_name then
+						local continue = false
+
+						if self.hit_player then
+							-- If function returns true, arrow continues flight through this object.
+							if self:hit_player(obj, thing.intersection_point) then
+								continue = true
+							end
+						end
+
+						if not continue then
+							self.object:remove()
+							return true
+						end
+					end
+				else
+					local ent = obj:get_luaentity()
+					if ent and not throwing.entity_ignores_arrow(ent.name) then
+						local continue = false
+
+						if self.hit_object then
+							-- If function returns true, arrow continues flight through this object.
+							if self:hit_object(obj, thing.intersection_point) then
+								continue = true
+							end
+						end
+
+						if not continue then
+							self.object:remove()
+							return true
+						end
+					end
+				end
+			end
+		end
+	end
+
+	self.lastpos = {x=cpos.x, y=cpos.y, z=cpos.z}
+end
+
+
 
 function throwing_unload (itemstack, player, unloaded, wear)
 	if itemstack:get_metadata() then

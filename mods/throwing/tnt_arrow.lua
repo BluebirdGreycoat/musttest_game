@@ -57,48 +57,42 @@ end
 
 -- Back to the arrow
 
-THROWING_ARROW_ENTITY.on_step = function(self, dtime)
-	self.timer=self.timer+dtime
-	local pos = self.object:get_pos()
-	local node = minetest.get_node(pos)
+local function explode_nearby(self, pos)
+	local vel = self.object:get_velocity()
+	local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
 
-  if self.timer>0.2 then
-    local objs = minetest.get_objects_inside_radius(table.copy(pos), 2)
-    for k, obj in pairs(objs) do
-      if obj:get_luaentity() ~= nil then
-				local oname = obj:get_luaentity().name
-				if not throwing.entity_blocks_arrow(oname) then
-          local damage = 1*500
-					local pname = self.player_name
-
-          -- Punch to alert mobs who hit them.
-          throwing_arrow_punch_entity(obj, self, damage)
-
-          boom(pos, pname)
-          self.object:remove()
-					return
-        end
-      elseif obj:is_player() then
-        local damage = 1
-				local pname = self.player_name
-
-        boom(pos, pname)
-        self.object:remove()
-				return
-      end
-    end
-  end
-
-	if self.lastpos.x~=nil then
-		if throwing_node_should_block_arrow(node.name) then
-			local pname = self.player_name
-			boom(self.lastpos, pname)
-			self.object:remove()
-			return
+	for k, obj in pairs(objs) do
+		if obj:get_luaentity() ~= nil then
+			local oname = obj:get_luaentity().name
+			if not throwing.entity_ignores_arrow(oname) then
+				local speed = vector.length(vel)
+				local damage = 1*500
+				throwing_arrow_punch_entity(obj, self, damage)
+				boom(pos, self.player_name)
+			end
+		elseif obj:is_player() then
+			local speed = vector.length(vel)
+			local damage = 1
+			throwing_arrow_punch_entity(obj, self, damage)
+			boom(pos, self.player_name)
 		end
 	end
+end
 
-	self.lastpos={x=pos.x, y=pos.y, z=pos.z}
+function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)
+	explode_nearby(self, intersection_point)
+end
+
+function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
+	explode_nearby(self, intersection_point)
+end
+
+function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
+	boom(above, self.player_name)
+end
+
+THROWING_ARROW_ENTITY.on_step = function(self, dtime)
+	throwing.do_fly(self, dtime)
 end
 
 minetest.register_entity("throwing:arrow_tnt_entity", THROWING_ARROW_ENTITY)

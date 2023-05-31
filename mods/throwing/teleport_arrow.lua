@@ -43,60 +43,34 @@ local THROWING_ARROW_ENTITY={
 
 local air_nodes = {"air", "group:airlike"}
 
-THROWING_ARROW_ENTITY.on_step = function(self, dtime)
-	self.timer = self.timer + dtime
-	local pos = self.object:get_pos()
+local function do_teleport(self, above)
+	if not self.player_name then
+		return
+	end
 
 	-- Player may have logged off after firing the arrow.
-	if not self.player_name then
-		self.object:remove()
-		return
-	end
-
 	local player = minetest.get_player_by_name(self.player_name)
+	local tpos = minetest.find_node_near(above, 1, air_nodes, true)
 
-	if not player then
-		self.object:remove()
-		return
+	if player and tpos then
+		player:set_pos(tpos)
 	end
+end
 
-	-- Raycast collisions with nodes. Ignore entities, they're not really useful.
-	-- (Note: 'lastpos' table is never nil because it is part of entity definition.
-	-- This is why test is against 'x' key here.)
-	--
-	-- Update: arrow throwing function now always sets 'lastpos' when the arrow
-	-- entity is spawned (to solve problems where the arrow has moved some distance
-	-- before the 'on_step' function gets called). Still checking this to avoid
-	-- problems with old arrow entities in the world.
-	if self.lastpos.x ~= nil then
-		local ray = minetest.raycast(self.lastpos, pos, false, true)
+function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)
+	do_teleport(self, intersection_point)
+end
 
-		for thing in ray do
-			if thing.type == "node" then
-				local nodeu = minetest.get_node(thing.under)
-				local nodea = minetest.get_node(thing.above)
+function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
+	do_teleport(self, intersection_point)
+end
 
-				local blocku = throwing_node_should_block_arrow(nodeu.name)
-				local blocka = throwing_node_should_block_arrow(nodea.name)
+function THROWING_ARROW_ENTITY.hit_node(self, above, under, intersection_point)
+	do_teleport(self, above)
+end
 
-				if not blocka and blocku then
-					local tpos = minetest.find_node_near(thing.above, 1, air_nodes, true)
-					if tpos then
-						player:set_pos(tpos)
-					end
-
-					self.object:remove()
-					return
-				elseif (blocka and blocku) or (blocka and not blocku) then
-					-- Arrow was fired from inside solid nodes.
-					self.object:remove()
-					return
-				end
-			end
-		end
-	end
-
-	self.lastpos = {x=pos.x, y=pos.y, z=pos.z}
+THROWING_ARROW_ENTITY.on_step = function(self, dtime)
+	throwing.do_fly(self, dtime)
 end
 
 minetest.register_entity("throwing:arrow_teleport_entity", THROWING_ARROW_ENTITY)

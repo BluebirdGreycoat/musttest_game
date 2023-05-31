@@ -1,5 +1,5 @@
 --[[
-function throwing.entity_blocks_arrow(entity_name)
+function throwing.entity_ignores_arrow(entity_name)
 	-- Dropped itemstacks don't take damage.
 	if entity_name == "__builtin:item" then
 		return true

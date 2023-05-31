@@ -46,53 +46,41 @@ local THROWING_ARROW_ENTITY={
 	collisionbox = {0,0,0,0,0,0},
 }
 
-THROWING_ARROW_ENTITY.on_step = function(self, dtime)
-	self.timer=self.timer+dtime
-	local pos = self.object:get_pos()
-	local node = minetest.get_node(pos)
+function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)
+	local damage = 4*500
+	throwing_arrow_punch_entity(obj, self, damage)
+	minetest.add_item(self.lastpos, 'default:stick')
+end
 
-	if self.timer>0.2 then
-		local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
-		for k, obj in pairs(objs) do
-			if obj:get_luaentity() ~= nil then
-				local oname = obj:get_luaentity().name
-				if not throwing.entity_blocks_arrow(oname) then
-					local damage = 4*500
-					throwing_arrow_punch_entity(obj, self, damage)
-					self.object:remove()
-					minetest.add_item(self.lastpos, 'default:stick')
-				end
-      elseif obj:is_player() then
-        local damage = 4*500
-        throwing_arrow_punch_entity(obj, self, damage)
-        self.object:remove()
-        minetest.add_item(self.lastpos, 'default:stick')
-			end
-		end
+function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
+	local damage = 4*500
+	throwing_arrow_punch_entity(obj, self, damage)
+	minetest.add_item(self.lastpos, 'default:stick')
+end
+
+function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
+	local fpos = minetest.find_node_near(above, 1, "group:airlike", true)
+	if fpos then
+		minetest.add_node(fpos, {name="fire:basic_flame"})
 	end
+	minetest.sound_play("throwing_shell_explode", {pos=above, gain=1.0, max_hear_distance=2*64}, true)
+end
 
-	if self.lastpos.x~=nil then
-		if throwing_node_should_block_arrow(node.name) then
-      if node.name == "throwing:light" or not minetest.test_protection(self.lastpos, "") then
-        minetest.add_node(self.lastpos, {name="fire:basic_flame"})
-      else
-        local fpos = minetest.find_node_near(pos, 1, "air")
-        if fpos then
-          minetest.add_node(fpos, {name="fire:basic_flame"})
-        end
-      end
-      minetest.sound_play("throwing_shell_explode", {pos=pos, gain=1.0, max_hear_distance=2*64}, true)
-			self.object:remove()
-		end
+THROWING_ARROW_ENTITY.on_step = function(self, dtime)
+	local pos = self.object:get_pos()
+
+	-- Light up the air as it passes.
+	if self.lastpos.x ~= nil then
 		if math_floor(self.lastpos.x+0.5) ~= math_floor(pos.x+0.5) or
-			math_floor(self.lastpos.y+0.5) ~= math_floor(pos.y+0.5) or
-			math_floor(self.lastpos.z+0.5) ~= math_floor(pos.z+0.5) then
+				math_floor(self.lastpos.y+0.5) ~= math_floor(pos.y+0.5) or
+				math_floor(self.lastpos.z+0.5) ~= math_floor(pos.z+0.5) then
 			if minetest.get_node(pos).name == "air" then
 				minetest.set_node(pos, {name="throwing:light"})
 			end
 		end
 	end
-	self.lastpos={x=pos.x, y=pos.y, z=pos.z}
+
+	throwing.do_fly(self, dtime)
 end
 
 minetest.register_entity("throwing:arrow_fire_entity", THROWING_ARROW_ENTITY)

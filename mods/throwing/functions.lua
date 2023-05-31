@@ -372,7 +372,10 @@ end
 -- Bows and crossbows
 
 function throwing_register_bow (name, desc, scale, stiffness, reload_time, toughness, is_cross, craft)
-	minetest.register_tool("throwing:" .. name, {
+	local bow_unloaded_name = "throwing:" .. name
+	local bow_loaded_name = "throwing:" .. name .. "_loaded"
+
+	minetest.register_tool(bow_unloaded_name, {
 		description = desc,
 		inventory_image = "throwing_" .. name .. ".png",
 		wield_scale = scale,
@@ -403,7 +406,7 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		end,
 	})
 	
-	minetest.register_tool("throwing:" .. name .. "_loaded", {
+	minetest.register_tool(bow_loaded_name, {
 		description = desc,
 		inventory_image = "throwing_" .. name .. "_loaded.png",
 		wield_scale = scale,
@@ -445,6 +448,10 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		-- Prevent dropping loaded bows.
 		on_drop = function(itemstack, dropper, pos) return itemstack end,
 	})
+
+	-- Store loaded/unloaded bow names.
+	throwing.bow_names_loaded[#(throwing.bow_names_loaded) + 1] = bow_loaded_name
+	throwing.bow_names_unloaded[#(throwing.bow_names_unloaded) + 1] = bow_unloaded_name
 	
 	minetest.register_craft({
 		output = 'throwing:' .. name,
@@ -494,3 +501,19 @@ function throwing_node_should_block_arrow (nn)
   return true
 end
 throwing.node_blocks_arrow = throwing_node_should_block_arrow
+
+-- Prevent moving loaded bows out of player inventory to other inventories.
+local function inventory_guard(player, action, inventory, inventory_info)
+	if action == "take" then
+		local sname = inventory_info.stack:get_name()
+		if sname:find("^throwing:") then
+			for k, v in ipairs(throwing.bow_names_loaded) do
+				if v == sname then
+					return 0
+				end
+			end
+		end
+	end
+end
+
+minetest.register_allow_player_inventory_action(inventory_guard)

@@ -1,5 +1,7 @@
 
 throwing = {}
+throwing.bow_names_loaded = {}
+throwing.bow_names_unloaded = {}
 throwing_arrows = {
 	{"throwing:arrow_steel", "throwing:arrow_steel_entity"},
 	{"throwing:arrow_stone", "throwing:arrow_stone_entity"},

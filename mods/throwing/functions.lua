@@ -131,12 +131,35 @@ end
 
 
 
-function throwing.flight_particle(pos)
+function throwing.flight_particle(lpos, cpos)
+	local mpos = {
+		x = (lpos.x + cpos.x) / 2,
+		y = (lpos.y + cpos.y) / 2,
+		z = (lpos.z + cpos.z) / 2,
+	}
+
 	minetest.add_particlespawner({
 		amount = 5,
 		time = 0.1,
-		minpos = pos,
-		maxpos = pos,
+		minpos = mpos,
+		maxpos = mpos,
+		minvel = {x=-0.1, y=-0.1, z=-0.1},
+		maxvel = {x=0.1,  y=0.1,  z=0.1},
+		minacc = vector.new(),
+		maxacc = vector.new(),
+		minexptime = 1.5,
+		maxexptime = 1.5,
+		minsize = 0.5,
+		maxsize = 1,
+		texture = "throwing_sparkle.png",
+		glow = 8,
+	})
+
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 0.1,
+		minpos = cpos,
+		maxpos = cpos,
 		minvel = {x=-0.1, y=-0.1, z=-0.1},
 		maxvel = {x=0.1,  y=0.1,  z=0.1},
 		minacc = vector.new(),
@@ -235,9 +258,9 @@ function throwing.do_fly(self, dtime)
 	self.lastpos = {x=cpos.x, y=cpos.y, z=cpos.z}
 
 	if self.flight_particle then
-		self:flight_particle(cpos)
+		self:flight_particle(lpos, cpos)
 	else
-		throwing.flight_particle(cpos)
+		throwing.flight_particle(lpos, cpos)
 	end
 end
 

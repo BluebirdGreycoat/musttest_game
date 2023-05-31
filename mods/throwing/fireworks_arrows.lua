@@ -91,12 +91,12 @@ local function throwing_register_fireworks(color, desc)
 		boom(above)
 	end
 
-	function THROWING_ARROW_ENTITY.flight_particle(self, pos)
+	function THROWING_ARROW_ENTITY.flight_particle(self, lpos, cpos)
 		minetest.add_particlespawner({
 			amount = 16,
 			time = 0.1,
-			minpos = pos,
-			maxpos = pos,
+			minpos = cpos,
+			maxpos = cpos,
 			minvel = {x=-5, y=-5, z=-5},
 			maxvel = {x=5,  y=5,  z=5},
 			minacc = vector.new(),

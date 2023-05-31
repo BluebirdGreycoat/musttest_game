@@ -441,6 +441,9 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			end
 			return itemstack
 		end,
+
+		-- Prevent dropping loaded bows.
+		on_drop = function(itemstack, dropper, pos) return itemstack end,
 	})
 	
 	minetest.register_craft({

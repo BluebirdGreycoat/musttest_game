@@ -360,14 +360,44 @@ function throwing_reload (index, indexname, controls, pname, pos, is_cross, load
 					imeta:set_string("ar_desc", arrowdesc)
 					toolranks.apply_description(imeta, bowdef)
 
-					-- Don't need to iterate through remaining arrow types.
 					playerinv:set_stack("main", index, newstack)
+
+					-- Start checking to see if player unwields this bow. If they do, we
+					-- must unload it.
+					throwing.wield_check(pname, index, indexname, loaded)
+
+					-- Don't need to iterate through remaining arrow types.
 					return
 				end
 			end
 		end
 	end
 end
+
+
+
+function throwing.wield_check(pname, index, unloaded, loaded)
+	local player = minetest.get_player_by_name(pname)
+	if not player then
+		return
+	end
+
+	local cindex = player:get_wield_index()
+	if cindex ~= index then
+		local stack = player:get_inventory():get_stack("main", index)
+		if stack:get_name() == loaded then
+			local newstack = throwing_unload(stack, player, unloaded, stack:get_wear())
+			if newstack then
+				player:get_inventory():set_stack("main", index, newstack)
+			end
+		end
+		return
+	end
+
+	minetest.after(0, throwing.wield_check, pname, index, unloaded, loaded)
+end
+
+
 
 -- Bows and crossbows
 
@@ -450,8 +480,14 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 	})
 
 	-- Store loaded/unloaded bow names.
-	throwing.bow_names_loaded[#(throwing.bow_names_loaded) + 1] = bow_loaded_name
-	throwing.bow_names_unloaded[#(throwing.bow_names_unloaded) + 1] = bow_unloaded_name
+	throwing.bow_names_loaded[#(throwing.bow_names_loaded) + 1] = {
+		name = bow_loaded_name,
+		unloaded = bow_unloaded_name,
+	}
+	throwing.bow_names_unloaded[#(throwing.bow_names_unloaded) + 1] = {
+		name = bow_unloaded_name,
+		loaded = bow_loaded_name,
+	}
 	
 	minetest.register_craft({
 		output = 'throwing:' .. name,
@@ -503,12 +539,15 @@ end
 throwing.node_blocks_arrow = throwing_node_should_block_arrow
 
 -- Prevent moving loaded bows out of player inventory to other inventories.
-local function inventory_guard(player, action, inventory, inventory_info)
+-- The action has to be prevented completely (we cannot simply unload the bow)
+-- because we cannot track the itemstack after it has been moved out of the
+-- player's inventory.
+local function inventory_allow(player, action, inventory, inventory_info)
 	if action == "take" then
 		local sname = inventory_info.stack:get_name()
 		if sname:find("^throwing:") then
 			for k, v in ipairs(throwing.bow_names_loaded) do
-				if v == sname then
+				if v.name == sname then
 					return 0
 				end
 			end
@@ -516,4 +555,69 @@ local function inventory_guard(player, action, inventory, inventory_info)
 	end
 end
 
-minetest.register_allow_player_inventory_action(inventory_guard)
+local function inventory_action(player, action, inventory, inventory_info)
+	if action == "put" then
+		local sname = inventory_info.stack:get_name()
+		if sname:find("^throwing:") then
+			for k, v in ipairs(throwing.bow_names_loaded) do
+				if v.name == sname then
+					-- Player has put a loaded bow into their inventory from somewhere else.
+					-- Unload the bow to prevent a possible exploit.
+					local bowstack = inventory_info.stack
+					local newstack = throwing_unload(bowstack, player, v.unloaded, bowstack:get_wear())
+					if newstack then
+						player:get_inventory():set_stack(inventory_info.listname, inventory_info.index, newstack)
+					end
+				end
+			end
+		end
+	elseif action == "move" then
+		local movedstack = player:get_inventory():get_stack(inventory_info.to_list, inventory_info.to_index)
+		local sname = movedstack:get_name()
+		if sname:find("^throwing:") then
+			for k, v in ipairs(throwing.bow_names_loaded) do
+				if v.name == sname then
+					-- Player has moved a bow around in their inventory.
+					-- Unloaded it, as they almost certainly aren't wielding it anymore.
+					local bowstack = movedstack
+					local newstack = throwing_unload(bowstack, player, v.unloaded, bowstack:get_wear())
+					if newstack then
+						player:get_inventory():set_stack(inventory_info.to_list, inventory_info.to_index, newstack)
+					end
+				end
+			end
+		end
+	end
+end
+
+local function get_unloaded_name(loaded)
+	for k, v in ipairs(throwing.bow_names_loaded) do
+		if v.name == loaded then
+			return v.unloaded
+		end
+	end
+end
+
+local function unload_all_bows(player)
+	local inv = player:get_inventory()
+	local sz = inv:get_size("main")
+
+	for k = 1, sz do
+		local stack = inv:get_stack("main", k)
+		local sname = stack:get_name()
+
+		if sname:find("^throwing:") and sname:find("_loaded$") then
+			local unloaded = get_unloaded_name(sname)
+			if unloaded then
+				local newstack = throwing_unload(stack, player, unloaded, stack:get_wear())
+				if newstack then
+					inv:set_stack("main", k, newstack)
+				end
+			end
+		end
+	end
+end
+
+minetest.register_allow_player_inventory_action(inventory_allow)
+minetest.register_on_player_inventory_action(inventory_action)
+minetest.register_on_joinplayer(unload_all_bows)

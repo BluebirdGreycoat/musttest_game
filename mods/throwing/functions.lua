@@ -253,15 +253,15 @@ function throwing.do_fly(self, dtime)
 				end
 			end
 		end
+
+		if self.flight_particle then
+			self:flight_particle(lpos, cpos)
+		else
+			throwing.flight_particle(lpos, cpos)
+		end
 	end
 
 	self.lastpos = {x=cpos.x, y=cpos.y, z=cpos.z}
-
-	if self.flight_particle then
-		self:flight_particle(lpos, cpos)
-	else
-		throwing.flight_particle(lpos, cpos)
-	end
 end
 
 

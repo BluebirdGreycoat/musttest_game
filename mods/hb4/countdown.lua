@@ -38,6 +38,10 @@ function countdown.step(data)
 	local report = false
 	local delay = 60
 
+	-- Debug.
+	--delay = 10
+	--report = true
+
 	-- Calculate how long until next public message.
 	do
 		-- Report on every hour change.
@@ -87,13 +91,18 @@ if not countdown.registered then
 	-- Should be 01:00:00 of next day UTC (1 hour after midnight, CST).
 	local nd = table.copy(cd)
 	nd.day = nd.day + 1
-	nd.hour = 6
+	nd.hour = 18
 	nd.min = 0
 	nd.sec = 0
 	nd = os.date("!*t", os.time(nd))
 	countdown.time = nd
 
-	minetest.after(60, countdown.step, {})
+	local delay = 60
+
+	-- Debug.
+	--delay = 10
+
+	minetest.after(delay, countdown.step, {})
 	countdown.registered = true
 end
 

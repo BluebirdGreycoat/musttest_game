@@ -84,7 +84,7 @@ end
 if not countdown.registered then
 	-- Calculate time to next shutdown.
 	local cd = os.date("!*t")
-	-- Should be 06:00:00 of next day.
+	-- Should be 01:00:00 of next day UTC (1 hour after midnight, CST).
 	local nd = table.copy(cd)
 	nd.day = nd.day + 1
 	nd.hour = 6

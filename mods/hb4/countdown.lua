@@ -84,16 +84,16 @@ function countdown.step(data)
 		if msgtype == 1 then
 			local p = "s"
 			if rd.sec == 1 then p = "" end
-			message = "Server: Restart in " .. rd.sec .. " second" .. p .. "."
+			message = "# Server: Restart in " .. rd.sec .. " second" .. p .. "."
 		elseif msgtype == 2 then
 			local p = "s"
 			if rd.min == 1 then p = "" end
-			message = "Server: Restarting in " .. rd.min .. " minute" .. p .. "."
+			message = "# Server: Restarting in " .. rd.min .. " minute" .. p .. "."
 		elseif msgtype == 3 then
 			local h = rd.hour + math.floor((rd.min / 60) + 0.5)
 			local p = "s"
 			if h == 1 then p = "" end
-			message = "Server: Nightly restart in " .. h .. " hour" .. p .. "."
+			message = "# Server: Nightly restart in " .. h .. " hour" .. p .. "."
 		end
 
 		chat_logging.log_server_message(message)

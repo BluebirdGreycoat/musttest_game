@@ -86,9 +86,10 @@ function countdown.step(data)
 			if rd.sec == 1 then p = "" end
 			message = "# Server: Restart in " .. rd.sec .. " second" .. p .. "."
 		elseif msgtype == 2 then
+			local h = rd.min + math.floor((rd.sec / 60) + 0.5)
 			local p = "s"
-			if rd.min == 1 then p = "" end
-			message = "# Server: Restarting in " .. rd.min .. " minute" .. p .. "."
+			if h == 1 then p = "" end
+			message = "# Server: Restarting in " .. h .. " minute" .. p .. "."
 		elseif msgtype == 3 then
 			local h = rd.hour + math.floor((rd.min / 60) + 0.5)
 			local p = "s"

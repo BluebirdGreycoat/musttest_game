@@ -66,7 +66,7 @@ function countdown.step(data)
 		end
 
 		-- Report every second of the last 20 seconds.
-		if rd.hour == 0 and rd.min == 0 and rd.sec <= 20 and data.sec ~= rd.sec then
+		if rd.hour == 0 and rd.min == 0 and rd.sec <= 20 then
 			report = true
 			delay = 1
 			msgtype = 1

@@ -257,7 +257,7 @@ end
 
 
 function armor.get_player_skin(self, name)
-	skin = skins.skins[name]
+	local skin = skins.skins[name]
 	return skin or armor.default_skin
 end
 

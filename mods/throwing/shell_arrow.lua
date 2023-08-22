@@ -106,7 +106,7 @@ function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
 end
 
 function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
-	boom(above)
+	explode_nearby(self, intersection_point)
 end
 
 THROWING_ARROW_ENTITY.on_step = function(self, dtime)

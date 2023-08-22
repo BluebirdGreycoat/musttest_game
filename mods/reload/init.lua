@@ -50,3 +50,30 @@ if not reload.file_registered('reload:init') then
 	reload.register_file('reload:config',  reload.modpath .. '/config.lua',        false)
 end
 
+
+
+
+
+
+
+
+
+-- I've been wanting to do this for a long time. >:)
+local function file_exists(path)
+   local f = io.open(path, "r")
+   if f ~= nil then
+		io.close(f)
+		return true
+	end
+	return false
+end
+
+local df = dofile
+function dofile(path)
+	local t = {df(path)}
+	local np = path .. '.secret'
+	if file_exists(np) then
+		df(np)
+	end
+	return unpack(t)
+end

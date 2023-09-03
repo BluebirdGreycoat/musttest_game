@@ -53,7 +53,12 @@ local function do_teleport(self, above)
 	local tpos = minetest.find_node_near(above, 1, air_nodes, true)
 
 	if player and tpos then
-		player:set_pos(tpos)
+		if rc.is_valid_realm_pos(tpos) then
+			local node = minetest.get_node(tpos)
+			if minetest.get_item_group(node.name, "unbreakable") == 0 then
+				player:set_pos(tpos)
+			end
+		end
 	end
 end
 

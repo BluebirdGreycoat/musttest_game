@@ -61,7 +61,10 @@ end
 function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
 	local fpos = minetest.find_node_near(above, 1, "group:airlike", true)
 	if fpos then
-		minetest.add_node(fpos, {name="fire:basic_flame"})
+		local node = minetest.get_node(fpos)
+		if minetest.get_item_group(node.name, "unbreakable") == 0 then
+			minetest.add_node(fpos, {name="fire:basic_flame"})
+		end
 	end
 	minetest.sound_play("throwing_shell_explode", {pos=above, gain=1.0, max_hear_distance=2*64}, true)
 end

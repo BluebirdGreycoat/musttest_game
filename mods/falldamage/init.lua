@@ -82,6 +82,7 @@ local function register_node(name, def2)
 	end
 
 	-- Any airlike drawtype nodes get added to the 'airlike' group.
+	-- Note: this includes any airlike drawtype nodes from the maptools files.
 	if def.drawtype == "airlike" then
 		def.groups.airlike = 1
 	end

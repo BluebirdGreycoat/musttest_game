@@ -736,6 +736,7 @@ function rc.check_position(player)
 		-- Notify wield3d we're adjusting the player position.
 		-- Wielded item entities don't like sudden movement.
 		wield3d.on_teleport()
+		default.detach_player_if_attached(player)
 
 		if player:get_hp() > 0 then
 			-- Return player to last known good position.

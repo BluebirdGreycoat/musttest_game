@@ -77,9 +77,12 @@ if not minetest.is_singleplayer() then
 				if blamed and mapgen.report_chunks >= 5 then
 					local invisible = gdac_invis.is_invisible(blamed)
 					if not invisible then
-						minetest.chat_send_all(
-							"# Server: Mapgen scrambling. Blame <" .. rename.gpn(blamed) .. "> for lag. Chunks: " ..
-							mapgen.report_chunks .. ".")
+						local pcount = #(minetest.get_connected_players())
+						if pcount and pcount >= 5 then
+							minetest.chat_send_all(
+								"# Server: Mapgen scrambling. Blame <" .. rename.gpn(blamed) .. "> for lag. Chunks: " ..
+								mapgen.report_chunks .. ".")
+						end
 					end
 				end
 

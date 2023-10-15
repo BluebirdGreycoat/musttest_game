@@ -67,7 +67,8 @@ for k, v in ipairs(meat_types) do
 
 		-- Send message if meat was raw or gross.
 		if v.is_gross or v.is_raw then
-			minetest.chat_send_player(user:get_player_name(), "# Server: You eat " .. v.desc .. "? Eww, gross!")
+			minetest.chat_send_player(user:get_player_name(),
+				"# Server: You eat " .. utility.get_short_desc(v.desc) .. "? Eww, gross!")
 		end
 
 		return eat_meat(itemstack, user, pointed_thing)

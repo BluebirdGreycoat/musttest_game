@@ -469,13 +469,13 @@ function default.sapling_on_place(itemstack, placer, pointed_thing,
 	end
 	-- Check tree volume for protection
 	if default.intersects_protection(
-			vector.add(pos, vector.add(minp_relative, {x=-1, y=-1, z=-1})),
+			vector.add(pos, vector.add(minp_relative, {x=-1, y=0, z=-1})),
 			vector.add(pos, vector.add(maxp_relative, {x=1, y=1, z=1})),
 			player_name,
 			interval) then
 		minetest.record_protection_violation(pos, player_name)
 		-- Print extra information to explain
-		minetest.chat_send_player(player_name, "# Server: Tree will intersect protection!")
+		minetest.chat_send_player(player_name, "# Server: Tree may intersect protection!")
 		return itemstack
 	end
 

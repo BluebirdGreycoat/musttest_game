@@ -3,7 +3,7 @@ if not minetest.global_exists("basictrees") then basictrees = {} end
 local SAPLING_TIME_MIN = 60*15
 local SAPLING_TIME_MAX = 60*30
 local SAPLING_CHANCE = 25
-local SCHEMATIC_MINP = {x=-4, y=1, z=-4}
+local SCHEMATIC_MINP = {x=-4, y=0, z=-4}
 local SCHEMATIC_MAXP = {x=4, y=6, z=4}
 local SCHEMATIC_RELP = {x=-4, y=-1, z=-4}
 

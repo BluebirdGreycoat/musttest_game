@@ -535,7 +535,7 @@ function marker.get_formspec(player)
 	for i = 1, #alists, 1 do
 		local k = alists[i].name
 		if k ~= "default" then
-			formspec = formspec .. comma .. k
+			formspec = formspec .. comma .. minetest.formspec_escape(k)
 			comma = ","
 		end
 	end

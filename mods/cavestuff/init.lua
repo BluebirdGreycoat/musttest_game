@@ -548,6 +548,7 @@ minetest.register_node("cavestuff:dark_obsidian", {
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
 	node_dig_prediction = "",
 
+	-- Note: adamant TNT mining depends on this.
   on_blast = function(...) end, -- Blast resistant.
 
 	after_destruct = function(pos)

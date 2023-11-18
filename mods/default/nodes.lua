@@ -1316,7 +1316,16 @@ minetest.register_node("default:adamant", {
 	silverpick_drop = true,
 	light_source = 6,
 	node_dig_prediction = "",
+
 	-- Note: NOT blast resistant. May be TNT mined.
+	on_blast = function(pos)
+		local obsidian = minetest.find_node_near(pos, 1, "cavestuff:dark_obsidian")
+		if obsidian then
+			minetest.remove_node(obsidian)
+			minetest.remove_node(pos)
+			return {"default:adamant", "cavestuff:dark_obsidian"}
+		end
+	end,
 })
 
 --

@@ -299,3 +299,12 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = "xdecor:wooden2_lightbox",
+	recipe = {
+		{"group:stick", "basictrees:tree_wood", "group:stick"},
+		{"default:glass", "xdecor:lantern", "default:glass"},
+		{"group:stick", "basictrees:tree_wood", "group:stick"}
+	}
+})
+

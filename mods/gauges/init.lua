@@ -108,7 +108,7 @@ local hp_bar = {
 	physical = false,
 	collisionbox = {x = 0, y = 0, z = 0},
 	visual = "sprite",
-	textures = {"health_20.png"}, -- The texture is changed later in the code.
+	textures = {"blank.png"}, -- The texture is changed later in the code.
 	visual_size = {
 		x = 1.5*bar_scalar,
 		y = 0.09375*bar_scalar,
@@ -116,6 +116,7 @@ local hp_bar = {
 	}, -- Y value is (1 / 16) * 1.5.
 	wielder = nil,
 	glow = -1,
+	static_save = false,
 
 	-- Cached values.
 	chp = 0,

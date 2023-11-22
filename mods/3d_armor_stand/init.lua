@@ -11,14 +11,16 @@ local armor_stand_formspec = "size[8,7]" ..
 	"list[context;armor_torso;4,0.5;1,1;]" ..
 	"list[context;armor_legs;3,1.5;1,1;]" ..
 	"list[context;armor_feet;4,1.5;1,1;]" ..
+	"list[context;armor_shield;5,1.5;1,1;]" ..
 	"image[3,0.5;1,1;3d_armor_stand_head.png]" ..
 	"image[4,0.5;1,1;3d_armor_stand_torso.png]" ..
 	"image[3,1.5;1,1;3d_armor_stand_legs.png]" ..
 	"image[4,1.5;1,1;3d_armor_stand_feet.png]" ..
+	"image[5,1.5;1,1;3d_armor_stand_shield.png]" ..
 	"list[current_player;main;0,3;8,1;]" ..
 	"list[current_player;main;0,4.25;8,3;8]"
 
-local elements = {"head", "torso", "legs", "feet"}
+local elements = {"head", "torso", "legs", "feet", "shield"}
 
 local function drop_armor(pos)
 	local meta = minetest.get_meta(pos)

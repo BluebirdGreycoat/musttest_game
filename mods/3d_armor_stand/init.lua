@@ -198,6 +198,8 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 		add_hidden_node(pos, placer)
 	end,
 	_on_rename_check = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec", armor_stand_formspec)
 		update_entity(pos)
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack)
@@ -290,6 +292,7 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 	end,
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec", armor_stand_formspec)
 		meta:set_string("infotext", "Armor Stand (Owned by <" .. rename.gpn(meta:get_string("owner")) .. ">!)")
 		update_entity(pos)
 	end,

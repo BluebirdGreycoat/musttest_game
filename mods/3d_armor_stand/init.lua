@@ -197,6 +197,9 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 		minetest.add_entity(pos, "3d_armor_stand:armor_entity")
 		add_hidden_node(pos, placer)
 	end,
+	_on_rename_check = function(pos)
+		update_entity(pos)
+	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack)
 		local def = stack:get_definition() or {}
 		local groups = def.groups or {}
@@ -288,6 +291,7 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 	_on_rename_check = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "Armor Stand (Owned by <" .. rename.gpn(meta:get_string("owner")) .. ">!)")
+		update_entity(pos)
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)

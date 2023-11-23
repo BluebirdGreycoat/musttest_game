@@ -45,6 +45,9 @@ minetest.register_node("fire:basic_flame", {
 		flame_sound = 1,
 		notify_construct = 1,
 		fire = 1,
+		-- It would be fun to make fire a falling node, but currently it causes the
+		-- fire nodes to fall before they burn their target, which tends to leave
+		-- stuff hanging in air.
 	}),
     
 	on_timer = function(pos)
@@ -299,6 +302,11 @@ minetest.register_abm({
 				else
 					minetest.remove_node(p)
 					minetest.check_for_falling(p)
+				end
+
+				-- Cause fire node to fall if we burnt our support.
+				if p.y < pos.y then
+					sfn.drop_node(pos)
 				end
 			end
 		end,

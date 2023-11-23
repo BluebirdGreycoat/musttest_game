@@ -3,6 +3,7 @@ mods/worldedit
 
 # Secret files.
 *.sec
+*.secret
 
 # Vim swap files.
 *.swp

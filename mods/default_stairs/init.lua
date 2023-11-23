@@ -264,6 +264,15 @@ stairs.register_stair_and_slab(
 )
 
 stairs.register_stair_and_slab(
+	"adamantd",
+	"default:adamant_brittle",
+	{cracky = 1},
+	{{name="default_adamant_cracked_32x32.png", align_style="world", scale=2}},
+	"Brittle Adamant",
+	default.node_sound_stone_defaults()
+)
+
+stairs.register_stair_and_slab(
 	"straw",
 	"farming:straw",
 	{snappy = 3, flammable = 4},

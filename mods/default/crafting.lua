@@ -525,6 +525,13 @@ minetest.register_craft({
 	recipe = "default:clay_lump",
 })
 
+minetest.register_craft({
+	type = "cooking",
+	output = "default:adamant",
+	recipe = "default:adamant_brittle",
+	cooktime = 60,
+})
+
 
 --
 -- Fuels

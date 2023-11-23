@@ -43,21 +43,38 @@ local THROWING_ARROW_ENTITY={
 
 local air_nodes = {"air", "group:airlike"}
 
-local function do_teleport(self, above)
+local function do_teleport(self, tptarget, under, above)
 	if not self.player_name then
 		return
 	end
 
 	-- Player may have logged off after firing the arrow.
 	local player = minetest.get_player_by_name(self.player_name)
-	local tpos = minetest.find_node_near(above, 1, air_nodes, true)
+	local tpos = minetest.find_node_near(tptarget, 1, air_nodes, true)
 
-	if player and tpos then
-		if rc.is_valid_realm_pos(tpos) then
-			local node = minetest.get_node(tpos)
-			if minetest.get_item_group(node.name, "unbreakable") == 0 then
-				player:set_pos(tpos)
+	if not player or not tpos then
+		return
+	end
+
+	if not rc.is_valid_realm_pos(tpos) then
+		return
+	end
+
+	local node = minetest.get_node(tpos)
+	-- Maptools air is airlike but unbreakable. Don't TP in here.
+	if minetest.get_item_group(node.name, "unbreakable") == 0 then
+		if under and above then
+			-- Arrow hit node.
+			local node = minetest.get_node(under)
+			local ndef = minetest.registered_nodes[node.name]
+			if ndef then
+				if not ndef.disallow_teleport then
+					player:set_pos(tpos)
+				end
 			end
+		else
+			-- Hit player or object, 'tptarget' is intersection point.
+			player:set_pos(tpos)
 		end
 	end
 end
@@ -71,7 +88,8 @@ function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
 end
 
 function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
-	do_teleport(self, above)
+	-- Intentionally duplicated 'above', not a bug.
+	do_teleport(self, above, under, above)
 end
 
 THROWING_ARROW_ENTITY.on_step = function(self, dtime)

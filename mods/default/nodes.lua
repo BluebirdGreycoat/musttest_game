@@ -1313,19 +1313,47 @@ minetest.register_node("default:adamant", {
 	groups = {}, -- No valid digging groups for this node.
 	sounds = default.node_sound_stone_defaults(),
 	drop = "default:adamant_shard",
-	silverpick_drop = true,
 	light_source = 6,
 	node_dig_prediction = "",
+	disallow_teleport = true,
 
 	-- Note: NOT blast resistant. May be TNT mined.
 	on_blast = function(pos)
 		local obsidian = minetest.find_node_near(pos, 1, "cavestuff:dark_obsidian")
 		if obsidian then
+			if math.random(1, 500) == 1 then
+				if utility.do_something_nasty then
+					minetest.after(math.random(1, 30), function()
+						utility.do_something_nasty(pos, "severe")
+					end)
+				end
+			end
+
 			minetest.remove_node(obsidian)
 			minetest.remove_node(pos)
-			return {"default:adamant", "cavestuff:dark_obsidian"}
+
+			-- The obsidian block is broken up.
+			return {"default:adamant_brittle", "default:obsidian_shard 4"}
 		end
 	end,
+
+	-- This is needed to fix a potential griefing vector re: dropping adamant on
+	-- protected properties. Otherwise dropped adamant would be impossible to
+	-- remove without causing damage to the property.
+	on_finish_collapse = function(pos, node)
+		minetest.swap_node(pos, {name = "default:adamant_brittle"})
+	end,
+})
+
+minetest.register_node("default:adamant_brittle", {
+	description = "Cracked Adamant",
+	tiles = {{name="default_adamant_cracked_32x32.png", align_style="world", scale=2}},
+	is_ground_content = false,
+	groups = utility.dig_groups("hardmineral"),
+	sounds = default.node_sound_stone_defaults(),
+	drop = "default:adamant_shard",
+	silverpick_drop = true,
+	light_source = 4,
 })
 
 --

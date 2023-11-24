@@ -449,7 +449,7 @@ function doors.register(name, def)
 		def.on_blast = function() end
 		def.on_key_use = function(pos, player)
 			local door = doors.get(pos)
-			door:toggle(player)
+			door:toggle(player:get_player_name())
 		end
 		def.on_skeleton_key_use = function(pos, player, newsecret)
 			local meta = minetest.get_meta(pos)
@@ -661,7 +661,7 @@ function doors.register_trapdoor(name, def)
 		def.on_blast = function() end
 		def.on_key_use = function(pos, player)
 			local door = doors.get(pos)
-			door:toggle(player)
+			door:toggle(player:get_player_name())
 		end
 		def.on_skeleton_key_use = function(pos, player, newsecret)
 			local meta = minetest.get_meta(pos)
@@ -840,7 +840,7 @@ function doors.register_trapdoor_climbable(name, def)
 		def.on_blast = function() end
 		def.on_key_use = function(pos, player)
 			local door = doors.get(pos)
-			door:toggle(player)
+			door:toggle(player:get_player_name())
 		end
 		def.on_skeleton_key_use = function(pos, player, newsecret)
 			local meta = minetest.get_meta(pos)

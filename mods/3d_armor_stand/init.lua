@@ -20,7 +20,14 @@ local armor_stand_formspec = "size[8,7]" ..
 	"image[4,1.5;1,1;3d_armor_stand_feet.png]" ..
 	"image[5,1.5;1,1;3d_armor_stand_shield.png]" ..
 	"list[current_player;main;0,3;8,1;]" ..
-	"list[current_player;main;0,4.25;8,3;8]"
+	"list[current_player;main;0,4.25;8,3;8]" ..
+	"tooltip[equip;Equip this armor.\n\n" ..
+	  "If you are already wearing some armor\n" ..
+	  "pieces, they will be swapped instead.]" ..
+	"tooltip[unequip;Unequip your armor.\n\n" ..
+	  "The slots in the armor stand must be\n" ..
+	  "free, or the corresponding armor pieces\n" ..
+	  "will not be unequipped.]"
 
 local elements = {"head", "torso", "legs", "feet", "shield"}
 

@@ -7,6 +7,8 @@ local armor_stand_formspec = "size[8,7]" ..
 	default.gui_bg_img ..
 	default.gui_slots ..
 	default.get_hotbar_bg(0,3) ..
+	"button[0.5,0.5;2,1;equip;Equip]" ..
+	"button[0.5,1.5;2,1;unequip;Unequip]" ..
 	"list[context;armor_head;3,0.5;1,1;]" ..
 	"list[context;armor_torso;4,0.5;1,1;]" ..
 	"list[context;armor_legs;3,1.5;1,1;]" ..
@@ -136,6 +138,139 @@ local function remove_hidden_node(pos)
 	end
 end
 
+local function on_receive_fields(pos, formname, fields, sender)
+	if not sender or not sender:is_player() then
+		return
+	end
+
+	local node = minetest.get_node(pos)
+	local is_locked = nil
+
+	if node.name == "3d_armor_stand:armor_stand" then
+		is_locked = false
+	elseif node.name == "3d_armor_stand:locked_armor_stand" then
+		is_locked = true
+	else
+		-- Not an armor stand. This should never happen, anyways.
+		return
+	end
+
+	if fields.quit then
+		return
+	end
+
+	local name = sender:get_player_name()
+	local meta = minetest.get_meta(pos)
+
+	if is_locked and not has_locked_armor_stand_privilege(meta, sender) then
+		minetest.chat_send_player(name, "# Server: This armor stand isn't yours.")
+		easyvend.sound_error(sender)
+		return
+	end
+
+	if fields.equip or fields.unequip then
+
+		local inv = meta:get_inventory()
+		local pname, player_inv, armor_inv = armor:get_valid_player(sender, "[3d_armor_stand]")
+
+		-- Note: a nil check on pname alone would suffice, as other cases are
+		-- already caught (and logged!) by armor:get_valid_player() itself. However,
+		-- these additional checks make luacheck happy.
+		if not pname or not player_inv or not armor_inv then
+			minetest.chat_send_player(name, "# Server: General protection fault! " ..
+				"Please, try again or report to admin.")
+			return
+		end
+
+		-- Working on a list will hopefully make things a little faster, and partly
+		-- atomic. This cannot be done with the armor stand own inventory, though,
+		-- because it uses a separate inventory list per each group.
+		local armor_list = armor_inv:get_list("armor")
+
+		-- The logic is simple. For each existing element (aka, group) we aim to
+		-- swap the items in the corresponding slots of the armor stand inventory
+		-- and the player's armor inventory. Things are slightly different in the
+		-- two cases, though:
+		--   - equip: equip the pieces OR swap them if already worn.
+		--   - unequip: unequip pieces if there's room in the stand, otherwise skip.
+
+		local swap_count = 0
+
+		for _, element in ipairs(elements) do
+			local group = "armor_" .. element
+			local stand_stack = inv:get_stack(group, 1)
+
+			if
+				fields.unequip and     stand_stack:is_empty() or
+				fields.equip   and not stand_stack:is_empty()
+			then
+				local swap_pos = nil
+
+				-- Search for a wore piece of the same group, and/or an empty slot in
+				-- the player's armor inventory.
+				for i = 1, #armor_list do
+					local armor_stack = armor_list[i]
+
+					if fields.equip and armor_stack:is_empty() then
+						if not swap_pos then
+							-- First free slot.
+							swap_pos = i
+						end
+					elseif not armor_stack:is_empty() then
+						local def = armor_stack:get_definition()
+						if def.groups and def.groups[group] then
+							-- Slot with a piece with the same group.
+							swap_pos = i
+							break
+						end
+					end
+				end
+
+				-- If a swap position has been found, swap! Note that the source or
+				-- destination slots may be empty item stacks. (But not both, ofc.)
+				if swap_pos then
+					inv:set_stack(group, 1, armor_list[swap_pos])
+					armor_list[swap_pos] = stand_stack
+					swap_count = swap_count + 1
+				end
+			end
+		end
+
+		if swap_count == 0 then
+			if fields.equip then
+				minetest.chat_send_player(name, "# Server: Nothing to equip.")
+			else
+				minetest.chat_send_player(name, "# Server: Nothing to unequip, or no room on the armor stand.")
+			end
+		else
+			local pieces = swap_count > 1 and "pieces" or "piece"
+			local equipd = fields.equip and "equipped" or "unequipped"
+
+			minetest.chat_send_player(name, string.format(
+				"# Server: %d armor %s %s.", swap_count, pieces, equipd))
+
+			if fields.equip then
+				easyvend.sound_vend(pos)
+			else
+				easyvend.sound_setup(pos)
+			end
+
+			-- Update player's armor inventories (both detached and pinv).
+			armor_inv:set_list("armor", armor_list)
+			player_inv:set_list("armor", armor_list)
+
+			-- Update player's armor formspec.
+			armor:update_inventory(sender)
+
+			-- Actually apply the new armor stats to player.
+			armor:set_player_armor(sender)
+
+			-- Update the armor stand entity.
+			update_entity(pos)
+		end
+	end -- fields.equip or fields.unequip
+end
+
 minetest.register_node("3d_armor_stand:top", {
 	description = "Armor Stand Top",
 	paramtype = "light",
@@ -183,6 +318,7 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 		update_entity(pos)
 		return true -- Restart timer with same timeout.
 	end,
+	on_receive_fields = on_receive_fields,
 	can_dig = function(pos, player)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
@@ -273,6 +409,7 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 		update_entity(pos)
 		return true -- Restart timer with same timeout.
 	end,
+	on_receive_fields = on_receive_fields,
 	can_dig = function(pos, player)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()

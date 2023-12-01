@@ -86,6 +86,22 @@ end
 
 
 
+-- Persist player_labels.cast state into player's metadata. The inverted state
+-- is stored, so that absence of the key in player's metadata makes the nametag
+-- visible by default.
+local function persist_cast(pname)
+  local player = minetest.get_player_by_name(pname)
+  local plmeta = player:get_meta()
+
+  if player_labels.cast[pname] then
+    plmeta:set_string("hides_nametag", "") -- Removes the key.
+  else
+    plmeta:set_int("hides_nametag", 1)
+  end
+end
+
+
+
 -- Public API function.
 -- Returns 'true' if the player's nametag is ON.
 -- Returns 'false' if the player's nametag is OFF.
@@ -108,13 +124,23 @@ end
 -- Set up default state for new players.
 player_labels.on_joinplayer = function(player)
   local pname = player:get_player_name()
-  
+
   -- Start fresh.
   player_labels.cast[pname] = true
   player_labels.mark[pname] = 0
-  
-  -- Player labels are shown by default.
-  nametag_show(pname)
+
+  -- Restore previous state.
+  if player:get_meta():get_int("hides_nametag") ~= 0 then
+    player_labels.cast[pname] = false
+  end
+
+  -- Player labels are shown according to restored state.
+  if player_labels.cast[pname] then
+    nametag_show(pname)
+  else
+    minetest.chat_send_player(pname, "# Server: Avatar name broadcast is OFF.")
+    nametag_hide(pname)
+  end
 end
 
 
@@ -130,16 +156,19 @@ player_labels.toggle_nametag_broadcast = function(name)
     player_labels.cast[name] = true
     player_labels.enable_nametag_broadcast(name)
   end
+  persist_cast(name)
 end
 
 function player_labels.enable_nametag(pname)
 	player_labels.cast[pname] = true
 	player_labels.enable_nametag_broadcast(pname)
+  persist_cast(pname)
 end
 
 function player_labels.disable_nametag(pname)
 	player_labels.cast[pname] = false
 	player_labels.disable_nametag_broadcast(pname)
+  persist_cast(pname)
 end
 
 

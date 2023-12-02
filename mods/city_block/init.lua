@@ -627,7 +627,7 @@ if not city_block.run_once then
 		end,
 
 		-- Called by rename LBM.
-		_on_rename_check = function(pos)
+		_on_update_infotext = function(pos)
 			local meta = minetest.get_meta(pos)
 			local owner = meta:get_string("owner")
 			-- Nobody placed this block.

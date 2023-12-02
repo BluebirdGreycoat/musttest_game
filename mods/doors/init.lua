@@ -475,7 +475,7 @@ function doors.register(name, def)
 		end
 
 		-- Called by rename LBM.
-		def._on_rename_check = function(pos)
+		def._on_update_infotext = function(pos)
 			local meta = minetest.get_meta(pos)
 			local owner = meta:get_string("doors_owner")
 			-- Nobody placed this block.
@@ -687,7 +687,7 @@ function doors.register_trapdoor(name, def)
 		end
 
 		-- Called by rename LBM.
-		def._on_rename_check = function(pos)
+		def._on_update_infotext = function(pos)
 			local meta = minetest.get_meta(pos)
 			local owner = meta:get_string("doors_owner")
 			-- Nobody placed this block.
@@ -866,7 +866,7 @@ function doors.register_trapdoor_climbable(name, def)
 		end
 
 		-- Called by rename LBM.
-		def._on_rename_check = function(pos)
+		def._on_update_infotext = function(pos)
 			local meta = minetest.get_meta(pos)
 			local owner = meta:get_string("doors_owner")
 			-- Nobody placed this block.

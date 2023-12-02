@@ -576,7 +576,7 @@ minetest.register_node("circular_saw:circular_saw",  {
   on_metadata_inventory_take = circular_saw.on_metadata_inventory_take,
 
 	-- Called by rename LBM.
-	_on_rename_check = function(pos)
+	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		-- Nobody placed this block.

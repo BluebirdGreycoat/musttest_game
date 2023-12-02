@@ -1,6 +1,8 @@
 -- mods/default/craftitems.lua
 
 if not minetest.global_exists("default") then default = {} end
+
+-- To be called by "stick" items to force infotext/formspec node updates.
 function default.strike_protection(itemstack, user, pt)
 	if not user or not user:is_player() then
 		return
@@ -21,8 +23,9 @@ function default.strike_protection(itemstack, user, pt)
 	-- Update names in infotext.
 	local node = minetest.get_node(pt.under)
 	local ndef = minetest.registered_items[node.name]
-	if ndef and ndef._on_rename_check then
-		ndef._on_rename_check(pt.under)
+
+	if ndef and ndef._on_update_infotext then
+		ndef._on_update_infotext(pt.under)
 	end
 end
 

@@ -780,7 +780,7 @@ minetest.register_node("protector:protect", {
 	on_blast = function() end,
 
 	-- Called by rename LBM.
-	_on_rename_check = function(pos)
+	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		-- Nobody placed this block.
@@ -875,7 +875,7 @@ minetest.register_node("protector:protect3", {
 	on_blast = function() end,
 
 	-- Called by rename LBM.
-	_on_rename_check = function(pos)
+	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		local placedate = meta:get_string("placedate")
@@ -990,7 +990,7 @@ minetest.register_node("protector:protect2", {
 	on_blast = function() end,
 
 	-- Called by rename LBM.
-	_on_rename_check = function(pos)
+	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		local placedate = meta:get_string("placedate")
@@ -1094,7 +1094,7 @@ minetest.register_node("protector:protect4", {
 	on_blast = function() end,
 
 	-- Called by rename LBM.
-	_on_rename_check = function(pos)
+	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		local placedate = meta:get_string("placedate")

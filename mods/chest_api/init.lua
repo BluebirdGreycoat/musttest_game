@@ -80,7 +80,7 @@ if not chest_api.run_once then
 			end
 
 			-- Called by rename LBM.
-			def._on_rename_check = function(...)
+			def._on_update_infotext = function(...)
 				return chest_api.protected_on_rename_check(...)
 			end
 		else

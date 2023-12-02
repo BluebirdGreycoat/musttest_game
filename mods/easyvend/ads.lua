@@ -906,7 +906,7 @@ end
 
 
 
-function ads._on_rename_check(pos)
+function ads._on_update_infotext(pos)
 	local meta = minetest.get_meta(pos)
 	local pname = meta:get_string("owner")
 	meta:set_string("infotext", "Market Trade Booth\nOwned by <" .. rename.gpn(pname) .. ">!")
@@ -1142,8 +1142,8 @@ if not ads.run_once then
 			return itemstack
 		end,
 
-		_on_rename_check = function(...)
-			ads._on_rename_check(...)
+		_on_update_infotext = function(...)
+			ads._on_update_infotext(...)
 		end,
 
 		allow_metadata_inventory_move = function(...)

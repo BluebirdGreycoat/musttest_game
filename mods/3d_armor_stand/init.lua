@@ -205,11 +205,13 @@ local function on_receive_fields(pos, formname, fields, sender)
 
 		for _, element in ipairs(elements) do
 			local group = "armor_" .. element
+			inv:set_size(group, 1) -- Old stands might be missing a list.
 			local stand_stack = inv:get_stack(group, 1)
 
 			if
-				fields.unequip and     stand_stack:is_empty() or
-				fields.equip   and not stand_stack:is_empty()
+				(fields.unequip and     stand_stack:is_empty())
+				or
+				(fields.equip   and not stand_stack:is_empty())
 			then
 				local swap_pos = nil
 

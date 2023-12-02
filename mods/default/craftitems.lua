@@ -24,8 +24,20 @@ function default.strike_protection(itemstack, user, pt)
 	local node = minetest.get_node(pt.under)
 	local ndef = minetest.registered_items[node.name]
 
-	if ndef and ndef._on_update_infotext then
+	if not ndef then
+		return
+	end
+
+	if ndef._on_update_infotext then
 		ndef._on_update_infotext(pt.under)
+	end
+
+	if ndef._on_update_formspec then
+		ndef._on_update_formspec(pt.under)
+	end
+
+	if ndef._on_update_entity then
+		ndef._on_update_entity(pt.under)
 	end
 end
 

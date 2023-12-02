@@ -106,8 +106,9 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	toolranks.apply_description(imeta, itemstack:get_definition())
 
 	local dir = player:get_look_dir()
-	obj:set_velocity({x=dir.x*stiffness, y=dir.y*stiffness, z=dir.z*stiffness})
-	obj:set_acceleration({x=dir.x*-3, y=-8.5, z=dir.z*-3})
+	local vel = stiffness * 2
+	obj:set_velocity({x=dir.x*vel, y=dir.y*vel, z=dir.z*vel})
+	obj:set_acceleration({x=0, y=-5, z=0})
 	obj:set_yaw(player:get_look_horizontal() - (math.pi / 2))
 
 	if is_cross then

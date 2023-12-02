@@ -9,7 +9,7 @@ function tinderbox.on_use(itemstack, user, pt)
 	local pname = user:get_player_name()
 
 	local fakestack = ItemStack("dusts:coal")
-	local fakestack = real_torch.relight(fakestack, user, pt)
+	fakestack = real_torch.relight(fakestack, user, pt)
 	if not fakestack or fakestack:get_count() ~= 0 then return end -- Tinderbox was not used.
 
 	if itemstack:get_name() == "tinderbox:tinderbox" and itemstack:get_count() > 1 then

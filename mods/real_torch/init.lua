@@ -99,6 +99,7 @@ function real_torch.relight(itemstack, user, pointed_thing)
 
 	if rep then
 		minetest.add_node(pos, {name = nod.name, param2 = nod.param2})
+		minetest.sound_play("real_torch_light", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 
 		if not is_creative(user:get_player_name()) then
 			itemstack:take_item()

@@ -78,6 +78,38 @@ end
 
 
 
+function torches.on_use(itemstack, user, pointed_thing)
+	if not user or not user:is_player() then return end
+	if pointed_thing.type ~= "node" then return end
+
+	local torchtype = nil
+	local ndef = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name]
+	if not ndef or not ndef.drop then return end
+	if type(ndef.drop) == "string" then torchtype = ndef.drop end
+	if not torchtype then return end
+
+	local fakestack = ItemStack("dusts:coal")
+	fakestack = real_torch.relight(fakestack, user, pointed_thing)
+	if not fakestack or fakestack:get_count() ~= 0 then return end
+
+	-- Add unlit torch to player's inventory OUTSIDE this function's stack frame.
+	local pname = user:get_player_name()
+	local pos = pointed_thing.under
+
+	minetest.after(0, function()
+		local user = minetest.get_player_by_name(pname)
+		if not user then return end
+		local inv = user:get_inventory()
+		local leftover = inv:add_item("main", ItemStack(torchtype))
+		if not leftover:is_empty() then minetest.add_item(pos, leftover) end
+	end)
+
+	itemstack:take_item()
+	return itemstack
+end
+
+
+
 if not torches.run_once then
 	dofile(torches.modpath .. "/iron_torch.lua")
 	dofile(torches.modpath .. "/cave_torch.lua")

@@ -78,6 +78,10 @@ minetest.register_node("torches:torch_floor", {
 		return torches.put_torch(...)
   end,
 
+  on_use = function(...)
+    return torches.on_use(...)
+  end,
+
 	floodable = true,
 	on_rotate = false,
 

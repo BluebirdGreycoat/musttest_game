@@ -2,7 +2,7 @@
 
 if not minetest.global_exists("default") then default = {} end
 
--- To be called by "stick" items to force infotext/formspec node updates.
+-- To be called by "stick" items to force infotext/formspec/entity node updates.
 function default.strike_protection(itemstack, user, pt)
 	if not user or not user:is_player() then
 		return
@@ -28,14 +28,26 @@ function default.strike_protection(itemstack, user, pt)
 		return
 	end
 
+	-- Note: this callback shall only update "infotext" metadata key, and any data
+	-- directly related to infotext (such as a cached "dname" variable). The
+	-- reason for this is that this callback can also be called from LBM.
 	if ndef._on_update_infotext then
 		ndef._on_update_infotext(pt.under)
 	end
 
+	-- Note: this callback can do whatever (it is not called from LBM) but usually
+	-- you should only update the node formspec and directly related invlists, if
+	-- needed.
+	--
+	-- Special note on names: since this function is NOT called from LBM, you
+	-- should always avoid using a player's name in formspecs, since it will not
+	-- automatically update if the player changes their display name.
 	if ndef._on_update_formspec then
 		ndef._on_update_formspec(pt.under)
 	end
 
+	-- Note: this callback should only be used to force-update entity displays
+	-- such as on itemframe and armor stand nodes.
 	if ndef._on_update_entity then
 		ndef._on_update_entity(pt.under)
 	end

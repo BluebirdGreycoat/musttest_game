@@ -142,10 +142,16 @@ minetest.register_node("itemframes:frame",{
 		meta:set_string("owner",placer:get_player_name())
 		meta:set_string("infotext", string.format("Item Frame (Owned by <%s>!)", rename.gpn(placer:get_player_name())))
 	end,
+
+	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
 		on_rename_check(pos, "Item Frame")
+	end,
+
+	_on_update_entity = function(pos)
 		update_item(pos, minetest.get_node(pos))
 	end,
+
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end
 		local meta = minetest.get_meta(pos)
@@ -219,10 +225,16 @@ minetest.register_node("itemframes:pedestal",{
 		meta:set_string("owner",placer:get_player_name())
 		meta:set_string("infotext", string.format("Pedestal (Owned by <%s>!)", rename.gpn(placer:get_player_name())))
 	end,
+
+	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
 		on_rename_check(pos, "Pedestal")
+	end,
+
+	_on_update_entity = function(pos)
 		update_item(pos, minetest.get_node(pos))
 	end,
+
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end
 		local meta = minetest.get_meta(pos)

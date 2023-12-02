@@ -586,7 +586,9 @@ minetest.register_node("circular_saw:circular_saw",  {
 		local dname = rename.gpn(owner)
 
 		meta:set_string("rename", dname)
+	end,
 
+	_on_update_formspec = function(pos)
 		-- Update circular saw.
 		circular_saw:update_inventory(pos, 0)
 	end,

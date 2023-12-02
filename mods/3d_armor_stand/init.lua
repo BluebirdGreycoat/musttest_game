@@ -341,10 +341,12 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 		add_hidden_node(pos, placer)
 	end,
 
-	-- Called by rename LBM.
-	_on_update_infotext = function(pos)
+	_on_update_formspec = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", armor_stand_formspec)
+	end,
+
+	_on_update_entity = function(pos)
 		update_entity(pos)
 	end,
 
@@ -441,8 +443,15 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 	-- Called by rename LBM.
 	_on_update_infotext = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec", armor_stand_formspec)
 		meta:set_string("infotext", "Armor Stand (Owned by <" .. rename.gpn(meta:get_string("owner")) .. ">!)")
+	end,
+
+	_on_update_formspec = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec", armor_stand_formspec)
+	end,
+
+	_on_update_entity = function(pos)
 		update_entity(pos)
 	end,
 

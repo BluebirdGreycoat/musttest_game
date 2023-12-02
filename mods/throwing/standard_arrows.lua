@@ -45,6 +45,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		textures = {"throwing:arrow_" .. kind .. "_box"},
 		lastpos={},
 		collisionbox = {0,0,0,0,0,0},
+		static_save = false,
 	}
 	
 	function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)

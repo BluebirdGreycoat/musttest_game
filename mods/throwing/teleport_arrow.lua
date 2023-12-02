@@ -39,6 +39,7 @@ local THROWING_ARROW_ENTITY={
 	lastpos = {},
 	collisionbox = {0,0,0,0,0,0},
 	player = "",
+	static_save = false,
 }
 
 local air_nodes = {"air", "group:airlike"}

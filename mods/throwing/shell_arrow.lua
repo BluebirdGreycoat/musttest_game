@@ -38,6 +38,7 @@ local THROWING_ARROW_ENTITY={
 	textures = {"throwing:arrow_shell_box"},
 	lastpos={},
 	collisionbox = {0,0,0,0,0,0},
+	static_save = false,
 }
 
 local radius = 1

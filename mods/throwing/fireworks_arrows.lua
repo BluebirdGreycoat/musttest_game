@@ -39,6 +39,7 @@ local function throwing_register_fireworks(color, desc)
 		textures = {"throwing:arrow_fireworks_" .. color .. "_box"},
 		lastpos={},
 		collisionbox = {0,0,0,0,0,0},
+		static_save = false,
 	}
 	
 	local radius = 0.5

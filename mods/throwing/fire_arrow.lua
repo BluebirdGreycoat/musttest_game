@@ -44,6 +44,7 @@ local THROWING_ARROW_ENTITY={
 	textures = {"throwing:arrow_fire_box"},
 	lastpos={},
 	collisionbox = {0,0,0,0,0,0},
+	static_save = false,
 }
 
 function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)

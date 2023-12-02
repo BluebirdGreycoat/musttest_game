@@ -125,6 +125,21 @@ jaunt.on_receive_fields = function(player, formname, fields)
 							-- Make sure it's air.
 							local finpos = minetest.find_node_near(tarpos, 2, "air", true)
 
+							-- Make sure target isn't standing in/on something that disallows teleport.
+							if true then
+								local node = sky.get_last_walked_node(target)
+								local ndef = minetest.registered_nodes[node.name]
+								if ndef and ndef.disallow_teleport then
+									finpos = nil
+								end
+
+								node = sky.get_last_walked_nodeabove(target)
+								ndef = minetest.registered_nodes[node.name]
+								if ndef and ndef.disallow_teleport then
+									finpos = nil
+								end
+							end
+
 							if finpos and rc.current_realm_at_pos(finpos) == rc.current_realm_at_pos(uspos) then
 								if total_dist < range then
 									-- Alert player that someone's coming to them.

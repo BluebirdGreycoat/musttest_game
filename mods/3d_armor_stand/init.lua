@@ -514,6 +514,9 @@ minetest.register_entity("3d_armor_stand:armor_entity", {
 		textures = {"3d_armor_trans.png"},
 	},
 	_pos = nil,
+	get_staticdata = function(self)
+		return ""
+	end,
 	on_activate = function(self)
 		local pos = self.object:get_pos()
 		if pos then

@@ -8,11 +8,12 @@ local math_random = math.random
 
 
 
-sfn.spawn_falling_node = function(pos, node, meta)
+-- 'tablemeta' must be in table form, WITHOUT userdata.
+sfn.spawn_falling_node = function(pos, node, tablemeta)
 	ambiance.particles_on_dig(pos, node)
   local obj = minetest.add_entity(pos, "__builtin:falling_node")
   if obj then
-    obj:get_luaentity():set_node(node, meta)
+    obj:get_luaentity():set_node(node, tablemeta)
   end
 end
 
@@ -24,9 +25,9 @@ sfn.drop_node = function(pos)
 	end
 	if node.name ~= "air" and node.name ~= "ignore" then
 		if minetest.get_item_group(node.name, "immovable") == 0 then
-			local meta = minetest.get_meta(pos):to_table()
+			local tablemeta = minetest.get_meta(pos):to_table()
 			minetest.remove_node(pos)
-			sfn.spawn_falling_node(pos, node, meta)
+			sfn.spawn_falling_node(pos, node, tablemeta)
 			return true -- Success.
 		end
 	end

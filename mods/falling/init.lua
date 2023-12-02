@@ -211,6 +211,7 @@ minetest.register_entity(":__builtin:falling_node", {
   node = {},
   meta = {},
 
+  -- Warning: 'meta' sometimes contains userdata from the engine, or builtin.
   set_node = function(self, node, meta)
 		-- If this is a snow node and snow is supposed to be melted, then just remove the falling entity so we don't create gfx artifacts.
 		if node.name == "default:snow" then
@@ -222,12 +223,27 @@ minetest.register_entity(":__builtin:falling_node", {
 
     self.node = node
     self.meta = meta or {}
+
+    -- If we got userdata meta, convert to table form.
+		if type(meta.to_table) == "function" then
+			meta = meta:to_table()
+		end
+		for _, list in pairs(meta.inventory or {}) do
+			for i, stack in pairs(list) do
+				if type(stack) == "userdata" then
+					list[i] = stack:to_string()
+				end
+			end
+		end
+
     self.object:set_properties({
       is_visible = true,
       textures = {node.name},
     })
 		self.pharm, self.mharm = node_harm(node.name)
 		self.sound = node_sound(node.name)
+
+    --minetest.log("TEST1: " .. dump(self.meta))
   end,
 
   get_staticdata = function(self)
@@ -238,7 +254,10 @@ minetest.register_entity(":__builtin:falling_node", {
 			mharm = self.mharm,
 			sound = self.sound,
     }
-    return core.serialize(ds)
+
+    --minetest.log("TEST2: " .. dump(ds))
+
+    return minetest.serialize(ds)
   end,
 
   on_activate = function(self, staticdata)
@@ -250,7 +269,7 @@ minetest.register_entity(":__builtin:falling_node", {
 			return
 		end
 
-    local ds = core.deserialize(staticdata)
+    local ds = minetest.deserialize(staticdata)
     if ds and ds.node then
       self:set_node(ds.node, ds.meta)
     elseif ds then

@@ -35,6 +35,13 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 		return ndef.on_rightclick(under, node, placer, itemstack, pt) or itemstack
 	end
 
+	-- Check if we can relight an existing torch.
+	-- If we get an itemstack (and not nil), then we succeeded.
+	if true then
+		local stack = torches.on_use(itemstack, placer, pt)
+		if stack then return stack end
+	end
+
 	local def = minetest.reg_ns_nodes[itemstack:get_name()]
 	local good = false
 	if def then

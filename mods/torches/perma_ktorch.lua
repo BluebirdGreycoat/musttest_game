@@ -45,9 +45,11 @@ minetest.register_node("torches:perma_ktorch_floor", {
 		return torches.put_torch(...)
   end,
 
+  --[[
   on_use = function(...)
     return torches.on_use(...)
   end,
+  --]]
 
 	floodable = true,
 	on_rotate = false,

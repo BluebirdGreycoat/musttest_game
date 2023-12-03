@@ -3,11 +3,16 @@ local MAX_TEXT_SIZE = 10000
 local MAX_TITLE_SIZE = 80
 local SHORT_TITLE_SIZE = 35
 
+books.MAX_TEXT_SIZE = MAX_TEXT_SIZE
+books.MAX_TITLE_SIZE = MAX_TITLE_SIZE
+books.SHORT_TITLE_SIZE = SHORT_TITLE_SIZE
+
 
 
 local lpp = 14 -- Lines per book's page
 function books.book_on_use(itemstack, user)
 	local player_name = user:get_player_name()
+	local pos = user:get_pos()
 	local meta = itemstack:get_meta()
 	local title, text, owner = "", "", player_name
 	local page, page_max, lines, string = 1, 1, {}, ""
@@ -42,7 +47,7 @@ function books.book_on_use(itemstack, user)
 
 	local formspec
 	if owner == player_name then
-		formspec = "size[8,8]" .. default.gui_bg ..
+		formspec = "size[8,8.3]" .. default.gui_bg ..
 			default.gui_bg_img ..
 			"field[0.5,1;7.5,0;title;Title:;" ..
 				minetest.formspec_escape(title) .. "]" ..
@@ -50,9 +55,9 @@ function books.book_on_use(itemstack, user)
 				minetest.formspec_escape(text) .. "]" ..
 			"button_exit[2.5,7.5;3,1;save;Save]"
 	else
-		formspec = "size[8,8]" .. default.gui_bg ..
+		formspec = "size[8,8.3]" .. default.gui_bg ..
 			default.gui_bg_img ..
-			"label[0.5,0.5;by " .. owner .. "]" ..
+			"label[0.5,0.5;by <" .. rename.gpn(owner) .. ">]" ..
 			"tablecolumns[color;text]" ..
 			"tableoptions[background=#00000000;highlight=#00000000;border=false]" ..
 			"table[0.4,0;7,0.5;title;#FFFF00," .. minetest.formspec_escape(title) .. "]" ..
@@ -63,6 +68,7 @@ function books.book_on_use(itemstack, user)
 			"button[4.9,7.6;0.8,0.8;book_next;>]"
 	end
 
+	minetest.sound_play("book_open", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 	minetest.show_formspec(player_name, "books:book_formspec", formspec)
 	return itemstack
 end
@@ -73,6 +79,7 @@ books.on_player_receive_fields = function(player, formname, fields)
 	if formname ~= "books:book_formspec" then return end
 	local inv = player:get_inventory()
 	local stack = player:get_wielded_item()
+	local pos = player:get_pos()
 
 	if fields.save and fields.title and fields.text
 			and fields.title ~= "" and fields.text ~= "" then
@@ -117,6 +124,8 @@ books.on_player_receive_fields = function(player, formname, fields)
 			stack:get_meta():from_table({ fields = data })
 		end
 
+		minetest.sound_play("book_write", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
+
 	elseif fields.book_next or fields.book_prev then
 		local data = stack:get_meta():to_table().fields
 		if not data or not data.page then
@@ -140,6 +149,10 @@ books.on_player_receive_fields = function(player, formname, fields)
 
 		stack:get_meta():from_table({fields = data})
 		stack = books.book_on_use(stack, player)
+
+		minetest.sound_play("book_turn", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
+	elseif fields.quit then
+		minetest.sound_play("book_close", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 	end
 
 	-- Update stack

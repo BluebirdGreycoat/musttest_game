@@ -16,7 +16,7 @@ minetest.register_node("real_torch:torch", {
 	sunlight_propagates = true,
 	walkable = false,
 	liquids_pointable = false,
-	groups = utility.dig_groups("item", {flammable=1, attached_node=1}),
+	groups = utility.dig_groups("item", {flammable=1, attached_node=1, torch_unlit=1}),
 	drop = "real_torch:torch",
 	selection_box = {
 		type = "wallmounted",
@@ -60,7 +60,7 @@ minetest.register_node("real_torch:torch_wall", {
 	light_source = 3,
 	sunlight_propagates = true,
 	walkable = false,
-	groups = utility.dig_groups("item", {flammable=1, not_in_creative_inventory=1, attached_node=1}),
+	groups = utility.dig_groups("item", {flammable=1, not_in_creative_inventory=1, attached_node=1, torch_unlit=1}),
 	drop = "real_torch:torch",
 	floodable = true,
 	on_rotate = false,
@@ -94,7 +94,7 @@ minetest.register_node("real_torch:torch_ceiling", {
 	light_source = 3,
 	sunlight_propagates = true,
 	walkable = false,
-	groups = utility.dig_groups("item", {flammable=1, not_in_creative_inventory=1, attached_node=1}),
+	groups = utility.dig_groups("item", {flammable=1, not_in_creative_inventory=1, attached_node=1, torch_unlit=1}),
 	drop = "real_torch:torch",
 	selection_box = {
 		type = "wallmounted",

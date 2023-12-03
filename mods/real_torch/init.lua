@@ -68,6 +68,8 @@ function real_torch.relight(itemstack, user, pointed_thing)
 		return
 	end
 
+	--minetest.chat_send_all('test2.1')
+
 	local pos = pointed_thing.under
 	local nod = minetest.get_node(pos)
 	local rep = false
@@ -97,6 +99,8 @@ function real_torch.relight(itemstack, user, pointed_thing)
 		rep = true
 	end
 
+	--minetest.chat_send_all('test2.2')
+
 	if rep then
 		minetest.add_node(pos, {name = nod.name, param2 = nod.param2})
 		minetest.sound_play("real_torch_light", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
@@ -105,6 +109,8 @@ function real_torch.relight(itemstack, user, pointed_thing)
 			itemstack:take_item()
 		end
 	end
+
+	--minetest.chat_send_all('test2.3')
 
 	return itemstack
 end

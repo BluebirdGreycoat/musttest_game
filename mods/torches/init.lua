@@ -37,9 +37,21 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 
 	-- Check if we can relight an existing torch.
 	-- If we get an itemstack (and not nil), then we succeeded.
-	if true then
-		local stack = torches.on_use(itemstack, placer, pt)
-		if stack then return stack end
+	if pt.type == "node" then
+		local tpos = minetest.find_node_near(pt.under, 0, "group:torch_unlit", true)
+		if not tpos then
+			tpos = minetest.find_node_near(pt.above, 0, "group:torch_unlit", true)
+		end
+		if tpos then
+			--minetest.chat_send_all('test')
+			local fake_pt = {
+				type = "node",
+				under = tpos,
+				above = tpos,
+			}
+			local stack = torches.on_use(itemstack, placer, fake_pt)
+			if stack then return stack end
+		end
 	end
 
 	local def = minetest.reg_ns_nodes[itemstack:get_name()]
@@ -89,11 +101,15 @@ function torches.on_use(itemstack, user, pointed_thing)
 	if not user or not user:is_player() then return end
 	if pointed_thing.type ~= "node" then return end
 
+	--minetest.chat_send_all('test1')
+
 	local torchtype = nil
 	local ndef = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name]
 	if not ndef or not ndef.drop then return end
 	if type(ndef.drop) == "string" then torchtype = ndef.drop end
 	if not torchtype then return end
+
+	--minetest.chat_send_all('test2')
 
 	local fakestack = ItemStack("dusts:coal")
 	fakestack = real_torch.relight(fakestack, user, pointed_thing)
@@ -110,6 +126,8 @@ function torches.on_use(itemstack, user, pointed_thing)
 		local leftover = inv:add_item("main", ItemStack(torchtype))
 		if not leftover:is_empty() then minetest.add_item(pos, leftover) end
 	end)
+
+	--minetest.chat_send_all('test3')
 
 	itemstack:take_item()
 	return itemstack

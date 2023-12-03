@@ -37,7 +37,13 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 
 	-- Check if we can relight an existing torch.
 	-- If we get an itemstack (and not nil), then we succeeded.
-	if pt.type == "node" then
+	--
+	-- This code is also used by unlit torches, so we must make sure the itemstack
+	-- is NOT in the unlit torch group. Otherwise you could replace/relight
+	-- torches with unlit ones.
+	--
+	-- Note: burnt-out torches can be relit/replaced even if protected.
+	if pt.type == "node" and minetest.get_item_group(itemstack:get_name(), "torch_unlit") == 0 then
 		local tpos = minetest.find_node_near(pt.under, 0, "group:torch_unlit", true)
 		if not tpos then
 			tpos = minetest.find_node_near(pt.above, 0, "group:torch_unlit", true)
@@ -90,6 +96,7 @@ function torches.put_torch(itemstack, placer, pt, only_wall)
 	end
 	fakestack:set_name(torch)
 
+	-- Protection check is done by this function.
 	itemstack = minetest.item_place_node(fakestack, placer, pt, wdir)
 	itemstack:set_name(def._torches_node_floor)
 	return itemstack

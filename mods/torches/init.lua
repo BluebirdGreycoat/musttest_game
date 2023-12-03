@@ -113,7 +113,9 @@ end
 if not torches.run_once then
 	dofile(torches.modpath .. "/iron_torch.lua")
 	dofile(torches.modpath .. "/cave_torch.lua")
+	dofile(torches.modpath .. "/perma_torch.lua")
 	dofile(torches.modpath .. "/kalite_torch.lua")
+	dofile(torches.modpath .. "/perma_ktorch.lua")
 
 	local c = "torches:core"
 	local f = torches.modpath .. "/init.lua"

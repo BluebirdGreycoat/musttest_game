@@ -98,7 +98,7 @@ function handholds.on_use(itemstack, player, pointed_thing)
 			}
 
 			local wdef = itemstack:get_definition()
-			itemstack:add_wear(256)
+			itemstack:add_wear(10)
 			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
 				minetest.sound_play(wdef.sound.breaks, {pos = pointed_thing.above, gain = 0.5}, true)
 			end

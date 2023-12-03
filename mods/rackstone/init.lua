@@ -255,7 +255,11 @@ minetest.register_node("rackstone:redrack_cobble", {
 
 minetest.register_node("rackstone:nether_grit", {
   description = "Nether Grit",
-  tiles = {"rackstone_redrack2.png"},
+	tiles = {{
+		name = "rackstone_redrack2_animated.png",
+		animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 5.0},
+	}},
+  --tiles = {"rackstone_redrack2.png"},
   groups = utility.dig_groups("racksand", {falling_node=1, disable_jump=1}),
   sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
@@ -265,6 +269,7 @@ minetest.register_node("rackstone:nether_grit", {
   liquid_alternative_source = "rackstone:nether_grit",
   liquid_renewable = false,
   liquid_range = 0,
+  light_source = 2,
 
   walkable = false,
 

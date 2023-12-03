@@ -1,4 +1,8 @@
 
+if not minetest.global_exists("handholds") then handholds = {} end
+handholds.modpath = minetest.get_modpath("handholds")
+handholds.players = handholds.players or {}
+
 -- Localize for performance.
 local math_random = math.random
 
@@ -64,6 +68,93 @@ local function remove_handholds(pos)
 		end
 	end
 end
+
+
+
+function handholds.on_use(itemstack, player, pointed_thing)
+	local pname = player:get_player_name()
+
+	-- Ensure pointing at a SIDE face, not top or bottom.
+	if not pointed_thing or
+			pointed_thing.type ~= "node" or
+			pointed_thing.under.y + 1 == pointed_thing.above.y or
+			pointed_thing.under.y - 1 == pointed_thing.above.y then
+		return
+	end
+
+	local control = player:get_player_control()
+	if control.up and control.jump then
+		local last = handholds.players[pname] or {time=0}
+		local timenow = os.time()
+
+		-- Limit to 1/sec to disallow climbing shear walls by spamclicking.
+		if timenow > last.time then
+			local dir = player:get_look_dir()
+			ambiance.sound_play("climbing_pick_strike", pointed_thing.above, 0.5, 30)
+			player:add_velocity({x=dir.x, y=8.0, z=dir.z})
+
+			handholds.players[pname] = {
+				time = os.time(),
+			}
+
+			local wdef = itemstack:get_definition()
+			itemstack:add_wear(256)
+			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+				minetest.sound_play(wdef.sound.breaks, {pos = pointed_thing.above, gain = 0.5}, true)
+			end
+			return itemstack
+		end
+		return
+	end
+
+	-- Can't put handholds in protected surfaces.
+	if minetest.is_protected(pointed_thing.under, pname) or minetest.is_protected(pointed_thing.above, pname) then
+		return
+	end
+
+	local node_def =
+		minetest.reg_ns_nodes[minetest.get_node(pointed_thing.above).name]
+	if not node_def or not node_def.buildable_to then
+		return
+	end
+
+	local node_name = minetest.get_node(pointed_thing.under).name
+	local rotation = minetest.dir_to_facedir(
+		vector.subtract(pointed_thing.under, pointed_thing.above))
+
+	if node_name == "default:stone" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:stone", param2 = rotation})
+	elseif node_name == "default:desert_stone" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:desert_stone", param2 = rotation})
+	elseif node_name == "default:sandstone" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:sandstone", param2 = rotation})
+	elseif node_name == "default:ice" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:ice", param2 = rotation})
+	elseif node_name == "rackstone:rackstone" or node_name == "rackstone:mg_rackstone" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:rackstone", param2 = rotation})
+	elseif node_name == "rackstone:redrack" or node_name == "rackstone:mg_redrack" then
+		minetest.add_node(pointed_thing.under,
+			{name = "handholds:redrack", param2 = rotation})
+	else
+		return
+	end
+
+	minetest.add_node(pointed_thing.above, {name = "handholds:climbable_air"})
+	ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
+
+	local wdef = itemstack:get_definition()
+	itemstack:add_wear(256)
+	if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+		minetest.sound_play(wdef.sound.breaks, {pos = pointed_thing.above, gain = 0.5}, true)
+	end
+	return itemstack
+end
+
 
 
 -- climbable air!
@@ -245,61 +336,7 @@ minetest.register_tool("handholds:climbing_pick", {
 	description = "Climbing Pick",
 	inventory_image = "handholds_tool.png",
 	sound = {breaks = "default_tool_breaks"},
-	on_use = function(itemstack, player, pointed_thing)
-		if not pointed_thing or 
-				pointed_thing.type ~= "node" or 
-				minetest.is_protected(pointed_thing.under, player:get_player_name()) or
-				minetest.is_protected(pointed_thing.above, player:get_player_name()) or
-				pointed_thing.under.y + 1 == pointed_thing.above.y or
-				pointed_thing.under.y - 1 == pointed_thing.above.y then
-			return
-		end
-
-		local node_def = 
-			minetest.reg_ns_nodes[minetest.get_node(pointed_thing.above).name]
-		if not node_def or not node_def.buildable_to then
-			return
-		end
-
-		local node_name = minetest.get_node(pointed_thing.under).name
-		local rotation = minetest.dir_to_facedir(
-			vector.subtract(pointed_thing.under, pointed_thing.above))
-
-		if node_name == "default:stone" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:stone", param2 = rotation})
-		elseif node_name == "default:desert_stone" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:desert_stone", param2 = rotation})
-		elseif node_name == "default:sandstone" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:sandstone", param2 = rotation})
-		elseif node_name == "default:ice" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:ice", param2 = rotation})
-		elseif node_name == "rackstone:rackstone" or node_name == "rackstone:mg_rackstone" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:rackstone", param2 = rotation})
-		elseif node_name == "rackstone:redrack" or node_name == "rackstone:mg_redrack" then
-			minetest.add_node(pointed_thing.under,
-				{name = "handholds:redrack", param2 = rotation})
-		else
-			return
-		end
-
-		minetest.add_node(pointed_thing.above, {name = "handholds:climbable_air"})
-		ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
-
-		if not minetest.settings:get_bool("creative_mode") then
-			local wdef = itemstack:get_definition()
-			itemstack:add_wear(256)
-			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
-				minetest.sound_play(wdef.sound.breaks,
-					{pos = pointed_thing.above, gain = 0.5}, true)
-			end
-			return itemstack
-		end
-	end
+	on_use = function(...) return handholds.on_use(...) end,
 })
 
 minetest.register_craft({

@@ -944,9 +944,14 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	local melee_hit = true
 	local stomp_hit = false
+	local from_env = false
 
 	if tool_capabilities.damage_groups.from_stomp then
 		stomp_hit = true
+	end
+
+	if tool_capabilities.damage_groups.from_env then
+		from_env = true
 	end
 
 	if tool_capabilities.damage_groups.from_arrow then
@@ -998,7 +1003,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- PvP is disabled for players in jail. This fixes a possible way to exploit jail.
-	if jail.is_player_in_jail(hitter) or jail.is_player_in_jail(player) then
+	if not from_env and (jail.is_player_in_jail(hitter) or jail.is_player_in_jail(player)) then
 		minetest.chat_send_player(hitter:get_player_name(), "# Server: Brawling is not allowed in jail.")
 		return true
 	end

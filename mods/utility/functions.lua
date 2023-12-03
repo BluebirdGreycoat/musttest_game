@@ -26,10 +26,13 @@ function utility.damage_player(player, damage_type, damage, reason)
 
 	player:punch(player, 1.0, {
 		full_punch_interval = 1.0,
-		damage_groups = {[damage_type] = damage},
+		damage_groups = {[damage_type] = damage, from_env = 1},
 	}, nil)
 	-- Note: never set 'damage_groups.from_arrow' here.
 	-- That has special meaning to the cityblock code!
+	--
+	-- Note: 'from_env' informs the cityblock code that this punch should NOT be
+	-- treated as PvP. This is damage from the environment, OR from a mob.
 end
 
 

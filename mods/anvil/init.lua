@@ -1,4 +1,8 @@
 
+-- This is a cleanroom reimplementation of the GPL "anvil" mod commonly found
+-- lying around. This reimplementation is developed from memory and in-game
+-- (loose) behavior testing. It is provided under the MIT license.
+
 if not minetest.global_exists("anvil") then anvil = {} end
 anvil.modpath = minetest.get_modpath("anvil")
 

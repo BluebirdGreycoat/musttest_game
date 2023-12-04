@@ -140,10 +140,10 @@ local player_attached = default.player_attached
 -- Check each player and apply animations
 minetest.register_globalstep(function(dtime)
 	for _, player in pairs(minetest.get_connected_players()) do
-		local name = player:get_player_name()
-		local model_name = player_model[name]
+		local pname = player:get_player_name()
+		local model_name = player_model[pname]
 		local model = model_name and models[model_name]
-		if model and not player_attached[name] then
+		if model and not player_attached[pname] then
 			local controls = player:get_player_control()
 			local walking = false
 			local animation_speed_mod = model.animation_speed or 30
@@ -156,15 +156,24 @@ minetest.register_globalstep(function(dtime)
 			-- Determine if the player is sneaking, and reduce animation speed if so
 			if controls.sneak then
 				animation_speed_mod = animation_speed_mod / 2
+				player:set_properties({
+					makes_footstep_sound = false,
+				})
+			else
+				if not gdac_invis.is_invisible(pname) then
+					player:set_properties({
+						makes_footstep_sound = true,
+					})
+				end
 			end
 
 			-- Apply animations based on what the player is doing
 			if player:get_hp() == 0 then
 				player_set_animation(player, "lay")
 			elseif walking then
-				if player_sneak[name] ~= controls.sneak then
-					player_anim[name] = nil
-					player_sneak[name] = controls.sneak
+				if player_sneak[pname] ~= controls.sneak then
+					player_anim[pname] = nil
+					player_sneak[pname] = controls.sneak
 				end
 				if controls.LMB then
 					player_set_animation(player, "walk_mine", animation_speed_mod)

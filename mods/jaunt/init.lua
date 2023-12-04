@@ -127,14 +127,14 @@ jaunt.on_receive_fields = function(player, formname, fields)
 
 							-- Make sure target isn't standing in/on something that disallows teleport.
 							if true then
-								local node = sky.get_last_walked_node(target)
-								local ndef = minetest.registered_nodes[node.name]
+								local nodename = sky.get_last_walked_node(target)
+								local ndef = minetest.registered_nodes[nodename]
 								if ndef and ndef.disallow_teleport then
 									finpos = nil
 								end
 
-								node = sky.get_last_walked_nodeabove(target)
-								ndef = minetest.registered_nodes[node.name]
+								nodename = sky.get_last_walked_nodeabove(target)
+								ndef = minetest.registered_nodes[nodename]
 								if ndef and ndef.disallow_teleport then
 									finpos = nil
 								end

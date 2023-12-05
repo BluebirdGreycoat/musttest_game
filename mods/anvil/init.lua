@@ -65,13 +65,11 @@ function anvil.wear_hammer(pos, stack)
 	if sdef and uses[stack:get_name()] then
 		stack:add_wear_by_uses(uses[stack:get_name()])
 
-		--[[
 		if stack:is_empty() then
 			if sdef.sounds and sdef.sounds.breaks then
-				ambiance.sound_play(sdef.sounds.breaks, pos, 0.5, 16)
+				ambiance.sound_play(sdef.sounds.breaks, pos, 1.0, 16)
 			end
 		end
-		--]]
 	end
 
 	return stack
@@ -114,6 +112,10 @@ function anvil.craft_something(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 
+	if meta:get_int("strike") >= 1 then
+		return false
+	end
+
 	for index = 1, inv:get_size("input"), 1 do
 		local stack = inv:get_stack("input", index)
 		local craft, aftercraft = minetest.get_craft_result({
@@ -126,7 +128,9 @@ function anvil.craft_something(pos)
 			stack = aftercraft.items[1]
 			inv:set_stack("input", index, stack)
 			inv:add_item("input", ItemStack(craft.item))
+			meta:set_int("strike", 1)
 			anvil.update_infotext(pos)
+			minetest.get_node_timer(pos):start(1)
 			return true
 		end
 	end
@@ -547,6 +551,10 @@ function anvil.repair_tool(pos)
 	local inv = meta:get_inventory()
 	local list = inv:get_list("input") or {}
 
+	if meta:get_int("strike") >= 1 then
+		return false
+	end
+
 	for index, stack in ipairs(list) do
 		local idef = minetest.registered_tools[stack:get_name()]
 		if idef and idef.stack_max == 1 and not idef.wear_represents then
@@ -557,7 +565,9 @@ function anvil.repair_tool(pos)
 			stack:set_wear(wear)
 			list[index] = stack
 			inv:set_list("input", list)
+			meta:set_int("strike", 1)
 			anvil.update_infotext(pos)
+			minetest.get_node_timer(pos):start(1)
 			return true
 		end
 	end
@@ -571,6 +581,8 @@ end
 -- Timer fires.
 function anvil.on_timer(pos, elapsed)
 	-- TODO: require items to cool before they can be removed.
+	local meta = minetest.get_meta(pos)
+	meta:set_int("strike", 0)
 end
 
 
@@ -734,7 +746,7 @@ if not anvil.registered then
 		inventory_image = "anvil_tool_steelhammer.png",
 		wield_image = "anvil_tool_steelhammer.png",
 		tool_capabilities = tooldata["hammer_hammer"],
-		sound = {
+		sounds = {
 			breaks = "basictools_tool_breaks",
 		},
 		groups = {not_repaired_by_anvil=1},

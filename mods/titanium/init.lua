@@ -54,7 +54,7 @@ minetest.register_tool("titanium:sword", {
 	description = "Titanium Sword",
 	inventory_image = "j1_titanium_sword.png",
 	tool_capabilities = tooldata["sword_titanium"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
 })
 
 
@@ -64,7 +64,7 @@ minetest.register_tool("titanium:axe", {
 	description = "Titanium Axe",
 	inventory_image = "j1_titanium_axe.png",
 	tool_capabilities = tooldata["axe_titanium"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 
@@ -74,7 +74,7 @@ minetest.register_tool("titanium:shovel", {
 	description = "Titanium Shovel",
 	inventory_image = "j1_titanium_shovel.png",
 	tool_capabilities = tooldata["shovel_titanium"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 
@@ -84,7 +84,7 @@ minetest.register_tool("titanium:pick", {
     description = "Titanium Pickaxe",
     inventory_image = "j1_titanium_pick.png",
     tool_capabilities = tooldata["pick_titanium"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 

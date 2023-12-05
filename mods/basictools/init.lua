@@ -8,7 +8,7 @@ minetest.register_tool(":default:pick_wood", {
 	description = "Wooden Pickaxe",
 	inventory_image = "default_tool_woodpick.png",
 	tool_capabilities = tooldata["pick_wood"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
   groups = {flammable = 2, not_repaired_by_anvil = 1},
 })
 
@@ -16,7 +16,7 @@ minetest.register_tool(":default:pick_stone", {
 	description = "Stone Pickaxe",
 	inventory_image = "default_tool_stonepick.png",
 	tool_capabilities = tooldata["pick_stone"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
   groups = {not_repaired_by_anvil = 1},
 })
 
@@ -24,35 +24,35 @@ minetest.register_tool(":default:pick_steel", {
 	description = "Iron Pickaxe",
 	inventory_image = "default_tool_steelpick.png",
 	tool_capabilities = tooldata["pick_steel"],
-    sound = {breaks = "basictools_tool_breaks"},
+	sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:pick_bronze", {
 	description = "Copper Pickaxe",
 	inventory_image = "default_tool_bronzepick.png",
 	tool_capabilities = tooldata["pick_bronze"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:pick_bronze2", {
 	description = "Bronze Pickaxe",
 	inventory_image = "default_tool_bronzepick2.png",
 	tool_capabilities = tooldata["pick_bronze2"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:pick_mese", {
 	description = "Mese Pickaxe",
 	inventory_image = "default_tool_mesepick.png",
 	tool_capabilities = tooldata["pick_mese"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:pick_diamond", {
 	description = "Diamond Pickaxe",
 	inventory_image = "default_tool_diamondpick.png",
 	tool_capabilities = tooldata["pick_diamond"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:shovel_stone", {
@@ -60,7 +60,7 @@ minetest.register_tool(":default:shovel_stone", {
 	inventory_image = "default_tool_stoneshovel.png",
 	wield_image = "default_tool_stoneshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_stone"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
   groups = {not_repaired_by_anvil = 1},
 })
 
@@ -69,7 +69,7 @@ minetest.register_tool(":default:shovel_steel", {
 	inventory_image = "default_tool_steelshovel.png",
 	wield_image = "default_tool_steelshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_steel"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:shovel_bronze", {
@@ -77,7 +77,7 @@ minetest.register_tool(":default:shovel_bronze", {
 	inventory_image = "default_tool_bronzeshovel.png",
 	wield_image = "default_tool_bronzeshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_bronze"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:shovel_bronze2", {
@@ -85,7 +85,7 @@ minetest.register_tool(":default:shovel_bronze2", {
 	inventory_image = "default_tool_bronzeshovel2.png",
 	wield_image = "default_tool_bronzeshovel2.png^[transformR90",
 	tool_capabilities = tooldata["shovel_bronze2"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:shovel_mese", {
@@ -93,7 +93,7 @@ minetest.register_tool(":default:shovel_mese", {
 	inventory_image = "default_tool_meseshovel.png",
 	wield_image = "default_tool_meseshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_mese"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:shovel_diamond", {
@@ -101,14 +101,14 @@ minetest.register_tool(":default:shovel_diamond", {
 	inventory_image = "default_tool_diamondshovel.png",
 	wield_image = "default_tool_diamondshovel.png^[transformR90",
 	tool_capabilities = tooldata["shovel_diamond"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:axe_stone", {
 	description = "Stone Axe",
 	inventory_image = "default_tool_stoneaxe.png",
 	tool_capabilities = tooldata["axe_stone"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
   groups = {not_repaired_by_anvil = 1},
 })
 
@@ -116,42 +116,42 @@ minetest.register_tool(":default:axe_steel", {
 	description = "Iron Axe",
 	inventory_image = "default_tool_steelaxe.png",
 	tool_capabilities = tooldata["axe_steel"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:axe_bronze", {
 	description = "Copper Axe",
 	inventory_image = "default_tool_bronzeaxe.png",
 	tool_capabilities = tooldata["axe_bronze"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:axe_bronze2", {
 	description = "Bronze Axe",
 	inventory_image = "default_tool_bronzeaxe2.png",
 	tool_capabilities = tooldata["axe_bronze2"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:axe_mese", {
 	description = "Mese Axe",
 	inventory_image = "default_tool_meseaxe.png",
 	tool_capabilities = tooldata["axe_mese"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:axe_diamond", {
 	description = "Diamond Axe",
 	inventory_image = "default_tool_diamondaxe.png",
 	tool_capabilities = tooldata["axe_diamond"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:sword_stone", {
 	description = "Stone Sword",
 	inventory_image = "default_tool_stonesword.png",
 	tool_capabilities = tooldata["sword_stone"],
-  sound = {breaks = "basictools_tool_breaks"},
+  sounds = {breaks = "basictools_tool_breaks"},
   groups = {not_repaired_by_anvil = 1},
 })
 
@@ -159,35 +159,35 @@ minetest.register_tool(":default:sword_steel", {
 	description = "Iron Sword",
 	inventory_image = "default_tool_steelsword.png",
 	tool_capabilities = tooldata["sword_steel"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:sword_bronze", {
 	description = "Copper Sword",
 	inventory_image = "default_tool_bronzesword.png",
 	tool_capabilities = tooldata["sword_bronze"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:sword_bronze2", {
 	description = "Bronze Sword",
 	inventory_image = "default_tool_bronzesword2.png",
 	tool_capabilities = tooldata["sword_bronze2"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:sword_mese", {
 	description = "Mese Sword",
 	inventory_image = "default_tool_mesesword.png",
 	tool_capabilities = tooldata["sword_mese"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 minetest.register_tool(":default:sword_diamond", {
 	description = "Diamond Sword",
 	inventory_image = "default_tool_diamondsword.png",
 	tool_capabilities = tooldata["sword_diamond"],
-    sound = {breaks = "basictools_tool_breaks"},
+    sounds = {breaks = "basictools_tool_breaks"},
 })
 
 

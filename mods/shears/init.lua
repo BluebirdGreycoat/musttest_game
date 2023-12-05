@@ -52,7 +52,7 @@ if not shears.run_once then
 		-- The shears are allowed to dig leaves and ropes.
 		on_place = function(...) return shears.on_place(...) end,
 
-		sound = {breaks = "basictools_tool_breaks"},
+		sounds = {breaks = "basictools_tool_breaks"},
 		groups = {flammable=2},
 	})
 	minetest.register_alias("vines:shears", "shears:shears")

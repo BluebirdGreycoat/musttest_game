@@ -451,8 +451,34 @@ function anvil.on_punch(pos, node, user, pt)
 		return
 	end
 
-	-- TODO: repair stuff.
+	anvil.repair_tool(pos)
 	-- TODO: craft stuff.
+end
+
+
+
+-- Repair tool.
+function anvil.repair_tool(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	local list = inv:get_list("input")
+
+	for index, stack in ipairs(list) do
+		local idef = minetest.registered_tools[stack:get_name()]
+		if idef and idef.stack_max == 1 and not idef.wear_represents then
+			local wear = stack:get_wear()
+			wear = wear - 10000
+			if wear < 0 then wear = 0 end
+			stack:set_wear(wear)
+			list[index] = stack
+			inv:set_list("input", list)
+			anvil.update_infotext(pos)
+			return true
+		end
+	end
+
+	-- Nothing repaired.
+	return false
 end
 
 

@@ -451,8 +451,9 @@ function anvil.on_punch(pos, node, user, pt)
 		return
 	end
 
-	anvil.repair_tool(pos)
-	-- TODO: craft stuff.
+	if not anvil.repair_tool(pos) then
+		-- TODO: craft stuff.
+	end
 end
 
 

@@ -263,7 +263,18 @@ end
 
 -- Player punches anvil.
 function anvil.on_punch(pos, node, user, pt)
-	anvil.sparks_and_sound(pos)
+	if not user or not user:is_player() then
+		return
+	end
+
+	local stack = user:get_wielded_item()
+	local sname = stack:get_name()
+
+	if sname:find("hammer") or sname:find("pick") or sname:find("axe") or sname:find("sword") then
+		anvil.sparks_and_sound(pos)
+	else
+		ambiance.sound_play("default_dig_metal", pos, 0.5, 16)
+	end
 end
 
 

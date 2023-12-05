@@ -301,12 +301,12 @@ if not anvil.registered then
 	minetest.register_node("anvil:anvil", {
 		description = "Blacksmithing Anvil",
 		tiles = {
-			{name="nope.png"},
-			{name="nope.png"},
-			{name="nope.png"},
-			{name="nope.png"},
-			{name="nope.png"},
-			{name="nope.png"},
+			{name="anvil_tool_anvil.png"},
+			{name="anvil_tool_anvil.png"},
+			{name="anvil_tool_anvil.png"},
+			{name="anvil_tool_anvil.png"},
+			{name="anvil_tool_anvil.png"},
+			{name="anvil_tool_anvil.png"},
 		},
 
 		groups = utility.dig_groups("bigitem", {falling_node=1}),

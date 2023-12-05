@@ -109,6 +109,32 @@ end
 
 
 
+-- Do craft action.
+function anvil.craft_something(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+
+	for index = 1, inv:get_size("input"), 1 do
+		local stack = inv:get_stack("input", index)
+		local craft, aftercraft = minetest.get_craft_result({
+			method = "anvil",
+			width = 1,
+			items = {stack}
+		})
+
+		if craft.time ~= 0 and inv:room_for_item("input", craft.item) then
+			stack = aftercraft.items[1]
+			inv:set_stack("input", index, stack)
+			inv:add_item("input", ItemStack(craft.item))
+			return true
+		end
+	end
+
+	return false
+end
+
+
+
 -- Anvil item entity activation function.
 function anvil.on_activate(self, staticdata)
 end
@@ -507,7 +533,10 @@ function anvil.on_punch(pos, node, user, pt)
 		return
 	end
 
-	-- TODO: craft stuff.
+	if anvil.craft_something(pos) then
+		user:set_wielded_item(anvil.wear_hammer(pos, stack))
+		return
+	end
 end
 
 

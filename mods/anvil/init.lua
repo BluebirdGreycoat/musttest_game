@@ -50,6 +50,24 @@ if not anvil.registered then
 		groups = {},
 	})
 
+	minetest.register_craft({
+		output = "anvil:hammer",
+		recipe = {
+			{"carbon_steel:ingot", "darkage:iron_stick", "carbon_steel:ingot"},
+			{"carbon_steel:ingot", "darkage:iron_stick", "carbon_steel:ingot"},
+			{"", "darkage:iron_stick", ""},
+		},
+	})
+
+	minetest.register_craft({
+		output = "anvil:anvil",
+		recipe = {
+			{"carbon_steel:ingot", "carbon_steel:ingot", "carbon_steel:ingot"},
+			{"", "cast_iron:ingot", ""},
+			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		},
+	})
+
 	-- Register mod reloadable.
 	local c = "anvil:core"
 	local f = anvil.modpath .. "/init.lua"

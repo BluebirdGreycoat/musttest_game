@@ -39,6 +39,14 @@ function anvil.item_repairable_or_craftable(itemstack)
 	if minetest.get_item_group(itemstack:get_name(), "not_repaired_by_anvil") ~= 0 then
 		return false
 	end
+
+	-- Must NOT have a 'wear_represents' key, that means wear is NOT durability.
+	local idef = minetest.registered_items[itemstack:get_name()]
+	if idef and idef.wear_represents then
+		return false
+	end
+
+	-- Allow stuff that's used in anvil recipes.
 	if minetest.get_craft_result({
 				method = "anvil",
 				width = 1,
@@ -46,9 +54,11 @@ function anvil.item_repairable_or_craftable(itemstack)
 			}).time ~= 0 then
 		return true
 	end
+
 	if minetest.registered_tools[itemstack:get_name()] then
 		return true
 	end
+
 	return false
 end
 

@@ -87,9 +87,13 @@ function anvil.update_infotext(pos)
 
 	if owner ~= "" then
 		info = info .. "<" .. rename.gpn(owner) .. ">'s Anvil\n"
+	else
+		info = info .. "Blacksmithing Anvil\n"
 	end
 
-	info = info .. "Workpiece: " .. workpiece
+	if workpiece ~= "" then
+		info = info .. "Workpiece: " .. workpiece
+	end
 
 	meta:set_string("infotext", info)
 end
@@ -220,37 +224,57 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	end
 
 	local pname = user:get_player_name()
-	local wielded = itemstack
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
 
-	if wielded:is_empty() or not anvil.item_repairable_or_craftable(wielded) then
+	if anvil.player_can_use(pos, user) then
+		if itemstack:is_empty() and not inv:is_empty("input") then
+			return anvil.put_or_take(pos, user, itemstack, false)
+		end
+	end
+
+	-- Player does not need access rights to open the formspec.
+	if itemstack:is_empty() or not anvil.item_repairable_or_craftable(itemstack) then
 		anvil.show_formspec(pname, pos)
 		return
 	end
 
 	-- Otherwise, player needs access to be able to put or take from anvil.
-	if not anvil.player_can_use(pos, user) then
-		return
-	end
-
-	if anvil.item_repairable_or_craftable(wielded) then
-		return anvil.put_or_take(pos, user, itemstack)
+	if anvil.player_can_use(pos, user) then
+		if anvil.item_repairable_or_craftable(itemstack) then
+			return anvil.put_or_take(pos, user, itemstack, true)
+		end
 	end
 end
 
 
 
 -- Put or take user's currently-wielded item.
-function anvil.put_or_take(pos, user, itemstack)
-	local wielded = itemstack
+function anvil.put_or_take(pos, user, itemstack, put)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 
-	if inv:room_for_item("input", wielded) then
-		inv:add_item("input", wielded)
-		anvil.update_entity(pos)
-		anvil.update_infotext(pos)
-		anvil.update_formspec(pos)
-		return ItemStack("")
+	if put then
+		-- Putting onto anvil.
+		if inv:room_for_item("input", itemstack) then
+			inv:add_item("input", itemstack)
+			anvil.update_entity(pos)
+			anvil.update_infotext(pos)
+			anvil.update_formspec(pos)
+			return ItemStack("")
+		end
+	else
+		-- Taking from anvil.
+		local list = inv:get_list("input")
+		for index, stack in ipairs(list) do
+			if not stack:is_empty() then
+				inv:set_stack("input", index, ItemStack(""))
+				anvil.update_entity(pos)
+				anvil.update_infotext(pos)
+				anvil.update_formspec(pos)
+				return stack
+			end
+		end
 	end
 
 	return itemstack
@@ -413,8 +437,8 @@ function anvil.sparks_and_sound(pos)
 		collision_removal = true,
 		texture = "anvil_particle_spark.png",
 		glow = 13,
-		minsize = 1,
-		maxsize = 1,
+		minsize = 0.5,
+		maxsize = 0.5,
 		minpos = vector.add(pos, {x=0, y=0, z=0}),
 		maxpos = vector.add(pos, {x=0, y=0, z=0}),
 		minvel = {x=-4, y=1, z=-4},

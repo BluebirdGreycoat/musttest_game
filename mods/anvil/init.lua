@@ -56,9 +56,14 @@ function anvil.wear_hammer(pos, stack)
 		return stack
 	end
 
+	local uses = {
+		["anvil:hammer"] = 3000,
+		["xdecor:hammer"] = 500,
+	}
+
 	local sdef = stack:get_definition()
-	if sdef then
-		stack:add_wear_by_uses(3000)
+	if sdef and uses[stack:get_name()] then
+		stack:add_wear_by_uses(uses[stack:get_name()])
 
 		--[[
 		if stack:is_empty() then

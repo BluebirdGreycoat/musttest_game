@@ -397,7 +397,7 @@ if not anvil.registered then
 
 		groups = utility.dig_groups("bigitem", {falling_node=1}),
 		drop = 'anvil:anvil',
-		sounds = default.node_sound_metal_defaults(),
+		sounds = default.node_sound_metal_defaults({dig="default_silence"}),
 		stack_max = 1,
 
 		on_construct = function(...) return anvil.on_construct(...) end,

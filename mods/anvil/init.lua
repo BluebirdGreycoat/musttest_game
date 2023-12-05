@@ -201,6 +201,7 @@ end
 
 -- Anvil fell but cannot be placed as a node for some reason.
 function anvil.on_collapse_to_entity(pos, node)
+	minetest.add_item(pos, ItemStack("anvil:anvil"))
 end
 
 
@@ -326,12 +327,14 @@ end
 
 -- Function to update entity display.
 function anvil.update_entity(pos)
+	-- TODO: update entity. Create if needed. Remove duplicates.
 end
 
 
 
 -- Remove the entity display.
 function anvil.remove_entity(pos)
+	-- TODO: remove entity.
 end
 
 
@@ -351,6 +354,7 @@ end
 
 -- After inventory move.
 function anvil.on_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, user)
+	anvil.update_entity(pos)
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
 end
@@ -373,6 +377,7 @@ end
 
 -- After inventory put.
 function anvil.on_metadata_inventory_put(pos, listname, index, stack, user)
+	anvil.update_entity(pos)
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
 end
@@ -392,6 +397,7 @@ end
 
 -- After inventory take.
 function anvil.on_metadata_inventory_take(pos, listname, index, stack, user)
+	anvil.update_entity(pos)
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
 end
@@ -446,12 +452,14 @@ function anvil.on_punch(pos, node, user, pt)
 	end
 
 	-- TODO: repair stuff.
+	-- TODO: craft stuff.
 end
 
 
 
 -- Timer fires.
 function anvil.on_timer(pos, elapsed)
+	-- TODO: require items to cool before they can be removed.
 end
 
 
@@ -497,6 +505,7 @@ function anvil.sparks_and_sound(pos)
 		maxexptime = 1.0,
 	})
 	ambiance.sound_play("anvil_clang", pos, 0.5, 40)
+	-- TODO: more clang sounds.
 end
 
 

@@ -34,6 +34,46 @@ end
 
 
 
+-- Check if itemstack is a hammer.
+function anvil.is_hammer(itemstack)
+	if itemstack:is_empty() then
+		return false
+	end
+
+	local sn = itemstack:get_name()
+	if sn == "anvil:hammer" or sn == "xdecor:hammer" then
+		return true
+	end
+
+	return false
+end
+
+
+
+-- Apply wear to the hammer.
+function anvil.wear_hammer(pos, stack)
+	if stack:is_empty() then
+		return stack
+	end
+
+	local sdef = stack:get_definition()
+	if sdef then
+		stack:add_wear_by_uses(3000)
+
+		--[[
+		if stack:is_empty() then
+			if sdef.sounds and sdef.sounds.breaks then
+				ambiance.sound_play(sdef.sounds.breaks, pos, 0.5, 16)
+			end
+		end
+		--]]
+	end
+
+	return stack
+end
+
+
+
 -- Check whether itemstack is repairable by anvils.
 function anvil.item_repairable_or_craftable(itemstack)
 	if minetest.get_item_group(itemstack:get_name(), "not_repaired_by_anvil") ~= 0 then
@@ -114,9 +154,9 @@ function anvil.update_infotext(pos)
 			if not tdef.wear_represents then
 				local wear = itemstack:get_wear()
 				if wear == 0 then
-					info = info .. "Durability: %100\n"
+					info = info .. "Durability: 100%\n"
 				else
-					info = info .. "Durability: %" .. math.floor(((wear / 65535) * -1 + 1) * 100) .. "\n"
+					info = info .. "Durability: " .. math.floor(((wear / 65535) * -1 + 1) * 100) .. "%\n"
 				end
 			end
 		end
@@ -445,15 +485,24 @@ function anvil.on_punch(pos, node, user, pt)
 		return
 	end
 
+	-- Punching with empty hand takes item, if possible.
 	if stack:is_empty() then
 		stack = anvil.put_or_take(pos, user, stack, false)
 		user:set_wielded_item(stack)
 		return
 	end
 
-	if not anvil.repair_tool(pos) then
-		-- TODO: craft stuff.
+	-- We are going to repair or craft. Player must be wielding a hammer.
+	if not anvil.is_hammer(stack) then
+		return
 	end
+
+	if anvil.repair_tool(pos) then
+		user:set_wielded_item(anvil.wear_hammer(pos, stack))
+		return
+	end
+
+	-- TODO: craft stuff.
 end
 
 
@@ -468,6 +517,7 @@ function anvil.repair_tool(pos)
 		local idef = minetest.registered_tools[stack:get_name()]
 		if idef and idef.stack_max == 1 and not idef.wear_represents then
 			local wear = stack:get_wear()
+			-- Max wear is 65535 (16 bit unsigned).
 			wear = wear - 10000
 			if wear < 0 then wear = 0 end
 			stack:set_wear(wear)

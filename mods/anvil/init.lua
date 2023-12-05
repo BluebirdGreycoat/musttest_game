@@ -126,6 +126,7 @@ function anvil.craft_something(pos)
 			stack = aftercraft.items[1]
 			inv:set_stack("input", index, stack)
 			inv:add_item("input", ItemStack(craft.item))
+			anvil.update_infotext(pos)
 			return true
 		end
 	end
@@ -615,8 +616,7 @@ function anvil.sparks_and_sound(pos)
 		minexptime = 0.5,
 		maxexptime = 1.0,
 	})
-	ambiance.sound_play("anvil_clang", pos, 0.5, 40)
-	-- TODO: more clang sounds.
+	ambiance.sound_play("anvil_clang", pos, 0.3, 40)
 end
 
 

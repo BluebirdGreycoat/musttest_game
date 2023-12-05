@@ -8,6 +8,32 @@ anvil.modpath = minetest.get_modpath("anvil")
 
 
 
+-- Check protection, check access rights.
+function anvil.player_can_use(pos, player)
+	local pname = player:get_player_name()
+	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+
+	if owner == "" then
+		return true
+	end
+
+	-- Note: this is really only effective if anvil is ALSO inside protection.
+	if owner == pname then
+		return true
+	end
+
+	-- Player can use the anvil if not protected, even if they aren't owner.
+	-- This also lets anvils be shared, by sharing the protection.
+	if not minetest.test_protection(pos, pname) then
+		return true
+	end
+
+	return false
+end
+
+
+
 -- Check whether itemstack is repairable by anvils.
 function anvil.item_repairable_or_craftable(itemstack)
 	if minetest.get_item_group(itemstack:get_name(), "not_repaired_by_anvil") ~= 0 then
@@ -43,9 +69,28 @@ end
 
 -- Updates infotext according to current state.
 function anvil.update_infotext(pos)
-	local info = "Placeholder"
+	local info = ""
+	local workpiece = ""
 
 	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
+	local inv = meta:get_inventory()
+	local list = inv:get_list("input")
+
+	for index, stack in ipairs(list) do
+		if not stack:is_empty() then
+			local sdef = stack:get_definition() or {}
+			workpiece = utility.get_short_desc(sdef.description or "Unknown")
+			break
+		end
+	end
+
+	if owner ~= "" then
+		info = info .. "<" .. rename.gpn(owner) .. ">'s Anvil\n"
+	end
+
+	info = info .. "Workpiece: " .. workpiece
+
 	meta:set_string("infotext", info)
 end
 
@@ -148,13 +193,7 @@ function anvil.on_player_receive_fields(player, formname, fields)
 		return
 	end
 
-	local node = minetest.get_node(pos)
-	local meta = minetest.get_meta(pos)
-
-	local owner = meta:get_string("owner")
-
-	-- If owner is unset, let anyone use it.
-	if owner ~= "" and owner ~= pname then
+	if not anvil.player_can_use(pos, player) then
 		return
 	end
 
@@ -181,7 +220,40 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	end
 
 	local pname = user:get_player_name()
-	anvil.show_formspec(pname, pos)
+	local wielded = itemstack
+
+	if wielded:is_empty() or not anvil.item_repairable_or_craftable(wielded) then
+		anvil.show_formspec(pname, pos)
+		return
+	end
+
+	-- Otherwise, player needs access to be able to put or take from anvil.
+	if not anvil.player_can_use(pos, user) then
+		return
+	end
+
+	if anvil.item_repairable_or_craftable(wielded) then
+		return anvil.put_or_take(pos, user, itemstack)
+	end
+end
+
+
+
+-- Put or take user's currently-wielded item.
+function anvil.put_or_take(pos, user, itemstack)
+	local wielded = itemstack
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+
+	if inv:room_for_item("input", wielded) then
+		inv:add_item("input", wielded)
+		anvil.update_entity(pos)
+		anvil.update_infotext(pos)
+		anvil.update_formspec(pos)
+		return ItemStack("")
+	end
+
+	return itemstack
 end
 
 
@@ -200,6 +272,10 @@ end
 
 -- Can player move stuff in inventory.
 function anvil.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, user)
+	if not anvil.player_can_use(pos, user) then
+		return 0
+	end
+
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	return inv:get_stack(from_list, from_index):get_count()
@@ -209,12 +285,18 @@ end
 
 -- After inventory move.
 function anvil.on_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, user)
+	anvil.update_infotext(pos)
+	anvil.update_formspec(pos)
 end
 
 
 
 -- Can player put stuff in inventory.
 function anvil.allow_metadata_inventory_put(pos, listname, index, stack, user)
+	if not anvil.player_can_use(pos, user) then
+		return 0
+	end
+
 	if not anvil.item_repairable_or_craftable(stack) then
 		return 0
 	end
@@ -225,12 +307,18 @@ end
 
 -- After inventory put.
 function anvil.on_metadata_inventory_put(pos, listname, index, stack, user)
+	anvil.update_infotext(pos)
+	anvil.update_formspec(pos)
 end
 
 
 
 -- Can player take stuff from inventory.
 function anvil.allow_metadata_inventory_take(pos, listname, index, stack, user)
+	if not anvil.player_can_use(pos, user) then
+		return 0
+	end
+
 	return stack:get_count()
 end
 
@@ -238,6 +326,8 @@ end
 
 -- After inventory take.
 function anvil.on_metadata_inventory_take(pos, listname, index, stack, user)
+	anvil.update_infotext(pos)
+	anvil.update_formspec(pos)
 end
 
 
@@ -256,6 +346,8 @@ function anvil.after_place_node(pos, user, itemstack, pt)
 	-- Hold 'E' to set owner, otherwise anyone can use.
 	if control.aux1 then
 		meta:set_string("owner", pname)
+		anvil.update_infotext(pos)
+		anvil.update_formspec(pos)
 	end
 end
 
@@ -270,11 +362,18 @@ function anvil.on_punch(pos, node, user, pt)
 	local stack = user:get_wielded_item()
 	local sname = stack:get_name()
 
+	-- Note: hammering sound shall be played even if player cannot actually use the anvil.
 	if sname:find("hammer") or sname:find("pick") or sname:find("axe") or sname:find("sword") then
 		anvil.sparks_and_sound(pos)
 	else
 		ambiance.sound_play("default_dig_metal", pos, 0.5, 16)
 	end
+
+	if not anvil.player_can_use(pos, user) then
+		return
+	end
+
+	-- TODO: repair stuff.
 end
 
 
@@ -288,6 +387,10 @@ end
 -- Check if diggable.
 function anvil.can_dig(pos, user)
 	if not user or not user:is_player() then
+		return false
+	end
+
+	if not anvil.player_can_use(pos, user) then
 		return false
 	end
 

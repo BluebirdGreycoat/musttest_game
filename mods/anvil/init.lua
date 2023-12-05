@@ -300,6 +300,7 @@ if not anvil.registered then
 	-- The node.
 	minetest.register_node("anvil:anvil", {
 		description = "Blacksmithing Anvil",
+		drawtype = "nodebox",
 		tiles = {
 			{name="anvil_tool_anvil.png"},
 			{name="anvil_tool_anvil.png"},
@@ -308,6 +309,8 @@ if not anvil.registered then
 			{name="anvil_tool_anvil.png"},
 			{name="anvil_tool_anvil.png"},
 		},
+		paramtype2 = "facedir",
+		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
 
 		groups = utility.dig_groups("bigitem", {falling_node=1}),
 		drop = 'anvil:anvil',

@@ -502,8 +502,8 @@ function core.check_single_for_falling(p)
 
 	local an = core.get_item_group(n.name, "attached_node")
 	if an ~= 0 then
-		if not builtin_shared.check_attached_node(p, n, an) then
-			drop_attached_node(p)
+		if not utility.check_attached_node(p, n, an) then
+			utility.drop_attached_node(p)
 			return true
 		end
 	end

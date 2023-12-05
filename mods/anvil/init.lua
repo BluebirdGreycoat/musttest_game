@@ -377,6 +377,9 @@ if not anvil.registered then
 		on_punch = function(...) return anvil.on_punch(...) end,
 		on_timer = function(...) return anvil.on_timer(...) end,
 		can_dig = function(...) return anvil.can_dig(...) end,
+		_on_update_infotext = function(...) return anvil.update_infotext(...) end,
+		_on_update_formspec = function(...) return anvil.update_formspec(...) end,
+		_on_update_entity = function(...) return anvil.update_entity(...) end,
 	})
 
 

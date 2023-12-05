@@ -297,6 +297,18 @@ if not anvil.registered then
 	})
 
 
+	local function box(x1, y1, z1, x2, y2, z2)
+		return {
+			x1 / 16 - 0.5,
+			y1 / 16 - 0.5,
+			z1 / 16 - 0.5,
+			x2 / 16 - 0.5,
+			y2 / 16 - 0.5,
+			z2 / 16 - 0.5,
+		}
+	end
+
+
 	-- The node.
 	minetest.register_node("anvil:anvil", {
 		description = "Blacksmithing Anvil",
@@ -311,6 +323,36 @@ if not anvil.registered then
 		},
 		paramtype2 = "facedir",
 		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
+
+		node_box = {
+			type = "fixed",
+			fixed = {
+				box(-3, 8, 7, 0, 10, 9),
+				box(0, 7, 6, 3, 10, 10),
+				box(3, 7, 5, 16, 10, 11),
+				box(16, 8, 6, 18, 10, 10),
+				box(3, 6, 6, 15, 7, 10),
+				box(5, 3, 6, 11, 6, 10),
+				box(3, 2, 5, 13, 3, 11),
+				box(2, 0, 5, 14, 2, 11),
+				box(2, 0, 3, 4, 2, 13),
+				box(12, 0, 3, 14, 2, 13),
+			},
+		},
+
+		selection_box = {
+			type = "fixed",
+			fixed = {
+				box(-3, 7, 5, 18, 10, 11),
+			},
+		},
+
+		collision_box = {
+			type = "fixed",
+			fixed = {
+				box(0, 0, 4, 16, 10, 12),
+			},
+		},
 
 		groups = utility.dig_groups("bigitem", {falling_node=1}),
 		drop = 'anvil:anvil',

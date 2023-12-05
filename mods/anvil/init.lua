@@ -25,13 +25,6 @@ end
 
 
 
--- Get inventory list names.
-function anvil.get_inventory_names()
-	return {"input", "output", "work"}
-end
-
-
-
 -- Anvil item entity activation function.
 function anvil.on_activate(self, staticdata)
 end
@@ -63,12 +56,11 @@ function anvil.update_formspec(pos)
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-    "list[" .. smeta .. ";input;2.5,1.5;1,1;]"..
-    "list[" .. smeta .. ";output;3.5,1.5;1,1;]"..
-    "list[" .. smeta .. ";work;4.5,1.5;1,1;]"..
-    "list[current_player;main;0,3.75;8,1;]" ..
-    "list[current_player;main;0,5;8,3;8]" ..
-    default.get_hotbar_bg(0, 3.75)
+		"label[2.5,1;Workspace]" ..
+		"list[" .. smeta .. ";input;2.5,1.5;3,1;]" ..
+		"list[current_player;main;0,3.75;8,1;]" ..
+		"list[current_player;main;0,5;8,3;8]" ..
+		default.get_hotbar_bg(0, 3.75)
 
 	-- Note: using a NON-standard name because we do NOT want special
 	-- engine/client handling. This is just a storage space for the formspec
@@ -83,11 +75,7 @@ end
 function anvil.on_construct(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	local lists = anvil.get_inventory_names()
-
-	for index, name in ipairs(lists) do
-		inv:set_size(name, 1)
-	end
+	inv:set_size("input", 3)
 
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
@@ -107,13 +95,10 @@ end
 function anvil.on_blast(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	local lists = anvil.get_inventory_names()
+	local list = inv:get_list("input")
 
-	for index, name in ipairs(lists) do
-		local stack = inv:get_stack(name, 1)
-
+	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
-			inv:set_stack(name, ItemStack(""))
 			minetest.add_item(pos, stack)
 		end
 	end

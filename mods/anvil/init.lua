@@ -165,23 +165,35 @@ end
 
 -- Node destructor.
 function anvil.on_destruct(pos)
+	anvil.on_pre_fall(pos)
 	anvil.remove_entity(pos)
 end
 
 
 
--- Anvil gets blasted.
-function anvil.on_blast(pos)
+-- Pre-fall callback. Node is being converted to falling node.
+function anvil.on_pre_fall(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	local list = inv:get_list("input")
 
 	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
+			list[index] = ItemStack("")
 			minetest.add_item(pos, stack)
 		end
 	end
 
+	-- Have to explicitly clear the inventory.
+	-- Otherwise it will be duplicated when the node actually falls.
+	inv:set_list("input", list)
+end
+
+
+
+-- Anvil gets blasted.
+function anvil.on_blast(pos)
+	anvil.on_pre_fall(pos)
 	minetest.remove_node(pos)
 end
 
@@ -196,6 +208,8 @@ end
 -- Anvil fell and was reconstructed as a node.
 function anvil.on_finish_collapse(pos, node)
 	anvil.update_entity(pos)
+	anvil.update_infotext(pos)
+	anvil.update_formspec(pos)
 end
 
 
@@ -591,6 +605,7 @@ if not anvil.registered then
 		_on_update_infotext = function(...) return anvil.update_infotext(...) end,
 		_on_update_formspec = function(...) return anvil.update_formspec(...) end,
 		_on_update_entity = function(...) return anvil.update_entity(...) end,
+		_on_pre_fall = function(...) return anvil.on_pre_fall(...) end,
 	})
 
 

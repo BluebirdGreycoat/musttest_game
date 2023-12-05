@@ -435,6 +435,7 @@ local function convert_to_falling_node(pos, node)
 	end
 
 	-- Execute node callback PRIOR to dropping the node, incase it needs to clean stuff up.
+	-- Also make sure to call this BEFORE we get the node's meta, because the callback can change it.
 	if def and def._on_pre_fall then
 		def._on_pre_fall(pos)
 	end
@@ -454,6 +455,7 @@ end
 
 -- Copied from builtin so I can fix the behavior.
 function core.spawn_falling_node(pos)
+	minetest.chat_send_all('testing!')
 	local node = core.get_node(pos)
 	if node.name == "air" or node.name == "ignore" then
 		return false
@@ -466,4 +468,45 @@ function core.spawn_falling_node(pos)
 		return false
 	end
 	return convert_to_falling_node(pos, node)
+end
+
+
+
+-- Copied from builtin so I can fix the behavior.
+function core.check_single_for_falling(p)
+	local n = core.get_node(p)
+	if core.get_item_group(n.name, "falling_node") ~= 0 then
+		local p_bottom = vector.offset(p, 0, -1, 0)
+		-- Only spawn falling node if node below is loaded
+		local n_bottom = core.get_node_or_nil(p_bottom)
+		local d_bottom = n_bottom and core.registered_nodes[n_bottom.name]
+		if d_bottom then
+			local same = n.name == n_bottom.name
+			-- Let leveled nodes fall if it can merge with the bottom node
+			if same and d_bottom.paramtype2 == "leveled" and
+					core.get_node_level(p_bottom) <
+					core.get_node_max_level(p_bottom) then
+				local success, _ = convert_to_falling_node(p, n)
+				return success
+			end
+			-- Otherwise only if the bottom node is considered "fall through"
+			if not same and
+					(not d_bottom.walkable or d_bottom.buildable_to) and
+					(core.get_item_group(n.name, "float") == 0 or
+					d_bottom.liquidtype == "none") then
+				local success, _ = convert_to_falling_node(p, n)
+				return success
+			end
+		end
+	end
+
+	local an = core.get_item_group(n.name, "attached_node")
+	if an ~= 0 then
+		if not builtin_shared.check_attached_node(p, n, an) then
+			drop_attached_node(p)
+			return true
+		end
+	end
+
+	return false
 end

@@ -227,6 +227,7 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 
+	-- Rightclicking with an empty hand takes from anvil, if there is something to take.
 	if anvil.player_can_use(pos, user) then
 		if itemstack:is_empty() and not inv:is_empty("input") then
 			return anvil.put_or_take(pos, user, itemstack, false)
@@ -394,6 +395,12 @@ function anvil.on_punch(pos, node, user, pt)
 	end
 
 	if not anvil.player_can_use(pos, user) then
+		return
+	end
+
+	if stack:is_empty() then
+		stack = anvil.put_or_take(pos, user, stack, false)
+		user:set_wielded_item(stack)
 		return
 	end
 

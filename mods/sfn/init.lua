@@ -8,29 +8,8 @@ local math_random = math.random
 
 
 
--- 'tablemeta' must be in table form, WITHOUT userdata.
-sfn.spawn_falling_node = function(pos, node, tablemeta)
-	ambiance.particles_on_dig(pos, node)
-  local obj = minetest.add_entity(pos, "__builtin:falling_node")
-  if obj then
-    obj:get_luaentity():set_node(node, tablemeta)
-  end
-end
-
 sfn.drop_node = function(pos)
-	local node = minetest.get_node(pos)
-	if string.find(node.name, "flowing") then
-		-- Do not treat flowing liquid as a falling node. Looks ugly.
-		return
-	end
-	if node.name ~= "air" and node.name ~= "ignore" then
-		if minetest.get_item_group(node.name, "immovable") == 0 then
-			local tablemeta = minetest.get_meta(pos):to_table()
-			minetest.remove_node(pos)
-			sfn.spawn_falling_node(pos, node, tablemeta)
-			return true -- Success.
-		end
-	end
+	return core.spawn_falling_node(pos)
 end
 
 

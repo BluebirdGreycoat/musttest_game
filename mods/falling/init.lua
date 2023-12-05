@@ -417,3 +417,53 @@ minetest.register_entity(":__builtin:falling_node", {
     end
   end
 })
+
+
+
+-- Copied from builtin so I can fix the behavior.
+local function convert_to_falling_node(pos, node)
+	local obj = core.add_entity(pos, "__builtin:falling_node")
+	if not obj then
+		return false
+	end
+
+	ambiance.particles_on_dig(pos, node)
+
+	local def = core.registered_nodes[node.name]
+	if def and def.sounds and def.sounds.fall then
+		core.sound_play(def.sounds.fall, {pos = pos}, true)
+	end
+
+	-- Execute node callback PRIOR to dropping the node, incase it needs to clean stuff up.
+	if def and def._on_pre_fall then
+		def._on_pre_fall(pos)
+	end
+
+	-- remember node level, the entities' set_node() uses this
+	node.level = core.get_node_level(pos)
+	local meta = core.get_meta(pos)
+	local metatable = meta and meta:to_table() or {}
+
+	-- 'metatable' must be in table form, WITHOUT userdata.
+	obj:get_luaentity():set_node(node, metatable)
+	core.remove_node(pos)
+	return true, obj
+end
+
+
+
+-- Copied from builtin so I can fix the behavior.
+function core.spawn_falling_node(pos)
+	local node = core.get_node(pos)
+	if node.name == "air" or node.name == "ignore" then
+		return false
+	end
+	if string.find(node.name, "flowing") then
+		-- Do not treat flowing liquid as a falling node. Looks ugly.
+		return false
+	end
+	if minetest.get_item_group(node.name, "immovable") ~= 0 then
+		return false
+	end
+	return convert_to_falling_node(pos, node)
+end

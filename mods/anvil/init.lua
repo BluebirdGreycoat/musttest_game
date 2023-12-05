@@ -9,8 +9,15 @@ anvil.modpath = minetest.get_modpath("anvil")
 
 
 -- Check whether itemstack is repairable by anvils.
-function anvil.item_repairable(itemstack)
+function anvil.item_repairable_or_craftable(itemstack)
 	if minetest.get_item_group(itemstack:get_name(), "not_repaired_by_anvil") ~= 0 then
+		return true
+	end
+	if minetest.get_craft_result({
+				method = "anvil",
+				width = 1,
+				items = {itemstack}
+			}).time ~= 0 then
 		return true
 	end
 	return false
@@ -20,7 +27,7 @@ end
 
 -- Get inventory list names.
 function anvil.get_inventory_names()
-	return {"input", "output"}
+	return {"input", "output", "work"}
 end
 
 
@@ -50,10 +57,18 @@ end
 
 -- Updates formspec according to current state.
 function anvil.update_formspec(pos)
+	local smeta = "nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z
+
 	local formspec = "size[8,8]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
-		default.gui_slots
+		default.gui_slots ..
+    "list[" .. smeta .. ";input;2.5,1.5;1,1;]"..
+    "list[" .. smeta .. ";output;3.5,1.5;1,1;]"..
+    "list[" .. smeta .. ";work;4.5,1.5;1,1;]"..
+    "list[current_player;main;0,3.75;8,1;]" ..
+    "list[current_player;main;0,5;8,3;8]" ..
+    default.get_hotbar_bg(0, 3.75)
 
 	-- Note: using a NON-standard name because we do NOT want special
 	-- engine/client handling. This is just a storage space for the formspec
@@ -74,6 +89,8 @@ function anvil.on_construct(pos)
 		inv:set_size(name, 1)
 	end
 
+	anvil.update_infotext(pos)
+	anvil.update_formspec(pos)
 	anvil.update_entity(pos)
 end
 
@@ -357,6 +374,7 @@ if not anvil.registered then
 		groups = utility.dig_groups("bigitem", {falling_node=1}),
 		drop = 'anvil:anvil',
 		sounds = default.node_sound_metal_defaults(),
+		stack_max = 1,
 
 		on_construct = function(...) return anvil.on_construct(...) end,
 		on_destruct = function(...) return anvil.on_destruct(...) end,

@@ -271,14 +271,14 @@ end
 
 
 -- Can player move stuff in inventory.
-function anvil.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, user)
+function anvil.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, user)
 	if not anvil.player_can_use(pos, user) then
 		return 0
 	end
 
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	return inv:get_stack(from_list, from_index):get_count()
+	return count
 end
 
 

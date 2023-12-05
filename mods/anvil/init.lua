@@ -71,6 +71,7 @@ end
 function anvil.update_infotext(pos)
 	local info = ""
 	local workpiece = ""
+	local itemstack
 
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
@@ -81,6 +82,7 @@ function anvil.update_infotext(pos)
 		if not stack:is_empty() then
 			local sdef = stack:get_definition() or {}
 			workpiece = utility.get_short_desc(sdef.description or "Unknown")
+			itemstack = stack
 			break
 		end
 	end
@@ -92,7 +94,22 @@ function anvil.update_infotext(pos)
 	end
 
 	if workpiece ~= "" then
-		info = info .. "Workpiece: " .. workpiece
+		info = info .. "Workpiece: " .. workpiece .. "\n"
+	end
+
+	if itemstack then
+		local tdef = minetest.registered_items[itemstack:get_name()]
+		if tdef and tdef.stack_max == 1 then
+			-- Must NOT have a 'wear_represents' key, that implies wear is NOT default.
+			if not tdef.wear_represents then
+				local wear = itemstack:get_wear()
+				if wear == 0 then
+					info = info .. "Durability: %100\n"
+				else
+					info = info .. "Durability: %" .. math.floor(((wear / 65535) * -1 + 1) * 100) .. "\n"
+				end
+			end
+		end
 	end
 
 	meta:set_string("infotext", info)

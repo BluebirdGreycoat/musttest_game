@@ -158,7 +158,7 @@ function anvil.update_infotext(pos)
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 	local inv = meta:get_inventory()
-	local list = inv:get_list("input")
+	local list = inv:get_list("input") or {}
 
 	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
@@ -218,16 +218,15 @@ function anvil.update_formspec(pos)
 	-- string, but we send it to the client manually.
 	local meta = minetest.get_meta(pos)
 	meta:set_string("formspec2", formspec)
+
+	local inv = meta:get_inventory()
+	inv:set_size("input", 3)
 end
 
 
 
 -- Node constructor.
 function anvil.on_construct(pos)
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	inv:set_size("input", 3)
-
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
 	anvil.update_entity(pos)
@@ -247,7 +246,7 @@ end
 function anvil.on_pre_fall(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	local list = inv:get_list("input")
+	local list = inv:get_list("input") or {}
 
 	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
@@ -380,7 +379,7 @@ function anvil.put_or_take(pos, user, itemstack, put)
 		end
 	else
 		-- Taking from anvil.
-		local list = inv:get_list("input")
+		local list = inv:get_list("input") or {}
 		for index, stack in ipairs(list) do
 			if not stack:is_empty() then
 				inv:set_stack("input", index, ItemStack(""))
@@ -546,7 +545,7 @@ end
 function anvil.repair_tool(pos)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
-	local list = inv:get_list("input")
+	local list = inv:get_list("input") or {}
 
 	for index, stack in ipairs(list) do
 		local idef = minetest.registered_tools[stack:get_name()]

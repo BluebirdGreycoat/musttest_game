@@ -11,13 +11,16 @@ anvil.modpath = minetest.get_modpath("anvil")
 -- Check whether itemstack is repairable by anvils.
 function anvil.item_repairable_or_craftable(itemstack)
 	if minetest.get_item_group(itemstack:get_name(), "not_repaired_by_anvil") ~= 0 then
-		return true
+		return false
 	end
 	if minetest.get_craft_result({
 				method = "anvil",
 				width = 1,
 				items = {itemstack}
 			}).time ~= 0 then
+		return true
+	end
+	if minetest.registered_tools[itemstack:get_name()] then
 		return true
 	end
 	return false
@@ -197,7 +200,9 @@ end
 
 -- Can player move stuff in inventory.
 function anvil.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, user)
-	return 1
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	return inv:get_stack(from_list, from_index):get_count()
 end
 
 
@@ -210,7 +215,10 @@ end
 
 -- Can player put stuff in inventory.
 function anvil.allow_metadata_inventory_put(pos, listname, index, stack, user)
-	return 1
+	if not anvil.item_repairable_or_craftable(stack) then
+		return 0
+	end
+	return stack:get_count()
 end
 
 
@@ -223,7 +231,7 @@ end
 
 -- Can player take stuff from inventory.
 function anvil.allow_metadata_inventory_take(pos, listname, index, stack, user)
-	return 1
+	return stack:get_count()
 end
 
 
@@ -255,6 +263,7 @@ end
 
 -- Player punches anvil.
 function anvil.on_punch(pos, node, user, pt)
+	anvil.sparks_and_sound(pos)
 end
 
 
@@ -272,6 +281,36 @@ function anvil.can_dig(pos, user)
 	end
 
 	return true
+end
+
+
+
+-- Make sparks fly!
+function anvil.sparks_and_sound(pos)
+	local pos = vector.add(pos, {
+		x = math.random(-10, 10) / 30,
+		y = 0.2,
+		z = math.random(-10, 10) / 30
+	})
+	minetest.add_particlespawner({
+		amount = 6,
+		time = 0.2,
+		collisiondetection = true,
+		collision_removal = true,
+		texture = "anvil_particle_spark.png",
+		glow = 13,
+		minsize = 1,
+		maxsize = 1,
+		minpos = vector.add(pos, {x=0, y=0, z=0}),
+		maxpos = vector.add(pos, {x=0, y=0, z=0}),
+		minvel = {x=-4, y=1, z=-4},
+		maxvel = {x=4, y=2, z=4},
+		minacc = {x=0, y=-8, z=0},
+		maxacc = {x=0, y=-8, z=0},
+		minexptime = 0.5,
+		maxexptime = 1.0,
+	})
+	ambiance.sound_play("anvil_clang", pos, 0.5, 40)
 end
 
 

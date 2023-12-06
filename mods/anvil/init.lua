@@ -1022,7 +1022,7 @@ if not anvil.registered then
 
 		groups = utility.dig_groups("machine", {falling_node=1}),
 		drop = 'anvil:anvil',
-		sounds = default.node_sound_metal_defaults({dig="default_silence"}),
+		sounds = default.node_sound_metal_defaults({dig="default_silence", gain=1.0}),
 		stack_max = 1,
 
 		on_construct = function(...) return anvil.on_construct(...) end,

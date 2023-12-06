@@ -135,7 +135,12 @@ function anvil.craft_something(pos)
 			inv:add_item("input", ItemStack(craft.item))
 			meta:set_int("strike", 1)
 			anvil.update_infotext(pos)
-			minetest.get_node_timer(pos):start(1)
+
+			local timer = minetest.get_node_timer(pos)
+			if not timer:is_started() then
+				timer:start(1)
+			end
+
 			return true
 		end
 	end
@@ -769,7 +774,12 @@ function anvil.repair_tool(pos)
 			meta:set_int("heat", meta:get_int("heat") + 10)
 
 			anvil.update_infotext(pos)
-			minetest.get_node_timer(pos):start(1)
+
+			local timer = minetest.get_node_timer(pos)
+			if not timer:is_started() then
+				timer:start(1)
+			end
+
 			return true
 		end
 	end

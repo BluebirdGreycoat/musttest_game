@@ -2,9 +2,9 @@
 -- This is a cleanroom reimplementation of the GPL "anvil" mod commonly found
 -- lying around. This reimplementation is developed from memory of how the anvil
 -- worked in-game, and through in-game behavior testing of THIS implementation
--- as it was being delveloped. This mod is provided under the MIT license.
+-- as it was being developed. This mod is provided under the MIT license.
 --
--- Licensing notice: by "cleanroom implementation", I (MustTest) declare that
+-- Disclosure notice: by "cleanroom implementation", I (MustTest) declare that
 -- all code in this init.lua file was written WITHOUT REFERENCE to the code
 -- in the original anvil mod. Thus, this file is my own, separate expression of
 -- the concept of an anvil in Minetest. Certain similarities are required to

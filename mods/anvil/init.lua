@@ -5,6 +5,7 @@
 
 if not minetest.global_exists("anvil") then anvil = {} end
 anvil.modpath = minetest.get_modpath("anvil")
+anvil.entity_offset = {x=0, y=0.15, z=0}
 
 
 
@@ -402,14 +403,62 @@ end
 
 -- Function to update entity display.
 function anvil.update_entity(pos)
-	-- TODO: update entity. Create if needed. Remove duplicates.
+	local p2 = vector.add(pos, anvil.entity_offset)
+	local ents = minetest.get_objects_inside_radius(p2, 0.5)
+
+	local count = 0
+	local entity
+	local luaent
+
+	for k, v in ipairs(ents) do
+		local ent = v:get_luaentity()
+		if ent and ent.name == "anvil:item" then
+			-- If there are multiple entities, remove the extras.
+			if count >= 1 then
+				v:remove()
+			else
+				entity = v
+				luaent = ent
+				count = count + 1
+			end
+		end
+	end
+
+	-- If there are no entities, create one.
+	if count == 0 then
+		local ent = minetest.add_entity(p2, "anvil:item")
+		if ent then
+			local lent = ent:get_luaentity()
+			if not lent then
+				ent:remove()
+				return
+			end
+
+			entity = ent
+			luaent = lent
+		end
+	end
+
+	if not entity or not luaent then
+		return
+	end
+
+	entity:set_rotation({x = math.pi / 2, y=0, z=0})
 end
 
 
 
 -- Remove the entity display.
 function anvil.remove_entity(pos)
-	-- TODO: remove entity.
+	local p2 = vector.add(pos, anvil.entity_offset)
+	local ents = minetest.get_objects_inside_radius(p2, 0.5)
+
+	for k, v in ipairs(ents) do
+		local luaent = v:get_luaentity()
+		if luaent and luaent.name == "anvil:item" then
+			v:remove()
+		end
+	end
 end
 
 
@@ -580,7 +629,6 @@ end
 
 -- Timer fires.
 function anvil.on_timer(pos, elapsed)
-	-- TODO: require items to cool before they can be removed.
 	local meta = minetest.get_meta(pos)
 	meta:set_int("strike", 0)
 end
@@ -644,10 +692,11 @@ if not anvil.registered then
 		initial_properties = {
 			visual = "item",
 			wield_item = "default:coal_lump",
-			visual_size = {x=0.4, y=0.4, z=0.4},
+			visual_size = {x=0.2, y=0.2, z=0.2},
 			collide_with_objects = false,
 			pointable = false,
 			collisionbox = {0},
+			selectionbox = {0},
 		},
 
 		on_activate = function(...) return anvil.on_activate(...) end,
@@ -679,6 +728,7 @@ if not anvil.registered then
 			{name="anvil_tool_anvil.png"},
 			{name="anvil_tool_anvil.png"},
 		},
+		paramtype = "light",
 		paramtype2 = "facedir",
 		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
 

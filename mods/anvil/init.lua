@@ -800,6 +800,27 @@ function anvil.on_timer(pos, elapsed)
 
 		meta:set_int("heat", heat)
 		anvil.update_infotext(pos)
+
+		local p2 = vector.add(pos, anvil.entity_offset)
+		p2.y = p2.y - 0.2
+		minetest.add_particlespawner({
+			amount = 6,
+			time = 1,
+			minpos = {x = p2.x - 0.1, y = p2.y + 0.1, z = p2.z - 0.1 },
+			maxpos = {x = p2.x + 0.1, y = p2.y + 0.2, z = p2.z + 0.1 },
+			minvel = {x = -3, y = 0.5, z = -3},
+			maxvel = {x = 3, y = 0.5, z = 3},
+			minacc = {x = -0.15, y = -8, z = -0.15},
+			maxacc = {x = 0.15, y = -8, z = 0.15},
+			minexptime = 0.2,
+			maxexptime = 0.5,
+			minsize = 0.1,
+			maxsize = 0.1,
+			collisiondetection = true,
+			texture = "anvil_particle_heat.png",
+			glow = 13,
+		})
+
 		return true
 	end
 end

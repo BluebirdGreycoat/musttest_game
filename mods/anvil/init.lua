@@ -755,7 +755,17 @@ function anvil.on_timer(pos, elapsed)
 
 	-- Cool off over time.
 	if heat > 0 then
-		meta:set_int("heat", heat - 1)
+		local loss = 1
+		if minetest.find_node_near(pos, 2, "group:water") then
+			loss = 5
+		end
+
+		heat = heat - loss
+		if heat < 0 then
+			heat = 0
+		end
+
+		meta:set_int("heat", heat)
 		anvil.update_infotext(pos)
 		return true
 	end

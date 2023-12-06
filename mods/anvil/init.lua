@@ -258,6 +258,11 @@ function anvil.update_infotext(pos)
 		end
 	end
 
+	local heat = meta:get_int("heat")
+	if heat > 0 then
+		info = info .. "Let cool before take (" .. heat .. ")\n"
+	end
+
 	meta:set_string("infotext", info)
 end
 
@@ -407,6 +412,11 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	-- Rightclicking with an empty hand takes from anvil, if there is something to take.
 	if anvil.player_can_use(pos, user) then
 		if itemstack:is_empty() and not inv:is_empty("input") then
+			if meta:get_int("heat") > 0 then
+				anvil.burn_user(pos, user)
+				return
+			end
+
 			return anvil.put_or_take(pos, user, itemstack, false)
 		end
 	end
@@ -420,6 +430,11 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	-- Otherwise, player needs access to be able to put or take from anvil.
 	if anvil.player_can_use(pos, user) then
 		if anvil.item_repairable_or_craftable(itemstack) then
+			if meta:get_int("heat") > 0 then
+				anvil.burn_user(pos, user)
+				return
+			end
+
 			return anvil.put_or_take(pos, user, itemstack, true)
 		end
 	end
@@ -539,6 +554,12 @@ end
 
 -- Can player move stuff in inventory.
 function anvil.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, user)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("heat") > 0 then
+		anvil.burn_user(pos, user)
+		return 0
+	end
+
 	if not anvil.player_can_use(pos, user) then
 		return 0
 	end
@@ -561,6 +582,12 @@ end
 
 -- Can player put stuff in inventory.
 function anvil.allow_metadata_inventory_put(pos, listname, index, stack, user)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("heat") > 0 then
+		anvil.burn_user(pos, user)
+		return 0
+	end
+
 	if not anvil.player_can_use(pos, user) then
 		return 0
 	end
@@ -584,6 +611,12 @@ end
 
 -- Can player take stuff from inventory.
 function anvil.allow_metadata_inventory_take(pos, listname, index, stack, user)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("heat") > 0 then
+		anvil.burn_user(pos, user)
+		return 0
+	end
+
 	if not anvil.player_can_use(pos, user) then
 		return 0
 	end
@@ -645,6 +678,12 @@ function anvil.on_punch(pos, node, user, pt)
 
 	-- Punching with empty hand takes item, if possible.
 	if stack:is_empty() then
+		local meta = minetest.get_meta(pos)
+		if meta:get_int("heat") > 0 then
+			anvil.burn_user(pos, user)
+			return
+		end
+
 		stack = anvil.put_or_take(pos, user, stack, false)
 		user:set_wielded_item(stack)
 		return
@@ -682,13 +721,20 @@ function anvil.repair_tool(pos)
 		local idef = minetest.registered_tools[stack:get_name()]
 		if idef and idef.stack_max == 1 and not idef.wear_represents then
 			local wear = stack:get_wear()
+			if wear == 0 then
+				return false
+			end
+
 			-- Max wear is 65535 (16 bit unsigned).
 			wear = wear - 10000
 			if wear < 0 then wear = 0 end
 			stack:set_wear(wear)
+
 			list[index] = stack
 			inv:set_list("input", list)
 			meta:set_int("strike", 1)
+			meta:set_int("heat", meta:get_int("heat") + 10)
+
 			anvil.update_infotext(pos)
 			minetest.get_node_timer(pos):start(1)
 			return true
@@ -704,7 +750,15 @@ end
 -- Timer fires.
 function anvil.on_timer(pos, elapsed)
 	local meta = minetest.get_meta(pos)
+	local heat = meta:get_int("heat")
 	meta:set_int("strike", 0)
+
+	-- Cool off over time.
+	if heat > 0 then
+		meta:set_int("heat", heat - 1)
+		anvil.update_infotext(pos)
+		return true
+	end
 end
 
 
@@ -769,6 +823,32 @@ function anvil.on_rotate(pos, node, user, mode, new_param2)
 
 	-- Returning 'true' means we did the rotation ourselves.
 	return true
+end
+
+
+
+-- Burn player and play a sound.
+function anvil.burn_user(pos, user)
+	utility.damage_player(user, "heat", 1*250)
+	minetest.sound_play("default_item_smoke", {pos=pos, max_hear_distance=16, gain=0.5}, true)
+
+	local p2 = vector.add(pos, anvil.entity_offset)
+	minetest.add_particlespawner({
+		amount = 3,
+		time = 0.1,
+		minpos = {x = p2.x - 0.1, y = p2.y + 0.1, z = p2.z - 0.1 },
+		maxpos = {x = p2.x + 0.1, y = p2.y + 0.2, z = p2.z + 0.1 },
+		minvel = {x = 0, y = 2.5, z = 0},
+		maxvel = {x = 0, y = 2.5, z = 0},
+		minacc = {x = -0.15, y = -0.02, z = -0.15},
+		maxacc = {x = 0.15, y = -0.01, z = 0.15},
+		minexptime = 4,
+		maxexptime = 6,
+		minsize = 5,
+		maxsize = 5,
+		collisiondetection = false,
+		texture = "default_item_smoke.png"
+	})
 end
 
 

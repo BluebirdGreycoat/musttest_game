@@ -157,6 +157,16 @@ if not signs.run_once then
 		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
+	register_sign("brass", "Brass", {
+		sounds = default.node_sound_metal_defaults(),
+		groups = utility.dig_groups("bigitem", {attached_node = 1})
+	})
+
+	register_sign("bronze", "Bronze", {
+		sounds = default.node_sound_metal_defaults(),
+		groups = utility.dig_groups("bigitem", {attached_node = 1})
+	})
+
 	minetest.register_craft({
 		output = 'signs:sign_wall_steel 3',
 		recipe = {
@@ -180,6 +190,24 @@ if not signs.run_once then
 		recipe = {
 			{'group:wood', 'group:wood', 'group:wood'},
 			{'group:wood', 'group:wood', 'group:wood'},
+			{'', 'group:stick', ''},
+		}
+	})
+
+	minetest.register_craft({
+		output = 'signs:sign_wall_brass 3',
+		recipe = {
+			{'brass:ingot', 'brass:ingot', 'brass:ingot'},
+			{'brass:ingot', 'brass:ingot', 'brass:ingot'},
+			{'', 'group:stick', ''},
+		}
+	})
+
+	minetest.register_craft({
+		output = 'signs:sign_wall_bronze 3',
+		recipe = {
+			{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
+			{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
 			{'', 'group:stick', ''},
 		}
 	})

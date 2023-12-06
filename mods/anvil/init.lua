@@ -725,8 +725,16 @@ function anvil.repair_tool(pos)
 				return false
 			end
 
+			-- A heat source makes repairs faster.
+			local repair_amount = 500
+			if minetest.find_node_near(pos, 2, "group:fire") then
+				repair_amount = 3000
+			elseif minetest.find_node_near(pos, 2, "group:lava") then
+				repair_amount = 15000
+			end
+
 			-- Max wear is 65535 (16 bit unsigned).
-			wear = wear - 10000
+			wear = wear - repair_amount
 			if wear < 0 then wear = 0 end
 			stack:set_wear(wear)
 

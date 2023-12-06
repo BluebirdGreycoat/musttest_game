@@ -303,6 +303,7 @@ minetest.register_node("3d_armor_stand:armor_stand", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
+	stack_max = 1,
 	selection_box = {
 		type = "fixed",
 		fixed = {
@@ -398,6 +399,7 @@ minetest.register_node("3d_armor_stand:locked_armor_stand", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
+	stack_max = 1,
 	selection_box = {
 		type = "fixed",
 		fixed = {

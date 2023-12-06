@@ -403,6 +403,18 @@ end
 
 -- Function to update entity display.
 function anvil.update_entity(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+
+	local stack
+	local ilist = inv:get_list("input")
+	for index, item in ipairs(ilist) do
+		if not item:is_empty() then
+			stack = item
+			break
+		end
+	end
+
 	local p2 = vector.add(pos, anvil.entity_offset)
 	local ents = minetest.get_objects_inside_radius(p2, 0.5)
 
@@ -414,7 +426,8 @@ function anvil.update_entity(pos)
 		local ent = v:get_luaentity()
 		if ent and ent.name == "anvil:item" then
 			-- If there are multiple entities, remove the extras.
-			if count >= 1 then
+			-- Remove all entities if there is nothing on the anvil.
+			if not stack or count >= 1 then
 				v:remove()
 			else
 				entity = v
@@ -424,8 +437,8 @@ function anvil.update_entity(pos)
 		end
 	end
 
-	-- If there are no entities, create one.
-	if count == 0 then
+	-- If there are no entities and something is on the anvil, create one.
+	if count == 0 and stack then
 		local ent = minetest.add_entity(p2, "anvil:item")
 		if ent then
 			local lent = ent:get_luaentity()
@@ -439,11 +452,16 @@ function anvil.update_entity(pos)
 		end
 	end
 
-	if not entity or not luaent then
+	-- We must have entity, lua-entity, and stack.
+	if not entity or not luaent or not stack then
 		return
 	end
 
+	entity:set_pos(p2)
 	entity:set_rotation({x = math.pi / 2, y=0, z=0})
+	entity:set_properties({
+		wield_item = stack:get_name(),
+	})
 end
 
 
@@ -692,7 +710,7 @@ if not anvil.registered then
 		initial_properties = {
 			visual = "item",
 			wield_item = "default:coal_lump",
-			visual_size = {x=0.2, y=0.2, z=0.2},
+			visual_size = {x=0.3, y=0.3, z=0.2},
 			collide_with_objects = false,
 			pointable = false,
 			collisionbox = {0},

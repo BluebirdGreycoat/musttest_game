@@ -143,13 +143,25 @@ end
 
 -- Anvil item entity activation function.
 function anvil.on_activate(self, staticdata)
+	if staticdata and staticdata ~= "" then
+		local fields = minetest.deserialize(staticdata)
+		if fields then
+			self.object:set_properties({
+				wield_item = fields.wield_name,
+			})
+		end
+	end
 end
 
 
 
 -- Anvil item entity staticdata function.
 function anvil.get_staticdata(self)
-	return ""
+	local properties = self.object:get_properties()
+	local fields = {
+		wield_name = properties.wield_item,
+	}
+	return minetest.serialize(fields)
 end
 
 

@@ -268,11 +268,11 @@ local function on_receive_fields(pos, formname, fields, sender)
 			armor_inv:set_list("armor", armor_list)
 			player_inv:set_list("armor", armor_list)
 
-			-- Update player's armor formspec.
-			armor:update_inventory(sender)
-
 			-- Actually apply the new armor stats to player.
 			armor:set_player_armor(sender)
+
+			-- Update player's armor formspec.
+			armor:update_inventory(sender)
 
 			-- Update the armor stand entity.
 			update_entity(pos)

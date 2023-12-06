@@ -146,6 +146,7 @@ end
 
 
 -- Anvil item entity activation function.
+-- Note: this is also call for NEW entities, not just reactivated ones.
 function anvil.on_activate(self, staticdata)
 	local pos = vector.round(self.object:get_pos())
 	local node = minetest.get_node(pos)

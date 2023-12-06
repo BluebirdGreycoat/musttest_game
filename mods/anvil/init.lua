@@ -790,7 +790,7 @@ function anvil.on_timer(pos, elapsed)
 	if heat > 0 then
 		local loss = 1
 		if minetest.find_node_near(pos, 2, "group:water") then
-			loss = 5
+			loss = 3
 		end
 
 		heat = heat - loss

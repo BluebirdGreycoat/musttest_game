@@ -314,13 +314,32 @@ end
 -- Pre-fall callback. Node is being converted to falling node.
 function anvil.on_pre_fall(pos)
 	local meta = minetest.get_meta(pos)
+	local heat = meta:get_int("heat")
 	local inv = meta:get_inventory()
 	local list = inv:get_list("input") or {}
 
 	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
+			-- In anvil is removed/destroyed while hot items are on it, damage them.
+			if heat > 0 then
+				local idef = minetest.registered_tools[stack:get_name()]
+				if idef and idef.stack_max == 1 and not idef.wear_represents then
+					-- Add 2/3rds wear. This has a high chance to destroy the tool unless
+					-- it had good durability.
+					stack:add_wear((65535 / 3) * 2)
+
+					if stack:is_empty() then
+						if idef.sounds and idef.sounds.breaks then
+							ambiance.sound_play(idef.sounds.breaks, pos, 1.0, 16)
+						end
+					end
+				end
+			end
+
 			list[index] = ItemStack("")
-			minetest.add_item(pos, stack)
+			if not stack:is_empty() then
+				minetest.add_item(pos, stack)
+			end
 		end
 	end
 

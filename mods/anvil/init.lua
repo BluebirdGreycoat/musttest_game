@@ -5,7 +5,11 @@
 
 if not minetest.global_exists("anvil") then anvil = {} end
 anvil.modpath = minetest.get_modpath("anvil")
+
+-- Place entity exactly on anvil surface.
+-- Search for entities inside anvil node ONLY.
 anvil.entity_offset = {x=0, y=0.15, z=0}
+anvil.entity_radius = 0.45
 
 
 
@@ -416,6 +420,7 @@ end
 -- Function to update entity display.
 function anvil.update_entity(pos)
 	local meta = minetest.get_meta(pos)
+	local node = minetest.get_node(pos)
 	local inv = meta:get_inventory()
 
 	local stack
@@ -428,7 +433,7 @@ function anvil.update_entity(pos)
 	end
 
 	local p2 = vector.add(pos, anvil.entity_offset)
-	local ents = minetest.get_objects_inside_radius(p2, 0.5)
+	local ents = minetest.get_objects_inside_radius(p2, anvil.entity_radius)
 
 	local count = 0
 	local entity
@@ -469,8 +474,17 @@ function anvil.update_entity(pos)
 		return
 	end
 
+	-- Rotations determined by visual inspection (trial-and-error).
+	local param2_tab = {
+		[0] = math.pi,
+		[1] = math.pi / 2,
+		[2] = 0,
+		[3] = -(math.pi / 2),
+	}
+	local y_rot = param2_tab[node.param2] or 0
+
 	entity:set_pos(p2)
-	entity:set_rotation({x = math.pi / 2, y=0, z=0})
+	entity:set_rotation({x = math.pi / 2, y=y_rot, z=0})
 	entity:set_properties({
 		wield_item = stack:get_name(),
 	})
@@ -481,7 +495,7 @@ end
 -- Remove the entity display.
 function anvil.remove_entity(pos)
 	local p2 = vector.add(pos, anvil.entity_offset)
-	local ents = minetest.get_objects_inside_radius(p2, 0.5)
+	local ents = minetest.get_objects_inside_radius(p2, anvil.entity_radius)
 
 	for k, v in ipairs(ents) do
 		local luaent = v:get_luaentity()
@@ -710,6 +724,25 @@ end
 
 
 
+-- Rotate the anvil (and the display entity).
+function anvil.on_rotate(pos, node, user, mode, new_param2)
+	if mode ~= screwdriver.ROTATE_FACE then
+		return false
+	end
+
+	node.param2 = new_param2
+	minetest.swap_node(pos, node)
+	minetest.check_for_falling(pos)
+
+	-- Rotate the display entity if we have one.
+	anvil.update_entity(pos)
+
+	-- Returning 'true' means we did the rotation ourselves.
+	return true
+end
+
+
+
 if not anvil.registered then
 	anvil.registered = true
 
@@ -760,7 +793,7 @@ if not anvil.registered then
 		},
 		paramtype = "light",
 		paramtype2 = "facedir",
-		on_rotate = function(...) return screwdriver.rotate_simple(...) end,
+		on_rotate = function(...) return anvil.on_rotate(...) end,
 
 		node_box = {
 			type = "fixed",

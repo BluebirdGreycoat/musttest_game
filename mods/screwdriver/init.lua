@@ -129,7 +129,25 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
     minetest.check_for_falling(pos)
 	end
 
-	ambiance.sound_play("default_dug_metal", pos, 1, 30)
+	local sound = "default_place_node_hard"
+	if ndef.sounds then
+		if ndef.sounds.rotate then
+			sound = ndef.sounds.rotate
+		elseif ndef.sounds.footstep then
+			sound = ndef.sounds.footstep
+		elseif ndef.sounds.place then
+			sound = ndef.sounds.place
+		end
+	else
+		if node.name:find("wood") then
+			sound = "default_wood_footstep"
+		elseif node.name:find("stone") then
+			sound = "default_hard_footstep"
+		elseif node.name:find("glass") then
+			sound = "default_glass_footstep"
+		end
+	end
+	ambiance.sound_play(sound, pos, 1, 30)
 
 	itemstack:add_wear(65535 / ((uses or 200) - 1))
 	return itemstack

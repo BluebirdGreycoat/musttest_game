@@ -158,7 +158,7 @@ function anvil.on_activate(self, staticdata)
 
 	if staticdata and staticdata ~= "" then
 		local fields = minetest.deserialize(staticdata)
-		if fields then
+		if fields and fields.wield_name then
 			self:set_display_item(pos, fields.wield_name)
 		else
 			-- Clean up the ones with bad data.

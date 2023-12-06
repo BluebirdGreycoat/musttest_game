@@ -370,6 +370,12 @@ function anvil.on_finish_collapse(pos, node)
 	anvil.update_entity(pos)
 	anvil.update_infotext(pos)
 	anvil.update_formspec(pos)
+
+	-- If there was a timer running, restart it.
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("heat") > 0 then
+		minetest.get_node_timer(pos):start(1)
+	end
 end
 
 
@@ -749,7 +755,7 @@ function anvil.repair_tool(pos)
 			if minetest.find_node_near(pos, 2, "group:fire") then
 				repair_amount = 3000
 			elseif minetest.find_node_near(pos, 2, "group:lava") then
-				repair_amount = 15000
+				repair_amount = 10000
 			end
 
 			-- Max wear is 65535 (16 bit unsigned).

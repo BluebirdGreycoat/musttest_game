@@ -62,8 +62,8 @@ function anvil.wear_hammer(pos, stack)
 	end
 
 	local uses = {
-		["anvil:hammer"] = 3000,
-		["xdecor:hammer"] = 500,
+		["anvil:hammer"] = 1000,
+		["xdecor:hammer"] = 100,
 	}
 
 	local sdef = stack:get_definition()
@@ -758,9 +758,9 @@ function anvil.repair_tool(pos)
 			-- A heat source makes repairs faster.
 			local repair_amount = 500
 			if minetest.find_node_near(pos, 2, "group:fire") then
-				repair_amount = 3000
+				repair_amount = 2000
 			elseif minetest.find_node_near(pos, 2, "group:lava") then
-				repair_amount = 10000
+				repair_amount = 5000
 			end
 
 			-- Max wear is 65535 (16 bit unsigned).
@@ -1010,7 +1010,7 @@ if not anvil.registered then
 			},
 		},
 
-		groups = utility.dig_groups("bigitem", {falling_node=1}),
+		groups = utility.dig_groups("machine", {falling_node=1}),
 		drop = 'anvil:anvil',
 		sounds = default.node_sound_metal_defaults({dig="default_silence"}),
 		stack_max = 1,

@@ -99,6 +99,10 @@ minetest.register_node("fire:basic_flame", {
 
 	--on_blast = function()
 	--end, -- unaffected by explosions
+
+	on_collapse_to_entity = function(pos, node)
+		-- Don't drop anything.
+	end,
 })
 
 minetest.register_node("fire:permanent_flame", {
@@ -153,6 +157,10 @@ minetest.register_node("fire:permanent_flame", {
 
 	--on_blast = function()
 	--end,
+
+	on_collapse_to_entity = function(pos, node)
+		-- Don't drop anything.
+	end,
 })
 
 minetest.register_node("fire:nether_flame", {
@@ -206,6 +214,10 @@ minetest.register_node("fire:nether_flame", {
 
 	--on_blast = function()
 	--end,
+
+	on_collapse_to_entity = function(pos, node)
+		-- Don't drop anything.
+	end,
 })
 
 

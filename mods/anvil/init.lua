@@ -147,12 +147,22 @@ end
 
 -- Anvil item entity activation function.
 function anvil.on_activate(self, staticdata)
+	local pos = vector.round(self.object:get_pos())
+	local node = minetest.get_node(pos)
+
+	-- Clean up orphaned.
+	if node.name ~= "anvil:anvil" then
+		self.object:remove()
+		return
+	end
+
 	if staticdata and staticdata ~= "" then
 		local fields = minetest.deserialize(staticdata)
 		if fields then
-			self.object:set_properties({
-				wield_item = fields.wield_name,
-			})
+			self:set_display_item(pos, fields.wield_name)
+		else
+			-- Clean up the ones with bad data.
+			self.object:remove()
 		end
 	end
 end
@@ -161,11 +171,43 @@ end
 
 -- Anvil item entity staticdata function.
 function anvil.get_staticdata(self)
-	local properties = self.object:get_properties()
+	-- Note: can't access self.object here because it appears this function gets
+	-- called after the object has already been removed.
+
 	local fields = {
-		wield_name = properties.wield_item,
+		-- If we don't have a wield item name, you get a lump of coal instead.
+		wield_name = self._wield_item or "default:coal_lump",
 	}
+
 	return minetest.serialize(fields)
+end
+
+
+
+-- Set the display item on the display entity.
+function anvil.set_display_item(self, pos, stackname)
+	local p2 = vector.add(pos, anvil.entity_offset)
+	local node = minetest.get_node(pos)
+
+	-- Rotations determined by visual inspection (trial-and-error).
+	local param2_tab = {
+		[0] = math.pi,
+		[1] = math.pi / 2,
+		[2] = 0,
+		[3] = -(math.pi / 2),
+	}
+	local y_rot = param2_tab[node.param2] or 0
+
+	local entity = self.object
+	entity:set_pos(p2)
+	entity:set_rotation({x = math.pi / 2, y=y_rot, z=0})
+	entity:set_properties({
+		wield_item = stackname,
+	})
+
+	-- Also store stack name in the luaentity.
+	-- This lets us access the data in the 'get_staticdata' function.
+	self._wield_item = stackname
 end
 
 
@@ -474,20 +516,7 @@ function anvil.update_entity(pos)
 		return
 	end
 
-	-- Rotations determined by visual inspection (trial-and-error).
-	local param2_tab = {
-		[0] = math.pi,
-		[1] = math.pi / 2,
-		[2] = 0,
-		[3] = -(math.pi / 2),
-	}
-	local y_rot = param2_tab[node.param2] or 0
-
-	entity:set_pos(p2)
-	entity:set_rotation({x = math.pi / 2, y=y_rot, z=0})
-	entity:set_properties({
-		wield_item = stack:get_name(),
-	})
+	luaent:set_display_item(pos, stack:get_name())
 end
 
 
@@ -764,6 +793,7 @@ if not anvil.registered then
 
 		on_activate = function(...) return anvil.on_activate(...) end,
 		get_staticdata = function(...) return anvil.get_staticdata(...) end,
+		set_display_item = function(...) return anvil.set_display_item(...) end,
 	})
 
 

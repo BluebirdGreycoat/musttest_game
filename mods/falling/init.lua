@@ -455,7 +455,6 @@ end
 
 -- Copied from builtin so I can fix the behavior.
 function core.spawn_falling_node(pos)
-	minetest.chat_send_all('testing!')
 	local node = core.get_node(pos)
 	if node.name == "air" or node.name == "ignore" then
 		return false

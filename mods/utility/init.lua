@@ -8,6 +8,8 @@ local vector_round = vector.round
 local math_floor = math.floor
 local math_random = math.random
 
+dofile(utility.modpath .. "/sound_compat.lua")
+
 -- Dummy function.
 fireambiance = {}
 function fireambiance.on_flame_addremove(pos)

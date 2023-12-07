@@ -239,6 +239,13 @@ function tnt.register_tnt(def)
                   minetest.pos_to_string(pos))
             end
         end,
+
+        on_finish_collapse = function(pos, node)
+					local igniter = minetest.find_node_near(pos, 1, "group:igniter")
+					if igniter then
+						minetest.add_node(pos, {name = name .. "_burning"})
+					end
+        end,
         
 				-- TNT chain reactions.
 				on_blast = function(pos)

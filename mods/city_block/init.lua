@@ -352,26 +352,57 @@ function city_block:in_disallow_liquid_zone(pos, player)
 		return false
 	end
 
+	local pname = player:get_player_name()
 	pos = vector_round(pos)
-	-- Covers a 45x45x45 area.
-	local r = 22
-	local blocks = self.blocks
+
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	local blocks = {}
+	local sblocks = self.blocks
 	local t2 = os.time()
 
-	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
-		local v = blocks[i]
-		local vpos = v.pos
-		local t1 = v.time or 0
+	-- Covers a 45x45x45 area.
+	local r = 22
 
+	for i=1, #sblocks, 1 do
+		local vpos = sblocks[i].pos
+		local t1 = sblocks[i].time or 0
+
+		-- Only include active blocks.
 		if time_active(t1, t2) then
+			-- This is a cubic distance check.
 			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
 				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
 				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
-				return true
+				-- Add this block to list.
+				blocks[#blocks+1] = sblocks[i]
 			end
 		end
 	end
-	return false
+
+	-- Sort blocks, nearest blocks first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a.pos, pos)
+			local d2 = vector_distance(b.pos, pos)
+			return d1 < d2
+		end)
+
+	-- No intersecting blocks at all?
+	if #blocks == 0 then
+		return false
+	end
+
+	-- Check only the first, nearest block. Assumed active.
+	local bcheck = blocks[1]
+
+	if bcheck.owner == pname then
+		return false
+	end
+
+	-- Nearest block NOT owned by player.
+	-- This means this position is "in city" for purposes of placing/digging liquid.
+	return true
 end
 
 function city_block:in_city_suburbs(pos)

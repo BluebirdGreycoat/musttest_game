@@ -345,6 +345,35 @@ function city_block:in_city(pos)
 	return false
 end
 
+-- Pass the player doing the liquid dig/place action.
+function city_block:in_disallow_liquid_zone(pos, player)
+	-- Never in city zone, if not a player doing this.
+	if not player or not player:is_player() then
+		return false
+	end
+
+	pos = vector_round(pos)
+	-- Covers a 45x45x45 area.
+	local r = 22
+	local blocks = self.blocks
+	local t2 = os.time()
+
+	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
+		local v = blocks[i]
+		local vpos = v.pos
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 function city_block:in_city_suburbs(pos)
 	pos = vector_round(pos)
 	local r = 44

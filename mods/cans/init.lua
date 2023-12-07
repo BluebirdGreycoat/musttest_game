@@ -139,7 +139,7 @@ function cans.register_can(d)
         return
       end
 
-			if city_block:in_city(pos) then
+			if city_block:in_disallow_liquid_zone(pos, user) then
 				minetest.chat_send_player(pname, "# Server: Don't do that in town!")
 				easyvend.sound_error(pname)
 				return

@@ -1024,6 +1024,7 @@ if not anvil.registered then
 		drop = 'anvil:anvil',
 		sounds = default.node_sound_metal_defaults({dig={name="default_silence", gain=1.0}}),
 		stack_max = 1,
+		crushing_damage = 19*500,
 
 		on_construct = function(...) return anvil.on_construct(...) end,
 		on_destruct = function(...) return anvil.on_destruct(...) end,

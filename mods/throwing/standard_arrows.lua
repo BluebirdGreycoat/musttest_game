@@ -86,6 +86,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		else
 			minetest.add_item(above, 'default:stick')
 		end
+		ambiance.sound_play("throwing_arrow_hit", under, 1.0, 32)
 	end
 
 	THROWING_ARROW_ENTITY.on_step = function(self, dtime)

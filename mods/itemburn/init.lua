@@ -8,6 +8,7 @@ local math_random = math.random
 local math_min = math.min
 local abs = math.abs
 
+local gravity = tonumber(core.settings:get("movement_gravity")) or 9.81
 
 
 -- Use an offset for finding the node under the drop,
@@ -31,6 +32,44 @@ local item = {
 		local itemdef = minetest.registered_items[stack:get_name()]
 		if itemdef and itemdef.groups.flammable ~= 0 then
 			self.flammable = itemdef.groups.flammable
+		end
+	end,
+
+	-- Copy from builtin, with modifications.
+	get_staticdata = function(self)
+		return core.serialize({
+			itemstring = self.itemstring,
+			age = self.age,
+			dropped_by = self.dropped_by,
+			stuck_arrow = self.stuck_arrow,
+		})
+	end,
+
+	-- Copy from builtin, with modifications.
+	on_activate = function(self, staticdata, dtime_s)
+		if string.sub(staticdata, 1, string.len("return")) == "return" then
+			local data = core.deserialize(staticdata)
+			if data and type(data) == "table" then
+				self.itemstring = data.itemstring
+				self.age = (data.age or 0) + dtime_s
+				self.dropped_by = data.dropped_by
+				self.stuck_arrow = data.stuck_arrow
+			end
+		else
+			self.itemstring = staticdata
+		end
+		self.object:set_armor_groups({immortal = 1})
+		-- Leave stuck arrows where they last were.
+		if not self.stuck_arrow then
+			self.object:set_velocity({x = 0, y = 2, z = 0})
+			self.object:set_acceleration({x = 0, y = -gravity, z = 0})
+		end
+		self._collisionbox = self.initial_properties.collisionbox
+		self:set_item()
+		if self.stuck_arrow then
+			self.object:set_properties({
+				automatic_rotate = 0,
+			})
 		end
 	end,
 

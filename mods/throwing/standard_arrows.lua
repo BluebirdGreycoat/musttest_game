@@ -64,7 +64,23 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 
 	function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
 		if math_random() < toughness then
-			minetest.add_item(above, 'throwing:arrow_' .. kind)
+			local ent = minetest.add_item(above, 'throwing:arrow_' .. kind)
+			if ent then
+				local luaent = ent:get_luaentity()
+				if not luaent then
+					ent:remove()
+					return
+				end
+
+				if intersection_point then
+					ent:set_pos(intersection_point)
+					ent:set_properties({
+						automatic_rotate = 0,
+					})
+					ent:set_yaw(self.object:get_yaw())
+					ent:set_acceleration({x=0, y=0, z=0})
+				end
+			end
 		else
 			minetest.add_item(above, 'default:stick')
 		end

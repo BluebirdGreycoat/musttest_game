@@ -138,40 +138,44 @@ function throwing.flight_particle(lpos, cpos)
 		y = (lpos.y + cpos.y) / 2,
 		z = (lpos.z + cpos.z) / 2,
 	}
+	local mpos2 = {
+		x = (mpos.x + cpos.x) / 2,
+		y = (mpos.y + cpos.y) / 2,
+		z = (mpos.z + cpos.z) / 2,
+	}
+	local mpos3 = {
+		x = (lpos.x + mpos.x) / 2,
+		y = (lpos.y + mpos.y) / 2,
+		z = (lpos.z + mpos.z) / 2,
+	}
 
-	minetest.add_particlespawner({
-		amount = 5,
-		time = 0.1,
-		minpos = mpos,
-		maxpos = mpos,
-		minvel = {x=-0.1, y=-0.1, z=-0.1},
-		maxvel = {x=0.1,  y=0.1,  z=0.1},
-		minacc = vector.new(),
-		maxacc = vector.new(),
-		minexptime = 1.5,
-		maxexptime = 1.5,
-		minsize = 0.5,
-		maxsize = 1,
-		texture = "throwing_sparkle.png",
-		glow = 8,
-	})
+	local targets = {
+		mpos3,
+		mpos,
+		mpos2,
+		cpos,
+	}
 
-	minetest.add_particlespawner({
-		amount = 5,
-		time = 0.1,
-		minpos = cpos,
-		maxpos = cpos,
-		minvel = {x=-0.1, y=-0.1, z=-0.1},
-		maxvel = {x=0.1,  y=0.1,  z=0.1},
-		minacc = vector.new(),
-		maxacc = vector.new(),
-		minexptime = 1.5,
-		maxexptime = 1.5,
-		minsize = 0.5,
-		maxsize = 1,
-		texture = "throwing_sparkle.png",
-		glow = 8,
-	})
+	for i = 1, #targets, 1 do
+		local mpos = targets[i]
+
+		minetest.add_particlespawner({
+			amount = 3,
+			time = 0.1,
+			minpos = mpos,
+			maxpos = mpos,
+			minvel = {x=-0.1, y=-0.1, z=-0.1},
+			maxvel = {x=0.1,  y=0.1,  z=0.1},
+			minacc = vector.new(),
+			maxacc = vector.new(),
+			minexptime = 0.5,
+			maxexptime = 2.5,
+			minsize = 0.5,
+			maxsize = 1,
+			texture = "throwing_sparkle.png",
+			glow = 8,
+		})
+	end
 end
 
 

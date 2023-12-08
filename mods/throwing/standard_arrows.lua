@@ -60,6 +60,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		local speed = vector.length(vel)
 		local damage = ((speed + eq)^1.2)/5
 		throwing_arrow_punch_entity(obj, self, damage*500)
+		ambiance.sound_play("throwing_arrow_hit", obj:get_pos(), 1.0, 32)
 	end
 
 	function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)

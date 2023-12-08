@@ -21,6 +21,11 @@ Grahpics & sounds: CC-BY 3.0 (see http://creativecommons.org/licenses/by/3.0/leg
 CC0 (from freesound.org)
 Ali_6868: throwing_arrow_hit.*.ogg, throwing_arrow_fly.ogg
 
+CC BY-NC 4.0 (from freesound.org)
+LiamG_SFX: throwing_arrow_nock.ogg
+
+CC BY 3.0 (from freesound.org)
+Samulis: throwing_arrow_launch.ogg
 
 Changelog:
 

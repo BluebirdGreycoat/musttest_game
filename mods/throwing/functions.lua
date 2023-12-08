@@ -114,7 +114,7 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	if is_cross then
 		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos}, true)
 	else
-		minetest.sound_play("throwing_bow_sound", {pos=playerpos}, true)
+		minetest.sound_play("throwing_bow_launch", {pos=playerpos}, true)
 	end
 
 	luaent.player = player
@@ -413,6 +413,8 @@ function throwing_reload (index, indexname, controls, pname, pos, is_cross, load
 					-- Start checking to see if player unwields this bow. If they do, we
 					-- must unload it.
 					throwing.wield_check(pname, index, indexname, loaded)
+
+					ambiance.sound_play("throwing_arrow_nock", pos, 1.0, 16)
 
 					-- Don't need to iterate through remaining arrow types.
 					return

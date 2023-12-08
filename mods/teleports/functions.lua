@@ -378,7 +378,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 		end,
 	})
 
-	teleports.ping_all_teleports(player)
+	teleports.ping_all_teleports(origin_pos, player)
 end
 
 
@@ -1010,8 +1010,9 @@ end
 
 
 
-function teleports.ping_all_teleports(initiating_player)
+function teleports.ping_all_teleports(origin_pos, initiating_player)
 	local players = minetest.get_connected_players()
+	local start_realm = rc.current_realm_at_pos(origin_pos)
 
 	local ping = function(pos)
 		local xd = 1
@@ -1065,12 +1066,15 @@ function teleports.ping_all_teleports(initiating_player)
 			-- Don't add particles for the initiating player above the teleport they
 			-- are actually using (but spawn particles for them over any nearby).
 			if dist < 32 and (pref ~= initiating_player or dist > 2) then
-				ping(portpos)
+				local tp_realm = rc.current_realm_at_pos(portpos)
+				if tp_realm == start_realm then
+					ping(portpos)
 
-				if math_random(1, 500) == 1 then
-					minetest.after(math_random(1, 5), function()
-						pm.spawn_random_wisp(vector_add(portpos, {x=0, y=1, z=0}))
-					end)
+					if math_random(1, 500) == 1 then
+						minetest.after(math_random(1, 5), function()
+							pm.spawn_random_wisp(vector_add(portpos, {x=0, y=1, z=0}))
+						end)
+					end
 				end
 			end
 		end

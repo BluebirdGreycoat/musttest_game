@@ -175,6 +175,19 @@ function throwing.flight_particle(lpos, cpos)
 end
 
 
+local function highlight_position(pos)
+	utility.original_add_particle({
+		pos = pos,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 1.5,
+		size = 4,
+		collisiondetection = false,
+		vertical = false,
+		texture = "heart.png",
+	})
+end
+
 
 -- Do flying/collision logic, and execute entity callbacks.
 -- This should be called inside of the entity's on_step() function.
@@ -204,6 +217,11 @@ function throwing.do_fly(self, dtime)
 				local blocka = throwing_node_should_block_arrow(nodea.name)
 
 				if not blocka and blocku then
+					-- Test shows that nodeboxes are indeed collisioned correctly.
+					--if thing.intersection_point then
+					--	highlight_position(thing.intersection_point)
+					--end
+
 					if self.hit_node then
 						self:hit_node(thing.under, thing.above, thing.intersection_point)
 					end

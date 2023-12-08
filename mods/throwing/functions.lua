@@ -201,6 +201,8 @@ function throwing.do_fly(self, dtime)
 	local cpos = self.object:get_pos()
 	local lpos = self.lastpos
 
+	ambiance.sound_play("throwing_arrow_fly", cpos, 1.0, 4)
+
 	-- Detect collisions: raycast from last position to current. (Note: 'lastpos'
 	-- table is never nil because it is part of entity definition. This is why
 	-- test is against 'x' key here.)

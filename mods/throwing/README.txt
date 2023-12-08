@@ -19,7 +19,7 @@ Sourcecode: LGPLv2.1 (see http://www.gnu.org/licenses/lgpl-2.1.html)
 Grahpics & sounds: CC-BY 3.0 (see http://creativecommons.org/licenses/by/3.0/legalcode)
 
 CC0 (from freesound.org)
-Ali_6868: throwing_arrow_hit.ogg
+Ali_6868: throwing_arrow_hit.*.ogg, throwing_arrow_fly.ogg
 
 
 Changelog:

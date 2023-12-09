@@ -487,10 +487,17 @@ function ads.generate_formspec(pos, pname, booth)
 		ads.players[pname] = {}
 	end
 	local data = ads.players[pname]
-	data.ads = ads.get_valid_ads(pos, data.srchtxt) or {}
 	data.shops = data.shops or {}
 	data.selected = data.selected or 0
 	data.shopselect = data.shopselect or 0
+
+	if not data.ads or
+			(data.srchtxt or "") ~= (data.cache_srchtxt or "") or
+			(data.cache_time or 0) < os.time() then
+		data.ads = ads.get_valid_ads(pos, data.srchtxt) or {}
+		data.cache_srchtxt = data.srchtxt
+		data.cache_time = os.time() + 60*5
+	end
 
 	if data.selected ~= 0 and data.selected > #data.ads then
 		data.selected = #data.ads

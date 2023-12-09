@@ -351,44 +351,6 @@ end
 
 
 
-function ads.get_valid_ads(pos)
-	pos = vector_round(pos)
-	local temp = {}
-	for i = 1, #(ads.data), 1 do
-		local ad = ads.data[i]
-		local str = ""
-		local stack = ItemStack(ad.item)
-		local def = minetest.registered_items[stack:get_name()]
-
-		-- Skip ads with missing data.
-		if not ad.shop or not ad.date then
-			goto continue
-		end
-
-		-- Don't show ads for unknown items or items without descriptions.
-		if not def or not def.description then
-			goto continue
-		end
-
-		-- Don't show ads for far shops.
-		-- That is, don't show ads that were submitted far from the current location.
-		if vector_distance(pos, ad.pos) > ads.viewrange then
-			goto continue
-		end
-
-		-- Ignore ads submitted in a different realm.
-		if not rc.same_realm(pos, ad.pos) then
-			goto continue
-		end
-
-		temp[#temp+1] = table.copy(ad)
-		::continue::
-	end
-	return temp
-end
-
-
-
 local function in_market_range(mark, vend)
 	local r = ads.marketrange
 	if vend.x >= (mark.x - r) and vend.x <= (mark.x + r)
@@ -472,6 +434,50 @@ end
 
 
 
+function ads.get_valid_ads(pos, srchtxt)
+	pos = vector_round(pos)
+	local temp = {}
+	for i = 1, #(ads.data), 1 do
+		local ad = ads.data[i]
+		local str = ""
+		local stack = ItemStack(ad.item)
+		local def = minetest.registered_items[stack:get_name()]
+
+		-- Skip ads with missing data.
+		if not ad.shop or not ad.date then
+			goto continue
+		end
+
+		-- Don't show ads for unknown items or items without descriptions.
+		if not def or not def.description then
+			goto continue
+		end
+
+		-- Don't show ads for far shops.
+		-- That is, don't show ads that were submitted far from the current location.
+		if vector_distance(pos, ad.pos) > ads.viewrange then
+			goto continue
+		end
+
+		-- Ignore ads submitted in a different realm.
+		if not rc.same_realm(pos, ad.pos) then
+			goto continue
+		end
+
+		-- Skip adds without matching shops, if we're doing an item search.
+		local shops = ads.get_valid_shops(ad.pos, ad.owner, srchtxt)
+		if srchtxt and srchtxt ~= "" and #shops == 0 then
+			goto continue
+		end
+
+		temp[#temp+1] = table.copy(ad)
+		::continue::
+	end
+	return temp
+end
+
+
+
 -- Constructs the main formspec, for viewing ads and shop listings.
 function ads.generate_formspec(pos, pname, booth)
 	-- Set up player's view of the data.
@@ -479,7 +485,7 @@ function ads.generate_formspec(pos, pname, booth)
 		ads.players[pname] = {}
 	end
 	local data = ads.players[pname]
-	data.ads = ads.get_valid_ads(pos) or {}
+	data.ads = ads.get_valid_ads(pos, data.srchtxt) or {}
 	data.shops = data.shops or {}
 	data.selected = data.selected or 0
 	data.shopselect = data.shopselect or 0

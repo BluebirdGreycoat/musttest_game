@@ -399,17 +399,48 @@ local function in_market_range(mark, vend)
 	return false
 end
 
+
+
 local function match_search(search, itemstr)
 	if not search or search == "" then
 		return true
 	end
 
-	if itemstr:find(search) then
+	local idef = minetest.registered_items[itemstr]
+	if not idef then
+		return false
+	end
+
+	local shortdesc = utility.get_short_desc(idef.description)
+	shortdesc = shortdesc:lower()
+
+	local tokens = search:split(" ")
+	if not tokens or #tokens == 0 then
+		return false
+	end
+
+	local count = 0
+
+	for i = 1, #tokens do
+		local tok = tokens[i]
+
+		if tok ~= "" then
+			tok = tok:lower()
+			if itemstr:find(tok, 1, true) or shortdesc:find(tok, 1, true) then
+				count = count + 1
+			end
+		end
+	end
+
+	-- All search tokens found for this item.
+	if count == #tokens then
 		return true
 	end
 
 	return false
 end
+
+
 
 function ads.get_valid_shops(ad_pos, owner, srchtxt)
 	local db = {}

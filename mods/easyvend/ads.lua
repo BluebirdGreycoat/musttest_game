@@ -718,19 +718,32 @@ function ads.on_receive_fields(player, formname, fields)
 						local putsite = depositor.get_drop_location(pname)
 						local dropsite = depositor.get_drop_location(owner)
 						local vpos = shops[sel].pos
-						if putsite then
-							if dropsite then
-								local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, ads.tax, currency, type)
-								if msg then
-									minetest.chat_send_player(pname, "# Server: " .. msg)
+
+						local valid_trade = true
+						if not rc.same_realm(pos, vpos) then
+							valid_trade = false
+						end
+						if vector.distance(pos, vpos) > (ads.viewrange + ads.marketrange) then
+							valid_trade = false
+						end
+
+						if not valid_trade then
+							if putsite then
+								if dropsite then
+									local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, ads.tax, currency, type)
+									if msg then
+										minetest.chat_send_player(pname, "# Server: " .. msg)
+									end
+								else
+									minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote trading.")
+									easyvend.sound_error(pname)
 								end
 							else
-								minetest.chat_send_player(pname, "# Server: Cannot execute trade. <" .. rename.gpn(owner) .. "> has not registered an address for remote trading.")
+								minetest.chat_send_player(pname, "# Server: Cannot execute trade. You have not registered an address for remote trading.")
 								easyvend.sound_error(pname)
 							end
 						else
-							minetest.chat_send_player(pname, "# Server: Cannot execute trade. You have not registered an address for remote trading.")
-							easyvend.sound_error(pname)
+							minetest.chat_send_player(pname, "# Server: 0xBAADF00D")
 						end
 					end
 				elseif fields.domark then

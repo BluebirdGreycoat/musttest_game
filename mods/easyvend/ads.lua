@@ -11,7 +11,7 @@ ads.titlelen = 64
 ads.viewrange = 8000 -- Distance at which ads are visible.
 ads.marketrange = 15 -- Distance at which shops are visible (distance from ad source).
 ads.ad_cost = 5
-ads.tax = 3
+ads.tax = 0
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -444,13 +444,18 @@ function ads.generate_formspec(pos, pname, booth)
 		fs_size_y = 9
 	end
 
+	local tax_notice = ""
+	if ads.tax > 0 then
+		tax_notice = " NOTICE: A " .. ads.tax .. "% tax is applied to all remote transactions."
+	end
+
 	local esc = minetest.formspec_escape
 	local formspec =
 		"size[" .. fs_size_x .. "," .. fs_size_y .. "]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
-		"label[0,0;" .. minetest.formspec_escape("View nearby shops & trading opportunities! NOTICE: A " .. ads.tax .. "% tax is applied to all remote transactions.") .. "]"
+		"label[0,0;" .. minetest.formspec_escape("View nearby shops & trading opportunities!" .. tax_notice) .. "]"
 
 	if booth then
 		formspec = formspec ..

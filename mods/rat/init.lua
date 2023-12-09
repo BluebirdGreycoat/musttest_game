@@ -22,6 +22,7 @@ mobs.register_mob("rat:rat", {
 	makes_footstep_sound = false,
 	sounds = {
 		random = "rat_rat",
+		death = "rat_die",
 	},
 	walk_velocity = 1,
 	run_velocity = 2,

@@ -138,11 +138,20 @@ if not gem_tools.registered then
 			assert(tooldata[data])
 			assert(tooldata[data_rf])
 
+			local sounds = {
+				breaks = "basictools_tool_breaks",
+			}
+
+			if j.tool == "sword" or j.tool == "axe" then
+				sounds.punch_use_air = "sword_swipe"
+			end
+
 			minetest.register_tool(":" .. tool, {
 				description = desc,
 				inventory_image = iimg,
 				tool_capabilities = tooldata[data],
 				groups = {gem_tool=1},
+				sounds = sounds,
 			})
 
 			minetest.register_tool(":" .. tool_rf, {
@@ -150,6 +159,7 @@ if not gem_tools.registered then
 				inventory_image = iimg_rf,
 				tool_capabilities = tooldata[data_rf],
 				groups = {gem_tool=1},
+				sounds = sounds,
 			})
 
 			-- Register craft recipes.

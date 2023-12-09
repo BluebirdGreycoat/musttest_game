@@ -108,7 +108,10 @@ minetest.register_tool(":default:axe_stone", {
 	description = "Stone Axe",
 	inventory_image = "default_tool_stoneaxe.png",
 	tool_capabilities = tooldata["axe_stone"],
-  sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_hard",
+	},
   groups = {not_repaired_by_anvil = 1},
 })
 
@@ -116,35 +119,50 @@ minetest.register_tool(":default:axe_steel", {
 	description = "Iron Axe",
 	inventory_image = "default_tool_steelaxe.png",
 	tool_capabilities = tooldata["axe_steel"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:axe_bronze", {
 	description = "Copper Axe",
 	inventory_image = "default_tool_bronzeaxe.png",
 	tool_capabilities = tooldata["axe_bronze"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:axe_bronze2", {
 	description = "Bronze Axe",
 	inventory_image = "default_tool_bronzeaxe2.png",
 	tool_capabilities = tooldata["axe_bronze2"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:axe_mese", {
 	description = "Mese Axe",
 	inventory_image = "default_tool_meseaxe.png",
 	tool_capabilities = tooldata["axe_mese"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:axe_diamond", {
 	description = "Diamond Axe",
 	inventory_image = "default_tool_diamondaxe.png",
 	tool_capabilities = tooldata["axe_diamond"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:sword_stone", {
@@ -153,41 +171,60 @@ minetest.register_tool(":default:sword_stone", {
 	tool_capabilities = tooldata["sword_stone"],
   sounds = {breaks = "basictools_tool_breaks"},
   groups = {not_repaired_by_anvil = 1},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_hard",
+	},
 })
 
 minetest.register_tool(":default:sword_steel", {
 	description = "Iron Sword",
 	inventory_image = "default_tool_steelsword.png",
 	tool_capabilities = tooldata["sword_steel"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:sword_bronze", {
 	description = "Copper Sword",
 	inventory_image = "default_tool_bronzesword.png",
 	tool_capabilities = tooldata["sword_bronze"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:sword_bronze2", {
 	description = "Bronze Sword",
 	inventory_image = "default_tool_bronzesword2.png",
 	tool_capabilities = tooldata["sword_bronze2"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:sword_mese", {
 	description = "Mese Sword",
 	inventory_image = "default_tool_mesesword.png",
 	tool_capabilities = tooldata["sword_mese"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool(":default:sword_diamond", {
 	description = "Diamond Sword",
 	inventory_image = "default_tool_diamondsword.png",
 	tool_capabilities = tooldata["sword_diamond"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 

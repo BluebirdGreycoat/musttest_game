@@ -31,28 +31,40 @@ minetest.register_tool("moreores:axe_silver", {
 	description = "Silver Axe",
 	inventory_image = "moreores_tool_silveraxe.png",
 	tool_capabilities = tooldata["axe_silver"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool("moreores:axe_mithril", {
 	description = "Mithril Axe",
 	inventory_image = "moreores_tool_mithrilaxe.png",
 	tool_capabilities = tooldata["axe_mithril"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool("moreores:sword_silver", {
 	description = "Silver Sword",
 	inventory_image = "moreores_tool_silversword.png",
 	tool_capabilities = tooldata["sword_silver"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 minetest.register_tool("moreores:sword_mithril", {
 	description = "Mithril Sword",
 	inventory_image = "moreores_tool_mithrilsword.png",
 	tool_capabilities = tooldata["sword_mithril"],
-    sounds = {breaks = "basictools_tool_breaks"},
+	sounds = {
+		breaks = "basictools_tool_breaks",
+		punch_use_air = "sword_swipe_metal",
+	},
 })
 
 farming.register_hoe("moreores:hoe_silver", {

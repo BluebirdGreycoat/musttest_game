@@ -471,7 +471,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 	-- If the formspec is viewed from an OWNED market booth, we need an extra row for more buttons.
 	if booth and (booth_owner == pname or minetest.check_player_privs(pname, "server")) then
-		fs_size_y = 9
+		fs_size_y = 9.1
 	end
 
 	local tax_notice = ""
@@ -592,12 +592,10 @@ function ads.generate_formspec(pos, pname, booth)
 	formspec = formspec ..
 		"textarea[5.6,0.97;4.7,4.6;warning;;" .. addesc .. "]"
 
-		--[[
 	formspec = formspec ..
 		"field[5.6,6.81;2.7,1;srchtxt;;" .. esc(data.srchtxt or "") .. "]" ..
 		"button[8.0,6.5;1,1;dosearch;" .. esc("?") .. "]" ..
 		"button[9.0,6.5;1,1;clearsearch;X]"
-		--]]
 
 	if booth then
 		-- Show inventory/purchase button only if player has permissions on this booth.
@@ -732,6 +730,20 @@ function ads.on_receive_fields(player, formname, fields)
 	local booth = false
 	if string.find(formname, "|booth") then
 		booth = true
+	end
+
+	if fields.dosearch or fields.clearsearch then
+		local srchtxt = fields.srchtxt or ""
+
+		if fields.dosearch then
+			if srchtxt ~= "" then
+				ads.players[pname].srchtxt = srchtxt
+			else
+				ads.players[pname].srchtxt = nil
+			end
+		elseif fields.clearsearch then
+			ads.players[pname].srchtxt = nil
+		end
 	end
 
 	if fields.storage or fields.dotrade or fields.domark or fields.editrecord or fields.deleterecord or fields.newadd then

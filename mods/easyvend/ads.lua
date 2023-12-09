@@ -465,9 +465,11 @@ function ads.get_valid_ads(pos, srchtxt)
 		end
 
 		-- Skip adds without matching shops, if we're doing an item search.
-		local shops = ads.get_valid_shops(ad.pos, ad.owner, srchtxt)
-		if srchtxt and srchtxt ~= "" and #shops == 0 then
-			goto continue
+		if srchtxt and srchtxt ~= "" then
+			local shops = ads.get_valid_shops(ad.pos, ad.owner, srchtxt)
+			if #shops == 0 then
+				goto continue
+			end
 		end
 
 		temp[#temp+1] = table.copy(ad)

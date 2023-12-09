@@ -626,7 +626,8 @@ function ads.generate_formspec(pos, pname, booth)
 	formspec = formspec ..
 		"field[5.6,6.81;2.7,1;srchtxt;;" .. esc(data.srchtxt or "") .. "]" ..
 		"button[8.0,6.5;1,1;dosearch;" .. esc("?") .. "]" ..
-		"button[9.0,6.5;1,1;clearsearch;X]"
+		"button[9.0,6.5;1,1;clearsearch;X]" ..
+		"field_close_on_enter[srchtxt;false]"
 
 	if booth then
 		-- Show inventory/purchase button only if player has permissions on this booth.
@@ -763,10 +764,10 @@ function ads.on_receive_fields(player, formname, fields)
 		booth = true
 	end
 
-	if fields.dosearch or fields.clearsearch then
+	if fields.key_enter_field == "srchtxt" or fields.dosearch or fields.clearsearch then
 		local srchtxt = fields.srchtxt or ""
 
-		if fields.dosearch then
+		if fields.dosearch or fields.key_enter_field == "srchtxt" then
 			if srchtxt ~= "" then
 				ads.players[pname].srchtxt = srchtxt
 			else

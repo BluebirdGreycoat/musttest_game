@@ -33,6 +33,7 @@ mobs.register_mob("dm:dm", {
 	sounds = {
 		random = "dm_dm",
 		shoot_attack = "dm_fireball",
+		death = "dm_die",
 	},
 	walk_velocity = 1,
 	run_velocity = 3,

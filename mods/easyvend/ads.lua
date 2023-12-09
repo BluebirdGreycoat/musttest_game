@@ -491,6 +491,8 @@ function ads.generate_formspec(pos, pname, booth)
 	data.selected = data.selected or 0
 	data.shopselect = data.shopselect or 0
 
+	-- Caching the AD search is needed because depending on parameters/environment,
+	-- this algorith is potentially expensive.
 	if not data.ads or
 			(data.srchtxt or "") ~= (data.cache_srchtxt or "") or
 			(data.cache_time or 0) < os.time() then

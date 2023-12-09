@@ -389,12 +389,20 @@ end
 
 
 
+local function in_market_range(mark, vend)
+	local r = ads.marketrange
+	if vend.x >= (mark.x - r) and vend.x <= (mark.x + r)
+			and vend.y >= (mark.y - r) and vend.y <= (mark.y + r)
+			and vend.z >= (mark.z - r) and vend.z <= (mark.z + r) then
+		return true
+	end
+	return false
+end
+
 function ads.get_valid_shops(ad_pos, owner)
 	local db = {}
 	for k, v in ipairs(depositor.shops) do
-		if v.active and
-			v.owner == owner and
-			vector_distance(ad_pos, v.pos) < ads.marketrange and
+		if v.active and v.owner == owner and in_market_range(ad_pos, v.pos) and
 			rc.same_realm(ad_pos, v.pos)
 		then
 			if (v.type == 1 or v.type == 2) and

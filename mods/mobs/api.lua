@@ -4593,15 +4593,22 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- only play hit sound and show blood effects if damage is 1 or over
 	if damage >= 1 then
 
+		local weapon_def_sounds = weapon:get_definition().sounds
+
 		-- weapon sounds
-		if weapon:get_definition().sounds ~= nil then
-
-			local s = random(0, #weapon:get_definition().sounds)
-
-			minetest.sound_play(weapon:get_definition().sounds[s], {
-				object = self.object, --hitter,
-				max_hear_distance = 20
-			}, true)
+		if weapon_def_sounds ~= nil then
+			-- Names beginning with a '_' should never be clobbered by engine.
+			if weapon_def_sounds._punch_mob then
+				minetest.sound_play(weapon_def_sounds._punch_mob, {
+					object = self.object, --hitter,
+					max_hear_distance = 20
+				}, true)
+			else
+				minetest.sound_play("default_punch", {
+					object = self.object, --hitter,
+					max_hear_distance = 20
+				}, true)
+			end
 		else
 			minetest.sound_play("default_punch", {
 				object = self.object, --hitter,

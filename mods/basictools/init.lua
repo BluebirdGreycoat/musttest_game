@@ -122,6 +122,7 @@ minetest.register_tool(":default:axe_steel", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -132,6 +133,7 @@ minetest.register_tool(":default:axe_bronze", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -142,6 +144,7 @@ minetest.register_tool(":default:axe_bronze2", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -152,6 +155,7 @@ minetest.register_tool(":default:axe_mese", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -162,6 +166,7 @@ minetest.register_tool(":default:axe_diamond", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -184,6 +189,7 @@ minetest.register_tool(":default:sword_steel", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -194,6 +200,7 @@ minetest.register_tool(":default:sword_bronze", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -204,6 +211,7 @@ minetest.register_tool(":default:sword_bronze2", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -214,6 +222,7 @@ minetest.register_tool(":default:sword_mese", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -224,6 +233,7 @@ minetest.register_tool(":default:sword_diamond", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 

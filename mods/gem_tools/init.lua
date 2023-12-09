@@ -144,6 +144,7 @@ if not gem_tools.registered then
 
 			if j.tool == "sword" or j.tool == "axe" then
 				sounds.punch_use_air = "sword_swipe"
+				sounds._punch_mob = "sword_flesh"
 			end
 
 			minetest.register_tool(":" .. tool, {

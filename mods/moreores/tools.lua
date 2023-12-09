@@ -34,6 +34,7 @@ minetest.register_tool("moreores:axe_silver", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -44,6 +45,7 @@ minetest.register_tool("moreores:axe_mithril", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -54,6 +56,7 @@ minetest.register_tool("moreores:sword_silver", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 
@@ -64,6 +67,7 @@ minetest.register_tool("moreores:sword_mithril", {
 	sounds = {
 		breaks = "basictools_tool_breaks",
 		punch_use_air = "sword_swipe_metal",
+		_punch_mob = "sword_flesh",
 	},
 })
 

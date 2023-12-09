@@ -9,3 +9,5 @@ death_female.*.ogg: cut/modified, drotzruhn, Attribution 3.0 Unported (CC BY 3.0
 sword_swipe_metal.ogg: modified, MissCellany, CC0
 sword_swipe_hard.ogg: modified, LukeSharples, CC BY 4.0
 sword_swipe.*.ogg: modified, deleted_user_6479820, CC0
+
+sword_flesh.*.ogg: modified, Artninja, CC BY 4.0

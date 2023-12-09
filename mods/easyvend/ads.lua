@@ -399,7 +399,19 @@ local function in_market_range(mark, vend)
 	return false
 end
 
-function ads.get_valid_shops(ad_pos, owner)
+local function match_search(search, itemstr)
+	if not search or search == "" then
+		return true
+	end
+
+	if itemstr:find(search) then
+		return true
+	end
+
+	return false
+end
+
+function ads.get_valid_shops(ad_pos, owner, srchtxt)
 	local db = {}
 	for k, v in ipairs(depositor.shops) do
 		if v.active and v.owner == owner and in_market_range(ad_pos, v.pos) and
@@ -410,7 +422,17 @@ function ads.get_valid_shops(ad_pos, owner)
 				v.item ~= "" and
 				v.item ~= "ignore"
 			then
-				table.insert(db, {owner=v.owner, item=v.item, number=v.number, cost=v.cost, currency=v.currency, type=v.type, pos={x=v.pos.x, y=v.pos.y, z=v.pos.z}})
+				if match_search(srchtxt, v.item) then
+					table.insert(db, {
+						owner = v.owner,
+						item = v.item,
+						number = v.number,
+						cost = v.cost,
+						currency = v.currency,
+						type = v.type,
+						pos = {x=v.pos.x, y=v.pos.y, z=v.pos.z},
+					})
+				end
 			end
 		end
 	end
@@ -520,15 +542,15 @@ function ads.generate_formspec(pos, pname, booth)
 
 			formspec = formspec ..
 				"label[5.35,5.0;" .. esc(owner_text) .. "]" ..
-				"label[5.35,5.4;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
-				"label[5.35,5.8;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
-				"label[5.35,6.2;" .. esc("Distance " .. math_floor(vector_distance(ad.pos, pos)) .. " meters.") .. "]"
+				"label[5.35,5.3;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
+				"label[5.35,5.6;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
+				"label[5.35,5.9;" .. esc("Distance " .. math_floor(vector_distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
 			end
 
 			-- List nearby shops belonging to the selected ad.
-			local shops = ads.get_valid_shops(ad.pos, ad.owner)
+			local shops = ads.get_valid_shops(ad.pos, ad.owner, data.srchtxt)
 			ads.players[pname].shops = shops
 			for k, v in ipairs(shops) do
 				local str = ""
@@ -569,6 +591,13 @@ function ads.generate_formspec(pos, pname, booth)
 	addesc = minetest.formspec_escape(addesc)
 	formspec = formspec ..
 		"textarea[5.6,0.97;4.7,4.6;warning;;" .. addesc .. "]"
+
+		--[[
+	formspec = formspec ..
+		"field[5.6,6.81;2.7,1;srchtxt;;" .. esc(data.srchtxt or "") .. "]" ..
+		"button[8.0,6.5;1,1;dosearch;" .. esc("?") .. "]" ..
+		"button[9.0,6.5;1,1;clearsearch;X]"
+		--]]
 
 	if booth then
 		-- Show inventory/purchase button only if player has permissions on this booth.
@@ -735,7 +764,7 @@ function ads.on_receive_fields(player, formname, fields)
 							valid_trade = false
 						end
 
-						if not valid_trade then
+						if valid_trade then
 							if putsite then
 								if dropsite then
 									local msg = depositor.execute_trade(vpos, pname, owner, putsite, dropsite, item, number, cost, ads.tax, currency, type)

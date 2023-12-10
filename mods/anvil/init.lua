@@ -135,11 +135,7 @@ function anvil.craft_something(pos)
 			inv:add_item("input", ItemStack(craft.item))
 			meta:set_int("strike", 1)
 			anvil.update_infotext(pos)
-
-			local timer = minetest.get_node_timer(pos)
-			if not timer:is_started() then
-				timer:start(1)
-			end
+			anvil.start_timer_if_needed(pos)
 
 			return true
 		end
@@ -377,10 +373,7 @@ function anvil.on_finish_collapse(pos, node)
 	anvil.update_formspec(pos)
 
 	-- If there was a timer running, restart it.
-	local meta = minetest.get_meta(pos)
-	if meta:get_int("heat") > 0 then
-		minetest.get_node_timer(pos):start(1)
-	end
+	anvil.start_timer_if_needed(pos)
 end
 
 
@@ -434,6 +427,8 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	if not user or not user:is_player() then
 		return
 	end
+
+	anvil.start_timer_if_needed(pos)
 
 	local pname = user:get_player_name()
 	local meta = minetest.get_meta(pos)
@@ -742,6 +737,8 @@ function anvil.on_punch(pos, node, user, pt)
 		return
 	end
 
+	anvil.start_timer_if_needed(pos)
+
 	local stack = user:get_wielded_item()
 	local sname = stack:get_name()
 
@@ -824,11 +821,7 @@ function anvil.repair_tool(pos)
 			meta:set_int("heat", meta:get_int("heat") + 10)
 
 			anvil.update_infotext(pos)
-
-			local timer = minetest.get_node_timer(pos)
-			if not timer:is_started() then
-				timer:start(1)
-			end
+			anvil.start_timer_if_needed(pos)
 
 			return true
 		end
@@ -973,6 +966,19 @@ function anvil.burn_user(pos, user)
 		collisiondetection = false,
 		texture = "default_item_smoke.png"
 	})
+end
+
+
+
+-- Restart the cooldown timer if needed.
+function anvil.start_timer_if_needed(pos)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("heat") > 0 then
+		local timer = minetest.get_node_timer(pos)
+		if not timer:is_started() then
+			timer:start(1)
+		end
+	end
 end
 
 

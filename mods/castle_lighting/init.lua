@@ -83,6 +83,8 @@ minetest.register_node( "castle_lighting:chandelier_chain", {
 
 		},
 	},
+	walkable = false,
+	climbable = true,
 })
 
 minetest.register_craft({

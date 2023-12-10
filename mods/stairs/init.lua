@@ -15,6 +15,17 @@ stairs = {}
 if not minetest.global_exists("circular_saw") then circular_saw = {} end
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
+local function pixel_box(x1, y1, z1, x2, y2, z2)
+	return {
+		x1 / 16 - 0.5,
+		y1 / 16 - 0.5,
+		z1 / 16 - 0.5,
+		x2 / 16 - 0.5,
+		y2 / 16 - 0.5,
+		z2 / 16 - 0.5,
+	}
+end
+
 -- Also used by walls.
 function stairs.setup_nodedef_callbacks(subname, def)
 	if string.find(subname, "ice") or string.find(subname, "snow") then
@@ -470,7 +481,50 @@ local panels_defs = {
 			fixed = {-0.5, -0.5, 0, 0.5, 0.5, 0.5},
 		},
 		light=16/32,
-	}
+	},
+	["_pillar"] = {
+		description = "Column",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				pixel_box(2, 0, 5, 14, 16, 11),
+				pixel_box(3, 0, 3, 13, 16, 13),
+				pixel_box(5, 0, 2, 11, 16, 14),
+			},
+		},
+		selection_box = {
+			type = "fixed",
+			fixed = {
+				pixel_box(2, 0, 2, 14, 16, 14),
+			},
+		},
+		light=1,
+	},
+	["_pcend"] = {
+		description = "Column End",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				pixel_box(2, 0, 5, 14, 16, 11),
+				pixel_box(3, 0, 3, 13, 16, 13),
+				pixel_box(5, 0, 2, 11, 16, 14),
+
+				pixel_box(0, 0, 0, 16, 3, 16),
+				pixel_box(1, 3, 1, 15, 5, 15),
+				pixel_box(2, 5, 2, 14, 7, 14),
+			},
+		},
+		selection_box = {
+			type = "fixed",
+			fixed = {
+				-- The 5.1 is intentional, it keeps the wireframe from being burried,
+				-- which looks ugly.
+				pixel_box(2, 5.1, 2, 14, 16, 14),
+				pixel_box(0, 0, 0, 16, 5, 16),
+			},
+		},
+		light=1,
+	},
 }
 
 function stairs.register_panel(subname, recipeitem, groups, images, description, sounds)
@@ -504,7 +558,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		def.on_place = function(...) return stairs.rotate_and_place(...) end
 		def.groups = groups
 		def.sounds = sounds
-		def.description = description
+		def.description = description .. " " .. (def.description or "Panel")
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
@@ -905,7 +959,7 @@ end
 
 function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds)
   stairs.register_micro(subname, recipeitem, groups, images, desc .. " Microblock", sounds)
-  stairs.register_panel(subname, recipeitem, groups, images, desc .. " Panel", sounds)
+  stairs.register_panel(subname, recipeitem, groups, images, desc, sounds)
   stairs.register_stair(subname, recipeitem, groups, images, desc .. " Stair", sounds)
   stairs.register_extra_stairs(subname, recipeitem, groups, images, desc .. " Stair", sounds)
   stairs.register_slab(subname, recipeitem, groups, images, desc .. " Slab", sounds)

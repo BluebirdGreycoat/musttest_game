@@ -124,6 +124,9 @@ circular_saw.names = {
   {"slope", "_astair_3", 6},
   {"slope", "_astair_4", 6},
   {"slope", "_astair_5", 8},
+
+  {"panel", "_pillar", 8},
+  {"panel", "_pcend", 8},
 }
 
 function circular_saw:get_cost(inv, stackname)

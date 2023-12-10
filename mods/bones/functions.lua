@@ -386,8 +386,17 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	-- Halve player XP!
 	if not preserve_xp then
 		local xp_amount = xp.get_xp(pname, "digxp")
-		xp_amount = xp_amount/2
-		xp_for_bones = (xp_amount/3)*2
+
+		-- You lose 25% or 10K XP, whichever is less.
+		local xp_to_take = xp_amount / 4
+		if xp_to_take > 10000 then xp_to_take = 10000 end
+
+		xp_amount = xp_amount - xp_to_take
+		if xp_amount < 0 then xp_amount = 0 end
+
+		-- 75% of what you lost is put in the bones.
+		xp_for_bones = xp_to_take * 0.75
+
 		xp.set_xp(pname, "digxp", xp_amount)
 	end
 

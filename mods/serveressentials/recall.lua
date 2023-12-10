@@ -62,7 +62,10 @@ function serveressentials.emergency_recall(pname, param)
 		meta:set_int("time_of_last_emergency_recall", death_time)
 
 		local xp_amount = xp.get_xp(pname, "digxp")
-		xp_amount = xp_amount / 4
+		local percent_xp = xp_amount / 4
+		if percent_xp > 10000 then percent_xp = 10000 end
+		xp_amount = xp_amount - percent_xp
+		if xp_amount < 0 then xp_amount = 0 end
 		xp.set_xp(pname, "digxp", xp_amount)
 		hud_clock.update_xp(pname)
 
@@ -74,7 +77,7 @@ function serveressentials.emergency_recall(pname, param)
 	end
 
 	minetest.chat_send_player(pname, "# Server: type \"/emergency_recall confirm\" to run this command.")
-	minetest.chat_send_player(pname, "# Server: You will lose 75% of your current XP as payment.")
+	minetest.chat_send_player(pname, "# Server: You will lose 25% or 10K of your current XP as payment, whichever is less.")
 	minetest.chat_send_player(pname, "# Server: The command cannot be used again for three realtime days.")
 	minetest.chat_send_player(pname, "# Server: If confirmed, you will be respawned as if you had died.")
 	minetest.chat_send_player(pname, "# Server: FOR EMERGENCY USE ONLY.")

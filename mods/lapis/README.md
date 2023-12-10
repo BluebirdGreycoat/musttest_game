@@ -44,23 +44,11 @@ Written 2015 by LNJ
 License of source code:
 WTFPL
 
-------------------------------------
-
 code refinements by Xanthin
 
-------------------------------------
+updated for Enyekala by MustTest
 
---Nodeboxes for Columns designed
-
---by Artemis from Middle-Ages mod
-
---Licensed: WTFPL
-
---basecode is from Minetest Stairs mod
-
--Licensed under GPLv3 or later,
-
-see http://www.gnu.org/licenses/gpl-3.0.html
+GPL code removed.
 
 ===================================
 

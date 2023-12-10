@@ -464,7 +464,8 @@ end
 
 
 
--- respawn player at bed if enabled and valid position is found
+-- Respawn player at bed if enabled and valid position is found.
+-- Note: this can also be called from /emergency_recall.
 function beds.on_respawnplayer(player)
 	local name = player:get_player_name()
 	local player_meta = player:get_meta()

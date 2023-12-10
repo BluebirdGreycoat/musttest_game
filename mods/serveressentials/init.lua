@@ -20,6 +20,7 @@ dofile(serveressentials.modpath .. "/acacia.lua")
 dofile(serveressentials.modpath .. "/utility.lua")
 dofile(serveressentials.modpath .. "/whereis.lua")
 dofile(serveressentials.modpath .. "/teleport.lua")
+dofile(serveressentials.modpath .. "/recall.lua")
 
 
 

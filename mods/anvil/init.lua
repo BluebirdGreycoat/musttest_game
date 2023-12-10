@@ -462,13 +462,18 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 	end
 
 	-- Player does not need access rights to open the formspec.
-	if itemstack:is_empty() or not anvil.item_repairable_or_craftable(itemstack) then
+	if itemstack:is_empty() or (not anvil.item_repairable_or_craftable(itemstack)
+			and not anvil.is_water_bucket(itemstack)) then
 		anvil.show_formspec(pname, pos)
 		return
 	end
 
 	-- Otherwise, player needs access to be able to put or take from anvil.
 	if anvil.player_can_use(pos, user) then
+		if anvil.is_water_bucket(itemstack) then
+			return anvil.cool_with_bucket(pos, user, itemstack)
+		end
+
 		if anvil.item_repairable_or_craftable(itemstack) then
 			if meta:get_int("heat") > 0 then
 				anvil.burn_user(pos, user)
@@ -478,6 +483,51 @@ function anvil.on_rightclick(pos, node, user, itemstack, pt)
 			return anvil.put_or_take(pos, user, itemstack, true)
 		end
 	end
+end
+
+
+
+-- Query whether this itemstack is a water bucket with water.
+function anvil.is_water_bucket(itemstack)
+	local sname = itemstack:get_name()
+
+	if sname == "bucket:bucket_water" or sname == "bucket:bucket_river_water" then
+		return true
+	end
+
+	if sname == "cans:water_can" or sname == "cans:river_water_can" then
+		if cans.get_can_level(itemstack) > 0 then
+			return true
+		end
+	end
+
+	return false
+end
+
+
+
+-- Cool this anvil.
+function anvil.cool_with_bucket(pos, user, itemstack)
+	local meta = minetest.get_meta(pos)
+	local sname = itemstack:get_name()
+
+	if meta:get_int("heat") == 0 then
+		return itemstack
+	end
+
+	if sname == "bucket:bucket_water" or sname == "bucket:bucket_river_water" then
+		itemstack = ItemStack("bucket:bucket_empty")
+	elseif sname == "cans:water_can" or sname == "cans:river_water_can" then
+		local level = cans.get_can_level(itemstack)
+		level = level - 1
+		cans.set_can_level(itemstack, level)
+	end
+
+	meta:set_int("heat", 0)
+	ambiance.sound_play("default_cool_lava", pos, 0.1, 32)
+	anvil.update_infotext(pos)
+
+	return itemstack
 end
 
 

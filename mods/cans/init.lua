@@ -24,9 +24,22 @@ local function get_can_level(itemstack)
     return tonumber(itemstack:get_metadata())
   end
 end
+cans.get_can_level = get_can_level
 
 local function set_can_level(itemstack, charge)
   itemstack:set_metadata(tostring(charge))
+end
+
+function cans.set_can_level(itemstack, level)
+  if level < 0 then
+    level = 0
+  end
+
+  local idef = minetest.registered_items[itemstack:get_name()]
+  local max_level = idef._can_max_liquid_level
+
+  set_can_level(itemstack, level)
+  set_can_wear(itemstack, level, max_level)
 end
 
 local function node_in_group(name, list)
@@ -54,6 +67,7 @@ function cans.register_can(d)
     liquids_pointable = true,
 		wear_represents = "liquid_amount",
 		groups = {not_repaired_by_anvil = 1, disable_repair = 1},
+		_can_max_liquid_level = data.can_capacity,
     
     on_use = function(itemstack, user, pointed_thing)
       if pointed_thing.type ~= "node" then return end

@@ -3,3 +3,13 @@ http://opengameart.org/content/inventory-sound-effects
 
 Applicable licenses:
 CC-BY 3.0 CC-BY-SA 3.0 GPL 3.0 GPL 2.0
+
+Note on the above:
+Quote from OGA FAQ:
+
+"Some artists have multiple licenses listed. Does that mean you need apply the
+rules of all licenses or can we pick the one license we prefer?
+
+You must follow only one of the licenses. However, when you re-distribute/edit,
+you are encouraged to include/use all of the licenses, so the license spectrum
+(and thus sum of people/projects who can use the art) doesn't shrink."

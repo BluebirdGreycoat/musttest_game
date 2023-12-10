@@ -482,6 +482,12 @@ local panels_defs = {
 		},
 		light=16/32,
 	},
+
+-- Nodeboxes for Columns inspired
+-- (but not copied) from Artemis's design in Middle-Ages mod
+-- Licensed: WTFPL
+-- Integrated to circular saw by MustTest
+
 	["_pillar"] = {
 		description = "Column",
 		node_box = {

@@ -246,6 +246,14 @@ function dirtspread.register_active_block(name, data)
 	end
 
 	-- TNT uses voxelmanip, need to hook the `on_blast` method.
+	-- Update 12/10/23: Why do we do this? Can't remember now ...
+	-- Disabling this causes a HUGE performance improvement when blasting
+	-- dirt/sand.
+	--
+	-- I still can't remember why I hooked this function in the first place.
+	-- All it did was add the position to the update queue, but since the node
+	-- would most likely fall, the position would be out-of-date anyway!
+	--[[
 	local on_blast
 	if ndef.on_blast then
 		local old = ndef.on_blast
@@ -258,11 +266,12 @@ function dirtspread.register_active_block(name, data)
 			dirtspread.on_environment(pos)
 		end
 	end
+	--]]
 
 	minetest.override_item(name, {
 		groups = g,
 		on_timer = on_timer,
-		on_blast = on_blast,
+		--on_blast = on_blast,
 	})
 end
 

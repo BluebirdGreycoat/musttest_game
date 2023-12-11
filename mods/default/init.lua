@@ -19,3 +19,11 @@ dofile(default.modpath .. "/tvine.lua")
 
 
 
+function default.lava_death_messages()
+	return {
+		"<player> melted into a crisp.",
+		"<player> burnt to ash.",
+		"<player> stepped in something hot.",
+		"<player> did a Gollum.",
+	}
+end

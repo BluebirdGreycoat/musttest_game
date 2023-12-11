@@ -59,7 +59,7 @@ if not lava.run_once then
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
 		_damage_per_second_type = "lava",
-		_death_message = "<player> melted into a crisp.",
+		_death_message = default.lava_death_messages(),
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 		groups = -- comment
 		{
@@ -147,7 +147,7 @@ if not lava.run_once then
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
 		_damage_per_second_type = "lava",
-		_death_message = "<player> melted into a crisp.",
+		_death_message = default.lava_death_messages(),
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 
 		groups = -- comment

@@ -99,7 +99,7 @@ function utility.check_hanging_node(p, n, group_rating)
 	end
 
 	-- Node can hang from another hanging node above it.
-	if ((def2.groups or {}).handing_node or 0) ~= 0 then
+	if ((def2.groups or {}).hanging_node or 0) ~= 0 then
 		return true
 	end
 

@@ -82,6 +82,8 @@ local function node_considered_supporting(nn, on)
     return true
   end
 
+  --minetest.chat_send_all('checking: ' .. nn .. ',' .. on)
+
   -- None of these drawtypes can support other nodes under normal circumstances.
   if this_drawtype == "airlike" or
       this_drawtype == "signlike" or

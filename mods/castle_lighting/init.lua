@@ -37,6 +37,7 @@ minetest.register_node( "castle_lighting:chandelier", {
 	sounds = default.node_sound_glass_defaults(),
 	sunlight_propagates = true,
 	light_source = 14,
+	climbable = true,
 	tiles = {
 			{
 			name = "castle_chandelier.png",

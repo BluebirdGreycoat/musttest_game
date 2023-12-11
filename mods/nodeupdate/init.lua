@@ -5,12 +5,6 @@ _nodeupdate.modpath = minetest.get_modpath("nodeupdate")
 -- Localize for performance.
 local math_random = math.random
 
--- Grab old update function and save it.
-if not _nodeupdate.old_update then
-	_nodeupdate.old_update = core.check_single_for_falling
-end
-local old_nodeupdate = _nodeupdate.old_update
-
 local get_node = core.get_node
 local get_node_drops = core.get_node_drops
 local get_item_group = core.get_item_group
@@ -56,40 +50,6 @@ function _nodeupdate.spawn_particles(pos, node)
 	ambiance.particles_on_dig(pos, node)
 end
 local spawn_particles = _nodeupdate.spawn_particles
-
-
-
--- Override core function.
-core.check_single_for_falling = function(p)
-	local n = get_node(p)
-
-	-- Handle hanging nodes.
-	if get_item_group(n.name, "hanging_node") ~= 0 then
-		local p2 = {x=p.x, y=p.y+1, z=p.z}
-		local n2 = get_node_or_nil(p2)
-		if n2 and n2.name == "air" then
-			remove_node(p)
-			-- Pass node name, because passing a node table gives wrong results.
-			for _, item in pairs(get_node_drops(n.name, "")) do
-				local pos = {
-						x = p.x + math_random()/2 - 0.25,
-						y = p.y + math_random()/2 - 0.25,
-						z = p.z + math_random()/2 - 0.25,
-				}
-				add_item(pos, item)
-			end
-			spawn_particles(p, n)
-			return true
-		end
-	end
-  
-	-- Fallback to builtin function.
-	local spawned = old_nodeupdate(p)
-	if spawned then
-		spawn_particles(p, n)
-	end
-	return spawned
-end
 
 
 

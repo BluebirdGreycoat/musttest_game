@@ -50,6 +50,12 @@ function serveressentials.emergency_recall(pname, param)
 			end
 		end
 
+		if not beds.has_respawn_bed(pname) then
+			minetest.log("action", "Emergency recall request from " .. pname .. " denied: no bed")
+			minetest.chat_send_player(pname, "# Server: Invalid usage. You have no bed to return to.")
+			return
+		end
+
 		minetest.log("action", pname .. " executes emergency recall from " .. minetest.pos_to_string(death_pos))
 
 		-- Do it by simulating a fake death.
@@ -70,8 +76,8 @@ function serveressentials.emergency_recall(pname, param)
 		hud_clock.update_xp(pname)
 
 		-- Exactly as if player pressed "repawn" button on respawn formspec.
-		-- This will send player back to their bed, if they have one, or to the
-		-- Outback, if they don't. It also handles the Midfeld spaghetti logic.
+		-- This will send player back to their bed (which they should have). It also
+		-- handles the Midfeld spaghetti logic.
 		beds.on_respawnplayer(pref)
 		return
 	end
@@ -80,7 +86,7 @@ function serveressentials.emergency_recall(pname, param)
 	minetest.chat_send_player(pname, "# Server: You will lose 25% or 10K of your current XP as payment, whichever is less.")
 	minetest.chat_send_player(pname, "# Server: The command cannot be used again for three realtime days.")
 	minetest.chat_send_player(pname, "# Server: If confirmed, you will be respawned as if you had died.")
-	minetest.chat_send_player(pname, "# Server: FOR EMERGENCY USE ONLY.")
+	minetest.chat_send_player(pname, "# Server: FOR EMERGENCY USE ONLY. Requires a bed.")
 end
 
 

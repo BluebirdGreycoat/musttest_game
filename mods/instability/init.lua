@@ -82,6 +82,12 @@ local function node_considered_supporting(nn, on)
     return true
   end
 
+  -- Walkable-falling nodes support plantlike nodes.
+  if this_def.walkable and (this_groups.falling_node or 0) ~= 0
+      and other_def.drawtype == "plantlike" then
+    return true
+  end
+
   --minetest.chat_send_all('checking: ' .. nn .. ',' .. on)
 
   -- None of these drawtypes can support other nodes under normal circumstances.
@@ -96,12 +102,12 @@ local function node_considered_supporting(nn, on)
   end
 
   -- Attached nodes cannot support other nodes.
-  if this_groups.attached_node then
+  if (this_groups.attached_node or 0) ~= 0 then
     return false
   end
 
   -- Falling nodes cannot support other nodes.
-  if this_groups.falling_node then
+  if (this_groups.falling_node or 0) ~= 0 then
     return false
   end
   

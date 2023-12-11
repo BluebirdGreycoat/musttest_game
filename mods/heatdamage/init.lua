@@ -21,6 +21,10 @@ heatdamage.cache_clean = 20
 --heatdamage.immune_players["singleplayer"] = {timer=-1}
 
 heatdamage.is_immune = function(pname)
+  if gdac.player_is_admin(pname) then
+    return true
+  end
+
   if heatdamage.immune_players[pname] then
     if heatdamage.immune_players[pname].timer > 0 then
       return true
@@ -154,7 +158,7 @@ heatdamage.globalstep = function(dtime)
     
     for k, v in ipairs(players) do
         local name = v:get_player_name()
-        if heatdamage.immune_players[name] == nil then
+        if not heatdamage.is_immune(name) then
           if v:get_hp() > 0 then -- Don't bother if player already dead.
             -- Scan environment for nearby heat sources capable of causing damage to players.
             local total, lava = scan(v:get_pos())

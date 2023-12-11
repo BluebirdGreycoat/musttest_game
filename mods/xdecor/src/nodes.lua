@@ -646,7 +646,7 @@ end
 xdecor.register("stonepath", {
 	description = "Garden Stone Path",
 	tiles = {"default_stone.png"},
-	groups = utility.dig_groups("bigitem", {falling_node=1}),
+	groups = utility.dig_groups("bigitem", {attached_node=3}),
 	on_rotate = screwdriver.rotate_simple,
 	sounds = default.node_sound_stone_defaults(),
 	sunlight_propagates = true,

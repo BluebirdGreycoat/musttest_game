@@ -74,9 +74,7 @@ minetest.register_node("tnt:gunpowder", {
 
   on_punch = function(pos, node, puncher)
     local wielded = puncher:get_wielded_item():get_name()
-    if wielded == "torches:torch_floor" or
-       wielded == "torches:iron_torch" or
-       wielded == "torches:kalite_torch_floor" then
+		if minetest.get_item_group(wielded, "torch") ~= 0 then
       tnt.burn(pos)
       minetest.log("action", puncher:get_player_name() ..
         " ignites tnt:gunpowder at " ..
@@ -230,9 +228,7 @@ function tnt.register_tnt(def)
         
         on_punch = function(pos, node, puncher)
             local wielded = puncher:get_wielded_item():get_name()
-            if wielded == "torches:torch_floor" or
-               wielded == "torches:iron_torch" or
-               wielded == "torches:kalite_torch_floor" then
+            if minetest.get_item_group(wielded, "torch") ~= 0 then
                 minetest.add_node(pos, {name = name .. "_burning"})
                 minetest.log("action", puncher:get_player_name() ..
                   " ignites " .. node.name .. " at " ..

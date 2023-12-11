@@ -32,6 +32,13 @@ function serveressentials.do_suicide(pname, param)
 		-- Do it.
 		meta:set_int("time_of_last_suicide", death_time)
 		pref:set_hp(0, {reason="suicide"})
+
+		if pref:get_hp() > 0 then
+			minetest.chat_send_player(pname, "# Server: Failure. Seppuku not committed. Honor not gained.")
+		else
+			local data = skins.get_gender_strings(pname)
+			minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> ended " .. data.himself .. ".")
+		end
 		return
 	end
 

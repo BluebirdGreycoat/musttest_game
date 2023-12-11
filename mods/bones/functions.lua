@@ -261,6 +261,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		end
 	end
 
+	--minetest.chat_send_all('ondieplayer dump: ' .. dump(reason))
 	--minetest.log(dump(reason))
 
 	-- If player died while attached to cart/boat/etc, they must be detached.

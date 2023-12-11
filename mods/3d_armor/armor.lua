@@ -646,6 +646,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		local huh = armor.get_hp_change_reason(reason)
 		if huh then
 			reason = huh
+			--minetest.chat_send_all('replace dump: ' .. dump(reason))
 		end
 	end
 
@@ -664,6 +665,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	--minetest.log('reason: ' .. (reason.type or reason.reason or "N/A"))
 	--minetest.log('dump: ' .. dump(reason))
+	--minetest.chat_send_all('dump: ' .. dump(reason))
 	--minetest.log('on_player_hp_change: ' .. hp_change)
 
 	-- used for insta kill tools/commands like /kill (doesnt damage armor)
@@ -714,7 +716,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 				if pref then
 					-- PlayerHPChangeReason.type will be 'punch'.
 					utility.damage_player(pref, dtp, dps,
-						{reason="node_damage", damage_group=dtp, source_node=reason.node})
+						{reason="node_damage", damage_group=dtp, source_node=reason.node, node_pos=reason.node_pos})
 				end
 			end)
 
@@ -804,6 +806,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- the SAME server step, such that no other death reason could intervene for
 	-- any other player that is currently logged in.
 	if math.abs(hp_change) >= player:get_hp() then
+		--minetest.chat_send_all('armor notify: ' .. dump(reason))
 		armor.notify_death_reason(reason)
 	end
 

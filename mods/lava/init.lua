@@ -79,11 +79,13 @@ if not lava.run_once then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 
-					utility.damage_player(player, "lava", 20*500)
-
-					if player:get_hp() == 0 then
-						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-					end
+					local node = minetest.get_node(pos)
+					utility.damage_player(player, "lava", 20*500, {
+						reason = "node_damage",
+						damage_group = "lava",
+						source_node = node.name,
+						node_pos = pos,
+					})
 				end
 			end
 		end,
@@ -167,11 +169,13 @@ if not lava.run_once then
 						minetest.add_node(pa, {name="fire:basic_flame"})
 					end
 
-					utility.damage_player(player, "lava", 20*500)
-
-					if player:get_hp() == 0 then
-						minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> walked on lava.")
-					end
+					local node = minetest.get_node(pos)
+					utility.damage_player(player, "lava", 20*500, {
+						reason = "node_damage",
+						damage_group = "lava",
+						source_node = node.name,
+						node_pos = pos,
+					})
 				end
 			end
 		end,

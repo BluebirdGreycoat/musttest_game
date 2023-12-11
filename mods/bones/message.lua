@@ -133,6 +133,10 @@ end
 function bones.death_reason(pname, reason)
 	local dname = rename.gpn(pname)
 
+	--minetest.chat_send_all('message dump: ' .. dump(reason))
+
+	-- WARNING: do not do if reason.type == "punch", that will create a bug!
+
 	if reason.type == "fall" then
 		minetest.chat_send_all("# Server: <" .. dname .. "> fell.")
 	elseif reason.type == "drown" then

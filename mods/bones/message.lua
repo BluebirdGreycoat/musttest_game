@@ -130,6 +130,7 @@ end
 
 
 
+-- Note: this is not called if the player is cloaked or their ID is off.
 function bones.death_reason(pname, reason)
 	local dname = rename.gpn(pname)
 

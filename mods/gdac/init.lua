@@ -498,6 +498,9 @@ if not gdac.registered then
 		if not dropped then
 			instability.check_tower(pos, newnode, digger)
 			instability.check_single_node(pos)
+
+			-- Check advanced falling node logic.
+			instability.check_unsupported_single(pos)
 		end
 
 		if random(1, 5) == 1 then

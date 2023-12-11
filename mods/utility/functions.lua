@@ -86,6 +86,28 @@ end
 
 
 
+function utility.check_hanging_node(p, n, group_rating)
+	local def = core.registered_nodes[n.name]
+	local p2 = vector.offset(p, 0, 1, 0)
+
+	local nn = core.get_node(p2).name
+	local def2 = core.registered_nodes[nn]
+
+	-- Node can hang from a node with the same name.
+	if n.name == nn then
+		return true
+	end
+
+	-- Node can hang from any solid node.
+	if def2 and def2.walkable then
+		return true
+	end
+
+	return false
+end
+
+
+
 -- Use this to damage a player, instead of player:set_hp(), because this takes
 -- player's current armor groups into account.
 function utility.damage_player(player, damage_type, damage, reason)

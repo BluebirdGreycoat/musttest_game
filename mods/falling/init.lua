@@ -195,6 +195,28 @@ local find_slope = function(pos)
   return targets[random(1, #targets)]
 end
 
+-- Shall return true if a hypothetical falling node spawned at this position
+-- would find a slope to fall down (or would fall straight down). In other words,
+-- return false if that falling node, if spawned, would immediately turn back to
+-- a solid node without moving.
+function falling.could_fall_here(pos)
+	local d = vector.add(pos, {x=0, y=-1, z=0})
+
+	if outof_bounds(d) then
+		return false
+	end
+
+	if node_not_walkable(d) then
+		return true
+	end
+
+	if find_slope(d) then
+		return true
+	end
+
+	return false
+end
+
 
 
 minetest.register_entity(":__builtin:falling_node", {
@@ -470,6 +492,19 @@ function core.spawn_falling_node(pos)
 end
 
 
+local function highlight_position(pos)
+	utility.original_add_particle({
+		pos = pos,
+		velocity = {x=0, y=0, z=0},
+		acceleration = {x=0, y=0, z=0},
+		expirationtime = 1.5,
+		size = 4,
+		collisiondetection = false,
+		vertical = false,
+		texture = "heart.png",
+	})
+end
+
 
 -- Copied from builtin so I can fix the behavior.
 function core.check_single_for_falling(p)
@@ -501,7 +536,20 @@ function core.check_single_for_falling(p)
 
 	local an = core.get_item_group(n.name, "attached_node")
 	if an ~= 0 then
+		--minetest.chat_send_all('attached_node ' .. minetest.pos_to_string(p))
 		if not utility.check_attached_node(p, n, an) then
+			utility.drop_attached_node(p)
+			return true
+		end
+	end
+
+	local hn = core.get_item_group(n.name, "hanging_node")
+	if hn ~= 0 then
+		--minetest.chat_send_all('hanging_node ' .. minetest.pos_to_string(p))
+		-- Hanging vines, chains, etc.
+		if not utility.check_hanging_node(p, n, hn) then
+			--minetest.chat_send_all('hanging_node DROP ' .. minetest.pos_to_string(p))
+			--highlight_position(p)
 			utility.drop_attached_node(p)
 			return true
 		end

@@ -12,9 +12,10 @@ local getn = minetest.get_node
 
 
 
--- This helper function should determine whether a node is
--- considered to be capable of supporting another node.
--- First argument is the node to check. Second argument is the node it may or may not be supporting.
+-- This helper function shall return TRUE if THIS NODE (nn) shall be considered
+-- to be supporting THE OTHER NODE (on). THE OTHER NODE (on) is the one being
+-- checked to see if it needs to fall.
+--
 -- This allows liquid nodes to support each other, but not anybody else.
 local function node_considered_supporting(nn, on)
 	--minetest.chat_send_all(nn .. ', ' .. on)
@@ -35,59 +36,75 @@ local function node_considered_supporting(nn, on)
     return false
   end
 
-	if on then
-		-- Ladders are self-supporting.
-		if stringf(nn, "ladder") and stringf(on, "ladder") then
-			return true
-		end
+  -- Papyrus is self-supporting. Otherwise, digging 1 papyrus
+  -- would cause nearby papyrus to fall, which looks bad.
+  if nn == "default:papyrus" and on == "default:papyrus" then
+    return true
+  end
 
-		-- Papyrus is self-supporting. Otherwise, digging 1 papyrus
-		-- would cause nearby papyrus to fall, which looks bad.
-		if nn == "default:papyrus" and on == "default:papyrus" then
-			return true
-		end
+  -- Twisted vines are self-supporting.
+  if stringf(nn, "default:tvine") and stringf(on, "default:tvine") then
+    return true
+  end
 
-		-- Twisted vines are self-supporting.
-		if stringf(nn, "default:tvine") and stringf(on, "default:tvine") then
-			return true
-		end
-	end
-   
-  local def = allnodes[nn]
-  if def then
-    if def.liquidtype == "source" or def.liquidtype == "flowing" then
-			-- Did we get a name of a node we may or may not be supporting?
-			if on then
-				local d2 = allnodes[on]
-				if d2 then
-					if def.liquidtype == "source" and d2.liquidtype == "source" then
-						-- Liquid *sources* support other liquids.
-						return true
-					end
-				end
-			end
-			-- Liquid does not support.
-      return false
+  local this_def = allnodes[nn]
+  local other_def = allnodes[on]
+
+  -- Unknown nodes always support, to prevent accidents.
+  if not this_def or not other_def then
+    --minetest.chat_send_all('deadbeaf')
+    return true
+  end
+
+  if this_def.liquidtype == "source" then
+    if other_def.liquidtype == "source" then
+      --minetest.chat_send_all('liquid supporting')
+      -- Liquid *sources* support other liquid sources.
+      return true
     end
-    
-    local dt = def.drawtype
-    local pt2 = def.paramtype2
-    if dt == "airlike" or
-        dt == "signlike" or
-        dt == "torchlike" or
-        dt == "raillike" or
-        dt == "plantlike" or
-        dt == "firelike" or
-        (dt == "nodebox" and pt2 == "wallmounted") then
-      return false
-    end
-    
-    local groups = def.groups or {}
-    if groups.attached_node then
-      return false
-    end
+
+    -- Liquid does not support non-liquid nodes.
+    return false
+  elseif this_def.liquidtype == "flowing" then
+    -- Flowing liquids never support nodes.
+    return false
+  end
+
+  local this_groups = this_def.groups or {}
+  local other_groups = other_def.groups or {}
+
+  local this_drawtype = this_def.drawtype
+  local this_paramtype = this_def.paramtype2
+
+  -- Climbable supports adjacent climbable if they have the same drawtype.
+  -- This works for ladders, climbable vines, etc.
+  if this_def.climbable and other_def.climbable and this_def.drawtype == other_def.drawtype then
+    return true
+  end
+
+  -- None of these drawtypes can support other nodes under normal circumstances.
+  if this_drawtype == "airlike" or
+      this_drawtype == "signlike" or
+      this_drawtype == "torchlike" or
+      this_drawtype == "raillike" or
+      this_drawtype == "plantlike" or
+      this_drawtype == "firelike" or
+      (this_drawtype == "nodebox" and this_paramtype == "wallmounted") then
+    return false
+  end
+
+  -- Attached nodes cannot support other nodes.
+  if this_groups.attached_node then
+    return false
+  end
+
+  -- Falling nodes cannot support other nodes.
+  if this_groups.falling_node then
+    return false
   end
   
+  -- By default, node is considered supporting if we didn't handle it.
+  --minetest.chat_send_all('supporting: ' .. nn .. ", supported: " .. on)
   return true
 end
 
@@ -102,11 +119,6 @@ instability.is_singlenode = function(pos, axis)
   
   -- The code tries to exit as early as possible if I can determine
   -- right away the node being checked is not a singlenode.
-  
-  -- If the starting node isn't solid, don't bother checking.
-  if not node_considered_supporting(nn) then
-    return false
-  end
   
   if axis == "y" then
     local sides = {
@@ -412,8 +424,10 @@ function instability.check_unsupported_single(p)
     end
     -- No supporting nodes!
     if not solid then
-			sfn.drop_node(p)
-      core.check_for_falling(p)
+			if falling.could_fall_here(p) and sfn.drop_node(p) then
+        core.check_for_falling(p)
+        minetest.after(0.1, instability.check_unsupported_around, p)
+      end
     end
   end
 end

@@ -1520,7 +1520,7 @@ minetest.register_node("default:papyrus", {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 	},
-	groups = utility.dig_groups("plant", {flammable = 2, standing_node = 1}),
+	groups = utility.dig_groups("plant", {flammable = 2}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 

@@ -98,7 +98,39 @@ function utility.check_hanging_node(p, n, group_rating)
 		return true
 	end
 
+	-- Node can hang from another hanging node above it.
+	if ((def2.groups or {}).handing_node or 0) ~= 0 then
+		return true
+	end
+
 	-- Node can hang from any solid node.
+	if def2 and def2.walkable then
+		return true
+	end
+
+	return false
+end
+
+
+
+function utility.check_standing_node(p, n, group_rating)
+	local def = core.registered_nodes[n.name]
+	local p2 = vector.offset(p, 0, -1, 0)
+
+	local nn = core.get_node(p2).name
+	local def2 = core.registered_nodes[nn]
+
+	-- Node can stand on a node with the same name.
+	if n.name == nn then
+		return true
+	end
+
+	-- Node can stand on another standing node below it.
+	if ((def2.groups or {}).handing_node or 0) ~= 0 then
+		return true
+	end
+
+	-- Node can stand on any solid node.
 	if def2 and def2.walkable then
 		return true
 	end

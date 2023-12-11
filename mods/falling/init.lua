@@ -509,6 +509,7 @@ end
 -- Copied from builtin so I can fix the behavior.
 function core.check_single_for_falling(p)
 	local n = core.get_node(p)
+
 	if core.get_item_group(n.name, "falling_node") ~= 0 then
 		local p_bottom = vector.offset(p, 0, -1, 0)
 		-- Only spawn falling node if node below is loaded
@@ -534,22 +535,33 @@ function core.check_single_for_falling(p)
 		end
 	end
 
-	local an = core.get_item_group(n.name, "attached_node")
+	local ndef = minetest.registered_nodes[n.name]
+	if not ndef or not ndef.groups then
+		return false
+	end
+	local groups = ndef.groups
+
+	-- These special groups are mutually exclusive and should not be used together.
+
+	local an = groups.attached_node or 0
 	if an ~= 0 then
-		--minetest.chat_send_all('attached_node ' .. minetest.pos_to_string(p))
 		if not utility.check_attached_node(p, n, an) then
 			utility.drop_attached_node(p)
 			return true
 		end
 	end
 
-	local hn = core.get_item_group(n.name, "hanging_node")
+	local hn = groups.hanging_node or 0
 	if hn ~= 0 then
-		--minetest.chat_send_all('hanging_node ' .. minetest.pos_to_string(p))
-		-- Hanging vines, chains, etc.
 		if not utility.check_hanging_node(p, n, hn) then
-			--minetest.chat_send_all('hanging_node DROP ' .. minetest.pos_to_string(p))
-			--highlight_position(p)
+			utility.drop_attached_node(p)
+			return true
+		end
+	end
+
+	local sn = groups.standing_node or 0
+	if sn ~= 0 then
+		if not utility.check_standing_node(p, n, sn) then
 			utility.drop_attached_node(p)
 			return true
 		end

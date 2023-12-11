@@ -201,7 +201,15 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 
 	-- Update player's sky colors. Use flags to avoid extra calls.
 	if vector_distance(playerpos, pdata.ppos) > 5 or pdata.sky == -1 then
-		if rc.position_underground(playerpos) and pdata.sky <= 0 then
+		local pos_underground = rc.position_underground(playerpos)
+		if pos_underground then
+			local light = minetest.get_node_light(playerpos, 0.5)
+			if light and light >= 15 then
+				pos_underground = false
+			end
+		end
+
+		if pos_underground and pdata.sky <= 0 then
 			if not IS_SINGLEPLAYER then
 				if playerpos.y > -25000 and pdata.sky ~= 1 then
 					-- Cave (natural) background.
@@ -219,7 +227,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 					pdata.sky = 2
 				end
 			end
-		elseif not rc.position_underground(playerpos) and pdata.sky ~= 0 then
+		elseif not pos_underground and pdata.sky ~= 0 then
 			player:set_sky(rc.get_realm_sky(playerpos))
 			player:set_sun(rc.get_realm_sun(playerpos))
 			player:set_moon(rc.get_realm_moon(playerpos))

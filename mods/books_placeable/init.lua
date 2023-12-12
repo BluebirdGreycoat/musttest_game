@@ -165,6 +165,7 @@ books_placeable.on_rightclick = on_rightclick
 
 
 local function on_punch(pos, node, puncher, pointed_thing)
+	-- Note: we must get the REAL node, because it might have dropped!
 	local node = minetest.get_node(pos)
 
 	if node.name == "books:book_open" then

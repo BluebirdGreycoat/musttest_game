@@ -50,6 +50,12 @@ function serveressentials.emergency_recall(pname, param)
 			end
 		end
 
+		if meta:get_int("should_be_in_jail") ~= 0 then
+			minetest.log("action", "Emergency recall request from " .. pname .. " denied: in jail")
+			minetest.chat_send_player(pname, "# Server: You are in jail, you crook. Use /suicide if you are otherwise unable to commit seppuku and regain your honor.")
+			return
+		end
+
 		if not beds.has_respawn_bed(pname) then
 			minetest.log("action", "Emergency recall request from " .. pname .. " denied: no bed")
 			minetest.chat_send_player(pname, "# Server: Invalid usage. You have no bed to return to.")

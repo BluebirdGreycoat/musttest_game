@@ -204,6 +204,14 @@ function preload_tp.execute(parameters)
 
 	minetest.log("action", pname .. " initiates teleport to " .. minetest.pos_to_string(tp))
 
+	local map_min, map_max = minetest.get_mapgen_edges()
+
+	if tp.x < map_min.x or tp.y < map_min.y or tp.z < map_min.z or
+			tp.x > map_max.x or tp.y > map_max.y or tp.z > map_max.z then
+		minetest.chat_send_player(pname, "# Server: Internal error, void target destination.")
+		return
+	end
+
 	if pfx then
 		preload_tp.spawn_spinup_particles(vector_round(pp), total_time + 2)
 		preload_tp.spawn_spinup_particles(vector_round(tp), total_time + 1)
@@ -212,10 +220,8 @@ function preload_tp.execute(parameters)
 	-- Build callback function. When the map is loaded, we can teleport the player.
 	local cb = function(blockpos, action, calls_remaining, parameters)
 		-- Check if there was an error.
-		-- This avoids false error reports if the area to be generated exceeds the max map edge.
-		-- Update: actually it doesn't?
 		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-			minetest.chat_send_player(pname, "# Server: Internal error, try again or report.")
+			minetest.chat_send_player(pname, "# Server: Internal error, block loading canceled.")
 			return
 		end
 
@@ -245,6 +251,14 @@ function preload_tp.execute(parameters)
 
 	local minp = vector.add(tp, vector.new(-radius, -radius, -radius))
 	local maxp = vector.add(tp, vector.new(radius, radius, radius))
+
+	minp.x = math.max(minp.x, map_min.x)
+	minp.y = math.max(minp.y, map_min.y)
+	minp.z = math.max(minp.z, map_min.z)
+
+	maxp.x = math.min(maxp.x, map_max.x)
+	maxp.y = math.min(maxp.y, map_max.y)
+	maxp.z = math.min(maxp.z, map_max.z)
 
 	-- Emerge the target area. Once emergence is complete player can be teleported.
 	minetest.chat_send_player(pname, "# Server: Spatially translating! Stand by.")

@@ -348,7 +348,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 		return
 	end
 
-	minetest.log("[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
+	minetest.log("action", "[teleports] teleporting player <" .. pname .. "> to " .. minetest.pos_to_string(pos))
 
 	-- Teleport player to chosen location.
 	preload_tp.execute({

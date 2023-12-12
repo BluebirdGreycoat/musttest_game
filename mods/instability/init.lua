@@ -86,6 +86,11 @@ local function node_considered_supporting(nn, on)
   if this_def.walkable and (this_groups.falling_node or 0) ~= 0 then
     if other_def.drawtype == "plantlike" or (other_groups.attached_node or 0) ~= 0 then
       return true
+    elseif (other_groups.falling_node or 0) ~= 0 then
+      -- Be more conservative: support other falling nodes. If the node needs to
+      -- fall anyway, the falling node code will do it. This prevents us from
+      -- having issues with lots of falling nodes packed together in a pile.
+      return true
     end
   end
 

@@ -381,7 +381,12 @@ minetest.register_entity(":__builtin:falling_node", {
 						-- even though we'd normally be placing into air.
 						local callback = nodedef.on_collapse_to_entity
 						if callback then
-							callback(np, self.node)
+							local drops = callback(np, self.node)
+							if drops then
+								for k, v in ipairs(drops) do
+									minetest.add_item(np, v)
+								end
+							end
 						else
 							add_item(np, self.node)
 						end

@@ -143,54 +143,6 @@ end
 
 
 
-local function check_attached_node(p, n, group_rating)
-	local def = core.registered_nodes[n.name]
-	local d = vector.zero()
-	if group_rating == 3 then
-		-- always attach to floor
-		d.y = -1
-	elseif group_rating == 4 then
-		-- always attach to ceiling
-		d.y = 1
-	elseif group_rating == 2 then
-		-- attach to facedir or 4dir direction
-		if (def.paramtype2 == "facedir" or
-				def.paramtype2 == "colorfacedir") then
-			-- Attach to whatever facedir is "mounted to".
-			-- For facedir, this is where tile no. 5 point at.
-
-			-- The fallback vector here is in case 'facedir to dir' is nil due
-			-- to voxelmanip placing a wallmounted node without resetting a
-			-- pre-existing param2 value that is out-of-range for facedir.
-			-- The fallback vector corresponds to param2 = 0.
-			d = core.facedir_to_dir(n.param2) or vector.new(0, 0, 1)
-		elseif (def.paramtype2 == "4dir" or
-				def.paramtype2 == "color4dir") then
-			-- Similar to facedir handling
-			d = core.fourdir_to_dir(n.param2) or vector.new(0, 0, 1)
-		end
-	elseif def.paramtype2 == "wallmounted" or
-			def.paramtype2 == "colorwallmounted" then
-		-- Attach to whatever this node is "mounted to".
-		-- This where tile no. 2 points at.
-
-		-- The fallback vector here is used for the same reason as
-		-- for facedir nodes.
-		d = core.wallmounted_to_dir(n.param2) or vector.new(0, 1, 0)
-	else
-		d.y = -1
-	end
-	local p2 = vector.add(p, d)
-	local nn = core.get_node(p2).name
-	local def2 = core.registered_nodes[nn]
-	if def2 and not def2.walkable then
-		return false
-	end
-	return true
-end
-
-
-
 -- Override what's in the server's builtin.
 function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	local def = itemstack:get_definition()
@@ -317,7 +269,7 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 	-- Check if the node is attached and if it can be placed there
 	local attached_rating = core.get_item_group(def.name, "attached_node")
 	if attached_rating ~= 0 and
-			not check_attached_node(place_to, newnode, attached_rating) then
+			not utility.check_attached_node(place_to, newnode, attached_rating) then
 		log("action", "attached node " .. def.name ..
 			" can not be placed at " .. core.pos_to_string(place_to))
 		return itemstack, false, nil

@@ -10,6 +10,35 @@ papyrus.minlight = 13
 local math_floor = math.floor
 local math_random = math.random
 
+function papyrus.on_place(itemstack, placer, pt)
+	local under = pt.under
+	local above = pt.above
+	local node = minetest.get_node(under)
+	local ndef = minetest.registered_nodes[node.name]
+
+	-- Call on_rightclick if target node defines it.
+	if ndef and ndef.on_rightclick and
+		((not placer) or (placer and not placer:get_player_control().sneak)) then
+		return ndef.on_rightclick(under, node, placer, itemstack, pt) or itemstack
+	end
+
+	local fakestack = itemstack
+
+	-- Pointing at bottom face? Place hanging papyrus.
+	if above.y == (under.y - 1) then
+		--minetest.chat_send_all('placing hanging variant')
+		fakestack = ItemStack("default:papyrus2")
+		fakestack:set_count(itemstack:get_count())
+	end
+
+	local stack, success, pos = minetest.item_place_node(fakestack, placer, pt)
+
+	if success then
+		itemstack:set_count(stack:get_count())
+		return itemstack
+	end
+end
+
 -- Should return a random height for an individual plant to grow.
 function papyrus.random_height()
 	return math_floor(math_random(math_random(2, 3), math_random(3, 5)))

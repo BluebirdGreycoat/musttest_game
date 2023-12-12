@@ -55,7 +55,7 @@ local function on_place(itemstack, placer, pointed_thing)
 	if data and data_owner then
 		copymeta(itemstack:get_meta(), stack:get_meta() )
 	end
-	local _, placed = minetest.item_place_node(stack, placer, pointed_thing, nil)
+	local _, placed, pos = minetest.item_place_node(stack, placer, pointed_thing, nil)
 	if placed then
 		itemstack:take_item()
 	end

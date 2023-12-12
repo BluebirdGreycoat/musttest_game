@@ -94,6 +94,16 @@ local function node_considered_supporting(nn, on)
     end
   end
 
+  -- Standing nodes and hanging nodes support each other.
+  -- (utility.check_attached_node overrides this if it needs to on nodeupdate.)
+  -- This is here mostly so we don't interfere with them.
+  if (this_groups.hanging_node or 0) ~= 0 and (other_groups.hanging_node or 0) ~= 0 then
+    return true
+  end
+  if (this_groups.standing_node or 0) ~= 0 and (other_groups.standing_node or 0) ~= 0 then
+    return true
+  end
+
   --minetest.chat_send_all('checking: ' .. nn .. ',' .. on)
 
   -- None of these drawtypes can support other nodes under normal circumstances.

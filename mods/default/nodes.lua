@@ -1520,9 +1520,14 @@ minetest.register_node("default:papyrus", {
 		type = "fixed",
 		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
 	},
-	groups = utility.dig_groups("plant", {flammable = 2}),
+	drop = "default:papyrus",
+	groups = utility.dig_groups("plant", {flammable = 2, standing_node = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	on_place = function(...)
+		return papyrus.on_place(...)
+	end,
 
 	on_construct = function(...)
 		return papyrus.on_construct(...)
@@ -1538,6 +1543,36 @@ minetest.register_node("default:papyrus", {
 
 	after_dig_node = function(...)
 		return papyrus.after_dig_node(...)
+	end,
+})
+
+-- Hanging version.
+minetest.register_node("default:papyrus2", {
+	description = "Hanging Papyrus (You Hacker)",
+	drawtype = "plantlike",
+	tiles = {"default_papyrus.png"},
+	inventory_image = "default_papyrus.png",
+	wield_image = "default_papyrus.png",
+	paramtype = "light",
+	sunlight_propagates = true,
+	walkable = false,
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.3, -0.5, -0.3, 0.3, 0.5, 0.3}
+	},
+	drop = "default:papyrus",
+	groups = utility.dig_groups("plant", {flammable = 2, hanging_node = 1}),
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	-- Note: NOT climbable. Should behave like normal papyrus as close as possible.
+
+	on_collapse_to_entity = function(pos, node)
+		return {ItemStack("default:papyrus")}
+	end,
+
+	on_finish_collapse = function(pos, node)
+		minetest.set_node(pos, {name="default:papyrus"})
 	end,
 })
 

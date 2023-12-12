@@ -45,6 +45,31 @@ books.can_dig = function(pos,player)
     return inv:is_empty("books")
 end
 
+function books.update_infotext(pos)
+  local meta = minetest.get_meta(pos)
+  local inv = meta:get_inventory()
+  local list = inv:get_list("books")
+
+  local titles = {}
+  for k, v in ipairs(list) do
+    local imeta = v:get_meta()
+    local t = imeta:get_string("title")
+
+    titles[#titles + 1] = t
+
+    if k >= 5 then
+      break
+    end
+  end
+
+  local infotext = ""
+  for k, v in ipairs(titles) do
+    infotext = infotext .. k .. ": \"" .. v .. "\"\n"
+  end
+  meta:set_string("infotext", infotext)
+end
+
+
 books.allow_metadata_inventory_put = function(pos, listname, index, stack)
     if minetest.get_item_group(stack:get_name(), "book") ~= 0 then
         return stack:get_count()
@@ -52,16 +77,46 @@ books.allow_metadata_inventory_put = function(pos, listname, index, stack)
     return 0
 end
 
+function books.on_update_infotext(pos)
+    books.update_infotext(pos)
+end
+
+-- Use this callback hook to update all book descriptions.
+function books.on_update_entity(pos)
+  local meta = minetest.get_meta(pos)
+  local inv = meta:get_inventory()
+  local list = inv:get_list("books")
+
+  for k, v in ipairs(list) do
+    local imeta = v:get_meta()
+    local t = imeta:get_string("title")
+    local a = imeta:get_string("owner")
+
+		-- Don't bother triming the title if the trailing dots would make it longer
+		if #t > books.SHORT_TITLE_SIZE + 3 then
+			t = t:sub(1, books.SHORT_TITLE_SIZE) .. "..."
+		end
+		local desc = "\"" .. t .. "\" By <" .. rename.gpn(a) .. ">"
+
+		imeta:set_string("description", desc)
+  end
+
+  inv:set_list("books", list)
+end
+
 books.on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
     minetest.log("action", player:get_player_name() .. " moves stuff in bookshelf at " .. minetest.pos_to_string(pos))
+    books.update_infotext(pos)
 end
 
 books.on_metadata_inventory_put = function(pos, listname, index, stack, player)
     minetest.log("action", player:get_player_name() .. " moves stuff to bookshelf at " .. minetest.pos_to_string(pos))
+    books.update_infotext(pos)
 end
 
 books.on_metadata_inventory_take = function(pos, listname, index, stack, player)
     minetest.log("action", player:get_player_name() .. " takes stuff from bookshelf at " .. minetest.pos_to_string(pos))
+    books.update_infotext(pos)
 end
 
 books.on_blast = function(pos)
@@ -112,6 +167,12 @@ if not books.run_once then
             
         on_blast = function(...)
             return books.on_blast(...) end,
+
+        _on_update_infotext = function(...)
+            return books.on_update_infotext(...) end,
+
+        _on_update_entity = function(...)
+            return books.on_update_entity(...) end,
     })
 
     minetest.register_node("books:bookshelf_empty", {

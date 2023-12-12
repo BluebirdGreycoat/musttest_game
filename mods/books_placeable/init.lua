@@ -262,6 +262,14 @@ local function on_player_receive_fields(player, formname, fields)
 			title = "Untitled"
 		end
 
+		local short_title = title
+		-- Don't bother triming the title if the trailing dots would make it longer
+		if #short_title > books.SHORT_TITLE_SIZE + 3 then
+			short_title = short_title:sub(1, books.SHORT_TITLE_SIZE) .. "..."
+		end
+		local desc = "\"" .. short_title .. "\" By <" .. rename.gpn(pname) .. ">"
+
+		meta:set_string("description", desc)
 		meta:set_string("title", title)
 		meta:set_string("text", text)
 		meta:set_string("infotext", text)

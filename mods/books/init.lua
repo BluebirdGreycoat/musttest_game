@@ -52,13 +52,15 @@ function books.update_infotext(pos)
 
   local titles = {}
   for k, v in ipairs(list) do
-    local imeta = v:get_meta()
-    local t = imeta:get_string("title")
+    if not v:is_empty() then
+        local imeta = v:get_meta()
+        local t = imeta:get_string("title")
 
-    titles[#titles + 1] = t
+        titles[#titles + 1] = t
 
-    if k >= 5 then
-      break
+        if k >= 5 then
+        break
+        end
     end
   end
 
@@ -88,17 +90,19 @@ function books.on_update_entity(pos)
   local list = inv:get_list("books")
 
   for k, v in ipairs(list) do
-    local imeta = v:get_meta()
-    local t = imeta:get_string("title")
-    local a = imeta:get_string("owner")
+    if not v:is_empty() then
+        local imeta = v:get_meta()
+        local t = imeta:get_string("title")
+        local a = imeta:get_string("owner")
 
-		-- Don't bother triming the title if the trailing dots would make it longer
-		if #t > books.SHORT_TITLE_SIZE + 3 then
-			t = t:sub(1, books.SHORT_TITLE_SIZE) .. "..."
-		end
-		local desc = "\"" .. t .. "\" By <" .. rename.gpn(a) .. ">"
+        -- Don't bother triming the title if the trailing dots would make it longer
+        if #t > books.SHORT_TITLE_SIZE + 3 then
+        t = t:sub(1, books.SHORT_TITLE_SIZE) .. "..."
+        end
+        local desc = "\"" .. t .. "\" By <" .. rename.gpn(a) .. ">"
 
-		imeta:set_string("description", desc)
+        imeta:set_string("description", desc)
+    end
   end
 
   inv:set_list("books", list)

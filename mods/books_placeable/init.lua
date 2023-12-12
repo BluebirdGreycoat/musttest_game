@@ -165,6 +165,8 @@ books_placeable.on_rightclick = on_rightclick
 
 
 local function on_punch(pos, node, puncher, pointed_thing)
+	local node = minetest.get_node(pos)
+
 	if node.name == "books:book_open" then
 		node.name = "books:book_closed"
 		minetest.swap_node(pos, node)
@@ -357,7 +359,7 @@ if not books_placeable.registered then
 
 		-- Must use 'bigitem' group otherwise books cannot be closed by punching,
 		-- because they would simply be dug instantly instead.
-		groups = utility.dig_groups("bigitem", {attached_node = 1}),
+		groups = utility.dig_groups("bigitem", {attached_node = 3}),
 		on_punch = function(...) return books_placeable.on_punch(...) end,
 		on_rightclick = function(...) return books_placeable.on_rightclick(...) end,
 		on_dig = function(...) return books_placeable.on_dig(...) end,
@@ -396,7 +398,7 @@ if not books_placeable.registered then
 		-- Will be overridden inside 'preserve_metadata'!
 		drop = 'books:book_closed',
 
-		groups = utility.dig_groups("bigitem", {attached_node = 1}),
+		groups = utility.dig_groups("bigitem", {attached_node = 3}),
 		on_dig = function(...) return books_placeable.on_dig(...) end,
 		on_rightclick = function(...) return books_placeable.on_rightclick(...) end,
 		on_punch = function(...) return books_placeable.on_punch(...) end,

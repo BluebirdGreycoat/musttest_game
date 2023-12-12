@@ -156,7 +156,8 @@ minetest.register_node("firetree:fruit", {
 
 local can_grow = function(pos)
 	-- Firetree does not grow in other dimensions.
-	if rc.current_realm_at_pos(pos) ~= "overworld" then
+	local crealm = rc.current_realm_at_pos(pos)
+	if not (crealm == "overworld" or crealm == "naraxen") then
 		return false
 	end
 

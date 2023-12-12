@@ -20,15 +20,17 @@ local SHROOM_SCHEMATICS = {
 
 function redshroom.can_grow(pos)
 	-- Nether shroom does not grow in other dimensions.
-	if rc.current_realm_at_pos(pos) ~= "overworld" then
+	local crealm = rc.current_realm_at_pos(pos)
+	if not (crealm == "overworld" or crealm == "naraxen") then
 		return
 	end
 
+	-- The seed (fungus spore) hangs below stable soil.
 	local p2 = vector.offset(pos, 0, 1, 0)
 	local p3 = vector.offset(pos, 0, 2, 0)
 
-	local n2 = minetest.get_node(p2)
-	local n3 = minetest.get_node(p3)
+	local n2 = minetest.get_node(p2) -- Should be soil.
+	local n3 = minetest.get_node(p3) -- Should be air.
 
 	--minetest.chat_send_all('name1: ' .. n2.name)
 	--minetest.chat_send_all('name2: ' .. n3.name)

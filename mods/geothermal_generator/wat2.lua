@@ -113,6 +113,7 @@ function(pos, meta)
     }
 
     local cw = 0
+    local competing = 1 -- Include self in count.
 
 		-- Only flowing water counts.
     for k, v in ipairs(targets) do
@@ -122,6 +123,9 @@ function(pos, meta)
 					node.name == "cw:water_flowing" then
         cw = cw + 1
       end
+      if node.name:find("wat2:") or node.name:find("geo2:") then
+				competing = competing + 1
+			end
     end
 
     if cw > 0 then
@@ -129,7 +133,7 @@ function(pos, meta)
       meta:set_int("chktmr", math_random(3, 15))
 
       meta:set_int("active", 1)
-      meta:set_int("eups", math_floor(cw * ENERGY_AMOUNT))
+      meta:set_int("eups", math_floor((cw * ENERGY_AMOUNT) / competing))
 
       machines.swap_node(pos, "wat2:lv_active")
       result = true

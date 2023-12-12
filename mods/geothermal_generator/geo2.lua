@@ -113,6 +113,7 @@ function(pos, meta)
 
     local cw = 0
     local cl = 0
+    local competing = 1 -- Include self in count.
 
     for k, v in ipairs(targets) do
       local node = minetest.get_node(v)
@@ -121,6 +122,9 @@ function(pos, meta)
       elseif minetest.get_item_group(node.name, "lava") > 0 then
         cl = cl + 1
       end
+      if node.name:find("wat2:") or node.name:find("geo2:") then
+				competing = competing + 1
+			end
     end
 
     if cw > 0 and cl > 0 then
@@ -137,7 +141,7 @@ function(pos, meta)
 			end
 
       meta:set_int("active", 1)
-      meta:set_int("eups", math_floor((cw + cl)*ENERGY_AMOUNT))
+      meta:set_int("eups", math_floor(((cw + cl)*ENERGY_AMOUNT) / competing))
 
       machines.swap_node(pos, "geo2:lv_active")
       result = true

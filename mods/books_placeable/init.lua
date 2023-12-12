@@ -149,6 +149,9 @@ books_placeable.formspec_display = formspec_display
 
 
 local function on_rightclick(pos, node, clicker, itemstack, pointed_thing)
+	-- Safety check, get the REAL node instead of relying on function parameter.
+	local node = minetest.get_node(pos)
+
 	if node.name == "books:book_closed" then
 		node.name = "books:book_open"
 		minetest.swap_node(pos, node)

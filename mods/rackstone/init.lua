@@ -32,7 +32,7 @@ function(pos)
   local maxp = {x=pos.x+1, y=pos.y, z=pos.z+1}
   local nodes = minetest.find_nodes_in_area(minp, maxp, "rackstone:dauthsand_stable")
   for k, v in ipairs(nodes) do
-    minetest.add_node(v, {name="rackstone:dauthsand"})
+    minetest.swap_node(v, {name="rackstone:dauthsand"})
     minetest.check_for_falling(v)
   end
 end
@@ -580,15 +580,24 @@ minetest.register_node("rackstone:dauthsand", {
 })
 
 -- Special sand type that doesn't fall.
+-- Not supposed to be player-obtainable.
 minetest.register_node("rackstone:dauthsand_stable", {
-  description = "Dauthsand",
+  description = "Stable Dauthsand (You Hacker)",
   tiles = {"rackstone_dauthsand.png"},
   groups = utility.dig_groups("gravel", {racksand=1, nether_soil=1}),
-    --damage_per_second = 4*500,
-    post_effect_color = {a=255, r=0, g=0, b=0},
+	--damage_per_second = 4*500,
+	post_effect_color = {a=255, r=0, g=0, b=0},
   sounds = default.node_sound_gravel_defaults(),
   drop = 'rackstone:dauthsand',
 	movement_speed_multiplier = default.SLOW_SPEED,
+
+	on_finish_collapse = function(pos, node)
+		minetest.swap_node(pos, {name="rackstone:dauthsand"})
+	end,
+
+	on_collapse_to_entity = function(pos, node)
+		return {ItemStack("rackstone:dauthsand")}
+	end,
 })
 
 minetest.register_craft({

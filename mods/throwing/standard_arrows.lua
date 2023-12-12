@@ -73,25 +73,37 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 					return
 				end
 
-				if intersection_point then
-					-- I wish the API used quaternions. :(
-					local op = self.lastpos
-					local v = vector.normalize(vector.subtract(intersection_point, op))
-					local O = vector.length({x=v.x, y=0, z=v.z})
-					local A = v.y
-					local pitch = 0
-					if math.abs(O) > 0 then
-						pitch = math.atan(A/O)
-					end
+				local liquid = false
+				local node = minetest.get_node(under)
+				local ndef = minetest.registered_nodes[node.name]
+				if ndef.liquidtype ~= "none" then
+					liquid = true
+				end
 
+				if intersection_point then
 					ent:set_pos(intersection_point)
-					ent:set_properties({
-						automatic_rotate = 0,
-					})
-					ent:set_rotation({x=0, y=self.object:get_yaw(), z=pitch})
 					ent:set_velocity({x=0, y=0, z=0})
-					ent:set_acceleration({x=0, y=0, z=0})
-					luaent.stuck_arrow = true
+
+					if not liquid then
+						-- I wish the API used quaternions. :(
+						local op = self.lastpos
+						local v = vector.normalize(vector.subtract(intersection_point, op))
+						local O = vector.length({x=v.x, y=0, z=v.z})
+						local A = v.y
+						local pitch = 0
+						if math.abs(O) > 0 then
+							pitch = math.atan(A/O)
+						end
+
+						ent:set_properties({
+							automatic_rotate = 0,
+						})
+
+						ent:set_rotation({x=0, y=self.object:get_yaw(), z=pitch})
+						ent:set_acceleration({x=0, y=0, z=0})
+
+						luaent.stuck_arrow = true
+					end
 				end
 			end
 		else

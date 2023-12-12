@@ -346,6 +346,7 @@ if not books_placeable.registered then
 		paramtype = "light",
 		paramtype2 = "facedir",
 		sunlight_propagates = true,
+		walkable = false,
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -388,6 +389,7 @@ if not books_placeable.registered then
 		paramtype = "light",
 		paramtype2 = "facedir",
 		sunlight_propagates = true,
+		walkable = false,
 		node_box = {
 			type = "fixed",
 			fixed = {

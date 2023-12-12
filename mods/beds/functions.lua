@@ -457,8 +457,21 @@ end
 
 
 
+function beds.get_respawn_pos_or_nil(pname)
+	return beds.spawn[pname]
+end
+
+
+
 function beds.clear_player_spawn(pname)
 	beds.spawn[pname] = nil
+	beds.save_spawns()
+end
+
+
+
+function beds.set_player_spawn(pname, pos)
+	beds.spawn[pname] = pos
 	beds.save_spawns()
 end
 

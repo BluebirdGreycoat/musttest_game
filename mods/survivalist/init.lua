@@ -186,6 +186,11 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   flameportal.clear_return_location(pname)
 
 	-- Clear bed respawn position. Player must make new bed to survive.
+	local old_bed_pos = beds.get_respawn_pos_or_nil(pname)
+	if old_bed_pos then
+    local pmeta = player:get_meta()
+    pmeta:set_string("survivalist_old_bed_pos", minetest.pos_to_string(old_bed_pos))
+	end
 	beds.clear_player_spawn(pname)
   
   -- Give the game name some interesting names.
@@ -207,6 +212,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
 	end
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")
+  beds.report_respawn_status(pname)
   
   -- Give player the starting items.
   give_initial_stuff.give(player)
@@ -734,6 +740,12 @@ end
 
 -- Abort a running game without loss to player score.
 function survivalist.abort_game(pname)
+  local player = minetest.get_player_by_name(pname)
+  if not player or not player:is_player() then
+    return
+  end
+  local pmeta = player:get_meta()
+
   local gamemode = survivalist.modstorage:get_string(pname .. ":mode")
   if gamemode == "surface" or gamemode == "cave" or gamemode == "nether" then
 		if not survivalist.check_inventories_empty(pname) then
@@ -771,8 +783,15 @@ function survivalist.abort_game(pname)
 			survivalist.modstorage:set_string(pname .. ":home", nil)
 			survivalist.modstorage:set_string(pname .. ":xp", nil)
 
-			flameportal.clear_return_location(pname)
-			beds.clear_player_spawn(pname)
+			-- Restore old bed position if no new bed position was created.
+			local current_bed_pos = beds.get_respawn_pos_or_nil(pname)
+			if not current_bed_pos then
+        local bedpos = minetest.string_to_pos(pmeta:get_string("survivalist_old_bed_pos"))
+        if bedpos then
+          beds.set_player_spawn(pname, bedpos)
+        end
+			end
+			pmeta:set_string("survivalist_old_bed_pos", "")
 
 			if not gdac.player_is_admin(pname) then
 				local dname = rename.gpn(pname)
@@ -780,6 +799,7 @@ function survivalist.abort_game(pname)
 			else
 				minetest.chat_send_player(pname, "# Server: You canceled a Survival Challenge and went home.")
 			end
+			beds.report_respawn_status(pname)
 		end
 
 		-- Teleport is forced.

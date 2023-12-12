@@ -124,14 +124,13 @@ function boat.on_punch(self, puncher)
 	if not self.driver then
 		self.removed = true
 		local inv = puncher:get_inventory()
-		if not minetest.settings:get_bool("creative_mode")
-				or not inv:contains_item("main", "boats:boat") then
-			local leftover = inv:add_item("main", "boats:boat")
-			-- if no room in inventory add a replacement boat to the world
-			if not leftover:is_empty() then
-				minetest.add_item(self.object:get_pos(), leftover)
-			end
+
+		local leftover = inv:add_item("main", "boats:boat")
+		-- if no room in inventory add a replacement boat to the world
+		if not leftover:is_empty() then
+			minetest.add_item(self.object:get_pos(), leftover)
 		end
+
 		-- delay remove to ensure player is detached
 		minetest.after(0.1, function()
 			self.object:remove()
@@ -259,9 +258,7 @@ minetest.register_craftitem("boats:boat", {
 		local boat = minetest.add_entity(pointed_thing.under, "boats:boat")
 		if boat then
 			boat:setyaw(placer:get_look_horizontal())
-			if not minetest.settings:get_bool("creative_mode") then
-				itemstack:take_item()
-			end
+			itemstack:take_item()
 		end
 		return itemstack
 	end,

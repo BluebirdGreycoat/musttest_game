@@ -129,9 +129,7 @@ function beds.register_bed(name, def)
 				end
 			end
 
-			if not minetest.settings:get_bool("creative_mode") then
-				itemstack:take_item()
-			end
+			itemstack:take_item()
 			return itemstack
 		end,
 

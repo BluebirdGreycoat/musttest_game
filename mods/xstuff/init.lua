@@ -18,9 +18,6 @@ dofile(xtraores.path .. "/items.lua")
 -- Bricks.
 dofile(xtraores.path .. "/oreblocks.lua")
 
--- No special weapons (guns/revolver). Doesn't really fit.
--- dofile(xtraores.path .. "/special_weapons.lua")
-
 -- This is just the antracite torch. Seems to already be good for 3D, would fit
 -- well with Naraxen's look. Maybe fix this up someday.
 -- dofile(xtraores.path .. "/other_blocks.lua")

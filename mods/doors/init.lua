@@ -389,9 +389,7 @@ function doors.register(name, def)
 				meta:set_string("infotext", "Locked Door (Owned by <" .. dname .. ">!)")
 			end
 
-			if not minetest.settings:get_bool("creative_mode") then
-				itemstack:take_item()
-			end
+			itemstack:take_item()
 
 			on_place_node(pos, minetest.get_node(pos),
 				placer, node, itemstack, pointed_thing)
@@ -654,8 +652,6 @@ function doors.register_trapdoor(name, def)
 			local dname = rename.gpn(pn)
 			meta:set_string("rename", dname)
 			meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
-
-			return minetest.settings:get_bool("creative_mode")
 		end
 
 		def.on_blast = function() end
@@ -833,8 +829,6 @@ function doors.register_trapdoor_climbable(name, def)
 			local dname = rename.gpn(pn)
 			meta:set_string("rename", dname)
 			meta:set_string("infotext", "Locked Trapdoor (Owned by <" .. dname .. ">!)")
-
-			return minetest.settings:get_bool("creative_mode")
 		end
 
 		def.on_blast = function() end

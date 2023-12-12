@@ -480,8 +480,7 @@ local function lantern_place(itemstack, placer, pointed_thing)
 		return
 	end
 
-	if leftover:get_count() == 0 and not minetest.is_creative_enabled(
-			placer:get_player_name()) then
+	if leftover:get_count() == 0 then
 		itemstack:take_item()
 	end
 
@@ -621,10 +620,8 @@ xdecor.register("painting_1", {
 		local num = math_random(4)
 		local leftover = minetest.item_place_node(
 			ItemStack("xdecor:painting_"..num), placer, pointed_thing)
-		if leftover:get_count() == 0 and
-				not minetest.settings:get_bool("creative_mode") then
-			itemstack:take_item()
-		end
+
+		itemstack:take_item()
 		return itemstack
 	end,
 })

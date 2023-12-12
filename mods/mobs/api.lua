@@ -128,12 +128,6 @@ function mobs.is_invisible(self, pname)
 	return cloaking.is_cloaked(pname)
 end
 
--- creative check
-local creative_mode_cache = minetest.settings:get_bool("creative_mode")
-function mobs.is_creative(name)
-	return creative_mode_cache or minetest.check_player_privs(name, {creative = true})
-end
-
 -- Peaceful mode message so players will know there are no monsters.
 -- Perform registration only ONCE.
 if not mobs.registered and peaceful_only then
@@ -4570,14 +4564,6 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		-- toolrank support
 		local wear = floor((punch_interval / 75) * 9000)
 
-		if mobs.is_creative(hitter:get_player_name()) then
-			if tr then
-				wear = 1
-			else
-				wear = 0
-			end
-		end
-
 		if tr then
 			if weapon:get_definition()
 					and weapon:get_definition().original_description then
@@ -5912,13 +5898,9 @@ function mobs.nametag_receive_fields(player, formname, fields)
 
 		update_tag(mob_obj[name])
 
-		-- if not in creative then take item
-		if not mobs.is_creative(name) then
-
-			mob_sta[name]:take_item()
-
-			player:set_wielded_item(mob_sta[name])
-		end
+		-- take item
+		mob_sta[name]:take_item()
+		player:set_wielded_item(mob_sta[name])
 
 		-- reset external variables
 		mob_obj[name] = nil

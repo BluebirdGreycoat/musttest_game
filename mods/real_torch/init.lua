@@ -55,13 +55,6 @@ function real_torch.start_kalite_timer(pos)
 end
 
 
--- creative check
-local creative_mode_cache = minetest.settings:get_bool("creative_mode")
-function is_creative(name)
-	return creative_mode_cache or minetest.check_player_privs(name, {creative = true})
-end
-
-
 -- Note: this is also called by the tinderbox mod.
 function real_torch.relight(itemstack, user, pointed_thing)
 	if not pointed_thing or pointed_thing.type ~= "node" then
@@ -105,9 +98,7 @@ function real_torch.relight(itemstack, user, pointed_thing)
 		minetest.add_node(pos, {name = nod.name, param2 = nod.param2})
 		minetest.sound_play("real_torch_light", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 
-		if not is_creative(user:get_player_name()) then
-			itemstack:take_item()
-		end
+		itemstack:take_item()
 	end
 
 	--minetest.chat_send_all('test2.3')
@@ -255,9 +246,7 @@ minetest.override_item("tnt:gunpowder", {
 
 			add_effects(pos, 1)
 
-			if not is_creative(user:get_player_name()) then
-				itemstack:take_item()
-			end
+			itemstack:take_item()
 
 			return itemstack
 		end
@@ -278,9 +267,7 @@ minetest.override_item("tnt:gunpowder", {
 
 			add_effects(pos, 1)
 
-			if not is_creative(user:get_player_name()) then
-				itemstack:take_item()
-			end
+			itemstack:take_item()
 		end
 
 		return itemstack

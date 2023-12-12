@@ -900,9 +900,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 						return
 					end
 					minetest.add_node(pointed_thing.under, {name = recipeitem, param2 = p2})
-					if not minetest.settings:get_bool("creative_mode") then
-						itemstack:take_item()
-					end
+					itemstack:take_item()
 					return itemstack
 				end
 
@@ -916,9 +914,8 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 
 				-- else attempt to place node with proper param2
 				minetest.item_place_node(ItemStack(wield_item), placer, pointed_thing, p2)
-				if not minetest.settings:get_bool("creative_mode") then
-					itemstack:take_item()
-				end
+
+				itemstack:take_item()
 				return itemstack
 			else
 				-- place slab using look direction of player

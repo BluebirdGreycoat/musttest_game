@@ -187,6 +187,11 @@ function papyrus.after_dig_node(pos, node, metadata, digger)
 	-- No return value.
 end
 
+function papyrus.after_dig_node_hanging(pos, node, metadata, digger)
+	default.dig_down(pos, node, digger)
+	-- No return value.
+end
+
 if not papyrus.run_once then
 	local c = "papyrus:core"
 	local f = papyrus.modpath .. "/papyrus.lua"

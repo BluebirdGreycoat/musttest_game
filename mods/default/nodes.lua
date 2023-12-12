@@ -1574,6 +1574,10 @@ minetest.register_node("default:papyrus2", {
 	on_finish_collapse = function(pos, node)
 		minetest.set_node(pos, {name="default:papyrus"})
 	end,
+
+	after_dig_node = function(...)
+		return papyrus.after_dig_node_hanging(...)
+	end,
 })
 
 minetest.register_node("default:dry_shrub", {

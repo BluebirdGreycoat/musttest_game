@@ -783,14 +783,21 @@ function survivalist.abort_game(pname)
 			survivalist.modstorage:set_string(pname .. ":home", nil)
 			survivalist.modstorage:set_string(pname .. ":xp", nil)
 
-			-- Restore old bed position if no new bed position was created.
-			local current_bed_pos = beds.get_respawn_pos_or_nil(pname)
-			if not current_bed_pos then
-        local bedpos = minetest.string_to_pos(pmeta:get_string("survivalist_old_bed_pos"))
-        if bedpos then
-          beds.set_player_spawn(pname, bedpos)
-        end
-			end
+			-- UNCONDITIONALLY restore old bed position if available.
+			--
+			-- By overwriting whatever bed position the player had during the challenge,
+			-- we avoid the problem were the player dies right after canceling, resulting
+			-- in them being sent back to the challenge and being unable to get out again
+			-- because the challenge is already canceled.
+			--
+			-- This does mean that if a player sets up a bed during a challenge and then
+			-- cancels, they WILL NOT be able to return to their challenge location by dying,
+			-- UNLESS they didn't have a bed when they BEGAN the challenge (because in that
+			-- case, this code won't run).
+      local bedpos = minetest.string_to_pos(pmeta:get_string("survivalist_old_bed_pos"))
+      if bedpos then
+        beds.set_player_spawn(pname, bedpos)
+      end
 			pmeta:set_string("survivalist_old_bed_pos", "")
 
 			if not gdac.player_is_admin(pname) then

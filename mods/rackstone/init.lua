@@ -6,6 +6,10 @@ rackstone.modpath = minetest.get_modpath("rackstone")
 -- Localize for performance.
 local math_random = math.random
 
+-- Base light-level for all nether nodes.
+-- Otherwise the nether would be black.
+rackstone.light_source = 2
+
 
 
 rackstone.rackstone_sounds = 
@@ -182,8 +186,7 @@ minetest.register_node("rackstone:redrack", {
 		ignore = true,
 	},
 
-	-- Otherwise the nether will be pitch black.
-	light_source = 2,
+	light_source = rackstone.light_source,
   
   after_destruct = function(...)
     after_redrack_remove(...)
@@ -269,7 +272,7 @@ minetest.register_node("rackstone:nether_grit", {
   liquid_alternative_source = "rackstone:nether_grit",
   liquid_renewable = false,
   liquid_range = 0,
-  light_source = 2,
+	light_source = rackstone.light_source,
 
   walkable = false,
 
@@ -309,6 +312,7 @@ minetest.register_node("rackstone:void", {
   _damage_per_second_type = "crush",
 	_death_message = "<player> found a void pocket.",
 	drop = "",
+	light_source = rackstone.light_source,
 })
 
 minetest.register_node("rackstone:redrack_with_iron", {
@@ -327,6 +331,7 @@ minetest.register_node("rackstone:redrack_with_iron", {
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	place_param2 = 10,
+	light_source = rackstone.light_source,
   
   after_destruct = function(...)
     after_redrack_remove(...)
@@ -349,6 +354,7 @@ minetest.register_node("rackstone:redrack_with_copper", {
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	place_param2 = 10,
+	light_source = rackstone.light_source,
   
   after_destruct = function(...)
     after_redrack_remove(...)
@@ -382,6 +388,7 @@ minetest.register_node("rackstone:redrack_with_coal", {
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	place_param2 = 10,
+	light_source = rackstone.light_source,
   
   after_destruct = function(...)
     after_redrack_remove(...)
@@ -404,6 +411,7 @@ minetest.register_node("rackstone:redrack_with_tin", {
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	place_param2 = 10,
+	light_source = rackstone.light_source,
 
   after_destruct = function(...)
     after_redrack_remove(...)

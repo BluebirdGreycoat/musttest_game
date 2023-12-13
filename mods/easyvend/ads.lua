@@ -129,12 +129,12 @@ function ads.show_inventory_formspec(pos, pname, booth)
 	-- Slot overlay.
 	for x = 4, 15 do
 		for y = 0, 4 do
-			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;books_slot.png]"
+			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;easyvend_overflow.png]"
 		end
 	end
 	for x = 9, 15 do
 		for y = 5, 10 do
-			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;books_slot.png]"
+			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;easyvend_overflow.png]"
 		end
 	end
 
@@ -1274,6 +1274,7 @@ if not ads.run_once then
 		paramtype2 = "facedir",
 		groups = utility.dig_groups("furniture", {flammable = 2}),
 		sounds = default.node_sound_wood_defaults(),
+		stack_max = 1,
 
 		after_place_node = function(pos, placer, itemstack, pt)
 			ads.after_place_node(pos, placer)

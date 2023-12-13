@@ -140,7 +140,7 @@ function anvil.craft_something(pos)
 			meta:set_int("strike", 1)
 			anvil.update_infotext(pos)
 			anvil.update_entity(pos)
-			anvil.start_timer_if_needed(pos)
+			anvil.start_timer_if_needed(pos, 0.1)
 
 			return true
 		end
@@ -881,7 +881,8 @@ function anvil.on_timer(pos, elapsed)
 			glow = 13,
 		})
 
-		return true
+		local timer = minetest.get_node_timer(pos)
+		timer:start(1.0)
 	end
 end
 
@@ -978,12 +979,16 @@ end
 
 
 -- Restart the cooldown timer if needed.
-function anvil.start_timer_if_needed(pos)
+function anvil.start_timer_if_needed(pos, time)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("heat") > 0 or meta:get_int("strike") > 0 then
 		local timer = minetest.get_node_timer(pos)
 		if not timer:is_started() then
-			timer:start(1)
+			if time then
+				timer:start(time)
+			else
+				timer:start(1.0)
+			end
 		end
 	end
 end

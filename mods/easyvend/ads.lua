@@ -18,6 +18,22 @@ local vector_distance = vector.distance
 local vector_round = vector.round
 local math_floor = math.floor
 
+local open_storage = {
+	{1, 4},
+	{17, 20},
+	{33, 36},
+	{49, 52},
+	{65, 68},
+}
+
+function ads.is_open_index(index)
+	for k, v in ipairs(open_storage) do
+		if index >= v[1] and index <= v[2] then
+			return true
+		end
+	end
+end
+
 
 
 function ads.generate_submission_formspec(data)

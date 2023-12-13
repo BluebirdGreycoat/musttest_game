@@ -282,6 +282,8 @@ function anvil.update_formspec(pos)
 		"list[" .. smeta .. ";input;2.5,1.5;3,1;]" ..
 		"list[current_player;main;0,3.75;8,1;]" ..
 		"list[current_player;main;0,5;8,3;8]" ..
+		"listring[" .. smeta .. ";input]" ..
+		"listring[current_player;main]" ..
 		default.get_hotbar_bg(0, 3.75)
 
 	-- Note: using a NON-standard name because we do NOT want special

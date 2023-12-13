@@ -228,7 +228,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 
   if pointed_thing.type == "object" then
     local object = pointed_thing.ref
-    if object:is_player() then
+    if object:is_player() and not gdac.player_is_admin(object) then
       local uname = user:get_player_name()
       local oname = object:get_player_name()
       

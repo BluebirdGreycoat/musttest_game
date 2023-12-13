@@ -89,7 +89,14 @@ function mese_crystals.harvest_pos(pos, user)
 		end
 
 		if not stack:is_empty() then
-			minetest.add_item(pos, stack)
+			local obj = minetest.add_item(pos, stack)
+			if obj then
+				obj:set_velocity({
+					x = math.random(-100, 100) / 50,
+					y = math.random(50, 100) / 10,
+					z = math.random(-100, 100) / 50,
+				})
+			end
 		end
 
 		-- Gotten.

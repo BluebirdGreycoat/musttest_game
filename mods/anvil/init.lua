@@ -104,7 +104,11 @@ function anvil.item_repairable_or_craftable(itemstack)
 	end
 
 	if minetest.registered_tools[itemstack:get_name()] then
-		return true
+		-- Permit worn tools only.
+		local wear = itemstack:get_wear()
+		if wear > 0 then
+			return true
+		end
 	end
 
 	return false

@@ -116,6 +116,11 @@ function ads.show_inventory_formspec(pos, pname, booth)
 			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;books_slot.png]"
 		end
 	end
+	for x = 9, 15 do
+		for y = 5, 10 do
+			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;books_slot.png]"
+		end
+	end
 
 	-- Buttons.
 	formspec = formspec ..

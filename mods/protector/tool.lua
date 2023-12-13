@@ -12,6 +12,7 @@ minetest.register_craftitem("protector:tool", {
 	description = "Claim Expansion Tool\n\nStand near protector, face direction and use.\nHold sneak to copy member names.\nHold 'E' to double the gap distance.",
 	inventory_image = "nodeinspector.png^protector_lock.png",
 	stack_max = 1,
+	groups = {not_repaired_by_anvil=1},
 
 	on_use = function(itemstack, user, pointed_thing)
 
@@ -235,6 +236,7 @@ minetest.register_craftitem("protector:tool2", {
 	description = "Protector Mover Tool\n\nStand near protector, face direction and use.",
 	inventory_image = "nodeinspector.png^protector_lock.png",
 	stack_max = 1,
+	groups = {not_repaired_by_anvil=1},
 
 	on_use = function(itemstack, user, pointed_thing)
 

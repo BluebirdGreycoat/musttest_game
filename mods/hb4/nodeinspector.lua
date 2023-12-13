@@ -150,6 +150,7 @@ if not nodeinspector.registered then
 	minetest.register_tool(":nodeinspector:nodeinspector", {
 		description = "Node Inspector\n\nGet information about the pointed node.\nCheck protection and other things.\nHold 'sneak' to toggle protector display grid.",
 		inventory_image = "nodeinspector.png",
+		groups = {not_repaired_by_anvil=1},
 		on_use = function(...)
 			return nodeinspector.on_use(...)
 		end,

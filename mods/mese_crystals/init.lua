@@ -8,6 +8,7 @@ mese_crystals.longgrowtime = 60*30
 
 
 
+dofile(mese_crystals.modpath .. "/functions.lua")
 dofile(mese_crystals.modpath .. "/items.lua")
 dofile(mese_crystals.modpath .. "/tools.lua")
 dofile(mese_crystals.modpath .. "/mapgen.lua")

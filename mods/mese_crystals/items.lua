@@ -101,7 +101,7 @@ end
 
 if not mese_crystals.seed_registered then
 	minetest.register_craftitem("mese_crystals:mese_crystal_seed", {
-		description = "Zentamine Crystal Seed\n\nGrows fastest in or below the cavern of the Brimstone Ocean!\nThe care and tending of zentamine crystals is difficult.",
+		description = "Zentamine Crystal Seed",
 		inventory_image = "mese_crystal_seed.png",
 
 		on_place = function(...)

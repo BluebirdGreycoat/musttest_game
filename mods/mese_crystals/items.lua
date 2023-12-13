@@ -3,6 +3,20 @@
 local math_random = math.random
 
 
+
+function mese_crystals.on_finish_collapse(pos, node)
+	minetest.remove_node(pos)
+	minetest.add_item(pos, ItemStack("default:mese_crystal_fragment"))
+end
+
+
+
+function mese_crystals.on_collapse_to_entity(pos, node)
+	return {ItemStack("default:mese_crystal_fragment")}
+end
+
+
+
 if not mese_crystals.nodes_registered then
 	local boxes = {
 		{-0.2, -0.5, -0.2, 0.2, -0.1, 0.2},
@@ -51,6 +65,12 @@ if not mese_crystals.nodes_registered then
 				local node = minetest.get_node(pos)
 				node.param2 = math_random(0, 3)
 				minetest.swap_node(pos, node)
+			end,
+			on_finish_collapse = function(...)
+				return mese_crystals.on_finish_collapse(...)
+			end,
+			on_collapse_to_entity = function(...)
+				return mese_crystals.on_collapse_to_entity(...)
 			end,
 		})
 	end

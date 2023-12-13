@@ -110,6 +110,13 @@ function ads.show_inventory_formspec(pos, pname, booth)
 		"list[" .. ltrash .. ";" .. mtrash .. ";7,5.3;1,1;]" ..
 		"image[7,5.3;1,1;" .. itrash .. "]"
 
+	-- Slot overlay.
+	for x = 4, 15 do
+		for y = 0, 4 do
+			formspec = formspec .. "image[" .. x .. "," .. y .. ";1,1;books_slot.png]"
+		end
+	end
+
 	-- Buttons.
 	formspec = formspec ..
 		"button[0,5.3;2,1;backinv;Back]"

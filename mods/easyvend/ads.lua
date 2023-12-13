@@ -1090,6 +1090,8 @@ function ads.allow_metadata_inventory_move(pos, from_list, from_index, to_list, 
 		return 0
 	end
 
+	minetest.chat_send_player("MustTest", "# Server: Index: " .. to_index)
+
 	return count
 end
 

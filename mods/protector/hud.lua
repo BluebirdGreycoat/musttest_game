@@ -84,8 +84,13 @@ function hud.globalstep(dtime)
 			hud.players[pname].moved = false
 		end
 
+		local coord_str = ""
+		if passport.player_has_key(pname, player) then
+			coord_str = "\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ")
+		end
+
 		local hud_text = "Realm: " .. rc.pos_to_name(pos) ..
-			"\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ") ..
+			coord_str ..
 			"\nClaim: " .. owner_str
 
 		if hud_text ~= hud.players[pname].text then
@@ -106,35 +111,39 @@ function hud.globalstep(dtime)
 			hud.players[pname].owner = owner_str
 		end
 
-		local yaw = (player:get_look_horizontal() * 180.0) / math.pi
+		local dir_text = ""
+		if passport.player_has_key(pname, player) then
+			local yaw = (player:get_look_horizontal() * 180.0) / math.pi
 
-		local div = 360 / 8
-		local dir = "N/A"
-		yaw = yaw + (360 / 16)
-		if yaw > 360 then
-			yaw = yaw - 360
-		end
-		if yaw < div*1 then
-			dir = "N [+Z]"
-		elseif yaw < div*2 then
-			dir = "NW [-X +Z]"
-		elseif yaw < div*3 then
-			dir = "W [-X]"
-		elseif yaw < div*4 then
-			dir = "SW [-X -Z]"
-		elseif yaw < div*5 then
-			dir = "S [-Z]"
-		elseif yaw < div*6 then
-			dir = "SE [+X -Z]"
-		elseif yaw < div*7 then
-			dir = "E [+X]"
-		elseif yaw < div*8 then
-			dir = "NE [+X +Z]"
-		elseif yaw < div*9 then
-			dir = "N [+Z]"
+			local div = 360 / 8
+			local dir = "N/A"
+			yaw = yaw + (360 / 16)
+			if yaw > 360 then
+				yaw = yaw - 360
+			end
+			if yaw < div*1 then
+				dir = "N [+Z]"
+			elseif yaw < div*2 then
+				dir = "NW [-X +Z]"
+			elseif yaw < div*3 then
+				dir = "W [-X]"
+			elseif yaw < div*4 then
+				dir = "SW [-X -Z]"
+			elseif yaw < div*5 then
+				dir = "S [-Z]"
+			elseif yaw < div*6 then
+				dir = "SE [+X -Z]"
+			elseif yaw < div*7 then
+				dir = "E [+X]"
+			elseif yaw < div*8 then
+				dir = "NE [+X +Z]"
+			elseif yaw < div*9 then
+				dir = "N [+Z]"
+			end
+
+			dir_text = "Facing: " .. dir
 		end
 
-		local dir_text = "Facing: " .. dir
 		if dir_text ~= hud.players[pname].dir then
 			if not hud.players[pname].id2 then
 				hud.players[pname].id2 = player:hud_add({

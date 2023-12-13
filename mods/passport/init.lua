@@ -819,7 +819,31 @@ end
 
 
 
+function passport.inventory_action(player, action, inventory, inventory_info)
+	local pname = player:get_player_name()
+
+	if action == "put" or action == "take" then
+		local sname = inventory_info.stack:get_name()
+		if sname == "passport:passport_adv" then
+			-- Clear cache.
+			passport.keyed_players[pname] = nil
+		end
+	elseif action == "move" then
+		local movedstack = player:get_inventory():get_stack(inventory_info.to_list, inventory_info.to_index)
+		local sname = movedstack:get_name()
+		if sname == "passport:passport_adv" then
+			-- Clear cache.
+			passport.keyed_players[pname] = nil
+		end
+	end
+end
+
+
+
 if minetest.get_modpath("reload") then
+	minetest.register_on_player_inventory_action(function(...)
+		return passport.inventory_action(...) end)
+
   local c = "passport:core"
   local f = passport.modpath .. "/init.lua"
   if not reload.file_registered(c) then

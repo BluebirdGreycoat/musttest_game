@@ -1106,7 +1106,10 @@ function ads.allow_metadata_inventory_move(pos, from_list, from_index, to_list, 
 		return 0
 	end
 
-	minetest.chat_send_player("MustTest", "# Server: Index: " .. to_index)
+	-- Disallow storing items in the overflow pile.
+	if ads.is_open_index(from_index) and not ads.is_open_index(to_index) then
+		return 0
+	end
 
 	return count
 end
@@ -1121,6 +1124,11 @@ function ads.allow_metadata_inventory_put(pos, listname, index, stack, player)
 	end
 
 	if not has_inventory_privilege(meta, player) then
+		return 0
+	end
+
+	-- Disallow storing items in the overflow pile.
+	if not ads.is_open_index(index) then
 		return 0
 	end
 

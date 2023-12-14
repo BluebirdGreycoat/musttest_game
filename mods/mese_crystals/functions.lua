@@ -74,7 +74,12 @@ function mese_crystals.harvest_pos(pos, user)
 	if growth_stage > 1 then
 		ambiance.sound_play("default_break_glass", pos, 0.3, 32)
 
-		local stack = ItemStack("mese_crystals:zentamine")
+		local stack
+		if math.random(1, 30) == 1 then
+			stack = ItemStack("default:mese_crystal_fragment")
+		else
+			stack = ItemStack("mese_crystals:zentamine")
+		end
 
 		if user then
 			local inv = user:get_inventory()

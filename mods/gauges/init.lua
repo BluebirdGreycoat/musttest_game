@@ -71,18 +71,20 @@ function gauges.on_global_step()
 	local active_players = {}
 	-- Add gauges to players without them.
 	for _, player in ipairs(minetest.get_connected_players()) do
-		local name = player:get_player_name()
+		if not gdac.player_is_admin(player) then
+			local name = player:get_player_name()
 
-		local nametag = player_labels.query_nametag_onoff(name)
-		local invisible = gdac_invis.is_invisible(name)
-		local cloaked = cloaking.is_cloaked(name)
+			local nametag = player_labels.query_nametag_onoff(name)
+			local invisible = gdac_invis.is_invisible(name)
+			local cloaked = cloaking.is_cloaked(name)
 
-		if not invisible and not cloaked and nametag then
-			local wield = player_wielding[name]
-			if not wield then
-				add_gauge(player)
+			if not invisible and not cloaked and nametag then
+				local wield = player_wielding[name]
+				if not wield then
+					add_gauge(player)
+				end
+				active_players[name] = true
 			end
-			active_players[name] = true
 		end
 	end
 

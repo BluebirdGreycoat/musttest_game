@@ -22,8 +22,6 @@ ice.min_time = 40
 ice.max_time = 300
 
 function ice.on_ice_notify(pos, other)
-	--minetest.chat_send_player("MustTest", "# Server: Ice notify @ " .. minetest.pos_to_string(pos) .. "!")
-
 	local timer = minetest.get_node_timer(pos)
 	--if not timer:is_started() then
 		timer:start(math_random(ice.minmax_time()))
@@ -34,8 +32,6 @@ end
 
 -- Here is where we calculate the ice freeze/melt logic.
 function ice.on_ice_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "# Server: Icemelt @ " .. minetest.pos_to_string(pos) .. "!")
-
 	local nn = minetest.get_node(pos).name
 
 	if nn == "default:ice" then

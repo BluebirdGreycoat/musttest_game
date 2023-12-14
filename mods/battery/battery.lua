@@ -12,9 +12,9 @@ minetest.register_alias("battery:re_battery", "battery:battery")
 minetest.register_craft({
   output = 'battery:battery',
   recipe = {
-    {'group:wood', 'default:copper_ingot', 'group:wood'},
-    {'default:mese_crystal', 'moreores:tin_ingot',   'default:mese_crystal'},
-    {'group:wood', 'default:copper_ingot', 'group:wood'},
+    {'carbon_steel:dust', 'default:copper_ingot', 'zinc:dust'},
+    {'lead:ingot', 'moreores:tin_ingot',   'lead:ingot'},
+    {'zinc:dust', 'default:copper_ingot', 'carbon_steel:dust'},
   }
 })
 

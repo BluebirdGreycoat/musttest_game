@@ -907,7 +907,7 @@ minetest.register_craft({
 		output = "elevator:elevator",
 		recipe = {
 				{"cast_iron:ingot", "chains:iron_chain", "cast_iron:ingot"},
-				{"cast_iron:ingot", "default:mese_crystal", "cast_iron:ingot"},
+				{"cast_iron:ingot", "", "cast_iron:ingot"},
 				{"stainless_steel:ingot", "default:glass", "stainless_steel:ingot"},
 		},
 })

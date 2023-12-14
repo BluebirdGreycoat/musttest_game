@@ -153,7 +153,7 @@ if not chainsaw.run_once then
 	minetest.register_craft({
 		output = chainsaw.name,
 		recipe = {
-			{"stainless_steel:ingot", "default:mese_crystal_fragment", "battery:battery"},
+			{"stainless_steel:ingot", "cast_iron:ingot", "battery:battery"},
 			{"fine_wire:copper", "techcrafts:electric_motor", "battery:battery"},
 			{"", "", "stainless_steel:ingot"},
 		}

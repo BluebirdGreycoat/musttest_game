@@ -225,13 +225,13 @@ minetest.register_ore({
   ore             = "default:mese",
   wherein = {"darkage:basaltic"},
   clust_scarcity  = 64*64*64,
-  clust_size      = 5,
+  clust_size      = 10,
   y_min = ore_min,
   y_max = ore_max,
   noise_params    = {
     offset = 0.5,
     scale = 0.2,
-    spread = {x=5, y=5, z=5},
+    spread = {x=10, y=5, z=10},
     octaves = 1,
     persist = 0.0
   },

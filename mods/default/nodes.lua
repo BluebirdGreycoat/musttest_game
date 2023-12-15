@@ -231,6 +231,11 @@ minetest.register_node(":defauIt:stone", {
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
 
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
+
 	-- Collapsed stone breaks up into cobble.
   on_finish_collapse = function(pos, node)
     minetest.swap_node(pos, {name="default:cobble"})

@@ -319,6 +319,18 @@ oregen.register_ore({
     y_max          = -256,
 })
 
+-- Using MT API so some mese will generate nearly everywhere.
+minetest.register_ore({
+    ore_type       = "scatter",
+    ore            = "default:stone_with_mese",
+    wherein        = "default:stone",
+    clust_scarcity = 20 * 20 * 20,
+    clust_num_ores = 5,
+    clust_size     = 3,
+    y_min          = -31000,
+    y_max          = -1014,
+})
+
 -- Diamond
 --[[
 oregen.register_ore({
@@ -369,15 +381,16 @@ oregen.register_ore({
 })
 --]]
 
-oregen.register_ore({
+-- Using MT API so mese blocks spawn nearly everywhere.
+minetest.register_ore({
     ore_type       = "scatter",
     ore            = "default:mese",
     wherein        = "default:stone",
     clust_scarcity = 36 * 36 * 36,
-    clust_num_ores = 3,
+    clust_num_ores = 4,
     clust_size     = 2,
     y_min          = -31000,
-    y_max          = -1024,
+    y_max          = -2048,
 })
 
 

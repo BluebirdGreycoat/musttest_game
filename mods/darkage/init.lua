@@ -575,6 +575,14 @@ if not darkage.run_once then
 	})
 
 	minetest.register_node("darkage:basaltic", {
+		--[[
+    drawtype = "airlike",
+		paramtype = "light",
+		sunlight_propagates = true,
+		light_source = 15,
+		pointable = false,
+		--]]
+
 		description = "Basaltic Rock",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",

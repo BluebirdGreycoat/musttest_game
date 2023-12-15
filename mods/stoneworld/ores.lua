@@ -6,8 +6,8 @@ oregen.register_ore({
   ore_type = "scatter",
   ore = "stoneworld:meat_rock",
   wherein = {"darkage:basaltic_rubble"},
-  clust_scarcity = 8*8*8,
-  clust_num_ores = 4,
+  clust_scarcity = 18*18*18,
+  clust_num_ores = 3,
   clust_size = 3,
   y_min = ore_min,
   y_max = ore_max,
@@ -211,6 +211,23 @@ oregen.register_ore({
   y_min = ore_min,
   y_max = ore_max,
   noise_threshold = -1.0,
+  noise_params    = {
+    offset = 0.5,
+    scale = 0.2,
+    spread = {x=5, y=5, z=5},
+    octaves = 1,
+    persist = 0.0
+  },
+})
+
+minetest.register_ore({
+  ore_type        = "blob",
+  ore             = "default:mese",
+  wherein = {"darkage:basaltic"},
+  clust_scarcity  = 64*64*64,
+  clust_size      = 5,
+  y_min = ore_min,
+  y_max = ore_max,
   noise_params    = {
     offset = 0.5,
     scale = 0.2,

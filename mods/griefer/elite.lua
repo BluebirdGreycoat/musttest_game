@@ -123,7 +123,7 @@ mobs.register_spawn_abm({
   player_min_range = 20,
   player_max_range = 60,
 
-  mob_limit = 1,
+  mob_limit = 2,
   absolute_mob_limit = 32,
   mob_range = 40,
   min_count = 1,

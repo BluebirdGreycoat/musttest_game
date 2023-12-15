@@ -125,7 +125,7 @@ mobs.register_spawn_abm({
 
   mob_limit = 2,
   absolute_mob_limit = 32,
-  mob_range = 40,
+  mob_range = 30,
   min_count = 1,
-  max_count = 1,
+  max_count = 2,
 })

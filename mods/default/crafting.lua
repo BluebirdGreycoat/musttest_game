@@ -338,14 +338,17 @@ minetest.register_craft({
 	time = 10,
 })
 
-minetest.register_craft({
-	output = "default:mese_crystal",
-	recipe = {
-		{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
-		{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
-		{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
-	}
-})
+-- Recipe deleted after this date.
+if os.time() < os.time({month=1,day=1,year=2024}) then
+	minetest.register_craft({
+		output = "default:mese_crystal",
+		recipe = {
+			{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
+			{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
+			{"default:mese_crystal_fragment", "default:mese_crystal_fragment", "default:mese_crystal_fragment"},
+		}
+	})
+end
 
 minetest.register_craft({
   output = 'default:meselamp',

@@ -22,7 +22,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-  output = 'torches:torch_floor 4',
+  output = 'torches:torch_floor 2',
   recipe = {
     {'charcoal:charcoal'},
     {'group:stick'},

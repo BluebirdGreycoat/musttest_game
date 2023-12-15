@@ -180,11 +180,11 @@ minetest.register_node("torches:perma_torch_ceiling", {
 
 
 minetest.register_craft({
-  output = 'torches:perma_torch_floor',
-  type = "shapeless",
+  output = 'torches:perma_torch_floor 2',
   recipe = {
-    'torches:torch_floor',
-    'mese_crystals:zentamine',
+    {'mese_crystals:zentamine'},
+    {'default:coal_lump'},
+    {'group:stick'},
   }
 })
 

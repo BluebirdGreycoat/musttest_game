@@ -183,11 +183,11 @@ minetest.register_node("torches:perma_ktorch_ceiling", {
 
 
 minetest.register_craft({
-  output = 'torches:perma_ktorch_floor',
-  type = "shapeless",
+  output = 'torches:perma_ktorch_floor 2',
   recipe = {
-    'torches:kalite_torch_floor',
-    'mese_crystals:zentamine',
+    {'mese_crystals:zentamine'},
+    {'kalite:lump'},
+    {'group:stick'},
   }
 })
 

@@ -76,9 +76,10 @@ function mese_crystals.harvest_pos(pos, user)
 
 		local stack
 		if math.random(1, 30) == 1 then
-			stack = ItemStack("default:mese_crystal_fragment")
+			-- Chance to get an actual crystal.
+			stack = ItemStack("default:mese_crystal")
 		else
-			stack = ItemStack("mese_crystals:zentamine")
+			stack = ItemStack("default:mese_crystal_fragment")
 		end
 
 		if user then

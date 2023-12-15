@@ -567,6 +567,7 @@ function fortress.apply_design(internal, traversal, build)
 		end
 
 		vm:write_to_map()
+		minetest.fix_light(minp, maxp)
 	end
 
 	-- Add loot chests, but only when not in debug-layout mode.

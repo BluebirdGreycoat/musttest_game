@@ -566,7 +566,7 @@ function fortress.apply_design(internal, traversal, build)
 			minetest.place_schematic_on_vmanip(vm, v.pos, v.file, v.rotation, rp, v.force)
 		end
 
-		vm:write_to_map()
+		vm:write_to_map(true)
 	end
 
 	-- Add loot chests, but only when not in debug-layout mode.

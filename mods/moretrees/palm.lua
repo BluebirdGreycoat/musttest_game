@@ -2,7 +2,7 @@
 if not minetest.global_exists("moretrees") then moretrees = {} end
 local SAPLING_TIME_MIN = 60*20
 local SAPLING_TIME_MAX = 60*40
-local SAPLING_CHANCE = 40
+local SAPLING_CHANCE = 20
 local SCHEMATIC_MINP = {x=-4, y=0, z=-4}
 local SCHEMATIC_MAXP = {x=4, y=13, z=4}
 local SCHEMATIC_RELP = {x=-4, y=0, z=-4}

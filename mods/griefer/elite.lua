@@ -121,7 +121,7 @@ mobs.register_spawn_abm({
   min_light = 0,
   max_light = 11,
   player_min_range = 20,
-  player_max_range = 60,
+  player_max_range = 100,
 
   mob_limit = 2,
   absolute_mob_limit = 32,

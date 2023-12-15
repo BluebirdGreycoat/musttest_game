@@ -13,7 +13,7 @@ local function scepter_revive_player(tref, tname, pname, pos)
   ambiance.sound_play("nether_portal_usual", tref:get_pos(), 1.0, 30)
 
   local hp_max = tref:get_properties().hp_max
-  tref:set_hp(math.max(1, math.floor(hp_max * 0.01)), {reason="revive"})
+  tref:set_hp(hp_max, {reason="revive"})
   minetest.close_formspec(tname, "") -- Close the respawn formspec.
   ambiance.sound_play("default_cool_lava", tref:get_pos(), 1.0, 32)
   minetest.chat_send_player(pname, "# Server: You revived <" .. rename.gpn(tname) .. ">.")

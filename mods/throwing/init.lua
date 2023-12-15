@@ -13,6 +13,7 @@ throwing_arrows = {
 	{"throwing:arrow_tnt", "throwing:arrow_tnt_entity"},
 	{"throwing:arrow_torch", "throwing:arrow_torch_entity"},
 	{"throwing:arrow_diamond", "throwing:arrow_diamond_entity"},
+	{"throwing:arrow_mese", "throwing:arrow_mese_entity"},
 	{"throwing:arrow_shell", "throwing:arrow_shell_entity"},
 	{"throwing:arrow_fireworks_blue", "throwing:arrow_fireworks_blue_entity"},
 	{"throwing:arrow_fireworks_red", "throwing:arrow_fireworks_red_entity"},

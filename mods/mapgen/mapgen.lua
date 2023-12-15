@@ -329,6 +329,7 @@ minetest.register_ore({
     clust_size     = 3,
     y_min          = -31000,
     y_max          = -1014,
+    seed           = 65711905,
 })
 
 -- Diamond
@@ -391,6 +392,7 @@ minetest.register_ore({
     clust_size     = 2,
     y_min          = -31000,
     y_max          = -2048,
+    seed           = 681942,
 })
 
 

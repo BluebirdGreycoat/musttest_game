@@ -220,19 +220,31 @@ oregen.register_ore({
   },
 })
 
-minetest.register_ore({
-  ore_type        = "blob",
-  ore             = "default:mese",
-  wherein = {"darkage:basaltic"},
-  clust_scarcity  = 64*64*64,
-  clust_size      = 10,
-  y_min = ore_min,
-  y_max = ore_max,
-  noise_params    = {
-    offset = 0.5,
-    scale = 0.2,
-    spread = {x=10, y=5, z=10},
-    octaves = 1,
-    persist = 0.0
-  },
-})
+-- The point of this is to try to avoid generating large mese blobs intersecting
+-- with the cavern floor/ceiling, where they are too easily discovered.
+for k = 1, 5 do
+  local nbeg = stoneworld.REALM_START
+  local y_level = nbeg + (k * 500)
+  local y_offset = 250
+
+  local y_min = y_level + y_offset - 150
+  local y_max = y_level + y_offset + 150
+
+  minetest.register_ore({
+    ore_type        = "blob",
+    ore             = "default:mese",
+    wherein = {"darkage:basaltic"},
+    clust_scarcity  = 64*64*64,
+    clust_size      = 6,
+    y_min = y_min,
+    y_max = y_max,
+    noise_params    = {
+      seed = 182819,
+      offset = 0.5,
+      scale = 0.2,
+      spread = {x=10, y=5, z=10},
+      octaves = 1,
+      persist = 0.0
+    },
+  })
+end

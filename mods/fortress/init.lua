@@ -533,7 +533,9 @@ function fortress.check_done(internal, traversal, build)
 	end
 
 	-- Load entire map region, generating chunks as needed.
-	minetest.emerge_area(minp, maxp, cb)
+	-- Overgenerate ceiling to try to avoid lighting issues in caverns.
+	local omaxp = vector.offset(maxp, 0, 100, 0)
+	minetest.emerge_area(minp, omaxp, cb)
 end
 
 

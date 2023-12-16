@@ -116,7 +116,7 @@ end
 -- Also, we handle movement speed based on current node walked on.
 local function update_player(player, pname, pdata, playerpos, nodepos)
 	-- Player doesn't walk over nodes if attached to some vehicle.
-	if not default.player_attached[pname] and not gdac_invis.is_invisible(pname) then
+	if not default.player_attached[pname] then
 		-- Get node player is standing ON.
 		local snode = get_node(nodepos)
 		local sname = snode.name
@@ -183,17 +183,19 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 				pdata.wnode = wname
 			end
 
-			-- Execute `on_walkover' callback for current walked node.
-			-- Note, this must only be called ONCE for the walked node!
-			-- This is ensured because we are only called max once per position.
-			if sdef.walkable and sdef.on_player_walk_over then
-				sdef.on_player_walk_over(nodepos, player)
-			end
+			if not gdac_invis.is_invisible(pname) then
+				-- Execute `on_walkover' callback for current walked node.
+				-- Note, this must only be called ONCE for the walked node!
+				-- This is ensured because we are only called max once per position.
+				if sdef.walkable and sdef.on_player_walk_over then
+					sdef.on_player_walk_over(nodepos, player)
+				end
 
-			-- The default action is only rarely taken.
-			if not sdef._no_collapse_on_walkover then
-				if random(1, 500) == 1 then
-					default_on_walkover(nodepos, sname, player)
+				-- The default action is only rarely taken.
+				if not sdef._no_collapse_on_walkover then
+					if random(1, 500) == 1 then
+						default_on_walkover(nodepos, sname, player)
+					end
 				end
 			end
 		end -- Air/ignore check.

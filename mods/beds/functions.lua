@@ -233,6 +233,10 @@ function beds.spawn_monsters_near(pos)
 	for k = 1, count do
 		local target = air[math.random(1, #air)]
 		local success, luaentity = mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
+		if luaentity then
+			-- Disable drops from mobs spawned this way.
+			luaentity.drops = nil
+		end
 	end
 end
 

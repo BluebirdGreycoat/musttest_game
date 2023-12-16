@@ -257,7 +257,7 @@ function beds.check_for_monsters(pos)
 		return
 	end
 
-	local path = minetest.find_path(startpos, pos, 8, 5, 5)
+	local path = minetest.find_path(startpos, pos, 16, 5, 5)
 	if path then
 		minetest.chat_send_player("MustTest", "Path exists.")
 	end

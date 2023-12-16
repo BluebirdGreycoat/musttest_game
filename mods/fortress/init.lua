@@ -601,6 +601,7 @@ function fortress.apply_design(internal, traversal, build)
 		end
 	end
 
+	mapfix.work(minp, maxp)
 	minetest.log("action", "Finished generating fortress pattern in " .. math_floor(os.time()-internal.time) .. " seconds!")
 end
 

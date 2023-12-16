@@ -10,7 +10,7 @@ minetest.register_node("teleports:teleport", {
   groups = utility.dig_groups("machine", {
     immovable=1,
   }),
-  drop = 'default:diamond 8',
+  drop = 'default:diamond',
   sounds = default.node_sound_metal_defaults(),
   
   can_dig = function(...) return teleports.can_dig(...) end,

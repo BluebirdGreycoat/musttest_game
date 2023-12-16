@@ -8,7 +8,7 @@ mobs.register_mob("golem:stone_golem", {
 	type = "monster",
 	description = "Giant Stone Golem",
 	reach = 3,
-	damage = 2*500,
+	damage = 6*500,
 	damage_group = "crush",
 	attack_type = "dogfight",
 	hp_min = 62*500,

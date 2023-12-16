@@ -315,12 +315,10 @@ function beds.skip_night()
 				--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 				portal_sickness.on_use_bed(pname)
 
-				--[[
 				local pos = vector.round(utility.get_middle_pos(player:get_pos()))
 				if beds.check_monsters_accessible(pos) then
 					beds.spawn_monsters_near(pos)
 				end
-				--]]
       end
     end)
   end

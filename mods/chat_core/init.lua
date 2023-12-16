@@ -476,10 +476,12 @@ function chat_core.alert_player_sound(to)
 				minetest.sound_play("chat_alert", {to_player = to, gain = 0.4}, true)
 			end
 		end
-		local pref = minetest.get_player_by_name(to)
-		if pref then
-			local pos = pref:get_pos()
-			ambiance.sound_play("chat_alert", pos, 0.5, 20, to)
+		if not gdac_invis.is_invisible(to) then
+			local pref = minetest.get_player_by_name(to)
+			if pref then
+				local pos = pref:get_pos()
+				ambiance.sound_play("chat_alert", pos, 0.5, 20, to)
+			end
 		end
 	end
 end

@@ -230,11 +230,24 @@ function beds.check_for_monsters(pos)
 		return
 	end
 
-	local startpos = air[math.random(1, #air)]
+	local function find_ground(pos)
+		local p2 = vector.offset(pos, 0, -1, 0)
+		local n2 = minetest.get_node(p2)
+		local count = 0
+		while n2.name == "air" and count < 16 do
+			pos = p2
+			p2 = vector.offset(pos, 0, -1, 0)
+			n2 = minetest.get_node(p2)
+			count = count + 1
+		end
+		return pos
+	end
+
+	local startpos = find_ground(air[math.random(1, #air)])
 
 	local count = 0
 	while vector.distance(pos, startpos) < 20 and count < 30 do
-		startpos = air[math.random(1, #air)]
+		startpos = find_ground(air[math.random(1, #air)])
 		count = count + 1
 	end
 

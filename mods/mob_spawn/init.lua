@@ -607,7 +607,7 @@ function mob_spawn.spawn_mob_at(pos, mname)
 		if ent then
 			mob:set_yaw((math.random(0, 360) - 180) / 180 * math.pi)
 			report(mname, "Successfully spawned a mob!")
-			return true
+			return true, ent
 		else
 			mob:remove()
 		end

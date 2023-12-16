@@ -232,7 +232,7 @@ function beds.spawn_monsters_near(pos)
 
 	for k = 1, count do
 		local target = air[math.random(1, #air)]
-		mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
+		local success, luaentity = mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
 	end
 end
 

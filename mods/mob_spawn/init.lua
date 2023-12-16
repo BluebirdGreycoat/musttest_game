@@ -493,7 +493,6 @@ function mob_spawn.spawn_mobs(pname, index)
 	local pi = math.pi
 	local vector_new = vector.new
 	local vector_add = vector.add
-	local add_entity = minetest.add_entity
 
 	local attempts = mdef.max_spawns_per_run
 	local max_light = mdef.max_light
@@ -587,16 +586,8 @@ function mob_spawn.spawn_mobs(pname, index)
 			if mdef.add_entity_func then
 				mdef.add_entity_func(vector_add(pos, p2))
 			else
-				local mob = add_entity(vector_add(pos, p2), mname)
-				if mob then
-					local ent = mob:get_luaentity()
-					if ent then
-						mob:set_yaw((random(0, 360) - 180) / 180 * pi)
-						mobs_spawned = mobs_spawned + 1
-						report(mname, "Successfully spawned a mob!")
-					else
-						mob:remove()
-					end
+				if mob_spawn.spawn_mob_at(vector_add(pos, p2), mname) then
+					mobs_spawned = mobs_spawned + 1
 				end
 			end
     end
@@ -605,6 +596,22 @@ function mob_spawn.spawn_mobs(pname, index)
 	end
 
 	return mobs_spawned, mobs_saturated
+end
+
+
+
+function mob_spawn.spawn_mob_at(pos, mname)
+	local mob = minetest.add_entity(pos, mname)
+	if mob then
+		local ent = mob:get_luaentity()
+		if ent then
+			mob:set_yaw((math.random(0, 360) - 180) / 180 * pi)
+			report(mname, "Successfully spawned a mob!")
+			return true
+		else
+			mob:remove()
+		end
+	end
 end
 
 

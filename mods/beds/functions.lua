@@ -216,9 +216,31 @@ end
 
 
 
+function beds.spawn_monsters_near(pos)
+	pos = vector.round(pos)
+
+	local minp = vector.offset(pos, -5, -2, -5)
+	local maxp = vector.offset(pos, 5, 2, 5)
+	local air = minetest.find_nodes_in_area(minp, maxp, "air")
+
+	-- This will almost never happen.
+	if not air or #air == 0 then
+		return
+	end
+
+	local count = math.random(1, 5)
+
+	for k = 1, count do
+		local target = air[math.random(1, #air)]
+		mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
+	end
+end
+
+
+
 -- This function runs after a successful night skip, for each bed that was used
 -- for sleeping.
-function beds.check_for_monsters(pos)
+function beds.check_monsters_accessible(pos)
 	pos = vector.round(pos)
 
 	local minp = vector.offset(pos, -30, -10, -30)
@@ -259,7 +281,8 @@ function beds.check_for_monsters(pos)
 
 	local path = minetest.find_path(startpos, pos, 16, 5, 5)
 	if path then
-		minetest.chat_send_player("MustTest", "Path exists.")
+		--minetest.chat_send_player("MustTest", "Path exists.")
+		return true
 	end
 end
 
@@ -292,8 +315,12 @@ function beds.skip_night()
 				--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 				portal_sickness.on_use_bed(pname)
 
-				local pos = vector.round(player:get_pos())
-				beds.check_for_monsters(pos)
+				--[[
+				local pos = vector.round(utility.get_middle_pos(player:get_pos()))
+				if beds.check_monsters_accessible(pos) then
+					beds.spawn_monsters_near(pos)
+				end
+				--]]
       end
     end)
   end

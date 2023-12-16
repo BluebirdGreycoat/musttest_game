@@ -95,16 +95,19 @@ end
 -- Return reference to nearest player, or nil.
 function hb4.nearest_player(pos)
 	local players = minetest.get_connected_players()
+	local admin = minetest.get_player_by_name(gdac.name_of_admin)
 
 	local pref
 	local dist = 100000
 
 	for i=1, #players, 1 do
 		local p = players[i]
-		local d = vector.distance(p:get_pos(), pos)
-		if d < dist then
-			dist = d
-			pref = p
+		if p ~= admin then
+			local d = vector.distance(p:get_pos(), pos)
+			if d < dist then
+				dist = d
+				pref = p
+			end
 		end
 	end
 

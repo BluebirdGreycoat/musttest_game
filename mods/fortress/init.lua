@@ -534,6 +534,8 @@ function fortress.check_done(internal, traversal, build)
 
 	-- Load entire map region, generating chunks as needed.
 	-- Overgenerate ceiling to try to avoid lighting issues in caverns.
+	-- Doing this seems to be the trick.
+	-- This will FAIL if in cavern, but ceiling is more than 100 nodes up!
 	local omaxp = vector.offset(maxp, 0, 100, 0)
 	minetest.emerge_area(minp, omaxp, cb)
 end

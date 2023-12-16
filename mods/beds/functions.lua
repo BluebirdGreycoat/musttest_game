@@ -232,6 +232,18 @@ function beds.check_for_monsters(pos)
 
 	local startpos = air[math.random(1, #air)]
 
+	local count = 0
+	while vector.distance(pos, startpos) < 20 and count < 30 do
+		startpos = air[math.random(1, #air)]
+		count = count + 1
+	end
+
+	-- If start pos is too close, path could be starting in the same room.
+	-- This is not allowed.
+	if vector.distance(pos, startpos) < 20 then
+		return
+	end
+
 	local path = minetest.find_path(startpos, pos, 8, 5, 5)
 	if path then
 		minetest.chat_send_player("MustTest", "Path exists.")

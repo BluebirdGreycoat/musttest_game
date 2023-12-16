@@ -235,7 +235,14 @@ function beds.spawn_monsters_near(pos)
 		local success, luaentity = mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
 		if luaentity then
 			-- Disable drops from mobs spawned this way.
-			luaentity.drops = nil
+			local obj = luaentity.object
+			minetest.after(0.1, function()
+				-- Should return nil if object got deleted.
+				local luaent = obj:get_luaentity()
+				if luaent then
+					luaent.drops = nil
+				end
+			end)
 		end
 	end
 end

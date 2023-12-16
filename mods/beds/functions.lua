@@ -216,6 +216,30 @@ end
 
 
 
+-- This function runs after a successful night skip, for each bed that was used
+-- for sleeping.
+function beds.check_for_monsters(pos)
+	pos = vector.round(pos)
+
+	local minp = vector.offset(pos, -30, -10, -30)
+	local maxp = vector.offset(pos, 30, 10, 30)
+	local air = minetest.find_nodes_in_area(minp, maxp, "air")
+
+	-- This will almost never happen.
+	if not air or #air == 0 then
+		return
+	end
+
+	local startpos = air[math.random(1, #air)]
+
+	local path = minetest.find_path(startpos, pos, 8, 5, 5)
+	if path then
+		minetest.chat_send_player("MustTest", "Path exists.")
+	end
+end
+
+
+
 function beds.skip_night()
 	minetest.set_timeofday(0.23)
   
@@ -242,6 +266,9 @@ function beds.skip_night()
 				-- Notify portal sickness mod.
 				--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 				portal_sickness.on_use_bed(pname)
+
+				local pos = vector.round(player:get_pos())
+				beds.check_for_monsters(pos)
       end
     end)
   end

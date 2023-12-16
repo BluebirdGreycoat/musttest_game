@@ -121,7 +121,7 @@ register({
 
 register({
 	name = "golem:stone_golem",
-	nodes = {"whitestone:stone"},
+	nodes = {"rackstone:rackstone"},
 	min_light = 0,
 	max_light = 6,
 	max_height = -25000,

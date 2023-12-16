@@ -126,6 +126,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
       local rs_bot = floor(nstart-abs(n1)*64)
       
       local lakecel = bstart + 30
+      local cavernf = bstart + 40
       local lakelav = bstart
       local lakebed = bstart - 2
       local islandi = bstart - 2
@@ -190,10 +191,14 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
           elseif y <= lakecel then
             -- Carve out horizontal cavern above brimstone ocean.
             data[vp] = c_air
-          elseif ip == c_air and y > lakecel and y <= lakecel+5 then
-            -- Fill in huge ceiling holes created when huge caves
-            -- intersect with the brimstone ocean realm.
-            data[vp] = c_whitestone
+          elseif ip == c_air and y > lakecel and y <= cavernf then
+            if y <= (lakecel + 4) then
+              -- Fill in huge ceiling holes created when huge caves
+              -- intersect with the brimstone ocean realm.
+              data[vp] = c_redrack
+            else
+              data[vp] = c_nlava
+            end
           end
         end -- If Y coord is below nether start.
       

@@ -4809,6 +4809,8 @@ end
 -- Activate mob and reload settings.
 local function mob_activate(self, staticdata, def, dtime)
 
+	--minetest.chat_send_all('activating mob')
+
 	-- Remove mob if activated during daytime and has 'daytime_despawn'.
 	if def.daytime_despawn then
 		local tod = (minetest.get_timeofday() or 0) * 24000

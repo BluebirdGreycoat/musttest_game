@@ -73,6 +73,7 @@ function beds.register_bed(name, def)
 			if not placer or not placer:is_player() then
 				return itemstack
 			end
+			local pname = placer:get_player_name()
 
 			local under = pointed_thing.under
       local node = minetest.get_node(under)
@@ -90,8 +91,8 @@ function beds.register_bed(name, def)
 				pos = pointed_thing.above
 			end
 
-			if minetest.is_protected(pos, placer:get_player_name()) then
-				minetest.record_protection_violation(pos, placer:get_player_name())
+			if minetest.is_protected(pos, pname) then
+				minetest.record_protection_violation(pos, pname)
 				return itemstack
 			end
 
@@ -104,8 +105,8 @@ function beds.register_bed(name, def)
 			local dir = minetest.dir_to_facedir(placer:get_look_dir())
 			local botpos = vector.add(pos, minetest.facedir_to_dir(dir))
 
-			if minetest.is_protected(botpos, placer:get_player_name()) then
-				minetest.record_protection_violation(botpos, placer:get_player_name())
+			if minetest.is_protected(botpos, pname) then
+				minetest.record_protection_violation(botpos, pname)
 				return itemstack
 			end
 
@@ -122,10 +123,14 @@ function beds.register_bed(name, def)
 			do
 				local control = placer:get_player_control()
 				if control.aux1 then
-					local meta = minetest.get_meta(pos)
-					meta:set_string("owner", "server") -- "server" is a reserved name.
-					meta:mark_as_private("owner")
-					meta:set_string("infotext", "Public Bed")
+					if city_block:in_city(pos) then
+						local meta = minetest.get_meta(pos)
+						meta:set_string("owner", "server") -- "server" is a reserved name.
+						meta:mark_as_private("owner")
+						meta:set_string("infotext", "Public Bed")
+					else
+						minetest.chat_send_player(pname, "# Server: Beds are always private outside of any city or village.")
+					end
 				end
 			end
 

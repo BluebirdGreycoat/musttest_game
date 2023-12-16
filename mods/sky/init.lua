@@ -116,7 +116,7 @@ end
 -- Also, we handle movement speed based on current node walked on.
 local function update_player(player, pname, pdata, playerpos, nodepos)
 	-- Player doesn't walk over nodes if attached to some vehicle.
-	if not default.player_attached[pname] then
+	if not default.player_attached[pname] and not gdac_invis.is_invisible(pname) then
 		-- Get node player is standing ON.
 		local snode = get_node(nodepos)
 		local sname = snode.name

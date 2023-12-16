@@ -605,7 +605,7 @@ function mob_spawn.spawn_mob_at(pos, mname)
 	if mob then
 		local ent = mob:get_luaentity()
 		if ent then
-			mob:set_yaw((math.random(0, 360) - 180) / 180 * pi)
+			mob:set_yaw((math.random(0, 360) - 180) / 180 * math.pi)
 			report(mname, "Successfully spawned a mob!")
 			return true
 		else

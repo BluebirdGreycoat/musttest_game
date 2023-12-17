@@ -24,6 +24,7 @@ minetest.register_node("quartz:quartz_ore", {
 	tiles = {"default_stone.png^quartz_ore.png"},
 	groups = utility.dig_groups("mineral"),
 	drop = 'quartz:quartz_crystal',
+	_tnt_drop = 'quartz:quartz_crystal 3',
 	sounds = default.node_sound_stone_defaults(),
 	silverpick_drop = true,
 	place_param2 = 10,

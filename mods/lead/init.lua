@@ -4,6 +4,7 @@ minetest.register_node("lead:ore", {
   tiles = {"default_stone.png^technic_lead_mineral.png"},
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "lead:lump",
+  _tnt_drop = "lead:dust 3",
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

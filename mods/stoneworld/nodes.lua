@@ -24,6 +24,7 @@ minetest.register_node("stoneworld:basalt_with_gold", {
 	tiles = {"darkage_basalt.png^default_mineral_gold.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = "default:gold_lump",
+	_tnt_drop = "dusts:gold 3",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -34,6 +35,7 @@ minetest.register_node("stoneworld:basalt_with_diamond", {
 	tiles = {"darkage_basalt.png^default_mineral_diamond.png"},
 	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
+	_tnt_drop = "dusts:diamond_shard 10",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -50,6 +52,7 @@ minetest.register_node("stoneworld:basalt_with_mese", {
 			{items = {'default:mese_crystal'}}
 		}
 	},
+	_tnt_drop = "default:mese_crystal_fragment",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 
@@ -72,6 +75,7 @@ minetest.register_node("stoneworld:basalt_with_iron", {
 	tiles = {"darkage_basalt.png^default_mineral_iron.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
+	_tnt_drop = 'default:iron_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -108,6 +112,7 @@ minetest.register_node("stoneworld:basalt_with_copper", {
 	tiles = {"darkage_basalt.png^default_mineral_copper.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
+	_tnt_drop = 'default:copper_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -119,6 +124,7 @@ minetest.register_node("stoneworld:basalt_with_tin", {
   groups = utility.dig_groups("mineral", {ore=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "moreores:tin_lump",
+  _tnt_drop = "moreores:tin_lump 2",
 	silverpick_drop = true,
 	place_param2 = 10,
 })

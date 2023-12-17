@@ -1,4 +1,6 @@
 
+-- Note: these 4 ores do NOT give extra drops when blasted with TNT.
+
 minetest.register_node("xtraores:basalt_with_nickel", {
 	description = "Nickel Ore",
 	tiles = {"darkage_basalt.png^xtraores_mineral_nickel.png"},

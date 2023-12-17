@@ -5,6 +5,10 @@ minetest.register_node("akalin:ore", {
   groups = utility.dig_groups("hardmineral", {ore = 1}),
   drop = "akalin:lump",
 	silverpick_drop = true,
+	_tnt_drop = {
+    "akalin:lump",
+    "akalin:dust",
+  },
   sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
 })

@@ -5,6 +5,10 @@ minetest.register_node("chromium:ore", {
   groups = utility.dig_groups("mineral", {ore=1}),
   drop = "chromium:lump",
 	silverpick_drop = true,
+	_tnt_drop = {
+    "chromium:lump 2",
+    "chromium:dust",
+  },
   sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
 })

@@ -12,7 +12,8 @@ minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_nodes) do
 		cid_data[minetest.get_content_id(name)] = {
 			name = name,
-			drops = def.drops,
+			drops = def.drops, -- Why is this misspelled? Not used?
+			_tnt_drop = def._tnt_drop,
 			flammable = def.groups.flammable,
 			on_blast = def.on_blast,
       on_destruct = def.on_destruct,
@@ -138,6 +139,16 @@ local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destr
 		return c_fire
 	elseif def._is_bulk_mapgen_stone then
 		-- Ignore drops.
+		return c_air
+	elseif def._tnt_drop then
+		local t = type(def._tnt_drop)
+		if t == "string" then
+			add_drop(drops, def._tnt_drop)
+		elseif t == "table" then
+			for k, v in ipairs(def._tnt_drop) do
+				add_drop(drops, v)
+			end
+		end
 		return c_air
 	else
 		local node_drops = minetest.get_node_drops(def.name, "")

@@ -4,6 +4,10 @@ minetest.register_node("zinc:ore", {
   tiles = {"default_stone.png^technic_zinc_mineral.png"},
   groups = utility.dig_groups("mineral", {ore = 1}),
   drop = "zinc:lump",
+  _tnt_drop = {
+    "zinc:lump 2",
+    "zinc:dust",
+  },
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

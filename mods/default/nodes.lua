@@ -1156,6 +1156,7 @@ minetest.register_node("default:stone_with_iron", {
 	tiles = {"default_stone.png^default_mineral_iron.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
+	_tnt_drop = 'default:iron_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1175,6 +1176,7 @@ minetest.register_node("default:stone_with_copper", {
 	tiles = {"default_stone.png^default_mineral_copper.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
+	_tnt_drop = 'default:copper_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1186,6 +1188,7 @@ minetest.register_node("default:desert_stone_with_copper", {
 	tiles = {"default_desert_stone.png^default_mineral_copper2.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
+	_tnt_drop = 'default:copper_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1197,6 +1200,7 @@ minetest.register_node("default:desert_stone_with_iron", {
 	tiles = {"default_desert_stone.png^default_mineral_iron2.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:iron_lump',
+	_tnt_drop = 'default:iron_lump 2',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1208,6 +1212,7 @@ minetest.register_node("default:desert_stone_with_diamond", {
 	tiles = {"default_desert_stone.png^default_mineral_diamond2.png"},
 	groups = utility.dig_groups("hardmineral"),
 	drop = 'default:diamond',
+	_tnt_drop = 'dusts:diamond_shard 10',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1241,6 +1246,7 @@ minetest.register_node("default:stone_with_mese", {
 			{items = {'default:mese_crystal'}}
 		}
 	},
+	_tnt_drop = "default:mese_crystal_fragment",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	
@@ -1305,6 +1311,7 @@ minetest.register_node("default:stone_with_gold", {
 	tiles = {"default_stone.png^default_mineral_gold.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = "default:gold_lump",
+	_tnt_drop = 'dusts:gold 3',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1325,6 +1332,7 @@ minetest.register_node("default:stone_with_diamond", {
 	-- Player has to get mese pick or similar before they can get diamond.
 	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
+	_tnt_drop = "dusts:diamond_shard 10",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

@@ -536,7 +536,10 @@ function anvil.put_or_take(pos, user, itemstack, put)
 			anvil.update_entity(pos)
 			anvil.update_infotext(pos)
 			anvil.update_formspec(pos)
-			return ItemStack("")
+
+			-- Must return the ORIGINAL itemstack, not a new one.
+			itemstack:take_item(itemstack:get_count())
+			return itemstack
 		end
 	else
 		-- Taking from anvil.

@@ -108,6 +108,10 @@ function ambiance.register_sound_beacon(name, callbacks)
 		_play_immediate = callbacks.play_immediate,
 
 		on_activate = function(self, staticdata, dtime_s)
+			if self._play_immediate then
+				self._ptime = 0
+				self._ctime = 0
+			end
 		end,
 
 		on_punch = function(self, puncher, time_from_last_punch, tool_caps, dir)

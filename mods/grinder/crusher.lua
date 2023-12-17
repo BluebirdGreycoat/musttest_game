@@ -196,7 +196,12 @@ crusher.on_timer = function(pos, elapsed)
     local fuel_percent = math_floor(fuel_time / fuel_totaltime * 100)
     fuel_state = fuel_percent .. "%"
     formspec = crusher.get_active_formspec(fuel_percent, item_percent)
-    machines.swap_node(pos, "crusher:active")
+    local swapped = machines.swap_node(pos, "crusher:active")
+
+    if swapped then
+      ambiance.spawn_sound_beacon("ambiance:grinder_active", pos)
+    end
+
     -- make sure timer restarts automatically
     result = true
   else

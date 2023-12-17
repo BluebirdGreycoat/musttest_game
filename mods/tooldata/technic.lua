@@ -29,8 +29,8 @@ tech = {
 	battery_hv={buffer=120000},
 
 	-- Power is scaled by number of lava/water nodes adjacent to machine.
-	geothermal={power=20, buffer=500},
-	hydroturbine={power=10, buffer=300},
+	geothermal={power=3, buffer=500},
+	hydroturbine={power=1, buffer=300},
 
 	-- Time determines how many seconds to produce power.
 	-- Mesepower is how much power to produce if fuel is mese.

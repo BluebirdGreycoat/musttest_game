@@ -18,6 +18,7 @@ dofile(ambiance.modpath .. "/particles.lua")
 dofile(ambiance.modpath .. "/beacon.lua")
 dofile(ambiance.modpath .. "/treesounds.lua")
 dofile(ambiance.modpath .. "/gate.lua")
+dofile(ambiance.modpath .. "/default_beacons.lua")
 
 
 

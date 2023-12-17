@@ -317,9 +317,13 @@ for k, v in ipairs({
 
 					time = fuel.time
 					meta:set_float("maxtime", fuel.time)
-					machines.swap_node(pos, "gen2:" .. v.tier .. "_active")
+					local swapped = machines.swap_node(pos, "gen2:" .. v.tier .. "_active")
 					fuel_percent = 100
 					keeprunning = true -- Restart timer.
+
+					if swapped then
+						ambiance.spawn_sound_beacon("ambiance:furnace_active", pos)
+					end
 
 					if is_mese then
 						meta:set_int("eups", math_floor(v.mese))

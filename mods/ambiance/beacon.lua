@@ -5,6 +5,8 @@ local vector_round = vector.round
 -- Spawn a named sound beacon at `pos`, while ensuring that no more than `count`
 -- beacons of the same type are spawned within `radius` meters.
 function ambiance.spawn_sound_beacon(name, pos, radius, count)
+	radius = radius or 0.5
+	count = count or 1
 	pos = vector_round(pos)
 	local objs = minetest.get_objects_inside_radius(pos, radius)
 	local c = 0
@@ -23,7 +25,19 @@ function ambiance.spawn_sound_beacon(name, pos, radius, count)
 	end
 
 	--minetest.chat_send_all("added " .. name .. "!")
-	minetest.add_entity(pos, name)
+	local ent = minetest.add_entity(pos, name)
+	if ent then
+		local lent = ent:get_luaentity()
+		if not lent then
+			ent:remove()
+			return
+		end
+
+		-- Set initial check/play times to zero,
+		-- this makes sound play instantly on first spawn.
+		lent._ctime = 0
+		lent._ptime = 0
+	end
 end
 
 -- Trigger all sound beacons in a given radius to execute an environment recheck.
@@ -70,13 +84,14 @@ end
 
 
 function ambiance.register_sound_beacon(name, callbacks)
-	local cmin = callbacks.check_time_min
-	local cmax = callbacks.check_time_max
-	local pmin = callbacks.play_time_min
-	local pmax = callbacks.play_time_max
+	local cmin = callbacks.check_time_min or callbacks.check_time
+	local cmax = callbacks.check_time_max or callbacks.check_time
+	local pmin = callbacks.play_time_min or callbacks.play_time
+	local pmax = callbacks.play_time_max or callbacks.play_time
 
 	local check = callbacks.on_check_environment
 	local play = callbacks.on_play_sound
+	local stop = callbacks.on_stop_sound
 
 	local rand = math.random
 
@@ -116,6 +131,9 @@ function ambiance.register_sound_beacon(name, callbacks)
 			if self._ctime < 0 then
 				self._ctime = rand(cmin, cmax)
 				if not check(d, pos) then
+					if stop then
+						stop(d)
+					end
 					self.object:remove()
 					return
 				end

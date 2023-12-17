@@ -372,6 +372,10 @@ function(pos, elapsed, data)
     fuel_state = fuel_percent .. "%"
     formspec = data.form.active(fuel_percent, item_percent)
     machines.swap_node(pos, data.swap.active)
+
+    if data.active_sound then
+      ambiance.spawn_sound_beacon("ambiance:furnace_active", pos)
+    end
     
     -- Make sure timer restarts automatically.
     result = true

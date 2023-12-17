@@ -208,6 +208,7 @@ redstone_furnace.on_timer = function(pos, elapsed)
 	  if machines.swap_node(pos, "redstone_furnace:active") then
 			torchmelt.start_melting(pos)
 			notify.notify_adjacent(pos)
+			ambiance.spawn_sound_beacon("ambiance:furnace_active", pos)
 		end
     -- make sure timer restarts automatically
     result = true

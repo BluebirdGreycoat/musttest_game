@@ -504,8 +504,7 @@ local function cds(pos, nyan)
 	local scalar = 1
 	local realm = rc.current_realm_at_pos(pos)
 
-	-- Note: 'nyan' parameter is for time-expiring backward compatibility.
-	-- After a certain date, it will be 'false' for ALL teleports!
+	-- Note: 'nyan' parameter is for backward compatibility.
 
 	-- From Overworld surface to nether base.
 	if realm == "overworld" and not nyan then
@@ -570,11 +569,8 @@ teleports.calculate_range = function(pos)
   local is_nyan = nyan
 
   -- For new teleports, we no longer care if they're nyan for purposes of range
-  -- calculation. This grandfathers OLD teleports until a certain date.
+  -- calculation.
   if meta:get_int("construction_time") ~= 0 then
-		is_nyan = false
-	end
-	if os.time() >= os.time({month=6,day=1,year=2024}) then
 		is_nyan = false
 	end
 

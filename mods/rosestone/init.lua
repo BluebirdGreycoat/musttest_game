@@ -160,7 +160,7 @@ function rosestone.generate(minp, maxp, seed)
 			local y0 = pr:next(minp.y, maxp.y)
 			local z0 = pr:next(minp.z, maxp.z)
 			local p0 = {x = x0, y = y0, z = z0}
-			rosestone.place(p0, pr:next(3, 16))
+			rosestone.place(p0, pr:next(2, 8))
 		end
 	end
 end

@@ -203,6 +203,7 @@ minetest.register_node("default:stone", {
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -230,6 +231,7 @@ minetest.register_node(":defauIt:stone", {
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -261,6 +263,7 @@ minetest.register_node("default:cobble", {
 	}),
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -298,6 +301,7 @@ minetest.register_node("default:mossycobble", {
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
 	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
 })
 
 
@@ -310,6 +314,7 @@ minetest.register_node("default:desert_stone", {
 	drop = 'default:desert_cobble2',
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -335,6 +340,7 @@ minetest.register_node("default:desert_cobble", {
 	is_ground_content = false,
 	groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
 	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("default:desert_cobble2", {
@@ -343,6 +349,7 @@ minetest.register_node("default:desert_cobble2", {
 	is_ground_content = false,
 	groups = utility.dig_groups("cobble"),
 	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -374,6 +381,7 @@ minetest.register_node("default:sandstone", {
 	tiles = {"default_sandstone.png"},
 	groups = utility.dig_groups("softstone", {stone=1}),
 	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
 
 	-- Added on March 16, 2018.
 	movement_speed_multiplier = default.ROAD_SPEED,
@@ -404,6 +412,7 @@ minetest.register_node("default:desert_sandstone", {
 	groups = utility.dig_groups("softstone", {stone=1}),
 	sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED,
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("default:desert_sandstone_brick", {
@@ -430,6 +439,7 @@ minetest.register_node("default:silver_sandstone", {
 	groups = utility.dig_groups("softstone", {stone=1}),
 	sounds = default.node_sound_stone_defaults(),
 	movement_speed_multiplier = default.ROAD_SPEED,
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("default:silver_sandstone_brick", {
@@ -1069,6 +1079,7 @@ minetest.register_node("default:ice", {
 		ignore = true,
 	},
 	_no_auto_pop = true,
+	_is_bulk_mapgen_stone = true,
 
 	-- Hack to notify self.
 	on_construct = function(pos)

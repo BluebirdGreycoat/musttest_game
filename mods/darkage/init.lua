@@ -270,6 +270,7 @@ if not darkage.run_once then
 		description = "Chalk",
 		tiles = {"darkage_chalk.png"},
 		drop = 'darkage:chalk_powder 4',
+		_is_bulk_mapgen_stone = true,
 		groups = utility.dig_groups("clay", {falling_node=1}),
 		sounds = default.node_sound_stone_defaults()
 	})
@@ -350,6 +351,7 @@ if not darkage.run_once then
 		tiles = {"darkage_schist.png"},
 		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -361,6 +363,7 @@ if not darkage.run_once then
 		tiles = {"darkage_gneiss.png"},
 		groups = utility.dig_groups("softstone", {stone=1}),
 		drop = "darkage:gneiss_rubble",
+		_is_bulk_mapgen_stone = true,
 		sounds = default.node_sound_stone_defaults(),
 
 		_toolranks = {
@@ -373,6 +376,7 @@ if not darkage.run_once then
 		tiles = {"darkage_gneiss_rubble.png"},
 		groups = utility.dig_groups("cobble", {stone=1}),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -415,6 +419,7 @@ if not darkage.run_once then
 		drop = 'darkage:slate_rubble',
 		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -426,6 +431,7 @@ if not darkage.run_once then
 		tiles = {"darkage_slate_rubble.png"},
 		groups = utility.dig_groups("softcobble"),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -460,6 +466,7 @@ if not darkage.run_once then
 		tiles = {"darkage_shale.png", "darkage_shale.png", "darkage_shale_side.png"},
 		groups = utility.dig_groups("softstone"),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -472,6 +479,7 @@ if not darkage.run_once then
 		drop = "darkage:ors_rubble",
 		groups = utility.dig_groups("stone"),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -483,6 +491,7 @@ if not darkage.run_once then
 		tiles = {"darkage_ors_rubble.png"},
 		groups = utility.dig_groups("softcobble", {stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -510,6 +519,7 @@ if not darkage.run_once then
 		groups = utility.dig_groups("cobble", {stone = 1}),
 		drop = 'darkage:tuff_rubble',
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -529,6 +539,7 @@ if not darkage.run_once then
 		tiles = {"darkage_tuff_rubble.png"},
 		groups = utility.dig_groups("cobble", {falling_node = 1}),
 		sounds = default.node_sound_gravel_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -549,6 +560,7 @@ if not darkage.run_once then
 		groups = utility.dig_groups("cobble", {stone = 1}),
 		drop = 'darkage:rhyolitic_tuff_rubble',
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -560,6 +572,7 @@ if not darkage.run_once then
 		tiles = {"darkage_rhyolitic_tuff_rubble.png"},
 		groups = utility.dig_groups("softcobble", {falling_node = 1}),
 		sounds = default.node_sound_gravel_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,
@@ -586,6 +599,7 @@ if not darkage.run_once then
 		description = "Basaltic Rock",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",
+		_is_bulk_mapgen_stone = true,
 		groups = utility.dig_groups("hardstone", {stone = 1, native_stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
 		movement_speed_multiplier = default.ROAD_SPEED,
@@ -608,6 +622,7 @@ if not darkage.run_once then
 		description = "Basaltic Rock (Please Report To Admin)",
 		tiles = {"darkage_basalt.png"},
 		drop = "darkage:basaltic_rubble",
+		_is_bulk_mapgen_stone = true,
 		groups = utility.dig_groups("hardstone", {stone = 1, falling_node = 1}),
 		sounds = default.node_sound_stone_defaults(),
 		movement_speed_multiplier = default.ROAD_SPEED,
@@ -636,6 +651,7 @@ if not darkage.run_once then
 		tiles = {{name="darkage_basalt_rubble_32x32.png", align_style="world", scale=2}},
 		groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
 		sounds = default.node_sound_stone_defaults(),
+		_is_bulk_mapgen_stone = true,
 
 		_toolranks = {
 			ignore = true,

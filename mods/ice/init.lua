@@ -75,6 +75,7 @@ if not ice.registered then
 			slippery = 5,
 		}),
 		--_melts_to = "default:water_source",
+		_is_bulk_mapgen_stone = true,
 		sounds = default.node_sound_glass_defaults(),
 
 		-- Can be called by lavamelt ABM.

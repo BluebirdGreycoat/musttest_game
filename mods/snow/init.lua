@@ -91,6 +91,7 @@ local origsnowdef = {
 	drawtype = "nodebox",
 	movement_speed_multiplier = default.SLOW_SPEED_SNOW_THICK,
 	_melts_to = "air",
+	_is_bulk_mapgen_stone = true,
 
 	-- All snow types should become `default:snow`.
 	-- These shouldn't ever be gotten directly by players.

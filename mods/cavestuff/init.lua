@@ -31,6 +31,7 @@ minetest.register_node("cavestuff:cobble_with_moss", {
 
 	drop = "default:cobble",
 	silverpick_drop = true,
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -59,6 +60,7 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
 
 	drop = "default:cobble",
 	silverpick_drop = true,
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -87,6 +89,7 @@ minetest.register_node("cavestuff:cobble_with_algae", {
 
 	drop = "default:cobble",
 	silverpick_drop = true,
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -112,6 +115,7 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 
 	drop = "default:cobble",
 	silverpick_drop = true,
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -129,6 +133,7 @@ minetest.register_node("cavestuff:cobble_with_rockmelt", {
   light_source = 5,
   sounds = default.node_sound_stone_defaults(),
 	drop = "default:cobble",
+	_is_bulk_mapgen_stone = true,
 	movement_speed_multiplier = default.SLOW_SPEED,
 
 	on_construct = function(pos)
@@ -1009,11 +1014,20 @@ minetest.register_node("cavestuff:cobble", {
 	}),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
   drop = "default:cobble", -- Mimic default cobble.
+  _is_bulk_mapgen_stone = true,
   sounds = default.node_sound_stone_defaults(),
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
 		ignore = true,
 	},
+
+	on_finish_collapse = function(pos)
+		minetest.swap_node(pos, {name="default:cobble"})
+	end,
+
+	on_collapse_to_entity = function(pos)
+		return {ItemStack("default:cobble")}
+	end,
 })
 

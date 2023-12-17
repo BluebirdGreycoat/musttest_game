@@ -57,6 +57,7 @@ minetest.register_node("rackstone:rackstone", {
 	},
 
 	drop = "rackstone:cobble",
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("rackstone:cobble", {
@@ -72,6 +73,7 @@ minetest.register_node("rackstone:cobble", {
 		ignore = true,
 	},
 	_no_auto_pop = true,
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("rackstone:rackstone_brick2", {
@@ -180,6 +182,7 @@ minetest.register_node("rackstone:redrack", {
 			}
 		},
 	},
+	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -228,6 +231,7 @@ minetest.register_node("rackstone:redrack_cobble", {
 		ignore = true,
 	},
 	_no_auto_pop = true,
+	_is_bulk_mapgen_stone = true,
 
   after_destruct = function(...)
     rackstone.destabilize_dauthsand(...)
@@ -296,6 +300,7 @@ minetest.register_node("rackstone:nether_grit", {
 			{items = {'rackstone:nether_grit'}}
 		}
 	},
+	_is_bulk_mapgen_stone = true,
 })
 
 minetest.register_node("rackstone:void", {
@@ -312,6 +317,7 @@ minetest.register_node("rackstone:void", {
   _damage_per_second_type = "crush",
 	_death_message = "<player> found a void pocket.",
 	drop = "",
+	_is_bulk_mapgen_stone = true,
 	light_source = rackstone.light_source,
 })
 
@@ -504,6 +510,7 @@ minetest.register_node("rackstone:blackrack", {
   
   paramtype2 = "none",
   after_destruct = rackstone.destabilize_dauthsand,
+  _is_bulk_mapgen_stone = true,
   
   -- Nodes placed shall not produce starpearls when dug.
   after_place_node = function(pos, placer, itemstack, pointed_thing)

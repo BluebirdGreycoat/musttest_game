@@ -247,4 +247,103 @@ for k = 1, 5 do
       persist = 0.0
     },
   })
+
+  local spread = {x=4, y=2, z=4}
+  local scarcity = 20*20*20
+  local size = 5
+
+  oregen.register_ore({
+    ore_type        = "blob",
+    ore             = "morerocks:marble",
+    wherein         = {"darkage:basaltic"},
+    clust_scarcity  = scarcity,
+    clust_size      = size,
+    y_min           = y_min,
+    y_max           = y_max,
+    noise_threshold = 0.0,
+    noise_params    = {
+      offset = 0.5,
+      scale = 0.2,
+      spread = spread,
+      seed = 98246,
+      octaves = 1,
+      persist = 0.0
+    },
+  })
+
+  oregen.register_ore({
+    ore_type        = "blob",
+    ore             = "morerocks:marble_pink",
+    wherein         = {"darkage:basaltic"},
+    clust_scarcity  = scarcity,
+    clust_size      = size,
+    y_min           = y_min,
+    y_max           = y_max,
+    noise_threshold = 0.0,
+    noise_params    = {
+      offset = 0.5,
+      scale = 0.2,
+      spread = spread,
+      seed = 91573,
+      octaves = 1,
+      persist = 0.0
+    },
+  })
+
+  oregen.register_ore({
+    ore_type        = "blob",
+    ore             = "morerocks:marble_white",
+    wherein         = {"darkage:basaltic"},
+    clust_scarcity  = scarcity,
+    clust_size      = size,
+    y_min           = y_min,
+    y_max           = y_max,
+    noise_threshold = 0.0,
+    noise_params    = {
+      offset = 0.5,
+      scale = 0.2,
+      spread = spread,
+      seed = 3248248,
+      octaves = 1,
+      persist = 0.0
+    },
+  })
+
+  oregen.register_ore({
+    ore_type        = "blob",
+    ore             = "morerocks:granite",
+    wherein         = {"darkage:basaltic"},
+    clust_scarcity  = scarcity,
+    clust_size      = size,
+    y_min           = y_min,
+    y_max           = y_max,
+    noise_threshold = 0.0,
+    noise_params    = {
+      offset = 0.5,
+      scale = 0.2,
+      spread = spread,
+      seed = 18614,
+      octaves = 1,
+      persist = 0.0
+    },
+  })
+
+  oregen.register_ore({
+    ore_type        = "blob",
+    ore             = "morerocks:serpentine",
+    wherein         = {"darkage:basaltic"},
+    clust_scarcity  = scarcity,
+    clust_size      = size,
+    y_min           = y_min,
+    y_max           = y_max,
+    noise_threshold = 0.0,
+    noise_params    = {
+      offset = 0.5,
+      scale = 0.2,
+      spread = spread,
+      seed = 71256,
+      octaves = 1,
+      persist = 0.0
+    },
+  })
 end

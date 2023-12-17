@@ -442,8 +442,12 @@ for j, t in ipairs({
 				local formspec = func.formspec_active(fuelpercent, itempercent)
 				meta:set_string("infotext", infotext)
 				meta:set_string("formspec", formspec)
-				machines.swap_node(pos, "gemcut2:" .. t.tier .. "_active")
+				local swapped = machines.swap_node(pos, "gemcut2:" .. t.tier .. "_active")
 				minetest.get_node_timer(pos):start(1.0)
+
+				if swapped then
+					ambiance.spawn_sound_beacon("ambiance:gemcutter_active", pos)
+				end
 			else
 				local infotext = t.up .. " " .. MACHINE_NAME .. " (Standby)\n" ..
 					"Demand: 0 EU Per/Sec"

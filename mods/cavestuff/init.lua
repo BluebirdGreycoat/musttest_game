@@ -438,6 +438,7 @@ minetest.register_node("cavestuff:glow_fungus", {
   drawtype = "firelike",
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
   walkable = false,
+  buildable_to = true,
 
 	drop = "",
 	shears_drop = true,

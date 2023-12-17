@@ -13,3 +13,5 @@ sword_swipe.*.ogg: modified, deleted_user_6479820, CC0
 sword_flesh.*.ogg: modified, Artninja, CC BY 4.0
 
 grinder_grinding.ogg: modified, vumseplutten1709, CC0
+
+gemcutter_grinding.ogg: modified, soundmary, CC BY 4.0

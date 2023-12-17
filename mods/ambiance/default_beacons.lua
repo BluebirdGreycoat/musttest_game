@@ -71,3 +71,12 @@ local grinder_types = {
 
 register_node_sound("ambiance:grinder_active", grinder_types,
 	{name="grinder_grinding", gain=1.00, track_length=38, max_hear_distance=50})
+
+
+
+local gemcutter_types = {
+	"gemcut2:lv_active",
+}
+
+register_node_sound("ambiance:gemcutter_active", gemcutter_types,
+	{name="gemcutter_grinding", gain=0.60, track_length=2.7, max_hear_distance=30})

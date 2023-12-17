@@ -15,6 +15,7 @@ local furnace_types = {
 ambiance.register_sound_beacon("ambiance:furnace_active", {
 	check_time = 1,
 	play_time = 8,
+	play_immediate = true,
 
 	on_check_environment = function(self, pos)
 		local node = minetest.get_node(pos)

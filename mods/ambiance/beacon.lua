@@ -35,8 +35,10 @@ function ambiance.spawn_sound_beacon(name, pos, radius, count)
 
 		-- Set initial check/play times to zero,
 		-- this makes sound play instantly on first spawn.
-		lent._ctime = 0
-		lent._ptime = 0
+		if lent._play_immediate then
+			lent._ctime = 0
+			lent._ptime = 0
+		end
 	end
 end
 
@@ -102,6 +104,8 @@ function ambiance.register_sound_beacon(name, callbacks)
 		physical = false,
 		textures = {"air"},
 		is_visible = false,
+
+		_play_immediate = callbacks.play_immediate,
 
 		on_activate = function(self, staticdata, dtime_s)
 		end,

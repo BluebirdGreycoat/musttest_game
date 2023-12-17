@@ -22,6 +22,11 @@ for k, v in ipairs(exchange.types) do
 		local altact = puncher:get_player_control().sneak
 		local mult = puncher:get_player_control().aux1
 
+		if not city_block:in_city(pos) then
+			minetest.chat_send_player(pname, "# Server: You cannot exchange for minegeld outside any city or village.")
+			return
+		end
+
 		local rate = v.rate
 		local item = ItemStack(v.item)
 		item:set_count(1)

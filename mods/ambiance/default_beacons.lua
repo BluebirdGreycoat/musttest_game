@@ -8,7 +8,7 @@
 local function register_node_sound(name, nodes, sound)
 	ambiance.register_sound_beacon(name, {
 		check_time = 1,
-		play_time = 8,
+		play_time = sound.track_length,
 		play_immediate = true,
 
 		on_check_environment = function(self, pos)
@@ -22,7 +22,7 @@ local function register_node_sound(name, nodes, sound)
 
 		on_play_sound = function(self, pos, time_since_last_play)
 			local hnd = minetest.sound_play(sound,
-				{pos=pos, max_hear_distance=20}, false)
+				{pos=pos, max_hear_distance=sound.max_hear_distance}, false)
 
 			if self.hnd then
 				minetest.sound_fade(self.hnd, 3, 0)
@@ -59,7 +59,7 @@ local furnace_types = {
 }
 
 register_node_sound("ambiance:furnace_active", furnace_types,
-	{name="default_furnace_active", gain=0.25})
+	{name="default_furnace_active", gain=0.5, track_length=8, max_hear_distance=30})
 
 
 
@@ -70,4 +70,4 @@ local grinder_types = {
 }
 
 register_node_sound("ambiance:grinder_active", grinder_types,
-	{name="grinder_grinding", gain=1.00})
+	{name="grinder_grinding", gain=1.00, track_length=38, max_hear_distance=50})

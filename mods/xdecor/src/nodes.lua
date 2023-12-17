@@ -693,7 +693,11 @@ xdecor.register("table", {
 	sounds = default.node_sound_wood_defaults(),
 	node_box = xdecor.pixelbox(16, {
 		{0, 14, 0, 16, 2, 16}, {5.5, 0, 5.5, 5, 14, 6}
-	})
+	}),
+
+	on_timer = function(...)
+		return books.book_table_on_timer(...)
+	end,
 })
 
 xdecor.register("tatami", {

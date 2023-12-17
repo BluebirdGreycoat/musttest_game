@@ -194,6 +194,23 @@ local function on_dig(pos, node, digger)
 	end
 
 	local nodemeta = minetest.get_meta(pos)
+	if nodemeta:get_int("is_library_checkout") ~= 0 then
+		local pname = nodemeta:get_string("checked_out_by")
+		local title = nodemeta:get_string("title")
+
+		if title == "" then
+				title = "Untitled Book"
+		end
+
+		local pref = minetest.get_player_by_name(pname)
+		if pref and vector.distance(pos, pref:get_pos()) < 32 then
+				minetest.chat_send_player(pname, "# Server: \"" .. title .. "\" has been returned to the shelf.")
+		end
+
+		minetest.remove_node(pos)
+		return true
+	end
+
 	local stack
 	if nodemeta:get_string("owner") ~= "" then
 		stack = ItemStack({name = "books:book_written"})
@@ -206,6 +223,7 @@ local function on_dig(pos, node, digger)
 	if adder then
 		minetest.item_drop(adder, digger, digger:get_pos())
 	end
+
 	minetest.remove_node(pos)
 	return true
 end
@@ -252,6 +270,11 @@ local function on_player_receive_fields(player, formname, fields)
 
 		-- Book must be open.
 		if node.name ~= "books:book_open" then
+			return
+		end
+
+		if meta:get_int("is_library_checkout") ~= 0 then
+			minetest.chat_send_player(pname, "# Server: Don't write on library property!")
 			return
 		end
 

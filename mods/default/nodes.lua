@@ -1279,6 +1279,24 @@ minetest.register_node("default:mese", {
       })
 		end)
 	end,
+
+	on_blast = function(pos)
+		minetest.remove_node(pos)
+
+		if math.random(1, 20) > 1 then
+			return
+		end
+
+		minetest.after(math.random(1, 20) / 10, function()
+			tnt.boom(pos, {
+				radius = 10,
+				ignore_protection = false,
+				ignore_on_blast = true,
+				damage_radius = 20,
+				disable_drops = true,
+			})
+		end)
+	end,
 })
 
 

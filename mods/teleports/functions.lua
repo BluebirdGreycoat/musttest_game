@@ -22,23 +22,23 @@ local nyanbow = "rosestone:tail"
 
 -- Table of blocks which can be used to super-charge a teleport. Each block has a specific charge value.
 teleports.charge_blocks = {
-  ["default:diamondblock"]    = {charge=14   },
-  ["default:mese"]            = {charge=4    },
-  ["default:steelblock"]      = {charge=1    },
-  ["default:copperblock"]     = {charge=1.5  },
-  ["default:bronzeblock"]     = {charge=1.8  },
-  ["default:goldblock"]       = {charge=2    },
-  ["moreores:silver_block"]   = {charge=2    },
-  ["moreores:tin_block"]      = {charge=1.5  },
-  ["moreores:mithril_block"]  = {charge=24   },
-  ["chromium:block"]          = {charge=0.9  },
-  ["zinc:block"]              = {charge=1.8  },
-  ["lead:block"]              = {charge=0.4  },
+  ["default:diamondblock"]    = {charge=15   },
+  ["default:mese"]            = {charge=5    },
+  ["default:steelblock"]      = {charge=2    },
+  ["default:copperblock"]     = {charge=2.5  },
+  ["default:bronzeblock"]     = {charge=2.8  },
+  ["default:goldblock"]       = {charge=3    },
+  ["moreores:silver_block"]   = {charge=3    },
+  ["moreores:tin_block"]      = {charge=2.5  },
+  ["moreores:mithril_block"]  = {charge=25   },
+  ["chromium:block"]          = {charge=1.9  },
+  ["zinc:block"]              = {charge=2.8  },
+  ["lead:block"]              = {charge=1.4  },
   
-  ["akalin:block"]            = {charge=0.9  },
-  ["alatro:block"]            = {charge=0.7  },
-  ["arol:block"]              = {charge=0.5  },
-  ["talinite:block"]          = {charge=1.1  },
+  ["akalin:block"]            = {charge=1.9  },
+  ["alatro:block"]            = {charge=1.7  },
+  ["arol:block"]              = {charge=1.5  },
+  ["talinite:block"]          = {charge=2.1  },
 }
 
 
@@ -475,11 +475,18 @@ teleports.calculate_charge = function(pos)
     
     charge = math_floor(charge + 0.5)
 
+		-- Nyan teleports get a fixed charge which should result in 7770 range after
+		-- combined with 'inc = 25' variable.
+		if is_nyanporter then
+			charge = 310.8
+		end
+
 		-- Combined teleports interfere with each other and reduce their range.
 		local minp = vector.add(pos, {x=-2, y=0, z=-2})
 		local maxp = vector.add(pos, {x=2, y=0, z=2})
 		local others = minetest.find_nodes_in_area(minp, maxp, "teleports:teleport")
 
+		-- Range of teleports is reduced if they're crowded.
 		local other_count = 1
 		if others and #others > 0 then
 			charge = charge / #others
@@ -492,9 +499,16 @@ end
 
 
 -- Smoothly scale teleport range based on depth in the overworld.
-local function cds(y)
+local function cds(pos, nyan)
+	local y = pos.y
 	local scalar = 1
-	if y < 0 then
+	local realm = rc.current_realm_at_pos(pos)
+
+	-- Note: 'nyan' parameter is for time-expiring backward compatibility.
+	-- After a certain date, it will be 'false' for ALL teleports!
+
+	-- From Overworld surface to nether base.
+	if realm == "overworld" and not nyan then
 		-- You can probably tell that I'm really, really bad at math.
 
 		local depth = math.abs(y)
@@ -521,40 +535,31 @@ local function cds(y)
 		-- Clamp.
 		if scalar > 1 then scalar = 1 end
 		if scalar < 0 then scalar = 0 end
-	end
-	return scalar
-end
-
-
-
-local function fixed_nether_range(pos, range)
-	if os.time() >= os.time({month=1,day=1,year=2024}) then
-		local realm = rc.current_realm_at_pos(pos)
-		if realm == "naraxen" then
-			-- Teleport range shall not go above 250 meters.
-			range = math.min(range, 250)
+	elseif realm == "naraxen" then
+		if os.time() >= os.time({month=1,day=1,year=2024}) then
+			scalar = 0.1
 		end
 	end
-	return range
+
+	return scalar
 end
 
 
 
 teleports.calculate_range = function(pos)
   -- Compute charge.
+  local meta = minetest.get_meta(pos)
   local chg, other_cnt, nyan = teleports.calculate_charge(pos)
+
 	if nyan then
-		local owner = minetest.get_meta(pos):get_string("owner")
+		local owner = meta:get_string("owner")
 		-- There is an admin teleport pair between the Surface Colony and the City of Fire.
 		-- This special exception code makes it work.
 		if owner == gdac.name_of_admin then
 			return 31000, nyan
-		else
-			-- Range of nyan teleports is reduced if they're crowded.
-			return fixed_nether_range(pos, (7770 / other_cnt)), nyan
 		end
 	end
-  
+
   -- How much distance each unit of charge is good for.
   local inc = 25
   
@@ -562,16 +567,26 @@ teleports.calculate_range = function(pos)
   local rng = math_floor(inc * chg)
   
   -- Calculate how much to scale extra range by depth.
-  local scalar = cds(pos.y)
+  local is_nyan = nyan
+
+  -- For new teleports, we no longer care if they're nyan for purposes of range
+  -- calculation. This grandfathers OLD teleports until a certain date.
+  if meta:get_int("construction_time") ~= 0 then
+		is_nyan = false
+	end
+	if os.time() >= os.time({month=6,day=1,year=2024}) then
+		is_nyan = false
+	end
+
+  local scalar = cds(pos, is_nyan)
   
   -- Scale extra range by depth.
   rng = rng * scalar
   
-  -- Add extra range to base (minimum) range.
   -- Teleport range shall not go below 250 meters.
-  rng = rng + 250
+  rng = math.max(rng, 250)
   
-  return fixed_nether_range(pos, math_floor(rng)), nyan
+  return math_floor(rng), nyan
 end
 
 
@@ -997,6 +1012,7 @@ teleports.after_place_node = function(pos, placer)
 		meta:set_string("name", "")
 		meta:set_string("network", "")
 		meta:set_int("public", 1)
+		meta:set_int("construction_time", os.time())
 
 		local inv = meta:get_inventory()
 		inv:set_size("price", 1)

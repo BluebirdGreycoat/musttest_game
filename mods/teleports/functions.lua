@@ -491,6 +491,7 @@ end
 
 
 
+-- Smoothly scale teleport range based on depth in the overworld.
 local function cds(y)
 	local scalar = 1
 	if y < 0 then
@@ -526,6 +527,19 @@ end
 
 
 
+local function fixed_nether_range(pos, range)
+	if os.time() >= os.time({month=1,day=1,year=2024}) then
+		local realm = rc.current_realm_at_pos(pos)
+		if realm == "naraxen" then
+			-- Teleport range shall not go above 250 meters.
+			range = math.min(range, 250)
+		end
+	end
+	return range
+end
+
+
+
 teleports.calculate_range = function(pos)
   -- Compute charge.
   local chg, other_cnt, nyan = teleports.calculate_charge(pos)
@@ -537,7 +551,7 @@ teleports.calculate_range = function(pos)
 			return 31000, nyan
 		else
 			-- Range of nyan teleports is reduced if they're crowded.
-			return (7770 / other_cnt), nyan
+			return fixed_nether_range(pos, (7770 / other_cnt)), nyan
 		end
 	end
   
@@ -554,10 +568,10 @@ teleports.calculate_range = function(pos)
   rng = rng * scalar
   
   -- Add extra range to base (minimum) range.
+  -- Teleport range shall not go below 250 meters.
   rng = rng + 250
   
-  -- Teleport range shall not go below 250 meters.
-  return math_floor(rng), nyan
+  return fixed_nether_range(pos, math_floor(rng)), nyan
 end
 
 

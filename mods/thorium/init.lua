@@ -7,7 +7,7 @@ minetest.register_node("thorium:ore", {
   _tnt_drop = {
     "thorium:lump",
     "thorium:dust 2",
-  }
+  },
   sounds = default.node_sound_stone_defaults(),
 	silverpick_drop = true,
 	place_param2 = 10,

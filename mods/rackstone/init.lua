@@ -932,7 +932,7 @@ minetest.register_node("rackstone:rackstone_with_diamond", {
   sounds = default.node_sound_stone_defaults(),
   drop = "default:diamond 2",
 	_tnt_drop = {
-		'default:diamond',
+		'default:diamond 2',
 		'dusts:diamond_shard 3',
 	},
 	silverpick_drop = true,

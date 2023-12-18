@@ -4,7 +4,10 @@ minetest.register_node("thorium:ore", {
   tiles = {"default_stone.png^technic_thorium_mineral.png"},
   groups = utility.dig_groups("mineral", {melts = 1, ore = 1}),
   drop = "thorium:lump",
-  _tnt_drop = "thorium:dust 2",
+  _tnt_drop = {
+    "thorium:lump",
+    "thorium:dust 2",
+  }
   sounds = default.node_sound_stone_defaults(),
 	silverpick_drop = true,
 	place_param2 = 10,

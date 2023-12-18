@@ -117,15 +117,10 @@ end
 minetest.register_entity("throwing:arrow_shell_entity", THROWING_ARROW_ENTITY)
 
 minetest.register_craft({
-	output = 'throwing:arrow_shell 8',
+	output = 'throwing:arrow_shell 3',
 	recipe = {
-		{'default:stick', 'tnt:gunpowder', 'default:copper_ingot'},
-	}
-})
-
-minetest.register_craft({
-	output = 'throwing:arrow_shell 8',
-	recipe = {
+		{'', 'tnt:gunpowder', 'default:stick'},
 		{'default:copper_ingot', 'tnt:gunpowder', 'default:stick'},
+		{'', 'tnt:gunpowder', 'default:stick'},
 	}
 })

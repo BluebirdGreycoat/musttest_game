@@ -69,6 +69,9 @@ local item = {
 		if self.stuck_arrow then
 			self.object:set_properties({
 				automatic_rotate = 0,
+				physical = true,
+				collide_with_objects = true,
+				collisionbox = {-0.2, -0.2, -0.2, 0.2, 0.2, 0.2},
 			})
 		end
 	end,

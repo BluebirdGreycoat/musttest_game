@@ -59,6 +59,7 @@ local function throwing_register_fireworks(color, desc)
 			minsize = 1,
 			maxsize = 2.5,
 			texture = "throwing_sparkle_" .. color .. ".png",
+			glow = 14,
 		})
 	end
 	

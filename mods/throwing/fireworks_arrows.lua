@@ -141,14 +141,7 @@ local function throwing_register_fireworks(color, desc)
 	minetest.register_entity("throwing:arrow_fireworks_" .. color .. "_entity", THROWING_ARROW_ENTITY)
 	
 	minetest.register_craft({
-		output = 'throwing:arrow_fireworks_' .. color .. ' 8',
-		recipe = {
-			{'default:stick', 'tnt:gunpowder', 'dye:' .. color},
-		}
-	})
-	
-	minetest.register_craft({
-		output = 'throwing:arrow_fireworks_' .. color .. ' 8',
+		output = 'throwing:arrow_fireworks_' .. color,
 		recipe = {
 			{'dye:' .. color, 'tnt:gunpowder', 'default:stick'},
 		}

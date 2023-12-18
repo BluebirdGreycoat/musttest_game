@@ -32,6 +32,11 @@ local function set_closed_infotext(nodemeta, itemmeta)
 	end
 end
 
+function books_placeable.set_closed_infotext(pos)
+	local meta = minetest.get_meta(pos)
+	set_closed_infotext(meta, meta)
+end
+
 
 local function set_open_infotext(meta)
 	meta:set_string("infotext", meta:get_string("text"))

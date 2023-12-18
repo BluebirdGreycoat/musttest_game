@@ -52,6 +52,8 @@ function books.put_book_on_table(pos, stack, pname)
     bookmeta:set_int("is_library_checkout", 1)
     bookmeta:set_string("checked_out_by", pname)
 
+    books_placeable.set_closed_infotext(airpos)
+
     local tabletimer = minetest.get_node_timer(tablepos)
     tabletimer:start(10.0)
 

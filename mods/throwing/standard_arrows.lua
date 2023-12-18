@@ -128,13 +128,6 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 	minetest.register_craft({
 		output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
 		recipe = {
-			{'default:stick', 'default:stick', craft},
-		}
-	})
-	
-	minetest.register_craft({
-		output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
-		recipe = {
 			{craft, 'default:stick', 'default:stick'},
 		}
 	})

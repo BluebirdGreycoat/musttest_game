@@ -35,7 +35,10 @@ minetest.register_node("stoneworld:basalt_with_diamond", {
 	tiles = {"darkage_basalt.png^default_mineral_diamond.png"},
 	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
-	_tnt_drop = "dusts:diamond_shard 10",
+	_tnt_drop = {
+		'default:diamond',
+		'dusts:diamond_shard 3',
+	},
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

@@ -931,7 +931,10 @@ minetest.register_node("rackstone:rackstone_with_diamond", {
   groups = utility.dig_groups("mineral", {rackstone=1, netherack=1}),
   sounds = default.node_sound_stone_defaults(),
   drop = "default:diamond 2",
-  _tnt_drop = "dusts:diamond_shard 10",
+	_tnt_drop = {
+		'default:diamond',
+		'dusts:diamond_shard 3',
+	},
 	silverpick_drop = true,
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
 	place_param2 = 10,

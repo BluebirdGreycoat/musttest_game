@@ -1212,7 +1212,10 @@ minetest.register_node("default:desert_stone_with_diamond", {
 	tiles = {"default_desert_stone.png^default_mineral_diamond2.png"},
 	groups = utility.dig_groups("hardmineral"),
 	drop = 'default:diamond',
-	_tnt_drop = 'dusts:diamond_shard 10',
+	_tnt_drop = {
+		'default:diamond',
+		'dusts:diamond_shard 3',
+	},
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1332,7 +1335,10 @@ minetest.register_node("default:stone_with_diamond", {
 	-- Player has to get mese pick or similar before they can get diamond.
 	groups = utility.dig_groups("hardmineral"),
 	drop = "default:diamond",
-	_tnt_drop = "dusts:diamond_shard 10",
+	_tnt_drop = {
+		'default:diamond',
+		'dusts:diamond_shard 3',
+	},
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

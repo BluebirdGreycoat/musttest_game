@@ -338,6 +338,53 @@ ambiance.tmpsounds = {
 
 
 
+-- Add stoneworld cavern layer sounds.
+for k = 1, 5 do
+  local nbeg = 5150 -- Stoneworld REALM_START.
+  local y_level = nbeg + (k * 500)
+  local y_offset = 0
+
+  local y_min = y_level + y_offset - 50
+  local y_max = y_level + y_offset + 50
+
+  local sound1 = {
+		name = "cavewind",
+		gain = 1.0,
+		miny = y_min,
+		maxy = y_max,
+		time = "",
+		indoors = nil,
+		mintime = 25,
+		maxtime = 45,
+  }
+  local sound2 = {
+		name = "cavedraft",
+		gain = 1.0,
+		miny = y_min,
+		maxy = y_max,
+		time = "",
+		indoors = nil,
+		mintime = 100,
+		maxtime = 400,
+  }
+  local sound3 = {
+		name = "darkwind",
+		gain = 1.0,
+		miny = y_min,
+		maxy = y_max,
+		time = "",
+		indoors = nil,
+		mintime = 200,
+		maxtime = 500,
+	}
+
+	table.insert(ambiance.tmpsounds, sound1)
+	table.insert(ambiance.tmpsounds, sound2)
+	table.insert(ambiance.tmpsounds, sound3)
+end
+
+
+
 -- Initialize extra table parameters.
 minetest.after(0, function()
 	for k, v in ipairs(ambiance.tmpsounds) do

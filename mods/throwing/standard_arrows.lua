@@ -121,20 +121,27 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 	
 	minetest.register_entity("throwing:arrow_" .. kind .. "_entity", THROWING_ARROW_ENTITY)
 	
-	if not craftcount then
-		craftcount = 16
+	if craftcount == 1 then
+		minetest.register_craft({
+			output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
+			recipe = {
+				{craft, 'default:stick', 'default:stick'},
+			}
+		})
+	elseif craftcount == 3 then
+		minetest.register_craft({
+			output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
+			recipe = {
+				{'', 'default:stick', 'default:stick'},
+				{craft, 'default:stick', 'default:stick'},
+				{'', 'default:stick', 'default:stick'},
+			}
+		})
 	end
-
-	minetest.register_craft({
-		output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,
-		recipe = {
-			{craft, 'default:stick', 'default:stick'},
-		}
-	})
 end
 
-throwing_register_arrow_standard ('stone', 'Stone', 5, 0.88, 'default:cobble')
-throwing_register_arrow_standard ('steel', 'Steel', 15, 0.94, 'default:steel_ingot')
-throwing_register_arrow_standard ('diamond', 'Diamond', 25, 0.97, 'dusts:diamond_shard', 2)
-throwing_register_arrow_standard ('obsidian', 'Obsidian', 20, 0.88, 'default:obsidian_shard', 2)
-throwing_register_arrow_standard ('mese', 'Mese', 17, 0.90, 'default:mese_crystal_fragment', 2)
+throwing_register_arrow_standard ('stone', 'Stone', 5, 0.88, 'default:cobble', 3)
+throwing_register_arrow_standard ('steel', 'Steel', 15, 0.94, 'default:steel_ingot', 3)
+throwing_register_arrow_standard ('diamond', 'Diamond', 25, 0.97, 'dusts:diamond_shard', 1)
+throwing_register_arrow_standard ('obsidian', 'Obsidian', 20, 0.88, 'default:obsidian_shard', 1)
+throwing_register_arrow_standard ('mese', 'Mese', 17, 0.90, 'default:mese_crystal_fragment', 1)

@@ -233,20 +233,6 @@ oregen.register_ore({
     y_max          = -64,
 })
 
--- Gold
---[[
-oregen.register_ore({
-    ore_type       = "scatter",
-    ore            = "default:stone_with_gold",
-    wherein        = "default:stone",
-    clust_scarcity = 13 * 13 * 13,
-    clust_num_ores = 5,
-    clust_size     = 3,
-    y_min          = 1025,
-    y_max          = 31000,
-})
---]]
-
 oregen.register_ore({
     ore_type       = "scatter",
     ore            = "default:stone_with_gold",
@@ -268,34 +254,6 @@ oregen.register_ore({
     y_min          = -31000,
     y_max          = -256,
 })
-
--- Using MT API so that gold will generate everywhere.
---[[
-minetest.register_ore({
-	ore_type       = "scatter",
-	ore            = "default:stone_with_gold",
-	wherein        = "default:stone",
-	clust_scarcity = 25 * 25 * 25,
-	clust_num_ores = 6,
-	clust_size     = 3,
-	y_min          = -31000,
-	y_max          = -256,
-})
---]]
-
--- Mese crystal
---[[
-oregen.register_ore({
-    ore_type       = "scatter",
-    ore            = "default:stone_with_mese",
-    wherein        = "default:stone",
-    clust_scarcity = 14 * 14 * 14,
-    clust_num_ores = 5,
-    clust_size     = 3,
-    y_min          = 1025,
-    y_max          = 31000,
-})
---]]
 
 oregen.register_ore({
     ore_type       = "scatter",

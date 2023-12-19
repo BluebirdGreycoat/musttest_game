@@ -15,6 +15,8 @@ local function get_player(pref)
 	local pname = pref:get_player_name()
 	local data = players[pname]
 	if not data then
+		--minetest.log(dump(pref:get_physics_override()))
+
 		players[pname] = {
 			-- Physics stack.
 			physics_stack = {

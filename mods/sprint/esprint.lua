@@ -304,15 +304,15 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 		players[playerName]["sprinting"] = sprinting
 
 		if sprinting == true then
-			pova.set_physics_override(player, {
+			pova.set_physics_modifier(player, {
 				speed = speedmults[playerName] * SPRINT_SPEED * hp_mult,
 				jump = jumpmults[playerName] * SPRINT_JUMP * hp_mult,
-			})
+			}, "sprinting")
 		elseif sprinting == false then
-			pova.set_physics_override(player, {
+			pova.set_physics_modifier(player, {
 				speed = speedmults[playerName] * hp_mult,
 				jump = jumpmults[playerName] * hp_mult,
-			})
+			}, "sprinting")
 		end
 
 		return true

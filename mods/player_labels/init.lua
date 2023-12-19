@@ -30,7 +30,7 @@ function player_labels.update_nametag_text(pname)
 	end
 
 	-- Update nametag.
-	player:set_nametag_attributes({text=gdac_invis.gpn(pname)})
+	pova.update_modifier(player, "nametag", {text=gdac_invis.gpn(pname)}, "id_mark")
 end
 
 
@@ -69,8 +69,8 @@ local nametag_show = function(name)
   if obj and obj:is_player() then
     local col = {a=255, r=0, g=255, b=255}
     local txt = gdac_invis.gpn(obj:get_player_name())
-    obj:set_nametag_attributes({color=col, text=txt})
-		obj:set_properties({show_on_minimap = true})
+		pova.remove_modifier(obj, "nametag", "id_mark")
+		pova.remove_modifier(obj, "properties", "id_mark")
   end
 end
 
@@ -79,8 +79,9 @@ local nametag_hide = function(name)
   if obj and obj:is_player() then
     local col = {a=0, r=0, g=0, b=0}
     local txt = gdac_invis.gpn(obj:get_player_name())
-    obj:set_nametag_attributes({color=col, text=txt})
-		obj:set_properties({show_on_minimap = false})
+
+    pova.set_modifier(obj, "nametag", {color=col, text=txt}, "id_mark")
+    pova.set_modifier(obj, "properties", {show_on_minimap = false}, "id_mark")
   end
 end
 

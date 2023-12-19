@@ -38,7 +38,7 @@ gdac_invis.toggle_invisibility = function(name, param)
       gdac_invis.players[name] = {}
 
       player_labels.disable_nametag(name)
-      player:set_nametag_attributes({color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)})
+      pova.set_modifier(player, "nametag", {color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)}, "gdac_invis")
       
       player:set_properties({
         visual_size = {x=0, y=0},

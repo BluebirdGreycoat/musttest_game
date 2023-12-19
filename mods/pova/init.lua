@@ -9,6 +9,13 @@ pova.players = pova.players or {}
 
 
 
+local function filter_properties(data)
+	local o = {}
+	return o
+end
+
+
+
 -- Get data for player, creating an initial table with default data if needed.
 local function get_player(pref)
   local players = pova.players
@@ -31,7 +38,7 @@ local function get_player(pref)
 				{name="", data={pref:get_eye_offset()}},
 			},
 			properties = {
-				{name="", data=pref:get_properties()},
+				{name="", data=filter_properties(pref:get_properties())},
 			},
 			nametag = {
 				{name="", data=pref:get_nametag_attributes()},
@@ -75,6 +82,7 @@ local function combine_data(data, stack)
 			end
 		end
 	elseif stack == "eye_offset" then
+		-- Note: 'eye_offset' is an ARRAY, not a key/value map.
 		for k, v in ipairs(data.eye_offset) do
 			for i, j in ipairs(v.data) do
 				o[i] = j
@@ -82,13 +90,13 @@ local function combine_data(data, stack)
 		end
 	elseif stack == "properties" then
 		for k, v in ipairs(data.properties) do
-			for i, j in ipairs(v.data) do
+			for i, j in pairs(v.data) do
 				o[i] = j
 			end
 		end
 	elseif stack == "nametag" then
 		for k, v in ipairs(data.nametag) do
-			for i, j in ipairs(v.data) do
+			for i, j in pairs(v.data) do
 				o[i] = j
 			end
 		end
@@ -116,7 +124,7 @@ end
 
 
 -- Get currently-active overrides (combining all modifiers in named stack).
-function pova.get_combined_override(pref, stack)
+function pova.get_active_modifier(pref, stack)
 	local data = get_player(pref)
 	return combine_data(data, stack)
 end
@@ -146,7 +154,8 @@ end
 
 
 -- Set named modifier in the player's stack. The modifier is added if it doesn't
--- exist, otherwise it is replaced.
+-- exist, otherwise it is replaced. The modifier data is COMPLETELY replaced;
+-- existing data is NOT combined with the new data.
 function pova.set_modifier(pref, stack, modifiers, name)
 	local data = get_player(pref)
 
@@ -157,6 +166,34 @@ function pova.set_modifier(pref, stack, modifiers, name)
 		for k, v in ipairs(data[stack]) do
 			if v.name == name then
 				v.data = modifiers
+				replaced = true
+				break
+			end
+		end
+
+		if not replaced then
+			table.insert(data[stack], {name=name, data=modifiers})
+		end
+	end
+
+	update_player_data(pref, stack, data)
+end
+
+
+
+function pova.update_modifier(pref, stack, modifiers, name)
+	local data = get_player(pref)
+
+	-- Do not allow setting the default data.
+	if name ~= "" and stack ~= "" then
+		local replaced = false
+
+		for k, v in ipairs(data[stack]) do
+			if v.name == name then
+				-- Merge new data with existing data, overwriting as needed.
+				for i, j in pairs(modifiers) do
+					v.data[i] = j
+				end
 				replaced = true
 				break
 			end

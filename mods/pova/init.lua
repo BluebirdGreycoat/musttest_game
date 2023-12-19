@@ -9,10 +9,44 @@ pova.players = pova.players or {}
 
 
 
+-- Properties which pova must never modify (via pref:set_properties()).
 local properties_blacklist = {
+	eye_height = true,
+	physical = true,
+	collide_with_objects = true,
+	visual = true,
+	colors = true,
+	use_texture_alpha = true,
+	spritediv = true,
+	initial_sprite_basepos = true,
+	automatic_rotate = true,
+	automatic_face_movement_dir = true,
+	automatic_face_movement_max_rotation_per_sec = true,
+	backface_culling = true,
+	nametag = true,
+	nametag_color = true,
+	static_save = true,
+	shaded = true,
 }
 
+-- Properties which pova may modify (via pref:set_properties()).
 local properties_whitelist = {
+	hp_max = true,
+	breath_max = true,
+	zoom_fov = true,
+	collisionbox = true,
+	selectionbox = true,
+	pointable = true,
+	visual_size = true,
+	mesh = true,
+	textures = true,
+	is_visible = true,
+	makes_footstep_sound = true,
+	stepheight = true,
+	glow = true,
+	infotext = true,
+	damage_texture_modifier = true,
+	show_on_minimap = true,
 }
 
 

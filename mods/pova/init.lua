@@ -5,6 +5,7 @@
 
 if not minetest.global_exists("pova") then pova = {} end
 pova.modpath = minetest.get_modpath("pova")
+pova.players = pova.players or {}
 
 
 

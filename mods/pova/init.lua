@@ -86,7 +86,7 @@ local function update_player_data(pref, stack, data)
 	if stack == "physics" then
 		pref:set_physics_override(combine_data(data, stack))
 	elseif stack == "eye_offset" then
-		local v1, v2, v3 = table.unpack(combine_data(data, stack))
+		local v1, v2, v3 = unpack(combine_data(data, stack))
 		pref:set_eye_offset(v1, v2, v3)
 	end
 end

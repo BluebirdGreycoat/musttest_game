@@ -9,6 +9,13 @@ pova.players = pova.players or {}
 
 
 
+-- Set physics overrides.
+function pova.set_physics_override(pref, overrides)
+	pref:set_physics_override(overrides)
+end
+
+
+
 if not pova.registered then
 	pova.registered = true
 

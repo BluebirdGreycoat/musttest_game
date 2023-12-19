@@ -192,7 +192,7 @@ end)
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
 minetest.register_on_joinplayer(function(player)
-	player:set_physics_override({
+	pova.set_physics_override(player, {
 		sneak_glitch = false,
 		sneak = true,
 		gravity = 1.0,

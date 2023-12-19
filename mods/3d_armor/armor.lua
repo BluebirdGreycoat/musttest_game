@@ -234,7 +234,7 @@ function armor.set_player_armor(self, player)
 	end
 
 	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
-	player:set_physics_override(physics_o)
+	pova.set_physics_override(player, physics_o)
 	self.textures[name].armor = armor_texture
 	self.textures[name].preview = preview_string
 	self.def[name].state = state

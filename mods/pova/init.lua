@@ -11,7 +11,7 @@ pova.players = pova.players or {}
 
 -- Get data for player, creating an initial table with default data if needed.
 local function get_player(pref)
-	local players = pova.players
+  local players = pova.players
 	local pname = pref:get_player_name()
 	local data = players[pname]
 	if not data then

@@ -9,8 +9,24 @@ pova.players = pova.players or {}
 
 
 
+local properties_blacklist = {
+}
+
+local properties_whitelist = {
+}
+
+
+
 local function filter_properties(data)
 	local o = {}
+	for k, v in pairs(data) do
+		-- Blacklist takes precedence.
+		if not properties_blacklist[k] then
+			if properties_whitelist[k] then
+				o[k] = v
+			end
+		end
+	end
 	return o
 end
 

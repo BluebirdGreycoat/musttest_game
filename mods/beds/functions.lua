@@ -138,7 +138,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		player:set_eye_offset({x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
 		player:set_look_horizontal(math_random(1, 180) / 100)
 		default.player_attached[name] = false
-		pova.remove_physics_modifier(player, "sleeping")
+		pova.remove_modifier(player, "physics", "sleeping")
 		hud_flags.wielditem = true
 		default.player_set_animation(player, "stand" , 30)
 
@@ -158,7 +158,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 			y = bed_pos.y + 0.5,
 			z = bed_pos.z + dir.z / 2,
 		}
-		pova.set_physics_modifier(player, {speed = 0, jump = 0}, "sleeping")
+		pova.set_modifier(player, "physics", {speed = 0, jump = 0}, "sleeping")
 		player:set_pos(p)
 		default.player_attached[name] = true
 		hud_flags.wielditem = false

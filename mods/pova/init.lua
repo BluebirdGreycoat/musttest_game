@@ -16,14 +16,19 @@ local function get_player(pref)
 	local data = players[pname]
 	if not data then
 		--minetest.log(dump(pref:get_physics_override()))
+		--minetest.log(dump({pref:get_eye_offset()}))
 
 		players[pname] = {
 			-- Physics stack.
-			physics_stack = {
+			physics = {
 				-- Initial (default) entry MUST be at index 1.
 				{name="", data=pref:get_physics_override()},
 			},
+			eye_offset = {
+				{name="", data={pref:get_eye_offset()}},
+			},
 		}
+
 		data = players[pname]
 	end
 	return data
@@ -32,8 +37,8 @@ end
 
 
 -- Update the initial (default) entry in the physics stack (index 1).
-local function set_initial_physics(data, newdata)
-	local initial = data.physics_stack[1].data
+local function set_initial_data(data, stack, newdata)
+	local initial = data[stack][1].data
 
 	for k, v in pairs(newdata) do
 		initial[k] = v
@@ -45,15 +50,25 @@ end
 -- Combine all physics overrides in stack to a single table. Numbers are
 -- multiplied together. Boolean flags and other data simply overwrite, with the
 -- data at the top of the player's stack taking precedence.
-local function combine_physics(data)
+local function combine_data(data, stack)
 	local o = {}
 
-	for k, v in ipairs(data.physics_stack) do
-		-- Iterate through all keys in the physics_override (v.data) table.
-		for i, j in pairs(v.data) do
-			if type(j) == "number" then
-				o[i] = (o[i] or 1.0) * j
-			else
+	if stack == "physics" then
+		for k, v in ipairs(data.physics) do
+			-- Iterate through all keys in the physics_override (v.data) table.
+			for i, j in pairs(v.data) do
+				if type(j) == "number" then
+					o[i] = (o[i] or 1.0) * j
+				else
+					-- Booleans, etc.
+					o[i] = j
+				end
+			end
+		end
+	elseif stack == "eye_offset" then
+		for k, v in ipairs(data.eye_offset) do
+			-- Iterate through all keys in the physics_override (v.data) table.
+			for i, j in ipairs(v.data) do
 				-- Booleans, etc.
 				o[i] = j
 			end
@@ -67,17 +82,22 @@ end
 
 -- Combine all physics overrides in this player's override stack, and apply
 -- them.
-local function update_player_physics(pref, data)
-	pref:set_physics_override(combine_physics(data))
+local function update_player_data(pref, stack, data)
+	if stack == "physics" then
+		pref:set_physics_override(combine_data(data, stack))
+	elseif stack == "eye_offset" then
+		local v1, v2, v3 = table.unpack(combine_data(data, stack))
+		pref:set_eye_offset(v1, v2, v3)
+	end
 end
 
 
 
 -- Get currently-active physics overrides (combining all modifiers in player's
 -- stack).
-function pova.get_combined_physics_override(pref)
+function pova.get_combined_override(pref, stack)
 	local data = get_player(pref)
-	return combine_physics(data)
+	return combine_data(data, stack)
 end
 
 
@@ -85,36 +105,36 @@ end
 -- Set default physics overrides. Avoid using this function when possible. If
 -- you call it, you usually need to call it again with original data in order to
 -- restore overrides to what they were before.
-function pova.set_physics_override(pref, overrides)
+function pova.set_override(pref, stack, overrides)
 	local data = get_player(pref)
-	set_initial_physics(data, overrides)
-	update_player_physics(pref, data)
+	set_initial_data(data, stack, overrides)
+	update_player_data(pref, stack, data)
 end
 
 
 
 -- Add physics modifier to player's stack. The modifier is always added to the
 -- top.
-function pova.add_physics_modifier(pref, modifiers, name)
+function pova.add_modifier(pref, stack, modifiers, name)
 	local data = get_player(pref)
-	if name ~= "" then
-		table.insert(data.physics_stack, {name=name, data=modifiers})
+	if name ~= "" and stack ~= "" then
+		table.insert(data[stack], {name=name, data=modifiers})
 	end
-	update_player_physics(pref, data)
+	update_player_data(pref, stack, data)
 end
 
 
 
 -- Set named physics modifier in the player's stack. The modifier is added if it
 -- doesn't exist, otherwise it is replaced.
-function pova.set_physics_modifier(pref, modifiers, name)
+function pova.set_modifier(pref, stack, modifiers, name)
 	local data = get_player(pref)
 
 	-- Do not allow setting the default data.
-	if name ~= "" then
+	if name ~= "" and stack ~= "" then
 		local replaced = false
 
-		for k, v in ipairs(data.physics_stack) do
+		for k, v in ipairs(data[stack]) do
 			if v.name == name then
 				v.data = modifiers
 				replaced = true
@@ -123,31 +143,31 @@ function pova.set_physics_modifier(pref, modifiers, name)
 		end
 
 		if not replaced then
-			table.insert(data.physics_stack, {name=name, data=modifiers})
+			table.insert(data[stack], {name=name, data=modifiers})
 		end
 	end
 
-	update_player_physics(pref, data)
+	update_player_data(pref, stack, data)
 end
 
 
 
 -- Remove physics modifier by name. This undoes the effect of adding the named
 -- modifier.
-function pova.remove_physics_modifier(pref, name)
+function pova.remove_modifier(pref, stack, name)
 	local data = get_player(pref)
 
 	-- Do not allow removing the initial overrides.
-	if name ~= "" then
-		for k, v in ipairs(data.physics_stack) do
+	if name ~= "" and stack ~= "" then
+		for k, v in ipairs(data[stack]) do
 			if v.name == name then
-				table.remove(data.physics_stack, k)
+				table.remove(data[stack], k)
 				break
 			end
 		end
 	end
 
-	update_player_physics(pref, data)
+	update_player_data(pref, stack, data)
 end
 
 

@@ -276,18 +276,21 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 	end
 
 	if players[playerName] then
+		local was_sprinting = players[playerName]["sprinting"]
 		players[playerName]["sprinting"] = sprinting
 
-		if sprinting == true then
-			pova.set_physics_modifier(player, {
-				speed = SPRINT_SPEED * hp_mult,
-				jump = SPRINT_JUMP * hp_mult,
-			}, "sprinting")
-		elseif sprinting == false then
-			pova.set_physics_modifier(player, {
-				speed = hp_mult,
-				jump = hp_mult,
-			}, "sprinting")
+		if sprinting ~= was_sprinting then
+			if sprinting == true then
+				pova.set_modifier(player, "physics", {
+					speed = SPRINT_SPEED * hp_mult,
+					jump = SPRINT_JUMP * hp_mult,
+				}, "sprinting")
+			elseif sprinting == false then
+				pova.set_modifier(player, "physics", {
+					speed = hp_mult,
+					jump = hp_mult,
+				}, "sprinting")
+			end
 		end
 
 		return true

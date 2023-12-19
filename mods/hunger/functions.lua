@@ -262,7 +262,7 @@ function hunger.on_move(player)
 	local name = player:get_player_name()
 	local new = HUNGER_EXHAUST_MOVE
 
-	local speed = pova.get_combined_physics_override(player).speed
+	local speed = pova.get_combined_override(player, "physics").speed
 
 	-- If player is walking through tough material, they get exhausted faster.
 	if speed < default.NORM_SPEED then

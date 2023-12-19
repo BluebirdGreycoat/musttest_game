@@ -172,8 +172,20 @@ end
 
 
 
+-- Remove all modifiers when player leaves game!
+function pova.on_leaveplayer(pref)
+	local pname = pref:get_player_name()
+	pova.players[pname] = nil
+end
+
+
+
 if not pova.registered then
 	pova.registered = true
+
+	minetest.register_on_leaveplayer(function(...)
+		return pova.on_leaveplayer(...)
+	end)
 
 	-- Register mod reloadable.
 	local c = "pova:core"

@@ -17,15 +17,24 @@ local function get_player(pref)
 	if not data then
 		--minetest.log(dump(pref:get_physics_override()))
 		--minetest.log(dump({pref:get_eye_offset()}))
+		--minetest.log(dump(pref:get_properties()))
+		--minetest.log(dump(pref:get_nametag_attributes()))
 
+		-- Initial (default) modifiers MUST be at index 1 in each stack.
+		-- Initial modifiers are all named "".
 		players[pname] = {
 			-- Physics stack.
 			physics = {
-				-- Initial (default) entry MUST be at index 1.
 				{name="", data=pref:get_physics_override()},
 			},
 			eye_offset = {
 				{name="", data={pref:get_eye_offset()}},
+			},
+			properties = {
+				{name="", data=pref:get_properties()},
+			},
+			nametag = {
+				{name="", data=pref:get_nametag_attributes()},
 			},
 		}
 
@@ -36,7 +45,7 @@ end
 
 
 
--- Update the initial (default) entry in the physics stack (index 1).
+-- Update the initial (default) entry in the player's named stack (index 1).
 local function set_initial_data(data, stack, newdata)
 	local initial = data[stack][1].data
 
@@ -47,15 +56,15 @@ end
 
 
 
--- Combine all physics overrides in stack to a single table. Numbers are
--- multiplied together. Boolean flags and other data simply overwrite, with the
--- data at the top of the player's stack taking precedence.
+-- Combine all modifiers in named stack to a single table. Numbers are
+-- multiplied together if meaningful to do so. Boolean flags and other data
+-- simply overwrite, with the data at the top of the player's stack taking
+-- precedence.
 local function combine_data(data, stack)
 	local o = {}
 
 	if stack == "physics" then
 		for k, v in ipairs(data.physics) do
-			-- Iterate through all keys in the physics_override (v.data) table.
 			for i, j in pairs(v.data) do
 				if type(j) == "number" then
 					o[i] = (o[i] or 1.0) * j
@@ -67,9 +76,19 @@ local function combine_data(data, stack)
 		end
 	elseif stack == "eye_offset" then
 		for k, v in ipairs(data.eye_offset) do
-			-- Iterate through all keys in the physics_override (v.data) table.
 			for i, j in ipairs(v.data) do
-				-- Booleans, etc.
+				o[i] = j
+			end
+		end
+	elseif stack == "properties" then
+		for k, v in ipairs(data.properties) do
+			for i, j in ipairs(v.data) do
+				o[i] = j
+			end
+		end
+	elseif stack == "nametag" then
+		for k, v in ipairs(data.nametag) do
+			for i, j in ipairs(v.data) do
 				o[i] = j
 			end
 		end
@@ -80,21 +99,23 @@ end
 
 
 
--- Combine all physics overrides in this player's override stack, and apply
--- them.
+-- Combine all datums in this player's named stack, and apply them.
 local function update_player_data(pref, stack, data)
 	if stack == "physics" then
 		pref:set_physics_override(combine_data(data, stack))
 	elseif stack == "eye_offset" then
 		local v1, v2, v3 = unpack(combine_data(data, stack))
 		pref:set_eye_offset(v1, v2, v3)
+	elseif stack == "properties" then
+		pref:set_properties(combine_data(data, stack))
+	elseif stack == "nametag" then
+		pref:set_nametag_attributes(combine_data(data, stack))
 	end
 end
 
 
 
--- Get currently-active physics overrides (combining all modifiers in player's
--- stack).
+-- Get currently-active overrides (combining all modifiers in named stack).
 function pova.get_combined_override(pref, stack)
 	local data = get_player(pref)
 	return combine_data(data, stack)
@@ -102,9 +123,9 @@ end
 
 
 
--- Set default physics overrides. Avoid using this function when possible. If
--- you call it, you usually need to call it again with original data in order to
--- restore overrides to what they were before.
+-- Set default overrides for the named stack. AVOID USING THIS FUNCTION WHEN
+-- POSSIBLE. If you call it, you usually need to call it again with original
+-- data in order to restore overrides to what they were before.
 function pova.set_override(pref, stack, overrides)
 	local data = get_player(pref)
 	set_initial_data(data, stack, overrides)
@@ -113,8 +134,7 @@ end
 
 
 
--- Add physics modifier to player's stack. The modifier is always added to the
--- top.
+-- Add modifier to player's named stack. The modifier is added to the top.
 function pova.add_modifier(pref, stack, modifiers, name)
 	local data = get_player(pref)
 	if name ~= "" and stack ~= "" then
@@ -125,8 +145,8 @@ end
 
 
 
--- Set named physics modifier in the player's stack. The modifier is added if it
--- doesn't exist, otherwise it is replaced.
+-- Set named modifier in the player's stack. The modifier is added if it doesn't
+-- exist, otherwise it is replaced.
 function pova.set_modifier(pref, stack, modifiers, name)
 	local data = get_player(pref)
 
@@ -152,8 +172,8 @@ end
 
 
 
--- Remove physics modifier by name. This undoes the effect of adding the named
--- modifier.
+-- Remove modifier by name from named stack. This undoes the effect of adding
+-- the named modifier.
 function pova.remove_modifier(pref, stack, name)
 	local data = get_player(pref)
 
@@ -172,7 +192,8 @@ end
 
 
 
--- Remove all modifiers when player leaves game!
+-- Remove all modifiers when player leaves game! If there is a bug (and there
+-- will be bugs) this allows a player to reset all their modifiers to defaults.
 function pova.on_leaveplayer(pref)
 	local pname = pref:get_player_name()
 	pova.players[pname] = nil

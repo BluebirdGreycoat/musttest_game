@@ -135,7 +135,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		end
 
 		-- physics, eye_offset, etc
-		player:set_eye_offset({x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
+		pova.remove_modifier(player, "eye_offset", "sleeping")
 		player:set_look_horizontal(math_random(1, 180) / 100)
 		default.player_attached[name] = false
 		pova.remove_modifier(player, "physics", "sleeping")
@@ -149,7 +149,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		--player_in_bed = player_in_bed + 1
 
 		-- physics, eye_offset, etc
-		player:set_eye_offset({x = 0, y = -13, z = 0}, {x = 0, y = 0, z = 0})
+		pova.set_modifier(player, "eye_offset", {{x = 0, y = -13, z = 0}}, "sleeping")
 		local yaw, param2 = get_look_yaw(bed_pos)
 		player:set_look_horizontal(yaw)
 		local dir = minetest.facedir_to_dir(param2)

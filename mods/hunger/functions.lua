@@ -262,8 +262,10 @@ function hunger.on_move(player)
 	local name = player:get_player_name()
 	local new = HUNGER_EXHAUST_MOVE
 
+	local speed = pova.get_combined_physics_override(player).speed
+
 	-- If player is walking through tough material, they get exhausted faster.
-	if sprint.get_speed_multiplier(name) < default.NORM_SPEED then
+	if speed < default.NORM_SPEED then
 		--minetest.chat_send_all(name .. " hungers faster b/c of slow movement!")
 		new = HUNGER_EXHAUST_MOVE * 4
 	end

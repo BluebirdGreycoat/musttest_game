@@ -163,8 +163,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 
 				local smult = sdef.movement_speed_multiplier or default.NORM_SPEED
 				local jmult = sdef.movement_jump_multiplier or default.NORM_JUMP
-				sprint.set_speed_multiplier(pname, smult)
-				sprint.set_jump_multiplier(pname, jmult)
+				pova.set_physics_modifier(player, {speed=smult, jump=jmult}, "walking")
 
 				if wname ~= "air" then
 					-- But ignore doors.
@@ -172,8 +171,7 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 						local wdef = ns_nodes[wname] or all_nodes[wname] or {}
 						local smult2 = wdef.movement_speed_multiplier or default.NORM_SPEED
 						local jmult2 = wdef.movement_jump_multiplier or default.NORM_JUMP
-						sprint.set_speed_multiplier(pname, smult2)
-						sprint.set_jump_multiplier(pname, jmult2)
+						pova.set_physics_modifier(player, {speed=smult2, jump=jmult2}, "walking")
 					end
 				end
 

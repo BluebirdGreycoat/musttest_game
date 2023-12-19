@@ -2,7 +2,6 @@
 -- Player modifiers mod for Enyekala.
 -- Author of source code: MustTest/BlueBird51
 -- License of source code: MIT
--- This is not TenPlus1's 'pova' mod, nor is it based on it.
 
 if not minetest.global_exists("pova") then pova = {} end
 pova.modpath = minetest.get_modpath("pova")
@@ -96,7 +95,9 @@ end
 -- top.
 function pova.add_physics_modifier(pref, modifiers, name)
 	local data = get_player(pref)
-	table.insert(data.physics_stack, {name=name, data=modifiers})
+	if name ~= "" then
+		table.insert(data.physics_stack, {name=name, data=modifiers})
+	end
 	update_player_physics(pref, data)
 end
 

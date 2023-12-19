@@ -9,39 +9,17 @@ distributed without any warranty.
 
 sprint.players = sprint.players or {}
 sprint.stamina_hud = sprint.stamina_hud or {}
-sprint.speed_mults = sprint.speed_mults or {}
-sprint.jump_mults = sprint.jump_mults or {}
 
 -- Localize.
 local players = sprint.players
 local staminaHud = sprint.stamina_hud
-local speedmults = sprint.speed_mults
-local jumpmults = sprint.jump_mults
 local floor = math.floor
 local math_random = math.random
 
 
 
--- Public API functions.
-function sprint.set_speed_multiplier(pname, value)
-	speedmults[pname] = value
-end
-
-function sprint.get_speed_multiplier(pname)
-	return speedmults[pname]
-end
-
-function sprint.set_jump_multiplier(pname, value)
-	jumpmults[pname] = value
-end
-
-
-
 function sprint.on_joinplayer(player)
 	local playerName = player:get_player_name()
-
-	speedmults[playerName] = default.NORM_SPEED
-	jumpmults[playerName] = default.NORM_JUMP
 
 	players[playerName] = {
 		sprinting = false,
@@ -79,10 +57,7 @@ end
 
 function sprint.on_leaveplayer(player, timedout)
 	local playerName = player:get_player_name()
-
 	players[playerName] = nil
-	speedmults[playerName] = nil
-	jumpmults[playerName] = nil
 end
 
 -- Public API function.
@@ -305,13 +280,13 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 
 		if sprinting == true then
 			pova.set_physics_modifier(player, {
-				speed = speedmults[playerName] * SPRINT_SPEED * hp_mult,
-				jump = jumpmults[playerName] * SPRINT_JUMP * hp_mult,
+				speed = SPRINT_SPEED * hp_mult,
+				jump = SPRINT_JUMP * hp_mult,
 			}, "sprinting")
 		elseif sprinting == false then
 			pova.set_physics_modifier(player, {
-				speed = speedmults[playerName] * hp_mult,
-				jump = jumpmults[playerName] * hp_mult,
+				speed = hp_mult,
+				jump = hp_mult,
 			}, "sprinting")
 		end
 

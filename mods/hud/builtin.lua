@@ -28,7 +28,7 @@ hud.register("health", {
 		{
 			type = "damage",
 			func = function(player)
-				local props = player:get_properties()
+				local props = pova.get_active_modifier(player, "properties")
 				hud.change_item(player, "health", {number = player:get_hp(), max = props.hp_max})
 			end,
 		},
@@ -50,7 +50,7 @@ hud.register("air", {
 			type = "breath",
 			func = function(player)
 				local air = player:get_breath()
-				local props = player:get_properties()
+				local props = pova.get_active_modifier(player, "properties")
 				hud.change_item(player, "air", {number = air, max = props.breath_max})
 			end,
 		},

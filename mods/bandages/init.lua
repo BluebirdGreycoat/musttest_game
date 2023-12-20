@@ -182,7 +182,7 @@ function bandages.heal_target(itemstack, user, target, level)
   local pname = user:get_player_name()
 	local tname = target:get_player_name()
 	local hp = target:get_hp()
-	local hp_max = target:get_properties().hp_max
+	local hp_max = pova.get_active_modifier(target, "properties").hp_max
 
 	if hp >= hp_max then
 		return bandages.target_not_hurt(pname, tname)
@@ -226,7 +226,7 @@ end
 function bandages.heal_self(itemstack, user, level)
   local pname = user:get_player_name()
 	local hp = user:get_hp()
-	local hp_max = user:get_properties().hp_max
+	local hp_max = pova.get_active_modifier(user, "properties").hp_max
 
 	if hp >= hp_max then
 		return bandages.player_not_hurt(pname)

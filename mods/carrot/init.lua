@@ -51,7 +51,8 @@ minetest.register_craftitem("carrot:gold", {
   -- Give user 1/4 energy, health back.
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-    user:set_hp(user:get_hp() + (user:get_properties().hp_max / 2))
+    local hp_max = pova.get_active_modifier(user, "properties").hp_max
+    user:set_hp(user:get_hp() + (hp_max / 2))
 		sprint.add_stamina(user, (SPRINT_STAMINA / 4))
     return eat_func2(itemstack, user, pointed_thing)
   end,

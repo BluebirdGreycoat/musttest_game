@@ -114,7 +114,7 @@ local function create_box(motorhash, pos, target, sender)
     sender:setpos(pos)
     sender:set_attach(obj, "", {x=0, y=9, z=0}, {x=0, y=0, z=0})
     pova.set_modifier(sender, "eye_offset", {{x=0, y=-9, z=0},{x=0, y=-9, z=0}}, "elevator")
-    sender:set_properties({visual_size = {x=VISUAL_INCREASE, y=VISUAL_INCREASE}})
+    pova.set_modifier(sender, "properties", {visual_size = {x=VISUAL_INCREASE, y=VISUAL_INCREASE}}, "elevator")
     if armor_path then
         armor:update_player_visuals(sender)
     end
@@ -793,8 +793,10 @@ local function detach(self, pos)
         return
     end
     player:set_detach()
+
     pova.remove_modifier(player, "eye_offset", "elevator")
-    player:set_properties({visual_size = {x=1, y=1}})
+    pova.remove_modifier(player, "properties", "elevator")
+
     if armor_path then
         armor:update_player_visuals(player)
     end

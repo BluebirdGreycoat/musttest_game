@@ -65,7 +65,7 @@ function sprint.set_stamina(player, sta)
 	local pname = player:get_player_name()
 	if players[pname] then
 		if sta > SPRINT_STAMINA then sta = SPRINT_STAMINA end
-		local hp_max = player:get_properties().hp_max
+		local hp_max = pova.get_active_modifier(player, "properties").hp_max
 		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 		if sta > maxstamina then
 			sta = maxstamina
@@ -84,7 +84,7 @@ function sprint.add_stamina(player, sta)
 		stamina = stamina + sta
 		if stamina > SPRINT_STAMINA then stamina = SPRINT_STAMINA end
 		if stamina < 0 then stamina = 0 end
-		local hp_max = player:get_properties().hp_max
+		local hp_max = pova.get_active_modifier(player, "properties").hp_max
 		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 		if stamina > maxstamina then
 			stamina = maxstamina
@@ -213,7 +213,7 @@ function sprint.globalstep(dtime)
 					end
 
 					-- If player is in good health, they regain stamina more quickly.
-					local max_hp = player:get_properties().hp_max
+					local max_hp = pova.get_active_modifier(player, "properties").hp_max
 					if player:get_hp() >= max_hp then
 						mult = mult + 0.3
 					elseif player:get_hp() >= (max_hp * 0.9) then
@@ -237,7 +237,7 @@ function sprint.globalstep(dtime)
 				playerInfo["stamina"] = SPRINT_STAMINA
 			end
 
-			local hp_max = player:get_properties().hp_max
+			local hp_max = pova.get_active_modifier(player, "properties").hp_max
 			local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
 			if playerInfo["stamina"] > maxstamina then
 				playerInfo["stamina"] = maxstamina
@@ -264,7 +264,7 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 	-- Speed multiplier based on player's health relative to max.
 	-- This is as good a place as any to run this computation.
 	local hp = player:get_hp()
-	local max_hp = player:get_properties().hp_max
+	local max_hp = pova.get_active_modifier(player, "properties").hp_max
 
 	local hp_mult = 1
 	if hp <= (max_hp * 0.2) then

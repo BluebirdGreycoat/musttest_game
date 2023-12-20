@@ -44,7 +44,7 @@ function ambiance.check_water_pressure(pos, player)
 
 	local damage = 0
 	if y < -50 then
-		local hp_max = player:get_properties().hp_max
+		local hp_max = pova.get_active_modifier(player, "properties").hp_max
 
 		if w >= 45 then
 			damage = hp_max * 0.15

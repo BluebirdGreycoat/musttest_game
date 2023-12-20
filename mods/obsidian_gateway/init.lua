@@ -651,7 +651,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 				-- setting the player's health to 0.
 				bones.dump_bones(pname, true)
 				local pref = minetest.get_player_by_name(pname)
-				pref:set_hp(pref:get_properties().hp_max)
+				pref:set_hp(pova.get_active_modifier(pref, "properties").hp_max)
 				pref:get_meta():set_string("last_death_pos", "") -- Fake death.
 				give_initial_stuff.give(pref)
 			end
@@ -700,7 +700,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 								-- setting the player's health to 0.
 								bones.dump_bones(fname, true)
 								local pref = minetest.get_player_by_name(fname)
-								pref:set_hp(pref:get_properties().hp_max)
+								pref:set_hp(pova.get_active_modifier(pref, "properties").hp_max)
 								pref:get_meta():set_string("last_death_pos", "") -- Fake death.
 								give_initial_stuff.give(pref)
 							end

@@ -144,7 +144,7 @@ skins.update_player_skin = function(player)
 		armor.textures[name].skin = skins.skins[name] .. ".png"
 		armor:set_player_armor(player)
 	else
-		player:set_properties({
+		pova.set_override(player, "properties", {
 			textures = {skins.skins[name] .. ".png"},
 		})
 	end

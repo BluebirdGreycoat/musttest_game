@@ -224,12 +224,12 @@ function cloaking.toggle_cloak(pname)
 		-- Notify so health gauges can be removed.
 		gauges.on_teleport()
 
-		player:set_properties({
+		pova.set_modifier(player, "properties", {
 			visual_size = {x=0, y=0},
 			is_visible = false,
 			pointable = false,
 			show_on_minimap = false,
-		})
+		}, "cloak")
 
 		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))
 		minetest.chat_send_player(pname, "# Server: Cloak activated.")
@@ -243,12 +243,7 @@ function cloaking.toggle_cloak(pname)
 		player_labels.enable_nametag(pname)
 
 		-- Restore player properties.
-		player:set_properties({
-			visual_size = {x=1, y=1},
-			is_visible = true,
-			pointable = true,
-			show_on_minimap = true,
-		})
+		pova.remove_modifier(player, "properties", "cloak")
 
 		cloaking.particle_effect(utility.get_middle_pos(player:get_pos()))
 		minetest.chat_send_player(pname, "# Server: Cloak offline.")

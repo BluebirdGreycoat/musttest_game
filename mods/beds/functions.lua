@@ -307,7 +307,7 @@ function beds.skip_night()
       if player then
         -- Heal player 4 HP, but not if the player is dead.
         if player:get_hp() > 0 then
-					local hp_max = player:get_properties().hp_max
+					local hp_max = pova.get_active_modifier(player, "properties").hp_max
           player:set_hp(player:get_hp() + (hp_max * 0.2))
         end
 

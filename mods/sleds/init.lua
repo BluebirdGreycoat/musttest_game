@@ -60,7 +60,6 @@ function sleds.on_rightclick(self, clicker)
 	if self.driver and clicker == self.driver then
 		self.driver = nil
 		clicker:set_detach()
-		--clicker:set_properties({collisionbox = sleds.players[name].cb})
 		default.player_attached[name] = false
 		default.player_set_animation(clicker, "stand" , 30)
 		local pos = clicker:get_pos()
@@ -79,19 +78,14 @@ function sleds.on_rightclick(self, clicker)
 				luaentity.driver = nil
 			end
 			clicker:set_detach()
-			--clicker:set_properties({collisionbox = sleds.players[name].cb})
 		end
 		self.driver = clicker
 		clicker:set_attach(self.object, "", {x = 0, y = 0.1, z = -3}, {x = 0, y = 0, z = 0})
 		default.player_attached[name] = true
 		minetest.after(0.2, function() default.player_set_animation(clicker, "sit" , 30) end)
 		clicker:set_look_horizontal(self.object:getyaw())
-		--clicker:set_properties({stepheight=3})
 
-		local pp = clicker:get_properties()
 		sleds.players[name] = {}
-		--sleds.players[name].cb = pp.collisionbox
-		--clicker:set_properties({collisionbox = {0}})
 	end
 end
 
@@ -120,7 +114,6 @@ function sleds.on_punch(self, puncher, time_from_last_punch, tool_capabilities, 
 		self.driver = nil
 		local name = puncher:get_player_name()
 		puncher:set_detach()
-		--puncher:set_properties({collisionbox = sleds.players[name].cb})
 		default.player_attached[name] = false
 	end
 	if not self.driver then

@@ -143,7 +143,7 @@ function hunger.handle_action_event(player, new)
 	end
 
 	-- Player doesn't get exhausted as quickly if fit and in good health.
-	local max_hp = player:get_properties().hp_max
+	local max_hp = pova.get_active_modifier(player, "properties").hp_max
 	if player:get_hp() >= (max_hp * 0.9) then
 		new = math_floor(new / 2.0)
 	end
@@ -293,7 +293,7 @@ function hunger.increase_exhaustion(player, amount)
 			hunger.players[pname].exhaus = 0
 		end
 		-- Player doesn't get exhausted as quickly if fit and in good health.
-		local max_hp = player:get_properties().hp_max
+		local max_hp = pova.get_active_modifier(player, "properties").hp_max
 		if player:get_hp() >= (max_hp * 0.9) then
 			amount = math_floor(amount / 3.0)
 		end
@@ -349,7 +349,7 @@ function hunger.on_globalstep(dtime)
 			if tab then
 				local air = player:get_breath() or 0
 				local hp = player:get_hp()
-				local hp_max = player:get_properties().hp_max
+				local hp_max = pova.get_active_modifier(player, "properties").hp_max
 
 				local healmod = (hp / hp_max)
 				healmod = healmod * healmod * hunger.get_hpgen_boost(name)
@@ -498,7 +498,7 @@ function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 		if not result or result:get_count() == 0 then return end
 
 		local hp = user:get_hp()
-		local hp_max = user:get_properties().hp_max
+		local hp_max = pova.get_active_modifier(user, "properties").hp_max
 
 		-- Saturation
 		if sat < HUNGER_MAX and hunger_change then

@@ -12,7 +12,7 @@ local function scepter_revive_player(tref, tname, pname, pos)
   preload_tp.spawn_spinup_particles(tref:get_pos(), 1)
   ambiance.sound_play("nether_portal_usual", tref:get_pos(), 1.0, 30)
 
-  local hp_max = tref:get_properties().hp_max
+  local hp_max = pova.get_active_modifier(tref, "properties").hp_max
   tref:set_hp(hp_max, {reason="revive"})
   minetest.close_formspec(tname, "") -- Close the respawn formspec.
   ambiance.sound_play("default_cool_lava", tref:get_pos(), 1.0, 32)

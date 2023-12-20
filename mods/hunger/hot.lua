@@ -70,7 +70,7 @@ function hunger.time_hot(pname, key)
 	end
 
 	-- Cancel if health reached full
-	if pref:get_hp() == pref:get_properties().hp_max then
+	if pref:get_hp() == pova.get_active_modifier(pref, "properties").hp_max then
     tab[hotname] = nil
 		tab[datname] = nil
     return

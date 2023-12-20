@@ -272,7 +272,8 @@ local function get_player_max_hp(name)
 	local pref = minetest.get_player_by_name(name)
 	if pref then
 		local scale = 500
-		return math_floor(pref:get_properties().hp_max / scale)
+		local hp_max = pova.get_active_modifier(pref, "properties").hp_max
+		return math_floor(hp_max / scale)
 	end
 	return 20
 end

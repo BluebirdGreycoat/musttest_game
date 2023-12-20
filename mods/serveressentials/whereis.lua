@@ -43,7 +43,7 @@ function serveressentials.whereis(pname, param)
 	end
 
 	nearby = "{" .. table.concat(plist, ", ") .. "}"
-	local HP = "HP=" .. math.floor((player:get_hp() / player:get_properties().hp_max) * 100) .. "%"
+	local HP = "HP=" .. math.floor((player:get_hp() / pova.get_active_modifier(player, "properties").hp_max) * 100) .. "%"
 	local wieldname = serveressentials.get_short_stack_desc(player:get_wielded_item())
 	if not wieldname or wieldname == "" then
 		wieldname = "nothing"

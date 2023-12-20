@@ -62,7 +62,7 @@ function default.player_set_model(player, model_name)
 		if player_model[name] == model_name then
 			return
 		end
-		player:set_properties({
+		pova.set_override(player, "properties", {
 			mesh = model_name,
 			textures = player_textures[name] or model.textures,
 			visual = "mesh",
@@ -70,7 +70,7 @@ function default.player_set_model(player, model_name)
 		})
 		default.player_set_animation(player, "stand")
 	else
-		player:set_properties({
+		pova.set_override(player, "properties", {
 			textures = { "player.png", "player_back.png", },
 			visual = "upright_sprite",
 		})
@@ -81,7 +81,7 @@ end
 function default.player_set_textures(player, textures)
 	local name = player:get_player_name()
 	player_textures[name] = textures
-	player:set_properties({textures = textures,})
+	pova.set_override(player, "properties", {textures = textures})
 end
 
 function default.player_set_animation(player, anim_name, speed)
@@ -156,12 +156,12 @@ minetest.register_globalstep(function(dtime)
 			-- Determine if the player is sneaking, and reduce animation speed if so
 			if controls.sneak then
 				animation_speed_mod = animation_speed_mod / 2
-				player:set_properties({
+				pova.set_override(player, "properties", {
 					makes_footstep_sound = false,
 				})
 			else
 				if not gdac_invis.is_invisible(pname) then
-					player:set_properties({
+					pova.set_override(player, "properties", {
 						makes_footstep_sound = true,
 					})
 				end
@@ -192,7 +192,7 @@ end)
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
 minetest.register_on_joinplayer(function(player)
-	player:set_properties({
+	pova.set_override(player, "properties", {
 		infotext = rename.gpn(player:get_player_name()),
 	})
 	

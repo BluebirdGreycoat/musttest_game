@@ -21,7 +21,8 @@ function heal.heal_health_and_hunger(pname)
     was_dead = true
   end
 
-  player:set_hp(player:get_properties().hp_max, {reason="heal_command"})
+  local hp_max = pova.get_active_modifier(player, "properties").hp_max
+  player:set_hp(hp_max, {reason="heal_command"})
   hunger.update_hunger(player, 30)
 	sprint.set_stamina(player, SPRINT_STAMINA)
 	portal_sickness.reset(pname)

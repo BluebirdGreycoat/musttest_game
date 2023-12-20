@@ -165,7 +165,7 @@ local function update_player_data(pref, stack, data)
 		local v1, v2, v3 = unpack(combine_data(data, stack))
 		pref:set_eye_offset(v1, v2, v3)
 	elseif stack == "properties" then
-		pref:set_properties(combine_data(data, stack))
+		pref:set_properties(filter_properties(combine_data(data, stack)))
 	elseif stack == "nametag" then
 		pref:set_nametag_attributes(combine_data(data, stack))
 	end
@@ -173,7 +173,7 @@ end
 
 
 
--- Get currently-active overrides (combining all modifiers in named stack).
+-- Get currently active overrides (combining all modifiers in named stack).
 function pova.get_active_modifier(pref, stack)
 	local data = get_player(pref)
 	return combine_data(data, stack)
@@ -260,21 +260,26 @@ end
 
 
 -- Remove modifier by name from named stack. This undoes the effect of adding
--- the named modifier.
+-- the named modifier. Does nothing if the named modifier does not exist in the
+-- named stack.
 function pova.remove_modifier(pref, stack, name)
 	local data = get_player(pref)
+	local removed = false
 
 	-- Do not allow removing the initial overrides.
 	if name ~= "" and stack ~= "" then
 		for k, v in ipairs(data[stack]) do
 			if v.name == name then
 				table.remove(data[stack], k)
+				removed = true
 				break
 			end
 		end
 	end
 
-	update_player_data(pref, stack, data)
+	if removed then
+		update_player_data(pref, stack, data)
+	end
 end
 
 

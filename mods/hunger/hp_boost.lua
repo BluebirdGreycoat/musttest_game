@@ -78,7 +78,7 @@ function hunger.apply_health_boost(pname, key, data)
 
 	-- Note: must manually notify HP change reason here.
 	armor.notify_set_hp_reason({reason="hp_boost_start"})
-	pref:set_properties({hp_max=hp_max})
+	pova.set_modifier(pref, "properties", {hp_max=hp_max}, "hp_boost_" .. key)
 	pref:set_hp(hp)
 
 	if oldboost == 0 then
@@ -136,7 +136,7 @@ function hunger.time_health_boost(pname, key)
 		-- Note: must manually notify HP change reason here.
 		armor.notify_set_hp_reason({reason="hp_boost_end"})
 		pref:set_hp(nhp)
-		pref:set_properties({hp_max = nmax})
+		pova.remove_modifier(pref, "properties", "hp_boost_" .. key)
 
 		armor:update_inventory(pref)
 

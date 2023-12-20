@@ -12,7 +12,7 @@ local math_min = math.min
 
 
 local function update_textures(gauge, player)
-	local props = player:get_properties()
+	local props = pova.get_active_modifier(player, "properties")
 	local hp = math_floor((player:get_hp() / props.hp_max) * 20)
 	local breath = math_floor((player:get_breath() / props.breath_max) * 11)
 

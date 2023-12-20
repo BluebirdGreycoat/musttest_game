@@ -23,13 +23,11 @@ function binoculars.update_player_property(player)
 		have_binocs = true
 	end
 
-	-- Only set property if necessary to avoid player mesh reload
-	if player:get_properties().zoom_fov ~= new_zoom_fov then
-		player:set_properties({zoom_fov = new_zoom_fov})
-	end
-
 	if have_binocs then
+		pova.set_modifier(player, "properties", {zoom_fov=new_zoom_fov}, "binoculars")
 		return true
+	else
+		pova.remove_modifier(player, "properties", "binoculars")
 	end
 end
 

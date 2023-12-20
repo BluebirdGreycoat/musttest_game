@@ -7,7 +7,6 @@
 skins = {}
 skins.skins = {}
 skins.modpath = minetest.get_modpath("simple_skins")
-skins.armor = minetest.get_modpath("3d_armor")
 skins.inv = minetest.get_modpath("inventory_plus")
 
 -- Localize for performance.
@@ -133,21 +132,15 @@ end
 
 -- update player skin
 skins.update_player_skin = function(player)
-
 	if not player then
 		return
 	end
 
-	local name = player:get_player_name()
+	-- Damnit, I told you not to read this!
+	local pname = player:get_player_name()
 
-	if skins.armor then
-		armor.textures[name].skin = skins.skins[name] .. ".png"
-		armor:set_player_armor(player)
-	else
-		pova.set_override(player, "properties", {
-			textures = {skins.skins[name] .. ".png"},
-		})
-	end
+	armor.textures[pname].skin = skins.skins[pname] .. ".png"
+	armor:set_player_armor(player)
 
 	skins.save()
 end

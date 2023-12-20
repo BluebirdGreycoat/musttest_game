@@ -60,43 +60,49 @@ end
 
 
 
-function xp.update_players_max_hp(pname)
+function xp.update_players_max_hp(pname, login)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
 	end
 
 	local pmeta = pref:get_meta()
-	local boost_hp = hunger.get_health_boost(pname)
-	local max_hp = (pmeta:get_int("hp_max") + boost_hp)
+	local max_hp = pova.get_active_modifier(pref, "properties").hp_max
+	local cur_hp = pref:get_hp()
 
-	-- Should only happen for new players (and existing that don't have 'hp_max'
-	-- in their meta info yet).
-	if max_hp == 0 then max_hp = minetest.PLAYER_MAX_HP_DEFAULT end
+	if login then
+		-- Get stored values.
+		max_hp = pmeta:get_int("hp_max")
+		cur_hp = pmeta:get_int("hp_cur")
 
-	-- Note: this relies on us getting the same HP that the player last logged out with.
-	local hp = pref:get_hp()
-	local percent = (hp / max_hp)
+		-- Should only happen for new players (and existing that don't have 'hp_max'
+		-- in their meta info yet).
+		if max_hp == 0 or cur_hp == 0 then
+			max_hp = minetest.PLAYER_MAX_HP_DEFAULT
+			cur_hp = max_hp
+		end
+	end
+
+	local percent = (cur_hp / max_hp)
 	if percent > 1 then percent = 1 end
 
-	--minetest.log('max hp=' .. max_hp .. ', hp=' .. hp .. ', percent=' .. percent)
-
-	local new_max_hp = (xp.get_hp_max(pname) + boost_hp)
+	local new_max_hp = xp.get_hp_max(pname)
 	local new_hp = math_min((percent * new_max_hp), new_max_hp)
 
-	--minetest.chat_send_all('new max hp: ' .. new_max_hp .. ', new hp: ' .. new_hp)
-
 	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
-	-- does not store this itself, and reverts to HP_MAX=20 on every login.
+	-- does not store this itself, and reverts to HP_MAX=20 on every login. The
+	-- same logic applies to 'hp_cur', which we must keep track of ourselves.
 	--
 	-- Note: HP max must be set *before* HP update!
 	-- Otherwise set_hp() will be ignored if hp is higher than existing max!
 	--
 	-- Note: must manually notify the HP change reason, here.
+	pova.set_modifier(pref, "properties", {hp_max = new_max_hp}, "xphp", "add")
 	armor.notify_set_hp_reason({reason="xp_update"})
-	pova.set_modifier(pref, "properties", {hp_max = new_max_hp}, "xphp")
 	pref:set_hp(new_hp)
 	pmeta:set_int("hp_max", new_max_hp)
+
+	-- Data 'hp_cur' will be updated when player leaves.
 
 	-- Manually update HUD.
 	hud.player_event(pref, "health_changed")
@@ -105,7 +111,12 @@ end
 
 
 function xp.on_joinplayer(player)
-	minetest.after(0, xp.update_players_max_hp, player:get_player_name())
+	minetest.after(0, xp.update_players_max_hp, player:get_player_name(), true)
+end
+
+function xp.on_leaveplayer(player)
+	local meta = player:get_meta()
+	meta:set_int("hp_cur", player:get_hp())
 end
 
 
@@ -159,6 +170,7 @@ if not xp.run_once then
 	minetest.register_on_shutdown(function() xp.write_xp() end)
 	minetest.register_globalstep(function(...) xp.globalstep(...) end)
 	minetest.register_on_joinplayer(function(...) xp.on_joinplayer(...) end)
+	minetest.register_on_leaveplayer(function(...) xp.on_leaveplayer(...) end)
 
 	local c = "xp:core"
 	local f = xp.modpath .. "/init.lua"

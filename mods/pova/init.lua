@@ -140,8 +140,18 @@ local function combine_data(data, stack)
 		end
 	elseif stack == "properties" then
 		for k, v in ipairs(data.properties) do
-			for i, j in pairs(v.data) do
-				o[i] = j
+			if not data.mode then
+				for i, j in pairs(v.data) do
+					o[i] = j
+				end
+			elseif data.mode == "add" then
+				for i, j in pairs(v.data) do
+					if type(j) == "number" then
+						o[i] = o[i] + j
+					else
+						o[i] = j
+					end
+				end
 			end
 		end
 	elseif stack == "nametag" then
@@ -193,10 +203,10 @@ end
 
 
 -- Add modifier to player's named stack. The modifier is added to the top.
-function pova.add_modifier(pref, stack, modifiers, name)
+function pova.add_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 	if name ~= "" and stack ~= "" then
-		table.insert(data[stack], {name=name, data=modifiers})
+		table.insert(data[stack], {name=name, data=modifiers, mode=mode})
 	end
 	update_player_data(pref, stack, data)
 end
@@ -204,9 +214,9 @@ end
 
 
 -- Set named modifier in the player's stack. The modifier is added if it doesn't
--- exist, otherwise it is replaced. The modifier data is COMPLETELY replaced;
+-- exist, otherwise it is replaced. If the modifier data is COMPLETELY replaced;
 -- existing data is NOT combined with the new data.
-function pova.set_modifier(pref, stack, modifiers, name)
+function pova.set_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 
 	-- Do not allow setting the default data.
@@ -222,7 +232,7 @@ function pova.set_modifier(pref, stack, modifiers, name)
 		end
 
 		if not replaced then
-			table.insert(data[stack], {name=name, data=modifiers})
+			table.insert(data[stack], {name=name, data=modifiers, mode=mode})
 		end
 	end
 
@@ -231,7 +241,7 @@ end
 
 
 
-function pova.update_modifier(pref, stack, modifiers, name)
+function pova.update_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 
 	-- Do not allow setting the default data.
@@ -250,7 +260,7 @@ function pova.update_modifier(pref, stack, modifiers, name)
 		end
 
 		if not replaced then
-			table.insert(data[stack], {name=name, data=modifiers})
+			table.insert(data[stack], {name=name, data=modifiers, mode=mode})
 		end
 	end
 
@@ -334,10 +344,9 @@ function pova.dump_modifiers(pname, param)
 		minetest.chat_send_player(pname, "# Server:")
 	end
 
-	dump_stack(pname, data, "physics")
-	dump_stack(pname, data, "eye_offset")
-	dump_stack(pname, data, "properties")
-	dump_stack(pname, data, "nametag")
+	for k, v in pairs(data) do
+		dump_stack(pname, data, k)
+	end
 end
 
 
@@ -345,7 +354,7 @@ end
 if not pova.registered then
 	pova.registered = true
 
-	minetest.register_chatcommand("list_modifiers", {
+	minetest.register_chatcommand("pova", {
 		params = "[<player>]",
 		description = "List modifiers of self or player.",
 		privs = {server=true},

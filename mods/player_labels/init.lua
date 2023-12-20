@@ -18,8 +18,8 @@ player_labels.cast = player_labels.cast or {} -- Whether the player has delibera
 -- Otherwise, we don't need to do anything, since it will be rewritten automatically
 -- when it is next displayed.
 function player_labels.update_nametag_text(pname)
-	if not player_labels.query_nametag_onoff(pname) then
-		-- Player's nametag is currently off.
+	if player_labels.query_nametag_onoff(pname) then
+		-- Player's nametag is currently on.
 		return
 	end
 
@@ -30,7 +30,7 @@ function player_labels.update_nametag_text(pname)
 	end
 
 	-- Update nametag.
-	pova.update_modifier(player, "nametag", {text=gdac_invis.gpn(pname)}, "id_mark")
+	pova.update_modifier(player, "nametag", {text=rename.gpn(pname)}, "id_mark")
 end
 
 
@@ -67,8 +67,8 @@ end
 local nametag_show = function(name)
   local obj = minetest.get_player_by_name(name)
   if obj and obj:is_player() then
-    local col = {a=255, r=0, g=255, b=255}
-    local txt = rename.gpn(obj:get_player_name())
+    --local col = {a=255, r=0, g=255, b=255}
+    --local txt = rename.gpn(obj:get_player_name())
 		pova.remove_modifier(obj, "nametag", "id_mark")
 		pova.remove_modifier(obj, "properties", "id_mark")
   end
@@ -78,7 +78,7 @@ local nametag_hide = function(name)
   local obj = minetest.get_player_by_name(name)
   if obj and obj:is_player() then
     local col = {a=0, r=0, g=0, b=0}
-    local txt = rename.gpn(obj:get_player_name())
+    local txt = ""
 
     pova.set_modifier(obj, "nametag", {color=col, text=txt}, "id_mark")
     pova.set_modifier(obj, "properties", {show_on_minimap = false}, "id_mark")

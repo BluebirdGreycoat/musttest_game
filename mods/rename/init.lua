@@ -158,9 +158,8 @@ function rename.rename_player(pname, dname, tell)
 
 	local player = minetest.get_player_by_name(pname)
 	if player then
-		pova.set_override(player, "properties", {
-			infotext = rename.gpn(pname),
-		})
+		pova.set_override(player, "properties", {infotext = rename.gpn(pname)})
+		pova.set_override(player, "nametag", {text=rename.gpn(pname)})
 	end
 
 	return true

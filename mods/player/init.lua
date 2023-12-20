@@ -13,9 +13,13 @@ player.registered_player_models = { }
 -- Local for speed.
 local models = player.registered_player_models
 
+
+
 function default.player_register_model(name, def)
 	models[name] = def
 end
+
+
 
 -- Default player appearance
 -- Controled by 3d_armor mod!
@@ -37,6 +41,8 @@ default.player_register_model("character_musttest.b3d", {
 })
 --]]
 
+
+
 -- Player stats and animations
 local player_model = {}
 local player_textures = {}
@@ -44,6 +50,8 @@ local player_anim = {}
 local player_sneak = {}
 local player_velocity = {}
 default.player_attached = {}
+
+
 
 function default.player_get_animation(player)
 	local name = player:get_player_name()
@@ -53,6 +61,8 @@ function default.player_get_animation(player)
 		animation = player_anim[name],
 	}
 end
+
+
 
 -- Called when a player's appearance needs to be updated
 function default.player_set_model(player, model_name)
@@ -78,11 +88,15 @@ function default.player_set_model(player, model_name)
 	player_model[name] = model_name
 end
 
+
+
 function default.player_set_textures(player, textures)
 	local name = player:get_player_name()
 	player_textures[name] = textures
 	pova.set_override(player, "properties", {textures = textures})
 end
+
+
 
 function default.player_set_animation(player, anim_name, speed)
 	local name = player:get_player_name()
@@ -97,6 +111,8 @@ function default.player_set_animation(player, anim_name, speed)
 	player_anim[name] = anim_name
 	player:set_animation(anim, speed or model.animation_speed, animation_blend)
 end
+
+
 
 -- Update appearance when the player joins
 minetest.register_on_joinplayer(function(player)
@@ -123,6 +139,8 @@ minetest.register_on_joinplayer(function(player)
 	end
 end)
 
+
+
 minetest.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
 	player_model[name] = nil
@@ -132,6 +150,8 @@ minetest.register_on_leaveplayer(function(player)
 	-- Save player velocity. If they login again, I will be able to restore it.
 	player_velocity[name] = player:get_velocity()
 end)
+
+
 
 -- Localize for better performance.
 local player_set_animation = default.player_set_animation
@@ -189,11 +209,18 @@ minetest.register_globalstep(function(dtime)
 	end
 end)
 
+
+
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
 minetest.register_on_joinplayer(function(player)
 	pova.set_override(player, "properties", {
 		infotext = rename.gpn(player:get_player_name()),
+	})
+	pova.set_override(player, "nametag", {
+		color = {a=255, r=0, g=255, b=255},
+		text = rename.gpn(player:get_player_name()),
+		bgcolor = false,
 	})
 	
 	-- Disable the minimap. Cheaters will of course be able to enable it.

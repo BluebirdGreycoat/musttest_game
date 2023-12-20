@@ -92,6 +92,9 @@ local function get_mode(mode)
 			priority = mode.priority or 0,
 			count = pova.counter,
 		}
+		if o.priority < -999 then
+			o.priority = -999
+		end
 		pova.counter = pova.counter + 1
 		return o
 	end

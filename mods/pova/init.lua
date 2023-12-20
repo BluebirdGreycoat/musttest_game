@@ -7,6 +7,10 @@ if not minetest.global_exists("pova") then pova = {} end
 pova.modpath = minetest.get_modpath("pova")
 pova.players = pova.players or {}
 
+-- Used to force table.sort() to be stable.
+-- This counter increases every time a modifier is added.
+pova.counter = pova.counter or 0
+
 
 
 -- Properties which pova must never modify (via pref:set_properties()).
@@ -66,6 +70,35 @@ end
 
 
 
+local function get_mode(mode)
+	if type(mode) == "string" then
+		local o = {
+			op = mode,
+			priority = 0,
+			count = pova.counter,
+		}
+		pova.counter = pova.counter + 1
+		return o
+	elseif type(mode) == "nil" then
+		local o = {
+			priority = 0,
+			count = pova.counter,
+		}
+		pova.counter = pova.counter + 1
+		return o
+	else
+		local o = {
+			op = mode.op or nil,
+			priority = mode.priority or 0,
+			count = pova.counter,
+		}
+		pova.counter = pova.counter + 1
+		return o
+	end
+end
+
+
+
 -- Get data for player, creating an initial table with default data if needed.
 local function get_player(pref)
   local players = pova.players
@@ -82,16 +115,16 @@ local function get_player(pref)
 		players[pname] = {
 			-- Physics stack.
 			physics = {
-				{name="", data=pref:get_physics_override()},
+				{name="", data=pref:get_physics_override(), mode=get_mode({priority=-1000})},
 			},
 			eye_offset = {
-				{name="", data={pref:get_eye_offset()}},
+				{name="", data={pref:get_eye_offset()}, mode=get_mode({priority=-1000})},
 			},
 			properties = {
-				{name="", data=filter_properties(pref:get_properties())},
+				{name="", data=filter_properties(pref:get_properties()), mode=get_mode({priority=-1000})},
 			},
 			nametag = {
-				{name="", data=pref:get_nametag_attributes()},
+				{name="", data=pref:get_nametag_attributes(), mode=get_mode({priority=-1000})},
 			},
 		}
 
@@ -113,6 +146,32 @@ end
 
 
 
+local function stable_sort(a, b)
+	-- Highest priority entries move to the END of the array.
+	-- The higher the priority value, the higher the priority (meaning it
+	-- overrrides stuff with lower priority).
+	if a.mode.priority < b.mode.priority then
+		return true
+	end
+
+	-- If the priorities are equal, stable-sort according to counter.
+	if a.mode.count < b.mode.count then
+		return true
+	end
+
+	return false
+end
+
+
+
+local function do_sort(t)
+	local v = table.copy(t)
+	table.sort(v, stable_sort)
+	return v
+end
+
+
+
 -- Combine all modifiers in named stack to a single table. Numbers are
 -- multiplied together if meaningful to do so. Boolean flags and other data
 -- simply overwrite, with the data at the top of the player's stack taking
@@ -121,7 +180,7 @@ local function combine_data(data, stack)
 	local o = {}
 
 	if stack == "physics" then
-		for k, v in ipairs(data.physics) do
+		for k, v in ipairs(do_sort(data.physics)) do
 			for i, j in pairs(v.data) do
 				if type(j) == "number" then
 					o[i] = (o[i] or 1.0) * j
@@ -133,21 +192,21 @@ local function combine_data(data, stack)
 		end
 	elseif stack == "eye_offset" then
 		-- Note: 'eye_offset' is an ARRAY, not a key/value map.
-		for k, v in ipairs(data.eye_offset) do
+		for k, v in ipairs(do_sort(data.eye_offset)) do
 			for i, j in ipairs(v.data) do
 				o[i] = j
 			end
 		end
 	elseif stack == "properties" then
-		for k, v in ipairs(data.properties) do
-			if not v.mode then
+		for k, v in ipairs(do_sort(data.properties)) do
+			if not v.mode.op then
 				for i, j in pairs(v.data) do
 					o[i] = j
 				end
-			elseif v.mode == "add" then
+			elseif v.mode.op == "add" then
 				for i, j in pairs(v.data) do
 					if type(j) == "number" then
-						o[i] = o[i] + j
+						o[i] = (o[i] or 0.0) + j
 					else
 						o[i] = j
 					end
@@ -155,7 +214,7 @@ local function combine_data(data, stack)
 			end
 		end
 	elseif stack == "nametag" then
-		for k, v in ipairs(data.nametag) do
+		for k, v in ipairs(do_sort(data.nametag)) do
 			for i, j in pairs(v.data) do
 				o[i] = j
 			end
@@ -206,7 +265,7 @@ end
 function pova.add_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 	if name ~= "" and stack ~= "" then
-		table.insert(data[stack], {name=name, data=modifiers, mode=mode})
+		table.insert(data[stack], {name=name, data=modifiers, mode=get_mode(mode)})
 	end
 	update_player_data(pref, stack, data)
 end
@@ -232,7 +291,7 @@ function pova.set_modifier(pref, stack, modifiers, name, mode)
 		end
 
 		if not replaced then
-			table.insert(data[stack], {name=name, data=modifiers, mode=mode})
+			table.insert(data[stack], {name=name, data=modifiers, mode=get_mode(mode)})
 		end
 	end
 
@@ -241,6 +300,12 @@ end
 
 
 
+-- This is the same as 'pova.set_modifier()', except that if the modifier
+-- already exists, the new data is MERGED with the existing data, INSTEAD of
+-- totally replacing it. Useful if you want to update a modifier, while
+-- providing only a subset of its original data. However, the modifier will be
+-- created if it doesn't exist, and put at the top of the named stack. This
+-- function also allows you to change the modifer's mode.
 function pova.update_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 
@@ -254,13 +319,16 @@ function pova.update_modifier(pref, stack, modifiers, name, mode)
 				for i, j in pairs(modifiers) do
 					v.data[i] = j
 				end
+				if mode then
+					v.mode = get_mode(mode)
+				end
 				replaced = true
 				break
 			end
 		end
 
 		if not replaced then
-			table.insert(data[stack], {name=name, data=modifiers, mode=mode})
+			table.insert(data[stack], {name=name, data=modifiers, mode=get_mode(mode)})
 		end
 	end
 
@@ -332,7 +400,8 @@ function pova.dump_modifiers(pname, param)
 	local function dump_stack(pname, data, stack)
 		minetest.chat_send_player(pname, "# Server: === Dumping \"" .. stack .. "\" ===")
 		minetest.chat_send_player(pname, "# Server:")
-		for k, v in ipairs(data[stack]) do
+		local tb = do_sort(data[stack])
+		for k, v in ipairs(tb) do
 			local t = table.copy(v)
 			round_numbers(t)
 			local dumps = dump(t)

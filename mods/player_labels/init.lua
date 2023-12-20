@@ -68,7 +68,7 @@ local nametag_show = function(name)
   local obj = minetest.get_player_by_name(name)
   if obj and obj:is_player() then
     local col = {a=255, r=0, g=255, b=255}
-    local txt = gdac_invis.gpn(obj:get_player_name())
+    local txt = rename.gpn(obj:get_player_name())
 		pova.remove_modifier(obj, "nametag", "id_mark")
 		pova.remove_modifier(obj, "properties", "id_mark")
   end
@@ -78,7 +78,7 @@ local nametag_hide = function(name)
   local obj = minetest.get_player_by_name(name)
   if obj and obj:is_player() then
     local col = {a=0, r=0, g=0, b=0}
-    local txt = gdac_invis.gpn(obj:get_player_name())
+    local txt = ""
 
     pova.set_modifier(obj, "nametag", {color=col, text=txt}, "id_mark")
     pova.set_modifier(obj, "properties", {show_on_minimap = false}, "id_mark")

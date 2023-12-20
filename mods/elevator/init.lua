@@ -113,8 +113,10 @@ local function create_box(motorhash, pos, target, sender)
     -- Attach the player.
     sender:setpos(pos)
     sender:set_attach(obj, "", {x=0, y=9, z=0}, {x=0, y=0, z=0})
+
     pova.set_modifier(sender, "eye_offset", {{x=0, y=-9, z=0},{x=0, y=-9, z=0}}, "elevator")
     pova.set_modifier(sender, "properties", {visual_size = {x=VISUAL_INCREASE, y=VISUAL_INCREASE}}, "elevator")
+
     if armor_path then
         armor:update_player_visuals(sender)
     end

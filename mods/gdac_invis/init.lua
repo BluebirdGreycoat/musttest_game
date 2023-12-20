@@ -37,8 +37,9 @@ gdac_invis.toggle_invisibility = function(name, param)
     if not gdac_invis.players[name] then
       gdac_invis.players[name] = {}
 
-      player_labels.disable_nametag(name)
-      pova.set_modifier(player, "nametag", {color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)}, "gdac_invis")
+      pova.set_modifier(player, "nametag",
+        {color={a=0, r=0, g=0, b=0}, text=gdac_invis.gpn(name)}, "gdac_invis",
+        {priority=1000})
       
       pova.set_modifier(player, "properties", {
         visual_size = {x=0, y=0},
@@ -52,12 +53,10 @@ gdac_invis.toggle_invisibility = function(name, param)
 				is_visible = false,
 				pointable = false,
 				show_on_minimap = false,
-      }, "gdac_invis")
+      }, "gdac_invis", {priority=1000})
       
       minetest.chat_send_player(name, "# Server: Administrative cloak enabled.")
     else
-      player_labels.enable_nametag(name)
-
       pova.remove_modifier(player, "nametag", "gdac_invis")
       pova.remove_modifier(player, "properties", "gdac_invis")
 

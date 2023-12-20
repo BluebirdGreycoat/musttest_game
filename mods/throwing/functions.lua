@@ -350,6 +350,8 @@ function throwing_reload (index, indexname, controls, pname, pos, is_cross, load
 		return
 	end
 
+	pova.remove_modifier(player, "physics", "bow_reloading")
+
 	players[pname].reloading = false
 	local playerinv = player:get_inventory()
 	local itemstack = playerinv:get_stack("main", index)
@@ -479,6 +481,8 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 
 			-- Reload bow after some delay.
 			if not players[pname].reloading then
+				pova.set_modifier(user, "physics", {speed=0.7}, "bow_reloading")
+
 				players[pname].reloading = true
 				local controls = user:get_player_control()
 				minetest.after(reload_time, throwing_reload, index, indexname, controls, pname, pos, is_cross, "throwing:" .. name .. "_loaded")

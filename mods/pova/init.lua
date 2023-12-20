@@ -140,11 +140,11 @@ local function combine_data(data, stack)
 		end
 	elseif stack == "properties" then
 		for k, v in ipairs(data.properties) do
-			if not data.mode then
+			if not v.mode then
 				for i, j in pairs(v.data) do
 					o[i] = j
 				end
-			elseif data.mode == "add" then
+			elseif v.mode == "add" then
 				for i, j in pairs(v.data) do
 					if type(j) == "number" then
 						o[i] = o[i] + j

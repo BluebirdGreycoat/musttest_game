@@ -55,9 +55,7 @@ function hunger.apply_health_boost(pname, key, data)
 
 	local oldboost = hunger.get_health_boost(pname)
 
-	-- Boost max HP by 15000 points for 30 seconds, time-additive.
-	-- Note that this is just 500 short of the highest we can go; HP capped by
-	-- engine at 65535.
+	-- Boost max HP, time-additive.
 	tab[keyname] = (tab[keyname] or 0) + data.time
 	tab[datname] = tab[datname] or data
 
@@ -68,25 +66,24 @@ function hunger.apply_health_boost(pname, key, data)
 	end
 
 	local hp = pref:get_hp()
-	local hp_max = xp.get_hp_max(pname)
+	local hp_max = pova.get_active_modifier(pref, "properties").hp_max
 	local perc = (hp / hp_max)
+	if perc > 1 then perc = 1 end
 
-	-- This will get all existing health boosts, + the one we just added.
-	local cboost = oldboost + data.health
-	hp_max = hp_max + cboost
-	hp = hp_max * perc
+	local new_hp_max = hp_max + data.health
+	local new_hp = new_hp_max * perc
 
 	-- Note: must manually notify HP change reason here.
 	armor.notify_set_hp_reason({reason="hp_boost_start"})
-	pova.set_modifier(pref, "properties", {hp_max=hp_max}, "hp_boost_" .. key)
-	pref:set_hp(hp)
+	pova.set_modifier(pref, "properties", {hp_max=data.health}, "hp_boost_" .. key, "add")
+	pref:set_hp(new_hp)
 
 	if oldboost == 0 then
 		minetest.chat_send_player(pname, "# Server: Max health boosted for " .. tab[keyname] .. " seconds.")
 		hud.change_item(pref, "health", {text="hud_heart_fg_boost.png"})
 	end
-	armor:update_inventory(pref)
 
+	armor:update_inventory(pref)
 	hunger.time_health_boost(pname, key)
 end
 
@@ -124,19 +121,22 @@ function hunger.time_health_boost(pname, key)
 			hud.change_item(pref, "health", {text="hud_heart_fg.png"})
     end
 
-		local nmax = xp.get_hp_max(pname)
+		local hp_max = pova.get_active_modifier(pref, "properties").hp_max
 		local hp = pref:get_hp()
-		local hp_max = nmax + cboost
 		local perc = (hp / hp_max)
-
-		-- Restore baseline HP level.
-		local nmax = nmax + nboost
-		local nhp = perc * nmax
+		if perc > 1 then perc = 1 end
 
 		-- Note: must manually notify HP change reason here.
 		armor.notify_set_hp_reason({reason="hp_boost_end"})
-		pref:set_hp(nhp)
 		pova.remove_modifier(pref, "properties", "hp_boost_" .. key)
+
+		-- Restore baseline HP level.
+		local new_hp_max = pova.get_active_modifier(pref, "properties").hp_max
+		local new_hp = perc * new_hp_max
+
+		-- Note: must manually notify HP change reason here.
+		armor.notify_set_hp_reason({reason="hp_boost_end"})
+		pref:set_hp(new_hp)
 
 		armor:update_inventory(pref)
 

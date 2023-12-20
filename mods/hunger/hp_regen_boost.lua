@@ -51,7 +51,6 @@ function hunger.apply_hpgen_boost(pname, key, data)
 	tab[datname] = tab[datname] or data
 
 	-- Don't stack 'minetest.after' chains.
-	-- Also don't stack 'hp_max'.
 	if already_boosted then
 		return
 	end

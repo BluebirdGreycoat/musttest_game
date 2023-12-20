@@ -78,7 +78,7 @@ local nametag_hide = function(name)
   local obj = minetest.get_player_by_name(name)
   if obj and obj:is_player() then
     local col = {a=0, r=0, g=0, b=0}
-    local txt = ""
+    local txt = rename.gpn(obj:get_player_name())
 
     pova.set_modifier(obj, "nametag", {color=col, text=txt}, "id_mark")
     pova.set_modifier(obj, "properties", {show_on_minimap = false}, "id_mark")

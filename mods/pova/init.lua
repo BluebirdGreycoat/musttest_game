@@ -76,6 +76,7 @@ local function get_mode(mode)
 			op = mode,
 			priority = 0,
 			count = pova.counter,
+			time = -1,
 		}
 		pova.counter = pova.counter + 1
 		return o
@@ -83,6 +84,7 @@ local function get_mode(mode)
 		local o = {
 			priority = 0,
 			count = pova.counter,
+			time = -1,
 		}
 		pova.counter = pova.counter + 1
 		return o
@@ -91,6 +93,7 @@ local function get_mode(mode)
 			op = mode.op or nil,
 			priority = mode.priority or 0,
 			count = pova.counter,
+			time = mode.time or -1,
 		}
 		if o.priority < -999 then
 			o.priority = -999

@@ -293,8 +293,67 @@ end
 
 
 
+function pova.dump_modifiers(pname, param)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local pref2 = minetest.get_player_by_name(param)
+	if pref2 and pref2:is_player() then
+		pref = pref2
+	end
+
+	local tname = pref:get_player_name()
+	minetest.chat_send_player(pname, "# Server: Dumping modifiers of <" .. rename.gpn(tname) .. ">.")
+	minetest.chat_send_player(pname, "# Server: " .. ("="):rep(80))
+
+	local function round_numbers(t)
+		for k, v in pairs(t) do
+			if type(v) == "number" then
+				t[k] = tonumber(string.format("%.2f", v))
+			elseif type(v) == "table" then
+				round_numbers(v)
+			end
+		end
+	end
+
+	local data = get_player(pref)
+	local function dump_stack(pname, data, stack)
+		minetest.chat_send_player(pname, "# Server: === Dumping \"" .. stack .. "\" ===")
+		minetest.chat_send_player(pname, "# Server:")
+		for k, v in ipairs(data[stack]) do
+			local t = table.copy(v)
+			round_numbers(t)
+			local dumps = dump(t)
+			dumps = dumps:gsub("\n", " ")
+			dumps = dumps:gsub("%s+", " ")
+			dumps = dumps:gsub(" = ", "=")
+			minetest.chat_send_player(pname, "# Server: (" .. k .. "): " .. dumps)
+		end
+		minetest.chat_send_player(pname, "# Server:")
+	end
+
+	dump_stack(pname, data, "physics")
+	dump_stack(pname, data, "eye_offset")
+	dump_stack(pname, data, "properties")
+	dump_stack(pname, data, "nametag")
+end
+
+
+
 if not pova.registered then
 	pova.registered = true
+
+	minetest.register_chatcommand("list_modifiers", {
+		params = "[<player>]",
+		description = "List modifiers of self or player.",
+		privs = {server=true},
+
+		func = function(...)
+			return pova.dump_modifiers(...)
+		end
+	})
 
 	minetest.register_on_leaveplayer(function(...)
 		return pova.on_leaveplayer(...)

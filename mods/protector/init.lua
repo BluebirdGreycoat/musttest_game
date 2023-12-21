@@ -415,7 +415,7 @@ function protector.punish_player(pos, pname)
 	if protector.flip then
 
 		-- yaw +/- 180°
-		local yaw = player:get_look_horizontal() + math_random(-math.pi, math.pi)
+		local yaw = player:get_look_horizontal() + (math_random(-(math.pi*100), (math.pi*100))/100)
 		player:set_look_horizontal(yaw)
 
 		-- Invert pitch.

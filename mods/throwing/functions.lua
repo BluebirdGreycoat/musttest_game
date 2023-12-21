@@ -81,16 +81,32 @@ local function get_shoot_position(player)
 	return pos
 end
 
+
+
+-- Can't do this, MT's API is broken here.
 local function do_bow_recoil(player)
-	local off1 = math.random(-(math.pi*100), (math.pi*100))/100 * 0.02
-	local off2 = math.random(-(math.pi*100), 0.0)/100 * 0.03
+	--local off1 = math.random(-(math.pi*100), (math.pi*100))/100 * 0.02
+	--local off2 = math.random(-(math.pi*100), 0.0)/100 * 0.03
 
-	local yaw = player:get_look_horizontal() + off1
+	-- set_look_horizontal() is broken.
+	--[[
+	local oldyaw = player:get_look_horizontal()
+	local yaw = oldyaw-- + off1
+
+	while yaw < 0 do yaw = yaw + math.pi * 2 end
+	while yaw > math.pi * 2 do yaw = yaw - math.pi * 2 end
+
+	minetest.chat_send_all(math.deg(oldyaw) .. ', ' .. math.deg(yaw))
+
 	player:set_look_horizontal(yaw)
+	--]]
 
-	local pitch = player:get_look_vertical() + off2
-	player:set_look_vertical(pitch)
+	-- this is also broken.
+	--local pitch = player:get_look_vertical() + off2
+	--player:set_look_vertical(pitch)
 end
+
+
 
 function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if not player or not player:is_player() then return end

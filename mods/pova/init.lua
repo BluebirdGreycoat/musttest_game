@@ -311,7 +311,7 @@ end
 -- totally replacing it. Useful if you want to update a modifier, while
 -- providing only a subset of its original data. However, the modifier will be
 -- created if it doesn't exist, and put at the top of the named stack. This
--- function also allows you to change the modifer's mode.
+-- function also allows you to change the modifer's mode table.
 function pova.update_modifier(pref, stack, modifiers, name, mode)
 	local data = get_player(pref)
 

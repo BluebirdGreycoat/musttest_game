@@ -368,6 +368,28 @@ end
 
 
 
+-- Shall update modifier timers and remove expired ones.
+function pova.globalstep(dtime)
+	local function work(t, i)
+		local d = t[i].mode
+		if d.time >= 0 then
+			d.time = d.time - dtime
+			if d.time < 0 then
+				return false
+			end
+		end
+		return true
+	end
+
+	for pname, data in pairs(pova.players) do
+		for stack, array in pairs(data) do
+			utility.array_remove(array, work)
+		end
+	end
+end
+
+
+
 -- Remove all modifiers when player leaves game! If there is a bug (and there
 -- will be bugs) this allows a player to reset all their modifiers to defaults.
 function pova.on_leaveplayer(pref)
@@ -428,6 +450,10 @@ end
 
 if not pova.registered then
 	pova.registered = true
+
+	minetest.register_globalstep(function(...)
+		return pova.globalstep(...)
+	end)
 
 	minetest.register_chatcommand("pova", {
 		params = "[<player>]",

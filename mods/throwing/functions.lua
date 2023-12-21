@@ -84,6 +84,7 @@ end
 
 
 -- Can't do this, MT's API is broken here.
+-- I posted an issue to the devs: https://github.com/minetest/minetest/issues/14143
 local function do_bow_recoil(player)
 	--local off1 = math.random(-(math.pi*100), (math.pi*100))/100 * 0.02
 	--local off2 = math.random(-(math.pi*100), 0.0)/100 * 0.03

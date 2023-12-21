@@ -378,7 +378,7 @@ function armor.get_valid_player(self, player, msg)
 		-- another mod (XP) before the armor inv is set up. This is normal.
 		-- Can't figure out why this happens even when the XP change happens *after*
 		-- the joinplayer callbacks inside minetest.after()!?
-		--minetest.log("error", "3d_armor: Detached armor inventory is nil "..msg)
+		minetest.log("error", "3d_armor: Detached armor inventory is nil "..msg)
 		return
 	end
 

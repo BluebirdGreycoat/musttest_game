@@ -315,7 +315,7 @@ end
 
 -- Process Lua array, removing elements as we go.
 function utility.array_remove(t, keep)
-	local j, n = 1, #t
+	local j, n, c = 1, #t, 0
 
 	for i = 1, n do
 		if keep(t, i, j) then
@@ -326,9 +326,10 @@ function utility.array_remove(t, keep)
 			end
 			j = j + 1 -- Increment position of where we'll place the next kept value.
 		else
+			c = c + 1 -- Increment number removed.
 			t[i] = nil
 		end
 	end
 
-	return t
+	return t, c
 end

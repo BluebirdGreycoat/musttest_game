@@ -383,7 +383,11 @@ function pova.globalstep(dtime)
 
 	for pname, data in pairs(pova.players) do
 		for stack, array in pairs(data) do
-			utility.array_remove(array, work)
+			local _, c = utility.array_remove(array, work)
+			if c > 0 then
+				local pref = minetest.get_player_by_name(pname)
+				update_player_data(pref, stack, data)
+			end
 		end
 	end
 end

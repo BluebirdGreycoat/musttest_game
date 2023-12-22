@@ -362,6 +362,12 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 			teleports.kill_players_at_pos(teleport_pos, pname)
 
 			-- Delete 3x3x3 area above teleport.
+			-- Do it again to prevent possible exploit.
+			teleports.clear_area(minp, maxp)
+		end,
+
+		on_map_loaded = function()
+			-- Delete 3x3x3 area above teleport.
 			teleports.clear_area(minp, maxp)
 		end,
 

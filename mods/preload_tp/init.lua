@@ -167,6 +167,7 @@ function preload_tp.execute(parameters)
 	parameters.teleport_sound = parameters.teleport_sound or nil
 	parameters.send_blocks = parameters.send_blocks or false
 	parameters.particle_effects = parameters.particle_effects or false
+	parameters.on_map_loaded = parameters.on_map_loaded or nil
 
 	local pname = parameters.player_name
 	local tpos = parameters.target_position
@@ -238,6 +239,10 @@ function preload_tp.execute(parameters)
 		-- We don't do anything until the last callback.
 		if calls_remaining ~= 0 then
 			return
+		end
+
+		if parameters.on_map_loaded then
+			parameters.on_map_loaded()
 		end
 
 		if not force then

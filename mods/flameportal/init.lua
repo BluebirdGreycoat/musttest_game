@@ -167,6 +167,7 @@ flameportal.make_platform = function(param)
       for z = param.minp.z, param.maxp.z, 1 do
         local pos = {x=x, y=y, z=z}
         local node = minetest.get_node(pos)
+        --minetest.chat_send_all(minetest.pos_to_string(pos) .. "=" .. node.name)
         if node.name == "air" or node.name == "rackstone:redrack" then
           if not minetest.test_protection(pos, "") then
             minetest.add_node(pos, {name="rackstone:redrack"})
@@ -310,7 +311,14 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
 		emerge_radius = 64,
 		particle_effects = true,
 
-		pre_teleport_callback = function()
+		-- Test code.
+		--spinup_time = 3,
+
+		-- Map modifications have to be done here, instead of in 'pre_teleport_callback'
+		-- because otherwise if we wait for the long spinup time, the map will become
+		-- unloaded again and we won't spawn the platform or the flame pillar!
+		on_map_loaded = function()
+      --minetest.chat_send_all('pretp!')
 			flameportal.make_platform(tb)
 			flameportal.make_flame_pillar(tb2)
 		end,

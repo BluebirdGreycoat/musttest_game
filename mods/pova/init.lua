@@ -6,6 +6,7 @@
 if not minetest.global_exists("pova") then pova = {} end
 pova.modpath = minetest.get_modpath("pova")
 pova.players = pova.players or {}
+pova.last_properties = pova.last_properties or {}
 
 -- Used to force table.sort() to be stable.
 -- This counter increases every time a modifier is added.
@@ -232,6 +233,40 @@ end
 
 
 
+local function equals(a, b)
+	if a == b then
+		return true
+	end
+
+	local t1 = type(a)
+	local t2 = type(b)
+	if t1 ~= t2 then
+		return false
+	end
+	if t1 ~= "table" then
+		return false
+	end
+
+	local key_set = {}
+
+	for key1, value1 in pairs(a) do
+		local value2 = b[key1]
+		if value2 == nil or equals(value1, value2) == false then
+			return false
+		end
+		key_set[key1] = true
+	end
+
+	-- Check if B contains any keys not found in A.
+	for key2, _ in pairs(b) do
+		if not key_set[key2] then return false end
+	end
+
+	return true
+end
+
+
+
 -- Combine all datums in this player's named stack, and apply them.
 local function update_player_data(pref, stack, data)
 	if stack == "physics" then
@@ -240,7 +275,17 @@ local function update_player_data(pref, stack, data)
 		local v1, v2, v3 = unpack(combine_data(data, stack))
 		pref:set_eye_offset(v1, v2, v3)
 	elseif stack == "properties" then
-		pref:set_properties(filter_properties(combine_data(data, stack)))
+		local pname = pref:get_player_name()
+		local new_props = filter_properties(combine_data(data, stack))
+		local old_props = pova.last_properties[pname] or {}
+		local changed_props = {}
+		for k, v in pairs(new_props) do
+			if not equals(old_props[k], v) then
+				changed_props[k] = v
+			end
+		end
+		pref:set_properties(changed_props)
+		pova.last_properties[pname] = new_props
 	elseif stack == "nametag" then
 		pref:set_nametag_attributes(combine_data(data, stack))
 	end

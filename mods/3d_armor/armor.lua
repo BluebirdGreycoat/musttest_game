@@ -815,10 +815,15 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		armor.notify_death_reason(reason)
 	end
 
-	--minetest.chat_send_all(hp_change)
+
+	-- Simulate a 'stun' effect for heavy hits.
 	if hp_change <= -(3*500) then
-		-- Simulate a 'stun' effect for heavy hits (1.5 hearts for a default-HP player).
-		pova.update_modifier(player, "physics", {sneak=false}, "damage_disables_sneak", {time=2})
+		pova.update_modifier(player, "physics", {sneak=false}, "damage.stun.1", {time=2})
+	end
+	if hp_change <= -(6*500) then
+		pova.update_modifier(player, "physics", {speed=0.8}, "damage.stun.3", {time=3})
+	elseif hp_change <= -(2*500) then
+		pova.update_modifier(player, "physics", {speed=0.95}, "damage.stun.2", {time=3})
 	end
 
 	return hp_change

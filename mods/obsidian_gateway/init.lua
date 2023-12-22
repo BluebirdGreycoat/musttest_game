@@ -594,6 +594,11 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 		emerge_radius = 32,
 		particle_effects = true,
 
+		-- Force teleport on first init.
+		-- This should reduce problems due to the player moving around and canceling
+		-- the teleport on a new gate.
+		force_teleport = first_time_init,
+
 		pre_teleport_callback = function()
 			-- Cancel teleport if origin gate does not have portal liquid.
 			if not obsidian_gateway.have_liquid(origin, northsouth) then

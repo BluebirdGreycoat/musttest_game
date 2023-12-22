@@ -941,7 +941,7 @@ tooldata["shovel_amethyst_rf"] = {
 
 tooldata["axe_amethyst_rf"] = {
 	full_punch_interval = 1.0,
-	max_drop_level = 3,
+  max_drop_level = 3,
 	groupcaps = {
 		choppy = {times={[1]=1.50, [2]=0.30, [3]=0.30}, uses=230, maxlevel=3},
 	},

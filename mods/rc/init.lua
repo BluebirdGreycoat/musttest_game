@@ -487,7 +487,7 @@ function rc.get_random_realm_gate_position(pname, origin)
 	-- (or the Nether). Gate is more likely to go down rather than up.
 	local pos = {
 		x = math_random(-3000, 3000) + origin.x,
-		y = math_random(-2000, 300) + origin.y,
+		y = math_random(-2000, 1500) + origin.y,
 		z = math_random(-3000, 3000) + origin.z,
 	}
 

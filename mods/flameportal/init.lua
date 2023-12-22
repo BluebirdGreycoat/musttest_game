@@ -157,6 +157,9 @@ flameportal.activate_gateway = function(pos)
     for k, v in ipairs(void) do
         minetest.add_node(v, {name="voidstone:void"})
     end
+
+    -- Success.
+    return true
 end
 
 

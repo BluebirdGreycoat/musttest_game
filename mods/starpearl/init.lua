@@ -12,20 +12,20 @@ function starpearl.on_place(itemstack, placer, pt)
   -- What are we pointing at?
   local nn = minetest.get_node(pt.under).name
 
-	-- Allow stairs, slabs, dark obsidian, etc. to be struck by firestriker.
-	-- This comes before protection check so that players can use others' portals.
-	if string.find(nn, "obsidian") then
-		flameportal.try_teleport_on_flint_use(placer)
-	end
-
 	if string.find(nn, "obsidian") or string.find(nn, "grieferstone") then
-		obsidian_gateway.attempt_activation(pt.under, placer)
+		if obsidian_gateway.attempt_activation(pt.under, placer, "pearl") then
+			itemstack:take_item()
+			return itemstack
+		end
 	end
 
 	if nn == "default:obsidian" then
 		local result, pos = flameportal.find_gateway(pt.under)
 		if result == true and pos then
-			flameportal.activate_gateway(pos)
+			if flameportal.activate_gateway(pos) then
+				itemstack:take_item()
+				return itemstack
+			end
 		end
 	end
 end

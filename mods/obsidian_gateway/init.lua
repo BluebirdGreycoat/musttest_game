@@ -363,7 +363,7 @@ end
 
 
 
-function obsidian_gateway.attempt_activation(pos, player)
+function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	local pname = player:get_player_name()
 	local ppos = vector_round(player:get_pos())
 
@@ -452,14 +452,14 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 	local first_time_init = false
 
-	-- Event horizon color depends on whether we are a return gate.
-	obsidian_gateway.spawn_liquid(origin, northsouth, isreturngate)
-
 	minetest.log("action", pname .. " activated gateway @ " .. minetest.pos_to_string(pos))
 
 	-- Initialize gateway for the first time.
+	if itemstring == "pearl" then
 	if not target or (meta:get_string("obsidian_gateway_success_" .. ns_key) ~= "yes" and not isreturngate) then
 		-- Target is valid then this could be an OLD gate with old metadata.
+		-- This can ALSO happen if player initializes a new gate twice or more times before
+		-- the first initialization completes.
 		if target and not isreturngate and meta:get_string("obsidian_gateway_success_" .. ns_key) == "" then
 			minetest.chat_send_player(pname, "# Server: It looks like this could possibly be an OLD gate! Aborting for safety reasons.")
 			minetest.chat_send_player(pname, "# Server: If this Gateway was previously functioning normally, please mail the admin with the coordinates.")
@@ -528,7 +528,19 @@ function obsidian_gateway.attempt_activation(pos, player)
 
 		first_time_init = true
 		isowner = true
+	else
+		-- Used a pearl but gate already activated.
+		return
 	end
+	end -- Itemstring is "pearl".
+
+	-- Happens if gate is not initialized and we didn't use a pearl to activate it.
+	if not target then
+		return
+	end
+
+	-- Event horizon color depends on whether we are a return gate.
+	obsidian_gateway.spawn_liquid(origin, northsouth, isreturngate)
 
 	if gdac.player_is_admin(pname) then
 		isowner = true
@@ -550,6 +562,7 @@ function obsidian_gateway.attempt_activation(pos, player)
 	pdest = vector_round(pdest)
 
 	-- Make sure target is within some realm.
+	-- This generally should not happen.
 	if not rc.is_valid_realm_pos(pdest) then
 		return
 	end
@@ -737,6 +750,8 @@ function obsidian_gateway.attempt_activation(pos, player)
 		teleport_sound = "nether_portal_usual",
 		send_blocks = true,
 	})
+
+	return true
 end
 
 

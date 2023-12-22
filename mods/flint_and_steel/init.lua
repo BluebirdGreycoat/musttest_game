@@ -33,16 +33,9 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 		end
 
 		if string.find(nn, "obsidian") or string.find(nn, "grieferstone") then
-			obsidian_gateway.attempt_activation(pt.under, user)
+			obsidian_gateway.attempt_activation(pt.under, user, "")
 		end
 
-		if nn == "default:obsidian" then
-			local result, pos = flameportal.find_gateway(pt.under)
-			if result == true and pos then
-				flameportal.activate_gateway(pos)
-			end
-		end
-		
 		if is_flammable or is_coalblock or is_tnt or is_gunpowder or is_netherack then
 			-- Check if fires can be started at this location.
 			-- Don't let user start a fire if location is protected.

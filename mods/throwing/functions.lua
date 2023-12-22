@@ -71,12 +71,12 @@ local function get_shoot_position(player)
 	local yaw = player:get_look_horizontal()
 	local pos = player:get_pos()
 
-	local off = {x=0.24, y=0}
+	local off = {x=0.3, y=0}
 	--local off = {x=0, y=0}
 	off = rotate_point_2d(off, yaw)
 
 	pos.x = pos.x + off.x
-	pos.y = pos.y + 1.3
+	pos.y = pos.y + 1.5
 	pos.z = pos.z + off.y
 	return pos
 end
@@ -133,11 +133,12 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	imeta:set_string("ar_desc", nil)
 	toolranks.apply_description(imeta, itemstack:get_definition())
 
+	local accuracy = math.rad(math.random(-300, 300)/300)
 	local dir = player:get_look_dir()
 	local vel = stiffness * 2
 	obj:set_velocity({x=dir.x*vel, y=dir.y*vel, z=dir.z*vel})
 	obj:set_acceleration({x=0, y=-5, z=0})
-	obj:set_yaw(player:get_look_horizontal() - (math.pi / 2))
+	obj:set_yaw(player:get_look_horizontal() - (math.pi / 2) + accuracy)
 
 	if is_cross then
 		minetest.sound_play("throwing_crossbow_sound", {pos=playerpos}, true)

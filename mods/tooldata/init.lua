@@ -970,6 +970,7 @@ function td_api.arrow_toolcaps(name, damage)
 		damage_groups = {
 			arrow = damage,
 			from_arrow = 0,
+			knockback = 400,
 		},
 	}
 	-- This table gets sent through the engine, so only builtin parameters work.

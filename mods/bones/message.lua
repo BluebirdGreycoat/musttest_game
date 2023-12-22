@@ -34,6 +34,8 @@ local msg_str1 = {
 	"Bonebox beacon",
 
 	"Ritual box",
+	"Corpse",
+	"Coffin",
 }
 local msg_str2 = {
 	"perished",

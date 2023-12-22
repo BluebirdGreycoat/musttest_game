@@ -1,3 +1,4 @@
+[2023/12/21] ItsABug down too often. Back to Github! If I were conspiracy-minded, I'd wonder if YesABug was being DOSed by their competitors. It's a dark world!
 [2021/1/11] Teleport chance to misjump now incorporates the distance of the jump, compared with the teleport's maximum range.
 [2021/1/11] Made rosestones generate with coral-like formations instead of the silly straight lines.
 [2021/1/11] Made glowing rosestone more fragile.

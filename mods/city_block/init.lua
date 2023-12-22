@@ -890,8 +890,13 @@ function city_block.handle_assassination(p2pos, victim_pname, attack_pname, mele
 	if not city_block:in_safebed_zone(p2pos) and melee then
 		-- Victim doesn't lose their bed respawn if they were killed by a cheater.
 		if not sheriff.is_cheater(attack_pname) then
-			minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated in the wilds.")
-			beds.clear_player_spawn(victim_pname)
+			local pref = minetest.get_player_by_name(victim_pname)
+			if pref then
+				local meta = pref:get_meta()
+				meta:set_int("was_assassinated", 1)
+			end
+			--minetest.chat_send_player(victim_pname, "# Server: Your bed is lost! You were assassinated in the wilds.")
+			--beds.clear_player_spawn(victim_pname)
 		end
 	end
 end

@@ -563,12 +563,12 @@ end
 -- Respawn player at bed if enabled and valid position is found.
 -- Note: this can also be called from /emergency_recall.
 function beds.on_respawnplayer(player)
-	local name = player:get_player_name()
-	local player_meta = player:get_meta()
-	local pos = beds.spawn[name]
+	local pname = player:get_player_name()
+	local pmeta = player:get_meta()
+	local pos = beds.spawn[pname]
 
 	-- Record the last respawn time.
-	player_meta:set_string("last_respawn_time", tostring(os.time()))
+	pmeta:set_string("last_respawn_time", tostring(os.time()))
 
 	-- If the player died in MIDFELD, behave as if they don't have a bed, and send
 	-- them to the OUTBACK. If they die in the outback after this flag is set, they'll
@@ -607,30 +607,45 @@ function beds.on_respawnplayer(player)
 		rc.notify_realm_update(player, pos)
 		player:set_pos(pos)
 
-		local spawncount = beds.storage:get_int(name .. ":count")
-		if spawncount <= 1 then
-			beds.spawn[name] = nil
+		local spawncount = beds.storage:get_int(pname .. ":count")
+
+		if pmeta:get_int("was_assassinated") ~= 0 then
+			pmeta:set_string("was_assassinated", "")
+			spawncount = 0
+			chat_core.alert_player_sound(pname)
+			local RED = core.get_color_escape_sequence("#ff0000")
+			minetest.chat_send_player(pname, RED .. "# Server: Your bed is lost! You were assassinated in the wilds.")
+		end
+
+		if spawncount == 1 then
+			spawncount = 0
+			beds.storage:set_int(pname .. ":count", spawncount)
+
+			beds.spawn[pname] = nil
 			beds.save_spawns()
 
-			chat_core.alert_player_sound(name)
+			chat_core.alert_player_sound(pname)
 			local RED = core.get_color_escape_sequence("#ff0000")
-			minetest.chat_send_player(name, RED .. "# Server: Warning! Your respawn position is lost!")
-		else
+			minetest.chat_send_player(pname, RED .. "# Server: Warning! Your respawn position is lost. Sleep or die!")
+		elseif spawncount > 1 then
 			spawncount = spawncount - 1
-			beds.storage:set_int(name .. ":count", spawncount)
+			beds.storage:set_int(pname .. ":count", spawncount)
 
 			if spawncount > 1 then
-				minetest.chat_send_player(name, "# Server: " .. spawncount .. " respawns left for that bed.")
+				minetest.chat_send_player(pname, "# Server: " .. spawncount .. " respawns left for that bed.")
 			else
-				chat_core.alert_player_sound(name)
+				chat_core.alert_player_sound(pname)
 				local RED = core.get_color_escape_sequence("#ff0000")
-				minetest.chat_send_player(name, RED .. "# Server: Alert! Only 1 respawn left for that bed!")
+				minetest.chat_send_player(pname, RED .. "# Server: Alert! Only 1 respawn left for that bed!")
 			end
+		elseif spawncount == 0 then
+			beds.spawn[pname] = nil
+			beds.save_spawns()
 		end
 
 		ambiance.sound_play("respawn", pos, 1.0, 10)
 	else
-		local death_pos = minetest.string_to_pos(player_meta:get_string("last_death_pos"))
+		local death_pos = minetest.string_to_pos(pmeta:get_string("last_death_pos"))
 
 		-- If the death position is not known, assume they died in the Abyss.
 		-- This should normally never happen.
@@ -644,7 +659,7 @@ function beds.on_respawnplayer(player)
 		--minetest.after(1, function() minetest.chat_send_all("on_respawnplayer was called!") end)
 
 		-- Shall place player in the Outback, ALWAYS.
-		randspawn.reposition_player(name, death_pos)
+		randspawn.reposition_player(pname, death_pos)
 
 		-- If player died in a realm other than the abyss, then give them initial
 		-- stuff upon respawning there.

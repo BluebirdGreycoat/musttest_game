@@ -65,6 +65,7 @@ end
 
 
 -- Override minetest.register_node so that we can modify the falling damage GLOBALLY.
+-- And fix stuff the engine no longer takes care of for us.
 local old_register_node = minetest.register_node;
 local function register_node(name, def2)
 	local def = table.copy(def2)
@@ -85,6 +86,13 @@ local function register_node(name, def2)
 	-- Note: this includes any airlike drawtype nodes from the maptools files.
 	if def.drawtype == "airlike" then
 		def.groups.airlike = 1
+	end
+
+	-- Compatibility code, used to be in Minetest core but since 5.9.0 was removed.
+	if def.drawtype == "nodebox" or def.drawtype == "mesh" then
+		if type(def.use_texture_alpha) == "nil" then
+			def.use_texture_alpha = "clip"
+		end
 	end
 
 	-- Any nodes with "brick" or "block" in the name have dig prediction disabled.

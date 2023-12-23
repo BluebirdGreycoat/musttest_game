@@ -769,16 +769,35 @@ end
 function beds.monsters_nearby(pos, player)
 	-- `pos` is the position of the bed.
 	-- `player` is the person trying to sleep in a bed.
-	local ents = minetest.get_objects_inside_radius(pos, 10)
+	local radius_wide = 15
+	local radius_small = 4
+
+	local ents = minetest.get_objects_inside_radius(pos, radius_wide)
+	local wide_count = 0
+	local short_count = 0
+
 	for k, v in ipairs(ents) do
 		if not v:is_player() then
 			local tb = v:get_luaentity()
 			if tb and tb.mob then
 				if tb.type and tb.type == "monster" then
-					-- Found monster in radius.
-					return true
+					wide_count = wide_count + 1
+					if vector.distance(v:get_pos(), pos) < radius_small then
+						-- Found monster in (small) radius.
+						short_count = short_count + 1
+					end
 				end
 			end
+		end
+	end
+
+	if short_count > 0 then
+		return true
+	end
+
+	if wide_count > 0 then
+		if beds.check_monsters_accessible(pos) then
+			return true
 		end
 	end
 end

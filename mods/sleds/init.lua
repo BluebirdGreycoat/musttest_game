@@ -285,14 +285,20 @@ if not sleds.run_once then
 		end,
 	})
 
-	minetest.register_craft({
-		output = "sleds:sled",
-		recipe = {
-			{"group:stick", "", "group:stick"},
-			{"group:wood", "group:wood", "group:wood"},
-			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-		},
-	})
+	local function register_craft(runner)
+		minetest.register_craft({
+			output = "sleds:sled",
+			recipe = {
+				{"group:stick", "", "group:stick"},
+				{"group:wood", "group:wood", "group:wood"},
+				{runner, runner, runner},
+			},
+		})
+	end
+
+	register_craft("default:steel_ingot")
+	register_craft("cast_iron:ingot")
+	register_craft("carbon_steel:ingot")
 
 	minetest.register_craft({
 		type = "fuel",

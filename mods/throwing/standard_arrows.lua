@@ -59,6 +59,15 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		local vel = self.object:get_velocity()
 		local speed = vector.length(vel) / 2
 		local damage = ((speed + eq)^1.2)/5
+
+		local luaent = obj:get_luaentity()
+		if luaent and (luaent.mob or luaent._cmi_is_mob) then
+			if luaent.add_item_drop then
+				--minetest.chat_send_all('adding!')
+				luaent:add_item_drop("throwing:arrow_" .. kind)
+			end
+		end
+
 		throwing_arrow_punch_entity(obj, self, damage*500)
 		ambiance.sound_play("throwing_arrow_hit", obj:get_pos(), 1.0, 32)
 	end

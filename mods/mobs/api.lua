@@ -565,7 +565,7 @@ local function item_drop(self, cooked)
 	local pos = self.object:get_pos()
 
 	for n = 1, #self.drops do
-
+		if self.drops[n].name ~= "" then
 		if random(1, self.drops[n].chance) == 1 then
 
 			num = random(self.drops[n].min or 0, self.drops[n].max or 1)
@@ -596,9 +596,43 @@ local function item_drop(self, cooked)
 				obj:remove() -- item does not exist
 			end
 		end
+		end -- Item has name.
 	end
 
 	self.drops = {}
+end
+
+
+
+-- Mob method to add an item drop to their drop table. Example: arrows get stuck
+-- in mob, and are dropped when mob dies (arrow reuse).
+function mobs.add_item_drop(self, item)
+	-- self.drops should never be nil.
+	-- Copy the drop table to ensure it is unlinked from all other mobs of the same type.
+	-- (Normally, all mobs of the same type share the exact same drop table. However,
+	-- this is not the case for mobs activated from static data.)
+	if not self._drop_table_unlinked then
+		self.drops = table.copy(self.drops)
+		self._drop_table_unlinked = true
+	end
+
+	if type(item) == "string" then
+		self.drops[#self.drops + 1] = {
+			min = 1,
+			max = 1,
+			chance = 1,
+			name = item,
+		}
+	elseif type(item) == "table" then
+		self.drops[#self.drops + 1] = {
+			min = item.min or 1,
+			max = item.max or 1,
+			chance = item.chance or 1,
+			name = item.name or "",
+		}
+	end
+
+	--minetest.chat_send_all(dump(self.drops))
 end
 
 
@@ -5385,6 +5419,8 @@ if not mobs.registered then
 			on_breed = def.on_breed,
 
 			on_grown = def.on_grown,
+
+			add_item_drop = function(...) return mobs.add_item_drop(...) end,
 
 			on_activate = function(self, staticdata, dtime)
 				return mobs.mob_activate(self, staticdata, def, dtime)

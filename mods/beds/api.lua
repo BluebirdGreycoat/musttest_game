@@ -9,9 +9,11 @@ local function destruct_bed(pos, n)
 	local other
 
 	if n == 2 then
+		-- Head node destruct.
 		local dir = minetest.facedir_to_dir(node.param2)
 		other = vector.subtract(pos, dir)
 	elseif n == 1 then
+		-- Foot node destruct.
     local meta = minetest.get_meta(pos)
     local owner = meta:get_string("owner") or ""
     if owner ~= "" and owner ~= "server" then
@@ -142,8 +144,10 @@ function beds.register_bed(name, def)
       destruct_bed(pos, 1)
     end,
 
-		-- TNT+beds=problems.
-    on_blast = function(pos) end,
+    on_blast = function(pos)
+      destruct_bed(pos, 1)
+      minetest.remove_node(pos)
+    end,
 
 		on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
 			beds.on_rightclick(pos, clicker)
@@ -217,8 +221,10 @@ function beds.register_bed(name, def)
 			destruct_bed(pos, 2)
 		end,
 
-		-- TNT+beds=problems.
-		on_blast = function(pos) end,
+		on_blast = function(pos)
+			destruct_bed(pos, 2)
+			minetest.remove_node(pos)
+		end,
 	})
 
 	minetest.register_alias(name, name .. "_bottom")

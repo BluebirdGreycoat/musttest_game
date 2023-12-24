@@ -35,6 +35,7 @@ minetest.register_node(":rackstone:mg_redrack", rdef)
 local ddef = table.copy(minetest.registered_nodes["rackstone:rackstone"])
 ddef.is_ground_content = true
 ddef._is_bulk_mapgen_stone = true
+ddef.light_source = rackstone.light_source
 ddef.drop = "rackstone:cobble"
 ddef.after_place_node = function(pos) -- In case player manages to obtain.
   minetest.swap_node(pos, {name="rackstone:cobble"})

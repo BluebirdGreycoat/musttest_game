@@ -50,7 +50,7 @@ minetest.register_node("rackstone:rackstone", {
 	sounds = default.node_sound_stone_defaults(),
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
-	light_source = rackstone.light_source,
+	--light_source = rackstone.light_source,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {

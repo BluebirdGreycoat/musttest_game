@@ -313,7 +313,7 @@ end
 
 
 
--- Process Lua array, removing elements as we go.
+-- Process Lua array, removing elements as we go. The array is modified in-place.
 function utility.array_remove(t, keep)
 	local j, n, c = 1, #t, 0
 

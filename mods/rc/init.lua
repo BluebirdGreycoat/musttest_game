@@ -2,6 +2,10 @@
 -- Realm Control Mod.
 -- This mod manages realm boundaries and prevents players from moving freely
 -- between realms/dimensions without programmatic intervention.
+
+-- Author: MustTest/BluebirdGreycoat51/GoldFireUn
+-- License: MIT
+
 if not minetest.global_exists("rc") then rc = {} end
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
@@ -880,6 +884,7 @@ function rc.notify_realm_update(player, pos)
 	tb.pos = p
 	tb.realm = rc.current_realm_at_pos(p)
 	sky.notify_sky_update_needed(n)
+	bone_mark.notify_hud_update_needed(n)
 
 	-- Remove the 'new_arrival' flag after a few seconds.
 	-- Note: this flag was set in order to suppress the 'strayed from path' message

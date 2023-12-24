@@ -427,6 +427,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
     
 	local param2 = minetest.dir_to_facedir(player:get_look_dir())
 	minetest.add_node(pos, {name = "bones:bones", param2 = param2})
+	bone_mark.add_corpse(pos, pname)
 
 	local meta = minetest.get_meta(pos)
 	meta:set_float("digxp", xp_for_bones)

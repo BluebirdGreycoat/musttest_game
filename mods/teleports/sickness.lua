@@ -177,6 +177,16 @@ function portal_sickness.check_sick(pname)
 	end)
 end
 
+function portal_sickness.is_sick_or_queasy(pname)
+	portal_sickness.init_if_needed(pname)
+
+	if players[pname].sick >= 2 then
+		return true
+	elseif players[pname].sick == 1 then
+		return true
+	end
+end
+
 function portal_sickness.on_join_player(pname)
 	portal_sickness.check_sick(pname)
 end

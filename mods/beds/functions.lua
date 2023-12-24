@@ -1,6 +1,8 @@
 
 if not minetest.global_exists("beds") then beds = {} end
 
+local SLEEP_TIME_WO_NIGHTSKIP = 5
+
 -- Localize for performance.
 local vector_round = vector.round
 local math_random = math.random
@@ -113,6 +115,7 @@ end
 
 local function lay_down(player, pos, bed_pos, state, skip)
 	local name = player:get_player_name()
+	local pmeta = player:get_meta()
 	local hud_flags = player:hud_get_flags()
 
 	if not player or not name then
@@ -142,6 +145,17 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		hud_flags.wielditem = true
 		default.player_set_animation(player, "stand" , 30)
 
+		local otime = pmeta:get_int("last_sleep_time")
+		local ntime = os.time()
+		local dtime = math.max(ntime - otime, 0)
+
+		--minetest.chat_send_all("stayed in bed for " .. dtime .. " seconds.")
+
+		-- Staying in bed long enough cures portal sickness even if nightskip not successful.
+		if dtime > (60 * SLEEP_TIME_WO_NIGHTSKIP) then
+			beds.player_finishes_sleep(name)
+		end
+
 	-- lay down
 	else
 		beds.player[name] = 1
@@ -152,6 +166,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		pova.set_modifier(player, "eye_offset", {{x = 0, y = -13, z = 0}}, "sleeping")
 		local yaw, param2 = get_look_yaw(bed_pos)
 		player:set_look_horizontal(yaw)
+		pmeta:set_int("last_sleep_time", os.time())
 		local dir = minetest.facedir_to_dir(param2)
 		local p = {
 			x = bed_pos.x + dir.x / 2,
@@ -177,9 +192,9 @@ local function update_formspecs(finished)
     local is_majority = (ges / 2) < ppl_in_bed
 
     if finished then
-        form_n = beds.formspec .. "label[2.7,11;Good morning.]"
+        form_n = beds.formspec .. "label[3.0,11;Good morning.]"
     else
-        form_n = beds.formspec .. "label[2.2,11;" .. tostring(ppl_in_bed) ..
+        form_n = beds.formspec .. "label[2.4,11;" .. tostring(ppl_in_bed) ..
             " of " .. tostring(ges) .. " players are in bed.]"
         if is_majority and is_night_skip_enabled() then
             form_n = form_n .. "button_exit[2,8;4,0.75;force;Force Night Skip]"
@@ -187,7 +202,26 @@ local function update_formspecs(finished)
     end
 
     for name,_ in pairs(beds.player) do
-        minetest.show_formspec(name, "beds:detatched_formspec", form_n)
+			local form_s = form_n
+
+			if portal_sickness.is_sick_or_queasy(name) then
+				form_s = form_s .. "label[1.2,10;You are ill. Sleep " .. SLEEP_TIME_WO_NIGHTSKIP .. " minutes or skip night to cure.]"
+
+				if finished then
+					--minetest.chat_send_all('test')
+					minetest.after(1, function()
+						--minetest.chat_send_all('after')
+						if not portal_sickness.is_sick_or_queasy(name) then
+							--minetest.chat_send_all('not sick')
+							local form_s = form_n
+							form_s = form_s .. "label[2.3,10;You don't feel ill anymore.]"
+							minetest.show_formspec(name, "beds:detatched_formspec", form_s)
+						end
+					end)
+				end
+			end
+
+			minetest.show_formspec(name, "beds:detatched_formspec", form_s)
     end
 end
 
@@ -294,39 +328,44 @@ end
 
 
 
+function beds.player_finishes_sleep(pname)
+	local player = minetest.get_player_by_name(pname)
+	if player then
+		-- Heal player 4 HP, but not if the player is dead.
+		if player:get_hp() > 0 then
+			local hp_max = pova.get_active_modifier(player, "properties").hp_max
+			player:set_hp(player:get_hp() + (hp_max * 0.2))
+		end
+
+		-- Increase player's hunger.
+		hunger.increase_hunger(player, 6)
+
+		-- Refill stamina.
+		sprint.set_stamina(player, SPRINT_STAMINA)
+
+		-- Notify portal sickness mod.
+		--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
+		portal_sickness.on_use_bed(pname)
+
+		local pos = vector.round(utility.get_middle_pos(player:get_pos()))
+		if beds.check_monsters_accessible(pos) then
+			beds.spawn_monsters_near(pos)
+		end
+	end
+end
+
+
+
 function beds.skip_night()
 	minetest.set_timeofday(0.23)
   
   -- This assumes that players aren't kicked out of beds until after this function runs.
+  -- Thus the need for 'minetest.after'.
   for k, v in pairs(beds.player) do
     local pname = k
-    -- HUD update is ignored if minetest.after() isn't used?
-    -- Oh well. A little delay is nice, too.
-    minetest.after(0.5, function()
-      local player = minetest.get_player_by_name(pname)
-      if player then
-        -- Heal player 4 HP, but not if the player is dead.
-        if player:get_hp() > 0 then
-					local hp_max = pova.get_active_modifier(player, "properties").hp_max
-          player:set_hp(player:get_hp() + (hp_max * 0.2))
-        end
-
-        -- Increase player's hunger.
-        hunger.increase_hunger(player, 6)
-
-				-- Refill stamina.
-				sprint.set_stamina(player, SPRINT_STAMINA)
-
-				-- Notify portal sickness mod.
-				--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
-				portal_sickness.on_use_bed(pname)
-
-				local pos = vector.round(utility.get_middle_pos(player:get_pos()))
-				if beds.check_monsters_accessible(pos) then
-					beds.spawn_monsters_near(pos)
-				end
-      end
-    end)
+    minetest.after(0, function()
+			beds.player_finishes_sleep(pname)
+		end)
   end
 end
 

@@ -44,7 +44,8 @@ if not starpearl.run_once then
 
 	minetest.register_craftitem("starpearl:pearl", {
 		description = "Star Pearl",
-		inventory_image = "starpearl_pearl.png",
+		 inventory_image = "starpearl_pearl.png",
+		  light_source = 14,
 	})
 
   local c = "starpearl:core"

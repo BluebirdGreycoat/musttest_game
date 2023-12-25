@@ -167,13 +167,6 @@ minetest.register_craft({
 
 
 --------------------------------------------------------------------------------
-minetest.register_craftitem("mobs:flame_bolt", {
-	description = "Flame Bolt",
-	inventory_image = "mobs_flame_bolt.png",
-	groups = {flammable = 3},
-	light_source = 14,
-})
-
 -- Stores metadata, needs wear bar.
 -- Note: this also makes the staff repairable by combining it with another.
 minetest.register_tool("mobs:flame_staff", {

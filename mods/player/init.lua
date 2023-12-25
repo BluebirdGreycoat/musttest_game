@@ -21,28 +21,6 @@ end
 
 
 
--- Default player appearance
--- Controled by 3d_armor mod!
---[[
-default.player_register_model("character_musttest.b3d", {
-	animation_speed = 30,
-	textures = {"character.png", },
-	animations = {
-		-- Standard animations.
-		stand     = { x=  0, y= 79, },
-		lay       = { x=162, y=166, },
-		walk      = { x=168, y=187, },
-		mine      = { x=189, y=198, },
-		walk_mine = { x=200, y=219, },
-		-- Extra animations (not currently used by the game).
-		sit       = { x= 81, y=160, },
-        nod       = { x=221, y=251, },
-	},
-})
---]]
-
-
-
 -- Player stats and animations
 local player_model = {}
 local player_textures = {}
@@ -68,23 +46,19 @@ end
 function default.player_set_model(player, model_name)
 	local name = player:get_player_name()
 	local model = models[model_name]
-	if model then
-		if player_model[name] == model_name then
-			return
-		end
-		pova.set_override(player, "properties", {
-			mesh = model_name,
-			textures = player_textures[name] or model.textures,
-			visual = "mesh",
-			visual_size = model.visual_size or {x=1, y=1},
-		})
-		default.player_set_animation(player, "stand")
-	else
-		pova.set_override(player, "properties", {
-			textures = { "player.png", "player_back.png", },
-			visual = "upright_sprite",
-		})
+
+	if player_model[name] == model_name then
+		return
 	end
+
+	pova.set_override(player, "properties", {
+		mesh = model_name,
+		textures = player_textures[name] or model.textures,
+		visual = "mesh",
+		visual_size = model.visual_size or {x=1, y=1, z=1},
+	})
+
+	default.player_set_animation(player, "stand")
 	player_model[name] = model_name
 end
 
@@ -118,7 +92,7 @@ end
 minetest.register_on_joinplayer(function(player)
 	local pname = player:get_player_name()
 	default.player_attached[pname] = false
-	--default.player_set_model(player, "character_musttest.b3d")
+
 	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
 
 	-- Big hot-bar is revoked for cheaters.
@@ -225,6 +199,8 @@ end
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
 minetest.register_on_joinplayer(function(player)
+	set_prng(player)
+
 	pova.set_override(player, "properties", {
 		infotext = rename.gpn(player:get_player_name()),
 	})
@@ -243,8 +219,6 @@ minetest.register_on_joinplayer(function(player)
 		-- At last! The custom coordinate system is now First Class!
 		basic_debug = false,
 	})
-
-	set_prng(player)
 
 	-- Finally! Minetest has shadow support!
 	-- check if function is supported by server (old versions 5.5.0)

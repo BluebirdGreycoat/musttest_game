@@ -207,6 +207,21 @@ end)
 
 
 
+local function set_prng(pref)
+	local pmeta = pref:get_meta()
+	local s = "random_seed"
+	local rand = pmeta:get_int(s)
+
+	-- I would have liked to use SecureRandom() but I don't feel like doing the
+	-- skunkwork to convert a byte string into a random seed. I've done it before,
+	-- in C++. It wasn't fun.
+	if rand == 0 then
+		pmeta:set_int(s, math.random(1000, 10000))
+	end
+end
+
+
+
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
 minetest.register_on_joinplayer(function(player)
@@ -228,6 +243,8 @@ minetest.register_on_joinplayer(function(player)
 		-- At last! The custom coordinate system is now First Class!
 		basic_debug = false,
 	})
+
+	set_prng(player)
 
 	-- Finally! Minetest has shadow support!
 	-- check if function is supported by server (old versions 5.5.0)

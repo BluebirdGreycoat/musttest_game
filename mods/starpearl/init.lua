@@ -38,13 +38,13 @@ if not starpearl.run_once then
 		 inventory_image = "mobs_flame_bolt.png",
 		  groups = {flammable = 3},
 		   light_source = 14,
+
+		     on_place = function(...) return starpearl.on_place(...) end,
 	})
 
 	minetest.register_craftitem("starpearl:pearl", {
 		description = "Star Pearl",
 		inventory_image = "starpearl_pearl.png",
-
-		on_place = function(...) return starpearl.on_place(...) end,
 	})
 
   local c = "starpearl:core"

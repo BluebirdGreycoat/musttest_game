@@ -181,6 +181,8 @@ end)
 
 
 
+-- Each player gets assigned a unique random seed. Once set, this seed number
+-- shall never change.
 local function set_prng(pref)
 	local pmeta = pref:get_meta()
 	local s = "random_seed"
@@ -218,10 +220,20 @@ minetest.register_on_joinplayer(function(player)
 	-- be too oversized or undersized.
 	local nsize = 1+(prng:next(-10, 10)/100)
 
+	-- Adjust base speed. Max range diff is 0.05 either direction.
+	local nspeed = 1+(prng:next(-10, 10)/200)
+
+	-- Adjust base jump. Max range diff is 0.05 either direction.
+	local njump = 1+(prng:next(-10, 10)/100)
+
 	pova.set_modifier(player, "properties",
 		{visual_size={x=nsize, y=nsize}},
 	"notbornequal", {priority=-999})
-	
+
+	pova.set_modifier(player, "physics",
+		{speed=nspeed, jump=njump},
+	"notbornequal", {priority=-999})
+
 	-- Disable the minimap. Cheaters will of course be able to enable it.
 	-- Can be reenabled via item in-game.
 	player:hud_set_flags({

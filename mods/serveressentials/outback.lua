@@ -263,6 +263,71 @@ local function restart_timers()
 	end
 end
 
+
+
+-- Find outback surface under sunlight.
+local function find_ground(pos)
+	local n1 = minetest.get_node(pos)
+	local p2 = vector.offset(pos, 0, -1, 0)
+	local n2 = minetest.get_node(p2)
+	local count = 0
+	while n2.name == "air" and count < 32 do
+		pos = p2
+		n1 = minetest.get_node(pos)
+		p2 = vector.offset(pos, 0, -1, 0)
+		n2 = minetest.get_node(p2)
+		count = count + 1
+	end
+	if n2.name == "rackstone:cobble" and n1.name == "air" then
+		if (minetest.get_node_light(pos, 0.5)) or 0 == 15 then
+			return pos
+		end
+	end
+end
+
+
+
+local function place_random_farms(minp, maxp)
+	for count = 1, 50 do
+		local p = {
+			x = math.random(minp.x + 10, maxp.x - 10),
+			y = maxp.y,
+			z = math.random(minp.z + 10, maxp.z - 10),
+		}
+		local g = find_ground(p)
+		if g then
+			-- Check corners.
+			local c1 = find_ground(vector.offset(g, -2, 16, -2))
+			local c2 = find_ground(vector.offset(g, 2, 16, -2))
+			local c3 = find_ground(vector.offset(g, -2, 16, 2))
+			local c4 = find_ground(vector.offset(g, 2, 16, 2))
+
+			local b1, b2, b3, b4 = false, false, false, false
+
+			-- Make sure ground is mostly flat.
+			if c1 and math.abs(c1.y - g.y) < 2 then b1 = true end
+			if c2 and math.abs(c2.y - g.y) < 2 then b2 = true end
+			if c3 and math.abs(c3.y - g.y) < 2 then b3 = true end
+			if c4 and math.abs(c4.y - g.y) < 2 then b4 = true end
+
+			-- Can't be protected. This relies on protectors and protector meta being
+			-- set *before* we place the farms!
+			if minetest.test_protection(c1, "") then b1 = false end
+			if minetest.test_protection(c2, "") then b2 = false end
+			if minetest.test_protection(c3, "") then b3 = false end
+			if minetest.test_protection(c4, "") then b4 = false end
+
+			if b1 and b2 and b3 and b4 then
+				local schematic = rc.modpath .. "/outback_small_farm.mts"
+				local d = vector.offset(g, -2, -2, -2)
+				minetest.place_schematic(d, schematic, "random", {}, true, "")
+			end
+		end
+	end
+end
+
+
+
 local function callback(blockpos, action, calls_remaining, param)
 	-- We don't do anything until the last callback.
 	if calls_remaining ~= 0 then
@@ -332,6 +397,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	rebuild_nodes()
 	rebuild_metadata()
 	restart_timers()
+	place_random_farms(minp, maxp)
 end
 
 -- This API may be called to completely reset the Outback realm.

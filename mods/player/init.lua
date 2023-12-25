@@ -209,6 +209,18 @@ minetest.register_on_joinplayer(function(player)
 		text = rename.gpn(player:get_player_name()),
 		bgcolor = false,
 	})
+
+	local pmeta = player:get_meta()
+	local random_seed = pmeta:get_int("random_seed")
+	local prng = PseudoRandom(random_seed)
+
+	-- The max diff in either direction should be 0.1, otherwise players will
+	-- be too oversized or undersized.
+	local nsize = 1+(prng:next(-10, 10)/100)
+
+	pova.set_modifier(player, "properties",
+		{visual_size={x=nsize, y=nsize}},
+	"notbornequal", {priority=-999})
 	
 	-- Disable the minimap. Cheaters will of course be able to enable it.
 	-- Can be reenabled via item in-game.

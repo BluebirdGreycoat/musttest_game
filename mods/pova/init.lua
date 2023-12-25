@@ -179,10 +179,17 @@ end
 
 
 
+local function mult_visual_size(o, n)
+	return {x=o.x * n.x, y=o.y * n.y, z=o.z * (n.z or n.x)}
+end
+
+
+
 -- Combine all modifiers in named stack to a single table. Numbers are
 -- multiplied together if meaningful to do so. Boolean flags and other data
 -- simply overwrite, with the data at the top of the player's stack taking
 -- precedence.
+local def_visual_size = {x=1, y=1, z=1}
 local function combine_data(data, stack)
 	local o = {}
 
@@ -208,14 +215,24 @@ local function combine_data(data, stack)
 		for k, v in ipairs(do_sort(data.properties)) do
 			if not v.mode.op then
 				for i, j in pairs(v.data) do
-					o[i] = j
+					if i == "visual_size" then
+						-- Visual size is *always* multiplied.
+						o[i] = mult_visual_size(o[i] or def_visual_size, j)
+					else
+						o[i] = j
+					end
 				end
 			elseif v.mode.op == "add" then
 				for i, j in pairs(v.data) do
-					if type(j) == "number" then
-						o[i] = (o[i] or 0.0) + j
+					if i == "visual_size" then
+						-- Visual size is *always* multiplied.
+						o[i] = mult_visual_size(o[i] or def_visual_size, j)
 					else
-						o[i] = j
+						if type(j) == "number" then
+							o[i] = (o[i] or 0.0) + j
+						else
+							o[i] = j
+						end
 					end
 				end
 			end

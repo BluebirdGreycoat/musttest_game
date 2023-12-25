@@ -54,7 +54,7 @@ minetest.register_node("stoneworld:basalt_with_mese", {
 	drop = {
 		max_items = 2,
 		items = {
-			{items = {'mobs:flame_bolt'}, rarity = 16},
+			{items = {'mobs:flame_bolt'}, rarity = 32},
 			{items = {'default:mese_crystal'}}
 		}
 	},

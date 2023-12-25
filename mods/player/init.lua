@@ -176,15 +176,11 @@ minetest.register_globalstep(function(dtime)
 			-- Determine if the player is sneaking, and reduce animation speed if so
 			if controls.sneak then
 				animation_speed_mod = animation_speed_mod / 2
-				pova.set_override(player, "properties", {
-					makes_footstep_sound = false,
-				})
+
+				pova.set_modifier(player, "properties",
+					{makes_footstep_sound = false}, "footstep_sneaking")
 			else
-				if not gdac_invis.is_invisible(pname) then
-					pova.set_override(player, "properties", {
-						makes_footstep_sound = true,
-					})
-				end
+				pova.remove_modifier(player, "properties", "footstep_sneaking")
 			end
 
 			-- Apply animations based on what the player is doing

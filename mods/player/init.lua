@@ -237,7 +237,7 @@ minetest.register_on_joinplayer(function(player)
 	-- check if function is supported by server (old versions 5.5.0)
 	if player["set_lighting"] ~= nil then
 		player:set_lighting({
-			shadows = {intensity=0.5},
+			shadows = {intensity=0.3},
 		})
 	else
 		minetest.log("WARNING", "This server does not support player:lighting !");

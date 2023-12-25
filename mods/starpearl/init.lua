@@ -33,7 +33,7 @@ end
 
 
 if not starpearl.run_once then
-	minetest.register_craftitem("mobs:flame_bolt", {
+	minetest.register_craftitem(":mobs:flame_bolt", {
 		description = "Flame Bolt",
 		 inventory_image = "mobs_flame_bolt.png",
 		  groups = {flammable = 3},

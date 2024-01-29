@@ -644,15 +644,21 @@ if not flowers.reg3 then
 
 		on_place = function(itemstack, placer, pointed_thing)
 			local pos = pointed_thing.above
-			local node = minetest.get_node(pointed_thing.under).name
-			local def = minetest.reg_ns_nodes[node]
+			local node = minetest.get_node(pointed_thing.under)
+			local name = node.name
+			local def = minetest.reg_ns_nodes[name]
 			local player_name = placer:get_player_name()
+
+			-- Pass through interactions to nodes that define them (like chests).
+			if def.on_rightclick and not placer:get_player_control().sneak then
+				return def.on_rightclick(pointed_thing.under, node, placer, itemstack, pointed_thing)
+			end
 
 			-- Lilies are placeable in any water.
 			-- They only grow further in regular water sources.
 
 			if def and def.liquidtype == "source" and
-					minetest.get_item_group(node, "water") > 0 then
+					minetest.get_item_group(name, "water") > 0 then
 				if not minetest.is_protected(pos, player_name) then
 					minetest.add_node(pos, {name = "flowers:waterlily",
 					param2 = math_random(0, 3)})

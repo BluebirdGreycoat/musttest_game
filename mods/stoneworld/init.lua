@@ -21,6 +21,7 @@ local c_obsidian2       = minetest.get_content_id("default:obsidian")
 local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
 local c_adamant         = minetest.get_content_id("default:adamant")
+local c_sand            = minetest.get_content_id("cavestuff:coal_dust")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -31,6 +32,7 @@ local noisemap3 = {}
 local noisemap4 = {}
 local noisemap5 = {}
 local noisemap6 = {}
+local noisemap7 = {}
 
 local perlin1
 local perlin3
@@ -210,6 +212,17 @@ stoneworld.noise6param2d = {
 	lacunarity = 1.9,
 }
 
+-- Black sand spawning.
+stoneworld.noise7param3d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=128, y=128, z=128},
+	seed = 99382,
+	octaves = 4,
+	persist = 0.5,
+	lacunarity = 2.0,
+}
+
 
 
 --------------------------------------------------------------------------------
@@ -327,6 +340,9 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 
 	perlin6 = perlin6 or minetest.get_perlin_map(stoneworld.noise6param2d, sides2D)
 	perlin6:get_2d_map_flat(bp2d, noisemap6)
+
+	perlin7 = perlin7 or minetest.get_perlin_map(stoneworld.noise7param3d, sides3D)
+	perlin7:get_3d_map_flat(bp3d, noisemap7)
 
 	-- Localize commonly used functions for speed.
 	local floor = math.floor
@@ -551,6 +567,11 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 			local fungus = pr:next(1, 100) < 15
 
 			for y = miny, maxy do
+				-- Get index into 3D noise arrays.
+				local n3d = min_area:index(x, y, z)
+
+				local sand_threshold = abs(noisemap7[n3d])
+
 				local vd = max_area:index(x, y - 1, z)
 				local vp = max_area:index(x, y, z)
 				local vu = max_area:index(x, y + 1, z)
@@ -594,11 +615,15 @@ stoneworld.generate_realm = function(minp, maxp, seed)
 				-- But not if already turned to obsidian.
 				if nid ~= c_obsidian then
 					if cp == c_stone and cu == c_air and cd == c_stone then
-						nid = c_cobble
+						if sand_threshold < 0.1 then
+							nid = c_sand
+						else
+							nid = c_cobble
 
-						-- Sometimes place sunstone.
-						if pr:next(1, 300) == 1 then
-							nid = c_glow
+							-- Sometimes place sunstone.
+							if pr:next(1, 300) == 1 then
+								nid = c_glow
+							end
 						end
 					end
 				end

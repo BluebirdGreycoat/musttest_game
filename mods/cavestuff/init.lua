@@ -629,7 +629,7 @@ minetest.register_craft({
 })
 
 minetest.register_node("cavestuff:coal_dust", {
-  description = "Coal Dust Block",
+  description = "Black Sand",
   tiles = {"caverealms_coal_dust.png"},
   groups = utility.dig_groups("sand", {falling_node = 1}),
   sounds = default.node_sound_gravel_defaults(),

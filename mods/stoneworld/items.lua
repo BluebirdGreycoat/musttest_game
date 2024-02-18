@@ -14,6 +14,11 @@ local function scepter_revive_player(tref, tname, pname, pos)
 
   local hp_max = pova.get_active_modifier(tref, "properties").hp_max
   tref:set_hp(hp_max, {reason="revive"})
+
+  -- DON'T run the bed respawn code, we want to keep player in place.
+  bones.nohack.on_respawnplayer(tref)
+  sprint.on_respawnplayer(tref)
+
   minetest.close_formspec(tname, "") -- Close the respawn formspec.
   ambiance.sound_play("default_cool_lava", tref:get_pos(), 1.0, 32)
   minetest.chat_send_player(pname, "# Server: You revived <" .. rename.gpn(tname) .. ">.")

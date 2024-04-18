@@ -67,26 +67,31 @@ db_exec(create_db)
 local stmt_get_record = db:prepare([[
 	SELECT * FROM auth WHERE name = ? LIMIT 1;
 ]])
+assert(stmt_get_record, db:errmsg())
 
 local stmt_check_name = db:prepare([[
 	SELECT DISTINCT name
 	FROM auth
 	WHERE LOWER(name) = LOWER(?) LIMIT 1;
 ]])
+assert(stmt_check_name, db:errmsg())
 
 local stmt_check_name_all = db:prepare([[
 	SELECT name
 	FROM auth
 	WHERE LOWER(name) = LOWER(?);
 ]])
+assert(stmt_check_name_all, db:errmsg())
 
 local stmt_get_setting = db:prepare([[
 	SELECT ? FROM _s
 ]])
+assert(stmt_get_setting, db:errmsg())
 
 local stmt_get_names = db:prepare([[
 	SELECT name FROM auth WHERE name LIKE '%' || ? || '%';
 ]])
+assert(stmt_get_names, db:errmsg())
 
 
 
@@ -152,26 +157,32 @@ end
 local stmt_add_record = db:prepare([[
 	INSERT INTO auth (name, password, privileges, last_login) VALUES (?, ?, ?, ?)
 ]])
+assert(stmt_add_record, db:errmsg())
 
 local stmt_add_setting = db:prepare([[
 	INSERT INTO _s (?) VALUES (?)
 ]])
+assert(stmt_add_setting, db:errmsg())
 
 local stmt_update_login = db:prepare([[
 	UPDATE auth SET last_login = ? WHERE name = ?
 ]])
+assert(stmt_update_login, db:errmsg())
 
 local stmt_update_password = db:prepare([[
 	UPDATE auth SET password = ? WHERE name = ?
 ]])
+assert(stmt_update_password, db:errmsg())
 
 local stmt_update_privs = db:prepare([[
 	UPDATE auth SET privileges = ? WHERE name = ?
 ]])
+assert(stmt_update_privs, db:errmsg())
 
 local stmt_del_record = db:prepare([[
 	DELETE FROM auth WHERE name = ?
 ]])
+assert(stmt_del_record, db:errmsg())
 
 
 

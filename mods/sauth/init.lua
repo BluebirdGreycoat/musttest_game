@@ -63,54 +63,82 @@ db_exec(create_db)
 ###########################
 ]]
 
+-- Prepared statements.
+local stmt_get_record = db:prepare([[
+	SELECT * FROM auth WHERE name = ? LIMIT 1;
+]])
+
+local stmt_check_name = db:prepare([[
+	SELECT DISTINCT name
+	FROM auth
+	WHERE LOWER(name) = LOWER(?) LIMIT 1;
+]])
+
+local stmt_check_name_all = db:prepare([[
+	SELECT name
+	FROM auth
+	WHERE LOWER(name) = LOWER(?);
+]])
+
+local stmt_get_setting = db:prepare([[
+	SELECT ? FROM _s
+]])
+
+local stmt_get_names = db:prepare([[
+	SELECT name FROM auth WHERE name LIKE '%' || ? || '%';
+]])
+
+
+
+-- Actions.
 local function get_record(name)
-	local query = ([[
-	    SELECT * FROM auth WHERE name = '%s' LIMIT 1;
-	]]):format(name)
-	for row in db:nrows(query) do
+	stmt_get_record:reset()
+	assert(stmt_get_record:bind_values(name) == _sql.OK)
+
+	for row in stmt_get_record:nrows() do
 		return row
 	end
 end
 
 local function check_name(name)
-	local query = ([[
-		SELECT DISTINCT name 
-		FROM auth 
-		WHERE LOWER(name) = LOWER('%s') LIMIT 1;
-	]]):format(name)
-	for row in db:nrows(query) do
+	stmt_check_name:reset()
+	assert(stmt_check_name:bind_values(name) == _sql.OK)
+
+	for row in stmt_check_name:nrows() do
 		return row
 	end
 end
 
 local function check_name_all(name)
-	local query = ([[
-		SELECT name 
-		FROM auth 
-		WHERE LOWER(name) = LOWER('%s');
-	]]):format(name)
+	stmt_check_name_all:reset()
+	assert(stmt_check_name_all:bind_values(name) == _sql.OK)
+
 	local t = {}
-	for row in db:nrows(query) do
+	for row in stmt_check_name_all:nrows() do
 		t[#t+1] = row.name
 	end
+
 	return t
 end
 
 local function get_setting(column)
-	local query = ([[
-		SELECT %s FROM _s
-	]]):format(column)
-	for row in db:nrows(query) do
+	stmt_get_setting:reset()
+	assert(stmt_get_setting:bind_values(column) == _sql.OK)
+
+	for row in stmt_get_setting:nrows() do
 		return row
 	end
 end
 
 local function get_names(name)
-	local r,q = {}
-	q = "SELECT name FROM auth WHERE name LIKE '%"..name.."%';"
-	for row in db:nrows(q) do
+	stmt_get_names:reset()
+	assert(stmt_get_names:bind_values(name) == _sql.OK)
+
+	local r = {}
+	for row in stmt_get_names:nrows() do
 		r[#r+1] = row.name
 	end
+
 	return r
 end
 
@@ -120,53 +148,72 @@ end
 ##############################
 ]]
 
+-- Prepared statements.
+local stmt_add_record = db:prepare([[
+	INSERT INTO auth (name, password, privileges, last_login) VALUES (?, ?, ?, ?)
+]])
+
+local stmt_add_setting = db:prepare([[
+	INSERT INTO _s (?) VALUES (?)
+]])
+
+local stmt_update_login = db:prepare([[
+	UPDATE auth SET last_login = ? WHERE name = ?
+]])
+
+local stmt_update_password = db:prepare([[
+	UPDATE auth SET password = ? WHERE name = ?
+]])
+
+local stmt_update_privs = db:prepare([[
+	UPDATE auth SET privileges = ? WHERE name = ?
+]])
+
+local stmt_del_record = db:prepare([[
+	DELETE FROM auth WHERE name = ?
+]])
+
+
+
+-- Actions.
 local function add_record(name, password, privs, last_login)
-	local stmt = ([[
-		INSERT INTO auth (
-		name,
-		password,
-		privileges,
-		last_login
-    		) VALUES ('%s','%s','%s','%s')
-	]]):format(name, password, privs, last_login)
-	db_exec(stmt)
+	stmt_add_record:reset()
+	assert(stmt_add_record:bind_values(name, password, privs, last_login) == _sql.OK)
+	assert(stmt_add_record:step() == _sql.DONE)
 end
 
 local function add_setting(column, val)
-	local stmt = ([[
-		INSERT INTO _s (%s) VALUES ('%s')
-	]]):format(column, val)
-	db_exec(stmt)
+	stmt_add_setting:reset()
+	assert(stmt_add_setting:bind_values(column, val) == _sql.OK)
+	assert(stmt_add_setting:step() == _sql.DONE)
 end
 
 local function update_login(name)
 	local ts = os.time()
-	local stmt = ([[
-		UPDATE auth SET last_login = %i WHERE name = '%s'
-	]]):format(ts, name)
-	db_exec(stmt)
+	stmt_update_login:reset()
+	assert(stmt_update_login:bind_values(ts, name) == _sql.OK)
+	assert(stmt_update_login:step() == _sql.DONE)
 end
 
 local function update_password(name, password)
-	local stmt = ([[
-		UPDATE auth SET password = '%s' WHERE name = '%s'
-	]]):format(password,name)
-	db_exec(stmt)
+	stmt_update_password:reset()
+	assert(stmt_update_password:bind_values(name, password) == _sql.OK)
+	assert(stmt_update_password:step() == _sql.DONE)
 end
 
 local function update_privileges(name, privs)
-	local stmt = ([[
-		UPDATE auth SET privileges = '%s' WHERE name = '%s'
-	]]):format(privs,name)
-	db_exec(stmt)
+	stmt_update_privs:reset()
+	assert(stmt_update_privs:bind_values(name, privs) == _sql.OK)
+	assert(stmt_update_privs:step() == _sql.DONE)
 end
 
 local function del_record(name)
-	local stmt = ([[
-		DELETE FROM auth WHERE name = '%s'
-	]]):format(name)
-	db_exec(stmt)
+	stmt_del_record:reset()
+	assert(stmt_del_record:bind_values(name) == _sql.OK)
+	assert(stmt_del_record:step() == _sql.DONE)
 end
+
+
 
 --[[
 ######################

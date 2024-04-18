@@ -83,11 +83,6 @@ local stmt_check_name_all = db:prepare([[
 ]])
 assert(stmt_check_name_all, db:errmsg())
 
-local stmt_get_setting = db:prepare([[
-	SELECT ? FROM _s
-]])
-assert(stmt_get_setting, db:errmsg())
-
 local stmt_get_names = db:prepare([[
 	SELECT name FROM auth WHERE name LIKE '%' || ? || '%';
 ]])
@@ -126,15 +121,6 @@ local function check_name_all(name)
 	return t
 end
 
-local function get_setting(column)
-	stmt_get_setting:reset()
-	assert(stmt_get_setting:bind_values(column) == _sql.OK)
-
-	for row in stmt_get_setting:nrows() do
-		return row
-	end
-end
-
 local function get_names(name)
 	stmt_get_names:reset()
 	assert(stmt_get_names:bind_values(name) == _sql.OK)
@@ -158,11 +144,6 @@ local stmt_add_record = db:prepare([[
 	INSERT INTO auth (name, password, privileges, last_login) VALUES (?, ?, ?, ?)
 ]])
 assert(stmt_add_record, db:errmsg())
-
-local stmt_add_setting = db:prepare([[
-	INSERT INTO _s (?) VALUES (?)
-]])
-assert(stmt_add_setting, db:errmsg())
 
 local stmt_update_login = db:prepare([[
 	UPDATE auth SET last_login = ? WHERE name = ?
@@ -191,12 +172,6 @@ local function add_record(name, password, privs, last_login)
 	stmt_add_record:reset()
 	assert(stmt_add_record:bind_values(name, password, privs, last_login) == _sql.OK)
 	assert(stmt_add_record:step() == _sql.DONE)
-end
-
-local function add_setting(column, val)
-	stmt_add_setting:reset()
-	assert(stmt_add_setting:bind_values(column, val) == _sql.OK)
-	assert(stmt_add_setting:step() == _sql.DONE)
 end
 
 local function update_login(name)

@@ -125,6 +125,7 @@ end
 
 
 -- For one-time database format conversion!
+--[===[
 function email.translate_database()
 	local db = email.sql.open(email.database)
 	if not db then return end
@@ -152,3 +153,5 @@ function email.translate_database()
 	db_exec(db, [[ COMMIT; ]])
 	db:close()
 end
+--]===]
+

@@ -139,7 +139,10 @@ player_labels.on_joinplayer = function(player)
   if player_labels.cast[pname] then
     nametag_show(pname)
   else
-    minetest.chat_send_player(pname, "# Server: Avatar name broadcast is OFF.")
+    -- After welcome msg, before joinspec and email.
+    minetest.after(5, function(pn)
+      minetest.chat_send_player(pn, "# Server: Avatar name broadcast is OFF.")
+    end, pname)
     nametag_hide(pname)
   end
 end

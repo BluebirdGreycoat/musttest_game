@@ -183,13 +183,13 @@ end
 
 local function update_password(name, password)
 	stmt_update_password:reset()
-	assert(stmt_update_password:bind_values(name, password) == _sql.OK)
+	assert(stmt_update_password:bind_values(password, name) == _sql.OK)
 	assert(stmt_update_password:step() == _sql.DONE)
 end
 
 local function update_privileges(name, privs)
 	stmt_update_privs:reset()
-	assert(stmt_update_privs:bind_values(name, privs) == _sql.OK)
+	assert(stmt_update_privs:bind_values(privs, name) == _sql.OK)
 	assert(stmt_update_privs:step() == _sql.DONE)
 end
 

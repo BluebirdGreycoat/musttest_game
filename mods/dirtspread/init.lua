@@ -92,7 +92,7 @@ function dirtspread.on_timer(pos, elapsed)
 		-- If the function returns `true`, restart the timer.
 		if ndef.func(table.copy(pos), node) then
 			local timer = minetest.get_node_timer(pos)
-			timer:start(ndef.min_time, ndef.max_time)
+			timer:start(math.random(ndef.min_time, ndef.max_time))
 		end
 	end
 end
@@ -133,7 +133,7 @@ function dirtspread.on_notify_around(pos)
 			--]]
 
 			--minetest.chat_send_player("MustTest", "Started timer: " .. minetest.pos_to_string(p2))
-			timer:start(ndef.min_time, ndef.max_time)
+			timer:start(math.random(ndef.min_time, ndef.max_time))
 		end
 	end
 end

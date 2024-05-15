@@ -236,12 +236,26 @@ function dirtspread.register_active_block(name, data)
 	if ndef.on_timer then
 		local old = ndef.on_timer
 		on_timer = function(pos, elapsed)
-			dirtspread.on_timer(pos, elapsed)
-			return old(pos, elapsed)
+			-- FIXME: what happens if the dirtspread timer does NOT return true
+			-- (e.g., it set a new random expiry time), and the original nodetimer (old)
+			-- DOES return true (e.g., it has its own idea of when the next timeout
+			-- should happen)? This is a logic/time conflict which might cause strange
+			-- bugs with certain nodes if they BOTH have their own nodetimer, and are
+			-- also registered with the dirtspread code.
+			local b1 = dirtspread.on_timer(pos, elapsed)
+			local b2 = old(pos, elapsed)
+
+			-- If either returns true, we have to restart the timer.
+			if b1 or b2 then
+				return true
+			end
 		end
 	else
 		on_timer = function(pos, elapsed)
-			dirtspread.on_timer(pos, elapsed)
+			-- If the dirtspread timer func returns true, we have to restart the timer.
+			if dirtspread.on_timer(pos, elapsed) then
+				return true
+			end
 		end
 	end
 

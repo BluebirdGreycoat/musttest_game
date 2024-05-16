@@ -87,7 +87,7 @@ function xp.update_players_max_hp(pname, login)
 	if percent > 1 then percent = 1 end
 
 	local new_max_hp = xp.get_hp_max(pname)
-	local new_hp = math_min((percent * new_max_hp), new_max_hp)
+	local new_hp = math.floor(math.min((percent * new_max_hp), new_max_hp))
 
 	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
 	-- does not store this itself, and reverts to HP_MAX=20 on every login. The

@@ -77,7 +77,7 @@ function xp.update_players_max_hp(pname, login)
 
 		-- Should only happen for new players (and existing that don't have 'hp_max'
 		-- in their meta info yet).
-		if max_hp == 0 or cur_hp == 0 then
+		if max_hp == 0 and cur_hp == 0 then
 			max_hp = minetest.PLAYER_MAX_HP_DEFAULT
 			cur_hp = max_hp
 		end

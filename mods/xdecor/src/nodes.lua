@@ -617,11 +617,15 @@ xdecor.register("painting_1", {
 	walkable = false,
 
 	on_place = function(itemstack, placer, pointed_thing)
-		local num = math_random(4)
-		local leftover = minetest.item_place_node(
-			ItemStack("xdecor:painting_"..num), placer, pointed_thing)
+		local num = math_random(1, 4)
 
-		itemstack:take_item()
+		local leftover, success, pos = minetest.item_place_node(
+			ItemStack("xdecor:painting_" .. num), placer, pointed_thing)
+
+		if success then
+			itemstack:take_item()
+		end
+
 		return itemstack
 	end,
 })

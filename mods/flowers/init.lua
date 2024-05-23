@@ -649,7 +649,7 @@ if not flowers.reg3 then
 			local def = minetest.reg_ns_nodes[name]
 
 			-- Pass through interactions to nodes that define them (like chests).
-			if def.on_rightclick and placer and not placer:get_player_control().sneak then
+			if def and def.on_rightclick and placer and not placer:get_player_control().sneak then
 				return def.on_rightclick(pointed_thing.under, node, placer, itemstack, pointed_thing)
 			end
 

@@ -656,7 +656,7 @@ if not flowers.reg3 then
 			-- Lilies are placeable in any water.
 			-- They only grow further in regular water sources.
 
-			if def and def.liquidtype == "source" and
+			if def and def.liquidtype == "source" and placer and
 					minetest.get_item_group(name, "water") > 0 then
 
 				local player_name = placer:get_player_name()

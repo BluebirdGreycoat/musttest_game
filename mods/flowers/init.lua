@@ -660,13 +660,13 @@ if not flowers.reg3 then
 					minetest.get_item_group(name, "water") > 0 then
 
 				local player_name = placer:get_player_name()
-				if not minetest.is_protected(pos, player_name) then
+				if minetest.is_protected(pos, player_name) then
+					minetest.chat_send_player(player_name, "# Server: Position is protected.")
+					minetest.record_protection_violation(pos, player_name)
+				else
 					minetest.add_node(pos, {name = "flowers:waterlily",
 						param2 = math_random(0, 3)})
 					itemstack:take_item()
-				else
-					minetest.chat_send_player(player_name, "# Server: Position is protected.")
-					minetest.record_protection_violation(pos, player_name)
 				end
 			end
 

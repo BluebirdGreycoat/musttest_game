@@ -10,8 +10,12 @@ Edited by TenPlus1
 
 ]]--
 
+if not minetest.global_exists("bags") then bags = {} end
+bags.modpath = minetest.get_modpath("bags")
 
-local get_formspec = function(player, page)
+
+
+function bags.get_formspec(player, page)
 
 	if page == "bags" then
 
@@ -46,6 +50,11 @@ local get_formspec = function(player, page)
 				.."image[0,0;1,1;" .. image .. "]"
 				.."list[current_player;bag" .. i .. "contents;0,1;8,4;]"
 --]]
+			local by = 5.05
+			local bx = 5.37
+			local bw = 0.57
+			local bh = 0.41
+
 			return "size[8,9.5]"
 				.. default.gui_bg .. default.gui_bg_img .. default.gui_slots
 				.. "list[current_player;bag" .. i .. "contents;0,0;8,4;]"
@@ -53,10 +62,16 @@ local get_formspec = function(player, page)
 				.. "label[2,4.2;" .. minetest.formspec_escape("Bag #" .. i .. "") .. "]"
 				.. "button[6,4.2;2,0.5;bags;Bags]"
 				.. "image[3,4;1,1;" .. image .. "]"
-				.. "button[4.00,4.2;0.68,0.5;bag1;1]"
-				.. "button[4.45,4.2;0.68,0.5;bag2;2]"
-				.. "button[4.90,4.2;0.68,0.5;bag3;3]"
-				.. "button[5.35,4.2;0.68,0.5;bag4;4]"
+
+				.. "real_coordinates[true]"
+				.. "button[" .. bx + bw * 0 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag1;1]"
+				.. "button[" .. bx + bw * 1 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag2;2]"
+				.. "button[" .. bx + bw * 2 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag3;3]"
+				.. "button[" .. bx + bw * 3 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag4;4]"
+				.. "button[" .. bx + bw * 0 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";drop" .. i .. ";Chuck]"
+				.. "button[" .. bx + bw * 2 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";grab" .. i .. ";Snatch]"
+				.. "real_coordinates[false]"
+
 				.. "list[current_player;main;0,5.5;8,1;]"
 				.. "list[current_player;main;0,6.75;8,3;8]"
 				.. "listring[current_player;main]"
@@ -66,135 +81,143 @@ local get_formspec = function(player, page)
 	end
 end
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
 
-	if fields.bags then
-		inventory_plus.set_inventory_formspec(player, get_formspec(player, "bags"))
-		return
-	end
 
-	for i = 1, 4 do
+if not bags.loaded then
+	local c = "bags:core"
+	local f = bags.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+	bags.loaded = true
 
-		local page = "bag" .. i
-
-		if fields[page] then
-	
-			if player:get_inventory():get_stack(page, 1):get_definition().groups.bagslots == nil then
-				page = "bags"
-			end
-	
-			inventory_plus.set_inventory_formspec(player, get_formspec(player, page))
-	
+	minetest.register_on_player_receive_fields(function(player, formname, fields)
+		if fields.bags then
+			inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, "bags"))
 			return
 		end
-	end
-end)
 
-minetest.register_on_joinplayer(function(player)
+		for i = 1, 4 do
 
-	local player_inv = player:get_inventory()
-	local bags_inv = minetest.create_detached_inventory(player:get_player_name().."_bags",{
+			local page = "bag" .. i
 
-		on_put = function(inv, listname, index, stack, player)
-			player:get_inventory():set_stack(listname, index, stack)
-			player:get_inventory():set_size(listname.."contents", stack:get_definition().groups.bagslots)
-		end,
+			if fields[page] then
 
-		on_take = function(inv, listname, index, stack, player)
-			player:get_inventory():set_stack(listname, index, nil)
-		end,
+				if player:get_inventory():get_stack(page, 1):get_definition().groups.bagslots == nil then
+					page = "bags"
+				end
 
-		allow_put = function(inv, listname, index, stack, player)
-			if stack:get_definition().groups.bagslots then
-				return 1
-			else
-				return 0
+				inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, page))
+
+				return
 			end
-		end,
+		end
+	end)
 
-		allow_take = function(inv, listname, index, stack, player)
-			if player:get_inventory():is_empty(listname .. "contents") == true then
-				return stack:get_count()
-			else
+	minetest.register_on_joinplayer(function(player)
+
+		local player_inv = player:get_inventory()
+		local bags_inv = minetest.create_detached_inventory(player:get_player_name().."_bags",{
+
+			on_put = function(inv, listname, index, stack, player)
+				player:get_inventory():set_stack(listname, index, stack)
+				player:get_inventory():set_size(listname.."contents", stack:get_definition().groups.bagslots)
+			end,
+
+			on_take = function(inv, listname, index, stack, player)
+				player:get_inventory():set_stack(listname, index, nil)
+			end,
+
+			allow_put = function(inv, listname, index, stack, player)
+				if stack:get_definition().groups.bagslots then
+					return 1
+				else
+					return 0
+				end
+			end,
+
+			allow_take = function(inv, listname, index, stack, player)
+				if player:get_inventory():is_empty(listname .. "contents") == true then
+					return stack:get_count()
+				else
+					return 0
+				end
+			end,
+
+			allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
 				return 0
-			end
-		end,
+			end,
+		}, player:get_player_name())
 
-		allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
-			return 0
-		end,
-	}, player:get_player_name())
+		for i = 1, 4 do
+			local bag = "bag" .. i
 
-	for i = 1, 4 do
-		local bag = "bag" .. i
+			player_inv:set_size(bag, 1)
+			bags_inv:set_size(bag, 1)
+			bags_inv:set_stack(bag, 1, player_inv:get_stack(bag, 1))
+		end
+	end)
 
-		player_inv:set_size(bag, 1)
-		bags_inv:set_size(bag, 1)
-		bags_inv:set_stack(bag, 1, player_inv:get_stack(bag, 1))
-	end
-end)
+	-- register bags items
 
--- register bags items
+	minetest.register_craftitem("bags:small", {
+		description = "Small Bag",
+		inventory_image = "bags_small.png",
+		groups = {bagslots = 8},
+	})
 
-minetest.register_craftitem("bags:small", {
-	description = "Small Bag",
-	inventory_image = "bags_small.png",
-	groups = {bagslots = 8},
-})
+	minetest.register_craftitem("bags:medium", {
+		description = "Medium Bag",
+		inventory_image = "bags_medium.png",
+		groups = {bagslots = 16},
+	})
 
-minetest.register_craftitem("bags:medium", {
-	description = "Medium Bag",
-	inventory_image = "bags_medium.png",
-	groups = {bagslots = 16},
-})
+	minetest.register_craftitem("bags:large", {
+		description = "Large Bag",
+		inventory_image = "bags_large.png",
+		groups = {bagslots = 24},
+	})
 
-minetest.register_craftitem("bags:large", {
-	description = "Large Bag",
-	inventory_image = "bags_large.png",
-	groups = {bagslots = 24},
-})
+	minetest.register_tool("bags:trolley", {
+		description = "Trolley",
+		inventory_image = "bags_trolley.png",
+		groups = {bagslots = 32},
+	})
 
-minetest.register_tool("bags:trolley", {
-	description = "Trolley",
-	inventory_image = "bags_trolley.png",
-	groups = {bagslots = 32},
-})
+	-- register bag crafts
 
--- register bag crafts
+	minetest.register_craft({
+		output = "bags:small",
+		recipe = {
+			{"farming:string", "group:stick", "farming:string"},
+			{"group:leather", "group:leather", "group:leather"},
+			{"group:leather", "group:leather", "group:leather"},
+		},
+	})
 
-minetest.register_craft({
-	output = "bags:small",
-	recipe = {
-		{"farming:string", "group:stick", "farming:string"},
-		{"group:leather", "group:leather", "group:leather"},
-		{"group:leather", "group:leather", "group:leather"},
-	},
-})
+	minetest.register_craft({
+		output = "bags:medium",
+		recipe = {
+			{"farming:string", "group:stick", "farming:string"},
+			{"bags:small", "bags:small", "bags:small"},
+		},
+	})
 
-minetest.register_craft({
-	output = "bags:medium",
-	recipe = {
-		{"farming:string", "group:stick", "farming:string"},
-		{"bags:small", "bags:small", "bags:small"},
-	},
-})
+	minetest.register_craft({
+		output = "bags:large",
+		recipe = {
+			{"farming:string", "group:stick", "farming:string"},
+			{"bags:medium", "bags:medium", "bags:medium"},
+		},
+	})
 
-minetest.register_craft({
-	output = "bags:large",
-	recipe = {
-		{"farming:string", "group:stick", "farming:string"},
-		{"bags:medium", "bags:medium", "bags:medium"},
-	},
-})
+	minetest.register_craft({
+		output = "bags:trolley",
+		recipe = {
+			{"", "group:stick", ""},
+			{"bags:large", "bags:large", "bags:large"},
+			{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+		},
+	})
 
-minetest.register_craft({
-	output = "bags:trolley",
-	recipe = {
-		{"", "group:stick", ""},
-		{"bags:large", "bags:large", "bags:large"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-	},
-})
-
--- Register button once.
-inventory_plus.register_button("bags", "Bags")
+	-- Register button once.
+	inventory_plus.register_button("bags", "Bags")
+end

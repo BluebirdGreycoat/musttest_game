@@ -305,6 +305,10 @@ local c_silt            = minetest.get_content_id("darkage:silt")
 local c_mud             = minetest.get_content_id("darkage:mud")
 local c_clay            = minetest.get_content_id("default:clay")
 local c_lily            = minetest.get_content_id("flowers:waterlily")
+local c_tree            = minetest.get_content_id("basictrees:jungletree_cube")
+local c_leaves          = minetest.get_content_id("basictrees:jungletree_leaves2")
+local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_litter")
+local c_junglegrass     = minetest.get_content_id("default:junglegrass")
 
 -- Externally located tables for performance.
 local data = {}
@@ -541,6 +545,83 @@ cw.generate_realm = function(minp, maxp, seed)
 		v_orig.b = bottom
 		v_orig.t = v.y + 17
 	end
+
+	-- Final mapgen pass, for finding floors and ceilings in the forest.
+	-- Have to "get_data" again because we placed a bunch of schematics on the vmanip.
+	vm:get_data(data)
+  for x = x0, x1 do
+    for z = z0, z1 do
+      for y = y0, y1 do
+				if y < (nstart + 60) then
+					local center = area:index(x, y, z)
+					local under = area:index(x, y-1, z)
+					local above = area:index(x, y+1, z)
+					local north = area:index(x, y, z+1)
+					local south = area:index(x, y, z-1)
+					local east = area:index(x+1, y, z)
+					local west = area:index(x-1, y, z)
+					local sevenup = area:index(x, y+7, z)
+					local farnorth = area:index(x, y, z+7)
+					local farsouth = area:index(x, y, z-7)
+					local fareast = area:index(x+7, y, z)
+					local farwest = area:index(x-7, y, z)
+
+					local center_id = data[center]
+					local above_id = data[above]
+					local under_id = data[under]
+					local north_id = data[north]
+					local south_id = data[south]
+					local west_id = data[west]
+					local east_id = data[east]
+					local sevenup_id = data[sevenup]
+					local farnorth_id = data[farnorth]
+					local farsouth_id = data[farsouth]
+					local farwest_id = data[farwest]
+					local fareast_id = data[fareast]
+
+					local border_count = 0
+					if north_id == c_leaves or north_id == c_soil or north_id == c_tree then
+						border_count = border_count + 1
+					end
+					if south_id == c_leaves or south_id == c_soil or south_id == c_tree then
+						border_count = border_count + 1
+					end
+					if west_id == c_leaves or west_id == c_soil or west_id == c_tree then
+						border_count = border_count + 1
+					end
+					if east_id == c_leaves or east_id == c_soil or east_id == c_tree then
+						border_count = border_count + 1
+					end
+
+					local far_count = 0
+					if farnorth_id == c_leaves or farnorth_id == c_soil or farnorth_id == c_tree then
+						far_count = far_count + 1
+					end
+					if farsouth_id == c_leaves or farsouth_id == c_soil or farsouth_id == c_tree then
+						far_count = far_count + 1
+					end
+					if farwest_id == c_leaves or farwest_id == c_soil or farwest_id == c_tree then
+						far_count = far_count + 1
+					end
+					if fareast_id == c_leaves or fareast_id == c_soil or fareast_id == c_tree then
+						far_count = far_count + 1
+					end
+
+					local roofed = (sevenup_id == c_tree or sevenup_id == c_leaves)
+					local support = (under_id == c_leaves or under_id == c_tree)
+					local fillable = (center_id == c_air or (center_id == c_leaves and above_id == c_air))
+					local grassable = (center_id == c_air)
+
+					if roofed and fillable and support and border_count >= 4 and far_count >= 4 then
+						data[center] = c_soil
+					elseif roofed and support and grassable and far_count >= 3 then
+						data[center] = c_junglegrass
+					end
+				end
+      end
+    end
+  end
+  vm:set_data(data)
 
 	-- Finalize voxel manipulator.
 	-- Note: we specifically do not generate ores! The value of this realm is in

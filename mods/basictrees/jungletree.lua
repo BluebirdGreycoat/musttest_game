@@ -91,7 +91,10 @@ minetest.register_node("basictrees:jungletree_leaves", {
 minetest.register_node("basictrees:jungletree_leaves2", {
 	description = "Jungle Tree Leaves",
 	drawtype = "allfaces_optional",
-	waving = 1,
+
+	-- 2024/5/25: waving turned off because it doesn't look so good in large quantities?
+	--waving = 1,
+
 	tiles = {"default_jungleleaves.png"},
 
 	paramtype = "light",

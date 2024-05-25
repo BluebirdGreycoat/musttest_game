@@ -70,10 +70,14 @@ function xp.update_players_max_hp(pname, login)
 	local max_hp = pova.get_active_modifier(pref, "properties").hp_max
 	local cur_hp = pref:get_hp()
 
+	--minetest.chat_send_all('first: hp_max: ' .. max_hp .. ', hp: ' .. cur_hp)
+
 	if login then
 		-- Get stored values.
 		max_hp = pmeta:get_int("hp_max")
 		cur_hp = pmeta:get_int("hp_cur")
+
+		--minetest.chat_send_all('second: hp_max: ' .. max_hp .. ', hp: ' .. cur_hp)
 
 		-- Should only happen for new players (and existing that don't have 'hp_max'
 		-- in their meta info yet).
@@ -117,6 +121,7 @@ end
 function xp.on_leaveplayer(player)
 	local meta = player:get_meta()
 	meta:set_int("hp_cur", player:get_hp())
+	--print("CURRENT HP ON LOGOUT: " .. meta:get_int("hp_cur"))
 end
 
 
@@ -134,6 +139,19 @@ function xp.write_xp()
 		xp.storage:from_table({fields=temp})
 	end
 	xp.dirty = false
+end
+
+
+
+-- Leaveplayer callbacks are not called if there are players connected during shutdown.
+function xp.save_player_hps()
+	local players = minetest.get_connected_players()
+
+	for k, v in ipairs(players) do
+		local meta = v:get_meta()
+		meta:set_int("hp_cur", v:get_hp())
+		--print("CURRENT HP ON SHUTDOWN: " .. meta:get_int("hp_cur"))
+	end
 end
 
 
@@ -168,6 +186,7 @@ if not xp.run_once then
 
 	-- Save data.
 	minetest.register_on_shutdown(function() xp.write_xp() end)
+	minetest.register_on_shutdown(function() xp.save_player_hps() end)
 	minetest.register_globalstep(function(...) xp.globalstep(...) end)
 	minetest.register_on_joinplayer(function(...) xp.on_joinplayer(...) end)
 	minetest.register_on_leaveplayer(function(...) xp.on_leaveplayer(...) end)

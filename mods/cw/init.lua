@@ -267,6 +267,10 @@ if not cw.registered then
 	minetest.register_node("cw:water_flowing", fdef)
 end
 
+-- Param2 horizontal branch rotations.
+local branch_rotations = {4, 8, 12, 16}
+local branch_directions = {2, 0, 3, 1}
+
 cw.REALM_START = 3050
 cw.BEDROCK_DEPTH = 4
 cw.OCEAN_DEPTH = 16
@@ -306,12 +310,14 @@ local c_mud             = minetest.get_content_id("darkage:mud")
 local c_clay            = minetest.get_content_id("default:clay")
 local c_lily            = minetest.get_content_id("flowers:waterlily")
 local c_tree            = minetest.get_content_id("basictrees:jungletree_cube")
+local c_tree2           = minetest.get_content_id("basictrees:jungletree_trunk")
 local c_leaves          = minetest.get_content_id("basictrees:jungletree_leaves2")
 local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_litter")
 local c_junglegrass     = minetest.get_content_id("default:junglegrass")
 
 -- Externally located tables for performance.
 local data = {}
+local param2_data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 
@@ -546,9 +552,17 @@ cw.generate_realm = function(minp, maxp, seed)
 		v_orig.t = v.y + 17
 	end
 
+	local function farsig(id)
+		return (id == c_leaves or id == c_tree or id == c_tree2 or id == c_soil or id == c_junglegrass)
+	end
+	local function nearsup(id)
+		return (id == c_leaves or id == c_soil or id == c_tree or id == c_tree2)
+	end
+
 	-- Final mapgen pass, for finding floors and ceilings in the forest.
 	-- Have to "get_data" again because we placed a bunch of schematics on the vmanip.
 	vm:get_data(data)
+	vm:get_param2_data(param2_data)
   for x = x0, x1 do
     for z = z0, z1 do
       for y = y0, y1 do
@@ -579,35 +593,39 @@ cw.generate_realm = function(minp, maxp, seed)
 					local farwest_id = data[farwest]
 					local fareast_id = data[fareast]
 
+					-- Check if we have neighboring supports directly adjacent to us.
 					local border_count = 0
-					if north_id == c_leaves or north_id == c_soil or north_id == c_tree then
+					if nearsup(north_id) then
 						border_count = border_count + 1
 					end
-					if south_id == c_leaves or south_id == c_soil or south_id == c_tree then
+					if nearsup(south_id) then
 						border_count = border_count + 1
 					end
-					if west_id == c_leaves or west_id == c_soil or west_id == c_tree then
+					if nearsup(west_id) then
 						border_count = border_count + 1
 					end
-					if east_id == c_leaves or east_id == c_soil or east_id == c_tree then
+					if nearsup(east_id) then
 						border_count = border_count + 1
 					end
 
+					-- Check if we have neighboring trees at a distance.
+					-- This reduces border count at the edges of forest clusters, and
+					-- at altitude where the trees are thinner.
 					local far_count = 0
-					if farnorth_id == c_leaves or farnorth_id == c_soil or farnorth_id == c_tree then
+					if farsig(farnorth_id) then
 						far_count = far_count + 1
 					end
-					if farsouth_id == c_leaves or farsouth_id == c_soil or farsouth_id == c_tree then
+					if farsig(farsouth_id) then
 						far_count = far_count + 1
 					end
-					if farwest_id == c_leaves or farwest_id == c_soil or farwest_id == c_tree then
+					if farsig(farwest_id) then
 						far_count = far_count + 1
 					end
-					if fareast_id == c_leaves or fareast_id == c_soil or fareast_id == c_tree then
+					if farsig(fareast_id) then
 						far_count = far_count + 1
 					end
 
-					local roofed = (sevenup_id == c_tree or sevenup_id == c_leaves)
+					local roofed = (sevenup_id == c_tree or sevenup_id == c_leaves or sevenup_id == c_junglegrass)
 					local support = (under_id == c_leaves or under_id == c_tree)
 					local fillable = (center_id == c_air or (center_id == c_leaves and above_id == c_air))
 					local grassable = (center_id == c_air)
@@ -616,12 +634,49 @@ cw.generate_realm = function(minp, maxp, seed)
 						data[center] = c_soil
 					elseif roofed and support and grassable and far_count >= 3 then
 						data[center] = c_junglegrass
+						param2_data[center] = 2
+					end
+
+					if center_id == c_tree and roofed and (under_id == c_leaves or above_id == c_leaves) then
+						if param2_data[center] == 0 then
+							local diridx = math.random(1, 4)
+							local facedir = branch_directions[diridx]
+							data[center] = c_tree2
+							param2_data[center] = branch_rotations[diridx]
+
+							-- Extend branches horizontally.
+							-- Branches get longer (2 + far_count) if trees are denser.
+							local dir = minetest.facedir_to_dir(facedir)
+							local n = math.random(0, 2 + far_count)
+							local pos = {x=x, y=y, z=z}
+							for k = 1, n, 1 do
+								pos = vector.add(pos, dir)
+								idx = area:index(pos.x, pos.y, pos.z)
+								data[idx] = c_tree2
+								param2_data[idx] = branch_rotations[diridx]
+
+								-- Place leaves at end of branch.
+								p2 = vector.add(pos, dir)
+								i2 = area:index(p2.x, p2.y, p2.z)
+								if data[i2] == c_air then
+									data[i2] = c_leaves
+								end
+
+								-- Place leaves hanging from branch.
+								p3 = vector.add(pos, {x=0, y=-1, z=0})
+								i3 = area:index(p3.x, p3.y, p3.z)
+								if data[i3] == c_air then
+									data[i3] = c_leaves
+								end
+							end
+						end
 					end
 				end
       end
     end
   end
   vm:set_data(data)
+  vm:set_param2_data(param2_data)
 
 	-- Finalize voxel manipulator.
 	-- Note: we specifically do not generate ores! The value of this realm is in

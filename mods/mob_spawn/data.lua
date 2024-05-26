@@ -197,6 +197,34 @@ register({
 })
 
 register({
+  name = "dirtleaf:dirtleaf",
+  nodes = {
+    "basictrees:jungletree_leaves2",
+		"basictrees:jungletree_cube",
+  },
+  min_light = 0,
+  max_light = 13,
+  mob_limit = 10,
+  min_height = 3075,
+  max_height = 3150,
+  day_toggle = nil,
+
+	spawn_chance = 1,
+	mob_range = 30,
+	absolute_mob_limit = 20,
+	player_min_range = 5,
+	player_max_range = 50,
+	spawn_radius = 20,
+	node_skip = 4,
+	node_jitter = 4,
+	success_time_min = 1,
+	success_time_max = 20,
+
+	min_count = 1,
+	max_count = 1,
+})
+
+register({
 	name = "obsidianmonster:obsidianmonster",
 	nodes = {"air"},
 	min_light = 0,

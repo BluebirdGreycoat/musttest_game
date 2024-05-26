@@ -632,11 +632,16 @@ cw.generate_realm = function(minp, maxp, seed)
 
 					if roofed and fillable and support and border_count >= 4 and far_count >= 4 then
 						data[center] = c_soil
+
+						-- Put a horizontal branch peice underneath the soil.
+						data[under] = c_tree2
+						param2_data[under] = branch_rotations[math.random(1, 4)]
 					elseif roofed and support and grassable and far_count >= 3 then
 						data[center] = c_junglegrass
 						param2_data[center] = 2
 					end
 
+					-- Horizontal branch placement.
 					if center_id == c_tree and roofed and (under_id == c_leaves or above_id == c_leaves) then
 						if param2_data[center] == 0 then
 							local diridx = math.random(1, 4)

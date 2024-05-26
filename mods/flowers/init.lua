@@ -80,8 +80,6 @@ function flowers.on_flora_destruct(pos)
 end
 
 function flowers.on_flora_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "Flora timer @ " .. minetest.pos_to_string(pos) .. "!")
-
 	local node = minetest.get_node(pos)
 	if flowers.flower_spread(pos, node) then
 		minetest.get_node_timer(pos):start(math_random(flowers.flora_mintime, flowers.flora_maxtime))
@@ -447,8 +445,6 @@ function flowers.on_mushroom_destruct(pos)
 end
 
 function flowers.on_mushroom_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "Mushroom timer @ " .. minetest.pos_to_string(pos) .. "!")
-
 	local node = minetest.get_node(pos)
 	if flowers.mushroom_spread(pos, node) then
 		minetest.get_node_timer(pos):start(math_random(flowers.mushroom_mintime, flowers.mushroom_maxtime))
@@ -810,8 +806,6 @@ function flowers.on_lily_destruct(pos)
 end
 
 function flowers.on_lily_timer(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "Lily timer @ " .. minetest.pos_to_string(pos) .. "!")
-
 	if flowers.lily_spread(pos) then
 		minetest.get_node_timer(pos):start(math_random(flowers.lily_mintime, flowers.lily_maxtime))
 	else

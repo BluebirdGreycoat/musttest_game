@@ -349,8 +349,6 @@ local function place_smart(pos, vdir, placer)
 
 	fix_param2(pos)
 
-	--minetest.chat_send_player("MustTest", y1 .. ", " .. ny)
-
 	-- Returns the wanted position of the next road section.
 	local rp = vector.add(pos, vector.multiply(vdir, 7))
 	rp.y = rp.y + ny

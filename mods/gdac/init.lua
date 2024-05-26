@@ -53,7 +53,6 @@ gdac.detect_clip = false
 
 
 -- Settings. These can be changed after startup.
-gdac.name_of_admin = "MustTest"
 gdac.interact_range_limit = 6.5
 gdac.fly_timeout_min = 8
 gdac.fly_timeout_max = 32
@@ -68,9 +67,9 @@ gdac.log = function(message)
 	gdac.logfile:write(message .. "\r\n")
 	gdac.logfile:flush()
 	end
-	local admin = minetest.get_player_by_name(gdac.name_of_admin)
+	local admin = utility.get_first_available_admin()
 	if admin and admin:is_player() then
-		minetest.chat_send_player(gdac.name_of_admin, "# Server: " .. message)
+		minetest.chat_send_player(admin:get_player_name(), "# Server: " .. message)
 	end
 end
 

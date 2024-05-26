@@ -28,7 +28,6 @@ function spawn_sanitizer.sanitize_all()
 		for z = minp.z, maxp.z do
     for x = minp.x, maxp.x do
 		for y = minp.y, maxp.y do
-			--minetest.chat_send_player("MustTest", minetest.pos_to_string({x=x, y=y, z=z}))
 			local vp = area:index(x, y, z)
 			data[vp] = c_air
 		end

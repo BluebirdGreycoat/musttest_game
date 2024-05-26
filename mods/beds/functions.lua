@@ -321,7 +321,6 @@ function beds.check_monsters_accessible(pos)
 
 	local path = minetest.find_path(startpos, pos, 16, 5, 5)
 	if path then
-		--minetest.chat_send_player("MustTest", "Path exists.")
 		return true
 	end
 end
@@ -344,7 +343,6 @@ function beds.player_finishes_sleep(pname)
 		sprint.set_stamina(player, SPRINT_STAMINA)
 
 		-- Notify portal sickness mod.
-		--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. ">!")
 		portal_sickness.on_use_bed(pname)
 
 		local pos = vector.round(utility.get_middle_pos(player:get_pos()))
@@ -372,7 +370,6 @@ end
 
 
 function beds.report_respawn_status(name)
-	--minetest.chat_send_player("MustTest", "# Server: Respawn report!")
 	local good = false
 	local pos = beds.spawn[name]
   if pos then

@@ -126,13 +126,6 @@ local function get_reactor_damage(pos)
 	end
 	end
 
-	--minetest.chat_send_player("MustTest", "Checking reactor!")
-
-	-- Debug!
-	--if minetest.is_singleplayer() or gdac.player_is_admin(owner) then
-	--	return 0
-	--end
-
 	if water_layer > 25 then water_layer = 25 end
 	if lead_layer > 96 then lead_layer = 96 end
 	if blast_layer > 216 then blast_layer = 216 end
@@ -146,8 +139,6 @@ end
 
 
 local function check_environment(pos, meta)
-	--minetest.chat_send_player("MustTest", "Check env!")
-
   local timer = meta:get_int("chktmr")
   --local active = meta:get_int("active")
   if timer <= 0 then
@@ -158,8 +149,6 @@ local function check_environment(pos, meta)
 		if damage == 0 then
 			good = true
 		end
-
-		--minetest.chat_send_player("MustTest", "Reactor damage: " .. damage .. "!")
 
     if good then
 			meta:set_string("error", "DUMMY")
@@ -254,7 +243,6 @@ for k, v in ipairs({
 
 	func.on_punch =
 	function(pos, node, puncher, pointed_thing)
-		--minetest.chat_send_player("MustTest", "Punched!")
 		func.trigger_update(pos)
 
 		-- Check reactor integrity.
@@ -443,7 +431,6 @@ for k, v in ipairs({
 
 		do
 			local stack = inv:get_stack("out", 1)
-			--minetest.chat_send_player("MustTest", "# Server: " .. stack:get_count() .. " charge!")
 			if stack:get_count() >= BUFFER_SIZE then
 				need_discharge = true
 			end
@@ -525,7 +512,6 @@ for k, v in ipairs({
 
 		-- Discharge energy into the network.
 		if need_discharge then
-			--minetest.chat_send_player("MustTest", "# Server: Discharging reactor!")
 			local timer = meta:get_int("dschgtmr")
 
 			-- It's frequently the case that a reactor spends a lot of time trying to
@@ -617,8 +603,6 @@ for k, v in ipairs({
 
 		meta:set_string("infotext", func.compose_infotext(pos, false))
 		meta:set_string("formspec", func.compose_formspec(0, 0))
-
-		--minetest.chat_send_player("MustTest", "Constructed!")
 
 		inv:set_size("fuel", 6)
 		inv:set_size("out", 1)

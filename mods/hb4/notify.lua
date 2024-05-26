@@ -9,14 +9,10 @@ local items = minetest.registered_items
 local after = minetest.after
 
 function notify.do_notify(pos)
-	--minetest.chat_send_player("MustTest", "# Server: Executing notify @ " .. minetest.pos_to_string(pos) .. "!")
-
 	local minp = sub(pos, 1)
 	local maxp = add(pos, 1)
 	local nodes = find(minp, maxp, "group:want_notify")
 	if nodes and #nodes > 0 then
-		--minetest.chat_send_player("MustTest", "# Server: Notifying " .. #nodes .. " node(s)!")
-
 		for i=1, #nodes do
 			local p = nodes[i]
 			-- Don't call `on_notify' for the node that triggered the action.
@@ -24,8 +20,6 @@ function notify.do_notify(pos)
 				local nn = getn(p).name
 				local def = items[nn]
 				if def and def.on_notify then
-					--minetest.chat_send_player("MustTest", "# Server: Notifying node @ " .. minetest.pos_to_string(p) .. "!")
-
 					-- Pos of node to be notified, pos of node that caused the notification.
 					def.on_notify(p, pos)
 				end

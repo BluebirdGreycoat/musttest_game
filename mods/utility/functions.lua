@@ -4,6 +4,42 @@ local math_random = math.random
 local math_min = math.min
 local math_max = math.max
 
+
+
+-- Get the object ref of the first client that has the "server" priv, or nil.
+function utility.get_first_available_admin()
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		if minetest.check_player_privs(v, "server") then
+			return v
+		end
+	end
+end
+
+-- Get array of all admin-level clients currently connected.
+function utility.get_connected_admins()
+	local tb = {}
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		if minetest.check_player_privs(v, "server") then
+			tb[#tb + 1] = v
+		end
+	end
+	return tb
+end
+
+-- Get name of first connected admin, or whatever is in config, or "singleplayer".
+-- Try to use this function instead of writing the actual admin name everywhere.
+function utility.get_admin_name()
+	local admin = utility.get_first_available_admin()
+	if admin then
+		return admin:get_player_name()
+	end
+	return minetest.settings:get("name") or "singleplayer"
+end
+
+
+
 -- Copied from builtin so we can actually USE the damn code. >:(
 -- Builtin has been getting very modder-unfriendly!
 function utility.drop_attached_node(p)

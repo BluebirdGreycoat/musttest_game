@@ -223,17 +223,6 @@ end
 
 
 
--- Use from /lua command, mainly.
-function map.query(pname)
-	if map.has_mapping_kit(pname) then
-		minetest.chat_send_player("MustTest", "# Server: Player <" .. rename.gpn(pname) .. "> has a mapping kit!")
-	else
-		minetest.chat_send_player("MustTest", "# Server: Player <" .. rename.gpn(pname) .. "> does not have a mapping kit.")
-	end
-end
-
-
-
 function map.on_use(itemstack, user, pointed_thing)
 	map.update_inventory_info(user:get_player_name())
 end

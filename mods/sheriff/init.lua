@@ -92,7 +92,7 @@ function sheriff.register_cheater(pname)
 
 	-- Notify the administrator.
 	local from = "SERVER"
-	local to = gdac.name_of_admin or "singleplayer"
+	local to = minetest.settings:get("name") or "singleplayer"
 	local subject = "CHEATER REGISTRATION"
 	local message = "Player <" .. rename.gpn(pname) ..
 		"> was registered as a cheater. Please check the cheat log, and use " ..

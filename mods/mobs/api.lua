@@ -31,19 +31,18 @@ local function report(self, msg, range)
 	if self.name ~= mobs.report_name then
 		return
 	end
-	local pname = gdac.name_of_admin
-	if minetest.is_singleplayer() then
-		pname = "singleplayer"
+
+	local admin = utility.get_first_available_admin()
+	if not admin then
+		return
 	end
-	local player = minetest.get_player_by_name(pname)
+	local pname = admin:get_player_name()
 
 	-- Range limit so I only get reports from mobs nearby.
-	if player then
-		local s = self.object:get_pos()
-		local p = player:get_pos()
-		if vector.distance(s, p) < (range or 50) then
-			minetest.chat_send_player(pname, msg)
-		end
+	local s = self.object:get_pos()
+	local p = admin:get_pos()
+	if vector.distance(s, p) < (range or 50) then
+		minetest.chat_send_player(pname, msg)
 	end
 end
 
@@ -879,10 +878,7 @@ end
 local function show_position(p)
 	-- Keep this particle code for debugging purposes [MustTest].
 	-- Spawn particle at actual computed position without rounding.
-	local pname = "singleplayer"
-	if not minetest.is_singleplayer() then
-		pname = gdac.name_of_admin
-	end
+	local pname = utility.get_admin_name()
 
 	utility.original_add_particle({
 		playername = pname,
@@ -941,10 +937,7 @@ local function get_ahead_pos(self, pos, yaw)
 	-- Keep this particle code for debugging purposes [MustTest].
 	--[[
 	-- Spawn particle at actual computed position without rounding.
-	local pname = "singleplayer"
-	if not minetest.is_singleplayer() then
-		pname = gdac.name_of_admin
-	end
+	local pname = utility.get_admin_name()
 
 	utility.original_add_particle({
 		playername = pname,
@@ -1993,10 +1986,7 @@ local function highlight_path(self)
 
 	-- Show path using particles.
 	if self.path.way and #self.path.way > 0 then
-		local pname = "singleplayer"
-		if not minetest.is_singleplayer() then
-			pname = gdac.name_of_admin
-		end
+		local pname = utility.get_admin_name()
 
 		for _, pos in ipairs(self.path.way) do
 			utility.original_add_particle({

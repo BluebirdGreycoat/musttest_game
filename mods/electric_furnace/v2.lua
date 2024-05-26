@@ -200,7 +200,6 @@ for j, t in ipairs({
 		local public = func.has_public_access(pos)
 		local protected = false
 		if minetest.test_protection(pos, pname) then
-			--minetest.chat_send_player("MustTest", "# Server: TEST1")
 			protected = true
 		end
 		if listname == "fuel" and (not protected or public) then

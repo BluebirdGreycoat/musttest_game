@@ -1,7 +1,6 @@
 
 if not minetest.global_exists("mob_spawn") then mob_spawn = {} end
 mob_spawn.modpath = minetest.get_modpath("mob_spawn")
-mob_spawn.report_name = "MustTest"
 mob_spawn.report_mob = ""
 
 -- Ensure we don't get 'attempt to compare number with nil' at runtime.
@@ -24,7 +23,10 @@ local math_random = math.random
 local function report(mob, msg)
 	if mob_spawn.enable_reports then
 		if mob == mob_spawn.report_mob or mob_spawn.report_mob == "" then
-			minetest.chat_send_player(mob_spawn.report_name, "[" .. mob .. "]: " .. msg)
+			local admin = utility.get_first_available_admin()
+			if admin then
+				minetest.chat_send_player(admin:get_player_name(), "[" .. mob .. "]: " .. msg)
+			end
 		end
 	end
 end
@@ -365,15 +367,7 @@ function mob_spawn.on_globalstep(dtime)
 	end
 	time = 0
 
-	-- Profile function execution time.
-	--local t1 = os.clock()
-
 	execute_spawners()
-
-	-- Calculate elapsed time.
-	--local t2 = os.clock()
-	--local totalms = math.ceil((t2 - t1) * 1000)
-	--minetest.chat_send_player("MustTest", "Took " .. totalms .. " ms!")
 end
 
 -- Count how many mobs exist in a given area with a radius.

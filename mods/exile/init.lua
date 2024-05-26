@@ -36,8 +36,6 @@ local function move_player_to_exile(pname, target)
 	local maxp = vector.add(target, {x=8, y=100, z=8})
 
 	local function callback(blockpos, action, calls_remaining, param)
-		--minetest.chat_send_player("MustTest", 'callback')
-
 		-- We don't do anything until the last callback.
 		if calls_remaining ~= 0 then
 			return
@@ -47,7 +45,6 @@ local function move_player_to_exile(pname, target)
 		-- Note: this will usually fail if the area to emerge intersects the map edge.
 		-- But usually we don't try to do that, here.
 		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-			--minetest.chat_send_player("MustTest", "error")
 			return
 		end
 
@@ -66,8 +63,6 @@ local function move_player_to_exile(pname, target)
 			pos.y = orig_y + y + 1
 			local n3 = get_node(pos)
 
-			--minetest.chat_send_player("MustTest", minetest.pos_to_string(pos))
-
 			-- All 3 nodes must be loaded.
 			if n1.name ~= "ignore" and n2.name ~= "ignore" and n3.name ~= "ignore" then
 				local d1 = minetest.registered_nodes[n1.name]
@@ -75,7 +70,6 @@ local function move_player_to_exile(pname, target)
 				local d3 = minetest.registered_nodes[n3.name]
 				if d1 and d2 and d3 then
 					if d1.walkable and not d2.walkable and not d3.walkable then
-						--minetest.chat_send_player("MustTest", 'found ground')
 						pos.y = orig_y + y
 
 						local post_cb = function(param)
@@ -189,7 +183,6 @@ function exile.check_player(pname)
 end
 
 function exile.repeating_check(pname)
-	--minetest.chat_send_player("MustTest", "repeating check")
 	-- Only check confirmed cheaters, as no one else can be exiled.
 	if sheriff.is_cheater(pname) then
 		exile.check_player(pname)

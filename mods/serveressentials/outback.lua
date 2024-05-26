@@ -101,45 +101,46 @@ local function rebuild_nodes()
 	end
 end
 
+local OWNERNAME = minetest.settings:get("name") or "singleplayer"
 local metadata = {
 	-- Gate room, protection on floor.
 	{pos={x=-9174, y=4099, z=5782}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Gate room, protection on ceiling.
 	{pos={x=-9174, y=4106, z=5782}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Gate protection, left side.
 	{pos={x=-9165, y=4103, z=5785}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Gate protection, right side.
 	{pos={x=-9165, y=4103, z=5779}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Poem, left side.
 	{pos={x=-9172, y=4100, z=5783}, meta={fields={
 		infotext = "Make your choice, adventurous Stranger,\nStrike the Gate and bide the Danger!",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Make your choice, adventurous Stranger,%nStrike the Gate and bide the Danger!"
 	}}},
 	-- Poem, right side.
 	{pos={x=-9172, y=4100, z=5781}, meta={fields={
 		infotext = "Or else wonder, till it drives you mad,\nWhat would have followed, if you had.",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Or else wonder, till it drives you mad,%nWhat would have followed, if you had."
 	}}},
 	-- Door on the miner's hut.
@@ -154,84 +155,84 @@ local metadata = {
 	{pos={x=-9164, y=4101, z=5780}, meta={fields={
 		obsidian_gateway_success_ew = "yes",
 		obsidian_gateway_return_gate_ew = "0",
-		obsidian_gateway_owner_ew = "MustTest",
+		obsidian_gateway_owner_ew = OWNERNAME,
 		obsidian_gateway_destination_ew = get_exit_location(),
 	}}},
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4172, z=5724}, meta={fields={
 		infotext = "Henry D. Miner\nApril 13, 1821 - October 3, 1890\n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\"",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Henry D. Miner%nApril 13, 1821 - October 3, 1890%n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\""
 	}}},
 	-- Gravesite sign, right.
 	{pos={x=-9267, y=4172, z=5724}, meta={fields={
 		infotext = "Martha Ann Lee Miner\nNovember 2, 1829 - February 19, 1897",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Martha Ann Lee Miner%nNovember 2, 1829 - February 19, 1897"
 	}}},
 	-- Spawn sign, left.
 	{pos={x=-9221, y=4170, z=5861}, meta={fields={
 		infotext = "Use /spawn to get back here.",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Use /spawn to get back here."
 	}}},
 	-- Spawn sign, right.
 	{pos={x=-9221, y=4170, z=5860}, meta={fields={
 		infotext = "Use /info to get help.",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Use /info to get help."
 	}}},
 	-- Spawn sign, bottom left.
 	{pos={x=-9221, y=4169, z=5861}, meta={fields={
 		infotext = "See \"http://arklegacy.duckdns.org\" for important info.",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "See \"http://arklegacy.duckdns.org\" for important info."
 	}}},
 	-- Spawn sign, bottom right.
 	{pos={x=-9221, y=4169, z=5860}, meta={fields={
 		infotext = "Take care, don't rush!",
-		author = "MustTest",
+		author = OWNERNAME,
 		text = "Take care, don't rush!"
 	}}},
 	-- Graveyard protector.
 	{pos={x=-9266, y=4170, z=5724}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Farm protectors.
 	{pos={x=-9082, y=4179, z=5720}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	{pos={x=-9139, y=4168, z=5795}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	{pos={x=-9199, y=4169, z=5836}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Protector in the miner's hut.
 	{pos={x=-9176, y=4175, z=5745}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 	-- Spawn protector.
 	{pos={x=-9223, y=4168, z=5861}, meta={fields={
-		infotext = "Protection (Owned by <MustTest>!)\nPlaced on 2020/02/12 UTC",
-		owner = "MustTest",
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
-		rename = "MustTest",
+		rename = OWNERNAME,
 	}}},
 }
 

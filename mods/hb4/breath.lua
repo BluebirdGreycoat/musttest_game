@@ -92,7 +92,6 @@ end
 
 
 function breath.ignite_nearby_gas(pos)
-	--minetest.chat_send_player("MustTest", "# Server: Igniting gas @ " .. minetest.pos_to_string(pos) .. "!")
 	pos = vector_round(pos)
 	local gas = minetest.find_node_near(pos, 2, {"group:gas"})
 	if gas then

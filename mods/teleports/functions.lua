@@ -560,7 +560,7 @@ teleports.calculate_range = function(pos)
 		local owner = meta:get_string("owner")
 		-- There is an admin teleport pair between the Surface Colony and the City of Fire.
 		-- This special exception code makes it work.
-		if owner == gdac.name_of_admin then
+		if minetest.get_player_privs(owner).server then
 			return 31000, nyan
 		end
 	end
@@ -720,7 +720,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 	local owner = meta:get_string("owner") or ""
 
 	local infinite_fuel = false
-	if owner == "MustTest" then
+	if minetest.get_player_privs(owner).server then
 		infinite_fuel = true
 	else
 		local inv = meta:get_inventory()

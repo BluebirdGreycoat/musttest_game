@@ -4,17 +4,26 @@ if not minetest.global_exists("anticurse") then anticurse = {} end
 function anticurse.test(str, noreport)
 	if anticurse.check_string(anticurse.foul, str) then
 		if noreport == false then
-			minetest.chat_send_player("MustTest", "# Server: String contains crudity!")
+			local pref = utility.get_first_available_admin()
+			if pref then
+				minetest.chat_send_player(pref:get_player_name(), "# Server: String contains crudity!")
+			end
 		end
 		return false
 	elseif anticurse.check_string(anticurse.curse, str) then
 		if noreport == false then
-			minetest.chat_send_player("MustTest", "# Server: String contains cursing!")
+			local pref = utility.get_first_available_admin()
+			if pref then
+				minetest.chat_send_player(pref:get_player_name(), "# Server: String contains cursing!")
+			end
 		end
 		return false
 	else
 		if noreport == false then
-			minetest.chat_send_player("MustTest", "# Server: String confirmed SJW-safe!")
+			local pref = utility.get_first_available_admin()
+			if pref then
+				minetest.chat_send_player(pref:get_player_name(), "# Server: String confirmed SJW-safe!")
+			end
 		end
 	end
 	return true
@@ -23,7 +32,10 @@ end
 
 
 function anticurse.dump_files()
-	minetest.chat_send_player("MustTest", "# Server: Starting processing ...")
+	local pref = utility.get_first_available_admin()
+	if pref then
+		minetest.chat_send_player(pref:get_player_name(), "# Server: Starting processing ...")
+	end
 
 	local lines1, err1 = io.open(minetest.get_worldpath() .. "/ac_dump_bad.txt", "w")
 	if err1 then return end
@@ -53,7 +65,9 @@ function anticurse.dump_files()
 	lines2:close()
 	lines3:close()
 
-	minetest.chat_send_player("MustTest", "# Server: Finished processing!")
+	if pref then
+		minetest.chat_send_player(pref:get_player_name(), "# Server: Finished processing!")
+	end
 end
 
 
@@ -121,13 +135,7 @@ anticurse.on_prejoinplayer = function(name)
     return
   end
 
-  --[[if banned_names.guest_name(name) then
-    --return "Guest names are forbidden, sorry!"
-	
-		-- This code has moved to the welcome message mod.
-		--minetest.after(10, function() minetest.chat_send_player(name, "# Server: WARNING! You have logged in using a \"guest name\". Please be aware that such accounts are subject to deletion WITHOUT WARNING. You are still free to explore the server, though! If you want to play permanently, log in under another (non-guest) name and register the account by crafting and keeping a Proof of Citizenship item.") end)
-		return
-  else--]]if anticurse.check_string(anticurse.foul, name) then
+  if anticurse.check_string(anticurse.foul, name) then
     return "Eeeew, really? Pick a different username!"
   elseif anticurse.check_string(anticurse.curse, name) then
     return "Cursing. :-/   Remove the curse, please, and try again."
@@ -140,12 +148,6 @@ anticurse.on_prejoinplayer = function(name)
   elseif anticurse.check_string(anticurse.impersonate, name) then
     return "That name is too similar to someone else!"
   end
-
-
-	-- We are in maintenance mode.
-	--if name ~= "MustTest" then
-	--	return "The server is currently down for extended maintenance. It will be back up in a few hours."
-	--end
 end
 
 

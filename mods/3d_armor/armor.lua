@@ -6,7 +6,6 @@ local math_random = math.random
 armor.elements = armor.elements or {"head", "torso", "legs", "feet"}
 armor.physics = armor.physics or {"jump", "speed", "gravity"}
 armor.default_skin = "character"
-armor.version = "MustTest"
 
 armor.formspec =
 	"size[8,8.5]" ..

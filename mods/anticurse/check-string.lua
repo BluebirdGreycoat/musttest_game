@@ -132,7 +132,6 @@ anticurse.check_string = function(table, str)
 		
 		-- Find out if the word is whitelisted.
 		if p1 then
-			--minetest.chat_send_player("MustTest", "# Server: Found word at " .. idx .. ", " .. p1 .. ", " .. p2 .. ".")
 			-- Set 'true' if the found word is whitelisted.
 			isw = false
 
@@ -144,15 +143,9 @@ anticurse.check_string = function(table, str)
 
 				sf = sf + 1
 				if sf < 1 then sf = 1 end
-				--minetest.chat_send_player("MustTest", "# Server: Start search at " .. sf .. ": '" .. j .. "'.")
 
 				-- Get the location of the whitelisted word in the string.
 				p3, p4 = string_find(norm, j, sf)
-
-				--if p3 then
-				--	minetest.chat_send_player("MustTest",
-				--	"# Server: Found '" .. j .. "' at " .. p3 .. ", " .. p4 .. ".")
-				--end
                 
 				-- Find out if the detected possible "badword" overlaps with a whitelisted word.
 				if p3 then
@@ -170,11 +163,6 @@ anticurse.check_string = function(table, str)
 			
 			-- If 'havb' is set once, it is never unset.
 			if isw == false then
-				--if p1 and p2 then
-				--	minetest.chat_send_player("MustTest",
-				--		"# Server: BW: " .. sf .. " : " .. p1 .. ", " .. p2 .. ".")
-				--end
-
 				havb = true
 			end
 		end

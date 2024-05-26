@@ -289,8 +289,6 @@ function chat_controls.set_lists_from_fields(pname, fields)
 	local shout = string.gsub(fields.shout, "^,", "")
 	local distance = fields.dist
 
-	--minetest.chat_send_player("MustTest", shout)
-
 	ignore = ignore:trim()
 	filter = filter:trim()
 	white = white:trim()
@@ -352,7 +350,6 @@ function chat_controls.set_lists_from_fields(pname, fields)
 		local entry = string.trim(shout[i])
 		if #entry > 0 then
 			new_shout[#new_shout+1] = rename.grn(entry)
-			--minetest.chat_send_player("MustTest", new_shout[#new_shout])
 		end
 	end
 
@@ -404,7 +401,6 @@ function chat_controls.get_filters_as_text(pname)
 		end
 
 		for i = 1, #shout do
-			--minetest.chat_send_player("MustTest", shout[i])
 			shout[i] = rename.gpn(shout[i])
 		end
 
@@ -413,8 +409,6 @@ function chat_controls.get_filters_as_text(pname)
 		white = table.concat(white, ",")
 		pm = table.concat(pm, ",")
 		shout = table.concat(shout, ",")
-
-		--minetest.chat_send_player("MustTest", shout)
 
 		distance = tostring(tb.distance)
 	end
@@ -445,8 +439,6 @@ chat_controls.info = "* * * Documentation * * *\n" ..
 function chat_controls.compose_formspec(pname)
 	local ignore, filter, white, distance, pm, shout =
 		chat_controls.get_filters_as_text(pname)
-
-	--minetest.chat_send_player("MustTest", ignore)
 
 	local chathide = "false"
 	local nobeep = "false"

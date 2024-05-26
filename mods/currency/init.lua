@@ -171,7 +171,6 @@ function currency.room_for_cash(inv, name, amount)
 			while count < 1 and idx > 0 do
 				denom = currency_values[idx]
 				count = math.modf(remainder / denom)
-				--minetest.chat_send_player("MustTest", "# Server: Denom is " .. denom)
 				idx = idx - 1
 			end
 
@@ -225,13 +224,6 @@ function currency.room(pname, amount)
 		return false
 	end
 	local room = currency.room_for_cash(inv, "main", amount)
-	--[[
-	if room then
-		minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> has room for " .. amount .. " minegeld!")
-	else
-		minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> does NOT have room for " .. amount .. " minegeld!")
-	end
-	--]]
 	return room
 end
 
@@ -529,7 +521,6 @@ function currency.tell(pname)
 		return 0
 	end
 	local amount = currency.get_cash_value(inv, "main")
-	--minetest.chat_send_player("MustTest", "# Server: <" .. rename.gpn(pname) .. "> has " .. amount .. " minegeld!")
 	return amount
 end
 

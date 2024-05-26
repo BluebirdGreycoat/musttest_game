@@ -242,28 +242,6 @@ end
 
 
 
--- This code was used at one time to replace a valuable tool someone had lost
--- due to a bug.
---[[
-function toolranks.rebuild_tool()
-	local player = minetest.get_player_by_name("MustTest")
-	local inv = player:get_inventory()
-	local item = inv:get_stack("main", 1)
-	local meta = item:get_meta()
-	meta:set_string("tr_dug", "58194")
-	meta:set_string("tr_lastlevel", "7")
-	meta:set_string("en_desc", "Trusted")
-
-  local newdesc = toolranks.create_description(item:get_definition().original_description, 58194, 7)
-	meta:set_string("tr_desc", newdesc)
-
-	toolranks.apply_description(meta, item:get_definition())
-	inv:set_stack("main", 1, item)
-end
---]]
-
-
-
 if not toolranks.registered then
 	local function override_item(name)
 		--print(name)

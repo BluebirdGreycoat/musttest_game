@@ -420,12 +420,6 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	--	return
 	--end
 
-	-- Enable this if any serious problems occur.
-	--if pname ~= gdac.name_of_admin then
-	--	minetest.chat_send_player(pname, "# Server: Safety abort! Gateways are locked until further notice due to an error in the code.")
-	--	return
-	--end
-
 	-- If activating the gate in the OUTBACK, and player previously died in
 	-- MIDFELD, send them back to MIDFELD, do NOT send them to the overworld.
 	if rc.current_realm_at_pos(origin) == "abyss" then
@@ -557,7 +551,7 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	end
 
 	-- Let everyone use gates owned by the admin.
-	if actual_owner == gdac.name_of_admin then
+	if minetest.get_player_privs(actual_owner).server then
 		isowner = true
 	end
 

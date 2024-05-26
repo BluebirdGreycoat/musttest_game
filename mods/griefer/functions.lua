@@ -53,8 +53,11 @@ griefer.elite_do_punch = function(self, hitter, tflp, tcaps, dir)
 		if griefer.stupid_oerkki_trick then
 			local good, err = pcall(griefer.stupid_oerkki_trick, self)
 			if not good then
-				minetest.chat_send_player(gdac.name_of_admin,
-					"# Server: Error! " .. err)
+				local admin = utility.get_first_available_admin()
+				if admin then
+					minetest.chat_send_player(admin:get_player_name(),
+						"# Server: Error! " .. err)
+				end
 			end
 		end
 	end

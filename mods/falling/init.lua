@@ -375,7 +375,6 @@ minetest.register_entity(":__builtin:falling_node", {
 				-- Create node and remove entity.
         if not protected or n2.name == "air" or n2.name == "default:snow" or n2.name == "snow:footprints" then
 					if protected and nodedef.buildable_to then
-						--minetest.chat_send_player("MustTest", "# Server: Testing 1!")
 						-- If the position is protected and the node we're placing is `buildable_to',
 						-- then we must drop an item instead in order to avoid creating a protection exploit,
 						-- even though we'd normally be placing into air.
@@ -391,7 +390,6 @@ minetest.register_entity(":__builtin:falling_node", {
 							add_item(np, self.node)
 						end
 					else
-						--minetest.chat_send_player("MustTest", "# Server: Testing 2!")
 						-- We're either placing into air, or crushing something that isn't protected.
 						add_node(np, self.node)
 						if self.meta then
@@ -422,7 +420,6 @@ minetest.register_entity(":__builtin:falling_node", {
 					end
         else
 					-- Not air and protected, so we drop as entity instead.
-					--minetest.chat_send_player("MustTest", "# Server: Testing 3!")
 					local callback = nodedef.on_collapse_to_entity
 					if callback then
 						callback(np, self.node)

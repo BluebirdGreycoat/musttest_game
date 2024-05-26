@@ -157,8 +157,6 @@ end
 
 conv2.on_timer =
 function(pos, elapsed)
-	--minetest.chat_send_player("MustTest", "# Server: On Timer! " .. minetest.get_gametime())
-
 	local keeprunning = false
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()

@@ -155,7 +155,7 @@ end
 
 function status.chat_admin(name, param)
 	minetest.chat_send_player(name,
-		STATUS_COLOR .. "# Server: The administrator of this server is <MustTest>. " ..
+		STATUS_COLOR .. "# Server: The administrator of this server is <" .. utility.get_admin_name() .. ">. " ..
 		"You may send me messages using the email interface found through the Key of Citizenship.")
 	return true
 end

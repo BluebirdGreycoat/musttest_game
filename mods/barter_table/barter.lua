@@ -9,7 +9,10 @@ local math_floor = math.floor
 
 function barter.report(msg)
 	if barter.enable_logging then
-		minetest.chat_send_player("MustTest", msg)
+		local pref = utility.get_first_available_admin()
+		if pref then
+			minetest.chat_send_player(pref:get_player_name(), msg)
+		end
 	end
 end
 

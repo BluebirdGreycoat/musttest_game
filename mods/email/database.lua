@@ -6,8 +6,9 @@ local function db_exec(db, stmt)
     local msg = db:errmsg()
     minetest.log("error", "SQLite3 ERROR: " .. msg)
 
-    if minetest.get_player_by_name("MustTest") then
-      minetest.chat_send_player("MustTest", "# Server: Error from SQL! " .. msg)
+    local admin = utility.get_first_available_admin()
+    if admin then
+      minetest.chat_send_player(admin:get_player_name(), "# Server: Error from SQL! " .. msg)
     end
   end
 end

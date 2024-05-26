@@ -53,8 +53,6 @@ ac.low_suspicion_increase_max = 10
 -- if they merely have high avg suspicion over multiple sessions.
 ac.cheat_registration_threshold = 50
 
-ac.admin_name = "MustTest"
-
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
@@ -188,9 +186,9 @@ end
 
 -- Report to admin (if logged in).
 function ac.report_suspicious_act(pname, pos, act)
-	local pref = minetest.get_player_by_name(ac.admin_name)
+	local pref = utility.get_first_available_admin()
 	if pref then
-		minetest.chat_send_player(ac.admin_name,
+		minetest.chat_send_player(pref:get_player_name(),
 			"# Server: <" .. rename.gpn(pname) ..
 			"> caught in suspicious activity: '" .. act .. "' at " ..
 			rc.pos_to_namestr(pos) .. ". Suspicion: " ..

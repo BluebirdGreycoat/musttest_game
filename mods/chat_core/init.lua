@@ -412,7 +412,7 @@ chat_core.handle_command_msg = function(name, param)
 
 		if gdac_invis.is_invisible(to) and to ~= name then -- If target is invisible, and player sending is not same as target ...
 			if chat_core.players[name] and (chat_core.players[name].last_pm_from or "") ~= to then -- Do not permit, if player did not receive a PM from this target.
-				if to == "MustTest" then
+				if minetest.get_player_privs(to).server then
 					minetest.chat_send_player(name, "# Server: The server admin is not available at this time! If it's important, send mail instead.")
 				else
 					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(to) .. "> is not available at this time! If it's important, send mail instead.")

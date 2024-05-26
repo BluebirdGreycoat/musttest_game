@@ -672,6 +672,11 @@ cw.generate_realm = function(minp, maxp, seed)
 							data[above] = c_grass2
 						end
 						param2_data[above] = 2
+					elseif center_id == c_water and above_id == c_air and border_count >= 1 then
+						if math.random(1, 4) == 1 then
+							data[above] = c_lily
+							param2_data[above] = math.random(0, 3)
+						end
 					end
 
 					-- Horizontal branch placement.

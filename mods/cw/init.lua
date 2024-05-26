@@ -664,14 +664,14 @@ cw.generate_realm = function(minp, maxp, seed)
 							data[center] = c_junglegrass
 						end
 						param2_data[center] = 2
-					elseif support and grassable and water_count >= 2 then
+					elseif above_id == c_air and center_id == c_tree and water_count >= 2 then
 						-- Place grass on trunks near water.
 						if math.random(1, 3) == 1 then
-							data[center] = c_grass
+							data[above] = c_grass
 						else
-							data[center] = c_grass2
+							data[above] = c_grass2
 						end
-						param2_data[center] = 2
+						param2_data[above] = 2
 					end
 
 					-- Horizontal branch placement.

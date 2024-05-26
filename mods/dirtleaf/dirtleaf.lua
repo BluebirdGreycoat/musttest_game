@@ -18,7 +18,8 @@ mobs.register_mob("dirtleaf:dirtleaf", {
 
 	visual_size = {x = 0.8, y = 0.8},
 
-	reach = 2,
+	reach = 2, -- Mob will try to move this close to target.
+	punch_reach = 3, -- Mob can hit from this far away.
 	damage = 3*500,
 	damage_min = 2*500,
 	damage_max = 5*500,
@@ -43,13 +44,15 @@ mobs.register_mob("dirtleaf:dirtleaf", {
 		attack = "mobs_treemonster",
     distance = 20,
 	},
-	walk_velocity = 1.5,
-	run_velocity = 2.8,
+	walk_velocity = 1,
+	run_velocity = 2,
+	sprint_velocity = 3,
 	jump = true,
   jump_chance = 1,
   walk_chance = 1,
 	floats = 0,
-	view_range = 10,
+	view_range = 15,
+	fear_height = 3,
 	drops = {
 		{name = "default:dirt", chance = 1, min = 1, max = 2},
 		{name = "default:apple", chance = 2, min = 1, max = 3},

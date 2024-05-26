@@ -68,8 +68,8 @@ function bags.get_formspec(player, page)
 				.. "button[" .. bx + bw * 1 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag2;2]"
 				.. "button[" .. bx + bw * 2 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag3;3]"
 				.. "button[" .. bx + bw * 3 .. "," .. by .. ";" .. bw .. "," .. bh .. ";bag4;4]"
-				.. "button[" .. bx + bw * 0 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";drop" .. i .. ";Chuck]"
-				.. "button[" .. bx + bw * 2 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";grab" .. i .. ";Snatch]"
+				.. "button[" .. bx + bw * 0 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";bagdrop" .. i .. ";Chuck]"
+				.. "button[" .. bx + bw * 2 .. "," .. by + bh .. ";" .. bw * 2 .. "," .. bh .. ";baggrab" .. i .. ";Snatch]"
 				.. "real_coordinates[false]"
 
 				.. "list[current_player;main;0,5.5;8,1;]"
@@ -83,34 +83,157 @@ end
 
 
 
+function bags.drop_items(player, bagnum)
+	local bag = "bag" .. bagnum .. "contents"
+	local inv = player:get_inventory()
+	if not inv then return end
+	if inv:get_size(bag) <= 0 then return end
+
+	local lookdir = player:get_look_dir()
+	local eyeheight = player:get_properties().eye_height
+	local eye = vector.add(player:get_pos(), {x=0, y=eyeheight, z=0})
+	local sop = vector.add(eye, vector.multiply(lookdir, 5))
+	local ray = Raycast(eye, sop, false, false)
+
+	local pos
+	for pointed_thing in ray do
+		if pointed_thing.type == "node" then
+			local node = minetest.get_node(pointed_thing.under)
+			if minetest.get_item_group(node.name, "chest") ~= 0 then
+				pos = pointed_thing.under
+				break
+			end
+		end
+	end
+	if not pos then return end
+
+	local meta = minetest.get_meta(pos)
+	local inv2 = meta:get_inventory()
+	if not inv2 then return end
+	if inv2:get_size("main") <= 0 then return end
+
+	local size = inv:get_size(bag)
+	local count = 0
+
+	for k = 1, size, 1 do
+		local stack = inv:get_stack(bag, k)
+		count = count + stack:get_count()
+		stack = inv2:add_item("main", stack)
+		count = count - stack:get_count()
+		inv:set_stack(bag, k, stack)
+	end
+
+	return pos, count
+end
+
+
+
+function bags.grab_items(player, bagnum)
+	local bag = "bag" .. bagnum .. "contents"
+	local inv = player:get_inventory()
+	if not inv then return end
+	if inv:get_size(bag) <= 0 then return end
+
+	local lookdir = player:get_look_dir()
+	local eyeheight = player:get_properties().eye_height
+	local eye = vector.add(player:get_pos(), {x=0, y=eyeheight, z=0})
+	local sop = vector.add(eye, vector.multiply(lookdir, 5))
+	local ray = Raycast(eye, sop, false, false)
+
+	local pos
+	for pointed_thing in ray do
+		if pointed_thing.type == "node" then
+			local node = minetest.get_node(pointed_thing.under)
+			if minetest.get_item_group(node.name, "chest") ~= 0 then
+				pos = pointed_thing.under
+				break
+			end
+		end
+	end
+	if not pos then return end
+
+	local meta = minetest.get_meta(pos)
+	local inv2 = meta:get_inventory()
+	if not inv2 then return end
+	if inv2:get_size("main") <= 0 then return end
+
+	local size = inv2:get_size("main")
+	local count = 0
+
+	for k = 1, size, 1 do
+		local stack = inv2:get_stack("main", k)
+		count = count + stack:get_count()
+		stack = inv:add_item(bag, stack)
+		count = count - stack:get_count()
+		inv2:set_stack("main", k, stack)
+	end
+
+	return pos, count
+end
+
+
+
+function bags.receive_fields(player, formname, fields)
+	if fields.bags then
+		inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, "bags"))
+		return
+	end
+
+	local pname = player:get_player_name()
+
+	for i = 1, 4 do
+		local page = "bag" .. i
+		local drop = "bagdrop" .. i
+		local grab = "baggrab" .. i
+
+		if fields[page] then
+			if player:get_inventory():get_stack(page, 1):get_definition().groups.bagslots == nil then
+				page = "bags"
+			end
+
+			inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, page))
+
+			return
+		end
+
+		if fields[drop] then
+			local target, count = bags.drop_items(player, i)
+			if target then
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items defenestrated to chest at " .. rc.pos_to_namestr(target) .. ".")
+				if count > 0 then
+					easyvend.sound_vend(player:get_pos())
+				end
+			else
+				easyvend.sound_error(pname)
+			end
+			return
+		end
+
+		if fields[grab] then
+			local target, count = bags.grab_items(player, i)
+			if target then
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items snatched from chest at " .. rc.pos_to_namestr(target) .. ".")
+				if count > 0 then
+					easyvend.sound_vend(player:get_pos())
+				end
+			else
+				easyvend.sound_error(pname)
+			end
+			return
+		end
+	end
+end
+
+
+
 if not bags.loaded then
 	local c = "bags:core"
 	local f = bags.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
 	bags.loaded = true
 
-	minetest.register_on_player_receive_fields(function(player, formname, fields)
-		if fields.bags then
-			inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, "bags"))
-			return
-		end
-
-		for i = 1, 4 do
-
-			local page = "bag" .. i
-
-			if fields[page] then
-
-				if player:get_inventory():get_stack(page, 1):get_definition().groups.bagslots == nil then
-					page = "bags"
-				end
-
-				inventory_plus.set_inventory_formspec(player, bags.get_formspec(player, page))
-
-				return
-			end
-		end
-	end)
+	minetest.register_on_player_receive_fields(function(...)
+		return bags.receive_fields(...) end)
 
 	minetest.register_on_joinplayer(function(player)
 

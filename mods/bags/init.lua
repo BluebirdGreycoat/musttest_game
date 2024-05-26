@@ -116,6 +116,14 @@ function bags.get_chest(player)
 					end
 				end
 			end
+
+			-- Fail if the first node we point at isn't a chest.
+			-- No reaching through walls!
+			break
+		else
+			-- Fail if pointing at anything other than a node.
+			-- No reaching through entities!
+			break
 		end
 	end
 

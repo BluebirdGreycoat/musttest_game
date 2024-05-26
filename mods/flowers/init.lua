@@ -323,7 +323,7 @@ function flowers.flower_spread(pos, node)
 	pos.y = pos.y - 1
 	local under = minetest.get_node(pos)
 	pos.y = pos.y + 1
-  
+
   -- Replace flora with dry shrub in desert sand and silver sand,
 	-- as this is the only way to generate them.
 	-- However, preserve grasses in sand dune biomes.
@@ -644,22 +644,29 @@ if not flowers.reg3 then
 
 		on_place = function(itemstack, placer, pointed_thing)
 			local pos = pointed_thing.above
-			local node = minetest.get_node(pointed_thing.under).name
-			local def = minetest.reg_ns_nodes[node]
-			local player_name = placer:get_player_name()
+			local node = minetest.get_node(pointed_thing.under)
+			local name = node.name
+			local def = minetest.reg_ns_nodes[name]
+
+			-- Pass through interactions to nodes that define them (like chests).
+			if def and def.on_rightclick and placer and not placer:get_player_control().sneak then
+				return def.on_rightclick(pointed_thing.under, node, placer, itemstack, pointed_thing)
+			end
 
 			-- Lilies are placeable in any water.
 			-- They only grow further in regular water sources.
 
-			if def and def.liquidtype == "source" and
-					minetest.get_item_group(node, "water") > 0 then
-				if not minetest.is_protected(pos, player_name) then
-					minetest.add_node(pos, {name = "flowers:waterlily",
-					param2 = math_random(0, 3)})
-					itemstack:take_item()
-				else
+			if def and def.liquidtype == "source" and placer and
+					minetest.get_item_group(name, "water") > 0 then
+
+				local player_name = placer:get_player_name()
+				if minetest.is_protected(pos, player_name) then
 					minetest.chat_send_player(player_name, "# Server: Position is protected.")
 					minetest.record_protection_violation(pos, player_name)
+				else
+					minetest.add_node(pos, {name = "flowers:waterlily",
+						param2 = math_random(0, 3)})
+					itemstack:take_item()
 				end
 			end
 

@@ -236,6 +236,8 @@ function obsidian_gateway.get_origin_and_dir(pos)
 	local str_origin = meta:get_string("gate_origin")
 	local str_northsouth = meta:get_string("gate_northsouth")
 
+	meta:mark_as_private({"gate_origin", "gate_northsouth"})
+
 	local origin = minetest.string_to_pos(str_origin)
 	if origin then
 		-- Returns origin, true/false.
@@ -412,6 +414,7 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	-- By spliting the key names by ns/ew, I ensure connected portals don't
 	-- stomp on each other's data.
 	target = minetest.string_to_pos(meta:get_string("obsidian_gateway_destination_" .. ns_key))
+	meta:mark_as_private("obsidian_gateway_destination_" .. ns_key)
 	--if not target then
 	--	minetest.chat_send_player(pname, "# Server: Gateway has no destination! Aborting.")
 	--	return

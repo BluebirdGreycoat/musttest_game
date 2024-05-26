@@ -270,6 +270,8 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
   local meta = minetest.get_meta(voidpos)
   local spos = meta:get_string("target") or ""
   local target
+
+  meta:mark_as_private("target")
   
   if spos == "" then
     -- If metadata target hasn't been initialized yet.

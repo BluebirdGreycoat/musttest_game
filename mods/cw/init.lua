@@ -314,6 +314,7 @@ local c_tree2           = minetest.get_content_id("basictrees:jungletree_trunk")
 local c_leaves          = minetest.get_content_id("basictrees:jungletree_leaves2")
 local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_litter")
 local c_junglegrass     = minetest.get_content_id("default:junglegrass")
+local c_grass           = minetest.get_content_id("default:grass_5")
 
 -- Externally located tables for performance.
 local data = {}
@@ -552,9 +553,13 @@ cw.generate_realm = function(minp, maxp, seed)
 		v_orig.t = v.y + 17
 	end
 
+	-- Shall return true if ID is anything the mapgen places as part of forests.
 	local function farsig(id)
-		return (id == c_leaves or id == c_tree or id == c_tree2 or id == c_soil or id == c_junglegrass)
+		return (id == c_leaves or id == c_tree or id == c_tree2 or id == c_soil
+			or id == c_junglegrass or id == c_grass)
 	end
+
+	-- Shall return true if ID is a supporting structural node.
 	local function nearsup(id)
 		return (id == c_leaves or id == c_soil or id == c_tree or id == c_tree2)
 	end
@@ -625,8 +630,8 @@ cw.generate_realm = function(minp, maxp, seed)
 						far_count = far_count + 1
 					end
 
-					local roofed = (sevenup_id == c_tree or sevenup_id == c_leaves or sevenup_id == c_junglegrass)
-					local support = (under_id == c_leaves or under_id == c_tree)
+					local roofed = (sevenup_id == c_tree or sevenup_id == c_tree2 or sevenup_id == c_leaves or sevenup_id == c_junglegrass)
+					local support = (under_id == c_leaves or under_id == c_tree or under_id == c_tree2)
 					local fillable = (center_id == c_air or (center_id == c_leaves and above_id == c_air))
 					local grassable = (center_id == c_air)
 
@@ -637,7 +642,12 @@ cw.generate_realm = function(minp, maxp, seed)
 						data[under] = c_tree2
 						param2_data[under] = branch_rotations[math.random(1, 4)]
 					elseif roofed and support and grassable and far_count >= 3 then
-						data[center] = c_junglegrass
+						-- Randomly place grass or junglegrass.
+						if math.random(1, 3) == 1 then
+							data[center] = c_grass
+						else
+							data[center] = c_junglegrass
+						end
 						param2_data[center] = 2
 					end
 

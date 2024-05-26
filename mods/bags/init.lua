@@ -95,24 +95,28 @@ function bags.get_chest(player)
 		if pointed_thing.type == "node" then
 			local node = minetest.get_node(pointed_thing.under)
 			if minetest.get_item_group(node.name, "chest") ~= 0 then
-				local trypos = pointed_thing.under
-				local nodename = minetest.get_node(trypos).name
-				local nodemeta = minetest.get_meta(trypos)
-				local nodedef = minetest.registered_nodes[nodename] or {}
+				-- Forbid using this on open chests.
+				-- Theft would be a mere snatch!
+				if not string.find(node.name, "_open$") then
+					local trypos = pointed_thing.under
+					local nodename = minetest.get_node(trypos).name
+					local nodemeta = minetest.get_meta(trypos)
+					local nodedef = minetest.registered_nodes[nodename] or {}
 
-				-- Check if it's really registered as a chest with the chest API.
-				if nodedef._chest_basename then
-					if nodedef.protected then
-						-- Chest is protected.
-						if chest_api.has_locked_chest_privilege(trypos, nodename, nodemeta, player) then
+					-- Check if it's really registered as a chest with the chest API.
+					if nodedef._chest_basename then
+						if nodedef.protected then
+							-- Chest is protected.
+							if chest_api.has_locked_chest_privilege(trypos, nodename, nodemeta, player) then
+								pos = trypos
+								protected = true
+								break
+							end
+						else
+							-- Chest not protected, no access check.
 							pos = trypos
-							protected = true
 							break
 						end
-					else
-						-- Chest not protected, no access check.
-						pos = trypos
-						break
 					end
 				end
 			end

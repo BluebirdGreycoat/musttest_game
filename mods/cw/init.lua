@@ -315,6 +315,7 @@ local c_leaves          = minetest.get_content_id("basictrees:jungletree_leaves2
 local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_litter")
 local c_junglegrass     = minetest.get_content_id("default:junglegrass")
 local c_grass           = minetest.get_content_id("default:grass_5")
+local c_grass2          = minetest.get_content_id("default:dry_grass2_5")
 
 -- Externally located tables for performance.
 local data = {}
@@ -630,6 +631,20 @@ cw.generate_realm = function(minp, maxp, seed)
 						far_count = far_count + 1
 					end
 
+					local water_count = 0
+					if north_id == c_water then
+						water_count = water_count + 1
+					end
+					if south_id == c_water then
+						water_count = water_count + 1
+					end
+					if west_id == c_water then
+						water_count = water_count + 1
+					end
+					if east_id == c_water then
+						water_count = water_count + 1
+					end
+
 					local roofed = (sevenup_id == c_tree or sevenup_id == c_tree2 or sevenup_id == c_leaves or sevenup_id == c_junglegrass)
 					local support = (under_id == c_leaves or under_id == c_tree or under_id == c_tree2)
 					local fillable = (center_id == c_air or (center_id == c_leaves and above_id == c_air))
@@ -647,6 +662,14 @@ cw.generate_realm = function(minp, maxp, seed)
 							data[center] = c_grass
 						else
 							data[center] = c_junglegrass
+						end
+						param2_data[center] = 2
+					elseif support and grassable and water_count >= 2 then
+						-- Place grass on trunks near water.
+						if math.random(1, 3) == 1 then
+							data[center] = c_grass
+						else
+							data[center] = c_grass2
 						end
 						param2_data[center] = 2
 					end

@@ -90,18 +90,36 @@ function bags.get_chest(player)
 	local sop = vector.add(eye, vector.multiply(lookdir, 5))
 	local ray = Raycast(eye, sop, false, false)
 
-	local pos
+	local pos, protected
 	for pointed_thing in ray do
 		if pointed_thing.type == "node" then
 			local node = minetest.get_node(pointed_thing.under)
 			if minetest.get_item_group(node.name, "chest") ~= 0 then
-				pos = pointed_thing.under
-				break
+				local trypos = pointed_thing.under
+				local nodename = minetest.get_node(trypos).name
+				local nodemeta = minetest.get_meta(trypos)
+				local nodedef = minetest.registered_nodes[nodename] or {}
+
+				-- Check if it's really registered as a chest with the chest API.
+				if nodedef._chest_basename then
+					if nodedef.protected then
+						-- Chest is protected.
+						if chest_api.has_locked_chest_privilege(trypos, nodename, nodemeta, player) then
+							pos = trypos
+							protected = true
+							break
+						end
+					else
+						-- Chest not protected, no access check.
+						pos = trypos
+						break
+					end
+				end
 			end
 		end
 	end
 
-	return pos
+	return pos, protected
 end
 
 
@@ -112,7 +130,7 @@ function bags.drop_items(player, bagnum)
 	if not inv then return end
 	if inv:get_size(bag) <= 0 then return end
 
-	local pos = bags.get_chest(player)
+	local pos, protected = bags.get_chest(player)
 	if not pos then return end
 
 	local meta = minetest.get_meta(pos)
@@ -131,7 +149,7 @@ function bags.drop_items(player, bagnum)
 		inv:set_stack(bag, k, stack)
 	end
 
-	return pos, count
+	return pos, count, protected
 end
 
 
@@ -142,7 +160,7 @@ function bags.grab_items(player, bagnum)
 	if not inv then return end
 	if inv:get_size(bag) <= 0 then return end
 
-	local pos = bags.get_chest(player)
+	local pos, protected = bags.get_chest(player)
 	if not pos then return end
 
 	local meta = minetest.get_meta(pos)
@@ -161,7 +179,7 @@ function bags.grab_items(player, bagnum)
 		inv2:set_stack("main", k, stack)
 	end
 
-	return pos, count
+	return pos, count, protected
 end
 
 
@@ -190,9 +208,11 @@ function bags.receive_fields(player, formname, fields)
 		end
 
 		if fields[drop] then
-			local target, count = bags.drop_items(player, i)
+			local target, count, protected = bags.drop_items(player, i)
 			if target then
-				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items defenestrated to chest at " .. rc.pos_to_namestr(target) .. ".")
+				local protstr = ""
+				if protected then protstr = "protected " end
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items chucked into " .. protstr .. "chest at " .. rc.pos_to_namestr(target) .. ".")
 				if count > 0 then
 					easyvend.sound_vend(player:get_pos())
 				end
@@ -203,9 +223,11 @@ function bags.receive_fields(player, formname, fields)
 		end
 
 		if fields[grab] then
-			local target, count = bags.grab_items(player, i)
+			local target, count, protected = bags.grab_items(player, i)
 			if target then
-				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items snatched from chest at " .. rc.pos_to_namestr(target) .. ".")
+				local protstr = ""
+				if protected then protstr = "protected " end
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items snatched from " .. protstr .. "chest at " .. rc.pos_to_namestr(target) .. ".")
 				if count > 0 then
 					easyvend.sound_vend(player:get_pos())
 				end

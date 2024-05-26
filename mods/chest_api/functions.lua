@@ -436,6 +436,7 @@ local function has_locked_chest_privilege(pos, name, meta, player)
   
   return false
 end
+chest_api.has_locked_chest_privilege = has_locked_chest_privilege
 
 local function chest_lid_obstructed(pos)
 	local above = { x = pos.x, y = pos.y + 1, z = pos.z }

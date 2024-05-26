@@ -83,12 +83,7 @@ end
 
 
 
-function bags.drop_items(player, bagnum)
-	local bag = "bag" .. bagnum .. "contents"
-	local inv = player:get_inventory()
-	if not inv then return end
-	if inv:get_size(bag) <= 0 then return end
-
+function bags.get_chest(player)
 	local lookdir = player:get_look_dir()
 	local eyeheight = player:get_properties().eye_height
 	local eye = vector.add(player:get_pos(), {x=0, y=eyeheight, z=0})
@@ -105,6 +100,19 @@ function bags.drop_items(player, bagnum)
 			end
 		end
 	end
+
+	return pos
+end
+
+
+
+function bags.drop_items(player, bagnum)
+	local bag = "bag" .. bagnum .. "contents"
+	local inv = player:get_inventory()
+	if not inv then return end
+	if inv:get_size(bag) <= 0 then return end
+
+	local pos = bags.get_chest(player)
 	if not pos then return end
 
 	local meta = minetest.get_meta(pos)
@@ -134,22 +142,7 @@ function bags.grab_items(player, bagnum)
 	if not inv then return end
 	if inv:get_size(bag) <= 0 then return end
 
-	local lookdir = player:get_look_dir()
-	local eyeheight = player:get_properties().eye_height
-	local eye = vector.add(player:get_pos(), {x=0, y=eyeheight, z=0})
-	local sop = vector.add(eye, vector.multiply(lookdir, 5))
-	local ray = Raycast(eye, sop, false, false)
-
-	local pos
-	for pointed_thing in ray do
-		if pointed_thing.type == "node" then
-			local node = minetest.get_node(pointed_thing.under)
-			if minetest.get_item_group(node.name, "chest") ~= 0 then
-				pos = pointed_thing.under
-				break
-			end
-		end
-	end
+	local pos = bags.get_chest(player)
 	if not pos then return end
 
 	local meta = minetest.get_meta(pos)

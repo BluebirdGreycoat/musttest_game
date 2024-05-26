@@ -673,6 +673,7 @@ cw.generate_realm = function(minp, maxp, seed)
 						end
 						param2_data[above] = 2
 					elseif center_id == c_water and above_id == c_air and border_count >= 1 then
+						-- Place lilies around tree trunks on water.
 						if math.random(1, 4) == 1 then
 							data[above] = c_lily
 							param2_data[above] = math.random(0, 3)

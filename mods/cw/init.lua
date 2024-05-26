@@ -316,6 +316,7 @@ local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_
 local c_junglegrass     = minetest.get_content_id("default:junglegrass")
 local c_grass           = minetest.get_content_id("default:grass_5")
 local c_grass2          = minetest.get_content_id("default:dry_grass2_5")
+local c_papyrus2        = minetest.get_content_id("default:papyrus2")
 
 -- Externally located tables for performance.
 local data = {}
@@ -572,33 +573,33 @@ cw.generate_realm = function(minp, maxp, seed)
   for x = x0, x1 do
     for z = z0, z1 do
       for y = y0, y1 do
+				local center = area:index(x, y, z)
+				local under = area:index(x, y-1, z)
+				local above = area:index(x, y+1, z)
+				local north = area:index(x, y, z+1)
+				local south = area:index(x, y, z-1)
+				local east = area:index(x+1, y, z)
+				local west = area:index(x-1, y, z)
+				local sevenup = area:index(x, y+7, z)
+				local farnorth = area:index(x, y, z+7)
+				local farsouth = area:index(x, y, z-7)
+				local fareast = area:index(x+7, y, z)
+				local farwest = area:index(x-7, y, z)
+
+				local center_id = data[center]
+				local above_id = data[above]
+				local under_id = data[under]
+				local north_id = data[north]
+				local south_id = data[south]
+				local west_id = data[west]
+				local east_id = data[east]
+				local sevenup_id = data[sevenup]
+				local farnorth_id = data[farnorth]
+				local farsouth_id = data[farsouth]
+				local farwest_id = data[farwest]
+				local fareast_id = data[fareast]
+
 				if y < (nstart + 60) then
-					local center = area:index(x, y, z)
-					local under = area:index(x, y-1, z)
-					local above = area:index(x, y+1, z)
-					local north = area:index(x, y, z+1)
-					local south = area:index(x, y, z-1)
-					local east = area:index(x+1, y, z)
-					local west = area:index(x-1, y, z)
-					local sevenup = area:index(x, y+7, z)
-					local farnorth = area:index(x, y, z+7)
-					local farsouth = area:index(x, y, z-7)
-					local fareast = area:index(x+7, y, z)
-					local farwest = area:index(x-7, y, z)
-
-					local center_id = data[center]
-					local above_id = data[above]
-					local under_id = data[under]
-					local north_id = data[north]
-					local south_id = data[south]
-					local west_id = data[west]
-					local east_id = data[east]
-					local sevenup_id = data[sevenup]
-					local farnorth_id = data[farnorth]
-					local farsouth_id = data[farsouth]
-					local farwest_id = data[farwest]
-					local fareast_id = data[fareast]
-
 					-- Check if we have neighboring supports directly adjacent to us.
 					local border_count = 0
 					if nearsup(north_id) then
@@ -712,6 +713,23 @@ cw.generate_realm = function(minp, maxp, seed)
 								if data[i3] == c_air then
 									data[i3] = c_leaves
 								end
+							end
+						end
+					end
+				end -- Y below (nstart + 60).
+
+				if center_id == c_air and above_id == c_leaves and under_id == c_air then
+					if math.random(1, 50) == 1 then
+						local pos = {x=x, y=y, z=z}
+						local n = math.random(2, 8)
+						for k = 1, n, 1 do
+							idx = area:index(pos.x, pos.y, pos.z)
+							pos.y = pos.y - 1
+
+							if data[idx] == c_air then
+								data[idx] = c_papyrus2
+							else
+								break
 							end
 						end
 					end

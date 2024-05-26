@@ -186,6 +186,8 @@ function obsidian_gateway.spawn_liquid(origin, northsouth, returngate, force)
 			meta:set_string("gate_origin", str_origin)
 			meta:set_string("gate_northsouth", tostring(northsouth))
 
+			meta:mark_as_private({"color", "gate_origin", "gate_northsouth"})
+
 			spawned = true
 		elseif force and oldnode.name == "nether:portal_hidden" then
 			minetest.swap_node(p, node)
@@ -526,6 +528,11 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 		meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(target))
 		meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 
+		meta:mark_as_private({
+			"obsidian_gateway_destination_" .. ns_key,
+			"obsidian_gateway_owner_" .. ns_key
+		})
+
 		first_time_init = true
 		isowner = true
 	else
@@ -618,6 +625,12 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, "")
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, "")
 
+					meta:mark_as_private({
+						"obsidian_gateway_success_" .. ns_key,
+						"obsidian_gateway_destination_" .. ns_key,
+						"obsidian_gateway_owner_" .. ns_key
+					})
+
 					-- Cancel transport.
 					return true
 				end
@@ -635,6 +648,12 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
+
+					meta:mark_as_private({
+						"obsidian_gateway_destination_" .. ns_key,
+						"obsidian_gateway_owner_" .. ns_key,
+						"obsidian_gateway_return_gate_" .. ns_key
+					})
 				else
 					-- Place eastwest gateway.
 					local path = obsidian_gateway.modpath .. "/obsidian_gateway_eastwest.mts"
@@ -644,6 +663,12 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 					meta:set_string("obsidian_gateway_destination_" .. ns_key, minetest.pos_to_string(playerorigin))
 					meta:set_string("obsidian_gateway_owner_" .. ns_key, pname)
 					meta:set_int("obsidian_gateway_return_gate_" .. ns_key, 1)
+
+					meta:mark_as_private({
+						"obsidian_gateway_destination_" .. ns_key,
+						"obsidian_gateway_owner_" .. ns_key,
+						"obsidian_gateway_return_gate_" .. ns_key
+					})
 				end
 			end
 

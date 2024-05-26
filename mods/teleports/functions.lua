@@ -641,6 +641,7 @@ teleports.update = function(pos)
 			local data = tp.x .. "," .. tp.y .. "," .. tp.z
 			local real_label = rc.pos_to_string(tp)
 			meta:set_string("loc" .. (i), data)
+			meta:mark_as_private("loc" .. (i))
 
 			if v.name ~= nil then
 					if v.name ~= "" then
@@ -785,6 +786,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 	if fields.change_network and fields.network then
 		if owner == playername or admin then
 			meta:set_string("network", fields.network)
+			meta:mark_as_private("network")
 			teleports.teleports[tp_idx].channel = fields.network
 			needsave = true
 		else
@@ -1015,6 +1017,7 @@ teleports.after_place_node = function(pos, placer)
 		meta:set_string("network", "")
 		meta:set_int("public", 1)
 		meta:set_int("construction_time", os.time())
+		meta:mark_as_private({"owner", "rename", "name", "network", "public", "construction_time"})
 
 		local inv = meta:get_inventory()
 		inv:set_size("price", 1)

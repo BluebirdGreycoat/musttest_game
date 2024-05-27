@@ -159,7 +159,60 @@ end
 
 function bone_mark.on_leaveplayer(pref)
 	local pname = pref:get_player_name()
+
+	-- Skip if player doesn't have any corpse marks.
+	if not bone_mark.players[pname] then
+		return
+	end
+
+	local data = {}
+	for k, v in ipairs(bone_mark.players[pname]) do
+		if not v.remove then
+			data[#data + 1] = v.pos
+		end
+	end
+
+	local serialized = minetest.serialize(data)
+	pref:get_meta():set_string("marked_bones", serialized)
+
 	bone_mark.players[pname] = nil
+end
+
+
+
+-- Because leaveplayer callbacks don't get called if server shuts down while players are connected!
+function bone_mark.on_shutdown()
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		bone_mark.on_leaveplayer(v)
+	end
+end
+
+
+
+function bone_mark.on_joinplayer(pref)
+	local pname = pref:get_player_name()
+	bone_mark.players[pname] = nil
+
+	local pmeta = pref:get_meta()
+	local serialized = pmeta:get_string("marked_bones")
+
+	-- Abort if no data.
+	if serialized == "" then
+		return
+	end
+
+	local data = minetest.deserialize(serialized)
+
+	-- Abort if no data.
+	if not data then
+		return
+	end
+
+	-- Re-add player's corpse marks.
+	for k, v in ipairs(data) do
+		bone_mark.add_corpse(v, pname)
+	end
 end
 
 
@@ -169,8 +222,16 @@ if not bone_mark.registered then
 		return bone_mark.on_globalstep(...)
 	end)
 
+	minetest.register_on_joinplayer(function(...)
+		return bone_mark.on_joinplayer(...)
+	end)
+
 	minetest.register_on_leaveplayer(function(...)
 		return bone_mark.on_leaveplayer(...)
+	end)
+
+	minetest.register_on_shutdown(function(...)
+		return bone_mark.on_shutdown(...)
 	end)
 
 	local c = "bone_mark:core"

@@ -27,7 +27,7 @@ end
 enhanced_leafdecay.make_leaf_nodetimer =
 function(args)
   local r = (args.range or DEFAULT_RANGE)
-  local t = (args.tree or "group:tree")
+  local t = (args.tree or "group:tree") -- Can be an ARRAY table, also!
   local functor = function(pos, elapsed)
     -- If we can find a trunk right away, then done.
     if utility.find_node_near_not_world_edge(pos, r, t) then

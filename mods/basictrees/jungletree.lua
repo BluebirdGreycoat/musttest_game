@@ -31,9 +31,30 @@ minetest.register_node("basictrees:jungletree_trunk", {
   on_destruct = enhanced_leafdecay.make_tree_destructor({
     leaves = {
       "basictrees:jungletree_leaves",
+			"basictrees:jungletree_leaves2",
       "group:dry_leaves",
     },
   }),
+
+  -- Helpfully allow players to place cubic trunks, since we use these in Channelwood.
+  after_place_node = function(pos, placer, itemstack, pt)
+		if not placer then
+			return
+		end
+
+		local control = placer:get_player_control()
+		if control.sneak then
+			local node = minetest.get_node(pos)
+			minetest.swap_node(pos, {name="basictrees:jungletree_cube", param2=node.param2})
+			return
+		end
+
+		local p2 = minetest.find_node_near(pos, 1, {"basictrees:jungletree_cube"})
+		if p2 then
+			local node = minetest.get_node(p2)
+			minetest.swap_node(pos, {name="basictrees:jungletree_cube", param2=node.param2})
+		end
+  end,
 })
 
 minetest.register_node("basictrees:jungletree_cube", {
@@ -82,7 +103,30 @@ minetest.register_node("basictrees:jungletree_leaves", {
 	movement_speed_multiplier = default.SLOW_SPEED,
   
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:jungletree_trunk"}),
+
+  on_timer = enhanced_leafdecay.make_leaf_nodetimer({
+		tree = {"basictrees:jungletree_trunk", "basictrees:jungletree_cube"},
+	}),
+
+  -- Helpfully allow players to place non-waving leaves, since we use these in Channelwood.
+  after_place_node = function(pos, placer, itemstack, pt)
+		if not placer then
+			return
+		end
+
+		local control = placer:get_player_control()
+		if control.sneak then
+			local node = minetest.get_node(pos)
+			minetest.swap_node(pos, {name="basictrees:jungletree_leaves2", param2=node.param2})
+			return
+		end
+
+		local p2 = minetest.find_node_near(pos, 1, {"basictrees:jungletree_cube", "basictrees:jungletree_leaves2"})
+		if p2 then
+			local node = minetest.get_node(p2)
+			minetest.swap_node(pos, {name="basictrees:jungletree_leaves2", param2=node.param2})
+		end
+  end,
 })
 
 
@@ -104,7 +148,10 @@ minetest.register_node("basictrees:jungletree_leaves2", {
 	movement_speed_multiplier = default.SLOW_SPEED,
 
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
-  on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="basictrees:jungletree_cube"}),
+
+  on_timer = enhanced_leafdecay.make_leaf_nodetimer({
+		tree = {"basictrees:jungletree_trunk", "basictrees:jungletree_cube"},
+	}),
 })
 
 

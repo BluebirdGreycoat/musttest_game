@@ -430,6 +430,24 @@ local function callback(blockpos, action, calls_remaining, param)
 		meta:from_table(nil)
 	end
 
+	-- Erase the rope.
+	for k = 4500, 4577, 1 do
+		local p = {x=-9177, y=k, z=5746}
+		minetest.set_node(p, {name="air"})
+	end
+
+	-- Rebuild the rope, with self-constructing nodes.
+	do
+		local p = {x=-9177, y=4577, z=5746}
+		local n = minetest.get_node(p)
+		if n.name == "air" then
+			minetest.add_node(p, {name="vines:rope_bottom"})
+			local meta = minetest.get_meta(p)
+			meta:set_int("length_remaining", 80)
+			meta:mark_as_private("length_remaining")
+		end
+	end
+
 	teleports.delete_blocks_from_area(minp, maxp)
 	city_block.delete_blocks_from_area(minp, maxp)
 

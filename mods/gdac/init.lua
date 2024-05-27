@@ -19,18 +19,20 @@ dofile(gdac.modpath .. "/autokick.lua")
 
 
 function gdac.player_is_admin(playerorname)
-	if minetest.is_singleplayer() then
-		return false
-	end
+	--if minetest.is_singleplayer() then
+	--	return false
+	--end
 
 	--do return false end
 
-	local pref = playerorname
-	if type(pref) == "string" then
-		pref = minetest.get_player_by_name(pref)
-	end
-	if pref then
-		return minetest.check_player_privs(pref, {server=true})
+	if type(playerorname) == "string" then
+		if minetest.get_player_privs(playerorname).server then
+			return true
+		end
+	else
+		if minetest.get_player_privs(playerorname:get_player_name()).server then
+			return true
+		end
 	end
 end
 

@@ -47,8 +47,8 @@ if not armor.run_once then
 		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true },
 		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true },
 		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-	--cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false},
-	--leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false},
+		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false},
+		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false},
 	}
 
 	for key, data in pairs(ARMOR_MATERIALS) do

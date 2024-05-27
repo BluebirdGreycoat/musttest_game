@@ -52,6 +52,16 @@ sysdmg.default_groups = {
   ["3d_armor:chestplate_mithril"]  = {armor_heal=10*BLOCK_MULT, armor_use=250},
   ["3d_armor:leggings_mithril"]    = {armor_heal= 5*BLOCK_MULT, armor_use=50},
   ["3d_armor:boots_mithril"]       = {armor_heal= 5*BLOCK_MULT, armor_use=50},
+
+  ["3d_armor:helmet_cotton"]       = {armor_heal= 0*BLOCK_MULT, armor_use=1000},
+  ["3d_armor:chestplate_cotton"]   = {armor_heal= 5*BLOCK_MULT, armor_use=1500},
+  ["3d_armor:leggings_cotton"]     = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
+  ["3d_armor:boots_cotton"]        = {armor_heal= 0*BLOCK_MULT, armor_use=2000},
+
+  ["3d_armor:helmet_leather"]      = {armor_heal= 0*BLOCK_MULT, armor_use=1000},
+  ["3d_armor:chestplate_leather"]  = {armor_heal= 5*BLOCK_MULT, armor_use=1500},
+  ["3d_armor:leggings_leather"]    = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
+  ["3d_armor:boots_leather"]       = {armor_heal= 0*BLOCK_MULT, armor_use=2000},
 }
 
 
@@ -100,6 +110,16 @@ sysdmg.wear_groups = {
   ["3d_armor:chestplate_mithril"]  = {fall=0.5, fleshy=0.5, snappy=0.1, ground=0.0, boom=4.0},
   ["3d_armor:leggings_mithril"]    = {fall=0.8, fleshy=0.5, snappy=0.1, },
   ["3d_armor:boots_mithril"]       = {fall=0.9, fleshy=0.5, snappy=0.1, ground=2.0},
+
+  ["3d_armor:helmet_cotton"]       = {fall=0.5, crumbly=0.1, lava=4.0, crush=3.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_cotton"]   = {fall=0.5, crumbly=0.1, lava=4.0, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_cotton"]     = {fall=1.25,crumbly=0.1, lava=4.0,  heat=2.0},
+  ["3d_armor:boots_cotton"]        = {fall=1.5, crumbly=0.1, lava=4.0, heat=2.0, ground=2.0},
+
+  ["3d_armor:helmet_leather"]      = {fall=0.5, crumbly=0.1, lava=4.0, crush=3.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_leather"]  = {fall=0.5, crumbly=0.1, lava=4.0, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_leather"]    = {fall=1.25,crumbly=0.1, lava=4.0,  heat=2.0},
+  ["3d_armor:boots_leather"]       = {fall=1.5, crumbly=0.1, lava=4.0, heat=2.0, ground=2.0},
 }
 
 
@@ -150,6 +170,16 @@ sysdmg.resist_groups = {
   ["3d_armor:chestplate_mithril"]  = {boom=10, cracky=15, fleshy=25, fireball=25},
   ["3d_armor:leggings_mithril"]    = {boom=5, cracky=8, fleshy=25},
   ["3d_armor:boots_mithril"]       = {boom=5, cracky=8, fleshy=20},
+
+  ["3d_armor:helmet_cotton"]       = {fleshy=5,  crumbly=15, },
+  ["3d_armor:chestplate_cotton"]   = {fleshy=10, crumbly=25, },
+  ["3d_armor:leggings_cotton"]     = {fleshy=5,  crumbly=10, },
+  ["3d_armor:boots_cotton"]        = {fleshy=5,  crumbly=15, },
+
+  ["3d_armor:helmet_leather"]      = {fleshy=5,  crumbly=15, },
+  ["3d_armor:chestplate_leather"]  = {fleshy=10, crumbly=25, },
+  ["3d_armor:leggings_leather"]    = {fleshy=5,  crumbly=10, },
+  ["3d_armor:boots_leather"]       = {fleshy=5,  crumbly=15, },
 }
 
 -- Make calculating the "hard meta" rather difficult.

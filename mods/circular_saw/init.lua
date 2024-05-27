@@ -44,6 +44,7 @@ circular_saw.names = {
   {"panel", "_16", 4},
 
   {"stair", "_outer", 5},
+  {"stair", "_outer2", 4},
   {"stair", "", 6},
   {"stair", "_inner", 7},
   {"slab", "_1", 1},

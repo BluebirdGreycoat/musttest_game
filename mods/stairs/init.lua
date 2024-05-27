@@ -271,12 +271,24 @@ local stairs_defs = {
 		light=7/8,
 	},
 	["_outer"] = {
-		description = "Outside Corner Stair",
+		description = "Outside Corner Stair #1",
 		node_box = {
 			type = "fixed",
 			fixed = {
 				{-0.5, -0.5, -0.5, 0.5, 0, 0.5},
 				{-0.5, 0, 0, 0, 0.5, 0.5},
+			},
+		},
+		light=5/8,
+	},
+	["_outer2"] = {
+		description = "Outside Corner Stair #2",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, 0, 0, 0, 0.5, 0.5},
+				{-0.5, -0.5, -0.5, 0, 0, 0.5},
+				{0, -0.5, 0, 0.5, 0, 0.5},
 			},
 		},
 		light=5/8,

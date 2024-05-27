@@ -59,20 +59,22 @@ end
 dofile(minetest.get_modpath("stairs") .. "/slopes.lua")
 
 local slabs_defs = {
-	["_quarter"] =				{num=4,		light=0.25, is_flat=true},
-	["_three_quarter"] =	{num=12,	light=0.75, is_flat=true},
-	["_1"] =							{num=1,		light=1/16, is_flat=true},
-	["_2"] =							{num=2,		light=2/16, is_flat=true},
-	["_14"] =							{num=14,	light=14/16, is_flat=true},
-	["_15"] =							{num=15,	light=15/16, is_flat=true},
+	["_quarter"] =				{num=4,		light=0.25, is_flat=true, description="Quarter Slab"},
+	["_three_quarter"] =	{num=12,	light=0.75, is_flat=true, description="Three-Quarter Slab"},
+	["_1"] =							{num=1,		light=1/16, is_flat=true, description="1/16 Slab"},
+	["_2"] =							{num=2,		light=2/16, is_flat=true, description="1/8 Slab"},
+	["_14"] =							{num=14,	light=14/16, is_flat=true, description="7/8 Slab"},
+	["_15"] =							{num=15,	light=15/16, is_flat=true, description="15/16 Slab"},
 
 	["_two_sides"] = {
+		description = "1/16 2-Sided Corner Panel",
 		nodebox = {
 			{ -0.5, -0.5, -0.5, 0.5, -7/16, 7/16 },
 			{ -0.5, -0.5, 7/16, 0.5, 0.5, 0.5 },
 		}
 	},
 	["_three_sides"] = {
+		description = "1/16 3-Sided Corner Panel",
 		nodebox = {
 			{ -7/16, -0.5, -0.5, 0.5, -7/16, 7/16 },
 			{ -7/16, -0.5, 7/16, 0.5, 0.5, 0.5 },
@@ -80,6 +82,7 @@ local slabs_defs = {
 		}
 	},
 	["_three_sides_u"] = {
+		description = "1/16 3-Sided U Panel",
 		nodebox = {
 			{ -0.5, -0.5, -0.5, 0.5, 0.5, -7/16 },
 			{ -0.5, -0.5, -7/16, 0.5, -7/16, 7/16 },
@@ -87,6 +90,7 @@ local slabs_defs = {
 		}
 	},
 	["_four_sides"] = {
+		description = "1/16 4-Sided Nook Panel",
 		nodebox = {
 			{ -0.5, -0.5, -0.5, 0.5, 0.5, -7/16 },
 			{ -0.5, -0.5, -7/16, 0.5, -7/16, 7/16 },
@@ -95,6 +99,7 @@ local slabs_defs = {
 		}
 	},
 	["_hole"] = {
+		description = "1/16 Murderhole Full",
 		nodebox = {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, -7/16},
 			{-0.5, -0.5, 0.5, 0.5, 0.5, 7/16},
@@ -103,12 +108,14 @@ local slabs_defs = {
 		}
 	},
 	["_two_opposite"] = {
+		description = "Double Panel 1/16 Opposing",
 		nodebox = {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, -7/16},
 			{-0.5, -0.5, 0.5, 0.5, 0.5, 7/16},
 		}
 	},
 	["_pit"] = {
+		description = "1/16 Paneled Box Full",
 		nodebox = {
 			{ -0.5, -0.5, -0.5, 0.5, 0.5, -7/16 },
 			{ -0.5, -0.5, -7/16, 0.5, -7/16, 7/16 },
@@ -118,6 +125,7 @@ local slabs_defs = {
 		}
 	},
 	["_pit_half"] = {
+		description = "1/16 Paneled Box Half",
 		nodebox = {
 			{ -0.5, -0.5, -0.5, 0.0, 0.5, -7/16 },
 			{ -0.5, -0.5, -7/16, 0.0, -7/16, 7/16 },
@@ -127,6 +135,7 @@ local slabs_defs = {
 		}
 	},
 	["_hole_half"] = {
+		description = "1/16 Murderhole Half",
 		nodebox = {
 			{-0.5, -0.5, -0.5,  0.5,   0, -7/16},
 			{-0.5, -0.5, 0.5,   0.5,   0, 7/16},
@@ -206,6 +215,7 @@ end
 
 local stairs_defs = {
 	["_half"] = {
+		description = "Left Half Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -216,6 +226,7 @@ local stairs_defs = {
 		light=3/8,
 	},
 	["_right_half" ]= {
+		description = "Right Half Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -226,6 +237,7 @@ local stairs_defs = {
 		light=3/8,
 	},
 	["_half_1"] = {
+		description = "Left 1/16 Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -236,6 +248,7 @@ local stairs_defs = {
 		light=1/8,
 	},
 	["_right_half_1" ]= {
+		description = "Right 1/16 Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -246,6 +259,7 @@ local stairs_defs = {
 		light=1/8,
 	},
 	["_inner"] = {
+		description = "Inside Corner Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -257,6 +271,7 @@ local stairs_defs = {
 		light=7/8,
 	},
 	["_outer"] = {
+		description = "Outside Corner Stair",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -267,6 +282,7 @@ local stairs_defs = {
 		light=5/8,
 	},
 	["_alt"] = {
+		description = "Half Open Step",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -277,6 +293,7 @@ local stairs_defs = {
 		light=1/2,
 	},
 	["_alt_1"] = {
+		description = "1/16 Open Step",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -287,6 +304,7 @@ local stairs_defs = {
 		light=1/16,
 	},
 	["_alt_5"] = {
+		description = "Half Open Shelf",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -297,6 +315,7 @@ local stairs_defs = {
 		light=1/16,
 	},
 	["_alt_6"] = {
+		description = "Full Open Shelf",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -307,6 +326,7 @@ local stairs_defs = {
 		light=1/16,
 	},
 	["_alt_2"] = {
+		description = "1/8 Open Step",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -317,6 +337,7 @@ local stairs_defs = {
 		light=2/16,
 	},
 	["_alt_4"] = {
+		description = "Quarter Open Step",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -427,6 +448,7 @@ end
 
 local panels_defs = {
 	[""] = {
+		description = "Horizontal Double Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, 0, 0.5},
@@ -434,6 +456,7 @@ local panels_defs = {
 		light=1/4,
 	},
 	["_1"] = {
+		description = "1/16 Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, -0.4375, 0.5},
@@ -441,6 +464,7 @@ local panels_defs = {
 		light=1/32,
 	},
 	["_2"] = {
+		description = "1/8 Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, -0.375, 0.5},
@@ -448,6 +472,7 @@ local panels_defs = {
 		light=2/32,
 	},
 	["_4"] = {
+		description = "Quarter Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, -0.25, 0.5},
@@ -455,6 +480,7 @@ local panels_defs = {
 		light=4/32,
 	},
 	["_12"] = {
+		description = "Three-Quarter Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, 0.25, 0.5},
@@ -462,6 +488,7 @@ local panels_defs = {
 		light=12/32,
 	},
 	["_14"] = {
+		description = "7/8 Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, 0.375, 0.5},
@@ -469,6 +496,7 @@ local panels_defs = {
 		light=14/32,
 	},
 	["_15"] = {
+		description = "15/16 Half Panel",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, 0.4375, 0.5},
@@ -476,6 +504,7 @@ local panels_defs = {
 		light=15/32,
 	},
 	["_16"] = {
+		description = "Vertical Half Slab",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0.5, 0.5, 0.5},
@@ -582,6 +611,7 @@ end
 
 local microblocks_defs = {
 	[""] = {
+		description = "Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, 0, 0.5},
@@ -589,6 +619,7 @@ local microblocks_defs = {
 		light=8/64,
 	},
 	["_c"] = {
+		description = "Microblock Centered",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, 0, 0.25},
@@ -596,6 +627,7 @@ local microblocks_defs = {
 		light=8/64,
 	},
 	["_1c"] = {
+		description = "1/16 Microblock Centered",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, -0.4375, 0.25},
@@ -603,6 +635,7 @@ local microblocks_defs = {
 		light=1/64,
 	},
 	["_1"] = {
+		description = "1/16 Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, -0.4375, 0.5},
@@ -610,6 +643,7 @@ local microblocks_defs = {
 		light=1/64,
 	},
 	["_2"] = {
+		description = "1/8 Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, -0.375, 0.5},
@@ -617,6 +651,7 @@ local microblocks_defs = {
 		light=2/64,
 	},
 	["_4"] = {
+		description = "Quarter Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, -0.25, 0.5},
@@ -624,6 +659,7 @@ local microblocks_defs = {
 		light=4/64,
 	},
 	["_12"] = {
+		description = "Three-Quarter Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, 0.25, 0.5},
@@ -631,6 +667,7 @@ local microblocks_defs = {
 		light=12/64,
 	},
 	["_14"] = {
+		description = "7/8 Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, 0.375, 0.5},
@@ -638,6 +675,7 @@ local microblocks_defs = {
 		light=14/64,
 	},
 	["_15"] = {
+		description = "15/16 Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, 0.4375, 0.5},
@@ -645,6 +683,7 @@ local microblocks_defs = {
 		light=15/64,
 	},
 	["_16"] = {
+		description = "Vertical Double Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, 0, 0, 0.5, 0.5},
@@ -652,6 +691,7 @@ local microblocks_defs = {
 		light=16/64,
 	},
 	["_1s"] = {
+		description = "1/16 Double-Diag Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -662,6 +702,7 @@ local microblocks_defs = {
 		light=2/64,
 	},
 	["_16s"] = {
+		description = "Half Double-Diag Microblock",
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -862,7 +903,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	assert(ndef)
 
 	local slab_def = {
-		description = description .. " Slab",
+		description = description .. " Horizontal Half Slab",
 		drawtype = "nodebox",
 		tiles = images,
 		paramtype = "light",

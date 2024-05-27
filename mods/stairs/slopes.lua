@@ -314,18 +314,21 @@ local astair_4 = {
 
 local slopes_defs = {
 	[""] = {
+		description = "45 Slope Full",
 		mesh = "moreblocks_slope.obj",
 		collision_box = box_slope,
 		selection_box = box_slope,
 		light=1/2,
 	},
 	["_half"] = {
+		description = "22 Slope Full",
 		mesh = "moreblocks_slope_half.obj",
 		collision_box = box_slope_half,
 		selection_box = box_slope_half,
 		light=1/4,
 	},
 	["_half_raised"] = {
+		description = "22 Slope Raised Full",
 		mesh = "moreblocks_slope_half_raised.obj",
 		collision_box = box_slope_half_raised,
 		selection_box = box_slope_half_raised,
@@ -335,18 +338,21 @@ local slopes_defs = {
 	--==============================================================
 
 	["_inner"] = {
+		description = "45 Inner Corner Slope",
 		mesh = "moreblocks_slope_inner.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
 		light=3/4,
 	},
 	["_inner_half"] = {
+		description = "22 Inner Corner Slope",
 		mesh = "moreblocks_slope_inner_half.obj",
 		collision_box = box_slope_inner_half,
 		selection_box = box_slope_inner_half,
 		light=2/5,
 	},
 	["_inner_half_raised"] = {
+		description = "22 Inner Corner Raised Slope",
 		mesh = "moreblocks_slope_inner_half_raised.obj",
 		collision_box = box_slope_inner_half_raised,
 		selection_box = box_slope_inner_half_raised,
@@ -413,18 +419,21 @@ local slopes_defs = {
 	--==============================================================
 
 	["_outer"] = {
+		description = "45 Outer Corner Slope",
 		mesh = "moreblocks_slope_outer.obj",
 		collision_box = box_slope_outer,
 		selection_box = box_slope_outer,
 		light=2/5,
 	},
 	["_outer_half"] = {
+		description = "22 Outer Corner Slope",
 		mesh = "moreblocks_slope_outer_half.obj",
 		collision_box = box_slope_outer_half,
 		selection_box = box_slope_outer_half,
 		light=1/5,
 	},
 	["_outer_half_raised"] = {
+		description = "22 Outer Corner Raised Slope",
 		mesh = "moreblocks_slope_outer_half_raised.obj",
 		collision_box = box_slope_outer_half_raised,
 		selection_box = box_slope_outer_half_raised,
@@ -510,18 +519,21 @@ local slopes_defs = {
 	},
 
 	["_lh"] = {
+		description = "45 Slope Left",
 		mesh = "moreblocks_slope_lh.obj",
 		collision_box = box_slope_lh,
 		selection_box = box_slope_lh,
 		light=1/4,
 	},
 	["_half_lh"] = {
+		description = "22 Slope Left",
 		mesh = "moreblocks_slope_half_lh.obj",
 		collision_box = box_slope_half_lh,
 		selection_box = box_slope_half_lh,
 		light=1/8,
 	},
 	["_half_raised_lh"] = {
+		description = "22 Slope Raised Left",
 		mesh = "moreblocks_slope_half_raised_lh.obj",
 		collision_box = box_slope_half_raised_lh,
 		selection_box = box_slope_half_raised_lh,
@@ -529,6 +541,7 @@ local slopes_defs = {
 	},
 
 	["_xslope_slope_lh"] = {
+		description = "45 Microblock Slope Left",
 		mesh = "xslopes_slope_lh.obj",
 		collision_box = xslope_slope_lh,
 		selection_box = xslope_slope_lh,
@@ -548,18 +561,21 @@ local slopes_defs = {
 	},
 
 	["_rh"] = {
+		description = "45 Slope Right",
 		mesh = "moreblocks_slope_rh.obj",
 		collision_box = box_slope_rh,
 		selection_box = box_slope_rh,
 		light=1/4,
 	},
 	["_half_rh"] = {
+		description = "22 Slope Right",
 		mesh = "moreblocks_slope_half_rh.obj",
 		collision_box = box_slope_half_rh,
 		selection_box = box_slope_half_rh,
 		light=1/8,
 	},
 	["_half_raised_rh"] = {
+		description = "22 Slope Raised Right",
 		mesh = "moreblocks_slope_half_raised_rh.obj",
 		collision_box = box_slope_half_raised_rh,
 		selection_box = box_slope_half_raised_rh,
@@ -567,6 +583,7 @@ local slopes_defs = {
 	},
 
 	["_xslope_slope_rh"] = {
+		description = "45 Microblock Slope Right",
 		mesh = "xslopes_slope_rh.obj",
 		collision_box = xslope_slope_rh,
 		selection_box = xslope_slope_rh,

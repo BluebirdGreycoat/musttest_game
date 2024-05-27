@@ -93,6 +93,10 @@ local nodes = {
 	{pos={x=-9169, y=4102, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
 	{pos={x=-9169, y=4101, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
 	{pos={x=-9169, y=4100, z=5782}, node={name="pillars:rackstone_cobble_bottom", param2=3}},
+
+	-- Beacon protectors.
+	{pos={x=-9176, y=4191, z=5745}, node={name="protector:protect", param2=0}},
+	{pos={x=-9176, y=4185, z=5745}, node={name="protector:protect", param2=0}},
 }
 
 local function rebuild_nodes()
@@ -234,6 +238,19 @@ local metadata = {
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
+	-- Beacon protectors.
+	{pos={x=-9176, y=4185, z=5745}, meta={fields={
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2024/05/26 UTC",
+		owner = OWNERNAME,
+		placedate = "2024/05/26 UTC",
+		rename = OWNERNAME,
+	}}},
+	{pos={x=-9176, y=4191, z=5745}, meta={fields={
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2024/05/26 UTC",
+		owner = OWNERNAME,
+		placedate = "2024/05/26 UTC",
+		rename = OWNERNAME,
+	}}},
 }
 
 local function rebuild_metadata()
@@ -364,8 +381,10 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
 	local schematic = rc.modpath .. "/outback_map.mts"
 	local apron_schematic = rc.modpath .. "/outback_apron.mts"
+	local beacon_schem = rc.modpath .. "/outback_beacon.mts"
 	local pos = {x=-9274, y=4000+400, z=5682}
 	local apron_pos = {x=-9314, y=4141+400, z=5642}
+	local beacon_pos = {x=-9180, y=4580, z=5741}
 	local replacements = {}
 
 	if minetest.registered_nodes["basictrees:acacia_branch"] then
@@ -376,6 +395,7 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	minetest.place_schematic(apron_pos, apron_schematic, "0", replacements, true, "")
 	minetest.place_schematic(pos, schematic, "0", replacements, true, "")
+	minetest.place_schematic(beacon_pos, beacon_schem, "0", replacements, true, "")
 
 	-- Erase all stale metadata.
 	for k, v in ipairs(pos_metas) do

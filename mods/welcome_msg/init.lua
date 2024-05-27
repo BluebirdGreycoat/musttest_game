@@ -8,7 +8,7 @@ welcome.timeout2 = tonumber(minetest.settings:get("welcome_msg_delay2") or 30)
 
 -- The welcome message.
 welcome.message = minetest.settings:get("welcome_msg_string") or "Welcome!"
-welcome.message2 = minetest.settings:get("welcome_msg_string2")
+welcome.message2 = minetest.settings:get("welcome_msg_string2") or "Welcome message 2!"
 
 welcome.color = core.get_color_escape_sequence("#ff00ff")
 
@@ -32,7 +32,7 @@ end
 
 
 
-welcome.on_joinplayer = function(player)
+welcome.on_joinplayer = function(player, last_login)
   if not player or not player:is_player() then return end
 	local pname = player:get_player_name()
 
@@ -41,12 +41,25 @@ welcome.on_joinplayer = function(player)
 	 return
 	end
 
-	--[[
 	local pname = player:get_player_name()
 	if passport.player_registered(pname) then return end
-	minetest.after(welcome.timeout, welcome.on_timer, pname)
+	--minetest.after(welcome.timeout, welcome.on_timer, pname)
 	minetest.after(welcome.timeout2, welcome.on_timer2, pname)
-	--]]
+end
+
+
+
+function welcome.player_near_outback_edge(player)
+	local pname = player:get_player_name()
+	local spamkey = pname .. ":abyss_edge"
+
+	if not spam.test_key(spamkey) then
+		minetest.chat_send_player(pname, welcome.color ..
+			"# Server: <" .. rename.gpn(pname) ..
+			">, you are at the Outback boundary. " ..
+			"Escape is possible only through the Dimensional Gate.")
+		spam.mark_key(spamkey, 60*10)
+	end
 end
 
 

@@ -130,6 +130,11 @@ rc.realms = {
     star_data = {visible=true, count=50},
     realm_resets = true,
 
+    border_edge_distance = 7,
+    border_edge = function(...)
+			return welcome.player_near_outback_edge(...)
+		end,
+
     --[[
 
 			-- Notes:
@@ -740,6 +745,22 @@ function rc.check_position(player)
 					reset = {}
 					reset.spawn = v.orig -- Use current realm's respawn coordinates.
 					break
+				end
+
+				-- Check if player is NEAR the edge of the realm, and call a special
+				-- function if they are. This function gets called every time, and it
+				-- must handle being called multiple times as long as the player is
+				-- near the realm boundary.
+				if v.border_edge then
+					local d = v.border_edge_distance or 10
+					local minp2 = {x=minp.x + d, y=minp.y, z=minp.z + d}
+					local maxp2 = {x=maxp.x - d, y=maxp.y, z=maxp.z - d}
+
+					if p.x < minp2.x or p.x > maxp2.x or
+							p.y < minp2.y or p.y > maxp2.y or
+							p.z < minp2.z or p.z > maxp2.z then
+						v.border_edge(player, p)
+					end
 				end
 			end
 		end

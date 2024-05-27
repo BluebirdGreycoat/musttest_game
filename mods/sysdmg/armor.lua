@@ -53,15 +53,15 @@ sysdmg.default_groups = {
   ["3d_armor:leggings_mithril"]    = {armor_heal= 5*BLOCK_MULT, armor_use=50},
   ["3d_armor:boots_mithril"]       = {armor_heal= 5*BLOCK_MULT, armor_use=50},
 
-  ["3d_armor:helmet_cotton"]       = {armor_heal= 0*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:chestplate_cotton"]   = {armor_heal= 5*BLOCK_MULT, armor_use=1500},
-  ["3d_armor:leggings_cotton"]     = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
-  ["3d_armor:boots_cotton"]        = {armor_heal= 0*BLOCK_MULT, armor_use=2000},
+  ["3d_armor:helmet_cotton"]       = {armor_heal= 25*BLOCK_MULT, armor_use=700},
+  ["3d_armor:chestplate_cotton"]   = {armor_heal= 35*BLOCK_MULT, armor_use=800},
+  ["3d_armor:leggings_cotton"]     = {armor_heal= 15*BLOCK_MULT, armor_use=1000},
+  ["3d_armor:boots_cotton"]        = {armor_heal= 15*BLOCK_MULT, armor_use=1300},
 
-  ["3d_armor:helmet_leather"]      = {armor_heal= 0*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:chestplate_leather"]  = {armor_heal= 5*BLOCK_MULT, armor_use=1500},
-  ["3d_armor:leggings_leather"]    = {armor_heal= 0*BLOCK_MULT, armor_use=1500},
-  ["3d_armor:boots_leather"]       = {armor_heal= 0*BLOCK_MULT, armor_use=2000},
+  ["3d_armor:helmet_leather"]      = {armor_heal= 20*BLOCK_MULT, armor_use=500},
+  ["3d_armor:chestplate_leather"]  = {armor_heal= 25*BLOCK_MULT, armor_use=1000},
+  ["3d_armor:leggings_leather"]    = {armor_heal= 10*BLOCK_MULT, armor_use=1100},
+  ["3d_armor:boots_leather"]       = {armor_heal= 10*BLOCK_MULT, armor_use=1200},
 }
 
 

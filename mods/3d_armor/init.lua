@@ -40,38 +40,58 @@ if not armor.run_once then
 
 	-- Materials can only be loaded once, obviously.
 	ARMOR_MATERIALS = {
-		wood    = {item="group:wood"            , name="Wood"        , padding="farming:cotton"       , fuel=10, cook=0 , shield=true },
-		steel   = {item="default:steel_ingot"   , name="Wrought Iron", padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-		bronze  = {item="default:bronze_ingot"  , name="Bronze"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-		diamond = {item="default:diamond"       , name="Diamond"     , padding="farming:cloth"        , fuel=0 , cook=0 , shield=true },
-		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true },
-		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false},
-		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false},
+		wood    = {item="group:wood"            , name="Wood"        , padding="farming:cotton"       , fuel=10, cook=0 , shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name="Chausses"},
+		steel   = {item="default:steel_ingot"   , name="Wrought Iron", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		bronze  = {item="default:bronze_ingot"  , name="Bronze"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		diamond = {item="default:diamond"       , name="Diamond"     , padding="farming:cloth"        , fuel=0 , cook=0 , shield=true  , chestplate_name="Shardplate" , boots_name="Shoes" , helmet_name="Crown" , leggings_name=""        },
+		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
+		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
 	}
 
 	for key, data in pairs(ARMOR_MATERIALS) do
+		local capname = "Helmet"
+		if data.helmet_name ~= "" then
+			capname = data.helmet_name
+		end
+
 		register_piece("3d_armor:helmet_" .. key, {
-			description = data.name .. " Helmet",
+			description = data.name .. " " .. capname,
 			inventory_image = "3d_armor_inv_helmet_" .. key .. ".png",
 			groups = {armor_head=1},
 		})
 
+		local chestname = "Chestplate"
+		if data.chestplate_name ~= "" then
+			chestname = data.chestplate_name
+		end
+
 		register_piece("3d_armor:chestplate_" .. key, {
-			description = data.name .. " Chestplate",
+			description = data.name .. " " .. chestname,
 			inventory_image = "3d_armor_inv_chestplate_" .. key .. ".png",
 			groups = {armor_torso=1},
 		})
 
+		local legname = "Leggings"
+		if data.leggings_name ~= "" then
+			legname = data.leggings_name
+		end
+
 		register_piece("3d_armor:leggings_" .. key, {
-			description = data.name .. " Leggings",
+			description = data.name .. " " .. legname,
 			inventory_image = "3d_armor_inv_leggings_" .. key .. ".png",
 			groups = {armor_legs=1},
 		})
 
+		local shoename = "Boots"
+		if data.boots_name ~= "" then
+			shoename = data.boots_name
+		end
+
 		register_piece("3d_armor:boots_" .. key, {
-			description = data.name .. " Boots",
+			description = data.name .. " " .. shoename,
 			inventory_image = "3d_armor_inv_boots_" .. key .. ".png",
 			groups = {armor_feet=1},
 		})

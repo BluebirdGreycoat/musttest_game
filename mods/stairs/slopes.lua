@@ -640,7 +640,7 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
 			def.on_place = function(...) return stairs.rotate_and_place(...) end
 			def.groups = groups
 			def.sounds = sounds
-			def.description = description
+			def.description = description .. " " .. (def.description or "Slope")
 			def.tiles = stair_images
 			def.light_source = math.ceil(ndef.light_source*(def.light or 0))
 			def.light = nil

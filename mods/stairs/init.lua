@@ -185,7 +185,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
     def.on_place = function(...) return stairs.rotate_and_place(...) end
     def.groups = groups
     def.sounds = sounds
-    def.description = description
+		def.description = description .. " " .. (num.description or "Slab")
     def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*(num.light or 0))
 
@@ -359,7 +359,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		def.on_place = function(...) return stairs.rotate_and_place(...) end
 		def.groups = groups
 		def.sounds = sounds
-		def.description = description
+		def.description = description .. " " .. (def.description or "Stair")
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
@@ -704,7 +704,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 		def.on_place = function(...) return stairs.rotate_and_place(...) end
 		def.groups = groups
 		def.sounds = sounds
-		def.description = description
+		def.description = description .. " " .. (def.description or "Microblock")
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
@@ -755,7 +755,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 	assert(ndef)
 
 	local stair_def = {
-		description = description,
+		description = description .. " Stair",
 		drawtype = "mesh",
 		mesh = "stairs_stair.obj",
 		tiles = stair_images,
@@ -862,7 +862,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	assert(ndef)
 
 	local slab_def = {
-		description = description,
+		description = description .. " Slab",
 		drawtype = "nodebox",
 		tiles = images,
 		paramtype = "light",
@@ -961,13 +961,13 @@ end
 -- Now includes all extra blocks.
 
 function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_micro(subname, recipeitem, groups, images, desc .. " Microblock", sounds)
-  stairs.register_panel(subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_stair(subname, recipeitem, groups, images, desc .. " Stair", sounds)
-  stairs.register_extra_stairs(subname, recipeitem, groups, images, desc .. " Stair", sounds)
-  stairs.register_slab(subname, recipeitem, groups, images, desc .. " Slab", sounds)
-  stairs.register_extra_slabs(subname, recipeitem, groups, images, desc .. " Slab", sounds)
-  stairs.register_slopes(subname, recipeitem, groups, images, desc .. " Slope", sounds)
+  stairs.register_micro       (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_panel       (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_extra_stairs(subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_slopes      (subname, recipeitem, groups, images, desc, sounds)
 end
 
 

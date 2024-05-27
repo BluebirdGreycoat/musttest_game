@@ -362,54 +362,63 @@ local slopes_defs = {
 	--==============================================================
 
 	["_inner_cut"] = {
+		description = "Beveled Corner Slope #4",
 		mesh = "moreblocks_slope_inner_cut.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
 		light=4/5,
 	},
 	["_inner_cut2"] = {
+		description = "Beveled Corner Slope #5",
 		mesh = "moreblocks_slope_inner_cut2.obj",
 		collision_box = box_regular,
 		selection_box = box_regular,
 		light=4/5,
 	},
 	["_inner_cut3"] = {
+		description = "Beveled Corner Slope #1",
 		mesh = "moreblocks_slope_inner_cut3.obj",
 		collision_box = box_regular,
 		selection_box = box_regular,
 		light=4/5,
 	},
 	["_inner_cut4"] = {
+		description = "Inner Corner Beveled Slope",
 		mesh = "moreblocks_slope_inner_cut4.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
 		light=4/5,
 	},
 	["_inner_cut5"] = {
+		description = "Inner Corner Slope #1",
 		mesh = "moreblocks_slope_inner_cut5.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
 		light=4/5,
 	},
 	["_inner_cut6"] = {
+		description = "Inner Corner Slope #2",
 		mesh = "moreblocks_slope_inner_cut6.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
 		light=4/5,
 	},
 	["_inner_cut7"] = {
+		description = "Inner Corner Slope #3",
 		mesh = "moreblocks_slope_inner_cut7.obj",
 		collision_box = box_regular,
 		selection_box = box_regular,
 		light=4/5,
 	},
 	["_inner_cut_half"] = {
+		description = "Beveled Corner Slope #3",
 		mesh = "moreblocks_slope_inner_cut_half.obj",
 		collision_box = box_slope_inner_half,
 		selection_box = box_slope_inner_half,
 		light=2/5,
 	},
 	["_inner_cut_half_raised"] = {
+		description = "Beveled Corner Slope #2",
 		mesh = "moreblocks_slope_inner_cut_half_raised.obj",
 		collision_box = box_slope_inner_half_raised,
 		selection_box = box_slope_inner_half_raised,
@@ -443,24 +452,28 @@ local slopes_defs = {
 	--==============================================================
 
 	["_outer_cut"] = {
+		description = "Beveled Corner Slope #7",
 		mesh = "moreblocks_slope_outer_cut.obj",
 		collision_box = box_slope_outer,
 		selection_box = box_slope_outer,
 		light=1/4,
 	},
 	["_outer_cut_half"] = {
+		description = "Beveled Corner Slope #8",
 		mesh = "moreblocks_slope_outer_cut_half.obj",
 		collision_box = box_slope_outer_half,
 		selection_box = box_slope_outer_half,
 		light=1/8,
 	},
 	["_outer_cut_half_raised"] = {
+		description = "Beveled Corner Slope #9",
 		mesh = "moreblocks_slope_outer_cut_half_raised.obj",
 		collision_box = box_slope_outer_half_raised,
 		selection_box = box_slope_outer_half_raised,
 		light=3/8,
 	},
 	["_cut"] = {
+		description = "Beveled Corner Slope #6",
 		mesh = "moreblocks_slope_cut.obj",
 		collision_box = box_slope_outer,
 		selection_box = box_slope_outer,
@@ -470,48 +483,56 @@ local slopes_defs = {
 
 	-- Additional custom slopes.
 	["_xslope_quarter"] = {
+		description = "Microspike Left",
 		mesh = "xslopes_quarter.obj",
 		collision_box = xslope_quarter,
 		selection_box = xslope_quarter,
 		light=1/5,
 	},
 	["_xslope_quarter2"] = {
+		description = "Microspike Right",
 		mesh = "xslopes_quarter2.obj",
 		collision_box = xslope_quarter2,
 		selection_box = xslope_quarter2,
 		light=1/5,
 	},
 	["_xslope_three_quarter"] = {
+		description = "Corner Trapezoid Full",
 		mesh = "xslopes_three_quarter.obj",
 		collision_box = xslope_three_quarter,
 		selection_box = xslope_three_quarter,
 		light=3/5,
 	},
 	["_xslope_three_quarter_half"] = {
+		description = "Corner Trapezoid Half",
 		mesh = "xslopes_three_quarter_half.obj",
 		collision_box = xslope_three_quarter_half,
 		selection_box = xslope_three_quarter_half,
 		light=2/5,
 	},
 	["_xslope_cut"] = {
+		description = "Edge Trapezoid Half",
 		mesh = "xslopes_cut.obj",
 		collision_box = xslope_cut,
 		selection_box = xslope_cut,
 		light=1/2,
 	},
 	["_xslope_slope"] = {
+		description = "45 Doubled Microblock",
 		mesh = "xslopes_slope.obj",
 		collision_box = xslope_slope,
 		selection_box = xslope_slope,
 		light=1/4,
 	},
 	["_xslope_peak"] = {
+		description = "Tall Peak Full-Width",
 		mesh = "xslopes_peak.obj",
 		collision_box = xslope_peak,
 		selection_box = xslope_peak,
 		light=2/4,
 	},
 	["_xslope_peak_half"] = {
+		description = "Short Peak Full-Width",
 		mesh = "xslopes_peak_half.obj",
 		collision_box = xslope_peak_half,
 		selection_box = xslope_peak_half,
@@ -548,12 +569,14 @@ local slopes_defs = {
 		light=1/8,
 	},
 	["_xslope_peak_lh"] = {
+		description = "Tall Peak Half-Width",
 		mesh = "xslopes_peak_lh.obj",
 		collision_box = xslope_peak_lh,
 		selection_box = xslope_peak_lh,
 		light=2/8,
 	},
 	["_xslope_peak_half_lh"] = {
+		description = "Short Peak Half-Width",
 		mesh = "xslopes_peak_half_lh.obj",
 		collision_box = xslope_peak_half_lh,
 		selection_box = xslope_peak_half_lh,
@@ -591,6 +614,7 @@ local slopes_defs = {
 	},
 
 	["_astair_1"] = {
+		description = "Beveled Corner-Stair #1",
 		mesh = "astair_1.obj",
 		collision_box = astair_1,
 		selection_box = astair_1,
@@ -598,6 +622,7 @@ local slopes_defs = {
 	},
 
 	["_astair_2"] = {
+		description = "Beveled Corner-Stair #2",
 		mesh = "astair_2.obj",
 		collision_box = astair_2,
 		selection_box = astair_2,
@@ -605,6 +630,7 @@ local slopes_defs = {
 	},
 
 	["_astair_3"] = {
+		description = "Beveled Corner-Stair #3",
 		mesh = "astair_3.obj",
 		collision_box = astair_3,
 		selection_box = astair_3,
@@ -612,12 +638,14 @@ local slopes_defs = {
 	},
 
 	["_astair_4"] = {
+		description = "Beveled Corner-Stair #4",
 		mesh = "astair_4.obj",
 		collision_box = astair_4,
 		selection_box = astair_4,
 		light=1/3,
 	},
 	["_astair_5"] = {
+		description = "Beveled Corner-Stair #5",
 		mesh = "moreblocks_slope_inner_cut8.obj",
 		collision_box = box_regular,
 		selection_box = box_regular,

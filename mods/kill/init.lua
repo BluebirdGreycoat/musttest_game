@@ -4,8 +4,15 @@ kill.modpath = minetest.get_modpath("kill")
 
 
 
-minetest.register_privilege("kill", "Player can kill other players via command.")
-minetest.register_privilege("killme", "Player can ask the server to kill them.")
+minetest.register_privilege("kill", {
+	description = "Player can kill other players via command.",
+	give_to_singleplayer = false,
+})
+
+minetest.register_privilege("killme", {
+	description = "Player can ask the server to kill them.",
+	give_to_singleplayer = false,
+})
 
 
 

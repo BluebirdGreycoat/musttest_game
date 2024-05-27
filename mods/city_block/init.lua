@@ -714,7 +714,10 @@ if not city_block.run_once then
 		}
 	})
 
-	minetest.register_privilege("disable_pvp", "Players cannot damage players with this priv by punching.")
+	minetest.register_privilege("disable_pvp", {
+		description = "Players cannot damage players with this priv by punching.",
+		give_to_singleplayer = false,
+	})
 
 	minetest.register_on_punchplayer(function(...)
 		return city_block.on_punchplayer(...)

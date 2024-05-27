@@ -4,7 +4,10 @@ echo.modpath = minetest.get_modpath("echo")
 
 
 
-minetest.register_privilege("echo", "Allows the player to send server chat messages.")
+minetest.register_privilege("echo", {
+  description = "Allows the player to send server chat messages.",
+  give_to_singleplayer = false,
+})
 
 
 

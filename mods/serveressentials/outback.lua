@@ -97,6 +97,12 @@ local nodes = {
 	-- Beacon protectors.
 	{pos={x=-9176, y=4191, z=5745}, node={name="protector:protect", param2=0}},
 	{pos={x=-9176, y=4185, z=5745}, node={name="protector:protect", param2=0}},
+
+	-- Signs in miner's hut.
+	{pos={x=-9177, y=4177, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9177, y=4176, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9175, y=4177, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
+	{pos={x=-9175, y=4176, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
 }
 
 local function rebuild_nodes()
@@ -250,6 +256,27 @@ local metadata = {
 		owner = OWNERNAME,
 		placedate = "2024/05/26 UTC",
 		rename = OWNERNAME,
+	}}},
+	-- Signs in miner's hut.
+	{pos={x=-9177, y=4177, z=5744}, meta={fields={
+		infotext = "Find the Dimensional Gate at the bottom of this rope.\nThe gate is guarded.\nPrepare for combat!",
+		author = OWNERNAME,
+		text = "Find the Dimensional Gate at the bottom of this rope.%nThe gate is guarded.%nPrepare for combat!"
+	}}},
+	{pos={x=-9177, y=4176, z=5744}, meta={fields={
+		infotext = "There is NO WAY BACK BUT DEATH.",
+		author = OWNERNAME,
+		text = "There is NO WAY BACK BUT DEATH."
+	}}},
+	{pos={x=-9175, y=4177, z=5746}, meta={fields={
+		infotext = "I hope, for your sake, you brought a bed and mutton.\nIf you didn't bring a bed, you'll wish you had ...\nAnd you'll find yourself standing in morde poo.",
+		author = OWNERNAME,
+		text = "I hope, for your sake, you brought a bed and mutton.%nIf you didn't bring a bed, you'll wish you had ...%nAnd you'll find yourself standing in morde poo."
+	}}},
+	{pos={x=-9175, y=4176, z=5746}, meta={fields={
+		infotext = "Fortune favors the bold. Death finds the stupid.\nUsing a gate at night is stupid.\nDon't be that guy.",
+		author = OWNERNAME,
+		text = "Fortune favors the bold. Death finds the stupid.%nUsing a gate at night is stupid.%nDon't be that guy."
 	}}},
 }
 

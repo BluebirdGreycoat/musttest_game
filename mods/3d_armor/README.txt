@@ -24,5 +24,7 @@ Note: worldpath config settings override any settings made in the mod's director
 
 License Textures: 2017 - 2018 daviddoesminetest aka davidthecreator - CC BY-SA 3.0
 
+Note: Cotton/Leather textures are from UncleBob, CC0.
+
 License Source Code: 2013 - 2018 stujones11 aka stu - LGPL v2.1
 

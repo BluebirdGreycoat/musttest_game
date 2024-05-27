@@ -41,11 +41,12 @@ sysdmg.default_groups = {
   ["3d_armor:leggings_diamond"]    = {armor_heal= 0*BLOCK_MULT, armor_use=100},
   ["3d_armor:boots_diamond"]       = {armor_heal= 0*BLOCK_MULT, armor_use=100},
 
-  ["shields:shield_gold"]          = {armor_heal=10*BLOCK_MULT, armor_use=250},
-  ["3d_armor:helmet_gold"]         = {armor_heal= 6*BLOCK_MULT, armor_use=250},
-  ["3d_armor:chestplate_gold"]     = {armor_heal=15*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:leggings_gold"]       = {armor_heal= 6*BLOCK_MULT, armor_use=250},
-  ["3d_armor:boots_gold"]          = {armor_heal= 6*BLOCK_MULT, armor_use=250},
+  -- Gold is heavy.
+  ["shields:shield_gold"]          = {armor_heal=10*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
+  ["3d_armor:helmet_gold"]         = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
+  ["3d_armor:chestplate_gold"]     = {armor_heal=15*BLOCK_MULT, armor_use=1000, physics_jump=-0.05},
+  ["3d_armor:leggings_gold"]       = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
+  ["3d_armor:boots_gold"]          = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
 
   ["shields:shield_mithril"]       = {armor_heal= 8*BLOCK_MULT, armor_use=50},
   ["3d_armor:helmet_mithril"]      = {armor_heal= 5*BLOCK_MULT, armor_use=50},
@@ -53,15 +54,18 @@ sysdmg.default_groups = {
   ["3d_armor:leggings_mithril"]    = {armor_heal= 5*BLOCK_MULT, armor_use=50},
   ["3d_armor:boots_mithril"]       = {armor_heal= 5*BLOCK_MULT, armor_use=50},
 
-  ["3d_armor:helmet_cotton"]       = {armor_heal= 25*BLOCK_MULT, armor_use=700},
-  ["3d_armor:chestplate_cotton"]   = {armor_heal= 35*BLOCK_MULT, armor_use=800},
-  ["3d_armor:leggings_cotton"]     = {armor_heal= 15*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:boots_cotton"]        = {armor_heal= 15*BLOCK_MULT, armor_use=1300},
+  -- The physics modifiers should be fairly subtle.
+  -- They're mostly to help players overcome their natural limitations
+  -- (due to the NotBornEqual code).
+  ["3d_armor:helmet_cotton"]       = {armor_heal= 25*BLOCK_MULT, armor_use=700, physics_speed=0.05},
+  ["3d_armor:chestplate_cotton"]   = {armor_heal= 35*BLOCK_MULT, armor_use=800, physics_speed=0.05},
+  ["3d_armor:leggings_cotton"]     = {armor_heal= 15*BLOCK_MULT, armor_use=1000, physics_speed=0.05},
+  ["3d_armor:boots_cotton"]        = {armor_heal= 15*BLOCK_MULT, armor_use=1300, physics_speed=0.05},
 
-  ["3d_armor:helmet_leather"]      = {armor_heal= 20*BLOCK_MULT, armor_use=500},
-  ["3d_armor:chestplate_leather"]  = {armor_heal= 25*BLOCK_MULT, armor_use=1000},
-  ["3d_armor:leggings_leather"]    = {armor_heal= 10*BLOCK_MULT, armor_use=1100},
-  ["3d_armor:boots_leather"]       = {armor_heal= 10*BLOCK_MULT, armor_use=1200},
+  ["3d_armor:helmet_leather"]      = {armor_heal= 20*BLOCK_MULT, armor_use=500, physics_jump=0.05},
+  ["3d_armor:chestplate_leather"]  = {armor_heal= 25*BLOCK_MULT, armor_use=1000, physics_jump=0.05},
+  ["3d_armor:leggings_leather"]    = {armor_heal= 10*BLOCK_MULT, armor_use=1100, physics_jump=0.05},
+  ["3d_armor:boots_leather"]       = {armor_heal= 10*BLOCK_MULT, armor_use=1200, physics_jump=0.05},
 }
 
 

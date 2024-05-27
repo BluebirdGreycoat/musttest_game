@@ -232,6 +232,13 @@ function armor.set_player_armor(self, player)
 		preview_string = preview_string .. "^" .. v
 	end
 
+	-- Clamp minimum physics values.
+	for k, v in pairs(physics_o) do
+		if v < 0 then
+			physics_o[k] = 0
+		end
+	end
+
 	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
 	pova.set_modifier(player, "physics", physics_o, "3d_armor")
 	self.textures[name].armor = armor_texture

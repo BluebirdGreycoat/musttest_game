@@ -111,15 +111,15 @@ sysdmg.wear_groups = {
   ["3d_armor:leggings_mithril"]    = {fall=0.8, fleshy=0.5, snappy=0.1, },
   ["3d_armor:boots_mithril"]       = {fall=0.9, fleshy=0.5, snappy=0.1, ground=2.0},
 
-  ["3d_armor:helmet_cotton"]       = {fall=0.5, crumbly=0.1, lava=4.0, crush=3.0, heat=2.0, ground=0.0},
-  ["3d_armor:chestplate_cotton"]   = {fall=0.5, crumbly=0.1, lava=4.0, heat=2.0, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_cotton"]     = {fall=1.25,crumbly=0.1, lava=4.0,  heat=2.0},
-  ["3d_armor:boots_cotton"]        = {fall=1.5, crumbly=0.1, lava=4.0, heat=2.0, ground=2.0},
+  ["3d_armor:helmet_cotton"]       = {fall=0.5, crumbly=0.1, lava=5.0, crush=1.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_cotton"]   = {fall=0.5, crumbly=0.1, lava=5.0, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_cotton"]     = {fall=0.7, crumbly=0.1, lava=5.0, heat=2.0},
+  ["3d_armor:boots_cotton"]        = {fall=1.0, crumbly=0.1, lava=6.0, heat=2.0, ground=2.0},
 
-  ["3d_armor:helmet_leather"]      = {fall=0.5, crumbly=0.1, lava=4.0, crush=3.0, heat=2.0, ground=0.0},
-  ["3d_armor:chestplate_leather"]  = {fall=0.5, crumbly=0.1, lava=4.0, heat=2.0, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_leather"]    = {fall=1.25,crumbly=0.1, lava=4.0,  heat=2.0},
-  ["3d_armor:boots_leather"]       = {fall=1.5, crumbly=0.1, lava=4.0, heat=2.0, ground=2.0},
+  ["3d_armor:helmet_leather"]      = {fall=0.5, crumbly=0.1, lava=4.5, crush=1.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_leather"]  = {fall=0.5, crumbly=0.1, lava=4.5, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_leather"]    = {fall=0.7, crumbly=0.1, lava=4.5, heat=2.0},
+  ["3d_armor:boots_leather"]       = {fall=1.0, crumbly=0.1, lava=5.0, heat=2.0, ground=2.0},
 }
 
 
@@ -171,15 +171,15 @@ sysdmg.resist_groups = {
   ["3d_armor:leggings_mithril"]    = {boom=5, cracky=8, fleshy=25},
   ["3d_armor:boots_mithril"]       = {boom=5, cracky=8, fleshy=20},
 
-  ["3d_armor:helmet_cotton"]       = {fleshy=5,  crumbly=15, },
-  ["3d_armor:chestplate_cotton"]   = {fleshy=10, crumbly=25, },
-  ["3d_armor:leggings_cotton"]     = {fleshy=5,  crumbly=10, },
-  ["3d_armor:boots_cotton"]        = {fleshy=5,  crumbly=15, },
+  ["3d_armor:helmet_cotton"]       = {fleshy=5,  crumbly=17, heat=20, lava=10},
+  ["3d_armor:chestplate_cotton"]   = {fleshy=5,  crumbly=28, heat=20, lava=10},
+  ["3d_armor:leggings_cotton"]     = {fleshy=5,  crumbly=15, heat=20, lava=10},
+  ["3d_armor:boots_cotton"]        = {fleshy=5,  crumbly=20, heat=20, lava=10},
 
-  ["3d_armor:helmet_leather"]      = {fleshy=5,  crumbly=15, },
-  ["3d_armor:chestplate_leather"]  = {fleshy=10, crumbly=25, },
-  ["3d_armor:leggings_leather"]    = {fleshy=5,  crumbly=10, },
-  ["3d_armor:boots_leather"]       = {fleshy=5,  crumbly=15, },
+  ["3d_armor:helmet_leather"]      = {fleshy=7,  crumbly=22, heat=20, lava=15},
+  ["3d_armor:chestplate_leather"]  = {fleshy=7,  crumbly=30, heat=20, lava=15},
+  ["3d_armor:leggings_leather"]    = {fleshy=7,  crumbly=18, heat=20, lava=15},
+  ["3d_armor:boots_leather"]       = {fleshy=7,  crumbly=21, heat=20, lava=15},
 }
 
 -- Make calculating the "hard meta" rather difficult.

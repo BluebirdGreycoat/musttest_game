@@ -385,6 +385,9 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 	--
 	-- Update: re-enabled as of [8/16/22]: there is now a delay which allows the
 	-- admin time to correct a mistake in the event of a wrong cheat detection.
+	--
+	-- Update [2024/5/27]: two years later I still think this comment is funny.
+	-- Lol lol lol.
 	do
 		local cheater, time = sheriff.is_cheater(meta:get_string("owner"))
 		if cheater then

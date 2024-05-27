@@ -392,20 +392,6 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		if recipeitem then
 			if alternate == "_inner" then
 				minetest.register_craft({
-					type = "shapeless",
-					output = recipeitem .. ' 7',
-					recipe = {
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-					},
-				})
-				minetest.register_craft({
 					output = "stairs:stair_" .. subname .. alternate .. ' 8',
 					recipe = {
 						{recipeitem, recipeitem, recipeitem},
@@ -414,20 +400,6 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 					},
 				})
 			elseif alternate == "_outer" then
-				minetest.register_craft({
-					type = "shapeless",
-					output = recipeitem .. ' 5',
-					recipe = {
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-						"stairs:stair_" .. subname .. alternate,
-					},
-				})
 				minetest.register_craft({
 					output = "stairs:stair_" .. subname .. alternate .. ' 8',
 					recipe = {
@@ -861,15 +833,6 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
     assert(type(recipeitem) == "string")
     circular_saw.known_nodes[recipeitem] = {"stairs", subname}
 
-		-- Use stairs to craft full blocks again (1:1)
-		minetest.register_craft({
-			output = recipeitem .. ' 3',
-			recipe = {
-				{'stairs:stair_' .. subname, 'stairs:stair_' .. subname},
-				{'stairs:stair_' .. subname, 'stairs:stair_' .. subname},
-			},
-		})
-
 		-- Recipe matches appearence in inventory
 		minetest.register_craft({
 			output = 'stairs:stair_' .. subname .. ' 8',
@@ -978,15 +941,6 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 	minetest.register_node(":stairs:slab_" .. subname, slab_def)
 
 	if recipeitem then
-		-- Use 2 slabs to craft a full block again (1:1)
-		minetest.register_craft({
-			output = recipeitem,
-			recipe = {
-				{'stairs:slab_' .. subname},
-				{'stairs:slab_' .. subname},
-			},
-		})
-
 		minetest.register_craft({
 			output = 'stairs:slab_' .. subname .. ' 6',
 			recipe = {

@@ -47,6 +47,8 @@ if not armor.run_once then
 		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
 		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
 		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+
+		-- Note, cotton/leather armor textures are from UncleBob, CC0.
 		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
 		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
 	}

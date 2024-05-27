@@ -50,6 +50,19 @@ rc.realms = {
 		},
 		sky_data = {body_orbit_tilt = snow.body_orbit_tilt()},
     star_data = {day_opacity = snow.star_opacity()},
+
+    bed_assault_mob = function(pos)
+			if pos.y < -25000 then
+				return "oerkki:oerkki"
+			elseif pos.y < -30 then
+				if math.random(1, 10) == 1 then
+					return "dm:dm"
+				else
+					return "stoneman:stoneman"
+				end
+			end
+			return "iceman:iceman"
+		end,
 	},
 	-- Distance to channelwood: 2500
 	{
@@ -70,6 +83,7 @@ rc.realms = {
 		cloud_data={height=3112, density=0.6, speed={x=0.1, z=0.1}, thickness=4},
 		moon_data={scale=2.5},
 		sky_data = {body_orbit_tilt = -10.0},
+    bed_assault_mob = "dirtleaf:dirtleaf",
 	},
 	-- Distance to jarkati: 450
 	-- This breaks our minimum distance rule. Not much I can do about it now.
@@ -91,6 +105,7 @@ rc.realms = {
 		cloud_data={height=3900, density=0.2, speed={x=5, z=2}},
 		moon_data={scale=0.4},
 		sun_data={scale=0.4},
+    bed_assault_mob = "sandman:sandman",
 	},
 	-- Distance to utilities (pocket realms): 600
 	{
@@ -189,6 +204,10 @@ rc.realms = {
 		sun_data = {visible=false},
 		sky_data = {clouds=false},
 		star_data = {visible=false},
+    bed_assault_mob = {
+			"griefer:griefer",
+			"nssm:morde",
+		},
 	},
 }
 

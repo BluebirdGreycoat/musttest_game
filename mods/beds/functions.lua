@@ -266,12 +266,27 @@ function beds.spawn_monsters_near(pos)
 
 	for k = 1, count do
 		local target = air[math.random(1, #air)]
-		local success, luaentity = mob_spawn.spawn_mob_at(target, "stoneman:stoneman")
-		if luaentity then
-			--minetest.chat_send_all('setting drops to nil')
-			-- Must set to empty table, instead of nil, because of how mobs API
-			-- works.
-			luaentity.drops = {}
+		local rname = rc.current_realm_at_pos(target)
+		local rdata = rc.get_realm_data(rname) or {}
+		local mobname = rdata.bed_assault_mob
+
+		if mobname then
+			-- If it's a function, call it to get a string, otherwise it must be a string.
+			if type(mobname) == "function" then
+				mobname = mobname(target)
+			elseif type(mobname) == "table" then
+				mobname = mobname[math.random(1, #mobname)]
+			end
+
+			if type(mobname) == "string" then
+				local success, luaentity = mob_spawn.spawn_mob_at(target, mobname)
+				if luaentity then
+					--minetest.chat_send_all('setting drops to nil')
+					-- Must set to empty table, instead of nil, because of how mobs API
+					-- works.
+					luaentity.drops = {}
+				end
+			end
 		end
 	end
 end

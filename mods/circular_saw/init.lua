@@ -128,6 +128,29 @@ circular_saw.names = {
 
   {"panel", "_pillar", 8},
   {"panel", "_pcend", 8},
+
+  -- Note: the leading $ means the name is a modname, NOT a prefix!
+  {"$walls", "", 8},
+  {"$walls", "_noconnect", 8},
+  {"$walls", "_noconnect_wide", 8},
+  {"$walls", "_half", 4},
+
+  {"$pillars", "_bottom", 8},
+  {"$pillars", "_bottom_half", 4},
+  {"$pillars", "_top", 8},
+  {"$pillars", "_top_half", 4},
+  {"$pillars", "_bottom_full", 6},
+  {"$pillars", "_top_full", 6},
+  {"$pillars", "_bottom_back", 7},
+  {"$pillars", "_top_back", 7},
+
+  {"$murderhole", "", 6},
+  {"$machicolation", "", 6},
+
+  {"$arrowslit", "", 4},
+  {"$arrowslit", "_cross", 4},
+  {"$arrowslit", "_hole", 4},
+  {"$arrowslit", "_embrasure", 4},
 }
 
 function circular_saw:get_cost(inv, stackname)
@@ -152,7 +175,18 @@ function circular_saw:get_output_inv(modname, material, amount, max)
     local t = circular_saw.names[i]
     local cost = t[3]
     local balance = math_min(math_floor(amount/cost), max)
-    local nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
+    local nodename
+
+    -- If the prefix begins with a $, then it's actually a modname.
+    -- This is needed because some shapes (like walls and castle stuff) don't
+    -- have proper prefixes, and their names would otherwise collide with
+    -- stairs stuff if we don't take precautions.
+    if t[1]:sub(1, 1) == "$" then
+      nodename = t[1]:sub(2) .. ":" .. material .. t[2]
+    else
+      nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
+    end
+
     if minetest.registered_nodes[nodename] then
       list[#list + 1] = nodename .. " " .. balance
     end
@@ -473,7 +507,7 @@ function circular_saw.on_construct(pos)
   local fancy_inv = default.gui_bg..default.gui_bg_img..default.gui_slots
 
 	-- Modify formspec size and inventory size in order to make room for more blocks.
-  meta:set_string("formspec", "size[16,10]"..fancy_inv..
+  meta:set_string("formspec", "size[19,10]"..fancy_inv..
       "label[0,0;" ..S("Input\nMaterial").. "]" ..
       "list[context;input;1.5,0;1,1;]" ..
       "label[0,1;" ..S("Left-Over").. "]" ..
@@ -482,8 +516,8 @@ function circular_saw.on_construct(pos)
       "list[context;recycle;1.5,2;1,1;]" ..
       "field[0.3,4.0;1,1;max_offered;" ..S("Max").. ":;${max_offered}]" ..
       "button[1,3.7;1,1;Set;" ..S("Set").. "]" ..
-      "list[context;output;2.8,0;13,6;]" ..
-      "list[context;output;8.8,6;7,4;78]" ..
+      "list[context;output;2.8,0;16,6;]" ..
+      "list[context;output;8.8,6;10,4;78]" ..
       "list[current_player;main;0.5,6.25;8,4;]" ..
       "label[0,5;Mese Fuel\nStorage]" ..
       "list[context;fuel;1.5,5;1,1;]"
@@ -497,7 +531,7 @@ function circular_saw.on_construct(pos)
   inv:set_size("input", 1)    -- Input slot for full blocks of material x.
   inv:set_size("micro", 1)    -- Storage for 1-7 surplus microblocks.
   inv:set_size("recycle", 1)  -- Surplus partial blocks can be placed here.
-  inv:set_size("output", 6*13+7*4) -- Many versions of stair-parts of material x.
+  inv:set_size("output", 6*16+10*4) -- Many versions of stair-parts of material x.
   inv:set_size("fuel", 1)
 
   circular_saw:reset(pos)

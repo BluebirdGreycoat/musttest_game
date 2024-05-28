@@ -1,4 +1,10 @@
+
 walls = {}
+
+if not minetest.global_exists("circular_saw") then circular_saw = {} end
+circular_saw.known_nodes = circular_saw.known_nodes or {}
+
+
 
 walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
 	local register_node = function(name, def)
@@ -63,22 +69,6 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		sounds = wall_sounds,
 	})
 
-	minetest.register_craft({
-		output = "walls:" .. wall_name .. "_noconnect",
-		recipe = {
-			{'walls:' .. wall_name},
-			{'walls:' .. wall_name},
-		},
-	})
-
-	minetest.register_craft({
-		output = "walls:" .. wall_name .. "_noconnect_wide",
-		recipe = {
-			{'walls:' .. wall_name .. "_noconnect"},
-			{'walls:' .. wall_name .. "_noconnect"},
-		},
-	})
-
 	register_node(":walls:" .. wall_name .. "_half", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Half Wall",
@@ -95,26 +85,13 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	-- crafting recipe
+	-- crafting recipe for standard walls.
 	minetest.register_craft({
 		output = "walls:" .. wall_name .. " 6",
 		recipe = {
-			{ '', '', '' },
 			{ wall_mat, wall_mat, wall_mat},
 			{ wall_mat, wall_mat, wall_mat},
 		}
-	})
-
-	minetest.register_craft({
-		output = "walls:"..wall_name.."_half 2",
-		type="shapeless",
-		recipe = {"walls:"..wall_name},
-	})
-
-	minetest.register_craft({
-		output = "walls:"..wall_name,
-		type="shapeless",
-		recipe = {"walls:"..wall_name.."_half", "walls:"..wall_name.."_half"},
 	})
 
 	-- pillars
@@ -192,7 +169,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 
 	register_node(":pillars:" .. wall_name .. "_bottom_full", {
 		drawtype = "nodebox",
-		description = wall_desc .. " Wide Pillar Base",
+		description = wall_desc .. " Wide Pillar Base #1",
 		tiles = { wall_texture },
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
@@ -210,7 +187,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 
 	register_node(":pillars:" .. wall_name .. "_bottom_back", {
 		drawtype = "nodebox",
-		description = wall_desc .. " Wide Pillar Base",
+		description = wall_desc .. " Wide Pillar Base #2",
 		tiles = { wall_texture },
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
@@ -228,7 +205,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 
 	register_node(":pillars:" .. wall_name .. "_top_full", {
 		drawtype = "nodebox",
-		description = wall_desc .. " Wide Pillar Top",
+		description = wall_desc .. " Wide Pillar Top #1",
 		tiles = { wall_texture },
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
@@ -246,7 +223,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 
 	register_node(":pillars:" .. wall_name .. "_top_back", {
 		drawtype = "nodebox",
-		description = wall_desc .. " Wide Pillar Top",
+		description = wall_desc .. " Wide Pillar Top #2",
 		tiles = { wall_texture },
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
@@ -262,71 +239,9 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_bottom 4",
-		recipe = {
-			{"",wall_mat,""},
-			{"",wall_mat,""},
-			{wall_mat,wall_mat,wall_mat},
-		},
-	})
-
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_top 4",
-		recipe = {
-			{wall_mat,wall_mat,wall_mat},
-			{"",wall_mat,""},
-			{"",wall_mat,""},
-		},
-	})
-
-
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_top_half 2",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_top"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_top",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_top_half", "pillars:"..wall_name.."_top_half"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_top_full",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_top", "pillars:"..wall_name.."_top_half"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_top_back",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_top_full", "walls:" .. wall_name},
-	})
-
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_bottom_half 2",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_bottom"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_bottom",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_bottom_half", "pillars:"..wall_name.."_bottom_half"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_bottom_full",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_bottom", "pillars:"..wall_name.."_bottom_half"},
-	})
-	minetest.register_craft({
-		output = "pillars:"..wall_name.."_bottom_back",
-		type="shapeless",
-		recipe = {"pillars:"..wall_name.."_bottom_full", "walls:" .. wall_name},
-	})
-
-	
 	register_node(":murderhole:" .. wall_name, {
 		drawtype = "nodebox",
-		description = wall_desc .. " Murder Hole",
+		description = wall_desc .. " Murderhole",
 		tiles = { wall_texture },
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
@@ -361,28 +276,6 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
-	minetest.register_craft({
-		output = "murderhole:"..wall_name.." 4",
-		recipe = {
-			{"",wall_mat, "" },
-			{wall_mat,"", wall_mat},
-			{"",wall_mat, ""}
-		},
-	})
-
-	minetest.register_craft({
-		output = "machicolation:"..wall_name,
-		type="shapeless",
-		recipe = {"murderhole:"..wall_name},
-	})
-
-	minetest.register_craft({
-		output = "murderhole:"..wall_name,
-		type="shapeless",
-		recipe = {"machicolation:"..wall_name},
-	})
-
-	
 	-- arrow slits
 	register_node(":arrowslit:"..wall_name, {
 		drawtype = "nodebox",
@@ -472,36 +365,6 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, 0.125, -0.375, 0.5, 0.25},
 			},
 		},
-	})
-	
-	minetest.register_craft({
-		output = "arrowslit:"..wall_name.." 6",
-		recipe = {
-			{wall_mat,"",wall_mat},
-			{wall_mat,"",wall_mat},
-			{wall_mat,"",wall_mat},
-		},
-	})
-
-	minetest.register_craft({
-		output = "arrowslit:"..wall_name.."_cross",
-		recipe = {
-		{"arrowslit:"..wall_name} },
-	})
-	minetest.register_craft({
-		output = "arrowslit:"..wall_name.."_hole",
-		recipe = {
-		{"arrowslit:"..wall_name.."_cross"} },
-	})
-	minetest.register_craft({
-		output = "arrowslit:"..wall_name.."_embrasure",
-		recipe = {
-		{"arrowslit:"..wall_name.."_hole"} },
-	})
-	minetest.register_craft({
-		output = "arrowslit:"..wall_name,
-		recipe = {
-		{"arrowslit:"..wall_name.."_embrasure"} },
 	})
 end
 

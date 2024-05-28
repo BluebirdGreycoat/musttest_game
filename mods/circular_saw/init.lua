@@ -10,6 +10,9 @@ local math_floor = math.floor
 local math_min = math.min
 local math_max = math.max
 
+-- Must be enough space to hold all possible variants of a material.
+local INVENTORY_SIZE = 140
+
 local S = function(str) return str end
 
 if not minetest.global_exists("circular_saw") then circular_saw = {} end
@@ -25,6 +28,7 @@ end
 -- 3rd parameter: how many microblocks does this shape cost:
 -- It may cause slight loss, but no gain.
 -- 1st and 2nd parameters are nodename prefix/postfixes.
+-- All entries of this form assume the modname is "stairs".
 circular_saw.names = {
   {"micro", "_1", 1},
   {"micro", "_1s", 1},
@@ -135,6 +139,7 @@ circular_saw.names = {
   {"panel", "_pcend", 8},
 
   -- Note: the leading $ means the name is a modname, NOT a prefix!
+  -- This lets us import nodes from mods OTHER than the "stairs" mod.
   {"$walls", "", 8},
   {"$walls", "_noconnect", 8},
   {"$walls", "_noconnect_wide", 8},
@@ -223,17 +228,36 @@ end
 function circular_saw:reset(pos)
   local meta = minetest.get_meta(pos)
   local inv  = meta:get_inventory()
-	local owner = meta:get_string("owner")
-	local dname = rename.gpn(owner)
 
   inv:set_stack("input", 1, "")
   inv:set_stack("micro", 1, "")
   inv:set_list("output", {})
   meta:set_int("anz", 0)
 
-  meta:set_string("infotext",
-      S("Circular Saw is Empty (Owned by <%s>!)")
-      :format(dname))
+  circular_saw.update_infotext(pos)
+end
+
+
+
+function circular_saw.update_infotext(pos)
+  local meta = minetest.get_meta(pos)
+  local inv = meta:get_inventory()
+  local stack = inv:get_stack("input", 1)
+  local pname = meta:get_string("owner")
+
+  if stack:get_count() > 0 then
+    local desc = stack:get_name()
+    local idef = stack:get_definition()
+    if idef and idef.description then
+      desc = utility.get_short_desc(idef.description)
+    end
+
+    meta:set_string("infotext",
+      "Circular Saw is Working on \"" .. desc .. "\".\nOwned by <" .. rename.gpn(pname) .. ">!")
+  else
+    meta:set_string("infotext",
+      "Circular Saw is Empty.\nOwned by <" .. rename.gpn(pname) .. ">!")
+  end
 end
 
 
@@ -307,17 +331,7 @@ function circular_saw:update_inventory(pos, amount)
   -- Store how many microblocks are available:
   meta:set_int("anz", amount)
 
-	local material_desc = node_name
-	local def = minetest.registered_items[node_name]
-	if def and def.description then
-		material_desc = utility.get_short_desc(def.description)
-	end
-
-	local owner = meta:get_string("owner")
-	local dname = rename.gpn(owner)
-  meta:set_string("infotext",
-      S("Circular Saw is Working on \"%s\" (Owned by <%s>!)")
-      :format(material_desc, dname))
+  circular_saw.update_infotext(pos)
 end
 
 
@@ -571,6 +585,9 @@ function circular_saw.update_formspec(pos)
       "label[0,4.85;Mese Fuel\nStorage]" ..
       "list[context;fuel;1.2,4.85;1,1;]"
   )
+
+  local inv = meta:get_inventory()
+  inv:set_size("output", INVENTORY_SIZE)
 end
 
 function circular_saw.on_construct(pos)
@@ -580,13 +597,12 @@ function circular_saw.on_construct(pos)
 
   meta:set_int("anz", 0) -- No microblocks inside yet.
   meta:set_string("max_offered", 64) -- How many items of this kind are offered by default?
-  meta:set_string("infotext", S("Circular Saw is Empty"))
 
   local inv = meta:get_inventory()
   inv:set_size("input", 1)    -- Input slot for full blocks of material x.
   inv:set_size("micro", 1)    -- Storage for 1-7 surplus microblocks.
   inv:set_size("recycle", 1)  -- Surplus partial blocks can be placed here.
-  inv:set_size("output", 140) -- Many versions of stair-parts of material x.
+  inv:set_size("output", INVENTORY_SIZE) -- Many versions of stair-parts of material x.
   inv:set_size("fuel", 1)
 
   circular_saw:reset(pos)
@@ -614,9 +630,8 @@ function circular_saw.after_place_node(pos, placer)
   local dname = rename.gpn(owner)
   meta:set_string("owner",  owner)
   meta:set_string("rename", dname)
-  meta:set_string("infotext",
-      S("Circular Saw is Empty (Owned by <%s>!)")
-      :format(dname))
+
+  circular_saw.update_infotext(pos)
 end
 
 
@@ -683,15 +698,7 @@ if not circular_saw.loaded then
 
     -- Called by rename LBM.
     _on_update_infotext = function(pos)
-      local meta = minetest.get_meta(pos)
-      local owner = meta:get_string("owner")
-      -- Nobody placed this block.
-      if owner == "" then
-        return
-      end
-      local dname = rename.gpn(owner)
-
-      meta:set_string("rename", dname)
+      circular_saw.update_infotext(pos)
     end,
 
     _on_update_formspec = function(pos)

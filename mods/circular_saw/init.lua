@@ -183,11 +183,12 @@ end
 function circular_saw:get_output_inv(materials, amount, max)
   if (not max or max < 1 or max > 64) then max = 64 end
 
+  local vcount = 0
   local list = {}
 
   -- If there is nothing inside, display empty inventory:
   if amount < 1 then
-    return list
+    return list, vcount
   end
 
   -- Table of nodenames we've seen already, to avoid adding duplicates to
@@ -214,11 +215,15 @@ function circular_saw:get_output_inv(materials, amount, max)
       if minetest.registered_nodes[nodename] and not seen[nodename] then
         list[#list + 1] = nodename .. " " .. balance
         seen[nodename] = true
+
+        if balance > 0 then
+          vcount = vcount + 1
+        end
       end
     end
   end
 
-  return list
+  return list, vcount
 end
 
 
@@ -234,6 +239,7 @@ function circular_saw:reset(pos)
   inv:set_list("output", {})
   meta:set_int("anz", 0)
 
+  circular_saw.update_formspec(pos)
   circular_saw.update_infotext(pos)
 end
 
@@ -275,6 +281,7 @@ function circular_saw:update_inventory(pos, amount)
 
   if amount < 1 then -- If the last block is taken out.
     --minetest.log('action', 'amount is zero!')
+    meta:set_int("variant_count", 0)
     self:reset(pos)
     return
   end
@@ -285,6 +292,7 @@ function circular_saw:update_inventory(pos, amount)
     --minetest.log('action', 'stack is empty!')
     -- Any microblocks not taken out yet are now lost.
     -- (covers material loss in the machine)
+    meta:set_int("variant_count", 0)
     self:reset(pos)
     return
   end
@@ -297,6 +305,7 @@ function circular_saw:update_inventory(pos, amount)
   inv:set_stack("input", 1, input_item)
 
   local noutlist = {}
+  local total_available = 0
   local materials = circular_saw.known_nodes[node_name]
   if materials then
     local leftover_item = self:get_valid_microblock(materials)
@@ -311,7 +320,7 @@ function circular_saw:update_inventory(pos, amount)
     end
 
     -- Display:
-    noutlist = self:get_output_inv(materials, amount, meta:get_int("max_offered"))
+    noutlist, total_available = self:get_output_inv(materials, amount, meta:get_int("max_offered"))
   end
 
   ------------------------------------------------------------------------------
@@ -330,7 +339,9 @@ function circular_saw:update_inventory(pos, amount)
 
   -- Store how many microblocks are available:
   meta:set_int("anz", amount)
+  meta:set_int("variant_count", total_available)
 
+  circular_saw.update_formspec(pos)
   circular_saw.update_infotext(pos)
 end
 
@@ -560,6 +571,7 @@ function circular_saw.update_formspec(pos)
   local fancy_inv = default.gui_bg..default.gui_bg_img..default.gui_slots
   local meta = minetest.get_meta(pos)
   local scrollval = meta:get_string("scrollbar_val")
+  local vcount = meta:get_int("variant_count")
 
   --minetest.chat_send_all('test2')
 
@@ -581,6 +593,7 @@ function circular_saw.update_formspec(pos)
       "scroll_container_end[]" ..
       "scrollbaroptions[max=225;thumbsize=70;largestep=50;smallstep=3]" ..
       "scrollbar[11.0,0.5;0.4,6.05;vertical;output_grid;" .. scrollval .. "]" ..
+      "label[3.5,6.85;Material variants: " .. vcount .. "]" ..
       "real_coordinates[false]" ..
 
       "list[current_player;main;0.5,6.25;8,4;]" ..

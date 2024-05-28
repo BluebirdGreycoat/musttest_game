@@ -358,6 +358,7 @@ function circular_saw.on_receive_fields(pos, formname, fields, sender)
   end
 
   if fields.quit then
+    -- Needed so the form remembers its scroll position.
     circular_saw.update_formspec(pos)
     --minetest.chat_send_all('test quit event')
   end
@@ -571,6 +572,7 @@ function circular_saw.update_formspec(pos)
       "label[0,2.15;" ..S("Recycle\nOutput").. "]" ..
       "list[context;recycle;1.2,2.15;1,1;]" ..
       "field[0.3,4.0;1,1;max_offered;" ..S("Max").. ":;${max_offered}]" ..
+      "field_close_on_enter[max_offered;false]" ..
       "button[1.2,3.7;1,1;Set;" ..S("Set").. "]" ..
 
       "real_coordinates[true]" ..

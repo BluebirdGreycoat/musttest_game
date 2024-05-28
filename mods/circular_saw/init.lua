@@ -329,7 +329,7 @@ function circular_saw.on_receive_fields(pos, formname, fields, sender)
     if data and data.type == "CHG" then
       local meta = minetest.get_meta(pos)
       meta:set_string("scrollbar_val", tostring(data.value))
-      circular_saw.update_formspec(pos)
+      --circular_saw.update_formspec(pos)
       --minetest.chat_send_all('test scroll event')
       return
     end
@@ -341,6 +341,11 @@ function circular_saw.on_receive_fields(pos, formname, fields, sender)
     meta:set_string("max_offered",  max)
     -- Update to show the correct number of items:
     circular_saw:update_inventory(pos, 0)
+  end
+
+  if fields.quit then
+    circular_saw.update_formspec(pos)
+    --minetest.chat_send_all('test quit event')
   end
 end
 

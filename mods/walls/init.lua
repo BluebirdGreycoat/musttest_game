@@ -1,9 +1,6 @@
 
 walls = {}
 
-if not minetest.global_exists("circular_saw") then circular_saw = {} end
-circular_saw.known_nodes = circular_saw.known_nodes or {}
-
 
 
 walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
@@ -93,6 +90,8 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 			{ wall_mat, wall_mat, wall_mat},
 		}
 	})
+
+	circular_saw.register_node(wall_mat, wall_name)
 
 	-- pillars
 	register_node(":pillars:" .. wall_name .. "_bottom", {
@@ -239,6 +238,8 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 
+	circular_saw.register_node(wall_mat, wall_name)
+
 	register_node(":murderhole:" .. wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Murderhole",
@@ -258,6 +259,8 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		},
 	})
 	
+	circular_saw.register_node(wall_mat, wall_name)
+
 	register_node(":machicolation:" .. wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Machicolation",
@@ -275,6 +278,8 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 			},
 		},
 	})
+
+	circular_saw.register_node(wall_mat, wall_name)
 
 	-- arrow slits
 	register_node(":arrowslit:"..wall_name, {
@@ -366,6 +371,8 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 			},
 		},
 	})
+
+	circular_saw.register_node(wall_mat, wall_name)
 end
 
 walls.register("cobble", "Cobblestone", "default_cobble.png",

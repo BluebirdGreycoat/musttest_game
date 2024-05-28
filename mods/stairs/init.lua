@@ -12,8 +12,6 @@ local math_random = math.random
 local S = function(str) return str end
 
 stairs = {}
-if not minetest.global_exists("circular_saw") then circular_saw = {} end
-circular_saw.known_nodes = circular_saw.known_nodes or {}
 
 local function pixel_box(x1, y1, z1, x2, y2, z2)
 	return {
@@ -209,7 +207,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 	end
 
   if recipeitem then
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
   end
 end
 
@@ -426,7 +424,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 	minetest.register_alias("stairs:stair_" ..subname.. "_bottom", "stairs:stair_" ..subname)
 
   if recipeitem then
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
   end
 end
 
@@ -589,7 +587,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 	minetest.register_alias("stairs:panel_" ..subname.. "_bottom", "stairs:panel_" ..subname)
 
   if recipeitem then
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
   end
 end
 
@@ -741,7 +739,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
   minetest.register_alias("stairs:micro_" ..subname.. "_bottom", "stairs:micro_" ..subname)
 
   if recipeitem then
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
   end
 end
 
@@ -843,7 +841,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 
 	if recipeitem then
     assert(type(recipeitem) == "string")
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
 
 		-- Recipe matches appearence in inventory
 		minetest.register_craft({

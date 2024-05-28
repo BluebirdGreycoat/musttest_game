@@ -697,6 +697,6 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
 	end
 
   if recipeitem then
-    circular_saw.known_nodes[recipeitem] = {"stairs", subname}
+		circular_saw.register_node(recipeitem, subname)
   end
 end

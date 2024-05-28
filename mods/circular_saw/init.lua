@@ -13,9 +13,13 @@ local math_max = math.max
 local S = function(str) return str end
 
 if not minetest.global_exists("circular_saw") then circular_saw = {} end
-
--- This is populated by stairsplus:register_all:
 circular_saw.known_nodes = circular_saw.known_nodes or {}
+
+function circular_saw.register_node(recipeitem, subname)
+  circular_saw.known_nodes[recipeitem] = circular_saw.known_nodes[recipeitem] or {}
+  local d = circular_saw.known_nodes[recipeitem]
+  d[#d + 1] = subname
+end
 
 -- 3rd parameter: how many microblocks does this shape cost:
 -- It may cause slight loss, but no gain.
@@ -161,7 +165,16 @@ function circular_saw:get_cost(inv, stackname)
   end
 end
 
-function circular_saw:get_output_inv(modname, material, amount, max)
+function circular_saw:get_valid_microblock(materials)
+  for k, v in ipairs(materials) do
+    local item = "stairs:micro_" .. v
+    if minetest.registered_nodes[item] then
+      return item
+    end
+  end
+end
+
+function circular_saw:get_output_inv(materials, amount, max)
   if (not max or max < 1 or max > 64) then max = 64 end
 
   local list = {}
@@ -171,24 +184,31 @@ function circular_saw:get_output_inv(modname, material, amount, max)
     return list
   end
 
-  for i = 1, #circular_saw.names do
-    local t = circular_saw.names[i]
-    local cost = t[3]
-    local balance = math_min(math_floor(amount/cost), max)
-    local nodename
+  -- Table of nodenames we've seen already, to avoid adding duplicates to
+  -- the circular saw's output inventory list.
+  local seen = {}
 
-    -- If the prefix begins with a $, then it's actually a modname.
-    -- This is needed because some shapes (like walls and castle stuff) don't
-    -- have proper prefixes, and their names would otherwise collide with
-    -- stairs stuff if we don't take precautions.
-    if t[1]:sub(1, 1) == "$" then
-      nodename = t[1]:sub(2) .. ":" .. material .. t[2]
-    else
-      nodename = modname .. ":" .. t[1] .. "_" .. material .. t[2]
-    end
+  for _, material in ipairs(materials) do
+    for i = 1, #circular_saw.names do
+      local t = circular_saw.names[i]
+      local cost = t[3]
+      local balance = math_min(math_floor(amount/cost), max)
+      local nodename
 
-    if minetest.registered_nodes[nodename] then
-      list[#list + 1] = nodename .. " " .. balance
+      -- If the prefix begins with a $, then it's actually a modname.
+      -- This is needed because some shapes (like walls and castle stuff) don't
+      -- have proper prefixes, and their names would otherwise collide with
+      -- stairs stuff if we don't take precautions.
+      if t[1]:sub(1, 1) == "$" then
+        nodename = t[1]:sub(2) .. ":" .. material .. t[2]
+      else
+        nodename = "stairs:" .. t[1] .. "_" .. material .. t[2]
+      end
+
+      if minetest.registered_nodes[nodename] and not seen[nodename] then
+        list[#list + 1] = nodename .. " " .. balance
+        seen[nodename] = true
+      end
     end
   end
 
@@ -245,31 +265,29 @@ function circular_saw:update_inventory(pos, amount)
   end
 
   local node_name = stack:get_name() or ""
-  local name_parts = circular_saw.known_nodes[node_name] or ""
-  local modname  = name_parts[1] or ""
-  local material = name_parts[2] or ""
   local input_count = math_floor(amount / 8)
   local input_item = node_name .. " " .. input_count
 
   -- Display as many full blocks as possible.
-  --minetest.log('action', 'adding to input! ' .. input_item)
   inv:set_stack("input", 1, input_item)
 
-  -- The stairnodes made of default nodes use moreblocks namespace, other mods keep own:
-  if modname == "default" then
-    modname = "circular_saw"
+  local noutlist = {}
+  local materials = circular_saw.known_nodes[node_name]
+  if materials then
+    local leftover_item = self:get_valid_microblock(materials)
+
+    if leftover_item then
+      -- 0-7 microblocks may remain left-over:
+      inv:set_stack("micro", 1, (leftover_item .. " " .. (amount % 8)))
+    else
+      -- Erase stack because this microblock doesn't exist.
+      -- This generally shouldn't happen; this is for safety.
+      inv:set_stack("micro", 1, ItemStack(""))
+    end
+
+    -- Display:
+    noutlist = self:get_output_inv(materials, amount, meta:get_int("max_offered"))
   end
-  -- print("circular_saw set to " .. modname .. " : "
-  --	.. material .. " with " .. (amount) .. " microblocks.")
-
-  -- 0-7 microblocks may remain left-over:
-  local leftover_item = modname .. ":micro_" .. material .. "_bottom " .. (amount % 8)
-  inv:set_stack("micro", 1, leftover_item)
-
-  -- Display:
-  local noutlist = self:get_output_inv(modname, material, amount, meta:get_int("max_offered"))
-  --minetest.log('circular_saw: old inv size: ' .. inv:get_size("output"))
-  --minetest.log('circular_saw: new inv size: ' .. #noutlist)
 
   ------------------------------------------------------------------------------
   -- So the devs broke the engine again.
@@ -395,11 +413,14 @@ function circular_saw.allow_metadata_inventory_put(pos, listname, index, stack, 
         return 0
       end
     end
-    for name, t in pairs(circular_saw.known_nodes) do
-      if name == stackname and inv:room_for_item("input", stack) then
+
+    -- Check if this nodename is known to us.
+    for registered_name, _ in pairs(circular_saw.known_nodes) do
+      if registered_name == stackname and inv:room_for_item("input", stack) then
         return count
       end
     end
+
     return 0
   end
 end

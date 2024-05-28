@@ -479,6 +479,7 @@ end
 
 
 
+-- Ha hah ha lol olo lol.
 if not zcg.registered then
 	-- Load all crafts directly after server-init time.
 	-- We can't do this at craft-register time because the logic needs access to

@@ -579,7 +579,7 @@ function circular_saw.update_formspec(pos)
       "scroll_container[3.5,0.5;7.8,6.05;output_grid;vertical]" ..
       "list[context;output;0.03,0.03;6,23;]" ..
       "scroll_container_end[]" ..
-      "scrollbaroptions[max=225;thumbsize=70]" ..
+      "scrollbaroptions[max=225;thumbsize=70;largestep=50;smallstep=3]" ..
       "scrollbar[11.0,0.5;0.4,6.05;vertical;output_grid;" .. scrollval .. "]" ..
       "real_coordinates[false]" ..
 

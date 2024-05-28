@@ -325,7 +325,11 @@ end
 function circular_saw.on_receive_fields(pos, formname, fields, sender)
   -- Ignore scroll events.
   if fields.output_grid then
-    return
+    local data = minetest.explode_scrollbar_event(fields.output_grid)
+    if data and data.type == "CHG" then
+      --minetest.chat_send_all('test scroll event')
+      return
+    end
   end
 
   local meta = minetest.get_meta(pos)

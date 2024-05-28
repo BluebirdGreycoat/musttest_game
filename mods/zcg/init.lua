@@ -216,7 +216,7 @@ zcg.formspec = function(pn)
   local s = 0 -- for skipping pages
 
 	local whichlist = zcg.itemlist
-	local listname = " total items."
+	local listname = " searchable crafts."
 
 	if zcg.users[pn].searchtext ~= "" then
 		whichlist = zcg.users[pn].searchlist

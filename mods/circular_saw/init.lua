@@ -327,6 +327,9 @@ function circular_saw.on_receive_fields(pos, formname, fields, sender)
   if fields.output_grid then
     local data = minetest.explode_scrollbar_event(fields.output_grid)
     if data and data.type == "CHG" then
+      local meta = minetest.get_meta(pos)
+      meta:set_string("scrollbar_val", tostring(data.value))
+      circular_saw.update_formspec(pos)
       --minetest.chat_send_all('test scroll event')
       return
     end
@@ -536,6 +539,7 @@ end
 function circular_saw.update_formspec(pos)
   local fancy_inv = default.gui_bg..default.gui_bg_img..default.gui_slots
   local meta = minetest.get_meta(pos)
+  local scrollval = meta:get_string("scrollbar_val")
 
   --minetest.chat_send_all('test2')
 
@@ -555,7 +559,7 @@ function circular_saw.update_formspec(pos)
       "list[context;output;0.03,0.03;5,28;]" ..
       "scroll_container_end[]" ..
       "scrollbaroptions[max=283;thumbsize=70]" ..
-      "scrollbar[10.1,0.5;0.4,6.5;vertical;output_grid;0]" ..
+      "scrollbar[10.1,0.5;0.4,6.5;vertical;output_grid;" .. scrollval .. "]" ..
       "real_coordinates[false]" ..
 
       "list[current_player;main;0.5,6.25;8,4;]" ..

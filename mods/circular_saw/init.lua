@@ -13,6 +13,7 @@ local math_max = math.max
 local S = function(str) return str end
 
 if not minetest.global_exists("circular_saw") then circular_saw = {} end
+circular_saw.modpath = minetest.get_modpath("circular_saw")
 circular_saw.known_nodes = circular_saw.known_nodes or {}
 
 function circular_saw.register_node(recipeitem, subname)
@@ -322,6 +323,11 @@ end
 
 -- The amount of items offered per shape can be configured:
 function circular_saw.on_receive_fields(pos, formname, fields, sender)
+  -- Ignore scroll events.
+  if fields.output_grid then
+    return
+  end
+
   local meta = minetest.get_meta(pos)
   local max = tonumber(fields.max_offered)
   if max and max > 0 then
@@ -523,26 +529,41 @@ function circular_saw.on_metadata_inventory_take(
   -- The recycle field plays no role here since it is processed immediately.
 end
 
-function circular_saw.on_construct(pos)
-  local meta = minetest.get_meta(pos)
+function circular_saw.update_formspec(pos)
   local fancy_inv = default.gui_bg..default.gui_bg_img..default.gui_slots
+  local meta = minetest.get_meta(pos)
+
+  --minetest.chat_send_all('test2')
 
 	-- Modify formspec size and inventory size in order to make room for more blocks.
-  meta:set_string("formspec", "size[19,10]"..fancy_inv..
-      "label[0,0;" ..S("Input\nMaterial").. "]" ..
-      "list[context;input;1.5,0;1,1;]" ..
-      "label[0,1;" ..S("Left-Over").. "]" ..
-      "list[context;micro;1.5,1;1,1;]" ..
-      "label[0,2;" ..S("Recycle\nOutput").. "]" ..
-      "list[context;recycle;1.5,2;1,1;]" ..
+  meta:set_string("formspec", "size[9,10]"..fancy_inv..
+      "label[0,0.15;" ..S("Input\nMaterial").. "]" ..
+      "list[context;input;1.2,0.15;1,1;]" ..
+      "label[0,1.15;" ..S("Left-Over").. "]" ..
+      "list[context;micro;1.2,1.15;1,1;]" ..
+      "label[0,2.15;" ..S("Recycle\nOutput").. "]" ..
+      "list[context;recycle;1.2,2.15;1,1;]" ..
       "field[0.3,4.0;1,1;max_offered;" ..S("Max").. ":;${max_offered}]" ..
-      "button[1,3.7;1,1;Set;" ..S("Set").. "]" ..
-      "list[context;output;2.8,0;16,6;]" ..
-      "list[context;output;8.8,6;10,4;78]" ..
+      "button[1.2,3.7;1,1;Set;" ..S("Set").. "]" ..
+
+      "real_coordinates[true]" ..
+      "scroll_container[3.8,0.5;6.8,6.5;output_grid;vertical]" ..
+      "list[context;output;0.03,0.03;5,28;]" ..
+      "scroll_container_end[]" ..
+      "scrollbaroptions[max=283;thumbsize=70]" ..
+      "scrollbar[10.1,0.5;0.4,6.5;vertical;output_grid;0]" ..
+      "real_coordinates[false]" ..
+
       "list[current_player;main;0.5,6.25;8,4;]" ..
-      "label[0,5;Mese Fuel\nStorage]" ..
-      "list[context;fuel;1.5,5;1,1;]"
+      "label[0,4.85;Mese Fuel\nStorage]" ..
+      "list[context;fuel;1.2,4.85;1,1;]"
   )
+end
+
+function circular_saw.on_construct(pos)
+  local meta = minetest.get_meta(pos)
+
+  circular_saw.update_formspec(pos)
 
   meta:set_int("anz", 0) -- No microblocks inside yet.
   meta:set_string("max_offered", 64) -- How many items of this kind are offered by default?
@@ -552,7 +573,7 @@ function circular_saw.on_construct(pos)
   inv:set_size("input", 1)    -- Input slot for full blocks of material x.
   inv:set_size("micro", 1)    -- Storage for 1-7 surplus microblocks.
   inv:set_size("recycle", 1)  -- Surplus partial blocks can be placed here.
-  inv:set_size("output", 6*16+10*4) -- Many versions of stair-parts of material x.
+  inv:set_size("output", 140) -- Many versions of stair-parts of material x.
   inv:set_size("fuel", 1)
 
   circular_saw:reset(pos)
@@ -572,93 +593,108 @@ function circular_saw.can_dig(pos,player)
   return true
 end
 
-minetest.register_node("circular_saw:circular_saw",  {
-  description = "Circular Table Saw\n\nRequires mese fragments to power the saw wheel.\nDo not allow children to use.",
-  drawtype = "nodebox",
-  node_box = {
-    type = "fixed",
-    fixed = {
-      {-0.4, -0.5, -0.4, -0.25, 0.25, -0.25}, -- Leg
-      {0.25, -0.5, 0.25, 0.4, 0.25, 0.4}, -- Leg
-      {-0.4, -0.5, 0.25, -0.25, 0.25, 0.4}, -- Leg
-      {0.25, -0.5, -0.4, 0.4, 0.25, -0.25}, -- Leg
-      {-0.5, 0.25, -0.5, 0.5, 0.375, 0.5}, -- Tabletop
-      {-0.01, 0.4375, -0.125, 0.01, 0.5, 0.125}, -- Saw blade (top)
-      {-0.01, 0.375, -0.1875, 0.01, 0.4375, 0.1875}, -- Saw blade (bottom)
-      {-0.25, -0.0625, -0.25, 0.25, 0.25, 0.25}, -- Motor case
+
+
+function circular_saw.after_place_node(pos, placer)
+  local meta = minetest.get_meta(pos)
+  local owner = placer and placer:get_player_name() or ""
+  local dname = rename.gpn(owner)
+  meta:set_string("owner",  owner)
+  meta:set_string("rename", dname)
+  meta:set_string("infotext",
+      S("Circular Saw is Empty (Owned by <%s>!)")
+      :format(dname))
+end
+
+
+
+if not circular_saw.loaded then
+	local c = "circular_saw:core"
+	local f = circular_saw.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+	circular_saw.loaded = true
+
+
+  minetest.register_node("circular_saw:circular_saw",  {
+    description = "Circular Table Saw\n\nRequires mese fragments to power the saw wheel.\nDo not allow children to use.",
+    drawtype = "nodebox",
+    node_box = {
+      type = "fixed",
+      fixed = {
+        {-0.4, -0.5, -0.4, -0.25, 0.25, -0.25}, -- Leg
+        {0.25, -0.5, 0.25, 0.4, 0.25, 0.4}, -- Leg
+        {-0.4, -0.5, 0.25, -0.25, 0.25, 0.4}, -- Leg
+        {0.25, -0.5, -0.4, 0.4, 0.25, -0.25}, -- Leg
+        {-0.5, 0.25, -0.5, 0.5, 0.375, 0.5}, -- Tabletop
+        {-0.01, 0.4375, -0.125, 0.01, 0.5, 0.125}, -- Saw blade (top)
+        {-0.01, 0.375, -0.1875, 0.01, 0.4375, 0.1875}, -- Saw blade (bottom)
+        {-0.25, -0.0625, -0.25, 0.25, 0.25, 0.25}, -- Motor case
+      },
     },
-  },
 
-	dumpnodes_tile = {"default_wood.png"},
-  tiles = {
-    "moreblocks_circular_saw_top.png",
-    "moreblocks_circular_saw_bottom.png",
-    "moreblocks_circular_saw_side.png"
-  },
-  paramtype = "light",
-  sunlight_propagates = true,
-  paramtype2 = "facedir",
+    dumpnodes_tile = {"default_wood.png"},
+    tiles = {
+      "moreblocks_circular_saw_top.png",
+      "moreblocks_circular_saw_bottom.png",
+      "moreblocks_circular_saw_side.png"
+    },
+    paramtype = "light",
+    sunlight_propagates = true,
+    paramtype2 = "facedir",
 
-	on_rotate = function(...)
-		return screwdriver.rotate_simple(...)
-	end,
+    on_rotate = function(...)
+      return screwdriver.rotate_simple(...)
+    end,
 
-  groups = utility.dig_groups("furniture", {
-    immovable = 1,
-  }),
-  sounds = default.node_sound_wood_defaults(),
-  on_construct = circular_saw.on_construct,
-  can_dig = circular_saw.can_dig,
-	stack_max = 1,
+    groups = utility.dig_groups("furniture", {
+      immovable = 1,
+    }),
+    sounds = default.node_sound_wood_defaults(),
+    on_construct = function(...) return circular_saw.on_construct(...) end,
+    can_dig = function(...) return circular_saw.can_dig(...) end,
+    stack_max = 1,
 
-  -- Set the owner of this circular saw.
-  after_place_node = function(pos, placer)
-    local meta = minetest.get_meta(pos)
-    local owner = placer and placer:get_player_name() or ""
-		local dname = rename.gpn(owner)
-    meta:set_string("owner",  owner)
-		meta:set_string("rename", dname)
-    meta:set_string("infotext",
-        S("Circular Saw is Empty (Owned by <%s>!)")
-        :format(dname))
-  end,
+    -- Set the owner of this circular saw.
+    after_place_node = function(...) return circular_saw.after_place_node(...) end,
 
-  -- The amount of items offered per shape can be configured:
-  on_receive_fields = circular_saw.on_receive_fields,
-  allow_metadata_inventory_move = circular_saw.allow_metadata_inventory_move,
-  -- Only input- and recycle-slot are intended as input slots:
-  allow_metadata_inventory_put = circular_saw.allow_metadata_inventory_put,
-  allow_metadata_inventory_take = circular_saw.allow_metadata_inventory_take,
-  -- Taking is allowed from all slots (even the internal microblock slot). Moving is forbidden.
-  -- Putting something in is slightly more complicated than taking anything because we have to make sure it is of a suitable material:
-  on_metadata_inventory_put = circular_saw.on_metadata_inventory_put,
-  on_metadata_inventory_take = circular_saw.on_metadata_inventory_take,
+    -- The amount of items offered per shape can be configured:
+    on_receive_fields = function(...) return circular_saw.on_receive_fields(...) end,
+    allow_metadata_inventory_move = function(...) return circular_saw.allow_metadata_inventory_move(...) end,
+    -- Only input- and recycle-slot are intended as input slots:
+    allow_metadata_inventory_put = function(...) return circular_saw.allow_metadata_inventory_put(...) end,
+    allow_metadata_inventory_take = function(...) return circular_saw.allow_metadata_inventory_take(...) end,
+    -- Taking is allowed from all slots (even the internal microblock slot). Moving is forbidden.
+    -- Putting something in is slightly more complicated than taking anything because we have to make sure it is of a suitable material:
+    on_metadata_inventory_put = function(...) return circular_saw.on_metadata_inventory_put(...) end,
+    on_metadata_inventory_take = function(...) return circular_saw.on_metadata_inventory_take(...) end,
 
-	-- Called by rename LBM.
-	_on_update_infotext = function(pos)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-		-- Nobody placed this block.
-		if owner == "" then
-			return
-		end
-		local dname = rename.gpn(owner)
+    -- Called by rename LBM.
+    _on_update_infotext = function(pos)
+      local meta = minetest.get_meta(pos)
+      local owner = meta:get_string("owner")
+      -- Nobody placed this block.
+      if owner == "" then
+        return
+      end
+      local dname = rename.gpn(owner)
 
-		meta:set_string("rename", dname)
-	end,
+      meta:set_string("rename", dname)
+    end,
 
-	_on_update_formspec = function(pos)
-		-- Update circular saw.
-		circular_saw:update_inventory(pos, 0)
-	end,
-})
+    _on_update_formspec = function(pos)
+      -- Update circular saw.
+      circular_saw.update_formspec(pos)
+      circular_saw:update_inventory(pos, 0)
+    end,
+  })
 
 
-minetest.register_craft({
-  output = "circular_saw:circular_saw",
-  recipe = {
-    {'', 'gem_cutter:blade', ''},
-    {'group:wood', 'group:wood', 'group:wood'},
-    {'cast_iron:ingot', 'techcrafts:electric_motor', 'cast_iron:ingot'},
-  }
-})
+  minetest.register_craft({
+    output = "circular_saw:circular_saw",
+    recipe = {
+      {'', 'gem_cutter:blade', ''},
+      {'group:wood', 'group:wood', 'group:wood'},
+      {'cast_iron:ingot', 'techcrafts:electric_motor', 'cast_iron:ingot'},
+    }
+  })
+end

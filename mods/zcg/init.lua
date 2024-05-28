@@ -492,7 +492,7 @@ if not zcg.registered then
 			if name and name ~= "" then
 				-- Ignore stairs nodes. They do have generic/standard recipes, but we
 				-- wouldn't show them anway -- WAY too much CG spam.
-				if not name:find("^%:?stairs:") then
+				if not name:find("^%:?stairs:") and not name:find("^%:?walls:") then
 					zcg.load_crafts(name)
 				end
 			end

@@ -1,3 +1,7 @@
+[2024/5/28] New formspec for the circular saw: show more nodes in less formspec space.
+[2024/5/27] Improvements to the Outback: more signs, a beacon for the miners' hut, reparable rope, and a message for players trying to get past the realm border.
+[2024/5/27] Channelwood has got a new look: more plants and nicer trees.
+[2024/5/26] Useability improvements to players' inventory bags: switch buttons, snatch, and chuck.
 [2023/12/21] ItsABug down too often. Back to Github! If I were conspiracy-minded, I'd wonder if YesABug was being DOSed by their competitors. It's a dark world!
 [2021/1/11] Teleport chance to misjump now incorporates the distance of the jump, compared with the teleport's maximum range.
 [2021/1/11] Made rosestones generate with coral-like formations instead of the silly straight lines.

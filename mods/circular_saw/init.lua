@@ -11,7 +11,7 @@ local math_min = math.min
 local math_max = math.max
 
 -- Must be enough space to hold all possible variants of a material.
-local INVENTORY_SIZE = 140
+local INVENTORY_SIZE = 138
 
 local S = function(str) return str end
 
@@ -576,11 +576,11 @@ function circular_saw.update_formspec(pos)
       "button[1.2,3.7;1,1;Set;" ..S("Set").. "]" ..
 
       "real_coordinates[true]" ..
-      "scroll_container[3.8,0.5;6.8,6.5;output_grid;vertical]" ..
-      "list[context;output;0.03,0.03;5,28;]" ..
+      "scroll_container[3.5,0.5;7.8,6.05;output_grid;vertical]" ..
+      "list[context;output;0.03,0.03;6,23;]" ..
       "scroll_container_end[]" ..
-      "scrollbaroptions[max=283;thumbsize=70]" ..
-      "scrollbar[10.1,0.5;0.4,6.5;vertical;output_grid;" .. scrollval .. "]" ..
+      "scrollbaroptions[max=225;thumbsize=70]" ..
+      "scrollbar[11.0,0.5;0.4,6.05;vertical;output_grid;" .. scrollval .. "]" ..
       "real_coordinates[false]" ..
 
       "list[current_player;main;0.5,6.25;8,4;]" ..

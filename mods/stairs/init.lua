@@ -421,7 +421,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 			end
 		end
 	end
-	minetest.register_alias("stairs:stair_" ..subname.. "_bottom", "stairs:stair_" ..subname)
+	--minetest.register_alias("stairs:stair_" ..subname.. "_bottom", "stairs:stair_" ..subname)
 
   if recipeitem then
 		circular_saw.register_node(recipeitem, subname)
@@ -584,7 +584,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 
 		minetest.register_node(":stairs:panel_" ..subname..alternate, def)
 	end
-	minetest.register_alias("stairs:panel_" ..subname.. "_bottom", "stairs:panel_" ..subname)
+	--minetest.register_alias("stairs:panel_" ..subname.. "_bottom", "stairs:panel_" ..subname)
 
   if recipeitem then
 		circular_saw.register_node(recipeitem, subname)
@@ -736,7 +736,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 
 		minetest.register_node(":stairs:micro_" .. subname .. alternate, def)
 	end
-  minetest.register_alias("stairs:micro_" ..subname.. "_bottom", "stairs:micro_" ..subname)
+  --minetest.register_alias("stairs:micro_" ..subname.. "_bottom", "stairs:micro_" ..subname)
 
   if recipeitem then
 		circular_saw.register_node(recipeitem, subname)
@@ -745,8 +745,8 @@ end
 
 -- Register aliases for new pine node names
 
-minetest.register_alias("stairs:stair_pinewood", "stairs:stair_pine_wood")
-minetest.register_alias("stairs:slab_pinewood", "stairs:slab_pine_wood")
+--minetest.register_alias("stairs:stair_pinewood", "stairs:stair_pine_wood")
+--minetest.register_alias("stairs:slab_pinewood", "stairs:slab_pine_wood")
 
 
 

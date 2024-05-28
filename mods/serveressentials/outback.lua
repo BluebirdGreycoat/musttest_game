@@ -66,8 +66,8 @@ local nodes = {
 	{pos={x=-9167, y=4103, z=5779}, node={name="xdecor:lantern", param2=1}},
 	{pos={x=-9167, y=4103, z=5785}, node={name="xdecor:lantern", param2=1}},
 
-	-- Add a furnace to the miner's hut.
-	{pos={x=-9177, y=4176, z=5745}, node={name="redstone_furnace:inactive", param2=3}},
+	-- Add a chair to the miner's hut.
+	{pos={x=-9177, y=4176, z=5745}, node={name="xdecor:chair", param2=3}},
 
 	-- Graveyard protector.
 	{pos={x=-9266, y=4170, z=5724}, node={name="protector:protect3", param2=0}},
@@ -101,6 +101,7 @@ local nodes = {
 	-- Signs in miner's hut.
 	{pos={x=-9177, y=4177, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
 	{pos={x=-9177, y=4176, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9177, y=4177, z=5745}, node={name="signs:sign_wall_wood", param2=3}},
 	{pos={x=-9175, y=4177, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
 	{pos={x=-9175, y=4176, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
 }
@@ -262,6 +263,11 @@ local metadata = {
 		infotext = "Find the Dimensional Gate at the bottom of this rope.\nThe gate is guarded.\nPrepare for combat!",
 		author = OWNERNAME,
 		text = "Find the Dimensional Gate at the bottom of this rope.%nThe gate is guarded.%nPrepare for combat!"
+	}}},
+	{pos={x=-9177, y=4177, z=5745}, meta={fields={
+		infotext = "If you skipped reading /info, be sure to read it now.",
+		author = OWNERNAME,
+		text = "If you skipped reading /info, be sure to read it now."
 	}}},
 	{pos={x=-9177, y=4176, z=5744}, meta={fields={
 		infotext = "There is NO WAY BACK BUT DEATH.",

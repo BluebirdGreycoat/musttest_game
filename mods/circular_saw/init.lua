@@ -180,7 +180,7 @@ function circular_saw:get_valid_microblock(materials)
   end
 end
 
-function circular_saw:get_output_inv(materials, amount, max)
+function circular_saw:get_output_inv(parent_material, materials, amount, max)
   if (not max or max < 1 or max > 64) then max = 64 end
 
   local vcount = 0
@@ -212,7 +212,8 @@ function circular_saw:get_output_inv(materials, amount, max)
         nodename = "stairs:" .. t[1] .. "_" .. material .. t[2]
       end
 
-      if minetest.registered_nodes[nodename] and not seen[nodename] then
+      local ndef = minetest.registered_nodes[nodename]
+      if ndef and ndef._stairs_parent_material == parent_material and not seen[nodename] then
         list[#list + 1] = nodename .. " " .. balance
         seen[nodename] = true
 
@@ -320,7 +321,7 @@ function circular_saw:update_inventory(pos, amount)
     end
 
     -- Display:
-    noutlist, total_available = self:get_output_inv(materials, amount, meta:get_int("max_offered"))
+    noutlist, total_available = self:get_output_inv(node_name, materials, amount, meta:get_int("max_offered"))
   end
 
   ------------------------------------------------------------------------------

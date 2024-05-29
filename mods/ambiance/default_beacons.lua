@@ -5,6 +5,7 @@
 --
 -- Note on sound files: files MUST BE MONO-TRACK! Otherwise fade-with-distance
 -- WILL NOT WORK.
+if not ambiance.node_sound_beacons_loaded then
 local function register_node_sound(name, nodes, sound)
 	ambiance.register_sound_beacon(name, {
 		check_time = 1,
@@ -80,3 +81,6 @@ local gemcutter_types = {
 
 register_node_sound("ambiance:gemcutter_active", gemcutter_types,
 	{name="gemcutter_grinding", gain=0.60, track_length=2.7, max_hear_distance=30})
+
+ambiance.node_sound_beacons_loaded = true
+end

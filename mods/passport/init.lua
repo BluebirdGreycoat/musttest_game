@@ -567,7 +567,7 @@ function passport.exec_spawn(name, param)
 		return true
 	end
 	local target = randspawn.get_respawn_pos(pos, name)
-	if vector_distance(pos, target) < 20 then
+	if vector_distance(pos, target) < 10 then
 		minetest.chat_send_player(name, "# Server: Too close to the spawnpoint!")
 		easyvend.sound_error(name)
 		return true
@@ -583,6 +583,8 @@ function passport.exec_spawn(name, param)
 
 		minetest.after(1, function()
 			minetest.chat_send_player(name, "# Server: You have been returned to the spawnpoint.")
+			minetest.chat_send_player(name, "# Server: Warning: this command functions as a crutch for new players.")
+			minetest.chat_send_player(name, "# Server: It will not be available once you leave the Outback!")
 			portal_sickness.on_use_portal(name)
 		end)
 	else

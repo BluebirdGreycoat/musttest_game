@@ -323,17 +323,17 @@ ambiance.tmpsounds = {
 	{name="coyote",         realm="abyss", mingain=0.2, maxgain=1.3, miny=4560, maxy=4600, time="night", indoors=nil, mintime=10, maxtime=30, },
 
 	-- MIDFELD
-	{name="wind1",          realm="midfeld", gain=1.0, miny=4085, maxy=4250, time="", indoors=nil, mintime=20, maxtime=40, },
-	{name="wind2",          realm="midfeld", gain=1.0, miny=4085, maxy=4250, time="", indoors=nil, mintime=20, maxtime=40, },
-	{name="desertwind",     realm="midfeld", gain=1.0, miny=4085, maxy=4250, time="", indoors=nil, mintime=20, maxtime=40, },
-	{name="desertwind",     realm="midfeld", mingain=0.2, maxgain=0.4, miny=4085, maxy=4250, time="", indoors=nil, mintime=6, maxtime=8, }, -- Continuous quiet loop.
-	{name="night_cicadas",  realm="midfeld", mingain=0.2, maxgain=1.0, miny=4085, maxy=4250, time="night", indoors=nil, mintime=7, maxtime=11, }, -- Continuous quiet loop.
-	{name="wolves",         realm="midfeld", mingain=0.2, maxgain=1.3, miny=4085, maxy=4250, time="night", indoors=nil, mintime=60, maxtime=360, },
-	{name="coyote",         realm="midfeld", mingain=0.2, maxgain=1.3, miny=4085, maxy=4250, time="night", indoors=nil, mintime=60, maxtime=360, },
-	{name="owl",            realm="midfeld", mingain=0.2, maxgain=1.3, miny=4085, maxy=4250, time="night", indoors=nil, mintime=60, maxtime=360, },
-	{name="hornedowl",      realm="midfeld", mingain=0.2, maxgain=1.3, miny=4085, maxy=4250, time="night", indoors=nil, mintime=60, maxtime=360, },
-	{name="drippingwater",  realm="midfeld", mingain=0.2, maxgain=1.0, miny=4050, maxy=4085, time="", indoors=nil, },
-	{name="cave_bats",      realm="midfeld", gain=0.7, miny=4050, maxy=4085, time="night", indoors=false, mintime=60, maxtime=360, },
+	{name="wind1",          realm="midfeld", gain=1.0, miny=4485, maxy=4650, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="wind2",          realm="midfeld", gain=1.0, miny=4485, maxy=4650, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="midfeld", gain=1.0, miny=4485, maxy=4650, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="midfeld", mingain=0.2, maxgain=0.4, miny=4485, maxy=4650, time="", indoors=nil, mintime=6, maxtime=8, }, -- Continuous quiet loop.
+	{name="night_cicadas",  realm="midfeld", mingain=0.2, maxgain=1.0, miny=4485, maxy=4650, time="night", indoors=nil, mintime=7, maxtime=11, }, -- Continuous quiet loop.
+	{name="wolves",         realm="midfeld", mingain=0.2, maxgain=1.3, miny=4485, maxy=4650, time="night", indoors=nil, mintime=60, maxtime=360, },
+	{name="coyote",         realm="midfeld", mingain=0.2, maxgain=1.3, miny=4485, maxy=4650, time="night", indoors=nil, mintime=60, maxtime=360, },
+	{name="owl",            realm="midfeld", mingain=0.2, maxgain=1.3, miny=4485, maxy=4650, time="night", indoors=nil, mintime=60, maxtime=360, },
+	{name="hornedowl",      realm="midfeld", mingain=0.2, maxgain=1.3, miny=4485, maxy=4650, time="night", indoors=nil, mintime=60, maxtime=360, },
+	{name="drippingwater",  realm="midfeld", mingain=0.2, maxgain=1.0, miny=4450, maxy=4485, time="", indoors=nil, },
+	{name="cave_bats",      realm="midfeld", gain=0.7, miny=4450, maxy=4485, time="night", indoors=false, mintime=60, maxtime=360, },
 }
 
 

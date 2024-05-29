@@ -603,7 +603,9 @@ function circular_saw.update_formspec(pos)
   )
 
   local inv = meta:get_inventory()
-  inv:set_size("output", INVENTORY_SIZE)
+  if inv:get_size("output") ~= INVENTORY_SIZE then
+    inv:set_size("output", INVENTORY_SIZE)
+  end
 end
 
 function circular_saw.on_construct(pos)

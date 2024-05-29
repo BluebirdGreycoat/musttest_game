@@ -195,6 +195,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 		def.description = description .. " " .. (num.description or "Slab")
     def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*(num.light or 0))
+		def._stairs_parent_material = recipeitem
 
 		-- Only for flat slabs.
 		if num.is_flat then
@@ -394,6 +395,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
+		def._stairs_parent_material = recipeitem
     
 		stairs.setup_nodedef_callbacks(subname, def)
 
@@ -579,6 +581,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
+		def._stairs_parent_material = recipeitem
     
 		stairs.setup_nodedef_callbacks(subname, def)
 
@@ -731,6 +734,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 		def.tiles = stair_images
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
+		def._stairs_parent_material = recipeitem
 		
 		stairs.setup_nodedef_callbacks(subname, def)
 
@@ -788,6 +792,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		groups = groups,
 		sounds = sounds,
 		move_speed_stair = recipeitem,
+		_stairs_parent_material = recipeitem,
 		light_source = math.ceil(ndef.light_source*0.75),
 		selection_box = {
 			type = "fixed",
@@ -885,6 +890,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 		groups = groups,
 		sounds = sounds,
 		movement_speed_depends = recipeitem,
+		_stairs_parent_material = recipeitem,
 		light_source = math.ceil(ndef.light_source*0.5),
 		node_box = {
 			type = "fixed",

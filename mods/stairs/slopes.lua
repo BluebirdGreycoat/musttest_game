@@ -689,6 +689,7 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
 			def.tiles = stair_images
 			def.light_source = math.ceil(ndef.light_source*(def.light or 0))
 			def.light = nil
+			def._stairs_parent_material = recipeitem
 
 			stairs.setup_nodedef_callbacks(subname, def)
 			

@@ -32,6 +32,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		-- Must be in group:wall otherwise walls will not connect.
 		groups = utility.dig_groups("wall", {wall = 1}),
 		sounds = wall_sounds,
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":walls:" .. wall_name .. "_noconnect", {
@@ -48,6 +49,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		walkable = true,
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":walls:" .. wall_name .. "_noconnect_wide", {
@@ -64,6 +66,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		walkable = true,
 		groups = utility.dig_groups("wall"),
 		sounds = wall_sounds,
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":walls:" .. wall_name .. "_half", {
@@ -80,6 +83,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25, -0.5, 0.25, 0.25, 0.5, 0.5},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	-- crafting recipe for standard walls.
@@ -110,6 +114,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25,-0.125,-0.25,0.25,0.5,0.25}, 
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_bottom_half", {
@@ -128,6 +133,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25, -0.125, 0.25, 0.25, 0.5, 0.5},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 	
 	register_node(":pillars:" .. wall_name .. "_top", {
@@ -146,6 +152,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25,-0.5,-0.25,0.25,0.0625,0.25},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_top_half", {
@@ -164,6 +171,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25, -0.5, 0.25, 0.25, 0.0625, 0.5},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_bottom_full", {
@@ -182,6 +190,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.25, -0.125, -0.5, 0.25, 0.5, 0.5},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_bottom_back", {
@@ -200,6 +209,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.125, -0.25, 0.5, 0.5, 0.5}, -- NodeBox6
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_top_full", {
@@ -218,6 +228,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, -0.25, 0.5, 0.5, 0.25},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":pillars:" .. wall_name .. "_top_back", {
@@ -236,6 +247,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, -0.25, 0.5, 0.125, 0.5}, -- NodeBox3
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	circular_saw.register_node(wall_mat, wall_name)
@@ -257,6 +269,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-4/16,-8/16,8/16,4/16,8/16,4/16},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 	
 	circular_saw.register_node(wall_mat, wall_name)
@@ -277,6 +290,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{0.25, -0.5, 0, 0.5, 0.5, 0.5},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	circular_saw.register_node(wall_mat, wall_name)
@@ -301,6 +315,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, 0.3125, -0.25, 0.5, 0.125},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":arrowslit:"..wall_name.."_cross", {
@@ -326,6 +341,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, 0.3125, -0.25, 0.5, 0.125},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":arrowslit:"..wall_name.."_hole", {
@@ -349,6 +365,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, 0.3125, -0.25, 0.5, 0.125},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	register_node(":arrowslit:"..wall_name.."_embrasure", {
@@ -370,6 +387,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 				{-0.5, -0.5, 0.125, -0.375, 0.5, 0.25},
 			},
 		},
+		_stairs_parent_material = wall_mat,
 	})
 
 	circular_saw.register_node(wall_mat, wall_name)

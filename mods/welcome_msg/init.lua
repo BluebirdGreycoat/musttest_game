@@ -58,7 +58,7 @@ function welcome.player_near_outback_edge(player)
 			"# Server: <" .. rename.gpn(pname) ..
 			">, you are at the Outback boundary. " ..
 			"Escape is possible only through the Dimensional Gate.")
-		spam.mark_key(spamkey, 60*10)
+		spam.mark_key(spamkey, 60*5)
 	end
 end
 

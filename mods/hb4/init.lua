@@ -71,7 +71,12 @@ function hb4.delayed_harm2(data)
 				data.done()
 			end
 			if data.msg then
-				minetest.chat_send_all(data.msg)
+				local pname = player:get_player_name()
+				local key = pname .. "_hb4"
+				if not spam.test_key(key) then
+					spam.mark_key(key, 15)
+					minetest.chat_send_all(data.msg)
+				end
 			end
 			return
 		end

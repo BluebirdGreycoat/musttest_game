@@ -86,10 +86,10 @@ local nodes = {
 	{pos={x=-9227, y=4172, z=5861}, node={name="protector:protect", param2=0}},
 
 	-- Extra signs at spawn.
-	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
-	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
-	{pos={x=-9221, y=4170, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
-	{pos={x=-9221, y=4170, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
+	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4170, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4170, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
 
 	-- Extra pillar between Oerkki spawn point and the gate.
 	{pos={x=-9169, y=4104, z=5782}, node={name="pillars:rackstone_cobble_top", param2=3}},

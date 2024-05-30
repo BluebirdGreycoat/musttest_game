@@ -85,6 +85,10 @@ local nodes = {
 	{pos={x=-9228, y=4172, z=5851}, node={name="protector:protect", param2=0}},
 	{pos={x=-9227, y=4172, z=5861}, node={name="protector:protect", param2=0}},
 
+	-- Bridge protectors.
+	{pos={x=-9227, y=4172, z=5833}, node={name="protector:protect", param2=0}},
+	{pos={x=-9228, y=4172, z=5841}, node={name="protector:protect", param2=0}},
+
 	-- Extra signs at spawn.
 	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
 	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
@@ -256,6 +260,19 @@ local metadata = {
 		rename = OWNERNAME,
 	}}},
 	{pos={x=-9227, y=4172, z=5861}, meta={fields={
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
+		placedate = "2020/02/12 UTC",
+		rename = OWNERNAME,
+	}}},
+	-- Bridge protectors.
+	{pos={x=-9227, y=4172, z=5833}, meta={fields={
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
+		placedate = "2020/02/12 UTC",
+		rename = OWNERNAME,
+	}}},
+	{pos={x=-9228, y=4172, z=5841}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",

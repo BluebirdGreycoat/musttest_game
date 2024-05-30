@@ -197,12 +197,15 @@ zcg.formspec = function(pn)
         end
 
 				if type(c.result) == "string" then
+					local n1 = c.result
 					formspec = formspec .. "image[6,1.5;1,1;zcg_craft_arrow.png]"
-					formspec = formspec .. "item_image_button[7,1.5;1,1;".. c.result ..";;]"
+					formspec = formspec .. "item_image_button[7,1.5;1,1;".. n1 ..";zcg_out:" .. n1 .. ";]"
 				elseif type(c.result) == "table" then
 					-- Separating recipes have two outputs.
-					formspec = formspec .. "item_image_button[6,1.5;1,1;".. c.result[1] ..";;]"
-					formspec = formspec .. "item_image_button[7,1.5;1,1;".. c.result[2] ..";;]"
+					local n1 = c.result[1]
+					local n2 = c.result[2]
+					formspec = formspec .. "item_image_button[6,1.5;1,1;" .. n1 .. ";zcg_out:" .. n1 .. ";]"
+					formspec = formspec .. "item_image_button[7,1.5;1,1;" .. n2 .. ";zcg_out:" .. n2 .. ";]"
 				end
 
 				--minetest.chat_send_all(dump(c))

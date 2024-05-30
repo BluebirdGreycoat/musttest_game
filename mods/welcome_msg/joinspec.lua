@@ -11,26 +11,19 @@ local PRIORITY_X_OFFSET = 1.4
 
 
 joinspec.data = {
-	warning = "Welcome to the frontier, Stranger! You have arrived on Enyekala (Must Test), a complex, detailed survival-mode game built on top of the Minetest Engine (https://www.minetest.net/).\n\n" ..
-		"Please read this text, as it contains important information about this server. You will need to scroll this text to read all of it. Once you have closed this formspec, you can reshow it by typing “/info” in the chat, without quotes.\n\n" ..
+	warning = "Hello stranger! You have arrived in the Enyekala Realms.\n\n" ..
+		"This text provides you with basic information about the game. You can show this again by typing /info in the chat.\n\n" ..
 		"This is a heavily modded, hard-core PvP & PvE survival server. " ..
 		"The only way to find greatness is to survive, mine, build, and fight your way up! " ..
 		"There is no creative mode.\n\n" ..
 		"As a new adventurer, you start in a dry and dreary place the old-timers call “The Outback”. This is the dimension of the Unreal, because nothing here lasts, and in time, all is forgotten …. Leaving this realm, and finding your way to the true world, is akin to a test of skill. If you can escape this place then it may be that you have a chance to overcome the much harder challenge of survival in the natural realm. Many will not make the attempt. For them, the place of the Unreal is reality enough, and there is no need to seek anything else. You, O Adventuring Stranger, must make your choice.\n\n" ..
 		"Upon appearing in the Outback, your first order of business is to obtain a stone pick. Most stone here is unsuitable, but if you go rock prospecting you’ll find the right kind. You can pluck the dry shrubs to find sticks. Once you have a stone pick, you should locate some iron and build an iron pick. Craft yourself some armor while you’re at it, and the best sword you can lay hands on. Finally, you must find the Dimensional Gate, which is your way out. The portal chamber is well-guarded, so you will need to fight your way through. In order to activate the portal, you must stand physically inside of it, and strike the obsidian with your flint and steel. The dimensional shift takes a little time, and more guards may appear in the meanwhile, so you must be quick. Finally, if you get stuck in the Outback without suitable tools, you can use /spawn to return yourself to the spawnpoint.\n\n" ..
 		"The above is a coarse outline of your path through the Outback. The patient adventurer may wish to make some detours. Survival in the overworld is much harder than making a living in the Outback. The better your supplies that you bring with you through the dimensional gate, the better your chances in the overworld will be. Consider stockpiling food, weaponry, rare items, farming materials, and most importantly, a BED. Keep in mind that the Dimensional Gate is UNSTABLE. The portal’s exit coordinates change once every " .. randspawn.min_days .. " to " .. randspawn.max_days .. " realtime days, and you cannot rely on there being much (or even any) infrastructure to support you once you arrive at the other side! Until you meet others, this is hard-core PvE survival.\n\n" ..
-		"Here is a warning: wait until sunrise to use the Outback’s dimensional gate. Do not use it at night!\n\n" ..
 		"You may read the server’s webpage at http://arklegacy.duckdns.org/. " ..
 		"On this site you will find the server rules, as well as an additional introduction to the world, a FAQ, " ..
-		"some gameplay tips, and of course some maps of various locations. The website does not cover everything about Must Test—indeed it cannot—and part of the experience is about exploring, experimenting, and discovering undocumented stuff. Feel free to ask questions of the old-timers—but be careful! If you annoy them too much, you’d better beware lest they feed you to a Dungeon Master …. >:)\n\n" ..
-		"Due to the way the mapgen generates ores (among other things), trade with other players comes highly recommended; " ..
-		"sell what you don’t need and buy what you do. It is rare for one person to have convenient access to all available resources on this server, though with enough effort it can be done.\n\n" ..
-		"Minegeld is currency here. " ..
-		"You can trade gold, silver and copper ingots for minegeld at the Wild North Precious Metal Exchange, " ..
-		"which is located in the northeast quarter of the city at 1238, -8748. Some long-time inhabitants have commissioned banks out of their own resources, which you can use as well.\n\n" ..
+		"some gameplay tips, and of course some maps of various locations.\n\n" ..
 		"In order to register and preserve your account and player data, " ..
-		"you must obtain a Proof of Citizenship. The recipe is in the craft guide. Once you have crafted your Proof of Citizenship (PoC) you must keep it in your MAIN inventory at all times. Without it, the server will erase your account. This happens every Sunday when the system is purged of excess player data. Note that later you can upgrade your PoC to a Key, which provides a number of useful features for experienced adventurers, as well as a way to communicate with offline players (via in-game mail).\n\n" ..
-		"This server makes use of the latest Minetest APIs, therefore a recent client is recommended.",
+		"you must obtain a Proof of Citizenship. The recipe is in the craft guide. Once you have crafted your Proof of Citizenship (PoC) you must keep it in your MAIN inventory at all times. Without it, the server will erase your account. This happens every Sunday when the system is purged of excess player data. Note that later you can upgrade your PoC to a Key, which provides useful features for expert adventurers.",
 
 	version = minetest.get_version(),
 }

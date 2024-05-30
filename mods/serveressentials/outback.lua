@@ -432,10 +432,12 @@ local function callback(blockpos, action, calls_remaining, param)
 	local apron_schematic = rc.modpath .. "/outback_apron.mts"
 	local beacon_schem = rc.modpath .. "/outback_beacon.mts"
 	local spawn_cave_schem = rc.modpath .. "/outback_spawn_cave.mts"
+	local bridge_schem = rc.modpath .. "/outback_bridge.mts"
 	local pos = {x=-9274, y=4000+400, z=5682}
 	local apron_pos = {x=-9314, y=4141+400, z=5642}
 	local beacon_pos = {x=-9180, y=4580, z=5741}
 	local spawn_cave_pos = {x=-9233, y=4568, z=5851}
+	local bridge_pos = {x=-9232, y=4570, z=5828}
 	local replacements = {}
 
 	if minetest.registered_nodes["basictrees:acacia_branch"] then
@@ -448,6 +450,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	minetest.place_schematic(pos, schematic, "0", replacements, true, "")
 	minetest.place_schematic(beacon_pos, beacon_schem, "0", replacements, true, "")
 	minetest.place_schematic(spawn_cave_pos, spawn_cave_schem, "0", replacements, true, "")
+	minetest.place_schematic(bridge_pos, bridge_schem, "0", replacements, true, "")
 
 	-- Erase all stale metadata.
 	for k, v in ipairs(pos_metas) do

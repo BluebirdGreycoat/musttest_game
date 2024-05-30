@@ -10,21 +10,28 @@ local PRIORITY_X_OFFSET = 1.4
 
 
 
-joinspec.data = {
-	warning = "Hello stranger! You have arrived in the Enyekala Realms.\n\n" ..
-		"This text provides you with basic information about the game. You can show this again by typing /info in the chat.\n\n" ..
-		"This is a heavily modded, hard-core PvP & PvE survival server. " ..
-		"The only way to find greatness is to survive, mine, build, and fight your way up! " ..
-		"There is no creative mode.\n\n" ..
-		"As a new adventurer, you start in a dry and dreary place the old-timers call “The Outback”. This is the dimension of the Unreal, because nothing here lasts, and in time, all is forgotten …. Leaving this realm, and finding your way to the true world, is akin to a test of skill. If you can escape this place then it may be that you have a chance to overcome the much harder challenge of survival in the natural realm. Many will not make the attempt. For them, the place of the Unreal is reality enough, and there is no need to seek anything else. You, O Adventuring Stranger, must make your choice.\n\n" ..
-		"Upon appearing in the Outback, your first order of business is to obtain a stone pick. Most stone here is unsuitable, but if you go rock prospecting you’ll find the right kind. You can pluck the dry shrubs to find sticks. Once you have a stone pick, you should locate some iron and build an iron pick. Craft yourself some armor while you’re at it, and the best sword you can lay hands on. Finally, you must find the Dimensional Gate, which is your way out. The portal chamber is well-guarded, so you will need to fight your way through. In order to activate the portal, you must stand physically inside of it, and strike the obsidian with your flint and steel. The dimensional shift takes a little time, and more guards may appear in the meanwhile, so you must be quick. Finally, if you get stuck in the Outback without suitable tools, you can use /spawn to return yourself to the spawnpoint.\n\n" ..
-		"The above is a coarse outline of your path through the Outback. The patient adventurer may wish to make some detours. Survival in the overworld is much harder than making a living in the Outback. The better your supplies that you bring with you through the dimensional gate, the better your chances in the overworld will be. Consider stockpiling food, weaponry, rare items, farming materials, and most importantly, a BED. Keep in mind that the Dimensional Gate is UNSTABLE. The portal’s exit coordinates change once every " .. randspawn.min_days .. " to " .. randspawn.max_days .. " realtime days, and you cannot rely on there being much (or even any) infrastructure to support you once you arrive at the other side! Until you meet others, this is hard-core PvE survival.\n\n" ..
-		"You may read the server’s webpage at http://arklegacy.duckdns.org/. " ..
-		"On this site you will find the server rules, as well as an additional introduction to the world, a FAQ, " ..
-		"some gameplay tips, and of course some maps of various locations.\n\n" ..
-		"In order to register and preserve your account and player data, " ..
-		"you must obtain a Proof of Citizenship. The recipe is in the craft guide. Once you have crafted your Proof of Citizenship (PoC) you must keep it in your MAIN inventory at all times. Without it, the server will erase your account. This happens every Sunday when the system is purged of excess player data. Note that later you can upgrade your PoC to a Key, which provides useful features for expert adventurers.",
+local function get_text(pname)
+	local text = "Welcome to the frontier, <" .. rename.gpn(pname) .. ">! You have arrived in the Enyekala Realms. This text provides you with basic information about Enyekala. Type /info in the chat to reshow this page.\n\n" ..
+		"This is a hardcore survival game, with the occasional PvP, and with many materials and shapes to build with. Find greatness by working to master travel between the Realms!\n\n" ..
+		"=== HOW TO BEGIN ===\n\n" ..
+		"As a new adventurer, you start in a dry and dreary place the old-timers call “The Outback”. Leaving the dark cave in which you awoke, you quickly learn that nothing lasts in this tiny Realm. Escape this place ... or stay asleep in an endlessly repeating dream. You, O Adventuring Stranger, must make your choice.\n\n" ..
+		"Your first order of business is to craft a stone pick. You need black stone. Pluck the dry shrubs to get sticks. Once you have a stone pick, you should locate some iron and build an iron pick. Craft yourself some armor while you’re at it, and the best sword you can lay hands on.\n\n" ..
+		"Finally, you must find the Dimensional Gate, which is your way out. The portal chamber is well-guarded by Black-Hearted Oerkki, so you will need to fight your way through. In order to activate the portal, stand inside of it and strike the obsidian with your flint and steel. The dimensional shift takes a little time, and more Oerkki may appear while you wait, so you must time yourself carefully, and when you commit, be quick.\n\n" ..
+		"If you get stuck somewhere in the Outback without a pick, you can use /spawn to return yourself to the dark cave.\n\n" ..
+		"=== ADVICE ===\n\n" ..
+		"Survival in the snowy stone-world of Enyekala is much harder than making a living in the Outback. The better the supplies that you bring with you through the Dimensional Gate, the better your chances in the snowy Overworld will be. Bring food, weapons, rare items, farming materials, and most importantly, a BED. Be very careful not to sleep in your bed in the open air. You will be mobbed! Built a shelter, even if it’s an ugly cobble shack.\n\n" ..
+		"The Dimensional Gate is UNSTABLE. The portal’s exit coordinates change once every " .. randspawn.min_days .. " to " .. randspawn.max_days .. " realtime days, and you cannot rely on there being any city near you to protect you from mobs once you arrive in Enyekala proper! Until you can make it to civilization (or build your own), your fight is with the untamed wilderness.\n\n" ..
+		"=== WEBSITE ===\n\n" ..
+		"You can visit the server’s webpage at http://arklegacy.duckdns.org/. " ..
+		"You can find here chatlogs, maps, news and tips.\n\n" ..
+		"=== REGISTERING YOUR ACCOUNT ===\n\n" ..
+		"To prevent your server account from being erased during a weekly purge, " ..
+		"you must obtain a Proof of Citizenship. Find the recipe in the craft guide. Once you have crafted your Proof of Citizenship (PoC) you must keep it in your MAIN inventory at all times. The server purge happens every Sunday at the nightly restart.\n\n" ..
+		"Later, when you have progressed, you can swap out your PoC for a Key, which provides useful features for expert adventurers, and which ALSO protects your account, as long as you hold it in your MAIN inventory."
+	return text
+end
 
+joinspec.data = {
 	version = minetest.get_version(),
 }
 
@@ -167,7 +174,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"box[0,0;6.8,2;#101010FF]" ..
 			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
 
-		local warning = minetest.formspec_escape(joinspec.data.warning)
+		local warning = minetest.formspec_escape(get_text(pname))
 		formspec = formspec ..
 			"textarea[0.3,2.3;7,5.6;warning;;" .. warning .. "]"
 
@@ -175,7 +182,9 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 		formspec = formspec ..
 			"button[0,7.3;2,1;wrongserver;" .. minetest.formspec_escape("I’m Scared ...") .. "]" ..
 			"button[2,7.3;2,1;trading;Tradernet]" ..
-			"button[4,7.3;3,1;playgame;Accept Challenge!]"
+			"button[4,7.3;3,1;playgame;Accept Challenge!]" ..
+			"tooltip[wrongserver;Cowards will be kicked!]" ..
+			"tooltip[playgame;You are either brave, or stupid.]"
 
 		formspec = formspec ..
 			"label[" .. PRIORITY_X_OFFSET .. ",8.1;" .. minetest.formspec_escape(COLOR_ORANGE ..

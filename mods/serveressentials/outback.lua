@@ -80,12 +80,15 @@ local nodes = {
 	-- Protector in the miner's hut.
 	{pos={x=-9176, y=4175, z=5745}, node={name="protector:protect3", param2=0}},
 
-	-- Spawn protector.
-	{pos={x=-9223, y=4168, z=5861}, node={name="protector:protect3", param2=0}},
+	-- Spawn protectors.
+	{pos={x=-9223, y=4167, z=5861}, node={name="protector:protect", param2=0}},
+	{pos={x=-9228, y=4172, z=5851}, node={name="protector:protect", param2=0}},
 
 	-- Extra signs at spawn.
 	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
 	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
+	{pos={x=-9221, y=4170, z=5861}, node={name="signs:sign_wall_wood", param2=2}},
+	{pos={x=-9221, y=4170, z=5860}, node={name="signs:sign_wall_wood", param2=2}},
 
 	-- Extra pillar between Oerkki spawn point and the gate.
 	{pos={x=-9169, y=4104, z=5782}, node={name="pillars:rackstone_cobble_top", param2=3}},
@@ -238,8 +241,14 @@ local metadata = {
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	-- Spawn protector.
-	{pos={x=-9223, y=4168, z=5861}, meta={fields={
+	-- Spawn protectors.
+	{pos={x=-9223, y=4167, z=5861}, meta={fields={
+		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+		owner = OWNERNAME,
+		placedate = "2020/02/12 UTC",
+		rename = OWNERNAME,
+	}}},
+	{pos={x=-9228, y=4172, z=5851}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
@@ -415,9 +424,11 @@ local function callback(blockpos, action, calls_remaining, param)
 	local schematic = rc.modpath .. "/outback_map.mts"
 	local apron_schematic = rc.modpath .. "/outback_apron.mts"
 	local beacon_schem = rc.modpath .. "/outback_beacon.mts"
+	local spawn_cave_schem = rc.modpath .. "/outback_spawn_cave.mts"
 	local pos = {x=-9274, y=4000+400, z=5682}
 	local apron_pos = {x=-9314, y=4141+400, z=5642}
 	local beacon_pos = {x=-9180, y=4580, z=5741}
+	local spawn_cave_pos = {x=-9233, y=4568, z=5851}
 	local replacements = {}
 
 	if minetest.registered_nodes["basictrees:acacia_branch"] then
@@ -429,6 +440,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	minetest.place_schematic(apron_pos, apron_schematic, "0", replacements, true, "")
 	minetest.place_schematic(pos, schematic, "0", replacements, true, "")
 	minetest.place_schematic(beacon_pos, beacon_schem, "0", replacements, true, "")
+	minetest.place_schematic(spawn_cave_pos, spawn_cave_schem, "0", replacements, true, "")
 
 	-- Erase all stale metadata.
 	for k, v in ipairs(pos_metas) do

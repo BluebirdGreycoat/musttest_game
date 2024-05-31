@@ -22,6 +22,16 @@ local dyes = {
 	{"pink",       "Pink Dye",       {dye=1}},
 }
 
+-- Colors which do NOT have corresponding flowers.
+-- Also, it's so totally racist to say "blacklist" now.
+-- The NPCs can **** ** ***.
+local flower_blacklist = {
+	grey = true,
+	black = true,
+	dark_grey = true,
+	brown = true,
+}
+
 -- Define items.
 for _, row in ipairs(dyes) do
 	local name = row[1]
@@ -37,12 +47,14 @@ for _, row in ipairs(dyes) do
 		groups = groups,
 	})
 
-	minetest.register_craft({
-		type = "shapeless",
-		output = item_name .. " 1",
-		recipe = {"group:flower,color_" .. name, "farming:mortar_pestle"},
-		replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
-	})
+	if not flower_blacklist[name] then
+		minetest.register_craft({
+			type = "shapeless",
+			output = item_name .. " 1",
+			recipe = {"group:flower,color_" .. name, "farming:mortar_pestle"},
+			replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
+		})
+	end
 end
 
 -- Manually add coal --> black dye.

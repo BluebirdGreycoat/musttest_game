@@ -8,9 +8,21 @@ zcg.modpath = minetest.get_modpath("zcg")
 zcg.users = zcg.users or {}
 zcg.crafts = zcg.crafts or {}
 zcg.itemlist = zcg.itemlist or {}
+zcg.grouplist = zcg.grouplist or {}
 
 -- Localize for performance.
 local math_floor = math.floor
+
+
+
+-- Keep this code for future debugging if we use new groups in recipes.
+--[[
+minetest.after(5, function()
+	for k, v in pairs(zcg.grouplist) do
+		minetest.chat_send_all(k)
+	end
+end)
+--]]
 
 
 
@@ -28,6 +40,30 @@ zcg.items_in_group = function(group)
     if ok then table.insert(items,name) end
   end
   return items
+end
+
+
+
+function zcg.canonical_group_item(group)
+	if zcg.grouplist[group] then
+		return zcg.grouplist[group]
+	end
+
+	local items = zcg.items_in_group(group)
+	if items and items[1] then
+		zcg.grouplist[group] = {
+			item = items[1],
+			description = nil,
+		}
+		return zcg.grouplist[group]
+	end
+
+	-- Must not be the name of a node, but cannot be an empty string.
+	zcg.grouplist[group] = {
+		item = "unknown",
+		description = nil,
+	}
+	return zcg.grouplist[group]
 end
 
 
@@ -66,6 +102,8 @@ zcg.add_craft = function(input, realout, output, groups)
 	assert(type(c.result) == "string" or type(c.result) == "table")
 
   if c.items == nil then return end
+
+  --[[
   for i, item in pairs(c.items) do
     if item:sub(0,6) == "group:" then
 			-- The recipe item name may contain a count value.
@@ -74,6 +112,10 @@ zcg.add_craft = function(input, realout, output, groups)
 			local parts = string.split(strpart, " ")
 			assert(type(parts[1]) == "string")
       local groupname = parts[1]
+
+      -- For testing.
+      zcg.canonical_group_item(groupname)
+
 			local groupcount = parts[2] or 1
       if groups[groupname] ~= nil then
         c.items[i] = groups[groupname] .. " " .. groupcount
@@ -91,8 +133,10 @@ zcg.add_craft = function(input, realout, output, groups)
       end
     end
   end
+  --]]
+
   if c.width == 0 then c.width = 3 end
-  table.insert(zcg.crafts[output],c)
+  table.insert(zcg.crafts[output], c)
 end
 
 
@@ -157,8 +201,40 @@ zcg.formspec = function(pn)
         for i, item in pairs(c.items) do
 					local stack = ItemStack(item)
 					local itemname = stack:get_name()
-          formspec = formspec .. "item_image_button["..((i-1)%c.width+x)..","..(math_floor((i-1)/c.width+y)+0.5)..";1,1;"..item..";zcg:"..itemname..";]"
+					local label = ""
+					local groupdata
+					local groupname
+
+					if item:find("^group:") then
+						label = "G"
+
+						-- The group may have an item count. Get just the group name.
+						local gname = item:sub(7)
+						gname = gname:split(" ")
+						assert(type(gname[1]) == "string")
+						gname = gname[1]
+
+						groupdata = zcg.canonical_group_item(gname)
+						itemname = "group:" .. groupdata.item
+						groupname = gname
+						item = groupdata.item
+						--minetest.chat_send_all(itemname)
+					end
+
+          formspec = formspec .. "item_image_button[" .. ((i-1)%c.width+x) .. "," ..
+						(math_floor((i-1)/c.width+y)+0.5) .. ";1,1;" .. item .. ";zcg:" ..
+						itemname .. ";" .. label .. "]"
+
+					if groupdata then
+						local text = "Anything in \"" .. minetest.colorize("gold", "group:" .. groupname) .. "\""
+						if groupdata.description then
+							text = "Any " .. minetest.colorize("gold", groupdata.description)
+						end
+						formspec = formspec .. "tooltip[zcg:" .. itemname .. ";" ..
+							minetest.formspec_escape(text) .. "]"
+					end
         end
+
         if c.type == "normal" or
           c.type == "cooking" or
           c.type == "grinding" or
@@ -518,6 +594,8 @@ if not zcg.registered then
 			return zcg.on_receive_fields(...)
 		end)
 	end)
+
+	dofile(zcg.modpath .. "/groups.lua")
 
 	local c = "zcg:core"
 	local f = zcg.modpath .. "/init.lua"

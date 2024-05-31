@@ -1,0 +1,35 @@
+
+-- Default groups we know about in craft recipes.
+zcg.grouplist = {
+	["stick"] = {item="default:stick", description="Stick"},
+	["minegeld"] = {item="currency:minegeld_2", description="Minegeld"},
+	["wood_dark"] = {item="basictrees:jungletree_wood", description="Dark Wood"},
+	["dry_shrub"] = {item="default:dry_shrub", description="Dry Shrub"},
+	["book"] = {item="books:book_blank", description="Book"},
+	["seed_oil"] = {item="farming:seed_wheat", description="Seed With Oil"},
+	["sand"] = {item="default:sand", description="Sand"},
+	["native_stone"] = {item="default:stone", description="Native Stone"},
+	["tree"] = {item="basictrees:tree_trunk", description="Tree"},
+	["torch_craftitem"] = {item="torches:torch_floor", description="Torch"},
+	["leather"] = {item="mobs:leather", description="Leather"},
+	["leather_padding"] = {item="mobs:leather_padding", description="Leather Padding"},
+	["wood_light"] = {item="basictrees:aspen_wood", description="Light Wood"},
+	["wool_block"] = {item="wool:white", description="Wool Block"},
+	["vessel"] = {item="vessels:glass_bottle", description="Vessel"},
+	["wood"] = {item="basictrees:tree_wood", description="Wood"},
+	["bones"] = {item="bones:bones_type2", description="Bones"},
+	["leaves"] = {item="basictrees:tree_leaves", description="Leaves"},
+
+	-- Flowers.
+	["flower,color_cyan"] = {item="flowers:forgetmenot", description="Cyan Flower"},
+	["flower,color_blue"] = {item="flowers:bluebell", description="Blue Flower"},
+	["flower,color_magenta"] = {item="flowers:snapdragon", description="Magenta Flower"},
+	["flower,color_dark_green"] = {item="flowers:jack", description="Dark Green Flower"},
+	["flower,color_white"] = {item="flowers:dandelion_white", description="White Flower"},
+	["flower,color_green"] = {item="flowers:chrysanthemum_green", description="Green Flower"},
+	["flower,color_red"] = {item="flowers:zinnia_red", description="Red Flower"},
+	["flower,color_pink"] = {item="flowers:foxglove_pink", description="Pink Flower"},
+	["flower,color_yellow"] = {item="flowers:dandelion_yellow", description="Yellow Flower"},
+	["flower,color_orange"] = {item="flowers:tulip", description="Orange Flower"},
+	["flower,color_violet"] = {item="flowers:lupine_purple", description="Violet Flower"},
+}

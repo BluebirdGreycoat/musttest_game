@@ -1,3 +1,4 @@
+[2024/5/30] The ZCG craftguide now shows recipes with their proper groups, instead of trying to show all possible group permutations. A performance and useability enhancement a long time in coming.
 [2024/5/28] Restored env ambiance sounds in Outback and Midfeld. These had been missing ever since the realms' physical locations changed!
 [2024/5/28] Update circular saw output inventory size for existing circular saws, when they're used.
 [2024/5/28] Fixed a bug in the saw formspec: you couldn't set the stacksize!?

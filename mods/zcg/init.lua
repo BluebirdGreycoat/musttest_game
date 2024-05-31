@@ -45,10 +45,13 @@ end
 
 
 function zcg.canonical_group_item(group)
+	-- Hopefully we already know about this group.
 	if zcg.grouplist[group] then
 		return zcg.grouplist[group]
 	end
 
+	-- Otherwise, we have to fall back to using the first item that has this group,
+	-- that we can find. This is less than ideal but still meaningful. Sort of.
 	local items = zcg.items_in_group(group)
 	if items and items[1] then
 		zcg.grouplist[group] = {
@@ -59,6 +62,7 @@ function zcg.canonical_group_item(group)
 	end
 
 	-- Must not be the name of a node, but cannot be an empty string.
+	-- This really should not happen, but we have to return *something* to avoid a crash.
 	zcg.grouplist[group] = {
 		item = "unknown",
 		description = nil,
@@ -165,6 +169,7 @@ zcg.formspec = function(pn)
   local page = zcg.users[pn].page
   local alt = zcg.users[pn].alt
   local current_item = zcg.users[pn].current_item
+  local current_group = zcg.users[pn].current_group
   local formspec = "size[8,8.5]" ..
     default.gui_bg ..
     default.gui_bg_img ..
@@ -215,7 +220,7 @@ zcg.formspec = function(pn)
 						gname = gname[1]
 
 						groupdata = zcg.canonical_group_item(gname)
-						itemname = "group:" .. groupdata.item
+						itemname = "group:" .. gname:gsub(",", ":") -- comma cannot be used in formspecs!
 						groupname = gname
 						item = groupdata.item
 						--minetest.chat_send_all(itemname)
@@ -297,10 +302,15 @@ zcg.formspec = function(pn)
 	local whichlist = zcg.itemlist
 	local listname = " searchable crafts."
 
+	--minetest.chat_send_all(zcg.users[pn].searchtext)
 	if zcg.users[pn].searchtext ~= "" then
 		whichlist = zcg.users[pn].searchlist
 		page = zcg.users[pn].spage
 		listname = " result(s)."
+	elseif current_group ~= "" then
+		whichlist = zcg.items_in_group(current_group)
+		page = zcg.users[pn].spage
+		listname = " item(s) in group."
 	end
 
 	if #whichlist > 0 then
@@ -436,6 +446,7 @@ zcg.on_receive_fields = function(player, formname, fields)
   if zcg.users[pn] == nil then
 		zcg.users[pn] = {
 			current_item = "",
+			current_group = "",
 			alt = 1,
 			page = 0,
 			history = {index=0, list={}},
@@ -466,15 +477,22 @@ zcg.on_receive_fields = function(player, formname, fields)
     end
   end
   for k, v in pairs(fields) do
-    if (k:sub(0,4)=="zcg:") then
+		if (k:sub(0, 10) == "zcg:group:") then
+			zcg.users[pn].searchtext = ""
+			zcg.users[pn].current_group = k:sub(11):gsub(":", ",") -- comma cannot be used in formspecs!
+			zcg.users[pn].spage = 0 -- Reset user's search page.
+			--minetest.chat_send_all(zcg.users[pn].current_group)
+			inventory_plus.set_inventory_formspec(player, zcg.formspec(pn))
+    elseif (k:sub(0,4)=="zcg:") then
       local ni = k:sub(5)
+      zcg.users[pn].current_group = ""
 			zcg.users[pn].searchtext = fields.zcg_sbox or "<INVAL>"
       if zcg.crafts[ni] then
 				local previtem = zcg.users[pn].current_item
         zcg.users[pn].current_item = ni
         table.insert(zcg.users[pn].history.list, ni)
         zcg.users[pn].history.index = #zcg.users[pn].history.list
-        inventory_plus.set_inventory_formspec(player,zcg.formspec(pn))
+        inventory_plus.set_inventory_formspec(player, zcg.formspec(pn))
 
 				-- Add item to inventory if creative access is enabled.
 				if gdac.player_is_admin(pn) or singleplayer then
@@ -516,8 +534,10 @@ zcg.on_receive_fields = function(player, formname, fields)
     elseif (k == "zcg_clear") then
       zcg.users[pn].searchlist = {}
 			zcg.users[pn].searchtext = ""
+			zcg.users[pn].current_group = ""
       inventory_plus.set_inventory_formspec(player,zcg.formspec(pn))
     elseif (fields.key_enter_field == "zcg_sbox" or k == "zcg_search") then
+			zcg.users[pn].current_group = ""
 			local newtext = fields.zcg_sbox or "<INVAL>"
 			if newtext ~= zcg.users[pn].searchtext then -- Don't update if same.
 				zcg.users[pn].searchlist = {}

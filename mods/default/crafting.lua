@@ -28,6 +28,15 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = 'default:compass',
+	recipe = {
+		{'', 'default:obsidian_glass', ''},
+		{'group:wood', 'default:steel_ingot', 'group:wood'},
+		{'', 'group:wood', ''},
+	},
+})
+
 --[[
 minetest.register_craft({
 	-- Output count adjusted from 24 to 12, by MustTest.

@@ -6,8 +6,8 @@ give_initial_stuff.items = give_initial_stuff.items or {}
 -- Start items are hardcoded intentionally. The Outback (where new players
 -- start on first join) depends on this.
 local stuff_string =
-	"default:pick_wood,mobs:meat_mutton 10,torches:torch_floor 10," ..
-	"tinderbox:tinderbox,clock:calendar,flint_and_steel:flint_and_steel"
+	"default:pick_wood,mobs:meat_mutton 64,torches:torch_floor 64," ..
+	"tinderbox:tinderbox,clock:calendar,flint_and_steel:flint_and_steel,default:compass"
 
 -- This is also called when a Survival Challenge is started.
 function give_initial_stuff.give(player)

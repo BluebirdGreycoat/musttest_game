@@ -66,6 +66,12 @@ minetest.register_craftitem("default:paper", {
     groups = {flammable = 3},
 })
 
+minetest.register_craftitem("default:compass", {
+	description = "Compass",
+	inventory_image = "default_compass.png",
+	stack_max = 1,
+})
+
 minetest.register_craftitem("default:padlock", {
 	description = "Lock",
 	inventory_image = "lock_item.png",

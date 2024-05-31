@@ -25,6 +25,15 @@ end
 
 
 
+local function wielding_compass(player)
+	local stack = player:get_wielded_item()
+	if stack:get_name() == "default:compass" then
+		return true
+	end
+end
+
+
+
 local gs_timer = 0.0
 local gs_timestep = 0.5
 
@@ -85,7 +94,7 @@ function hud.globalstep(dtime)
 		end
 
 		local coord_str = ""
-		if passport.player_has_key(pname, player) then
+		if passport.player_has_key(pname, player) or wielding_compass(player) then
 			coord_str = "\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ")
 		end
 
@@ -112,7 +121,7 @@ function hud.globalstep(dtime)
 		end
 
 		local dir_text = ""
-		if passport.player_has_key(pname, player) then
+		if passport.player_has_key(pname, player) or wielding_compass(player) then
 			local yaw = (player:get_look_horizontal() * 180.0) / math.pi
 
 			local div = 360 / 8

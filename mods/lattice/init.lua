@@ -43,9 +43,9 @@ minetest.register_node("lattice:lattice_wooden", {
 minetest.register_craft({
 	output = "lattice:lattice_wooden 2",
 	recipe = {
-		{'default:stick', 'default:stick', 'default:stick'},
-		{'',              'default:stick', ''             },
-		{'default:stick', 'default:stick', 'default:stick'},
+		{'group:stick', 'group:stick', 'group:stick'},
+		{'',              'group:stick', ''             },
+		{'group:stick', 'group:stick', 'group:stick'},
 	}
 })
 

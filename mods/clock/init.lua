@@ -192,7 +192,7 @@ minetest.register_craft({
 	output = "clock:calendar",
 	recipe = {
 		{'', 'default:paper', ''},
-		{'', 'default:stick', ''},
+		{'', 'group:stick', ''},
 		{'', 'default:paper', ''},
 	},
 })

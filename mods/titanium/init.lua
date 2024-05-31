@@ -95,8 +95,8 @@ minetest.register_craft({
 	output = 'titanium:pick',
 	recipe = {
 		{'titanium:crystal', 'titanium:crystal', 'titanium:crystal'},
-		{'', 'default:stick', ''},
-		{'', 'default:stick', ''},
+		{'', 'group:stick', ''},
+		{'', 'group:stick', ''},
 	}
 })
 
@@ -107,8 +107,8 @@ minetest.register_craft({
 	output = 'titanium:axe',
 	recipe = {
 		{'titanium:crystal', 'titanium:crystal', ''},
-		{'titanium:crystal', 'default:stick', ''},
-		{'', 'default:stick', ''},
+		{'titanium:crystal', 'group:stick', ''},
+		{'', 'group:stick', ''},
 	}
 })
 
@@ -119,8 +119,8 @@ minetest.register_craft({
 	output = 'titanium:axe',
 	recipe = {
 		{'titanium:crystal', 'titanium:crystal', ''},
-		{'default:stick', 'titanium:crystal', ''},
-		{'default:stick', '', ''},
+		{'group:stick', 'titanium:crystal', ''},
+		{'group:stick', '', ''},
 	}
 })
 
@@ -131,8 +131,8 @@ minetest.register_craft({
 	output = 'titanium:shovel',
 	recipe = {
 		{'', 'titanium:crystal', ''},
-		{'', 'default:stick', ''},
-		{'', 'default:stick', ''},
+		{'', 'group:stick', ''},
+		{'', 'group:stick', ''},
 	}
 })
 
@@ -144,7 +144,7 @@ minetest.register_craft({
 	recipe = {
 		{'', 'titanium:crystal', ''},
 		{'', 'titanium:crystal', ''},
-		{'', 'default:stick', ''},
+		{'', 'group:stick', ''},
 	}
 })
 

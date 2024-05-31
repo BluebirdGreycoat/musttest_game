@@ -115,7 +115,7 @@ minetest.register_node("throwing:light", {
 minetest.register_craft({
 	output = 'throwing:arrow_fire',
 	recipe = {
-		{'charcoal:charcoal', 'plastic:oil_extract', 'default:stick'},
+		{'charcoal:charcoal', 'plastic:oil_extract', 'group:stick'},
 	},
 })
 

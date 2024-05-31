@@ -14,7 +14,7 @@ if not mese_crystals.crafts_registered then
 		recipe = {
 			{'default:diamond'},
 			{'default:glass'},
-			{'default:stick'},
+			{'group:stick'},
 		}
 	})
 

@@ -287,7 +287,7 @@ minetest.register_craft({
 	output = 'itemframes:frame',
 	recipe = {
 		{'group:stick', 'group:stick', 'group:stick'},
-		{'group:stick', 'default:paper', 'default:stick'},
+		{'group:stick', 'default:paper', 'group:stick'},
 		{'group:stick', 'group:stick', 'group:stick'},
 	}
 })

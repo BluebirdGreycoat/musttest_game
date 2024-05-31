@@ -1,8 +1,8 @@
 if not DISABLE_WOODEN_BOW then
 	throwing_register_bow ('bow_wood', 'Wooden Bow', {x=1, y=1, z=0.5}, 11, 0.8, 50, false, {
-			{'', 'default:stick', ''},
-			{'farming:string', '', 'default:stick'},
-			{'', 'default:stick', ''},
+			{'', 'group:stick', ''},
+			{'farming:string', '', 'group:stick'},
+			{'', 'group:stick', ''},
 		})
 end
 
@@ -48,9 +48,9 @@ end
 
 if not DISABLE_ARBALEST then
 	throwing_register_bow ('arbalest', 'Arbalest', {x=1, y=1.3, z=0.5}, 35, 7.5, 120, true, {
-			{'stainless_steel:ingot', 'farming:string', 'default:stick'},
+			{'stainless_steel:ingot', 'farming:string', 'group:stick'},
 			{'stainless_steel:ingot', 'farming:string', 'stainless_steel:ingot'},
-			{'stainless_steel:ingot', 'farming:string', 'default:stick'},
+			{'stainless_steel:ingot', 'farming:string', 'group:stick'},
 		})
 end
 

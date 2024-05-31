@@ -20,22 +20,6 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-  output = "default:stick",
-  recipe = {
-		{"torches:torch_floor", "torches:torch_floor"},
-		{"torches:torch_floor", "torches:torch_floor"},
-	},
-})
-
-minetest.register_craft({
-  output = "default:stick",
-  recipe = {
-		{"torches:kalite_torch_floor", "torches:kalite_torch_floor"},
-		{"torches:kalite_torch_floor", "torches:kalite_torch_floor"},
-	},
-})
-
-minetest.register_craft({
 	output = 'default:stick 3',
 	recipe = {
 		{'group:leaves'},

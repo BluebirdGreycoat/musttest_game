@@ -150,13 +150,9 @@ minetest.register_craft({
 minetest.register_craft({
 	type = "shapeless",
 	output = "default:stick",
-	recipe = {"real_torch:torch", "real_torch:torch", "real_torch:torch", "real_torch:torch"},
+	recipe = {"group:torch_craftitem", "group:torch_craftitem", "group:torch_craftitem", "group:torch_craftitem"},
 })
-minetest.register_craft({
-	type = "shapeless",
-	output = "default:stick",
-	recipe = {"real_torch:kalite_torch", "real_torch:kalite_torch", "real_torch:kalite_torch", "real_torch:kalite_torch"},
-})
+
 
 
 

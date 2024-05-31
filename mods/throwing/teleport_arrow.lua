@@ -102,8 +102,8 @@ minetest.register_entity("throwing:arrow_teleport_entity", THROWING_ARROW_ENTITY
 minetest.register_craft({
 	output = 'throwing:arrow_teleport 3',
 	recipe = {
-		{'', 'default:stick', 'default:stick'},
-		{'starpearl:pearl', 'default:stick', 'default:stick'},
-		{'', 'default:stick', 'default:stick'},
+		{'', 'group:stick', 'group:stick'},
+		{'starpearl:pearl', 'group:stick', 'group:stick'},
+		{'', 'group:stick', 'group:stick'},
 	}
 })

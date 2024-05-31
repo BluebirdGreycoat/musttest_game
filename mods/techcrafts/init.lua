@@ -20,7 +20,7 @@ minetest.register_craftitem("techcrafts:hinge_wood", {
 minetest.register_craft({
   output = 'techcrafts:hinge_wood 2',
   recipe = {
-    {'group:wood', 'default:stick', ''},
+    {'group:wood', 'group:stick', ''},
     {'', '', 'group:wood'},
   }
 })

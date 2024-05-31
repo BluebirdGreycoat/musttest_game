@@ -61,8 +61,8 @@ if not shears.run_once then
 		output = 'shears:shears',
 		recipe = {
 			{'',				'default:steel_ingot',	''                   },
-			{'default:stick',	'group:wood',			'default:steel_ingot'},
-			{'',				'default:stick',		''                   },
+			{'group:stick',	'group:wood',			'default:steel_ingot'},
+			{'',				'group:stick',		''                   },
 		},
 	})
 
@@ -70,8 +70,8 @@ if not shears.run_once then
 		output = 'shears:shears',
 		recipe = {
 			{'',				'moreores:tin_ingot',	''                    },
-			{'default:stick',	'group:wood',			'moreores:tin_ingot'  },
-			{'',				'default:stick',		''                    },
+			{'group:stick',	'group:wood',			'moreores:tin_ingot'  },
+			{'',				'group:stick',		''                    },
 		},
 	})
 

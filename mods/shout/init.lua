@@ -193,6 +193,18 @@ end
 
 
 
+local function get_non_admin_players()
+	local t = minetest.get_connected_players()
+	local b = {}
+	for k, v in ipairs(t) do
+		if not minetest.check_player_privs(v, "server") then
+			b[#b + 1] = v
+	end
+	return b
+end
+
+
+
 local HINT_DELAY_MIN = 60*45
 local HINT_DELAY_MAX = 60*90
 
@@ -202,7 +214,7 @@ function shout.print_hint()
 	-- Only if hints are available.
 	if #HINTS > 0 then
 		-- Don't speak to an empty room.
-		local players = minetest.get_connected_players()
+		local players = get_non_admin_players()
 		if #players > 0 then
 			minetest.chat_send_all("# Server: " .. HINTS[math_random(1, #HINTS)])
 		end

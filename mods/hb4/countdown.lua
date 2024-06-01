@@ -5,6 +5,16 @@ countdown.quit = false
 
 local color = minetest.get_color_escape_sequence("#ffff00")
 
+local function get_non_admin_players()
+	local t = minetest.get_connected_players()
+	local b = {}
+	for k, v in ipairs(t) do
+		if not minetest.check_player_privs(v, "server") then
+			b[#b + 1] = v
+	end
+	return b
+end
+
 function countdown.step(data)
 	-- Halt when done.
 	if countdown.quit then
@@ -97,8 +107,11 @@ function countdown.step(data)
 			message = "# Server: Nightly restart in " .. h .. " hour" .. p .. "."
 		end
 
-		chat_logging.log_server_message(message)
-		minetest.chat_send_all(color .. message)
+		-- Don't speak to empty room.
+		if #(get_non_admin_players()) > 0 then
+			chat_logging.log_server_message(message)
+			minetest.chat_send_all(color .. message)
+		end
 	end
 
 	-- Wait for next check.

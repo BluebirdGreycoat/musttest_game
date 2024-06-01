@@ -199,6 +199,7 @@ local function get_non_admin_players()
 	for k, v in ipairs(t) do
 		if not minetest.check_player_privs(v, "server") then
 			b[#b + 1] = v
+		end
 	end
 	return b
 end

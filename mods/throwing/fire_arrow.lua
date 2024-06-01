@@ -60,7 +60,7 @@ function THROWING_ARROW_ENTITY.hit_object(self, obj, intersection_point)
 end
 
 function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
-	local fpos = minetest.find_node_near(above, 1, "group:airlike", true)
+	local fpos = minetest.find_node_near(above, 1, {"air", "group:airlike"}, true)
 	if fpos then
 		local node = minetest.get_node(fpos)
 		if minetest.get_item_group(node.name, "unbreakable") == 0 then

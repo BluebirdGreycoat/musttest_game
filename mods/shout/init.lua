@@ -87,6 +87,7 @@ shout.BUILTIN_HINTS = {
 	"Mr. Momoa, your trailer's on fire.",
 	"You can use a trade booth to buy and sell items remotely, for shops set up to support it.",
 	"If you get stuck somewhere, you can use /emergency_recall to get out. But beware its cost.",
+	"Nothing responding? That's because I'm AFK!",
 }
 
 

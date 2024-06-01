@@ -46,6 +46,7 @@ minetest.register_entity("wield3d:wield_entity", {
 	collisionbox = {-0.125,-0.125,-0.125, 0.125,0.125,0.125},
 	visual = "wielditem",
 	pointable = false,
+	static_save = false,
 
 	on_activate = function(self, staticdata)
 		if staticdata == "expired" then
@@ -66,7 +67,8 @@ minetest.register_entity("wield3d:wield_entity", {
 -- This mod requires to be able to reset the wield entities.
 function wield3d.on_teleport()
 	-- Disabled, let's see if the devs finally fixed the entity attachment problems.
-	--[[
+	-- 2024/6/1: re-enabled because sometimes wields disappear and don't reappear.
+	---[[
 	local players = minetest.get_connected_players()
 	-- Just clear all the wield entities. They will be restored shortly.
 	for k, v in ipairs(players) do
@@ -138,7 +140,7 @@ minetest.register_globalstep(function(dtime)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	minetest.after(0.5, function() wield3d.on_teleport() end)
+	minetest.after(2, function() wield3d.on_teleport() end)
 end)
 
 minetest.register_on_leaveplayer(function(player)

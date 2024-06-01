@@ -220,6 +220,33 @@ minetest.override_item("stairs:stair_glow_emerald", {
 	light_source = 10,
 })
 
+
+
+minetest.register_node("cavestuff:glow_white_crystal", {
+  description = "White Crystal",
+  tiles = {"caverealms_glow_white.png"},
+  groups = utility.dig_groups("obsidian", {
+    immovable = 1,
+  }),
+  sounds = default.node_sound_glass_defaults(),
+  light_source = minetest.LIGHT_MAX,
+  paramtype = "light",
+  use_texture_alpha = "blend",
+  drawtype = "glasslike",
+  sunlight_propagates = true,
+})
+
+stairs.register_stair_and_slab(
+	"glow_white_crystal",
+	"cavestuff:glow_white_crystal",
+	utility.dig_groups("crystal"),
+	{"caverealms_glow_white.png"},
+	"White Crystal",
+	default.node_sound_glass_defaults()
+)
+
+
+
 minetest.register_node("cavestuff:glow_mese", {
   description = "Glowing Mese",
   tiles = {"caverealms_glow_mese.png"},

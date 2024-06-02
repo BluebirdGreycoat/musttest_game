@@ -149,7 +149,7 @@ randspawn.reposition_player = function(pname, death_pos)
 	if player then
 		-- Ensure teleport is forced, to prevent a cheat.
 		local pos = get_respawn_position(death_pos, pname)
-		pos = vector.add(pos, {x=math_random(-2, 2), y=0, z=math_random(-2, 2)})
+		pos = vector.add(pos, {x=math_random(-1, 1), y=0, z=math_random(-1, 1)})
 
 		preload_tp.execute({
 			player_name = pname,

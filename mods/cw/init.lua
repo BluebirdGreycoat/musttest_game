@@ -239,6 +239,116 @@ if not cw.jungletree_registered then
 	file:close()
 	end
 
+	do
+	-- Main difference is there's no trunk at all!
+	local jungletree_data = {
+		size = {x = 5, y = 17, z = 5},
+		data = {
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, L, L, L, N,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, L, L, L, N,
+			N, L, L, L, N,
+			N, L, L, L, N,
+			_, N, L, N, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			N, L, L, L, N,
+			N, B, L, B, N,
+			N, L, L, L, N,
+			_, N, N, N, _,
+
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			_, _, _, _, _,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			M, N, N, N, M,
+			_, _, _, _, _,
+		},
+		yslice_prob = {
+			{ypos=6, prob=191},
+			{ypos=7, prob=191},
+			{ypos=8, prob=191},
+			{ypos=9, prob=191},
+			{ypos=10, prob=191},
+		},
+	}
+
+	local data = minetest.serialize_schematic(jungletree_data, "mts", {})
+	local file = io.open(cw.worldpath .. "/cw_jungletree_notrunk.mts", "w")
+	file:write(data)
+	file:close()
+	end
+
 	cw.jungletree_registered = true
 end
 
@@ -551,6 +661,14 @@ cw.generate_realm = function(minp, maxp, seed)
 	vm:set_data(data)
 
 	if ENABLE_TREES then
+	local JP = JUNGLETREE_REPLACEMENTS
+	local FP = false -- Force place
+	local PUT_SCHEM = minetest.place_schematic_on_vmanip
+	local strrnd = "random"
+	local treebase = cw.worldpath .. "/cw_jungletree_base.mts"
+	local treetop = cw.worldpath .. "/cw_jungletree_top.mts"
+	local notrunk = cw.worldpath .. "/cw_jungletree_notrunk.mts"
+
 	for k, v_orig in ipairs(tree_positions1) do
 		local v = table.copy(v_orig)
 		local bottom = v.y
@@ -565,47 +683,57 @@ cw.generate_realm = function(minp, maxp, seed)
 		v.x = v.x - 2
 		v.z = v.z - 2
 
-		local path = cw.worldpath .. "/cw_jungletree_base.mts"
-		local path2 = cw.worldpath .. "/cw_jungletree_top.mts"
-		local path3 = path2
-
-		if h > 10 then
-			path2 = path
+		local midleveltree = treetop
+		if h >= (TREE_HEIGHT_MOD - 1) then
+			-- Remove 1/5 of the trunks.
+			if pr:next(1, 5) == 1 then
+				midleveltree = notrunk
+			end
+		elseif h >= TREE_HEIGHT_MOD then
+			-- Remove 1/3 of the trunks.
+			if pr:next(1, 3) == 1 then
+				midleveltree = notrunk
+			end
+		elseif h > 10 then
+			midleveltree = treebase
 		end
 
-		local force_place = false
-		minetest.place_schematic_on_vmanip(vm, v, path, "random", JUNGLETREE_REPLACEMENTS, force_place)
+		-- Tree base.
+		PUT_SCHEM(vm, v, treebase, strrnd, JP, FP)
 
 		if pr:next(1, 5) <= 4 then
 			v.y = v.y + h
 			if h > 10 then
-				minetest.place_schematic_on_vmanip(vm, vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				local rp = vector.add(v, RANDPOS[math_random(1, #RANDPOS)])
+				PUT_SCHEM(vm, rp, midleveltree, strrnd, JP, FP)
 			else
-				minetest.place_schematic_on_vmanip(vm, v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+				PUT_SCHEM(vm, v, midleveltree, strrnd, JP, FP)
 			end
 
 			if pr:next(1, 3) <= 2 then
 				v.y = v.y + h
 				if h > 10 then
-					minetest.place_schematic_on_vmanip(vm, vector.add(v, RANDPOS[math_random(1, #RANDPOS)]), path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+					local rp = vector.add(v, RANDPOS[math_random(1, #RANDPOS)])
+					PUT_SCHEM(vm, rp, midleveltree, strrnd, JP, FP)
 				else
-					minetest.place_schematic_on_vmanip(vm, v, path2, "random", JUNGLETREE_REPLACEMENTS, force_place)
+					PUT_SCHEM(vm, v, midleveltree, strrnd, JP, FP)
 				end
 
+				-- Treetops.
 				if h >= 10 then
 					if pr:next(1, 2) == 1 then
 						v.y = v.y + 13
-						minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+						PUT_SCHEM(vm, v, treetop, strrnd, JP, FP)
 
 						if h > 10 and pr:next(1, 3) == 1 then
 							v.y = v.y + 13
-							minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+							PUT_SCHEM(vm, v, treetop, strrnd, JP, FP)
 						end
 					end
 				elseif h >= 8 then
 					if pr:next(1, 3) == 1 then
 						v.y = v.y + 12
-						minetest.place_schematic_on_vmanip(vm, v, path3, "random", JUNGLETREE_REPLACEMENTS, force_place)
+						PUT_SCHEM(vm, v, treetop, strrnd, JP, FP)
 					end
 				end
 			end

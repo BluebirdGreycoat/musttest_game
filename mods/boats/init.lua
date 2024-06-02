@@ -6,6 +6,8 @@ if not minetest.global_exists("boats") then boats = {} end
 -- Localize for performance.
 local math_floor = math.floor
 
+local BOAT_SPEED = 6.5
+
 local function is_water(pos)
 	local nn = minetest.get_node(pos).name
 	return minetest.get_item_group(nn, "water") ~= 0
@@ -175,8 +177,9 @@ function boat.on_step(self, dtime)
 		self.v = 0
 		return
 	end
-	if math.abs(self.v) > 5 then
-		self.v = 5 * get_sign(self.v)
+
+	if math.abs(self.v) > BOAT_SPEED then
+		self.v = BOAT_SPEED * get_sign(self.v)
 	end
 
 	local p = self.object:get_pos()

@@ -45,7 +45,7 @@ local nodebox = {
 local selectionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 1.5}
 
 beds.register_bed("papyrus_bed:bed", {
-	description = "Bed (Papyrus)\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
+	description = "Bed (Papyrus)\n\nSleep once to set or refresh your home position.\nHold 'E' when placing (in city area) to make public.",
 	inventory_image = "papyrus_bed_wieldimage.png",
 	wield_image = "papyrus_bed_wieldimage.png",
 	tiles = {

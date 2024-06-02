@@ -50,7 +50,7 @@ for k, v in ipairs(beds.bed_colors) do
 	local mask = v.mask
 
 	beds.register_bed("beds:fancy_bed_" .. name, {
-		description = "Fancy Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
+		description = "Fancy Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing (in city area) to make public.",
 		inventory_image = "beds_bed_fancy.png^(beds_bed_fancy_mask.png^[multiply:" .. mask .. ")",
 		wield_image = "beds_bed_fancy.png^(beds_bed_fancy_mask.png^[multiply:" .. mask .. ")",
 		tiles = {
@@ -83,7 +83,7 @@ for k, v in ipairs(beds.bed_colors) do
 	-- Simple shaped bed
 
 	beds.register_bed("beds:bed_" .. name, {
-		description = "Simple Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing to make public.",
+		description = "Simple Bed (" .. desc .. ")\n\nSleep once to set or refresh your home position.\nHold 'E' when placing (in city area) to make public.",
 		inventory_image = "beds_bed.png^(beds_bed_mask.png^[multiply:" .. mask .. ")",
 		wield_image = "beds_bed.png^(beds_bed_mask.png^[multiply:" .. mask .. ")",
 		tiles = {

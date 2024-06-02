@@ -2314,6 +2314,7 @@ minetest.register_node("default:water_source", {
 	post_effect_color = {a = 103, r = 30, g = 60, b = 90},
 	groups = {water = 3, liquid = 3, puts_out_fire = 1},
 	sounds = default.node_sound_water_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_WATER,
 
 	-- Water turns to fire in the nether.
 	-- Note: this is not called if water-source is created by the engine due to liquid-flow mechanic.
@@ -2386,6 +2387,7 @@ minetest.register_node("default:water_flowing", {
 	post_effect_color = {a = 103, r = 30, g = 60, b = 90},
 	groups = {water = 3, liquid = 3, puts_out_fire = 1, not_in_creative_inventory = 1},
   sounds = default.node_sound_water_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_WATER,
 
   on_collapse_to_entity = function(pos, node)
     -- Do not allow player to obtain the node itself.

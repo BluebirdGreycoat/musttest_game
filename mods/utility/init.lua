@@ -313,6 +313,7 @@ default.SLOW_SPEED_NETHER = 0.85
 default.SLOW_SPEED_ICE = 0.85
 default.SLOW_SPEED_GRASS = 0.85
 default.SLOW_SPEED_PLANTS = 0.55
+default.SLOW_SPEED_WATER = 0.55
 default.NORM_SPEED = 1.0
 default.ROPE_SPEED = 1.1
 

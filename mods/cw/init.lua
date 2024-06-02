@@ -8,6 +8,7 @@ local math_random = math.random
 
 -- Disable for testing terrain shapes without all that foliage.
 local ENABLE_TREES = true
+local TREE_HEIGHT_MOD = 13
 
 if not cw.jungletree_registered then
 	local _ = {name = "air", prob = 0}
@@ -557,7 +558,7 @@ cw.generate_realm = function(minp, maxp, seed)
 		if w > 1.0 then
 			w = 1.0
 		end
-		local h = 13 * w
+		local h = math.floor(TREE_HEIGHT_MOD * w)
 		v.w = nil
 
 		-- Schematic horizontal offset.

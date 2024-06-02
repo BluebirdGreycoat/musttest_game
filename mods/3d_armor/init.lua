@@ -43,7 +43,11 @@ if not armor.run_once then
 		wood    = {item="group:wood"            , name="Wood"        , padding="farming:cotton"       , fuel=10, cook=0 , shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name="Chausses"},
 		steel   = {item="default:steel_ingot"   , name="Wrought Iron", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
 		bronze  = {item="default:bronze_ingot"  , name="Bronze"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+
+		-- Note to self so I don't forget: diamond armor doesn't use leather in its craft ON PURPOSE!
+		-- This is also true for wood armor. Leather is hard to get!
 		diamond = {item="default:diamond"       , name="Diamond"     , padding="farming:cloth"        , fuel=0 , cook=0 , shield=true  , chestplate_name="Shardplate" , boots_name="Shoes" , helmet_name="Crown" , leggings_name=""        },
+
 		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
 		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
 		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },

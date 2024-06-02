@@ -6,6 +6,9 @@ cw.worldpath = minetest.get_worldpath()
 -- Localize for performance.
 local math_random = math.random
 
+-- Disable for testing terrain shapes without all that foliage.
+local ENABLE_TREES = true
+
 if not cw.jungletree_registered then
 	local _ = {name = "air", prob = 0}
 	local L = {name = "default:jungleleaves", prob = 255}
@@ -299,6 +302,21 @@ cw.noise3param2d = {
 	lacunarity = 1.8,
 }
 
+-- Rivers.
+local RIVER_SCALE = 1024
+local RIVER_WIDTH = 0.03
+local RIVER_DEPTH = 8
+local RIVER_OCEAN_LIMIT = 6
+cw.noise4param2d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=RIVER_SCALE, y=RIVER_SCALE, z=RIVER_SCALE},
+	seed = 7718,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 2.0,
+}
+
 cw.noise2param2d = {
 	offset = 0,
 	scale = 1,
@@ -337,6 +355,7 @@ local param2_data = {}
 local noisemap1 = {}
 local noisemap2 = {}
 local noisemap3 = {}
+local noisemap4 = {}
 
 local JUNGLETREE_REPLACEMENTS = {
 	["default:jungletree"] = "basictrees:jungletree_cube",
@@ -404,6 +423,8 @@ cw.generate_realm = function(minp, maxp, seed)
 	perlin2:get_2d_map_flat(bp2d, noisemap2)
 	local perlin3 = minetest.get_perlin_map(cw.noise3param2d, sides2D)
 	perlin3:get_2d_map_flat(bp2d, noisemap3)
+	local perlin4 = minetest.get_perlin_map(cw.noise4param2d, sides2D)
+	perlin4:get_2d_map_flat(bp2d, noisemap4)
 
 	-- Localize commonly used functions.
 	local floor = math.floor
@@ -431,6 +452,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			local n1 = noisemap1[ni2]
 			local n2 = noisemap2[ni2]
 			local n3 = noisemap3[ni2]
+			local n4 = noisemap4[ni2]
 
 			-- Randomize height of the bedrock a bit.
 			local bedrock_adjust = (nstart + bd + pr:next(0, pr:next(1, 2)))
@@ -440,9 +462,26 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_depth = (nstart + od)
 			local ocean_surface = ocean_depth + 1
 
+			-- Large rivers.
+			local r4 = abs(n4)
+			if r4 <= RIVER_WIDTH then
+				-- Don't forget to floor it, otherwise we get glitches.
+				r4 = math.floor((((r4 / RIVER_WIDTH) * -1) + 1) * RIVER_DEPTH)
+			else
+				r4 = 0
+			end
+
 			-- Ground height.
 			local an1 = abs(n1) + (n3 * 2)
 			local ground_depth = (nstart + gd + floor(an1 * ghv))
+
+			-- Prevent rivers from digging too deep in the ocean.
+			if (ground_depth - r4) < (ocean_depth - RIVER_OCEAN_LIMIT) then
+				ground_depth = (ocean_depth - RIVER_OCEAN_LIMIT)
+			else
+				ground_depth = ground_depth - r4
+			end
+
 			local water_depth = (ocean_depth - ground_depth)
 			local lily_chance = 1000
 
@@ -510,6 +549,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 	vm:set_data(data)
 
+	if ENABLE_TREES then
 	for k, v_orig in ipairs(tree_positions1) do
 		local v = table.copy(v_orig)
 		local bottom = v.y
@@ -574,6 +614,7 @@ cw.generate_realm = function(minp, maxp, seed)
 		v_orig.b = bottom
 		v_orig.t = v.y + 17
 	end
+	end -- ENABLE_TREES
 
 	-- Shall return true if ID is anything the mapgen places as part of forests.
 	local function farsig(id)

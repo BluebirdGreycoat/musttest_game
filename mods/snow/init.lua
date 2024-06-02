@@ -114,6 +114,9 @@ local origsnowdef = {
 		cold = 1,
 		melts = 1,
 
+		-- Snow is soft.
+		fall_damage_add_percent = -20,
+
 		-- Currently just used to notify thin_ice and torches.
 		notify_construct = 1,
 	}),
@@ -207,6 +210,7 @@ for i = 1, 17, 1 do
 		snow.snowdef[i].groups.snowy = nil
 		snow.snowdef[i].groups.melts = nil
 		snow.snowdef[i].groups.dig_immediate = 2
+		snow.snowdef[i].groups.fall_damage_add_percent = nil
 		snow.snowdef[i].no_sound_on_fall = true
 		snow.snowdef[i].sounds = nil
 	end
@@ -214,13 +218,16 @@ for i = 1, 17, 1 do
 		snow.snowdef[i].pointable = false
 		snow.snowdef[i].no_sound_on_fall = true
 		snow.snowdef[i].groups.dig_immediate = 2
+		snow.snowdef[i].groups.fall_damage_add_percent = nil
 	end
 	if i == 4 then
 		snow.snowdef[i].groups.dig_immediate = 2
+		snow.snowdef[i].groups.fall_damage_add_percent = nil
 	end
 
 	if i <= 5 then
 		snow.snowdef[i].movement_speed_multiplier = default.SLOW_SPEED_SNOW_LIGHT
+		snow.snowdef[i].groups.fall_damage_add_percent = nil
 	end
 
 	if i >= 6 and i <= 10 then

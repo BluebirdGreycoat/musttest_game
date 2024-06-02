@@ -1,3 +1,4 @@
+[2024/6/1] Add fence rails and mese posts.
 [2024/5/30] Added a compass item.
 [2024/5/30] The ZCG craftguide now shows recipes with their proper groups, instead of trying to show all possible group permutations. A performance and useability enhancement a long time in coming.
 [2024/5/28] Restored env ambiance sounds in Outback and Midfeld. These had been missing ever since the realms' physical locations changed!

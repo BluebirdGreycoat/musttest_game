@@ -769,3 +769,35 @@ minetest.register_craft({
 	recipe = "default:dry_grass_dummy",
 	burntime = 2,
 })
+
+
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "default:fence_rail_aspen_wood",
+	burntime = 3,
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "default:fence_rail_pine_wood",
+	burntime = 4,
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "default:fence_rail_wood",
+	burntime = 5,
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "default:fence_rail_acacia_wood",
+	burntime = 6,
+})
+
+minetest.register_craft({
+	type = "fuel",
+	recipe = "default:fence_rail_junglewood",
+	burntime = 7,
+})

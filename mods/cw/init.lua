@@ -441,7 +441,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_surface = ocean_depth + 1
 
 			-- Ground height.
-			local an1 = abs(n1) + (n3 * 1.5)
+			local an1 = abs(n1) + (n3 * 2)
 			local ground_depth = (nstart + gd + floor(an1 * ghv))
 			local water_depth = (ocean_depth - ground_depth)
 			local lily_chance = 1000

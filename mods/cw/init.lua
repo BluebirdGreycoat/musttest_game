@@ -288,6 +288,17 @@ cw.noise1param2d = {
 	lacunarity = 2,
 }
 
+-- Large scale land height.
+cw.noise3param2d = {
+	offset = 0,
+	scale = 1,
+	spread = {x=2048, y=2048, z=2048},
+	seed = 8872,
+	octaves = 7,
+	persist = 0.6,
+	lacunarity = 1.8,
+}
+
 cw.noise2param2d = {
 	offset = 0,
 	scale = 1,
@@ -316,13 +327,16 @@ local c_soil            = minetest.get_content_id("default:dirt_with_rainforest_
 local c_junglegrass     = minetest.get_content_id("default:junglegrass")
 local c_grass           = minetest.get_content_id("default:grass_5")
 local c_grass2          = minetest.get_content_id("default:dry_grass2_5")
+local c_grass3          = minetest.get_content_id("default:marram_grass_3")
 local c_papyrus2        = minetest.get_content_id("default:papyrus2")
+local c_sand            = minetest.get_content_id("default:sand")
 
 -- Externally located tables for performance.
 local data = {}
 local param2_data = {}
 local noisemap1 = {}
 local noisemap2 = {}
+local noisemap3 = {}
 
 local JUNGLETREE_REPLACEMENTS = {
 	["default:jungletree"] = "basictrees:jungletree_cube",
@@ -388,6 +402,8 @@ cw.generate_realm = function(minp, maxp, seed)
 	perlin1:get_2d_map_flat(bp2d, noisemap1)
 	local perlin2 = minetest.get_perlin_map(cw.noise2param2d, sides2D)
 	perlin2:get_2d_map_flat(bp2d, noisemap2)
+	local perlin3 = minetest.get_perlin_map(cw.noise3param2d, sides2D)
+	perlin3:get_2d_map_flat(bp2d, noisemap3)
 
 	-- Localize commonly used functions.
 	local floor = math.floor
@@ -414,6 +430,7 @@ cw.generate_realm = function(minp, maxp, seed)
 
 			local n1 = noisemap1[ni2]
 			local n2 = noisemap2[ni2]
+			local n3 = noisemap3[ni2]
 
 			-- Randomize height of the bedrock a bit.
 			local bedrock_adjust = (nstart + bd + pr:next(0, pr:next(1, 2)))
@@ -424,7 +441,7 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_surface = ocean_depth + 1
 
 			-- Ground height.
-			local an1 = abs(n1)
+			local an1 = abs(n1) + (n3 * 1.5)
 			local ground_depth = (nstart + gd + floor(an1 * ghv))
 			local water_depth = (ocean_depth - ground_depth)
 			local lily_chance = 1000
@@ -468,8 +485,11 @@ cw.generate_realm = function(minp, maxp, seed)
 						elseif y < ground_depth then
 							data[vp] = c_dirt
 						elseif y == ground_depth then
-							-- Mud appears when silt rises to water surface and above.
-							if ground_depth >= (ocean_depth - 1) then
+							if ground_depth >= (ocean_depth + 3) then
+								-- Mud turns to sand when ground is high enough.
+								data[vp] = c_sand
+							elseif ground_depth >= (ocean_depth - 1) then
+								-- Mud appears when silt rises to water surface and above.
 								data[vp] = c_mud
 							else
 								data[vp] = c_silt
@@ -678,6 +698,11 @@ cw.generate_realm = function(minp, maxp, seed)
 						if math.random(1, 4) == 1 then
 							data[above] = c_lily
 							param2_data[above] = math.random(0, 3)
+						end
+					elseif center_id == c_sand and above_id == c_air and border_count >= 1 then
+						if math.random(1, 2) == 1 then
+							data[above] = c_grass3
+							param2_data[above] = 2
 						end
 					end
 

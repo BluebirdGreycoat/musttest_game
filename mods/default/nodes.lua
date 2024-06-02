@@ -2152,6 +2152,102 @@ for i = 1, 5 do
 	})
 end
 
+
+
+minetest.register_node("default:marram_grass_1", {
+	description = "Marram Grass",
+	drawtype = "plantlike",
+	waving = 1,
+	tiles = {"default_marram_grass_1.png"},
+	inventory_image = "default_marram_grass_1.png",
+	wield_image = "default_marram_grass_1.png",
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
+	sunlight_propagates = true,
+	walkable = false,
+	buildable_to = true,
+	groups = utility.dig_groups("plant", {flammable = 3, flora = 1, grass = 1, marram_grass = 1, attached_node = 1}),
+	sounds = default.node_sound_leaves_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-6 / 16, -0.5, -6 / 16, 6 / 16, -0.25, 6 / 16},
+	},
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	flowerpot_insert = {
+		"default:marram_grass_1",
+		"default:marram_grass_2",
+		"default:marram_grass_3",
+	},
+
+	on_place = function(itemstack, placer, pointed_thing)
+		-- place a random marram grass node
+		local stack = ItemStack("default:marram_grass_" .. math.random(1, 3))
+		local ret = minetest.item_place(stack, placer, pointed_thing)
+		return ItemStack("default:marram_grass_1 " ..
+			itemstack:get_count() - (1 - ret:get_count()))
+	end,
+
+	on_construct = function(...)
+		return flowers.on_flora_construct(...)
+	end,
+
+	on_destruct = function(...)
+		return flowers.on_flora_destruct(...)
+	end,
+
+	on_timer = function(...)
+		return flowers.on_flora_timer(...)
+	end,
+
+	on_punch = function(...)
+		return flowers.on_flora_punch(...)
+	end,
+})
+
+for i = 2, 3 do
+	minetest.register_node("default:marram_grass_" .. i, {
+		description = "Marram Grass",
+		drawtype = "plantlike",
+		waving = 1,
+		tiles = {"default_marram_grass_" .. i .. ".png"},
+		inventory_image = "default_marram_grass_" .. i .. ".png",
+		wield_image = "default_marram_grass_" .. i .. ".png",
+		paramtype = "light",
+		paramtype2 = "meshoptions",
+		place_param2 = 2,
+		sunlight_propagates = true,
+		walkable = false,
+		buildable_to = true,
+		groups = utility.dig_groups("plant", {flammable = 3, flora = 1, grass = 1, marram_grass = 1, attached_node = 1, not_in_creative_inventory = 1}),
+		drop = "default:marram_grass_1",
+		sounds = default.node_sound_leaves_defaults(),
+		selection_box = {
+			type = "fixed",
+			fixed = {-6 / 16, -0.5, -6 / 16, 6 / 16, -0.25, 6 / 16},
+		},
+		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+		flowerpot_drop = "default:marram_grass_1",
+
+		on_construct = function(...)
+			return flowers.on_flora_construct(...)
+		end,
+
+		on_destruct = function(...)
+			return flowers.on_flora_destruct(...)
+		end,
+
+		on_timer = function(...)
+			return flowers.on_flora_timer(...)
+		end,
+
+		on_punch = function(...)
+			return flowers.on_flora_punch(...)
+		end,
+	})
+end
+
 --
 -- Liquids
 --

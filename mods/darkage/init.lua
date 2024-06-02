@@ -336,6 +336,7 @@ if not darkage.run_once then
 		groups = utility.dig_groups("mud", {falling_node=1}),
 		drop = 'darkage:mud_lump 4',
 		sounds = default.node_sound_dirt_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED,
 	})
 
 	minetest.register_node("darkage:silt", {
@@ -344,6 +345,7 @@ if not darkage.run_once then
 		groups = utility.dig_groups("mud", {falling_node=1}),
 		drop = 'darkage:silt_lump 4',
 		sounds = default.node_sound_dirt_defaults(),
+		movement_speed_multiplier = default.SLOW_SPEED,
 	})
 
 	minetest.register_node("darkage:schist", {

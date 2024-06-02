@@ -258,6 +258,9 @@ if not flowerpot.loaded then
 		"default:junglegrass",
 		"default:coarsegrass",
 		"default:papyrus",
+		"default:marram_grass_1",
+		"default:marram_grass_2",
+		"default:marram_grass_3",
 
 		"farming:cotton_1",
 		"farming:cotton_2",

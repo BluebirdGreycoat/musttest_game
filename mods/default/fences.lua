@@ -26,7 +26,7 @@ default.register_fence("default:fence_wood", {
 	wield_image = "default_fence_overlay.png^default_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
 	material = "default:wood",
 	groups = utility.dig_groups("fence_wood", {flammable = 2, fence = 1}),
-	sounds = default.node_sound_wood_defaults()
+	sounds = default.node_sound_wood_defaults(),
 })
 
 default.register_fence("default:fence_acacia_wood", {
@@ -80,7 +80,7 @@ default.register_fence_rail("default:fence_rail_iron", {
 				"default_fence_rail_overlay.png^[makealpha:255,126,126",
 	material = "default:steel_ingot",
 	groups = utility.dig_groups("fence_metal", {fence = 1}),
-	sounds = default.node_sound_wood_defaults()
+	sounds = default.node_sound_metal_defaults()
 })
 
 default.register_fence_rail("default:fence_rail_bronze", {
@@ -92,7 +92,7 @@ default.register_fence_rail("default:fence_rail_bronze", {
 				"default_fence_rail_overlay.png^[makealpha:255,126,126",
 	material = "default:bronze_ingot",
 	groups = utility.dig_groups("fence_metal", {fence = 1}),
-	sounds = default.node_sound_wood_defaults()
+	sounds = default.node_sound_metal_defaults()
 })
 
 default.register_fence_rail("default:fence_rail_wood", {

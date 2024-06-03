@@ -236,13 +236,14 @@ minetest.register_node("cavestuff:glow_white_crystal", {
   sunlight_propagates = true,
 })
 
+-- This formatting is so bad whoever sees it will spontaneously combust.
 stairs.register_stair_and_slab(
 	"glow_white_crystal",
-	"cavestuff:glow_white_crystal",
-	utility.dig_groups("crystal"),
-	{"caverealms_glow_white.png"},
-	"White Crystal",
-	default.node_sound_glass_defaults()
+	 "cavestuff:glow_white_crystal",
+	  utility.dig_groups("crystal"),
+	   {"caverealms_glow_white.png"},
+	    "White Crystal",
+	     default.node_sound_glass_defaults()
 )
 
 

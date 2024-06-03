@@ -298,9 +298,9 @@ local metadata = {
 		text = "Find the Dimensional Gate at the bottom of this rope.%nThe gate is guarded.%nPrepare for combat!"
 	}}},
 	{pos={x=-9177, y=4177, z=5745}, meta={fields={
-		infotext = "If you skipped reading /info, be sure to read it now.",
+		infotext = "If you skipped reading /info, be sure to read it now.\nIf the rope doesn't go all the way, punch the end to fix.",
 		author = OWNERNAME,
-		text = "If you skipped reading /info, be sure to read it now."
+		text = "If you skipped reading /info, be sure to read it now.%nIf the rope doesn't go all the way, punch the end to fix."
 	}}},
 	{pos={x=-9177, y=4176, z=5744}, meta={fields={
 		infotext = "There is NO WAY BACK BUT DEATH.",

@@ -205,6 +205,8 @@ local curtain_colors = {
 	"orange",
 	"brown",
 	"violet",
+	"gold",
+	"purple",
 }
 
 for _, c in pairs(curtain_colors) do
@@ -220,7 +222,12 @@ for _, c in pairs(curtain_colors) do
 		paramtype2 = "colorwallmounted",
 		groups = utility.dig_groups("item", {flammable=3}),
 		selection_box = {type="wallmounted"},
-		on_rightclick = function(pos, node, _, itemstack)
+
+		on_rightclick = function(pos, node, clicker, itemstack)
+			-- If curtains get used as banners, letting just anyone open/close them messes up the "banner" look.
+			if minetest.test_protection(pos, clicker:get_player_name()) then
+				return itemstack
+			end
 			minetest.add_node(pos, {name="xdecor:curtain_open_"..c, param2=node.param2})
 			return itemstack
 		end
@@ -235,7 +242,12 @@ for _, c in pairs(curtain_colors) do
 		groups = utility.dig_groups("item", {flammable=3, not_in_creative_inventory=1}),
 		selection_box = {type="wallmounted"},
 		drop = "xdecor:curtain_"..c,
-		on_rightclick = function(pos, node, _, itemstack)
+
+		on_rightclick = function(pos, node, clicker, itemstack)
+			-- If curtains get used as banners, letting just anyone open/close them messes up the "banner" look.
+			if minetest.test_protection(pos, clicker:get_player_name()) then
+				return itemstack
+			end
 			minetest.add_node(pos, {name="xdecor:curtain_"..c, param2=node.param2})
 			return itemstack
 		end

@@ -134,7 +134,7 @@ local nodes = {
 		no_stairs = true,
 	},
 	["tar"] = {
-		description = S("Tar"),
+		description = S("Vulcanized Tar"),
 		groups = utility.dig_groups("stone", {tar_block = 1}),
 		sounds = sound_stone,
 		-- Tar is treated as solid, rock-like node with road properties.

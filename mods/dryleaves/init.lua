@@ -24,6 +24,8 @@ minetest.register_node("dryleaves:leaves", {
 
 	tiles = {"dryleaves_leaves.png"},
 	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -43,6 +45,8 @@ minetest.register_node("dryleaves:jungleleaves", {
 
 	tiles = {"dryleaves_jungleleaves.png"},
 	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -61,6 +65,8 @@ minetest.register_node("dryleaves:dry_leaves", {
 	walkable = false,
 	tiles = {"darkage_dry_leaves.png"},
 	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -81,6 +87,8 @@ minetest.register_node("dryleaves:plantlike", {
 	tiles = {"default_leaves_plantlike.png"},
 
 	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 2,
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 
 	sounds = default.node_sound_leaves_defaults(),

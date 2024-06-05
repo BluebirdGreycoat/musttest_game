@@ -1,4 +1,8 @@
 
+-- A Channelwood-like realm. Endless, shallow water in all directions, with
+-- trees growing out of the ocean. Trees are huge and extremely tall. Water is
+-- dangerious, filled with flesh-eating fish! Trees do not burn (too wet).
+
 if not minetest.global_exists("cw") then cw = {} end
 cw.modpath = minetest.get_modpath("cw")
 cw.worldpath = minetest.get_worldpath()
@@ -7,41 +11,18 @@ cw.worldpath = minetest.get_worldpath()
 local math_random = math.random
 
 -- Disable for testing terrain shapes without all that foliage.
-local ENABLE_TREES = false
+local ENABLE_TREES = true
 local TREE_HEIGHT_MOD = 13
 
+-- Tree schems.
 if not cw.jungletree_registered then
 	dofile(cw.modpath .. "/schems.lua")
 	cw.jungletree_registered = true
 end
 
--- A Channelwood-like realm. Endless, shallow water in all directions, with
--- trees growing out of the ocean. Trees are huge and extremely tall. Water is
--- dangerious, filled with flesh-eating fish! Trees do not burn (too wet).
-
 -- Register deadly water.
 if not cw.registered then
-	-- Basically just a copy of regular water, with damage_per_second.
-	local sdef = table.copy(minetest.registered_nodes["default:water_source"])
-	local fdef = table.copy(minetest.registered_nodes["default:water_flowing"])
-
-	sdef.damage_per_second = 1*500
-	fdef.damage_per_second = 1*500
-
-  sdef._damage_per_second_type = "fleshy"
-  fdef._damage_per_second_type = "fleshy"
-
-	sdef._death_message = "the piranha got <player>."
-	fdef._death_message = "the piranha got <player>."
-
-	sdef.liquid_alternative_flowing = "cw:water_flowing"
-	sdef.liquid_alternative_source = "cw:water_source"
-
-	fdef.liquid_alternative_flowing = "cw:water_flowing"
-	fdef.liquid_alternative_source = "cw:water_source"
-
-	minetest.register_node("cw:water_source", sdef)
-	minetest.register_node("cw:water_flowing", fdef)
+	dofile(cw.modpath .. "/water.lua")
 end
 
 -- Param2 horizontal branch rotations.
@@ -66,10 +47,11 @@ cw.noise1param2d = {
 }
 
 -- Large scale land height.
+local LAND_SCALE = 2048
 cw.noise3param2d = {
 	offset = 0,
 	scale = 1,
-	spread = {x=2048, y=2048, z=2048},
+	spread = {x=LAND_SCALE, y=LAND_SCALE, z=LAND_SCALE},
 	seed = 8872,
 	octaves = 7,
 	persist = 0.6,
@@ -236,18 +218,24 @@ cw.generate_realm = function(minp, maxp, seed)
 			local ocean_depth = (nstart + od)
 			local ocean_surface = ocean_depth + 1
 
+			-- Ground height.
+			local an1 = abs(n1) + (n3 * 2)
+			local ground_depth = (nstart + gd + floor(an1 * ghv))
+
+			-- As land climbs above sea level, deepen rivers to compensate.
+			local r_depth = RIVER_DEPTH
+			if ground_depth > ocean_depth then
+				r_depth = r_depth + (ground_depth - ocean_depth)
+			end
+
 			-- Large rivers.
 			local r4 = abs(n4)
 			if r4 <= RIVER_WIDTH then
 				-- Don't forget to floor it, otherwise we get glitches.
-				r4 = math.floor((((r4 / RIVER_WIDTH) * -1) + 1) * RIVER_DEPTH)
+				r4 = math.floor((((r4 / RIVER_WIDTH) * -1) + 1) * r_depth)
 			else
 				r4 = 0
 			end
-
-			-- Ground height.
-			local an1 = abs(n1) + (n3 * 2)
-			local ground_depth = (nstart + gd + floor(an1 * ghv))
 
 			-- Prevent rivers from digging too deep in the ocean.
 			if (ground_depth - r4) < (ocean_depth - RIVER_OCEAN_LIMIT) then

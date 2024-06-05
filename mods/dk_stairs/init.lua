@@ -4,6 +4,11 @@ local register_stairs = function(basename)
 	local ndef = minetest.registered_nodes["darkage:" .. basename]
 	if ndef then
 		local groups = utility.copy_builtin_groups(ndef.groups)
+		local datatable = {}
+
+		if basename == "straw_bale" then
+			datatable.exclude_pillars = true
+		end
 
 		stairs.register_stair_and_slab(
 			basename,
@@ -11,7 +16,8 @@ local register_stairs = function(basename)
 			groups,
 			ndef.tiles, 
 			ndef.description,
-			ndef.sounds
+			ndef.sounds,
+			datatable
 		)
 	end
 end
@@ -51,4 +57,7 @@ register_stairs("stone_brick")
 -- Special: stairs ONLY, no walls/castle stuff!
 register_stairs("marble_tile")
 register_stairs("straw_bale")
+
+minetest.register_alias("stairs:panel_straw_bale_pcend", "stairs:panel_wood_pcend")
+minetest.register_alias("stairs:panel_straw_bale_pillar", "stairs:panel_wood_pillar")
 

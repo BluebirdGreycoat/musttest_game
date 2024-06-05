@@ -288,8 +288,12 @@ stairs.register_stair_and_slab(
 	{snappy = 3, flammable = 4},
 	{"farming_straw.png"},
 	"Straw",
-	default.node_sound_leaves_defaults()
+	default.node_sound_leaves_defaults(),
+	{exclude_pillars=true}
 )
+
+minetest.register_alias("stairs:panel_straw_pcend", "stairs:panel_wood_pcend")
+minetest.register_alias("stairs:panel_straw_pillar", "stairs:panel_wood_pillar")
 
 stairs.register_stair_and_slab(
 	"straw_weathered",
@@ -297,8 +301,12 @@ stairs.register_stair_and_slab(
 	{snappy = 3, flammable = 4},
 	{"farming_straw_weathered.png"},
 	"Weathered Straw",
-	default.node_sound_leaves_defaults()
+	default.node_sound_leaves_defaults(),
+	{exclude_pillars=true}
 )
+
+minetest.register_alias("stairs:panel_straw_weathered_pcend", "stairs:panel_wood_pcend")
+minetest.register_alias("stairs:panel_straw_weathered_pillar", "stairs:panel_wood_pillar")
 
 stairs.register_stair_and_slab(
 	"steelblock",

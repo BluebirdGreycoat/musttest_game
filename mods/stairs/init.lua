@@ -502,6 +502,7 @@ local panels_defs = {
 -- Integrated to circular saw by MustTest
 
 	["_pillar"] = {
+		_is_panel_pillar = true,
 		description = "Column",
 		node_box = {
 			type = "fixed",
@@ -520,6 +521,7 @@ local panels_defs = {
 		light=1,
 	},
 	["_pcend"] = {
+		_is_panel_pillar = true,
 		description = "Column End",
 		node_box = {
 			type = "fixed",
@@ -546,7 +548,7 @@ local panels_defs = {
 	},
 }
 
-function stairs.register_panel(subname, recipeitem, groups, images, description, sounds)
+function stairs.register_panel(subname, recipeitem, groups, images, description, sounds, datatable)
 	local stair_images = {}
 	for i, image in ipairs(images) do
 		if type(image) == "string" then
@@ -571,6 +573,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 	assert(ndef)
 
 	for alternate, def in pairs(defs) do
+		if not def._is_panel_pillar or (def._is_panel_pillar and not datatable.exclude_pillars) then
 		def.drawtype = "nodebox"
 		def.paramtype = "light"
 		def.paramtype2 = "facedir"
@@ -586,6 +589,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:panel_" ..subname..alternate, def)
+		end
 	end
 	--minetest.register_alias("stairs:panel_" ..subname.. "_bottom", "stairs:panel_" ..subname)
 
@@ -974,13 +978,13 @@ end
 function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds, datatable)
 	datatable = datatable or {}
 
-  stairs.register_micro       (subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_panel       (subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_extra_stairs(subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds)
-  stairs.register_slopes      (subname, recipeitem, groups, images, desc, sounds)
+  stairs.register_micro       (subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_panel       (subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_extra_stairs(subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds, datatable)
+  stairs.register_slopes      (subname, recipeitem, groups, images, desc, sounds, datatable)
 
   if datatable.include_new_slopes then
 		stairs.register_new_slopes(subname, recipeitem, groups, images, desc, sounds, datatable)

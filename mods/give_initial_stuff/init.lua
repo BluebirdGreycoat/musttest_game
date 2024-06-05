@@ -5,8 +5,17 @@ give_initial_stuff.items = give_initial_stuff.items or {}
 
 -- Start items are hardcoded intentionally. The Outback (where new players
 -- start on first join) depends on this.
+--
+-- Purpose of items:
+--   1) wood pick: signals that you're a noob.
+--   2) mutton: signals that this isn't a vegan server.
+--   3) torches: signals that you're expected to go mining where it's dark.
+--   4) tinderbox: signals that you're gonna need to scavenge lights.
+--   5) calendar: signals this server has seasons.
+--   6) flint/steel: your purpose in life is to light trees on fire. Also, your trash. And your pet.
+--   7) compass: signals an element of adventure/exploration.
 local stuff_string =
-	"default:pick_wood,mobs:meat_mutton 64,torches:torch_floor 64," ..
+	"default:pick_wood,mobs:meat_mutton 10,torches:torch_floor 10," ..
 	"tinderbox:tinderbox,clock:calendar,flint_and_steel:flint_and_steel,default:compass"
 
 -- This is also called when a Survival Challenge is started.

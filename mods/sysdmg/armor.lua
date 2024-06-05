@@ -43,10 +43,10 @@ sysdmg.default_groups = {
 
   -- Gold is heavy.
   ["shields:shield_gold"]          = {armor_heal=10*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
-  ["3d_armor:helmet_gold"]         = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
+  ["3d_armor:helmet_gold"]         = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.02},
   ["3d_armor:chestplate_gold"]     = {armor_heal=15*BLOCK_MULT, armor_use=1000, physics_jump=-0.05},
-  ["3d_armor:leggings_gold"]       = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
-  ["3d_armor:boots_gold"]          = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.05},
+  ["3d_armor:leggings_gold"]       = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.02},
+  ["3d_armor:boots_gold"]          = {armor_heal= 6*BLOCK_MULT, armor_use=250, physics_jump=-0.02},
 
   ["shields:shield_mithril"]       = {armor_heal= 8*BLOCK_MULT, armor_use=50},
   ["3d_armor:helmet_mithril"]      = {armor_heal= 5*BLOCK_MULT, armor_use=50},

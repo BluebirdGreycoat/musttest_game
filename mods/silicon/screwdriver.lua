@@ -44,8 +44,9 @@ function electric_screwdriver.on_use(itemstack, user, pt)
 			if node.param2 >= 0 and node.param2 <= 23 then
 				meta:set_int("screwdriver_rotation", node.param2)
 
-				minetest.chat_send_player(user:get_player_name(),
-					"# Server: copied facedir (" .. node.param2 .. ")!")
+				-- Spam.
+				--minetest.chat_send_player(user:get_player_name(),
+				--	"# Server: copied facedir (" .. node.param2 .. ")!")
 			end
 		end
 	else

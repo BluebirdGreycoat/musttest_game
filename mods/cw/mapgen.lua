@@ -371,7 +371,8 @@ cw.generate_realm = function(vm, minp, maxp, seed)
 			midleveltree = treebase
 		end
 
-		if column_pr:next(1, 5) <= 4 then
+		-- Require a minimum height step of 7 for taller trees.
+		if column_pr:next(1, 5) <= 4 and h >= 7 then
 			v.y = v.y + h
 			if h > 10 then
 				local rp = vector.add(v, RANDPOS[math_random(1, #RANDPOS)])
@@ -460,6 +461,7 @@ cw.generate_realm = function(vm, minp, maxp, seed)
 				local farwest_id = data[farwest]
 				local fareast_id = data[fareast]
 
+				-- Decorations not to be placed in the tops of forests.
 				if y < (nstart + 60) then
 					-- Check if we have neighboring supports directly adjacent to us.
 					local border_count = 0
@@ -602,7 +604,7 @@ cw.generate_realm = function(vm, minp, maxp, seed)
 					end
 				end
 
-				-- Dryleaf stuff.
+				-- Convert a percentage of leaves into dry leaves.
 				if center_id == c_leaves and under_id == c_leaves then
 					if math_random(1, 100) <= 5 then
 						data[center] = DRY_LEAVES_LIST[math_random(1, #DRY_LEAVES_LIST)]

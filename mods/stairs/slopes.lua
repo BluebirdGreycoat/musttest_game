@@ -7,6 +7,17 @@ Licensed under the zlib license. See LICENSE.md for more information.
 
 local S = function(str) return str end
 
+local function pixel_box(x1, y1, z1, x2, y2, z2)
+	return {
+		x1 / 16 - 0.5,
+		y1 / 16 - 0.5,
+		z1 / 16 - 0.5,
+		x2 / 16 - 0.5,
+		y2 / 16 - 0.5,
+		z2 / 16 - 0.5,
+	}
+end
+
 local box_regular = {
 	type = "fixed",
 	fixed = {
@@ -116,6 +127,26 @@ local box_slope_inner = {
 		{-0.5, 0, 0, 0.5, 0.25, 0.5},
 		{-0.5, 0.25, 0.25, 0.5, 0.5, 0.5},
 		{-0.5, 0.25, -0.5, -0.25, 0.5, 0.5},
+	}
+}
+
+local box_slope_inner_cut4 = {
+	type = "fixed",
+	fixed = {
+		pixel_box(0, 0, 8, 16, 8, 16),
+		pixel_box(0, 0, 8, 8, 8, 0),
+		pixel_box(0, 8, 0, 4, 16, 16),
+		pixel_box(4, 8, 12, 16, 16, 16),
+	}
+}
+
+local box_slope_01 = {
+	type = "fixed",
+	fixed = {
+		pixel_box(0, 0, 8, 4, 8, 0),
+		pixel_box(8, 0, 16, 16, 8, 12),
+		pixel_box(0, 0, 16, 8, 8, 8),
+		pixel_box(0, 8, 16, 4, 16, 12),
 	}
 }
 
@@ -338,7 +369,7 @@ local slopes_defs = {
 	--==============================================================
 
 	["_inner"] = {
-		description = "45 Inner Corner Slope",
+		description = "45 Inner Corner Slope #1",
 		mesh = "moreblocks_slope_inner.obj",
 		collision_box = box_slope_inner,
 		selection_box = box_slope_inner,
@@ -385,15 +416,15 @@ local slopes_defs = {
 	["_inner_cut4"] = {
 		description = "Inner Corner Beveled Slope",
 		mesh = "moreblocks_slope_inner_cut4.obj",
-		collision_box = box_slope_inner,
-		selection_box = box_slope_inner,
+		collision_box = box_slope_inner_cut4,
+		selection_box = box_slope_inner_cut4,
 		light=4/5,
 	},
 	["_inner_cut5"] = {
 		description = "Inner Corner Slope #1",
 		mesh = "moreblocks_slope_inner_cut5.obj",
-		collision_box = box_slope_inner,
-		selection_box = box_slope_inner,
+		collision_box = box_slope_inner_cut4,
+		selection_box = box_slope_inner_cut4,
 		light=4/5,
 	},
 	["_inner_cut6"] = {
@@ -454,8 +485,8 @@ local slopes_defs = {
 	["_outer_cut"] = {
 		description = "Beveled Corner Slope #7",
 		mesh = "moreblocks_slope_outer_cut.obj",
-		collision_box = box_slope_outer,
-		selection_box = box_slope_outer,
+		collision_box = box_slope_01,
+		selection_box = box_slope_01,
 		light=1/4,
 	},
 	["_outer_cut_half"] = {
@@ -694,6 +725,112 @@ function stairs.register_slopes(subname, recipeitem, groups, images, description
 			stairs.setup_nodedef_callbacks(subname, def)
 			
 			minetest.register_node(":stairs:slope_" ..subname..alternate, def)
+		--end
+	end
+
+  if recipeitem then
+		circular_saw.register_node(recipeitem, subname)
+  end
+end
+
+
+
+local newslope_box01 = {
+	type = "fixed",
+	fixed = {
+		pixel_box(0, 0, 16, 16, 8, 8),
+		pixel_box(0, 0, 8, 8, 8, 0),
+	},
+}
+
+local newslope_box02 = {
+	type = "fixed",
+	fixed = {
+		pixel_box(0, 0, 16, 8, 8, 8),
+	},
+}
+
+-- Note: names must NOT conflict with 'slopes_defs'!
+-- This table shall only contain shapes suitable for use with default, basic materials:
+-- stone, stone brick, desert stone and brick, sandstone and brick, and MAYBE a few others.
+-- Strive hard to keep the node count down, and DO NOT register these shapes for every
+-- possible material just because you *think* you can get away with it! This game is
+-- already very close to the maximum allowed number of content IDs.
+local new_slopes_defs = {
+	["_01"] = {
+		description = "45 Inner Corner Slope #2",
+		mesh = "musttest_newslopes_01.obj",
+		collision_box = newslope_box01,
+		selection_box = newslope_box01,
+		light=1/4,
+	},
+	["_02"] = {
+		description = "Half Microspike",
+		mesh = "musttest_newslopes_02.obj",
+		collision_box = newslope_box02,
+		selection_box = newslope_box02,
+		light=1/8,
+	},
+}
+
+function stairs.register_new_slopes(subname, recipeitem, groups, images, description, sounds, datatable)
+	local stair_images = {}
+	for i, image in ipairs(images) do
+		if type(image) == "string" then
+			stair_images[i] = {
+				name = image,
+				backface_culling = true,
+			}
+		elseif image.backface_culling == nil then -- override using any other value
+			stair_images[i] = table.copy(image)
+			stair_images[i].backface_culling = true
+		end
+	end
+
+	local defs = table.copy(new_slopes_defs)
+
+	if datatable.blacklist then
+		for k, v in pairs(datatable.blacklist) do
+			defs[k] = nil
+		end
+	end
+
+	if datatable.whitelist then
+		local newdefs = {}
+		for k, v in pairs(defs) do
+			if datatable.whitelist[k] then
+				newdefs[k] = v
+			end
+		end
+		defs = newdefs
+	end
+
+  -- Do not modify function argument.
+  local groups = table.copy(groups)
+	groups.stairs_slope = 1
+  groups.not_in_craft_guide = 1
+	groups.stairs_node = 1
+
+  local ndef = minetest.registered_items[recipeitem]
+  assert(ndef)
+
+	for alternate, def in pairs(defs) do
+		--if not alternate:find("_xslope_") or minetest.settings:get("port") == "30001" then
+			def.drawtype = "mesh"
+			def.paramtype = "light"
+			def.paramtype2 = "facedir"
+			def.on_place = function(...) return stairs.rotate_and_place(...) end
+			def.groups = groups
+			def.sounds = sounds
+			def.description = description .. " " .. (def.description or "Slope")
+			def.tiles = stair_images
+			def.light_source = math.ceil(ndef.light_source*(def.light or 0))
+			def.light = nil
+			def._stairs_parent_material = recipeitem
+
+			stairs.setup_nodedef_callbacks(subname, def)
+
+			minetest.register_node(":newslopes:" ..subname..alternate, def)
 		--end
 	end
 

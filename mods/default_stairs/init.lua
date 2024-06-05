@@ -62,7 +62,8 @@ stairs.register_stair_and_slab(
 	{cracky = 3},
 	{"default_stone.png"},
 	"Stone",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true}
 )
 
 stairs.register_stair_and_slab(
@@ -89,7 +90,8 @@ stairs.register_stair_and_slab(
 	{cracky = 2},
 	{"default_stone_brick.png"},
 	"Stone Brick",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true, blacklist={["_02"]=true}}
 )
 
 stairs.register_stair_and_slab(
@@ -107,7 +109,8 @@ stairs.register_stair_and_slab(
 	{cracky = 3},
 	{"default_desert_stone.png"},
 	"Redstone",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true}
 )
 
 stairs.register_stair_and_slab(
@@ -134,7 +137,8 @@ stairs.register_stair_and_slab(
 	{cracky = 2},
 	{"default_desert_stone_brick.png"},
 	"Redstone Brick",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true, blacklist={["_02"]=true}}
 )
 
 stairs.register_stair_and_slab(
@@ -152,7 +156,8 @@ stairs.register_stair_and_slab(
 	{cracky = 3},
 	{"default_sandstone.png"},
 	"Sandstone",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true}
 )
 
 stairs.register_stair_and_slab(
@@ -161,7 +166,8 @@ stairs.register_stair_and_slab(
 	{cracky = 2},
 	{"default_sandstone_brick.png"},
 	"Sandstone Brick",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true, blacklist={["_02"]=true}}
 )
 
 stairs.register_stair_and_slab(
@@ -179,7 +185,8 @@ stairs.register_stair_and_slab(
 	{cracky = 3},
 	{"default_desert_sandstone.png"},
 	"Desert Sandstone",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true}
 )
 
 stairs.register_stair_and_slab(
@@ -188,7 +195,8 @@ stairs.register_stair_and_slab(
 	{cracky = 2},
 	{"default_desert_sandstone_brick.png"},
 	"Desert Sandstone Brick",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true, blacklist={["_02"]=true}}
 )
 
 stairs.register_stair_and_slab(
@@ -233,7 +241,8 @@ stairs.register_stair_and_slab(
 	{cracky = 1, level = 2},
 	{"default_obsidian.png"},
 	"Obsidian",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true}
 )
 
 stairs.register_stair_and_slab(
@@ -242,7 +251,8 @@ stairs.register_stair_and_slab(
 	{cracky = 1, level = 2},
 	{"default_obsidian_brick.png"},
 	"Obsidian Brick",
-	default.node_sound_stone_defaults()
+	default.node_sound_stone_defaults(),
+	{include_new_slopes=true, blacklist={["_02"]=true}}
 )
 
 stairs.register_stair_and_slab(

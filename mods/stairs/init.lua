@@ -971,7 +971,9 @@ end
 -- Stair/slab registration function.
 -- Now includes all extra blocks.
 
-function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds)
+function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds, datatable)
+	datatable = datatable or {}
+
   stairs.register_micro       (subname, recipeitem, groups, images, desc, sounds)
   stairs.register_panel       (subname, recipeitem, groups, images, desc, sounds)
   stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds)
@@ -979,6 +981,10 @@ function stairs.register_stair_and_slab(subname, recipeitem, groups, images, des
   stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds)
   stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds)
   stairs.register_slopes      (subname, recipeitem, groups, images, desc, sounds)
+
+  if datatable.include_new_slopes then
+		stairs.register_new_slopes(subname, recipeitem, groups, images, desc, sounds, datatable)
+	end
 end
 
 

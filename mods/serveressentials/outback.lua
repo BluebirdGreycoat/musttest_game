@@ -1,8 +1,14 @@
 
--- The current location of the Outback's gateway exit.
+-- The current location of the Outback Gateway's exit coordinates.
 -- Note: this is updated to the correct position (as stored in mod-storage)
 -- on first load or whenever the mod is reloaded.
 serveressentials.gateway_exit_position = {x=0, y=0, z=0}
+
+--[[
+serveressentials.outback_gates = {
+	overworld = {pos={x=-9186, y=4501, z=5830}, ns=false},
+}
+--]]
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -36,8 +42,7 @@ serveressentials.get_exit_location = get_exit_location
 serveressentials.gateway_exit_position = minetest.string_to_pos(get_exit_location())
 
 function serveressentials.get_current_exit_location()
-	-- Also need to update the gate itself, right away.
-	local m2 = minetest.get_meta({x=-9164, y=4101+400, z=5780})
+	local m2 = minetest.get_meta({x=-9186, y=4501, z=5830})
 	local s2 = m2:get_string("obsidian_gateway_destination_ew")
 	return s2
 end
@@ -57,71 +62,76 @@ function serveressentials.update_exit_location(pos)
 	meta:set_string("outback_exit_location", s)
 
 	-- Also need to update the gate itself, right away.
-	local m2 = minetest.get_meta({x=-9164, y=4101+400, z=5780})
+	local m2 = minetest.get_meta({x=-9186, y=4501, z=5830})
 	m2:set_string("obsidian_gateway_destination_ew", s)
 end
 
 local nodes = {
 	-- Replace torches with real lanterns in front of the gate.
-	{pos={x=-9167, y=4103, z=5779}, node={name="xdecor:lantern", param2=1}},
-	{pos={x=-9167, y=4103, z=5785}, node={name="xdecor:lantern", param2=1}},
+	--[[
+	{pos={x=-9167, y=4503, z=5779}, node={name="xdecor:lantern", param2=1}},
+	{pos={x=-9167, y=4503, z=5785}, node={name="xdecor:lantern", param2=1}},
+	--]]
 
 	-- Add a chair to the miner's hut.
-	{pos={x=-9177, y=4176, z=5745}, node={name="xdecor:chair", param2=3}},
+	{pos={x=-9177, y=4576, z=5745}, node={name="xdecor:chair", param2=3}},
 
 	-- Graveyard protector.
-	{pos={x=-9266, y=4170, z=5724}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9266, y=4570, z=5724}, node={name="protector:protect3", param2=0}},
 
 	-- Farm protectors.
-	{pos={x=-9082, y=4179, z=5720}, node={name="protector:protect3", param2=0}},
-	{pos={x=-9139, y=4168, z=5795}, node={name="protector:protect3", param2=0}},
-	{pos={x=-9199, y=4169, z=5836}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9082, y=4579, z=5720}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9139, y=4568, z=5795}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9199, y=4569, z=5836}, node={name="protector:protect3", param2=0}},
 
 	-- Protector in the miner's hut.
-	{pos={x=-9176, y=4175, z=5745}, node={name="protector:protect3", param2=0}},
+	{pos={x=-9176, y=4575, z=5745}, node={name="protector:protect3", param2=0}},
 
 	-- Spawn protectors.
-	{pos={x=-9223, y=4167, z=5861}, node={name="protector:protect", param2=0}},
-	{pos={x=-9228, y=4172, z=5851}, node={name="protector:protect", param2=0}},
-	{pos={x=-9227, y=4172, z=5861}, node={name="protector:protect", param2=0}},
+	{pos={x=-9223, y=4567, z=5861}, node={name="protector:protect", param2=0}},
+	{pos={x=-9228, y=4572, z=5851}, node={name="protector:protect", param2=0}},
+	{pos={x=-9227, y=4572, z=5861}, node={name="protector:protect", param2=0}},
 
 	-- Bridge protectors.
-	{pos={x=-9227, y=4172, z=5833}, node={name="protector:protect", param2=0}},
-	{pos={x=-9228, y=4172, z=5841}, node={name="protector:protect", param2=0}},
+	{pos={x=-9227, y=4572, z=5833}, node={name="protector:protect", param2=0}},
+	{pos={x=-9228, y=4572, z=5841}, node={name="protector:protect", param2=0}},
 
 	-- Extra signs at spawn.
-	{pos={x=-9221, y=4169, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
-	{pos={x=-9221, y=4169, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
-	{pos={x=-9221, y=4170, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
-	{pos={x=-9221, y=4170, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4569, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4569, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4570, z=5861}, node={name="signs:sign_wall_brass", param2=2}},
+	{pos={x=-9221, y=4570, z=5860}, node={name="signs:sign_wall_brass", param2=2}},
 
 	-- Extra pillar between Oerkki spawn point and the gate.
-	{pos={x=-9169, y=4104, z=5782}, node={name="pillars:rackstone_cobble_top", param2=3}},
-	{pos={x=-9169, y=4103, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
-	{pos={x=-9169, y=4102, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
-	{pos={x=-9169, y=4101, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
-	{pos={x=-9169, y=4100, z=5782}, node={name="pillars:rackstone_cobble_bottom", param2=3}},
+	--[[
+	{pos={x=-9169, y=4504, z=5782}, node={name="pillars:rackstone_cobble_top", param2=3}},
+	{pos={x=-9169, y=4503, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4502, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4501, z=5782}, node={name="walls:rackstone_cobble_noconnect", param2=0}},
+	{pos={x=-9169, y=4500, z=5782}, node={name="pillars:rackstone_cobble_bottom", param2=3}},
+	--]]
 
 	-- Beacon protectors.
-	{pos={x=-9176, y=4191, z=5745}, node={name="protector:protect", param2=0}},
-	{pos={x=-9176, y=4185, z=5745}, node={name="protector:protect", param2=0}},
+	{pos={x=-9176, y=4591, z=5745}, node={name="protector:protect", param2=0}},
+	{pos={x=-9176, y=4585, z=5745}, node={name="protector:protect", param2=0}},
 
 	-- Signs in miner's hut.
-	{pos={x=-9177, y=4177, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
-	{pos={x=-9177, y=4176, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
-	{pos={x=-9177, y=4177, z=5745}, node={name="signs:sign_wall_wood", param2=3}},
-	{pos={x=-9175, y=4177, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
-	{pos={x=-9175, y=4176, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
+	{pos={x=-9177, y=4577, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9177, y=4576, z=5744}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9177, y=4577, z=5745}, node={name="signs:sign_wall_wood", param2=3}},
+	{pos={x=-9175, y=4577, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
+	{pos={x=-9175, y=4576, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
 }
 
 local function rebuild_nodes()
 	for k, v in ipairs(nodes) do
-		minetest.set_node(vector.add(v.pos, {x=0, y=400, z=0}), v.node)
+		minetest.set_node(v.pos, v.node)
 	end
 end
 
 local OWNERNAME = minetest.settings:get("name") or "singleplayer"
 local metadata = {
+	--[[
 	-- Gate room, protection on floor.
 	{pos={x=-9174, y=4099, z=5782}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
@@ -162,167 +172,193 @@ local metadata = {
 		author = OWNERNAME,
 		text = "Or else wonder, till it drives you mad,%nWhat would have followed, if you had."
 	}}},
+	--]]
 	-- Door on the miner's hut.
-	{pos={x=-9174, y=4175, z=5744}, meta={fields={
+	{pos={x=-9174, y=4575, z=5744}, meta={fields={
 		state = "1",
 	}}},
 	-- Door on the calico stash (safe from Indians!).
-	{pos={x=-9090, y=4182, z=5869}, meta={fields={
+	{pos={x=-9090, y=4582, z=5869}, meta={fields={
 		state = "0",
 	}}},
 	-- The gateway portal itself.
+	--[[
 	{pos={x=-9164, y=4101, z=5780}, meta={fields={
 		obsidian_gateway_success_ew = "yes",
 		obsidian_gateway_return_gate_ew = "0",
 		obsidian_gateway_owner_ew = OWNERNAME,
 		obsidian_gateway_destination_ew = get_exit_location(),
 	}}},
+	--]]
+	-- Door portal to Overworld.
+	{pos={x=-9186, y=4501, z=5830},
+	is_gate=true,
+	meta={fields={
+		obsidian_gateway_success_ew = "yes",
+		obsidian_gateway_return_gate_ew = "0",
+		obsidian_gateway_owner_ew = OWNERNAME,
+		obsidian_gateway_destination_ew = get_exit_location(),
+	}}},
 	-- Gravesite sign, left.
-	{pos={x=-9265, y=4172, z=5724}, meta={fields={
+	{pos={x=-9265, y=4572, z=5724}, meta={fields={
 		infotext = "Henry D. Miner\nApril 13, 1821 - October 3, 1890\n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\"",
 		author = OWNERNAME,
 		text = "Henry D. Miner%nApril 13, 1821 - October 3, 1890%n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\""
 	}}},
 	-- Gravesite sign, right.
-	{pos={x=-9267, y=4172, z=5724}, meta={fields={
+	{pos={x=-9267, y=4572, z=5724}, meta={fields={
 		infotext = "Martha Ann Lee Miner\nNovember 2, 1829 - February 19, 1897",
 		author = OWNERNAME,
 		text = "Martha Ann Lee Miner%nNovember 2, 1829 - February 19, 1897"
 	}}},
 	-- Spawn sign, left.
-	{pos={x=-9221, y=4170, z=5861}, meta={fields={
+	{pos={x=-9221, y=4570, z=5861}, meta={fields={
 		infotext = "Use /spawn to get back here.",
 		author = OWNERNAME,
 		text = "Use /spawn to get back here."
 	}}},
 	-- Spawn sign, right.
-	{pos={x=-9221, y=4170, z=5860}, meta={fields={
+	{pos={x=-9221, y=4570, z=5860}, meta={fields={
 		infotext = "Use /info to get help.",
 		author = OWNERNAME,
 		text = "Use /info to get help."
 	}}},
 	-- Spawn sign, bottom left.
-	{pos={x=-9221, y=4169, z=5861}, meta={fields={
+	{pos={x=-9221, y=4569, z=5861}, meta={fields={
 		infotext = "See \"http://arklegacy.duckdns.org\" for important info.",
 		author = OWNERNAME,
 		text = "See \"http://arklegacy.duckdns.org\" for important info."
 	}}},
 	-- Spawn sign, bottom right.
-	{pos={x=-9221, y=4169, z=5860}, meta={fields={
+	{pos={x=-9221, y=4569, z=5860}, meta={fields={
 		infotext = "Take care, don't rush!",
 		author = OWNERNAME,
 		text = "Take care, don't rush!"
 	}}},
 	-- Graveyard protector.
-	{pos={x=-9266, y=4170, z=5724}, meta={fields={
+	{pos={x=-9266, y=4570, z=5724}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
 	-- Farm protectors.
-	{pos={x=-9082, y=4179, z=5720}, meta={fields={
+	{pos={x=-9082, y=4579, z=5720}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9139, y=4168, z=5795}, meta={fields={
+	{pos={x=-9139, y=4568, z=5795}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9199, y=4169, z=5836}, meta={fields={
+	{pos={x=-9199, y=4569, z=5836}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
 	-- Protector in the miner's hut.
-	{pos={x=-9176, y=4175, z=5745}, meta={fields={
+	{pos={x=-9176, y=4575, z=5745}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	-- Spawn protectors.
-	{pos={x=-9223, y=4167, z=5861}, meta={fields={
+	-- Spawn cave protectors.
+	{pos={x=-9223, y=4567, z=5861}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9228, y=4172, z=5851}, meta={fields={
+	{pos={x=-9228, y=4572, z=5851}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9227, y=4172, z=5861}, meta={fields={
+	{pos={x=-9227, y=4572, z=5861}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
 	-- Bridge protectors.
-	{pos={x=-9227, y=4172, z=5833}, meta={fields={
+	{pos={x=-9227, y=4572, z=5833}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9228, y=4172, z=5841}, meta={fields={
+	{pos={x=-9228, y=4572, z=5841}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
 		owner = OWNERNAME,
 		placedate = "2020/02/12 UTC",
 		rename = OWNERNAME,
 	}}},
-	-- Beacon protectors.
-	{pos={x=-9176, y=4185, z=5745}, meta={fields={
+	-- Beacon protectors (over miners' hut).
+	{pos={x=-9176, y=4585, z=5745}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2024/05/26 UTC",
 		owner = OWNERNAME,
 		placedate = "2024/05/26 UTC",
 		rename = OWNERNAME,
 	}}},
-	{pos={x=-9176, y=4191, z=5745}, meta={fields={
+	{pos={x=-9176, y=4591, z=5745}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2024/05/26 UTC",
 		owner = OWNERNAME,
 		placedate = "2024/05/26 UTC",
 		rename = OWNERNAME,
 	}}},
 	-- Signs in miner's hut.
-	{pos={x=-9177, y=4177, z=5744}, meta={fields={
+	{pos={x=-9177, y=4577, z=5744}, meta={fields={
 		infotext = "Find the Dimensional Gate at the bottom of this rope.\nThe gate is guarded.\nPrepare for combat!",
 		author = OWNERNAME,
 		text = "Find the Dimensional Gate at the bottom of this rope.%nThe gate is guarded.%nPrepare for combat!"
 	}}},
-	{pos={x=-9177, y=4177, z=5745}, meta={fields={
+	{pos={x=-9177, y=4577, z=5745}, meta={fields={
 		infotext = "If you skipped reading /info, be sure to read it now.\nIf the rope doesn't go all the way, punch the end to fix.",
 		author = OWNERNAME,
 		text = "If you skipped reading /info, be sure to read it now.%nIf the rope doesn't go all the way, punch the end to fix."
 	}}},
-	{pos={x=-9177, y=4176, z=5744}, meta={fields={
+	{pos={x=-9177, y=4576, z=5744}, meta={fields={
 		infotext = "There is NO WAY BACK BUT DEATH.",
 		author = OWNERNAME,
 		text = "There is NO WAY BACK BUT DEATH."
 	}}},
-	{pos={x=-9175, y=4177, z=5746}, meta={fields={
+	{pos={x=-9175, y=4577, z=5746}, meta={fields={
 		infotext = "I hope, for your sake, you brought a bed and mutton.\nIf you didn't bring a bed, you'll wish you had ...\nAnd you'll find yourself standing in morde poo.",
 		author = OWNERNAME,
 		text = "I hope, for your sake, you brought a bed and mutton.%nIf you didn't bring a bed, you'll wish you had ...%nAnd you'll find yourself standing in morde poo."
 	}}},
-	{pos={x=-9175, y=4176, z=5746}, meta={fields={
+	{pos={x=-9175, y=4576, z=5746}, meta={fields={
 		infotext = "Fortune favors the bold. Death finds the stupid.\nUsing a gate at night is stupid.\nDon't be that guy.",
 		author = OWNERNAME,
 		text = "Fortune favors the bold. Death finds the stupid.%nUsing a gate at night is stupid.%nDon't be that guy."
+	}}},
+	-- Table sign in the 2024 Outback Gateroom.
+	{pos={x=-9174, y=4501, z=5828}, meta={fields={
+		infotext = "Make your choice, adventurous Stranger,\nStrike a Door and bide the Danger!\nOr else wonder, till it drives you mad,\nWhat would have followed, if you had.\n---- C.S. Lewis (modified)",
+		author = OWNERNAME,
+		text = "Make your choice, adventurous Stranger,%nStrike a Door and bide the Danger!%nOr else wonder, till it drives you mad,%nWhat would have followed, if you had.%n---- C.S. Lewis (modified)"
 	}}},
 }
 
 local function rebuild_metadata()
 	for k, v in ipairs(metadata) do
-		local meta = minetest.get_meta(vector.add(v.pos, {x=0, y=400, z=0}))
+		local meta = minetest.get_meta(v.pos)
 		meta:from_table(v.meta)
+
+		if v.is_gate then
+			if v.meta.fields.obsidian_gateway_destination_ew then
+				obsidian_gateway.spawn_liquid(v.pos, false, false, true)
+			elseif v.meta.fields.obsidian_gateway_destination_ns then
+				obsidian_gateway.spawn_liquid(v.pos, true, false, true)
+			end
+		end
 	end
 end
 
@@ -486,6 +522,18 @@ local function callback(blockpos, action, calls_remaining, param)
 			schem = rc.modpath .. "/outback_blackstone_deposit_4.mts",
 			pos = {x=-9258, y=4566, z=5706},
 		},
+		{
+			schem = rc.modpath .. "/outback_gateroom_2024.mts",
+			pos1 = {x=-9188, y=4498, z=5818},
+			pos2 = {x=-9160, y=4513, z=5838},
+			protectors = true,
+		},
+		{
+			schem = rc.modpath .. "/outback_guardroom_2024.mts",
+			pos1 = {x=-9183, y=4498, z=5775},
+			pos2 = {x=-9159, y=4507, z=5789},
+			protectors = true,
+		},
 	}
 
 	local replacements = {}
@@ -495,14 +543,28 @@ local function callback(blockpos, action, calls_remaining, param)
 		}
 	end
 
-	for k, v in ipairs(schems) do
-		minetest.place_schematic(v.pos, v.schem, "0", replacements, true, "")
-	end
-
 	-- Erase all stale metadata.
 	for k, v in ipairs(pos_metas) do
 		local meta = minetest.get_meta(v)
 		meta:from_table(nil)
+	end
+
+	-- Place all schematics.
+	for k, v in ipairs(schems) do
+		minetest.place_schematic(v.pos or v.pos1, v.schem, "0", replacements, true, "")
+
+		if v.protectors then
+			local positions = minetest.find_nodes_in_area(v.pos1, v.pos2, "group:protector")
+			for k, v in ipairs(positions) do
+				local meta = minetest.get_meta(v)
+				meta:from_table({fields={
+					infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+					owner = OWNERNAME,
+					placedate = "2024/06/04 UTC",
+					rename = OWNERNAME,
+				}})
+			end
+		end
 	end
 
 	-- Erase the rope.

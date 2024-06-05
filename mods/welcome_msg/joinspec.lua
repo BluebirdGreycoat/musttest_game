@@ -150,6 +150,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		-- Exit buttons.
 		formspec = formspec ..
+			"style[wrongserver;bgcolor=red]" ..
 			"button[0,3.8;2,1;wrongserver;Not Now]" ..
 			"button[2,3.8;2,1;trading;Trading]" ..
 			"button[5,3.8;2,1;playgame;Proceed!]"
@@ -180,6 +181,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		-- Exit buttons.
 		formspec = formspec ..
+			"style[wrongserver;bgcolor=red]" ..
 			"button[0,7.3;2,1;wrongserver;" .. minetest.formspec_escape("I’m Scared ...") .. "]" ..
 			"button[2,7.3;2,1;trading;Tradernet]" ..
 			"button[4,7.3;3,1;playgame;Accept Challenge!]" ..

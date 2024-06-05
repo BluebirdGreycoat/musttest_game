@@ -50,7 +50,7 @@ shout.BUILTIN_HINTS = {
 	"You can place water for farms above sea level by melting ice with torches or fire.",
 	"You can travel over flat snow or ice quickly using a sled.",
 	"Icemen are the primary source of mossy cobble, which is used as a fuel in some teleports.",
-	"You can place a public bed (not ownable by anyone) by holding 'E' when you place it.",
+	"You can place a public bed in city areas (not ownable by anyone) by holding 'E' when you place it.",
 	"You can place nearly any block as a falling node by holding 'E' when you place it, with air below.",
 	"The brimstone ocean contains a few resources not found anywhere else; however the entire underworld is very dangerous.",
 	"Locked chests are unlocked (and items may be stolen) if the chest lid is open.",

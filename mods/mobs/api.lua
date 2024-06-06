@@ -4396,11 +4396,13 @@ local function do_states(self, dtime)
 	local yaw = self.object:get_yaw()
 	if not yaw then return end
 
+	--[[
 	-- Deal with invalid states. Note: unknown state types (non-empty string) are
 	-- valid and we don't do anything with them; they can be used by some mobs.
 	if not self.state or self.state == "" then
 		transition_state(self, "stand")
 	end
+	--]]
 
 	--report(self, "current state: " .. self.state .. " (" .. self.substate .. ")", 2)
 
@@ -4882,6 +4884,12 @@ local function mob_activate(self, staticdata, def, dtime)
 	-- for current mobs that dont have this set
 	if not self.base_selbox then
 		self.base_selbox = self.selectionbox or self.base_colbox
+	end
+
+	-- Deal with invalid states. Note: unknown state types (non-empty string) are
+	-- valid and we don't do anything with them; they can be used by some mobs.
+	if not self.state or self.state == "" then
+		transition_state(self, "stand")
 	end
 
 	-- set texture, model and size

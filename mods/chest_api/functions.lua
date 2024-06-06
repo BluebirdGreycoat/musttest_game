@@ -11,13 +11,13 @@ chest_api.update_vending = function(pos)
 	local vendors = {}
 	local node = nil
 
+	local names = {
+		"easyvend:vendor",
+		"easyvend:vendor_on",
+		"easyvend:depositor",
+		"easyvend:depositor_on",
+	}
 	local valid_vendor = function(name)
-		local names = {
-			"easyvend:vendor",
-			"easyvend:vendor_on",
-			"easyvend:depositor",
-			"easyvend:depositor_on",
-		}
 		for k, v in ipairs(names) do
 			if v == name then
 				return true

@@ -34,6 +34,7 @@ easyvend.traversable_node_types = {
 easyvend.registered_chests = {}
 dofile(minetest.get_modpath("easyvend") .. "/ads.lua")
 dofile(minetest.get_modpath("easyvend") .. "/exchange.lua")
+dofile(minetest.get_modpath("easyvend") .. "/mail.lua")
 
 
 if minetest.get_modpath("reload") then

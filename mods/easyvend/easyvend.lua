@@ -141,8 +141,8 @@ easyvend.set_formspec = function(pos)
 	.."label[3,-0.2;" .. minetest.formspec_escape(description) .. "]"
 
 	.."image[7.5,0.2;0.5,1;" .. status_image .. "]"
-	.."textarea[2.8,0.2;5.1,2;;Status: " .. minetest.formspec_escape(status) .. ";]"
-	.."textarea[2.8,1.3;5.6,2;;Message: " .. minetest.formspec_escape(message) .. ";]"
+	.."textarea[2.8,0.2;4.5,1.5;;Status: " .. minetest.formspec_escape(status) .. ";]"
+	.."textarea[2.8,1.3;4.5,1.5;;Message: " .. minetest.formspec_escape(message) .. ";]"
 
 		.."label[0,-0.15;"..numbertext.."]"
 		.."label[0,1.2;"..costtext.."]"
@@ -154,16 +154,19 @@ easyvend.set_formspec = function(pos)
 		local wear = "false"
 		if meta:get_int("wear") == 1 then wear = "true" end
 		formspec = formspec
-				.."item_image_button[0,1.65;1,1;" .. machine_currency .. ";easyvend_currency_image;]"
-				.."list[context;item;0,0.35;1,1;]"
-				.."listring[current_player;main]"
-				.."listring[context;item]"
-		.."field[1.3,0.65;1.5,1;number;;" .. number .. "]"
-		.."tooltip[number;"..itemcounttooltip.."]"
-		.."field[1.3,1.95;1.5,1;cost;;" .. cost .. "]"
-		.."tooltip[cost;"..itemcounttooltip.."]"
-		.."button[6,2.8;2,0.5;save;Confirm]"
-		.."tooltip[save;Confirm configuration and activate machine (only for owner)]"
+			.."image[7,1.5;1,1;gui_clu_grey.png;]"
+			.."item_image_button[0,1.65;1,1;" .. machine_currency .. ";easyvend_currency_image;]"
+			.."list[context;item;0,0.35;1,1;]"
+			.."list[context;upgrade_slot;7,1.5;1,1;]"
+			.."listring[current_player;main]"
+			.."listring[context;item]"
+			.."field[1.3,0.65;1.5,1;number;;" .. number .. "]"
+			.."tooltip[number;"..itemcounttooltip.."]"
+			.."field[1.3,1.95;1.5,1;cost;;" .. cost .. "]"
+			.."tooltip[cost;"..itemcounttooltip.."]"
+			.."button[6,2.8;2,0.5;save;Confirm]"
+			.."tooltip[save;Confirm configuration and activate machine (only for owner)]"
+
 		local weartext, weartooltip
 		if buysell == "buy" then
 			weartext = "Buy worn tools"
@@ -215,12 +218,14 @@ end
 
 easyvend.machine_disable = function(pos, node, playername)
 	if node.name == "easyvend:vendor_on" then
-				easyvend.sound_disable(pos)
+		easyvend.sound_disable(pos)
 		minetest.swap_node(pos, {name="easyvend:vendor", param2 = node.param2})
+
 		return true
 	elseif node.name == "easyvend:depositor_on" then
-				easyvend.sound_disable(pos)
+		easyvend.sound_disable(pos)
 		minetest.swap_node(pos, {name="easyvend:depositor", param2 = node.param2})
+
 		return true
 	else
 		if playername ~= nil then
@@ -268,7 +273,12 @@ easyvend.machine_check = function(pos, node)
 	local inv = meta:get_inventory()
 	local itemstack = inv:get_stack("item", 1)
 	local buysell = easyvend.buysell(node.name)
-    
+
+	if inv:get_size("upgrade_slot") == 0 then
+		inv:set_size("upgrade_slot", 1)
+	end
+	local have_clu = inv:contains_item("upgrade_slot", "techcrafts:control_logic_unit")
+
 	local machine_currency = meta:get_string("machine_currency")
 	local cost = meta:get_int("cost")
 
@@ -371,7 +381,24 @@ easyvend.machine_check = function(pos, node)
 	if node.name == "easyvend:vendor" or node.name == "easyvend:depositor" then
 		if active then change = easyvend.machine_enable(pos, node) end
 	elseif node.name == "easyvend:vendor_on" or node.name == "easyvend:depositor_on" then
-		if not active then change = easyvend.machine_disable(pos, node) end
+		if not active then
+			change = easyvend.machine_disable(pos, node)
+
+			local machine_type = "vendor"
+			if node.name:find("depositor") then
+				machine_type = "depositor"
+			end
+
+			if have_clu then
+				easyvend.record_disable({
+					type = "disable",
+					owner = machine_owner,
+					machine_type = machine_type,
+					item = itemname,
+					pos = vector.copy(pos),
+				})
+			end
+		end
 	end
 
 	local current_node = minetest.get_node(pos)
@@ -510,11 +537,17 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 	local sendername = sender:get_player_name()
 	local meta = minetest.get_meta(pos)
 
+	local meta_inv = meta:get_inventory()
+	if meta_inv:get_size("upgrade_slot") == 0 then
+		meta_inv:set_size("upgrade_slot", 1)
+	end
+	local have_clu = meta_inv:contains_item("upgrade_slot", "techcrafts:control_logic_unit")
+
 	local node = minetest.get_node(pos)
 	local number = meta:get_int("number")
 	local cost = meta:get_int("cost")
 	local itemname=meta:get_string("itemname")
-	local item=meta:get_inventory():get_stack("item", 1)
+	local item=meta_inv:get_stack("item", 1)
 	local check_wear = meta:get_int("wear") == 0 and minetest.registered_tools[itemname] ~= nil
 
 	local buysell = easyvend.buysell(node.name)
@@ -566,6 +599,10 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 	end
 
 	if chest_pos_remove ~= nil and chest_pos_add ~= nil and sender and sender:is_player() then
+		-- Since we'll be modifying chest inventories, update nearby vending machines when we're done.
+		minetest.after(0, chest_api.update_vending, chest_pos_add)
+		minetest.after(0, chest_api.update_vending, chest_pos_remove)
+
 		local rchest = minetest.get_node(chest_pos_remove)
 		local rchestdef = registered_chests[rchest.name]
 		local rchest_meta = minetest.get_meta(chest_pos_remove)
@@ -632,6 +669,18 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
+
+					if have_clu then
+						easyvend.record_purchase({
+							type = "sell",
+							owner = machine_owner,
+							player = sendername,
+							count = number,
+							item = itemname,
+							price = price,
+							pos = vector.copy(pos),
+						})
+					end
 				else
 					-- Large item counts (multiple stacks)
 					local numberstacks = math.modf(number / number_stack_max)
@@ -699,6 +748,18 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						minetest.log("action", sendername .. remote_str .. " bought " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld from vending machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (pricewithtax - price))
+
+						if have_clu then
+							easyvend.record_purchase({
+								type = "sell",
+								owner = machine_owner,
+								player = sendername,
+								count = number,
+								item = itemname,
+								price = price,
+								pos = vector.copy(pos),
+							})
+						end
 					end
 				end
 			elseif chest_has and player_has then
@@ -766,6 +827,18 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 					minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 						itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 						machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
+
+					if have_clu then
+						easyvend.record_deposit({
+							type = "buy",
+							owner = machine_owner,
+							player = sendername,
+							count = number,
+							item = itemname,
+							price = price,
+							pos = vector.copy(pos),
+						})
+					end
 				else
 					-- Large item counts (multiple stacks)
 					local numberstacks = math.modf(number / number_stack_max)
@@ -830,6 +903,18 @@ easyvend.execute_trade = function(pos, sender, player_inv, pin, vendor_inv, iin,
 						minetest.log("action", sendername .. remote_str .. " sold " .. number .. " " ..
 							itemname .. " for " .. price .. " minegeld to depositing machine owned by " ..
 							machine_owner .. " at " .. minetest.pos_to_string(pos) .. ", tax was " .. (price - pricewithtax))
+
+						if have_clu then
+							easyvend.record_deposit({
+								type = "buy",
+								owner = machine_owner,
+								player = sendername,
+								count = number,
+								item = itemname,
+								price = price,
+								pos = vector.copy(pos),
+							})
+						end
 					end
 				end
 			elseif chest_has and player_has then
@@ -896,6 +981,7 @@ easyvend.after_place_node = function(pos, placer)
 	local dname = rename.gpn(player_name)
 	inv:set_size("item", 1)
 	inv:set_size("gold", 1)
+	inv:set_size("upgrade_slot", 1)
 
 	local machine_currency = currency_types[initial_currency]
 	meta:set_string("machine_currency", machine_currency)
@@ -927,12 +1013,18 @@ end
 
 easyvend.can_dig = function(pos, player)
 	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	if not inv:is_empty("upgrade_slot") then
+		return false
+	end
+
 	local name = player:get_player_name()
 	local owner = meta:get_string("owner")
 	-- Owner can always dig shop
 	if owner == name then
 		return true
 	end
+
 	local chest_pos = easyvend.find_connected_chest(owner, pos)
 	local chest, meta_chest
 	if chest_pos then
@@ -941,6 +1033,7 @@ easyvend.can_dig = function(pos, player)
 	else
 		return true --if no chest, enyone can dig this shop
 	end
+
 	if registered_chests[chest.name] then
 		 if player and player:is_player() then
 			local owner_chest = meta_chest:get_string(registered_chests[chest.name].meta_owner)
@@ -1062,7 +1155,7 @@ easyvend.find_connected_chest = function(owner, pos, nodename, check_wear, amoun
 	if (#nodes < 1 or  #nodes > 2) then
 		return nil, "no_chest"
 	end
-    
+
 	-- Find the stack direction
 	local first = nil
 	local second = nil
@@ -1179,7 +1272,7 @@ end
 -- Pseudo-inventory handling
 easyvend.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 	if listname=="item" then
-		local meta = minetest.get_meta(pos);
+		local meta = minetest.get_meta(pos)
 		local owner = meta:get_string("owner")
 		local name = player:get_player_name()
 		if name == owner then
@@ -1200,10 +1293,28 @@ easyvend.allow_metadata_inventory_put = function(pos, listname, index, stack, pl
 			end
 		end
 	end
+
+	if listname == "upgrade_slot" and stack:get_name() == "techcrafts:control_logic_unit" then
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		if inv:get_stack("upgrade_slot", 1):get_count() == 0 then
+			return 1
+		end
+	end
+
 	return 0
 end
 
 easyvend.allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+	if listname == "upgrade_slot" then
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
+		local pname = player:get_player_name()
+		if pname == owner then
+			return stack:get_count()
+		end
+	end
+
 	return 0
 end
 

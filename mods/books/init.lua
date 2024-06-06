@@ -51,6 +51,7 @@ function books.put_book_on_table(pos, stack, pname)
     bookmeta:from_table(stack:get_meta():to_table())
     bookmeta:set_int("is_library_checkout", 1)
     bookmeta:set_string("checked_out_by", pname)
+    bookmeta:set_int("page", 1)
 
     books_placeable.set_closed_infotext(airpos)
 

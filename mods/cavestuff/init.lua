@@ -234,6 +234,15 @@ minetest.register_node("cavestuff:glow_white_crystal", {
   use_texture_alpha = "blend",
   drawtype = "glasslike",
   sunlight_propagates = true,
+  silverpick_drop = true,
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {'default:mese_crystal'}, rarity = 64},
+			{items = {'vessels:glass_fragments'}, rarity = 5},
+			{items = {'default:glass'}}
+		}
+	},
 })
 
 -- This formatting is so bad whoever sees it will spontaneously combust.
@@ -243,7 +252,8 @@ stairs.register_stair_and_slab(
 	  utility.dig_groups("crystal"),
 	   {"caverealms_glow_white.png"},
 	    "White Crystal",
-	     default.node_sound_glass_defaults()
+	     default.node_sound_glass_defaults(),
+	      {no_slopes=true, exclude_pillars=true}
 )
 
 

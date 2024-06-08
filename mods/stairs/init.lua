@@ -984,7 +984,10 @@ function stairs.register_stair_and_slab(subname, recipeitem, groups, images, des
   stairs.register_extra_stairs(subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds, datatable)
-  stairs.register_slopes      (subname, recipeitem, groups, images, desc, sounds, datatable)
+
+  if not datatable.no_slopes then
+		stairs.register_slopes(subname, recipeitem, groups, images, desc, sounds, datatable)
+	end
 
   if datatable.include_new_slopes then
 		stairs.register_new_slopes(subname, recipeitem, groups, images, desc, sounds, datatable)

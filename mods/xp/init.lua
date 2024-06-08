@@ -183,6 +183,78 @@ end
 
 
 
+function xp.do_chatcommand(pname, param)
+	local tokens = param:split(" ")
+	if #tokens < 2 then
+		minetest.chat_send_player(pname, "# Server: Wrong number of arguments.")
+		return
+	end
+
+	if tokens[1] == "get" then
+		if not minetest.player_exists(tokens[2]) then
+			minetest.chat_send_player(pname, "# Server: No such player.")
+			return
+		end
+		local amount = xp.get_xp(tokens[2], "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> has " .. amount .. " XP.")
+	elseif tokens[1] == "set" then
+		if #tokens ~= 3 then
+			minetest.chat_send_player(pname, "# Server: Wrong number of arguments.")
+			return
+		end
+		if not minetest.player_exists(tokens[2]) then
+			minetest.chat_send_player(pname, "# Server: No such player.")
+			return
+		end
+		local amount = tonumber(tokens[3])
+		if type(amount) == "nil" then
+			minetest.chat_send_player(pname, "# Server: Couldn't parse amount.")
+			return
+		end
+		if amount > xp.digxp_max then
+			amount = xp.digxp_max
+		end
+		if amount < 0 then
+			amount = 0
+		end
+		xp.set_xp(tokens[2], "digxp", amount)
+		hud_clock.update_xp(tokens[2])
+		amount = xp.get_xp(tokens[2], "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
+	elseif tokens[1] == "add" then
+		if #tokens ~= 3 then
+			minetest.chat_send_player(pname, "# Server: Wrong number of arguments.")
+			return
+		end
+		if not minetest.player_exists(tokens[2]) then
+			minetest.chat_send_player(pname, "# Server: No such player.")
+			return
+		end
+		local amount = tonumber(tokens[3])
+		if type(amount) == "nil" then
+			minetest.chat_send_player(pname, "# Server: Couldn't parse amount.")
+			return
+		end
+		local total = xp.get_xp(tokens[2], "digxp")
+		total = total + amount
+		if total > xp.digxp_max then
+			total = xp.digxp_max
+		end
+		if total < 0 then
+			total = 0
+		end
+		xp.set_xp(tokens[2], "digxp", total)
+		hud_clock.update_xp(tokens[2])
+		amount = xp.get_xp(tokens[2], "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
+	else
+		minetest.chat_send_player(pname, "# Server: Invalid operation.")
+		return
+	end
+end
+
+
+
 if not xp.run_once then
 	xp.storage = minetest.get_mod_storage()
 
@@ -196,6 +268,16 @@ if not xp.run_once then
 	minetest.register_globalstep(function(...) xp.globalstep(...) end)
 	minetest.register_on_joinplayer(function(...) xp.on_joinplayer(...) end)
 	minetest.register_on_leaveplayer(function(...) xp.on_leaveplayer(...) end)
+
+	minetest.register_chatcommand("digxp", {
+		params = "get|set|add <player> <amount>",
+		description = "Manage players' mining XP.",
+		privs = {server=true},
+
+		func = function(...)
+			return xp.do_chatcommand(...)
+		end
+	})
 
 	local c = "xp:core"
 	local f = xp.modpath .. "/init.lua"

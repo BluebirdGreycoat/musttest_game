@@ -840,12 +840,12 @@ end
 
 
 function armor.record_player_hp(pname)
-	minetest.chat_send_all('recording new hp 3')
+	--minetest.chat_send_all('recording new hp 3')
 	if not pname then return end -- Might be nil, because of how we're called.
-	minetest.chat_send_all('recording new hp 4')
+	--minetest.chat_send_all('recording new hp 4')
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
-		minetest.chat_send_all('recording new hp')
+		--minetest.chat_send_all('recording new hp')
 		local pmeta = pref:get_meta()
 		pmeta:set_int("hp_cur", pref:get_hp())
 	end

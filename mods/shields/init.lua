@@ -40,9 +40,15 @@ minetest.register_craft({
 
 
 for key, data in pairs(ARMOR_MATERIALS) do
+	local nrba = nil
+	if data.not_repaired_by_anvil then
+		nrba = 1
+	end
+
 	register_shield("shields:shield_" .. key, {
 		description = data.name .. " Shield",
 		inventory_image = "shields_inv_shield_" .. key .. ".png",
+		groups = {not_repaired_by_anvil=nrba},
 	})
 end
 

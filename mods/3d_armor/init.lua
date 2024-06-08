@@ -40,21 +40,21 @@ if not armor.run_once then
 
 	-- Materials can only be loaded once, obviously.
 	ARMOR_MATERIALS = {
-		wood    = {item="group:wood"            , name="Wood"        , padding="farming:cotton"       , fuel=10, cook=0 , shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name="Chausses"},
-		steel   = {item="default:steel_ingot"   , name="Wrought Iron", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
-		bronze  = {item="default:bronze_ingot"  , name="Bronze"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		wood    = {item="group:wood"            , name="Wood"        , padding="farming:cotton"       , fuel=10, cook=0 , shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name="Chausses" , not_repaired_by_anvil = true },
+		steel   = {item="default:steel_ingot"   , name="Wrought Iron", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""         , not_repaired_by_anvil = false},
+		bronze  = {item="default:bronze_ingot"  , name="Bronze"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""         , not_repaired_by_anvil = false},
 
 		-- Note to self so I don't forget: diamond armor doesn't use leather in its craft ON PURPOSE!
 		-- This is also true for wood armor. Leather is hard to get!
-		diamond = {item="default:diamond"       , name="Diamond"     , padding="farming:cloth"        , fuel=0 , cook=0 , shield=true  , chestplate_name="Shardplate" , boots_name="Shoes" , helmet_name="Crown" , leggings_name=""        },
+		diamond = {item="default:diamond"       , name="Diamond"     , padding="farming:cloth"        , fuel=0 , cook=0 , shield=true  , chestplate_name="Shardplate" , boots_name="Shoes" , helmet_name="Crown" , leggings_name=""         , not_repaired_by_anvil = false},
 
-		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
-		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
-		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""        },
+		gold    = {item="default:gold_ingot"    , name="Golden"      , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""         , not_repaired_by_anvil = false},
+		mithril = {item="moreores:mithril_ingot", name="Mithril"     , padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""         , not_repaired_by_anvil = false},
+		carbon  = {item="carbon_steel:ingot"    , name="Carbon Steel", padding="group:leather_padding", fuel=0 , cook=15, shield=true  , chestplate_name=""           , boots_name=""      , helmet_name=""      , leggings_name=""         , not_repaired_by_anvil = false},
 
 		-- Note, cotton/leather armor textures are from UncleBob, CC0.
-		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
-		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses"},
+		cotton  = {item="farming:cloth"         , name="Cloth"       , padding="farming:cotton"       , fuel=4 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses" , not_repaired_by_anvil = true },
+		leather = {item="mobs:leather"          , name="Leather"     , padding="farming:cloth"        , fuel=6 , cook=0 , shield=false , chestplate_name="Jerkin"     , boots_name="Shoes" , helmet_name="Cap"   , leggings_name="Chausses" , not_repaired_by_anvil = true },
 	}
 
 	for key, data in pairs(ARMOR_MATERIALS) do
@@ -63,10 +63,15 @@ if not armor.run_once then
 			capname = data.helmet_name
 		end
 
+		local nrba = nil
+		if data.not_repaired_by_anvil then
+			nrba = 1
+		end
+
 		register_piece("3d_armor:helmet_" .. key, {
 			description = data.name .. " " .. capname,
 			inventory_image = "3d_armor_inv_helmet_" .. key .. ".png",
-			groups = {armor_head=1},
+			groups = {armor_head=1, not_repaired_by_anvil=nrba},
 		})
 
 		local chestname = "Chestplate"
@@ -77,7 +82,7 @@ if not armor.run_once then
 		register_piece("3d_armor:chestplate_" .. key, {
 			description = data.name .. " " .. chestname,
 			inventory_image = "3d_armor_inv_chestplate_" .. key .. ".png",
-			groups = {armor_torso=1},
+			groups = {armor_torso=1, not_repaired_by_anvil=nrba},
 		})
 
 		local legname = "Leggings"
@@ -88,7 +93,7 @@ if not armor.run_once then
 		register_piece("3d_armor:leggings_" .. key, {
 			description = data.name .. " " .. legname,
 			inventory_image = "3d_armor_inv_leggings_" .. key .. ".png",
-			groups = {armor_legs=1},
+			groups = {armor_legs=1, not_repaired_by_anvil=nrba},
 		})
 
 		local shoename = "Boots"
@@ -99,7 +104,7 @@ if not armor.run_once then
 		register_piece("3d_armor:boots_" .. key, {
 			description = data.name .. " " .. shoename,
 			inventory_image = "3d_armor_inv_boots_" .. key .. ".png",
-			groups = {armor_feet=1},
+			groups = {armor_feet=1, not_repaired_by_anvil=nrba},
 		})
 	end
 

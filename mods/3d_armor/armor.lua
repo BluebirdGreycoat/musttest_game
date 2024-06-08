@@ -652,6 +652,13 @@ end
 
 
 function armor.on_player_hp_change(player, hp_change, reason)
+	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
+	minetest.after(1, function() armor.record_player_hp(pname) end)
+
+	if not (pname and hp_change < 0) then
+		return hp_change
+	end
+
 	-- If a notified reason is available, use that instead.
 	if reason.type == "punch" or reason.type == "set_hp" then
 		local huh = armor.get_hp_change_reason(reason)
@@ -659,11 +666,6 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			reason = huh
 			--minetest.chat_send_all('replace dump: ' .. dump(reason))
 		end
-	end
-
-	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
-	if not (pname and hp_change < 0) then
-		return hp_change
 	end
 
 	-- Admin does not take damage.
@@ -833,4 +835,18 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	return hp_change
+end
+
+
+
+function armor.record_player_hp(pname)
+	minetest.chat_send_all('recording new hp 3')
+	if not pname then return end -- Might be nil, because of how we're called.
+	minetest.chat_send_all('recording new hp 4')
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
+		minetest.chat_send_all('recording new hp')
+		local pmeta = pref:get_meta()
+		pmeta:set_int("hp_cur", pref:get_hp())
+	end
 end

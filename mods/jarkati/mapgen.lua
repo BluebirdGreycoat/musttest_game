@@ -12,6 +12,7 @@ local ENABLE_DECORATIONS = true
 local ENABLE_TOPSOIL = true
 local ENABLE_CAVES = true
 local ENABLE_OREGEN = true
+local ENABLE_CRYSTAL = true
 
 jarkati.biomes = {}
 jarkati.decorations = {}
@@ -536,6 +537,7 @@ local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
 local c_water           = minetest.get_content_id("default:water_source")
 local c_lava            = minetest.get_content_id("default:lava_source")
+local c_crystal         = minetest.get_content_id("cavestuff:glow_white_crystal")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -714,7 +716,20 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 		if x < 0 then x = 0 end
 		n1 = n1 * (1 + x)
 
-		return (abs(n1) > 0.6 or (abs(n2) * (n3 * n3)) > 0.8)
+		local bigcavern = false
+		if abs(n1) > 0.6 then
+			bigcavern = true
+		end
+		local vertspike = false
+		if (abs(n2) * (n3 * n3)) > 0.8 then
+			vertspike = true
+		end
+		local crystal = false
+		if vertspike and (abs(n2) * (n3 * n3)) < 1.0 then
+			crystal = true
+		end
+
+		return (bigcavern or vertspike), crystal
 	end
 
 	-- Generic filler stone type.
@@ -744,7 +759,7 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 			-- Iterate downwards so we can detect when caves modify the surface height.
 			for y = maxy, miny, -1 do
 			--for y = y1, y0, -1 do
-				local cave = cavern(x, y, z)
+				local cave, crystal = cavern(x, y, z)
 				local vp = area:index(x, y, z)
 				local cid = vm_data[vp]
 
@@ -754,7 +769,11 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 				-- Don't overwrite previously existing stuff (non-ignore, non-air).
 				-- This avoids ruining schematics that were previously placed.
 				if (cid == c_air or cid == c_ignore) then
-					if ENABLE_CAVES and cave then
+					if ENABLE_CRYSTAL and crystal then
+						if y <= ground - 4 then
+							vm_data[vp] = c_crystal
+						end
+					elseif ENABLE_CAVES and cave then
 						-- We've started carving a cave in this column.
 						-- Don't bother flagging this unless the cave roof would be above ground level.
 						if (y > ground and not gc0) then

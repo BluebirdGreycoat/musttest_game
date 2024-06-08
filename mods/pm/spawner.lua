@@ -33,6 +33,7 @@ function pm.on_nodespawner_timer(pos, elapsed)
 			pm.spawn_wisp(pos, "nest_guard")
 			pm.spawn_wisp(pos, "nest_worker")
 			meta:set_int("nest_built", 1)
+			meta:mark_as_private("nest_built")
 		end
 
 		-- Keep calling this timer function.

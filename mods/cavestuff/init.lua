@@ -238,7 +238,7 @@ minetest.register_node("cavestuff:glow_white_crystal", {
 	drop = {
 		max_items = 1,
 		items = {
-			{items = {'default:mese_crystal'}, rarity = 64},
+			{items = {'default:mese_crystal'}, rarity = 24},
 			{items = {'vessels:glass_fragments'}, rarity = 5},
 			{items = {'default:glass'}}
 		}

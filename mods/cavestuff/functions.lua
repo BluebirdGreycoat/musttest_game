@@ -149,7 +149,9 @@ end
 
 
 
+-- For testing.
 local FAST_CRYSTAL_GROWTH = false
+
 function cavestuff.white_crystal.on_construct(pos)
 	local timer = minetest.get_node_timer(pos)
 	if not FAST_CRYSTAL_GROWTH then

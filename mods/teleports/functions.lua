@@ -683,7 +683,7 @@ teleports.update = function(pos)
 			default.gui_bg_img ..
 			default.gui_slots ..
 
-			"label[0,0;" .. 'Transport to nearby beacons! Need mossy cobble for energy.' .. "]" ..
+			"label[0,0;" .. 'Transport to nearby beacons. Need mese/mossy for energy.' .. "]" ..
 
 			"label[1,0.70;Beacon ID: " .. minetest.formspec_escape(nm) .. "]" ..
 			"label[1,1.2;Beacon Channel: " .. minetest.formspec_escape(net) .. "]" ..
@@ -882,8 +882,12 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 				local lcost = math_floor(rcost * 0.5)
 				if lcost < 1 then lcost = 1 end
 
+				-- If using mese fragments, cost is a bit higher.
+				local mcost = rcost * 1.5
+
 				local price1 = {name="default:mossycobble", count=rcost, wear=0, metadata=""}
 				local price2 = {name="flowers:waterlily", count=lcost, wear=0, metadata=""}
+				local price3 = {name="default:mese_crystal_fragment", count=mcost, wear=0, metadata=""}
 
 				if not inv:is_empty("price") then
 					if inv:contains_item("price", price1) then
@@ -891,6 +895,9 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 						have_biofuel = true
 					elseif inv:contains_item("price", price2) then
 						inv:remove_item("price", price2)
+						have_biofuel = true
+					elseif inv:contains_item("price", price3) then
+						inv:remove_item("price", price3)
 						have_biofuel = true
 					else
 						minetest.chat_send_player(playername, "# Server: Insufficient stored energy for transport. Add more biofuel.")
@@ -924,6 +931,8 @@ teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, p
   if listname == "price" and stack:get_name() == "default:mossycobble" then
     return stack:get_count()
   elseif listname == "price" and stack:get_name() == "flowers:waterlily" then
+    return stack:get_count()
+  elseif listname == "price" and stack:get_name() == "default:mese_crystal_fragment" then
     return stack:get_count()
 	elseif listname == "price" and stack:get_name() == "rosestone:head" then
 		if minetest.test_protection(pos, pname) then return 0 end
@@ -1172,6 +1181,9 @@ function teleports.refill_all()
 						stack:set_count(64)
 						inv:set_stack("price", 1, stack)
 					elseif stack:get_name() == "flowers:waterlily" then
+						stack:set_count(64)
+						inv:set_stack("price", 1, stack)
+					elseif stack:get_name() == "default:mese_crystal_fragment" then
 						stack:set_count(64)
 						inv:set_stack("price", 1, stack)
 					end

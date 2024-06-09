@@ -63,6 +63,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   local rstart = nethermapgen.BEDROCK_DEPTH
 
   -- Don't run for out-of-bounds mapchunks.
+  -- This code makes nethermapgen run for ALL chunks from start, to bottom of world.
   local mindepth = nstart + 100
   if minp.y > mindepth and maxp.y > mindepth then return end
 
@@ -72,7 +73,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   
   local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
   local area2 = VoxelArea:new{MinEdge=minp, MaxEdge=maxp}
-  
+
   local pr = PseudoRandom(seed + 65)
   
   local x1 = maxp.x

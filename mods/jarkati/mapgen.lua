@@ -536,11 +536,14 @@ local c_desert_cobble2  = minetest.get_content_id("default:desert_cobble2")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
+local c_gravel          = minetest.get_content_id("default:gravel")
 local c_water           = minetest.get_content_id("default:water_source")
 local c_lava            = minetest.get_content_id("default:lava_source")
 local c_crystal         = minetest.get_content_id("cavestuff:glow_white_crystal")
 local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
+local c_sandstone       = minetest.get_content_id("default:sandstone")
+local c_desertsandstone = minetest.get_content_id("default:desert_sandstone")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -732,7 +735,7 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 			crystal = true
 		end
 
-		return (bigcavern or vertspike), crystal
+		return bigcavern, vertspike, crystal
 	end
 
 	-- Generic filler stone type.
@@ -762,7 +765,7 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 			-- Iterate downwards so we can detect when caves modify the surface height.
 			for y = maxy, miny, -1 do
 			--for y = y1, y0, -1 do
-				local cave, crystal = cavern(x, y, z)
+				local cave, vertspike, crystal = cavern(x, y, z)
 				local vp = area:index(x, y, z)
 				local cid = vm_data[vp]
 
@@ -773,10 +776,21 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 				-- This avoids ruining schematics that were previously placed.
 				if (cid == c_air or cid == c_ignore) then
 					if ENABLE_CRYSTAL and crystal then
-						if y <= ground - 4 then
+						if y <= ground - 6 then
 							vm_data[vp] = c_crystal
 						end
-					elseif ENABLE_CAVES and cave then
+					elseif ENABLE_CRYSTAL and vertspike then
+						-- Cap crystals with lava just below the jarkati surface.
+						-- Make a crystal floor so the lava doesn't fall into the caves.
+						local lmin = ground - 6
+						local lmax = ground - 4
+						local croof = ground - 7
+						if y >= lmin and y <= lmax then
+							vm_data[vp] = c_lava
+						elseif y == croof then
+							vm_data[vp] = c_crystal
+						end
+					elseif ENABLE_CAVES and (cave or vertspike) then
 						-- We've started carving a cave in this column.
 						-- Don't bother flagging this unless the cave roof would be above ground level.
 						if (y > ground and not gc0) then
@@ -850,12 +864,18 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 
 					if y <= ground then
 						count = 1
-						if vm_data[vp0] ~= c_air and vm_data[vpu] ~= c_air and vm_data[vpu] ~= c_ignore then
+						-- Do not place topsoil layers in these nodes.
+						if vm_data[vp0] == c_lava or vm_data[vp0] == c_crystal then
+							depth = 0
+						elseif vm_data[vp0] ~= c_air and vm_data[vpu] ~= c_air and vm_data[vpu] ~= c_ignore then
+							-- Otherwise, replace everything other than air and ignore.
 							depth = (ground - y) + 1
 						else
+							-- Skip replacing air and ignore.
 							depth = 0
 						end
 					else
+						-- Above ground, can't place layer soil here.
 						count = 0
 						depth = 0
 					end
@@ -880,7 +900,14 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 	if ENABLE_CRYSTAL then
 	for x = x0, x1 do
 		for z = z0, z1 do
-			for y = y0, y1 do
+			-- Don't place these decorations near the bedrock layer.
+			-- Glow worms in particular were seen generating *underneath* the bottom
+			-- of the bedrock, because there *was* crystal there before the bedrock
+			-- code force-replaced it.
+			local miny = math.max(y0, nbeg + 16)
+			local maxy = y1
+
+			for y = miny, maxy do
 				local vp = area:index(x, y, z)
 				local vd = area:index(x, y-1, z)
 				local vu = area:index(x, y+1, z)
@@ -901,6 +928,12 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 				if vm_data[v3] == c_stone then stones = stones + 1 end
 				if vm_data[v4] == c_stone then stones = stones + 1 end
 
+				local lavasrc = 0
+				if vm_data[v1] == c_lava then lavasrc = lavasrc + 1 end
+				if vm_data[v2] == c_lava then lavasrc = lavasrc + 1 end
+				if vm_data[v3] == c_lava then lavasrc = lavasrc + 1 end
+				if vm_data[v4] == c_lava then lavasrc = lavasrc + 1 end
+
 				-- Stone next to crystal turns to cobble.
 				-- Place fungus and glow worms and top and bottom, too, if there's room.
 				if vm_data[vp] == c_stone and crystals > 0 then
@@ -911,6 +944,13 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 					if vm_data[vu] == c_air and pr:next(1, 2) == 1 then
 						vm_data[vu] = c_fungus
 					end
+				end
+
+				-- Sand next to lava (horizontal only) turns to ... gravel?
+				if (vm_data[vp] == c_sand or vm_data[vp] == c_desert_sand or
+					 vm_data[vp] == c_sandstone or vm_data[vp] == c_desertsandstone)
+					 and lavasrc > 0 then
+					vm_data[vp] = c_gravel
 				end
 			end
 		end

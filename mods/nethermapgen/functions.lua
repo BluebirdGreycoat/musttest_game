@@ -104,3 +104,37 @@ end
 nethermapgen.scatter_flames = function(pos)
   scatter_nether_fire(pos)
 end
+
+
+
+local SHROOM_SCHEMATICS = {
+	"redshroom_shroom1.mts",
+	"redshroom_shroom2.mts",
+	"redshroom_shroom3.mts",
+	"redshroom_shroom4.mts",
+	"redshroom_shroom5.mts",
+	"redshroom_shroom6.mts",
+}
+
+nethermapgen.create_shroom = function(vm, pos)
+	local schempath = nethermapgen.redshroom_modpath .. "/schematics/"
+	local path = schempath .. SHROOM_SCHEMATICS[random(#SHROOM_SCHEMATICS)]
+	minetest.place_schematic_on_vmanip(vm, vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
+end
+
+
+
+local FIRETREE_SCHEMATICS = {
+	"firetree_tree1.mts",
+	"firetree_tree2.mts",
+	"firetree_tree3.mts",
+	"firetree_tree4.mts",
+	"firetree_tree5.mts",
+	"firetree_tree6.mts",
+}
+
+nethermapgen.create_firetree = function(vm, pos)
+	local schempath = nethermapgen.firetree_modpath .. "/schematics/"
+	local path = schempath .. FIRETREE_SCHEMATICS[random(#FIRETREE_SCHEMATICS)]
+	minetest.place_schematic_on_vmanip(vm, vector.add(pos, {x=-2, y=0, z=-2}), path, "random", nil, false)
+end

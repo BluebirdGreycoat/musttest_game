@@ -22,8 +22,8 @@ moreores_mithril_ore_per_chunk = 3
 
 -- Minimal depths of ore generation (Y coordinate, 0 being sea level by default)
 moreores_tin_min_depth = -256
-moreores_silver_min_depth = -31000
-moreores_mithril_min_depth = -31000
+moreores_silver_min_depth = -25000
+moreores_mithril_min_depth = -25000
 
 -- Maximal depths of ore generation (Y coordinate, 0 being sea level by default)
 moreores_tin_max_depth = 400

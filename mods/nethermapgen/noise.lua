@@ -53,7 +53,7 @@ nethermapgen.noise5param3d = {
   scale = 1,
   spread = {x=128, y=128, z=128},
   seed = 8125,
-  octaves = 3,
+  octaves = 5,
   persist = 0.5,
   lacunarity = 2
 }

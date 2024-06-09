@@ -1,4 +1,17 @@
 
+nethermapgen = {}
+nethermapgen.modpath = minetest.get_modpath("nethermapgen")
+nethermapgen.firetree_modpath = minetest.get_modpath("firetree")
+nethermapgen.redshroom_modpath = minetest.get_modpath("redshroom")
+
+-- These are copied in the init script, they MUST match.
+nethermapgen.NETHER_START = -25000
+nethermapgen.BRIMSTONE_OCEAN = -30800
+nethermapgen.BEDROCK_DEPTH = -30900
+
+dofile(nethermapgen.modpath .. "/noise.lua")
+dofile(nethermapgen.modpath .. "/functions.lua")
+
 local set_node = minetest.set_node
 local get_node = minetest.get_node
 local swap_node = minetest.swap_node
@@ -40,10 +53,13 @@ local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 -- Externally located tables for performance.
 local data = {}
 local noisemap1 = {}
+local noisemap1_full = {}
 local noisemap2 = {}
 local noisemap3 = {}
+local noisemap3_full = {}
 local noisemap4 = {}
 local noisemap5 = {}
+local noisemap5_full = {}
 
 --[[
 Notes on mapgen function. IMPORTANT!
@@ -57,10 +73,15 @@ This 'hack' would not be necessary if we were using Singlenode for the C++ mapge
 However, we're using Valleys, so the Lua mapgen must work nicely with it.
 --]]
 
-nethermapgen.generate_realm = function(minp, maxp, seed)
+nethermapgen.generate_realm = function(vm, minp, maxp, seed)
   local nstart = nethermapgen.NETHER_START
   local bstart = nethermapgen.BRIMSTONE_OCEAN
   local rstart = nethermapgen.BEDROCK_DEPTH
+
+  local gennotify_data = {
+    minp = minp,
+    maxp = maxp,
+  }
 
   -- Don't run for out-of-bounds mapchunks.
   -- This code makes nethermapgen run for ALL chunks from start, to bottom of world.
@@ -68,11 +89,8 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   if minp.y > mindepth and maxp.y > mindepth then return end
 
   -- Grab the voxel manipulator.
-  local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+  local emin, emax = vm:get_emerged_area()
   vm:get_data(data) -- Read current map data.
-  
-  local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
-  local area2 = VoxelArea:new{MinEdge=minp, MaxEdge=maxp}
 
   local pr = PseudoRandom(seed + 65)
   
@@ -82,15 +100,26 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   local x0 = minp.x
   local y0 = minp.y
   local z0 = minp.z
+
+  -- To be used with noisemaps as needed.
+  local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+  local area2 = VoxelArea:new({MinEdge={x=x0, y=y0, z=z0}, MaxEdge={x=x1, y=y1, z=z1}})
   
-  -- Compute side lengths. 
+  -- Compute side lengths.
   local side_len_x = ((x1-x0)+1)
   local side_len_y = ((y1-y0)+1)
   local side_len_z = ((z1-z0)+1)
+  local side_len_x_full = ((emax.x-emin.x)+1)
+  local side_len_y_full = ((emax.y-emin.y)+1)
+  local side_len_z_full = ((emax.z-emin.z)+1)
   local sides3D = {x=side_len_x, y=side_len_y, z=side_len_z}
+  local sides3D_full = {x=side_len_x_full, y=side_len_y_full, z=side_len_z_full}
   local sides2D = {x=side_len_x, y=side_len_z}
+  local sides2D_full = {x=side_len_x_full, y=side_len_z_full}
   local bp3d = {x=x0, y=y0, z=z0}
+  local bp3d_full = {x=emin.x, y=emin.y, z=emin.z}
   local bp2d = {x=x0, y=z0}
+  local bp2d_full = {x=emin.x, y=emin.z}
   
   -- Get noisemaps.
   local perlin1 = minetest.get_perlin_map(nethermapgen.noise1param2d, sides2D)
@@ -101,15 +130,103 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   perlin3:get_2d_map_flat(bp2d, noisemap3)
   local perlin4 = minetest.get_perlin_map(nethermapgen.noise4param2d, sides2D)
   perlin4:get_2d_map_flat(bp2d, noisemap4)
-  local perlin5 = minetest.get_perlin_map(nethermapgen.noise5param3d, sides3D)
-  perlin5:get_3d_map_flat(bp3d, noisemap5)
+
+  -- Not currently used.
+  --local perlin5 = minetest.get_perlin_map(nethermapgen.noise5param3d, sides3D)
+  --perlin5:get_3d_map_flat(bp3d, noisemap5)
   
+  -- Some noisemaps need a full emin/emax version.
+  local perlin1_full = minetest.get_perlin_map(nethermapgen.noise1param2d, sides2D_full)
+  perlin1_full:get_2d_map_flat(bp2d_full, noisemap1_full)
+  local perlin3_full = minetest.get_perlin_map(nethermapgen.noise3param2d, sides2D_full)
+  perlin3_full:get_2d_map_flat(bp2d_full, noisemap3_full)
+  local perlin5_full = minetest.get_perlin_map(nethermapgen.noise5param3d, sides3D_full)
+  perlin5_full:get_3d_map_flat(bp3d_full, noisemap5_full)
+
   -- Localize commonly used functions.
   local floor = math.floor
   local ceil = math.ceil
   local abs = math.abs
-  
-  -- First mapgen pass.
+
+  -- Pre-pass: convert stuff from the C++ mapgen to nether nodes.
+  -- Do NOT modify terrain shape in this pass! (Except for the hack, see hack.)
+  -- We have to scan through the overgenerated edges because those will contain
+  -- default nodes as well.
+  for z = emin.z, emax.z do
+    for x = emin.x, emax.x do
+      -- Get index into 2D noise arrays.
+      local nx = (x-emin.x)
+      local nz = (z-emin.z)
+      local ni2 = (side_len_z_full*nz+nx)
+      ni2 = ni2 + 1 -- Lua arrays start indexing at 1, not 0. Urrrrgh. >:(
+
+      local n1 = noisemap1_full[ni2]
+
+      -- Calculate the variance at the top of the nether's cavern realm,
+      -- where it merges with default stone caverns.
+      local rs_top = ceil(nstart+abs(n1)*64)
+      local rs_bot = floor(nstart-abs(n1)*64)
+
+      for y = emin.y, emax.y do
+        local vp = area:index(x, y, z)
+
+        -- Get the type already generated at this position.
+        local ip = data[vp]
+
+        -- Note: sometimes these will be nil, because of accessing outside the array.
+        -- (We are scanning through the emin/emax range.)
+        local iu = data[area:index(x, y+1, z)]
+        local id = data[area:index(x, y-1, z)]
+
+        -- Defines rackstone veins all throughout the nether.
+        local n5 = noisemap5_full[area:index(x, y, z)]
+
+        -- Using mapdata already generated by the C++ mapgen, convert regular nodes to nether types.
+        if ip == c_stone then
+          if y >= rs_bot and y <= rs_top then
+            -- Top of the nether where it meets default caverns.
+            data[vp] = c_mgrackstone
+          elseif y < rs_bot then
+            -- Regular rackstone veins run throughout nether.
+            if abs(n5) < 0.025 then
+              data[vp] = c_mgrackstone
+            else
+              -- Everything else is redrack.
+              data[vp] = c_mgredrack
+            end
+          end
+        elseif ip == c_cobble or ip == c_mossycobble then
+          data[vp] = c_netherbrick
+        elseif ip == c_cobblestair then
+          data[vp] = c_netherstair
+        elseif ip == c_water or ip == c_waterflow then
+          data[vp] = c_air
+        elseif ip == c_lava or ip == c_lavaflow then
+          data[vp] = c_air
+        end
+
+        -- Get rid of ores generated by C++ (we use our own).
+        -- WARNING: this creates bugs because it captures too many nodes, including our own,
+        -- from neighboring chunks!
+        --if ip ~= c_air and ip ~= c_ignore then
+        --  data[vp] = c_mgrackstone
+        --end
+
+        -- HACK:
+        -- Get rid of the <BEEP> flat horizontal slabs that appear at chunk top/bot edges
+        -- whenever emerge threads are more than 1. We have to do this *indiscriminately*,
+        -- which unfortunately modifies the terrain shape more than is actually necessary.
+        if ip == c_stone or ip == c_mgredrack or ip == c_redrack or ip == c_mgrackstone or ip == c_rackstone then
+          if (id == c_air or id == c_ignore) and (iu == c_air or iu == c_ignore) then
+            data[vp] = c_air
+          end
+        end
+      end
+    end
+  end
+
+  -- Pass the first. Here, I modify the terrain shape (minp/maxp range only) to
+  -- generate the nether sea, its ceiling, and the cavern floor directly above.
   for z = z0, z1 do
     for x = x0, x1 do
       -- Get index into 2D noise arrays.
@@ -117,21 +234,18 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
       local nz = (z-z0)
       local ni2 = (side_len_z*nz+nx)
       ni2 = ni2 + 1 -- Lua arrays start indexing at 1, not 0. Urrrrgh. >:(
-          
+
       local n1 = noisemap1[ni2]
       local n2 = noisemap2[ni2]
       local n3 = noisemap3[ni2]
       local n4 = noisemap4[ni2]
-      
-      local rs_top = ceil(nstart+abs(n1)*64)
-      local rs_bot = floor(nstart-abs(n1)*64)
-      
+
       local lakecel = bstart + 30
       local cavernf = bstart + 40
       local lakelav = bstart
       local lakebed = bstart - 2
       local islandi = bstart - 2
-      
+
       if n4 > -0.3 then
         if abs(n2) > 0.6 then
           islandi = bstart + 5
@@ -143,114 +257,84 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
           islandi = islandi + pr:next(3, 5)
         end
       end
-      
+
       lakecel = lakecel - pr:next(0, 1+floor(abs(n3) * 3.5))
       lakecel = lakecel + floor(abs(n1) * 6)
-      
-      -- First pass through column.
+
+      -- For whole column:
       for y = y0, y1 do
         local vp = area:index(x, y, z)
-        local vu = area:index(x, y+1, z)
-        local vd = area:index(x, y-1, z)
-      
-        -- 3D noise.
-        local np = area2:index(x, y, z)
-        local n5 = noisemap5[np]
-        
-        if y <= rs_top then
-          -- Get the type already generated at this position.
-          local ip = data[vp]
-          
-          -- Using mapdata already generated by the C++ mapgen, convert regular nodes to nether types.
-          if ip == c_cobble or ip == c_mossycobble then
-            data[vp] = c_netherbrick
-          elseif ip == c_cobblestair then
-            data[vp] = c_netherstair
-          elseif ip == c_water or ip == c_waterflow then
-            data[vp] = c_lava
-          elseif ip ~= c_air and ip ~= c_vine then -- Vines can cross chunk borders. Don't replace them.
-            -- Generate rackstone layer between nether and underworld.
-            if y >= rs_bot and y <= rs_top then
-              data[vp] = c_mgrackstone
-            elseif y < rs_bot then
-              if abs(n5) < 0.015 then
-                data[vp] = c_mgrackstone
-              else
-                data[vp] = c_mgredrack
-              end
-            else
-              data[vp] = c_stone
-            end
-          end
-          
-          -- Generate the endless nether lava ocean, with islands.
-          if y <= lakebed or y <= islandi then
-            -- Fill in map below brimstone ocean & create islands.
+
+        -- Generate the endless nether lava ocean, with islands.
+        if y <= lakebed or y <= islandi then
+          -- Fill in map below brimstone ocean & create islands.
+          -- Important: NOT using mg_redrack here, because I don't want C++
+          -- caves/dungeons carving through this!
+          data[vp] = c_redrack
+        elseif y <= lakelav then
+          -- Special lava for brimstone ocean.
+          -- Right around islands.
+          data[vp] = c_nlava
+        elseif y <= lakecel then
+          -- Carve out horizontal cavern above brimstone ocean.
+          -- Note: we fix the ceiling in a later pass.
+          data[vp] = c_air
+        end
+      end
+    end
+  end
+  
+  -- Pass the second. Generate the non-cave-carvable ceiling above the
+  -- nether sea. To prevent C++ caves cutting through the nethersea roof, this
+  -- has to be overgenerated.
+  for z = emin.z, emax.z do
+    for x = emin.x, emax.x do
+      -- Get index into 2D noise arrays.
+      local nx = (x-emin.x)
+      local nz = (z-emin.z)
+      local ni2 = (side_len_z_full*nz+nx)
+      ni2 = ni2 + 1 -- Lua arrays start indexing at 1, not 0. Urrrrgh. >:(
+
+      local n1 = noisemap1_full[ni2]
+      local n3 = noisemap3_full[ni2]
+
+      local lakecel = bstart + 30
+      local cavernf = bstart + 40
+
+      lakecel = lakecel - pr:next(0, 1+floor(abs(n3) * 3.5))
+      lakecel = lakecel + floor(abs(n1) * 5)
+
+      -- For whole column:
+      for y = emin.y, emax.y do
+        if y > lakecel and y <= cavernf then
+          local vp = area:index(x, y, z)
+
+          -- Fill in huge ceiling holes created when huge caves
+          -- intersect with the brimstone ocean realm. This "floor" itself
+          -- supports a second lava ocean in the cavern layers.
+          local f1 = lakecel + 1
+          local f2 = lakecel + 5
+          if y >= f1 and y <= f2 then
+            -- Important: NOT using mg_redrack here, because I don't want C++
+            -- caves/dungeons carving through this!
             data[vp] = c_redrack
-          elseif y <= lakelav then
-            data[vp] = c_nlava -- Special lava for brimstone ocean.
-          elseif y <= lakecel then
-            -- Carve out horizontal cavern above brimstone ocean.
-            data[vp] = c_air
-          elseif ip == c_air and y > lakecel and y <= cavernf then
-            if y <= (lakecel + 4) then
-              -- Fill in huge ceiling holes created when huge caves
-              -- intersect with the brimstone ocean realm.
-              data[vp] = c_redrack
-            else
+          elseif y > f2 and y <= cavernf then
+            if data[vp] == c_air then
               data[vp] = c_nlava
             end
           end
-        end -- If Y coord is below nether start.
-      
-      end -- For all in Y coordinates.
-    end -- For all in X coordinates.
-  end -- For all in Z coordinates.
-  
-  -- Second mapgen pass, for things that need overgenerating.
-  local ex1 = emax.x
-  local ey1 = emax.y
-  local ez1 = emax.z
-  local ex0 = emin.x
-  local ey0 = emin.y
-  local ez0 = emin.z
-  
-  for z = ez0, ez1 do
-    for x = ex0, ex1 do
-      local lakebot = bstart + 20
-      local laketop = bstart + 50
-
-      for y = ey0, ey1 do
-        -- Get voxelmap indice.
-        local vp = area:index(x, y, z)
-        local vd = area:index(x, y-1, z)
-
-        local ip = data[vp]
-        local id = data[vd]
-        
-        -- Transform dungeons (over)-generated by the C++ mapgen.
-        -- Also remove water.
-        if y <= nstart then
-          if ip == c_cobble or ip == c_mossycobble then
-            data[vp] = c_netherbrick
-          elseif ip == c_cobblestair then
-            data[vp] = c_netherstair
-          elseif ip == c_water or ip == c_waterflow then
-            data[vp] = c_lava
-          end
         end
-        
-        -- Bedrock layer.
+      end
+    end
+  end
+
+  -- Generate the bedrock layer. This MUST overwrite everything else!
+  for z = emin.z, emax.z do
+    for x = emin.x, emax.x do
+      for y = emin.y, emax.y do
         if y <= rstart+pr:next(1,pr:next(2, 3)) then
+          local vp = area:index(x, y, z)
           data[vp] = c_bedrock
-        end
-
-        -- Fill gaps carved by C++ caves, to prevent upper level brimstone ocean
-        -- from draining down below.
-        if y >= ey0 + 1 and y >= lakebot and y <= laketop then
-          if ip == c_nlava and (id == c_air or id == c_ignore) then
-            data[vd] = c_mgredrack
-          end
         end
       end
     end
@@ -279,7 +363,7 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   
   -- Final mapgen pass, for finding floors and ceilings.
   -- Note: this has to be a seperate pass because otherwise the code
-  -- will find floors and ceilings where there aren't any. Sad but true. :(
+  -- will find floors and ceilings where there aren't any.
   for x = x0, x1 do
     for z = z0, z1 do
       for y = y0, y1 do
@@ -334,9 +418,9 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   vm:set_data(data)
   minetest.generate_ores(vm, minp, maxp)
   vm:set_lighting({day=0, night=0})
-  vm:calc_lighting()
+  vm:calc_lighting(emin, emax, true)
   vm:update_liquids()
-  vm:write_to_map()
+  --vm:write_to_map()
   
   for k, v in ipairs(chnk_pos_flame) do
     nethermapgen.scatter_flames(v)
@@ -346,14 +430,14 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
     local p = table.copy(v)
     p.y = p.y - 1
     set_node(p, {name="rackstone:dauthsand"})
-    firetree.create_firetree({x=p.x, y=p.y+1, z=p.z})
+    nethermapgen.create_firetree(vm, {x=p.x, y=p.y+1, z=p.z})
   end
   
   for k, v in ipairs(chnk_pos_shroom) do
     local p = table.copy(v)
     p.y = p.y - 1
     set_node(p, {name="rackstone:dauthsand"})
-    redshroom.create_shroom({x=p.x, y=p.y+1, z=p.z})
+    nethermapgen.create_shroom(vm, {x=p.x, y=p.y+1, z=p.z})
   end
   
   for k, v in ipairs(chnk_pos_crystal) do
@@ -373,12 +457,20 @@ nethermapgen.generate_realm = function(minp, maxp, seed)
   end
 
   for k, v in ipairs(chnk_pos_grass) do
-		-- Use swap_node to avoid triggering the construction timer.
 		swap_node(v, {name="nether:grass_" .. math_random(1, 3)})
   end
 
   for k, v in ipairs(chnk_pos_flower) do
-		-- Use swap_node to avoid triggering the construction timer.
 		swap_node(v, {name="nether:glowflower"})
   end
+
+	minetest.save_gen_notify("nether:mapgen_info", gennotify_data)
 end
+
+
+
+-- Register the mapgen callback.
+minetest.register_on_generated(function(...)
+  nethermapgen.generate_realm(...)
+end)
+

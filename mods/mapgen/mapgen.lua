@@ -71,7 +71,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = 16 * 16 * 16,
     clust_size      = 5,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = 0,
     noise_threshold = 0.0,
     noise_params    = {
@@ -91,7 +91,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = 10 * 10 * 10,
     clust_size      = 5,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -64,
     noise_threshold = 0.0,
     noise_params    = {
@@ -110,7 +110,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = 10 * 10 * 10,
     clust_size      = 5,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -64,
     noise_threshold = 0.0,
     noise_params    = {
@@ -146,7 +146,7 @@ oregen.register_ore({
     clust_scarcity = 8 * 8 * 8,
     clust_num_ores = 8,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = 64,
 })
 
@@ -157,7 +157,7 @@ oregen.register_ore({
     clust_scarcity = 24 * 24 * 24,
     clust_num_ores = 27,
     clust_size     = 6,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = 0,
 })
 
@@ -182,7 +182,7 @@ oregen.register_ore({
     clust_scarcity = 7 * 7 * 7,
     clust_num_ores = 5,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = 0,
 })
 
@@ -193,7 +193,7 @@ oregen.register_ore({
     clust_scarcity = 24 * 24 * 24,
     clust_num_ores = 27,
     clust_size     = 6,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -64,
 })
 
@@ -229,7 +229,7 @@ oregen.register_ore({
     clust_scarcity = 9 * 9 * 9,
     clust_num_ores = 5,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -64,
 })
 
@@ -251,7 +251,7 @@ oregen.register_ore({
     clust_scarcity = 13 * 13 * 13,
     clust_num_ores = 5,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -256,
 })
 
@@ -273,7 +273,7 @@ oregen.register_ore({
     clust_scarcity = 14 * 14 * 14,
     clust_num_ores = 5,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -256,
 })
 
@@ -285,7 +285,7 @@ minetest.register_ore({
     clust_scarcity = 20 * 20 * 20,
     clust_num_ores = 5,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -1014,
     seed           = 65711905,
 })
@@ -322,7 +322,7 @@ oregen.register_ore({
     clust_scarcity = 15 * 15 * 15,
     clust_num_ores = 4,
     clust_size     = 3,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -256,
 })
 
@@ -348,7 +348,7 @@ minetest.register_ore({
     clust_scarcity = 36 * 36 * 36,
     clust_num_ores = 4,
     clust_size     = 2,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = -2048,
     seed           = 681942,
 })

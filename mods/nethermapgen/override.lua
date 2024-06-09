@@ -1,11 +1,13 @@
 
+--[[
 -- Prevent the carving of water/lava caves in these materials.
 minetest.override_item("rackstone:rackstone", {
-  is_ground_content = false,
+  --is_ground_content = false,
 })
 minetest.override_item("rackstone:redrack", {
-  is_ground_content = false,
+  --is_ground_content = false,
 })
+--]]
 
 -- We need 2 types of nether stone, 1 type for below the brimstone ocean,
 -- and the second type for the nether above. The second type allows caves

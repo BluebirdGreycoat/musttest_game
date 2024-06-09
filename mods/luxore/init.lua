@@ -37,6 +37,6 @@ oregen.register_ore({
 	clust_scarcity = 16*16*16,
 	clust_num_ores = 3,
 	clust_size = 10,
-	y_min = -30000,
+	y_min = -25000,
 	y_max = -512,
 })

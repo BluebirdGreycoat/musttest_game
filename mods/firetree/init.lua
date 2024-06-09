@@ -38,7 +38,7 @@ minetest.register_node("firetree:leaves", {
 		items = {
 			-- You sometimes get a real apple.
 			{items = {'basictrees:tree_apple'}, rarity = 22},
-			{items = {'firetree:sapling'}, rarity = 18},
+			{items = {'firetree:sapling'}, rarity = 14},
 			{items = {"default:stick"}, rarity = 6},
 
 			-- Player will get leaves only if he gets nothing else; this is because 'max_items' is 1.

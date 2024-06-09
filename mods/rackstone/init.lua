@@ -51,6 +51,7 @@ minetest.register_node("rackstone:rackstone", {
   after_destruct = rackstone.destabilize_dauthsand,
 	movement_speed_multiplier = default.ROAD_SPEED_NETHER,
 	--light_source = rackstone.light_source,
+	is_ground_content = false,
 
 	-- Common stone does not count toward tool's dig count.
 	_toolranks = {
@@ -166,6 +167,7 @@ minetest.register_node("rackstone:redrack", {
 	groups = utility.dig_groups("netherack", {rackstone=1, stabilize_dauthsand=1, netherack=1}),
 	sounds = rackstone.rackstone_sounds(),
 	movement_speed_multiplier = default.SLOW_SPEED_NETHER,
+	is_ground_content = false,
 
 	drop = {
 		max_items = 1,

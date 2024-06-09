@@ -71,7 +71,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = scarcity,
     clust_size      = size,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -1000,
     noise_threshold = 0.0,
     noise_params    = {
@@ -90,7 +90,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = scarcity,
     clust_size      = size,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -1000,
     noise_threshold = 0.0,
     noise_params    = {
@@ -109,7 +109,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = scarcity,
     clust_size      = size,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -1000,
     noise_threshold = 0.0,
     noise_params    = {
@@ -128,7 +128,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = scarcity,
     clust_size      = size,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -1000,
     noise_threshold = 0.0,
     noise_params    = {
@@ -147,7 +147,7 @@ oregen.register_ore({
     wherein         = {"default:stone"},
     clust_scarcity  = scarcity,
     clust_size      = size,
-    y_min           = -31000,
+    y_min           = -25000,
     y_max           = -1000,
     noise_threshold = 0.0,
     noise_params    = {
@@ -168,7 +168,7 @@ oregen.register_ore({
     clust_scarcity = 11 * 11 * 11,
     clust_num_ores = 5,
     clust_size     = 2,
-    y_min          = -31000,
+    y_min          = -25000,
     y_max          = MAPGEN_SEA_LEVEL,
 })
 --]]

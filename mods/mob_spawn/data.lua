@@ -706,6 +706,55 @@ register({
 	realm_restriction = true,
 })
 
+-- Source of obsidian in Jarkati.
+register({
+	name = "obsidianmonster:obsidianmonster",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 0,
+  min_height = 3620,
+  max_height = 3720,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 995463,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
+})
+
+-- That flying thing.
+-- Source of leather in Jarkati.
+register({
+	name = "oerkki:oerkki",
+	nodes = {"air"},
+	min_light = 0,
+	max_light = 0,
+  min_height = 3620,
+  max_height = 3720,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 5523,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 

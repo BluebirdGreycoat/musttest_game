@@ -5,8 +5,9 @@ cavestuff.modpath = minetest.get_modpath("cavestuff")
 -- Localize for performance.
 local math_random = math.random
 
--- Hot cobble functions.
+-- Node functions.
 cavestuff.hotcobble = cavestuff.hotcobble or {}
+cavestuff.white_crystal = cavestuff.white_crystal or {}
 
 
 
@@ -105,6 +106,116 @@ function cavestuff.hotcobble.on_finish_collapse(pos, node)
 		end
 	else
 		minetest.swap_node(pos, {name="default:cobble"})
+	end
+end
+
+
+
+function cavestuff.white_crystal.after_dig_node(pos, oldnode, metadata, digger)
+	if not digger or not digger:is_player() then
+		return
+	end
+	local pname = digger:get_player_name()
+	--minetest.chat_send_all('oldnode: ' .. dump(oldnode))
+	-- Drop nodes hanging.
+	for k = 1, 16 do
+		local p = vector.add(pos, {x=0, y=-k, z=0})
+		local n = minetest.get_node(p)
+		--minetest.chat_send_all(dump(n))
+		if n.name == oldnode.name and not minetest.test_protection(p, pname) then
+			--minetest.chat_send_all('drop node')
+			--local time = 1/k
+			minetest.after(0, sfn.drop_node, p)
+			--minetest.set_node(p, {name="default:stone"})
+		else
+			break
+		end
+	end
+	-- Drop nodes standing.
+	for k = 1, 16 do
+		local p = vector.add(pos, {x=0, y=k, z=0})
+		local n = minetest.get_node(p)
+		--minetest.chat_send_all(dump(n))
+		if n.name == oldnode.name and not minetest.test_protection(p, pname) then
+			--minetest.chat_send_all('drop node')
+			--local time = 1/k
+			minetest.after(0, sfn.drop_node, p)
+			--minetest.set_node(p, {name="default:stone"})
+		else
+			break
+		end
+	end
+end
+
+
+
+local FAST_CRYSTAL_GROWTH = false
+function cavestuff.white_crystal.on_construct(pos)
+	local timer = minetest.get_node_timer(pos)
+	if not FAST_CRYSTAL_GROWTH then
+		timer:start(60*math.random(15, 60))
+	else
+		timer:start(5)
+	end
+end
+
+
+
+function cavestuff.white_crystal.on_timer(pos, elapsed)
+	local sides = {
+		{x=pos.x+1, y=pos.y, z=pos.z},
+		{x=pos.x-1, y=pos.y, z=pos.z},
+		{x=pos.x, y=pos.y, z=pos.z+1},
+		{x=pos.x, y=pos.y, z=pos.z-1},
+	}
+
+	local lava = 0
+	local water = 0
+
+	for k = 1, #sides do
+		local n = minetest.get_node(sides[k])
+		if minetest.get_item_group(n.name, "lava") ~= 0 then
+			lava = lava + 1
+		end
+		if minetest.get_item_group(n.name, "water") ~= 0 then
+			water = water + 1
+		end
+	end
+
+	if water > 0 and lava > 0 then
+		local above = {x=pos.x, y=pos.y+1, z=pos.z}
+		local c = minetest.get_node(above)
+		if c.name == "cavestuff:whitespike4" then
+			local under = {x=pos.x, y=pos.y-1, z=pos.z}
+			local n = minetest.get_node(under)
+			local ndef = minetest.registered_nodes[n.name]
+			-- Only ground content in group "ore" is eligible to be a transmutation source.
+			if ndef.is_ground_content and minetest.get_item_group(n.name, "ore") ~= 0 then
+				minetest.set_node(pos, {name="glowstone:minerals"})
+				minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
+				return
+			end
+		elseif c.name == "cavestuff:whitespike3" then
+			minetest.swap_node(above, {name="cavestuff:whitespike4", param2=math.random(0, 3)})
+			minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
+		elseif c.name == "cavestuff:whitespike2" then
+			minetest.swap_node(above, {name="cavestuff:whitespike3", param2=math.random(0, 3)})
+			minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
+		elseif c.name == "cavestuff:whitespike1" then
+			minetest.swap_node(above, {name="cavestuff:whitespike2", param2=math.random(0, 3)})
+			minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
+		elseif c.name == "air" then
+			minetest.swap_node(above, {name="cavestuff:whitespike1", param2=math.random(0, 3)})
+			minetest.sound_play("default_cool_lava", {pos=pos, max_hear_distance=16, gain=0.25}, true)
+		end
+	end
+
+	-- If transmutation not finished, restart timer.
+	local timer = minetest.get_node_timer(pos)
+	if not FAST_CRYSTAL_GROWTH then
+		timer:start(60*math.random(15, 60))
+	else
+		timer:start(5)
 	end
 end
 

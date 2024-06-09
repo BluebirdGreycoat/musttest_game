@@ -248,40 +248,16 @@ minetest.register_node("cavestuff:glow_white_crystal", {
 		}
 	},
 
-	after_dig_node = function(pos, oldnode, metadata, digger)
-		if not digger or not digger:is_player() then
-			return
-		end
-		local pname = digger:get_player_name()
-		--minetest.chat_send_all('oldnode: ' .. dump(oldnode))
-		-- Drop nodes hanging.
-		for k = 1, 16 do
-			local p = vector.add(pos, {x=0, y=-k, z=0})
-			local n = minetest.get_node(p)
-			--minetest.chat_send_all(dump(n))
-			if n.name == oldnode.name and not minetest.test_protection(p, pname) then
-				--minetest.chat_send_all('drop node')
-				--local time = 1/k
-				minetest.after(0, sfn.drop_node, p)
-				--minetest.set_node(p, {name="default:stone"})
-			else
-				break
-			end
-		end
-		-- Drop nodes standing.
-		for k = 1, 16 do
-			local p = vector.add(pos, {x=0, y=k, z=0})
-			local n = minetest.get_node(p)
-			--minetest.chat_send_all(dump(n))
-			if n.name == oldnode.name and not minetest.test_protection(p, pname) then
-				--minetest.chat_send_all('drop node')
-				--local time = 1/k
-				minetest.after(0, sfn.drop_node, p)
-				--minetest.set_node(p, {name="default:stone"})
-			else
-				break
-			end
-		end
+	on_construct = function(...)
+		return cavestuff.white_crystal.on_construct(...)
+	end,
+
+	after_dig_node = function(...)
+		return cavestuff.white_crystal.after_dig_node(...)
+	end,
+
+	on_timer = function(...)
+		return cavestuff.white_crystal.on_timer(...)
 	end,
 })
 
@@ -1076,6 +1052,40 @@ for i=1, 4, 1 do
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
+			end
+		end,
+  })
+end
+
+for i=1, 4, 1 do
+  minetest.register_node("cavestuff:whitespike" .. i, {
+    description = "White Crystal Spike",
+    mesh = "mese_crystal_ore" .. i .. ".obj",
+    tiles = {"caverealms_glow_white.png"},
+    drawtype = "mesh",
+    paramtype = "light",
+		paramtype2 = "facedir",
+    groups = utility.dig_groups("crystal", {
+			attached_node = 1, fall_damage_add_percent = 100,
+		}),
+    sounds = default.node_sound_glass_defaults(),
+    selection_box = {
+      type = "fixed",
+      fixed = {-0.3, -0.5, -0.3, 0.3, 0.35, 0.3}
+    },
+		on_rotate = function(...)
+			return screwdriver.rotate_simple(...)
+		end,
+		on_construct = function(pos)
+			local node = minetest.get_node(pos)
+			node.param2 = math_random(0, 3)
+			minetest.swap_node(pos, node)
+		end,
+		on_player_walk_over = function(pos, player)
+			utility.damage_player(player, "fleshy", 1*500, "ground")
+
+			if player:get_hp() == 0 then
+				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a crystal spike.")
 			end
 		end,
   })

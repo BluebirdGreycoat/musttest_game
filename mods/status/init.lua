@@ -111,7 +111,7 @@ end
 
 
 
-function status.chat_short_status(user, param)
+function status.chat_short_status(user, param, last_login)
   -- Serialize player names to string.
   local players = minetest.get_connected_players()
   local clients = "{"
@@ -149,6 +149,29 @@ function status.chat_short_status(user, param)
 		num_clients .. " " .. splayers .. " online" .. tail
 
 	minetest.chat_send_player(user, final)
+
+	if last_login then
+		local days = math.floor((os.time() - last_login) / (60 * 60 * 24))
+		local hours = math.floor((os.time() - last_login) / (60 * 60))
+		local logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M UTC", last_login) .. " "
+		local loginhours = ""
+
+		if hours == 1 then
+			loginhours = ", 1 hour ago"
+		else
+			loginhours = ", " .. hours .. " hours ago"
+		end
+
+		if days <= 0 then
+			logintime = logintime .. "(Today" .. loginhours .. ")"
+		elseif days == 1 then
+			logintime = logintime .. "(Yesterday" .. loginhours .. ")"
+		else
+			logintime = logintime .. "(" .. days .. " days" .. loginhours .. ")"
+		end
+
+		minetest.chat_send_player(user, STATUS_COLOR .. "# Server: " .. logintime)
+	end
 end
 
 
@@ -162,14 +185,14 @@ end
 
 
 
-function status.on_joinplayer(player)
+function status.on_joinplayer(player, last_login)
 	local pname = player:get_player_name()
 	-- Don't show /status info to registered players rejoining the server.
 	-- It's just noise, if they want it they can type /status manually.
 	if not passport.player_registered(pname) then
 		status.chat_status(pname, "")
 	else
-		status.chat_short_status(pname, "")
+		status.chat_short_status(pname, "", last_login)
 	end
 end
 

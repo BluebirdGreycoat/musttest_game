@@ -132,15 +132,23 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)
 		if pauth and pauth.last_login then
-			local days = math_floor((os.time() - pauth.last_login) / (60 * 60 * 24))
+			local days = math.floor((os.time() - pauth.last_login) / (60 * 60 * 24))
+			local hours = math.floor((os.time() - pauth.last_login) / (60 * 60))
 			logintime = "Your last login was on " .. os.date("!%Y/%m/%d, %H:%M UTC", pauth.last_login) .. " "
+			local loginhours = ""
+
+			if hours == 1 then
+				loginhours = ", 1 hour ago"
+			else
+				loginhours = ", " .. hours .. " hours ago"
+			end
 
 			if days <= 0 then
-				logintime = logintime .. "(Today)"
+				logintime = logintime .. "(Today" .. loginhours .. ")"
 			elseif days == 1 then
-				logintime = logintime .. "(Yesterday)"
+				logintime = logintime .. "(Yesterday" .. loginhours .. ")"
 			else
-				logintime = logintime .. "(" .. days .. " Days Ago)"
+				logintime = logintime .. "(" .. days .. " days" .. loginhours .. ")"
 			end
 		end
 		logintime = minetest.formspec_escape(logintime)

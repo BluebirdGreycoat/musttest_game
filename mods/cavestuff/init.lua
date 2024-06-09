@@ -224,9 +224,13 @@ minetest.override_item("stairs:stair_glow_emerald", {
 
 minetest.register_node("cavestuff:glow_white_crystal", {
   description = "White Crystal",
-  tiles = {"caverealms_glow_white.png"},
+	tiles = {{
+		name = "caverealms_glow_white_animated.png",
+		animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 4.0},
+	}},
   groups = utility.dig_groups("obsidian", {
-    immovable = 1,
+		-- Can't be immovable, this interferes with dig-fragility!
+    --immovable = 1,
   }),
   sounds = default.node_sound_glass_defaults(),
   light_source = minetest.LIGHT_MAX,
@@ -243,6 +247,42 @@ minetest.register_node("cavestuff:glow_white_crystal", {
 			{items = {'default:glass'}}
 		}
 	},
+
+	after_dig_node = function(pos, oldnode, metadata, digger)
+		if not digger or not digger:is_player() then
+			return
+		end
+		local pname = digger:get_player_name()
+		--minetest.chat_send_all('oldnode: ' .. dump(oldnode))
+		-- Drop nodes hanging.
+		for k = 1, 16 do
+			local p = vector.add(pos, {x=0, y=-k, z=0})
+			local n = minetest.get_node(p)
+			--minetest.chat_send_all(dump(n))
+			if n.name == oldnode.name and not minetest.test_protection(p, pname) then
+				--minetest.chat_send_all('drop node')
+				--local time = 1/k
+				minetest.after(0, sfn.drop_node, p)
+				--minetest.set_node(p, {name="default:stone"})
+			else
+				break
+			end
+		end
+		-- Drop nodes standing.
+		for k = 1, 16 do
+			local p = vector.add(pos, {x=0, y=k, z=0})
+			local n = minetest.get_node(p)
+			--minetest.chat_send_all(dump(n))
+			if n.name == oldnode.name and not minetest.test_protection(p, pname) then
+				--minetest.chat_send_all('drop node')
+				--local time = 1/k
+				minetest.after(0, sfn.drop_node, p)
+				--minetest.set_node(p, {name="default:stone"})
+			else
+				break
+			end
+		end
+	end,
 })
 
 -- This formatting is so bad whoever sees it will spontaneously combust.

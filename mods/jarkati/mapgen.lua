@@ -532,12 +532,15 @@ local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
 local c_desert_stone    = minetest.get_content_id("default:desert_stone")
 local c_desert_cobble   = minetest.get_content_id("default:desert_cobble")
+local c_desert_cobble2  = minetest.get_content_id("default:desert_cobble2")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_sand            = minetest.get_content_id("default:sand")
 local c_desert_sand     = minetest.get_content_id("default:desert_sand")
 local c_water           = minetest.get_content_id("default:water_source")
 local c_lava            = minetest.get_content_id("default:lava_source")
 local c_crystal         = minetest.get_content_id("cavestuff:glow_white_crystal")
+local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
+local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -870,6 +873,46 @@ jarkati.generate_realm = function(vm, minp, maxp, seed)
 					end
 				end
 			end -- End column loop.
+		end
+	end
+	end
+
+	if ENABLE_CRYSTAL then
+	for x = x0, x1 do
+		for z = z0, z1 do
+			for y = y0, y1 do
+				local vp = area:index(x, y, z)
+				local vd = area:index(x, y-1, z)
+				local vu = area:index(x, y+1, z)
+				local v1 = area:index(x+1, y, z)
+				local v2 = area:index(x-1, y, z)
+				local v3 = area:index(x, y, z+1)
+				local v4 = area:index(x, y, z-1)
+
+				local crystals = 0
+				if vm_data[v1] == c_crystal then crystals = crystals + 1 end
+				if vm_data[v2] == c_crystal then crystals = crystals + 1 end
+				if vm_data[v3] == c_crystal then crystals = crystals + 1 end
+				if vm_data[v4] == c_crystal then crystals = crystals + 1 end
+
+				local stones = 0
+				if vm_data[v1] == c_stone then stones = stones + 1 end
+				if vm_data[v2] == c_stone then stones = stones + 1 end
+				if vm_data[v3] == c_stone then stones = stones + 1 end
+				if vm_data[v4] == c_stone then stones = stones + 1 end
+
+				-- Stone next to crystal turns to cobble.
+				-- Place fungus and glow worms and top and bottom, too, if there's room.
+				if vm_data[vp] == c_stone and crystals > 0 then
+					vm_data[vp] = c_desert_cobble2
+					if vm_data[vd] == c_air and pr:next(1, 2) == 1 then
+						vm_data[vd] = c_worm
+					end
+					if vm_data[vu] == c_air and pr:next(1, 2) == 1 then
+						vm_data[vu] = c_fungus
+					end
+				end
+			end
 		end
 	end
 	end

@@ -1,4 +1,11 @@
 
+darkgen = {}
+darkgen.modpath = minetest.get_modpath("darkgen")
+
+darkgen.SHEET_HEIGHT = 20
+
+dofile(darkgen.modpath .. "/noise.lua")
+
 -- Content IDs used with the voxel manipulator.
 local c_rock   = minetest.get_content_id("default:stone")
 local c_water  = minetest.get_content_id("default:water_source")
@@ -42,7 +49,7 @@ local noisemap9 = {}
 local noisemap10= {}
 local noisemap11= {}
 
-darkgen.generate_realm = function(minp, maxp, seed)
+darkgen.generate_realm = function(vm, minp, maxp, seed)
   local nstart = darkgen.SHEET_HEIGHT
 
   -- Don't run for out-of-bounds mapchunks.
@@ -50,7 +57,7 @@ darkgen.generate_realm = function(minp, maxp, seed)
   if minp.y > (nstart + 200) or maxp.y < (nstart - 100) then return end
 
   -- Grab the voxel manipulator.
-  local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+  local emin, emax = vm:get_emerged_area()
   vm:get_data(data) -- Read current map data.
   
   local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
@@ -102,6 +109,35 @@ darkgen.generate_realm = function(minp, maxp, seed)
   local floor = math.floor
   local ceil = math.ceil
   local abs = math.abs
+
+  --[[
+  -- Pre-pass: clean up C++ mapgen flat-slab leftovers.
+  for z = emin.z, emax.z do
+    for x = emin.x, emax.x do
+      for y = emin.y, emax.y do
+        local vp = area:index(x, y, z)
+
+        -- Get the type already generated at this position.
+        local ip = data[vp]
+
+        -- Note: sometimes these will be nil, because of accessing outside the array.
+        -- (We are scanning through the emin/emax range.)
+        local iu = data[area:index(x, y+1, z)]
+        local id = data[area:index(x, y-1, z)]
+
+        -- HACK:
+        -- Get rid of the <BEEP> flat horizontal slabs that appear at chunk top/bot edges
+        -- whenever emerge threads are more than 1. We have to do this *indiscriminately*,
+        -- which unfortunately modifies the terrain shape more than is actually necessary.
+        if ip == c_stone then
+          if (id == c_air or id == c_ignore) and (iu == c_air or iu == c_ignore) then
+            data[vp] = c_air
+          end
+        end
+      end
+    end
+  end
+  --]]
 
 	local function apply_ore(v, y, n, f, m, o)
 		local bot = (nstart + f) - (n*m)
@@ -173,5 +209,13 @@ darkgen.generate_realm = function(minp, maxp, seed)
   --vm:set_lighting({day=0, night=0})
   --vm:calc_lighting()
   --vm:update_liquids()
-  vm:write_to_map()
+  --vm:write_to_map()
 end
+
+
+
+-- Register the mapgen callback.
+minetest.register_on_generated(function(...)
+  darkgen.generate_realm(...)
+end)
+

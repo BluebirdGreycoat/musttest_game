@@ -62,7 +62,39 @@ local generate = function(minp, maxp, seed)
     MinEdge = {x = emin.x, y = emin.y, z = emin.z},
     MaxEdge = {x = emax.x, y = emax.y, z = emax.z},
   }
-  local data = vm:get_data(sulfur_buf)
+  vm:get_data(sulfur_buf)
+  local data = sulfur_buf
+
+  --[[
+  -- Pre-pass: clean up C++ mapgen flat-slab leftovers.
+  local area = a
+  for z = emin.z, emax.z do
+    for x = emin.x, emax.x do
+      for y = emin.y, emax.y do
+        local vp = area:index(x, y, z)
+
+        -- Get the type already generated at this position.
+        local ip = data[vp]
+
+        -- Note: sometimes these will be nil, because of accessing outside the array.
+        -- (We are scanning through the emin/emax range.)
+        local iu = data[area:index(x, y+1, z)]
+        local id = data[area:index(x, y-1, z)]
+
+        -- HACK:
+        -- Get rid of the <BEEP> flat horizontal slabs that appear at chunk top/bot edges
+        -- whenever emerge threads are more than 1. We have to do this *indiscriminately*,
+        -- which unfortunately modifies the terrain shape more than is actually necessary.
+        if ip == c_stone then
+          if (id == c_air or id == c_ignore) and (iu == c_air or iu == c_ignore) then
+            data[vp] = c_air
+          end
+        end
+      end
+    end
+  end
+  --]]
+
   local pr = PseudoRandom(17 * minp.x + 42 * minp.y + 101 * minp.z)
   sulfur_noise = sulfur_noise or minetest.get_perlin(9876, 3, 0.5, 100)
 

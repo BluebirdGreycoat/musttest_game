@@ -7,6 +7,8 @@ local vector_round = vector.round
 local math_floor = math.floor
 local PRIORITY_MESSAGE = "Fight Big Tech Censorship!"
 local PRIORITY_X_OFFSET = 1.4
+local WEBADDR = minetest.settings:get("server_address")
+local WEBPORT = minetest.settings:get("port")
 
 
 
@@ -22,7 +24,7 @@ local function get_text(pname)
 		"Survival in the snowy stone-world of Enyekala is much harder than making a living in the Outback. The better the supplies that you bring with you through the Dimensional Gate, the better your chances in the snowy Overworld will be. Bring food, weapons, rare items, farming materials, and most importantly, a BED. Be very careful not to sleep in your bed in the open air. You will be mobbed! Build a shelter, even if it’s an ugly cobble shack.\n\n" ..
 		"The Dimensional Gate is UNSTABLE. The portal’s exit coordinates change once every " .. randspawn.min_days .. " to " .. randspawn.max_days .. " realtime days, and you cannot rely on there being any city near you to protect you from mobs once you arrive in Enyekala proper! Until you can make it to civilization (or build your own), your fight is with the untamed wilderness.\n\n" ..
 		"=== WEBSITE ===\n\n" ..
-		"You can visit the server’s webpage at http://arklegacy.duckdns.org/. " ..
+		"You can visit the server’s webpage at http://" .. WEBADDR .. "/. " ..
 		"You can find here chatlogs, maps, news and tips.\n\n" ..
 		"=== REGISTERING YOUR ACCOUNT ===\n\n" ..
 		"To prevent your server account from being erased during a weekly purge, " ..
@@ -124,7 +126,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
 
 		formspec = formspec ..
-			"label[0,2.1;Server: ‘Enyekala’ @ minetest:arklegacy.duckdns.org:30000]"
+			"label[0,2.1;Server: ‘Enyekala’ @ minetest:" .. WEBADDR .. ":" .. WEBPORT .. "]"
 
 		formspec = formspec ..
 			"label[0,2.6;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the frontier!]"

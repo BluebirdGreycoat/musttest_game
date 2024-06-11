@@ -4,6 +4,8 @@
 -- on first load or whenever the mod is reloaded.
 serveressentials.gateway_exit_position = {x=0, y=0, z=0}
 
+local WEBADDR = minetest.settings:get("server_address")
+
 --[[
 serveressentials.outback_gates = {
 	overworld = {pos={x=-9186, y=4501, z=5830}, ns=false},
@@ -225,9 +227,9 @@ local metadata = {
 	}}},
 	-- Spawn sign, bottom left.
 	{pos={x=-9221, y=4569, z=5861}, meta={fields={
-		infotext = "See \"http://arklegacy.duckdns.org\" for important info.",
+		infotext = "See \"http://" .. WEBADDR .. "\" for important info.",
 		author = OWNERNAME,
-		text = "See \"http://arklegacy.duckdns.org\" for important info."
+		text = "See \"http://" .. WEBADDR .. "\" for important info."
 	}}},
 	-- Spawn sign, bottom right.
 	{pos={x=-9221, y=4569, z=5860}, meta={fields={

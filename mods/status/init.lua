@@ -3,6 +3,8 @@ if not minetest.global_exists("status") then status = {} end
 status.modpath = minetest.get_modpath("status")
 status.motd = minetest.settings:get("motd") or ""
 
+local WEBADDR = minetest.settings:get("server_address")
+
 -- Get text color.
 local STATUS_COLOR = core.get_color_escape_sequence("#0d9b7b")
 status.color = STATUS_COLOR
@@ -103,7 +105,7 @@ function status.chat_status(user, param)
   local final =
 		STATUS_COLOR .. "# Server: " .. version .. ", " .. uptime .. ", " .. max_lag .. ".\n" ..
 		STATUS_COLOR .. "# Server: " .. motd2 .. "\n" ..
-		STATUS_COLOR .. "# Server: More info can be found at http://arklegacy.duckdns.org/."
+		STATUS_COLOR .. "# Server: More info can be found at http://" .. WEBADDR .. "/."
   
   minetest.chat_send_player(user, final)
   return true

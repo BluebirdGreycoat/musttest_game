@@ -25,6 +25,18 @@ dofile(serveressentials.modpath .. "/suicide.lua")
 
 
 
+function serveressentials.do_rename(pname, param)
+	local tokens = param:split(" ")
+	if #tokens ~= 2 then
+		minetest.chat_send_player(pname, "# Server: Invalid usage.")
+		return
+	end
+
+	rename.rename_player(rename.grn(tokens[1]), tokens[2], pname)
+end
+
+
+
 if not serveressentials.registered then
 	-- Overriding the teleport chat-command is necessary in order to let admins
 	-- use realm-relative coordinates. It also prevents admins from accidentally
@@ -55,6 +67,16 @@ if not serveressentials.registered then
 
 		func = function(...)
 			return serveressentials.whereis(...)
+		end
+	})
+
+	minetest.register_chatcommand("rename", {
+		params = "<player> <alias>",
+		description = "Rename a player.",
+		privs = {server=true},
+
+		func = function(...)
+			return serveressentials.do_rename(...)
 		end
 	})
 

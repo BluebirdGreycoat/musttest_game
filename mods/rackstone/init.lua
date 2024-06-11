@@ -294,7 +294,11 @@ minetest.register_node("rackstone:nether_grit", {
 	post_effect_color = {a = 200, r = 30, g = 0, b = 0},
 	damage_per_second = 1*500,
   _damage_per_second_type = "poison",
-	_death_message = function() return "Nether tar ate a new hole in <player>." end,
+	_death_message = {
+		"Nether tar ate a new hole in <player>.",
+		"<player> succumbed to the horrors of nether grit.",
+		"<player> died: stuck in nether grit.",
+	},
 
 	drop = {
 		max_items = 1,

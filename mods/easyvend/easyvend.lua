@@ -390,13 +390,16 @@ easyvend.machine_check = function(pos, node)
 			end
 
 			if have_clu then
-				easyvend.record_disable({
-					type = "disable",
-					owner = machine_owner,
-					machine_type = machine_type,
-					item = itemname,
-					pos = vector.copy(pos),
-				})
+				-- Don't send email if shop was disabled because it entered config mode.
+				if meta:get_int("configmode") ~= 1 then
+					easyvend.record_disable({
+						type = "disable",
+						owner = machine_owner,
+						machine_type = machine_type,
+						item = itemname,
+						pos = vector.copy(pos),
+					})
+				end
 			end
 		end
 	end

@@ -15,6 +15,25 @@ dungeon_loot.min_num_of_rooms = 4
 dungeon_loot.depth_first_basic_increase = 200
 dungeon_loot.depth_second_basic_increase = 2000
 
+-- Nodes dungeons are made out of.
+dungeon_loot.DUNGEON_NODES = {
+	"default:stone",
+	"default:cobble",
+	"default:mossycobble",
+	"default:desert_stone",
+	"rackstone:brick",
+	"rackstone:mg_redrack",
+	"rackstone:redrack",
+	"rackstone:rackstone",
+	"rackstone:mg_rackstone",
+}
+
+dungeon_loot.CHEST_NODES = {
+	"chests:chest_public_closed",
+	"morechests:woodchest_public_closed",
+	"morechests:ironchest_public_closed",
+}
+
 -- The master list of loot types
 -- Note that tools and weapons should always have max_amount = 1.
 -- Chance is a probability between 0 (practically never) and 1 (always),

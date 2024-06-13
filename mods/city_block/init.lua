@@ -554,8 +554,9 @@ function city_block.create_formspec(pos, pname, blockdata)
 		"field[0.30,0.75;4,1;CITYNAME;;]" ..
 		"button_exit[0,1.30;2,1;OK;Confirm]" ..
 		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
-		"field_close_on_enter[CITYNAME;true]" ..
+		"field_close_on_enter[CITYNAME;true]" --[[ ..
 		"checkbox[0,2;pvp_arena;Mark Dueling Arena;" .. pvp .. "]"
+		--]]
 
 	return formspec
 end
@@ -631,6 +632,7 @@ function city_block.on_receive_fields(player, formname, fields)
 		meta:set_string("infotext", city_block.get_infotext(pos))
 		block.area_name = area_name
 		city_block:save()
+	--[[
 	elseif fields.pvp_arena == "true" then
 		local block = city_block.get_block(pos)
 		if block then
@@ -647,6 +649,7 @@ function city_block.on_receive_fields(player, formname, fields)
 			meta:set_string("infotext", city_block.get_infotext(pos))
 			city_block:save()
 		end
+	--]]
 	end
 
 	return true

@@ -43,8 +43,11 @@ dungeon_loot.loot_types = {
 	{name="treasure", max_amount = 10, chance = 0.7, type = "depth_cutoff"},
 	{name="tools", max_amount = 1, chance = 0.5, type = "depth_cutoff"},
 	{name="weapons", max_amount = 1, chance = 0.1, type = "depth_cutoff"},
+	{name="bows", max_amount = 1, chance = 0.1, type = "depth_cutoff"},
 	{name="consumables", max_amount = 80, chance = 0.9, type = "basic_list"},
-	{name="seedlings", max_amount = 5, chance = 0.3, type = "basic_list"}
+	{name="seedlings", max_amount = 5, chance = 0.3, type = "basic_list"},
+	{name="metals", max_amount = 20, chance = 0.3, type = "basic_list"},
+	{name="supplies", max_amount = 20, chance = 0.3, type = "basic_list"},
 }
 
 -- Loot type lists; these names MUST be exactly of the format:
@@ -66,7 +69,7 @@ dungeon_loot.treasure_list = {
 	{name="default:goldblock", min_depth = 777},
 	{name="default:mese", min_depth = 800},
 	{name="default:diamondblock", min_depth = 1800},
-	{name="default:mese", min_depth = 2000}
+	{name="default:mese", min_depth = 2000},
 }
 
 dungeon_loot.tools_list = {
@@ -74,7 +77,8 @@ dungeon_loot.tools_list = {
 	{name="default:shovel_diamond", min_depth = 38},
 	{name="default:pick_bronze", min_depth = 40},
 	{name="default:axe_diamond", min_depth = 95},
-	{name="default:pick_diamond", min_depth = 100}
+	{name="default:pick_diamond", min_depth = 100},
+	{name="bucket:bucket_water", min_depth = 100},
 }
 
 dungeon_loot.weapons_list = {
@@ -82,6 +86,16 @@ dungeon_loot.weapons_list = {
 	{name="default:sword_bronze", min_depth = 50},
 	{name="default:sword_mese", min_depth = 150},
 	{name="default:sword_diamond", min_depth = 250}
+}
+
+dungeon_loot.bows_list = {
+	{name="throwing:bow_wood", min_depth = 0},
+	{name="throwing:longbow", min_depth = 50},
+	{name="throwing:bow_composite", min_depth = 150},
+	{name="throwing:bow_steel", min_depth = 250},
+	{name="throwing:crossbow", min_depth = 500},
+	{name="throwing:arbalest", min_depth = 1500},
+	{name="throwing:bow_royal", min_depth = 25000},
 }
 
 
@@ -94,7 +108,9 @@ dungeon_loot.weapons_list = {
 dungeon_loot.consumables_list = {
 	{name="basictrees:tree_apple", chance_and_amount = 20},
 	{name="default:torch", chance_and_amount = 30},
-	{name="default:stick", chance_and_amount = 10}
+	{name="default:stick", chance_and_amount = 10},
+	{name="mobs:meat_raw", chance_and_amount = 10},
+	{name="mobs:meat_raw_mutton", chance_and_amount = 10},
 }
 
 dungeon_loot.seedlings_list = {
@@ -102,6 +118,22 @@ dungeon_loot.seedlings_list = {
 	{name="basictrees:pine_sapling", chance = 10, amount = 2},
 	{name="basictrees:jungletree_sapling", chance = 15, amount = 2},
 	{name="basictrees:acacia_sapling", chance = 15, amount = 2}
+}
+
+dungeon_loot.metals_list = {
+	{name="default:steel_ingot", chance = 10, amount = 10},
+	{name="zinc:ingot", chance = 5, amount = 10},
+	{name="chromium:ingot", chance = 5, amount = 10},
+	{name="default:copper_ingot", chance = 5, amount = 10},
+	{name="titanium:crystal", chance = 5, amount = 10},
+}
+
+dungeon_loot.supplies_list = {
+	{name="mobs:leather", chance = 5, amount = 10},
+	{name="mobs:leather_padding", chance = 5, amount = 3},
+	{name="farming:string", chance = 5, amount = 10},
+	{name="mobs:flame_bolt", chance = 5, amount = 10},
+	{name="tnt:gunpowder", chance = 5, amount = 10},
 }
 
 -- Add items from other mods here inside the appropriate 

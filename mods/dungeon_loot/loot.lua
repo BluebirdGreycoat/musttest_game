@@ -129,7 +129,7 @@ function dungeon_loot.fill_chest(pos)
 	local inv = meta:get_inventory()
 
 	for i, v in ipairs(dungeon_loot.loot_types) do
-		local item, num = get_item_and_amount(v,pos.y)
+		local item, num = get_item_and_amount(v, pos.y)
 		if item then
 			if minetest.registered_items[item] then -- Ensure not unknown item.
 				local stack = ItemStack({name = item, count = num, wear = 0, metadata = ""})
@@ -147,7 +147,7 @@ function dungeon_loot.place_loot_chest(tab)
 	end
 
 	-- Random number of chests.
-	local count = math_random(1, 3)
+	local count = math_random(2, 5)
 
 	for k = 1, count do
 		local pos = tab[math_random(1, #tab)]

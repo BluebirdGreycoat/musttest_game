@@ -17,6 +17,7 @@ dofile(modpath .. "/functions.lua")
 dofile(modpath .. "/api.lua")
 dofile(modpath .. "/beds.lua")
 dofile(modpath .. "/spawns.lua")
+dofile(modpath .. "/public_spawns.lua")
 
 minetest.register_privilege("nobeds", {
 	description = "Player does not require sleep.",

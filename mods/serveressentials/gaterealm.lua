@@ -79,6 +79,7 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	teleports.delete_blocks_from_area(minp, maxp)
 	city_block.delete_blocks_from_area(minp, maxp)
+	beds.delete_public_spawns_from_area(minp, maxp)
 
 	-- Restore all bones.
 	for k, v in ipairs(bones) do

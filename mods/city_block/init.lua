@@ -32,6 +32,24 @@ end
 
 
 
+function city_block.get_block(pos)
+	local allblocks = city_block.blocks
+	local numblocks = #(city_block.blocks)
+	local block
+
+	for i = 1, numblocks do
+		local entry = allblocks[i]
+		if vector_equals(entry.pos, pos) then
+			block = entry
+			break
+		end
+	end
+
+	return block
+end
+
+
+
 function city_block.delete_blocks_from_area(minp, maxp)
 	local i = 1
 	local blocks = city_block.blocks
@@ -54,6 +72,9 @@ function city_block.delete_blocks_from_area(minp, maxp)
 
 	i = i + 1
 	goto do_next
+
+	-- Done.
+	city_block:save()
 end
 
 
@@ -511,15 +532,21 @@ function city_block.on_rightclick(pos, node, clicker, itemstack)
 
 	-- Create formspec context.
 	city_block.formspecs[pname] = pos
+	local blockdata = city_block.get_block(pos)
 
-	local formspec = city_block.create_formspec(pos, pname)
+	local formspec = city_block.create_formspec(pos, pname, blockdata)
 	minetest.show_formspec(pname, "city_block:main", formspec)
 end
 
 
 
-function city_block.create_formspec(pos, pname)
-	local formspec = "size[4.1,2.0]" ..
+function city_block.create_formspec(pos, pname, blockdata)
+	local pvp = "false"
+	if blockdata.pvp_arena then
+		pvp = "true"
+	end
+
+	local formspec = "size[4.1,3.0]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
 		default.gui_slots ..
@@ -527,7 +554,8 @@ function city_block.create_formspec(pos, pname)
 		"field[0.30,0.75;4,1;CITYNAME;;]" ..
 		"button_exit[0,1.30;2,1;OK;Confirm]" ..
 		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
-		"field_close_on_enter[CITYNAME;true]"
+		"field_close_on_enter[CITYNAME;true]" ..
+		"checkbox[0,2;pvp_arena;Mark Dueling Arena;" .. pvp .. "]"
 
 	return formspec
 end
@@ -591,17 +619,7 @@ function city_block.on_receive_fields(player, formname, fields)
 			return
 		end
 
-		local allblocks = city_block.blocks
-		local numblocks = #(city_block.blocks)
-		local block
-
-		for i = 1, numblocks do
-			local entry = allblocks[i]
-			if vector_equals(entry.pos, pos) then
-				block = entry
-				break
-			end
-		end
+		local block = city_block.get_block(pos)
 
 		-- Ensure we got the city block data.
 		if not block then
@@ -613,6 +631,22 @@ function city_block.on_receive_fields(player, formname, fields)
 		meta:set_string("infotext", city_block.get_infotext(pos))
 		block.area_name = area_name
 		city_block:save()
+	elseif fields.pvp_arena == "true" then
+		local block = city_block.get_block(pos)
+		if block then
+			minetest.chat_send_player(pname, "# Server: Enabled dueling arena.")
+			block.pvp_arena = true
+			meta:set_string("infotext", city_block.get_infotext(pos))
+			city_block:save()
+		end
+	elseif fields.pvp_arena == "false" then
+		local block = city_block.get_block(pos)
+		if block then
+			minetest.chat_send_player(pname, "# Server: Disabled dueling arena.")
+			block.pvp_arena = nil
+			meta:set_string("infotext", city_block.get_infotext(pos))
+			city_block:save()
+		end
 	end
 
 	return true
@@ -630,6 +664,11 @@ function city_block.get_infotext(pos)
 
 	if cityname ~= "" then
 		text = text .. "\nRegion Designate: \"" .. cityname .. "\""
+	end
+
+	local blockdata = city_block.get_block(pos)
+	if blockdata and blockdata.pvp_arena then
+		text = text .. "\nThis marks a dueling arena."
 	end
 
 	return text
@@ -652,6 +691,7 @@ if not city_block.run_once then
 		}),
 		is_ground_content = false,
 		sounds = default.node_sound_stone_defaults(),
+		stack_max = 1,
 
 		on_rightclick = function(...)
 			return city_block.on_rightclick(...)

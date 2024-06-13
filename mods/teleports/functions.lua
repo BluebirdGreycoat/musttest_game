@@ -65,6 +65,9 @@ function teleports.delete_blocks_from_area(minp, maxp)
 
 	i = i + 1
 	goto do_next
+
+	-- Done.
+	teleports.save()
 end
 
 

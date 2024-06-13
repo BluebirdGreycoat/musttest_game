@@ -200,7 +200,11 @@ passport.compose_formspec = function(pname)
 		local city_info = city_block.city_info(player_pos)
 
 		if city_info then
-			status_info[#status_info + 1] = "Lawful Zone"
+			if city_info.pvp_arena then
+				status_info[#status_info + 1] = "Dueling Arena"
+			else
+				status_info[#status_info + 1] = "Lawful Zone"
+			end
 
 			local count = 0
 			local targets = minetest.get_connected_players()

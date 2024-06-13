@@ -98,8 +98,7 @@ function beds.register_bed(name, def)
 				return itemstack
 			end
 
-			local node_def = minetest.reg_ns_nodes[
-				minetest.get_node(pos).name]
+			local node_def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
 			if not node_def or not node_def.buildable_to then
 				return itemstack
 			end
@@ -112,8 +111,7 @@ function beds.register_bed(name, def)
 				return itemstack
 			end
 
-			local botdef = minetest.reg_ns_nodes[
-				minetest.get_node(botpos).name]
+			local botdef = minetest.reg_ns_nodes[minetest.get_node(botpos).name]
 			if not botdef or not botdef.buildable_to then
 				return itemstack
 			end
@@ -125,11 +123,12 @@ function beds.register_bed(name, def)
 			do
 				local control = placer:get_player_control()
 				if control.aux1 then
-					if city_block:in_city(pos) then
+					if city_block:in_city(pos) or minetest.check_player_privs(placer, "server") then
 						local meta = minetest.get_meta(pos)
 						meta:set_string("owner", "server") -- "server" is a reserved name.
 						meta:mark_as_private("owner")
 						meta:set_string("infotext", "Public Bed")
+						beds.add_public_spawn(pos)
 					else
 						minetest.chat_send_player(pname, "# Server: Beds are always private outside of any city or village.")
 					end
@@ -142,11 +141,13 @@ function beds.register_bed(name, def)
 
     on_destruct = function(pos)
       destruct_bed(pos, 1)
+      beds.remove_public_spawn(pos)
     end,
 
     on_blast = function(pos)
       destruct_bed(pos, 1)
       minetest.remove_node(pos)
+      beds.remove_public_spawn(pos)
     end,
 
 		on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)

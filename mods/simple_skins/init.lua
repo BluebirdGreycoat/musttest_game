@@ -80,13 +80,16 @@ end
 skins.load()
 
 skins.save = function()
-	local output = io.open(skins.file,'w')
+	local data = {}
+	--local output = io.open(skins.file,'w')
 	for name, skin in pairs(skins.skins) do
 		if name and skin then
-			output:write(name .. " " .. skin .. "\n")
+			--output:write(name .. " " .. skin .. "\n")
+			table.insert(data, (name .. " " .. skin .. "\n"))
 		end
 	end
-	io.close(output)
+	--io.close(output)
+	minetest.safe_file_write(skins.file, table.concat(data))
 end
 
 -- skin selection page

@@ -42,12 +42,13 @@ function beds.save_spawns()
 		return
 	end
 	local data = {}
-	local output = io.open(org_file, "w")
+	--local output = io.open(org_file, "w")
 	for k, v in pairs(beds.spawn) do
 		table.insert(data, string.format("%.1f %.1f %.1f %s\n", v.x, v.y, v.z, k))
 	end
-	output:write(table.concat(data))
-	io.close(output)
+	--output:write(table.concat(data))
+	--io.close(output)
+	minetest.safe_file_write(org_file, table.concat(data))
 end
 
 function beds.set_spawn(pos, name)

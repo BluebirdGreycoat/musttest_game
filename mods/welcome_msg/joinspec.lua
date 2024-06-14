@@ -9,6 +9,15 @@ local PRIORITY_MESSAGE = "Fight Big Tech Censorship!"
 local PRIORITY_X_OFFSET = 1.4
 local WEBADDR = minetest.settings:get("server_address")
 local WEBPORT = minetest.settings:get("port")
+local FORUMADDR = minetest.settings:get("forum_topic")
+
+if not WEBADDR or WEBADDR == "" then
+	WEBADDR = "example.com"
+end
+
+if not FORUMADDR or FORUMADDR == "" then
+	FORUMADDR = "forum.minetest.net"
+end
 
 
 
@@ -126,10 +135,12 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
 
 		formspec = formspec ..
-			"label[0,2.1;Server: ‘Enyekala’ @ minetest:" .. WEBADDR .. ":" .. WEBPORT .. "]"
+			"label[0,2.9;" ..
+			minetest.formspec_escape("Server: ‘Enyekala’ @ " ..
+			minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT) .. "]"
 
 		formspec = formspec ..
-			"label[0,2.6;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the frontier!]"
+			"label[0,2.1;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the frontier!]"
 
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)
@@ -156,18 +167,29 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 		logintime = minetest.formspec_escape(logintime)
 
 		formspec = formspec ..
-			"label[0,3.1;" .. logintime .. "]"
+			"label[0,2.4;" .. logintime .. "]"
+
+		formspec = formspec ..
+			"label[0,3.2;" ..
+			minetest.formspec_escape("Forum topic: " ..
+			minetest.colorize("cyan", "http://" .. FORUMADDR)) .. "]"
 
 		-- Exit buttons.
 		formspec = formspec ..
 			"style[wrongserver;bgcolor=red]" ..
-			"button[0,3.8;2,1;wrongserver;Not Now]" ..
-			"button[2,3.8;2,1;trading;Trading]" ..
-			"button[5,3.8;2,1;playgame;Proceed!]"
+			"button[0,3.9;2,1;wrongserver;Not Now]" ..
+			"button[2,3.9;2,1;trading;Trading]" ..
+			"button[5,3.9;2,1;playgame;Proceed!]"
+
+		formspec = formspec ..
+			"real_coordinates[true]" ..
+			"button_url[6.62,3.85;2.23,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
+			"button_url[6.62,4.2;2.23,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
+			"real_coordinates[false]"
 
 		if haskey then
 			formspec = formspec ..
-				"button[4,3.8;1,1;passport;Key]"
+				"button[4,3.9;1,1;passport;Key]"
 		end
 
 		formspec = formspec ..

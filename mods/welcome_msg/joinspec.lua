@@ -183,7 +183,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		formspec = formspec ..
 			"real_coordinates[true]" ..
-			"button_url[7.15,3.85;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
+			"button_url[7.15,3.84;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
 			"button_url[7.15,4.2;1.7,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
 			"real_coordinates[false]"
 

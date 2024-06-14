@@ -1171,6 +1171,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- If hitter is self, punch was (most likely) due to game code.
+	-- E.g., node damage or other environment hazard.
 	if player == hitter then
 		return
 	end

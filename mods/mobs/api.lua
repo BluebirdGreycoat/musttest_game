@@ -1409,7 +1409,7 @@ local function punch_target(self, dtime)
 
 		self.attack:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {[dgroup] = damage}
+			damage_groups = {[dgroup] = damage, from_mob = 1}
 		}, nil)
 
 		-- Start punch timer; mob cannot punch again until timer reaches 0.

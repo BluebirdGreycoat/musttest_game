@@ -36,10 +36,9 @@ local function check_bounds(pname)
 	if dueling_players[pname] then
 		local pref = minetest.get_player_by_name(pname)
 
-		-- Player left unexpectedly.
+		-- Player left the game unexpectedly.
 		if not pref then
 			dueling_players[pname] = nil
-			minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
 			return
 		end
 
@@ -55,8 +54,7 @@ local function check_bounds(pname)
 
 				if data.out_of_bounds >= 30 then
 					-- Player has been out of bounds for 30 seconds.
-					dueling_players[pname] = nil
-					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+					armor.end_duel(pref)
 					return
 				end
 
@@ -64,8 +62,7 @@ local function check_bounds(pname)
 				minetest.chat_send_player(pname, "# Server: Return to the duel! (" .. (30 - data.out_of_bounds) .. ").")
 			else
 				-- Player has completely left the duel area (teleport?) End duel immediately.
-				dueling_players[pname] = nil
-				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+				armor.end_duel(pref)
 				return
 			end
 		elseif vector_distance(data.start_pos, player_pos) <= DUEL_MAX_RADIUS and in_arena then

@@ -86,6 +86,8 @@ function armor.add_dueling_player(player)
 
 	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
 	minetest.after(1, check_bounds, pname)
+
+	return true
 end
 
 -- End current duel if one in progress.

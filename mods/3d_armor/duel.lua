@@ -186,6 +186,18 @@ local function respawn_victim(player, respawn_pos)
 	})
 end
 
+local function spawn_bones(player)
+	local pname = player:get_player_name()
+	local pos = vector_round(player:get_pos())
+	if minetest.get_node(pos).name == "air" then
+		minetest.set_node(pos, {name="bones:bones_type2", param2=math_random(0, 3)})
+		local meta = minetest.get_meta(pos)
+		meta:set_string("infotext", "Duel: <" .. rename.gpn(pname) .. ">'s bones.")
+		meta:set_int("protection_cancel", 1)
+		meta:mark_as_private("protection_cancel")
+	end
+end
+
 -- Called from the armor HP-change code only if player would die.
 function armor.handle_pvp_arena_death(hp_change, player)
 	local pname = player:get_player_name()
@@ -213,6 +225,7 @@ function armor.handle_pvp_arena_death(hp_change, player)
 				if #opponents > 0 and #spawns > 0 then
 					-- Death sound needs to play before we respawn the player.
 					coresounds.play_death_sound(player, pname)
+					spawn_bones(player)
 
 					-- The nearest opponent was probably the killer.
 					print_message(player, opponents[1])

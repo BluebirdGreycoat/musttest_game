@@ -22,6 +22,13 @@ local DUEL_DEFEAT_STRINGS = {
 	"<winner> won a duel with <loser>.",
 	"<winner> dealt out a whopping drubbing.",
 	"<loser> got themselves a severe drubbing.",
+	"<winner> beat <loser> in honorable combat!",
+	"<winner> bested <loser>.",
+	"<loser> got a royal walloping from <winner>.",
+	"<loser> got trashed in a duel by <winner>.",
+	"<winner> trashed <loser> in a duel.",
+	"<loser> got some major hurt from <winner>.",
+	"<winner> gave out a royal swatting to <loser>.",
 }
 
 -- Check whether player is in bounds to duel, and end duel if necessary.

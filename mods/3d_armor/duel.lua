@@ -36,11 +36,14 @@ local function check_bounds(pname)
 			return
 		end
 
-		local data = dueling_players[pname]
-		local in_arena = city_block:in_pvp_arena(pref:get_pos())
+		local player_pos = vector_round(pref:get_pos())
 
-		if vector_distance(data.start_pos, pref:get_pos()) > DUEL_MAX_RADIUS or not in_arena then
-			if vector_distance(data.start_pos, pref:get_pos()) < (DUEL_MAX_RADIUS + 50) then
+		local data = dueling_players[pname]
+		local in_arena = (city_block:in_pvp_arena(player_pos) and
+			minetest.test_protection(player_pos, ""))
+
+		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
+			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
 				-- Player is slightly out of bounds. Warn them to return.
 
 				if data.out_of_bounds >= 30 then
@@ -58,7 +61,7 @@ local function check_bounds(pname)
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
 				return
 			end
-		elseif vector_distance(data.start_pos, pref:get_pos()) <= DUEL_MAX_RADIUS and in_arena then
+		elseif vector_distance(data.start_pos, player_pos) <= DUEL_MAX_RADIUS and in_arena then
 			data.out_of_bounds = 0
 		end
 

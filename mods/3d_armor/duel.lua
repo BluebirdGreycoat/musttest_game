@@ -153,10 +153,15 @@ end
 local function print_message(victim, killer)
 	local pname = victim:get_player_name()
 	local kname = killer:get_player_name()
-	local msg = DUEL_DEFEAT_STRINGS[math_random(1, #DUEL_DEFEAT_STRINGS)]
-	msg = msg:gsub("<loser>", "<" .. rename.gpn(pname) .. ">")
-	msg = msg:gsub("<winner>", "<" .. rename.gpn(kname) .. ">")
-	minetest.chat_send_all("# Server: " .. msg)
+	local spamkey = "duel:" .. pname .. ":" .. kname
+
+	if not spam.test_key(spamkey) then
+		local msg = DUEL_DEFEAT_STRINGS[math_random(1, #DUEL_DEFEAT_STRINGS)]
+		msg = msg:gsub("<loser>", "<" .. rename.gpn(pname) .. ">")
+		msg = msg:gsub("<winner>", "<" .. rename.gpn(kname) .. ">")
+		minetest.chat_send_all("# Server: " .. msg)
+		spam.mark_key(spamkey, 10)
+	end
 end
 
 local function heal_player(pname)

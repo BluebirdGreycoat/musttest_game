@@ -136,11 +136,11 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		formspec = formspec ..
 			"label[0,2.9;" ..
-			minetest.formspec_escape("Server: ‘Enyekala’ @ " ..
+			minetest.formspec_escape("Server: " ..
 			minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT) .. "]"
 
 		formspec = formspec ..
-			"label[0,2.1;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the frontier!]"
+			"label[0,2.1;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the Enyekala frontier!]"
 
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)
@@ -171,7 +171,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		formspec = formspec ..
 			"label[0,3.2;" ..
-			minetest.formspec_escape("Forum topic: " ..
+			minetest.formspec_escape("Forum: " ..
 			minetest.colorize("cyan", "http://" .. FORUMADDR)) .. "]"
 
 		-- Exit buttons.
@@ -183,8 +183,8 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		formspec = formspec ..
 			"real_coordinates[true]" ..
-			"button_url[6.62,3.85;2.23,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
-			"button_url[6.62,4.2;2.23,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
+			"button_url[7.15,3.85;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
+			"button_url[7.15,4.2;1.7,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
 			"real_coordinates[false]"
 
 		if haskey then
@@ -209,7 +209,23 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 
 		local warning = minetest.formspec_escape(get_text(pname))
 		formspec = formspec ..
-			"textarea[0.3,2.3;7,5.6;warning;;" .. warning .. "]"
+			"textarea[0.3,2.3;7,4.7;warning;;" .. warning .. "]"
+
+		formspec = formspec ..
+			"label[0,6.4;" ..
+			minetest.formspec_escape("Server: " ..
+			minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT) .. "]"
+
+		formspec = formspec ..
+			"label[0,6.7;" ..
+			minetest.formspec_escape("Forum: " ..
+			minetest.colorize("cyan", "http://" .. FORUMADDR)) .. "]"
+
+		formspec = formspec ..
+			"real_coordinates[true]" ..
+			"button_url[7.15,7.85;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
+			"button_url[7.15,8.2;1.7,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
+			"real_coordinates[false]"
 
 		-- Exit buttons.
 		formspec = formspec ..

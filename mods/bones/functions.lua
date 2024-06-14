@@ -550,6 +550,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	minetest.get_node_timer(pos):start(10)
   
 	hud_clock.update_xp(pname)
+	armor.end_duel(player)
 
 	local print_reason = bones.do_messages(pos, pname, num_stacks)
 	if print_reason then

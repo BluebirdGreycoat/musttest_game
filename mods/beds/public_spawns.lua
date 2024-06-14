@@ -1,6 +1,7 @@
 
 beds.public_spawns = {}
 
+local vector_distance = vector.distance
 local worldpath = minetest.get_worldpath()
 local pubfile = worldpath .. "/public_bed_spawns"
 
@@ -9,19 +10,26 @@ local pubfile = worldpath .. "/public_bed_spawns"
 function beds.read_public_spawns()
 	local file, err = io.open(pubfile, "r")
 	if err then
+		--minetest.chat_send_all('error: ' .. err)
 		beds.public_spawns = {}
+		return
 	end
 	if file then
 		local datstr = file:read("*all")
 		local dattab = minetest.deserialize(datstr)
 		if dattab and type(dattab) == "table" then
+			--minetest.chat_send_all('got spawns from file')
 			beds.public_spawns = dattab
 		else
+			--minetest.chat_send_all('could not deserialize')
 			beds.public_spawns = {}
 		end
 		file:close()
 	end
 end
+
+-- Read the spawns.
+beds.read_public_spawns()
 
 
 
@@ -101,4 +109,54 @@ function beds.delete_public_spawns_from_area(minp, maxp)
 
 	-- Done.
 	beds.save_public_spawns()
+end
+
+
+
+-- Copied over from the cityblock code and adapted for public bed spawns.
+function beds.nearest_public_spawns(pos, num, rangelim)
+	local get_rn = rc.current_realm_at_pos
+	local realm = get_rn(pos)
+
+	-- Copy the master table's indices so we don't modify it.
+	-- We do not need to copy the inner table data itself. Just the indices.
+	-- Only copy over public spawns in the same realm, too.
+	local blocks = {}
+	local sblocks = beds.public_spawns
+	local t2 = os.time()
+
+	for i=1, #sblocks, 1 do
+		local p = sblocks[i]
+
+		if rangelim then
+			if vector_distance(p, pos) < rangelim then
+				if get_rn(p) == realm then
+					blocks[#blocks+1] = sblocks[i]
+				end
+			end
+		else
+			if get_rn(p) == realm then
+				blocks[#blocks+1] = sblocks[i]
+			end
+		end
+	end
+
+	-- Sort spawns, nearest spawns first.
+	table.sort(blocks,
+		function(a, b)
+			local d1 = vector_distance(a, pos)
+			local d2 = vector_distance(b, pos)
+			return d1 < d2
+		end)
+
+	-- Return N-nearest spawns (should be at the front of the sorted table).
+	local ret = {}
+	for i = 1, num, 1 do
+		if i <= #blocks then
+			ret[#ret + 1] = blocks[i]
+		else
+			break
+		end
+	end
+	return ret
 end

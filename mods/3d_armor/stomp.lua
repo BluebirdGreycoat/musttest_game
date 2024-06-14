@@ -1,5 +1,5 @@
 
-local stomp_radius = 1.5
+local STOMP_RADIUS = 2.5
 
 
 
@@ -46,7 +46,7 @@ local function do_stomp(pname, pos, damage)
     return
   end
 
-  local objs = minetest.get_objects_inside_radius(pos, stomp_radius)
+  local objs = minetest.get_objects_inside_radius(pos, STOMP_RADIUS)
 
   for k, v in ipairs(objs) do
     if v:is_player() and v:get_player_name() ~= pname then
@@ -64,7 +64,7 @@ end
 
 function armor.stomp_at(stomper, pos, damage)
   local pname = stomper:get_player_name()
-  local objs = minetest.get_objects_inside_radius(pos, stomp_radius)
+  local objs = minetest.get_objects_inside_radius(pos, STOMP_RADIUS)
   local stomped = false
 
   -- Check if we're going to stomp anybody.

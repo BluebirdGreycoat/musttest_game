@@ -2,6 +2,7 @@
 -- Localize for performance.
 local math_floor = math.floor
 local math_random = math.random
+local IS_SINGLEPLAYER = minetest.is_singleplayer()
 
 armor.elements = armor.elements or {"head", "torso", "legs", "feet"}
 armor.physics = armor.physics or {"jump", "speed", "gravity"}
@@ -655,6 +656,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
 	minetest.after(1, function() armor.record_player_hp(pname) end)
 
+	-- Return HP change as-is if it's a positive number.
+	-- We do not modify it, or do armor wear, in that case.
 	if not (pname and hp_change < 0) then
 		return hp_change
 	end
@@ -669,8 +672,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	-- Admin does not take damage.
-	local singleplayer = minetest.is_singleplayer()
-	if not singleplayer then
+	if not IS_SINGLEPLAYER then
 		if gdac.player_is_admin(player) then
 			return 0
 		end
@@ -700,7 +702,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		-- code, and it turned out the problem was passing a negative value to this
 		-- function for the amount of damage. Facepalm. Why do they let me code!?
 		if armor.stomp_at(player, player:get_pos(), math.abs(hp_change * 1000)) then
-			hp_change = hp_change * 100
+			hp_change = hp_change * 50
 		else
 			hp_change = hp_change * 500
 		end
@@ -832,6 +834,13 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		pova.update_modifier(player, "physics", {speed=0.8}, "damage.stun.3", {time=3})
 	elseif hp_change <= -(2*500) then
 		pova.update_modifier(player, "physics", {speed=0.95}, "damage.stun.2", {time=3})
+	end
+
+	-- If this damage will kill the player ...
+	--minetest.chat_send_all(hp_change)
+	if (player:get_hp() + hp_change) <= 0 then
+		--minetest.chat_send_all('damage will kill player')
+		hp_change = armor.handle_pvp_arena_death(hp_change, player)
 	end
 
 	return hp_change

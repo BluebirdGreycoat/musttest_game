@@ -24,7 +24,8 @@ local math_random = math.random
 -- This prevents certain classes of exploits (such as using them offensively
 -- during PvP). This also strongly discourages constantly moving them around
 -- for trivial reasons.
-local CITYBLOCK_DELAY_TIME = 60*60*6
+--local CITYBLOCK_DELAY_TIME = 60*60*6
+local CITYBLOCK_DELAY_TIME = 1
 
 local function time_active(t1, t2)
 	return (math.abs(t2 - t1) > CITYBLOCK_DELAY_TIME)
@@ -86,36 +87,46 @@ function city_block.on_punch(pos, node, puncher, pt)
 
 	local pname = puncher:get_player_name()
 
-	if minetest.test_protection(pos, pname) then
-		return
-	end
-
 	local wielded = puncher:get_wielded_item()
 	if wielded:get_name() == "rosestone:head" and wielded:get_count() >= 8 then
-		for i, v in ipairs(city_block.blocks) do
-			if vector_equals(v.pos, pos) then
-				if not v.is_jail then
-					local p1 = vector_add(pos, {x=-1, y=0, z=-1})
-					local p2 = vector_add(pos, {x=1, y=0, z=1})
-					local positions, counts = minetest.find_nodes_in_area(p1, p2, "griefer:grieferstone")
+		-- Only if area is not protected against this player.
+		if not minetest.test_protection(pos, pname) then
+			for i, v in ipairs(city_block.blocks) do
+				if vector_equals(v.pos, pos) then
+					if not v.is_jail then
+						local p1 = vector_add(pos, {x=-1, y=0, z=-1})
+						local p2 = vector_add(pos, {x=1, y=0, z=1})
+						local positions, counts = minetest.find_nodes_in_area(p1, p2, "griefer:grieferstone")
 
-					if counts["griefer:grieferstone"] == 8 then
-						v.is_jail = true
-						local meta = minetest.get_meta(pos)
-						local infotext = meta:get_string("infotext")
-						infotext = infotext .. "\nJail Marker"
-						meta:set_string("infotext", infotext)
+						if counts["griefer:grieferstone"] == 8 then
+							v.is_jail = true
+							local meta = minetest.get_meta(pos)
+							local infotext = meta:get_string("infotext")
+							infotext = infotext .. "\nJail Marker"
+							meta:set_string("infotext", infotext)
 
-						city_block:save()
+							city_block:save()
 
-						wielded:take_item(8)
-						puncher:set_wielded_item(wielded)
+							wielded:take_item(8)
+							puncher:set_wielded_item(wielded)
 
-						minetest.chat_send_player(pname, "# Server: Jail position marked!")
-						return
+							minetest.chat_send_player(pname, "# Server: Jail position marked!")
+							return
+						end
 					end
 				end
 			end
+		end
+	end
+
+	-- Duel activation.
+	-- Can be done even if player doesn't have access to protection.
+	if wielded:get_name() == "default:gold_ingot" and wielded:get_count() > 0 then
+		local block = city_block.get_block(pos)
+		if block.pvp_arena then
+			wielded:take_item()
+			puncher:set_wielded_item(wielded)
+			armor.add_dueling_player(puncher)
 		end
 	end
 end
@@ -366,6 +377,32 @@ function city_block:in_city(pos)
 	return false
 end
 
+-- Query whether pos is in a dueling arena. Size is same as city area.
+function city_block:in_pvp_arena(pos)
+	pos = vector_round(pos)
+	-- Covers a 45x45x45 area.
+	local r = 22
+	local blocks = self.blocks
+	local t2 = os.time()
+
+	for i=1, #blocks, 1 do -- Convenience of ipairs() does not justify its overhead.
+		local v = blocks[i]
+		local vpos = v.pos
+		local t1 = v.time or 0
+
+		if time_active(t1, t2) then
+			if pos.x >= (vpos.x - r) and pos.x <= (vpos.x + r) and
+				 pos.z >= (vpos.z - r) and pos.z <= (vpos.z + r) and
+				 pos.y >= (vpos.y - r) and pos.y <= (vpos.y + r) then
+				if v.pvp_arena then
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
 -- Pass the player doing the liquid dig/place action.
 function city_block:in_disallow_liquid_zone(pos, player)
 	-- Never in city zone, if not a player doing this.
@@ -554,9 +591,8 @@ function city_block.create_formspec(pos, pname, blockdata)
 		"field[0.30,0.75;4,1;CITYNAME;;]" ..
 		"button_exit[0,1.30;2,1;OK;Confirm]" ..
 		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
-		"field_close_on_enter[CITYNAME;true]" --[[ ..
+		"field_close_on_enter[CITYNAME;true]" ..
 		"checkbox[0,2;pvp_arena;Mark Dueling Arena;" .. pvp .. "]"
-		--]]
 
 	return formspec
 end
@@ -632,7 +668,7 @@ function city_block.on_receive_fields(player, formname, fields)
 		meta:set_string("infotext", city_block.get_infotext(pos))
 		block.area_name = area_name
 		city_block:save()
-	--[[
+	---[[
 	elseif fields.pvp_arena == "true" then
 		local block = city_block.get_block(pos)
 		if block then
@@ -671,7 +707,7 @@ function city_block.get_infotext(pos)
 
 	local blockdata = city_block.get_block(pos)
 	if blockdata and blockdata.pvp_arena then
-		text = text .. "\nThis marks a dueling arena."
+		text = text .. "\nThis marks a dueling arena.\nPunch with gold ingot to duel."
 	end
 
 	return text

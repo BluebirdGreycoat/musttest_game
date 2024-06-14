@@ -530,13 +530,15 @@ function beds.on_rightclick(pos, player)
 
 	-- Player can sleep in bed anytime in the nether.
 	if ppos.y > -25000 then
-		if tod > 0.2 and tod < 0.805 then
-			if beds.player[name] then
-				lay_down(player, nil, nil, false)
+		if rc.current_realm_at_pos(pos) ~= "naraxen" then
+			if tod > 0.2 and tod < 0.805 then
+				if beds.player[name] then
+					lay_down(player, nil, nil, false)
+				end
+				minetest.chat_send_player(name, "# Server: You can only sleep at night.")
+				beds.report_respawn_status(name)
+				return
 			end
-			minetest.chat_send_player(name, "# Server: You can only sleep at night.")
-			beds.report_respawn_status(name)
-			return
 		end
 	end
 

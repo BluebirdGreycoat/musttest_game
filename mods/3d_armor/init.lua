@@ -27,6 +27,7 @@ ARMOR_HEAL_MULTIPLIER = 1.0
 
 dofile(armor.modpath .. "/armor.lua")
 dofile(armor.modpath .. "/stomp.lua")
+dofile(armor.modpath .. "/duel.lua")
 
 if not armor.run_once then
 	armor.run_once = true

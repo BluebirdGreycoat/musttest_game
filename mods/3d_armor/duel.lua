@@ -80,7 +80,7 @@ function armor.add_dueling_player(player)
 
 	dueling_players[pname] = {
 		start_time = os.time(),
-		start_pos = player:get_pos(),
+		start_pos = vector_round(player:get_pos()),
 		out_of_bounds = 0,
 	}
 
@@ -189,20 +189,21 @@ end
 -- Called from the armor HP-change code only if player would die.
 function armor.handle_pvp_arena_death(hp_change, player)
 	local pname = player:get_player_name()
-	local pos = vector_round(player:get_pos())
+	local player_pos = vector_round(player:get_pos())
 
 	-- Player must have signaled their intent to duel.
 	if dueling_players[pname] then
 		--minetest.chat_send_all('dead player is dueling')
+		local duel_info = dueling_players[pname]
 
 		-- PvP arena must be marked and protected.
-		if city_block:in_pvp_arena(pos) then
+		if city_block:in_pvp_arena(player_pos) then
 			--minetest.chat_send_all('in pvp arena')
-			if minetest.test_protection(pos, "") then
+			if minetest.test_protection(player_pos, "") then
 				--minetest.chat_send_all('is_protected')
 
-				local opponents = get_likely_opponents(player, pos)
-				local spawns = get_public_spawns(pos)
+				local opponents = get_likely_opponents(player, player_pos)
+				local spawns = get_public_spawns(duel_info.start_pos)
 
 				--minetest.chat_send_all('opponents: ' .. #opponents)
 				--minetest.chat_send_all('spawns: ' .. #spawns)
@@ -222,6 +223,7 @@ function armor.handle_pvp_arena_death(hp_change, player)
 					--minetest.chat_send_all('preventing real death')
 
 					-- Prevent real death, and all its consequences.
+					-- Player will be fully healed after they teleport to a public spawn.
 					return -(player:get_hp() - 1)
 				end
 			end
@@ -231,4 +233,18 @@ function armor.handle_pvp_arena_death(hp_change, player)
 
 	-- Otherwise, do not interfere with normal damage to player.
 	return hp_change
+end
+
+
+
+-- Used to query if this location is a valid combat arena.
+function armor.is_valid_arena(pos)
+	pos = vector_round(pos)
+	if city_block:in_pvp_arena(pos) then
+		if minetest.test_protection(pos, "") then
+			if #(get_public_spawns(pos)) > 0 then
+				return true
+			end
+		end
+	end
 end

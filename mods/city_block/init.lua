@@ -124,9 +124,13 @@ function city_block.on_punch(pos, node, puncher, pt)
 	if wielded:get_name() == "default:gold_ingot" and wielded:get_count() > 0 then
 		local block = city_block.get_block(pos)
 		if block.pvp_arena then
-			if armor.add_dueling_player(puncher) then
-				wielded:take_item()
-				puncher:set_wielded_item(wielded)
+			if armor.is_valid_arena(pos) then
+				if armor.add_dueling_player(puncher) then
+					wielded:take_item()
+					puncher:set_wielded_item(wielded)
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and public beds.")
 			end
 		end
 	end

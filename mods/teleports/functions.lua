@@ -74,7 +74,7 @@ end
 
 -- Build list of all teleports in same realm as 'origin', then return a random
 -- TP from that list, or nil.
-function teleports.get_random_teleport(origin)
+function teleports.get_random_teleport(origin, range)
 	if #(teleports.teleports) == 0 then
 		return
 	end
@@ -91,7 +91,9 @@ function teleports.get_random_teleport(origin)
 		local p = ports[i]
 		if not vector_equals(p.pos, origin) then
 			if rc.current_realm_at_pos(p.pos) == realm then
-				caned[#caned + 1] = p
+				if vector_distance(p.pos, origin) <= range then
+					caned[#caned + 1] = p
+				end
 			end
 		end
 	end
@@ -327,7 +329,7 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 
 	--minetest.chat_send_all('chance: ' .. random_chance)
 	if math_random(1, random_chance) == 1 then
-		local tp = teleports.get_random_teleport(origin_pos)
+		local tp = teleports.get_random_teleport(origin_pos, teleport_range)
 
 		if not tp then
 			minetest.chat_send_player(pname, "# Server: Transport error! Aborted.")

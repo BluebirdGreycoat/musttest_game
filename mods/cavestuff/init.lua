@@ -1069,6 +1069,7 @@ for i=1, 4, 1 do
 			attached_node = 1, fall_damage_add_percent = 100,
 		}),
     sounds = default.node_sound_glass_defaults(),
+    light_source = (4 + i),
     selection_box = {
       type = "fixed",
       fixed = {-0.3, -0.5, -0.3, 0.3, 0.35, 0.3}

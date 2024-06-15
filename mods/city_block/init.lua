@@ -1097,6 +1097,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	local melee_hit = true
 	local stomp_hit = false
 	local from_env = false
+	local from_mob = false
 
 	if tool_capabilities.damage_groups.from_stomp then
 		stomp_hit = true
@@ -1104,6 +1105,10 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 
 	if tool_capabilities.damage_groups.from_env then
 		from_env = true
+	end
+
+	if tool_capabilities.damage_groups.from_mob then
+		from_mob = true
 	end
 
 	if tool_capabilities.damage_groups.from_arrow then
@@ -1188,5 +1193,13 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 			city_block.handle_consequences(pref, href, melee_hit, stomp_hit)
 		end
 	end)
+
+	-- When we return from this punch handler, the HP-change callback(s) will be called.
+	-- This notifies the dueling code that the next HP-change is from a player-to-player
+	-- punch, so that we can handle the HP-change sensibly.
+	if not from_env and not from_mob then
+		-- Pass victim name, hitter name, boot-stomp flag, ranged/arrow flag.
+		armor.notify_duel_punch(pname, hname, stomp_hit, not melee_hit)
+	end
 end
 

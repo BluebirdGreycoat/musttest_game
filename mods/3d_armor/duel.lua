@@ -270,3 +270,9 @@ function armor.is_valid_arena(pos)
 		end
 	end
 end
+
+
+
+-- Called by the cityblock punch handler.
+function armor.notify_duel_punch(victim_name, hitter_name, stomp_flag, ranged_flag)
+end

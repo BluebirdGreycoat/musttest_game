@@ -11,7 +11,7 @@ local PUBLIC_BED_DISTANCE = 150
 local OPPONENT_DISTANCE = 75
 local DUEL_MAX_RADIUS = 256
 
-local DUEL_DEFEAT_STRINGS = {
+local DUEL_MELEE_STRINGS = {
 	"<loser> lost a duel.",
 	"<loser> got owned.",
 	"<winner> defeated <loser> in a duel.",
@@ -30,6 +30,21 @@ local DUEL_DEFEAT_STRINGS = {
 	"<winner> trashed <loser> in a duel.",
 	"<loser> got some major hurt from <winner>.",
 	"<winner> gave out a royal swatting to <loser>.",
+}
+
+local DUEL_ARROW_STRINGS = {
+	"<loser> didn't get out of the way of <winner>'s flying projectile.",
+	"<loser> never saw it coming.",
+	"<loser> faced down <winner>'s artillery and lost.",
+	"<winner> used <loser> for ranged target practice.",
+}
+
+local DUEL_STOMP_STRINGS = {
+	"<winner> stomped on <loser>'s head.",
+	"<loser> was flattened.",
+	"<loser> was flattened by <winner>.",
+	"<loser> got a taste of jackboot.",
+	"<winner> used <loser> to cushion their fall.",
 }
 
 -- Check whether player is in bounds to duel, and end duel if necessary.
@@ -159,9 +174,19 @@ local function print_message(victim, punch_info)
 
 	if pname == punch_info.victim and kname == punch_info.hitter then
 	if not spam.test_key(spamkey) then
-		local msg = DUEL_DEFEAT_STRINGS[math_random(1, #DUEL_DEFEAT_STRINGS)]
+		local msg
+
+		if punch_info.stomp then
+			msg = DUEL_STOMP_STRINGS[math_random(1, #DUEL_STOMP_STRINGS)]
+		elseif punch_info.arrow then
+			msg = DUEL_ARROW_STRINGS[math_random(1, #DUEL_ARROW_STRINGS)]
+		else
+			msg = DUEL_MELEE_STRINGS[math_random(1, #DUEL_MELEE_STRINGS)]
+		end
+
 		msg = msg:gsub("<loser>", "<" .. rename.gpn(pname) .. ">")
 		msg = msg:gsub("<winner>", "<" .. rename.gpn(kname) .. ">")
+
 		minetest.chat_send_all("# Server: " .. msg)
 		spam.mark_key(spamkey, 10)
 	end

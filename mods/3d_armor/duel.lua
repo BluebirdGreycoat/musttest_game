@@ -5,6 +5,7 @@ local math_random = math.random
 
 armor.dueling_players = armor.dueling_players or {}
 local dueling_players = armor.dueling_players
+local ACTIVE_DUEL_PUNCH = nil
 
 local PUBLIC_BED_DISTANCE = 150
 local OPPONENT_DISTANCE = 75
@@ -150,17 +151,20 @@ local function get_public_spawns(pos)
 	return targets
 end
 
-local function print_message(victim, killer)
+local function print_message(victim, punch_info)
+	local killer = minetest.get_player_by_name(punch_info.hitter)
 	local pname = victim:get_player_name()
 	local kname = killer:get_player_name()
 	local spamkey = "duel:" .. pname .. ":" .. kname
 
+	if pname == punch_info.victim and kname == punch_info.hitter then
 	if not spam.test_key(spamkey) then
 		local msg = DUEL_DEFEAT_STRINGS[math_random(1, #DUEL_DEFEAT_STRINGS)]
 		msg = msg:gsub("<loser>", "<" .. rename.gpn(pname) .. ">")
 		msg = msg:gsub("<winner>", "<" .. rename.gpn(kname) .. ">")
 		minetest.chat_send_all("# Server: " .. msg)
 		spam.mark_key(spamkey, 10)
+	end
 	end
 end
 
@@ -229,15 +233,20 @@ function armor.handle_pvp_arena_death(hp_change, player)
 				--minetest.chat_send_all('opponents: ' .. #opponents)
 				--minetest.chat_send_all('spawns: ' .. #spawns)
 
+				-- Get notified punch info (from cityblock punch handler callback).
+				-- Set global punch info to nil so we don't mistakenly use stale data later.
+				local punch_info = ACTIVE_DUEL_PUNCH
+				ACTIVE_DUEL_PUNCH = nil
+
 				-- There must be nearby opponents and nearby spawns.
 				-- No opponents == no duel, no spawns == not valid arena.
-				if #opponents > 0 and #spawns > 0 then
+				if #opponents > 0 and #spawns > 0 and punch_info then
 					-- Death sound needs to play before we respawn the player.
 					coresounds.play_death_sound(player, pname)
 					spawn_bones(player)
 
-					-- The nearest opponent was probably the killer.
-					print_message(player, opponents[1])
+					-- Send taunt.
+					print_message(player, punch_info)
 
 					-- Send victim to a respawn point.
 					respawn_victim(player, spawns[math_random(1, #spawns)])
@@ -275,4 +284,10 @@ end
 
 -- Called by the cityblock punch handler.
 function armor.notify_duel_punch(victim_name, hitter_name, stomp_flag, ranged_flag)
+	ACTIVE_DUEL_PUNCH = {
+		victim = victim_name,
+		hitter = hitter_name,
+		stomp = stomp_flag,
+		arrow = ranged_flag,
+	}
 end

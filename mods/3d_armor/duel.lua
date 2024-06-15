@@ -47,6 +47,10 @@ local DUEL_STOMP_STRINGS = {
 	"<winner> used <loser> to cushion their fall.",
 }
 
+local function hud_update(player, duel_data)
+	player:hud_change(duel_data.hud[2], "text", "Foes: " .. #(armor.get_likely_opponents(player, player:get_pos())))
+end
+
 -- Check whether player is in bounds to duel, and end duel if necessary.
 local function check_bounds(pname)
 	if dueling_players[pname] then
@@ -63,6 +67,8 @@ local function check_bounds(pname)
 		local data = dueling_players[pname]
 		local in_arena = (city_block:in_pvp_arena(player_pos) and
 			minetest.test_protection(player_pos, ""))
+
+		hud_update(pref, data)
 
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
 			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
@@ -98,10 +104,31 @@ function armor.add_dueling_player(player)
 		return
 	end
 
+	local hud1 = player:hud_add({
+		type = "text",
+		position = {x=1.00, y=0.30},
+		alignment = {x=-1, y=1},
+		text = "PvP: Dueling!",
+		number = 0xFFFFFF,
+		size = {x=1, y=1},
+		offset = {x=-16, y=0},
+	})
+
+	local hud2 = player:hud_add({
+		type = "text",
+		position = {x=1.00, y=0.30},
+		alignment = {x=-1, y=1},
+		text = "Foes: " .. #(armor.get_likely_opponents(player, player:get_pos())),
+		number = 0xFFFFFF,
+		size = {x=1, y=1},
+		offset = {x=-16, y=18},
+	})
+
 	dueling_players[pname] = {
 		start_time = os.time(),
 		start_pos = vector_round(player:get_pos()),
 		out_of_bounds = 0,
+		hud = {hud1, hud2},
 	}
 
 	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
@@ -114,13 +141,20 @@ end
 function armor.end_duel(player)
 	local pname = player:get_player_name()
 	if dueling_players[pname] then
+		local data = dueling_players[pname]
+		if data.hud then
+			for k = 1, #data.hud do
+				player:hud_remove(data.hud[k])
+			end
+		end
+		data.hud = nil
 		dueling_players[pname] = nil
 		minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
 	end
 end
 
 -- Get nearby players, not admins, not self.
-local function get_likely_opponents(player, pos)
+function armor.get_likely_opponents(player, pos)
 	local targets = {}
 	local pname = player:get_player_name()
 	local players = minetest.get_connected_players()
@@ -252,7 +286,7 @@ function armor.handle_pvp_arena_death(hp_change, player)
 			if minetest.test_protection(player_pos, "") then
 				--minetest.chat_send_all('is_protected')
 
-				local opponents = get_likely_opponents(player, player_pos)
+				local opponents = armor.get_likely_opponents(player, player_pos)
 				local spawns = get_public_spawns(duel_info.start_pos)
 
 				--minetest.chat_send_all('opponents: ' .. #opponents)

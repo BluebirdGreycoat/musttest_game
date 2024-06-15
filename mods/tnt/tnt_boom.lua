@@ -264,10 +264,18 @@ local function entity_physics(pos, radius, drops, boomdef)
 
 				-- Do knockback only if player didn't die.
 				if obj:get_hp() > 0 then
-					local dir = vector.normalize(vector.subtract(obj_pos, pos))
-					local moveoff = vector.multiply(dir, 2 / dist * radius)
-					moveoff = vector.multiply(moveoff, 3)
-					obj:add_player_velocity(moveoff)
+					-- HACK: do not apply knockback if the player is in a duel.
+					-- This has a HIGH chance of causing fall damage leading to death, which would
+					-- bypass the duel!
+					-- This check is needed because it is way too easy to kill someone by fall damage
+					-- when using TNT arrows.
+					if not armor.dueling_players[obj:get_player_name()] then
+						local dir = vector.normalize(vector.subtract(obj_pos, pos))
+						local moveoff = vector.multiply(dir, 2 / dist * radius)
+						moveoff = vector.multiply(moveoff, 3)
+						moveoff.y = math.min(math.abs(moveoff.y), 20)
+						obj:add_player_velocity(moveoff)
+					end
 				end
 			end
 		else

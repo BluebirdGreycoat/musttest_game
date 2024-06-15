@@ -128,6 +128,10 @@ function city_block.on_punch(pos, node, puncher, pt)
 				if armor.add_dueling_player(puncher) then
 					wielded:take_item()
 					puncher:set_wielded_item(wielded)
+				else
+					if armor.dueling_players[pname] then
+						minetest.chat_send_player(pname, "# Server: You are already in a duel!")
+					end
 				end
 			else
 				minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and public beds.")

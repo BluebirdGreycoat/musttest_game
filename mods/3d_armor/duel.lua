@@ -61,7 +61,7 @@ local function check_bounds(pname)
 		-- Player left the game unexpectedly.
 		if not pref then
 			dueling_players[pname] = nil
-			minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+			minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel.")
 			return
 		end
 
@@ -84,7 +84,7 @@ local function check_bounds(pname)
 				end
 
 				data.out_of_bounds = data.out_of_bounds + 1
-				minetest.chat_send_player(pname, "# Server: Return to the duel! (" .. (30 - data.out_of_bounds) .. ").")
+				minetest.chat_send_player(pname, "# Server: Return to the combat zone! (" .. (30 - data.out_of_bounds) .. ").")
 			else
 				-- Player has completely left the duel area (teleport?) End duel immediately.
 				armor.end_duel(pref)
@@ -154,14 +154,34 @@ function armor.add_dueling_player(player, duel_pos)
 		offset = {x=-16, y=yoff*0},
 	})
 
+	local hud5 = player:hud_add({
+		type = "waypoint",
+		name = "Arena Marker",
+		number = 0xFFFFFF,
+		world_pos = duel_pos,
+	})
+
+	local beds = {}
+	local spawns = armor.get_public_spawns(duel_pos)
+	for k = 1, #spawns do
+		local id = player:hud_add({
+			type = "waypoint",
+			name = "Respawn Point",
+			number = 0xFFFFFF,
+			world_pos = spawns[k],
+			precision = 0,
+		})
+		beds[#beds + 1] = id
+	end
+
 	dueling_players[pname] = {
 		start_time = os.time(),
 		start_pos = duel_pos,
 		out_of_bounds = 0,
-		hud = {hud1, hud2, hud3, hud4},
+		hud = {hud1, hud2, hud3, hud4, hud5, beds},
 	}
 
-	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
+	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!")
 	chat_core.alert_player_sound(pname)
 	minetest.after(1, check_bounds, pname)
 
@@ -176,14 +196,20 @@ function armor.end_duel(player)
 
 		if data.hud then
 			for k = 1, #data.hud do
-				player:hud_remove(data.hud[k])
+				if type(data.hud[k]) == "table" then
+					for j = 1, #data.hud[k] do
+						player:hud_remove(data.hud[k][j])
+					end
+				else
+					player:hud_remove(data.hud[k])
+				end
 			end
 		end
 
 		data.hud = nil
 		dueling_players[pname] = nil
 
-		minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+		minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel.")
 		chat_core.alert_player_sound(pname)
 	end
 end

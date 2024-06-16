@@ -62,13 +62,13 @@ local DUEL_SUICIDE_STRINGS = {
 	"<loser> died: couldn't take what <l_he> dished out.",
 }
 
-local function hud_update(player, duel_data)
+function armor.hud_update(player, duel_data)
 	player:hud_change(duel_data.hud[2], "text",
-		"Foes: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
+		"Participants: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
 end
 
 -- Check whether player is in bounds to duel, and end duel if necessary.
-local function check_bounds(pname)
+function armor.check_bounds(pname)
 	if dueling_players[pname] then
 		local pref = minetest.get_player_by_name(pname)
 
@@ -85,7 +85,7 @@ local function check_bounds(pname)
 		local in_arena = (city_block:in_pvp_arena(player_pos) and
 			minetest.test_protection(player_pos, ""))
 
-		hud_update(pref, data)
+		armor.hud_update(pref, data)
 
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
 			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
@@ -109,7 +109,7 @@ local function check_bounds(pname)
 		end
 
 		-- Check again.
-		minetest.after(1, check_bounds, pname)
+		minetest.after(1, function() armor.check_bounds(pname) end)
 	end
 end
 
@@ -137,7 +137,7 @@ function armor.add_dueling_player(player, duel_pos)
 		type = "text",
 		position = {x=1.00, y=0.30},
 		alignment = {x=-1, y=1},
-		text = "Foes: " .. #(armor.get_likely_opponents(player, duel_pos)),
+		text = "Participants: " .. #(armor.get_likely_opponents(player, duel_pos)),
 		number = 0xFFFFFF,
 		size = {x=1, y=1},
 		offset = {x=-16, y=yoff*2},
@@ -197,7 +197,7 @@ function armor.add_dueling_player(player, duel_pos)
 
 	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!")
 	chat_core.alert_player_sound(pname)
-	minetest.after(1, check_bounds, pname)
+	minetest.after(1, function() armor.check_bounds(pname) end)
 
 	return true
 end
@@ -430,36 +430,46 @@ function armor.handle_pvp_arena_death(hp_change, player)
 				-- There must be nearby opponents and nearby spawns.
 				-- No opponents == no duel, no spawns == not valid arena.
 				if #opponents > 0 and #spawns > 0 and punch_info then
-					-- If player has only 1 HP, they were already "dead" as far as we're concerned.
-					if player:get_hp() > 1 then
-						debug_print('handling duel death: ' .. pname)
-
-						-- Death sound needs to play before we respawn the player.
-						coresounds.play_death_sound(player, pname)
-
-						-- We MUST wait until next server step to spawn bones, because
-						-- bones cancel protection, which would confuse the arena code and
-						-- cause the player to die a real death! This can happen if two or
-						-- more players die at the exact same time in the same spot
-						-- (e.g., murder-suicide with a TNT arrow).
-						spawn_bones_after(player:get_pos(), pname, punch_info.hitter)
-
-						-- Send taunt.
-						print_message(player, punch_info)
-
-						-- Send victim to a respawn point.
-						respawn_victim(player, spawns[math_random(1, #spawns)])
+					-- The hitter must also be in the duel.
+					-- PvP arenas are not meant to be used as defense against bastards!
+					-- Duels are between friends, or frenemies.
+					local hitter_is_dueling = false
+					if punch_info.hitter and dueling_players[punch_info.hitter] then
+						hitter_is_dueling = true
 					end
 
-					debug_print('preventing real death: ' .. pname)
+					if hitter_is_dueling then
+						-- If player has only 1 HP, they were already "dead" as far as we're concerned.
+						if player:get_hp() > 1 then
+							debug_print('handling duel death: ' .. pname)
 
-					-- Prevent real death, and all its consequences.
-					-- Player will be fully healed after they teleport to a public spawn.
-					-- Note: if player HP is 1, this should return 0 (no hp change allowed).
-					if player:get_hp() <= 1 then
-						return 0
+							-- Death sound needs to play before we respawn the player.
+							coresounds.play_death_sound(player, pname)
+
+							-- We MUST wait until next server step to spawn bones, because
+							-- bones cancel protection, which would confuse the arena code and
+							-- cause the player to die a real death! This can happen if two or
+							-- more players die at the exact same time in the same spot
+							-- (e.g., murder-suicide with a TNT arrow).
+							spawn_bones_after(player:get_pos(), pname, punch_info.hitter)
+
+							-- Send taunt.
+							print_message(player, punch_info)
+
+							-- Send victim to a respawn point.
+							respawn_victim(player, spawns[math_random(1, #spawns)])
+						end
+
+						debug_print('preventing real death: ' .. pname)
+
+						-- Prevent real death, and all its consequences.
+						-- Player will be fully healed after they teleport to a public spawn.
+						-- Note: if player HP is 1, this should return 0 (no hp change allowed).
+						if player:get_hp() <= 1 then
+							return 0
+						end
+						return -(player:get_hp() - 1)
 					end
-					return -(player:get_hp() - 1)
 				end
 			else
 				debug_print('NOT PROTECTED: ' .. pname)

@@ -45,7 +45,7 @@ local radius = 1
 
 local function add_effects(pos, radius)
 	minetest.add_particlespawner({
-		amount = 8,
+		amount = 40,
 		time = 0.5,
 		minpos = vector.subtract(pos, radius / 2),
 		maxpos = vector.add(pos, radius / 2),
@@ -55,9 +55,10 @@ local function add_effects(pos, radius)
 		maxacc = vector.new(),
 		minexptime = 0.5,
 		maxexptime = 1,
-		minsize = 0.5,
-		maxsize = 1,
+		minsize = 1.0,
+		maxsize = 4.0,
 		texture = "tnt_smoke.png",
+		glow = 13,
 	})
 end
 
@@ -80,6 +81,8 @@ local function explode_nearby(self, pos)
 	local vel = self.object:get_velocity()
 	local objs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 2)
 
+	local got_boom = false
+
 	for k, obj in pairs(objs) do
 		if obj:get_luaentity() ~= nil then
 			local oname = obj:get_luaentity().name
@@ -88,13 +91,19 @@ local function explode_nearby(self, pos)
 				local damage = (((speed + 5)^1.2)/5 + 12) * 1
 				throwing_arrow_punch_entity(obj, self, damage*500)
 				boom(pos)
+				got_boom = true
 			end
 		elseif obj:is_player() then
 			local speed = vector.length(vel)
 			local damage = ((speed + 5)^1.2)/5 + 12
 			throwing_arrow_punch_entity(obj, self, damage*500)
 			boom(pos)
+			got_boom = true
 		end
+	end
+
+	if not got_boom then
+		boom(pos)
 	end
 end
 

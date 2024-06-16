@@ -7,9 +7,11 @@ armor.dueling_players = armor.dueling_players or {}
 local dueling_players = armor.dueling_players
 local ACTIVE_DUEL_PUNCH = nil
 
+-- For best duels, these numbers should be the same.
 local PUBLIC_BED_DISTANCE = 150
-local OPPONENT_DISTANCE = 75
-local DUEL_MAX_RADIUS = 256
+local OPPONENT_DISTANCE = 150
+local DUEL_MAX_RADIUS = 150
+
 local SPAWN_SAFE_ZONE = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 

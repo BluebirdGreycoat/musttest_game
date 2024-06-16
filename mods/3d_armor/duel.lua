@@ -10,6 +10,7 @@ local ACTIVE_DUEL_PUNCH = nil
 local PUBLIC_BED_DISTANCE = 150
 local OPPONENT_DISTANCE = 75
 local DUEL_MAX_RADIUS = 256
+local SPAWN_SAFE_ZONE = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 
 local DUEL_MELEE_STRINGS = {
@@ -377,6 +378,19 @@ local function spawn_bones(pos, pname, hname)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
+	end
+
+	local data = dueling_players[pname]
+	if not data then
+		return
+	end
+
+	-- Prevent placing bones near any of the public spawns.
+	local spawns = armor.get_public_spawns(data.start_pos)
+	for k = 1, #spawns do
+		if vector_distance(pos, spawns[k]) < SPAWN_SAFE_ZONE then
+			return
+		end
 	end
 
 	pos = armor.find_ground_by_raycast(pos, pref)

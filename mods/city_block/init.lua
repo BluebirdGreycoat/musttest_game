@@ -24,8 +24,8 @@ local math_random = math.random
 -- This prevents certain classes of exploits (such as using them offensively
 -- during PvP). This also strongly discourages constantly moving them around
 -- for trivial reasons.
---local CITYBLOCK_DELAY_TIME = 60*60*6
-local CITYBLOCK_DELAY_TIME = 1
+local CITYBLOCK_DELAY_TIME = 60*60*6
+--local CITYBLOCK_DELAY_TIME = 1
 
 local function time_active(t1, t2)
 	return (math.abs(t2 - t1) > CITYBLOCK_DELAY_TIME)

@@ -335,20 +335,26 @@ function armor.handle_pvp_arena_death(hp_change, player)
 				-- There must be nearby opponents and nearby spawns.
 				-- No opponents == no duel, no spawns == not valid arena.
 				if #opponents > 0 and #spawns > 0 and punch_info then
-					-- Death sound needs to play before we respawn the player.
-					coresounds.play_death_sound(player, pname)
-					spawn_bones(player)
+					-- If player has only 1 HP, they were already "dead" as far as we're concerned.
+					if player:get_hp() > 1 then
+						--minetest.chat_send_all('handling duel death')
 
-					-- Send taunt.
-					print_message(player, punch_info)
+						-- Death sound needs to play before we respawn the player.
+						coresounds.play_death_sound(player, pname)
+						spawn_bones(player)
 
-					-- Send victim to a respawn point.
-					respawn_victim(player, spawns[math_random(1, #spawns)])
+						-- Send taunt.
+						print_message(player, punch_info)
+
+						-- Send victim to a respawn point.
+						respawn_victim(player, spawns[math_random(1, #spawns)])
+					end
 
 					--minetest.chat_send_all('preventing real death')
 
 					-- Prevent real death, and all its consequences.
 					-- Player will be fully healed after they teleport to a public spawn.
+					-- Note: if player HP is 1, this should return 0 (no hp change allowed).
 					return -(player:get_hp() - 1)
 				end
 			end

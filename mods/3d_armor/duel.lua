@@ -371,8 +371,13 @@ local function respawn_victim(player, respawn_pos)
 end
 
 local function spawn_bones(pos, pname, hname)
+	pos = vector_round(pos)
 	local pref = minetest.get_player_by_name(pname)
-	pos = armor.find_ground_by_raycast(vector_round(pos), pref)
+	if not pref then
+		return
+	end
+
+	pos = armor.find_ground_by_raycast(pos, pref)
 	if minetest.get_node(pos).name == "air" then
 		minetest.set_node(pos, {name="bones:bones_type2", param2=math_random(0, 3)})
 		local meta = minetest.get_meta(pos)
@@ -384,43 +389,60 @@ local function spawn_bones(pos, pname, hname)
 	end
 end
 
+local function spawn_bones_after(pos, pname, hname)
+	minetest.after(0, spawn_bones, pos, pname, hname)
+end
+
+local function debug_print(msg)
+	--minetest.chat_send_all(msg)
+end
+
 -- Called from the armor HP-change code only if player would die.
 function armor.handle_pvp_arena_death(hp_change, player)
 	local pname = player:get_player_name()
 	local player_pos = vector_round(player:get_pos())
+	debug_print('pos: ' .. minetest.pos_to_string(player_pos) .. ': ' .. pname)
 
 	-- Player must have signaled their intent to duel.
 	if dueling_players[pname] then
-		--minetest.chat_send_all('dead player is dueling')
+		debug_print('dead player is dueling: ' .. pname)
 		local duel_info = dueling_players[pname]
 
 		-- PvP arena must be marked and protected.
 		if city_block:in_pvp_arena(player_pos) then
-			--minetest.chat_send_all('in pvp arena')
+			debug_print('in pvp arena: ' .. pname)
 			if minetest.test_protection(player_pos, "") then
-				--minetest.chat_send_all('is_protected')
+				debug_print('is_protected: ' .. pname)
 
 				local opponents = armor.get_likely_opponents(player, duel_info.start_pos)
 				local spawns = armor.get_public_spawns(duel_info.start_pos)
 
-				--minetest.chat_send_all('opponents: ' .. #opponents)
-				--minetest.chat_send_all('spawns: ' .. #spawns)
+				debug_print('opponents: ' .. #opponents .. ': ' .. pname)
+				debug_print('spawns: ' .. #spawns .. ': ' .. pname)
 
 				-- Get notified punch info (from cityblock punch handler callback).
 				-- Set global punch info to nil so we don't mistakenly use stale data later.
 				local punch_info = ACTIVE_DUEL_PUNCH
 				ACTIVE_DUEL_PUNCH = nil
 
+				debug_print('punch info: ' .. dump(punch_info) .. ': ' .. pname)
+
 				-- There must be nearby opponents and nearby spawns.
 				-- No opponents == no duel, no spawns == not valid arena.
 				if #opponents > 0 and #spawns > 0 and punch_info then
 					-- If player has only 1 HP, they were already "dead" as far as we're concerned.
 					if player:get_hp() > 1 then
-						--minetest.chat_send_all('handling duel death')
+						debug_print('handling duel death: ' .. pname)
 
 						-- Death sound needs to play before we respawn the player.
 						coresounds.play_death_sound(player, pname)
-						spawn_bones(player:get_pos(), pname, punch_info.hitter)
+
+						-- We MUST wait until next server step to spawn bones, because
+						-- bones cancel protection, which would confuse the arena code and
+						-- cause the player to die a real death! This can happen if two or
+						-- more players die at the exact same time in the same spot
+						-- (e.g., murder-suicide with a TNT arrow).
+						spawn_bones_after(player:get_pos(), pname, punch_info.hitter)
 
 						-- Send taunt.
 						print_message(player, punch_info)
@@ -429,13 +451,18 @@ function armor.handle_pvp_arena_death(hp_change, player)
 						respawn_victim(player, spawns[math_random(1, #spawns)])
 					end
 
-					--minetest.chat_send_all('preventing real death')
+					debug_print('preventing real death: ' .. pname)
 
 					-- Prevent real death, and all its consequences.
 					-- Player will be fully healed after they teleport to a public spawn.
 					-- Note: if player HP is 1, this should return 0 (no hp change allowed).
+					if player:get_hp() <= 1 then
+						return 0
+					end
 					return -(player:get_hp() - 1)
 				end
+			else
+				debug_print('NOT PROTECTED: ' .. pname)
 			end
 		end
 		-- Player is dueling, but arena checks didn't pass.

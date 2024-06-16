@@ -1087,6 +1087,8 @@ city_block.victims = city_block.victims or {}
 -- necessary when a mod needs to punch a player, but has no entity that can do
 -- the actual punch.
 function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
+	--minetest.chat_send_all('city_block: on_punchplayer')
+
 	if not player:is_player() then
 		return
 	end

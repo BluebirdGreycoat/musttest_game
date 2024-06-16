@@ -662,6 +662,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		return hp_change
 	end
 
+	--minetest.chat_send_all('armor: on_hp_change: ' .. hp_change)
+
 	-- If a notified reason is available, use that instead.
 	if reason.type == "punch" or reason.type == "set_hp" then
 		local huh = armor.get_hp_change_reason(reason)
@@ -840,7 +842,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- If this damage will kill the player ...
 	--minetest.chat_send_all(hp_change)
 	if (player:get_hp() + hp_change) <= 0 then
-		--minetest.chat_send_all('damage will kill player')
+		--minetest.chat_send_all('damage will kill player: ' .. player:get_player_name())
 		hp_change = armor.handle_pvp_arena_death(hp_change, player)
 	end
 

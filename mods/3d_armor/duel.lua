@@ -361,6 +361,9 @@ end
 
 local function respawn_victim(player, respawn_pos)
 	local pname = player:get_player_name()
+	local duel_info = dueling_players[pname]
+	duel_info.no_respawn_protection = nil
+
 	preload_tp.execute({
 		player_name = pname,
 		target_position = respawn_pos,
@@ -426,6 +429,17 @@ function armor.have_dueling_respawn_protection(player, hitter)
 
 	if dueling_players[pname] and dueling_players[hname] then
 		local duel_info = dueling_players[pname]
+
+		-- Hitter is punching, disable their respawn protection.
+		dueling_players[hname].no_respawn_protection = true
+		debug_print('respawn protection canceled for: ' .. hname)
+
+		-- Shortcut if respawn protection is already disabled for this player.
+		if duel_info.no_respawn_protection then
+			debug_print('no respawn protection: ' .. pname)
+			return
+		end
+
 		local spawns = armor.get_public_spawns(duel_info.start_pos)
 
 		-- Prevent damage to player if they're in a spawn area.

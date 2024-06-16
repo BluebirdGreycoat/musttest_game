@@ -1120,28 +1120,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		-- player that isn't the player going to be hit.
 		melee_hit = false
 
-		-- We don't have enough information to know exactly who fired this weapon,
-		-- but it's probably a safe bet that it was the nearest player who is NOT
-		-- the player being hit. But if we were explicitly provided a player object
-		-- that is NOT self, then we don't need to do this.
-		if hitter == player or not hitter:is_player() then
-			-- If initial hitter is the player, or the hitter isn't a player, then
-			-- get the nearest other player to this position (who is not the initial
-			-- player) and use that player as the hitter.
-
-			local pos = player:get_pos()
-			local culprit = hb4.nearest_player_not(pos, player)
-			if culprit then
-				local cpos = culprit:get_pos()
-				-- Only if culprit is nearby.
-				if vector.distance(cpos, pos) < 50 then
-					hitter = culprit
-				end
-			end
-		end
+		--minetest.chat_send_all('from arrow')
 	end
 	
 	if not hitter:is_player() then
+		--minetest.chat_send_all('hitter not player')
 		return
 	end
 
@@ -1179,17 +1162,27 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		ambiance.sound_play("player_damage", p2pos, 2.0, 30)
 	end
 
+	local pname = player:get_player_name()
+	local hname = hitter:get_player_name()
+
 	-- If hitter is self, punch was (most likely) due to game code.
 	-- E.g., node damage or other environment hazard.
 	if player == hitter then
+		--minetest.chat_send_all('player == hitter')
+		--minetest.chat_send_all(dump(from_env))
+		--minetest.chat_send_all(dump(from_mob))
+		--minetest.chat_send_all(dump(not melee_hit))
+		if not from_env and not from_mob and not melee_hit then
+			-- This one's a suicide.
+			--minetest.chat_send_all('suicide!')
+			armor.notify_duel_punch(pname, hname, stomp_hit, not melee_hit)
+		end
 		return
 	end
 
 	-- Stuff that happens when one player kills another.
 	-- Must be executed on the next server step, so we can determine if victim
 	-- really died! (This is because damage will often be modified.)
-	local pname = player:get_player_name()
-	local hname = hitter:get_player_name()
 	minetest.after(0, function()
 		local pref = minetest.get_player_by_name(pname)
 		local href = minetest.get_player_by_name(hname)

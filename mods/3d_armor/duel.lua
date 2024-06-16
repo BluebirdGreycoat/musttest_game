@@ -48,6 +48,20 @@ local DUEL_STOMP_STRINGS = {
 	"<winner> used <loser> to cushion their fall.",
 }
 
+local DUEL_SUICIDE_STRINGS = {
+	"<loser> killed themselves.",
+	"<loser> got a taste of their own medicine.",
+	"<loser> got on the wrong end of their own weapon.",
+	"<loser> suicided.",
+	"<loser> ended themselves.",
+	"<loser> won a fight with themselves.",
+	"<loser> died like a noob: harm self-inflicted.",
+	"<loser> self-terminated.",
+	"<loser> died: incompetence.",
+	"<loser> perished: weapon misuse.",
+	"<loser> died: couldn't take what they dished out.",
+}
+
 local function hud_update(player, duel_data)
 	player:hud_change(duel_data.hud[2], "text",
 		"Foes: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
@@ -271,7 +285,9 @@ local function print_message(victim, punch_info)
 	if not spam.test_key(spamkey) then
 		local msg
 
-		if punch_info.stomp then
+		if pname == kname then
+			msg = DUEL_SUICIDE_STRINGS[math_random(1, #DUEL_SUICIDE_STRINGS)]
+		elseif punch_info.stomp then
 			msg = DUEL_STOMP_STRINGS[math_random(1, #DUEL_STOMP_STRINGS)]
 		elseif punch_info.arrow then
 			msg = DUEL_ARROW_STRINGS[math_random(1, #DUEL_ARROW_STRINGS)]

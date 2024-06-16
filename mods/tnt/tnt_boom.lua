@@ -217,32 +217,13 @@ local function entity_physics(pos, radius, drops, boomdef)
 
 					local hitter = obj
 
-					-- Hack used to signal to the city-block handler what happened.
-					-- This is ugly as Sin, but what else can I do? (Note: it will not
-					-- work to try to use the actual player responsible as the hitter,
-					-- because the city-block code enforces a range limit which arrows can
-					-- exceed.)
+					-- If tnt was launched by a player, use them as the hitter.
 					if boomdef.name and boomdef.name ~= "" and boomdef.from_arrow then
-						-- But only if the target to be punched is NOT the target that fired
-						-- the weapon. This prevents an issue in the city-block code, which
-						-- cannot differentiate between someone killing another and someone
-						-- killing themselves. In other words, this causes the city-block
-						-- code to skip its arrow-handling routine if the player fired the
-						-- arrow at their own feet. If we did not do this check, then a very
-						-- clever player could suicide using a ranged TNT weapon, log off
-						-- before the city-block code runs, and thus trick the city-block
-						-- code into blaming someone else entirely for the death caused!
-						if pname ~= boomdef.name then
-							dg.from_arrow = 0
+						dg.from_arrow = 0
 
-							-- If the player that launched this TNT is online, we can also
-							-- provide the city-block handler with their actual player ref.
-							-- This lets the city-block code skip finding the nearest player,
-							-- which can be inaccurate if several players are near each other.
-							local pref = minetest.get_player_by_name(boomdef.name)
-							if pref then
-								hitter = pref
-							end
+						local pref = minetest.get_player_by_name(boomdef.name)
+						if pref then
+							hitter = pref
 						end
 					end
 

@@ -675,6 +675,17 @@ if not armor.duel_registered then
 		end,
 		--]]
 
+		detach_player = function(self)
+			if self.player_name then
+				local pref = minetest.get_player_by_name(self.player_name)
+				if pref then
+					self.player_name = nil
+					pref:set_detach()
+					self.object:remove()
+				end
+			end
+		end,
+
 		on_step = function(self, dtime)
 			if self.player_name then
 				local data = dueling_players[self.player_name]

@@ -289,6 +289,17 @@ function default.detach_player_if_attached(player)
 		return "bed"
 	end
 
+	local parent = player:get_attach()
+	if parent then
+		local ent = parent:get_luaentity()
+		if ent then
+			if ent.name == "3d_armor:pvpduel_respawn" then
+				ent:detach_player()
+				return "bed"
+			end
+		end
+	end
+
 	local ents = minetest.get_objects_inside_radius(utility.get_foot_pos(player:get_pos()), 2)
 
 	local result = ""

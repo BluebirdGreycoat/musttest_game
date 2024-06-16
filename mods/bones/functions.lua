@@ -42,9 +42,6 @@ local function may_replace(pos, player)
 		return false
 	end
 
-	local pname = player and player:get_player_name() or ""
-	local protected = minetest.test_protection(pos, pname)
-
 	-- Allow replacing air and (non-walkable) liquids.
 	if nn == "air" or (ndef.liquidtype ~= "none" and not ndef.walkable) then
 		return true
@@ -57,11 +54,15 @@ local function may_replace(pos, player)
 		return false
 	end
 
+	local pname = player and player:get_player_name() or ""
+	local protected = minetest.test_protection(pos, pname)
+
 	-- Default to each nodes buildable_to; if a placed block would replace it, why
 	-- shouldn't bones? Flowers being squished by bones are more realistical than
 	-- a squished stone, too. Exception are of course any protected buildable_to.
 	return ndef.buildable_to and not protected
 end
+bones.may_replace = may_replace
 
 
 
@@ -135,6 +136,8 @@ end
 
 
 local find_ground = function(pos, player)
+	return armor.find_ground_by_raycast(pos, player)
+	--[[
 	local p = {x=pos.x, y=pos.y, z=pos.z}
   local count = 0
 
@@ -157,6 +160,7 @@ local find_ground = function(pos, player)
 	end
 
   return pos
+  --]]
 end
 
 

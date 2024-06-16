@@ -3,9 +3,11 @@ local STOMP_RADIUS = 2.5
 
 
 
-function armor.find_ground_by_raycast(pos)
+-- Used for bone placement and stomping.
+function armor.find_ground_by_raycast(pos, player)
+  pos = vector.round(pos)
   local p1 = pos
-  local p2 = vector.offset(pos, 0, -50, 0)
+  local p2 = vector.offset(pos, 0, -100, 0)
   local ray = Raycast(p1, p2, false, false)
   local p3 = pos
 
@@ -14,7 +16,8 @@ function armor.find_ground_by_raycast(pos)
       local n1 = minetest.get_node(pt.under)
       local n2 = minetest.get_node(pt.above)
 
-      if n1.name ~= "air" and n2.name == "air" then
+      -- We have found a ground surface suitable for bones or stomping.
+      if not bones.may_replace(pt.under, player) and bones.may_replace(pt.above, player) then
         p3 = pt.above
         break
       end

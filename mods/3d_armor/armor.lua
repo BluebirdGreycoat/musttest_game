@@ -701,7 +701,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		-- Kids, don't get bit like I did. I just spend 1 hr trying to debug this
 		-- code, and it turned out the problem was passing a negative value to this
 		-- function for the amount of damage. Facepalm. Why do they let me code!?
-		if armor.stomp_at(player, player:get_pos(), math.abs(hp_change * 1000)) then
+		local stomppos = armor.find_ground_by_raycast(player:get_pos(), player)
+		if armor.stomp_at(player, stomppos, math.abs(hp_change * 1000)) then
 			hp_change = hp_change * 50
 		else
 			hp_change = hp_change * 500

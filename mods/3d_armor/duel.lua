@@ -336,7 +336,8 @@ local function respawn_victim(player, respawn_pos)
 end
 
 local function spawn_bones(pos, pname, hname)
-	pos = armor.find_ground_by_raycast(vector_round(pos))
+	local pref = minetest.get_player_by_name(pname)
+	pos = armor.find_ground_by_raycast(vector_round(pos), pref)
 	if minetest.get_node(pos).name == "air" then
 		minetest.set_node(pos, {name="bones:bones_type2", param2=math_random(0, 3)})
 		local meta = minetest.get_meta(pos)

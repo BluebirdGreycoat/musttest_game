@@ -1,3 +1,4 @@
+[2024/6/16] PvP/dueling arenas can now be constructed by players. You need: city block(s), protections, and public beds (for the spawns).
 [2024/6/12] Dungeons: more chests, more loot, more ways to die.
 [2024/6/5] Integrated vending with email.
 [2024/6/5] Channelwood mapgen becomes the first realm to run on the dedicated mapgen thread.

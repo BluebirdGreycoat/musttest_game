@@ -23,7 +23,7 @@ local DUEL_MELEE_STRINGS = {
 	"<winner> totally owned <loser>.",
 	"<winner> won a duel with <loser>.",
 	"<winner> dealt out a whopping drubbing.",
-	"<loser> got themselves a severe drubbing.",
+	"<loser> got <l_himself> a severe drubbing.",
 	"<winner> beat <loser> in honorable combat!",
 	"<winner> bested <loser>.",
 	"<loser> got a royal walloping from <winner>.",
@@ -45,21 +45,21 @@ local DUEL_STOMP_STRINGS = {
 	"<loser> was flattened.",
 	"<loser> was flattened by <winner>.",
 	"<loser> got a taste of jackboot.",
-	"<winner> used <loser> to cushion their fall.",
+	"<winner> used <loser> to cushion <w_his> fall.",
 }
 
 local DUEL_SUICIDE_STRINGS = {
-	"<loser> killed themselves.",
-	"<loser> got a taste of their own medicine.",
-	"<loser> got on the wrong end of their own weapon.",
+	"<loser> killed <l_himself>.",
+	"<loser> got a taste of <l_his> own medicine.",
+	"<loser> got on the wrong end of <l_his> own weapon.",
 	"<loser> suicided.",
-	"<loser> ended themselves.",
-	"<loser> won a fight with themselves.",
+	"<loser> ended <l_himself>.",
+	"<loser> won a fight with <l_himself>.",
 	"<loser> died like a noob: harm self-inflicted.",
 	"<loser> self-terminated.",
 	"<loser> died: incompetence.",
 	"<loser> perished: weapon misuse.",
-	"<loser> died: couldn't take what they dished out.",
+	"<loser> died: couldn't take what <l_he> dished out.",
 }
 
 local function hud_update(player, duel_data)
@@ -295,8 +295,42 @@ local function print_message(victim, punch_info)
 			msg = DUEL_MELEE_STRINGS[math_random(1, #DUEL_MELEE_STRINGS)]
 		end
 
+		-- I can hear the snowflakes screaming "sexist" rn LOL.
+		-- This is like holy water on a vampire!
+		local psex = skins.get_gender_strings(pname)
+		local ksex = skins.get_gender_strings(kname)
+
 		msg = msg:gsub("<loser>", "<" .. rename.gpn(pname) .. ">")
 		msg = msg:gsub("<winner>", "<" .. rename.gpn(kname) .. ">")
+
+		msg = string.gsub(msg, "<w_himself>", ksex.himself)
+		msg = string.gsub(msg, "<w_his>", ksex.his)
+		msg = string.gsub(msg, "<w_him>", ksex.him)
+		msg = string.gsub(msg, "<w_he>", ksex.he)
+
+		msg = string.gsub(msg, "<l_himself>", psex.himself)
+		msg = string.gsub(msg, "<l_his>", psex.his)
+		msg = string.gsub(msg, "<l_him>", psex.him)
+		msg = string.gsub(msg, "<l_he>", psex.he)
+
+		if string.find(msg, "<w>") then
+			local hitter = minetest.get_player_by_name(kname)
+			if hitter then
+				local wield = hitter:get_wielded_item()
+				local def = minetest.registered_items[wield:get_name()]
+				local meta = wield:get_meta()
+				local description = meta:get_string("description")
+				if description ~= "" then
+					msg = string.gsub(msg, "<w>", "'" .. utility.get_short_desc(description):trim() .. "'")
+				elseif def and def.description then
+					local str = utility.get_short_desc(def.description)
+					if str == "" then
+						str = "Potato Fist"
+					end
+					msg = string.gsub(msg, "<w>", str)
+				end
+			end
+		end
 
 		minetest.chat_send_all("# Server: " .. msg)
 		spam.mark_key(spamkey, 10)

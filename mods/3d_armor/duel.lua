@@ -10,6 +10,7 @@ local ACTIVE_DUEL_PUNCH = nil
 local PUBLIC_BED_DISTANCE = 150
 local OPPONENT_DISTANCE = 75
 local DUEL_MAX_RADIUS = 256
+local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 
 local DUEL_MELEE_STRINGS = {
 	"<loser> lost a duel.",
@@ -59,6 +60,7 @@ local function check_bounds(pname)
 		-- Player left the game unexpectedly.
 		if not pref then
 			dueling_players[pname] = nil
+			minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
 			return
 		end
 
@@ -131,7 +133,8 @@ function armor.add_dueling_player(player)
 		hud = {hud1, hud2},
 	}
 
-	minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
+	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
+	chat_core.alert_player_sound(pname)
 	minetest.after(1, check_bounds, pname)
 
 	return true
@@ -142,14 +145,18 @@ function armor.end_duel(player)
 	local pname = player:get_player_name()
 	if dueling_players[pname] then
 		local data = dueling_players[pname]
+
 		if data.hud then
 			for k = 1, #data.hud do
 				player:hud_remove(data.hud[k])
 			end
 		end
+
 		data.hud = nil
 		dueling_players[pname] = nil
-		minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+
+		minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended the duel.")
+		chat_core.alert_player_sound(pname)
 	end
 end
 

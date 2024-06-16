@@ -3,6 +3,29 @@ local STOMP_RADIUS = 2.5
 
 
 
+function armor.find_ground_by_raycast(pos)
+  local p1 = pos
+  local p2 = vector.offset(pos, 0, -50, 0)
+  local ray = Raycast(p1, p2, false, false)
+  local p3 = pos
+
+  for pt in ray do
+    if pt.type == "node" then
+      local n1 = minetest.get_node(pt.under)
+      local n2 = minetest.get_node(pt.above)
+
+      if n1.name ~= "air" and n2.name == "air" then
+        p3 = pt.above
+        break
+      end
+    end
+  end
+
+  return p3
+end
+
+
+
 local function boast(stomper, target)
   local pname = stomper:get_player_name()
 	if spam.test_key("stomper" .. pname .. "9353") then

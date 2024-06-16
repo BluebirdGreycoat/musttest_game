@@ -313,6 +313,7 @@ local function heal_player(pname)
   local hp_max = pova.get_active_modifier(pref, "properties").hp_max
 	pref:set_hp(hp_max, {reason="heal_command"})
 	sprint.set_stamina(pref, SPRINT_STAMINA)
+	bones.nohack.on_respawnplayer(pref)
 
 	minetest.chat_send_player(pname, "# Server: You respawned.")
 end

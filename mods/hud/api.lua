@@ -138,19 +138,27 @@ end
 --------------------------------------------------------------------------------
 
 -- Following code is placed here to keep HUD ids internal.
-local function add_hud_item(player, name, def)
+local function add_hud_item(player, name, def, foreground)
 	if not player or not name or not def then
 		throw_error("not enough parameters given")
 		return false
 	end
 
+	-- Copy that table!
 	-- Every player must have their own copy of the HUD element definition table,
 	-- otherwise modifications to the table will leak to other players, and to
 	-- the default global state. How this got missed in the original mod, I'll
 	-- never know.
+	local newdef = table.copy(def)
+	if not foreground then
+		newdef.z_index = -1
+	else
+		newdef.z_index = 1
+	end
+
 	local i_name = player:get_player_name() .. "_" .. name
-	hud_id[i_name] = table.copy(def) -- Copy that table!
-	hud_id[i_name].id = player:hud_add(def)
+	hud_id[i_name] = newdef
+	hud_id[i_name].id = player:hud_add(newdef)
 end
 
 minetest.register_on_joinplayer(function(player)
@@ -162,11 +170,11 @@ minetest.register_on_joinplayer(function(player)
 
 	-- Now add the backgrounds for statbars.
 	for _, item in pairs(sb_bg) do
-		add_hud_item(player, _ .. "_bg", item)
+		add_hud_item(player, _ .. "_bg", item, false)
 	end
 
 	-- And finally the actual HUD items.
 	for _, item in pairs(items) do
-		add_hud_item(player, _, item)
+		add_hud_item(player, _, item, true)
 	end
 end)

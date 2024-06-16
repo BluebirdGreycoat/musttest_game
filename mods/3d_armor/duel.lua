@@ -49,7 +49,8 @@ local DUEL_STOMP_STRINGS = {
 }
 
 local function hud_update(player, duel_data)
-	player:hud_change(duel_data.hud[2], "text", "Foes: " .. #(armor.get_likely_opponents(player, player:get_pos())))
+	player:hud_change(duel_data.hud[2], "text",
+		"Foes: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
 end
 
 -- Check whether player is in bounds to duel, and end duel if necessary.
@@ -99,12 +100,14 @@ local function check_bounds(pname)
 end
 
 -- Call this when a player begins to duel.
-function armor.add_dueling_player(player)
+function armor.add_dueling_player(player, duel_pos)
 	local pname = player:get_player_name()
 
 	if dueling_players[pname] then
 		return
 	end
+
+	local yoff = 18
 
 	local hud1 = player:hud_add({
 		type = "text",
@@ -113,24 +116,49 @@ function armor.add_dueling_player(player)
 		text = "PvP: Dueling!",
 		number = 0xFFFFFF,
 		size = {x=1, y=1},
-		offset = {x=-16, y=0},
+		offset = {x=-16, y=yoff*1},
 	})
 
 	local hud2 = player:hud_add({
 		type = "text",
 		position = {x=1.00, y=0.30},
 		alignment = {x=-1, y=1},
-		text = "Foes: " .. #(armor.get_likely_opponents(player, player:get_pos())),
+		text = "Foes: " .. #(armor.get_likely_opponents(player, duel_pos)),
 		number = 0xFFFFFF,
 		size = {x=1, y=1},
-		offset = {x=-16, y=18},
+		offset = {x=-16, y=yoff*2},
+	})
+
+	local hud3 = player:hud_add({
+		type = "text",
+		position = {x=1.00, y=0.30},
+		alignment = {x=-1, y=1},
+		text = "Spawnpoints: " .. #(armor.get_public_spawns(duel_pos)),
+		number = 0xFFFFFF,
+		size = {x=1, y=1},
+		offset = {x=-16, y=yoff*3},
+	})
+
+	local cb = city_block.get_block(duel_pos)
+	local arena_name = ""
+	if cb.area_name and cb.area_name ~= "" then
+		arena_name = cb.area_name
+	end
+	local hud4 = player:hud_add({
+		type = "text",
+		position = {x=1.00, y=0.30},
+		alignment = {x=-1, y=1},
+		text = "Arena: " .. arena_name,
+		number = 0xFFFFFF,
+		size = {x=1, y=1},
+		offset = {x=-16, y=yoff*0},
 	})
 
 	dueling_players[pname] = {
 		start_time = os.time(),
-		start_pos = vector_round(player:get_pos()),
+		start_pos = duel_pos,
 		out_of_bounds = 0,
-		hud = {hud1, hud2},
+		hud = {hud1, hud2, hud3, hud4},
 	}
 
 	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to duel!")
@@ -192,7 +220,7 @@ function armor.get_likely_opponents(player, pos)
 end
 
 -- Get nearby public spawns IN a PvP zone.
-local function get_public_spawns(pos)
+function armor.get_public_spawns(pos)
 	local targets = {}
 	local spawns = beds.nearest_public_spawns(pos, 5, PUBLIC_BED_DISTANCE)
 
@@ -293,8 +321,8 @@ function armor.handle_pvp_arena_death(hp_change, player)
 			if minetest.test_protection(player_pos, "") then
 				--minetest.chat_send_all('is_protected')
 
-				local opponents = armor.get_likely_opponents(player, player_pos)
-				local spawns = get_public_spawns(duel_info.start_pos)
+				local opponents = armor.get_likely_opponents(player, duel_info.start_pos)
+				local spawns = armor.get_public_spawns(duel_info.start_pos)
 
 				--minetest.chat_send_all('opponents: ' .. #opponents)
 				--minetest.chat_send_all('spawns: ' .. #spawns)
@@ -339,7 +367,7 @@ function armor.is_valid_arena(pos)
 	pos = vector_round(pos)
 	if city_block:in_pvp_arena(pos) then
 		if minetest.test_protection(pos, "") then
-			if #(get_public_spawns(pos)) > 0 then
+			if #(armor.get_public_spawns(pos)) > 0 then
 				return true
 			end
 		end

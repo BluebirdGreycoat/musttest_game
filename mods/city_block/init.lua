@@ -125,7 +125,7 @@ function city_block.on_punch(pos, node, puncher, pt)
 		local block = city_block.get_block(pos)
 		if block.pvp_arena then
 			if armor.is_valid_arena(pos) then
-				if armor.add_dueling_player(puncher) then
+				if armor.add_dueling_player(puncher, pos) then
 					wielded:take_item()
 					puncher:set_wielded_item(wielded)
 				else

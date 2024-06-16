@@ -26,6 +26,7 @@ function heal.heal_health_and_hunger(pname)
   hunger.update_hunger(player, 30)
 	sprint.set_stamina(player, SPRINT_STAMINA)
 	portal_sickness.reset(pname)
+	bones.nohack.on_respawnplayer(player)
 
 	if was_dead then
     minetest.close_formspec(pname, "")

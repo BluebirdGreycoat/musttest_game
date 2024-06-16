@@ -361,6 +361,9 @@ end
 
 local function respawn_victim(player, respawn_pos)
 	local pname = player:get_player_name()
+
+	-- Re-engage respawn protection.
+	-- This will disable if they hit anybody.
 	local duel_info = dueling_players[pname]
 	duel_info.no_respawn_protection = nil
 

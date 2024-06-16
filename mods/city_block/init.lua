@@ -134,7 +134,7 @@ function city_block.on_punch(pos, node, puncher, pt)
 					end
 				end
 			else
-				minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and public beds.")
+				minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and at least 2 public beds.")
 			end
 		end
 	end

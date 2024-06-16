@@ -415,7 +415,7 @@ function armor.is_valid_arena(pos)
 	pos = vector_round(pos)
 	if city_block:in_pvp_arena(pos) then
 		if minetest.test_protection(pos, "") then
-			if #(armor.get_public_spawns(pos)) > 0 then
+			if #(armor.get_public_spawns(pos)) >= 2 then
 				return true
 			end
 		end

@@ -15,6 +15,7 @@ local OPPONENT_DISTANCE = 256
 local DUEL_MAX_RADIUS = 256
 
 local SPAWN_SAFE_ZONE = 5
+local RESPAWN_TIME = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 
 local DUEL_MELEE_STRINGS = {
@@ -69,9 +70,17 @@ local DUEL_SUICIDE_STRINGS = {
 	"<loser> died: couldn't take what <l_he> dished out.",
 }
 
-function armor.hud_update(player, duel_data)
+function armor.dueling_hud_update(player, duel_data)
 	player:hud_change(duel_data.hud[2], "text",
 		"Participants: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
+
+	if duel_data.respawn_countdown then
+		local text = "Respawn in: " .. duel_data.respawn_countdown
+		player:hud_change(duel_data.hud[6], "text", text)
+	else
+		-- Hide this element.
+		player:hud_change(duel_data.hud[6], "text", "")
+	end
 end
 
 -- Check whether player is in bounds to duel, and end duel if necessary.
@@ -92,7 +101,16 @@ function armor.check_bounds(pname)
 		local in_arena = (city_block:in_pvp_arena(player_pos) and
 			minetest.test_protection(player_pos, ""))
 
-		armor.hud_update(pref, data)
+		if data.respawn_countdown then
+			if data.respawn_countdown > 0 then
+				--pref:set_pos(data.respawn_pos)
+				data.respawn_countdown = data.respawn_countdown - 1
+			else
+				data.respawn_countdown = nil
+			end
+		end
+
+		armor.dueling_hud_update(pref, data)
 
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
 			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
@@ -195,11 +213,21 @@ function armor.add_dueling_player(player, duel_pos)
 		beds[#beds + 1] = id
 	end
 
+	local hud6 = player:hud_add({
+		type = "text",
+		position = {x=0.50, y=0.50},
+		alignment = {x=0, y=0},
+		text = "",
+		number = 0xFFFFFF,
+		size = {x=3, y=1},
+		offset = {x=0, y=0},
+	})
+
 	dueling_players[pname] = {
 		start_time = os.time(),
 		start_pos = duel_pos,
 		out_of_bounds = 0,
-		hud = {hud1, hud2, hud3, hud4, hud5, beds},
+		hud = {hud1, hud2, hud3, hud4, hud5, hud6, beds},
 	}
 
 	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!")
@@ -359,6 +387,37 @@ local function heal_player(pname)
 	minetest.chat_send_player(pname, "# Server: You respawned.")
 end
 
+local function lock_player_at_spawn(player, respawn_pos)
+	-- Move the player also.
+	player:set_pos(respawn_pos)
+	local pname = player:get_player_name()
+
+	-- Do this soon.
+	local function donext()
+		local player = minetest.get_player_by_name(pname)
+		if not player then
+			return
+		end
+
+		local obj = minetest.add_entity(respawn_pos, "3d_armor:pvpduel_respawn")
+		if not obj then
+			return
+		end
+
+		local ent = obj:get_luaentity()
+		if ent then
+			ent.player_name = pname
+			player:set_attach(obj)
+		end
+	end
+
+	-- If we don't delay a little, other observing clients won't pick up
+	-- that the player moved, and they'll just appear to be standing in the middle
+	-- of the field until the respawn countdown finishes, at which point other
+	-- clients will see them zip to the bed location.
+	minetest.after(0.5, donext)
+end
+
 local function respawn_victim(player, respawn_pos)
 	local pname = player:get_player_name()
 
@@ -366,6 +425,8 @@ local function respawn_victim(player, respawn_pos)
 	-- This will disable if they hit anybody.
 	local duel_info = dueling_players[pname]
 	duel_info.no_respawn_protection = nil
+	duel_info.respawn_pos = respawn_pos
+	duel_info.respawn_countdown = RESPAWN_TIME
 
 	preload_tp.execute({
 		player_name = pname,
@@ -375,6 +436,11 @@ local function respawn_victim(player, respawn_pos)
 		post_teleport_callback = function()
 			ambiance.sound_play("respawn", respawn_pos, 0.5, 10)
 			minetest.after(1, heal_player, pname)
+
+			local pref = minetest.get_player_by_name(pname)
+			if pref then
+				lock_player_at_spawn(pref, respawn_pos)
+			end
 		end,
 
 		force_teleport = true,
@@ -505,6 +571,9 @@ function armor.handle_pvp_arena_death(hp_change, player)
 						if player:get_hp() > 1 then
 							debug_print('handling duel death: ' .. pname)
 
+							-- Get them off of whatever.
+							default.detach_player_if_attached(player)
+
 							-- Death sound needs to play before we respawn the player.
 							coresounds.play_death_sound(player, pname)
 
@@ -568,4 +637,64 @@ function armor.notify_duel_punch(victim_name, hitter_name, stomp_flag, ranged_fl
 		stomp = stomp_flag,
 		arrow = ranged_flag,
 	}
+end
+
+
+
+if not armor.duel_registered then
+	armor.duel_registered = true
+
+	local entity_def = {
+		visual = "wielditem",
+		visual_size = {x=0, y=0},
+		collisionbox = {0, 0, 0, 0, 0, 0},
+		physical = false,
+		textures = {"air"},
+		is_visible = false,
+		static_save = false,
+
+		--[[
+		on_activate = function(self, staticdata, dtime_s)
+			if self._play_immediate then
+				self._ptime = 0
+				self._ctime = 0
+			end
+		end,
+
+		on_punch = function(self, puncher, time_from_last_punch, tool_caps, dir)
+		end,
+
+		on_death = function(self, killer)
+		end,
+
+		on_rightclick = function(self, clicker)
+		end,
+
+		get_staticdata = function(self)
+			return ""
+		end,
+		--]]
+
+		on_step = function(self, dtime)
+			if self.player_name then
+				local data = dueling_players[self.player_name]
+				if not data then
+					self.object:remove()
+					return
+				end
+
+				-- Will be nil when the countdown has ended.
+				if not data.respawn_countdown then
+					local pref = minetest.get_player_by_name(self.player_name)
+					if pref then
+						self.player_name = nil
+						pref:set_detach()
+						self.object:remove()
+					end
+				end
+			end
+		end,
+	}
+
+	minetest.register_entity("3d_armor:pvpduel_respawn", entity_def)
 end

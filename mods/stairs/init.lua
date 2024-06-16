@@ -974,6 +974,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 				{'stairs:slab_' .. subname},
 				{'stairs:slab_' .. subname},
 			},
+		})
 	end
 end
 

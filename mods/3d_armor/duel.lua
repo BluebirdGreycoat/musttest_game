@@ -499,6 +499,11 @@ function armor.have_dueling_respawn_protection(player, hitter)
 	if dueling_players[pname] and dueling_players[hname] then
 		local duel_info = dueling_players[pname]
 
+		-- If the hitter's respawn countdown is in progress, they cannot damage anyone!
+		if dueling_players[hname].respawn_countdown then
+			return true
+		end
+
 		-- Hitter is punching, disable their respawn protection.
 		dueling_players[hname].no_respawn_protection = true
 		debug_print('respawn protection canceled for: ' .. hname)
@@ -675,6 +680,13 @@ if not armor.duel_registered then
 		end,
 		--]]
 
+		on_punch = function(self, puncher, time_from_last_punch, tool_caps, dir)
+		end,
+
+		on_blast = function()
+			return false, false, {}
+		end,
+
 		detach_player = function(self)
 			if self.player_name then
 				local pref = minetest.get_player_by_name(self.player_name)
@@ -701,6 +713,12 @@ if not armor.duel_registered then
 						self.player_name = nil
 						pref:set_detach()
 						self.object:remove()
+					end
+				else
+					-- Keep attaching.
+					local pref = minetest.get_player_by_name(self.player_name)
+					if pref then
+						pref:set_attach(self.object)
 					end
 				end
 			end

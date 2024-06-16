@@ -8,11 +8,13 @@ local dueling_players = armor.dueling_players
 local ACTIVE_DUEL_PUNCH = nil
 
 -- For best duels, these numbers should be the same.
-local PUBLIC_BED_DISTANCE = 150
-local OPPONENT_DISTANCE = 150
-local DUEL_MAX_RADIUS = 150
+-- This is just a max size for an arena. You can make smaller, just don't mark
+-- the whole area as part of the arena. Minimum size is 1 city block.
+local PUBLIC_BED_DISTANCE = 256
+local OPPONENT_DISTANCE = 256
+local DUEL_MAX_RADIUS = 256
 
-local SPAWN_SAFE_ZONE = 10
+local SPAWN_SAFE_ZONE = 5
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 
 local DUEL_MELEE_STRINGS = {
@@ -415,6 +417,31 @@ local function debug_print(msg)
 	--minetest.chat_send_all(msg)
 end
 
+-- Cityblock punch handler uses this to check if a player should receive any
+-- damage at all. This is somewhat like jails, where brawling is not allowed.
+function armor.have_dueling_respawn_protection(player, hitter)
+	local pname = player:get_player_name()
+	local hname = hitter:get_player_name()
+	local player_pos = vector_round(player:get_pos())
+
+	if dueling_players[pname] and dueling_players[hname] then
+		local duel_info = dueling_players[pname]
+		local spawns = armor.get_public_spawns(duel_info.start_pos)
+
+		-- Prevent damage to player if they're in a spawn area.
+		for k = 1, #spawns do
+			if vector_distance(player_pos, spawns[k]) < SPAWN_SAFE_ZONE then
+				local key = "duel:spawnprotection:" .. pname
+				if not spam.test_key(key) then
+					minetest.chat_send_player(pname, "# Server: You were hit, but it reflected off your respawn protection.")
+					spam.mark_key(key, 2)
+				end
+				return true
+			end
+		end
+	end
+end
+
 -- Called from the armor HP-change code only if player would die.
 function armor.handle_pvp_arena_death(hp_change, player)
 	local pname = player:get_player_name()
@@ -469,7 +496,7 @@ function armor.handle_pvp_arena_death(hp_change, player)
 							-- cause the player to die a real death! This can happen if two or
 							-- more players die at the exact same time in the same spot
 							-- (e.g., murder-suicide with a TNT arrow).
-							spawn_bones_after(player:get_pos(), pname, punch_info.hitter)
+							spawn_bones_after(player_pos, pname, punch_info.hitter)
 
 							-- Send taunt.
 							print_message(player, punch_info)

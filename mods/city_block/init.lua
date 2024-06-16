@@ -1154,6 +1154,11 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return true
 	end
 
+	-- PvP is disabled for dueling players still in their spawn area.
+	if armor.have_dueling_respawn_protection(player, hitter) then
+		return true
+	end
+
 	-- Admins cannot be punched.
 	if gdac.player_is_admin(player) then
 		return true

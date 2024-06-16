@@ -46,6 +46,8 @@ local DUEL_STOMP_STRINGS = {
 	"<loser> was flattened by <winner>.",
 	"<loser> got a taste of jackboot.",
 	"<winner> used <loser> to cushion <w_his> fall.",
+	"<loser> got <l_himself> some pancaking by <winner>'s boots of steel.",
+	"<winner> smashed <loser> into the earth.",
 }
 
 local DUEL_SUICIDE_STRINGS = {

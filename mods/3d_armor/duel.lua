@@ -3,6 +3,10 @@ local vector_round = vector.round
 local vector_distance = vector.distance
 local math_random = math.random
 
+local function debug_print(msg)
+	--minetest.chat_send_all(msg)
+end
+
 armor.dueling_players = armor.dueling_players or {}
 local dueling_players = armor.dueling_players
 local ACTIVE_DUEL_PUNCH = nil
@@ -473,6 +477,17 @@ local function respawn_victim(player, respawn_pos)
 	})
 end
 
+-- Query whether a position is within the safe zone of any respawn point in a
+-- radius from a dueling arena position.
+function armor.in_pvp_respawn_area(pos, arena_pos)
+	local spawns = armor.get_public_spawns(arena_pos)
+	for k = 1, #spawns do
+		if vector_distance(pos, spawns[k]) < SPAWN_SAFE_ZONE then
+			return true
+		end
+	end
+end
+
 local function spawn_bones(pos, pname, hname)
 	pos = vector_round(pos)
 	local pref = minetest.get_player_by_name(pname)
@@ -486,11 +501,8 @@ local function spawn_bones(pos, pname, hname)
 	end
 
 	-- Prevent placing bones near any of the public spawns.
-	local spawns = armor.get_public_spawns(data.start_pos)
-	for k = 1, #spawns do
-		if vector_distance(pos, spawns[k]) < SPAWN_SAFE_ZONE then
-			return
-		end
+	if armor.in_pvp_respawn_area(data.start_pos) then
+		return
 	end
 
 	pos = armor.find_ground_by_raycast(pos, pref)
@@ -509,10 +521,6 @@ local function spawn_bones_after(pos, pname, hname)
 	minetest.after(0, spawn_bones, pos, pname, hname)
 end
 
-local function debug_print(msg)
-	--minetest.chat_send_all(msg)
-end
-
 -- Cityblock punch handler uses this to check if a player should receive any
 -- damage at all. This is somewhat like jails, where brawling is not allowed.
 function armor.have_dueling_respawn_protection(player, hitter)
@@ -524,6 +532,7 @@ function armor.have_dueling_respawn_protection(player, hitter)
 		local duel_info = dueling_players[pname]
 
 		-- If the hitter's respawn countdown is in progress, they cannot damage anyone!
+		-- (Technically, during this period they shouldn't be able to interact.)
 		if dueling_players[hname].respawn_countdown then
 			return true
 		end
@@ -538,18 +547,13 @@ function armor.have_dueling_respawn_protection(player, hitter)
 			return
 		end
 
-		local spawns = armor.get_public_spawns(duel_info.start_pos)
-
-		-- Prevent damage to player if they're in a spawn area.
-		for k = 1, #spawns do
-			if vector_distance(player_pos, spawns[k]) < SPAWN_SAFE_ZONE then
-				local key = "duel:spawnprotection:" .. pname
-				if not spam.test_key(key) then
-					minetest.chat_send_player(pname, "# Server: You were hit, but it reflected off your respawn protection.")
-					spam.mark_key(key, 2)
-				end
-				return true
+		if armor.in_pvp_respawn_area(player_pos, duel_info.start_pos) then
+			local key = "duel:spawnprotection:" .. pname
+			if not spam.test_key(key) then
+				minetest.chat_send_player(pname, "# Server: You were hit, but it reflected off your respawn protection.")
+				spam.mark_key(key, 2)
 			end
+			return true
 		end
 	end
 end

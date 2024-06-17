@@ -37,6 +37,7 @@ local DUEL_MELEE_STRINGS = {
 	"<winner> trashed <loser> in a duel.",
 	"<loser> got some major hurt from <winner>.",
 	"<winner> gave out a royal swatting to <loser>.",
+	"<loser> was killed by <winner>'s <w_weapon>.",
 }
 
 local DUEL_ARROW_STRINGS = {
@@ -44,6 +45,12 @@ local DUEL_ARROW_STRINGS = {
 	"<loser> never saw it coming.",
 	"<loser> faced down <winner>'s artillery and lost.",
 	"<winner> used <loser> for ranged target practice.",
+	"<loser> became a pincushion.",
+	"<loser> HEARD <winner>'s incoming artillery. Didn't avoid it.",
+	"<winner> is having fun with that <w_weapon>.",
+	"<winner> has pulled out the big guns.",
+	"<winner> is busy sniping with <w_his> <w_weapon>. Watch out!",
+	"<winner> didn't have to get close to <loser> to make that kill.",
 }
 
 local DUEL_STOMP_STRINGS = {
@@ -54,6 +61,10 @@ local DUEL_STOMP_STRINGS = {
 	"<winner> used <loser> to cushion <w_his> fall.",
 	"<loser> got <l_himself> some pancaking by <winner>'s boots of steel.",
 	"<winner> smashed <loser> into the earth.",
+	"<winner> crushed <loser> from above.",
+	"<winner> stomped <loser> into the ground.",
+	"<winner> used <loser> to break <w_his> fall.",
+	"<winner> used <loser> like a trampoline!",
 }
 
 local DUEL_SUICIDE_STRINGS = {
@@ -68,6 +79,12 @@ local DUEL_SUICIDE_STRINGS = {
 	"<loser> died: incompetence.",
 	"<loser> perished: weapon misuse.",
 	"<loser> died: couldn't take what <l_he> dished out.",
+	"<loser> killed <l_himself> with <l_his> own <l_weapon>.",
+	"<loser> used <l_his> <l_weapon> on <l_himself>. Idiot!",
+	"<loser> did something stupid.",
+	"<loser> won the Darwin award.",
+	"<loser> held <l_his> <l_weapon> by the wrong end.",
+	"<loser> hit <l_himself>: terrible aim.",
 }
 
 function armor.dueling_hud_update(player, duel_data)
@@ -348,24 +365,31 @@ local function print_message(victim, punch_info)
 		msg = string.gsub(msg, "<l_him>", psex.him)
 		msg = string.gsub(msg, "<l_he>", psex.he)
 
-		if string.find(msg, "<w>") then
-			local hitter = minetest.get_player_by_name(kname)
-			if hitter then
-				local wield = hitter:get_wielded_item()
-				local def = minetest.registered_items[wield:get_name()]
-				local meta = wield:get_meta()
-				local description = meta:get_string("description")
-				if description ~= "" then
-					msg = string.gsub(msg, "<w>", "'" .. utility.get_short_desc(description):trim() .. "'")
-				elseif def and def.description then
-					local str = utility.get_short_desc(def.description)
-					if str == "" then
-						str = "Potato Fist"
+		-- Weapon name, or default description.
+		local function weapon_string(msg, key, name)
+			if string.find(msg, key) then
+				local pref = minetest.get_player_by_name(name)
+				if pref then
+					local wield = pref:get_wielded_item()
+					local def = minetest.registered_items[wield:get_name()]
+					local meta = wield:get_meta()
+					local description = meta:get_string("description")
+					if description ~= "" then
+						msg = string.gsub(msg, key, "'" .. utility.get_short_desc(description):trim() .. "'")
+					elseif def and def.description then
+						local str = utility.get_short_desc(def.description)
+						if str == "" then
+							str = "Potato Fist"
+						end
+						msg = string.gsub(msg, key, str)
 					end
-					msg = string.gsub(msg, "<w>", str)
 				end
 			end
+			return msg
 		end
+
+		msg = weapon_string(msg, "<w_weapon>", kname)
+		msg = weapon_string(msg, "<l_weapon>", pname)
 
 		minetest.chat_send_all("# Server: " .. msg)
 		spam.mark_key(spamkey, 10)

@@ -132,6 +132,9 @@ function jail.go_to_jail(player, bcb)
 		particle_effects = true,
 	})
 
+	-- End duel if one currently in progress for this player.
+	armor.end_duel(pname)
+
 	-- Player should be sent to jail successfully, no reason for error right now.
 	return true
 end

@@ -659,6 +659,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- Return HP change as-is if it's a positive number.
 	-- We do not modify it, or do armor wear, in that case.
 	if not (pname and hp_change < 0) then
+		armor.clear_duel_punch()
 		return hp_change
 	end
 
@@ -676,6 +677,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	-- Admin does not take damage.
 	if not IS_SINGLEPLAYER then
 		if gdac.player_is_admin(player) then
+			armor.clear_duel_punch()
 			return 0
 		end
 	end
@@ -687,6 +689,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	-- used for insta kill tools/commands like /kill (doesnt damage armor)
 	if hp_change <= -60000 then
+		armor.clear_duel_punch()
 		return hp_change
 	end
 
@@ -740,6 +743,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 			-- Do not apply damage from this point. Damage will be applied via 'punch'
 			-- on the next server step.
+			armor.clear_duel_punch()
 			return 0
 		end
 	end
@@ -846,6 +850,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		hp_change = armor.handle_pvp_arena_death(hp_change, player)
 	end
 
+	armor.clear_duel_punch()
 	return hp_change
 end
 

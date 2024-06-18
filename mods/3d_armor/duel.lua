@@ -744,6 +744,10 @@ function armor.notify_duel_punch(victim_name, hitter_name, stomp_flag, ranged_fl
 	}
 end
 
+function armor.clear_duel_punch()
+	ACTIVE_DUEL_PUNCH = nil
+end
+
 
 
 if not armor.duel_registered then

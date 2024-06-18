@@ -468,6 +468,11 @@ local function respawn_victim(player, respawn_pos)
 	duel_info.respawn_pos = respawn_pos
 	duel_info.respawn_countdown = RESPAWN_TIME
 
+	-- Note: player is allowed to interact with themselves and nearby objects
+	-- during respawn countdown. Keep this as a feature, NOT a bug! It allows them
+	-- to do something while they wait a few seconds, such as switch their
+	-- weapons/armor to prepare for the next round.
+
 	preload_tp.execute({
 		player_name = pname,
 		target_position = respawn_pos,

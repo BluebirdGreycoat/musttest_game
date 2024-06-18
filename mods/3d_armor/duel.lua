@@ -94,6 +94,18 @@ local DUEL_SUICIDE_STRINGS = {
 
 
 
+local function announce_begin(pname)
+	local msg = "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!"
+	minetest.chat_send_all(SHOUT_COLOR .. msg)
+	chat_logging.log_server_message(msg)
+end
+
+local function announce_end(pname)
+	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel."
+	minetest.chat_send_all(SHOUT_COLOR .. msg)
+	chat_logging.log_server_message(msg)
+end
+
 -- Lets outside code query if this player is currently respawning (implies they're in a duel).
 function armor.is_duelist_respawning(pname)
 	local data = dueling_players[pname]
@@ -156,7 +168,7 @@ function armor.check_bounds(pname)
 		-- Player left the game unexpectedly.
 		if not pref then
 			dueling_players[pname] = nil
-			minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel.")
+			announce_end(pname)
 			return
 		end
 
@@ -309,7 +321,7 @@ function armor.add_dueling_player(player, duel_pos)
 		hud = {hud1, hud2, hud3, hud4, hud5, hud6, beds},
 	}
 
-	minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!")
+	announce_begin(pname)
 	chat_core.alert_player_sound(pname)
 	minetest.after(1, function() armor.check_bounds(pname) end)
 
@@ -337,7 +349,7 @@ function armor.end_duel(player)
 		data.hud = nil
 		dueling_players[pname] = nil
 
-		minetest.chat_send_all(SHOUT_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel.")
+		announce_end(pname)
 		chat_core.alert_player_sound(pname)
 	end
 end

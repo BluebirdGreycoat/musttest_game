@@ -18,6 +18,7 @@ local PUBLIC_BED_DISTANCE = 256
 local OPPONENT_DISTANCE = 256
 local DUEL_MAX_RADIUS = 256
 
+local ENV_DAMAGE_AFTER_PUNCH = 5 -- Time from last punch env damage is accounted.
 local SPAWN_SAFE_ZONE = 5
 local RESPAWN_TIME = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
@@ -290,6 +291,7 @@ function armor.add_dueling_player(player, duel_pos)
 		beds[#beds + 1] = id
 	end
 
+	-- The "Respawn" HUD counter. Shown only when dead and busy respawning.
 	local hud6 = player:hud_add({
 		type = "text",
 		position = {x=0.50, y=0.50},
@@ -506,6 +508,7 @@ local function respawn_victim(player, respawn_pos)
 
 	-- Re-engage respawn protection.
 	-- This will disable if they hit anybody.
+	-- It will also turn off if they leave spawn.
 	local duel_info = dueling_players[pname]
 	duel_info.no_respawn_protection = nil
 	duel_info.respawn_pos = respawn_pos
@@ -590,6 +593,7 @@ end
 
 -- Cityblock punch handler uses this to check if a player should receive any
 -- damage at all. This is somewhat like jails, where brawling is not allowed.
+-- Return 'true' to disable damage from this punch.
 function armor.have_dueling_respawn_protection(player, hitter)
 	local pname = player:get_player_name()
 	local hname = hitter:get_player_name()
@@ -608,12 +612,18 @@ function armor.have_dueling_respawn_protection(player, hitter)
 		dueling_players[hname].no_respawn_protection = true
 		debug_print('respawn protection canceled for: ' .. hname)
 
+		-- Inform that this player was hit.
+		duel_info.time_of_last_punch = os.time()
+		duel_info.last_punched_by = hname
+
 		-- Shortcut if respawn protection is already disabled for this player.
 		if duel_info.no_respawn_protection then
 			debug_print('no respawn protection: ' .. pname)
 			return
 		end
 
+		-- If respawn protection isn't explicitly turned off, and they're in a spawn
+		-- area, then prevent damage from this punch.
 		if armor.in_pvp_respawn_area(player_pos, duel_info.start_pos) then
 			local key = "duel:spawnprotection:" .. pname
 			if not spam.test_key(key) then

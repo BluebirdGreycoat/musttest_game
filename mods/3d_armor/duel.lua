@@ -18,7 +18,7 @@ local PUBLIC_BED_DISTANCE = 256
 local OPPONENT_DISTANCE = 256
 local DUEL_MAX_RADIUS = 256
 
-local ENV_DAMAGE_AFTER_PUNCH = 5 -- Time from last punch env damage is accounted.
+local ENV_TIME_AFTER_PUNCH = 5 -- Time from last punch env damage is accounted.
 local SPAWN_SAFE_ZONE = 5
 local RESPAWN_TIME = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
@@ -390,9 +390,8 @@ function armor.get_public_spawns(pos)
 end
 
 local function print_message(victim, punch_info)
-	local killer = minetest.get_player_by_name(punch_info.hitter)
 	local pname = victim:get_player_name()
-	local kname = killer:get_player_name()
+	local kname = punch_info.hitter
 	local spamkey = "duel:" .. pname .. ":" .. kname
 
 	if pname == punch_info.victim and kname == punch_info.hitter then
@@ -445,6 +444,8 @@ local function print_message(victim, punch_info)
 						end
 						msg = string.gsub(msg, key, str)
 					end
+				else
+					msg = string.gsub(msg, key, "Vanishing Act")
 				end
 			end
 			return msg
@@ -612,10 +613,6 @@ function armor.have_dueling_respawn_protection(player, hitter)
 		dueling_players[hname].no_respawn_protection = true
 		debug_print('respawn protection canceled for: ' .. hname)
 
-		-- Inform that this player was hit.
-		duel_info.time_of_last_punch = os.time()
-		duel_info.last_punched_by = hname
-
 		-- Shortcut if respawn protection is already disabled for this player.
 		if duel_info.no_respawn_protection then
 			debug_print('no respawn protection: ' .. pname)
@@ -636,6 +633,8 @@ function armor.have_dueling_respawn_protection(player, hitter)
 end
 
 -- Called from the armor HP-change code only if player would die.
+-- Don't put logic here that needs to run for every punch, use the punch handler
+-- for that.
 function armor.handle_pvp_arena_death(hp_change, player)
 	local pname = player:get_player_name()
 	local player_pos = vector_round(player:get_pos())
@@ -662,6 +661,23 @@ function armor.handle_pvp_arena_death(hp_change, player)
 				-- Set global punch info to nil so we don't mistakenly use stale data later.
 				local punch_info = ACTIVE_DUEL_PUNCH
 				ACTIVE_DUEL_PUNCH = nil
+
+				-- If punch info is nil at this point, the damage was caused by
+				-- something other than a player. Could be env, could be mob, could even
+				-- be a stray :set_hp() somewhere in the code. Use the last known punch
+				-- table, if it is not too old.
+				--
+				-- This is also a feature: if a player manages to cause env damage to
+				-- another player as a result of a normal punch, this will attribute the
+				-- env damage to the hitter if the time separation is short enough.
+				--
+				-- This will work no matter how many times non-player-punch damage is
+				-- applied, as long as the damage occurs shortly after the initial punch.
+				if not punch_info then
+					if os.time() <= (duel_info.last_punch_time + ENV_TIME_AFTER_PUNCH) then
+						punch_info = duel_info.last_punch_table
+					end
+				end
 
 				debug_print('punch info: ' .. dump(punch_info) .. ': ' .. pname)
 
@@ -751,6 +767,13 @@ function armor.notify_duel_punch(victim_name, hitter_name, stomp_flag, ranged_fl
 		stomp = stomp_flag,
 		arrow = ranged_flag,
 	}
+
+	-- Also set this table on the victim's dueling info.
+	local data = dueling_players[victim_name]
+	if data then
+		data.last_punch_table = ACTIVE_DUEL_PUNCH
+		data.last_punch_time = os.time()
+	end
 end
 
 function armor.clear_duel_punch()

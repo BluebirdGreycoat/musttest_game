@@ -1164,6 +1164,12 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 		return true
 	end
 
+	------------------------------------------------------------------------------
+	-- After this point, we know the punch is to be allowed.
+	-- Checks for allowance must go ABOVE.
+	-- Consequences must go BELOW.
+	------------------------------------------------------------------------------
+
 	-- Let others hear sounds of nearby combat.
 	if damage > 0 then
 		ambiance.sound_play("player_damage", p2pos, 2.0, 30)

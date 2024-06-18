@@ -427,11 +427,10 @@ local function heal_player(pname)
 end
 
 local function lock_player_at_spawn(player, respawn_pos)
-	-- Move the player also.
-	player:set_pos(respawn_pos)
 	local pname = player:get_player_name()
 
 	-- Do this soon.
+	-- This is a hacky way to prevent the player from being allowed to move.
 	local function donext()
 		local player = minetest.get_player_by_name(pname)
 		if not player then
@@ -458,6 +457,8 @@ local function lock_player_at_spawn(player, respawn_pos)
 end
 
 local function respawn_victim(player, respawn_pos)
+	-- Move the player also.
+	player:set_pos(respawn_pos)
 	local pname = player:get_player_name()
 
 	-- Re-engage respawn protection.

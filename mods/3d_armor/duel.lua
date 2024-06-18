@@ -91,6 +91,49 @@ local DUEL_SUICIDE_STRINGS = {
 	"<loser> hit <l_himself>: terrible aim.",
 }
 
+
+
+-- Lets outside code query if this player is currently respawning (implies they're in a duel).
+function armor.is_duelist_respawning(pname)
+	local data = dueling_players[pname]
+	if not data then
+		return
+	end
+
+	-- If the timer exists, they're respawning.
+	if data.respawn_countdown then
+		return true
+	end
+end
+
+local function set_visible(player, visible)
+	if visible then
+		pova.remove_modifier(player, "nametag", "duelist:respawn_invis")
+		pova.remove_modifier(player, "properties", "duelist:respawn_invis")
+	else
+		gauges.remove_hp_bar_for_player(player:get_player_name())
+
+		-- Make them invisible.
+		pova.set_modifier(player, "nametag",
+			{color={a=0, r=0, g=0, b=0}, text=""}, "duelist:respawn_invis",
+			{priority=1000})
+
+		pova.set_modifier(player, "properties", {
+			visual_size = {x=0, y=0},
+			makes_footstep_sound = false,
+
+			-- Cannot be zero-size because otherwise player would fall through cracks.
+			--collisionbox = {0},
+			--selectionbox = {0},
+
+			collide_with_objects = false,
+			is_visible = false,
+			pointable = false,
+			show_on_minimap = false,
+		}, "duelist:respawn_invis", {priority=1000})
+	end
+end
+
 function armor.dueling_hud_update(player, duel_data)
 	player:hud_change(duel_data.hud[2], "text",
 		"Participants: " .. #(armor.get_likely_opponents(player, duel_data.start_pos)))
@@ -129,6 +172,7 @@ function armor.check_bounds(pname)
 				data.respawn_countdown = data.respawn_countdown - 1
 			else
 				data.respawn_countdown = nil
+				set_visible(pref, true)
 			end
 		end
 
@@ -467,6 +511,13 @@ local function respawn_victim(player, respawn_pos)
 	duel_info.no_respawn_protection = nil
 	duel_info.respawn_pos = respawn_pos
 	duel_info.respawn_countdown = RESPAWN_TIME
+
+	-- This is to 1) hide a glitch where sometimes other client's don't notice
+	-- that the player was teleported back to a respawn (this might have something
+	-- to do with them not knowing about the player getting attached to the
+	-- respawn entity), and 2) to prevent other players from knowing their respawn
+	-- location right away.
+	set_visible(player, false)
 
 	-- Note: player is allowed to interact with themselves and nearby objects
 	-- during respawn countdown. Keep this as a feature, NOT a bug! It allows them

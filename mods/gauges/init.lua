@@ -67,18 +67,33 @@ function gauges.on_teleport()
 end
 --------------------------------------------------------------------------------
 
+function gauges.remove_hp_bar_for_player(pname)
+	local wield = player_wielding[pname]
+	if not wield then
+		return
+	end
+	if wield.object then
+		wield.object:set_detach()
+		wield.object:remove()
+	end
+	player_wielding[pname] = nil
+end
+
 function gauges.on_global_step()
 	local active_players = {}
+	local allplayers = minetest.get_connected_players()
+
 	-- Add gauges to players without them.
-	for _, player in ipairs(minetest.get_connected_players()) do
+	for _, player in ipairs(allplayers) do
 		if not gdac.player_is_admin(player) then
 			local name = player:get_player_name()
 
 			local nametag = player_labels.query_nametag_onoff(name)
 			local invisible = gdac_invis.is_invisible(name)
 			local cloaked = cloaking.is_cloaked(name)
+			local respawning = armor.is_duelist_respawning(name)
 
-			if not invisible and not cloaked and nametag then
+			if not invisible and not cloaked and not respawning and nametag then
 				local wield = player_wielding[name]
 				if not wield then
 					add_gauge(player)

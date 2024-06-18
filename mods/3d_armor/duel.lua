@@ -173,6 +173,7 @@ function armor.check_bounds(pname)
 			else
 				data.respawn_countdown = nil
 				set_visible(pref, true)
+				minetest.chat_send_player(pname, "# Server: You respawned.")
 			end
 		end
 
@@ -466,8 +467,6 @@ local function heal_player(pname)
 	pref:set_hp(hp_max, {reason="heal_command"})
 	sprint.set_stamina(pref, SPRINT_STAMINA)
 	bones.nohack.on_respawnplayer(pref)
-
-	minetest.chat_send_player(pname, "# Server: You respawned.")
 end
 
 local function lock_player_at_spawn(player, respawn_pos)

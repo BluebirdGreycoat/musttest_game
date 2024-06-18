@@ -133,7 +133,7 @@ function jail.go_to_jail(player, bcb)
 	})
 
 	-- End duel if one currently in progress for this player.
-	armor.end_duel(pname)
+	armor.end_duel(player)
 
 	-- Player should be sent to jail successfully, no reason for error right now.
 	return true

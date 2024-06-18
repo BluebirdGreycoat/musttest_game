@@ -122,6 +122,7 @@ function armor.check_bounds(pname)
 		local in_arena = (city_block:in_pvp_arena(player_pos) and
 			minetest.test_protection(player_pos, ""))
 
+		-- Respawn countdown timer.
 		if data.respawn_countdown then
 			if data.respawn_countdown > 0 then
 				--pref:set_pos(data.respawn_pos)
@@ -131,8 +132,18 @@ function armor.check_bounds(pname)
 			end
 		end
 
+		-- Disable respawn protection once player has moved out of respawn area.
+		if data.no_respawn_protection == nil then
+			if not armor.in_pvp_respawn_area(player_pos, data.start_pos) then
+				debug_print('disabling respawn protection: ' .. pname .. ': player moved out of spawn')
+				data.no_respawn_protection = true
+			end
+		end
+
+		-- HUD update.
 		armor.dueling_hud_update(pref, data)
 
+		-- Arena distance checks.
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
 			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
 				-- Player is slightly out of bounds. Warn them to return.
@@ -501,7 +512,7 @@ local function spawn_bones(pos, pname, hname)
 	end
 
 	-- Prevent placing bones near any of the public spawns.
-	if armor.in_pvp_respawn_area(data.start_pos) then
+	if armor.in_pvp_respawn_area(pos, data.start_pos) then
 		return
 	end
 
@@ -601,7 +612,11 @@ function armor.handle_pvp_arena_death(hp_change, player)
 
 					if hitter_is_dueling then
 						-- If player has only 1 HP, they were already "dead" as far as we're concerned.
-						if player:get_hp() > 1 then
+						-- However, it may transpire that a player gets to 1 hp naturally.
+						-- So the only way to know if we should respawn the player is this:
+						-- do they have a respawn countdown currently in progress? If yes,
+						-- then they were already "killed" and we should skip this.
+						if not duel_info.respawn_countdown then
 							debug_print('handling duel death: ' .. pname)
 
 							-- Get them off of whatever.

@@ -81,6 +81,7 @@ function wield3d.on_teleport()
 		player_wielding[name] = nil
 	end
 	gauges.on_teleport()
+	city_block.on_teleport()
 	--]]
 end
 

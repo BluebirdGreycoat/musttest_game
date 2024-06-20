@@ -20,6 +20,9 @@ local vector_add = vector.add
 local vector_equals = vector.equals
 local math_random = math.random
 
+-- HUD markers for select city blocks.
+dofile(city_block.modpath .. "/beacon.lua")
+
 -- Cityblocks take 6 hours to become "active".
 -- This prevents certain classes of exploits (such as using them offensively
 -- during PvP). This also strongly discourages constantly moving them around
@@ -592,6 +595,11 @@ function city_block.create_formspec(pos, pname, blockdata)
 		pvp = "true"
 	end
 
+	local hud = "false"
+	if blockdata.hud_beacon then
+		hud = "true"
+	end
+
 	local formspec = "size[4.1,3.0]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
@@ -601,7 +609,8 @@ function city_block.create_formspec(pos, pname, blockdata)
 		"button_exit[0,1.30;2,1;OK;Confirm]" ..
 		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
 		"field_close_on_enter[CITYNAME;true]" ..
-		"checkbox[0,2;pvp_arena;Mark Dueling Arena;" .. pvp .. "]"
+		"checkbox[0,2.0;pvp_arena;Mark Dueling Arena;" .. pvp .. "]" ..
+		"checkbox[0,2.4;hud_beacon;Signal Nearby Keys;" .. hud .. "]"
 
 	return formspec
 end
@@ -695,6 +704,22 @@ function city_block.on_receive_fields(player, formname, fields)
 			city_block:save()
 		end
 	--]]
+	---[[
+	elseif fields.hud_beacon == "true" then
+		local block = city_block.get_block(pos)
+		if block then
+			minetest.chat_send_player(pname, "# Server: Activated KEY signal.")
+			block.hud_beacon = true
+			city_block:save()
+		end
+	elseif fields.hud_beacon == "false" then
+		local block = city_block.get_block(pos)
+		if block then
+			minetest.chat_send_player(pname, "# Server: Disabled KEY signal.")
+			block.hud_beacon = nil
+			city_block:save()
+		end
+	--]]
 	end
 
 	return true
@@ -720,6 +745,12 @@ function city_block.get_infotext(pos)
 	end
 
 	return text
+end
+
+
+
+function city_block.on_leaveplayer(player, timed_out)
+	city_block.disable_beacons_for_player(player:get_player_name())
 end
 
 
@@ -810,6 +841,12 @@ if not city_block.run_once then
 	minetest.register_on_punchplayer(function(...)
 		return city_block.on_punchplayer(...)
 	end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return city_block.on_leaveplayer()
+	end)
+
+	city_block.update_beacons()
 
 	local c = "city_block:core"
 	local f = city_block.modpath .. "/init.lua"

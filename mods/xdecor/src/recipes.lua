@@ -19,7 +19,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:candle",
 	recipe = {
-		{"torches:torch_floor"},
+		{"group:torch_craftitem"},
 		{"default:paper"},
 	},
 })
@@ -148,7 +148,7 @@ minetest.register_craft({
 	output = "xdecor:lantern",
 	recipe = {
 		{"default:iron_lump"},
-		{"torches:torch_floor"},
+		{"group:torch_craftitem"},
 		{"default:iron_lump"}
 	}
 })
@@ -156,9 +156,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "xdecor:lantern",
 	recipe = {
-		{"default:iron_lump"},
-		{"torches:kalite_torch_floor"},
-		{"default:iron_lump"}
+		{"moreores:tin_lump"},
+		{"group:torch_craftitem"},
+		{"moreores:tin_lump"}
 	}
 })
 

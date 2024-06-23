@@ -2,14 +2,22 @@
 -- Localize for performance.
 local math_random = math.random
 
-function mese_crystals.get_grow_time()
-	return mese_crystals.growtime + math_random(1, 30)
-	--return mese_crystals.growtime
-end
+-- For testing.
+local FAST_CRYSTAL_GROWTH = false
 
+-- Crystals are NOT plants, they're more "like" stony material.
+-- They should take a long time to grow.
+function mese_crystals.get_grow_time()
+  if FAST_CRYSTAL_GROWTH then
+    return 5
+  end
+	return 60*math.random(15, 30)
+end
 function mese_crystals.get_long_grow_time()
-	return mese_crystals.longgrowtime + math_random(1, 30)
-	--return mese_crystals.longgrowtime
+  if FAST_CRYSTAL_GROWTH then
+    return 5
+  end
+	return 60*math.random(60, 120)
 end
 
 
@@ -20,6 +28,26 @@ local check_lava = function(pos)
     return 1
   else
     return 0
+  end
+end
+
+
+
+-- Get the location of a valid glow mineral.
+local function get_glowminerals(pos)
+  local t = {
+    vector.offset(pos, 0, -2, 0),
+    vector.offset(pos, 1, -1, 0),
+    vector.offset(pos, -1, -1, 0),
+    vector.offset(pos, 0, -1, 1),
+    vector.offset(pos, 0, -1, -1),
+  }
+
+  for k = 1, #t do
+    local n = minetest.get_node(t[k])
+    if n.name == "glowstone:minerals" then
+      return t[k]
+    end
   end
 end
 
@@ -62,10 +90,19 @@ local grow_mese_crystal_ore = function(pos, node)
 
 	local keepgrowing = false
 
-  if node.name == "mese_crystals:mese_crystal_ore3" then
+  if node.name == "mese_crystals:mese_crystal_ore4" then
+    local gm = get_glowminerals(pos)
+    if gm then
+      node.name = "mese_crystals:mese_crystal_ore5"
+      minetest.swap_node(pos, node)
+      minetest.set_node(gm, {name="cavestuff:coal_dust"}) -- Black sand.
+      minetest.check_single_for_falling(gm)
+      -- Last stage, does not need node timer.
+    end
+  elseif node.name == "mese_crystals:mese_crystal_ore3" then
     node.name = "mese_crystals:mese_crystal_ore4"
     minetest.swap_node(pos, node)
-		-- Last stage, does not need node timer.
+		keepgrowing = true
   elseif node.name == "mese_crystals:mese_crystal_ore2" then
     node.name = "mese_crystals:mese_crystal_ore3"
     minetest.swap_node(pos, node)

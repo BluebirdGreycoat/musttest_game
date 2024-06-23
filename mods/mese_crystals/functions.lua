@@ -39,7 +39,9 @@ function mese_crystals.harvest_pos(pos, user)
 	local growth_stage = 0
 
 	-- Determine growth stage.
-	if node.name == "mese_crystals:mese_crystal_ore4" then
+	if node.name == "mese_crystals:mese_crystal_ore5" then
+		growth_stage = 5
+	elseif node.name == "mese_crystals:mese_crystal_ore4" then
 		growth_stage = 4
 	elseif node.name == "mese_crystals:mese_crystal_ore3" then
 		growth_stage = 3
@@ -53,7 +55,11 @@ function mese_crystals.harvest_pos(pos, user)
 	end
 
 	-- Update crystaline plant.
-	if growth_stage == 4 then
+	if growth_stage == 5 then
+		node.name = "mese_crystals:mese_crystal_ore4"
+		minetest.swap_node(pos, node)
+		minetest.get_node_timer(pos):start(mese_crystals.get_grow_time())
+	elseif growth_stage == 4 then
 		node.name = "mese_crystals:mese_crystal_ore3"
 		minetest.swap_node(pos, node)
 		minetest.get_node_timer(pos):start(mese_crystals.get_grow_time())
@@ -75,7 +81,7 @@ function mese_crystals.harvest_pos(pos, user)
 		ambiance.sound_play("default_break_glass", pos, 0.3, 32)
 
 		local stack
-		if math.random(1, 30) == 1 then
+		if math.random(1, 30) == 1 or growth_stage == 5 then
 			-- Chance to get an actual crystal.
 			stack = ItemStack("default:mese_crystal")
 		else

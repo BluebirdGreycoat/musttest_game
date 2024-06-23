@@ -23,13 +23,16 @@ if not mese_crystals.nodes_registered then
 		{-0.2, -0.5, -0.2, 0.2, 0.10, 0.2},
 		{-0.2, -0.5, -0.2, 0.2, 0.25, 0.2},
 		{-0.2, -0.5, -0.2, 0.2, 0.35, 0.2},
-		{-0.2, -0.5, -0.2, 0.2, 0.35, 0.2},
+		{-0.2, -0.5, -0.2, 0.2, 0.50, 0.2},
 	}
 	local light = {1, 3, 5, 7, 8}
 
 	-- Register 5 levels of crystal.
 	for i = 1, 5, 1 do
 		local dropstring = "default:mese_crystal_fragment " .. i
+		if i == 5 then
+			dropstring = "default:mese_crystal"
+		end
 
 		minetest.register_node("mese_crystals:mese_crystal_ore" .. i, {
 			description = "Zentamine Crystal Ore",

@@ -3,10 +3,6 @@ if not minetest.global_exists("mese_crystals") then mese_crystals = {} end
 mese_crystals.modpath = minetest.get_modpath("mese_crystals")
 
 
-mese_crystals.growtime = 60*5
-mese_crystals.longgrowtime = 60*30
-
-
 
 dofile(mese_crystals.modpath .. "/functions.lua")
 dofile(mese_crystals.modpath .. "/items.lua")

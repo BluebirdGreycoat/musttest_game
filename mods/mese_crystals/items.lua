@@ -23,11 +23,14 @@ if not mese_crystals.nodes_registered then
 		{-0.2, -0.5, -0.2, 0.2, 0.10, 0.2},
 		{-0.2, -0.5, -0.2, 0.2, 0.25, 0.2},
 		{-0.2, -0.5, -0.2, 0.2, 0.35, 0.2},
+		{-0.2, -0.5, -0.2, 0.2, 0.35, 0.2},
 	}
-	local light = {1, 3, 5, 7}
+	local light = {1, 3, 5, 7, 8}
 
-	-- Register 4 levels of crystal.
-	for i = 1, 4, 1 do
+	-- Register 5 levels of crystal.
+	for i = 1, 5, 1 do
+		local dropstring = "default:mese_crystal_fragment " .. i
+
 		minetest.register_node("mese_crystals:mese_crystal_ore" .. i, {
 			description = "Zentamine Crystal Ore",
 			mesh = "mese_crystal_ore" .. i .. ".obj",
@@ -36,7 +39,7 @@ if not mese_crystals.nodes_registered then
 			paramtype2 = "facedir",
 			drawtype = "mesh",
 			groups = utility.dig_groups("crystal", {attached_node = 1, fall_damage_add_percent = 60}),
-			drop = "default:mese_crystal_fragment " .. i,
+			drop = dropstring,
 			use_texture_alpha = "blend",
 			sounds = default.node_sound_stone_defaults(),
 			light_source = light[i],

@@ -1,7 +1,7 @@
 # Blender v2.72 (sub 0) OBJ File: 'crystal-RBA-2.blend'
 # www.blender.org
 mtllib mese_crystal_ore2.mtl
-o CrystalCrack
+o Crystal
 v 0.209846 -0.263163 -0.213646
 v 0.209252 -0.256063 -0.215366
 v 0.212346 -0.254628 -0.210314
@@ -252,7 +252,7 @@ vt 0.752000 0.030800
 vt 0.975600 0.752800
 vt 0.023500 0.275900
 vt 0.485800 0.969500
-usemtl MEGAICEMAGIC
+usemtl CrystalMat
 s 1
 f 32/1 34/2 33/3 30/4
 f 69/5 67/6 68/7 70/8

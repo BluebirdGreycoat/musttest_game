@@ -1,6 +1,9 @@
 
 if not minetest.global_exists("prospector") then prospector = {} end
 prospector.modpath = minetest.get_modpath("silicon")
+prospector.players = prospector.players or {}
+
+local HUD_REMAIN_TIME = 15
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -9,6 +12,110 @@ local math_random = math.random
 prospector.image = "prospector.png"
 prospector.name = "prospector:prospector"
 prospector.description = "Prospector\n\nTool to scan for hidden materials.\nMust be charged to use."
+
+-- Accuracy is a number between 0 and 100. Higher is more accurate.
+function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local found = true
+
+	if math_random() > accuracy/100 then
+		if math_random(1, 2) == 1 then
+			found = not found
+		end
+	end
+
+	local sound = "technic_prospector_" .. (found and "hit" or "miss")
+	ambiance.sound_play(sound, start_pos, 1.0, 20)
+
+	-- Mark nodes on the player's HUD.
+	if found then
+		local data = prospector.players[pname]
+		if not data then
+			prospector.players[pname] = {hud={}}
+			data = prospector.players[pname]
+		end
+		local hud = data.hud
+
+		for k, v in ipairs(nodes) do
+			-- Accuracy affects how many ores are revealed.
+			if math_random() < accuracy/100 then
+				-- Get value where 1 = most inaccurate, 0 = least inaccurate.
+				-- Normalize range, flip and shift.
+				local alpha = ((accuracy / 100) * -1) + 1
+
+				-- The revealed position of the ore decreases in accuracy.
+				local orepos = {
+					x = v.x + (math_random(-7, 7) * alpha),
+					y = v.y + (math_random(-7, 7) * alpha),
+					z = v.z + (math_random(-7, 7) * alpha),
+				}
+
+				-- Skip revealing ores that are outside our scan area.
+				if orepos.x >= minp.x and orepos.x <= maxp.x
+					 and orepos.y >= minp.y and orepos.y <= maxp.y
+					 and orepos.z >= minp.z and orepos.z <= maxp.z then
+					local id = pref:hud_add({
+						type = "waypoint",
+						name = "Ore",
+						number = 0X5fb471,
+						world_pos = orepos,
+						precision = 1, -- Integers only.
+					})
+
+					hud[#hud + 1] = {
+						id = id,
+						time = os.time(),
+					}
+				end
+			end
+		end
+
+		if not data.started then
+			data.started = true
+			minetest.after(1, function()
+				return prospector.update_hud(pname)
+			end)
+		end
+	end
+end
+
+function prospector.update_hud(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local data = prospector.players[pname]
+	if not data then
+		return
+	end
+
+	local hud = data.hud
+	if #hud == 0 then
+		data.started = false
+		return
+	end
+
+	local remaintime = HUD_REMAIN_TIME
+	local ctime = os.time()
+	local nhud = {}
+	for k = 1, #hud do
+		if (hud[k].time + remaintime) > ctime then
+			nhud[#nhud + 1] = hud[k]
+		else
+			pref:hud_remove(hud[k].id)
+		end
+	end
+	data.hud = nhud
+
+	minetest.after(1, function()
+		return prospector.update_hud(pname)
+	end)
+end
 
 local function get_metadata(toolstack)
 	local meta = toolstack:get_meta()
@@ -87,6 +194,8 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 		return 10
 	end
 
+	local pname = user:get_player_name()
+
 	local toolmeta = get_metadata(toolstack)
 	local look_diameter = toolmeta.look_radius * 2 + 1
 	local charge_to_take = toolmeta.look_depth * (toolmeta.look_depth + 1) * look_diameter * look_diameter
@@ -136,15 +245,9 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	end
 	--]]
 
-	local accuracy = toolmeta.accuracy
-	if math_random() > accuracy/100 then
-		if math_random(1, 2) == 1 then
-			found = not found
-		end
+	if found then
+		prospector.mark_nodes(pname, start_pos, nodes, toolmeta.accuracy, minp, maxp)
 	end
-
-	local sound = "technic_prospector_" .. (found and "hit" or "miss")
-	ambiance.sound_play(sound, pointed_thing.under, 1.0, 20)
 
 	return charge_to_take
 end
@@ -291,6 +394,11 @@ function prospector.on_receive_fields(user, formname, fields)
 	return true
 end
 
+function prospector.on_leaveplayer(pref)
+	local pname = pref:get_player_name()
+	prospector.players[pname] = nil
+end
+
 if not prospector.run_once then
 	minetest.register_tool(":" .. prospector.name, {
 		description = prospector.description,
@@ -309,6 +417,10 @@ if not prospector.run_once then
 
 	minetest.register_on_player_receive_fields(function(...)
 		return prospector.on_receive_fields(...)
+	end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return prospector.on_leaveplayer(...)
 	end)
 
 	---[[

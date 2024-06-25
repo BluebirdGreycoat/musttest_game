@@ -843,7 +843,7 @@ if not city_block.run_once then
 	end)
 
 	minetest.register_on_leaveplayer(function(...)
-		return city_block.on_leaveplayer()
+		return city_block.on_leaveplayer(...)
 	end)
 
 	city_block.update_beacons()

@@ -124,17 +124,31 @@ local function lay_down(player, pos, bed_pos, state, skip)
 
 	-- stand up
 	if state ~= nil and not state then
-		local p = beds.pos[name] or nil
-		if beds.player[name] ~= nil then
-			beds.player[name] = nil
-			--player_in_bed = player_in_bed - 1
+		if not beds.player[name] then
+			-- Player wasn't in bed, skip!
+			-- This can happen because in the case of a successful night-skip, this
+			-- function is called twice to make players stand up: once when the night
+			-- is skipped, and again when the player dismisses their "good morning"
+			-- formspec.
+			return
 		end
+
+		beds.player[name] = nil
+
 		-- skip here to prevent sending player specific changes (used for leaving players)
 		if skip then
 			return
 		end
+
+		-- Return player to where they were standing before they went to bed.
+		local p = beds.pos[name]
+		beds.pos[name] = nil
+
 		if p then
-			player:set_pos(p)
+			-- Security check for people who insist on cheating on their exams.
+			if vector.distance(p, player:get_pos()) < 20 then
+				player:set_pos(p)
+			end
 		end
 
 		-- physics, eye_offset, etc
@@ -160,7 +174,6 @@ local function lay_down(player, pos, bed_pos, state, skip)
 	else
 		beds.player[name] = 1
 		beds.pos[name] = pos
-		--player_in_bed = player_in_bed + 1
 
 		-- physics, eye_offset, etc
 		pova.set_modifier(player, "eye_offset", {{x = 0, y = -13, z = 0}}, "sleeping")
@@ -374,7 +387,7 @@ function beds.skip_night()
   
   -- This assumes that players aren't kicked out of beds until after this function runs.
   -- Thus the need for 'minetest.after'.
-  for k, v in pairs(beds.player) do
+  for k, _ in pairs(beds.player) do
     local pname = k
     minetest.after(0, function()
 			beds.player_finishes_sleep(pname)

@@ -144,6 +144,7 @@ doors.register_trapdoor("trapdoor_glass", {
 	sounds = default.node_sound_glass_defaults(),
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:glass",
+	sunlight_propagates = true,
 })
 
 doors.register_trapdoor("trapdoor_glass_locked", {
@@ -156,6 +157,7 @@ doors.register_trapdoor("trapdoor_glass_locked", {
 	sounds = default.node_sound_glass_defaults(),
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:glass",
+	sunlight_propagates = true,
 })
 
 doors.register_trapdoor("trapdoor_obsidian_glass", {
@@ -167,6 +169,7 @@ doors.register_trapdoor("trapdoor_obsidian_glass", {
 	sounds = default.node_sound_glass_defaults(),
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:obsidian_glass",
+	sunlight_propagates = true,
 })
 
 doors.register_trapdoor("trapdoor_obsidian_glass_locked", {
@@ -179,4 +182,5 @@ doors.register_trapdoor("trapdoor_obsidian_glass_locked", {
 	sounds = default.node_sound_glass_defaults(),
 	groups = utility.dig_groups("door_stone", {door = 1}),
 	recipeitem = "default:obsidian_glass",
+	sunlight_propagates = true,
 })

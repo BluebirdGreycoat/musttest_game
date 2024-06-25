@@ -2,12 +2,15 @@
 if not minetest.global_exists("prospector") then prospector = {} end
 prospector.modpath = minetest.get_modpath("silicon")
 prospector.players = prospector.players or {}
+prospector.hidden_ores = prospector.hidden_ores or {}
+prospector.shown_ores = prospector.shown_ores or {}
 
 local HUD_REMAIN_TIME = 15
 
 -- Localize for performance.
 local math_floor = math.floor
 local math_random = math.random
+local vector_equals = vector.equals
 
 prospector.image = "prospector.png"
 prospector.name = "prospector:prospector"
@@ -40,9 +43,23 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 		end
 		local hud = data.hud
 
+		local function do_exists(p)
+			for k = 1, #hud do
+				if vector_equals(hud[k].pos, p) then
+					hud[k].time = os.time()
+					return true
+				end
+			end
+		end
+
 		for k, v in ipairs(nodes) do
+			-- Set if this node was detected at least once, thus must always be detected.
+			-- This is to prevent nodes from being possibly added to the 'undetectable'
+			-- list, if we saw them at least once.
+			local always_detect = prospector.always_detectable(v)
+
 			-- Accuracy affects how many ores are revealed.
-			if math_random() < accuracy/100 then
+			if math_random() < accuracy/100 or always_detect then
 				-- Get value where 1 = most inaccurate, 0 = least inaccurate.
 				-- Normalize range, flip and shift.
 				local alpha = ((accuracy / 100) * -1) + 1
@@ -54,23 +71,41 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 					z = v.z + (math_random(-7, 7) * alpha),
 				}
 
-				-- Skip revealing ores that are outside our scan area.
-				if orepos.x >= minp.x and orepos.x <= maxp.x
+				-- Skip revealing ores if their randomized position is outside our scan area.
+				if (orepos.x >= minp.x and orepos.x <= maxp.x
 					 and orepos.y >= minp.y and orepos.y <= maxp.y
-					 and orepos.z >= minp.z and orepos.z <= maxp.z then
-					local id = pref:hud_add({
-						type = "waypoint",
-						name = "Ore",
-						number = 0X5fb471,
-						world_pos = orepos,
-						precision = 1, -- Integers only.
-					})
+					 and orepos.z >= minp.z and orepos.z <= maxp.z)
+					 or always_detect then
+					-- Skip marking ores that have already been marked as unfindable.
+					-- This prevents them from being found again by user spam-clicking.
+					if not prospector.is_unfindable(v) then
+						-- Check if this ore is already tagged in the user's HUD.
+						-- (If it is, we also update its time.)
+						if not do_exists(v) then
+							local id = pref:hud_add({
+								type = "waypoint",
+								name = "Ore",
+								number = 0X5fb471,
+								world_pos = orepos,
+								precision = 1, -- Integers only.
+							})
 
-					hud[#hud + 1] = {
-						id = id,
-						time = os.time(),
-					}
+							hud[#hud + 1] = {
+								id = id,
+								time = os.time(),
+								pos = v,
+							}
+
+							prospector.mark_detectable(v)
+						end
+					end
+				else
+					-- Mark this ore as unfindable.
+					prospector.mark_unfindable(v)
 				end
+			else
+				-- Mark this ore as unfindable.
+				prospector.mark_unfindable(v)
 			end
 		end
 
@@ -79,6 +114,44 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 			minetest.after(1, function()
 				return prospector.update_hud(pname)
 			end)
+		end
+	end
+end
+
+function prospector.mark_unfindable(pos)
+	local hidden = prospector.hidden_ores
+	for k = 1, #hidden do
+		if vector_equals(hidden[k], pos) then
+			return
+		end
+	end
+	hidden[#hidden + 1] = pos
+end
+
+function prospector.is_unfindable(pos)
+	local hidden = prospector.hidden_ores
+	for k = 1, #hidden do
+		if vector_equals(hidden[k], pos) then
+			return true
+		end
+	end
+end
+
+function prospector.mark_detectable(pos)
+	local shown = prospector.shown_ores
+	for k = 1, #shown do
+		if vector_equals(shown[k], pos) then
+			return
+		end
+	end
+	shown[#shown + 1] = pos
+end
+
+function prospector.always_detectable(pos)
+	local shown = prospector.shown_ores
+	for k = 1, #shown do
+		if vector_equals(shown[k], pos) then
+			return true
 		end
 	end
 end
@@ -399,6 +472,17 @@ function prospector.on_leaveplayer(pref)
 	prospector.players[pname] = nil
 end
 
+-- This must be called periodically to avoid lots of records being stored in RAM.
+-- Function is time-recursive.
+function prospector.clear_ore_lists()
+	prospector.hidden_ores = {}
+	prospector.shown_ores = {}
+
+	minetest.after((60*math.random(60, 120)), function()
+		prospector.clear_ore_lists()
+	end)
+end
+
 if not prospector.run_once then
 	minetest.register_tool(":" .. prospector.name, {
 		description = prospector.description,
@@ -421,6 +505,11 @@ if not prospector.run_once then
 
 	minetest.register_on_leaveplayer(function(...)
 		return prospector.on_leaveplayer(...)
+	end)
+
+	-- Periodically clear the ore lists.
+	minetest.after((60*math.random(60, 120)), function()
+		prospector.clear_ore_lists()
 	end)
 
 	---[[

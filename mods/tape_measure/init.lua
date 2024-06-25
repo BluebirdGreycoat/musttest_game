@@ -1,4 +1,7 @@
 
+tape_measure = {}
+local WAYPOINT_DISTANCE_LIMIT = 256
+
 local function measure(stack, player, pointed)
 	if not stack or not player or not pointed then
 		return
@@ -66,6 +69,47 @@ minetest.register_on_leaveplayer(function(player)
 	player_waypoints[pname] = nil
 end)
 
+minetest.register_on_dieplayer(function(player)
+	local pname = player:get_player_name()
+	local data = player_waypoints[pname]
+	if data then
+		player:hud_remove(data.id)
+		player_waypoints[pname] = nil
+	end
+end)
+
+function tape_measure.realm_check(pname)
+	local data = player_waypoints[pname]
+	if not data then
+		return
+	end
+
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local realm = rc.current_realm(pref)
+
+	-- Remove waypoint if realm changed.
+	if realm ~= data.realm then
+		pref:hud_remove(data.id)
+		player_waypoints[pname] = nil
+		return
+	end
+
+	-- Remove waypoint if player went too far.
+	if vector.distance(data.pos, pref:get_pos()) > WAYPOINT_DISTANCE_LIMIT then
+		pref:hud_remove(data.id)
+		player_waypoints[pname] = nil
+		return
+	end
+
+	minetest.after(1, function()
+		tape_measure.realm_check(pname)
+	end)
+end
+
 local function waypoint(stack, player, pointed)
 	if not player or not pointed then
 		return
@@ -101,6 +145,7 @@ local function waypoint(stack, player, pointed)
 		if pos and not vector.equals(pos, point.pos) then
 			player:hud_change(point.id, "world_pos", pos)
 			player_waypoints[pname].pos = pos
+			player_waypoints[pname].realm = rc.current_realm_at_pos(pos)
 		else
 			player:hud_remove(point.id)
 			player_waypoints[pname] = nil
@@ -119,7 +164,15 @@ local function waypoint(stack, player, pointed)
 		world_pos = pos,
 	})
 
-	player_waypoints[pname] = {id = id, pos = pos}
+	player_waypoints[pname] = {
+		id = id,
+		pos = pos,
+		realm = rc.current_realm_at_pos(pos),
+	}
+
+	minetest.after(1, function()
+		tape_measure.realm_check(pname)
+	end)
 end
 
 minetest.register_tool("tape_measure:tape_measure", {

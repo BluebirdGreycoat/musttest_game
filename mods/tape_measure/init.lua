@@ -23,20 +23,27 @@ local function measure(stack, player, pointed)
 		return
 	end
 
-	local name = player:get_player_name()
+	if not rc.is_valid_realm_pos(pos) then
+		return
+	end
+
+	local pname = player:get_player_name()
 	local meta = stack:get_meta()
-	local start = meta:get("start_pos")
+	local realm = meta:get("start_realm") -- Returns nil if not present.
+	local start = meta:get("start_pos") -- Returns nil if not present.
 	local spos = minetest.pos_to_string(pos)
 
-	if not start then
+	if (not start) or (rc.current_realm_at_pos(pos) ~= realm) then
 		meta:set_string("start_pos", spos)
-		minetest.chat_send_player(name, "# Server: Start position set to " .. rc.pos_to_namestr(pos))
+		meta:set_string("start_realm", rc.current_realm_at_pos(pos))
+		minetest.chat_send_player(pname, "# Server: Start position set to " .. rc.pos_to_namestr(pos) .. ".")
 		return stack
 	end
 
 	start = minetest.string_to_pos(start)
-	minetest.chat_send_player(name, "# Server: End position set to " .. rc.pos_to_namestr(pos))
+	minetest.chat_send_player(pname, "# Server: End position set to " .. rc.pos_to_namestr(pos) .. ".")
 	meta:set_string("start_pos", "")
+	meta:set_string("start_realm", "")
 
 	local dist = vector.distance(start, pos)
 	dist = string.format("%s", math.floor(dist * 100) / 100).."m"
@@ -46,8 +53,8 @@ local function measure(stack, player, pointed)
 	local size = {x=x+1, y=y+1, z=z+1}
 
 	minetest.chat_send_player(
-		name, "# Server: Distance: " .. dist .. " | Size: " ..
-		minetest.pos_to_string(size))
+		pname, "# Server: Distance: " .. dist .. " | Size: " ..
+		minetest.pos_to_string(size) .. ".")
 
 	return stack
 end
@@ -55,8 +62,8 @@ end
 local player_waypoints = {}
 
 minetest.register_on_leaveplayer(function(player)
-	local name = player:get_player_name()
-	player_waypoints[name] = nil
+	local pname = player:get_player_name()
+	player_waypoints[pname] = nil
 end)
 
 local function waypoint(stack, player, pointed)
@@ -87,16 +94,16 @@ local function waypoint(stack, player, pointed)
 		end
 	end
 
-	local name = player:get_player_name()
-	local point = player_waypoints[name]
+	local pname = player:get_player_name()
+	local point = player_waypoints[pname]
 
 	if point then
 		if pos and not vector.equals(pos, point.pos) then
 			player:hud_change(point.id, "world_pos", pos)
-			player_waypoints[name].pos = pos
+			player_waypoints[pname].pos = pos
 		else
 			player:hud_remove(point.id)
-			player_waypoints[name] = nil
+			player_waypoints[pname] = nil
 		end
 		return
 	end
@@ -112,7 +119,7 @@ local function waypoint(stack, player, pointed)
 		world_pos = pos,
 	})
 
-	player_waypoints[name] = {id = id, pos = pos}
+	player_waypoints[pname] = {id = id, pos = pos}
 end
 
 minetest.register_tool("tape_measure:tape_measure", {

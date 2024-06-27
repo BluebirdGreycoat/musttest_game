@@ -61,6 +61,12 @@ local function do_teleport(self, tptarget, under, above)
 		return
 	end
 
+	-- Do not teleport attached players.
+	local pname = player:get_player_name()
+	if default.player_attached[pname] or player:get_attach() then
+		return
+	end
+
 	local node = minetest.get_node(tpos)
 	-- Maptools air is airlike but unbreakable. Don't TP in here.
 	if minetest.get_item_group(node.name, "unbreakable") == 0 then

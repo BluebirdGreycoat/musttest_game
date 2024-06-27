@@ -47,6 +47,10 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
+			if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+				return false, "Cannot teleport attached player."
+			end
+
 			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
 			jail.discharge_pref(teleportee)
@@ -78,6 +82,10 @@ function serveressentials.do_teleport(name, param)
 		end
 		teleportee = core.get_player_by_name(name)
 		if teleportee then
+			if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+				return false, "Cannot teleport attached player."
+			end
+
 			local o = vector_round(teleportee:get_pos())
 			rc.notify_realm_update(teleportee:get_player_name(), p)
 			jail.discharge_pref(teleportee)
@@ -102,6 +110,11 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport outside of any realm."
 		end
+
+		if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+			return false, "Cannot teleport attached player."
+		end
+
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		jail.discharge_pref(teleportee)
@@ -126,6 +139,11 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
+
+		if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+			return false, "Cannot teleport attached player."
+		end
+
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		jail.discharge_pref(teleportee)
@@ -150,6 +168,11 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
+
+		if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+			return false, "Cannot teleport attached player."
+		end
+
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)
 		jail.discharge_pref(teleportee)
@@ -176,6 +199,11 @@ function serveressentials.do_teleport(name, param)
 		if not rc.is_valid_realm_pos(p) then
 			return false, "Cannot teleport players outside realm boundaries."
 		end
+
+		if default.player_attached[teleportee:get_player_name()] or teleportee:get_attach() then
+			return false, "Cannot teleport attached player."
+		end
+
 		p = find_free_position_near(p)
 		local o = vector_round(teleportee:get_pos())
 		rc.notify_realm_update(teleportee:get_player_name(), p)

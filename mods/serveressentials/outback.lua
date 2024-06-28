@@ -472,6 +472,123 @@ end
 
 
 
+local OUTBACK_SCHEMS = {
+	{
+		schem = rc.modpath .. "/outback_apron.mts",
+		pos = {x=-9314, y=4141+400, z=5642},
+	},
+	{
+		schem = rc.modpath .. "/outback_map.mts",
+		pos = {x=-9274, y=4000+400, z=5682},
+	},
+	{
+		schem = rc.modpath .. "/outback_beacon.mts",
+		pos = {x=-9180, y=4580, z=5741},
+	},
+	{
+		schem = rc.modpath .. "/outback_spawn_cave.mts",
+		pos = {x=-9233, y=4568, z=5851},
+	},
+	{
+		schem = rc.modpath .. "/outback_bridge.mts",
+		pos = {x=-9232, y=4570, z=5828},
+	},
+	{
+		schem = rc.modpath .. "/outback_hill_blackstone.mts",
+		pos = {x=-9195, y=4576, z=5743},
+	},
+	{
+		schem = rc.modpath .. "/outback_blackstone_deposit_1.mts",
+		pos = {x=-9242, y=4565, z=5844},
+	},
+	{
+		schem = rc.modpath .. "/outback_blackstone_deposit_2.mts",
+		pos = {x=-9217, y=4560, z=5873},
+	},
+	{
+		schem = rc.modpath .. "/outback_blackstone_deposit_3.mts",
+		pos = {x=-9088, y=4588, z=5870},
+	},
+	{
+		schem = rc.modpath .. "/outback_blackstone_deposit_4.mts",
+		pos = {x=-9258, y=4566, z=5706},
+	},
+}
+
+local GATEROOM_SCHEMS = {
+	{
+		schem = rc.modpath .. "/outback_gateroom_2024.mts",
+		pos1 = {x=-9188, y=4498, z=5818},
+		pos2 = {x=-9160, y=4513, z=5838},
+		protectors = true,
+	},
+}
+
+local GUARDROOM_SCHEMS = {
+	{
+		schem = rc.modpath .. "/outback_guardroom_2024.mts",
+		pos1 = {x=-9183, y=4498, z=5775},
+		pos2 = {x=-9159, y=4507, z=5789},
+		protectors = true,
+	},
+	{
+		schem = rc.modpath .. "/outback_guardroom_floor.mts",
+		pos1 = {x=-9178, y=4499, z=5777},
+		pos2 = {x=-9168, y=4499, z=5787},
+		protectors = false,
+	},
+	{
+		schem = rc.modpath .. "/outback_guardroom_lights.mts",
+		pos1 = {x=-9178, y=4500, z=5779},
+		pos2 = {x=-9170, y=4505, z=5785},
+		protectors = false,
+	},
+	{
+		schem = rc.modpath .. "/outback_doorwall_01.mts",
+		pos1 = {x=-9176, y=4500, z=5772},
+		pos2 = {x=-9172, y=4502, z=5774},
+		protectors = false,
+	},
+	{
+		schem = rc.modpath .. "/outback_doorwall_02.mts",
+		pos1 = {x=-9176, y=4500, z=5790},
+		pos2 = {x=-9172, y=4502, z=5792},
+		protectors = false,
+	},
+}
+
+local function place_schematics(schems)
+	local replacements = {}
+	if minetest.registered_nodes["basictrees:acacia_branch"] then
+		replacements = {
+			["stairs:slope_acacia_trunk_outer"] = "basictrees:acacia_branch",
+		}
+	end
+
+	-- Place all schematics.
+	for k, v in ipairs(schems) do
+		minetest.place_schematic(v.pos or v.pos1, v.schem, "0", replacements, true, "")
+
+		if v.protectors then
+			local positions = minetest.find_nodes_in_area(v.pos1, v.pos2, "group:protector")
+			for k, v in ipairs(positions) do
+				local meta = minetest.get_meta(v)
+				meta:from_table({fields={
+					infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
+					owner = OWNERNAME,
+					placedate = "2024/06/04 UTC",
+					rename = OWNERNAME,
+				}})
+			end
+		end
+	end
+end
+
+serveressentials.place_schematics = place_schematics
+serveressentials.OUTBACK_SCHEMS = OUTBACK_SCHEMS
+serveressentials.GATEROOM_SCHEMS = GATEROOM_SCHEMS
+serveressentials.GUARDROOM_SCHEMS = GUARDROOM_SCHEMS
+
 local function callback(blockpos, action, calls_remaining, param)
 	-- We don't do anything until the last callback.
 	if calls_remaining ~= 0 then
@@ -504,116 +621,16 @@ local function callback(blockpos, action, calls_remaining, param)
 		end
 	end
 
-	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
-	local schems = {
-		{
-			schem = rc.modpath .. "/outback_apron.mts",
-			pos = {x=-9314, y=4141+400, z=5642},
-		},
-		{
-			schem = rc.modpath .. "/outback_map.mts",
-			pos = {x=-9274, y=4000+400, z=5682},
-		},
-		{
-			schem = rc.modpath .. "/outback_beacon.mts",
-			pos = {x=-9180, y=4580, z=5741},
-		},
-		{
-			schem = rc.modpath .. "/outback_spawn_cave.mts",
-			pos = {x=-9233, y=4568, z=5851},
-		},
-		{
-			schem = rc.modpath .. "/outback_bridge.mts",
-			pos = {x=-9232, y=4570, z=5828},
-		},
-		{
-			schem = rc.modpath .. "/outback_hill_blackstone.mts",
-			pos = {x=-9195, y=4576, z=5743},
-		},
-		{
-			schem = rc.modpath .. "/outback_blackstone_deposit_1.mts",
-			pos = {x=-9242, y=4565, z=5844},
-		},
-		{
-			schem = rc.modpath .. "/outback_blackstone_deposit_2.mts",
-			pos = {x=-9217, y=4560, z=5873},
-		},
-		{
-			schem = rc.modpath .. "/outback_blackstone_deposit_3.mts",
-			pos = {x=-9088, y=4588, z=5870},
-		},
-		{
-			schem = rc.modpath .. "/outback_blackstone_deposit_4.mts",
-			pos = {x=-9258, y=4566, z=5706},
-		},
-		{
-			schem = rc.modpath .. "/outback_gateroom_2024.mts",
-			pos1 = {x=-9188, y=4498, z=5818},
-			pos2 = {x=-9160, y=4513, z=5838},
-			protectors = true,
-		},
-		{
-			schem = rc.modpath .. "/outback_guardroom_2024.mts",
-			pos1 = {x=-9183, y=4498, z=5775},
-			pos2 = {x=-9159, y=4507, z=5789},
-			protectors = true,
-		},
-		{
-			schem = rc.modpath .. "/outback_guardroom_floor.mts",
-			pos1 = {x=-9178, y=4499, z=5777},
-			pos2 = {x=-9168, y=4499, z=5787},
-			protectors = false,
-		},
-		{
-			schem = rc.modpath .. "/outback_guardroom_lights.mts",
-			pos1 = {x=-9178, y=4500, z=5779},
-			pos2 = {x=-9170, y=4505, z=5785},
-			protectors = false,
-		},
-		{
-			schem = rc.modpath .. "/outback_doorwall_01.mts",
-			pos1 = {x=-9176, y=4500, z=5772},
-			pos2 = {x=-9172, y=4502, z=5774},
-			protectors = false,
-		},
-		{
-			schem = rc.modpath .. "/outback_doorwall_02.mts",
-			pos1 = {x=-9176, y=4500, z=5790},
-			pos2 = {x=-9172, y=4502, z=5792},
-			protectors = false,
-		},
-	}
-
-	local replacements = {}
-	if minetest.registered_nodes["basictrees:acacia_branch"] then
-		replacements = {
-			["stairs:slope_acacia_trunk_outer"] = "basictrees:acacia_branch",
-		}
-	end
-
 	-- Erase all stale metadata.
 	for k, v in ipairs(pos_metas) do
 		local meta = minetest.get_meta(v)
 		meta:from_table(nil)
 	end
 
-	-- Place all schematics.
-	for k, v in ipairs(schems) do
-		minetest.place_schematic(v.pos or v.pos1, v.schem, "0", replacements, true, "")
-
-		if v.protectors then
-			local positions = minetest.find_nodes_in_area(v.pos1, v.pos2, "group:protector")
-			for k, v in ipairs(positions) do
-				local meta = minetest.get_meta(v)
-				meta:from_table({fields={
-					infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
-					owner = OWNERNAME,
-					placedate = "2024/06/04 UTC",
-					rename = OWNERNAME,
-				}})
-			end
-		end
-	end
+	-- Place schematic. This overwrites all nodes, but not necessarily their meta.
+	place_schematics(OUTBACK_SCHEMS)
+	place_schematics(GATEROOM_SCHEMS)
+	place_schematics(GUARDROOM_SCHEMS)
 
 	-- Erase the rope.
 	for k = 4500, 4577, 1 do

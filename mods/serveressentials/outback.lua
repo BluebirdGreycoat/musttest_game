@@ -246,6 +246,19 @@ local metadata = {
 		author = OWNERNAME,
 		text = "This is not the portal you are looking for."
 	}}},
+
+	-- More signs.
+	{pos={x=-9174, y=4502, z=5772}, meta={fields={
+		infotext = "The Guardroom",
+		author = OWNERNAME,
+		text = "The Guardroom"
+	}}},
+	{pos={x=-9174, y=4502, z=5792}, meta={fields={
+		infotext = "The Guardroom",
+		author = OWNERNAME,
+		text = "The Guardroom"
+	}}},
+
 	-- Graveyard protector.
 	{pos={x=-9266, y=4570, z=5724}, meta={fields={
 		infotext = "Protection (Owned by <" .. OWNERNAME .. ">!)\nPlaced on 2020/02/12 UTC",
@@ -555,6 +568,18 @@ local function callback(blockpos, action, calls_remaining, param)
 			schem = rc.modpath .. "/outback_guardroom_lights.mts",
 			pos1 = {x=-9178, y=4500, z=5779},
 			pos2 = {x=-9170, y=4505, z=5785},
+			protectors = false,
+		},
+		{
+			schem = rc.modpath .. "/outback_doorwall_01.mts",
+			pos1 = {x=-9176, y=4500, z=5772},
+			pos2 = {x=-9172, y=4502, z=5774},
+			protectors = false,
+		},
+		{
+			schem = rc.modpath .. "/outback_doorwall_02.mts",
+			pos1 = {x=-9176, y=4500, z=5790},
+			pos2 = {x=-9172, y=4502, z=5792},
 			protectors = false,
 		},
 	}

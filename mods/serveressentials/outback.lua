@@ -123,6 +123,9 @@ local nodes = {
 	{pos={x=-9177, y=4577, z=5745}, node={name="signs:sign_wall_wood", param2=3}},
 	{pos={x=-9175, y=4577, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
 	{pos={x=-9175, y=4576, z=5746}, node={name="signs:sign_wall_wood", param2=4}},
+
+	-- Sign in the "fake gate" in the Oerkki guardroom.
+	{pos={x=-9164, y=4503, z=5782}, node={name="signs:sign_wall_wood", param2=2}},
 }
 
 local function rebuild_nodes()
@@ -236,6 +239,12 @@ local metadata = {
 		infotext = "Take care, don't rush!",
 		author = OWNERNAME,
 		text = "Take care, don't rush!"
+	}}},
+	-- Sign in the "fake gate" in the Oerkki guardroom.
+	{pos={x=-9164, y=4503, z=5782}, meta={fields={
+		infotext = "This is not the portal you are looking for.",
+		author = OWNERNAME,
+		text = "This is not the portal you are looking for."
 	}}},
 	-- Graveyard protector.
 	{pos={x=-9266, y=4570, z=5724}, meta={fields={
@@ -535,6 +544,18 @@ local function callback(blockpos, action, calls_remaining, param)
 			pos1 = {x=-9183, y=4498, z=5775},
 			pos2 = {x=-9159, y=4507, z=5789},
 			protectors = true,
+		},
+		{
+			schem = rc.modpath .. "/outback_guardroom_floor.mts",
+			pos1 = {x=-9178, y=4499, z=5777},
+			pos2 = {x=-9168, y=4499, z=5787},
+			protectors = false,
+		},
+		{
+			schem = rc.modpath .. "/outback_guardroom_lights.mts",
+			pos1 = {x=-9178, y=4500, z=5779},
+			pos2 = {x=-9170, y=4505, z=5785},
+			protectors = false,
 		},
 	}
 

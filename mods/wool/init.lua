@@ -40,7 +40,3 @@ for i = 1, #dyes, 1 do
 		recipe = {"dye:" .. name, "group:wool_block"},
 	}
 end
-
--- Backwards compatibility with jordach's 16-color wool mod
-minetest.register_alias("wool:dark_blue", "wool:blue")
-minetest.register_alias("wool:gold", "wool:yellow")

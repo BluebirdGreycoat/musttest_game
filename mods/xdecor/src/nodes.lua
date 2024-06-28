@@ -192,24 +192,28 @@ xdecor.register("cobweb", {
 
 -- Only permit colors the Minetest client understands.
 local curtain_colors = {
-	"red",
-	"blue",
-	"green",
-	"yellow",
-	"cyan",
-	"magenta",
-	"pink",
-	"black",
-	"white",
-	"grey",
-	"orange",
-	"brown",
-	"violet",
-	"gold",
-	"purple",
+	{color="red"},
+	{color="blue"},
+	{color="green"},
+	{color="yellow"},
+	{color="cyan"},
+	{color="magenta"},
+	{color="pink"},
+	{color="black"},
+	{color="white"},
+	{color="grey"},
+	{color="orange"},
+	{color="brown"},
+	{color="violet"},
+
+	-- Need manual recipes for these because there are no wools for these colors.
+	{color="gold", manual_recipe=true},
+	{color="purple", manual_recipe=true},
 }
 
-for _, c in pairs(curtain_colors) do
+for _, data in ipairs(curtain_colors) do
+	local c = data.color
+
 	xdecor.register("curtain_"..c, {
 		description = c:gsub("^%l", string.upper).." Curtain",
 		walkable = false,
@@ -253,14 +257,35 @@ for _, c in pairs(curtain_colors) do
 		end
 	})
 
-	minetest.register_craft({
-		output = "xdecor:curtain_" .. c .. " 4",
-		recipe = {
-			{"wool:" .. c, "wool:" .. c},
-			{"farming:cloth", "farming:cloth"},
-		}
-	})
+	if not data.manual_recipe then
+		minetest.register_craft({
+			output = "xdecor:curtain_" .. c .. " 4",
+			recipe = {
+				{"wool:" .. c, "wool:" .. c},
+				{"farming:cloth", "farming:cloth"},
+			}
+		})
+	end
 end
+
+-- Manual recipes for purple and gold curtains.
+minetest.register_craft({
+	output = "xdecor:curtain_gold",
+	type = "shapeless",
+	recipe = {
+		"xdecor:curtain_yellow",
+		"dye:orange",
+		"dye:brown",
+	}
+})
+minetest.register_craft({
+	output = "xdecor:curtain_purple",
+	type = "shapeless",
+	recipe = {
+		"xdecor:curtain_magenta",
+		"dye:blue",
+	}
+})
 
 xdecor.register("cushion", {
 	description = "Cushion",

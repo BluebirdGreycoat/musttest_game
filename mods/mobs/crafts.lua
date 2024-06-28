@@ -72,7 +72,7 @@ for k, v in ipairs(meat_types) do
 			if not spam.test_key(key) then
 				minetest.chat_send_player(pname,
 					"# Server: You eat " .. utility.get_short_desc(v.desc) .. "? Eww, gross!")
-				spam.mark_key(key, 60*5)
+				spam.mark_key(key, 60*60)
 			end
 		end
 

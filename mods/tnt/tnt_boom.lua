@@ -89,7 +89,7 @@ local function add_drop(drops, item)
 	end
 end
 
-local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destruct_queue, on_after_destruct_queue, fire_locations, ignore_protection, ignore_on_blast)
+local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destruct_queue, on_after_destruct_queue, fire_locations, ignore_protection, ignore_on_blast, pname)
 	-- This, right here, is probably what slows TNT code down the most.
   -- Perhaps we can avoid the issue by not allowing TNT to be placed within
   -- a hundred meters of a city block?
@@ -97,7 +97,7 @@ local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destr
   -- Idea: TNT blasts ignore protection, but TNT can only be placed away from
   -- cityblocks. Explosions from mobs and arrows respect protection as usual.
   if not ignore_protection then
-    if minetest.test_protection(npos, "") then
+    if minetest.test_protection(npos, pname) then
       return cid
     end
 	end
@@ -366,7 +366,7 @@ end
 
 
 -- Quickly check for protection in an area.
-local function check_protection(pos, radius)
+local function check_protection(pos, radius, pname)
 	-- How much beyond the radius to check for protections.
 	local e = 10
 
@@ -381,7 +381,7 @@ local function check_protection(pos, radius)
 	for x=minp.x, maxp.x, ss do
 		for y=minp.y, maxp.y, ss do
 			for z=minp.z, maxp.z, ss do
-				if check({x=x, y=y, z=z}, "") then
+				if check({x=x, y=y, z=z}, pname) then
 					-- Protections are present.
 					return true
 				end
@@ -395,7 +395,7 @@ end
 
 
 
-local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast)
+local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pname)
 	pos = vector_round(pos)
 	-- scan for adjacent TNT nodes first, and enlarge the explosion
 	local vm1 = VoxelManip()
@@ -443,7 +443,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast)
 	-- If no protections are present, we can optimize by skipping the protection
 	-- check for individual nodes. If we have a small radius, then don't bother.
 	if radius > 8 then
-		if not check_protection(pos, radius) then
+		if not check_protection(pos, radius, pname) then
 			ignore_protection = true
 		end
 	end
@@ -483,7 +483,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast)
 			if cid ~= c_air then
 				data[vi] = destroy(drops, p, cid, c_air, c_fire,
 					on_blast_queue, on_destruct_queue, on_after_destruct_queue,
-          fire_locations, ignore_protection, ignore_on_blast)
+          fire_locations, ignore_protection, ignore_on_blast, pname)
 			end
 		end
     

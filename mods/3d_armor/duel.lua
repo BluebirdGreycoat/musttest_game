@@ -115,7 +115,9 @@ local function announce_end(pname, reason)
 		reasonstr = "disjunction"
 	end
 
-	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel: " .. reasonstr .. "."
+	local sex = skins.get_gender_strings(pname)
+	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended " .. sex.his .. " participation in a duel: " .. reasonstr .. "."
+
 	minetest.chat_send_all(SHOUT_COLOR .. msg)
 	chat_logging.log_server_message(msg)
 end

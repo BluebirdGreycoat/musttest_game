@@ -100,8 +100,22 @@ local function announce_begin(pname)
 	chat_logging.log_server_message(msg)
 end
 
-local function announce_end(pname)
-	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel."
+local function announce_end(pname, reason)
+	local reasonstr = "no reason"
+
+	if reason == "jail" then
+		reasonstr = "sent to jail"
+	elseif reason == "death" then
+		reasonstr = "perished ... unfortunately"
+	elseif reason == "bounds" then
+		reasonstr = "out of bounds"
+	elseif reason == "far" then
+		reasonstr = "too far away"
+	elseif reason == "left"
+		reasonstr = "disjunction"
+	end
+
+	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended their participation in a duel: " .. reasonstr .. "."
 	minetest.chat_send_all(SHOUT_COLOR .. msg)
 	chat_logging.log_server_message(msg)
 end
@@ -168,7 +182,7 @@ function armor.check_bounds(pname)
 		-- Player left the game unexpectedly.
 		if not pref then
 			dueling_players[pname] = nil
-			announce_end(pname)
+			announce_end(pname, "left")
 			return
 		end
 
@@ -203,12 +217,12 @@ function armor.check_bounds(pname)
 
 		-- Arena distance checks.
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
-			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 50) then
+			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 100) then
 				-- Player is slightly out of bounds. Warn them to return.
 
 				if data.out_of_bounds >= 30 then
 					-- Player has been out of bounds for 30 seconds.
-					armor.end_duel(pref)
+					armor.end_duel(pref, "bounds")
 					return
 				end
 
@@ -216,7 +230,7 @@ function armor.check_bounds(pname)
 				minetest.chat_send_player(pname, "# Server: Return to the combat zone! (" .. (30 - data.out_of_bounds) .. ").")
 			else
 				-- Player has completely left the duel area (teleport?) End duel immediately.
-				armor.end_duel(pref)
+				armor.end_duel(pref, "far")
 				return
 			end
 		elseif vector_distance(data.start_pos, player_pos) <= DUEL_MAX_RADIUS and in_arena then
@@ -329,7 +343,7 @@ function armor.add_dueling_player(player, duel_pos)
 end
 
 -- End current duel if one in progress.
-function armor.end_duel(player)
+function armor.end_duel(player, reason)
 	local pname = player:get_player_name()
 	if dueling_players[pname] then
 		local data = dueling_players[pname]
@@ -349,7 +363,7 @@ function armor.end_duel(player)
 		data.hud = nil
 		dueling_players[pname] = nil
 
-		announce_end(pname)
+		announce_end(pname, reason)
 		chat_core.alert_player_sound(pname)
 	end
 end

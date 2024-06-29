@@ -109,10 +109,10 @@ function countdown.step(data)
 		end
 
 		-- Don't speak to empty room.
-		--if #(get_non_admin_players()) > 0 then
+		if #(get_non_admin_players()) > 0 then
 			chat_logging.log_server_message(message)
 			minetest.chat_send_all(color .. message)
-		--end
+		end
 	end
 
 	-- Wait for next check.

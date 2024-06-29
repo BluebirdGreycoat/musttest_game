@@ -111,7 +111,7 @@ local function announce_end(pname, reason)
 		reasonstr = "out of bounds"
 	elseif reason == "far" then
 		reasonstr = "too far away"
-	elseif reason == "left"
+	elseif reason == "left" then
 		reasonstr = "disjunction"
 	end
 

@@ -62,6 +62,7 @@ function admin_tnt.on_timer(pos, elapsed)
 				damage_radius = 6,
 				disable_drops = true,
 				name = keyname, -- Only destroy stuff owned by this player, or no-one.
+				protection_name = keyname,
 			})
 		end)
 	end

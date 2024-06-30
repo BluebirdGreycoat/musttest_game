@@ -399,10 +399,9 @@ function protector.punish_player(pos, pname)
 	end
 
 	-- hurt player if protection violated
-	if protector.hurt > 0 then
+	if protector.hurt > 0 and not armor.player_in_duel(pname) then
 		local hp = player:get_hp()
 		if hp > 0 then -- Avoid writing message twice.
-			-- Bypass armor processing.
 			player:set_hp(hp - (protector.hurt*500))
 
 			if player:get_hp() <= 0 then

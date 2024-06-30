@@ -11,6 +11,13 @@ armor.dueling_players = armor.dueling_players or {}
 local dueling_players = armor.dueling_players
 local ACTIVE_DUEL_PUNCH = nil
 
+-- Query whether player is currently in a duel.
+function armor.player_in_duel(pname)
+	if dueling_players[pname] then
+		return true
+	end
+end
+
 -- For best duels, these numbers should be the same.
 -- This is just a max size for an arena. You can make smaller, just don't mark
 -- the whole area as part of the arena. Minimum size is 1 city block.

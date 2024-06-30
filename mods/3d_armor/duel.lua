@@ -672,11 +672,12 @@ function armor.handle_pvp_arena_death(hp_change, player)
 	if dueling_players[pname] then
 		debug_print('dead player is dueling: ' .. pname)
 		local duel_info = dueling_players[pname]
+		local recently_in_arena = (duel_info.out_of_bounds > 0)
 
 		-- PvP arena must be marked and protected.
-		if city_block:in_pvp_arena(player_pos) then
+		if recently_in_arena or city_block:in_pvp_arena(player_pos) then
 			debug_print('in pvp arena: ' .. pname)
-			if minetest.test_protection(player_pos, "") then
+			if recently_in_arena or minetest.test_protection(player_pos, "") then
 				debug_print('is_protected: ' .. pname)
 
 				local opponents = armor.get_likely_opponents(player, duel_info.start_pos)

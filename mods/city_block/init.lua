@@ -85,20 +85,55 @@ function city_block.on_punch(pos, node, puncher, pt)
 	-- Duel activation.
 	-- Can be done even if player doesn't have access to protection.
 	if wielded:get_name() == "default:gold_ingot" and wielded:get_count() > 0 then
-		local block = city_block.get_block(pos)
-		if block.pvp_arena then
-			if armor.is_valid_arena(pos) then
-				if armor.add_dueling_player(puncher, pos) then
-					wielded:take_item()
-					puncher:set_wielded_item(wielded)
+		local targetpos = pos
+
+		-- Check for config device, and try to use that.
+		-- Note: configured target pos might not be valid.
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
+		local inv = meta:get_inventory()
+		local config = inv:get_stack("config", 1)
+
+		if config:get_name() == "cfg:dev" and config:get_count() == 1 then
+			local cmeta = config:get_meta()
+			local s1 = cmeta:get_string("p1")
+			local p1 = minetest.string_to_pos(s1)
+			if s1 and s1 ~= "" and p1 then
+				p1 = vector_round(p1)
+				if vector_distance(p1, pos) <= armor.DUEL_MAX_RADIUS then
+					targetpos = p1
 				else
-					if armor.dueling_players[pname] then
-						minetest.chat_send_player(pname, "# Server: You are already in a duel!")
-					end
+					minetest.chat_send_player(pname, "# Server: Target too far.")
+					return
 				end
 			else
-				minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and at least 2 public beds.")
+				minetest.chat_send_player(pname, "# Server: Invalid configuration.")
+				return
 			end
+		end
+
+		local block = city_block.get_block(targetpos)
+		if block and block.pvp_arena then
+			local target_meta = minetest.get_meta(targetpos)
+			local target_owner = target_meta:get_string("owner")
+			if target_owner == owner then
+				if armor.is_valid_arena(targetpos) then
+					if armor.add_dueling_player(puncher, targetpos) then
+						wielded:take_item()
+						puncher:set_wielded_item(wielded)
+					else
+						if armor.dueling_players[pname] then
+							minetest.chat_send_player(pname, "# Server: You are already in a duel!")
+						end
+					end
+				else
+					minetest.chat_send_player(pname, "# Server: This is not a working dueling arena! You need city blocks, protection, and at least 2 public beds.")
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: Invalid configuration.")
+			end
+		else
+			minetest.chat_send_player(pname, "# Server: Target is not an arena marker.")
 		end
 	end
 end

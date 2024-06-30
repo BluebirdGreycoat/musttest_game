@@ -6,10 +6,14 @@ guicolors.modpath = minetest.get_modpath("guicolors")
 
 
 
-function default.get_hotbar_bg(x,y)
+function default.get_hotbar_bg(x, y, real)
 	local out = ""
+	local pad = 0
+	if real then
+		pad = 0.25
+	end
 	for i=0,7,1 do
-		out = out .. "image[" .. x+i .. "," .. y .. ";1,1;gui_hb_bg.png]"
+		out = out .. "image[" .. x+i+(pad*i) .. "," .. y .. ";1,1;gui_hb_bg.png]"
 	end
 	return out
 end

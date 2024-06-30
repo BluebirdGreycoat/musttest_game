@@ -14,6 +14,7 @@ local function scepter_revive_player(tref, tname, pname, pos)
 
   local hp_max = pova.get_active_modifier(tref, "properties").hp_max
   tref:set_hp(hp_max, {reason="revive"})
+  tref:get_meta():set_int("abyss_return_midfeld", 0)
 
   -- DON'T run the bed respawn code, we want to keep player in place.
   bones.nohack.on_respawnplayer(tref)

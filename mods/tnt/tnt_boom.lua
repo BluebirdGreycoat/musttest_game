@@ -395,7 +395,7 @@ end
 
 
 
-local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pname)
+local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pname, protection_name)
 	pos = vector_round(pos)
 	-- scan for adjacent TNT nodes first, and enlarge the explosion
 	local vm1 = VoxelManip()
@@ -443,7 +443,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	-- If no protections are present, we can optimize by skipping the protection
 	-- check for individual nodes. If we have a small radius, then don't bother.
 	if radius > 8 then
-		if not check_protection(pos, radius, pname) then
+		if not check_protection(pos, radius, protection_name) then
 			ignore_protection = true
 		end
 	end
@@ -483,7 +483,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 			if cid ~= c_air then
 				data[vi] = destroy(drops, p, cid, c_air, c_fire,
 					on_blast_queue, on_destruct_queue, on_after_destruct_queue,
-          fire_locations, ignore_protection, ignore_on_blast, pname)
+          fire_locations, ignore_protection, ignore_on_blast, protection_name)
 			end
 		end
     
@@ -579,6 +579,9 @@ function tnt.boom_impl(pos, def)
 	if def.name and gdac.player_is_admin(def.name) then
 		def.name = nil
 	end
+	if def.protection_name and gdac.player_is_admin(def.protection_name) then
+		def.protection_name = nil
+	end
 	
 	if not minetest.test_protection(pos, "") then
 		local node = minetest.get_node(pos)
@@ -588,7 +591,9 @@ function tnt.boom_impl(pos, def)
 		end
 	end
 	
-	local drops, radius = tnt_explode(pos, def.radius, def.ignore_protection, def.ignore_on_blast, def.name or "")
+	local drops, radius = tnt_explode(pos, def.radius, def.ignore_protection,
+		def.ignore_on_blast, (def.name or ""), (def.protection_name or ""))
+
 	-- append entity drops
 	local damage_radius = (radius / def.radius) * def.damage_radius
 	entity_physics(pos, damage_radius, drops, def)

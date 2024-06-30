@@ -178,6 +178,9 @@ function armor.dueling_hud_update(player, duel_data)
 	if duel_data.respawn_countdown then
 		local text = "Respawn in: " .. duel_data.respawn_countdown
 		player:hud_change(duel_data.hud[6], "text", text)
+	elseif duel_data.out_of_bounds and duel_data.out_of_bounds > 0 then
+		local text = "Return to the combat zone! (" .. (30 - duel_data.out_of_bounds) .. ")"
+		player:hud_change(duel_data.hud[6], "text", text)
 	else
 		-- Hide this element.
 		player:hud_change(duel_data.hud[6], "text", "")
@@ -222,9 +225,6 @@ function armor.check_bounds(pname)
 			end
 		end
 
-		-- HUD update.
-		armor.dueling_hud_update(pref, data)
-
 		-- Arena distance checks.
 		if vector_distance(data.start_pos, player_pos) > DUEL_MAX_RADIUS or not in_arena then
 			if vector_distance(data.start_pos, player_pos) < (DUEL_MAX_RADIUS + 100) then
@@ -237,7 +237,6 @@ function armor.check_bounds(pname)
 				end
 
 				data.out_of_bounds = data.out_of_bounds + 1
-				minetest.chat_send_player(pname, "# Server: Return to the combat zone! (" .. (30 - data.out_of_bounds) .. ").")
 			else
 				-- Player has completely left the duel area (teleport?) End duel immediately.
 				armor.end_duel(pref, "far")
@@ -246,6 +245,9 @@ function armor.check_bounds(pname)
 		elseif vector_distance(data.start_pos, player_pos) <= DUEL_MAX_RADIUS and in_arena then
 			data.out_of_bounds = 0
 		end
+
+		-- HUD update.
+		armor.dueling_hud_update(pref, data)
 
 		-- Check again.
 		minetest.after(1, function() armor.check_bounds(pname) end)
@@ -330,7 +332,7 @@ function armor.add_dueling_player(player, duel_pos)
 	-- The "Respawn" HUD counter. Shown only when dead and busy respawning.
 	local hud6 = player:hud_add({
 		type = "text",
-		position = {x=0.50, y=0.50},
+		position = {x=0.50, y=0.40},
 		alignment = {x=0, y=0},
 		text = "",
 		number = 0xFFFFFF,

@@ -39,6 +39,7 @@ dofile(city_block.modpath .. "/queries.lua")
 dofile(city_block.modpath .. "/functions.lua")
 dofile(city_block.modpath .. "/file.lua")
 dofile(city_block.modpath .. "/pvp.lua")
+dofile(city_block.modpath .. "/inv.lua")
 
 
 
@@ -170,6 +171,30 @@ if not city_block.run_once then
 
 		on_punch = function(...)
 			return city_block.on_punch(...)
+		end,
+
+		allow_metadata_inventory_move = function(...)
+			return city_block.allow_metadata_inventory_move(...)
+		end,
+
+		allow_metadata_inventory_put = function(...)
+			return city_block.allow_metadata_inventory_put(...)
+		end,
+
+		allow_metadata_inventory_take = function(...)
+			return city_block.allow_metadata_inventory_take(...)
+		end,
+
+		on_metadata_inventory_move = function(...)
+			return city_block.on_metadata_inventory_move(...)
+		end,
+
+		on_metadata_inventory_put = function(...)
+			return city_block.on_metadata_inventory_put(...)
+		end,
+
+		on_metadata_inventory_take = function(...)
+			return city_block.on_metadata_inventory_take(...)
 		end,
 	})
 

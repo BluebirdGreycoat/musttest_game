@@ -87,7 +87,7 @@ mobs.register_mob("griefer:griefer", {
 mobs.register_spawn_abm({
   name = "griefer:griefer",
   nodes = {"griefer:grieferstone"},
-  interval = 15,
+  interval = 3,
   chance = 30,
 
   -- Warning, do NOT change! The cursed-stone configuration in the Outback's gateroom depends on this.

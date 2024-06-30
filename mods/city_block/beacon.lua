@@ -1,4 +1,5 @@
 
+-- HUD markers for select city blocks.
 city_block.beacons = city_block.beacons or {}
 
 local vector_round = vector.round

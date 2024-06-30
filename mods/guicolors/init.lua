@@ -25,7 +25,7 @@ default.formspec.get_slot_colors = function()
 	return colors
 end
 default.formspec.get_form_image = function()
-	local image = "background[5,5;1,1;gui_formbg.png;true]"
+	local image = "background9[5,5;1,1;gui_formbg.png;true;100]"
 	return image
 end
 

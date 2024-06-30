@@ -26,7 +26,7 @@ local OPPONENT_DISTANCE = 256
 local DUEL_MAX_RADIUS = 256
 armor.DUEL_MAX_RADIUS = DUEL_MAX_RADIUS
 
-local ENV_TIME_AFTER_PUNCH = 5 -- Time from last punch env damage is accounted.
+local ENV_TIME_AFTER_PUNCH = 15 -- Time from last punch env damage is accounted.
 local SPAWN_SAFE_ZONE = 5
 local RESPAWN_TIME = 10
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")

@@ -22,6 +22,7 @@ local math_random = math.random
 
 -- HUD markers for select city blocks.
 dofile(city_block.modpath .. "/beacon.lua")
+dofile(city_block.modpath .. "/formspec.lua")
 
 -- Cityblocks take 6 hours to become "active".
 -- This prevents certain classes of exploits (such as using them offensively
@@ -589,34 +590,6 @@ end
 
 
 
-function city_block.create_formspec(pos, pname, blockdata)
-	local pvp = "false"
-	if blockdata.pvp_arena then
-		pvp = "true"
-	end
-
-	local hud = "false"
-	if blockdata.hud_beacon then
-		hud = "true"
-	end
-
-	local formspec = "size[4.1,3.0]" ..
-		default.gui_bg ..
-		default.gui_bg_img ..
-		default.gui_slots ..
-		"label[0,0;Enter city/area region name:]" ..
-		"field[0.30,0.75;4,1;CITYNAME;;]" ..
-		"button_exit[0,1.30;2,1;OK;Confirm]" ..
-		"button_exit[2,1.30;2,1;CANCEL;Abort]" ..
-		"field_close_on_enter[CITYNAME;true]" ..
-		"checkbox[0,2.0;pvp_arena;Mark Dueling Arena;" .. pvp .. "]" ..
-		"checkbox[0,2.4;hud_beacon;Signal Nearby Keys;" .. hud .. "]"
-
-	return formspec
-end
-
-
-
 function check_cityname(cityname)
   return not string.match(cityname, "[^%a%s]")
 end
@@ -653,9 +626,14 @@ function city_block.on_receive_fields(player, formname, fields)
 
 		-- Ensure city name is valid.
 		local is_valid = true
+
+		-- Empty area name means erase.
+		--[[
 		if #area_name == 0 then
 			is_valid = false
 		end
+		--]]
+
 		if #area_name > 20 then
 			is_valid = false
 		end
@@ -684,7 +662,13 @@ function city_block.on_receive_fields(player, formname, fields)
 		-- Write out.
 		meta:set_string("cityname", area_name)
 		meta:set_string("infotext", city_block.get_infotext(pos))
-		block.area_name = area_name
+
+		if #area_name > 0 then
+			block.area_name = area_name
+		else
+			block.area_name = nil
+		end
+
 		city_block:save()
 	---[[
 	elseif fields.pvp_arena == "true" then

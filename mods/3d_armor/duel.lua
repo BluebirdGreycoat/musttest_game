@@ -375,6 +375,7 @@ function armor.end_duel(player, reason)
 		data.hud = nil
 		dueling_players[pname] = nil
 
+		set_visible(player, true)
 		announce_end(pname, reason)
 		chat_core.alert_player_sound(pname)
 	end

@@ -751,6 +751,11 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	local damage_type = armor.get_damage_type_from_reason(reason)
 	local ignore_wear = armor.armor_wear_ignores_damage(damage_type)
 
+	-- Disable armor wear if player is dueling.
+	if armor.player_in_duel(pname) then
+		ignore_wear = true
+	end
+
 	-- Test code to check that I know what I'm doing.
 	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_type)
 	--minetest.log('scaled hp change: ' .. hp_change)

@@ -76,6 +76,7 @@ minetest.register_entity("cobble_bomb:cobblebomb", {
 			ignore_protection = false,
 			disable_drops = false,
 			ignore_on_blast = false,
+			name = self.owner,
 			from_arrow = true,
 		}
 		tnt.boom(pos, def)

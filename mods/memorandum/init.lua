@@ -70,6 +70,16 @@ memorandum.extract_metainfo = function(text)
 		data = data or {}
 		data.message = data.message or ""
 		data.author = data.author or ""
+		data.iv = data.iv or ""
+
+		-- If we have an IV, the data is encrypted.
+		if data.iv ~= "" then
+			local plain, err = ossl.decrypt(data.iv, data.message)
+			if plain then
+				data.message = plain
+				data.iv = nil
+			end
+		end
 
 		return data
 	else
@@ -100,7 +110,17 @@ end
 memorandum.insert_metainfo = function(meta)
 	local message = meta:get_string("text") or ""
 	local author = meta:get_string("signed") or ""
-	local serialized = minetest.write_json({message=message, author=author})
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, message)
+	if enc then
+		message = enc
+	else
+		iv = nil
+	end
+
+	local serialized = minetest.write_json({message=message, author=author, iv=iv})
+
 	-- Tag string as JSON data. The now-depreciated data format can never have this string at the end.
 	-- This means we can use it to determine if data is in the old format or the new format, when loading.
 	serialized = serialized .. ":JSON"
@@ -116,10 +136,18 @@ memorandum.compose_metadata = function(data)
   local message = data.text or ""
   local author = data.signed or ""
 
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, message)
+	if enc then
+		message = enc
+	else
+		iv = nil
+	end
+
   message = message:sub(1, MAX_LETTER_SIZE)
   author = author:sub(1, MAX_AUTHOR_SIZE)
 
-  local serialized = minetest.write_json({message=message, author=author})
+  local serialized = minetest.write_json({message=message, author=author, iv=iv})
   serialized = serialized .. ":JSON"
   return serialized
 end

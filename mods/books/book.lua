@@ -25,6 +25,15 @@ function books.book_on_use(itemstack, user)
 
 	local data = meta:to_table().fields
 
+	-- Decrypt if needed.
+	if data.iv and data.iv ~= "" then
+		local enc = ossl.decrypt(data.iv, data.text)
+		if enc then
+			data.text = enc
+			data.iv = nil
+		end
+	end
+
 	if data.owner then
 		title = data.title
 		text = data.text
@@ -101,6 +110,7 @@ books.on_player_receive_fields = function(player, formname, fields)
 		end
 
 		if not data then data = {} end
+
 		data.title = fields.title:sub(1, MAX_TITLE_SIZE)
 		data.owner = player:get_player_name()
 		local short_title = data.title
@@ -112,6 +122,15 @@ books.on_player_receive_fields = function(player, formname, fields)
 		data.text = fields.text:sub(1, MAX_TEXT_SIZE)
 		data.page = 1
 		data.page_max = math.ceil((#data.text:gsub("[^\n]", "") + 1) / lpp)
+
+		-- Encrypt the new text.
+		data.iv = ossl.geniv()
+		local enc = ossl.encrypt(data.iv, data.text)
+		if enc then
+			data.text = enc
+		else
+			data.iv = nil
+		end
 
 		if new_stack then
 			new_stack:get_meta():from_table({ fields = data })
@@ -178,8 +197,24 @@ books.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 		return
 	end
 	local copymeta = original:get_meta():to_table()
+
+	-- Re-encrypt the data with a different IV.
+	if copymeta.fields and copymeta.fields.iv and copymeta.fields.iv ~= "" then
+		local newiv = ossl.geniv()
+		local enc
+		local dec = ossl.decrypt(copymeta.fields.iv, copymeta.fields.text)
+		if dec then
+			enc = ossl.encrypt(newiv, dec)
+		end
+		if enc then
+			copymeta.fields.iv = newiv
+			copymeta.fields.text = enc
+		end
+	end
+
 	-- copy of the book held by player's mouse cursor
 	itemstack:get_meta():from_table(copymeta)
+
 	-- put the book with metadata back in the craft grid
 	craft_inv:set_stack("craft", index, original)
 end

@@ -6,6 +6,13 @@ local THEKEY = ossl.default_key
 ossl.default_key = nil
 assert(THEKEY and #THEKEY == 16)
 
+-- Generate a random IV.
+function ossl.geniv()
+	local s = ossl.randlib.bytes(16)
+	assert(#s == 16)
+	return s
+end
+
 -- Input IV + plaintext, get encrypted binary; or nil + errormsg.
 -- The IV does not need to be secret and should be stored with the binary.
 function ossl.encrypt(iv, text)

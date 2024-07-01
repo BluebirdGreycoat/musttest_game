@@ -47,5 +47,8 @@ if not ossl.registered then
 	ossl.cipher = ossl.lib.new(ossl.CIPHER_NAME)
 	assert(ossl.cipher)
 
+	ossl.randlib = require("openssl.rand")
+	assert(ossl.randlib)
+
 	ossl.registered = true
 end

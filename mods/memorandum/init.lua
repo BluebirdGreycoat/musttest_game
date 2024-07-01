@@ -110,13 +110,17 @@ end
 memorandum.insert_metainfo = function(meta)
 	local message = meta:get_string("text") or ""
 	local author = meta:get_string("signed") or ""
+	local iv = meta:get_string("iv") or ""
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, message)
-	if enc then
-		message = enc
-	else
-		iv = nil
+	-- Encrypt the message only if needed.
+	if iv == "" then
+		iv = ossl.geniv()
+		local enc = ossl.encrypt(iv, message)
+		if enc then
+			message = enc
+		else
+			iv = nil
+		end
 	end
 
 	local serialized = minetest.write_json({message=message, author=author, iv=iv})
@@ -136,6 +140,10 @@ memorandum.compose_metadata = function(data)
   local message = data.text or ""
   local author = data.signed or ""
 
+  -- Clamp data sizes BEFORE encryption.
+  message = message:sub(1, MAX_LETTER_SIZE)
+  author = author:sub(1, MAX_AUTHOR_SIZE)
+
 	local iv = ossl.geniv()
 	local enc = ossl.encrypt(iv, message)
 	if enc then
@@ -143,9 +151,6 @@ memorandum.compose_metadata = function(data)
 	else
 		iv = nil
 	end
-
-  message = message:sub(1, MAX_LETTER_SIZE)
-  author = author:sub(1, MAX_AUTHOR_SIZE)
 
   local serialized = minetest.write_json({message=message, author=author, iv=iv})
   serialized = serialized .. ":JSON"
@@ -158,11 +163,23 @@ end
 memorandum.on_rightclick = function(pos, node, clicker, itemstack, pt)
 	local pname = clicker:get_player_name()
 	local meta = minetest.get_meta(pos)
+
 	local info = {
 		text = meta:get_string("text"),
 		signed = meta:get_string("signed"),
+		iv = meta:get_string("iv"),
 		edit = meta:get_int("edit"),
 	}
+
+	-- Decrypt if needed.
+	if info.iv and info.iv ~= "" then
+		local enc = ossl.decrypt(info.iv, info.text)
+		if enc then
+			info.text = enc
+			info.iv = nil
+		end
+	end
+
 	local formspec = memorandum.get_formspec(info)
 	local tag = minetest.pos_to_string(pos)
 	if memorandum.check_explosive_runes(pname, pos, info.signed, info.text) then
@@ -329,13 +346,26 @@ memorandum.on_letter_empty_input = function(pos, fields, sender)
 	local facedir = minetest.get_node(pos).param2
 	minetest.add_node(pos, {name="memorandum:letter_written", param2=facedir})
 
+	-- Clamp data sizes BEFORE encryption.
+	local text = fields.text:sub(1, MAX_LETTER_SIZE)
+	local author = fields.signed:sub(1, MAX_AUTHOR_SIZE)
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, text)
+	if enc then
+		text = enc
+	else
+		iv = nil
+	end
+
 	local meta = minetest.get_meta(pos)
-	meta:set_string("text", fields.text:sub(1, MAX_LETTER_SIZE))
-	meta:set_string("signed", fields.signed:sub(1, MAX_AUTHOR_SIZE))
+	meta:set_string("text", text)
+	meta:set_string("signed", author)
+	meta:set_string("iv", iv)
 	meta:set_string("owner", sender:get_player_name()) -- Record REAL author.
 	meta:set_int("edit", 0)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
-	meta:mark_as_private({"text", "signed", "edit", "owner"})
+	meta:mark_as_private({"text", "signed", "edit", "owner", "iv"})
 end
 
 
@@ -393,10 +423,23 @@ memorandum.on_letter_written_input = function(pos, fields, sender)
 		meta:set_int("edit", 0)
 	end
 
-	meta:set_string("text", fields.text:sub(1, MAX_LETTER_SIZE))
-	meta:set_string("signed", fields.signed:sub(1, MAX_AUTHOR_SIZE))
+	-- Clamp data sizes BEFORE encryption.
+	local text = fields.text:sub(1, MAX_LETTER_SIZE)
+	local author = fields.signed:sub(1, MAX_AUTHOR_SIZE)
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, text)
+	if enc then
+		text = enc
+	else
+		iv = nil
+	end
+
+	meta:set_string("text", text)
+	meta:set_string("signed", author)
+	meta:set_string("iv", iv)
 	meta:set_string("owner", sendername)
-	meta:mark_as_private({"text", "signed", "edit"})
+	meta:mark_as_private({"text", "signed", "edit", "owner", "iv"})
 
 	minetest.chat_send_player(sendername, "# Server: Memorandum successfully edited.")
 end
@@ -482,13 +525,27 @@ memorandum.on_letter_item_place = function(itemstack, placer, pointed_thing)
 		minetest.add_node(above, {name="memorandum:letter_written", param2=facedir})
 	end
 
-	local text = itemstack:get_metadata()
-	local data = memorandum.extract_metainfo(text)
+	local serialized = itemstack:get_metadata()
+	local data = memorandum.extract_metainfo(serialized)
+
+	-- Clamp data sizes BEFORE encryption.
+	local text = data.message:sub(1, MAX_LETTER_SIZE)
+	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, text)
+	if enc then
+		text = enc
+	else
+		iv = nil
+	end
+
 	local meta = minetest.get_meta(above)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
-	meta:set_string("text", data.message)
-	meta:set_string("signed", data.author)
-	meta:mark_as_private({"text", "signed"})
+	meta:set_string("text", text)
+	meta:set_string("signed", author)
+	meta:set_string("iv", iv)
+	meta:mark_as_private({"text", "signed", "iv"})
 
 	itemstack:take_item()
 	return itemstack
@@ -587,13 +644,27 @@ memorandum.on_message_use = function(itemstack, user, pointed_thing)
 
 	minetest.add_node(pos, {name="memorandum:letter_written", param2=math_random(0, 3)})
 
-	local text = itemstack:get_metadata()
-	local data = memorandum.extract_metainfo(text)
+	local serialized = itemstack:get_metadata()
+	local data = memorandum.extract_metainfo(serialized)
+
+	-- Clamp data sizes BEFORE encryption.
+	local text = data.message:sub(1, MAX_LETTER_SIZE)
+	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, text)
+	if enc then
+		text = enc
+	else
+		iv = nil
+	end
+
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
-	meta:set_string("text", data.message)
-	meta:set_string("signed", data.author)
-	meta:mark_as_private({"text", "signed"})
+	meta:set_string("text", text)
+	meta:set_string("signed", author)
+	meta:set_string("iv", iv)
+	meta:mark_as_private({"text", "signed", "iv", "signed"})
 
 	itemstack:take_item()
 	user:get_inventory():add_item("main", {name="vessels:glass_bottle", count=1, wear=0, metadata=""})
@@ -629,13 +700,27 @@ memorandum.on_message_place = function(itemstack, placer, pointed_thing)
 
 	minetest.set_node(pos, {name="memorandum:message"})
 
-	local text = itemstack:get_metadata()
-	local data = memorandum.extract_metainfo(text)
+	local serialized = itemstack:get_metadata()
+	local data = memorandum.extract_metainfo(serialized)
+
+	-- Clamp data sizes BEFORE encryption.
+	local text = data.message:sub(1, MAX_LETTER_SIZE)
+	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
+
+	local iv = ossl.geniv()
+	local enc = ossl.encrypt(iv, text)
+	if enc then
+		text = enc
+	else
+		iv = nil
+	end
+
 	local meta = minetest.get_meta(pos)
-	meta:set_string("text", data.message)
-	meta:set_string("signed", data.author)
+	meta:set_string("text", text)
+	meta:set_string("signed", author)
+	meta:set_string("iv", iv)
 	meta:set_string("infotext", "Bottle With Message")
-	meta:mark_as_private({"text", "signed"})
+	meta:mark_as_private({"text", "signed", "iv"})
 
 	dirtspread.on_environment(pos)
 	droplift.notify(pos)
@@ -725,7 +810,10 @@ if not memorandum.run_once then
 			type = "fixed",
 			fixed = collisionbox_sheet,
 		},
-		groups = utility.dig_groups("item", {not_in_creative_inventory=1}),
+
+		-- Note: must use 'bigitem' dig group because instant-dig interferes with
+		-- memorandum functionality.
+		groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 		sounds = default.node_sound_leaves_defaults(),
 
 		on_construct = function(...) return memorandum.on_letter_empty_initialize(...) end,
@@ -760,7 +848,10 @@ if not memorandum.run_once then
 			type = "fixed",
 			fixed = collisionbox_sheet
 		},
-		groups = utility.dig_groups("item", {not_in_creative_inventory=1}),
+
+		-- Note: must use 'bigitem' dig group because instant-dig interferes with
+		-- memorandum functionality.
+		groups = utility.dig_groups("bigitem", {not_in_creative_inventory=1}),
 		sounds = default.node_sound_leaves_defaults(),
 
 		on_rightclick = function(...) return memorandum.on_rightclick(...) end,
@@ -792,7 +883,10 @@ if not memorandum.run_once then
 		},
 		stack_max = 1,
 		walkable = false,
-		groups = utility.dig_groups("item", {vessel=1, attached_node=1, not_in_creative_inventory=1}),
+
+		-- Note: must use 'bigitem' dig group because instant-dig interferes with
+		-- memorandum functionality.
+		groups = utility.dig_groups("bigitem", {vessel=1, attached_node=1, not_in_creative_inventory=1}),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 		--sounds = default.node_sound_glass_defaults(),
 

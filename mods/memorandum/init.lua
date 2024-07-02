@@ -914,34 +914,10 @@ if not memorandum.run_once then
 		on_dig = function(...) return memorandum.on_message_dig(...) end,
 	})
 
-	if minetest.get_modpath("farming") ~= nil then
-		minetest.register_craft({
-			type = "shapeless",
-			output = "memorandum:eraser",
-			recipe = {"farming:bread"},
-		})
-	end
-	if minetest.get_modpath("candles") ~= nil then
-		minetest.register_craft({
-			type = "shapeless",
-			output = "memorandum:eraser",
-			recipe = {"candles:wax"},
-		})
-	end
-	if minetest.get_modpath("bees") ~= nil then
-		minetest.register_craft({
-			type = "shapeless",
-			output = "memorandum:eraser",
-			recipe = {"bees:honey_comb"},
-		})
-	end
-	if minetest.get_modpath("technic") ~= nil then
-		minetest.register_craft({
-			type = "shapeless",
-			output = "memorandum:eraser",
-			recipe = {"technic:raw_latex"},
-		})
-	end
+	minetest.register_craft({
+		output = "memorandum:eraser",
+		recipe = {{"rubber:raw_latex", "plastic:raw_paraffin", "rubber:raw_latex"}},
+	})
 
 	minetest.register_on_player_receive_fields(function(...)
 		return memorandum.on_player_receive_fields(...)

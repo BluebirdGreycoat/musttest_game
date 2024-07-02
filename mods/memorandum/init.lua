@@ -73,8 +73,14 @@ memorandum.extract_metainfo = function(text)
 		data.iv = data.iv or ""
 
 		-- If we have an IV, the data is encrypted.
-		if data.iv ~= "" then
-			local plain, err = ossl.decrypt(data.iv, data.message)
+		-- This complicated check is because the IV can be a number or a string.
+		if data.iv and (data.iv == "1" or data.iv == 1 or #tostring(data.iv) >= 16) then
+			local plain, err
+			if #tostring(data.iv) >= 16 then
+				plain, err = ossl.decrypt(data.iv, data.message)
+			else
+				plain, err = ossl.decrypt(data.message)
+			end
 			if plain then
 				data.message = plain
 				data.iv = nil
@@ -113,13 +119,13 @@ memorandum.insert_metainfo = function(meta)
 	local iv = meta:get_string("iv") or ""
 
 	-- Encrypt the message only if needed.
-	if iv == "" then
-		iv = ossl.geniv()
-		local enc = ossl.encrypt(iv, message)
+	if iv and (iv == "0" or iv == "") then
+		local enc = ossl.encrypt(message)
 		if enc then
 			message = enc
+			iv = 1
 		else
-			iv = nil
+			iv = 0
 		end
 	end
 
@@ -144,12 +150,12 @@ memorandum.compose_metadata = function(data)
   message = message:sub(1, MAX_LETTER_SIZE)
   author = author:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, message)
+  local iv = 1
+	local enc = ossl.encrypt(message)
 	if enc then
 		message = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
   local serialized = minetest.write_json({message=message, author=author, iv=iv})
@@ -172,8 +178,13 @@ memorandum.on_rightclick = function(pos, node, clicker, itemstack, pt)
 	}
 
 	-- Decrypt if needed.
-	if info.iv and info.iv ~= "" then
-		local enc = ossl.decrypt(info.iv, info.text)
+	if info.iv and (info.iv == "1" or #info.iv >= 16) then
+		local enc
+		if #info.iv >= 16 then
+			enc = ossl.decrypt(info.iv, info.text)
+		else
+			enc = ossl.decrypt(info.text)
+		end
 		if enc then
 			info.text = enc
 			info.iv = nil
@@ -350,18 +361,18 @@ memorandum.on_letter_empty_input = function(pos, fields, sender)
 	local text = fields.text:sub(1, MAX_LETTER_SIZE)
 	local author = fields.signed:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, text)
+	local iv = 1
+	local enc = ossl.encrypt(text)
 	if enc then
 		text = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
-	meta:set_string("iv", iv)
+	meta:set_int("iv", iv)
 	meta:set_string("owner", sender:get_player_name()) -- Record REAL author.
 	meta:set_int("edit", 0)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
@@ -427,17 +438,17 @@ memorandum.on_letter_written_input = function(pos, fields, sender)
 	local text = fields.text:sub(1, MAX_LETTER_SIZE)
 	local author = fields.signed:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, text)
+	local iv = 1
+	local enc = ossl.encrypt(text)
 	if enc then
 		text = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
-	meta:set_string("iv", iv)
+	meta:set_int("iv", iv)
 	meta:set_string("owner", sendername)
 	meta:mark_as_private({"text", "signed", "edit", "owner", "iv"})
 
@@ -532,19 +543,19 @@ memorandum.on_letter_item_place = function(itemstack, placer, pointed_thing)
 	local text = data.message:sub(1, MAX_LETTER_SIZE)
 	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, text)
+	local iv = 1
+	local enc = ossl.encrypt(text)
 	if enc then
 		text = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
 	local meta = minetest.get_meta(above)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
-	meta:set_string("iv", iv)
+	meta:set_int("iv", iv)
 	meta:mark_as_private({"text", "signed", "iv"})
 
 	itemstack:take_item()
@@ -651,19 +662,19 @@ memorandum.on_message_use = function(itemstack, user, pointed_thing)
 	local text = data.message:sub(1, MAX_LETTER_SIZE)
 	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, text)
+	local iv = 1
+	local enc = ossl.encrypt(text)
 	if enc then
 		text = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext", "A Sheet of Paper (Written)")
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
-	meta:set_string("iv", iv)
+	meta:set_int("iv", iv)
 	meta:mark_as_private({"text", "signed", "iv", "signed"})
 
 	itemstack:take_item()
@@ -707,18 +718,18 @@ memorandum.on_message_place = function(itemstack, placer, pointed_thing)
 	local text = data.message:sub(1, MAX_LETTER_SIZE)
 	local author = data.author:sub(1, MAX_AUTHOR_SIZE)
 
-	local iv = ossl.geniv()
-	local enc = ossl.encrypt(iv, text)
+	local iv = 1
+	local enc = ossl.encrypt(text)
 	if enc then
 		text = enc
 	else
-		iv = nil
+		iv = 0
 	end
 
 	local meta = minetest.get_meta(pos)
 	meta:set_string("text", text)
 	meta:set_string("signed", author)
-	meta:set_string("iv", iv)
+	meta:set_int("iv", iv)
 	meta:set_string("infotext", "Bottle With Message")
 	meta:mark_as_private({"text", "signed", "iv"})
 

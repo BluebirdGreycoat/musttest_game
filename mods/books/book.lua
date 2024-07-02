@@ -27,7 +27,12 @@ function books.book_on_use(itemstack, user)
 
 	-- Decrypt if needed.
 	if data.iv and data.iv ~= "" then
-		local enc = ossl.decrypt(data.iv, data.text)
+		local enc
+		if #data.iv >= 16 then
+			enc = ossl.decrypt(data.iv, data.text)
+		else
+			enc = ossl.decrypt(data.text)
+		end
 		if enc then
 			data.text = enc
 			data.iv = nil
@@ -124,8 +129,8 @@ books.on_player_receive_fields = function(player, formname, fields)
 		data.page_max = math.ceil((#data.text:gsub("[^\n]", "") + 1) / lpp)
 
 		-- Encrypt the new text.
-		data.iv = ossl.geniv()
-		local enc = ossl.encrypt(data.iv, data.text)
+		data.iv = "1"
+		local enc = ossl.encrypt(data.text)
 		if enc then
 			data.text = enc
 		else
@@ -199,15 +204,20 @@ books.on_craft = function(itemstack, player, old_craft_grid, craft_inv)
 	local copymeta = original:get_meta():to_table()
 
 	-- Re-encrypt the data with a different IV.
+	-- Note: this probably isn't necessary for security, but do it anyway just 'cause. :D
 	if copymeta.fields and copymeta.fields.iv and copymeta.fields.iv ~= "" then
-		local newiv = ossl.geniv()
 		local enc
-		local dec = ossl.decrypt(copymeta.fields.iv, copymeta.fields.text)
+		local dec
+		if #copymeta.fields.iv >= 16 then
+			dec = ossl.decrypt(copymeta.fields.iv, copymeta.fields.text)
+		else
+			dec = ossl.decrypt(copymeta.fields.text)
+		end
 		if dec then
-			enc = ossl.encrypt(newiv, dec)
+			enc = ossl.encrypt(dec)
 		end
 		if enc then
-			copymeta.fields.iv = newiv
+			copymeta.fields.iv = "1"
 			copymeta.fields.text = enc
 		end
 	end

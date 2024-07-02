@@ -532,7 +532,9 @@ function marker.get_formspec(player)
 			"field[0.3,1.85;2.5,0.7;player;;" .. minetest.formspec_escape(gui.playername) .. "]" ..
 			"button[3.0,1.0;0.9,0.7;addlist;>]" ..
 			"button[4.1,1.0;0.9,0.7;dellist;X]" ..
-			"button[3.0,1.85;2,0.7;sendlist;Send List]" ..
+			"button[3.0,1.85;2,0.7;sendlist;Send To Key]" ..
+			"button[5.2,1.0;1.1,0.7;import;Import]" ..
+			"button[5.2,1.85;1.1,0.7;export;Export]" ..
 		"container_end[]"
 
 	-- List names: top right.
@@ -694,6 +696,54 @@ marker.on_receive_fields = function(player, formname, fields)
 				minetest.chat_send_player(pname, "# Server: Removed marker list.")
 			else
 				minetest.chat_send_player(pname, "# Server: Cannot remove non-existent list.")
+			end
+		end
+	elseif fields.export then
+		local name = fields.listname or ""
+		name = name:trim()
+		if name == "" then
+			minetest.chat_send_player(pname, "# Server: Cannot export list with empty name.")
+		else
+			if marker.have_list(pname, name) then
+				if inv:contains_item("main", "default:paper") then
+					local data = marker.get_list(pname, name)
+					local json = minetest.write_json(data)
+					if json then
+						local b64 = minetest.encode_base64(json)
+						if b64 then
+							-- Split into lines.
+							local s = ""
+							for k = 1, #b64, 40 do
+								s = s .. (b64:sub(k, k + 40) .. "\n")
+							end
+							s = s .. "=== END OF LIST ==="
+
+							local serialized = memorandum.compose_metadata({
+								text = ("=== MARKER LIST ===\n" .. s),
+								signed = pname,
+							})
+							local itemstack = inv:add_item("main", {
+								name="memorandum:letter",
+								count=1, wear=0,
+								metadata=serialized,
+							})
+							if itemstack:is_empty() then
+								inv:remove_item("main", "default:paper")
+								minetest.chat_send_player(pname, "# Server: Exported marker list.")
+							else
+								minetest.chat_send_player(pname, "# Server: Could not get blank paper.")
+							end
+						else
+							minetest.chat_send_player(pname, "# Server: Base64 encode error.")
+						end
+					else
+						minetest.chat_send_player(pname, "# Server: JSON encode error.")
+					end
+				else
+					minetest.chat_send_player(pname, "# Server: You need blank paper to export a list.")
+				end
+			else
+				minetest.chat_send_player(pname, "# Server: Cannot export non-existent list.")
 			end
 		end
   elseif fields.sendlist then

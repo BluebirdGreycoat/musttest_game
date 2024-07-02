@@ -522,13 +522,22 @@ function marker.get_formspec(player)
     default.gui_slots
 
 	formspec = formspec ..
-		"item_image[0,0;1,1;passport:passport_adv]" ..
-    "label[1,0;Key Device Marker System]" ..
-		"field[0.3,1.3;2.9,1;listname;;" .. minetest.formspec_escape(gui.listname) .. "]" ..
-		"field[0.3,2.15;2.9,1;player;;" .. minetest.formspec_escape(gui.playername) .. "]"
+		"real_coordinates[true]" ..
+		"container[0,0]" ..
+			"item_image[0.35,0.34;1,1;passport:passport_adv]" ..
+			"label[1.5,0.5;Key Device Marker System]" ..
+		"container_end[]" ..
+		"container[0.1,0.85]" ..
+			"field[0.3,1.0;2.5,0.7;listname;;" .. minetest.formspec_escape(gui.listname) .. "]" ..
+			"field[0.3,1.85;2.5,0.7;player;;" .. minetest.formspec_escape(gui.playername) .. "]" ..
+			"button[3.0,1.0;0.9,0.7;addlist;>]" ..
+			"button[4.1,1.0;0.9,0.7;dellist;X]" ..
+			"button[3.0,1.85;2,0.7;sendlist;Send List]" ..
+		"container_end[]"
 
+	-- List names: top right.
 	formspec = formspec ..
-		"textlist[5.0,0.0;3.7,2.6;lists;"
+		"textlist[6.7,0.4;4.5,3.0;lists;"
 
 	local comma = ""
 	--minetest.log(dump(alists))
@@ -540,8 +549,9 @@ function marker.get_formspec(player)
 		end
 	end
 
+	-- Loose markers: bottom left.
 	formspec = formspec .. ";" .. gui.index1 .. "]" ..
-		"textlist[0.0,3.0;3.7,3.0;markers;"
+		"textlist[0.4,3.9;4.7,3.1;markers;"
 
 	for i = 1, #deflist, 1 do
 		local s = rc.pos_to_namestr(deflist[i])
@@ -551,8 +561,9 @@ function marker.get_formspec(player)
 		end
 	end
 
+	-- List positions: bottom right.
 	formspec = formspec .. ";" .. gui.index2 .. "]" ..
-		"textlist[5.0,3.0;3.7,4.0;positions;"
+		"textlist[6.7,3.9;4.5,4.55;positions;"
 
 	local lname = marker.get_list_name(player, gui.index1)
 	if lname and lname ~= "" then
@@ -568,20 +579,21 @@ function marker.get_formspec(player)
 	formspec = formspec .. ";" .. gui.index3 .. "]"
 
 	formspec = formspec ..
-		"button[3.0,1.0;1,1;addlist;>]" ..
-		"button[4.0,1.0;1,1;dellist;X]" ..
-		"button[3.0,1.85;2,1;sendlist;Send List]" ..
-		"button[4.0,3.0;1,1;ls;<]" ..
-		"button[4.0,4.0;1,1;mark;Mark]" ..
-		"button[4.0,5.0;1,1;rs;>]" ..
-		"button[0.0,6.25;1,1;done;Done]" ..
-		"button[1.0,6.25;1,1;delete;Erase]"
+		"container[1.4,0.9]" ..
+			"button[4.0,3.0;1,0.7;ls;<]" ..
+			"button[4.0,3.8;1,0.7;mark;Mark]" ..
+			"button[4.0,4.6;1,0.7;delete;Erase]" ..
+			"button[4.0,5.4;1,0.7;rs;>]" ..
+		"container_end[]" ..
+		"container[0.4,1.5]" ..
+			"button[0.0,6.25;1.2,0.7;done;Done]"
 
 	if not gui.show then
-		formspec = formspec .. "button[2.0,6.25;3,1;show;Enable Scan]"
+		formspec = formspec .. "button[2.8,6.25;3.2,0.7;show;Enable Scan]"
 	else
-		formspec = formspec .. "button[2.0,6.25;3,1;hide;Disable Scan]"
+		formspec = formspec .. "button[2.8,6.25;3.2,0.7;hide;Disable Scan]"
 	end
+	formspec = formspec .. "container_end[]"
 
 	return formspec
 end

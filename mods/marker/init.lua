@@ -797,7 +797,8 @@ marker.on_receive_fields = function(player, formname, fields)
 										end
 									end
 
-									minetest.chat_send_player(pname, "# Server: Mark list imported.")
+									marker.save_player(pname)
+									minetest.chat_send_player(pname, "# Server: Marker list imported.")
 								else
 									minetest.chat_send_player(pname, "# Server: JSON decode error.")
 								end
@@ -848,6 +849,7 @@ marker.on_receive_fields = function(player, formname, fields)
 											datato[#datato + 1] = table.copy(datafrom[i])
 										end
 
+										marker.save_player(targetname)
 										minetest.chat_send_player(pname, "# Server: Marker list sent!")
 										minetest.chat_send_player(targetname, "# Server: <" .. rename.gpn(pname) .. "> sent a marker list to your Key!")
 									else

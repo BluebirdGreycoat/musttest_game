@@ -15,7 +15,14 @@ local lpp = 14 -- Lines per book's page
 
 
 local function copymeta(frommeta, tometa)
-	tometa:from_table( frommeta:to_table() )
+	local t = frommeta:to_table()
+
+	-- Infotext can contain the whole text of the book, unencrypted.
+	-- Do not leak it.
+	t.fields.infotext = nil
+	t.fields.description = nil
+
+	tometa:from_table(t)
 end
 
 
@@ -26,10 +33,13 @@ local function set_closed_infotext(nodemeta, itemmeta)
 	owner = rename.gpn(owner)
 
 	if title ~= "" and owner ~= "" then
-		nodemeta:set_string("infotext", S("\"@1\"\nby <@2>", title, owner))
+		nodemeta:set_string("infotext", "\"" .. title .. "\"\nby <" .. owner .. ">")
 	else
 		nodemeta:set_string("infotext", "Book (Blank)")
 	end
+
+	-- Prevent leaks.
+	nodemeta:set_string("description", "")
 end
 
 function books_placeable.set_closed_infotext(pos)
@@ -39,7 +49,23 @@ end
 
 
 local function set_open_infotext(meta)
-	meta:set_string("infotext", meta:get_string("text"))
+	local iv = meta:get_string("iv")
+	local enc = meta:get_string("text")
+
+	-- We have to decrypt the text to show a few lines on mouse-over.
+	if iv == "1" or #iv >= 16 then
+		local dec
+		if #iv >= 16 then
+			dec = ossl.decrypt(iv, enc)
+		else
+			dec = ossl.decrypt(enc)
+		end
+		if dec then
+			enc = dec
+		end
+	end
+
+	meta:set_string("infotext", enc:sub(1, books.MAX_PREVIEW_LENGTH))
 end
 
 
@@ -62,6 +88,8 @@ local function on_place(itemstack, placer, pointed_thing)
 	end
 	local _, placed, pos = minetest.item_place_node(stack, placer, pointed_thing, nil)
 	if placed then
+		local meta = minetest.get_meta(pos)
+		meta:mark_as_private({"text", "iv", "title", "owner", "page", "page_max", "description"})
 		itemstack:take_item()
 	end
 	return itemstack
@@ -74,6 +102,7 @@ local function after_place_node(pos, placer, itemstack, pointed_thing)
 	if itemmeta then
 		local nodemeta = minetest.get_meta(pos)
 		copymeta(itemmeta, nodemeta)
+		nodemeta:mark_as_private({"text", "iv", "title", "owner", "page", "page_max", "description"})
 		set_closed_infotext(nodemeta, itemmeta)
 	end
 	minetest.sound_play("book_slam", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
@@ -83,21 +112,35 @@ books_placeable.after_place_node = after_place_node
 
 local function formspec_display(meta, player_name, pos, usertype)
 	-- Courtesy of minetest_game/mods/default/craftitems.lua
-	local title, text, owner = "", "", player_name
+	local title, text, owner, iv = "", "", player_name, ""
 	local page, page_max, lines, string = 1, 1, {}, ""
+	local datatable = meta:to_table().fields
 
-	if meta:to_table().fields.owner then
+	if datatable.owner then
 		title = meta:get_string("title")
 		text = meta:get_string("text")
 		owner = meta:get_string("owner")
+		iv = meta:get_string("iv")
+
+		if #iv >= 16 then
+			local dec = ossl.decrypt(iv, text)
+			if dec then
+				text = dec
+			end
+		elseif iv == "1" then
+			local dec = ossl.decrypt(text)
+			if dec then
+				text = dec
+			end
+		end
 
 		for str in (text .. "\n"):gmatch("([^\n]*)[\n]") do
 			lines[#lines+1] = str
 		end
 
-		if meta:to_table().fields.page then
-			page = meta:to_table().fields.page
-			page_max = meta:to_table().fields.page_max
+		if datatable.page then
+			page = datatable.page
+			page_max = datatable.page_max
 
 			for i = ((lpp * page) - lpp) + 1, lpp * page do
 				if not lines[i] then break end
@@ -218,8 +261,19 @@ local function on_dig(pos, node, digger)
 
 	local stack
 	if nodemeta:get_string("owner") ~= "" then
+		-- Manually set the stack description, because for security reasons the
+		-- 'copymeta' func nils that.
+		local owner = nodemeta:get_string("owner")
+		local desc = nodemeta:get_string("title")
+		-- Don't bother triming the title if the trailing dots would make it longer
+		if #desc > books.SHORT_TITLE_SIZE + 3 then
+			desc = desc:sub(1, books.SHORT_TITLE_SIZE) .. "..."
+		end
+		desc = "\"" .. desc .. "\" by <" .. rename.gpn(owner) .. ">"
+
 		stack = ItemStack({name = "books:book_written"})
 		copymeta(nodemeta, stack:get_meta() )
+		stack:get_meta():set_string("description", desc)
 	else
 		stack = ItemStack({name = "books:book_blank"})
 	end
@@ -295,16 +349,27 @@ local function on_player_receive_fields(player, formname, fields)
 		if #short_title > books.SHORT_TITLE_SIZE + 3 then
 			short_title = short_title:sub(1, books.SHORT_TITLE_SIZE) .. "..."
 		end
-		local desc = "\"" .. short_title .. "\" By <" .. rename.gpn(pname) .. ">"
+		local desc = "\"" .. short_title .. "\" by <" .. rename.gpn(pname) .. ">"
+
+		-- Encrypt the text.
+		local plaintext = text
+		local iv = 0
+		local enc = ossl.encrypt(text)
+		if enc then
+			text = enc
+			iv = 1
+		end
 
 		meta:set_string("description", desc)
 		meta:set_string("title", title)
 		meta:set_string("text", text)
-		meta:set_string("infotext", text)
+		meta:set_string("infotext", plaintext:sub(1, books.MAX_PREVIEW_LENGTH))
 		meta:set_string("owner", pname)
-		meta:set_int("text_len", text:len())
 		meta:set_int("page", 1)
 		meta:set_int("page_max", math.ceil((text:gsub("[^\n]", ""):len() + 1) / lpp))
+		meta:set_int("iv", iv)
+		meta:mark_as_private({"text", "iv", "title", "owner", "page", "page_max", "description"})
+
 		minetest.sound_play("book_write", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 
 		minetest.after(1.5, function() close_book(pos) end)

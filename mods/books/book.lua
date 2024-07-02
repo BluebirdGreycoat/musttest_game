@@ -7,6 +7,9 @@ books.MAX_TEXT_SIZE = MAX_TEXT_SIZE
 books.MAX_TITLE_SIZE = MAX_TITLE_SIZE
 books.SHORT_TITLE_SIZE = SHORT_TITLE_SIZE
 
+-- For when book text is exposed in "infotext" meta.
+books.MAX_PREVIEW_LENGTH = 256
+
 
 
 local lpp = 14 -- Lines per book's page
@@ -123,7 +126,7 @@ books.on_player_receive_fields = function(player, formname, fields)
 		if #short_title > SHORT_TITLE_SIZE + 3 then
 			short_title = short_title:sub(1, SHORT_TITLE_SIZE) .. "..."
 		end
-		data.description = "\"" .. short_title .. "\" By <"..rename.gpn(data.owner) .. ">"
+		data.description = "\"" .. short_title .. "\" by <"..rename.gpn(data.owner) .. ">"
 		data.text = fields.text:sub(1, MAX_TEXT_SIZE)
 		data.page = 1
 		data.page_max = math.ceil((#data.text:gsub("[^\n]", "") + 1) / lpp)

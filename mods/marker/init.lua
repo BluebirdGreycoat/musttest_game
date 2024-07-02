@@ -712,15 +712,17 @@ marker.on_receive_fields = function(player, formname, fields)
 					if json then
 						local b64 = minetest.encode_base64(json)
 						if b64 then
+							local mname = "# Marker list: \"" .. name .. "\"\n"
+
 							-- Split into lines.
-							local s = ""
+							local s = mname .. "=== MARKER LIST ===\n"
 							for k = 1, #b64, 40 do
 								s = s .. (b64:sub(k, k + 39) .. "\n")
 							end
 							s = s .. "=== END OF LIST ==="
 
 							local serialized = memorandum.compose_metadata({
-								text = ("=== MARKER LIST ===\n" .. s),
+								text = s,
 								signed = pname,
 							})
 							local itemstack = inv:add_item("main", {

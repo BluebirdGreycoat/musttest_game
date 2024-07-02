@@ -167,7 +167,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   end
 
 	-- Abort if player is trying to cheat by sitting in a cart. >:)
-	if default.player_attached[pname] then
+	if default.player_attached[pname] or player:get_attach() then
 		minetest.chat_send_player(pname, "# Server: Transport error. Player attached!")
 		return
 	end

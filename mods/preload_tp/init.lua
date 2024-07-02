@@ -1,11 +1,20 @@
 
 if not minetest.global_exists("preload_tp") then preload_tp = {} end
 preload_tp.modpath = minetest.get_modpath("preload_tp")
+preload_tp.teleporting_players = preload_tp.teleporting_players or {}
 
 -- Localize for performance.
 local vector_distance = vector.distance
 local vector_round = vector.round
 local math_floor = math.floor
+
+
+
+function preload_tp.teleport_in_progress(pname)
+	if preload_tp.teleporting_players[pname] then
+		return true
+	end
+end
 
 
 
@@ -19,6 +28,9 @@ function preload_tp.finalize(parameters)
 	local cb_param = parameters.callback_param
 	local tpsound = parameters.teleport_sound
 	local pfx = parameters.particle_effects
+
+	-- Regardless of success or failure, the player is no longer in progress.
+	preload_tp.teleporting_players[pname] = nil
 	
 	-- Find the player.
 	local player = minetest.get_player_by_name(pname)
@@ -44,7 +56,7 @@ function preload_tp.finalize(parameters)
 	end
 
 	-- But we must never teleport a player who is attached.
-	if default.player_attached[pname] then
+	if default.player_attached[pname] or player:get_attach() then
 		minetest.chat_send_player(pname, "# Server: Transport error. Player attached!")
 		return
 	end
@@ -223,6 +235,7 @@ function preload_tp.execute(parameters)
 		-- Check if there was an error.
 		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
 			minetest.chat_send_player(pname, "# Server: Internal error, block loading canceled.")
+			preload_tp.teleporting_players[pname] = nil
 			return
 		end
 
@@ -264,6 +277,8 @@ function preload_tp.execute(parameters)
 	maxp.x = math.min(maxp.x, map_max.x)
 	maxp.y = math.min(maxp.y, map_max.y)
 	maxp.z = math.min(maxp.z, map_max.z)
+
+	preload_tp.teleporting_players[pname] = true
 
 	-- Emerge the target area. Once emergence is complete player can be teleported.
 	minetest.chat_send_player(pname, "# Server: Spatially translating! Stand by.")

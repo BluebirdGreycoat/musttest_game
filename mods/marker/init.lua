@@ -708,13 +708,14 @@ marker.on_receive_fields = function(player, formname, fields)
 				if inv:contains_item("main", "default:paper") then
 					local data = marker.get_list(pname, name)
 					local json = minetest.write_json(data)
+
 					if json then
 						local b64 = minetest.encode_base64(json)
 						if b64 then
 							-- Split into lines.
 							local s = ""
 							for k = 1, #b64, 40 do
-								s = s .. (b64:sub(k, k + 40) .. "\n")
+								s = s .. (b64:sub(k, k + 39) .. "\n")
 							end
 							s = s .. "=== END OF LIST ==="
 
@@ -745,6 +746,72 @@ marker.on_receive_fields = function(player, formname, fields)
 			else
 				minetest.chat_send_player(pname, "# Server: Cannot export non-existent list.")
 			end
+		end
+	elseif fields.import then
+		if marker.list_count(pname) < marker.max_lists then
+			local name = fields.listname or ""
+			name = name:trim()
+			if name == "" then
+				minetest.chat_send_player(pname, "# Server: Cannot add list with empty name.")
+			elseif name == "default" then
+				minetest.chat_send_player(pname, "# Server: Cannot add list with reserved name.")
+			else
+				if marker.have_list(pname, name) then
+					minetest.chat_send_player(pname, "# Server: Cannot add list, it already exists.")
+				else
+					local main = player:get_wield_list()
+					local idx = player:get_wield_index() + 1
+					local stack = inv:get_stack(main, idx)
+
+					if stack:get_count() == 1 and stack:get_name() == "memorandum:letter" then
+						-- Deserialize.
+						local data = memorandum.get_data_from_stack(stack) or {}
+						local str = data.message or ""
+
+						local p1, p2 = str:find("=== MARKER LIST ===")
+						local p3, p4 = str:find("=== END OF LIST ===")
+
+						if p1 and p2 and p3 and p4 then
+							-- Extract b64 data and strip whitespace.
+							local b64 = str:sub(p2+1, p3-1):gsub("[ \t\r\f\n]", ""):trim()
+							local json = minetest.decode_base64(b64)
+
+							if json then
+								-- Warning: this is untrusted data, handle it carefully.
+								local tfrom = minetest.parse_json(json)
+
+								if tfrom and type(tfrom) == "table" then
+									-- because we checked to make sure the key doesn't have this list already,
+									-- we have assured that this will create it for the first time, and it will be empty
+									local newlist = marker.get_list(pname, name)
+									for i = 1, #tfrom, 1 do
+										if i <= marker.max_waypoints then
+											local x = math.round(tonumber(tfrom[i].x) or 0)
+											local y = math.round(tonumber(tfrom[i].y) or 0)
+											local z = math.round(tonumber(tfrom[i].z) or 0)
+											newlist[#newlist + 1] = {x=x,y=y,z=z}
+										else
+											break
+										end
+									end
+
+									minetest.chat_send_player(pname, "# Server: Mark list imported.")
+								else
+									minetest.chat_send_player(pname, "# Server: JSON decode error.")
+								end
+							else
+								minetest.chat_send_player(pname, "# Server: Base64 decode error.")
+							end
+						else
+							minetest.chat_send_player(pname, "# Server: Could not process memorandum info.")
+						end
+					else
+						minetest.chat_send_player(pname, "# Server: You must put a marker list memorandum next to your Key.")
+					end
+				end
+			end
+		else
+			minetest.chat_send_player(pname, "# Server: Marker list roster is full, cannot create a new marker list.")
 		end
   elseif fields.sendlist then
 		local targetname = fields.player or ""

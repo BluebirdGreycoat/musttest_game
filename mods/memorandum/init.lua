@@ -55,6 +55,14 @@ end
 
 
 
+-- Returns {message, author}
+-- Use only on memorandum items!
+function memorandum.get_data_from_stack(stack)
+	return memorandum.extract_metainfo(stack:get_metadata())
+end
+
+
+
 -- Extract information from itemstack meta.
 memorandum.extract_metainfo = function(text)
 	local newformat = false

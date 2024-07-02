@@ -168,11 +168,13 @@ passport.compose_formspec = function(pname)
 
 	-- Special abilities are revoked for cheaters.
 	if not sheriff.is_cheater(pname) then
-		if survivalist.player_beat_cave_challenge(pname) then
+		local admin = gdac.player_is_admin(pname)
+
+		if survivalist.player_beat_cave_challenge(pname) or admin then
 			formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
 		end
 
-		if survivalist.player_beat_nether_challenge(pname) then
+		if survivalist.player_beat_nether_challenge(pname) or admin then
 			if cloaking.is_cloaked(pname) then
 				formspec = formspec .. "button[3,3.7;2,1;cloak;Uncloak]"
 			else

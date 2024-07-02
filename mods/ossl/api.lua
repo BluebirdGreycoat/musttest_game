@@ -24,7 +24,7 @@ function ossl.encrypt(text)
 			-- JSON encoder vomits on the raw binary.
 			enc = minetest.encode_base64(encrypted),
 
-			-- Include the IV with the encrypted string.
+			-- Include IV with the encrypted string. Base64 encoded for same reason.
 			iv = minetest.encode_base64(iv),
 
 			-- Version ID. Nil shall be treated the same as 1. 0 is the same as 1.
@@ -81,7 +81,7 @@ function ossl.decrypt(oldiv, data)
 			-- parser vomits on raw binary.
 			local enc = minetest.decode_base64(json.enc or "")
 
-			-- The IV, included with the encrypted data.
+			-- IV, included with the encrypted data. Base64 encoded for same reason.
 			local iv = minetest.decode_base64(json.iv or "")
 
 			-- Version ID. Nil shall be treated the same as 1. 0 is the same as 1.

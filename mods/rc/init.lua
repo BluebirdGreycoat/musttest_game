@@ -888,8 +888,11 @@ function rc.plane_shift_message(pref, p, n)
 				local realm_name = d.description
 				local insult = ""
 
-				if rr ~= "abyss" and rr2 == "abyss" then
-					insult = " Noob!"
+				local pname = pref:get_player_name()
+				if beds.get_respawn_count(pname) == 0 then
+					if rr ~= "abyss" and rr2 == "abyss" then
+						insult = " Noob!"
+					end
 				end
 
 				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. "." .. insult)

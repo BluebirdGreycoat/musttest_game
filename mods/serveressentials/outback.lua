@@ -6,7 +6,14 @@ serveressentials.outback_gates = {
 }
 
 function serveressentials.get_gate(realm)
-	return serveressentials.outback_gates[realm]
+	local data = serveressentials.outback_gates[realm]
+
+	if data then
+		return data
+	end
+
+	-- Use the overworld gate as fallback.
+	return serveressentials.outback_gates["overworld"]
 end
 
 -- Shall return a list of the names of realms the Outback links to.

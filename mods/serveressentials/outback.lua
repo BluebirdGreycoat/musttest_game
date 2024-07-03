@@ -35,7 +35,7 @@ local vector_round = vector.round
 -- with respect to the Outback gateway's current exit location.
 local PROTECTOR_DISTANCE_FROM_EXIT = 50
 function serveressentials.protector_can_place(pos, realm)
-	local p2 = serveressentials.get_exit_location(realm)
+	local p2 = minetest.string_to_pos(serveressentials.get_exit_location(realm))
 	if vector_distance(pos, p2) > PROTECTOR_DISTANCE_FROM_EXIT then
 		return true
 	end
@@ -48,12 +48,12 @@ function serveressentials.get_exit_location(realm)
 
 	-- Backward compatibility.
 	if realm == "overworld" then
-		if s and s == "" then
+		if s == "" then
 			s = meta:get_string("outback_exit_location")
 		end
 	end
 
-	if s and s ~= "" then
+	if s ~= "" then
 		local p = minetest.string_to_pos(s)
 		if p then
 			return s

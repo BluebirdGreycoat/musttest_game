@@ -83,6 +83,11 @@ function serveressentials.update_exit_location(pos, realm)
 	local gate = serveressentials.get_gate(realm)
 	local m2 = minetest.get_meta(gate.pos)
 	m2:set_string("obsidian_gateway_destination_" .. gate.dir, s)
+
+	-- Make sure there's a return gate entity, in lieu of an actual gate.
+	obsidian_gateway.create_portal_entity(vector.offset(pos, 0, 7, 0), {
+		target = obsidian_gateway.get_gate_player_spawn_pos(gate.pos, gate.dir),
+	})
 end
 
 local nodes = {

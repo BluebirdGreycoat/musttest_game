@@ -364,6 +364,18 @@ end
 
 
 
+function obsidian_gateway.get_gate_player_spawn_pos(pos, dir)
+	if dir == "ns" then
+		return vector.add(pos, {x=1.5, y=1.5, z=0})
+	elseif dir == "ew" then
+		return vector.add(pos, {x=0, y=1.5, z=1.5})
+	else
+		return pos
+	end
+end
+
+
+
 function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	local pname = player:get_player_name()
 	local ppos = vector_round(player:get_pos())

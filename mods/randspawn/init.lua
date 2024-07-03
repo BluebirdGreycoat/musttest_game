@@ -203,6 +203,22 @@ function randspawn.get_spawn_name(realm)
 	return "Unknown Location"
 end
 
+function randspawn.on_outback_gate_use(params)
+	if rc.current_realm_at_pos(params.gate_origin) == "abyss" then
+		-- Shift the Outback exit 30 minutes after every use.
+		minetest.after(60*30, function()
+			local realmname = rc.current_realm_at_pos(params.teleport_destination)
+			randspawn.find_new_spawn(true, realmname)
+		end)
+
+		-- Make sure there's a return gate entity, in lieu of an actual gate.
+		obsidian_gateway.create_portal_entity(vector.offset(params.teleport_destination, 0, 7, 0), {
+			target = obsidian_gateway.get_gate_player_spawn_pos(
+				params.gate_origin, params.gate_orientation),
+		})
+	end
+end
+
 
 
 if not randspawn.run_once then
@@ -211,14 +227,8 @@ if not randspawn.run_once then
 	local name = "randspawn:core"
 	reload.register_file(name, file, false)
 
-	-- Shift the Outback exit 30 minutes after every use.
 	portal_cb.register_after_use(function(params)
-		if rc.current_realm_at_pos(params.gate_origin) == "abyss" then
-			minetest.after(60*30, function()
-				local realmname = rc.current_realm_at_pos(params.teleport_destination)
-				randspawn.find_new_spawn(true, realmname)
-			end)
-		end
+		randspawn.on_outback_gate_use(params)
 	end)
 
 	randspawn.modstorage = minetest.get_mod_storage()

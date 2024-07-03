@@ -1,4 +1,6 @@
 
+local PLAYER_PROXIMITY_DISTANCE = 3
+
 local function spawn_particles(pos)
 	for k, v in ipairs({
 		{texture = "quartz_crystal_piece.png", vel=1.5, dst=0, a=60},
@@ -94,8 +96,8 @@ function obsidian_gateway.on_portent_step(self, dtime, moveresult)
 	self.time = 0
 
 	local pos = vector.round(self.object:get_pos())
-	local minp = vector.offset(pos, -5, -5, -5)
-	local maxp = vector.offset(pos, 5, 5, 5)
+	local minp = vector.offset(pos, -3, -3, -3)
+	local maxp = vector.offset(pos, 3, 3, 3)
 	local objs = minetest.get_objects_in_area(minp, maxp)
 
 	-- Remove duplicates.
@@ -119,15 +121,17 @@ function obsidian_gateway.on_portent_step(self, dtime, moveresult)
 	local players = minetest.get_connected_players()
 	for k = 1, #players do
 		local p = players[k]:get_pos()
-		if vector.distance(p, pos) < 3 then
+		if vector.distance(p, pos) < PLAYER_PROXIMITY_DISTANCE then
 			if self.target then
 				local pname = players[k]:get_player_name()
 				if not default.player_attached[pname] and not players[k]:get_attach() then
 					if not preload_tp.teleport_in_progress(pname) then
-						send_player_to(pname, self.target)
+						if rc.is_valid_realm_pos(self.target) then
+							send_player_to(pname, self.target)
 
-						-- Only teleport one player at this time.
-						return
+							-- Only teleport one player at this time.
+							return
+						end
 					end
 				end
 			end
@@ -138,7 +142,9 @@ function obsidian_gateway.on_portent_step(self, dtime, moveresult)
 	local strexitpos = serveressentials.get_current_exit_location(self.realm)
 	local exitpos = minetest.string_to_pos(strexitpos)
 	if exitpos then
-		if vector.distance(pos, exitpos) > 15 then
+		-- Note: for outback gates, entities will usually be positioned about 10
+		-- nodes ABOVE the actual teleport location.
+		if vector.distance(pos, exitpos) > 20 then
 			self.object:remove()
 			return
 		end

@@ -133,6 +133,16 @@ function obsidian_gateway.on_portent_step(self, dtime, moveresult)
 			end
 		end
 	end
+
+	-- Remove the entity once the gate stops pointing here.
+	local strexitpos = serveressentials.get_current_exit_location(self.realm)
+	local exitpos = minetest.string_to_pos(strexitpos)
+	if exitpos then
+		if vector.distance(pos, exitpos) > 15 then
+			self.object:remove()
+			return
+		end
+	end
 end
 
 function obsidian_gateway.on_portent_attach_child(self, child)

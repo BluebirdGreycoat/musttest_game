@@ -131,7 +131,7 @@ function hud_clock.get_date_string()
 	return hud_clock.get_datetime(days)
 end
 
-function hud_clock.get_calendar_infotext()
+function hud_clock.get_calendar_infotext(pos)
 	local days1 = math_floor(serveressentials.get_outback_timeout() / (60*60*24))
 	local days2 = math_floor(randspawn.get_spawn_reset_timeout() / (60*60*24))
 	local days3 = math_floor(serveressentials.get_midfeld_timeout() / (60*60*24))
@@ -140,8 +140,10 @@ function hud_clock.get_calendar_infotext()
 	days2 = math.max(days2, 0)
 	days3 = math.max(days3, 0)
 
+	local realmname = rc.current_realm_at_pos(pos)
+
 	return hud_clock.get_date_string() ..
-		"\nSpawn: " .. randspawn.get_spawn_name() ..
+		"\nSpawn: " .. randspawn.get_spawn_name(realmname) ..
 		"\nOutback Winds: " .. days1 .. " Days" ..
 		"\nOutback Gate: " .. days2 .. " Days" ..
 		"\nMidfeld Fog: " .. days3 .. " Days"
@@ -169,13 +171,13 @@ minetest.register_node("clock:calendar", {
 
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext())
+		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
 		minetest.get_node_timer(pos):start(60*60)
 	end,
 
 	on_timer = function(pos, elapsed)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext())
+		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
 		minetest.get_node_timer(pos):start(60*60)
 	end,
 
@@ -184,7 +186,7 @@ minetest.register_node("clock:calendar", {
 			return
 		end
 		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext())
+		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
 	end,
 })
 

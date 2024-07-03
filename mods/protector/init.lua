@@ -42,6 +42,7 @@ local function realm_allows_protection(pos, pname)
 		return true
 	end
 
+	-- Do NOT allow players to place protection in the Void, or the Outback.
 	local rn = rc.current_realm_at_pos(pos)
 	if rn == "abyss" or rn == "" then
 		return false
@@ -517,7 +518,8 @@ function protector.check_overlap_main(protname, pname, spos)
 	-- Do not allow protections to be placed near the Outback gate's exit coordinates.
 	-- Note: this prevents the admin from placing protection here, too.
 	-- Existing protections (if any) remain untouched.
-	if not serveressentials.protector_can_place(spos) then
+	local realmname = rc.current_realm_at_pos(spos)
+	if not serveressentials.protector_can_place(spos, realmname) then
 		return false, 5
 	end
 

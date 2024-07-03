@@ -26,7 +26,10 @@ function randspawn.check_spawn_reset()
 		meta:set_string("spawn_reset_timer", stime)
 
 		-- Find a new spawn point.
-		randspawn.find_new_spawn()
+		local t = serveressentials.get_realm_names()
+		for k, realm in ipairs(t) do
+			randspawn.find_new_spawn(false, realm)
+		end
 		return
 	end
 
@@ -39,7 +42,10 @@ function randspawn.check_spawn_reset()
 		meta:set_string("spawn_reset_timer", stime)
 
 		-- Find a new spawn point.
-		randspawn.find_new_spawn()
+		local t = serveressentials.get_realm_names()
+		for k, realm in ipairs(t) do
+			randspawn.find_new_spawn(false, realm)
+		end
 	end
 end
 minetest.after(0, function() randspawn.check_spawn_reset() end)
@@ -75,6 +81,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	end
 
 	local pos = param.pos
+	local realm = param.realm
 	local get_node = minetest.get_node
 
 	-- Start at sea level and check upwards 200 meters to find ground.
@@ -94,7 +101,7 @@ local function callback(blockpos, action, calls_remaining, param)
 
 			-- Call `serveressentials.update_exit_location()` once we have a new spawnpoint.
 			--minetest.log("found new spawn location!")
-			serveressentials.update_exit_location(thispos)
+			serveressentials.update_exit_location(thispos, realm)
 			return
 		end
 	end
@@ -102,17 +109,18 @@ local function callback(blockpos, action, calls_remaining, param)
 	-- We didn't find a suitable spawn location. Try again shortly.
 	--minetest.log("could not find spawn location, trying again.")
 	local ls = param.local_shift
-	minetest.after(10, function() randspawn.find_new_spawn(ls) end)
+	minetest.after(10, function() randspawn.find_new_spawn(ls, realm) end)
 end
 
-function randspawn.find_new_spawn(local_shift)
-	local pos = {x=math_random(-6000, 6000), y=0, z=math_random(-6000, 6000)}
+function randspawn.find_new_spawn(local_shift, realm)
+	local realmspawny = rc.get_realm_data(realm).spawnlevel
+	local pos = {x=math_random(-6000, 6000), y=realmspawny, z=math_random(-6000, 6000)}
 
 	-- If we're only performing a local shift, adjust the coordinates randomly
 	-- around the current existing coordinates (if existing coords exist!).
 	if local_shift then
 		local rad = 75
-		local soldpos = serveressentials.get_current_exit_location()
+		local soldpos = serveressentials.get_current_exit_location(realm)
 		local oldpos = minetest.string_to_pos(soldpos)
 		if oldpos then
 			pos.x = math.random(oldpos.x - rad, oldpos.x + rad)
@@ -122,10 +130,10 @@ function randspawn.find_new_spawn(local_shift)
 	end
 
 	local minp = vector.add(pos, {x=-7, y=-20, z=-7})
-	local maxp = vector.add(pos, {x=7, y=300, z=7})
+	local maxp = vector.add(pos, {x=7, y=200, z=7})
 
 	minetest.emerge_area(minp, maxp, callback,
-		{pos=table.copy(pos), local_shift=local_shift})
+		{pos=table.copy(pos), local_shift=local_shift, realm=realm})
 end
 
 
@@ -170,8 +178,8 @@ end
 
 
 -- The calendar item calls this to report the location of the current spawnpoint.
-function randspawn.get_spawn_name()
-	local s = serveressentials.get_current_exit_location()
+function randspawn.get_spawn_name(realm)
+	local s = serveressentials.get_current_exit_location(realm)
 	local p = minetest.string_to_pos(s)
 
 	-- The outback spawn exit isn't fixed, so you can never really know exactly
@@ -207,7 +215,8 @@ if not randspawn.run_once then
 	portal_cb.register_after_use(function(params)
 		if rc.current_realm_at_pos(params.gate_origin) == "abyss" then
 			minetest.after(60*30, function()
-				return randspawn.find_new_spawn(true)
+				local realmname = rc.current_realm_at_pos(params.teleport_destination)
+				randspawn.find_new_spawn(true, realmname)
 			end)
 		end
 	end)

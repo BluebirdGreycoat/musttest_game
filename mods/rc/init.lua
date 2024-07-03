@@ -40,6 +40,7 @@ rc.realms = {
 		ground = -10,
 		underground = -32, -- Affects sky color, see sky mod.
 		sealevel = 0,
+		spawnlevel = 0,
 		windlevel = 20,
 		realm_origin = {x=-1067, y=-10, z=8930},
 		disabled = false, -- Whether realm can be "gated" to. Use when testing!
@@ -77,6 +78,7 @@ rc.realms = {
 		ground = 3066,
 		underground = 3050,
 		sealevel = 3066,
+		spawnlevel = 3066,
 		windlevel = 3100,
 		realm_origin = {x=2019, y=3066, z=-1992},
 		disabled = false, -- Whether realm can be "gated" to.
@@ -99,6 +101,7 @@ rc.realms = {
 		ground = 3740,
 		underground = 3730,
 		sealevel = 3740,
+		spawnlevel = 3720,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
 		sky_data={clouds=true},
@@ -121,6 +124,7 @@ rc.realms = {
 		ground = 4170+400,
 		underground = 4160+400, -- Affects sky color, see sky mod.
 		sealevel = 4160+400,
+		spawnlevel = 4560,
 		windlevel = 4150+400,
 		realm_origin = {x=-9174, y=4100+400, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
@@ -160,6 +164,7 @@ rc.realms = {
 		ground = 4096+400,
 		underground = 4085+400, -- Affects sky color, see sky mod.
 		sealevel = 4095+400,
+		spawnlevel = 4480,
 		windlevel = 4125+400,
 		realm_origin = {x=-12174, y=4097+400, z=5782},
 		disabled = true, -- Realm cannot receive an incoming gate. OFFICIAL.
@@ -203,6 +208,7 @@ rc.realms = {
 		ground = 8150,
 		underground = 8150, -- Affects sky color, see sky mod.
 		sealevel = 8150,
+		spawnlevel = 6600,
 		windlevel = 8150,
 		realm_origin = {x=2382, y=6650, z=-3721},
 		moon_data = {visible=false},

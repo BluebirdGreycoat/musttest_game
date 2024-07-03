@@ -1,16 +1,24 @@
 
--- The current location of the Outback Gateway's exit coordinates.
--- Note: this is updated to the correct position (as stored in mod-storage)
--- on first load or whenever the mod is reloaded.
-serveressentials.gateway_exit_position = {x=0, y=0, z=0}
+-- Hardcoded positions of the outback gates, indexed by the name of the realm
+-- they're supposed to lead to.
+serveressentials.outback_gates = {
+	overworld = {pos={x=-9186, y=4501, z=5830}, dir="ew"},
+}
+
+function serveressentials.get_gate(realm)
+	return serveressentials.outback_gates[realm]
+end
+
+-- Shall return a list of the names of realms the Outback links to.
+function serveressentials.get_realm_names()
+	local t = {}
+	for k, v in pairs(serveressentials.outback_gates) do
+		t[#t + 1] = k
+	end
+	return t
+end
 
 local WEBADDR = minetest.settings:get("server_address")
-
---[[
-serveressentials.outback_gates = {
-	overworld = {pos={x=-9186, y=4501, z=5830}, ns=false},
-}
---]]
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -19,17 +27,25 @@ local vector_round = vector.round
 -- Called by the protector mod to determine if a protector can be placed here,
 -- with respect to the Outback gateway's current exit location.
 local PROTECTOR_DISTANCE_FROM_EXIT = 50
-function serveressentials.protector_can_place(pos)
-	local p2 = serveressentials.gateway_exit_position
+function serveressentials.protector_can_place(pos, realm)
+	local p2 = serveressentials.get_exit_location(realm)
 	if vector_distance(pos, p2) > PROTECTOR_DISTANCE_FROM_EXIT then
 		return true
 	end
 	return false
 end
 
-local function get_exit_location()
+function serveressentials.get_exit_location(realm)
 	local meta = serveressentials.modstorage
-	local s = meta:get_string("outback_exit_location")
+	local s = meta:get_string("outback_exit_location_" .. realm)
+
+	-- Backward compatibility.
+	if realm == "overworld" then
+		if s and s == "" then
+			s = meta:get_string("outback_exit_location")
+		end
+	end
+
 	if s and s ~= "" then
 		local p = minetest.string_to_pos(s)
 		if p then
@@ -40,41 +56,29 @@ local function get_exit_location()
 	-- Fallback.
 	return "(0,-7,0)"
 end
-serveressentials.get_exit_location = get_exit_location
-serveressentials.gateway_exit_position = minetest.string_to_pos(get_exit_location())
 
-function serveressentials.get_current_exit_location()
-	local m2 = minetest.get_meta({x=-9186, y=4501, z=5830})
-	local s2 = m2:get_string("obsidian_gateway_destination_ew")
+function serveressentials.get_current_exit_location(realm)
+	local gate = serveressentials.get_gate(realm)
+	local m2 = minetest.get_meta(gate.pos)
+	local s2 = m2:get_string("obsidian_gateway_destination_" .. gate.dir)
 	return s2
 end
 
-function serveressentials.update_exit_location(pos)
+function serveressentials.update_exit_location(pos, realm)
 	pos = vector_round(pos)
-
-	-- Update position stored in memory.
-	local p = serveressentials.gateway_exit_position
-	p.x = pos.x
-	p.y = pos.y
-	p.z = pos.z
 
 	-- Update the location stored in mod-storage.
 	local meta = serveressentials.modstorage
 	local s = minetest.pos_to_string(pos)
-	meta:set_string("outback_exit_location", s)
+	meta:set_string("outback_exit_location_" .. realm, s)
 
 	-- Also need to update the gate itself, right away.
-	local m2 = minetest.get_meta({x=-9186, y=4501, z=5830})
-	m2:set_string("obsidian_gateway_destination_ew", s)
+	local gate = serveressentials.get_gate(realm)
+	local m2 = minetest.get_meta(gate.pos)
+	m2:set_string("obsidian_gateway_destination_" .. gate.dir, s)
 end
 
 local nodes = {
-	-- Replace torches with real lanterns in front of the gate.
-	--[[
-	{pos={x=-9167, y=4503, z=5779}, node={name="xdecor:lantern", param2=1}},
-	{pos={x=-9167, y=4503, z=5785}, node={name="xdecor:lantern", param2=1}},
-	--]]
-
 	-- Add a chair to the miner's hut.
 	{pos={x=-9177, y=4576, z=5745}, node={name="xdecor:chair", param2=3}},
 
@@ -186,15 +190,6 @@ local metadata = {
 	{pos={x=-9090, y=4582, z=5869}, meta={fields={
 		state = "0",
 	}}},
-	-- The gateway portal itself.
-	--[[
-	{pos={x=-9164, y=4101, z=5780}, meta={fields={
-		obsidian_gateway_success_ew = "yes",
-		obsidian_gateway_return_gate_ew = "0",
-		obsidian_gateway_owner_ew = OWNERNAME,
-		obsidian_gateway_destination_ew = get_exit_location(),
-	}}},
-	--]]
 	-- Door portal to Overworld.
 	{pos={x=-9186, y=4501, z=5830},
 	is_gate=true,
@@ -202,7 +197,7 @@ local metadata = {
 		obsidian_gateway_success_ew = "yes",
 		obsidian_gateway_return_gate_ew = "0",
 		obsidian_gateway_owner_ew = OWNERNAME,
-		obsidian_gateway_destination_ew = get_exit_location(),
+		obsidian_gateway_destination_ew = serveressentials.get_exit_location("overworld"),
 	}}},
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4572, z=5724}, meta={fields={

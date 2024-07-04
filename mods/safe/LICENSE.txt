@@ -1,0 +1,63 @@
+ 
+Source Code License
+----------------------
+
+MIT, by MustTest/GoldFireUn
+The source code is a clean-room implementation designed specifically for integration
+with the Enyekala code base.
+
+
+
+Multimedia License (textures, sounds, and models)
+----------------------------------------------------------
+
+Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+
+	 sorcerykid: Leslie E. Krause
+
+   /sounds/safe_open.ogg
+   obtained from https://freesound.org/people/kyles/sounds/362053/
+   modified by sorcereykid (sp?)
+
+   /sounds/safe_close.ogg
+   obtained from https://freesound.org/people/kyles/sounds/362053/
+   modified by sorcerykid
+
+   /sounds/safe_lock.ogg
+   obtained from https://freesound.org/people/kyles/sounds/362053/
+   modified by sorcerykid
+
+   /sounds/safe_unlock.ogg
+   obtained from https://freesound.org/people/kyles/sounds/362053/
+   modified by sorcerykid
+
+   /textures/safe_front.png
+   obtained from https://gitlab.com/VanessaE/currency/
+
+   /textures/safe_side.png
+   obtained from https://gitlab.com/VanessaE/currency/
+
+You are free to:
+Share — copy and redistribute the material in any medium or format.
+Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+Under the following terms:
+
+Attribution — You must give appropriate credit, provide a link to the license, and
+indicate if changes were made. You may do so in any reasonable manner, but not in any way
+that suggests the licensor endorses you or your use.
+
+No additional restrictions — You may not apply legal terms or technological measures that
+legally restrict others from doing anything the license permits.
+
+Notices:
+
+You do not have to comply with the license for elements of the material in the public
+domain or where your use is permitted by an applicable exception or limitation.
+No warranties are given. The license may not give you all of the permissions necessary
+for your intended use. For example, other rights such as publicity, privacy, or moral
+rights may limit how you use the material.
+
+For more details:
+http://creativecommons.org/licenses/by-sa/3.0/

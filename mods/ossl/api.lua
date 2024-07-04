@@ -7,13 +7,34 @@ ossl.default_key = nil
 assert(THEKEY and #THEKEY == 16)
 
 -- Input plaintext, get encrypted binary; or nil + errormsg.
-function ossl.encrypt(text)
+function ossl.encrypt(params)
 	-- Get cryptographically secure random IV.
 	local iv = ossl.randlib.bytes(16)
 	assert(#iv == 16)
 
+	local text
+	local mykey = THEKEY
+
+	if type(params) == "table" then
+		if type(params.password) == "string" and type(params.data) == "string" then
+			-- Really simple way to make sure the key is 16 bytes.
+			local c = params.password .. "1234567890abcdef"
+			mykey = c:sub(1, 16)
+			assert(#mykey == 16)
+			text = params.data
+		else
+			-- Unsuported parameter set.
+			assert(false)
+		end
+	elseif type(params) == "string" then
+		text = params
+	else
+		-- Unsuported argument types.
+		assert(false)
+	end
+
 	local version = 2
-	local encrypted, err = ossl.cipher:encrypt(THEKEY, iv):final(text)
+	local encrypted, err = ossl.cipher:encrypt(mykey, iv):final(text)
 
 	if encrypted then
 		-- Stick the encrypted data into a JSON table. This lets us handle
@@ -56,13 +77,13 @@ end
 -- This is depreciated; for backwards compatibility only.
 --
 -- NEW API: Input encrypted binary, get plaintext; or nil + errormsg.
-function ossl.decrypt(oldiv, data)
+function ossl.decrypt(oldiv, params)
 	-- Handle new API detection.
-	if oldiv and not data then
+	if oldiv and not params then
 		-- Only 1 argument. IV should be packed with the data.
-		data = oldiv
+		params = oldiv
 		oldiv = nil
-	elseif oldiv and data then
+	elseif oldiv and params then
 		-- 2 arguments: IV and encrypted data.
 		oldiv = minetest.decode_base64(oldiv)
 		assert(#oldiv == 16)
@@ -70,10 +91,32 @@ function ossl.decrypt(oldiv, data)
 		return nil, "invalid parameters"
 	end
 
-	local decoded, err
-	local serialized = minetest.decode_base64(data)
+	local text
+	local mykey = THEKEY
 
-	if serialized:find(":JSON45$") then
+	if type(params) == "table" then
+		assert(not oldiv)
+		if type(params.password) == "string" and type(params.data) == "string" then
+			-- Really simple way to make sure the key is 16 bytes.
+			local c = params.password .. "1234567890abcdef"
+			mykey = c:sub(1, 16)
+			assert(#mykey == 16)
+			text = params.data
+		else
+			-- Unsuported parameter set.
+			assert(false)
+		end
+	elseif type(params) == "string" then
+		text = params
+	else
+		-- Unsupported argument types.
+		assert(false)
+	end
+
+	local decoded, err
+	local serialized = minetest.decode_base64(text)
+
+	if serialized and serialized:find(":JSON45$") then
 		serialized = string.gsub(serialized, ":JSON45$", "")
 		local json = minetest.parse_json(serialized)
 		if json then
@@ -95,9 +138,9 @@ function ossl.decrypt(oldiv, data)
 			if enc and (iv or oldiv) then
 				if ver == 1 and oldiv then
 					-- Version 1 required the IV to be given to us by our caller.
-					decoded, err = ossl.cipher:decrypt(THEKEY, oldiv):final(enc)
+					decoded, err = ossl.cipher:decrypt(mykey, oldiv):final(enc)
 				elseif ver == 2 then
-					decoded, err = ossl.cipher:decrypt(THEKEY, iv):final(enc)
+					decoded, err = ossl.cipher:decrypt(mykey, iv):final(enc)
 				else
 					err = "invalid version"
 					decoded = nil
@@ -110,11 +153,14 @@ function ossl.decrypt(oldiv, data)
 			err = "JSON decode error"
 			decoded = nil
 		end
-	else
+	elseif serialized and oldiv then
 		-- It's NOT JSON encoded, fall back to the first version of this code.
 		-- The very first version required our caller to give us the correct IV.
 		assert(#oldiv == 16)
-		decoded, err = ossl.cipher:decrypt(THEKEY, oldiv):final(serialized)
+		decoded, err = ossl.cipher:decrypt(mykey, oldiv):final(serialized)
+	else
+		decoded = nil
+		err = "base64 decode error"
 	end
 
 	return decoded, err

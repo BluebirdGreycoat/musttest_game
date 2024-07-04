@@ -33,9 +33,11 @@ Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
 
    /textures/safe_front.png
    obtained from https://gitlab.com/VanessaE/currency/
+   modified by MustTest
 
    /textures/safe_side.png
    obtained from https://gitlab.com/VanessaE/currency/
+   modified by MustTest
 
 You are free to:
 Share — copy and redistribute the material in any medium or format.

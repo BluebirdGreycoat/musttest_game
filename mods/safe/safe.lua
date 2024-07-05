@@ -6,12 +6,6 @@ safe.players = safe.players or {}
 -- an inventory is open. Transient usage only.
 safe.passwords = safe.passwords or {}
 
--- This color name apparently offends some woke cupcake somewhere in the world.
--- The W3C recommends partly for this reason that color names NOT be used.
--- Therefore, today is a good day to use an "offensive" color name, and offend
--- some woke cupcake somewhere in the world. CUPCAKE!
-safe.MESSAGE_COLOR = minetest.get_color_escape_sequence("indianred")
-
 -- 32 is an offensive number. The use of 32 erases my culture! I demand that 32
 -- not be used by anyone. 32 is white, patriarchal oppression. LOL.
 safe.INVENTORY_SIZE = 32
@@ -25,12 +19,12 @@ end
 
 
 function safe.is_valid_node(pos)
-	local node = minetest.get_node(pos)
-	if node.name == "safe:box" then
-		return true
-	end
-	if node.name == "safe:box_open" then
-		return true
+	local name = minetest.get_node(pos).name
+
+	for k, v in pairs(safe.safe_nodes) do
+		if k == name then
+			return true
+		end
 	end
 end
 
@@ -314,9 +308,12 @@ function safe.get_formspec(pos, pname)
 		local invname = safe.gen_invname(pos, pname)
 		safe.load_detached_inventory(pos, pname)
 
+		local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+		local cn = ndef._safe_common_name
+
 		-- Unlocked formspec.
 		formspec = "size[8,10.1]" .. defgui .. "real_coordinates[true]" ..
-			"button_exit[8.62,5.5;1.5,0.7;lock_safe;Lock Safe]" ..
+			"button_exit[7.12,5.5;3.0,0.7;lock_safe;Lock " .. cn .. "]" ..
 			"label[0.35,5.6;Secure Storage]" ..
 			"list[detached:" .. invname .. ";main;0.35,0.5;8,4;]" ..
 			"list[current_player;main;0.35,7.1;8,1;]" ..
@@ -349,9 +346,17 @@ end
 
 function safe.on_rightclick(pos, node, user, itemstack, pt)
 	local pname = user:get_player_name()
+
+	-- No-go if the user already has a safe open.
 	if safe.players[pname] then
 		return
 	end
+
+	-- Well, duh. Need to check this too.
+	if not safe.is_valid_node(pos) then
+		return
+	end
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("disable_time") >= os.time() then
@@ -369,7 +374,8 @@ function safe.on_rightclick(pos, node, user, itemstack, pt)
 	for k, v in pairs(safe.players) do
 		if vector.equals(v.pos, pos) then
 			local c = safe.MESSAGE_COLOR
-			minetest.chat_send_player(pname, c .. "# Server: Someone else is using this safe.")
+			local cn = ndef._safe_common_name:lower()
+			minetest.chat_send_player(pname, c .. "# Server: Someone else is using this " .. cn .. ".")
 			return
 		end
 	end
@@ -408,6 +414,7 @@ end
 function safe.after_place_node(pos, user, itemstack, pt)
 	local pname = user:get_player_name()
 	local meta = minetest.get_meta(pos)
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 
 	-- Note: since the server is responsible for BOTH encryption and decryption,
 	-- there is no way (that I know of) to design the system such that the server
@@ -423,18 +430,23 @@ function safe.after_place_node(pos, user, itemstack, pt)
 	--
 	-- But keep in mind that as long as Minetest's network protocol is plaintext,
 	-- this is all moot if you're being MITM'ed. And you're always being MITM'ed!
+	--
+	-- Historical note: MITM stands for Man-In-The-Middle. Certain members of
+	-- society are trying to make it stand for Monster-In-The-Middle. Because use
+	-- of the word "man" offends them, or ... something something SJW something.
 	meta:set_string("owner", pname)
 	meta:set_string("canary", safe.encrypt("default", "encrypted") or "")
 	meta:set_int("locked", 0)
 	meta:mark_as_private({"owner", "canary", "locked"})
 
 	local c = safe.MESSAGE_COLOR
-	minetest.chat_send_player(pname, c .. "# Server: Safe default password is: \"default\".")
+	local cn = ndef._safe_common_name
+	minetest.chat_send_player(pname, c .. "# Server: " .. cn .. "'s default password is: \"default\".")
 	minetest.chat_send_player(pname, c .. "# Server: You need to set a new password.")
 
 	-- Safe is not locked after construction, by default.
 	local n = minetest.get_node(pos)
-	n.name = "safe:box_open"
+	n.name = ndef._safe_open_node
 	minetest.swap_node(pos, n)
 end
 
@@ -510,7 +522,8 @@ function safe.unlock_safe(pos, password)
 		safe.passwords[hash] = password
 
 		local n = minetest.get_node(pos)
-		n.name = "safe:box_open"
+		local ndef = minetest.registered_nodes[n.name]
+		n.name = ndef._safe_open_node
 		minetest.swap_node(pos, n)
 
 		ambiance.sound_play("safe_unlock", pos, 1.0, 20)
@@ -531,7 +544,8 @@ function safe.lock_safe(pos, pname)
 		safe.update_infotext(pos)
 
 		local n = minetest.get_node(pos)
-		n.name = "safe:box"
+		local ndef = minetest.registered_nodes[n.name]
+		n.name = ndef._safe_close_node
 		minetest.swap_node(pos, n)
 
 		ambiance.sound_play("safe_lock", pos, 1.0, 20)
@@ -560,6 +574,7 @@ function safe.on_player_receive_fields(player, formname, fields)
 		safe.players[pname] = nil
 		return true
 	end
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 
 	-- Check safe not currently disabled.
 	if meta:get_int("disable_time") >= os.time() then
@@ -591,7 +606,8 @@ function safe.on_player_receive_fields(player, formname, fields)
 			meta:set_int("disable_time", os.time() + 5)
 			meta:mark_as_private("disable_time")
 			local c = safe.MESSAGE_COLOR
-			minetest.chat_send_player(pname, c .. "# Server: Wrong password. Safe temporarily disabled.")
+			local cn = ndef._safe_common_name
+			minetest.chat_send_player(pname, c .. "# Server: Wrong password. " .. cn .. " temporarily disabled.")
 			ambiance.sound_play("safe_error", pos, 1.0, 20)
 		end
 

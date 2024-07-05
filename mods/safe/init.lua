@@ -2,29 +2,74 @@
 if not minetest.global_exists("safe") then safe = {} end
 safe.modpath = minetest.get_modpath("safe")
 
+-- This color name apparently offends some woke cupcake somewhere in the world.
+-- The W3C recommends partly for this reason that color names NOT be used.
+-- Therefore, today is a good day to use an "offensive" color name, and offend
+-- some woke cupcake somewhere in the world. CUPCAKE!
+safe.MESSAGE_COLOR = minetest.get_color_escape_sequence("indianred")
+
+local CLOSE_SAFE_TILES = {
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_front.png",
+}
+
+local OPEN_SAFE_TILES = {
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_side.png",
+	"safe_front_open.png",
+}
+
+-- Info for node registration.
+safe.safe_nodes = {
+	["safe:box"] = {
+		desc = "Safety Deposit Box",
+		tiles = CLOSE_SAFE_TILES,
+		drop = "safe:box",
+		groups = utility.dig_groups("machine", {immovable=1}),
+		sounds = default.node_sound_metal_defaults(),
+		open_node = "safe:box_open",
+		close_node = "safe:box",
+		common_name = "Safe",
+	},
+	["safe:box_open"] = {
+		desc = "Safety Deposit Box",
+		tiles = OPEN_SAFE_TILES,
+		drop = "safe:box",
+		groups = utility.dig_groups("machine", {immovable=1}),
+		sounds = default.node_sound_metal_defaults(),
+		open_node = "safe:box_open",
+		close_node = "safe:box",
+		common_name = "Safe",
+	},
+}
+
 dofile(safe.modpath .. "/safe.lua")
 
 if not safe.registered then
-	for name, info in pairs({
-		["safe:box"] = {front_tex="safe_front.png"},
-		["safe:box_open"] = {front_tex="safe_front_open.png"},
-	}) do
+	for name, infotocopy in pairs(safe.safe_nodes) do
+		-- Copy the data so we can safely modify it as needed.
+		local info = table.copy(infotocopy)
+
 		minetest.register_node(name, {
-			description = "Safety Deposit Box",
-			tiles = {
-				"safe_side.png",
-				"safe_side.png",
-				"safe_side.png",
-				"safe_side.png",
-				"safe_side.png",
-				info.front_tex,
-			},
+			description = info.desc,
+			tiles = info.tiles,
 
 			paramtype2 = "facedir",
-			groups = utility.dig_groups("machine", {immovable=1}),
-			drop = "safe:box",
-			sounds = default.node_sound_metal_defaults(),
+			groups = info.groups,
+			drop = info.drop,
+			sounds = info.sounds,
 			stack_max = 1,
+
+			_safe_common_name = info.common_name,
+			_safe_open_node = info.open_node,
+			_safe_close_node = info.close_node,
 
 			on_rotate = function(...) return screwdriver.rotate_simple(...) end,
 			on_construct = function(...) return safe.on_construct(...) end,

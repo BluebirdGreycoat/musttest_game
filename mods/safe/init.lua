@@ -41,9 +41,9 @@ if not safe.registered then
 	minetest.register_craft({
 		output = "safe:box",
 		recipe = {
-			{'carbon_steel:ingot', 'default:padlock', 'carbon_steel:ingot'},
-			{'carbon_steel:ingot', 'morechests:ironchest_locked_closed', 'carbon_steel:ingot'},
-			{'carbon_steel:ingot', 'techcrafts:control_logic_unit', 'carbon_steel:ingot'},
+			{'carbon_steel:block', 'default:padlock', 'carbon_steel:block'},
+			{'carbon_steel:block', 'morechests:ironchest_locked_closed', 'carbon_steel:block'},
+			{'carbon_steel:block', 'techcrafts:control_logic_unit', 'carbon_steel:block'},
 		},
 	})
 

@@ -627,16 +627,23 @@ function safe.on_player_receive_fields(player, formname, fields)
 			local newpass = (type(fields.new_password) == "string" and fields.new_password) or ""
 			local cnfpass = (type(fields.confirm_password) == "string" and fields.confirm_password) or ""
 
-			if newpass == cnfpass then
-				safe.change_inventory_password(pos, pin, newpass)
-				meta:set_string("canary", safe.encrypt(newpass, "encrypted") or "")
-				meta:mark_as_private("canary")
-				safe.players[pname] = nil
-				minetest.chat_send_player(pname, color .. "# Server: Password updated.")
-				return true
+			if #newpass <= 16 then
+				if newpass == cnfpass then
+					safe.change_inventory_password(pos, pin, newpass)
+					meta:set_string("canary", safe.encrypt(newpass, "encrypted") or "")
+					meta:mark_as_private("canary")
+					safe.players[pname] = nil
+					minetest.chat_send_player(pname, color .. "# Server: Password updated.")
+					return true
+				else
+					safe.players[pname] = nil
+					minetest.chat_send_player(pname, color .. "# Server: New passwords do not match!")
+					ambiance.sound_play("safe_error", pos, 1.0, 20)
+					return true
+				end
 			else
 				safe.players[pname] = nil
-				minetest.chat_send_player(pname, color .. "# Server: New passwords do not match!")
+				minetest.chat_send_player(pname, color .. "# Server: Password cannot be more than 16 letters.")
 				ambiance.sound_play("safe_error", pos, 1.0, 20)
 				return true
 			end

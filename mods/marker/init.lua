@@ -669,7 +669,11 @@ marker.on_receive_fields = function(player, formname, fields)
 				else
 					-- this automatically adds the list if it doesn't exist
 					local pos = player:get_pos()
-					pos.y = pos.y + 1
+
+					-- No longer needed since player position is now their center instead
+					-- of their feet.
+					--pos.y = pos.y + 1
+
 					marker.add_waypoint(pname, pos, name)
 					gui.index1 = #(marker.players[pname])
 					gui.index3 = -1

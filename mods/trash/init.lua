@@ -20,6 +20,11 @@ function trash.allow_put(inv, listname, index, stack, player)
 		return 0
 	end
 
+	-- Don't allow safes to be trashed.
+	if safe.is_safe_name(stack:get_name()) then
+		return 0
+	end
+
 	local stack_count = stack:get_count()
 
 	-- Do not allow trashing of tools that have gained rank.

@@ -3,12 +3,9 @@
 safe.players = safe.players or {}
 
 -- Inventory passwords. Needed so inventory contents can be decrypted as long as
--- an inventory is open. Transient usage only.
+-- an inventory is open. Transient usage only. Separate from player contexts
+-- because these have a different lifetime.
 safe.passwords = safe.passwords or {}
-
--- 32 is an offensive number. The use of 32 erases my culture! I demand that 32
--- not be used by anyone. 32 is white, patriarchal oppression. LOL.
-safe.INVENTORY_SIZE = 32
 
 
 
@@ -21,6 +18,18 @@ end
 function safe.is_valid_node(pos)
 	local name = minetest.get_node(pos).name
 
+	for k, v in pairs(safe.safe_nodes) do
+		if k == name then
+			return true
+		end
+	end
+end
+
+
+
+-- Mainly used to prevent safe nodes from being trashed.
+-- Also prevents safes from being stored recursively, which would be bad.
+function safe.is_safe_name(name)
 	for k, v in pairs(safe.safe_nodes) do
 		if k == name then
 			return true
@@ -57,7 +66,7 @@ end
 
 
 
-function safe.get_inventory_callbacks(pname)
+function safe.get_inventory_callbacks(ndef, pname)
 	return {
 		-- Pile of security and safety checks.
 		allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
@@ -109,6 +118,13 @@ function safe.get_inventory_callbacks(pname)
 				return 0
 			end
 			if listname ~= "main" then
+				return 0
+			end
+			-- Recursive storage protection.
+			if safe.is_safe_name(stack:get_name()) then
+				return 0
+			end
+			if not ndef._safe_allow_item(stack:get_name()) then
 				return 0
 			end
 			return stack:get_count()
@@ -190,9 +206,10 @@ function safe.load_detached_inventory(pos, pname)
 		local co = safe.MESSAGE_COLOR
 		minetest.chat_send_player(pname, co .. "# Server: Accessing secure inventory ...")
 
-		local cb = safe.get_inventory_callbacks(pname)
+		local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+		local cb = safe.get_inventory_callbacks(ndef, pname)
 		local inv = minetest.create_detached_inventory(invname, cb, pname)
-		inv:set_size("main", safe.INVENTORY_SIZE)
+		inv:set_size("main", ndef._safe_inventory_size)
 
 		local hash = minetest.hash_node_position(pos)
 		assert(safe.passwords[hash])
@@ -201,7 +218,7 @@ function safe.load_detached_inventory(pos, pname)
 
 		-- Populate the detached inventory.
 		local meta = minetest.get_meta(pos)
-		for k = 1, safe.INVENTORY_SIZE do
+		for k = 1, ndef._safe_inventory_size do
 			local s = meta:get_string("item" .. k)
 			local e = meta:get_int("item" .. k .. "iv")
 			if s ~= "" then
@@ -230,9 +247,10 @@ end
 function safe.change_inventory_password(pos, oldpass, newpass)
 	local t = {}
 	local meta = minetest.get_meta(pos)
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 
 	-- Load inventory with old password.
-	for k = 1, safe.INVENTORY_SIZE do
+	for k = 1, ndef._safe_inventory_size do
 		local s = meta:get_string("item" .. k)
 		local e = meta:get_int("item" .. k .. "iv")
 
@@ -311,16 +329,24 @@ function safe.get_formspec(pos, pname)
 		local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 		local cn = ndef._safe_common_name
 
+		local w = ndef._safe_inventory_w
+		local h = ndef._safe_inventory_h
+		local pad = 0.25
+
+		-- The formspec math causes the formspec to change size vertically depending
+		-- on the number of inventory rows in the safe. Formspec size doesn't follow
+		-- new (real) coordinates.
+
 		-- Unlocked formspec.
-		formspec = "size[8,10.1]" .. defgui .. "real_coordinates[true]" ..
-			"button_exit[7.12,5.5;3.0,0.7;lock_safe;Lock " .. cn .. "]" ..
-			"label[0.35,5.6;Secure Storage]" ..
-			"list[detached:" .. invname .. ";main;0.35,0.5;8,4;]" ..
-			"list[current_player;main;0.35,7.1;8,1;]" ..
-			"list[current_player;main;0.35,8.5;8,3;8]" ..
+		formspec = "size[8," .. (h+6.1) .. "]" .. defgui .. "real_coordinates[true]" ..
+			"button_exit[7.12," .. (h+0.5+(pad*h)) .. ";3.0,0.7;lock_safe;Lock " .. cn .. "]" ..
+			"label[0.35," .. (h+0.6+(pad*h)) .. ";Secure Storage]" ..
+			"list[detached:" .. invname .. ";main;0.35,0.5;" .. w .. "," .. h .. ";]" ..
+			"list[current_player;main;0.35," .. (h+2.1+(pad*h)) .. ";8,1;]" ..
+			"list[current_player;main;0.35," .. (h+3.5+(pad*h)) .. ";8,3;8]" ..
 			"listring[detached:" .. invname .. ";main]" ..
 			"listring[current_player;main]" ..
-			default.get_hotbar_bg(0.35, 7.1, true)
+			default.get_hotbar_bg(0.35, (h+2.1+(pad*h)), true)
 	end
 
 	return formspec, locked
@@ -329,17 +355,41 @@ end
 
 
 function safe.on_construct(pos)
-	safe.update_infotext(pos)
 end
 
 
 
 function safe.on_destruct(pos)
+	local hash = minetest.hash_node_position(pos)
+	safe.passwords[hash] = nil
+
+	-- If someone had this safe open, destroy their context.
+	local delete_me = {}
+	for pname, context in pairs(safe.players) do
+		if vector.equals(context.pos, pos) then
+			delete_me[pname] = context
+		end
+	end
+	for pname, context in pairs(delete_me) do
+		safe.players[pname] = nil
+		minetest.close_formspec(pname, "safe:main")
+		minetest.remove_detached_inventory(safe.gen_invname(context.pos, pname))
+	end
 end
 
 
 
 function safe.on_blast(pos)
+	local node = minetest.get_node(pos)
+	local ndef = minetest.registered_nodes[node.name]
+	if ndef._safe_is_blastable then
+		local drops = {}
+		drops[1] = ItemStack(ndef._safe_close_node)
+		local metatable = minetest.get_meta(pos):to_table().fields
+		safe.preserve_metadata(pos, node, metatable.fields, drops)
+		minetest.remove_node(pos)
+		return drops
+	end
 end
 
 
@@ -434,9 +484,30 @@ function safe.after_place_node(pos, user, itemstack, pt)
 	-- Historical note: MITM stands for Man-In-The-Middle. Certain members of
 	-- society are trying to make it stand for Monster-In-The-Middle. Because use
 	-- of the word "man" offends them, or ... something something SJW something.
+
+	local oldmeta = itemstack:get_meta()
+	if oldmeta:get_string("canary") ~= "" and oldmeta:get_string("owner") ~= "" then
+		meta:from_table(oldmeta:to_table())
+		meta:set_int("locked", 1)
+		meta:mark_as_private({"owner", "canary", "locked", "disable_time"})
+
+		for k = 1, ndef._safe_inventory_size do
+			meta:mark_as_private({"item" .. k, "item" .. k .. "iv"})
+		end
+
+		-- Safe must be locked by default.
+		local n = minetest.get_node(pos)
+		n.name = ndef._safe_close_node
+		minetest.swap_node(pos, n)
+
+		safe.update_infotext(pos)
+		return
+	end
+
+	-- New safe setup.
 	meta:set_string("owner", pname)
 	meta:set_string("canary", safe.encrypt("default", "encrypted") or "")
-	meta:set_int("locked", 0)
+	meta:set_int("locked", 1)
 	meta:mark_as_private({"owner", "canary", "locked"})
 
 	local c = safe.MESSAGE_COLOR
@@ -444,10 +515,12 @@ function safe.after_place_node(pos, user, itemstack, pt)
 	minetest.chat_send_player(pname, c .. "# Server: " .. cn .. "'s default password is: \"default\".")
 	minetest.chat_send_player(pname, c .. "# Server: You need to set a new password.")
 
-	-- Safe is not locked after construction, by default.
+	-- Safe is locked after construction, by default.
 	local n = minetest.get_node(pos)
-	n.name = ndef._safe_open_node
+	n.name = ndef._safe_close_node
 	minetest.swap_node(pos, n)
+
+	safe.update_infotext(pos)
 end
 
 
@@ -470,15 +543,23 @@ end
 
 function safe.can_dig(pos, user)
 	local meta = minetest.get_meta(pos)
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
 
 	-- Note: I allow to dig a safe that's locked, because punching it always
 	-- engages the lock.
 
-	-- Can't dig unless inventory is empty.
-	for k = 1, safe.INVENTORY_SIZE do
-		local s = meta:get_string("item" .. k)
-		if s ~= "" then
-			return false
+	-- Check safe not currently disabled.
+	if meta:get_int("disable_time") >= os.time() then
+		return false
+	end
+
+	if not ndef._safe_allow_dig then
+		-- Can't dig unless inventory is empty.
+		for k = 1, ndef._safe_inventory_size do
+			local s = meta:get_string("item" .. k)
+			if s ~= "" then
+				return false
+			end
 		end
 	end
 
@@ -497,11 +578,13 @@ end
 function safe.update_infotext(pos)
 	local meta = minetest.get_meta(pos)
 	local locked = (meta:get_int("locked") == 1)
+	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+	local cn = ndef._safe_common_name
 
 	if locked then
-		meta:set_string("infotext", "Locked Safe")
+		meta:set_string("infotext", "Locked " .. cn)
 	else
-		meta:set_string("infotext", "Open Safe")
+		meta:set_string("infotext", "Open " .. cn)
 	end
 end
 
@@ -704,4 +787,37 @@ function safe.on_leaveplayer(pref)
 	end
 
 	safe.players[pname] = nil
+end
+
+
+
+function safe.preserve_metadata(pos, oldnode, oldmeta, drops)
+	if drops and drops[1] then
+		local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+		if ndef._safe_is_known_node then
+			local stack = drops[1]
+			local meta = stack:get_meta()
+
+			-- Remove keys.
+			oldmeta.description = nil
+			oldmeta.infotext = nil
+
+			-- Check if the briefcase actually contains anything.
+			local have_documents = false
+			for k = 1, ndef._safe_inventory_size do
+				if oldmeta["item" .. k] and oldmeta["item" .. k] ~= "" then
+					have_documents = true
+					break
+				end
+			end
+
+			if have_documents then
+				oldmeta.description = "Briefcase With Documents"
+			end
+
+			meta:from_table({fields=oldmeta})
+			stack:set_name(ndef._safe_close_node)
+			stack:set_count(1)
+		end
+	end
 end

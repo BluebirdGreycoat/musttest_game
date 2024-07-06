@@ -7,12 +7,16 @@ local math_random = math.random
 local math_min = math.min
 local math_max = math.max
 
+-- Fill a list with data for content IDs, after all nodes are registered
 local cid_data = {}
 minetest.register_on_mods_loaded(function()
 	for name, def in pairs(minetest.registered_nodes) do
 		cid_data[minetest.get_content_id(name)] = {
 			name = name,
-			drops = def.drops, -- Why is this misspelled? Not used?
+
+			-- Why is this misspelled? Not used? (drops: no such key)
+			drops = def.drops,
+
 			_tnt_drop = def._tnt_drop,
 			flammable = def.groups.flammable,
 			on_blast = def.on_blast,

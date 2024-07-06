@@ -3,7 +3,6 @@ tnt = {}
 local enable_tnt = true
 local tnt_radius = 3
 
--- Fill a list with data for content IDs, after all nodes are registered
 
 function tnt.burn(pos)
 	local name = minetest.get_node(pos).name

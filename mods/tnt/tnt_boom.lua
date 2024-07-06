@@ -47,49 +47,47 @@ end
 
 local function eject_drops(drops, pos, radius)
   local drop_pos = vector.new(pos)
-  for name, total in pairs(drops) do
-		local trash = false
 
-		if stack_loss_prob[name] ~= nil and math_random(1, stack_loss_prob[name]) == 1 then
-			trash = true
-		end
+  for _, item in pairs(drops) do
+		local count = math_min(item:get_count(), item:get_stack_max())
 
-		if not trash then
-			local count = total
-			local item = ItemStack(name)
+		while count > 0 do
+			local take = math_max(1, math_min(radius * radius, count, item:get_stack_max()))
 
-			while count > 0 do
-				local take = math_max(1, math_min(radius * radius, count, item:get_stack_max()))
+			rand_pos(pos, drop_pos, radius*0.9)
+			local dropitem = ItemStack(item)
+			dropitem:set_count(take)
 
-				rand_pos(pos, drop_pos, radius*0.9)
-				local dropitem = ItemStack(name)
-				dropitem:set_count(take)
+			local obj = minetest.add_item(drop_pos, dropitem)
+			if obj then
+				obj:get_luaentity().collect = true
+				obj:set_acceleration({x = 0, y = -10, z = 0})
+				obj:set_velocity({x = math_random(-3, 3), y = math_random(0, 10), z = math_random(-3, 3)})
 
-				local obj = minetest.add_item(drop_pos, dropitem)
-				if obj then
-					obj:get_luaentity().collect = true
-					obj:set_acceleration({x = 0, y = -10, z = 0})
-					obj:set_velocity({x = math_random(-3, 3), y = math_random(0, 10), z = math_random(-3, 3)})
-					droplift.invoke(obj, math_random(3, 10))
-				end
-
-				count = count - take
+				droplift.invoke(obj, math_random(3, 10))
 			end
+
+			count = count - take
 		end
   end
 end
 
 local function add_drop(drops, item)
+	-- Make sure it's an item stack.
 	item = ItemStack(item)
 	local name = item:get_name()
 	
+	-- Deal with trash.
+	if stack_loss_prob[name] ~= nil and math_random(1, stack_loss_prob[name]) == 1 then
+		return
+	end
+
 	local drop = drops[name]
 	if drop == nil then
-		drops[name] = item:get_count()
+		drops[name] = item
 	else
-    -- This is causing stacks to get clamped to stack_max, which causes stuff to be lost.
-		--drop:set_count(drop:get_count() + item:get_count())
-    drops[name] = drops[name] + item:get_count()
+		-- Note: this should NOT get clamped by stack_max anymore.
+		drop:set_count(drop:get_count() + item:get_count())
 	end
 end
 
@@ -149,15 +147,16 @@ local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destr
 		if t == "string" then
 			add_drop(drops, def._tnt_drop)
 		elseif t == "table" then
-			for k, v in ipairs(def._tnt_drop) do
-				add_drop(drops, v)
+			local b = def._tnt_drop
+			for k = 1, #b do
+				add_drop(drops, b[k])
 			end
 		end
 		return c_air
 	else
 		local node_drops = minetest.get_node_drops(def.name, "")
-		for _, item in ipairs(node_drops) do
-			add_drop(drops, item)
+		for k = 1, #node_drops do
+			add_drop(drops, node_drops[k])
 		end
 		return c_air
 	end
@@ -297,8 +296,8 @@ local function entity_physics(pos, radius, drops, boomdef)
 					end
 				end
 
-				for _, item in ipairs(entity_drops) do
-					add_drop(drops, item)
+				for k = 1, #entity_drops do
+					add_drop(drops, entity_drops[k])
 				end
 			end
 		end
@@ -497,7 +496,8 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	end
   
   -- Call on_destruct callbacks.
-  for k, v in ipairs(on_destruct_queue) do
+  for k = 1, #on_destruct_queue do
+		local v = on_destruct_queue[k]
     v.on_destruct(v.pos)
   end
 
@@ -527,17 +527,19 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	end
 
 	-- Execute after-destruct callbacks.
-  for k, v in ipairs(on_after_destruct_queue) do
+	for k = 1, #on_after_destruct_queue do
+		local v = on_after_destruct_queue[k]
     v.after_destruct(v.pos, v.oldnode)
   end
 
-	for _, queued_data in ipairs(on_blast_queue) do
+  for k = 1, #on_blast_queue do
+		local queued_data = on_blast_queue[k]
 		local dist = math_max(1, vector_distance(queued_data.pos, pos))
 		local intensity = (radius * radius) / (dist * dist)
 		local node_drops = queued_data.on_blast(queued_data.pos, intensity)
 		if node_drops then
-			for _, item in ipairs(node_drops) do
-				add_drop(drops, item)
+			for j = 1, #node_drops do
+				add_drop(drops, node_drops[j])
 			end
 		end
 	end
@@ -545,8 +547,8 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
   -- Initialize flames.
   local fdef = minetest.registered_nodes["fire:basic_flame"]
   if fdef and fdef.on_construct then
-    for k, v in ipairs(fire_locations) do
-      fdef.on_construct(v)
+		for k = 1, #fire_locations do
+      fdef.on_construct(fire_locations[k])
     end
   end
 

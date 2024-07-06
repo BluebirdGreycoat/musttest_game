@@ -280,7 +280,11 @@ function safe.change_inventory_password(pos, oldpass, newpass)
 			if s then
 				v.data = s
 				v.enc = 1
+			else
+				v.enc = 0
 			end
+		else
+			v.enc = 0
 		end
 	end
 

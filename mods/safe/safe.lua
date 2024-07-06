@@ -227,7 +227,7 @@ function safe.load_detached_inventory(pos, pname)
 					s = safe.decrypt(password, s)
 				end
 
-				if s then
+				if s and s ~= "" then
 					local stack = ItemStack(s)
 					inv:set_stack("main", k, stack)
 				else

@@ -385,7 +385,7 @@ function safe.on_blast(pos)
 	if ndef._safe_is_blastable then
 		local drops = {}
 		drops[1] = ItemStack(ndef._safe_close_node)
-		local metatable = minetest.get_meta(pos):to_table().fields
+		local metatable = minetest.get_meta(pos):to_table()
 		safe.preserve_metadata(pos, node, metatable.fields, drops)
 		minetest.remove_node(pos)
 		return drops

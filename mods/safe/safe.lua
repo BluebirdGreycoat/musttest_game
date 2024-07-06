@@ -248,6 +248,10 @@ function safe.change_inventory_password(pos, oldpass, newpass)
 	local t = {}
 	local meta = minetest.get_meta(pos)
 	local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+	local hash = minetest.hash_node_position(pos)
+
+	-- Safety check. We CANNOT have a password resident in memory.
+	assert(not safe.passwords[hash])
 
 	-- Load inventory with old password.
 	for k = 1, ndef._safe_inventory_size do
@@ -258,6 +262,10 @@ function safe.change_inventory_password(pos, oldpass, newpass)
 			local ns = safe.decrypt(oldpass, s)
 			if ns then
 				s = ns
+			else
+				-- Failure to decrypt means we have to clear this slot.
+				s = ""
+				e = 0
 			end
 		end
 
@@ -266,10 +274,13 @@ function safe.change_inventory_password(pos, oldpass, newpass)
 
 	-- Encrypt stuff.
 	for k, v in ipairs(t) do
-		local s = safe.encrypt(newpass, v.data)
-		if s then
-			v.data = s
-			v.enc = 1
+		-- Skip trying to encrypt empty slots.
+		if v.data ~= "" then
+			local s = safe.encrypt(newpass, v.data)
+			if s then
+				v.data = s
+				v.enc = 1
+			end
 		end
 	end
 

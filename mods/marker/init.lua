@@ -933,7 +933,10 @@ marker.on_receive_fields = function(player, formname, fields)
   elseif fields.mark then
 		if marker.list_size(pname, "default") < marker.max_waypoints then
 			local pos = player:get_pos()
-			pos.y = pos.y + 1
+
+			-- No longer needed since player position is their center instead of their feet.
+			--pos.y = pos.y + 1
+
 			marker.add_waypoint(pname, pos, "default")
 			local deflist = marker.get_list(pname, "default")
 			gui.index2 = #deflist

@@ -235,6 +235,15 @@ if not safe.registered then
 		},
 	})
 
+	minetest.register_craft({
+		output = "safe:briefcase",
+		recipe = {
+			{'', 'default:padlock', ''},
+			{'group:leather', 'chests:chest_locked_closed', 'group:leather'},
+			{'dye:black', 'techcrafts:control_logic_unit', 'dye:black'},
+		},
+	})
+
 	minetest.register_on_player_receive_fields(function(...)
 		return safe.on_player_receive_fields(...)
 	end)

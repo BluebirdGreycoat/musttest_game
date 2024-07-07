@@ -209,7 +209,8 @@ xpanes.register_pane("bar", {
 	recipe = {
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"}
-	}
+	},
+	amount = 6,
 })
 
 xpanes.register_pane("wood", {

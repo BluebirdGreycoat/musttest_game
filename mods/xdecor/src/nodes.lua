@@ -14,7 +14,8 @@ local function register_pane(name, desc, def)
 		wield_image = "xdecor_"..name..".png",
 		groups = def.groups,
 		sounds = def.sounds or default.node_sound_defaults(),
-		recipe = def.recipe
+		recipe = def.recipe,
+		amount = def.amount,
 	})
 end
 
@@ -22,14 +23,17 @@ register_pane("bamboo_frame", "Bamboo Frame", {
 	groups = utility.dig_groups("pane_wood", {pane=1, flammable=2}),
 	recipe = {{"default:papyrus", "default:papyrus", "default:papyrus"},
 		  {"default:papyrus", "farming:cotton",  "default:papyrus"},
-		  {"default:papyrus", "default:papyrus", "default:papyrus"}}
+		  {"default:papyrus", "default:papyrus", "default:papyrus"}},
+	amount = 6,
 })
 
 register_pane("chainlink", "Chain Link Mesh", {
 	groups = utility.dig_groups("pane_metal", {pane=1}),
-	recipe = {{"default:steel_ingot", "", "default:steel_ingot"},
-		  {"", "default:steel_ingot", ""},
-		  {"default:steel_ingot", "", "default:steel_ingot"}},
+	recipe = {
+		{"chains:iron_chain", "", "chains:iron_chain"},
+		{"", "chains:iron_chain", ""},
+		{"chains:iron_chain", "", "chains:iron_chain"}},
+	amount = 1,
 	sounds = default.node_sound_metal_defaults(),
 })
 
@@ -39,6 +43,7 @@ register_pane("rusty_bar", "Rusty Iron Bars", {
 	recipe = {{"", "default:dirt", ""},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
 		  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"}},
+	amount = 6,
 	sounds = default.node_sound_metal_defaults(),
 })
 
@@ -47,7 +52,8 @@ register_pane("wood_frame", "Wood Frame", {
 	groups = utility.dig_groups("pane_wood", {pane=1, flammable=2}),
 	recipe = {{"group:wood", "group:stick", "group:wood"},
 		  {"group:stick", "group:stick", "group:stick"},
-		  {"group:wood", "group:stick", "group:wood"}}
+		  {"group:wood", "group:stick", "group:wood"}},
+	amount = 6,
 })
 
 xdecor.register("baricade", {

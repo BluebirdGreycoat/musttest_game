@@ -136,12 +136,9 @@ minetest.register_node("chains:bronze_chandelier", {
 -- crafts
 
 minetest.register_craft({
+	type = "anvil",
 	output = 'chains:iron_chain 3',
-	recipe = {
-		{'default:steel_ingot'},
-		{'default:steel_ingot'},
-		{'default:steel_ingot'},
-	}
+	recipe = 'default:steel_ingot 3',
 })
 
 minetest.register_craft({
@@ -162,12 +159,9 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "anvil",
 	output = 'chains:bronze_chain 3',
-	recipe = {
-		{'default:bronze_ingot'},
-		{'default:bronze_ingot'},
-		{'default:bronze_ingot'},
-	}
+	recipe = 'default:bronze_ingot 3',
 })
 
 minetest.register_craft({

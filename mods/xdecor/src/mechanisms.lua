@@ -103,6 +103,7 @@ xdecor.register("lever_off", {
 	description = "Spring Lever",
 	tiles = {"xdecor_lever_off.png"},
 	drawtype = "nodebox",
+	inventory_image = "xdecor_lever_inv.png",
 	node_box = xdecor.pixelbox(16, {{2, 1, 15, 12, 14, 1}}),
 	groups = utility.dig_groups("bigitem"),
 	sounds = default.node_sound_stone_defaults(),

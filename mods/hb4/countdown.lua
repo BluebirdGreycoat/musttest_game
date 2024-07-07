@@ -70,10 +70,12 @@ function countdown.step(data)
 		end
 
 		-- Report every minute once there are 10 or less minutes.
-		if rd.hour == 0 and rd.min <= 10 and data.min ~= rd.min then
-			report = true
+		if rd.hour == 0 and rd.min <= 10 then
+			if data.min ~= rd.min then
+				report = true
+				msgtype = 2
+			end
 			delay = 5
-			msgtype = 2
 		end
 
 		-- Report every second of the last 20 seconds.

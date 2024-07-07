@@ -73,10 +73,9 @@ minetest.register_node("quartz:pillar", {
 
 -- Quartz Crystal Piece
 minetest.register_craft({
-	output = '"quartz:quartz_crystal_piece" 3',
-	recipe = {
-		{'quartz:quartz_crystal'}
-	}
+	type = "anvil",
+	output = 'quartz:quartz_crystal_piece 3',
+	recipe = 'quartz:quartz_crystal',
 })
 
 -- Quartz Block

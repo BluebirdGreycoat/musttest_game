@@ -161,7 +161,7 @@ function safe.get_inventory_callbacks(ndef, pname)
 
 
 		-- I encrypt inv locations peicemeal in order to provide robustness against
-		-- a server crash. For the same reason, I also to this as soon as possible,
+		-- a server crash. For the same reason, I also do this as soon as possible,
 		-- whenever something changes, instead of waiting for the user to close the
 		-- formspec.
 		on_move = function(inv, from_list, from_index, to_list, to_index, count, player)
@@ -348,6 +348,11 @@ function safe.get_formspec(pos, pname)
 		local h = ndef._safe_inventory_h
 		local pad = 0.25
 
+		local restrict = "false"
+		if meta:get_int("restrict_password") == 1 then
+			restrict = "true"
+		end
+
 		-- The formspec math causes the formspec to change size vertically depending
 		-- on the number of inventory rows in the safe. Formspec size doesn't follow
 		-- new (real) coordinates.
@@ -355,13 +360,18 @@ function safe.get_formspec(pos, pname)
 		-- Unlocked formspec.
 		formspec = "size[8," .. (h+6.1) .. "]" .. defgui .. "real_coordinates[true]" ..
 			"button_exit[7.12," .. (h+0.5+(pad*h)) .. ";3.0,0.7;lock_safe;Lock " .. cn .. "]" ..
-			"label[0.35," .. (h+0.6+(pad*h)) .. ";Secure Storage]" ..
+			"label[0.35," .. (h+0.6+(pad*h)) .. ";" .. minetest.formspec_escape("Secure Storage: owned by <" .. rename.gpn(owner) .. ">") .. "]" ..
 			"list[detached:" .. invname .. ";main;0.35,0.5;" .. w .. "," .. h .. ";]" ..
 			"list[current_player;main;0.35," .. (h+2.1+(pad*h)) .. ";8,1;]" ..
 			"list[current_player;main;0.35," .. (h+3.5+(pad*h)) .. ";8,3;8]" ..
 			"listring[detached:" .. invname .. ";main]" ..
 			"listring[current_player;main]" ..
 			default.get_hotbar_bg(0.35, (h+2.1+(pad*h)), true)
+
+		-- Add some options for the owner.
+		if pname == owner then
+			formspec = formspec .. "checkbox[0.35," .. (h+1.0+(pad*h)) .. ";restrict_password;Restrict Password;" .. restrict .. "]"
+		end
 	end
 
 	return formspec, locked
@@ -689,12 +699,17 @@ function safe.on_player_receive_fields(player, formname, fields)
 		return true
 	end
 
+	-- Player enters password to access the safe.
 	if fields.key_enter_field == "pin_entry" and context.locked then
 		local pin = (type(fields.pin_entry) == "string" and fields.pin_entry) or ""
 		local canary = safe.decrypt(pin, meta:get_string("canary"))
 
 		-- If we could decrypt the canary correctly, we have the right password.
-		if canary and canary == "encrypted" then
+		-- But note! We also check if the password is restricted. If that doesn't
+		-- pass, we tell the user exactly the same as if they got the password wrong.
+		local may_access = (meta:get_int("restrict_password") == 0 or pname == owner)
+
+		if canary and canary == "encrypted" and may_access then
 			context.locked = false
 			safe.unlock_safe(pos, pin)
 			minetest.show_formspec(pname, "safe:main", safe.get_formspec(pos, pname))
@@ -727,6 +742,25 @@ function safe.on_player_receive_fields(player, formname, fields)
 			minetest.show_formspec(pname, "safe:main", safe.get_formspec(pos, pname))
 			return true
 		end
+	end
+
+	-- Only the owner can change the password restriction, and only while the safe is UNLOCKED.
+	if fields.restrict_password and pname == owner and not context.locked then
+		if fields.restrict_password == 'true' then
+			meta:set_int("restrict_password", 1)
+			meta:mark_as_private("restrict_password")
+			local c = safe.MESSAGE_COLOR
+			local cn = ndef._safe_common_name:lower()
+			minetest.chat_send_player(pname, c .. "# Server: Only the owner may use the password to this " .. cn .. ".")
+		elseif fields.restrict_password == 'false' then
+			meta:set_int("restrict_password", 0)
+			meta:mark_as_private("restrict_password")
+			local c = safe.MESSAGE_COLOR
+			local cn = ndef._safe_common_name:lower()
+			minetest.chat_send_player(pname, c .. "# Server: Anyone with the password may access this " .. cn .. ".")
+		end
+		minetest.show_formspec(pname, "safe:main", safe.get_formspec(pos, pname))
+		return true
 	end
 
 	-- Only the owner can change the password, and only while the safe is locked.

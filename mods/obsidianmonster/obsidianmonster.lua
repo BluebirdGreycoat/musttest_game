@@ -4,6 +4,7 @@ local vector_round = vector.round
 
 mobs.register_mob("obsidianmonster:obsidianmonster", {
 	type = "monster",
+	description = "Shard Bat",
 	passive = false,
 	damage = 3*500,
 	attack_type = "shoot",

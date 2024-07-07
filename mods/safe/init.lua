@@ -2,6 +2,9 @@
 if not minetest.global_exists("safe") then safe = {} end
 safe.modpath = minetest.get_modpath("safe")
 
+-- Max interaction distance.
+safe.INTERACTION_DISTANCE = 10
+
 -- This color name apparently offends some woke cupcake somewhere in the world.
 -- The W3C recommends partly for this reason that color names NOT be used.
 -- Therefore, today is a good day to use an "offensive" color name, and offend

@@ -89,6 +89,9 @@ function safe.get_inventory_callbacks(ndef, pname)
 			if not safe.passwords[hash] then
 				return 0
 			end
+			if vector.distance(pos, player:get_pos()) > safe.INTERACTION_DISTANCE then
+				return 0
+			end
 			if from_list ~= "main" or to_list ~= "main" then
 				return 0
 			end
@@ -115,6 +118,9 @@ function safe.get_inventory_callbacks(ndef, pname)
 			end
 			local hash = minetest.hash_node_position(pos)
 			if not safe.passwords[hash] then
+				return 0
+			end
+			if vector.distance(pos, player:get_pos()) > safe.INTERACTION_DISTANCE then
 				return 0
 			end
 			if listname ~= "main" then
@@ -150,6 +156,9 @@ function safe.get_inventory_callbacks(ndef, pname)
 			end
 			local hash = minetest.hash_node_position(pos)
 			if not safe.passwords[hash] then
+				return 0
+			end
+			if vector.distance(pos, player:get_pos()) > safe.INTERACTION_DISTANCE then
 				return 0
 			end
 			if listname ~= "main" then
@@ -422,6 +431,11 @@ end
 function safe.on_rightclick(pos, node, user, itemstack, pt)
 	local pname = user:get_player_name()
 
+	-- No-go if player too far.
+	if vector.distance(pos, user:get_pos()) > safe.INTERACTION_DISTANCE then
+		return
+	end
+
 	-- No-go if the user already has a safe open.
 	if safe.players[pname] then
 		return
@@ -677,6 +691,12 @@ function safe.on_player_receive_fields(player, formname, fields)
 	local pos = context.pos
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
+
+	-- Interaction distance check.
+	if vector.distance(pos, player:get_pos()) > safe.INTERACTION_DISTANCE then
+		safe.players[pname] = nil
+		return true
+	end
 
 	if not safe.is_valid_node(pos) then
 		safe.players[pname] = nil

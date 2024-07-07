@@ -536,7 +536,7 @@ for _,mode in ipairs({"on", "off"}) do
                 minetest.show_formspec(sender:get_player_name(), "elevator:elevator", formspec)
             elseif not elevator.motors[meta:get_string("motor")] then
                 if not minetest.test_protection(pos, sender:get_player_name()) then
-                    formspec = "size[4,2]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
+                    formspec = "size[4,2.3]" .. default.gui_bg .. default.gui_bg_img .. default.gui_slots
                     .."label[0,0;This elevator is inactive.]"
                     .."field[0.25,1.25;4,0;label;;"..minetest.formspec_escape(meta:get_string("label")).."]"
                     .."button_exit[-0.05,1.5;4,1;setlabel;Set label]"
@@ -577,7 +577,7 @@ minetest.register_on_player_receive_fields(function(sender, formname, fields)
         return true
     end
     local meta = minetest.get_meta(pos)
-    if fields.setlabel then
+    if fields.setlabel or fields.key_enter_field == "label" then
         if minetest.test_protection(pos, sender:get_player_name()) then
             return true
         end

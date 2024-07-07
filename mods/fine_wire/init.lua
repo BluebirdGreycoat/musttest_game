@@ -15,12 +15,9 @@ minetest.register_craftitem("fine_wire:silver", {
 })
 
 minetest.register_craft({
+	type = "anvil",
   output = 'fine_wire:copper 3',
-  recipe = {
-    {'', 'default:copper_ingot', ''},
-    {'', 'default:copper_ingot', ''},
-    {'', 'default:copper_ingot', ''},
-  }
+  recipe = 'default:copper_ingot 3',
 })
 
 minetest.register_craft({
@@ -30,12 +27,9 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "anvil",
   output = 'fine_wire:gold 3',
-  recipe = {
-    {'', 'default:gold_ingot', ''},
-    {'', 'default:gold_ingot', ''},
-    {'', 'default:gold_ingot', ''},
-  }
+  recipe = 'default:gold_ingot 3',
 })
 
 minetest.register_craft({
@@ -45,12 +39,9 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	type = "anvil",
   output = 'fine_wire:silver 3',
-  recipe = {
-    {'', 'moreores:silver_ingot', ''},
-    {'', 'moreores:silver_ingot', ''},
-    {'', 'moreores:silver_ingot', ''},
-  }
+  recipe = 'moreores:silver_ingot 3',
 })
 
 minetest.register_craft({

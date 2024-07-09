@@ -147,11 +147,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     
     -- Locked gold chest.
     if string.find(name, "locked") then 
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
-        "field[8.25,0.45;2,0.75;name;;]" ..
+        "field[8.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
 
 	-- Locked or unlocked diamond chest.
@@ -171,11 +171,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 
     -- Locked diamond chest.
     if string.find(name, "locked") then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
-        "field[8.25,0.45;2,0.75;name;;]" ..
+        "field[8.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
 
 	-- Locked or unlocked mithril chest.
@@ -195,16 +195,16 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 
     -- Locked mithril chest.
     if string.find(name, "locked") then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[12,0;2,1;rename;Rename]" ..
-        "field[10.25,0.45;2,0.75;name;;]" ..
+        "field[10.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
     
   -- Locked silver chest. (This chest is shareable.) Grandfather in old ironside chests.
   elseif (string.find(name, "silver") and string.find(name, "locked")) or sharecount > 0 then
-    local chest_name = meta:get_string("chest_name") or ""
+    local chest_name = F(meta:get_string("chest_name") or "")
     formspec = "size[10,10]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,1.3;8,4;]" ..
       "list[current_player;main;0,5.85;8,1;]" ..
@@ -214,9 +214,9 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "label[0,0;" .. desc .. "]" ..
       default.get_hotbar_bg(0, 5.85) ..
       "button[6,0;2,1;rename;Rename]" ..
-      "field[4.25,0.45;2,0.75;name;;]" ..
+      "field[4.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
       "field_close_on_enter[name;false]" ..
-      "label[0,0.35;Label: <" .. F(chest_name) .. ">]" ..
+      "label[0,0.35;Label: <" .. chest_name .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
       "button[8,2.2;2,1;unshare;Unshare]" ..
       "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]"
@@ -252,11 +252,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     -- (If chest was locked silver, then another if-statement already handled it.)
 		-- Iron locked chests with existing shares are grandfathered in.
     if locked then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
-        "field[4.25,0.45;2,0.75;name;;]" ..
+        "field[4.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
 
 				-- Trash icon.
 				.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..

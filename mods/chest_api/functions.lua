@@ -672,16 +672,20 @@ function chest_api.on_player_receive_fields(player, formname, fields)
     end
   end
 
-  if (fields.addname or fields.key_enter_field == "addname_field") and fields.addname_field ~= "" then -- Sharing formspec only.
+  if fields.addname or fields.key_enter_field == "addname_field" then -- Sharing formspec only.
 		-- Permit grandfathering of old shared ironside chests.
 		local shares, sharecount = get_share_names(meta)
 
     if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
       if owner == pn or gdac.player_is_admin(pn) then
-        add_share_name(meta, fields.addname_field, pn)
+        if fields.addname_field ~= "" then
+          add_share_name(meta, fields.addname_field, pn)
 
-        -- The sharing formspec is being displayed. Refresh it.
-        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          -- The sharing formspec is being displayed. Refresh it.
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+        else
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access the list.")
+        end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
       end
@@ -696,10 +700,14 @@ function chest_api.on_player_receive_fields(player, formname, fields)
 
     if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
       if owner == pn or gdac.player_is_admin(pn) then
-        del_share_name(meta, fields.delname_field, pn)
+        if fields.delname_field ~= "" then
+          del_share_name(meta, fields.delname_field, pn)
 
-        -- The sharing formspec is being displayed. Refresh it.
-        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          -- The sharing formspec is being displayed. Refresh it.
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+        else
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access the list.")
+        end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
       end

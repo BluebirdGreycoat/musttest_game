@@ -338,7 +338,7 @@ local function del_share_name(meta, name, pname)
 end
 
 -- Generate a share formspec. We need the chest metadata.
-chest_api.get_share_formspec = function(pos, meta)
+chest_api.get_share_formspec = function(pos, meta, delname)
   local node = minetest.get_node(pos)
   local nn = node.name
   local desc = minetest.reg_ns_nodes[nn].description
@@ -360,7 +360,7 @@ chest_api.get_share_formspec = function(pos, meta)
     "label[0,1.71;Add or remove access grants:]" ..
     "field[0.27,2.46;2.5,1;addname_field;;]" ..
     "field_close_on_enter[addname_field;false]" ..
-    "field[0.27,3.46;2.5,1;delname_field;;]" ..
+    "field[0.27,3.46;2.5,1;delname_field;;" .. F(delname or "") .. "]" ..
     "field_close_on_enter[delname_field;false]" ..
     "label[0,4;Tip: any locked chest can be shared with a key.]"
   
@@ -720,6 +720,48 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
         else
           minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access the list.")
+        end
+      else
+        minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+      end
+    else
+      minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+    end
+  end
+
+  if fields.sharelist then
+    -- Permit grandfathering of old shared ironside chests.
+    local shares, sharecount = get_share_names(meta)
+
+    if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
+      if owner == pn or gdac.player_is_admin(pn) then
+        local event = minetest.explode_textlist_event(fields.sharelist)
+        if event.type == "DCL" then
+          local idx = event.index
+          if idx >= 1 and idx <= sharecount then
+            -- NOTE: This is hacky and (cit.) ugly as sin! But per-player
+            -- contexts sounds like over-engineering here.
+            -- The problem is Lua gives no legit way to get a table key from its
+            -- index. (There is no index at all!) Moreover, the order that pairs
+            -- iterates through the keys of a table is unspecified. Moreover,
+            -- the table I get here by calling get_share_names is not even the
+            -- same that was used during the formspec generation, and it may
+            -- even contain different names, or have them in a different order
+            -- (although there is *no* order!) because the metadata from which
+            -- it is created could have changed in the meanwhile.
+            local delname
+            for k, v in pairs(shares) do
+              delname = k
+              idx = idx - 1
+              if idx == 0 then
+                break
+              end
+            end
+            delname = rename.gpn(delname)
+
+            -- The sharing formspec is being displayed. Refresh it.
+            minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, delname))
+          end
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")

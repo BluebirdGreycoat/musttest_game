@@ -324,6 +324,8 @@ local function del_share_name(meta, name, pname)
   local share_names, share_count = get_share_names(meta)
   if share_names[name] then
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> can no longer access " .. get_chest_name(meta) .. ".")
+  else
+    minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> was not in the access list of " .. get_chest_name(meta) .. ".")
   end
   share_names[name] = nil
   local str = minetest.write_json(share_names) -- Returns nil for empty table?

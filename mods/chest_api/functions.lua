@@ -150,6 +150,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       local chest_name = meta:get_string("chest_name") or ""
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
         "field[8.25,0.45;2,0.75;name;;]" ..
+        "field_close_on_enter[name;false]" ..
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
     end
 
@@ -173,6 +174,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       local chest_name = meta:get_string("chest_name") or ""
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
         "field[8.25,0.45;2,0.75;name;;]" ..
+        "field_close_on_enter[name;false]" ..
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
     end
 
@@ -196,6 +198,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       local chest_name = meta:get_string("chest_name") or ""
       formspec = formspec .. "button[12,0;2,1;rename;Rename]" ..
         "field[10.25,0.45;2,0.75;name;;]" ..
+        "field_close_on_enter[name;false]" ..
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
     end
     
@@ -212,6 +215,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       default.get_hotbar_bg(0, 5.85) ..
       "button[6,0;2,1;rename;Rename]" ..
       "field[4.25,0.45;2,0.75;name;;]" ..
+      "field_close_on_enter[name;false]" ..
       "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
       "button[8,2.2;2,1;unshare;Unshare]" ..
@@ -251,6 +255,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       local chest_name = meta:get_string("chest_name") or ""
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
         "field[4.25,0.45;2,0.75;name;;]" ..
+        "field_close_on_enter[name;false]" ..
         "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
 
 				-- Trash icon.
@@ -611,7 +616,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
     return true -- Abort.
   end
 
-  if fields.rename then
+  if fields.rename or fields.key_enter_field == "name" then
     -- Anitcheat check.
     if (string.find(nn, "copper") or string.find(nn, "diamond") or
         string.find(nn, "iron") or

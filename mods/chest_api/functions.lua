@@ -214,7 +214,8 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "field[4.25,0.45;2,0.75;name;;]" ..
       "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
-      "button[8,2.2;2,1;unshare;Unshare]"
+      "button[8,2.2;2,1;unshare;Unshare]" ..
+      "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]"
 
 			-- Trash icon.
 			.. "list[" .. ltrash .. ";" .. mtrash .. ";9,5.85;1,1;]" ..
@@ -339,6 +340,7 @@ chest_api.get_share_formspec = function(pos, meta)
     "label[0,0;" .. minetest.formspec_escape(utility.get_short_desc(desc)) .. "]" ..
     "label[0,0.35;Label: <" .. minetest.formspec_escape(cname) .. ">]" ..
     "button[6,0;2,1;unshare;Unshare]" ..
+    "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]" ..
     "button_exit[6,4;2,1;quit;Close]" ..
     "button[2.5,2.14;2,1.02;addname;Add Name]" ..
     "button[2.5,3.14;2,1.02;delname;Remove Name]" ..

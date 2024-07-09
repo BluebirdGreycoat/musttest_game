@@ -303,6 +303,12 @@ end
 local function add_share_name(meta, name, pname)
   if name == "" then return end -- Failsafe.
 	name = rename.grn(name)
+  -- Being able to get rid of ghosts from the past may be a good idea.
+  -- Being able to shove them in the future probably isn't.
+  if not minetest.player_exists(name) then
+    minetest.chat_send_player(pname, "# Server: Can't add non-existent player <" .. rename.gpn(name) .. ">.")
+    return
+  end
   local share_names, share_count = get_share_names(meta)
   if not share_names[name] then
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> will now have access to " .. get_chest_name(meta) .. ".")

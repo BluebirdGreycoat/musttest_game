@@ -346,7 +346,9 @@ chest_api.get_share_formspec = function(pos, meta)
     "button[2.5,3.14;2,1.02;delname;Remove Name]" ..
     "label[0,1.71;Add or remove access grants:]" ..
     "field[0.27,2.46;2.5,1;addname_field;;]" ..
+    "field_close_on_enter[addname_field;false]" ..
     "field[0.27,3.46;2.5,1;delname_field;;]" ..
+    "field_close_on_enter[delname_field;false]" ..
     "label[0,4;Tip: any locked chest can be shared with a key.]"
   
   formspec = formspec ..
@@ -670,7 +672,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
     end
   end
 
-  if fields.addname and fields.addname_field ~= "" then -- Sharing formspec only.
+  if (fields.addname or fields.key_enter_field == "addname_field") and fields.addname_field ~= "" then -- Sharing formspec only.
 		-- Permit grandfathering of old shared ironside chests.
 		local shares, sharecount = get_share_names(meta)
 
@@ -688,7 +690,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
     end
   end
 
-  if fields.delname then -- Sharing formspec only.
+  if fields.delname or fields.key_enter_field == "delname_field" then -- Sharing formspec only.
 		-- Permit grandfathering of old shared ironside chests.
 		local shares, sharecount = get_share_names(meta)
 

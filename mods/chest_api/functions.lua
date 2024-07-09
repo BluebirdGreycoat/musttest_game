@@ -1,8 +1,8 @@
 
--- Localize vector.distance() for performance.
+-- Localize for performance.
+local F = minetest.formspec_escape
 local vector_distance = vector.distance
 local math_random = math.random
-
 
 
 -- This function is responsible for triggering the update of vending
@@ -151,7 +151,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
         "field[8.25,0.45;2,0.75;name;;]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
     end
 
 	-- Locked or unlocked diamond chest.
@@ -175,7 +175,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
         "field[8.25,0.45;2,0.75;name;;]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
     end
 
 	-- Locked or unlocked mithril chest.
@@ -199,7 +199,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       formspec = formspec .. "button[12,0;2,1;rename;Rename]" ..
         "field[10.25,0.45;2,0.75;name;;]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
     end
     
   -- Locked silver chest. (This chest is shareable.) Grandfather in old ironside chests.
@@ -216,7 +216,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "button[6,0;2,1;rename;Rename]" ..
       "field[4.25,0.45;2,0.75;name;;]" ..
       "field_close_on_enter[name;false]" ..
-      "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]" ..
+      "label[0,0.35;Label: <" .. F(chest_name) .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
       "button[8,2.2;2,1;unshare;Unshare]" ..
       "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]"
@@ -256,7 +256,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
         "field[4.25,0.45;2,0.75;name;;]" ..
         "field_close_on_enter[name;false]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "label[0,0.35;Label: <" .. F(chest_name) .. ">]"
 
 				-- Trash icon.
 				.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
@@ -350,8 +350,8 @@ chest_api.get_share_formspec = function(pos, meta)
     default.gui_slots
   
   formspec = "size[8,5]" .. defgui ..
-    "label[0,0;" .. minetest.formspec_escape(utility.get_short_desc(desc)) .. "]" ..
-    "label[0,0.35;Label: <" .. minetest.formspec_escape(cname) .. ">]" ..
+    "label[0,0;" .. F(utility.get_short_desc(desc)) .. "]" ..
+    "label[0,0.35;Label: <" .. F(cname) .. ">]" ..
     "button[6,0;2,1;unshare;Unshare]" ..
     "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]" ..
     "button_exit[6,4;2,1;quit;Close]" ..
@@ -369,7 +369,7 @@ chest_api.get_share_formspec = function(pos, meta)
   
   local share_names, share_count = get_share_names(meta)
   for k, v in pairs(share_names) do
-    formspec = formspec .. minetest.formspec_escape(rename.gpn(k)) .. ","
+    formspec = formspec .. F(rename.gpn(k)) .. ","
   end 
   formspec = string.gsub(formspec, ",$", "") -- Remove trailing comma.
   formspec = formspec .. "]"

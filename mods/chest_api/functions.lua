@@ -312,6 +312,7 @@ local function add_share_name(meta, name, pname)
   -- Being able to shove them in the future probably isn't.
   if not minetest.player_exists(name) then
     minetest.chat_send_player(pname, "# Server: Can't add non-existent player <" .. rename.gpn(name) .. ">.")
+    easyvend.sound_error(pname)
     return
   end
   local share_names, share_count = get_share_names(meta)
@@ -331,6 +332,7 @@ local function del_share_name(meta, name, pname)
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> can no longer access " .. get_chest_name(meta) .. ".")
   else
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> was not in the access list of " .. get_chest_name(meta) .. ".")
+    easyvend.sound_error(pname)
   end
   share_names[name] = nil
   local str = minetest.write_json(share_names) -- Returns nil for empty table?
@@ -642,9 +644,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         minetest.show_formspec(pn, "default:chest", chest_api.get_chest_formspec(nn, desc, pos))
       else
         minetest.chat_send_player(pn, "# Server: You cannot relabel this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have labeling functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -657,9 +661,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -679,9 +685,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -698,12 +706,15 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
         else
           minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access the list.")
+          easyvend.sound_error(pn)
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -720,12 +731,15 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
         else
           minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access the list.")
+          easyvend.sound_error(pn)
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -765,9 +779,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 

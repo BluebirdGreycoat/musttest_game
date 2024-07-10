@@ -1,8 +1,8 @@
 
--- Localize vector.distance() for performance.
+-- Localize for performance.
+local F = minetest.formspec_escape
 local vector_distance = vector.distance
 local math_random = math.random
-
 
 
 -- This function is responsible for triggering the update of vending
@@ -147,10 +147,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     
     -- Locked gold chest.
     if string.find(name, "locked") then 
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
-        "field[8.25,0.45;2,0.75;name;;]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "field[8.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
+        "field_close_on_enter[name;false]" ..
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
 
 	-- Locked or unlocked diamond chest.
@@ -170,10 +171,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 
     -- Locked diamond chest.
     if string.find(name, "locked") then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
-        "field[8.25,0.45;2,0.75;name;;]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "field[8.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
+        "field_close_on_enter[name;false]" ..
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
 
 	-- Locked or unlocked mithril chest.
@@ -193,15 +195,16 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 
     -- Locked mithril chest.
     if string.find(name, "locked") then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[12,0;2,1;rename;Rename]" ..
-        "field[10.25,0.45;2,0.75;name;;]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "field[10.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
+        "field_close_on_enter[name;false]" ..
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
     
   -- Locked silver chest. (This chest is shareable.) Grandfather in old ironside chests.
   elseif (string.find(name, "silver") and string.find(name, "locked")) or sharecount > 0 then
-    local chest_name = meta:get_string("chest_name") or ""
+    local chest_name = F(meta:get_string("chest_name") or "")
     formspec = "size[10,10]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,1.3;8,4;]" ..
       "list[current_player;main;0,5.85;8,1;]" ..
@@ -211,10 +214,12 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "label[0,0;" .. desc .. "]" ..
       default.get_hotbar_bg(0, 5.85) ..
       "button[6,0;2,1;rename;Rename]" ..
-      "field[4.25,0.45;2,0.75;name;;]" ..
-      "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]" ..
+      "field[4.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
+      "field_close_on_enter[name;false]" ..
+      "label[0,0.35;Label: <" .. chest_name .. ">]" ..
       "button[8,1.2;2,1;doshare;Share Chest]" ..
-      "button[8,2.2;2,1;unshare;Unshare]"
+      "button[8,2.2;2,1;unshare;Unshare]" ..
+      "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]"
 
 			-- Trash icon.
 			.. "list[" .. ltrash .. ";" .. mtrash .. ";9,5.85;1,1;]" ..
@@ -247,10 +252,11 @@ chest_api.get_chest_formspec = function(name, desc, pos)
     -- (If chest was locked silver, then another if-statement already handled it.)
 		-- Iron locked chests with existing shares are grandfathered in.
     if locked then
-      local chest_name = meta:get_string("chest_name") or ""
+      local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[6,0;2,1;rename;Rename]" ..
-        "field[4.25,0.45;2,0.75;name;;]" ..
-        "label[0,0.35;Label: <" .. minetest.formspec_escape(chest_name) .. ">]"
+        "field[4.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
+        "field_close_on_enter[name;false]" ..
+        "label[0,0.35;Label: <" .. chest_name .. ">]"
 
 				-- Trash icon.
 				.. "list[" .. ltrash .. ";" .. mtrash .. ";8,1.3;1,1;]" ..
@@ -302,6 +308,13 @@ end
 local function add_share_name(meta, name, pname)
   if name == "" then return end -- Failsafe.
 	name = rename.grn(name)
+  -- Being able to get rid of ghosts from the past may be a good idea.
+  -- Being able to shove them in the future probably isn't.
+  if not minetest.player_exists(name) then
+    minetest.chat_send_player(pname, "# Server: Can't add non-existent player <" .. rename.gpn(name) .. ">.")
+    easyvend.sound_error(pname)
+    return
+  end
   local share_names, share_count = get_share_names(meta)
   if not share_names[name] then
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> will now have access to " .. get_chest_name(meta) .. ".")
@@ -317,6 +330,9 @@ local function del_share_name(meta, name, pname)
   local share_names, share_count = get_share_names(meta)
   if share_names[name] then
     minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> can no longer access " .. get_chest_name(meta) .. ".")
+  else
+    minetest.chat_send_player(pname, "# Server: Player <" .. rename.gpn(name) .. "> was not in the access list of " .. get_chest_name(meta) .. ".")
+    easyvend.sound_error(pname)
   end
   share_names[name] = nil
   local str = minetest.write_json(share_names) -- Returns nil for empty table?
@@ -324,7 +340,7 @@ local function del_share_name(meta, name, pname)
 end
 
 -- Generate a share formspec. We need the chest metadata.
-chest_api.get_share_formspec = function(pos, meta)
+chest_api.get_share_formspec = function(pos, meta, delname)
   local node = minetest.get_node(pos)
   local nn = node.name
   local desc = minetest.reg_ns_nodes[nn].description
@@ -336,15 +352,18 @@ chest_api.get_share_formspec = function(pos, meta)
     default.gui_slots
   
   formspec = "size[8,5]" .. defgui ..
-    "label[0,0;" .. minetest.formspec_escape(utility.get_short_desc(desc)) .. "]" ..
-    "label[0,0.35;Label: <" .. minetest.formspec_escape(cname) .. ">]" ..
+    "label[0,0;" .. F(utility.get_short_desc(desc)) .. "]" ..
+    "label[0,0.35;Label: <" .. F(cname) .. ">]" ..
     "button[6,0;2,1;unshare;Unshare]" ..
+    "tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]" ..
     "button_exit[6,4;2,1;quit;Close]" ..
     "button[2.5,2.14;2,1.02;addname;Add Name]" ..
     "button[2.5,3.14;2,1.02;delname;Remove Name]" ..
     "label[0,1.71;Add or remove access grants:]" ..
     "field[0.27,2.46;2.5,1;addname_field;;]" ..
-    "field[0.27,3.46;2.5,1;delname_field;;]" ..
+    "field_close_on_enter[addname_field;false]" ..
+    "field[0.27,3.46;2.5,1;delname_field;;" .. F(delname or "") .. "]" ..
+    "field_close_on_enter[delname_field;false]" ..
     "label[0,4;Tip: any locked chest can be shared with a key.]"
   
   formspec = formspec ..
@@ -352,7 +371,7 @@ chest_api.get_share_formspec = function(pos, meta)
   
   local share_names, share_count = get_share_names(meta)
   for k, v in pairs(share_names) do
-    formspec = formspec .. minetest.formspec_escape(rename.gpn(k)) .. ","
+    formspec = formspec .. F(rename.gpn(k)) .. ","
   end 
   formspec = string.gsub(formspec, ",$", "") -- Remove trailing comma.
   formspec = formspec .. "]"
@@ -599,7 +618,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
     return true -- Abort.
   end
 
-  if fields.rename then
+  if fields.rename or fields.key_enter_field == "name" then
     -- Anitcheat check.
     if (string.find(nn, "copper") or string.find(nn, "diamond") or
         string.find(nn, "iron") or
@@ -625,9 +644,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         minetest.show_formspec(pn, "default:chest", chest_api.get_chest_formspec(nn, desc, pos))
       else
         minetest.chat_send_player(pn, "# Server: You cannot relabel this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have labeling functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -640,9 +661,11 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
@@ -662,45 +685,105 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
-  if fields.addname and fields.addname_field ~= "" then -- Sharing formspec only.
+  if fields.addname or fields.key_enter_field == "addname_field" then -- Sharing formspec only.
 		-- Permit grandfathering of old shared ironside chests.
 		local shares, sharecount = get_share_names(meta)
 
     if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
       if owner == pn or gdac.player_is_admin(pn) then
-        add_share_name(meta, fields.addname_field, pn)
+        if fields.addname_field ~= "" then
+          add_share_name(meta, fields.addname_field, pn)
 
-        -- The sharing formspec is being displayed. Refresh it.
-        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          -- The sharing formspec is being displayed. Refresh it.
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+        else
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access the list.")
+          easyvend.sound_error(pn)
+        end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 
-  if fields.delname then -- Sharing formspec only.
+  if fields.delname or fields.key_enter_field == "delname_field" then -- Sharing formspec only.
 		-- Permit grandfathering of old shared ironside chests.
 		local shares, sharecount = get_share_names(meta)
 
     if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
       if owner == pn or gdac.player_is_admin(pn) then
-        del_share_name(meta, fields.delname_field, pn)
+        if fields.delname_field ~= "" then
+          del_share_name(meta, fields.delname_field, pn)
 
-        -- The sharing formspec is being displayed. Refresh it.
-        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          -- The sharing formspec is being displayed. Refresh it.
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+        else
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access the list.")
+          easyvend.sound_error(pn)
+        end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
       end
     else
       minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
+    end
+  end
+
+  if fields.sharelist then
+    -- Permit grandfathering of old shared ironside chests.
+    local shares, sharecount = get_share_names(meta)
+
+    if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
+      if owner == pn or gdac.player_is_admin(pn) then
+        local event = minetest.explode_textlist_event(fields.sharelist)
+        if event.type == "DCL" then
+          local idx = event.index
+          if idx >= 1 and idx <= sharecount then
+            -- NOTE: This is hacky and (cit.) ugly as sin! But per-player
+            -- contexts sounds like over-engineering here.
+            -- The problem is Lua gives no legit way to get a table key from its
+            -- index. (There is no index at all!) Moreover, the order that pairs
+            -- iterates through the keys of a table is unspecified. Moreover,
+            -- the table I get here by calling get_share_names is not even the
+            -- same that was used during the formspec generation, and it may
+            -- even contain different names, or have them in a different order
+            -- (although there is *no* order!) because the metadata from which
+            -- it is created could have changed in the meanwhile.
+            local delname
+            for k, v in pairs(shares) do
+              delname = k
+              idx = idx - 1
+              if idx == 0 then
+                break
+              end
+            end
+            delname = rename.gpn(delname)
+
+            -- The sharing formspec is being displayed. Refresh it.
+            minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, delname))
+          end
+        end
+      else
+        minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
+        easyvend.sound_error(pn)
+      end
+    else
+      minetest.chat_send_player(pn, "# Server: This chest does not have sharing functionality.")
+      easyvend.sound_error(pn)
     end
   end
 

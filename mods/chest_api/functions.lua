@@ -129,7 +129,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 
 	-- Permit grandfathering of old shared ironside chests.
 	local shares, sharecount = get_share_names(meta)
-  
+
 	-- Obtain hooks into the trash mod's trash slot inventory.
 	local ltrash, mtrash = trash.get_listname()
 	local itrash = trash.get_iconname()
@@ -148,9 +148,9 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 			-- Trash icon.
 			.. "list[" .. ltrash .. ";" .. mtrash .. ";10,5.85;1,1;]" ..
 			"image[10,5.85;1,1;" .. itrash .. "]"
-    
+
     -- Locked gold chest.
-    if string.find(name, "locked") then 
+    if string.find(name, "locked") then
       local chest_name = F(meta:get_string("chest_name") or "")
       formspec = formspec .. "button[10,0;2,1;rename;Rename]" ..
         "field[8.25,0.45;2,0.75;name;;" .. chest_name .. "]" ..
@@ -205,7 +205,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
         "field_close_on_enter[name;false]" ..
         "label[0,0.35;Label: <" .. chest_name .. ">]"
     end
-    
+
   -- Locked silver chest. (This chest is shareable.) Grandfather in old ironside chests.
   elseif (string.find(name, "silver") and string.find(name, "locked")) or sharecount > 0 then
     local chest_name = F(meta:get_string("chest_name") or "")
@@ -228,13 +228,13 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 			-- Trash icon.
 			.. "list[" .. ltrash .. ";" .. mtrash .. ";9,5.85;1,1;]" ..
 			"image[9,5.85;1,1;" .. itrash .. "]"
-    
+
     --formspec = formspec .. "textlist[8,1.26;1.70,3;sharelist;Item ##1,Item ##2,Item ##3]"
-    
+
   -- Locked/unlocked copper, iron, or silver chests.
   elseif string.find(name, "iron") or
          string.find(name, "copper") or
-         string.find(name, "silver") then 
+         string.find(name, "silver") then
 		local locked = string.find(name, "locked")
 
 		if locked then
@@ -251,7 +251,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "listring[current_player;main]" ..
       "label[0,0;" .. desc .. "]" ..
       default.get_hotbar_bg(0, 5.85)
-    
+
     -- Locked copper or iron chest.
     -- (If chest was locked silver, then another if-statement already handled it.)
 		-- Iron locked chests with existing shares are grandfathered in.
@@ -281,9 +281,9 @@ chest_api.get_chest_formspec = function(name, desc, pos)
       "listring[nodemeta:" .. spos .. ";main]" ..
       "listring[current_player;main]" ..
       default.get_hotbar_bg(0, 4.85)
-    
+
   -- Locked/unlocked non-metalic chest (new version). Should have 8*3 size inventory.
-  else 
+  else
     formspec = "size[9,8]" .. defgui ..
       "list[nodemeta:" .. spos .. ";main;0,0.3;8,3;]" ..
       "list[current_player;main;0,3.85;8,1;]" ..
@@ -296,7 +296,7 @@ chest_api.get_chest_formspec = function(name, desc, pos)
 			.. "list[" .. ltrash .. ";" .. mtrash .. ";8,0.3;1,1;]" ..
 			"image[8,0.3;1,1;" .. itrash .. "]"
   end
-  
+
   return formspec
 end
 
@@ -365,12 +365,12 @@ chest_api.get_share_formspec = function(pos, meta, pname)
 
 	-- Erase the selection index to prevent accidental double-delete.
 	context.sharelist_index = nil
-  
+
   local formspec
   local defgui = default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots
-  
+
   formspec = "size[8,5]" .. defgui ..
     "label[0,0;" .. F(utility.get_short_desc(desc)) .. "]" ..
     "label[0,0.35;Label: <" .. F(cname) .. ">]" ..
@@ -385,7 +385,7 @@ chest_api.get_share_formspec = function(pos, meta, pname)
     "field[0.27,3.46;2.5,1;delname_field;;" .. F(delname or "") .. "]" ..
     "field_close_on_enter[delname_field;false]" ..
     "label[0,4;Tip: any locked chest can be shared with a key.]"
-  
+
   local ordered_names = {}
   local share_names, share_count = get_share_names(meta)
 
@@ -400,10 +400,10 @@ chest_api.get_share_formspec = function(pos, meta, pname)
   for k = 1, #ordered_names do
 		local n = ordered_names[k]
     formspec = formspec .. F(rename.gpn(n)) .. ","
-  end 
+  end
   formspec = string.gsub(formspec, ",$", "") -- Remove trailing comma.
   formspec = formspec .. "]"
-  
+
   return formspec
 end
 
@@ -413,7 +413,7 @@ local function has_locked_chest_privilege(pos, name, meta, player)
   if minetest.check_player_privs(player, "protection_bypass") then
     return true
   end
-  
+
 	if player:get_player_name() == meta:get_string("owner") then
 		-- Owner can access the node to any time
 		return true
@@ -454,12 +454,12 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 			end
 		end
 	end
-  
+
   -- Is player wielding the right key?
   local item = player:get_wielded_item()
   if item:get_name() == "key:key" or item:get_name() == "key:chain" then
     local key_meta = item:get_meta()
-    
+
 		if key_meta:get_string("secret") == "" then
 			local key_oldmeta = item:get_metadata()
 			if key_oldmeta == "" or not minetest.parse_json(key_oldmeta) then
@@ -483,7 +483,7 @@ local function has_locked_chest_privilege(pos, name, meta, player)
 			end
 		end
 	end
-  
+
   return false
 end
 chest_api.has_locked_chest_privilege = has_locked_chest_privilege
@@ -539,7 +539,7 @@ local function open_chest(def, pos, node, clicker)
       "default:chest",
 			chest_api.get_chest_formspec(name, def.description, pos))
 
-  open_chests[pname] = { 
+  open_chests[pname] = {
     pos = pos,
     sound = def.sound_close,
     swap = name .. "_closed",
@@ -564,7 +564,7 @@ local function close_chest(pn, pos, node, swap, sound)
     end
   end
 
-	-- Play sound, close chest.	
+	-- Play sound, close chest.
   minetest.after(0.2, minetest.swap_node, pos, {
     name = swap,
     param2 = node.param2
@@ -839,7 +839,7 @@ function chest_api.protected_can_dig(pos, player)
 	local owner = meta:get_string("owner") or ""
 	local pname = player:get_player_name()
 	local inv = meta:get_inventory()
-	
+
 	-- Only chest owners can dig shared locked chests.
 	-- If chests is owned by the server, or by no one, then anyone can dig.
 	return inv:is_empty("main") and (owner == pname or owner == "" or owner == "server")

@@ -705,7 +705,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           -- The sharing formspec is being displayed. Refresh it.
           minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
         else
-          minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access the list.")
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access list.")
           easyvend.sound_error(pn)
         end
       else
@@ -730,7 +730,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           -- The sharing formspec is being displayed. Refresh it.
           minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
         else
-          minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access the list.")
+          minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access list.")
           easyvend.sound_error(pn)
         end
       else

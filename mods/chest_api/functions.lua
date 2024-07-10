@@ -1,4 +1,8 @@
 
+-- Player contexts, indexed by player name.
+chest_api.open_chests = chest_api.open_chests or {}
+local open_chests = chest_api.open_chests
+
 -- Localize for performance.
 local F = minetest.formspec_escape
 local vector_distance = vector.distance
@@ -340,11 +344,27 @@ local function del_share_name(meta, name, pname)
 end
 
 -- Generate a share formspec. We need the chest metadata.
-chest_api.get_share_formspec = function(pos, meta, delname)
+chest_api.get_share_formspec = function(pos, meta, pname)
   local node = minetest.get_node(pos)
   local nn = node.name
   local desc = minetest.reg_ns_nodes[nn].description
   local cname = meta:get_string("chest_name") or ""
+  local delname
+
+  -- Should always exist, since this function never gets called unless we have one.
+  local context = open_chests[pname]
+
+  -- Get which name is currently selected.
+  if true then
+		local selected_name = context.sharelist_index or 0
+		local sharelist_names = context.sharelist_names or {}
+		if selected_name >= 1 and selected_name <= #sharelist_names then
+			delname = sharelist_names[selected_name]
+		end
+	end
+
+	-- Erase the selection index to prevent accidental double-delete.
+	context.sharelist_index = nil
   
   local formspec
   local defgui = default.gui_bg ..
@@ -366,12 +386,20 @@ chest_api.get_share_formspec = function(pos, meta, delname)
     "field_close_on_enter[delname_field;false]" ..
     "label[0,4;Tip: any locked chest can be shared with a key.]"
   
-  formspec = formspec ..
-    "textlist[5,1;2.8,2.9;sharelist;"
-  
+  local ordered_names = {}
   local share_names, share_count = get_share_names(meta)
+
+  -- Create an ordered list and store the names in the player context.
   for k, v in pairs(share_names) do
-    formspec = formspec .. F(rename.gpn(k)) .. ","
+		ordered_names[#ordered_names + 1] = k
+  end
+  context.sharelist_names = ordered_names
+
+  -- Show names in the formspec, in order.
+  formspec = formspec .. "textlist[5,1;2.8,2.9;sharelist;"
+  for k = 1, #ordered_names do
+		local n = ordered_names[k]
+    formspec = formspec .. F(rename.gpn(n)) .. ","
   end 
   formspec = string.gsub(formspec, ",$", "") -- Remove trailing comma.
   formspec = formspec .. "]"
@@ -475,9 +503,6 @@ local function chest_lid_obstructed(pos)
 	end
 	return true
 end
-
-chest_api.open_chests = chest_api.open_chests or {}
-local open_chests = chest_api.open_chests
 
 local function open_chest(def, pos, node, clicker)
 	-- Player name.
@@ -658,7 +683,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
 
     if (string.find(nn, "silver") and string.find(nn, "locked")) or sharecount > 0 then
       if owner == pn or gdac.player_is_admin(pn) then
-        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+        minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, pn))
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
         easyvend.sound_error(pn)
@@ -681,7 +706,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         -- Refresh sharing formspec only if already being displayed.
         -- The main formspec doesn't need updating.
         if formname == "default:chest_share" then
-          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, pn))
         end
       else
         minetest.chat_send_player(pn, "# Server: You do not have permission to manage shares for this chest.")
@@ -703,7 +728,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           add_share_name(meta, fields.addname_field, pn)
 
           -- The sharing formspec is being displayed. Refresh it.
-          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, pn))
         else
           minetest.chat_send_player(pn, "# Server: You must specify a player name to add to the access list.")
           easyvend.sound_error(pn)
@@ -728,7 +753,7 @@ function chest_api.on_player_receive_fields(player, formname, fields)
           del_share_name(meta, fields.delname_field, pn)
 
           -- The sharing formspec is being displayed. Refresh it.
-          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta))
+          minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, pn))
         else
           minetest.chat_send_player(pn, "# Server: You must specify a player name to remove from the access list.")
           easyvend.sound_error(pn)
@@ -753,28 +778,10 @@ function chest_api.on_player_receive_fields(player, formname, fields)
         if event.type == "DCL" then
           local idx = event.index
           if idx >= 1 and idx <= sharecount then
-            -- NOTE: This is hacky and (cit.) ugly as sin! But per-player
-            -- contexts sounds like over-engineering here.
-            -- The problem is Lua gives no legit way to get a table key from its
-            -- index. (There is no index at all!) Moreover, the order that pairs
-            -- iterates through the keys of a table is unspecified. Moreover,
-            -- the table I get here by calling get_share_names is not even the
-            -- same that was used during the formspec generation, and it may
-            -- even contain different names, or have them in a different order
-            -- (although there is *no* order!) because the metadata from which
-            -- it is created could have changed in the meanwhile.
-            local delname
-            for k, v in pairs(shares) do
-              delname = k
-              idx = idx - 1
-              if idx == 0 then
-                break
-              end
-            end
-            delname = rename.gpn(delname)
+						open_chests[pn].sharelist_index = idx
 
             -- The sharing formspec is being displayed. Refresh it.
-            minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, delname))
+            minetest.show_formspec(pn, "default:chest_share", chest_api.get_share_formspec(pos, meta, pn))
           end
         end
       else

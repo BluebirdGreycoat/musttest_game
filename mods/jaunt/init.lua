@@ -17,11 +17,11 @@ function jaunt.get_formspec(player)
 
 	formspec = formspec ..
 		"item_image[0,0;1,1;passport:passport_adv]" ..
-    "label[1,0;Key: Teleport to player beacon.]" ..
-    "label[1,0.4;Requires teleport for anchor.]" ..
+		"label[1,0;Key: Teleport to player beacon.]" ..
+		"label[1,0.4;Requires teleport for anchor.]" ..
 		"field[0.3,1.3;2.9,1;player;;]" ..
 		"button[3.0,1.0;1.5,1;go;Jaunt]" ..
-		"field_close_on_enter[player;true]" ..
+		"field_close_on_enter[player;false]" ..
 		"button[1.25,2.0;2.25,1;cancel;Abort]" ..
     "label[0,3;Jaunt range is influenced by the status\nof the target's beacon. Marked players can\nbe found from farther.]" ..
 		"item_image[1.25,4.5;1,1;command_tokens:mark_player]" ..
@@ -75,7 +75,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
     passport.show_formspec(pname)
 		return true
 	end
-	if fields.quit then
+	if fields.quit and not fields.key_enter_field then
 		return true
 	end
 
@@ -178,7 +178,7 @@ jaunt.on_receive_fields = function(player, formname, fields)
 										end,
 									})
 
-									-- don't reshow the formspec
+									-- Close the formspec.
 									minetest.close_formspec(pname, "jaunt:fs")
 									return true
 								else

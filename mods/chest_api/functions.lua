@@ -357,7 +357,7 @@ chest_api.get_share_formspec = function(pos, meta, pname)
 		local selected_name = context.sharelist_index or 0
 		local sharelist_names = context.sharelist_names or {}
 		if selected_name >= 1 and selected_name <= #sharelist_names then
-			delname = sharelist_names[selected_name]
+			delname = rename.gpn(sharelist_names[selected_name])
 		end
 	end
 

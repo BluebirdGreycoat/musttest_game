@@ -1018,6 +1018,7 @@ function chest_api.public_on_construct(pos)
 	local name = minetest.get_node(pos).name
 	meta:set_string("infotext", "Unlocked Chest")
 	local inv = meta:get_inventory()
+
 	if string.find(name, "gold") then
 		inv:set_size("main", 12*4)
 	elseif string.find(name, "diamond") then
@@ -1114,11 +1115,11 @@ end
 
 function chest_api.on_blast(pos)
 	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
-	local name = def._chest_basename
-	local drops = {}
-	default.get_inventory_drops(pos, "main", drops)
-	drops[#drops+1] = name .. "_closed"
-	minetest.remove_node(pos)
-	return drops
+	 local name = def._chest_basename
+	  local drops = {}
+	   default.get_inventory_drops(pos, "main", drops)
+	    drops[#drops+1] = name .. "_closed"
+	     minetest.remove_node(pos)
+	      return drops
 end
 

@@ -683,6 +683,9 @@ teleports.update = function(pos)
 		charge = "ROSE"
 	end
 
+	local defnm = minetest.formspec_escape(name)
+	local defnt = minetest.formspec_escape(public == "true" and network or "")
+
 	local formspec = "size[11,7;]" ..
 			default.gui_bg ..
 			default.gui_bg_img ..
@@ -693,9 +696,8 @@ teleports.update = function(pos)
 			"label[1,0.70;Beacon ID: " .. minetest.formspec_escape(nm) .. "]" ..
 			"label[1,1.2;Beacon Channel: " .. minetest.formspec_escape(net) .. "]" ..
 
-			"field[0.3,2.7;2,0.5;id;Change Beacon ID;]" .. "button_exit[2,2.4;2,0.5;change_id;Confirm]" ..
-			"field[0.3,3.9;2,0.5;network;Change Channel;]" .. "button_exit[2,3.6;2,0.5;change_network;Confirm]" ..
-
+			"field[0.3,2.7;2,0.5;id;Change Beacon ID;" .. defnm .. "]" .. "field_close_on_enter[id;false]" .. "button[2,2.4;2,0.5;change_id;Confirm]" ..
+			"field[0.3,3.9;2,0.5;network;Change Channel;" .. defnt .. "]" .. "field_close_on_enter[network;false]" .. "button[2,3.6;2,0.5;change_network;Confirm]" ..
 			buttons ..
 
 			"button_exit[0,5.2;2,0.5;cancel;Close]" ..
@@ -777,7 +779,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 		end
 	end
 
-	if fields.change_id and fields.id then
+	if (fields.change_id or fields.key_enter_field == "id") and fields.id then
 		if owner == playername or admin then
 			meta:set_string("name", fields.id)
 			teleports.teleports[tp_idx].name = fields.id
@@ -788,7 +790,7 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 		end
 	end
 
-	if fields.change_network and fields.network then
+	if (fields.change_network or fields.key_enter_field == "network") and fields.network then
 		if owner == playername or admin then
 			meta:set_string("network", fields.network)
 			meta:mark_as_private("network")

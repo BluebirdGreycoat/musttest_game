@@ -328,10 +328,14 @@ function safe.get_formspec(pos, pname)
 
   if locked then
 		-- Locked formspec.
+		local ndef = minetest.registered_nodes[minetest.get_node(pos).name]
+		local cn = ndef._safe_common_name
+
 		if pname == owner then
 			formspec = "size[3.4,5.1]" .. defgui .. "real_coordinates[true]" ..
 				"label[1.1,1.1;Enter Password]" ..
 				"pwdfield[1.1,1.4;2.5,0.5;pin_entry;]" ..
+				"button_exit[1.1,2.0;2.5,0.5t;unlock_safe;Unlock " .. cn .. "]" ..
 				"label[1.1,3.1;Change Password]" ..
 				"label[0.4,3.65;Old]" ..
 				"label[0.4,4.25;New]" ..
@@ -339,11 +343,12 @@ function safe.get_formspec(pos, pname)
 				"pwdfield[1.1,3.4;2.5,0.5;old_password;]" ..
 				"pwdfield[1.1,4.0;2.5,0.5;new_password;]" ..
 				"pwdfield[1.1,4.6;2.5,0.5;confirm_password;]" ..
-				"button_exit[1.1,5.2;2.0,0.5;change_pwd;Change]"
+				"button_exit[1.1,5.2;2.5,0.5;change_pwd;Change]"
 		else
 			formspec = "size[3.4,2.0]" .. defgui .. "real_coordinates[true]" ..
 				"label[1.1,1.1;Enter Password]" ..
-				"pwdfield[1.1,1.4;2.5,0.5;pin_entry;]"
+				"pwdfield[1.1,1.4;2.5,0.5;pin_entry;]" ..
+				"button_exit[1.1,2.0;2.0,0.7;unlock_safe;Unlock " .. cn .. "]"
 		end
   else
 		-- Name of detached inventory.
@@ -720,7 +725,7 @@ function safe.on_player_receive_fields(player, formname, fields)
 	end
 
 	-- Player enters password to access the safe.
-	if fields.key_enter_field == "pin_entry" and context.locked then
+	if (fields.unlock_safe or fields.key_enter_field == "pin_entry") and context.locked then
 		local pin = (type(fields.pin_entry) == "string" and fields.pin_entry) or ""
 		local canary = safe.decrypt(pin, meta:get_string("canary"))
 

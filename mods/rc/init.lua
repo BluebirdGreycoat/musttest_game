@@ -25,6 +25,8 @@ local default_clouds = {
 	thickness = 16,
 }
 
+local SERVER_STATIC_SPAWN = {x=-9223, y=4169+400, z=5861}
+
 -- Known realms. Min/max area positions should not overlap!
 -- WARNING: ABSOLUTE MINIMUM GAP BETWEEN REALMS MUST BE 500 BLOCKS!
 rc.realms = {
@@ -36,7 +38,7 @@ rc.realms = {
 		maxp = {x=30927, y=500, z=30927},
 		gate_minp = {x=-30000, y=-30800, z=-30000},
 		gate_maxp = {x=30000, y=-10, z=30000},
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = -10,
 		underground = -32, -- Affects sky color, see sky mod.
 		sealevel = 0,
@@ -74,7 +76,7 @@ rc.realms = {
 		maxp = {x=30927, y=3150, z=30927},
 		gate_minp = {x=-30000, y=3065, z=-30000},
 		gate_maxp = {x=30000, y=3067, z=30000},
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 3066,
 		underground = 3050,
 		sealevel = 3066,
@@ -97,7 +99,7 @@ rc.realms = {
 		maxp = {x=30927, y=3800, z=30927},
 		gate_minp = {x=-30000, y=3620, z=-30000},
 		gate_maxp = {x=30000, y=3640, z=30000},
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 3740,
 		underground = 3730,
 		sealevel = 3740,
@@ -120,7 +122,7 @@ rc.realms = {
 		maxp = vector.add({x=-9174, y=4100+400, z=5782}, {x=100, y=100, z=100}),
 		gate_minp = vector.add({x=-9174, y=4100+400, z=5782}, {x=-80, y=-80, z=-80}),
 		gate_maxp = vector.add({x=-9174, y=4100+400, z=5782}, {x=80, y=80, z=80}),
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 4170+400,
 		underground = 4160+400, -- Affects sky color, see sky mod.
 		sealevel = 4160+400,
@@ -160,7 +162,7 @@ rc.realms = {
 		maxp = vector.add({x=-12174, y=4100+400, z=5782}, {x=132, y=150, z=132}),
 		gate_minp = vector.add({x=-12174, y=4100+400, z=5782}, {x=-116, y=-34, z=-116}),
 		gate_maxp = vector.add({x=-12174, y=4100+400, z=5782}, {x=116, y=-10, z=116}),
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 4096+400,
 		underground = 4085+400, -- Affects sky color, see sky mod.
 		sealevel = 4095+400,
@@ -204,7 +206,7 @@ rc.realms = {
 		maxp = {x=30927, y=8150, z=30927},
 		gate_minp = {x=-30000, y=5350, z=-30000},
 		gate_maxp = {x=30000, y=7950, z=30000},
-		orig = {x=-9223, y=4169+400, z=5861}, -- Same as server's static spawnpoint!
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 8150,
 		underground = 8150, -- Affects sky color, see sky mod.
 		sealevel = 8150,
@@ -219,6 +221,76 @@ rc.realms = {
 			"griefer:griefer",
 			"nssm:morde",
 		},
+	},
+
+	-- Work in progress realms.
+	{
+		id = 7, -- REALM ID. Code relies on this.
+		name = "waterworld",
+		description = "Water's Abyss",
+		minp = {x=-30912, y=8650, z=-30912},
+		maxp = {x=30927, y=9650, z=30927},
+		gate_minp = {x=-30000, y=8650+50, z=-30000},
+		gate_maxp = {x=30000, y=8650+500, z=30000},
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
+		ground = 8650+500,
+		underground = 8650+500, -- Affects sky color, see sky mod.
+		sealevel = 8650+500,
+		spawnlevel = 8650+500,
+		windlevel = 8650+500,
+		realm_origin = {x=-482, y=8650+500, z=5582},
+		disabled = true, -- Not ready yet.
+	},
+	{
+		id = 8, -- REALM ID. Code relies on this.
+		name = "stoneworld",
+		description = "Chaotica",
+		minp = {x=-30912, y=10150, z=-30912},
+		maxp = {x=30927, y=15150, z=30927},
+		gate_minp = {x=-30000, y=10150+50, z=-30000},
+		gate_maxp = {x=30000, y=10150+200, z=30000},
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
+		ground = 10150+200,
+		underground = 10150+200, -- Affects sky color, see sky mod.
+		sealevel = 10150+200,
+		spawnlevel = 10150+200,
+		windlevel = 10150+200,
+		realm_origin = {x=-7729, y=10150+200, z=-5821},
+		disabled = true, -- Not ready yet.
+	},
+	{
+		id = 9, -- REALM ID. Code relies on this.
+		name = "paradaxun",
+		description = "Paradaxun",
+		minp = {x=-30912, y=15650, z=-30912},
+		maxp = {x=30927, y=20650, z=30927},
+		gate_minp = {x=-30000, y=15650+50, z=-30000},
+		gate_maxp = {x=30000, y=15650+4000, z=30000},
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
+		ground = 15650+4000,
+		underground = 15650+4000, -- Affects sky color, see sky mod.
+		sealevel = 15650+4000,
+		spawnlevel = 15650+4000,
+		windlevel = 15650+4000,
+		realm_origin = {x=6565, y=15650+4000, z=4404},
+		disabled = true, -- Not ready yet.
+	},
+	{
+		id = 10, -- REALM ID. Code relies on this.
+		name = "ariba",
+		description = "Ariba",
+		minp = {x=-30912, y=21150, z=-30912},
+		maxp = {x=30927, y=23450, z=30927},
+		gate_minp = {x=-30000, y=21150+50, z=-30000},
+		gate_maxp = {x=30000, y=21150+2000, z=30000},
+		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
+		ground = 21150+2000,
+		underground = 21150+2000, -- Affects sky color, see sky mod.
+		sealevel = 21150+2000,
+		spawnlevel = 21150+2000,
+		windlevel = 21150+2000,
+		realm_origin = {x=6565, y=21150+2000, z=4404},
+		disabled = true, -- Not ready yet.
 	},
 }
 

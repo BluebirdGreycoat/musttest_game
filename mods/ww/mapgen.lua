@@ -51,9 +51,12 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Compute side lengths.
 	local side_len_x = ((x1-x0)+1)
+	local side_len_y = ((y1-y0)+1)
 	local side_len_z = ((z1-z0)+1)
 	local sides2D = {x=side_len_x, y=side_len_z}
+	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
 	local bp2d = {x=x0, y=z0}
+	local bp3d = {x=x0, y=y0, z=z0}
 
 	-- First mapgen pass.
 	for z = z0, z1 do

@@ -9,6 +9,7 @@ sw.modpath = minetest.get_modpath("sw")
 sw.worldpath = minetest.get_worldpath()
 
 dofile(sw.modpath .. "/noise.lua")
+dofile(sw.modpath .. "/data.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150

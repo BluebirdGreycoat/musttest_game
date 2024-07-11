@@ -1,6 +1,6 @@
 
 -- Another hostile stone-garden realm supposedly using an advanced mapgen concept.
--- Realistic rivers, etc. Probably will require pre-generated data.
+-- Realistic (lava?) rivers, etc. Probably will require pre-generated data.
 
 -- Mapgen Environment ONLY.
 -- Not reloadable!

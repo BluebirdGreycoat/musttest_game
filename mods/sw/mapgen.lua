@@ -8,18 +8,23 @@ sw = {}
 sw.modpath = minetest.get_modpath("sw")
 sw.worldpath = minetest.get_worldpath()
 
+dofile(sw.modpath .. "/noise.lua")
+
 local REALM_START = 10150
 local REALM_END = 15150
 local REALM_GROUND = 10150+200
 local BEDROCK_HEIGHT = REALM_START + 12
 
 -- Localize for performance.
-local math_random = math.random
+local random = math.random
+local abs = math.abs
+local floor = math.floor
 
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
 local c_stone           = minetest.get_content_id("default:stone")
+local c_cobble          = minetest.get_content_id("default:cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 
 -- Externally located tables for performance.
@@ -55,6 +60,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local sides2D = {x=side_len_x, y=side_len_z}
 	local bp2d = {x=x0, y=z0}
 
+	local baseterrain = sw.get_2d_noise(bp2d, sides2D, "baseterrain")
+
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -64,6 +71,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 			local ni2 = (side_len_z*nz+nx)
 			-- Lua arrays start indexing at 1, not 0. Urrrrgh.
 			ni2 = ni2 + 1
+
+			local ground_y = REALM_GROUND + floor(baseterrain[ni2])
 
 			-- First pass through column.
 			for y = y0, y1 do
@@ -75,8 +84,12 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 					if cid == c_air or cid == c_ignore then
 						if y <= BEDROCK_HEIGHT then
 							data[vp] = c_bedrock
-						elseif y <= REALM_GROUND then
-							data[vp] = c_stone
+						elseif y <= ground_y then
+							if y == ground_y then
+								data[vp] = c_cobble
+							else
+								data[vp] = c_stone
+							end
 						else
 							data[vp] = c_air
 						end
@@ -90,8 +103,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   vm:set_param2_data(param2_data)
 
 	-- Finalize voxel manipulator.
-	vm:set_lighting({day=0, night=0})
 	vm:calc_lighting()
+	vm:update_liquids()
 end
 
 

@@ -1,21 +1,21 @@
 
 local NOISE_SCALE = 1
 
-sw.perlins = sw.perlins or {}
-sw.maps = sw.maps or {}
-sw.noises = sw.noises or {}
+ww.perlins = ww.perlins or {}
+ww.maps = ww.maps or {}
+ww.noises = ww.noises or {}
 
-local maps = sw.maps
-local perlins = sw.perlins
-local noises = sw.noises
+local maps = ww.maps
+local perlins = ww.perlins
+local noises = ww.noises
 
-function sw.create_2d_noise(which, data)
+function ww.create_2d_noise(which, data)
 	local nk = which .. "_2d"
 	noises[nk] = data
 end
 
 -- Base terrain height.
-sw.create_2d_noise("baseterrain", {
+ww.create_2d_noise("baseterrain", {
 	offset = 1,
 	scale = 16,
 	spread = {x=16*NOISE_SCALE, y=16*NOISE_SCALE, z=16*NOISE_SCALE},
@@ -25,7 +25,7 @@ sw.create_2d_noise("baseterrain", {
 	lacunarity = 2,
 })
 
-function sw.get_2d_noise(pos, sides2D, which)
+function ww.get_2d_noise(pos, sides2D, which)
 	local nk = which .. "_2d"
 	local mk = which .. "_2d"
 	local pk = which .. "_2d"

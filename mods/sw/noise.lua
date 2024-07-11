@@ -14,6 +14,11 @@ function sw.create_2d_noise(which, data)
 	noises[nk] = data
 end
 
+function sw.create_3d_noise(which, data)
+	local nk = which .. "_3d"
+	noises[nk] = data
+end
+
 -- Base terrain height.
 sw.create_2d_noise("baseterrain", {
 	offset = 1,

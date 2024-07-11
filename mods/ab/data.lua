@@ -1,4 +1,6 @@
 
+local NOISE_SCALE = 1
+
 -- Base terrain height.
 sw.create_2d_noise("baseterrain", {
 	offset = 1,

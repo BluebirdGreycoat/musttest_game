@@ -1,6 +1,4 @@
 
-local NOISE_SCALE = 1
-
 sw.perlins = sw.perlins or {}
 sw.maps = sw.maps or {}
 sw.noises = sw.noises or {}

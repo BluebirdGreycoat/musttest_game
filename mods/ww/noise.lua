@@ -40,3 +40,14 @@ function ww.get_2d_noise(pos, sides2D, which)
 	perlins[pk]:get_2d_map_flat(pos, maps[mk])
 	return maps[mk]
 end
+
+function ab.get_3d_noise(pos, sides3D, which)
+	local nk = which .. "_3d"
+	local mk = which .. "_3d"
+	local pk = which .. "_3d"
+	local noisedata = noises[nk]
+	perlins[pk] = perlins[pk] or minetest.get_perlin_map(noisedata, sides3D)
+	maps[mk] = maps[mk] or {}
+	perlins[pk]:get_3d_map_flat(pos, maps[mk])
+	return maps[mk]
+end

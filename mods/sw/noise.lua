@@ -28,7 +28,7 @@ function sw.get_2d_noise(pos, sides2D, which)
 	return maps[mk]
 end
 
-function ab.get_3d_noise(pos, sides3D, which)
+function sw.get_3d_noise(pos, sides3D, which)
 	local nk = which .. "_3d"
 	local mk = which .. "_3d"
 	local pk = which .. "_3d"

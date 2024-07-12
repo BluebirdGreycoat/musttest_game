@@ -13,7 +13,7 @@ sw.create_2d_noise("baseterrain", {
 })
 
 sw.create_3d_noise("shear1", {
-	offset = 1,
+	offset = 0,
 	scale = 10,
 	spread = {x=64, y=8, z=64},
 	seed = 2718,
@@ -23,7 +23,7 @@ sw.create_3d_noise("shear1", {
 })
 
 sw.create_3d_noise("shear2", {
-	offset = 1,
+	offset = 0,
 	scale = 10,
 	spread = {x=64, y=8, z=64},
 	seed = 8281,

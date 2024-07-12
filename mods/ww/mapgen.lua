@@ -1,5 +1,11 @@
 
--- Really simplistic mapgen that's just water survival.
+-- Really simplistic mapgen that's just water survival. The ocean is deep enough
+-- that survival in the depths should not be possible without special pressure
+-- equipment. However, there should be lots of treasure down there ...
+
+-- Two possible ways to play a deep water survival.
+--   1) spawn under the sea floor and have to (somehow) swim to the surface.
+--   2) spawn on the surface and have to dive (somehow) to get to the sea floor.
 
 -- Mapgen Environment ONLY.
 -- Not reloadable!
@@ -16,7 +22,14 @@ local REALM_GROUND = 8650+500
 local BEDROCK_HEIGHT = REALM_START + 12
 
 -- Localize for performance.
-local math_random = math.random
+local random = math.random
+local abs = math.abs
+local floor = math.floor
+local min = math.min
+local max = math.max
+local tan = math.tan
+local sin = math.sin
+local cos = math.cos
 
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
@@ -64,6 +77,18 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	local bp2d = {x=emin.x, y=emax.z}
 	local bp3d = {x=x0, y=y0, z=z0}
 
+	local seafloor = ww.get_2d_noise(bp2d, sides2D, "seafloor")
+	local shear1 = ww.get_3d_noise(bp3d, sides3D, "shear1")
+	local shear2 = ww.get_3d_noise(bp3d, sides3D, "shear2")
+	local floorchannel = ww.get_2d_noise(bp2d, sides2D, "floorchannel")
+
+	local function get_seafloor(n2d)
+		local a = REALM_START + 50
+		local t = min(1, abs(floorchannel[n2d]))
+		a = a + seafloor[n2d] * (tan(t) / 1.558)
+		return floor(a)
+	end
+
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -71,14 +96,18 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 				-- Get index into 3D noise arrays.
 				local n3d = min_area:index(x, y, z)
 
+				-- Shear the 2D noise coordinate offset.
+				local shear_x	= floor(x + shear1[n3d])
+				local shear_z = floor(z + shear2[n3d])
+
 				-- Get index into overgenerated 2D noise arrays.
-				local nx = (x-emin.x)
-				local nz = (z-emin.z)
+				local nx = (shear_x-emin.x)
+				local nz = (shear_z-emin.z)
 				local n2d = (((emax.z - emin.z) + 1) * nz + nx)
 				-- Lua arrays start indexing at 1, not 0. Urrrrgh.
 				n2d = n2d + 1
 
-				local sea_floor_y = REALM_START + 50
+				local sea_floor_y = get_seafloor(n2d)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)

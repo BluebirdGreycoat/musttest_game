@@ -35,8 +35,12 @@ local cos = math.cos
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
 local c_stone           = minetest.get_content_id("default:stone")
+local c_cobble          = minetest.get_content_id("default:cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_water           = minetest.get_content_id("default:water_source")
+local c_silt            = minetest.get_content_id("darkage:silt")
+local c_mud             = minetest.get_content_id("darkage:mud")
+local c_sand            = minetest.get_content_id("default:sand")
 
 -- Externally located tables for performance.
 local data = {}
@@ -92,6 +96,8 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
+			local bedrock_adjust = pr:next(0, 3)
+
 			for y = y0, y1 do
 				-- Get index into 3D noise arrays.
 				local n3d = min_area:index(x, y, z)
@@ -114,7 +120,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 					local cid = data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if y <= BEDROCK_HEIGHT then
+						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
 							data[vp] = c_bedrock
 						elseif y <= sea_floor_y then
 							data[vp] = c_stone
@@ -122,6 +128,34 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 							data[vp] = c_water
 						else
 							data[vp] = c_air
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for z = z0, z1 do
+		for x = x0, x1 do
+			for y = y0, y1 do
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+					local vu = area:index(x, y + 1, z)
+					local vd = area:index(x, y - 1, z)
+
+					if data[vd] == c_stone and data[vp] == c_stone and data[vu] == c_water then
+						local vc = area:index(x, y + 2, z)
+						local vx = area:index(x, y + 3, z)
+
+						data[vp] = c_cobble
+						data[vu] = c_sand
+
+						if data[vc] == c_water then
+							data[vc] = c_silt
+						end
+
+						if data[vc] == c_silt and data[vx] == c_water then
+							data[vx] = c_silt
 						end
 					end
 				end

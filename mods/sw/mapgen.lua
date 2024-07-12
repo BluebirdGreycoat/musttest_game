@@ -10,6 +10,7 @@ sw.worldpath = minetest.get_worldpath()
 
 dofile(sw.modpath .. "/noise.lua")
 dofile(sw.modpath .. "/data.lua")
+dofile(sw.modpath .. "/tunnel.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150
@@ -74,86 +75,6 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local shear2 = sw.get_3d_noise(bp3d, sides3D, "shear2")
 	local softener = sw.get_3d_noise(bp3d, sides3D, "softener")
 
-	local caves = {}
-	for k = 1, 100 do
-		local y_level = REALM_START + (k * 50)
-		local good = true
-		if minp.y > (y_level + 70) or maxp.y < (y_level - 70) then
-			good = false
-		end
-
-		if good then
-			caves[#caves + 1] = {
-				{
-					routemap = sw.get_2d_noise(bp2d, sides2D, "cave1_" .. k .. "_route"),
-					heightmap = sw.get_2d_noise(bp2d, sides2D, "cave1_" .. k .. "_height"),
-					y_level = y_level,
-				},
-				{
-					routemap = sw.get_2d_noise(bp2d, sides2D, "cave2_" .. k .. "_route"),
-					heightmap = sw.get_2d_noise(bp2d, sides2D, "cave2_" .. k .. "_height"),
-					y_level = y_level,
-				},
-				{
-					routemap = sw.get_2d_noise(bp2d, sides2D, "cave3_" .. k .. "_route"),
-					heightmap = sw.get_2d_noise(bp2d, sides2D, "cave3_" .. k .. "_height"),
-					y_level = y_level,
-				},
-			}
-		end
-	end
-
-	local function is_cave(y, n2d)
-		-- Carve long winding caves.
-		for k = 1, #caves do
-			for j = 1, 3 do
-				-- Initial cave noise values.
-				local c1 = caves[k][j].routemap[n2d]
-				local c2 = caves[k][j].heightmap[n2d]
-				local yl = caves[k][j].y_level
-
-				local n1 = 1
-				local n2 = 1
-				local n4 = 1
-
-				-- Basic cave parameters: Y-level, passage height.
-				local cnoise1 = abs(c1)
-				local cnoise2 = c1
-				local clevel = (yl + floor(c2 * 50)) + floor(n1 * 2)
-				local cheight = 5 + abs(floor(n1 * 3))
-
-				-- Modify cave height.
-				cheight = cheight + floor(n4 * 2)
-
-				-- Modifiers for roughening the rounding and making it less predictable.
-				local z1 = abs(floor(n1))
-				local z2 = abs(floor(n2))
-
-				-- Limit determines the thickness of the cave passages.
-				local limit = 0.10
-				local cnoise
-				local go = false
-
-				if cnoise1 <= limit then
-					cnoise = cnoise1
-					go = true
-				end
-
-				if go then
-					-- This bit of math is just to round off the sharp edges of the
-					-- cave passages. Calculate cave top/bottom Y-values.
-					local n = abs(floor((cnoise / limit) * (cheight / 2)))
-					local bot = (clevel + n + z1)
-					local top = (clevel + cheight - n - z2)
-
-					if y >= bot and y <= top then
-						return true
-					end
-				end
-			end
-		end
-	end
-
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -186,11 +107,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 						if y <= BEDROCK_HEIGHT then
 							data[vp] = c_bedrock
 						elseif y <= ground_y then
-							if is_cave(y, n2d_steady) then
-								data[vp] = c_air
-							else
-								data[vp] = c_stone
-							end
+							data[vp] = c_stone
 						else
 							data[vp] = c_air
 						end
@@ -202,6 +119,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 	vm:set_data(data)
   vm:set_param2_data(param2_data)
+
+  sw.generate_tunnels(vm, minp, maxp, seed, REALM_START, REALM_END)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

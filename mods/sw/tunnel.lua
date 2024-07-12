@@ -1,4 +1,8 @@
 
+local REALM_START = 10150
+local REALM_END = 15150
+local LAYER_COUNT = math.floor((REALM_END - REALM_START) / 50)
+
 local abs = math.abs
 local floor = math.floor
 local max = math.max
@@ -14,7 +18,7 @@ local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 -- Tunnels come in layers, with 3 distinct tunnels per layer, and each tunnel
 -- uses two 2D noises, one for route and one for elevation.
 local pr = PseudoRandom(1893)
-for k = 1, 100 do
+for k = 1, LAYER_COUNT do
 	sw.create_2d_noise("cave1_" .. k .. "_route", {
 		offset = 0,
 		scale = 1,
@@ -74,11 +78,12 @@ end
 
 
 -- Figure out which tunnel noises are used in this map chunk.
-function sw.prepare_tunnels(bp2d, sides2D, minp, maxp, ystart, yend)
+function sw.prepare_tunnels(bp2d, sides2D, minp, maxp)
 	local caves = {}
-	local realm_start = ystart
+	local realm_start = REALM_START
+	local num = LAYER_COUNT
 
-	for k = 1, 100 do
+	for k = 1, num do
 		local y_level = realm_start + (k * 50)
 		local good = true
 		if minp.y > (y_level + 70) or maxp.y < (y_level - 70) then
@@ -112,7 +117,7 @@ end
 
 
 
-function sw.generate_tunnels(vm, minp, maxp, seed, ystart, yend)
+function sw.generate_tunnels(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local pr = PseudoRandom(seed + 1891)
@@ -137,7 +142,7 @@ function sw.generate_tunnels(vm, minp, maxp, seed, ystart, yend)
 	local bp2d = {x=emin.x, y=emax.z}
 	local bp3d = {x=x0, y=y0, z=z0}
 
-	local caves = sw.prepare_tunnels(bp2d, sides2D, minp, maxp, ystart, yend)
+	local caves = sw.prepare_tunnels(bp2d, sides2D, minp, maxp)
 
 	local function is_cave(x, y, z)
 		-- Carve long winding tunnels.

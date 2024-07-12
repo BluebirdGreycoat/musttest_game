@@ -120,7 +120,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	vm:set_data(data)
   vm:set_param2_data(param2_data)
 
-  sw.generate_tunnels(vm, minp, maxp, seed, REALM_START, REALM_END)
+  sw.generate_tunnels(vm, minp, maxp, seed)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

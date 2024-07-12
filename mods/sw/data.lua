@@ -41,3 +41,61 @@ sw.create_3d_noise("softener", {
 	persist = 0.5,
 	lacunarity = 2,
 })
+
+local pr = PseudoRandom(1893)
+for k = 1, 100 do
+	sw.create_2d_noise("cave1_" .. k .. "_route", {
+		offset = 0,
+		scale = 1,
+		spread = {x=75, y=75, z=75},
+		seed = pr:next(10, 1000),
+		octaves = 10,
+		persist = 0.5,
+		lacunarity = 1.6,
+	})
+	sw.create_2d_noise("cave1_" .. k .. "_height", {
+		offset = 0,
+		scale = 1,
+		spread = {x=256, y=256, z=256},
+		seed = pr:next(10, 1000),
+		octaves = 4,
+		persist = 0.5,
+		lacunarity = 2.0,
+	})
+	sw.create_2d_noise("cave2_" .. k .. "_route", {
+		offset = 0,
+		scale = 1,
+		spread = {x=75, y=75, z=75},
+		seed = pr:next(10, 1000),
+		octaves = 10,
+		persist = 0.5,
+		lacunarity = 1.6,
+	})
+	sw.create_2d_noise("cave2_" .. k .. "_height", {
+		offset = 0,
+		scale = 1,
+		spread = {x=256, y=256, z=256},
+		seed = pr:next(10, 1000),
+		octaves = 4,
+		persist = 0.5,
+		lacunarity = 2.0,
+	})
+	sw.create_2d_noise("cave3_" .. k .. "_route", {
+		offset = 0,
+		scale = 1,
+		spread = {x=75, y=75, z=75},
+		seed = pr:next(10, 1000),
+		octaves = 10,
+		persist = 0.5,
+		lacunarity = 1.6,
+	})
+	sw.create_2d_noise("cave3_" .. k .. "_height", {
+		offset = 0,
+		scale = 1,
+		spread = {x=256, y=256, z=256},
+		seed = pr:next(10, 1000),
+		octaves = 4,
+		persist = 0.5,
+		lacunarity = 2.0,
+	})
+end

@@ -10,6 +10,7 @@ ab.worldpath = minetest.get_worldpath()
 dofile(ab.modpath .. "/noise.lua")
 dofile(ab.modpath .. "/data.lua")
 dofile(ab.modpath .. "/tree.lua")
+dofile(ab.modpath .. "/tunnel.lua")
 
 local REALM_START = 21150
 local REALM_END = 23450
@@ -117,6 +118,8 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 	vm:set_data(data)
   vm:set_param2_data(param2_data)
+
+  ab.generate_tunnels(vm, minp, maxp, seed)
 
   for k = 1, #trees do
 		ab.place_acacia_tree(vm, trees[k])

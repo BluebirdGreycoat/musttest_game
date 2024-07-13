@@ -10,6 +10,7 @@ pd.worldpath = minetest.get_worldpath()
 
 dofile(pd.modpath .. "/noise.lua")
 dofile(pd.modpath .. "/data.lua")
+dofile(pd.modpath .. "/tunnel.lua")
 
 local REALM_START = 15650
 local REALM_END = 20650
@@ -98,6 +99,8 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 
 	vm:set_data(data)
   vm:set_param2_data(param2_data)
+
+  pd.generate_tunnels(vm, minp, maxp, seed)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

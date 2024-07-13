@@ -7,6 +7,7 @@ local abs = math.abs
 local floor = math.floor
 local max = math.max
 local min = math.min
+local pr = PseudoRandom(1893)
 
 local vm_data = {}
 local c_air = minetest.get_content_id("air")
@@ -15,9 +16,40 @@ local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 
 
 
+sw.create_2d_noise("cave_n1", {
+	offset = 0,
+	scale = 1,
+	spread = {x=64, y=64, z=64},
+	seed = pr:next(10, 1000),
+	octaves = 4,
+	persist = 0.7,
+	lacunarity = 2.1,
+})
+
+sw.create_2d_noise("cave_n2", {
+	offset = 0,
+	scale = 1,
+	spread = {x=64, y=64, z=64},
+	seed = pr:next(10, 1000),
+	octaves = 4,
+	persist = 0.7,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cave_n4", {
+	offset = 0,
+	scale = 1,
+	spread = {x=64, y=64, z=64},
+	seed = pr:next(10, 1000),
+	octaves = 5,
+	persist = 0.7,
+	lacunarity = 1.5,
+})
+
+
+
 -- Tunnels come in layers, with 3 distinct tunnels per layer, and each tunnel
 -- uses two 2D noises, one for route and one for elevation.
-local pr = PseudoRandom(1893)
 for k = 1, LAYER_COUNT do
 	sw.create_2d_noise("cave1_" .. k .. "_route", {
 		offset = 0,
@@ -120,6 +152,7 @@ end
 function sw.generate_tunnels(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local min_area = VoxelArea:new({MinEdge=minp, MaxEdge=maxp})
 	local pr = PseudoRandom(seed + 1891)
 
 	vm:get_data(vm_data)
@@ -144,6 +177,10 @@ function sw.generate_tunnels(vm, minp, maxp, seed)
 
 	local caves = sw.prepare_tunnels(bp2d, sides2D, minp, maxp)
 
+	local noisemap1 = sw.get_2d_noise(bp2d, sides2D, "cave_n1")
+	local noisemap2 = sw.get_2d_noise(bp2d, sides2D, "cave_n2")
+	local noisemap4 = sw.get_3d_noise(bp3d, sides3D, "cave_n4")
+
 	local function is_cave(x, y, z)
 		-- Carve long winding tunnels.
 		for k = 1, #caves do
@@ -155,14 +192,17 @@ function sw.generate_tunnels(vm, minp, maxp, seed)
 				local n2d = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
 				n2d = n2d + 1
 
+				-- Get index into 3D noise arrays.
+				local n3d = min_area:index(x, y, z)
+
 				-- Initial cave noise values.
 				local c1 = caves[k][j].routemap[n2d]
 				local c2 = caves[k][j].heightmap[n2d]
 				local yl = caves[k][j].y_level
 
-				local n1 = 1
-				local n2 = 1
-				local n4 = 1
+				local n1 = noisemap1[n2d]
+				local n2 = noisemap2[n2d]
+				local n4 = noisemap4[n3d]
 
 				-- Basic cave parameters: Y-level, passage height.
 				local cnoise1 = abs(c1)

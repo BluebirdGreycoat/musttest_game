@@ -18,7 +18,11 @@ local REALM_GROUND = 21150+2000
 local BEDROCK_HEIGHT = REALM_START + 12
 
 -- Localize for performance.
-local math_random = math.random
+local random = math.random
+local floor = math.floor
+local min = math.min
+local max = math.max
+local abs = math.abs
 
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
@@ -77,6 +81,8 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	local baseterrain = ab.get_2d_noise(bp2d, sides2D, "baseterrain")
+
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -91,7 +97,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 				-- Lua arrays start indexing at 1, not 0. Urrrrgh.
 				n2d = n2d + 1
 
-				local ground_y = REALM_GROUND
+				local ground_y = floor(REALM_GROUND + baseterrain[n2d])
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)

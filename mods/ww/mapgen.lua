@@ -43,7 +43,8 @@ local c_mud             = minetest.get_content_id("darkage:mud")
 local c_sand            = minetest.get_content_id("default:sand")
 
 -- Externally located tables for performance.
-local data = {}
+local vm_data = {}
+local vm_light = {}
 local param2_data = {}
 
 
@@ -60,7 +61,9 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
-	vm:get_data(data)
+	vm:set_lighting({day=0, night=0})
+	vm:get_data(vm_data)
+	vm:get_light_data(vm_light)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -120,17 +123,17 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
-					local cid = data[vp]
+					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
 						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
-							data[vp] = c_bedrock
+							vm_data[vp] = c_bedrock
 						elseif y <= sea_floor_y then
-							data[vp] = c_stone
+							vm_data[vp] = c_stone
 						elseif y <= REALM_GROUND then
-							data[vp] = c_water
+							vm_data[vp] = c_water
 						else
-							data[vp] = c_air
+							vm_data[vp] = c_air
 						end
 					end
 				end
@@ -138,6 +141,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	-- Generate sea floor layers.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
@@ -146,19 +150,19 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 					local vu = area:index(x, y + 1, z)
 					local vd = area:index(x, y - 1, z)
 
-					if data[vd] == c_stone and data[vp] == c_stone and data[vu] == c_water then
+					if vm_data[vd] == c_stone and vm_data[vp] == c_stone and vm_data[vu] == c_water then
 						local vc = area:index(x, y + 2, z)
 						local vx = area:index(x, y + 3, z)
 
-						data[vp] = c_cobble
-						data[vu] = c_sand
+						vm_data[vp] = c_cobble
+						vm_data[vu] = c_sand
 
-						if data[vc] == c_water then
-							data[vc] = c_silt
+						if vm_data[vc] == c_water then
+							vm_data[vc] = c_silt
 						end
 
-						if data[vc] == c_silt and data[vx] == c_water then
-							data[vx] = c_silt
+						if vm_data[vc] == c_silt and vm_data[vx] == c_water then
+							vm_data[vx] = c_silt
 						end
 					end
 				end
@@ -166,11 +170,29 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
-	vm:set_data(data)
+	-- Set light data.
+	for z = emin.z, emax.z do
+		for x = emin.x, emax.x do
+			for y = emin.y, emax.y do
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+
+					if y <= REALM_GROUND then
+						vm_light[vp] = 0
+					else
+						vm_light[vp] = 15
+					end
+				end
+			end
+		end
+	end
+
+	vm:set_data(vm_data)
+	vm:set_light_data(vm_light)
   vm:set_param2_data(param2_data)
 
 	-- Finalize voxel manipulator.
-	vm:calc_lighting()
+	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)
 
 	minetest.save_gen_notify("ww:mapgen_info", gennotify_data)
 end

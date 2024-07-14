@@ -39,6 +39,10 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 		return
 	end
 
+	local gennotify_data = {}
+	gennotify_data.minp = minp
+	gennotify_data.maxp = maxp
+
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
 	vm:get_data(data)
@@ -106,6 +110,8 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()
 	vm:update_liquids()
+
+	minetest.save_gen_notify("pd:mapgen_info", gennotify_data)
 end
 
 

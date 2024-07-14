@@ -44,6 +44,7 @@ local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 
 -- Externally located tables for performance.
 local vm_data = {}
+local vm_light = {}
 local param2_data = {}
 
 
@@ -56,13 +57,18 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 	local time1 = os.clock()
 
+	local gennotify_data = {}
+	gennotify_data.minp = minp
+	gennotify_data.maxp = maxp
+
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
+	vm:set_lighting({day=0, night=0})
 	vm:get_data(vm_data)
+	vm:get_light_data(vm_light)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
-	local min_area = VoxelArea:new {MinEdge=minp, MaxEdge=maxp}
 	local pr = PseudoRandom(seed + 672)
 
 	local x1 = maxp.x
@@ -73,15 +79,15 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local z0 = minp.z
 
 	-- Compute side lengths.
-	-- Note: 2D noise maps use overgeneration coordinates/sizes.
+	-- Note: noise maps use overgeneration coordinates/sizes.
 	-- This is to support horizontal shearing.
-	local side_len_x = ((x1-x0)+1)
-	local side_len_y = ((y1-y0)+1)
-	local side_len_z = ((z1-z0)+1)
-	local sides2D = {x=(emax.x - emin.x) + 1, y=(emax.z - emin.z) + 1}
-	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
+	local side_len_x = ((emax.x-emin.x)+1)
+	local side_len_y = ((emax.y-emin.y)+1)
+	local side_len_z = ((emax.z-emin.z)+1)
+	local sides2D = {x=side_len_x, y=side_len_z}
+	local sides3D = {x=side_len_x, y=side_len_y, z=side_len_z}
 	local bp2d = {x=emin.x, y=emin.z}
-	local bp3d = {x=x0, y=y0, z=z0}
+	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	local baseterrain, baseterrain_perlin = sw.get_2d_noise(bp2d, sides2D, "baseterrain")
 	local continental, continental_perlin = sw.get_2d_noise(bp2d, sides2D, "continental")
@@ -93,7 +99,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 	local function heightfunc(x, y, z)
 		-- Get index into 3D noise arrays.
-		local n3d = min_area:index(x, y, z)
+		local n3d = area:index(x, y, z)
 
 		-- Shear the 2D noise coordinate offset.
 		local shear_x	= floor(x + shear1[n3d] * min(1, abs(softener[n3d])))
@@ -150,7 +156,26 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	for z = emin.z, emax.z do
+		for x = emin.x, emax.x do
+			for y = emin.y, emax.y do
+				local ground_y = heightfunc(x, y, z)
+
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+
+					if y <= ground_y then
+						vm_light[vp] = 0
+					else
+						vm_light[vp] = 15
+					end
+				end
+			end
+		end
+	end
+
 	vm:set_data(vm_data)
+	vm:set_light_data(vm_light)
   vm:set_param2_data(param2_data)
 
   local function get_height(x, z)
@@ -174,8 +199,10 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   sw.despeckle_terrain(vm, minp, maxp)
 
 	-- Finalize voxel manipulator.
-	vm:calc_lighting()
+	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)
 	vm:update_liquids()
+
+	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
 	--print('time to generate: ' .. (time2 - time1))

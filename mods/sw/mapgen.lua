@@ -25,6 +25,10 @@ local floor = math.floor
 local max = math.max
 local min = math.min
 
+local function clamp(v, minv, maxv)
+	return max(minv, min(v, maxv))
+end
+
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
@@ -68,10 +72,11 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local side_len_z = ((z1-z0)+1)
 	local sides2D = {x=(emax.x - emin.x) + 1, y=(emax.z - emin.z) + 1}
 	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
-	local bp2d = {x=emin.x, y=emax.z}
+	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=x0, y=y0, z=z0}
 
 	local baseterrain = sw.get_2d_noise(bp2d, sides2D, "baseterrain")
+	local continental = sw.get_2d_noise(bp2d, sides2D, "continental")
 	local shear1 = sw.get_3d_noise(bp3d, sides3D, "shear1")
 	local shear2 = sw.get_3d_noise(bp3d, sides3D, "shear2")
 	local softener = sw.get_3d_noise(bp3d, sides3D, "softener")
@@ -87,6 +92,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 				local shear_x	= floor(x + shear1[n3d] * min(1, abs(softener[n3d])))
 				local shear_z = floor(z + shear2[n3d] * min(1, abs(softener[n3d])))
 
+				shear_x = clamp(shear_x, emin.x, emax.x)
+				shear_z = clamp(shear_z, emin.z, emax.z)
+
 				-- Get index into overgenerated 2D noise arrays.
 				local nx = (shear_x-emin.x)
 				local nz = (shear_z-emin.z)
@@ -98,7 +106,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 				n2d = n2d + 1
 				n2d_steady = n2d_steady + 1
 
-				local ground_y = REALM_GROUND + floor(baseterrain[n2d])
+				local ground_y = REALM_GROUND + floor(baseterrain[n2d] + continental[n2d])
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)

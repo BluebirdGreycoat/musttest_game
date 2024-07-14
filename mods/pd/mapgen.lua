@@ -63,7 +63,7 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 	local side_len_z = ((z1-z0)+1)
 	local sides2D = {x=(emax.x - emin.x) + 1, y=(emax.z - emin.z) + 1}
 	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
-	local bp2d = {x=emin.x, y=emax.z}
+	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=x0, y=y0, z=z0}
 
 	-- First mapgen pass.

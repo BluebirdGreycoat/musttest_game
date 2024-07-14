@@ -152,7 +152,6 @@ end
 function pd.generate_tunnels(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
-	local min_area = VoxelArea:new({MinEdge=minp, MaxEdge=maxp})
 	local pr = PseudoRandom(seed + 1891)
 
 	vm:get_data(vm_data)
@@ -165,15 +164,15 @@ function pd.generate_tunnels(vm, minp, maxp, seed)
 	local z0 = minp.z
 
 	-- Compute side lengths.
-	-- Note: 2D noise maps use overgeneration coordinates/sizes.
+	-- Note: noise maps use overgeneration coordinates/sizes.
 	-- This is to support horizontal shearing.
-	local side_len_x = ((x1-x0)+1)
-	local side_len_y = ((y1-y0)+1)
-	local side_len_z = ((z1-z0)+1)
-	local sides2D = {x=(emax.x - emin.x) + 1, y=(emax.z - emin.z) + 1}
-	local sides3D = {x=side_len_x, y=side_len_z, z=side_len_y}
-	local bp2d = {x=emin.x, y=emax.z}
-	local bp3d = {x=x0, y=y0, z=z0}
+	local side_len_x = ((emax.x-emin.x)+1)
+	local side_len_y = ((emax.y-emin.y)+1)
+	local side_len_z = ((emax.z-emin.z)+1)
+	local sides2D = {x=side_len_x, y=side_len_z}
+	local sides3D = {x=side_len_x, y=side_len_y, z=side_len_z}
+	local bp2d = {x=emin.x, y=emin.z}
+	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	local caves = pd.prepare_tunnels(bp2d, sides2D, minp, maxp)
 
@@ -193,7 +192,7 @@ function pd.generate_tunnels(vm, minp, maxp, seed)
 				n2d = n2d + 1
 
 				-- Get index into 3D noise arrays.
-				local n3d = min_area:index(x, y, z)
+				local n3d = area:index(x, y, z)
 
 				-- Initial cave noise values.
 				local c1 = caves[k][j].routemap[n2d]

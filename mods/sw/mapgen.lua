@@ -12,11 +12,13 @@ dofile(sw.modpath .. "/noise.lua")
 dofile(sw.modpath .. "/data.lua")
 dofile(sw.modpath .. "/tunnel.lua")
 dofile(sw.modpath .. "/despeckle.lua")
+dofile(sw.modpath .. "/spheres.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150
 local REALM_GROUND = 10150+200
 local BEDROCK_HEIGHT = REALM_START + 12
+local TAN_OF_1 = math.tan(1)
 
 -- Localize for performance.
 local random = math.random
@@ -24,6 +26,10 @@ local abs = math.abs
 local floor = math.floor
 local max = math.max
 local min = math.min
+local sin = math.sin
+local cos = math.cos
+local tan = math.tan
+local distance = vector.distance
 
 local function clamp(v, minv, maxv)
 	return max(minv, min(v, maxv))
@@ -37,7 +43,7 @@ local c_cobble          = minetest.get_content_id("default:cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 
 -- Externally located tables for performance.
-local data = {}
+local vm_data = {}
 local param2_data = {}
 
 
@@ -48,9 +54,11 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		return
 	end
 
+	local time1 = os.clock()
+
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
-	vm:get_data(data)
+	vm:get_data(vm_data)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -75,50 +83,66 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=x0, y=y0, z=z0}
 
-	local baseterrain = sw.get_2d_noise(bp2d, sides2D, "baseterrain")
-	local continental = sw.get_2d_noise(bp2d, sides2D, "continental")
+	local baseterrain, baseterrain_perlin = sw.get_2d_noise(bp2d, sides2D, "baseterrain")
+	local continental, continental_perlin = sw.get_2d_noise(bp2d, sides2D, "continental")
+	local mountains, mountains_perlin = sw.get_2d_noise(bp2d, sides2D, "mountains")
+	local mtnchannel, mtnchannel_perlin = sw.get_2d_noise(bp2d, sides2D, "mtnchannel")
 	local shear1 = sw.get_3d_noise(bp3d, sides3D, "shear1")
 	local shear2 = sw.get_3d_noise(bp3d, sides3D, "shear2")
 	local softener = sw.get_3d_noise(bp3d, sides3D, "softener")
+
+	local function heightfunc(x, y, z)
+		-- Get index into 3D noise arrays.
+		local n3d = min_area:index(x, y, z)
+
+		-- Shear the 2D noise coordinate offset.
+		local shear_x	= floor(x + shear1[n3d] * min(1, abs(softener[n3d])))
+		local shear_z = floor(z + shear2[n3d] * min(1, abs(softener[n3d])))
+
+		shear_x = clamp(shear_x, emin.x, emax.x)
+		shear_z = clamp(shear_z, emin.z, emax.z)
+
+		-- Get index into overgenerated 2D noise arrays.
+		local nx = (shear_x-emin.x)
+		local nz = (shear_z-emin.z)
+		local nx_steady = (x-emin.x)
+		local nz_steady = (z-emin.z)
+		local n2d = (((emax.z - emin.z) + 1) * nz + nx)
+		local n2d_steady = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
+		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
+		n2d = n2d + 1
+		n2d_steady = n2d_steady + 1
+
+		-- Calc multiplier [0, 1] for mountain noise.
+		local mtnchnl = (tan(min(1, abs(mtnchannel[n2d]))) / TAN_OF_1)
+		-- Sharpen curve.
+		mtnchnl = mtnchnl * mtnchnl * mtnchnl
+
+		local ground_y = REALM_GROUND + floor(
+			baseterrain[n2d] +
+			continental[n2d] +
+			(mountains[n2d] * mtnchnl))
+
+		return ground_y
+	end
 
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
-				-- Get index into 3D noise arrays.
-				local n3d = min_area:index(x, y, z)
-
-				-- Shear the 2D noise coordinate offset.
-				local shear_x	= floor(x + shear1[n3d] * min(1, abs(softener[n3d])))
-				local shear_z = floor(z + shear2[n3d] * min(1, abs(softener[n3d])))
-
-				shear_x = clamp(shear_x, emin.x, emax.x)
-				shear_z = clamp(shear_z, emin.z, emax.z)
-
-				-- Get index into overgenerated 2D noise arrays.
-				local nx = (shear_x-emin.x)
-				local nz = (shear_z-emin.z)
-				local nx_steady = (x-emin.x)
-				local nz_steady = (z-emin.z)
-				local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-				local n2d_steady = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
-				-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-				n2d = n2d + 1
-				n2d_steady = n2d_steady + 1
-
-				local ground_y = REALM_GROUND + floor(baseterrain[n2d] + continental[n2d])
+				local ground_y = heightfunc(x, y, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
-					local cid = data[vp]
+					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
 						if y <= BEDROCK_HEIGHT then
-							data[vp] = c_bedrock
+							vm_data[vp] = c_bedrock
 						elseif y <= ground_y then
-							data[vp] = c_stone
+							vm_data[vp] = c_stone
 						else
-							data[vp] = c_air
+							vm_data[vp] = c_air
 						end
 					end
 				end
@@ -126,15 +150,35 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
-	vm:set_data(data)
+	vm:set_data(vm_data)
   vm:set_param2_data(param2_data)
 
+  local function get_height(x, z)
+		local pos = {x=x, y=z}
+
+		-- Calc multiplier [0, 1] for mountain noise.
+		local mtnchnl = (tan(min(1, abs(mtnchannel_perlin:get_2d(pos)))) / TAN_OF_1)
+		-- Sharpen curve.
+		mtnchnl = mtnchnl * mtnchnl * mtnchnl
+
+		local ground_y = REALM_GROUND + floor(
+			baseterrain_perlin:get_2d(pos) +
+			continental_perlin:get_2d(pos) +
+			(mountains_perlin:get_2d(pos) * mtnchnl))
+
+		return ground_y
+  end
+
   sw.generate_tunnels(vm, minp, maxp, seed)
+  sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
   sw.despeckle_terrain(vm, minp, maxp)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()
 	vm:update_liquids()
+
+	local time2 = os.clock()
+	--print('time to generate: ' .. (time2 - time1))
 end
 
 

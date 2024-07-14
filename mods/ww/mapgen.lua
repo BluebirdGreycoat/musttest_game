@@ -34,8 +34,8 @@ local cos = math.cos
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
-local c_stone           = minetest.get_content_id("default:stone")
-local c_cobble          = minetest.get_content_id("default:cobble")
+local c_stone           = minetest.get_content_id("darkage:basaltic")
+local c_cobble          = minetest.get_content_id("darkage:basaltic_rubble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 local c_water           = minetest.get_content_id("default:water_source")
 local c_silt            = minetest.get_content_id("darkage:silt")

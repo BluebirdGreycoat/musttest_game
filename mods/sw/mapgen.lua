@@ -11,6 +11,7 @@ sw.worldpath = minetest.get_worldpath()
 dofile(sw.modpath .. "/noise.lua")
 dofile(sw.modpath .. "/data.lua")
 dofile(sw.modpath .. "/tunnel.lua")
+dofile(sw.modpath .. "/despeckle.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150
@@ -121,6 +122,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   vm:set_param2_data(param2_data)
 
   sw.generate_tunnels(vm, minp, maxp, seed)
+  sw.despeckle_terrain(vm, minp, maxp)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

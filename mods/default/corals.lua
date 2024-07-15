@@ -128,6 +128,7 @@ minetest.register_node("default:coral_brown", {
 	tiles = {"default_coral_brown.png"},
 	groups = utility.dig_groups("cobble"),
 	drop = "default:coral_skeleton",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -136,6 +137,7 @@ minetest.register_node("default:coral_orange", {
 	tiles = {"default_coral_orange.png"},
 	groups = utility.dig_groups("cobble"),
 	drop = "default:coral_skeleton",
+	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 })
 

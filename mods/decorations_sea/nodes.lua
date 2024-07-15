@@ -73,3 +73,28 @@ for k = 1, 5 do
 		end,
 	})
 end
+
+
+
+local node_coral_info = {
+	{name="Blue Ridge Coral"},
+	{name="Orange Rock Coral"},
+	{name="Rose Coral"},
+	{name="Purple Staghorn"},
+	{name="Oxblood Coral"},
+	{name="Yellow Emerald Coral"},
+	{name="Red Vanahorn"},
+	{name="Green Polyps"},
+}
+for k = 1, 8 do
+	local tex = "decorations_sea_coral_node_0" .. k .. ".png"
+
+	minetest.register_node("decorations_sea:node_coral_" .. k, {
+		description = node_coral_info[k].name,
+		tiles = {tex},
+		groups = utility.dig_groups("cobble"),
+		drop = "default:coral_skeleton",
+		silverpick_drop = true,
+		sounds = default.node_sound_stone_defaults(),
+	})
+end

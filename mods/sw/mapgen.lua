@@ -135,6 +135,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
+			local bedrock_adjust = pr:next(0, 3)
+
 			for y = y0, y1 do
 				local ground_y = heightfunc(x, y, z)
 
@@ -143,7 +145,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if y <= BEDROCK_HEIGHT then
+						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
 							vm_data[vp] = c_bedrock
 						elseif y <= ground_y then
 							vm_data[vp] = c_stone

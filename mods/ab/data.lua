@@ -11,3 +11,37 @@ ab.create_2d_noise("baseterrain", {
 	persist = 0.6,
 	lacunarity = 1.7,
 })
+
+-- Large, deep canyons.
+ab.create_2d_noise("canyons", {
+	offset = 0,
+	scale = 1,
+	spread = {x=1024, y=1024, z=1024},
+	seed = 289149,
+	octaves = 7,
+	persist = 0.7,
+	lacunarity = 1.7,
+	flags = "eased",
+})
+
+ab.create_3d_noise("canyonshear1", {
+	offset = 0,
+	scale = 6,
+	spread = {x=64, y=32, z=64},
+	seed = 822,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 2,
+	flags = "eased",
+})
+
+ab.create_3d_noise("canyonshear2", {
+	offset = 0,
+	scale = 6,
+	spread = {x=64, y=32, z=64},
+	seed = 513,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 2,
+	flags = "eased",
+})

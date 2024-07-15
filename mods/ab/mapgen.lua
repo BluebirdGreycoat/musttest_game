@@ -25,6 +25,10 @@ local min = math.min
 local max = math.max
 local abs = math.abs
 
+local function clamp(v, minv, maxv)
+	return max(minv, min(v, maxv))
+end
+
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
 local c_ignore          = minetest.get_content_id("ignore")
@@ -85,23 +89,60 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	local canyonshear1 = ab.get_3d_noise(bp3d, sides3D, "canyonshear1")
+	local canyonshear2 = ab.get_3d_noise(bp3d, sides3D, "canyonshear2")
 	local baseterrain = ab.get_2d_noise(bp2d, sides2D, "baseterrain")
+	local canyons = ab.get_2d_noise(bp2d, sides2D, "canyons")
+
+	local function heightfunc(x, y, z)
+		-- Get index into 3D noise arrays.
+		local n3d = area:index(x, y, z)
+
+		-- Shear the 2D noise coordinate offset.
+		local shear_x	= floor(x + canyonshear1[n3d])
+		local shear_z = floor(z + canyonshear2[n3d])
+
+		shear_x = clamp(shear_x, emin.x, emax.x)
+		shear_z = clamp(shear_z, emin.z, emax.z)
+
+		-- Get index into overgenerated 2D noise arrays.
+		local nx = (shear_x-emin.x)
+		local nz = (shear_z-emin.z)
+		local nx_steady = (x-emin.x)
+		local nz_steady = (z-emin.z)
+		local n2d = (((emax.z - emin.z) + 1) * nz + nx)
+		local n2d_steady = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
+		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
+		n2d = n2d + 1
+		n2d_steady = n2d_steady + 1
+
+		local canyon_offset = 0
+		local canyon_noise = canyons[n2d]
+
+		local canyon_threshold_lower = 0.20
+		local canyon_threshold_middle = 0.30
+		local canyon_threshold_upper = 0.35
+
+		if canyon_noise > -canyon_threshold_upper and canyon_noise < canyon_threshold_upper then
+			canyon_offset = -33
+		end
+		if canyon_noise > -canyon_threshold_middle and canyon_noise < canyon_threshold_middle then
+			canyon_offset = -66
+		end
+		if canyon_noise > -canyon_threshold_lower and canyon_noise < canyon_threshold_lower then
+			canyon_offset = -100
+		end
+
+		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)
+
+		return ground_y
+	end
 
 	-- First mapgen pass.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
-				-- Get index into 3D noise arrays.
-				local n3d = area:index(x, y, z)
-
-				-- Get index into overgenerated 2D noise arrays.
-				local nx = (x-emin.x)
-				local nz = (z-emin.z)
-				local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-				-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-				n2d = n2d + 1
-
-				local ground_y = floor(REALM_GROUND + baseterrain[n2d])
+				local ground_y = heightfunc(x, y, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)

@@ -186,3 +186,41 @@ for k = 1, 6 do
 		end
 	})
 end
+
+
+
+minetest.register_node("decorations_sea:sea_cucumber", {
+	description = "Sea Cucumber",
+	drawtype = "plantlike_rooted",
+	waving = 1,
+	tiles = {"default_sand.png"},
+	special_tiles = {{name = "decorations_sea_pickle.png", tileable_vertical = true}},
+	inventory_image = "decorations_sea_pickle.png",
+	wield_image = "decorations_sea_pickle.png",
+	paramtype = "light",
+	paramtype2 = "leveled",
+	groups = utility.dig_groups("plant", {flammable = 2}),
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+			{-4/16, 0.5, -4/16, 4/16, 1.5, 4/16},
+		},
+	},
+	node_dig_prediction = "default:sand",
+	node_placement_prediction = "",
+	sounds = default.node_sound_sand_defaults({
+		dig = {name = "default_dig_snappy", gain = 0.2},
+		dug = {name = "default_grass_footstep", gain = 0.25},
+	}),
+
+	on_place = get_deco_place_func({
+		min_height = 1,
+		max_height = 1,
+		nodename = "decorations_sea:sea_cucumber",
+	}),
+
+	after_destruct  = function(pos, oldnode)
+		minetest.set_node(pos, {name = "default:sand"})
+	end
+})

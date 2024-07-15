@@ -139,12 +139,12 @@ end
 
 
 local sand_plant_info = {
-	{name="Giant Kelp", min_height=3, max_height=14},
-	{name="Red Dulse", min_height=3, max_height=6},
-	{name="Sea Lettuce", min_height=3, max_height=6},
-	{name="Sea Grass", min_height=1, max_height=1},
-	{name="Sea Fern", min_height=1, max_height=1},
-	{name="Seaweed", min_height=1, max_height=1},
+	{name="Giant Kelp", min_height=3, max_height=14, box={-2/16, 0.5, -2/16, 2/16, 3.5, 2/16}},
+	{name="Red Dulse", min_height=3, max_height=6, box={-2/16, 0.5, -2/16, 2/16, 3.5, 2/16}},
+	{name="Sea Lettuce", min_height=3, max_height=6, box={-2/16, 0.5, -2/16, 2/16, 3.5, 2/16}},
+	{name="Sea Grass", min_height=1, max_height=1, box={-4/16, 0.5, -4/16, 4/16, 1.5, 4/16}},
+	{name="Sea Fern", min_height=1, max_height=1, box={-4/16, 0.5, -4/16, 4/16, 1.5, 4/16}},
+	{name="Seaweed", min_height=1, max_height=1, box={-4/16, 0.5, -4/16, 4/16, 1.5, 4/16}},
 }
 for k = 1, 6 do
 	local tex = "decorations_sea_seagrass_0" .. k .. ".png"
@@ -164,8 +164,8 @@ for k = 1, 6 do
 		selection_box = {
 			type = "fixed",
 			fixed = {
-					{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
-					{-2/16, 0.5, -2/16, 2/16, (1.0 * sand_plant_info[k].min_height + 0.5), 2/16},
+				{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+				sand_plant_info[k].box,
 			},
 		},
 		node_dig_prediction = "default:sand",

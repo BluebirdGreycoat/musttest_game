@@ -227,7 +227,7 @@ rc.realms = {
 	{
 		id = 7, -- REALM ID. Code relies on this.
 		name = "waterworld",
-		description = "Water's Abyss",
+		description = "Great Deep",
 		minp = {x=-30912, y=8650, z=-30912},
 		maxp = {x=30927, y=9650, z=30927},
 		gate_minp = {x=-30000, y=8650+50, z=-30000},

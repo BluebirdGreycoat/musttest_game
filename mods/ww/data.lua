@@ -22,6 +22,17 @@ ww.create_2d_noise("floorchannel", {
 	lacunarity = 1.8,
 })
 
+-- Sea floor glowing lights.
+ww.create_2d_noise("glowveins", {
+	offset = 0,
+	scale = 1,
+	spread = {x=64, y=64, z=64},
+	seed = 162,
+	octaves = 6,
+	persist = 0.6,
+	lacunarity = 1.7,
+})
+
 ww.create_3d_noise("shear1", {
 	offset = 0,
 	scale = 10,

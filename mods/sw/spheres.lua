@@ -166,35 +166,48 @@ function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 		local sphere_x = data.pos_x
 		local sphere_y = data.y_level + data.y_offset
 		local sphere_z = data.pos_z
+		local sphere_rad = data.radius
+
+		local minbox = {
+			x = sphere_x - sphere_rad - 6,
+			y = sphere_y - sphere_rad - 6,
+			z = sphere_z - sphere_rad - 6,
+		}
+		local maxbox = {
+			x = sphere_x + sphere_rad + 6,
+			y = sphere_y + sphere_rad + 6,
+			z = sphere_z + sphere_rad + 6,
+		}
 
 		local p1 = vector.new(sphere_x, sphere_y, sphere_z)
+		local p2 = {x=0, y=0, z=0}
 
+		local ncid_1 = c_obsidian
+		local ncid_3 = data.cid_3
+
+		-- For each dimension, do bounds checks as early as possible.
 		for z = z0, z1 do
+			if z >= minbox.z and z <= maxbox.z then
 			for x = x0, x1 do
+				if x >= minbox.x and x <= maxbox.x then
 				for y = y0, y1 do
-					if y >= ystart and y <= yend then
+					if y >= ystart and y <= yend and y >= minbox.y and y <= maxbox.y then
 						local vp = area:index(x, y, z)
 						local cid = vm_data[vp]
 
 						if cid == c_air then
+							p2.x = x
+							p2.y = y
+							p2.z = z
 
-							local p2 = vector.new(x, y, z)
 							local n3d = area:index(x, y, z)
 							local nrad = abs(sphereshear[n3d]) * 5
 							local D = floor(distance(p1, p2))
 
-							local ncid_1 = c_obsidian
-							local ncid_2 = data.cid_1
-							local ncid_3 = data.cid_3
-
-							if pr:next(1, 3) >= 2 then
-								ncid_2 = data.cid_2
-							end
-
 							local sphere = false
-							local shell_outer = floor(data.radius + nrad)
-							local shell_inner = floor(data.radius - SPHERE_WALL - nrad)
-							local shell_center = floor(data.radius - SPHERE_INNER - nrad)
+							local shell_outer = floor(sphere_rad + nrad)
+							local shell_inner = floor(sphere_rad - SPHERE_WALL - nrad)
+							local shell_center = floor(sphere_rad - SPHERE_INNER - nrad)
 
 							if D <= shell_outer then
 								sphere = true
@@ -204,16 +217,22 @@ function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 								if D >= shell_inner then
 									vm_data[vp] = ncid_1
 								elseif D >= shell_center then
-									vm_data[vp] = ncid_2
+									if pr:next(1, 3) >= 2 then
+										vm_data[vp] = data.cid_2
+									else
+										vm_data[vp] = data.cid_1
+									end
 								else
 									vm_data[vp] = ncid_3
 								end
 							end
 						end
 					end
+				end -- Y
 				end
+			end -- X
 			end
-		end
+		end -- Z
 	end
 
 	vm:set_data(vm_data)

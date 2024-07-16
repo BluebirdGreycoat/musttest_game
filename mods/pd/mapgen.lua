@@ -49,6 +49,7 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PseudoRandom(seed + 5554)
 
 	local x1 = maxp.x
@@ -75,15 +76,9 @@ pd.generate_realm = function(vm, minp, maxp, seed)
 			local bedrock_adjust = pr:next(0, 3)
 
 			for y = y0, y1 do
-				-- Get index into 3D noise arrays.
+				-- Get index into noise arrays.
 				local n3d = area:index(x, y, z)
-
-				-- Get index into overgenerated 2D noise arrays.
-				local nx = (x-emin.x)
-				local nz = (z-emin.z)
-				local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-				-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-				n2d = n2d + 1
+				local n2d = area2d:index(x, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)

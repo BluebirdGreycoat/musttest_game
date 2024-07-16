@@ -69,6 +69,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PseudoRandom(seed + 672)
 
 	local x1 = maxp.x
@@ -108,16 +109,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		shear_x = clamp(shear_x, emin.x, emax.x)
 		shear_z = clamp(shear_z, emin.z, emax.z)
 
-		-- Get index into overgenerated 2D noise arrays.
-		local nx = (shear_x-emin.x)
-		local nz = (shear_z-emin.z)
-		local nx_steady = (x-emin.x)
-		local nz_steady = (z-emin.z)
-		local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-		local n2d_steady = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
-		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-		n2d = n2d + 1
-		n2d_steady = n2d_steady + 1
+		local n2d = area2d:index(shear_x, shear_z)
+		local n2d_steady = area2d:index(x, z)
 
 		-- Calc multiplier [0, 1] for mountain noise.
 		local mtnchnl = (tan(min(1, abs(mtnchannel[n2d]))) / TAN_OF_1)

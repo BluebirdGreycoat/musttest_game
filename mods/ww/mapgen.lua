@@ -70,6 +70,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PseudoRandom(seed + 7218)
 
 	local x1 = maxp.x
@@ -97,19 +98,14 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	local glowveins = ww.get_2d_noise(bp2d, sides2D, "glowveins")
 
 	local function get_seafloor(x, y, z)
-		-- Get index into 3D noise arrays.
+		-- Get index into noise arrays.
 		local n3d = area:index(x, y, z)
 
 		-- Shear the 2D noise coordinate offset.
 		local shear_x	= floor(x + shear1[n3d])
 		local shear_z = floor(z + shear2[n3d])
 
-		-- Get index into overgenerated 2D noise arrays.
-		local nx = (shear_x-emin.x)
-		local nz = (shear_z-emin.z)
-		local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-		n2d = n2d + 1
+		local n2d = area2d:index(shear_x, shear_z)
 
 		local a = REALM_START + 50
 		local t = min(1, abs(floorchannel[n2d]))

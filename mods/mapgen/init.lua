@@ -103,6 +103,9 @@ end
 if not mapgen.files_registered then
 	local mp = mapgen.modpath
 
+	-- Shall include useful utilities for Lua mapgens running in the mapgen env.
+	minetest.register_mapgen_script(mp .. "/area2d.lua")
+
 	-- These files are reloadable. Their functions can be changed at runtime.
 	reload_or_dofile("mapgen:shrubs", mp .. "/shrubs.lua")
 	reload_or_dofile("mapgen:papyrus", mp .. "/papyrus.lua")

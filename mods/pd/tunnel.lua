@@ -152,6 +152,7 @@ end
 function pd.generate_tunnels(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PseudoRandom(seed + 1891)
 
 	vm:get_data(vm_data)
@@ -185,14 +186,9 @@ function pd.generate_tunnels(vm, minp, maxp, seed)
 		for k = 1, #caves do
 			-- For each of the 3 separate tunnels per layer.
 			for j = 1, 3 do
-				-- Get index into overgenerated 2D noise arrays.
-				local nx_steady = (x-emin.x)
-				local nz_steady = (z-emin.z)
-				local n2d = (((emax.z - emin.z) + 1) * nz_steady + nx_steady)
-				n2d = n2d + 1
-
-				-- Get index into 3D noise arrays.
+				-- Get index into noise arrays.
 				local n3d = area:index(x, y, z)
+				local n2d = area2d:index(x, z)
 
 				-- Initial cave noise values.
 				local c1 = caves[k][j].routemap[n2d]

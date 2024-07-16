@@ -1,6 +1,24 @@
 
 local NOISE_SCALE = 1
 
+-- Given scale, octaves, and persistence,
+-- get the max value the perlin noise can have.
+local function calc(scale, oct, perc)
+	local acc = scale
+	for k = 1, oct - 1 do
+		-- Get amplitude of *previous* octave multiplied by persist.
+		local fac = math.ceil((scale/(2^(k-1)))*perc)
+		acc = acc + fac
+	end
+	return acc
+end
+
+-- Get the *actual* in-engine scale value in order to achive desired max scale.
+local function doit(scale, oct, perc)
+	local a = calc(scale, oct, perc)
+	return math.floor((scale / a) * scale)
+end
+
 -- Base terrain height.
 ww.create_2d_noise("seafloor", {
 	offset = 8,
@@ -28,6 +46,16 @@ ww.create_2d_noise("glowveins", {
 	scale = 1,
 	spread = {x=64, y=64, z=64},
 	seed = 162,
+	octaves = 6,
+	persist = 0.6,
+	lacunarity = 1.7,
+})
+
+ww.create_2d_noise("seamounts", {
+	offset = 0,
+	scale = 1,
+	spread = {x=1024, y=1024, z=1024},
+	seed = 244,
 	octaves = 6,
 	persist = 0.6,
 	lacunarity = 1.7,

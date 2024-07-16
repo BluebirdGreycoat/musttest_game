@@ -20,6 +20,7 @@ local REALM_START = 8650
 local REALM_END = 9650
 local REALM_GROUND = 8650+500
 local BEDROCK_HEIGHT = REALM_START + 12
+local TAN_OF_1 = math.tan(1)
 
 -- Localize for performance.
 local random = math.random
@@ -30,6 +31,10 @@ local max = math.max
 local tan = math.tan
 local sin = math.sin
 local cos = math.cos
+
+local function clamp(v, minv, maxv)
+	return max(minv, min(v, maxv))
+end
 
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
@@ -94,8 +99,13 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	local seafloor = ww.get_2d_noise(bp2d, sides2D, "seafloor")
 	local shear1 = ww.get_3d_noise(bp3d, sides3D, "shear1")
 	local shear2 = ww.get_3d_noise(bp3d, sides3D, "shear2")
+	local shear3 = ww.get_3d_noise(bp3d, sides3D, "shear3")
+	local shear4 = ww.get_3d_noise(bp3d, sides3D, "shear4")
 	local floorchannel = ww.get_2d_noise(bp2d, sides2D, "floorchannel")
 	local glowveins = ww.get_2d_noise(bp2d, sides2D, "glowveins")
+	local seamounts = ww.get_2d_noise(bp2d, sides2D, "seamounts")
+	local mtnchannel = ww.get_2d_noise(bp2d, sides2D, "mtnchannel")
+	local softener = ww.get_3d_noise(bp3d, sides3D, "softener")
 
 	local function get_seafloor(x, y, z)
 		-- Get index into noise arrays.
@@ -104,12 +114,25 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 		-- Shear the 2D noise coordinate offset.
 		local shear_x	= floor(x + shear1[n3d])
 		local shear_z = floor(z + shear2[n3d])
+		local shear_x2	= floor(x + shear3[n3d] * min(1, abs(softener[n3d])))
+		local shear_z2 = floor(z + shear4[n3d] * min(1, abs(softener[n3d])))
+
+		shear_x2 = clamp(shear_x2, emin.x, emax.x)
+		shear_z2 = clamp(shear_z2, emin.z, emax.z)
 
 		local n2d = area2d:index(shear_x, shear_z)
+		local n2d2 = area2d:index(shear_x2, shear_z2)
+
+		-- Calc multiplier [0, 1] for mountain noise.
+		local mnoise = mtnchannel[n2d]
+		local mtnchnl = (tan(min(1, abs(mnoise)) * -1 + 1) / TAN_OF_1)
+		-- Sharpen curve.
+		mtnchnl = mtnchnl ^ 10
 
 		local a = REALM_START + 50
 		local t = min(1, abs(floorchannel[n2d]))
-		a = a + seafloor[n2d] * (tan(t) / 1.558)
+		a = a + seafloor[n2d] * (tan(t) / TAN_OF_1)
+		a = a + (abs(seamounts[n2d2]) * abs(mtnchnl))
 		return floor(a)
 	end
 

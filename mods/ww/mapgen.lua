@@ -15,6 +15,7 @@ ww.worldpath = minetest.get_worldpath()
 
 dofile(ww.modpath .. "/noise.lua")
 dofile(ww.modpath .. "/data.lua")
+dofile(ww.modpath .. "/reef.lua")
 
 local REALM_START = 8650
 local REALM_END = 9650
@@ -127,7 +128,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 		local mnoise = mtnchannel[n2d]
 		local mtnchnl = (tan(min(1, abs(mnoise)) * -1 + 1) / TAN_OF_1)
 		-- Sharpen curve.
-		mtnchnl = mtnchnl ^ 10
+		mtnchnl = mtnchnl ^ 7
 
 		local a = REALM_START + 50
 		local t = min(1, abs(floorchannel[n2d]))
@@ -168,11 +169,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	for z = z0, z1 do
 		for x = x0, x1 do
 		-- Get index into overgenerated 2D noise arrays.
-		local nx = (x-emin.x)
-		local nz = (z-emin.z)
-		local n2d = (((emax.z - emin.z) + 1) * nz + nx)
-		-- Lua arrays start indexing at 1, not 0. Urrrrgh.
-		n2d = n2d + 1
+		local n2d = area2d:index(x, z)
 
 			for y = y0, y1 do
 				if y >= REALM_START and y <= REALM_END then
@@ -236,6 +233,8 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	vm:set_data(vm_data)
 	vm:set_light_data(vm_light)
   vm:set_param2_data(param2_data)
+
+  ww.generate_reefs(vm, minp, maxp, seed, REALM_START, REALM_END, REALM_GROUND)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

@@ -15,6 +15,16 @@ local max = math.max
 local min = math.min
 local tan = math.tan
 
+ww.create_2d_noise("reefpattern", {
+	offset = 0,
+	scale = 1,
+	spread = {x=64, y=64, z=64},
+	seed = 872,
+	octaves = 5,
+	persist = 0.5,
+	lacunarity = 2,
+})
+
 local CORAL_PLANT_CIDS = {
 	minetest.get_content_id("default:coral_green"),
 	minetest.get_content_id("default:coral_pink"),
@@ -60,7 +70,7 @@ local SAND_DECO_CIDS = {
 	minetest.get_content_id("decorations_sea:sand_decoration_5"),
 }
 
-function ww.generate_reefs(vm, minp, maxp, seed, ystart, yend, yground)
+function ww.generate_reefs(vm, minp, maxp, seed, ystart, yend, yground, heightfunc)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
@@ -86,15 +96,31 @@ function ww.generate_reefs(vm, minp, maxp, seed, ystart, yend, yground)
 	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
+	local reefpattern = ww.get_2d_noise(bp2d, sides2D, "reefpattern")
+	local min_noise = 0
+	local max_noise = 0
+
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
 				if y >= ystart and y <= yend then
+					local n2d = area2d:index(x, z)
 					local vp = area:index(x, y, z)
+					local ground = heightfunc(x, y, z)
+					local reef = reefpattern[n2d]
+
+					if reef < min_noise then
+						min_noise = reef
+					end
+
+					if reef > max_noise then
+						max_noise = reef
+					end
 				end
 			end
 		end
 	end
 
+	--print(min_noise, max_noise)
 	vm:set_data(vm_data)
 end

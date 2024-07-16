@@ -94,6 +94,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local canyonshear2 = ab.get_3d_noise(bp3d, sides3D, "canyonshear2")
 	local baseterrain = ab.get_2d_noise(bp2d, sides2D, "baseterrain")
 	local canyons = ab.get_2d_noise(bp2d, sides2D, "canyons")
+	local canyonpath = ab.get_2d_noise(bp2d, sides2D, "canyonpath")
 
 	local function heightfunc(x, y, z)
 		-- Get index into noise arrays.
@@ -110,7 +111,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		local n2d_steady = area2d:index(x, z)
 
 		local canyon_offset = 0
-		local canyon_noise = canyons[n2d]
+		local canyon_noise = canyons[n2d] + (canyonpath[n2d_steady] * 0.1)
 
 		local canyon_threshold_lower = 0.20
 		local canyon_threshold_middle = 0.30
@@ -128,7 +129,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)
 
-		return ground_y
+		return ground_y, canyon_offset
 	end
 
 	-- First mapgen pass.
@@ -137,7 +138,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local bedrock_adjust = pr:next(0, 3)
 
 			for y = y0, y1 do
-				local ground_y = heightfunc(x, y, z)
+				local ground_y, canyon_offset = heightfunc(x, y, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
@@ -149,7 +150,9 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 						elseif y <= ground_y then
 							if y == ground_y then
 								data[vp] = c_cobble
-								chose_ground_decor(x, y, z)
+								if canyon_offset < 0 then
+									chose_ground_decor(x, y, z)
+								end
 							else
 								data[vp] = c_stone
 							end

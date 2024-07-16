@@ -234,7 +234,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
 	vm:set_light_data(vm_light)
   vm:set_param2_data(param2_data)
 
-  ww.generate_reefs(vm, minp, maxp, seed, REALM_START, REALM_END, REALM_GROUND)
+  ww.generate_reefs(vm, minp, maxp, seed, REALM_START, REALM_END, REALM_GROUND, get_seafloor)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

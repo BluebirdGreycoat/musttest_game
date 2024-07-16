@@ -45,3 +45,15 @@ ab.create_3d_noise("canyonshear2", {
 	lacunarity = 2,
 	flags = "eased",
 })
+
+-- Roughen the edges of canyons.
+ab.create_2d_noise("canyonpath", {
+	offset = 0,
+	scale = 1,
+	spread = {x=16, y=16, z=16},
+	seed = 489,
+	octaves = 4,
+	persist = 0.5,
+	lacunarity = 2,
+	flags = "noeased",
+})

@@ -97,6 +97,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local baseterrain = ab.get_2d_noise(bp2d, sides2D, "baseterrain")
 	local canyons = ab.get_2d_noise(bp2d, sides2D, "canyons")
 	local canyonpath = ab.get_2d_noise(bp2d, sides2D, "canyonpath")
+	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
 
 	local function heightfunc(x, y, z)
 		-- Get index into noise arrays.
@@ -115,9 +116,10 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		local canyon_offset = 0
 		local canyon_noise = canyons[n2d] + (canyonpath[n2d_steady] * 0.1)
 
-		local canyon_threshold_lower = 0.20
-		local canyon_threshold_middle = 0.30
-		local canyon_threshold_upper = 0.45
+		local canyon_width = canyonwidth[n2d_steady] -- absvalue noise.
+		local canyon_threshold_lower = 0.20 * canyon_width
+		local canyon_threshold_middle = 0.30 * canyon_width
+		local canyon_threshold_upper = 0.45 * canyon_width
 
 		if canyon_noise >= -canyon_threshold_upper and canyon_noise <= canyon_threshold_upper then
 			-- Calculate detritis slope.

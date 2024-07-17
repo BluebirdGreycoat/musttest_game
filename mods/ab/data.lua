@@ -54,3 +54,14 @@ ab.create_2d_noise("canyonpath", {
 	lacunarity = 2,
 	flags = "noeased",
 })
+
+ab.create_2d_noise("canyonwidth", {
+	offset = 0,
+	scale = 1.5,
+	spread = {x=512, y=512, z=512},
+	seed = 6628,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 2,
+	flags = "absvalue",
+})

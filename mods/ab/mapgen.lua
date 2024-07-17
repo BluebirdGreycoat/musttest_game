@@ -12,6 +12,7 @@ dofile(ab.modpath .. "/data.lua")
 dofile(ab.modpath .. "/tree.lua")
 dofile(ab.modpath .. "/tunnel.lua")
 dofile(ab.modpath .. "/despeckle.lua")
+dofile(ab.modpath .. "/biome.lua")
 
 local REALM_START = 21150
 local REALM_END = 23450
@@ -81,22 +82,12 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
-	local grass = {}
-	local trees = {}
-
-	local function chose_ground_decor(x, y, z)
-		if pr:next(1, 100) == 1 then
-			trees[#trees + 1] = {x=x, y=y, z=z}
-		elseif pr:next(1, 10) == 1 then
-			grass[#grass + 1] = {x=x, y=y+1, z=z}
-		end
-	end
-
 	local canyonshear1 = ab.get_3d_noise(bp3d, sides3D, "canyonshear1")
 	local canyonshear2 = ab.get_3d_noise(bp3d, sides3D, "canyonshear2")
 	local baseterrain = ab.get_2d_noise(bp2d, sides2D, "baseterrain")
 	local canyons = ab.get_2d_noise(bp2d, sides2D, "canyons")
 	local canyonpath = ab.get_2d_noise(bp2d, sides2D, "canyonpath")
+	local canyonpath2 = ab.get_2d_noise(bp2d, sides2D, "canyonpath2")
 	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
 	local canyondepth = ab.get_2d_noise(bp2d, sides2D, "canyondepth")
 
@@ -115,13 +106,15 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		local n2d_steady = area2d:index(x, z)
 
 		local canyon_offset = 0
-		local canyon_noise = canyons[n2d] + (canyonpath[n2d_steady] * 0.1)
+		local canyon_noise = canyons[n2d] + (canyonpath[n2d_steady] * canyonpath2[n2d_steady])
 
-		local canyon_width = canyonwidth[n2d_steady] -- absvalue noise.
-		local canyon_threshold_lower = 0.20 * canyon_width
-		local canyon_threshold_middle = 0.30 * canyon_width
-		local canyon_threshold_upper = 0.45 * canyon_width
+		-- absvalue noise.
+		local canyon_width = canyonwidth[n2d_steady]
 		local canyon_depth = canyondepth[n2d]
+
+		local canyon_threshold_lower = (0.02 + canyon_depth * 0.01) * canyon_width
+		local canyon_threshold_middle = (0.04 + canyon_depth * 0.02) * canyon_width
+		local canyon_threshold_upper = (0.06 + canyon_depth * 0.03) * canyon_width
 
 		if canyon_noise >= -canyon_threshold_upper and canyon_noise <= canyon_threshold_upper then
 			-- Calculate detritis slope.
@@ -168,14 +161,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
 							data[vp] = c_bedrock
 						elseif y <= ground_y then
-							if y == ground_y then
-								data[vp] = c_cobble
-								if canyon_offset < 0 then
-									chose_ground_decor(x, y, z)
-								end
-							else
-								data[vp] = c_stone
-							end
+							data[vp] = c_stone
 						else
 							data[vp] = c_air
 						end
@@ -190,18 +176,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
   ab.generate_tunnels(vm, minp, maxp, seed)
   ab.despeckle_terrain(vm, minp, maxp)
-
-  for k = 1, #trees do
-		ab.place_acacia_tree(vm, trees[k])
-  end
-
-  for k = 1, #grass do
-		if pr:next(1, 8) == 1 then
-			minetest.set_node(grass[k], {name="default:dry_shrub"})
-		else
-			minetest.set_node(grass[k], {name="default:dry_grass2_" .. pr:next(1, 5), param2=2})
-		end
-  end
+  ab.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

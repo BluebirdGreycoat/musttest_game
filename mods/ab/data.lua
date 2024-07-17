@@ -16,11 +16,11 @@ ab.create_2d_noise("baseterrain", {
 ab.create_2d_noise("canyons", {
 	offset = 0,
 	scale = 1,
-	spread = {x=1024, y=1024, z=1024},
+	spread = {x=4096, y=4096, z=4096},
 	seed = 289149,
-	octaves = 7,
-	persist = 0.7,
-	lacunarity = 1.7,
+	octaves = 8,
+	persist = 0.5,
+	lacunarity = 2,
 })
 
 ab.create_3d_noise("canyonshear1", {
@@ -52,7 +52,18 @@ ab.create_2d_noise("canyonpath", {
 	octaves = 4,
 	persist = 0.5,
 	lacunarity = 2,
-	flags = "noeased",
+	flags = "noeased,absvalue",
+})
+
+ab.create_2d_noise("canyonpath2", {
+	offset = 0,
+	scale = 0.02,
+	spread = {x=512, y=512, z=512},
+	seed = 335,
+	octaves = 4,
+	persist = 0.5,
+	lacunarity = 2,
+	flags = "noeased,absvalue",
 })
 
 ab.create_2d_noise("canyonwidth", {
@@ -63,7 +74,7 @@ ab.create_2d_noise("canyonwidth", {
 	octaves = 2,
 	persist = 0.5,
 	lacunarity = 2,
-	flags = "absvalue",
+	flags = "noeased,absvalue",
 })
 
 ab.create_2d_noise("canyondepth", {
@@ -74,5 +85,5 @@ ab.create_2d_noise("canyondepth", {
 	octaves = 2,
 	persist = 0.5,
 	lacunarity = 2,
-	flags = "absvalue",
+	flags = "noeased,absvalue",
 })

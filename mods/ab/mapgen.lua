@@ -17,6 +17,7 @@ local REALM_START = 21150
 local REALM_END = 23450
 local REALM_GROUND = 21150+2000
 local BEDROCK_HEIGHT = REALM_START + 12
+local TAN_OF_1 = math.tan(1)
 
 -- Localize for performance.
 local random = math.random
@@ -24,6 +25,7 @@ local floor = math.floor
 local min = math.min
 local max = math.max
 local abs = math.abs
+local tan = math.tan
 
 local function clamp(v, minv, maxv)
 	return max(minv, min(v, maxv))
@@ -115,16 +117,30 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 		local canyon_threshold_lower = 0.20
 		local canyon_threshold_middle = 0.30
-		local canyon_threshold_upper = 0.35
+		local canyon_threshold_upper = 0.45
 
-		if canyon_noise > -canyon_threshold_upper and canyon_noise < canyon_threshold_upper then
-			canyon_offset = -33
+		if canyon_noise >= -canyon_threshold_upper and canyon_noise <= canyon_threshold_upper then
+			-- Calculate detritis slope.
+			local cn = abs(canyon_noise) - canyon_threshold_middle
+			local a = cn / (canyon_threshold_upper - canyon_threshold_middle)
+			local b = tan(a ^ 2) / TAN_OF_1
+			local c = floor(b * 15)
+			canyon_offset = -33 + c
 		end
-		if canyon_noise > -canyon_threshold_middle and canyon_noise < canyon_threshold_middle then
-			canyon_offset = -66
+		if canyon_noise >= -canyon_threshold_middle and canyon_noise <= canyon_threshold_middle then
+			-- Calculate detritis slope.
+			local cn = abs(canyon_noise) - canyon_threshold_lower
+			local a = cn / (canyon_threshold_middle - canyon_threshold_lower)
+			local b = tan(a ^ 2) / TAN_OF_1
+			local c = floor(b * 15)
+			canyon_offset = -66 + c
 		end
-		if canyon_noise > -canyon_threshold_lower and canyon_noise < canyon_threshold_lower then
-			canyon_offset = -100
+		if canyon_noise >= -canyon_threshold_lower and canyon_noise <= canyon_threshold_lower then
+			-- Calculate detritis slope.
+			local a = abs(canyon_noise / canyon_threshold_lower)
+			local b = (tan(a ^ 2) / TAN_OF_1)
+			local c = floor(b * 15)
+			canyon_offset = -100 + c
 		end
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)

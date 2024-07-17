@@ -98,6 +98,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local canyons = ab.get_2d_noise(bp2d, sides2D, "canyons")
 	local canyonpath = ab.get_2d_noise(bp2d, sides2D, "canyonpath")
 	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
+	local canyondepth = ab.get_2d_noise(bp2d, sides2D, "canyondepth")
 
 	local function heightfunc(x, y, z)
 		-- Get index into noise arrays.
@@ -120,6 +121,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		local canyon_threshold_lower = 0.20 * canyon_width
 		local canyon_threshold_middle = 0.30 * canyon_width
 		local canyon_threshold_upper = 0.45 * canyon_width
+		local canyon_depth = canyondepth[n2d]
 
 		if canyon_noise >= -canyon_threshold_upper and canyon_noise <= canyon_threshold_upper then
 			-- Calculate detritis slope.
@@ -127,7 +129,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local a = cn / (canyon_threshold_upper - canyon_threshold_middle)
 			local b = tan(a ^ 2) / TAN_OF_1
 			local c = floor(b * 15)
-			canyon_offset = -33 + c
+			canyon_offset = (-33 + c) * canyon_depth
 		end
 		if canyon_noise >= -canyon_threshold_middle and canyon_noise <= canyon_threshold_middle then
 			-- Calculate detritis slope.
@@ -135,14 +137,14 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local a = cn / (canyon_threshold_middle - canyon_threshold_lower)
 			local b = tan(a ^ 2) / TAN_OF_1
 			local c = floor(b * 15)
-			canyon_offset = -66 + c
+			canyon_offset = (-66 + c) * canyon_depth
 		end
 		if canyon_noise >= -canyon_threshold_lower and canyon_noise <= canyon_threshold_lower then
 			-- Calculate detritis slope.
 			local a = abs(canyon_noise / canyon_threshold_lower)
 			local b = (tan(a ^ 2) / TAN_OF_1)
 			local c = floor(b * 15)
-			canyon_offset = -100 + c
+			canyon_offset = (-100 + c) * canyon_depth
 		end
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)

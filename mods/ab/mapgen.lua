@@ -110,8 +110,9 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 		-- absvalue noise.
 		local canyon_width = canyonwidth[n2d_steady]
-		local canyon_depth = canyondepth[n2d]
+		local canyon_depth = max(0.25, canyondepth[n2d])
 
+		-- Canyons are located around -/+ 0.
 		local canyon_threshold_lower = (0.02 + canyon_depth * 0.01) * canyon_width
 		local canyon_threshold_middle = (0.04 + canyon_depth * 0.02) * canyon_width
 		local canyon_threshold_upper = (0.06 + canyon_depth * 0.03) * canyon_width
@@ -138,6 +139,25 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local b = (tan(a ^ 2) / TAN_OF_1)
 			local c = floor(b * 15)
 			canyon_offset = (-100 + c) * canyon_depth
+		end
+
+		local mesa_noise = canyon_noise
+		local mesa_threshold = 0.95
+		local mesa_threshold_width = 0.2
+		local mesa_threshold_cap = mesa_threshold + mesa_threshold_width
+		if mesa_noise >= mesa_threshold then
+			-- Calculate detritis slope.
+			local m = min(mesa_threshold_width, max(0, (mesa_threshold_cap - mesa_noise)))
+			local g = m / mesa_threshold_width
+			local a = g * -1 + 1
+			local b = tan(a ^ 3) / TAN_OF_1
+			local h = tan(a ^ 6) / TAN_OF_1
+			local c = floor(b * 50 + h * canyonpath[n2d_steady])
+			local j = max(0.75, canyon_depth)
+			if mesa_noise >= mesa_threshold_cap then
+				c = 100
+			end
+			canyon_offset = c * j
 		end
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)

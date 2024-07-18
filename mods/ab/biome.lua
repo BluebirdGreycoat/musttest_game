@@ -2,6 +2,7 @@
 local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
+local c_stone = minetest.get_content_id("rackstone:rackstone")
 local c_cobble = minetest.get_content_id("rackstone:cobble")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 
@@ -28,14 +29,6 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local grass = {}
 	local trees = {}
 
-	local function chose_ground_decor(x, y, z)
-		if pr:next(1, 100) == 1 then
-			trees[#trees + 1] = {x=x, y=y, z=z}
-		elseif pr:next(1, 10) == 1 then
-			grass[#grass + 1] = {x=x, y=y+1, z=z}
-		end
-	end
-
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
@@ -46,15 +39,26 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 					local cid_c = vm_data[vp_c]
 					local cid_u = vm_data[vp_u]
 
-					if cid_c ~= c_air and cid_c ~= c_ignore and cid_c ~= c_bedrock then
-						if cid_u == c_air then
-							-- We have found a surface.
-							local ground_y = heightfunc(x, y, z)
+					if cid_c == c_stone and cid_u == c_air then
+						-- We have found a surface.
+						local ground_y, canyon_offset = heightfunc(x, y, z)
 
+						-- Only cobble the surface, skip caves.
+						if y == ground_y then
 							vm_data[vp_c] = c_cobble
+						end
 
-							if y >= ground_y then
-								chose_ground_decor(x, y, z)
+						if y >= ground_y then
+							local grassed = false
+							if pr:next(1, 6) == 1 then
+								grass[#grass + 1] = {x=x, y=y+1, z=z}
+								grassed = true
+							end
+
+							if canyon_offset < 0 and not grassed then
+								if pr:next(1, 100) == 1 then
+									trees[#trees + 1] = {x=x, y=y, z=z}
+								end
 							end
 						end
 					end
@@ -70,7 +74,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
   end
 
   for k = 1, #grass do
-		if pr:next(1, 8) == 1 then
+		if pr:next(1, 7) == 1 then
 			minetest.set_node(grass[k], {name="default:dry_shrub"})
 		else
 			minetest.set_node(grass[k], {name="default:dry_grass2_" .. pr:next(1, 5), param2=2})

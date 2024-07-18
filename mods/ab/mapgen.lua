@@ -141,6 +141,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			canyon_offset = (-100 + c) * canyon_depth
 		end
 
+		-- Mesas are located around 1.
 		local mesa_noise = canyon_noise
 		local mesa_threshold = 0.95
 		local mesa_threshold_width = 0.2

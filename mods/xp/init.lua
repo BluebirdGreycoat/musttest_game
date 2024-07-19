@@ -35,6 +35,18 @@ end
 
 
 
+function xp.subtract_xp(pname, kind, count)
+	local points = xp.get_xp(pname, kind)
+	points = points - count
+	if points < 0 then
+		points = 0
+	end
+	xp.set_xp(pname, kind, points)
+	hud_clock.update_xp(pname)
+end
+
+
+
 -- 500 internal hp = 1 player-visible HP.
 --
 -- Note: max hp gain from XP must be no greater than 40000.

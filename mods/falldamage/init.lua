@@ -10,6 +10,36 @@ dofile(falldamage.modpath .. "/liquidinteraction.lua")
 
 
 
+local on_drop_callbacks = {}
+local function call_on_drop_callbacks(oldstack, newstack, dropper, pos)
+	local n = #on_drop_callbacks
+	for k = 1, n do
+		local cb = on_drop_callbacks[k]
+		cb(oldstack, newstack, dropper, pos)
+	end
+end
+function minetest.register_on_player_dropitem(func)
+	assert(type(func) == "function")
+	on_drop_callbacks[#on_drop_callbacks + 1] = func
+end
+local function override_on_drop(def)
+	local old_on_drop = def.on_drop or minetest.item_drop
+	function def.on_drop(itemstack, dropper, pos)
+		local oldstack = ItemStack(itemstack)
+		local oldcount = oldstack:get_count()
+		local newstack = old_on_drop(itemstack, dropper, pos)
+		local newcount = newstack:get_count()
+
+		if newcount < oldcount then
+			call_on_drop_callbacks(oldstack, newstack, dropper, pos)
+		end
+
+		return newstack
+	end
+end
+
+
+
 local function copy_pointed_thing(pointed_thing)
 	return {
 		type  = pointed_thing.type,
@@ -34,6 +64,9 @@ function minetest.register_craftitem(name, def2)
 	if type(def.wield_image) == "string" then
 		def.wield_image = image.get(def.wield_image)
 	end
+
+	override_on_drop(def)
+
 	return old_register_craftitem(name, def)
 end
 
@@ -59,6 +92,9 @@ function minetest.register_tool(name, def)
 
 		ndef.range = (ndef.range or defrange) * rangemod
 	end
+
+	override_on_drop(ndef)
+
 	return old_register_tool(name, ndef)
 end
 
@@ -154,6 +190,8 @@ local function register_node(name, def2)
 			-- the MT core will follow up with a protection check.
 		end
 	end
+
+	override_on_drop(def)
 
 	if type(def.tiles) == "table" then
 		for k, v in pairs(def.tiles) do

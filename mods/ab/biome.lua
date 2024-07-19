@@ -35,6 +35,23 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local grass = {}
 	local trees = {}
 	local deadtrees = {}
+	local glowstones = {}
+
+	local glowstones_count = pr:next(1, 5)
+	for k = 1, glowstones_count do
+		glowstones[#glowstones + 1] = {
+			x = x0 + pr:next(0, (x1 - x0)),
+			z = z0 + pr:next(0, (z1 - z0)),
+		}
+	end
+
+	local deadtrees_count = 64
+	for k = 1, deadtrees_count do
+		deadtrees[#deadtrees + 1] = {
+			x = x0 + pr:next(0, (x1 - x0)),
+			z = z0 + pr:next(0, (z1 - z0)),
+		}
+	end
 
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -69,17 +86,6 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 									trees[#trees + 1] = {x=x, y=y, z=z}
 								end
 							end
-
-							if canyon_offset == 0 and not grassed then
-								if pr:next(1, 100) == 1 then
-									deadtrees[#deadtrees + 1] = {x=x, y=y, z=z}
-								end
-
-								-- Very, very rarely, a live tree.
-								--if pr:next(1, 50000) == 1 then
-								--	trees[#trees + 1] = {x=x, y=y, z=z}
-								--end
-							end
 						end
 					end
 				end
@@ -101,8 +107,36 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 		end
   end
 
-  for k = 1, #deadtrees do
-		local p = vector.offset(deadtrees[k], 0, 1, 0)
+  local function place_ground_decorations(decolist, decofunc)
+		for k = 1, #decolist do
+			local x = decolist[k].x
+			local z = decolist[k].z
+			for y = y1, y0, -1 do
+				if y >= ystart and y <= yend then
+					local vp_c = area:index(x, y, z)
+					local vp_u = area:index(x, y + 1, z)
+					local ground_y, canyon_offset = heightfunc(x, y, z)
+
+					local cid_c = vm_data[vp_c]
+					local cid_u = vm_data[vp_u]
+
+					if cid_c == c_cobble and cid_u == c_air then
+						if y >= ground_y and canyon_offset == 0 then
+							-- On surface, not in canyon or mesa.
+							local p = {x=x, y=y, z=z}
+							decofunc(p)
+
+							-- Goto next item.
+							break
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local function put_deadtree(pos)
+		local p = vector.offset(pos, 0, 1, 0)
 		local n = pr:next(2, 5)
 
 		if pr:next(1, 6) == 1 then
@@ -121,4 +155,10 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 			end
 		end
   end
+
+	place_ground_decorations(glowstones, function(pos)
+		minetest.set_node(pos, {name="glowstone:minerals"})
+	end)
+
+	place_ground_decorations(deadtrees, put_deadtree)
 end

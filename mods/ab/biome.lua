@@ -6,10 +6,16 @@ local c_stone = minetest.get_content_id("rackstone:rackstone")
 local c_cobble = minetest.get_content_id("rackstone:cobble")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 
+local NN_DEAD_TREE = "basictrees:tree_trunk_dead"
+
 local abs = math.abs
 local floor = math.floor
 local max = math.max
 local min = math.min
+
+-- Param2 horizontal branch rotations.
+local branch_rotations = {4, 8, 12, 16}
+local branch_directions = {2, 0, 3, 1}
 
 function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local emin, emax = vm:get_emerged_area()
@@ -28,6 +34,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 
 	local grass = {}
 	local trees = {}
+	local deadtrees = {}
 
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -48,6 +55,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 							vm_data[vp_c] = c_cobble
 						end
 
+						-- Surface decorations here.
 						if y >= ground_y then
 							local grassed = false
 							if pr:next(1, 6) == 1 then
@@ -55,10 +63,22 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 								grassed = true
 							end
 
-							if canyon_offset < 0 and not grassed then
-								if pr:next(1, 100) == 1 then
+							-- Place trees when canyons are at least this deep.
+							if canyon_offset < -50 and not grassed then
+								if pr:next(1, 200) == 1 then
 									trees[#trees + 1] = {x=x, y=y, z=z}
 								end
+							end
+
+							if canyon_offset == 0 and not grassed then
+								if pr:next(1, 100) == 1 then
+									deadtrees[#deadtrees + 1] = {x=x, y=y, z=z}
+								end
+
+								-- Very, very rarely, a live tree.
+								--if pr:next(1, 50000) == 1 then
+								--	trees[#trees + 1] = {x=x, y=y, z=z}
+								--end
 							end
 						end
 					end
@@ -78,6 +98,27 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 			minetest.set_node(grass[k], {name="default:dry_shrub"})
 		else
 			minetest.set_node(grass[k], {name="default:dry_grass2_" .. pr:next(1, 5), param2=2})
+		end
+  end
+
+  for k = 1, #deadtrees do
+		local p = vector.offset(deadtrees[k], 0, 1, 0)
+		local n = pr:next(2, 5)
+
+		if pr:next(1, 6) == 1 then
+			for i = 1, n do
+				minetest.set_node(p, {name=NN_DEAD_TREE})
+				p = vector.offset(p, 0, 1, 0)
+			end
+		else
+			local diridx = pr:next(1, 4)
+			local facedir = branch_directions[diridx]
+			local vec = minetest.facedir_to_dir(facedir)
+
+			for i = 1, n do
+				minetest.set_node(p, {name=NN_DEAD_TREE, param2=branch_rotations[diridx]})
+				p = vector.add(p, vec)
+			end
 		end
   end
 end

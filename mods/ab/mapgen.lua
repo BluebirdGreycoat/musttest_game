@@ -163,6 +163,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)
 
+		-- Canyon offset indicates whether we're in a canyon or atop a mesa.
 		return ground_y, canyon_offset
 	end
 

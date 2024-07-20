@@ -4,7 +4,7 @@ if not minetest.global_exists("fencelike") then fencelike = {} end
 fencelike.modpath = minetest.get_modpath("fencelike")
 
 local fence_collision_extra = minetest.settings:get_bool("enable_fence_tall") and 3/8 or 0
-fence_collision_extra = 3/8 -- Ignore setting.
+fence_collision_extra = 0 -- Ignore setting.
 
 
 

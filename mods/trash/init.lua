@@ -3,7 +3,7 @@ if not minetest.global_exists("trash") then trash = {} end
 trash.modpath = minetest.get_modpath("trash")
 
 -- XP loss for trashing stuff is 1 per item, multiplied by this.
-local TRASH_XP_MOD = 0.25
+local TRASH_XP_MOD = 0.2
 
 function trash.get_listname()
 	return "detached:trash", "main"

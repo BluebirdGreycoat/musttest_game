@@ -18,8 +18,6 @@ local branch_rotations = {4, 8, 12, 16}
 local branch_directions = {2, 0, 3, 1}
 
 function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
-	seed = mapgen.get_blockseed(minp)
-
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})

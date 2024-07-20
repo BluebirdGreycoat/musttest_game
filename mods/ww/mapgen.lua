@@ -59,6 +59,8 @@ local param2_data = {}
 
 
 ww.generate_realm = function(vm, minp, maxp, seed)
+	seed = mapgen.get_blockseed(minp)
+
 	-- Don't run for out-of-bounds mapchunks.
 	if minp.y > REALM_END or maxp.y < REALM_START then
 		return

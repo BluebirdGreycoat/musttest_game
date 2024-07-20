@@ -18,10 +18,14 @@ local branch_rotations = {4, 8, 12, 16}
 local branch_directions = {2, 0, 3, 1}
 
 function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
+	seed = mapgen.get_blockseed(minp)
+
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
-	local pr = PseudoRandom(seed + 418)
+	local pr = PcgRandom(seed + 592)
+
+	--print('pos: ' .. minetest.pos_to_string(minp) .. ', blockseed: ' .. seed .. ', rnd: ' .. pr:next())
 
 	vm:get_data(vm_data)
 
@@ -38,48 +42,32 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local glowstones = {}
 	local raretrees = {}
 
-	local glowstones_count = pr:next(1, 5)
-	for k = 1, glowstones_count do
-		glowstones[#glowstones + 1] = {
-			x = x0 + pr:next(0, (x1 - x0)),
-			z = z0 + pr:next(0, (z1 - z0)),
-		}
-	end
+	local function generate_deco_positions(tb, mapchunk_chance, count, cluster_count, cluster_rad)
+		if pr:next(1, mapchunk_chance) == 1 then
+			for k = 1, count do
+				local x = x0 + pr:next(0, (x1 - x0))
+				local z = z0 + pr:next(0, (z1 - z0))
 
-	local deadtrees_count = 64
-	for k = 1, deadtrees_count do
-		deadtrees[#deadtrees + 1] = {
-			x = x0 + pr:next(0, (x1 - x0)),
-			z = z0 + pr:next(0, (z1 - z0)),
-		}
-	end
+				tb[#tb + 1] = {
+					x = x,
+					z = z,
+				}
 
-	local grass_count = 1066
-	for k = 1, grass_count do
-		grass[#grass + 1] = {
-			x = x0 + pr:next(0, (x1 - x0)),
-			z = z0 + pr:next(0, (z1 - z0)),
-		}
-	end
-
-	local trees_count = 32
-	for k = 1, trees_count do
-		trees[#trees + 1] = {
-			x = x0 + pr:next(0, (x1 - x0)),
-			z = z0 + pr:next(0, (z1 - z0)),
-		}
-	end
-
-	-- Very rarely, alive trees on the surface.
-	if pr:next(1, 1) == 1 then
-		local raretrees_count = pr:next(1, 2)
-		for k = 1, raretrees_count do
-			raretrees[#raretrees + 1] = {
-				x = x0 + pr:next(0, (x1 - x0)),
-				z = z0 + pr:next(0, (z1 - z0)),
-			}
+				for i = 1, cluster_count do
+					tb[#tb + 1] = {
+						x = x + pr:next(-cluster_rad, cluster_rad),
+						z = z + pr:next(-cluster_rad, cluster_rad),
+					}
+				end
+			end
 		end
 	end
+
+	generate_deco_positions(glowstones, 1, pr:next(1, 5), 0, 0)
+	generate_deco_positions(deadtrees, 1, 15, pr:next(0, 3), 5)
+	generate_deco_positions(grass, 1, 200, 3, 2)
+	generate_deco_positions(trees, 1, 32, 0, 0)
+	generate_deco_positions(raretrees, 10, pr:next(1, 2), pr:next(0, 2), 10)
 
 	for z = z0, z1 do
 		for x = x0, x1 do

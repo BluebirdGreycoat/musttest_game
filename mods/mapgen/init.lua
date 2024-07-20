@@ -5,6 +5,33 @@ minetest.clear_registered_ores()
 minetest.clear_registered_biomes()
 minetest.clear_registered_decorations()
 
+
+
+--[==[
+collectgarbage"stop" -- we don't want GC heuristics to interfere
+
+local n = 1e8 -- number of runs
+local function bench(name, constructor, invokation)
+	local func = assert(loadstring(([[
+local r = %s
+for _ = 1, %d do %s end
+]]):format(constructor, n, invokation)))
+	local t = minetest.get_us_time()
+	func()
+	print(name, (minetest.get_us_time() - t) / n, "µs/call")
+end
+
+bench("Lua", "nil", "math.random()")
+bench("PCG", "PcgRandom(42)", "r:next()")
+bench("K&R", "PseudoRandom(42)", "r:next()")
+bench("Secure", "assert(SecureRandom())", "r:next_bytes()")
+--]==]
+
+
+
+
+
+
 if not minetest.global_exists("mapgen") then mapgen = {} end
 mapgen.modpath = minetest.get_modpath("mapgen")
 mapgen.blames = mapgen.blames or {}
@@ -105,6 +132,7 @@ if not mapgen.files_registered then
 
 	-- Shall include useful utilities for Lua mapgens running in the mapgen env.
 	minetest.register_mapgen_script(mp .. "/area2d.lua")
+	minetest.register_mapgen_script(mp .. "/mapgen-utils.lua")
 
 	-- These files are reloadable. Their functions can be changed at runtime.
 	reload_or_dofile("mapgen:shrubs", mp .. "/shrubs.lua")

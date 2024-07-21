@@ -41,6 +41,19 @@ if not ossl.registered then
 		Then, we'll have him shot.
 	--]]
 
+	local env = minetest.request_insecure_environment()
+	if not env then
+		minetest.log("error", "[ossl] Failed to get an insecure environment. " ..
+			"Please add this mod to the trusted mods list in the server settings.")
+		asset(env)
+	end
+
+	-- We have to hack Lua here. This is needed because some openssl seems to
+	-- inernally use require. Use rawget/rawset to bypass ... everything.
+	local _require = rawget(_G, "require")
+	rawset(_G, "require", env.require)
+
+	-- Require what's needed.
 	-- https://luarocks.org/modules/daurnimator/luaossl
 	ossl.lib = require("openssl.cipher")
 	assert(ossl.lib)
@@ -49,6 +62,9 @@ if not ossl.registered then
 
 	ossl.randlib = require("openssl.rand")
 	assert(ossl.randlib)
+
+	-- Restore the order of the Universe.
+	rawset(_G, "require", _require)
 
 	ossl.registered = true
 end

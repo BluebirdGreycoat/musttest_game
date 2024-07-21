@@ -294,6 +294,14 @@ chat_core.on_chat_message = function(name, message)
 	-- Trim input.
 	message = string.trim(message)
 
+	local pref = minetest.get_player_by_name(name)
+	if not pref then
+		return
+	end
+	if pref:get_hp() <= 0 then
+		return
+	end
+
 	if message:sub(1, 1) == "/" then
 		minetest.chat_send_player(name, "# Server: Invalid command. See '/help all' for a list of valid commands.")
 		easyvend.sound_error(name)

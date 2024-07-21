@@ -201,12 +201,17 @@ local function make_fs(pname)
 		end
 		
 		local infomsg = {}
-		infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
 
-		if #ips <= 5 then
-			infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
-		else
-			infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): DYNAMIC"
+		-- Only the server operator should be able to see this info.
+		-- Keep the admin's alt(s) top secret :)
+		if minetest.check_player_privs(pname, {server=true}) then
+			infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
+
+			if #ips <= 5 then
+				infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
+			else
+				infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): DYNAMIC"
+			end
 		end
 
 		-- last_pos and last_seen are per name, not per record-entry.

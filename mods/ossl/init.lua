@@ -45,7 +45,7 @@ if not ossl.registered then
 	if not env then
 		minetest.log("error", "[ossl] Failed to get an insecure environment. " ..
 			"Please add this mod to the trusted mods list in the server settings.")
-		asset(env)
+		error("Failed to get an insecure environment.")
 	end
 
 	-- We have to hack Lua here. This is needed because some openssl seems to

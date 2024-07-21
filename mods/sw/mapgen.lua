@@ -13,6 +13,7 @@ dofile(sw.modpath .. "/data.lua")
 dofile(sw.modpath .. "/tunnel.lua")
 dofile(sw.modpath .. "/despeckle.lua")
 dofile(sw.modpath .. "/spheres.lua")
+dofile(sw.modpath .. "/biome.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150
@@ -194,6 +195,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   sw.generate_tunnels(vm, minp, maxp, seed)
   sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
   sw.despeckle_terrain(vm, minp, maxp)
+  sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

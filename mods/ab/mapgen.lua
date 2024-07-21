@@ -165,6 +165,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		end
 
 		-- Winding wadis.
+		local river_offset = 0
 		if canyon_offset == 0 then
 			local wn = wadipath[n2d]
 
@@ -177,14 +178,14 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local b = tan(a * -1 + 1) / TAN_OF_1
 
 			if wn > lower and wn < upper then
-				canyon_offset = -10 * b * canyondepth[n2d]
+				river_offset = -10 * b * canyondepth[n2d]
 			end
 		end
 
-		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)
+		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset + river_offset)
 
 		-- Canyon offset indicates whether we're in a canyon or atop a mesa.
-		return ground_y, canyon_offset
+		return ground_y, canyon_offset, river_offset
 	end
 
 	-- First mapgen pass.

@@ -5,6 +5,7 @@ local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("rackstone:rackstone")
 local c_cobble = minetest.get_content_id("rackstone:cobble")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
+local c_grit = minetest.get_content_id("rackstone:nether_grit")
 
 local NN_DEAD_TREE = "basictrees:tree_trunk_dead"
 
@@ -79,11 +80,21 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 
 					if cid_c == c_stone and cid_u == c_air then
 						-- We have found a surface.
-						local ground_y, canyon_offset = heightfunc(x, y, z)
+						local ground_y, canyon, river = heightfunc(x, y, z)
 
 						-- Only cobble the surface, skip caves.
 						if y == ground_y then
+							if river <= -7 then
+								vm_data[vp_c] = c_grit
+							else
+								vm_data[vp_c] = c_cobble
+							end
+						elseif y < ground_y and y >= ground_y - 5 then
+							-- Fill upper cave entrances with cobble.
 							vm_data[vp_c] = c_cobble
+						elseif y < ground_y - 5 and y > ground_y - 20 then
+							-- Fill cave entrances with grit.
+							vm_data[vp_c] = c_grit
 						end
 					end
 				end

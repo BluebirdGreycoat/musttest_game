@@ -108,8 +108,8 @@ local function get_record_simple(name)
 	return e, strings, true
 end
 
-local function make_fs(name)
-	local state = get_state(name)
+local function make_fs(pname)
+	local state = get_state(pname)
 	local list, filter = state.list, state.filter
 	local pli, ei = state.player_index or 1, state.entry_index or 0
 	if pli > #list then
@@ -216,7 +216,9 @@ local function make_fs(name)
 
 			-- We can also add a button to allow the formspec user to jump to this
 			-- location.
-			fsn=fsn+1 fs[fsn] = "button[13,10.3;3,1;jump;Jump To Last Pos]"
+			if minetest.check_player_privs(pname, {teleport=true}) then
+				fsn=fsn+1 fs[fsn] = "button[13,10.3;3,1;jump;Jump To Last Pos]"
+			end
 		end
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
@@ -244,18 +246,18 @@ end
 
 function xban.gui.on_receive_fields(player, formname, fields)
 	if formname ~= FORMNAME then return end
-	local name = player:get_player_name()
-	if not minetest.check_player_privs(name, { ban=true }) then
-		minetest.log("warning", "[xban2] Received fields from unauthorized user: " .. name)
+	local pname = player:get_player_name()
+	if not minetest.check_player_privs(pname, { ban=true }) then
+		minetest.log("warning", "[xban2] Received fields from unauthorized user: " .. pname)
 		return true
 	end
-	local state = get_state(name)
+	local state = get_state(pname)
 
 	if fields.player then
 		local t = minetest.explode_textlist_event(fields.player)
 		if (t.type == "CHG") or (t.type == "DCL") then
 			state.player_index = t.index
-			minetest.show_formspec(name, FORMNAME, make_fs(name))
+			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 		end
 		return true
 	end
@@ -264,7 +266,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local t = minetest.explode_textlist_event(fields.entry)
 		if (t.type == "CHG") or (t.type == "DCL") then
 			state.entry_index = t.index
-			minetest.show_formspec(name, FORMNAME, make_fs(name))
+			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 		end
 		return true
 	end
@@ -273,10 +275,10 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local filter = fields.filter or ""
 		state.filter = filter
 		state.list = make_list(filter)
-		minetest.show_formspec(name, FORMNAME, make_fs(name))
+		minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 	end
 
-	if fields.jump then
+	if fields.jump and minetest.check_player_privs(pname, {teleport=true}) then
 		local list = state.list
 		local pli = state.player_index or 1
 		if pli > #list then
@@ -287,10 +289,10 @@ function xban.gui.on_receive_fields(player, formname, fields)
 			local e, strings, gotten = get_record_simple(record_name)
 			if type(e.last_pos) == "table" and e.last_pos[record_name] then
 				local pos = vector_round(table.copy(e.last_pos[record_name]))
-				minetest.chat_send_player(name,
+				minetest.chat_send_player(pname,
 					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
 					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")
-				rc.notify_realm_update(name, pos)
+				rc.notify_realm_update(pname, pos)
 				player:set_pos(pos)
 			end
 		end

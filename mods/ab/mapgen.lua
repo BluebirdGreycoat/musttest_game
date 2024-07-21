@@ -92,6 +92,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local canyonpath2 = ab.get_2d_noise(bp2d, sides2D, "canyonpath2")
 	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
 	local canyondepth = ab.get_2d_noise(bp2d, sides2D, "canyondepth")
+	local wadipath = ab.get_2d_noise(bp2d, sides2D, "wadipath")
 
 	local function heightfunc(x, y, z)
 		-- Get index into noise arrays.
@@ -161,6 +162,23 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 				c = 100
 			end
 			canyon_offset = c * j
+		end
+
+		-- Winding wadis.
+		if canyon_offset == 0 then
+			local wn = wadipath[n2d]
+
+			local lower = -0.2
+			local upper = 0.2
+			local mid = (lower + upper) / 2
+			local half = mid - lower
+
+			local a = abs((wn - mid) / half)
+			local b = tan(a * -1 + 1) / TAN_OF_1
+
+			if wn > lower and wn < upper then
+				canyon_offset = -10 * b * canyondepth[n2d]
+			end
 		end
 
 		local ground_y = REALM_GROUND + floor(baseterrain[n2d_steady] + canyon_offset)

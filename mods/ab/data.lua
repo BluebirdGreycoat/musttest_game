@@ -87,3 +87,13 @@ ab.create_2d_noise("canyondepth", {
 	lacunarity = 2,
 	flags = "noeased,absvalue",
 })
+
+ab.create_2d_noise("wadipath", {
+	offset = 0,
+	scale = 1,
+	spread = {x=256, y=256, z=256},
+	seed = 491,
+	octaves = 3,
+	persist = 0.5,
+	lacunarity = 2,
+})

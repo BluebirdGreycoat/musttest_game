@@ -40,6 +40,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local deadtrees = {}
 	local glowstones = {}
 	local raretrees = {}
+	local gritpits = {}
 
 	local function generate_deco_positions(tb, mapchunk_chance, count, cluster_count, cluster_rad)
 		if pr:next(1, mapchunk_chance) == 1 then
@@ -67,6 +68,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	generate_deco_positions(grass, 1, 200, 3, 2)
 	generate_deco_positions(trees, 1, 32, 0, 0)
 	generate_deco_positions(raretrees, 10, pr:next(1, 2), pr:next(0, 2), 10)
+	generate_deco_positions(gritpits, 2, pr:next(1, 3), pr:next(1, 2), 10)
 
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -232,5 +234,11 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 
 	place_plains_decorations(raretrees, function(pos)
 		ab.place_acacia_tree(vm, pos)
+	end)
+
+	place_plains_decorations(gritpits, function(pos)
+		local path = ab.modpath .. "/pit.mts"
+		pos = vector.offset(pos, -2, -2, -2)
+		minetest.place_schematic_on_vmanip(vm, pos, path, "random", nil, true)
 	end)
 end

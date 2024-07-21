@@ -45,15 +45,22 @@ local function parse_time(t) --> secs
 end
 
 function xban.find_entry(player, create) --> entry, index
-	for index, e in ipairs(xban.db) do
+	local db = xban.db
+	local dblen = #xban.db
+
+	for index = 1, dblen do
+		local e = db[index]
+
 		for name in pairs(e.names) do
 			if name == player then
 				return e, index
 			end
 		end
 	end
+
 	if create then
 		ACTION("Created new entry for `%s'", player)
+
 		local e = {
 			names = { [player]=true },
 			banned = false,
@@ -61,9 +68,11 @@ function xban.find_entry(player, create) --> entry, index
 			last_pos = { },
 			last_seen = { },
 		}
-		table.insert(xban.db, e)
-		return e, #xban.db
+
+		db[#db + 1] = e
+		return e, #db
 	end
+
 	return nil
 end
 
@@ -171,12 +180,15 @@ end
 
 function xban.get_record(player)
 	local e = xban.find_entry(player)
+
 	if not e then
 		return nil, ("No entry for <%s>."):format(rename.gpn(player))
 	elseif (not e.record) or (#e.record == 0) then
 		return nil, ("<%s> has no ban records."):format(rename.gpn(player))
 	end
+
 	local record = { }
+
 	for _, rec in ipairs(e.record) do
 		local msg = rec.reason and ("Reason: '" .. rec.reason .. "'") or "No reason given"
 		if rec.expires then
@@ -187,11 +199,14 @@ function xban.get_record(player)
 		end
 		table.insert(record, ("[%s]: %s."):format(os.date("%c", e.time), msg))
 	end
+
 	local last_pos
+
 	if e.last_pos and e.last_pos[player] then
 		last_pos = ("User was last seen at %s."):format(
 		  rc.pos_to_namestr(vector_round(e.last_pos[player])))
 	end
+
 	return record, last_pos
 end
 

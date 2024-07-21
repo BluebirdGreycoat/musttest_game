@@ -36,7 +36,11 @@ local function make_list(filter)
 									dropped = true
 									goto done
 								end
-								list[#list+1] = name -- Insert real name.
+
+								-- Do not include administrators in the list.
+								if not minetest.check_player_privs(name, {server=true}) then
+									list[#list+1] = name -- Insert real name.
+								end
 							end
 						end
 					end
@@ -51,7 +55,11 @@ local function make_list(filter)
 						dropped = true
 						goto done
 					end
-					list[#list+1] = name
+
+					-- Do not include administrators in the list.
+					if not minetest.check_player_privs(name, {server=true}) then
+						list[#list+1] = name
+					end
 				end
 			end
 		end

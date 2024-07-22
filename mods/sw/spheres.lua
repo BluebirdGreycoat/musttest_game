@@ -55,10 +55,10 @@ do
 	})
 
 	-- For sphere positions, sizes, and counts.
-	local pr1 = PseudoRandom(SPHERE_SEED + 1)
+	local pr1 = PcgRandom(SPHERE_SEED + 1)
 
 	-- For sphere contents.
-	local pr2 = PseudoRandom(SPHERE_SEED + 2)
+	local pr2 = PcgRandom(SPHERE_SEED + 2)
 
 	for x = minp.x, maxp.x, step do
 		for z = minp.z, maxp.z, step do

@@ -13,6 +13,7 @@ dofile(ab.modpath .. "/tree.lua")
 dofile(ab.modpath .. "/tunnel.lua")
 dofile(ab.modpath .. "/despeckle.lua")
 dofile(ab.modpath .. "/biome.lua")
+dofile(ab.modpath .. "/mesas.lua")
 
 local REALM_START = 21150
 local REALM_END = 23450
@@ -27,6 +28,7 @@ local min = math.min
 local max = math.max
 local abs = math.abs
 local tan = math.tan
+local distance = vector.distance
 
 local function clamp(v, minv, maxv)
 	return max(minv, min(v, maxv))
@@ -93,6 +95,37 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
 	local canyondepth = ab.get_2d_noise(bp2d, sides2D, "canyondepth")
 	local wadipath = ab.get_2d_noise(bp2d, sides2D, "wadipath")
+	local mesatable = ab.get_mesas(minp, maxp)
+
+	local MESA_THRESHOLD = 0.95
+	local MESA_THRESHOLD_WIDTH = 0.2
+	local MESA_THRESHOLD_CAP = MESA_THRESHOLD + MESA_THRESHOLD_WIDTH
+
+	local function get_mesa_value(x, z, noise, n2d)
+		local maxnoise = noise
+		for k = 1, #mesatable do
+			local r1 = mesatable[k].radius - 150
+			local r2 = mesatable[k].radius
+			local p1 = {x=x, y=0, z=z}
+			local p2 = {x=mesatable[k].pos_x, y=0, z=mesatable[k].pos_z}
+			local d = distance(p1, p2) + (canyonpath[n2d] * 10)
+
+			if d < r1 then
+				if MESA_THRESHOLD_CAP > maxnoise then
+					maxnoise = MESA_THRESHOLD_CAP
+				end
+			elseif d < r2 then
+				local a = d - r1
+				local b = a / (r2 - r1)
+				local c = b * -1 + 1
+				local t = MESA_THRESHOLD + (MESA_THRESHOLD_WIDTH * c)
+				if t > maxnoise then
+					maxnoise = t
+				end
+			end
+		end
+		return maxnoise
+	end
 
 	local function heightfunc(x, y, z)
 		-- Get index into noise arrays.
@@ -145,20 +178,17 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		end
 
 		-- Mesas are located around 1.
-		local mesa_noise = canyon_noise
-		local mesa_threshold = 0.95
-		local mesa_threshold_width = 0.2
-		local mesa_threshold_cap = mesa_threshold + mesa_threshold_width
-		if mesa_noise >= mesa_threshold then
+		local mesa_noise = get_mesa_value(x, z, canyon_noise, n2d)
+		if mesa_noise >= MESA_THRESHOLD then
 			-- Calculate detritis slope.
-			local m = min(mesa_threshold_width, max(0, (mesa_threshold_cap - mesa_noise)))
-			local g = m / mesa_threshold_width
+			local m = min(MESA_THRESHOLD_WIDTH, max(0, (MESA_THRESHOLD_CAP - mesa_noise)))
+			local g = m / MESA_THRESHOLD_WIDTH
 			local a = g * -1 + 1
 			local b = tan(a ^ 3) / TAN_OF_1
 			local h = tan(a ^ 6) / TAN_OF_1
 			local c = floor(b * 50 + h * canyonpath[n2d_steady])
 			local j = max(0.75, canyon_depth)
-			if mesa_noise >= mesa_threshold_cap then
+			if mesa_noise >= MESA_THRESHOLD_CAP then
 				c = 100
 			end
 			canyon_offset = c * j

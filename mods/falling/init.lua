@@ -147,6 +147,7 @@ local function node_walkable(pos, nodedef, selfdef)
 	-- Shortcut.
 	if nn == "air" then return false end
 
+	if nodedef.buildable_to then return false end
 	if nodedef.walkable then return true end
 
 	local f = selfdef.groups.float or 0

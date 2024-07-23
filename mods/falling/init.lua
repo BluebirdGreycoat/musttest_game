@@ -140,11 +140,19 @@ end
 
 
 
-local function node_not_walkable(pos)
+-- Shall return 'true' if self-node considers under-node to be an obstacle.
+local function node_walkable(pos, nodedef, selfdef)
 	local nn = get_node(pos).name
-	if nn == "air" then return true end
-	local def = all_nodes[nn]
-	if def and not def.walkable then return true end
+
+	-- Shortcut.
+	if nn == "air" then return false end
+
+	if nodedef.walkable then return true end
+
+	local f = selfdef.groups.float or 0
+	if f ~= 0 and nodedef.liquidtype ~= "none" then
+		return true
+	end
 end
 
 local adjacency = {
@@ -170,7 +178,7 @@ local function outof_bounds(pos)
 	return false
 end
 
-local find_slope = function(pos)
+local find_slope = function(pos, nodedef, selfdef)
 	adjacency[1].x=pos.x-1 adjacency[1].y=pos.y adjacency[1].z=pos.z
 	adjacency[2].x=pos.x+1 adjacency[2].y=pos.y adjacency[2].z=pos.z
 	adjacency[3].x=pos.x   adjacency[3].y=pos.y adjacency[3].z=pos.z+1
@@ -180,9 +188,9 @@ local find_slope = function(pos)
 
   for i = 1, 4 do
     local p = adjacency[i]
-    if node_not_walkable(p) then
+    if not node_walkable(p, nodedef, selfdef) then
 			p.y = p.y + 1
-      if node_not_walkable(p) and not outof_bounds(p) then
+      if not node_walkable(p, nodedef, selfdef) and not outof_bounds(p) then
         targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
       end
 			p.y = p.y - 1
@@ -201,16 +209,18 @@ end
 -- a solid node without moving.
 function falling.could_fall_here(pos)
 	local d = vector.add(pos, {x=0, y=-1, z=0})
+	local selfdef = all_nodes[get_node(pos).name]
+	local nodedef = all_nodes[get_node(d).name]
 
 	if outof_bounds(d) then
 		return false
 	end
 
-	if node_not_walkable(d) then
+	if not node_walkable(d, nodedef, selfdef) then
 		return true
 	end
 
-	if find_slope(d) then
+	if find_slope(d, nodedef, selfdef) then
 		return true
 	end
 
@@ -336,7 +346,8 @@ minetest.register_entity(":__builtin:falling_node", {
       end
       
       -- We have hit the ground. Check for a possible slope which we can continue to fall down.
-      local ss = find_slope(bcp)
+      local selfdef = all_nodes[self.node.name]
+      local ss = find_slope(bcp, bcd, selfdef)
       if ss ~= nil then
 				self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
 				self.object:set_velocity({x=0, y=0, z=0})

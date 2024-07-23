@@ -1,10 +1,12 @@
 
-ab.perlins = ab.perlins or {}
+ab.perlin_maps = ab.perlin_maps or {}
+sw.perlins = sw.perlins or {}
 ab.maps = ab.maps or {}
 ab.noises = ab.noises or {}
 
 local maps = ab.maps
-local perlins = ab.perlins
+local perlin_maps = ab.perlin_maps
+local perlins = sw.perlins
 local noises = ab.noises
 
 function ab.create_2d_noise(which, data)
@@ -22,10 +24,11 @@ function ab.get_2d_noise(pos, sides2D, which)
 	local mk = which .. "_2d"
 	local pk = which .. "_2d"
 	local noisedata = noises[nk]
-	perlins[pk] = perlins[pk] or minetest.get_perlin_map(noisedata, sides2D)
+	perlin_maps[pk] = perlin_maps[pk] or minetest.get_perlin_map(noisedata, sides2D)
+	perlins[pk] = perlins[pk] or minetest.get_perlin(noisedata)
 	maps[mk] = maps[mk] or {}
-	perlins[pk]:get_2d_map_flat(pos, maps[mk])
-	return maps[mk]
+	perlin_maps[pk]:get_2d_map_flat(pos, maps[mk])
+	return maps[mk], perlins[pk]
 end
 
 function ab.get_3d_noise(pos, sides3D, which)
@@ -33,8 +36,9 @@ function ab.get_3d_noise(pos, sides3D, which)
 	local mk = which .. "_3d"
 	local pk = which .. "_3d"
 	local noisedata = noises[nk]
-	perlins[pk] = perlins[pk] or minetest.get_perlin_map(noisedata, sides3D)
+	perlin_maps[pk] = perlin_maps[pk] or minetest.get_perlin_map(noisedata, sides3D)
+	perlins[pk] = perlins[pk] or minetest.get_perlin(noisedata)
 	maps[mk] = maps[mk] or {}
-	perlins[pk]:get_3d_map_flat(pos, maps[mk])
-	return maps[mk]
+	perlin_maps[pk]:get_3d_map_flat(pos, maps[mk])
+	return maps[mk], perlins[pk]
 end

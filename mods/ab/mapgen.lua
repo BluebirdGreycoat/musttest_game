@@ -95,7 +95,10 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local canyonwidth = ab.get_2d_noise(bp2d, sides2D, "canyonwidth")
 	local canyondepth = ab.get_2d_noise(bp2d, sides2D, "canyondepth")
 	local wadipath = ab.get_2d_noise(bp2d, sides2D, "wadipath")
-	local mesatable = ab.get_mesas(minp, maxp)
+	local mesatable = ab.get_mesas(minp, maxp, REALM_GROUND - 50, REALM_GROUND + 150)
+
+	--print(dump(sides2D))
+	print(#mesatable .. ' mesas')
 
 	local MESA_THRESHOLD = 0.95
 	local MESA_THRESHOLD_WIDTH = 0.2
@@ -103,27 +106,47 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 	local function get_mesa_value(x, z, noise, n2d)
 		local maxnoise = noise
-		for k = 1, #mesatable do
-			local r1 = mesatable[k].radius - 150
-			local r2 = mesatable[k].radius
+		local mesatable_count = #mesatable
+		---[[
+		for k = 1, mesatable_count do
+			local mesa = mesatable[k]
+			local offset = (canyonpath[n2d] * 10) - abs(baseterrain[n2d] * 10)
+
+			local w1 = (mesa.radius + offset)
+			local w2 = (mesa.radius + mesa.slope + offset)
+
+			local x2 = mesa.pos_x
+			local z2 = mesa.pos_z
+
+			if x < x2 - w2 or x > x2 + w2 then goto continue end
+			if z < z2 - w2 or z > z2 + w2 then goto continue end
+
+			local r1 = w1 ^ 2
+			local r2 = w2 ^ 2
+
+			local x3 = x2 - x
+			local z3 = z2 - z
+			local d = (x3 ^ 2) + (z3 ^ 2)
+
+			--[=[
 			local p1 = {x=x, y=0, z=z}
-			local p2 = {x=mesatable[k].pos_x, y=0, z=mesatable[k].pos_z}
-			local d = distance(p1, p2) + (canyonpath[n2d] * 10)
+			local p2 = {x=mesa.pos_x, y=0, z=mesa.pos_z}
+			local d = distance(p1, p2)
+			--]=]
 
 			if d < r1 then
-				if MESA_THRESHOLD_CAP > maxnoise then
-					maxnoise = MESA_THRESHOLD_CAP
-				end
+				maxnoise = max(MESA_THRESHOLD_CAP, maxnoise)
 			elseif d < r2 then
 				local a = d - r1
 				local b = a / (r2 - r1)
 				local c = b * -1 + 1
 				local t = MESA_THRESHOLD + (MESA_THRESHOLD_WIDTH * c)
-				if t > maxnoise then
-					maxnoise = t
-				end
+				maxnoise = max(maxnoise, t)
 			end
+
+			::continue::
 		end
+		--]]
 		return maxnoise
 	end
 

@@ -94,7 +94,7 @@ function ab.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 						elseif y < ground_y and y >= ground_y - 5 then
 							-- Fill upper cave entrances with cobble.
 							vm_data[vp_c] = c_cobble
-						elseif y < ground_y - 5 and y > ground_y - 20 then
+						elseif canyon == 0 and y < ground_y - 5 and y > ground_y - 20 then
 							-- Fill cave entrances with grit.
 							vm_data[vp_c] = c_grit
 						end

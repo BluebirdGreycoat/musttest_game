@@ -85,7 +85,7 @@ do
 		end
 	end
 end
-print('mesa count: ' .. #ALL_MESAS)
+--print('mesa count: ' .. #ALL_MESAS)
 --------------------------------------------------------------------------------
 
 -- Get which mesas intersect this map chunk.

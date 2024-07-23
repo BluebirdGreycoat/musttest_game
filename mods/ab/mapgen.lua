@@ -98,7 +98,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local mesatable = ab.get_mesas(minp, maxp, REALM_GROUND - 50, REALM_GROUND + 150)
 
 	--print(dump(sides2D))
-	print(#mesatable .. ' mesas')
+	--print(#mesatable .. ' mesas')
 
 	local MESA_THRESHOLD = 0.95
 	local MESA_THRESHOLD_WIDTH = 0.2

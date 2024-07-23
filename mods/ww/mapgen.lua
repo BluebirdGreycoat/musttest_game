@@ -16,6 +16,7 @@ ww.worldpath = minetest.get_worldpath()
 dofile(ww.modpath .. "/noise.lua")
 dofile(ww.modpath .. "/data.lua")
 dofile(ww.modpath .. "/reef.lua")
+dofile(ww.modpath .. "/floatforest.lua")
 
 local REALM_START = 8650
 local REALM_END = 9650
@@ -237,6 +238,7 @@ ww.generate_realm = function(vm, minp, maxp, seed)
   vm:set_param2_data(param2_data)
 
   ww.generate_reefs(vm, minp, maxp, seed, REALM_START, REALM_END, REALM_GROUND, get_seafloor)
+  ww.generate_floating_forests(vm, minp, maxp, seed, REALM_START, REALM_END, REALM_GROUND)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

@@ -347,16 +347,18 @@ minetest.register_entity(":__builtin:falling_node", {
       end
       
       -- We have hit the ground. Check for a possible slope which we can continue to fall down.
-      local selfdef = all_nodes[self.node.name]
-      local ss = find_slope(bcp, bcd, selfdef)
-      if ss ~= nil then
-				self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
-				self.object:set_velocity({x=0, y=0, z=0})
+      if bcd then
+				local selfdef = all_nodes[self.node.name]
+				local ss = find_slope(bcp, bcd, selfdef)
+				if ss ~= nil then
+					self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
+					self.object:set_velocity({x=0, y=0, z=0})
 
-				entity_physics(bcp, self.node, self.pharm, self.mharm)
-				ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
-				return
-      end
+					entity_physics(bcp, self.node, self.pharm, self.mharm)
+					ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
+					return
+				end
+			end
       
       local np = {x=bcp.x, y=bcp.y+1, z=bcp.z}
       local protected = nil

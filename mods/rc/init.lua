@@ -234,7 +234,7 @@ rc.realms = {
 		gate_maxp = {x=30000, y=8650+500, z=30000},
 		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
 		ground = 8650+500,
-		underground = 8650+500, -- Affects sky color, see sky mod.
+		underground = 8650+450, -- Affects sky color, see sky mod.
 		sealevel = 8650+500,
 		spawnlevel = 8650+500,
 		windlevel = 8650+500,

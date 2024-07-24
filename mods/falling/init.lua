@@ -141,7 +141,8 @@ end
 
 
 -- Shall return 'true' if self-node considers under-node to be an obstacle.
-local function node_walkable(nodedef, selfdef)
+local function node_walkable(pos, nodedef, selfdef)
+	-- Can't check for 'buildable_to' here, because liquids are 'buildable_to'.
 	if nodedef.walkable then return true end
 
 	local f = selfdef.groups.float or 0
@@ -185,11 +186,11 @@ local find_slope = function(pos, selfdef)
     local p = adjacency[i]
     local nodedef = all_nodes[get_node(p).name]
 
-    if not node_walkable(nodedef, selfdef) then
+    if not node_walkable(p, nodedef, selfdef) then
 			p.y = p.y + 1
 			nodedef = all_nodes[get_node(p).name]
 
-      if not node_walkable(nodedef, selfdef) and not outof_bounds(p) then
+      if not node_walkable(p, nodedef, selfdef) and not outof_bounds(p) then
         targets[#targets+1] = {x=p.x, y=p.y-1, z=p.z}
       end
 
@@ -216,7 +217,7 @@ function falling.could_fall_here(pos)
 		return false
 	end
 
-	if not node_walkable(nodedef, selfdef) then
+	if not node_walkable(d, nodedef, selfdef) then
 		return true
 	end
 
@@ -329,7 +330,7 @@ minetest.register_entity(":__builtin:falling_node", {
     local bcd = bcn and all_nodes[bcn.name]
 		local selfdef = all_nodes[self.node.name]
     
-    if bcn and (not bcd or node_walkable(bcd, selfdef)) then
+    if bcn and (not bcd or node_walkable(bcp, bcd, selfdef)) then
       if bcd and bcd.leveled and bcn.name == self.node.name then
 				local addlevel = self.node.level
 
@@ -530,12 +531,18 @@ end
 -- Copied from builtin so I can fix the behavior.
 function core.check_single_for_falling(p)
 	local n = core.get_node(p)
+	local ndef = minetest.registered_nodes[n.name]
+	if not ndef or not ndef.groups then
+		return false
+	end
+	local groups = ndef.groups
 
-	if core.get_item_group(n.name, "falling_node") ~= 0 then
+	if (groups.falling_node or 0) ~= 0 then
 		local p_bottom = vector.offset(p, 0, -1, 0)
 		-- Only spawn falling node if node below is loaded
 		local n_bottom = core.get_node_or_nil(p_bottom)
 		local d_bottom = n_bottom and core.registered_nodes[n_bottom.name]
+
 		if d_bottom then
 			local same = n.name == n_bottom.name
 			-- Let leveled nodes fall if it can merge with the bottom node
@@ -545,22 +552,14 @@ function core.check_single_for_falling(p)
 				local success, _ = convert_to_falling_node(p, n)
 				return success
 			end
+
 			-- Otherwise only if the bottom node is considered "fall through"
-			if not same and
-					(not d_bottom.walkable or d_bottom.buildable_to) and
-					(core.get_item_group(n.name, "float") == 0 or
-					d_bottom.liquidtype == "none") then
+			if not same and not node_walkable(p_bottom, d_bottom, ndef) then
 				local success, _ = convert_to_falling_node(p, n)
 				return success
 			end
 		end
 	end
-
-	local ndef = minetest.registered_nodes[n.name]
-	if not ndef or not ndef.groups then
-		return false
-	end
-	local groups = ndef.groups
 
 	-- These special groups are mutually exclusive and should not be used together.
 

@@ -28,7 +28,7 @@ local branch_directions = {2, 0, 3, 1}
 ww.create_2d_noise("forestpattern", {
 	offset = 0,
 	scale = 1,
-	spread = {x=64, y=64, z=64},
+	spread = {x=256, y=256, z=256},
 	seed = 738,
 	octaves = 5,
 	persist = 0.5,
@@ -68,14 +68,37 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 	local min_noise = 0
 	local max_noise = 0
 	local ocean_surface = yground + 1
-	local forest_begin = 0.5
+
+	local noisesteps = {
+		{-1.0, -0.9},
+		{-0.8, -0.7},
+		{-0.6, -0.5},
+		{-0.4, -0.3},
+		{-0.2, -0.1},
+		{0.0, 0.1},
+		{0.2, 0.3},
+		{0.4, 0.5},
+		{0.6, 0.7},
+		{0.8, 0.9},
+	}
+
+	local function forestnoise(x, z)
+		local n2d = area2d:index(x, z)
+		local forest = forestpattern[n2d]
+		for k = 1, #noisesteps do
+			local pair = noisesteps[k]
+			if forest >= pair[1] and forest <= pair[2] then
+				return 1
+			end
+		end
+		return 0
+	end
 
 	for z = z0, z1 do
 		for x = x0, x1 do
-			local n2d = area2d:index(x, z)
-			local forest = forestpattern[n2d]
+			local forest = forestnoise(x, z)
 
-			if forest >= forest_begin then
+			if forest >= 1 then
 				for y = y0, y1 do
 					if y >= ystart and y <= yend then
 						local vp = area:index(x, y, z)

@@ -50,7 +50,7 @@ minetest.register_node("swamp:root", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	is_ground_content = false,
-	groups = {choppy = 3, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1, flammable = 3, wood = 1},
 	sounds = default.node_sound_wood_defaults(),
 })
 
@@ -60,7 +60,7 @@ minetest.register_node("swamp:root_with_mud", {
 	place_param2 = 0,
 	tiles = {"swamp_root_with_mud.png"},
 	is_ground_content = false,
-	groups = {choppy = 3, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1, flammable = 3, wood = 1},
 	sounds = default.node_sound_wood_defaults(),
 })
 

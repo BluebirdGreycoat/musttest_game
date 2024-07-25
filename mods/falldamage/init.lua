@@ -245,7 +245,7 @@ local function register_node(name, def2)
 	falldamage.apply_range_checks(def)
 	falldamage.apply_liquid_interaction_mod(name, def)
 	if def.sounds then
-		assert(type(def.sounds) == "table")
+		assert(type(def.sounds) == "table", name)
 	end
 	old_register_node(name, def)
 

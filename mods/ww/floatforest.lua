@@ -5,6 +5,12 @@ local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_lily = minetest.get_content_id("flowers:waterlily")
+local c_root = minetest.get_content_id("swamp:root")
+local c_mudroot = minetest.get_content_id("swamp:root_with_mud")
+
+local get_node = minetest.get_node
+local set_node = minetest.set_node
+local facedir_to_dir = minetest.facedir_to_dir
 
 local NN_LOGMAT = "basictrees:jungletree_cube"
 local TAN_OF_1 = math.tan(1)
@@ -62,17 +68,19 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 	local min_noise = 0
 	local max_noise = 0
 	local ocean_surface = yground + 1
+	local forest_begin = 0.5
 
 	for z = z0, z1 do
 		for x = x0, x1 do
-			for y = y0, y1 do
-				if y >= ystart and y <= yend then
-					local n2d = area2d:index(x, z)
-					local vp = area:index(x, y, z)
-					local forest = forestpattern[n2d]
+			local n2d = area2d:index(x, z)
+			local forest = forestpattern[n2d]
 
-					if y == ocean_surface then
-						if forest > 0.5 then
+			if forest >= forest_begin then
+				for y = y0, y1 do
+					if y >= ystart and y <= yend then
+						local vp = area:index(x, y, z)
+
+						if y == ocean_surface then
 							if pr:next(1, 6) == 1 then
 								vm_data[vp] = c_lily
 								vm_param2_data[vp] = pr:next(0, 3)
@@ -93,6 +101,14 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 							if pr:next(1, 30) == 1 then
 								logmats[#logmats + 1] = {x=x, y=y-4, z=z}
 							end
+
+							if pr:next(1, 4) == 1 then
+								vm_data[vp] = c_root
+							end
+						elseif y == yground then
+							if pr:next(1, 5) == 1 then
+								vm_data[vp] = c_root
+							end
 						end
 					end
 				end
@@ -110,16 +126,16 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 
 		if pr:next(1, 6) == 1 then
 			for i = 1, n do
-				minetest.set_node(p, {name=NN_LOGMAT})
+				set_node(p, {name=NN_LOGMAT})
 				p = vector.offset(p, 0, -1, 0)
 			end
 		else
 			local diridx = pr:next(1, 4)
 			local facedir = branch_directions[diridx]
-			local vec = minetest.facedir_to_dir(facedir)
+			local vec = facedir_to_dir(facedir)
 
 			for i = 1, n do
-				minetest.set_node(p, {name=NN_LOGMAT, param2=branch_rotations[diridx]})
+				set_node(p, {name=NN_LOGMAT, param2=branch_rotations[diridx]})
 				p = vector.add(p, vec)
 			end
 		end

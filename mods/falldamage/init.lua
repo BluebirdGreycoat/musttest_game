@@ -24,12 +24,19 @@ function minetest.register_on_player_dropitem(func)
 end
 local function override_on_drop(def)
 	local old_on_drop = def.on_drop or minetest.item_drop
+
 	function def.on_drop(itemstack, dropper, pos)
 		local oldstack = ItemStack(itemstack)
 		local oldcount = oldstack:get_count()
 		local newstack = old_on_drop(itemstack, dropper, pos)
-		local newcount = newstack:get_count()
 
+		if not newstack then
+			-- If we reach here, we cannot do anything!
+			-- 'minetest.item_drop' can return nil if adding object to world fails.
+			return
+		end
+
+		local newcount = newstack:get_count()
 		if newcount < oldcount then
 			call_on_drop_callbacks(oldstack, newstack, dropper, pos)
 		end

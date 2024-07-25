@@ -1,6 +1,6 @@
 
 minetest.register_node("swamp:swamp_water_source", {
-	description = S("Swamp Water Source"),
+	description = "Swamp Water Source",
 	drawtype = "liquid",
 	tiles = {
 		{
@@ -49,7 +49,7 @@ minetest.register_node("swamp:swamp_water_source", {
 })
 
 minetest.register_node("swamp:swamp_water_flowing", {
-	description = S("Flowing Swamp Water"),
+	description = "Flowing Swamp Water",
 	drawtype = "flowingliquid",
 	tiles = {"swamp_swamp_water.png"},
 	special_tiles = {

@@ -24,7 +24,7 @@ local MODPATH = minetest.get_modpath(MODNAME)
 local S = minetest.get_translator(MODNAME)
 
 minetest.register_node("swamp:dirt_with_swamp_grass", {
-	description = S("Dirt with Swamp Grass"),
+	description = "Dirt With Swamp Grass",
 	tiles = {"swamp_swamp_grass.png", "swamp_mud.png",
 		{name = "swamp_mud.png^swamp_swamp_grass_side.png",
 		tileable_vertical = false}},
@@ -41,7 +41,7 @@ minetest.register_node("swamp:dirt_with_swamp_grass", {
 })
 
 minetest.register_node("swamp:root", {
-	description = S("Root"),
+	description = "Tangled Roots",
 	drawtype = "glasslike_framed_optional",
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -50,22 +50,22 @@ minetest.register_node("swamp:root", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	is_ground_content = false,
-	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1, flammable = 3, wood = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1, flammable = 3},
 	sounds = default.node_sound_wood_defaults(),
 })
 
 minetest.register_node("swamp:root_with_mud", {
-	description = S("Root With Mud"),
+	description = "Roots In Mud",
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"swamp_root_with_mud.png"},
 	is_ground_content = false,
-	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1, flammable = 3, wood = 1},
+	groups = {choppy = 3, oddly_breakable_by_hand = 2, falling_node = 1, float = 1},
 	sounds = default.node_sound_wood_defaults(),
 })
 
 minetest.register_node("swamp:mangrove_wood", {
-	description = S("Mangrove Wood Planks"),
+	description = S("Mangrove Wood"),
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	tiles = {"swamp_mangrove_wood.png"},
@@ -106,7 +106,7 @@ minetest.register_node("swamp:mud", {
 })
 
 minetest.register_node("swamp:muddy_mud", {
-    description = S("Muddy Mud"),
+    description = "Sinkhole Mud",
     tiles = {"swamp_muddy_mud.png"},
     drop = "swamp:muddy_mud",
     liquid_viscosity = 15,

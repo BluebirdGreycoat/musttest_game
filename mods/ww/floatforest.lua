@@ -7,6 +7,9 @@ local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_lily = minetest.get_content_id("flowers:waterlily")
 local c_root = minetest.get_content_id("swamp:root")
 local c_mudroot = minetest.get_content_id("swamp:root_with_mud")
+local c_rootblock = minetest.get_content_id("sumpf:peat")
+local c_rootblock2 = minetest.get_content_id("sumpf:junglestone")
+local c_coarsegrass = minetest.get_content_id("default:coarsegrass")
 
 local get_node = minetest.get_node
 local set_node = minetest.set_node
@@ -91,6 +94,9 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 		{0.4, 0.5},
 		{0.6, 0.7},
 		{0.8, 0.9},
+		{1.0, 1.1},
+		{1.2, 1.5},
+		{1.6, 2.0},
 	}
 
 	local function forestnoise(x, z)
@@ -99,7 +105,7 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 		for k = 1, #noisesteps do
 			local pair = noisesteps[k]
 
-			local w = forestwidth[n2d] * 0.1
+			local w = forestwidth[n2d] * 0.2
 			local n1 = pair[1] - w
 			local n2 = pair[2] + w
 
@@ -132,6 +138,13 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 	for z = z0, z1 do
 		for x = x0, x1 do
 			local forest = forestnoise(x, z)
+			local logmat_off = 0
+
+			if forest < 1.2 then
+				logmat_off = -2
+			elseif forest < 1.4 then
+				logmat_off = -1
+			end
 
 			if forest >= 1 then
 				for y = y0, y1 do
@@ -145,27 +158,40 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 							end
 
 							if pr:next(1, 10) == 1 then
-								logmats[#logmats + 1] = {x=x, y=y, z=z}
+								logmats[#logmats + 1] = {x=x, y=y+logmat_off, z=z}
 							end
 
 							if pr:next(1, 16) == 1 then
-								logmats[#logmats + 1] = {x=x, y=y-1, z=z}
+								logmats[#logmats + 1] = {x=x, y=y-1+logmat_off, z=z}
 							end
 
 							if pr:next(1, 16) == 1 then
-								logmats[#logmats + 1] = {x=x, y=y-2, z=z}
+								logmats[#logmats + 1] = {x=x, y=y-2+logmat_off, z=z}
 							end
 
 							if pr:next(1, 30) == 1 then
-								logmats[#logmats + 1] = {x=x, y=y-4, z=z}
+								logmats[#logmats + 1] = {x=x, y=y-4+logmat_off, z=z}
 							end
 
-							if forest >= 1.5 and pr:next(1, 4) == 1 then
-								vm_data[vp] = c_root
+							if forest >= 1.5 then
+								if pr:next(1, 4) == 1 then
+									vm_data[vp] = c_root
+								elseif forest < 1.55 then
+									if pr:next(1, 5) <= 4 then
+										vm_data[vp] = c_coarsegrass
+										vm_param2_data[vp] = 2
+									end
+								elseif forest > 1.7 then
+									vm_data[vp] = c_rootblock2
+								end
 							end
 						elseif y == yground then
-							if forest >= 1.5 and pr:next(1, 5) == 1 then
-								vm_data[vp] = c_root
+							if forest >= 1.5 then
+								if pr:next(1, 5) == 1 then
+									vm_data[vp] = c_root
+								else
+									vm_data[vp] = c_rootblock
+								end
 							end
 						end
 					end

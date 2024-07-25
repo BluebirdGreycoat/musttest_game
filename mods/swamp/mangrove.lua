@@ -1,6 +1,6 @@
 
 minetest.register_node("swamp:mangrove_tree", {
-	description = S("Mangrove Tree"),
+	description = "Mangrove Trunk",
 	tiles = {"swamp_mangrove_tree_top.png", "swamp_mangrove_tree_top.png",
 		"swamp_mangrove_tree.png"},
 	paramtype2 = "facedir",
@@ -11,7 +11,7 @@ minetest.register_node("swamp:mangrove_tree", {
 })
 
 minetest.register_node("swamp:mangrove_leaves", {
-	description = S("Mangrove Tree Leaves"),
+	description = "Mangrove Leaves",
 	drawtype = "allfaces_optional",
 	tiles = {"swamp_mangrove_leaves.png"},
 	waving = 1,
@@ -42,7 +42,7 @@ function swamp.grow_new_mangrove_sapling(pos)
 end
 
 minetest.register_node("swamp:mangrove_sapling", {
-	description = S("Mangrove Tree Sapling"),
+	description = "Mangrove Sapling",
 	drawtype = "plantlike",
 	tiles = {"swamp_mangrove_sapling.png"},
 	inventory_image = "swamp_mangrove_sapling.png",

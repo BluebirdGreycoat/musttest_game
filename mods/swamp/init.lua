@@ -22,6 +22,8 @@ local path = minetest.get_modpath(minetest.get_current_modname())
 swamp = { }
 
 dofile(path .. "/nodes.lua")
+dofile(path .. "/liquids.lua")
+dofile(path .. "/mangrove.lua")
 --dofile(path .. "/stairs.lua")
 --dofile(path .. "/biomes.lua")
 --dofile(path .. "/miscellaneous.lua")

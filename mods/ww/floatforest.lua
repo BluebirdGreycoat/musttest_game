@@ -98,11 +98,32 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 		local forest = forestpattern[n2d]
 		for k = 1, #noisesteps do
 			local pair = noisesteps[k]
+
 			local w = forestwidth[n2d] * 0.1
 			local n1 = pair[1] - w
 			local n2 = pair[2] + w
-			if forest >= n1 and forest <= n2 then
-				return 1
+
+			-- Ensure min/max in right order.
+			if n1 > n2 then
+				n1, n2 = n2, n1
+			end
+			local D = n2 - n1
+
+			if D > 0 and forest >= n1 and forest <= n2 then
+				local a = forest - n1
+				local b = a / D
+
+				-- b is from 0 .. 1
+				-- want 0 .. 1 .. 0
+				if b <= 0.5 then
+					b = b / 0.5
+				else
+					b = b - 0.5
+					b = b / 0.5
+					b = b * -1 + 1
+				end
+
+				return 1 + b
 			end
 		end
 		return 0
@@ -118,7 +139,7 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 						local vp = area:index(x, y, z)
 
 						if y == ocean_surface then
-							if pr:next(1, 6) == 1 then
+							if forest < 1.5 and pr:next(1, 6) == 1 then
 								vm_data[vp] = c_lily
 								vm_param2_data[vp] = pr:next(0, 3)
 							end
@@ -139,11 +160,11 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 								logmats[#logmats + 1] = {x=x, y=y-4, z=z}
 							end
 
-							if pr:next(1, 4) == 1 then
+							if forest >= 1.5 and pr:next(1, 4) == 1 then
 								vm_data[vp] = c_root
 							end
 						elseif y == yground then
-							if pr:next(1, 5) == 1 then
+							if forest >= 1.5 and pr:next(1, 5) == 1 then
 								vm_data[vp] = c_root
 							end
 						end

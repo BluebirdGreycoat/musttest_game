@@ -35,6 +35,16 @@ ww.create_2d_noise("forestpattern", {
 	lacunarity = 2,
 })
 
+ww.create_2d_noise("forestwidth", {
+	offset = 0,
+	scale = 1,
+	spread = {x=256, y=256, z=256},
+	seed = 482,
+	octaves = 5,
+	persist = 0.5,
+	lacunarity = 2,
+})
+
 function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, yground)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -65,6 +75,7 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	local forestpattern = ww.get_2d_noise(bp2d, sides2D, "forestpattern")
+	local forestwidth = ww.get_2d_noise(bp2d, sides2D, "forestwidth")
 	local min_noise = 0
 	local max_noise = 0
 	local ocean_surface = yground + 1
@@ -87,7 +98,10 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 		local forest = forestpattern[n2d]
 		for k = 1, #noisesteps do
 			local pair = noisesteps[k]
-			if forest >= pair[1] and forest <= pair[2] then
+			local w = forestwidth[n2d] * 0.1
+			local n1 = pair[1] - w
+			local n2 = pair[2] + w
+			if forest >= n1 and forest <= n2 then
 				return 1
 			end
 		end

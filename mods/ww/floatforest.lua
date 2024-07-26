@@ -10,6 +10,7 @@ local c_mudroot = minetest.get_content_id("swamp:root_with_mud")
 local c_rootblock = minetest.get_content_id("sumpf:peat")
 local c_rootblock2 = minetest.get_content_id("sumpf:junglestone")
 local c_coarsegrass = minetest.get_content_id("default:coarsegrass")
+local c_floatforest = minetest.get_content_id("sumpf:sumpf2")
 
 local get_node = minetest.get_node
 local set_node = minetest.set_node
@@ -48,6 +49,19 @@ ww.create_2d_noise("forestwidth", {
 	lacunarity = 2,
 })
 
+for k = 1, 11 do
+	local pr = PcgRandom(3821 + k)
+	ww.create_2d_noise("forestpath_" .. k, {
+		offset = 0,
+		scale = 1,
+		spread = {x=64, y=64, z=64},
+		seed = pr:next(1, 1000),
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 2,
+	})
+end
+
 function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, yground)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -82,9 +96,10 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 	local min_noise = 0
 	local max_noise = 0
 	local ocean_surface = yground + 1
+	local under_surface = yground - 1
 
 	local noisesteps = {
-		{-1.0, -0.9},
+		{-2.0, -0.9},
 		{-0.8, -0.7},
 		{-0.6, -0.5},
 		{-0.4, -0.3},
@@ -94,18 +109,42 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 		{0.4, 0.5},
 		{0.6, 0.7},
 		{0.8, 0.9},
-		{1.0, 1.1},
-		{1.2, 1.5},
-		{1.6, 2.0},
+		{1.0, 2.0},
+	}
+
+	local forestpath = {
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_1"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_2"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_3"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_4"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_5"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_6"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_7"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_8"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_9"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_10"),
+		ww.get_2d_noise(bp2d, sides2D, "forestpath_11"),
 	}
 
 	local function forestnoise(x, z)
 		local n2d = area2d:index(x, z)
-		local forest = forestpattern[n2d]
+		local forestp = forestpattern[n2d]
+		local forestw = min(0.1, max(-0.1, forestwidth[n2d] * 0.1))
+
+		if forestw > 0.06 then
+			return 1 + (forestw / 0.095)
+		end
+
 		for k = 1, #noisesteps do
 			local pair = noisesteps[k]
 
-			local w = forestwidth[n2d] * 0.2
+			local f = forestp + forestpath[k][n2d] * 0.3
+			local w = forestw
+
+			if w < 0 then
+				goto continue
+			end
+
 			local n1 = pair[1] - w
 			local n2 = pair[2] + w
 
@@ -115,8 +154,8 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 			end
 			local D = n2 - n1
 
-			if D > 0 and forest >= n1 and forest <= n2 then
-				local a = forest - n1
+			if D > 0 and f >= n1 and f <= n2 then
+				local a = f - n1
 				local b = a / D
 
 				-- b is from 0 .. 1
@@ -131,6 +170,8 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 
 				return 1 + b
 			end
+
+			::continue::
 		end
 		return 0
 	end
@@ -150,6 +191,7 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 				for y = y0, y1 do
 					if y >= ystart and y <= yend then
 						local vp = area:index(x, y, z)
+						local vp_up = area:index(x, y+1, z)
 
 						if y == ocean_surface then
 							if forest < 1.5 and pr:next(1, 6) == 1 then
@@ -175,14 +217,24 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 
 							if forest >= 1.5 then
 								if pr:next(1, 4) == 1 then
-									vm_data[vp] = c_root
-								elseif forest < 1.55 then
+									if forest >= 1.7 then
+										vm_data[vp] = c_mudroot
+									else
+										vm_data[vp] = c_root
+									end
+									if forest > 1.8 then
+										vm_data[vp_up] = c_floatforest
+									end
+								elseif forest <= 1.7 then
 									if pr:next(1, 5) <= 4 then
 										vm_data[vp] = c_coarsegrass
 										vm_param2_data[vp] = 2
 									end
 								elseif forest > 1.7 then
 									vm_data[vp] = c_rootblock2
+									if forest > 1.8 then
+										vm_data[vp_up] = c_floatforest
+									end
 								end
 							end
 						elseif y == yground then
@@ -190,6 +242,12 @@ function ww.generate_floating_forests(vm, minp, maxp, seed, ystart, yend, ygroun
 								if pr:next(1, 5) == 1 then
 									vm_data[vp] = c_root
 								else
+									vm_data[vp] = c_rootblock
+								end
+							end
+						elseif y == under_surface then
+							if forest >= 1.5 then
+								if pr:next(1, 4) == 1 then
 									vm_data[vp] = c_rootblock
 								end
 							end

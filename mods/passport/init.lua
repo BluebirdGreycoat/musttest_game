@@ -15,12 +15,12 @@ passport.modpath = minetest.get_modpath("passport")
 passport.open_keys = passport.open_keys or {}
 
 -- Localize for performance.
-local F = minetest.formspec_escape
-local vector_distance = vector.distance
-local vector_round = vector.round
-local vector_add = vector.add
-local math_floor = math.floor
-local math_random = math.random
+local F = minetest.formspec_escape   
+  local vector_distance = vector.distance
+   local vector_round = vector.round
+	  local vector_add = vector.add
+	local math_floor = math.floor
+ local math_random = math.random
 
 
 

@@ -137,10 +137,8 @@ passport.compose_formspec = function(pname)
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-		"label[1,0.0;" ..
-			minetest.formspec_escape("Key of Citizenship Interface") .. "]" ..
-		"label[6,0.0;" ..
-			minetest.formspec_escape("Recalls Nearby (" .. #beacons .. ")") .. "]" ..
+		"label[1,0.0;Key of Citizenship Interface]" ..
+		"label[6,0.0;Recalls Nearby (" .. #beacons .. ")]" ..
     buttons ..
     "button_exit[1,5.7;2,1;exit;Close]" ..
     "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..
@@ -159,13 +157,11 @@ passport.compose_formspec = function(pname)
       boolparticle .. "]" ..
 
 		"tooltip[togglechat;" .. 
-			minetest.formspec_escape(
 				"Toggle whether the server should echo your chat back to your client.\n" ..
-				"Newer clients should keep this checked.") .. "]" ..
+				"Newer clients should keep this checked.]" ..
 		"tooltip[toggleparticles;" .. 
-			minetest.formspec_escape(
 				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
-				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning ...") .. "]"
+				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning...]"
 
 	-- Special abilities are revoked for cheaters.
 	if not sheriff.is_cheater(pname) then

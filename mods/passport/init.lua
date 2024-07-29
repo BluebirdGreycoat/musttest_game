@@ -234,8 +234,7 @@ passport.compose_formspec = function(pname)
 	status_info[#status_info + 1] = tostring("Respawns: " .. beds.get_respawn_count(pname))
 
 	-- Status info.
-	formspec = formspec .. "label[1,6.6;Status: " ..
-		minetest.formspec_escape(table.concat(status_info, " | ")) .. "]"
+	formspec = formspec .. "label[1,6.6;Status: " .. F(table.concat(status_info, " | ")) .. "]"
   
   return formspec
 end

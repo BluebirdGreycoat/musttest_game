@@ -15,6 +15,7 @@ passport.modpath = minetest.get_modpath("passport")
 passport.open_keys = passport.open_keys or {}
 
 -- Localize for performance.
+local F = minetest.formspec_escape
 local vector_distance = vector.distance
 local vector_round = vector.round
 local vector_add = vector.add
@@ -95,7 +96,7 @@ passport.compose_formspec = function(pname)
   
   local i = 1
   for k, v in pairs(passport.recalls) do
-    local n = v.name
+    local n = F(v.name)
     local c = v.code
 		if v.tname == "jail:jail" then
 			buttons = buttons .. "button_exit[3,5.7;2,1;" .. c .. ";" .. n .. "]"
@@ -116,7 +117,7 @@ passport.compose_formspec = function(pname)
   
   local h = 1
   for k, v in ipairs(passport.player_recalls[pname]) do
-    local n = v.name
+    local n = F(v.name)
     local c = v.code
 		buttons = buttons .. "button_exit[6," .. (h-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
 		h = h + 1

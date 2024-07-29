@@ -24,15 +24,16 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 	end
 
 	local found = true
+	local count_found = 0
 
+	-- Note: inaccuracy can sometimes cause the prospector to NOT find nodes that
+	-- are there. However, it can never cause the prospector to find nodes that
+	-- ARE NOT there.
 	if math_random() > accuracy/100 then
 		if math_random(1, 2) == 1 then
 			found = not found
 		end
 	end
-
-	local sound = "technic_prospector_" .. (found and "hit" or "miss")
-	ambiance.sound_play(sound, start_pos, 1.0, 20)
 
 	-- Mark nodes on the player's HUD.
 	if found then
@@ -98,6 +99,8 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 
 							prospector.mark_detectable(v)
 						end
+
+						count_found = count_found + 1
 					end
 				else
 					-- Mark this ore as unfindable.
@@ -116,6 +119,9 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 			end)
 		end
 	end
+
+	local sound = "technic_prospector_" .. ((count_found > 0 and "hit") or "miss")
+	ambiance.sound_play(sound, start_pos, 0.6, 20)
 end
 
 function prospector.mark_unfindable(pos)
@@ -302,10 +308,7 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	if minp.z > maxp.z then minp.z, maxp.z = maxp.z, minp.z end
 
 	local found = false
-	local nodes = minetest.find_nodes_in_area(minp, maxp, toolmeta.target)
-	if nodes and #nodes > 0 then
-		found = true
-	end
+	local nodes = minetest.find_nodes_in_area(minp, maxp, toolmeta.target) or {}
 
 	-- Test code to ensure minp, maxp are sane.
 	--[[
@@ -318,9 +321,7 @@ function prospector.do_use(toolstack, user, pointed_thing, wear)
 	end
 	--]]
 
-	if found then
-		prospector.mark_nodes(pname, start_pos, nodes, toolmeta.accuracy, minp, maxp)
-	end
+	prospector.mark_nodes(pname, start_pos, nodes, toolmeta.accuracy, minp, maxp)
 
 	return charge_to_take
 end

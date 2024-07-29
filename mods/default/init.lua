@@ -13,6 +13,8 @@ default.LIGHT_MAX = 15
 dofile(default.modpath .. "/cactus.lua")
 dofile(default.modpath .. "/papyrus.lua")
 dofile(default.modpath .. "/nodes.lua")
+dofile(default.modpath .. "/kelps.lua")
+dofile(default.modpath .. "/corals.lua")
 dofile(default.modpath .. "/fences.lua")
 dofile(default.modpath .. "/craftitems.lua")
 dofile(default.modpath .. "/crafting.lua")
@@ -26,5 +28,6 @@ function default.lava_death_messages()
 		"<player> burnt to ash.",
 		"<player> stepped in something hot.",
 		"<player> did a Gollum.",
+		"<player> self-immolated.",
 	}
 end

@@ -14,31 +14,31 @@ privs.print_privs = function(user, param)
   end
   
   if not minetest.player_exists(name) then
-    minetest.chat_send_player(user, "# Server: Player <" .. rename.gpn(name) .. "> does not exist.")
+    minetest.chat_send_player(user, "# Server: Entity <" .. rename.gpn(name) .. "> was never embodied.")
+    easyvend.sound_error(user)
     return true
   end
   
   local privs = minetest.get_player_privs(name)
   if privs then
-    -- There are only two tiers. A player is either a `player`, or the server operator (ME).
-    -- There are no other privilege tiers, and no details given, to avoid jealously problems.
-    local string = "player"
+    -- Few details are given, to avoid jealously problems.
+    local string = "a civilian"
 
     if privs.server then
-      string = "server"
+      string = "an arch-wizard"
     end
 
 		if user == name or minetest.check_player_privs(user, {privs=true}) then
 			-- If player is querying privs of self, or player is admin, then print full privs list.
-			minetest.chat_send_player(user, "# Server: Privileges of <" .. rename.gpn(name) .. ">: " .. core.privs_to_string(privs, ", ") .. ".")
+			minetest.chat_send_player(user, "# Server: Capabilities of <" .. rename.gpn(name) .. ">: " .. core.privs_to_string(privs, ", ") .. ".")
 		else
 			-- Otherwise just print the generic privs rank.
-			minetest.chat_send_player(user, "# Server: Privilege rank of <" .. rename.gpn(name) .. ">: " .. string .. ".")
+			minetest.chat_send_player(user, "# Server: <" .. rename.gpn(name) .. "> is " .. string .. ".")
 		end
     return true
   end
   
-  minetest.chat_send_player(user, "# Server: Could not obtain privileges of player <" .. rename.gpn(name) .. ">!")
+  minetest.chat_send_player(user, "# Server: Could not obtain capabilities of <" .. rename.gpn(name) .. ">!")
 	easyvend.sound_error(user)
   return true
 end

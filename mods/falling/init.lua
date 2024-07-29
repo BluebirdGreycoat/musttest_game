@@ -307,10 +307,13 @@ minetest.register_entity(":__builtin:falling_node", {
     if not vector_equals(acceleration, {x = 0, y = -8, z = 0}) then
       self.object:set_acceleration({x = 0, y = -8, z = 0})
     end
+
     -- Turn to actual node when colliding with ground, or continue to move
     local pos = self.object:get_pos()
+
     -- Position of bottom center point
     local bcp = vector_round({x = pos.x, y = pos.y - 0.7, z = pos.z})
+
     -- Avoid bugs caused by an unloaded node below
     local bcn = get_node_or_nil(bcp)
     local bcd = bcn and all_nodes[bcn.name]
@@ -318,9 +321,11 @@ minetest.register_entity(":__builtin:falling_node", {
     if bcn and (not bcd or bcd.walkable or (get_item_group(self.node.name, "float") ~= 0 and bcd.liquidtype ~= "none")) then
       if bcd and bcd.leveled and bcn.name == self.node.name then
 				local addlevel = self.node.level
+
 				if not addlevel or addlevel <= 0 then
 					addlevel = bcd.leveled
 				end
+
 				if add_node_level(bcp, addlevel) == 0 then
 					self.object:remove()
 					return
@@ -335,6 +340,7 @@ minetest.register_entity(":__builtin:falling_node", {
       if ss ~= nil then
 				self.object:set_pos(vector_add(ss, {x=0, y=1, z=0}))
 				self.object:set_velocity({x=0, y=0, z=0})
+
 				entity_physics(bcp, self.node, self.pharm, self.mharm)
 				ambiance.sound_play("default_gravel_footstep", ss, 0.2, 20)
 				return

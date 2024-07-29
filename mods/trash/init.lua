@@ -2,6 +2,9 @@
 if not minetest.global_exists("trash") then trash = {} end
 trash.modpath = minetest.get_modpath("trash")
 
+-- XP loss for trashing stuff is 1 per item, multiplied by this.
+local TRASH_XP_MOD = 0.2
+
 function trash.get_listname()
 	return "detached:trash", "main"
 end
@@ -54,9 +57,24 @@ function trash.on_put(inv, to_list, to_index, stack, player)
 			max_hear_distance=16,
 		}, true)
 
-		minetest.log("action", player:get_player_name() .. " trashes " ..
-			"\"" .. stack:get_name() .. " " .. stack:get_count() .. "\"" ..
+		local count = stack:get_count()
+		local pname = player:get_player_name()
+
+		-- Discourage use of the trash slot, especially for things like mass cobble.
+		-- I'd much rather see players storing cobble in chests everywhere.
+		xp.subtract_xp(pname, "digxp", count * TRASH_XP_MOD)
+
+		minetest.log("action", pname .. " trashes " ..
+			"\"" .. stack:get_name() .. " " .. count .. "\"" ..
 			" using inventory trash slot.")
+	end
+end
+
+function trash.on_drop_item(oldstack, newstack, dropper, pos)
+	if dropper and dropper:is_player() then
+		local pname = dropper:get_player_name()
+		local count = oldstack:get_count()
+		xp.subtract_xp(pname, "digxp", count * TRASH_XP_MOD)
 	end
 end
 
@@ -70,6 +88,8 @@ if not trash.registered then
 			return trash.on_put(...)
 		end,
 	})
+
+	minetest.register_on_player_dropitem(function(...) return trash.on_drop_item(...) end)
 
 	inv:set_size("main", 1)
 

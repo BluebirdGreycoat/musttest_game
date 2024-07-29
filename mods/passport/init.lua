@@ -15,11 +15,12 @@ passport.modpath = minetest.get_modpath("passport")
 passport.open_keys = passport.open_keys or {}
 
 -- Localize for performance.
-local vector_distance = vector.distance
-local vector_round = vector.round
-local vector_add = vector.add
-local math_floor = math.floor
-local math_random = math.random
+local F = minetest.formspec_escape   
+  local vector_distance = vector.distance
+   local vector_round = vector.round
+	  local vector_add = vector.add
+	local math_floor = math.floor
+ local math_random = math.random
 
 
 
@@ -95,7 +96,7 @@ passport.compose_formspec = function(pname)
   
   local i = 1
   for k, v in pairs(passport.recalls) do
-    local n = v.name
+    local n = F(v.name)
     local c = v.code
 		if v.tname == "jail:jail" then
 			buttons = buttons .. "button_exit[3,5.7;2,1;" .. c .. ";" .. n .. "]"
@@ -116,7 +117,7 @@ passport.compose_formspec = function(pname)
   
   local h = 1
   for k, v in ipairs(passport.player_recalls[pname]) do
-    local n = v.name
+    local n = F(v.name)
     local c = v.code
 		buttons = buttons .. "button_exit[6," .. (h-0.3) .. ";3,1;" .. c .. ";" .. n .. "]"
 		h = h + 1
@@ -136,10 +137,8 @@ passport.compose_formspec = function(pname)
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-		"label[1,0.0;" ..
-			minetest.formspec_escape("Key of Citizenship Interface") .. "]" ..
-		"label[6,0.0;" ..
-			minetest.formspec_escape("Recalls Nearby (" .. #beacons .. ")") .. "]" ..
+		"label[1,0.0;Key of Citizenship Interface]" ..
+		"label[6,0.0;Recalls Nearby (" .. #beacons .. ")]" ..
     buttons ..
     "button_exit[1,5.7;2,1;exit;Close]" ..
     "button_exit[1,2.7;2,1;mapfix;Fix Map]" ..
@@ -158,13 +157,11 @@ passport.compose_formspec = function(pname)
       boolparticle .. "]" ..
 
 		"tooltip[togglechat;" .. 
-			minetest.formspec_escape(
 				"Toggle whether the server should echo your chat back to your client.\n" ..
-				"Newer clients should keep this checked.") .. "]" ..
+				"Newer clients should keep this checked.]" ..
 		"tooltip[toggleparticles;" .. 
-			minetest.formspec_escape(
 				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
-				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning ...") .. "]"
+				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning...]"
 
 	-- Special abilities are revoked for cheaters.
 	if not sheriff.is_cheater(pname) then
@@ -237,8 +234,7 @@ passport.compose_formspec = function(pname)
 	status_info[#status_info + 1] = tostring("Respawns: " .. beds.get_respawn_count(pname))
 
 	-- Status info.
-	formspec = formspec .. "label[1,6.6;Status: " ..
-		minetest.formspec_escape(table.concat(status_info, " | ")) .. "]"
+	formspec = formspec .. "label[1,6.6;Status: " .. F(table.concat(status_info, " | ")) .. "]"
   
   return formspec
 end

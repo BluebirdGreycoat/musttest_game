@@ -2,7 +2,7 @@
 local entity = {
 	initial_properties = {
 		visual = "mesh",
-		mesh = "lagwing_main.obj",
+		mesh = "lagwing_main.b3d",
 		visual_size = {x=1, y=1},
 		collisionbox = {-1, -1, -1, 1, 1, 1},
 		physical = true,

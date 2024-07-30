@@ -14,6 +14,8 @@ function lagwing.on_activate(self, staticdata, dtime_s)
 			self.circle_right = true
 		end
 	end
+
+	self.object:set_animation({x=1, y=20}, 15, 0, true)
 end
 
 function lagwing.on_deactivate(self, removal)

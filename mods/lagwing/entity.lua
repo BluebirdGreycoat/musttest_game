@@ -2,11 +2,11 @@
 local entity = {
 	initial_properties = {
 		visual = "mesh",
-		mesh = "boats_boat.obj",
+		mesh = "lagwing_main.obj",
 		visual_size = {x=1, y=1},
 		collisionbox = {-1, -1, -1, 1, 1, 1},
 		physical = true,
-		textures = {"air"},
+		textures = {"lagwing_main.png"},
 		is_visible = true,
 		static_save = true,
 	},

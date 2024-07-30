@@ -23,7 +23,7 @@ lagwing.SLOW_TURN_RATE = math.rad(10)
 lagwing.MAX_ROLL_ANGLE = math.rad(35)
 lagwing.MAX_ROLL_RATE = math.rad(15)
 lagwing.MAX_PITCH_RATE = math.rad(35)
-lagwing.SHOW_RAYCASTS = false
+lagwing.SHOW_RAYCASTS = true
 
 dofile(lagwing.modpath .. "/ride.lua")
 dofile(lagwing.modpath .. "/func.lua")

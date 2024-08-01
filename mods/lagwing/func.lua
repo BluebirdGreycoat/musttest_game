@@ -15,7 +15,7 @@ function lagwing.on_activate(self, staticdata, dtime_s)
 		end
 	end
 
-	self.object:set_animation({x=1, y=20}, 15, 0, true)
+	self.object:set_animation({x=1, y=180}, 30, 0, true)
 end
 
 function lagwing.on_deactivate(self, removal)
@@ -30,7 +30,7 @@ end
 function lagwing.on_rightclick(self, clicker)
 	if not self.rider then
 		if not clicker:get_attach() then
-			clicker:set_attach(self.object)
+			clicker:set_attach(self.object, "Saddle")
 			self.rider = clicker:get_player_name()
 			return
 		end

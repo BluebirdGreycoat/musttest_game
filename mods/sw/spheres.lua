@@ -37,9 +37,9 @@ local SPHERE_CONTENTS = {
 	{CID("default:obsidian"), CID("default:obsidian"), CID("air")},
 	{CID("default:obsidian"), CID("default:obsidian"), CID("air")},
 	{CID("default:lava_source"), CID("default:lava_source"), CID("default:lava_source")},
-	{CID("default:lava_source"), CID("default:lava_source"), CID("default:lava_source")},
 	{CID("default:water_source"), CID("default:water_source"), CID("default:water_source")},
 	{CID("cavestuff:glow_white_crystal"), CID("quartz:block"), CID("air")},
+	{CID("darkage:darkdirt"), CID("default:dirt"), CID("default:dirt")},
 }
 
 --------------------------------------------------------------------------------

@@ -5,6 +5,10 @@ sw.worldpath = minetest.get_worldpath()
 
 
 
+dofile(sw.modpath .. "/ore.lua")
+
+
+
 function sw.on_generated(minp, maxp, blockseed)
 	local mapgen = minetest.get_mapgen_object("gennotify")
 	local data = (mapgen.custom and mapgen.custom["sw:mapgen_info"])

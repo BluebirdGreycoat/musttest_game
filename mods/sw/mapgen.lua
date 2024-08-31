@@ -197,6 +197,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   sw.despeckle_terrain(vm, minp, maxp)
   sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
+  minetest.generate_ores(vm)
+
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)
 	vm:update_liquids()

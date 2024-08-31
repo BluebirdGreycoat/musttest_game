@@ -23,13 +23,14 @@ local maxp = {x=31000, z=31000}
 local step = 100
 
 local ALL_SPHERES = {}
-local MIN_RADIUS = 10
-local MAX_RADIUS = 50
+local MIN_RADIUS = 7
+local MAX_RADIUS = 20
 local MIN_Y = -10
 local MAX_Y = 10
 local SPHERE_SEED = 4718
-local SPHERE_WALL = 16
-local SPHERE_INNER = 20
+local SPHERE_WALL = 4
+local SPHERE_INNER = 7
+local SPHERE_MISSHAPE = 4
 local SPHERE_CONTENTS = {
 	{CID("default:obsidian"), CID("default:obsidian"), CID("default:obsidian")},
 	{CID("default:obsidian"), CID("default:obsidian"), CID("default:obsidian")},
@@ -201,13 +202,13 @@ function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 							p2.z = z
 
 							local n3d = area:index(x, y, z)
-							local nrad = abs(sphereshear[n3d]) * 5
+							local nrad = abs(sphereshear[n3d]) * SPHERE_MISSHAPE
 							local D = floor(distance(p1, p2))
 
 							local sphere = false
 							local shell_outer = floor(sphere_rad + nrad)
-							local shell_inner = floor(sphere_rad - SPHERE_WALL - nrad)
-							local shell_center = floor(sphere_rad - SPHERE_INNER - nrad)
+							local shell_inner = floor(sphere_rad + nrad - SPHERE_WALL)
+							local shell_center = floor(sphere_rad + nrad - SPHERE_INNER)
 
 							if D <= shell_outer then
 								sphere = true

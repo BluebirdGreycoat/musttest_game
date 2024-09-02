@@ -41,14 +41,16 @@ local scatter_ores = {
 	{ore="cavestuff:dark_obsidian", seed=11, threshhold=-0.3, scarcity=8, count=8, size=3, wherein="default:obsidian"},
 
 	-- Commons.
-	{ore="default:stone_with_coal", seed=1, threshhold=0.1, scarcity=8, count=8, size=3},
+	{ore="default:stone_with_coal", seed=1, threshhold=0.1, scarcity=8, count=8, size=3, wherein={"default:stone", "default:cobble"}},
+	{ore="kalite:ore", seed=12, threshhold=0.1, scarcity=12, count=5, size=3, wherein={"default:stone", "default:cobble"}},
 	{ore="default:stone_with_iron", seed=2, threshhold=0.2, scarcity=7, count=5, size=3},
 	{ore="default:stone_with_copper", seed=3, threshhold=0.2, scarcity=9, count=5, size=3},
 	{ore="quartz:quartz_ore", seed=30, threshhold=0.1, scarcity=9, count=5, size=3},
 
 	-- Rares.
 	{ore="default:stone_with_gold", seed=4, threshhold=0.4, scarcity=13, count=5, size=3},
-	{ore="default:stone_with_mese", seed=5, threshhold=0.4, scarcity=14, count=5, size=3},
+	{ore="sulfur:ore", seed=4, threshhold=0.3, scarcity=13, count=10, size=4},
+	{ore="default:stone_with_mese", seed=5, threshhold=0.4, scarcity=14, count=5, size=3, wherein={"default:stone", "default:cobble"}},
 	{ore="default:stone_with_diamond", seed=6, threshhold=0.4, scarcity=15, count=4, size=3},
 	{ore="default:mese", seed=6, threshhold=0.5, scarcity=36, count=4, size=2},
 }
@@ -58,7 +60,7 @@ for index, data in ipairs(scatter_ores) do
 	minetest.register_ore({
 		ore_type = "scatter",
 		ore = data.ore,
-		wherein = data.wherein or {"default:stone", "default:cobble"},
+		wherein = data.wherein or {"default:stone"},
 		y_min = REALM_START,
 		y_max = REALM_END,
     clust_scarcity = data.scarcity * data.scarcity * data.scarcity,

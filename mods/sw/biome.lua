@@ -5,6 +5,8 @@ local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("default:stone")
 local c_cobble = minetest.get_content_id("default:cobble")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
+local c_obsidian = minetest.get_content_id("default:obsidian")
+local c_gravel = minetest.get_content_id("default:gravel")
 
 local NN_DEAD_CORAL = "default:coral_skeleton"
 
@@ -16,6 +18,25 @@ local min = math.min
 -- Param2 horizontal branch rotations.
 local branch_rotations = {4, 8, 12, 16}
 local branch_directions = {2, 0, 3, 1}
+
+local sphere_base_locations = {
+	{x=1, y=0, z=0},
+	{x=-1, y=0, z=0},
+	{x=0, y=0, z=1},
+	{x=0, y=0, z=-1},
+	{x=1, y=1, z=0},
+	{x=-1, y=1, z=0},
+	{x=0, y=1, z=1},
+	{x=0, y=1, z=-1},
+	{x=1, y=0, z=1},
+	{x=1, y=0, z=-1},
+	{x=-1, y=0, z=1},
+	{x=-1, y=0, z=-1},
+	{x=1, y=1, z=1},
+	{x=1, y=1, z=-1},
+	{x=-1, y=1, z=1},
+	{x=-1, y=1, z=-1},
+}
 
 function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local emin, emax = vm:get_emerged_area()
@@ -71,13 +92,23 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 					local cid_c = vm_data[vp_c]
 					local cid_u = vm_data[vp_u]
 
-					if cid_c == c_stone and cid_u == c_air then
+					if cid_c ~= c_air and cid_c ~= c_ignore and cid_c ~= c_obsidian and cid_u == c_air then
 						-- We have found a surface.
 						local ground_y = heightfunc(x, y, z)
 
 						-- Only cobble the surface, skip caves.
 						if y == ground_y then
 							vm_data[vp_c] = c_cobble
+
+							-- Surround base of obsidian spheres with special material.
+							for k = 1, #sphere_base_locations do
+								local v = sphere_base_locations[k]
+								local c = vm_data[area:index(x+v.x, y+v.y, z+v.z)]
+								if c == c_obsidian then
+									vm_data[vp_c] = c_gravel
+									break
+								end
+							end
 						end
 					end
 				end

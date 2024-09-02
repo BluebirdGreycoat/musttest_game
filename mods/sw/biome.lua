@@ -92,12 +92,14 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 					local cid_c = vm_data[vp_c]
 					local cid_u = vm_data[vp_u]
 
-					if cid_c ~= c_air and cid_c ~= c_ignore and cid_c ~= c_obsidian and cid_u == c_air then
+					if cid_c ~= c_air and cid_c ~= c_ignore and cid_c ~= c_obsidian and (cid_u == c_air or cid_u == c_obsidian) then
 						-- We have found a surface.
 						local ground_y = heightfunc(x, y, z)
 
 						-- Only cobble the surface, skip caves.
-						if y == ground_y then
+						-- Need this +/- 1 here because ground-Y isn't perfect for some
+						-- reason, even though it should always be a rounded integer.
+						if y >= ground_y - 1 and y <= ground_y + 1 then
 							vm_data[vp_c] = c_cobble
 
 							-- Surround base of obsidian spheres with special material.

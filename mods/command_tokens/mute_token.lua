@@ -95,7 +95,7 @@ end
 
 
 
-command_tokens.mute.execute = function(player, target)
+command_tokens.mute.execute = function(player, target, chatcommand)
 	player = rename.grn(player)
 	target = rename.grn(target)
 	local dname = rename.gpn(target)
@@ -106,7 +106,7 @@ command_tokens.mute.execute = function(player, target)
 		local pinv = pref:get_inventory()
 		local stack = ItemStack("command_tokens:mute_player")
 
-		if pinv:contains_item("main", stack) then
+		if chatcommand or pinv:contains_item("main", stack) then
 			-- Mute player if they wern't muted, unmute them if they were.
 			if not command_tokens.mute.players[target] then
 				-- Mark this occurance with an ID that isn't likely to be already in use.

@@ -816,11 +816,12 @@ function anvil.repair_tool(pos)
 			local repair_amount = 500
 			if minetest.find_node_near(pos, 2, "group:fire") then
 				repair_amount = 2000
-			elseif minetest.find_node_near(pos, 2, "group:lava") then
+			end
+			if minetest.find_node_near(pos, 2, "group:lava") then
 				repair_amount = 5000
 			end
 
-			-- Max wear is 65535 (16 bit unsigned).
+			-- Max wear is 65535 (16 bit unsigned aka uint16_t).
 			wear = wear - repair_amount
 			if wear < 0 then wear = 0 end
 			stack:set_wear(wear)

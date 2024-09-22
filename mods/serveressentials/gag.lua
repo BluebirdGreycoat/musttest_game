@@ -1,4 +1,5 @@
 
+-- Also, that is NOT how centaurs are born.
 function serveressentials.do_gag(pname, param)
 	command_tokens.mute.execute(pname, param, true)
 end

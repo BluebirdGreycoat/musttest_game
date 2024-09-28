@@ -152,6 +152,48 @@ end
 
 
 
+function wizard.banish_staff(itemstack, user, pt)
+  if not user or not user:is_player() then
+		return
+	end
+
+	if pt.type ~= "node" then
+		return
+	end
+
+	local node = minetest.get_node(pt.under)
+	local nodename = node.name
+
+	-- Must be a rune slab.
+	if nodename ~= "signs:sign_wall_stone" then
+		return
+	end
+
+	local pname = user:get_player_name()
+	local meta = minetest.get_meta(pt.under)
+	local text = meta:get_string("text"):trim()
+	local author = meta:get_string("author")
+
+	-- Staff user must be sign author.
+	if author ~= pname then
+		return
+	end
+
+	local ptarget = minetest.get_player_by_name(text)
+	if not ptarget or not ptarget:is_player() then
+		return
+	end
+
+	-- Perform kick action AFTER returning from the current stack frame.
+	-- User might kick self.
+	local ntarget = ptarget:get_player_name()
+	minetest.after(0, function()
+		minetest.kick_player(ntarget, "Momentarily banished.")
+	end)
+end
+
+
+
 if not wizard.registered then
 	wizard.registered = true
 
@@ -186,6 +228,23 @@ if not wizard.registered then
 		_on_update_formspec = function(...) return wizard.update_formspec(...) end,
 		_on_update_entity = function(...) return wizard.update_entity(...) end,
 		_on_pre_fall = function(...) return wizard.on_pre_fall(...) end,
+	})
+
+	minetest.register_tool("wizard:banish_staff", {
+		description = "Banishing Staff",
+		inventory_image = "stoneworld_oerkki_staff.png",
+
+		-- Tools with dual-use functions MUST put the secondary use in this callback,
+		-- otherwise normal punches do not work!
+		on_place = function(...) return wizard.banish_staff(...) end,
+		on_secondary_use = function(...) return wizard.banish_staff(...) end,
+
+		-- Damage info is stored by sysdmg.
+		tool_capabilities = {
+			full_punch_interval = 3.0,
+		},
+
+		groups = {not_repaired_by_anvil = 1, disable_repair = 1},
 	})
 
 	-- Register mod reloadable.

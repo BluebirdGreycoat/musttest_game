@@ -184,6 +184,23 @@ function wizard.banish_staff(itemstack, user, pt)
 		return
 	end
 
+	-- 10% for the Big Guy.
+	if minetest.check_player_privs(ptarget, {server=true}) then
+		local pos = user:get_pos()
+		minetest.after(0, function()
+			tnt.boom(pos, {
+				radius = 5,
+				ignore_protection = false,
+				ignore_on_blast = false,
+				damage_radius = 5,
+				disable_drops = true,
+			})
+		end)
+
+		itemstack:take_item()
+		return itemstack
+	end
+
 	-- Perform kick action AFTER returning from the current stack frame.
 	-- User might kick self.
 	local ntarget = ptarget:get_player_name()

@@ -82,6 +82,7 @@ function wizard.banish_staff(itemstack, user, pt)
 	meta:set_string("author", "")
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
+	wizard.runeslab_particles(pt.under)
 
 	-- Perform kick action AFTER returning from the current stack frame.
 	-- User might kick self. Don't kick dead players.
@@ -94,10 +95,5 @@ function wizard.banish_staff(itemstack, user, pt)
 	end)
 
 	-- Take 15 hp of health from the wizard.
-	minetest.after(0, function()
-		local pref = minetest.get_player_by_name(pname)
-		if pref and pref:get_hp() > 0 then
-			utility.damage_player(pref, "electrocute", 15 * 500)
-		end
-	end)
+	wizard.damage_player(pname, 15)
 end

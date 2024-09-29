@@ -49,14 +49,10 @@ function wizard.track_staff(itemstack, user, pt)
 	meta:set_string("author", "")
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
+	wizard.runeslab_particles(pt.under)
 
 	ac.show_path(pname, target_name, user:get_pos(), 30)
 
 	-- Take 5 hp of health from the wizard.
-	minetest.after(0, function()
-		local pref = minetest.get_player_by_name(pname)
-		if pref and pref:get_hp() > 0 then
-			utility.damage_player(pref, "electrocute", 5 * 500)
-		end
-	end)
+	wizard.damage_player(pname, 5)
 end

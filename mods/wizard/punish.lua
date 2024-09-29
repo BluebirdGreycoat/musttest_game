@@ -68,6 +68,7 @@ function wizard.punish_staff(itemstack, user, pt)
 	meta:set_string("author", "")
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
+	wizard.runeslab_particles(pt.under)
 
 	-- Leave stack frame, first. Wizard might kill self.
 	local ntarget = ptarget:get_player_name()
@@ -79,10 +80,5 @@ function wizard.punish_staff(itemstack, user, pt)
 	end)
 
 	-- Take 80 hp of health from the wizard.
-	minetest.after(0, function()
-		local pref = minetest.get_player_by_name(pname)
-		if pref and pref:get_hp() > 0 then
-			utility.damage_player(pref, "electrocute", 80 * 500)
-		end
-	end)
+	wizard.damage_player(pname, 80)
 end

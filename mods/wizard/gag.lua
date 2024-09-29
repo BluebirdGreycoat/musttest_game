@@ -55,6 +55,8 @@ function wizard.gag_staff(itemstack, user, pt)
 	meta:set_string("author", "")
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
+	wizard.runeslab_particles(pt.under)
 
 	command_tokens.mute.execute(pname, target_name, true)
+	wizard.damage_player(pname, 1)
 end

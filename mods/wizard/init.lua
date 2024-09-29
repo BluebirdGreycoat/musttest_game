@@ -8,6 +8,51 @@ dofile(wizard.modpath .. "/track.lua")
 dofile(wizard.modpath .. "/gag.lua")
 dofile(wizard.modpath .. "/punish.lua")
 
+function wizard.damage_player(pname, amount)
+	minetest.after(0, function()
+		local pref = minetest.get_player_by_name(pname)
+		if pref and pref:get_hp() > 0 then
+			utility.damage_player(pref, "electrocute", amount * 500)
+		end
+	end)
+end
+
+function wizard.runeslab_particles(pos)
+	local image = "nether_particle_anim3.png"
+	local color = "white"
+	local d = 0.5
+	minetest.add_particlespawner({
+		amount = 5,
+		time = 1.1,
+		minpos = {x=pos.x-d, y=pos.y-d, z=pos.z-d},
+		maxpos = {x=pos.x+d, y=pos.y+d, z=pos.z+d},
+		minvel = {x=0, y=-d, z=0},
+		maxvel = {x=0, y=d, z=0},
+		minacc = {x=0, y=0, z=0},
+		maxacc = {x=0, y=0, z=0},
+		minexptime = 1.5,
+		maxexptime = 2.5,
+		minsize = 1,
+		maxsize = 1.5,
+		collisiondetection = true,
+		collision_removal = true,
+		texture = image .. "^[colorize:" .. color .. ":alpha",
+		vertical = false,
+
+		animation = {
+			type = "vertical_frames",
+			aspect_w = 7,
+			aspect_h = 7,
+
+			-- Disabled for now due to causing older clients to hang.
+			--length = -1,
+			length = 1.0,
+		},
+
+		glow = 14,
+	})
+end
+
 if not wizard.registered then
 	wizard.registered = true
 

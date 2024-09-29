@@ -60,6 +60,11 @@ function wizard.banish_staff(itemstack, user, pt)
 		return
 	end
 
+	if not rc.same_realm(user:get_pos(), ptarget:get_pos()) then
+		meta:set_string("infotext", "OTHER DIMENSION")
+		return
+	end
+
 	-- Staff user can specify an origin other than himself.
 	-- The wizard may use a minion to extend his power.
 	local origin = user:get_pos()
@@ -96,4 +101,5 @@ function wizard.banish_staff(itemstack, user, pt)
 
 	-- Take 15 hp of health from the wizard.
 	wizard.damage_player(pname, 15)
+	xp.subtract_xp(pname, "digxp", 1000)
 end

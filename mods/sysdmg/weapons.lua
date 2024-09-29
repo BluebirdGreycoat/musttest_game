@@ -93,6 +93,7 @@ sysdmg.damage_groups = {
   ["wizard:banish_staff"]       = {knockback=4, knockback=1.8*KNB},
   ["wizard:tracking_staff"]     = {knockback=4, knockback=1.8*KNB},
   ["wizard:gagging_staff"]      = {knockback=4, knockback=1.8*KNB},
+  ["wizard:summon_staff"]       = {knockback=4, knockback=1.8*KNB},
 }
 
 -- Make calculating the "hard meta" rather difficult.

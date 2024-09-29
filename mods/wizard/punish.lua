@@ -58,6 +58,11 @@ function wizard.punish_staff(itemstack, user, pt)
 		return
 	end
 
+	if not rc.same_realm(user:get_pos(), ptarget:get_pos()) then
+		meta:set_string("infotext", "OTHER DIMENSION")
+		return
+	end
+
 	local wizard_xp = xp.get_xp(pname, "digxp")
 	local victim_xp = xp.get_xp(target_name, "digxp")
 	if wizard_xp < victim_xp then
@@ -81,4 +86,5 @@ function wizard.punish_staff(itemstack, user, pt)
 
 	-- Take 80 hp of health from the wizard.
 	wizard.damage_player(pname, 80)
+	xp.subtract_xp(pname, "digxp", 5000)
 end

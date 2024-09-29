@@ -7,6 +7,7 @@ dofile(wizard.modpath .. "/banish.lua")
 dofile(wizard.modpath .. "/track.lua")
 dofile(wizard.modpath .. "/gag.lua")
 dofile(wizard.modpath .. "/punish.lua")
+dofile(wizard.modpath .. "/summon.lua")
 
 function wizard.damage_player(pname, amount)
 	minetest.after(0, function()
@@ -19,7 +20,7 @@ end
 
 function wizard.runeslab_particles(pos)
 	local image = "nether_particle_anim3.png"
-	local color = "white"
+	local color = "dark_grey"
 	local d = 0.5
 	minetest.add_particlespawner({
 		amount = 5,

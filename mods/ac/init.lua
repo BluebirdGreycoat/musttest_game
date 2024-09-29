@@ -602,12 +602,16 @@ function ac.on_shutdown()
 	end
 end
 
-function ac.show_path(user, target, origin, distance)
+function ac.show_path(user, target, origin, distance, duration)
 	local path = ap.get_position_list(target)
 	if not path or #path == 0 then
 		return
 	end
 	local lpath = #path
+
+	if not duration then
+		duration = 60
+	end
 
 	for k = 1, lpath, 1 do
 		local data = path[k]
@@ -620,11 +624,12 @@ function ac.show_path(user, target, origin, distance)
 					pos = pos,
 					velocity = {x=0, y=0, z=0},
 					acceleration = {x=0, y=0, z=0},
-					expirationtime = 60,
+					expirationtime = duration,
 					size = 4,
 					collisiondetection = false,
 					vertical = false,
 					texture = "track_marker.png",
+					glow = 3,
 				})
 			end
 		else
@@ -633,11 +638,11 @@ function ac.show_path(user, target, origin, distance)
 				pos = pos,
 				velocity = {x=0, y=0, z=0},
 				acceleration = {x=0, y=0, z=0},
-				expirationtime = 60,
+				expirationtime = duration,
 				size = 4,
 				collisiondetection = false,
 				vertical = false,
-				texture = "heart.png",
+				texture = "track_marker.png",
 				glow = 14,
 			})
 		end

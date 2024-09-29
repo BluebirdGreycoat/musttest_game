@@ -1,5 +1,5 @@
 
-function wizard.gag_staff(itemstack, user, pt)
+function wizard.punish_staff(itemstack, user, pt)
   if not user or not user:is_player() then
 		return
 	end
@@ -52,12 +52,49 @@ function wizard.gag_staff(itemstack, user, pt)
 		return
 	end
 
+	if not rc.same_realm(user:get_pos(), ptarget:get_pos()) then
+		meta:set_string("infotext", "OTHER DIMENSION")
+		return
+	end
+
+	-- Range limit.
+	if vector.distance(user:get_pos(), ptarget:get_pos()) > 500 then
+		meta:set_string("infotext", "TOO FAR")
+		return
+	end
+
+	local playerpos = vector.round(user:get_pos())
+	local minp = vector.add(tpos, {x=-5, y-5, z=-5})
+	local maxp = vector.add(tpos, {x=5, y=5, z=5})
+	local floors = minetest.find_nodes_in_area_under_air(minp, maxp, "griefer:grieferstone")
+	if #floors == 0 then
+		meta:set_string("infotext", "NO SUMMON STONE")
+		return
+	end
+	local tpos = vector.add(floors[math.random(1, #floors)], {x=0, y=1, z=0})
+
 	meta:set_string("author", "")
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
 	wizard.runeslab_particles(pt.under)
 
-	command_tokens.mute.execute(pname, target_name, true)
-	wizard.damage_player(pname, 1)
-	xp.subtract_xp(pname, "digxp", 20)
+	-- Leave stack frame, first.
+	local ntarget = ptarget:get_player_name()
+	minetest.after(0, function()
+		local pref = minetest.get_player_by_name(ntarget)
+		if pref and pref:get_hp() > 0 then
+			preload_tp.execute({
+				player_name = ntarget,
+				target_position = tpos,
+				emerge_radius = 32,
+				force_teleport = true,
+				send_blocks = true,
+				particle_effects = true,
+			})
+		end
+	end)
+
+	-- Take 50 hp of health from the wizard.
+	wizard.damage_player(pname, 50)
+	xp.subtract_xp(pname, "digxp", 500)
 end

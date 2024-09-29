@@ -602,7 +602,7 @@ function ac.on_shutdown()
 	end
 end
 
-function ac.show_path(user, target)
+function ac.show_path(user, target, origin, distance)
 	local path = ap.get_position_list(target)
 	if not path or #path == 0 then
 		return
@@ -613,18 +613,34 @@ function ac.show_path(user, target)
 		local data = path[k]
 		local pos = data.pos
 
-		utility.original_add_particle({
-			playername = user,
-			pos = pos,
-			velocity = {x=0, y=0, z=0},
-			acceleration = {x=0, y=0, z=0},
-			expirationtime = 60,
-			size = 4,
-			collisiondetection = false,
-			vertical = false,
-			texture = "heart.png",
-			glow = 14,
-		})
+		if origin and distance then
+			if vector.distance(pos, origin) <= distance then
+				utility.original_add_particle({
+					playername = user,
+					pos = pos,
+					velocity = {x=0, y=0, z=0},
+					acceleration = {x=0, y=0, z=0},
+					expirationtime = 60,
+					size = 4,
+					collisiondetection = false,
+					vertical = false,
+					texture = "track_marker.png",
+				})
+			end
+		else
+			utility.original_add_particle({
+				playername = user,
+				pos = pos,
+				velocity = {x=0, y=0, z=0},
+				acceleration = {x=0, y=0, z=0},
+				expirationtime = 60,
+				size = 4,
+				collisiondetection = false,
+				vertical = false,
+				texture = "heart.png",
+				glow = 14,
+			})
+		end
 	end
 end
 

@@ -1,5 +1,5 @@
 
-function wizard.banish_staff(itemstack, user, pt)
+function wizard.punish_staff(itemstack, user, pt)
   if not user or not user:is_player() then
 		return
 	end
@@ -18,16 +18,8 @@ function wizard.banish_staff(itemstack, user, pt)
 
 	local pname = user:get_player_name()
 	local meta = minetest.get_meta(pt.under)
-	local text = meta:get_string("text"):trim()
+	local target_name = meta:get_string("text"):trim()
 	local author = meta:get_string("author")
-
-	local tokens = text:split(":")
-	if #tokens == 0 or #tokens > 2 then
-		meta:set_string("infotext", "CAN'T READ")
-		return
-	end
-
-	local target_name = (tokens[2] or tokens[1]):trim()
 
 	-- Staff user must be sign author.
 	if author ~= pname then
@@ -60,22 +52,16 @@ function wizard.banish_staff(itemstack, user, pt)
 		return
 	end
 
-	-- Staff user can specify an origin other than himself.
-	-- The wizard may use a minion to extend his power.
-	local origin = user:get_pos()
-	if tokens[1] and tokens[2] then
-		local origin_name = tokens[1]:trim()
-		if origin_name ~= target_name then
-			local origin_ref = minetest.get_player_by_name(origin_name)
-			if origin_ref then
-				origin = origin_ref:get_pos()
-			end
-		end
+	-- Range limit.
+	if vector.distance(user:get_pos(), ptarget:get_pos()) > 100 then
+		meta:set_string("infotext", "TOO FAR")
+		return
 	end
 
-	-- Range limit.
-	if vector.distance(origin, ptarget:get_pos()) > 100 then
-		meta:set_string("infotext", "TOO FAR")
+	local wizard_xp = xp.get_xp(pname, "digxp")
+	local victim_xp = xp.get_xp(target_name, "digxp")
+	if wizard_xp < victim_xp then
+		meta:set_string("infotext", "LACK STRENGTH")
 		return
 	end
 
@@ -83,21 +69,20 @@ function wizard.banish_staff(itemstack, user, pt)
 	meta:set_string("text", "")
 	meta:set_string("infotext", "OBEYING")
 
-	-- Perform kick action AFTER returning from the current stack frame.
-	-- User might kick self. Don't kick dead players.
+	-- Leave stack frame, first. Wizard might kill self.
 	local ntarget = ptarget:get_player_name()
 	minetest.after(0, function()
 		local pref = minetest.get_player_by_name(ntarget)
 		if pref and pref:get_hp() > 0 then
-			minetest.kick_player(ntarget, "Momentarily banished.")
+			pref:set_hp(0, {reason="kill"})
 		end
 	end)
 
-	-- Take 15 hp of health from the wizard.
+	-- Take 80 hp of health from the wizard.
 	minetest.after(0, function()
 		local pref = minetest.get_player_by_name(pname)
 		if pref and pref:get_hp() > 0 then
-			utility.damage_player(pref, "electrocute", 15 * 500)
+			utility.damage_player(pref, "electrocute", 80 * 500)
 		end
 	end)
 end

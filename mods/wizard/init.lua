@@ -4,6 +4,9 @@ wizard.modpath = minetest.get_modpath("wizard")
 
 dofile(wizard.modpath .. "/node.lua")
 dofile(wizard.modpath .. "/banish.lua")
+dofile(wizard.modpath .. "/track.lua")
+dofile(wizard.modpath .. "/gag.lua")
+dofile(wizard.modpath .. "/punish.lua")
 
 if not wizard.registered then
 	wizard.registered = true

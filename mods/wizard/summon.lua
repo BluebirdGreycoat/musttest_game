@@ -1,5 +1,5 @@
 
-function wizard.punish_staff(itemstack, user, pt)
+function wizard.summon_staff(itemstack, user, pt)
   if not user or not user:is_player() then
 		return
 	end
@@ -64,8 +64,8 @@ function wizard.punish_staff(itemstack, user, pt)
 	end
 
 	local playerpos = vector.round(user:get_pos())
-	local minp = vector.add(tpos, {x=-5, y-5, z=-5})
-	local maxp = vector.add(tpos, {x=5, y=5, z=5})
+	local minp = vector.add(playerpos, {x=-5, y=-5, z=-5})
+	local maxp = vector.add(playerpos, {x=5, y=5, z=5})
 	local floors = minetest.find_nodes_in_area_under_air(minp, maxp, "griefer:grieferstone")
 	if #floors == 0 then
 		meta:set_string("infotext", "NO SUMMON STONE")

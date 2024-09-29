@@ -615,7 +615,7 @@ function ac.show_path(user, target, origin, distance, duration)
 
 	for k = 1, lpath, 1 do
 		local data = path[k]
-		local pos = data.pos
+		local pos = vector.offset(data.pos, 0, 0.5, 0)
 
 		if origin and distance then
 			if vector.distance(pos, origin) <= distance then

@@ -20,7 +20,7 @@ end
 
 function wizard.runeslab_particles(pos)
 	local image = "nether_particle_anim3.png"
-	local color = "dark_grey"
+	local color = "darkgrey"
 	local d = 0.5
 	minetest.add_particlespawner({
 		amount = 5,

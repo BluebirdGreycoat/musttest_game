@@ -77,10 +77,10 @@ function ap.on_leaveplayer(pref)
 	local pname = pref:get_player_name()
 	ap.players[pname].exit_time = os.time()
 
-	minetest.after(ap.record_time() + 5, function()
+	minetest.after(ap.get_record_time() + 5, function()
 		local data = ap.players[pname]
 		if data then
-			if data.exit_time and data.exit_time <= (os.time() - ap.record_time()) then
+			if data.exit_time and data.exit_time <= (os.time() - ap.get_record_time()) then
 				ap.players[pname] = nil
 			end
 		end

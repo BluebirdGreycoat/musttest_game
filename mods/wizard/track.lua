@@ -53,8 +53,9 @@ function wizard.track_staff(itemstack, user, pt)
 	meta:set_string("infotext", "OBEYING")
 	wizard.runeslab_particles(pt.under)
 
+	local range = 100
 	local duration = 300
-	ac.show_path(pname, target_name, user:get_pos(), 30, duration)
+	ac.show_path(pname, target_name, user:get_pos(), range, duration)
 
 	-- Take 5 hp of health from the wizard.
 	wizard.damage_player(pname, 5)

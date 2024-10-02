@@ -63,33 +63,45 @@ function real_torch.relight(itemstack, user, pointed_thing)
 
 	--minetest.chat_send_all('test2.1')
 
+	local function try_relight_position(pos)
+		local nod = minetest.get_node(pos)
+		local rep = false
+
+		if nod.name == "real_torch:torch" then
+			nod.name = "torches:torch_floor"
+			rep = true
+
+		elseif nod.name == "real_torch:torch_wall" then
+			nod.name = "torches:torch_wall"
+			rep = true
+
+		elseif nod.name == "real_torch:torch_ceiling" then
+			nod.name = "torches:torch_ceiling"
+			rep = true
+
+		elseif nod.name == "real_torch:kalite_torch" then
+			nod.name = "torches:kalite_torch_floor"
+			rep = true
+
+		elseif nod.name == "real_torch:kalite_torch_wall" then
+			nod.name = "torches:kalite_torch_wall"
+			rep = true
+
+		elseif nod.name == "real_torch:kalite_torch_ceiling" then
+			nod.name = "torches:kalite_torch_ceiling"
+			rep = true
+		end
+
+		return rep, nod
+	end
+
 	local pos = pointed_thing.under
-	local nod = minetest.get_node(pos)
-	local rep = false
+	local rep, nod = try_relight_position(pos)
 
-	if nod.name == "real_torch:torch" then
-		nod.name = "torches:torch_floor"
-		rep = true
-
-	elseif nod.name == "real_torch:torch_wall" then
-		nod.name = "torches:torch_wall"
-		rep = true
-
-	elseif nod.name == "real_torch:torch_ceiling" then
-		nod.name = "torches:torch_ceiling"
-		rep = true
-
-	elseif nod.name == "real_torch:kalite_torch" then
-		nod.name = "torches:kalite_torch_floor"
-		rep = true
-
-	elseif nod.name == "real_torch:kalite_torch_wall" then
-		nod.name = "torches:kalite_torch_wall"
-		rep = true
-
-	elseif nod.name == "real_torch:kalite_torch_ceiling" then
-		nod.name = "torches:kalite_torch_ceiling"
-		rep = true
+	-- If failure, try pos above.
+	if not rep then
+		pos = pointed_thing.above
+		rep, nod = try_relight_position(pos)
 	end
 
 	--minetest.chat_send_all('test2.2')

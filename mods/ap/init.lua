@@ -61,13 +61,30 @@ function ap.get_position_list(pname)
 end
 
 function ap.on_joinplayer(pref)
-	ap.players[pref:get_player_name()] = {
-		positions = {},
-	}
+	-- Don't erase evidence.
+	local pname = pref:get_player_name()
+	if not ap.players[pname] then
+		ap.players[pname] = {
+			positions = {},
+		}
+	end
+	ap.players[pname].join_time = os.time()
+	ap.players[pname].exit_time = nil
 end
 
 function ap.on_leaveplayer(pref)
-	ap.players[pref:get_player_name()] = nil
+	-- Don't erase evidence right away.
+	local pname = pref:get_player_name()
+	ap.players[pname].exit_time = os.time()
+
+	minetest.after(ap.get_record_time() + 5, function()
+		local data = ap.players[pname]
+		if data then
+			if data.exit_time and data.exit_time <= (os.time() - ap.get_record_time()) then
+				ap.players[pname] = nil
+			end
+		end
+	end)
 end
 
 local time = 0

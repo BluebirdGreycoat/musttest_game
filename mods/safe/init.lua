@@ -91,6 +91,9 @@ function safe.briefcase_allow_item(name)
 	if minetest.get_item_group(name, "key") ~= 0 then
 		return true
 	end
+	if currency.is_currency(name) then
+		return true
+	end
 end
 
 -- Thunk to allow function to be replaced on reload.

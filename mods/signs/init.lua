@@ -105,7 +105,7 @@ end
 if not signs.run_once then
 	local function register_sign(material, desc, def)
 		minetest.register_node("signs:sign_wall_" .. material, {
-			description = desc .. " Sign",
+			description = desc,
 			drawtype = "nodebox",
 			tiles = {"default_sign_wall_" .. material .. ".png"},
 			inventory_image = "default_sign_" .. material .. ".png",
@@ -144,28 +144,33 @@ if not signs.run_once then
 		})
 	end
 
-	register_sign("wood", "Wooden", {
+	register_sign("wood", "Wooden Sign", {
 		sounds = default.node_sound_wood_defaults(),
 		groups = utility.dig_groups("bigitem", {attached_node = 1, flammable = 2})
 	})
 
-	register_sign("steel", "Iron", {
+	register_sign("steel", "Iron Plate", {
 		sounds = default.node_sound_metal_defaults(),
 		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
-	register_sign("tin", "Tin", {
+	register_sign("tin", "Tin Plate", {
 		sounds = default.node_sound_metal_defaults(),
 		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
-	register_sign("brass", "Brass", {
+	register_sign("brass", "Brass Plaque", {
 		sounds = default.node_sound_metal_defaults(),
 		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
-	register_sign("bronze", "Bronze", {
+	register_sign("bronze", "Bronze Plaque", {
 		sounds = default.node_sound_metal_defaults(),
+		groups = utility.dig_groups("bigitem", {attached_node = 1})
+	})
+
+	register_sign("stone", "Rune Slab", {
+		sounds = default.node_sound_stone_defaults(),
 		groups = utility.dig_groups("bigitem", {attached_node = 1})
 	})
 
@@ -211,6 +216,15 @@ if not signs.run_once then
 			{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
 			{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
 			{'', 'group:stick', ''},
+		}
+	})
+
+	minetest.register_craft({
+		output = 'signs:sign_wall_stone',
+		recipe = {
+			{'default:stone', 'default:stone', 'default:stone'},
+			{'default:stone', 'default:stone', 'default:stone'},
+			{'', 'engraver:chisel', ''},
 		}
 	})
 

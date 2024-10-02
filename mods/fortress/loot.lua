@@ -113,6 +113,13 @@ fortress.loot = {
       -- Special (non-craftable) loot.
       {item="stoneworld:oerkki_scepter", min=1, max=1, chance=5},
       {item="griefer:elitestone", min=1, max=1, chance=5},
+
+      -- Very special non-craftable loot.
+      {item="wizard:banish_staff", min=1, max=1, chance=3},
+      {item="wizard:tracking_staff", min=1, max=1, chance=5},
+      {item="wizard:gagging_staff", min=1, max=1, chance=5},
+      {item="wizard:punish_staff", min=1, max=1, chance=1},
+      {item="wizard:summon_staff", min=1, max=1, chance=2},
     },
   },
 }

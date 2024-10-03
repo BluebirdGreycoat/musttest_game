@@ -78,6 +78,32 @@ function trash.on_drop_item(oldstack, newstack, dropper, pos)
 	end
 end
 
+function trash.on_pulverize(pname, param)
+	local player = minetest.get_player_by_name(pname)
+	if not player then
+		minetest.log("error", "Unable to pulverize, no player.")
+		minetest.chat_send_player(pname, "# Server: Unable to pulverize, no player.")
+		return false
+	end
+
+	local wielded_item = player:get_wielded_item()
+	if wielded_item:is_empty() then
+		minetest.chat_send_player(pname, "# Server: Unable to pulverize, no item in hand.")
+		return false
+	end
+
+	local count = wielded_item:get_count()
+
+	minetest.log("action", pname .. " pulverized \"" ..
+		wielded_item:get_name() .. " " .. count .. "\"")
+
+	xp.subtract_xp(pname, "digxp", count * TRASH_XP_MOD)
+
+	player:set_wielded_item(nil)
+	minetest.chat_send_player(pname, "# Server: An item was pulverized.")
+	return true
+end
+
 if not trash.registered then
 	local inv = minetest.create_detached_inventory("trash", {
 		allow_put = function(...)
@@ -92,6 +118,10 @@ if not trash.registered then
 	minetest.register_on_player_dropitem(function(...) return trash.on_drop_item(...) end)
 
 	inv:set_size("main", 1)
+
+	minetest.override_chatcommand("pulverize", {
+		func = function(...) return trash.on_pulverize(...) end,
+	})
 
 	local c = "trash:core"
 	local f = trash.modpath .. "/init.lua"

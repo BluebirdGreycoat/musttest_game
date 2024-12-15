@@ -100,6 +100,7 @@ minetest.override_item("default:dirt_with_dry_grass", {
 
 minetest.register_node("farming:soil", {
 	paramtype = "light",
+	paramtype2 = "4dir",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -111,6 +112,7 @@ minetest.register_node("farming:soil", {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 	},
+	on_rotate = false,
 	description = "Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil.png", "default_dirt.png"},
@@ -150,6 +152,7 @@ minetest.register_node("farming:soil", {
 
 minetest.register_node("farming:soil_wet", {
 	paramtype = "light",
+	paramtype2 = "4dir",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -161,6 +164,7 @@ minetest.register_node("farming:soil_wet", {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 	},
+	on_rotate = false,
 	description = "Wet Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	tiles = {"default_dirt.png^farming_soil_wet.png", "default_dirt.png^farming_soil_wet_side.png"},
@@ -213,6 +217,7 @@ minetest.override_item("default:desert_sand", {
 
 minetest.register_node("farming:desert_sand_soil", {
 	paramtype = "light",
+	paramtype2 = "4dir",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -224,6 +229,7 @@ minetest.register_node("farming:desert_sand_soil", {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 	},
+	on_rotate = false,
 	description = "Desert Sand Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
@@ -263,6 +269,7 @@ minetest.register_node("farming:desert_sand_soil", {
 
 minetest.register_node("farming:desert_sand_soil_wet", {
 	paramtype = "light",
+	paramtype2 = "4dir",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -274,6 +281,7 @@ minetest.register_node("farming:desert_sand_soil_wet", {
 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 		},
 	},
+	on_rotate = false,
 	description = "Wet Desert Sand Soil",
 	movement_speed_multiplier = default.SLOW_SPEED,
 	drop = "default:desert_sand",
@@ -367,7 +375,7 @@ function farming.on_update_soil(pos, node)
 	if minetest.find_node_near(pos, radius, {"group:water"}) then
 		-- if it is dry soil and not base node, turn it into wet soil
 		if wet_lvl == 0 then
-			minetest.add_node(pos, {name = wet})
+			minetest.add_node(pos, {name = wet, param2 = node.param2})
 			farming.notify_soil_single(pos)
 		end
 	else
@@ -384,7 +392,7 @@ function farming.on_update_soil(pos, node)
 
 			-- if its wet turn it back into dry soil
 			elseif wet_lvl == 1 then
-				minetest.add_node(pos, {name = dry})
+				minetest.add_node(pos, {name = dry, param2 = node.param2})
 				farming.notify_soil_single(pos)
 			end
 		end

@@ -40,6 +40,10 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 		return
 	end
 
+	local facedir = minetest.dir_to_fourdir(user:get_look_dir())
+	facedir = facedir + 1
+	if facedir > 3 then facedir = 0 end
+
 	local pname = user:get_player_name()
 	local under = minetest.get_node(pt.under)
 	local p = {x=pt.under.x, y=pt.under.y+1, z=pt.under.z}
@@ -107,7 +111,7 @@ farming.hoe_on_use = function(itemstack, user, pointed_thing, uses)
 	end
 
 	-- turn the node into soil and play sound
-	minetest.add_node(pt.under, {name = ndef.soil.dry})
+	minetest.add_node(pt.under, {name = ndef.soil.dry, param2 = facedir})
 	minetest.sound_play("default_dig_crumbly", {
 		pos = pt.under,
 		gain = 0.5,

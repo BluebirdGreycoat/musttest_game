@@ -755,6 +755,33 @@ register({
 	noise_threshold = 0.3,
 })
 
+register({
+	name = "dm:dm",
+	nodes = {
+    "default:cobble",
+    "default:stone",
+  },
+	min_light = 0,
+	max_light = 15,
+	min_height = 10150,
+	max_height = 15150,
+	clearance = 3,
+
+	--[[
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=128, y=128, z=128},
+		seed = 3727,
+		octaves = 2,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.0,
+	--]]
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 

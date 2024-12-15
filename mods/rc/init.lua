@@ -258,6 +258,7 @@ rc.realms = {
 		windlevel = function(pos3d) return sw.get_ground_y(pos3d) + 30 end,
 		realm_origin = {x=-7729, y=10150+200, z=-5821},
 		disabled = false,
+		bed_assault_mob = "stoneman:stoneman",
 	},
 
 	{

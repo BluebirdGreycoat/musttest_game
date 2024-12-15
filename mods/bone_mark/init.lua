@@ -10,6 +10,7 @@ local STEP_TIME = 3.5
 local BONE_NEAR_DIST = 3
 local BONE_FAR_DIST = 100
 local CORPSE_MISSING_TIME = 120
+local step_timer = 0
 
 
 
@@ -53,7 +54,6 @@ end
 
 
 
-local step_timer = 0
 function bone_mark.on_globalstep(dtime)
 	step_timer = step_timer + dtime
 	if step_timer < STEP_TIME then return end

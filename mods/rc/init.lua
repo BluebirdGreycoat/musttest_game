@@ -241,10 +241,11 @@ rc.realms = {
 		realm_origin = {x=-482, y=8650+500, z=5582},
 		disabled = true, -- Not ready yet.
 	},
+
 	{
 		id = 8, -- REALM ID. Code relies on this.
 		name = "stoneworld",
-		description = "Chaotica",
+		description = "Cacorcica",
 		minp = {x=-30912, y=10150, z=-30912},
 		maxp = {x=30927, y=15150, z=30927},
 		gate_minp = {x=-30000, y=10150+50, z=-30000},
@@ -258,6 +259,7 @@ rc.realms = {
 		realm_origin = {x=-7729, y=10150+200, z=-5821},
 		disabled = false,
 	},
+
 	{
 		id = 9, -- REALM ID. Code relies on this.
 		name = "paradaxun",
@@ -275,6 +277,7 @@ rc.realms = {
 		realm_origin = {x=6565, y=15650+4000, z=4404},
 		disabled = true, -- Not ready yet.
 	},
+
 	{
 		id = 10, -- REALM ID. Code relies on this.
 		name = "ariba",

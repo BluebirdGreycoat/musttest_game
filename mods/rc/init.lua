@@ -253,10 +253,10 @@ rc.realms = {
 		ground = 10150+200,
 		underground = 10150+200, -- Affects sky color, see sky mod.
 		sealevel = 10150+200,
-		spawnlevel = 10150+200,
+		spawnlevel = function(pos3d) return sw.get_ground_y(pos3d) end,
 		windlevel = 10150+200,
 		realm_origin = {x=-7729, y=10150+200, z=-5821},
-		disabled = true, -- Not ready yet.
+		disabled = false,
 	},
 	{
 		id = 9, -- REALM ID. Code relies on this.

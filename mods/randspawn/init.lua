@@ -17,7 +17,7 @@ function randspawn.check_spawn_reset()
 	local stime = meta:get_string("spawn_reset_timer")
 
 	-- If timestamp is missing, then initialize it.
-	-- Outback reset will be schedualed after the timeout.
+	-- Outback reset will be scheduled after the timeout.
 	if not stime or stime == "" then
 		local time = os.time()
 		local days = 60*60*24*math_random(randspawn.min_days, randspawn.max_days)
@@ -84,8 +84,11 @@ local function callback(blockpos, action, calls_remaining, param)
 	local realm = param.realm
 	local get_node = minetest.get_node
 
-	-- Start at sea level and check upwards 200 meters to find ground.
-	for y = -10, 200, 1 do
+	local miny = pos.y - 15
+	local maxy = pos.y + 95
+
+	-- Start at bottom of emerged area and check upwards 100 meters to find ground.
+	for y = miny, maxy, 1 do
 		local thispos = {x=pos.x, y=y, z=pos.z}
 		local nu = get_node(thispos)
 		local na = get_node(vector.add(thispos, {x=0, y=1, z=0}))
@@ -96,7 +99,7 @@ local function callback(blockpos, action, calls_remaining, param)
 			break
 		end
 
-		if na.name == "air" and (nu.name == "default:snow" or nu.name == "default:ice") then
+		if na.name == "air" and nu.name ~= "air" then
 			thispos.y = thispos.y + 1
 
 			-- Call `serveressentials.update_exit_location()` once we have a new spawnpoint.
@@ -107,14 +110,25 @@ local function callback(blockpos, action, calls_remaining, param)
 	end
 
 	-- We didn't find a suitable spawn location. Try again shortly.
-	--minetest.log("could not find spawn location, trying again.")
+	minetest.log("could not find spawn location, trying again.")
 	local ls = param.local_shift
 	minetest.after(10, function() randspawn.find_new_spawn(ls, realm) end)
 end
 
 function randspawn.find_new_spawn(local_shift, realm)
-	local realmspawny = rc.get_realm_data(realm).spawnlevel
-	local pos = {x=math_random(-6000, 6000), y=realmspawny, z=math_random(-6000, 6000)}
+	local realmspawny = 0
+	local realmspawn = rc.get_realm_data(realm).spawnlevel
+
+	local randx = math_random(-6000, 6000)
+	local randz = math_random(-6000, 6000)
+
+	if type(realmspawn) == "number" then
+		realmspawny = realmspawn
+	elseif type(realmspawn) == "function" then
+		realmspawny = realmspawn({x=randx, y=0, z=randz})
+	end
+
+	local pos = {x=randx, y=realmspawny, z=randz}
 
 	-- If we're only performing a local shift, adjust the coordinates randomly
 	-- around the current existing coordinates (if existing coords exist!).
@@ -124,13 +138,13 @@ function randspawn.find_new_spawn(local_shift, realm)
 		local oldpos = minetest.string_to_pos(soldpos)
 		if oldpos then
 			pos.x = math.random(oldpos.x - rad, oldpos.x + rad)
-			pos.y = 0
+			pos.y = oldpos.y
 			pos.z = math.random(oldpos.z - rad, oldpos.z + rad)
 		end
 	end
 
 	local minp = vector.add(pos, {x=-7, y=-20, z=-7})
-	local maxp = vector.add(pos, {x=7, y=200, z=7})
+	local maxp = vector.add(pos, {x=7, y=100, z=7})
 
 	minetest.emerge_area(minp, maxp, callback,
 		{pos=table.copy(pos), local_shift=local_shift, realm=realm})

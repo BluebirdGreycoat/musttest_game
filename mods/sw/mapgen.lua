@@ -113,7 +113,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		shear_z = clamp(shear_z, emin.z, emax.z)
 
 		local n2d = area2d:index(shear_x, shear_z)
-		local n2d_steady = area2d:index(x, z)
+		--local n2d_steady = area2d:index(x, z)
 
 		-- Calc multiplier [0, 1] for mountain noise.
 		local mtnchnl = (tan(min(1, abs(mtnchannel[n2d]))) / TAN_OF_1)

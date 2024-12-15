@@ -1,8 +1,11 @@
 
 -- Hardcoded positions of the outback gates, indexed by the name of the realm
 -- they're supposed to lead to.
+--
+-- Don't forget to add a gate entry in the metadata tables below! Search for 'is_gate=true'.
 serveressentials.outback_gates = {
 	overworld = {pos={x=-9186, y=4501, z=5830}, dir="ew"},
+	stoneworld = {pos={x=-9162, y=4501, z=5823}, dir="ew"},
 }
 
 function serveressentials.get_gate(realm)
@@ -202,8 +205,9 @@ local metadata = {
 	{pos={x=-9090, y=4582, z=5869}, meta={fields={
 		state = "0",
 	}}},
+
 	-- Door portal to Overworld.
-	{pos={x=-9186, y=4501, z=5830},
+	{pos=serveressentials.get_gate("overworld").pos,
 	is_gate=true,
 	meta={fields={
 		obsidian_gateway_success_ew = "yes",
@@ -211,6 +215,17 @@ local metadata = {
 		obsidian_gateway_owner_ew = OWNERNAME,
 		obsidian_gateway_destination_ew = serveressentials.get_exit_location("overworld"),
 	}}},
+
+	-- Portal to Dead Seabed.
+	{pos=serveressentials.get_gate("stoneworld").pos,
+	is_gate=true,
+	meta={fields={
+		obsidian_gateway_success_ew = "yes",
+		obsidian_gateway_return_gate_ew = "0",
+		obsidian_gateway_owner_ew = OWNERNAME,
+		obsidian_gateway_destination_ew = serveressentials.get_exit_location("stoneworld"),
+	}}},
+
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4572, z=5724}, meta={fields={
 		infotext = "Henry D. Miner\nApril 13, 1821 - October 3, 1890\n\"An ardent Abolitionist, a true Republican, and a determined teetotaler.\"",
@@ -379,14 +394,26 @@ local metadata = {
 }
 
 local function rebuild_metadata()
+	-- For getting rid of the fence blocks in opened gates.
+	-- Needed else portal liquid won't spawn.
+	local function erase(targets)
+		for i = 1, #targets, 1 do
+			if minetest.get_node(targets[i]).name == "default:fence_wood" then
+				minetest.set_node(targets[i], {name="air"})
+			end
+		end
+	end
+
 	for k, v in ipairs(metadata) do
 		local meta = minetest.get_meta(v.pos)
 		meta:from_table(v.meta)
 
 		if v.is_gate then
 			if v.meta.fields.obsidian_gateway_destination_ew then
+				erase(obsidian_gateway.door_positions(v.pos, false))
 				obsidian_gateway.spawn_liquid(v.pos, false, false, true)
 			elseif v.meta.fields.obsidian_gateway_destination_ns then
+				erase(obsidian_gateway.door_positions(v.pos, true))
 				obsidian_gateway.spawn_liquid(v.pos, true, false, true)
 			end
 		end

@@ -21,7 +21,7 @@ for index, data in ipairs(sheet_ores) do
 		column_midpoint_factor = 0.5,
 		y_min = REALM_START,
 		y_max = REALM_END,
-		noise_threshhold = 0.8 + data.threshhold,
+		noise_threshold = 0.8 + data.threshhold,
 		noise_params = {
 			offset = 0,
 			scale = 2,
@@ -66,7 +66,7 @@ for index, data in ipairs(scatter_ores) do
     clust_scarcity = data.scarcity * data.scarcity * data.scarcity,
     clust_num_ores = data.count,
     clust_size     = data.size,
-		noise_threshhold = -0.1 + data.threshhold,
+		noise_threshold = -0.1 + data.threshhold,
 		noise_params = {
 			offset = 0,
 			scale = 1,

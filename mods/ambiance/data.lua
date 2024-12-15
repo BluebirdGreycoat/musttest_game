@@ -4,6 +4,10 @@
 -- Localize for performance.
 local math_random = math.random
 
+function get_sw_ground(pos3d)
+	return sw.get_ground_y(pos3d)
+end
+
 
 
 -- Table of registered sounds. Algorithm intended for intermittent sounds only, continuous sounds need special treatment.
@@ -334,6 +338,15 @@ ambiance.tmpsounds = {
 	{name="hornedowl",      realm="midfeld", mingain=0.2, maxgain=1.3, miny=4485, maxy=4650, time="night", indoors=nil, mintime=60, maxtime=360, },
 	{name="drippingwater",  realm="midfeld", mingain=0.2, maxgain=1.0, miny=4450, maxy=4485, time="", indoors=nil, },
 	{name="cave_bats",      realm="midfeld", gain=0.7, miny=4450, maxy=4485, time="night", indoors=false, mintime=60, maxtime=360, },
+
+	-- CARCORSICA
+	{name="wind1",          realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-5, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="wind2",          realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-10, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-15, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="stoneworld", mingain=0.2, maxgain=0.4, absminy=10150, absmaxy=15150, miny=-30, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=6, maxtime=8, }, -- Continuous quiet loop.
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-50, maxy=-10, ground_offset=get_sw_ground, time="", indoors=nil, mintime=5, maxtime=10},
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-100, maxy=-50, ground_offset=get_sw_ground, time="", indoors=nil, mintime=30, maxtime=120},
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-1000, maxy=-100, ground_offset=get_sw_ground, time="", indoors=nil, mintime=120, maxtime=720},
 }
 
 

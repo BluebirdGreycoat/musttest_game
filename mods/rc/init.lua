@@ -245,7 +245,7 @@ rc.realms = {
 	{
 		id = 8, -- REALM ID. Code relies on this.
 		name = "stoneworld",
-		description = "Carcorcica",
+		description = "Carcorsica",
 		minp = {x=-30912, y=10150, z=-30912},
 		maxp = {x=30927, y=15150, z=30927},
 		gate_minp = {x=-30000, y=10150+50, z=-30000},

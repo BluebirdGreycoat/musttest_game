@@ -8,6 +8,9 @@ ambiance.modpath = minetest.get_modpath("ambiance")
 
 -- Localize for performance.
 local math_random = math.random
+local vround = vector.round
+local min = math.min
+local max = math.max
 
 
 
@@ -57,7 +60,19 @@ ambiance.globalstep = function(dtime)
 					if player and player:is_player() then
 						local pos = utility.get_foot_pos(player:get_pos())
 						-- Is player in this sounds's Y layer?
-						if pos.y >= v.miny and pos.y <= v.maxy then
+						local miny = v.miny
+						local maxy = v.maxy
+
+						if v.ground_offset then
+							local g = v.ground_offset(vround(pos))
+							miny = g + miny
+							maxy = g + maxy
+
+							miny = max(miny, v.absminy)
+							maxy = min(maxy, v.absmaxy)
+						end
+
+						if pos.y >= miny and pos.y <= maxy then
 
 							-- Don't play sound if player is underwater (muted sounds).
 							-- Note: player's underwater status is modified by the scuba code.

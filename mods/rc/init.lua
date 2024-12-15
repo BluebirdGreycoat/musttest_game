@@ -245,17 +245,17 @@ rc.realms = {
 	{
 		id = 8, -- REALM ID. Code relies on this.
 		name = "stoneworld",
-		description = "Cacorcica",
+		description = "Carcorcica",
 		minp = {x=-30912, y=10150, z=-30912},
 		maxp = {x=30927, y=15150, z=30927},
 		gate_minp = {x=-30000, y=10150+50, z=-30000},
 		gate_maxp = {x=30000, y=10150+200, z=30000},
 		orig = SERVER_STATIC_SPAWN, -- Same as server's static spawnpoint!
-		ground = 10150+200,
-		underground = 10150+200, -- Affects sky color, see sky mod.
+		ground = function(pos3d) return sw.get_ground_y(pos3d) end,
+		underground = function(pos3d) return sw.get_ground_y(pos3d) - 50 end,
 		sealevel = 10150+200,
 		spawnlevel = function(pos3d) return sw.get_ground_y(pos3d) end,
-		windlevel = 10150+200,
+		windlevel = function(pos3d) return sw.get_ground_y(pos3d) + 30 end,
 		realm_origin = {x=-7729, y=10150+200, z=-5821},
 		disabled = false,
 	},
@@ -311,7 +311,11 @@ function rc.position_underground(pos)
 		if p.x >= minp.x and p.x <= maxp.x and
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
-			if p.y < v.underground then
+			local ugl = v.underground
+			if type(ugl) == "function" then
+				ugl = ugl(pos)
+			end
+			if p.y < ugl then
 				return true
 			else
 				return false
@@ -659,7 +663,11 @@ function rc.get_ground_level_at_pos(pos)
 		if p.x >= minp.x and p.x <= maxp.x and
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
-			return true, v.ground
+			local gl = v.ground
+			if type(gl) == "function" then
+				gl = gl(pos)
+			end
+			return true, gl
 		end
 	end
 
@@ -695,7 +703,11 @@ function rc.get_wind_level_at_pos(pos)
 		if p.x >= minp.x and p.x <= maxp.x and
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
-			return true, v.windlevel
+			local wl = v.windlevel
+			if type(wl) == "function" then
+				wl = wl(pos)
+			end
+			return true, wl
 		end
 	end
 

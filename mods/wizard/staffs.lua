@@ -1,12 +1,14 @@
 
+-- Callbacks disabled until these are properly balanced.
+
 minetest.register_tool("wizard:banish_staff", {
 	description = "Banishing Staff",
 	inventory_image = "stoneworld_oerkki_staff_2.png",
 
 	-- Tools with dual-use functions MUST put the secondary use in this callback,
 	-- otherwise normal punches do not work!
-	on_place = function(...) return wizard.banish_staff(...) end,
-	on_secondary_use = function(...) return wizard.banish_staff(...) end,
+	--on_place = function(...) return wizard.banish_staff(...) end,
+	--on_secondary_use = function(...) return wizard.banish_staff(...) end,
 
 	-- Damage info is stored by sysdmg.
 	tool_capabilities = {
@@ -22,8 +24,8 @@ minetest.register_tool("wizard:tracking_staff", {
 
 	-- Tools with dual-use functions MUST put the secondary use in this callback,
 	-- otherwise normal punches do not work!
-	on_place = function(...) return wizard.track_staff(...) end,
-	on_secondary_use = function(...) return wizard.track_staff(...) end,
+	--on_place = function(...) return wizard.track_staff(...) end,
+	--on_secondary_use = function(...) return wizard.track_staff(...) end,
 
 	-- Damage info is stored by sysdmg.
 	tool_capabilities = {
@@ -39,8 +41,8 @@ minetest.register_tool("wizard:gagging_staff", {
 
 	-- Tools with dual-use functions MUST put the secondary use in this callback,
 	-- otherwise normal punches do not work!
-	on_place = function(...) return wizard.gag_staff(...) end,
-	on_secondary_use = function(...) return wizard.gag_staff(...) end,
+	--on_place = function(...) return wizard.gag_staff(...) end,
+	--on_secondary_use = function(...) return wizard.gag_staff(...) end,
 
 	-- Damage info is stored by sysdmg.
 	tool_capabilities = {
@@ -56,8 +58,8 @@ minetest.register_tool("wizard:punish_staff", {
 
 	-- Tools with dual-use functions MUST put the secondary use in this callback,
 	-- otherwise normal punches do not work!
-	on_place = function(...) return wizard.punish_staff(...) end,
-	on_secondary_use = function(...) return wizard.punish_staff(...) end,
+	--on_place = function(...) return wizard.punish_staff(...) end,
+	--on_secondary_use = function(...) return wizard.punish_staff(...) end,
 
 	-- Damage info is stored by sysdmg.
 	tool_capabilities = {
@@ -73,8 +75,8 @@ minetest.register_tool("wizard:summon_staff", {
 
 	-- Tools with dual-use functions MUST put the secondary use in this callback,
 	-- otherwise normal punches do not work!
-	on_place = function(...) return wizard.summon_staff(...) end,
-	on_secondary_use = function(...) return wizard.summon_staff(...) end,
+	--on_place = function(...) return wizard.summon_staff(...) end,
+	--on_secondary_use = function(...) return wizard.summon_staff(...) end,
 
 	-- Damage info is stored by sysdmg.
 	tool_capabilities = {

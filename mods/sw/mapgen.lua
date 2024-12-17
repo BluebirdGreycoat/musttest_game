@@ -14,6 +14,7 @@ dofile(sw.modpath .. "/tunnel.lua")
 dofile(sw.modpath .. "/despeckle.lua")
 dofile(sw.modpath .. "/spheres.lua")
 dofile(sw.modpath .. "/biome.lua")
+dofile(sw.modpath .. "/caverns.lua")
 
 local REALM_START = 10150
 local REALM_END = 15150
@@ -63,6 +64,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local gennotify_data = {}
 	gennotify_data.minp = minp
 	gennotify_data.maxp = maxp
+	gennotify_data.need_mapfix = true
 
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
@@ -192,6 +194,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		return ground_y
   end
 
+  sw.generate_caverns(vm, minp, maxp, seed, get_height)
   sw.generate_tunnels(vm, minp, maxp, seed)
   sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
   sw.despeckle_terrain(vm, minp, maxp)
@@ -202,6 +205,11 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)
 	vm:update_liquids()
+
+	-- Skip mapfix for underground sections.
+	if y1 < (get_height(x0, z0) - 150) then
+		gennotify_data.need_mapfix = false
+	end
 
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 

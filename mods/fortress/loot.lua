@@ -115,11 +115,14 @@ fortress.loot = {
       {item="griefer:elitestone", min=1, max=1, chance=5},
 
       -- Very special non-craftable loot.
+      -- WOAH, WOAH, WOAH, these aren't ready yet.
+      --[[
       {item="wizard:banish_staff", min=1, max=1, chance=3},
       {item="wizard:tracking_staff", min=1, max=1, chance=5},
       {item="wizard:gagging_staff", min=1, max=1, chance=5},
       {item="wizard:punish_staff", min=1, max=1, chance=1},
       {item="wizard:summon_staff", min=1, max=1, chance=2},
+      --]]
     },
   },
 }

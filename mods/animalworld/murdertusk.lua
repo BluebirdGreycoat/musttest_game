@@ -1,4 +1,5 @@
 
+-- Warthog by KrupnoPavel. Modified for Enyekala by MustTest.
 mobs.register_mob("animalworld:murdertusk", {
 	stepheight = 2,
 	type = "animal",

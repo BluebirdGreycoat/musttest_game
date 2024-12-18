@@ -18,8 +18,8 @@ local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 sw.create_3d_noise("cavern_noise1", {
 	offset = 0,
-	scale = 10,
-	spread = {x=80, y=60, z=80},
+	scale = 1,
+	spread = {x=200, y=60, z=200},
 	seed = 88812,
 	octaves = 6,
 	persist = 0.5,
@@ -28,8 +28,8 @@ sw.create_3d_noise("cavern_noise1", {
 
 sw.create_3d_noise("cavern_noise2", {
 	offset = 0,
-	scale = 4,
-	spread = {x=72, y=64, z=72},
+	scale = 1,
+	spread = {x=100, y=60, z=100},
 	seed = 88813,
 	octaves = 5,
 	persist = 0.6,
@@ -37,9 +37,9 @@ sw.create_3d_noise("cavern_noise2", {
 })
 
 sw.create_3d_noise("cavern_noise3", {
-	offset = 0,
-	scale = 2,
-	spread = {x=72, y=64, z=72},
+	offset = 0.5,
+	scale = 1,
+	spread = {x=500, y=500, z=500},
 	seed = 88814,
 	octaves = 4,
 	persist = 0.7,
@@ -53,6 +53,16 @@ sw.create_3d_noise("cavern_noise4", {
 	seed = 88815,
 	octaves = 3,
 	persist = 0.8,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cavern_noise5", {
+	offset = 0,
+	scale = 1,
+	spread = {x=8, y=16, z=8},
+	seed = 888166,
+	octaves = 2,
+	persist = 0.5,
 	lacunarity = 1.5,
 })
 
@@ -88,6 +98,7 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 	local noisemap2 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise2")
 	local noisemap3 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise3")
 	local noisemap4 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise4")
+	local noisemap5 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise5")
 
 	local function is_cavern(x, y, z, ground_y)
 		local idx = area:index(x, y, z)
@@ -96,9 +107,15 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 		local n2 = noisemap2[idx]
 		local n3 = noisemap3[idx]
 		local n4 = noisemap4[idx]
+		local n5 = noisemap5[idx]
 
 		if y < (ground_y - (500 + (abs(n4) * 50))) then
-			if ((n1 + n2) * n3) > 0.5 or n4 > 0.8 then
+			local noise1 = n1 + n2 + n3
+			local noise2 = abs(n5)
+			if noise1 < -0.2 then
+				if noise1 > -0.3 and noise2 > 0.2 then
+					return false
+				end
 				return true
 			end
 		end

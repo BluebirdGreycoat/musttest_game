@@ -27,9 +27,9 @@ mobs.register_mob("warthog:warthog", {
 	armor_level = 2,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	visual = "mesh",
-	mesh = "warthog_warthog.x",
+	mesh = "mobs_pumba.b3d",
 	textures = {
-		{"warthog_warthog.png"},
+		{"mobs_pumba.png"},
 	},
 	makes_footstep_sound = true,
 	sounds = {

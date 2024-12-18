@@ -677,6 +677,31 @@ register({
 	max_count = 1,
 })
 
+-- Murdertusks in Saravinca
+register({
+	name = "animalworld:murdertusk",
+	nodes = {"rackstone:cobble"},
+	min_light = 0,
+	max_light = 15,
+	min_height = 21150,
+	max_height = 23450,
+	clearance = 2,
+
+	spawn_chance = 1,
+	mob_range = 30,
+	absolute_mob_limit = 20,
+	player_min_range = 10,
+	player_max_range = 60,
+	spawn_radius = 50,
+	node_skip = 4,
+	node_jitter = 4,
+	success_time_min = 1,
+	success_time_max = 20,
+
+	min_count = 1,
+	max_count = 4,
+})
+
 -- A very rare, very hard mob.
 register({
 	name = "griefer:elite_griefer",

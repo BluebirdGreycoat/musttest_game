@@ -85,7 +85,7 @@ local function callback(blockpos, action, calls_remaining, param)
 	local get_node = minetest.get_node
 
 	local miny = pos.y - 15
-	local maxy = pos.y + 95
+	local maxy = pos.y + 195
 
 	-- Start at bottom of emerged area and check upwards 100 meters to find ground.
 	for y = miny, maxy, 1 do
@@ -144,7 +144,7 @@ function randspawn.find_new_spawn(local_shift, realm)
 	end
 
 	local minp = vector.add(pos, {x=-7, y=-20, z=-7})
-	local maxp = vector.add(pos, {x=7, y=100, z=7})
+	local maxp = vector.add(pos, {x=7, y=200, z=7})
 
 	minetest.emerge_area(minp, maxp, callback,
 		{pos=table.copy(pos), local_shift=local_shift, realm=realm})

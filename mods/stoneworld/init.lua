@@ -22,6 +22,12 @@ end
 
 
 
+function stoneworld.get_ground_y(pos3d)
+	return 6500
+end
+
+
+
 --------------------------------------------------------------------------------
 if not stoneworld.registered then
 	dofile(stoneworld.modpath .. "/nodes.lua")

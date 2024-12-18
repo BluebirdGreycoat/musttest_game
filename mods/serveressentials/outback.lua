@@ -1,11 +1,13 @@
 
 -- Hardcoded positions of the outback gates, indexed by the name of the realm
 -- they're supposed to lead to.
---
--- Don't forget to add a gate entry in the metadata tables below! Search for 'is_gate=true'.
 serveressentials.outback_gates = {
 	overworld = {pos={x=-9186, y=4501, z=5830}, dir="ew"},
 	stoneworld = {pos={x=-9162, y=4501, z=5823}, dir="ew"},
+	channelwood = {pos={x=-9186, y=4501, z=5823}, dir="ew"},
+	jarkati = {pos={x=-9168, y=4501, z=5820}, dir="ns"},
+	naraxen = {pos={x=-9183, y=4501, z=5836}, dir="ns"},
+	ariba = {pos={x=-9168, y=4501, z=5836}, dir="ns"},
 }
 
 function serveressentials.get_gate(realm)
@@ -63,7 +65,15 @@ function serveressentials.get_exit_location(realm)
 		end
 	end
 
+	-- Any realm, not 'overworld', that hasn't been initialized yet.
+	-- Find a new spawn location.
+	if s == "" then
+		randspawn.find_new_spawn(false, realm)
+	end
+
 	-- Fallback.
+	-- If we weren't initialized (s == ""), the exit location should be updated
+	-- momentarilly as a result of the 'find_new_spawn' call.
 	return "(0,-7,0)"
 end
 
@@ -206,6 +216,8 @@ local metadata = {
 		state = "0",
 	}}},
 
+	-- Gate meta now added dynamically. No more hardcoding.
+	--[[
 	-- Door portal to Overworld.
 	{pos=serveressentials.get_gate("overworld").pos,
 	is_gate=true,
@@ -225,6 +237,7 @@ local metadata = {
 		obsidian_gateway_owner_ew = OWNERNAME,
 		obsidian_gateway_destination_ew = serveressentials.get_exit_location("stoneworld"),
 	}}},
+	--]]
 
 	-- Gravesite sign, left.
 	{pos={x=-9265, y=4572, z=5724}, meta={fields={
@@ -393,7 +406,32 @@ local metadata = {
 	}}},
 }
 
-local function rebuild_metadata()
+
+
+-- Dynamically add metadata for gates based on the gate list.
+local function get_gate_meta()
+	local metaout = {}
+	for realmname, v in pairs(serveressentials.outback_gates) do
+		--print(dump(serveressentials.get_exit_location(realmname)))
+		table.insert(metaout, {
+			pos = v.pos,
+			is_gate = true,
+			meta = {
+				fields = {
+					["obsidian_gateway_success_" .. v.dir] = "yes",
+					["obsidian_gateway_return_gate_" .. v.dir] = "0",
+					["obsidian_gateway_owner_" .. v.dir] = OWNERNAME,
+					["obsidian_gateway_destination_" .. v.dir] = serveressentials.get_exit_location(realmname),
+				}
+			}
+		})
+	end
+	return metaout
+end
+
+
+
+local function rebuild_metadata(metain)
 	-- For getting rid of the fence blocks in opened gates.
 	-- Needed else portal liquid won't spawn.
 	local function erase(targets)
@@ -404,7 +442,7 @@ local function rebuild_metadata()
 		end
 	end
 
-	for k, v in ipairs(metadata) do
+	for k, v in ipairs(metain) do
 		local meta = minetest.get_meta(v.pos)
 		meta:from_table(v.meta)
 
@@ -698,7 +736,8 @@ local function callback(blockpos, action, calls_remaining, param)
 
 	-- Finally, rebuild the core metadata and node structure.
 	rebuild_nodes()
-	rebuild_metadata()
+	rebuild_metadata(metadata)
+	rebuild_metadata(get_gate_meta())
 	restart_timers()
 	place_random_farms(minp, maxp)
 end

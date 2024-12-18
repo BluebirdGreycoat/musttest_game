@@ -29,6 +29,7 @@ function serveressentials.check_outback_reset()
 		minetest.chat_send_all("# Server: When it resumes, there is nothing left of what went before.")
 	end
 end
+-- After all mods loaded and server running.
 minetest.after(0, function() serveressentials.check_outback_reset() end)
 
 
@@ -63,4 +64,5 @@ function serveressentials.check_midfeld_reset()
 		minetest.chat_send_all("# Server: When it lifts, all is as it was at the beginning.")
 	end
 end
+-- After all mods loaded and server running.
 minetest.after(0, function() serveressentials.check_midfeld_reset() end)

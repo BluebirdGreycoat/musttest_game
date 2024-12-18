@@ -103,7 +103,7 @@ rc.realms = {
 		ground = 3740,
 		underground = 3730,
 		sealevel = 3740,
-		spawnlevel = 3720,
+		spawnlevel = 3740,
 		windlevel = 3750,
 		realm_origin = {x=1986, y=3700, z=-1864},
 		sky_data={clouds=true},
@@ -200,7 +200,7 @@ rc.realms = {
 	{
 		-- Stoneworld. Tartarus. Place of evildoers. 3000 blocks high, all stone.
 		id = 6, -- REALM ID. Code relies on this.
-		name = "naraxen",
+		name = "naraxen", -- described in the 'stoneworld' folder.
 		description = "Naraxen",
 		minp = {x=-30912, y=5150, z=-30912},
 		maxp = {x=30927, y=8150, z=30927},
@@ -210,7 +210,7 @@ rc.realms = {
 		ground = 8150,
 		underground = 8150, -- Affects sky color, see sky mod.
 		sealevel = 8150,
-		spawnlevel = 6600,
+		spawnlevel = function(pos3d) return stoneworld.get_ground_y(pos3d) end,
 		windlevel = 8150,
 		realm_origin = {x=2382, y=6650, z=-3721},
 		moon_data = {visible=false},
@@ -244,7 +244,7 @@ rc.realms = {
 
 	{
 		id = 8, -- REALM ID. Code relies on this.
-		name = "stoneworld",
+		name = "stoneworld", -- 'sw' folder.
 		description = "Carcorsica",
 		minp = {x=-30912, y=10150, z=-30912},
 		maxp = {x=30927, y=15150, z=30927},
@@ -282,7 +282,7 @@ rc.realms = {
 	{
 		id = 10, -- REALM ID. Code relies on this.
 		name = "ariba",
-		description = "Ariba",
+		description = "Saravinca",
 		minp = {x=-30912, y=21150, z=-30912},
 		maxp = {x=30927, y=23450, z=30927},
 		gate_minp = {x=-30000, y=21150+50, z=-30000},
@@ -291,10 +291,10 @@ rc.realms = {
 		ground = 21150+2000,
 		underground = 21150+1900, -- Affects sky color, see sky mod.
 		sealevel = 21150+2000,
-		spawnlevel = 21150+2000,
+		spawnlevel = 21150+1900,
 		windlevel = 21150+2000,
 		realm_origin = {x=6565, y=21150+2000, z=4404},
-		disabled = true, -- Not ready yet.
+		disabled = false,
 	},
 }
 

@@ -20,6 +20,7 @@ local REALM_START = 10150
 local REALM_END = 15150
 local REALM_GROUND = 10150+200
 local BEDROCK_HEIGHT = REALM_START + 12
+local LAVA_SEA_HEIGHT = 10170
 local TAN_OF_1 = math.tan(1)
 
 -- Localize for performance.
@@ -43,6 +44,7 @@ local c_ignore          = minetest.get_content_id("ignore")
 local c_stone           = minetest.get_content_id("default:stone")
 local c_cobble          = minetest.get_content_id("default:cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
+local c_lava            = minetest.get_content_id("lbrim:lava_source")
 
 -- Externally located tables for performance.
 local vm_data = {}

@@ -53,6 +53,11 @@ local scatter_ores = {
 	{ore="default:stone_with_mese", seed=5, threshhold=0.4, scarcity=14, count=5, size=3},
 	{ore="default:stone_with_diamond", seed=6, threshhold=0.4, scarcity=15, count=4, size=3},
 	{ore="default:mese", seed=6, threshhold=0.5, scarcity=36, count=4, size=2},
+
+	-- Glows.
+	{ore="luxore:luxore", seed=833, threshhold=0.5, scarcity=16, count=3, size=10},
+	{ore="glowstone:luxore", seed=835, threshhold=0.5, scarcity=18, count=3, size=10},
+	{ore="glowstone:cobble", seed=837, threshhold=0.5, scarcity=18, count=3, size=10},
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 

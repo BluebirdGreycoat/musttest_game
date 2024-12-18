@@ -2,6 +2,7 @@
 local REALM_START = 10150
 local REALM_END = 15150
 local LAYER_COUNT = math.floor((REALM_END - REALM_START) / 50)
+local LAVA_SEA_HEIGHT = 10170
 
 local abs = math.abs
 local floor = math.floor
@@ -13,6 +14,7 @@ local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
+local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 
 
@@ -247,7 +249,11 @@ function sw.generate_tunnels(vm, minp, maxp, seed)
 					-- Do NOT carve tunnels through bedrock or "ignore".
 					-- Skip air since there's nothing there anyway.
 					if cid ~= c_air and cid ~= c_ignore and cid ~= c_bedrock then
-						vm_data[vp] = c_air
+						if y <= LAVA_SEA_HEIGHT then
+							vm_data[vp] = c_lava
+						else
+							vm_data[vp] = c_air
+						end
 					end
 				end
 			end

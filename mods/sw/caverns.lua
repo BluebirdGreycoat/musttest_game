@@ -1,6 +1,7 @@
 
 local REALM_START = 10150
 local REALM_END = 15150
+local LAVA_SEA_HEIGHT = 10170
 
 local abs = math.abs
 local floor = math.floor
@@ -13,11 +14,12 @@ local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_cobble = minetest.get_content_id("default:cobble")
+local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 sw.create_3d_noise("cavern_noise1", {
 	offset = 0,
-	scale = 8,
-	spread = {x=64, y=72, z=64},
+	scale = 10,
+	spread = {x=80, y=60, z=80},
 	seed = 88812,
 	octaves = 6,
 	persist = 0.5,
@@ -37,7 +39,7 @@ sw.create_3d_noise("cavern_noise2", {
 sw.create_3d_noise("cavern_noise3", {
 	offset = 0,
 	scale = 2,
-	spread = {x=64, y=72, z=64},
+	spread = {x=72, y=64, z=72},
 	seed = 88814,
 	octaves = 4,
 	persist = 0.7,
@@ -47,7 +49,7 @@ sw.create_3d_noise("cavern_noise3", {
 sw.create_3d_noise("cavern_noise4", {
 	offset = 0,
 	scale = 1,
-	spread = {x=64, y=72, z=64},
+	spread = {x=74, y=62, z=74},
 	seed = 88815,
 	octaves = 3,
 	persist = 0.8,
@@ -129,7 +131,11 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 					-- Do NOT carve caverns through bedrock or "ignore".
 					-- Skip air since there's nothing there anyway.
 					if cid ~= c_air and cid ~= c_ignore and cid ~= c_bedrock then
-						vm_data[vp] = c_air
+						if y <= LAVA_SEA_HEIGHT then
+							vm_data[vp] = c_lava
+						else
+							vm_data[vp] = c_air
+						end
 					end
 				else
 					if toggle == 2 then

@@ -20,10 +20,10 @@ mobs.register_mob("animalworld:suboar", {
 	armor = 70,
 	collisionbox = {-0.5, -0.01, -0.5, 0.5, 0.95, 0.5},
 	visual = "mesh",
-	mesh = "animalworld_suboar.x",
+	mesh = "mobs_pumba.b3d",
 	visual_size = {x = 1.0, y = 1.0},
 	textures = {
-		{"animalworld_suboar.png"},
+		{"animalworld_suboar2.png"},
 	},
 	sounds = {
 		random = "animalworld_suboar",

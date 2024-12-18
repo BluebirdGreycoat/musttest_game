@@ -58,6 +58,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	local gennotify_data = {}
 	gennotify_data.minp = minp
 	gennotify_data.maxp = maxp
+	gennotify_data.need_mapfix = true
 
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
@@ -274,9 +275,16 @@ ab.generate_realm = function(vm, minp, maxp, seed)
   ab.despeckle_terrain(vm, minp, maxp)
   ab.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
+  minetest.generate_ores(vm)
+
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()
 	vm:update_liquids()
+
+	-- Skip mapfix for underground sections.
+	if y1 < (REALM_GROUND - 150) then
+		gennotify_data.need_mapfix = false
+	end
 
 	minetest.save_gen_notify("ab:mapgen_info", gennotify_data)
 end

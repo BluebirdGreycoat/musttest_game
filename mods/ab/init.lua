@@ -3,6 +3,8 @@ if not minetest.global_exists("ab") then ab = {} end
 ab.modpath = minetest.get_modpath("ab")
 ab.worldpath = minetest.get_worldpath()
 
+dofile(ab.modpath .. "/ore.lua")
+
 
 
 function ab.on_generated(minp, maxp, blockseed)
@@ -12,11 +14,13 @@ function ab.on_generated(minp, maxp, blockseed)
 
 	-- This ugly hack is currently the best way I know of to make light correct
 	-- after chunk generation.
-	minetest.after(math.random(1, 100) / 50, function()
-		local emin = vector.add(data.minp, {x=-16, y=-16, z=-16})
-		local emax = vector.add(data.maxp, {x=16, y=16, z=16})
-		mapfix.work(emin, emax)
-	end)
+	if data.need_mapfix then
+		minetest.after(math.random(1, 100) / 50, function()
+			local emin = vector.add(data.minp, {x=-16, y=-16, z=-16})
+			local emax = vector.add(data.maxp, {x=16, y=16, z=16})
+			mapfix.work(emin, emax)
+		end)
+	end
 end
 
 

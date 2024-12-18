@@ -544,6 +544,11 @@ minetest.register_node("rackstone:blackrack", {
 				return
 			end
 
+			-- Otherwise, pearls would be WAY too easy to get in this realm, due to large blackrack deposits.
+			if realm == "ariba" then
+				return
+			end
+
       local chance = 80
       local tool = digger:get_wielded_item():get_name()
 
@@ -888,6 +893,7 @@ stairs.register_stair_and_slab(
 
 -- These nodes appear only in the Outback.
 -- They have enhanced drops in order to help new players.
+-- Also appears in Mesa/Canyon realm.
 minetest.register_node("rackstone:rackstone_with_coal", {
   description = "Rackstone With Coal",
   tiles = {"rackstone_rackstone.png^default_mineral_coal.png"},

@@ -702,6 +702,18 @@ register({
 
 	min_count = 1,
 	max_count = 4,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 423821,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
 })
 
 -- A very rare, very hard mob.

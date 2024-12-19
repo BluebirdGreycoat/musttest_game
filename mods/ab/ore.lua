@@ -64,8 +64,8 @@ local scatter_ores = {
 	{ore="glowstone:minerals", seed=838, threshhold=0.2, scarcity=20, count=3, size=10, wherein={"rackstone:cobble"}},
 
 	-- Problems for the player.
-	{ore="default:lava_source", seed=523, threshhold=-0.2, scarcity=15, count=5, size=3, y_min=LAVA_MIN, y_max=LAVA_MAX},
-	{ore="default:lava_source", seed=557, threshhold=0.2, scarcity=32, count=10, size=9, y_min=LAVA_MIN, y_max=LAVA_MAX},
+	{ore="default:lava_source", seed=523, threshhold=0.3, scarcity=15, count=5, size=3, y_min=LAVA_MIN, y_max=LAVA_MAX},
+	{ore="default:lava_source", seed=557, threshhold=0.5, scarcity=32, count=10, size=9, y_min=LAVA_MIN, y_max=LAVA_MAX+100},
 }
 local SCATTER_ORE_SEED_FLOOR = 48921
 

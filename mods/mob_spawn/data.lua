@@ -687,7 +687,7 @@ register({
 	clearance = 2,
 
 	-- Not in canyons, not on mesas.
-	min_height = 23140,
+	min_height = 23150,
 	max_height = 23200,
 
 	spawn_chance = 1,

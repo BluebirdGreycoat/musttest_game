@@ -683,9 +683,11 @@ register({
 	nodes = {"rackstone:cobble"},
 	min_light = 0,
 	max_light = 15,
-	min_height = 21150,
-	max_height = 23450,
 	clearance = 2,
+
+	-- Not in canyons, not on mesas.
+	min_height = 23140,
+	max_height = 23200,
 
 	spawn_chance = 1,
 	mob_range = 30,

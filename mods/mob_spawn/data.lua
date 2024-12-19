@@ -691,7 +691,7 @@ register({
 
 	spawn_chance = 1,
 	mob_range = 30,
-	absolute_mob_limit = 20,
+	absolute_mob_limit = 10,
 	player_min_range = 10,
 	player_max_range = 60,
 	spawn_radius = 50,

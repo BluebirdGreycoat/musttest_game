@@ -299,6 +299,7 @@ rc.realms = {
 		realm_origin = {x=6565, y=21150+2000, z=4404},
 		disabled = false,
 		cloud_data = {height=23300, density=0.3},
+		star_data = {count=200},
 	},
 }
 

@@ -473,7 +473,7 @@ register({
 	name = "stoneman:stoneman",
 	nodes = {"darkage:basaltic_rubble", "darkage:basaltic"},
 	min_light = 0,
-	max_light = 1,
+	max_light = 10,
   min_height = 5150,
   max_height = 8150,
 	clearance = 3,
@@ -715,6 +715,57 @@ register({
 		flags = "",
 	},
 	noise_threshold = 0.3,
+})
+
+-- DMs in Saravinca.
+register({
+	name = "dm:dm",
+	nodes = {
+    "rackstone:cobble",
+    "rackstone:rackstone",
+  },
+	min_light = 0,
+	max_light = 10,
+	day_toggle = false,
+	min_height = 21150,
+	max_height = 23450,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=128, y=128, z=128},
+		seed = 47821,
+		octaves = 2,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.0,
+})
+
+-- Stone monsters in Saravinca.
+register({
+	name = "stoneman:stoneman",
+	nodes = {"rackstone:cobble", "rackstone:rackstone"},
+	min_light = 0,
+	max_light = 10,
+	day_toggle = false,
+	min_height = 21150,
+	max_height = 23450,
+	clearance = 3,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 992134,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = -0.3,
 })
 
 -- A very rare, very hard mob.

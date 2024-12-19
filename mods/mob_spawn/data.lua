@@ -682,7 +682,8 @@ register({
 	name = "animalworld:murdertusk",
 	nodes = {"rackstone:cobble"},
 	min_light = 0,
-	max_light = 15,
+	max_light = 10,
+	day_toggle = false,
 	clearance = 2,
 
 	-- Not in canyons, not on mesas.

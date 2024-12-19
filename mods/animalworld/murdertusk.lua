@@ -35,7 +35,7 @@ mobs.register_mob("animalworld:murdertusk", {
 	jump = true,
 	drops = {
 		{name = "mobs:meat_raw_pork", chance = 2, min = 1, max = 1},
-		{name = "mobs:leather", chance = 5, min = 1, max = 1},
+		{name = "mobs:leather", chance = 10, min = 1, max = 1},
 	},
 	water_damage = 0,
 	lava_damage = 4*500,

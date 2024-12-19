@@ -707,9 +707,9 @@ register({
 	noise_params = {
 		offset = 0,
 		scale = 1,
-		spread = {x=512, y=512, z=512},
-		seed = 423821,
-		octaves = 3,
+		spread = {x=256, y=256, z=256},
+		seed = 168662,
+		octaves = 2,
 		persist = 0.5,
 		lacunarity = 1.5,
 		flags = "",

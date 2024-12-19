@@ -3,6 +3,15 @@ if not minetest.global_exists("ab") then ab = {} end
 ab.modpath = minetest.get_modpath("ab")
 ab.worldpath = minetest.get_worldpath()
 
+local REALM_START = 21150
+local REALM_END = 23450
+local REALM_GROUND = 21150+2000
+
+local abs = math.abs
+local min = math.min
+local max = math.max
+local floor = math.floor
+
 dofile(ab.modpath .. "/ore.lua")
 
 
@@ -21,6 +30,55 @@ function ab.on_generated(minp, maxp, blockseed)
 			mapfix.work(emin, emax)
 		end)
 	end
+end
+
+
+
+local noisemap1
+local noisemap2
+local noisemap3
+local noisemap4
+local noisemap5
+
+-- Can't construct mapgen perlin at mod load time, MG parameters can still change.
+local function init_perlin_once()
+	if not ab.have_noise then
+		-- Noise replicated from the mapgen env.
+		dofile(ab.modpath .. "/noise.lua")
+		dofile(ab.modpath .. "/data.lua")
+
+		noisemap1 = ab.get_3d_perlin("cavern_noise1")
+		noisemap2 = ab.get_3d_perlin("cavern_noise2")
+		noisemap3 = ab.get_3d_perlin("cavern_noise3")
+		noisemap4 = ab.get_3d_perlin("cavern_noise4")
+		noisemap5 = ab.get_3d_perlin("cavern_noise5")
+
+		assert(noisemap1)
+
+		ab.have_noise = true
+	end
+end
+
+function ab.want_cavern_ambiance(pos3d)
+	init_perlin_once()
+
+	local y = pos3d.y
+	local ground_y = REALM_GROUND
+
+	local n1 = noisemap1:get_3d(pos3d)
+	local n2 = noisemap2:get_3d(pos3d)
+	local n3 = noisemap3:get_3d(pos3d)
+	local n4 = noisemap4:get_3d(pos3d)
+	--local n5 = noisemap5:get_3d(pos3d)
+
+	if y < (ground_y - (350 + (abs(n4) * 50))) then
+		local noise1 = n1 + n2 + n3
+		if noise1 < -0.2 then
+			return true
+		end
+	end
+
+	return false
 end
 
 

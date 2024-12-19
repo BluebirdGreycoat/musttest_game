@@ -366,6 +366,25 @@ ambiance.tmpsounds = {
 		noise_function = function(pos3d) return sw.want_cavern_ambiance(pos3d) end,
 		realm = "stoneworld",
 	},
+
+	-- Cavern ambiance for Saravinca.
+	{
+		name = "cavewind", gain = 1.0, miny = 21150, maxy = 23000, time = "", indoors = nil, mintime = 25, maxtime = 45,
+		noise_function = function(pos3d) return ab.want_cavern_ambiance(pos3d) end,
+		realm = "ariba",
+	},
+
+	{
+		name = "cavedraft", gain = 1.0, miny = 21150, maxy = 23000, time = "", indoors = nil, mintime = 100, maxtime = 400,
+		noise_function = function(pos3d) return ab.want_cavern_ambiance(pos3d) end,
+		realm = "ariba",
+	},
+
+	{
+		name = "darkwind", gain = 1.0, miny = 21150, maxy = 23000, time = "", indoors = nil, mintime = 200, maxtime = 500,
+		noise_function = function(pos3d) return ab.want_cavern_ambiance(pos3d) end,
+		realm = "ariba",
+	},
 }
 
 

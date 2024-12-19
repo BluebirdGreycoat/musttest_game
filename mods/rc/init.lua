@@ -298,7 +298,7 @@ rc.realms = {
 		windlevel = 21150+2000,
 		realm_origin = {x=6565, y=21150+2000, z=4404},
 		disabled = false,
-		cloud_data = {height=23300, density=0.3},
+		cloud_data = {height=23300, density=0.3, speed={x=-20, z=5}},
 		star_data = {count=200},
 	},
 }

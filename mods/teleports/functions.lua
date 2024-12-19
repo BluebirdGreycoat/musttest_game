@@ -514,6 +514,7 @@ local function cds(pos, nyan)
 	local y = pos.y
 	local scalar = 1
 	local realm = rc.current_realm_at_pos(pos)
+	local realmdata = rc.get_realm_data(realm)
 
 	-- Note: 'nyan' parameter is for backward compatibility.
 
@@ -549,10 +550,38 @@ local function cds(pos, nyan)
 		if os.time() >= os.time({month=1,day=1,year=2024}) then
 			scalar = 0.1
 		end
+	elseif realm == "stoneworld" or realm == "ariba" then
+		local miny = realmdata.minp.y
+		local _, maxy = rc.get_ground_level_at_pos(pos)
+
+		local height = maxy - miny
+		if height <= 1 then height = 1 end
+		local depth = math.abs(y - miny)
+		scalar = depth / height
+
+		-- Clamp.
+		if scalar > 1 then scalar = 1 end
+		if scalar < 0 then scalar = 0 end
+
+		-- Magic!
+		-- The number of iterations determines the steepness of the curve.
+		for i=1, 2, 1 do
+			scalar = scalar * 1.719
+			scalar = scalar + 1
+
+			-- Input to log should be [1, 2.719].
+			-- Log should return something in range [0, 1].
+			scalar = math.log(scalar)
+		end
+
+		-- Clamp.
+		if scalar > 1 then scalar = 1 end
+		if scalar < 0 then scalar = 0 end
 	end
 
 	return scalar
 end
+teleports.calculate_cds = cds
 
 
 

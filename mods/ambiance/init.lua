@@ -91,6 +91,15 @@ ambiance.globalstep = function(dtime)
 									end
 								end
 
+								-- If we have a noise function, use that (allows arbitrary
+								-- complexity in calculating where ambiance is allowed to play).
+								-- Should be used by custom Lua mapgens + realms.
+								if v.noise_function then
+									if not v.noise_function(vround(pos)) then
+										spawnsound = false
+									end
+								end
+
 								-- If sound may only play in a particular realm ...
 								if v.realm and rc.current_realm_at_pos(pos) ~= v.realm then
 									spawnsound = false

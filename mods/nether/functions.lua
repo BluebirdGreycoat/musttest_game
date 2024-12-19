@@ -131,6 +131,10 @@ function nether.liquid_on_timer(pos, elapsed)
 			transform_hidden(pos)
 			return
 		end
+	else
+		-- No player around.
+		transform_hidden(pos)
+		return
 	end
 
 	local d = 0.5

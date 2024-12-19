@@ -344,9 +344,28 @@ ambiance.tmpsounds = {
 	{name="wind2",          realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-10, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="desertwind",     realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-15, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=20, maxtime=40, },
 	{name="desertwind",     realm="stoneworld", mingain=0.2, maxgain=0.4, absminy=10150, absmaxy=15150, miny=-30, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=6, maxtime=8, }, -- Continuous quiet loop.
-	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-50, maxy=-10, ground_offset=get_sw_ground, time="", indoors=nil, mintime=5, maxtime=10},
-	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-100, maxy=-50, ground_offset=get_sw_ground, time="", indoors=nil, mintime=30, maxtime=120},
-	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-1000, maxy=-100, ground_offset=get_sw_ground, time="", indoors=nil, mintime=120, maxtime=720},
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-100, ground_offset=get_sw_ground, time="", indoors=nil, mintime=5, maxtime=10},
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-50, ground_offset=get_sw_ground, time="", indoors=nil, mintime=30, maxtime=120},
+	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-10, ground_offset=get_sw_ground, time="", indoors=nil, mintime=120, maxtime=720},
+
+	-- Cavern ambiance for Carcorsica.
+	{
+		name = "cavewind", gain = 1.0, miny = 10150, maxy = 15150, time = "", indoors = nil, mintime = 25, maxtime = 45,
+		noise_function = function(pos3d) return sw.want_cavern_ambiance(pos3d) end,
+		realm = "stoneworld",
+	},
+
+	{
+		name = "cavedraft", gain = 1.0, miny = 10150, maxy = 15150, time = "", indoors = nil, mintime = 100, maxtime = 400,
+		noise_function = function(pos3d) return sw.want_cavern_ambiance(pos3d) end,
+		realm = "stoneworld",
+	},
+
+	{
+		name = "darkwind", gain = 1.0, miny = 10150, maxy = 15150, time = "", indoors = nil, mintime = 200, maxtime = 500,
+		noise_function = function(pos3d) return sw.want_cavern_ambiance(pos3d) end,
+		realm = "stoneworld",
+	},
 }
 
 

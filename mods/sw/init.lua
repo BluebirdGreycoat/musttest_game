@@ -14,6 +14,7 @@ local TAN_OF_1 = math.tan(1)
 
 local tan = math.tan
 local min = math.min
+local max = math.max
 local abs = math.abs
 local floor = math.floor
 
@@ -42,8 +43,16 @@ local continental
 local mountains
 local mtnchannel
 
-function sw.get_ground_y(pos3d)
-	-- This silliness exists because devs too busy with changing names of stuff.
+local noisemap1
+local noisemap2
+local noisemap3
+local noisemap4
+local noisemap5
+
+-- This silliness exists because devs too busy with changing names of stuff.
+-- Update: ok, so it makes sense that you cant use perlins at load time because
+-- the mapgen parameters might still be changing.
+local function init_perlin_once()
 	if not sw.have_noise then
 		-- Noise replicated from the mapgen env.
 		dofile(sw.modpath .. "/noise.lua")
@@ -54,10 +63,23 @@ function sw.get_ground_y(pos3d)
 		mountains = sw.get_2d_perlin("mountains")
 		mtnchannel = sw.get_2d_perlin("mtnchannel")
 
+		noisemap1 = sw.get_3d_perlin("cavern_noise1")
+		noisemap2 = sw.get_3d_perlin("cavern_noise2")
+		noisemap3 = sw.get_3d_perlin("cavern_noise3")
+		noisemap4 = sw.get_3d_perlin("cavern_noise4")
+		noisemap5 = sw.get_3d_perlin("cavern_noise5")
+
 		assert(mtnchannel)
+		assert(noisemap1)
 
 		sw.have_noise = true
 	end
+end
+
+-- Other parts of the code need to know the ground height at a location,
+-- which can vary 1000's of nodes up or down.
+function sw.get_ground_y(pos3d)
+	init_perlin_once()
 
 	local pos2d = {x=pos3d.x, y=pos3d.z}
 
@@ -72,6 +94,28 @@ function sw.get_ground_y(pos3d)
 		(mountains:get_2d(pos2d) * mtnchnl))
 
 	return ground_y
+end
+
+function sw.want_cavern_ambiance(pos3d)
+	local y = pos3d.y
+	local ground_y = sw.get_ground_y(pos3d)
+
+	local n1 = noisemap1:get_3d(pos3d)
+	local n2 = noisemap2:get_3d(pos3d)
+	local n3 = noisemap3:get_3d(pos3d)
+	local n4 = noisemap4:get_3d(pos3d)
+	--local n5 = noisemap5:get_3d(pos3d)
+
+	if y < (ground_y - (500 + (abs(n4) * 50))) then
+		local noise1 = n1 + n2 + n3
+
+		-- Extend cavern ambiance beyond caverns slightly (use 0.0 instead of 0.2).
+		if noise1 < 0.0 then
+			return true
+		end
+	end
+
+	return false
 end
 
 -- Causes assertion failure because can't call 'get_perlin' at load time.

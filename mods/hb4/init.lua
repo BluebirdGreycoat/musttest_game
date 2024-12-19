@@ -105,7 +105,9 @@ function hb4.nearest_player(pos)
 	local function is_admin(pref)
 		for k, v in ipairs(admins) do
 			if pref == v then
-				return true
+				if gdac_invis.is_invisible(pref:get_player_name()) then
+					return true
+				end
 			end
 		end
 	end
@@ -137,7 +139,9 @@ function hb4.nearest_player_not(pos, pnot)
 	local function is_admin(pref)
 		for k, v in ipairs(admins) do
 			if pref == v then
-				return true
+				if gdac_invis.is_invisible(pref:get_player_name()) then
+					return true
+				end
 			end
 		end
 	end

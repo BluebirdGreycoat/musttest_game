@@ -94,3 +94,54 @@ sw.create_3d_noise("softener", {
 	persist = 0.5,
 	lacunarity = 2,
 })
+
+--------------------------------------------------------------------------------
+sw.create_3d_noise("cavern_noise1", {
+	offset = 0,
+	scale = 1,
+	spread = {x=200, y=60, z=200},
+	seed = 88812,
+	octaves = 6,
+	persist = 0.5,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cavern_noise2", {
+	offset = 0,
+	scale = 1,
+	spread = {x=100, y=60, z=100},
+	seed = 88813,
+	octaves = 5,
+	persist = 0.6,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cavern_noise3", {
+	offset = 0.5,
+	scale = 1,
+	spread = {x=500, y=500, z=500},
+	seed = 88814,
+	octaves = 4,
+	persist = 0.7,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cavern_noise4", {
+	offset = 0,
+	scale = 1,
+	spread = {x=74, y=62, z=74},
+	seed = 88815,
+	octaves = 3,
+	persist = 0.8,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("cavern_noise5", {
+	offset = 0,
+	scale = 1,
+	spread = {x=8, y=16, z=8},
+	seed = 888166,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 1.5,
+})

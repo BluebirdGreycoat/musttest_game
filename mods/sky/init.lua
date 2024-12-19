@@ -332,7 +332,10 @@ end
 
 function sky.notify_sky_update_needed(pname)
 	-- "-1" indicates that the sky needs updating for this player.
-	sky.players[pname].sky = -1
+	local pdata = sky.players[pname]
+	if pdata then
+		pdata.sky = -1
+	end
 end
 
 

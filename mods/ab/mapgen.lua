@@ -14,6 +14,7 @@ dofile(ab.modpath .. "/tunnel.lua")
 dofile(ab.modpath .. "/despeckle.lua")
 dofile(ab.modpath .. "/biome.lua")
 dofile(ab.modpath .. "/mesas.lua")
+dofile(ab.modpath .. "/caverns.lua")
 
 local REALM_START = 21150
 local REALM_END = 23450
@@ -42,7 +43,8 @@ local c_cobble          = minetest.get_content_id("rackstone:cobble")
 local c_bedrock         = minetest.get_content_id("bedrock:bedrock")
 
 -- Externally located tables for performance.
-local data = {}
+local vm_data = {}
+local vm_light = {}
 local param2_data = {}
 
 
@@ -62,7 +64,8 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Grab the voxel manipulator.
 	local emin, emax = vm:get_emerged_area()
-	vm:get_data(data)
+	vm:get_data(vm_data)
+	vm:get_light_data(vm_light)
 	vm:get_param2_data(param2_data)
 
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -248,19 +251,19 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 			local bedrock_adjust = pr:next(0, 3)
 
 			for y = y0, y1 do
-				local ground_y, canyon_offset = heightfunc(x, y, z)
+				local ground_y = heightfunc(x, y, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
-					local cid = data[vp]
+					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
 						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
-							data[vp] = c_bedrock
+							vm_data[vp] = c_bedrock
 						elseif y <= ground_y then
-							data[vp] = c_stone
+							vm_data[vp] = c_stone
 						else
-							data[vp] = c_air
+							vm_data[vp] = c_air
 						end
 					end
 				end
@@ -268,10 +271,30 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
-	vm:set_data(data)
+	for z = emin.z, emax.z do
+		for x = emin.x, emax.x do
+			for y = emin.y, emax.y do
+				local ground_y = heightfunc(x, y, z)
+
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+
+					if y <= ground_y then
+						vm_light[vp] = 0
+					else
+						vm_light[vp] = 15
+					end
+				end
+			end
+		end
+	end
+
+	vm:set_data(vm_data)
+	vm:set_light_data(vm_light)
   vm:set_param2_data(param2_data)
 
   ab.generate_tunnels(vm, minp, maxp, seed)
+  ab.generate_caverns(vm, minp, maxp, seed)
   ab.despeckle_terrain(vm, minp, maxp)
   ab.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
@@ -282,7 +305,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 	vm:update_liquids()
 
 	-- Skip mapfix for underground sections.
-	if y1 < (REALM_GROUND - 150) then
+	if y1 < (REALM_GROUND - 250) then
 		gennotify_data.need_mapfix = false
 	end
 

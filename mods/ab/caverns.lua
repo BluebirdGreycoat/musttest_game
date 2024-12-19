@@ -1,7 +1,8 @@
 
-local REALM_START = 10150
-local REALM_END = 15150
-local LAVA_SEA_HEIGHT = 10170
+local REALM_START = 21150
+local REALM_END = 23450
+local REALM_GROUND = 21150+2000
+local LAVA_SEA_HEIGHT = 21170
 
 local abs = math.abs
 local floor = math.floor
@@ -13,12 +14,12 @@ local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
-local c_cobble = minetest.get_content_id("default:cobble")
+local c_cobble = minetest.get_content_id("rackstone:cobble")
 local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 
 
-function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
+function ab.generate_caverns(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 
@@ -31,6 +32,9 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 	local y0 = minp.y
 	local z0 = minp.z
 
+	y0 = max(REALM_START, y0)
+	y1 = min(REALM_END, y1)
+
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.
 	-- This is to support horizontal shearing.
@@ -42,11 +46,11 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
-	local noisemap1 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise1")
-	local noisemap2 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise2")
-	local noisemap3 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise3")
-	local noisemap4 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise4")
-	local noisemap5 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise5")
+	local noisemap1 = ab.get_3d_noise(bp3d, sides3D, "cavern_noise1")
+	local noisemap2 = ab.get_3d_noise(bp3d, sides3D, "cavern_noise2")
+	local noisemap3 = ab.get_3d_noise(bp3d, sides3D, "cavern_noise3")
+	local noisemap4 = ab.get_3d_noise(bp3d, sides3D, "cavern_noise4")
+	local noisemap5 = ab.get_3d_noise(bp3d, sides3D, "cavern_noise5")
 
 	local function is_cavern(x, y, z, ground_y)
 		local idx = area:index(x, y, z)
@@ -57,7 +61,7 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 		local n4 = noisemap4[idx]
 		local n5 = noisemap5[idx]
 
-		if y < (ground_y - (500 + (abs(n4) * 50))) then
+		if y < (ground_y - (350 + (abs(n4) * 50))) then
 			local noise1 = n1 + n2 + n3
 			local noise2 = abs(n5)
 			if noise1 < -0.2 then
@@ -78,7 +82,7 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 			-- 2: cavern
 			local toggle = 0
 
-			local ground_y = heightfunc(x, z)
+			local ground_y = REALM_GROUND
 
 			for y = y0, y1 do
 				local is_floor = false

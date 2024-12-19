@@ -245,7 +245,10 @@ local function update_player_sky(player, pname, pdata, playerpos)
 			-- Hack because it's almost 2025 and Minetest is still buggy.
 			player:set_clouds({height=150})
 			minetest.after(0, function()
-				player:set_clouds(c)
+				local pref = minetest.get_player_by_name(pname)
+				if pref then
+					pref:set_clouds(c)
+				end
 			end)
 
 			pdata.sky = 0

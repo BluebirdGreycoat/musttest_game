@@ -294,7 +294,12 @@ ab.generate_realm = function(vm, minp, maxp, seed)
   vm:set_param2_data(param2_data)
 
   ab.generate_tunnels(vm, minp, maxp, seed)
-  ab.generate_caverns(vm, minp, maxp, seed)
+
+  -- Can skip this because caverns don't intersect the mostly-flat surface.
+  if y1 <= 23000 then
+		ab.generate_caverns(vm, minp, maxp, seed)
+	end
+
   ab.despeckle_terrain(vm, minp, maxp)
   ab.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 

@@ -198,7 +198,9 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 			end
 		end -- Air/ignore check.
 	end
+end
 
+local function update_player_sky(player, pname, pdata, playerpos)
 	-- Update player's sky colors. Use flags to avoid extra calls.
 	if vector_distance(playerpos, pdata.ppos) > 5 or pdata.sky == -1 then
 		local pos_underground = rc.position_underground(playerpos)
@@ -228,11 +230,24 @@ local function update_player(player, pname, pdata, playerpos, nodepos)
 				end
 			end
 		elseif not pos_underground and pdata.sky ~= 0 then
-			player:set_sky(rc.get_realm_sky(playerpos))
+			local s = rc.get_realm_sky(playerpos)
+			local c = rc.get_realm_clouds(playerpos)
+
+			--minetest.chat_send_all("----------------")
+			--minetest.chat_send_all(dump(s))
+			--minetest.chat_send_all(dump(c))
+
+			player:set_sky(s)
 			player:set_sun(rc.get_realm_sun(playerpos))
 			player:set_moon(rc.get_realm_moon(playerpos))
 			player:set_stars(rc.get_realm_stars(playerpos))
-			player:set_clouds(rc.get_realm_clouds(playerpos))
+
+			-- Hack because it's almost 2025 and Minetest is still buggy.
+			player:set_clouds({height=150})
+			minetest.after(0, function()
+				player:set_clouds(c)
+			end)
+
 			pdata.sky = 0
 		end
 
@@ -263,7 +278,12 @@ function sky.on_globalstep(dtime)
 			local npos = utility.node_under_pos(ppos)
 
 			update_player(player, pname, pdata, ppos, npos)
+			update_player_sky(player, pname, pdata, ppos)
 			pdata.rpos = rpos
+		end
+
+		if pdata.sky == -1 then
+			update_player_sky(player, pname, pdata, ppos)
 		end
 	end
 end
@@ -289,6 +309,13 @@ function sky.on_joinplayer(player)
 
 	-- Update player on first join.
 	update_player(player, pname, pdata, ppos, npos)
+
+	-- Hack because clouds don't initialize properly if sent right away ...
+	for i = 5, 5, 1 do
+		minetest.after(i, function()
+			sky.notify_sky_update_needed(pname)
+		end)
+	end
 end
 
 

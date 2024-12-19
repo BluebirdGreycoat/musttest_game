@@ -259,6 +259,9 @@ rc.realms = {
 		realm_origin = {x=-7729, y=10150+200, z=-5821},
 		disabled = false,
 		bed_assault_mob = "stoneman:stoneman",
+
+		-- Clouds don't play nice atm.
+		cloud_data = {density = 0},
 	},
 
 	{
@@ -295,6 +298,7 @@ rc.realms = {
 		windlevel = 21150+2000,
 		realm_origin = {x=6565, y=21150+2000, z=4404},
 		disabled = false,
+		cloud_data = {height=23300, density=0.3},
 	},
 }
 

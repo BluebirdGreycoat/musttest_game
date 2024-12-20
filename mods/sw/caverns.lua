@@ -18,18 +18,23 @@ local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 
 
-function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
-	local emin, emax = vm:get_emerged_area()
-	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
-
-	vm:get_data(vm_data)
-
+function sw.generate_caverns(vm, minp, maxp, seed, get_height)
 	local x1 = maxp.x
 	local y1 = maxp.y
 	local z1 = maxp.z
 	local x0 = minp.x
 	local y0 = minp.y
 	local z0 = minp.z
+
+	-- Skip generating caverns at surface and above.
+  if y0 >= (get_height(x0, z0) - 150) then
+		return
+	end
+
+	local emin, emax = vm:get_emerged_area()
+	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+
+	vm:get_data(vm_data)
 
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.
@@ -78,7 +83,7 @@ function sw.generate_caverns(vm, minp, maxp, seed, heightfunc)
 			-- 2: cavern
 			local toggle = 0
 
-			local ground_y = heightfunc(x, z)
+			local ground_y = get_height(x, z)
 
 			for y = y0, y1 do
 				local is_floor = false

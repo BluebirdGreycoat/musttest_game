@@ -25,7 +25,7 @@ local step = 100
 local SPHERES_EVERYWHERE = false -- Mainly for debugging.
 local ALL_SPHERES = {}
 local MIN_RADIUS = 7
-local MAX_RADIUS = 20
+local MAX_RADIUS = 50
 local MIN_Y = -10
 local MAX_Y = 10
 local SPHERE_SEED = 4718
@@ -56,17 +56,20 @@ do
 		lacunarity = 2,
 	})
 
-	-- For sphere positions, sizes, and counts.
+	-- For sphere positions and counts.
 	local pr1 = PcgRandom(SPHERE_SEED + 1)
 
 	-- For sphere contents.
 	local pr2 = PcgRandom(SPHERE_SEED + 2)
 
+	-- Sphere radii.
+	local pr3 = PcgRandom(SPHERE_SEED + 3)
+
 	for x = minp.x, maxp.x, step do
 		for z = minp.z, maxp.z, step do
 			local count = pr1:next(1, 3)
 			for k = 1, count do
-				local rad = pr1:next(MIN_RADIUS, MAX_RADIUS)
+				local rad = pr3:next(MIN_RADIUS, pr3:next(floor(MAX_RADIUS / 2), MAX_RADIUS))
 				local yoff = pr1:next(MIN_Y, MAX_Y)
 				local px = pr1:next(x - (step / 2), x + (step / 2))
 				local pz = pr1:next(z - (step / 2), z + (step / 2))
@@ -92,7 +95,7 @@ end
 --------------------------------------------------------------------------------
 
 -- Get which spheres intersect this map chunk.
-function sw.get_spheres(minp, maxp, heightfunc, radius_override)
+function sw.get_spheres(minp, maxp, get_height, radius_override)
 	local maxrad = radius_override or MAX_RADIUS
 	local minx = minp.x - maxrad
 	local miny = minp.y - maxrad
@@ -110,12 +113,16 @@ function sw.get_spheres(minp, maxp, heightfunc, radius_override)
 			if data.pos_z >= minz and data.pos_z <= maxz then
 				--print('matching x/z sphere')
 				-- Find ground level at the center of each sphere.
-				local y_level = heightfunc(data.pos_x, data.pos_z)
+				-- Bake Y-level info the first time we generate it.
+				local y_level = data.y_level
+				if not y_level then
+					data.y_level = get_height(data.pos_x, data.pos_z)
+					y_level = data.y_level
+				end
 				--print('y_level: ' .. y_level)
 
 				if y_level >= miny and y_level <= maxy then
 					local d = table.copy(data)
-					d.y_level = y_level
 					got[#got + 1] = d
 				end
 			end
@@ -135,8 +142,20 @@ sw.create_3d_noise("sphereshear", {
 	lacunarity = 2,
 })
 
-function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
-	local spheres = sw.get_spheres(minp, maxp, heightfunc)
+function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, get_height)
+	local x1 = maxp.x
+	local y1 = maxp.y
+	local z1 = maxp.z
+	local x0 = minp.x
+	local y0 = minp.y
+	local z0 = minp.z
+
+  -- Spheres only generate on surface chunks.
+  if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
+		return
+	end
+
+	local spheres = sw.get_spheres(minp, maxp, get_height)
 	--print('spheres: ' .. #spheres)
 	if #spheres == 0 then
 		return
@@ -147,13 +166,6 @@ function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local pr = PseudoRandom(seed + 5928)
 
 	vm:get_data(vm_data)
-
-	local x1 = maxp.x
-	local y1 = maxp.y
-	local z1 = maxp.z
-	local x0 = minp.x
-	local y0 = minp.y
-	local z0 = minp.z
 
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.

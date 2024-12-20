@@ -237,14 +237,10 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
   sw.generate_caverns(vm, minp, maxp, seed, get_height)
-  sw.generate_tunnels(vm, minp, maxp, seed)
+  sw.generate_tunnels(vm, minp, maxp, seed, get_height)
   sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
   sw.despeckle_terrain(vm, minp, maxp)
-
-  -- Run biome generator only for surface chunks.
-  if y0 >= (get_height(x0, z0) - 250) then
-		sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height)
-	end
+	sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height)
 
   minetest.generate_ores(vm)
 
@@ -260,7 +256,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	--print('time to generate: ' .. (time2 - time1))
+	print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

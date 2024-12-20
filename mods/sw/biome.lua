@@ -11,7 +11,7 @@ local c_gravel = minetest.get_content_id("default:gravel")
 local c_rackcobble = minetest.get_content_id("rackstone:cobble")
 
 local NN_DEAD_CORAL = "default:coral_skeleton"
-local SPHERE_ADJACENT_BIOME_RADIUS = 50
+local SPHERE_ADJACENT_BIOME_RADIUS = 100
 
 local abs = math.abs
 local floor = math.floor
@@ -56,6 +56,18 @@ local sphere_base_locations = {
 }
 
 function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_height)
+	local x1 = maxp.x
+	local y1 = maxp.y
+	local z1 = maxp.z
+	local x0 = minp.x
+	local y0 = minp.y
+	local z0 = minp.z
+
+  -- Run biome generator only for surface chunks.
+  if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
+		return
+	end
+
 	local spheres = sw.get_spheres(minp, maxp, get_height, SPHERE_ADJACENT_BIOME_RADIUS)
 
 	local emin, emax = vm:get_emerged_area()
@@ -67,13 +79,6 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 
 	vm:get_data(vm_data)
 	vm:get_param2_data(vm_param2_data)
-
-	local x1 = maxp.x
-	local y1 = maxp.y
-	local z1 = maxp.z
-	local x0 = minp.x
-	local y0 = minp.y
-	local z0 = minp.z
 
 	local grass = {}
 	local deadcorals = {}
@@ -149,7 +154,7 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 
 									local r = (pr:next(0, 100) / 100) * -1 + 1
 									local d = o / m
-									r = r ^ 5
+									r = r ^ 3
 									local g = r ^ 10
 
 									if r > d then

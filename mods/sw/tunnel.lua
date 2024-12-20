@@ -151,20 +151,25 @@ end
 
 
 
-function sw.generate_tunnels(vm, minp, maxp, seed)
-	local emin, emax = vm:get_emerged_area()
-	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
-	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
-	local pr = PseudoRandom(seed + 1891)
-
-	vm:get_data(vm_data)
-
+function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	local x1 = maxp.x
 	local y1 = maxp.y
 	local z1 = maxp.z
 	local x0 = minp.x
 	local y0 = minp.y
 	local z0 = minp.z
+
+	-- Skip generating tunnels far above surface.
+  if y0 >= (get_height(x0, z0) + 250) then
+		return
+	end
+
+	local emin, emax = vm:get_emerged_area()
+	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
+	local pr = PseudoRandom(seed + 1891)
+
+	vm:get_data(vm_data)
 
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.

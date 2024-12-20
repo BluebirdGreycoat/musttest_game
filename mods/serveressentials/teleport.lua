@@ -2,6 +2,17 @@
 -- Localize for performance.
 local vector_round = vector.round
 
+local function realm_to_actual(name)
+	name = name:lower()
+	for k, v in ipairs(rc.realms) do
+		local desc = v.description:lower()
+		if v.name == name or desc == name then
+			return v.name
+		end
+	end
+	return name
+end
+
 function serveressentials.do_teleport(name, param)
 	name = name:trim()
 	param = param:trim()
@@ -69,7 +80,7 @@ function serveressentials.do_teleport(name, param)
 	p.z = tonumber(p.z)
 	--minetest.chat_send_player(name, "Got: " .. realm .. ":" .. p.x .. "," .. p.y .. "," .. p.z)
 	if realm and p.x and p.y and p.z then
-		p = rc.realmpos_to_pos(realm, p)
+		p = rc.realmpos_to_pos(realm_to_actual(realm), p)
 		if not p then
 			return false, "Cannot interpret realm coordinates."
 		end
@@ -161,7 +172,7 @@ function serveressentials.do_teleport(name, param)
 		teleportee = core.get_player_by_name(teleportee_name)
 	end
 	if teleportee and realm and p.x and p.y and p.z then
-		p = rc.realmpos_to_pos(realm, p)
+		p = rc.realmpos_to_pos(realm_to_actual(realm), p)
 		if not p then
 			return false, "Cannot interpret realm coordinates."
 		end

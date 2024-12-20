@@ -101,8 +101,10 @@ end
 --
 
 if not flowers.registered then
-	-- Aliases for original flowers mod
+	-- Flowers by DragonsVolcanoDance.
+	dofile(flowers.modpath .. "/dvd.lua")
 
+	-- Aliases for original flowers mod
 	minetest.register_alias("flowers:flower_rose", "flowers:rose")
 	minetest.register_alias("flowers:flower_tulip", "flowers:tulip")
 	minetest.register_alias("flowers:flower_dandelion_yellow", "flowers:dandelion_yellow")

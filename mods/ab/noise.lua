@@ -1,12 +1,13 @@
 
+-- Faxing bugs! Don't confuse 'sw' for 'ab', MustTest!
 ab.perlin_maps = ab.perlin_maps or {}
-sw.perlins = sw.perlins or {}
+ab.perlins = ab.perlins or {}
 ab.maps = ab.maps or {}
 ab.noises = ab.noises or {}
 
 local maps = ab.maps
 local perlin_maps = ab.perlin_maps
-local perlins = sw.perlins
+local perlins = ab.perlins
 local noises = ab.noises
 
 function ab.create_2d_noise(which, data)

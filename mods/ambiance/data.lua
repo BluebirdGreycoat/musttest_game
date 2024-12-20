@@ -343,7 +343,7 @@ ambiance.tmpsounds = {
 	{name="wind1",          realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-5, maxy=30000, ground_offset=get_sw_ground, time="", indoors=false, mintime=20, maxtime=40, },
 	{name="wind2",          realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-10, maxy=30000, ground_offset=get_sw_ground, time="", indoors=false, mintime=20, maxtime=40, },
 	{name="desertwind",     realm="stoneworld", gain=1.0, absminy=10150, absmaxy=15150, miny=-15, maxy=30000, ground_offset=get_sw_ground, time="", indoors=false, mintime=20, maxtime=40, },
-	{name="desertwind",     realm="stoneworld", mingain=0.2, maxgain=0.4, absminy=10150, absmaxy=15150, miny=-30, maxy=30000, ground_offset=get_sw_ground, time="", indoors=nil, mintime=6, maxtime=8, }, -- Continuous quiet loop.
+	{name="desertwind",     realm="stoneworld", mingain=0.2, maxgain=0.4, absminy=10150, absmaxy=15150, miny=-30, maxy=30000, ground_offset=get_sw_ground, time="", indoors=false, mintime=6, maxtime=8, },
 	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-100, ground_offset=get_sw_ground, time="", indoors=nil, mintime=5, maxtime=10},
 	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-50, ground_offset=get_sw_ground, time="", indoors=nil, mintime=30, maxtime=120},
 	{name="drippingwater",  realm="stoneworld", mingain=0.2, maxgain=1.0, absminy=10150, absmaxy=15150, miny=-5000, maxy=-10, ground_offset=get_sw_ground, time="", indoors=nil, mintime=120, maxtime=720},

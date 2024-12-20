@@ -22,6 +22,7 @@ local minp = {x=-31000, z=-31000}
 local maxp = {x=31000, z=31000}
 local step = 100
 
+local SPHERES_EVERYWHERE = false -- Mainly for debugging.
 local ALL_SPHERES = {}
 local MIN_RADIUS = 7
 local MAX_RADIUS = 20
@@ -72,7 +73,7 @@ do
 				local pos2d = {x=px, y=pz}
 				local contents = SPHERE_CONTENTS[pr2:next(1, #SPHERE_CONTENTS)]
 
-				--if abs(perlin:get_2d(pos2d)) < 0.2 then
+				if abs(perlin:get_2d(pos2d)) < 0.2 or SPHERES_EVERYWHERE then
 					ALL_SPHERES[#ALL_SPHERES + 1] = {
 						pos_x = px,
 						pos_z = pz,
@@ -82,22 +83,23 @@ do
 						cid_2 = contents[2],
 						cid_3 = contents[3],
 					}
-				--end
+				end
 			end
 		end
 	end
 end
-print('num total spheres: ' .. #ALL_SPHERES)
+--print('num total spheres: ' .. #ALL_SPHERES)
 --------------------------------------------------------------------------------
 
 -- Get which spheres intersect this map chunk.
-function sw.get_spheres(minp, maxp, heightfunc)
-	local minx = minp.x - MAX_RADIUS
-	local miny = minp.y - MAX_RADIUS
-	local minz = minp.z - MAX_RADIUS
-	local maxx = maxp.x + MAX_RADIUS
-	local maxy = maxp.y + MAX_RADIUS
-	local maxz = maxp.z + MAX_RADIUS
+function sw.get_spheres(minp, maxp, heightfunc, radius_override)
+	local maxrad = radius_override or MAX_RADIUS
+	local minx = minp.x - maxrad
+	local miny = minp.y - maxrad
+	local minz = minp.z - maxrad
+	local maxx = maxp.x + maxrad
+	local maxy = maxp.y + maxrad
+	local maxz = maxp.z + maxrad
 
 	local got = {}
 	local count = #ALL_SPHERES
@@ -106,10 +108,10 @@ function sw.get_spheres(minp, maxp, heightfunc)
 		local data = ALL_SPHERES[k]
 		if data.pos_x >= minx and data.pos_x <= maxx then
 			if data.pos_z >= minz and data.pos_z <= maxz then
-				print('matching x/z sphere')
+				--print('matching x/z sphere')
 				-- Find ground level at the center of each sphere.
 				local y_level = heightfunc(data.pos_x, data.pos_z)
-				print('y_level: ' .. y_level)
+				--print('y_level: ' .. y_level)
 
 				if y_level >= miny and y_level <= maxy then
 					local d = table.copy(data)
@@ -135,7 +137,7 @@ sw.create_3d_noise("sphereshear", {
 
 function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local spheres = sw.get_spheres(minp, maxp, heightfunc)
-	print('spheres: ' .. #spheres)
+	--print('spheres: ' .. #spheres)
 	if #spheres == 0 then
 		return
 	end

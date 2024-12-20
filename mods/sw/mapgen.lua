@@ -130,8 +130,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		shear_x = clamp(shear_x, emin.x, emax.x)
 		shear_z = clamp(shear_z, emin.z, emax.z)
 --]====]
-		--local n2d = area2d:index(shear_x, shear_z)
-		local n2d = area2d:index(x, z)
+		local n2d = area2d:index(shear_x, shear_z)
+		--local n2d = area2d:index(x, z)
 
 		--return baseterrain[n2d]
 
@@ -242,7 +242,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   sw.despeckle_terrain(vm, minp, maxp)
 
   -- Run biome generator only for surface chunks.
-  if y0 >= (get_height(x0, z0) - 150) then
+  if y0 >= (get_height(x0, z0) - 250) then
 		sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height)
 	end
 

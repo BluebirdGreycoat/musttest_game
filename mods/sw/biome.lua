@@ -1,5 +1,6 @@
 
 local vm_data = {}
+local vm_param2_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("default:stone")
@@ -7,8 +8,10 @@ local c_cobble = minetest.get_content_id("default:cobble")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_obsidian = minetest.get_content_id("default:obsidian")
 local c_gravel = minetest.get_content_id("default:gravel")
+local c_rackcobble = minetest.get_content_id("rackstone:cobble")
 
 local NN_DEAD_CORAL = "default:coral_skeleton"
+local SPHERE_ADJACENT_BIOME_RADIUS = 50
 
 local abs = math.abs
 local floor = math.floor
@@ -22,6 +25,16 @@ local vlen = vector.length
 -- Param2 horizontal branch rotations.
 local branch_rotations = {4, 8, 12, 16}
 local branch_directions = {2, 0, 3, 1}
+
+local ARADONIA_FLOWERS_LIST = {
+	{id=minetest.get_content_id("aradonia:caveflower6"), param2=0},
+	{id=minetest.get_content_id("aradonia:caveflower8"), param2=0},
+	{id=minetest.get_content_id("aradonia:caveflower9"), param2=0},
+	{id=minetest.get_content_id("aradonia:caveflower10"), param2=0},
+	{id=minetest.get_content_id("aradonia:caveflower11"), param2=2},
+	{id=minetest.get_content_id("aradonia:caveflower12"), param2=10},
+	{id=minetest.get_content_id("aradonia:caveflower13"), param2=35},
+}
 
 local sphere_base_locations = {
 	{x=1, y=0, z=0},
@@ -43,7 +56,7 @@ local sphere_base_locations = {
 }
 
 function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_height)
-	local spheres = {}--sw.get_spheres(minp, maxp, get_height)
+	local spheres = sw.get_spheres(minp, maxp, get_height, SPHERE_ADJACENT_BIOME_RADIUS)
 
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
@@ -53,6 +66,7 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 	--print('pos: ' .. minetest.pos_to_string(minp) .. ', blockseed: ' .. seed .. ', rnd: ' .. pr:next())
 
 	vm:get_data(vm_data)
+	vm:get_param2_data(vm_param2_data)
 
 	local x1 = maxp.x
 	local y1 = maxp.y
@@ -109,20 +123,46 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 							if #spheres == 0 then
 								vm_data[vp_c] = c_cobble
 							else
-								local want_smudge = false
+								-- Are we adjacent to a sphere?
+								local sphere_adjacent = false
+								local sphere_radius = 0
+								local closest_dist = SPHERE_ADJACENT_BIOME_RADIUS ^ 2
+
 								for m = 1, #spheres do
 									local sph = spheres[m]
 									local sx1 = x - sph.pos_x
 									local sy1 = y - sph.y_level
 									local sz1 = z - sph.pos_z
-									if sqrt(sx1 * sx1 + sy1 * sy1 + sz1 * sz1) < 50 then
-										want_smudge = true
-										break
+									local dst = sqrt(sx1 * sx1 + sy1 * sy1 + sz1 * sz1)
+
+									if dst < closest_dist then
+										sphere_adjacent = true
+										sphere_radius = sph.radius + 3
+										closest_dist = dst
 									end
 								end
 
-								if want_smudge then
-									vm_data[vp_c] = c_gravel
+								if sphere_adjacent then
+									local m = SPHERE_ADJACENT_BIOME_RADIUS - sphere_radius
+									local n = closest_dist
+									local o = abs(n - sphere_radius)
+
+									local r = (pr:next(0, 100) / 100) * -1 + 1
+									local d = o / m
+									r = r ^ 5
+									local g = r ^ 10
+
+									if r > d then
+										vm_data[vp_c] = c_gravel
+									else
+										vm_data[vp_c] = c_cobble
+									end
+
+									--if g > d then
+									--	local f = ARADONIA_FLOWERS_LIST[pr:next(1, #ARADONIA_FLOWERS_LIST)]
+									--	vm_data[vp_u] = f.id
+									--	vm_param2_data[vp_u] = f.param2
+									--end
 								else
 									vm_data[vp_c] = c_cobble
 								end
@@ -145,6 +185,7 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 	end
 
 	vm:set_data(vm_data)
+  vm:set_param2_data(vm_param2_data)
 
   local function place_ground_decorations(decolist, decofunc)
 		for k = 1, #decolist do

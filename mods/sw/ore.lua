@@ -42,7 +42,7 @@ local scatter_ores = {
 
 	-- Commons.
 	{ore="default:stone_with_coal", seed=1, threshhold=0.1, scarcity=8, count=8, size=3, wherein={"default:stone", "default:cobble"}},
-	{ore="kalite:ore", seed=12, threshhold=0.1, scarcity=12, count=5, size=3, wherein={"default:stone", "default:cobble"}},
+	{ore="kalite:ore", seed=12, threshhold=0.1, scarcity=12, count=5, size=3},
 	{ore="default:stone_with_iron", seed=2, threshhold=0.2, scarcity=7, count=5, size=3, wherein={"default:stone", "default:cobble"}},
 	{ore="default:stone_with_copper", seed=3, threshhold=0.2, scarcity=9, count=5, size=3},
 	{ore="quartz:quartz_ore", seed=30, threshhold=0.1, scarcity=9, count=5, size=3},

@@ -72,7 +72,7 @@ do
 				local pos2d = {x=px, y=pz}
 				local contents = SPHERE_CONTENTS[pr2:next(1, #SPHERE_CONTENTS)]
 
-				if abs(perlin:get_2d(pos2d)) < 0.2 then
+				--if abs(perlin:get_2d(pos2d)) < 0.2 then
 					ALL_SPHERES[#ALL_SPHERES + 1] = {
 						pos_x = px,
 						pos_z = pz,
@@ -82,18 +82,21 @@ do
 						cid_2 = contents[2],
 						cid_3 = contents[3],
 					}
-				end
+				--end
 			end
 		end
 	end
 end
+print('num total spheres: ' .. #ALL_SPHERES)
 --------------------------------------------------------------------------------
 
 -- Get which spheres intersect this map chunk.
 function sw.get_spheres(minp, maxp, heightfunc)
 	local minx = minp.x - MAX_RADIUS
+	local miny = minp.y - MAX_RADIUS
 	local minz = minp.z - MAX_RADIUS
 	local maxx = maxp.x + MAX_RADIUS
+	local maxy = maxp.y + MAX_RADIUS
 	local maxz = maxp.z + MAX_RADIUS
 
 	local got = {}
@@ -103,14 +106,15 @@ function sw.get_spheres(minp, maxp, heightfunc)
 		local data = ALL_SPHERES[k]
 		if data.pos_x >= minx and data.pos_x <= maxx then
 			if data.pos_z >= minz and data.pos_z <= maxz then
+				print('matching x/z sphere')
 				-- Find ground level at the center of each sphere.
 				local y_level = heightfunc(data.pos_x, data.pos_z)
-				local miny = minp.y - MAX_RADIUS
-				local maxy = maxp.y + MAX_RADIUS
+				print('y_level: ' .. y_level)
 
 				if y_level >= miny and y_level <= maxy then
-					got[#got + 1] = table.copy(data)
-					got[#got].y_level = y_level
+					local d = table.copy(data)
+					d.y_level = y_level
+					got[#got + 1] = d
 				end
 			end
 		end
@@ -131,6 +135,7 @@ sw.create_3d_noise("sphereshear", {
 
 function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, heightfunc)
 	local spheres = sw.get_spheres(minp, maxp, heightfunc)
+	print('spheres: ' .. #spheres)
 	if #spheres == 0 then
 		return
 	end

@@ -14,6 +14,10 @@ local abs = math.abs
 local floor = math.floor
 local max = math.max
 local min = math.min
+local vdist = vector.distance
+local vround = vector.round
+local sqrt = math.sqrt
+local vlen = vector.length
 
 -- Param2 horizontal branch rotations.
 local branch_rotations = {4, 8, 12, 16}
@@ -38,7 +42,9 @@ local sphere_base_locations = {
 	{x=-1, y=1, z=-1},
 }
 
-function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
+function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_height)
+	local spheres = {}--sw.get_spheres(minp, maxp, get_height)
+
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
@@ -100,7 +106,27 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc)
 						-- Need this +/- 1 here because ground-Y isn't perfect for some
 						-- reason, even though it should always be a rounded integer.
 						if y >= ground_y - 1 and y <= ground_y + 1 then
-							vm_data[vp_c] = c_cobble
+							if #spheres == 0 then
+								vm_data[vp_c] = c_cobble
+							else
+								local want_smudge = false
+								for m = 1, #spheres do
+									local sph = spheres[m]
+									local sx1 = x - sph.pos_x
+									local sy1 = y - sph.y_level
+									local sz1 = z - sph.pos_z
+									if sqrt(sx1 * sx1 + sy1 * sy1 + sz1 * sz1) < 50 then
+										want_smudge = true
+										break
+									end
+								end
+
+								if want_smudge then
+									vm_data[vp_c] = c_gravel
+								else
+									vm_data[vp_c] = c_cobble
+								end
+							end
 
 							-- Surround base of obsidian spheres with special material.
 							for k = 1, #sphere_base_locations do

@@ -24,7 +24,7 @@ minetest.register_node(':aradonia:caveflower6', {
 	inventory_image = 'dvd_luminousflower.png',
 	paramtype = "light",
 	light_source = 6,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Fairy Flower
@@ -37,7 +37,7 @@ minetest.register_node(':aradonia:caveflower8', {
 	inventory_image = 'dvd_fairyflower2.png',
 	paramtype = "light",
 	light_source = 5,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Weeping Sunset Flower
@@ -50,7 +50,7 @@ minetest.register_node(':aradonia:caveflower9', {
 	inventory_image = 'dvd_weepingsunset.png',
 	paramtype = "light",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Weeping Sunrise Flower
@@ -63,7 +63,7 @@ minetest.register_node(':aradonia:caveflower10', {
 	inventory_image = 'dvd_weepingsunrise.png',
 	paramtype = "light",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Fiery Lantern
@@ -78,7 +78,7 @@ minetest.register_node(':aradonia:caveflower11', {
 	paramtype2 = "meshoptions",
 	place_param2 = 2,
 	light_source = 5,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Fireflowers
@@ -93,7 +93,7 @@ minetest.register_node(':aradonia:caveflower12', {
 	paramtype2 = "meshoptions",
 	place_param2 = 10,
 	light_source = 2,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 })
 
 -- Fiery Thorns
@@ -108,7 +108,7 @@ minetest.register_node(':aradonia:caveflower13', {
 	paramtype2 = "meshoptions",
 	place_param2 = 3+32,
 	light_source = 1,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1},
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 
 	damage_per_second = 2*500,
   _damage_per_second_type = "snappy",

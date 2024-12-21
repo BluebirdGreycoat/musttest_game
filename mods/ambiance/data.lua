@@ -367,6 +367,12 @@ ambiance.tmpsounds = {
 		realm = "stoneworld",
 	},
 
+	-- SARAVINCA
+	{name="wind1",          realm="ariba", gain=1.0, absminy=21150, absmaxy=23450, miny=0, maxy=30000, ground_offset=23000, time="", indoors=false, mintime=20, maxtime=40, },
+	{name="wind2",          realm="ariba", gain=1.0, absminy=21150, absmaxy=23450, miny=0, maxy=30000, ground_offset=23000, time="", indoors=false, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="ariba", gain=1.0, absminy=21150, absmaxy=23450, miny=0, maxy=30000, ground_offset=23000, time="", indoors=false, mintime=20, maxtime=40, },
+	{name="desertwind",     realm="ariba", mingain=0.2, maxgain=0.4, absminy=21150, absmaxy=23450, miny=0, maxy=30000, ground_offset=23000, time="", indoors=false, mintime=6, maxtime=8, },
+
 	-- Cavern ambiance for Saravinca.
 	{
 		name = "cavewind", gain = 1.0, miny = 21150, maxy = 23000, time = "", indoors = nil, mintime = 25, maxtime = 45,

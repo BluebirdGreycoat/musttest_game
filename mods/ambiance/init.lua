@@ -64,7 +64,12 @@ ambiance.globalstep = function(dtime)
 						local maxy = v.maxy
 
 						if v.ground_offset then
-							local g = v.ground_offset(vround(pos))
+							local g
+							if type(v.ground_offset) == "function" then
+								g = v.ground_offset(vround(pos))
+							else
+								g = v.ground_offset
+							end
 							miny = g + miny
 							maxy = g + maxy
 

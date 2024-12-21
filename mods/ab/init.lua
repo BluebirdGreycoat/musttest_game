@@ -73,7 +73,7 @@ function ab.want_cavern_ambiance(pos3d)
 
 	if y < (ground_y - (350 + (abs(n4) * 50))) then
 		local noise1 = n1 + n2 + n3
-		if noise1 < -0.2 then
+		if noise1 < 0.0 then
 			return true
 		end
 	end

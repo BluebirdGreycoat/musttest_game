@@ -1,4 +1,19 @@
 
+local function murdertusk_despawn(self)
+	local pos = vector.round(self.object:get_pos())
+	local nodeabove = minetest.get_node_or_nil(pos)
+	local nodeunder = minetest.get_node_or_nil(vector.offset(pos, 0, -1, 0))
+	if nodeabove and nodeunder then
+		if nodeabove.name == "air" and nodeunder.name ~= "air" then
+			minetest.set_node(pos, {name="default:dry_grass_" .. math.random(1, 5), param2=2})
+			minetest.check_for_falling(pos)
+		end
+	end
+
+	-- Mark object for removal by the mob API.
+	self.mkrm = true
+end
+
 -- Warthog by KrupnoPavel. Modified for Enyekala by MustTest.
 mobs.register_mob("animalworld:murdertusk", {
 	stepheight = 2,
@@ -55,6 +70,8 @@ mobs.register_mob("animalworld:murdertusk", {
 	},
 	view_range = 50,
   makes_bones_in_lava = true,
+  daytime_despawn = true,
+  on_despawn = murdertusk_despawn,
 })
 
 mobs.register_egg("animalworld:murdertusk", "Murdertusk", "default_dirt.png", 1)

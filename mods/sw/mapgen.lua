@@ -256,7 +256,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	--print('carcorsica: mapgen time: ' .. (time2 - time1))
+	print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

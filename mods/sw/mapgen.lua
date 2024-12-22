@@ -349,7 +349,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
 
-	sw.generate_xen(vm, minp, maxp, seed)
+	sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 	if far_diff(-100) then
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)

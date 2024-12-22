@@ -83,7 +83,7 @@ sw.create_2d_noise("xen5", {
 	lacunarity = 1.75,
 })
 
-function sw.generate_xen(vm, minp, maxp, seed)
+function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local x1 = maxp.x
 	local y1 = maxp.y
 	local z1 = maxp.z
@@ -121,8 +121,20 @@ function sw.generate_xen(vm, minp, maxp, seed)
 	local xen4 = sw.get_2d_noise(bp2d, sides2D, "xen4")
 	local xen5 = sw.get_2d_noise(bp2d, sides2D, "xen5")
 
-	local function is_xen(vp, vp2d, x, y, z)
-		local n1 = xen1[vp]
+	local function is_xen(x, y, z)
+		local vp3d = area:index(x, y, z)
+
+		-- Shear the 2D noise coordinate offset.
+		local shear_x	= floor(x + shear1[vp3d])
+		local shear_z = floor(z + shear2[vp3d])
+
+		shear_x = clamp(shear_x, emin.x, emax.x)
+		shear_z = clamp(shear_z, emin.z, emax.z)
+
+		local vp2d = area2d:index(shear_x, shear_z)
+		vp3d = area:index(shear_x, y, shear_z)
+
+		local n1 = xen1[vp3d]
 		local n2 = xen2[vp2d] -- For large islands and voids.
 		local n3 = 0--xen3[vp2d] -- Xen Y-level offset.
 		local n4 = xen4[vp2d] -- Holes.
@@ -156,14 +168,13 @@ function sw.generate_xen(vm, minp, maxp, seed)
 
 	for z = z0, z1 do
 		for x = x0, x1 do
-			local vp2d = area2d:index(x, z)
 			for y = y0, y1 do
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if is_xen(vp, vp2d, x, y, z) then
+						if is_xen(x, y, z) then
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air

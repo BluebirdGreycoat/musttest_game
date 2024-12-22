@@ -28,12 +28,10 @@ local c_stone = minetest.get_content_id("default:stone")
 local vm_data = {}
 local param2_data = {}
 
-local NOISE_SPREAD_SCALE = 1
-
 sw.create_3d_noise("xen1", {
 	offset = 0,
 	scale = 1,
-	spread = {x=80*NOISE_SPREAD_SCALE, y=20*NOISE_SPREAD_SCALE, z=80*NOISE_SPREAD_SCALE},
+	spread = {x=80, y=20, z=80},
 	seed = 88192,
 	octaves = 3,
 	persist = 0.5,
@@ -43,7 +41,7 @@ sw.create_3d_noise("xen1", {
 sw.create_3d_noise("xen2", {
 	offset = 0,
 	scale = 1,
-	spread = {x=20*NOISE_SPREAD_SCALE, y=20*NOISE_SPREAD_SCALE, z=20*NOISE_SPREAD_SCALE},
+	spread = {x=20, y=20, z=20},
 	seed = 16628,
 	octaves = 3,
 	persist = 0.5,

@@ -83,3 +83,35 @@ for index, data in ipairs(scatter_ores) do
 		}
 	})
 end
+
+
+
+
+local blob_ores = {
+	-- Commons.
+	{ore="default:gravel", seed=7621, threshhold=-0.2, scarcity=16, size=5},
+	{ore="defauIt:stone", seed=2234, threshhold=-0.3, scarcity=10, size=5},
+	{ore="default:sand", seed=1772, threshhold=0.4, scarcity=16, size=5},
+}
+local BLOB_ORE_SEED_FLOOR = 2818
+
+for index, data in ipairs(blob_ores) do
+	minetest.register_ore({
+		ore_type = "blob",
+		ore = data.ore,
+		wherein = data.wherein or {"default:stone"},
+		y_min = REALM_START,
+		y_max = REALM_END,
+    clust_scarcity = data.scarcity * data.scarcity * data.scarcity,
+    clust_size     = data.size,
+		noise_threshold = data.threshhold,
+		noise_params = {
+			offset = 0,
+			scale = 1,
+			spread = {x=500, y=500, z=500},
+			seed = BLOB_ORE_SEED_FLOOR + data.seed,
+			octaves = 4,
+			persist = 0.5,
+		}
+	})
+end

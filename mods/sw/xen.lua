@@ -3,7 +3,7 @@ local REALM_START = 10150
 local REALM_END = 15150
 local REALM_GROUND = 10150+200
 local TAN_OF_1 = math.tan(1)
-local XEN_BEGIN = REALM_END - 1000
+local XEN_BEGIN = REALM_END - 2000
 local XEN_END = REALM_END
 
 -- Localize for performance.
@@ -28,24 +28,26 @@ local c_stone = minetest.get_content_id("default:stone")
 local vm_data = {}
 local param2_data = {}
 
+local NOISE_SPREAD_SCALE = 1
+
 sw.create_3d_noise("xen1", {
 	offset = 0,
 	scale = 1,
-	spread = {x=74, y=62, z=74},
-	seed = 88815,
+	spread = {x=80*NOISE_SPREAD_SCALE, y=20*NOISE_SPREAD_SCALE, z=80*NOISE_SPREAD_SCALE},
+	seed = 88192,
 	octaves = 3,
-	persist = 0.8,
-	lacunarity = 1.5,
+	persist = 0.5,
+	lacunarity = 1.75,
 })
 
 sw.create_3d_noise("xen2", {
 	offset = 0,
 	scale = 1,
-	spread = {x=8, y=16, z=8},
-	seed = 888166,
-	octaves = 2,
+	spread = {x=20*NOISE_SPREAD_SCALE, y=20*NOISE_SPREAD_SCALE, z=20*NOISE_SPREAD_SCALE},
+	seed = 16628,
+	octaves = 3,
 	persist = 0.5,
-	lacunarity = 1.5,
+	lacunarity = 1.75,
 })
 
 function sw.generate_xen(vm, minp, maxp, seed)
@@ -82,7 +84,28 @@ function sw.generate_xen(vm, minp, maxp, seed)
 	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
 	local xen2 = sw.get_3d_noise(bp3d, sides3D, "xen2")
 
-	local function is_xen(x, y, z)
+	local function is_xen(vp, x, y, z)
+		local n1 = xen1[vp]
+		local n2 = xen2[vp]
+
+		local xen_mid = math.floor((XEN_BEGIN+XEN_END)/2)
+		local xen_middiff_up = math.floor(XEN_END - xen_mid)
+		local xen_middiff_dn = math.floor(xen_mid - XEN_BEGIN)
+
+		-- Extinction value shall be 1 at XEN MID, and 0 at both top and bottom.
+		-- Using exponential falloff.
+		local extinction
+		if y >= xen_mid then
+			extinction = ((XEN_END - y) / xen_middiff_up)
+		else
+			extinction = ((y - XEN_BEGIN) / xen_middiff_dn)
+		end
+		extinction = clamp(extinction, 0, 1)
+		extinction = tan(extinction) / TAN_OF_1
+
+		if n1 < (-1.5 + extinction) then
+			return true
+		end
 	end
 
 	for z = z0, z1 do
@@ -93,7 +116,7 @@ function sw.generate_xen(vm, minp, maxp, seed)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if is_xen(x, y, z) then
+						if is_xen(vp, x, y, z) then
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air

@@ -21,10 +21,13 @@ local c_worm            = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus          = minetest.get_content_id("cavestuff:glow_fungus")
 local c_adamant         = minetest.get_content_id("default:adamant")
 local c_sand            = minetest.get_content_id("cavestuff:coal_dust")
+local c_fireflower      = minetest.get_content_id("aradonia:caveflower12")
+local c_firethorn       = minetest.get_content_id("aradonia:caveflower13")
 
 -- Externally located tables for performance.
 local vm_data = {}
 local vm_light = {}
+local param2_data = {}
 
 local noisemap1 = {}
 local noisemap3 = {}
@@ -239,6 +242,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 	local emin, emax = vm:get_emerged_area()
 	vm:get_data(vm_data)
 	vm:get_light_data(vm_light)
+	vm:get_param2_data(param2_data)
 
 	-- Actual emerged area should be bigger than the chunk we're generating!
 	assert(emin.y < minp.y and emin.x < minp.x and emin.z < minp.z)
@@ -551,6 +555,9 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	-- Shall store coordinates everywhere I place sand.
+	local all_sand_positions = {}
+
 	-- Second mapgen pass. Add context-specific modifications and decorations.
 	-- No overgeneration, stay within minp/maxp bounds.
 	for z = z0 + 1, z1 - 1 do
@@ -616,6 +623,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 					if cp == c_stone and cu == c_air and cd == c_stone then
 						if sand_threshold < 0.1 then
 							nid = c_sand
+							all_sand_positions[#all_sand_positions+1] = {x=x, y=y, z=z}
 						else
 							nid = c_cobble
 
@@ -647,6 +655,25 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 		end
 	end
 
+	-- Place stuff on sand.
+	for k = 1, #all_sand_positions do
+		local pos = all_sand_positions[k]
+		local v1 = max_area:index(pos.x, pos.y, pos.z)
+		local v2 = max_area:index(pos.x, pos.y+1, pos.z)
+		local v3 = max_area:index(pos.x, pos.y+2, pos.z)
+
+		if vm_data[v1] == c_sand and vm_data[v2] == c_air and vm_data[v3] == c_air then
+			local rnd = pr:next(1, 100)
+			if rnd == 1 then
+				vm_data[v2] = c_fireflower
+				param2_data[v2] = 10
+			elseif rnd < 30 then
+				vm_data[v2] = c_firethorn
+				param2_data[v2] = 35
+			end
+		end
+	end
+
 	-- Lighting pass. Set everything dark.
 	for z = emin.z, emax.z do
 		for x = emin.x, emax.x do
@@ -659,6 +686,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Finalize voxel manipulator.
 	vm:set_data(vm_data)
+	vm:set_param2_data(param2_data)
 	minetest.generate_ores(vm)
 	vm:set_light_data(vm_light)
 	vm:calc_lighting({x=emin.x, y=emin.y, z=emin.z}, {x=emax.x, y=maxp.y, z=emax.z}, true)

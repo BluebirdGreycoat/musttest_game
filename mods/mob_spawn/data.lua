@@ -855,7 +855,7 @@ register({
 	min_light = 0,
 	max_light = 15,
 	min_height = 10150,
-	max_height = 15150,
+	max_height = 13150, -- Not in Xen.
 	clearance = 3,
 
 	--[[

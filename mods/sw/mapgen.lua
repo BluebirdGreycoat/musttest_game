@@ -198,14 +198,31 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- First mapgen pass.
 	-- Optimization: we can skip calculating the exact ground height if we KNOW we are far
 	-- enough below it. The probability of this creating a glitch is very low.
+	-- Generally, the more points in this list, the better our accuracy.
 	local chunk_horiz_levels = {
+		-- Chunk corners.
 		get_height(x0, z0),
 		get_height(x1, z0),
 		get_height(x1, z1),
 		get_height(x0, z1),
-		get_height(floor((x0+x1)/2), floor((z0+z1)/2)), -- Chunk center.
+
+		-- Chunk center.
+		get_height(floor((x0+x1)/2), floor((z0+z1)/2)),
+
+		-- Edge midpoints.
+		get_height(floor((x0+x1)/2), z0),
+		get_height(x1, floor((z0+z1)/2)),
+		get_height(floor((x0+x1)/2), z1),
+		get_height(x0, floor((z0+z1)/2)),
 	}
 
+	-- If passed a positive diff, this function only returns TRUE if ALL tested
+	-- ground points are BELOW the BOTTOM of the chunk. Useful to check if a chunk
+	-- is entirely above ground in the sky.
+	--
+	-- If passed a negative diff, this function only returns TRUE if ALL tested
+	-- ground points are ABOVE the TOP of the chunk. Useful to check if a chunk is
+	-- entirely below ground, with 'diff' tolerance.
 	local function far_diff(diff)
 		for k, height in ipairs(chunk_horiz_levels) do
 			local y_level = height + diff
@@ -218,11 +235,12 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 				return false
 			end
 		end
-		-- y1 is significantly (determined by diff) above/below all entries in the list.
+		-- y0/y1 is significantly (determined by diff) above/below all entries in the list.
 		return true
 	end
 
 	if far_diff(-250) then
+		--print('filling all with stone')
 		-- Far below surface. Fill everything with stone.
 		for z = z0, z1 do
 			for x = x0, x1 do
@@ -303,7 +321,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
 
-	if far_diff(-150) then
+	if far_diff(-100) then
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)
 	end
 
@@ -329,14 +347,14 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	vm:update_liquids()
 
 	-- Skip mapfix for underground sections.
-	if far_diff(-150) then
+	if far_diff(-100) then
 		gennotify_data.need_mapfix = false
 	end
 
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	print('carcorsica: mapgen time: ' .. (time2 - time1))
+	--print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

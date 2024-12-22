@@ -36,7 +36,7 @@ mobs.register_mob("animalworld:murdertusk", {
 	collisionbox = {-0.5, -0.01, -0.5, 0.5, 0.95, 0.5},
 	visual = "mesh",
 	mesh = "mobs_pumba.b3d",
-	visual_size = {x = 1.0, y = 1.0},
+	visual_size = {x = 1.2, y = 1.2},
 	textures = {
 		{"animalworld_suboar2.png"},
 	},

@@ -9,6 +9,7 @@ local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_obsidian = minetest.get_content_id("default:obsidian")
 local c_gravel = minetest.get_content_id("default:gravel")
 local c_rackcobble = minetest.get_content_id("rackstone:cobble")
+local c_sunflower = minetest.get_content_id("aradonia:caveflower9")
 
 local NN_DEAD_CORAL = "default:coral_skeleton"
 local SPHERE_ADJACENT_BIOME_RADIUS = 100
@@ -55,7 +56,7 @@ local sphere_base_locations = {
 	{x=-1, y=1, z=-1},
 }
 
-function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_height)
+function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_height, gennotify_data)
 	local x1 = maxp.x
 	local y1 = maxp.y
 	local z1 = maxp.z
@@ -107,6 +108,8 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 	generate_deco_positions(deadcorals, 3, 3, pr:next(3, 6), 2)
 	generate_deco_positions(grass, 1, 50, 3, 2)
 
+	local sunflower_positions = {}
+
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
@@ -155,7 +158,7 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 									local r = (pr:next(0, 100) / 100) * -1 + 1
 									local d = o / m
 									r = r ^ 3
-									local g = r ^ 10
+									local g = r ^ 15
 
 									if r > d then
 										vm_data[vp_c] = c_gravel
@@ -163,11 +166,12 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 										vm_data[vp_c] = c_cobble
 									end
 
-									--if g > d then
-									--	local f = ARADONIA_FLOWERS_LIST[pr:next(1, #ARADONIA_FLOWERS_LIST)]
-									--	vm_data[vp_u] = f.id
-									--	vm_param2_data[vp_u] = f.param2
-									--end
+									if g > d and cid_u == c_air then
+										if pr:next(1, 20) == 1 then
+											sunflower_positions[#sunflower_positions+1] = {x=x, y=y+1, z=z}
+											-- Note: can't place the node here because that will interfere with mapgen.
+										end
+									end
 								else
 									vm_data[vp_c] = c_cobble
 								end
@@ -187,6 +191,16 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 				end
 			end
 		end
+	end
+
+	--print('placing ' .. #sunflower_positions .. ' sunflowers')
+
+	for k = 1, #sunflower_positions do
+		local p = sunflower_positions[k]
+		local vp = area:index(p.x, p.y, p.z)
+		vm_data[vp] = c_sunflower
+		local oc = gennotify_data.on_construct
+		oc[#oc+1] = p
 	end
 
 	vm:set_data(vm_data)

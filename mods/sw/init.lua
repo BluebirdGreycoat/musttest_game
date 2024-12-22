@@ -34,6 +34,15 @@ function sw.on_generated(minp, maxp, blockseed)
 			mapfix.work(emin, emax)
 		end)
 	end
+
+	for k = 1, #data.on_construct do
+		local pos = data.on_construct[k]
+		local node = minetest.get_node(pos)
+		local ndef = minetest.registered_nodes[node.name]
+		if ndef and ndef.on_construct then
+			ndef.on_construct(pos)
+		end
+	end
 end
 
 

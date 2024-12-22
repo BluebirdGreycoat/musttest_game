@@ -74,6 +74,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	gennotify_data.minp = minp
 	gennotify_data.maxp = maxp
 	gennotify_data.need_mapfix = true
+	gennotify_data.on_construct = {} -- Positions where 'on_construct' callbacks need to be run.
 --]====]
 
 	-- Grab the voxel manipulator.
@@ -240,7 +241,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   sw.generate_tunnels(vm, minp, maxp, seed, get_height)
   sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
   sw.despeckle_terrain(vm, minp, maxp)
-	sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height)
+	sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height, gennotify_data)
 
   minetest.generate_ores(vm)
 
@@ -256,7 +257,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	print('carcorsica: mapgen time: ' .. (time2 - time1))
+	--print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

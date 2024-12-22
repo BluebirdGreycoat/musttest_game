@@ -28,32 +28,57 @@ local c_stone = minetest.get_content_id("default:stone")
 local vm_data = {}
 local param2_data = {}
 
+-- Main shape of Xen islands.
 sw.create_3d_noise("xen1", {
 	offset = 0,
 	scale = 1,
-	spread = {x=80, y=30, z=80},
+	spread = {x=180, y=60, z=180},
 	seed = 88192,
 	octaves = 3,
 	persist = 0.5,
 	lacunarity = 1.75,
 })
 
-sw.create_3d_noise("xen2", {
+-- Where Xen spawns.
+sw.create_2d_noise("xen2", {
 	offset = 0,
 	scale = 1,
-	spread = {x=20, y=20, z=20},
-	seed = 16628,
+	spread = {x=100, y=100, z=100},
+	seed = 4712,
+	octaves = 1,
+	persist = 0.5,
+	lacunarity = 2,
+})
+
+-- Holes in Xen. A gift for those who don't look where they step.
+sw.create_2d_noise("xen4", {
+	offset = 0,
+	scale = 1,
+	spread = {x=40, y=40, z=40},
+	seed = 4782,
 	octaves = 3,
 	persist = 0.5,
 	lacunarity = 1.75,
 })
 
+-- Xen Y level.
 sw.create_2d_noise("xen3", {
 	offset = 0,
 	scale = 500,
 	spread = {x=800, y=800, z=800},
 	seed = 66172,
 	octaves = 3,
+	persist = 0.5,
+	lacunarity = 1.75,
+})
+
+-- Large scale void spaces.
+sw.create_2d_noise("xen5", {
+	offset = 0,
+	scale = 1,
+	spread = {x=2000, y=2000, z=2000},
+	seed = 18349,
+	octaves = 8,
 	persist = 0.5,
 	lacunarity = 1.75,
 })
@@ -91,13 +116,17 @@ function sw.generate_xen(vm, minp, maxp, seed)
 	vm:get_param2_data(param2_data)
 
 	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
-	local xen2 = sw.get_3d_noise(bp3d, sides3D, "xen2")
+	local xen2 = sw.get_2d_noise(bp2d, sides2D, "xen2")
 	local xen3 = sw.get_2d_noise(bp2d, sides2D, "xen3")
+	local xen4 = sw.get_2d_noise(bp2d, sides2D, "xen4")
+	local xen5 = sw.get_2d_noise(bp2d, sides2D, "xen5")
 
 	local function is_xen(vp, vp2d, x, y, z)
 		local n1 = xen1[vp]
-		local n2 = xen2[vp]
-		local n3 = xen3[vp2d]
+		local n2 = xen2[vp2d] -- For large islands and voids.
+		local n3 = 0--xen3[vp2d] -- Xen Y-level offset.
+		local n4 = xen4[vp2d] -- Holes.
+		local n5 = xen5[vp2d] -- Huge void areas.
 
 		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
 		local xen_middiff_up = math.floor(XEN_END - xen_mid)
@@ -112,9 +141,15 @@ function sw.generate_xen(vm, minp, maxp, seed)
 			extinction = ((y - XEN_BEGIN) / xen_middiff_dn)
 		end
 		extinction = clamp(extinction, 0, 1)
-		extinction = tan(extinction ^ 3) / TAN_OF_1
+		extinction = tan(extinction ^ 4) / TAN_OF_1
 
-		if n1 < (-1.25 + extinction) then
+		local islands_and_voids = clamp(abs(n2), 0, 1)
+		islands_and_voids = tan(islands_and_voids) / TAN_OF_1
+		islands_and_voids = islands_and_voids - 0.25
+
+		local largescale = clamp(n5, -1, 1) * 0.2
+
+		if (n1 + (abs(n4)*0.25) - islands_and_voids + largescale) < (-1.25 + extinction) then
 			return true
 		end
 	end

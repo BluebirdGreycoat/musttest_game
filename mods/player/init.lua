@@ -249,6 +249,8 @@ minetest.register_on_joinplayer(function(player)
 	if player["set_lighting"] ~= nil then
 		player:set_lighting({
 			shadows = {intensity=0.3},
+			volumetric_light = {strength=0.2},
+			bloom = {intensity=0.05},
 		})
 	else
 		minetest.log("WARNING", "This server does not support player:lighting !");

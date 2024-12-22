@@ -136,7 +136,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 		local n1 = xen1[vp3d]
 		local n2 = xen2[vp2d] -- For large islands and voids.
-		local n3 = 0--xen3[vp2d] -- Xen Y-level offset.
+		local n3 = xen3[vp2d] -- Xen Y-level offset.
 		local n4 = xen4[vp2d] -- Holes.
 		local n5 = xen5[vp2d] -- Huge void areas.
 

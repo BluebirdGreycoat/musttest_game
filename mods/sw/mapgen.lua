@@ -16,6 +16,7 @@ dofile(sw.modpath .. "/despeckle.lua")
 dofile(sw.modpath .. "/spheres.lua")
 dofile(sw.modpath .. "/biome.lua")
 dofile(sw.modpath .. "/caverns.lua")
+dofile(sw.modpath .. "/xen.lua")
 --]====]
 
 local REALM_START = 10150
@@ -262,9 +263,33 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 				end
 			end
 		end
+
+		-- Compute underground darkness.
+		for z = emin.z, emax.z do
+			for x = emin.x, emax.x do
+				for y = emin.y, emax.y do
+					if y >= REALM_START and y <= REALM_END then
+						local vp = area:index(x, y, z)
+						vm_light[vp] = 0
+					end
+				end
+			end
+		end
 	elseif far_diff(250) then
 		-- Far above surface. Fill everything with air.
 		-- Aka do nothing.
+
+		-- Compute atmosphere light.
+		for z = emin.z, emax.z do
+			for x = emin.x, emax.x do
+				for y = emin.y, emax.y do
+					if y >= REALM_START and y <= REALM_END then
+						local vp = area:index(x, y, z)
+						vm_light[vp] = 15
+					end
+				end
+			end
+		end
 	else
 		-- We're near surface, must calculate ground height exactly.
 		for z = z0, z1 do
@@ -291,20 +316,21 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 				end
 			end
 		end
-	end
 
-	for z = emin.z, emax.z do
-		for x = emin.x, emax.x do
-			for y = emin.y, emax.y do
-				local ground_y = heightfunc(x, y, z)
+		-- Compute surface light.
+		for z = emin.z, emax.z do
+			for x = emin.x, emax.x do
+				for y = emin.y, emax.y do
+					local ground_y = heightfunc(x, y, z)
 
-				if y >= REALM_START and y <= REALM_END then
-					local vp = area:index(x, y, z)
+					if y >= REALM_START and y <= REALM_END then
+						local vp = area:index(x, y, z)
 
-					if y <= ground_y then
-						vm_light[vp] = 0
-					else
-						vm_light[vp] = 15
+						if y <= ground_y then
+							vm_light[vp] = 0
+						else
+							vm_light[vp] = 15
+						end
 					end
 				end
 			end
@@ -320,6 +346,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   --print('#1 - flat value: ' .. heightfunc(x0, y0, z0))
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
+
+	sw.generate_xen(vm, minp, maxp, seed)
 
 	if far_diff(-100) then
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)
@@ -354,7 +382,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	--print('carcorsica: mapgen time: ' .. (time2 - time1))
+	print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

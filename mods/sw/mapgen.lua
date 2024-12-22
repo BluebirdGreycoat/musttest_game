@@ -25,6 +25,8 @@ local REALM_GROUND = 10150+200
 local BEDROCK_HEIGHT = REALM_START + 12
 local LAVA_SEA_HEIGHT = 10170
 local TAN_OF_1 = math.tan(1)
+local XEN_BEGIN = REALM_END - 2000
+local XEN_END = REALM_END
 
 -- Localize for performance.
 local random = math.random
@@ -353,7 +355,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)
 	end
 
-	if not far_diff(250) then
+	-- Generate tunnels in all chunks NOT too far above ground, and also in Xen areas.
+	if not far_diff(250) or y1 >= XEN_BEGIN then
 		sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	end
 

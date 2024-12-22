@@ -31,7 +31,7 @@ local param2_data = {}
 sw.create_3d_noise("xen1", {
 	offset = 0,
 	scale = 1,
-	spread = {x=80, y=20, z=80},
+	spread = {x=80, y=30, z=80},
 	seed = 88192,
 	octaves = 3,
 	persist = 0.5,
@@ -43,6 +43,16 @@ sw.create_3d_noise("xen2", {
 	scale = 1,
 	spread = {x=20, y=20, z=20},
 	seed = 16628,
+	octaves = 3,
+	persist = 0.5,
+	lacunarity = 1.75,
+})
+
+sw.create_2d_noise("xen3", {
+	offset = 0,
+	scale = 500,
+	spread = {x=800, y=800, z=800},
+	seed = 66172,
 	octaves = 3,
 	persist = 0.5,
 	lacunarity = 1.75,
@@ -63,6 +73,7 @@ function sw.generate_xen(vm, minp, maxp, seed)
 
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PcgRandom(seed + 728)
 
 	-- Compute side lengths.
@@ -81,12 +92,14 @@ function sw.generate_xen(vm, minp, maxp, seed)
 
 	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
 	local xen2 = sw.get_3d_noise(bp3d, sides3D, "xen2")
+	local xen3 = sw.get_2d_noise(bp2d, sides2D, "xen3")
 
-	local function is_xen(vp, x, y, z)
+	local function is_xen(vp, vp2d, x, y, z)
 		local n1 = xen1[vp]
 		local n2 = xen2[vp]
+		local n3 = xen3[vp2d]
 
-		local xen_mid = math.floor((XEN_BEGIN+XEN_END)/2)
+		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
 		local xen_middiff_up = math.floor(XEN_END - xen_mid)
 		local xen_middiff_dn = math.floor(xen_mid - XEN_BEGIN)
 
@@ -99,22 +112,23 @@ function sw.generate_xen(vm, minp, maxp, seed)
 			extinction = ((y - XEN_BEGIN) / xen_middiff_dn)
 		end
 		extinction = clamp(extinction, 0, 1)
-		extinction = tan(extinction) / TAN_OF_1
+		extinction = tan(extinction ^ 3) / TAN_OF_1
 
-		if n1 < (-1.5 + extinction) then
+		if n1 < (-1.25 + extinction) then
 			return true
 		end
 	end
 
 	for z = z0, z1 do
 		for x = x0, x1 do
+			local vp2d = area2d:index(x, z)
 			for y = y0, y1 do
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if is_xen(vp, x, y, z) then
+						if is_xen(vp, vp2d, x, y, z) then
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air

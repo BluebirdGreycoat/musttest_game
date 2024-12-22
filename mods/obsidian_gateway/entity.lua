@@ -138,6 +138,12 @@ function obsidian_gateway.on_portent_step(self, dtime, moveresult)
 		end
 	end
 
+	-- Bug check.
+	if not self.realm or self.realm == "" then
+		self.object:remove()
+		return
+	end
+
 	-- Remove the entity once the gate stops pointing here.
 	local strexitpos = serveressentials.get_current_exit_location(self.realm)
 	local exitpos = minetest.string_to_pos(strexitpos)

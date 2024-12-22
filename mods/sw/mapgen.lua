@@ -375,6 +375,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	vm:update_liquids()
 
 	-- Skip mapfix for underground sections.
+	-- Note: because of Xen, we always have to mapfix the sky sections, even very high up.
 	if far_diff(-100) then
 		gennotify_data.need_mapfix = false
 	end

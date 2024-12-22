@@ -21,8 +21,32 @@ local function clamp(v, minv, maxv)
 	return max(minv, min(v, maxv))
 end
 
+local c_air = minetest.get_content_id("air")
+local c_ignore = minetest.get_content_id("ignore")
+local c_stone = minetest.get_content_id("default:stone")
+
 local vm_data = {}
 local param2_data = {}
+
+sw.create_3d_noise("xen1", {
+	offset = 0,
+	scale = 1,
+	spread = {x=74, y=62, z=74},
+	seed = 88815,
+	octaves = 3,
+	persist = 0.8,
+	lacunarity = 1.5,
+})
+
+sw.create_3d_noise("xen2", {
+	offset = 0,
+	scale = 1,
+	spread = {x=8, y=16, z=8},
+	seed = 888166,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 1.5,
+})
 
 function sw.generate_xen(vm, minp, maxp, seed)
 	local x1 = maxp.x
@@ -54,6 +78,31 @@ function sw.generate_xen(vm, minp, maxp, seed)
 
 	vm:get_data(vm_data)
 	vm:get_param2_data(param2_data)
+
+	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
+	local xen2 = sw.get_3d_noise(bp3d, sides3D, "xen2")
+
+	local function is_xen(x, y, z)
+	end
+
+	for z = z0, z1 do
+		for x = x0, x1 do
+			for y = y0, y1 do
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+					local cid = vm_data[vp]
+
+					if cid == c_air or cid == c_ignore then
+						if is_xen(x, y, z) then
+							vm_data[vp] = c_stone
+						else
+							vm_data[vp] = c_air
+						end
+					end
+				end
+			end
+		end
+	end
 
 	vm:set_data(vm_data)
 	vm:set_param2_data(param2_data)

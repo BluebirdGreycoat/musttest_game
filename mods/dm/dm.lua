@@ -1,4 +1,18 @@
 
+-- Chance to explode after death.
+local function after_dm_die(self, pos)
+	if math.random(1, 100) == 1 then
+		local def = {
+			radius = 5,
+			damage_radius = 25,
+			ignore_protection = false,
+			disable_drops = false,
+			ignore_on_blast = false,
+		}
+		tnt.boom(pos, def)
+	end
+end
+
 mobs.register_mob("dm:dm", {
 	description = "Dungeon Master",
 	type = "monster",
@@ -63,6 +77,7 @@ mobs.register_mob("dm:dm", {
 		speed_run = 15,
 	},
   makes_bones_in_lava = false,
+  after_die = after_dm_die,
 })
 
 

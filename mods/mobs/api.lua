@@ -730,6 +730,10 @@ local function check_for_death(self, cause, cmi_cause)
 
 		self.on_die(self, pos)
 
+		if self.after_die then
+			self.after_die(self, pos)
+		end
+
 		-- Mark for removal as last action on mob_step().
 		self.mkrm = true
 
@@ -764,6 +768,10 @@ local function check_for_death(self, cause, cmi_cause)
 	end
 
 	effect(pos, 20, "tnt_smoke.png")
+
+	if self.after_die then
+		self.after_die(self, pos)
+	end
 
 	return true
 end
@@ -5276,6 +5284,7 @@ if not mobs.registered then
 			owner                   = def.owner or "",
 			order                   = def.order or "",
 			on_die                  = def.on_die,
+			after_die               = def.after_die,
 			do_custom               = def.do_custom,
 
 			-- The number of nodes a mob can jump over. Actual jump velocity is

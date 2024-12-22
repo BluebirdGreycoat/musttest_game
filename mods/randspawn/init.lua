@@ -67,6 +67,25 @@ end
 
 
 
+-- List of nodes Outback gates should never place players over.
+local FORBIDDEN_SPAWN_SURFACE_NODES = {
+	"default:water_source",
+	"cw:water_source",
+	"default:lava_source",
+	"lbrim:lava_source",
+}
+
+local function forbidden_surface(nodename)
+	for k, v in ipairs(FORBIDDEN_SPAWN_SURFACE_NODES) do
+		if nodename == v then
+			return true
+		end
+	end
+	return false
+end
+
+
+
 local function callback(blockpos, action, calls_remaining, param)
 	-- We don't do anything until the last callback.
 	if calls_remaining ~= 0 then
@@ -87,11 +106,13 @@ local function callback(blockpos, action, calls_remaining, param)
 	local miny = pos.y - 15
 	local maxy = pos.y + 195
 
-	-- Start at bottom of emerged area and check upwards 100 meters to find ground.
+	-- Start at bottom of emerged area and scan upward to find ground.
 	for y = miny, maxy, 1 do
 		local thispos = {x=pos.x, y=y, z=pos.z}
 		local nu = get_node(thispos)
 		local na = get_node(vector.add(thispos, {x=0, y=1, z=0}))
+		local nb = get_node(vector.add(thispos, {x=0, y=2, z=0}))
+		local nd = get_node(vector.add(thispos, {x=0, y=3, z=0}))
 
 		-- Exit if map not loaded.
 		if nu.name == "ignore" or na.name == "ignore" then
@@ -99,13 +120,17 @@ local function callback(blockpos, action, calls_remaining, param)
 			break
 		end
 
-		if na.name == "air" and nu.name ~= "air" then
-			thispos.y = thispos.y + 1
+		-- Require 3 nodes of air to ensure player doesn't spawn with head buried.
+		-- We're not communists.
+		if na.name == "air" and nb.name == "air" and nd.name == "air" and nu.name ~= "air" then
+			if not forbidden_surface(nu.name) then
+				thispos.y = thispos.y + 1
 
-			-- Call `serveressentials.update_exit_location()` once we have a new spawnpoint.
-			--minetest.log("found new spawn location!")
-			serveressentials.update_exit_location(thispos, realm)
-			return
+				-- We have a new spawnpoint.
+				--minetest.log("found new spawn location!")
+				serveressentials.update_exit_location(thispos, realm)
+				return
+			end
 		end
 	end
 

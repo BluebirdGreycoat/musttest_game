@@ -1,6 +1,8 @@
 
 local REALM_START = 10150
 local REALM_END = 15150
+local XEN_BEGIN = REALM_END - 2000
+local XEN_END = REALM_END
 
 local sheet_ores = {
 	{ore="morerocks:marble", seed=1, threshhold=0.3},
@@ -20,8 +22,8 @@ for index, data in ipairs(sheet_ores) do
 		column_height_min = 4,
 		column_height_max = 10,
 		column_midpoint_factor = 0.5,
-		y_min = REALM_START,
-		y_max = REALM_END,
+		y_min = data.y_min or REALM_START,
+		y_max = data.y_max or XEN_BEGIN,
 		noise_threshold = 0.8 + data.threshhold,
 		noise_params = {
 			offset = 0,
@@ -67,8 +69,8 @@ for index, data in ipairs(scatter_ores) do
 		ore_type = "scatter",
 		ore = data.ore,
 		wherein = data.wherein or {"default:stone"},
-		y_min = REALM_START,
-		y_max = REALM_END,
+		y_min = data.y_min or REALM_START,
+		y_max = data.y_max or XEN_BEGIN,
     clust_scarcity = data.scarcity * data.scarcity * data.scarcity,
     clust_num_ores = data.count,
     clust_size     = data.size,
@@ -100,8 +102,8 @@ for index, data in ipairs(blob_ores) do
 		ore_type = "blob",
 		ore = data.ore,
 		wherein = data.wherein or {"default:stone"},
-		y_min = REALM_START,
-		y_max = REALM_END,
+		y_min = data.y_min or REALM_START,
+		y_max = data.y_max or XEN_BEGIN,
     clust_scarcity = data.scarcity * data.scarcity * data.scarcity,
     clust_size     = data.size,
 		noise_threshold = data.threshhold,

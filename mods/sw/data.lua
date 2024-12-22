@@ -52,6 +52,16 @@ sw.create_2d_noise("mountains", {
 	lacunarity = 1.7,
 })
 
+sw.create_2d_noise("rough_terrain", {
+	offset = 0.5,
+	scale = 1,
+	spread = {x=128, y=128, z=128},
+	seed = 44092,
+	octaves = 4,
+	persist = 0.7,
+	lacunarity = 1.7,
+})
+
 -- Determines whether mountains will rise up from the land.
 sw.create_2d_noise("mtnchannel", {
 	offset = 0,

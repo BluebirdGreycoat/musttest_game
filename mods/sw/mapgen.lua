@@ -114,6 +114,8 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	local continental, continental_perlin = sw.get_2d_noise(bp2d, sides2D, "continental")
 	local mountains, mountains_perlin = sw.get_2d_noise(bp2d, sides2D, "mountains")
 	local mtnchannel, mtnchannel_perlin = sw.get_2d_noise(bp2d, sides2D, "mtnchannel")
+	local rough_terrain = sw.get_2d_noise(bp2d, sides2D, "rough_terrain")
+	local cavern_noise5 = sw.get_3d_noise(bp3d, sides3D, "cavern_noise5")
 ---[====[
 	local shear1, shear1_perlin = sw.get_3d_noise(bp3d, sides3D, "shear1")
 	local shear2, shear2_perlin = sw.get_3d_noise(bp3d, sides3D, "shear2")
@@ -132,7 +134,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		shear_z = clamp(shear_z, emin.z, emax.z)
 --]====]
 		local n2d = area2d:index(shear_x, shear_z)
-		--local n2d = area2d:index(x, z)
+		local n2d_steady = area2d:index(x, z)
 
 		--return baseterrain[n2d]
 
@@ -147,7 +149,12 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 			continental[n2d] +
 			(mountains[n2d] * mtnchnl))
 
-		return ground_y
+		local n5 = abs(cavern_noise5[area:index(shear_x, y, shear_z)])
+		if n5 > rough_terrain[n2d_steady] then
+			ground_y = ground_y + 5
+		end
+
+		return floor(ground_y)
 		--]====]
 	end
 ---[====[

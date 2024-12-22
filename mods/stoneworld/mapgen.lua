@@ -23,6 +23,7 @@ local c_adamant         = minetest.get_content_id("default:adamant")
 local c_sand            = minetest.get_content_id("cavestuff:coal_dust")
 local c_fireflower      = minetest.get_content_id("aradonia:caveflower12")
 local c_firethorn       = minetest.get_content_id("aradonia:caveflower13")
+local c_midnight_sun    = minetest.get_content_id("aradonia:caveflower6")
 
 -- Externally located tables for performance.
 local vm_data = {}
@@ -268,7 +269,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 	local bp2d = {x=x0, y=z0}
 	local bp3d = {x=x0, y=y0, z=z0}
 
-	local pr = PseudoRandom(seed + 7114)
+	local pr = PcgRandom(seed + 7114)
 
 	------------------------------------------------------------------------------
 
@@ -646,6 +647,11 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 				if fungus then
 					if cp == c_air and (cd == c_stone or cd == c_cobble) then
 						nid = c_fungus
+
+						-- Very rarely, a Midnight Sun plant.
+						if pr:next(1, 10000) == 1 then
+							nid = c_midnight_sun
+						end
 					end
 				end
 

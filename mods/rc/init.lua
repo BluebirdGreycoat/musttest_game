@@ -246,6 +246,14 @@ rc.realms = {
 		id = 8, -- REALM ID. Code relies on this.
 		name = "stoneworld", -- 'sw' folder.
 		description = "Carcorsica",
+
+		alt_description = function(pos)
+			if pos.y >= 13150 then
+				return "Ir'xen"
+			end
+			return "Carcorsica"
+		end,
+
 		minp = {x=-30912, y=10150, z=-30912},
 		maxp = {x=30927, y=15150, z=30927},
 		gate_minp = {x=-30000, y=10150+50, z=-30000},
@@ -781,7 +789,11 @@ function rc.realm_description_at_pos(p)
 		if p.x >= minp.x and p.x <= maxp.x and
 				p.y >= minp.y and p.y <= maxp.y and
 				p.z >= minp.z and p.z <= maxp.z then
-			return v.description
+			if v.alt_description then
+				return v.alt_description(p)
+			else
+				return v.description
+			end
 		end
 	end
 

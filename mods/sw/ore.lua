@@ -61,6 +61,12 @@ local scatter_ores = {
 	{ore="luxore:luxore", seed=833, threshhold=0.2, scarcity=15, count=3, size=10},
 	{ore="glowstone:luxore", seed=835, threshhold=0.2, scarcity=15, count=3, size=10},
 	{ore="glowstone:cobble", seed=837, threshhold=0.2, scarcity=15, count=3, size=10},
+
+	-- Ir'xen glows.
+	{ore="luxore:luxore", seed=4234, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END},
+	{ore="glowstone:luxore", seed=772, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END},
+	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END},
+	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END},
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 

@@ -261,6 +261,7 @@ rc.realms = {
 		bed_assault_mob = "stoneman:stoneman",
 
 		-- Clouds don't play nice atm.
+		sky_data = {clouds = false},
 		cloud_data = {density = 0},
 	},
 

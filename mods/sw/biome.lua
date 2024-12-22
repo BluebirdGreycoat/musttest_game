@@ -65,9 +65,9 @@ function sw.generate_biome(vm, minp, maxp, seed, ystart, yend, heightfunc, get_h
 	local z0 = minp.z
 
   -- Run biome generator only for surface chunks.
-  if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
-		return
-	end
+  --if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
+	--	return
+	--end
 
 	local spheres = sw.get_spheres(minp, maxp, get_height, SPHERE_ADJACENT_BIOME_RADIUS)
 

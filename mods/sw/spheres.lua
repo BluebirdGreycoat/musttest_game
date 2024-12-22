@@ -151,9 +151,9 @@ function sw.generate_spheres(vm, minp, maxp, seed, ystart, yend, get_height)
 	local z0 = minp.z
 
   -- Spheres only generate on surface chunks.
-  if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
-		return
-	end
+  --if y0 >= (get_height(x0, z0) + 250) or y1 <= (get_height(x0, z0) - 250) then
+	--	return
+	--end
 
 	local spheres = sw.get_spheres(minp, maxp, get_height)
 	--print('spheres: ' .. #spheres)

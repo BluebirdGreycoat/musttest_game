@@ -157,55 +157,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		return floor(ground_y)
 		--]====]
 	end
----[====[
-	-- First mapgen pass.
-	for z = z0, z1 do
-		for x = x0, x1 do
-			local bedrock_adjust = pr:next(0, 3)
 
-			for y = y0, y1 do
-				local ground_y = heightfunc(x, y, z)
-
-				if y >= REALM_START and y <= REALM_END then
-					local vp = area:index(x, y, z)
-					local cid = vm_data[vp]
-
-					if cid == c_air or cid == c_ignore then
-						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
-							vm_data[vp] = c_bedrock
-						elseif y <= ground_y then
-							vm_data[vp] = c_stone
-						else
-							vm_data[vp] = c_air
-						end
-					end
-				end
-			end
-		end
-	end
-
-	for z = emin.z, emax.z do
-		for x = emin.x, emax.x do
-			for y = emin.y, emax.y do
-				local ground_y = heightfunc(x, y, z)
-
-				if y >= REALM_START and y <= REALM_END then
-					local vp = area:index(x, y, z)
-
-					if y <= ground_y then
-						vm_light[vp] = 0
-					else
-						vm_light[vp] = 15
-					end
-				end
-			end
-		end
-	end
-
-	vm:set_data(vm_data)
-	vm:set_light_data(vm_light)
-  vm:set_param2_data(param2_data)
---]====]
+	-- Simplier version of the above. Gives an approximation of the ground height.
+	-- Does not include effects from shear, or small scale details.
   local function get_height(x, z)
 		local pos2d = {x=x, y=z}
 
@@ -240,15 +194,133 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		--]====]
   end
 
+---[====[
+	-- First mapgen pass.
+	-- Optimization: we can skip calculating the exact ground height if we KNOW we are far
+	-- enough below it. The probability of this creating a glitch is very low.
+	local chunk_horiz_levels = {
+		get_height(x0, z0),
+		get_height(x1, z0),
+		get_height(x1, z1),
+		get_height(x0, z1),
+		get_height(floor((x0+x1)/2), floor((z0+z1)/2)), -- Chunk center.
+	}
+
+	local function far_diff(diff)
+		for k, height in ipairs(chunk_horiz_levels) do
+			local y_level = height + diff
+			if diff < 0 and y1 >= y_level then
+				-- Chunk is not far enough down.
+				return false
+			end
+			if diff > 0 and y0 <= y_level then
+				-- Chunk is not high enough up.
+				return false
+			end
+		end
+		-- y1 is significantly (determined by diff) above/below all entries in the list.
+		return true
+	end
+
+	if far_diff(-250) then
+		-- Far below surface. Fill everything with stone.
+		for z = z0, z1 do
+			for x = x0, x1 do
+				local bedrock_adjust = pr:next(0, 3)
+
+				for y = y0, y1 do
+					if y >= REALM_START and y <= REALM_END then
+						local vp = area:index(x, y, z)
+						local cid = vm_data[vp]
+
+						if cid == c_air or cid == c_ignore then
+							if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
+								vm_data[vp] = c_bedrock
+							else
+								vm_data[vp] = c_stone
+							end
+						end
+					end
+				end
+			end
+		end
+	elseif far_diff(250) then
+		-- Far above surface. Fill everything with air.
+		-- Aka do nothing.
+	else
+		-- We're near surface, must calculate ground height exactly.
+		for z = z0, z1 do
+			for x = x0, x1 do
+				local bedrock_adjust = pr:next(0, 3)
+
+				for y = y0, y1 do
+					local ground_y = heightfunc(x, y, z)
+
+					if y >= REALM_START and y <= REALM_END then
+						local vp = area:index(x, y, z)
+						local cid = vm_data[vp]
+
+						if cid == c_air or cid == c_ignore then
+							if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
+								vm_data[vp] = c_bedrock
+							elseif y <= ground_y then
+								vm_data[vp] = c_stone
+							else
+								vm_data[vp] = c_air
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for z = emin.z, emax.z do
+		for x = emin.x, emax.x do
+			for y = emin.y, emax.y do
+				local ground_y = heightfunc(x, y, z)
+
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x, y, z)
+
+					if y <= ground_y then
+						vm_light[vp] = 0
+					else
+						vm_light[vp] = 15
+					end
+				end
+			end
+		end
+	end
+
+	vm:set_data(vm_data)
+	vm:set_light_data(vm_light)
+  vm:set_param2_data(param2_data)
+--]====]
+
 	--print("---------------------")
   --print('#1 - flat value: ' .. heightfunc(x0, y0, z0))
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
-  sw.generate_caverns(vm, minp, maxp, seed, get_height)
-  sw.generate_tunnels(vm, minp, maxp, seed, get_height)
-  sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
-  sw.despeckle_terrain(vm, minp, maxp)
-	sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height, gennotify_data)
+
+	if far_diff(-150) then
+		sw.generate_caverns(vm, minp, maxp, seed, get_height)
+	end
+
+	if not far_diff(250) then
+		sw.generate_tunnels(vm, minp, maxp, seed, get_height)
+	end
+
+  if not far_diff(-250) and not far_diff(250) then
+		sw.generate_spheres(vm, minp, maxp, seed, REALM_START, REALM_END, get_height)
+	end
+
+	-- Despeckle everywhere.
+	sw.despeckle_terrain(vm, minp, maxp)
+
+  if not far_diff(-250) and not far_diff(250) then
+		sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height, gennotify_data)
+	end
 
   minetest.generate_ores(vm)
 
@@ -257,14 +329,14 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	vm:update_liquids()
 
 	-- Skip mapfix for underground sections.
-	if y1 < (get_height(x0, z0) - 150) then
+	if far_diff(-150) then
 		gennotify_data.need_mapfix = false
 	end
 
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)
 
 	local time2 = os.clock()
-	--print('carcorsica: mapgen time: ' .. (time2 - time1))
+	print('carcorsica: mapgen time: ' .. (time2 - time1))
 --]====]
 end
 

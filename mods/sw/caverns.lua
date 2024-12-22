@@ -30,9 +30,9 @@ function sw.generate_caverns(vm, minp, maxp, seed, get_height)
 	local z0 = minp.z
 
 	-- Skip generating caverns at surface and above.
-  if y0 >= (get_height(x0, z0) - 150) then
-		return
-	end
+  --if y0 >= (get_height(x0, z0) - 150) then
+	--	return
+	--end
 
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})

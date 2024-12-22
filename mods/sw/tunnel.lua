@@ -160,9 +160,9 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	local z0 = minp.z
 
 	-- Skip generating tunnels far above surface.
-  if y0 >= (get_height(x0, z0) + 250) then
-		return
-	end
+  --if y0 >= (get_height(x0, z0) + 250) then
+	--	return
+	--end
 
 	local emin, emax = vm:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})

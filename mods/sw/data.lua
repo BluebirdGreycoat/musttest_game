@@ -55,9 +55,9 @@ sw.create_2d_noise("mountains", {
 sw.create_2d_noise("rough_terrain", {
 	offset = 0.5,
 	scale = 1,
-	spread = {x=128, y=128, z=128},
+	spread = {x=256, y=256, z=256},
 	seed = 44092,
-	octaves = 4,
+	octaves = 2,
 	persist = 0.7,
 	lacunarity = 1.7,
 })

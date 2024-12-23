@@ -349,6 +349,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   --print('#2 - obj  value: ' .. get_height(x0, z0))
 ---[====[
 
+	-- Handles its own validity checks.
 	sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 	if far_diff(-100) then
@@ -370,6 +371,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   if not far_diff(-250) and not far_diff(250) then
 		sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height, gennotify_data)
 	end
+
+	-- Handles its own validity checks.
+	sw.generate_xen_biome(vim, minp, maxp, seed)
 
   minetest.generate_ores(vm)
 

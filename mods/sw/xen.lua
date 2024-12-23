@@ -94,6 +94,17 @@ sw.create_3d_noise("xen6", {
 	lacunarity = 1.75,
 })
 
+-- Caves.
+sw.create_3d_noise("xen7", {
+	offset = 0,
+	scale = 1,
+	spread = {x=16, y=16, z=16},
+	seed = 77193,
+	octaves = 2,
+	persist = 0.5,
+	lacunarity = 1.75,
+})
+
 function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local x1 = maxp.x
 	local y1 = maxp.y
@@ -124,7 +135,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	vm:get_data(vm_data)
-	vm:get_param2_data(param2_data)
+	--vm:get_param2_data(param2_data)
 
 	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
 	local xen2 = sw.get_2d_noise(bp2d, sides2D, "xen2")
@@ -132,6 +143,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local xen4 = sw.get_2d_noise(bp2d, sides2D, "xen4")
 	local xen5 = sw.get_2d_noise(bp2d, sides2D, "xen5")
 	local xen6 = sw.get_3d_noise(bp3d, sides3D, "xen6")
+	local xen7 = sw.get_3d_noise(bp3d, sides3D, "xen7")
 
 	local function is_xen(x, y, z)
 		local vp3d = area:index(x, y, z)
@@ -153,6 +165,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 		local n4 = xen4[vp2d] -- Holes.
 		local n5 = xen5[vp2d] -- Huge void areas.
 		local n6 = xen6[vp3d_steady] -- Floating rocks near larger islands.
+		local n7 = xen7[vp3d] -- Cave systems.
 
 		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
 		local xen_middiff_up = math.floor(XEN_END - xen_mid)
@@ -180,6 +193,12 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 		local right_side2 = (-1.0 + extinction)
 
 		if left_side < right_side1 then
+			-- Carve out cave systems.
+			-- For some reason using abs() here makes chunkgen take x3 as long,
+			-- but we don't really need it anyway, these look OK.
+			if n7 > 0.7 then
+				return false
+			end
 			return true
 		end
 
@@ -195,6 +214,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 		end
 	end
 
+	-- Shape terrain.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
@@ -215,5 +235,69 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	end
 
 	vm:set_data(vm_data)
-	vm:set_param2_data(param2_data)
+	--vm:set_param2_data(param2_data)
 end
+
+
+
+function sw.generate_xen_biome(vm, minp, maxp, seed)
+	local x1 = maxp.x
+	local y1 = maxp.y
+	local z1 = maxp.z
+	local x0 = minp.x
+	local y0 = minp.y
+	local z0 = minp.z
+
+	-- Don't run for out-of-bounds mapchunks.
+	if minp.y > XEN_END or maxp.y < XEN_BEGIN then
+		return
+	end
+
+	local emin, emax = vm:get_emerged_area()
+	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
+	local pr = PcgRandom(seed + 728)
+
+	-- Compute side lengths.
+	-- Note: noise maps use overgeneration coordinates/sizes.
+	-- This is to support horizontal shearing.
+	local side_len_x = ((emax.x-emin.x)+1)
+	local side_len_y = ((emax.y-emin.y)+1)
+	local side_len_z = ((emax.z-emin.z)+1)
+	local sides2D = {x=side_len_x, y=side_len_z}
+	local sides3D = {x=side_len_x, y=side_len_y, z=side_len_z}
+	local bp2d = {x=emin.x, y=emin.z}
+	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
+
+	vm:get_data(vm_data)
+	--vm:get_param2_data(param2_data)
+
+	-- Find biome surfaces.
+	for z = z0, z1 do
+		for x = x0, x1 do
+			for y = y0, y1 do
+				if y >= REALM_START and y <= REALM_END then
+					local vp_1 = area:index(x, y-1, z)
+					local vp_2 = area:index(x, y, z)
+					local vp_3 = area:index(x, y+1, z)
+
+					local c1 = vm_data[vp_1]
+					local c2 = vm_data[vp_2]
+					local c3 = vm_data[vp_3]
+
+					-- Ground surface.
+					if c1 == c_stone and c2 == c_air and c3 == c_air then
+					end
+
+					-- Roof surface.
+					if c1 == c_air and c2 == c_air and c3 == c_stone then
+					end
+				end
+			end
+		end
+	end
+
+	vm:set_data(vm_data)
+	--vm:set_param2_data(param2_data)
+end
+

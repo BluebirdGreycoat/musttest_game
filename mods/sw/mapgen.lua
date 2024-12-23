@@ -373,7 +373,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	end
 
 	-- Handles its own validity checks.
-	sw.generate_xen_biome(vim, minp, maxp, seed)
+	sw.generate_xen_biome(vm, minp, maxp, seed)
 
   minetest.generate_ores(vm)
 

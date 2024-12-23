@@ -24,6 +24,12 @@ end
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("sw:teststone1")
+local c_worm = minetest.get_content_id("cavestuff:glow_worm")
+local c_fungus = minetest.get_content_id("cavestuff:glow_fungus")
+local c_midnight_sun = minetest.get_content_id("aradonia:caveflower6")
+local c_fire_lantern = minetest.get_content_id("aradonia:caveflower11")
+local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
+local c_red_vine = minetest.get_content_id("nethervine:vine")
 
 local vm_data = {}
 local param2_data = {}
@@ -272,6 +278,9 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	vm:get_data(vm_data)
 	--vm:get_param2_data(param2_data)
 
+	local floors = {}
+	local ceilings = {}
+
 	-- Find biome surfaces.
 	for z = z0, z1 do
 		for x = x0, x1 do
@@ -287,10 +296,63 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 					-- Ground surface.
 					if c1 == c_stone and c2 == c_air and c3 == c_air then
+						floors[#floors+1] = {x=x, y=y-1, z=z}
 					end
 
 					-- Roof surface.
 					if c1 == c_air and c2 == c_air and c3 == c_stone then
+						ceilings[#ceilings+1] = {x=x, y=y+1, z=z}
+					end
+				end
+			end
+		end
+	end
+
+	for k = 1, #floors do
+		local p = floors[k]
+		if pr:next(1, 7) == 1 then
+			local vp = area:index(p.x, p.y+1, p.z)
+			local plant_id = c_fungus
+			if pr:next(1, 20) == 1 then
+				local ceiling_cid = vm_data[area:index(p.x, p.y+15, p.z)]
+				-- Chose plant type.
+				if ceiling_cid == c_stone then
+					plant_id = c_midnight_sun
+				elseif ceiling_cid == c_air then
+					if pr:next(1, 5) <= 3 then
+						plant_id = c_candle_flower
+					else
+						plant_id = c_fire_lantern
+					end
+				end
+			end
+			vm_data[vp] = plant_id
+		end
+	end
+
+	for k = 1, #ceilings do
+		local p = ceilings[k]
+		if pr:next(1, 7) == 1 then
+			-- Chose whether to place glow worm or nether vine.
+			-- Nether vines grow in proximity to floors.
+			local vine_id = c_worm
+			if vm_data[area:index(p.x, p.y-15, p.z)] == c_stone then
+				vine_id = c_red_vine
+			end
+
+			local length = pr:next(1, 4)
+			-- Sometimes, a long glow worm/vine.
+			if pr:next(1, 50) == 1 then
+				length = pr:next(5, 16)
+			end
+			for j = 1, length do
+				-- Keep Y in chunk bounds.
+				local cd = p.y - j
+				if cd >= emin.y and cd <= emax.y then
+					local vp = area:index(p.x, cd, p.z)
+					-- Don't erase anything existing (like stone).
+					if vm_data[vp] == c_air then
+						vm_data[vp] = vine_id
 					end
 				end
 			end

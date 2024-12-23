@@ -33,6 +33,14 @@ local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
 local c_fairy_flower = minetest.get_content_id("aradonia:caveflower8")
 local c_red_vine = minetest.get_content_id("nethervine:vine")
 
+local C_CRYSTALS = {
+	minetest.get_content_id("mese_crystals:mese_crystal_ore1"),
+	minetest.get_content_id("mese_crystals:mese_crystal_ore2"),
+	minetest.get_content_id("mese_crystals:mese_crystal_ore3"),
+	minetest.get_content_id("mese_crystals:mese_crystal_ore4"),
+	minetest.get_content_id("mese_crystals:mese_crystal_ore5"),
+}
+
 local vm_data = {}
 local param2_data = {}
 
@@ -278,7 +286,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	vm:get_data(vm_data)
-	--vm:get_param2_data(param2_data)
+	vm:get_param2_data(param2_data)
 
 	local floors = {}
 	local ceilings = {}
@@ -323,8 +331,10 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 		-- Place ground plants.
 		if pr:next(1, 7) == 1 then
+			local vp2 = base_idx + area.ystride
 			local plant_id = c_fungus
 			local rnd1 = pr:next(1, 100)
+
 			if rnd1 <= 5 then
 				local ceiling_idx = base_idx + area.ystride * 16 -- +y *16
 				local ceiling_cid = vm_data[ceiling_idx]
@@ -349,9 +359,11 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 						plant_id = c_fairy_flower
 					end
 				end
+			elseif rnd1 <= 15 then
+				plant_id = C_CRYSTALS[random(1, #C_CRYSTALS)]
+				param2_data[vp2] = random(0, 3)
 			end
 
-			local vp2 = base_idx + area.ystride
 			vm_data[vp2] = plant_id
 		end
 	end
@@ -389,7 +401,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 				-- Keep Y in chunk bounds.
 				local cd = p.y - j
 				if cd >= EMIN_Y and cd <= EMAX_Y then
-					local vp = base_idx + area.ystride * cd
+					local vp = base_idx - area.ystride * j
 					-- Don't erase anything existing (like stone).
 					if vm_data[vp] == c_air then
 						vm_data[vp] = vine_id
@@ -400,6 +412,6 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	end
 
 	vm:set_data(vm_data)
-	--vm:set_param2_data(param2_data)
+	vm:set_param2_data(param2_data)
 end
 

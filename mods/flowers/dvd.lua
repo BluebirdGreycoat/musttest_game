@@ -109,6 +109,17 @@ minetest.register_node(':aradonia:caveflower10', {
 })
 --------------------------------------------------------------------------------
 
+local function fire_lantern_punch(pos)
+	local p1 = vector.offset(pos, 0, 1, 0)
+	if minetest.get_node(p1).name == "air" then
+		minetest.set_node(p1, {name="fire:basic_flame"})
+	end
+end
+
+local function fire_lantern_after_destruct(pos)
+	minetest.set_node(pos, {name="fire:basic_flame"})
+end
+
 -- Fiery Lantern
 minetest.register_node(':aradonia:caveflower11', {
 	description = 'Fiery Lantern',
@@ -124,7 +135,10 @@ minetest.register_node(':aradonia:caveflower11', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	on_punch = fire_lantern_punch,
+	after_destruct = fire_lantern_after_destruct,
 })
+--------------------------------------------------------------------------------
 
 -- Fireflowers
 minetest.register_node(':aradonia:caveflower12', {

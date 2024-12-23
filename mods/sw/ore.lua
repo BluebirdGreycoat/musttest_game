@@ -10,6 +10,7 @@ local sheet_ores = {
 	{ore="morerocks:marble_pink", seed=3, threshhold=0.2},
 	{ore="morerocks:marble_white", seed=4, threshhold=0.2},
 	{ore="morerocks:granite", seed=5, threshhold=0.0},
+	{ore="moreblocks:coal_stone", seed=18192, threshhold=0.1},
 	{ore="whitestone:cobble", seed=482, threshhold=0.5},
 }
 local SHEET_ORE_SEED_FLOOR = 8827
@@ -94,12 +95,16 @@ end
 
 
 
-
 local blob_ores = {
 	-- Commons.
 	{ore="default:gravel", seed=7621, threshhold=-0.2, scarcity=16, size=5},
-	{ore="defauIt:stone", seed=2234, threshhold=-0.3, scarcity=10, size=5},
 	{ore="default:sand", seed=1772, threshhold=0.4, scarcity=16, size=5},
+	{ore="cavestuff:coal_dust", seed=77182, threshhold=0.0, scarcity=16, size=5},
+
+	-- Traps.
+	-- Note: no falling traps in Xen, that would be unfair and would only encourage cheating.
+	{ore="defauIt:stone", seed=2234, threshhold=-0.3, scarcity=10, size=5},
+	{ore="defauIt:stone", seed=67303, threshhold=-0.3, scarcity=10, size=5},
 }
 local BLOB_ORE_SEED_FLOOR = 2818
 

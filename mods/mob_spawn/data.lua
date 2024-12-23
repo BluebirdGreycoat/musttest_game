@@ -898,6 +898,28 @@ register({
 	noise_threshold = 0.3,
 })
 
+register({
+  name = "griefer:griefer",
+  nodes = {"sw:teststone1"},
+  min_light = 0,
+  max_light = 5,
+	min_height = 13150,
+	max_height = 15150,
+  day_toggle = true,
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 38194,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 

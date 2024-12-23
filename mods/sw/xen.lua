@@ -71,7 +71,7 @@ sw.create_2d_noise("xen4", {
 -- Xen Y level.
 sw.create_2d_noise("xen3", {
 	offset = 0,
-	scale = 500,
+	scale = 200,
 	spread = {x=800, y=800, z=800},
 	seed = 66172,
 	octaves = 3,
@@ -168,7 +168,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 		local n1 = xen1[vp3d]
 		local n2 = xen2[vp2d] -- For large islands and voids.
-		local n3 = 0--xen3[vp2d] -- Xen Y-level offset.
+		local n3 = xen3[vp2d] -- Xen Y-level offset.
 		local n4 = xen4[vp2d] -- Holes.
 		local n5 = xen5[vp2d] -- Huge void areas.
 		local n6 = xen6[vp3d_steady] -- Floating rocks near larger islands.

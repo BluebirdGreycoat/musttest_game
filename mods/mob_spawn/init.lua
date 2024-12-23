@@ -463,6 +463,7 @@ function mob_spawn.spawn_mobs(pname, index)
 		return 0
 	end
 
+	--[[
 	-- Mobs rarely spawn in the colonies. They keep killing the noobs!
 	if vector_distance(spos, {x=0, y=0, z=0}) < 100 then
 		if random(1, 10) < 10 then
@@ -473,6 +474,7 @@ function mob_spawn.spawn_mobs(pname, index)
 			return 0
 		end
 	end
+	--]]
 
 	-- If have perlin object, then check if mob can spawn in this location.
 	if mdef.perlin and mdef.noise_threshold then

@@ -306,12 +306,12 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 					-- Ground surface.
 					if c1 == c_stone and c2 == c_air and c3 == c_air then
-						floors[#floors+1] = {x=x, y=y-1, z=z}
+						floors[#floors+1] = vp_1
 					end
 
 					-- Roof surface.
 					if c1 == c_air and c2 == c_air and c3 == c_stone then
-						ceilings[#ceilings+1] = {x=x, y=y+1, z=z}
+						ceilings[#ceilings+1] = vp_3
 					end
 				end
 			end
@@ -319,8 +319,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	end
 
 	for k = 1, #floors do
-		local p = floors[k]
-		local base_idx = area:index(p.x, p.y, p.z)
+		local base_idx = floors[k]
 
 		-- Convert stone to gravel in tight spaces (like caves/tunnels).
 		local vp3 = base_idx + area.ystride * 6 -- +y *6
@@ -350,14 +349,11 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 				end
 			elseif rnd1 <= 10 then
 				-- Place fairy flowers in open areas only.
-				-- We need 32 nodes to chunk top in order to run this check.
-				if p.y + 32 <= emax.y then
-					local j1 = base_idx + area.ystride * 16
-					local j2 = base_idx + area.ystride * 32
-					if vm_data[j1] == c_air
-					   and vm_data[j2] == c_air then
-						plant_id = c_fairy_flower
-					end
+				local j1 = base_idx + area.ystride * 16
+				local j2 = base_idx + area.ystride * 32
+				-- Will be ignore if indices out of bounds.
+				if vm_data[j1] == c_air and vm_data[j2] == c_air then
+					plant_id = c_fairy_flower
 				end
 			elseif rnd1 <= 15 then
 				plant_id = C_CRYSTALS[random(1, #C_CRYSTALS)]
@@ -372,10 +368,9 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local EMAX_Y = emax.y
 
 	for k = 1, #ceilings do
-		local p = ceilings[k]
 		if pr:next(1, 7) == 1 then
 			local length = pr:next(1, 100)
-			local base_idx = area:index(p.x, p.y, p.z)
+			local base_idx = ceilings[k]
 
 			-- Sometimes, a long glow worm/vine.
 			if pr:next(1, 50) == 1 then
@@ -398,14 +393,11 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 			length = floor(length * 0.04) + 1
 
 			for j = 1, length do
-				-- Keep Y in chunk bounds.
-				local cd = p.y - j
-				if cd >= EMIN_Y and cd <= EMAX_Y then
-					local vp = base_idx - area.ystride * j
-					-- Don't erase anything existing (like stone).
-					if vm_data[vp] == c_air then
-						vm_data[vp] = vine_id
-					end
+				local vp = base_idx - area.ystride * j
+				-- Don't erase anything existing (like stone).
+				-- Will be ignore if index out of bounds.
+				if vm_data[vp] == c_air then
+					vm_data[vp] = vine_id
 				end
 			end
 		end

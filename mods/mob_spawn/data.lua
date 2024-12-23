@@ -873,6 +873,31 @@ register({
 	--]]
 })
 
+-- These guys are absolutely brutal.
+register({
+	name = "oerkki:oerkki",
+	nodes = {"air"},
+	day_toggle = false,
+	min_light = 0,
+	max_light = 15,
+	min_height = 13150,
+	max_height = 15150,
+	clearance = 2, -- Wants a 3x3x3 area.
+	flyswim = "flyswim",
+
+	noise_params = {
+		offset = 0,
+		scale = 1,
+		spread = {x=512, y=512, z=512},
+		seed = 27192,
+		octaves = 3,
+		persist = 0.5,
+		lacunarity = 1.5,
+		flags = "",
+	},
+	noise_threshold = 0.3,
+})
+
 -- Reinit per-player data.
 mob_spawn.players = {}
 

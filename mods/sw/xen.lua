@@ -29,6 +29,7 @@ local c_fungus = minetest.get_content_id("cavestuff:glow_fungus")
 local c_midnight_sun = minetest.get_content_id("aradonia:caveflower6")
 local c_fire_lantern = minetest.get_content_id("aradonia:caveflower11")
 local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
+local c_fairy_flower = minetest.get_content_id("aradonia:caveflower8")
 local c_red_vine = minetest.get_content_id("nethervine:vine")
 
 local vm_data = {}
@@ -313,7 +314,8 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 		if pr:next(1, 7) == 1 then
 			local vp = area:index(p.x, p.y+1, p.z)
 			local plant_id = c_fungus
-			if pr:next(1, 20) == 1 then
+			local rnd1 = pr:next(1, 100)
+			if rnd1 <= 5 then
 				local ceiling_cid = vm_data[area:index(p.x, p.y+15, p.z)]
 				-- Chose plant type.
 				if ceiling_cid == c_stone then
@@ -323,6 +325,17 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 						plant_id = c_candle_flower
 					else
 						plant_id = c_fire_lantern
+					end
+				end
+			elseif rnd1 <= 10 then
+				-- Place fairy flowers in open areas only.
+				-- We need 32 nodes to chunk top in order to run this check.
+				if p.y + 32 <= emax.y then
+					local j1 = p.y + 16
+					local j2 = p.y + 32
+					if vm_data[area:index(p.x, j1, p.z)] == c_air
+					   and vm_data[area:index(p.x, j2, p.z)] == c_air then
+						plant_id = c_fairy_flower
 					end
 				end
 			end

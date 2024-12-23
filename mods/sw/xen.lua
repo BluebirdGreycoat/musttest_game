@@ -348,6 +348,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 		-- Place ground plants.
 		if pr:next(1, 7) == 1 then
+			local n8 = xen8[base_idx]
 			local vp2 = base_idx + area.ystride
 			local plant_id = c_fungus
 			local rnd1 = pr:next(1, 100)
@@ -357,21 +358,27 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 				local ceiling_cid = vm_data[ceiling_idx]
 				-- Chose plant type.
 				if ceiling_cid == c_stone then
-					plant_id = c_midnight_sun
+					if n8 < 0 then
+						plant_id = c_midnight_sun
+					end
 				elseif ceiling_cid == c_air then
-					if pr:next(1, 5) <= 3 then
-						plant_id = c_candle_flower
-					else
-						plant_id = c_fire_lantern
+					if n8 > 0 then
+						if pr:next(1, 5) <= 3 then
+							plant_id = c_candle_flower
+						else
+							plant_id = c_fire_lantern
+						end
 					end
 				end
 			elseif rnd1 <= 10 then
-				-- Place fairy flowers in open areas only.
-				local j1 = base_idx + area.ystride * 16
-				local j2 = base_idx + area.ystride * 32
-				-- Will be ignore if indices out of bounds.
-				if vm_data[j1] == c_air and vm_data[j2] == c_air then
-					plant_id = c_fairy_flower
+				if n8 < -0.3 then
+					-- Place fairy flowers in open areas only.
+					local j1 = base_idx + area.ystride * 16
+					local j2 = base_idx + area.ystride * 32
+					-- Will be ignore if indices out of bounds.
+					if vm_data[j1] == c_air and vm_data[j2] == c_air then
+						plant_id = c_fairy_flower
+					end
 				end
 			elseif rnd1 <= 15 then
 				plant_id = C_CRYSTALS[random(1, #C_CRYSTALS)]

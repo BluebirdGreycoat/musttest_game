@@ -890,14 +890,14 @@ register({
 	noise_params = {
 		offset = 0,
 		scale = 1,
-		spread = {x=512, y=512, z=512},
+		spread = {x=300, y=300, z=300},
 		seed = 27192,
-		octaves = 3,
+		octaves = 2,
 		persist = 0.5,
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.3,
+	noise_threshold = 0.0,
 	--]]
 })
 
@@ -915,14 +915,14 @@ register({
 	noise_params = {
 		offset = 0,
 		scale = 1,
-		spread = {x=512, y=512, z=512},
+		spread = {x=300, y=300, z=300},
 		seed = 38194,
-		octaves = 3,
+		octaves = 2,
 		persist = 0.5,
 		lacunarity = 1.5,
 		flags = "",
 	},
-	noise_threshold = 0.3,
+	noise_threshold = 0.0,
 	--]]
 })
 

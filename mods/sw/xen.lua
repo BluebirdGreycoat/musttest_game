@@ -121,6 +121,17 @@ sw.create_3d_noise("xen7", {
 	lacunarity = 1.75,
 })
 
+-- Xen biome locations.
+sw.create_3d_noise("xen8", {
+	offset = 0,
+	scale = 1,
+	spread = {x=128, y=128, z=128},
+	seed = 485321,
+	octaves = 2,
+	persist = 0.4,
+	lacunarity = 1.75,
+})
+
 function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local x1 = maxp.x
 	local y1 = maxp.y
@@ -291,27 +302,34 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local floors = {}
 	local ceilings = {}
 
+	local xen8 = sw.get_3d_noise(bp3d, sides3D, "xen8")
+
 	-- Find biome surfaces.
 	for z = z0, z1 do
 		for x = x0, x1 do
 			for y = y0, y1 do
 				if y >= REALM_START and y <= REALM_END then
 					local base_idx = area:index(x, y, z)
-					local vp_1 = base_idx - area.ystride
-					local vp_3 = base_idx + area.ystride
+					local n8 = xen8[base_idx]
 
-					local c1 = vm_data[vp_1]
-					local c2 = vm_data[base_idx]
-					local c3 = vm_data[vp_3]
+					-- Entirely skip some areas for biome placement.
+					if n8 < -0.2 or n8 > 0.2 then
+						local vp_1 = base_idx - area.ystride
+						local vp_3 = base_idx + area.ystride
 
-					-- Ground surface.
-					if c1 == c_stone and c2 == c_air and c3 == c_air then
-						floors[#floors+1] = vp_1
-					end
+						local c1 = vm_data[vp_1]
+						local c2 = vm_data[base_idx]
+						local c3 = vm_data[vp_3]
 
-					-- Roof surface.
-					if c1 == c_air and c2 == c_air and c3 == c_stone then
-						ceilings[#ceilings+1] = vp_3
+						-- Ground surface.
+						if c1 == c_stone and c2 == c_air and c3 == c_air then
+							floors[#floors+1] = vp_1
+						end
+
+						-- Roof surface.
+						if c1 == c_air and c2 == c_air and c3 == c_stone then
+							ceilings[#ceilings+1] = vp_3
+						end
 					end
 				end
 			end

@@ -296,12 +296,12 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 		for x = x0, x1 do
 			for y = y0, y1 do
 				if y >= REALM_START and y <= REALM_END then
-					local vp_1 = area:index(x, y-1, z)
-					local vp_2 = area:index(x, y, z)
-					local vp_3 = area:index(x, y+1, z)
+					local base_idx = area:index(x, y, z)
+					local vp_1 = base_idx - area.ystride
+					local vp_3 = base_idx + area.ystride
 
 					local c1 = vm_data[vp_1]
-					local c2 = vm_data[vp_2]
+					local c2 = vm_data[base_idx]
 					local c3 = vm_data[vp_3]
 
 					-- Ground surface.

@@ -884,7 +884,9 @@ register({
 	max_height = 15150,
 	clearance = 2, -- Wants a 3x3x3 area.
 	flyswim = "flyswim",
+	spawn_chance = 1,
 
+	---[[
 	noise_params = {
 		offset = 0,
 		scale = 1,
@@ -896,17 +898,20 @@ register({
 		flags = "",
 	},
 	noise_threshold = 0.3,
+	--]]
 })
 
 register({
   name = "griefer:griefer",
   nodes = {"sw:teststone1"},
   min_light = 0,
-  max_light = 5,
+  max_light = 7,
 	min_height = 13150,
 	max_height = 15150,
-  day_toggle = true,
+  day_toggle = false,
+	spawn_chance = 1,
 
+  ---[[
 	noise_params = {
 		offset = 0,
 		scale = 1,
@@ -918,6 +923,7 @@ register({
 		flags = "",
 	},
 	noise_threshold = 0.3,
+	--]]
 })
 
 -- Reinit per-player data.

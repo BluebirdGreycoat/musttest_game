@@ -24,6 +24,7 @@ end
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("sw:teststone1")
+local c_gravel = minetest.get_content_id("default:gravel")
 local c_worm = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus = minetest.get_content_id("cavestuff:glow_fungus")
 local c_midnight_sun = minetest.get_content_id("aradonia:caveflower6")
@@ -311,12 +312,22 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 	for k = 1, #floors do
 		local p = floors[k]
+		local base_idx = area:index(p.x, p.y, p.z)
+
+		-- Convert stone to gravel in tight spaces (like caves/tunnels).
+		local vp3 = base_idx + area.ystride * 6 -- +y *6
+
+		if vm_data[vp3] == c_stone then
+			vm_data[base_idx] = c_gravel
+		end
+
+		-- Place ground plants.
 		if pr:next(1, 7) == 1 then
-			local vp = area:index(p.x, p.y+1, p.z)
 			local plant_id = c_fungus
 			local rnd1 = pr:next(1, 100)
 			if rnd1 <= 5 then
-				local ceiling_cid = vm_data[area:index(p.x, p.y+15, p.z)]
+				local ceiling_idx = base_idx + area.ystride * 16 -- +y *16
+				local ceiling_cid = vm_data[ceiling_idx]
 				-- Chose plant type.
 				if ceiling_cid == c_stone then
 					plant_id = c_midnight_sun
@@ -331,38 +342,54 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 				-- Place fairy flowers in open areas only.
 				-- We need 32 nodes to chunk top in order to run this check.
 				if p.y + 32 <= emax.y then
-					local j1 = p.y + 16
-					local j2 = p.y + 32
-					if vm_data[area:index(p.x, j1, p.z)] == c_air
-					   and vm_data[area:index(p.x, j2, p.z)] == c_air then
+					local j1 = base_idx + area.ystride * 16
+					local j2 = base_idx + area.ystride * 32
+					if vm_data[j1] == c_air
+					   and vm_data[j2] == c_air then
 						plant_id = c_fairy_flower
 					end
 				end
 			end
-			vm_data[vp] = plant_id
+
+			local vp2 = base_idx + area.ystride
+			vm_data[vp2] = plant_id
 		end
 	end
+
+	local EMIN_Y = emin.y
+	local EMAX_Y = emax.y
 
 	for k = 1, #ceilings do
 		local p = ceilings[k]
 		if pr:next(1, 7) == 1 then
+			local length = pr:next(1, 100)
+			local base_idx = area:index(p.x, p.y, p.z)
+
+			-- Sometimes, a long glow worm/vine.
+			if pr:next(1, 50) == 1 then
+				-- Multiply length instead of calling pr:next() again, for performance.
+				length = length * 4
+			end
+
 			-- Chose whether to place glow worm or nether vine.
 			-- Nether vines grow in proximity to floors.
 			local vine_id = c_worm
-			if vm_data[area:index(p.x, p.y-15, p.z)] == c_stone then
+			if vm_data[base_idx - area.ystride * 15] == c_stone then
 				vine_id = c_red_vine
+				-- Multiply length instead of calling pr:next() again, for performance.
+				length = min(400, length * 4)
 			end
 
-			local length = pr:next(1, 4)
-			-- Sometimes, a long glow worm/vine.
-			if pr:next(1, 50) == 1 then
-				length = pr:next(5, 16)
-			end
+			-- If length is between 1 and 99, this results in 1 .. 4
+			-- Length will be 5 if input is 100. If 400, length will be 17.
+			-- Using this scaling method lets me reduce calls to pr:next().
+			length = floor(length * 0.04) + 1
+
 			for j = 1, length do
 				-- Keep Y in chunk bounds.
 				local cd = p.y - j
-				if cd >= emin.y and cd <= emax.y then
-					local vp = area:index(p.x, cd, p.z)
+				if cd >= EMIN_Y and cd <= EMAX_Y then
+					local vp = base_idx + area.ystride * cd
 					-- Don't erase anything existing (like stone).
 					if vm_data[vp] == c_air then
 						vm_data[vp] = vine_id

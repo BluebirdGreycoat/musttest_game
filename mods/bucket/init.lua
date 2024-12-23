@@ -52,6 +52,13 @@ local function check_protection(pos, name, text)
 	local success, gl = rc.get_ground_level_at_pos(pos)
 	if not success then
 		minetest.chat_send_player(name, "# Server: That position is in the Void!")
+		easyvend.sound_error(name)
+		return true
+	end
+
+	if rc.liquid_forbidden_at(pos) and text:find("place") then
+		minetest.chat_send_player(name, "# Server: Liquids forbidden in this region.")
+		easyvend.sound_error(name)
 		return true
 	end
 
@@ -81,6 +88,7 @@ local function check_protection(pos, name, text)
 			.. " with a bucket")
 		minetest.record_protection_violation(pos, name)
     minetest.chat_send_player(name, "# Server: Nope. Not on someone else's land!")
+    easyvend.sound_error(name)
 		return true
 	end
 	return false

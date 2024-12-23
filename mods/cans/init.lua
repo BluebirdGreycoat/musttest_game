@@ -130,13 +130,20 @@ function cans.register_can(d)
 			local success, ground_level = rc.get_ground_level_at_pos(pos)
 			if not success then
 				minetest.chat_send_player(pname, "# Server: That position is in the Void!")
+				easyvend.sound_error(pname)
 				return
 			end
+
+      if rc.liquid_forbidden_at(pos) then
+        minetest.chat_send_player(pname, "# Server: Liquids forbidden in this region.")
+        easyvend.sound_error(pname)
+        return
+      end
 
 			-- Above 10000 XP, player can use buckets.
 			-- Note: this will allow high-XP players to place lava (which ignores
 			-- protection) above ground. If such a player decides to grief somebody,
-			-- I guess you'll need to form a committee! (You can still use city blocks
+			-- I guess you'll need to form a posse! (You can still use city blocks
 			-- to protect builds.)
 			local lxp = (xp.get_xp(pname, "digxp") >= 10000)
 			if not lxp or sheriff.is_cheater(pname) then
@@ -150,6 +157,7 @@ function cans.register_can(d)
       if minetest.is_protected(pos, pname) then
         minetest.log("action", pname .. " tried to place " .. data.place_name .. " at protected position " .. minetest.pos_to_string(pos) .. " with a "..data.can_name)
         minetest.chat_send_player(pname, "# Server: Not on somebody else's land!")
+        easyvend.sound_error(pname)
         return
       end
 

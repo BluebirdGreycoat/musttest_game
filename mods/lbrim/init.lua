@@ -63,7 +63,15 @@ minetest.register_node("lbrim:lava_source", {
     disable_jump = 1, 
     melt_around = 3
   },
-  
+
+  -- Not called by engine or voxelmanips.
+  on_construct = function(pos)
+    if rc.liquid_forbidden_at(pos) then
+      ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+      minetest.add_node(pos, {name="fire:basic_flame"})
+    end
+  end,
+
   on_blast = function(pos, intensity) end,
 
 	on_player_walk_over = function(pos, player)

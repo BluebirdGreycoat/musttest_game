@@ -1053,6 +1053,33 @@ function rc.notify_realm_update(player, pos)
 	end)
 end
 
+
+
+local LIQUID_FORBIDDEN_REGIONS = {
+	-- Xen coordinates.
+	{
+		minp = {x=-30912, y=13150, z=-30912},
+		maxp = {x=30927, y=15150, z=30927},
+	},
+}
+
+function rc.liquid_forbidden_at(pos)
+	for k, v in ipairs(LIQUID_FORBIDDEN_REGIONS) do
+		local minp = v.minp
+		local maxp = v.maxp
+
+		if pos.x >= minp.x and pos.x <= maxp.x
+		   and pos.y >= minp.y and pos.y <= maxp.y
+		   and pos.z >= minp.z and pos.z <= maxp.z then
+			-- Forbid liquid here.
+			return true
+		end
+	end
+	return false
+end
+
+
+
 if not rc.registered then
 	minetest.register_on_joinplayer(function(...)
 		return rc.on_joinplayer(...)

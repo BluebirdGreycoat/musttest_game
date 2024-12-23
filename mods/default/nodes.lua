@@ -2333,6 +2333,11 @@ minetest.register_node("default:water_source", {
 			add_steam_particles(pos)
 			minetest.add_node(pos, {name="fire:basic_flame"})
 		end
+		if rc.liquid_forbidden_at(pos) then
+			ambiance.sound_play("default_cool_lava", pos, 2.0, 16)
+			add_steam_particles(pos)
+			minetest.add_node(pos, {name="fire:basic_flame"})
+		end
 	end,
 
 	on_destruct = function(pos)

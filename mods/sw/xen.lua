@@ -23,7 +23,7 @@ end
 
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
-local c_stone = minetest.get_content_id("default:stone")
+local c_stone = minetest.get_content_id("sw:teststone1")
 
 local vm_data = {}
 local param2_data = {}
@@ -78,7 +78,18 @@ sw.create_2d_noise("xen5", {
 	scale = 1,
 	spread = {x=2000, y=2000, z=2000},
 	seed = 18349,
-	octaves = 8,
+	octaves = 6,
+	persist = 0.5,
+	lacunarity = 1.75,
+})
+
+-- Small floating rocks scattered near larger islands.
+sw.create_3d_noise("xen6", {
+	offset = 0,
+	scale = 1,
+	spread = {x=12, y=12, z=12},
+	seed = 58812,
+	octaves = 2,
 	persist = 0.5,
 	lacunarity = 1.75,
 })
@@ -120,9 +131,11 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local xen3 = sw.get_2d_noise(bp2d, sides2D, "xen3")
 	local xen4 = sw.get_2d_noise(bp2d, sides2D, "xen4")
 	local xen5 = sw.get_2d_noise(bp2d, sides2D, "xen5")
+	local xen6 = sw.get_3d_noise(bp3d, sides3D, "xen6")
 
 	local function is_xen(x, y, z)
 		local vp3d = area:index(x, y, z)
+		local vp3d_steady = vp3d
 
 		-- Shear the 2D noise coordinate offset.
 		local shear_x	= floor(x + shear1[vp3d])
@@ -136,9 +149,10 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 		local n1 = xen1[vp3d]
 		local n2 = xen2[vp2d] -- For large islands and voids.
-		local n3 = xen3[vp2d] -- Xen Y-level offset.
+		local n3 = 0--xen3[vp2d] -- Xen Y-level offset.
 		local n4 = xen4[vp2d] -- Holes.
 		local n5 = xen5[vp2d] -- Huge void areas.
+		local n6 = xen6[vp3d_steady] -- Floating rocks near larger islands.
 
 		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
 		local xen_middiff_up = math.floor(XEN_END - xen_mid)
@@ -161,8 +175,23 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 		local largescale = clamp(n5, -1, 1) * 0.2
 
-		if (n1 + (abs(n4)*0.25) - islands_and_voids + largescale) < (-1.25 + extinction) then
+		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale)
+		local right_side1 = (-1.25 + extinction)
+		local right_side2 = (-1.0 + extinction)
+
+		if left_side < right_side1 then
 			return true
+		end
+
+		-- Place clusters of small islands around the edges of the big ones.
+		if left_side < right_side2 then
+			-- Left and right sides of this equation are:
+			-- :keep in 1 layer:    :round top/bottom:
+			if abs(y - xen_mid) < (5 + abs(n6) * 3) then
+				if n6 < -0.5 or n6 > 0.5 then
+					return true
+				end
+			end
 		end
 	end
 

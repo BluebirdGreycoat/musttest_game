@@ -238,10 +238,10 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 		-- For huge islands (where negative), and where positive, absolutely empty areas.
 		-- Most values should hover around 0. Range [-1.75 .. 1.75], before extinction applies.
 		local masscale = clamp(n9, -1, 1)
-		--masscale = masscale ^ 3 --* masscale * masscale
-		if masscale < 0 then
-			masscale = masscale ^ 2
-		end
+		masscale = masscale ^ 2 --* masscale * masscale
+		--if masscale < 0 then
+		--	masscale = masscale ^ 2
+		--end
 		local massivescale = masscale * -1.75 * extinction
 		-- For testing:
 		--local massivescale = -1.75 * extinction

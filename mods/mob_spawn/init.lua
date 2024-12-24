@@ -67,7 +67,7 @@ function mob_spawn.register_spawn(data)
 	-- Does mob want day, night, or doesn't care?
 	-- If true, mob only spawns in daytime. False means only spawn at night.
 	-- If nil, mob may spawn at any time.
-	tb.day_toggle = data.day_toggle or nil
+	tb.day_toggle = data.day_toggle
 
 	-- How many mobs to spawn at once?
 	-- This determines how many mobs spawn, when all other checks pass.
@@ -434,7 +434,7 @@ function mob_spawn.spawn_mobs(pname, index)
 	local daynight = mdef.day_toggle
 
 	-- If toggle set to nil then ignore day/night check.
-	if daynight ~= nil then
+	if type(daynight) == "boolean" then
 		local tod = (minetest.get_timeofday() or 0) * 24000
 
 		if tod > 4500 and tod < 19500 then

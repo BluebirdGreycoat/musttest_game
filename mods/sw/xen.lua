@@ -134,15 +134,15 @@ sw.create_3d_noise("xen8", {
 	lacunarity = 1.75,
 })
 
--- Huge islands.
+-- Huge islands big enough for internal caverns.
 sw.create_2d_noise("xen9", {
 	offset = 0,
 	scale = 1,
-	spread = {x=3000, y=3000, z=3000},
+	spread = {x=1024, y=1024, z=1024},
 	seed = 172882,
 	octaves = 3,
 	persist = 0.5,
-	lacunarity = 1.75,
+	lacunarity = 2,
 })
 
 function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
@@ -238,22 +238,24 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 		-- For huge islands (where negative), and where positive, absolutely empty areas.
 		-- Most values should hover around 0. Range [-1.75 .. 1.75], before extinction applies.
 		local masscale = clamp(n9, -1, 1)
-		masscale = masscale ^ 2 --* masscale * masscale
+		--if not REPORTED then
+		--	REPORTED = true
+		--	print('masscale: ' .. masscale)
+		--end
+
+		masscale = masscale ^ 3
 		--if masscale < 0 then
 		--	masscale = masscale ^ 2
 		--end
-		local massivescale = masscale * -1.75 * extinction
+
+		local massivescale = (masscale * extinction)
+		--local massivescale = masscale * -1.75 * extinction
 		-- For testing:
 		--local massivescale = -1.75 * extinction
 
 		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale + massivescale)
 		local right_side1 = (-1.25 + extinction)
 		local right_side2 = (-1.0 + extinction)
-
-		--if not REPORTED then
-		--	REPORTED = true
-		--	print('left_side: ' .. left_side .. ', right_side1: ' .. right_side1)
-		--end
 
 		if left_side < right_side1 then
 			-- Carve out cave systems.
@@ -263,7 +265,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 				return false, true, false
 			end
 			-- Hollow caverns inside the big ones.
-			if left_side + 1.0 < right_side1 then
+			if left_side + 0.8 < right_side1 then
 				return false, true, true
 			end
 			return true, true, false

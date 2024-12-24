@@ -126,7 +126,6 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 --]====]
 
 	local function heightfunc(x, y, z)
----[====[
 		-- Get index into 3D noise arrays.
 		local n3d = area:index(x, y, z)
 		-- Shear the 2D noise coordinate offset.
@@ -135,13 +134,12 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 		shear_x = clamp(shear_x, emin.x, emax.x)
 		shear_z = clamp(shear_z, emin.z, emax.z)
---]====]
+
 		local n2d = area2d:index(shear_x, shear_z)
 		local n2d_steady = area2d:index(x, z)
 
 		--return baseterrain[n2d]
 
-		---[====[
 		-- Calc multiplier [0, 1] for mountain noise.
 		local mtnchnl = (tan(min(1, abs(mtnchannel[n2d]))) / TAN_OF_1)
 		-- Sharpen curve.
@@ -158,7 +156,6 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 		end
 
 		return floor(ground_y)
-		--]====]
 	end
 
 	-- Simplier version of the above. Gives an approximation of the ground height.
@@ -166,23 +163,6 @@ sw.generate_realm = function(vm, minp, maxp, seed)
   local function get_height(x, z)
 		local pos2d = {x=x, y=z}
 
-		--[[
-		local pos3d = {x=x, y=y0, z=z}
-
-		-- Shear the 2D noise coordinate offset.
-		local shear_x	= floor(x + shear1_perlin:get_3d(pos3d) * min(1, abs(softener_perlin:get_3d(pos3d))))
-		local shear_z = floor(z + shear2_perlin:get_3d(pos3d) * min(1, abs(softener_perlin:get_3d(pos3d))))
-
-		shear_x = clamp(shear_x, emin.x, emax.x)
-		shear_z = clamp(shear_z, emin.z, emax.z)
-
-		pos2d.x = shear_x
-		pos2d.y = shear_z
-		--]]
-
-		--return baseterrain_perlin:get_2d(pos2d)
-
-		---[====[
 		-- Calc multiplier [0, 1] for mountain noise.
 		local mtnchnl = (tan(min(1, abs(mtnchannel_perlin:get_2d(pos2d)))) / TAN_OF_1)
 		-- Sharpen curve.
@@ -194,7 +174,6 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 			(mountains_perlin:get_2d(pos2d) * mtnchnl))
 
 		return ground_y
-		--]====]
   end
 
 ---[====[
@@ -383,8 +362,10 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Skip mapfix for underground sections.
 	-- Note: because of Xen, we always have to mapfix the sky sections, even very high up.
-	if far_diff(-100) then
+	-- However, do NOT mapfix air regions high above ground but below Xen.
+	if far_diff(-100) or (far_diff(250) and y1 < XEN_BEGIN) then
 		gennotify_data.need_mapfix = false
+		print('skip mapfix')
 	end
 
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)

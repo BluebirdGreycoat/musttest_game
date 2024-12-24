@@ -15,6 +15,7 @@ local min = math.min
 local sin = math.sin
 local cos = math.cos
 local tan = math.tan
+local mod = math.fmod
 local distance = vector.distance
 
 local function clamp(v, minv, maxv)
@@ -42,6 +43,7 @@ local C_CRYSTALS = {
 }
 
 local vm_data = {}
+local vm_light = {}
 local param2_data = {}
 
 -- Main shape of Xen islands.
@@ -132,7 +134,18 @@ sw.create_3d_noise("xen8", {
 	lacunarity = 1.75,
 })
 
-function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
+-- Huge islands.
+sw.create_2d_noise("xen9", {
+	offset = 0,
+	scale = 1,
+	spread = {x=3000, y=3000, z=3000},
+	seed = 172882,
+	octaves = 3,
+	persist = 0.5,
+	lacunarity = 1.75,
+})
+
+function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 	local x1 = maxp.x
 	local y1 = maxp.y
 	local z1 = maxp.z
@@ -171,9 +184,15 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 	local xen5 = sw.get_2d_noise(bp2d, sides2D, "xen5")
 	local xen6 = sw.get_3d_noise(bp3d, sides3D, "xen6")
 	local xen7 = sw.get_3d_noise(bp3d, sides3D, "xen7")
+	local xen9 = sw.get_2d_noise(bp2d, sides2D, "xen9")
 
-	local function is_xen(x, y, z)
-		local vp3d = area:index(x, y, z)
+	local REPORTED = false
+
+	-- Returns several boolean values:
+	-- 1: whether to place stone or air
+	-- 2: whether to set light full-bright or full-dark
+	-- 3: whether the location represents a hollow cavern.
+	local function is_xen(vp3d, x, y, z)
 		local vp3d_steady = vp3d
 
 		-- Shear the 2D noise coordinate offset.
@@ -193,6 +212,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 		local n5 = xen5[vp2d] -- Huge void areas.
 		local n6 = xen6[vp3d_steady] -- Floating rocks near larger islands.
 		local n7 = xen7[vp3d] -- Cave systems.
+		local n9 = xen9[vp2d] -- Huge islands.
 
 		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
 		local xen_middiff_up = math.floor(XEN_END - xen_mid)
@@ -215,31 +235,56 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 
 		local largescale = clamp(n5, -1, 1) * 0.2
 
-		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale)
+		-- For huge islands (where negative), and where positive, absolutely empty areas.
+		-- Most values should hover around 0. Range [-1.75 .. 1.75], before extinction applies.
+		local masscale = clamp(n9, -1, 1)
+		masscale = masscale ^ 3 --* masscale * masscale
+		local massivescale = masscale * -1.75 * extinction
+		-- For testing:
+		--local massivescale = -1.75 * extinction
+
+		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale + massivescale)
 		local right_side1 = (-1.25 + extinction)
-		local right_side2 = (-1.0 + extinction)
+		--local right_side2 = (-1.0 + extinction)
+
+		--if not REPORTED then
+		--	REPORTED = true
+		--	print('left_side: ' .. left_side .. ', right_side1: ' .. right_side1)
+		--end
 
 		if left_side < right_side1 then
 			-- Carve out cave systems.
 			-- For some reason using abs() here makes chunkgen take x3 as long,
 			-- but we don't really need it anyway, these look OK.
 			if n7 > 0.7 then
-				return false
+				return false, true, false
 			end
-			return true
+			-- Hollow caverns inside the big ones.
+			if left_side + 1.0 < right_side1 then
+				return false, true, true
+			end
+			return true, true, false
 		end
 
 		-- Place clusters of small islands around the edges of the big ones.
 		if left_side < right_side2 then
-			-- Left and right sides of this equation are:
-			-- :keep in 1 layer:    :round top/bottom:
-			if abs(y - xen_mid) < (5 + abs(n6) * 3) then
-				if n6 < -0.5 or n6 > 0.5 then
-					return true
+		--if left_side - 0.5 < right_side1 then
+			-- There are three layers of small islands.
+			for n = -1, 1, 1 do
+				-- Left and right sides of this equation are:
+				-- :if within layer:             :round top/bottom:
+				if abs(y - (xen_mid + n * 100)) < (5 + abs(n6) * 3) then
+					if n6 < -0.5 or n6 > 0.5 then
+						return true, true, false
+					end
 				end
 			end
 		end
+
+		return false, false, false
 	end
+
+	local cavern_hints = gennotify_data.cavern_hints
 
 	-- Shape terrain.
 	for z = z0, z1 do
@@ -250,10 +295,24 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						if is_xen(x, y, z) then
+						local xen, dark, cavern = is_xen(vp, x, y, z)
+
+						if xen then
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air
+						end
+
+						if dark then
+							vm_light[vp] = 0
+						else
+							vm_light[vp] = 15
+						end
+
+						if cavern then
+							if mod(x, 16) == 0 and mod(y, 16) == 0 and mod(z, 16) == 0 then
+								cavern_hints[#cavern_hints+1] = {x=x, y=y, z=z}
+							end
 						end
 					end
 				end
@@ -297,6 +356,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	vm:get_data(vm_data)
+	vm:get_light_data(vm_light)
 	vm:get_param2_data(param2_data)
 
 	local floors = {}
@@ -429,6 +489,7 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	end
 
 	vm:set_data(vm_data)
+	vm:set_light_data(vm_light)
 	vm:set_param2_data(param2_data)
 end
 

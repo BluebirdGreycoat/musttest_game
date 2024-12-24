@@ -78,6 +78,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	gennotify_data.maxp = maxp
 	gennotify_data.need_mapfix = true
 	gennotify_data.on_construct = {} -- Positions where 'on_construct' callbacks need to be run.
+	gennotify_data.cavern_hints = {}
 --]====]
 
 	-- Grab the voxel manipulator.
@@ -329,7 +330,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 ---[====[
 
 	-- Handles its own validity checks.
-	sw.generate_xen(vm, minp, maxp, seed, shear1, shear2)
+	sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 
 	if far_diff(-100) then
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)

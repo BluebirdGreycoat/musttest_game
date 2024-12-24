@@ -26,6 +26,8 @@ function sw.on_generated(minp, maxp, blockseed)
 	local data = (mapgen.custom and mapgen.custom["sw:mapgen_info"])
 	if not data then return end
 
+	local pr = PcgRandom(blockseed + 165)
+
 	-- This ugly hack is currently the best way I know of to make light correct
 	-- after chunk generation.
 	if data.need_mapfix then
@@ -43,6 +45,17 @@ function sw.on_generated(minp, maxp, blockseed)
 		if ndef and ndef.on_construct then
 			ndef.on_construct(pos)
 		end
+	end
+
+	-- Place rosestone in Xen caverns.
+	for k = 1, #data.cavern_hints do
+		--if pr:next(1, 1000) == 1 then
+			local pos = data.cavern_hints[k]
+			pos.x = pos.x + pr:next(-8, 8)
+			pos.y = pos.y + pr:next(-8, 8)
+			pos.z = pos.z + pr:next(-8, 8)
+			rosestone.place(pos, pr:next(3, 8))
+		--end
 	end
 end
 

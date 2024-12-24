@@ -48,14 +48,19 @@ function sw.on_generated(minp, maxp, blockseed)
 	end
 
 	-- Place rosestone in Xen caverns.
-	for k = 1, #data.cavern_hints do
-		--if pr:next(1, 1000) == 1 then
-			local pos = data.cavern_hints[k]
-			pos.x = pos.x + pr:next(-8, 8)
-			pos.y = pos.y + pr:next(-8, 8)
-			pos.z = pos.z + pr:next(-8, 8)
-			rosestone.place(pos, pr:next(3, 8))
-		--end
+	local cavern_hints = table.copy(data.cavern_hints)
+	table.shuffle(cavern_hints)
+	for k = 1, #cavern_hints do
+		-- Max rosestone clumps per mapchunk.
+		if k > 3 then
+			break
+		end
+
+		local pos = data.cavern_hints[k]
+		pos.x = pos.x + pr:next(-8, 8)
+		pos.y = pos.y + pr:next(-8, 8)
+		pos.z = pos.z + pr:next(-8, 8)
+		rosestone.place(pos, pr:next(3, 8))
 	end
 end
 

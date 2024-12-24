@@ -347,6 +347,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- Despeckle everywhere.
 	sw.despeckle_terrain(vm, minp, maxp)
 
+	-- Carcorsica surface decorations.
   if not far_diff(-250) and not far_diff(250) then
 		sw.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc, get_height, gennotify_data)
 	end
@@ -365,7 +366,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- However, do NOT mapfix air regions high above ground but below Xen.
 	if far_diff(-100) or (far_diff(250) and y1 < XEN_BEGIN) then
 		gennotify_data.need_mapfix = false
-		print('skip mapfix')
+		--print('skip mapfix')
 	end
 
 	minetest.save_gen_notify("sw:mapgen_info", gennotify_data)

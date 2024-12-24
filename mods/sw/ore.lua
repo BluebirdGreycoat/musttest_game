@@ -12,6 +12,9 @@ local sheet_ores = {
 	{ore="morerocks:granite", seed=5, threshhold=0.0},
 	{ore="moreblocks:coal_stone", seed=18192, threshhold=0.1},
 	{ore="whitestone:cobble", seed=482, threshhold=0.5},
+
+	-- Regular stone in Xen.
+	{ore="default:stone", seed=5823, threshhold=-1.2, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
 }
 local SHEET_ORE_SEED_FLOOR = 8827
 
@@ -19,7 +22,7 @@ for index, data in ipairs(sheet_ores) do
 	minetest.register_ore({
 		ore_type = "sheet",
 		ore = data.ore,
-		wherein = "default:stone",
+		wherein = data.wherein or "default:stone",
 		column_height_min = 4,
 		column_height_max = 10,
 		column_midpoint_factor = 0.5,
@@ -64,10 +67,11 @@ local scatter_ores = {
 	{ore="glowstone:cobble", seed=837, threshhold=0.2, scarcity=15, count=3, size=10},
 
 	-- Ir'xen glows.
-	{ore="luxore:luxore", seed=4234, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="glowstone:luxore", seed=772, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="luxore:luxore", seed=4234, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
+	{ore="glowstone:luxore", seed=772, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
+	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
+	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
+	{ore="cavestuff:glow_obsidian", seed=3312, threshhold=-0.5, scarcity=10, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 
@@ -87,8 +91,9 @@ for index, data in ipairs(scatter_ores) do
 			scale = 1,
 			spread = {x=500, y=500, z=500},
 			seed = SCATTER_ORE_SEED_FLOOR + data.seed,
-			octaves = 4,
+			octaves = data.octaves or 4,
 			persist = 0.5,
+			lacunarity = 2,
 		}
 	})
 end

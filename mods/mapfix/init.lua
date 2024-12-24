@@ -12,6 +12,8 @@ mapfix.modpath = minetest.get_modpath("mapfix")
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
+local max = math.max
+local min = math.min
 
 -- Configurable settings.
 local MIN_TIMEOUT = 10
@@ -118,7 +120,7 @@ mapfix.command = function(pname, param)
 	local maxp = vector.add(pos, radius)
 
 	-- Special handling to protect Carcorsica surface from Ir'xen shadows.
-	if maxp.y >= XEN_BUFFER or minp.y <= XEN_BEGIN then
+	if maxp.y >= XEN_BUFFER and minp.y <= XEN_BEGIN then
 		-- If the Carcorsica surface extends into Xen space, mapfix is OK here.
 		if sw.get_ground_y(pos) < XEN_BUFFER then
 			minetest.chat_send_player(pname,

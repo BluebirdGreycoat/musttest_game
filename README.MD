@@ -26,3 +26,7 @@ This subgame was written primarilly by GoldFireUn, using Minetest Game as a base
 ---
 
 This game is designed to be run on a public, multiplayer server. It is NOT designed for singleplayer. This is not to say that it will never be useable in a singleplayer world, if people decide they want to put the work into making it happen.
+
+-- This is a test line
+
+-- This is another test change 

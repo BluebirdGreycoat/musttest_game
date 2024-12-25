@@ -332,21 +332,19 @@ end
 
 -- Lua tip: never create closures inside a hot loop.
 -- Tanks ur performance HARD.
-local function add_ground_soil(vm_data, area, idx)
-	if vm_data[idx - area.ystride] == c_stone then
-		vm_data[idx] = c_gravel
-	end
-end
-
 local function fill_hollows(vm_data, area, base_idx)
-	local up = base_idx + area.ystride * 4
-	local cid_ground = vm_data[base_idx]
+	local ystride = area.ystride
+	local zstride = area.zstride
 
-	if cid_ground ~= c_stone then
+	local up = base_idx + ystride * 3
+	local cid_ground = vm_data[base_idx - ystride]
+	local cid_replace = vm_data[base_idx]
+
+	if cid_ground ~= c_stone or cid_replace ~= c_stone then
 		return
 	end
 
-	local cid_air = vm_data[base_idx + area.ystride]
+	local cid_air = vm_data[base_idx + ystride]
 	if cid_air ~= c_air then
 		return
 	end
@@ -356,8 +354,8 @@ local function fill_hollows(vm_data, area, base_idx)
 		return
 	end
 
-	local cid_above_n = vm_data[up + area.zstride * 8]
-	local cid_above_s = vm_data[up - area.zstride * 8]
+	local cid_above_n = vm_data[up + zstride * 8]
+	local cid_above_s = vm_data[up - zstride * 8]
 	local cid_above_e = vm_data[up + 8]
 	local cid_above_w = vm_data[up - 8]
 
@@ -368,11 +366,7 @@ local function fill_hollows(vm_data, area, base_idx)
 	if cid_above_w == c_stone then count = count + 1 end
 
 	if count >= 3 then
-		add_ground_soil(vm_data, area, base_idx)
-		add_ground_soil(vm_data, area, base_idx - 1)
-		add_ground_soil(vm_data, area, base_idx + 1)
-		add_ground_soil(vm_data, area, base_idx + area.zstride)
-		add_ground_soil(vm_data, area, base_idx - area.zstride)
+		vm_data[base_idx] = c_gravel
 	end
 end
 
@@ -412,13 +406,13 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 	vm:get_data(vm_data)
 
-	for z = z0, z1, 2 do
-		for y = y0, y1, 1 do
+	for z = z0, z1 do
+		for y = y0, y1 do
 			if y >= REALM_START and y <= REALM_END then
 				local base_idx = area:index(x0, y, z)
-				for x = x0, x1, 2 do
+				for x = x0, x1 do
 					fill_hollows(vm_data, area, base_idx)
-					base_idx = base_idx + 2
+					base_idx = base_idx + 1
 				end
 			end
 		end

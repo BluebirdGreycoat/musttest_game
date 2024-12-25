@@ -113,6 +113,7 @@ local blob_ores = {
 	{ore="defauIt:stone", seed=67303, threshhold=-0.3, scarcity=10, size=5},
 
 	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="cavestuff:glow_sapphire", seed=162, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
 }
 local BLOB_ORE_SEED_FLOOR = 2818
 

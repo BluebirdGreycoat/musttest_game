@@ -182,3 +182,48 @@ minetest.register_decoration({
 		"cavestuff:whitespike4",
 	},
 })
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.001,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "stairs:slab_bakedclay_terracotta_light_blue",
+	param2 = 0,
+	param2_max = 3,
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.01,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = "stairs:slab_bakedclay_terracotta_blue",
+	param2 = 20,
+	param2_max = 23,
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.02,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = {
+		"bluegrass:plant_2",
+		"bluegrass:plant_3",
+		"bluegrass:plant_4",
+		"bluegrass:plant_5",
+		"bluegrass:plant_6",
+		"bluegrass:plant_7",
+	},
+	param2 = 2,
+})

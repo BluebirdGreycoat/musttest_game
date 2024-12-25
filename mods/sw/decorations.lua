@@ -6,7 +6,20 @@ minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
 	sidelen = 8,
-	fill_ratio = 0.005,
+	fill_ratio = 0.001,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "mese_crystals:mese_crystal_ore5",
+	param2 = 0,
+	param2_max = 3,
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.3,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	flags = "all_floors",
@@ -14,11 +27,12 @@ minetest.register_decoration({
 		"mese_crystals:mese_crystal_ore1",
 		"mese_crystals:mese_crystal_ore2",
 		"mese_crystals:mese_crystal_ore3",
-		"mese_crystals:mese_crystal_ore4",
-		"mese_crystals:mese_crystal_ore5",
 	},
 	param2 = 0,
 	param2_max = 3,
+	spawn_by = "mese_crystals:mese_crystal_ore5",
+	num_spawn_by = 1,
+	check_offset = 1,
 })
 
 -- Midnight sun and fairy flowers.

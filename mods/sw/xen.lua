@@ -330,7 +330,15 @@ end
 
 
 
-local function fill_hollows(area, base_idx)
+-- Lua tip: never create closures inside a hot loop.
+-- Tanks ur performance HARD.
+local function add_ground_soil(vm_data, area, idx)
+	if vm_data[idx - area.ystride] == c_stone then
+		vm_data[idx] = c_gravel
+	end
+end
+
+local function fill_hollows(vm_data, area, base_idx)
 	local up = base_idx + area.ystride * 4
 	local cid_ground = vm_data[base_idx]
 
@@ -359,18 +367,12 @@ local function fill_hollows(area, base_idx)
 	if cid_above_e == c_stone then count = count + 1 end
 	if cid_above_w == c_stone then count = count + 1 end
 
-	local function add_ground_soil(idx)
-		if vm_data[idx - area.ystride] == c_stone then
-			vm_data[idx] = c_gravel
-		end
-	end
-
 	if count >= 3 then
-		add_ground_soil(base_idx)
-		add_ground_soil(base_idx - 1)
-		add_ground_soil(base_idx + 1)
-		add_ground_soil(base_idx + area.zstride)
-		add_ground_soil(base_idx - area.zstride)
+		add_ground_soil(vm_data, area, base_idx)
+		add_ground_soil(vm_data, area, base_idx - 1)
+		add_ground_soil(vm_data, area, base_idx + 1)
+		add_ground_soil(vm_data, area, base_idx + area.zstride)
+		add_ground_soil(vm_data, area, base_idx - area.zstride)
 	end
 end
 
@@ -413,9 +415,10 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	for z = z0, z1, 2 do
 		for y = y0, y1, 1 do
 			if y >= REALM_START and y <= REALM_END then
+				local base_idx = area:index(x0, y, z)
 				for x = x0, x1, 2 do
-					local base_idx = area:index(x+random(-1, 1), y, z+random(-1, 1))
-					fill_hollows(area, base_idx)
+					fill_hollows(vm_data, area, base_idx)
+					base_idx = base_idx + 2
 				end
 			end
 		end

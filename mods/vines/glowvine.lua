@@ -1,7 +1,7 @@
 
 -- New Vines for Xen
 
-dofile(vines.modpath .. "/glowvine.lua")
+
 
  minetest.register_node('vine:luminoustreevine', {
 	 drawtype = "plantlike",

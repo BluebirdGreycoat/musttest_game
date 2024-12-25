@@ -294,10 +294,11 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 
 	-- Shape terrain.
 	for z = z0, z1 do
-		for x = x0, x1 do
-			for y = y0, y1 do
-				if y >= REALM_START and y <= REALM_END then
-					local vp = area:index(x, y, z)
+		for y = y0, y1 do
+			if y >= REALM_START and y <= REALM_END then
+				local vp = area:index(x0, y, z)
+
+				for x = x0, x1 do
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
@@ -321,6 +322,8 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 							end
 						end
 					end
+
+					vp = vp + 1
 				end
 			end
 		end
@@ -328,6 +331,52 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 
 	vm:set_data(vm_data)
 	--vm:set_param2_data(param2_data)
+end
+
+
+
+local function fill_hollows(area, base_idx)
+	local up = base_idx + area.ystride * 4
+	local cid_ground = vm_data[base_idx]
+
+	if cid_ground ~= c_stone then
+		return
+	end
+
+	local cid_air = vm_data[base_idx + area.ystride]
+	if cid_air ~= c_air then
+		return
+	end
+
+	local cid_above_air = vm_data[up]
+	if cid_above_air ~= c_air then
+		return
+	end
+
+	local cid_above_n = vm_data[up + area.zstride * 8]
+	local cid_above_s = vm_data[up - area.zstride * 8]
+	local cid_above_e = vm_data[up + 8]
+	local cid_above_w = vm_data[up - 8]
+
+	local count = 0
+	if cid_above_n == c_stone then count = count + 1 end
+	if cid_above_s == c_stone then count = count + 1 end
+	if cid_above_e == c_stone then count = count + 1 end
+	if cid_above_w == c_stone then count = count + 1 end
+
+	local function add_ground_soil(idx)
+		if vm_data[idx - area.ystride] == c_stone then
+			vm_data[idx] = c_gravel
+		end
+	end
+
+	if count >= 3 then
+		add_ground_soil(base_idx)
+		add_ground_soil(base_idx - 1)
+		add_ground_soil(base_idx + 1)
+		add_ground_soil(base_idx + area.zstride)
+		add_ground_soil(base_idx - area.zstride)
+	end
 end
 
 
@@ -350,6 +399,9 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PcgRandom(seed + 728)
 
+	--print('ystride: ' .. area.ystride)
+	--print('zstride: ' .. area.zstride)
+
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.
 	-- This is to support horizontal shearing.
@@ -365,6 +417,17 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	vm:get_light_data(vm_light)
 	vm:get_param2_data(param2_data)
 
+	for z = z0, z1, 2 do
+		for y = y0, y1, 1 do
+			if y >= REALM_START and y <= REALM_END then
+				for x = x0, x1, 2 do
+					local base_idx = area:index(x+random(-1, 1), y, z+random(-1, 1))
+					fill_hollows(area, base_idx)
+				end
+			end
+		end
+	end
+
 	local floors = {}
 	local ceilings = {}
 
@@ -372,13 +435,13 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 
 	-- Find biome surfaces.
 	for z = z0, z1 do
-		for x = x0, x1 do
-			for y = y0, y1 do
-				if y >= REALM_START and y <= REALM_END then
-					local base_idx = area:index(x, y, z)
-					local n8 = xen8[base_idx]
+		for y = y0, y1 do
+			if y >= REALM_START and y <= REALM_END then
+				local base_idx = area:index(x0, y, z)
 
+				for x = x0, x1 do
 					-- Entirely skip some areas for biome placement.
+					local n8 = xen8[base_idx]
 					if n8 < -0.2 or n8 > 0.2 then
 						local vp_1 = base_idx - area.ystride
 						local vp_3 = base_idx + area.ystride
@@ -397,6 +460,8 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 							ceilings[#ceilings+1] = vp_3
 						end
 					end
+
+					base_idx = base_idx + 1
 				end
 			end
 		end

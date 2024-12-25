@@ -15,6 +15,7 @@ local sheet_ores = {
 
 	-- Regular stone in Xen.
 	{ore="default:stone", seed=5823, threshhold=-1.2, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="default:desert_stone", seed=511, threshhold=-1.0, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
 }
 local SHEET_ORE_SEED_FLOOR = 8827
 

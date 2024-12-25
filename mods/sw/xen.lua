@@ -34,6 +34,7 @@ local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
 local c_fairy_flower = minetest.get_content_id("aradonia:caveflower8")
 local c_red_vine = minetest.get_content_id("nethervine:vine")
 local c_dirt = minetest.get_content_id("default:dirt")
+local c_cobble_slab = minetest.get_content_id("stairs:slab_cobble")
 
 --[[
 local C_CRYSTALS = {
@@ -370,6 +371,27 @@ local function fill_hollows(vm_data, area, base_idx)
 		vm_data[base_idx] = c_dirt
 	elseif count >= 3 then
 		vm_data[base_idx] = c_gravel
+	end
+
+	local dn = base_idx - ystride * 2
+
+	-- This check prevents placing obsidian on the little islands.
+	if vm_data[base_idx - ystride * 12] == c_stone then
+		local cid_below_n = vm_data[dn + zstride * 8]
+		local cid_below_s = vm_data[dn - zstride * 8]
+		local cid_below_e = vm_data[dn + 8]
+		local cid_below_w = vm_data[dn - 8]
+
+		local bcount = 0
+		if cid_below_n == c_air then bcount = bcount + 1 end
+		if cid_below_s == c_air then bcount = bcount + 1 end
+		if cid_below_e == c_air then bcount = bcount + 1 end
+		if cid_below_w == c_air then bcount = bcount + 1 end
+
+		-- No stone above and air below.
+		if count == 0 and bcount >= 3 then
+			vm_data[base_idx] = c_cobble_slab
+		end
 	end
 end
 

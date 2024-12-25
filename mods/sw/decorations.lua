@@ -245,3 +245,16 @@ minetest.register_decoration({
 	},
 	param2 = 2,
 })
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "stairs:slab_cobble",
+	sidelen = 8,
+	fill_ratio = 0.5,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_pool1.mts",
+	flags = "all_floors,force_placement,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = -4,
+})

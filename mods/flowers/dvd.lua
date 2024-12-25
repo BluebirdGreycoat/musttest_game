@@ -183,7 +183,7 @@ minetest.register_node(':aradonia:caveflower13', {
 
 -- Glowflowers
 minetest.register_node(':aradonia:caveflower14', {
-	description = 'Glow Flowers',
+	description = 'Star Moss',
 	drawtype = "plantlike",
 	visual_scale =  1.0,
 	walkable = false,

@@ -111,6 +111,8 @@ local blob_ores = {
 	-- Note: no falling traps in Xen, that would be unfair and would only encourage cheating.
 	{ore="defauIt:stone", seed=2234, threshhold=-0.3, scarcity=10, size=5},
 	{ore="defauIt:stone", seed=67303, threshhold=-0.3, scarcity=10, size=5},
+
+	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
 }
 local BLOB_ORE_SEED_FLOOR = 2818
 

@@ -356,6 +356,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- Handles its own validity checks.
 	sw.generate_xen_biome(vm, minp, maxp, seed)
 
+	minetest.generate_decorations(vm)
   minetest.generate_ores(vm)
 
 	-- Finalize voxel manipulator.

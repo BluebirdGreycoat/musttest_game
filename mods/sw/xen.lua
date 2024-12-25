@@ -34,6 +34,7 @@ local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
 local c_fairy_flower = minetest.get_content_id("aradonia:caveflower8")
 local c_red_vine = minetest.get_content_id("nethervine:vine")
 
+--[[
 local C_CRYSTALS = {
 	minetest.get_content_id("mese_crystals:mese_crystal_ore1"),
 	minetest.get_content_id("mese_crystals:mese_crystal_ore2"),
@@ -41,6 +42,7 @@ local C_CRYSTALS = {
 	minetest.get_content_id("mese_crystals:mese_crystal_ore4"),
 	minetest.get_content_id("mese_crystals:mese_crystal_ore5"),
 }
+--]]
 
 local vm_data = {}
 local vm_light = {}
@@ -190,8 +192,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 
 	-- Returns several boolean values:
 	-- 1: whether to place stone or air
-	-- 2: whether to set light full-bright or full-dark
-	-- 3: whether the location represents a hollow cavern.
+	-- 2: whether the location represents a hollow cavern.
 	local function is_xen(vp3d, x, y, z)
 		local vp3d_steady = vp3d
 
@@ -263,13 +264,13 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 			-- For some reason using abs() here makes chunkgen take x3 as long,
 			-- but we don't really need it anyway, these look OK.
 			if n7 > 0.7 then
-				return false, true, false
+				return false, false
 			end
 			-- Hollow caverns inside the big ones.
 			if left_side + 0.8 < right_side1 then
-				return false, true, true
+				return false, true
 			end
-			return true, true, false
+			return true, false
 		end
 
 		-- Place clusters of small islands around the edges of the big ones.
@@ -281,13 +282,13 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 				-- :if within layer:             :round top/bottom:
 				if abs(y - (xen_mid + n * 100)) < (5 + abs(n6) * 3) then
 					if n6 < -0.5 or n6 > 0.5 then
-						return true, true, false
+						return true, false
 					end
 				end
 			end
 		end
 
-		return false, false, false
+		return false, false
 	end
 
 	local cavern_hints = gennotify_data.cavern_hints
@@ -302,18 +303,12 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 					local cid = vm_data[vp]
 
 					if cid == c_air or cid == c_ignore then
-						local xen, dark, cavern = is_xen(vp, x, y, z)
+						local xen, cavern = is_xen(vp, x, y, z)
 
 						if xen then
 							vm_data[vp] = c_stone
 						else
 							vm_data[vp] = c_air
-						end
-
-						if dark then
-							vm_light[vp] = 0
-						else
-							vm_light[vp] = 15
 						end
 
 						if cavern then
@@ -414,8 +409,6 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
 	vm:get_data(vm_data)
-	vm:get_light_data(vm_light)
-	vm:get_param2_data(param2_data)
 
 	for z = z0, z1, 2 do
 		for y = y0, y1, 1 do
@@ -428,139 +421,6 @@ function sw.generate_xen_biome(vm, minp, maxp, seed)
 		end
 	end
 
-	local floors = {}
-	local ceilings = {}
-
-	local xen8 = sw.get_3d_noise(bp3d, sides3D, "xen8")
-
-	-- Find biome surfaces.
-	for z = z0, z1 do
-		for y = y0, y1 do
-			if y >= REALM_START and y <= REALM_END then
-				local base_idx = area:index(x0, y, z)
-
-				for x = x0, x1 do
-					-- Entirely skip some areas for biome placement.
-					local n8 = xen8[base_idx]
-					if n8 < -0.2 or n8 > 0.2 then
-						local vp_1 = base_idx - area.ystride
-						local vp_3 = base_idx + area.ystride
-
-						local c1 = vm_data[vp_1]
-						local c2 = vm_data[base_idx]
-						local c3 = vm_data[vp_3]
-
-						-- Ground surface.
-						if c1 == c_stone and c2 == c_air and c3 == c_air then
-							floors[#floors+1] = vp_1
-						end
-
-						-- Roof surface.
-						if c1 == c_air and c2 == c_air and c3 == c_stone then
-							ceilings[#ceilings+1] = vp_3
-						end
-					end
-
-					base_idx = base_idx + 1
-				end
-			end
-		end
-	end
-
-	for k = 1, #floors do
-		local base_idx = floors[k]
-
-		-- Convert stone to gravel in tight spaces (like caves/tunnels).
-		local vp3 = base_idx + area.ystride * 6 -- +y *6
-
-		if vm_data[vp3] == c_stone then
-			vm_data[base_idx] = c_gravel
-		end
-
-		-- Place ground plants.
-		if pr:next(1, 7) == 1 then
-			local n8 = xen8[base_idx]
-			local vp2 = base_idx + area.ystride
-			local plant_id = c_fungus
-			local rnd1 = pr:next(1, 100)
-
-			if rnd1 <= 5 then
-				local ceiling_idx = base_idx + area.ystride * 16 -- +y *16
-				local ceiling_cid = vm_data[ceiling_idx]
-				-- Chose plant type.
-				if ceiling_cid == c_stone then
-					if n8 < 0 then
-						plant_id = c_midnight_sun
-					end
-				elseif ceiling_cid == c_air then
-					if n8 > 0 then
-						if pr:next(1, 5) <= 3 then
-							plant_id = c_candle_flower
-						else
-							plant_id = c_fire_lantern
-						end
-					end
-				end
-			elseif rnd1 <= 10 then
-				if n8 < -0.3 then
-					-- Place fairy flowers in open areas only.
-					local j1 = base_idx + area.ystride * 16
-					local j2 = base_idx + area.ystride * 32
-					-- Will be ignore if indices out of bounds.
-					if vm_data[j1] == c_air and vm_data[j2] == c_air then
-						plant_id = c_fairy_flower
-					end
-				end
-			elseif rnd1 <= 15 then
-				plant_id = C_CRYSTALS[random(1, #C_CRYSTALS)]
-				param2_data[vp2] = random(0, 3)
-			end
-
-			vm_data[vp2] = plant_id
-		end
-	end
-
-	local EMIN_Y = emin.y
-	local EMAX_Y = emax.y
-
-	for k = 1, #ceilings do
-		if pr:next(1, 7) == 1 then
-			local length = pr:next(1, 100)
-			local base_idx = ceilings[k]
-
-			-- Sometimes, a long glow worm/vine.
-			if pr:next(1, 50) == 1 then
-				-- Multiply length instead of calling pr:next() again, for performance.
-				length = length * 4
-			end
-
-			-- Chose whether to place glow worm or nether vine.
-			-- Nether vines grow in proximity to floors.
-			local vine_id = c_worm
-			if vm_data[base_idx - area.ystride * 15] == c_stone then
-				vine_id = c_red_vine
-				-- Multiply length instead of calling pr:next() again, for performance.
-				length = min(400, length * 4)
-			end
-
-			-- If length is between 1 and 99, this results in 1 .. 4
-			-- Length will be 5 if input is 100. If 400, length will be 17.
-			-- Using this scaling method lets me reduce calls to pr:next().
-			length = floor(length * 0.04) + 1
-
-			for j = 1, length do
-				local vp = base_idx - area.ystride * j
-				-- Don't erase anything existing (like stone).
-				-- Will be ignore if index out of bounds.
-				if vm_data[vp] == c_air then
-					vm_data[vp] = vine_id
-				end
-			end
-		end
-	end
-
 	vm:set_data(vm_data)
-	vm:set_light_data(vm_light)
-	vm:set_param2_data(param2_data)
 end
 

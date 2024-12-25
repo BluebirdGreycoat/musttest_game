@@ -1,4 +1,5 @@
-
+-- Disabled for now, as none of these nodes are available yet.
+--[[
 minetest.register_craft({
 	output = "sumpf:junglestonebrick",
 	recipe = {
@@ -28,3 +29,4 @@ minetest.register_craft({
 	output = "sumpf:junglestone",
 	recipe = "sumpf:cobble",
 })
+--]]

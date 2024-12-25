@@ -21,7 +21,7 @@ local distance = vector.distance
 local function clamp(v, minv, maxv)
 	return max(minv, min(v, maxv))
 end
-
+-- my random change
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("sw:teststone1")

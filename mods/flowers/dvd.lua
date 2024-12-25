@@ -180,3 +180,20 @@ minetest.register_node(':aradonia:caveflower13', {
 		"<player> was pierced by firethorns.",
 	},
 })
+
+-- Glowflowers
+minetest.register_node(':aradonia:caveflower14', {
+	description = 'Star Moss',
+	drawtype = "plantlike",
+	visual_scale =  1.0,
+	walkable = false,
+	tiles = {'dvd_glowflowers.png'},
+	inventory_image = 'dvd_glowflowers.png',
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	place_param2 = 10,
+	light_source = 4,
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+})

@@ -214,9 +214,9 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 		local n7 = xen7[vp3d] -- Cave systems.
 		local n9 = xen9[vp2d] -- Huge islands.
 
-		local xen_mid = math.floor(((XEN_BEGIN+XEN_END)/2)+n3)
-		local xen_middiff_up = math.floor(XEN_END - xen_mid)
-		local xen_middiff_dn = math.floor(xen_mid - XEN_BEGIN)
+		local xen_mid = floor(((XEN_BEGIN+XEN_END)/2)+n3)
+		local xen_middiff_up = floor(XEN_END - xen_mid)
+		local xen_middiff_dn = floor(xen_mid - XEN_BEGIN)
 
 		-- Extinction value shall be 1 at XEN MID, and 0 at both top and bottom.
 		-- Using exponential falloff.
@@ -227,10 +227,10 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 			extinction = ((y - XEN_BEGIN) / xen_middiff_dn)
 		end
 		extinction = clamp(extinction, 0, 1)
-		extinction = tan(extinction ^ 4) / TAN_OF_1
+		extinction = extinction * extinction * extinction * extinction
 
 		local islands_and_voids = clamp(abs(n2), 0, 1)
-		islands_and_voids = tan(islands_and_voids) / TAN_OF_1
+		islands_and_voids = islands_and_voids * islands_and_voids
 		islands_and_voids = islands_and_voids - 0.25
 
 		local largescale = clamp(n5, -1, 1) * 0.2
@@ -243,17 +243,18 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 		--	print('masscale: ' .. masscale)
 		--end
 
-		masscale = masscale ^ 3
+		-- 3x multiply should preserve the sign.
+		masscale = masscale * masscale * masscale
 		--if masscale < 0 then
 		--	masscale = masscale ^ 2
 		--end
 
-		local massivescale = (masscale * extinction)
+		--local massivescale = (masscale * extinction)
 		--local massivescale = masscale * -1.75 * extinction
 		-- For testing:
 		--local massivescale = -1.75 * extinction
 
-		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale + massivescale)
+		local left_side = (n1 + (abs(n4) * 0.25) - islands_and_voids + largescale + masscale) * extinction
 		local right_side1 = (-1.25 + extinction)
 		local right_side2 = (-1.0 + extinction)
 

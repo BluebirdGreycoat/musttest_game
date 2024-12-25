@@ -33,6 +33,7 @@ local c_fire_lantern = minetest.get_content_id("aradonia:caveflower11")
 local c_candle_flower = minetest.get_content_id("aradonia:caveflower12")
 local c_fairy_flower = minetest.get_content_id("aradonia:caveflower8")
 local c_red_vine = minetest.get_content_id("nethervine:vine")
+local c_dirt = minetest.get_content_id("default:dirt")
 
 --[[
 local C_CRYSTALS = {
@@ -365,7 +366,9 @@ local function fill_hollows(vm_data, area, base_idx)
 	if cid_above_e == c_stone then count = count + 1 end
 	if cid_above_w == c_stone then count = count + 1 end
 
-	if count >= 3 then
+	if count >= 4 then
+		vm_data[base_idx] = c_dirt
+	elseif count >= 3 then
 		vm_data[base_idx] = c_gravel
 	end
 end

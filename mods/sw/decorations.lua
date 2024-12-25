@@ -38,7 +38,7 @@ minetest.register_decoration({
 -- Midnight sun and fairy flowers.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "default:gravel",
+	place_on = {"default:gravel", "default:dirt"},
 	sidelen = 8,
 	fill_ratio = 0.05,
 	y_min = XEN_BEGIN,
@@ -52,7 +52,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "default:gravel"},
+	place_on = {"sw:teststone1", "default:gravel", "default:dirt"},
 	sidelen = 8,
 	fill_ratio = 0.7,
 	y_min = XEN_BEGIN,
@@ -103,11 +103,20 @@ minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
 	sidelen = 8,
-	fill_ratio = 0.25,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	flags = "all_floors",
 	decoration = "cavestuff:glow_fungus",
+	noise_params = {
+		offset = -0.1,
+		scale = 0.35,
+		spread = {x=32, y=32, z=32},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
 })
 
 -- Glow worms.
@@ -115,13 +124,22 @@ minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
 	sidelen = 8,
-	fill_ratio = 0.2,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	flags = "all_ceilings",
 	decoration = "cavestuff:glow_worm",
 	height = 1,
 	height_max = 4,
+	noise_params = {
+		offset = -0.1,
+		scale = 0.35,
+		spread = {x=32, y=32, z=32},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
 })
 
 -- Nether vines.

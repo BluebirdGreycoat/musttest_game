@@ -50,6 +50,27 @@ minetest.register_decoration({
 	},
 })
 
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"sw:teststone1", "default:gravel"},
+	sidelen = 8,
+	fill_ratio = 0.7,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"cavestuff:bluecrystal1",
+		"cavestuff:bluecrystal2",
+		"cavestuff:bluecrystal3",
+		"cavestuff:bluecrystal4",
+	},
+	param2 = 0,
+	param2_max = 3,
+	spawn_by = "aradonia:caveflower6",
+	num_spawn_by = 1,
+	check_offset = 1,
+})
+
 -- Fire vase.
 minetest.register_decoration({
 	deco_type = "simple",
@@ -143,4 +164,21 @@ minetest.register_decoration({
 	decoration = "nethervine:vine",
 	height = 8,
 	height_max = 32,
+})
+
+-- White crystals.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.001,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"cavestuff:whitespike1",
+		"cavestuff:whitespike2",
+		"cavestuff:whitespike3",
+		"cavestuff:whitespike4",
+	},
 })

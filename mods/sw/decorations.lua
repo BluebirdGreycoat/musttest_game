@@ -3,6 +3,32 @@ local XEN_BEGIN = 13150
 local XEN_END = 15150
 
 minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "stairs:slab_cobble",
+	sidelen = 8,
+	fill_ratio = 0.1,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_pool1.mts",
+	flags = "all_floors,force_placement,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = -4,
+})
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "stairs:slab_cobble",
+	sidelen = 8,
+	fill_ratio = 0.01,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_pool2.mts",
+	flags = "all_floors,force_placement,place_center_x,place_center_z",
+	rotation = "0",
+	place_offset_y = -1,
+})
+
+minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
 	sidelen = 8,
@@ -101,7 +127,7 @@ minetest.register_decoration({
 -- Blue fungus.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "bedrock:bedrock"},
 	sidelen = 8,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
@@ -203,6 +229,22 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
+	place_on = "bedrock:bedrock",
+	sidelen = 8,
+	fill_ratio = 0.3,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"cavestuff:whitespike1",
+		"cavestuff:whitespike2",
+		"cavestuff:whitespike3",
+		"cavestuff:whitespike4",
+	},
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
 	place_on = "sw:teststone1",
 	sidelen = 8,
 	fill_ratio = 0.001,
@@ -244,17 +286,4 @@ minetest.register_decoration({
 		"bluegrass:plant_7",
 	},
 	param2 = 2,
-})
-
-minetest.register_decoration({
-	deco_type = "schematic",
-	place_on = "stairs:slab_cobble",
-	sidelen = 8,
-	fill_ratio = 0.5,
-	y_min = XEN_BEGIN,
-	y_max = XEN_END,
-	schematic = "schems/xen_pool1.mts",
-	flags = "all_floors,force_placement,place_center_x,place_center_z",
-	rotation = "random",
-	place_offset_y = -4,
 })

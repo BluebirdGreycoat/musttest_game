@@ -41,6 +41,59 @@ function serveressentials.do_teleport(name, param)
 		return pos, false
 	end
 
+	-- Teleport player some distance in a cardinal direction.
+	local teleportee = nil
+	local distance = nil
+	local direction = nil
+	direction, distance = string.match(param, "^([^ ]+) *: *([%d]+)$")
+	distance = tonumber(distance)
+
+	if direction and distance then
+		teleportee = minetest.get_player_by_name(name)
+		if teleportee then
+			local pname = teleportee:get_player_name()
+			if default.player_attached[pname] or teleportee:get_attach() then
+				return false, "Cannot teleport attached player."
+			end
+
+			distance = math.floor(distance)
+			local havedir = false
+			local pos = vector.round(teleportee:get_pos())
+
+			if direction == "north" or direction == "n" then
+				pos.z = pos.z + distance
+				havedir = true
+			elseif direction == "south" or direction == "s" then
+				pos.z = pos.z - distance
+				havedir = true
+			elseif direction == "west" or direction == "w" then
+				pos.x = pos.x - distance
+				havedir = true
+			elseif direction == "east" or direction == "e" then
+				pos.x = pos.x + distance
+				havedir = true
+			elseif direction == "up" or direction == "u" then
+				pos.y = pos.y + distance
+				havedir = true
+			elseif direction == "down" or direction == "d" then
+				pos.y = pos.y - distance
+				havedir = true
+			end
+
+			if havedir then
+				if not rc.is_valid_realm_pos(pos) then
+					return false, "Cannot teleport outside of any realm."
+				end
+
+				rc.notify_realm_update(pname, pos)
+				jail.discharge_pref(teleportee)
+				teleportee:set_pos(pos)
+				return true, "Teleporting " .. distance .. " meters " .. direction .. "."
+			end
+		end
+	end
+
+	-- Teleport player to absolute coordinates.
 	local teleportee = nil
 	local p = {}
 	p.x, p.y, p.z = string.match(param, "^([%d.-]+)[, ] *([%d.-]+)[, ] *([%d.-]+)$")
@@ -70,6 +123,7 @@ function serveressentials.do_teleport(name, param)
 		end
 	end
 
+	-- Teleport player to relative realm coordinates.
 	local teleportee = nil
 	local p = {}
 	local realm = nil
@@ -105,6 +159,7 @@ function serveressentials.do_teleport(name, param)
 		end
 	end
 
+	-- Teleport self to target player.
 	local teleportee = nil
 	local p = nil
 	local target_name = nil
@@ -137,6 +192,7 @@ function serveressentials.do_teleport(name, param)
 		return false, "You don't have permission to teleport other players (missing bring privilege)."
 	end
 
+	-- Teleport target player to target coordinates.
 	local teleportee = nil
 	local p = {}
 	local teleportee_name = nil
@@ -162,6 +218,7 @@ function serveressentials.do_teleport(name, param)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. core.pos_to_string(p) .. ", which is @ " .. rc.pos_to_namestr(p) .. "."
 	end
 
+	-- Teleport target player to realm relative coordinates.
 	local teleportee = nil
 	local p = {}
 	local teleportee_name = nil
@@ -191,6 +248,7 @@ function serveressentials.do_teleport(name, param)
 		return true, "Teleporting <" .. rename.gpn(teleportee_name) .. "> from " .. rc.pos_to_namestr(o) .. " to " .. rc.pos_to_namestr(p) .. "."
 	end
 
+	-- Teleport player to another player.
 	local teleportee = nil
 	local p = nil
 	local teleportee_name = nil

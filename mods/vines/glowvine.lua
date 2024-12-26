@@ -7,7 +7,7 @@
 	 drawtype = "plantlike",
 	 inventory_image = "dvd_luminousvineend.png",
 	 weild_image = "dvd_luminousvine.png",
-	 description = 'Twilight Vine End',
+	 description = 'Twilight Vine',
 	 tiles = {'dvd_luminousvineend.png'},
 	 paramtype = "light",
 	 sunlight_propagates = true, 

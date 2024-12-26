@@ -17,6 +17,7 @@ local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("default:stone")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
+local c_bedrock2 = minetest.get_content_id("sw:teststone1_hard")
 local c_lava = minetest.get_content_id("lbrim:lava_source")
 
 
@@ -287,14 +288,21 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 						local below = base_idx - YSTRIDE
 						local above = base_idx + YSTRIDE
 
+						local cidb = vm_data[below]
+						local cida = vm_data[above]
+
 						-- Replace floor node only if node below is something other than air.
-						if floor_below and vm_data[below] ~= c_air then
-							vm_data[below] = c_cave_floor
+						if floor_below then
+							if cidb ~= c_air and cidb ~= c_bedrock2 then
+								vm_data[below] = c_cave_floor
+							end
 						end
 
 						-- Replace ceiling node only if node above is something other than air.
-						if ceiling_above and vm_data[above] ~= c_air then
-							vm_data[above] = c_cave_ceiling
+						if ceiling_above then
+							if cida ~= c_air and cida ~= c_bedrock2 then
+								vm_data[above] = c_cave_ceiling
+							end
 						end
 					end
 				end

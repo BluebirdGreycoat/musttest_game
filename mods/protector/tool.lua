@@ -154,7 +154,9 @@ minetest.register_craftitem("protector:tool", {
 
 		-- check not replacing an immovable object
 		local node = minetest.get_node(pos)
-		if minetest.get_item_group(node.name, "immovable") ~= 0 then
+		if minetest.get_item_group(node.name, "immovable") ~= 0
+		   or minetest.get_item_group(node.name, "unbreakable") ~= 0
+		then
 			minetest.chat_send_player(name, "# Server: Cannot place protector in place of immovable object!")
 			prospector.ptool_mark_single(name, pos, "Blockage")
 			return

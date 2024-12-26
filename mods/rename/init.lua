@@ -95,27 +95,34 @@ function rename.rename_player(pname, dname, tell)
 
 	-- Check the auth database to ensure players cannot choose names that are already allocated.
 	do
-		local get_auth = minetest.get_auth_handler().get_auth
-		assert(type(get_auth) == "function")
-		local check_name = minetest.get_auth_handler().check_similar_name
-		assert(type(check_name) == "function")
+		local auth_handler = minetest.get_auth_handler()
 
-		-- Check auth table to see if an entry with this exact name already exists.
-		if get_auth(dname) ~= nil then
-			minetest.chat_send_player(tell, "# Server: That name is currently allocated by someone else.")
-			easyvend.sound_error(tell)
-			return
+		if auth_handler.get_auth then
+			local get_auth = auth_handler.get_auth
+			assert(type(get_auth) == "function")
+
+			-- Check auth table to see if an entry with this exact name already exists.
+			if get_auth(dname) ~= nil then
+				minetest.chat_send_player(tell, "# Server: That name is currently allocated by someone else.")
+				easyvend.sound_error(tell)
+				return
+			end
 		end
 
-		-- Search the auth table to see if there is already a similar name.
-		local names = check_name(dname)
-		for k, v in pairs(names) do
-			if v:lower() == lname then
-				-- Players are allowed to chose names that differ in case from their original.
-				if v:lower() ~= pname then
-					minetest.chat_send_player(tell, "# Server: That name or a similar one is already allocated!")
-					easyvend.sound_error(tell)
-					return
+		if auth_handler.check_similar_name then
+			local check_name = auth_handler.check_similar_name
+			assert(type(check_name) == "function")
+
+			-- Search the auth table to see if there is already a similar name.
+			local names = check_name(dname)
+			for k, v in pairs(names) do
+				if v:lower() == lname then
+					-- Players are allowed to chose names that differ in case from their original.
+					if v:lower() ~= pname then
+						minetest.chat_send_player(tell, "# Server: That name or a similar one is already allocated!")
+						easyvend.sound_error(tell)
+						return
+					end
 				end
 			end
 		end

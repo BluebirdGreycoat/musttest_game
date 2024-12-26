@@ -14,7 +14,18 @@ if not ie then
 end
 
 -- Requires library for db access
-local _sql = ie.require("lsqlite3")
+local _sql
+do
+	local success, lib = pcall(ie.require, "lsqlite3")
+	if not success then
+		minetest.log("error", "sqlite not found, using builtin auth handler (skipping sauth)")
+		minetest.log("error", lib)
+		return
+	end
+	assert(lib)
+	assert(lib.open)
+	_sql = lib
+end
 -- Don't allow other mods to use this global library!
 if sqlite3 then sqlite3 = nil end
 

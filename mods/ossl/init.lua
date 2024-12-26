@@ -55,13 +55,28 @@ if not ossl.registered then
 
 	-- Require what's needed.
 	-- https://luarocks.org/modules/daurnimator/luaossl
-	ossl.lib = require("openssl.cipher")
-	assert(ossl.lib)
-	ossl.cipher = ossl.lib.new(ossl.CIPHER_NAME)
-	assert(ossl.cipher)
+	local b1, lib = pcall(require, "openssl.cipher")
+	local b2, randlib = pcall(require, "openssl.rand")
 
-	ossl.randlib = require("openssl.rand")
-	assert(ossl.randlib)
+	if b1 and b2 then
+		assert(lib and randlib)
+		assert(lib.new)
+
+		ossl.lib = lib
+		ossl.randlib = randlib
+
+		assert(ossl.lib)
+		assert(ossl.randlib)
+
+		ossl.cipher = ossl.lib.new(ossl.CIPHER_NAME)
+		assert(ossl.cipher)
+
+		ossl.have_openssl = true
+	else
+		minetest.log("error", "failed to find openssl, openssl functionality will not be available.")
+		if type(lib) == "string" then minetest.log("error", lib) end
+		if type(randlib) == "string" then minetest.log("error", randlib) end
+	end
 
 	-- Restore the order of the Universe.
 	rawset(_G, "require", _require)

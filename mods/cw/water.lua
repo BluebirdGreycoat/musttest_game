@@ -9,8 +9,8 @@ fdef.damage_per_second = 1*500
 sdef._damage_per_second_type = "fleshy"
 fdef._damage_per_second_type = "fleshy"
 
-sdef._death_message = "the piranha got <player>."
-fdef._death_message = "the piranha got <player>."
+sdef._death_message = "The piranha got <player>."
+fdef._death_message = "The piranha got <player>."
 
 sdef.liquid_alternative_flowing = "cw:water_flowing"
 sdef.liquid_alternative_source = "cw:water_source"

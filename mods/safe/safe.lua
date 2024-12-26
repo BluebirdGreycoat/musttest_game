@@ -436,6 +436,11 @@ end
 function safe.on_rightclick(pos, node, user, itemstack, pt)
 	local pname = user:get_player_name()
 
+	if not ossl.have_openssl then
+		minetest.chat_send_player(pname, "# Server: Encrypted storage is not available because OpenSSL is missing.")
+		return
+	end
+
 	-- No-go if player too far.
 	if vector.distance(pos, user:get_pos()) > safe.INTERACTION_DISTANCE then
 		return

@@ -8,6 +8,10 @@ assert(THEKEY and #THEKEY == 16)
 
 -- Input plaintext, get encrypted binary; or nil + errormsg.
 function ossl.encrypt(params)
+	if not ossl.have_openssl then
+		return nil, "missing openssl"
+	end
+
 	-- Get cryptographically secure random IV.
 	local iv = ossl.randlib.bytes(16)
 	assert(#iv == 16)
@@ -78,6 +82,10 @@ end
 --
 -- NEW API: Input encrypted binary, get plaintext; or nil + errormsg.
 function ossl.decrypt(oldiv, params)
+	if not ossl.have_openssl then
+		return nil, "missing openssl"
+	end
+
 	-- Handle new API detection.
 	if oldiv and not params then
 		-- Only 1 argument. IV should be packed with the data.

@@ -1,4 +1,6 @@
 
+-- Disabled because the base nodes aren't available yet anyway.
+--[[
 if rawget(_G, "stairs") then
 	stairs.register_stair_and_slab("swampstone", "sumpf:junglestone",
 		{cracky=3},
@@ -32,3 +34,4 @@ if rawget(_G, "stairs") then
 		default.node_sound_leaves_defaults()
 	)
 end
+--]]

@@ -5,6 +5,7 @@ sw.worldpath = minetest.get_worldpath()
 sw.have_noise = false
 
 dofile(sw.modpath .. "/nodes.lua")
+dofile(sw.modpath .. "/stairs.lua")
 dofile(sw.modpath .. "/ore.lua")
 dofile(sw.modpath .. "/decorations.lua")
 

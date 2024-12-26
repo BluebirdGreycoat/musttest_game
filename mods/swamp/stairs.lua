@@ -18,6 +18,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 USA
 --]]
 
+-- Disabled because the base nodes aren't available yet anyway.
+--[[
 local S = minetest.get_translator(minetest.get_current_modname())
 
 if minetest.get_modpath("moreblocks") then
@@ -42,3 +44,4 @@ elseif minetest.get_modpath("stairs") then
 		S("Mangrove Wood Slab"),
 		default.node_sound_wood_defaults())
 end
+--]]

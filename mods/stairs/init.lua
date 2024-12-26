@@ -986,6 +986,12 @@ end
 function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc, sounds, datatable)
 	datatable = datatable or {}
 
+	if datatable.stair_and_slab_only then
+		stairs.register_stair(subname, recipeitem, groups, images, desc, sounds, datatable)
+		stairs.register_slab(subname, recipeitem, groups, images, desc, sounds, datatable)
+		return
+	end
+
   stairs.register_micro       (subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_panel       (subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds, datatable)

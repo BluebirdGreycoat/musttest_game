@@ -88,7 +88,7 @@ minetest.register_node("doors:hidden", {
 	buildable_to = false,
 	floodable = false,
 	drop = "",
-	groups = {not_in_creative_inventory = 1},
+	groups = {unbreakable = 1, immovable = 1, not_in_creative_inventory = 1},
 	on_blast = function() end,
 	tiles = {"doors_blank.png"},
 	-- 1px transparent block inside door hinge near node top.

@@ -12,6 +12,15 @@ minetest.register_node("sw:teststone1", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	-- Collapsed stone breaks up into cobble.
+  on_finish_collapse = function(pos, node)
+    minetest.swap_node(pos, {name="sw:teststone2"})
+  end,
+
+	on_collapse_to_entity = function(pos, node)
+		minetest.add_item(pos, {name="sw:teststone2"})
+	end,
 })
 
 -- This is to surround water pools to prevent leakage.
@@ -34,7 +43,7 @@ minetest.register_node("sw:teststone2", {
 	description = "Fractured Irx",
 	tiles = {{name="sw_teststone_2.png", align_style="world", scale=4}},
 
-	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
+	groups = utility.dig_groups("stone", {stone = 1, native_stone = 1}),
 	drop = 'sw:teststone2',
 	sounds = default.node_sound_stone_defaults(),
 	_is_bulk_mapgen_stone = true,

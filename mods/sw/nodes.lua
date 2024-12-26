@@ -6,6 +6,8 @@ minetest.register_node("sw:teststone1", {
 	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
 	drop = 'sw:teststone2',
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Informs TNT not to include this in drops.
 	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.
@@ -47,6 +49,8 @@ minetest.register_node("sw:teststone2", {
 	groups = utility.dig_groups("stone", {stone = 1, native_stone = 1}),
 	drop = 'sw:teststone2',
 	sounds = default.node_sound_stone_defaults(),
+
+	-- Informs TNT not to include this in drops.
 	_is_bulk_mapgen_stone = true,
 
 	-- Common stone does not count toward tool's dig count.

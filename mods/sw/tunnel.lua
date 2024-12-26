@@ -3,6 +3,8 @@ local REALM_START = 10150
 local REALM_END = 15150
 local LAYER_COUNT = math.floor((REALM_END - REALM_START) / 50)
 local LAVA_SEA_HEIGHT = 10170
+local XEN_BEGIN = REALM_END - 2000
+local XEN_END = REALM_END
 
 local abs = math.abs
 local floor = math.floor
@@ -13,6 +15,7 @@ local pr = PseudoRandom(1893)
 local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
+local c_stone = minetest.get_content_id("default:stone")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_lava = minetest.get_content_id("lbrim:lava_source")
 
@@ -188,7 +191,7 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	local noisemap2 = sw.get_2d_noise(bp2d, sides2D, "cave_n2")
 	local noisemap4 = sw.get_3d_noise(bp3d, sides3D, "cave_n4")
 
-	local function is_cave(x, y, z)
+	local function is_cave(x, y, z, do_fc_check)
 		-- Carve long winding tunnels.
 		for k = 1, #caves do
 			-- For each of the 3 separate tunnels per layer.
@@ -237,18 +240,39 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 					local top = (clevel + cheight - n - z2)
 
 					if y >= bot and y <= top then
-						return true
+						if do_fc_check then
+							local found_floor = is_cave(x, y-1, z)
+							local found_ceiling = is_cave(x, y+1, z)
+							-- Need to negate the second two.
+							-- Should return:
+							-- 1: whether this position is cave
+							-- 2: whether position below is solid (found floor)
+							-- 3: whether position above is solid (found ceiling)
+							return true, (not found_floor), (not found_ceiling)
+						else
+							return true
+						end
 					end
 				end
 			end
 		end
 	end
 
+	local YSTRIDE = area.ystride
+	local c_cave_floor = c_stone
+	local c_cave_ceiling = c_stone
+
+	if y0 >= XEN_BEGIN and y1 <= XEN_END then
+		c_cave_floor = minetest.get_content_id("sw:teststone2")
+		c_cave_ceiling = minetest.get_content_id("sw:teststone2")
+	end
+
 	for z = z0, z1 do
 		for y = y0, y1 do
 			local base_idx = area:index(x0, y, z)
 			for x = x0, x1 do
-				if is_cave(x, y, z) then
+				local found_cave, floor_below, ceiling_above = is_cave(x, y, z, true)
+				if found_cave then
 					local cid = vm_data[base_idx]
 
 					-- Do NOT carve tunnels through bedrock or "ignore".
@@ -258,6 +282,19 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 							vm_data[base_idx] = c_lava
 						else
 							vm_data[base_idx] = c_air
+						end
+
+						local below = base_idx - YSTRIDE
+						local above = base_idx + YSTRIDE
+
+						-- Replace floor node only if node below is something other than air.
+						if floor_below and vm_data[below] ~= c_air then
+							vm_data[below] = c_cave_floor
+						end
+
+						-- Replace ceiling node only if node above is something other than air.
+						if ceiling_above and vm_data[above] ~= c_air then
+							vm_data[above] = c_cave_ceiling
 						end
 					end
 				end

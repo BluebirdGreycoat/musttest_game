@@ -4,7 +4,7 @@ minetest.register_node("sw:teststone1", {
 	tiles = {{name="sw_teststone_1.png", align_style="world", scale=4}},
 
 	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
-	drop = 'sw:teststone1',
+	drop = 'sw:teststone2',
 	sounds = default.node_sound_stone_defaults(),
 	_is_bulk_mapgen_stone = true,
 
@@ -28,4 +28,19 @@ minetest.register_node("sw:teststone1_hard", {
 	always_protected = true, -- Protector code handles this.
   on_blast = function(...) end,
   can_dig = function(...) return false end,
+})
+
+minetest.register_node("sw:teststone2", {
+	description = "Fractured Irx",
+	tiles = {{name="sw_teststone_2.png", align_style="world", scale=4}},
+
+	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
+	drop = 'sw:teststone2',
+	sounds = default.node_sound_stone_defaults(),
+	_is_bulk_mapgen_stone = true,
+
+	-- Common stone does not count toward tool's dig count.
+	_toolranks = {
+		ignore = true,
+	},
 })

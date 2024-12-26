@@ -123,25 +123,32 @@ minetest.register_craftitem("protector:tool", {
 		-- Does location already have a protector?
 		if minetest.get_node(pos).name:find("^protector:protect") then
 			minetest.chat_send_player(name, "# Server: Protector already in place!")
+			prospector.ptool_mark_single(name, pos, "Protector")
 			return
 		end
 
 		-- does a protector already exist nearby?
-		if #minetest.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1),
-				{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"}) > 0 then
+		local nearby_protectors = minetest.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1),
+			{"protector:protect", "protector:protect2", "protector:protect3", "protector:protect4"})
+		if #nearby_protectors > 0 then
 			minetest.chat_send_player(name, "# Server: Protector already near target!")
+			for k, v in ipairs(nearby_protectors) do
+				prospector.ptool_mark_single(name, v, "Protector")
+			end
 			return
 		end
 
 		-- do not replace containers with inventory space
 		if minetest.get_inventory({type = "node", pos = pos}) then
 			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr(pos) .. ".")
+			prospector.ptool_mark_single(name, pos, "Blockage")
 			return
 		end
 
 		-- protection check for other stuff, like bedrock, etc
 		if minetest.is_protected(pos, name) then
 			minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr(pos) .. ".")
+			prospector.ptool_mark_single(name, pos, "Blockage")
 			return
 		end
 
@@ -149,6 +156,7 @@ minetest.register_craftitem("protector:tool", {
 		local node = minetest.get_node(pos)
 		if minetest.get_item_group(node.name, "immovable") ~= 0 then
 			minetest.chat_send_player(name, "# Server: Cannot place protector in place of immovable object!")
+			prospector.ptool_mark_single(name, pos, "Blockage")
 			return
 		end
 
@@ -213,8 +221,10 @@ minetest.register_craftitem("protector:tool", {
 
 		if members_copied and not s then
 			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ". Members copied.")
+			prospector.ptool_mark_single(name, pos, "Success")
 		else
 			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ".")
+			prospector.ptool_mark_single(name, pos, "Success")
 		end
 	end,
 })

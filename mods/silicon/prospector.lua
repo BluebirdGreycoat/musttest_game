@@ -16,8 +16,14 @@ prospector.image = "prospector.png"
 prospector.name = "prospector:prospector"
 prospector.description = "Prospector\n\nTool to scan for hidden materials.\nMust be charged to use."
 
+-- Intended for use with the protector tool to show already-existing protectors,
+-- or blockages.
+function prospector.ptool_mark_single(pname, pos, waypoint_text)
+	prospector.mark_nodes(pname, nil, {pos}, 100, pos, pos, waypoint_text)
+end
+
 -- Accuracy is a number between 0 and 100. Higher is more accurate.
-function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
+function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp, waypoint_text)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
@@ -85,7 +91,7 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 						if not do_exists(v) then
 							local id = pref:hud_add({
 								type = "waypoint",
-								name = "Ore",
+								name = waypoint_text or "Ore",
 								number = 0X5fb471,
 								world_pos = orepos,
 								precision = 1, -- Integers only.

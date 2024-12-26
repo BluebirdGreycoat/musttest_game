@@ -300,13 +300,35 @@ minetest.register_decoration({
 	flags = "all_ceilings",
 	decoration = "vines:luminoustreevineend",
 	noise_params = {
-		offset = -0.1,
-		scale = 0.25,
+		offset = -0.2,
+		scale = 0.22,
 		spread = {x=100, y=100, z=100},
-		seed = 7718,
+		seed = 88112,
 		octaves = 3,
 		persistence = 0.7,
 		lacunarity = 2.0,
 		flags = "absvalue",
 	},
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = "vines:luminoustreevine",
+	noise_params = {
+		offset = -0.2,
+		scale = 0.22,
+		spread = {x=100, y=100, z=100},
+		seed = 88112,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+	height = 4,
+	height_max = 10,
 })

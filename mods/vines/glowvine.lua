@@ -10,10 +10,10 @@ end
 
 minetest.register_node('vines:luminoustreevine', {
 	drawtype = "plantlike",
-	inventory_image = "dvd_luminousvineend.png",
+	inventory_image = "dvd_luminousvine.png",
 	weild_image = "dvd_luminousvine.png",
 	description = 'Twilight Vine',
-	tiles = {'dvd_luminousvineend.png'},
+	tiles = {'dvd_luminousvine.png'},
 	paramtype = "light",
 	light_source = 6,
 	groups = utility.dig_groups("plant", {
@@ -32,10 +32,10 @@ minetest.register_node('vines:luminoustreevine', {
 
 minetest.register_node('vines:luminoustreevineend', {
 	drawtype = "plantlike",
-	inventory_image = "dvd_luminousvine.png",
-	weild_image = "dvd_luminousvine.png",
+	inventory_image = "dvd_luminousvineend.png",
+	weild_image = "dvd_luminousvineend.png",
 	description = 'Twilight Vine',
-	tiles = {'dvd_luminousvine.png'},
+	tiles = {'dvd_luminousvineend.png'},
 	paramtype = "light",
 	light_source = 6,
 	groups = utility.dig_groups("plant", {

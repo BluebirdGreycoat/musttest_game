@@ -289,3 +289,24 @@ minetest.register_decoration({
 	},
 	param2 = 2,
 })
+
+-- Twilight vine.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = "vines:luminoustreevineend",
+	noise_params = {
+		offset = -0.1,
+		scale = 0.25,
+		spread = {x=100, y=100, z=100},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+})

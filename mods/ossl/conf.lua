@@ -1,4 +1,8 @@
 
+if minetest.is_singleplayer() then
+	return
+end
+
 -- You'd better have one set in the server configuration.
 -- And once you set it you'd better NEVER change it.
 ossl.default_key = "0123456789ABCDEF"

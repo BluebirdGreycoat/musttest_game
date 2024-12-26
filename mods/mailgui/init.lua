@@ -68,6 +68,8 @@ mailgui.send_mail_multi = function(from, subject, message, mailto)
       reason = "Player does not exist."
 		elseif v.error == "toobig" then
 			reason = "Email is too large."
+		elseif v.error == "missingdep" then
+			reason = "Missing mod dependency."
     end
     minetest.chat_send_player(from, "# Server: Failed to send mail to <" .. rename.gpn(v.name) .. ">! " .. reason)
 		easyvend.sound_error(from)
@@ -382,6 +384,8 @@ mailgui.gui_handler = function(pref, fname, fields)
 									pstate.infotext = "Recipient <" .. mailto .. "> does not exist!"
 								elseif e == "toobig" then
 									pstate.infotext = "Email is too big to send!"
+                elseif e == "missingdep" then
+                  pstate.infotext = "Missing mod dependency."
 								else
 									pstate.infotext = "Unknown error!"
 								end

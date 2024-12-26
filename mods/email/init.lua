@@ -17,6 +17,10 @@ dofile(email.modpath .. "/database.lua")
 
 
 function email.on_startup()
+	if not email.sql then
+		return
+	end
+
 	assert(not email.db)
 	email.db = email.sql.open(email.database)
 	assert(email.db)
@@ -35,14 +39,19 @@ end
 
 
 function email.on_shutdown()
-	assert(email.db)
-	email.db:close()
-	email.db = nil
+	if email.db then
+		email.db:close()
+		email.db = nil
+	end
 end
 
 
 
 function email.get_inbox(name)
+	if not email.db then
+		return {}
+	end
+
 	name = rename.grn(name)
   if not email.inboxes[name] then
 		assert(email.db)
@@ -62,6 +71,10 @@ end
 
 
 function email.clear_inbox(name, mails)
+	if not email.db then
+		return
+	end
+
 	name = rename.grn(name)
 	local inbox = email.get_inbox(name)
 
@@ -95,6 +108,10 @@ function email.send_mail_multi(from, multi_target, subject, message)
 
   local success = {}
   local failure = {}
+
+  if not email.db then
+		return success, failure
+	end
 
 	email.db_exec([[ BEGIN TRANSACTION; ]])
   
@@ -130,6 +147,10 @@ end
 
 -- This should only be called internally to this mod.
 function email.send_mail_ex(from, to, subject, message)
+	if not email.db then
+		return false, "missingdep"
+	end
+
 	from = rename.grn(from)
 	to = rename.grn(to)
 
@@ -191,8 +212,14 @@ if not email.registered then
 	local secenv = minetest.request_insecure_environment()
 	if secenv then
 		print("[email] insecure environment loaded.")
-		email.sql = secenv.require("lsqlite3")
-		assert(email.sql, "lsqlite3 failed to load")
+		local success, lib = pcall(secenv.require, "lsqlite3")
+		if not success then
+			minetest.log("error", "lsqlite3 failed to load. email functionality disabled.")
+			minetest.log("error", lib)
+		else
+			assert(lib.open)
+			email.sql = lib
+		end
 	else
 		minetest.log("error", "[email] Failed to load insecure environment," ..
 				" please add this mod to the trusted mods list.")

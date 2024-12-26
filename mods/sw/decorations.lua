@@ -32,7 +32,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone2"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
@@ -45,7 +45,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone2"},
 	sidelen = 8,
 	fill_ratio = 0.3,
 	y_min = XEN_BEGIN,
@@ -80,7 +80,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "default:gravel", "default:dirt"},
+	place_on = {"sw:teststone1", "sw:teststone2", "default:gravel", "default:dirt"},
 	sidelen = 8,
 	fill_ratio = 0.7,
 	y_min = XEN_BEGIN,
@@ -215,7 +215,7 @@ minetest.register_decoration({
 -- White crystals.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone2"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
@@ -273,7 +273,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone2"},
 	sidelen = 8,
 	fill_ratio = 0.02,
 	y_min = XEN_BEGIN,

@@ -204,7 +204,7 @@ minetest.register_craft({
 
 cans.register_can({
   can_name = "cans:river_water_can",
-  can_description = "Salt Water Can",
+  can_description = "Fresh Water Can",
   can_inventory_image = "technic_river_water_can.png",
   can_capacity = 16,
   liquid_source_name = "default:river_water_source",

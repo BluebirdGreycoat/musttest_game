@@ -305,7 +305,7 @@ bucket.register_liquid(
 	"bucket:bucket_river_water",
 	"default:river_water_source",
 	"bucket_river_water.png",
-	"Salt Water Bucket",
+	"Fresh Water Bucket",
 	{water_bucket = 1}
 )
 

@@ -39,6 +39,7 @@ minetest.register_node("sw:teststone1_hard", {
   can_dig = function(...) return false end,
 })
 
+-- Xen mapgen places this on tunnel floors and ceilings to help decoration placement.
 minetest.register_node("sw:teststone2", {
 	description = "Fractured Irx",
 	tiles = {{name="sw_teststone_2.png", align_style="world", scale=4}},

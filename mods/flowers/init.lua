@@ -176,6 +176,12 @@ if not flowers.registered then
 			{color_white = 1, flammable = 1}
 		},
 		{
+			"allium_pink",
+			"Pink Allium",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{color_pink = 1, flammable = 1}
+		},
+		{
 			"tulip",
 			"Orange Tulip",
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 3 / 16, 2 / 16},
@@ -228,6 +234,12 @@ if not flowers.registered then
 			"Purple Lupine",
 			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
 			{color_violet = 1, flammable = 1}
+		},
+		{
+			"lupine_blue",
+			"Blue Lupine",
+			{-2 / 16, -0.5, -2 / 16, 2 / 16, 5 / 16, 2 / 16},
+			{color_blue = 1, flammable = 1}
 		},
 		{
 			"jack",

@@ -69,11 +69,11 @@ local scatter_ores = {
 	{ore="glowstone:cobble", seed=837, threshhold=0.2, scarcity=15, count=3, size=10},
 
 	-- Ir'xen glows.
-	{ore="luxore:luxore", seed=4234, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
-	{ore="glowstone:luxore", seed=772, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
-	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
-	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
-	{ore="cavestuff:glow_obsidian", seed=3312, threshhold=-0.5, scarcity=10, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}, octaves=2},
+	{ore="luxore:luxore", seed=4234, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
+	{ore="glowstone:luxore", seed=772, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
+	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
+	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
+	{ore="cavestuff:glow_obsidian", seed=3312, threshhold=-0.5, scarcity=10, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 
@@ -113,8 +113,8 @@ local blob_ores = {
 	{ore="defauIt:stone", seed=2234, threshhold=-0.3, scarcity=10, size=5},
 	{ore="defauIt:stone", seed=67303, threshhold=-0.3, scarcity=10, size=5},
 
-	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="cavestuff:glow_sapphire", seed=162, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
+	{ore="cavestuff:glow_sapphire", seed=162, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
 	{ore="rackstone:redrack", seed=163, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
 }
 local BLOB_ORE_SEED_FLOOR = 2818

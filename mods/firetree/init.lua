@@ -244,6 +244,7 @@ minetest.register_node("firetree:sapling", {
 	description = "Firetree Seedling\n\nMay grow in deep or hot places.\nWill also grow on the surface.\nGrows firefruit.",
 	drawtype = "plantlike",
 
+
 	tiles = {"firetree_sapling.png"},
 	inventory_image = "firetree_sapling.png",
 	wield_image = "firetree_sapling.png",

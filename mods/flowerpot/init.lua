@@ -283,6 +283,7 @@ if not flowerpot.loaded then
 		"flowers:dandelion_yellow",
 		"flowers:geranium",
 		"flowers:chrysanthemum_green",
+		"flowers:allium_pink",
 		"flowers:rose",
 		"flowers:rose_white",
 		"flowers:zinnia_red",
@@ -300,6 +301,7 @@ if not flowerpot.loaded then
 		"flowers:iris_black",
 		"flowers:daylily",
 		"flowers:lupine_purple",
+		"flowers:lupine_blue",
 		"flowers:jack",
 
 		"flowers:mushroom_brown",

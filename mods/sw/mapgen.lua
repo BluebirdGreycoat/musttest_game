@@ -248,9 +248,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 		-- Compute underground darkness.
 		for z = emin.z, emax.z do
-			for x = emin.x, emax.x do
-				for y = emin.y, emax.y do
-					if y >= REALM_START and y <= REALM_END then
+			for y = emin.y, emax.y do
+				if y >= REALM_START and y <= REALM_END then
+					for x = emin.x, emax.x do
 						local vp = area:index(x, y, z)
 						vm_light[vp] = 0
 					end
@@ -263,9 +263,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 		-- Compute atmosphere light.
 		for z = emin.z, emax.z do
-			for x = emin.x, emax.x do
-				for y = emin.y, emax.y do
-					if y >= REALM_START and y <= REALM_END then
+			for y = emin.y, emax.y do
+				if y >= REALM_START and y <= REALM_END then
+					for x = emin.x, emax.x do
 						local vp = area:index(x, y, z)
 						vm_light[vp] = 15
 					end
@@ -301,11 +301,10 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 		-- Compute surface light.
 		for z = emin.z, emax.z do
-			for x = emin.x, emax.x do
-				for y = emin.y, emax.y do
-					local ground_y = heightfunc(x, y, z)
-
-					if y >= REALM_START and y <= REALM_END then
+			for y = emin.y, emax.y do
+				if y >= REALM_START and y <= REALM_END then
+					for x = emin.x, emax.x do
+						local ground_y = heightfunc(x, y, z)
 						local vp = area:index(x, y, z)
 
 						if y <= ground_y then

@@ -245,22 +245,23 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	end
 
 	for z = z0, z1 do
-		for x = x0, x1 do
-			for y = y0, y1 do
+		for y = y0, y1 do
+			local base_idx = area:index(x0, y, z)
+			for x = x0, x1 do
 				if is_cave(x, y, z) then
-					local vp = area:index(x, y, z)
-					local cid = vm_data[vp]
+					local cid = vm_data[base_idx]
 
 					-- Do NOT carve tunnels through bedrock or "ignore".
 					-- Skip air since there's nothing there anyway.
 					if cid ~= c_air and cid ~= c_ignore and cid ~= c_bedrock then
 						if y <= LAVA_SEA_HEIGHT then
-							vm_data[vp] = c_lava
+							vm_data[base_idx] = c_lava
 						else
-							vm_data[vp] = c_air
+							vm_data[base_idx] = c_air
 						end
 					end
 				end
+				base_idx = base_idx + 1
 			end
 		end
 	end

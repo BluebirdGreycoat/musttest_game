@@ -26,6 +26,7 @@ end
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("sw:teststone1")
+local c_tunnel_stone = minetest.get_content_id("sw:teststone2")
 local c_gravel = minetest.get_content_id("default:gravel")
 local c_worm = minetest.get_content_id("cavestuff:glow_worm")
 local c_fungus = minetest.get_content_id("cavestuff:glow_fungus")
@@ -343,7 +344,9 @@ local function fill_hollows(vm_data, area, base_idx)
 	local cid_ground = vm_data[base_idx - ystride]
 	local cid_replace = vm_data[base_idx]
 
-	if cid_ground ~= c_stone or cid_replace ~= c_stone then
+	if not ((cid_ground == c_stone or cid_ground == c_tunnel_stone)
+	   and (cid_replace == c_stone or cid_replace == c_tunnel_stone))
+	then
 		return
 	end
 
@@ -363,10 +366,10 @@ local function fill_hollows(vm_data, area, base_idx)
 	local cid_above_w = vm_data[up - 8]
 
 	local count = 0
-	if cid_above_n == c_stone then count = count + 1 end
-	if cid_above_s == c_stone then count = count + 1 end
-	if cid_above_e == c_stone then count = count + 1 end
-	if cid_above_w == c_stone then count = count + 1 end
+	if cid_above_n == c_stone or cid_above_n == c_tunnel_stone then count = count + 1 end
+	if cid_above_s == c_stone or cid_above_s == c_tunnel_stone then count = count + 1 end
+	if cid_above_e == c_stone or cid_above_e == c_tunnel_stone then count = count + 1 end
+	if cid_above_w == c_stone or cid_above_w == c_tunnel_stone then count = count + 1 end
 
 	if count >= 4 then
 		vm_data[base_idx] = c_dirt
@@ -377,6 +380,7 @@ local function fill_hollows(vm_data, area, base_idx)
 	local dn = base_idx - ystride * 2
 
 	-- This check prevents placing obsidian on the little islands.
+	-- (Most of the time.)
 	if vm_data[base_idx - ystride * 12] == c_stone then
 		local cid_below_n = vm_data[dn + zstride * 8]
 		local cid_below_s = vm_data[dn - zstride * 8]

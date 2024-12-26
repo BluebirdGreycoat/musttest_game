@@ -3,7 +3,7 @@
 
 
 
- minetest.register_node('vine:luminoustreevine', {
+ minetest.register_node('vines:luminoustreevine', {
 	 drawtype = "plantlike",
 	 inventory_image = "dvd_luminousvineend.png",
 	 weild_image = "dvd_luminousvine.png",
@@ -28,7 +28,7 @@
   },
  })
  
-  minetest.register_node('vine:luminoustreevineend', {
+  minetest.register_node('vines:luminoustreevineend', {
 	 drawtype = "plantlike",
 	 inventory_image = "dvd_luminousvine.png",
 	 weild_image = "dvd_luminousvine.png",

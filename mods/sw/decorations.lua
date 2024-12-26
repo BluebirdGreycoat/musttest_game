@@ -13,6 +13,7 @@ minetest.register_decoration({
 	flags = "all_floors,force_placement,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = -4,
+	replacements = {["sw:teststone1"] = "sw:teststone1_hard"},
 })
 
 minetest.register_decoration({
@@ -26,6 +27,7 @@ minetest.register_decoration({
 	flags = "all_floors,force_placement,place_center_x,place_center_z",
 	rotation = "0",
 	place_offset_y = -1,
+	replacements = {["sw:teststone1"] = "sw:teststone1_hard"},
 })
 
 minetest.register_decoration({

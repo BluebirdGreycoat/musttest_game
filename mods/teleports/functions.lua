@@ -225,7 +225,7 @@ teleports.clear_area = function(minp, maxp)
 				if node.name ~= "ignore" then
 					if node.name ~= "air" and node.name ~= "bones:bones" and
 						node.name ~= "bedrock:bedrock" then
-						-- Only nodes not defined ans unbreakable.
+						-- Only nodes not defined as unbreakable.
 						if minetest.get_item_group(node.name, "unbreakable") == 0 then
 							minetest.remove_node(pos)
 						end

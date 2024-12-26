@@ -365,3 +365,35 @@ minetest.register_decoration({
 	flags = "all_floors",
 	decoration = "xdecor:cobweb",
 })
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.3,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "default:dirt_with_rainforest_litter",
+	spawn_by = {"bedrock:bedrock", "stairs:cobble_slab"},
+	num_spawn_by = 1,
+	check_offset = 1,
+})
+
+-- Regular flowers on dirt near pools.
+local ALL_FLOWERS = {}
+for k, data in ipairs(flowers.datas) do
+	-- data[1] should be flower name.
+	ALL_FLOWERS[#ALL_FLOWERS+1] = "flowers:" .. data[1]
+end
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "default:dirt_with_rainforest_litter",
+	sidelen = 8,
+	fill_ratio = 0.3,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = ALL_FLOWERS,
+})

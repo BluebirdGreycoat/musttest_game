@@ -8,6 +8,22 @@ local get_public_time = function()
 	return os.date("!%Y/%m/%d UTC")
 end
 
+local function pos_has_inventory(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = minetest.get_inventory({type = "node", pos = pos})
+	if not inv then
+		return false
+	end
+
+	local lists = inv:get_lists()
+
+	if next(lists) == nil then
+		return false
+	end
+
+	return true
+end
+
 minetest.register_craftitem("protector:tool", {
 	description = "Claim Expansion Tool\n\nStand near protector, face direction and use.\nHold sneak to copy member names.\nHold 'E' to double the gap distance.",
 	inventory_image = "nodeinspector.png^protector_lock.png",
@@ -138,8 +154,8 @@ minetest.register_craftitem("protector:tool", {
 			return
 		end
 
-		-- do not replace containers with inventory space
-		if minetest.get_inventory({type = "node", pos = pos}) then
+		-- do not replace containers with inventory space.
+		if pos_has_inventory(pos) then
 			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr(pos) .. ".")
 			prospector.ptool_mark_single(name, pos, "Blockage")
 			return

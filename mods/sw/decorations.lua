@@ -290,7 +290,7 @@ minetest.register_decoration({
 	param2 = 2,
 })
 
--- Twilight vine.
+-- Twilight bulb.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
@@ -303,7 +303,7 @@ minetest.register_decoration({
 		offset = -0.2,
 		scale = 0.22,
 		spread = {x=100, y=100, z=100},
-		seed = 88112,
+		seed = 88112, -- Note: using the same seed keeps them with vines.
 		octaves = 3,
 		persistence = 0.7,
 		lacunarity = 2.0,
@@ -311,6 +311,7 @@ minetest.register_decoration({
 	},
 })
 
+-- Twilight vine.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
@@ -323,7 +324,7 @@ minetest.register_decoration({
 		offset = -0.2,
 		scale = 0.22,
 		spread = {x=100, y=100, z=100},
-		seed = 88112,
+		seed = 88112, -- Note: using the same seed keeps them with bulbs.
 		octaves = 3,
 		persistence = 0.7,
 		lacunarity = 2.0,

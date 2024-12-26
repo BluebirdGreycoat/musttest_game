@@ -19,6 +19,10 @@ local myhash = minetest.hash_node_position -- TODO: could I implement this in Lu
 -- Private function!
 -- Create db:exec wrapper for error reporting.
 function nodestore.db_exec(stmt)
+	if not nodestore.db then
+		return
+	end
+
   if nodestore.db:exec(stmt) ~= nodestore.sql.OK then
 		local msg = nodestore.db:errmsg()
     minetest.log("error", "Sqlite ERROR: " .. msg)
@@ -223,6 +227,10 @@ end
 --
 -- Write all sectors marked as dirty to the database.
 function nodestore.do_save()
+	if not nodestore.db then
+		return
+	end
+
 	-- First check if anything is dirty. Count dirty entries.
 	local have_dirty = false
 	for k, v in pairs(nodestore.dirty) do
@@ -295,6 +303,10 @@ end
 
 -- Private function!
 function nodestore.db_save_sector(key, data)
+	if not nodestore.db then
+		return
+	end
+
 	local stmt = nodestore.db:prepare([[ INSERT OR REPLACE INTO store (name, data) VALUES (?, ?); ]])
 
 	local r1 = stmt:bind(1, key)
@@ -314,6 +326,10 @@ end
 
 -- Private function!
 function nodestore.db_load_sector(key)
+	if not nodestore.db then
+		return nil
+	end
+
 	local stmt = nodestore.db:prepare([[ SELECT name, data FROM store WHERE name = ? LIMIT 1; ]])
 	stmt:bind(1, key)
 	local r = stmt:step()
@@ -337,14 +353,21 @@ end
 -- Private function!
 -- This is needed to ensure dirty sectors are saved before the database is closed.
 function nodestore.on_shutdown()
-	nodestore.do_save()
-	nodestore.db:close()
+	if nodestore.db then
+		nodestore.do_save()
+		nodestore.db:close()
+		nodestore.db = nil
+	end
 end
 
 
 
 -- Private function!
 function nodestore.create_table()
+	if not nodestore.db then
+		return
+	end
+
 	local stmt = [[
 		CREATE TABLE IF NOT EXISTS store (name INTEGER PRIMARY KEY, data BLOB) WITHOUT ROWID;
 	]]
@@ -357,16 +380,16 @@ end
 if not nodestore.run_once then
 	-- Obtain library for database access.
 	-- lsqlite3 loaded on init file for security
-	--nodestore.sql = require("lsqlite3")
 	nodestore.sql = networks.sql
-	assert(nodestore.sql)
 
 	-- Don't allow other mods to use this global library!
 	if sqlite3 then sqlite3 = nil end
 
 	-- Open database.
-	nodestore.db = nodestore.sql.open(nodestore.database)
-	assert(nodestore.db)
+	if nodestore.sql then
+		nodestore.db = nodestore.sql.open(nodestore.database)
+		assert(nodestore.db)
+	end
 
 	-- Create table if necessary.
 	nodestore.create_table()

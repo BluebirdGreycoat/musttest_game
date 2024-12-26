@@ -333,3 +333,29 @@ minetest.register_decoration({
 	height = 4,
 	height_max = 10,
 })
+
+-- Spider webs in Xen tunnels.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "sw:teststone2",
+	sidelen = 8,
+	fill_ratio = 0.001,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_web1.mts",
+	flags = "all_ceilings,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+-- Stray cobwebs.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone2",
+	sidelen = 8,
+	fill_ratio = 0.005,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "xdecor:cobweb",
+})

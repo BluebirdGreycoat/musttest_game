@@ -293,14 +293,14 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 
 						-- Replace floor node only if node below is something other than air.
 						if floor_below then
-							if cidb ~= c_air and cidb ~= c_bedrock2 then
+							if cidb ~= c_air and cidb ~= c_bedrock and cidb ~= c_bedrock2 then
 								vm_data[below] = c_cave_floor
 							end
 						end
 
 						-- Replace ceiling node only if node above is something other than air.
 						if ceiling_above then
-							if cida ~= c_air and cida ~= c_bedrock2 then
+							if cida ~= c_air and cida ~= c_bedrock and cida ~= c_bedrock2 then
 								vm_data[above] = c_cave_ceiling
 							end
 						end

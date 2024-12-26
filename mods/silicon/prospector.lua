@@ -120,8 +120,10 @@ function prospector.mark_nodes(pname, start_pos, nodes, accuracy, minp, maxp)
 		end
 	end
 
-	local sound = "technic_prospector_" .. ((count_found > 0 and "hit") or "miss")
-	ambiance.sound_play(sound, start_pos, 0.6, 20)
+	if start_pos then
+		local sound = "technic_prospector_" .. ((count_found > 0 and "hit") or "miss")
+		ambiance.sound_play(sound, start_pos, 0.6, 20)
+	end
 end
 
 function prospector.mark_unfindable(pos)

@@ -1,4 +1,7 @@
 
+-- Basic stair and slab nodes ONLY.
+-- We must conserve content IDs!
+
 stairs.register_stair_and_slab(
 	"sw_teststone1",
 	"sw:teststone1",

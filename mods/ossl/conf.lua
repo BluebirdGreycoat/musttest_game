@@ -1,5 +1,6 @@
 
 if minetest.is_singleplayer() then
+	ossl.default_key = "0123456789ABCDEF"
 	return
 end
 

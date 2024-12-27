@@ -2,6 +2,7 @@
 local XEN_BEGIN = 13150
 local XEN_END = 15150
 
+-- Small pools.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = "stairs:slab_cobble",
@@ -19,6 +20,7 @@ minetest.register_decoration({
 	},
 })
 
+-- Large pools.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = "stairs:slab_cobble",
@@ -36,6 +38,7 @@ minetest.register_decoration({
 	},
 })
 
+-- Large yellow crystals.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = {"sw:teststone1", "sw:teststone2"},
@@ -49,6 +52,7 @@ minetest.register_decoration({
 	param2_max = 3,
 })
 
+-- Small yellow crystals clustered around larger ones.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = {"sw:teststone1", "sw:teststone2"},
@@ -84,6 +88,7 @@ minetest.register_decoration({
 	},
 })
 
+-- Blue crystals clustered around midnight sun flowers.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = {"sw:teststone1", "sw:teststone2", "default:gravel", "default:dirt"},
@@ -396,4 +401,55 @@ minetest.register_decoration({
 	y_max = XEN_END,
 	flags = "all_floors",
 	decoration = ALL_FLOWERS,
+})
+
+-- Junglegrass.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "default:junglegrass",
+	noise_params = {
+		offset = -0.7,
+		scale = 1,
+		spread = {x=100, y=100, z=100},
+		seed = 77189,
+		octaves = 1,
+		persistence = 0.5,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+	param2 = 2,
+})
+
+-- Other grasses.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"default:coarsegrass",
+		"default:grass_1",
+		"default:grass_2",
+		"default:grass_3",
+		"default:grass_4",
+		"default:grass_5",
+	},
+	noise_params = {
+		offset = -0.6,
+		scale = 1,
+		spread = {x=100, y=100, z=100},
+		seed = 127112,
+		octaves = 1,
+		persistence = 0.5,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+	param2 = 2,
 })

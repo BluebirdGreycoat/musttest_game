@@ -1,6 +1,7 @@
 
 local XEN_BEGIN = 13150
 local XEN_END = 15150
+local XEN_MID = 14150
 
 -- Small pools.
 minetest.register_decoration({
@@ -143,7 +144,7 @@ minetest.register_decoration({
 	place_on = {"sw:teststone1", "bedrock:bedrock"},
 	sidelen = 8,
 	y_min = XEN_BEGIN,
-	y_max = XEN_END,
+	y_max = XEN_MID,
 	flags = "all_floors",
 	decoration = "cavestuff:glow_fungus",
 	noise_params = {
@@ -157,8 +158,28 @@ minetest.register_decoration({
 		flags = "absvalue",
 	},
 })
-
--- Glow worms.
+-- Star Moss
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	sidelen = 8,
+	y_min = XEN_MID -10,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "aradonia:caveflower14",
+	param2 = 10,
+	noise_params = {
+		offset = -0.1,
+		scale = 0.35,
+		spread = {x=32, y=32, z=32},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+})	
+	-- Glow worms.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",

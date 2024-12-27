@@ -389,8 +389,10 @@ minetest.register_decoration({
 	fill_ratio = 0.005,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
-	flags = "all_floors",
+	flags = "all_ceilings",
 	decoration = "xdecor:cobweb",
+	height = 1,
+	height_max = 3,
 })
 
 minetest.register_decoration({

@@ -269,6 +269,7 @@ minetest.register_decoration({
 	param2_max = 3,
 })
 
+
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
@@ -285,6 +286,26 @@ minetest.register_decoration({
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = {"sw:teststone1", "sw:teststone2"},
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = "default:diamondblock",
+		noise_params = {
+		offset = -0.04,
+		scale = 0.05,
+		spread = {x=150, y=150, z=150},
+		seed = 802,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "sw:teststone1",
 	sidelen = 8,
 	fill_ratio = 0.02,
 	y_min = XEN_BEGIN,

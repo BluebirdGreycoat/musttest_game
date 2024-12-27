@@ -286,6 +286,7 @@ end
 
 -- Combine all datums in this player's named stack, and apply them.
 local function update_player_data(pref, stack, data)
+	--minetest.chat_send_all('updating!')
 	if stack == "physics" then
 		pref:set_physics_override(combine_data(data, stack))
 	elseif stack == "eye_offset" then

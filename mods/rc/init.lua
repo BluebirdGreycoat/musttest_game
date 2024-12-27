@@ -10,6 +10,8 @@ if not minetest.global_exists("rc") then rc = {} end
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
 
+dofile(rc.modpath .. "/gravity.lua")
+
 -- Localize for performance.
 local vector_round = vector.round
 local math_random = math.random
@@ -249,7 +251,7 @@ rc.realms = {
 
 		alt_description = function(pos)
 			if pos.y >= 13150 then
-				return "Ir'xen"
+				return "Ir-Xen"
 			end
 			return "Carcorsica"
 		end,
@@ -271,6 +273,13 @@ rc.realms = {
 		-- Clouds don't play nice atm.
 		sky_data = {clouds = false},
 		cloud_data = {density = 0},
+
+		-- Low gravity in Xen.
+		get_physics_override = function(pos)
+			if pos.y >= 13150 then
+				return {gravity=0.75, liquid_sink=2}
+			end
+		end,
 	},
 
 	{
@@ -966,6 +975,8 @@ function rc.on_joinplayer(player)
 		if not data then return end
 		data.new_arrival = nil
 	end)
+
+	rc.do_gravity_check(n)
 end
 
 

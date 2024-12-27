@@ -1,5 +1,6 @@
 
 local XEN_BEGIN = 13150
+local XEN_MID = 14150
 local XEN_END = 15150
 
 -- Small pools.
@@ -430,7 +431,7 @@ minetest.register_decoration({
 	place_on = "sw:teststone1",
 	sidelen = 8,
 	y_min = XEN_BEGIN,
-	y_max = XEN_END,
+	y_max = XEN_MID,
 	flags = "all_floors",
 	decoration = "default:junglegrass",
 	noise_params = {
@@ -452,7 +453,7 @@ minetest.register_decoration({
 	place_on = "sw:teststone1",
 	sidelen = 8,
 	y_min = XEN_BEGIN,
-	y_max = XEN_END,
+	y_max = XEN_MID,
 	flags = "all_floors",
 	decoration = {
 		"default:coarsegrass",

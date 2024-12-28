@@ -15,6 +15,15 @@ local function pixel_box(x1, y1, z1, x2, y2, z2)
 	}
 end
 
+local function get_selection_box(x1, y1, z1, x2, y2, z2)
+	return {
+		type = "fixed",
+		fixed = {
+			pixel_box(x1, y1, z1, x2, y2, z2),
+		},
+	}
+end
+
 flowers.aradonia_flowers_list = {
 	{node="aradonia:caveflower6"},
 	{node="aradonia:caveflower8"},
@@ -143,12 +152,7 @@ minetest.register_node(':aradonia:caveflower11', {
 	paramtype2 = "meshoptions",
 	place_param2 = 2,
 	light_source = 5,
-		selection_box = {
-        type = "fixed",
-        fixed = {
-	   pixel_box(0, 0, 0, 16, 27, 16),
-	  },
-	},
+	selection_box = get_selection_box(0, 0, 0, 16, 27, 16),
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,

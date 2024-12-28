@@ -189,7 +189,7 @@ xdecor.register("cobweb", {
 	liquid_range = 0,
 	walkable = false,
 	selection_box = {type = "regular"},
-	groups = utility.dig_groups("plant", {flammable=3}),
+	groups = utility.dig_groups("hardplant", {flammable=3}),
 	sounds = default.node_sound_leaves_defaults(),
 
 	drop = "farming:cotton 5",

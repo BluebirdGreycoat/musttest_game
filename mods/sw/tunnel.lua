@@ -244,12 +244,17 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 						if do_fc_check then
 							local found_floor = is_cave(x, y-1, z)
 							local found_ceiling = is_cave(x, y+1, z)
+							local wall_n = is_cave(x, y, z+1)
+							local wall_s = is_cave(x, y, z-1)
+							local wall_e = is_cave(x+1, y, z)
+							local wall_w = is_cave(x-1, y, z)
 							-- Need to negate the second two.
 							-- Should return:
 							-- 1: whether this position is cave
 							-- 2: whether position below is solid (found floor)
 							-- 3: whether position above is solid (found ceiling)
-							return true, (not found_floor), (not found_ceiling)
+							-- 4,5,6: whether position (at direction) is solid.
+							return true, (not found_floor), (not found_ceiling), (not wall_n), (not wall_s), (not wall_e), (not wall_w)
 						else
 							return true
 						end
@@ -260,19 +265,25 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	end
 
 	local YSTRIDE = area.ystride
+	local ZSTRIDE = area.zstride
 	local c_cave_floor = c_stone
 	local c_cave_ceiling = c_stone
+	local c_cave_wall = c_stone
 
 	if y0 >= XEN_BEGIN and y1 <= XEN_END then
 		c_cave_floor = minetest.get_content_id("sw:teststone2")
 		c_cave_ceiling = minetest.get_content_id("sw:teststone2")
+		c_cave_wall = minetest.get_content_id("sw:teststone2")
 	end
 
 	for z = z0, z1 do
 		for y = y0, y1 do
 			local base_idx = area:index(x0, y, z)
 			for x = x0, x1 do
-				local found_cave, floor_below, ceiling_above = is_cave(x, y, z, true)
+				local found_cave, floor_below, ceiling_above,
+					wall_n, wall_s, wall_e, wall_w =
+						is_cave(x, y, z, true)
+
 				if found_cave then
 					local cid = vm_data[base_idx]
 
@@ -287,9 +298,17 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 
 						local below = base_idx - YSTRIDE
 						local above = base_idx + YSTRIDE
+						local pn = base_idx + ZSTRIDE
+						local ps = base_idx - ZSTRIDE
+						local pe = base_idx + 1
+						local pw = base_idx - 1
 
 						local cidb = vm_data[below]
 						local cida = vm_data[above]
+						local cidn = vm_data[pn]
+						local cids = vm_data[ps]
+						local cide = vm_data[pe]
+						local cidw = vm_data[pw]
 
 						-- Replace floor node only if node below is something other than air.
 						if floor_below then
@@ -302,6 +321,34 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 						if ceiling_above then
 							if cida ~= c_air and cida ~= c_bedrock and cida ~= c_bedrock2 then
 								vm_data[above] = c_cave_ceiling
+							end
+						end
+
+						-- North wall.
+						if wall_n then
+							if cidn ~= c_air and cidn ~= c_bedrock and cidn ~= c_bedrock2 then
+								vm_data[pn] = c_cave_wall
+							end
+						end
+
+						-- South wall.
+						if wall_s then
+							if cids ~= c_air and cids ~= c_bedrock and cids ~= c_bedrock2 then
+								vm_data[ps] = c_cave_wall
+							end
+						end
+
+						-- East wall.
+						if wall_e then
+							if cide ~= c_air and cide ~= c_bedrock and cide ~= c_bedrock2 then
+								vm_data[pe] = c_cave_wall
+							end
+						end
+
+						-- West wall.
+						if wall_w then
+							if cidw ~= c_air and cidw ~= c_bedrock and cidw ~= c_bedrock2 then
+								vm_data[pw] = c_cave_wall
 							end
 						end
 					end

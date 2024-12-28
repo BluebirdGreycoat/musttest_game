@@ -3,6 +3,8 @@ local REALM_START = 10150
 local REALM_END = 15150
 local XEN_BEGIN = REALM_END - 2000
 local XEN_END = REALM_END
+local XEN_UPPERMID = 14300
+local XEN_MID = 14150
 
 local sheet_ores = {
 	{ore="morerocks:marble", seed=1, threshhold=0.3},
@@ -74,6 +76,14 @@ local scatter_ores = {
 	{ore="glowstone:cobble", seed=814, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
 	{ore="glowstone:glowstone", seed=7736, threshhold=-0.3, scarcity=11, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
 	{ore="cavestuff:glow_obsidian", seed=3312, threshhold=-0.5, scarcity=10, count=3, size=5, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}, octaves=2},
+	
+	--Ir'xen gems.
+	{ore="gems:ruby2_ore", seed=772, threshhold=-0.5, scarcity=16, count=12, size=6, y_min=XEN_UPPERMID, y_max=XEN_END, wherein={"sw:teststone1",}, octaves=2},
+	{ore="gems:emerald2_ore", seed=772, threshhold=-0.5, scarcity=16, count=12, size=6, y_min=XEN_BEGIN, y_max=XEN_UPPERMID, wherein={"sw:teststone1",}, octaves=2},
+	{ore="gems:sapphire2_ore", seed=772, threshhold=-0.5, scarcity=16, count=12, size=6, y_min=XEN_UPPERMID, y_max=XEN_END, wherein={"sw:teststone1",}, octaves=2},
+	{ore="gems:amethyst2_ore", seed=772, threshhold=-0.5, scarcity=16, count=12, size=6, y_min=XEN_BEGIN, y_max=XEN_UPPERMID, wherein={"sw:teststone1",}, octaves=2},
+
+	
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 
@@ -116,7 +126,8 @@ local blob_ores = {
 	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
 	{ore="cavestuff:glow_sapphire", seed=162, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
 	{ore="rackstone:redrack", seed=163, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="default:diamondblock", seed=164, threshhold=0.4, scarcity=30, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="default:diamondblock", seed=164, threshhold=0.3, scarcity=30, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	
 }
 local BLOB_ORE_SEED_FLOOR = 2818
 

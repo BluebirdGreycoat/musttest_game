@@ -2,6 +2,7 @@
 local XEN_BEGIN = 13150
 local XEN_MID = 14150
 local XEN_END = 15150
+local XEN_UPPERMID = 14300
 
 -- Small pools.
 minetest.register_decoration({
@@ -144,9 +145,30 @@ minetest.register_decoration({
 	place_on = {"sw:teststone1", "bedrock:bedrock"},
 	sidelen = 8,
 	y_min = XEN_BEGIN,
-	y_max = XEN_END,
+	y_max = XEN_MID,
 	flags = "all_floors",
 	decoration = "cavestuff:glow_fungus",
+	noise_params = {
+		offset = -0.1,
+		scale = 0.15,
+		spread = {x=32, y=32, z=32},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+})
+-- Star Moss
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	sidelen = 8,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "aradonia:caveflower14",
+	param2 = 10,
 	noise_params = {
 		offset = -0.1,
 		scale = 0.35,
@@ -157,9 +179,52 @@ minetest.register_decoration({
 		lacunarity = 2.0,
 		flags = "absvalue",
 	},
+})	
+--White Moonflower
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	sidelen = 8,
+	y_min = XEN_UPPERMID -5,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "aradonia:caveflower15",
+	noise_params = {
+		offset = -0.1,
+		scale = 0.25,
+		spread = {x=100, y=100, z=100},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
+})
+--Pink Moonflower
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	sidelen = 8,
+	y_min = XEN_UPPERMID -5,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = "aradonia:caveflower16",
+	spawn_by = "aradonia:caveflower15",
+	num_spawn_by = 1,
+	check_offset = 1,
+	noise_params = {
+		offset = -0.1,
+		scale = 0.25,
+		spread = {x=100, y=100, z=100},
+		seed = 7718,
+		octaves = 3,
+		persistence = 0.7,
+		lacunarity = 2.0,
+		flags = "absvalue",
+	},
 })
 
--- Glow worms.
+	-- Glow worms.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
@@ -427,53 +492,4 @@ minetest.register_decoration({
 	decoration = ALL_FLOWERS,
 })
 
--- Junglegrass.
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = "sw:teststone1",
-	sidelen = 8,
-	y_min = XEN_BEGIN,
-	y_max = XEN_MID,
-	flags = "all_floors",
-	decoration = "default:junglegrass",
-	noise_params = {
-		offset = -0.7,
-		scale = 1,
-		spread = {x=100, y=100, z=100},
-		seed = 77189,
-		octaves = 1,
-		persistence = 0.5,
-		lacunarity = 2.0,
-		flags = "absvalue",
-	},
-	param2 = 2,
-})
 
--- Other grasses.
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = "sw:teststone1",
-	sidelen = 8,
-	y_min = XEN_BEGIN,
-	y_max = XEN_MID,
-	flags = "all_floors",
-	decoration = {
-		"default:coarsegrass",
-		"default:grass_1",
-		"default:grass_2",
-		"default:grass_3",
-		"default:grass_4",
-		"default:grass_5",
-	},
-	noise_params = {
-		offset = -0.6,
-		scale = 1,
-		spread = {x=100, y=100, z=100},
-		seed = 127112,
-		octaves = 1,
-		persistence = 0.5,
-		lacunarity = 2.0,
-		flags = "absvalue",
-	},
-	param2 = 2,
-})

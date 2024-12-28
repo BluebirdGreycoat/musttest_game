@@ -197,3 +197,67 @@ minetest.register_node(':aradonia:caveflower14', {
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
+
+--Moon Flower 
+minetest.register_node(':aradonia:caveflower15', {
+	description = 'Moon Flower',
+	drawtype = "plantlike",
+	visual_scale =  1.0,
+	walkable = false,
+	tiles = {'dvd_moonflower.png'},
+	inventory_image = 'dvd_moonflower.png',
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	light_source = 4,
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+})
+
+--Pink Moon Flower
+minetest.register_node(':aradonia:caveflower16', {
+	description = 'Pink Moon Flower',
+	drawtype = "plantlike",
+	visual_scale =  1.0,
+	walkable = false,
+	tiles = {'dvd_pinkmoonflower.png'},
+	inventory_image = 'dvd_pinkmoonflower.png',
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	light_source = 4,
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+})
+
+--Dustflower
+minetest.register_node(':aradonia:caveflower17', {
+	description = 'Dust Flower',
+	drawtype = "plantlike",
+	visual_scale =  1.0,
+	walkable = false,
+	tiles = {'dvd_dustflower.png'},
+	inventory_image = 'dvd_dustflower.png',
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	light_source = 4,
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+})
+
+--Emergant Dustflower
+minetest.register_node(':aradonia:caveflower18', {
+	description = 'Emergant Dustflower',
+	drawtype = "plantlike",
+	visual_scale =  2.0,
+	walkable = false,
+	tiles = {'dvd_emergantdustflower.png'},
+	inventory_image = 'dvd_emergantdustflower.png',
+	paramtype = "light",
+	paramtype2 = "meshoptions",
+	light_source = 6,
+	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	sounds = default.node_sound_leaves_defaults(),
+	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+})

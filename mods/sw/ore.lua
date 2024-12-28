@@ -82,8 +82,6 @@ local scatter_ores = {
 	{ore="gems:emerald2_ore", seed=772, threshhold=-0.5, scarcity=25, count=12, size=6, y_min=XEN_BEGIN, y_max=XEN_UPPERMID, wherein={"sw:teststone1",}, octaves=2},
 	{ore="gems:sapphire2_ore", seed=772, threshhold=-0.5, scarcity=25, count=12, size=6, y_min=XEN_UPPERMID, y_max=XEN_END, wherein={"sw:teststone1",}, octaves=2},
 	{ore="gems:amethyst2_ore", seed=772, threshhold=-0.5, scarcity=25, count=12, size=6, y_min=XEN_BEGIN, y_max=XEN_UPPERMID, wherein={"sw:teststone1",}, octaves=2},
-
-	
 }
 local SCATTER_ORE_SEED_FLOOR = 2818
 

@@ -29,32 +29,7 @@ local function do_craft(pos, times)
 		return
 	end
 
-	local out_item = output.item
-	local total_count = out_item:get_count() * times
-	local need_slots = math.ceil(total_count / out_item:get_stack_max())
-	local free_slots = 0
-
-	-- Check if we have enough free slots (completely empty).
-	-- Don't bother trying to calculate space in partially filled slots.
-	local output_list = inv:get_list("output")
-	for k, v in ipairs(output_list) do
-		if v:is_empty() then
-			free_slots = free_slots + 1
-		end
-	end
-
-	if free_slots < need_slots then
-		meta:set_string("errmsg", "No room in product output.")
-		return
-	end
-
-	-- First, decrement as many items from storage as we can.
-	-- The number of times we succesfully take items, is the actual number of times
-	-- we can craft.
-	local total_decremented = 0
-	local storage_list = inv:get_list("input")
-
-	-- Find out how much of each item we need.
+	-- Find out how much of each item we need, per craft operation.
 	-- Key: name of item, value: number needed.
 	local needed_items = {}
 
@@ -62,7 +37,7 @@ local function do_craft(pos, times)
 		local stack = recipe[k]
 		if not stack:is_empty() then
 			local sname = stack:get_name()
-			local scount = stack:get_count() * times
+			local scount = stack:get_count()
 
 			if not needed_items[sname] then
 				needed_items[sname] = scount
@@ -72,31 +47,45 @@ local function do_craft(pos, times)
 		end
 	end
 
-	-- Check if input contains everything needed.
-	for name, count in pairs(needed_items) do
-		local stack = ItemStack(name .. " " .. count)
-		if not inv:contains_item("input", stack) then
-			meta:set_string("errmsg", "Missing material in storage.")
+	local num_crafted = meta:get_int("num_crafted")
+	meta:set_int("num_crafted", 0)
+
+	-- Run the crafting logic the requested number of times.
+	-- We need to iterate instead of doing fancy math because otherwise there'll
+	-- be bugs and duplication glitches.
+	for num_crafts = 1, times do
+		if not inv:room_for_item("output", output.item) then
+			if num_crafted == 0 then
+				meta:set_string("errmsg", "No room in product output.")
+			else
+				meta:set_string("errmsg", "No room in product output. (" .. num_crafted .. " crafted.)")
+			end
 			return
 		end
-	end
 
-	-- Input contains everything, remove needed materials.
-	for name, count in pairs(needed_items) do
-		local stack = ItemStack(name .. " " .. count)
-		inv:remove_item("input", stack)
-	end
+		-- Check if input contains everything needed.
+		for name, count in pairs(needed_items) do
+			local stack = ItemStack(name .. " " .. count)
+			if not inv:contains_item("input", stack) then
+				if num_crafted == 0 then
+					meta:set_string("errmsg", "Missing material in storage.")
+				else
+					meta:set_string("errmsg", "Missing material in storage. (" .. num_crafted .. " crafted.)")
+				end
+				return
+			end
+		end
 
-	-- Add 'total_count' of 'out_item' to output inventory.
-	local count_remaining = total_count
-	local count_subtract = out_item:get_count()
-	while count_remaining > 0 do
-		inv:add_item("output", out_item)
-		count_remaining = count_remaining - count_subtract
-	end
+		-- Input contains everything, remove needed materials.
+		for name, count in pairs(needed_items) do
+			local stack = ItemStack(name .. " " .. count)
+			inv:remove_item("input", stack)
+		end
 
-	-- Finally, add output replacements back to storage, or the world if no room.
-	for num_crafts = 1, times do
+		-- Add output item to output inventory.
+		inv:add_item("output", output.item)
+
+		-- Finally, add output replacements back to storage, or the world if no room.
 		for k, stack in ipairs(output.replacements) do
 			local leftover = inv:add_item("input", stack)
 			if not leftover:is_empty() then
@@ -114,9 +103,12 @@ local function do_craft(pos, times)
 				end
 			end
 		end
+
+		num_crafted = num_crafted + 1
 	end
 
-	meta:set_string("errmsg", "Success.")
+	meta:set_int("num_crafted", num_crafted)
+	meta:set_string("errmsg", "Success, crafted " .. num_crafted)
 end
 
 local function update_infotext(pos)
@@ -301,6 +293,7 @@ function workbench.on_receive_fields(player, formname, fields)
 
 	if fields.quit then
 		meta:set_string("errmsg", "Crafting table ready.")
+		meta:set_int("num_crafted", 0)
 		player_contexts[pname] = nil
 		return
 	end
@@ -396,6 +389,8 @@ local function update_craft_preview(pos, pname)
 	else
 		meta:set_string("errmsg", "Crafting table ready.")
 	end
+
+	meta:set_int("num_crafted", 0)
 
 	local formspec = build_formspec(pos, pname)
 	minetest.show_formspec(pname, FORMSPEC_NAME, formspec)
@@ -494,6 +489,24 @@ function workbench.allow_metadata_inventory_put(pos, listname, index, stack, pla
 		return 0
 	end
 
+	if listname == "input" then
+		local stack_meta = stack:get_meta():to_table()
+		local have_fields = false
+
+		for k, v in pairs(stack_meta.fields) do
+			have_fields = true
+			break
+		end
+
+		if have_fields or stack:get_wear() > 0 then
+			meta:set_string("errmsg", "Items with wear or metadata not allowed.")
+
+			local formspec = build_formspec(pos, pname)
+			minetest.show_formspec(pname, FORMSPEC_NAME, formspec)
+			return 0
+		end
+	end
+
 	return stack:get_count()
 end
 
@@ -545,9 +558,19 @@ function workbench.on_metadata_inventory_put(pos, listname, index, stack, player
 end
 
 function workbench.on_metadata_inventory_take(pos, listname, index, stack, player)
+	local meta = minetest.get_meta(pos)
 	local pname = player:get_player_name()
+
 	if listname == "craft" then
 		update_craft_preview(pos, pname)
+	end
+
+	if listname == "output" then
+		meta:set_int("num_crafted", 0)
+		meta:set_string("errmsg", "Crafting table ready.")
+
+		local formspec = build_formspec(pos, pname)
+		minetest.show_formspec(pname, FORMSPEC_NAME, formspec)
 	end
 end
 
@@ -565,3 +588,6 @@ if not workbench.registered then
 
 	workbench.registered = true
 end
+
+-- So laugh at him back.
+

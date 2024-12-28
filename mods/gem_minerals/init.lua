@@ -9,10 +9,14 @@ if not minetest.global_exists("gem_minerals") then gem_minerals = {} end
 gem_minerals.modpath = minetest.get_modpath("gem_minerals")
 
 local gems = {
-	{name="ruby", desc="Ruby", hardness=20},
-	{name="amethyst", desc="Amethyst", hardness=12},
-	{name="sapphire", desc="Sapphire", hardness=18},
-	{name="emerald", desc="Emerald", hardness=15},
+	{name="ruby", desc="Ruby", hardness=20, extra = true, texture = "default_stone.png",},
+	{name="amethyst", desc="Amethyst", hardness=12, extra = true, texture = "default_stone.png",},
+	{name="sapphire", desc="Sapphire", hardness=18, extra = true, texture = "default_stone.png", },
+	{name="emerald", desc="Emerald", hardness=15, extra = true, texture = "default_stone.png",},
+	{name="emerald2", desc="Emerald", hardness=15, texture = "xen_stone.png", altname = "emerald",},
+	{name="sapphire2", desc="Sapphire", hardness=15, texture = "xen_stone.png", altname = "sapphire",},
+	{name="ruby2", desc="Ruby", hardness=15, texture = "xen_stone.png", altname = "ruby",},
+	{name="amethyst2", desc="Amethyst", hardness=15, texture = "xen_stone.png", altname = "amethyst",},
 }
 
 if not gem_minerals.registered then
@@ -25,19 +29,22 @@ if not gem_minerals.registered then
 		-- Ore.
 		minetest.register_node(":" .. ore, {
 			description = v.desc .. " Ore",
-			tiles = {"default_stone.png^gem_minerals_" .. v.name .. "_ore.png"},
+			tiles = {v.texture .. "^gem_minerals_" .. (v.altname or v.name) .. "_ore.png"},
 			is_ground_content = true,
 			groups = utility.dig_groups("hardstone"),
 			sounds = default.node_sound_stone_defaults(),
-			drop = "gems:raw_" .. v.name,
+			drop = "gems:raw_" .. (v.altname or v.name),
 			silverpick_drop = true,
 			place_param2 = 10,
 		})
+		
+if v.extra then 
 
-		minetest.register_alias(ore .. "_mined", ore)
 
-		-- Block.
-		minetest.register_node(":" .. block, {
+			minetest.register_alias(ore .. "_mined", ore)
+
+	-- Block.
+			minetest.register_node(":" .. block, {
 			description = v.desc .. " Block",
 			tiles = {"gem_minerals_" .. v.name .. "_block.png"},
 			is_ground_content = false,
@@ -45,47 +52,48 @@ if not gem_minerals.registered then
 			sounds = default.node_sound_stone_defaults(),
 			drop = gem .. " 8",
 			silverpick_drop = block,
-		})
+			})
 
-		-- Cut Gem.
-		minetest.register_craftitem(":" .. gem, {
+	-- Cut Gem.
+			minetest.register_craftitem(":" .. gem, {
 			description = v.desc .. " Gem",
 			inventory_image = "gem_minerals_" .. v.name .. "_gem.png",
 			groups = {gem = 1, crystal = 1},
-		})
+			})
 
-		-- Raw gem.
-		minetest.register_craftitem(":" .. raw, {
+	-- Raw gem.
+			minetest.register_craftitem(":" .. raw, {
 			description = "Uncut " .. v.desc .. " Gem",
 			inventory_image = "gem_minerals_raw_" .. v.name .. ".png",
 			groups = {gem = 1, crystal = 1},
-		})
+			})
 
-		-- Block craft.
-		minetest.register_craft({
+	-- Block craft.
+			minetest.register_craft({
 			output = block,
 			recipe = {
-				{gem, gem, gem},
-				{gem, "default:stone", gem},
-				{gem, gem, gem},
+			{gem, gem, gem},
+			{gem, "default:stone", gem},
+			{gem, gem, gem},
 			}
-		})
+			})
 
-		-- Get gems back from block.
-		minetest.register_craft({
+	-- Get gems back from block.
+			minetest.register_craft({
 			type = "shapeless",
 			output = gem .. " 8",
 			recipe = {block},
-		})
+			})
 
-		-- Cut raw gem.
-		minetest.register_craft({
+	-- Cut raw gem.
+			minetest.register_craft({
 			type = "cutting",
 			output = gem,
 			recipe = raw,
 			hardness = v.hardness,
-		})
+			})
 	end
+end
 
 	local c = "gem_minerals:core"
 	local f = gem_minerals.modpath .. "/init.lua"

@@ -495,7 +495,10 @@ minetest.register_node("cavestuff:glow_fungus", {
   light_source = 5,
   paramtype = "light",
   drawtype = "firelike",
-	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+  -- No slowdown for this.
+	--movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
   walkable = false,
   buildable_to = true,
 

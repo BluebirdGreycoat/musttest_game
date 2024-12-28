@@ -190,8 +190,8 @@ minetest.register_decoration({
 	flags = "all_floors",
 	decoration = "aradonia:caveflower15",
 	noise_params = {
-		offset = -0.1,
-		scale = 0.25,
+		offset = -0,
+		scale = 0.01,
 		spread = {x=100, y=100, z=100},
 		seed = 7718,
 		octaves = 3,
@@ -214,7 +214,7 @@ minetest.register_decoration({
 	check_offset = 1,
 	noise_params = {
 		offset = -0.1,
-		scale = 0.25,
+		scale = 0.01,
 		spread = {x=100, y=100, z=100},
 		seed = 7718,
 		octaves = 3,

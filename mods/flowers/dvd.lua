@@ -193,6 +193,10 @@ minetest.register_node(':aradonia:caveflower14', {
 	paramtype2 = "meshoptions",
 	place_param2 = 10,
 	light_source = 4,
+	selection_box = {
+    type = "fixed",
+    fixed = {-0.5, -0.5, -0.5, 0.5, -0.2, 0.5},
+    },
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,

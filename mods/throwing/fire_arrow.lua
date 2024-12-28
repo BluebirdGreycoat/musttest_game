@@ -63,6 +63,15 @@ function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
 	if not intersection_point then
 		return
 	end
+
+	local node = minetest.get_node(under)
+	local ndef = minetest.registered_nodes[node.name]
+
+	-- Call 'on_arrow_impact' if node defines it.
+	if ndef.on_arrow_impact then
+		ndef.on_arrow_impact(under, above, self.object, intersection_point)
+	end
+
 	local fpos = minetest.find_node_near(intersection_point, 1, {"air", "group:airlike"}, true)
 	if fpos then
 		local node = minetest.get_node(fpos)

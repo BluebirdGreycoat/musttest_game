@@ -588,3 +588,6 @@ if not workbench.registered then
 
 	workbench.registered = true
 end
+
+-- So laugh at him back.
+

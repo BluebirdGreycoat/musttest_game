@@ -2,7 +2,7 @@
 local XEN_BEGIN = 13150
 local XEN_MID = 14150
 local XEN_END = 15150
-local XEN_UPPERMID = 14350
+local XEN_UPPERMID = 14300
 
 -- Small pools.
 minetest.register_decoration({
@@ -150,7 +150,7 @@ minetest.register_decoration({
 	decoration = "cavestuff:glow_fungus",
 	noise_params = {
 		offset = -0.1,
-		scale = 0.35,
+		scale = 0.15,
 		spread = {x=32, y=32, z=32},
 		seed = 7718,
 		octaves = 3,
@@ -164,7 +164,7 @@ minetest.register_decoration({
 	deco_type = "simple",
 	place_on = {"sw:teststone1", "bedrock:bedrock"},
 	sidelen = 8,
-	y_min = XEN_MID -10,
+	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	flags = "all_floors",
 	decoration = "aradonia:caveflower14",

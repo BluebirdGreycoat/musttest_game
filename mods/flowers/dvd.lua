@@ -51,7 +51,7 @@ minetest.register_node(':aradonia:caveflower6', {
 	light_source = 6,
 	selection_box = get_selection_box(0, 0, 0, 16, 32, 16),
 	groups = utility.dig_groups("hardplant", {
-		attached_node = 1, flammable = 3,
+		attached_node = 1
 	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -172,7 +172,7 @@ minetest.register_node(':aradonia:caveflower11', {
 	light_source = 5,
 	selection_box = get_selection_box(0, 0, 0, 16, 27, 16),
 	groups = utility.dig_groups("hardplant", {
-		attached_node = 1, flammable = 3,
+		attached_node = 1
 	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -200,7 +200,7 @@ minetest.register_node(':aradonia:caveflower12', {
 	  },
 	},
 	groups = utility.dig_groups("plant", {
-		attached_node = 1, flammable = 3,
+		attached_node = 1
 	}),
 	sounds = default.node_sound_leaves_defaults(),
 

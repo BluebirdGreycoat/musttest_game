@@ -74,6 +74,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = "farming:string 1",
+	recipe = {
+		{"xdecor:cobweb"},
+		{"xdecor:cobweb"},
+		{"xdecor:cobweb"},
+	},
+})
+
+minetest.register_craft({
 	output = "xdecor:cushion 3",
 	recipe = {
 		{"farming:cloth", "farming:cloth", "farming:cloth"},

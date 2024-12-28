@@ -489,6 +489,24 @@ function workbench.allow_metadata_inventory_put(pos, listname, index, stack, pla
 		return 0
 	end
 
+	if listname == "input" then
+		local stack_meta = stack:get_meta():to_table()
+		local have_fields = false
+
+		for k, v in pairs(stack_meta.fields) do
+			have_fields = true
+			break
+		end
+
+		if have_fields or stack:get_wear() > 0 then
+			meta:set_string("errmsg", "Items with wear or metadata not allowed.")
+
+			local formspec = build_formspec(pos, pname)
+			minetest.show_formspec(pname, FORMSPEC_NAME, formspec)
+			return 0
+		end
+	end
+
 	return stack:get_count()
 end
 

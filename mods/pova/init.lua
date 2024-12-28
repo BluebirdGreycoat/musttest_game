@@ -156,16 +156,17 @@ end
 local function stable_sort(a, b)
 	-- Highest priority entries move to the END of the array.
 	-- The higher the priority value, the higher the priority (meaning it
-	-- overrrides stuff with lower priority).
-	if a.mode.priority < b.mode.priority then
-		return true
+	-- overrides stuff with lower priority).
+	if a.mode.priority ~= b.mode.priority then
+			return a.mode.priority < b.mode.priority
 	end
 
 	-- If the priorities are equal, stable-sort according to counter.
-	if a.mode.count < b.mode.count then
-		return true
+	if a.mode.count ~= b.mode.count then
+			return a.mode.count < b.mode.count
 	end
 
+	-- If both priority and count are equal, return false to preserve stability.
 	return false
 end
 

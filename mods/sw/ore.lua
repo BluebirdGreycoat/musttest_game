@@ -116,7 +116,8 @@ local blob_ores = {
 	{ore="cavestuff:glow_white_crystal", seed=161, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
 	{ore="cavestuff:glow_sapphire", seed=162, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1", "sw:teststone2"}},
 	{ore="rackstone:redrack", seed=163, threshhold=0, scarcity=20, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
-	{ore="default:diamondblock", seed=164, threshhold=0.4, scarcity=30, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	{ore="default:diamondblock", seed=164, threshhold=0.3, scarcity=30, size=4, y_min=XEN_BEGIN, y_max=XEN_END, wherein={"sw:teststone1"}},
+	
 }
 local BLOB_ORE_SEED_FLOOR = 2818
 

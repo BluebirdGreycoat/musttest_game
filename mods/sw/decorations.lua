@@ -212,16 +212,7 @@ minetest.register_decoration({
 	spawn_by = "aradonia:caveflower15",
 	num_spawn_by = 1,
 	check_offset = 1,
-	noise_params = {
-		offset = -0.1,
-		scale = 0.01,
-		spread = {x=100, y=100, z=100},
-		seed = 7718,
-		octaves = 3,
-		persistence = 0.7,
-		lacunarity = 2.0,
-		flags = "absvalue",
-	},
+    fill_ratio = 0.3,
 })
 
 	-- Glow worms.

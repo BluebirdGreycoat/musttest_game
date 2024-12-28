@@ -69,6 +69,7 @@ minetest.register_node(':aradonia:caveflower8', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 })
 
 --------------------------------------------------------------------------------
@@ -116,6 +117,7 @@ minetest.register_node(':aradonia:caveflower9', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_construct = sunflower_on_construct,
 	on_timer = sunflower_on_timer,
+	buildable_to = true,
 })
 
 -- Weeping Sunrise Flower
@@ -133,6 +135,7 @@ minetest.register_node(':aradonia:caveflower10', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_construct = sunflower_on_construct,
 	on_timer = sunflower_on_timer,
+	buildable_to = true,
 })
 --------------------------------------------------------------------------------
 
@@ -189,6 +192,7 @@ minetest.register_node(':aradonia:caveflower12', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 })
 
 -- Fiery Thorns
@@ -206,6 +210,7 @@ minetest.register_node(':aradonia:caveflower13', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 
 	damage_per_second = 2*500,
   _damage_per_second_type = "snappy",
@@ -236,6 +241,7 @@ minetest.register_node(':aradonia:caveflower14', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 })
 
 -- Moon Flower
@@ -252,6 +258,7 @@ minetest.register_node(':aradonia:caveflower15', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 })
 
 -- Pink Moon Flower
@@ -268,11 +275,12 @@ minetest.register_node(':aradonia:caveflower16', {
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	buildable_to = true,
 })
 
 -- Dustflower
 minetest.register_node(':aradonia:caveflower17', {
-	description = 'Dust Flower',
+	description = 'Dust Squab',
 	drawtype = "plantlike",
 	visual_scale =  1.0,
 	walkable = false,
@@ -288,7 +296,7 @@ minetest.register_node(':aradonia:caveflower17', {
 
 -- That other Dustflower
 minetest.register_node(':aradonia:caveflower18', {
-	description = 'Dustflower',
+	description = 'Dust Flower',
 	drawtype = "plantlike",
 	visual_scale =  2.0,
 	walkable = false,

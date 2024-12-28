@@ -163,7 +163,7 @@ minetest.register_node(':aradonia:caveflower11', {
 })
 --------------------------------------------------------------------------------
 
--- Fireflowers
+-- Candle Flowers
 minetest.register_node(':aradonia:caveflower12', {
 	description = 'Candle Flowers',
 	drawtype = "plantlike",

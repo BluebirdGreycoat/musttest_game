@@ -137,6 +137,7 @@ minetest.register_decoration({
 	spawn_by = "aradonia:caveflower11",
 	num_spawn_by = 1,
 	check_offset = 1,
+	param2 = 10,
 })
 
 -- Blue fungus.

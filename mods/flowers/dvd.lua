@@ -32,6 +32,11 @@ flowers.aradonia_flowers_list = {
 	{node="aradonia:caveflower11"},
 	{node="aradonia:caveflower12"},
 	{node="aradonia:caveflower13"},
+	{node="aradonia:caveflower14"},
+	{node="aradonia:caveflower15"},
+	{node="aradonia:caveflower16"},
+	{node="aradonia:caveflower17"},
+	{node="aradonia:caveflower18"},
 }
 
 -- Giant Luminous Flower
@@ -175,10 +180,10 @@ minetest.register_node(':aradonia:caveflower12', {
 	paramtype2 = "meshoptions",
 	place_param2 = 10,
 	light_source = 5,
-		selection_box = {
-        type = "fixed",
-        fixed = {
-	   pixel_box(0, 0, 0, 16, 7, 16),
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			pixel_box(0, 0, 0, 16, 7, 16),
 	  },
 	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
@@ -210,7 +215,7 @@ minetest.register_node(':aradonia:caveflower13', {
 	},
 })
 
--- Glowflowers
+-- Star Moss
 minetest.register_node(':aradonia:caveflower14', {
 	description = 'Star Moss',
 	drawtype = "plantlike",
@@ -223,9 +228,9 @@ minetest.register_node(':aradonia:caveflower14', {
 	place_param2 = 10,
 	light_source = 4,
 	selection_box = {
-        type = "fixed",
-        fixed = {
-	   pixel_box(0, 0, 0, 16, 7, 16),
+		type = "fixed",
+		fixed = {
+			pixel_box(0, 0, 0, 16, 7, 16),
 	  },
 	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
@@ -233,7 +238,7 @@ minetest.register_node(':aradonia:caveflower14', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
 
---Moon Flower 
+-- Moon Flower
 minetest.register_node(':aradonia:caveflower15', {
 	description = 'Moon Flower',
 	drawtype = "plantlike",
@@ -249,7 +254,7 @@ minetest.register_node(':aradonia:caveflower15', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
 
---Pink Moon Flower
+-- Pink Moon Flower
 minetest.register_node(':aradonia:caveflower16', {
 	description = 'Pink Moon Flower',
 	drawtype = "plantlike",
@@ -265,7 +270,7 @@ minetest.register_node(':aradonia:caveflower16', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
 
---Dustflower
+-- Dustflower
 minetest.register_node(':aradonia:caveflower17', {
 	description = 'Dust Flower',
 	drawtype = "plantlike",
@@ -281,9 +286,9 @@ minetest.register_node(':aradonia:caveflower17', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
 
---Emergant Dustflower
+-- That other Dustflower
 minetest.register_node(':aradonia:caveflower18', {
-	description = 'Emergant Dustflower',
+	description = 'Dustflower',
 	drawtype = "plantlike",
 	visual_scale =  2.0,
 	walkable = false,
@@ -292,10 +297,10 @@ minetest.register_node(':aradonia:caveflower18', {
 	paramtype = "light",
 	paramtype2 = "meshoptions",
 	light_source = 6,
-			selection_box = {
-        type = "fixed",
-        fixed = {
-	   pixel_box(0, 0, 0, 16, 32, 16),
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			pixel_box(0, 0, 0, 16, 32, 16),
 	  },
 	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},

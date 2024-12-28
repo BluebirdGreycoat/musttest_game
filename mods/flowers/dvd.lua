@@ -205,9 +205,9 @@ minetest.register_node(':aradonia:caveflower14', {
 	place_param2 = 10,
 	light_source = 4,
 	selection_box = {
-      type = "fixed",
-      fixed = {
-	  pixel_box(0, 0, 0, 16, 7, 16),
+        type = "fixed",
+        fixed = {
+	   pixel_box(0, 0, 0, 16, 7, 16),
 	  },
 	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},

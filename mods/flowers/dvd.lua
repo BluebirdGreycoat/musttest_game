@@ -143,6 +143,12 @@ minetest.register_node(':aradonia:caveflower11', {
 	paramtype2 = "meshoptions",
 	place_param2 = 2,
 	light_source = 5,
+		selection_box = {
+        type = "fixed",
+        fixed = {
+	   pixel_box(0, 0, 0, 16, 27, 16),
+	  },
+	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -163,6 +169,12 @@ minetest.register_node(':aradonia:caveflower12', {
 	paramtype2 = "meshoptions",
 	place_param2 = 10,
 	light_source = 5,
+		selection_box = {
+        type = "fixed",
+        fixed = {
+	   pixel_box(0, 0, 0, 16, 7, 16),
+	  },
+	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
@@ -274,6 +286,12 @@ minetest.register_node(':aradonia:caveflower18', {
 	paramtype = "light",
 	paramtype2 = "meshoptions",
 	light_source = 6,
+			selection_box = {
+        type = "fixed",
+        fixed = {
+	   pixel_box(0, 0, 0, 16, 32, 16),
+	  },
+	},
 	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,

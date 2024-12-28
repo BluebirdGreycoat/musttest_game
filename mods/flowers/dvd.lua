@@ -50,7 +50,9 @@ minetest.register_node(':aradonia:caveflower6', {
 	paramtype = "light",
 	light_source = 6,
 	selection_box = get_selection_box(0, 0, 0, 16, 32, 16),
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
@@ -66,7 +68,9 @@ minetest.register_node(':aradonia:caveflower8', {
 	paramtype = "light",
 	light_source = 5,
 	selection_box = get_selection_box(-2, 0, -2, 18, 28, 18),
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	buildable_to = true,
@@ -112,7 +116,9 @@ minetest.register_node(':aradonia:caveflower9', {
 	inventory_image = 'dvd_weepingsunset.png',
 	paramtype = "light",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_construct = sunflower_on_construct,
@@ -130,7 +136,9 @@ minetest.register_node(':aradonia:caveflower10', {
 	inventory_image = 'dvd_weepingsunrise.png',
 	paramtype = "light",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_construct = sunflower_on_construct,
@@ -163,7 +171,9 @@ minetest.register_node(':aradonia:caveflower11', {
 	place_param2 = 2,
 	light_source = 5,
 	selection_box = get_selection_box(0, 0, 0, 16, 27, 16),
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_punch = fire_lantern_punch,
@@ -189,7 +199,9 @@ minetest.register_node(':aradonia:caveflower12', {
 			pixel_box(0, 0, 0, 16, 7, 16),
 	  },
 	},
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 
 	-- No slowdown for this.
@@ -210,7 +222,9 @@ minetest.register_node(':aradonia:caveflower13', {
 	paramtype2 = "meshoptions",
 	place_param2 = 3+32,
 	light_source = 1,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	buildable_to = true,
@@ -241,7 +255,9 @@ minetest.register_node(':aradonia:caveflower14', {
 			pixel_box(0, 0, 0, 16, 7, 16),
 	  },
 	},
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 
 	-- No slowdown for this.
@@ -261,7 +277,9 @@ minetest.register_node(':aradonia:caveflower15', {
 	paramtype = "light",
 	paramtype2 = "meshoptions",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	buildable_to = true,
@@ -278,7 +296,9 @@ minetest.register_node(':aradonia:caveflower16', {
 	paramtype = "light",
 	paramtype2 = "meshoptions",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	buildable_to = true,
@@ -295,7 +315,9 @@ minetest.register_node(':aradonia:caveflower17', {
 	paramtype = "light",
 	paramtype2 = "meshoptions",
 	light_source = 4,
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
@@ -317,7 +339,9 @@ minetest.register_node(':aradonia:caveflower18', {
 			pixel_box(0, 0, 0, 16, 32, 16),
 	  },
 	},
-	groups = {level = 1, snappy = 3, oddly_breakable_by_hand = 1, attached_node = 1},
+	groups = utility.dig_groups("plant", {
+		attached_node = 1, flammable = 3,
+	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })

@@ -255,25 +255,61 @@ minetest.register_craft({
   time = 3,
 })
 
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:dark_green 5',
+  recipe = 'aradonia:caveflower17',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:dark_green 20',
+  recipe = 'aradonia:caveflower18',
+  time = 12,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:pink 5',
+  recipe = 'aradonia:caveflower16',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:white 5',
+  recipe = 'aradonia:caveflower15',
+  time = 3,
+})
+
 -- DVD's flowers grinding recipies here.
 
-	minetest.register_craft({
-      type = "grinding",
-			output = 'default:diamond 5',
-			recipe = 'aradonia:caveflower6',
-			time = 10,
-		})
-		
-		minetest.register_craft({
-      type = "grinding",
-			output = 'dusts:diamond_shard 5',
-			recipe = 'aradonia:caveflower14',
-			time = 10,
+minetest.register_craft({
+    type = "grinding",
+	output = 'default:diamond 5',
+	recipe = 'aradonia:caveflower6',
+	time = 12,
 		})
 
 minetest.register_craft({
-      type = "grinding",
-			output = 'uranium:dust_enriched 10',
-			recipe = 'aradonia:caveflower8',
-			time = 10,
+    type = "grinding",
+	output = 'uranium:dust_enriched 5',
+	recipe = 'aradonia:caveflower8',
+	time = 12,
 		})
+		
+minetest.register_craft({
+    type = "grinding",
+	output = 'sulfur:dust 5	',
+	recipe = 'aradonia:caveflower11',
+	time = 12,
+		})	
+		
+minetest.register_craft({
+    type = "grinding",
+	output = 'starpearl:pearl 5',
+	recipe = 'aradonia:caveflower18',
+	time = 12,
+		})		
+		

@@ -355,8 +355,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- Handles its own validity checks.
 	sw.generate_xen_biome(vm, minp, maxp, seed)
 
-	minetest.generate_decorations(vm)
+	-- Generate ores first, so that decorations can be specified just for them.
   minetest.generate_ores(vm)
+	minetest.generate_decorations(vm)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

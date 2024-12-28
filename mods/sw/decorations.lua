@@ -414,7 +414,10 @@ minetest.register_decoration({
 		offset = -0.2,
 		scale = 0.22,
 		spread = {x=100, y=100, z=100},
-		seed = 88112, -- Note: using the same seed keeps them with bulbs.
+		-- Note: using the same seed keeps them with bulbs.
+		-- We can't just combine the two decorations into one because one is a vine
+		-- and the other is a single node.
+		seed = 88112,
 		octaves = 3,
 		persistence = 0.7,
 		lacunarity = 2.0,

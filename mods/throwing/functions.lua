@@ -599,13 +599,13 @@ function throwing_node_should_block_arrow (nn)
      string.find(nn, "ladder") then
     return false
   end
-  
-  local def = minetest.reg_ns_nodes[nn]
-  if def._arrows_collide == true then
-		return true
-	end
 
   if def then
+		local def = minetest.reg_ns_nodes[nn]
+		if def._arrows_collide == true then
+			return true
+		end
+
     local dt = def.drawtype
     local pt2 = def.paramtype2
     if dt == "airlike" or

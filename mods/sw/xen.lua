@@ -297,7 +297,7 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 	-- nothing but air, and massively increase mapgen speed for those regions.
 	-- Step size controls how accurate we are vs how performant.
 	local xen_mapgen_wanted = false
-	local xen_mapgen_step = 8
+	local xen_mapgen_step = 5 -- 80/5==16, 16*16==256
 	for z = z0, z1, xen_mapgen_step do
 		for y = y0, y1, xen_mapgen_step do
 			for x = x0, x1, xen_mapgen_step do

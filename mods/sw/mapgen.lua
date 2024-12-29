@@ -373,7 +373,7 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	-- Skip mapfix for underground sections.
 	-- Note: because of Xen, we always have to mapfix the sky sections, even very high up.
 	-- However, do NOT mapfix air regions high above ground but below Xen.
-	if far_diff(-100) or (far_diff(250) and y1 < XEN_BEGIN) then
+	if far_diff(-100) or (far_diff(250) and y1 < (XEN_BEGIN + 250)) then
 		gennotify_data.need_mapfix = false
 		--print('skip mapfix')
 	end

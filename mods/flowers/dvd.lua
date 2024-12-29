@@ -222,6 +222,7 @@ minetest.register_node(':aradonia:caveflower13', {
 	paramtype2 = "meshoptions",
 	place_param2 = 3+32,
 	light_source = 1,
+	selection_box = get_selection_box(0, 0, 0, 16, 12, 16),
 	groups = utility.dig_groups("plant", {
 		attached_node = 1, flammable = 3,
 	}),

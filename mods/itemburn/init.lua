@@ -42,6 +42,8 @@ local item = {
 			age = self.age,
 			dropped_by = self.dropped_by,
 			stuck_arrow = self.stuck_arrow,
+			stuck_arrow_target = self.stuck_arrow_target,
+			stuck_arrow_nodename = self.stuck_arrow_nodename,
 		})
 	end,
 
@@ -54,6 +56,8 @@ local item = {
 				self.age = (data.age or 0) + dtime_s
 				self.dropped_by = data.dropped_by
 				self.stuck_arrow = data.stuck_arrow
+				self.stuck_arrow_target = data.stuck_arrow_target
+				self.stuck_arrow_nodename = data.stuck_arrow_nodename
 			end
 		else
 			self.itemstring = staticdata
@@ -191,6 +195,24 @@ local item = {
 				if burn_chance > 0 and math_random(0, burn_chance) ~= 0 then
 					self:burn_up()
 				end
+			end
+		end
+
+		-- Free stuck arrows if their target changed.
+		if self.stuck_arrow and self.stuck_arrow_target then
+			local node = minetest.get_node_or_nil(self.stuck_arrow_target)
+			if node and node.name ~= self.stuck_arrow_nodename then
+				self.stuck_arrow = nil
+				self.stuck_arrow_target = nil
+
+				self.object:set_acceleration({x = 0, y = -gravity, z = 0})
+				self.object:set_rotation({x=0, y=self.object:get_yaw(), z=0})
+				self.object:set_properties({
+					-- Devs doing some complicated stuff with stack size.
+					-- No need that, we simple folk, we use constants :)
+					automatic_rotate = math.pi * 0.5,
+				})
+				return
 			end
 		end
 	end,

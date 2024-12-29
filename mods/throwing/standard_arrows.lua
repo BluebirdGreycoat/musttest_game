@@ -133,6 +133,8 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 						ent:set_acceleration({x=0, y=0, z=0})
 
 						luaent.stuck_arrow = true
+						luaent.stuck_arrow_target = under
+						luaent.stuck_arrow_nodename = node.name
 					end
 				end
 			end

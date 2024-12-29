@@ -618,6 +618,20 @@ if not darkage.run_once then
 		_toolranks = {
 			ignore = true,
 		},
+
+		-- Intersection point can be nil, and 'above' can be same as 'pos'.
+		on_arrow_impact = function(pos, above, entity, intersection_point)
+			local ent = entity:get_luaentity()
+
+			if ent.name == "throwing:arrow_shell_entity" then
+				if minetest.test_protection(pos, "") then
+					return
+				end
+
+				minetest.swap_node(pos, {name="darkage:basaltic_rubble"})
+				core.spawn_falling_node(pos)
+			end
+		end,
 	})
 
 	minetest.register_node("darkage:unstable_basalt", {
@@ -658,6 +672,19 @@ if not darkage.run_once then
 		_toolranks = {
 			ignore = true,
 		},
+
+		-- Intersection point can be nil, and 'above' can be same as 'pos'.
+		on_arrow_impact = function(pos, above, entity, intersection_point)
+			local ent = entity:get_luaentity()
+
+			if ent.name == "throwing:arrow_shell_entity" then
+				if minetest.test_protection(pos, "") then
+					return
+				end
+
+				core.spawn_falling_node(pos)
+			end
+		end,
 	})
 
 	minetest.register_node("darkage:basaltic_brick", {

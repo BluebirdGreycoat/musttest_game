@@ -1121,5 +1121,19 @@ minetest.register_node("cavestuff:cobble", {
 	on_collapse_to_entity = function(pos)
 		return {ItemStack("default:cobble")}
 	end,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			minetest.swap_node(pos, {name="default:cobble"})
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 

@@ -601,6 +601,10 @@ function throwing_node_should_block_arrow (nn)
   end
   
   local def = minetest.reg_ns_nodes[nn]
+  if def._arrows_collide == true then
+		return true
+	end
+
   if def then
     local dt = def.drawtype
     local pt2 = def.paramtype2

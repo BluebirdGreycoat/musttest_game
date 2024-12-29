@@ -98,6 +98,10 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 				if minetest.get_item_group(node.name, "falling_node") ~= 0 then
 					liquid_or_falling = true
 				end
+				-- Don't stick to nodes that explicitly forbid it.
+				if ndef._arrows_stick == false then
+					liquid_or_falling = true
+				end
 
 				if intersection_point then
 					ent:set_pos(intersection_point)

@@ -555,6 +555,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
   
 	hud_clock.update_xp(pname)
 	armor.end_duel(player, "death")
+	pova.remove_modifier(player, "physics", "sprinting")
 
 	local print_reason = bones.do_messages(pos, pname, num_stacks)
 	if print_reason then

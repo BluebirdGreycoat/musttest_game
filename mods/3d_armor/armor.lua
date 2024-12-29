@@ -654,7 +654,10 @@ end
 
 function armor.on_player_hp_change(player, hp_change, reason)
 	local pname, player_inv, armor_inv = armor:get_valid_player(player, "[on_hpchange]")
-	minetest.after(1, function() armor.record_player_hp(pname) end)
+	minetest.after(1, function()
+		armor.record_player_hp(pname)
+		sprint.update_sprint_modifier(pname)
+	end)
 
 	-- Return HP change as-is if it's a positive number.
 	-- We do not modify it, or do armor wear, in that case.

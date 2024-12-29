@@ -258,7 +258,8 @@ end
 
 
 
-function sprint.set_sprinting(playerName, sprinting) --Sets the state of a player (0=stopped/moving, 1=sprinting)
+-- Sets the state of a player (0=stopped/moving, 1=sprinting)
+function sprint.set_sprinting(playerName, sprinting)
 	local player = minetest.get_player_by_name(playerName)
 	
 	-- Speed multiplier based on player's health relative to max.
@@ -298,4 +299,44 @@ function sprint.set_sprinting(playerName, sprinting) --Sets the state of a playe
 
 	return false
 end
+
+-- Force an update to the player's sprint movement modifier.
+function sprint.update_sprint_modifier(pname)
+	if players[pname] then
+		local pref = minetest.get_player_by_name(pname)
+		if not pref then
+			return
+		end
+		--minetest.chat_send_all('test')
+
+		-- Speed multiplier based on player's health relative to max.
+		-- This is as good a place as any to run this computation.
+		local hp = pref:get_hp()
+		local max_hp = pova.get_active_modifier(pref, "properties").hp_max
+
+		local hp_mult = 1
+		if hp <= (max_hp * 0.2) then
+			hp_mult = 0.8
+		elseif hp <= (max_hp * 0.5) then
+			hp_mult = 0.9
+		elseif hp >= (max_hp * 0.95) then
+			hp_mult = 1.1
+		end
+
+		local sprinting = players[pname].sprinting
+
+		if sprinting == true then
+			pova.set_modifier(pref, "physics", {
+				speed = SPRINT_SPEED * hp_mult,
+				jump = SPRINT_JUMP * hp_mult,
+			}, "sprinting")
+		elseif sprinting == false then
+			pova.set_modifier(pref, "physics", {
+				speed = hp_mult,
+				jump = hp_mult,
+			}, "sprinting")
+		end
+	end
+end
+
 

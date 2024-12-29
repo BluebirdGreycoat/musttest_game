@@ -535,6 +535,7 @@ minetest.register_node("default:obsidian", {
   on_blast = function(...) end, -- Blast resistant.
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
 	node_dig_prediction = "",
+	_arrows_stick = false,
 
 	-- Callbacks are overridden in flameportal mod!
 	crushing_damage = 5000,
@@ -1461,6 +1462,8 @@ minetest.register_node("default:adamant", {
 	on_finish_collapse = function(pos, node)
 		minetest.swap_node(pos, {name = "default:adamant_brittle"})
 	end,
+
+	_arrows_stick = false,
 })
 
 minetest.register_node("default:adamant_brittle", {
@@ -2747,6 +2750,7 @@ minetest.register_node("default:glass", {
 	sounds = default.node_sound_glass_defaults(),
 	drop = "vessels:glass_fragments",
 	silverpick_drop = true,
+	_arrows_stick = false,
 })
 
 minetest.register_node("default:obsidian_glass", {
@@ -2761,6 +2765,7 @@ minetest.register_node("default:obsidian_glass", {
 	drop = "default:obsidian_shard",
 	silverpick_drop = true,
 	node_dig_prediction = "",
+	_arrows_stick = false,
 })
 
 

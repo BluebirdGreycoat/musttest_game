@@ -532,6 +532,8 @@ minetest.register_node("cavestuff:glow_obsidian", {
 	on_destruct = function(pos)
 		obsidian_gateway.on_damage_gate(pos)
 	end,
+
+	_arrows_stick = false,
 })
 
 minetest.register_craft({
@@ -622,6 +624,7 @@ minetest.register_node("cavestuff:dark_obsidian", {
 		obsidian_gateway.on_damage_gate(pos)
 	end,
 	crushing_damage = 5000,
+	_arrows_stick = false,
 })
 
 stairs.register_stair_and_slab(

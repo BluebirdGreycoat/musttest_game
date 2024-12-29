@@ -241,7 +241,13 @@ mobs.register_arrow("oerkki:flame_bolt", {
 	end,
 
 	-- Node hit, bursts into flame.
-	hit_node = function(self, pos, node)
+	hit_node = function(self, pos, nodename)
+		-- Call 'on_arrow_impact' if node defines it.
+		local ndef = minetest.registered_nodes[nodename]
+		if ndef.on_arrow_impact then
+			ndef.on_arrow_impact(pos, pos, self.object, nil)
+		end
+
 		arrow_effect(pos, 2, 5)
 	end
 })

@@ -113,7 +113,13 @@ mobs.register_arrow("dm:fireball", {
 	end,
 
 	-- Node hit, bursts into flame.
-	hit_node = function(self, pos, node)
+	hit_node = function(self, pos, nodename)
+		-- Call 'on_arrow_impact' if node defines it.
+		local ndef = minetest.registered_nodes[nodename]
+		if ndef.on_arrow_impact then
+			ndef.on_arrow_impact(pos, pos, self.object, nil)
+		end
+
 		-- The tnt explosion function respects protection perfectly (MustTest).
 		tnt.boom(pos, {
 			radius = 2,

@@ -92,7 +92,13 @@ mobs.register_arrow("obsidianmonster:arrow", {
 		ambiance.sound_play("default_punch", player:get_pos(), 1.0, 30)
 	end,
 
-	hit_node = function(self, pos, node)
+	hit_node = function(self, pos, nodename)
+		-- Call 'on_arrow_impact' if node defines it.
+		local ndef = minetest.registered_nodes[nodename]
+		if ndef.on_arrow_impact then
+			ndef.on_arrow_impact(pos, pos, self.object, nil)
+		end
+
 		pos = vector_round(pos)
 		if minetest.test_protection(pos, "") then
 			return

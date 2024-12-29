@@ -54,16 +54,35 @@ gdac_invis.toggle_invisibility = function(name, param)
 				pointable = false,
 				show_on_minimap = false,
       }, "gdac_invis", {priority=1000})
+
+      player:set_observers({})
       
       minetest.chat_send_player(name, "# Server: Administrative cloak enabled.")
     else
       pova.remove_modifier(player, "nametag", "gdac_invis")
       pova.remove_modifier(player, "properties", "gdac_invis")
 
+      player:set_observers(nil)
+
       gdac_invis.players[name] = nil
       minetest.chat_send_player(name, "# Server: Invisibility cloak disabled.")
     end
   end
+
+  --[[
+  local whoseesme = player:get_effective_observers()
+  if whoseesme then
+    local count = 0
+    for k, v in pairs(whoseesme) do
+      print(k .. " sees you")
+      count = count + 1
+    end
+    print(count .. " people see you")
+  else
+    print('all see you')
+  end
+  --]]
+
   return true
 end
 

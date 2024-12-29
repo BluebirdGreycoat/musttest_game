@@ -522,7 +522,16 @@ minetest.register_node("cavestuff:glow_obsidian", {
   }),
   light_source = 7,
   sounds = default.node_sound_stone_defaults(),
-  on_blast = function(...) end, -- Blast resistant.
+
+  -- Blast resistant.
+  -- But note, this spawns as an ore in Xen (and maybe some other places),
+  -- so it looks weird when they stay hanging in the air after a TNT blast.
+  on_blast = utility.make_knockdown_on_blast({
+		name = "cavestuff:glow_obsidian",
+		count = 4, -- Min number of air needed to cause collapse.
+		force_drop = true, -- Needed because otherwise obsidian is immovable.
+	}),
+
 	node_dig_prediction = "",
 
 	after_destruct = function(pos)
@@ -614,7 +623,11 @@ minetest.register_node("cavestuff:dark_obsidian", {
 	node_dig_prediction = "",
 
 	-- Note: adamant TNT mining depends on this.
-  on_blast = function(...) end, -- Blast resistant.
+  on_blast = utility.make_knockdown_on_blast({
+		name = "cavestuff:dark_obsidian",
+		count = 4, -- Min number of air needed to cause collapse.
+		force_drop = true, -- Needed because otherwise obsidian is immovable.
+	}),
 
 	after_destruct = function(pos)
 		minetest.after(0, ambiance.recheck_nearby_sound_beacons, {x=pos.x, y=pos.y, z=pos.z}, 16)

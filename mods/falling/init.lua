@@ -498,17 +498,19 @@ end
 
 
 -- Copied from builtin so I can fix the behavior.
-function core.spawn_falling_node(pos)
+function core.spawn_falling_node(pos, drop_immovable)
 	local node = core.get_node(pos)
 	if node.name == "air" or node.name == "ignore" then
 		return false
 	end
-	if string.find(node.name, "flowing") then
-		-- Do not treat flowing liquid as a falling node. Looks ugly.
-		return false
-	end
-	if minetest.get_item_group(node.name, "immovable") ~= 0 then
-		return false
+	if not drop_immovable then
+		if string.find(node.name, "flowing") then
+			-- Do not treat flowing liquid as a falling node. Looks ugly.
+			return false
+		end
+		if minetest.get_item_group(node.name, "immovable") ~= 0 then
+			return false
+		end
 	end
 	return convert_to_falling_node(pos, node)
 end

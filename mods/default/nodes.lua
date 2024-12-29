@@ -532,7 +532,12 @@ minetest.register_node("default:obsidian", {
 	tiles = {"default_obsidian.png"},
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("obsidian", {stone=1}),
-  on_blast = function(...) end, -- Blast resistant.
+
+  on_blast = utility.make_knockdown_on_blast({
+		name = "default:obsidian",
+		count = 4, -- Min number of air needed to cause collapse.
+	}),
+
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
 	node_dig_prediction = "",
 	_arrows_stick = false,
@@ -1425,6 +1430,11 @@ minetest.register_node("default:diamondblock", {
 
 -- 'default_adamant.png' texture by 'WintersKnight94', CC0 1.0 Universal
 -- world-align version by MustTest.
+local BLAST_ADAMANT = utility.make_knockdown_on_blast({
+	name = "default:adamant",
+	count = 4,
+	-- 'force_drop' not needed because adamant not in 'immovable' group.
+})
 minetest.register_node("default:adamant", {
 	description = "Adamant",
 	tiles = {{name="default_adamant_32x32.png", align_style="world", scale=2}},
@@ -1453,6 +1463,8 @@ minetest.register_node("default:adamant", {
 
 			-- The obsidian block is broken up.
 			return {"default:adamant_brittle", "default:obsidian_shard 4"}
+		else
+			BLAST_ADAMANT(pos)
 		end
 	end,
 

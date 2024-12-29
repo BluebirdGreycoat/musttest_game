@@ -6,6 +6,49 @@ local math_max = math.max
 
 
 
+-- Use this to define 'on_blast' for nodes that should be knocked down by TNT
+-- to prevent them from being left hanging in air (like glow obsidian, which is
+-- normally immovable).
+function utility.make_knockdown_on_blast(args)
+	return function(pos)
+		-- Note: using 'minetest.after' to ensure this code takes lower priority
+		-- over code that runs in the same stack frame as the actual bast.
+		minetest.after(0, function()
+			if minetest.test_protection(pos, "") then
+				return
+			end
+			if minetest.get_node(pos).name ~= args.name then
+				return
+			end
+
+			local airs = {
+				vector.offset(pos, 0, 1, 0),
+				vector.offset(pos, 0, -1, 0),
+				vector.offset(pos, 1, 0, 0),
+				vector.offset(pos, -1, 0, 0),
+				vector.offset(pos, 0, 0, 1),
+				vector.offset(pos, 0, 0, -1),
+			}
+
+			local count = 0
+			local get_node = minetest.get_node
+
+			for k = 1, #airs do
+				local nn = get_node(airs[k]).name
+				if nn == "air" then
+					count = count + 1
+				end
+			end
+
+			if count >= args.count then
+				minetest.spawn_falling_node(pos, args.force_drop)
+			end
+		end)
+	end
+end
+
+
+
 -- Get the object ref of the first client that has the "server" priv, or nil.
 function utility.get_first_available_admin()
 	local players = minetest.get_connected_players()

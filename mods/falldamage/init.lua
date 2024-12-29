@@ -242,6 +242,18 @@ local function register_node(name, def2)
 		end
 	end
 
+	-- For nodes in the falling group, the default behavior is to fall when
+	-- struck by any arrow.
+	if def.groups.falling_node and def.groups.falling_node ~= 0 then
+		local old_on_arrow_impact = def.on_arrow_impact
+		function def.on_arrow_impact(under, above, entity, intersection_point)
+			if old_on_arrow_impact then
+				old_on_arrow_impact(under, above, entity, intersection_point)
+			end
+			minetest.check_for_falling(under)
+		end
+	end
+
 	falldamage.apply_range_checks(def)
 	falldamage.apply_liquid_interaction_mod(name, def)
 	if def.sounds then

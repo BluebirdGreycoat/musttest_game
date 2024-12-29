@@ -250,7 +250,10 @@ local function register_node(name, def2)
 			if old_on_arrow_impact then
 				old_on_arrow_impact(under, above, entity, intersection_point)
 			end
-			minetest.check_for_falling(under)
+
+			if not minetest.test_protection(under, "") then
+				core.spawn_falling_node(under)
+			end
 		end
 	end
 

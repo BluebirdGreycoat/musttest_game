@@ -264,7 +264,7 @@ end
 local timer = 0
 function sky.on_globalstep(dtime)
 	timer = timer + dtime
-	if timer < 0.25 then return end
+	if timer < 0.15 then return end
 	timer = 0
 
 	local players = get_connected_players()

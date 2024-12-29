@@ -327,7 +327,7 @@ minetest.register_decoration({
 	param2_max = 3,
 })
 
-
+-- This is supposed to be a strange-looking blue crystal with brown/gold highlights.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "sw:teststone1",
@@ -487,4 +487,16 @@ minetest.register_decoration({
 	decoration = ALL_FLOWERS,
 })
 
-
+-- Waterlilies, an important resource.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "default:river_water_source",
+	sidelen = 8,
+	fill_ratio = 0.1,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "liquid_surface",
+	decoration = "flowers:waterlily",
+	param2 = 0,
+	param2_max = 3,
+})

@@ -21,8 +21,8 @@ local DEFAULT_RADIUS = 30
 local MAX_RADIUS = 75
 
 -- Special region between Xen and Carcorsica where mapfix use must be restricted.
-local XEN_INTERCALATE_TOP = 13400
-local XEN_INTERCALATE_BOT = 13000
+local XEN_INTERCALATE_TOP = 13700
+local XEN_INTERCALATE_BOT = 13300
 
 local function work(minp, maxp)
 	local vm = minetest.get_voxel_manip(minp, maxp)

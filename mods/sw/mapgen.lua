@@ -368,12 +368,14 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)
-	vm:update_liquids()
+
+	-- Mapgen never places liquids that need updating?
+	--vm:update_liquids()
 
 	-- Skip mapfix for underground sections.
 	-- Note: because of Xen, we always have to mapfix the sky sections, even very high up.
 	-- However, do NOT mapfix air regions high above ground but below Xen.
-	if far_diff(-100) or (far_diff(250) and y0 < (XEN_BEGIN + 250)) then
+	if far_diff(-100) or (far_diff(250) and y0 < (XEN_BEGIN + 550)) then
 		gennotify_data.need_mapfix = false
 		--print('skip mapfix')
 	end

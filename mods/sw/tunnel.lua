@@ -3,7 +3,10 @@ local REALM_START = 10150
 local REALM_END = 15150
 local LAYER_COUNT = math.floor((REALM_END - REALM_START) / 50)
 local LAVA_SEA_HEIGHT = 10170
-local XEN_BEGIN = REALM_END - 2000
+
+-- Actual XEN_BEGIN is REALM_END - 2000, but don't place special tunnel stone
+-- that far down because it will intersect with tall Carcorsica mountains.
+local XEN_BEGIN = REALM_END - 1500
 local XEN_END = REALM_END
 
 local abs = math.abs

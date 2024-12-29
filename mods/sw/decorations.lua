@@ -1,5 +1,7 @@
 
-local XEN_BEGIN = 13150
+-- High above the actual beginning, to ensure decorations here don't spawn on
+-- unusually tall Carcorsica mountains. (Actual XEN_BEGIN is 13150.)
+local XEN_BEGIN = 13500
 local XEN_MID = 14150
 local XEN_END = 15150
 local XEN_UPPERMID = 14300

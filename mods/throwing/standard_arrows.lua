@@ -102,6 +102,10 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 				if ndef._arrows_stick == false then
 					liquid_or_falling = true
 				end
+				-- Don't stick to meshnodes or nodeboxes.
+				if ndef.drawtype == "mesh" or ndef.drawtype == "nodebox" then
+					liquid_or_falling = true
+				end
 
 				if intersection_point then
 					ent:set_pos(intersection_point)

@@ -90,16 +90,20 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 					return
 				end
 
-				local liquid = false
+				-- Do not stick to liquid or falling-type nodes.
+				local liquid_or_falling = false
 				if ndef.liquidtype ~= "none" then
-					liquid = true
+					liquid_or_falling = true
+				end
+				if minetest.get_item_group(node.name, "falling_node") ~= 0 then
+					liquid_or_falling = true
 				end
 
 				if intersection_point then
 					ent:set_pos(intersection_point)
 					ent:set_velocity({x=0, y=0, z=0})
 
-					if not liquid then
+					if not liquid_or_falling then
 						-- I wish the API used quaternions. :(
 						local op = self.lastpos
 						local v = vector.normalize(vector.subtract(intersection_point, op))

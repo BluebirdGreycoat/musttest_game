@@ -600,8 +600,9 @@ function throwing_node_should_block_arrow (nn)
     return false
   end
 
+  -- All stairs nodes always collide with arrows.
+	local def = minetest.reg_ns_nodes[nn]
   if def then
-		local def = minetest.reg_ns_nodes[nn]
 		if def._arrows_collide == true then
 			return true
 		end

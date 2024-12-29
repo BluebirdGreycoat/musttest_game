@@ -488,3 +488,32 @@ minetest.register_decoration({
 })
 
 
+-- Big Dustflower
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"default:desert_stone", "rackstone:rackstone"},
+	sidelen = 8,
+	fill_ratio = 0.004,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"aradonia:caveflower18",
+	},
+})
+
+-- Little Dustflower
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"default:desert_stone", "rackstone:rackstone"},
+	sidelen = 8,
+	fill_ratio = 0.3,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	spawn_by = "aradonia:caveflower18",
+	num_spawn_by = 1,
+	decoration = {
+		"aradonia:caveflower17",
+	},
+})

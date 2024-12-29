@@ -329,14 +329,15 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 ---[====[
 
 	-- Handles its own validity checks.
-	sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
+	local xen_mapgen_wanted = sw.generate_xen(
+		vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 
 	if far_diff(-100) then
 		sw.generate_caverns(vm, minp, maxp, seed, get_height)
 	end
 
 	-- Generate tunnels in all chunks NOT too far above ground, and also in Xen areas.
-	if not far_diff(250) or y1 >= XEN_BEGIN then
+	if not far_diff(250) or (y1 >= XEN_BEGIN and xen_mapgen_wanted) then
 		sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	end
 
@@ -345,7 +346,9 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	end
 
 	-- Despeckle everywhere.
-	sw.despeckle_terrain(vm, minp, maxp)
+	if y0 <= XEN_BEGIN or xen_mapgen_wanted then
+		sw.despeckle_terrain(vm, minp, maxp)
+	end
 
 	-- Carcorsica surface decorations.
   if not far_diff(-250) and not far_diff(250) then
@@ -353,11 +356,15 @@ sw.generate_realm = function(vm, minp, maxp, seed)
 	end
 
 	-- Handles its own validity checks.
-	sw.generate_xen_biome(vm, minp, maxp, seed)
+	if xen_mapgen_wanted then
+		sw.generate_xen_biome(vm, minp, maxp, seed)
+	end
 
 	-- Generate ores first, so that decorations can be specified just for them.
-  minetest.generate_ores(vm)
-	minetest.generate_decorations(vm)
+	if y0 <= XEN_BEGIN or xen_mapgen_wanted then
+		minetest.generate_ores(vm)
+		minetest.generate_decorations(vm)
+	end
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting(vector.offset(emin, 0, 16, 0), vector.offset(emax, 0, -16, 0), true)

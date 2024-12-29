@@ -180,9 +180,6 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 	local bp2d = {x=emin.x, y=emin.z}
 	local bp3d = {x=emin.x, y=emin.y, z=emin.z}
 
-	vm:get_data(vm_data)
-	--vm:get_param2_data(param2_data)
-
 	local xen1 = sw.get_3d_noise(bp3d, sides3D, "xen1")
 	local xen2 = sw.get_2d_noise(bp2d, sides2D, "xen2")
 	local xen3 = sw.get_2d_noise(bp2d, sides2D, "xen3")
@@ -295,41 +292,66 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 		return false, false
 	end
 
-	local cavern_hints = gennotify_data.cavern_hints
-
-	-- Shape terrain.
-	for z = z0, z1 do
-		for y = y0, y1 do
-			if y >= REALM_START and y <= REALM_END then
-				local vp = area:index(x0, y, z)
-
-				for x = x0, x1 do
-					local cid = vm_data[vp]
-
-					if cid == c_air or cid == c_ignore then
-						local xen, cavern = is_xen(vp, x, y, z)
-
-						if xen then
-							vm_data[vp] = c_stone
-						else
-							vm_data[vp] = c_air
-						end
-
-						if cavern then
-							if mod(x, 16) == 0 and mod(y, 16) == 0 and mod(z, 16) == 0 then
-								cavern_hints[#cavern_hints+1] = {x=x, y=y, z=z}
-							end
-						end
-					end
-
-					vp = vp + 1
+	-- Quick scan: is there anything in this chunk?
+	-- Due to the way the terrain is shaped, we can probably skip chunks with
+	-- nothing but air, and massively increase mapgen speed for those regions.
+	-- Step size controls how accurate we are vs how performant.
+	local xen_mapgen_wanted = false
+	local xen_mapgen_step = 8
+	for z = z0, z1, xen_mapgen_step do
+		for y = y0, y1, xen_mapgen_step do
+			for x = x0, x1, xen_mapgen_step do
+				local vp = area:index(x, y, z)
+				if is_xen(vp, x, y, z) then
+					xen_mapgen_wanted = true
+					break
 				end
 			end
 		end
 	end
 
-	vm:set_data(vm_data)
-	--vm:set_param2_data(param2_data)
+	if xen_mapgen_wanted then
+		vm:get_data(vm_data)
+		--vm:get_param2_data(param2_data)
+
+		local cavern_hints = gennotify_data.cavern_hints
+
+		-- Shape terrain.
+		for z = z0, z1 do
+			for y = y0, y1 do
+				if y >= REALM_START and y <= REALM_END then
+					local vp = area:index(x0, y, z)
+
+					for x = x0, x1 do
+						local cid = vm_data[vp]
+
+						if cid == c_air or cid == c_ignore then
+							local xen, cavern = is_xen(vp, x, y, z)
+
+							if xen then
+								vm_data[vp] = c_stone
+							else
+								vm_data[vp] = c_air
+							end
+
+							if cavern then
+								if mod(x, 16) == 0 and mod(y, 16) == 0 and mod(z, 16) == 0 then
+									cavern_hints[#cavern_hints+1] = {x=x, y=y, z=z}
+								end
+							end
+						end
+
+						vp = vp + 1
+					end
+				end
+			end
+		end
+
+		vm:set_data(vm_data)
+		--vm:set_param2_data(param2_data)
+	end
+
+	return xen_mapgen_wanted
 end
 
 

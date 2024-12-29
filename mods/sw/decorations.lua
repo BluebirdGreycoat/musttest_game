@@ -40,6 +40,61 @@ minetest.register_decoration({
 	},
 })
 
+--------------------------------------------------------------------------------
+-- Large crystal formations.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.05,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_crysform1.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = -1,
+	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
+	num_spawn_by = 3,
+	check_offset = -1,
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "cavestuff:glow_mese",
+	sidelen = 8,
+	fill_ratio = 0.6,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_floors",
+	decoration = {
+		"stairs:stair_glow_mese",
+		"stairs:slab_glow_mese",
+		"stairs:micro_glow_mese_16",
+		"stairs:micro_glow_mese",
+	},
+	param2 = 0,
+	param2_max = 3,
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "cavestuff:glow_mese",
+	sidelen = 8,
+	fill_ratio = 0.6,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = {
+		"stairs:stair_glow_mese",
+		"stairs:slab_glow_mese",
+		"stairs:micro_glow_mese_16",
+		"stairs:micro_glow_mese",
+	},
+	param2 = 20,
+	param2_max = 23,
+})
+
+--------------------------------------------------------------------------------
 -- Large yellow crystals.
 minetest.register_decoration({
 	deco_type = "simple",
@@ -57,7 +112,12 @@ minetest.register_decoration({
 -- Small yellow crystals clustered around larger ones.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "sw:teststone2"},
+	place_on = {
+		"sw:teststone1",
+		"sw:teststone2",
+		"default:desert_stone",
+		"rackstone:rackstone",
+	},
 	sidelen = 8,
 	fill_ratio = 0.3,
 	y_min = XEN_BEGIN,
@@ -70,7 +130,10 @@ minetest.register_decoration({
 	},
 	param2 = 0,
 	param2_max = 3,
-	spawn_by = "mese_crystals:mese_crystal_ore5",
+	spawn_by = {
+		"mese_crystals:mese_crystal_ore5",
+		"cavestuff:glow_mese",
+	},
 	num_spawn_by = 1,
 	check_offset = 1,
 })

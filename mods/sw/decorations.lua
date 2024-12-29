@@ -48,7 +48,7 @@ minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = "sw:teststone1",
 	sidelen = 8,
-	fill_ratio = 0.05,
+	fill_ratio = 0.01,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_crysform1.mts",
@@ -60,6 +60,39 @@ minetest.register_decoration({
 	check_offset = -1,
 })
 
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.02,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_crysform2.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = -1,
+	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
+	num_spawn_by = 3,
+	check_offset = -1,
+})
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = "sw:teststone1",
+	sidelen = 8,
+	fill_ratio = 0.02,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_crysform3.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
+	num_spawn_by = 3,
+	check_offset = -1,
+})
+
+-- Add detail to the top of glow crystal formations.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "cavestuff:glow_mese",
@@ -78,6 +111,8 @@ minetest.register_decoration({
 	param2_max = 3,
 })
 
+-- Add detail to the bottom of glow crystal formations.
+-- Can't combine with top decorations because param2 must be different.
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "cavestuff:glow_mese",

@@ -81,6 +81,7 @@ end
 -- Called from bones code, mainly.
 function map.clear_inventory_info(pname)
 	map.players[pname] = {has_kit = false, indices={}}
+	map.update_hud_flags(pname)
 end
 
 

@@ -60,6 +60,20 @@ minetest.register_node("rackstone:rackstone", {
 
 	drop = "rackstone:cobble",
 	_is_bulk_mapgen_stone = true,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			minetest.swap_node(pos, {name="rackstone:cobble"})
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("rackstone:cobble", {
@@ -76,6 +90,19 @@ minetest.register_node("rackstone:cobble", {
 	},
 	_no_auto_pop = true,
 	_is_bulk_mapgen_stone = true,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("rackstone:rackstone_brick2", {
@@ -218,6 +245,20 @@ minetest.register_node("rackstone:redrack", {
 			end)
 		end
 	end,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			minetest.swap_node(pos, {name="rackstone:redrack_cobble"})
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 
@@ -257,6 +298,19 @@ minetest.register_node("rackstone:redrack_cobble", {
 					})
 				end
 			end)
+		end
+	end,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
 		end
 	end,
 })
@@ -627,6 +681,19 @@ minetest.register_node("rackstone:dauthsand_stable", {
 
 	on_collapse_to_entity = function(pos, node)
 		return {ItemStack("rackstone:dauthsand")}
+	end,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
+		end
 	end,
 })
 

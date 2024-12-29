@@ -285,6 +285,19 @@ minetest.register_node("default:cobble", {
 	},
 
 	_no_auto_pop = true,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("default:stonebrick", {
@@ -346,6 +359,20 @@ minetest.register_node("default:desert_stone", {
 	on_collapse_to_entity = function(pos, node)
 		minetest.add_item(pos, {name="default:desert_cobble2"})
 	end,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			minetest.swap_node(pos, {name="default:desert_cobble2"})
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("default:desert_cobble", {
@@ -355,6 +382,19 @@ minetest.register_node("default:desert_cobble", {
 	groups = utility.dig_groups("cobble", {stone = 1, native_stone = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	_is_bulk_mapgen_stone = true,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("default:desert_cobble2", {
@@ -369,6 +409,19 @@ minetest.register_node("default:desert_cobble2", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		local ent = entity:get_luaentity()
+
+		if ent.name == "throwing:arrow_shell_entity" then
+			if minetest.test_protection(pos, "") then
+				return
+			end
+
+			core.spawn_falling_node(pos)
+		end
+	end,
 })
 
 minetest.register_node("default:desert_stonebrick", {
@@ -482,6 +535,7 @@ minetest.register_node("default:obsidian", {
   on_blast = function(...) end, -- Blast resistant.
 	movement_speed_multiplier = default.ROAD_SPEED_CAVERN,
 	node_dig_prediction = "",
+	_arrows_stick = false,
 
 	-- Callbacks are overridden in flameportal mod!
 	crushing_damage = 5000,
@@ -1408,6 +1462,8 @@ minetest.register_node("default:adamant", {
 	on_finish_collapse = function(pos, node)
 		minetest.swap_node(pos, {name = "default:adamant_brittle"})
 	end,
+
+	_arrows_stick = false,
 })
 
 minetest.register_node("default:adamant_brittle", {
@@ -2694,6 +2750,7 @@ minetest.register_node("default:glass", {
 	sounds = default.node_sound_glass_defaults(),
 	drop = "vessels:glass_fragments",
 	silverpick_drop = true,
+	_arrows_stick = false,
 })
 
 minetest.register_node("default:obsidian_glass", {
@@ -2708,6 +2765,7 @@ minetest.register_node("default:obsidian_glass", {
 	drop = "default:obsidian_shard",
 	silverpick_drop = true,
 	node_dig_prediction = "",
+	_arrows_stick = false,
 })
 
 

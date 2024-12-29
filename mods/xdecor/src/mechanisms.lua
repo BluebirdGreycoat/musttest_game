@@ -233,9 +233,11 @@ local function plate_break(pos, player)
 	local function do_break(pos)
 		-- Check if node has air below it.
 		if minetest.get_node(vector.add(pos, {x=0, y=-2, z=0})).name == "air" then
-			-- Collapse ground!
-			if sfn.drop_node(vector.add(pos, {x=0, y=-1, z=0})) then
-				minetest.check_for_falling(pos)
+			-- Collapse ground only if plate placer has access.
+			if not minetest.test_protection(pos, owner) then
+				if sfn.drop_node(vector.add(pos, {x=0, y=-1, z=0})) then
+					minetest.check_for_falling(pos)
+				end
 			end
 		end
 	end

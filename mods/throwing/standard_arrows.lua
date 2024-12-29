@@ -98,6 +98,14 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 				if minetest.get_item_group(node.name, "falling_node") ~= 0 then
 					liquid_or_falling = true
 				end
+				-- Don't stick to nodes that explicitly forbid it.
+				if ndef._arrows_stick == false then
+					liquid_or_falling = true
+				end
+				-- Don't stick to meshnodes or nodeboxes.
+				if ndef.drawtype == "mesh" or ndef.drawtype == "nodebox" then
+					liquid_or_falling = true
+				end
 
 				if intersection_point then
 					ent:set_pos(intersection_point)
@@ -125,6 +133,8 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 						ent:set_acceleration({x=0, y=0, z=0})
 
 						luaent.stuck_arrow = true
+						luaent.stuck_arrow_target = under
+						luaent.stuck_arrow_nodename = node.name
 					end
 				end
 			end

@@ -44,17 +44,20 @@ minetest.register_node(':aradonia:caveflower6', {
 	description = 'Midnight Sun',
 	drawtype = "plantlike",
 	visual_scale =  2.0,
-	walkable = false,
+	walkable = true,
 	tiles = {'dvd_luminousflower.png'},
 	inventory_image = 'dvd_luminousflower.png',
 	paramtype = "light",
 	light_source = 6,
 	selection_box = get_selection_box(0, 0, 0, 16, 32, 16),
+	collision_box = get_selection_box(4, 0, 4, 12, 16, 12),
 	groups = utility.dig_groups("hardplant", {
 		attached_node = 1
 	}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+	_arrows_collide = true,
+	_arrows_stick = false,
 })
 
 -- Fairy Flower
@@ -163,7 +166,7 @@ minetest.register_node(':aradonia:caveflower11', {
 	description = 'Fiery Lantern',
 	drawtype = "plantlike",
 	visual_scale =  2.0,
-	walkable = false,
+	walkable = true,
 	tiles = {'dvd_fierylantern.png'},
 	inventory_image = 'dvd_fierylantern.png',
 	paramtype = "light",
@@ -171,6 +174,7 @@ minetest.register_node(':aradonia:caveflower11', {
 	place_param2 = 2,
 	light_source = 5,
 	selection_box = get_selection_box(0, 0, 0, 16, 27, 16),
+	collision_box = get_selection_box(4, 0, 4, 12, 16, 12),
 	groups = utility.dig_groups("hardplant", {
 		attached_node = 1
 	}),
@@ -178,6 +182,13 @@ minetest.register_node(':aradonia:caveflower11', {
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 	on_punch = fire_lantern_punch,
 	after_destruct = fire_lantern_after_destruct,
+
+	-- Intersection point can be nil, and 'above' can be same as 'pos'.
+	on_arrow_impact = function(pos, above, entity, intersection_point)
+		fire_lantern_punch(pos)
+	end,
+	_arrows_collide = true,
+	_arrows_stick = false,
 })
 --------------------------------------------------------------------------------
 

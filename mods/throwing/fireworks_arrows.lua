@@ -90,6 +90,14 @@ local function throwing_register_fireworks(color, desc)
 	end
 
 	function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
+		local node = minetest.get_node(under)
+		local ndef = minetest.registered_nodes[node.name]
+
+		-- Call 'on_arrow_impact' if node defines it.
+		if ndef.on_arrow_impact then
+			ndef.on_arrow_impact(under, above, self.object, intersection_point)
+		end
+
 		boom(above)
 	end
 

@@ -27,7 +27,7 @@ end
 
 function rc.get_realm_physics_override(pos)
 	local data = rc.get_realm_data(rc.current_realm_at_pos(pos))
-	if data.get_physics_override then
+	if data and data.get_physics_override then
 		return data.get_physics_override(pos)
 	end
 end

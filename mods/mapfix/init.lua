@@ -20,9 +20,9 @@ local MIN_TIMEOUT = 10
 local DEFAULT_RADIUS = 30
 local MAX_RADIUS = 75
 
--- Special floatland region where mapfix use must be restricted.
-local XEN_BEGIN = 13150
-local XEN_BUFFER = XEN_BEGIN - 500
+-- Special region between Xen and Carcorsica where mapfix use must be restricted.
+local XEN_INTERCALATE_TOP = 13400
+local XEN_INTERCALATE_BOT = 13000
 
 local function work(minp, maxp)
 	local vm = minetest.get_voxel_manip(minp, maxp)
@@ -120,9 +120,9 @@ mapfix.command = function(pname, param)
 	local maxp = vector.add(pos, radius)
 
 	-- Special handling to protect Carcorsica surface from Ir'xen shadows.
-	if maxp.y >= XEN_BUFFER and minp.y <= XEN_BEGIN then
+	if maxp.y >= XEN_INTERCALATE_BOT and minp.y <= XEN_INTERCALATE_TOP then
 		-- If the Carcorsica surface extends into Xen space, mapfix is OK here.
-		if sw.get_ground_y(pos) < XEN_BUFFER then
+		if sw.get_ground_y(pos) < XEN_INTERCALATE_BOT then
 			minetest.chat_send_player(pname,
 				"# Server: Mapfix forbidden within Ir'xen/Carcorsica intercalate zone.")
 			return

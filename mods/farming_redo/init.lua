@@ -1,4 +1,51 @@
 
+-- DVD's coffee
+
+minetest.register_craftitem(":farming_coffeegrounds", {
+    description = "Coffee Grounds",
+	inventory_image = "farming_coffeegrounds.png",
+})
+
+minetest.register_craft({
+    type = "shapeless",
+	output = "farming_coffeegrounds",
+	inventory_image = "farming_coffeegrounds.png",
+	recipe = {"coffee_bush:seeds", "farming:mortar_pestle"},
+	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
+})
+
+minetest.register_craftitem(":farming_coffeecup", {
+	description = "Coffee",
+	inventory_image = "farming_coffeecup.png",
+})
+
+minetest.register_craft({"farming_coffeecup",
+    type = "shapeless",
+    description = "Coffee",
+	inventory_image = "farming_coffeecup.png",
+	weild_image = "farming_coffeecup",
+	output = "farming_coffeecup",
+	on_use = minetest.item_eat(1),
+	recipe = {"farming_coffeegrounds", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
+	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
+})
+
+-- This is supposed to boost the stamina of the player when they consume coffee.
+
+local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
+minetest.register_craftitem(":farming_coffeecup", {
+	description = "Coffee\n\nIncreases stamina regen for a time.",
+	inventory_image = "farming_coffeecup.png",
+
+  on_use = function(itemstack, user, pointed_thing)
+    if not user or not user:is_player() then return end
+		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=6.0, time=30})
+    return eat_function(itemstack, user, pointed_thing)
+  end,
+
+	groups = {vessel = 1},
+})
+
 minetest.register_craftitem(":farming:bread_slice", {
 	description = "Sliced Bread",
 	inventory_image = "farming_bread_slice.png",

@@ -133,7 +133,7 @@ minetest.register_decoration({
 
 --------------------------------------------------------------------------------
 
--- Sunfire Tree One.
+-- Sunfire Tree 1.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1"},
@@ -148,26 +148,26 @@ minetest.register_decoration({
 	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
 })
 
--- Sunfire Tree Two.
+-- Sunfire Tree 2.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1"},
 	sidelen = 8,
-	fill_ratio = 0.001,
+	fill_ratio = 0.0001,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
-	schematic = "schems/xen_tree5.mts",
+	schematic = "schems/xen_tree2.mts",
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
 })
 
--- Sunfire Tree Three.
+--Sunfire Tree 3.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1"},
 	sidelen = 8,
-	fill_ratio = 0.001,
+	fill_ratio = 0.002,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree3.mts",
@@ -176,12 +176,12 @@ minetest.register_decoration({
 	place_offset_y = 0,
 })
 
---Sunfire Tree Four.
+--Sunfire Tree 4.
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1"},
 	sidelen = 8,
-	fill_ratio = 0.001,
+	fill_ratio = 0.0001,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree4.mts",

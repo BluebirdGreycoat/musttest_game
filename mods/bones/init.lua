@@ -51,6 +51,9 @@ minetest.register_node("bones:bones", {
 	paramtype2 = "facedir",
     drop = "bones:bones_type2",
 
+	-- Must be 'immovable = 1' because otherwise a bone duplication glitch may occur.
+	-- For same reason, we can't make this a falling node.
+	-- The problem is because the 'on_destruct' callback remakes the bones if they get removed wrongly.
 	groups = utility.dig_groups("bigitem", {immovable = 1}),
 
 	sounds = default.node_sound_gravel_defaults(),

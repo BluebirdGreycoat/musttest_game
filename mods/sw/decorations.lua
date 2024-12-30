@@ -160,7 +160,6 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
 })
 
 -- Sunfire Tree Three.
@@ -175,7 +174,20 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
+})
+
+--Sunfire Tree Four.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1"},
+	sidelen = 8,
+	fill_ratio = 0.001,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree4.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
 })
 
 -- Large yellow crystals.

@@ -9,6 +9,9 @@
 	 paramtype = "light",
 	 light_source = 2,
 	 groups = {level = 1, choppy=2, oddly_breakable_by_hand=4},
+	 on_destruct = enhanced_leafdecay.make_tree_destructor({
+    leaves = {"firetree:luminoustreeleaves"},
+	}),
 	 })
  
  minetest.register_node('firetree:luminoustreeleaves', {
@@ -19,6 +22,9 @@
 	  sunlight_propagates = true,
 	  light_source = 4,
       groups = {level = 1, snappy=3, oddly_breakable_by_hand=1},
+	  on_destruct = enhanced_leafdecay.make_tree_destructor({
+    leaves = {"firetree:luminoustreeleaves"},
+	}),
  })
  
  minetest.register_node('firetree:luminoustreesapling', {
@@ -32,6 +38,13 @@
 	  light_source = 2,
 	  walkable = false,
       groups = {level = 1, snappy=3, oddly_breakable_by_hand=1},
+ })
+ 
+  minetest.register_node('firetree:luminoustreeplank', {
+	  description = 'Sunfire Tree Planks',
+	  tiles = {'dvd_luminousplanks.png'},
+      groups = {level = 1, snappy=3, oddly_breakable_by_hand=1},
+     sounds = default.node_sound_wood_defaults(),
  })
  
  

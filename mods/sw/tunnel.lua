@@ -19,6 +19,9 @@ local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("default:stone")
+local c_stone2 = minetest.get_content_id("sw:teststone1")
+local c_stone3 = minetest.get_content_id("sw:teststone1_open")
+local c_stone4 = minetest.get_content_id("sw:teststone2")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_bedrock2 = minetest.get_content_id("sw:teststone1_hard")
 local c_lava = minetest.get_content_id("lbrim:lava_source")
@@ -292,7 +295,9 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 
 					-- Do NOT carve tunnels through bedrock or "ignore".
 					-- Skip air since there's nothing there anyway.
-					if cid ~= c_air and cid ~= c_ignore and cid ~= c_bedrock then
+					-- Update: only replace the checked content IDs.
+					-- If the main mapgen changes nodes placed, we have to update this, too.
+					if cid == c_stone or cid == c_stone2 or cid == c_stone3 or cid == c_stone4 then
 						if y <= LAVA_SEA_HEIGHT then
 							vm_data[base_idx] = c_lava
 						else
@@ -315,42 +320,42 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 
 						-- Replace floor node only if node below is something other than air.
 						if floor_below then
-							if cidb ~= c_air and cidb ~= c_bedrock and cidb ~= c_bedrock2 then
+							if cidb == c_stone or cidb == c_stone2 or cidb == c_stone3 or cidb == c_stone4 then
 								vm_data[below] = c_cave_floor
 							end
 						end
 
 						-- Replace ceiling node only if node above is something other than air.
 						if ceiling_above then
-							if cida ~= c_air and cida ~= c_bedrock and cida ~= c_bedrock2 then
+							if cida == c_stone or cida == c_stone2 or cida == c_stone3 or cida == c_stone4 then
 								vm_data[above] = c_cave_ceiling
 							end
 						end
 
 						-- North wall.
 						if wall_n then
-							if cidn ~= c_air and cidn ~= c_bedrock and cidn ~= c_bedrock2 then
+							if cidn == c_stone or cidn == c_stone2 or cidn == c_stone3 or cidn == c_stone4 then
 								vm_data[pn] = c_cave_wall
 							end
 						end
 
 						-- South wall.
 						if wall_s then
-							if cids ~= c_air and cids ~= c_bedrock and cids ~= c_bedrock2 then
+							if cids == c_stone or cids == c_stone2 or cids == c_stone3 or cids == c_stone4 then
 								vm_data[ps] = c_cave_wall
 							end
 						end
 
 						-- East wall.
 						if wall_e then
-							if cide ~= c_air and cide ~= c_bedrock and cide ~= c_bedrock2 then
+							if cide == c_stone or cide == c_stone2 or cide == c_stone3 or cide == c_stone4 then
 								vm_data[pe] = c_cave_wall
 							end
 						end
 
 						-- West wall.
 						if wall_w then
-							if cidw ~= c_air and cidw ~= c_bedrock and cidw ~= c_bedrock2 then
+							if cidw == c_stone or cidw == c_stone2 or cidw == c_stone3 or cidw == c_stone4 then
 								vm_data[pw] = c_cave_wall
 							end
 						end

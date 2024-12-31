@@ -34,7 +34,7 @@ minetest.register_craftitem(":farming:coffeecup", {
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=6.0, time=30})
+		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=2.0, time=15})
     return eat_function(itemstack, user, pointed_thing)
   end,
 

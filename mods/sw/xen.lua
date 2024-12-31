@@ -26,6 +26,7 @@ end
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("sw:teststone1")
+local c_stone2 = minetest.get_content_id("sw:teststone1_open")
 local c_tunnel_stone = minetest.get_content_id("sw:teststone2")
 local c_gravel = minetest.get_content_id("default:gravel")
 local c_worm = minetest.get_content_id("cavestuff:glow_worm")
@@ -194,7 +195,8 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 	-- Returns several boolean values:
 	-- 1: whether to place stone or air
 	-- 2: whether the location represents a hollow cavern.
-	local function is_xen(vp3d, x, y, z)
+	-- 3: whether the location is open to the sky (no roof/overhang).
+	local function is_xen(vp3d, x, y, z, find_open_areas)
 		local vp3d_steady = vp3d
 
 		-- Shear the 2D noise coordinate offset.
@@ -265,13 +267,52 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 			-- For some reason using abs() here makes chunkgen take x3 as long,
 			-- but we don't really need it anyway, these look OK.
 			if n7 > 0.7 then
-				return false, false
+				return false, false, false
 			end
 			-- Hollow caverns inside the big ones.
 			if left_side + 0.8 < right_side1 then
-				return false, true
+				return false, true, false
 			end
-			return true, false
+
+			-- Determine if this location isn't under a low overhang or cave roof.
+			-- We consider areas with 30 nodes of air to be "open".
+			local is_open = false
+			if find_open_areas then
+				local dist = 30
+				local bot = (emax.y - 1) - dist
+
+				if y < bot then
+					is_open = true
+					local step = 5
+					local top = y + dist
+
+					-- Begin search 1 node above current Y.
+					-- Otherwise search will always fail.
+					local vp3 = area:index(x, y+1, z)
+					for k = y + 1, top, step do
+						if is_xen(vp3, x, k, z) then
+							is_open = false
+							break
+						end
+						vp3 = vp3 + area.ystride * step
+					end
+
+					-- We found an open space.
+					-- Now, exclude ridges, but allow small hills (y-2).
+					if is_open then
+						local tw = is_xen(area:index(x-8, y-2, z), x-8, y-2, z)
+						local te = is_xen(area:index(x+8, y-2, z), x+8, y-2, z)
+						local tn = is_xen(area:index(x, y-2, z+8), x, y-2, z+8)
+						local ts = is_xen(area:index(x, y-2, z-8), x, y-2, z-8)
+						if (not tw) or (not te) or (not tn) or (not ts) then
+							is_open = false
+						end
+					end
+				end
+			end
+
+			-- Xen solid.
+			return true, false, is_open
 		end
 
 		-- Place clusters of small islands around the edges of the big ones.
@@ -283,13 +324,13 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 				-- :if within layer:             :round top/bottom:
 				if abs(y - (xen_mid + n * 100)) < (5 + abs(n6) * 3) then
 					if n6 < -0.5 or n6 > 0.5 then
-						return true, false
+						return true, false, false
 					end
 				end
 			end
 		end
 
-		return false, false
+		return false, false, false
 	end
 
 	-- Quick scan: is there anything in this chunk?
@@ -325,11 +366,16 @@ function sw.generate_xen(vm, minp, maxp, seed, shear1, shear2, gennotify_data)
 					for x = x0, x1 do
 						local cid = vm_data[vp]
 
+						-- Do not replace what's already here.
 						if cid == c_air or cid == c_ignore then
-							local xen, cavern = is_xen(vp, x, y, z)
+							local xen, cavern, open = is_xen(vp, x, y, z, true)
 
 							if xen then
-								vm_data[vp] = c_stone
+								if open then
+									vm_data[vp] = c_stone2
+								else
+									vm_data[vp] = c_stone
+								end
 							else
 								vm_data[vp] = c_air
 							end
@@ -388,10 +434,10 @@ local function fill_hollows(vm_data, area, base_idx)
 	local cid_above_w = vm_data[up - 8]
 
 	local count = 0
-	if cid_above_n == c_stone or cid_above_n == c_tunnel_stone then count = count + 1 end
-	if cid_above_s == c_stone or cid_above_s == c_tunnel_stone then count = count + 1 end
-	if cid_above_e == c_stone or cid_above_e == c_tunnel_stone then count = count + 1 end
-	if cid_above_w == c_stone or cid_above_w == c_tunnel_stone then count = count + 1 end
+	if cid_above_n == c_stone or cid_above_n == c_stone2 or cid_above_n == c_tunnel_stone then count = count + 1 end
+	if cid_above_s == c_stone or cid_above_s == c_stone2 or cid_above_s == c_tunnel_stone then count = count + 1 end
+	if cid_above_e == c_stone or cid_above_e == c_stone2 or cid_above_e == c_tunnel_stone then count = count + 1 end
+	if cid_above_w == c_stone or cid_above_w == c_stone2 or cid_above_w == c_tunnel_stone then count = count + 1 end
 
 	if count >= 4 then
 		vm_data[base_idx] = c_dirt

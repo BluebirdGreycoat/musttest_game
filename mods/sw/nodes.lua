@@ -59,6 +59,7 @@ minetest.register_node("sw:teststone1_hard", {
 minetest.register_node("sw:teststone1_open", {
 	description = "Irx Stone (You Hacker)",
 	tiles = {{name="sw_teststone_1.png", align_style="world", scale=4}},
+	--tiles = {"default_sandstone.png"}, -- For testing.
 
 	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
 	drop = 'sw:teststone2',

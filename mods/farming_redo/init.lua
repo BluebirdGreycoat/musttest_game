@@ -1,39 +1,34 @@
 
 -- DVD's coffee
 
-minetest.register_craftitem(":farming_coffeegrounds", {
+minetest.register_craftitem(":farming:coffeegrounds", {
     description = "Coffee Grounds",
 	inventory_image = "farming_coffeegrounds.png",
 })
 
 minetest.register_craft({
     type = "shapeless",
-	output = "farming_coffeegrounds",
-	inventory_image = "farming_coffeegrounds.png",
+	output = "farming:coffeegrounds",
 	recipe = {"coffee_bush:seeds", "farming:mortar_pestle"},
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 
-minetest.register_craftitem(":farming_coffeecup", {
+minetest.register_craftitem(":farming:coffeecup", {
 	description = "Coffee",
 	inventory_image = "farming_coffeecup.png",
 })
 
-minetest.register_craft({"farming_coffeecup",
+minetest.register_craft({
     type = "shapeless",
-    description = "Coffee",
-	inventory_image = "farming_coffeecup.png",
-	weild_image = "farming_coffeecup",
-	output = "farming_coffeecup",
-	on_use = minetest.item_eat(1),
-	recipe = {"farming_coffeegrounds", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
+	output = "farming:coffeecup",
+	recipe = {"farming:coffeegrounds", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
 })
 
 -- This is supposed to boost the stamina of the player when they consume coffee.
 
 local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
-minetest.register_craftitem(":farming_coffeecup", {
+minetest.register_craftitem(":farming:coffeecup", {
 	description = "Coffee\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_coffeecup.png",
 

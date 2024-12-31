@@ -145,9 +145,6 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	on_destruct = enhanced_leafdecay.make_tree_destructor({
-    leaves = {"firetree:luminoustreeleaves"},
-	}),
 })
 
 -- Sunfire Tree 2.
@@ -162,9 +159,6 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	on_destruct = enhanced_leafdecay.make_tree_destructor({
-    leaves = {"firetree:luminoustreeleaves"},
-	}),
 })
 
 --Sunfire Tree 3.
@@ -179,9 +173,6 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	on_destruct = enhanced_leafdecay.make_tree_destructor({
-    leaves = {"firetree:luminoustreeleaves"},
-	}),
 })
 
 --Sunfire Tree 4.
@@ -196,9 +187,6 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	on_destruct = enhanced_leafdecay.make_tree_destructor({
-    leaves = {"firetree:luminoustreeleaves"},
-	}),
 })
 
 -- Large yellow crystals.

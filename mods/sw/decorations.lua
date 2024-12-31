@@ -189,6 +189,20 @@ minetest.register_decoration({
 	place_offset_y = 0,
 })
 
+--Sunfire Tree 5.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0002,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree5.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
 -- Large yellow crystals.
 minetest.register_decoration({
 	deco_type = "simple",

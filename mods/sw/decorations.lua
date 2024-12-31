@@ -166,7 +166,7 @@ minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
-	fill_ratio = 0.002,
+	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree3.mts",
@@ -180,7 +180,7 @@ minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
-	fill_ratio = 0.0002,
+	fill_ratio = 0.0003,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree4.mts",
@@ -198,6 +198,34 @@ minetest.register_decoration({
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree5.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+--Sunfire Tree 6.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0003,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree6.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+--Sunfire Tree 7.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0003,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree7.mts",
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,

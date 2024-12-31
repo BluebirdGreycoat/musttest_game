@@ -32,7 +32,7 @@ minetest.register_craft({"farming_coffeecup",
 
 -- This is supposed to boost the stamina of the player when they consume coffee.
 
-local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
+local eat_function = minetest.item_eat(1, "vessels:vessels_drinking_mug")
 minetest.register_craftitem(":farming_coffeecup", {
 	description = "Coffee\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_coffeecup.png",
@@ -45,6 +45,46 @@ minetest.register_craftitem(":farming_coffeecup", {
 
 	groups = {vessel = 1},
 })
+
+-- DVD's tea
+
+minetest.register_craftitem(":farming_preparedtealeaves", {
+    description = "Prepared Tea Leaves",
+	inventory_image = "farming_preparedtealeaves.png",
+})
+
+minetest.register_craft({
+    type = "shapeless",
+	output = "farming_preparedtealeaves",
+	inventory_image = "farming_preparedtealeaves.png",
+	recipe = {"tea_tree:leaves", "farming:mortar_pestle"},
+	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
+})
+
+minetest.register_craftitem(":farming_teacup", {
+	description = "Tea",
+	on_use = minetest.item_eat(1),
+	inventory_image = "farming_teacup.png",
+})
+
+minetest.register_craft({"farming_teacup",
+    type = "shapeless",
+    description = "Tea",
+	inventory_image = "farming_teacup.png",
+	weild_image = "farming_teacup",
+	output = "farming_teacup",
+	on_use = minetest.item_eat(1),
+	recipe = {"farming_preparedtealeaves", "bucket:bucket_water", "vessels:drinking_glass"},
+	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
+})
+
+minetest.register_craftitem(":farming_teacup", {
+	description = "Tea",
+	inventory_image = "farming_teacup.png",
+	on_use = minetest.item_eat(1),
+})
+
+------
 
 minetest.register_craftitem(":farming:bread_slice", {
 	description = "Sliced Bread",

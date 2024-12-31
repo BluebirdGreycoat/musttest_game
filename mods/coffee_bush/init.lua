@@ -127,4 +127,3 @@ function(pos, oldnode, oldmetadata, digger)
   end
 end
 minetest.register_node("coffee_bush:plant_4", table.copy(crop_def))
-

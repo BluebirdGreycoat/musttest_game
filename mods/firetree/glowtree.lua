@@ -19,9 +19,6 @@ minetest.register_node("firetree:luminoustreesapling", {
 	},
 	groups = utility.dig_groups("plant", {flammable=2, attached_node=1, sapling=1}),
 	sounds = default.node_sound_leaves_defaults(),
-    on_timer = on_timer,
-    on_place = on_place,
-    on_construct = on_construct,
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })
 
@@ -51,21 +48,30 @@ minetest.register_node("firetree:luminoustreesapling", {
   
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
   on_timer = enhanced_leafdecay.make_leaf_nodetimer({tree="firetree:luminoustreetrunk"}),
-  	on_destruct = enhanced_leafdecay.make_tree_destructor({
-    leaves = {"firetree:luminoustreeleaves"},
-	}),
 })
 
 minetest.register_node("firetree:luminoustreetrunk", {
 	drawtype = "nodebox",
+	node_box = {
+		type = "fixed",
+		fixed = basictrees.trunk_nodebox,
+	},
 	description = "Sunfire Tree Trunk",
 	paramtype = "light",
 	tiles = {'dvd_treetop.png', 'dvd_treetop.png', 'dvd_luminoustreetrunk.png', 'dvd_luminoustreetrunk.png', 'dvd_luminoustreetrunk.png', 'dvd_luminoustreetrunk.png',
 	},
 	 paramtype = "light",
+	paramtype2 = "facedir",
 	 light_source = 2,
-	 groups = {level = 1, choppy=2, oddly_breakable_by_hand=4},
-	})
+	groups = utility.dig_groups("tree", {tree=1, flammable=2}),
+	sounds = default.node_sound_wood_defaults(),
+	on_place = minetest.rotate_node,
+	movement_speed_multiplier = default.NORM_SPEED,
+
+  on_destruct = enhanced_leafdecay.make_tree_destructor({
+    leaves = {"firetree:luminoustreeleaves"},
+  }),
+})
 
 minetest.register_node("firetree:luminousplanks", {
 	description = "Sunfire Tree Planks",
@@ -88,5 +94,6 @@ stairs.register_stair_and_slab(
 	{choppy=2, oddly_breakable_by_hand=2, flammable=2},
 	{"dvd_luminousplanks.png"},
 	"Sunfire Planks",
-	default.node_sound_wood_defaults()
+	default.node_sound_wood_defaults(),
+	{stair_and_slab_only=true}
 )

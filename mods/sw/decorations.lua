@@ -180,7 +180,7 @@ minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
-	fill_ratio = 0.0001,
+	fill_ratio = 0.0002,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree4.mts",

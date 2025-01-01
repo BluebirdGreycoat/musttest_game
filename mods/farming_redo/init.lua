@@ -63,14 +63,19 @@ minetest.register_craft({
 minetest.register_craft({
     type = "shapeless",
 	output = "farming:crushedtealeaves",
-	recipe = {"tea_tree:leaves", "farming:mortar_pestle"},
+	recipe = {"tea_tree:leaves", "tea_tree:leaves", "tea_tree:leaves", "tea_tree:leaves", "tea_tree:leaves", "farming:mortar_pestle"},
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 
 minetest.register_craftitem(":farming:teacup", {
 	description = "Tea",
-	on_use = minetest.item_eat(1),
 	inventory_image = "farming_teacup.png",
+		on_use = minetest.item_eat(1),
+	on_use = function(itemstack, user, pointed_thing)
+		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
+				local func = minetest.item_eat(1)
+		return func(itemstack, user, pointed_thing)
+	end,
 })
 
 minetest.register_craft({
@@ -80,15 +85,6 @@ minetest.register_craft({
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
 })
 
-minetest.register_craftitem(":farming:teacup", {
-	description = "Tea",
-	on_use = minetest.item_eat(1),
-	on_use = function(itemstack, user, pointed_thing)
-		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
-				local func = minetest.item_eat(1)
-		return func(itemstack, user, pointed_thing)
-	end,
-})
 ---------------------------------------------------
 
 minetest.register_craftitem(":farming:bread_slice", {

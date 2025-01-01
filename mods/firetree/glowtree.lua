@@ -20,6 +20,18 @@ minetest.register_node("firetree:luminoustreesapling", {
 	groups = utility.dig_groups("plant", {flammable=2, attached_node=1, sapling=1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
+
+	on_timer = function(...)
+		return firetree.on_glowtree_timer(...)
+	end,
+
+	on_place = function(...)
+		return firetree.on_glowtree_place(...)
+	end,
+
+	on_construct = function(...)
+		return firetree.on_glowtree_construct(...)
+	end,
 })
 
  minetest.register_node("firetree:luminoustreeleaves", {

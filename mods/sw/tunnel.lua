@@ -19,6 +19,9 @@ local vm_data = {}
 local c_air = minetest.get_content_id("air")
 local c_ignore = minetest.get_content_id("ignore")
 local c_stone = minetest.get_content_id("default:stone")
+local c_stone2 = minetest.get_content_id("sw:teststone1")
+local c_stone3 = minetest.get_content_id("sw:teststone1_open")
+local c_stone4 = minetest.get_content_id("sw:teststone2")
 local c_bedrock = minetest.get_content_id("bedrock:bedrock")
 local c_bedrock2 = minetest.get_content_id("sw:teststone1_hard")
 local c_lava = minetest.get_content_id("lbrim:lava_source")
@@ -176,8 +179,6 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 	local area2d = VoxelArea2D:new({MinEdge={x=emin.x, y=emin.z}, MaxEdge={x=emax.x, y=emax.z}})
 	local pr = PseudoRandom(seed + 1891)
 
-	vm:get_data(vm_data)
-
 	-- Compute side lengths.
 	-- Note: noise maps use overgeneration coordinates/sizes.
 	-- This is to support horizontal shearing.
@@ -279,87 +280,133 @@ function sw.generate_tunnels(vm, minp, maxp, seed, get_height)
 		c_cave_wall = minetest.get_content_id("sw:teststone2")
 	end
 
-	for z = z0, z1 do
-		for y = y0, y1 do
-			local base_idx = area:index(x0, y, z)
-			for x = x0, x1 do
-				local found_cave, floor_below, ceiling_above,
-					wall_n, wall_s, wall_e, wall_w =
-						is_cave(x, y, z, true)
+	vm:get_data(vm_data)
 
-				if found_cave then
-					local cid = vm_data[base_idx]
+	--local times_called = 0
+	local function do_chunk(x0, y0, z0, x1, y1, z1)
+		--times_called = times_called + 1
+		local want_caves = false
+		local step = 5
 
-					-- Do NOT carve tunnels through bedrock or "ignore".
-					-- Skip air since there's nothing there anyway.
-					if cid ~= c_air and cid ~= c_ignore and cid ~= c_bedrock then
-						if y <= LAVA_SEA_HEIGHT then
-							vm_data[base_idx] = c_lava
-						else
-							vm_data[base_idx] = c_air
-						end
+		for z = z0, z1, step do
+			for y = y0, y1, step do
+				for x = x0, x1, step do
+					if is_cave(x, y, z) then
+						want_caves = true
+						break
+					end
+				end
+			end
+		end
+		--]]
 
-						local below = base_idx - YSTRIDE
-						local above = base_idx + YSTRIDE
-						local pn = base_idx + ZSTRIDE
-						local ps = base_idx - ZSTRIDE
-						local pe = base_idx + 1
-						local pw = base_idx - 1
+		if not want_caves then
+			--print('dont want caves')
+			return
+		end
 
-						local cidb = vm_data[below]
-						local cida = vm_data[above]
-						local cidn = vm_data[pn]
-						local cids = vm_data[ps]
-						local cide = vm_data[pe]
-						local cidw = vm_data[pw]
+		--print('really want caves')
 
-						-- Replace floor node only if node below is something other than air.
-						if floor_below then
-							if cidb ~= c_air and cidb ~= c_bedrock and cidb ~= c_bedrock2 then
-								vm_data[below] = c_cave_floor
+		for z = z0, z1 do
+			for y = y0, y1 do
+				local base_idx = area:index(x0, y, z)
+				for x = x0, x1 do
+					local found_cave, floor_below, ceiling_above,
+						wall_n, wall_s, wall_e, wall_w =
+							is_cave(x, y, z, true)
+
+					if found_cave then
+						local cid = vm_data[base_idx]
+
+						-- Do NOT carve tunnels through bedrock or "ignore".
+						-- Skip air since there's nothing there anyway.
+						-- Update: only replace the checked content IDs.
+						-- If the main mapgen changes nodes placed, we have to update this, too.
+						if cid == c_stone or cid == c_stone2 or cid == c_stone3 or cid == c_stone4 then
+							if y <= LAVA_SEA_HEIGHT then
+								vm_data[base_idx] = c_lava
+							else
+								vm_data[base_idx] = c_air
 							end
-						end
 
-						-- Replace ceiling node only if node above is something other than air.
-						if ceiling_above then
-							if cida ~= c_air and cida ~= c_bedrock and cida ~= c_bedrock2 then
-								vm_data[above] = c_cave_ceiling
+							local below = base_idx - YSTRIDE
+							local above = base_idx + YSTRIDE
+							local pn = base_idx + ZSTRIDE
+							local ps = base_idx - ZSTRIDE
+							local pe = base_idx + 1
+							local pw = base_idx - 1
+
+							local cidb = vm_data[below]
+							local cida = vm_data[above]
+							local cidn = vm_data[pn]
+							local cids = vm_data[ps]
+							local cide = vm_data[pe]
+							local cidw = vm_data[pw]
+
+							-- Replace floor node only if node below is something other than air.
+							if floor_below then
+								if cidb == c_stone or cidb == c_stone2 or cidb == c_stone3 or cidb == c_stone4 then
+									vm_data[below] = c_cave_floor
+								end
 							end
-						end
 
-						-- North wall.
-						if wall_n then
-							if cidn ~= c_air and cidn ~= c_bedrock and cidn ~= c_bedrock2 then
-								vm_data[pn] = c_cave_wall
+							-- Replace ceiling node only if node above is something other than air.
+							if ceiling_above then
+								if cida == c_stone or cida == c_stone2 or cida == c_stone3 or cida == c_stone4 then
+									vm_data[above] = c_cave_ceiling
+								end
 							end
-						end
 
-						-- South wall.
-						if wall_s then
-							if cids ~= c_air and cids ~= c_bedrock and cids ~= c_bedrock2 then
-								vm_data[ps] = c_cave_wall
+							-- North wall.
+							if wall_n then
+								if cidn == c_stone or cidn == c_stone2 or cidn == c_stone3 or cidn == c_stone4 then
+									vm_data[pn] = c_cave_wall
+								end
 							end
-						end
 
-						-- East wall.
-						if wall_e then
-							if cide ~= c_air and cide ~= c_bedrock and cide ~= c_bedrock2 then
-								vm_data[pe] = c_cave_wall
+							-- South wall.
+							if wall_s then
+								if cids == c_stone or cids == c_stone2 or cids == c_stone3 or cids == c_stone4 then
+									vm_data[ps] = c_cave_wall
+								end
 							end
-						end
 
-						-- West wall.
-						if wall_w then
-							if cidw ~= c_air and cidw ~= c_bedrock and cidw ~= c_bedrock2 then
-								vm_data[pw] = c_cave_wall
+							-- East wall.
+							if wall_e then
+								if cide == c_stone or cide == c_stone2 or cide == c_stone3 or cide == c_stone4 then
+									vm_data[pe] = c_cave_wall
+								end
+							end
+
+							-- West wall.
+							if wall_w then
+								if cidw == c_stone or cidw == c_stone2 or cidw == c_stone3 or cidw == c_stone4 then
+									vm_data[pw] = c_cave_wall
+								end
 							end
 						end
 					end
+					base_idx = base_idx + 1
 				end
-				base_idx = base_idx + 1
 			end
 		end
 	end
 
+	if (x1-x0) == 79 and (y1-y0) == 79 and (z1-z0) == 79 then
+		--print('dividing region into quads')
+		local chunksz = 20
+		for dz = z0, z1, chunksz do
+			for dy = y0, y1, chunksz do
+				for dx = x0, x1, chunksz do
+					do_chunk(dx, dy, dz, dx+chunksz, dy+chunksz, dz+chunksz)
+				end
+			end
+		end
+	else
+		--print('whole region tunnels')
+		do_chunk(x0, y0, z0, x1, y1, z1)
+	end
+
+	--print('called ' .. times_called .. ' times')
 	vm:set_data(vm_data)
 end

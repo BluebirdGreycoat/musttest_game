@@ -75,7 +75,6 @@ minetest.register_craftitem(":farming:teacup", {
 
 minetest.register_craft({
     type = "shapeless",
-	inventory_image = "farming_teacup.png",
 	output = "farming:teacup",
 	recipe = {"farming:preparedtealeaves", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
@@ -83,7 +82,6 @@ minetest.register_craft({
 
 minetest.register_craftitem(":farming:teacup", {
 	description = "Tea",
-	inventory_image = "farming_teacup.png",
 	on_use = minetest.item_eat(1),
 	on_use = function(itemstack, user, pointed_thing)
 		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))

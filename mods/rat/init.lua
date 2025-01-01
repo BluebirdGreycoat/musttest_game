@@ -52,6 +52,7 @@ minetest.register_craftitem("rat:rat_cooked", {
 	description = "Cooked Rat",
 	inventory_image = "rat_inventory_cooked_rat.png",
 	on_use = minetest.item_eat(3),
+	_xp_zerocost_drop = true,
 })
 
 

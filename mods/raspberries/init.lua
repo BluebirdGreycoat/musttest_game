@@ -31,6 +31,7 @@ minetest.register_node("raspberries:fruit", {
     place = {name = "default_place_node", gain = 0.25},
   }),
   on_use = minetest.item_eat(1),
+  _xp_zerocost_drop = true,
 })
 
 
@@ -44,6 +45,7 @@ minetest.register_craftitem("raspberries:smoothie", {
 		local func = minetest.item_eat(1)
 		return func(itemstack, user, pointed_thing)
 	end,
+	_xp_zerocost_drop = true,
 	-- Stored in glass, so does not rot.
 })
 

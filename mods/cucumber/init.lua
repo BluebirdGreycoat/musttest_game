@@ -13,6 +13,7 @@ minetest.register_craftitem(":farming:potato_salad", {
 		hunger.apply_health_boost(user:get_player_name(), "salad", {health=30*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
+  _xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -57,6 +58,7 @@ minetest.register_craftitem("cucumber:cucumber", {
 	groups = {food_cucumber = 1, flammable = 2},
 	on_use = minetest.item_eat(4),
 	flowerpot_insert = {"cucumber:cucumber_1", "cucumber:cucumber_2", "cucumber:cucumber_3", "cucumber:cucumber_4"},
+	_xp_zerocost_drop = true,
 })
 
 -- cucumber definition

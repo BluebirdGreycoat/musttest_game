@@ -92,6 +92,7 @@ for k, v in ipairs(meat_types) do
 		inventory_image = v.image,
 		groups = groups,
 		on_use = do_eat_meat,
+		_xp_zerocost_drop = true,
 	})
 
 	if v.cooked then

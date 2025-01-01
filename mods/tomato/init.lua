@@ -37,6 +37,7 @@ minetest.register_craftitem("tomato:tomato", {
   on_use = minetest.item_eat(2),
 	groups = {foodrot=1},
 	flowerpot_insert = {"tomato:plant_1", "tomato:plant_2", "tomato:plant_3", "tomato:plant_4", "tomato:plant_5", "tomato:plant_6", "tomato:plant_7", "tomato:plant_8"},
+	_xp_zerocost_drop = true,
 })
 
 

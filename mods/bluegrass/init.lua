@@ -192,6 +192,7 @@ minetest.register_craftitem("bluegrass:cooked", {
   inventory_image = "bluegrass_cooked.png",
   on_use = minetest.item_eat(1),
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
 })
 
 

@@ -44,6 +44,7 @@ minetest.register_craftitem("onions:onion", {
 	groups = {foodrot=1},
 	flowerpot_insert = {
 		"onions:allium_sprouts_1", "onions:allium_sprouts_2", "onions:allium_sprouts_3", "onions:allium_sprouts_4",},
+	_xp_zerocost_drop = true,
 })
 
 -- sauteed onions
@@ -52,6 +53,7 @@ minetest.register_craftitem("onions:sauteed_onions", {
 	inventory_image = "sauteed_onions.png",
 	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -71,6 +73,7 @@ minetest.register_craftitem("onions:onion_potato_salad", {
 		hunger.apply_health_boost(user:get_player_name(), "onions", {health=30*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({

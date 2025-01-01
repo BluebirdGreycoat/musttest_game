@@ -170,6 +170,7 @@ minetest.register_craftitem("basictrees:pine_nuts", {
 	description = "Roasted Pine Cone Nuts",
 	inventory_image = "moretrees_pine_nuts.png",
 	on_use = minetest.item_eat(1),
+	_xp_zerocost_drop = true,
 })
 
 

@@ -162,6 +162,7 @@ minetest.register_craftitem("moretrees:cedar_nuts", {
 	description = "Roasted Cedar Cone Nuts",
 	inventory_image = "moretrees_cedar_nuts.png",
 	on_use = minetest.item_eat(1),
+	_xp_zerocost_drop = true,
 	-- Nuts do not rot.
 })
 

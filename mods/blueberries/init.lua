@@ -35,6 +35,7 @@ minetest.register_node("blueberries:fruit", {
     place = {name = "default_place_node", gain = 0.25},
   }),
   on_use = minetest.item_eat(1),
+  _xp_zerocost_drop = true,
 })
 
 -- blueberry muffin (thanks to sosogirl123 @ deviantart.com for muffin image)
@@ -44,6 +45,7 @@ minetest.register_craftitem("blueberries:muffin", {
   inventory_image = "blueberries_muffin.png",
   on_use = minetest.item_eat(2),
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({

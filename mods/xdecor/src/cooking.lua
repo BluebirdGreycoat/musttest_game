@@ -217,6 +217,7 @@ minetest.register_craftitem("xdecor:bowl_soup", {
 	inventory_image = "xdecor_bowl_soup.png",
 	wield_image = "xdecor_bowl_soup.png",
 	groups = {not_in_creative_inventory=1},
+	_xp_zerocost_drop = true,
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end

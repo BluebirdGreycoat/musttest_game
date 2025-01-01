@@ -37,6 +37,7 @@ minetest.register_craftitem("farming:bread", {
 	inventory_image = "farming_bread.png",
 	on_use = minetest.item_eat(5),
 	groups = {flammable = 2, foodrot=1},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({

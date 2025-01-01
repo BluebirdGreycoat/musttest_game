@@ -30,6 +30,7 @@ minetest.register_node("coffee_bush:seeds", {
     place = {name = "default_place_node", gain = 0.25},
   }),
   on_use = minetest.item_eat(1),
+  _xp_zerocost_drop = true,
 })
 
 

@@ -120,6 +120,7 @@ if not hb4.fruitregrow.registered then
 		on_use = minetest.item_eat(2),
 		sounds = default.node_sound_leaves_defaults(),
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 
 		on_construct = enhanced_leafdecay.make_leaf_constructor({}),
 		on_timer = enhanced_leafdecay.make_leaf_nodetimer({}),

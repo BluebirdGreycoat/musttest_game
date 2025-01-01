@@ -161,6 +161,7 @@ minetest.register_craftitem("moretrees:raw_coconut", {
 	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 

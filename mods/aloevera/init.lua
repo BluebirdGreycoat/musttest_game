@@ -44,6 +44,7 @@ minetest.register_craftitem("aloevera:aloe_slice", {
 	groups = {foodrot=1},
 	flowerpot_insert = {"aloevera:aloe_plant_01", "aloevera:aloe_plant_02", "aloevera:aloe_plant_03", "aloevera:aloe_plant_04"},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 -- aloe gel

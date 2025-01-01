@@ -37,6 +37,7 @@ minetest.register_craftitem("carrot:regular", {
   on_use = minetest.item_eat(1),
 	flowerpot_insert = {"carrot:plant_1", "carrot:plant_2", "carrot:plant_3", "carrot:plant_4", "carrot:plant_5", "carrot:plant_6", "carrot:plant_7", "carrot:plant_8"},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 

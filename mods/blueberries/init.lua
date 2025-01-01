@@ -36,6 +36,7 @@ minetest.register_node("blueberries:fruit", {
   }),
   on_use = minetest.item_eat(1),
   _xp_zerocost_drop = true,
+  _xdecor_soup_ingredient = true,
 })
 
 -- blueberry muffin (thanks to sosogirl123 @ deviantart.com for muffin image)

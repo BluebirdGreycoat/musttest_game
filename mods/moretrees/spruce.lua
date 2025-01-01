@@ -161,6 +161,7 @@ minetest.register_craftitem("moretrees:spruce_nuts", {
 	inventory_image = "moretrees_spruce_nuts.png",
 	on_use = minetest.item_eat(1),
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 	-- Nuts do not rot.
 })
 

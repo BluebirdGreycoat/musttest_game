@@ -59,6 +59,7 @@ minetest.register_craftitem("pumpkin:slice", {
   on_use = minetest.item_eat(2),
 	groups = {foodrot=1},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 

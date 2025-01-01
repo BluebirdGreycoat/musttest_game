@@ -45,6 +45,7 @@ minetest.register_craftitem("onions:onion", {
 	flowerpot_insert = {
 		"onions:allium_sprouts_1", "onions:allium_sprouts_2", "onions:allium_sprouts_3", "onions:allium_sprouts_4",},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 -- sauteed onions
@@ -54,6 +55,7 @@ minetest.register_craftitem("onions:sauteed_onions", {
 	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 minetest.register_craft({

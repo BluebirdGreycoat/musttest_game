@@ -176,6 +176,7 @@ minetest.register_craftitem("xdecor:honey", {
 	groups = {food_honey = 1, food_sugar = 1, flammable = 2, not_in_creative_inventory=1},
 	on_use = minetest.item_eat(2),
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 -- Recipes

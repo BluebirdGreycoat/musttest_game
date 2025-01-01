@@ -59,6 +59,7 @@ minetest.register_craftitem("cucumber:cucumber", {
 	on_use = minetest.item_eat(4),
 	flowerpot_insert = {"cucumber:cucumber_1", "cucumber:cucumber_2", "cucumber:cucumber_3", "cucumber:cucumber_4"},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 -- cucumber definition

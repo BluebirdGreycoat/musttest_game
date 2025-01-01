@@ -206,6 +206,7 @@ if not nethervine.registered then
 			return nethervine.eat_grass(...)
 		end,
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 	})
 
 	-- Dried nethergrass has edible property!
@@ -234,6 +235,7 @@ if not nethervine.registered then
 			return nethervine.eat_dried_grass(...)
 		end,
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 	})
 
 	-- This particular flower does not grow!

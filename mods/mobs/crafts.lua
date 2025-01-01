@@ -93,6 +93,7 @@ for k, v in ipairs(meat_types) do
 		groups = groups,
 		on_use = do_eat_meat,
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 	})
 
 	if v.cooked then

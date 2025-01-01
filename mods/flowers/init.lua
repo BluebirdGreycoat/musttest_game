@@ -501,6 +501,7 @@ if not flowers.reg2 then
 		sounds = default.node_sound_leaves_defaults(),
 		movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 
 		on_use = function(itemstack, user, pointed_thing)
 			if not user or not user:is_player() then return end
@@ -544,6 +545,7 @@ if not flowers.reg2 then
 		sounds = default.node_sound_leaves_defaults(),
 		on_use = minetest.item_eat(1),
 		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 		selection_box = {
 			type = "fixed",
 			fixed = {-0.3, -0.5, -0.3, 0.3, 0, 0.3}

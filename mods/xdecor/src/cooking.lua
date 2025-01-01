@@ -1,12 +1,5 @@
 local cauldron, sounds = {}, {}
 
--- Add more ingredients here that make a soup.
-local ingredients_list = {
-	"apple", "mushroom", "honey", "pumpkin", "egg", "bread", "meat",
-	"chicken", "carrot", "potato", "melon", "rhubarb", "cucumber",
-	"corn", "beans", "berries", "grapes", "tomato", "wheat"
-}
-
 cauldron.cbox = {
 	{0,  0, 0,  16, 16, 0},
 	{0,  0, 16, 16, 16, 0},
@@ -77,14 +70,6 @@ function cauldron.idle_timer(pos)
 	return true
 end
 
--- Ugly hack to determine if an item has the function `minetest.item_eat` in its definition.
-local function eatable(itemstring)
-	local item = itemstring:match("[%w_:]+")
-	local on_use_def = minetest.registered_items[item].on_use
-	if not on_use_def then return end
-	return string.format("%q", string.dump(on_use_def)):find("item_eat")
-end
-
 function cauldron.boiling_timer(pos)
 	local node = minetest.get_node(pos)
 	local objs = minetest.get_objects_inside_radius(pos, 0.5)
@@ -94,17 +79,19 @@ function cauldron.boiling_timer(pos)
 	for _, obj in pairs(objs) do
 		if obj and not obj:is_player() and obj:get_luaentity().itemstring then
 			local itemstring = obj:get_luaentity().itemstring
-			local food = itemstring:match(":([%w_]+)")
+			local foodstack = ItemStack(itemstring)
 
-			for _, ingredient in pairs(ingredients_list) do
-				if food and (eatable(itemstring) or food:find(ingredient)) then
-					ingredients[#ingredients+1] = food break
+			if foodstack and not foodstack:is_empty() then
+				local fooddef = foodstack:get_definition()
+				if fooddef and fooddef._xdecor_soup_ingredient then
+					ingredients[#ingredients+1] = foodstack
 				end
 			end
 		end
 	end
 
-	if #ingredients >= 2 then
+	-- Require 3 ingredients to make soup.
+	if #ingredients >= 3 then
 		for _, obj in pairs(objs) do obj:remove() end
 		minetest.add_node(pos, {name="xdecor:cauldron_soup", param2=node.param2})
 	end

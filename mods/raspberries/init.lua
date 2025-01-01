@@ -32,6 +32,7 @@ minetest.register_node("raspberries:fruit", {
   }),
   on_use = minetest.item_eat(1),
   _xp_zerocost_drop = true,
+  _xdecor_soup_ingredient = true,
 })
 
 

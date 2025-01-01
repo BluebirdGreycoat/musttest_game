@@ -47,6 +47,7 @@ minetest.register_craftitem("potatoes:potato", {
 	groups = {foodrot=1},
 	flowerpot_insert = {"potatoes:potato_1", "potatoes:potato_2", "potatoes:potato_3", "potatoes:potato_4"},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 -- baked potato
@@ -56,6 +57,7 @@ minetest.register_craftitem("potatoes:baked_potato", {
 	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
 	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 minetest.register_craft({

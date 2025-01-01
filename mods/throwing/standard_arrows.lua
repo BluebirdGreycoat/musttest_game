@@ -102,10 +102,15 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 				if ndef._arrows_stick == false then
 					liquid_or_falling = true
 				end
+
+				-- Disabled, we probably want to allow arrows to stick to stairs/cut nodes.
+				-- Also, since trees are nodeboxes this would also prevent arrows sticking to them.
+				--[[
 				-- Don't stick to meshnodes or nodeboxes.
 				if ndef.drawtype == "mesh" or ndef.drawtype == "nodebox" then
 					liquid_or_falling = true
 				end
+				--]]
 
 				if intersection_point then
 					ent:set_pos(intersection_point)

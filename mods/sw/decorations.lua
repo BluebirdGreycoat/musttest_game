@@ -133,10 +133,10 @@ minetest.register_decoration({
 
 --------------------------------------------------------------------------------
 
--- Sunfire Tree One.
+-- Sunfire Tree 1.
 minetest.register_decoration({
 	deco_type = "schematic",
-	place_on = {"sw:teststone1"},
+	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
@@ -145,15 +145,14 @@ minetest.register_decoration({
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
-	spawn_by = {"default:desert_stone", "rackstone:rackstone"},
 })
 
--- Sunfire Tree Two.
+-- Sunfire Tree 2.
 minetest.register_decoration({
 	deco_type = "schematic",
-	place_on = {"sw:teststone1"},
+	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
-	fill_ratio = 0.001,
+	fill_ratio = 0.0001,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree2.mts",
@@ -162,10 +161,10 @@ minetest.register_decoration({
 	place_offset_y = 0,
 })
 
--- Sunfire Tree Three.
+--Sunfire Tree 3.
 minetest.register_decoration({
 	deco_type = "schematic",
-	place_on = {"sw:teststone1"},
+	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
@@ -176,15 +175,57 @@ minetest.register_decoration({
 	place_offset_y = 0,
 })
 
---Sunfire Tree Four.
+--Sunfire Tree 4.
 minetest.register_decoration({
 	deco_type = "schematic",
-	place_on = {"sw:teststone1"},
+	place_on = {"sw:teststone1_open"},
 	sidelen = 8,
-	fill_ratio = 0.001,
+	fill_ratio = 0.0003,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
 	schematic = "schems/xen_tree4.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+--Sunfire Tree 5.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0002,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree5.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+--Sunfire Tree 6.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0003,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree6.mts",
+	flags = "all_floors,place_center_x,place_center_z",
+	rotation = "random",
+	place_offset_y = 0,
+})
+
+--Sunfire Tree 7.
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"sw:teststone1_open"},
+	sidelen = 8,
+	fill_ratio = 0.0003,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	schematic = "schems/xen_tree7.mts",
 	flags = "all_floors,place_center_x,place_center_z",
 	rotation = "random",
 	place_offset_y = 0,
@@ -273,7 +314,7 @@ minetest.register_decoration({
 -- Fire vase.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1","sw:teststone1_open"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,
@@ -285,7 +326,7 @@ minetest.register_decoration({
 -- Candle flower.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone1_open"},
 	sidelen = 8,
 	fill_ratio = 0.5,
 	y_min = XEN_BEGIN,
@@ -301,7 +342,7 @@ minetest.register_decoration({
 -- Blue fungus.
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	place_on = {"sw:teststone1", "bedrock:bedrock", "sw:teststone1_open"},
 	sidelen = 8,
 	y_min = XEN_BEGIN,
 	y_max = XEN_MID,
@@ -321,7 +362,7 @@ minetest.register_decoration({
 -- Star Moss
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	place_on = {"sw:teststone1", "bedrock:bedrock", "sw:teststone1_open"},
 	sidelen = 8,
 	y_min = XEN_BEGIN,
 	y_max = XEN_END,
@@ -342,7 +383,7 @@ minetest.register_decoration({
 --White Moonflower
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	place_on = {"sw:teststone1", "bedrock:bedrock", "sw:teststone1_open"},
 	sidelen = 8,
 	y_min = XEN_UPPERMID -5,
 	y_max = XEN_END,
@@ -362,7 +403,7 @@ minetest.register_decoration({
 --Pink Moonflower
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = {"sw:teststone1", "bedrock:bedrock"},
+	place_on = {"sw:teststone1", "bedrock:bedrock", "sw:teststone1_open"},
 	sidelen = 8,
 	y_min = XEN_UPPERMID -5,
 	y_max = XEN_END,
@@ -474,7 +515,7 @@ minetest.register_decoration({
 
 minetest.register_decoration({
 	deco_type = "simple",
-	place_on = "sw:teststone1",
+	place_on = {"sw:teststone1", "sw:teststone1_open"},
 	sidelen = 8,
 	fill_ratio = 0.001,
 	y_min = XEN_BEGIN,

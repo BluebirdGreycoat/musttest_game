@@ -167,7 +167,10 @@ minetest.register_node(':aradonia:caveflower11', {
 	drawtype = "plantlike",
 	visual_scale =  2.0,
 	walkable = true,
-	tiles = {'dvd_fierylantern.png'},
+	tiles = {{
+		name = "dvd_fierylantern_anim.png",
+		animation = {type="vertical_frames", aspect_w=32, aspect_h=32, length=3.0},
+	}},
 	inventory_image = 'dvd_fierylantern.png',
 	paramtype = "light",
 	paramtype2 = "meshoptions",

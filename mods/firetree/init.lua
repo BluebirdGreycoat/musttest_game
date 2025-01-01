@@ -4,6 +4,7 @@ firetree.modpath = minetest.get_modpath("firetree")
 local SAPLING_TIME_MIN = 5*60
 local SAPLING_TIME_MAX = 10*60
 
+dofile(firetree.modpath .. "/glowtree_sapling.lua")
 dofile(firetree.modpath .. "/glowtree.lua")
 
 -- Localize for performance.

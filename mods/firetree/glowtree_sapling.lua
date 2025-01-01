@@ -88,7 +88,8 @@ local function on_timer(pos, elapsed)
 	local data = GLOWTREE_SCHEMATICS[random(#GLOWTREE_SCHEMATICS)]
 	local path = directory .. data.file
 	local target = vector.add(pos, data.pos)
-	minetest.place_schematic(target, path, "random", nil, false)
+	local flags = "place_center_x,place_center_z"
+	minetest.place_schematic(target, path, "random", nil, false, flags)
 end
 
 

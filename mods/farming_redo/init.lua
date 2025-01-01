@@ -9,7 +9,7 @@ minetest.register_craftitem(":farming:coffeegrounds", {
 minetest.register_craft({
     type = "shapeless",
 	output = "farming:coffeegrounds",
-	recipe = {"coffee_bush:seeds", "farming:mortar_pestle"},
+	recipe = {"coffee_bush:seeds", "coffee_bush:seeds", "coffee_bush:seeds", "coffee_bush:seeds", "coffee_bush:seeds", "farming:mortar_pestle"},
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 

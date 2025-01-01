@@ -63,7 +63,7 @@ minetest.register_craft({
 minetest.register_craft({
     type = "shapeless",
 	output = "farming:crushedtealeaves",
-	inventory_image = "farming_crushedtealeaves.png",
+
 	recipe = {"tea_tree:leaves", "farming:mortar_pestle"},
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
@@ -74,13 +74,9 @@ minetest.register_craftitem(":farming:teacup", {
 	inventory_image = "farming_teacup.png",
 })
 
-minetest.register_craft({"farming:teacup",
+minetest.register_craft({
     type = "shapeless",
-    description = "Tea",
-	inventory_image = "farming_teacup.png",
-	weild_image = "farming_teacup",
 	output = "farming:teacup",
-	on_use = minetest.item_eat(1),
 	recipe = {"farming:preparedtealeaves", "bucket:bucket_water", "vessels:drinking_glass"},
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
 })

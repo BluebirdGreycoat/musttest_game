@@ -10,8 +10,8 @@ local SAPLING_TIME_MAX = 15*60
 -- DVD, you'll need to change the X,Y,Z positions to make the treeschems center on the sapling.
 local GLOWTREE_SCHEMATICS = {
 	{file="xen_tree1.mts", pos={x=0, y=0, z=0}},
-	{file="xen_tree2.mts", pos={x=0, y=0, z=0}},
-	{file="xen_tree3.mts", pos={x=0, y=0, z=0}},
+    {file="xen_tree2.mts", pos={x=0, y=0, z=0}},
+  	{file="xen_tree3.mts", pos={x=0, y=0, z=0}},
 	{file="xen_tree4.mts", pos={x=0, y=0, z=0}},
 	{file="xen_tree5.mts", pos={x=0, y=0, z=0}},
 	{file="xen_tree6.mts", pos={x=0, y=0, z=0}},

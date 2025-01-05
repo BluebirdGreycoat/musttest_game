@@ -1043,7 +1043,7 @@ function chest_api.public_on_rightclick(pos, node, clicker)
 	local def = minetest.reg_ns_nodes[minetest.get_node(pos).name]
 	local name = def._chest_basename
 	meta:set_string("infotext", "Unlocked Chest")
-	meta:set_string("formspec", nil)
+	meta:set_string("formspec", "")
 
 	-- Upgrade inventory size.
 	if string.find(name, "gold") then

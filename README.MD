@@ -9,7 +9,7 @@ This repository contains the complete Lua code and media for the server running 
 
 * See LICENSE.TXT for licensing info.
 
-* There is a website where you can find information about the server that runs this game, see here: [Server Website](http://arklegacy.duckdns.org/)
+* There is a website where you can find information about the server that runs this game, see here: [Server Website](http://arklegacy-server.net/)
 
 ---
 

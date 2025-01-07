@@ -9,6 +9,7 @@ local XEN_MID = 14150
 local sheet_ores = {
 	{ore="morerocks:marble", seed=1, threshhold=0.3},
 	{ore="morerocks:serpentine", seed=2, threshhold=0.4},
+	{ore="darkage:marble", seed=2, threshhold=0.4},
 	{ore="morerocks:marble_pink", seed=3, threshhold=0.2},
 	{ore="morerocks:marble_white", seed=4, threshhold=0.2},
 	{ore="morerocks:granite", seed=5, threshhold=0.0},

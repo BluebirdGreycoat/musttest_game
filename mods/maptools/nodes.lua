@@ -436,6 +436,7 @@ minetest.register_node("maptools:superapple", {
 	walkable = false,
 	groups = {fleshy=3, dig_immediate=3, not_in_creative_inventory = maptools.creative},
 	on_use = minetest.item_eat(20),
+	_xp_zerocost_drop = true,
 	sounds = default.node_sound_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
 })

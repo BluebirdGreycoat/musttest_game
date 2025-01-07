@@ -73,8 +73,12 @@ end
 function trash.on_drop_item(oldstack, newstack, dropper, pos)
 	if dropper and dropper:is_player() then
 		local pname = dropper:get_player_name()
-		local count = oldstack:get_count()
-		xp.subtract_xp(pname, "digxp", count * TRASH_XP_MOD)
+		local sdef = oldstack:get_definition()
+		if sdef and not sdef._xp_zerocost_drop then
+			local count = oldstack:get_count()
+			local xp_mult = TRASH_XP_MOD
+			xp.subtract_xp(pname, "digxp", count * xp_mult)
+		end
 	end
 end
 

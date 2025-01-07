@@ -119,6 +119,8 @@ if not hb4.fruitregrow.registered then
 		groups = {fleshy=3, dig_immediate=3, flammable=2, leafdecay=3, leafdecay_drop=1},
 		on_use = minetest.item_eat(2),
 		sounds = default.node_sound_leaves_defaults(),
+		_xp_zerocost_drop = true,
+		_xdecor_soup_ingredient = true,
 
 		on_construct = enhanced_leafdecay.make_leaf_constructor({}),
 		on_timer = enhanced_leafdecay.make_leaf_nodetimer({}),

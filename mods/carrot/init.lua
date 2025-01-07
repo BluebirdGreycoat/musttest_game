@@ -36,6 +36,8 @@ minetest.register_craftitem("carrot:regular", {
   inventory_image = "carrot_regular.png",
   on_use = minetest.item_eat(1),
 	flowerpot_insert = {"carrot:plant_1", "carrot:plant_2", "carrot:plant_3", "carrot:plant_4", "carrot:plant_5", "carrot:plant_6", "carrot:plant_7", "carrot:plant_8"},
+	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 
@@ -47,6 +49,7 @@ local eat_func2 = hunger.item_eat(0, nil, 10)
 minetest.register_craftitem("carrot:gold", {
   description = "Golden Carrot",
   inventory_image = "carrot_gold.png",
+  _xp_zerocost_drop = true,
 
   -- Give user 1/4 energy, health back.
   on_use = function(itemstack, user, pointed_thing)
@@ -76,6 +79,7 @@ minetest.register_craftitem("carrot:health_boost_drink", {
 		hunger.apply_health_boost(user:get_player_name(), "drink", {health=30*500, time=30})
     return eat_function(itemstack, user, pointed_thing)
   end,
+  _xp_zerocost_drop = true,
 })
 
 minetest.register_craft({

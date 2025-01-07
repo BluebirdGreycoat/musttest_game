@@ -160,6 +160,8 @@ minetest.register_craftitem("moretrees:raw_coconut", {
 	inventory_image = "moretrees_raw_coconut.png",
 	on_use = minetest.item_eat(4),
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 
@@ -175,6 +177,7 @@ minetest.register_craftitem("moretrees:coconut_milk", {
 		local func = minetest.item_eat(1)
 		return func(itemstack, user, pointed_thing)
 	end,
+	_xp_zerocost_drop = true,
 })
 
 

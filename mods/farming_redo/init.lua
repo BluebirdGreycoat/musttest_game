@@ -41,6 +41,7 @@ minetest.register_craftitem(":farming:coffeecup", {
   end,
 
 	groups = {vessel = 1},
+	_xp_zerocost_drop = true,
 })
 
 -- Adding this so that coffee & tea can be placed physically in the world.
@@ -98,6 +99,7 @@ minetest.register_craftitem(":farming:teacup", {
 				local func = minetest.item_eat(1)
 		return func(itemstack, user, pointed_thing)
 	end,
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -135,6 +137,7 @@ minetest.register_craftitem(":farming:bread_slice", {
 	inventory_image = "farming_bread_slice.png",
 	on_use = minetest.item_eat(1),
 	groups = {food_bread_slice = 1, flammable = 2},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -160,6 +163,7 @@ minetest.register_craftitem(":farming:toast", {
 	inventory_image = "farming_toast.png",
 	on_use = minetest.item_eat(1),
 	groups = {food_toast = 1, flammable = 2},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craftitem(":farming:toast_sandwich", {
@@ -167,6 +171,7 @@ minetest.register_craftitem(":farming:toast_sandwich", {
 	inventory_image = "farming_toast_sandwich.png",
 	on_use = minetest.item_eat(4),
 	groups = {flammable = 2},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -185,6 +190,7 @@ minetest.register_craftitem(":farming:tomato_sandwich", {
 	inventory_image = "farming_toasted_tomato_sandwich.png",
 	on_use = minetest.item_eat(6),
 	groups = {flammable = 2},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -203,6 +209,7 @@ minetest.register_craftitem(":farming:carrot_cake", {
 	description = "Carrot Cake\n\nImproves health regeneration for a period of time.",
 	inventory_image = "farming_carrot_cake.png",
 	groups = {flammable = 2},
+	_xp_zerocost_drop = true,
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
@@ -394,6 +401,7 @@ minetest.register_craftitem(":farming:blueberry_pie", {
 	description = "Blueberry Pie",
 	inventory_image = "farming_blueberry_pie.png",
 	on_use = minetest.item_eat(6),
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -411,6 +419,7 @@ minetest.register_craftitem(":farming:apple_pie", {
 	description = "Apple Pie",
 	inventory_image = "farming_apple_pie.png",
 	on_use = minetest.item_eat(6),
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({
@@ -469,6 +478,7 @@ minetest.register_craftitem(":farming:carrot_juice", {
   end,
 
 	groups = {vessel = 1},
+	_xp_zerocost_drop = true,
 })
 
 minetest.register_craft({

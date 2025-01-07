@@ -182,6 +182,7 @@ end
 minetest.register_craftitem("bluegrass:bluegrass", {
   description = "Bluegrass Stalk (Completely Inedible)",
   inventory_image = "bluegrass_bluegrass.png",
+  _xdecor_soup_ingredient = true,
 	-- Does not rot.
 })
 
@@ -192,6 +193,8 @@ minetest.register_craftitem("bluegrass:cooked", {
   inventory_image = "bluegrass_cooked.png",
   on_use = minetest.item_eat(1),
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
+	_xdecor_soup_ingredient = true,
 })
 
 

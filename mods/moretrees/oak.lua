@@ -170,6 +170,7 @@ minetest.register_craftitem("moretrees:acorn_muffin", {
 	description = "Acorn Muffin\n\nImproves health regeneration for a period of time.",
 	inventory_image = "moretrees_acorn_muffin.png",
 	groups = {foodrot=1},
+	_xp_zerocost_drop = true,
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end

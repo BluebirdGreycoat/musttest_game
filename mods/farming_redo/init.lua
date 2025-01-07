@@ -31,6 +31,17 @@ local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
 minetest.register_craftitem(":farming:coffeecup", {
 	description = "Coffee\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_coffeecup.png",
+	drawtype = "plantlike",
+	visual_scale = 0.8,
+	paramtype = "light",
+	tiles = {"farming_coffeecup.png"},
+	groups = {food_coffee = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+	sounds = default.node_sound_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+	},
+	walkable = false,
 
 -- We have soup in the game that has stamina regen at 3.0, so coffee should be at least 2.5, MustNoob! Esp. since the recipe is more costly now.
 
@@ -44,25 +55,6 @@ minetest.register_craftitem(":farming:coffeecup", {
 	_xp_zerocost_drop = true,
 })
 
--- Adding this so that coffee & tea can be placed physically in the world.
-
-minetest.register_node(":farming:coffeecup", {
-	description = "Coffee",
-	inventory_image = "farming_coffeecup.png",
-	wield_image = "farming_coffeecup.png",
-	drawtype = "plantlike",
-	visual_scale = 0.8,
-	paramtype = "light",
-	on_use = minetest.item_eat(1),
-	tiles = {"farming_coffeecup.png"},
-	groups = {food_coffee = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
-	sounds = default.node_sound_defaults(),
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
-	},
-	walkable = false,
-})
 
 -- DVD's tea. Seems to work for now, all I need is it to do something special. Maybe cure queasiness?
 
@@ -100,25 +92,9 @@ minetest.register_craftitem(":farming:teacup", {
 		return func(itemstack, user, pointed_thing)
 	end,
 	_xp_zerocost_drop = true,
-})
-
-minetest.register_craft({
-    type = "shapeless",
-	output = "farming:teacup",
-	recipe = {"farming:preparedtealeaves", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
-	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
-})
-
--- Making tea placable.
-
-minetest.register_node(":farming:teacup", {
-	description = "Tea",
-	inventory_image = "farming_teacup.png",
-	wield_image = "farming_teacup.png",
-	drawtype = "plantlike",
+		drawtype = "plantlike",
 	visual_scale = 0.8,
 	paramtype = "light",
-	on_use = minetest.item_eat(1),
 	tiles = {"farming_teacup.png"},
 	groups = {food_tea = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
 	sounds = default.node_sound_defaults(),
@@ -129,6 +105,12 @@ minetest.register_node(":farming:teacup", {
 	walkable = false,
 })
 
+minetest.register_craft({
+    type = "shapeless",
+	output = "farming:teacup",
+	recipe = {"farming:preparedtealeaves", "bucket:bucket_water", "vessels:vessels_drinking_mug"},
+	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
+})
 
 ---------------------------------------------------
 

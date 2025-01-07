@@ -35,7 +35,6 @@ minetest.register_node(":farming:coffeecup", {
 	drawtype = "plantlike",
 	visual_scale = 0.8,
 	paramtype = "light",
-	on_use = minetest.item_eat(1),
 	tiles = {"farming_coffeecup.png"},
 	groups = {food_coffee = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
 	sounds = default.node_sound_defaults(),
@@ -86,7 +85,6 @@ minetest.register_craft({
 minetest.register_node(":farming:teacup", {
 	description = "Tea",
 	inventory_image = "farming_teacup.png",
-		on_use = minetest.item_eat(1),
 	on_use = function(itemstack, user, pointed_thing)
 		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
 				local func = minetest.item_eat(1)

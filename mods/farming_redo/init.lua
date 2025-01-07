@@ -28,12 +28,14 @@ minetest.register_craft({
 -- This is supposed to boost the stamina of the player when they consume coffee.
 
 local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
-minetest.register_craftitem(":farming:coffeecup", {
+
+minetest.register_node(":farming:coffeecup", {
 	description = "Coffee\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_coffeecup.png",
 	drawtype = "plantlike",
 	visual_scale = 0.8,
 	paramtype = "light",
+	on_use = minetest.item_eat(1),
 	tiles = {"farming_coffeecup.png"},
 	groups = {food_coffee = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
 	sounds = default.node_sound_defaults(),
@@ -51,7 +53,6 @@ minetest.register_craftitem(":farming:coffeecup", {
     return eat_function(itemstack, user, pointed_thing)
   end,
 
-	groups = {vessel = 1},
 	_xp_zerocost_drop = true,
 })
 
@@ -82,7 +83,7 @@ minetest.register_craft({
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 
-minetest.register_craftitem(":farming:teacup", {
+minetest.register_node(":farming:teacup", {
 	description = "Tea",
 	inventory_image = "farming_teacup.png",
 		on_use = minetest.item_eat(1),
@@ -92,7 +93,7 @@ minetest.register_craftitem(":farming:teacup", {
 		return func(itemstack, user, pointed_thing)
 	end,
 	_xp_zerocost_drop = true,
-		drawtype = "plantlike",
+	drawtype = "plantlike",
 	visual_scale = 0.8,
 	paramtype = "light",
 	tiles = {"farming_teacup.png"},

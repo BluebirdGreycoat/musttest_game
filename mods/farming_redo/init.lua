@@ -28,19 +28,33 @@ minetest.register_craft({
 -- This is supposed to boost the stamina of the player when they consume coffee.
 
 local eat_function = minetest.item_eat(4, "vessels:vessels_drinking_mug")
-minetest.register_craftitem(":farming:coffeecup", {
+
+minetest.register_node(":farming:coffeecup", {
 	description = "Coffee\n\nIncreases stamina regen for a time.",
 	inventory_image = "farming_coffeecup.png",
+	drawtype = "plantlike",
+	visual_scale = 0.8,
+	paramtype = "light",
+	tiles = {"farming_coffeecup.png"},
+	groups = {food_coffee = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+	sounds = default.node_sound_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+	},
+	walkable = false,
+
+-- We have soup in the game that has stamina regen at 3.0, so coffee should be at least 2.5, MustNoob! Esp. since the recipe is more costly now.
 
   on_use = function(itemstack, user, pointed_thing)
     if not user or not user:is_player() then return end
-		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=2.0, time=15})
+		hunger.apply_stamina_boost(user:get_player_name(), "drink", {regen=2.5, time=15})
     return eat_function(itemstack, user, pointed_thing)
   end,
 
-	groups = {vessel = 1},
 	_xp_zerocost_drop = true,
 })
+
 
 -- DVD's tea. Seems to work for now, all I need is it to do something special. Maybe cure queasiness?
 
@@ -68,16 +82,26 @@ minetest.register_craft({
 	replacements = {{"farming:mortar_pestle", "farming:mortar_pestle"}},
 })
 
-minetest.register_craftitem(":farming:teacup", {
+minetest.register_node(":farming:teacup", {
 	description = "Tea",
 	inventory_image = "farming_teacup.png",
-		on_use = minetest.item_eat(1),
 	on_use = function(itemstack, user, pointed_thing)
 		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
 				local func = minetest.item_eat(1)
 		return func(itemstack, user, pointed_thing)
 	end,
 	_xp_zerocost_drop = true,
+	drawtype = "plantlike",
+	visual_scale = 0.8,
+	paramtype = "light",
+	tiles = {"farming_teacup.png"},
+	groups = {food_tea = 1, vessel = 1, dig_immediate = 3, attached_node = 1},
+	sounds = default.node_sound_defaults(),
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+	},
+	walkable = false,
 })
 
 minetest.register_craft({

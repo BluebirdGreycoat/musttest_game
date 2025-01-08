@@ -283,6 +283,20 @@ minetest.register_craft({
   time = 3,
 })
 
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:cyan 5',
+  recipe = 'vines:luminoustreevine',
+  time = 3,
+})
+
+minetest.register_craft({
+  type = "extracting",
+  output = 'dye:cyan 2',
+  recipe = 'vines:luminoustreevineend',
+  time = 3,
+})
+
 -- DVD's flowers grinding recipies here.
 
 minetest.register_craft({

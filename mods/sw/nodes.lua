@@ -61,7 +61,7 @@ minetest.register_node("sw:teststone1_open", {
 	tiles = {{name="sw_teststone_1.png", align_style="world", scale=4}},
 	--tiles = {"default_sandstone.png"}, -- For testing.
 
-	groups = utility.dig_groups("obsidian", {stone = 1, native_stone = 1}),
+	groups = utility.dig_groups("hardstone", {stone = 1, native_stone = 1}),
 	drop = 'sw:teststone2',
 	sounds = default.node_sound_stone_defaults(),
 
@@ -126,4 +126,18 @@ minetest.register_node("sw:teststone2", {
 			core.spawn_falling_node(pos)
 		end
 	end,
+})
+
+minetest.register_node("sw:teststone1brick", {
+	description = "Irx Bricks",
+	tiles = {"xen_stone_brick.png"},
+	groups = utility.dig_groups("hardstone"),
+	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("sw:teststone1block", {
+	description = "Irx Block",
+	tiles = {"xen_stone_block.png"},
+	groups = utility.dig_groups("hardstone"),
+	sounds = default.node_sound_stone_defaults(),
 })

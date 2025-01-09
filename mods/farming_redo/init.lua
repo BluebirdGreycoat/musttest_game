@@ -83,7 +83,7 @@ minetest.register_craft({
 })
 
 minetest.register_node(":farming:teacup", {
-	description = "Tea\n\nGives you the vigor of youth for a short amount of time.",
+	description = "Tea\n\nRejuvenates your weary spirit.",
 	inventory_image = "farming_teacup.png",
 	on_use = function(itemstack, user, pointed_thing)
 		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))

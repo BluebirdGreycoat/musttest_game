@@ -83,11 +83,12 @@ minetest.register_craft({
 })
 
 minetest.register_node(":farming:teacup", {
-	description = "Tea",
+	description = "Tea\n\nGives you the vigor of youth for a short amount of time.",
 	inventory_image = "farming_teacup.png",
 	on_use = function(itemstack, user, pointed_thing)
 		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
 				local func = minetest.item_eat(1)
+	hunger.apply_hot(user:get_player_name(), "drink", {heal=500, time=20})
 		return func(itemstack, user, pointed_thing)
 	end,
 	_xp_zerocost_drop = true,

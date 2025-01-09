@@ -13,6 +13,7 @@ local max = math.max
 local floor = math.floor
 
 dofile(ab.modpath .. "/ore.lua")
+dofile(ab.modpath .. "/decorations.lua")
 
 
 

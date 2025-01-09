@@ -5,7 +5,7 @@ local math_random = math.random
 -- Tea Tree Seeds
 
 minetest.register_node("tea_tree:seeds", {
-  description = "Tree Tea Seeds",
+  description = "Tea Bush Seeds",
   tiles = {"teatreeseeds.png"},
   wield_image = "teatreeseeds.png",
   inventory_image = "teatreeseeds.png",
@@ -65,7 +65,7 @@ crop_def._farming_prev_seed = "tea_tree:seeds"
 crop_def.tiles = {"tea_tree1.png"}
 minetest.register_node("tea_tree:plant_1", table.copy(crop_def))
 
-crop_def.description = "Tea Tree"
+crop_def.description = "Tea Bush"
 crop_def.inventory_image = "tea_tree2.png"
 crop_def._farming_next_plant = "tea_tree:plant_3"
 crop_def._farming_prev_plant = "tea_tree:plant_1"
@@ -92,14 +92,14 @@ function(pos, oldnode, oldmetadata, digger)
 end
 minetest.register_node("tea_tree:plant_2", table.copy(crop_def))
 
-crop_def.description = "Tea Tree"
+crop_def.description = "Tea Bush"
 crop_def.inventory_image = "tea_tree3.png"
 crop_def._farming_next_plant = "tea_tree:plant_4"
 crop_def._farming_prev_plant = "tea_tree:plant_2"
 crop_def.tiles = {"tea_tree3.png"}
 minetest.register_node("tea_tree:plant_3", table.copy(crop_def))
 
-crop_def.description = "Mature Tea Tree"
+crop_def.description = "Tea Bush With Flowers"
 crop_def.inventory_image = "tea_tree4.png"
 crop_def._farming_next_plant = nil
 crop_def._farming_prev_plant = "tea_tree:plant_3"

@@ -304,6 +304,7 @@ ab.generate_realm = function(vm, minp, maxp, seed)
   ab.generate_biome(vm, minp, maxp, seed, REALM_START, REALM_END, heightfunc)
 
   minetest.generate_ores(vm)
+  minetest.generate_decorations(vm)
 
 	-- Finalize voxel manipulator.
 	vm:calc_lighting()

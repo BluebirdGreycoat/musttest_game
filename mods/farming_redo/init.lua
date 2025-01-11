@@ -112,6 +112,21 @@ minetest.register_craft({
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
 })
 
+minetest.register_craft({
+    type = "extracting",
+	output = 'dye:brown 2',
+	recipe = "tea_tree:seeds",
+	time = 3,
+})
+
+minetest.register_craft({
+    type = "compressing",
+	output = 'plastic:oil_extract',
+	recipe = "tea_tree:seeds",
+	time = 3,
+})
+
+
 ---------------------------------------------------
 
 minetest.register_craftitem(":farming:bread_slice", {

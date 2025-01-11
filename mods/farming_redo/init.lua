@@ -122,7 +122,7 @@ minetest.register_craft({
 minetest.register_craft({
     type = "compressing",
 	output = 'plastic:oil_extract',
-	recipe = "tea_tree:seeds",
+	recipe = "tea_tree:seeds 4",
 	time = 3,
 })
 

@@ -2,7 +2,6 @@
 if not minetest.global_exists("fortress") then fortress = {} end
 fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
-fortress.schempath = fortress.modpath .. "/schems"
 
 if fortress.debug_layout == nil then
 	fortress.debug_layout = false
@@ -227,7 +226,7 @@ function fortress.add_schematics(pos, start, info, internal, traversal, build)
 
 		if math_random(1, 100) <= chance then
 			local file = v.file
-			local path = fortress.schempath .. "/" .. file .. ".mts"
+			local path = internal.data.schemdir .. "/" .. file .. ".mts"
 			local adjust = table.copy(v.adjust or {x=0, y=0, z=0})
 			local force = true
 			local priority = v.priority or 0

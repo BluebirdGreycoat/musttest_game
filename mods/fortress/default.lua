@@ -51,6 +51,9 @@ fortress.default = {
 		["stairs:stair_rackstone_brick"] = "stairs:stair_basaltic_rubble",
 	},
 
+	-- Path to the directory where the schem files are stored.
+	schemdir = minetest.get_modpath("fortress") .. "/schems",
+
 	-- Fortress section definitions.
 	-- Each chunk has a name, and its table defines which other chunks may be
 	-- spawned off it.

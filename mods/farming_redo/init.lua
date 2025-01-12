@@ -119,20 +119,21 @@ minetest.register_craft({
 	time = 3,
 })
 
--- I have to use compressing recipes for these because minetest doesn't seem to understand multiple imput recipes in the grinder. (and I didn't find an example of one either)
+-- U: I have to use compressing recipes for these because minetest doesn't seem to understand multiple imput recipes in the grinder. (and I didn't find an example of one either)
+-- Me: grinding recipes now accept input counts > 1. The future is BASED.
 
 minetest.register_craft({
-    type = "compressing",
+	type = "grinding",
 	output = 'farming:flour',
 	recipe = 'tea_tree:seeds 4',
 	time = 5,
 })
 
 minetest.register_craft({
-    type = "compressing",
+	type = "grinding",
 	output = 'farming:crushedtealeaves',
 	recipe = 'tea_tree:leaves 3',
-	time = 5,
+	time = 3,
 })
 
 

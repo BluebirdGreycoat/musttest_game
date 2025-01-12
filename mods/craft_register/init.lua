@@ -56,17 +56,25 @@ minetest.register_craft = function(def)
     end
     
     if def.type == "grinding" then
+      local stack = string.split(def.recipe, " ")
+      local name = tostring(stack[1])
+      local count = tonumber(stack[2] or 1)
+
       local time = def.time
       if type(time) ~= "number" then time = 6 end
       
-      if string.find(def.recipe, "^group:") then -- Support group recipes.
-        registered_grinding_groups[def.recipe] = {}
-        registered_grinding_groups[def.recipe].time = time
-        registered_grinding_groups[def.recipe].output = def.output
-      else
-        registered_grindings[def.recipe] = {}
-        registered_grindings[def.recipe].time = time
-        registered_grindings[def.recipe].output = def.output
+      if count > 0 then
+        if string.find(def.recipe, "^group:") then -- Support group recipes.
+          registered_grinding_groups[name] = {}
+          registered_grinding_groups[name].time = time
+          registered_grinding_groups[name].output = def.output
+          registered_grinding_groups[name].count = count
+        else
+          registered_grindings[name] = {}
+          registered_grindings[name].time = time
+          registered_grindings[name].output = def.output
+          registered_grindings[name].count = count
+        end
       end
       return
     end
@@ -200,7 +208,7 @@ minetest.get_all_craft_recipes = function(item)
       recipes[#recipes+1] = {
         width = 1,
         type = "grinding",
-        items = {k},
+        items = {k .. " " .. v.count},
         output = v,
         method = "normal",
       }
@@ -234,7 +242,7 @@ minetest.get_all_craft_recipes = function(item)
       recipes[#recipes+1] = {
         width = 1,
         type = "grinding",
-        items = {k},
+        items = {k .. " " .. v.count},
         output = v,
         method = "normal",
       }
@@ -403,6 +411,9 @@ minetest.get_craft_result = function(def)
   if m == "grinding" then
     local name = i[1]:get_name()
     if registered_grindings[name] then
+      local count = registered_grindings[name].count
+      if i[1]:get_count() < count then goto ugh end
+
       local output = {}
       local decinput = {}
 
@@ -412,7 +423,7 @@ minetest.get_craft_result = function(def)
 
       decinput.items = {}
       decinput.items[1] = ItemStack(i[1]) -- Force copy.
-      decinput.items[1]:take_item()
+      decinput.items[1]:take_item(count)
 
       return output, decinput
     else -- Determine if a group recipe matches.
@@ -421,6 +432,9 @@ minetest.get_craft_result = function(def)
         for k, v in pairs(def.groups) do
           local gkey = "group:" .. k
           if registered_grinding_groups[gkey] then
+						local count = registered_grinding_groups[gkey].count
+						if i[1]:get_count() < count then goto ugh end
+
             local output = {}
             local decinput = {}
 
@@ -430,7 +444,7 @@ minetest.get_craft_result = function(def)
 
             decinput.items = {}
             decinput.items[1] = ItemStack(i[1]) -- Force copy.
-            decinput.items[1]:take_item()
+            decinput.items[1]:take_item(count)
             
             return output, decinput
           end

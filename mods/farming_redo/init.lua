@@ -112,6 +112,30 @@ minetest.register_craft({
 	replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}}
 })
 
+minetest.register_craft({
+    type = "extracting",
+	output = 'dye:brown 2',
+	recipe = "tea_tree:seeds",
+	time = 3,
+})
+
+-- I have to use compressing recipes for these because minetest doesn't seem to understand multiple imput recipes in the grinder. (and I didn't find an example of one either)
+
+minetest.register_craft({
+    type = "compressing",
+	output = 'farming:flour',
+	recipe = 'tea_tree:seeds 4',
+	time = 5,
+})
+
+minetest.register_craft({
+    type = "compressing",
+	output = 'farming:crushedtealeaves',
+	recipe = 'tea_tree:leaves 3',
+	time = 5,
+})
+
+
 ---------------------------------------------------
 
 minetest.register_craftitem(":farming:bread_slice", {

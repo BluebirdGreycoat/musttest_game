@@ -116,12 +116,12 @@ function(pos, oldnode, oldmetadata, digger)
       minetest.add_item(pos, leftover)
     else
       local inv = digger:get_inventory()
-      local leftover = inv:add_item("main", ItemStack("tea_tree:seeds " .. math_random(1, 3)))
+      local leftover = inv:add_item("main", ItemStack("tea_tree:seeds " .. math_random(0, 1)))
       minetest.add_item(pos, leftover)
 	  
 	  -- Attempting to add tea tree leaves to the player's inventory here.
 	  local inv = digger:get_inventory()
-      local leftover = inv:add_item("main", ItemStack("tea_tree:leaves " .. math_random(1, 3)))
+      local leftover = inv:add_item("main", ItemStack("tea_tree:leaves " .. math_random(1, 2)))
       minetest.add_item(pos, leftover)
       
       -- Restore tree. Player did not actually dig it up.

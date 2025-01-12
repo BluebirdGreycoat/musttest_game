@@ -762,3 +762,7 @@ minetest.register_decoration({
 	},
 	param2 = 2,
 })
+
+-- MCAMC! There should be a line ending after this line!
+-- If there's no line ending make sure you add one!
+-- If your editor is stripping out line endings throw your editor in the trash and buy a new one from Walmart!

@@ -729,3 +729,36 @@ minetest.register_decoration({
 		"aradonia:caveflower17",
 	},
 })
+
+-- Tree vines.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "firetree:luminoustreeleaves",
+	sidelen = 8,
+	fill_ratio = 0.05,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = "default:papyrus2",
+	height = 3,
+	height_max = 7,
+})
+
+-- Tree moss ... or something like that.
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "firetree:luminoustreeleaves",
+	sidelen = 8,
+	fill_ratio = 0.1,
+	y_min = XEN_BEGIN,
+	y_max = XEN_END,
+	flags = "all_ceilings",
+	decoration = {
+		"default:grass_1_hanging",
+		"default:grass_2_hanging",
+		"default:grass_3_hanging",
+		"default:grass_4_hanging",
+		"default:grass_5_hanging",
+	},
+	param2 = 2,
+})

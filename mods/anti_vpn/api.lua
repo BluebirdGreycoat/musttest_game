@@ -270,12 +270,40 @@ local function process_ip_queue()
             for k, v in pairs(tbl.security) do blocked = blocked or v end
 
             local asn = tbl['network'] and tbl.network.autonomous_system_number or ''
+            local aso = tbl['network'] and tbl.network.autonomous_system_organization or ''
+            local network = tbl['network'] and tbl.network.network or ''
             local country = tbl['location'] and tbl.location.country_code or ''
+            local city = tbl['location'] and tbl.location.city or ''
+            local region = tbl['location'] and tbl.location.region or ''
+            local continent = tbl['location'] and tbl.location.continent or ''
+            local timezone = tbl['location'] and tbl.location.time_zone or ''
+            local is_eu = tbl['location'] and tbl.location.is_in_european_union or ''
+            local lat = tbl['location'] and tbl.location.latitude or ''
+            local lon = tbl['location'] and tbl.location.longitude or ''
+            local locale_code = tbl['location'] and tbl.location.locale_code or ''
+            local metro_code = tbl['location'] and tbl.location.metro_code or ''
+            local region_code = tbl['location'] and tbl.location.region_code or ''
+            local country_code = tbl['location'] and tbl.location.country_code or ''
+            local continent_code = tbl['location'] and tbl.location.continent_code or ''
 
             ip_data[ip] = ip_data[ip] or {}
             ip_data[ip]['asn'] = asn
+            ip_data[ip]['aso'] = aso
+            ip_data[ip]['network'] = network
             ip_data[ip]['blocked'] = blocked
             ip_data[ip]['country'] = country
+            ip_data[ip]['city'] = city
+            ip_data[ip]['region'] = region
+            ip_data[ip]['continent'] = continent
+            ip_data[ip]['time_zone'] = timezone
+            ip_data[ip]['lat'] = lat
+            ip_data[ip]['lon'] = lon
+            ip_data[ip]['locale_code'] = locale_code
+            ip_data[ip]['metro_code'] = metro_code
+            ip_data[ip]['region_code'] = region_code
+            ip_data[ip]['country_code'] = country_code
+            ip_data[ip]['continent_code'] = continent_code
+            ip_data[ip]['is_in_eu'] = is_eu
             ip_data[ip]['created'] = os.time()
             ip_data[ip]['provider'] = 'vpnapi'
 
@@ -298,6 +326,10 @@ local function process_ip_queue()
         -- was successful.
         if result.succeeded then process_ip_queue() end
     end)
+end
+
+function anti_vpn.get_vpn_data_for(ip)
+    return ip_data[ip] -- Or nil.
 end
 
 -- If IP is in ip_data, do nothing.  If not, queue up a remote lookup.
@@ -419,9 +451,13 @@ end
 
 -- Misc functions to "clean" the database.
 anti_vpn.cleanup = function()
-    for ip, v in pairs(ip_data) do
+    --for ip, v in pairs(ip_data) do
         -- Do stuff here.
-    end
+    --end
+
+    -- All IPs will be refetched.
+    ip_data = {}
+    anti_vpn.flush_mod_storage()
 end
 
 -- Returns a string for use in a chat message.

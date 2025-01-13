@@ -14,9 +14,12 @@ give_initial_stuff.items = give_initial_stuff.items or {}
 --   5) calendar: signals this server has seasons.
 --   6) flint/steel: your purpose in life is to light trees on fire. Also, your trash. And your pet.
 --   7) compass: signals an element of adventure/exploration.
+--
+-- Update: sadly the flint had to be removed (replaced with apples).
+-- Seems people took the purpose of their life a little too seriously.
 local stuff_string =
-	"default:pick_wood,mobs:meat_mutton 10,torches:torch_floor 10," ..
-	"tinderbox:tinderbox,clock:calendar,flint_and_steel:flint_and_steel,default:compass"
+	"default:pick_wood,mobs:meat_mutton 10,default:apple 10,torches:torch_floor 10," ..
+	"tinderbox:tinderbox,clock:calendar,default:compass"
 
 -- This is also called when a Survival Challenge is started.
 function give_initial_stuff.give(player)

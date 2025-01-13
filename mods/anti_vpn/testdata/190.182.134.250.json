@@ -1,0 +1,29 @@
+{
+    "ip": "190.182.134.250",
+    "security": {
+        "vpn": false,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "",
+        "region": "",
+        "country": "Argentina",
+        "continent": "South America",
+        "region_code": "",
+        "country_code": "AR",
+        "continent_code": "SA",
+        "latitude": "-34.6022",
+        "longitude": "-58.3845",
+        "time_zone": "America/Argentina/Buenos_Aires",
+        "locale_code": "en",
+        "metro_code": "",
+        "is_in_european_union": false
+    },
+    "network": {
+        "network": "190.182.134.0/24",
+        "autonomous_system_number": "AS27983",
+        "autonomous_system_organization": "Red Intercable Digital S.A."
+    }
+}

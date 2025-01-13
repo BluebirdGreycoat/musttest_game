@@ -1,0 +1,29 @@
+{
+    "ip": "195.80.150.186",
+    "security": {
+        "vpn": true,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "Ljubljana",
+        "region": "Ljubljana",
+        "country": "Slovenia",
+        "continent": "Europe",
+        "region_code": "061",
+        "country_code": "SI",
+        "continent_code": "EU",
+        "latitude": "46.0503",
+        "longitude": "14.5046",
+        "time_zone": "Europe/Ljubljana",
+        "locale_code": "en",
+        "metro_code": "",
+        "is_in_european_union": true
+    },
+    "network": {
+        "network": "195.80.148.0/22",
+        "autonomous_system_number": "AS206804",
+        "autonomous_system_organization": "EstNOC OY"
+    }
+}

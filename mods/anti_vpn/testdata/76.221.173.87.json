@@ -1,0 +1,29 @@
+{
+    "ip": "76.221.173.87",
+    "security": {
+        "vpn": false,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "Northridge",
+        "region": "California",
+        "country": "United States",
+        "continent": "North America",
+        "region_code": "CA",
+        "country_code": "US",
+        "continent_code": "NA",
+        "latitude": "34.2326",
+        "longitude": "-118.5481",
+        "time_zone": "America/Los_Angeles",
+        "locale_code": "en",
+        "metro_code": "803",
+        "is_in_european_union": false
+    },
+    "network": {
+        "network": "76.220.0.0/15",
+        "autonomous_system_number": "AS7018",
+        "autonomous_system_organization": "ATT-INTERNET4"
+    }
+}

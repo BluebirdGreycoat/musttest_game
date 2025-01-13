@@ -1,0 +1,29 @@
+{
+    "ip": "102.91.46.185",
+    "security": {
+        "vpn": false,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "",
+        "region": "",
+        "country": "Nigeria",
+        "continent": "Africa",
+        "region_code": "",
+        "country_code": "NG",
+        "continent_code": "AF",
+        "latitude": "10.0000",
+        "longitude": "8.0000",
+        "time_zone": "Africa/Lagos",
+        "locale_code": "en",
+        "metro_code": "",
+        "is_in_european_union": false
+    },
+    "network": {
+        "network": "102.91.46.0/23",
+        "autonomous_system_number": "AS29465",
+        "autonomous_system_organization": "MTN NIGERIA Communication limited"
+    }
+}

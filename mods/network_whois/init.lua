@@ -2,7 +2,13 @@
 if not minetest.global_exists("network_whois") then network_whois = {} end
 network_whois.modpath = minetest.get_modpath("network_whois")
 
-
+-- If it's an IPV6-mapped IPV4 address, convert to plain IPV4 to make it easier to read.
+local function sanitize_ipv4(ip)
+    if ip:find("::ffff:") then
+        ip = ip:sub(8)
+    end
+    return ip
+end
 
 function network_whois.display(name, target)
 	local player = minetest.get_player_by_name(target)
@@ -18,7 +24,7 @@ function network_whois.display(name, target)
 	end
 
 	minetest.chat_send_player(name, "# Server: Account <" .. rename.gpn(target) ..
-		">: ADR " .. info.address ..
+		">: ADR " .. sanitize_ipv4(info.address) ..
 		", IPV " .. info.ip_version ..
 		", CU " .. info.connection_uptime ..
 		", AVG RTT " .. info.avg_rtt ..

@@ -1,0 +1,29 @@
+{
+    "ip": "168.227.97.54",
+    "security": {
+        "vpn": false,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "Mendoza",
+        "region": "Mendoza",
+        "country": "Argentina",
+        "continent": "South America",
+        "region_code": "M",
+        "country_code": "AR",
+        "continent_code": "SA",
+        "latitude": "-32.8817",
+        "longitude": "-68.8125",
+        "time_zone": "America/Argentina/Mendoza",
+        "locale_code": "en",
+        "metro_code": "",
+        "is_in_european_union": false
+    },
+    "network": {
+        "network": "168.227.96.0/22",
+        "autonomous_system_number": "AS264685",
+        "autonomous_system_organization": "REDES DEL OESTE S.A"
+    }
+}

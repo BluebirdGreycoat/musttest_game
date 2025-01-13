@@ -1,0 +1,29 @@
+{
+    "ip": "188.214.122.101",
+    "security": {
+        "vpn": true,
+        "proxy": false,
+        "tor": false,
+        "relay": false
+    },
+    "location": {
+        "city": "Cairo",
+        "region": "Cairo Governorate",
+        "country": "Egypt",
+        "continent": "Africa",
+        "region_code": "C",
+        "country_code": "EG",
+        "continent_code": "AF",
+        "latitude": "30.0588",
+        "longitude": "31.2268",
+        "time_zone": "Africa/Cairo",
+        "locale_code": "en",
+        "metro_code": "",
+        "is_in_european_union": false
+    },
+    "network": {
+        "network": "188.214.122.0/24",
+        "autonomous_system_number": "AS9009",
+        "autonomous_system_organization": "M247 Europe SRL"
+    }
+}

@@ -1,0 +1,8 @@
+anti_vpn.provider.vpnapi.apikey (API KEY for https://vpnapi.io/) string ""
+
+anti_vpn.provider.vpnapi.url (URL to make requests to) string "https://vpnapi.io"
+
+anti_vpn.debug.json (Dump mod_storage as pure JSON to world folder) bool false
+
+-- Suggestion: include a link to your web site, IRC channel, Discord, etc...
+anti_vpn.kick_text (Extra text to append to the kick message) string ""

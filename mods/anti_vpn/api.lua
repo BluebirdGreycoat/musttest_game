@@ -14,6 +14,9 @@ local USER_AGENT = 'https://github.com/EdenLostMinetest/anti_vpn'
 -- Timeout (seconds) when sending HTTP requests.
 local DEFAULT_TIMEOUT = 10
 
+-- How long to use old data in cache before doing a refetch from provider.
+local CACHE_TIMEOUT = 60*60*24*3
+
 -- How often (seconds) to run the async background tasks.
 local ASYNC_WORKER_DELAY = 5
 
@@ -184,6 +187,12 @@ anti_vpn.lookup = function(pname, ip)
     if is_private_ip(ip) then return true, false end
 
     if ip_data[ip] == nil then return false, false end
+
+    -- If the IP data is too old, pretend we don't have it.
+    -- This should cause a refetch from our provider.
+    if ((ip_data[ip].created or 0) + CACHE_TIMEOUT) < os.time() then
+        return false, false
+    end
 
     return true, ip_data[ip]['blocked']
 end

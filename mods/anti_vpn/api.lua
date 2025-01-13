@@ -285,6 +285,10 @@ local function process_ip_queue()
             local region_code = tbl['location'] and tbl.location.region_code or ''
             local country_code = tbl['location'] and tbl.location.country_code or ''
             local continent_code = tbl['location'] and tbl.location.continent_code or ''
+            local is_vpn = tbl['security'] and tbl.security.vpn or false
+            local is_proxy = tbl['security'] and tbl.security.proxy or false
+            local is_tor = tbl['security'] and tbl.security.tor or false
+            local is_relay = tbl['security'] and tbl.security.relay or false
 
             ip_data[ip] = ip_data[ip] or {}
             ip_data[ip]['asn'] = asn
@@ -306,6 +310,10 @@ local function process_ip_queue()
             ip_data[ip]['is_in_eu'] = is_eu
             ip_data[ip]['created'] = os.time()
             ip_data[ip]['provider'] = 'vpnapi'
+            ip_data[ip]['is_vpn'] = is_vpn
+            ip_data[ip]['is_proxy'] = is_proxy
+            ip_data[ip]['is_tor'] = is_tor
+            ip_data[ip]['is_relay'] = is_relay
 
             anti_vpn.flush_mod_storage()
             ip_queue[ip] = nil

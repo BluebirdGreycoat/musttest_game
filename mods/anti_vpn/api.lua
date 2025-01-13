@@ -421,6 +421,7 @@ anti_vpn.flush_mod_storage = function()
     end
 end
 
+-- To be called at server start ONLY.
 anti_vpn.drop_old_ips = function()
     local ips_to_drop = {}
     local cur_time = os.time()
@@ -503,6 +504,13 @@ anti_vpn.cleanup = function()
     -- All IPs will be refetched.
     ip_data = {}
     anti_vpn.flush_mod_storage()
+
+    -- Re-enqueue all player IPs for lookup.
+    for _, player in ipairs(minetest.get_connected_players()) do
+        local pname = player:get_player_name()
+        local ip = anti_vpn.get_player_ip(pname)
+        anti_vpn.enqueue_lookup(ip)
+    end
 end
 
 -- Returns a string for use in a chat message.

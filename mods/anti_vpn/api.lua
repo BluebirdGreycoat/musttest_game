@@ -17,6 +17,9 @@ local DEFAULT_TIMEOUT = 10
 -- How long to use old data in cache before doing a refetch from provider.
 local CACHE_TIMEOUT = 60*60*24*3
 
+-- How long old entries can remain in the IP cache before getting deleted.
+local CLEAN_OLD_AFTER = 60*60*24*90
+
 -- How often (seconds) to run the async background tasks.
 local ASYNC_WORKER_DELAY = 5
 
@@ -267,7 +270,7 @@ local function process_ip_queue()
 
             if tbl['ip'] == nil then
                 minetest.log('error', '[anti_vpn] HTTP response is missing the original IP address.')
-                minetest.log('error', dump(result))
+                --minetest.log('error', dump(result))
                 return
             end
 
@@ -299,7 +302,9 @@ local function process_ip_queue()
             local is_tor = tbl['security'] and tbl.security.tor or false
             local is_relay = tbl['security'] and tbl.security.relay or false
 
+            -- Don't remove existing data, but we may overwrite.
             ip_data[ip] = ip_data[ip] or {}
+
             ip_data[ip]['asn'] = asn
             ip_data[ip]['aso'] = aso
             ip_data[ip]['network'] = network
@@ -334,7 +339,7 @@ local function process_ip_queue()
             ip_queue[ip] = nil
 
             minetest.log('error', '[anti_vpn] HTTP request failed for ' .. ip)
-            minetest.log('error', dump(result))
+            --minetest.log('error', dump(result))
         end
 
         active_requests = active_requests - 1
@@ -416,6 +421,26 @@ anti_vpn.flush_mod_storage = function()
     end
 end
 
+anti_vpn.drop_old_ips = function()
+    local ips_to_drop = {}
+    local cur_time = os.time()
+
+    for ip, v in pairs(ip_data) do
+        if ((v.created or 0) + CLEAN_OLD_AFTER) < cur_time then
+            ips_to_drop[#ips_to_drop+1] = ip
+        end
+    end
+
+    for idx, ip in ipairs(ips_to_drop) do
+        ip_data[ip] = nil
+    end
+
+    if #ips_to_drop > 0 then
+        anti_vpn.flush_mod_storage()
+        minetest.log('action', '[anti_vpn] dropped ' .. #ips_to_drop .. ' old records.')
+    end
+end
+
 anti_vpn.init = function(http_api_provider)
     http_api = http_api_provider
 
@@ -425,6 +450,9 @@ anti_vpn.init = function(http_api_provider)
     local json = mod_storage:get('ip_data')
     ip_data = json and minetest.parse_json(json) or {}
     minetest.log('action', '[anti_vpn] Loaded ' .. count_keys(ip_data) .. ' IP lookups.')
+
+    -- Remove old/stale IPs from database, so we don't end up keeping them forever.
+    anti_vpn.drop_old_ips()
 
     json = mod_storage:get('players')
     player_data = json and minetest.parse_json(json) or {}

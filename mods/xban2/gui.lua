@@ -116,6 +116,13 @@ local function get_record_simple(name)
 	return e, strings, true
 end
 
+local function sanitize_ipv4(ip)
+	if ip:find("::ffff:") then
+		ip = ip:sub(8)
+	end
+	return ip
+end
+
 local function make_fs(pname)
 	local state = get_state(pname)
 	local list, filter = state.list, state.filter
@@ -204,7 +211,7 @@ local function make_fs(pname)
 			if not k:find("[%.%:]") then
 				names[#names+1] = rename.gpn(k)
 			else
-				ips[#ips+1] = k -- Is an IP address.
+				ips[#ips+1] = sanitize_ipv4(k) -- Is an IP address.
 			end
 		end
 		

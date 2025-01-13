@@ -143,6 +143,9 @@ anti_vpn.set_operating_mode = function(mode)
     operating_mode = mode
     mod_storage:set_string('operating_mode', mode)
     return msg
+
+    -- TODO: if changing from "off" to "dryrun" or "enforce", reenqueue all
+    -- connected IPs.
 end
 
 -- Returns raw operating mode string ("off", "dryrun", "enforce")

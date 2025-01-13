@@ -20,6 +20,16 @@ local function ip2str(ver)
 	end
 end
 
+local function get_truefalse(slave)
+	if slave == true then
+		return "YES"
+	elseif slave == false then
+		return "NO"
+	else
+		return "N/A"
+	end
+end
+
 function network_whois.display(name, target, formatting)
 	local player = minetest.get_player_by_name(target)
 	if not player then
@@ -34,6 +44,9 @@ function network_whois.display(name, target, formatting)
 	end
 
 	if formatting == "table" then
+		-- VPN API expects IPv4 to be in the old form. IPv6 is used as-is.
+		local vpn = anti_vpn.get_vpn_data_for(sanitize_ipv4(info.address)) or {}
+
 		local tb = {
 			"IP Address:        " .. sanitize_ipv4(info.address),
 			"IP Version:        " .. ip2str(info.ip_version),
@@ -43,8 +56,26 @@ function network_whois.display(name, target, formatting)
 			"Max RTT:           " .. (info.max_rtt and string.format("%.3f", info.max_rtt)) or "N/A",
 			"Protocol Version:  " .. info.protocol_version,
 			"Formspec Version:  " .. info.formspec_version,
-			"Language Code:     " .. info.lang_code or "N/A",
+			"Language Code:     " .. (info.lang_code or "N/A"),
 			"Login Name:        " .. rename.grn(target),
+			"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
+			"ASN:               " .. (vpn.asn or "N/A"),
+			"ASO:               " .. (vpn.aso or "N/A"),
+			"City:              " .. (vpn.city or "N/A"),
+			"Region:            " .. (vpn.region or "N/A"),
+			"Country:           " .. (vpn.country or "N/A"),
+			"Continent:         " .. (vpn.continent or "N/A"),
+			"Region Code:       " .. (vpn.region_code or "N/A"),
+			"Country Code:      " .. (vpn.country_code or "N/A"),
+			"Continent Code:    " .. (vpn.continent_code or "N/A"),
+			"Latitude:          " .. (vpn.lat or "N/A"),
+			"Longitude:         " .. (vpn.lon or "N/A"),
+			"Time Zone:         " .. (vpn.time_zone or "N/A"),
+			"EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
+			"Is VPN:            " .. get_truefalse(vpn.is_vpn),
+			"Is Proxy:          " .. get_truefalse(vpn.is_proxy),
+			"Is Tor:            " .. get_truefalse(vpn.is_tor),
+			"Is Relay:          " .. get_truefalse(vpn.is_relay),
 		}
 
 		minetest.chat_send_player(name, "# Server: WHOIS data for account <" .. rename.gpn(target) .. ">:")
@@ -52,12 +83,10 @@ function network_whois.display(name, target, formatting)
 			minetest.chat_send_player(name, "# Server:     " .. v)
 		end
 	else
+		-- Basic info only.
 		minetest.chat_send_player(name, "# Server: Account <" .. rename.gpn(target) ..
 			">: ADR " .. sanitize_ipv4(info.address) ..
 			", IPV " .. info.ip_version ..
-			", CU " .. info.connection_uptime ..
-			", AVG RTT " .. info.avg_rtt ..
-			", PV " .. info.protocol_version ..
 			", RN <" .. rename.grn(target) .. ">" ..
 			".")
 	end

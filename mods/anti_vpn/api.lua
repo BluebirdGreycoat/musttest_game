@@ -593,7 +593,7 @@ anti_vpn.async_worker = function()
     process_ip_queue()
 end
 
-anti_vpn.enqueue_connected_players()
+anti_vpn.enqueue_connected_players = function()
     for _, player in ipairs(minetest.get_connected_players()) do
         local pname = player:get_player_name()
         local ip = anti_vpn.get_player_ip(pname)

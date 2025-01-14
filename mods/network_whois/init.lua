@@ -30,6 +30,16 @@ local function get_truefalse(slave)
 	end
 end
 
+local function get_stringna(str)
+	if str == nil then
+		return "N/A"
+	elseif str == "" then
+		return "N/A"
+	else
+		return str
+	end
+end
+
 function network_whois.display(name, target, formatting)
 	local player = minetest.get_player_by_name(target)
 	if not player then
@@ -56,24 +66,24 @@ function network_whois.display(name, target, formatting)
 			"Max RTT:           " .. (info.max_rtt and string.format("%.3f", info.max_rtt)) or "N/A",
 			"Protocol Version:  " .. info.protocol_version,
 			"Formspec Version:  " .. info.formspec_version,
-			"Language Code:     " .. (info.lang_code or "N/A"),
+			"Language Code:     " .. get_stringna(info.lang_code),
 			"Login Name:        " .. rename.grn(target),
 			"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
-			"ASN:               " .. (vpn.asn or "N/A"),
-			"ASO:               " .. (vpn.aso or "N/A"),
-			"ISP:               " .. (vpn.isp or "N/A"),
-			"City:              " .. (vpn.city or "N/A"),
-			"District:          " .. (vpn.district or "N/A"),
-			"Zip:               " .. (vpn.zip or "N/A"),
-			"Region:            " .. (vpn.region or "N/A"),
-			"Country:           " .. (vpn.country or "N/A"),
-			"Continent:         " .. (vpn.continent or "N/A"),
-			"Region Code:       " .. (vpn.region_code or "N/A"),
-			"Country Code:      " .. (vpn.country_code or "N/A"),
-			"Continent Code:    " .. (vpn.continent_code or "N/A"),
-			"Latitude:          " .. (vpn.lat or "N/A"),
-			"Longitude:         " .. (vpn.lon or "N/A"),
-			"Time Zone:         " .. (vpn.time_zone or "N/A"),
+			"ASN:               " .. get_stringna(vpn.asn),
+			"ASO:               " .. get_stringna(vpn.aso),
+			"ISP:               " .. get_stringna(vpn.isp),
+			"City:              " .. get_stringna(vpn.city),
+			"District:          " .. get_stringna(vpn.district),
+			"Zip:               " .. get_stringna(vpn.zip),
+			"Region:            " .. get_stringna(vpn.region),
+			"Country:           " .. get_stringna(vpn.country),
+			"Continent:         " .. get_stringna(vpn.continent),
+			"Region Code:       " .. get_stringna(vpn.region_code),
+			"Country Code:      " .. get_stringna(vpn.country_code),
+			"Continent Code:    " .. get_stringna(vpn.continent_code),
+			"Latitude:          " .. get_stringna(vpn.lat),
+			"Longitude:         " .. get_stringna(vpn.lon),
+			"Time Zone:         " .. get_stringna(vpn.time_zone),
 			"EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
 			"Is VPN:            " .. get_truefalse(vpn.is_vpn),
 			"Is Proxy:          " .. get_truefalse(vpn.is_proxy),

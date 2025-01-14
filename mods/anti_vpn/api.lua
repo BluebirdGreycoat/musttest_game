@@ -142,14 +142,17 @@ anti_vpn.set_operating_mode = function(mode)
         return 'Invalid mode. Valid modes are "off", "dryrun", "enforce".'
     end
 
-    local msg = 'Changing Anti VPN operating mode from ' .. operating_mode .. ' to ' .. mode .. '.'
+    local old_opmode = operating_mode
+    local msg = 'Changing Anti VPN operating mode from ' .. old_opmode .. ' to ' .. mode .. '.'
     minetest.log('action', '[anti_vpn] ' .. msg)
     operating_mode = mode
     mod_storage:set_string('operating_mode', mode)
-    return msg
 
-    -- TODO: if changing from "off" to "dryrun" or "enforce", reenqueue all
-    -- connected IPs.
+    if old_opmode ~= "enforce" and mode == "enforce" then
+        anti_vpn.enqueue_connected_players()
+    end
+
+    return msg
 end
 
 -- Returns raw operating mode string ("off", "dryrun", "enforce")
@@ -590,6 +593,14 @@ anti_vpn.async_worker = function()
     process_ip_queue()
 end
 
+anti_vpn.enqueue_connected_players()
+    for _, player in ipairs(minetest.get_connected_players()) do
+        local pname = player:get_player_name()
+        local ip = anti_vpn.get_player_ip(pname)
+        anti_vpn.enqueue_lookup(ip)
+    end
+end
+
 -- Misc functions to "clean" the database.
 anti_vpn.cleanup = function()
     --for ip, v in pairs(ip_data) do
@@ -601,11 +612,7 @@ anti_vpn.cleanup = function()
     anti_vpn.flush_mod_storage()
 
     -- Re-enqueue all player IPs for lookup.
-    for _, player in ipairs(minetest.get_connected_players()) do
-        local pname = player:get_player_name()
-        local ip = anti_vpn.get_player_ip(pname)
-        anti_vpn.enqueue_lookup(ip)
-    end
+    anti_vpn.enqueue_connected_players()
 end
 
 -- Returns a string for use in a chat message.

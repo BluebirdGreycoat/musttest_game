@@ -249,22 +249,22 @@ end
 player_labels.on_token_use = function(itemstack, user, pointed_thing)
   if not user then return end
   if not user:is_player() then return end
-	local pname = user:get_player_name()
+  local pname = user:get_player_name()
 
   if pointed_thing.type == "object" then
     local object = pointed_thing.ref
     if object:is_player() and not gdac.player_is_admin(object) then
       local uname = user:get_player_name()
       local oname = object:get_player_name()
-      
+
       if gdac_invis.is_invisible(oname) == true then return end
-			if cloaking.is_cloaked(oname) then return end
+      if cloaking.is_cloaked(oname) then return end
 
-			local sex = skins.get_gender_strings(oname)
-			local xp_amount = xp.get_xp(oname, "digxp")
-			local info = minetest.get_player_information(oname)
+      local sex = skins.get_gender_strings(oname)
+      local xp_amount = xp.get_xp(oname, "digxp")
+      local info = minetest.get_player_information(oname)
 
-			if not info then
+      if not info then
         minetest.chat_send_player(uname, "# Server: error getting target information.")
         return
       end
@@ -272,7 +272,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
 
       -- Non-doxable info only, please.
-			local tb = {
+      local tb = {
         "Mineral XP:        " .. string.format("%.3f", xp_amount),
         "Connection Uptime: " .. info.connection_uptime,
         "Avg RTT:           " .. (info.avg_rtt and string.format("%.3f", info.avg_rtt)) or "N/A",
@@ -295,8 +295,8 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
         "Is Relay:          " .. get_truefalse(vpn.is_relay),
         "Is Mobile:         " .. get_truefalse(vpn.is_mobile),
         "Is Hosting:        " .. get_truefalse(vpn.is_hosting),
-			}
-      
+      }
+
       minetest.chat_send_player(name, "# Server: INFO for account <" .. rename.gpn(oname) .. ">:")
       for k, v in ipairs(tb) do
         minetest.chat_send_player(name, "# Server:     " .. v)
@@ -304,28 +304,28 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 
       -- Inform victim.
       minetest.chat_send_player(oname, "# Server: Entity <" .. rename.gpn(uname) .. "> identified you.")
-      
+
       refcount_increment(oname)
       nametag_show(oname)
       minetest.after(player_labels.mark_timeout, player_labels.on_tag_timeout, oname)
-      
+
       return
     end
   end
 
   if gdac_invis.is_invisible(pname) == true then
     minetest.chat_send_player(pname, "# Server: You are currently invisible! Being invisible already hides your nametag.")
-		minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, stop being invisible.")
-		easyvend.sound_error(pname)
+    minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, stop being invisible.")
+    easyvend.sound_error(pname)
     return
   end
 
-	if cloaking.is_cloaked(pname) then
-		minetest.chat_send_player(pname, "# Server: You are currently cloaked! Being cloaked already hides your nametag.")
-		minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, turn of your cloak.")
-		easyvend.sound_error(pname)
-		return
-	end
+  if cloaking.is_cloaked(pname) then
+    minetest.chat_send_player(pname, "# Server: You are currently cloaked! Being cloaked already hides your nametag.")
+    minetest.chat_send_player(pname, "# Server: If you want to show your nametag again, turn of your cloak.")
+    easyvend.sound_error(pname)
+    return
+  end
 
   player_labels.toggle_nametag_broadcast(pname)
   return

@@ -188,6 +188,9 @@ end
 --   [1] (bool) "found" - Was the IP found in the ip_data?
 --   [2] (bool) "blocked" - Does this IP address map to a proxy or VPN?
 --   [3] (bool) "whitelisted" - Is this account name in whitelist?
+--
+-- Note: in the case of a whitelisted VPN user, whose IP data we have, this
+-- function will return 'true, true, true'.
 anti_vpn.lookup = function(pname, ip)
     assert(type(pname) == 'string')
     assert(type(ip) == 'string')

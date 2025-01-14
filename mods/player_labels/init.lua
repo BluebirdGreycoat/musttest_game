@@ -295,9 +295,9 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
         "Is Hosting:        " .. get_truefalse(vpn.is_hosting),
       }
 
-      minetest.chat_send_player(name, "# Server: INFO for account <" .. rename.gpn(oname) .. ">:")
+      minetest.chat_send_player(uname, "# Server: INFO for account <" .. rename.gpn(oname) .. ">:")
       for k, v in ipairs(tb) do
-        minetest.chat_send_player(name, "# Server:     " .. v)
+        minetest.chat_send_player(uname, "# Server:     " .. v)
       end
 
       -- Inform victim.

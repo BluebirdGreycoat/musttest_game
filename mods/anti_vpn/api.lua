@@ -184,31 +184,43 @@ anti_vpn.whitelist_player = function(pname, whitelist)
     return was_whitelisted
 end
 
--- Returns table:
+-- Returns multiple results:
 --   [1] (bool) "found" - Was the IP found in the ip_data?
---   [2] (bool) "blocked" - Should we reject the user from this IP address?
+--   [2] (bool) "blocked" - Does this IP address map to a proxy or VPN?
+--   [3] (bool) "whitelisted" - Is this account name in whitelist?
 anti_vpn.lookup = function(pname, ip)
     assert(type(pname) == 'string')
     assert(type(ip) == 'string')
 
-    if operating_mode == 'off' then return true, false end
+    local found, blocked, whitelisted = false, false, false
+
+    -- Private IPs are always whitelisted.
+    if is_private_ip(ip) then
+        whitelisted = true
+    end
 
     -- Check name against VPN whitelist.
     if player_data[pname] and player_data[pname].bypass then
-        return true, false
+        whitelisted = true
     end
 
-    if is_private_ip(ip) then return true, false end
+    -- Check if we HAVE the data for this IP.
+    local data = ip_data[ip]
+    if data ~= nil then
+        -- If the IP data is too old, pretend we don't have it.
+        -- This should cause a refetch from our provider.
+        if ((data.created or 0) + CACHE_TIMEOUT) >= os.time() then
+            found = true
+        end
 
-    if ip_data[ip] == nil then return false, false end
-
-    -- If the IP data is too old, pretend we don't have it.
-    -- This should cause a refetch from our provider.
-    if ((ip_data[ip].created or 0) + CACHE_TIMEOUT) < os.time() then
-        return false, false
+        -- This really just signals if the IP maps to a proxy or VPN.
+        if data.blocked then
+            blocked = true
+        end
     end
 
-    return true, ip_data[ip]['blocked']
+    -- Return all flags.
+    return found, blocked, whitelisted
 end
 
 anti_vpn.add_override_ip = function(ip, blocked)
@@ -478,7 +490,8 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
     ip = sanitize_ipv4(ip)
 
     ip = testdata_player_ip[pname] or ip -- Hack for testing.
-    local found, blocked = anti_vpn.lookup(pname, ip)
+    local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
+
     if found and blocked then
         minetest.log('warning', '[anti_vpn] blocking player ' .. pname .. ' from ' .. ip .. ' mode=' .. operating_mode)
         if operating_mode == 'enforce' then
@@ -494,9 +507,13 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
 end
 
 anti_vpn.on_joinplayer = function(player, last_login)
+    if operating_mode == 'off' then return end
+
     local pname = player:get_player_name()
     local ip = anti_vpn.get_player_ip(pname) or ''
-    local found, blocked = anti_vpn.lookup(pname, ip)
+
+    local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
+
     if found and blocked then kick_player(pname, ip) end
     if not found then anti_vpn.enqueue_lookup(ip) end
 end
@@ -574,7 +591,8 @@ local function async_player_kick()
     for _, player in ipairs(minetest.get_connected_players()) do
         local pname = player:get_player_name()
         local ip = anti_vpn.get_player_ip(pname)
-        local found, blocked = anti_vpn.lookup(pname, ip)
+
+        local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
         if found and blocked then
             kick_player(pname, ip)

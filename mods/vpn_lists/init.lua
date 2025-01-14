@@ -39,8 +39,13 @@ local function chat_cmd_handler(pname, param)
 	end
 end
 
+minetest.register_privilege("vpn_lists", {
+    description = "Allows user to manage the VPN whitelist.",
+    give_to_singleplayer = false,
+})
+
 minetest.register_chatcommand('vpn_whitelist', {
-    privs = {vpn_control = true},
+    privs = {vpn_lists = true},
     description = 'Whitelist or un-whitelist a player from the Anti VPN system.',
     params = '<command> <playername>',
     func = chat_cmd_handler,

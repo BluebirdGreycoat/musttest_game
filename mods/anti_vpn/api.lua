@@ -49,7 +49,7 @@ local ip_data = {}
 local ip_queue = {}
 
 -- Count of outstanding HTTP requests.
-local active_requests = 0
+local active_requests_vpnapi = 0
 
 -- Allow/Deny/Lockdown info, per player.
 -- Key = player name
@@ -232,12 +232,120 @@ anti_vpn.delete_ip = function(ip)
     anti_vpn.flush_mod_storage()
 end
 
--- Called on demand, and from async timer, to serially process the ip_queue.
-local function process_ip_queue()
-    if operating_mode == 'off' then return end
+local process_ip_queue -- Forward declare function.
+local function handle_vpnapi_response(result)
+    if result.succeeded then
+        local tbl = minetest.parse_json(result.data)
+        if type(tbl) ~= 'table' then
+            minetest.log('error', '[anti_vpn] HTTP response is not JSON?')
+            -- Don't write to console, that could mess it up.
+            --minetest.log('error', dump(result))
+            return
+        end
 
+        if tbl['ip'] == nil then
+            minetest.log('error', '[anti_vpn] HTTP response is missing the original IP address.')
+            --minetest.log('error', dump(result))
+            return
+        end
+
+        local ip = tbl.ip
+        local blocked = false
+
+        -- Expected keys are 'vpn', 'proxy', 'tor', 'relay'.
+        -- We'll reject the IP if any are true.
+        for k, v in pairs(tbl.security) do blocked = blocked or v end
+
+        local asn = tbl['network'] and tbl.network.autonomous_system_number or ''
+        local aso = tbl['network'] and tbl.network.autonomous_system_organization or ''
+        local network = tbl['network'] and tbl.network.network or ''
+        local country = tbl['location'] and tbl.location.country_code or ''
+        local city = tbl['location'] and tbl.location.city or ''
+        local region = tbl['location'] and tbl.location.region or ''
+        local continent = tbl['location'] and tbl.location.continent or ''
+        local timezone = tbl['location'] and tbl.location.time_zone or ''
+        local is_eu = tbl['location'] and tbl.location.is_in_european_union or ''
+        local lat = tbl['location'] and tbl.location.latitude or ''
+        local lon = tbl['location'] and tbl.location.longitude or ''
+        local locale_code = tbl['location'] and tbl.location.locale_code or ''
+        local metro_code = tbl['location'] and tbl.location.metro_code or ''
+        local region_code = tbl['location'] and tbl.location.region_code or ''
+        local country_code = tbl['location'] and tbl.location.country_code or ''
+        local continent_code = tbl['location'] and tbl.location.continent_code or ''
+        local is_vpn = tbl['security'] and tbl.security.vpn or false
+        local is_proxy = tbl['security'] and tbl.security.proxy or false
+        local is_tor = tbl['security'] and tbl.security.tor or false
+        local is_relay = tbl['security'] and tbl.security.relay or false
+
+        -- Don't remove existing data, but we may overwrite.
+        ip_data[ip] = ip_data[ip] or {}
+
+        ip_data[ip]['asn'] = asn
+        ip_data[ip]['aso'] = aso
+        ip_data[ip]['network'] = network
+        ip_data[ip]['blocked'] = blocked
+        ip_data[ip]['country'] = country
+        ip_data[ip]['city'] = city
+        ip_data[ip]['region'] = region
+        ip_data[ip]['continent'] = continent
+        ip_data[ip]['time_zone'] = timezone
+        ip_data[ip]['lat'] = lat
+        ip_data[ip]['lon'] = lon
+        ip_data[ip]['locale_code'] = locale_code
+        ip_data[ip]['metro_code'] = metro_code
+        ip_data[ip]['region_code'] = region_code
+        ip_data[ip]['country_code'] = country_code
+        ip_data[ip]['continent_code'] = continent_code
+        ip_data[ip]['is_in_eu'] = is_eu
+        ip_data[ip]['created'] = os.time()
+        ip_data[ip]['provider'] = 'vpnapi'
+        ip_data[ip]['is_vpn'] = is_vpn
+        ip_data[ip]['is_proxy'] = is_proxy
+        ip_data[ip]['is_tor'] = is_tor
+        ip_data[ip]['is_relay'] = is_relay
+
+        anti_vpn.flush_mod_storage()
+        ip_queue[ip] = nil
+
+        -- Make the log message somewhat parseable w/ "awk", in case we
+        -- need to reconstruct our database from just the log files.
+        minetest.log('action', '[anti_vpn] HTTP response: ip:' .. ip .. ' blocked:' .. tostring(blocked) .. ' asn:' .. asn .. ' country:' .. country)
+    else
+        ip_queue[ip] = nil
+
+        minetest.log('error', '[anti_vpn] HTTP request failed for ' .. ip)
+        --minetest.log('error', dump(result))
+    end
+
+    active_requests_vpnapi = active_requests_vpnapi - 1
+
+    -- Start a new lookup immediately, if we have one, and if previous
+    -- was successful.
+    if result.succeeded then process_ip_queue() end
+end
+
+local function fetch_vpnapi_provider(ip)
     -- Only one request at a time please.
-    if active_requests > 0 then return end
+    if active_requests_vpnapi > 0 then return end
+    active_requests_vpnapi = active_requests_vpnapi + 1
+
+    -- Queue up an external lookup.  This is async and can take several
+    -- seconds, so we don't want to block the server during this time.
+    -- We'll allow the login for now, and kick the player later if needed.
+    local url = vpnapi_url .. '/api/' .. ip
+    minetest.log('action', '[anti_vpn] fetching ' .. url)
+
+    http_api.fetch({
+        url = url .. '?key=' .. apikey,
+        method = 'GET',
+        user_agent = USER_AGENT,
+        timeout = DEFAULT_TIMEOUT
+    }, handle_vpnapi_response)
+end
+
+-- Called on demand, and from async timer, to serially process the ip_queue.
+process_ip_queue = function()
+    if operating_mode == 'off' then return end
 
     -- Is the ip_queue empty?
     if next(ip_queue) == nil then return end
@@ -250,108 +358,7 @@ local function process_ip_queue()
 
     local ip = next(ip_queue)
 
-    active_requests = active_requests + 1
-
-    -- Queue up an external lookup.  This is async and can take several
-    -- seconds, so we don't want to block the server during this time.
-    -- We'll allow the login for now, and kick the player later if needed.
-    local url = vpnapi_url .. '/api/' .. ip
-    minetest.log('action', '[anti_vpn] fetching ' .. url)
-    http_api.fetch({
-        url = url .. '?key=' .. apikey,
-        method = 'GET',
-        user_agent = USER_AGENT,
-        timeout = DEFAULT_TIMEOUT
-    }, function(result)
-        if result.succeeded then
-            local tbl = minetest.parse_json(result.data)
-            if type(tbl) ~= 'table' then
-                minetest.log('error', '[anti_vpn] HTTP response is not JSON?')
-                -- Don't write to console, that could mess it up.
-                --minetest.log('error', dump(result))
-                return
-            end
-
-            if tbl['ip'] == nil then
-                minetest.log('error', '[anti_vpn] HTTP response is missing the original IP address.')
-                --minetest.log('error', dump(result))
-                return
-            end
-
-            local ip = tbl.ip
-            local blocked = false
-
-            -- Expected keys are 'vpn', 'proxy', 'tor', 'relay'.
-            -- We'll reject the IP if any are true.
-            for k, v in pairs(tbl.security) do blocked = blocked or v end
-
-            local asn = tbl['network'] and tbl.network.autonomous_system_number or ''
-            local aso = tbl['network'] and tbl.network.autonomous_system_organization or ''
-            local network = tbl['network'] and tbl.network.network or ''
-            local country = tbl['location'] and tbl.location.country_code or ''
-            local city = tbl['location'] and tbl.location.city or ''
-            local region = tbl['location'] and tbl.location.region or ''
-            local continent = tbl['location'] and tbl.location.continent or ''
-            local timezone = tbl['location'] and tbl.location.time_zone or ''
-            local is_eu = tbl['location'] and tbl.location.is_in_european_union or ''
-            local lat = tbl['location'] and tbl.location.latitude or ''
-            local lon = tbl['location'] and tbl.location.longitude or ''
-            local locale_code = tbl['location'] and tbl.location.locale_code or ''
-            local metro_code = tbl['location'] and tbl.location.metro_code or ''
-            local region_code = tbl['location'] and tbl.location.region_code or ''
-            local country_code = tbl['location'] and tbl.location.country_code or ''
-            local continent_code = tbl['location'] and tbl.location.continent_code or ''
-            local is_vpn = tbl['security'] and tbl.security.vpn or false
-            local is_proxy = tbl['security'] and tbl.security.proxy or false
-            local is_tor = tbl['security'] and tbl.security.tor or false
-            local is_relay = tbl['security'] and tbl.security.relay or false
-
-            -- Don't remove existing data, but we may overwrite.
-            ip_data[ip] = ip_data[ip] or {}
-
-            ip_data[ip]['asn'] = asn
-            ip_data[ip]['aso'] = aso
-            ip_data[ip]['network'] = network
-            ip_data[ip]['blocked'] = blocked
-            ip_data[ip]['country'] = country
-            ip_data[ip]['city'] = city
-            ip_data[ip]['region'] = region
-            ip_data[ip]['continent'] = continent
-            ip_data[ip]['time_zone'] = timezone
-            ip_data[ip]['lat'] = lat
-            ip_data[ip]['lon'] = lon
-            ip_data[ip]['locale_code'] = locale_code
-            ip_data[ip]['metro_code'] = metro_code
-            ip_data[ip]['region_code'] = region_code
-            ip_data[ip]['country_code'] = country_code
-            ip_data[ip]['continent_code'] = continent_code
-            ip_data[ip]['is_in_eu'] = is_eu
-            ip_data[ip]['created'] = os.time()
-            ip_data[ip]['provider'] = 'vpnapi'
-            ip_data[ip]['is_vpn'] = is_vpn
-            ip_data[ip]['is_proxy'] = is_proxy
-            ip_data[ip]['is_tor'] = is_tor
-            ip_data[ip]['is_relay'] = is_relay
-
-            anti_vpn.flush_mod_storage()
-            ip_queue[ip] = nil
-
-            -- Make the log message somewhat parseable w/ "awk", in case we
-            -- need to reconstruct our database from just the log files.
-            minetest.log('action', '[anti_vpn] HTTP response: ip:' .. ip .. ' blocked:' .. tostring(blocked) .. ' asn:' .. asn .. ' country:' .. country)
-        else
-            ip_queue[ip] = nil
-
-            minetest.log('error', '[anti_vpn] HTTP request failed for ' .. ip)
-            --minetest.log('error', dump(result))
-        end
-
-        active_requests = active_requests - 1
-
-        -- Start a new lookup immediately, if we have one, and if previous
-        -- was successful.
-        if result.succeeded then process_ip_queue() end
-    end)
+    fetch_vpnapi_provider(ip)
 end
 
 function anti_vpn.get_vpn_data_for(ip)

@@ -28,9 +28,11 @@ local function resolve_ip(txt)
 
     -- Maybe its a player's name.  If yes, use their IP.
     local player = minetest.get_player_information(txt)
-    local ip = player and player.address
-    ip = sanitize_ipv4(ip)
-    if anti_vpn.is_valid_ip(ip) then return ip end
+    if player then
+        local ip = sanitize_ipv4(player.address or '')
+        if anti_vpn.is_valid_ip(ip) then return ip end
+    end
+
     return nil
 end
 

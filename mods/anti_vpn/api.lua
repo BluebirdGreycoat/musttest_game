@@ -186,6 +186,7 @@ anti_vpn.lookup = function(pname, ip)
 
     if operating_mode == 'off' then return true, false end
 
+    -- Check name against VPN whitelist.
     if player_data[pname] and player_data[pname].bypass then
         return true, false
     end

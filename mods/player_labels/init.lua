@@ -281,7 +281,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
         "Protocol Version:  " .. info.protocol_version,
         "Formspec Version:  " .. info.formspec_version,
         "Language Code:     " .. get_stringna(info.lang_code),
-        "Login Name:        " .. rename.grn(target),
+        "Login Name:        " .. rename.grn(oname),
         "VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
         "Country:           " .. get_stringna(vpn.country),
         "Continent:         " .. get_stringna(vpn.continent),

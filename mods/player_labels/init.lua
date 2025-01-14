@@ -257,6 +257,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       local uname = user:get_player_name()
       local oname = object:get_player_name()
 
+      -- Protection for cloaked users.
       if gdac_invis.is_invisible(oname) == true then return end
       if cloaking.is_cloaked(oname) then return end
 

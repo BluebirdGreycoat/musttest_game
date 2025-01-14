@@ -264,7 +264,6 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       -- Protection against random noob acounts using this ...
       if not passport.player_has_key(uname, user) then return end
 
-      local sex = skins.get_gender_strings(oname)
       local xp_amount = xp.get_xp(oname, "digxp")
       local info = minetest.get_player_information(oname)
 

@@ -495,7 +495,10 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
     ip = testdata_player_ip[pname] or ip -- Hack for testing.
     local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
-    if found and blocked then
+    -- Always get IP data for everyone, including whitelisted.
+    if not found then anti_vpn.enqueue_lookup(ip) end
+
+    if found and blocked and not whitelisted then
         minetest.log('warning', '[anti_vpn] blocking player ' .. pname .. ' from ' .. ip .. ' mode=' .. operating_mode)
         if operating_mode == 'enforce' then
             return get_kick_text(pname, ip)
@@ -503,8 +506,6 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
             return nil
         end
     end
-
-    if not found then anti_vpn.enqueue_lookup(ip) end
 
     return nil
 end
@@ -517,8 +518,13 @@ anti_vpn.on_joinplayer = function(player, last_login)
 
     local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
-    if found and blocked then kick_player(pname, ip) end
+    -- Always get IP data for everyone, including whitelisted.
     if not found then anti_vpn.enqueue_lookup(ip) end
+
+    if found and blocked and not whitelisted then
+        minetest.log('warning', '[anti_vpn] kicking player ' .. pname .. ' from ' .. ip .. ' mode=' .. operating_mode)
+        kick_player(pname, ip)
+    end
 end
 
 anti_vpn.flush_mod_storage = function()
@@ -597,7 +603,7 @@ local function async_player_kick()
 
         local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
-        if found and blocked then
+        if found and blocked and not whitelisted then
             kick_player(pname, ip)
             count = count + 1
         end

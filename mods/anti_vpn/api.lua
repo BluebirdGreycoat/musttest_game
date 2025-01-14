@@ -448,7 +448,7 @@ process_ip_queue = function()
 end
 
 function anti_vpn.get_vpn_data_for(ip)
-    return ip_data[ip] -- Or nil.
+    return ip_data[sanitize_ipv4(ip)] -- Or nil.
 end
 
 -- If IP is in ip_data, do nothing.  If not, queue up a remote lookup.

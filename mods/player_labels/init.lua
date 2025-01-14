@@ -224,6 +224,27 @@ end
 
 
 
+local function get_truefalse(slave)
+	if slave == true then
+		return "YES"
+	elseif slave == false then
+		return "NO"
+	else
+		return "N/A"
+	end
+end
+
+local function get_stringna(str)
+	if str == nil then
+		return "N/A"
+	elseif str == "" then
+		return "N/A"
+	else
+		return str
+	end
+end
+
+
 -- This function is called whenever the player uses the ID token.
 player_labels.on_token_use = function(itemstack, user, pointed_thing)
   if not user then return end
@@ -241,10 +262,48 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 
 			local sex = skins.get_gender_strings(oname)
 			local xp_amount = xp.get_xp(oname, "digxp")
+			local info = minetest.get_player_information(oname)
+
+			if not info then
+        minetest.chat_send_player(uname, "# Server: error getting target information.")
+        return
+      end
+
+      local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
+
+      -- Non-doxable info only, please.
+			local tb = {
+        "Mineral XP:        " .. string.format("%.3f", xp_amount),
+        "Connection Uptime: " .. info.connection_uptime,
+        "Avg RTT:           " .. (info.avg_rtt and string.format("%.3f", info.avg_rtt)) or "N/A",
+        "Min RTT:           " .. (info.min_rtt and string.format("%.3f", info.min_rtt)) or "N/A",
+        "Max RTT:           " .. (info.max_rtt and string.format("%.3f", info.max_rtt)) or "N/A",
+        "Protocol Version:  " .. info.protocol_version,
+        "Formspec Version:  " .. info.formspec_version,
+        "Language Code:     " .. get_stringna(info.lang_code),
+        "Login Name:        " .. rename.grn(target),
+        "VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
+        "Country:           " .. get_stringna(vpn.country),
+        "Continent:         " .. get_stringna(vpn.continent),
+        "Country Code:      " .. get_stringna(vpn.country_code),
+        "Continent Code:    " .. get_stringna(vpn.continent_code),
+        "Time Zone:         " .. get_stringna(vpn.time_zone),
+        "EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
+        "Is VPN:            " .. get_truefalse(vpn.is_vpn),
+        "Is Proxy:          " .. get_truefalse(vpn.is_proxy),
+        "Is Tor:            " .. get_truefalse(vpn.is_tor),
+        "Is Relay:          " .. get_truefalse(vpn.is_relay),
+        "Is Mobile:         " .. get_truefalse(vpn.is_mobile),
+        "Is Hosting:        " .. get_truefalse(vpn.is_hosting),
+			}
       
-      minetest.chat_send_player(uname, "# Server: Player's alias is <" .. rename.gpn(oname) .. ">; " .. sex.his .. " login name is <" .. oname .. ">.")
-			minetest.chat_send_player(uname, "# Server: Player <" .. rename.gpn(oname) .. ">'s mineral XP is " .. xp_amount .. ".")
-      minetest.chat_send_player(oname, "# Server: Player <" .. rename.gpn(uname) .. "> identified you.")
+      minetest.chat_send_player(name, "# Server: INFO for account <" .. rename.gpn(oname) .. ">:")
+      for k, v in ipairs(tb) do
+        minetest.chat_send_player(name, "# Server:     " .. v)
+      end
+
+      -- Inform victim.
+      minetest.chat_send_player(oname, "# Server: Entity <" .. rename.gpn(uname) .. "> identified you.")
       
       refcount_increment(oname)
       nametag_show(oname)

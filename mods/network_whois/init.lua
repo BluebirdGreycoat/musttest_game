@@ -54,8 +54,7 @@ function network_whois.display(name, target, formatting)
 	end
 
 	if formatting == "table" then
-		-- VPN API expects IPv4 to be in the old form. IPv6 is used as-is.
-		local vpn = anti_vpn.get_vpn_data_for(sanitize_ipv4(info.address)) or {}
+		local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
 
 		local tb = {
 			"IP Address:        " .. sanitize_ipv4(info.address),

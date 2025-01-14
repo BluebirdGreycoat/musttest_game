@@ -271,7 +271,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 
       local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
 
-      -- Non-doxable info only, please.
+      -- No info that could lead to doxing, please.
       local tb = {
         "Mineral XP:        " .. string.format("%.3f", xp_amount),
         "Connection Uptime: " .. info.connection_uptime,

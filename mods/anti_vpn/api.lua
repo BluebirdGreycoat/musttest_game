@@ -6,7 +6,8 @@ anti_vpn = {}
 
 -- By default, talk to local testing stub.  For production, you should
 -- configure the settings in `minetest.conf`.  See the `README.md` file.
-local DEFAULT_URL = 'http://localhost:48888'
+local DEFAULT_VPNAPI_URL = 'http://localhost:48888'
+local DEFAULT_IPAPI_URL = 'http://localhost:48888'
 
 -- User agent to transmit with HTTP requests.
 local USER_AGENT = 'https://github.com/EdenLostMinetest/anti_vpn'
@@ -50,6 +51,7 @@ local ip_queue = {}
 
 -- Count of outstanding HTTP requests.
 local active_requests_vpnapi = 0
+local active_requests_ipapi = 0
 
 -- Allow/Deny/Lockdown info, per player.
 -- Key = player name
@@ -62,9 +64,11 @@ local player_data = {}
 local mod_storage = minetest.get_mod_storage()
 
 -- Never expose the APIKEY outside this mod.
+-- This is used with vpnapi.io
 local apikey = nil
 
-local vpnapi_url = DEFAULT_URL
+local vpnapi_url = DEFAULT_VPNAPI_URL
+local ipapi_url = DEFAULT_IPAPI_URL
 
 local function count_keys(tbl)
     local count = 0
@@ -232,19 +236,22 @@ anti_vpn.delete_ip = function(ip)
     anti_vpn.flush_mod_storage()
 end
 
-local process_ip_queue -- Forward declare function.
+-- Forward declare function.
+local process_ip_queue
+
+-- VPNAPI.io seems to give us the goods w.r.t. whether connection is a VPN.
 local function handle_vpnapi_response(result)
     if result.succeeded then
         local tbl = minetest.parse_json(result.data)
         if type(tbl) ~= 'table' then
-            minetest.log('error', '[anti_vpn] HTTP response is not JSON?')
+            minetest.log('error', '[anti_vpn] vpnapi.io HTTP response is not JSON?')
             -- Don't write to console, that could mess it up.
             --minetest.log('error', dump(result))
             return
         end
 
         if tbl['ip'] == nil then
-            minetest.log('error', '[anti_vpn] HTTP response is missing the original IP address.')
+            minetest.log('error', '[anti_vpn] vpnapi.io HTTP response is missing the original IP address.')
             --minetest.log('error', dump(result))
             return
         end
@@ -264,7 +271,7 @@ local function handle_vpnapi_response(result)
         local region = tbl['location'] and tbl.location.region or ''
         local continent = tbl['location'] and tbl.location.continent or ''
         local timezone = tbl['location'] and tbl.location.time_zone or ''
-        local is_eu = tbl['location'] and tbl.location.is_in_european_union or ''
+        local is_eu = tbl['location'] and tbl.location.is_in_european_union or false
         local lat = tbl['location'] and tbl.location.latitude or ''
         local lon = tbl['location'] and tbl.location.longitude or ''
         local locale_code = tbl['location'] and tbl.location.locale_code or ''
@@ -305,15 +312,12 @@ local function handle_vpnapi_response(result)
         ip_data[ip]['is_relay'] = is_relay
 
         anti_vpn.flush_mod_storage()
-        ip_queue[ip] = nil
 
         -- Make the log message somewhat parseable w/ "awk", in case we
         -- need to reconstruct our database from just the log files.
-        minetest.log('action', '[anti_vpn] HTTP response: ip:' .. ip .. ' blocked:' .. tostring(blocked) .. ' asn:' .. asn .. ' country:' .. country)
+        minetest.log('action', '[anti_vpn] vpnapi.io HTTP response: ip:' .. ip .. ' blocked:' .. tostring(blocked) .. ' asn:' .. asn .. ' country:' .. country)
     else
-        ip_queue[ip] = nil
-
-        minetest.log('error', '[anti_vpn] HTTP request failed for ' .. ip)
+        minetest.log('error', '[anti_vpn] vpnapi.io HTTP request failed for ' .. ip)
         --minetest.log('error', dump(result))
     end
 
@@ -324,7 +328,64 @@ local function handle_vpnapi_response(result)
     if result.succeeded then process_ip_queue() end
 end
 
+-- We query IP-API.com to get a little more information ...
+local function handle_ipapi_response(result)
+    if result.succeeded then
+        local tbl = minetest.parse_json(result.data)
+        if type(tbl) ~= 'table' then
+            minetest.log('error', '[anti_vpn] ip-api.com HTTP response is not JSON?')
+            -- Don't write to console, that could mess it up.
+            --minetest.log('error', dump(result))
+            return
+        end
+
+        if tbl['query'] == nil then
+            minetest.log('error', '[anti_vpn] ip-api.com HTTP response is missing the original IP address.')
+            --minetest.log('error', dump(result))
+            return
+        end
+
+        local ip = tbl.query
+
+        local district = tbl.district or ''
+        local zipcode = tbl.zip or ''
+        local isp = tbl.isp or ''
+        local mobile = tbl.mobile or false
+        local hosting = tbl.hosting or false
+        local proxy = tbl.proxy or false
+
+        -- Don't remove existing data, but we may overwrite.
+        ip_data[ip] = ip_data[ip] or {}
+
+        ip_data[ip]['district'] = district
+        ip_data[ip]['zip'] = zipcode
+        ip_data[ip]['isp'] = isp
+        ip_data[ip]['is_mobile'] = mobile
+        ip_data[ip]['is_hosting'] = hosting
+
+        -- This one is also obtained from vpnapi.io
+        -- Set 'true' if either provider set 'true'.
+        ip_data[ip]['is_proxy'] = ip_data[ip]['is_proxy'] or proxy
+
+        anti_vpn.flush_mod_storage()
+
+        minetest.log('action', '[anti_vpn] ip-api.com HTTP response: ip:' .. ip)
+    else
+        minetest.log('error', '[anti_vpn] ip-api.com HTTP request failed for ' .. ip)
+        --minetest.log('error', dump(result))
+    end
+
+    active_requests_ipapi = active_requests_ipapi - 1
+
+    -- Start a new lookup immediately, if we have one, and if previous
+    -- was successful.
+    if result.succeeded then process_ip_queue() end
+end
+
 local function fetch_vpnapi_provider(ip)
+    -- API key required.
+    if apikey == nil then return end
+
     -- Only one request at a time please.
     if active_requests_vpnapi > 0 then return end
     active_requests_vpnapi = active_requests_vpnapi + 1
@@ -343,6 +404,26 @@ local function fetch_vpnapi_provider(ip)
     }, handle_vpnapi_response)
 end
 
+local function fetch_ipapi_provider(ip)
+    -- Only one request at a time please.
+    if active_requests_ipapi > 0 then return end
+    active_requests_ipapi = active_requests_ipapi + 1
+
+    -- Queue up an external lookup.  This is async and can take several
+    -- seconds, so we don't want to block the server during this time.
+    -- We'll allow the login for now, and kick the player later if needed.
+    local url = ipapi_url .. '/json/' .. ip
+    local fields = "17556000"
+    minetest.log('action', '[anti_vpn] fetching ' .. url)
+
+    http_api.fetch({
+        url = url .. '?fields=' .. fields,
+        method = 'GET',
+        user_agent = USER_AGENT,
+        timeout = DEFAULT_TIMEOUT
+    }, handle_ipapi_response)
+end
+
 -- Called on demand, and from async timer, to serially process the ip_queue.
 process_ip_queue = function()
     if operating_mode == 'off' then return end
@@ -357,8 +438,10 @@ process_ip_queue = function()
     end
 
     local ip = next(ip_queue)
+    ip_queue[ip] = nil
 
     fetch_vpnapi_provider(ip)
+    fetch_ipapi_provider(ip)
 end
 
 function anti_vpn.get_vpn_data_for(ip)
@@ -477,7 +560,8 @@ anti_vpn.init = function(http_api_provider)
         minetest.log('error', '[anti_vpn] Failed to lookup vpnapi.io api key.')
     end
 
-    vpnapi_url = minetest.settings:get('anti_vpn.provider.vpnapi.url') or DEFAULT_URL
+    vpnapi_url = minetest.settings:get('anti_vpn.provider.vpnapi.url') or DEFAULT_VPNAPI_URL
+    ipapi_url = minetest.settings:get('anti_vpn.provider.ip_api.url') or DEFAULT_IPAPI_URL
 end
 
 local function async_player_kick()

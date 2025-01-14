@@ -61,7 +61,10 @@ function network_whois.display(name, target, formatting)
 			"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
 			"ASN:               " .. (vpn.asn or "N/A"),
 			"ASO:               " .. (vpn.aso or "N/A"),
+			"ISP:               " .. (vpn.isp or "N/A"),
 			"City:              " .. (vpn.city or "N/A"),
+			"District:          " .. (vpn.district or "N/A"),
+			"Zip:               " .. (vpn.zip or "N/A"),
 			"Region:            " .. (vpn.region or "N/A"),
 			"Country:           " .. (vpn.country or "N/A"),
 			"Continent:         " .. (vpn.continent or "N/A"),
@@ -76,6 +79,8 @@ function network_whois.display(name, target, formatting)
 			"Is Proxy:          " .. get_truefalse(vpn.is_proxy),
 			"Is Tor:            " .. get_truefalse(vpn.is_tor),
 			"Is Relay:          " .. get_truefalse(vpn.is_relay),
+			"Is Mobile:         " .. get_truefalse(vpn.is_mobile),
+			"Is Hosting:        " .. get_truefalse(vpn.is_hosting),
 		}
 
 		minetest.chat_send_player(name, "# Server: WHOIS data for account <" .. rename.gpn(target) .. ">:")

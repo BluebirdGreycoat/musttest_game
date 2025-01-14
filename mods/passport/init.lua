@@ -652,6 +652,10 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 				"# Server: A newly fashioned Key of Citizenship emits a soft blue glow mere moments after its crafter finishes the device.")
 		end)
 
+		-- Add this user to the VPN whitelist.
+		-- VPN-based blocking is for new players and hit-&-run trolls, not established players (even if they do turn out to be trouble)!
+		anti_vpn.whitelist_player(pname, true)
+
 		-- Clear cache of player registration.
 		passport.keyed_players[pname] = nil
 		passport.registered_players[pname] = nil

@@ -273,12 +273,12 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
       local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
 
       -- No info that could lead to doxing, please.
+      -- RTT is potentially hazardous for a non-VPN user.
+      -- No TZ, that narrows location too much.
+      -- Unify VPN/proxy/tor/relay/hosting into one line.
       local tb = {
         "Mineral XP:        " .. string.format("%.3f", xp_amount),
         "Connection Uptime: " .. info.connection_uptime,
-        "Avg RTT:           " .. (info.avg_rtt and string.format("%.3f", info.avg_rtt)) or "N/A",
-        "Min RTT:           " .. (info.min_rtt and string.format("%.3f", info.min_rtt)) or "N/A",
-        "Max RTT:           " .. (info.max_rtt and string.format("%.3f", info.max_rtt)) or "N/A",
         "Protocol Version:  " .. info.protocol_version,
         "Formspec Version:  " .. info.formspec_version,
         "Language Code:     " .. get_stringna(info.lang_code),
@@ -287,12 +287,8 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
         "Country:           " .. get_stringna(vpn.country),
         "Continent:         " .. get_stringna(vpn.continent),
         "EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
-        "Is VPN:            " .. get_truefalse(vpn.is_vpn),
-        "Is Proxy:          " .. get_truefalse(vpn.is_proxy),
-        "Is Tor:            " .. get_truefalse(vpn.is_tor),
-        "Is Relay:          " .. get_truefalse(vpn.is_relay),
-        "Is Mobile:         " .. get_truefalse(vpn.is_mobile),
-        "Is Hosting:        " .. get_truefalse(vpn.is_hosting),
+        "Stealth Mode:      " .. get_truefalse(vpn.is_vpn or vpn.is_tor or vpn.is_proxy or vpn.is_relay or vpn.is_hosting),
+        "Mobile Connection: " .. get_truefalse(vpn.is_mobile),
       }
 
       minetest.chat_send_player(uname, "# Server: INFO for account <" .. rename.gpn(oname) .. ">:")

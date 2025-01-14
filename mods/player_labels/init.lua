@@ -285,8 +285,6 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
         "VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
         "Country:           " .. get_stringna(vpn.country),
         "Continent:         " .. get_stringna(vpn.continent),
-        "Country Code:      " .. get_stringna(vpn.country_code),
-        "Continent Code:    " .. get_stringna(vpn.continent_code),
         "Time Zone:         " .. get_stringna(vpn.time_zone),
         "EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
         "Is VPN:            " .. get_truefalse(vpn.is_vpn),

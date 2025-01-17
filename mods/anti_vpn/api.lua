@@ -470,7 +470,7 @@ end
 
 -- If IP is in ip_data, do nothing.  If not, queue up a remote lookup.
 -- Returns nothing.
-anti_vpn.enqueue_lookup = function(ip)
+anti_vpn.enqueue_lookup = function(ip, pname)
     if not anti_vpn.is_valid_ip(ip) then return end
 
     -- Don't bother looking up private/LAN IPs.
@@ -482,8 +482,13 @@ anti_vpn.enqueue_lookup = function(ip)
     -- If IP is already queued, then do nothing.
     if ip_queue[ip] ~= nil then return end
 
-    ip_queue[ip] = os.time();
-    minetest.log('action', '[anti_vpn] Queueing request for ' .. ip)
+    ip_queue[ip] = os.time()
+
+    local namestr = ""
+    if pname then
+        namestr = " (" .. pname .. ")"
+    end
+    minetest.log('action', '[anti_vpn] Queueing request for ' .. ip .. namestr)
 
     process_ip_queue()
 end
@@ -498,7 +503,7 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
     local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
     -- Always get IP data for everyone, including whitelisted.
-    if not found then anti_vpn.enqueue_lookup(ip) end
+    if not found then anti_vpn.enqueue_lookup(ip, pname) end
 
     if found and blocked and not whitelisted then
         minetest.log('warning', '[anti_vpn] blocking player ' .. pname .. ' from ' .. ip .. ' mode=' .. operating_mode)
@@ -521,7 +526,7 @@ anti_vpn.on_joinplayer = function(player, last_login)
     local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)
 
     -- Always get IP data for everyone, including whitelisted.
-    if not found then anti_vpn.enqueue_lookup(ip) end
+    if not found then anti_vpn.enqueue_lookup(ip, pname) end
 
     if found and blocked and not whitelisted then
         minetest.log('warning', '[anti_vpn] kicking player ' .. pname .. ' from ' .. ip .. ' mode=' .. operating_mode)
@@ -626,7 +631,7 @@ anti_vpn.enqueue_connected_players = function()
     for _, player in ipairs(minetest.get_connected_players()) do
         local pname = player:get_player_name()
         local ip = anti_vpn.get_player_ip(pname)
-        anti_vpn.enqueue_lookup(ip)
+        anti_vpn.enqueue_lookup(ip, pname)
     end
 end
 

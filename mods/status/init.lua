@@ -9,21 +9,51 @@ local WEBADDR = minetest.settings:get("server_address")
 local STATUS_COLOR = core.get_color_escape_sequence("#0d9b7b")
 status.color = STATUS_COLOR
 
+-- Enhanced info for admin's eyes only.
+local function get_admin_info(pname)
+	local info = minetest.get_player_information(pname)
+	if not info then return "" end
 
+	local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
+
+	local s = {}
+
+	if vpn.is_vpn or vpn.is_proxy or vpn.is_tor or vpn.is_relay or vpn.is_hosting then
+		s[#s+1] = "Stealth"
+	end
+	if vpn.is_mobile then
+		s[#s+1] = "Mobile"
+	end
+
+	if #s > 0 then
+		return " (" .. table.concat(s, ", ") .. ")"
+	end
+
+	return ""
+end
 
 function status.chat_players(user, param)
 	do
+		local admincmd = minetest.check_player_privs(user, {server=true})
+
 		-- Serialize player names to string.
 		local players = minetest.get_connected_players()
 		local clients = "{"
 		local num_clients = 0
+
 		for k, v in ipairs(players) do
+			-- Some players can hide from the player list, but admins always see everyone.
 			local hide = minetest.check_player_privs(v:get_player_name(), {statushide=true})
-			if hide == false then
-				clients = clients .. rename.gpn(v:get_player_name()) .. ", "
+			if hide == false or admincmd == true then
+				local admininfo = ""
+				if admincmd == true then
+					admininfo = get_admin_info(v:get_player_name())
+				end
+				clients = clients .. rename.gpn(v:get_player_name()) .. admininfo .. ", "
 				num_clients = num_clients + 1
 			end
 		end
+
 		clients = clients .. "}"
 		clients = string.gsub(clients, ", }", "}")
 

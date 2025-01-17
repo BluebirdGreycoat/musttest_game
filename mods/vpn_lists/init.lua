@@ -28,6 +28,13 @@ local function chat_cmd_handler(pname, param)
 				else
 					chat_send(pname, "Player <" .. dname .. "> wasn't in whitelist.")
 				end
+			elseif action == "test" or action == "check" or action == "get" or action == "inspect" then
+				local whitelisted = anti_vpn.whitelist_player(target, nil)
+				if whitelisted then
+					chat_send(pname, "Player <" .. dname .. "> is in VPN whitelist.")
+				else
+					chat_send(pname, "Player <" .. dname .. "> NOT in VPN whitelist.")
+				end
 			else
 				chat_send(pname, "Unrecognized command: " .. action)
 			end

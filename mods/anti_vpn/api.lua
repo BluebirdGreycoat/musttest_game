@@ -162,25 +162,27 @@ end
 
 -- Add or remove a player name from the VPN whitelist.
 -- If added, this player will be exempt from VPN kicking.
+-- Pass 'nil' to simply query if player in whitelist.
 anti_vpn.whitelist_player = function(pname, whitelist)
     local was_whitelisted = false
     if player_data[pname] and player_data[pname].bypass then
         was_whitelisted = true
     end
-    if whitelist then
+    if whitelist == true then
         -- Don't erase other stuff if it might exist.
         if player_data[pname] then
             player_data[pname].bypass = true
         else
             player_data[pname] = {bypass = true}
         end
-    else
+        anti_vpn.flush_mod_storage()
+    elseif whitelist == false
         -- Don't erase other stuff if it might exist.
         if player_data[pname] and player_data[pname].bypass then
             player_data[pname].bypass = nil
         end
+        anti_vpn.flush_mod_storage()
     end
-    anti_vpn.flush_mod_storage()
     return was_whitelisted
 end
 

@@ -176,7 +176,7 @@ anti_vpn.whitelist_player = function(pname, whitelist)
             player_data[pname] = {bypass = true}
         end
         anti_vpn.flush_mod_storage()
-    elseif whitelist == false
+    elseif whitelist == false then
         -- Don't erase other stuff if it might exist.
         if player_data[pname] and player_data[pname].bypass then
             player_data[pname].bypass = nil

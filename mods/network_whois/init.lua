@@ -40,6 +40,20 @@ local function get_stringna(str)
 	end
 end
 
+local function get_authdate(authdata)
+	local s
+	local t = authdata.first_login or 0
+	if t ~= 0 then
+		s = os.date("!%Y-%m-%d", t)
+	else
+		-- For a lot of players, first login info was populated from the chatlog.
+		-- There's no useable data before this date;
+		-- those players have a first login of 0.
+		s = "Pre 2017-07-03"
+	end
+	return s
+end
+
 function network_whois.display(name, target, formatting)
 	local player = minetest.get_player_by_name(target)
 	if not player then
@@ -68,7 +82,7 @@ function network_whois.display(name, target, formatting)
 			"Formspec Version:  " .. info.formspec_version,
 			"Language Code:     " .. get_stringna(info.lang_code),
 			"Login Name:        " .. rename.grn(target),
-			"First Login:       " .. os.date("!%Y-%m-%d", (authdata.first_login or 0)),
+			"First Login:       " .. get_authdate(authdata),
 			"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
 			"ASN:               " .. get_stringna(vpn.asn),
 			"ASO:               " .. get_stringna(vpn.aso),

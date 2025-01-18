@@ -283,7 +283,7 @@ local function make_fs(pname)
 		-- May return nil.
 		local authdata = minetest.get_auth_handler().get_auth(record_name)
 		if authdata then
-			infomsg[#infomsg+1] = "First login: " .. get_authdate(authdata)
+			infomsg[#infomsg+1] = "First login: " .. get_authdate(authdata) .. "."
 
 			if (authdata.first_login or 0) ~= 0 then
 				FIRST_LOGIN = authdata.first_login
@@ -295,12 +295,12 @@ local function make_fs(pname)
 
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
-				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
+				os.date("!%Y-%m-%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
 		end
 
 		local time_NOW = os.time()
 		if FIRST_LOGIN and time_NOW > FIRST_LOGIN then
-			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, time_NOW)
+			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, time_NOW) .. "."
 		end
 
 		if sheriff.is_cheater(record_name) then

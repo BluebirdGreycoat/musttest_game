@@ -161,8 +161,9 @@ end
 
 local function make_fs(pname)
 	local state = get_state(pname)
-	local list, filter = state.list, state.filter
+	local list, filter, iplist = state.list, state.filter, state.iplist
 	local pli, ei = state.player_index or 1, state.entry_index or 0
+	local ipindex = state.iplist_index or 0
 	if pli > #list then
 		pli = #list
 	end
@@ -182,6 +183,14 @@ local function make_fs(pname)
 	local RECLISTSZ = "15.3,3.0"
 	local INFOPOS = "4.7,5.0"
 	local INFOSZ = "15.3,6.3"
+	local IPLISTPOS = "15.98,1.8"
+	local IPLISTSZ = "4,9.5"
+
+	-- Make space for the IP list.
+	if MAY_VIEW_WHOIS then
+		RECLISTSZ = "11.05,3.0"
+		INFOSZ = "11.05,6.3"
+	end
 
 	local fs = {
 		"size[16,11.5]",
@@ -270,12 +279,10 @@ local function make_fs(pname)
 
 		if MAY_VIEW_WHOIS then
 			infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
+			infomsg[#infomsg+1] = "IPs used: " .. #ips .. "."
 
-			if #ips <= 5 then
-				infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): ["..table.concat(ips, " | ").."]"
-			else
-				infomsg[#infomsg+1] = "IPs used (" .. #ips .. "): DYNAMIC"
-			end
+			fsn=fsn+1 fs[fsn] = format("textlist[" .. IPLISTPOS .. ";" .. IPLISTSZ .. ";iplist;%s;%d;0]",
+				table.concat(ips, ","), ipindex)
 		end
 
 		-- last_pos and last_seen are per name, not per record-entry.
@@ -342,6 +349,10 @@ local function make_fs(pname)
 		fsn=fsn+1 fs[fsn] = "textlist[" .. RECLISTPOS .. ";" .. RECLISTSZ .. ";err;"..ESC(e)..";0]"
 		fsn=fsn+1 fs[fsn] = "textlist[" .. INFOPOS .. ";" .. INFOSZ .. ";info;;0]"
 		fsn=fsn+1 fs[fsn] = "label[" .. MSGPOS .. ";"..ESC(e).."]"
+
+		if MAY_VIEW_WHOIS then
+			fsn=fsn+1 fs[fsn] = "textlist[" .. IPLISTPOS .. ";" .. IPLISTSZ .. ";iplist;;0]"
+		end
 	end
 	return table.concat(fs)
 end
@@ -359,6 +370,16 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local t = minetest.explode_textlist_event(fields.player)
 		if (t.type == "CHG") or (t.type == "DCL") then
 			state.player_index = t.index
+			state.iplist_index = nil
+			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
+		end
+		return true
+	end
+
+	if fields.iplist then
+		local t = minetest.explode_textlist_event(fields.iplist)
+		if (t.type == "CHG") or (t.type == "DCL") then
+			state.iplist_index = t.index
 			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 		end
 		return true
@@ -368,6 +389,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local t = minetest.explode_textlist_event(fields.entry)
 		if (t.type == "CHG") or (t.type == "DCL") then
 			state.entry_index = t.index
+			state.iplist_index = nil
 			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 		end
 		return true

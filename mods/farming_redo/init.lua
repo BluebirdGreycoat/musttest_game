@@ -88,7 +88,7 @@ minetest.register_node(":farming:teacup", {
 
 	on_use = function(itemstack, user, pointed_thing)
 		local do_the_eat = minetest.item_eat(4, "vessels:vessels_drinking_mug")
-		hunger.apply_hot(user:get_player_name(), "drink", {heal=40, time=120})
+		hunger.apply_hot(user:get_player_name(), "drink_tea", {heal=40, time=120})
 		return do_the_eat(itemstack, user, pointed_thing)
 	end,
 

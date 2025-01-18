@@ -123,6 +123,42 @@ local function sanitize_ipv4(ip)
 	return ip
 end
 
+local function get_authdate(authdata)
+	local s
+	local t = authdata.first_login or 0
+	if t ~= 0 then
+		s = os.date("!%Y-%m-%d", t)
+	else
+		-- For a lot of players, first login info was populated from the chatlog.
+		-- There's no useable data before this date;
+		-- players whos played before the chatlog was added have a first login of 0.
+		-- (Check for IS NULL in the SQL database.)
+		s = "Pre 2017-07-03"
+	end
+	return s
+end
+
+local function get_account_age(first_login, last_login)
+	local diff = last_login - first_login
+
+	local days = math.floor(diff / (60*60*24))
+	local months = 0
+	local years = 0
+
+	-- This is making me feel stupid.
+	while days >= 30 do
+		months = months + 1
+		days = days - 30
+	end
+	while months >= 12 do
+		years = years + 1
+		months = months - 12
+	end
+
+	-- Return the result as a string
+	return string.format("%d years, %d months, %d days", years, months, days)
+end
+
 local function make_fs(pname)
 	local state = get_state(pname)
 	local list, filter = state.list, state.filter
@@ -240,9 +276,30 @@ local function make_fs(pname)
 				fsn=fsn+1 fs[fsn] = "button[13,10.3;3,1;jump;Jump To Last Pos]"
 			end
 		end
+
+		local FIRST_LOGIN
+		local LAST_LOGIN
+
+		-- May return nil.
+		local authdata = minetest.get_auth_handler().get_auth(record_name)
+		if authdata then
+			infomsg[#infomsg+1] = "First login: " .. get_authdate(authdata)
+
+			if (authdata.first_login or 0) ~= 0 then
+				FIRST_LOGIN = authdata.first_login
+			end
+			if (authdata.last_login or 0) ~= 0 then
+				LAST_LOGIN = authdata.last_login
+			end
+		end
+
 		if type(e.last_seen) == "table" and e.last_seen[record_name] then
 			infomsg[#infomsg+1] = "Last login: " ..
 				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
+		end
+
+		if FIRST_LOGIN and LAST_LOGIN and LAST_LOGIN > FIRST_LOGIN then
+			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, LAST_LOGIN)
 		end
 
 		if sheriff.is_cheater(record_name) then

@@ -10,6 +10,9 @@ local vector_round = vector.round
 -- Reloadable.
 dofile(xban.MP.."/serialize.lua")
 
+-- How many seconds (minetest.after) to check temp bans.
+local TEMP_BAN_CHECK_INTERVAL = 60
+
 local DEF_SAVE_INTERVAL = 300 -- 5 minutes
 local DEF_DB_FILENAME = minetest.get_worldpath().."/xban.db"
 
@@ -367,9 +370,13 @@ function xban.chatcommand_wl(name, params)
 end
 
 function xban.check_temp_bans()
-	minetest.after(60, function() xban.check_temp_bans() end)
+	minetest.after(TEMP_BAN_CHECK_INTERVAL, function()
+		xban.check_temp_bans()
+	end)
+
 	local to_rm = { }
 	local now = os.time()
+
 	for i, e in ipairs(xban.tempbans) do
 		if e.expires and (e.expires <= now) then
 			table.insert(to_rm, i)
@@ -379,6 +386,7 @@ function xban.check_temp_bans()
 			e.time = nil
 		end
 	end
+
 	for _, i in ipairs(to_rm) do
 		table.remove(xban.tempbans, i)
 	end

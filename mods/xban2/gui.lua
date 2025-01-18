@@ -480,6 +480,7 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local filter = fields.filter or ""
 		state.filter = filter
 		state.list = make_list(filter)
+		state.iplist_index = nil
 		minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 	end
 

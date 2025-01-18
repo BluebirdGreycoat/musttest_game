@@ -55,6 +55,7 @@ function network_whois.display(name, target, formatting)
 
 	if formatting == "table" then
 		local vpn = anti_vpn.get_vpn_data_for(info.address) or {}
+		local authdata = minetest.get_auth_handler().get_auth(target)
 
 		local tb = {
 			"IP Address:        " .. sanitize_ipv4(info.address),
@@ -67,6 +68,7 @@ function network_whois.display(name, target, formatting)
 			"Formspec Version:  " .. info.formspec_version,
 			"Language Code:     " .. get_stringna(info.lang_code),
 			"Login Name:        " .. rename.grn(target),
+			"First Login:       " .. os.date("!%Y-%m-%d", (authdata.first_login or 0)),
 			"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
 			"ASN:               " .. get_stringna(vpn.asn),
 			"ASO:               " .. get_stringna(vpn.aso),

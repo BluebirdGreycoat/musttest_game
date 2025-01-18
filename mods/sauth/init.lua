@@ -63,7 +63,7 @@ end
 local create_db = [[
 CREATE TABLE IF NOT EXISTS auth (id INTEGER PRIMARY KEY AUTOINCREMENT,
 name VARCHAR(32), password VARCHAR(512), privileges VARCHAR(512),
-last_login INTEGER);
+last_login INTEGER, first_login INTEGER);
 CREATE TABLE IF NOT EXISTS _s (import BOOLEAN);
 ]]
 db_exec(create_db)

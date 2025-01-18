@@ -122,8 +122,7 @@ function xban.ban_player(player, source, expires, reason) --> bool, err
 	e.expires = expires
 	e.banned = true
 	local msg
-	local date = (expires and os.date("%c", expires)
-	  or "The End of Time")
+	local date = (expires and os.date("%c", expires) or "The End of Time")
 	if expires then
 		table.insert(xban.tempbans, e)
 		msg = ("Banned: Expires: %s, Reason: %s"):format(date, reason)

@@ -298,8 +298,9 @@ local function make_fs(pname)
 				os.date("!%Y/%m/%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
 		end
 
-		if FIRST_LOGIN and LAST_LOGIN and LAST_LOGIN > FIRST_LOGIN then
-			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, LAST_LOGIN)
+		local time_NOW = os.time()
+		if FIRST_LOGIN and time_NOW > FIRST_LOGIN then
+			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, time_NOW)
 		end
 
 		if sheriff.is_cheater(record_name) then

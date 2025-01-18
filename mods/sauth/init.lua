@@ -152,7 +152,7 @@ end
 
 -- Prepared statements.
 local stmt_add_record = db:prepare([[
-	INSERT INTO auth (name, password, privileges, last_login) VALUES (?, ?, ?, ?)
+	INSERT INTO auth (name, password, privileges, last_login, first_login) VALUES (?, ?, ?, ?, ?)
 ]])
 assert(stmt_add_record, db:errmsg())
 
@@ -179,9 +179,9 @@ assert(stmt_del_record, db:errmsg())
 
 
 -- Actions.
-local function add_record(name, password, privs, last_login)
+local function add_record(name, password, privs, last_login, first_login)
 	stmt_add_record:reset()
-	assert(stmt_add_record:bind_values(name, password, privs, last_login) == _sql.OK)
+	assert(stmt_add_record:bind_values(name, password, privs, last_login, first_login) == _sql.OK)
 	assert(stmt_add_record:step() == _sql.DONE)
 end
 
@@ -266,7 +266,8 @@ sauth.auth_handler = {
 		local record = {
 			password = r.password,
 			privileges = privileges,
-			last_login = tonumber(r.last_login)
+			last_login = tonumber(r.last_login),
+			first_login = tonumber(r.first_login or 0),
 		}
 		if not auth_table[name] and add_to_cache then auth_table[name] = record end -- Cache if reqd
 		return record
@@ -276,14 +277,15 @@ sauth.auth_handler = {
 		assert(type(name) == 'string')
 		assert(type(password) == 'string')
 		local ts, privs = os.time()
+		local first_login = os.time()
 		if core.settings then
 			privs = core.settings:get("default_privs")
 		else
 			-- use old method
 			privs = core.setting_get("default_privs")
 		end
-		-- Params: name, password, privs, last_login
-		add_record(name,password,privs,ts)
+		-- Params: name, password, privs, last_login, first_login
+		add_record(name,password,privs,ts,first_login)
 		return true
 	end,
 

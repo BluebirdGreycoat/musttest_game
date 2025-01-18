@@ -184,6 +184,11 @@ function xban.add_whitelist(name_or_ip, source)
 	return true
 end
 
+-- Get ban records and 'last pos' of player.
+-- Returns:
+--     1) nil, message
+--     2) records, last_pos
+--     3) records, nil
 function xban.get_record(player)
 	local e = xban.find_entry(player)
 

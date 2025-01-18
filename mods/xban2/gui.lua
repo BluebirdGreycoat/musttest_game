@@ -170,6 +170,10 @@ local function make_fs(pname)
 	-- Can this formspec user teleport?
 	local USER_CAN_TELEPORT = minetest.check_player_privs(pname, {teleport=true})
 
+	-- Only server operators should see detailed connection info.
+	-- Also keep the admin's alt(s) top secret :)
+	local MAY_VIEW_WHOIS = minetest.check_player_privs(pname, {server=true})
+
 	-- GUI element positions.
 	local MSGPOS = "0.5,12.0"
 	local PLISTPOS = "0.5,1.8"
@@ -264,9 +268,7 @@ local function make_fs(pname)
 		
 		local infomsg = {}
 
-		-- Only the server operator should be able to see this info.
-		-- Keep the admin's alt(s) top secret :)
-		if minetest.check_player_privs(pname, {server=true}) then
+		if MAY_VIEW_WHOIS then
 			infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
 
 			if #ips <= 5 then

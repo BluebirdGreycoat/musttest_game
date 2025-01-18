@@ -13,6 +13,9 @@ dofile(xban.MP.."/serialize.lua")
 -- How many seconds (minetest.after) to check temp bans.
 local TEMP_BAN_CHECK_INTERVAL = 60
 
+-- Whether to record IP/name information for temporary (non-PoC/KoC) accounts.
+local RECORD_TEMP_ACCOUNTS = true
+
 local DEF_SAVE_INTERVAL = 300 -- 5 minutes
 local DEF_DB_FILENAME = minetest.get_worldpath().."/xban.db"
 
@@ -217,10 +220,12 @@ function xban.on_prejoinplayer(name, ip)
 	if minetest.check_player_privs(name, {server=true}) then
 		return
 	end
+
 	local wl = xban.db.whitelist or { }
 	if wl[name] or wl[ip] then return end
 	local e = xban.find_entry(name) or xban.find_entry(ip)
 	if not e then return end
+
 	if e.banned then
 		local date = (e.expires and os.date("%c", e.expires) or "The End of Time")
 		return ("\nBanned!\nExpires: %s\nReason: %s"):format(date, e.reason)
@@ -231,34 +236,31 @@ function xban.on_joinplayer(player)
 	local name = player:get_player_name()
 	local e = xban.find_entry(name)
 	local ip = minetest.get_player_ip(name)
+
 	if not e then
-		-- Don't create database entries for players who never registered.
-		-- This keeps the database size limited to only those players who
-		-- decided to play on the server for a while. Guests are not included.
-		if ip and passport.player_registered(name) then
+		if ip and (RECORD_TEMP_ACCOUNTS or passport.player_registered(name)) then
 			e = xban.find_entry(ip, true)
 		else
 			return
 		end
 	end
+
 	e.names[name] = true
 	if ip then
 		e.names[ip] = true
 	end
+
 	e.last_seen[name] = os.time()
 end
 
 function xban.on_leaveplayer(player, timeout)
 	local pname = player:get_player_name()
-
-	-- Don't record last_pos for temporary accounts.
-	if not passport.player_registered(pname) then
-		return
-	end
-
 	local e = xban.find_entry(pname)
+
 	if e then
-		e.last_pos[pname] = player:get_pos()
+		if RECORD_TEMP_ACCOUNTS or passport.player_registered(pname) then
+			e.last_pos[pname] = vector_round(player:get_pos())
+		end
 	end
 end
 

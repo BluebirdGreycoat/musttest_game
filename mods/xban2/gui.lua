@@ -91,7 +91,9 @@ local function get_state(name)
 		state = { index=1, filter="" }
 		states[name] = state
 		state.list, state.dropped = make_list()
+		state.iplist = {}
 	end
+	if not state.iplist then state.iplist = {} end
 	return state
 end
 
@@ -159,14 +161,34 @@ local function get_account_age(first_login, last_login)
 	return string.format("%d years, %d months, %d days", years, months, days)
 end
 
+local function get_truefalse(slave)
+	if slave == true then
+		return "YES"
+	elseif slave == false then
+		return "NO"
+	else
+		return "N/A"
+	end
+end
+
+local function get_stringna(str)
+	if str == nil then
+		return "N/A"
+	elseif str == "" then
+		return "N/A"
+	else
+		return str
+	end
+end
+
 local function make_fs(pname)
 	local state = get_state(pname)
 	local list, filter, iplist = state.list, state.filter, state.iplist
 	local pli, ei = state.player_index or 1, state.entry_index or 0
 	local ipindex = state.iplist_index or 0
-	if pli > #list then
-		pli = #list
-	end
+
+	if pli > #list then pli = #list end
+	if ipindex > #iplist then ipindex = #iplist end
 
 	-- Can this formspec user teleport?
 	local USER_CAN_TELEPORT = minetest.check_player_privs(pname, {teleport=true})
@@ -229,6 +251,7 @@ local function make_fs(pname)
 
 	local record_name = list[pli]
 	if record_name then
+		local bed_respawn_loc = beds.get_respawn_pos_or_nil(record_name)
 		local e, strings, gotten = get_record_simple(record_name)
 
 		for i, r in ipairs(strings) do
@@ -247,7 +270,7 @@ local function make_fs(pname)
 				rec = e.record[1]
 				state.entry_index = 1
 				ei = 1
-			end	
+			end
 
 			fsn=fsn+1 fs[fsn] = format("label[" .. MSGPOS .. ";%s]",
 
@@ -274,69 +297,128 @@ local function make_fs(pname)
 				ips[#ips+1] = sanitize_ipv4(k) -- Is an IP address.
 			end
 		end
-		
-		local infomsg = {}
 
 		if MAY_VIEW_WHOIS then
-			infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
-			infomsg[#infomsg+1] = "IPs used: " .. #ips .. "."
-
 			fsn=fsn+1 fs[fsn] = format("textlist[" .. IPLISTPOS .. ";" .. IPLISTSZ .. ";iplist;%s;%d;0]",
 				table.concat(ips, ","), ipindex)
+			state.iplist = ips
+		else
+			state.iplist = nil
+			state.iplist_index = nil
 		end
 
-		-- last_pos and last_seen are per name, not per record-entry.
+		-- We can also add a button to allow the formspec user to jump to this
+		-- location.
+		local the_last_pos
 		if type(e.last_pos) == "table" and e.last_pos[record_name] then
-			infomsg[#infomsg+1] = "User was last seen at " ..
-				rc.pos_to_namestr(vector_round(e.last_pos[record_name])) .. "."
-
-			-- We can also add a button to allow the formspec user to jump to this
-			-- location.
+			the_last_pos = e.last_pos[record_name]
+		end
+		if the_last_pos then
 			if USER_CAN_TELEPORT then
 				fsn=fsn+1 fs[fsn] = "button[17,11.6;3,0.6;jump;Jump To Last Pos]"
 			end
 		end
 
-		local bed_respawn_loc = beds.get_respawn_pos_or_nil(record_name)
 		if bed_respawn_loc then
-			infomsg[#infomsg+1] = "Home position at " ..
-				rc.pos_to_namestr(vector_round(bed_respawn_loc)) .. "."
-
 			if USER_CAN_TELEPORT then
 				fsn=fsn+1 fs[fsn] = "button[13.7,11.6;3,0.6;jumphome;Jump To Home]"
 			end
 		end
 
-		local FIRST_LOGIN
-		local LAST_LOGIN
+		-- Strings to store in the info message box.
+		local infomsg = {}
 
-		-- May return nil.
-		local authdata = minetest.get_auth_handler().get_auth(record_name)
-		if authdata then
-			infomsg[#infomsg+1] = "First login: " .. get_authdate(authdata) .. "."
+		if state.iplist_index and MAY_VIEW_WHOIS then
+			-- Show WHOIS data for the selected IP.
+			local ip = iplist[ipindex]
+			if ip then
+				local whois = anti_vpn.get_vpn_data_for(ip)
+				if whois then
+					local tb = {
+						"IP Address:        " .. ip,
+						"VPN Last Updated:  " .. ((vpn.created and os.date("!%Y-%m-%d", vpn.created)) or "Never"),
+						"ASN:               " .. get_stringna(vpn.asn),
+						"ASO:               " .. get_stringna(vpn.aso),
+						"ISP:               " .. get_stringna(vpn.isp),
+						"City:              " .. get_stringna(vpn.city),
+						"District:          " .. get_stringna(vpn.district),
+						"Zip:               " .. get_stringna(vpn.zip),
+						"Region:            " .. get_stringna(vpn.region),
+						"Country:           " .. get_stringna(vpn.country),
+						"Continent:         " .. get_stringna(vpn.continent),
+						"Region Code:       " .. get_stringna(vpn.region_code),
+						"Country Code:      " .. get_stringna(vpn.country_code),
+						"Continent Code:    " .. get_stringna(vpn.continent_code),
+						"Latitude:          " .. get_stringna(vpn.lat),
+						"Longitude:         " .. get_stringna(vpn.lon),
+						"Time Zone:         " .. get_stringna(vpn.time_zone),
+						"EU Vassal Slave:   " .. get_truefalse(vpn.is_in_eu), -- Have to put some humor in this. >:[
+						"Is VPN:            " .. get_truefalse(vpn.is_vpn),
+						"Is Proxy:          " .. get_truefalse(vpn.is_proxy),
+						"Is Tor:            " .. get_truefalse(vpn.is_tor),
+						"Is Relay:          " .. get_truefalse(vpn.is_relay),
+						"Is Mobile:         " .. get_truefalse(vpn.is_mobile),
+						"Is Hosting:        " .. get_truefalse(vpn.is_hosting),
+					}
 
-			if (authdata.first_login or 0) ~= 0 then
-				FIRST_LOGIN = authdata.first_login
+					for k, v in ipairs(tb) do
+						infomsg[#infomsg+1] = v
+					end
+				else
+					infomsg[#infomsg+1] = "IP: " .. ip
+					infomsg[#infomsg+1] = "WHOIS data not available for this IP."
+					anti_vpn.enqueue_lookup(ip)
+				end
+			else
+				infomsg[#infomsg+1] = "Invalid selection."
 			end
-			if (authdata.last_login or 0) ~= 0 then
-				LAST_LOGIN = authdata.last_login
+		else
+			-- Show general information.
+			if MAY_VIEW_WHOIS then
+				infomsg[#infomsg+1] = "Other names (" .. #names .. "): {"..table.concat(names, ", ").."}"
+				infomsg[#infomsg+1] = "IPs used: " .. #ips .. "."
 			end
-		end
 
-		if type(e.last_seen) == "table" and e.last_seen[record_name] then
-			infomsg[#infomsg+1] = "Last login: " ..
-				os.date("!%Y-%m-%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
-		end
+			-- last_pos and last_seen are per name, not per record-entry.
+			if the_last_pos then
+				infomsg[#infomsg+1] = "User was last seen at " .. rc.pos_to_namestr(vector_round(the_last_pos)) .. "."
+			end
 
-		local time_NOW = os.time()
-		if FIRST_LOGIN and time_NOW > FIRST_LOGIN then
-			infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, time_NOW) .. "."
-		end
+			if bed_respawn_loc then
+				infomsg[#infomsg+1] = "Home position at " .. rc.pos_to_namestr(vector_round(bed_respawn_loc)) .. "."
+			end
 
-		if sheriff.is_cheater(record_name) then
-			infomsg[#infomsg+1] = "Player is a registered cheater/hacker."
-		elseif sheriff.is_suspected_cheater(record_name) then
-			infomsg[#infomsg+1] = "Player is a suspected cheater!"
+			local FIRST_LOGIN
+			local LAST_LOGIN
+
+			-- May return nil.
+			local authdata = minetest.get_auth_handler().get_auth(record_name)
+			if authdata then
+				infomsg[#infomsg+1] = "First login: " .. get_authdate(authdata) .. "."
+
+				if (authdata.first_login or 0) ~= 0 then
+					FIRST_LOGIN = authdata.first_login
+				end
+				if (authdata.last_login or 0) ~= 0 then
+					LAST_LOGIN = authdata.last_login
+				end
+			end
+
+			if type(e.last_seen) == "table" and e.last_seen[record_name] then
+				infomsg[#infomsg+1] = "Last login: " ..
+					os.date("!%Y-%m-%d, %H:%M:%S UTC", e.last_seen[record_name]) .. "."
+			end
+
+			local time_NOW = os.time()
+			if FIRST_LOGIN and time_NOW > FIRST_LOGIN then
+				infomsg[#infomsg+1] = "Account age: " .. get_account_age(FIRST_LOGIN, time_NOW) .. "."
+			end
+
+			if sheriff.is_cheater(record_name) then
+				infomsg[#infomsg+1] = "Player is a registered cheater/hacker."
+			elseif sheriff.is_suspected_cheater(record_name) then
+				infomsg[#infomsg+1] = "Player is a suspected cheater!"
+			end
 		end
 
 		-- Escape everything.
@@ -389,7 +471,6 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		local t = minetest.explode_textlist_event(fields.entry)
 		if (t.type == "CHG") or (t.type == "DCL") then
 			state.entry_index = t.index
-			state.iplist_index = nil
 			minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 		end
 		return true

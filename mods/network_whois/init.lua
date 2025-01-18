@@ -48,7 +48,7 @@ local function get_authdate(authdata)
 	else
 		-- For a lot of players, first login info was populated from the chatlog.
 		-- There's no useable data before this date;
-		-- those players have a first login of 0.
+		-- players whos played before the chatlog was added have a first login of 0.
 		s = "Pre 2017-07-03"
 	end
 	return s

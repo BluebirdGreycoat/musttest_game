@@ -381,10 +381,9 @@ minetest.register_on_prejoinplayer(function(name, ip)
 	-- Check name isn't registered
 	local chk = check_name(name)
 	if chk then
-		return ("\nCannot create new player called '%s'. "..
-			"Another account called '%s' is already registered. "..
-			"Please check the spelling if it's your account "..
-			"or use a different nickname."):format(name, chk.name)
+		return ("\nCannot allocate account '%s'. " ..
+			"Name '%s' already authorized. " ..
+			"Choose a different name."):format(name, chk.name)
 	end
 end)
 

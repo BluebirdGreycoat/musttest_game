@@ -308,14 +308,14 @@ if not bandages.registered then
   })
 
   minetest.register_craft({
-    output = 'bandages:bandage_1 3',
+    output = 'bandages:bandage_1 5',
     recipe = {
       {'default:paper', 'farming:string', 'default:paper'},
     }
   })
 
   minetest.register_craft({
-    output = 'bandages:bandage_2 3',
+    output = 'bandages:bandage_2 4',
     recipe = {
       {'default:paper', 'farming:cloth', 'default:paper'},
     }

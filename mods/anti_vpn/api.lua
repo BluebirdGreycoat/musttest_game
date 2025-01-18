@@ -91,6 +91,28 @@ local function get_engine_ip(pname)
     return sanitize_ipv4(minetest.get_player_ip(pname))
 end
 
+-- An IPv6 address consists of 8 groups of 1 to 4 hexadecimal digits, separated by colons.
+local function is_ipv6_normal(address)
+    -- Split the address into groups by colon.
+    local groups = {}
+    for group in address:gmatch("[^:]+") do
+        table.insert(groups, group)
+    end
+
+    -- Check if the number of groups is exactly 8.
+    if #groups ~= 8 then return false end
+
+    -- Verify each group has 1 to 4 hexadecimal digits.
+    for _, group in ipairs(groups) do
+        if not group:match("^%x%x?%x?%x?$") then
+            return false
+        end
+    end
+
+    -- Passed all checks, it's a valid IPv6 in normal form.
+    return true
+end
+
 local IPV4_PATTERN = '^(%d+)%.(%d+)%.(%d+)%.(%d+)$'
 
 anti_vpn.is_valid_ip = function(ip)
@@ -104,7 +126,7 @@ anti_vpn.is_valid_ip = function(ip)
         count = count + 1
     end
 
-    return count == 4
+    return count == 4 or is_ipv6_normal(ip)
 end
 
 -- https://www.rfc-editor.org/rfc/rfc1918
@@ -337,7 +359,7 @@ local function handle_vpnapi_response(result)
         -- need to reconstruct our database from just the log files.
         minetest.log('action', '[anti_vpn] vpnapi.io HTTP response: ip:' .. ip .. ' blocked:' .. tostring(blocked) .. ' asn:' .. asn .. ' country:' .. country)
     else
-        minetest.log('error', '[anti_vpn] vpnapi.io HTTP request failed for ' .. ip)
+        minetest.log('error', '[anti_vpn] vpnapi.io HTTP request failed')
         --minetest.log('error', dump(result))
     end
 
@@ -391,7 +413,7 @@ local function handle_ipapi_response(result)
 
         minetest.log('action', '[anti_vpn] ip-api.com HTTP response: ip:' .. ip)
     else
-        minetest.log('error', '[anti_vpn] ip-api.com HTTP request failed for ' .. ip)
+        minetest.log('error', '[anti_vpn] ip-api.com HTTP request failed')
         --minetest.log('error', dump(result))
     end
 

@@ -167,14 +167,25 @@ local function make_fs(pname)
 		pli = #list
 	end
 
+	-- Can this formspec user teleport?
+	local USER_CAN_TELEPORT = minetest.check_player_privs(pname, {teleport=true})
+
+	-- GUI element positions.
+	local MSGPOS = "0.5,12.0"
+	local PLISTPOS = "0.5,1.8"
+	local PLISTSZ = "4,9.5"
+	local RECLISTPOS = "4.7,1.8"
+	local RECLISTSZ = "15.3,3.0"
+	local INFOPOS = "4.7,5.0"
+	local INFOSZ = "15.3,6.3"
+
 	local fs = {
-		"size[16,12]",
-		default.gui_bg,
-		default.gui_bg_img,
-		default.gui_slots,
-		"label[0,0.02;Filter]",
-		"field[1.5,0.33;12.8,1;filter;;"..ESC(filter).."]",
-		"button[14,0;2,1;search;Search]",
+		"size[16,11.5]",
+		(default.gui_bg .. default.gui_bg_img .. default.gui_slots),
+		"real_coordinates[true]",
+		"label[0.5,0.6;Filter]",
+		"field[1.5,0.4;16,0.6;filter;;"..ESC(filter).."]",
+		"button[18,0.4;2,0.6;search;Search]",
 		"field_close_on_enter[filter;false]",
 	}
 	local fsn = #fs
@@ -200,7 +211,7 @@ local function make_fs(pname)
 		end
 	end
 
-	fsn=fsn+1 fs[fsn] = format("textlist[0,1.8;4,8;player;%s;%d;0]",
+	fsn=fsn+1 fs[fsn] = format("textlist[" .. PLISTPOS .. ";" .. PLISTSZ .. ";player;%s;%d;0]",
 			table.concat(nlist, ","), pli)
 
 	local record_name = list[pli]
@@ -213,7 +224,7 @@ local function make_fs(pname)
 
 		-- Element field name changes based on whether we got a real set of ban records.
 		fsn=fsn+1 fs[fsn] = format(
-				"textlist[4.2,1.8;11.6,6;" .. (gotten and "entry" or "err") .. ";%s;%d;0]",
+				"textlist[" .. RECLISTPOS .. ";" .. RECLISTSZ .. ";" .. (gotten and "entry" or "err") .. ";%s;%d;0]",
 				table.concat(strings, ","), ei)
 
 		local rec = e.record[ei]
@@ -225,7 +236,7 @@ local function make_fs(pname)
 				ei = 1
 			end	
 
-			fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
+			fsn=fsn+1 fs[fsn] = format("label[" .. MSGPOS .. ";%s]",
 
 				ESC("Source: "..(rec.source or "<none>")
 					.."\nDate: "..os.date("%c", rec.time)
@@ -235,7 +246,7 @@ local function make_fs(pname)
 				pli) -- End format.
 		else
 			-- No ban records?
-			fsn=fsn+1 fs[fsn] = format("label[0,10.3;%s]",
+			fsn=fsn+1 fs[fsn] = format("label[" .. MSGPOS .. ";%s]",
 					ESC("Player <" .. rename.gpn(record_name) .. "> has no ban records.")
 				) -- End format.
 		end
@@ -272,8 +283,18 @@ local function make_fs(pname)
 
 			-- We can also add a button to allow the formspec user to jump to this
 			-- location.
-			if minetest.check_player_privs(pname, {teleport=true}) then
-				fsn=fsn+1 fs[fsn] = "button[13,10.3;3,1;jump;Jump To Last Pos]"
+			if USER_CAN_TELEPORT then
+				fsn=fsn+1 fs[fsn] = "button[17,11.6;3,0.6;jump;Jump To Last Pos]"
+			end
+		end
+
+		local bed_respawn_loc = beds.get_respawn_pos_or_nil(record_name)
+		if bed_respawn_loc then
+			infomsg[#infomsg+1] = "Home position at " ..
+				rc.pos_to_namestr(vector_round(bed_respawn_loc)) .. "."
+
+			if USER_CAN_TELEPORT then
+				fsn=fsn+1 fs[fsn] = "button[13.7,11.6;3,0.6;jumphome;Jump To Home]"
 			end
 		end
 
@@ -309,15 +330,16 @@ local function make_fs(pname)
 			infomsg[#infomsg+1] = "Player is a suspected cheater!"
 		end
 
+		-- Escape everything.
 		for k, v in ipairs(infomsg) do
 			infomsg[k] = ESC(v)
 		end
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;info;"..table.concat(infomsg, ",")..";0]"
+		fsn=fsn+1 fs[fsn] = "textlist[" .. INFOPOS .. ";" .. INFOSZ .. ";info;"..table.concat(infomsg, ",")..";0]"
 	else
 		local e = "No entry matches the query."
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,1.8;11.6,6;err;"..ESC(e)..";0]"
-		fsn=fsn+1 fs[fsn] = "textlist[4.2,8.0;11.6,1.8;info;;0]"
-		fsn=fsn+1 fs[fsn] = "label[0,10.3;"..ESC(e).."]"
+		fsn=fsn+1 fs[fsn] = "textlist[" .. RECLISTPOS .. ";" .. RECLISTSZ .. ";err;"..ESC(e)..";0]"
+		fsn=fsn+1 fs[fsn] = "textlist[" .. INFOPOS .. ";" .. INFOSZ .. ";info;;0]"
+		fsn=fsn+1 fs[fsn] = "label[" .. MSGPOS .. ";"..ESC(e).."]"
 	end
 	return table.concat(fs)
 end
@@ -356,6 +378,8 @@ function xban.gui.on_receive_fields(player, formname, fields)
 		minetest.show_formspec(pname, FORMNAME, make_fs(pname))
 	end
 
+	-- Make sure we check privs here.
+	-- User teleports to player's last known position.
 	if fields.jump and minetest.check_player_privs(pname, {teleport=true}) then
 		local list = state.list
 		local pli = state.player_index or 1
@@ -369,7 +393,28 @@ function xban.gui.on_receive_fields(player, formname, fields)
 				local pos = vector_round(table.copy(e.last_pos[record_name]))
 				minetest.chat_send_player(pname,
 					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
-					">'s last known exit position at " .. rc.pos_to_namestr(pos) .. ".")
+					">'s last known position at " .. rc.pos_to_namestr(pos) .. ".")
+				rc.notify_realm_update(pname, pos)
+				player:set_pos(pos)
+			end
+		end
+	end
+
+	-- User teleports to player's home position.
+	if fields.jumphome and minetest.check_player_privs(pname, {teleport=true}) then
+		local list = state.list
+		local pli = state.player_index or 1
+		if pli > #list then
+			pli = #list
+		end
+		local record_name = list[pli]
+		if record_name then
+			local bed_respawn_loc = beds.get_respawn_pos_or_nil(record_name)
+			if bed_respawn_loc then
+				local pos = vector_round(bed_respawn_loc)
+				minetest.chat_send_player(pname,
+					"# Server: Teleporting to <" .. rename.gpn(record_name) ..
+					">'s home position at " .. rc.pos_to_namestr(pos) .. ".")
 				rc.notify_realm_update(pname, pos)
 				player:set_pos(pos)
 			end

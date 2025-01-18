@@ -987,12 +987,20 @@ function anvil.start_timer_if_needed(pos, time)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("heat") > 0 or meta:get_int("strike") > 0 then
 		local timer = minetest.get_node_timer(pos)
+
 		if not timer:is_started() then
 			if time then
 				timer:start(time)
 			else
 				timer:start(1.0)
 			end
+		end
+
+		-- Timeout is randomly large very rarely.
+		-- Don't know what causes this, and it might not even be this mod.
+		if timer:get_timeout() > 10 then
+			timer:stop()
+			timer:start(1.0)
 		end
 	end
 end

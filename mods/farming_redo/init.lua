@@ -85,12 +85,13 @@ minetest.register_craft({
 minetest.register_node(":farming:teacup", {
 	description = "Tea\n\nRejuvenates your weary spirit.",
 	inventory_image = "farming_teacup.png",
+
 	on_use = function(itemstack, user, pointed_thing)
-		user:get_inventory():add_item("main", ItemStack("vessels:vessels_drinking_mug"))
-				local func = minetest.item_eat(1)
-	hunger.apply_hot(user:get_player_name(), "drink", {heal=500, time=20})
-		return func(itemstack, user, pointed_thing)
+		local do_the_eat = minetest.item_eat(4, "vessels:vessels_drinking_mug")
+		hunger.apply_hot(user:get_player_name(), "drink", {heal=40, time=120})
+		return do_the_eat(itemstack, user, pointed_thing)
 	end,
+
 	_xp_zerocost_drop = true,
 	drawtype = "plantlike",
 	visual_scale = 0.8,

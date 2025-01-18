@@ -141,7 +141,37 @@ local ragequit = {
 	"This server sucks, I'm going home",
 	"Getting out",
 	"Escaped",
+	"Out-skilled",
+	"Lame",
+	"Just can't even",
+	"Busy repairing ego",
+	"The peaceful life is elsewhere",
+	"Checked out",
+	"Reached salt cap",
+	"Noped out",
+	"Equiped quit button",
+	"This server's full of cheaters",
+	"Salt",
+	"Fled",
+	"Respawning elsewhere",
+	"Damage to ego",
+	"Bye",
+	"Way too much nope",
+	"Server not balanced",
+	"Ego took critical hit",
+	"Hate losing",
+	"Temp self-ban",
+	"Salt limit exceeded",
+	"Bruh",
+	"Better things to do",
+	"Cooling off",
+	"Chilling out",
+	"Fleeing the natives",
 }
+
+local function get_ragequit()
+	return ragequit[math_random(1, #ragequit)]
+end
 
 chat_colorize.send_all = function(message)
   local color = ""
@@ -197,7 +227,7 @@ if not chat_colorize.registered then
 			end
 
 			if chat_colorize.is_ragequit(player_name) then
-				rq_spc, ragequit_suffix = " ", "(" .. ragequit[math_random(1, #ragequit)] .. ".)"
+				rq_spc, ragequit_suffix = " ", "(" .. get_ragequit() .. ".)"
 			end
 
 			-- Send colored, prefixed, translatable message [ + translatable timeout_suffix ]

@@ -579,15 +579,24 @@ end
 
 
 bones.allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+	if minetest.check_player_privs(player, {server = true}) then
+		return count
+	end
+
 	if is_owner(pos, player:get_player_name()) then
 		return count
 	end
+
 	return 0
 end
 
 
 
 bones.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+	if minetest.check_player_privs(player, {server = true}) then
+		return stack:get_count()
+	end
+
 	minetest.chat_send_player(player:get_player_name(), "# Server: Bones are not a place to store items!")
 	return 0
 end

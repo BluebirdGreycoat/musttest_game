@@ -161,7 +161,7 @@ if not sw.registered then
 	end)
 
 	-- Register the mapgen.
-	minetest.register_mapgen_script(sw.modpath .. "/mapgen.lua")
+	minetest.register_mapgen_script(sw.modpath .. "/mapgen_v2.lua")
 
 	local c = "sw:core"
 	local f = sw.modpath .. "/init.lua"

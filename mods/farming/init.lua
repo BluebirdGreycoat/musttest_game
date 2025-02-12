@@ -25,6 +25,7 @@ farming.register_plant("farming:wheat", {
   place_param2 = 3,
 	flowerpot_drop = "farming:wheat",
 	flowerpot_insert = {"farming:wheat_1", "farming:wheat_2", "farming:wheat_3", "farming:wheat_4", "farming:wheat_5", "farming:wheat_6", "farming:wheat_7", "farming:wheat_8"},
+	_xdecor_soup_ingredient = true,
 })
 minetest.register_craftitem("farming:flour", {
 	description = "Flour",

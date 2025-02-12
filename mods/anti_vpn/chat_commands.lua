@@ -66,7 +66,7 @@ local function chat_cmd_ip(pname, parts)
     elseif (verb == 'del') or (verb == 'delete') or (verb == 'rm') then
         for _, ip in ipairs(ip_list) do anti_vpn.delete_ip(ip) end
     else
-        chat_send_error(pname, 'Invalid command: ' .. param)
+        chat_send_error(pname, 'Invalid command.')
     end
 end
 

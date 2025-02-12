@@ -76,6 +76,8 @@ function cauldron.boiling_timer(pos)
 	if not next(objs) then return true end
 
 	local ingredients = {}
+	local objstoeat = {}
+
 	for _, obj in pairs(objs) do
 		if obj and not obj:is_player() and obj:get_luaentity().itemstring then
 			local itemstring = obj:get_luaentity().itemstring
@@ -85,6 +87,7 @@ function cauldron.boiling_timer(pos)
 				local fooddef = foodstack:get_definition()
 				if fooddef and fooddef._xdecor_soup_ingredient then
 					ingredients[#ingredients+1] = foodstack
+					objstoeat[#objstoeat+1] = obj
 				end
 			end
 		end
@@ -92,7 +95,7 @@ function cauldron.boiling_timer(pos)
 
 	-- Require 3 ingredients to make soup.
 	if #ingredients >= 3 then
-		for _, obj in pairs(objs) do obj:remove() end
+		for _, obj in pairs(objstoeat) do obj:remove() end
 		minetest.add_node(pos, {name="xdecor:cauldron_soup", param2=node.param2})
 	end
 
@@ -100,6 +103,7 @@ function cauldron.boiling_timer(pos)
 	if not minetest.get_node(node_under).name:find("fire") then
 		minetest.add_node(pos, {name="xdecor:cauldron_idle", param2=node.param2})
 	end
+
 	return true
 end
 

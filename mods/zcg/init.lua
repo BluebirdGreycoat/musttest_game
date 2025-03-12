@@ -495,7 +495,7 @@ zcg.on_receive_fields = function(player, formname, fields)
         inventory_plus.set_inventory_formspec(player, zcg.formspec(pn))
 
 				-- Add item to inventory if creative access is enabled.
-				if gdac.player_is_admin(pn) or singleplayer then
+				if gdac.player_is_admin(pn) or singleplayer or minetest.check_player_privs(player, "creative") then
 					-- If player clicked twice.
 					if previtem == ni then
 						local inv = player:get_inventory()

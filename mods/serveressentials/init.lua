@@ -61,6 +61,11 @@ if not serveressentials.registered then
 		give_to_singleplayer = false,
 	})
 
+	minetest.register_privilege("creative", {
+		description = "Enables creative inventory.",
+		give_to_singleplayer = false,
+	})
+
 	minetest.register_chatcommand("whereis", {
 		params = "[<player>]",
 		description = "Locate a player or the caller.",

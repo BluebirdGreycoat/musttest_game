@@ -1249,7 +1249,7 @@ minetest.register_node("default:stone_with_copper", {
 	tiles = {"default_stone.png^default_mineral_copper.png"},
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = 'default:copper_lump',
-	_tnt_drop = 'default:copper_lump 2',
+	_tnt_drop = 'default:copper_lump 3',
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,
@@ -1322,7 +1322,7 @@ minetest.register_node("default:stone_with_mese", {
 			{items = {'default:mese_crystal'}}
 		}
 	},
-	_tnt_drop = "default:mese_crystal_fragment",
+	_tnt_drop = "default:mese_crystal 3",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
 	
@@ -1388,7 +1388,7 @@ minetest.register_node("default:stone_with_gold", {
 	groups = utility.dig_groups("mineral", {ore = 1}),
 	drop = "default:gold_lump",
 	_tnt_drop = {
-		'default:gold_lump',
+		'default:gold_lump 2',
 		'dusts:gold 3',
 	},
 	silverpick_drop = true,

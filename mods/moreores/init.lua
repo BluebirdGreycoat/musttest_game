@@ -74,7 +74,7 @@ local function add_ore(modname, description, mineral_name, oredef)
 			groups = utility.dig_groups(diggroup, {ore = 1}),
 			sounds = default_stone_sounds,
 			drop = lump_item,
-			_tnt_drop = lump_item .. " 2",
+			_tnt_drop = lump_item .. " 3",
 			silverpick_drop = true,
 			place_param2 = 10,
 		})

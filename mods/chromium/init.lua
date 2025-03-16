@@ -7,7 +7,7 @@ minetest.register_node("chromium:ore", {
 	silverpick_drop = true,
 	_tnt_drop = {
     "chromium:lump 2",
-    "chromium:dust",
+    "chromium:dust 2",
   },
   sounds = default.node_sound_stone_defaults(),
 	place_param2 = 10,

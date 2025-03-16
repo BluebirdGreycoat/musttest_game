@@ -5,7 +5,7 @@ minetest.register_node("talinite:ore", {
   groups = utility.dig_groups("hardmineral", {ore = 1}),
   drop = "talinite:lump",
   _tnt_drop = {
-    "talinite:lump",
+    "talinite:lump 2",
     "talinite:dust",
   },
 	silverpick_drop = true,

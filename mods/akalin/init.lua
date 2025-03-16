@@ -6,7 +6,7 @@ minetest.register_node("akalin:ore", {
   drop = "akalin:lump",
 	silverpick_drop = true,
 	_tnt_drop = {
-    "akalin:lump",
+    "akalin:lump 2",
     "akalin:dust",
   },
   sounds = default.node_sound_stone_defaults(),

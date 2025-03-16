@@ -34,6 +34,7 @@ if not gem_minerals.registered then
 			groups = utility.dig_groups("hardstone"),
 			sounds = default.node_sound_stone_defaults(),
 			drop = "gems:raw_" .. (v.altname or v.name),
+			_tnt_drop = "gems:raw_" .. (v.altname or v.name) .. " 2",
 			silverpick_drop = true,
 			place_param2 = 10,
 		})

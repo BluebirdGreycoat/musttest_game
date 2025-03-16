@@ -5,7 +5,7 @@ minetest.register_node("arol:ore", {
   groups = utility.dig_groups("hardmineral", {ore=1}),
   drop = "arol:lump",
   _tnt_drop = {
-    "arol:lump",
+    "arol:lump 2",
     "arol:dust",
   },
 	silverpick_drop = true,

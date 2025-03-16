@@ -6,7 +6,7 @@ minetest.register_node("zinc:ore", {
   drop = "zinc:lump",
   _tnt_drop = {
     "zinc:lump 2",
-    "zinc:dust",
+    "zinc:dust 2",
   },
 	silverpick_drop = true,
   sounds = default.node_sound_stone_defaults(),

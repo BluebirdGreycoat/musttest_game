@@ -37,6 +37,14 @@ minetest.register_node("cavestuff:cobble_with_moss", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	on_finish_collapse = function(pos)
+		minetest.swap_node(pos, {name="default:cobble"})
+	end,
+
+	on_collapse_to_entity = function(pos)
+		return {ItemStack("default:cobble")}
+	end,
 })
 
 minetest.register_node("cavestuff:cobble_with_lichen", {
@@ -66,6 +74,14 @@ minetest.register_node("cavestuff:cobble_with_lichen", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	on_finish_collapse = function(pos)
+		minetest.swap_node(pos, {name="default:cobble"})
+	end,
+
+	on_collapse_to_entity = function(pos)
+		return {ItemStack("default:cobble")}
+	end,
 })
 
 minetest.register_node("cavestuff:cobble_with_algae", {
@@ -95,6 +111,14 @@ minetest.register_node("cavestuff:cobble_with_algae", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	on_finish_collapse = function(pos)
+		minetest.swap_node(pos, {name="default:cobble"})
+	end,
+
+	on_collapse_to_entity = function(pos)
+		return {ItemStack("default:cobble")}
+	end,
 })
 
 minetest.register_node("cavestuff:cobble_with_salt", {
@@ -121,6 +145,14 @@ minetest.register_node("cavestuff:cobble_with_salt", {
 	_toolranks = {
 		ignore = true,
 	},
+
+	on_finish_collapse = function(pos)
+		minetest.swap_node(pos, {name="default:cobble"})
+	end,
+
+	on_collapse_to_entity = function(pos)
+		return {ItemStack("default:cobble")}
+	end,
 })
 
 minetest.register_node("cavestuff:cobble_with_rockmelt", {

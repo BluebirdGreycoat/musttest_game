@@ -419,6 +419,12 @@ local function make_fs(pname)
 			elseif sheriff.is_suspected_cheater(record_name) then
 				infomsg[#infomsg+1] = "Player is a suspected cheater!"
 			end
+
+			if anti_vpn.whitelist_player(record_name, nil) then
+				infomsg[#infomsg+1] = "VPN use whitelisted: YES"
+			else
+				infomsg[#infomsg+1] = "VPN use whitelisted: NO"
+			end
 		end
 
 		-- Escape everything.

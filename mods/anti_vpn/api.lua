@@ -600,16 +600,17 @@ anti_vpn.init = function(http_api_provider)
     operating_mode = (mod_storage:contains('operating_mode') and mod_storage:get_string('operating_mode')) or 'enforce'
     minetest.log('action', '[anti_vpn] operating_mode: ' .. operating_mode)
 
-    local json = mod_storage:get('ip_data')
-    ip_data = json and minetest.parse_json(json) or {}
+    local json_ip_data = mod_storage:get('ip_data')
+    local json_players = mod_storage:get('players')
+
+    ip_data = json_ip_data and minetest.parse_json(json_ip_data) or {}
+    player_data = json_players and minetest.parse_json(json_players) or {}
+
     minetest.log('action', '[anti_vpn] Loaded ' .. count_keys(ip_data) .. ' IP lookups.')
+    minetest.log('action', '[anti_vpn] Loaded ' .. count_keys(player_data) .. ' players.')
 
     -- Remove old/stale IPs from database, so we don't end up keeping them forever.
     anti_vpn.drop_old_ips()
-
-    json = mod_storage:get('players')
-    player_data = json and minetest.parse_json(json) or {}
-    minetest.log('action', '[anti_vpn] Loaded ' .. count_keys(player_data) .. ' players.')
 
     apikey = minetest.settings:get('anti_vpn.provider.vpnapi.apikey')
     if apikey == nil then

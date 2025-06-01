@@ -184,6 +184,7 @@ local drop_xp_list = {
 	["xtraores:palladium_ore"] = 7.0,
 	["xtraores:cobalt_ore"] = 7.0,
 }
+
 local drop_xp_multiplier = 1.0
 for k, v in pairs(drop_xp_list) do
 	drop_xp_list[k] = v * drop_xp_multiplier
@@ -297,6 +298,12 @@ local drop_node_list = {
 	["stoneworld:basalt_with_coal"] = true,
 	["stoneworld:basalt_with_copper"] = true,
 	["stoneworld:basalt_with_tin"] = true,
+	
+	-- Ir'xen gems.
+	["gems:ruby2_ore"] = true,
+	["gems:emerald2_ore"] = true,
+	["gems:sapphire2_ore"] = true,
+	["gems:amethyst2_ore"] = true,
 }
 
 

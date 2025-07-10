@@ -402,7 +402,9 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 						local victim = minetest.get_player_by_name(pname)
 						if victim then
 							victim:set_hp(0, {reason="kill"})
-							minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was crushed by teleporting into solid matter. Ouch!")
+							if victim:get_hp() == 0 then
+								minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> was crushed by teleporting into solid matter. Ouch!")
+							end
 						end
 
 						-- Cancel teleport. Couldn't clear target area.

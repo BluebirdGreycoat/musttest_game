@@ -213,8 +213,13 @@ teleports.load = function()
 end
 
 
-
+-- Returns 'true' if area entirely clear.
+-- Returns 'false' if some positions could not be cleared,
+--   also table of positions that could not be cleared.
 teleports.clear_area = function(pname, minp, maxp)
+	local result = true
+	local badpos = {}
+
 	for x = minp.x, maxp.x, 1 do
 		for y = minp.y, maxp.y, 1 do
 			for z = minp.z, maxp.z, 1 do
@@ -223,19 +228,34 @@ teleports.clear_area = function(pname, minp, maxp)
 				local node = minetest.get_node(pos)
 
 				if node.name ~= "ignore" then
-					if node.name ~= "air" and node.name ~= "bones:bones" and
-						node.name ~= "bedrock:bedrock" then
-						-- Only nodes not defined as unbreakable.
-						if minetest.get_item_group(node.name, "unbreakable") == 0 then
-							if not minetest.test_protection(pos, pname) then
-								minetest.remove_node(pos)
+					if node.name ~= "air" and node.name ~= "bones:bones" then
+						if node.name ~= "bedrock:bedrock" then
+							-- Only nodes not defined as unbreakable.
+							if minetest.get_item_group(node.name, "unbreakable") == 0 then
+								if not minetest.test_protection(pos, pname) then
+									minetest.remove_node(pos)
+								else
+									-- Protected
+									badpos[#badpos+1] = pos
+									result = false
+								end
+							else
+								-- Unbreakable
+								badpos[#badpos+1] = pos
+								result = false
 							end
+						else
+							-- Bedrock
+							badpos[#badpos+1] = pos
+							result = false
 						end
 					end
 				end
 			end
 		end
 	end
+
+	return result, badpos
 end
 
 
@@ -370,7 +390,10 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 
 			-- Delete 3x3x3 area above teleport.
 			-- Do it again to prevent possible exploit.
-			teleports.clear_area(pname, minp, maxp)
+			if not teleports.clear_area(pname, minp, maxp) then
+				-- Cancel teleport.
+				return true
+			end
 		end,
 
 		on_map_loaded = function()

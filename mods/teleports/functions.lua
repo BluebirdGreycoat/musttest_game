@@ -214,7 +214,7 @@ end
 
 
 
-teleports.clear_area = function(minp, maxp)
+teleports.clear_area = function(pname, minp, maxp)
 	for x = minp.x, maxp.x, 1 do
 		for y = minp.y, maxp.y, 1 do
 			for z = minp.z, maxp.z, 1 do
@@ -227,7 +227,9 @@ teleports.clear_area = function(minp, maxp)
 						node.name ~= "bedrock:bedrock" then
 						-- Only nodes not defined as unbreakable.
 						if minetest.get_item_group(node.name, "unbreakable") == 0 then
-							minetest.remove_node(pos)
+							if not minetest.test_protection(pos, pname) then
+								minetest.remove_node(pos)
+							end
 						end
 					end
 				end
@@ -368,12 +370,12 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 
 			-- Delete 3x3x3 area above teleport.
 			-- Do it again to prevent possible exploit.
-			teleports.clear_area(minp, maxp)
+			teleports.clear_area(pname, minp, maxp)
 		end,
 
 		on_map_loaded = function()
 			-- Delete 3x3x3 area above teleport.
-			teleports.clear_area(minp, maxp)
+			teleports.clear_area(pname, minp, maxp)
 		end,
 
 		post_teleport_callback = function()

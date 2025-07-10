@@ -390,9 +390,24 @@ teleports.teleport_player = function(player, origin_pos, teleport_pos, teleport_
 
 			-- Delete 3x3x3 area above teleport.
 			-- Do it again to prevent possible exploit.
-			if not teleports.clear_area(pname, minp, maxp) then
-				-- Cancel teleport.
-				return true
+			local success, badpos = teleports.clear_area(pname, minp, maxp)
+			if not success then
+				-- Location where player *would* have tp'ed to.
+				local p1 = vector.copy(pos)
+				local p2 = vector.add(pos, {x=0, y=1, z=0})
+
+				for k = 1, #badpos, 1 do
+					if vector.equals(badpos[k], p1) or vector.equals(badpos[k], p2) then
+						-- Stargate crush.
+						local victim = minetest.get_player_by_name(pname)
+						if victim then
+							victim:set_hp(0, {reason="kill"})
+						end
+
+						-- Cancel teleport. Couldn't clear target area.
+						return true
+					end
+				end
 			end
 		end,
 

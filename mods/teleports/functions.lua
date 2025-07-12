@@ -233,7 +233,13 @@ teleports.clear_area = function(pname, minp, maxp)
 							-- Only nodes not defined as unbreakable.
 							if minetest.get_item_group(node.name, "unbreakable") == 0 then
 								if not minetest.test_protection(pos, pname) then
-									minetest.remove_node(pos)
+									if rc.is_valid_realm_pos(pos) then
+										minetest.remove_node(pos)
+									else
+										-- Void
+										badpos[#badpos+1] = pos
+										result = false
+									end
 								else
 									-- Protected
 									badpos[#badpos+1] = pos

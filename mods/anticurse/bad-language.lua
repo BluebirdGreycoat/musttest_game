@@ -22,7 +22,7 @@ anticurse.foul = {
 	{word="t+w+a+t+", white={"water", "watch", "just", "wait"}},
   
   -- It's generally pretty easy to check for this naughty word.
-  {word="f+u+c*k+", white={"keep", "know", "could"}},
+  {word="f+u+c*k+", white={"keep", "know", "could", "ukrai"}},
   {word="f+u+c+k*", white={
 		"can", "claim", "come", "came", "uclid", "could", "custom", "grief",
 		"cheat", "confucius",

@@ -668,11 +668,11 @@ end
 local function on_player_receive_fields(player, formname, fields)
 	local formname2 = formname:sub(1, 16)
 	if formname2 ~= "books:book_edit_" and formname2 ~= "books:book_view_" then
-		return
+		return false
 	end
 
 	if not player or not player:is_player() then
-		return
+		return false
 	end
 
 	local pos = minetest.string_to_pos(formname:sub(17))
@@ -703,17 +703,17 @@ local function on_player_receive_fields(player, formname, fields)
 		-- Security check. Player must be owner of book.
 		local owner = meta:get_string("owner")
 		if owner ~= "" and owner ~= pname then
-			return
+			return true
 		end
 
 		-- Book must be open.
 		if node.name ~= "books:book_open" then
-			return
+			return true
 		end
 
 		if meta:get_int("is_library_checkout") ~= 0 then
 			minetest.chat_send_player(pname, "# Server: Don't write on library property!")
-			return
+			return true
 		end
 
 		title = title:trim()
@@ -949,7 +949,8 @@ if not books_placeable.registered then
 	})
 
 	minetest.register_on_player_receive_fields(function(...)
-		books_placeable.on_player_receive_fields(...) end)
+		return books_placeable.on_player_receive_fields(...)
+	end)
 
 	minetest.register_on_leaveplayer(function(...)
 		books_placeable.on_leaveplayer(...)

@@ -104,14 +104,16 @@ end
 
 
 local function on_place(itemstack, placer, pointed_thing)
-	if minetest.test_protection(pointed_thing.above, placer:get_player_name()) then
-		return itemstack
-	end
-
 	-- Call 'on_rightclick' of pointed node.
 	local pointed_on_rightclick = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name].on_rightclick
 	if pointed_on_rightclick and not placer:get_player_control().sneak then
 		return pointed_on_rightclick(pointed_thing.under, minetest.get_node(pointed_thing.under), placer, itemstack)
+	end
+
+	local pname = placer:get_player_name()
+	if minetest.test_protection(pointed_thing.above, pname) then
+		minetest.chat_send_player(pname, "# Server: You can't place the book here: the land is not yours (protected).")
+		return itemstack
 	end
 
 	local data = itemstack:get_meta()

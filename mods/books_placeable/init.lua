@@ -484,8 +484,17 @@ local kick_blame_msgs = {
 
 local function kick_reading_players(pos, blamed)
 	local pos_hash = minetest.hash_node_position(pos)
-	local public_blame_done = false
-
+	
+	local spam_key
+	local public_blame_done
+	if blamed and blamed ~= "" then
+		spam_key = string.format("books:slammer_%s", blamed)
+		public_blame_done = spam.test_key(spam_key)
+	else
+		spam_key = nil
+		public_blame_done = true
+	end
+	
 	local to_remove = {}
 
 	for name, data in pairs(books_placeable.open_books) do
@@ -498,11 +507,13 @@ local function kick_reading_players(pos, blamed)
 
 			if blamed and blamed ~= "" and name ~= blamed then
 				if math.random(1, 3) == 1 and not public_blame_done then
-					public_blame_done = true
 					local msg = kick_blame_msgs[math.random(1, #kick_blame_msgs)]
 					msg = msg:gsub("<blamed>", rename.gpn(blamed))
 					msg = msg:gsub("<victim>", rename.gpn(name))
 					minetest.chat_send_all("# Server: " .. msg)
+					
+					public_blame_done = true
+					spam.mark_key(spam_key, 30)
 				else
 					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(blamed) .. "> rudely slams the book closed. Rude!")
 				end

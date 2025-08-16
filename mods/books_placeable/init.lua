@@ -695,7 +695,13 @@ local function on_player_receive_fields(player, formname, fields)
 
 	if not data or data.form_pos ~= pos_hash or data.formname ~= formname2 then
 		minetest.log("warning", "Player " .. pname .. " delivered fields for a form they weren't sent. SUS!")
-		invalidate_player_data(pname)
+		-- Invalidate the player's context.
+		if data.copy_pos or data.copy_job then
+			data.form_pos = nil
+			data.formname = nil
+		else
+			books_placeable.open_books[pname] = nil
+		end
 		return true
 	end
 

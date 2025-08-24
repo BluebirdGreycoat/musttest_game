@@ -77,7 +77,7 @@ local function place_node_floor(pos)
 	local starty = pos.y
 	local nn = minetest.get_node(pos)
 	local fail = false
-	while not fail and nn.name == "air" do
+	while not fail and nn.name == "air" or nn.name == "ignore" do
 		pos.y = pos.y - 1
 		nn = minetest.get_node(pos)
 		if pos.y < starty - 180 then

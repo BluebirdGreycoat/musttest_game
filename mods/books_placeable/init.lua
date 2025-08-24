@@ -6,6 +6,20 @@
 if not minetest.global_exists("books_placeable") then books_placeable = {} end
 books_placeable.modpath = minetest.get_modpath("books_placeable")
 
+local MAX_COPY_DISTANCE = 3	-- Book copy is aborted if players mover further.
+books_placeable.MAX_COPY_DISTANCE = MAX_COPY_DISTANCE
+
+-- Used to store formspec contexts and book copying jobs.
+-- Indexed by player names. Format:
+-- {
+-- 	form_pos = <number>,    -- Node position hash (from minetest.hash_node_position) of the book being read.
+-- 	formname = <string>,    -- Formspec name (not including the position part).
+-- 	copy_pos = <number>,    -- Node position hash (from minetest.hash_node_position) of the book being duplicated.
+-- 	copy_job = <userdata>   -- Handle of the delayed book copy job (from minetest.after).
+-- }
+-- Updated when a player reads or copies a book, or on player on death or disconnection. Entries may be nil if a player
+-- isn't reading nor copying a book.
+books_placeable.open_books = books_placeable.open_books or {}
 
 -- Translation support
 local S = minetest.get_translator("books_placeable")
@@ -14,13 +28,33 @@ local F = minetest.formspec_escape
 local lpp = 14 -- Lines per book's page
 
 
-local function copymeta(frommeta, tometa)
+local function copymeta(frommeta, tometa, reencrypt)
 	local t = frommeta:to_table()
 
 	-- Infotext can contain the whole text of the book, unencrypted.
 	-- Do not leak it.
 	t.fields.infotext = nil
 	t.fields.description = nil
+
+	-- WAH WA HWAWHA BOOK BHWALA COPY.
+	if reencrypt then
+		if t.fields.iv and t.fields.iv ~= "" then
+			local enc
+			local dec
+			if #t.fields.iv >= 16 then
+				dec = ossl.decrypt(t.fields.iv, t.fields.text)
+			else
+				dec = ossl.decrypt(t.fields.text)
+			end
+			if dec then
+				enc = ossl.encrypt(dec)
+			end
+			if enc then
+				t.fields.iv = "1"
+				t.fields.text = enc
+			end
+		end
+	end
 
 	tometa:from_table(t)
 end
@@ -70,14 +104,16 @@ end
 
 
 local function on_place(itemstack, placer, pointed_thing)
-	if minetest.test_protection(pointed_thing.above, placer:get_player_name()) then
-		return itemstack
-	end
-
 	-- Call 'on_rightclick' of pointed node.
 	local pointed_on_rightclick = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name].on_rightclick
 	if pointed_on_rightclick and not placer:get_player_control().sneak then
 		return pointed_on_rightclick(pointed_thing.under, minetest.get_node(pointed_thing.under), placer, itemstack)
+	end
+
+	local pname = placer:get_player_name()
+	if minetest.test_protection(pointed_thing.above, pname) then
+		minetest.chat_send_player(pname, "# Server: You can't place the book here: the land is not yours (protected).")
+		return itemstack
 	end
 
 	local data = itemstack:get_meta()
@@ -192,6 +228,18 @@ local function formspec_display(meta, player_name, pos, usertype)
 
 	minetest.show_formspec(player_name,
 		formname .. minetest.pos_to_string(pos), formspec)
+
+	-- Store some context to be verified when receiving form fields.
+	local data = books_placeable.open_books[player_name]
+	if data then
+		data.form_pos = minetest.hash_node_position(pos)
+		data.formname = formname
+	else
+		books_placeable.open_books[player_name] = {
+			form_pos = minetest.hash_node_position(pos),
+			formname = formname
+		}
+	end
 end
 books_placeable.formspec_display = formspec_display
 
@@ -215,16 +263,319 @@ end
 books_placeable.on_rightclick = on_rightclick
 
 
+local function do_book_copy(pos, player)
+	local node = minetest.get_node(pos)
+	if node.name ~= "books:book_open" and node.name ~= "books:book_closed" then
+		return false
+	end
+
+	local meta = minetest.get_meta(pos)
+	local wielded = player:get_wielded_item()
+	local stack = ItemStack({ name = "books:book_written" })
+	local stackmeta = stack:get_meta()
+
+	-- HAWAWALAH WAWAHH META UHLA RECRYPTA BHWABA.
+	copymeta(meta, stackmeta, true)
+
+	-- AWAWAWA DESCROPTIAN.
+	local owner = meta:get_string("owner")
+	local desc = meta:get_string("title")
+	if #desc > books.SHORT_TITLE_SIZE + 3 then
+		desc = desc:sub(1, books.SHORT_TITLE_SIZE) .. "..."
+	end
+	desc = "\"" .. desc .. "\" by <" .. rename.gpn(owner) .. ">"
+	stackmeta:set_string("description", desc)
+
+	-- HLAWA WAWAHU OERRKI BWAHAWAH LIBRARYAAH.
+	stackmeta:set_string("is_library_checkout", "")
+	stackmeta:set_string("checked_out_by", "")
+
+	-- AGHWAWA GIWE WAHBHA BOOK.
+	local success = false
+	local pinv = player:get_inventory()
+	if pinv:room_for_item("main", stack) then
+		success = pinv:add_item("main", stack):is_empty()
+	end
+	if not success then
+		success = minetest.add_item(pos, stack) ~= nil
+	end
+	if not success then
+		return false
+	end
+
+	-- WAH WA WA OERRKI EAT PLAYER NOM NOM >:)
+	if math.random(1, 20) == 1 then
+		ambiance.sound_play("griefer_griefer", pos, 1.0, 6)
+	end
+
+	return true
+end
+
+
+local function get_delay_for_book_copy(meta)
+	local t = meta:to_table()
+	local data = t.fields
+
+	-- UUUGH GET GRR AHUGH TEXT!
+	if data.iv and data.iv ~= "" then
+		local enc
+		if #data.iv >= 16 then
+			enc = ossl.decrypt(data.iv, data.text)
+		else
+			enc = ossl.decrypt(data.text)
+		end
+		if enc then
+			data.text = enc
+			data.iv = nil
+		end
+	end
+
+	-- AHWAHAHA MATHAWAA GRR UGHH --> 0.0 ... 1.0
+	local delay =	0.85 * #data.text / books.MAX_TEXT_SIZE
+	            + 0.15 * #data.title / books.MAX_TITLE_SIZE
+
+	-- UGH UGH AHWAWAWA LOGAARGHH --> 1.5 ... 5
+	delay = 1.5 + 3.5 * math.log(1 + delay * 9, 10)
+
+	-- AWK GR-UUUGHH ACK ACK MAX!!
+	delay = math.min(delay, 5.0)
+
+	return delay
+	-- return 20 -- for testing.
+end
+
+
+-- NOTE: Expected to be called from within minetest.after. UGH SIGH UCKAA AWAA!!
+local function finish_book_copy(pos, pname)
+	-- Invalidate the player context, but preserve it if a formspec is still open.
+	local data = books_placeable.open_books[pname]
+	if data then
+		data.copy_job = nil
+		data.copy_pos = nil
+
+		if data.form_pos == nil and data.formname == nil then
+			books_placeable.open_books[pname] = nil
+		end
+	end
+
+	-- GRR UGHH PLAYYR WACKA WACKA LEFT!
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	-- GRR UGHH PLAYYR WACKA WACKA MOVE!
+	if vector.distance(pref:get_pos(), pos) > books_placeable.MAX_COPY_DISTANCE then
+		minetest.chat_send_player(pname, "# Server: You must stand close by the book you're copying.")
+		easyvend.sound_error(pname)
+		return
+	end
+
+	-- GRR UGHHH OERKKI ERROR?
+	if not do_book_copy(pos, pref) then
+		minetest.chat_send_player(pname, "# Server: Book copy failed. Try again in a little while.")
+		easyvend.sound_error(pname)
+	end
+end
+
+
+-- NOTE: Expected to be called from within minetest.after. AWAwAWAGHHH!
+local function play_book_copy_sound(pos, pname, max)
+	if max and max <= 0 then return end
+
+	local data = books_placeable.open_books[pname]
+	if data and data.copy_job then
+		-- NOTE: The 'book_write' track length is about 1.173 s.
+		ambiance.sound_play("book_write", pos, 1.0, 6)
+		minetest.after(1.2, play_book_copy_sound, pos, pname, (max and (max - 1) or 5))
+	end
+end
+
+
+local function on_use(itemstack, user, pointed_thing)
+	if pointed_thing.type ~= "node" then
+		return books.book_on_use(itemstack, user, pointed_thing)
+	end
+
+	local pos = pointed_thing.under
+	local node = minetest.get_node(pos)
+
+	-- Not a book node, pass it by. WAWAWAAAA!
+	if node.name ~= "books:book_closed" and node.name ~= "books:book_open" then
+		return books.book_on_use(itemstack, user, pointed_thing)
+	end
+
+	-- Punching a closed book with a blank or written book: just open it.
+	if node.name == "books:book_closed" then
+		minetest.punch_node(pos, user)
+		return nil -- No change to the inventory.
+	end
+
+	-- Punching an open book with a written book: close it.
+	if node.name == "books:book_open" and itemstack:get_name() == "books:book_written" then
+		minetest.punch_node(pos, user)
+		return nil -- No change to the inventory.
+	end
+
+	local nodemeta = minetest.get_meta(pos)
+	local owner = nodemeta:get_string("owner")
+
+	if itemstack:get_name() == "books:book_blank" and owner ~= "" then
+		local pname = user:get_player_name()
+		local data = books_placeable.open_books[pname]
+
+		if data and data.copy_job then
+			minetest.chat_send_player(pname, "# Server: You are already copying a book; wait to be done.")
+			easyvend.sound_error(pname)
+			return nil -- No change to the inventory.
+		end
+
+		local delay = get_delay_for_book_copy(nodemeta)
+		local job = minetest.after(delay, finish_book_copy, pos, pname)
+
+		-- minetest.chat_send_all(string.format("# Server: Delay is %.2f s.", delay))
+
+		if job then
+			local pos_hash = minetest.hash_node_position(pos)
+			if data then
+				data.copy_pos = pos_hash
+				data.copy_job = job
+			else
+				data = { copy_pos = pos_hash, copy_job = job }
+				books_placeable.open_books[pname] = data
+			end
+			play_book_copy_sound(pos, pname)
+			itemstack:take_item(1)
+		else
+			if data then
+				data.copy_pos = nil
+				data.copy_job = nil
+				
+				if data.form_pos == nil and data.formname == nil then
+					books_placeable.open_books[pname] = nil
+				end
+			end
+
+			minetest.chat_send_player(pname, "# Server: Book copy failed. Try again in a little while.")
+			easyvend.sound_error(pname)
+		end
+
+		return itemstack
+	end
+
+	-- return nil -- No change to the inventory.
+end
+books_placeable.on_use = on_use
+
+
+local kick_blame_msgs = {
+	"Player <<blamed>> rudely slams the book closed while <<victim>> is still reading. Rude!",
+	"<<blamed>> rudely snaps the book shut, cutting off <<victim>>'s scholarly pursuit. Quite uncivilized!",
+	"Player <<blamed>> snaps the book shut while <<victim>> is reading. So rude!",
+	"<<blamed>> hastily closes the volume, disrupting <<victim>>'s quiet reading. Most impolite!",
+	"Alas, <<blamed>> interrupts <<victim>>'s literary reverie by shutting the tome. How discorteous!",
+	"Player <<blamed>> cuts off <<victim>>'s reading with a quick book close. Manners!",
+	"<<blamed>> rudely shuts the book on <<victim>>'s storytime. Rude move!",
+	"Forsooth, <<blamed>> doth churlishly shutter the tome whilst <<victim>> peruseth its pages. A most discourteous act!",
+	"Mid-read, <<victim>> gets the book yanked by <<blamed>>. Bold move!",
+	"While <<victim>>'s lost in the pages, <<blamed>> cheekily closes the book. Talk about bad manners!",
+	"Mid-page, <<victim>>'s reading gets wrecked by <<blamed>> closing the book. Manners!",
+}
+
+local function kick_reading_players(pos, blamed)
+	local pos_hash = minetest.hash_node_position(pos)
+	
+	local spam_key
+	local public_blame_done
+	if blamed and blamed ~= "" then
+		spam_key = string.format("books:slammer_%s", blamed)
+		public_blame_done = spam.test_key(spam_key)
+	else
+		spam_key = nil
+		public_blame_done = true
+	end
+	
+	local to_remove = {}
+
+	for name, data in pairs(books_placeable.open_books) do
+		-- If a formspec is open, close it.
+		if data.form_pos == pos_hash and data.formname and data.formname ~= "" then
+			local formname2 = data.formname .. minetest.pos_to_string(pos)
+			minetest.close_formspec(name, formname2)
+			data.form_pos = nil
+			data.formname = nil
+
+			if blamed and blamed ~= "" and name ~= blamed then
+				if math.random(1, 3) == 1 and not public_blame_done then
+					local msg = kick_blame_msgs[math.random(1, #kick_blame_msgs)]
+					msg = msg:gsub("<blamed>", rename.gpn(blamed))
+					msg = msg:gsub("<victim>", rename.gpn(name))
+					minetest.chat_send_all("# Server: " .. msg)
+					
+					public_blame_done = true
+					spam.mark_key(spam_key, 30)
+				else
+					minetest.chat_send_player(name, "# Server: <" .. rename.gpn(blamed) .. "> rudely slams the book closed. Rude!")
+				end
+			end
+		end
+
+		-- If a copy is in progress, cancel it.
+		if data.copy_pos == pos_hash and data.copy_job then
+			data.copy_job:cancel()
+			data.copy_pos = nil
+			data.copy_job = nil
+			
+			if blamed and blamed ~= "" then
+				easyvend.sound_error(name)
+				if name == blamed then
+					minetest.chat_send_player(name, "# Server: Book copy failed. Blame yourself for slamming it!")
+				else
+					minetest.chat_send_player(name, "# Server: Book copy failed. Blame <" .. rename.gpn(blamed) .. ">!")
+				end
+			end
+		end
+
+		if data.form_pos == nil and data.formname == nil and
+		   data.copy_pos == nil and data.copy_job == nil
+		then
+			table.insert(to_remove, name)
+		end
+	end -- for name, data in pairs(...)
+
+	-- Cleanup player contexts.
+	for _, name in ipairs(to_remove) do
+		books_placeable.open_books[name] = nil
+	end
+end
+
+
 local function on_punch(pos, node, puncher, pointed_thing)
 	-- Note: we must get the REAL node, because it might have dropped!
 	local node = minetest.get_node(pos)
 
 	if node.name == "books:book_open" then
+		-- FIX: Punching an open book with a single blank book to start a duplication job
+		--      empties the wielded itemstack, triggering a second punch event. This must
+		--      be ignored for the player initiating the copy job, to prevent prematurely
+		--      closing the book, which could allow it to be returned to a library and
+		--      cause the copy job to fail. The check is limited to the punching player,
+		--      allowing others to spitefully slam the book closed >:]
+		local open_books = books_placeable.open_books
+		local pos_hash = minetest.hash_node_position(pos)
+		local pname = puncher:get_player_name()
+		for name, data in pairs(open_books) do
+			if name == pname and data.copy_pos == pos_hash and data.copy_job then
+				return
+			end
+		end
+
 		node.name = "books:book_closed"
 		minetest.swap_node(pos, node)
 		local meta = minetest.get_meta(pos)
 		set_closed_infotext(meta, meta)
 		minetest.sound_play("book_close", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
+		kick_reading_players(pos, pname)
 	elseif node.name == "books:book_closed" then
 		node.name = "books:book_open"
 		minetest.swap_node(pos, node)
@@ -255,6 +606,7 @@ local function on_dig(pos, node, digger)
 				minetest.chat_send_player(pname, "# Server: \"" .. title .. "\" has been returned to the shelf.")
 		end
 
+		kick_reading_players(pos, digger:get_player_name())
 		minetest.remove_node(pos)
 		return true
 	end
@@ -283,6 +635,7 @@ local function on_dig(pos, node, digger)
 		minetest.item_drop(adder, digger, digger:get_pos())
 	end
 
+	kick_reading_players(pos, digger:get_player_name())
 	minetest.remove_node(pos)
 	return true
 end
@@ -302,39 +655,84 @@ local function close_book(pos)
 end
 
 
+-- NOTE: This function is expected to be called from within minetest.after.
+local function try_auto_close_book(pos, max_attempts)
+	if max_attempts and max_attempts <= 0 then
+		return
+	end
+
+	local pos_hash = minetest.hash_node_position(pos)
+	local open_books = books_placeable.open_books
+
+	for name, data in pairs(open_books) do
+		if data.form_pos == pos_hash or data.copy_pos == pos_hash then
+			-- Someone else is reading or copying the book, don't auto-close it.
+			-- NOTE: this also prevents automatic returning of checked-out books.
+			-- Just try again in a bit.
+			minetest.after(5, try_auto_close_book, pos, (max_attempts and (max_attempts - 1) or 10))
+			return
+		end
+	end
+
+	close_book(pos)
+end
+
+
 local function on_player_receive_fields(player, formname, fields)
 	local formname2 = formname:sub(1, 16)
 	if formname2 ~= "books:book_edit_" and formname2 ~= "books:book_view_" then
-		return
+		return false
 	end
 
 	if not player or not player:is_player() then
-		return
+		return false
 	end
 
+	local pos = minetest.string_to_pos(formname:sub(17))
+	local pos_hash = minetest.hash_node_position(pos)
 	local pname = player:get_player_name()
+	local data = books_placeable.open_books[pname]
+
+	if not data or data.form_pos ~= pos_hash or data.formname ~= formname2 then
+		minetest.log("warning", "Player " .. pname .. " delivered fields for a form they weren't sent. SUS!")
+		-- Invalidate the player's context.
+		if data.copy_pos or data.copy_job then
+			data.form_pos = nil
+			data.formname = nil
+		else
+			books_placeable.open_books[pname] = nil
+		end
+		return true
+	end
+
+	local node = minetest.get_node(pos)
+	local meta = minetest.get_meta(pos)
+
+	if node.name ~= "books:book_closed" and node.name ~= "books:book_open" then
+		-- Error 0x8891571: The book has gone away.
+		-- Save us from embarrassment by silently closing the form.
+		minetest.close_formspec(pname, formname)
+		return true
+	end
 
 	if fields.save and fields.title ~= "" and fields.text ~= "" then
-		local pos = minetest.string_to_pos(formname:sub(17))
-		local node = minetest.get_node(pos)
-		local meta = minetest.get_meta(pos)
 		local text = fields.text:gsub("\r\n", "\n"):gsub("\r", "\n"):sub(1, books.MAX_TEXT_SIZE)
 		local title = fields.title:sub(1, books.MAX_TITLE_SIZE)
 
 		-- Security check. Player must be owner of book.
 		local owner = meta:get_string("owner")
 		if owner ~= "" and owner ~= pname then
-			return
+			return true
 		end
 
 		-- Book must be open.
 		if node.name ~= "books:book_open" then
-			return
+			return true
 		end
 
 		if meta:get_int("is_library_checkout") ~= 0 then
 			minetest.chat_send_player(pname, "# Server: Don't write on library property!")
-			return
+			return true
 		end
 
 		title = title:trim()
@@ -372,12 +770,18 @@ local function on_player_receive_fields(player, formname, fields)
 
 		minetest.sound_play("book_write", {pos = pos, gain = 0.1, max_hear_distance = 16}, true)
 
-		minetest.after(1.5, function() close_book(pos) end)
-	elseif fields.book_next or fields.book_prev then
-		local pos = minetest.string_to_pos(formname:sub(17))
-		local node = minetest.get_node(pos)
-		local meta = minetest.get_meta(pos)
+		-- Invalidate the player context. If a book copy is in progress, just alter
+		-- the formspec-relevant data.
+		if data.copy_job or data.copy_pos then
+			data.form_pos = nil
+			data.formname = nil
+		else
+			books_placeable.open_books[pname] = nil
+		end
 
+		minetest.after(1.5, try_auto_close_book, pos)
+
+	elseif fields.book_next or fields.book_prev then
 		if fields.book_next then
 			meta:set_int("page", meta:get_int("page") + 1)
 			if meta:get_int("page") > meta:get_int("page_max") then
@@ -393,10 +797,21 @@ local function on_player_receive_fields(player, formname, fields)
 		end
 
 		formspec_display(meta, player:get_player_name(), pos, "user")
+
 	elseif fields.quit then
-		local pos = minetest.string_to_pos(formname:sub(17))
-		minetest.after(0.5, function() close_book(pos) end)
+		-- Invalidate the player context. If a book copy is in progress, just alter
+		-- the formspec-relevant data.
+		if data.copy_job or data.copy_pos then
+			data.form_pos = nil
+			data.formname = nil
+		else
+			books_placeable.open_books[pname] = nil
+		end
+
+		minetest.after(0.5, try_auto_close_book, pos)
 	end
+
+	return true -- Handled. (Blocks subsequent callbacks.)
 end
 books_placeable.on_player_receive_fields = on_player_receive_fields
 
@@ -422,13 +837,50 @@ function books_placeable.preserve_metadata(pos, oldnode, oldmeta, drops)
 end
 
 
+local function invalidate_player_data(pname)
+	local data = books_placeable.open_books[pname]
+
+	if data then
+		local form_pos = data.form_pos
+		local copy_pos = data.copy_pos
+
+		if data.copy_job then
+			data.copy_job:cancel()
+			data.copy_job = nil
+		end
+		
+		books_placeable.open_books[pname] = nil
+
+		if form_pos then
+			try_auto_close_book(minetest.get_position_from_hash(form_pos))
+		end
+		if copy_pos and copy_pos ~= form_pos then
+			try_auto_close_book(minetest.get_position_from_hash(copy_pos))
+		end
+	end
+end
+
+function books_placeable.on_leaveplayer(player, timeout)
+	if not player or not player:is_player() then return end
+	local pn = player:get_player_name()
+	invalidate_player_data(pn)
+end
+
+function books_placeable.on_dieplayer(player, reason)
+	if not player or not player:is_player() then return end
+	local pn = player:get_player_name()
+	invalidate_player_data(pn)
+end
+
 
 if not books_placeable.registered then
 	minetest.override_item("books:book_blank", {
 		on_place = function(...) return books_placeable.on_place(...) end,
+		on_use = function(...) return books_placeable.on_use(...) end,
 	})
 	minetest.override_item("books:book_written", {
 		on_place = function(...) return books_placeable.on_place(...) end,
+		on_use = function(...) return books_placeable.on_use(...) end,
 	})
 
 	-- For books:book_open, books:book_written_open
@@ -516,7 +968,16 @@ if not books_placeable.registered then
 	})
 
 	minetest.register_on_player_receive_fields(function(...)
-		books_placeable.on_player_receive_fields(...) end)
+		return books_placeable.on_player_receive_fields(...)
+	end)
+
+	minetest.register_on_leaveplayer(function(...)
+		books_placeable.on_leaveplayer(...)
+	end)
+
+	minetest.register_on_dieplayer(function(...)
+		books_placeable.on_dieplayer(...)
+	end)
 
 	minetest.register_alias("default:book_closed", "books:book_closed")
 	minetest.register_alias("default:book_open", "books:book_open")

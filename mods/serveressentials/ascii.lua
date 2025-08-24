@@ -161,21 +161,30 @@ function serveressentials.textblit(pname, param)
 
 	local dir = minetest.dir_to_facedir(user:get_look_dir())
 
-	local function do_it()
+	local function do_it(vdata)
 		rotate_bitmap(pos, textbitmap, dir)
 
-		for i = 1, #textbitmap, 1 do
-			target.x = textbitmap[i].x
-			target.z = textbitmap[i].z
-			target.y = pos.y
-			place_node_floor(target)
-		end
-
-		minetest.chat_send_player(pname, "# Server: Text blit done.")
+		minetest.after(0.5, function()
+			for i = 1, #textbitmap, 1 do
+				target.x = textbitmap[i].x
+				target.z = textbitmap[i].z
+				target.y = pos.y
+				place_node_floor(target)
+			end
+			minetest.chat_send_player(pname, "# Server: Text blit done.")
+		end)
 	end
 
 	local function callback(blockpos, action, calls_remaining, param)
-		if calls_remaining == 0 then
+		if action == minetest.EMERGE_CANCELLED or action == minetest.EMERGE_ERRORED then
+			param.do_it = false
+			minetest.chat_send_player(pname, "# Server: Emerge error.")
+			return
+		end
+
+		if calls_remaining ~= 0 then return end
+
+		if param.do_it then
 			do_it()
 		end
 	end
@@ -183,7 +192,7 @@ function serveressentials.textblit(pname, param)
 	local minp, maxp = cuboid_bounds(textbitmap)
 	minp.y = pos.y - 100
 	maxp.y = pos.y + 100
-	minetest.emerge_area(minp, maxp, callback)
+	minetest.emerge_area(minp, maxp, callback, {do_it=true})
 end
 
 if not serveressentials.ascii_registered then

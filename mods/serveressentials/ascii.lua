@@ -108,6 +108,18 @@ function serveressentials.textblit(pname, param)
 	local cx = 0
 	local cz = 0
 
+	-- Debug: Print image properties
+	print("Image width: " .. ascii:width())
+	print("Image height: " .. ascii:height())
+	print("Number of bands: " .. ascii:bands())
+	print("Band format: " .. ascii:format())
+	print("Interpretation: " .. ascii:interpretation())
+
+	local stride = ascii:bands()
+	if stride ~= 3 then
+		error("ASCII image stride is NOT RGB!")
+	end
+
 	-- Pixel positions.
 	local textbitmap = {}
 
@@ -120,12 +132,11 @@ function serveressentials.textblit(pname, param)
 
 		for x = 0, gwidth - 1, 1 do -- Column
 			for z = 0, gheight - 1, 1 do -- Row
-				-- Calculate array index. 8-bit RGBA format. Also flip the glyphs vertical.
-				local idx = 4 * ((sz + z * -1 + gheight - 1) * 160 + (sx + x))
+				-- Calculate array index. 8-bit RGB format. Also flip the glyphs vertical.
+				local idx = 3 * ((sz + z * -1 + gheight - 1) * 160 + (sx + x))
 				local r = buffer[idx]
-				local a = buffer[idx + 3]
 
-				if a >= 255 and r >= 128 then
+				if r >= 128 then
 					textbitmap[#textbitmap + 1] = {
 						x = pos.x + cx + x,
 						z = pos.z + cz + z

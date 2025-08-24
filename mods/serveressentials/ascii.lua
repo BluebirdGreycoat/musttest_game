@@ -159,13 +159,9 @@ function serveressentials.textblit(pname, param)
 		i = i + 1
 	end
 
-	local function do_it()
-		local user = minetest.get_player_by_name(pname)
-		if not user or not user:is_player() then
-			return
-		end
+	local dir = minetest.dir_to_facedir(user:get_look_dir())
 
-		local dir = minetest.dir_to_facedir(user:get_look_dir())
+	local function do_it()
 		rotate_bitmap(pos, textbitmap, dir)
 
 		for i = 1, #textbitmap, 1 do

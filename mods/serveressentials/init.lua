@@ -23,6 +23,7 @@ dofile(serveressentials.modpath .. "/teleport.lua")
 dofile(serveressentials.modpath .. "/recall.lua")
 dofile(serveressentials.modpath .. "/suicide.lua")
 dofile(serveressentials.modpath .. "/gag.lua")
+dofile(serveressentials.modpath .. "/ascii.lua")
 
 
 

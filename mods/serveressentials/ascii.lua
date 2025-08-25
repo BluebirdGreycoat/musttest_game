@@ -17,10 +17,6 @@ local buffer = ascii:write_to_memory() -- CDATA, not string.
 local gwidth = 10
 local gheight = 10
 
--- Colors.
-local cblack = "cavestuff:dark_obsidian"
-local cwhite = "default:snow"
-
 function cuboid_bounds(points)
 	local min_x, max_x = points[1].x, points[1].x
 	local min_z, max_z = points[1].z, points[1].z
@@ -71,24 +67,41 @@ local function rotate_bitmap(pos, bitmap, dir)
 	end
 end
 
-local function place_node_floor(pos)
-	pos = vector.new(pos)
-	pos.y = pos.y + 90
-	local starty = pos.y
-	local nn = minetest.get_node(pos)
-	local fail = false
-	while not fail and nn.name == "air" or nn.name == "ignore" do
-		pos.y = pos.y - 1
-		nn = minetest.get_node(pos)
-		if pos.y < starty - 180 then
-			fail = true
-			break
+local function blit_text(pname, pos, minp, maxp, points)
+	-- Colors.
+	local c_writesurf = minetest.get_content_id("default:snow")
+	local c_writenode = minetest.get_content_id("cavestuff:dark_obsidian")
+
+	local vm = VoxelManip()
+	minp, maxp = vm:read_from_map(minp, maxp)
+	local area = VoxelArea:new({MinEdge = minp, MaxEdge = maxp})
+	local data = vm:get_data()
+
+	-- This simply searches the column downwards starting from the top,
+	-- and stops at the first writable node it finds, returning its index.
+	local function find_surf(x, y, z)
+		local top = maxp.y
+		local bot = minp.y
+		for k = top, bot, -1 do
+			local vi = area:index(x, k, z)
+			if data[vi] == c_writesurf then
+				return vi
+			end
 		end
 	end
-	-- Only replace snow.
-	if not fail and nn.name == cwhite then
-		minetest.set_node(pos, {name=cblack})
+
+	for i = 1, #points, 1 do
+		local x = points[i].x
+		local z = points[i].z
+		local y = pos.y
+
+		local vi = find_surf(x, y, z)
+		if vi then data[vi] = c_writenode end
 	end
+
+	vm:set_data(data)
+	vm:write_to_map()
+	minetest.chat_send_player(pname, "# Server: Text blit done.")
 end
 
 function serveressentials.textblit(pname, param)
@@ -102,7 +115,7 @@ function serveressentials.textblit(pname, param)
 	end
 
 	local pos = vector.round(user:get_pos())
-	local target = vector.new(pos)
+	local dir = minetest.dir_to_facedir(user:get_look_dir())
 
 	-- Cursor pos.
 	local cx = 0
@@ -125,73 +138,65 @@ function serveressentials.textblit(pname, param)
 
 	local i = 1
 	while i <= #param do
-		local b = string.byte(param, i)
-
-		local sx = (b % 16) * gwidth
-		local sz = floor(b / 16) * gheight
-
-		for x = 0, gwidth - 1, 1 do -- Column
-			for z = 0, gheight - 1, 1 do -- Row
-				-- Calculate array index. 8-bit RGB format. Also flip the glyphs vertical.
-				local idx = 3 * ((sz + z * -1 + gheight - 1) * 160 + (sx + x))
-				local r = buffer[idx]
-
-				if r >= 128 then
-					textbitmap[#textbitmap + 1] = {
-						x = pos.x + cx + x,
-						z = pos.z + cz + z
-					}
-				end
-			end
-		end
-
-		cx = cx + gwidth
-
 		local ch1 = param:sub(i, i)
 		local ch2 = param:sub(i + 1, i + 1)
-		if ch2 == " " and (ch1 == '.' or ch1 == ',' or ch1 == "!" or ch1 == "?" or ch1 == ":") then
+
+		if ch1 == "%" and (ch2 == 'n' or ch2 == 'N') then
 			cx = 0
 			cz = cz - gheight
-			i = i + 1 -- Skip the space.
+			i = i + 1 -- Skip the sequence.
+		else
+			local b = string.byte(param, i)
+			local sx = (b % 16) * gwidth
+			local sz = floor(b / 16) * gheight
+
+			for x = 0, gwidth - 1, 1 do -- Column
+				for z = 0, gheight - 1, 1 do -- Row
+					-- Calculate array index. 8-bit RGB format. Also flip the glyphs vertical.
+					local idx = 3 * ((sz + z * -1 + gheight - 1) * 160 + (sx + x))
+					local r = buffer[idx]
+
+					if r >= 128 then
+						textbitmap[#textbitmap + 1] = {
+							x = pos.x + cx + x,
+							z = pos.z + cz + z
+						}
+					end
+				end
+			end
+
+			cx = cx + gwidth
 		end
 
 		-- Advance counter manually.
 		i = i + 1
 	end
 
-	local dir = minetest.dir_to_facedir(user:get_look_dir())
+	-- Apply rotation.
+	rotate_bitmap(pos, textbitmap, dir)
 
-	local function do_it(vdata)
-		rotate_bitmap(pos, textbitmap, dir)
+	-- Compute voxel manipulator cuboid.
+	local minp, maxp = cuboid_bounds(textbitmap)
+	minp.y = pos.y - 50
+	maxp.y = pos.y + 50
 
-		minetest.after(0.5, function()
-			for i = 1, #textbitmap, 1 do
-				target.x = textbitmap[i].x
-				target.z = textbitmap[i].z
-				target.y = pos.y
-				place_node_floor(target)
-			end
-			minetest.chat_send_player(pname, "# Server: Text blit done.")
-		end)
-	end
-
+	-- Make sure the map is fully generated.
 	local function callback(blockpos, action, calls_remaining, param)
-		if action == minetest.EMERGE_CANCELLED or action == minetest.EMERGE_ERRORED then
+		-- Check if there was an error.
+		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
 			param.do_it = false
-			minetest.chat_send_player(pname, "# Server: Emerge error.")
 			return
 		end
 
-		if calls_remaining ~= 0 then return end
+		-- We don't do anything until the last callback.
+		if calls_remaining ~= 0 then
+			return
+		end
 
 		if param.do_it then
-			do_it()
+			blit_text(pname, pos, minp, maxp, textbitmap)
 		end
 	end
-
-	local minp, maxp = cuboid_bounds(textbitmap)
-	minp.y = pos.y - 100
-	maxp.y = pos.y + 100
 	minetest.emerge_area(minp, maxp, callback, {do_it=true})
 end
 
@@ -199,6 +204,8 @@ if not serveressentials.ascii_registered then
 	serveressentials.ascii_registered = true
 
 	minetest.register_chatcommand("textblit", {
+		params = "",
+		description = "Write text into snow, with your position as the starting point.",
 		privs = {server=true},
 
 		func = function(...)

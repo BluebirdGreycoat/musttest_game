@@ -3,6 +3,9 @@
 -- Cool stuff!
 -- https://www.youtube.com/watch?v=QV7SHnKSgs0
 
+serveressentials.TEXTBLIT_WRITE_SURF = "default:snow" -- Don't change unless you know what you're doing.
+serveressentials.TEXTBLIT_WRITE_NODE = "air"
+
 local floor = math.floor
 local tobyte = string.byte
 local modpath = minetest.get_modpath("serveressentials")
@@ -67,10 +70,10 @@ local function rotate_bitmap(pos, bitmap, dir)
 	end
 end
 
-local function blit_text(pname, pos, minp, maxp, points)
+local function blit_text(pname, minp, maxp, points)
 	-- Colors.
-	local c_writesurf = minetest.get_content_id("default:snow")
-	local c_writenode = minetest.get_content_id("cavestuff:dark_obsidian")
+	local c_writesurf = minetest.get_content_id(serveressentials.TEXTBLIT_WRITE_SURF)
+	local c_writenode = minetest.get_content_id(serveressentials.TEXTBLIT_WRITE_NODE)
 
 	local vm = VoxelManip()
 	minp, maxp = vm:read_from_map(minp, maxp)
@@ -79,7 +82,7 @@ local function blit_text(pname, pos, minp, maxp, points)
 
 	-- This simply searches the column downwards starting from the top,
 	-- and stops at the first writable node it finds, returning its index.
-	local function find_surf(x, y, z)
+	local function find_surf(x, z)
 		local top = maxp.y
 		local bot = minp.y
 		for k = top, bot, -1 do
@@ -93,9 +96,8 @@ local function blit_text(pname, pos, minp, maxp, points)
 	for i = 1, #points, 1 do
 		local x = points[i].x
 		local z = points[i].z
-		local y = pos.y
 
-		local vi = find_surf(x, y, z)
+		local vi = find_surf(x, z)
 		if vi then data[vi] = c_writenode end
 	end
 
@@ -111,6 +113,10 @@ function serveressentials.textblit(pname, param)
 	param = param:trim()
 	if #param == 0 then
 		minetest.chat_send_player(pname, "# Server: Nothing to blit.")
+		return
+	end
+	if #param > 256 then
+		minetest.chat_send_player(pname, "# Server: Text is too long!")
 		return
 	end
 
@@ -194,7 +200,7 @@ function serveressentials.textblit(pname, param)
 		end
 
 		if param.do_it then
-			blit_text(pname, pos, minp, maxp, textbitmap)
+			blit_text(pname, minp, maxp, textbitmap)
 		end
 	end
 	minetest.emerge_area(minp, maxp, callback, {do_it=true})

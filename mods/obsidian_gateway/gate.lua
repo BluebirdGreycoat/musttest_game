@@ -577,6 +577,8 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	-- Make sure target is within some realm.
 	-- This generally should not happen.
 	if not rc.is_valid_realm_pos(pdest) then
+		-- Show problem.
+		minetest.chat_send_player(pname, "# Server: Void portal destination.")
 		return
 	end
 

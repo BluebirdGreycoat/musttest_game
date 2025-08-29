@@ -163,7 +163,7 @@ function randspawn.find_new_spawn(local_shift, realm)
 		local oldpos = minetest.string_to_pos(soldpos)
 		if oldpos then
 			pos.x = math.random(oldpos.x - rad, oldpos.x + rad)
-			pos.y = oldpos.y
+			pos.y = realmspawny -- Prevent climbing.
 			pos.z = math.random(oldpos.z - rad, oldpos.z + rad)
 		end
 	end

@@ -127,7 +127,7 @@ local function callback(blockpos, action, calls_remaining, param)
 				thispos.y = thispos.y + 1
 
 				-- We have a new spawnpoint.
-				--minetest.log("found new spawn location!")
+				minetest.log("found new spawn location for realm: " .. realm .. " at " .. minetest.pos_to_string(thispos))
 				serveressentials.update_exit_location(thispos, realm)
 				return
 			end

@@ -3,7 +3,9 @@
 -- Cool stuff!
 -- https://www.youtube.com/watch?v=QV7SHnKSgs0
 
-serveressentials.TEXTBLIT_WRITE_SURF = "default:snow" -- Don't change unless you know what you're doing.
+ -- Don't change unless you know what you're doing.
+serveressentials.TEXTBLIT_WRITE_SURF = "default:snow"
+serveressentials.TEXTBLIT_WRITE_SURF2 = "snow:footprints"
 serveressentials.TEXTBLIT_WRITE_NODE = "air"
 
 local floor = math.floor
@@ -73,6 +75,7 @@ end
 local function blit_text(pname, minp, maxp, points)
 	-- Colors.
 	local c_writesurf = minetest.get_content_id(serveressentials.TEXTBLIT_WRITE_SURF)
+	local c_writesurf2 = minetest.get_content_id(serveressentials.TEXTBLIT_WRITE_SURF2)
 	local c_writenode = minetest.get_content_id(serveressentials.TEXTBLIT_WRITE_NODE)
 
 	local vm = VoxelManip()
@@ -87,7 +90,8 @@ local function blit_text(pname, minp, maxp, points)
 		local bot = minp.y
 		for k = top, bot, -1 do
 			local vi = area:index(x, k, z)
-			if data[vi] == c_writesurf then
+			local cid = data[vi]
+			if cid == c_writesurf or cid == c_writesurf2 then
 				return vi
 			end
 		end

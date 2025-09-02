@@ -6,7 +6,7 @@ anticurse.foul = {
 		"extrem", "is", "was", "excit", "mass", "exodus", "names", "exclud", "else",
 		"house", "example", "exchange", "please", "excuse", "course", "extend", "ones",
 		"excel+ent", "exotic", "extensive", "exces+ive", "exam", "years", "exit",
-		"drops", "floods",
+		"drops", "floods", "signs", "exhibit",
 	}},
 
 	"h+y+m+e+n+",

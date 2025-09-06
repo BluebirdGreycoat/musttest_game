@@ -33,6 +33,7 @@ if not stoneworld.registered then
 	dofile(stoneworld.modpath .. "/nodes.lua")
 	dofile(stoneworld.modpath .. "/ores.lua")
 	dofile(stoneworld.modpath .. "/items.lua")
+	dofile(stoneworld.modpath .. "/soa.lua")
 
 	minetest.set_gen_notify("custom", nil, {"stoneworld:fortress_spawn_location"})
 	minetest.register_on_generated(function() stoneworld.on_generated() end)

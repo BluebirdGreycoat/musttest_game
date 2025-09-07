@@ -63,6 +63,11 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
   local chest_location = minetest.string_to_pos(staffmeta:get_string("chest_location"))
   local user_location = vector.round(user:get_pos())
 
+  -- Do nothing if player is cloaked.
+  if cloaking.is_cloaked(pname) then
+		return
+	end
+
   if pt.type == "node" then
 		nodepos = pt.under
 		node = minetest.get_node(pt.under)
@@ -74,12 +79,12 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
 		end
 	end
 
-	if is_chest then
+	if is_chest and nodepos then
 		local chest_owner = minetest.get_meta(nodepos):get_string("owner")
 		if chest_owner == "" or chest_owner == pname then
 			staffmeta:set_string("chest_location", minetest.pos_to_string(nodepos))
 			minetest.chat_send_player(pname, "# Server: Chest coordinates secured.")
-			return itemstack
+			return itemstack -- Update user's tool.
 		else
 			-- However, if someone else initializes the staff and shares it with
 			-- another player, they will still be able to teleport items.

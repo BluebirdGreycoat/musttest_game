@@ -1,4 +1,5 @@
 -- Staff of Abundance
+local MAX_RANGE = 128
 
 local function pluralize(count, singular, plural)
 	if count == 1 then
@@ -54,6 +55,7 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
   local staffmeta = itemstack:get_meta()
   local node, nodepos, is_chest
   local chest_location = minetest.string_to_pos(staffmeta:get_string("chest_location"))
+  local user_location = vector.round(user:get_pos())
 
   if pt.type == "node" then
 		nodepos = pt.under
@@ -78,7 +80,7 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
 		end
 	end
 
-	if chest_location then
+	if chest_location and vector.distance(chest_location, user_location) < MAX_RANGE then
 		local chest_inv = minetest.get_meta(chest_location):get_inventory()
 		local user_inv = user:get_inventory()
 		local success, numstacks = refresh_stacks(user_inv, chest_inv)

@@ -75,6 +75,8 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
 			minetest.chat_send_player(pname, "# Server: Chest coordinates secured.")
 			return itemstack
 		else
+			-- However, if someone else initializes the staff and shares it with
+			-- another player, they will still be able to teleport items.
 			minetest.chat_send_player(pname, "# Server: This chest is locked!")
 			return
 		end

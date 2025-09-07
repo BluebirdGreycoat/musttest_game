@@ -79,7 +79,7 @@ fortress.loot = {
   },
 
   exceptional = {
-    max_items = 6,
+    max_items = 4,
     item_list = {
       {item="3d_armor:helmet_mithril", min=1, max=1, chance=10},
       {item="3d_armor:chestplate_mithril", min=1, max=1, chance=10},
@@ -112,7 +112,7 @@ fortress.loot = {
 
       -- Special (non-craftable) loot.
       {item="stoneworld:oerkki_scepter", min=1, max=1, chance=5},
-      {item="stoneworld:oerkki_soa", min=1, max=1, chance=5},
+      {item="stoneworld:oerkki_soa", min=1, max=1, chance=4},
       {item="griefer:elitestone", min=1, max=1, chance=5},
 
       -- Very special non-craftable loot.

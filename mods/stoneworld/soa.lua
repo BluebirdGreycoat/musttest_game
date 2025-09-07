@@ -12,6 +12,12 @@ end
 local function refresh_stacks(toinv, frominv)
 	local tolist = toinv:get_list("main")
 	local fromlist = frominv:get_list("main")
+
+	-- Nil checks.
+	if not tolist or not fromlist then
+		return
+	end
+
 	local items_were_moved = false
 	local num_stacks_refreshed = 0
 
@@ -83,9 +89,12 @@ function stoneworld.oerkki_soa(itemstack, user, pt)
 	end
 
 	if chest_location and vector.distance(chest_location, user_location) < MAX_RANGE then
+		-- Chest inventory may be nil.
 		local chest_inv = minetest.get_meta(chest_location):get_inventory()
 		local user_inv = user:get_inventory()
+
 		local success, numstacks = refresh_stacks(user_inv, chest_inv)
+
 		if success then
 			minetest.chat_send_player(pname, "# Server: " .. numstacks .. " " ..
 				pluralize(numstacks, "stack", "stacks") .. " refreshed.")

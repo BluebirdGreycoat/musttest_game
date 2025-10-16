@@ -90,6 +90,10 @@ fortress.default = {
 				{file="nf_building_solid", force=false, adjust={x=0, y=-7, z=22}},
 				{file="nf_building_solid", force=false, adjust={x=11, y=-7, z=22}},
 				{file="nf_building_solid", force=false, adjust={x=22, y=-7, z=22}},
+				{file="fortress_well_water", chance=40, force=true,
+					adjust={x=10, y=3, z=10}},
+				{file="fortress_well_lava", chance=20, force=true,
+					adjust={x=10, y=3, z=10}},
 			},
 			size = {x=3, y=1, z=3},
 			next = {

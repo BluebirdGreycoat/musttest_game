@@ -10,6 +10,7 @@ default.LIGHT_MAX = 15
 
 
 
+dofile(default.modpath .. "/functions.lua")
 dofile(default.modpath .. "/cactus.lua")
 dofile(default.modpath .. "/papyrus.lua")
 dofile(default.modpath .. "/nodes.lua")

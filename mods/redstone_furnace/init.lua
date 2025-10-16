@@ -2,6 +2,7 @@
 if not minetest.global_exists("redstone_furnace") then redstone_furnace = {} end
 redstone_furnace.modpath = minetest.get_modpath("redstone_furnace")
 local FURNACE_SPEED = 1.5
+local MAGMA_DURATION = 10
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -155,10 +156,22 @@ redstone_furnace.on_timer = function(pos, elapsed)
       local fuel, afterfuel = minetest.get_craft_result({method = "fuel", width = 1, items = fuellist})
 
       if fuel.time == 0 then
-        -- No valid fuel in fuel list
-        fuel_totaltime = 0
-        fuel_time = 0
-        src_time = 0
+        -- Magma provides infinite fuel.
+        if default.has_magma_fuel(pos) then
+          fuel_totaltime = MAGMA_DURATION
+          fuel_time = 0
+          -- FX
+          for i = 1, 2, 1 do
+            minetest.after(math.random(10, 100) / 10, function()
+              lava_extras.spawn_particles(pos, minetest.get_node(pos))
+            end)
+          end
+        else
+          -- No valid fuel in fuel list
+          fuel_totaltime = 0
+          fuel_time = 0
+          src_time = 0
+        end
       else
         -- Take fuel from fuel list
         inv:set_stack("fuel", 1, afterfuel.items[1])

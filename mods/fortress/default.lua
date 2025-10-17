@@ -20,6 +20,7 @@ fortress.default = {
 	-- The initial schem placed by the spawner.
 	-- This starts the rest of the fortress growing off it.
 	initial = {
+		---[[
 		"junction",
 		"junction_walk_bridge",
 		"plaza",
@@ -27,6 +28,7 @@ fortress.default = {
 		"ns_gatehouse",
 		"ns_bridge_passage",
 		"ew_bridge_passage",
+		--]]
 	},
 
 	-- Size of cells.
@@ -172,16 +174,20 @@ fortress.default = {
 				{file="nf_detail_room1", chance=15, force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_room2", chance=15, force=true, adjust={x=3, y=4, z=3}},
 				{file="nf_detail_room3", chance=15, rotation="90", force=false, adjust={x=0, y=4, z=3}},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="0", force=false, adjust={x=3, y=2, z=-2}},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false, adjust={x=3, y=2, z=11}},
 			},
 			chests = {
-				{pos={x_min=0, x_max=10, y=4, z=3}, chance=10, loot="common"},
-				{pos={x_min=0, x_max=10, y=4, z=7}, chance=10, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=3}, chance=20, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=7}, chance=20, loot="common"},
 				{pos={x_min=0, x_max=10, y=4, z=3}, chance=5, loot="rare"},
 				{pos={x_min=0, x_max=10, y=4, z=7}, chance=5, loot="rare"},
-			},
+			},---[[
 			next = {
 				["+x"] = {
-					{chunk="ew", chance=50},
+					{chunk="ew", chance=80},
 					{chunk="ew_stair", chance=20},
 					{chunk="ew_bridge_passage", chance=10, shift={x=0, y=0, z=-1}},
 					{chunk="ew_bridge_passage_n", chance=30, shift={x=0, y=0, z=0}},
@@ -195,7 +201,7 @@ fortress.default = {
 					{chunk="w_capped", fallback=true},
 				},
 				["-x"] = {
-					{chunk="ew", chance=50},
+					{chunk="ew", chance=80},
 					{chunk="ew_stair", chance=20},
 					{chunk="ew_bridge_passage", chance=10, shift={x=0, y=0, z=-1}},
 					{chunk="ew_bridge_passage_n", chance=30, shift={x=0, y=0, z=0}},
@@ -210,7 +216,7 @@ fortress.default = {
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="ew_walk", fallback=true}},
-			},
+			},--]]
 		},
 
 		ns = {
@@ -224,16 +230,20 @@ fortress.default = {
 				{file="nf_detail_room1", chance=15, rotation="90", force=true, adjust={x=3, y=3, z=3}},
 				{file="nf_detail_room2", chance=15, rotation="90", force=true, adjust={x=3, y=4, z=3}},
 				{file="nf_detail_room3", chance=15, force=false, adjust={x=3, y=4, z=0}},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="90", force=false, adjust={x=-2, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false, adjust={x=11, y=2, z=3}},
 			},
 			chests = {
-				{pos={x=3, y=4, z_min=0, z_max=10}, chance=10, loot="common"},
-				{pos={x=7, y=4, z_min=0, z_max=10}, chance=10, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=10}, chance=20, loot="common"},
+				{pos={x=7, y=4, z_min=0, z_max=10}, chance=20, loot="common"},
 				{pos={x=3, y=4, z_min=0, z_max=10}, chance=5, loot="rare"},
 				{pos={x=7, y=4, z_min=0, z_max=10}, chance=5, loot="rare"},
-			},
+			},---[[
 			next = {
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=80},
 					{chunk="ns_stair", chance=20},
 					{chunk="ns_bridge_passage", chance=10, shift={x=-1, y=0, z=0}},
 					{chunk="ns_bridge_passage_e", chance=30, shift={x=0, y=0, z=0}},
@@ -247,7 +257,7 @@ fortress.default = {
 					{chunk="s_capped", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=80},
 					{chunk="ns_stair", chance=20},
 					{chunk="ns_bridge_passage", chance=10, shift={x=-1, y=0, z=0}},
 					{chunk="ns_bridge_passage_e", chance=30, shift={x=0, y=0, z=0}},
@@ -262,7 +272,7 @@ fortress.default = {
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
 				["+y"] = {{chunk="ns_walk", fallback=true}},
-			},
+			},--]]
 		},
 
 		ns_plaza_e = {
@@ -365,6 +375,7 @@ fortress.default = {
 			schem = {
 				{file="nf_passage_n_capped"},
 				{file="hall_end_stair", rotation="180", chance=20, force=true, priority=1000, adjust={x=4, y=4, z=5}},
+				{file="elite_spawner", chance=25, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			chests = {
 				{pos={x_min=3, x_max=7, y=4, z=3}, chance=50, loot="common"},
@@ -381,6 +392,7 @@ fortress.default = {
 			schem = {
 				{file="nf_passage_s_capped"},
 				{file="hall_end_stair", rotation="0", chance=20, force=true, priority=1000, adjust={x=4, y=4, z=-2}},
+				{file="elite_spawner", chance=25, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			chests = {
 				{pos={x_min=3, x_max=7, y=4, z=7}, chance=50, loot="common"},
@@ -397,6 +409,7 @@ fortress.default = {
 			schem = {
 				{file="nf_passage_e_capped"},
 				{file="hall_end_stair", rotation="270", chance=20, force=true, priority=1000, adjust={x=5, y=4, z=4}},
+				{file="elite_spawner", chance=25, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			chests = {
 				{pos={x_min=3, x_max=10, y=4, z=3}, chance=50, loot="common"},
@@ -413,6 +426,7 @@ fortress.default = {
 			schem = {
 				{file="nf_passage_w_capped"},
 				{file="hall_end_stair", rotation="90", chance=20, force=true, priority=1000, adjust={x=-2, y=4, z=4}},
+				{file="elite_spawner", chance=25, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			chests = {
 				{pos={x_min=0, x_max=7, y=4, z=3}, chance=50, loot="common"},
@@ -430,10 +444,11 @@ fortress.default = {
 				{file="nf_passage_ne_corner"},
 				{file="ns_hall_end_n", priority=1000, force=false, adjust={x=2, y=3, z=11}},
 				{file="ew_hall_end_e", priority=1000, force=false, adjust={x=11, y=3, z=2}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="s_capped", fallback=true},
 				},
 				["+x"] = {
@@ -450,6 +465,7 @@ fortress.default = {
 				{file="nf_passage_nw_corner"},
 				{file="ew_hall_end_w", priority=1000, force=false, adjust={x=-3, y=3, z=2}},
 				{file="ns_hall_end_n", priority=1000, force=false, adjust={x=2, y=3, z=11}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["-x"] = {
@@ -457,7 +473,7 @@ fortress.default = {
 					{chunk="e_capped", fallback=true},
 				},
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="s_capped", fallback=true},
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
@@ -470,10 +486,11 @@ fortress.default = {
 				{file="nf_passage_sw_corner"},
 				{file="ns_hall_end_s", priority=1000, force=false, adjust={x=2, y=3, z=-3}},
 				{file="ew_hall_end_w", priority=1000, force=false, adjust={x=-3, y=3, z=2}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="n_capped", fallback=true},
 				},
 				["-x"] = {
@@ -490,10 +507,11 @@ fortress.default = {
 				{file="nf_passage_se_corner"},
 				{file="ns_hall_end_s", priority=1000, force=false, adjust={x=2, y=3, z=-3}},
 				{file="ew_hall_end_e", priority=1000, force=false, adjust={x=11, y=3, z=2}},
+				{file="nf_detail_spawner1", chance=20, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="n_capped", fallback=true},
 				},
 				["+x"] = {
@@ -511,6 +529,7 @@ fortress.default = {
 				{file="ew_hall_end_e", priority=1000, force=false, adjust={x=11, y=3, z=2}},
 				{file="ew_hall_end_w", priority=1000, force=false, adjust={x=-3, y=3, z=2}},
 				{file="ns_hall_end_s", priority=1000, force=false, adjust={x=2, y=3, z=-3}},
+				{file="nf_detail_spawner1", chance=15, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["+x"] = {
@@ -522,7 +541,7 @@ fortress.default = {
 					{chunk="e_capped", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="n_capped", fallback=true},
 				},
 				["-y"] = {{chunk="solid", fallback=true}},
@@ -536,14 +555,15 @@ fortress.default = {
 				{file="ns_hall_end_n", priority=1000, force=false, adjust={x=2, y=3, z=11}},
 				{file="ns_hall_end_s", priority=1000, force=false, adjust={x=2, y=3, z=-3}},
 				{file="ew_hall_end_e", priority=1000, force=false, adjust={x=11, y=3, z=2}},
+				{file="nf_detail_spawner1", chance=15, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="s_capped", fallback=true},
 				},
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="n_capped", fallback=true},
 				},
 				["+x"] = {
@@ -561,14 +581,15 @@ fortress.default = {
 				{file="ew_hall_end_w", priority=1000, force=false, adjust={x=-3, y=3, z=2}},
 				{file="ns_hall_end_n", priority=1000, force=false, adjust={x=2, y=3, z=11}},
 				{file="ns_hall_end_s", priority=1000, force=false, adjust={x=2, y=3, z=-3}},
+				{file="nf_detail_spawner1", chance=15, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["-z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="n_capped", fallback=true},
 				},
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="s_capped", fallback=true},
 				},
 				["-x"] = {
@@ -586,6 +607,7 @@ fortress.default = {
 				{file="ew_hall_end_e", priority=1000, force=false, adjust={x=11, y=3, z=2}},
 				{file="ew_hall_end_w", priority=1000, force=false, adjust={x=-3, y=3, z=2}},
 				{file="ns_hall_end_n", priority=1000, force=false, adjust={x=2, y=3, z=11}},
+				{file="nf_detail_spawner1", chance=15, rotation="random", force=true, adjust={x=3, y=3, z=3}},
 			},
 			next = {
 				["-x"] = {
@@ -597,7 +619,7 @@ fortress.default = {
 					{chunk="w_capped", fallback=true},
 				},
 				["+z"] = {
-					{chunk="ns", chance=50},
+					{chunk="ns", chance=70},
 					{chunk="s_capped", fallback=true},
 				},
 				["-y"] = {{chunk="solid", fallback=true}},

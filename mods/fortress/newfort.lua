@@ -20,9 +20,9 @@ fortress.newfort_data = {
 	-- The initial schem placed by the spawner.
 	-- This starts the rest of the fortress growing off it.
 	initial = {
-		"junction",
-		--[[
 		"junction_walk_bridge",
+		--[[
+		"junction",
 		"plaza",
 	  "ew_gatehouse",
 		"ns_gatehouse",
@@ -39,11 +39,8 @@ fortress.newfort_data = {
 	-- Maximum fortress extent.
 	-- The fortress spawner will not spawn any chunks farther than this distance
 	-- from the starting position.
-	max_extent = {x=150, y=100, z=150},
-
-	-- If chunk position would exceed the soft extent, then the chance for all
-	-- sub-chunks becomes 0, and fallback chunks (if any) are used ONLY.
-	soft_extent = {x=100, y=30, z=100},
+	-- Expressed in chunk units.
+	max_extent = {x=25, y=20, z=25},
 
 	-- List of node replacements.
 	replacements = {

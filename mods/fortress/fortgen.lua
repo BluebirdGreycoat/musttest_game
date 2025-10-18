@@ -19,6 +19,8 @@ local KEYDIRS = {
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 
+
+
 local function initialize_params(pos, data, start, traversal, build, internal)
 	-- Build traversal table if not provided. The traversal table allows us to
 	-- know if a section of fortress was already generated at a cell location. The
@@ -61,7 +63,9 @@ local function initialize_params(pos, data, start, traversal, build, internal)
 
 			-- Extents.
 			max_extent = table.copy(data.max_extent),
-			soft_extent = table.copy(data.soft_extent),
+
+			-- Limits. Indexed by chunk name, values are current usage count.
+			limits = {},
 		}
 
 		minetest.log("action", "Computing fortress pattern @ " ..
@@ -86,6 +90,8 @@ local function initialize_params(pos, data, start, traversal, build, internal)
 
 	return pos, data, start, traversal, build, internal
 end
+
+
 
 local function add_schematics(pos, info, internal, traversal, build)
 	-- Obtain relevant parameters for this section of fortress.
@@ -147,6 +153,8 @@ local function add_schematics(pos, info, internal, traversal, build)
 	end
 end
 
+
+
 -- To be called once map region fully loaded.
 local function apply_fortress_design(internal, traversal, build)
 	local minp = table.copy(internal.vm_minp)
@@ -196,6 +204,8 @@ local function apply_fortress_design(internal, traversal, build)
 	minetest.log("action", "Finished generating fortress pattern in " ..
 		math.floor(os.time()-internal.time) .. " seconds!")
 end
+
+
 
 local function write_fortress_to_map(internal, traversal, build)
 	local minp = table.copy(internal.spawn_pos)
@@ -258,6 +268,77 @@ local function write_fortress_to_map(internal, traversal, build)
 	minetest.emerge_area(minp, omaxp, cb)
 end
 
+
+
+local function space_free(chunkpos, chunkdata, traversal)
+	-- Calculate all positions this chunk will potentially occupy.
+	-- This adds a position hash for each possible location from 'offset' to
+	-- 'size'. The position hashes are sparse, so this is more efficient than it
+	-- looks.
+	local hashes = {}
+	local size = chunkdata.size or {x=1, y=1, z=1}
+
+	for x = 0, size.x - 1, 1 do
+		for y = 0, size.y - 1, 1 do
+			for z = 0, size.z - 1, 1 do
+				local curpos = {x=x, y=y, z=z}
+				local p3 = vector.add(chunkpos, curpos)
+				local hash = HASH_POSITION(p3)
+				hashes[#hashes + 1] = hash
+			end
+		end
+	end
+
+	-- Do nothing if this chunk already occupied.
+	for _, hash in ipairs(hashes) do
+		if traversal.determined[hash] or traversal.indeterminate[hash] then
+			return false
+		end
+	end
+
+	return true
+end
+
+
+
+local function claim_space(chunkpos, chunkname, chunkdata, traversal)
+	-- Calculate all positions this chunk will potentially occupy.
+	-- This adds a position hash for each possible location from 'offset' to
+	-- 'size'. The position hashes are sparse, so this is more efficient than it
+	-- looks.
+	local hashes = {}
+	local size = chunkdata.size or {x=1, y=1, z=1}
+
+	for x = 0, size.x - 1, 1 do
+		for y = 0, size.y - 1, 1 do
+			for z = 0, size.z - 1, 1 do
+				local curpos = {x=x, y=y, z=z}
+				local p3 = vector.add(chunkpos, curpos)
+				local hash = HASH_POSITION(p3)
+				hashes[#hashes + 1] = hash
+			end
+		end
+	end
+
+	-- Occupy this chunk!
+	for _, hash in ipairs(hashes) do
+		traversal.determined[hash] = {
+			-- Store chunk name for debugging.
+			-- It will be stored in "infotext" metadata for manual inspection.
+			chunk = chunkname,
+
+			-- Indicates that this is a placeholder entry in the traversal table.
+			-- This is needed to support large chunks that cover multiple tiles.
+			placeholder = true,
+		}
+	end
+
+	-- Returns chunk-space position hashes.
+	return hashes
+end
+
+
+
 -- Process the next (single) chunk to fully determine.
 -- Returns its position hash (chunk pos) or nil, if nothing indeterminate.
 local function determine_next_chunk(data, traversal, build, internal)
@@ -269,15 +350,23 @@ local function determine_next_chunk(data, traversal, build, internal)
 	if #allowedchunks > 0 then
 		-- Step 0: select a random chunk from the list of possibilities.
 		local chunkname = allowedchunks[math.random(1, #allowedchunks)].chunk
+		local chunkpos = UNHASH_POSITION(chunkposhash)
+		local chunkdata = data.chunks[chunkname]
 
 		-- Step 1: add current chunk to list of fully-determined chunks.
 		-- Remove this entry from the list of indeterminate (possible) chunks.
-		traversal.determined[chunkposhash] = chunkname
+		local otherhashes = claim_space(chunkpos, chunkname, chunkdata, traversal)
+		traversal.determined[chunkposhash] = {chunk=chunkname}
 		traversal.indeterminate[chunkposhash] = nil
 
-		return chunkposhash, allowedchunks
+		-- Update limits count.
+		internal.limits[chunkname] = (internal.limits[chunkname] or 0) + 1
+
+		return chunkname, chunkposhash, otherhashes, allowedchunks
 	end
 end
+
+
 
 -- Return the INTERSECTION of 2 chunk arrays (an array which only contains
 -- entries that are present in BOTH input arrays).
@@ -299,18 +388,52 @@ local function get_chunk_intersection(entries, neighbors)
 	return t
 end
 
-local function chunkpos_ok(pos)
-	if pos.x >= -10 and pos.x <= 10
-			and pos.y >= -10 and pos.y <= 10
-			and pos.z >= -10 and pos.z <= 10 then
+
+
+local function chunkpos_ok(pos, internal)
+	local minp = {
+		x = -internal.max_extent.x,
+		y = -internal.max_extent.y,
+		z = -internal.max_extent.z,
+	}
+	local maxp = {
+		x = internal.max_extent.x,
+		y = internal.max_extent.y,
+		z = internal.max_extent.z,
+	}
+
+	if pos.x >= minp.x and pos.x <= maxp.x
+			and pos.y >= minp.y and pos.y <= maxp.y
+			and pos.z >= minp.z and pos.z <= maxp.z then
 		return true
 	end
 end
 
+
+
+local function filter_chunk_limits(data, neighbors, internal)
+	local t = {}
+
+	for _, neighborinfo in ipairs(neighbors) do
+		if data.chunks[neighborinfo.chunk].limit then
+			if (internal.limits[neighborinfo.chunk] or 0)
+					< data.chunks[neighborinfo.chunk].limit then
+				t[#t + 1] = neighborinfo
+			end
+		else
+			t[#t + 1] = neighborinfo
+		end
+	end
+
+	return t
+end
+
+
+
 -- Must return true if all neighbors updated successfully.
-local function update_chunk_neighbors(chunkposhash, data, traversal)
+local function update_chunk_neighbors(chunkposhash, data, traversal, internal)
 	local chunkpos = UNHASH_POSITION(chunkposhash)
-	local chunkname = traversal.determined[chunkposhash]
+	local chunkname = traversal.determined[chunkposhash].chunk
 	local chunkdata = data.chunks[chunkname]
 	local chunkneighbors = chunkdata.next
 
@@ -326,19 +449,21 @@ local function update_chunk_neighbors(chunkposhash, data, traversal)
 	-- This means creating/updating a list of allowed chunks for each position.
 	for dirkey, neighbors in pairs(chunkneighbors) do
 		-- 'neighbors' is an array like so: {{chunk="name1"}, {chunk="name2"}, ...}
+		local filteredneighbors = filter_chunk_limits(data, neighbors, internal)
 		local neighborpos = vector.add(chunkpos, KEYDIRS[dirkey])
 		local neighborhash = HASH_POSITION(neighborpos)
 
 		-- Skip neighbor locations already fully determined.
 		-- Note: the determined chunkname for this neighbor should always be one of
 		-- the allowed neighbors of the current chunk. Otherwise we're in trouble.
-		if not traversal.determined[neighborhash] and chunkpos_ok(neighborpos) then
+		if not traversal.determined[neighborhash]
+				and chunkpos_ok(neighborpos, internal) then
 			if not traversal.indeterminate[neighborhash] then
-				combinedneighbors[neighborhash] = neighbors
+				combinedneighbors[neighborhash] = filteredneighbors
 				neighborsgood[neighborhash] = true
 			else
 				local oldlist = traversal.indeterminate[neighborhash]
-				local newlist = get_chunk_intersection(oldlist, neighbors)
+				local newlist = get_chunk_intersection(oldlist, filteredneighbors)
 
 				if #newlist > 0 then
 					combinedneighbors[neighborhash] = newlist
@@ -363,17 +488,26 @@ local function update_chunk_neighbors(chunkposhash, data, traversal)
 	return true
 end
 
+
+
 local function expand_all_chunkschems(data, traversal, build, internal)
 	local spawnpos = internal.spawn_pos
 	local chunkstep = internal.step
 
-	for poshash, chunkname in pairs(traversal.determined) do
-		local chunkpos = UNHASH_POSITION(poshash)
-		local schempos = vector.add(spawnpos, vector.multiply(chunkpos, chunkstep))
-		local chunkdata = data.chunks[chunkname]
-		add_schematics(schempos, chunkdata, internal, traversal, build)
+	for poshash, entryinfo in pairs(traversal.determined) do
+		-- Skip placeholder entries (supports large chunks).
+		if not entryinfo.placeholder then
+			local chunkname = entryinfo.chunk
+			local chunkpos = UNHASH_POSITION(poshash)
+			local schempos = vector.add(spawnpos,
+				vector.multiply(chunkpos, chunkstep))
+			local chunkdata = data.chunks[chunkname]
+			add_schematics(schempos, chunkdata, internal, traversal, build)
+		end
 	end
 end
+
+
 
 -- User provides only 'pos' and 'data'. All other paremeters are internal use.
 local function generate_fortress(pos, data, start, traversal, build, internal)
@@ -381,19 +515,27 @@ local function generate_fortress(pos, data, start, traversal, build, internal)
 	pos, data, start, traversal, build, internal =
 		initialize_params(pos, data, start, traversal, build, internal)
 
-	local chunkposhash, prevallowedchunks
+	local chunkname,
+		chunkposhash,
+		otherhashes,
+		prevallowedchunks
 
-	chunkposhash, prevallowedchunks = determine_next_chunk(
-		data, traversal, build, internal)
+	chunkname, chunkposhash, otherhashes, prevallowedchunks
+		= determine_next_chunk(data, traversal, build, internal)
 
 	while chunkposhash do
-		if update_chunk_neighbors(chunkposhash, data, traversal) then
-			chunkposhash, prevallowedchunks = determine_next_chunk(
-				data, traversal, build, internal)
+		if update_chunk_neighbors(chunkposhash, data, traversal, internal) then
+			chunkname, chunkposhash, otherhashes, prevallowedchunks
+				= determine_next_chunk(data, traversal, build, internal)
 		else
 			-- Backtrack.
 			traversal.indeterminate[chunkposhash] = prevallowedchunks
 			traversal.determined[chunkposhash] = nil
+			internal.limits[chunkname] = internal.limits[chunkname] - 1
+
+			for _, hash in ipairs(otherhashes) do
+				traversal.determined[hash] = nil
+			end
 		end
 	end
 
@@ -402,10 +544,14 @@ local function generate_fortress(pos, data, start, traversal, build, internal)
 	write_fortress_to_map(internal, traversal, build)
 end
 
+
+
 -- Public API function.
 function fortress.generate_wfc(pos, data)
 	generate_fortress(pos, data)
 end
+
+
 
 function fortress.chat_command_wfc(name, param)
 	local player = minetest.get_player_by_name(name)

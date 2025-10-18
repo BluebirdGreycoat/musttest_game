@@ -17,8 +17,16 @@ dofile(fortress.modpath .. "/functions.lua")
 dofile(fortress.modpath .. "/default.lua")
 dofile(fortress.modpath .. "/loot.lua")
 dofile(fortress.modpath .. "/oldgen.lua")
-dofile(fortress.modpath .. "/newfort.lua")
-dofile(fortress.modpath .. "/fortgen.lua")
+
+-- Experimental (and broken) implementation reserved for reference!
+--dofile(fortress.modpath .. "/newfort.lua")
+--dofile(fortress.modpath .. "/fortgen.lua")
+
+-- Shiny new Wave Function Collapse (TM) algorithm.
+dofile(fortress.modpath .. "/newfort2.lua")
+dofile(fortress.modpath .. "/fortgen2.lua")
+
+
 
 if not fortress.run_once then
 	minetest.register_chatcommand("spawn_fortress", {
@@ -32,13 +40,13 @@ if not fortress.run_once then
 		end,
 	})
 
-	minetest.register_chatcommand("gen_wfc_fort", {
+	minetest.register_chatcommand("genfort", {
 		params = "",
 		description = "Spawn a fortress starting at your current location.",
 		privs = {server=true},
 
 		func = function(...)
-			fortress.chat_command_wfc(...)
+			fortress.genfort_chatcmd(...)
 			return true
 		end,
 	})

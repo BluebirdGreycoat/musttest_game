@@ -414,5 +414,5 @@ function fortress.chat_command_wfc(name, param)
 	end
 
 	local pos = vector.round(player:get_pos())
-	fortress.generate_wfc(pos, fortress.default)
+	fortress.generate_wfc(pos, fortress.newfort_data)
 end

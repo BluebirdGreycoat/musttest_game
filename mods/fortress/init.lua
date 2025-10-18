@@ -17,6 +17,7 @@ dofile(fortress.modpath .. "/functions.lua")
 dofile(fortress.modpath .. "/default.lua")
 dofile(fortress.modpath .. "/loot.lua")
 dofile(fortress.modpath .. "/oldgen.lua")
+dofile(fortress.modpath .. "/newfort.lua")
 dofile(fortress.modpath .. "/fortgen.lua")
 
 if not fortress.run_once then

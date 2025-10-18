@@ -108,7 +108,52 @@ function fortress.process_next_chunk(params)
 	local determined = params.traversal.determined
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
-	local poshash, newchunks = next(potential)
+
+	local function select_next_potential()
+		-- No potentials available? Return nil.
+		if not next(potential) then return nil end
+
+		-- Build array listing all potential location hashes and chunk sets.
+		-- An ordered array is necessary to sort them and chose highest priority.
+		local array = {}
+		for positionhash, chunks in pairs(potential) do
+			local chunkcount = 0
+			for chunkname, _ in pairs(chunks) do
+				chunkcount = chunkcount + 1
+			end
+			array[#array + 1] = {
+				chunkpos = positionhash,
+				chunkcount = chunkcount,
+			}
+		end
+
+		-- Now sort the array so that lowest-entropy potentials are at the front.
+		table.sort(array, function(a, b) return a.chunkcount < b.chunkcount end)
+
+		-- Now build an array of all potentials at front with the same chunk count.
+		-- These are considered "ties" which must be broken randomly.
+		local firstcount = array[1].chunkcount
+		local ties = {}
+		for k, v in ipairs(array) do
+			if v.chunkcount == firstcount then
+				ties[#ties + 1] = v
+			else
+				break
+			end
+		end
+
+		-- Now choose random from the list of tied potentials.
+		-- This is what we'll return to the caller, as position-hash + chunk names.
+		local choice = ties[math.random(1, #ties)]
+		return choice.chunkpos, potential[choice.chunkpos]
+	end
+
+	-- Chose next potential to expand/compute, with lowest-entropy chunks having
+	-- highest priority, and ties broken randomly.
+	local poshash, newchunks = select_next_potential()
+
+	-- No new possibilities? We're done.
+	if not poshash then return end
 
 	local function select_random_chunk()
 		local choices = {}
@@ -166,9 +211,6 @@ function fortress.process_next_chunk(params)
 			return true
 		end
 	end
-
-	-- No new possibilities? We're done.
-	if not poshash then return end
 
 	-- We will jump here if neighbor checks failed.
 	-- Abort entirely if we do this too many times (prevent infinite loop).

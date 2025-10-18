@@ -21,7 +21,8 @@ fortress.genfort_data = {
 	step = {x=11, y=11, z=11},
 
 	-- Maximum fortress extent, in chunk/tile units.
-	max_extent = {x=25, y=20, z=25},
+	-- The min extents are simply computed as the inverse.
+	max_extent = {x=10, y=10, z=10},
 
 	-- List of node replacements.
 	replacements = {
@@ -44,6 +45,7 @@ fortress.genfort_data = {
 				{file="bridge_junction_house", chance=10},
 				{file="nf_detail_lava_well1", chance=10, offset={x=3, y=1, z=3}},
 			},
+			-- This limits the number of times this chunk can be used in a fort.
 			limit = 6,
 			valid_neighbors = {
 				[DIRNAME.NORTH] = {ns_walk_bridge=true},

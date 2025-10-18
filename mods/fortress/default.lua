@@ -20,8 +20,8 @@ fortress.default = {
 	-- The initial schem placed by the spawner.
 	-- This starts the rest of the fortress growing off it.
 	initial = {
-		---[[
 		"junction",
+		--[[
 		"junction_walk_bridge",
 		"plaza",
 	  "ew_gatehouse",

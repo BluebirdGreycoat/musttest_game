@@ -340,6 +340,8 @@ function fortress.process_next_chunk(params)
 					minetest.log("warning", "Chunk: " .. chunkname)
 					minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
 					minetest.log("warning", "After " .. try_limit .. " iterations.")
+					-- Treat this as a non-fatal error for now, but it means the generated
+					-- fort will have missing sections.
 					return
 				end
 				goto try_again

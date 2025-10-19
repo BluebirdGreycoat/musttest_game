@@ -11,6 +11,8 @@ local DIRNAME = {
 
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
+local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
+local ELITE_SPAWNER_HALLWAY_CHANCE = 10
 local FLOOR_LAVA_CHANCE = 5
 
 -- Custom tile probabilities.
@@ -20,6 +22,11 @@ local TJUNCT_BRIDGE_PROB = 8
 local BRIDGE_CORNER_PROB = 10
 local BRIDGE_CAP_PROB = 5
 local STRAIGHT_BRIDGE_PROB = 120
+local JUNCTION_HALLWAY_PROB = 8
+local STRAIGHT_HALLWAY_PROB = 90
+local HALLWAY_CAP_PROB = 5
+local HALLWAY_CORNER_PROB = 15
+local TJUNCT_HALLWAY_PROB = 8
 
 -- Connectivity table for open-walk bridges.
 -- Makes defining these data much more concise.
@@ -87,7 +94,7 @@ local BRIDGE_VALID_CONNECTIVITY = {
 	},
 }
 
--- Oerkki spawner schem table.
+-- Oerkki spawner schem tables.
 local BASIC_OERKKI_SPAWNER = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_CHANCE,
@@ -100,8 +107,20 @@ local BASIC_OERKKI_SPAWNER_RAISED = {
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
 }
+local HALLWAY_OERKKI_SPAWNER = {
+	file = "nf_detail_spawner1",
+	chance = OERKKI_SPAWNER_HALLWAY_CHANCE,
+	rotation = "random",
+	offset = {x=3, y=3, z=3},
+}
+local HALLWAY_ELITE_SPAWNER = {
+	file = "elite_spawner",
+	chance = ELITE_SPAWNER_HALLWAY_CHANCE,
+	rotation = "random",
+	offset = {x=3, y=3, z=3},
+}
 
--- Floor lava schem table.
+-- Floor lava schem tables.
 local BASIC_FLOOR_LAVA = {
 	file = "nf_detail_lava1",
 	chance = FLOOR_LAVA_CHANCE,
@@ -114,13 +133,87 @@ local BASIC_FLOOR_LAVA_RAISED = {
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
 }
+local HALLWAY_FLOOR_LAVA = {
+	file = "nf_detail_lava1",
+	chance = FLOOR_LAVA_CHANCE,
+	rotation = "random",
+	offset = {x=3, y=3, z=3},
+}
+
+local function GET_BRIDGE_STARTER_PEICES()
+	return "junction_walk_bridge", "ew_walk_bridge", "ns_walk_bridge"
+end
+
+local function GET_PASSAGE_STARTER_PEICES()
+	return "ns_hallway", "ew_hallway", "junction_hallway"
+end
+
+local PASSAGE_VALID_CONNECTIVITY = {
+	[DIRNAME.NORTH] = {
+		ns_hallway = true,
+		junction_hallway = true,
+		hallway_s_capped = true,
+
+		-- Corners.
+		hall_corner_se = true,
+		hall_corner_sw = true,
+
+		-- T-junctions.
+		hallway_nes_t = true,
+		hallway_swn_t = true,
+		hallway_esw_t = true,
+	},
+	[DIRNAME.SOUTH] = {
+		ns_hallway = true,
+		junction_hallway = true,
+		hallway_n_capped = true,
+
+		-- Corners.
+		hall_corner_ne = true,
+		hall_corner_nw = true,
+
+		-- T-junctions.
+		hallway_nes_t = true,
+		hallway_wne_t = true,
+		hallway_swn_t = true,
+	},
+	[DIRNAME.EAST] = {
+		ew_hallway = true,
+		junction_hallway = true,
+		hallway_w_capped = true,
+
+		-- Corners.
+		hall_corner_nw = true,
+		hall_corner_sw = true,
+
+		-- T-junctions.
+		hallway_esw_t = true,
+		hallway_swn_t = true,
+		hallway_wne_t = true,
+	},
+	[DIRNAME.WEST] = {
+		ew_hallway = true,
+		junction_hallway = true,
+		hallway_e_capped = true,
+
+		-- Corners.
+		hall_corner_ne = true,
+		hall_corner_se = true,
+
+		-- T-junctions.
+		hallway_esw_t = true,
+		hallway_nes_t = true,
+		hallway_wne_t = true,
+	},
+}
 
 
 
 fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
-		"junction_walk_bridge",
+		--GET_BRIDGE_STARTER_PEICES(),
+		GET_PASSAGE_STARTER_PEICES(),
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -128,8 +221,8 @@ fortress.genfort_data = {
 
 	-- Maximum fortress extent, in chunk/tile units.
 	-- The min extents are simply computed as the inverse.
-	--max_extent = {x=10, y=10, z=10},
-	max_extent = {x=25, y=10, z=25},
+	max_extent = {x=10, y=10, z=10},
+	--max_extent = {x=25, y=10, z=25},
 
 	-- List of node replacements.
 	replacements = {
@@ -515,6 +608,343 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CAP_PROB,
+		},
+
+		-- Straight hallway/covered-passage peices.
+		ns_hallway = {
+			schem = {
+				{file="nf_passage_ns"},
+
+				-- TODO: These need to be part of a special bridge-connecting chunk,
+				-- otherwise the probabilities will get merged together!
+				-- Stairways to lower bridge causeways.
+				-- Priority needed to ensure they overwrite the bridge walls.
+				--[[
+				{file="ns_hall_end_stair_n", priority=100, force=false,
+					offset={x=2, y=1, z=11}},
+				{file="ns_hall_end_stair_s", priority=100, force=false,
+					offset={x=2, y=1, z=-3}},
+				--]]
+
+				-- Hazard/spawner detailing.
+				HALLWAY_FLOOR_LAVA,
+				HALLWAY_OERKKI_SPAWNER,
+
+				-- Room detailing.
+				{file="nf_detail_room1", chance=15, rotation="90",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_room2", chance=15, rotation="90",
+					offset={x=3, y=4, z=3}},
+				{file="nf_detail_room3", chance=15, force=false,
+					offset={x=3, y=4, z=0}},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}},
+			},
+			valid_neighbors = {
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.DOWN] = {solid_under_passage=true},
+			},
+			probability = STRAIGHT_HALLWAY_PROB,
+		},
+
+		ew_hallway = {
+			schem = {
+				{file="nf_passage_ew"},
+
+				-- TODO: These need to be part of a special bridge-connecting chunk,
+				-- otherwise the probabilities will get merged together!
+				-- Stairways to lower bridge causeways.
+				-- Priority needed to ensure they overwrite the bridge walls.
+				--[[
+				{file="ew_hall_end_stair_e", priority=100, force=false,
+					offset={x=11, y=1, z=2}},
+				{file="ew_hall_end_stair_w", priority=100, force=false,
+					offset={x=-3, y=1, z=2}},
+				--]]
+
+				-- Hazard/spawner detailing.
+				HALLWAY_FLOOR_LAVA,
+				HALLWAY_OERKKI_SPAWNER,
+
+				-- Room detailing.
+				{file="nf_detail_room1", chance=15, offset={x=3, y=3, z=3}},
+				{file="nf_detail_room2", chance=15, offset={x=3, y=4, z=3}},
+				{file="nf_detail_room3", chance=15, rotation="90", force=false,
+					offset={x=0, y=4, z=3}},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}},
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = STRAIGHT_HALLWAY_PROB,
+		},
+
+		solid_top = {
+			schem = {{file="nf_building_solid"}},
+			valid_neighbors = {[DIRNAME.DOWN]={solid_middle=true}},
+		},
+
+		solid_middle = {
+			schem = {{file="nf_building_solid"}},
+			valid_neighbors = {[DIRNAME.DOWN]={solid_bottom=true}},
+		},
+
+		solid_bottom = {
+			schem = {{file="nf_building_solid"}},
+		},
+
+		-- Four-direction hallway covered passage.
+		junction_hallway = {
+			schem = {
+				{file="nf_passage_4x_junction"},
+				-- Hallway end caps. TODO: Don't need these?
+				--[[
+				{file="ew_hall_end_e", force=false, offset={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", force=false, offset={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", force=false, offset={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", force=false, offset={x=2, y=3, z=-3}},
+				--]]
+
+				HALLWAY_FLOOR_LAVA, HALLWAY_OERKKI_SPAWNER,
+			},
+			valid_neighbors = {
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = JUNCTION_HALLWAY_PROB,
+		},
+
+		-- Hallway end caps.
+		hallway_n_capped = {
+			schem = {
+				{file="nf_passage_n_capped"},
+				{file="hall_end_stair", rotation="180", chance=20, priority=1000,
+					offset={x=4, y=4, z=5}},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CAP_PROB,
+		},
+
+		hallway_s_capped = {
+			schem = {
+				{file="nf_passage_s_capped"},
+				{file="hall_end_stair", rotation="0", chance=20, priority=1000,
+					offset={x=4, y=4, z=-2}},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CAP_PROB,
+		},
+
+		hallway_e_capped = {
+			schem = {
+				{file="nf_passage_e_capped"},
+				{file="hall_end_stair", rotation="270", chance=20, priority=1000,
+					offset={x=5, y=4, z=4}},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CAP_PROB,
+		},
+
+		hallway_w_capped = {
+			schem = {
+				{file="nf_passage_w_capped"},
+				{file="hall_end_stair", rotation="90", chance=20, priority=1000,
+					offset={x=-2, y=4, z=4}},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CAP_PROB,
+		},
+
+		-- Hallway/passage corners.
+		hall_corner_ne = {
+			schem = {
+				{file="nf_passage_ne_corner"},
+
+				--[[
+				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
+				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CORNER_PROB,
+		},
+
+		hall_corner_nw = {
+			schem = {
+				{file="nf_passage_nw_corner"},
+
+				--[[
+				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CORNER_PROB,
+		},
+
+		hall_corner_se = {
+			schem = {
+				{file="nf_passage_se_corner"},
+
+				--[[
+				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
+				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CORNER_PROB,
+		},
+
+		hall_corner_sw = {
+			schem = {
+				{file="nf_passage_sw_corner"},
+
+				--[[
+				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
+				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = HALLWAY_CORNER_PROB,
+		},
+
+		hallway_esw_t = {
+			schem = {
+				{file="nf_passage_esw_t"},
+
+				--[[
+				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
+				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = TJUNCT_HALLWAY_PROB,
+		},
+
+		hallway_nes_t = {
+			schem = {
+				{file="nf_passage_nes_t"},
+
+				--[[
+				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
+				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = TJUNCT_HALLWAY_PROB,
+		},
+
+		hallway_swn_t = {
+			schem = {
+				{file="nf_passage_swn_t"},
+
+				--[[
+				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
+				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = TJUNCT_HALLWAY_PROB,
+		},
+
+		hallway_wne_t = {
+			schem = {
+				{file="nf_passage_wne_t"},
+
+				--[[
+				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
+				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
+				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
+				--]]
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			probability = TJUNCT_HALLWAY_PROB,
 		},
 	},
 }

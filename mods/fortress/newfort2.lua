@@ -11,22 +11,25 @@ local DIRNAME = {
 
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
+local ELITE_SPAWNER_CHANCE = 10
 local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
 local FLOOR_LAVA_CHANCE = 5
 
--- Custom tile probabilities.
+-- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
 local JUNCTION_BRIDGE_PROB = 4
 local TJUNCT_BRIDGE_PROB = 8
 local BRIDGE_CORNER_PROB = 10
 local BRIDGE_CAP_PROB = 5
 local STRAIGHT_BRIDGE_PROB = 120
+
+-- Hallway probabilities.
 local JUNCTION_HALLWAY_PROB = 8
-local STRAIGHT_HALLWAY_PROB = 90
+local STRAIGHT_HALLWAY_PROB = 30
 local HALLWAY_CAP_PROB = 5
-local HALLWAY_CORNER_PROB = 15
-local TJUNCT_HALLWAY_PROB = 8
+local HALLWAY_CORNER_PROB = 8
+local TJUNCT_HALLWAY_PROB = 15
 
 -- Connectivity table for open-walk bridges.
 -- Makes defining these data much more concise.
@@ -100,24 +103,35 @@ local BASIC_OERKKI_SPAWNER = {
 	chance = OERKKI_SPAWNER_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
+	priority = 900,
 }
 local BASIC_OERKKI_SPAWNER_RAISED = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
+	priority = 900,
+}
+local BASIC_ELITE_SPAWNER = {
+	file = "elite_spawner",
+	chance = ELITE_SPAWNER_CHANCE,
+	rotation = "random",
+	offset = {x=3, y=0, z=3},
+	priority = 900,
 }
 local HALLWAY_OERKKI_SPAWNER = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_HALLWAY_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
+	priority = 900,
 }
 local HALLWAY_ELITE_SPAWNER = {
 	file = "elite_spawner",
 	chance = ELITE_SPAWNER_HALLWAY_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
+	priority = 900,
 }
 
 -- Floor lava schem tables.
@@ -126,18 +140,21 @@ local BASIC_FLOOR_LAVA = {
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
+	priority = 900,
 }
 local BASIC_FLOOR_LAVA_RAISED = {
 	file = "nf_detail_lava1",
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
+	priority = 900,
 }
 local HALLWAY_FLOOR_LAVA = {
 	file = "nf_detail_lava1",
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
+	priority = 900,
 }
 
 local function GET_BRIDGE_STARTER_PEICES()
@@ -145,13 +162,13 @@ local function GET_BRIDGE_STARTER_PEICES()
 end
 
 local function GET_PASSAGE_STARTER_PEICES()
-	return "ns_hallway", "ew_hallway", "junction_hallway"
+	return "hallway_straight_ns", "hallway_straight_ew", "hallway_junction"
 end
 
 local PASSAGE_VALID_CONNECTIVITY = {
 	[DIRNAME.NORTH] = {
-		ns_hallway = true,
-		junction_hallway = true,
+		hallway_straight_ns = true,
+		hallway_junction = true,
 		hallway_s_capped = true,
 
 		-- Corners.
@@ -164,8 +181,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_esw_t = true,
 	},
 	[DIRNAME.SOUTH] = {
-		ns_hallway = true,
-		junction_hallway = true,
+		hallway_straight_ns = true,
+		hallway_junction = true,
 		hallway_n_capped = true,
 
 		-- Corners.
@@ -178,8 +195,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_swn_t = true,
 	},
 	[DIRNAME.EAST] = {
-		ew_hallway = true,
-		junction_hallway = true,
+		hallway_straight_ew = true,
+		hallway_junction = true,
 		hallway_w_capped = true,
 
 		-- Corners.
@@ -192,8 +209,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_wne_t = true,
 	},
 	[DIRNAME.WEST] = {
-		ew_hallway = true,
-		junction_hallway = true,
+		hallway_straight_ew = true,
+		hallway_junction = true,
 		hallway_e_capped = true,
 
 		-- Corners.
@@ -214,6 +231,7 @@ fortress.genfort_data = {
 	initial_chunks = {
 		--GET_BRIDGE_STARTER_PEICES(),
 		GET_PASSAGE_STARTER_PEICES(),
+		--"roof_tower",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -242,6 +260,10 @@ fortress.genfort_data = {
 		-- Probability 0 prevents air from being placed even though it is specified
 		-- in valid chunk neighbor tables.
 		air = {probability=0, fallback=true},
+
+		-- Use this when you want air to affect probabilities,
+		-- and air should be placed.
+		air_option = {fallback=true},
 
 		-- A four-way uncovered bridge junction.
 		junction_walk_bridge = {
@@ -611,7 +633,7 @@ fortress.genfort_data = {
 		},
 
 		-- Straight hallway/covered-passage peices.
-		ns_hallway = {
+		hallway_straight_ns = {
 			schem = {
 				{file="nf_passage_ns"},
 
@@ -648,11 +670,12 @@ fortress.genfort_data = {
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_straight_ns=true},
 			},
 			probability = STRAIGHT_HALLWAY_PROB,
 		},
 
-		ew_hallway = {
+		hallway_straight_ew = {
 			schem = {
 				{file="nf_passage_ew"},
 
@@ -687,6 +710,7 @@ fortress.genfort_data = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_straight_ew=true},
 			},
 			probability = STRAIGHT_HALLWAY_PROB,
 		},
@@ -709,7 +733,7 @@ fortress.genfort_data = {
 		},
 
 		-- Four-direction hallway covered passage.
-		junction_hallway = {
+		hallway_junction = {
 			schem = {
 				{file="nf_passage_4x_junction"},
 				-- Hallway end caps. TODO: Don't need these?
@@ -728,6 +752,7 @@ fortress.genfort_data = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_junction=true},
 			},
 			probability = JUNCTION_HALLWAY_PROB,
 		},
@@ -743,6 +768,7 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_n=true},
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
@@ -758,6 +784,7 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_s=true},
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
@@ -773,6 +800,7 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_e=true},
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
@@ -788,6 +816,7 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_w=true},
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
@@ -809,6 +838,7 @@ fortress.genfort_data = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_corner_ne=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
 		},
@@ -828,6 +858,7 @@ fortress.genfort_data = {
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_corner_nw=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
 		},
@@ -847,6 +878,7 @@ fortress.genfort_data = {
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_corner_se=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
 		},
@@ -866,6 +898,7 @@ fortress.genfort_data = {
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_corner_sw=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
 		},
@@ -887,6 +920,7 @@ fortress.genfort_data = {
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_t_esw=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
 		},
@@ -908,6 +942,7 @@ fortress.genfort_data = {
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_t_nes=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
 		},
@@ -929,6 +964,7 @@ fortress.genfort_data = {
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_t_swn=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
 		},
@@ -950,8 +986,120 @@ fortress.genfort_data = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_t_wne=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
+		},
+
+		-- Passageway roof pieces.
+		roof_junction = {schem = {{file="nf_walkway_4x_junction", force=false}}},
+		roof_corner_ne = {schem = {{file="nf_walkway_ne_corner", force=false}}},
+		roof_corner_nw = {schem = {{file="nf_walkway_nw_corner", force=false}}},
+		roof_corner_sw = {schem = {{file="nf_walkway_sw_corner", force=false}}},
+		roof_corner_se = {schem = {{file="nf_walkway_se_corner", force=false}}},
+		roof_t_esw = {schem = {{file="nf_walkway_esw_t", force=false}}},
+		roof_t_nes = {schem = {{file="nf_walkway_nes_t", force=false}}},
+		roof_t_swn = {schem = {{file="nf_walkway_swn_t", force=false}}},
+		roof_t_wne = {schem = {{file="nf_walkway_wne_t", force=false}}},
+
+		roof_straight_ew = {
+			schem = {
+				{file="nf_walkway_ew", force=false},
+				{file="bridge_house_ew", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+		},
+
+		roof_straight_ns = {
+			schem = {
+				{file="nf_walkway_ns", force=false},
+				{file="bridge_house_ns", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+		},
+
+		roof_capped_n = {
+			schem = {
+				{file="nf_walkway_n_capped", force=false},
+				{file="bridge_house_n", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+			fallback = true, -- Allow use at extents edge.
+		},
+
+		roof_capped_s = {
+			schem = {
+				{file="nf_walkway_s_capped", force=false},
+				{file="bridge_house_s", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+			fallback = true, -- Allow use at extents edge.
+		},
+
+		roof_capped_e = {
+			schem = {
+				{file="nf_walkway_e_capped", force=false},
+				{file="bridge_house_e", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+			fallback = true, -- Allow use at extents edge.
+		},
+
+		roof_capped_w = {
+			schem = {
+				{file="nf_walkway_w_capped", force=false},
+				{file="bridge_house_w", chance=15, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				-- Air is included in the list so that the roof tower probability can
+				-- have something to compete with, so we don't create towers everywhere.
+				[DIRNAME.UP] = {roof_tower=true, air_option=true},
+			},
+			fallback = true, -- Allow use at extents edge.
+		},
+
+		-- Roof tower.
+		roof_tower = {
+			schem = {
+				{file="nf_tower", force=false, priority=1000, offset={x=3, y=-10, z=3}},
+
+				-- A nasty surprise.
+				{
+					file = "fort_elitespawner_small",
+					chance = 20,
+					rotation = "random",
+					offset = {x=4, y=1, z=4},
+					priority = 1100,
+				},
+			},
+			probability = 5,
+			fallback = true,
 		},
 	},
 }

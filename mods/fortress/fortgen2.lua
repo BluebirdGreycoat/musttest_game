@@ -100,6 +100,43 @@ function fortress.gen_init(spawn_pos)
 		[initial_chunk] = true,
 	}
 
+	-- NOTE: Sanity check.
+	-- Make sure all 'valid_neighbors' and 'enabled_neighbors' actually exist.
+	-- This catches problems with wrongly named neighbors.
+	for _, chunkdata in pairs(params.chunks) do
+		if chunkdata.valid_neighbors then
+			for dir, list in pairs(chunkdata.valid_neighbors) do
+				if not KEYDIRS[dir] then
+					minetest.log("error", "Invalid neighbor direction key!")
+					return nil
+				end
+				for chunkname, _ in pairs(list) do
+					if not params.chunks[chunkname] then
+						minetest.log("error",
+							"Neighbor " .. chunkname .. " does not exist!")
+						return nil
+					end
+				end
+			end
+		end
+
+		if chunkdata.enabled_neighbors then
+			for dir, list in pairs(chunkdata.enabled_neighbors) do
+				if not KEYDIRS[dir] then
+					minetest.log("error", "Invalid neighbor direction key!")
+					return nil
+				end
+				for chunkname, _ in pairs(list) do
+					if not params.chunks[chunkname] then
+						minetest.log("error",
+							"Neighbor " .. chunkname .. " does not exist!")
+						return nil
+					end
+				end
+			end
+		end
+	end
+
 	return true, params
 end
 

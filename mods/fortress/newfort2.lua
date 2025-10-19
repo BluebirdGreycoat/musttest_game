@@ -647,7 +647,7 @@ fortress.genfort_data = {
 			valid_neighbors = {
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.DOWN] = {solid_under_passage=true},
+				[DIRNAME.DOWN] = {solid_top=true},
 			},
 			probability = STRAIGHT_HALLWAY_PROB,
 		},
@@ -694,15 +694,18 @@ fortress.genfort_data = {
 		solid_top = {
 			schem = {{file="nf_building_solid"}},
 			valid_neighbors = {[DIRNAME.DOWN]={solid_middle=true}},
+			fallback = true,
 		},
 
 		solid_middle = {
 			schem = {{file="nf_building_solid"}},
 			valid_neighbors = {[DIRNAME.DOWN]={solid_bottom=true}},
+			fallback = true,
 		},
 
 		solid_bottom = {
 			schem = {{file="nf_building_solid"}},
+			fallback = true,
 		},
 
 		-- Four-direction hallway covered passage.
@@ -742,6 +745,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {solid_top=true},
 			},
 			probability = HALLWAY_CAP_PROB,
+			fallback = true,
 		},
 
 		hallway_s_capped = {
@@ -756,6 +760,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {solid_top=true},
 			},
 			probability = HALLWAY_CAP_PROB,
+			fallback = true,
 		},
 
 		hallway_e_capped = {
@@ -770,6 +775,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {solid_top=true},
 			},
 			probability = HALLWAY_CAP_PROB,
+			fallback = true,
 		},
 
 		hallway_w_capped = {
@@ -784,6 +790,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {solid_top=true},
 			},
 			probability = HALLWAY_CAP_PROB,
+			fallback = true,
 		},
 
 		-- Hallway/passage corners.

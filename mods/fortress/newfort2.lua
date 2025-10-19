@@ -13,6 +13,8 @@ local function HASHKEY(x, y, z)
 	return minetest.hash_node_position({x=x, y=y, z=z})
 end
 
+
+
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
 local ELITE_SPAWNER_CHANCE = 10
@@ -20,6 +22,17 @@ local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
 local FLOOR_LAVA_CHANCE = 5
 local PASSAGE_DETAIL_CHANCE = 20
+
+-- Schem priorities.
+-- Lower numbers are written to map before higher numbers.
+-- The default priority (if not specified) is 0.
+local PASSAGE_TO_ROOF_STAIR_PRIORITY = 800
+local OERKKI_SPAWNER_PRIORITY = 900
+local ELITE_OERKKI_SPAWNER_PRIORITY = 950
+local LAVA_FLOOR_HAZARD_PRIORITY = 900
+local BRIDGE_OPEN_PIT_PRIORITY = 1000
+local TOWER_PRIORITY = 1000
+local WINDOW_DECO_PRIORITY = 100
 
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
@@ -35,6 +48,11 @@ local STRAIGHT_HALLWAY_PROB = 30
 local HALLWAY_CAP_PROB = 5
 local HALLWAY_CORNER_PROB = 8
 local TJUNCT_HALLWAY_PROB = 15
+
+-- Transition probabilities.
+local PASSAGE_BRIDGE_TRANSITION_PROB = 100
+
+
 
 -- Connectivity table for open-walk bridges.
 -- Makes defining these data much more concise.
@@ -54,6 +72,8 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		-- Corners.
 		sw_corner_walk = true,
 		se_corner_walk = true,
+
+		LARGE_hallway_ew_to_bridge_ns_START_NORTH = true,
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
@@ -69,6 +89,8 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		-- Corners.
 		ne_corner_walk = true,
 		nw_corner_walk = true,
+
+		LARGE_hallway_ew_to_bridge_ns_START_SOUTH = true,
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
@@ -102,42 +124,46 @@ local BRIDGE_VALID_CONNECTIVITY = {
 	},
 }
 
+
+
 -- Oerkki spawner schem tables.
 local BASIC_OERKKI_SPAWNER = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
-	priority = 900,
+	priority = OERKKI_SPAWNER_PRIORITY,
 }
 local BASIC_OERKKI_SPAWNER_RAISED = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
-	priority = 900,
+	priority = OERKKI_SPAWNER_PRIORITY,
 }
 local BASIC_ELITE_SPAWNER = {
 	file = "elite_spawner",
 	chance = ELITE_SPAWNER_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
-	priority = 900,
+	priority = ELITE_OERKKI_SPAWNER_PRIORITY,
 }
 local HALLWAY_OERKKI_SPAWNER = {
 	file = "nf_detail_spawner1",
 	chance = OERKKI_SPAWNER_HALLWAY_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
-	priority = 900,
+	priority = OERKKI_SPAWNER_PRIORITY,
 }
 local HALLWAY_ELITE_SPAWNER = {
 	file = "elite_spawner",
 	chance = ELITE_SPAWNER_HALLWAY_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
-	priority = 900,
+	priority = ELITE_OERKKI_SPAWNER_PRIORITY,
 }
+
+
 
 -- Floor lava schem tables.
 local BASIC_FLOOR_LAVA = {
@@ -145,22 +171,24 @@ local BASIC_FLOOR_LAVA = {
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
-	priority = 900,
+	priority = LAVA_FLOOR_HAZARD_PRIORITY,
 }
 local BASIC_FLOOR_LAVA_RAISED = {
 	file = "nf_detail_lava1",
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=1, z=3},
-	priority = 900,
+	priority = LAVA_FLOOR_HAZARD_PRIORITY,
 }
 local HALLWAY_FLOOR_LAVA = {
 	file = "nf_detail_lava1",
 	chance = FLOOR_LAVA_CHANCE,
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
-	priority = 900,
+	priority = LAVA_FLOOR_HAZARD_PRIORITY,
 }
+
+
 
 local function GET_BRIDGE_STARTER_PEICES()
 	return "junction_walk_bridge", "ew_walk_bridge", "ns_walk_bridge"
@@ -169,6 +197,8 @@ end
 local function GET_PASSAGE_STARTER_PEICES()
 	return "hallway_straight_ns", "hallway_straight_ew", "hallway_junction"
 end
+
+
 
 local PASSAGE_VALID_CONNECTIVITY = {
 	[DIRNAME.NORTH] = {
@@ -212,6 +242,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_esw_t = true,
 		hallway_swn_t = true,
 		hallway_wne_t = true,
+
+		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -226,8 +258,64 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_esw_t = true,
 		hallway_nes_t = true,
 		hallway_wne_t = true,
+
+		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST = true,
 	},
 }
+
+
+
+-- Large chunk connecting EW hallway to NS bridge.
+local function GET_HALL_EW_TO_BRIDGE_NS(chunkname, shift)
+	return {
+		schem = {
+			{file="nf_ew_passage_ns_bridge_access", offset={x=0, y=0, z=-11}},
+		},
+
+		-- Size and offset in chunk/tile units.
+		-- The presence of 'size' and 'shift' tell the algorithm that this is a
+		-- large chunk/tile, which has special code paths to handle the large
+		-- size, offset, and footprint.
+		size = {x=1, y=1, z=3},
+		shift = shift,
+
+		valid_neighbors = {
+			[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+			[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+
+			[DIRNAME.NORTH] = {[chunkname]=true},
+			[DIRNAME.SOUTH] = {[chunkname]=true},
+
+			[DIRNAME.UP] = {roof_straight_ew=true},
+			[DIRNAME.DOWN] = {solid_top=true},
+		},
+		extended_neighbors = {
+			[HASHKEY(0, 0, 2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+			[HASHKEY(0, 0, -2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+			[HASHKEY(0, -1, 1)] = {bridge_arch_ns=true},
+			[HASHKEY(0, -1, -1)] = {bridge_arch_ns=true},
+		},
+
+		-- Defines the chunk/tiles' additional extra footprint.
+		-- This is what gets written to the algorithm data structure when a chunk
+		-- is confirmed to be placed. Keys are ALWAYS position hashes.
+		--
+		-- Since this large chunk is just a combination of smaller tiles, each
+		-- position can have the name of an existing smaller tile, taking on all
+		-- the connective/etc properties of those smaller peices.
+		--
+		-- If we had internal pieces that should be ignored by the algorithm, we
+		-- could use 'large_chunk_dummy' for those. But this chunk is just 1x1x3,
+		-- not big enough for that.
+		footprint = {
+			[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
+			[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
+			[HASHKEY(0, 0, -1)] = "ns_walk_bridge",
+		},
+
+		probability = PASSAGE_BRIDGE_TRANSITION_PROB,
+	}
+end
 
 
 
@@ -235,8 +323,9 @@ fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
 		--GET_BRIDGE_STARTER_PEICES(),
-		GET_PASSAGE_STARTER_PEICES(),
-		--"hallway_ew_to_bridge_ns",
+		--GET_PASSAGE_STARTER_PEICES(),
+		--"hallway_straight_ew",
+		"LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -337,7 +426,8 @@ fortress.genfort_data = {
 		bridge_pillar_top = {
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_mid=true},
-			}
+			},
+			fallback = true,
 		},
 
 		bridge_pillar_mid = {
@@ -345,7 +435,8 @@ fortress.genfort_data = {
 			schem = {{file="nf_center_pillar_top"}},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_bottom=true},
-			}
+			},
+			fallback = true,
 		},
 
 		bridge_pillar_bottom = {
@@ -353,6 +444,7 @@ fortress.genfort_data = {
 				{file="nf_center_pillar_bottom", offset={x=1, y=-11, z=1}},
 				{file="nf_center_pillar_bottom", offset={x=1, y=-22, z=1}},
 			},
+			fallback = true,
 		},
 
 		bridge_arch_ns = {
@@ -362,7 +454,8 @@ fortress.genfort_data = {
 				-- NOTE: You can use 'priority' to specify when in relation to other
 				-- schems this schem should be written. This is useful for schems that
 				-- overlap each other, if you want one to always be written last.
-				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3}, priority=1000},
+				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3},
+					priority=BRIDGE_OPEN_PIT_PRIORITY},
 			},
 		},
 
@@ -371,7 +464,8 @@ fortress.genfort_data = {
 				{file="nf_bridge_arch_ew", force=false, offset={x=0, y=6, z=0}},
 
 				-- Note the use of 'priority' to ensure this schem is written last.
-				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3}, priority=1000},
+				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3},
+					priority=BRIDGE_OPEN_PIT_PRIORITY},
 			},
 		},
 
@@ -595,6 +689,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CAP_PROB,
+			fallback = true,
 		},
 
 		capped_bridge_s = {
@@ -607,6 +702,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CAP_PROB,
+			fallback = true,
 		},
 
 		capped_bridge_e = {
@@ -619,6 +715,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CAP_PROB,
+			fallback = true,
 		},
 
 		capped_bridge_w = {
@@ -631,6 +728,7 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CAP_PROB,
+			fallback = true,
 		},
 
 		-- Straight hallway/covered-passage peices.
@@ -663,9 +761,9 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=70, rotation="90", force=false,
-					offset={x=-2, y=2, z=3}},
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
-					offset={x=11, y=2, z=3}},
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
@@ -705,9 +803,9 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=70, rotation="0", force=false,
-					offset={x=3, y=2, z=-2}},
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
-					offset={x=3, y=2, z=11}},
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
@@ -764,18 +862,19 @@ fortress.genfort_data = {
 		hallway_n_capped = {
 			schem = {
 				{file="nf_passage_n_capped"},
-				{file="hall_end_stair", rotation="180", chance=20, priority=1000,
-					offset={x=4, y=4, z=5}},
+				{file="hall_end_stair", rotation="180", chance=20,
+					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
+						offset={x=4, y=4, z=5}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=80, rotation="0", force=false,
-					offset={x=3, y=2, z=-2}},
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="90", force=false,
-					offset={x=-2, y=2, z=3}},
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
-					offset={x=11, y=2, z=3}},
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -788,18 +887,19 @@ fortress.genfort_data = {
 		hallway_s_capped = {
 			schem = {
 				{file="nf_passage_s_capped"},
-				{file="hall_end_stair", rotation="0", chance=20, priority=1000,
-					offset={x=4, y=4, z=-2}},
+				{file="hall_end_stair", rotation="0", chance=20,
+					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
+						offset={x=4, y=4, z=-2}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=80, rotation="180", force=false,
-					offset={x=3, y=2, z=11}},
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="90", force=false,
-					offset={x=-2, y=2, z=3}},
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
-					offset={x=11, y=2, z=3}},
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -812,18 +912,19 @@ fortress.genfort_data = {
 		hallway_e_capped = {
 			schem = {
 				{file="nf_passage_e_capped"},
-				{file="hall_end_stair", rotation="270", chance=20, priority=1000,
-					offset={x=5, y=4, z=4}},
+				{file="hall_end_stair", rotation="270", chance=20,
+					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
+						offset={x=5, y=4, z=4}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=80, rotation="90", force=false,
-					offset={x=-2, y=2, z=3}},
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="0", force=false,
-					offset={x=3, y=2, z=-2}},
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
-					offset={x=3, y=2, z=11}},
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -836,18 +937,19 @@ fortress.genfort_data = {
 		hallway_w_capped = {
 			schem = {
 				{file="nf_passage_w_capped"},
-				{file="hall_end_stair", rotation="90", chance=20, priority=1000,
-					offset={x=-2, y=4, z=4}},
+				{file="hall_end_stair", rotation="90", chance=20,
+					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
+						offset={x=-2, y=4, z=4}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=80, rotation="270", force=false,
-					offset={x=11, y=2, z=3}},
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="0", force=false,
-					offset={x=3, y=2, z=-2}},
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
-					offset={x=3, y=2, z=11}},
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -952,7 +1054,7 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="180", force=false,
-					offset={x=3, y=2, z=11}},
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
@@ -978,7 +1080,7 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="90", force=false,
-					offset={x=-2, y=2, z=3}},
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
@@ -1004,7 +1106,7 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="270", force=false,
-					offset={x=11, y=2, z=3}},
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
@@ -1030,7 +1132,7 @@ fortress.genfort_data = {
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="0", force=false,
-					offset={x=3, y=2, z=-2}},
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
@@ -1136,9 +1238,11 @@ fortress.genfort_data = {
 		},
 
 		-- Roof tower.
+		tower_top = {},
 		roof_tower = {
 			schem = {
-				{file="nf_tower", force=false, priority=1000, offset={x=3, y=-10, z=3}},
+				{file="nf_tower", force=false, priority=TOWER_PRIORITY,
+					offset={x=3, y=-10, z=3}},
 
 				-- A nasty surprise.
 				{
@@ -1146,42 +1250,36 @@ fortress.genfort_data = {
 					chance = 20,
 					rotation = "random",
 					offset = {x=4, y=1, z=4},
-					priority = 1100, -- Place after tower.
+					priority = TOWER_PRIORITY + 1, -- Place after tower.
 				},
+			},
+			valid_neighbors = {
+				[DIRNAME.UP] = {tower_top=true},
 			},
 			probability = 5,
 			fallback = true,
 		},
 
+		-- Large chunk dummy piece (does not expand into any schems, and has no
+		-- connections). Use this in footprint tables to "take up space" for chunk
+		-- locations which should be ignored by the algorithm.
+		large_chunk_dummy = {},
+
 		-- EW passageway with ns bridge connectors.
-		hallway_ew_to_bridge_ns = {
-			schem = {
-				{file="nf_ew_passage_ns_bridge_access", offset={x=0, y=0, z=-11}},
-			},
-			size = {x=1, y=1, z=3}, -- Schematic size in chunk units.
-			valid_neighbors = {
-				--[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				--[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+		-- Only useable as a NORTHern neighbor, because 'shift' is north-fixed.
+		LARGE_hallway_ew_to_bridge_ns_START_NORTH =
+			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_NORTH",
+				{x=0, y=0, z=1}),
 
-				[DIRNAME.NORTH] = {ns_walk_bridge=true},
-				[DIRNAME.SOUTH] = {ns_walk_bridge=true},
+		-- SOUTH neighbor version. Note how the Z is flipped. However, this will not
+		-- be symmetrical for all large chunks!
+		LARGE_hallway_ew_to_bridge_ns_START_SOUTH =
+			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_SOUTH",
+				{x=0, y=0, z=-1}),
 
-				[DIRNAME.UP] = {roof_straight_ew=true},
-				[DIRNAME.DOWN] = {solid_top=true},
-			},
-			extended_neighbors = {
-				[HASHKEY(0, 0, 2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[HASHKEY(0, 0, -2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-			},
-
-			-- Defines the chunk/tiles' additional extra footprint.
-			-- This is what gets written to the algorithm data structure when a chunk
-			-- is confirmed to be placed. (The center point 0,0,0 is always placed.)
-			-- Keys are ALWAYS position hashes.
-			footprint = {
-				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
-				[HASHKEY(0, 0, -1)] = "ns_walk_bridge",
-			},
-		},
+		-- Coming from east or west, no offset is required.
+		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST =
+			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
+				{x=0, y=0, z=0}),
 	},
 }

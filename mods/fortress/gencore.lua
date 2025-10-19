@@ -35,6 +35,7 @@ function fortress.process_next_chunk(params)
 	local determined = params.traversal.determined
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
+	local override_chunk_schems = params.override_chunk_schems
 
 	local function select_next_potential()
 		-- No potentials available? Return nil.
@@ -78,7 +79,8 @@ function fortress.process_next_chunk(params)
 	-- Select a random chunk; must return the chosen chunk's name.
 	-- We take into account the chunk's probability, but this only matters if
 	-- there are multiple possible chunk names to choose from.
-	local function select_random_chunk(all_chunks, selectable_chunks)
+	local function select_random_chunk(
+			all_chunks, selectable_chunks, ignore_chunks)
 		local allchoices = {}
 		local choices = {}
 
@@ -86,7 +88,9 @@ function fortress.process_next_chunk(params)
 		for name, _ in pairs(selectable_chunks) do
 			local prob = (all_chunks[name].probability or 100)
 			if prob > 0 then  -- Skip zero-prob choices to optimize
-				choices[#choices + 1] = {name=name, prob=prob}
+				if not ignore_chunks[name] then -- Skip chunks being ignored.
+					choices[#choices + 1] = {name=name, prob=prob}
+				end
 			end
 
 			-- This will be used as fallback incase zero-prob elements result in there
@@ -217,12 +221,16 @@ function fortress.process_next_chunk(params)
 
 	-- Chose next potential to expand/compute, with lowest-entropy chunks having
 	-- highest priority, and ties broken randomly.
-	local poshash, selectable_chunks = select_next_potential()
+	local originalposhash, selectable_chunks = select_next_potential()
 	local all_limited_chunks = get_limited_chunks()
 	local all_fallback_chunks = get_fallback_chunks()
 
+	-- List of chunks that fail the neighbor test,
+	-- so we ignore them when trying again.
+	local ignore_chunks = {}
+
 	-- No new possibilities? We're done.
-	if not poshash then return end
+	if not originalposhash then return end
 
 	-- We will jump here if neighbor checks failed.
 	-- Abort entirely if we do this too many times (prevent infinite loop).
@@ -234,15 +242,22 @@ function fortress.process_next_chunk(params)
 	-- This takes into account competing chunk probabilities.
 	-- BUG: sometimes chunkname is nil? But this should not happen unless somehow
 	-- there are NO 'selectable_chunks' to choose from, but how could that happen?
-	local chunkname = select_random_chunk(all_chunks, selectable_chunks)
-	local chunkpos = UNHASH_POSITION(poshash)
+	local chunkname = select_random_chunk(
+		all_chunks, selectable_chunks, ignore_chunks)
+	local chunkpos = UNHASH_POSITION(originalposhash)
 	local chunkdata = all_chunks[chunkname]
 
 	-- Handle this hopefully very rare error.
 	if not chunkname or not chunkdata then
 		params.algorithm_fail = true
-		minetest.log("error", "Fail: chunkname or chunkdata is nil!")
+		minetest.log("error", "Fail: chunkname or chunkdata is nil! Giving up.")
 		return
+	end
+
+	-- Support for large chunks (greater than 1x1x1 units).
+	-- Shift the chunk position in the direction it defines.
+	if chunkdata.size and chunkdata.shift then
+		chunkpos = vector.add(chunkpos, chunkdata.shift)
 	end
 
 	minetest.log("action",
@@ -371,6 +386,12 @@ function fortress.process_next_chunk(params)
 					-- fort will have missing sections.
 					return
 				end
+
+				minetest.log("action",
+					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
+						" adding to ignore list.")
+
+				ignore_chunks[chunkname] = true
 				goto try_again
 			end
 		end
@@ -378,16 +399,25 @@ function fortress.process_next_chunk(params)
 
 	-- Step 2: add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
-	determined[poshash] = chunkname
-	potential[poshash] = nil
+	determined[originalposhash] = chunkname
+	potential[originalposhash] = nil
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
-	for hashpos, name in pairs(chunkdata.footprint or {}) do
-		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
-		local neighborhash = HASH_POSITION(neighborpos)
-		determined[neighborhash] = name
-		potential[neighborhash] = nil
+	if chunkdata.footprint then
+		for hashpos, name in pairs(chunkdata.footprint) do
+			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
+			local neighborhash = HASH_POSITION(neighborpos)
+
+			determined[neighborhash] = name
+			potential[neighborhash] = nil
+
+			-- Notify the schematic placer.
+			override_chunk_schems[neighborhash] = "IGNORE" -- Special value.
+		end
+
+		-- Notify the schematic placer.
+		override_chunk_schems[HASH_POSITION(chunkpos)] = chunkname
 	end
 
 	-- Step 3: update the limits count.

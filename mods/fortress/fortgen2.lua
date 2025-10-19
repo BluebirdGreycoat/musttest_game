@@ -67,6 +67,11 @@ function fortress.gen_init(spawn_pos)
 			potential = {},
 		},
 
+		-- Indexed by chunk hash position.
+		-- This is a table of "large chunks" whose schems should override locations
+		-- in '[traversal.determined].'
+		override_chunk_schems = {},
+
 		-- Initialize build table to an empty array. This array describes all schems
 		-- which must be placed, and their parameters, once the fortress generation
 		-- algorithm is complete.
@@ -183,8 +188,19 @@ function fortress.expand_all_schems(params)
 	for poshash, chunkname in pairs(params.traversal.determined) do
 		local chunkpos = UNHASH_POSITION(poshash)
 		local schempos = vector.add(spawn_pos, vector.multiply(chunkpos, chunkstep))
-		local chunkdata = params.chunks[chunkname]
-		fortress.expand_single_schem(schempos, chunkdata, params)
+		local altname = params.override_chunk_schems[poshash]
+
+		if altname then
+			-- If we got IGNORE at this position from 'override_chunk_schems', then
+			-- don't place any schematics.
+			if altname ~= "IGNORE" then
+				local chunkdata = params.chunks[altname]
+				fortress.expand_single_schem(schempos, chunkdata, params)
+			end
+		else
+			local chunkdata = params.chunks[chunkname]
+			fortress.expand_single_schem(schempos, chunkdata, params)
+		end
 	end
 end
 

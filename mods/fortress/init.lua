@@ -25,6 +25,7 @@ dofile(fortress.modpath .. "/oldgen.lua")
 -- Shiny new Wave Function Collapse (TM) algorithm.
 dofile(fortress.modpath .. "/newfort2.lua")
 dofile(fortress.modpath .. "/fortgen2.lua")
+dofile(fortress.modpath .. "/gencore.lua")
 
 
 

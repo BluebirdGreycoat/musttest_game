@@ -9,12 +9,17 @@ local DIRNAME = {
 	DOWN  = "-y",
 }
 
+local function HASHKEY(x, y, z)
+	return minetest.hash_node_position({x=x, y=y, z=z})
+end
+
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
 local ELITE_SPAWNER_CHANCE = 10
 local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
 local FLOOR_LAVA_CHANCE = 5
+local PASSAGE_DETAIL_CHANCE = 20
 
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
@@ -231,7 +236,7 @@ fortress.genfort_data = {
 	initial_chunks = {
 		--GET_BRIDGE_STARTER_PEICES(),
 		GET_PASSAGE_STARTER_PEICES(),
-		--"roof_tower",
+		--"hallway_ew_to_bridge_ns",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -303,8 +308,6 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = {air=true},
-				[DIRNAME.SOUTH] = {air=true},
 				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
 				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 				[DIRNAME.UP] = {air=true},
@@ -325,8 +328,6 @@ fortress.genfort_data = {
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
 				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = {air=true},
-				[DIRNAME.WEST] = {air=true},
 				[DIRNAME.UP] = {air=true},
 				[DIRNAME.DOWN] = {bridge_arch_ns=true},
 			},
@@ -653,11 +654,11 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER,
 
 				-- Room detailing.
-				{file="nf_detail_room1", chance=15, rotation="90",
+				{file="nf_detail_room1", chance=PASSAGE_DETAIL_CHANCE, rotation="90",
 					offset={x=3, y=3, z=3}},
-				{file="nf_detail_room2", chance=15, rotation="90",
+				{file="nf_detail_room2", chance=PASSAGE_DETAIL_CHANCE, rotation="90",
 					offset={x=3, y=4, z=3}},
-				{file="nf_detail_room3", chance=15, force=false,
+				{file="nf_detail_room3", chance=PASSAGE_DETAIL_CHANCE, force=false,
 					offset={x=3, y=4, z=0}},
 
 				-- Outside window decorations.
@@ -695,10 +696,12 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER,
 
 				-- Room detailing.
-				{file="nf_detail_room1", chance=15, offset={x=3, y=3, z=3}},
-				{file="nf_detail_room2", chance=15, offset={x=3, y=4, z=3}},
-				{file="nf_detail_room3", chance=15, rotation="90", force=false,
-					offset={x=0, y=4, z=3}},
+				{file="nf_detail_room1", chance=PASSAGE_DETAIL_CHANCE,
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_room2", chance=PASSAGE_DETAIL_CHANCE,
+					offset={x=3, y=4, z=3}},
+				{file="nf_detail_room3", chance=PASSAGE_DETAIL_CHANCE, rotation="90",
+					force=false, offset={x=0, y=4, z=3}},
 
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=70, rotation="0", force=false,
@@ -765,6 +768,14 @@ fortress.genfort_data = {
 					offset={x=4, y=4, z=5}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -781,6 +792,14 @@ fortress.genfort_data = {
 					offset={x=4, y=4, z=-2}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="180", force=false,
+					offset={x=3, y=2, z=11}},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -797,6 +816,14 @@ fortress.genfort_data = {
 					offset={x=5, y=4, z=4}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -813,6 +840,14 @@ fortress.genfort_data = {
 					offset={x=-2, y=4, z=4}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="270", force=false,
+					offset={x=11, y=2, z=3}},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}},
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -914,6 +949,10 @@ fortress.genfort_data = {
 				--]]
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=50, rotation="180", force=false,
+					offset={x=3, y=2, z=11}},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
@@ -936,6 +975,10 @@ fortress.genfort_data = {
 				--]]
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=50, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
@@ -958,6 +1001,10 @@ fortress.genfort_data = {
 				--]]
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=50, rotation="270", force=false,
+					offset={x=11, y=2, z=3}},
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
@@ -980,6 +1027,10 @@ fortress.genfort_data = {
 				--]]
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=50, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}},
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
@@ -1095,11 +1146,42 @@ fortress.genfort_data = {
 					chance = 20,
 					rotation = "random",
 					offset = {x=4, y=1, z=4},
-					priority = 1100,
+					priority = 1100, -- Place after tower.
 				},
 			},
 			probability = 5,
 			fallback = true,
+		},
+
+		-- EW passageway with ns bridge connectors.
+		hallway_ew_to_bridge_ns = {
+			schem = {
+				{file="nf_ew_passage_ns_bridge_access", offset={x=0, y=0, z=-11}},
+			},
+			size = {x=1, y=1, z=3}, -- Schematic size in chunk units.
+			valid_neighbors = {
+				--[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				--[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+
+				[DIRNAME.NORTH] = {ns_walk_bridge=true},
+				[DIRNAME.SOUTH] = {ns_walk_bridge=true},
+
+				[DIRNAME.UP] = {roof_straight_ew=true},
+				[DIRNAME.DOWN] = {solid_top=true},
+			},
+			extended_neighbors = {
+				[HASHKEY(0, 0, 2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[HASHKEY(0, 0, -2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+			},
+
+			-- Defines the chunk/tiles' additional extra footprint.
+			-- This is what gets written to the algorithm data structure when a chunk
+			-- is confirmed to be placed. (The center point 0,0,0 is always placed.)
+			-- Keys are ALWAYS position hashes.
+			footprint = {
+				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, -1)] = "ns_walk_bridge",
+			},
 		},
 	},
 }

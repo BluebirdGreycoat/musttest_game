@@ -209,6 +209,12 @@ function fortress.process_next_chunk(params)
 		end
 	end
 
+	-- Return vector from dir key or position hash.
+	local function vecfromdirhash(dir)
+		if KEYDIRS[dir] then return KEYDIRS[dir] end
+		return UNHASH_POSITION(dir)
+	end
+
 	-- Chose next potential to expand/compute, with lowest-entropy chunks having
 	-- highest priority, and ties broken randomly.
 	local poshash, selectable_chunks = select_next_potential()
@@ -244,7 +250,14 @@ function fortress.process_next_chunk(params)
 		", try count: " .. try_count)
 
 	-- Returns the neighbors a chunk defines for a direction, if it has any.
+	-- Also support the use of extended neighbors.
 	local function get_chunk_neighbors(dir)
+		if not KEYDIRS[dir] and chunkdata.extended_neighbors then
+			if chunkdata.extended_neighbors[dir] then
+				return chunkdata.extended_neighbors[dir]
+			end
+		end
+
 		if not chunkdata.valid_neighbors then return {} end
 		if not chunkdata.valid_neighbors[dir] then return {} end
 		return chunkdata.valid_neighbors[dir]
@@ -264,6 +277,14 @@ function fortress.process_next_chunk(params)
 			[DIRNAME.DOWN] = {},
 		}
 
+		-- If the chunk defines extended neighbors, add those neighbor keys to the
+		-- list of neighbors needing to be checked.
+		if chunkdata.extended_neighbors then
+			for hashpos, _ in pairs(chunkdata.extended_neighbors) do
+				neighbors_to_update[hashpos] = {}
+			end
+		end
+
 		-- Compute additional intersections to narrow down the lists.
 		local dirs_to_ignore = {}
 		for dir, _ in pairs(neighbors_to_update) do
@@ -273,7 +294,7 @@ function fortress.process_next_chunk(params)
 			-- that don't actually exist).
 			local filt = intersect(chunk_names, get_chunk_neighbors(dir))
 
-			local neighborpos = vector.add(chunkpos, KEYDIRS[dir])
+			local neighborpos = vector.add(chunkpos, vecfromdirhash(dir))
 			local neighborhash = HASH_POSITION(neighborpos)
 
 			-- If the current chunk defines NO NEIGHBORS for this direction, we
@@ -335,8 +356,14 @@ function fortress.process_next_chunk(params)
 			if not next(chunks) then
 				try_count = try_count + 1
 				if try_count > try_limit then
+					-- Make dir key human-readable.
+					local dirstr = dir
+					if not KEYDIRS[dir] then
+						dirstr = POS_TO_STR(UNHASH_POSITION(dir))
+					end
+
 					minetest.log("warning", "Iteration canceled!")
-					minetest.log("warning", "Dir: " .. dir)
+					minetest.log("warning", "Dir: " .. dirstr)
 					minetest.log("warning", "Chunk: " .. chunkname)
 					minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
 					minetest.log("warning", "After " .. try_limit .. " iterations.")
@@ -354,6 +381,15 @@ function fortress.process_next_chunk(params)
 	determined[poshash] = chunkname
 	potential[poshash] = nil
 
+	-- Apply the chunk's footprint, which can be larger than a single chunk.
+	-- This is required for chunks larger than 1x1x1 chunk/tile units.
+	for hashpos, name in pairs(chunkdata.footprint or {}) do
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
+		local neighborhash = HASH_POSITION(neighborpos)
+		determined[neighborhash] = name
+		potential[neighborhash] = nil
+	end
+
 	-- Step 3: update the limits count.
 	chunk_limits[chunkname] = (chunk_limits[chunkname] or 0) + 1
 
@@ -364,7 +400,7 @@ function fortress.process_next_chunk(params)
 		for dir, chunks in pairs(neighbors_to_update) do
 			if next(chunks) then -- Keep data structure clean; skip empties.
 				-- Calculate the index hash of the neighboring position.
-				local neighborpos = vector.add(chunkpos, KEYDIRS[dir])
+				local neighborpos = vector.add(chunkpos, vecfromdirhash(dir))
 				local neighborhash = HASH_POSITION(neighborpos)
 
 				-- Also, do not add to 'potential' if already defined in 'determined.'

@@ -16,8 +16,9 @@ local DIRNAME = {
 
 
 -- Loot chest chances.
-local COMMON_LOOT_CHANCE = 20
-local RARE_LOOT_CHANCE = 3
+local COMMON_LOOT_CHANCE = 40
+local RARE_LOOT_CHANCE = 15
+local EXCEPTIONAL_LOOT_CHANCE = 5
 
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
@@ -400,8 +401,6 @@ local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 	}
 end
 
-
-
 -- Large chunk connecting NS hallway to EW bridge.
 local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 	return {
@@ -462,6 +461,25 @@ local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 		},
 
 		probability = probability,
+	}
+end
+
+local function GET_BASIC_LOOT_POSITIONS()
+	return {
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=RARE_LOOT_CHANCE, loot="rare"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=RARE_LOOT_CHANCE, loot="rare"},
+		{pos={x_min=1, x_max=9, y=4, z_min=1, z_max=9},
+			chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 	}
 end
 
@@ -1088,6 +1106,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_junction=true},
 			},
 			probability = JUNCTION_HALLWAY_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		-- Hallway end caps.
@@ -1114,6 +1133,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=3, z_max=10},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=10},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_s_capped = {
@@ -1139,6 +1166,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=7},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=0, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_e_capped = {
@@ -1164,6 +1199,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=10, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=3, x_max=10, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=3, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_w_capped = {
@@ -1189,6 +1232,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=0, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=0, x_max=7, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		-- Hallway caps which exclude the stairs.
@@ -1213,6 +1264,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_NO_STAIR_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=3, z_max=10},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=10},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_s_capped_no_stair = {
@@ -1235,6 +1294,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_NO_STAIR_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=7},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=0, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_e_capped_no_stair = {
@@ -1257,6 +1324,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_NO_STAIR_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=10, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=3, x_max=10, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=3, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		hallway_w_capped_no_stair = {
@@ -1279,6 +1354,14 @@ fortress.genfort_data = {
 			},
 			probability = HALLWAY_CAP_NO_STAIR_PROB,
 			fallback = true,
+			chests = {
+				{pos={x_min=0, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=0, x_max=7, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		-- Hallway/passage corners.
@@ -1300,6 +1383,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_corner_ne=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_corner_nw = {
@@ -1320,6 +1404,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_corner_nw=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_corner_se = {
@@ -1340,6 +1425,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_corner_se=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_corner_sw = {
@@ -1360,6 +1446,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_corner_sw=true},
 			},
 			probability = HALLWAY_CORNER_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hallway_esw_t = {
@@ -1386,6 +1473,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_t_esw=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hallway_nes_t = {
@@ -1412,6 +1500,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_t_nes=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hallway_swn_t = {
@@ -1438,6 +1527,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_t_swn=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hallway_wne_t = {
@@ -1464,6 +1554,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_t_wne=true},
 			},
 			probability = TJUNCT_HALLWAY_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		-- Passageway roof pieces.
@@ -1983,6 +2074,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {hall_straight_ew_roof_stair=true},
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_straight_ns_stair = {
@@ -2005,6 +2097,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {hall_straight_ns_roof_stair=true},
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_straight_ew_roof_stair = {
@@ -2036,6 +2129,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {hall_straight_ew_roof_stair_rev=true},
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_straight_ns_stair_rev = {
@@ -2058,6 +2152,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {hall_straight_ns_roof_stair_rev=true},
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+			chests = GET_BASIC_LOOT_POSITIONS(),
 		},
 
 		hall_straight_ew_roof_stair_rev = {

@@ -356,16 +356,28 @@ function fortress.apply_genfort(params)
 	vm:write_to_map(true)
 
 	-- Add loot chests.
+	-- Track how many chests we successfully add, and what types.
+	local totals = {chests = 0}
 	for k, v in ipairs(params.build.chests) do
 		local p = v.pos
 		local n = minetest.get_node(p)
+		local f = minetest.get_node(vector.offset(p, 0, -1, 0))
 
-		-- Only if location not already occupied.
-		if n.name == "air" then
+		-- Only if location not already occupied, and floor is brick.
+		if n.name == "air" and f.name == "rackstone:brick_black" then
 			local param2 = math.random(0, 3)
 			local cname = CHEST_NAMES[math.random(1, #CHEST_NAMES)]
 			minetest.set_node(p, {name=cname, param2=param2})
 			fortress.add_loot_items(p, v.loot)
+			totals.chests = totals.chests + 1
+			totals[v.loot] = (totals[v.loot] or 0) + 1
+		end
+	end
+
+	minetest.log("action", "Added " .. totals.chests .. " chests to fortress")
+	for k, v in pairs(totals) do
+		if k ~= "chests" then
+			minetest.log("action", "Added " .. v .. " " .. k .. " chests")
 		end
 	end
 

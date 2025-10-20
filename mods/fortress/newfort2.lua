@@ -196,21 +196,39 @@ local HALLWAY_FLOOR_LAVA = {
 
 
 local function GET_BRIDGE_STARTER_PIECES()
-	return "junction_walk_bridge", "ew_walk_bridge", "ns_walk_bridge"
+	return "junction_walk_bridge",
+		"ew_walk_bridge",
+		"ns_walk_bridge",
+		"walk_bridge_nse",
+		"walk_bridge_nsw",
+		"walk_bridge_nwe",
+		"walk_bridge_swe"
 end
 
 local function GET_PASSAGE_STARTER_PIECES()
-	return "hallway_straight_ns", "hallway_straight_ew", "hallway_junction"
+	return "hallway_straight_ns",
+		"hallway_straight_ew",
+		"hallway_junction",
+		"hallway_esw_t",
+		"hallway_nes_t",
+		"hallway_swn_t",
+		"hallway_wne_t"
 end
 
 local function GET_TRANSITION_STARTER_PIECES()
-	return "LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
-		"LARGE_hallway_ns_to_bridge_ew_START_NORTHSOUTH"
+	return "hall_ns_to_bridge_ew",
+		"hall_ew_to_bridge_ns",
+		"bridge_ns_to_hall_ew",
+		"bridge_ew_to_hall_ns",
+		"hall_ew_to_bridge_n",
+		"hall_ew_to_bridge_s",
+		"hall_ns_to_bridge_e",
+		"hall_ns_to_bridge_w"
 end
 
 
 
-local PASSAGE_VALID_CONNECTIVITY = {
+local PASSAGE_CONNECT = {
 	[DIRNAME.NORTH] = {
 		hallway_straight_ns = true,
 		hallway_junction = true,
@@ -226,6 +244,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_esw_t = true,
 
 		hall_ns_to_bridge_ew = true,
+		hall_ns_to_bridge_e = true,
+		hall_ns_to_bridge_w = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
@@ -242,6 +262,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_swn_t = true,
 
 		hall_ns_to_bridge_ew = true,
+		hall_ns_to_bridge_e = true,
+		hall_ns_to_bridge_w = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
@@ -258,6 +280,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_wne_t = true,
 
 		hall_ew_to_bridge_ns = true,
+		hall_ew_to_bridge_n = true,
+		hall_ew_to_bridge_s = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -274,6 +298,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_wne_t = true,
 
 		hall_ew_to_bridge_ns = true,
+		hall_ew_to_bridge_n = true,
+		hall_ew_to_bridge_s = true,
 	},
 }
 
@@ -293,8 +319,8 @@ local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 		size = {x=1, y=1, z=3},
 
 		valid_neighbors = {
-			[HASHKEY(1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-			[HASHKEY(-1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+			[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
+			[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
 
 			[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
 			[HASHKEY(0, -1, 1)] = {solid_top=true},
@@ -362,8 +388,8 @@ local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 		size = {x=3, y=1, z=1},
 
 		valid_neighbors = {
-			[HASHKEY(1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-			[HASHKEY(1, 0, -1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+			[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+			[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 
 			[HASHKEY(1, 1, 0)] = {roof_straight_ns=true},
 			[HASHKEY(1, -1, 0)] = {solid_top=true},
@@ -437,10 +463,11 @@ end
 fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
-		--GET_BRIDGE_STARTER_PIECES(),
-		--GET_PASSAGE_STARTER_PIECES(),
-		--GET_TRANSITION_STARTER_PIECES(),
-		"bridge_ns_to_hall_ew",
+		GET_BRIDGE_STARTER_PIECES(),
+		GET_PASSAGE_STARTER_PIECES(),
+		GET_TRANSITION_STARTER_PIECES(),
+		--"large_plaza",
+		--"ew_plaza_s",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -881,8 +908,8 @@ fortress.genfort_data = {
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_straight_ns=true},
 			},
@@ -923,8 +950,8 @@ fortress.genfort_data = {
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_straight_ew=true},
 			},
@@ -963,10 +990,10 @@ fortress.genfort_data = {
 				HALLWAY_FLOOR_LAVA, HALLWAY_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_junction=true},
 			},
@@ -1087,8 +1114,8 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_corner_ne=true},
 			},
@@ -1107,8 +1134,8 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_corner_nw=true},
 			},
@@ -1127,8 +1154,8 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_corner_se=true},
 			},
@@ -1147,8 +1174,8 @@ fortress.genfort_data = {
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_corner_sw=true},
 			},
@@ -1172,9 +1199,9 @@ fortress.genfort_data = {
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_t_esw=true},
 			},
@@ -1198,9 +1225,9 @@ fortress.genfort_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_t_nes=true},
 			},
@@ -1224,9 +1251,9 @@ fortress.genfort_data = {
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.SOUTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_t_swn=true},
 			},
@@ -1250,9 +1277,9 @@ fortress.genfort_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 			},
 			valid_neighbors = {
-				[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.NORTH] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_t_wne=true},
 			},
@@ -1394,5 +1421,365 @@ fortress.genfort_data = {
 			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB1),
 		hall_ns_to_bridge_ew =
 			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB2),
+
+		-- The big 9x9 plaza object.
+		large_plaza = {
+			schem = {
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
+				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=0}},
+				{file="nf_building_solid", force=false, offset={x=22, y=-7, z=0}},
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=11}},
+				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=11}},
+				{file="nf_building_solid", force=false, offset={x=22, y=-7, z=11}},
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=22}},
+				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=22}},
+				{file="nf_building_solid", force=false, offset={x=22, y=-7, z=22}},
+				{file="fortress_well_water", chance=40,	offset={x=10, y=3, z=10}},
+				{file="fortress_well_lava", chance=20, offset={x=10, y=3, z=10}},
+			},
+			size = {x=3, y=1, z=3},
+			valid_neighbors = {
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(2, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(1, -1, 1)] = {solid_top=true},
+				[HASHKEY(2, -1, 1)] = {solid_top=true},
+				[HASHKEY(0, -1, 2)] = {solid_top=true},
+				[HASHKEY(1, -1, 2)] = {solid_top=true},
+				[HASHKEY(2, -1, 2)] = {solid_top=true},
+
+				-- Edge centers.
+				-- West side.
+				--[[
+				[HASHKEY(-2, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_swn_t = true,
+					ns_plaza_w = true,
+				},
+				-- East side.
+				[HASHKEY(3, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_nes_t = true,
+					ns_plaza_e = true,
+				},
+				-- South side.
+				[HASHKEY(1, 0, -2)] = {
+					hallway_straight_ew = true,
+					hallway_esw_t = true,
+					ew_plaza_s = true,
+				},
+				-- North side.
+				[HASHKEY(1, 0, 3)] = {
+					hallway_straight_ew = true,
+					hallway_wne_t = true,
+					ew_plaza_n = true,
+				},
+				--]]
+			},
+			-- Prevent us from overwriting anyone else.
+			require_empty_neighbors = {
+				-- Footprint must be empty.
+				[HASHKEY(0, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
+				[HASHKEY(2, 0, 0)] = true,
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
+				[HASHKEY(2, 0, 1)] = true,
+				[HASHKEY(0, 0, 2)] = true,
+				[HASHKEY(1, 0, 2)] = true,
+				[HASHKEY(2, 0, 2)] = true,
+
+				-- Require both sides of all four possible entrances to be empty.
+				-- Both sides of south entrance.
+				[HASHKEY(0, 0, -1)] = true,
+				[HASHKEY(2, 0, -1)] = true,
+				-- Both sides of north entrance.
+				[HASHKEY(0, 0, 3)] = true,
+				[HASHKEY(2, 0, 3)] = true,
+				-- Both sides of west entrance.
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(-1, 0, 2)] = true,
+				-- Both sides of east entrance.
+				[HASHKEY(3, 0, 0)] = true,
+				[HASHKEY(3, 0, 2)] = true,
+			},
+			-- Prevent algorithm from coming back and overwriting us.
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(2, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 1)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 1)] = "large_chunk_dummy",
+				[HASHKEY(2, 0, 1)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 2)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 2)] = "large_chunk_dummy",
+				[HASHKEY(2, 0, 2)] = "large_chunk_dummy",
+			},
+		},
+
+		-- Plaza exits/entrances.
+		ns_plaza_e = {
+			schem = {
+				{file="ns_bridge_passage_e"},
+				{file="plaza_door_ew", offset={x=0, y=4, z=3}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(0, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ns",
+			},
+			-- Require both sides of the east-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(1, 0, 1)] = true,
+				[HASHKEY(1, 0, -1)] = true,
+			},
+		},
+
+		ns_plaza_w = {
+			schem = {
+				{file="ns_bridge_passage_w"},
+				{file="plaza_door_ew", offset={x=19, y=4, z=3}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=14, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=14, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(1, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(1, 0, 0)] = "hallway_straight_ns",
+			},
+			-- Require both sides of the west-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(0, 0, -1)] = true,
+			},
+		},
+
+		ew_plaza_n = {
+			schem = {
+				{file="ew_bridge_passage_n"},
+				{file="plaza_door_ns", offset={x=3, y=4, z=0}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
+			},
+			-- Require both sides of the north-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(-1, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
+			},
+		},
+
+		ew_plaza_s = {
+			schem = {
+				{file="ew_bridge_passage_s"},
+				{file="plaza_door_ns", offset={x=3, y=4, z=19}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=14}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=14}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 2)] = {large_plaza=true},
+				--[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				--[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				--[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
+			},
+			-- Require both sides of the south-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
+			},
+		},
+
+		-- Hallway/bridge access.
+		hall_ns_to_bridge_e = {
+			schem = {
+				{file="ns_bridge_passage_e"},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(0, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ns",
+			},
+			-- Require both sides of the east-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(1, 0, 1)] = true,
+				[HASHKEY(1, 0, -1)] = true,
+			},
+			-- Probability that hallways may spawn bridge accesses.
+			probability = PASSAGE_BRIDGE_TRANSITION_PROB2,
+		},
+
+		hall_ns_to_bridge_w = {
+			schem = {
+				{file="ns_bridge_passage_w"},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=14, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=14, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(1, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(1, 0, 0)] = "hallway_straight_ns",
+			},
+			-- Require both sides of the west-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(0, 0, -1)] = true,
+			},
+			-- Probability that hallways may spawn bridge accesses.
+			probability = PASSAGE_BRIDGE_TRANSITION_PROB2,
+		},
+
+		hall_ew_to_bridge_n = {
+			schem = {
+				{file="ew_bridge_passage_n"},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
+			},
+			-- Require both sides of the north-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(-1, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
+			},
+			-- Probability that hallways may spawn bridge accesses.
+			probability = PASSAGE_BRIDGE_TRANSITION_PROB2,
+		},
+
+		hall_ew_to_bridge_s = {
+			schem = {
+				{file="ew_bridge_passage_s"},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=14}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=14}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
+			},
+			-- Require both sides of the south-facing bridge to be empty.
+			require_empty_neighbors = {
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
+			},
+			-- Probability that hallways may spawn bridge accesses.
+			probability = PASSAGE_BRIDGE_TRANSITION_PROB2,
+		},
 	},
 }

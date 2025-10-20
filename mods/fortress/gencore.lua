@@ -427,6 +427,7 @@ function fortress.process_next_chunk(params)
 			potential[neighborhash] = nil
 
 			-- Notify the schematic placer.
+			-- Fill entire footprint with IGNORE.
 			override_chunk_schems[neighborhash] = "IGNORE" -- Special value.
 		end
 

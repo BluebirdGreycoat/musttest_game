@@ -1,4 +1,7 @@
 
+-- Why did I decide to write this? I played a fort-raid with family and realized
+-- how crummy the fortress gen was.
+
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 local POS_TO_STR = minetest.pos_to_string

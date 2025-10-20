@@ -32,9 +32,7 @@ function fortress.process_next_chunk(params)
 		local chunkpos = UNHASH_POSITION(hashpos)
 		local realpos = vec_add(spawn_pos, vec_mult(chunkpos, chunk_step))
 		local finalhash = HASH_POSITION(realpos)
-		if previous_gen[finalhash] then
-			return true
-		end
+		return previous_gen[finalhash]
 	end
 
 	local function select_next_potential()
@@ -382,7 +380,7 @@ function fortress.process_next_chunk(params)
 				local detchunk = determined[neighborhash]
 				filt = intersect(filt, {[detchunk]=true})
 			elseif previous_exists(neighborhash) then
-				local detchunk = previous_gen[neighborhash]
+				local detchunk = previous_exists(neighborhash)
 				filt = intersect(filt, {[detchunk]=true})
 			else
 				-- Filter chunks by limits. This has to be done EXCLUSIVE of checking

@@ -509,11 +509,11 @@ end
 fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
-		GET_BRIDGE_STARTER_PIECES(),
-		GET_PASSAGE_STARTER_PIECES(),
-		GET_TRANSITION_STARTER_PIECES(),
+		--GET_BRIDGE_STARTER_PIECES(),
+		--GET_PASSAGE_STARTER_PIECES(),
+		--GET_TRANSITION_STARTER_PIECES(),
 		--"large_plaza",
-		--"ew_plaza_s",
+		"ew_plaza_s",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -1723,8 +1723,8 @@ fortress.genfort_data = {
 
 				-- Edge centers.
 				-- West side.
-				--[[
-				[HASHKEY(-2, 0, 1)] = {
+				---[[
+				[HASHKEY(-1, 0, 1)] = {
 					hallway_straight_ns = true,
 					hallway_swn_t = true,
 					ns_plaza_w = true,
@@ -1736,7 +1736,7 @@ fortress.genfort_data = {
 					ns_plaza_e = true,
 				},
 				-- South side.
-				[HASHKEY(1, 0, -2)] = {
+				[HASHKEY(1, 0, -1)] = {
 					hallway_straight_ew = true,
 					hallway_esw_t = true,
 					ew_plaza_s = true,
@@ -1748,6 +1748,46 @@ fortress.genfort_data = {
 					ew_plaza_n = true,
 				},
 				--]]
+
+				-- Require both sides of all four possible entrances to be hallways.
+				-- Both sides of south entrance.
+				[HASHKEY(0, 0, -1)] = {hallway_straight_ew=true},
+				[HASHKEY(2, 0, -1)] = {hallway_straight_ew=true},
+				-- Both sides of north entrance.
+				[HASHKEY(0, 0, 3)] = {hallway_straight_ew=true},
+				[HASHKEY(2, 0, 3)] = {hallway_straight_ew=true},
+				-- Both sides of west entrance.
+				[HASHKEY(-1, 0, 0)] = {hallway_straight_ns=true},
+				[HASHKEY(-1, 0, 2)] = {hallway_straight_ns=true},
+				-- Both sides of east entrance.
+				[HASHKEY(3, 0, 0)] = {hallway_straight_ns=true},
+				[HASHKEY(3, 0, 2)] = {hallway_straight_ns=true},
+
+				-- Now the corners.
+				-- Southwest corner.
+				[HASHKEY(-1, 0, -1)] = {
+					hall_corner_ne = true,
+					hallway_e_capped = true,
+					hallway_n_capped = true,
+				},
+				-- Northwest corner.
+				[HASHKEY(-1, 0, 3)] = {
+					hall_corner_se = true,
+					hallway_s_capped = true,
+					hallway_e_capped = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(3, 0, 3)] = {
+					hall_corner_sw = true,
+					hallway_s_capped = true,
+					hallway_w_capped = true,
+				},
+				-- Southeast corner.
+				[HASHKEY(3, 0, -1)] = {
+					hall_corner_nw = true,
+					hallway_n_capped = true,
+					hallway_w_capped = true,
+				},
 			},
 			-- Prevent us from overwriting anyone else.
 			require_empty_neighbors = {
@@ -1761,20 +1801,6 @@ fortress.genfort_data = {
 				[HASHKEY(0, 0, 2)] = true,
 				[HASHKEY(1, 0, 2)] = true,
 				[HASHKEY(2, 0, 2)] = true,
-
-				-- Require both sides of all four possible entrances to be empty.
-				-- Both sides of south entrance.
-				[HASHKEY(0, 0, -1)] = true,
-				[HASHKEY(2, 0, -1)] = true,
-				-- Both sides of north entrance.
-				[HASHKEY(0, 0, 3)] = true,
-				[HASHKEY(2, 0, 3)] = true,
-				-- Both sides of west entrance.
-				[HASHKEY(-1, 0, 0)] = true,
-				[HASHKEY(-1, 0, 2)] = true,
-				-- Both sides of east entrance.
-				[HASHKEY(3, 0, 0)] = true,
-				[HASHKEY(3, 0, 2)] = true,
 			},
 			-- Prevent algorithm from coming back and overwriting us.
 			footprint = {
@@ -1901,7 +1927,7 @@ fortress.genfort_data = {
 			},
 			size = {x=1, y=1, z=2},
 			valid_neighbors = {
-				[HASHKEY(0, 0, 2)] = {large_plaza=true},
+				[HASHKEY(-1, 0, 2)] = {large_plaza=true},
 				--[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
 				--[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
 				--[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],

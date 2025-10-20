@@ -13,8 +13,10 @@ function refill.refill_all(pname)
 	local total = 0
 	for i = 1, sz, 1 do
 		local stack = inv:get_stack("main", i)
-		if stack:get_count() > 0 then
-			stack:set_count(stack:get_stack_max())
+		local count = stack:get_count()
+		local max = stack:get_stack_max()
+		if count > 0 and count < max then
+			stack:set_count(max)
 			inv:set_stack("main", i, stack)
 			total = total + 1
 		end
@@ -30,12 +32,14 @@ function refill.refill_single(pname)
 		return
 	end
 	local stack = player:get_wielded_item()
-	if stack:get_count() > 0 then
-		stack:set_count(stack:get_stack_max())
+	local count = stack:get_count()
+	local max = stack:get_stack_max()
+	if count > 0 and count < max then
+		stack:set_count(max)
 		player:set_wielded_item(stack)
 		minetest.chat_send_player(pname, "# Server: Stack refilled.")
 	else
-		minetest.chat_send_player(pname, "# Server: No wielded stack!")
+		minetest.chat_send_player(pname, "# Server: Nothing to do.")
 		easyvend.sound_error(pname)
 	end
 end

@@ -387,6 +387,7 @@ function fortress.collect_loot_chests(schempos, chunkdata, params)
 	end
 
 	local all_chests = params.build.chests
+	local used_locations = {} -- Don't overwrite chests.
 
 	for k, v in ipairs(chunkdata.chests) do
 		-- Spawn loot chest only if chance succeeds.
@@ -412,11 +413,16 @@ function fortress.collect_loot_chests(schempos, chunkdata, params)
 			end
 
 			local loc = vector.add(schempos, p2)
+			local hash = HASH_POSITION(loc)
 
-			all_chests[#all_chests + 1] = {
-				pos = loc,
-				loot = v.loot,
-			}
+			if not used_locations[hash] then
+				used_locations[hash] = true
+
+				all_chests[#all_chests + 1] = {
+					pos = loc,
+					loot = v.loot,
+				}
+			end
 		end
 	end
 end

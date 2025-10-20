@@ -1,17 +1,17 @@
 
--- Direction names.
-local DIRNAME = {
-	NORTH = "+z",
-	SOUTH = "-z",
-	EAST  = "+x",
-	WEST  = "-x",
-	UP    = "+y",
-	DOWN  = "-y",
-}
-
 local function HASHKEY(x, y, z)
 	return minetest.hash_node_position({x=x, y=y, z=z})
 end
+
+-- Direction names.
+local DIRNAME = {
+	NORTH = HASHKEY(0, 0, 1),
+	SOUTH = HASHKEY(0, 0, -1),
+	EAST  = HASHKEY(1, 0, 0),
+	WEST  = HASHKEY(-1, 0, 0),
+	UP    = HASHKEY(0, 1, 0),
+	DOWN  = HASHKEY(0, -1, 0),
+}
 
 
 
@@ -37,9 +37,9 @@ local WINDOW_DECO_PRIORITY = 100
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
 local JUNCTION_BRIDGE_PROB = 4
-local TJUNCT_BRIDGE_PROB = 8
-local BRIDGE_CORNER_PROB = 10
-local BRIDGE_CAP_PROB = 5
+local TJUNCT_BRIDGE_PROB = 15
+local BRIDGE_CORNER_PROB = 8
+local BRIDGE_CAP_PROB = 1
 local STRAIGHT_BRIDGE_PROB = 120
 
 -- Hallway probabilities.
@@ -50,14 +50,15 @@ local HALLWAY_CORNER_PROB = 8
 local TJUNCT_HALLWAY_PROB = 15
 
 -- Transition probabilities.
-local PASSAGE_BRIDGE_TRANSITION_PROB = 100
+local PASSAGE_BRIDGE_TRANSITION_PROB1 = 5 -- Prob bridge may spawn hallways.
+local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 
 
 
 -- Connectivity table for open-walk bridges.
 -- Makes defining these data much more concise.
 -- Alterations to this affect all bridge tiles.
-local BRIDGE_VALID_CONNECTIVITY = {
+local BRIDGE_CONNECT = {
 	[DIRNAME.NORTH] = {
 		ns_walk_bridge = true,
 		s_broken_walk = true,
@@ -73,7 +74,7 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		sw_corner_walk = true,
 		se_corner_walk = true,
 
-		LARGE_hallway_ew_to_bridge_ns_START_NORTH = true,
+		bridge_ns_to_hall_ew = true,
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
@@ -90,7 +91,7 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		ne_corner_walk = true,
 		nw_corner_walk = true,
 
-		LARGE_hallway_ew_to_bridge_ns_START_SOUTH = true,
+		bridge_ns_to_hall_ew = true,
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
@@ -106,6 +107,8 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		-- Corners.
 		sw_corner_walk = true,
 		nw_corner_walk = true,
+
+		bridge_ew_to_hall_ns = true,
 	},
 	[DIRNAME.WEST] = {
 		ew_walk_bridge = true,
@@ -121,6 +124,8 @@ local BRIDGE_VALID_CONNECTIVITY = {
 		-- Corners.
 		se_corner_walk = true,
 		ne_corner_walk = true,
+
+		bridge_ew_to_hall_ns = true,
 	},
 }
 
@@ -190,12 +195,17 @@ local HALLWAY_FLOOR_LAVA = {
 
 
 
-local function GET_BRIDGE_STARTER_PEICES()
+local function GET_BRIDGE_STARTER_PIECES()
 	return "junction_walk_bridge", "ew_walk_bridge", "ns_walk_bridge"
 end
 
-local function GET_PASSAGE_STARTER_PEICES()
+local function GET_PASSAGE_STARTER_PIECES()
 	return "hallway_straight_ns", "hallway_straight_ew", "hallway_junction"
+end
+
+local function GET_TRANSITION_STARTER_PIECES()
+	return "LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
+		"LARGE_hallway_ns_to_bridge_ew_START_NORTHSOUTH"
 end
 
 
@@ -214,6 +224,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_nes_t = true,
 		hallway_swn_t = true,
 		hallway_esw_t = true,
+
+		hall_ns_to_bridge_ew = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
@@ -228,6 +240,8 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_nes_t = true,
 		hallway_wne_t = true,
 		hallway_swn_t = true,
+
+		hall_ns_to_bridge_ew = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
@@ -243,7 +257,7 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_swn_t = true,
 		hallway_wne_t = true,
 
-		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST = true,
+		hall_ew_to_bridge_ns = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -259,17 +273,17 @@ local PASSAGE_VALID_CONNECTIVITY = {
 		hallway_nes_t = true,
 		hallway_wne_t = true,
 
-		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST = true,
+		hall_ew_to_bridge_ns = true,
 	},
 }
 
 
 
 -- Large chunk connecting EW hallway to NS bridge.
-local function GET_HALL_EW_TO_BRIDGE_NS(chunkname, shift)
+local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 	return {
 		schem = {
-			{file="nf_ew_passage_ns_bridge_access", offset={x=0, y=0, z=-11}},
+			{file="nf_ew_passage_ns_bridge_access"},
 		},
 
 		-- Size and offset in chunk/tile units.
@@ -277,23 +291,32 @@ local function GET_HALL_EW_TO_BRIDGE_NS(chunkname, shift)
 		-- large chunk/tile, which has special code paths to handle the large
 		-- size, offset, and footprint.
 		size = {x=1, y=1, z=3},
-		shift = shift,
 
 		valid_neighbors = {
-			[DIRNAME.EAST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-			[DIRNAME.WEST] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+			[HASHKEY(1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+			[HASHKEY(-1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.WEST],
 
-			[DIRNAME.NORTH] = {[chunkname]=true},
-			[DIRNAME.SOUTH] = {[chunkname]=true},
+			[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
+			[HASHKEY(0, -1, 1)] = {solid_top=true},
 
-			[DIRNAME.UP] = {roof_straight_ew=true},
-			[DIRNAME.DOWN] = {solid_top=true},
+			-- Extended neighbors. You can use HASHKEY() here because the keys are all
+			-- the same; 'DIRNAME.NORTH' etc. is just a shortcut for easier reading.
+			[HASHKEY(0, 0, 3)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+			[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+			[HASHKEY(0, -1, 2)] = {bridge_arch_ns=true},
+			[HASHKEY(0, -1, 0)] = {bridge_arch_ns=true},
 		},
-		extended_neighbors = {
-			[HASHKEY(0, 0, 2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-			[HASHKEY(0, 0, -2)] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-			[HASHKEY(0, -1, 1)] = {bridge_arch_ns=true},
-			[HASHKEY(0, -1, -1)] = {bridge_arch_ns=true},
+
+		-- Require these neighboring positions to be EMPTY.
+		-- NOTE: this should only be used when you are sure you NEVER want to place
+		-- THIS CHUNK if there is ever anything at a particular neighbor position,
+		-- for large chunks that span multiple cells/tiles.
+		require_empty_neighbors = {
+			--[HASHKEY(0, 0, 3)] = true,
+			[HASHKEY(0, 0, 2)] = true,
+			[HASHKEY(0, 0, 1)] = true,
+			[HASHKEY(0, 0, 0)] = true,
+			--[HASHKEY(0, 0, -1)] = true,
 		},
 
 		-- Defines the chunk/tiles' additional extra footprint.
@@ -308,13 +331,93 @@ local function GET_HALL_EW_TO_BRIDGE_NS(chunkname, shift)
 		-- could use 'large_chunk_dummy' for those. But this chunk is just 1x1x3,
 		-- not big enough for that.
 		footprint = {
-			[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
-			[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
-			[HASHKEY(0, 0, -1)] = "ns_walk_bridge",
+			[HASHKEY(0, 0, 2)] = "ns_walk_bridge",
+			[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
+			[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
 		},
 
-		probability = PASSAGE_BRIDGE_TRANSITION_PROB,
+		probability = probability,
 	}
+end
+
+
+
+-- Large chunk connecting NS hallway to EW bridge.
+local function GET_HALL_NS_TO_BRIDGE_EW(probability)
+	return {
+		schem = {
+			{file="nf_ns_passage_ew_bridge_access"},
+		},
+
+		-- Size and offset in chunk/tile units.
+		-- The presence of 'size' and 'shift' tell the algorithm that this is a
+		-- large chunk/tile, which has special code paths to handle the large
+		-- size, offset, and footprint.
+		size = {x=3, y=1, z=1},
+
+		valid_neighbors = {
+			[HASHKEY(1, 0, 1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
+			[HASHKEY(1, 0, -1)] = PASSAGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+
+			[HASHKEY(1, 1, 0)] = {roof_straight_ns=true},
+			[HASHKEY(1, -1, 0)] = {solid_top=true},
+
+			-- Extended neighbors.
+			[HASHKEY(3, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
+			[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
+			[HASHKEY(0, -1, 0)] = {bridge_arch_ew=true},
+			[HASHKEY(2, -1, 0)] = {bridge_arch_ew=true},
+		},
+
+		-- Require these neighboring positions to be EMPTY.
+		require_empty_neighbors = {
+			--[HASHKEY(3, 0, 0)] = true,
+			[HASHKEY(2, 0, 0)] = true,
+			[HASHKEY(1, 0, 0)] = true,
+			[HASHKEY(0, 0, 0)] = true,
+			--[HASHKEY(-1, 0, 0)] = true,
+		},
+
+		-- Defines the chunk/tiles' additional extra footprint.
+		-- This is what gets written to the algorithm data structure when a chunk
+		-- is confirmed to be placed. Keys are ALWAYS position hashes.
+		--
+		-- Since this large chunk is just a combination of smaller tiles, each
+		-- position can have the name of an existing smaller tile, taking on all
+		-- the connective/etc properties of those smaller peices.
+		--
+		-- If we had internal pieces that should be ignored by the algorithm, we
+		-- could use 'large_chunk_dummy' for those. But this chunk is just 1x1x3,
+		-- not big enough for that.
+		footprint = {
+			[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
+			[HASHKEY(1, 0, 0)] = "hallway_straight_ns",
+			[HASHKEY(2, 0, 0)] = "ew_walk_bridge",
+		},
+
+		probability = probability,
+	}
+end
+
+
+
+local TJUNC_BLIST = {
+	walk_bridge_nse = true,
+	walk_bridge_nsw = true,
+	walk_bridge_nwe = true,
+	walk_bridge_swe = true,
+}
+
+
+
+local function exclude(set, unwanted)
+	local t = {}
+	for k, v in pairs(set) do
+		if not unwanted[k] then
+			t[k] = v
+		end
+	end
+	return t
 end
 
 
@@ -322,10 +425,10 @@ end
 fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
-		--GET_BRIDGE_STARTER_PEICES(),
-		--GET_PASSAGE_STARTER_PEICES(),
-		--"hallway_straight_ew",
-		"LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
+		--GET_BRIDGE_STARTER_PIECES(),
+		--GET_PASSAGE_STARTER_PIECES(),
+		--GET_TRANSITION_STARTER_PIECES(),
+		"bridge_ns_to_hall_ew",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -333,8 +436,7 @@ fortress.genfort_data = {
 
 	-- Maximum fortress extent, in chunk/tile units.
 	-- The min extents are simply computed as the inverse.
-	max_extent = {x=10, y=10, z=10},
-	--max_extent = {x=25, y=10, z=25},
+	max_extent = {x=11, y=8, z=11},
 
 	-- List of node replacements.
 	replacements = {
@@ -375,10 +477,16 @@ fortress.genfort_data = {
 			--limit = JUNCTION_BRIDGE_LIMIT,
 
 			valid_neighbors = {
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				-- Junction connects to everything except itself.
+				[DIRNAME.NORTH] = exclude(BRIDGE_CONNECT[DIRNAME.NORTH],
+					{junction_walk_bridge=true}),
+				[DIRNAME.SOUTH] = exclude(BRIDGE_CONNECT[DIRNAME.SOUTH],
+					{junction_walk_bridge=true}),
+				[DIRNAME.EAST] = exclude(BRIDGE_CONNECT[DIRNAME.EAST],
+					{junction_walk_bridge=true}),
+				[DIRNAME.WEST] = exclude(BRIDGE_CONNECT[DIRNAME.WEST],
+					{junction_walk_bridge=true}),
+
 				[DIRNAME.UP] = {air=true},
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
@@ -397,8 +505,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.WEST] = BRIDGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.UP] = {air=true},
 				[DIRNAME.DOWN] = {bridge_arch_ew=true},
 			},
@@ -415,8 +523,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
+				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
 				[DIRNAME.UP] = {air=true},
 				[DIRNAME.DOWN] = {bridge_arch_ns=true},
 			},
@@ -442,7 +550,6 @@ fortress.genfort_data = {
 		bridge_pillar_bottom = {
 			schem = {
 				{file="nf_center_pillar_bottom", offset={x=1, y=-11, z=1}},
-				{file="nf_center_pillar_bottom", offset={x=1, y=-22, z=1}},
 			},
 			fallback = true,
 		},
@@ -573,10 +680,9 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.WEST] = {air=true},
+				[DIRNAME.NORTH] = exclude(BRIDGE_CONNECT[DIRNAME.NORTH], TJUNC_BLIST),
+				[DIRNAME.SOUTH] = exclude(BRIDGE_CONNECT[DIRNAME.SOUTH], TJUNC_BLIST),
+				[DIRNAME.EAST] = exclude(BRIDGE_CONNECT[DIRNAME.EAST], TJUNC_BLIST),
 			},
 			probability = TJUNCT_BRIDGE_PROB,
 		},
@@ -588,10 +694,9 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.EAST] = {air=true},
+				[DIRNAME.NORTH] = exclude(BRIDGE_CONNECT[DIRNAME.NORTH], TJUNC_BLIST),
+				[DIRNAME.SOUTH] = exclude(BRIDGE_CONNECT[DIRNAME.SOUTH], TJUNC_BLIST),
+				[DIRNAME.WEST] = exclude(BRIDGE_CONNECT[DIRNAME.WEST], TJUNC_BLIST),
 			},
 			probability = TJUNCT_BRIDGE_PROB,
 		},
@@ -603,10 +708,9 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.NORTH] = {air=true},
+				[DIRNAME.EAST] = exclude(BRIDGE_CONNECT[DIRNAME.EAST], TJUNC_BLIST),
+				[DIRNAME.SOUTH] = exclude(BRIDGE_CONNECT[DIRNAME.SOUTH], TJUNC_BLIST),
+				[DIRNAME.WEST] = exclude(BRIDGE_CONNECT[DIRNAME.WEST], TJUNC_BLIST),
 			},
 			probability = TJUNCT_BRIDGE_PROB,
 		},
@@ -618,10 +722,9 @@ fortress.genfort_data = {
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.SOUTH] = {air=true},
+				[DIRNAME.WEST] = exclude(BRIDGE_CONNECT[DIRNAME.WEST], TJUNC_BLIST),
+				[DIRNAME.EAST] = exclude(BRIDGE_CONNECT[DIRNAME.EAST], TJUNC_BLIST),
+				[DIRNAME.NORTH] = exclude(BRIDGE_CONNECT[DIRNAME.NORTH], TJUNC_BLIST),
 			},
 			probability = TJUNCT_BRIDGE_PROB,
 		},
@@ -633,8 +736,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CORNER_PROB,
@@ -646,8 +749,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.NORTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.NORTH],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.WEST] = BRIDGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CORNER_PROB,
@@ -659,8 +762,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.WEST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.WEST],
+				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.WEST] = BRIDGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CORNER_PROB,
@@ -672,8 +775,8 @@ fortress.genfort_data = {
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
 			},
 			valid_neighbors = {
-				[DIRNAME.SOUTH] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.SOUTH],
-				[DIRNAME.EAST] = BRIDGE_VALID_CONNECTIVITY[DIRNAME.EAST],
+				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
 				[DIRNAME.DOWN] = {bridge_pillar_top=true},
 			},
 			probability = BRIDGE_CORNER_PROB,
@@ -1253,6 +1356,7 @@ fortress.genfort_data = {
 					priority = TOWER_PRIORITY + 1, -- Place after tower.
 				},
 			},
+			size = {x=1, y=2, z=1}, -- Try to keep tops being cut off.
 			valid_neighbors = {
 				[DIRNAME.UP] = {tower_top=true},
 			},
@@ -1265,21 +1369,18 @@ fortress.genfort_data = {
 		-- locations which should be ignored by the algorithm.
 		large_chunk_dummy = {},
 
-		-- EW passageway with ns bridge connectors.
-		-- Only useable as a NORTHern neighbor, because 'shift' is north-fixed.
-		LARGE_hallway_ew_to_bridge_ns_START_NORTH =
-			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_NORTH",
-				{x=0, y=0, z=1}),
+		-- EW passageway with NS bridge connectors.
+		-- Two of these so we can give them distinct probabilities.
+		bridge_ns_to_hall_ew =
+			GET_HALL_EW_TO_BRIDGE_NS(PASSAGE_BRIDGE_TRANSITION_PROB1),
+		hall_ew_to_bridge_ns =
+			GET_HALL_EW_TO_BRIDGE_NS(PASSAGE_BRIDGE_TRANSITION_PROB2),
 
-		-- SOUTH neighbor version. Note how the Z is flipped. However, this will not
-		-- be symmetrical for all large chunks!
-		LARGE_hallway_ew_to_bridge_ns_START_SOUTH =
-			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_SOUTH",
-				{x=0, y=0, z=-1}),
-
-		-- Coming from east or west, no offset is required.
-		LARGE_hallway_ew_to_bridge_ns_START_EASTWEST =
-			GET_HALL_EW_TO_BRIDGE_NS("LARGE_hallway_ew_to_bridge_ns_START_EASTWEST",
-				{x=0, y=0, z=0}),
+		-- NS passageway with EW bridge connectors.
+		-- Two of these so we can give them distinct probabilities.
+		bridge_ew_to_hall_ns =
+			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB1),
+		hall_ns_to_bridge_ew =
+			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB2),
 	},
 }

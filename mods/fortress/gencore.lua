@@ -1,27 +1,7 @@
 
--- Map direction strings to vectors.
-local KEYDIRS = {
-	["+x"] = {x= 1, y= 0, z= 0},
-	["-x"] = {x=-1, y= 0, z= 0},
-	["+y"] = {x= 0, y= 1, z= 0},
-	["-y"] = {x= 0, y=-1, z= 0},
-	["+z"] = {x= 0, y= 0, z= 1},
-	["-z"] = {x= 0, y= 0, z=-1},
-}
-
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 local POS_TO_STR = minetest.pos_to_string
-
--- Direction names.
-local DIRNAME = {
-	NORTH = "+z",
-	SOUTH = "-z",
-	EAST  = "+x",
-	WEST  = "-x",
-	UP    = "+y",
-	DOWN  = "-y",
-}
 
 
 
@@ -213,12 +193,6 @@ function fortress.process_next_chunk(params)
 		end
 	end
 
-	-- Return vector from dir key or position hash.
-	local function vecfromdirhash(dir)
-		if KEYDIRS[dir] then return KEYDIRS[dir] end
-		return UNHASH_POSITION(dir)
-	end
-
 	-- Chose next potential to expand/compute, with lowest-entropy chunks having
 	-- highest priority, and ties broken randomly.
 	local originalposhash, selectable_chunks = select_next_potential()
@@ -246,6 +220,9 @@ function fortress.process_next_chunk(params)
 		all_chunks, selectable_chunks, ignore_chunks)
 	local chunkpos = UNHASH_POSITION(originalposhash)
 	local chunkdata = all_chunks[chunkname]
+	local neighbors_to_update -- Placeholder in scope.
+	local possible_offsets = {}
+	local current_offset = 0
 
 	-- Handle this hopefully very rare error.
 	if not chunkname or not chunkdata then
@@ -254,70 +231,121 @@ function fortress.process_next_chunk(params)
 		return
 	end
 
-	-- Support for large chunks (greater than 1x1x1 units).
-	-- Shift the chunk position in the direction it defines.
-	if chunkdata.size and chunkdata.shift then
-		chunkpos = vector.add(chunkpos, chunkdata.shift)
+	if try_count > try_limit then
+		minetest.log("warning", "Iteration canceled!")
+		minetest.log("warning", "Chunk: " .. chunkname)
+		minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
+		minetest.log("warning", "After " .. try_limit .. " iterations.")
+		-- Treat this as a non-fatal error for now, but it means the generated
+		-- fort will have missing sections.
+		return
 	end
+
+	-- Support for large chunks (greater than 1x1x1 units).
+	--
+	-- Calculate all the possible offsets we could give this chunk to satisfy its
+	-- neighbor conditions. We will try to fit the chunk with each offset in turn,
+	-- until we find a suitable offset or we run out of offsets (in which case we
+	-- will know there is no possible room for this chunk).
+	if chunkdata.size then
+		local v = chunkdata.size
+		local a = possible_offsets
+		for x = 0, v.x - 1 do
+			for y = 0, v.y - 1 do
+				for z = 0, v.z - 1 do
+					a[#a + 1] = {x=-x, y=-y, z=-z}
+				end
+			end
+		end
+	else
+		local a = possible_offsets
+		a[#a + 1] = {x=0, y=0, z=0}
+	end
+	current_offset = 0
+
+	-- We will jump here if the chunk failed the neighbor checks, but there are
+	-- still more offsets to try. If we run out of offsets then we error.
+	::try_next_offset::
+	current_offset = current_offset + 1
+
+	if current_offset > #possible_offsets then
+		ignore_chunks[chunkname] = true
+		try_count = try_count + 1
+		goto try_again
+	end
+
+	chunkpos = vector.add(chunkpos, possible_offsets[current_offset])
 
 	minetest.log("action",
 		"Processing chunk: " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
-		", try count: " .. try_count)
+		", try count: " .. try_count .. ", offset: " .. current_offset)
 
-	-- Returns the neighbors a chunk defines for a direction, if it has any.
-	-- Also support the use of extended neighbors.
-	local function get_chunk_neighbors(dir)
-		if not KEYDIRS[dir] and chunkdata.extended_neighbors then
-			if chunkdata.extended_neighbors[dir] then
-				return chunkdata.extended_neighbors[dir]
+	-- If any of the chunk's required empty neighbors aren't empty, we cannot
+	-- place this chunk here.
+	if chunkdata.require_empty_neighbors then
+		for hashpos, _ in pairs(chunkdata.require_empty_neighbors) do
+			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
+			local neighborhash = HASH_POSITION(neighborpos)
+
+			local function in_list(list)
+				for k, v in pairs(list) do
+					if k == chunkname then
+						return true
+					end
+				end
+			end
+
+			-- The "potential" location is considered to be occupied if that location
+			-- exists AND our current chunk name is NOT in the list of potentials.
+			---[[
+			if determined[neighborhash] or
+					(potential[neighborhash] and not in_list(potential[neighborhash]))
+						then
+			--]]
+			--[[
+			if determined[neighborhash] or potential[neighborhash] then
+			--]]
+				-- If we still have more possible offsets to try for this chunk,
+				-- then don't skip this chunk just yet. Try next offset.
+				if current_offset < #possible_offsets then goto try_next_offset end
+
+				ignore_chunks[chunkname] = true
+
+				minetest.log("action",
+					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
+						", adding to ignore list.")
+
+				try_count = try_count + 1
+				goto try_again
 			end
 		end
-
-		if not chunkdata.valid_neighbors then return {} end
-		if not chunkdata.valid_neighbors[dir] then return {} end
-		return chunkdata.valid_neighbors[dir]
 	end
 
 	-- Step 1: collect neighbors. We only do this if the selected chunk defines
 	-- neighbors. If it does, those neighbors must be matched against any existing
 	-- neighbors already contained in the 'potential' list (indexed by hash).
-	local neighbors_to_update
 	if chunkdata.valid_neighbors then
-		neighbors_to_update = {
-			[DIRNAME.NORTH] = {},
-			[DIRNAME.SOUTH] = {},
-			[DIRNAME.EAST] = {},
-			[DIRNAME.WEST] = {},
-			[DIRNAME.UP] = {},
-			[DIRNAME.DOWN] = {},
-		}
+		-- The chunk defines which neighbors it cares about. If any possible
+		-- direction defines NO NEIGHBORS for this direction, we interpret that ALL
+		-- neighbors are permitted without restriction.
+		local all_neighbors = chunkdata.valid_neighbors
+		neighbors_to_update = {}
 
-		-- If the chunk defines extended neighbors, add those neighbor keys to the
-		-- list of neighbors needing to be checked.
-		if chunkdata.extended_neighbors then
-			for hashpos, _ in pairs(chunkdata.extended_neighbors) do
-				neighbors_to_update[hashpos] = {}
-			end
-		end
+		-- This will contain the dir hashes of neighbors we determine we must
+		-- ignore even though the chunk defines them (e.g., we're at extent
+		-- boundaries).
+		local dirs_to_ignore = {}
 
 		-- Compute additional intersections to narrow down the lists.
-		local dirs_to_ignore = {}
-		for dir, _ in pairs(neighbors_to_update) do
+		for dir, dir_neighbors in pairs(all_neighbors) do
 			-- Since 'chunk_names' contains ALL chunk names, this should result in a
 			-- list containing just the valid chunk neighbors for current chunk. Leave
 			-- this as a sanity check (in case a chunk defines neighbors in its data
 			-- that don't actually exist).
-			local filt = intersect(chunk_names, get_chunk_neighbors(dir))
+			local filt = intersect(chunk_names, dir_neighbors)
 
-			local neighborpos = vector.add(chunkpos, vecfromdirhash(dir))
+			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
 			local neighborhash = HASH_POSITION(neighborpos)
-
-			-- If the current chunk defines NO NEIGHBORS for this direction, we
-			-- interpret that ALL neighbors are permitted, no restriction.
-			if not next(filt) then
-				dirs_to_ignore[dir] = true
-				goto nextdir
-			end
 
 			-- If defined neighbors exist in the 'potential' list, the result must be
 			-- the INTERSECTION of both lists. This might result in the list being
@@ -350,11 +378,9 @@ function fortress.process_next_chunk(params)
 				end
 			else
 				-- Otherwise add this direction to the set of dirs to REMOVE entirely.
+				-- This neighbor position is outside extent bounds!
 				dirs_to_ignore[dir] = true
 			end
-
-			-- Jump here if this iteration is to be skipped, goto next dir.
-			::nextdir::
 		end
 
 		-- Delete directions that exceed fort bounds.
@@ -367,31 +393,19 @@ function fortress.process_next_chunk(params)
 		-- we have made a mistake and we must cancel this iteration, so we can
 		-- hopefully chose a different path the next time we enter this function.
 		-- This obviously skips directions that we explicitly ignored earlier.
-		for dir, chunks in pairs(neighbors_to_update) do
-			if not next(chunks) then
-				try_count = try_count + 1
-				if try_count > try_limit then
-					-- Make dir key human-readable.
-					local dirstr = dir
-					if not KEYDIRS[dir] then
-						dirstr = POS_TO_STR(UNHASH_POSITION(dir))
-					end
+		for _, neighbors in pairs(neighbors_to_update) do
+			if not next(neighbors) then
+				-- If we still have more possible offsets to try for this chunk,
+				-- then don't skip this chunk just yet. Try next offset.
+				if current_offset < #possible_offsets then goto try_next_offset end
 
-					minetest.log("warning", "Iteration canceled!")
-					minetest.log("warning", "Dir: " .. dirstr)
-					minetest.log("warning", "Chunk: " .. chunkname)
-					minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
-					minetest.log("warning", "After " .. try_limit .. " iterations.")
-					-- Treat this as a non-fatal error for now, but it means the generated
-					-- fort will have missing sections.
-					return
-				end
+				ignore_chunks[chunkname] = true
 
 				minetest.log("action",
 					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
-						" adding to ignore list.")
+						", adding to ignore list.")
 
-				ignore_chunks[chunkname] = true
+				try_count = try_count + 1
 				goto try_again
 			end
 		end
@@ -430,7 +444,7 @@ function fortress.process_next_chunk(params)
 		for dir, chunks in pairs(neighbors_to_update) do
 			if next(chunks) then -- Keep data structure clean; skip empties.
 				-- Calculate the index hash of the neighboring position.
-				local neighborpos = vector.add(chunkpos, vecfromdirhash(dir))
+				local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
 				local neighborhash = HASH_POSITION(neighborpos)
 
 				-- Also, do not add to 'potential' if already defined in 'determined.'

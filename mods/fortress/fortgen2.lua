@@ -11,29 +11,9 @@ local CHEST_NAMES = {
 	"morechests:ironchest_public_closed",
 }
 
--- Map direction strings to vectors.
-local KEYDIRS = {
-	["+x"] = {x= 1, y= 0, z= 0},
-	["-x"] = {x=-1, y= 0, z= 0},
-	["+y"] = {x= 0, y= 1, z= 0},
-	["-y"] = {x= 0, y=-1, z= 0},
-	["+z"] = {x= 0, y= 0, z= 1},
-	["-z"] = {x= 0, y= 0, z=-1},
-}
-
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 local POS_TO_STR = minetest.pos_to_string
-
--- Direction names.
-local DIRNAME = {
-	NORTH = "+z",
-	SOUTH = "-z",
-	EAST  = "+x",
-	WEST  = "-x",
-	UP    = "+y",
-	DOWN  = "-y",
-}
 
 
 
@@ -95,11 +75,16 @@ function fortress.gen_init(spawn_pos)
 	-- Just one possibility with a chance of 100.
 	-- The initial chunk always begins at {x=0, y=0, z=0} in "chunk space".
 	if not params.initial_chunks or #params.initial_chunks == 0 then
+		minetest.log("error", "No initial starter chunks to choose from.")
 		return nil -- Handle error.
 	end
 
 	local initial_chunk = params.initial_chunks[
 		math.random(1, #params.initial_chunks)]
+	if not params.chunks[initial_chunk] then
+		minetest.log("error", "Invalid starting chunk.")
+		return nil -- Handle error.
+	end
 
 	params.traversal.potential[HASH_POSITION({x=0, y=0, z=0})] = {
 		[initial_chunk] = true,
@@ -111,10 +96,6 @@ function fortress.gen_init(spawn_pos)
 	for _, chunkdata in pairs(params.chunks) do
 		if chunkdata.valid_neighbors then
 			for dir, list in pairs(chunkdata.valid_neighbors) do
-				if not KEYDIRS[dir] then
-					minetest.log("error", "Invalid neighbor direction key!")
-					return nil
-				end
 				for chunkname, _ in pairs(list) do
 					if not params.chunks[chunkname] then
 						minetest.log("error",
@@ -127,10 +108,6 @@ function fortress.gen_init(spawn_pos)
 
 		if chunkdata.enabled_neighbors then
 			for dir, list in pairs(chunkdata.enabled_neighbors) do
-				if not KEYDIRS[dir] then
-					minetest.log("error", "Invalid neighbor direction key!")
-					return nil
-				end
 				for chunkname, _ in pairs(list) do
 					if not params.chunks[chunkname] then
 						minetest.log("error",
@@ -157,6 +134,11 @@ function fortress.make_fort(spawn_pos)
 
 	local runmore = fortress.process_next_chunk(params)
 	while runmore do runmore = fortress.process_next_chunk(params) end
+
+	if not next(params.traversal.determined) then
+		minetest.log("error", "No chunks to generate.")
+		return
+	end
 
 	if not params.algorithm_fail then
 		fortress.expand_all_schems(params)

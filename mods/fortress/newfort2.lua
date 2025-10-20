@@ -63,6 +63,7 @@ local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 
 -- MISC probabilities.
 local TOWER_PROBABILITY = 10
+local PLAZA_GATE_PROB = 20
 
 
 
@@ -87,6 +88,7 @@ local BRIDGE_CONNECT = {
 		se_corner_walk = true,
 
 		bridge_ns_to_hall_ew = true,
+		ew_plaza_s = true,
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
@@ -105,6 +107,7 @@ local BRIDGE_CONNECT = {
 		nw_corner_walk = true,
 
 		bridge_ns_to_hall_ew = true,
+		ew_plaza_n = true,
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
@@ -123,6 +126,7 @@ local BRIDGE_CONNECT = {
 		nw_corner_walk = true,
 
 		bridge_ew_to_hall_ns = true,
+		ns_plaza_w = true,
 	},
 	[DIRNAME.WEST] = {
 		ew_walk_bridge = true,
@@ -141,6 +145,7 @@ local BRIDGE_CONNECT = {
 		ne_corner_walk = true,
 
 		bridge_ew_to_hall_ns = true,
+		ns_plaza_e = true,
 	},
 }
 
@@ -166,6 +171,9 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_ew = true,
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
+
+		ns_plaza_e = true,
+		ns_plaza_w = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
@@ -188,6 +196,9 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_ew = true,
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
+
+		ns_plaza_e = true,
+		ns_plaza_w = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
@@ -210,6 +221,9 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_ns = true,
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
+
+		ew_plaza_n = true,
+		ew_plaza_s = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -232,6 +246,9 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_ns = true,
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
+
+		ew_plaza_n = true,
+		ew_plaza_s = true,
 	},
 }
 
@@ -378,6 +395,10 @@ local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 			-- Both sides of northern bridge connector.
 			[HASHKEY(-1, 0, 2)] = true,
 			[HASHKEY(1, 0, 2)] = true,
+
+			-- Both sides of the middle EW hallway.
+			[HASHKEY(-1, 0, 1)] = true,
+			[HASHKEY(1, 0, 1)] = true,
 		},
 
 		-- Defines the chunk/tiles' additional extra footprint.
@@ -441,6 +462,10 @@ local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 			-- Both sides of right-hand bridge connector.
 			[HASHKEY(2, 0, 1)] = true,
 			[HASHKEY(2, 0, -1)] = true,
+
+			-- Both sides of the middle NS hallway.
+			[HASHKEY(1, 0, 1)] = true,
+			[HASHKEY(1, 0, -1)] = true,
 		},
 
 		-- Defines the chunk/tiles' additional extra footprint.
@@ -509,11 +534,15 @@ end
 fortress.genfort_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
-		--GET_BRIDGE_STARTER_PIECES(),
-		--GET_PASSAGE_STARTER_PIECES(),
-		--GET_TRANSITION_STARTER_PIECES(),
+		GET_BRIDGE_STARTER_PIECES(),
+		GET_PASSAGE_STARTER_PIECES(),
+		GET_TRANSITION_STARTER_PIECES(),
 		--"large_plaza",
-		"ew_plaza_s",
+		--"ew_plaza_s",
+		--"ew_plaza_n",
+		--"ns_plaza_w",
+		--"ns_plaza_e",
+		--"hallway_straight_ns",
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -1722,35 +1751,40 @@ fortress.genfort_data = {
 				[HASHKEY(2, -1, 2)] = {solid_top=true},
 
 				-- Edge centers.
-				-- West side.
 				---[[
+				-- West side.
 				[HASHKEY(-1, 0, 1)] = {
 					hallway_straight_ns = true,
 					hallway_swn_t = true,
 					ns_plaza_w = true,
+					--hallway_e_capped = true,
 				},
 				-- East side.
 				[HASHKEY(3, 0, 1)] = {
 					hallway_straight_ns = true,
 					hallway_nes_t = true,
 					ns_plaza_e = true,
+					--hallway_w_capped = true,
 				},
 				-- South side.
 				[HASHKEY(1, 0, -1)] = {
 					hallway_straight_ew = true,
 					hallway_esw_t = true,
 					ew_plaza_s = true,
+					--hallway_n_capped = true,
 				},
 				-- North side.
 				[HASHKEY(1, 0, 3)] = {
 					hallway_straight_ew = true,
 					hallway_wne_t = true,
 					ew_plaza_n = true,
+					--hallway_s_capped = true,
 				},
 				--]]
 
 				-- Require both sides of all four possible entrances to be hallways.
 				-- Both sides of south entrance.
+				---[[
 				[HASHKEY(0, 0, -1)] = {hallway_straight_ew=true},
 				[HASHKEY(2, 0, -1)] = {hallway_straight_ew=true},
 				-- Both sides of north entrance.
@@ -1762,32 +1796,47 @@ fortress.genfort_data = {
 				-- Both sides of east entrance.
 				[HASHKEY(3, 0, 0)] = {hallway_straight_ns=true},
 				[HASHKEY(3, 0, 2)] = {hallway_straight_ns=true},
+				--]]
 
 				-- Now the corners.
+				---[[
 				-- Southwest corner.
 				[HASHKEY(-1, 0, -1)] = {
 					hall_corner_ne = true,
 					hallway_e_capped = true,
 					hallway_n_capped = true,
+					hallway_junction = true,
+					hallway_wne_t = true,
+					hallway_nes_t = true,
 				},
 				-- Northwest corner.
 				[HASHKEY(-1, 0, 3)] = {
 					hall_corner_se = true,
 					hallway_s_capped = true,
 					hallway_e_capped = true,
+					hallway_junction = true,
+					hallway_esw_t = true,
+					hallway_nes_t = true,
 				},
 				-- Northeast corner.
 				[HASHKEY(3, 0, 3)] = {
 					hall_corner_sw = true,
 					hallway_s_capped = true,
 					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_esw_t = true,
 				},
 				-- Southeast corner.
 				[HASHKEY(3, 0, -1)] = {
 					hall_corner_nw = true,
 					hallway_n_capped = true,
 					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_wne_t = true,
 				},
+				--]]
 			},
 			-- Prevent us from overwriting anyone else.
 			require_empty_neighbors = {
@@ -1817,6 +1866,7 @@ fortress.genfort_data = {
 		},
 
 		-- Plaza exits/entrances.
+		-- Bridgewalk faces east, plaza is west of us.
 		ns_plaza_e = {
 			schem = {
 				{file="ns_bridge_passage_e"},
@@ -1831,6 +1881,7 @@ fortress.genfort_data = {
 			},
 			size = {x=2, y=1, z=1},
 			valid_neighbors = {
+				[HASHKEY(-1, 0, 0)] = {large_plaza=true, hallway_e_capped=true},
 				[HASHKEY(0, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(0, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
@@ -1847,8 +1898,10 @@ fortress.genfort_data = {
 				[HASHKEY(1, 0, 1)] = true,
 				[HASHKEY(1, 0, -1)] = true,
 			},
+			probability = PLAZA_GATE_PROB,
 		},
 
+		-- Bridgewalk faces west, plaza is east of us.
 		ns_plaza_w = {
 			schem = {
 				{file="ns_bridge_passage_w"},
@@ -1863,6 +1916,7 @@ fortress.genfort_data = {
 			},
 			size = {x=2, y=1, z=1},
 			valid_neighbors = {
+				[HASHKEY(2, 0, 0)] = {large_plaza=true, hallway_w_capped=true},
 				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 				[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
@@ -1879,8 +1933,10 @@ fortress.genfort_data = {
 				[HASHKEY(0, 0, 1)] = true,
 				[HASHKEY(0, 0, -1)] = true,
 			},
+			probability = PLAZA_GATE_PROB,
 		},
 
+		-- Bridgewalk faces north, plaza will be south of us.
 		ew_plaza_n = {
 			schem = {
 				{file="ew_bridge_passage_n"},
@@ -1895,6 +1951,7 @@ fortress.genfort_data = {
 			},
 			size = {x=1, y=1, z=2},
 			valid_neighbors = {
+				[HASHKEY(0, 0, -1)] = {large_plaza=true, hallway_n_capped=true},
 				[HASHKEY(0, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.EAST],
 				[HASHKEY(-1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.WEST],
@@ -1911,8 +1968,10 @@ fortress.genfort_data = {
 				[HASHKEY(-1, 0, 1)] = true,
 				[HASHKEY(1, 0, 1)] = true,
 			},
+			probability = PLAZA_GATE_PROB,
 		},
 
+		-- Bridgewalk faces south, plaza will be north of us.
 		ew_plaza_s = {
 			schem = {
 				{file="ew_bridge_passage_s"},
@@ -1927,10 +1986,10 @@ fortress.genfort_data = {
 			},
 			size = {x=1, y=1, z=2},
 			valid_neighbors = {
-				[HASHKEY(-1, 0, 2)] = {large_plaza=true},
-				--[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
-				--[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
-				--[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 0, 2)] = {large_plaza=true, hallway_s_capped=true},
+				[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
 				[HASHKEY(0, -1, 1)] = {solid_top=true},
 				[HASHKEY(0, -1, 0)] = {bridge_arch_ns=true},
@@ -1944,6 +2003,7 @@ fortress.genfort_data = {
 				[HASHKEY(-1, 0, 0)] = true,
 				[HASHKEY(1, 0, 0)] = true,
 			},
+			probability = PLAZA_GATE_PROB,
 		},
 
 		-- Hallway/bridge access.

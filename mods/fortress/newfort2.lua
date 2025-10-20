@@ -15,6 +15,10 @@ local DIRNAME = {
 
 
 
+-- Loot chest chances.
+local COMMON_LOOT_CHANCE = 100
+local RARE_LOOT_CHANCE = 100
+
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10
 local ELITE_SPAWNER_CHANCE = 10
@@ -980,6 +984,16 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_straight_ns=true},
 			},
 			probability = STRAIGHT_HALLWAY_PROB,
+			chests = {
+				{pos={x=3, y=4, z_min=0, z_max=10},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=7, y=4, z_min=0, z_max=10},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=10},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=0, z_max=10},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+			},
 		},
 
 		hallway_straight_ew = {
@@ -1020,6 +1034,16 @@ fortress.genfort_data = {
 				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
 				[DIRNAME.DOWN] = {solid_top=true},
 				[DIRNAME.UP] = {roof_straight_ew=true},
+			},
+			chests = {
+				{pos={x_min=0, x_max=10, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=7},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=0, x_max=10, y=4, z=3},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=0, x_max=10, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
 			},
 			probability = STRAIGHT_HALLWAY_PROB,
 		},

@@ -178,12 +178,19 @@ function fortress.expand_all_schems(params)
 			if altname ~= "IGNORE" then
 				local chunkdata = params.chunks[altname]
 				fortress.expand_single_schem(schempos, chunkdata, params)
+				fortress.collect_loot_chests(schempos, chunkdata, params)
 			end
 		else
 			local chunkdata = params.chunks[chunkname]
 			fortress.expand_single_schem(schempos, chunkdata, params)
+			fortress.collect_loot_chests(schempos, chunkdata, params)
 		end
 	end
+
+	minetest.log("action", "Added " .. #params.build.schems ..
+		" schematics to fortress layout.")
+	minetest.log("action", "Added " .. #params.build.chests ..
+		" chests to fortress layout.")
 end
 
 
@@ -368,4 +375,48 @@ function fortress.apply_genfort(params)
 	-- Report success, and how long it took.
 	minetest.log("action", "Finished generating fortress pattern in " ..
 		math.floor(os.time() - params.time) .. " seconds!")
+end
+
+
+
+-- Read chunk data and calculate where to place chests.
+-- Store chest locations in the builder data.
+function fortress.collect_loot_chests(schempos, chunkdata, params)
+	if not chunkdata.chests then
+		return
+	end
+
+	local all_chests = params.build.chests
+
+	for k, v in ipairs(chunkdata.chests) do
+		-- Spawn loot chest only if chance succeeds.
+		if math.random(1, 100) <= v.chance then
+			local p2 = table.copy(v.pos)
+
+			-- The position adjustment setting may specify min/max values for each
+			-- dimension coordinate.
+			if p2.x_min then
+				p2.x = math.random(p2.x_min, p2.x_max)
+				p2.x_min = nil
+				p2.x_max = nil
+			end
+			if p2.y_min then
+				p2.y = math.random(p2.y_min, p2.y_max)
+				p2.y_min = nil
+				p2.y_max = nil
+			end
+			if p2.z_min then
+				p2.z = math.random(p2.z_min, p2.z_max)
+				p2.z_min = nil
+				p2.z_max = nil
+			end
+
+			local loc = vector.add(schempos, p2)
+
+			all_chests[#all_chests + 1] = {
+				pos = loc,
+				loot = v.loot,
+			}
+		end
+	end
 end

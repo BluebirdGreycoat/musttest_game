@@ -20,13 +20,17 @@ function fortress.process_next_chunk(params)
 	local chunk_limits = params.chunk_limits
 	local override_chunk_schems = params.override_chunk_schems
 	local previous_gen = fortress.OCCUPIED_LOCATIONS
+	local spawn_pos = params.spawn_pos
+	local chunk_step = params.step
+	local vec_add = vector.add
+	local vec_mult = vector.multiply
 
 	-- This function checks if a location was previously generated.
 	-- We have to take into account relative positions, which involves some
 	-- unhashing/rehashing, and vector addition.
 	local function previous_exists(hashpos)
 		local chunkpos = UNHASH_POSITION(hashpos)
-		local realpos = vector.add(chunkpos, params.spawn_pos)
+		local realpos = vec_add(spawn_pos, vec_mult(chunkpos, chunk_step))
 		local finalhash = HASH_POSITION(realpos)
 		if previous_gen[finalhash] then
 			return true

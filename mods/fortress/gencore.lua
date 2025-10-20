@@ -219,6 +219,7 @@ function fortress.process_next_chunk(params)
 	local chunkname = select_random_chunk(
 		all_chunks, selectable_chunks, ignore_chunks)
 	local chunkpos = UNHASH_POSITION(originalposhash)
+	local original_chunkpos = vector.copy(chunkpos)
 	local chunkdata = all_chunks[chunkname]
 	local neighbors_to_update -- Placeholder in scope.
 	local possible_offsets = {}
@@ -274,7 +275,8 @@ function fortress.process_next_chunk(params)
 		goto try_again
 	end
 
-	chunkpos = vector.add(chunkpos, possible_offsets[current_offset])
+	-- Don't bork the original chunk pos.
+	chunkpos = vector.add(original_chunkpos, possible_offsets[current_offset])
 
 	minetest.log("action",
 		"Processing chunk: " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..

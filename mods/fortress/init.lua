@@ -3,6 +3,7 @@ if not minetest.global_exists("fortress") then fortress = {} end
 fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
 
+-- Only affects fortgen V1.
 if fortress.debug_layout == nil then
 	fortress.debug_layout = false
 end
@@ -32,7 +33,7 @@ dofile(fortress.modpath .. "/gencore.lua")
 if not fortress.run_once then
 	minetest.register_chatcommand("spawn_fortress", {
 		params = "",
-		description = "Spawn a fortress starting at your current location.",
+		description = "Spawn a v1 fortress (smelly mess) at your location.",
 		privs = {server=true},
 
 		func = function(...)
@@ -43,7 +44,7 @@ if not fortress.run_once then
 
 	minetest.register_chatcommand("genfort", {
 		params = "",
-		description = "Spawn a fortress starting at your current location.",
+		description = "Spawn a v2 fortress (rule-constrained) at your location.",
 		privs = {server=true},
 
 		func = function(...)

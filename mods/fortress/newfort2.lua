@@ -46,7 +46,7 @@ local STRAIGHT_BRIDGE_WIDE_PROB = 120
 -- Hallway probabilities.
 local JUNCTION_HALLWAY_PROB = 8
 local STRAIGHT_HALLWAY_PROB = 30
-local STRAIGHT_HALLWAY_WITH_STAIR_PROB = 30
+local STRAIGHT_HALLWAY_WITH_STAIR_PROB = 5
 local HALLWAY_CAP_PROB = 5
 local HALLWAY_CAP_NO_STAIR_PROB = 1
 local HALLWAY_CORNER_PROB = 8
@@ -136,6 +136,97 @@ local BRIDGE_CONNECT = {
 		ne_corner_walk = true,
 
 		bridge_ew_to_hall_ns = true,
+	},
+}
+
+local PASSAGE_CONNECT = {
+	[DIRNAME.NORTH] = {
+		hallway_straight_ns = true,
+		hall_straight_ns_stair = true,
+		hall_straight_ns_stair_rev = true,
+		hallway_junction = true,
+		hallway_s_capped = true,
+		hallway_s_capped_no_stair = true,
+
+		-- Corners.
+		hall_corner_se = true,
+		hall_corner_sw = true,
+
+		-- T-junctions.
+		hallway_nes_t = true,
+		hallway_swn_t = true,
+		hallway_esw_t = true,
+
+		-- Transitions to bridges.
+		hall_ns_to_bridge_ew = true,
+		hall_ns_to_bridge_e = true,
+		hall_ns_to_bridge_w = true,
+	},
+	[DIRNAME.SOUTH] = {
+		hallway_straight_ns = true,
+		hall_straight_ns_stair = true,
+		hall_straight_ns_stair_rev = true,
+		hallway_junction = true,
+		hallway_n_capped = true,
+		hallway_n_capped_no_stair = true,
+
+		-- Corners.
+		hall_corner_ne = true,
+		hall_corner_nw = true,
+
+		-- T-junctions.
+		hallway_nes_t = true,
+		hallway_wne_t = true,
+		hallway_swn_t = true,
+
+		-- Transitions to bridges.
+		hall_ns_to_bridge_ew = true,
+		hall_ns_to_bridge_e = true,
+		hall_ns_to_bridge_w = true,
+	},
+	[DIRNAME.EAST] = {
+		hallway_straight_ew = true,
+		hall_straight_ew_stair = true,
+		hall_straight_ew_stair_rev = true,
+		hallway_junction = true,
+		hallway_w_capped = true,
+		hallway_w_capped_no_stair = true,
+
+		-- Corners.
+		hall_corner_nw = true,
+		hall_corner_sw = true,
+
+		-- T-junctions.
+		hallway_esw_t = true,
+		hallway_swn_t = true,
+		hallway_wne_t = true,
+
+		-- Transitions to bridges.
+		hall_ew_to_bridge_ns = true,
+		hall_ew_to_bridge_n = true,
+		hall_ew_to_bridge_s = true,
+	},
+	[DIRNAME.WEST] = {
+		hallway_straight_ew = true,
+		hall_straight_ew_stair = true,
+		hall_straight_ew_stair_rev = true,
+		hallway_junction = true,
+		hallway_e_capped = true,
+		hallway_e_capped_no_stair = true,
+
+		-- Corners.
+		hall_corner_ne = true,
+		hall_corner_se = true,
+
+		-- T-junctions.
+		hallway_esw_t = true,
+		hallway_nes_t = true,
+		hallway_wne_t = true,
+
+		-- Transitions to bridges.
+		hall_ew_to_bridge_ns = true,
+		hall_ew_to_bridge_n = true,
+		hall_ew_to_bridge_s = true,
 	},
 }
 
@@ -235,99 +326,6 @@ local function GET_TRANSITION_STARTER_PIECES()
 		"hall_ns_to_bridge_e",
 		"hall_ns_to_bridge_w"
 end
-
-
-
-local PASSAGE_CONNECT = {
-	[DIRNAME.NORTH] = {
-		hallway_straight_ns = true,
-		hall_straight_ns_stair = true,
-		hall_straight_ns_stair_rev = true,
-		hallway_junction = true,
-		hallway_s_capped = true,
-		hallway_s_capped_no_stair = true,
-
-		-- Corners.
-		hall_corner_se = true,
-		hall_corner_sw = true,
-
-		-- T-junctions.
-		hallway_nes_t = true,
-		hallway_swn_t = true,
-		hallway_esw_t = true,
-
-		-- Transitions to bridges.
-		hall_ns_to_bridge_ew = true,
-		hall_ns_to_bridge_e = true,
-		hall_ns_to_bridge_w = true,
-	},
-	[DIRNAME.SOUTH] = {
-		hallway_straight_ns = true,
-		hall_straight_ns_stair = true,
-		hall_straight_ns_stair_rev = true,
-		hallway_junction = true,
-		hallway_n_capped = true,
-		hallway_n_capped_no_stair = true,
-
-		-- Corners.
-		hall_corner_ne = true,
-		hall_corner_nw = true,
-
-		-- T-junctions.
-		hallway_nes_t = true,
-		hallway_wne_t = true,
-		hallway_swn_t = true,
-
-		-- Transitions to bridges.
-		hall_ns_to_bridge_ew = true,
-		hall_ns_to_bridge_e = true,
-		hall_ns_to_bridge_w = true,
-	},
-	[DIRNAME.EAST] = {
-		hallway_straight_ew = true,
-		hall_straight_ew_stair = true,
-		hall_straight_ew_stair_rev = true,
-		hallway_junction = true,
-		hallway_w_capped = true,
-		hallway_w_capped_no_stair = true,
-
-		-- Corners.
-		hall_corner_nw = true,
-		hall_corner_sw = true,
-
-		-- T-junctions.
-		hallway_esw_t = true,
-		hallway_swn_t = true,
-		hallway_wne_t = true,
-
-		-- Transitions to bridges.
-		hall_ew_to_bridge_ns = true,
-		hall_ew_to_bridge_n = true,
-		hall_ew_to_bridge_s = true,
-	},
-	[DIRNAME.WEST] = {
-		hallway_straight_ew = true,
-		hall_straight_ew_stair = true,
-		hall_straight_ew_stair_rev = true,
-		hallway_junction = true,
-		hallway_e_capped = true,
-		hallway_e_capped_no_stair = true,
-
-		-- Corners.
-		hall_corner_ne = true,
-		hall_corner_se = true,
-
-		-- T-junctions.
-		hallway_esw_t = true,
-		hallway_nes_t = true,
-		hallway_wne_t = true,
-
-		-- Transitions to bridges.
-		hall_ew_to_bridge_ns = true,
-		hall_ew_to_bridge_n = true,
-		hall_ew_to_bridge_s = true,
-	},
-}
 
 
 

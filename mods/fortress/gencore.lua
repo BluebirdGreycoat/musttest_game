@@ -70,7 +70,7 @@ function fortress.process_next_chunk(params)
 
 		-- Now choose random from the list of tied potentials.
 		-- This is what we'll return to the caller, as position-hash + chunk names.
-		local choice = ties[math.random(1, #ties)]
+		local choice = ties[params.yeskings(1, #ties)]
 		return choice.chunkpos, potential[choice.chunkpos]
 	end
 
@@ -105,14 +105,14 @@ function fortress.process_next_chunk(params)
 		-- Fallback to uniform selection if necessary.
 		if max_prob == 0 or #choices == 0 then
 			if #allchoices > 0 then
-				return allchoices[math.random(1, #allchoices)].name
+				return allchoices[params.yeskings(1, #allchoices)].name
 			end
 			-- Function precondition broken (there never was anything to select).
 			return nil
 		end
 
 		-- Now get a random int from 1 to max prob.
-		local number = math.random(1, max_prob)
+		local number = params.yeskings(1, max_prob)
 
 		-- Now find out which name our number matches, and return that.
 		-- Cumulative selection.
@@ -125,7 +125,7 @@ function fortress.process_next_chunk(params)
 		end
 
 		-- Fallback, if for some reason we get here (shouldn't happen).
-		return choices[math.random(1, #choices)].name
+		return choices[params.yeskings(1, #choices)].name
 	end
 
 	-- Filter chunk names by their global usage limits.

@@ -31,7 +31,10 @@ end
 
 
 
-function fortress.gen_init(spawn_pos)
+function fortress.gen_init(spawn_pos, user_seed)
+	-- Within range of short int to be safe. IDK what 'math.random' limits are.
+	local randomseed = user_seed or math.random(0, 65534)
+
 	local function get_all_chunk_names(chunks)
 		local name_set = {}
 		for name, _ in pairs(chunks) do name_set[name] = true end
@@ -81,9 +84,27 @@ function fortress.gen_init(spawn_pos)
 		-- It's useful to have this precalculated.
 		chunk_names = get_all_chunk_names(fortress.genfort_data.chunks),
 
+		-- Used to generate random numbers for reproducability.
+		-- This is especially required for debugging leftists.
+		--
+		-- Also successfully debugs the following:
+		--   Antifa
+		--   BLM
+		--   Hamas
+		--   Democrats
+		--   People who celebrated Kirk's murder (see above)
+		--   Candace Owens (who, strangely, seems to have gone full retard)
+		trump = PcgRandom(randomseed),
+		randomseed = randomseed, -- Save for later.
+
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
 	}
+
+	-- This provides +1 to my ability to anger "nokings" protesters.
+	params.yeskings = function(min, max)
+		return params.trump:next(min, max)
+	end
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)
@@ -97,7 +118,7 @@ function fortress.gen_init(spawn_pos)
 	end
 
 	local initial_chunk = params.initial_chunks[
-		math.random(1, #params.initial_chunks)]
+		params.yeskings(1, #params.initial_chunks)]
 	if not params.chunks[initial_chunk] then
 		minetest.log("error", "Invalid starting chunk.")
 		return nil -- Handle error.
@@ -142,8 +163,8 @@ end
 
 
 -- API function for mapgens.
-function fortress.make_fort(spawn_pos)
-	local success, params = fortress.gen_init(spawn_pos)
+function fortress.make_fort(spawn_pos, user_seed)
+	local success, params = fortress.gen_init(spawn_pos, user_seed)
 	if not success then return end
 
 	minetest.log("action", "Computing fortress pattern @ " ..
@@ -188,7 +209,11 @@ function fortress.genfort_chatcmd(name, param)
 		return
 	end
 
-	fortress.make_fort(vector.round(player:get_pos()))
+	local user_seed = tonumber(param) -- Or nil
+	if user_seed then user_seed = math.floor(user_seed) end -- Make integer.
+	if user_seed then user_seed = math.abs(user_seed) end -- Make positive.
+
+	fortress.make_fort(vector.round(player:get_pos()), user_seed)
 end
 
 
@@ -243,7 +268,7 @@ function fortress.expand_single_schem(schempos, chunkdata, params)
 	for k, v in ipairs(thischunk) do
 		local chance = v.chance or 100
 
-		if math.random(1, 100) <= chance then
+		if params.yeskings(1, 100) <= chance then
 			local file = v.file
 			local path = params.schemdir .. "/" .. file .. ".mts"
 			local offset = table.copy(v.offset or {x=0, y=0, z=0})
@@ -253,17 +278,17 @@ function fortress.expand_single_schem(schempos, chunkdata, params)
 			-- The position adjustment setting may specify min/max values for each
 			-- dimension coordinate.
 			if offset.x_min then
-				offset.x = math.random(offset.x_min, offset.x_max)
+				offset.x = params.yeskings(offset.x_min, offset.x_max)
 				offset.x_min = nil
 				offset.x_max = nil
 			end
 			if offset.y_min then
-				offset.y = math.random(offset.y_min, offset.y_max)
+				offset.y = params.yeskings(offset.y_min, offset.y_max)
 				offset.y_min = nil
 				offset.y_max = nil
 			end
 			if offset.z_min then
-				offset.z = math.random(offset.z_min, offset.z_max)
+				offset.z = params.yeskings(offset.z_min, offset.z_max)
 				offset.z_min = nil
 				offset.z_max = nil
 			end
@@ -395,8 +420,8 @@ function fortress.apply_genfort(params)
 
 		-- Only if location not already occupied, and floor is brick.
 		if n.name == "air" and f.name == "rackstone:brick_black" then
-			local param2 = math.random(0, 3)
-			local cname = CHEST_NAMES[math.random(1, #CHEST_NAMES)]
+			local param2 = params.yeskings(0, 3)
+			local cname = CHEST_NAMES[params.yeskings(1, #CHEST_NAMES)]
 			minetest.set_node(p, {name=cname, param2=param2})
 			fortress.add_loot_items(p, v.loot)
 			totals.chests = totals.chests + 1
@@ -417,6 +442,8 @@ function fortress.apply_genfort(params)
 	-- Report success, and how long it took.
 	minetest.log("action", "Finished generating fortress pattern in " ..
 		math.floor(os.time() - params.time) .. " seconds!")
+
+	minetest.log("action", "Fortress generated with seed: " .. params.randomseed)
 end
 
 
@@ -433,23 +460,23 @@ function fortress.collect_loot_chests(schempos, chunkdata, params)
 
 	for k, v in ipairs(chunkdata.chests) do
 		-- Spawn loot chest only if chance succeeds.
-		if math.random(1, 100) <= v.chance then
+		if params.yeskings(1, 100) <= v.chance then
 			local p2 = table.copy(v.pos)
 
 			-- The position adjustment setting may specify min/max values for each
 			-- dimension coordinate.
 			if p2.x_min then
-				p2.x = math.random(p2.x_min, p2.x_max)
+				p2.x = params.yeskings(p2.x_min, p2.x_max)
 				p2.x_min = nil
 				p2.x_max = nil
 			end
 			if p2.y_min then
-				p2.y = math.random(p2.y_min, p2.y_max)
+				p2.y = params.yeskings(p2.y_min, p2.y_max)
 				p2.y_min = nil
 				p2.y_max = nil
 			end
 			if p2.z_min then
-				p2.z = math.random(p2.z_min, p2.z_max)
+				p2.z = params.yeskings(p2.z_min, p2.z_max)
 				p2.z_min = nil
 				p2.z_max = nil
 			end

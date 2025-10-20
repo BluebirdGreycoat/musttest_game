@@ -19,6 +19,19 @@ function fortress.process_next_chunk(params)
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
 	local override_chunk_schems = params.override_chunk_schems
+	local previous_gen = fortress.OCCUPIED_LOCATIONS
+
+	-- This function checks if a location was previously generated.
+	-- We have to take into account relative positions, which involves some
+	-- unhashing/rehashing, and vector addition.
+	local function previous_exists(hashpos)
+		local chunkpos = UNHASH_POSITION(hashpos)
+		local realpos = vector.add(chunkpos, params.spawn_pos)
+		local finalhash = HASH_POSITION(realpos)
+		if previous_gen[finalhash] then
+			return true
+		end
+	end
 
 	local function select_next_potential()
 		-- No potentials available? Return nil.
@@ -303,7 +316,7 @@ function fortress.process_next_chunk(params)
 			-- The "potential" location is considered to be occupied if that location
 			-- exists AND our current chunk name is NOT in the list of potentials.
 			---[[
-			if determined[neighborhash] or
+			if (determined[neighborhash] or previous_exists(neighborhash)) or
 					(potential[neighborhash] and not in_list(potential[neighborhash]))
 						then
 			--]]
@@ -363,6 +376,9 @@ function fortress.process_next_chunk(params)
 			-- determined neighbor isn't a valid neighbor of the selected chunk.
 			if determined[neighborhash] then
 				local detchunk = determined[neighborhash]
+				filt = intersect(filt, {[detchunk]=true})
+			elseif previous_exists(neighborhash) then
+				local detchunk = previous_gen[neighborhash]
 				filt = intersect(filt, {[detchunk]=true})
 			else
 				-- Filter chunks by limits. This has to be done EXCLUSIVE of checking
@@ -455,7 +471,8 @@ function fortress.process_next_chunk(params)
 
 				-- Also, do not add to 'potential' if already defined in 'determined.'
 				-- This prevents trying to overwrite parts already generated.
-				if not determined[neighborhash] then
+				if not determined[neighborhash]
+						and not previous_exists(neighborhash) then
 					local finalchunks = chunks
 
 					-- Finally, if the chunkdata defines enabled neighbors, we should

@@ -28,6 +28,11 @@ dofile(fortress.modpath .. "/newfort2.lua")
 dofile(fortress.modpath .. "/fortgen2.lua")
 dofile(fortress.modpath .. "/gencore.lua")
 
+-- This stores ALL generated fortress chunks allocated THIS session.
+-- The fort algorithm queries this table during its generating iterations to see
+-- if a particular position was already occupied by a previously-generated fort.
+fortress.OCCUPIED_LOCATIONS = {}
+
 
 
 if not fortress.run_once then

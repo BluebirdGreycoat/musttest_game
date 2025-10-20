@@ -158,6 +158,16 @@ function fortress.make_fort(spawn_pos)
 	end
 
 	if not params.algorithm_fail then
+		-- Before writing anything to the map (which actually happens in a mapgen
+		-- callback), first save all determined locations we'll occupy to a global
+		-- map.
+		for hash, chunkname in pairs(params.traversal.determined) do
+			local chunkpos = UNHASH_POSITION(hash)
+			local realpos = vector.add(chunkpos, params.spawn_pos)
+			local finalhash = HASH_POSITION(realpos)
+			fortress.OCCUPIED_LOCATIONS[finalhash] = chunkname
+		end
+
 		fortress.expand_all_schems(params)
 		fortress.write_to_map(params)
 	else

@@ -1,4 +1,5 @@
 -- This file implements a constraint-rule based dungeon generator.
+--[===[
 
 local CHEST_NAMES = {
 	"morechests:woodchest_public_closed",
@@ -562,3 +563,4 @@ function fortress.chat_command_wfc(name, param)
 	local pos = vector.round(player:get_pos())
 	fortress.generate_wfc(pos, fortress.newfort_data)
 end
+--]===]

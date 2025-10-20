@@ -723,6 +723,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 			p.y = p.y + 11
 		end
 
+		-- Can't run fortgen inside mapgen thread.
 		--[[
 		minetest.after(0, function()
 			fortress.generate(p, "default")

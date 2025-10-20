@@ -17,6 +17,20 @@ local POS_TO_STR = minetest.pos_to_string
 
 
 
+local function lock_spawnpos(p, s)
+	local np = vector.copy(p)
+
+	-- Lock X,Z,Y coords to values divisible by fortress step size.
+	-- Doing this helps adjacent fortresses line up neatly.
+	np.x = np.x - (np.x % s.x)
+	np.y = np.y - (np.y % s.y)
+	np.z = np.z - (np.z % s.z)
+
+	return np
+end
+
+
+
 function fortress.gen_init(spawn_pos)
 	local function get_all_chunk_names(chunks)
 		local name_set = {}
@@ -70,6 +84,9 @@ function fortress.gen_init(spawn_pos)
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
 	}
+
+	-- Adjust spawn position to a multiple of the fortress "step" size.
+	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)
 
 	-- Add initial to the list of indeterminates.
 	-- Just one possibility with a chance of 100.

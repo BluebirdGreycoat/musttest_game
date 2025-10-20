@@ -47,10 +47,10 @@ function fortress.add_loot_items(pos, loot)
 		local max = v.max or 1
 		local chance = v.chance or 100
 
-		if math_random(1, 100) <= chance then
+		if math.random(1, 100) <= chance then
 			-- Only if named item actually exists.
 			if minetest.registered_items[v.item] then
-				local itemstr = (v.item .. " " .. math_random(min, max))
+				local itemstr = (v.item .. " " .. math.random(min, max))
 				chosen_items[#chosen_items+1] = itemstr
 			end
 		end

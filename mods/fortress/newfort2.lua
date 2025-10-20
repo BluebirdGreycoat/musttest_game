@@ -40,18 +40,24 @@ local JUNCTION_BRIDGE_PROB = 4
 local TJUNCT_BRIDGE_PROB = 15
 local BRIDGE_CORNER_PROB = 8
 local BRIDGE_CAP_PROB = 1
-local STRAIGHT_BRIDGE_PROB = 120
+local STRAIGHT_BRIDGE_PROB = 1 -- Prefer WIDE whenever possible.
+local STRAIGHT_BRIDGE_WIDE_PROB = 120
 
 -- Hallway probabilities.
 local JUNCTION_HALLWAY_PROB = 8
 local STRAIGHT_HALLWAY_PROB = 30
+local STRAIGHT_HALLWAY_WITH_STAIR_PROB = 30
 local HALLWAY_CAP_PROB = 5
+local HALLWAY_CAP_NO_STAIR_PROB = 1
 local HALLWAY_CORNER_PROB = 8
 local TJUNCT_HALLWAY_PROB = 15
 
 -- Transition probabilities.
-local PASSAGE_BRIDGE_TRANSITION_PROB1 = 5 -- Prob bridge may spawn hallways.
+local PASSAGE_BRIDGE_TRANSITION_PROB1 = 15 -- Prob bridge may spawn hallways.
 local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
+
+-- MISC probabilities.
+local TOWER_PROBABILITY = 10
 
 
 
@@ -61,6 +67,7 @@ local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 local BRIDGE_CONNECT = {
 	[DIRNAME.NORTH] = {
 		ns_walk_bridge = true,
+		ns_walk_bridge_wide = true,
 		s_broken_walk = true,
 		junction_walk_bridge = true,
 		capped_bridge_s = true,
@@ -78,6 +85,7 @@ local BRIDGE_CONNECT = {
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
+		ns_walk_bridge_wide = true,
 		n_broken_walk = true,
 		junction_walk_bridge = true,
 		capped_bridge_n = true,
@@ -95,6 +103,7 @@ local BRIDGE_CONNECT = {
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
+		ew_walk_bridge_wide = true,
 		w_broken_walk = true,
 		junction_walk_bridge = true,
 		capped_bridge_w = true,
@@ -112,6 +121,7 @@ local BRIDGE_CONNECT = {
 	},
 	[DIRNAME.WEST] = {
 		ew_walk_bridge = true,
+		ew_walk_bridge_wide = true,
 		e_broken_walk = true,
 		junction_walk_bridge = true,
 		capped_bridge_e = true,
@@ -197,8 +207,8 @@ local HALLWAY_FLOOR_LAVA = {
 
 local function GET_BRIDGE_STARTER_PIECES()
 	return "junction_walk_bridge",
-		"ew_walk_bridge",
-		"ns_walk_bridge",
+		"ew_walk_bridge_wide",
+		"ns_walk_bridge_wide",
 		"walk_bridge_nse",
 		"walk_bridge_nsw",
 		"walk_bridge_nwe",
@@ -231,8 +241,11 @@ end
 local PASSAGE_CONNECT = {
 	[DIRNAME.NORTH] = {
 		hallway_straight_ns = true,
+		hall_straight_ns_stair = true,
+		hall_straight_ns_stair_rev = true,
 		hallway_junction = true,
 		hallway_s_capped = true,
+		hallway_s_capped_no_stair = true,
 
 		-- Corners.
 		hall_corner_se = true,
@@ -243,14 +256,18 @@ local PASSAGE_CONNECT = {
 		hallway_swn_t = true,
 		hallway_esw_t = true,
 
+		-- Transitions to bridges.
 		hall_ns_to_bridge_ew = true,
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
+		hall_straight_ns_stair = true,
+		hall_straight_ns_stair_rev = true,
 		hallway_junction = true,
 		hallway_n_capped = true,
+		hallway_n_capped_no_stair = true,
 
 		-- Corners.
 		hall_corner_ne = true,
@@ -261,14 +278,18 @@ local PASSAGE_CONNECT = {
 		hallway_wne_t = true,
 		hallway_swn_t = true,
 
+		-- Transitions to bridges.
 		hall_ns_to_bridge_ew = true,
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
+		hall_straight_ew_stair = true,
+		hall_straight_ew_stair_rev = true,
 		hallway_junction = true,
 		hallway_w_capped = true,
+		hallway_w_capped_no_stair = true,
 
 		-- Corners.
 		hall_corner_nw = true,
@@ -279,14 +300,18 @@ local PASSAGE_CONNECT = {
 		hallway_swn_t = true,
 		hallway_wne_t = true,
 
+		-- Transitions to bridges.
 		hall_ew_to_bridge_ns = true,
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
+		hall_straight_ew_stair = true,
+		hall_straight_ew_stair_rev = true,
 		hallway_junction = true,
 		hallway_e_capped = true,
+		hallway_e_capped_no_stair = true,
 
 		-- Corners.
 		hall_corner_ne = true,
@@ -297,6 +322,7 @@ local PASSAGE_CONNECT = {
 		hallway_nes_t = true,
 		hallway_wne_t = true,
 
+		-- Transitions to bridges.
 		hall_ew_to_bridge_ns = true,
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
@@ -475,7 +501,7 @@ fortress.genfort_data = {
 
 	-- Maximum fortress extent, in chunk/tile units.
 	-- The min extents are simply computed as the inverse.
-	max_extent = {x=11, y=8, z=11},
+	max_extent = {x=16, y=8, z=16},
 
 	-- List of node replacements.
 	replacements = {
@@ -568,6 +594,48 @@ fortress.genfort_data = {
 				[DIRNAME.DOWN] = {bridge_arch_ns=true},
 			},
 			probability = STRAIGHT_BRIDGE_PROB,
+		},
+
+		-- An east-west bridge walkway peice.
+		-- The WIDE version should be used everywhere the narrow version isn't.
+		-- This version places air neighbors on each side to prevent crowding.
+		ew_walk_bridge_wide = {
+			schem = {
+				{file="nf_walkway_ew", force=false},
+				{file="bridge_house_ew", chance=10, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
+				[DIRNAME.WEST] = BRIDGE_CONNECT[DIRNAME.WEST],
+				[DIRNAME.UP] = {air=true},
+				[DIRNAME.DOWN] = {bridge_arch_ew=true},
+				[DIRNAME.NORTH] = {air=true},
+				[DIRNAME.SOUTH] = {air=true},
+			},
+
+			-- This is what you want in order to adjust chunk probability.
+			probability = STRAIGHT_BRIDGE_WIDE_PROB,
+		},
+
+		-- A north-south bridge walkway peice.
+		-- The WIDE version should be used everywhere the narrow version isn't.
+		-- This version places air neighbors on each side to prevent crowding.
+		ns_walk_bridge_wide = {
+			schem = {
+				{file="nf_walkway_ns", force=false},
+				{file="bridge_house_ns", chance=10, offset={x=0, y=3, z=0}},
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+			},
+			valid_neighbors = {
+				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[DIRNAME.UP] = {air=true},
+				[DIRNAME.DOWN] = {bridge_arch_ns=true},
+				[DIRNAME.EAST] = {air=true},
+				[DIRNAME.WEST] = {air=true},
+			},
+			probability = STRAIGHT_BRIDGE_WIDE_PROB,
 		},
 
 		bridge_pillar_top = {
@@ -1101,6 +1169,96 @@ fortress.genfort_data = {
 			fallback = true,
 		},
 
+		-- Hallway caps which exclude the stairs.
+		-- These are used as a last-ditch fallback (very low probability).
+		hallway_n_capped_no_stair = {
+			schem = {
+				{file="nf_passage_n_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_n=true},
+			},
+			probability = HALLWAY_CAP_NO_STAIR_PROB,
+			fallback = true,
+		},
+
+		hallway_s_capped_no_stair = {
+			schem = {
+				{file="nf_passage_s_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_s=true},
+			},
+			probability = HALLWAY_CAP_NO_STAIR_PROB,
+			fallback = true,
+		},
+
+		hallway_e_capped_no_stair = {
+			schem = {
+				{file="nf_passage_e_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_e=true},
+			},
+			probability = HALLWAY_CAP_NO_STAIR_PROB,
+			fallback = true,
+		},
+
+		hallway_w_capped_no_stair = {
+			schem = {
+				{file="nf_passage_w_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_w=true},
+			},
+			probability = HALLWAY_CAP_NO_STAIR_PROB,
+			fallback = true,
+		},
+
 		-- Hallway/passage corners.
 		hall_corner_ne = {
 			schem = {
@@ -1399,7 +1557,7 @@ fortress.genfort_data = {
 			valid_neighbors = {
 				[DIRNAME.UP] = {tower_top=true},
 			},
-			probability = 5,
+			probability = TOWER_PROBABILITY,
 			fallback = true,
 		},
 
@@ -1780,6 +1938,112 @@ fortress.genfort_data = {
 			},
 			-- Probability that hallways may spawn bridge accesses.
 			probability = PASSAGE_BRIDGE_TRANSITION_PROB2,
+		},
+
+		-- Straight hallways with internal stairs to roof.
+		hall_straight_ew_stair = {
+			schem = {
+				{file="nf_passage_ew_stair"},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = exclude(PASSAGE_CONNECT[DIRNAME.EAST],
+					{hallway_w_capped=true}), -- Cap stairs interfere.
+				[DIRNAME.WEST] = exclude(PASSAGE_CONNECT[DIRNAME.WEST],
+					{hallway_e_capped=true}), -- Cap stairs interfere.
+
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {hall_straight_ew_roof_stair=true},
+			},
+			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+		},
+
+		hall_straight_ns_stair = {
+			schem = {
+				{file="nf_passage_ew_stair", rotation="90"},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.NORTH] = exclude(PASSAGE_CONNECT[DIRNAME.NORTH],
+					{hallway_s_capped=true}), -- Cap stairs interfere.
+				[DIRNAME.SOUTH] = exclude(PASSAGE_CONNECT[DIRNAME.SOUTH],
+					{hallway_n_capped=true}), -- Cap stairs interfere.
+
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {hall_straight_ns_roof_stair=true},
+			},
+			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+		},
+
+		hall_straight_ew_roof_stair = {
+			schem = {{file="nf_walkway_ew_stair", force=false}},
+		},
+
+		hall_straight_ns_roof_stair = {
+			schem = {{file="nf_walkway_ew_stair", rotation="90", force=false}},
+		},
+
+		-- Straight hallways with internal stairs to roof.
+		hall_straight_ew_stair_rev = {
+			schem = {
+				{file="nf_passage_ew_stair", rotation="180"},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.EAST] = exclude(PASSAGE_CONNECT[DIRNAME.EAST],
+					{hallway_w_capped=true}), -- Cap stairs interfere.
+				[DIRNAME.WEST] = exclude(PASSAGE_CONNECT[DIRNAME.WEST],
+					{hallway_e_capped=true}), -- Cap stairs interfere.
+
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {hall_straight_ew_roof_stair_rev=true},
+			},
+			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+		},
+
+		hall_straight_ns_stair_rev = {
+			schem = {
+				{file="nf_passage_ew_stair", rotation="270"},
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.NORTH] = exclude(PASSAGE_CONNECT[DIRNAME.NORTH],
+					{hallway_s_capped=true}), -- Cap stairs interfere.
+				[DIRNAME.SOUTH] = exclude(PASSAGE_CONNECT[DIRNAME.SOUTH],
+					{hallway_n_capped=true}), -- Cap stairs interfere.
+
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {hall_straight_ns_roof_stair_rev=true},
+			},
+			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
+		},
+
+		hall_straight_ew_roof_stair_rev = {
+			schem = {{file="nf_walkway_ew_stair", force=false, rotation="180"}},
+		},
+
+		hall_straight_ns_roof_stair_rev = {
+			schem = {{file="nf_walkway_ew_stair", rotation="270", force=false}},
 		},
 	},
 }

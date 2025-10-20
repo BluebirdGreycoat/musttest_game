@@ -312,11 +312,17 @@ local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 		-- THIS CHUNK if there is ever anything at a particular neighbor position,
 		-- for large chunks that span multiple cells/tiles.
 		require_empty_neighbors = {
-			--[HASHKEY(0, 0, 3)] = true,
 			[HASHKEY(0, 0, 2)] = true,
 			[HASHKEY(0, 0, 1)] = true,
 			[HASHKEY(0, 0, 0)] = true,
-			--[HASHKEY(0, 0, -1)] = true,
+
+			-- Both sides of southern bridge connector.
+			[HASHKEY(-1, 0, 0)] = true,
+			[HASHKEY(1, 0, 0)] = true,
+
+			-- Both sides of northern bridge connector.
+			[HASHKEY(-1, 0, 2)] = true,
+			[HASHKEY(1, 0, 2)] = true,
 		},
 
 		-- Defines the chunk/tiles' additional extra footprint.
@@ -371,11 +377,17 @@ local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 
 		-- Require these neighboring positions to be EMPTY.
 		require_empty_neighbors = {
-			--[HASHKEY(3, 0, 0)] = true,
 			[HASHKEY(2, 0, 0)] = true,
 			[HASHKEY(1, 0, 0)] = true,
 			[HASHKEY(0, 0, 0)] = true,
-			--[HASHKEY(-1, 0, 0)] = true,
+
+			-- Both sides of left-hand bridge connector.
+			[HASHKEY(0, 0, 1)] = true,
+			[HASHKEY(0, 0, -1)] = true,
+
+			-- Both sides of right-hand bridge connector.
+			[HASHKEY(2, 0, 1)] = true,
+			[HASHKEY(2, 0, -1)] = true,
 		},
 
 		-- Defines the chunk/tiles' additional extra footprint.

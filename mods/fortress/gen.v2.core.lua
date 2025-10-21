@@ -11,7 +11,7 @@ local POS_TO_STR = minetest.pos_to_string
 -- This is the core of the Wave Function Collapse (TM) algorithm.
 -- It's just marketing lingo. This is actually just a rules-constraint system.
 -- Function must be called in a loop until it says 'enough!'
-function fortress.process_next_chunk(params)
+function fortress.v2.process_chunk(params)
 	-- Core queues/lists used by the algorithm.
 	local all_chunks = params.chunks
 	local chunk_names = params.chunk_names
@@ -19,7 +19,7 @@ function fortress.process_next_chunk(params)
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
 	local override_chunk_schems = params.override_chunk_schems
-	local previous_gen = fortress.OCCUPIED_LOCATIONS
+	local previous_gen = fortress.v2.OCCUPIED_LOCATIONS
 	local spawn_pos = params.spawn_pos
 	local chunk_step = params.step
 	local vec_add = vector.add

@@ -24,14 +24,13 @@ dofile(fortress.modpath .. "/oldgen.lua")
 --dofile(fortress.modpath .. "/fortgen.lua")
 
 -- Shiny new Wave Function Collapse (TM) algorithm.
-dofile(fortress.modpath .. "/newfort2.lua")
-dofile(fortress.modpath .. "/fortgen2.lua")
-dofile(fortress.modpath .. "/gencore.lua")
-
--- This stores ALL generated fortress chunks allocated THIS session.
--- The fort algorithm queries this table during its generating iterations to see
--- if a particular position was already occupied by a previously-generated fort.
-fortress.OCCUPIED_LOCATIONS = {}
+-- These files implement a *BETTER* constraint-rule based dungeon generator.
+dofile(fortress.modpath .. "/gen.v2.main.lua")
+dofile(fortress.modpath .. "/gen.v2.data.lua")
+dofile(fortress.modpath .. "/gen.v2.core.lua")
+dofile(fortress.modpath .. "/gen.v2.init.lua")
+dofile(fortress.modpath .. "/gen.v2.util.lua")
+dofile(fortress.modpath .. "/gen.v2.chat.lua")
 
 
 
@@ -53,7 +52,7 @@ if not fortress.run_once then
 		privs = {server=true},
 
 		func = function(...)
-			fortress.genfort_chatcmd(...)
+			fortress.v2.chat_command(...)
 			return true
 		end,
 	})

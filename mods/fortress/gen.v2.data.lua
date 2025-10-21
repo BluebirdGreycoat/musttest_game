@@ -152,6 +152,8 @@ local BRIDGE_CONNECT = {
 	},
 }
 
+-- Connectivity table for enclosed passages/hallways.
+-- These spawn with roof walks on top.
 local PASSAGE_CONNECT = {
 	[DIRNAME.NORTH] = {
 		hallway_straight_ns = true,
@@ -559,7 +561,7 @@ end
 
 
 
-fortress.genfort_data = {
+fortress.v2.fortress_data = {
 	-- The initial chunk/tile placed by the generator algorithm.
 	initial_chunks = {
 		GET_BRIDGE_STARTER_PIECES(),

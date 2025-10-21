@@ -296,9 +296,11 @@ function fortress.process_next_chunk(params)
 	-- Don't bork the original chunk pos.
 	chunkpos = vector.add(original_chunkpos, possible_offsets[current_offset])
 
+	--[[
 	minetest.log("action",
 		"Processing chunk: " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 		", try count: " .. try_count .. ", offset: " .. current_offset)
+	--]]
 
 	-- If any of the chunk's required empty neighbors aren't empty, we cannot
 	-- place this chunk here.
@@ -331,9 +333,11 @@ function fortress.process_next_chunk(params)
 
 				ignore_chunks[chunkname] = true
 
+				--[[
 				minetest.log("action",
 					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 						", adding to ignore list.")
+				--]]
 
 				try_count = try_count + 1
 				goto try_again
@@ -424,9 +428,11 @@ function fortress.process_next_chunk(params)
 
 				ignore_chunks[chunkname] = true
 
+				--[[
 				minetest.log("action",
 					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 						", adding to ignore list.")
+				--]]
 
 				try_count = try_count + 1
 				goto try_again
@@ -436,7 +442,7 @@ function fortress.process_next_chunk(params)
 
 	-- Step 2: add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
-	determined[originalposhash] = chunkname
+	determined[HASH_POSITION(chunkpos)] = chunkname
 	potential[originalposhash] = nil
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.

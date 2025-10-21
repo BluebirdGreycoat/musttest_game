@@ -16,7 +16,7 @@ local DIRNAME = {
 
 
 -- Loot chest chances.
-local COMMON_LOOT_CHANCE = 40
+local COMMON_LOOT_CHANCE = 30
 local RARE_LOOT_CHANCE = 15
 local EXCEPTIONAL_LOOT_CHANCE = 5
 
@@ -25,7 +25,7 @@ local OERKKI_SPAWNER_CHANCE = 10
 local ELITE_SPAWNER_CHANCE = 10
 local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
-local FLOOR_LAVA_CHANCE = 5
+local FLOOR_LAVA_CHANCE = 8
 local PASSAGE_DETAIL_CHANCE = 20
 
 -- Schem priorities.
@@ -64,6 +64,9 @@ local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 -- MISC probabilities.
 local TOWER_PROBABILITY = 10
 local PLAZA_GATE_PROB = 20
+local LARGE_PLAZA_CHANCE = 100
+local MEDIUM_PLAZA_CHANCE = 500
+local SMALL_PLAZA_CHANCE = 1000
 
 
 
@@ -172,8 +175,10 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 
-		ns_plaza_e = true,
-		ns_plaza_w = true,
+		-- Causes algorithm failures, not sure why yet.
+		-- It works for bridges. Could be orientation related?
+		--ns_plaza_e = true,
+		--ns_plaza_w = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
@@ -197,8 +202,10 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 
-		ns_plaza_e = true,
-		ns_plaza_w = true,
+		-- Causes algorithm failures, not sure why yet.
+		-- It works for bridges. Could be orientation related?
+		--ns_plaza_e = true,
+		--ns_plaza_w = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
@@ -222,8 +229,10 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
 
-		ew_plaza_n = true,
-		ew_plaza_s = true,
+		-- Causes algorithm failures, not sure why yet.
+		-- It works for bridges. Could be orientation related?
+		--ew_plaza_n = true,
+		--ew_plaza_s = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -247,8 +256,10 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
 
-		ew_plaza_n = true,
-		ew_plaza_s = true,
+		-- Causes algorithm failures, not sure why yet.
+		-- It works for bridges. Could be orientation related?
+		--ew_plaza_n = true,
+		--ew_plaza_s = true,
 	},
 }
 
@@ -347,6 +358,10 @@ local function GET_TRANSITION_STARTER_PIECES()
 		"hall_ew_to_bridge_s",
 		"hall_ns_to_bridge_e",
 		"hall_ns_to_bridge_w"
+end
+
+local function GET_PLAZA_STARTER_PIECES()
+	return "large_plaza", "medium_plaza", "small_plaza"
 end
 
 
@@ -508,6 +523,23 @@ local function GET_BASIC_LOOT_POSITIONS()
 	}
 end
 
+local function GET_BRIDGEWALK_LOOT_POSITIONS()
+	return {
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=COMMON_LOOT_CHANCE, loot="common"},
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=RARE_LOOT_CHANCE, loot="rare"},
+		{pos={x_min=1, x_max=9, y=1, z_min=1, z_max=9},
+			chance=RARE_LOOT_CHANCE, loot="rare"},
+	}
+end
+
 
 
 local TJUNC_BLIST = {
@@ -537,12 +569,7 @@ fortress.genfort_data = {
 		GET_BRIDGE_STARTER_PIECES(),
 		GET_PASSAGE_STARTER_PIECES(),
 		GET_TRANSITION_STARTER_PIECES(),
-		--"large_plaza",
-		--"ew_plaza_s",
-		--"ew_plaza_n",
-		--"ns_plaza_w",
-		--"ns_plaza_e",
-		--"hallway_straight_ns",
+		GET_PLAZA_STARTER_PIECES(),
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -760,6 +787,7 @@ fortress.genfort_data = {
 			},
 
 			probability = BROKEN_BRIDGE_PROB,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 
 			-- Setting this flag specifies the chunk may be used at extent boundaries.
 			fallback = true,
@@ -778,6 +806,7 @@ fortress.genfort_data = {
 			},
 			probability = BROKEN_BRIDGE_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		e_broken_walk = {
@@ -793,6 +822,7 @@ fortress.genfort_data = {
 			},
 			probability = BROKEN_BRIDGE_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		w_broken_walk = {
@@ -808,6 +838,7 @@ fortress.genfort_data = {
 			},
 			probability = BROKEN_BRIDGE_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		-- Broken bits of arch underneath broken causeway ends.
@@ -949,6 +980,7 @@ fortress.genfort_data = {
 			},
 			probability = BRIDGE_CAP_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		capped_bridge_s = {
@@ -962,6 +994,7 @@ fortress.genfort_data = {
 			},
 			probability = BRIDGE_CAP_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		capped_bridge_e = {
@@ -975,6 +1008,7 @@ fortress.genfort_data = {
 			},
 			probability = BRIDGE_CAP_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		capped_bridge_w = {
@@ -988,6 +1022,7 @@ fortress.genfort_data = {
 			},
 			probability = BRIDGE_CAP_PROB,
 			fallback = true,
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		-- Straight hallway/covered-passage peices.
@@ -1635,6 +1670,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_tower=true, air_option=true},
 			},
 			fallback = true, -- Allow use at extents edge.
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		roof_capped_s = {
@@ -1649,6 +1685,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_tower=true, air_option=true},
 			},
 			fallback = true, -- Allow use at extents edge.
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		roof_capped_e = {
@@ -1663,6 +1700,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_tower=true, air_option=true},
 			},
 			fallback = true, -- Allow use at extents edge.
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		roof_capped_w = {
@@ -1677,6 +1715,7 @@ fortress.genfort_data = {
 				[DIRNAME.UP] = {roof_tower=true, air_option=true},
 			},
 			fallback = true, -- Allow use at extents edge.
+			chests = GET_BRIDGEWALK_LOOT_POSITIONS(),
 		},
 
 		-- Roof tower.
@@ -1722,7 +1761,7 @@ fortress.genfort_data = {
 		hall_ns_to_bridge_ew =
 			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB2),
 
-		-- The big 9x9 plaza object.
+		-- The big 3x3 plaza object.
 		large_plaza = {
 			schem = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
@@ -1757,28 +1796,28 @@ fortress.genfort_data = {
 					hallway_straight_ns = true,
 					hallway_swn_t = true,
 					ns_plaza_w = true,
-					--hallway_e_capped = true,
+					hallway_e_capped_no_stair = true,
 				},
 				-- East side.
 				[HASHKEY(3, 0, 1)] = {
 					hallway_straight_ns = true,
 					hallway_nes_t = true,
 					ns_plaza_e = true,
-					--hallway_w_capped = true,
+					hallway_w_capped_no_stair = true,
 				},
 				-- South side.
 				[HASHKEY(1, 0, -1)] = {
 					hallway_straight_ew = true,
 					hallway_esw_t = true,
 					ew_plaza_s = true,
-					--hallway_n_capped = true,
+					hallway_n_capped_no_stair = true,
 				},
 				-- North side.
 				[HASHKEY(1, 0, 3)] = {
 					hallway_straight_ew = true,
 					hallway_wne_t = true,
 					ew_plaza_n = true,
-					--hallway_s_capped = true,
+					hallway_s_capped_no_stair = true,
 				},
 				--]]
 
@@ -1863,6 +1902,7 @@ fortress.genfort_data = {
 				[HASHKEY(1, 0, 2)] = "large_chunk_dummy",
 				[HASHKEY(2, 0, 2)] = "large_chunk_dummy",
 			},
+			probability = LARGE_PLAZA_CHANCE,
 		},
 
 		-- Plaza exits/entrances.
@@ -1881,7 +1921,14 @@ fortress.genfort_data = {
 			},
 			size = {x=2, y=1, z=1},
 			valid_neighbors = {
-				[HASHKEY(-1, 0, 0)] = {large_plaza=true, hallway_e_capped=true},
+				[HASHKEY(-1, 0, 0)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_e_capped = true,
+				},
 				[HASHKEY(0, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(0, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
@@ -1916,7 +1963,14 @@ fortress.genfort_data = {
 			},
 			size = {x=2, y=1, z=1},
 			valid_neighbors = {
-				[HASHKEY(2, 0, 0)] = {large_plaza=true, hallway_w_capped=true},
+				[HASHKEY(2, 0, 0)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_w_capped = true,
+				},
 				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
 				[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
@@ -1951,7 +2005,14 @@ fortress.genfort_data = {
 			},
 			size = {x=1, y=1, z=2},
 			valid_neighbors = {
-				[HASHKEY(0, 0, -1)] = {large_plaza=true, hallway_n_capped=true},
+				[HASHKEY(0, 0, -1)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_n_capped = true,
+				},
 				[HASHKEY(0, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
 				[HASHKEY(1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.EAST],
 				[HASHKEY(-1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.WEST],
@@ -1986,7 +2047,14 @@ fortress.genfort_data = {
 			},
 			size = {x=1, y=1, z=2},
 			valid_neighbors = {
-				[HASHKEY(0, 0, 2)] = {large_plaza=true, hallway_s_capped=true},
+				[HASHKEY(0, 0, 2)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_s_capped = true,
+				},
 				[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
 				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
 				[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
@@ -2247,6 +2315,219 @@ fortress.genfort_data = {
 
 		hall_straight_ns_roof_stair_rev = {
 			schem = {{file="nf_walkway_ew_stair", rotation="270", force=false}},
+		},
+
+		-- Small plaza. 1x1.
+		small_plaza = {
+			schem = {
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
+			},
+			size = {x=1, y=1, z=1},
+			chests = GET_BASIC_LOOT_POSITIONS(),
+			valid_neighbors = {
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+
+				-- Cardinal edges.
+				---[[
+				-- West side.
+				[HASHKEY(-1, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_swn_t = true,
+					ns_plaza_w = true,
+					hallway_e_capped_no_stair = true,
+				},
+				-- East side.
+				[HASHKEY(1, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_nes_t = true,
+					ns_plaza_e = true,
+					hallway_w_capped_no_stair = true,
+				},
+				-- South side.
+				[HASHKEY(0, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_esw_t = true,
+					ew_plaza_s = true,
+					hallway_n_capped_no_stair = true,
+				},
+				-- North side.
+				[HASHKEY(0, 0, 1)] = {
+					hallway_straight_ew = true,
+					hallway_wne_t = true,
+					ew_plaza_n = true,
+					hallway_s_capped_no_stair = true,
+				},
+				--]]
+
+				-- Now the corners.
+				---[[
+				-- Southwest corner.
+				[HASHKEY(-1, 0, -1)] = {
+					hall_corner_ne = true,
+					hallway_e_capped = true,
+					hallway_n_capped = true,
+					hallway_junction = true,
+					hallway_wne_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northwest corner.
+				[HASHKEY(-1, 0, 1)] = {
+					hall_corner_se = true,
+					hallway_s_capped = true,
+					hallway_e_capped = true,
+					hallway_junction = true,
+					hallway_esw_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(1, 0, 1)] = {
+					hall_corner_sw = true,
+					hallway_s_capped = true,
+					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_esw_t = true,
+				},
+				-- Southeast corner.
+				[HASHKEY(1, 0, -1)] = {
+					hall_corner_nw = true,
+					hallway_n_capped = true,
+					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_wne_t = true,
+				},
+				--]]
+			},
+			-- Prevent us from overwriting anyone else.
+			require_empty_neighbors = {
+				-- Footprint must be empty.
+				[HASHKEY(0, 0, 0)] = true,
+			},
+			-- Prevent algorithm from coming back and overwriting us.
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
+			},
+			probability = SMALL_PLAZA_CHANCE,
+		},
+
+		-- The 2x2 plaza object.
+		medium_plaza = {
+			schem = {
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
+				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=0}},
+				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=11}},
+				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=11}},
+			},
+			size = {x=2, y=1, z=2},
+			valid_neighbors = {
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(1, -1, 1)] = {solid_top=true},
+
+				-- Edges.
+				---[[
+				-- West side.
+				[HASHKEY(-1, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_swn_t = true,
+					ns_plaza_w = true,
+					hallway_e_capped_no_stair = true,
+				},
+				-- East side.
+				[HASHKEY(2, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_nes_t = true,
+					ns_plaza_e = true,
+					hallway_w_capped_no_stair = true,
+				},
+				-- South side.
+				[HASHKEY(0, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_esw_t = true,
+					ew_plaza_s = true,
+					hallway_n_capped_no_stair = true,
+				},
+				-- North side.
+				[HASHKEY(1, 0, 2)] = {
+					hallway_straight_ew = true,
+					hallway_wne_t = true,
+					ew_plaza_n = true,
+					hallway_s_capped_no_stair = true,
+				},
+				--]]
+
+				-- Require the left sides of all possible entrances to be hallways.
+				-- Left side of south entrance.
+				---[[
+				[HASHKEY(1, 0, -1)] = {hallway_straight_ew=true},
+				-- Left side of north entrance.
+				[HASHKEY(0, 0, 2)] = {hallway_straight_ew=true},
+				-- Left side of west entrance.
+				[HASHKEY(-1, 0, 0)] = {hallway_straight_ns=true},
+				-- Left side of east entrance.
+				[HASHKEY(2, 0, 1)] = {hallway_straight_ns=true},
+				--]]
+
+				-- Now the corners.
+				---[[
+				-- Southwest corner.
+				[HASHKEY(-1, 0, -1)] = {
+					hall_corner_ne = true,
+					hallway_e_capped = true,
+					hallway_n_capped = true,
+					hallway_junction = true,
+					hallway_wne_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northwest corner.
+				[HASHKEY(-1, 0, 2)] = {
+					hall_corner_se = true,
+					hallway_s_capped = true,
+					hallway_e_capped = true,
+					hallway_junction = true,
+					hallway_esw_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(2, 0, 2)] = {
+					hall_corner_sw = true,
+					hallway_s_capped = true,
+					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_esw_t = true,
+				},
+				-- Southeast corner.
+				[HASHKEY(2, 0, -1)] = {
+					hall_corner_nw = true,
+					hallway_n_capped = true,
+					hallway_w_capped = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_wne_t = true,
+				},
+				--]]
+			},
+			-- Prevent us from overwriting anyone else.
+			require_empty_neighbors = {
+				-- Footprint must be empty.
+				[HASHKEY(0, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
+			},
+			-- Prevent algorithm from coming back and overwriting us.
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 1)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 1)] = "large_chunk_dummy",
+			},
+			probability = MEDIUM_PLAZA_CHANCE,
 		},
 	},
 }

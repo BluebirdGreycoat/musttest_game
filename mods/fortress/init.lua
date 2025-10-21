@@ -48,7 +48,7 @@ if not fortress.run_once then
 	})
 
 	minetest.register_chatcommand("genfort", {
-		params = "[randomseed(int)]",
+		params = "[randomseed] [max_iterations]",
 		description = "Spawn a v2 fortress (rule-constrained) at your location.",
 		privs = {server=true},
 

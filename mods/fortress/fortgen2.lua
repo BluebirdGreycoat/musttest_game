@@ -31,9 +31,10 @@ end
 
 
 
-function fortress.gen_init(spawn_pos, user_seed)
+function fortress.gen_init(user_params)
 	-- Within range of short int to be safe. IDK what 'math.random' limits are.
-	local randomseed = user_seed or math.random(0, 65534)
+	local randomseed = (user_params and user_params.user_seed)
+		or math.random(0, 65534)
 
 	local function get_all_chunk_names(chunks)
 		local name_set = {}
@@ -42,14 +43,11 @@ function fortress.gen_init(spawn_pos, user_seed)
 	end
 
 	local params = {
-		-- Algorithm start time.
-		time = os.time(),
-
 		-- NOTE: Key 'algorithm_fail' is set if something errored and NOTHING should
 		-- be written to map.
 
 		-- Commonly used items.
-		spawn_pos = vector.copy(vector.round(spawn_pos)),
+		spawn_pos = vector.copy(vector.round(user_params.spawn_pos)),
 		step = fortress.genfort_data.step,
 		max_extent = fortress.genfort_data.max_extent,
 		chunks = fortress.genfort_data.chunks,
@@ -62,6 +60,11 @@ function fortress.gen_init(spawn_pos, user_seed)
 		traversal = {
 			determined = {},
 			potential = {},
+
+			-- This will store chunk locations which have already been expanded and
+			-- written once to map, so that we don't write them again during a
+			-- continuation.
+			completed = {},
 		},
 
 		-- Indexed by chunk hash position.
@@ -96,6 +99,10 @@ function fortress.gen_init(spawn_pos, user_seed)
 		--   Candace Owens (who, strangely, seems to have gone full retard)
 		trump = PcgRandom(randomseed),
 		randomseed = randomseed, -- Save for later.
+
+		-- Keeps track of the number of fortgen iterations performed so far.
+		iterations = 0,
+		last_max_iterations = 0,
 
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
@@ -163,21 +170,64 @@ end
 
 
 -- API function for mapgens.
-function fortress.make_fort(spawn_pos, user_seed)
-	local success, params = fortress.gen_init(spawn_pos, user_seed)
-	if not success then return end
+function fortress.make_fort(user_params)
+	-- Get continuation parameters, or INIT new parameters.
+	local success, params = true, fortress.CONTINUATION_PARAMS
+	if not fortress.CONTINUATION_PARAMS then
+		success, params = fortress.gen_init(user_params)
+		if not success then return end
+	end
+	fortress.CONTINUATION_PARAMS = nil -- Don't leak, it'll screw up debugging.
+
+	-- Algorithm start time.
+	params.time = os.time()
+
+	if user_params.max_iterations and user_params.max_iterations < 1 then
+		minetest.log("action", "No iterations to execute.")
+		return
+	end
+
+	if user_params.max_iterations then
+		params.last_max_iterations =
+			params.last_max_iterations + user_params.max_iterations
+	end
 
 	minetest.log("action", "Computing fortress pattern @ " ..
 		POS_TO_STR(vector.round(params.spawn_pos)) .. "!")
+	minetest.log("action", "Current iteration count: " .. params.iterations)
 
-	local runmore = fortress.process_next_chunk(params)
-	while runmore do runmore = fortress.process_next_chunk(params) end
+	local runmore = false
+	params.final_flag = false
+
+	repeat
+		-- Break if user specified max iterations have been reached.
+		-- This is useful for debugging.
+		if user_params.max_iterations
+				and params.iterations >= params.last_max_iterations then
+			goto skip_setting_final_flag
+		end
+
+		runmore = fortress.process_next_chunk(params)
+		params.iterations = params.iterations + 1
+	until not runmore
+
+	-- This flag only set if we exited the loop normally, not due to max
+	-- iterations being reached!
+	minetest.log("action", "Fortgen iterations self-terminated.")
+	params.final_flag = true
+	::skip_setting_final_flag::
 
 	if not next(params.traversal.determined) then
 		minetest.log("error", "No chunks to generate.")
 		return
 	end
 
+	minetest.log("action", "Fortgen ended after " ..
+		params.iterations .. " iterations.")
+
+	-- This flag set only if algorithm ran into a fatal error.
+	-- This should never happen, but I've seen it happen exactly once, and if it
+	-- does we must NOT write anything to map.
 	if not params.algorithm_fail then
 		local spawn_pos = params.spawn_pos
 		local step = params.step
@@ -185,11 +235,13 @@ function fortress.make_fort(spawn_pos, user_seed)
 		-- Before writing anything to the map (which actually happens in a mapgen
 		-- callback), first save all determined locations we'll occupy to a global
 		-- map.
-		for hash, chunkname in pairs(params.traversal.determined) do
-			local chunkpos = UNHASH_POSITION(hash)
-			local realpos = vector.add(spawn_pos, vector.multiply(chunkpos, step))
-			local finalhash = HASH_POSITION(realpos)
-			fortress.OCCUPIED_LOCATIONS[finalhash] = chunkname
+		if params.final_flag then -- Only after fortgen completed normally.
+			for hash, chunkname in pairs(params.traversal.determined) do
+				local chunkpos = UNHASH_POSITION(hash)
+				local realpos = vector.add(spawn_pos, vector.multiply(chunkpos, step))
+				local finalhash = HASH_POSITION(realpos)
+				fortress.OCCUPIED_LOCATIONS[finalhash] = chunkname
+			end
 		end
 
 		fortress.expand_all_schems(params)
@@ -203,17 +255,42 @@ end
 
 
 -- Called from debug chatcommand.
-function fortress.genfort_chatcmd(name, param)
+function fortress.genfort_chatcmd(name, textparam)
 	local player = minetest.get_player_by_name(name)
 	if not player or not player:is_player() then
 		return
 	end
 
-	local user_seed = tonumber(param) -- Or nil
+	local args = textparam:split(" ")
+	if args[1] == "clear" then
+		if fortress.CONTINUATION_PARAMS or fortress.OCCUPIED_LOCATIONS then
+			minetest.log("action", "Continuation params cleared.")
+		end
+		fortress.CONTINUATION_PARAMS = nil
+		fortress.OCCUPIED_LOCATIONS = {}
+		return
+	end
+
+	local user_seed = args[1] and tonumber(args[1]) -- Or nil
 	if user_seed then user_seed = math.floor(user_seed) end -- Make integer.
 	if user_seed then user_seed = math.abs(user_seed) end -- Make positive.
 
-	fortress.make_fort(vector.round(player:get_pos()), user_seed)
+	local max_iterations = args[2] and tonumber(args[2]) -- Or nil
+	if max_iterations then max_iterations = math.floor(max_iterations) end
+	if max_iterations then max_iterations = math.abs(max_iterations) end
+
+	if user_seed then
+		minetest.log("action", "Fortgen user_seed: " .. user_seed)
+	end
+	if max_iterations then
+		minetest.log("action", "Fortgen max_iterations: " .. max_iterations)
+	end
+
+	fortress.make_fort({
+		spawn_pos = vector.round(player:get_pos()),
+		user_seed = user_seed,
+		max_iterations = max_iterations,
+	})
 end
 
 
@@ -221,25 +298,32 @@ end
 function fortress.expand_all_schems(params)
 	local spawn_pos = params.spawn_pos
 	local chunkstep = params.step
+	local vec_add = vector.add
+	local vec_mul = vector.multiply
 
 	for poshash, chunkname in pairs(params.traversal.determined) do
-		local chunkpos = UNHASH_POSITION(poshash)
-		local schempos = vector.add(spawn_pos, vector.multiply(chunkpos, chunkstep))
-		local altname = params.override_chunk_schems[poshash]
+		-- Don't repeat if already done.
+		if not params.traversal.completed[poshash] then
+			local chunkpos = UNHASH_POSITION(poshash)
+			local schempos = vec_add(spawn_pos, vec_mul(chunkpos, chunkstep))
+			local altname = params.override_chunk_schems[poshash]
 
-		if altname then
-			-- If we got IGNORE at this position from 'override_chunk_schems', then
-			-- don't place any schematics.
-			if altname ~= "IGNORE" then
-				local chunkdata = params.chunks[altname]
+			if altname then
+				-- If we got IGNORE at this position from 'override_chunk_schems', then
+				-- don't place any schematics.
+				if altname ~= "IGNORE" then
+					local chunkdata = params.chunks[altname]
+					fortress.expand_single_schem(schempos, chunkdata, params)
+					fortress.collect_loot_chests(schempos, chunkdata, params)
+				end
+			else
+				local chunkdata = params.chunks[chunkname]
 				fortress.expand_single_schem(schempos, chunkdata, params)
 				fortress.collect_loot_chests(schempos, chunkdata, params)
 			end
-		else
-			local chunkdata = params.chunks[chunkname]
-			fortress.expand_single_schem(schempos, chunkdata, params)
-			fortress.collect_loot_chests(schempos, chunkdata, params)
 		end
+		-- Mark as done.
+		params.traversal.completed[poshash] = true
 	end
 
 	minetest.log("action", "Added " .. #params.build.schems ..
@@ -367,6 +451,23 @@ function fortress.write_to_map(params)
 
 		-- Actually spawn the fortress once map completely loaded.
 		fortress.apply_genfort(params)
+
+		-- If we stopped prematurely, save important data for a "continuation" run.
+		if not params.final_flag then
+			-- Clear data NOT needed for a continuation.
+			-- This lets continuations write only the new parts of the fort, instead
+			-- of rewriting everything all over again.
+			params.build.schems = {}
+			params.build.chests = {}
+			params.vm_minp = nil
+			params.vm_maxp = nil
+			params.final_flag = false
+			fortress.CONTINUATION_PARAMS = params
+			minetest.log("action", "Fortgen params saved for continuation.")
+		else
+			-- Avoid leaking this on a successful run.
+			fortress.CONTINUATION_PARAMS = nil
+		end
 	end
 
 	-- Load entire map region, generating chunks as needed.

@@ -63,10 +63,10 @@ local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 
 -- MISC probabilities.
 local TOWER_PROBABILITY = 10
-local PLAZA_GATE_PROB = 20
+local PLAZA_GATE_PROB = 30
 local LARGE_PLAZA_CHANCE = 100
 local MEDIUM_PLAZA_CHANCE = 500
-local SMALL_PLAZA_CHANCE = 1000
+local SMALL_PLAZA_CHANCE = 200
 
 
 

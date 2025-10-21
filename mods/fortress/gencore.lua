@@ -255,8 +255,11 @@ function fortress.process_next_chunk(params)
 		minetest.log("warning", "Chunk: " .. chunkname)
 		minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
 		minetest.log("warning", "After " .. try_limit .. " iterations.")
-		-- Treat this as a non-fatal error for now, but it means the generated
+		-- Treat this as a non-fatal error for testing; it means the generated
 		-- fort will have missing sections.
+		-- Don't allow an incomplete fortress to be spawned for players!
+		-- It looks stupid and unprofessional.
+		params.algorithm_fail = true
 		return
 	end
 

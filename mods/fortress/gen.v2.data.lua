@@ -580,7 +580,13 @@ fortress.v2.fortress_data = {
 		{x=24, y=8, z=24},
 		{x=20, y=8, z=20},
 		{x=16, y=8, z=16},
+
+		-- Most common size. Duplicates increase probability.
 		{x=12, y=8, z=12},
+		{x=12, y=8, z=12},
+		{x=12, y=8, z=12},
+		{x=12, y=8, z=12},
+
 		{x=8, y=8, z=8},
 		{x=6, y=8, z=6},
 	},

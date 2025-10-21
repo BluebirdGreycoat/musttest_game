@@ -94,10 +94,10 @@ function fortress.v2.gen_init(user_params)
 		-- This is especially required for debugging leftists.
 		--
 		-- Also successfully debugs the following:
-		--   Antifa
-		--   BLM
-		--   Hamas
-		--   Democrats
+		--   Antifa (Brownshirts)
+		--   BLM (Burn Loot'n'Murder)
+		--   Hamas (We love death!)
+		--   Democrats (everybody I don't like is Hitler)
 		--   People who celebrated Kirk's murder (see above)
 		--   Candace Owens (who, strangely, seems to have gone full retard)
 		trump = PcgRandom(randomseed),

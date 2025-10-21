@@ -1,0 +1,223 @@
+
+-- List of allowed chest nodes.
+local CHEST_NAMES = {
+	-- Duplicated for probability.
+	"morechests:woodchest_public_closed",
+	"morechests:woodchest_public_closed",
+	"morechests:woodchest_public_closed",
+	"chests:chest_public_closed",
+	"chests:chest_public_closed",
+	"morechests:ironchest_public_closed",
+}
+
+local POS_TO_STR = minetest.pos_to_string
+
+
+
+function fortress.v2.write_map(params)
+	local minp = table.copy(params.spawn_pos)
+	local maxp = table.copy(params.spawn_pos)
+
+	-- Calculate voxelmanip area bounds.
+	for _, v in ipairs(params.build.schems) do
+		if v.pos.x < minp.x then minp.x = v.pos.x end
+		if v.pos.x + v.size.x > maxp.x then maxp.x = v.pos.x + v.size.x end
+
+		if v.pos.y < minp.y then minp.y = v.pos.y end
+		if v.pos.y + v.size.y > maxp.y then maxp.y = v.pos.y + v.size.y end
+
+		if v.pos.z < minp.z then minp.z = v.pos.z end
+		if v.pos.z + v.size.z > maxp.z then maxp.z = v.pos.z + v.size.z end
+	end
+
+	minetest.log("action", "Writing fortress to map.")
+	minetest.log("action", "POS: " .. POS_TO_STR(params.spawn_pos))
+	minetest.log("action", "MINP: " .. POS_TO_STR(minp))
+	minetest.log("action", "MAXP: " .. POS_TO_STR(maxp))
+	minetest.log("action", "Volume: " .. POS_TO_STR(vector.subtract(maxp, minp)))
+
+	params.vm_minp = minp
+	params.vm_maxp = maxp
+
+	local MAPGENTIME0 = os.clock()
+
+	-- Build callback function. When the map is loaded, we can spawn the fortress.
+	local cb = function(blockpos, action, calls_remaining)
+		-- Check if there was an error.
+		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
+			minetest.log("error", "Failed to emerge area to spawn fortress.")
+			return
+		end
+
+		-- We don't do anything until the last callback.
+		if calls_remaining ~= 0 then
+			return
+		end
+
+		local MAPGENTIME1 = os.clock()
+		local ELAPSEDTIME = MAPGENTIME1 - MAPGENTIME0
+		minetest.log("action", string.format("%.2f", ELAPSEDTIME) ..
+			" seconds elapsed emerging fort region.")
+
+		-- Actually spawn the fortress once map completely loaded.
+		fortress.v2.apply_layout(params)
+
+		-- If we stopped prematurely, save important data for a "continuation" run.
+		if not params.final_flag then
+			-- Clear data NOT needed for a continuation.
+			-- This lets continuations write only the new parts of the fort, instead
+			-- of rewriting everything all over again.
+			params.build.schems = {}
+			params.build.chests = {}
+			params.vm_minp = nil
+			params.vm_maxp = nil
+			params.final_flag = false
+			fortress.v2.CONTINUATION_PARAMS = params
+			minetest.log("action", "Fortgen params SAVED for continuation.")
+		else
+			-- Avoid leaking this on a successful run.
+			fortress.v2.CONTINUATION_PARAMS = nil
+		end
+	end
+
+	-- Load entire map region, generating chunks as needed.
+	-- Overgenerate ceiling to try to avoid lighting issues in caverns.
+	-- Doing this seems to be the trick.
+	-- This will FAIL if in cavern, but ceiling is more than 100 nodes up!
+	local omaxp = vector.offset(maxp, 0, 100, 0)
+	minetest.emerge_area(minp, omaxp, cb)
+end
+
+
+
+local function place_all_chests(params)
+	-- Track how many chests we successfully add, and what types.
+	local chest_count = 0
+	local totals = {}
+	local random = params.yeskings
+
+	for k, v in ipairs(params.build.chests) do
+		local p = v.pos
+		local n = minetest.get_node(p)
+		local f = minetest.get_node(vector.offset(p, 0, -1, 0))
+
+		-- Only if location not already occupied, and floor is brick.
+		if n.name == "air" and f.name == "rackstone:brick_black" then
+			-- Random chest node and rotation.
+			local rotation = random(0, 3)
+			local nodename = CHEST_NAMES[random(1, #CHEST_NAMES)]
+
+			minetest.set_node(p, {name=nodename, param2=rotation})
+			fortress.add_loot_items(p, v.loot)
+
+			-- Increment totals.
+			chest_count = chest_count + 1
+			totals[v.loot] = (totals[v.loot] or 0) + 1
+		end
+	end
+
+	minetest.log("action", "Spawned " .. chest_count .. " total chests.")
+	for loot, count in pairs(totals) do
+		minetest.log("action", "Spawned " .. count .. " " .. loot .. " chests.")
+	end
+end
+
+
+
+-- To be called once map region fully loaded.
+function fortress.v2.apply_layout(params)
+	local minp = table.copy(params.vm_minp)
+	local maxp = table.copy(params.vm_maxp)
+	local step = params.step
+
+	if fortress.is_protected(minp, maxp) then
+		minetest.log("error", "Cannot spawn fortress, protection is present.")
+		return
+	end
+
+	local TIME0 = os.clock()
+
+	local put_schem = minetest.place_schematic_on_vmanip
+	local vm = minetest.get_voxel_manip(minp, maxp)
+	local emin, emax = vm:get_emerged_area()
+	local area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+
+	local c_air = minetest.get_content_id("air")
+	local c_brick = minetest.get_content_id("rackstone:brick_black")
+	local c_block = minetest.get_content_id("rackstone:blackrack_block")
+	local c_slab = minetest.get_content_id("stairs:slab_rackstone_brick_black")
+
+	-- Note: replacements can only be sensibly defined for the entire fortress
+	-- sheet as a whole. Defining custom replacement lists for individual fortress
+	-- sections would NOT work the way you expect! Blame Minetest.
+	local rp = params.replacements or {}
+
+	-- Sort chunks by priority. Lowest priority first. This matters for schems
+	-- that have 'force' == true, since they can overwrite what's already there.
+	table.sort(params.build.schems,
+		function(a, b) return a.priority < b.priority end)
+
+	for k, v in ipairs(params.build.schems) do
+		put_schem(vm, v.pos, v.file, v.rotation, rp, v.force)
+	end
+
+	-- Helper to decorate at a particular position.
+	local function decorate(vm_data, pos)
+		local x0 = pos.x
+		local y0 = pos.y
+		local z0 = pos.z
+		local x1 = pos.x + step.x
+		local y1 = pos.y + step.y
+		local z1 = pos.z + step.z
+		local rng = params.yeskings
+
+		for z = z0, z1 do
+			for x = x0, x1 do
+				for y = y0, y1 do
+					local vpu = area:index(x, y - 1, z)
+					local vpa = area:index(x, y, z)
+					local cidu = vm_data[vpu]
+					local cida = vm_data[vpa]
+					if cidu == c_brick and cida == c_air then
+						if rng(0, 150) == 0 then
+							if rng(0, 10) > 0 then
+								vm_data[vpu] = c_slab
+							else
+								vm_data[vpu] = c_air
+							end
+						elseif rng(0, 200) == 0 then
+							vm_data[vpa] = c_slab
+						elseif rng(0, 100) == 0 then
+							vm_data[vpu] = c_block
+						end
+					end
+				end
+			end
+		end
+	end
+
+	-- Wait till all schematics have been placed, then we can do 'vm:get_data().'
+	local vm_data = {}
+	vm:get_data(vm_data)
+
+	for k, v in ipairs(params.build.schems) do
+		decorate(vm_data, v.pos) -- Pos should be in worldspace.
+	end
+
+	vm:set_data(vm_data)
+	vm:write_to_map(true)
+
+	-- Add loot chests.
+	place_all_chests(params)
+
+	local TIME1 = os.clock()
+	minetest.log("action", string.format("%.2f", TIME1 - TIME0) ..
+		" seconds elapsed writing fort with voxelmanip.")
+
+	-- Last-ditch effort to fix these darn lighting issues.
+	mapfix.work(minp, maxp)
+
+	-- Report success, and how long it took.
+	minetest.log("action", "Fortgen completed after " ..
+		math.floor(os.time() - params.time) .. " seconds.")
+end

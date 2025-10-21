@@ -31,6 +31,7 @@ dofile(fortress.modpath .. "/gen.v2.core.lua")
 dofile(fortress.modpath .. "/gen.v2.init.lua")
 dofile(fortress.modpath .. "/gen.v2.util.lua")
 dofile(fortress.modpath .. "/gen.v2.chat.lua")
+dofile(fortress.modpath .. "/gen.v2.map.lua")
 
 
 

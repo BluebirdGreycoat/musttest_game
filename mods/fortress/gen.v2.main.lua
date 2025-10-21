@@ -5,11 +5,30 @@ fortress.v2 = fortress.v2 or {}
 -- This stores ALL generated fortress chunks allocated THIS session.
 -- The fort algorithm queries this table during its generating iterations to see
 -- if a particular position was already occupied by a previously-generated fort.
+-- Note that in order for this to be efficient, fortress spawn locations need to
+-- be locked to multiples of the fortress step size. See INIT function.
 fortress.v2.OCCUPIED_LOCATIONS = {}
 
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 local POS_TO_STR = minetest.pos_to_string
+
+
+
+local function save_occupied_locations(params)
+	local spawn_pos = params.spawn_pos
+	local step = params.step
+	local vec_add = vector.add
+	local vec_mul = vector.multiply
+	local occupied = fortress.v2.OCCUPIED_LOCATIONS
+
+	for hash, chunkname in pairs(params.traversal.determined) do
+		local chunkpos = UNHASH_POSITION(hash)
+		local realpos = vec_add(spawn_pos, vec_mul(chunkpos, step))
+		local finalhash = HASH_POSITION(realpos)
+		occupied[finalhash] = chunkname
+	end
+end
 
 
 
@@ -38,7 +57,6 @@ function fortress.v2.make_fort(user_params)
 
 	minetest.log("action", "Computing fortress pattern @ " ..
 		POS_TO_STR(vector.round(params.spawn_pos)) .. "!")
-	minetest.log("action", "Current iteration count: " .. params.iterations)
 
 	local runmore = false
 	params.final_flag = false
@@ -57,41 +75,39 @@ function fortress.v2.make_fort(user_params)
 
 	-- This flag only set if we exited the loop normally, not due to max
 	-- iterations being reached!
-	minetest.log("action", "Fortgen iterations self-terminated.")
 	params.final_flag = true
 	::skip_setting_final_flag::
 
 	if not next(params.traversal.determined) then
-		minetest.log("error", "No chunks to generate.")
+		minetest.log("error", "No chunks were added to fortress layout.")
 		return
 	end
 
-	minetest.log("action", "Fortgen ended after " ..
-		params.iterations .. " iterations.")
+	if params.final_flag then
+		minetest.log("action", "Fortgen quit after " ..
+			params.iterations .. " iterations.")
+	else
+		minetest.log("action", "Fortgen ABORTED after " ..
+			params.iterations .. " iterations.")
+	end
 
 	-- This flag set only if algorithm ran into a fatal error.
-	-- This should never happen, but I've seen it happen exactly once, and if it
-	-- does we must NOT write anything to map.
 	if not params.algorithm_fail then
-		local spawn_pos = params.spawn_pos
-		local step = params.step
-
 		-- Before writing anything to the map (which actually happens in a mapgen
 		-- callback), first save all determined locations we'll occupy to a global
-		-- map.
-		if params.final_flag then -- Only after fortgen completed normally.
-			for hash, chunkname in pairs(params.traversal.determined) do
-				local chunkpos = UNHASH_POSITION(hash)
-				local realpos = vector.add(spawn_pos, vector.multiply(chunkpos, step))
-				local finalhash = HASH_POSITION(realpos)
-				fortress.v2.OCCUPIED_LOCATIONS[finalhash] = chunkname
-			end
+		-- map. Only after fortgen completed normally.
+		if params.final_flag and not params.dry_run then
+			save_occupied_locations(params)
 		end
 
-		fortress.v2.expand_all_schems(params)
-		fortress.v2.write_map(params)
+		fortress.v2.process_layout(params)
+
+		-- Skip writing to map for dry runs.
+		if not params.dry_run then
+			fortress.v2.write_map(params)
+		end
 	else
-		minetest.log("error", "Something failed in fortress algorithm!")
+		minetest.log("error", "Fortgen algorithm failure!")
 		minetest.log("error", "Not writing anything to map.")
 	end
 end

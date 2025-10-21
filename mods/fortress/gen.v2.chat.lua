@@ -1,6 +1,6 @@
 
 function fortress.v2.get_chat_command_params_desc()
-	return "[<seednumber>|clear|dryrun] [<iterationcount>]"
+	return "[<seednumber>|clear|dryrun [<seednumber>]] [<iterationcount>]"
 end
 
 
@@ -23,12 +23,19 @@ function fortress.v2.chat_command(name, textparam)
 	end
 
 	local dry_run = false
-	if args[1] == "dryrun" then dry_run = true end
+	local seednum_offset = 1
+	local maxiter_offset = 2
 
-	local randseed = args[1] and tonumber(args[1]) -- Or nil
+	if args[1] == "dryrun" then
+		dry_run = true
+		seednum_offset = 2
+		maxiter_offset = 3
+	end
+
+	local randseed = args[seednum_offset] and tonumber(args[seednum_offset])
 	if randseed then randseed = math.abs(math.floor(randseed)) end
 
-	local maxiter = args[2] and tonumber(args[2]) -- Or nil
+	local maxiter = args[maxiter_offset] and tonumber(args[maxiter_offset])
 	if maxiter then maxiter = math.abs(math.floor(maxiter)) end
 
 	if randseed then

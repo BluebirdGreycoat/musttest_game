@@ -21,6 +21,8 @@ function fortress.is_protected(minp, maxp)
 	return false
 end
 
+
+
 function fortress.add_loot_items(pos, loot)
 	local meta = minetest.get_meta(pos)
 	if not meta then return end

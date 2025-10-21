@@ -111,9 +111,7 @@ end
 
 
 local function choose_initial_chunk(params)
-	-- Add initial to the list of indeterminates.
-	-- Just one possibility with a chance of 100.
-	-- The initial chunk always begins at {x=0, y=0, z=0} in "chunk space".
+	-- Sanity checks.
 	if not params.initial_chunks or #params.initial_chunks == 0 then
 		minetest.log("error", "No initial starter chunks to choose from.")
 		return -- Handle error.
@@ -127,6 +125,7 @@ local function choose_initial_chunk(params)
 		return -- Handle error.
 	end
 
+	-- The initial chunk always begins at {x=0, y=0, z=0} in "chunk space".
 	params.traversal.potential[HASH_POSITION({x=0, y=0, z=0})] = {
 		[initial_chunk] = true,
 	}
@@ -161,6 +160,7 @@ function fortress.v2.gen_init(user_params)
 		schemdir = FORTDATA.schemdir,
 
 		-- Key 'max_extent' is set, chosen from list of allowed sizes in fort data.
+		-- Key 'final_flag' is set when fortgen algorithm finishes on its own.
 
 		-- The traversal "grid" (sparse). Indexed by chunk hash position.
 		-- Contains entries for "fully determined" tiles, and potential neighbors.
@@ -227,6 +227,7 @@ function fortress.v2.gen_init(user_params)
 	-- Chose how big the fortress will be.
 	params.max_extent = select_max_extent(params, FORTDATA)
 	minetest.log("action", "Fortress extents: " .. POS_TO_STR(params.max_extent))
+	minetest.log("action", "Fortress seed: " .. params.randomseed)
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)

@@ -575,20 +575,18 @@ fortress.v2.fortress_data = {
 
 	-- Maximum fortress extent, in chunk/tile units.
 	-- The min extents are simply computed as the inverse.
-	-- A random size is selected on gen init time.
+	-- A random size is selected on gen init time, based on probability weight.
 	max_extents = {
-		{x=24, y=8, z=24},
-		{x=20, y=8, z=20},
-		{x=16, y=8, z=16},
+		{x=24, y=8, z=24, weight=5}, -- Huge, should be rare.
+		{x=20, y=8, z=20, weight=10},
+		{x=16, y=8, z=16, weight=15},
 
-		-- Most common size. Duplicates increase probability.
-		{x=12, y=8, z=12},
-		{x=12, y=8, z=12},
-		{x=12, y=8, z=12},
-		{x=12, y=8, z=12},
+		-- Most common sizes.
+		{x=12, y=8, z=12, weight=80},
+		{x=10, y=8, z=10, weight=120},
 
-		{x=8, y=8, z=8},
-		{x=6, y=8, z=6},
+		{x=8, y=8, z=8, weight=50},
+		{x=6, y=8, z=6, weight=25},
 	},
 
 	-- List of node replacements.

@@ -23,10 +23,57 @@ end
 
 
 
+-- Weighted probability selector function.
 local function select_max_extent(params, fortdata)
 	local list = fortdata.max_extents
 	local prng = params.yeskings
-	return list[prng(1, #list)]
+
+	local allchoices = {}
+	local choices = {}
+
+	-- First build array from dictionary set.
+	for _, data in pairs(list) do
+		local prob = (data.weight or 100)
+		if prob > 0 then  -- Skip zero-prob choices to optimize
+			choices[#choices + 1] =
+				{data={x=data.x, y=data.y, z=data.z}, prob=prob}
+		end
+
+		-- This will be used as fallback incase zero-prob elements result in there
+		-- being no elements in the 'choices' array.
+		allchoices[#allchoices + 1] =
+			{data={x=data.x, y=data.y, z=data.z}, prob=prob}
+	end
+
+	-- Now, add up all the probabilities to find a max value.
+	-- Max prob should never be zero. But it might be (e.g., testing), so handle
+	-- it.
+	local max_prob = 0
+	for k, v in ipairs(choices) do max_prob = max_prob + v.prob end
+
+	-- Fallback to uniform selection if necessary.
+	if max_prob == 0 or #choices == 0 then
+		if #allchoices > 0 then
+			return allchoices[prng(1, #allchoices)].data
+		end
+		-- Function precondition broken (there never was anything to select).
+		return nil
+	end
+
+	-- Now get a random int from 1 to max prob.
+	local number = prng(1, max_prob)
+
+	-- Cumulative selection.
+	local cumulative = 0
+	for _, v in ipairs(choices) do
+		cumulative = cumulative + v.prob
+		if number <= cumulative then
+			return v.data
+		end
+	end
+
+	-- Fallback, if for some reason we get here (shouldn't happen).
+	return choices[prng(1, #choices)].data
 end
 
 

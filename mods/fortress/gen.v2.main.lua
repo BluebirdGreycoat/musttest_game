@@ -7,6 +7,11 @@ fortress.v2 = fortress.v2 or {}
 -- if a particular position was already occupied by a previously-generated fort.
 fortress.v2.OCCUPIED_LOCATIONS = {}
 
+local HASH_POSITION = minetest.hash_node_position
+local UNHASH_POSITION = minetest.get_position_from_hash
+local POS_TO_STR = minetest.pos_to_string
+
+
 
 -- API function for mapgens.
 function fortress.v2.make_fort(user_params)

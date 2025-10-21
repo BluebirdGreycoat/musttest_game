@@ -118,6 +118,7 @@ function fortress.v2.gen_init(user_params)
 
 	-- Chose how big the fortress will be.
 	params.max_extent = select_max_extent(params, FORTDATA)
+	minetest.log("action", "Chosen extents are " .. POS_TO_STR(params.max_extent))
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)

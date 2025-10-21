@@ -78,12 +78,69 @@ end
 
 
 
-function fortress.v2.gen_init(user_params)
-	local FORTDATA = fortress.v2.fortress_data
+local function validate_fortdata(params)
+	-- Make sure all 'valid_neighbors' and 'enabled_neighbors' actually exist.
+	-- This catches problems with wrongly named neighbors.
+	for _, chunkdata in pairs(params.chunks) do
+		if chunkdata.valid_neighbors then
+			for dir, list in pairs(chunkdata.valid_neighbors) do
+				for chunkname, _ in pairs(list) do
+					if not params.chunks[chunkname] then
+						minetest.log("error", "Chunk " .. chunkname .. " does not exist!")
+						return
+					end
+				end
+			end
+		end
 
-	-- Within range of short int to be safe. IDK what 'math.random' limits are.
-	local randomseed = (user_params and user_params.user_seed)
-		or math.random(0, 65534)
+		if chunkdata.enabled_neighbors then
+			for dir, list in pairs(chunkdata.enabled_neighbors) do
+				for chunkname, _ in pairs(list) do
+					if not params.chunks[chunkname] then
+						minetest.log("error", "Chunk " .. chunkname .. " does not exist!")
+						return
+					end
+				end
+			end
+		end
+	end
+
+	return true
+end
+
+
+
+local function choose_initial_chunk(params)
+	-- Add initial to the list of indeterminates.
+	-- Just one possibility with a chance of 100.
+	-- The initial chunk always begins at {x=0, y=0, z=0} in "chunk space".
+	if not params.initial_chunks or #params.initial_chunks == 0 then
+		minetest.log("error", "No initial starter chunks to choose from.")
+		return -- Handle error.
+	end
+
+	local choices = params.initial_chunks
+	local initial_chunk = choices[params.yeskings(1, #choices)]
+
+	if not params.chunks[initial_chunk] then
+		minetest.log("error", "Invalid starting chunk.")
+		return -- Handle error.
+	end
+
+	params.traversal.potential[HASH_POSITION({x=0, y=0, z=0})] = {
+		[initial_chunk] = true,
+	}
+
+	return true
+end
+
+
+
+function fortress.v2.gen_init(user_params)
+	local FORTDATA = user_params.fortress_data
+
+	-- Get random seed, or generate one ourselves.
+	local randomseed = user_params.user_seed or math.random(0, 65534)
 
 	local function get_all_chunk_names(chunks)
 		local name_set = {}
@@ -154,6 +211,10 @@ function fortress.v2.gen_init(user_params)
 		iterations = 0,
 		last_max_iterations = 0,
 
+		-- If 'true', nothing will be written to map, but everything else will be
+		-- done. Useful for testing the algorithm with changes to fort data.
+		dry_run = user_params.dry_run,
+
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
 	}
@@ -165,58 +226,17 @@ function fortress.v2.gen_init(user_params)
 
 	-- Chose how big the fortress will be.
 	params.max_extent = select_max_extent(params, FORTDATA)
-	minetest.log("action", "Chosen extents are " .. POS_TO_STR(params.max_extent))
+	minetest.log("action", "Fortress extents: " .. POS_TO_STR(params.max_extent))
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)
 
-	-- Add initial to the list of indeterminates.
-	-- Just one possibility with a chance of 100.
-	-- The initial chunk always begins at {x=0, y=0, z=0} in "chunk space".
-	if not params.initial_chunks or #params.initial_chunks == 0 then
-		minetest.log("error", "No initial starter chunks to choose from.")
-		return nil -- Handle error.
-	end
+	-- Choose our initial starting chunk.
+	if not choose_initial_chunk(params) then return end
 
-	local initial_chunk = params.initial_chunks[
-		params.yeskings(1, #params.initial_chunks)]
-	if not params.chunks[initial_chunk] then
-		minetest.log("error", "Invalid starting chunk.")
-		return nil -- Handle error.
-	end
+	-- Sanity check.
+	if not validate_fortdata(params) then return end
 
-	params.traversal.potential[HASH_POSITION({x=0, y=0, z=0})] = {
-		[initial_chunk] = true,
-	}
-
-	-- NOTE: Sanity check.
-	-- Make sure all 'valid_neighbors' and 'enabled_neighbors' actually exist.
-	-- This catches problems with wrongly named neighbors.
-	for _, chunkdata in pairs(params.chunks) do
-		if chunkdata.valid_neighbors then
-			for dir, list in pairs(chunkdata.valid_neighbors) do
-				for chunkname, _ in pairs(list) do
-					if not params.chunks[chunkname] then
-						minetest.log("error",
-							"Neighbor " .. chunkname .. " does not exist!")
-						return nil
-					end
-				end
-			end
-		end
-
-		if chunkdata.enabled_neighbors then
-			for dir, list in pairs(chunkdata.enabled_neighbors) do
-				for chunkname, _ in pairs(list) do
-					if not params.chunks[chunkname] then
-						minetest.log("error",
-							"Neighbor " .. chunkname .. " does not exist!")
-						return nil
-					end
-				end
-			end
-		end
-	end
-
+	-- Success.
 	return true, params
 end

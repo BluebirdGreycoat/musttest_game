@@ -582,8 +582,8 @@ fortress.v2.fortress_data = {
 		{x=16, y=8, z=16, weight=15},
 
 		-- Most common sizes.
-		{x=12, y=8, z=12, weight=80},
-		{x=10, y=8, z=10, weight=120},
+		{x=12, y=8, z=12, weight=100},
+		{x=10, y=8, z=10, weight=150},
 
 		{x=8, y=8, z=8, weight=50},
 		{x=6, y=8, z=6, weight=25},
@@ -604,12 +604,9 @@ fortress.v2.fortress_data = {
 	chunks = {
 		-- Blank tile, to be used as default neighbor for non-connecting chunks.
 		-- Since air specifies no specific neighbors, it can neighbor ANY chunk.
-		-- Probability 0 prevents air from being placed even though it is specified
-		-- in valid chunk neighbor tables.
 		air = {probability=0, fallback=true},
 
-		-- Use this when you want air to affect probabilities,
-		-- and air should be placed.
+		-- Use this when you want air to have weight in probabilities.
 		air_option = {fallback=true},
 
 		-- A four-way uncovered bridge junction.

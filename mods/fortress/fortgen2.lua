@@ -484,6 +484,7 @@ end
 function fortress.apply_genfort(params)
 	local minp = table.copy(params.vm_minp)
 	local maxp = table.copy(params.vm_maxp)
+	local step = params.step
 
 	if fortress.is_protected(minp, maxp) then
 		minetest.log("error", "Cannot spawn fortress, protection is present.")
@@ -491,6 +492,13 @@ function fortress.apply_genfort(params)
 	end
 
 	local vm = minetest.get_voxel_manip(minp, maxp)
+	local emin, emax = vm:get_emerged_area()
+	local area = VoxelArea:new {MinEdge=emin, MaxEdge=emax}
+
+	local c_air = minetest.get_content_id("air")
+	local c_brick = minetest.get_content_id("rackstone:brick_black")
+	local c_block = minetest.get_content_id("rackstone:blackrack_block")
+	local c_slab = minetest.get_content_id("stairs:slab_rackstone_brick_black")
 
 	-- Note: replacements can only be sensibly defined for the entire fortress
 	-- sheet as a whole. Defining custom replacement lists for individual fortress
@@ -509,6 +517,49 @@ function fortress.apply_genfort(params)
 			vm, v.pos, v.file, v.rotation, rp, v.force)
 	end
 
+	-- Helper to decorate at a particular position.
+	local vm_data = {}
+	local function decorate(pos)
+		local x0 = pos.x
+		local y0 = pos.y
+		local z0 = pos.z
+		local x1 = pos.x + step.x
+		local y1 = pos.y + step.y
+		local z1 = pos.z + step.z
+		local rng = params.yeskings
+
+		for z = z0, z1 do
+			for x = x0, x1 do
+				for y = y0, y1 do
+					local vpu = area:index(x, y - 1, z)
+					local vpa = area:index(x, y, z)
+					local cidu = vm_data[vpu]
+					local cida = vm_data[vpa]
+					if cidu == c_brick and cida == c_air then
+						if rng(0, 150) == 0 then
+							if rng(0, 10) > 0 then
+								vm_data[vpu] = c_slab
+							else
+								vm_data[vpu] = c_air
+							end
+						elseif rng(0, 200) == 0 then
+							vm_data[vpa] = c_slab
+						elseif rng(0, 100) == 0 then
+							vm_data[vpu] = c_block
+						end
+					end
+				end
+			end
+		end
+	end
+
+	-- Wait till all schematics have been placed, then we can do 'vm:get_data().'
+	vm:get_data(vm_data)
+	for k, v in ipairs(params.build.schems) do
+		decorate(v.pos) -- Pos should be in worldspace.
+	end
+
+	vm:set_data(vm_data)
 	vm:write_to_map(true)
 
 	-- Add loot chests.

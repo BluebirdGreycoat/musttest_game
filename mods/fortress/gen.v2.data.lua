@@ -575,7 +575,15 @@ fortress.v2.fortress_data = {
 
 	-- Maximum fortress extent, in chunk/tile units.
 	-- The min extents are simply computed as the inverse.
-	max_extent = {x=16, y=8, z=16},
+	-- A random size is selected on gen init time.
+	max_extents = {
+		{x=24, y=8, z=24},
+		{x=20, y=8, z=20},
+		{x=16, y=8, z=16},
+		{x=12, y=8, z=12},
+		{x=8, y=8, z=8},
+		{x=6, y=8, z=6},
+	},
 
 	-- List of node replacements.
 	replacements = {

@@ -23,7 +23,17 @@ end
 
 
 
+local function select_max_extent(params, fortdata)
+	local list = fortdata.max_extents
+	local prng = params.yeskings
+	return list[prng(1, #list)]
+end
+
+
+
 function fortress.v2.gen_init(user_params)
+	local FORTDATA = fortress.v2.fortress_data
+
 	-- Within range of short int to be safe. IDK what 'math.random' limits are.
 	local randomseed = (user_params and user_params.user_seed)
 		or math.random(0, 65534)
@@ -40,12 +50,13 @@ function fortress.v2.gen_init(user_params)
 
 		-- Commonly used items.
 		spawn_pos = vector.copy(vector.round(user_params.spawn_pos)),
-		step = fortress.v2.fortress_data.step,
-		max_extent = fortress.v2.fortress_data.max_extent,
-		chunks = fortress.v2.fortress_data.chunks,
-		initial_chunks = fortress.v2.fortress_data.initial_chunks,
-		replacements = fortress.v2.fortress_data.replacements,
-		schemdir = fortress.v2.fortress_data.schemdir,
+		step = FORTDATA.step,
+		chunks = FORTDATA.chunks,
+		initial_chunks = FORTDATA.initial_chunks,
+		replacements = FORTDATA.replacements,
+		schemdir = FORTDATA.schemdir,
+
+		-- Key 'max_extent' is set, chosen from list of allowed sizes in fort data.
 
 		-- The traversal "grid" (sparse). Indexed by chunk hash position.
 		-- Contains entries for "fully determined" tiles, and potential neighbors.
@@ -77,7 +88,7 @@ function fortress.v2.gen_init(user_params)
 
 		-- A list of ALL available chunk names defined by the data.
 		-- It's useful to have this precalculated.
-		chunk_names = get_all_chunk_names(fortress.v2.fortress_data.chunks),
+		chunk_names = get_all_chunk_names(FORTDATA.chunks),
 
 		-- Used to generate random numbers for reproducability.
 		-- This is especially required for debugging leftists.
@@ -104,6 +115,9 @@ function fortress.v2.gen_init(user_params)
 	params.yeskings = function(min, max)
 		return params.trump:next(min, max)
 	end
+
+	-- Chose how big the fortress will be.
+	params.max_extent = select_max_extent(params, FORTDATA)
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)

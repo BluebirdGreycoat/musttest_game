@@ -175,10 +175,9 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 
-		-- Causes algorithm failures, not sure why yet.
-		-- It works for bridges. Could be orientation related?
-		--ns_plaza_e = true,
-		--ns_plaza_w = true,
+		-- Plaza entrances.
+		ns_plaza_e_from_hall = true,
+		ns_plaza_w_from_hall = true,
 	},
 	[DIRNAME.SOUTH] = {
 		hallway_straight_ns = true,
@@ -202,10 +201,9 @@ local PASSAGE_CONNECT = {
 		hall_ns_to_bridge_e = true,
 		hall_ns_to_bridge_w = true,
 
-		-- Causes algorithm failures, not sure why yet.
-		-- It works for bridges. Could be orientation related?
-		--ns_plaza_e = true,
-		--ns_plaza_w = true,
+		-- Plaza entrances.
+		ns_plaza_e_from_hall = true,
+		ns_plaza_w_from_hall = true,
 	},
 	[DIRNAME.EAST] = {
 		hallway_straight_ew = true,
@@ -229,10 +227,9 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
 
-		-- Causes algorithm failures, not sure why yet.
-		-- It works for bridges. Could be orientation related?
-		--ew_plaza_n = true,
-		--ew_plaza_s = true,
+		-- Plaza entrances.
+		ew_plaza_n_from_hall = true,
+		ew_plaza_s_from_hall = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -256,10 +253,9 @@ local PASSAGE_CONNECT = {
 		hall_ew_to_bridge_n = true,
 		hall_ew_to_bridge_s = true,
 
-		-- Causes algorithm failures, not sure why yet.
-		-- It works for bridges. Could be orientation related?
-		--ew_plaza_n = true,
-		--ew_plaza_s = true,
+		-- Plaza entrances.
+		ew_plaza_n_from_hall = true,
+		ew_plaza_s_from_hall = true,
 	},
 }
 
@@ -1940,10 +1936,14 @@ fortress.genfort_data = {
 				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
 				[HASHKEY(0, 0, 0)] = "hallway_straight_ns",
 			},
-			-- Require both sides of the east-facing bridge to be empty.
 			require_empty_neighbors = {
+				-- Require both sides of the east-facing bridge to be empty.
 				[HASHKEY(1, 0, 1)] = true,
 				[HASHKEY(1, 0, -1)] = true,
+
+				-- Both sides of the NS hallway.
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(0, 0, -1)] = true,
 			},
 			probability = PLAZA_GATE_PROB,
 		},
@@ -1982,10 +1982,14 @@ fortress.genfort_data = {
 				[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
 				[HASHKEY(1, 0, 0)] = "hallway_straight_ns",
 			},
-			-- Require both sides of the west-facing bridge to be empty.
 			require_empty_neighbors = {
+				-- Require both sides of the west-facing bridge to be empty.
 				[HASHKEY(0, 0, 1)] = true,
 				[HASHKEY(0, 0, -1)] = true,
+
+				-- Both sides of the NS hallway.
+				[HASHKEY(1, 0, 1)] = true,
+				[HASHKEY(1, 0, -1)] = true,
 			},
 			probability = PLAZA_GATE_PROB,
 		},
@@ -2024,10 +2028,14 @@ fortress.genfort_data = {
 				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
 				[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
 			},
-			-- Require both sides of the north-facing bridge to be empty.
 			require_empty_neighbors = {
+				-- Require both sides of the north-facing bridge to be empty.
 				[HASHKEY(-1, 0, 1)] = true,
 				[HASHKEY(1, 0, 1)] = true,
+
+				-- Both sides of the EW hallway.
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
 			},
 			probability = PLAZA_GATE_PROB,
 		},
@@ -2066,10 +2074,14 @@ fortress.genfort_data = {
 				[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
 				[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
 			},
-			-- Require both sides of the south-facing bridge to be empty.
 			require_empty_neighbors = {
+				-- Require both sides of the south-facing bridge to be empty.
 				[HASHKEY(-1, 0, 0)] = true,
 				[HASHKEY(1, 0, 0)] = true,
+
+				-- Both sides of the EW hallway must be empty.
+				[HASHKEY(-1, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
 			},
 			probability = PLAZA_GATE_PROB,
 		},
@@ -2528,6 +2540,176 @@ fortress.genfort_data = {
 				[HASHKEY(1, 0, 1)] = "large_chunk_dummy",
 			},
 			probability = MEDIUM_PLAZA_CHANCE,
+		},
+
+		-- Special plaza entrances that can spawn from hallways (not bridges).
+		-- These should behave exactly like 'hall_ns_to_bridge_e' and related.
+		-- Bridgewalk faces east, plaza is west of us.
+		ns_plaza_e_from_hall = {
+			schem = {
+				{file="ns_bridge_passage_e"},
+				{file="plaza_door_ew", offset={x=0, y=4, z=3}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(-1, 0, 0)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_e_capped = true,
+				},
+				[HASHKEY(0, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(0, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ns",
+			},
+			require_empty_neighbors = {
+				-- Require both sides of the east-facing bridge to be empty.
+				[HASHKEY(1, 0, 1)] = true,
+				[HASHKEY(1, 0, -1)] = true,
+			},
+			probability = PLAZA_GATE_PROB,
+		},
+
+		-- Bridgewalk faces west, plaza is east of us.
+		ns_plaza_w_from_hall = {
+			schem = {
+				{file="ns_bridge_passage_w"},
+				{file="plaza_door_ew", offset={x=19, y=4, z=3}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=14, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=14, y=3, z=3}},
+			},
+			size = {x=2, y=1, z=1},
+			valid_neighbors = {
+				[HASHKEY(2, 0, 0)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_w_capped = true,
+				},
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, -1)] = PASSAGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(-1, 0, 0)] = BRIDGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(1, 1, 0)] = {roof_straight_ns=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ew=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(1, 0, 0)] = "hallway_straight_ns",
+			},
+			require_empty_neighbors = {
+				-- Require both sides of the west-facing bridge to be empty.
+				[HASHKEY(0, 0, 1)] = true,
+				[HASHKEY(0, 0, -1)] = true,
+			},
+			probability = PLAZA_GATE_PROB,
+		},
+
+		-- Bridgewalk faces north, plaza will be south of us.
+		ew_plaza_n_from_hall = {
+			schem = {
+				{file="ew_bridge_passage_n"},
+				{file="plaza_door_ns", offset={x=3, y=4, z=0}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=3}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=3}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, -1)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_n_capped = true,
+				},
+				[HASHKEY(0, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 0)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 0)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 1)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
+			},
+			require_empty_neighbors = {
+				-- Require both sides of the north-facing bridge to be empty.
+				[HASHKEY(-1, 0, 1)] = true,
+				[HASHKEY(1, 0, 1)] = true,
+			},
+			probability = PLAZA_GATE_PROB,
+		},
+
+		-- Bridgewalk faces south, plaza will be north of us.
+		ew_plaza_s_from_hall = {
+			schem = {
+				{file="ew_bridge_passage_s"},
+				{file="plaza_door_ns", offset={x=3, y=4, z=19}, priority=100},
+
+				-- Hazards need custom offset for this large chunk.
+				-- Can't use the basic macros here.
+				{file="nf_detail_lava1", chance=FLOOR_LAVA_CHANCE, rotation="random",
+					offset={x=3, y=3, z=14}},
+				{file="nf_detail_spawner1", chance=OERKKI_SPAWNER_CHANCE,
+					rotation="random", offset={x=3, y=3, z=14}},
+			},
+			size = {x=1, y=1, z=2},
+			valid_neighbors = {
+				[HASHKEY(0, 0, 2)] = {
+					large_plaza = true,
+					medium_plaza = true,
+					small_plaza = true,
+
+					-- Note that this does result in an orphan cap roof on top.
+					hallway_s_capped = true,
+				},
+				[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				[HASHKEY(1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.EAST],
+				[HASHKEY(-1, 0, 1)] = PASSAGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(0, 1, 1)] = {roof_straight_ew=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(0, -1, 0)] = {bridge_arch_ns=true},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
+				[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
+			},
+			require_empty_neighbors = {
+				-- Require both sides of the south-facing bridge to be empty.
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(1, 0, 0)] = true,
+			},
+			probability = PLAZA_GATE_PROB,
 		},
 	},
 }

@@ -179,6 +179,7 @@ local PASSAGE_CONNECT = {
 		hallway_junction = true,
 		hallway_s_capped = true,
 		hallway_s_capped_no_stair = true,
+		hallway_s_capped_no_stair_prob0 = true,
 
 		-- Corners.
 		hall_corner_se = true,
@@ -205,6 +206,7 @@ local PASSAGE_CONNECT = {
 		hallway_junction = true,
 		hallway_n_capped = true,
 		hallway_n_capped_no_stair = true,
+		hallway_n_capped_no_stair_prob0 = true,
 
 		-- Corners.
 		hall_corner_ne = true,
@@ -231,6 +233,7 @@ local PASSAGE_CONNECT = {
 		hallway_junction = true,
 		hallway_w_capped = true,
 		hallway_w_capped_no_stair = true,
+		hallway_w_capped_no_stair_prob0 = true,
 
 		-- Corners.
 		hall_corner_nw = true,
@@ -257,6 +260,7 @@ local PASSAGE_CONNECT = {
 		hallway_junction = true,
 		hallway_e_capped = true,
 		hallway_e_capped_no_stair = true,
+		hallway_e_capped_no_stair_prob0 = true,
 
 		-- Corners.
 		hall_corner_ne = true,
@@ -2536,28 +2540,44 @@ fortress.v2.fortress_data = {
 					hallway_straight_ns = true,
 					hallway_swn_t = true,
 					ns_plaza_w = true,
-					hallway_e_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hall_corner_nw = true,
+					hall_corner_sw = true,
 				},
 				-- East side.
 				[HASHKEY(1, 0, 0)] = {
 					hallway_straight_ns = true,
 					hallway_nes_t = true,
 					ns_plaza_e = true,
-					hallway_w_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hall_corner_ne = true,
+					hall_corner_se = true,
 				},
 				-- South side.
 				[HASHKEY(0, 0, -1)] = {
 					hallway_straight_ew = true,
 					hallway_esw_t = true,
 					ew_plaza_s = true,
-					hallway_n_capped_no_stair_prob0 = true,
+					hallway_n_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+					hall_corner_sw = true,
+					hall_corner_se = true,
 				},
 				-- North side.
 				[HASHKEY(0, 0, 1)] = {
 					hallway_straight_ew = true,
 					hallway_wne_t = true,
 					ew_plaza_n = true,
-					hallway_s_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+					hall_corner_ne = true,
+					hall_corner_nw = true,
 				},
 				--]]
 
@@ -2637,6 +2657,8 @@ fortress.v2.fortress_data = {
 					hallway_swn_t = true,
 					ns_plaza_w = true,
 					hallway_e_capped_no_stair = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_n_capped_no_stair_prob0 = true,
 				},
 				-- East side.
 				[HASHKEY(2, 0, 0)] = {
@@ -2644,6 +2666,8 @@ fortress.v2.fortress_data = {
 					hallway_nes_t = true,
 					ns_plaza_e = true,
 					hallway_w_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
 				},
 				-- South side.
 				[HASHKEY(0, 0, -1)] = {
@@ -2651,6 +2675,8 @@ fortress.v2.fortress_data = {
 					hallway_esw_t = true,
 					ew_plaza_s = true,
 					hallway_n_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
 				},
 				-- North side.
 				[HASHKEY(1, 0, 2)] = {
@@ -2658,6 +2684,8 @@ fortress.v2.fortress_data = {
 					hallway_wne_t = true,
 					ew_plaza_n = true,
 					hallway_s_capped_no_stair = true,
+					hallway_w_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
 				},
 				--]]
 

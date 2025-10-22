@@ -32,7 +32,7 @@ end
 
 
 local function report_chunk_usage_results(params)
-	local determined_chunks = params.traversal.determined
+	local chunk_usage = params.chunk_usage
 
 	-- Add these tables if the user_results table doesn't have them yet.
 	params.user_results.chunks_used = params.user_results.chunks_used or {}
@@ -42,9 +42,9 @@ local function report_chunk_usage_results(params)
 	local chunks_used = params.user_results.chunks_used
 	local chunk_counts = params.user_results.chunk_counts
 
-	for _, chunkname in pairs(determined_chunks) do
-		chunks_used[chunkname] = true
-		chunk_counts[chunkname] = (chunk_counts[chunkname] or 0) + 1
+	for _, info in ipairs(chunk_usage) do
+		chunks_used[info.name] = true
+		chunk_counts[info.name] = (chunk_counts[info.name] or 0) + 1
 	end
 end
 

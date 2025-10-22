@@ -7,14 +7,15 @@ end
 function fortress.v2.show_command_help(pname)
 	local strings = {
 		"Spawn a v2 fortress (rule-constrained) at your location.",
-		"Command usages:",
-		"    /genfort <seednumber>",
-		"    /genfort <seednumber> <iterationcount>",
+		"Common command usages:",
+		"    /genfort seed=<seednumber>",
+		"    /genfort seed=<seednumber> iterations=<count>",
 		"    /genfort clear",
 		"    /genfort dryrun",
-		"    /genfort dryrun <seednumber>",
-		"    /genfort dryrun <seednumber> <iterationcount>",
+		"    /genfort dryrun seed=<seednumber>",
+		"    /genfort dryrun seed=<seednumber> iterations=<count>",
 		"    /genfort test",
+		"    /genfort force seed=<seednumber>",
 		"Include \"quiet\" in any command to suppress chat output.",
 		"Use \"force\" to force writing to map even if fortgen fails.",
 		"Use \"start=<chunkname>\" to start with a specific chunk.",
@@ -104,29 +105,22 @@ function fortress.v2.chat_command(pname, textparam)
 	end
 
 	local args = textparam:split(" ")
-	if args[1] == "clear" then
-		if fortress.v2.has_saved_info() then
-			minetest.chat_send_player(pname,
-				"# Server: Genfort continuation params cleared.")
-		else
-			minetest.chat_send_player(pname, "# Server: Nothing to be done.")
-		end
-		fortress.v2.clear_saved_info()
-		return
-	end
 
+	local randseed = nil
+	local maxiter = nil
 	local run_tests = false
 	local dry_run = false
-	local seednum_offset = 1
-	local maxiter_offset = 2
-
-	local starting_chunk
+	local starting_chunk = nil
 	local quiet = false
 	local force_write = false
 
+	-- Parse arguments.
 	for k, v in ipairs(args) do
 		if v == "quiet" then quiet = true end
 		if v == "force" then force_write = true end
+		if v == "dryrun" then dry_run = true end
+		if v == "test" then run_tests = true end
+
 		if v:find("start=") then
 			local chunkname = string.split(v, "=")[2]
 			if chunkname and fortress.v2.fortress_data.chunks[chunkname] then
@@ -136,32 +130,42 @@ function fortress.v2.chat_command(pname, textparam)
 				return
 			end
 		end
+
+		if v == "clear" then
+			if fortress.v2.has_saved_info() then
+				minetest.chat_send_player(pname,
+					"# Server: Genfort continuation params cleared.")
+			else
+				minetest.chat_send_player(pname, "# Server: Nothing to be done.")
+			end
+			fortress.v2.clear_saved_info()
+			return
+		end
+
+		if v:find("seed=") then
+			local seedstr = string.split(v, "=")[2]
+			if seedstr and tonumber(seedstr) then
+				randseed = math.abs(math.floor(tonumber(seedstr)))
+			else
+				minetest.chat_send_player(pname, "# Server: Invalid seed.")
+				return
+			end
+		end
+
+		if v:find("iterations=") then
+			local iterstr = string.split(v, "=")[2]
+			if iterstr and tonumber(iterstr) then
+				maxiter = math.abs(math.floor(tonumber(iterstr)))
+			else
+				minetest.chat_send_player(pname, "# Server: Invalid iteration count.")
+				return
+			end
+		end
 	end
 
-	if args[1] == "dryrun" then
-		dry_run = true
-		seednum_offset = 2
-		maxiter_offset = 3
-	elseif args[1] == "test" then
-		-- Running tests means we don't care about other arguments.
-		run_tests = true
-	end
-
-	local randseed, maxiter
-
-	if not run_tests then
-		randseed = args[seednum_offset] and tonumber(args[seednum_offset])
-		if randseed then randseed = math.abs(math.floor(randseed)) end
-
-		maxiter = args[maxiter_offset] and tonumber(args[maxiter_offset])
-		if maxiter then maxiter = math.abs(math.floor(maxiter)) end
-	end
-
-	if randseed then
-		minetest.log("action", "User specified SEED: " .. randseed)
-	end
-	if maxiter then
-		minetest.log("action", "User specified Iteration Count: " .. maxiter)
+	if dry_run and force_write then
+		minetest.chat_send_player(pname, "# Server: Mutually exclusive options.")
+		return
 	end
 
 	-- Log to chat and debug.txt, or be quiet.
@@ -188,6 +192,7 @@ function fortress.v2.chat_command(pname, textparam)
 				spawn_pos = vector.round(player:get_pos()),
 				fortress_data = fortress.v2.fortress_data,
 
+				-- Max iterations and starting seed are NOT used in tests.
 				starting_chunk = starting_chunk,
 				dry_run = true,
 				log = chatlogger,

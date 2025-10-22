@@ -251,10 +251,17 @@ function fortress.v2.process_chunk(params)
 	end
 
 	if try_count > try_limit then
+		local array_possibilities = {}
+		for name, _ in pairs(potential[originalposhash]) do
+			array_possibilities[#array_possibilities + 1] = name
+		end
+
 		params.log("warning", "Iteration canceled!")
 		params.log("warning", "Chunk: " .. chunkname)
 		params.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
 		params.log("warning", "After " .. try_limit .. " iterations.")
+		params.log("warning", "Remaining available choices were: {" ..
+			table.concat(array_possibilities, ", ") .. "}")
 		-- Treat this as a non-fatal error for testing; it means the generated
 		-- fort will have missing sections.
 		-- Don't allow an incomplete fortress to be spawned for players!
@@ -446,8 +453,12 @@ function fortress.v2.process_chunk(params)
 
 	-- Step 2: add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
-	determined[HASH_POSITION(chunkpos)] = chunkname
+	local finalposhash = HASH_POSITION(chunkpos)
+	determined[finalposhash] = chunkname
 	potential[originalposhash] = nil
+
+	params.chunk_usage[#params.chunk_usage + 1] =
+		{name=chunkname, hash=finalposhash}
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
@@ -465,7 +476,7 @@ function fortress.v2.process_chunk(params)
 		end
 
 		-- Notify the schematic placer.
-		override_chunk_schems[HASH_POSITION(chunkpos)] = chunkname
+		override_chunk_schems[finalposhash] = chunkname
 	end
 
 	-- Step 3: update the limits count.

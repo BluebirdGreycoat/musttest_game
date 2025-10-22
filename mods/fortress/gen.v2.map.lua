@@ -168,9 +168,9 @@ function fortress.v2.apply_layout(params)
 		local x0 = pos.x
 		local y0 = pos.y
 		local z0 = pos.z
-		local x1 = pos.x + step.x
-		local y1 = pos.y + step.y
-		local z1 = pos.z + step.z
+		local x1 = pos.x + step.x - 1
+		local y1 = pos.y + step.y - 1
+		local z1 = pos.z + step.z - 1
 		local rng = params.yeskings
 
 		for z = z0, z1 do
@@ -222,9 +222,9 @@ function fortress.v2.apply_layout(params)
 			local x0 = pos.x
 			local y0 = pos.y
 			local z0 = pos.z
-			local x1 = pos.x + step.x
-			local y1 = pos.y + step.y
-			local z1 = pos.z + step.z
+			local x1 = pos.x + step.x - 1
+			local y1 = pos.y + step.y - 1
+			local z1 = pos.z + step.z - 1
 
 			for z = z0, z1 do
 				for x = x0, x1 do

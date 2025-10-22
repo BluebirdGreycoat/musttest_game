@@ -234,6 +234,10 @@ function fortress.v2.gen_init(user_params)
 		-- own chunk, if the user didn't specify.
 		starting_chunk = user_params.starting_chunk,
 
+		-- Array list of all chunks created.
+		-- Elements are subtables with position hash and chunk name.
+		chunk_usage = {},
+
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
 	}

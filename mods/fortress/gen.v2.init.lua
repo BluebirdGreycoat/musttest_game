@@ -120,6 +120,11 @@ local function choose_initial_chunk(params)
 	local choices = params.initial_chunks
 	local initial_chunk = choices[params.yeskings(1, #choices)]
 
+	-- The user can override.
+	if params.starting_chunk then
+		initial_chunk = params.starting_chunk
+	end
+
 	if not params.chunks[initial_chunk] then
 		params.log("error", "Invalid starting chunk.")
 		return -- Handle error.
@@ -129,6 +134,7 @@ local function choose_initial_chunk(params)
 	params.traversal.potential[HASH_POSITION({x=0, y=0, z=0})] = {
 		[initial_chunk] = true,
 	}
+	params.starting_chunk = initial_chunk
 
 	return true
 end
@@ -222,6 +228,11 @@ function fortress.v2.gen_init(user_params)
 		-- If 'true', nothing will be written to map, but everything else will be
 		-- done. Useful for testing the algorithm with changes to fort data.
 		dry_run = user_params.dry_run,
+
+		-- The user can specify a specific starting chunk, instead of letting the
+		-- algorithm choose one at random. This key is ALSO set when we choose our
+		-- own chunk, if the user didn't specify.
+		starting_chunk = user_params.starting_chunk,
 
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!

@@ -17,6 +17,7 @@ function fortress.v2.show_command_help(pname)
 		"    /genfort test",
 		"Include \"quiet\" in any command to suppress chat output.",
 		"Use \"force\" to force writing to map even if fortgen fails.",
+		"Use \"start=<chunkname>\" to start with a specific chunk.",
 	}
 
 	for k, v in ipairs(strings) do
@@ -119,12 +120,22 @@ function fortress.v2.chat_command(pname, textparam)
 	local seednum_offset = 1
 	local maxiter_offset = 2
 
+	local starting_chunk
 	local quiet = false
 	local force_write = false
 
 	for k, v in ipairs(args) do
 		if v == "quiet" then quiet = true end
 		if v == "force" then force_write = true end
+		if v:find("start=") then
+			local chunkname = string.split(v, "=")[2]
+			if chunkname and fortress.v2.fortress_data.chunks[chunkname] then
+				starting_chunk = chunkname
+			else
+				minetest.chat_send_player(pname, "# Server: Invalid chunk name.")
+				return
+			end
+		end
 	end
 
 	if args[1] == "dryrun" then
@@ -173,6 +184,7 @@ function fortress.v2.chat_command(pname, textparam)
 				spawn_pos = vector.round(player:get_pos()),
 				fortress_data = fortress.v2.fortress_data,
 
+				starting_chunk = starting_chunk,
 				dry_run = true,
 				log = chatlogger,
 
@@ -214,6 +226,7 @@ function fortress.v2.chat_command(pname, textparam)
 			max_iterations = maxiter,
 			dry_run = dry_run,
 			force_write = force_write,
+			starting_chunk = starting_chunk,
 
 			-- If nil, the fortgen will write to debug.txt by default.
 			log = chatlogger,

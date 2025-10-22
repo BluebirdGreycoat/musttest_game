@@ -275,6 +275,66 @@ end
 
 
 
+-- Write possibility (neighbor) lists into the list of indeterminate potentials.
+local function write_neighbors(params, chunkpos, chunkdata, newneighbors)
+	local determined = params.traversal.determined
+	local potential = params.traversal.potential
+
+	local function IS_CLAIMED(hash)
+		local spawn_pos = params.spawn_pos
+		local chunk_step = params.step
+		local occupied = fortress.v2.OCCUPIED_LOCATIONS
+		return already_claimed(spawn_pos, chunk_step, hash, occupied)
+	end
+
+	for dir, chunks in pairs(newneighbors) do
+		-- Calculate the index hash of the neighboring position.
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
+		local neighborhash = HASH_POSITION(neighborpos)
+
+		-- Keep data structure clean; skip empties.
+		if not next(chunks) then goto skip_empty end
+
+		-- Also, do not add to 'potential' if already defined in 'determined.'
+		-- This prevents trying to overwrite parts already generated.
+		-- The neighbor checks we do elsewhere should have ensured that this
+		-- does not create invalid adjacent combinations.
+		if not determined[neighborhash] and not IS_CLAIMED(neighborhash) then
+			local finalchunks = chunks
+
+			-- Finally, if the chunkdata defines enabled neighbors, we should
+			-- additionally filter the neighbor chunk list by that.
+			--
+			-- Note that if 'enabled_neighbors' is not present then only data from
+			-- 'valid_neighbors' is used (filtered as elsewhere in the algorithm).
+			--
+			-- The purpose of 'enabled_neighbors' is to allow a chunk to define
+			-- (in 'valid_neighbors') that it's OK being placed next to a named
+			-- adjacent chunk, but (if not included in 'enabled_neighbors') that
+			-- chunk will never be spawned from THIS chunk. Example: you want a
+			-- broken bridge peice to allow itself to be placed next to another
+			-- broken bridge facing the opposite direction, but you DON'T want
+			-- that neighbor to be spawned unless it was already there from
+			-- another source.
+			if chunkdata.enabled_neighbors then
+				local enabled_dir = chunkdata.enabled_neighbors[dir]
+				if enabled_dir then
+					finalchunks = intersect(chunks, enabled_dir)
+				end
+			end
+
+			-- Add these possible neighbors to the neighbor positions.
+			-- These "potentials" will be selected from by the next run of the
+			-- algorithm.
+			potential[neighborhash] = finalchunks
+		end
+
+		::skip_empty::
+	end
+end
+
+
+
 -- This is the core of the Wave Function Collapse (TM) algorithm.
 -- It's just marketing lingo. This is actually just a rules-constraint system.
 -- Function must be called in a loop until it says 'enough!'
@@ -524,53 +584,27 @@ function fortress.v2.process_chunk(params)
 
 	-- Step 2: add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
-	local finalposhash = HASH_POSITION(chunkpos)
-	determined[finalposhash] = chunkname
+	-- Note that for large chunks, these two positions are (often) not the same.
+	determined[HASH_POSITION(chunkpos)] = chunkname
 	potential[originalposhash] = nil
-
-	-- Also list all chunks placed in an array of {name, hash} pairs.
-	params.chunk_usage[#params.chunk_usage + 1] =
-		{name=chunkname, hash=finalposhash}
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
 	write_footprint(params, chunkpos, chunkdata)
 
-	-- Step 3: update the limits count.
+	-- Step 3: update neighbor lists.
+	-- We skip this if the current chunk (we just added to 'determined') has no
+	-- defined neighbors. This is common for "end cap" pieces.
+	if neighbors_to_update then
+		write_neighbors(params, chunkpos, chunkdata, neighbors_to_update)
+	end
+
+	-- Update the chunk limits count.
 	chunk_limits[chunkname] = (chunk_limits[chunkname] or 0) + 1
 
-	-- Step 4: update neighbor lists.
-	-- We skip this if the current chunk (we just added to 'determined') has no
-	-- defined neighbors.
-	if neighbors_to_update then
-		for dir, chunks in pairs(neighbors_to_update) do
-			if next(chunks) then -- Keep data structure clean; skip empties.
-				-- Calculate the index hash of the neighboring position.
-				local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
-				local neighborhash = HASH_POSITION(neighborpos)
-
-				-- Also, do not add to 'potential' if already defined in 'determined.'
-				-- This prevents trying to overwrite parts already generated.
-				if not determined[neighborhash] and not IS_CLAIMED(neighborhash) then
-					local finalchunks = chunks
-
-					-- Finally, if the chunkdata defines enabled neighbors, we should
-					-- additionally filter the neighbor chunk list by that.
-					--
-					-- Note that if 'enabled_neighbors' is not present then only data from
-					-- 'valid_neighbors' is used (filtered as above in this function).
-					if chunkdata.enabled_neighbors then
-						local enabled_dir = chunkdata.enabled_neighbors[dir]
-						if enabled_dir then
-							finalchunks = intersect(chunks, enabled_dir)
-						end
-					end
-
-					potential[neighborhash] = finalchunks
-				end
-			end
-		end
-	end
+	-- Also list all chunks placed in an array of {name, hash} pairs.
+	params.chunk_usage[#params.chunk_usage + 1] =
+		{name=chunkname, hash=HASH_POSITION(chunkpos)}
 
 	-- Finished one iteration successfully.
 	return true

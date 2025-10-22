@@ -232,6 +232,9 @@ function fortress.v2.gen_init(user_params)
 		return params.trump:next(min, max)
 	end
 
+	-- Store seed number in user results.
+	params.user_results.seednumber = params.randomseed
+
 	-- Chose how big the fortress will be.
 	params.max_extent = select_max_extent(params, FORTDATA)
 	params.log("action", "Fortress extents: " .. POS_TO_STR(params.max_extent))

@@ -162,6 +162,7 @@ function fortress.v2.chat_command(pname, textparam)
 		local time0 = os.clock()
 
 		local user_results = {}
+		local bad_seeds = {}
 
 		for k = 1, test_count do
 			-- Saved info will mess up tests.
@@ -179,6 +180,9 @@ function fortress.v2.chat_command(pname, textparam)
 				user_results = user_results,
 			}) then
 				errors = errors + 1
+				if user_results.seednumber then
+					bad_seeds[#bad_seeds + 1] = user_results.seednumber
+				end
 			end
 		end
 
@@ -193,6 +197,12 @@ function fortress.v2.chat_command(pname, textparam)
 
 		report_chunks_never_used(pname, user_results,
 			fortress.v2.fortress_data.chunks)
+
+		-- Report which seed numbers errored.
+		if #bad_seeds > 0 then
+			minetest.chat_send_player(pname,
+				"# Server: Bad seeds: " .. table.concat(bad_seeds, ", ") .. ".")
+		end
 	else
 		fortress.v2.make_fort({
 			-- Required parameters.

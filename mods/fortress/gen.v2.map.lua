@@ -147,6 +147,7 @@ function fortress.v2.apply_layout(params)
 	local c_block = minetest.get_content_id("rackstone:blackrack_block")
 	local c_slab = minetest.get_content_id("stairs:slab_rackstone_brick_black")
 	local c_debug = minetest.get_content_id("wool:yellow")
+	local c_debug_start = minetest.get_content_id("wool:red")
 
 	-- Note: replacements can only be sensibly defined for the entire fortress
 	-- sheet as a whole. Defining custom replacement lists for individual fortress
@@ -207,12 +208,15 @@ function fortress.v2.apply_layout(params)
 
 	if params.bad_chunkpos then
 		params.log("error", "Writing debug wool.")
-		local chunkpos = params.bad_chunkpos
-		local step = params.step
-		local spawn = params.spawn_pos
-		local add = vector.add
-		local mul = vector.multiply
-		local realpos = add(spawn, mul(chunkpos, step))
+
+		local function make_worldpos(chunkpos)
+			local step = params.step
+			local spawn = params.spawn_pos
+			local add = vector.add
+			local mul = vector.multiply
+			local realpos = add(spawn, mul(chunkpos, step))
+			return realpos
+		end
 
 		local function putwool(vm_data, pos, step, area, content)
 			local x0 = pos.x
@@ -225,14 +229,22 @@ function fortress.v2.apply_layout(params)
 			for z = z0, z1 do
 				for x = x0, x1 do
 					for y = y0, y1 do
-						local vp = area:index(x, y, z)
-						vm_data[vp] = content
+						if ((x == x0 or x == x1) and (y == y0 or y == y1)) or
+								((x == x0 or x == x1) and (z == z0 or z == z1)) or
+									((y == y0 or y == y1) and (z == z0 or z == z1)) then
+							local vp = area:index(x, y, z)
+							vm_data[vp] = content
+						end
 					end
 				end
 			end
 		end
 
-		putwool(vm_data, realpos, step, area, c_debug)
+		local errorpos = make_worldpos(params.bad_chunkpos)
+		local startpos = make_worldpos({x=0, y=0, z=0})
+
+		putwool(vm_data, errorpos, step, area, c_debug)
+		putwool(vm_data, startpos, step, area, c_debug_start)
 	end
 
 	vm:set_data(vm_data)

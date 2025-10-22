@@ -1452,6 +1452,127 @@ fortress.v2.fortress_data = {
 			},
 		},
 
+		-- Probability ZERO hall caps. To be used only by the most desperate.
+		hallway_n_capped_no_stair_prob0 = {
+			schem = {
+				{file="nf_passage_n_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_n=true},
+			},
+			probability = 0,
+			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=3, z_max=10},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=10},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
+		},
+
+		hallway_s_capped_no_stair_prob0 = {
+			schem = {
+				{file="nf_passage_s_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_s=true},
+			},
+			probability = 0,
+			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=7, y=4, z=7},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x=3, y=4, z_min=0, z_max=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=0, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
+		},
+
+		hallway_e_capped_no_stair_prob0 = {
+			schem = {
+				{file="nf_passage_e_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="90", force=false,
+					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_e=true},
+			},
+			probability = 0,
+			fallback = true,
+			chests = {
+				{pos={x_min=3, x_max=10, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=3, x_max=10, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=3, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
+		},
+
+		hallway_w_capped_no_stair_prob0 = {
+			schem = {
+				{file="nf_passage_w_capped"},
+
+				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Outside window decorations.
+				{file="fortress_window_deco", chance=80, rotation="270", force=false,
+					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="0", force=false,
+					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=70, rotation="180", force=false,
+					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+			},
+			valid_neighbors = {
+				[DIRNAME.DOWN] = {solid_top=true},
+				[DIRNAME.UP] = {roof_capped_w=true},
+			},
+			probability = 0,
+			fallback = true,
+			chests = {
+				{pos={x_min=0, x_max=7, y=4, z=3},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=0, x_max=7, y=4, z=7},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x=7, y=4, z_min=3, z_max=7},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
+		},
+
 		-- Hallway/passage corners.
 		hall_corner_ne = {
 			schem = {
@@ -1821,6 +1942,8 @@ fortress.v2.fortress_data = {
 					hallway_swn_t = true,
 					ns_plaza_w = true,
 					hallway_e_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
 				},
 				-- East side.
 				[HASHKEY(3, 0, 1)] = {
@@ -1828,6 +1951,8 @@ fortress.v2.fortress_data = {
 					hallway_nes_t = true,
 					ns_plaza_e = true,
 					hallway_w_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
 				},
 				-- South side.
 				[HASHKEY(1, 0, -1)] = {
@@ -1835,6 +1960,8 @@ fortress.v2.fortress_data = {
 					hallway_esw_t = true,
 					ew_plaza_s = true,
 					hallway_n_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
 				},
 				-- North side.
 				[HASHKEY(1, 0, 3)] = {
@@ -1842,23 +1969,57 @@ fortress.v2.fortress_data = {
 					hallway_wne_t = true,
 					ew_plaza_n = true,
 					hallway_s_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
 				},
 				--]]
 
 				-- Require both sides of all four possible entrances to be hallways.
 				-- Both sides of south entrance.
 				---[[
-				[HASHKEY(0, 0, -1)] = {hallway_straight_ew=true},
-				[HASHKEY(2, 0, -1)] = {hallway_straight_ew=true},
+				[HASHKEY(0, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_n_capped_no_stair_prob0 = true,
+				},
+				[HASHKEY(2, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
 				-- Both sides of north entrance.
-				[HASHKEY(0, 0, 3)] = {hallway_straight_ew=true},
-				[HASHKEY(2, 0, 3)] = {hallway_straight_ew=true},
+				[HASHKEY(0, 0, 3)] = {
+					hallway_straight_ew = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
+				[HASHKEY(2, 0, 3)] = {
+					hallway_straight_ew = true,
+					hallway_w_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
+				},
 				-- Both sides of west entrance.
-				[HASHKEY(-1, 0, 0)] = {hallway_straight_ns=true},
-				[HASHKEY(-1, 0, 2)] = {hallway_straight_ns=true},
+				[HASHKEY(-1, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
+				[HASHKEY(-1, 0, 2)] = {
+					hallway_straight_ns = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
 				-- Both sides of east entrance.
-				[HASHKEY(3, 0, 0)] = {hallway_straight_ns=true},
-				[HASHKEY(3, 0, 2)] = {hallway_straight_ns=true},
+				[HASHKEY(3, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
+				[HASHKEY(3, 0, 2)] = {
+					hallway_straight_ns = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
 				--]]
 
 				-- Now the corners.
@@ -2375,28 +2536,28 @@ fortress.v2.fortress_data = {
 					hallway_straight_ns = true,
 					hallway_swn_t = true,
 					ns_plaza_w = true,
-					hallway_e_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
 				},
 				-- East side.
 				[HASHKEY(1, 0, 0)] = {
 					hallway_straight_ns = true,
 					hallway_nes_t = true,
 					ns_plaza_e = true,
-					hallway_w_capped_no_stair = true,
+					hallway_w_capped_no_stair_prob0 = true,
 				},
 				-- South side.
 				[HASHKEY(0, 0, -1)] = {
 					hallway_straight_ew = true,
 					hallway_esw_t = true,
 					ew_plaza_s = true,
-					hallway_n_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
 				},
 				-- North side.
 				[HASHKEY(0, 0, 1)] = {
 					hallway_straight_ew = true,
 					hallway_wne_t = true,
 					ew_plaza_n = true,
-					hallway_s_capped_no_stair = true,
+					hallway_s_capped_no_stair_prob0 = true,
 				},
 				--]]
 
@@ -2468,7 +2629,7 @@ fortress.v2.fortress_data = {
 				[HASHKEY(0, -1, 1)] = {solid_top=true},
 				[HASHKEY(1, -1, 1)] = {solid_top=true},
 
-				-- Edges.
+				-- Entrances on the edges.
 				---[[
 				-- West side.
 				[HASHKEY(-1, 0, 1)] = {
@@ -2503,13 +2664,29 @@ fortress.v2.fortress_data = {
 				-- Require the left sides of all possible entrances to be hallways.
 				-- Left side of south entrance.
 				---[[
-				[HASHKEY(1, 0, -1)] = {hallway_straight_ew=true},
+				[HASHKEY(1, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
 				-- Left side of north entrance.
-				[HASHKEY(0, 0, 2)] = {hallway_straight_ew=true},
+				[HASHKEY(0, 0, 2)] = {
+					hallway_straight_ew = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
 				-- Left side of west entrance.
-				[HASHKEY(-1, 0, 0)] = {hallway_straight_ns=true},
+				[HASHKEY(-1, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
 				-- Left side of east entrance.
-				[HASHKEY(2, 0, 1)] = {hallway_straight_ns=true},
+				[HASHKEY(2, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
 				--]]
 
 				-- Now the corners.

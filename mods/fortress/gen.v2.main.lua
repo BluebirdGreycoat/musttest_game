@@ -7,11 +7,26 @@ fortress.v2 = fortress.v2 or {}
 -- if a particular position was already occupied by a previously-generated fort.
 -- Note that in order for this to be efficient, fortress spawn locations need to
 -- be locked to multiples of the fortress step size. See INIT function.
-fortress.v2.OCCUPIED_LOCATIONS = {}
+fortress.v2.OCCUPIED_LOCATIONS = fortress.v2.OCCUPIED_LOCATIONS or {}
 
 local HASH_POSITION = minetest.hash_node_position
 local UNHASH_POSITION = minetest.get_position_from_hash
 local POS_TO_STR = minetest.pos_to_string
+
+
+
+function fortress.v2.has_saved_info()
+	if fortress.v2.CONTINUATION_PARAMS or fortress.v2.OCCUPIED_LOCATIONS then
+		return true
+	end
+end
+
+
+
+function fortress.v2.clear_saved_info()
+	fortress.v2.CONTINUATION_PARAMS = nil
+	fortress.v2.OCCUPIED_LOCATIONS = {}
+end
 
 
 
@@ -112,6 +127,9 @@ function fortress.v2.make_fort(user_params)
 		if not params.dry_run then
 			fortress.v2.write_map(params)
 		end
+
+		-- Report success.
+		return true
 	else
 		params.log("error", "Fortgen algorithm failure!")
 		params.log("error", "Not writing anything to map.")

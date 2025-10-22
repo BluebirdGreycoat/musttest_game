@@ -3,6 +3,14 @@ function fortress.v2.get_chat_command_params_desc()
 	return "[<seednumber>|clear|dryrun [<seednumber>]] [<iterationcount>]"
 end
 
+local function pluralize(count, singular, plural)
+	if count == 1 then
+		return singular
+	end
+
+	return plural
+end
+
 
 
 -- Called from debug chat command.
@@ -14,14 +22,14 @@ function fortress.v2.chat_command(pname, textparam)
 
 	local args = textparam:split(" ")
 	if args[1] == "clear" then
-		if fortress.v2.CONTINUATION_PARAMS or fortress.v2.OCCUPIED_LOCATIONS then
+		if fortress.v2.has_saved_info() then
 			minetest.log("action", "Genfort continuation params cleared.")
 		end
-		fortress.v2.CONTINUATION_PARAMS = nil
-		fortress.v2.OCCUPIED_LOCATIONS = {}
+		fortress.v2.clear_saved_info()
 		return
 	end
 
+	local run_tests = false
 	local dry_run = false
 	local seednum_offset = 1
 	local maxiter_offset = 2
@@ -35,6 +43,9 @@ function fortress.v2.chat_command(pname, textparam)
 		dry_run = true
 		seednum_offset = 2
 		maxiter_offset = 3
+	elseif args[1] == "test" then
+		-- Running tests means we don't care about other arguments.
+		run_tests = true
 	end
 
 	local randseed = args[seednum_offset] and tonumber(args[seednum_offset])
@@ -55,19 +66,50 @@ function fortress.v2.chat_command(pname, textparam)
 		minetest.log(info, text)
 		minetest.chat_send_player(pname, "# Server: " .. text)
 	end
-	if quiet then chatlogger = nil end
+	if quiet or run_tests then chatlogger = nil end
 
-	fortress.v2.make_fort({
-		-- Required parameters.
-		spawn_pos = vector.round(player:get_pos()),
-		fortress_data = fortress.v2.fortress_data,
+	if run_tests then
+		-- Saved info will mess up tests.
+		fortress.v2.clear_saved_info()
 
-		-- Optional parameters.
-		user_seed = randseed,
-		max_iterations = maxiter,
-		dry_run = dry_run,
+		local test_count = 100
+		local errors = 0
+		local time0 = os.clock()
 
-		-- If nil, the fortgen will write to debug.txt by default.
-		log = chatlogger,
-	})
+		for k = 1, test_count do
+			if not fortress.v2.make_fort({
+				-- Required parameters.
+				spawn_pos = vector.round(player:get_pos()),
+				fortress_data = fortress.v2.fortress_data,
+
+				dry_run = true,
+				log = chatlogger,
+			}) then
+				errors = errors + 1
+			end
+		end
+
+		local time1 = os.clock()
+		local elapsed = time1 - time0
+
+		minetest.chat_send_player(pname,
+			"# Server: Ran " .. test_count .. " tests. " .. errors .. " " ..
+				pluralize(errors, "error", "errors") .. ".")
+		minetest.chat_send_player(pname,
+			"# Server: " .. string.format("%.2f", elapsed) .. " seconds elapsed.")
+	else
+		fortress.v2.make_fort({
+			-- Required parameters.
+			spawn_pos = vector.round(player:get_pos()),
+			fortress_data = fortress.v2.fortress_data,
+
+			-- Optional parameters.
+			user_seed = randseed,
+			max_iterations = maxiter,
+			dry_run = dry_run,
+
+			-- If nil, the fortgen will write to debug.txt by default.
+			log = chatlogger,
+		})
+	end
 end

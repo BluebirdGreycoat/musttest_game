@@ -44,6 +44,7 @@ function fortress.v2.make_fort(user_params)
 
 	-- Algorithm start time.
 	params.time = os.time()
+	local ALGORITHMTIME0 = os.clock()
 
 	if user_params.max_iterations and user_params.max_iterations < 1 then
 		params.log("action", "No iterations to execute.")
@@ -77,6 +78,11 @@ function fortress.v2.make_fort(user_params)
 	-- iterations being reached!
 	params.final_flag = true
 	::skip_setting_final_flag::
+
+	local ALGORITHMTIME1 = os.clock()
+	local TIMEELAPSED = ALGORITHMTIME1 - ALGORITHMTIME0
+	params.log("action", string.format("%.2f", TIMEELAPSED) ..
+		" seconds elapsed generating pattern.")
 
 	if not next(params.traversal.determined) then
 		params.log("error", "No chunks were added to fortress layout.")

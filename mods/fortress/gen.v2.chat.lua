@@ -147,11 +147,15 @@ function fortress.v2.chat_command(pname, textparam)
 		run_tests = true
 	end
 
-	local randseed = args[seednum_offset] and tonumber(args[seednum_offset])
-	if randseed then randseed = math.abs(math.floor(randseed)) end
+	local randseed, maxiter
 
-	local maxiter = args[maxiter_offset] and tonumber(args[maxiter_offset])
-	if maxiter then maxiter = math.abs(math.floor(maxiter)) end
+	if not run_tests then
+		randseed = args[seednum_offset] and tonumber(args[seednum_offset])
+		if randseed then randseed = math.abs(math.floor(randseed)) end
+
+		maxiter = args[maxiter_offset] and tonumber(args[maxiter_offset])
+		if maxiter then maxiter = math.abs(math.floor(maxiter)) end
+	end
 
 	if randseed then
 		minetest.log("action", "User specified SEED: " .. randseed)

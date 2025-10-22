@@ -259,6 +259,7 @@ function fortress.v2.process_chunk(params)
 		-- fort will have missing sections.
 		-- Don't allow an incomplete fortress to be spawned for players!
 		-- It looks stupid and unprofessional.
+		params.bad_chunkpos = chunkpos
 		params.algorithm_fail = true
 		return
 	end

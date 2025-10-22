@@ -146,6 +146,7 @@ function fortress.v2.apply_layout(params)
 	local c_brick = minetest.get_content_id("rackstone:brick_black")
 	local c_block = minetest.get_content_id("rackstone:blackrack_block")
 	local c_slab = minetest.get_content_id("stairs:slab_rackstone_brick_black")
+	local c_debug = minetest.get_content_id("wool:yellow")
 
 	-- Note: replacements can only be sensibly defined for the entire fortress
 	-- sheet as a whole. Defining custom replacement lists for individual fortress
@@ -202,6 +203,36 @@ function fortress.v2.apply_layout(params)
 
 	for k, v in ipairs(params.build.schems) do
 		decorate(vm_data, v.pos) -- Pos should be in worldspace.
+	end
+
+	if params.bad_chunkpos then
+		params.log("error", "Writing debug wool.")
+		local chunkpos = params.bad_chunkpos
+		local step = params.step
+		local spawn = params.spawn_pos
+		local add = vector.add
+		local mul = vector.multiply
+		local realpos = add(spawn, mul(chunkpos, step))
+
+		local function putwool(vm_data, pos, step, area, content)
+			local x0 = pos.x
+			local y0 = pos.y
+			local z0 = pos.z
+			local x1 = pos.x + step.x
+			local y1 = pos.y + step.y
+			local z1 = pos.z + step.z
+
+			for z = z0, z1 do
+				for x = x0, x1 do
+					for y = y0, y1 do
+						local vp = area:index(x, y, z)
+						vm_data[vp] = content
+					end
+				end
+			end
+		end
+
+		putwool(vm_data, realpos, step, area, c_debug)
 	end
 
 	vm:set_data(vm_data)

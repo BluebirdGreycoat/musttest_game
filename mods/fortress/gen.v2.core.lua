@@ -216,6 +216,65 @@ end
 
 
 
+-- Given a max bounding box size (from origin), make a list of all the negative
+-- offsets that could be added to shift the box around the origin.
+local function calculate_negative_offsets(size)
+	local v = size
+	local a = {}
+	for x = 0, v.x - 1 do
+		for y = 0, v.y - 1 do
+			for z = 0, v.z - 1 do
+				a[#a + 1] = {x=-x, y=-y, z=-z}
+			end
+		end
+	end
+	return a
+end
+
+
+
+-- Write a chunk's footprint (if it has one) into the list of determined chunks.
+local function write_footprint(params, chunkpos, chunkdata)
+	local override = params.override_chunk_schems
+	local determined = params.traversal.determined
+	local potential = params.traversal.potential
+	local footprint = chunkdata.footprint
+	local poshash = HASH_POSITION(chunkpos)
+
+	-- Most chunks don't define this.
+	-- We don't need to do anything for them.
+	if not footprint then return end
+
+	for hashpos, name in pairs(footprint) do
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
+		local neighborhash = HASH_POSITION(neighborpos)
+
+		-- Note that a chunk's footprint is allowed to specify the names of other,
+		-- unrelated chunks, in case you want the algorithm to treat those locations
+		-- as if they were actually occupied by those other chunks. For example,
+		-- a combined bridge/hallway chunk (taking up 2 tiles of space) could have a
+		-- footprint that defines its "bridge part" as an ordinary bridge, and the
+		-- "hallway part" could simply be named as another existing hallway piece.
+		determined[neighborhash] = name
+
+		-- Make sure all potentials within this footprint are empty.
+		-- We should already have assured that this is the case by reading from
+		-- 'require_empty_neighbors' defined in the chunk data, but if that data is
+		-- bad, this WILL create a bug. The fix is to fix your data.
+		potential[neighborhash] = nil
+
+		-- Notify the schematic placer: fill entire footprint with IGNORE.
+		-- This tells the schem placer that this location needs special handling,
+		-- because what is in 'determined' isn't the actual schematic we place.
+		override[neighborhash] = "IGNORE" -- Special value.
+	end
+
+	-- Notify the schematic placer.
+	override[poshash] = chunkname
+end
+
+
+
 -- This is the core of the Wave Function Collapse (TM) algorithm.
 -- It's just marketing lingo. This is actually just a rules-constraint system.
 -- Function must be called in a loop until it says 'enough!'
@@ -254,9 +313,10 @@ function fortress.v2.process_chunk(params)
 
 	-- We will jump here if neighbor checks failed.
 	-- Abort entirely if we do this too many times (prevent infinite loop).
-	local try_count = 0
-	local try_limit = 100
+	local try_again_count = 0
+	local try_again_limit = 100
 	::try_again::
+	try_again_count = try_again_count + 1
 
 	-- Step 0: select a random chunk from the list of possibilities.
 	-- This takes into account competing chunk probabilities.
@@ -269,8 +329,6 @@ function fortress.v2.process_chunk(params)
 	local original_chunkpos = vector.copy(chunkpos)
 	local chunkdata = all_chunks[chunkname]
 	local neighbors_to_update -- Placeholder in scope.
-	local possible_offsets = {}
-	local current_offset = 0
 
 	-- Handle this hopefully very rare error.
 	if not chunkname or not chunkdata then
@@ -279,7 +337,7 @@ function fortress.v2.process_chunk(params)
 		return
 	end
 
-	if try_count > try_limit then
+	if try_again_count > try_again_limit then
 		local array_possibilities = {}
 		for name, _ in pairs(potential[originalposhash]) do
 			array_possibilities[#array_possibilities + 1] = name
@@ -288,11 +346,10 @@ function fortress.v2.process_chunk(params)
 		params.log("warning", "Iteration canceled!")
 		params.log("warning", "Chunk: " .. chunkname)
 		params.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
-		params.log("warning", "After " .. try_limit .. " iterations.")
+		params.log("warning", "After " .. try_again_limit .. " iterations.")
 		params.log("warning", "Remaining available choices were: {" ..
 			table.concat(array_possibilities, ", ") .. "}")
-		-- Treat this as a non-fatal error for testing; it means the generated
-		-- fort will have missing sections.
+
 		-- Don't allow an incomplete fortress to be spawned for players!
 		-- It looks stupid and unprofessional.
 		params.bad_chunkpos = chunkpos
@@ -306,35 +363,22 @@ function fortress.v2.process_chunk(params)
 	-- neighbor conditions. We will try to fit the chunk with each offset in turn,
 	-- until we find a suitable offset or we run out of offsets (in which case we
 	-- will know there is no possible room for this chunk).
-	if chunkdata.size then
-		local v = chunkdata.size
-		local a = possible_offsets
-		for x = 0, v.x - 1 do
-			for y = 0, v.y - 1 do
-				for z = 0, v.z - 1 do
-					a[#a + 1] = {x=-x, y=-y, z=-z}
-				end
-			end
-		end
-	else
-		local a = possible_offsets
-		a[#a + 1] = {x=0, y=0, z=0}
-	end
-	current_offset = 0
+	local offsets = calculate_negative_offsets(chunkdata.size or {x=1, y=1, z=1})
+	local current_offset = 0
 
 	-- We will jump here if the chunk failed the neighbor checks, but there are
 	-- still more offsets to try. If we run out of offsets then we error.
 	::try_next_offset::
 	current_offset = current_offset + 1
 
-	if current_offset > #possible_offsets then
+	if current_offset > #offsets then
 		ignore_chunks[chunkname] = true
-		try_count = try_count + 1
 		goto try_again
 	end
 
+	-- Calculate chunk position adjusted by currently chosen offset.
 	-- Don't bork the original chunk pos.
-	chunkpos = vector.add(original_chunkpos, possible_offsets[current_offset])
+	chunkpos = vector.add(original_chunkpos, offsets[current_offset])
 
 	--[[
 	params.log("action",
@@ -369,7 +413,7 @@ function fortress.v2.process_chunk(params)
 			--]]
 				-- If we still have more possible offsets to try for this chunk,
 				-- then don't skip this chunk just yet. Try next offset.
-				if current_offset < #possible_offsets then goto try_next_offset end
+				if current_offset < #offsets then goto try_next_offset end
 
 				ignore_chunks[chunkname] = true
 
@@ -379,7 +423,6 @@ function fortress.v2.process_chunk(params)
 						", adding to ignore list.")
 				--]]
 
-				try_count = try_count + 1
 				goto try_again
 			end
 		end
@@ -464,7 +507,7 @@ function fortress.v2.process_chunk(params)
 			if not next(neighbors) then
 				-- If we still have more possible offsets to try for this chunk,
 				-- then don't skip this chunk just yet. Try next offset.
-				if current_offset < #possible_offsets then goto try_next_offset end
+				if current_offset < #offsets then goto try_next_offset end
 
 				ignore_chunks[chunkname] = true
 
@@ -474,7 +517,6 @@ function fortress.v2.process_chunk(params)
 						", adding to ignore list.")
 				--]]
 
-				try_count = try_count + 1
 				goto try_again
 			end
 		end
@@ -486,27 +528,13 @@ function fortress.v2.process_chunk(params)
 	determined[finalposhash] = chunkname
 	potential[originalposhash] = nil
 
+	-- Also list all chunks placed in an array of {name, hash} pairs.
 	params.chunk_usage[#params.chunk_usage + 1] =
 		{name=chunkname, hash=finalposhash}
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
-	if chunkdata.footprint then
-		for hashpos, name in pairs(chunkdata.footprint) do
-			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
-			local neighborhash = HASH_POSITION(neighborpos)
-
-			determined[neighborhash] = name
-			potential[neighborhash] = nil
-
-			-- Notify the schematic placer.
-			-- Fill entire footprint with IGNORE.
-			override_chunk_schems[neighborhash] = "IGNORE" -- Special value.
-		end
-
-		-- Notify the schematic placer.
-		override_chunk_schems[finalposhash] = chunkname
-	end
+	write_footprint(params, chunkpos, chunkdata)
 
 	-- Step 3: update the limits count.
 	chunk_limits[chunkname] = (chunk_limits[chunkname] or 0) + 1

@@ -204,7 +204,7 @@ end
 -- Filter chunk names by their fallback flag.
 -- These are the only chunks allowed to be placed at the fortress extent
 -- limits.
-local function get_fallback_chunks(all_chunks, chunk_limits)
+local function get_fallback_chunks(all_chunks)
 	local filtered = {}
 	for chunkname, thischunk in pairs(all_chunks) do
 		if thischunk.fallback then
@@ -335,6 +335,146 @@ end
 
 
 
+-- Check whether the given set of neighbor positions are completely empty,
+-- or (if not empty) contain our chunk name in their list of potentials.
+-- Returns true only if the above condition holds.
+local function check_empty_neighbors(params, chunkname, chunkpos, wantempty)
+	local determined = params.traversal.determined
+	local potential = params.traversal.potential
+
+	local function IS_CLAIMED(hash)
+		local spawn_pos = params.spawn_pos
+		local chunk_step = params.step
+		local occupied = fortress.v2.OCCUPIED_LOCATIONS
+		return already_claimed(spawn_pos, chunk_step, hash, occupied)
+	end
+
+	local function in_list(list)
+		for k, v in pairs(list) do
+			if k == chunkname then
+				return true
+			end
+		end
+	end
+
+	for hashpos, _ in pairs(wantempty) do
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
+		local neighborhash = HASH_POSITION(neighborpos)
+
+		-- The "potential" location is considered to be occupied if that location
+		-- exists AND our current chunk name is NOT in the list of potentials.
+		if (determined[neighborhash] or IS_CLAIMED(neighborhash)) or
+				(potential[neighborhash] and not in_list(potential[neighborhash]))
+					then
+			return -- Error
+		end
+	end
+
+	-- Success.
+	return true
+end
+
+
+
+-- This function checks whether a chunk's defined 'valid_neighbors' can be
+-- applied to its defined neighboring positions without violating the rule that
+-- a potential neighbor location can never be reduced to an empty list of
+-- allowed chunks.
+--
+-- Returns a table of filtered neighbors if the condition holds.
+-- This table should never be empty. Otherwise, returns nil.
+local function check_valid_neighbors(
+		params, limiteds, fallbacks, chunkpos, valids)
+	local chunk_names = params.chunk_names
+	local determined = params.traversal.determined
+	local potential = params.traversal.potential
+
+	local function IS_CLAIMED(hash)
+		local spawn_pos = params.spawn_pos
+		local chunk_step = params.step
+		local occupied = fortress.v2.OCCUPIED_LOCATIONS
+		return already_claimed(spawn_pos, chunk_step, hash, occupied)
+	end
+
+	-- The chunk defines which neighbors it cares about. If any possible
+	-- direction defines NO NEIGHBORS for this direction, we interpret that ALL
+	-- neighbors are permitted without restriction.
+	local final_neighbors = {}
+
+	-- This will contain the hashes of neighbors we determine we must
+	-- ignore even though the chunk defines them (e.g., we're at extent
+	-- boundaries).
+	local ignore_neighbors = {}
+
+	-- Compute intersections to narrow down the lists.
+	for dir, dir_neighbors in pairs(valids) do
+		-- Since 'chunk_names' contains ALL chunk names, this should result in a
+		-- list containing just the valid chunk neighbors for current chunk. Leave
+		-- this as a sanity check (in case a chunk defines neighbors in its data
+		-- that don't actually exist).
+		local filt = intersect(chunk_names, dir_neighbors)
+
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
+		local neighborhash = HASH_POSITION(neighborpos)
+
+		-- If defined neighbors exist in the 'potential' list, the result must be
+		-- the INTERSECTION of both lists. This might result in the list being
+		-- EMPTY, which indicates we need to backtrack/try again.
+		if potential[neighborhash] then
+			filt = intersect(filt, potential[neighborhash])
+		end
+
+		-- This also might result in the list becoming empty, if the already-
+		-- determined neighbor isn't a valid neighbor of the selected chunk.
+		local claimed = IS_CLAIMED(neighborhash)
+		if determined[neighborhash] then
+			local detchunk = determined[neighborhash]
+			filt = intersect(filt, {[detchunk]=true})
+		elseif claimed then
+			filt = intersect(filt, {[claimed]=true})
+		else
+			-- Filter chunks by limits. This has to be done EXCLUSIVE of checking
+			-- allowed neighbors against already-determined neighbors (see above)
+			-- because that neighbor may have been the last allowed per limits.
+			filt = intersect(limiteds, filt)
+		end
+
+		-- Add neighbors for this direction only if in bounds (prevents infinite
+		-- neighbor expansion).
+		if within_extents(neighborpos, params.max_extent) then
+			-- If near extent boundaries, additionally filter chunks, allowing only
+			-- fallback chunks to be used here.
+			if near_extents(neighborpos, params.max_extent) then
+				final_neighbors[dir] = intersect(fallbacks, filt)
+			else
+				final_neighbors[dir] = filt
+			end
+		else
+			-- Otherwise add this direction to the set of dirs to REMOVE entirely.
+			-- This neighbor position is outside extent bounds!
+			ignore_neighbors[dir] = true
+		end
+	end
+
+	-- Delete directions that exceed fort bounds.
+	-- Do not simply leave their lists empty, because that would confuse things.
+	for hash, _ in pairs(ignore_neighbors) do
+		final_neighbors[hash] = nil
+	end
+
+	-- Now (and this is very important) if any of the neighbor lists are EMPTY,
+	-- we have made a mistake and we must backtrack.
+	-- This obviously skips directions that we explicitly ignored earlier.
+	for _, neighborlist in pairs(final_neighbors) do
+		if not next(neighborlist) then return end
+	end
+
+	-- Success.
+	return final_neighbors
+end
+
+
+
 -- This is the core of the Wave Function Collapse (TM) algorithm.
 -- It's just marketing lingo. This is actually just a rules-constraint system.
 -- Function must be called in a loop until it says 'enough!'
@@ -345,24 +485,13 @@ function fortress.v2.process_chunk(params)
 	local determined = params.traversal.determined
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
-	local override_chunk_schems = params.override_chunk_schems
 	local random = params.yeskings
-
-	-- Helper function to shorten long lines in conditionals.
-	-- Return true if a hash-location is already occupied by part of another
-	-- fortress.
-	local function IS_CLAIMED(hash)
-		local spawn_pos = params.spawn_pos
-		local chunk_step = params.step
-		local occupied = fortress.v2.OCCUPIED_LOCATIONS
-		return already_claimed(spawn_pos, chunk_step, hash, occupied)
-	end
 
 	-- Chose next potential to expand/compute, with lowest-entropy chunks having
 	-- highest priority, and ties broken randomly.
 	local originalposhash, selectable_chunks = next_potential(random, potential)
 	local all_limited_chunks = get_limited_chunks(all_chunks, chunk_limits)
-	local all_fallback_chunks = get_fallback_chunks(all_chunks, chunk_limits)
+	local all_fallback_chunks = get_fallback_chunks(all_chunks)
 
 	-- List of chunks that fail the neighbor test,
 	-- so we ignore them when trying again.
@@ -378,8 +507,9 @@ function fortress.v2.process_chunk(params)
 	::try_again::
 	try_again_count = try_again_count + 1
 
-	-- Step 0: select a random chunk from the list of possibilities.
+	-- Select a random chunk from the list of possibilities.
 	-- This takes into account competing chunk probabilities.
+	--
 	-- BUG: sometimes chunkname is nil? But this should not happen unless somehow
 	-- there are NO 'selectable_chunks' to choose from, but how could that happen?
 	local chunkname = choose_chunk(
@@ -431,6 +561,8 @@ function fortress.v2.process_chunk(params)
 	::try_next_offset::
 	current_offset = current_offset + 1
 
+	-- If we run out of offsets to try (large chunks only) then ignore this chunk
+	-- name and try to select a new one.
 	if current_offset > #offsets then
 		ignore_chunks[chunkname] = true
 		goto try_again
@@ -449,42 +581,15 @@ function fortress.v2.process_chunk(params)
 	-- If any of the chunk's required empty neighbors aren't empty, we cannot
 	-- place this chunk here.
 	if chunkdata.require_empty_neighbors then
-		local function in_list(list)
-			for k, v in pairs(list) do
-				if k == chunkname then
-					return true
-				end
-			end
-		end
+		local wantempty = chunkdata.require_empty_neighbors
 
-		for hashpos, _ in pairs(chunkdata.require_empty_neighbors) do
-			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
-			local neighborhash = HASH_POSITION(neighborpos)
+		if not check_empty_neighbors(params, chunkname, chunkpos, wantempty) then
+			-- If we still have more possible offsets to try for this chunk,
+			-- then don't skip this chunk just yet. Try next offset.
+			if current_offset < #offsets then goto try_next_offset end
 
-			-- The "potential" location is considered to be occupied if that location
-			-- exists AND our current chunk name is NOT in the list of potentials.
-			---[[
-			if (determined[neighborhash] or IS_CLAIMED(neighborhash)) or
-					(potential[neighborhash] and not in_list(potential[neighborhash]))
-						then
-			--]]
-			--[[
-			if determined[neighborhash] or potential[neighborhash] then
-			--]]
-				-- If we still have more possible offsets to try for this chunk,
-				-- then don't skip this chunk just yet. Try next offset.
-				if current_offset < #offsets then goto try_next_offset end
-
-				ignore_chunks[chunkname] = true
-
-				--[[
-				params.log("action",
-					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
-						", adding to ignore list.")
-				--]]
-
-				goto try_again
-			end
+			ignore_chunks[chunkname] = true
+			goto try_again
 		end
 	end
 
@@ -492,97 +597,28 @@ function fortress.v2.process_chunk(params)
 	-- neighbors. If it does, those neighbors must be matched against any existing
 	-- neighbors already contained in the 'potential' list (indexed by hash).
 	if chunkdata.valid_neighbors then
-		-- The chunk defines which neighbors it cares about. If any possible
-		-- direction defines NO NEIGHBORS for this direction, we interpret that ALL
-		-- neighbors are permitted without restriction.
-		local all_neighbors = chunkdata.valid_neighbors
-		neighbors_to_update = {}
+		local valids = chunkdata.valid_neighbors
+		local fallbacks = all_fallback_chunks
+		local limiteds = all_limited_chunks
 
-		-- This will contain the dir hashes of neighbors we determine we must
-		-- ignore even though the chunk defines them (e.g., we're at extent
-		-- boundaries).
-		local dirs_to_ignore = {}
-
-		-- Compute additional intersections to narrow down the lists.
-		for dir, dir_neighbors in pairs(all_neighbors) do
-			-- Since 'chunk_names' contains ALL chunk names, this should result in a
-			-- list containing just the valid chunk neighbors for current chunk. Leave
-			-- this as a sanity check (in case a chunk defines neighbors in its data
-			-- that don't actually exist).
-			local filt = intersect(chunk_names, dir_neighbors)
-
-			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
-			local neighborhash = HASH_POSITION(neighborpos)
-
-			-- If defined neighbors exist in the 'potential' list, the result must be
-			-- the INTERSECTION of both lists. This might result in the list being
-			-- EMPTY, which indicates we need to backtrack/try again.
-			if potential[neighborhash] then
-				filt = intersect(filt, potential[neighborhash])
-			end
-
-			-- This also might result in the list becoming empty, if the already-
-			-- determined neighbor isn't a valid neighbor of the selected chunk.
-			if determined[neighborhash] then
-				local detchunk = determined[neighborhash]
-				filt = intersect(filt, {[detchunk]=true})
-			elseif IS_CLAIMED(neighborhash) then
-				local detchunk = IS_CLAIMED(neighborhash)
-				filt = intersect(filt, {[detchunk]=true})
-			else
-				-- Filter chunks by limits. This has to be done EXCLUSIVE of checking
-				-- allowed neighbors against already-determined neighbors (see above)
-				-- because that neighbor may have been the last allowed per limits.
-				filt = intersect(all_limited_chunks, filt)
-			end
-
-			-- Add neighbors for this direction only if in bounds (prevents infinite
-			-- neighbor expansion).
-			if within_extents(neighborpos, params.max_extent) then
-				-- If near extent boundaries, additionally filter chunks, allowing only
-				-- fallback chunks to be used here.
-				if near_extents(neighborpos, params.max_extent) then
-					neighbors_to_update[dir] = intersect(all_fallback_chunks, filt)
-				else
-					neighbors_to_update[dir] = filt
-				end
-			else
-				-- Otherwise add this direction to the set of dirs to REMOVE entirely.
-				-- This neighbor position is outside extent bounds!
-				dirs_to_ignore[dir] = true
-			end
-		end
-
-		-- Delete directions that exceed fort bounds.
-		-- Do not simply leave their lists empty, because that would confuse things.
-		for dir, _ in pairs(dirs_to_ignore) do
-			neighbors_to_update[dir] = nil
-		end
+		neighbors_to_update = check_valid_neighbors(
+			params, limiteds, fallbacks, chunkpos, valids)
 
 		-- Now (and this is very important) if any of the neighbor lists are EMPTY,
 		-- we have made a mistake and we must cancel this iteration, so we can
 		-- hopefully chose a different path the next time we enter this function.
 		-- This obviously skips directions that we explicitly ignored earlier.
-		for _, neighbors in pairs(neighbors_to_update) do
-			if not next(neighbors) then
-				-- If we still have more possible offsets to try for this chunk,
-				-- then don't skip this chunk just yet. Try next offset.
-				if current_offset < #offsets then goto try_next_offset end
+		if not neighbors_to_update then
+			-- If we still have more possible offsets to try for this chunk,
+			-- then don't skip this chunk just yet. Try next offset.
+			if current_offset < #offsets then goto try_next_offset end
 
-				ignore_chunks[chunkname] = true
-
-				--[[
-				params.log("action",
-					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
-						", adding to ignore list.")
-				--]]
-
-				goto try_again
-			end
+			ignore_chunks[chunkname] = true
+			goto try_again
 		end
 	end
 
-	-- Step 2: add current chunk to list of fully-determined chunks.
+	-- Add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
 	-- Note that for large chunks, these two positions are (often) not the same.
 	determined[HASH_POSITION(chunkpos)] = chunkname
@@ -592,7 +628,7 @@ function fortress.v2.process_chunk(params)
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
 	write_footprint(params, chunkpos, chunkdata)
 
-	-- Step 3: update neighbor lists.
+	-- Update neighbor lists.
 	-- We skip this if the current chunk (we just added to 'determined') has no
 	-- defined neighbors. This is common for "end cap" pieces.
 	if neighbors_to_update then

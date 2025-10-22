@@ -234,7 +234,7 @@ end
 
 
 -- Write a chunk's footprint (if it has one) into the list of determined chunks.
-local function write_footprint(params, chunkpos, chunkdata)
+local function write_footprint(params, chunkpos, chunkname, chunkdata)
 	local override = params.override_chunk_schems
 	local determined = params.traversal.determined
 	local potential = params.traversal.potential
@@ -243,7 +243,7 @@ local function write_footprint(params, chunkpos, chunkdata)
 
 	-- Most chunks don't define this.
 	-- We don't need to do anything for them.
-	if not footprint then return end
+	if not footprint or not next(footprint) then return end
 
 	for hashpos, name in pairs(footprint) do
 		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(hashpos))
@@ -287,12 +287,13 @@ local function write_neighbors(params, chunkpos, chunkdata, newneighbors)
 		return already_claimed(spawn_pos, chunk_step, hash, occupied)
 	end
 
-	for dir, chunks in pairs(newneighbors) do
+	for dirhash, chunks in pairs(newneighbors) do
 		-- Calculate the index hash of the neighboring position.
-		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dir))
+		local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dirhash))
 		local neighborhash = HASH_POSITION(neighborpos)
 
 		-- Keep data structure clean; skip empties.
+		-- Should not happen, though? See 'check_valid_neighbors.'
 		if not next(chunks) then goto skip_empty end
 
 		-- Also, do not add to 'potential' if already defined in 'determined.'
@@ -317,7 +318,7 @@ local function write_neighbors(params, chunkpos, chunkdata, newneighbors)
 			-- that neighbor to be spawned unless it was already there from
 			-- another source.
 			if chunkdata.enabled_neighbors then
-				local enabled_dir = chunkdata.enabled_neighbors[dir]
+				local enabled_dir = chunkdata.enabled_neighbors[dirhash]
 				if enabled_dir then
 					finalchunks = intersect(chunks, enabled_dir)
 				end
@@ -462,9 +463,7 @@ local function check_valid_neighbors(
 		final_neighbors[hash] = nil
 	end
 
-	-- Now (and this is very important) if any of the neighbor lists are EMPTY,
-	-- we have made a mistake and we must backtrack.
-	-- This obviously skips directions that we explicitly ignored earlier.
+	-- If ANY subtable of 'final_neighbors' is empty, we must return nil.
 	for _, neighborlist in pairs(final_neighbors) do
 		if not next(neighborlist) then return end
 	end
@@ -475,10 +474,41 @@ end
 
 
 
+-- Query function to check whether a neighbors list contains any large chunks.
+-- Returns those large neighbors as a list of dirhash={chunknames}, else nil.
+local function get_neighboring_large(params, newneighbors)
+	local large = {}
+
+	for dirhash, possibilities in pairs(newneighbors) do
+		for chunkname, _ in pairs(possibilities) do
+			local chunkdata = params.chunks[chunkname]
+			if chunkdata and chunkdata.size then
+				local sz = chunkdata.size
+				local volume = sz.x * sz.y * sz.z
+
+				-- Volume larger than 1 means we are a large chunk.
+				if volume > 1 then
+					if not large[dirhash] then large[dirhash] = {} end
+					large[dirhash][chunkname] = true
+				end
+			end
+		end
+	end
+
+	-- Return nil if large neighbors table is empty.
+	if not next(large) then return end
+	return large
+end
+
+
+
 -- This is the core of the Wave Function Collapse (TM) algorithm.
 -- It's just marketing lingo. This is actually just a rules-constraint system.
 -- Function must be called in a loop until it says 'enough!'
-function fortress.v2.process_chunk(params)
+--
+-- NOTE: 'dryrun_params' is internal-use-only. It has nothing to do with the
+-- dryrun option in the user-facing chat command.
+function fortress.v2.process_chunk(params, dryrun_params)
 	-- Core queues/lists used by the algorithm.
 	local all_chunks = params.chunks
 	local chunk_names = params.chunk_names
@@ -486,10 +516,20 @@ function fortress.v2.process_chunk(params)
 	local potential = params.traversal.potential
 	local chunk_limits = params.chunk_limits
 	local random = params.yeskings
+	local originalposhash, selectable_chunks
 
-	-- Chose next potential to expand/compute, with lowest-entropy chunks having
-	-- highest priority, and ties broken randomly.
-	local originalposhash, selectable_chunks = next_potential(random, potential)
+	if dryrun_params then
+		-- Special code path which restricts us to choosing this SPECIFIC location
+		-- and a specific list of potential chunk names.
+		originalposhash = dryrun_params.chunkpos
+		selectable_chunks = dryrun_params.chunknames
+	else
+		-- Normal code path.
+		-- Chose next potential to expand/compute, with lowest-entropy chunks having
+		-- highest priority, and ties broken randomly.
+		originalposhash, selectable_chunks = next_potential(random, potential)
+	end
+
 	local all_limited_chunks = get_limited_chunks(all_chunks, chunk_limits)
 	local all_fallback_chunks = get_fallback_chunks(all_chunks)
 
@@ -518,7 +558,7 @@ function fortress.v2.process_chunk(params)
 	local chunkpos = UNHASH_POSITION(originalposhash)
 	local original_chunkpos = vector.copy(chunkpos)
 	local chunkdata = all_chunks[chunkname]
-	local neighbors_to_update -- Placeholder in scope.
+	local newneighbors -- Placeholder in scope.
 
 	-- Handle this hopefully very rare error.
 	if not chunkname or not chunkdata then
@@ -527,23 +567,27 @@ function fortress.v2.process_chunk(params)
 		return
 	end
 
+	-- Handle reaching our iteration limit for trying different chunks.
 	if try_again_count > try_again_limit then
-		local array_possibilities = {}
-		for name, _ in pairs(potential[originalposhash]) do
-			array_possibilities[#array_possibilities + 1] = name
+		if not dryrun_params then
+			local array_possibilities = {}
+			for name, _ in pairs(potential[originalposhash]) do
+				array_possibilities[#array_possibilities + 1] = name
+			end
+
+			params.log("warning", "Iteration canceled!")
+			params.log("warning", "Chunk: " .. chunkname)
+			params.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
+			params.log("warning", "After " .. try_again_limit .. " iterations.")
+			params.log("warning", "Remaining available choices were: {" ..
+				table.concat(array_possibilities, ", ") .. "}")
+
+			-- Don't allow an incomplete fortress to be spawned for players!
+			-- It looks stupid and unprofessional.
+			params.bad_chunkpos = chunkpos
+			params.algorithm_fail = true
 		end
 
-		params.log("warning", "Iteration canceled!")
-		params.log("warning", "Chunk: " .. chunkname)
-		params.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
-		params.log("warning", "After " .. try_again_limit .. " iterations.")
-		params.log("warning", "Remaining available choices were: {" ..
-			table.concat(array_possibilities, ", ") .. "}")
-
-		-- Don't allow an incomplete fortress to be spawned for players!
-		-- It looks stupid and unprofessional.
-		params.bad_chunkpos = chunkpos
-		params.algorithm_fail = true
 		return
 	end
 
@@ -601,14 +645,16 @@ function fortress.v2.process_chunk(params)
 		local fallbacks = all_fallback_chunks
 		local limiteds = all_limited_chunks
 
-		neighbors_to_update = check_valid_neighbors(
+		newneighbors = check_valid_neighbors(
 			params, limiteds, fallbacks, chunkpos, valids)
 
+		-- Function returns nil if ANY required neighbor list would be EMPTY.
+		--
 		-- Now (and this is very important) if any of the neighbor lists are EMPTY,
 		-- we have made a mistake and we must cancel this iteration, so we can
 		-- hopefully chose a different path the next time we enter this function.
 		-- This obviously skips directions that we explicitly ignored earlier.
-		if not neighbors_to_update then
+		if not newneighbors then
 			-- If we still have more possible offsets to try for this chunk,
 			-- then don't skip this chunk just yet. Try next offset.
 			if current_offset < #offsets then goto try_next_offset end
@@ -618,6 +664,84 @@ function fortress.v2.process_chunk(params)
 		end
 	end
 
+	-- Exit early (avoid looping recursion) if everything succeeded so far and
+	-- this was a test dryrun.
+	if dryrun_params then return true end
+
+	------------------------------------------------------------------------------
+	-- Here below is the test-and-backtrack code.
+	------------------------------------------------------------------------------
+
+	-- If the CURRENT CHUNK has any new, large neighbors, we need to simulate
+	-- placing THIS CURRENT CHUNK, then attempt to process the neighbors.
+	-- If the dryrun fails, we have to undo our changes and abort (backtrack).
+	if newneighbors and get_neighboring_large(params, newneighbors) then
+		-- First, make a copy so that we can restore.
+		-- For obvious reasons, if many chunks have large neighbor possibilities,
+		-- this will be slow over many hundreds/thousands of iterations.
+		local old_determined = table.copy(determined)
+		local old_potential = table.copy(potential)
+		local old_override = table.copy(params.override_chunk_schems)
+
+		-- All these actions have to be undone if we fail.
+		-- NOTE: we simply repeat here, what this function would do on a
+		-- successful run anyway. Except that we keep information in order to undo.
+		-- See above table copies. Also see the banner comment near the end of this
+		-- function.
+		determined[HASH_POSITION(chunkpos)] = chunkname
+		potential[originalposhash] = nil
+
+		write_footprint(params, chunkpos, chunkname, chunkdata)
+		write_neighbors(params, chunkpos, chunkdata, newneighbors)
+
+		-- Increment usage count.
+		chunk_limits[chunkname] = (chunk_limits[chunkname] or 0) + 1
+
+		-- Now we can run the simulation.
+		local good = true
+		for dirhash, chunklist in pairs(newneighbors) do
+			local neighborpos = vector.add(chunkpos, UNHASH_POSITION(dirhash))
+			local neighborhash = HASH_POSITION(neighborpos)
+
+			local dryrun = {
+				chunkpos = neighborhash,
+				chunknames = chunklist,
+			}
+
+			-- Should not happen.
+			if not next(chunklist) then goto skip_empty end
+
+			-- Check if any one of this chunks's neighbors fails to emerge.
+			if not fortress.v2.process_chunk(params, dryrun) then
+				good = false
+				break
+			end
+
+			::skip_empty::
+		end
+
+		-- Restore.
+		determined, params.traversal.determined = old_determined, old_determined
+		potential, params.traversal.potential = old_potential, old_potential
+		params.override_chunk_schems = old_override
+
+		-- Restore by decrementing. This table, at least, didn't need copying.
+		chunk_limits[chunkname] = chunk_limits[chunkname] - 1
+
+		if not good then
+			-- If we still have more possible offsets to try for this chunk,
+			-- then don't skip this chunk just yet. Try next offset.
+			if current_offset < #offsets then goto try_next_offset end
+
+			ignore_chunks[chunkname] = true
+			goto try_again
+		end
+	end
+
+	------------------------------------------------------------------------------
+	-- If we reach here, everything succeeded and we can update the fort layout.
+	------------------------------------------------------------------------------
+
 	-- Add current chunk to list of fully-determined chunks.
 	-- Remove this entry from the list of indeterminate (possible) chunks.
 	-- Note that for large chunks, these two positions are (often) not the same.
@@ -626,19 +750,21 @@ function fortress.v2.process_chunk(params)
 
 	-- Apply the chunk's footprint, which can be larger than a single chunk.
 	-- This is required for chunks larger than 1x1x1 chunk/tile units.
-	write_footprint(params, chunkpos, chunkdata)
+	write_footprint(params, chunkpos, chunkname, chunkdata)
 
 	-- Update neighbor lists.
 	-- We skip this if the current chunk (we just added to 'determined') has no
 	-- defined neighbors. This is common for "end cap" pieces.
-	if neighbors_to_update then
-		write_neighbors(params, chunkpos, chunkdata, neighbors_to_update)
+	if newneighbors then
+		write_neighbors(params, chunkpos, chunkdata, newneighbors)
 	end
 
 	-- Update the chunk limits count.
 	chunk_limits[chunkname] = (chunk_limits[chunkname] or 0) + 1
 
 	-- Also list all chunks placed in an array of {name, hash} pairs.
+	-- This is NOT used by the algorithm internally; this is recorded for user
+	-- facing results/use.
 	params.chunk_usage[#params.chunk_usage + 1] =
 		{name=chunkname, hash=HASH_POSITION(chunkpos)}
 

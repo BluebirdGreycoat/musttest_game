@@ -154,6 +154,11 @@ function fortress.v2.gen_init(user_params)
 		-- Replaceable log function.
 		log = user_params.log or minetest.log,
 
+		-- Optional table to store user-readable results, statistics etc.
+		-- If our caller passes us a table, they can read results from it after the
+		-- algorithm has returned.
+		user_results = user_params.user_results or {},
+
 		-- Commonly used items.
 		spawn_pos = vector.copy(vector.round(user_params.spawn_pos)),
 		step = FORTDATA.step,

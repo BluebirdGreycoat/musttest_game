@@ -36,10 +36,18 @@ local function show_single(pname, param)
 
 	local privs = def.privs or {}
 	if minetest.check_player_privs(pname, privs) then
+		if type(def.show_help) == "function" then
+			def.show_help(pname)
+			return
+		end
+
 		local cmd = "/" .. param
-		local args = def.params and def.params ~= "" and (" " .. def.params .. ": ") or ": "
+		local args = def.params and def.params ~= "" and
+			(" " .. def.params .. ": ") or ": "
+
 		local desc = def.description or "No description provided."
 		minetest.chat_send_player(pname, "# Server: " .. cmd .. args .. desc)
+
 		return
 	end
 

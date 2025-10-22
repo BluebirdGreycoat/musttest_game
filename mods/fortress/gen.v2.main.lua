@@ -16,7 +16,8 @@ local POS_TO_STR = minetest.pos_to_string
 
 
 function fortress.v2.has_saved_info()
-	if fortress.v2.CONTINUATION_PARAMS or fortress.v2.OCCUPIED_LOCATIONS then
+	if fortress.v2.CONTINUATION_PARAMS or
+			next(fortress.v2.OCCUPIED_LOCATIONS) then
 		return true
 	end
 end
@@ -26,6 +27,25 @@ end
 function fortress.v2.clear_saved_info()
 	fortress.v2.CONTINUATION_PARAMS = nil
 	fortress.v2.OCCUPIED_LOCATIONS = {}
+end
+
+
+
+local function report_chunk_usage_results(params)
+	local determined_chunks = params.traversal.determined
+
+	-- Add these tables if the user_results table doesn't have them yet.
+	params.user_results.chunks_used = params.user_results.chunks_used or {}
+	params.user_results.chunk_counts = params.user_results.chunk_counts or {}
+
+	-- Localize.
+	local chunks_used = params.user_results.chunks_used
+	local chunk_counts = params.user_results.chunk_counts
+
+	for _, chunkname in pairs(determined_chunks) do
+		chunks_used[chunkname] = true
+		chunk_counts[chunkname] = (chunk_counts[chunkname] or 0) + 1
+	end
 end
 
 
@@ -110,6 +130,13 @@ function fortress.v2.make_fort(user_params)
 	else
 		params.log("action", "Fortgen ABORTED after " ..
 			params.iterations .. " iterations.")
+	end
+
+	report_chunk_usage_results(params)
+
+	-- Allow user to force writing the fortress. Useful for debugging.
+	if user_params.force_write then
+		params.algorithm_fail = nil
 	end
 
 	-- This flag set only if algorithm ran into a fatal error.

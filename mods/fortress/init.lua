@@ -48,8 +48,9 @@ if not fortress.run_once then
 	})
 
 	minetest.register_chatcommand("genfort", {
-		params = fortress.v2.get_chat_command_params_desc(),
-		description = "Spawn a v2 fortress (rule-constrained) at your location.",
+		params = "",
+		show_help = function(...) fortress.v2.show_command_help(...) end,
+		description = "Fort generator manual spawn.",
 		privs = {server=true},
 
 		func = function(...)

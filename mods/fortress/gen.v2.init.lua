@@ -86,7 +86,7 @@ local function validate_fortdata(params)
 			for dir, list in pairs(chunkdata.valid_neighbors) do
 				for chunkname, _ in pairs(list) do
 					if not params.chunks[chunkname] then
-						minetest.log("error", "Chunk " .. chunkname .. " does not exist!")
+						params.log("error", "Chunk " .. chunkname .. " does not exist!")
 						return
 					end
 				end
@@ -97,7 +97,7 @@ local function validate_fortdata(params)
 			for dir, list in pairs(chunkdata.enabled_neighbors) do
 				for chunkname, _ in pairs(list) do
 					if not params.chunks[chunkname] then
-						minetest.log("error", "Chunk " .. chunkname .. " does not exist!")
+						params.log("error", "Chunk " .. chunkname .. " does not exist!")
 						return
 					end
 				end
@@ -113,7 +113,7 @@ end
 local function choose_initial_chunk(params)
 	-- Sanity checks.
 	if not params.initial_chunks or #params.initial_chunks == 0 then
-		minetest.log("error", "No initial starter chunks to choose from.")
+		params.log("error", "No initial starter chunks to choose from.")
 		return -- Handle error.
 	end
 
@@ -121,7 +121,7 @@ local function choose_initial_chunk(params)
 	local initial_chunk = choices[params.yeskings(1, #choices)]
 
 	if not params.chunks[initial_chunk] then
-		minetest.log("error", "Invalid starting chunk.")
+		params.log("error", "Invalid starting chunk.")
 		return -- Handle error.
 	end
 
@@ -150,6 +150,9 @@ function fortress.v2.gen_init(user_params)
 	local params = {
 		-- NOTE: Key 'algorithm_fail' is set if something errored and NOTHING should
 		-- be written to map.
+
+		-- Replaceable log function.
+		log = user_params.log or minetest.log,
 
 		-- Commonly used items.
 		spawn_pos = vector.copy(vector.round(user_params.spawn_pos)),
@@ -226,8 +229,8 @@ function fortress.v2.gen_init(user_params)
 
 	-- Chose how big the fortress will be.
 	params.max_extent = select_max_extent(params, FORTDATA)
-	minetest.log("action", "Fortress extents: " .. POS_TO_STR(params.max_extent))
-	minetest.log("action", "Fortress seed: " .. params.randomseed)
+	params.log("action", "Fortress extents: " .. POS_TO_STR(params.max_extent))
+	params.log("action", "Fortress seed: " .. params.randomseed)
 
 	-- Adjust spawn position to a multiple of the fortress "step" size.
 	params.spawn_pos = lock_spawnpos(params.spawn_pos, params.step)

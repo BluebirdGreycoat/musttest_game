@@ -46,7 +46,7 @@ function fortress.v2.make_fort(user_params)
 	params.time = os.time()
 
 	if user_params.max_iterations and user_params.max_iterations < 1 then
-		minetest.log("action", "No iterations to execute.")
+		params.log("action", "No iterations to execute.")
 		return
 	end
 
@@ -55,7 +55,7 @@ function fortress.v2.make_fort(user_params)
 			params.last_max_iterations + user_params.max_iterations
 	end
 
-	minetest.log("action", "Computing fortress pattern @ " ..
+	params.log("action", "Computing fortress pattern @ " ..
 		POS_TO_STR(vector.round(params.spawn_pos)) .. "!")
 
 	local runmore = false
@@ -79,15 +79,15 @@ function fortress.v2.make_fort(user_params)
 	::skip_setting_final_flag::
 
 	if not next(params.traversal.determined) then
-		minetest.log("error", "No chunks were added to fortress layout.")
+		params.log("error", "No chunks were added to fortress layout.")
 		return
 	end
 
 	if params.final_flag then
-		minetest.log("action", "Fortgen quit after " ..
+		params.log("action", "Fortgen quit after " ..
 			params.iterations .. " iterations.")
 	else
-		minetest.log("action", "Fortgen ABORTED after " ..
+		params.log("action", "Fortgen ABORTED after " ..
 			params.iterations .. " iterations.")
 	end
 
@@ -107,7 +107,7 @@ function fortress.v2.make_fort(user_params)
 			fortress.v2.write_map(params)
 		end
 	else
-		minetest.log("error", "Fortgen algorithm failure!")
-		minetest.log("error", "Not writing anything to map.")
+		params.log("error", "Fortgen algorithm failure!")
+		params.log("error", "Not writing anything to map.")
 	end
 end

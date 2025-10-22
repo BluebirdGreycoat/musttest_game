@@ -246,15 +246,15 @@ function fortress.v2.process_chunk(params)
 	-- Handle this hopefully very rare error.
 	if not chunkname or not chunkdata then
 		params.algorithm_fail = true
-		minetest.log("error", "Fail: chunkname or chunkdata is nil! Giving up.")
+		params.log("error", "Fail: chunkname or chunkdata is nil! Giving up.")
 		return
 	end
 
 	if try_count > try_limit then
-		minetest.log("warning", "Iteration canceled!")
-		minetest.log("warning", "Chunk: " .. chunkname)
-		minetest.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
-		minetest.log("warning", "After " .. try_limit .. " iterations.")
+		params.log("warning", "Iteration canceled!")
+		params.log("warning", "Chunk: " .. chunkname)
+		params.log("warning", "Pos: " .. POS_TO_STR(chunkpos))
+		params.log("warning", "After " .. try_limit .. " iterations.")
 		-- Treat this as a non-fatal error for testing; it means the generated
 		-- fort will have missing sections.
 		-- Don't allow an incomplete fortress to be spawned for players!
@@ -300,7 +300,7 @@ function fortress.v2.process_chunk(params)
 	chunkpos = vector.add(original_chunkpos, possible_offsets[current_offset])
 
 	--[[
-	minetest.log("action",
+	params.log("action",
 		"Processing chunk: " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 		", try count: " .. try_count .. ", offset: " .. current_offset)
 	--]]
@@ -337,7 +337,7 @@ function fortress.v2.process_chunk(params)
 				ignore_chunks[chunkname] = true
 
 				--[[
-				minetest.log("action",
+				params.log("action",
 					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 						", adding to ignore list.")
 				--]]
@@ -432,7 +432,7 @@ function fortress.v2.process_chunk(params)
 				ignore_chunks[chunkname] = true
 
 				--[[
-				minetest.log("action",
+				params.log("action",
 					"Can't place " .. chunkname .. " at " .. POS_TO_STR(chunkpos) ..
 						", adding to ignore list.")
 				--]]

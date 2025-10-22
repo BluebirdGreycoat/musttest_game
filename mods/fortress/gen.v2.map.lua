@@ -30,11 +30,11 @@ function fortress.v2.write_map(params)
 		if v.pos.z + v.size.z > maxp.z then maxp.z = v.pos.z + v.size.z end
 	end
 
-	minetest.log("action", "Writing fortress to map.")
-	minetest.log("action", "POS: " .. POS_TO_STR(params.spawn_pos))
-	minetest.log("action", "MINP: " .. POS_TO_STR(minp))
-	minetest.log("action", "MAXP: " .. POS_TO_STR(maxp))
-	minetest.log("action", "Volume: " .. POS_TO_STR(vector.subtract(maxp, minp)))
+	params.log("action", "Writing fortress to map.")
+	params.log("action", "POS: " .. POS_TO_STR(params.spawn_pos))
+	params.log("action", "MINP: " .. POS_TO_STR(minp))
+	params.log("action", "MAXP: " .. POS_TO_STR(maxp))
+	params.log("action", "Volume: " .. POS_TO_STR(vector.subtract(maxp, minp)))
 
 	params.vm_minp = minp
 	params.vm_maxp = maxp
@@ -45,7 +45,7 @@ function fortress.v2.write_map(params)
 	local cb = function(blockpos, action, calls_remaining)
 		-- Check if there was an error.
 		if action == core.EMERGE_CANCELLED or action == core.EMERGE_ERRORED then
-			minetest.log("error", "Failed to emerge area to spawn fortress.")
+			params.log("error", "Failed to emerge area to spawn fortress.")
 			return
 		end
 
@@ -56,7 +56,7 @@ function fortress.v2.write_map(params)
 
 		local MAPGENTIME1 = os.clock()
 		local ELAPSEDTIME = MAPGENTIME1 - MAPGENTIME0
-		minetest.log("action", string.format("%.2f", ELAPSEDTIME) ..
+		params.log("action", string.format("%.2f", ELAPSEDTIME) ..
 			" seconds elapsed emerging fort region.")
 
 		-- Actually spawn the fortress once map completely loaded.
@@ -73,7 +73,7 @@ function fortress.v2.write_map(params)
 			params.vm_maxp = nil
 			params.final_flag = false
 			fortress.v2.CONTINUATION_PARAMS = params
-			minetest.log("action", "Fortgen params SAVED for continuation.")
+			params.log("action", "Fortgen params SAVED for continuation.")
 		else
 			-- Avoid leaking this on a successful run.
 			fortress.v2.CONTINUATION_PARAMS = nil
@@ -116,9 +116,9 @@ local function place_all_chests(params)
 		end
 	end
 
-	minetest.log("action", "Spawned " .. chest_count .. " total chests.")
+	params.log("action", "Spawned " .. chest_count .. " total chests.")
 	for loot, count in pairs(totals) do
-		minetest.log("action", "Spawned " .. count .. " " .. loot .. " chests.")
+		params.log("action", "Spawned " .. count .. " " .. loot .. " chests.")
 	end
 end
 
@@ -131,7 +131,7 @@ function fortress.v2.apply_layout(params)
 	local step = params.step
 
 	if fortress.is_protected(minp, maxp) then
-		minetest.log("error", "Cannot spawn fortress, protection is present.")
+		params.log("error", "Cannot spawn fortress, protection is present.")
 		return
 	end
 
@@ -211,13 +211,13 @@ function fortress.v2.apply_layout(params)
 	place_all_chests(params)
 
 	local TIME1 = os.clock()
-	minetest.log("action", string.format("%.2f", TIME1 - TIME0) ..
+	params.log("action", string.format("%.2f", TIME1 - TIME0) ..
 		" seconds elapsed writing fort with voxelmanip.")
 
 	-- Last-ditch effort to fix these darn lighting issues.
 	mapfix.work(minp, maxp)
 
 	-- Report success, and how long it took.
-	minetest.log("action", "Fortgen completed after " ..
+	params.log("action", "Fortgen completed after " ..
 		math.floor(os.time() - params.time) .. " seconds.")
 end

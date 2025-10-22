@@ -6,8 +6,8 @@ end
 
 
 -- Called from debug chat command.
-function fortress.v2.chat_command(name, textparam)
-	local player = minetest.get_player_by_name(name)
+function fortress.v2.chat_command(pname, textparam)
+	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
 		return
 	end
@@ -25,6 +25,11 @@ function fortress.v2.chat_command(name, textparam)
 	local dry_run = false
 	local seednum_offset = 1
 	local maxiter_offset = 2
+
+	local quiet = false
+	for k, v in ipairs(args) do
+		if v == "quiet" then quiet = true end
+	end
 
 	if args[1] == "dryrun" then
 		dry_run = true
@@ -45,6 +50,13 @@ function fortress.v2.chat_command(name, textparam)
 		minetest.log("action", "User specified Iteration Count: " .. maxiter)
 	end
 
+	-- Log to chat and debug.txt, or be quiet.
+	local chatlogger = function(info, text)
+		minetest.log(info, text)
+		minetest.chat_send_player(pname, "# Server: " .. text)
+	end
+	if quiet then chatlogger = nil end
+
 	fortress.v2.make_fort({
 		-- Required parameters.
 		spawn_pos = vector.round(player:get_pos()),
@@ -54,5 +66,8 @@ function fortress.v2.chat_command(name, textparam)
 		user_seed = randseed,
 		max_iterations = maxiter,
 		dry_run = dry_run,
+
+		-- If nil, the fortgen will write to debug.txt by default.
+		log = chatlogger,
 	})
 end

@@ -41,8 +41,8 @@ function fortress.v2.process_layout(params)
 	local schem_count = #params.build.schems
 	local chest_count = #params.build.chests
 
-	minetest.log("action", "Added " .. schem_count .. " schems to fortress.")
-	minetest.log("action", "Added " .. chest_count .. " chests to fortress.")
+	params.log("action", "Added " .. schem_count .. " schems to fortress.")
+	params.log("action", "Added " .. chest_count .. " chests to fortress.")
 end
 
 

@@ -596,7 +596,7 @@ fortress.v2.fortress_data = {
 		GET_PLAZA_STARTER_PIECES(),
 		"ew_gatehouse",
 		"ns_gatehouse",
-		GET_BRIDGE_STARTER_PIECES(),
+		GET_BRIDGE_STARTER_PIECES(), -- Duplicated for probability.
 	},
 
 	-- Size of cells/tiles, in worldspace units.

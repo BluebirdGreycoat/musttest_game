@@ -728,7 +728,13 @@ function fortress.v2.process_chunk(params, dryrun_params)
 			-- Should not happen.
 			if not next(chunklist) then goto skip_empty end
 
+			-- If neighbor position already occupied, skip this position.
+			-- We already know it will fail to emerge; that's expected.
+			if determined[neighborhash] then goto skip_empty end
+
 			-- Check if any one of this chunks's neighbors fails to emerge.
+			-- This will succeed if ANY possible neighbor can be placed.
+			-- If NONE can be placed, then we must backtrack.
 			if not fortress.v2.process_chunk(params, dryrun) then
 				good = false
 				break

@@ -84,6 +84,7 @@ local PLAZA_GATE_PROB = 30
 local LARGE_PLAZA_CHANCE = 100
 local MEDIUM_PLAZA_CHANCE = 500
 local SMALL_PLAZA_CHANCE = 200
+local GATEHOUSE_PROB = 10
 
 
 
@@ -147,6 +148,7 @@ local BRIDGE_CONNECT = {
 
 		bridge_ew_to_hall_ns = true,
 		ns_plaza_w = true,
+		ew_gatehouse = true,
 	},
 	[DIRNAME.WEST] = {
 		ew_walk_bridge = true,
@@ -166,6 +168,7 @@ local BRIDGE_CONNECT = {
 
 		bridge_ew_to_hall_ns = true,
 		ns_plaza_e = true,
+		ew_gatehouse = true,
 	},
 }
 
@@ -2943,6 +2946,51 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 0, 0)] = true,
 			},
 			probability = PLAZA_GATE_PROB,
+		},
+
+		-- Gatehouses.
+		ew_gatehouse = {
+			schem = {
+				{file="nf_gatehouse_ew", offset={x=0, y=0, z=7}},
+				{file="nf_gatehouse_bridge_shim_w", force=false,
+					offset={x=0, y=-11, z=11}},
+				{file="nf_gatehouse_bridge_shim_e", force=false,
+					offset={x=20, y=-11, z=11}},
+			},
+			size = {x=2, y=1, z=3},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 1)] = "ew_walk_bridge",
+				[HASHKEY(1, 0, 1)] = "ew_walk_bridge",
+				[HASHKEY(0, 0, 2)] = "large_chunk_dummy",
+				[HASHKEY(1, 0, 2)] = "large_chunk_dummy",
+
+			},
+			probability = GATEHOUSE_PROB,
+			--[[
+			require_empty_neighbors = {
+				-- Both sides of east-facing bridge.
+				[HASHKEY(2, 0, 0)] = true,
+				[HASHKEY(2, 0, 2)] = true,
+
+				-- Both sides of west-facing bridge.
+				[HASHKEY(-1, 0, 0)] = true,
+				[HASHKEY(-1, 0, 2)] = true,
+			},
+			--]]
+			valid_neighbors = {
+				[HASHKEY(-1, 0, 1)] = BRIDGE_CONNECT[DIRNAME.WEST],
+				[HASHKEY(2, 0, 1)] = BRIDGE_CONNECT[DIRNAME.EAST],
+
+				-- Both sides of east-facing bridge.
+				[HASHKEY(2, 0, 0)] = {air=true, air_option=true},
+				[HASHKEY(2, 0, 2)] = {air=true, air_option=true},
+
+				-- Both sides of west-facing bridge.
+				[HASHKEY(-1, 0, 0)] = {air=true, air_option=true},
+				[HASHKEY(-1, 0, 2)] = {air=true, air_option=true},
+			},
 		},
 	},
 }

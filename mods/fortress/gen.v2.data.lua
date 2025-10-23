@@ -38,7 +38,7 @@ local OERKKI_SPAWNER_CHANCE = 10
 local ELITE_SPAWNER_CHANCE = 10
 local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
-local FLOOR_LAVA_CHANCE = 8
+local FLOOR_LAVA_CHANCE = 7
 local PASSAGE_DETAIL_CHANCE = 20
 local HALLWAY_CAP_DOORWAY_PROB = 50
 local HALLWAY_CORNER_DOORWAY_PROB = 20
@@ -84,6 +84,7 @@ local LARGE_PLAZA_CHANCE = 100
 local MEDIUM_PLAZA_CHANCE = 500
 local SMALL_PLAZA_CHANCE = 200
 local GATEHOUSE_PROB = 10
+local BRIDGE_OPEN_PIT_CHANCE = 7
 
 
 
@@ -334,6 +335,7 @@ local BASIC_FLOOR_LAVA = {
 	rotation = "random",
 	offset = {x=3, y=0, z=3},
 	priority = LAVA_FLOOR_HAZARD_PRIORITY,
+	exclude = {nf_detail_lava_well3=true, bridge_pit=true},
 }
 local BASIC_FLOOR_LAVA_RAISED = {
 	file = "nf_detail_lava1",
@@ -348,6 +350,13 @@ local HALLWAY_FLOOR_LAVA = {
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
 	priority = LAVA_FLOOR_HAZARD_PRIORITY,
+}
+local BASIC_FLOOR_LAVA_WELL = {
+	file = "nf_detail_lava_well3",
+	chance = FLOOR_LAVA_CHANCE,
+	offset = {x=4, y=0, z=4},
+	priority = LAVA_FLOOR_HAZARD_PRIORITY,
+	exclude = {nf_detail_lava1=true, bridge_pit=true},
 }
 
 
@@ -652,7 +661,6 @@ fortress.v2.fortress_data = {
 			-- NOTE: This limits the number of times this chunk can be used in a fort.
 			-- As a general rule, avoid using this except for very rare features.
 			-- Prefer to set low probabilities instead.
-			-- TODO: Demonstrate this with an actual special feature peice.
 			--limit = JUNCTION_BRIDGE_LIMIT,
 
 			valid_neighbors = {
@@ -681,7 +689,14 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
 				{file="bridge_house_ew", chance=10, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+
+				-- Note the use of 'priority' to ensure this schem is written last.
+				{file="bridge_pit", chance=BRIDGE_OPEN_PIT_CHANCE,
+					offset={x=3, y=-3, z=3}, priority=BRIDGE_OPEN_PIT_PRIORITY,
+					exclude={nf_detail_lava1=true, nf_detail_lava3=true}},
+
+				-- Misc hazards. Note that the bridge pit can exclude the lava deco.
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
@@ -699,7 +714,16 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
 				{file="bridge_house_ns", chance=10, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+
+				-- NOTE: You can use 'priority' to specify when in relation to other
+				-- schems this schem should be written. This is useful for schems that
+				-- overlap each other, if you want one to always be written last.
+				{file="bridge_pit", chance=BRIDGE_OPEN_PIT_CHANCE,
+					offset={x=3, y=-3, z=3}, priority=BRIDGE_OPEN_PIT_PRIORITY,
+					exclude={nf_detail_lava1=true, nf_detail_lava_well3=true}},
+
+				-- Misc hazards. Note that the bridge pit can exclude the lava deco.
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -717,7 +741,12 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
 				{file="bridge_house_ew", chance=10, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
+
+				-- Note the use of 'priority' to ensure this schem is written last.
+				{file="bridge_pit", chance=BRIDGE_OPEN_PIT_CHANCE,
+					offset={x=3, y=-3, z=3}, priority=BRIDGE_OPEN_PIT_PRIORITY,
+					exclude={nf_detail_lava1=true, nf_detail_lava3=true}},
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = BRIDGE_CONNECT[DIRNAME.EAST],
@@ -739,7 +768,14 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
 				{file="bridge_house_ns", chance=10, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
+
+				-- NOTE: You can use 'priority' to specify when in relation to other
+				-- schems this schem should be written. This is useful for schems that
+				-- overlap each other, if you want one to always be written last.
+				{file="bridge_pit", chance=BRIDGE_OPEN_PIT_CHANCE,
+					offset={x=3, y=-3, z=3}, priority=BRIDGE_OPEN_PIT_PRIORITY,
+					exclude={nf_detail_lava1=true, nf_detail_lava_well3=true}},
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -778,22 +814,12 @@ fortress.v2.fortress_data = {
 		bridge_arch_ns = {
 			schem = {
 				{file="nf_bridge_arch_ns", force=false, offset={x=0, y=6, z=0}},
-
-				-- NOTE: You can use 'priority' to specify when in relation to other
-				-- schems this schem should be written. This is useful for schems that
-				-- overlap each other, if you want one to always be written last.
-				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3},
-					priority=BRIDGE_OPEN_PIT_PRIORITY},
 			},
 		},
 
 		bridge_arch_ew = {
 			schem = {
 				{file="nf_bridge_arch_ew", force=false, offset={x=0, y=6, z=0}},
-
-				-- Note the use of 'priority' to ensure this schem is written last.
-				{file="bridge_pit", chance=5, offset={x=3, y=8, z=3},
-					priority=BRIDGE_OPEN_PIT_PRIORITY},
 			},
 		},
 
@@ -958,7 +984,7 @@ fortress.v2.fortress_data = {
 		ne_corner_walk = {
 			schem = {
 				{file="nf_walkway_ne_corner", force=false},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -971,7 +997,7 @@ fortress.v2.fortress_data = {
 		nw_corner_walk = {
 			schem = {
 				{file="nf_walkway_nw_corner", force=false},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -984,7 +1010,7 @@ fortress.v2.fortress_data = {
 		sw_corner_walk = {
 			schem = {
 				{file="nf_walkway_sw_corner", force=false},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
@@ -997,7 +1023,7 @@ fortress.v2.fortress_data = {
 		se_corner_walk = {
 			schem = {
 				{file="nf_walkway_se_corner", force=false},
-				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
@@ -1823,7 +1849,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
 				{file="bridge_house_ew", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can
@@ -1836,7 +1862,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
 				{file="bridge_house_ns", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can
@@ -1849,7 +1875,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_n_capped", force=false},
 				{file="bridge_house_n", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can
@@ -1864,7 +1890,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_s_capped", force=false},
 				{file="bridge_house_s", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can
@@ -1879,7 +1905,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_e_capped", force=false},
 				{file="bridge_house_e", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can
@@ -1894,7 +1920,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_w_capped", force=false},
 				{file="bridge_house_w", chance=15, offset={x=0, y=3, z=0}},
-				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA,
+				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
 				-- Air is included in the list so that the roof tower probability can

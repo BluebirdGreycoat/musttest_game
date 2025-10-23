@@ -636,7 +636,10 @@ fortress.v2.fortress_data = {
 		air = {probability=0, fallback=true},
 
 		-- Use this when you want air to have weight in probabilities.
-		air_option = {fallback=true},
+		air_option = {
+			fallback = true,
+			footprint = {[HASHKEY(0, 0, 0)] = "air"},
+		},
 
 		-- A four-way uncovered bridge junction.
 		junction_walk_bridge = {
@@ -2979,7 +2982,7 @@ fortress.v2.fortress_data = {
 				-- Both sides of east-facing bridge.
 				-- Southeast corner.
 				[HASHKEY(2, 0, 0)] = {
-					air = true,
+					air_option = true,
 					ns_walk_bridge = true,
 					walk_bridge_nsw = true,
 					nw_corner_walk = true,
@@ -2987,7 +2990,7 @@ fortress.v2.fortress_data = {
 				},
 				-- Northeast corner.
 				[HASHKEY(2, 0, 2)] = {
-					air = true,
+					air_option = true,
 					ns_walk_bridge = true,
 					walk_bridge_nsw = true,
 					sw_corner_walk = true,
@@ -2997,7 +3000,7 @@ fortress.v2.fortress_data = {
 				-- Both sides of west-facing bridge.
 				-- Southwest corner.
 				[HASHKEY(-1, 0, 0)] = {
-					air = true,
+					air_option = true,
 					ns_walk_bridge = true,
 					walk_bridge_nse = true,
 					ne_corner_walk = true,
@@ -3005,7 +3008,7 @@ fortress.v2.fortress_data = {
 				},
 				-- Northwest corner.
 				[HASHKEY(-1, 0, 2)] = {
-					air = true,
+					air_option = true,
 					ns_walk_bridge = true,
 					walk_bridge_nse = true,
 					se_corner_walk = true,
@@ -3044,7 +3047,7 @@ fortress.v2.fortress_data = {
 				-- Both sides of north-facing bridge.
 				-- Northwest corner.
 				[HASHKEY(0, 0, 2)] = {
-					air = true,
+					air_option = true,
 					ew_walk_bridge = true,
 					walk_bridge_nwe = true,
 					ne_corner_walk = true,
@@ -3052,7 +3055,7 @@ fortress.v2.fortress_data = {
 				},
 				-- Northeast corner.
 				[HASHKEY(2, 0, 2)] = {
-					air = true,
+					air_option = true,
 					ew_walk_bridge = true,
 					walk_bridge_nwe = true,
 					nw_corner_walk = true,
@@ -3062,7 +3065,7 @@ fortress.v2.fortress_data = {
 				-- Both sides of south-facing bridge.
 				-- Southwest corner.
 				[HASHKEY(0, 0, -1)] = {
-					air = true,
+					air_option = true,
 					ew_walk_bridge = true,
 					walk_bridge_swe = true,
 					se_corner_walk = true,
@@ -3070,7 +3073,7 @@ fortress.v2.fortress_data = {
 				},
 				-- Southeast corner.
 				[HASHKEY(2, 0, -1)] = {
-					air = true,
+					air_option = true,
 					ew_walk_bridge = true,
 					walk_bridge_swe = true,
 					sw_corner_walk = true,

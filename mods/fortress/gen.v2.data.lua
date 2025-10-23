@@ -2,18 +2,14 @@
 -- Todo:
 -- Add grand staircases (bridge and passage variants).
 -- (Note: maybe we don't want these? Fortresses should be 2D only ....)
--- Add connections between sections of gatehouse tower.
--- Allow fortress to generate off of gatehouse tower sections.
 -- Add raised plaza.
 -- Add throne room.
 -- Add balconies.
 -- Add lava aquaducts.
 -- Add bluegrass farm.
--- Add single-room chambers.
 -- Add great hall.
 -- Add dungeon prison.
 -- Add portal chamber.
--- Add ziggurat plaza.
 -- Add table/alter room.
 
 local function HASHKEY(x, y, z)

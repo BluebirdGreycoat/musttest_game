@@ -19,6 +19,7 @@ function fortress.v2.show_command_help(pname)
 		"Include \"quiet\" in any command to suppress chat output.",
 		"Use \"force\" to force writing to map even if fortgen fails.",
 		"Use \"start=<chunkname>\" to start with a specific chunk.",
+		"Use \"require=<chunkname>\" to generate a fort that includes that chunk.",
 	}
 
 	for k, v in ipairs(strings) do
@@ -70,29 +71,26 @@ local function report_chunks_never_used(pname, user_params, all_chunks)
 		minetest.chat_send_player(pname,
 			"# Server: " .. pluralize(#namelist, "Chunk", "Chunks") ..
 				" not used: " .. str .. ".")
-	else
-		minetest.chat_send_player(pname,
-			"# Server: All available chunks were used at least once.")
-
-		-- Sort by usage count.
-		local usages = user_params.chunk_counts or {}
-		local allnames = {}
-
-		for name, v in pairs(user_params.chunk_counts) do
-			allnames[#allnames + 1] = name
-		end
-
-		table.sort(allnames, function(a, b)
-			return (usages[a] or 0) < (usages[b] or 0)
-		end)
-
-		local topnum = math.min(10, #namelist)
-		local leastusedstr = table.concat(namelist, ", ", 1, topnum)
-		minetest.chat_send_player(pname,
-			"# Server: The " .. topnum .. " least-used " ..
-				pluralize(topnum, "chunk was", "chunks were") .. ": " ..
-					leastusedstr .. ".")
 	end
+
+	-- Sort by usage count.
+	local usages = user_params.chunk_counts or {}
+	local allnames = {}
+
+	for name, v in pairs(user_params.chunk_counts) do
+		allnames[#allnames + 1] = name
+	end
+
+	table.sort(allnames, function(a, b)
+		return (usages[a] or 0) < (usages[b] or 0)
+	end)
+
+	local topnum = math.min(10, #namelist)
+	local leastusedstr = table.concat(namelist, ", ", 1, topnum)
+	minetest.chat_send_player(pname,
+		"# Server: The " .. topnum .. " least-used " ..
+			pluralize(topnum, "chunk was", "chunks were") .. ": " ..
+				leastusedstr .. ".")
 end
 
 
@@ -111,6 +109,7 @@ function fortress.v2.chat_command(pname, textparam)
 	local run_tests = false
 	local dry_run = false
 	local starting_chunk = nil
+	local required_chunk = nil
 	local quiet = false
 	local force_write = false
 
@@ -158,6 +157,16 @@ function fortress.v2.chat_command(pname, textparam)
 				maxiter = math.abs(math.floor(tonumber(iterstr)))
 			else
 				minetest.chat_send_player(pname, "# Server: Invalid iteration count.")
+				return
+			end
+		end
+
+		if v:find("require=") then
+			local chunkname = string.split(v, "=")[2]
+			if chunkname and fortress.v2.fortress_data.chunks[chunkname] then
+				required_chunk = chunkname
+			else
+				minetest.chat_send_player(pname, "# Server: Invalid chunk name.")
 				return
 			end
 		end
@@ -225,6 +234,57 @@ function fortress.v2.chat_command(pname, textparam)
 				"# Server: Bad seeds: " .. table.concat(bad_seeds, ", ") .. ".")
 		end
 	else
+		-- If the user has asked for a fort containing a specific chunk,
+		-- then iterate fortress layout generation until we find that chunk being
+		-- used, or we reach max iterations.
+		if required_chunk then
+			minetest.chat_send_player(pname, "# Server: Searching for chunk ...")
+
+			local user_results = {}
+			local try_count = 100
+			local success = false
+
+			for k = 1, try_count do
+				-- Saved info will mess up tests.
+				fortress.v2.clear_saved_info()
+
+				fortress.v2.make_fort({
+					-- Required parameters.
+					spawn_pos = vector.round(player:get_pos()),
+					fortress_data = fortress.v2.fortress_data,
+
+					-- Max iterations and starting seed are NOT used here,
+					-- since they don't make sense for our purpose.
+					starting_chunk = starting_chunk,
+					dry_run = true,
+
+					-- The algorithm will output result statistics here.
+					user_results = user_results,
+				})
+
+				if user_results.chunks_used then
+					if user_results.chunks_used[required_chunk] then
+						randseed = user_results.seednumber
+						success = true
+						break
+					end
+				end
+			end
+
+			if not success then
+				minetest.chat_send_player(pname,
+					"# Server: Could not find fortress layout containing " ..
+						required_chunk .. " after " .. try_count .. " iterations.")
+
+				return
+			end
+
+			local count = user_results.chunk_counts[required_chunk]
+			minetest.chat_send_player(pname,
+				"# Server: Chunk " .. required_chunk .. " was used " .. count .. " " ..
+					pluralize(count, "time", "times") .. ".")
+		end
+
 		fortress.v2.make_fort({
 			-- Required parameters.
 			spawn_pos = vector.round(player:get_pos()),

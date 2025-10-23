@@ -46,7 +46,7 @@ local FLOOR_LAVA_CHANCE = 8
 local PASSAGE_DETAIL_CHANCE = 20
 local HALLWAY_CAP_DOORWAY_PROB = 50
 local HALLWAY_CORNER_DOORWAY_PROB = 20
-local HALLWAY_TJUNC_DOORWAY_PROB = 20
+local HALLWAY_TJUNC_DOORWAY_PROB = 30
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.

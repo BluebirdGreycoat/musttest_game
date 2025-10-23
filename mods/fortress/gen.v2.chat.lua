@@ -85,8 +85,8 @@ local function report_chunks_never_used(pname, user_params, all_chunks)
 		return (usages[a] or 0) < (usages[b] or 0)
 	end)
 
-	local topnum = math.min(10, #namelist)
-	local leastusedstr = table.concat(namelist, ", ", 1, topnum)
+	local topnum = math.min(10, #allnames)
+	local leastusedstr = table.concat(allnames, ", ", 1, topnum)
 	minetest.chat_send_player(pname,
 		"# Server: The " .. topnum .. " least-used " ..
 			pluralize(topnum, "chunk was", "chunks were") .. ": " ..

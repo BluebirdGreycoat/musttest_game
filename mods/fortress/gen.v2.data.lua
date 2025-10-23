@@ -84,7 +84,7 @@ local PLAZA_GATE_PROB = 30
 local LARGE_PLAZA_CHANCE = 100
 local MEDIUM_PLAZA_CHANCE = 500
 local SMALL_PLAZA_CHANCE = 200
-local GATEHOUSE_PROB = 10
+local GATEHOUSE_PROB = 100
 
 
 
@@ -110,6 +110,7 @@ local BRIDGE_CONNECT = {
 
 		bridge_ns_to_hall_ew = true,
 		ew_plaza_s = true,
+		ns_gatehouse = true,
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
@@ -129,6 +130,7 @@ local BRIDGE_CONNECT = {
 
 		bridge_ns_to_hall_ew = true,
 		ew_plaza_n = true,
+		ns_gatehouse = true,
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
@@ -447,7 +449,7 @@ local function GET_HALL_EW_TO_BRIDGE_NS(probability)
 		-- the connective/etc properties of those smaller peices.
 		--
 		-- If we had internal pieces that should be ignored by the algorithm, we
-		-- could use 'large_chunk_dummy' for those. But this chunk is just 1x1x3,
+		-- could use a 'dummy' chunk for those. But this chunk is just 1x1x3,
 		-- not big enough for that.
 		footprint = {
 			[HASHKEY(0, 0, 2)] = "ns_walk_bridge",
@@ -514,7 +516,7 @@ local function GET_HALL_NS_TO_BRIDGE_EW(probability)
 		-- the connective/etc properties of those smaller peices.
 		--
 		-- If we had internal pieces that should be ignored by the algorithm, we
-		-- could use 'large_chunk_dummy' for those. But this chunk is just 1x1x3,
+		-- could use a 'dummy' chunk for those. But this chunk is just 1x1x3,
 		-- not big enough for that.
 		footprint = {
 			[HASHKEY(0, 0, 0)] = "ew_walk_bridge",
@@ -1894,11 +1896,6 @@ fortress.v2.fortress_data = {
 			fallback = true,
 		},
 
-		-- Large chunk dummy piece (does not expand into any schems, and has no
-		-- connections). Use this in footprint tables to "take up space" for chunk
-		-- locations which should be ignored by the algorithm.
-		large_chunk_dummy = {},
-
 		-- EW passageway with NS bridge connectors.
 		-- Two of these so we can give them distinct probabilities.
 		bridge_ns_to_hall_ew =
@@ -1914,6 +1911,7 @@ fortress.v2.fortress_data = {
 			GET_HALL_NS_TO_BRIDGE_EW(PASSAGE_BRIDGE_TRANSITION_PROB2),
 
 		-- The big 3x3 plaza object.
+		large_plaza_dummy = {},
 		large_plaza = {
 			schem = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
@@ -2084,15 +2082,15 @@ fortress.v2.fortress_data = {
 			},
 			-- Prevent algorithm from coming back and overwriting us.
 			footprint = {
-				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(2, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(0, 0, 1)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 1)] = "large_chunk_dummy",
-				[HASHKEY(2, 0, 1)] = "large_chunk_dummy",
-				[HASHKEY(0, 0, 2)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 2)] = "large_chunk_dummy",
-				[HASHKEY(2, 0, 2)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 0)] = "large_plaza_dummy",
+				[HASHKEY(1, 0, 0)] = "large_plaza_dummy",
+				[HASHKEY(2, 0, 0)] = "large_plaza_dummy",
+				[HASHKEY(0, 0, 1)] = "large_plaza_dummy",
+				[HASHKEY(1, 0, 1)] = "large_plaza_dummy",
+				[HASHKEY(2, 0, 1)] = "large_plaza_dummy",
+				[HASHKEY(0, 0, 2)] = "large_plaza_dummy",
+				[HASHKEY(1, 0, 2)] = "large_plaza_dummy",
+				[HASHKEY(2, 0, 2)] = "large_plaza_dummy",
 			},
 			probability = LARGE_PLAZA_CHANCE,
 		},
@@ -2526,6 +2524,7 @@ fortress.v2.fortress_data = {
 		},
 
 		-- Small plaza. 1x1.
+		small_plaza_dummy = {},
 		small_plaza = {
 			schem = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
@@ -2631,12 +2630,13 @@ fortress.v2.fortress_data = {
 			},
 			-- Prevent algorithm from coming back and overwriting us.
 			footprint = {
-				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 0)] = "small_plaza_dummy",
 			},
 			probability = SMALL_PLAZA_CHANCE,
 		},
 
 		-- The 2x2 plaza object.
+		medium_plaza_dummy = {},
 		medium_plaza = {
 			schem = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
@@ -2770,10 +2770,10 @@ fortress.v2.fortress_data = {
 			},
 			-- Prevent algorithm from coming back and overwriting us.
 			footprint = {
-				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(0, 0, 1)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 1)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 0)] = "medium_plaza_dummy",
+				[HASHKEY(1, 0, 0)] = "medium_plaza_dummy",
+				[HASHKEY(0, 0, 1)] = "medium_plaza_dummy",
+				[HASHKEY(1, 0, 1)] = "medium_plaza_dummy",
 			},
 			probability = MEDIUM_PLAZA_CHANCE,
 		},
@@ -2949,6 +2949,7 @@ fortress.v2.fortress_data = {
 		},
 
 		-- Gatehouses.
+		ew_gatehouse_dummy = {},
 		ew_gatehouse = {
 			schem = {
 				{file="nf_gatehouse_ew", offset={x=0, y=0, z=7}},
@@ -2959,38 +2960,143 @@ fortress.v2.fortress_data = {
 			},
 			size = {x=2, y=1, z=3},
 			footprint = {
-				[HASHKEY(0, 0, 0)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 0)] = "large_chunk_dummy",
+				[HASHKEY(0, 0, 0)] = "ew_gatehouse_dummy",
+				[HASHKEY(1, 0, 0)] = "ew_gatehouse_dummy",
 				[HASHKEY(0, 0, 1)] = "ew_walk_bridge",
 				[HASHKEY(1, 0, 1)] = "ew_walk_bridge",
-				[HASHKEY(0, 0, 2)] = "large_chunk_dummy",
-				[HASHKEY(1, 0, 2)] = "large_chunk_dummy",
-
+				[HASHKEY(0, 0, 2)] = "ew_gatehouse_dummy",
+				[HASHKEY(1, 0, 2)] = "ew_gatehouse_dummy",
 			},
 			probability = GATEHOUSE_PROB,
-			--[[
-			require_empty_neighbors = {
-				-- Both sides of east-facing bridge.
-				[HASHKEY(2, 0, 0)] = true,
-				[HASHKEY(2, 0, 2)] = true,
-
-				-- Both sides of west-facing bridge.
-				[HASHKEY(-1, 0, 0)] = true,
-				[HASHKEY(-1, 0, 2)] = true,
-			},
-			--]]
+			limit = 2,
 			valid_neighbors = {
 				[HASHKEY(-1, 0, 1)] = BRIDGE_CONNECT[DIRNAME.WEST],
 				[HASHKEY(2, 0, 1)] = BRIDGE_CONNECT[DIRNAME.EAST],
 
 				-- Both sides of east-facing bridge.
-				[HASHKEY(2, 0, 0)] = {air=true, air_option=true},
-				[HASHKEY(2, 0, 2)] = {air=true, air_option=true},
+				-- Southeast corner.
+				[HASHKEY(2, 0, 0)] = {
+					air = true,
+					ns_walk_bridge = true,
+					walk_bridge_nsw = true,
+					nw_corner_walk = true,
+					capped_bridge_n = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(2, 0, 2)] = {
+					air = true,
+					ns_walk_bridge = true,
+					walk_bridge_nsw = true,
+					sw_corner_walk = true,
+					capped_bridge_s = true,
+				},
 
 				-- Both sides of west-facing bridge.
-				[HASHKEY(-1, 0, 0)] = {air=true, air_option=true},
-				[HASHKEY(-1, 0, 2)] = {air=true, air_option=true},
+				-- Southwest corner.
+				[HASHKEY(-1, 0, 0)] = {
+					air = true,
+					ns_walk_bridge = true,
+					walk_bridge_nse = true,
+					ne_corner_walk = true,
+					capped_bridge_n = true,
+				},
+				-- Northwest corner.
+				[HASHKEY(-1, 0, 2)] = {
+					air = true,
+					ns_walk_bridge = true,
+					walk_bridge_nse = true,
+					se_corner_walk = true,
+					capped_bridge_s = true,
+				},
+
+				-- Basement.
+				[HASHKEY(0, -4, 0)] = {gatehouse_pillar_ew=true},
 			},
+		},
+
+		ns_gatehouse_dummy = {},
+		ns_gatehouse = {
+			schem = {
+				{file="nf_gatehouse_ns", offset={x=7, y=0, z=0}},
+				{file="nf_gatehouse_bridge_shim_s", force=false,
+					offset={x=11, y=-11, z=0}},
+				{file="nf_gatehouse_bridge_shim_n", force=false,
+					offset={x=11, y=-11, z=20}},
+			},
+			size = {x=3, y=1, z=2},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ns_gatehouse_dummy",
+				[HASHKEY(1, 0, 0)] = "ns_walk_bridge",
+				[HASHKEY(2, 0, 0)] = "ns_gatehouse_dummy",
+				[HASHKEY(0, 0, 1)] = "ns_gatehouse_dummy",
+				[HASHKEY(1, 0, 1)] = "ns_walk_bridge",
+				[HASHKEY(2, 0, 1)] = "ns_gatehouse_dummy",
+			},
+			probability = GATEHOUSE_PROB,
+			limit = 2,
+			valid_neighbors = {
+				[HASHKEY(1, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+				[HASHKEY(1, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+
+				-- Both sides of north-facing bridge.
+				-- Northwest corner.
+				[HASHKEY(0, 0, 2)] = {
+					air = true,
+					ew_walk_bridge = true,
+					walk_bridge_nwe = true,
+					ne_corner_walk = true,
+					capped_bridge_e = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(2, 0, 2)] = {
+					air = true,
+					ew_walk_bridge = true,
+					walk_bridge_nwe = true,
+					nw_corner_walk = true,
+					capped_bridge_w = true,
+				},
+
+				-- Both sides of south-facing bridge.
+				-- Southwest corner.
+				[HASHKEY(0, 0, -1)] = {
+					air = true,
+					ew_walk_bridge = true,
+					walk_bridge_swe = true,
+					se_corner_walk = true,
+					capped_bridge_e = true,
+				},
+				-- Southeast corner.
+				[HASHKEY(2, 0, -1)] = {
+					air = true,
+					ew_walk_bridge = true,
+					walk_bridge_swe = true,
+					sw_corner_walk = true,
+					capped_bridge_w = true,
+				},
+
+				-- Basement.
+				[HASHKEY(0, -4, 0)] = {gatehouse_pillar_ns=true},
+			},
+		},
+
+		gatehouse_pillar_ew = {
+			schem = {
+				{file="nf_gatehouse_tower_ew", offset={x=2, y=0, z=7}},
+				{file="nf_gatehouse_tower_ew", offset={x=2, y=11, z=7}},
+				{file="nf_gatehouse_tower_ew", offset={x=2, y=22, z=7}},
+				{file="nf_gatehouse_tower_ew", offset={x=2, y=33, z=7}},
+			},
+			size = {x=2, y=4, z=3},
+		},
+
+		gatehouse_pillar_ns = {
+			schem = {
+				{file="nf_gatehouse_tower_ns", offset={x=7, y=0, z=2}},
+				{file="nf_gatehouse_tower_ns", offset={x=7, y=11, z=2}},
+				{file="nf_gatehouse_tower_ns", offset={x=7, y=22, z=2}},
+				{file="nf_gatehouse_tower_ns", offset={x=7, y=33, z=2}},
+			},
+			size = {x=3, y=4, z=2},
 		},
 	},
 }

@@ -3145,6 +3145,8 @@ fortress.v2.fortress_data = {
 		medium_chamber = {
 			schem = {
 				{file="nf_medium_chamber_enclosed", priority=WINDOW_DECO_PRIORITY+1},
+				{file="nf_detail_lava_well2", priority=WINDOW_DECO_PRIORITY+2,
+					chance=30, offset={x=9, y=0, z=9}},
 			},
 			size = {x=2, y=1, z=2},
 			valid_neighbors = {

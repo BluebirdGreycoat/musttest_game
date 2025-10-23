@@ -2148,6 +2148,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_e_capped = true,
@@ -2194,6 +2195,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_w_capped = true,
@@ -2240,6 +2242,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_n_capped = true,
@@ -2286,6 +2289,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_s_capped = true,
@@ -2832,6 +2836,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_e_capped = true,
@@ -2874,6 +2879,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_w_capped = true,
@@ -2916,6 +2922,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_n_capped = true,
@@ -2958,6 +2965,7 @@ fortress.v2.fortress_data = {
 					large_plaza = true,
 					medium_plaza = true,
 					small_plaza = true,
+					medium_chamber = true,
 
 					-- Note that this does result in an orphan cap roof on top.
 					hallway_s_capped = true,
@@ -3130,6 +3138,130 @@ fortress.v2.fortress_data = {
 				{file="nf_gatehouse_tower_ns", offset={x=7, y=33, z=2}},
 			},
 			size = {x=3, y=4, z=2},
+		},
+
+		-- The 2x2 chamber object.
+		medium_chamber_dummy = {},
+		medium_chamber = {
+			schem = {
+				{file="nf_medium_chamber_enclosed"},
+			},
+			size = {x=2, y=1, z=2},
+			valid_neighbors = {
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(1, -1, 1)] = {solid_top=true},
+
+				-- Entrances on the edges.
+				-- West side.
+				[HASHKEY(-1, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_swn_t = true,
+					ns_plaza_w = true,
+					hallway_e_capped_no_stair = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_n_capped_no_stair_prob0 = true,
+				},
+				-- East side.
+				[HASHKEY(2, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_nes_t = true,
+					ns_plaza_e = true,
+					hallway_w_capped_no_stair = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_s_capped_no_stair_prob0 = true,
+				},
+				-- South side.
+				[HASHKEY(0, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_esw_t = true,
+					ew_plaza_s = true,
+					hallway_n_capped_no_stair = true,
+					hallway_e_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
+				-- North side.
+				[HASHKEY(1, 0, 2)] = {
+					hallway_straight_ew = true,
+					hallway_wne_t = true,
+					ew_plaza_n = true,
+					hallway_s_capped_no_stair = true,
+					hallway_w_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
+
+				-- Require the left sides of all possible entrances to be hallways.
+				-- Left side of south entrance.
+				[HASHKEY(1, 0, -1)] = {
+					hallway_straight_ew = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
+				-- Left side of north entrance.
+				[HASHKEY(0, 0, 2)] = {
+					hallway_straight_ew = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
+				-- Left side of west entrance.
+				[HASHKEY(-1, 0, 0)] = {
+					hallway_straight_ns = true,
+					hallway_n_capped_no_stair_prob0 = true,
+					hallway_e_capped_no_stair_prob0 = true,
+				},
+				-- Left side of east entrance.
+				[HASHKEY(2, 0, 1)] = {
+					hallway_straight_ns = true,
+					hallway_s_capped_no_stair_prob0 = true,
+					hallway_w_capped_no_stair_prob0 = true,
+				},
+
+				-- Now the corners.
+				-- Southwest corner.
+				[HASHKEY(-1, 0, -1)] = {
+					hall_corner_ne = true,
+					hallway_e_capped_no_stair = true,
+					hallway_n_capped_no_stair = true,
+					hallway_junction = true,
+					hallway_wne_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northwest corner.
+				[HASHKEY(-1, 0, 2)] = {
+					hall_corner_se = true,
+					hallway_s_capped_no_stair = true,
+					hallway_e_capped_no_stair = true,
+					hallway_junction = true,
+					hallway_esw_t = true,
+					hallway_nes_t = true,
+				},
+				-- Northeast corner.
+				[HASHKEY(2, 0, 2)] = {
+					hall_corner_sw = true,
+					hallway_s_capped_no_stair = true,
+					hallway_w_capped_no_stair = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_esw_t = true,
+				},
+				-- Southeast corner.
+				[HASHKEY(2, 0, -1)] = {
+					hall_corner_nw = true,
+					hallway_n_capped_no_stair = true,
+					hallway_w_capped_no_stair = true,
+					hallway_junction = true,
+					hallway_swn_t = true,
+					hallway_wne_t = true,
+				},
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "medium_chamber_dummy",
+				[HASHKEY(1, 0, 0)] = "medium_chamber_dummy",
+				[HASHKEY(0, 0, 1)] = "medium_chamber_dummy",
+				[HASHKEY(1, 0, 1)] = "medium_chamber_dummy",
+			},
 		},
 	},
 }

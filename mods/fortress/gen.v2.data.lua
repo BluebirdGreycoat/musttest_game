@@ -3144,7 +3144,7 @@ fortress.v2.fortress_data = {
 		medium_chamber_dummy = {},
 		medium_chamber = {
 			schem = {
-				{file="nf_medium_chamber_enclosed"},
+				{file="nf_medium_chamber_enclosed", priority=WINDOW_DECO_PRIORITY+1},
 			},
 			size = {x=2, y=1, z=2},
 			valid_neighbors = {
@@ -3153,6 +3153,11 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, -1, 0)] = {solid_top=true},
 				[HASHKEY(0, -1, 1)] = {solid_top=true},
 				[HASHKEY(1, -1, 1)] = {solid_top=true},
+
+				-- Roof.
+				[HASHKEY(0, 1, 0)] = {
+					medium_chamber_flatroof = true,
+				},
 
 				-- Entrances on the edges.
 				-- West side.
@@ -3261,6 +3266,20 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 0, 0)] = "medium_chamber_dummy",
 				[HASHKEY(0, 0, 1)] = "medium_chamber_dummy",
 				[HASHKEY(1, 0, 1)] = "medium_chamber_dummy",
+			},
+		},
+
+		medium_chamber_flatroof_dummy = {},
+		medium_chamber_flatroof = {
+			schem = {
+				{file="nf_medium_chamber_flatroof"},
+			},
+			size = {x=2, y=1, z=2},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "medium_chamber_flatroof_dummy",
+				[HASHKEY(1, 0, 0)] = "medium_chamber_flatroof_dummy",
+				[HASHKEY(0, 0, 1)] = "medium_chamber_flatroof_dummy",
+				[HASHKEY(1, 0, 1)] = "medium_chamber_flatroof_dummy",
 			},
 		},
 	},

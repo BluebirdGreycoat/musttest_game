@@ -84,7 +84,7 @@ local PLAZA_GATE_PROB = 30
 local LARGE_PLAZA_CHANCE = 100
 local MEDIUM_PLAZA_CHANCE = 500
 local SMALL_PLAZA_CHANCE = 200
-local GATEHOUSE_PROB = 100
+local GATEHOUSE_PROB = 10
 
 
 
@@ -594,6 +594,9 @@ fortress.v2.fortress_data = {
 		GET_PASSAGE_STARTER_PIECES(),
 		GET_TRANSITION_STARTER_PIECES(),
 		GET_PLAZA_STARTER_PIECES(),
+		"ew_gatehouse",
+		"ns_gatehouse",
+		GET_BRIDGE_STARTER_PIECES(),
 	},
 
 	-- Size of cells/tiles, in worldspace units.
@@ -611,8 +614,8 @@ fortress.v2.fortress_data = {
 		{x=12, y=8, z=12, weight=100},
 		{x=10, y=8, z=10, weight=150},
 
-		{x=8, y=8, z=8, weight=50},
-		{x=6, y=8, z=6, weight=25},
+		{x=8, y=8, z=8, weight=25},
+		{x=6, y=8, z=6, weight=10},
 	},
 
 	-- List of node replacements.

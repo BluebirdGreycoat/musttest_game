@@ -61,17 +61,31 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 	local thischunk = chunkdata.schem
 	local all_schems = params.build.schems
 
+	-- Will store the names of excluded schem files.
+	-- We allow schems to be defined as excluding the possibility of other schems,
+	-- if placed. Exclusions are processed (and handled) in the order they appear
+	-- in the data.
+	local excluded = {}
+
 	-- Add schems which are part of this chunk.
 	-- A chunk may have multiple schems with different parameters.
 	for _, v in ipairs(thischunk) do
 		local chance = v.chance or 100
 
-		if random(1, 100) <= chance then
+		if random(1, 100) <= chance and not excluded[v.file] then
 			local file = v.file
 			local path = params.schemdir .. "/" .. file .. ".mts"
 			local offset = table.copy(v.offset or {x=0, y=0, z=0})
 			local force = true
 			local priority = v.priority or 0
+
+			-- Only process this schem's exclusion of other schems if we are actually
+			-- going to place this schem (chance has succeeded).
+			if v.exclude then
+				for name, _ in pairs(v.exclude) do
+					excluded[name] = true
+				end
+			end
 
 			-- The position adjustment setting may specify min/max values for each
 			-- dimension coordinate.

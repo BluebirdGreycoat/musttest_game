@@ -44,6 +44,9 @@ local OERKKI_SPAWNER_HALLWAY_CHANCE = 10
 local ELITE_SPAWNER_HALLWAY_CHANCE = 10
 local FLOOR_LAVA_CHANCE = 8
 local PASSAGE_DETAIL_CHANCE = 20
+local HALLWAY_CAP_DOORWAY_PROB = 50
+local HALLWAY_CORNER_DOORWAY_PROB = 20
+local HALLWAY_TJUNC_DOORWAY_PROB = 20
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.
@@ -1218,7 +1221,9 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_n_capped"},
 				{file="hall_end_stair", rotation="180", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=4, y=4, z=5}},
+						offset={x=4, y=4, z=5}, exclude={nf_passage_door=true}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=8}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1251,7 +1256,9 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_s_capped"},
 				{file="hall_end_stair", rotation="0", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=4, y=4, z=-2}},
+						offset={x=4, y=4, z=-2}, exclude={nf_passage_door=true}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=0}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1284,7 +1291,9 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_e_capped"},
 				{file="hall_end_stair", rotation="270", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=5, y=4, z=4}},
+						offset={x=5, y=4, z=4}, exclude={nf_passage_door=true}},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1317,7 +1326,9 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_w_capped"},
 				{file="hall_end_stair", rotation="90", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=-2, y=4, z=4}},
+						offset={x=-2, y=4, z=4}, exclude={nf_passage_door=true}},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1350,6 +1361,8 @@ fortress.v2.fortress_data = {
 		hallway_n_capped_no_stair = {
 			schem = {
 				{file="nf_passage_n_capped"},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=8}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1380,6 +1393,8 @@ fortress.v2.fortress_data = {
 		hallway_s_capped_no_stair = {
 			schem = {
 				{file="nf_passage_s_capped"},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=0}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1410,6 +1425,8 @@ fortress.v2.fortress_data = {
 		hallway_e_capped_no_stair = {
 			schem = {
 				{file="nf_passage_e_capped"},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1440,6 +1457,8 @@ fortress.v2.fortress_data = {
 		hallway_w_capped_no_stair = {
 			schem = {
 				{file="nf_passage_w_capped"},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1471,6 +1490,8 @@ fortress.v2.fortress_data = {
 		hallway_n_capped_no_stair_prob0 = {
 			schem = {
 				{file="nf_passage_n_capped"},
+				{file="nf_passage_door", rotation="90", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=3, y=4, z=8}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1501,6 +1522,8 @@ fortress.v2.fortress_data = {
 		hallway_s_capped_no_stair_prob0 = {
 			schem = {
 				{file="nf_passage_s_capped"},
+				{file="nf_passage_door", rotation="90", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=3, y=4, z=0}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1531,6 +1554,8 @@ fortress.v2.fortress_data = {
 		hallway_e_capped_no_stair_prob0 = {
 			schem = {
 				{file="nf_passage_e_capped"},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1561,6 +1586,8 @@ fortress.v2.fortress_data = {
 		hallway_w_capped_no_stair_prob0 = {
 			schem = {
 				{file="nf_passage_w_capped"},
+				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_ELITE_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1592,11 +1619,10 @@ fortress.v2.fortress_data = {
 		hall_corner_ne = {
 			schem = {
 				{file="nf_passage_ne_corner"},
-
-				--[[
-				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
-				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
-				--]]
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CORNER_DOORWAY_PROB, offset={x=3, y=4, z=8}},
+				{file="nf_passage_door", chance=HALLWAY_CORNER_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
@@ -1613,11 +1639,10 @@ fortress.v2.fortress_data = {
 		hall_corner_nw = {
 			schem = {
 				{file="nf_passage_nw_corner"},
-
-				--[[
-				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
-				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
-				--]]
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CORNER_DOORWAY_PROB, offset={x=3, y=4, z=8}},
+				{file="nf_passage_door", chance=HALLWAY_CORNER_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
@@ -1634,11 +1659,10 @@ fortress.v2.fortress_data = {
 		hall_corner_se = {
 			schem = {
 				{file="nf_passage_se_corner"},
-
-				--[[
-				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
-				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
-				--]]
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CORNER_DOORWAY_PROB, offset={x=3, y=4, z=0}},
+				{file="nf_passage_door", chance=HALLWAY_CORNER_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
@@ -1655,11 +1679,10 @@ fortress.v2.fortress_data = {
 		hall_corner_sw = {
 			schem = {
 				{file="nf_passage_sw_corner"},
-
-				--[[
-				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
-				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
-				--]]
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_CORNER_DOORWAY_PROB, offset={x=3, y=4, z=0}},
+				{file="nf_passage_door", chance=HALLWAY_CORNER_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 			},
@@ -1677,11 +1700,13 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_passage_esw_t"},
 
-				--[[
-				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
-				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
-				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
-				--]]
+				-- Doorways.
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=0}},
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1704,11 +1729,13 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_passage_nes_t"},
 
-				--[[
-				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
-				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
-				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
-				--]]
+				-- Doorways.
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=8}},
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=0}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1731,11 +1758,13 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_passage_swn_t"},
 
-				--[[
-				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
-				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
-				{file="ns_hall_end_s", offset={x=2, y=3, z=-3}},
-				--]]
+				-- Doorways.
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=0}},
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=8}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 
@@ -1758,11 +1787,13 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_passage_wne_t"},
 
-				--[[
-				{file="ew_hall_end_e", offset={x=11, y=3, z=2}},
-				{file="ew_hall_end_w", offset={x=-3, y=3, z=2}},
-				{file="ns_hall_end_n", offset={x=2, y=3, z=11}},
-				--]]
+				-- Doorways.
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=0, y=4, z=3}},
+				{file="nf_passage_door", rotation="90",
+					chance=HALLWAY_TJUNC_DOORWAY_PROB, offset={x=3, y=4, z=8}},
+				{file="nf_passage_door", chance=HALLWAY_TJUNC_DOORWAY_PROB,
+					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
 

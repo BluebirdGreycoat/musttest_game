@@ -164,13 +164,13 @@ function fortress.v2.apply_layout(params)
 	end
 
 	-- Helper to decorate at a particular position.
-	local function decorate(vm_data, pos)
+	local function decorate(vm_data, pos, size)
 		local x0 = pos.x
 		local y0 = pos.y
 		local z0 = pos.z
-		local x1 = pos.x + step.x - 1
-		local y1 = pos.y + step.y - 1
-		local z1 = pos.z + step.z - 1
+		local x1 = pos.x + size.x - 1
+		local y1 = pos.y + size.y - 1
+		local z1 = pos.z + size.z - 1
 		local rng = params.yeskings
 
 		for z = z0, z1 do
@@ -203,7 +203,7 @@ function fortress.v2.apply_layout(params)
 	vm:get_data(vm_data)
 
 	for k, v in ipairs(params.build.schems) do
-		decorate(vm_data, v.pos) -- Pos should be in worldspace.
+		decorate(vm_data, v.pos, v.size) -- Pos should be in worldspace.
 	end
 
 	if params.bad_chunkpos then

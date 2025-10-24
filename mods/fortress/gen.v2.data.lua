@@ -95,7 +95,7 @@ local SMALL_PLAZA_CHANCE = 200 -- High prob due to rare conditions required.
 local GATEHOUSE_PROB = 10
 local BRIDGE_OPEN_PIT_CHANCE = 7
 local PORTAL_CHANCE = 25 -- Chance to spawn inside medium enclosed chamber.
-local GREAT_HALL_PROB = 100 -- Competes with hallways.
+local GREAT_HALL_PROB = 25 -- Competes with hallways.
 
 
 
@@ -272,6 +272,8 @@ local PASSAGE_CONNECT = {
 		-- Plaza entrances.
 		ew_plaza_n_from_hall = true,
 		ew_plaza_s_from_hall = true,
+
+		great_hall_ew = true,
 	},
 	[DIRNAME.WEST] = {
 		hallway_straight_ew = true,
@@ -299,6 +301,8 @@ local PASSAGE_CONNECT = {
 		-- Plaza entrances.
 		ew_plaza_n_from_hall = true,
 		ew_plaza_s_from_hall = true,
+
+		great_hall_ew = true,
 	},
 }
 
@@ -686,6 +690,7 @@ fortress.v2.fortress_data = {
 		"ew_gatehouse",
 		"ns_gatehouse",
 		"great_hall_ns",
+		"great_hall_ew",
 		GET_BRIDGE_STARTER_PIECES(), -- Duplicated for probability.
 	},
 
@@ -3596,6 +3601,109 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 1, 1)] = "great_hall_ns_dummy",
 				[HASHKEY(0, 1, 2)] = "great_hall_ns_dummy",
 				[HASHKEY(1, 1, 2)] = "great_hall_ns_dummy",
+			},
+			probability = GREAT_HALL_PROB,
+		},
+
+		great_hall_ew_dummy = {},
+		great_hall_ew = {
+			schem = {
+				{file="nf_great_hall", rotation="90"},
+
+				-- Outside window decorations.
+				-- South side bottom.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3, y=2, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3+11, y=2, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3+22, y=2, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				-- South side top.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3, y=2+11, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3+11, y=2+11, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="0", force=false, offset={x=3+22, y=2+11, z=-2},
+						priority=WINDOW_DECO_PRIORITY},
+				-- North side bottom.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3, y=2, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3+11, y=2, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3+22, y=2, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				-- North side top.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3, y=2+11, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3+11, y=2+11, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="180", force=false, offset={x=3+22, y=2+11, z=11+11},
+						priority=WINDOW_DECO_PRIORITY},
+				-- West side top.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="90", force=false, offset={x=-2, y=2+11, z=3},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="90", force=false, offset={x=-2, y=2+11, z=3+11},
+						priority=WINDOW_DECO_PRIORITY},
+				-- East side top.
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="270", force=false, offset={x=11+22, y=2+11, z=3},
+						priority=WINDOW_DECO_PRIORITY},
+				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
+					rotation="270", force=false, offset={x=11+22, y=2+11, z=3+11},
+						priority=WINDOW_DECO_PRIORITY},
+			},
+			size = {x=3, y=2, z=2},
+			valid_neighbors = {
+				-- Western entrances.
+				[HASHKEY(-1, 0, 0)] = exclude(PASSAGE_CONNECT[DIRNAME.WEST],
+					{hallway_e_capped=true, hall_straight_ew_stair=true}),
+				[HASHKEY(-1, 0, 1)] = exclude(PASSAGE_CONNECT[DIRNAME.WEST],
+					{hallway_e_capped=true, hall_straight_ew_stair=true}),
+
+				-- Eastern entrances.
+				[HASHKEY(3, 0, 0)] = exclude(PASSAGE_CONNECT[DIRNAME.EAST],
+					{hallway_w_capped=true, hall_straight_ew_stair=true}),
+				[HASHKEY(3, 0, 1)] = exclude(PASSAGE_CONNECT[DIRNAME.EAST],
+					{hallway_w_capped=true, hall_straight_ew_stair=true}),
+
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(2, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(1, -1, 1)] = {solid_top=true},
+				[HASHKEY(2, -1, 1)] = {solid_top=true},
+			},
+			footprint = {
+				-- Lower floor.
+				[HASHKEY(0, 0, 0)] = "hallway_straight_ew",
+				[HASHKEY(1, 0, 0)] = "great_hall_ew_dummy",
+				[HASHKEY(2, 0, 0)] = "hallway_straight_ew",
+				[HASHKEY(0, 0, 1)] = "hallway_straight_ew",
+				[HASHKEY(1, 0, 1)] = "great_hall_ew_dummy",
+				[HASHKEY(2, 0, 1)] = "hallway_straight_ew",
+
+				-- Upper floor.
+				[HASHKEY(0, 1, 0)] = "great_hall_ew_dummy",
+				[HASHKEY(1, 1, 0)] = "great_hall_ew_dummy",
+				[HASHKEY(2, 1, 0)] = "great_hall_ew_dummy",
+				[HASHKEY(0, 1, 1)] = "great_hall_ew_dummy",
+				[HASHKEY(1, 1, 1)] = "great_hall_ew_dummy",
+				[HASHKEY(2, 1, 1)] = "great_hall_ew_dummy",
 			},
 			probability = GREAT_HALL_PROB,
 		},

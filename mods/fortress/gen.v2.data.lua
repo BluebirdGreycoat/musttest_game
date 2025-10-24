@@ -1405,6 +1405,7 @@ fortress.v2.fortress_data = {
 				{pos={x=7, y=4, z_min=3, z_max=10},
 					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 			},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hallway_s_capped = {
@@ -1440,6 +1441,7 @@ fortress.v2.fortress_data = {
 				{pos={x=7, y=4, z_min=0, z_max=7},
 					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 			},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hallway_e_capped = {
@@ -1475,6 +1477,7 @@ fortress.v2.fortress_data = {
 				{pos={x=3, y=4, z_min=3, z_max=7},
 					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 			},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hallway_w_capped = {
@@ -1510,6 +1513,7 @@ fortress.v2.fortress_data = {
 				{pos={x=7, y=4, z_min=3, z_max=7},
 					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 			},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		-- Hallway caps which exclude the stairs.

@@ -4,5 +4,9 @@
 -- disallowed here, otherwise TRUE for all other positions.
 function fortress.can_teleport_at(pos)
 	pos = vector.round(pos)
+
+	local forts = fortress.v2.get_fortinfo_at_pos(pos)
+	if #forts > 0 then return false end
+
 	return true
 end

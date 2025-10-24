@@ -136,6 +136,10 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 				force = force,
 				replacements = params.replacements,
 				priority = priority,
+
+				-- The chunk can specify fixed param2 rotations for a set of nodes.
+				-- This is useful for rotated schems which won't match after rotation.
+				set_param2_rotations = chunkdata.set_param2_rotations,
 			}
 
 			-- We will jump here if it is determined that this schem will NOT be

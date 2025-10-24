@@ -2691,14 +2691,17 @@ fortress.v2.fortress_data = {
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
 			chests = GET_BASIC_LOOT_POSITIONS(),
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hall_straight_ew_roof_stair = {
 			schem = {{file="nf_walkway_ew_stair", force=false}},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hall_straight_ns_roof_stair = {
 			schem = {{file="nf_walkway_ew_stair", rotation="90", force=false}},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		-- Straight hallways with internal stairs to roof.
@@ -2723,6 +2726,7 @@ fortress.v2.fortress_data = {
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
 			chests = GET_BASIC_LOOT_POSITIONS(),
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hall_straight_ns_stair_rev = {
@@ -2746,14 +2750,17 @@ fortress.v2.fortress_data = {
 			},
 			probability = STRAIGHT_HALLWAY_WITH_STAIR_PROB,
 			chests = GET_BASIC_LOOT_POSITIONS(),
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hall_straight_ew_roof_stair_rev = {
 			schem = {{file="nf_walkway_ew_stair", force=false, rotation="180"}},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		hall_straight_ns_roof_stair_rev = {
 			schem = {{file="nf_walkway_ew_stair", rotation="270", force=false}},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		-- Small plaza. 1x1.
@@ -3712,6 +3719,7 @@ fortress.v2.fortress_data = {
 				[HASHKEY(2, 1, 1)] = "great_hall_ew_dummy",
 			},
 			probability = GREAT_HALL_PROB,
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 
 		great_hall_roof_ns_dummy = {},
@@ -3746,6 +3754,7 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 0, 1)] = "great_hall_roof_ew_dummy",
 				[HASHKEY(2, 0, 1)] = "great_hall_roof_ew_dummy",
 			},
+			set_param2_rotations = {["rackstone:brick_black"]=0},
 		},
 	},
 }

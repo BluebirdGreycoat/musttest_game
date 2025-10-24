@@ -198,12 +198,48 @@ function fortress.v2.apply_layout(params)
 		end
 	end
 
+	-- Set param2 values of all nodes in chunk to specific values defined by
+	-- chunk data.
+	local function set_param2(vm_data, vm_param2_data, pos, size, param2nodes)
+		local param2 = {}
+		for k, v in pairs(param2nodes) do
+			param2[minetest.get_content_id(k)] = 0
+		end
+
+		local x0 = pos.x
+		local y0 = pos.y
+		local z0 = pos.z
+		local x1 = pos.x + size.x - 1
+		local y1 = pos.y + size.y - 1
+		local z1 = pos.z + size.z - 1
+		local rng = params.yeskings
+
+		for z = z0, z1 do
+			for x = x0, x1 do
+				for y = y0, y1 do
+					local vp = area:index(x, y, z)
+					local cid = vm_data[vp]
+					local p2 = param2[cid]
+					if p2 then vm_param2_data[vp] = p2 end
+				end
+			end
+		end
+	end
+
 	-- Wait till all schematics have been placed, then we can do 'vm:get_data().'
 	local vm_data = {}
+	local vm_param2_data = {}
 	vm:get_data(vm_data)
+	vm:get_param2_data(vm_param2_data)
 
+	-- This takes place AFTER all schems have already been placed.
+	-- Now we can do decorations/param2 adjustments, etc.
 	for k, v in ipairs(params.build.schems) do
 		decorate(vm_data, v.pos, v.size) -- Pos should be in worldspace.
+
+		if v.set_param2_rotations then
+			set_param2(vm_data, vm_param2_data, v.pos, v.size, v.set_param2_rotations)
+		end
 	end
 
 	if params.bad_chunkpos then
@@ -248,6 +284,7 @@ function fortress.v2.apply_layout(params)
 	end
 
 	vm:set_data(vm_data)
+	vm:set_param2_data(vm_param2_data)
 	vm:write_to_map(true)
 
 	-- Add loot chests.

@@ -28,8 +28,8 @@ local DIRNAME = {
 
 
 -- Loot chest chances.
-local COMMON_LOOT_CHANCE = 20
-local RARE_LOOT_CHANCE = 10
+local COMMON_LOOT_CHANCE = 25
+local RARE_LOOT_CHANCE = 15
 local EXCEPTIONAL_LOOT_CHANCE = 4
 
 -- Extra decoration schem chances.
@@ -3584,6 +3584,9 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, -1, 1)] = {solid_top=true},
 				[HASHKEY(0, -1, 2)] = {solid_top=true},
 				[HASHKEY(1, -1, 2)] = {solid_top=true},
+
+				-- Roof.
+				[HASHKEY(0, 2, 0)] = {great_hall_roof_ns=true},
 			},
 			footprint = {
 				-- Lower floor.
@@ -3687,6 +3690,9 @@ fortress.v2.fortress_data = {
 				[HASHKEY(0, -1, 1)] = {solid_top=true},
 				[HASHKEY(1, -1, 1)] = {solid_top=true},
 				[HASHKEY(2, -1, 1)] = {solid_top=true},
+
+				-- Roof.
+				[HASHKEY(0, 2, 0)] = {great_hall_roof_ew=true},
 			},
 			footprint = {
 				-- Lower floor.
@@ -3706,6 +3712,40 @@ fortress.v2.fortress_data = {
 				[HASHKEY(2, 1, 1)] = "great_hall_ew_dummy",
 			},
 			probability = GREAT_HALL_PROB,
+		},
+
+		great_hall_roof_ns_dummy = {},
+		great_hall_roof_ns = {
+			schem = {
+				{file="nf_great_hall_roof", force=false},
+			},
+			size = {x=2, y=2, z=3},
+			footprint = {
+				-- Lower floor.
+				[HASHKEY(0, 0, 0)] = "great_hall_roof_ns_dummy",
+				[HASHKEY(1, 0, 0)] = "great_hall_roof_ns_dummy",
+				[HASHKEY(0, 0, 1)] = "great_hall_roof_ns_dummy",
+				[HASHKEY(1, 0, 1)] = "great_hall_roof_ns_dummy",
+				[HASHKEY(0, 0, 2)] = "great_hall_roof_ns_dummy",
+				[HASHKEY(1, 0, 2)] = "great_hall_roof_ns_dummy",
+			},
+		},
+
+		great_hall_roof_ew_dummy = {},
+		great_hall_roof_ew = {
+			schem = {
+				{file="nf_great_hall_roof", rotation="90", force=false},
+			},
+			size = {x=3, y=2, z=2},
+			footprint = {
+				-- Lower floor.
+				[HASHKEY(0, 0, 0)] = "great_hall_roof_ew_dummy",
+				[HASHKEY(1, 0, 0)] = "great_hall_roof_ew_dummy",
+				[HASHKEY(2, 0, 0)] = "great_hall_roof_ew_dummy",
+				[HASHKEY(0, 0, 1)] = "great_hall_roof_ew_dummy",
+				[HASHKEY(1, 0, 1)] = "great_hall_roof_ew_dummy",
+				[HASHKEY(2, 0, 1)] = "great_hall_roof_ew_dummy",
+			},
 		},
 	},
 }

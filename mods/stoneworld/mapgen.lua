@@ -6,7 +6,7 @@ stoneworld.REALM_START = 5150
 stoneworld.REALM_END = 8150
 
 local FORTRESS_THRESHOLD = 0.2
-local FORTRESS_MIN_CEILING_HEIGHT_NEEDED = 40
+local FORTRESS_MIN_CEILING_HEIGHT_NEEDED = 35
 
 -- Content IDs used with the voxel manipulator.
 local c_air             = minetest.get_content_id("air")
@@ -45,6 +45,7 @@ local perlin3
 local perlin4
 local perlin5
 local perlin6
+local perlin7
 
 
 
@@ -485,7 +486,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 							-- ocean, then we have a chance to spawn a lava fortress here.
 							if not spawn_fortress then
 								if (top - bot) >= FORTRESS_MIN_CEILING_HEIGHT_NEEDED and
-										bot <= (lava - 5) then
+										bot <= (lava - 2) then
 									-- Use perlin noise to limit fortress spawning to regions.
 									-- Using abs() will cause fortresses to spawn in winding strings.
 									if abs(n3) < FORTRESS_THRESHOLD then
@@ -705,7 +706,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 
 	-- A chance to spawn a fortress. Do NOT spawn a fortress in every mapchunk
 	-- that's eligible, that will crowd everything else out!
-	if spawn_fortress and pr:next(1, 10) == 1 then
+	if spawn_fortress and pr:next(1, 6) == 1 then
 		local p = vector.round({
 			x = floor((x0 + x1) / 2),
 			y = fortress_y,

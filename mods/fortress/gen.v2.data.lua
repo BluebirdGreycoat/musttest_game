@@ -895,7 +895,7 @@ fortress.v2.fortress_data = {
 
 		bridge_pillar_mid = {
 			-- The bridge pillar schem is 2 units high.
-			schem = {{file="nf_center_pillar_top"}},
+			schem = {{file="nf_center_pillar_top", force=false}},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {bridge_pillar_bottom=true},
 			},
@@ -904,7 +904,7 @@ fortress.v2.fortress_data = {
 
 		bridge_pillar_bottom = {
 			schem = {
-				{file="nf_center_pillar_bottom", offset={x=1, y=-11, z=1}},
+				{file="nf_center_pillar_bottom", offset={x=1, y=-11, z=1}, force=false},
 			},
 			fallback = true,
 		},

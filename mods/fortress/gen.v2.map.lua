@@ -202,8 +202,8 @@ function fortress.v2.apply_layout(params)
 	-- chunk data.
 	local function set_param2(vm_data, vm_param2_data, pos, size, param2nodes)
 		local param2 = {}
-		for k, v in pairs(param2nodes) do
-			param2[minetest.get_content_id(k)] = 0
+		for nodename, wantedparam2 in pairs(param2nodes) do
+			param2[minetest.get_content_id(nodename)] = wantedparam2
 		end
 
 		local x0 = pos.x

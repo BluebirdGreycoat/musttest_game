@@ -61,6 +61,8 @@ local WINDOW_DECO_PRIORITY = 100
 local BRIDGE_HOUSE_PRIORITY = 500
 local JUNCTION_GLOWSTONE_ERASER_PRIORITY = 10 -- Below bridge houses.
 local JUNCTION_PLATFORM_ERASER_PRIORITY = 10
+local MEDIUM_ENCLOSED_CHAMBER_PRIORITY = WINDOW_DECO_PRIORITY + 1 -- Overwrite.
+local PORTAL_PRIORITY = WINDOW_DECO_PRIORITY + 3 -- Ensure portals overwrite.
 
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
@@ -87,11 +89,12 @@ local PASSAGE_BRIDGE_TRANSITION_PROB2 = 50 -- Prob hallways may spawn bridges.
 -- MISC probabilities.
 local TOWER_PROBABILITY = 10
 local PLAZA_GATE_PROB = 30
-local LARGE_PLAZA_CHANCE = 100
-local MEDIUM_PLAZA_CHANCE = 500
-local SMALL_PLAZA_CHANCE = 200
+local LARGE_PLAZA_CHANCE = 100 -- High prob due to rare conditions required.
+local MEDIUM_PLAZA_CHANCE = 500 -- High prob due to rare conditions required.
+local SMALL_PLAZA_CHANCE = 200 -- High prob due to rare conditions required.
 local GATEHOUSE_PROB = 10
 local BRIDGE_OPEN_PIT_CHANCE = 7
+local PORTAL_CHANCE = 10 -- Chance to spawn inside medium enclosed chamber.
 
 
 
@@ -3324,9 +3327,25 @@ fortress.v2.fortress_data = {
 		medium_chamber_dummy = {},
 		medium_chamber = {
 			schem = {
-				{file="nf_medium_chamber_enclosed", priority=WINDOW_DECO_PRIORITY+1},
-				{file="nf_detail_lava_well2", priority=WINDOW_DECO_PRIORITY+2,
-					chance=30, offset={x=9, y=0, z=9}},
+				{file="nf_medium_chamber_enclosed",
+					priority=MEDIUM_ENCLOSED_CHAMBER_PRIORITY},
+				{file="nf_detail_lava_well2",
+					priority=MEDIUM_ENCLOSED_CHAMBER_PRIORITY+1,
+						chance=30, offset={x=9, y=0, z=9}},
+
+				-- Portals.
+				-- North.
+				{file="nf_portal", priority=PORTAL_PRIORITY, chance=PORTAL_CHANCE,
+					offset={x=9, y=1, z=17}},
+				-- South.
+				{file="nf_portal", priority=PORTAL_PRIORITY, chance=PORTAL_CHANCE,
+					offset={x=9, y=1, z=4}},
+				-- West.
+				{file="nf_portal", priority=PORTAL_PRIORITY, chance=PORTAL_CHANCE,
+					offset={x=4, y=1, z=9}, rotation="90"},
+				-- East.
+				{file="nf_portal", priority=PORTAL_PRIORITY, chance=PORTAL_CHANCE,
+					offset={x=17, y=1, z=9}, rotation="90"},
 			},
 			size = {x=2, y=1, z=2},
 			valid_neighbors = {

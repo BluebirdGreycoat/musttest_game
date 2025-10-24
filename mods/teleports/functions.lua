@@ -92,7 +92,9 @@ function teleports.get_random_teleport(origin, range)
 		if not vector_equals(p.pos, origin) then
 			if rc.current_realm_at_pos(p.pos) == realm then
 				if vector_distance(p.pos, origin) <= range then
-					caned[#caned + 1] = p
+					if fortress.can_teleport_at(p.pos) then
+						caned[#caned + 1] = p
+					end
 				end
 			end
 		end
@@ -105,9 +107,15 @@ end
 
 
 
+-- Called by player's KEY to show nearby teleport options.
 function teleports.nearest_beacons_to_position(pos, num, rangelim)
 	local get_rn = rc.current_realm_at_pos
 	local realm = get_rn(pos)
+
+	-- Can't find beacons inside a fortress.
+	if not fortress.can_teleport_at(pos) then
+		return {}
+	end
 
 	-- Copy the master table's indices so we don't modify it.
 	-- We do not need to copy the inner table data itself. Just the indices.
@@ -117,7 +125,8 @@ function teleports.nearest_beacons_to_position(pos, num, rangelim)
 	for i=1, #sblocks, 1 do
 		local v = sblocks[i]
 		local p = v.pos
-		if v.is_recall then
+		-- Ignore non-recall, or inside fortress.
+		if v.is_recall and fortress.can_teleport_at(p) then
 			if rangelim then
 				if vector_distance(p, pos) < rangelim then
 					if get_rn(p) == realm then
@@ -449,7 +458,7 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 	local trange, isnyan = teleports.calculate_range(pos)
 	local start_realm = rc.current_realm_at_pos(pos)
 
-	if start_realm == "" then
+	if start_realm == "" or not fortress.can_teleport_at(pos) then
 		return nearby
 	end
 
@@ -459,7 +468,7 @@ teleports.find_nearby = function(pos, count, network, yespublic)
 		if not vector_equals(tp.pos, pos) and vector_distance(tp.pos, pos) <= trange then
 			local target_realm = rc.current_realm_at_pos(tp.pos)
 			-- Only find teleports in the same dimension.
-			if start_realm == target_realm then
+			if start_realm == target_realm and fortress.can_teleport_at(tp.pos) then
 				local othernet = tp.channel or ""
 
 				if othernet == network or (othernet == "" and yespublic == 'true') then
@@ -906,6 +915,16 @@ teleports.on_receive_fields = function(pos, formname, fields, player)
 
 		if tpname and type(tpname) == "string" then
 			local tppos = minetest.string_to_pos(tpname)
+
+			if tppos and not fortress.can_teleport_at(tppos) then
+				minetest.log("action",
+					"Not allowing teleport into fortress at " ..
+						minetest.pos_to_string(tppos) .. " by player " .. playername ..
+							" from TP at " .. minetest.pos_to_string(pos) .. ".")
+
+				tppos = nil
+			end
+
 			if tppos then
 				teleport_range = teleports.calculate_range(pos)
 				if vector_distance(tppos, pos) <= teleport_range then

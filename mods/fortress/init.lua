@@ -13,6 +13,8 @@ local vector_round = vector.round
 local math_floor = math.floor
 local math_random = math.random
 
+dofile(fortress.modpath .. "/scrambler.lua")
+
 -- Default fortress definition.
 dofile(fortress.modpath .. "/functions.lua")
 dofile(fortress.modpath .. "/default.lua")

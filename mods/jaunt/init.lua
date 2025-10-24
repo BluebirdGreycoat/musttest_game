@@ -84,6 +84,12 @@ jaunt.on_receive_fields = function(player, formname, fields)
 	if fields.key_enter_field == "player" or fields.go then
 		local success, tp_range = jaunt.valid_teleport(uspos)
 
+		if not fortress.can_teleport_at(uspos) then
+			minetest.chat_send_player(pname, "# Server: Cannot confirm jaunt origin.")
+			jaunt.show_formspec(pname)
+			return true
+		end
+
 		if success then -- Teleport was found.
 			local target = rename.grn((fields.player or ""):trim())
 			if target ~= pname then
@@ -124,6 +130,11 @@ jaunt.on_receive_fields = function(player, formname, fields)
 
 							-- Make sure it's air.
 							local finpos = minetest.find_node_near(tarpos, 2, "air", true)
+
+							-- Don't allow jaunt to players inside fortress.
+							if finpos and not fortress.can_teleport_at(finpos) then
+								finpos = nil
+							end
 
 							-- Make sure target isn't standing in/on something that disallows teleport.
 							if true then

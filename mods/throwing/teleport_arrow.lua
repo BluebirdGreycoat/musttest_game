@@ -61,6 +61,10 @@ local function do_teleport(self, tptarget, under, above)
 		return
 	end
 
+	-- Respond to fortress exclusion zones.
+	if not fortress.can_teleport_at(player:get_pos()) then return end
+	if not fortress.can_teleport_at(tpos) then return end
+
 	-- Do not teleport attached players.
 	local pname = player:get_player_name()
 	if default.player_attached[pname] or player:get_attach() then

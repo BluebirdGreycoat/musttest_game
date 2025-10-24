@@ -16,7 +16,18 @@ function stoneworld.on_generated(minp, maxp, blockseed)
 
 	minetest.after(0, function()
 		--minetest.chat_send_all('generating fortress at ' .. minetest.pos_to_string(data.pos))
+
+		-- Old fortresses, version 1. Yucky mess.
+		--[[
 		fortress.generate(data.pos, "default")
+		--]]
+
+		-- Out with the old, in with the new.
+		fortress.v2.make_fort({
+			-- Required parameters.
+			spawn_pos = data.pos,
+			fortress_data = fortress.v2.fortress_data,
+		})
 	end)
 end
 

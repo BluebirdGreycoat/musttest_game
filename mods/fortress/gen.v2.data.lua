@@ -28,9 +28,9 @@ local DIRNAME = {
 
 
 -- Loot chest chances.
-local COMMON_LOOT_CHANCE = 30
-local RARE_LOOT_CHANCE = 15
-local EXCEPTIONAL_LOOT_CHANCE = 5
+local COMMON_LOOT_CHANCE = 20
+local RARE_LOOT_CHANCE = 10
+local EXCEPTIONAL_LOOT_CHANCE = 4
 
 -- Extra decoration schem chances.
 local OERKKI_SPAWNER_CHANCE = 10

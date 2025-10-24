@@ -495,7 +495,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 										-- spawn, causing a high probability of overlapping fortresses.
 										if y == lava then
 											spawn_fortress = true
-											fortress_y = lava + 10
+											fortress_y = lava + 12
 										end
 									end
 								end
@@ -705,7 +705,7 @@ stoneworld.generate_realm = function(vm, minp, maxp, seed)
 
 	-- A chance to spawn a fortress. Do NOT spawn a fortress in every mapchunk
 	-- that's eligible, that will crowd everything else out!
-	if spawn_fortress and pr:next(1, 5) == 1 then
+	if spawn_fortress and pr:next(1, 10) == 1 then
 		local p = vector.round({
 			x = floor((x0 + x1) / 2),
 			y = fortress_y,

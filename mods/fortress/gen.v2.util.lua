@@ -67,6 +67,9 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 	-- in the data.
 	local excluded = {}
 
+	-- Will store the names of all schems placed so far for this chunk.
+	local included = {}
+
 	-- Add schems which are part of this chunk.
 	-- A chunk may have multiple schems with different parameters.
 	for _, v in ipairs(thischunk) do
@@ -84,6 +87,16 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 			if v.exclude then
 				for name, _ in pairs(v.exclude) do
 					excluded[name] = true
+				end
+			end
+
+			-- If this schem requires another, then process this schem only if its
+			-- requirement has been satisfied.
+			if v.require then
+				for name, _ in pairs(v.require) do
+					if not included[name] then
+						goto skip
+					end
 				end
 			end
 
@@ -112,6 +125,8 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 			local rotation = v.rotation or "0"
 			local realschempos = vector.add(schempos, offset)
 
+			included[file] = true
+
 			-- Add fortress section to construction queue.
 			all_schems[#all_schems + 1] = {
 				file = path,
@@ -122,6 +137,10 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 				replacements = params.replacements,
 				priority = priority,
 			}
+
+			-- We will jump here if it is determined that this schem will NOT be
+			-- included, based on filters, etc.
+			::skip::
 		end
 	end
 end

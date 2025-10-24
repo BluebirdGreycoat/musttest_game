@@ -43,6 +43,10 @@ local PASSAGE_DETAIL_CHANCE = 20
 local HALLWAY_CAP_DOORWAY_PROB = 50
 local HALLWAY_CORNER_DOORWAY_PROB = 20
 local HALLWAY_TJUNC_DOORWAY_PROB = 30
+local BRIDGE_HOUSE_CHANCE = 15
+local BRIDGE_HOUSE_ROOF_CHANCE = 40
+local JUNCTION_GLOWSTONE_ERASER_CHANCE = 60
+local JUNCTION_PLATFORM_ERASER_CHANCE = 50
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.
@@ -54,6 +58,9 @@ local LAVA_FLOOR_HAZARD_PRIORITY = 900
 local BRIDGE_OPEN_PIT_PRIORITY = 1000
 local TOWER_PRIORITY = 1000
 local WINDOW_DECO_PRIORITY = 100
+local BRIDGE_HOUSE_PRIORITY = 500
+local JUNCTION_GLOWSTONE_ERASER_PRIORITY = 10 -- Below bridge houses.
+local JUNCTION_PLATFORM_ERASER_PRIORITY = 10
 
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
@@ -574,6 +581,70 @@ end
 
 
 
+-- I wanted these two related functions to be one function returning 2 tables,
+-- but Lua doesn't include BOTH return values in the parent table, only the
+-- first one! Because of this, I have today learned that Lua sucks. >:|
+local function GET_BRIDGE_HOUSE_DECO(dir)
+	return {
+		file = "bridge_house_" .. dir,
+		chance = BRIDGE_HOUSE_CHANCE,
+		offset = {x=0, y=3, z=0},
+		priority = BRIDGE_HOUSE_PRIORITY,
+	}
+end
+
+local function GET_BRIDGE_HOUSE_ROOF_DECO(dir)
+	return {
+		file = "bridge_house_roof",
+		chance = BRIDGE_HOUSE_ROOF_CHANCE,
+		offset = {x=0, y=8, z=0},
+		require = {["bridge_house_" .. dir]=true},
+		priority = BRIDGE_HOUSE_PRIORITY,
+	}
+end
+
+
+
+-- Slightly simpler versions for 3/4-way junctions and corners.
+local function GET_BRIDGE_HOUSE_JUNCTION_DECO()
+	return {
+		file = "bridge_house_junction",
+		chance = BRIDGE_HOUSE_CHANCE,
+		offset = {x=0, y=3, z=0},
+		priority = BRIDGE_HOUSE_PRIORITY,
+	}
+end
+
+local function GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO()
+	return {
+		file = "bridge_house_roof",
+		chance = BRIDGE_HOUSE_ROOF_CHANCE,
+		offset = {x=0, y=8, z=0},
+		require = {["bridge_house_junction"]=true},
+		priority = BRIDGE_HOUSE_PRIORITY,
+	}
+end
+
+
+
+local JUNCTION_GLOWSTONE_ERASER = {
+	file = "nf_junction_glowstone_eraser",
+	chance = JUNCTION_GLOWSTONE_ERASER_CHANCE,
+	offset = {x=1, y=3, z=1},
+	priority = JUNCTION_GLOWSTONE_ERASER_PRIORITY,
+}
+
+local JUNCTION_PLATFORM_ERASER = {
+	file = "nf_junction_platform_eraser",
+	chance = JUNCTION_PLATFORM_ERASER_CHANCE,
+	offset = {x=1, y=1, z=1},
+	priority = JUNCTION_PLATFORM_ERASER_PRIORITY,
+	-- Really we want to exclude the "raised" versions of these.
+	exclude = {nf_detail_lava1=true, nf_detail_spawner1=true},
+}
+
+
+
 local TJUNC_BLIST = {
 	walk_bridge_nse = true,
 	walk_bridge_nsw = true,
@@ -619,8 +690,9 @@ fortress.v2.fortress_data = {
 		{x=16, y=8, z=16, weight=15},
 
 		-- Most common sizes.
-		{x=12, y=8, z=12, weight=100},
-		{x=10, y=8, z=10, weight=150},
+		{x=14, y=8, z=14, weight=50},
+		{x=12, y=8, z=12, weight=150},
+		{x=10, y=8, z=10, weight=100},
 
 		{x=8, y=8, z=8, weight=25},
 		{x=6, y=8, z=6, weight=10},
@@ -654,8 +726,14 @@ fortress.v2.fortress_data = {
 			schem = {
 				-- 'force' is true by default.
 				{file="nf_walkway_4x_junction", force=false},
-				{file="bridge_junction_house", chance=10},
+				{file="bridge_junction_house", chance=10,
+					exclude={bridge_house_junction=true}},
 				{file="nf_detail_lava_well1", chance=10, offset={x=3, y=1, z=3}},
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
 			},
 
 			-- NOTE: This limits the number of times this chunk can be used in a fort.
@@ -688,7 +766,8 @@ fortress.v2.fortress_data = {
 		ew_walk_bridge = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
-				{file="bridge_house_ew", chance=10, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ew"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ew"),
 
 				-- Note the use of 'priority' to ensure this schem is written last.
 				{file="bridge_pit", chance=BRIDGE_OPEN_PIT_CHANCE,
@@ -713,7 +792,8 @@ fortress.v2.fortress_data = {
 		ns_walk_bridge = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
-				{file="bridge_house_ns", chance=10, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ns"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ns"),
 
 				-- NOTE: You can use 'priority' to specify when in relation to other
 				-- schems this schem should be written. This is useful for schems that
@@ -740,7 +820,8 @@ fortress.v2.fortress_data = {
 		ew_walk_bridge_wide = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
-				{file="bridge_house_ew", chance=10, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ew"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ew"),
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
 
 				-- Note the use of 'priority' to ensure this schem is written last.
@@ -767,7 +848,8 @@ fortress.v2.fortress_data = {
 		ns_walk_bridge_wide = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
-				{file="bridge_house_ns", chance=10, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ns"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ns"),
 				BASIC_OERKKI_SPAWNER, BASIC_FLOOR_LAVA, BASIC_FLOOR_LAVA_WELL,
 
 				-- NOTE: You can use 'priority' to specify when in relation to other
@@ -927,6 +1009,11 @@ fortress.v2.fortress_data = {
 		walk_bridge_nse = {
 			schem = {
 				{file="walk_bridge_nse", force=false},
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
 				BASIC_OERKKI_SPAWNER_RAISED, BASIC_FLOOR_LAVA_RAISED,
 			},
 			valid_neighbors = {
@@ -941,6 +1028,11 @@ fortress.v2.fortress_data = {
 		walk_bridge_nsw = {
 			schem = {
 				{file="walk_bridge_nsw", force=false},
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
 				BASIC_OERKKI_SPAWNER_RAISED, BASIC_FLOOR_LAVA_RAISED,
 			},
 			valid_neighbors = {
@@ -955,6 +1047,11 @@ fortress.v2.fortress_data = {
 		walk_bridge_swe = {
 			schem = {
 				{file="walk_bridge_swe", force=false},
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
 				BASIC_OERKKI_SPAWNER_RAISED, BASIC_FLOOR_LAVA_RAISED,
 			},
 			valid_neighbors = {
@@ -969,6 +1066,11 @@ fortress.v2.fortress_data = {
 		walk_bridge_nwe = {
 			schem = {
 				{file="walk_bridge_nwe", force=false},
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
 				BASIC_OERKKI_SPAWNER_RAISED, BASIC_FLOOR_LAVA_RAISED,
 			},
 			valid_neighbors = {
@@ -985,6 +1087,9 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_ne_corner", force=false},
 				BASIC_OERKKI_SPAWNER,
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -998,6 +1103,9 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_nw_corner", force=false},
 				BASIC_OERKKI_SPAWNER,
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = BRIDGE_CONNECT[DIRNAME.NORTH],
@@ -1011,6 +1119,9 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_sw_corner", force=false},
 				BASIC_OERKKI_SPAWNER,
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
@@ -1024,6 +1135,9 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_walkway_se_corner", force=false},
 				BASIC_OERKKI_SPAWNER,
+
+				GET_BRIDGE_HOUSE_JUNCTION_DECO(),
+				GET_BRIDGE_HOUSE_JUNCTION_ROOF_DECO(),
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = BRIDGE_CONNECT[DIRNAME.SOUTH],
@@ -1036,7 +1150,8 @@ fortress.v2.fortress_data = {
 		capped_bridge_n = {
 			schem = {
 				{file="nf_walkway_n_capped", force=false},
-				{file="bridge_house_n", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("n"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("n"),
 				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
@@ -1050,7 +1165,8 @@ fortress.v2.fortress_data = {
 		capped_bridge_s = {
 			schem = {
 				{file="nf_walkway_s_capped", force=false},
-				{file="bridge_house_s", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("s"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("s"),
 				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
@@ -1064,7 +1180,8 @@ fortress.v2.fortress_data = {
 		capped_bridge_e = {
 			schem = {
 				{file="nf_walkway_e_capped", force=false},
-				{file="bridge_house_e", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("e"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("e"),
 				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
@@ -1078,7 +1195,8 @@ fortress.v2.fortress_data = {
 		capped_bridge_w = {
 			schem = {
 				{file="nf_walkway_w_capped", force=false},
-				{file="bridge_house_w", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("w"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("w"),
 				BASIC_OERKKI_SPAWNER,
 			},
 			valid_neighbors = {
@@ -1835,20 +1953,51 @@ fortress.v2.fortress_data = {
 		},
 
 		-- Passageway roof pieces.
-		roof_junction = {schem = {{file="nf_walkway_4x_junction", force=false}}},
+		roof_junction = {
+			schem = {
+				{file="nf_walkway_4x_junction", force=false},
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
+			},
+		},
 		roof_corner_ne = {schem = {{file="nf_walkway_ne_corner", force=false}}},
 		roof_corner_nw = {schem = {{file="nf_walkway_nw_corner", force=false}}},
 		roof_corner_sw = {schem = {{file="nf_walkway_sw_corner", force=false}}},
 		roof_corner_se = {schem = {{file="nf_walkway_se_corner", force=false}}},
-		roof_t_esw = {schem = {{file="nf_walkway_esw_t", force=false}}},
-		roof_t_nes = {schem = {{file="nf_walkway_nes_t", force=false}}},
-		roof_t_swn = {schem = {{file="nf_walkway_swn_t", force=false}}},
-		roof_t_wne = {schem = {{file="nf_walkway_wne_t", force=false}}},
+		roof_t_esw = {
+			schem = {
+				{file="nf_walkway_esw_t", force=false},
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
+			},
+		},
+		roof_t_nes = {
+			schem = {
+				{file="nf_walkway_nes_t", force=false},
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
+			},
+		},
+		roof_t_swn = {
+			schem = {
+				{file="nf_walkway_swn_t", force=false},
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
+			},
+		},
+		roof_t_wne = {
+			schem = {
+				{file="nf_walkway_wne_t", force=false},
+				JUNCTION_GLOWSTONE_ERASER,
+				JUNCTION_PLATFORM_ERASER,
+			},
+		},
 
 		roof_straight_ew = {
 			schem = {
 				{file="nf_walkway_ew", force=false},
-				{file="bridge_house_ew", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ew"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ew"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
@@ -1861,7 +2010,8 @@ fortress.v2.fortress_data = {
 		roof_straight_ns = {
 			schem = {
 				{file="nf_walkway_ns", force=false},
-				{file="bridge_house_ns", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("ns"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("ns"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
@@ -1874,7 +2024,8 @@ fortress.v2.fortress_data = {
 		roof_capped_n = {
 			schem = {
 				{file="nf_walkway_n_capped", force=false},
-				{file="bridge_house_n", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("n"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("n"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
@@ -1889,7 +2040,8 @@ fortress.v2.fortress_data = {
 		roof_capped_s = {
 			schem = {
 				{file="nf_walkway_s_capped", force=false},
-				{file="bridge_house_s", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("s"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("s"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
@@ -1904,7 +2056,8 @@ fortress.v2.fortress_data = {
 		roof_capped_e = {
 			schem = {
 				{file="nf_walkway_e_capped", force=false},
-				{file="bridge_house_e", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("e"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("e"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {
@@ -1919,7 +2072,8 @@ fortress.v2.fortress_data = {
 		roof_capped_w = {
 			schem = {
 				{file="nf_walkway_w_capped", force=false},
-				{file="bridge_house_w", chance=15, offset={x=0, y=3, z=0}},
+				GET_BRIDGE_HOUSE_DECO("w"),
+				GET_BRIDGE_HOUSE_ROOF_DECO("w"),
 				BASIC_OERKKI_SPAWNER, BASIC_ELITE_SPAWNER, BASIC_FLOOR_LAVA_WELL,
 			},
 			valid_neighbors = {

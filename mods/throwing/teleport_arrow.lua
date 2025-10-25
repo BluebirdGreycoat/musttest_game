@@ -44,6 +44,17 @@ local THROWING_ARROW_ENTITY={
 
 local air_nodes = {"air", "group:airlike"}
 
+local function play_whoosh(frompos, topos)
+	minetest.sound_play("throwing_teleport_whoosh_out", {
+		pos = frompos,
+		gain = 1.0,
+	}, true)
+	minetest.sound_play("throwing_teleport_whoosh_in", {
+		pos = topos,
+		gain = 1.0,
+	}, true)
+end
+
 local function do_teleport(self, tptarget, under, above)
 	local function doerror()
 		local player = minetest.get_player_by_name(self.player_name or "")
@@ -91,13 +102,17 @@ local function do_teleport(self, tptarget, under, above)
 			local ndef = minetest.registered_nodes[node.name]
 			if ndef then
 				if not ndef.disallow_teleport then
+					local frompos = player:get_pos()
 					player:set_pos(tpos)
+					play_whoosh(frompos, tpos)
 					return -- Success.
 				end
 			end
 		else
 			-- Hit player or object, 'tptarget' is intersection point.
+			local frompos = player:get_pos()
 			player:set_pos(tpos)
+			play_whoosh(frompos, tpos)
 			return -- Success.
 		end
 	end

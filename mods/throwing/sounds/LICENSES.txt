@@ -1,1 +1,16 @@
 Fizzle by michorvath -- https://freesound.org/s/388247/ -- License: Creative Commons 0 -- Cut/modified (throwing_teleport_fizzle.ogg)
+
+throwing_teleport_whoosh_*.ogg
+	bosslevelaudio
+	https://opengameart.org/content/wierd-whooshes
+	License (any ONE of the following):
+		CC-BY 3.0
+		OGA-BY 3.0
+		OGA-BY 4.0
+		CC-BY 4.0
+		GPL 3.0
+		GPL 2.0
+		CC0
+		CC-BY-SA 4.0
+		CC-BY-SA 3.0
+	File cut/modified

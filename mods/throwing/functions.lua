@@ -1,4 +1,9 @@
 
+-- How long an arrow flies before being deleted.
+-- This is to prevent "infinite" map load/gen during arrow flight.
+-- E.g., shooting an arrow from the top of a mount or floating island.
+local MAX_FLIGHT_TIME = 30
+
 -- Function is badly named! Should be 'entity_ignores_arrow'.
 -- Return 'true' if the entity cannot be hit, otherwise return 'false' if the entity should be punched.
 -- Note: 'entity_name' is the registered name of the entity to be checked for hit.
@@ -146,6 +151,7 @@ function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
 	luaent.inventory = player:get_inventory()
 	luaent.stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
 	luaent.lastpos = table.copy(spawnpos)
+	luaent.spawntime = os.time()
 
 	-- Firing anything disables your cloak.
 	cloaking.disable_if_enabled(pname, true)
@@ -228,6 +234,16 @@ function throwing.do_fly(self, dtime)
 	local lpos = self.lastpos
 
 	ambiance.sound_play("throwing_arrow_fly", cpos, 1.0, 4)
+
+	-- Prevent player stupidity.
+	-- Note: this can happen if arrow entity is unloaded, then loaded later.
+	-- Not strictly necessary at this time (because arrow entities have
+	-- 'static_save=false'), but WILL be necessary if I ever implement the entity
+	-- flight path entirely in Lua.
+	if ((self.spawntime or 0) + MAX_FLIGHT_TIME) < os.time() then
+		self.object:remove()
+		return true
+	end
 
 	-- Detect collisions: raycast from last position to current. (Note: 'lastpos'
 	-- table is never nil because it is part of entity definition. This is why

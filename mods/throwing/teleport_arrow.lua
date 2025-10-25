@@ -45,30 +45,41 @@ local THROWING_ARROW_ENTITY={
 local air_nodes = {"air", "group:airlike"}
 
 local function do_teleport(self, tptarget, under, above)
-	if not self.player_name then
-		return
+	local function doerror()
+		local player = minetest.get_player_by_name(self.player_name or "")
+		if not player then return end
+		local pname = player:get_player_name()
+
+		--minetest.chat_send_player(pname, "# Server: Your arrow fizzled.")
+
+		minetest.sound_play("throwing_teleport_fizzle", {
+			pos = player:get_pos(),
+			gain = 1.0,
+		}, true)
+		minetest.sound_play("throwing_teleport_fizzle", {
+			pos = tptarget,
+			gain = 1.0,
+		}, true)
 	end
+
+	if not self.player_name then return doerror() end
 
 	-- Player may have logged off after firing the arrow.
 	local player = minetest.get_player_by_name(self.player_name)
 	local tpos = minetest.find_node_near(tptarget, 1, air_nodes, true)
 
-	if not player or not tpos then
-		return
-	end
+	if not player or not tpos then return doerror() end
 
-	if not rc.is_valid_realm_pos(tpos) then
-		return
-	end
+	if not rc.is_valid_realm_pos(tpos) then return doerror() end
 
 	-- Respond to fortress exclusion zones.
-	if not fortress.can_teleport_at(player:get_pos()) then return end
-	if not fortress.can_teleport_at(tpos) then return end
+	if not fortress.can_teleport_at(player:get_pos()) then return doerror() end
+	if not fortress.can_teleport_at(tpos) then return doerror() end
 
 	-- Do not teleport attached players.
 	local pname = player:get_player_name()
 	if default.player_attached[pname] or player:get_attach() then
-		return
+		return doerror()
 	end
 
 	local node = minetest.get_node(tpos)
@@ -81,13 +92,17 @@ local function do_teleport(self, tptarget, under, above)
 			if ndef then
 				if not ndef.disallow_teleport then
 					player:set_pos(tpos)
+					return -- Success.
 				end
 			end
 		else
 			-- Hit player or object, 'tptarget' is intersection point.
 			player:set_pos(tpos)
+			return -- Success.
 		end
 	end
+
+	doerror()
 end
 
 function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)

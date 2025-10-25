@@ -125,6 +125,20 @@ local item = {
 	end,
 
 	on_step = function(self, dtime, moveresult)
+		-- Damn, the devs left a fly in the soup ... (see below).
+		if moveresult.touching_ground then
+			for _, info in ipairs(moveresult.collisions) do
+				-- Node pos can sometimes be nil! This is a bug!
+				if not info.node_pos then
+					-- Fake it for now.
+					minetest.log("warning",
+						"Working around engine bug (location ref #44819)")
+					info.node_pos = self.object:get_pos()
+				end
+			end
+		end
+
+		-- ... in this function (see above).
 		builtin_item.on_step(self, dtime, moveresult)
 
 		local is_falling = false

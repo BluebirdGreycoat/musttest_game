@@ -128,6 +128,9 @@ local item = {
 		-- Update: damn, actually the fly was in my own ointment ...
 		-- I have been duly corrected. I must filter the moveresults to exclude
 		-- entity-to-entity collisions.
+		--
+		-- Stuck arrow entities have `collide_with_objects = true`, but builtin
+		-- entity does not handle object collisions.
 		if self.stuck_arrow then
 			local need_filtration = false
 			for _, info in ipairs(moveresult.collisions) do

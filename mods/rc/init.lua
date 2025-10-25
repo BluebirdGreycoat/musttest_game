@@ -35,7 +35,7 @@ rc.realms = {
 	{
 		id = 1, -- REALM ID. Code relies on this.
 		name = "overworld", -- Default/overworld realm.
-		description = "Overworld",
+		description = "Enyekala",
 		minp = {x=-30912, y=-30912, z=-30912},
 		maxp = {x=30927, y=500, z=30927},
 		gate_minp = {x=-30000, y=-30800, z=-30000},

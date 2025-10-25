@@ -1,5 +1,5 @@
 -- Staff of Abundance
-local MAX_RANGE = 128
+local MAX_RANGE = 256
 
 local function pluralize(count, singular, plural)
 	if count == 1 then

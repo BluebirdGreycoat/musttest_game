@@ -73,9 +73,7 @@ local item = {
 		if self.stuck_arrow then
 			self.object:set_properties({
 				automatic_rotate = 0,
-				physical = true,
 				collide_with_objects = true,
-				collisionbox = {-0.2, -0.2, -0.2, 0.2, 0.2, 0.2},
 			})
 		end
 	end,
@@ -126,15 +124,25 @@ local item = {
 
 	on_step = function(self, dtime, moveresult)
 		-- Damn, the devs left a fly in the soup ... (see below).
-		if moveresult.touching_ground then
+		--
+		-- Update: damn, actually the fly was in my own ointment ...
+		-- I have been duly corrected. I must filter the moveresults to exclude
+		-- entity-to-entity collisions.
+		if self.stuck_arrow then
+			local need_filtration = false
 			for _, info in ipairs(moveresult.collisions) do
-				-- Node pos can sometimes be nil! This is a bug!
-				if not info.node_pos then
-					-- Fake it for now.
-					minetest.log("warning",
-						"Working around engine bug (location ref #44819)")
-					info.node_pos = self.object:get_pos()
+				if info.type ~= "node" then
+					need_filtration = true
 				end
+			end
+			if need_filtration then
+				local filtered = {}
+				for _, info in ipairs(moveresult.collisions) do
+					if info.type == "node" then
+						filtered[#filtered + 1] = info
+					end
+				end
+				moveresult = filtered
 			end
 		end
 
@@ -216,6 +224,7 @@ local item = {
 		if self.stuck_arrow and self.stuck_arrow_target then
 			local node = minetest.get_node_or_nil(self.stuck_arrow_target)
 			if node and node.name ~= self.stuck_arrow_nodename then
+				--minetest.log("action", "Freeing stuck arrow.")
 				self.stuck_arrow = nil
 				self.stuck_arrow_target = nil
 
@@ -225,6 +234,7 @@ local item = {
 					-- Devs doing some complicated stuff with stack size.
 					-- No need that, we simple folk, we use constants :)
 					automatic_rotate = math.pi * 0.5,
+					collide_with_objects = false,
 				})
 				return
 			end

@@ -129,9 +129,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 
 						ent:set_properties({
 							automatic_rotate = 0,
-							physical = true,
 							collide_with_objects = true,
-							collisionbox = {-0.2, -0.2, -0.2, 0.2, 0.2, 0.2},
 						})
 
 						ent:set_rotation({x=0, y=self.object:get_yaw(), z=pitch})

@@ -2,7 +2,7 @@
 
 minetest.register_craftitem("nssm:white_wolf_fur", {
 	description = "White Wolf Pelt",
-	image = "white_wolf_fur.png",
+	inventory_image = "white_wolf_fur.png",
 	groups = {flammable = 2},
 })
 
@@ -18,7 +18,7 @@ local function nssm_craftitem (name, descr)
 
 	minetest.register_craftitem("nssm:"..name, {
 		description = descr,
-		image = name..".png",
+		inventory_image = name..".png",
 	})
 end
 --]]

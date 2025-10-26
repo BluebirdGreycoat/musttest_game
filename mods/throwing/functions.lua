@@ -333,7 +333,7 @@ end
 
 
 
-function throwing_unload (itemstack, player, unloaded, wear)
+function throwing_unload (itemstack, player, unloaded)
 	if itemstack:get_metadata() then
 		for _,arrow in ipairs(throwing_arrows) do
 			local arw = itemstack:get_metadata()
@@ -350,21 +350,15 @@ function throwing_unload (itemstack, player, unloaded, wear)
 		end
 	end
 
-	if wear >= 65535 then
-		ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
-		itemstack:take_item(itemstack:get_count())
-		return itemstack
-	else
-		local newstack = ItemStack(unloaded)
-		newstack:set_wear(wear)
-		local imeta = newstack:get_meta()
+	local newstack = ItemStack(unloaded)
+	newstack:set_wear(itemstack:get_wear())
 
-		local ometa = itemstack:get_meta()
-		imeta:set_string("en_desc", ometa:get_string("en_desc"))
+	local imeta = newstack:get_meta()
+	local ometa = itemstack:get_meta()
+	imeta:set_string("en_desc", ometa:get_string("en_desc"))
 
-		toolranks.apply_description(imeta, newstack:get_definition())
-		return newstack
-	end
+	toolranks.apply_description(imeta, newstack:get_definition())
+	return newstack
 end
 
 function throwing_arrow_punch_entity (target, self, damage)
@@ -480,7 +474,7 @@ function throwing.wield_check(pname, index, unloaded, loaded)
 	if cindex ~= index then
 		local stack = player:get_inventory():get_stack("main", index)
 		if stack:get_name() == loaded then
-			local newstack = throwing_unload(stack, player, unloaded, stack:get_wear())
+			local newstack = throwing_unload(stack, player, unloaded)
 			if newstack then
 				player:get_inventory():set_stack("main", index, newstack)
 			end
@@ -546,11 +540,10 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 
 			local control = user:get_player_control()
 			local unloaded = "throwing:" .. name
-			local wear = itemstack:get_wear()
 
 			-- Unload the bow.
 			if control.sneak then
-				local newstack = throwing_unload(itemstack, user, unloaded, wear)
+				local newstack = throwing_unload(itemstack, user, unloaded)
 
 				if newstack then
 					return newstack
@@ -559,10 +552,16 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			end
 
 			-- Fire the bow.
-			local newstack = throwing_shoot_arrow(itemstack, user, stiffness, is_cross)
+			local newstack = throwing_shoot_arrow(
+				itemstack, user, stiffness, is_cross)
+
 			if newstack then
-				wear = wear + (65535 / toughness)
-				newstack = throwing_unload(newstack, user, unloaded, wear)
+				newstack = throwing_unload(newstack, user, unloaded)
+				newstack = utility.wear_tool_with_feedback({
+					item = newstack,
+					user = user,
+					total_uses = toughness,
+				})
 			end
 
 			if newstack then
@@ -665,7 +664,7 @@ local function inventory_action(player, action, inventory, inventory_info)
 					-- Player has put a loaded bow into their inventory from somewhere else.
 					-- Unload the bow to prevent a possible exploit.
 					local bowstack = inventory_info.stack
-					local newstack = throwing_unload(bowstack, player, v.unloaded, bowstack:get_wear())
+					local newstack = throwing_unload(bowstack, player, v.unloaded)
 					if newstack then
 						player:get_inventory():set_stack(inventory_info.listname, inventory_info.index, newstack)
 					end
@@ -681,7 +680,7 @@ local function inventory_action(player, action, inventory, inventory_info)
 					-- Player has moved a bow around in their inventory.
 					-- Unloaded it, as they almost certainly aren't wielding it anymore.
 					local bowstack = movedstack
-					local newstack = throwing_unload(bowstack, player, v.unloaded, bowstack:get_wear())
+					local newstack = throwing_unload(bowstack, player, v.unloaded)
 					if newstack then
 						player:get_inventory():set_stack(inventory_info.to_list, inventory_info.to_index, newstack)
 					end
@@ -710,7 +709,7 @@ local function unload_all_bows(player)
 		if sname:find("^throwing:") and sname:find("_loaded$") then
 			local unloaded = get_unloaded_name(sname)
 			if unloaded then
-				local newstack = throwing_unload(stack, player, unloaded, stack:get_wear())
+				local newstack = throwing_unload(stack, player, unloaded)
 				if newstack then
 					inv:set_stack("main", k, newstack)
 				end

@@ -6,6 +6,65 @@ local math_max = math.max
 
 
 
+function utility.wear_tool_with_feedback(params)
+	-- First, get the stack definition, before adding wear.
+	local def = params.item:get_definition()
+	local itemname = params.item:get_name()
+	if not def then return params.item end -- No def? No go.
+	if not minetest.registered_tools[itemname] then return params.item end
+
+	local total_uses = 0
+	local total_wear = 0
+	local current_wear = params.item:get_wear()
+
+	-- Add the wear (damage).
+	if params.wear then
+		params.item:add_wear(params.wear)
+		total_uses = math.floor(65536 / params.wear)
+		total_wear = params.wear
+	elseif params.total_uses then
+		params.item:add_wear_by_uses(params.total_uses)
+		total_uses = params.total_uses
+		total_wear = math.floor(65536 / params.total_uses)
+	end
+
+	-- Count will be 0 if wear broke the tool.
+	local count = params.item:get_count()
+	local remaining_uses = math.floor((65536 - current_wear) / total_wear) - 1
+	local sound = def.sound or {}
+	local breaksound = sound.breaks or "default_tool_breaks"
+
+	-- Play broken tool sound.
+	if count == 0 then
+		local player = params.user
+		local pname = player:get_player_name()
+		local pos = player:get_pos()
+		local desc = def.description
+
+		minetest.chat_send_player(pname, "# Server: Your " .. desc .. " is lost.")
+		minetest.sound_play(breaksound, {pos=pos, gain=1.0}, true)
+	elseif remaining_uses <= 10 then
+		-- Warn tool will soon break.
+		local player = params.user
+		local pos = player:get_pos()
+		local pname = player:get_player_name()
+		local desc = def.description
+		local spamkey = pname .. ":" .. itemname .. ":breaks"
+
+		if not spam.test_key(spamkey) then
+			minetest.chat_send_player(pname,
+				"# Server: Your " .. desc .. " is about to break!")
+			minetest.sound_play(breaksound, {pos=pos, gain=0.5}, true)
+			spam.mark_key(spamkey, 5)
+		end
+	end
+
+	-- Return itemstack.
+	return params.item
+end
+
+
+
 -- Use this to define 'on_blast' for nodes that should be knocked down by TNT
 -- to prevent them from being left hanging in air (like glow obsidian, which is
 -- normally immovable).

@@ -203,16 +203,6 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 		end
 	end
 
-	-- Don't print message more than once every 5 seconds.
-	local os_time = os.time()
-	if os_time > (pdata.last_alert or 0) + 5 then
-		if(itemstack:get_wear() > 60135) then
-			minetest.chat_send_player(pname, "# Server: Your tool is about to break!")
-			ambiance.sound_play("default_tool_breaks", user:get_pos(), 1.0, 20)
-			pdata.last_alert = os_time
-		end
-	end
-
 	-- pass total number of nodes (of this type) that could be dug assuming no tool repairs, as second param to this function
   local level = toolranks.get_level(dugnodes, math_floor(65535 / digparams.wear), lastlevel)
 
@@ -236,7 +226,11 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
   --minetest.chat_send_all("wear="..wear.."Original wear: "..digparams.wear.." 1+level/4="..1+level/4)
   -- Uncomment for testing ^
 
-  itemstack:add_wear(wear)
+  itemstack = utility.wear_tool_with_feedback({
+		item = itemstack,
+		user = user,
+		wear = wear,
+	})
   return itemstack
 end
 

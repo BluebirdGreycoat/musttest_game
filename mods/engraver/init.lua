@@ -197,13 +197,13 @@ local function handle_engraver_use(player, formname, fields)
 	local index = player:get_wield_index()
 	local chisel = inv:get_stack("main", index)
 	if chisel:get_name() == "engraver:chisel" then
-		chisel:add_wear(300)
+		chisel = utility.wear_tool_with_feedback({
+			item = chisel,
+			wear = 300,
+			user = player,
+		})
+
 		inv:set_stack("main", index, chisel)
-
-		if chisel:is_empty() == 0 then
-			ambiance.sound_play("default_tool_breaks", pos, 1.0, 10)
-		end
-
 		got_chisel = true
 	end
 

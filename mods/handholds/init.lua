@@ -103,7 +103,8 @@ function handholds.on_use(itemstack, player, pointed_thing)
 			local wdef = itemstack:get_definition()
 			itemstack:add_wear(10)
 			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
-				minetest.sound_play(wdef.sound.breaks, {pos = pointed_thing.above, gain = 0.5}, true)
+				minetest.sound_play(wdef.sound.breaks,
+					{pos = pointed_thing.above, gain = 0.5}, true)
 			end
 			return itemstack
 		end
@@ -150,11 +151,13 @@ function handholds.on_use(itemstack, player, pointed_thing)
 	minetest.add_node(pointed_thing.above, {name = "handholds:climbable_air"})
 	ambiance.sound_play("default_dig_cracky", pointed_thing.above, 0.5, 30)
 
-	local wdef = itemstack:get_definition()
-	itemstack:add_wear(256)
-	if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
-		minetest.sound_play(wdef.sound.breaks, {pos = pointed_thing.above, gain = 0.5}, true)
-	end
+	itemstack = utility.wear_tool_with_feedback({
+		--total_uses = 130,
+		wear = 256,
+		item = itemstack,
+		user = player,
+	})
+
 	return itemstack
 end
 

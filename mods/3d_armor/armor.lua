@@ -784,7 +784,11 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			local item = stack:get_name()
 
 			if not ignore_wear then
-				stack:add_wear(use * armor.wear_from_reason(item, idef, reason))
+				stack = utility.wear_tool_with_feedback({
+					item = stack,
+					wear = (use * armor.wear_from_reason(item, idef, reason)),
+					user = player,
+				})
 			end
 
 			armor_inv:set_stack("armor", i, stack)
@@ -794,13 +798,6 @@ function armor.on_player_hp_change(player, hp_change, reason)
 			items = items + 1
 
 			if stack:get_count() == 0 then
-				local desc = minetest.registered_items[item].description
-
-				if desc then
-					minetest.chat_send_player(pname, "# Server: Your " .. desc .. " got destroyed!")
-					ambiance.sound_play("default_tool_breaks", player:get_pos(), 1.0, 20)
-				end
-
 				armor:set_player_armor(player)
 				armor:update_inventory(player)
 			end

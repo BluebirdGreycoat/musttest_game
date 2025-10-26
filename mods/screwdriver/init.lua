@@ -149,7 +149,11 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 	end
 	ambiance.sound_play(sound, pos, 1, 30)
 
-	itemstack:add_wear(65535 / ((uses or 200) - 1))
+	itemstack = utility.wear_tool_with_feedback({
+		total_uses = uses,
+		item = itemstack,
+		user = user,
+	})
 	return itemstack
 end
 

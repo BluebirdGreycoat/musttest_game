@@ -69,12 +69,11 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 	breath.ignite_nearby_gas(pt.under)
   
   -- Wear tool.
-  itemstack:add_wear(1000)
-
-  -- Tool break sound.
-  if itemstack:get_count() == 0 then
-    ambiance.sound_play("default_tool_breaks", pt.above, 0.7, 20)
-  end
+  itemstack = utility.wear_tool_with_feedback({
+		wear = 1000,
+		user = user,
+		item = itemstack,
+	})
 
 	-- Play sound.
 	ambiance.sound_play("fire_flint_and_steel", pt.above, 0.7, 20)

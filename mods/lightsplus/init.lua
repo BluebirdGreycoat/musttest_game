@@ -73,8 +73,8 @@ local LIGHT_DEFS = {
 
 
 for _, row in ipairs(LIGHT_DEFS) do
-	local off = row[1]
-	local on = row[2]
+	local NODENAME_OFF = row[1]
+	local NODENAME_ON = row[2]
 	local desc = row[3]
 	local tiles = row[4]
 	local paramtype = row[5]
@@ -89,19 +89,19 @@ for _, row in ipairs(LIGHT_DEFS) do
 	if type(nodebox) ~= "table" then nodebox = nil end
 
 	local dig_group = "glass"
-	if off:find("flat") then
+	if NODENAME_OFF:find("flat") then
 		dig_group = "bigitem"
 	end
 
 	local light_source = 14
 
-	if off:find("slab") then
+	if NODENAME_OFF:find("slab") then
 		light_source = 12
-	elseif off:find("flat") then
+	elseif NODENAME_OFF:find("flat") then
 		light_source = 8
 	end
 
-	minetest.register_node(off, {
+	minetest.register_node(NODENAME_OFF, {
 		description = desc,
 		tiles = { tiles },
 		groups = utility.dig_groups(dig_group),
@@ -110,15 +110,22 @@ for _, row in ipairs(LIGHT_DEFS) do
 		drawtype = drawtype,
 		node_box = nodebox,
 		selection_box = nodebox,
+
 		on_punch = function(pos, node, puncher)
-			minetest.swap_node(pos, {name=on, param2=node.param2})
+			minetest.swap_node(pos, {name=NODENAME_ON, param2=node.param2})
 		end,
-		on_place = minetest.rotate_and_place
+
+		on_place = minetest.rotate_and_place,
+
+		-- Intersection point can be nil, and 'above' can be same as 'pos'.
+		on_arrow_impact = function(pos, above, entity, intersection_point)
+			minetest.swap_node(pos, {name=NODENAME_ON})
+		end,
 	})
 
-	minetest.register_node(on, {
+	minetest.register_node(NODENAME_ON, {
 		description = desc .. " (Active)",
-		drop = off,
+		drop = NODENAME_OFF,
 		tiles = { tiles },
 		light_source = light_source,
 		groups = utility.dig_groups(dig_group, {not_in_creative_inventory=1}),
@@ -127,10 +134,25 @@ for _, row in ipairs(LIGHT_DEFS) do
 		drawtype = drawtype,
 		node_box = nodebox,
 		selection_box = nodebox,
+
 		on_punch = function(pos, node, puncher)
-			minetest.swap_node(pos, {name=off, param2=node.param2})
+			minetest.swap_node(pos, {name=NODENAME_OFF, param2=node.param2})
 		end,
-		on_place = minetest.rotate_and_place
+
+		on_place = minetest.rotate_and_place,
+
+		on_finish_collapse = function(pos, node)
+			minetest.swap_node(pos, {name=NODENAME_OFF})
+		end,
+
+		on_collapse_to_entity = function(pos, node)
+			minetest.add_item(pos, {name=NODENAME_OFF})
+		end,
+
+		-- Intersection point can be nil, and 'above' can be same as 'pos'.
+		on_arrow_impact = function(pos, above, entity, intersection_point)
+			minetest.swap_node(pos, {name=NODENAME_OFF})
+		end,
 	})
 end
 

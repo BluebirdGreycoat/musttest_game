@@ -77,6 +77,7 @@ function handholds.on_use(itemstack, player, pointed_thing)
 	local pname = player:get_player_name()
 
 	-- Ensure pointing at a SIDE face, not top or bottom.
+	-- As Reddit would say, "skill issue"
 	if not pointed_thing or
 			pointed_thing.type ~= "node" or
 			pointed_thing.under.y + 1 == pointed_thing.above.y or

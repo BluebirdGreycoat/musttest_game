@@ -86,6 +86,16 @@ if not mese_crystals.nodes_registered then
   	inventory_image = "zentamine_fragment.png",
 	})
 
+	minetest.register_craftitem("mese_crystals:obsidian_zentamine", {
+  	description = "Obsidian-Zentamine Shard",
+  	inventory_image = "obsidian_zentamine_fragment.png",
+	})
+
+	minetest.register_craftitem("mese_crystals:fertile_fragment", {
+  	description = "Fertile Mese Fragment",
+  	inventory_image = "fertile_mese_fragment.png",
+	})
+
 
 	mese_crystals.nodes_registered = true
 end

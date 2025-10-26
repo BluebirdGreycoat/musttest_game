@@ -22,9 +22,29 @@ if not mese_crystals.crafts_registered then
 	  type = "cooking",
   	output = "mese_crystals:zentamine",
 		recipe = "default:mese_crystal_fragment",
-		cooktime = 2,
+		cooktime = 20,
 	})
 
+	minetest.register_craft({
+		type = "alloying",
+		output = "mese_crystals:obsidian_zentamine",
+		recipe = {"default:mese_crystal_fragment", "default:obsidian_shard"},
+		time = 15,
+	})
+
+	minetest.register_craft({
+		type = "alloying",
+		output = "mese_crystals:fertile_fragment",
+		recipe = {"mese_crystals:obsidian_zentamine", "glowstone:glowing_dust 2"},
+		time = 15,
+	})
+
+	minetest.register_craft({
+	  type = "cooking",
+  	output = "default:mese_crystal",
+		recipe = "mese_crystals:fertile_fragment 9",
+		cooktime = 10,
+	})
 
 	mese_crystals.crafts_registered = true
 end

@@ -2156,7 +2156,14 @@ fortress.v2.fortress_data = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=22}},
 				{file="nf_building_solid", force=false, offset={x=11, y=-7, z=22}},
 				{file="nf_building_solid", force=false, offset={x=22, y=-7, z=22}},
-				{file="fortress_well_water", chance=40,	offset={x=10, y=3, z=10}},
+
+				-- Don't even think about what they burnt on this.
+				{file="nf_detail_pagan_alter", chance=5, force=false,
+					offset={x_min=12, x_max=13, y=4, z_min=11, z_max=12}, priority=1,
+					exclude={fortress_well_water=true, fortress_well_lava=true}},
+
+				{file="fortress_well_water", chance=20,	offset={x=10, y=3, z=10},
+					exclude={fortress_well_lava=true}},
 				{file="fortress_well_lava", chance=20, offset={x=10, y=3, z=10}},
 			},
 			size = {x=3, y=1, z=3},

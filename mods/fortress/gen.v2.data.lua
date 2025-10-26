@@ -1326,7 +1326,12 @@ fortress.v2.fortress_data = {
 		},
 
 		solid_top = {
-			schem = {{file="nf_building_solid"}},
+			schem = {
+				{file="nf_building_solid"},
+				{file="nf_building_solid2", chance=35},
+				{file="nf_building_solid3", chance=25},
+				{file="nf_building_solid4", chance=15},
+			},
 			valid_neighbors = {[DIRNAME.DOWN]={solid_middle=true}},
 			fallback = true,
 		},

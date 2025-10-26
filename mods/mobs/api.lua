@@ -4482,14 +4482,12 @@ local function falling(self, pos)
 	else
 
 		-- fall damage onto solid ground
-		if self.fall_damage == 1
-		and self.object:get_velocity().y == 0 then
-
+		if self.fall_damage >= 1 and self.object:get_velocity().y == 0 then
 			local d = (self.old_y or 0) - self.object:get_pos().y
 
 			if d > 5 then
-
-				self.health = self.health - floor(d - 5)
+				-- Scale fall damage.
+				self.health = self.health - floor((d - 5) * 500)
 
 				effect(pos, 5, "tnt_smoke.png", 1, 2, 2, nil)
 
@@ -5333,7 +5331,7 @@ if not mobs.registered then
 			lava_annihilates        = first_or_second(def.lava_annihilates, true),
 			makes_bones_in_lava     = first_or_second(def.makes_bones_in_lava, true),
 
-			fall_damage             = def.fall_damage or (1*500),
+			fall_damage             = def.fall_damage or 1,
 			fall_speed              = def.fall_speed or -10, -- must be lower than -2 (default: -10)
 			drops                   = def.drops or {},
 			armor                   = def.armor or 100,

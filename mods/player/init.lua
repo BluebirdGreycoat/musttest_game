@@ -4,6 +4,8 @@
 if not minetest.global_exists("player") then player = {} end
 player.modpath = minetest.get_modpath("player")
 
+dofile(player.modpath .. "/hotbar.lua")
+
 -- Player animation blending
 -- Note: This is currently broken due to a bug in Irrlicht, leave at 0
 local animation_blend = 0
@@ -89,26 +91,31 @@ end
 
 
 -- Update appearance when the player joins
-minetest.register_on_joinplayer(function(player)
-	local pname = player:get_player_name()
+minetest.register_on_joinplayer(function(pref)
+	local pname = pref:get_player_name()
 	default.player_attached[pname] = false
 
-	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
+	pref:set_local_animation(
+		{x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
 
 	-- Big hot-bar is revoked for cheaters.
-  if minetest.check_player_privs(player, {big_hotbar=true}) and not sheriff.is_cheater(pname) then
-    player:hud_set_hotbar_image("gui_hotbar2.png")
-    player:hud_set_hotbar_itemcount(16)
+  if minetest.check_player_privs(pref, {big_hotbar=true}) and
+			not sheriff.is_cheater(pname) then
+		local meta = pref:get_meta()
+		if meta:get_int("show_big_hotbar") == 1 then
+			player.set_big_hotbar(pref)
+		else
+			player.set_small_hotbar(pref)
+		end
   else
-    player:hud_set_hotbar_image("gui_hotbar.png")
-    player:hud_set_hotbar_itemcount(8)
+		player.set_small_hotbar(pref)
   end
   
-	player:hud_set_hotbar_selected_image("hud_hotbar_selected.png")
+	pref:hud_set_hotbar_selected_image("hud_hotbar_selected.png")
 
 	-- Update player velocity if available.
 	if player_velocity[pname] then
-		player:add_velocity(player_velocity[pname])
+		pref:add_velocity(player_velocity[pname])
 		player_velocity[pname] = nil
 	end
 end)

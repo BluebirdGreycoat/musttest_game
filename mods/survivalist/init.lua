@@ -500,8 +500,8 @@ end
 
 -- Called when the player wants to claim victory. Must validate.
 function survivalist.attempt_claim(pname)
-  local player = minetest.get_player_by_name(pname)
-  if not player then
+  local pref = minetest.get_player_by_name(pname)
+  if not pref then
     return
   end
   
@@ -534,7 +534,7 @@ function survivalist.attempt_claim(pname)
 	end
   
   -- Check if the player is in the city.
-  local pos = player:get_pos()
+  local pos = pref:get_pos()
   local cityname = ""
   local home_pos = minetest.string_to_pos(survivalist.modstorage:get_string(pname .. ":home"))
 
@@ -593,12 +593,12 @@ function survivalist.attempt_claim(pname)
 	else
 		minetest.chat_send_player(pname, "# Server: You have won the Survival Challenge!")
 	end
-  local inv = player:get_inventory()
+  local inv = pref:get_inventory()
   local leftover = inv:add_item("main", ItemStack("survivalist:" .. rank .. "_skill_token " .. tokencount))
   
   -- No room in inventory? Drop 'em.
   if leftover:get_count() > 0 then
-    minetest.item_drop(leftover, player, pos)
+    minetest.item_drop(leftover, pref, pos)
 		if not gdac.player_is_admin(pname) then
 			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s Skill Mark was dropped on the ground!")
 		end
@@ -633,14 +633,15 @@ function survivalist.attempt_claim(pname)
   -- Grant player the big_hotbar priv.
   -- Rewarded by the 'surface' gamemode only.
   if currentgame == "surface" then
-    if not minetest.check_player_privs(player, {big_hotbar=true}) then
+    if not minetest.check_player_privs(pref, {big_hotbar=true}) then
       local privs = minetest.get_player_privs(pname)
       privs.big_hotbar = true
       minetest.set_player_privs(pname, privs)
 			minetest.notify_authentication_modified(pname)
       
-      player:hud_set_hotbar_image("gui_hotbar2.png")
-      player:hud_set_hotbar_itemcount(16)
+      player.set_big_hotbar(pref)
+      minetest.chat_send_player(pname,
+        "# Server: You can now use the /hotbar command to switch sizes.")
     end
   end
   

@@ -8,17 +8,71 @@
 -- Mod updated and made compatible with MustTest, by MustTest.
 
 --Node Definitions and Functions
-local lights = {
-	{"lightsplus:light", "lightsplus:light_on", "Light", "lightsplus_light.png", "", "", "facedir", ""},
-	{"lightsplus:gold_light", "lightsplus:gold_light_on", "Gold Light", "lightsplus_gold_light.png", "", "facedir", "", ""},
-	{"lightsplus:slab_light", "lightsplus:slab_light_on", "Slab Light", "lightsplus_light.png", "light", "facedir", "nodebox", {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 0, 0.5},},},
-	{"lightsplus:gold_slab_light", "lightsplus:gold_slab_light_on", "Gold Slab Light", "lightsplus_gold_light.png", "light", "facedir", "nodebox", {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 0, 0.5},},},
-	{"lightsplus:flat_light", "lightsplus:flat_light_on", "Flat Light", "lightsplus_light.png", "light", "facedir", "nodebox", {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -7/16, 0.5},},},
-	{"lightsplus:gold_flat_light", "lightsplus:gold_flat_light_on", "Gold Flat Light", "lightsplus_gold_light.png", "light", "facedir", "nodebox", {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -7/16, 0.5},},},
+local LIGHT_DEFS = {
+	{
+		"lightsplus:light",
+		"lightsplus:light_on",
+		"Light",
+		"lightsplus_light.png",
+		"",
+		"facedir",
+		"",
+		"",
+	},
+	{
+		"lightsplus:gold_light",
+		"lightsplus:gold_light_on",
+		"Gold Light",
+		"lightsplus_gold_light.png",
+		"",
+		"facedir",
+		"",
+		"",
+	},
+	{
+		"lightsplus:slab_light",
+		"lightsplus:slab_light_on",
+		"Slab Light",
+		"lightsplus_light.png",
+		"light",
+		"facedir",
+		"nodebox",
+		{type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 0, 0.5}},
+	},
+	{
+		"lightsplus:gold_slab_light",
+		"lightsplus:gold_slab_light_on",
+		"Gold Slab Light",
+		"lightsplus_gold_light.png",
+		"light",
+		"facedir",
+		"nodebox",
+		{type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, 0, 0.5}},
+	},
+	{
+		"lightsplus:flat_light",
+		"lightsplus:flat_light_on",
+		"Flat Light",
+		"lightsplus_light.png",
+		"light",
+		"facedir",
+		"nodebox",
+		{type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -7/16, 0.5}},
+	},
+	{
+		"lightsplus:gold_flat_light",
+		"lightsplus:gold_flat_light_on",
+		"Gold Flat Light",
+		"lightsplus_gold_light.png",
+		"light",
+		"facedir",
+		"nodebox",
+		{type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -7/16, 0.5}},
+	},
 }
 
 
-for _, row in ipairs(lights) do
+for _, row in ipairs(LIGHT_DEFS) do
 	local off = row[1]
 	local on = row[2]
 	local desc = row[3]
@@ -27,6 +81,12 @@ for _, row in ipairs(lights) do
 	local paramtype2 = row[6]
 	local drawtype = row[7]
 	local nodebox = row[8]
+
+	-- Suppress warnings from engine by not passing empty strings.
+	if paramtype == "" then paramtype = nil end
+	if paramtype2 == "" then paramtype2 = nil end
+	if drawtype == "" then drawtype = nil end
+	if type(nodebox) ~= "table" then nodebox = nil end
 
 	local dig_group = "glass"
 	if off:find("flat") then
@@ -175,23 +235,29 @@ minetest.register_craft({
 	},
 })
 
-minetest.register_alias("newlights:light", "lightsplus:light")
-minetest.register_alias("newlights:light_on", "lightsplus:light_on")
-minetest.register_alias("newlights:slab_light", "lightsplus:flat_light")
-minetest.register_alias("newlights:slab_light_on", "lightsplus:flat_light_on")
-minetest.register_alias("lightsplus:slab_light_wall", "lightsplus:slab_light")
-minetest.register_alias("lightsplus:slab_light_wall_on", "lightsplus:slab_light_on")
-minetest.register_alias("lightsplus:slab_light_inv", "lightsplus:slab_light")
-minetest.register_alias("lightsplus:slab_light_inv_on", "lightsplus:slab_light_on")
-minetest.register_alias("lightsplus:light_gold", "lightsplus:gold_light")
-minetest.register_alias("lightsplus:light_on_gold", "lightsplus:gold_light_on")
-minetest.register_alias("lightsplus:slab_light_gold", "lightsplus:gold_slab_light")
-minetest.register_alias("lightsplus:slab_light_on_gold", "lightsplus:gold_slab_light_on")
-minetest.register_alias("lightsplus:slab_light_wall_gold", "lightsplus:gold_slab_light")
-minetest.register_alias("lightsplus:slab_light_wall_on_gold", "lightsplus:gold_slab_light_on")
-minetest.register_alias("lightsplus:slab_light_inv_gold", "lightsplus:gold_slab_light")
-minetest.register_alias("lightsplus:slab_light_inv_on_gold", "lightsplus:gold_slab_light_on")
-minetest.register_alias("lightsplus:light_flat", "lightsplus:flat_light")
-minetest.register_alias("lightsplus:light_flat_on", "lightsplus:flat_light_on")
-minetest.register_alias("lightsplus:light_flat_gold", "lightsplus:gold_flat_light")
-minetest.register_alias("lightsplus:light_flat_on_gold", "lightsplus:gold_flat_light_on")
+local ALIASES = {
+	{"newlights:light", "lightsplus:light"},
+	{"newlights:light_on", "lightsplus:light_on"},
+	{"newlights:slab_light", "lightsplus:flat_light"},
+	{"newlights:slab_light_on", "lightsplus:flat_light_on"},
+	{"lightsplus:slab_light_wall", "lightsplus:slab_light"},
+	{"lightsplus:slab_light_wall_on", "lightsplus:slab_light_on"},
+	{"lightsplus:slab_light_inv", "lightsplus:slab_light"},
+	{"lightsplus:slab_light_inv_on", "lightsplus:slab_light_on"},
+	{"lightsplus:light_gold", "lightsplus:gold_light"},
+	{"lightsplus:light_on_gold", "lightsplus:gold_light_on"},
+	{"lightsplus:slab_light_gold", "lightsplus:gold_slab_light"},
+	{"lightsplus:slab_light_on_gold", "lightsplus:gold_slab_light_on"},
+	{"lightsplus:slab_light_wall_gold", "lightsplus:gold_slab_light"},
+	{"lightsplus:slab_light_wall_on_gold", "lightsplus:gold_slab_light_on"},
+	{"lightsplus:slab_light_inv_gold", "lightsplus:gold_slab_light"},
+	{"lightsplus:slab_light_inv_on_gold", "lightsplus:gold_slab_light_on"},
+	{"lightsplus:light_flat", "lightsplus:flat_light"},
+	{"lightsplus:light_flat_on", "lightsplus:flat_light_on"},
+	{"lightsplus:light_flat_gold", "lightsplus:gold_flat_light"},
+	{"lightsplus:light_flat_on_gold", "lightsplus:gold_flat_light_on"}
+}
+
+for _, pair in ipairs(ALIASES) do
+	minetest.register_alias(pair[1], pair[2])
+end

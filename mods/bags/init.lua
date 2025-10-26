@@ -262,21 +262,27 @@ if not bags.loaded then
 	minetest.register_on_player_receive_fields(function(...)
 		return bags.receive_fields(...) end)
 
-	minetest.register_on_joinplayer(function(player)
+	minetest.register_on_joinplayer(function(pref)
+		local pname = pref:get_player_name()
+		local player_inv = pref:get_inventory()
 
-		local player_inv = player:get_inventory()
-		local bags_inv = minetest.create_detached_inventory(player:get_player_name().."_bags",{
-
-			on_put = function(inv, listname, index, stack, player)
-				player:get_inventory():set_stack(listname, index, stack)
-				player:get_inventory():set_size(listname.."contents", stack:get_definition().groups.bagslots)
+		local bags_inv = minetest.create_detached_inventory(pname .. "_bags", {
+			on_put = function(inv, listname, index, stack, pref)
+				local pinv = pref:get_inventory()
+				local slots = stack:get_definition().groups.bagslots
+				pinv:set_stack(listname, index, stack)
+				pinv:set_size(listname .. "contents", slots)
 			end,
 
-			on_take = function(inv, listname, index, stack, player)
-				player:get_inventory():set_stack(listname, index, nil)
+			on_take = function(inv, listname, index, stack, pref)
+				pref:get_inventory():set_stack(listname, index, nil)
 			end,
 
-			allow_put = function(inv, listname, index, stack, player)
+			allow_put = function(inv, listname, index, stack, pref)
+				if not pref:get_inventory():is_empty(listname) then
+					return 0
+				end
+
 				if stack:get_definition().groups.bagslots then
 					return 1
 				else
@@ -284,18 +290,19 @@ if not bags.loaded then
 				end
 			end,
 
-			allow_take = function(inv, listname, index, stack, player)
-				if player:get_inventory():is_empty(listname .. "contents") == true then
+			allow_take = function(inv, listname, index, stack, pref)
+				if pref:get_inventory():is_empty(listname .. "contents") == true then
 					return stack:get_count()
 				else
 					return 0
 				end
 			end,
 
-			allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
+			allow_move = function(
+					inv, from_list, from_index, to_list, to_index, count, pref)
 				return 0
 			end,
-		}, player:get_player_name())
+		}, pname)
 
 		for i = 1, 4 do
 			local bag = "bag" .. i

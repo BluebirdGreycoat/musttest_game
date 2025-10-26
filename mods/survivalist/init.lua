@@ -206,9 +206,9 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
   -- Inform player the game has begun.
 	if not gdac.player_is_admin(pname) then
 		local dname = rename.gpn(pname)
-		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector_round(pos)) .. "!")
+		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr_ex(vector_round(pos)) .. "!")
 	else
-		minetest.chat_send_player(pname, "# Server: You have begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr(vector_round(pos)) .. "!")
+		minetest.chat_send_player(pname, "# Server: You have begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr_ex(vector_round(pos)) .. "!")
 	end
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")

@@ -234,6 +234,9 @@ local generate_coord_string = function(name)
 
 		local pstr = rc.pos_to_string(pos)
 		pstr = string.gsub(pstr, "[%(%)]", "")
+		if not fortress.can_teleport_at(pos) then
+			pstr = "???"
+		end
 
 		-- Note: 'nodeowner
 		local nodeowner = protector.get_node_owner(pos)

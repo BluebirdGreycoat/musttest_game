@@ -556,7 +556,7 @@ function marker.get_formspec(player)
 		"textlist[0.4,3.9;4.7,3.1;markers;"
 
 	for i = 1, #deflist, 1 do
-		local s = rc.pos_to_namestr(deflist[i])
+		local s = rc.pos_to_namestr_ex(deflist[i])
 		formspec = formspec .. minetest.formspec_escape(s)
 		if i < #deflist then
 			formspec = formspec .. ","
@@ -572,7 +572,7 @@ function marker.get_formspec(player)
 		local data = marker.get_list(player, lname)
 		comma = ""
 		for i = 1, #data, 1 do
-			local s = minetest.formspec_escape(rc.pos_to_namestr(data[i]))
+			local s = minetest.formspec_escape(rc.pos_to_namestr_ex(data[i]))
 			formspec = formspec .. comma .. s
 			comma = ","
 		end
@@ -940,7 +940,7 @@ marker.on_receive_fields = function(player, formname, fields)
 			marker.add_waypoint(pname, pos, "default")
 			local deflist = marker.get_list(pname, "default")
 			gui.index2 = #deflist
-			minetest.chat_send_player(pname, "# Server: Placed marker at " .. rc.pos_to_namestr(vector_round(pos)) .. ".")
+			minetest.chat_send_player(pname, "# Server: Placed marker at " .. rc.pos_to_namestr_ex(vector_round(pos)) .. ".")
 		else
 			minetest.chat_send_player(pname, "# Server: Cannot place a new marker, storage is full.")
 		end
@@ -948,7 +948,7 @@ marker.on_receive_fields = function(player, formname, fields)
 		local index = gui.index2
 		local deflist = marker.get_list(pname, "default")
 		if index >= 1 and index <= #deflist then
-			local s = rc.pos_to_namestr(deflist[index])
+			local s = rc.pos_to_namestr_ex(deflist[index])
 			marker.remove_waypoint(pname, index, "default")
 			gui.index2 = -1
 			minetest.chat_send_player(pname, "# Server: Removed marker: " .. s .. ".")

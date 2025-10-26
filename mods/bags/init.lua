@@ -224,7 +224,7 @@ function bags.receive_fields(player, formname, fields)
 			if target then
 				local protstr = ""
 				if protected then protstr = "protected " end
-				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items chucked into " .. protstr .. "chest at " .. rc.pos_to_namestr(target) .. ".")
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items chucked into " .. protstr .. "chest at " .. rc.pos_to_namestr_ex(target) .. ".")
 				if count > 0 then
 					easyvend.sound_vend(player:get_pos())
 				end
@@ -239,7 +239,7 @@ function bags.receive_fields(player, formname, fields)
 			if target then
 				local protstr = ""
 				if protected then protstr = "protected " end
-				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items snatched from " .. protstr .. "chest at " .. rc.pos_to_namestr(target) .. ".")
+				minetest.chat_send_player(pname, "# Server: Bag #" .. i .. ": " .. count .. " items snatched from " .. protstr .. "chest at " .. rc.pos_to_namestr_ex(target) .. ".")
 				if count > 0 then
 					easyvend.sound_vend(player:get_pos())
 				end

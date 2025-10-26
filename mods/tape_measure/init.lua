@@ -39,12 +39,12 @@ local function measure(stack, player, pointed)
 	if (not start) or (rc.current_realm_at_pos(pos) ~= realm) then
 		meta:set_string("start_pos", spos)
 		meta:set_string("start_realm", rc.current_realm_at_pos(pos))
-		minetest.chat_send_player(pname, "# Server: Start position set to " .. rc.pos_to_namestr(pos) .. ".")
+		minetest.chat_send_player(pname, "# Server: Start position set to " .. rc.pos_to_namestr_ex(pos) .. ".")
 		return stack
 	end
 
 	start = minetest.string_to_pos(start)
-	minetest.chat_send_player(pname, "# Server: End position set to " .. rc.pos_to_namestr(pos) .. ".")
+	minetest.chat_send_player(pname, "# Server: End position set to " .. rc.pos_to_namestr_ex(pos) .. ".")
 	meta:set_string("start_pos", "")
 	meta:set_string("start_realm", "")
 

@@ -56,7 +56,7 @@ function easyvend.record_purchase(data)
 	local message = MSG_SELL:format(
 		utility.get_short_desc(idef.description),
 		nearest_city(data.pos),
-		rc.pos_to_namestr(data.pos)
+		rc.pos_to_namestr_ex(data.pos)
 	)
 
 	email.send_mail_single(MAIL_FROM, to, SUBJECT_SELL, message)
@@ -80,7 +80,7 @@ function easyvend.record_deposit(data)
 	local message = MSG_BUY:format(
 		utility.get_short_desc(idef.description),
 		nearest_city(data.pos),
-		rc.pos_to_namestr(data.pos)
+		rc.pos_to_namestr_ex(data.pos)
 	)
 
 	email.send_mail_single(MAIL_FROM, to, SUBJECT_BUY, message)
@@ -101,7 +101,7 @@ function easyvend.record_disable(data)
 		utility.get_short_desc(idef.description),
 		data.machine_type,
 		nearest_city(data.pos),
-		rc.pos_to_namestr(data.pos)
+		rc.pos_to_namestr_ex(data.pos)
 	)
 
 	email.send_mail_single(MAIL_FROM, to, SUBJECT_OFF, message)

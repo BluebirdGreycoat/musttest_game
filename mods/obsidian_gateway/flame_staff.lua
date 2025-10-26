@@ -111,8 +111,8 @@ function obsidian_gateway.on_flamestaff_use(item, user, pt)
 			meta:set_string("gate2", minetest.pos_to_string(playerorigin))
 
 			local info = "\n" ..
-				rc.pos_to_namestr(minetest.string_to_pos(meta:get_string("gate1"))) .. "\n" ..
-				rc.pos_to_namestr(minetest.string_to_pos(meta:get_string("gate2")))
+				rc.pos_to_namestr_ex(minetest.string_to_pos(meta:get_string("gate1"))) .. "\n" ..
+				rc.pos_to_namestr_ex(minetest.string_to_pos(meta:get_string("gate2")))
 
 			meta:set_string("description", "Flame Staff (Linked)" .. info)
 			item:set_wear(1)

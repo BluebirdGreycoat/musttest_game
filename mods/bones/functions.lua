@@ -772,7 +772,7 @@ bones.do_grab_bones_message = function(pname, pos, meta)
 				"# Server: Player <" ..
 				rename.gpn(pname) ..
 				"> claimed " .. ownerstring .. " " .. agestring .. " bones at " ..
-				rc.pos_to_namestr(vector_round(pos)) ..
+				rc.pos_to_namestr_ex(vector_round(pos)) ..
 				" with " .. numstacks .. " " .. stacks .. ".")
 		else
 			minetest.chat_send_all(

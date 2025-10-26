@@ -400,6 +400,20 @@ function rc.pos_to_namestr(pos)
 	return "(" .. name .. ": " .. str .. ")"
 end
 
+function rc.pos_to_namestr_ex(pos)
+	local name = rc.pos_to_name(pos)
+	local str = rc.pos_to_string(pos)
+	local in_fort = not fortress.can_teleport_at(pos)
+
+	if in_fort then
+		str = "???"
+	else
+		str = string.gsub(str, "[%(%)]", "")
+	end
+
+	return "(" .. name .. ": " .. str .. ")"
+end
+
 function rc.pos_to_name(pos)
 	return rc.realm_description_at_pos(pos)
 end

@@ -93,9 +93,17 @@ function hud.globalstep(dtime)
 			hud.players[pname].moved = false
 		end
 
+		local has_key = passport.player_has_key(pname, player)
+		local has_compass = wielding_compass(player)
+		local in_fort = not fortress.can_teleport_at(pos)
+
 		local coord_str = ""
-		if passport.player_has_key(pname, player) or wielding_compass(player) then
-			coord_str = "\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ")
+		if has_key or has_compass then
+			if in_fort then
+				coord_str = "\nCoords: Indeterminate"
+			else
+				coord_str = "\nCoords: " .. rc.pos_to_string(pos):gsub(",", ", ")
+			end
 		end
 
 		local hud_text = "Realm: " .. rc.pos_to_name(pos) ..
@@ -121,7 +129,7 @@ function hud.globalstep(dtime)
 		end
 
 		local dir_text = ""
-		if passport.player_has_key(pname, player) or wielding_compass(player) then
+		if has_key or has_compass then
 			local yaw = (player:get_look_horizontal() * 180.0) / math.pi
 
 			local div = 360 / 8
@@ -150,7 +158,11 @@ function hud.globalstep(dtime)
 				dir = "N [+Z]"
 			end
 
-			dir_text = "Facing: " .. dir
+			if in_fort then
+				dir_text = "Facing: ???"
+			else
+				dir_text = "Facing: " .. dir
+			end
 		end
 
 		if dir_text ~= hud.players[pname].dir then

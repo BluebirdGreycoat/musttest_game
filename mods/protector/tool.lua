@@ -156,14 +156,14 @@ minetest.register_craftitem("protector:tool", {
 
 		-- do not replace containers with inventory space.
 		if pos_has_inventory(pos) then
-			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr(pos) .. ".")
+			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
 			prospector.ptool_mark_single(name, pos, "Blockage")
 			return
 		end
 
 		-- protection check for other stuff, like bedrock, etc
 		if minetest.is_protected(pos, name) then
-			minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr(pos) .. ".")
+			minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
 			prospector.ptool_mark_single(name, pos, "Blockage")
 			return
 		end
@@ -238,10 +238,10 @@ minetest.register_craftitem("protector:tool", {
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
 
 		if members_copied and not s then
-			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ". Members copied.")
+			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ". Members copied.")
 			prospector.ptool_mark_single(name, pos, "Success")
 		else
-			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr(pos) .. ".")
+			minetest.chat_send_player(name, "# Server: Protector placed at " .. rc.pos_to_namestr_ex(pos) .. ".")
 			prospector.ptool_mark_single(name, pos, "Success")
 		end
 	end,
@@ -363,13 +363,13 @@ minetest.register_craftitem("protector:tool2", {
 
 		-- do not replace containers with inventory space
 		if minetest.get_inventory({type = "node", pos = pos}) then
-			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr(pos) .. ".")
+			minetest.chat_send_player(name, "# Server: Cannot place protector, container at " .. rc.pos_to_namestr_ex(pos) .. ".")
 			return
 		end
 
 		-- protection check for other stuff, like bedrock, etc
 		if minetest.is_protected(pos, owner) then
-			minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr(pos) .. ".")
+			minetest.chat_send_player(name, "Cannot place protector, already protected at " .. rc.pos_to_namestr_ex(pos) .. ".")
 			return
 		end
 
@@ -406,7 +406,7 @@ minetest.register_craftitem("protector:tool2", {
 		meta:set_string("members", members)
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)
-		minetest.chat_send_player(name, "# Server: Protector moved to " .. rc.pos_to_namestr(pos) .. ".")
+		minetest.chat_send_player(name, "# Server: Protector moved to " .. rc.pos_to_namestr_ex(pos) .. ".")
 	end,
 })
 

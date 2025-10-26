@@ -236,7 +236,7 @@ function randspawn.get_spawn_name(realm)
 		p.y = math.floor(p.y / 10) * 10 + ro.y
 		p.z = math.floor(p.z / 100) * 100 + ro.z
 
-		return rc.pos_to_namestr(p)
+		return rc.pos_to_namestr_ex(p)
 	end
 
 	return "Unknown Location"

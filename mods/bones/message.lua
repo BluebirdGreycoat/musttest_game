@@ -104,7 +104,7 @@ local send_chat_world = function(pos, player)
 	if show_everyone then
 		local dname = rename.gpn(player)
 		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. " ..
-			"<" .. dname .. "> " .. random_str(msg_str2) .. " at " .. rc.pos_to_namestr(pos) .. ".")
+			"<" .. dname .. "> " .. random_str(msg_str2) .. " at " .. rc.pos_to_namestr_ex(pos) .. ".")
 	else
 		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. ID and location unknown.")
 	end
@@ -112,8 +112,12 @@ local send_chat_world = function(pos, player)
 	-- Print this on the next server step, to ensure it is printed AFTER any other
 	-- messages that should be printed first.
 	minetest.after(0, function()
-		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr(pos) .. ".")
-		minetest.chat_send_player(player, "# Server: Find your bone-loot at the above coordinates.")
+		minetest.chat_send_player(player, "# Server: You died at " .. rc.pos_to_namestr_ex(pos) .. ".")
+
+		if fortress.can_teleport_at(pos) then
+			minetest.chat_send_player(player,
+				"# Server: Find your bone-loot at the above coordinates.")
+		end
 	end)
 
 	-- The player can't trigger any more chat messages until released.

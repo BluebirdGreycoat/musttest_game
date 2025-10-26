@@ -150,7 +150,7 @@ function ads.show_inventory_formspec(pos, pname, booth)
 
 		local dp = depositor.get_drop_location(pname)
 		if dp then
-			text = text .. "Your currently registered delivery address is " .. rc.pos_to_namestr(dp) .. ".\n"
+			text = text .. "Your currently registered delivery address is " .. rc.pos_to_namestr_ex(dp) .. ".\n"
 			if vector.equals(dp, pos) then
 				text = text .. "This is located at this market booth here."
 			else
@@ -619,7 +619,7 @@ function ads.generate_formspec(pos, pname, booth)
 			formspec = formspec ..
 				"label[5.35,5.0;" .. esc(owner_text) .. "]" ..
 				"label[5.35,5.3;" .. esc("Submitted on " .. os.date("!%Y/%m/%d", ad.date) .. ".") .. "]" ..
-				"label[5.35,5.6;" .. esc("From " .. rc.pos_to_namestr(ad.pos) .. ".") .. "]" ..
+				"label[5.35,5.6;" .. esc("From " .. rc.pos_to_namestr_ex(ad.pos) .. ".") .. "]" ..
 				"label[5.35,5.9;" .. esc("Distance " .. math_floor(vector_distance(ad.pos, pos)) .. " meters.") .. "]"
 			if ad.custom then
 				addesc = ad.shop .. "\n\n" .. ad.custom
@@ -1191,7 +1191,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 				depositor.set_drop_location(pos, pname)
 				local p2 = depositor.get_drop_location(pname)
 				if p2 then
-					minetest.chat_send_player(pname, "# Server: Goods will be delivered to drop-point at " .. rc.pos_to_namestr(p2) .. "! Payments are also retrieved at this location.")
+					minetest.chat_send_player(pname, "# Server: Goods will be delivered to drop-point at " .. rc.pos_to_namestr_ex(p2) .. "! Payments are also retrieved at this location.")
 					ads.show_inventory_formspec(pos, pname, booth)
 				else
 					minetest.chat_send_player(pname, "# Server: Error, could not set delivery drop-point.")
@@ -1211,7 +1211,7 @@ function ads.on_receive_inventory_fields(player, formname, fields)
 	if booth and fields.unsetpoint then
 		local p2 = depositor.get_drop_location(pname)
 		if p2 then
-			minetest.chat_send_player(pname, "# Server: Delivery point at " .. rc.pos_to_namestr(p2) .. " revoked by explicit request.")
+			minetest.chat_send_player(pname, "# Server: Delivery point at " .. rc.pos_to_namestr_ex(p2) .. " revoked by explicit request.")
 		end
 		depositor.unset_drop_location(pname)
 		ads.show_inventory_formspec(pos, pname, booth)

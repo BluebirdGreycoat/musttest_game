@@ -120,7 +120,7 @@ key.on_skeleton_use = function(itemstack, user, pointed_thing)
 			meta:set_string("secret", secret)
 			meta:set_string("description", "Key to <" .. rename.gpn(owner) .. ">'s " ..
 				utility.get_short_desc(ndef.description) .. " @ " ..
-				rc.pos_to_namestr(vector_round(pos)))
+				rc.pos_to_namestr_ex(vector_round(pos)))
 			return itemstack
 		end
 	end

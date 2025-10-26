@@ -14,13 +14,13 @@ function(stack)
 	local p3 = minetest.string_to_pos(meta:get_string("p3"))
 	local s1, s2, s3 = "N/A", "N/A", "N/A"
 	if p1 then
-		s1 = rc.pos_to_namestr(p1)
+		s1 = rc.pos_to_namestr_ex(p1)
 	end
 	if p2 then
-		s2 = rc.pos_to_namestr(p2)
+		s2 = rc.pos_to_namestr_ex(p2)
 	end
 	if p3 then
-		s3 = rc.pos_to_namestr(p3)
+		s3 = rc.pos_to_namestr_ex(p3)
 	end
 	local desc = "WR Config Device\n\nPrimary: " .. s1 .. "\nSecondary: " .. s2 .. "\nTertiary: " .. s3 .. ""
 	meta:set_string("description", desc)
@@ -37,12 +37,12 @@ function(stack, user, pt)
 			local p2 = pt.under
 			local s2 = minetest.pos_to_string(p2)
 			meta:set_string("p2", s2)
-			minetest.chat_send_player(pname, "# Server: WR-Config set secondary target! " .. rc.pos_to_name(p2) .. ": " .. rc.pos_to_string(p2) .. ".")
+			minetest.chat_send_player(pname, "# Server: WR-Config set secondary target! " .. rc.pos_to_namestr_ex(p2))
 		else
 			local p1 = pt.under
 			local s1 = minetest.pos_to_string(p1)
 			meta:set_string("p1", s1)
-			minetest.chat_send_player(pname, "# Server: WR-Config set primary target! " .. rc.pos_to_name(p1) .. ": " .. rc.pos_to_string(p1) .. ".")
+			minetest.chat_send_player(pname, "# Server: WR-Config set primary target! " .. rc.pos_to_namestr_ex(p1))
 		end
 	else
 		minetest.chat_send_player(pname, "# Server: Set device configuration by punching a node. Also try holding shift or right-clicking.")
@@ -60,7 +60,7 @@ function(stack, user, pt)
 		local p3 = pt.under
 		local s3 = minetest.pos_to_string(p3)
 		meta:set_string("p3", s3)
-		minetest.chat_send_player(pname, "# Server: WR-Config set tertiary target! " .. rc.pos_to_name(p3) .. ": " .. rc.pos_to_string(p3) .. ".")
+		minetest.chat_send_player(pname, "# Server: WR-Config set tertiary target! " .. rc.pos_to_namestr_ex(p3))
 	end
 	configurator.update_description(stack)
   return stack

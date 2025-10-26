@@ -569,7 +569,7 @@ function beds.on_rightclick(pos, player)
 			local spawncount = 8
 			beds.storage:set_int(name .. ":count", spawncount)
 
-			minetest.chat_send_player(name, "# Server: You will respawn in your bed at " .. rc.pos_to_namestr(pos) .. " up to " .. spawncount .. " times.")
+			minetest.chat_send_player(name, "# Server: You will respawn in your bed at " .. rc.pos_to_namestr_ex(pos) .. " up to " .. spawncount .. " times.")
 			minetest.chat_send_player(name, "# Server: Afterward you will need to sleep again to refresh your respawn position.")
 			minetest.chat_send_player(name, "# Server: You may safely dig your previous bed, if you had one set.")
 			if survivalist.game_in_progress(name) then

@@ -37,21 +37,21 @@ function plastic.oil_extract_on_use(itemstack, user, pt)
 
 		oil_hinge(under, meta)
 
-		minetest.chat_send_player(pname, "# Server: Door hinges at " .. rc.pos_to_namestr(under) .. " have been oiled.")
+		minetest.chat_send_player(pname, "# Server: Door hinges at " .. rc.pos_to_namestr_ex(under) .. " have been oiled.")
 		success = true
 	elseif (groups.chest_node and groups.chest_node > 0) then
 		local pname = user:get_player_name()
 
 		oil_hinge(under, meta)
 
-		minetest.chat_send_player(pname, "# Server: Chest hinges at " .. rc.pos_to_namestr(under) .. " have been oiled.")
+		minetest.chat_send_player(pname, "# Server: Chest hinges at " .. rc.pos_to_namestr_ex(under) .. " have been oiled.")
 		success = true
 	elseif meta:get_int("engraver_chiseled") ~= 0 then
 		if meta:get_int("chiseled_polished") == 0 then -- Only if text wasn't already polished.
 			-- Node has text engraving, polish it so that it cannot be modified anymore.
 			local pname = user:get_player_name()
 			if not minetest.test_protection(under, pname) then -- Requires protection access.
-				minetest.chat_send_player(pname, "# Server: Text engraving at " .. rc.pos_to_namestr(under) .. " has been polished.")
+				minetest.chat_send_player(pname, "# Server: Text engraving at " .. rc.pos_to_namestr_ex(under) .. " has been polished.")
 				meta:set_int("chiseled_polished", 1)
 				meta:mark_as_private("chiseled_polished")
 				success = true

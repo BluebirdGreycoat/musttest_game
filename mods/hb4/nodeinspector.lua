@@ -34,8 +34,8 @@ function nodeinspector.inspect(pname, under, above)
 		return
 	end
 
-	local strunder = rc.pos_to_namestr(under)
-	local strabove = rc.pos_to_namestr(above)
+	local strunder = rc.pos_to_namestr_ex(under)
+	local strabove = rc.pos_to_namestr_ex(above)
 
 	local descunder = utility.get_short_desc(defunder.description or "<NONE>")
 	local descabove = utility.get_short_desc(defabove.description or "<NONE>")

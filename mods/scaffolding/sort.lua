@@ -59,5 +59,5 @@ function scaffolding.sort_inventory(pname, pos, inv)
 		end
 	end
 
-	minetest.chat_send_player(pname, "# Server: Successfully sorted chest at " .. rc.pos_to_namestr(pos) .. "!")
+	minetest.chat_send_player(pname, "# Server: Successfully sorted chest at " .. rc.pos_to_namestr_ex(pos) .. "!")
 end

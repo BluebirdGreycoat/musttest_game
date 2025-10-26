@@ -1,6 +1,13 @@
 
 if not grinder.crafts_registered then
 	if minetest.get_modpath("default") then
+    minetest.register_craft({
+      type = "grinding",
+      output = "glowstone:glowing_dust",
+      recipe = "default:tvine_seed 4",
+      time = 15,
+    })
+
 		minetest.register_craft({
       type = "grinding",
 			output = 'default:gravel',

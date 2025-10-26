@@ -157,193 +157,201 @@ end
 
 
 
--- climbable air!
-minetest.register_node("handholds:climbable_air", {
-	description = "Air!",
-	drawtype = "airlike",
-	paramtype = "light",
-	sunlight_propagates = true,
-	walkable = false,
-	pointable = false,
-	diggable = false,
-	climbable = true,
-	buildable_to = true,
-	floodable = true,
-	drop = "",
-	groups = {not_in_creative_inventory = 1},
-	sounds = default.node_sound_stone_defaults(),
-	on_destruct = function(pos)
-		remove_handholds(pos)
-	end,
-	on_flood = function(pos)
-		remove_handholds(pos)
-	end,
-	-- Player should not be able to obtain node.
-	on_finish_collapse = function(pos, node)
-		minetest.remove_node(pos)
-	end,
-	on_collapse_to_entity = function(pos, node)
-		-- Do nothing.
-	end,
-})
+if not handholds.run_once then
+	-- climbable air!
+	minetest.register_node("handholds:climbable_air", {
+		description = "Air!",
+		drawtype = "airlike",
+		paramtype = "light",
+		sunlight_propagates = true,
+		walkable = false,
+		pointable = false,
+		diggable = false,
+		climbable = true,
+		buildable_to = true,
+		floodable = true,
+		drop = "",
+		groups = {not_in_creative_inventory = 1},
+		sounds = default.node_sound_stone_defaults(),
+		on_destruct = function(pos)
+			remove_handholds(pos)
+		end,
+		on_flood = function(pos)
+			remove_handholds(pos)
+		end,
+		-- Player should not be able to obtain node.
+		on_finish_collapse = function(pos, node)
+			minetest.remove_node(pos)
+		end,
+		on_collapse_to_entity = function(pos, node)
+			-- Do nothing.
+		end,
+	})
 
 
--- handholds nodes
-minetest.register_node("handholds:stone", {
-	description = "Stone Handholds",
-	tiles = {
-		"default_stone.png", "default_stone.png", 
-		"default_stone.png", "default_stone.png", 
-		"default_stone.png", "default_stone.png^handholds_holds.png"
-	},
-	paramtype2 = "facedir",
-	on_rotate = function()
-		return false
-	end,
-	groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
-	drop = 'default:cobble',
-	sounds = default.node_sound_stone_defaults(),
-	after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-	end,
-	_handholds_original = "default:stone",
-})
+	-- handholds nodes
+	minetest.register_node("handholds:stone", {
+		description = "Stone Handholds",
+		tiles = {
+			"default_stone.png", "default_stone.png",
+			"default_stone.png", "default_stone.png",
+			"default_stone.png", "default_stone.png^handholds_holds.png"
+		},
+		paramtype2 = "facedir",
+		on_rotate = function()
+			return false
+		end,
+		groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
+		drop = 'default:cobble',
+		sounds = default.node_sound_stone_defaults(),
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+		end,
+		_handholds_original = "default:stone",
+	})
 
-minetest.register_node("handholds:desert_stone", {
-	description = "Desert Stone Handholds",
-	tiles = {
-		"default_desert_stone.png", "default_desert_stone.png", 
-		"default_desert_stone.png", "default_desert_stone.png", 
-		"default_desert_stone.png", "default_desert_stone.png^handholds_holds.png"
-	},
-	paramtype2 = "facedir",
-	on_rotate = function()
-		return false
-	end,
-	groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
-	drop = 'default:desert_cobble2',
-	sounds = default.node_sound_stone_defaults(),
-	after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-	end,
-	_handholds_original = "default:desert_stone",
-})
+	minetest.register_node("handholds:desert_stone", {
+		description = "Desert Stone Handholds",
+		tiles = {
+			"default_desert_stone.png", "default_desert_stone.png",
+			"default_desert_stone.png", "default_desert_stone.png",
+			"default_desert_stone.png", "default_desert_stone.png^handholds_holds.png"
+		},
+		paramtype2 = "facedir",
+		on_rotate = function()
+			return false
+		end,
+		groups = utility.dig_groups("stone", {not_in_creative_inventory = 1, handholds = 1}),
+		drop = 'default:desert_cobble2',
+		sounds = default.node_sound_stone_defaults(),
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+		end,
+		_handholds_original = "default:desert_stone",
+	})
 
-minetest.register_node("handholds:sandstone", {
-	description = "Sandstone Handholds",
-	tiles = {
-		"default_sandstone.png", "default_sandstone.png", 
-		"default_sandstone.png", "default_sandstone.png", 
-		"default_sandstone.png", "default_sandstone.png^handholds_holds.png"
-	},
-	paramtype2 = "facedir",
-	on_rotate = function()
-		return false
-	end,
-	groups = utility.dig_groups("softstone", {not_in_creative_inventory = 1, handholds = 1}),
-	drop = 'default:sandstone',
-	sounds = default.node_sound_stone_defaults(),
-	after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-	end,
-	_handholds_original = "default:sandstone",
-})
+	minetest.register_node("handholds:sandstone", {
+		description = "Sandstone Handholds",
+		tiles = {
+			"default_sandstone.png", "default_sandstone.png",
+			"default_sandstone.png", "default_sandstone.png",
+			"default_sandstone.png", "default_sandstone.png^handholds_holds.png"
+		},
+		paramtype2 = "facedir",
+		on_rotate = function()
+			return false
+		end,
+		groups = utility.dig_groups("softstone", {not_in_creative_inventory = 1, handholds = 1}),
+		drop = 'default:sandstone',
+		sounds = default.node_sound_stone_defaults(),
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+		end,
+		_handholds_original = "default:sandstone",
+	})
 
-minetest.register_node("handholds:ice", {
-	description = "Ice Handholds",
-	tiles = {
-		"default_ice.png", "default_ice.png", 
-		"default_ice.png", "default_ice.png", 
-		"default_ice.png", "default_ice.png^handholds_holds.png"
-	},
-	paramtype2 = "facedir",
-	on_rotate = function()
-		return false
-	end,
-	groups = utility.dig_groups("ice", {
-		puts_out_fire = 1, cools_lava = 1,
-		not_in_creative_inventory = 1, handholds = 1
-	}),
-	drop = 'default:ice',
-	sounds = default.node_sound_glass_defaults(),
-	after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-	end,
-	_handholds_original = "default:ice",
+	minetest.register_node("handholds:ice", {
+		description = "Ice Handholds",
+		tiles = {
+			"default_ice.png", "default_ice.png",
+			"default_ice.png", "default_ice.png",
+			"default_ice.png", "default_ice.png^handholds_holds.png"
+		},
+		paramtype2 = "facedir",
+		on_rotate = function()
+			return false
+		end,
+		groups = utility.dig_groups("ice", {
+			puts_out_fire = 1, cools_lava = 1,
+			not_in_creative_inventory = 1, handholds = 1
+		}),
+		drop = 'default:ice',
+		sounds = default.node_sound_glass_defaults(),
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+		end,
+		_handholds_original = "default:ice",
 
-	on_construct = function(pos)
-		if rc.ice_melts_at_pos(pos) then
-			minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
-		end
-	end,
+		on_construct = function(pos)
+			if rc.ice_melts_at_pos(pos) then
+				minetest.get_node_timer(pos):start(math_random(ice.minmax_time()))
+			end
+		end,
 
-	on_timer = function(pos, elapsed)
-		if rc.ice_melts_at_pos(pos) then
-			minetest.add_node(pos, {name="default:water_flowing"})
-		end
-	end,
-})
+		on_timer = function(pos, elapsed)
+			if rc.ice_melts_at_pos(pos) then
+				minetest.add_node(pos, {name="default:water_flowing"})
+			end
+		end,
+	})
 
-minetest.register_node("handholds:rackstone", {
-	description = "Rackstone Handholds",
-	tiles = {
-		"rackstone_rackstone.png", "rackstone_rackstone.png",
-		"rackstone_rackstone.png", "rackstone_rackstone.png",
-		"rackstone_rackstone.png", "rackstone_rackstone.png^handholds_holds_dark.png"
-	},
-	paramtype2 = "facedir",
-	groups = utility.dig_groups("stone", {handholds=1}),
-	sounds = default.node_sound_stone_defaults(),
-	drop = 'rackstone:rackstone',
-	on_rotate = function()
-		return false
-	end,
-  after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-		rackstone.destabilize_dauthsand(pos)
-	end,
-	_handholds_original = "rackstone:rackstone",
-})
+	minetest.register_node("handholds:rackstone", {
+		description = "Rackstone Handholds",
+		tiles = {
+			"rackstone_rackstone.png", "rackstone_rackstone.png",
+			"rackstone_rackstone.png", "rackstone_rackstone.png",
+			"rackstone_rackstone.png", "rackstone_rackstone.png^handholds_holds_dark.png"
+		},
+		paramtype2 = "facedir",
+		groups = utility.dig_groups("stone", {handholds=1}),
+		sounds = default.node_sound_stone_defaults(),
+		drop = 'rackstone:rackstone',
+		on_rotate = function()
+			return false
+		end,
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+			rackstone.destabilize_dauthsand(pos)
+		end,
+		_handholds_original = "rackstone:rackstone",
+	})
 
-minetest.register_node("handholds:redrack", {
-	description = "Netherack Handholds",
-	tiles = {
-		"rackstone_redrack.png", "rackstone_redrack.png",
-		"rackstone_redrack.png", "rackstone_redrack.png",
-		"rackstone_redrack.png", "rackstone_redrack.png^handholds_holds_very_dark.png"
-	},
-	paramtype2 = "facedir",
-	groups = utility.dig_groups("netherack", {handholds=1}),
-	sounds = rackstone.rackstone_sounds(),
-	drop = 'rackstone:redrack',
-	on_rotate = function()
-		return false
-	end,
-  after_destruct = function(pos, oldnode)
-		remove_air(pos, oldnode)
-    rackstone.after_redrack_remove(pos, oldnode)
-    rackstone.destabilize_dauthsand(pos, oldnode)
-  end,
-  on_construct = function(pos)
-    rackstone.on_redrack_place(pos)
-  end,
-	_handholds_original = "rackstone:redrack",
-})
+	minetest.register_node("handholds:redrack", {
+		description = "Netherack Handholds",
+		tiles = {
+			"rackstone_redrack.png", "rackstone_redrack.png",
+			"rackstone_redrack.png", "rackstone_redrack.png",
+			"rackstone_redrack.png", "rackstone_redrack.png^handholds_holds_very_dark.png"
+		},
+		paramtype2 = "facedir",
+		groups = utility.dig_groups("netherack", {handholds=1}),
+		sounds = rackstone.rackstone_sounds(),
+		drop = 'rackstone:redrack',
+		on_rotate = function()
+			return false
+		end,
+		after_destruct = function(pos, oldnode)
+			remove_air(pos, oldnode)
+			rackstone.after_redrack_remove(pos, oldnode)
+			rackstone.destabilize_dauthsand(pos, oldnode)
+		end,
+		on_construct = function(pos)
+			rackstone.on_redrack_place(pos)
+		end,
+		_handholds_original = "rackstone:redrack",
+	})
 
 
--- handholds tool
-minetest.register_tool("handholds:climbing_pick", {
-	description = "Climbing Pick",
-	inventory_image = "handholds_tool.png",
-	sound = {breaks = "default_tool_breaks"},
-	on_use = function(...) return handholds.on_use(...) end,
-})
+	-- handholds tool
+	minetest.register_tool("handholds:climbing_pick", {
+		description = "Climbing Pick",
+		inventory_image = "handholds_tool.png",
+		sound = {breaks = "default_tool_breaks"},
+		on_use = function(...) return handholds.on_use(...) end,
+	})
 
-minetest.register_craft({
-	output = "handholds:climbing_pick",
-	recipe = {
-		{'default:diamond', 'default:diamond', 'default:diamond'},
-		{'group:stick', '', ''},
-		{'group:stick', '', ''},
-	},
-})
+	minetest.register_craft({
+		output = "handholds:climbing_pick",
+		recipe = {
+			{'default:diamond', 'default:diamond', 'default:diamond'},
+			{'group:stick', '', ''},
+			{'group:stick', '', ''},
+		},
+	})
+
+	local c = "handholds:core"
+	local f = handholds.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	handholds.run_once = true
+end

@@ -3527,6 +3527,28 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_great_hall"},
 
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "elite_spawner",
+					chance = ELITE_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
+
 				-- Outside window decorations.
 				-- West side bottom.
 				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
@@ -3633,12 +3655,50 @@ fortress.v2.fortress_data = {
 			},
 			probability = GREAT_HALL_PROB,
 			limit = 2,
+			chests = {
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=2, z_min=4, z_max=28},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		great_hall_ew_dummy = {},
 		great_hall_ew = {
 			schem = {
 				{file="nf_great_hall", rotation="90"},
+
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "elite_spawner",
+					chance = ELITE_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
 
 				-- Outside window decorations.
 				-- South side bottom.
@@ -3747,12 +3807,50 @@ fortress.v2.fortress_data = {
 			probability = GREAT_HALL_PROB,
 			set_param2_rotations = {["rackstone:brick_black"]=0},
 			limit = 2,
+			chests = {
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=2, z_min=4, z_max=17},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		great_hall_roof_ns_dummy = {},
 		great_hall_roof_ns = {
 			schem = {
 				{file="nf_great_hall_roof", force=false},
+
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=0, z_min=4, z_max=26},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=0, z_min=4, z_max=26},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "elite_spawner",
+					chance = ELITE_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=15, y=0, z_min=4, z_max=26},
+					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
 			},
 			size = {x=2, y=2, z=3},
 			footprint = {
@@ -3764,12 +3862,50 @@ fortress.v2.fortress_data = {
 				[HASHKEY(0, 0, 2)] = "great_hall_roof_ns_dummy",
 				[HASHKEY(1, 0, 2)] = "great_hall_roof_ns_dummy",
 			},
+			chests = {
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=17, y=1, z_min=4, z_max=28},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 
 		great_hall_roof_ew_dummy = {},
 		great_hall_roof_ew = {
 			schem = {
 				{file="nf_great_hall_roof", rotation="90", force=false},
+
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=0, z_min=4, z_max=15},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "nf_detail_spawner1",
+					chance = OERKKI_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=0, z_min=4, z_max=15},
+					priority = OERKKI_SPAWNER_PRIORITY,
+				},
+				{
+					file = "elite_spawner",
+					chance = ELITE_SPAWNER_CHANCE,
+					rotation = "random",
+					offset = {x_min=4, x_max=26, y=0, z_min=4, z_max=15},
+					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
 			},
 			size = {x=3, y=2, z=2},
 			footprint = {
@@ -3782,6 +3918,22 @@ fortress.v2.fortress_data = {
 				[HASHKEY(2, 0, 1)] = "great_hall_roof_ew_dummy",
 			},
 			set_param2_rotations = {["rackstone:brick_black"]=0},
+			chests = {
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=COMMON_LOOT_CHANCE, loot="common"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=RARE_LOOT_CHANCE, loot="rare"},
+				{pos={x_min=4, x_max=28, y=1, z_min=4, z_max=17},
+					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
+			},
 		},
 	},
 }

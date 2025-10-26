@@ -4,6 +4,21 @@ if not minetest.global_exists("sleds") then sleds = {} end
 sleds.modpath = minetest.get_modpath("sleds")
 sleds.players = sleds.players or {}
 
+local MAX_PLAYER_CONTROLED_VELOCITY = 7
+local PLAYER_CONTROLED_DECEL_RATE = 1
+local PLAYER_CONTROLED_ACCEL_RATE = 3
+local DOWNSLOPE_ACCEL_RATE = 3.0
+local MAX_DOWNSLOPE_VELOCITY = 20
+local MIN_DOWNSLOPE_FORWARD_VEL_REQ = 2
+local TURN_RATE_RADIANS_PER_SEC = math.rad(30)
+local MIN_VELOCITY_FOR_JUMP = 5
+local VELOCITY_COST_FOR_JUMP = 1
+local JUMP_Y_VELOCITY = 6
+local MIN_TIME_BETWEEN_JUMPS = 1.5
+local SNOWICE_COASTING_DECEL_RATE = 0.5
+local HIGH_FRICTION_DECEL_RATE = 5
+local STAMINA_COST_PER_JUMP = 5
+
 
 
 local function is_snow(pos)
@@ -80,9 +95,11 @@ function sleds.on_rightclick(self, clicker)
 			clicker:set_detach()
 		end
 		self.driver = clicker
-		clicker:set_attach(self.object, "", {x = 0, y = 0.1, z = -3}, {x = 0, y = 0, z = 0})
+		clicker:set_attach(self.object, "",
+			{x = 0, y = 0.1, z = -3}, {x = 0, y = 0, z = 0})
 		default.player_attached[name] = true
-		minetest.after(0.2, function() default.player_set_animation(clicker, "sit" , 30) end)
+		minetest.after(0.2, function()
+			default.player_set_animation(clicker, "sit" , 30) end)
 		clicker:set_look_horizontal(self.object:getyaw())
 
 		sleds.players[name] = {}
@@ -106,7 +123,8 @@ function sleds.get_staticdata(self)
 	})
 end
 
-function sleds.on_punch(self, puncher, time_from_last_punch, tool_capabilities, dir)
+function sleds.on_punch(
+		self, puncher, time_from_last_punch, tool_capabilities, dir)
 	if not puncher or not puncher:is_player() or self.removed then
 		return
 	end
@@ -127,9 +145,9 @@ function sleds.on_punch(self, puncher, time_from_last_punch, tool_capabilities, 
 		end
 
 		-- delay remove to ensure player is detached
-		minetest.after(0.1, function()
+		--minetest.after(0.1, function()
 			self.object:remove()
-		end)
+		--end)
 	end
 end
 
@@ -140,13 +158,11 @@ function sleds.on_step(self, dtime)
 
 	-- Slow the sled down gradually.
 	if is_snow_or_air({x=pos.x, y=pos.y-0.3, z=pos.z}) then
-		self.v = self.v - 0.02
+		self.v = self.v - (SNOWICE_COASTING_DECEL_RATE * dtime)
 	else
-		self.v = self.v - 0.2
+		self.v = self.v - (HIGH_FRICTION_DECEL_RATE * dtime)
 	end
-	if self.v < 0 then
-		self.v = 0
-	end
+	if self.v < 0 then self.v = 0 end
 
 	-- Update jump timer.
 	self.jump = (self.jump or 0) - dtime
@@ -156,12 +172,16 @@ function sleds.on_step(self, dtime)
 	local is_flying = false
 	local last_y = self.y
 	self.y = pos.y
-	if self.y < last_y then
-		if self.v > 2 then
+	if self.y < (last_y - 0.001) then -- Because comparing floats is perilous.
+		if self.v >= MIN_DOWNSLOPE_FORWARD_VEL_REQ then
+			--minetest.log("action", self.y .. ", " .. last_y)
 			local node = minetest.get_node({x=pos.x, y=pos.y-2, z=pos.z})
 			-- But not if sled is flying.
-			if node.name ~= "air" then
-				self.v = self.v + 0.2
+			if node.name ~= "air" and (self.jump or 0) <= 0 then
+				self.v = self.v + (DOWNSLOPE_ACCEL_RATE * dtime)
+				if self.v > MAX_DOWNSLOPE_VELOCITY then
+					self.v = MAX_DOWNSLOPE_VELOCITY
+				end
 			else
 				-- Don't compute driver controls if flying.
 				is_flying = true
@@ -175,28 +195,33 @@ function sleds.on_step(self, dtime)
 		local yaw = self.object:get_yaw()
 		if ctrl.up then
 			-- Cannot accelerate faster than this if player-powered.
-			if self.v < 7 then
-				self.v = self.v + 0.1
+			if self.v < MAX_PLAYER_CONTROLED_VELOCITY then
+				self.v = self.v + (PLAYER_CONTROLED_ACCEL_RATE * dtime)
+				-- Expressly allow self.v to be higher (don't clamp).
+				-- We could be going faster while traveling downslope.
 			end
 		elseif ctrl.down then
-			self.v = self.v - 0.13
+			self.v = self.v - (PLAYER_CONTROLED_DECEL_RATE * dtime)
+			if self.v < 0 then self.v = 0 end -- Clamp.
 		end
-		if ctrl.left then
-			self.object:set_yaw(yaw + (1 + dtime) * 0.03)
-		elseif ctrl.right then
-			self.object:set_yaw(yaw - (1 + dtime) * 0.03)
+		if ctrl.left and not ctrl.right then
+			self.object:set_yaw(yaw + (TURN_RATE_RADIANS_PER_SEC * dtime))
+		elseif ctrl.right and not ctrl.left then
+			self.object:set_yaw(yaw - (TURN_RATE_RADIANS_PER_SEC * dtime))
 		end
 
 		-- Allow sled to jump, if velocity high enough and
 		-- pilot hasn't already executed a jump.
-		if ctrl.jump and self.v > 6 and (self.jump or 0) <= 0 then
+		if ctrl.jump and self.v >= MIN_VELOCITY_FOR_JUMP and
+				(self.jump or 0) <= 0 then
 			local sta = sprint.get_stamina(self.driver)
-			local stacost = 5
+			local stacost = STAMINA_COST_PER_JUMP
 			if sta >= stacost then
-				velo.y = velo.y + 6
-				self.v = self.v - 1 -- Knock velocity down a bit.
-				self.jump = 1.5 -- Delay before pilot can jump again.
+				velo.y = velo.y + JUMP_Y_VELOCITY
+				self.v = self.v - VELOCITY_COST_FOR_JUMP -- Knock velocity down a bit.
+				self.jump = MIN_TIME_BETWEEN_JUMPS -- Delay before pilot can jump again.
 				sprint.add_stamina(self.driver, -stacost)
+				if self.v < 0 then self.v = 0 end
 			end
 		end
 	end

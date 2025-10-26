@@ -113,7 +113,7 @@ function hud.globalstep(dtime)
 		if hud_text ~= hud.players[pname].text then
 			if not hud.players[pname].id then
 				hud.players[pname].id = player:hud_add({
-					hud_elem_type = "text",
+					type = "text",
 					name = "Protector Area",
 					number = 0xFFFFFF, --0xFFFF22,
 					position = {x=0, y=1},
@@ -168,7 +168,7 @@ function hud.globalstep(dtime)
 		if dir_text ~= hud.players[pname].dir then
 			if not hud.players[pname].id2 then
 				hud.players[pname].id2 = player:hud_add({
-					hud_elem_type = "text",
+					type = "text",
 					number = 0xFFFFFF,
 					position = {x=1, y=1},
 					offset = {x=-16, y=-130 + 18*2},

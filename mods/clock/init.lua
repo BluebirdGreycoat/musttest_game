@@ -80,7 +80,7 @@ minetest.register_on_joinplayer(function(player)
 	player_hud[pname] = {}
 	local offy = -130
 	local h = player:hud_add({
-		hud_elem_type = "text",
+		type = "text",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=1},
 		offset = {x=-16, y=offy},
@@ -88,7 +88,7 @@ minetest.register_on_joinplayer(function(player)
 		number = 0xFFFFFF,
 	})
 	local c = player:hud_add({
-		hud_elem_type = "image",
+		type = "image",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=1},
 		offset = {x=-108, y=offy},
@@ -96,7 +96,7 @@ minetest.register_on_joinplayer(function(player)
 		text = "mthudclock.png",
 	})
 	local x = player:hud_add({
-		hud_elem_type = "text",
+		type = "text",
 		position = {x=positionx, y=positiony},
 		offset = {x=-16, y=offy + 18},
 		alignment = {x=-1, y=1},

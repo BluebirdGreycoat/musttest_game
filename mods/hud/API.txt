@@ -17,7 +17,7 @@ hud.remove_item(player, name)
 
 HUD item definition
 {
-	hud_elem_type = "statbar",		-- currently only supported type (same as in lua-api.txt)
+	type= "statbar",		-- currently only supported type (same as in lua-api.txt)
 	position = {x=<x>, y=<y>},		-- position of statbar (same as in lua-api.txt)
 	size = {x=24, y=24},			-- statbar texture size (default 24x24), needed to be scaled correctly
 	text = "hud_heart_fg.png",		-- texture name (same as in lua-api.txt)

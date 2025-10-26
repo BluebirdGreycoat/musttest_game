@@ -119,7 +119,7 @@ function bone_mark.on_globalstep(dtime)
 						end
 
 						mdata.hud = pref:hud_add({
-							hud_elem_type = "waypoint",
+							type = "waypoint",
 							name = message,
 							number = number,
 							world_pos = mdata.pos,

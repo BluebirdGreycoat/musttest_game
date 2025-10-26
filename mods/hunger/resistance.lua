@@ -58,7 +58,7 @@ function hunger.apply_damage_resistance(pname, key, data)
 	end
 
 	tab[datname].hud = pref:hud_add({
-    hud_elem_type = "image",
+    type = "image",
     scale = {x = -100, y = -100},
     alignment = {x = 1, y = 1},
     text = "dmg_boost_effect.png",

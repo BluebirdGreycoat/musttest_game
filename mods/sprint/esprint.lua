@@ -32,7 +32,7 @@ function sprint.on_joinplayer(player)
 	-- Background images.
 	-- Add them first, since draw order is determined by ID.
 	player:hud_add({
-		hud_elem_type = "statbar",
+		type = "statbar",
 		position = {x=0.5,y=1},
 		size = {x=16, y=16},
 		text = "sprint_stamina_icon_bg.png",
@@ -43,7 +43,7 @@ function sprint.on_joinplayer(player)
 
 	-- Main stat icons.
 	players[playerName].hud = player:hud_add({
-		hud_elem_type = "statbar",
+		type = "statbar",
 		position = {x=0.5,y=1},
 		size = {x=16, y=16},
 		text = "sprint_stamina_icon.png",

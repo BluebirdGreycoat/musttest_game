@@ -16,7 +16,7 @@ HUD_ARMOR_POS = {x = 0.5, y = 1}
 HUD_ARMOR_OFFSET = {x = -width + -gap, y = -127}
 
 hud.register("health", {
-	hud_elem_type = "statbar",
+	type = "statbar",
 	position = HUD_HEALTH_POS,
 	size = HUD_SB_SIZE,
 	text = "hud_heart_fg.png",
@@ -37,7 +37,7 @@ hud.register("health", {
 })
 
 hud.register("air", {
-	hud_elem_type = "statbar",
+	type = "statbar",
 	position = HUD_AIR_POS,
 	size = HUD_SB_SIZE,
 	text = "hud_air_fg.png",
@@ -59,7 +59,7 @@ hud.register("air", {
 })
 
 hud.register("armor", {
-	hud_elem_type = "statbar",
+	type = "statbar",
 	position = HUD_ARMOR_POS,
 	size = HUD_SB_SIZE,
 	text = "hud_armor_fg.png",
@@ -71,7 +71,7 @@ hud.register("armor", {
 })
 
 hud.register("hunger", {
-	hud_elem_type = "statbar",
+	type = "statbar",
 	position = HUD_HUNGER_POS,
 	size = HUD_SB_SIZE,
 	text = "hud_hunger_fg.png",

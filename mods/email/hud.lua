@@ -16,7 +16,7 @@ function email.update_hud(player)
 				email.hud:change(player, "email:text", "text", "(" .. #inbox .. ")")
 			else
 				email.hud:add(player, "email:icon", {
-					hud_elem_type = "image",
+					type = "image",
 					name = "MailIcon",
 					position = {x=0.52, y=0.52},
 					text="email_mail.png",
@@ -25,7 +25,7 @@ function email.update_hud(player)
 				})
 
 				email.hud:add(player, "email:text", {
-					hud_elem_type = "text",
+					type = "text",
 					name = "MailText",
 					position = {x=0.55, y=0.52},
 					text= "(" .. #inbox .. ")",

@@ -76,7 +76,7 @@ function marker.update_single_hud(player)
 					number = "8739932"
 				end
 				data.hnd = pref:hud_add({
-					hud_elem_type = "waypoint",
+					type = "waypoint",
 					name = "Marker",
 					number = number,
 					world_pos = wp,

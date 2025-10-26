@@ -56,7 +56,7 @@ function hunger.apply_hpgen_boost(pname, key, data)
 	end
 
 	tab[datname].hud = pref:hud_add({
-    hud_elem_type = "image",
+    type = "image",
     scale = {x = -100, y = -100},
     alignment = {x = 1, y = 1},
     text = "hp_boost_effect.png",

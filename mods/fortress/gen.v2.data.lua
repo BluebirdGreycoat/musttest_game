@@ -3,13 +3,10 @@
 -- Add grand staircases (bridge and passage variants).
 -- (Note: maybe we don't want these? Fortresses should be 2D only ....)
 -- Add raised plaza.
--- Add throne room.
 -- Add balconies.
 -- Add lava aquaducts.
 -- Add bluegrass farm.
--- Add great hall.
 -- Add dungeon prison.
--- Add alter room.
 
 local function HASHKEY(x, y, z)
 	return minetest.hash_node_position({x=x, y=y, z=z})

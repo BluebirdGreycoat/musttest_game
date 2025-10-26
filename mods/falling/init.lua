@@ -563,30 +563,42 @@ function core.check_single_for_falling(p)
 		end
 	end
 
-	-- These special groups are mutually exclusive and should not be used together.
+	-- Handle special groups.
 
-	local an = groups.attached_node or 0
-	if an ~= 0 then
-		if not utility.check_attached_node(p, n, an) then
-			utility.drop_attached_node(p)
-			return true
+	local attached_node = groups.attached_node or 0
+	local hanging_node = groups.hanging_node or 0
+	local standing_node = groups.standing_node or 0
+
+	-- These checks are not mutually exclusive.
+	-- If any of them succeed, the node does not fall.
+	-- If all checks (however many) fail, the node falls.
+	local checks_done = 0
+	local fail_count = 0
+
+	if attached_node ~= 0 then
+		if not utility.check_attached_node(p, n, attached_node) then
+			fail_count = fail_count + 1
 		end
+		checks_done = checks_done + 1
 	end
 
-	local hn = groups.hanging_node or 0
-	if hn ~= 0 then
-		if not utility.check_hanging_node(p, n, hn) then
-			utility.drop_attached_node(p)
-			return true
+	if hanging_node ~= 0 then
+		if not utility.check_hanging_node(p, n, hanging_node) then
+			fail_count = fail_count + 1
 		end
+		checks_done = checks_done + 1
 	end
 
-	local sn = groups.standing_node or 0
-	if sn ~= 0 then
-		if not utility.check_standing_node(p, n, sn) then
-			utility.drop_attached_node(p)
-			return true
+	if standing_node ~= 0 then
+		if not utility.check_standing_node(p, n, standing_node) then
+			fail_count = fail_count + 1
 		end
+		checks_done = checks_done + 1
+	end
+
+	if checks_done > 0 and fail_count >= checks_done then
+		utility.drop_attached_node(p)
+		return true
 	end
 
 	return false

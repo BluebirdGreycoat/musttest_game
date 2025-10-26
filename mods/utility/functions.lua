@@ -225,7 +225,6 @@ end
 
 
 function utility.check_hanging_node(p, n, group_rating)
-	local def = core.registered_nodes[n.name]
 	local p2 = vector.offset(p, 0, 1, 0)
 
 	local nn = core.get_node(p2).name
@@ -252,7 +251,6 @@ end
 
 
 function utility.check_standing_node(p, n, group_rating)
-	local def = core.registered_nodes[n.name]
 	local p2 = vector.offset(p, 0, -1, 0)
 
 	local nn = core.get_node(p2).name
@@ -264,7 +262,8 @@ function utility.check_standing_node(p, n, group_rating)
 	end
 
 	-- Node can stand on another standing node below it.
-	if ((def2.groups or {}).handing_node or 0) ~= 0 then
+	-- 'handing_node' ? Seriously? That's why this never worked ...
+	if ((def2.groups or {}).standing_node or 0) ~= 0 then
 		return true
 	end
 

@@ -490,9 +490,9 @@ local function lantern_place(itemstack, placer, pointed_thing)
 		return itemstack
 	end
 
-	-- Decide whether the lantern attaches the the floor
+	-- Decide whether the lantern attaches to the floor/wall
 	-- (default) or the ceiling.
-	local leftover, place_pos, nodename
+	local leftover, place_pos, place_success, nodename
 	local up = vector.new(pointed_thing.above.x, pointed_thing.above.y+1, pointed_thing.above.z)
 	local upnode = minetest.get_node(up)
 	local updef = minetest.registered_nodes[upnode.name]
@@ -512,6 +512,8 @@ local function lantern_place(itemstack, placer, pointed_thing)
 	else
 		nodename = "xdecor:lantern"
 	end
+
+	--minetest.log("action", "nodename: " .. nodename)
 
 	-- Non-standard 'minetest.item_place_node'.
 	leftover, place_success, place_pos = minetest.item_place_node(
@@ -555,6 +557,7 @@ xdecor.register("lantern", {
 
 
 -- Same as lantern, but attaches to ceiling.
+-- Can also hang from other hanging nodes.
 xdecor.register("lantern_hanging", {
 	description = "Hanging Lantern",
 	light_source = 13,
@@ -562,7 +565,7 @@ xdecor.register("lantern_hanging", {
 	inventory_image = "xdecor_lantern_inv.png^xdecor_lantern_hanging_overlay_inv.png",
 	wield_image = "xdecor_lantern_inv.png",
 	walkable = false,
-	groups = utility.dig_groups("item", {attached_node=4}),
+	groups = utility.dig_groups("item", {attached_node=4, hanging_node=1}),
 	is_ground_content = false,
 	tiles = {{name = "xdecor_lantern.png", animation = {type="vertical_frames", length = 1.5}}},
 	selection_box = xdecor.pixelbox(16, {{4, 0, 4, 8, 16, 8}}),

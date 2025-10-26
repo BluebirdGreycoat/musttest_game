@@ -141,6 +141,10 @@ local function make_log(name)
 	return name ~= "" and core.log or function() end
 end
 
+local function get_item_group_ex(def, group)
+	return def.groups[group] or 0
+end
+
 
 
 -- Override what's in the server's builtin.
@@ -266,11 +270,35 @@ function core.item_place_node(itemstack, placer, pointed_thing, param2)
 		end
 	end
 
-	-- Check if the node is attached and if it can be placed there
-	local attached_rating = core.get_item_group(def.name, "attached_node")
-	if attached_rating ~= 0 and
-			not utility.check_attached_node(place_to, newnode, attached_rating) then
-		log("action", "attached node " .. def.name ..
+	-- Check if the node is attached (or hanging) and if it can be placed there
+	local attached_rating = get_item_group_ex(def, "attached_node")
+	local hanging_rating = get_item_group_ex(def, "hanging_node")
+	-- Note: not checking 'standing_node' atm because the game doesn't use it.
+
+	-- These checks are not mutually exclusive.
+	-- If any of them succeed, the node does not fall.
+	-- If all checks (however many) fail, the node falls.
+	local checks_done = 0
+	local fail_count = 0
+
+	if attached_rating ~= 0 then
+		if not utility.check_attached_node(place_to, newnode, attached_rating) then
+			fail_count = fail_count + 1
+		end
+		checks_done = checks_done + 1
+	end
+
+	if hanging_rating ~= 0 then
+		if not utility.check_hanging_node(place_to, newnode, hanging_rating) then
+			fail_count = fail_count + 1
+		end
+		checks_done = checks_done + 1
+	end
+
+	-- If both checks failed, we can't place this code.
+	-- These are true by default, even if we don't run the checks.
+	if checks_done > 0 and fail_count >= checks_done then
+		log("action", "attached or hanging node " .. def.name ..
 			" can not be placed at " .. core.pos_to_string(place_to))
 		return itemstack, false, nil
 	end

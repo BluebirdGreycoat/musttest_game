@@ -85,6 +85,16 @@ stairs.register_stair_and_slab(
 )
 
 stairs.register_stair_and_slab(
+	"mossystone",
+	"default:mossystone",
+	{cracky = 3},
+	{"gloopblocks_stone_mossy.png"},
+	"Mossy Stone",
+	default.node_sound_stone_defaults(),
+	{stair_and_slab_only=true}
+)
+
+stairs.register_stair_and_slab(
 	"stonebrick",
 	"default:stonebrick",
 	{cracky = 2},
@@ -92,6 +102,16 @@ stairs.register_stair_and_slab(
 	"Stone Brick",
 	default.node_sound_stone_defaults(),
 	{include_new_slopes=true, blacklist={["_02"]=true}}
+)
+
+stairs.register_stair_and_slab(
+	"mossy_stonebrick",
+	"default:mossy_stonebrick",
+	{cracky = 2},
+	{"gloopblocks_stone_brick_mossy.png"},
+	"Mossy Stone Brick",
+	default.node_sound_stone_defaults(),
+	{stair_and_slab_only=true}
 )
 
 stairs.register_stair_and_slab(

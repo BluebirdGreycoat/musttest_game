@@ -2,6 +2,8 @@
 if not minetest.global_exists("lavacooling") then lavacooling = {} end
 lavacooling.modpath = minetest.get_modpath("lavacooling")
 
+dofile(lavacooling.modpath .. "/water_abm.lua")
+
 local fire_node = 						{name="fire:basic_flame"}
 local obsidian_node = 				{name="default:obsidian"}
 local cobble_node = 					{name="default:cobble"}
@@ -132,7 +134,7 @@ local function do_rockmelt_cooling(pos, node)
 	end
 end
 
-local speedmult = 0.25
+local SPEEDMULT = 0.25
 
 minetest.register_abm({
 	label = "Lava Melting",
@@ -149,7 +151,7 @@ minetest.register_abm({
 	nodenames = lava_group,
 	neighbors = flammable_group,
 	interval = 4,
-	chance = 256*speedmult,
+	chance = 256*SPEEDMULT,
 	catch_up = false,
 	action = do_lava_flammables,
 })
@@ -159,7 +161,7 @@ minetest.register_abm({
 	nodenames = lava_sources,
 	neighbors = water_group,
 	interval = 7,
-	chance = 256*speedmult,
+	chance = 256*SPEEDMULT,
 	catch_up = false,
 	action = do_lavasource_cooling,
 })
@@ -169,7 +171,7 @@ minetest.register_abm({
 	nodenames = flowing_lava,
 	neighbors = flowing_water,
 	interval = 9,
-	chance = 256*speedmult,
+	chance = 256*SPEEDMULT,
 	catch_up = false,
 	action = do_flowinglava_flowingwater_cooling,
 })
@@ -179,7 +181,7 @@ minetest.register_abm({
 	nodenames = flowing_lava,
 	neighbors = water_sources,
 	interval = 11,
-	chance = 256*speedmult,
+	chance = 256*SPEEDMULT,
 	catch_up = false,
 	action = do_flowinglava_watersource_cooling,
 })
@@ -189,7 +191,7 @@ minetest.register_abm({
 	nodenames = {"cavestuff:cobble_with_rockmelt"},
 	neighbors = water_group,
 	interval = 3,
-	chance = 256*speedmult,
+	chance = 256*SPEEDMULT,
 	catch_up = false,
 	action = do_rockmelt_cooling,
 })

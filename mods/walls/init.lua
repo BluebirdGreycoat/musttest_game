@@ -4,7 +4,10 @@ walls = {}
 
 
 walls.register = function(
-		wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
+		wall_name, wall_desc, wall_texture, wall_mat, wall_sounds,
+			additional_params)
+	additional_params = additional_params or {}
+
 	local register_node = function(name, def)
 		local ndef = table.copy(def)
 		stairs.setup_nodedef_callbacks(name, ndef)
@@ -37,6 +40,19 @@ walls.register = function(
 		sounds = wall_sounds,
 		_stairs_parent_material = wall_mat,
 	})
+
+	-- crafting recipe for standard walls.
+	minetest.register_craft({
+		output = "walls:" .. wall_name .. " 6",
+		recipe = {
+			{ wall_mat, wall_mat, wall_mat},
+			{ wall_mat, wall_mat, wall_mat},
+		}
+	})
+
+	if additional_params.wall_only then
+		return
+	end
 
 	register_node(":walls:" .. wall_name .. "_noconnect", {
 		description = wall_desc .. " Pillar",
@@ -87,15 +103,6 @@ walls.register = function(
 			},
 		},
 		_stairs_parent_material = wall_mat,
-	})
-
-	-- crafting recipe for standard walls.
-	minetest.register_craft({
-		output = "walls:" .. wall_name .. " 6",
-		recipe = {
-			{ wall_mat, wall_mat, wall_mat},
-			{ wall_mat, wall_mat, wall_mat},
-		}
 	})
 
 	-- pillars
@@ -495,4 +502,13 @@ walls.register("obsidian_brick", "Obsidian Brick", "default_obsidian_brick.png",
 
 walls.register("rackstone_cobble", "Rackstone Cobble", "rackstone_rackstone_cobble.png",
 		"rackstone:cobble", default.node_sound_stone_defaults())
+
+walls.register("mossystone", "Mossy Stone", "gloopblocks_stone_mossy.png",
+	"default:mossystone", default.node_sound_stone_defaults(),
+	{wall_only=true})
+
+walls.register("mossy_stonebrick", "Mossy Stone Brick",
+	"gloopblocks_stone_brick_mossy.png",
+	"default:mossy_stonebrick", default.node_sound_stone_defaults(),
+	{wall_only=true})
 

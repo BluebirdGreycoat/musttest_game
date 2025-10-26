@@ -200,6 +200,7 @@ minetest.register_node("default:stone", {
 		melts = 1, cobble_type = 1,
   }),
 	drop = 'default:cobble',
+	silverpick_drop = "default:stone",
 	legacy_mineral = true,
 	sounds = default.node_sound_stone_defaults(),
 	_melts_to = "cavestuff:cobble_with_rockmelt",
@@ -326,9 +327,37 @@ minetest.register_node("default:mossycobble", {
 		stone = 1, native_stone = 1,
 		melts = 1,
 	}),
+	drop = "default:cobble",
+	silverpick_drop = "default:mossycobble",
 	_melts_to = "cavestuff:cobble_with_rockmelt",
 	sounds = default.node_sound_stone_defaults(),
 	_is_bulk_mapgen_stone = true,
+})
+
+minetest.register_node("default:mossystone", {
+	description = "Mossy Stone",
+	tiles = {"gloopblocks_stone_mossy.png"},
+	groups = utility.dig_groups("stone", {
+		stone = 1, native_stone = 1, melts = 1,
+	}),
+	is_ground_content = false,
+	sounds = default.node_sound_stone_defaults(),
+	drop = "default:cobble",
+	silverpick_drop = "default:mossystone",
+	_melts_to = "default:stone",
+})
+
+minetest.register_node("default:mossy_stonebrick", {
+	description = "Mossy Stone Brick",
+	paramtype2 = "facedir",
+	place_param2 = 0,
+	tiles = {"gloopblocks_stone_brick_mossy.png"},
+	is_ground_content = false,
+	groups = utility.dig_groups("brick", {brick = 1, melts = 1}),
+	sounds = default.node_sound_stone_defaults(),
+	drop = "default:stonebrick",
+	silverpick_drop = "default:mossy_stonebrick",
+	_melts_to = "default:stonebrick",
 })
 
 

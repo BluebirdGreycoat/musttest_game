@@ -1,0 +1,3 @@
+https://content.luanti.org/packages/mt-mods/gloopblocks/
+	gloopblocks_stone_mossy.png: CC-by-SA 4.0, VanessaE, mt-mods (modified)
+	gloopblocks_stone_brick_mossy.png: CC-by-SA 4.0, VanessaE, mt-mods (modified)

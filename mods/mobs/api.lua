@@ -2312,6 +2312,12 @@ local function get_attackable_targets(self)
 				goto continue
 			end
 
+			-- Ignore specific mobs.
+			if self.specific_neutrals and self.specific_neutrals[ent.name] then
+				objs[n] = nil
+				goto continue
+			end
+
 		-- Remove all other entities.
 		else
 			objs[n] = nil
@@ -5397,6 +5403,7 @@ if not mobs.registered then
 			attack_npcs             = def.attack_npcs ~= false,
 			specific_attack         = def.specific_attack,
 			specific_allies         = def.specific_allies,
+			specific_neutrals       = def.specific_neutrals,
 			runaway_from            = def.runaway_from,
 			owner_loyal             = def.owner_loyal,
 			facing_fence            = false,

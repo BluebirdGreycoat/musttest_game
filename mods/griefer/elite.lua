@@ -10,6 +10,10 @@ mobs.register_mob("griefer:elite_griefer", {
 		["griefer:griefer"] = true,
 		["dm:dm"] = true,
 	},
+	specific_neutrals = {
+		-- Normally attacks animals, but rats are "vermin" so should be ignored.
+		["rat:rat"] = true,
+	},
 	pathfinding = 3,
 	pathing_radius = 20,
 	max_node_dig_level = 2,

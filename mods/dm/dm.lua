@@ -25,6 +25,10 @@ mobs.register_mob("dm:dm", {
 		["griefer:griefer"] = true,
 		["griefer:elite_griefer"] = true,
 	},
+	specific_neutrals = {
+		-- Normally attacks animals, but rats are "vermin" so should be ignored.
+		["rat:rat"] = true,
+	},
 	dogshoot_switch = 1,
 	dogshoot_count_max = 10,
 	reach = 3,

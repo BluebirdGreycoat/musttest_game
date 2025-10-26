@@ -3,12 +3,15 @@ walls = {}
 
 
 
-walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
+walls.register = function(
+		wall_name, wall_desc, wall_texture, wall_mat, wall_sounds)
 	local register_node = function(name, def)
 		local ndef = table.copy(def)
 		stairs.setup_nodedef_callbacks(name, ndef)
 		minetest.register_node(name, ndef)
 	end
+
+	circular_saw.register_node(wall_mat, wall_name)
 
 	-- inventory node, and pole-type wall start item
 	register_node(":walls:" .. wall_name, {
@@ -94,8 +97,6 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 			{ wall_mat, wall_mat, wall_mat},
 		}
 	})
-
-	circular_saw.register_node(wall_mat, wall_name)
 
 	-- pillars
 	register_node(":pillars:" .. wall_name .. "_bottom", {
@@ -250,7 +251,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		_stairs_parent_material = wall_mat,
 	})
 
-	circular_saw.register_node(wall_mat, wall_name)
+	--circular_saw.register_node(wall_mat, wall_name)
 
 	register_node(":murderhole:" .. wall_name, {
 		drawtype = "nodebox",
@@ -272,7 +273,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		_stairs_parent_material = wall_mat,
 	})
 	
-	circular_saw.register_node(wall_mat, wall_name)
+	--circular_saw.register_node(wall_mat, wall_name)
 
 	register_node(":machicolation:" .. wall_name, {
 		drawtype = "nodebox",
@@ -293,7 +294,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		_stairs_parent_material = wall_mat,
 	})
 
-	circular_saw.register_node(wall_mat, wall_name)
+	--circular_saw.register_node(wall_mat, wall_name)
 
 	-- arrow slits
 	register_node(":arrowslit:"..wall_name, {
@@ -390,7 +391,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 		_stairs_parent_material = wall_mat,
 	})
 
-	circular_saw.register_node(wall_mat, wall_name)
+	--circular_saw.register_node(wall_mat, wall_name)
 end
 
 walls.register("cobble", "Cobblestone", "default_cobble.png",

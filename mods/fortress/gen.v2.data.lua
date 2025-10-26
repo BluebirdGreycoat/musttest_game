@@ -95,7 +95,7 @@ local SMALL_PLAZA_CHANCE = 200 -- High prob due to rare conditions required.
 local GATEHOUSE_PROB = 10
 local BRIDGE_OPEN_PIT_CHANCE = 7
 local PORTAL_CHANCE = 25 -- Chance to spawn inside medium enclosed chamber.
-local GREAT_HALL_PROB = 25 -- Competes with hallways.
+local GREAT_HALL_PROB = 20 -- Competes with hallways.
 
 
 
@@ -3573,6 +3573,12 @@ fortress.v2.fortress_data = {
 				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
 					rotation="180", force=false, offset={x=3+11, y=2+11, z=11+22},
 						priority=WINDOW_DECO_PRIORITY},
+
+				-- Signs of human sacrifice. Many Sams undoubtedly met a horrid fate.
+				{file="nf_detail_throne", chance=5, force=false,
+					offset={x=8, y=2, z=20}, priority=1},
+				{file="nf_detail_pagan_alter", chance=5, force=false,
+					offset={x=7, y=2, z=7}, priority=1},
 			},
 			size = {x=2, y=2, z=3},
 			valid_neighbors = {
@@ -3617,6 +3623,7 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 1, 2)] = "great_hall_ns_dummy",
 			},
 			probability = GREAT_HALL_PROB,
+			limit = 2,
 		},
 
 		great_hall_ew_dummy = {},
@@ -3679,6 +3686,12 @@ fortress.v2.fortress_data = {
 				{file="fortress_window_deco", chance=GH_WINDOW_DECO_CHANCE,
 					rotation="270", force=false, offset={x=11+22, y=2+11, z=3+11},
 						priority=WINDOW_DECO_PRIORITY},
+
+				-- Signs of human sacrifice. Many Sams undoubtedly met a horrid fate.
+				{file="nf_detail_throne", chance=5, force=false, rotation="90",
+					offset={x=20, y=2, z=8}, priority=1},
+				{file="nf_detail_pagan_alter", chance=5, force=false, rotation="90",
+					offset={x=7, y=2, z=7}, priority=1},
 			},
 			size = {x=3, y=2, z=2},
 			valid_neighbors = {
@@ -3724,6 +3737,7 @@ fortress.v2.fortress_data = {
 			},
 			probability = GREAT_HALL_PROB,
 			set_param2_rotations = {["rackstone:brick_black"]=0},
+			limit = 2,
 		},
 
 		great_hall_roof_ns_dummy = {},

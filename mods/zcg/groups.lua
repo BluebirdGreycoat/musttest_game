@@ -19,6 +19,7 @@ zcg.grouplist = {
 	["wood"] = {item="basictrees:tree_wood", description="Wood"},
 	["bones"] = {item="bones:bones_type2", description="Bones"},
 	["leaves"] = {item="basictrees:tree_leaves", description="Leaves"},
+	["food_sugar"] = {item="farming:sugar", description="Sugar"},
 
 	-- Flowers.
 	["flower,color_cyan"] = {item="flowers:forgetmenot", description="Cyan Flower"},

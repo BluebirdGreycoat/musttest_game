@@ -204,9 +204,9 @@ minetest.register_craftitem(":farming:tomato_sandwich", {
 minetest.register_craft({
 	output = "farming:tomato_sandwich",
 	recipe = {
-		{"farming:flour"},
+		{"farming:toast"},
 		{"tomato:tomato"},
-		{"farming:sugar"},
+		{"farming:toast"},
 	}
 })
 
@@ -231,7 +231,7 @@ minetest.register_craft({
 	output = "farming:carrot_cake",
 	type = "shapeless",
 	recipe = {
-		"farming:flour", "farming:sugar",
+		"farming:flour", "group:food_sugar",
 		"carrot:regular", "carrot:regular", "carrot:regular",
                 "farming:baking_tray"
 	},
@@ -416,7 +416,7 @@ minetest.register_craft({
 	output = "farming:blueberry_pie",
 	type = "shapeless",
 	recipe = {
-		"farming:flour", "farming:sugar",
+		"farming:flour", "group:food_sugar",
 		"blueberries:fruit", "farming:baking_tray"
 	},
 	replacements = {{"farming:baking_tray", "farming:baking_tray"}}
@@ -434,7 +434,7 @@ minetest.register_craft({
 	output = "farming:apple_pie",
 	type = "shapeless",
 	recipe = {
-		"farming:flour", "farming:sugar",
+		"farming:flour", "group:food_sugar",
 		"basictrees:tree_apple", "farming:baking_tray"
 	},
 	replacements = {{"farming:baking_tray", "farming:baking_tray"}}

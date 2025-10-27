@@ -93,6 +93,7 @@ local GATEHOUSE_PROB = 10
 local BRIDGE_OPEN_PIT_CHANCE = 7
 local PORTAL_CHANCE = 25 -- Chance to spawn inside medium enclosed chamber.
 local GREAT_HALL_PROB = 20 -- Competes with hallways.
+local TOWER_KEEP_PROB = 10 -- Competes with bridges.
 
 
 
@@ -119,6 +120,7 @@ local BRIDGE_CONNECT = {
 		bridge_ns_to_hall_ew = true,
 		ew_plaza_s = true,
 		ns_gatehouse = true,
+		tower_keep = true,
 	},
 	[DIRNAME.SOUTH] = {
 		ns_walk_bridge = true,
@@ -139,6 +141,7 @@ local BRIDGE_CONNECT = {
 		bridge_ns_to_hall_ew = true,
 		ew_plaza_n = true,
 		ns_gatehouse = true,
+		tower_keep = true,
 	},
 	[DIRNAME.EAST] = {
 		ew_walk_bridge = true,
@@ -159,6 +162,7 @@ local BRIDGE_CONNECT = {
 		bridge_ew_to_hall_ns = true,
 		ns_plaza_w = true,
 		ew_gatehouse = true,
+		tower_keep = true,
 	},
 	[DIRNAME.WEST] = {
 		ew_walk_bridge = true,
@@ -179,6 +183,7 @@ local BRIDGE_CONNECT = {
 		bridge_ew_to_hall_ns = true,
 		ns_plaza_e = true,
 		ew_gatehouse = true,
+		tower_keep = true,
 	},
 }
 
@@ -688,6 +693,7 @@ fortress.v2.fortress_data = {
 		"ns_gatehouse",
 		"great_hall_ns",
 		"great_hall_ew",
+		"tower_keep",
 		GET_BRIDGE_STARTER_PIECES(), -- Duplicated for probability.
 	},
 
@@ -3235,16 +3241,16 @@ fortress.v2.fortress_data = {
 				[HASHKEY(2, 0, 0)] = {
 					air_option = true,
 					ns_walk_bridge = true,
-					walk_bridge_nsw = true,
-					nw_corner_walk = true,
+					walk_bridge_nse = true,
+					ne_corner_walk = true,
 					capped_bridge_n = true,
 				},
 				-- Northeast corner.
 				[HASHKEY(2, 0, 2)] = {
 					air_option = true,
 					ns_walk_bridge = true,
-					walk_bridge_nsw = true,
-					sw_corner_walk = true,
+					walk_bridge_nse = true,
+					se_corner_walk = true,
 					capped_bridge_s = true,
 				},
 
@@ -3253,16 +3259,16 @@ fortress.v2.fortress_data = {
 				[HASHKEY(-1, 0, 0)] = {
 					air_option = true,
 					ns_walk_bridge = true,
-					walk_bridge_nse = true,
-					ne_corner_walk = true,
+					walk_bridge_nsw = true,
+					nw_corner_walk = true,
 					capped_bridge_n = true,
 				},
 				-- Northwest corner.
 				[HASHKEY(-1, 0, 2)] = {
 					air_option = true,
 					ns_walk_bridge = true,
-					walk_bridge_nse = true,
-					se_corner_walk = true,
+					walk_bridge_nsw = true,
+					sw_corner_walk = true,
 					capped_bridge_s = true,
 				},
 
@@ -3940,8 +3946,7 @@ fortress.v2.fortress_data = {
 		tower_keep_dummy = {},
 		tower_keep = {
 			schem = {
-				{file="nf_keep_bottom",
-					priority=MEDIUM_ENCLOSED_CHAMBER_PRIORITY},
+				{file="nf_keep_bottom"},
 			},
 			size = {x=2, y=1, z=2},
 			valid_neighbors = {
@@ -3950,6 +3955,12 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, -1, 0)] = {solid_top=true},
 				[HASHKEY(0, -1, 1)] = {solid_top=true},
 				[HASHKEY(1, -1, 1)] = {solid_top=true},
+
+				-- Above.
+				[HASHKEY(0, 1, 0)] = {
+					tower_keep_top = true,
+					tower_keep_middle = true,
+				},
 
 				-- Entrances on the edges.
 				-- West side.
@@ -3966,6 +3977,75 @@ fortress.v2.fortress_data = {
 				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
 				[HASHKEY(0, 0, 1)] = "ew_walk_bridge",
 				[HASHKEY(1, 0, 1)] = "ns_walk_bridge",
+			},
+			require_empty_neighbors = {
+				-- West side.
+				[HASHKEY(-1, 0, 0)] = true,
+				-- East side.
+				[HASHKEY(2, 0, 1)] = true,
+				-- South side.
+				[HASHKEY(1, 0, -1)] = true,
+				-- North side.
+				[HASHKEY(0, 0, 2)] = true,
+			},
+			probability = TOWER_KEEP_PROB,
+			limit = 3,
+		},
+
+		-- The 2x2 tower keep object.
+		tower_keep_middle_dummy = {},
+		tower_keep_middle = {
+			schem = {
+				{file="nf_keep_middle"},
+			},
+			valid_neighbors = {
+				-- Above.
+				[HASHKEY(0, 1, 0)] = {
+					tower_keep_top = true,
+				},
+			},
+			size = {x=2, y=1, z=2},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "tower_keep_middle_dummy",
+				[HASHKEY(1, 0, 0)] = "tower_keep_middle_dummy",
+				[HASHKEY(0, 0, 1)] = "tower_keep_middle_dummy",
+				[HASHKEY(1, 0, 1)] = "tower_keep_middle_dummy",
+			},
+		},
+
+		-- The 2x2 tower keep object.
+		tower_keep_top_dummy = {},
+		tower_keep_top = {
+			schem = {
+				{file="nf_keep_top"},
+			},
+			valid_neighbors = {
+				-- Above.
+				[HASHKEY(0, 1, 0)] = {
+					tower_keep_roof = true,
+				},
+			},
+			size = {x=2, y=1, z=2},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "tower_keep_top_dummy",
+				[HASHKEY(1, 0, 0)] = "tower_keep_top_dummy",
+				[HASHKEY(0, 0, 1)] = "tower_keep_top_dummy",
+				[HASHKEY(1, 0, 1)] = "tower_keep_top_dummy",
+			},
+		},
+
+		-- The 2x2 tower keep object.
+		tower_keep_roof_dummy = {},
+		tower_keep_roof = {
+			schem = {
+				{file="nf_keep_roof"},
+			},
+			size = {x=2, y=1, z=2},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "tower_keep_roof_dummy",
+				[HASHKEY(1, 0, 0)] = "tower_keep_roof_dummy",
+				[HASHKEY(0, 0, 1)] = "tower_keep_roof_dummy",
+				[HASHKEY(1, 0, 1)] = "tower_keep_roof_dummy",
 			},
 		},
 	},

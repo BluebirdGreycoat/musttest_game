@@ -218,7 +218,10 @@ function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	for k, v in ipairs(allplayers) do
 		if v:get_player_name() ~= pname then
 			if vector_distance(v:get_pos(), player:get_pos()) < 3 then
-				friendstobring[#friendstobring+1] = v:get_player_name()
+				-- Exclude players who are flagged to return to Midfeld.
+				if v:get_meta():get_int("abyss_return_midfeld") == 0 then
+					friendstobring[#friendstobring+1] = v:get_player_name()
+				end
 			end
 		end
 	end

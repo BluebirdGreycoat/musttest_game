@@ -319,7 +319,7 @@ end
 
 function depositor.save()
 	-- Custom file format. minetest.serialize() is unusable for large tables.
-	local datastring = ""
+	local shopstrings = {}
 	for k, v in ipairs(depositor.shops) do
 		if v.pos then
 			local x = v.pos.x
@@ -341,29 +341,15 @@ function depositor.save()
 
 			if x and y and z and t and o and i and c and a and r and n then
 				-- x,y,z,owner,item,cost,type,active,number,currency
-				datastring = datastring ..
-					x .. "," .. y .. "," .. z .. "," .. o .. "," .. i .. "," .. c .. "," .. t .. "," .. a .. "," .. n .. "," .. r .. "\n"
+				local str = table.concat({x, y, z, o, i, c, t, a, n, r}, ",")
+				shopstrings[#shopstrings + 1] = str
 			end
 		end
 	end
-	local file, err = io.open(depositor.datafile, "w")
-	if err then
-		minetest.log("error", "Failed to open " .. depositor.datafile .. " for writing: " .. err)
-	else
-		file:write(datastring)
-		file:close()
-	end
 
-	local file, err = io.open(depositor.dropfile, "w")
-	if err then
-		minetest.log("error", "Failed to open " .. depositor.dropfile .. " for writing: " .. err)
-	else
-		local datastring = minetest.serialize(depositor.drops)
-		if datastring then
-			file:write(datastring)
-		end
-		file:close()
-	end
+	local dropfiledata = minetest.serialize(depositor.drops)
+	minetest.safe_file_write(depositor.datafile, table.concat(shopstrings, "\n"))
+	minetest.safe_file_write(depositor.dropfile, dropfiledata)
 end
 
 

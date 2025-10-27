@@ -3,6 +3,7 @@ if not minetest.global_exists("obsidian_gateway") then obsidian_gateway = {} end
 obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
 
 dofile(obsidian_gateway.modpath .. "/gate.lua")
+dofile(obsidian_gateway.modpath .. "/gate_activate.lua")
 dofile(obsidian_gateway.modpath .. "/flame_staff.lua")
 dofile(obsidian_gateway.modpath .. "/entity.lua")
 

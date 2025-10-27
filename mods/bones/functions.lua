@@ -234,6 +234,7 @@ local function find_suitable_bone_location(pos, player)
 	-- By now, we have either found air or nothing.
 	return air -- May be nil.
 end
+bones.find_suitable_bone_location = find_suitable_bone_location
 
 
 

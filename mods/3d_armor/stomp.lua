@@ -17,7 +17,8 @@ function armor.find_ground_by_raycast(pos, player)
       local n2 = minetest.get_node(pt.above)
 
       -- We have found a ground surface suitable for bones or stomping.
-      if not bones.may_replace(pt.under, player) and bones.may_replace(pt.above, player) then
+      if not bones.may_replace(pt.under, player) and
+          bones.may_replace(pt.above, player) then
         p3 = pt.above
         break
       end

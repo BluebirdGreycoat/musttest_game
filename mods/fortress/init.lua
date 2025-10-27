@@ -35,6 +35,7 @@ dofile(fortress.modpath .. "/gen.v2.util.lua")
 dofile(fortress.modpath .. "/gen.v2.chat.lua")
 dofile(fortress.modpath .. "/gen.v2.file.lua")
 dofile(fortress.modpath .. "/gen.v2.map.lua")
+dofile(fortress.modpath .. "/gen.v2.sql.lua")
 
 
 
@@ -62,6 +63,7 @@ if not fortress.run_once then
 		end,
 	})
 
+	fortress.v2.sql_init()
 	fortress.v2.load_fort_information()
 
 	local c = "fortress:core"

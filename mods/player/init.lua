@@ -10,7 +10,7 @@ dofile(player.modpath .. "/hotbar.lua")
 -- Note: This is currently broken due to a bug in Irrlicht, leave at 0
 local animation_blend = 0
 
-player.registered_player_models = { }
+player.registered_player_models = {}
 
 -- Local for speed.
 local models = player.registered_player_models
@@ -33,8 +33,8 @@ default.player_attached = {}
 
 
 
-function default.player_get_animation(player)
-	local name = player:get_player_name()
+function default.player_get_animation(pref)
+	local name = pref:get_player_name()
 	return {
 		model = player_model[name],
 		textures = player_textures[name],
@@ -45,37 +45,37 @@ end
 
 
 -- Called when a player's appearance needs to be updated
-function default.player_set_model(player, model_name)
-	local name = player:get_player_name()
+function default.player_set_model(pref, model_name)
+	local name = pref:get_player_name()
 	local model = models[model_name]
 
 	if player_model[name] == model_name then
 		return
 	end
 
-	pova.set_override(player, "properties", {
+	pova.set_override(pref, "properties", {
 		mesh = model_name,
 		textures = player_textures[name] or model.textures,
 		visual = "mesh",
 		visual_size = model.visual_size or {x=1, y=1, z=1},
 	})
 
-	default.player_set_animation(player, "stand")
+	default.player_set_animation(pref, "stand")
 	player_model[name] = model_name
 end
 
 
 
-function default.player_set_textures(player, textures)
-	local name = player:get_player_name()
+function default.player_set_textures(pref, textures)
+	local name = pref:get_player_name()
 	player_textures[name] = textures
-	pova.set_override(player, "properties", {textures = textures})
+	pova.set_override(pref, "properties", {textures = textures})
 end
 
 
 
-function default.player_set_animation(player, anim_name, speed)
-	local name = player:get_player_name()
+function default.player_set_animation(pref, anim_name, speed)
+	local name = pref:get_player_name()
 	if player_anim[name] == anim_name then
 		return
 	end
@@ -85,7 +85,7 @@ function default.player_set_animation(player, anim_name, speed)
 	end
 	local anim = model.animations[anim_name]
 	player_anim[name] = anim_name
-	player:set_animation(anim, speed or model.animation_speed, animation_blend)
+	pref:set_animation(anim, speed or model.animation_speed, animation_blend)
 end
 
 
@@ -122,14 +122,14 @@ end)
 
 
 
-minetest.register_on_leaveplayer(function(player)
-	local name = player:get_player_name()
+minetest.register_on_leaveplayer(function(pref)
+	local name = pref:get_player_name()
 	player_model[name] = nil
 	player_anim[name] = nil
 	player_textures[name] = nil
 
 	-- Save player velocity. If they login again, I will be able to restore it.
-	player_velocity[name] = player:get_velocity()
+	player_velocity[name] = pref:get_velocity()
 end)
 
 
@@ -140,12 +140,12 @@ local player_attached = default.player_attached
 
 -- Check each player and apply animations
 minetest.register_globalstep(function(dtime)
-	for _, player in pairs(minetest.get_connected_players()) do
-		local pname = player:get_player_name()
+	for _, pref in pairs(minetest.get_connected_players()) do
+		local pname = pref:get_player_name()
 		local model_name = player_model[pname]
 		local model = model_name and models[model_name]
 		if model and not player_attached[pname] then
-			local controls = player:get_player_control()
+			local controls = pref:get_player_control()
 			local walking = false
 			local animation_speed_mod = model.animation_speed or 30
 
@@ -158,29 +158,29 @@ minetest.register_globalstep(function(dtime)
 			if controls.sneak then
 				animation_speed_mod = animation_speed_mod / 2
 
-				pova.set_modifier(player, "properties",
+				pova.set_modifier(pref, "properties",
 					{makes_footstep_sound = false}, "footstep_sneaking")
 			else
-				pova.remove_modifier(player, "properties", "footstep_sneaking")
+				pova.remove_modifier(pref, "properties", "footstep_sneaking")
 			end
 
 			-- Apply animations based on what the player is doing
-			if player:get_hp() == 0 then
-				player_set_animation(player, "lay")
+			if pref:get_hp() == 0 then
+				player_set_animation(pref, "lay")
 			elseif walking then
 				if player_sneak[pname] ~= controls.sneak then
 					player_anim[pname] = nil
 					player_sneak[pname] = controls.sneak
 				end
 				if controls.LMB then
-					player_set_animation(player, "walk_mine", animation_speed_mod)
+					player_set_animation(pref, "walk_mine", animation_speed_mod)
 				else
-					player_set_animation(player, "walk", animation_speed_mod)
+					player_set_animation(pref, "walk", animation_speed_mod)
 				end
 			elseif controls.LMB then
-				player_set_animation(player, "mine")
+				player_set_animation(pref, "mine")
 			else
-				player_set_animation(player, "stand", animation_speed_mod)
+				player_set_animation(pref, "stand", animation_speed_mod)
 			end
 		end
 	end
@@ -207,19 +207,19 @@ end
 
 -- Disable the "sneak glitch" for all players.
 -- Note: 'sneak=false' interferes with footstep sounds when walking on snow.
-minetest.register_on_joinplayer(function(player)
-	set_prng(player)
+minetest.register_on_joinplayer(function(pref)
+	set_prng(pref)
 
-	pova.set_override(player, "properties", {
-		infotext = rename.gpn(player:get_player_name()),
+	pova.set_override(pref, "properties", {
+		infotext = rename.gpn(pref:get_player_name()),
 	})
-	pova.set_override(player, "nametag", {
+	pova.set_override(pref, "nametag", {
 		color = {a=255, r=0, g=255, b=255},
-		text = rename.gpn(player:get_player_name()),
+		text = rename.gpn(pref:get_player_name()),
 		bgcolor = false,
 	})
 
-	local pmeta = player:get_meta()
+	local pmeta = pref:get_meta()
 	local random_seed = pmeta:get_int("random_seed")
 	local prng = PseudoRandom(random_seed)
 
@@ -233,17 +233,17 @@ minetest.register_on_joinplayer(function(player)
 	-- Adjust base jump. Max range diff is 0.05 either direction.
 	local njump = 1+(prng:next(-10, 10)/100)
 
-	pova.set_modifier(player, "properties",
+	pova.set_modifier(pref, "properties",
 		{visual_size={x=nsize, y=nsize}},
 	"notbornequal", {priority=-999})
 
-	pova.set_modifier(player, "physics",
+	pova.set_modifier(pref, "physics",
 		{speed=nspeed, jump=njump},
 	"notbornequal", {priority=-999})
 
 	-- Disable the minimap. Cheaters will of course be able to enable it.
 	-- Can be reenabled via item in-game.
-	player:hud_set_flags({
+	pref:hud_set_flags({
 		minimap = false,
 		minimap_radar = false,
 
@@ -253,8 +253,8 @@ minetest.register_on_joinplayer(function(player)
 
 	-- Finally! Minetest has shadow support!
 	-- check if function is supported by server (old versions 5.5.0)
-	if player["set_lighting"] ~= nil then
-		player:set_lighting({
+	if pref["set_lighting"] ~= nil then
+		pref:set_lighting({
 			shadows = {intensity=0.3},
 			volumetric_light = {strength=0.2},
 			bloom = {intensity=0.05},

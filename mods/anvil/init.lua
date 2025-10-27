@@ -386,7 +386,7 @@ end
 
 
 -- Formspec received fields.
-function anvil.on_player_receive_fields(player, formname, fields)
+function anvil.on_player_receive_fields(pref, formname, fields)
 	local fn = formname:sub(1, 14)
 	if fn ~= "anvil:formspec" then
 		return
@@ -397,19 +397,19 @@ function anvil.on_player_receive_fields(player, formname, fields)
 		return
 	end
 
-	if not player or not player:is_player() then
+	if not pref or not pref:is_player() then
 		return
 	end
 
-	local pname = player:get_player_name()
-	local plpos = player:get_pos()
+	local pname = pref:get_player_name()
+	local plpos = pref:get_pos()
 
 	-- Require close interactions (needed for security, since owner can be blank).
 	if vector.distance(pos, plpos) > 10 then
 		return
 	end
 
-	if not anvil.player_can_use(pos, player) then
+	if not anvil.player_can_use(pos, pref) then
 		return
 	end
 

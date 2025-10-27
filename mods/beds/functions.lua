@@ -242,19 +242,19 @@ end
 
 function beds.kick_players()
 	for name, _ in pairs(beds.player) do
-		local player = minetest.get_player_by_name(name)
-		lay_down(player, nil, nil, false)
+		local pref = minetest.get_player_by_name(name)
+		lay_down(pref, nil, nil, false)
 	end
 end
 
 
 
 function beds.kick_one_player(name)
-    local player = minetest.get_player_by_name(name)
-    if player and player:is_player() then
+    local pref = minetest.get_player_by_name(name)
+    if pref and pref:is_player() then
         if beds.player[name] ~= nil then
             beds.player[name] = nil
-            lay_down(player, nil, nil, false)
+            lay_down(pref, nil, nil, false)
             update_formspecs(false)
             return true
         end
@@ -356,24 +356,24 @@ end
 
 
 function beds.player_finishes_sleep(pname)
-	local player = minetest.get_player_by_name(pname)
-	if player then
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
 		-- Heal player 4 HP, but not if the player is dead.
-		if player:get_hp() > 0 then
-			local hp_max = pova.get_active_modifier(player, "properties").hp_max
-			player:set_hp(player:get_hp() + (hp_max * 0.2))
+		if pref:get_hp() > 0 then
+			local hp_max = pova.get_active_modifier(pref, "properties").hp_max
+			pref:set_hp(pref:get_hp() + (hp_max * 0.2))
 		end
 
 		-- Increase player's hunger.
-		hunger.increase_hunger(player, 6)
+		hunger.increase_hunger(pref, 6)
 
 		-- Refill stamina.
-		sprint.set_stamina(player, SPRINT_STAMINA)
+		sprint.set_stamina(pref, SPRINT_STAMINA)
 
 		-- Notify portal sickness mod.
 		portal_sickness.on_use_bed(pname)
 
-		local pos = vector.round(utility.get_middle_pos(player:get_pos()))
+		local pos = vector.round(utility.get_middle_pos(pref:get_pos()))
 		if beds.check_monsters_accessible(pos) then
 			beds.spawn_monsters_near(pos)
 		end

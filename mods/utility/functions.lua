@@ -36,18 +36,18 @@ function utility.wear_tool_with_feedback(params)
 
 	-- Play broken tool sound.
 	if count == 0 then
-		local player = params.user
-		local pname = player:get_player_name()
-		local pos = player:get_pos()
+		local pref = params.user
+		local pname = pref:get_player_name()
+		local pos = pref:get_pos()
 		local desc = def.description
 
 		minetest.chat_send_player(pname, "# Server: Your " .. desc .. " is lost.")
 		minetest.sound_play(breaksound, {pos=pos, gain=1.0}, true)
 	elseif remaining_uses <= 10 then
 		-- Warn tool will soon break.
-		local player = params.user
-		local pos = player:get_pos()
-		local pname = player:get_player_name()
+		local pref = params.user
+		local pos = pref:get_pos()
+		local pname = pref:get_player_name()
 		local desc = def.description
 		local spamkey = pname .. ":" .. itemname .. ":breaks"
 

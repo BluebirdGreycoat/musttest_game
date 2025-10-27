@@ -35,11 +35,11 @@ bucket.liquids = {}
 bucket.harm_player_after =
 function(pname, harm)
   minetest.after(0, function()
-    local player = minetest.get_player_by_name(pname)
-    if player and player:is_player() then
-			utility.damage_player(player, "heat", harm)
+    local pref = minetest.get_player_by_name(pname)
+    if pref and pref:is_player() then
+			utility.damage_player(pref, "heat", harm)
 
-			if player:get_hp() == 0 then
+			if pref:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> died while bucketing something hot!")
 			end
     end

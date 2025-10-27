@@ -53,8 +53,8 @@ end
 
 function beds.set_spawn(pos, name)
 	if beds.player[name] then
-		local player = minetest.get_player_by_name(name)
-		if player and player:is_player() then
+		local pref = minetest.get_player_by_name(name)
+		if pref and pref:is_player() then
 			beds.spawn[name] = pos
 		end
 	end

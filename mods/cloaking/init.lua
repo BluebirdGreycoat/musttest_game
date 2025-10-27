@@ -251,8 +251,8 @@ function cloaking.toggle_cloak(pname)
 end
 
 -- Disable cloak if player dies.
-function cloaking.on_dieplayer(player, reason)
-	local pname = player:get_player_name()
+function cloaking.on_dieplayer(pref, reason)
+	local pname = pref:get_player_name()
 	if cloaking.is_cloaked(pname) then
 		-- Ensure cloak is disabled *after* player is dead (and bones spawned), not before!
 		minetest.after(0, cloaking.toggle_cloak, pname)

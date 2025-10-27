@@ -63,9 +63,9 @@ minetest.register_chatcommand("recharge", {
 	description = "Recharges the machine tool held in hand.",
 	privs = {server=true},
 	func = function(name, param)
-		local player = minetest.get_player_by_name(name)
-		if player and player:is_player() then
-			local tool = player:get_wielded_item()
+		local pref = minetest.get_player_by_name(name)
+		if pref and pref:is_player() then
+			local tool = pref:get_wielded_item()
 			local def = minetest.registered_items[tool:get_name()]
 			if def and def.wear_represents and def.wear_represents == "eu_charge" then
 				-- The wear format says that 1 means fully charged.
@@ -74,7 +74,7 @@ minetest.register_chatcommand("recharge", {
 				-- but should never go past that.
 				-- A value greater than 1 means some energy has been drained.
 				tool:set_wear(1)
-				player:set_wielded_item(tool)
+				pref:set_wielded_item(tool)
 
 				if map.is_mapping_kit(tool:get_name()) then
 					map.update_inventory_info(name)

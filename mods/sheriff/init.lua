@@ -127,12 +127,12 @@ end
 -- This may be called from `minetest.after`, etc.
 function sheriff.punish_player(pname)
 	-- Check that player actually exists and is logged in.
-	local player = minetest.get_player_by_name(pname)
-	if not player then
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
 		return
 	end
 
-	sheriff.random_hit(player)
+	sheriff.random_hit(pref)
 
 	minetest.after(1, function()
 		sheriff.random_gloat(pname)

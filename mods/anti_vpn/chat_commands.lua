@@ -27,9 +27,9 @@ local function resolve_ip(txt)
     if anti_vpn.is_valid_ip(txt) then return txt end
 
     -- Maybe its a player's name.  If yes, use their IP.
-    local player = minetest.get_player_information(txt)
-    if player then
-        local ip = sanitize_ipv4(player.address or '')
+    local pinfo = minetest.get_player_information(txt)
+    if pinfo then
+        local ip = sanitize_ipv4(pinfo.address or '')
         if anti_vpn.is_valid_ip(ip) then return ip end
     end
 

@@ -63,23 +63,23 @@ end)
 
 
 function hud_clock.update_xp(pname)
-	local player = minetest.get_player_by_name(pname)
-	if player and player_hud[pname] then
+	local pref = minetest.get_player_by_name(pname)
+	if pref and player_hud[pname] then
 		local x = player_hud[pname].digxp
-		player:hud_change(x, "text", ("Mineral XP: " .. get_digxp(pname)))
+		pref:hud_change(x, "text", ("Mineral XP: " .. get_digxp(pname)))
 	end
 end
 
 
 
-minetest.register_on_joinplayer(function(player)
-	local pname = player:get_player_name()
+minetest.register_on_joinplayer(function(pref)
+	local pname = pref:get_player_name()
 	if player_hud[pname] then
 		player_hud[pname] = nil
 	end
 	player_hud[pname] = {}
 	local offy = -130
-	local h = player:hud_add({
+	local h = pref:hud_add({
 		type = "text",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=1},
@@ -87,7 +87,7 @@ minetest.register_on_joinplayer(function(player)
 		text = hud_clock.get_time(),
 		number = 0xFFFFFF,
 	})
-	local c = player:hud_add({
+	local c = pref:hud_add({
 		type = "image",
 		position = {x=positionx, y=positiony},
 		alignment = {x=-1, y=1},
@@ -95,7 +95,7 @@ minetest.register_on_joinplayer(function(player)
 		scale = {x=1, y=1},
 		text = "mthudclock.png",
 	})
-	local x = player:hud_add({
+	local x = pref:hud_add({
 		type = "text",
 		position = {x=positionx, y=positiony},
 		offset = {x=-16, y=offy + 18},

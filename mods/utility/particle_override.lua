@@ -47,9 +47,9 @@ function minetest.add_particlespawner_single(data)
 	local id
 	local pname = data.playername or ""
 	if players[pname] then
-		local player = minetest.get_player_by_name(pname)
-		if player then
-			if vector_distance(player:get_pos(), data.minpos) <= maxdist then
+		local pref = minetest.get_player_by_name(pname)
+		if pref then
+			if vector_distance(pref:get_pos(), data.minpos) <= maxdist then
 				id = add_particlespawner(data)
 			end
 		end
@@ -59,9 +59,9 @@ end
 
 function minetest.add_particlespawner(data)
 	for k, v in pairs(players) do
-		local player = minetest.get_player_by_name(k)
-		if player then
-			if vector_distance(player:get_pos(), (data.minpos or data.pos)) <= maxdist then
+		local pref = minetest.get_player_by_name(k)
+		if pref then
+			if vector_distance(pref:get_pos(), (data.minpos or data.pos)) <= maxdist then
 				data.playername = k
 				add_particlespawner(data)
 			end
@@ -71,9 +71,9 @@ end
 
 function minetest.add_particle(data)
 	for k, v in pairs(players) do
-		local player = minetest.get_player_by_name(k)
-		if player then
-			if vector_distance(player:get_pos(), data.pos) <= maxdist then
+		local pref = minetest.get_player_by_name(k)
+		if pref then
+			if vector_distance(pref:get_pos(), data.pos) <= maxdist then
 				data.playername = k
 				add_particle(data)
 			end

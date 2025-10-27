@@ -15,16 +15,16 @@ welcome.color = core.get_color_escape_sequence("#ff00ff")
 
 
 welcome.on_timer = function(pname)
-	local player = minetest.get_player_by_name(pname)
-	if not player then return end -- Player doesn't exist anymore.
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then return end -- Player doesn't exist anymore.
 	minetest.chat_send_player(pname, welcome.color .. "# Server: " .. welcome.message)
 end
 
 
 
 welcome.on_timer2 = function(pname)
-  local player = minetest.get_player_by_name(pname)
-  if not player then return end -- Player doesn't exist anymore.
+  local pref = minetest.get_player_by_name(pname)
+  if not pref then return end -- Player doesn't exist anymore.
   if welcome.message2 then
     minetest.chat_send_player(pname, welcome.color .. "# Server: " .. welcome.message2)
   end

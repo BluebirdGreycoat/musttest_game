@@ -83,14 +83,14 @@ function trash.on_drop_item(oldstack, newstack, dropper, pos)
 end
 
 function trash.on_pulverize(pname, param)
-	local player = minetest.get_player_by_name(pname)
-	if not player then
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
 		minetest.log("error", "Unable to pulverize, no player.")
 		minetest.chat_send_player(pname, "# Server: Unable to pulverize, no player.")
 		return false
 	end
 
-	local wielded_item = player:get_wielded_item()
+	local wielded_item = pref:get_wielded_item()
 	if wielded_item:is_empty() then
 		minetest.chat_send_player(pname, "# Server: Unable to pulverize, no item in hand.")
 		return false
@@ -103,7 +103,7 @@ function trash.on_pulverize(pname, param)
 
 	xp.subtract_xp(pname, "digxp", count * TRASH_XP_MOD)
 
-	player:set_wielded_item(nil)
+	pref:set_wielded_item(nil)
 	minetest.chat_send_player(pname, "# Server: An item was pulverized.")
 	return true
 end

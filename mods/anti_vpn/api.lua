@@ -539,10 +539,10 @@ anti_vpn.on_prejoinplayer = function(pname, ip)
     return nil
 end
 
-anti_vpn.on_joinplayer = function(player, last_login)
+anti_vpn.on_joinplayer = function(pref, last_login)
     if operating_mode == 'off' then return end
 
-    local pname = player:get_player_name()
+    local pname = pref:get_player_name()
     local ip = anti_vpn.get_player_ip(pname) or ''
 
     local found, blocked, whitelisted = anti_vpn.lookup(pname, ip)

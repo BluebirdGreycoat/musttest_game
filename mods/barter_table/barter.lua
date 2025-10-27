@@ -85,9 +85,9 @@ end
 
 barter.chest.give_inventory = function(inv, list, playername)
 	barter.report("Giving list " .. list .. " to <" .. playername .. ">.")
-	player = minetest.get_player_by_name(playername)
-	if inv and player then
-		local pinv = player:get_inventory()
+	local pref = minetest.get_player_by_name(playername)
+	if inv and pref then
+		local pinv = pref:get_inventory()
 		if pinv then
 			barter.report("Moving items!")
 			local from_list = inv:get_list(list)

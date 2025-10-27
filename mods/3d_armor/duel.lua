@@ -511,14 +511,14 @@ local function heal_player(pname)
 	bones.nohack.on_respawnplayer(pref)
 end
 
-local function lock_player_at_spawn(player, respawn_pos)
-	local pname = player:get_player_name()
+local function lock_player_at_spawn(pref, respawn_pos)
+	local pname = pref:get_player_name()
 
 	-- Do this soon.
 	-- This is a hacky way to prevent the player from being allowed to move.
 	local function donext()
-		local player = minetest.get_player_by_name(pname)
-		if not player then
+		local pref = minetest.get_player_by_name(pname)
+		if not pref then
 			return
 		end
 
@@ -530,7 +530,7 @@ local function lock_player_at_spawn(player, respawn_pos)
 		local ent = obj:get_luaentity()
 		if ent then
 			ent.player_name = pname
-			player:set_attach(obj)
+			pref:set_attach(obj)
 		end
 	end
 

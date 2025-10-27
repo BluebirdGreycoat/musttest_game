@@ -97,11 +97,11 @@ function minetest.unban_player_or_ip(name)
 end
 
 local delete_particlespawner = minetest.delete_particlespawner
-function minetest.delete_particlespawner(id, player)
-	if type(player) == "string" then
-		player = rename.grn(player)
+function minetest.delete_particlespawner(id, pnameorref)
+	if type(pnameorref) == "string" then
+		pnameorref = rename.grn(pnameorref)
 	end
-	return delete_particlespawner(id, player)
+	return delete_particlespawner(id, pnameorref)
 end
 
 -- This function should never be called with an alias anyway.

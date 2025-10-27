@@ -7,27 +7,27 @@ binoculars.modpath = minetest.get_modpath("binoculars")
 -- Global to allow overriding
 
 -- May be called with player object or player name.
-function binoculars.update_player_property(player)
-	if type(player) == "string" then
-		player = minetest.get_player_by_name(player)
+function binoculars.update_player_property(pref)
+	if type(pref) == "string" then
+		pref = minetest.get_player_by_name(pref)
 	end
-	if not player or not player:is_player() then
+	if not pref or not pref:is_player() then
 		return
 	end
 
 	local new_zoom_fov = 0
 	local have_binocs = false
 
-	if player:get_wielded_item():get_name() == "binoculars:binoculars" then
+	if pref:get_wielded_item():get_name() == "binoculars:binoculars" then
 		new_zoom_fov = 10
 		have_binocs = true
 	end
 
 	if have_binocs then
-		pova.set_modifier(player, "properties", {zoom_fov=new_zoom_fov}, "binoculars")
+		pova.set_modifier(pref, "properties", {zoom_fov=new_zoom_fov}, "binoculars")
 		return true
 	else
-		pova.remove_modifier(player, "properties", "binoculars")
+		pova.remove_modifier(pref, "properties", "binoculars")
 	end
 end
 

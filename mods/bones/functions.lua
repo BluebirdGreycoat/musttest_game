@@ -21,9 +21,9 @@ local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
     
 	-- Don't let dead players pick bones.
-	local player = minetest.get_player_by_name(name)
-	if not player or not player:is_player() then return false end
-	if player:get_hp() <= 0 then return false end
+	local pref = minetest.get_player_by_name(name)
+	if not pref or not pref:is_player() then return false end
+	if pref:get_hp() <= 0 then return false end
     
 	if owner == "" or owner == name or minetest.check_player_privs(name, "protection_bypass") then
 		return true
@@ -243,9 +243,9 @@ bones.find_suitable_bone_location = find_suitable_bone_location
 -- player's health is not actually changed. You might need to update a few other
 -- datums too, to get exactly the right result.
 function bones.dump_bones(pname, preserve_xp)
-	local player = minetest.get_player_by_name(pname)
-	if player then
-		bones.on_dieplayer(player, {type="none"}, preserve_xp)
+	local pref = minetest.get_player_by_name(pname)
+	if pref then
+		bones.on_dieplayer(pref, {type="none"}, preserve_xp)
 	end
 end
 

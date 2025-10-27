@@ -347,8 +347,9 @@ function depositor.save()
 		end
 	end
 
+	local shopfiledata = table.concat(shopstrings, "\n") .. "\n"
 	local dropfiledata = minetest.serialize(depositor.drops)
-	minetest.safe_file_write(depositor.datafile, table.concat(shopstrings, "\n"))
+	minetest.safe_file_write(depositor.datafile, shopfiledata)
 	minetest.safe_file_write(depositor.dropfile, dropfiledata)
 end
 

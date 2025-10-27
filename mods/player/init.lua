@@ -1,19 +1,21 @@
 
--- Minetest 0.4 mod: player
+-- Minetest 0.4 mod: "playermod" Name change required due to EXCESSIVE use of
+-- "player" as a variable name throughout the codebase, leading to a sitation
+-- where somebody, somewhere, is changing its value.
 -- See README.txt for licensing and other information.
-if not minetest.global_exists("player") then player = {} end
-player.modpath = minetest.get_modpath("player")
+if not minetest.global_exists("playermod") then playermod = {} end
+playermod.modpath = minetest.get_modpath("player")
 
-dofile(player.modpath .. "/hotbar.lua")
+dofile(playermod.modpath .. "/hotbar.lua")
 
 -- Player animation blending
 -- Note: This is currently broken due to a bug in Irrlicht, leave at 0
 local animation_blend = 0
 
-player.registered_player_models = {}
+playermod.registered_player_models = {}
 
 -- Local for speed.
-local models = player.registered_player_models
+local models = playermod.registered_player_models
 
 
 
@@ -103,12 +105,12 @@ minetest.register_on_joinplayer(function(pref)
 			not sheriff.is_cheater(pname) then
 		local meta = pref:get_meta()
 		if meta:get_int("show_big_hotbar") == 1 then
-			player.set_big_hotbar(pref)
+			playermod.set_big_hotbar(pref)
 		else
-			player.set_small_hotbar(pref)
+			playermod.set_small_hotbar(pref)
 		end
   else
-		player.set_small_hotbar(pref)
+		playermod.set_small_hotbar(pref)
   end
   
 	pref:hud_set_hotbar_selected_image("hud_hotbar_selected.png")

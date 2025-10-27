@@ -639,7 +639,7 @@ function survivalist.attempt_claim(pname)
       minetest.set_player_privs(pname, privs)
 			minetest.notify_authentication_modified(pname)
       
-      player.set_big_hotbar(pref)
+      playermod.set_big_hotbar(pref)
       minetest.chat_send_player(pname,
         "# Server: You can now use the /hotbar command to switch sizes.")
     end

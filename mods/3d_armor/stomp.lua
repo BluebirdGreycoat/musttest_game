@@ -8,7 +8,7 @@ function armor.find_ground_by_raycast(pos, player)
   pos = vector.round(pos)
   local p1 = pos
   local p2 = vector.offset(pos, 0, -100, 0)
-  local ray = Raycast(p1, p2, false, false)
+  local ray = Raycast(p1, p2, false, true) -- Intersect liquids required.
   local p3 = pos
 
   for pt in ray do

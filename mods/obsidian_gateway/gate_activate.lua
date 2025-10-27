@@ -6,6 +6,36 @@ local math_random = math.random
 
 
 
+-- Quickly check for protection in an area.
+local function check_protection(pos, radius)
+	-- How much beyond the radius to check for protections.
+	local e = 3
+
+	local minp = vector.new(pos.x-(radius+e), pos.y-(radius+e), pos.z-(radius+e))
+	local maxp = vector.new(pos.x+(radius+e), pos.y+(radius+e), pos.z+(radius+e))
+
+	-- Step size, to avoid checking every single node.
+	-- This assumes protections cannot be smaller than this size.
+	local ss = 3
+	local check = minetest.test_protection
+
+	for x=minp.x, maxp.x, ss do
+		for y=minp.y, maxp.y, ss do
+			for z=minp.z, maxp.z, ss do
+				if check({x=x, y=y, z=z}, "") then
+					-- Protections are present.
+					return true
+				end
+			end
+		end
+	end
+
+	-- Nothing in the area is protected.
+	return false
+end
+
+
+
 function obsidian_gateway.attempt_activation(pos, player, itemstring)
 	local pname = player:get_player_name()
 	local ppos = vector_round(player:get_pos())

@@ -3935,5 +3935,38 @@ fortress.v2.fortress_data = {
 					chance=EXCEPTIONAL_LOOT_CHANCE, loot="exceptional"},
 			},
 		},
+
+		-- The 2x2 tower keep object.
+		tower_keep_dummy = {},
+		tower_keep = {
+			schem = {
+				{file="nf_keep_bottom",
+					priority=MEDIUM_ENCLOSED_CHAMBER_PRIORITY},
+			},
+			size = {x=2, y=1, z=2},
+			valid_neighbors = {
+				-- Basement.
+				[HASHKEY(0, -1, 0)] = {solid_top=true},
+				[HASHKEY(1, -1, 0)] = {solid_top=true},
+				[HASHKEY(0, -1, 1)] = {solid_top=true},
+				[HASHKEY(1, -1, 1)] = {solid_top=true},
+
+				-- Entrances on the edges.
+				-- West side.
+				[HASHKEY(-1, 0, 1)] = BRIDGE_CONNECT[DIRNAME.WEST],
+				-- East side.
+				[HASHKEY(2, 0, 0)] = BRIDGE_CONNECT[DIRNAME.EAST],
+				-- South side.
+				[HASHKEY(0, 0, -1)] = BRIDGE_CONNECT[DIRNAME.SOUTH],
+				-- North side.
+				[HASHKEY(1, 0, 2)] = BRIDGE_CONNECT[DIRNAME.NORTH],
+			},
+			footprint = {
+				[HASHKEY(0, 0, 0)] = "ns_walk_bridge",
+				[HASHKEY(1, 0, 0)] = "ew_walk_bridge",
+				[HASHKEY(0, 0, 1)] = "ew_walk_bridge",
+				[HASHKEY(1, 0, 1)] = "ns_walk_bridge",
+			},
+		},
 	},
 }

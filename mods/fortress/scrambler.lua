@@ -1,11 +1,22 @@
 
+local FORTREALM_MINY = rc.get_realm_data("naraxen").minp.y
+local FORTREALM_MAXY = rc.get_realm_data("naraxen").maxp.y
+
+
+
 -- API function. Teleports, TP arrows, and Jaunt query this to see if they can
 -- teleport to or from a location. Function must return FALSE if tp is to be
 -- disallowed here, otherwise TRUE for all other positions.
 function fortress.can_teleport_at(pos)
-	pos = vector.round(pos)
+	-- Efficiency check. Forts (and their suppressor obelisks) never spawn
+	-- anywhere but in Naraxen (translated, Stone Garden).
+	if pos.y < FORTREALM_MINY or pos.y > FORTREALM_MAXY then
+		return true
+	end
 
+	pos = vector.round(pos)
 	local forts = fortress.v2.get_fortinfo_at_pos(pos)
+
 	for k, v in ipairs(forts) do
 		if v.spawned then
 			if type(v.suppressors) == "table" then

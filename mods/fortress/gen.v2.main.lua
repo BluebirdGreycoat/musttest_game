@@ -159,6 +159,8 @@ function fortress.v2.make_fort(user_params)
 			fortress.v2.save_fort_information()
 
 			-- Save heavy data: the entire chunk layout of the fortress.
+			-- This way, if we ever want to do anything with the fortress at some
+			-- point in the future, we have the data available.
 			fortress.v2.sql_write(
 				tostring(minetest.hash_node_position(params.spawn_pos)),
 				xban.serialize(params.traversal.determined))

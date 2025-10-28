@@ -146,19 +146,6 @@ function fortress.v2.make_fort(user_params)
 		-- map. Only after fortgen completed normally.
 		if params.final_flag and not params.dry_run then
 			save_occupied_locations(params)
-
-			-- Save light fort information.
-			fortress.v2.add_new_fort_entry({
-				pos = params.spawn_pos,
-				minp = minp,
-				maxp = maxp,
-			})
-			fortress.v2.save_fort_information()
-
-			-- Save heavy data: the entire chunk layout of the fortress.
-			fortress.v2.sql_write(
-				tostring(minetest.hash_node_position(params.spawn_pos)),
-				xban.serialize(params.traversal.determined))
 		end
 
 		fortress.v2.process_layout(params)

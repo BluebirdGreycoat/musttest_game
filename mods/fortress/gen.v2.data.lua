@@ -44,7 +44,7 @@ local BRIDGE_HOUSE_ROOF_CHANCE = 40
 local JUNCTION_GLOWSTONE_ERASER_CHANCE = 60
 local JUNCTION_PLATFORM_ERASER_CHANCE = 50
 local GH_WINDOW_DECO_CHANCE = 80 -- Window deco for great halls.
-local OBELISK_CHANCE = 20
+local OBELISK_CHANCE = 10
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.
@@ -3950,6 +3950,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_great_hall_roof", force=false},
 
+				-- Spawners.
 				{
 					file = "nf_detail_spawner1",
 					chance = OERKKI_SPAWNER_CHANCE,
@@ -3970,6 +3971,32 @@ fortress.v2.fortress_data = {
 					rotation = "random",
 					offset = {x_min=4, x_max=15, y=0, z_min=4, z_max=26},
 					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
+
+				-- Obelisks.
+				{
+					file = "nf_dead_obelisk",
+					chance = OBELISK_CHANCE,
+					rotation = "0",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = OBELISK_PRIORITY,
+				},
+				{
+					file = "nf_live_obelisk",
+					chance = 90,
+					rotation = "0",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = OBELISK_PRIORITY + 1,
+					require = {nf_dead_obelisk=true},
+				},
+				{
+					file = "nf_active_obelisk",
+					chance = 10,
+					rotation = "0",
+					offset = {x_min=4, x_max=15, y=1, z_min=4, z_max=26},
+					priority = OBELISK_PRIORITY + 2,
+					require = {nf_live_obelisk=true},
+					notify = true,
 				},
 			},
 			size = {x=2, y=2, z=3},
@@ -4005,6 +4032,7 @@ fortress.v2.fortress_data = {
 			schem = {
 				{file="nf_great_hall_roof", rotation="90", force=false},
 
+				-- Spawners.
 				{
 					file = "nf_detail_spawner1",
 					chance = OERKKI_SPAWNER_CHANCE,
@@ -4025,6 +4053,32 @@ fortress.v2.fortress_data = {
 					rotation = "random",
 					offset = {x_min=4, x_max=26, y=0, z_min=4, z_max=15},
 					priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+				},
+
+				-- Obelisks.
+				{
+					file = "nf_dead_obelisk",
+					chance = OBELISK_CHANCE,
+					rotation = "0",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = OBELISK_PRIORITY,
+				},
+				{
+					file = "nf_live_obelisk",
+					chance = 90,
+					rotation = "0",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = OBELISK_PRIORITY + 1,
+					require = {nf_dead_obelisk=true},
+				},
+				{
+					file = "nf_active_obelisk",
+					chance = 10,
+					rotation = "0",
+					offset = {x_min=4, x_max=26, y=1, z_min=4, z_max=15},
+					priority = OBELISK_PRIORITY + 2,
+					require = {nf_live_obelisk=true},
+					notify = true,
 				},
 			},
 			size = {x=3, y=2, z=2},

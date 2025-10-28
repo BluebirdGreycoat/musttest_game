@@ -280,6 +280,10 @@ minetest.register_node("cavestuff:glow_white_crystal", {
 		}
 	},
 
+	on_destruct = function(...)
+		return cavestuff.white_crystal.on_destruct(...)
+	end,
+
 	on_construct = function(...)
 		return cavestuff.white_crystal.on_construct(...)
 	end,

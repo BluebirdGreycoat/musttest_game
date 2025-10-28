@@ -47,6 +47,7 @@ end
 
 
 function fortress.v2.get_fortinfo_at_pos(pos)
+	pos = vector.round(pos)
 	local i = {}
 
 	for _, info in ipairs(fortress.v2.FORTRESS_INFO) do
@@ -66,6 +67,16 @@ function fortress.v2.get_fortinfo_at_pos(pos)
 	end
 
 	return i
+end
+
+
+
+function fortress.v2.touch_specific_fort(pos)
+	pos = vector.round(pos)
+
+	for _, info in ipairs(fortress.v2.FORTRESS_INFO) do
+		if vector.equals(info.pos, pos) then return info end
+	end
 end
 
 

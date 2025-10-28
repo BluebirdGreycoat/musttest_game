@@ -6,7 +6,15 @@ function fortress.can_teleport_at(pos)
 	pos = vector.round(pos)
 
 	local forts = fortress.v2.get_fortinfo_at_pos(pos)
-	if #forts > 0 then return false end
+	for k, v in ipairs(forts) do
+		if v.spawned then
+			if type(v.suppressors) == "table" then
+				if #v.suppressors > 0 then return false end
+			elseif (v.suppressors or 0) > 0 then
+				return false
+			end
+		end
+	end
 
 	return true
 end

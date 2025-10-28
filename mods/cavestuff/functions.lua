@@ -163,6 +163,58 @@ end
 
 
 
+local function handle_fort_obelisk(pos)
+	local meta = minetest.get_meta(pos)
+	if meta:get_int("fortress_suppressor") ~= 1 then return end
+
+	local strpos = meta:get_string("fortress_location")
+	local fortpos = minetest.string_to_pos(strpos)
+	if not fortpos then return end
+
+	local fort = fortress.v2.touch_specific_fort(fortpos)
+	if not fort then return end
+
+	-- Setting these to none doesn't seem to prevent this function from getting
+	-- called twice for the same location(s).
+	meta:set_int("fortress_suppressor", 0)
+	meta:set_string("fortress_location", "")
+
+	--minetest.log("error", "Destructing!")
+	local do_boom = false
+
+	-- Be aware that this destructor can get called twice for the SAME node.
+	-- Remove by matching position to ensure we only do this once.
+	for k, v in ipairs(fort.suppressors) do
+		if vector.equals(v, pos) then
+			table.remove(fort.suppressors, k)
+			fortress.v2.save_fort_information()
+			do_boom = true
+			break
+		end
+	end
+
+	if do_boom then
+		minetest.after(1, function()
+			local def = {
+				radius = 10,
+				damage_radius = 30,
+				ignore_protection = false,
+				disable_drops = false,
+				ignore_on_blast = false,
+			}
+			tnt.boom(pos, def)
+		end)
+	end
+end
+
+
+
+function cavestuff.white_crystal.on_destruct(pos)
+	handle_fort_obelisk(pos)
+end
+
+
+
 function cavestuff.white_crystal.on_timer(pos, elapsed)
 	local sides = {
 		{x=pos.x+1, y=pos.y, z=pos.z},

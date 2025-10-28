@@ -24,12 +24,14 @@ function fortress.v2.process_layout(params)
 				-- don't place any schematics.
 				if altname ~= "IGNORE" then
 					local chunkdata = params.chunks[altname]
-					fortress.v2.expand_single_schem(schempos, chunkdata, params)
+					fortress.v2.expand_single_schem(
+						schempos, chunkname, chunkdata, params)
 					fortress.v2.collect_chests(schempos, chunkdata, params)
 				end
 			else
 				local chunkdata = params.chunks[chunkname]
-				fortress.v2.expand_single_schem(schempos, chunkdata, params)
+				fortress.v2.expand_single_schem(
+					schempos, chunkname, chunkdata, params)
 				fortress.v2.collect_chests(schempos, chunkdata, params)
 			end
 		end
@@ -47,7 +49,7 @@ end
 
 
 
-function fortress.v2.expand_single_schem(schempos, chunkdata, params)
+function fortress.v2.expand_single_schem(schempos, chunkname, chunkdata, params)
 	-- Obtain relevant parameters for this section of fortress.
 	-- A chunk may contain multiple schematics to place, each with their own
 	-- parameters and chance to spawn.
@@ -58,7 +60,7 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 	-- Calculate size of chunk. A rough guess which defaults to step size.
 	local size = vector.multiply((chunkdata.size or {x=1, y=1, z=1}), params.step)
 	local random = params.yeskings
-	local thischunk = chunkdata.schem
+	local these_schems = chunkdata.schem
 	local all_schems = params.build.schems
 
 	-- Will store the names of excluded schem files.
@@ -72,7 +74,7 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 
 	-- Add schems which are part of this chunk.
 	-- A chunk may have multiple schems with different parameters.
-	for _, v in ipairs(thischunk) do
+	for _, v in ipairs(these_schems) do
 		local chance = v.chance or 100
 
 		if random(1, 100) <= chance and not excluded[v.file] then
@@ -141,6 +143,17 @@ function fortress.v2.expand_single_schem(schempos, chunkdata, params)
 				-- This is useful for rotated schems which won't match after rotation.
 				set_param2_rotations = chunkdata.set_param2_rotations,
 			}
+
+			-- Schems may request a function call to notify about their construction.
+			if v.notify then
+				local t = params.notifications
+				t[#t + 1] = {
+					pos = vector.copy(realschempos),
+					chunk = chunkname,
+					schem = file,
+					spawn = vector.copy(params.spawn_pos),
+				}
+			end
 
 			-- We will jump here if it is determined that this schem will NOT be
 			-- included, based on filters, etc.

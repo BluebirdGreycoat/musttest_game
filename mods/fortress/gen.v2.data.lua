@@ -44,6 +44,7 @@ local BRIDGE_HOUSE_ROOF_CHANCE = 40
 local JUNCTION_GLOWSTONE_ERASER_CHANCE = 60
 local JUNCTION_PLATFORM_ERASER_CHANCE = 50
 local GH_WINDOW_DECO_CHANCE = 80 -- Window deco for great halls.
+local OBELISK_CHANCE = 100
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.
@@ -60,6 +61,7 @@ local JUNCTION_GLOWSTONE_ERASER_PRIORITY = 10 -- Below bridge houses.
 local JUNCTION_PLATFORM_ERASER_PRIORITY = 10
 local MEDIUM_ENCLOSED_CHAMBER_PRIORITY = WINDOW_DECO_PRIORITY + 1 -- Overwrite.
 local PORTAL_PRIORITY = WINDOW_DECO_PRIORITY + 3 -- Ensure portals overwrite.
+local OBELISK_PRIORITY = 900
 
 -- Bridge probabilities.
 local BROKEN_BRIDGE_PROB = 8
@@ -345,6 +347,34 @@ local HALLWAY_ELITE_SPAWNER = {
 	rotation = "random",
 	offset = {x=3, y=3, z=3},
 	priority = ELITE_OERKKI_SPAWNER_PRIORITY,
+}
+
+
+
+-- Obelisks.
+local HALLWAY_OBELISK_DEAD = {
+	file = "nf_dead_obelisk",
+	chance = OBELISK_CHANCE,
+	rotation = "0",
+	offset = {x=4, y=4, z=4},
+	priority = OBELISK_PRIORITY,
+}
+local HALLWAY_OBELISK_LIVE = {
+	file = "nf_live_obelisk",
+	chance = 90,
+	rotation = "0",
+	offset = {x=4, y=4, z=4},
+	priority = OBELISK_PRIORITY + 1,
+	require = {nf_dead_obelisk=true},
+}
+local HALLWAY_OBELISK_ACTIVE = {
+	file = "nf_active_obelisk",
+	chance = 10,
+	rotation = "0",
+	offset = {x=4, y=4, z=4},
+	priority = OBELISK_PRIORITY + 2,
+	require = {nf_live_obelisk=true},
+	notify = true,
 }
 
 
@@ -716,6 +746,14 @@ fortress.v2.fortress_data = {
 		{x=8, y=8, z=8, weight=25},
 		{x=6, y=8, z=6, weight=10},
 	},
+
+	-- Optional handler for any schem that has 'notify=true'.
+	-- Params passed are pos (worldspace) and schem (filename).
+	-- Notification happens *after* the fort is written to map.
+	-- Parameters are passed through a table.
+	on_schem_notify = function(...)
+		return fortress.v2.handle_notify(...)
+	end,
 
 	-- List of node replacements.
 	replacements = {
@@ -1246,6 +1284,9 @@ fortress.v2.fortress_data = {
 				HALLWAY_FLOOR_LAVA,
 				HALLWAY_OERKKI_SPAWNER,
 
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
+
 				-- Room detailing.
 				{file="nf_detail_room1", chance=PASSAGE_DETAIL_CHANCE, rotation="90",
 					offset={x=3, y=3, z=3}},
@@ -1297,6 +1338,9 @@ fortress.v2.fortress_data = {
 				-- Hazard/spawner detailing.
 				HALLWAY_FLOOR_LAVA,
 				HALLWAY_OERKKI_SPAWNER,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 
 				-- Room detailing.
 				{file="nf_detail_room1", chance=PASSAGE_DETAIL_CHANCE,

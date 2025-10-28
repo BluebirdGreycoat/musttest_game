@@ -238,6 +238,11 @@ function fortress.v2.gen_init(user_params)
 		-- Elements are subtables with position hash and chunk name.
 		chunk_usage = {},
 
+		-- List of notifications to be processed after the fort is written.
+		-- These are not triggered for dry runs or partial generation.
+		notifications = {},
+		notify_func = FORTDATA.on_schem_notify,
+
 		-- NOTE: during mapgen, additional keys 'vm_minp' and 'vm_maxp' are added to
 		-- this table. There may be others!
 	}

@@ -130,6 +130,19 @@ end
 
 
 
+local function process_notifications(params)
+	local notify_func = params.notify_func
+	local notifications = params.notifications
+
+	if type(notify_func) ~= "function" then return end
+
+	for _, info in ipairs(notifications) do
+		notify_func(info)
+	end
+end
+
+
+
 -- To be called once map region fully loaded.
 function fortress.v2.apply_layout(params)
 	local minp = table.copy(params.vm_minp)
@@ -308,6 +321,7 @@ function fortress.v2.apply_layout(params)
 	if params.final_flag then
 		fortress.v2.confirm_fort_entry(params.spawn_pos)
 		fortress.v2.save_fort_information()
+		process_notifications(params)
 	end
 
 	-- Report success, and how long it took.

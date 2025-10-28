@@ -29,13 +29,13 @@ end
 
 
 -- API function. Get the complete layout (as a table) of a fort at a given
--- spawn location. If no fort spawned at the location, returns nil.
+-- spawn location. If no fort spawned from the location, returns nil.
 --
 -- You can get fort spawn locations by calling fortress.get_forts_at_pos() and
 -- inspecting the 'pos' entries in each info subtable.
 --
--- If not nil, the returned table has keys as hashed "chunk" positions (always
--- relative to 'spawnpos') and values are string chunk names.
+-- If not nil, the returned table uses hashed "chunk" positions (always
+-- relative to 'spawnpos') as keys, and values are string chunk names.
 function fortress.get_fort_layout(spawnpos)
 	spawnpos = vector.round(spawnpos)
 

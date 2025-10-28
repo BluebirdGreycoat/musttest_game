@@ -2898,6 +2898,9 @@ fortress.v2.fortress_data = {
 		small_plaza = {
 			schem = {
 				{file="nf_building_solid", force=false, offset={x=0, y=-7, z=0}},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			size = {x=1, y=1, z=1},
 			chests = GET_BASIC_LOOT_POSITIONS(),

@@ -44,7 +44,7 @@ local BRIDGE_HOUSE_ROOF_CHANCE = 40
 local JUNCTION_GLOWSTONE_ERASER_CHANCE = 60
 local JUNCTION_PLATFORM_ERASER_CHANCE = 50
 local GH_WINDOW_DECO_CHANCE = 80 -- Window deco for great halls.
-local OBELISK_CHANCE = 100
+local OBELISK_CHANCE = 20
 
 -- Schem priorities.
 -- Lower numbers are written to map before higher numbers.
@@ -1410,6 +1410,9 @@ fortress.v2.fortress_data = {
 				--]]
 
 				HALLWAY_FLOOR_LAVA, HALLWAY_OERKKI_SPAWNER,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.NORTH] = PASSAGE_CONNECT[DIRNAME.NORTH],
@@ -1429,7 +1432,8 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_n_capped"},
 				{file="hall_end_stair", rotation="180", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=4, y=4, z=5}, exclude={nf_passage_door=true}},
+					offset={x=4, y=4, z=5},
+					exclude={nf_passage_door=true, nf_dead_obelisk=true}},
 				{file="nf_passage_door", rotation="90",
 					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=8}},
 
@@ -1442,6 +1446,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1465,7 +1472,8 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_s_capped"},
 				{file="hall_end_stair", rotation="0", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=4, y=4, z=-2}, exclude={nf_passage_door=true}},
+					offset={x=4, y=4, z=-2},
+					exclude={nf_passage_door=true, nf_dead_obelisk=true}},
 				{file="nf_passage_door", rotation="90",
 					chance=HALLWAY_CAP_DOORWAY_PROB, offset={x=3, y=4, z=0}},
 
@@ -1478,6 +1486,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1501,7 +1512,8 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_e_capped"},
 				{file="hall_end_stair", rotation="270", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=5, y=4, z=4}, exclude={nf_passage_door=true}},
+					offset={x=5, y=4, z=4},
+					exclude={nf_passage_door=true, nf_dead_obelisk=true}},
 				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
 					offset={x=8, y=4, z=3}},
 
@@ -1514,6 +1526,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1537,7 +1552,8 @@ fortress.v2.fortress_data = {
 				{file="nf_passage_w_capped"},
 				{file="hall_end_stair", rotation="90", chance=20,
 					priority=PASSAGE_TO_ROOF_STAIR_PRIORITY,
-						offset={x=-2, y=4, z=4}, exclude={nf_passage_door=true}},
+					offset={x=-2, y=4, z=4},
+					exclude={nf_passage_door=true, nf_dead_obelisk=true}},
 				{file="nf_passage_door", chance=HALLWAY_CAP_DOORWAY_PROB,
 					offset={x=0, y=4, z=3}},
 
@@ -1550,6 +1566,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1585,6 +1604,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1617,6 +1639,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1649,6 +1674,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1681,6 +1709,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1714,6 +1745,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1746,6 +1780,9 @@ fortress.v2.fortress_data = {
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1778,6 +1815,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1810,6 +1850,9 @@ fortress.v2.fortress_data = {
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
 				{file="fortress_window_deco", chance=70, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.DOWN] = {solid_top=true},
@@ -1837,6 +1880,9 @@ fortress.v2.fortress_data = {
 					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
@@ -1857,6 +1903,9 @@ fortress.v2.fortress_data = {
 					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
@@ -1877,6 +1926,9 @@ fortress.v2.fortress_data = {
 					offset={x=8, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
@@ -1897,6 +1949,9 @@ fortress.v2.fortress_data = {
 					offset={x=0, y=4, z=3}},
 
 				HALLWAY_OERKKI_SPAWNER, HALLWAY_FLOOR_LAVA,
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.SOUTH] = PASSAGE_CONNECT[DIRNAME.SOUTH],
@@ -1925,6 +1980,9 @@ fortress.v2.fortress_data = {
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="180", force=false,
 					offset={x=3, y=2, z=11}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
@@ -1954,6 +2012,9 @@ fortress.v2.fortress_data = {
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="90", force=false,
 					offset={x=-2, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.EAST] = PASSAGE_CONNECT[DIRNAME.EAST],
@@ -1983,6 +2044,9 @@ fortress.v2.fortress_data = {
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="270", force=false,
 					offset={x=11, y=2, z=3}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],
@@ -2012,6 +2076,9 @@ fortress.v2.fortress_data = {
 				-- Outside window decorations.
 				{file="fortress_window_deco", chance=50, rotation="0", force=false,
 					offset={x=3, y=2, z=-2}, priority=WINDOW_DECO_PRIORITY},
+
+				-- Obelisks.
+				HALLWAY_OBELISK_DEAD, HALLWAY_OBELISK_LIVE, HALLWAY_OBELISK_ACTIVE,
 			},
 			valid_neighbors = {
 				[DIRNAME.WEST] = PASSAGE_CONNECT[DIRNAME.WEST],

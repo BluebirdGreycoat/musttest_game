@@ -173,6 +173,7 @@ local function handle_fort_obelisk(pos)
 
 	local fort = fortress.v2.touch_specific_fort(fortpos)
 	if not fort then return end
+	if type(fort.suppressors) ~= "table" then return end
 
 	-- Setting these to none doesn't seem to prevent this function from getting
 	-- called twice for the same location(s).

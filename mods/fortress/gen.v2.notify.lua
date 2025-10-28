@@ -15,6 +15,8 @@ local function setup_obelisk(info)
 
 	-- Add position to list of this fort's suppressors. Forbid duplicates.
 	fort.suppressors = fort.suppressors or {}
+	if type(fort.suppressors) ~= "table" then return end
+
 	local need_add = true
 	for k, v in ipairs(fort.suppressors) do
 		if vector.equals(v, npos) then

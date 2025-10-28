@@ -67,3 +67,14 @@ function fortress.v2.get_fortinfo_at_pos(pos)
 
 	return i
 end
+
+
+
+function fortress.v2.confirm_fort_entry(pos)
+	for k, v in ipairs(fortress.v2.FORTRESS_INFO) do
+		if vector.equals(v.pos, pos) then
+			v.spawned = true
+			break
+		end
+	end
+end

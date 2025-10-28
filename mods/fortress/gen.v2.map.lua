@@ -297,6 +297,12 @@ function fortress.v2.apply_layout(params)
 	-- Last-ditch effort to fix these darn lighting issues.
 	mapfix.work(minp, maxp)
 
+	-- Mark (in fortress data) that this fortress successfully spawned.
+	if params.final_flag then
+		fortress.v2.confirm_fort_entry(params.spawn_pos)
+		fortress.v2.save_fort_information()
+	end
+
 	-- Report success, and how long it took.
 	params.log("action", "Fortgen completed after " ..
 		math.floor(os.time() - params.time) .. " seconds.")

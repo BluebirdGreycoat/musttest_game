@@ -141,14 +141,28 @@ function fortress.v2.make_fort(user_params)
 
 	-- This flag set only if algorithm ran into a fatal error.
 	if not params.algorithm_fail then
+		fortress.v2.process_layout(params)
+		fortress.v2.calculate_voxel_bounds(params)
+
 		-- Before writing anything to the map (which actually happens in a mapgen
 		-- callback), first save all determined locations we'll occupy to a global
 		-- map. Only after fortgen completed normally.
 		if params.final_flag and not params.dry_run then
 			save_occupied_locations(params)
-		end
 
-		fortress.v2.process_layout(params)
+			-- Save light fort information.
+			fortress.v2.add_new_fort_entry({
+				pos = params.spawn_pos,
+				minp = params.vm_minp,
+				maxp = params.vm_maxp,
+			})
+			fortress.v2.save_fort_information()
+
+			-- Save heavy data: the entire chunk layout of the fortress.
+			fortress.v2.sql_write(
+				tostring(minetest.hash_node_position(params.spawn_pos)),
+				xban.serialize(params.traversal.determined))
+		end
 
 		-- Skip writing to map for dry runs.
 		if not params.dry_run then

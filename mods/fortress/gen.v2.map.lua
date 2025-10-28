@@ -14,7 +14,7 @@ local POS_TO_STR = minetest.pos_to_string
 
 
 
-function fortress.v2.write_map(params)
+function fortress.v2.calculate_voxel_bounds(params)
 	local minp = table.copy(params.spawn_pos)
 	local maxp = table.copy(params.spawn_pos)
 
@@ -30,14 +30,20 @@ function fortress.v2.write_map(params)
 		if v.pos.z + v.size.z > maxp.z then maxp.z = v.pos.z + v.size.z end
 	end
 
-	params.log("action", "Writing fortress to map.")
+	params.vm_minp = minp
+	params.vm_maxp = maxp
+end
+
+
+
+function fortress.v2.write_map(params)
+	local minp, maxp = params.vm_minp, params.vm_maxp
+
+	params.log("action", "Emerging fortress world region in preparation.")
 	params.log("action", "POS: " .. POS_TO_STR(params.spawn_pos))
 	params.log("action", "MINP: " .. POS_TO_STR(minp))
 	params.log("action", "MAXP: " .. POS_TO_STR(maxp))
 	params.log("action", "Volume: " .. POS_TO_STR(vector.subtract(maxp, minp)))
-
-	params.vm_minp = minp
-	params.vm_maxp = maxp
 
 	local MAPGENTIME0 = os.clock()
 
@@ -136,6 +142,7 @@ function fortress.v2.apply_layout(params)
 	end
 
 	local TIME0 = os.clock()
+	params.log("action", "Writing fortress to map.")
 
 	local put_schem = minetest.place_schematic_on_vmanip
 	local vm = minetest.get_voxel_manip(minp, maxp)
@@ -299,20 +306,8 @@ function fortress.v2.apply_layout(params)
 
 	-- Mark (in fortress data) that this fortress successfully spawned.
 	if params.final_flag then
-		-- Save light fort information.
-		-- We have to do this here because otherwise we won't have minp or maxp.
-		fortress.v2.add_new_fort_entry({
-			pos = params.spawn_pos,
-			minp = minp,
-			maxp = maxp,
-		})
 		fortress.v2.confirm_fort_entry(params.spawn_pos)
 		fortress.v2.save_fort_information()
-
-		-- Save heavy data: the entire chunk layout of the fortress.
-		fortress.v2.sql_write(
-			tostring(minetest.hash_node_position(params.spawn_pos)),
-			xban.serialize(params.traversal.determined))
 	end
 
 	-- Report success, and how long it took.

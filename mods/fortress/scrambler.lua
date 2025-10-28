@@ -45,5 +45,8 @@ function fortress.get_fort_layout(spawnpos)
 
 	if not data then return end
 
-	return minetest.deserialize(data)
+	local layout = minetest.deserialize(data)
+	if type(layout) ~= "table" then return end
+
+	return layout
 end

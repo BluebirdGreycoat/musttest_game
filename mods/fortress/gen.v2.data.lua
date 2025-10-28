@@ -4038,7 +4038,7 @@ fortress.v2.fortress_data = {
 		tower_keep_roof_dummy = {},
 		tower_keep_roof = {
 			schem = {
-				{file="nf_keep_roof"},
+				{file="nf_keep_roof", force=false},
 			},
 			size = {x=2, y=1, z=2},
 			footprint = {

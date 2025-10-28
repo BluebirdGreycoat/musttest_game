@@ -297,14 +297,6 @@ function fortress.v2.apply_layout(params)
 	-- Last-ditch effort to fix these darn lighting issues.
 	mapfix.work(minp, maxp)
 
-	-- Save fort information.
-	fortress.v2.add_new_fort_entry({
-		pos = params.spawn_pos,
-		minp = minp,
-		maxp = maxp,
-	})
-	fortress.v2.save_fort_information()
-
 	-- Report success, and how long it took.
 	params.log("action", "Fortgen completed after " ..
 		math.floor(os.time() - params.time) .. " seconds.")

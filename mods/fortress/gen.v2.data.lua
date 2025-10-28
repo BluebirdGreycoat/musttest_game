@@ -2277,7 +2277,7 @@ fortress.v2.fortress_data = {
 				{file="nf_building_solid", force=false, offset={x=22, y=-7, z=22}},
 
 				-- Don't even think about what they burnt on this.
-				{file="nf_detail_pagan_alter", chance=5, force=false,
+				{file="nf_detail_pagan_altar", chance=5, force=false,
 					offset={x_min=12, x_max=13, y=4, z_min=11, z_max=12}, priority=1,
 					exclude={fortress_well_water=true, fortress_well_lava=true}},
 
@@ -3725,7 +3725,7 @@ fortress.v2.fortress_data = {
 				-- Signs of human sacrifice. Many Sams undoubtedly met a horrid fate.
 				{file="nf_detail_throne", chance=5, force=false,
 					offset={x=8, y=2, z=20}, priority=1},
-				{file="nf_detail_pagan_alter", chance=5, force=false,
+				{file="nf_detail_pagan_altar", chance=5, force=false,
 					offset={x=7, y=2, z=7}, priority=1},
 			},
 			size = {x=2, y=2, z=3},
@@ -3876,7 +3876,7 @@ fortress.v2.fortress_data = {
 				-- Signs of human sacrifice. Many Sams undoubtedly met a horrid fate.
 				{file="nf_detail_throne", chance=5, force=false, rotation="90",
 					offset={x=20, y=2, z=8}, priority=1},
-				{file="nf_detail_pagan_alter", chance=5, force=false, rotation="90",
+				{file="nf_detail_pagan_altar", chance=5, force=false, rotation="90",
 					offset={x=7, y=2, z=7}, priority=1},
 			},
 			size = {x=3, y=2, z=2},

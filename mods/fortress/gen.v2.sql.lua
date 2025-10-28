@@ -4,18 +4,38 @@ fortress.v2.SQL_DATABASE_FILE =
 
 
 
-local function execute_statement(stmt)
+local function execute_statement(stmt, values)
 	if not fortress.v2.SQL_LIB then return end
 	if not fortress.v2.SQL_DATABASE_OBJ then return end
 
+	local SQL_ROW = fortress.v2.SQL_LIB.ROW
+	local SQL_DONE = fortress.v2.SQL_LIB.DONE
 	local SQL_OK = fortress.v2.SQL_LIB.OK
-	if fortress.v2.SQL_DATABASE_OBJ:exec(stmt) ~= SQL_OK then
-		local msg = fortress.v2.SQL_DATABASE_OBJ:errmsg()
+
+	local db = fortress.v2.SQL_DATABASE_OBJ
+	local allrows, status
+	local obj = db:prepare(stmt)
+	if not obj then return end
+
+	local function geterr()
+		local msg = db:errmsg()
 		minetest.log("error", "SQLite3 Error: " .. msg)
-		return
 	end
 
-	return true
+	if type(values) == "table" then
+		if obj:bind_values(unpack(values)) ~= SQL_OK then return geterr() end
+	end
+
+	for row in obj:nrows() do
+		if not allrows then allrows = {} end
+		allrows[#allrows + 1] = row
+	end
+
+	status = db:errcode()
+	if status ~= SQL_DONE and status ~= SQL_OK then return geterr() end
+	if obj:finalize() ~= SQL_OK then return geterr() end
+
+	return true, allrows
 end
 
 
@@ -67,4 +87,29 @@ function fortress.v2.sql_init()
 	if not init_lib() then return end
 	if not open_database() then return end
 	if not create_table() then return end
+
+	return true
+end
+
+
+
+-- Accepts: string key, string data.
+-- Returns: boolean success.
+function fortress.v2.sql_write(key, data)
+	if type(key) ~= "string" or type(data) ~= "string" then return end
+	local cmd = [[ INSERT INTO fortress (hash, data) VALUES (?, ?); ]]
+	return execute_statement(cmd, {key, data})
+end
+
+
+
+-- Accepts: string key.
+-- Returns: string data, or nil.
+function fortress.v2.sql_read(key)
+	if type(key) ~= "string" then return end
+	local cmd = [[ SELECT data FROM fortress WHERE hash = ? LIMIT 1; ]]
+	local status, rows = execute_statement(cmd, {key})
+	if not status then return end
+	if not rows or not rows[1] or type(rows[1].data) ~= "string" then return end
+	return rows[1].data
 end

@@ -63,7 +63,9 @@ if not fortress.run_once then
 		end,
 	})
 
-	fortress.v2.sql_init()
+	if not fortress.v2.sql_init() then
+		minetest.log("error", "[fortress] could not initialize SQL storage")
+	end
 	fortress.v2.load_fort_information()
 
 	local c = "fortress:core"

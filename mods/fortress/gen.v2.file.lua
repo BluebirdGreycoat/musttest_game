@@ -17,15 +17,18 @@ end
 
 function fortress.v2.load_fort_information()
 	local file, err = io.open(fortress.v2.FORTINFO_FILE, "r")
-	if err then
+
+	if not file or err then
 		fortress.v2.FORTRESS_INFO = {}
 		return
 	end
+
 	fortress.v2.FORTRESS_INFO = minetest.deserialize(file:read("*all"))
+	file:close()
+
 	if type(fortress.v2.FORTRESS_INFO) ~= "table" then
 		fortress.v2.FORTRESS_INFO = {}
 	end
-	file:close()
 end
 
 

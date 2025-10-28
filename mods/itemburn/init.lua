@@ -131,7 +131,7 @@ local item = {
 		--
 		-- Stuck arrow entities have `collide_with_objects = true`, but builtin
 		-- entity does not handle object collisions.
-		if self.stuck_arrow then
+		if self.stuck_arrow and moveresult then
 			local need_filtration = false
 			for _, info in ipairs(moveresult.collisions) do
 				if info.type ~= "node" then

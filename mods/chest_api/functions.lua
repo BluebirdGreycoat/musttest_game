@@ -370,7 +370,7 @@ chest_api.get_share_formspec = function(pos, meta, pname)
 		default.gui_slots
 
 	formspec = "size[8,5]" .. defgui ..
-		"label[0,0;" .. F(utility.get_short_desc(desc)) .. "]" ..
+		"label[0,0;" .. F(utility.get_short_desc(ItemStack(nn))) .. "]" ..
 		"label[0,0.35;Label: <" .. F(cname) .. ">]" ..
 		"button[6,0;2,1;unshare;Unshare]" ..
 		"tooltip[unshare;Warning:\n\nThis will remove all the players\nfrom the access list of this chest!]" ..

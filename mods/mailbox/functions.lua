@@ -212,12 +212,7 @@ function(pos, listname, index, stack, player)
     inv:remove_item("drop", stack)
     inv:add_item("main", stack)
 
-		local desc = "Unknown Item(s)"
-		local def = minetest.registered_items[stack:get_name()]
-		if def and def.description then
-			desc = utility.get_short_desc(def.description)
-		end
-
+    local desc = utility.get_short_desc(stack)
 		local ownername = rename.gpn(meta:get_string("owner"))
 
 		minetest.chat_send_player(player:get_player_name(),
@@ -267,11 +262,7 @@ function(pos, listname, index, stack, player)
         inv:set_size('cfg', 2)
       end
       if have_clu then
-        local desc = "Unknown Item(s)"
-        local def = minetest.registered_items[stack:get_name()]
-        if def and def.description then
-          desc = utility.get_short_desc(def.description)
-        end
+        local desc = utility.get_short_desc(stack)
         local from = "SERVER"
         local to = owner
         local subject = "Mailbox Delivery"

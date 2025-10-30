@@ -39,7 +39,7 @@ function utility.wear_tool_with_feedback(params)
 		local pref = params.user
 		local pname = pref:get_player_name()
 		local pos = pref:get_pos()
-		local desc = utility.get_short_desc(def.description)
+		local desc = utility.get_short_desc(params.item)
 
 		minetest.chat_send_player(pname, "# Server: Your " .. desc .. " is lost.")
 		minetest.sound_play(breaksound, {pos=pos, gain=1.0}, true)
@@ -48,7 +48,7 @@ function utility.wear_tool_with_feedback(params)
 		local pref = params.user
 		local pos = pref:get_pos()
 		local pname = pref:get_player_name()
-		local desc = utility.get_short_desc(def.description)
+		local desc = utility.get_short_desc(params.item)
 		local spamkey = pname .. ":" .. itemname .. ":breaks"
 
 		if not spam.test_key(spamkey) then

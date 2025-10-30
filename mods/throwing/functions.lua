@@ -430,7 +430,7 @@ function throwing_reload (index, indexname, controls, pname, pos, is_cross, load
 					playerinv:set_stack("main", index + arrow_index, arrow_stack)
 
 					local name = arrow[1]
-					local arrowdesc = utility.get_short_desc(minetest.registered_items[name].description or "")
+					local arrowdesc = utility.get_short_desc(ItemStack(name))
 					local entity = arrow[2]
 
 					-- Replace with loaded bow item.

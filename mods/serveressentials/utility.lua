@@ -1,5 +1,7 @@
 
 function serveressentials.get_short_stack_desc(stack)
+	return utility.get_short_desc(stack)
+	--[[
 	local def = minetest.registered_items[stack:get_name()]
 	local meta = stack:get_meta()
 	local description = meta:get_string("description")
@@ -8,6 +10,7 @@ function serveressentials.get_short_stack_desc(stack)
 	elseif def and def.description then
 		return utility.get_short_desc(def.description):trim()
 	end
+	--]]
 end
 
 -- Get the number of seconds until the next schedualed reset of the Outback.

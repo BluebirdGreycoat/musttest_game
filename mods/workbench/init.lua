@@ -122,7 +122,7 @@ local function update_infotext(pos)
 	else
 		meta:set_string("infotext",
 			"Workbench (Owned by <" .. rename.gpn(pname) .. ">)\n" ..
-			"Crafting \"" .. utility.get_short_desc(stack:get_description()) ..
+			"Crafting \"" .. utility.get_short_desc(stack) ..
 			"\" x" .. stack:get_count())
 	end
 end

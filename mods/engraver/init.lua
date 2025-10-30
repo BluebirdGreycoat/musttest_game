@@ -288,7 +288,7 @@ local function get_item_desc(stack)
 	if desc == "" then
 		desc = minetest.registered_items[stack:get_name()].description or ""
 	end
-	desc = utility.get_short_desc(desc)
+	desc = utility.get_short_desc(stack)
 
 	return desc
 end

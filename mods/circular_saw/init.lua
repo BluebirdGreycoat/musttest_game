@@ -255,11 +255,7 @@ function circular_saw.update_infotext(pos)
   local pname = meta:get_string("owner")
 
   if stack:get_count() > 0 then
-    local desc = stack:get_name()
-    local idef = stack:get_definition()
-    if idef and idef.description then
-      desc = utility.get_short_desc(idef.description)
-    end
+    local desc = utility.get_short_desc(stack)
 
     meta:set_string("infotext",
       "Circular Saw is Working on \"" .. desc .. "\".\nOwned by <" .. rename.gpn(pname) .. ">!")

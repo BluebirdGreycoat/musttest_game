@@ -98,8 +98,9 @@ end
 easyvend.set_formspec = function(pos)
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
+	local itemstack = ItemStack(node.name)
 
-	local description = utility.get_short_desc(minetest.reg_ns_nodes[node.name].description);
+	local description = utility.get_short_desc(itemstack);
 	local number = meta:get_int("number")
 	local cost = meta:get_int("cost")
 	local itemname = meta:get_string("itemname")
@@ -507,7 +508,7 @@ easyvend.make_infotext = function(pos, nodename, owner, cost, number, itemstring
 	end
 	local iname = minetest.registered_items[itemstring].description
 	if iname == nil then iname = itemstring end
-	iname = utility.get_short_desc(iname)
+	iname = utility.get_short_desc(ItemStack(itemstring))
 	local printitem, printcost
 	if number == 1 then
 		printitem = iname

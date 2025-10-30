@@ -645,7 +645,7 @@ function ads.generate_formspec(pos, pname, booth)
 
 				local def = minetest.registered_items[v.item]
 				if def then
-					str = str .. v.number .. "x " .. utility.get_short_desc(def.description)
+					str = str .. v.number .. "x " .. utility.get_short_desc(ItemStack(v.item))
 					str = str .. " For " .. cost .. " Minegeld"
 
 					str = minetest.formspec_escape(str)
@@ -704,6 +704,7 @@ function ads.generate_formspec(pos, pname, booth)
 			local sel = (data.shopselect or 0)
 			if shops and sel ~= 0 and shops[sel] then
 				local text = ""
+				local itemstack = ItemStack(shops[sel].item)
 				local idef = minetest.registered_items[shops[sel].item]
 				local curt = shops[sel].currency
 				local cost = shops[sel].cost or 0
@@ -713,9 +714,9 @@ function ads.generate_formspec(pos, pname, booth)
 
 				if idef and shops[sel].owner ~= pname then
 					if shops[sel].type == 1 then
-						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " MG)"
+						text = "Purchase (" .. shops[sel].number .. "x " .. utility.get_short_desc(itemstack) .. " For " .. realcost .. " MG)"
 					elseif shops[sel].type == 2 then
-						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(idef.description) .. " For " .. realcost .. " MG)"
+						text = "Deposit (" .. shops[sel].number .. "x " .. utility.get_short_desc(itemstack) .. " For " .. realcost .. " MG)"
 					end
 
 					if text ~= "" then

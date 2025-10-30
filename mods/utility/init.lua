@@ -267,14 +267,49 @@ function utility.inventory_count_items(inv, listname, itemname)
 	return count
 end
 
-function utility.get_short_desc(str)
-	if not str then return "Unknown" end
-	if string.find(str, "[\n%(]") then
-		str = string.sub(str, 1, string.find(str, "[\n%(]")-1)
+-- Pass original description string,
+-- or itemstack to have this function figure it out.
+function utility.get_short_desc(stack)
+	local desc
+	::try_again::
+
+	if type(stack) == "string" then
+		-- If passed an item-string, try and convert it to a stack.
+		if stack:find(":") then
+			stack = ItemStack(stack)
+			goto try_again
+		end
+
+		desc = stack
+	elseif stack.is_known and stack:is_known() then
+		-- Should be an itemstack.
+		local idef = stack:get_definition()
+		local meta = stack:get_meta()
+
+		-- We have to check various places for the description string,
+		-- in order of priority/override.
+
+		if meta:get_string("description") ~= "" then
+			desc = meta:get_string("description")
+			goto done
+		end
+
+		desc = idef.description
+
+		::done::
 	end
-	str = string.gsub(str, "^%s+", "")
-	str = string.gsub(str, "%s+$", "")
-	return str
+
+	if not desc or desc == "" then return "Unknown" end
+
+	if string.find(desc, "[\n%(]") then
+		desc = string.sub(desc, 1, string.find(desc, "[\n%(]")-1)
+	end
+
+	-- Trim.
+	desc = string.gsub(desc, "^%s+", "")
+	desc = string.gsub(desc, "%s+$", "")
+
+	return desc:trim()
 end
 
 dofile(utility.modpath .. "/particle_override.lua")

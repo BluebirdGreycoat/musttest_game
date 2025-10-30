@@ -208,7 +208,7 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 
 	-- New level should never be less than the old level.
   if lastlevel < level then
-    local levelup_text = "# Server: Your " .. utility.get_short_desc(itemdesc) .. " just leveled up!"
+    local levelup_text = "# Server: Your " .. utility.get_short_desc(itemstack) .. " just leveled up!"
     ambiance.sound_play("toolranks_levelup", user:get_pos(), 1.0, 20)
     minetest.chat_send_player(pname, levelup_text)
     itemmeta:set_string("tr_lastlevel", level)

@@ -233,7 +233,7 @@ function anvil.update_infotext(pos)
 	for index, stack in ipairs(list) do
 		if not stack:is_empty() then
 			local sdef = stack:get_definition() or {}
-			workpiece = utility.get_short_desc(sdef.description or "Unknown")
+			workpiece = utility.get_short_desc(stack)
 			itemstack = stack
 			break
 		end

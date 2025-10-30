@@ -509,7 +509,7 @@ zcg.on_receive_fields = function(player, formname, fields)
 						end
 
 						if not leftover or leftover:get_count() == 0 then
-							local desc = utility.get_short_desc(stack:get_definition().description or "Undescribed Item")
+							local desc = utility.get_short_desc(stack)
 							minetest.chat_send_player(pn, "# Server: Added '" .. desc .. "' to inventory!")
 						else
 							minetest.chat_send_player(pn, "# Server: Not enough room in inventory!")

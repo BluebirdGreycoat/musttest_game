@@ -54,7 +54,7 @@ function easyvend.record_purchase(data)
 
 	local to = data.owner
 	local message = MSG_SELL:format(
-		utility.get_short_desc(idef.description),
+		utility.get_short_desc(ItemStack(data.item)),
 		nearest_city(data.pos),
 		rc.pos_to_namestr_ex(data.pos)
 	)
@@ -78,7 +78,7 @@ function easyvend.record_deposit(data)
 
 	local to = data.owner
 	local message = MSG_BUY:format(
-		utility.get_short_desc(idef.description),
+		utility.get_short_desc(ItemStack(data.item)),
 		nearest_city(data.pos),
 		rc.pos_to_namestr_ex(data.pos)
 	)
@@ -98,7 +98,7 @@ function easyvend.record_disable(data)
 
 	local to = data.owner
 	local message = MSG_OFF:format(
-		utility.get_short_desc(idef.description),
+		utility.get_short_desc(ItemStack(data.item)),
 		data.machine_type,
 		nearest_city(data.pos),
 		rc.pos_to_namestr_ex(data.pos)

@@ -245,17 +245,7 @@ local function update_description(toolstack)
 
 	local radius = m.look_radius  * 2 + 1
 	local depth = m.look_depth
-
-	local target = "Unknown Block"
-	local ndef = minetest.reg_ns_nodes[m.target]
-	if ndef then
-		local d = ndef.description or ""
-		if d ~= "" then
-			target = utility.get_short_desc(d)
-		else
-			target = "UNKNOWN NODE"
-		end
-	end
+	local target = utility.get_short_desc(ItemStack(m.target))
 
 	-- Compute accuracy based on energy left.
 	local accuracy = (toolstack:get_wear()/(65535*3))
@@ -352,21 +342,8 @@ function prospector.do_place(toolstack, user, pointed_thing)
 	end
 	local look_diameter = toolmeta.look_radius * 2 + 1
 
-	local desc = "UNKNOWN BLOCK"
-	if minetest.reg_ns_nodes[toolmeta.target] then
-		local d = minetest.reg_ns_nodes[toolmeta.target].description or ""
-		if d ~= "" then
-			desc = utility.get_short_desc(d)
-		end
-	end
-
-	local pdesc = "UNKNOWN BLOCK"
-	if pointed and minetest.reg_ns_nodes[pointed] then
-		local d = minetest.reg_ns_nodes[pointed].description or ""
-		if d ~= "" then
-			pdesc = utility.get_short_desc(d)
-		end
-	end
+	local desc = utility.get_short_desc(ItemStack(toolmeta.target))
+	local pdesc = utility.get_short_desc(ItemStack(pointed))
 
 	minetest.show_formspec(user:get_player_name(), "technic:prospector_control",
 		"size[7,8.5]" ..

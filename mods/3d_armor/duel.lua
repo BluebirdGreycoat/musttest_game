@@ -475,9 +475,9 @@ local function print_message(victim, punch_info)
 					local meta = wield:get_meta()
 					local description = meta:get_string("description")
 					if description ~= "" then
-						msg = string.gsub(msg, key, "'" .. utility.get_short_desc(description):trim() .. "'")
+						msg = string.gsub(msg, key, "'" .. utility.get_short_desc(wield) .. "'")
 					elseif def and def.description then
-						local str = utility.get_short_desc(def.description)
+						local str = utility.get_short_desc(wield)
 						if str == "" then
 							str = "Potato Fist"
 						end

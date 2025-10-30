@@ -34,11 +34,14 @@ function nodeinspector.inspect(pname, under, above)
 		return
 	end
 
+	local stackunder = ItemStack(nodeunder.name)
+	local stackabove = ItemStack(nodeabove.name)
+
 	local strunder = rc.pos_to_namestr_ex(under)
 	local strabove = rc.pos_to_namestr_ex(above)
 
-	local descunder = utility.get_short_desc(defunder.description or "<NONE>")
-	local descabove = utility.get_short_desc(defabove.description or "<NONE>")
+	local descunder = utility.get_short_desc(stackunder)
+	local descabove = utility.get_short_desc(stackabove)
 
 	local levelunder = 0
 	local levelabove = 0

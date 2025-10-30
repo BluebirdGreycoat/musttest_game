@@ -268,6 +268,7 @@ function utility.inventory_count_items(inv, listname, itemname)
 end
 
 function utility.get_short_desc(str)
+	if not str then return "Unknown" end
 	if string.find(str, "[\n%(]") then
 		str = string.sub(str, 1, string.find(str, "[\n%(]")-1)
 	end

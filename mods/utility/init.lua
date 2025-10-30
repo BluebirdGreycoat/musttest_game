@@ -281,7 +281,7 @@ function utility.get_short_desc(stack)
 		end
 
 		desc = stack
-	elseif stack.is_known and stack:is_known() then
+	elseif stack and stack.is_known and stack:is_known() then
 		-- Should be an itemstack.
 		local idef = stack:get_definition()
 		local meta = stack:get_meta()

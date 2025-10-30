@@ -328,6 +328,7 @@ minetest.register_node(":engraver:bench", {
 			{1/4, -0.5, -7/16, 7/16, 0.5, -1/4},
 		}
 	},
+	stack_max = 1,
 
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)

@@ -289,11 +289,22 @@ function utility.get_short_desc(stack)
 		-- We have to check various places for the description string,
 		-- in order of priority/override.
 
+		if meta:get_string("short_description") ~= "" then
+			desc = meta:get_string("short_description")
+			goto done
+		end
+
 		if meta:get_string("description") ~= "" then
 			desc = meta:get_string("description")
 			goto done
 		end
 
+		if idef.short_description then
+			desc = idef.short_description
+			goto done
+		end
+
+		-- Fallback case.
 		desc = idef.description
 
 		::done::

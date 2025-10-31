@@ -393,18 +393,8 @@ function mobs.player_killed_mob(self, player)
 	-- Get weapon description.
 	if string.find(msg, "<w>") then
 		local wield = player:get_wielded_item()
-		local def = minetest.registered_items[wield:get_name()]
-		local meta = wield:get_meta()
-		local description = meta:get_string("description")
-		if description ~= "" then
-			msg = string.gsub(msg, "<w>", "'" .. utility.get_short_desc(description):trim() .. "'")
-		elseif def and def.description then
-			local str = utility.get_short_desc(def.description)
-			if str == "" then
-				str = "Potato Fist"
-			end
-			msg = string.gsub(msg, "<w>", str)
-		end
+		local description = utility.get_short_desc(wield)
+		msg = string.gsub(msg, "<w>", "'" .. description .. "'")
 	end
 
 	-- Make first character uppercase.

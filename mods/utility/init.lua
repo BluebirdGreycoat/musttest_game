@@ -275,9 +275,15 @@ function utility.get_short_desc(stack)
 
 	if type(stack) == "string" then
 		-- If passed an item-string, try and convert it to a stack.
-		if stack:find(":") then
-			stack = ItemStack(stack)
-			goto try_again
+		-- This code can have false positives, if so fix the call site by passing a
+		-- real itemstack instead of a string.
+		if stack:find(":") and not stack:find("\n") then
+			local newstack = ItemStack(stack)
+			if newstack:is_known() then
+				stack = newstack
+				goto try_again
+			end
+			-- Else we'll use the string as-is.
 		end
 
 		desc = stack

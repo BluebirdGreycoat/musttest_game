@@ -10,6 +10,7 @@ minetest.register_item(":", {
   wield_image = "wieldhand.png",
   wield_scale = {x=1,y=1,z=2.5},
   tool_capabilities = tooldata["hand_hand"],
+  description = "Potato Fist",
   
   -- This seems to prevent the wieldhand from being used to dig things.
   --on_use = function(itemstack, user, pointed_thing)

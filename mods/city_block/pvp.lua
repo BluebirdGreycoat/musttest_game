@@ -103,18 +103,8 @@ function city_block.murder_message(killer, victim, sendto)
 		local hitter = minetest.get_player_by_name(killer)
 		if hitter then
 			local wield = hitter:get_wielded_item()
-			local def = minetest.registered_items[wield:get_name()]
-			local meta = wield:get_meta()
-			local description = meta:get_string("description")
-			if description ~= "" then
-				msg = string.gsub(msg, "<w>", "'" .. utility.get_short_desc(wield) .. "'")
-			elseif def and def.description then
-				local str = utility.get_short_desc(wield)
-				if str == "" then
-					str = "Potato Fist"
-				end
-				msg = string.gsub(msg, "<w>", str)
-			end
+			local description = utility.get_short_desc(wield)
+			msg = string.gsub(msg, "<w>", "'" .. description .. "'")
 		end
 	end
 

@@ -176,7 +176,7 @@ if not city_block.run_once then
 		return city_block.on_receive_fields(...) end)
 
 	minetest.register_node("city_block:cityblock", {
-		description = "Lawful Zone Marker [Marks a 45x45x45 area as a city.]\n\nSaves your bed respawn position, if someone killed you within the city area.\nMurderers and trespassers will be sent to jail if caught in a city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
+		description = "Lawful Zone Marker (Marks a 45x45x45 area as a city.)\n\nSaves your bed respawn position, if someone killed you within the city area.\nMurderers and trespassers will be sent to jail if caught in a city.\nPrevents the use of ore leeching equipment within 100 meters radius.\nPrevents mining with TNT nearby.",
 		tiles = {"moreblocks_circle_stone_bricks.png^default_tool_mesepick.png"},
 		is_ground_content = false,
 		groups = utility.dig_groups("obsidian", {

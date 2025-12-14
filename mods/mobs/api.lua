@@ -1291,6 +1291,14 @@ end
 
 -- Arrow shooting code extracted into its own function [MustTest].
 local function shoot_arrow(self, vec)
+	-- Forbid close range shots (really we want to prevent length == 0).
+	if vector.length(vec) < 0.1 then
+		return
+	end
+
+	-- Don't modify argument.
+	vec = vector.copy(vec)
+
 	-- Play shoot attack sound.
 	mob_sound(self, self.sounds.shoot_attack)
 
@@ -1309,6 +1317,8 @@ local function shoot_arrow(self, vec)
 		end -- Sanity check.
 
 		local amount = (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z) ^ 0.5
+		if amount < 0.001 then return end -- Prevent division by 0.
+
 		local v = ent.velocity or 1 -- or set to default
 
 		ent.switch = 1

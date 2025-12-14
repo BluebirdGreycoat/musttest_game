@@ -329,6 +329,12 @@ minetest.register_entity(":__builtin:falling_node", {
     local bcn = get_node_or_nil(bcp)
     local bcd = bcn and all_nodes[bcn.name]
 		local selfdef = all_nodes[self.node.name]
+
+		-- Bail if nil.
+		if not selfdef then
+			self.object:remove()
+			return
+		end
     
     if bcn and (not bcd or node_walkable(bcp, bcd, selfdef)) then
       if bcd and bcd.leveled and bcn.name == self.node.name then

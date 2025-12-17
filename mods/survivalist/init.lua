@@ -153,7 +153,7 @@ dofile(survivalist.modpath .. "/loot.lua")
 
 -- Actually teleport the player to the start location and announce in chat.
 -- Also, record that the game has begun.
-function survivalist.teleport_and_announce(pname, pos, gamemode)
+function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   local player = minetest.get_player_by_name(pname)
   if not player then
     return
@@ -173,9 +173,10 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
 	end
 
 	-- Record home position.
-	local homepos = vector_round(player:get_pos())
+	local homepos = fakehomepos or vector_round(player:get_pos())
 
   -- Teleport player.
+  rc.notify_realm_update(player, pos)
 	wield3d.on_teleport()
   player:set_pos(vector.add(pos, {x=math_random(-3, 3), y=0.5, z=math_random(-3, 3)}))
   
@@ -240,6 +241,8 @@ function survivalist.teleport_and_announce(pname, pos, gamemode)
 			end
 		end
 	end)
+
+	return true
 end
 
 
@@ -1110,7 +1113,7 @@ if not survivalist.run_once then
     return survivalist.on_dieplayer(...)
   end)
 
-  
+  dofile(survivalist.modpath .. "/fix.lua")
   
   -- File is reloadable.
   local c = "survivalist:core"

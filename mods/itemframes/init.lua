@@ -42,11 +42,24 @@ minetest.register_entity("itemframes:item",{
 				end
 			end
 		end
+
 		if self.texture ~= nil then
 			self.object:set_properties({textures = {self.texture}})
 		end
+
+		local posoffset = {x=0, y=0, z=0}
 		if self.nodename == "itemframes:pedestal" then
 			self.object:set_properties({automatic_rotate = 1})
+			posoffset.y = -1
+		end
+
+		-- Itemframe/pedestal no longer here? Remove.
+		local pos = vector.add(self.object:get_pos(), posoffset)
+		local node = minetest.get_node(pos)
+		if node.name ~= "ignore" then -- Unless in unloaded location.
+			if node.name ~= "itemframes:frame" and node.name ~= "itemframes:pedestal" then
+				self.object:remove()
+			end
 		end
 	end,
 	get_staticdata = function(self)

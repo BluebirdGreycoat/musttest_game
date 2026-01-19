@@ -73,35 +73,46 @@ local function get_node(pos)
     return minetest.get_node_or_nil(pos)
 end
 
--- Use homedecor's placeholder if possible.
-local placeholder = homedecor_path and "homedecor:expansion_placeholder" or "elevator:placeholder"
-if homedecor_path then
-    minetest.register_alias("elevator:placeholder", "homedecor:expansion_placeholder")
-else
-    -- Placeholder node, in the style of homedecor.
-    minetest.register_node(placeholder, {
-        description = "Expansion Placeholder",
-        selection_box = {
-            type = "fixed",
-            fixed = {0, 0, 0, 0, 0, 0},
-        },
-        groups = {
-            not_in_creative_inventory=1
-        },
-        drawtype = "airlike",
-        paramtype = "light",
-        sunlight_propagates = true,
+local PLACEHOLDER = "elevator:placeholder"
 
-        walkable = false,
-        buildable_to = false,
-        is_ground_content = false,
+-- This hidden node is placed on top of the bottom, and prevents
+-- nodes from being placed in the top half of the elevator.
+--
+-- Copied from "doors:hidden". I didn't just use an alias because I want to keep
+-- this a non-destructive change in case I need to revert something.
+minetest.register_node(PLACEHOLDER, {
+    description = "Expansion Placeholder",
+    tiles = {"doors_blank.png"},
+    groups = {unbreakable = 1, immovable = 1, not_in_creative_inventory = 1},
+    -- can't use airlike otherwise falling nodes will turn to entities
+    -- and will be forever stuck until elevator is removed.
+    drawtype = "nodebox",
+    paramtype = "light",
+    paramtype2 = "facedir",
+    sunlight_propagates = true,
 
-        on_dig = function(pos, node, player)
-            minetest.remove_node(pos)
-            minetest.set_node(pos, {name=placeholder})
-        end
-    })
-end
+    -- has to be walkable for falling nodes to stop falling.
+    walkable = true,
+    pointable = false,
+    diggable = false,
+    buildable_to = false,
+    floodable = false,
+    drop = "",
+    is_ground_content = false,
+
+    on_blast = function() end,
+
+    -- 1px transparent block inside elevator corner near node top.
+    nodebox = {
+        type = "fixed",
+        fixed = {-15/32, 13/32, -15/32, -13/32, 1/2, -13/32},
+    },
+    -- collision_box needed otherise selection box would be full node size
+    collision_box = {
+        type = "fixed",
+        fixed = {-15/32, 13/32, -15/32, -13/32, 1/2, -13/32},
+    },
+})
 
 local VISUAL_INCREASE = 1.75
 
@@ -446,14 +457,16 @@ for _,mode in ipairs({"on", "off"}) do
         -- Emit a bit of light when active.
         light_source = (on and 4 or nil),
 
+        on_construct = function(pos)
+            -- Add a placeholder to avoid nodes being placed in the top.
+            local p = vector.add(pos, {x=0, y=1, z=0})
+            local p2 = minetest.get_node(pos).param2
+            minetest.set_node(p, {name=PLACEHOLDER, param2=p2})
+        end,
+
         after_place_node  = function(pos, placer, itemstack)
             local meta = minetest.get_meta(pos)
             meta:set_int("version", VERSION)
-
-            -- Add a placeholder to avoid nodes being placed in the top.
-            local p = vector.add(pos, {x=0, y=1, z=0})
-            local p2 = minetest.dir_to_facedir(placer:get_look_dir())
-            minetest.set_node(p, {name=placeholder, paramtype2="facedir", param2=p2})
 
             -- Try to build a motor above.
             local motor = locate_motor(pos)
@@ -466,10 +479,11 @@ for _,mode in ipairs({"on", "off"}) do
             unbuild(pos, 2)
         end,
 
+        -- Determine whether it's allowed to place an elevator here.
         on_place = function(itemstack, placer, pointed_thing)
             local pos  = pointed_thing.above
             local node = minetest.get_node(vector.add(pos, {x=0, y=1, z=0}))
-            if (node ~= nil and node.name ~= "air" and node.name ~= placeholder) then
+            if (node ~= nil and node.name ~= "air" and node.name ~= PLACEHOLDER) then
                 return
             end
             return minetest.item_place(itemstack, placer, pointed_thing)
@@ -561,7 +575,7 @@ for _,mode in ipairs({"on", "off"}) do
 
         on_destruct = function(pos)
             local p = vector.add(pos, {x=0, y=1, z=0})
-            if get_node(p).name == placeholder then
+            if get_node(p).name == PLACEHOLDER then
                 minetest.remove_node(p)
             end
         end,

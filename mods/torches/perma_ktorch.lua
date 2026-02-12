@@ -3,10 +3,10 @@ minetest.register_node("torches:perma_ktorch_floor", {
   description = "Everlasting Kalite Torch",
   drawtype = "mesh",
   mesh = "torch_floor.obj",
-  inventory_image = "gloopores_kalite_torch_on_floor.png",
-  wield_image = "gloopores_kalite_torch_on_floor.png",
+  inventory_image = "perma_kalite_torch_on_floor.png",
+  wield_image = "perma_kalite_torch_on_floor.png",
   tiles = {{
-    name = "gloopores_kalite_torch_on_floor_animated.png",
+    name = "perma_kalite_torch_on_floor_animated.png",
     animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",
@@ -81,7 +81,7 @@ minetest.register_node("torches:perma_ktorch_wall", {
   drawtype = "mesh",
   mesh = "torch_wall.obj",
   tiles = {{
-        name = "gloopores_kalite_torch_on_floor_animated.png",
+        name = "perma_kalite_torch_on_floor_animated.png",
         animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",
@@ -134,7 +134,7 @@ minetest.register_node("torches:perma_ktorch_ceiling", {
   drawtype = "mesh",
   mesh = "torch_ceiling.obj",
   tiles = {{
-        name = "gloopores_kalite_torch_on_floor_animated.png",
+        name = "perma_kalite_torch_on_floor_animated.png",
         animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",

@@ -3,10 +3,10 @@ minetest.register_node("torches:perma_torch_floor", {
   description = "Everlasting Torch",
   drawtype = "mesh",
   mesh = "torch_floor.obj",
-  inventory_image = "default_torch_on_floor.png",
-  wield_image = "default_torch_on_floor.png",
+  inventory_image = "perma_torch_on_floor.png",
+  wield_image = "perma_torch_on_floor.png",
   tiles = {{
-    name = "default_torch_on_floor_animated.png",
+    name = "perma_torch_on_floor_animated.png",
     animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",
@@ -78,7 +78,7 @@ minetest.register_node("torches:perma_torch_wall", {
   drawtype = "mesh",
   mesh = "torch_wall.obj",
   tiles = {{
-        name = "default_torch_on_floor_animated.png",
+        name = "perma_torch_on_floor_animated.png",
         animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",
@@ -131,7 +131,7 @@ minetest.register_node("torches:perma_torch_ceiling", {
   drawtype = "mesh",
   mesh = "torch_ceiling.obj",
   tiles = {{
-        name = "default_torch_on_floor_animated.png",
+        name = "perma_torch_on_floor_animated.png",
         animation = {type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = 3.3}
   }},
   paramtype = "light",

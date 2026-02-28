@@ -39,7 +39,7 @@ local nethercitypos = {x=0, y=-30793, z=0}
 
 
 -- The game rules description. Shown in formspec.
-survivalist.gamerules = 
+survivalist.gamerules =
   "===| Survival Challenge Description |===\n\n" ..
   "This page contains the rules for this mini-game, with options to begin a Challenge or claim victory on a Challenge currently in-progress.\n\n" ..
   "The Survival Challenge focuses on survival in the wild far from developed regions. You can play it solo or with other players.\n\n" ..
@@ -158,7 +158,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   if not player then
     return
   end
-  
+
   -- Player's inventories must be empty.
   if not survivalist.check_inventories_empty(pname) then
     minetest.chat_send_player(pname, "# Server: All your inventories (including the Starfissure Box and armor) must be empty before you can begin a challenge (the Proof of Citizenship does not count). You will receive starting items when you begin.")
@@ -179,10 +179,10 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   rc.notify_realm_update(player, pos)
 	wield3d.on_teleport()
   player:set_pos(vector.add(pos, {x=math_random(-3, 3), y=0.5, z=math_random(-3, 3)}))
-  
+
   -- Make sure player is healthy.
   heal.heal_health_and_hunger(pname)
-  
+
   -- Remove posibility of cheating via netherportals.
   flameportal.clear_return_location(pname)
 
@@ -193,7 +193,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
     pmeta:set_string("survivalist_old_bed_pos", minetest.pos_to_string(old_bed_pos))
 	end
 	beds.clear_player_spawn(pname)
-  
+
   -- Give the game name some interesting names.
   local gamestring = "Void"
   if gamemode == "surface" then
@@ -203,7 +203,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   elseif gamemode == "nether" then
     gamestring = "Netherealm"
   end
-  
+
   -- Inform player the game has begun.
 	if not gdac.player_is_admin(pname) then
 		local dname = rename.gpn(pname)
@@ -214,13 +214,13 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   survivalist.shout_player_stats(pname)
   minetest.chat_send_player(pname, "# Server: To win, you must find the city and claim victory in the Main Square. If you die without sleeping, you will fail the Challenge.")
   beds.report_respawn_status(pname)
-  
+
   -- Give player the starting items.
   give_initial_stuff.give(player)
-  
+
   -- Record the player's new gamemode.
   survivalist.modstorage:set_string(pname .. ":mode", gamemode)
-  
+
   -- Record the player's starting position.
   survivalist.modstorage:set_string(pname .. ":pos", minetest.pos_to_string(vector_round(pos)))
 
@@ -253,14 +253,14 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
   -- Positions to load. Need a larger area in order to make sure any protections are discovered.
   local minp = vector.add(pos, vector.new(-64, -64, -64))
   local maxp = vector.add(pos, vector.new(64, 64, 64))
-  
+
   -- Dungeon coordinates.
   local dminp = vector.add(pos, vector.new(-4, 0, -4))
   local dmaxp = vector.add(pos, vector.new(4, 4, 4))
-  
+
   -- Copy the position table so it doesn't get modified.
   local pos2 = table.copy(pos)
-  
+
   -- Build callback function. When the map is loaded, we need to check protections and create the dungeon.
   local tbparam = {}
   local cb = function(blockpos, action, calls_remaining, param)
@@ -281,7 +281,7 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
 			easyvend.sound_error(pname)
 			return
 		end
-    
+
     -- Check for protections, and if there are none, create a dungeon.
     for x = dminp.x, dmaxp.x, 1 do
       for y = dminp.y, dmaxp.y, 1 do
@@ -295,7 +295,7 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
         end
       end
     end
-    
+
     -- Check if spawning in air (e.g., due to large cavern).
     if minetest.get_node(pos2).name == "air" then
       minetest.chat_send_player(pname, "# Server: Error: did not succeed in finding a suitable start location! If this happens, just try again.")
@@ -307,11 +307,11 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
     -- Generate dungeon for the player to spawn in.
     local path = survivalist.modpath .. "/schematics/survivalist_" .. gamemode .. "_dungeon.mts"
     minetest.place_schematic(vector.add(pos2, {x=-4, y=0, z=-4}), path, "random", nil, true)
-    
+
     -- Choose a location for the chest.
     local chestpos = vector.add(pos2, vector.new(math_random(-3, 3), 1, math_random(-3, 3)))
 		chestpos = vector_round(chestpos)
-    
+
     -- Create chest with stuff.
     minetest.set_node(chestpos, {
 			name = "morechests:goldchest_public_closed",
@@ -322,11 +322,11 @@ function survivalist.prepare_dungeon(pname, pos, gamemode)
 		if inv then
 			survivalist.fill_loot_chest(inv, gamemode)
 		end
-    
+
     -- Teleport player and announce.
     survivalist.teleport_and_announce(pname, pos2, gamemode)
   end
-  
+
   -- Emerge the target area. Once emergence is complete the dungeon will spawn.
   minetest.chat_send_player(pname, "# Server: Checking reliability of target location ... please stand by, this can take several seconds.")
   minetest.emerge_area(minp, maxp, cb, tbparam)
@@ -344,7 +344,7 @@ function survivalist.shout_player_stats(pname)
   local wins_fail =     pname .. ":wins_fail"
   local wins_bstreak =  pname .. ":wins_bstreak"
   local wins_tokens =   pname .. ":wins_tokens"
-  
+
 	if not gdac.player_is_admin(pname) then
 		local dname = rename.gpn(pname)
 		minetest.chat_send_all("# Server: Survivalist stats for <" ..
@@ -379,7 +379,7 @@ function survivalist.start_game(pname, gamemode)
   if not player then
     return
   end
-  
+
   -- Is a game already running?
   local currentgame = survivalist.modstorage:get_string(pname .. ":mode")
   if currentgame == "surface" or currentgame == "cave" or currentgame == "nether" then
@@ -413,7 +413,7 @@ function survivalist.start_game(pname, gamemode)
 		easyvend.sound_error(pname)
 		return
 	end
-  
+
   -- Player's inventories must be empty.
   if not survivalist.check_inventories_empty(pname) then
     minetest.chat_send_player(pname, "# Server: All your inventories (including the Starfissure Box and armor) must be empty before you can begin a challenge (the Proof of Citizenship does not count). You will receive starting items when you begin.")
@@ -507,7 +507,7 @@ function survivalist.attempt_claim(pname)
   if not pref then
     return
   end
-  
+
   -- Make sure a game is actually running.
   local currentgame = survivalist.modstorage:get_string(pname .. ":mode")
   if currentgame ~= "surface" and currentgame ~= "cave" and currentgame ~= "nether" then
@@ -535,7 +535,7 @@ function survivalist.attempt_claim(pname)
 			return
 		end
 	end
-  
+
   -- Check if the player is in the city.
   local pos = pref:get_pos()
   local cityname = ""
@@ -553,13 +553,13 @@ function survivalist.attempt_claim(pname)
     finalcitypos = table.copy(home_pos)
     cityname = "place they started"
   end
-  
+
   if not finalcitypos then
     minetest.chat_send_player(pname, "# Server: You must be within 20 meters of the main square of the Surface Colony or the Nether City or the place where you started the challenge in order to claim victory!")
 		easyvend.sound_error(pname)
     return
   end
-  
+
   -- What rank (copper, silver, gold) has the player earned?
   local ranks = {
     ["surface"] = {rank="copper", upper="Copper"},
@@ -568,11 +568,11 @@ function survivalist.attempt_claim(pname)
   }
   local rank = ranks[currentgame].rank
   local upperank = ranks[currentgame].upper
-  
+
   -- Reward the player.
   local tokencount = 1
   local startpos = minetest.string_to_pos(survivalist.modstorage:get_string(pname .. ":pos"))
-  
+
   -- If the starting position couldn't be parsed we'll just give the player 1 token.
   if startpos then
     local dist = vector_distance(finalcitypos, startpos)
@@ -587,7 +587,7 @@ function survivalist.attempt_claim(pname)
     end
     tokencount = dist
   end
-  
+
 	local dname = rename.gpn(pname)
 	if not gdac.player_is_admin(pname) then
 		minetest.chat_send_all("# Server: Player <" .. dname .. "> has claimed victory in the " .. cityname .. "!")
@@ -598,7 +598,7 @@ function survivalist.attempt_claim(pname)
 	end
   local inv = pref:get_inventory()
   local leftover = inv:add_item("main", ItemStack("survivalist:" .. rank .. "_skill_token " .. tokencount))
-  
+
   -- No room in inventory? Drop 'em.
   if leftover:get_count() > 0 then
     minetest.item_drop(leftover, pref, pos)
@@ -607,14 +607,14 @@ function survivalist.attempt_claim(pname)
 		end
   end
   minetest.chat_send_player(pname, "# Server: You should have received a skill mark in your inventory. If your inventory was full, check near your feet!")
-  
+
   -- Record that the challenge is over.
   survivalist.modstorage:set_string(pname .. ":mode", nil)
   survivalist.modstorage:set_string(pname .. ":pos", nil)
 	survivalist.modstorage:set_string(pname .. ":home", nil)
 	survivalist.modstorage:set_string(pname .. ":xp", nil)
   survivalist.players[pname].choice = nil
-  
+
   -- Record total wins, win streaks, and win types.
   local ms = survivalist.modstorage
   local wins_total = pname .. ":wins_total"
@@ -626,13 +626,13 @@ function survivalist.attempt_claim(pname)
   ms:set_int(wins_streak, ms:get_int(wins_streak) + 1)
   ms:set_int(wins_type, ms:get_int(wins_type) + 1)
   ms:set_int(wins_tokens, ms:get_int(wins_tokens) + tokencount)
-  
+
   -- If current streak is better than best streak, update best streak.
   -- Best streak is never erased.
   if ms:get_int(wins_streak) > ms:get_int(wins_bstreak) then
     ms:set_int(wins_bstreak, ms:get_int(wins_streak))
   end
-  
+
   -- Grant player the big_hotbar priv.
   -- Rewarded by the 'surface' gamemode only.
   if currentgame == "surface" then
@@ -641,16 +641,18 @@ function survivalist.attempt_claim(pname)
       privs.big_hotbar = true
       minetest.set_player_privs(pname, privs)
 			minetest.notify_authentication_modified(pname)
-      
+
+      local playermeta = pref:get_meta()
       playermod.set_big_hotbar(pref)
+      playermeta:set_int("show_big_hotbar", 1)
       minetest.chat_send_player(pname,
         "# Server: You can now use the /hotbar command to switch sizes.")
     end
   end
-  
+
   -- Let everyone know the player's win stats.
   survivalist.shout_player_stats(pname)
-  
+
   -- Add player's name to the rankings.
   survivalist.add_player_to_rankings(pname)
 end
@@ -729,12 +731,12 @@ function survivalist.on_dieplayer(player)
 		survivalist.modstorage:set_string(pname .. ":home", nil)
 		survivalist.modstorage:set_string(pname .. ":xp", nil)
     survivalist.modstorage:set_int(pname .. ":wins_streak", 0)
-    
+
     -- Count loss.
     local ms = survivalist.modstorage
     local ff = pname .. ":wins_fail"
     ms:set_int(ff, ms:get_int(ff) + 1)
-    
+
     -- Add player's name to the rankings (deaths count too).
     survivalist.add_player_to_rankings(pname)
   end
@@ -847,11 +849,11 @@ function survivalist.compose_formspec(pname)
     modestring = " (You are currently in a Netherealm Challenge)"
 		inchallenge = true
   end
-  
+
   local type_surface = "false"
   local type_cave = "false"
   local type_nether = "false"
-  
+
   -- Choose which checkbox will be shown as selected.
   if survivalist.players[pname] and survivalist.players[pname].choice then
     local choice = survivalist.players[pname].choice
@@ -863,17 +865,17 @@ function survivalist.compose_formspec(pname)
       type_nether = "true"
     end
   end
-  
+
   local formspec = ""
   formspec = formspec .. "size[8,7]" ..
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
-    
+
     "label[0,0;Survivalist Challenge" .. modestring .. "]" ..
-    
+
     "textarea[0.3,0.5;8,4;rules;;" .. minetest.formspec_escape(survivalist.gamerules) .. "]"
-    
+
 	-- Show challenge choices only if no challenge is in progress.
 	if not inchallenge and survivalist.have_xp(pname, "minimum") then
 		formspec = formspec .. "label[0,4;Choose Your Challenge!]"
@@ -916,7 +918,7 @@ end
 function survivalist.compose_rankings_formspec(pname)
   local players = survivalist.get_ranking_entries()
   local data = {}
-  
+
   local ms = survivalist.modstorage
   for k, v in pairs(players) do
     data[#data+1] = {
@@ -931,7 +933,7 @@ function survivalist.compose_rankings_formspec(pname)
       tokens = ms:get_int(k .. ":wins_tokens"),
     }
   end
-  
+
   local form = ""
   form = form .. "size[13,7]" ..
     default.gui_bg ..
@@ -939,20 +941,20 @@ function survivalist.compose_rankings_formspec(pname)
     default.gui_slots ..
     "label[0,0;Survival Challenge Rankings]" ..
     "button[11,6.2;2,1;close_rankings;Close]"
-  
+
   form = form .. "tablecolumns[color;text;text;text;text;text;text;text;text;text;text;text;text;text;text;text;text;text]"
   form = form .. "table[0,0.5;12.8,5;rankings_table;"
   form = form .. "#00ffff,Username,|,Victories,|,Deaths,|,C-Streak,|,B-Streak,|,Iceworld,|,Underearth,|,Netherealm,|,Marks,"
-  
+
   for k, v in ipairs(data) do
     form = form .. ",<" .. rename.gpn(v.name) .. ">,|," .. v.wins .. ",|," .. v.deaths .. ",|," ..
       v.streak .. ",|," .. v.bstreak .. ",|," .. v.surface .. ",|," .. v.cave ..
       ",|," .. v.nether .. ",|," .. v.tokens .. ","
   end
-  
+
   form = string.gsub(form, ",$", "")
   form = form .. ";1]"
-  
+
   return form
 end
 
@@ -983,7 +985,7 @@ function survivalist.on_receive_fields(player, formname, fields)
 	if fields.quit then
 		return true
 	end
-  
+
   if fields.show_rankings then
     survivalist.show_rankings_formspec(pname)
     return true
@@ -993,19 +995,19 @@ function survivalist.on_receive_fields(player, formname, fields)
 		survivalist.show_rankings_formspec(pname)
 		return true
 	end
-  
+
   if fields.close_rankings or formname == "survivalist:rankings" then
     survivalist.show_formspec(pname)
     return true
   end
-  
+
   -- Start game.
   if fields.start and survivalist.have_xp(pname, "minimum") then
     minetest.close_formspec(pname, "survivalist:survivalist")
     survivalist.start_game(pname, survivalist.players[pname].choice)
     return true
   end
-  
+
   -- Claim victory.
   if fields.victory then
     minetest.close_formspec(pname, "survivalist:survivalist")
@@ -1019,7 +1021,7 @@ function survivalist.on_receive_fields(player, formname, fields)
 		survivalist.abort_game(pname)
 		return true
 	end
-  
+
   -- Handle gamemode checkboxes.
   for j, k in ipairs({"surface", "cave", "nether"}) do
     if fields["type_" .. k] then
@@ -1032,13 +1034,13 @@ function survivalist.on_receive_fields(player, formname, fields)
       return true
     end
   end
-  
+
   if fields.close then
     --minetest.close_formspec(pname, "survivalist:survivalist")
     passport.show_formspec(pname)
     return true
   end
-  
+
 	survivalist.show_formspec(pname)
   return true
 end
@@ -1049,14 +1051,14 @@ end
 if not survivalist.run_once then
   -- Obtain modstorage.
   survivalist.modstorage = minetest.get_mod_storage()
-  
+
   minetest.register_privilege("big_hotbar", {
-    description = "Player has double-wide hotbar for item wielding.", 
+    description = "Player has double-wide hotbar for item wielding.",
     give_to_singleplayer = false,
   })
 
-  
-  
+
+
   -- Define the victory tokens.
   local nodebox = {
     type = "fixed",
@@ -1096,13 +1098,13 @@ if not survivalist.run_once then
   -- Compatibility alias.
   minetest.register_alias("survivalist:skill_token", "survivalist:silver_skill_token")
 
-  
-  
+
+
   -- GUI input handler.
   minetest.register_on_player_receive_fields(function(...)
     return survivalist.on_receive_fields(...)
   end)
-  
+
   -- Update state for players that join.
   minetest.register_on_joinplayer(function(...)
     return survivalist.on_joinplayer(...)
@@ -1114,12 +1116,12 @@ if not survivalist.run_once then
   end)
 
   dofile(survivalist.modpath .. "/fix.lua")
-  
+
   -- File is reloadable.
   local c = "survivalist:core"
   local f = survivalist.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   -- Done.
   survivalist.run_once = true
 end

@@ -391,11 +391,14 @@ end
 
 
 chat_core.handle_command_msg = function(name, param)
+	-- It doesn't make sense to require the "shout" priv for private messages ...
+	--[[
 	if not minetest.check_player_privs(name, {shout=true}) then
 		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
 		easyvend.sound_error(name)
 		return -- Player doesn't have shout priv.
 	end
+	--]]
 
 	-- Gagged players cannot polute global chat, but PMs are allowed.
 	-- If an annoying pervert is PM'ing someone, that person should take advantage

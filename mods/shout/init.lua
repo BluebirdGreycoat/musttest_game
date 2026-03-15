@@ -405,7 +405,7 @@ if not shout.run_once then
 	minetest.register_chatcommand("channel", {
 		params = "<id>",
 		description = "Set channel name.",
-		privs = {shout=true},
+		privs = {},
 		func = function(name, param)
 			shout.channel(name, param)
 			return true
@@ -415,7 +415,7 @@ if not shout.run_once then
 	minetest.register_chatcommand("x", {
 		params = "<message>",
 		description = "Speak on current channel.",
-		privs = {shout=true},
+		privs = {},
 		func = function(name, param)
 			shout.x(name, param)
 			return true

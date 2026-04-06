@@ -33,7 +33,8 @@ function randspawn.check_spawn_reset()
 		return
 	end
 
-	local now = os.time()
+	local TEMPORAL_PAUSE = 60*60*24*3
+	local now = os.time() - TEMPORAL_PAUSE
 	local later = tonumber(stime) -- Time of future reset (or initialization).
 
 	if now >= later then
@@ -57,8 +58,9 @@ function randspawn.get_spawn_reset_timeout()
 	local meta = randspawn.modstorage
 	local stime = meta:get_string("spawn_reset_timer")
 
+	local TEMPORAL_PAUSE = 60*60*24*3
 	local later = tonumber(stime)
-	local now = os.time()
+	local now = os.time() - TEMPORAL_PAUSE
 	local diff = later - now
 
 	if diff < 0 then diff = 0 end

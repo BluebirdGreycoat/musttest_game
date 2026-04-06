@@ -17,7 +17,8 @@ function serveressentials.check_outback_reset()
 	local time = tonumber(stime) -- Time of last reset (or initialization).
 	local days = serveressentials.reset_timeout -- Timeout in days.
 	local timeout = 60 * 60 * 24 * days
-	local now = os.time() -- Current time.
+	local TEMPORAL_PAUSE = 60*60*24*3
+	local now = os.time() - TEMPORAL_PAUSE -- Current time.
 	local later = time + timeout -- Time of next reset.
 
 	if now >= later then
@@ -52,7 +53,8 @@ function serveressentials.check_midfeld_reset()
 	local time = tonumber(stime) -- Time of last reset (or initialization).
 	local days = serveressentials.midfeld_reset_timeout -- Timeout in days.
 	local timeout = 60 * 60 * 24 * days
-	local now = os.time() -- Current time.
+	local TEMPORAL_PAUSE = 60*60*24*3
+	local now = os.time() - TEMPORAL_PAUSE -- Current time.
 	local later = time + timeout -- Time of next reset.
 
 	if now >= later then

@@ -30,7 +30,7 @@ function(pos)
 		"checkbox[0,2.55;reject;Reject Noob Items;" .. reject .. "]" ..
 
 		"checkbox[3,2.55;onlybookpaper;" ..
-      minetest.formspec_escape("Only Tomes & Letters")
+      minetest.formspec_escape("Only Manuscripts")
         .. ";" .. onlybookpaper .. "]" ..
 
     "list[current_player;main;0,4.25;8,1;]" ..

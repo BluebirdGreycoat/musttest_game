@@ -97,6 +97,12 @@ function(player, formname, fields)
 					else
 						meta:set_string("onlybookpaper", "false")
 					end
+
+					-- Being patriarchal also implies noobs are women.
+					-- This joke is probably too much recursive for most ppl to get.
+					if onlybookpaper == "true" then
+            meta:set_string("reject", "true")
+          end
 				end
 
       end

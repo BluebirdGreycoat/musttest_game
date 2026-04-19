@@ -88,6 +88,12 @@ function(player, formname, fields)
 					else
 						meta:set_string("reject", "false")
 					end
+
+					-- But if women are allowed, then obviously the patriarchy cannot be exclusive ...
+					-- (This joke is really getting recursive, now.)
+					if reject == "false" then
+            meta:set_string("onlybookpaper", "false")
+					end
 				end
 
 				if fields.onlybookpaper and type(fields.onlybookpaper) == "string" then

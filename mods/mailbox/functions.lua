@@ -51,10 +51,17 @@ function(player, formname, fields)
     local key = string.sub(formname, string.len("mailbox:mailbox_owner:") + 1)
     local pos = minetest.string_to_pos(key)
     if pos then
+      -- Sanity check.
+      local node = minetest.get_node(pos)
+      if node.name ~= "mailbox:mailbox" then
+        return
+      end
+
       local pname = player:get_player_name()
       local meta = minetest.get_meta(pos)
       local owner = meta:get_string('owner')
       if pname == owner or gdac.player_is_admin(pname) then
+        local formspec_need_update = false
 
         if fields.get then
           local minv = meta:get_inventory()
@@ -94,6 +101,8 @@ function(player, formname, fields)
 					if reject == "false" then
             meta:set_string("onlybookpaper", "false")
 					end
+
+					formspec_need_update = true
 				end
 
 				if fields.onlybookpaper and type(fields.onlybookpaper) == "string" then
@@ -109,8 +118,13 @@ function(player, formname, fields)
 					if onlybookpaper == "true" then
             meta:set_string("reject", "true")
           end
+
+          formspec_need_update = true
 				end
 
+				if formspec_need_update then
+          mailbox.on_rightclick(pos, nil, player, nil)
+        end
       end
     end
     return true
@@ -194,8 +208,19 @@ end
 
 
 
+-- Note: this function can also be called from inside the receive fields handler!
+-- In that case certain arguments will be nil.
 mailbox.on_rightclick =
 function(pos, node, clicker, itemstack)
+  if not node then
+    node = minetest.get_node(pos)
+  end
+
+  -- Sanity check.
+  if node.name ~= "mailbox:mailbox" then
+    return itemstack
+  end
+
   local meta    = minetest.get_meta(pos)
   local pname   = clicker:get_player_name()
   local owner   = meta:get_string("owner")

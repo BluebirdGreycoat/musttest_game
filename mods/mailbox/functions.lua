@@ -1,14 +1,18 @@
 
-mailbox.get_owner_formspec = 
+mailbox.get_owner_formspec =
 function(pos)
   local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 	local reject = meta:get_string("reject")
+	local onlybookpaper = meta:get_string("onlybookpaper")
 
 	-- Fallback in case value not defined.
 	if reject ~= "false" and reject ~= "true" then
 		reject = "false"
+	end
+	if onlybookpaper ~= "false" and onlybookpaper ~= "true" then
+		onlybookpaper = "false"
 	end
 
   local formspec = "size[8,8.5]" ..
@@ -17,27 +21,31 @@ function(pos)
     default.gui_slots ..
     "label[0,0;" .. minetest.formspec_escape("<" .. owner .. ">'s Mailbox") .. "]" ..
     "list[nodemeta:" .. spos .. ";main;0,0.5;8,1;]" ..
-    
+
     "label[6,1.75;Upgrades]" ..
     "list[nodemeta:" .. spos .. ";cfg;6,2.25;2,1;]" ..
-    
+
     "button[0,1.75;2,1;get;Get Mail]" ..
 		"item_image[2,1.65;1,1;mailbox:mailbox]" ..
 		"checkbox[0,2.55;reject;Reject Noob Items;" .. reject .. "]" ..
-    
+
+		"checkbox[3,2.55;onlybookpaper;" ..
+      minetest.formspec_escape("Only Tomes & Letters")
+        .. ";" .. onlybookpaper .. "]" ..
+
     "list[current_player;main;0,4.25;8,1;]" ..
     "list[current_player;main;0,5.5;8,3;8]" ..
-    
+
     "listring[nodemeta:" .. spos .. ";main]"..
     "listring[current_player;main]"..
     default.get_hotbar_bg(0, 4.25)
-        
+
   return formspec
 end
 
 
 
-mailbox.on_receive_fields = 
+mailbox.on_receive_fields =
 function(player, formname, fields)
   if string.find(formname, "^mailbox:mailbox_owner:") then
     local key = string.sub(formname, string.len("mailbox:mailbox_owner:") + 1)
@@ -76,9 +84,18 @@ function(player, formname, fields)
 				if fields.reject and type(fields.reject) == "string" then
 					local reject = fields.reject
 					if reject == "false" or reject == "true" then
-						meta:set_string("reject", fields.reject)
+						meta:set_string("reject", reject)
 					else
 						meta:set_string("reject", "false")
+					end
+				end
+
+				if fields.onlybookpaper and type(fields.onlybookpaper) == "string" then
+					local onlybookpaper = fields.onlybookpaper
+					if onlybookpaper == "false" or onlybookpaper == "true" then
+						meta:set_string("onlybookpaper", onlybookpaper)
+					else
+						meta:set_string("onlybookpaper", "false")
 					end
 				end
 
@@ -90,42 +107,42 @@ end
 
 
 
-mailbox.get_insert_formspec = 
+mailbox.get_insert_formspec =
 function(pos)
   local meta = minetest.get_meta(pos)
   local owner = meta:get_string('owner')
   local spos = pos.x .. "," .. pos.y .. "," ..pos.z
-  
+
   local title = "Mailbox (Owned by <" .. owner .. ">!)"
-    
+
   local formspec = "size[8,7.5]" ..
     default.gui_bg ..
     default.gui_bg_img ..
     default.gui_slots ..
     "label[0,0;" .. minetest.formspec_escape(title) .. "]" ..
-    
+
     "label[3.5,1;Drop Slot]" ..
     "list[nodemeta:" .. spos .. ";drop;3.5,1.5;1,1;]" ..
-    
+
     "list[current_player;main;0,3.25;8,1;]" ..
     "list[current_player;main;0,4.5;8,3;8]" ..
-    
+
     "listring[nodemeta:" .. spos .. ";drop]"..
     "listring[current_player;main]"..
     default.get_hotbar_bg(0, 3.25)
-        
+
   return formspec
 end
 
 
 
-mailbox.on_punch = 
+mailbox.on_punch =
 function(pos, node, puncher, pointed_thing)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
-  
+
   inv:set_size('cfg', 2)
-  
+
   -- Update infotext to new format.
   local owner = meta:get_string("owner") or ""
   meta:set_string("infotext", "Mailbox (Owned by <" .. owner .. ">!)")
@@ -133,17 +150,17 @@ end
 
 
 
-mailbox.after_place_node = 
+mailbox.after_place_node =
 function(pos, placer, itemstack)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
   local owner = placer:get_player_name()
 	local dname = rename.gpn(owner)
-  
+
   meta:set_string("owner", owner)
 	meta:set_string("rename", dname)
   meta:set_string("infotext", "Mailbox (Owned by <" .. dname .. ">!)")
-  
+
   inv:set_size("main", 8)
   inv:set_size("drop", 1)
   inv:set_size("cfg", 2)
@@ -151,7 +168,7 @@ end
 
 
 
-mailbox.on_destruct = 
+mailbox.on_destruct =
 function(pos)
 	-- Nothing here ATM.
 end
@@ -165,13 +182,13 @@ end
 
 
 
-mailbox.on_rightclick = 
+mailbox.on_rightclick =
 function(pos, node, clicker, itemstack)
   local meta    = minetest.get_meta(pos)
   local pname   = clicker:get_player_name()
   local owner   = meta:get_string("owner")
   local meta    = minetest.get_meta(pos)
-  
+
   if owner == pname then
     local formspec = mailbox.get_owner_formspec(pos)
     local spos = minetest.pos_to_string(pos)
@@ -185,13 +202,13 @@ function(pos, node, clicker, itemstack)
     local formspec = mailbox.get_insert_formspec(pos)
     minetest.show_formspec(pname, "mailbox:mailbox_insert", formspec)
   end
-  
+
   return itemstack
 end
 
 
 
-mailbox.can_dig = 
+mailbox.can_dig =
 function(pos, player)
   local meta = minetest.get_meta(pos);
   local pname = player:get_player_name()
@@ -204,7 +221,7 @@ end
 
 
 
-mailbox.on_metadata_inventory_put = 
+mailbox.on_metadata_inventory_put =
 function(pos, listname, index, stack, player)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
@@ -223,7 +240,7 @@ end
 
 
 
-mailbox.allow_metadata_inventory_put = 
+mailbox.allow_metadata_inventory_put =
 function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
   if listname == "drop" then
@@ -245,6 +262,21 @@ function(pos, listname, index, stack, player)
 					return 0
 				end
 			end
+		end
+
+		local onlybookpaper = meta:get_string("onlybookpaper")
+		if onlybookpaper == "true" then
+      local is_valid = false
+			for k, v in ipairs(mailbox.letter_items) do
+				if stack:get_name() == ItemStack(v):get_name() then
+          is_valid = true
+          break
+				end
+			end
+			if not is_valid then
+        minetest.chat_send_player(pname, "# Server: This mail box only accepts tomes and letters, sorry!")
+        return 0
+      end
 		end
 
     local inv = meta:get_inventory()
@@ -292,14 +324,14 @@ end
 
 
 
-mailbox.allow_metadata_inventory_move = 
+mailbox.allow_metadata_inventory_move =
 function(pos, from_list, from_index, to_list, to_index, count, player)
   return 0
 end
 
 
 
-mailbox.allow_metadata_inventory_take = 
+mailbox.allow_metadata_inventory_take =
 function(pos, listname, index, stack, player)
   local meta = minetest.get_meta(pos)
   local owner = meta:get_string('owner')

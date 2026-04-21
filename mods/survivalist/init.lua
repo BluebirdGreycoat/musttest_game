@@ -4,6 +4,9 @@ survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}
 
+-- How long player must wait to retry a new challege after starting one.
+local CHALLENGE_RETRY_DELAY = 60*60*3
+
 -- XP requirements. Amounts are somewhat arbitrary.
 survivalist.xp_minimum = 700
 survivalist.xp_surface = 700
@@ -14,6 +17,14 @@ survivalist.xp_nether = 2400
 survivalist.completion_xp_surface = 1100
 survivalist.completion_xp_cave = 2700
 survivalist.completion_xp_nether = 4500
+
+local function pluralize(count, singular, plural)
+	if count == 1 then
+		return singular
+	end
+
+	return plural
+end
 
 
 
@@ -179,6 +190,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   rc.notify_realm_update(player, pos)
 	wield3d.on_teleport()
   player:set_pos(vector.add(pos, {x=math_random(-3, 3), y=0.5, z=math_random(-3, 3)}))
+  player:get_meta():set_string("challenge_starting_time", tostring(os.time()))
 
   -- Make sure player is healthy.
   heal.heal_health_and_hunger(pname)
@@ -377,6 +389,17 @@ function survivalist.start_game(pname, gamemode)
   -- Get player and make sure he exists.
   local player = minetest.get_player_by_name(pname)
   if not player then
+    return
+  end
+
+  -- Is player trying again too soon?
+  local timeprevious = tonumber(player:get_meta():get_string("challenge_starting_time")) or 0
+  if (timeprevious + CHALLENGE_RETRY_DELAY) > os.time() then
+    local seconds = (timeprevious + CHALLENGE_RETRY_DELAY) - os.time()
+    local minutes = math.floor(seconds/60)
+    minetest.chat_send_player(pname, "# Server: It's too soon since you last started a challenge!")
+    minetest.chat_send_player(pname, "# Server: You must wait " .. minutes .. " more " .. pluralize(minutes, "minute", "minutes") .. ".")
+		easyvend.sound_error(pname)
     return
   end
 

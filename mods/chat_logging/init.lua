@@ -147,13 +147,13 @@ if not chat_logging.opened then
 	local path2 = chat_logging.worldpath .. "/chat-public.txt"
 	chat_logging.logfile2 = io.open(path2, "a")
 
-  minetest.register_on_shutdown(function(...) 
+  minetest.register_on_shutdown(function(...)
     return chat_logging.on_shutdown(...) end)
   --minetest.register_on_joinplayer(function(...)
   --  return chat_logging.on_joinplayer(...) end)
   --minetest.register_on_leaveplayer(function(...)
   --  return chat_logging.on_leaveplayer(...) end)
-  
+
   chat_logging.opened = true
 end
 
@@ -200,6 +200,7 @@ chat_logging.log_public_action = function(pname, act, loc)
 	chat_logging.logfile2:flush()
 end
 
+--[[
 chat_logging.log_private_message = function(from, to, message)
   local prefix = "[" .. get_time_and_place(from) .. "] "
   local wspace = generate_whitespace(prefix)
@@ -207,7 +208,9 @@ chat_logging.log_private_message = function(from, to, message)
   chat_logging.logfile:write(prefix)
   chat_logging.logfile:flush()
 end
+--]]
 
+--[[
 chat_logging.log_team_chat = function(from, stats, message, team)
   local prefix = "[" .. get_time_and_place(from) .. "] "
   local wspace = generate_whitespace(prefix)
@@ -215,6 +218,7 @@ chat_logging.log_team_chat = function(from, stats, message, team)
   chat_logging.logfile:write(prefix)
   chat_logging.logfile:flush()
 end
+--]]
 
 chat_logging.log_server_message = function(message)
   local prefix = "[" .. get_time() .. "] "

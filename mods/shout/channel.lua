@@ -7,23 +7,38 @@ local WHITE = core.get_color_escape_sequence("#ffffff")
 
 
 
--- Get player's current "in-memory" channel name, or nil.
+local function channels_intersect(t1, t2)
+	for _, k1 in ipairs(t1) do
+		for _, k2 in ipairs(t2) do
+			if k1 == k2 then
+				return true
+			end
+		end
+	end
+end
+
+
+
+-- Get player's current "in-memory" channel names (as an array), or nil.
 function shout.player_channel(pname)
-	if shout.players[pname] and shout.players[pname] ~= "" then
+	if shout.players[pname] and #shout.players[pname] > 0 then
 		return shout.players[pname]
 	end
 end
 
 
 
--- Get list of all players in a channel.
-function shout.channel_players(channel)
+-- Get an array list of all players in a list of channels.
+function shout.channel_players(channels)
 	local players = minetest.get_connected_players()
 	local result = {}
 	for k, v in ipairs(players) do
-		local n = v:get_player_name()
-		if shout.players[n] and shout.players[n] == channel then
-			result[#result+1] = n
+		local pname = v:get_player_name()
+		local arraylist = shout.player_channel(pname)
+		if arraylist then
+			if channels_intersect(arraylist, channels) then
+				result[#result+1] = pname
+			end
 		end
 	end
 	return result
@@ -37,10 +52,16 @@ function shout.notify_channel(channel, message)
 	local players = minetest.get_connected_players()
 
 	-- Send message to all players in the same channel.
-	for k, v in ipairs(players) do
-		local n = v:get_player_name()
-		if shout.players[n] and shout.players[n] == channel then
-			minetest.chat_send_player(n, TEAM_COLOR .. message)
+	for _, v in ipairs(players) do
+		local pname = v:get_player_name()
+		local arraylist = shout.player_channel(pname)
+		if arraylist then
+			for _, arrayentry in ipairs(arraylist) do
+				if arrayentry == channel then
+					minetest.chat_send_player(pname, TEAM_COLOR .. message)
+					break
+				end
+			end
 		end
 	end
 end
@@ -48,77 +69,125 @@ end
 
 
 -- let player join, leave channels
-function shout.channel(name, param, on_join, on_leave)
-	param = string.trim(param)
-	local player = minetest.get_player_by_name(name)
+function shout.channel_command(pname, cmdparams)
+	cmdparams = string.trim(cmdparams)
+
+	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then
 		return
 	end
 
-	if shout.players[name] and shout.players[name] ~= "" and param ~= shout.players[name] then
-		shout.notify_channel(shout.players[name],
-			"# Server: User <" .. rename.gpn(name) .. "> has left channel '" ..
-			shout.players[name] .. "'.")
-	end
+	local tokens = string.split(cmdparams, " ")
+	local join_or_leave = tokens[1]
+	local channel_name = tokens[2]
 
-	if param == "" then
-		if not on_join then
-			if shout.players[name] then
-				minetest.chat_send_player(name, "# Server: Channel cleared.")
-			else
-				minetest.chat_send_player(name, "# Server: Not on any channel.")
-			end
-		end
-
-		shout.players[name] = nil
-		if not on_leave then
-			player:get_meta():set_string("active_channel", "")
-		end
+	if not (#tokens == 2 and join_or_leave and channel_name and channel_name:len() > 0) then
+		minetest.chat_send_player(pname, "# Server: Invalid command syntax.")
 		return
 	end
 
-	if not on_join then
-		if shout.players[name] and shout.players[name] == param then
-			minetest.chat_send_player(name,
-				"# Server: Already on channel '" .. param .. "'.")
-			return
-		end
+	if not (join_or_leave == "join" or join_or_leave == "leave") then
+		minetest.chat_send_player(pname, "# Server: Unrecognized verb.")
+		return
 	end
 
 	-- Require channel names to match specific format.
-	if not string.find(param, "^[_%w]+$") then
-		minetest.chat_send_player(name,
-			"# Server: Invalid channel name! Use only alphanumeric characters and underscores.")
-		easyvend.sound_error(name)
+	if not string.find(channel_name, "^[_%w]+$") then
+		minetest.chat_send_player(pname,
+			"# Server: Only alphanumeric characters and underscores may be used in channel names.")
+		easyvend.sound_error(pname)
 		return
 	end
 
-	-- Only print this if called by explicit chatcommand.
-	if not on_join then
-		minetest.chat_send_player(name, "# Server: Chat channel set to '" .. param .. "'.")
+	local boolean_joinleave = true
+	if join_or_leave == "leave" then
+		boolean_joinleave = false
 	end
 
-	shout.players[name] = param
-	player:get_meta():set_string("active_channel", param)
-	shout.notify_channel(shout.players[name],
-		"# Server: User <" .. rename.gpn(name) .. "> has joined channel '" ..
-		shout.players[name] .. "'.")
+	shout.channel_do_joinleave(pname, channel_name, boolean_joinleave, true)
+end
+
+
+
+function shout.channel_do_joinleave(pname, channel_name, is_join, is_chatcommand, always_report)
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then return end
+
+	local pmeta = player:get_meta()
+	local channel_data = pmeta:get_string("active_channel")
+	local channel_array = minetest.deserialize(channel_data)
+
+	if not (type(channel_array) == "table" and #channel_array > 0) then
+		channel_array = {}
+	end
+
+	-- Convert to dict for easier logic.
+	local channel_dict = {}
+	for _, v in ipairs(channel_array) do
+		channel_dict[v] = true
+	end
+
+	local is_changed = false
+
+	if is_join then
+		if not channel_dict[channel_name] then
+			channel_dict[channel_name] = true
+			is_changed = true
+		end
+	else
+		if channel_dict[channel_name] then
+			channel_dict[channel_name] = nil
+			is_changed = true
+		end
+	end
+
+	-- Convert back to array.
+	channel_array = {}
+	for k, _ in pairs(channel_dict) do
+		channel_array[#channel_array + 1] = k
+	end
+
+	-- Persist.
+	if is_chatcommand and is_changed then
+		shout.players[pname] = channel_array
+		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
+	end
+
+	-- Report status.
+	if is_changed or always_report then
+		local join_str = "joined"
+		if not is_join then join_str = "left" end
+
+		shout.notify_channel(channel_name, "# Server: <" .. rename.gpn(pname) ..
+			"> has " .. join_str .. " channel '" .. channel_name .. "'.")
+
+		if is_chatcommand and not is_join then
+			minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
+		end
+	elseif not is_changed and is_chatcommand then
+		-- If we get here, nothing changed.
+		if is_join then
+			minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")
+		else
+			minetest.chat_send_player(pname, "# Server: You were not in channel '" .. channel_name .. "'.")
+		end
+	end
 end
 
 
 
 -- let player put a message onto a channel
-function shout.x(name, param)
+function shout.x(pname, param)
 	param = string.trim(param)
-	if not shout.players[name] then
-		minetest.chat_send_player(name, "# Server: You have not specified a channel.")
-		easyvend.sound_error(name)
+	if not shout.player_channel(pname) then
+		minetest.chat_send_player(pname, "# Server: No open communication channels.")
+		easyvend.sound_error(pname)
 		return
 	end
 
 	if #param < 1 then
-		minetest.chat_send_player(name, "# Server: No message specified.")
-		easyvend.sound_error(name)
+		minetest.chat_send_player(pname, "# Server: No message.")
+		easyvend.sound_error(pname)
 		return
 	end
 
@@ -127,68 +196,85 @@ function shout.x(name, param)
 	-- then probably they're in a group together, or are related.
 	-- Chat between such shouldn't be blocked.
 	--[[
-	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: You cannot talk while gagged!")
-		easyvend.sound_error(name)
+	if command_tokens.mute.player_muted(pname) then
+		minetest.chat_send_player(pname, "# Server: You cannot talk while gagged!")
+		easyvend.sound_error(pname)
 		return
 	end
 	--]]
 
-	local stats = chat_core.player_status(name)
-	local dname = rename.gpn(name)
-	local channel = shout.players[name]
+	local stats = chat_core.player_status(pname)
+	local dname = rename.gpn(pname)
+	local channels = shout.player_channel(pname)
 	local players = minetest.get_connected_players()
 
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-	if chat_core.check_language(name, param, channel) then return end
+	-- No need to be a Karen over speech since it's not in the public chatlog.
+	--if chat_core.check_language(pname, param, channels) then return end
 
-	local mk = chat_core.generate_coord_string(name)
+	local mk = chat_core.generate_coord_string(pname)
 
 	-- Send message to all players in the same channel.
 	-- The player who sent the message always receives it.
-	for k, v in ipairs(players) do
-		local n = v:get_player_name()
-		if shout.players[n] and shout.players[n] == channel then
-			local ignored = false
+	for _, v in ipairs(players) do
+		local ignored = false
+		local to_pname = v:get_player_name()
+		local to_channels = shout.player_channel(to_pname)
 
-			-- Don't send teamchat if player is ignored.
-			if chat_controls.player_ignored(n, name) then
-				ignored = true
-			end
+		-- Don't send teamchat if player is ignored.
+		if chat_controls.player_ignored(to_pname, pname) then
+			ignored = true
+		end
 
-			if not ignored then
-				minetest.chat_send_player(n, stats .. "<!" .. chat_core.nametag_color .. rename.gpn(name) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
+		if not ignored and to_channels then
+			if channels_intersect(to_channels, channels) then
+				minetest.chat_send_player(to_pname, stats .. "<!" .. chat_core.nametag_color .. rename.gpn(pname) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
 			end
 		end
 	end
 
+	-- Prevent temptation >:D
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)
-	--chat_logging.log_public_shout(name, param, shout.channelmk)
+	--chat_logging.log_public_shout(pname, param, shout.channelmk)
+	--chat_logging.log_team_chat(pname, stats, param, channels)
 
-	chat_logging.log_team_chat(name, stats, param, channel)
-	afk.reset_timeout(name)
+	afk.reset_timeout(pname)
 end
 
 
 
--- Join channel on login, if no channel currently set.
+-- Join channel on login.
 function shout.join_channel(player)
 	local pname = player:get_player_name()
 	if not shout.player_channel(pname) then
-		local channel = player:get_meta():get_string("active_channel")
-		if channel and channel ~= "" then
-			minetest.after(0, function() shout.channel(pname, channel, true) end)
-		end
+		minetest.after(0, function()
+			local pref = minetest.get_player_by_name(pname)
+			if not pref then return end
+
+			local data = pref:get_meta():get_string("active_channel")
+			if data and data ~= "" then
+				local arraylist = minetest.deserialize(data)
+				if type(arraylist) == "table" and #arraylist > 0 then
+					shout.players[pname] = arraylist
+					for _, arrayentry in ipairs(arraylist) do
+						shout.channel_do_joinleave(pname, arrayentry, true, false, true)
+					end
+				end
+			end
+		end)
 	end
 end
 
 
 
--- Leave channel on logout, if a channel is currently set.
+-- Leave channel on logout.
 function shout.leave_channel(player)
 	local pname = player:get_player_name()
-	local curchan = shout.player_channel(pname)
-	if curchan and curchan ~= "" then
-		shout.channel(pname, "", false, true)
+	local arraylist = shout.player_channel(pname)
+	if arraylist then
+		for _, arrayentry in ipairs(arraylist) do
+			shout.channel_do_joinleave(pname, arrayentry, false)
+		end
 	end
+	shout.players[pname] = nil
 end

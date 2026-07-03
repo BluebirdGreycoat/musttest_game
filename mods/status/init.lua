@@ -66,9 +66,9 @@ function status.chat_players(user, param)
 
 	do
 		-- Serialize player names to string.
-		local channel = shout.player_channel(user)
-		if channel and channel ~= "" then
-			local players = shout.channel_players(channel)
+		local channels = shout.player_channel(user)
+		if channels then
+			local players = shout.channel_players(channels)
 			local clients = "{"
 			local num_clients = 0
 			for k, v in ipairs(players) do
@@ -83,7 +83,7 @@ function status.chat_players(user, param)
 
 			-- Build status string.
 			local final =
-				STATUS_COLOR .. "# Server: Players In Channel '" .. channel .. "' (" .. num_clients .. "): " .. clients .. "."
+				STATUS_COLOR .. "# Server: Channel Players (" .. num_clients .. "): " .. clients .. "."
 
 			minetest.chat_send_player(user, final)
 		end
@@ -96,7 +96,7 @@ end
 
 function status.chat_status(user, param)
   local p1, p2
-  
+
   -- Get uptime.
   local status_str = status.original_status()
   p1, p2 = string.find(status_str, "uptime:[^|]+")
@@ -106,7 +106,7 @@ function status.chat_status(user, param)
     uptime = string.gsub(uptime, "uptime: ", "Uptime: ")
 		uptime = string.trim(uptime)
   end
-  
+
   p1, p2 = string.find(status_str, "max lag:[^|]+")
   local max_lag = "max lag: unknown"
   if p1 and p2 then
@@ -120,7 +120,7 @@ function status.chat_status(user, param)
   if not motd2 or motd2 == "" then
 		motd2 = "Daily message has not been set!"
   end
-  
+
   -- Get version string.
   local version = "version: unknown"
   p1, p2 = string.find(status_str, "version:[^|]+")
@@ -130,13 +130,13 @@ function status.chat_status(user, param)
   end
   version = string.gsub(version, "version: ", "Version: ")
   version = string.gsub(version, "-dev", "-DEV")
-  
+
   -- Build status string.
   local final =
 		STATUS_COLOR .. "# Server: " .. version .. ", " .. uptime .. ", " .. max_lag .. ".\n" ..
 		STATUS_COLOR .. "# Server: " .. motd2 .. "\n" ..
 		STATUS_COLOR .. "# Server: More info can be found at http://" .. WEBADDR .. "/."
-  
+
   minetest.chat_send_player(user, final)
   return true
 end

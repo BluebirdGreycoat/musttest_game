@@ -30,18 +30,18 @@ if not shout.run_once then
 	})
 
 	minetest.register_chatcommand("channel", {
-		params = "<id>",
-		description = "Set channel name.",
+		params = "<join|leave> <channelname>",
+		description = "Join or leave open channels.",
 		privs = {},
 		func = function(name, param)
-			shout.channel(name, param)
+			shout.channel_command(name, param)
 			return true
 		end,
 	})
 
 	minetest.register_chatcommand("x", {
 		params = "<message>",
-		description = "Speak on current channel.",
+		description = "Speak on open channel(s).",
 		privs = {},
 		func = function(name, param)
 			shout.x(name, param)

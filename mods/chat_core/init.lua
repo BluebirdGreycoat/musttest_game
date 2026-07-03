@@ -294,7 +294,7 @@ chat_core.on_chat_message = function(name, message)
 		return
 	end
 	if pref:get_hp() <= 0 then
-		return
+		return -- U ded; and teh ded do not speak.
 	end
 
 	if message:sub(1, 1) == "/" then
@@ -302,6 +302,12 @@ chat_core.on_chat_message = function(name, message)
 		easyvend.sound_error(name)
 		-- It's a special command, and not one that was registered.
 		-- This is actually never called?
+		return
+	end
+
+	-- Note: channel speak does NOT require 'shout' priv.
+	if pref:get_meta():get_int("xinvert") == 1 then
+		shout.x(name, message)
 		return
 	end
 

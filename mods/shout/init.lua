@@ -42,9 +42,19 @@ if not shout.run_once then
 	minetest.register_chatcommand("x", {
 		params = "<message>",
 		description = "Speak on open channel(s).",
-		privs = {},
+		privs = {}, -- Specifically does not require 'shout'
 		func = function(name, param)
 			shout.x(name, param)
+			return true
+		end,
+	})
+
+	minetest.register_chatcommand("xinvert", {
+		params = "",
+		description = "Toggle whether /x is required for channel speak.",
+		privs = {},
+		func = function(name, param)
+			shout.xinvert(name, param)
 			return true
 		end,
 	})

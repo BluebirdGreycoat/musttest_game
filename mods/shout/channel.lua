@@ -278,3 +278,20 @@ function shout.leave_channel(player)
 	end
 	shout.players[pname] = nil
 end
+
+
+
+function shout.xinvert(pname, param)
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then return end
+
+	local status = player:get_meta():get_int("xinvert")
+	if status == 0 then
+		status = 1
+		minetest.chat_send_player(pname, "# Server: All chat messages restricted to channels.")
+	else
+		status = 0
+		minetest.chat_send_player(pname, "# Server: Global chat restored.")
+	end
+	player:get_meta():set_int("xinvert", status)
+end

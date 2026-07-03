@@ -71,6 +71,14 @@ chat_core.send_all_ex = function(from, prename, actname, postname, message, alwa
 	local ppos = player:get_pos()
 	local mlower = string.lower(message)
 
+	local adhoc_me = false
+	local newmsg = message
+	if message:find("^" .. actname .. " ") then
+		alwaysecho = true
+		adhoc_me = true
+		newmsg = message:sub(actname:len() + 2)
+	end
+
 	for k, v in ipairs(allplayers) do
 		local pname = v:get_player_name()
 		local plower = string.lower(rename.gpn(pname))
@@ -102,6 +110,11 @@ chat_core.send_all_ex = function(from, prename, actname, postname, message, alwa
 			if chat_controls.player_ignored(pname, from) then
 				should_send = false
 				ignored = true
+			end
+
+			-- /me emotes are only locally visible. They also do not show in the public log.
+			if alwaysecho and vector_distance(ppos, tpos) > 64 then
+				should_send = false
 			end
 
 			-- Chat from nearby players is highlighted.
@@ -136,18 +149,27 @@ chat_core.send_all_ex = function(from, prename, actname, postname, message, alwa
 				end
 
 				-- Finally send the message.
-				if should_beep then
+				if should_beep and not adhoc_me then
 					chat_core.alert_player_sound(pname)
 				end
-				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
+
+				if adhoc_me then
+					minetest.chat_send_player(pname, "# " .. color_nametag .. actname .. color_white .. " " .. chat_colorize.COLOR_ORANGE .. newmsg)
+				else
+					minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
+				end
 			end
 		else -- Message being echoed back to player that sent it.
 			if alwaysecho then
-				-- It should be a /me command.
-				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. message)
+				if adhoc_me then
+					minetest.chat_send_player(pname, "# " .. color_nametag .. actname .. color_white .. " " .. chat_colorize.COLOR_ORANGE .. newmsg)
+				else
+					-- It should be a /me command.
+					minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. newmsg)
+				end
 			else
 				-- Send chat to self if echo enabled.
-				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. message)
+				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. newmsg)
 			end
 		end
 	end
@@ -322,6 +344,7 @@ chat_core.on_chat_message = function(name, message)
 		return
 	end
 
+	-- Global chat requires 'shout' priv.
 	if not minetest.check_player_privs(name, {shout=true}) then
 		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
 		-- Player doesn't have shout priv.
@@ -372,15 +395,20 @@ end
 
 
 chat_core.handle_command_me = function(name, param)
+	-- Emote chat command is short-range, doesn't require 'shout' priv.
 	if not minetest.check_player_privs(name, {shout=true}) then
 		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
 		return -- Player doesn't have shout priv.
 	end
 
+	-- Emotes don't require an ungagged tongue.
+	-- (And they're short-range, not part of the global chat.)
+	--[[
 	if command_tokens.mute.player_muted(name) then
 		minetest.chat_send_player(name, "# Server: You can't do that while gagged, sorry.")
 		return -- Player is muted.
 	end
+	--]]
 
 	param = string.trim(param)
 	if #param < 1 then
@@ -392,8 +420,8 @@ chat_core.handle_command_me = function(name, param)
 	local coord_string = generate_coord_string(name)
 
 	player_labels.on_chat_message(name, param)
-	chat_core.send_all(name, "* <", rename.gpn(name), coord_string .. "> ", param, true)
-	chat_logging.log_public_action(name, param, coord_string)
+	chat_core.send_all(name, "# ", rename.gpn(name), " ", param, true)
+	--chat_logging.log_public_action(name, param, coord_string)
 	afk.reset_timeout(name)
 end
 
@@ -517,7 +545,7 @@ if not chat_core.registered then
 	minetest.register_chatcommand("me", {
 		params = "<action>",
 		description = "Send an 'action' message beginning with your name.",
-		privs = {shout=true},
+		privs = {}, -- Expressly does NOT require 'shout', visible only at close range.
 		func = function(name, param)
 			chat_core.handle_command_me(name, chat_core.rewrite_message(param))
 			return true
@@ -527,7 +555,7 @@ if not chat_core.registered then
 	minetest.register_chatcommand("msg", {
 		params = "<player> <message>",
 		description = "Send a private message to another player.",
-		privs = {shout=true},
+		privs = {}, -- Private messages don't require access to the global chat.
 		func = function(name, param)
 			chat_core.handle_command_msg(name, chat_core.rewrite_message(param))
 			return true
@@ -537,7 +565,7 @@ if not chat_core.registered then
 	minetest.register_chatcommand("r", {
 		params = "<message>",
 		description = "Reply via PM to the last player to send you a PM.",
-		privs = {shout=true},
+		privs = {}, -- Private messages don't require access to the global chat.
 		func = function(name, param)
 			chat_core.handle_command_r(name, chat_core.rewrite_message(param))
 			return true

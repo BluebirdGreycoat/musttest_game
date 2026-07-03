@@ -187,6 +187,7 @@ chat_logging.log_public_chat = function(pname, stats, msg, loc)
 	chat_logging.logfile2:flush()
 end
 
+--[[
 chat_logging.log_public_action = function(pname, act, loc)
   local prefix = "[" .. get_time_and_place(pname) .. "] "
 	local prefix2 = "[" .. get_public_time() .. "] "
@@ -199,6 +200,7 @@ chat_logging.log_public_action = function(pname, act, loc)
   chat_logging.logfile:flush()
 	chat_logging.logfile2:flush()
 end
+--]]
 
 --[[
 chat_logging.log_private_message = function(from, to, message)

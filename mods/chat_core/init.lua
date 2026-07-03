@@ -61,19 +61,14 @@ end
 
 
 
--- Send regular chat from a player to all other players.
--- This is called by this mod after validation checks pass.
-chat_core.send_all = function(from, prename, actname, postname, message, alwaysecho)
+chat_core.send_all_ex = function(from, prename, actname, postname, message, alwaysecho, allplayers)
 	-- `alwaysecho` is true in the case of a /me command.
 	-- The client never echoes this command by itself.
 
 	local player = minetest.get_player_by_name(from)
-	if not player then
-		return
-	end
-	local ppos = player:get_pos()
+	if not player then return end
 
-	local allplayers = minetest.get_connected_players()
+	local ppos = player:get_pos()
 	local mlower = string.lower(message)
 
 	for k, v in ipairs(allplayers) do
@@ -156,6 +151,22 @@ chat_core.send_all = function(from, prename, actname, postname, message, alwayse
 			end
 		end
 	end
+end
+
+
+
+-- Send regular chat from a player to all other players.
+-- This is called by this mod after validation checks pass.
+chat_core.send_all = function(from, prename, actname, postname, message, alwaysecho)
+	-- `alwaysecho` is true in the case of a /me command.
+	-- The client never echoes this command by itself.
+
+	local player = minetest.get_player_by_name(from)
+	local allplayers = minetest.get_connected_players()
+
+	if not player then return end
+
+	chat_core.send_all_ex(from, prename, actname, postname, message, alwaysecho, allplayers)
 end
 
 

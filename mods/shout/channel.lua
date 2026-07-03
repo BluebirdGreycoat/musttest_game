@@ -214,24 +214,23 @@ function shout.x(pname, param)
 
 	local mk = chat_core.generate_coord_string(pname)
 
+	local allplayers = {}
+
 	-- Send message to all players in the same channel.
 	-- The player who sent the message always receives it.
 	for _, v in ipairs(players) do
-		local ignored = false
 		local to_pname = v:get_player_name()
 		local to_channels = shout.player_channel(to_pname)
 
-		-- Don't send teamchat if player is ignored.
-		if chat_controls.player_ignored(to_pname, pname) then
-			ignored = true
-		end
-
-		if not ignored and to_channels then
+		if to_channels then
 			if channels_intersect(to_channels, channels) then
-				minetest.chat_send_player(to_pname, stats .. "<!" .. chat_core.nametag_color .. rename.gpn(pname) .. WHITE .. mk .. "!> " .. TEAM_COLOR .. param)
+				allplayers[#allplayers + 1] = v
 			end
 		end
 	end
+
+	-- Handles chat filters, colorization, distance, etc.
+	chat_core.send_all_ex(pname, stats .. "<!", rename.gpn(pname), mk .. "!> ", param, false, allplayers)
 
 	-- Prevent temptation >:D
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)

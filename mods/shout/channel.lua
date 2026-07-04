@@ -81,6 +81,11 @@ function shout.channel_command(pname, cmdparams)
 	local join_or_leave = tokens[1]
 	local channel_name = tokens[2]
 
+	if #tokens == 0 then
+		shout.show_channel_status(pname)
+		return
+	end
+
 	if not (#tokens == 2 and join_or_leave and channel_name and channel_name:len() > 0) then
 		minetest.chat_send_player(pname, "# Server: Invalid command syntax.")
 		return
@@ -293,4 +298,13 @@ function shout.xinvert(pname, param)
 		minetest.chat_send_player(pname, "# Server: Global chat restored.")
 	end
 	player:get_meta():set_int("xinvert", status)
+end
+
+
+
+function shout.show_channel_status(pname)
+	local channels = shout.player_channel(pname)
+	local count = #channels
+	local list = table.concat(channels, ", ")
+	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")
 end

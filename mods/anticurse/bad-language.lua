@@ -14,13 +14,13 @@ anticurse.foul = {
 	{word="s+%d+x+", white={
 		"drops",
 	}},
-  
+
   {word="b+i*t+c+h+", white={"cheap", "doubt", "check", "childish", "chaotic"}},
 
   {word="c+u+n+t+", white={"truck"}},
   "c+v+n+t+",
 	{word="t+w+a+t+", white={"water", "watch", "just", "wait"}},
-  
+
   -- It's generally pretty easy to check for this naughty word.
   {word="f+u+c*k+", white={"keep", "know", "could", "ukrai"}},
   {word="f+u+c+k*", white={
@@ -53,7 +53,7 @@ anticurse.foul = {
 	"f+a+c*k+y",
 	"f+%d+c+k+",
 	"n+i+g+e+r+",
-  
+
   "b+l+o*w+j+o*b+",
 	"s+h+t+h+o+l+e+",
 
@@ -114,9 +114,9 @@ anticurse.foul = {
 		"and", "know", "should", "kill", "would", "keep", "medikit", "knew", "xd",
 		"traveled", "word", "kalite", "found",
 	}},
-  
+
   --"p+e+r+v+e+r+t+",
-  
+
 	"s+h+x+t+",
 	{word="s+c+h+i*t+", white={"test", "the"}},
   {word="s+h+i+t+", white={
@@ -147,16 +147,16 @@ anticurse.foul = {
 
 	{word="f+a+g+o+t+", white={"gotcha"}},
   {word="g+a+y+", white={"gayety", "gayeties", "yak", "ing", "yack"}},
-  
-  {word="p+u+s+y+", white={"pussycat", "pussyfoot"}},
+
+  {word="p+u+s+y+", white={"pussycat", "pussyfoot", "you"}},
   "p+ss+y+",
-  
+
   {word="c+o+c+k+", white={"peacock", "cockney", "cockroach"}},
   {word="w+h+o+r+e+", white={
 		"reach", "read", "really", "remove", "record", "relay", "return",
-		"require", "rebel",
+		"require", "rebel", "rebuilt",
 	}},
-  
+
   {word="c+u+m+", white={
 		"accumulat", "acumen", "circum", "cucumber", "cumber", "cumulat",
 		"document", "ecumeni", "encumber", "encumbranc", "incumb", "locum", "scum",

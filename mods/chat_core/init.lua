@@ -389,10 +389,12 @@ end
 
 chat_core.handle_command_me = function(name, param)
 	-- Emote chat command is short-range, doesn't require 'shout' priv.
+	--[[
 	if not minetest.check_player_privs(name, {shout=true}) then
 		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
 		return -- Player doesn't have shout priv.
 	end
+	--]]
 
 	-- Emotes don't require an ungagged tongue.
 	-- (And they're short-range, not part of the global chat.)
@@ -410,7 +412,7 @@ chat_core.handle_command_me = function(name, param)
 	end
 
 	if chat_core.check_language(name, param) then return end
-	local coord_string = generate_coord_string(name)
+	--local coord_string = generate_coord_string(name)
 
 	player_labels.on_chat_message(name, param)
 	chat_core.send_all(name, "# ", rename.gpn(name), " ", param, true)

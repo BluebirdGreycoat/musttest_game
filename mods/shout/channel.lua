@@ -13,6 +13,7 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{name="announce", no_player_chat=true},
 	{name="bones", no_player_chat=true},
 	{name="hints", no_player_chat=true},
+	{name="channels", no_player_chat=true},
 }
 
 
@@ -211,6 +212,12 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	end
 
 	-- Report status.
+	shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
+end
+
+
+
+function shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 	if not is_server_action then
 		if is_changed then
 			if is_join then

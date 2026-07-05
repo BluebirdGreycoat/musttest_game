@@ -24,7 +24,7 @@ if not shout.run_once then
 		description = "Yell a message to everyone on the server. You can also prepend your chat with '!'.",
 		privs = {shout=true},
 		func = function(name, param)
-			shout.shout(name, param)
+			shout.shout(name, chat_core.rewrite_message(param))
 			return true
 		end,
 	})
@@ -44,7 +44,7 @@ if not shout.run_once then
 		description = "Speak on open channel(s).",
 		privs = {}, -- Specifically does not require 'shout'
 		func = function(name, param)
-			shout.x(name, param)
+			shout.x(name, chat_core.rewrite_message(param))
 			return true
 		end,
 	})

@@ -1,6 +1,7 @@
 
 shout.players = shout.players or {}
 
+local MAX_CHANNEL_COUNT = 128
 local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
@@ -197,7 +198,7 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	end
 
 	-- Error if too many entries.
-	if #channel_array > 16 then
+	if #channel_array > MAX_CHANNEL_COUNT then
 		minetest.chat_send_player(pname, "# Server: Cannot join too many channels!")
 		easyvend.sound_error(pname)
 		return

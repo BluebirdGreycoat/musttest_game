@@ -379,10 +379,10 @@ chat_core.on_chat_message = function(name, message)
 	-- If this succeeds player was kicked or muted or something.
 	if chat_core.check_language(name, message) then return end
 
-	local coord_string = generate_coord_string(name)
+	local mark = generate_coord_string(name)
 
-	chat_core.send_all(name, "<", rename.gpn(name), coord_string .. "> ", message)
-	chat_logging.log_public_chat(name, message, coord_string)
+	chat_core.send_all(name, "<", rename.gpn(name), mark .. "> ", message)
+	chat_logging.log_public_chat(name, message, mark)
 
 	-- Notify other stuff.
 	player_labels.on_chat_message(name, message)

@@ -380,7 +380,6 @@ chat_core.on_chat_message = function(name, message)
 	if chat_core.check_language(name, message) then return end
 
 	local coord_string = generate_coord_string(name)
-	local stats = chat_core.player_status(name)
 
 	chat_core.send_all(name, "<", rename.gpn(name), coord_string .. "> ", message)
 	chat_logging.log_public_chat(name, message, coord_string)

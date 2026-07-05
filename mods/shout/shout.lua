@@ -7,7 +7,6 @@ local WHITE = core.get_color_escape_sequence("#ffffff")
 
 -- Shout a message.
 function shout.shout(name, param)
-	param = string.trim(param)
 	if #param < 1 then
 		minetest.chat_send_player(name, "# Server: No message specified.")
 		easyvend.sound_error(name)

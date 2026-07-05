@@ -297,6 +297,7 @@ chat_core.generate_coord_string = generate_coord_string
 
 
 
+--[===[
 function chat_core.player_status(pname)
 	-- He's probably right, you know.
 	--[[
@@ -319,6 +320,7 @@ function chat_core.player_status(pname)
 	--]]
 	return ""
 end
+--]===]
 
 
 

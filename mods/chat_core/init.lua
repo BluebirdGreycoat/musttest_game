@@ -61,6 +61,24 @@ end
 
 
 
+function chat_core.accident_check(pname, message)
+	local pm_pos = string.find(message, "msg")
+	if not pm_pos then pm_pos = string.find(message, "MSG") end
+	if not pm_pos then pm_pos = string.find(message, "pm") end
+	if not pm_pos then pm_pos = string.find(message, "PM") end
+
+	if pm_pos and pm_pos <= 3 then -- Space for 2 symbols.
+		minetest.chat_send_player(pname,
+			"# Server: Did you mean to send a PM? " ..
+			"The command format is \"/msg <player> <message>\" (without quotes). " ..
+			"Chat not sent.")
+		easyvend.sound_error(pname)
+		return true
+	end
+end
+
+
+
 function chat_core.send_all_ex(params)
 	local from = params.from
 	local prename = params.prename or "<"
@@ -363,22 +381,7 @@ chat_core.on_chat_message = function(name, message)
 	end
 
 	-- Check for accidents.
-	local pm_pos = string.find(message, "msg")
-	if not pm_pos then
-		pm_pos = string.find(message, "MSG")
-	end
-	if not pm_pos then
-		pm_pos = string.find(message, "pm")
-	end
-	if not pm_pos then
-		pm_pos = string.find(message, "PM")
-	end
-	if pm_pos and pm_pos <= 3 then -- Space for 2 symbols.
-		minetest.chat_send_player(name,
-			"# Server: Did you mean to send a PM? The command format is \"/msg <player> <message>\" (without quotes). Chat not sent.")
-		easyvend.sound_error(name)
-		return
-	end
+	if chat_core.accident_check(name, message) then return end
 
 	-- If this succeeds player was kicked or muted or something.
 	if chat_core.check_language(name, message) then return end

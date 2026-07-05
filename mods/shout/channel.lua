@@ -10,14 +10,17 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{
 		name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
 		description="Global channel for general communication.",
+		ex_desc="Chat is published permanently. Shout priv required. Keep it clean.",
 	},
 	{
 		name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
 		description="Newbies' help channel.",
+		ex_desc="Chat is published permanently. Shout priv required. Keep it clean.",
 	},
 	{
 		name="citizens", enable_gag=true,
 		description="General channel for players with enough experience to possess a Key of Citizenship.",
+		ex_desc="Chat here will not be published externally.",
 	},
 	{
 		name="announce", no_player_chat=true,
@@ -71,12 +74,10 @@ function shout.show_channel_list_help(pname)
 	chatsend(pname, "# Server: This list only shows BUILTIN channels. Other users can create their own.")
 
 	for k, line in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
-		chatsend(pname, "# Server: " .. k .. ": <" .. line.name .. ">: " .. line.description)
-		if line.public_chatlog then
-			chatsend(pname, "# Server:         Info: Public.")
-		end
-		if line.no_player_chat then
-			chatsend(pname, "# Server:         Info: System use only.")
+		chatsend(pname, "# Server: " .. k .. ": <" .. line.name .. ">")
+		chatsend(pname, "# server:    " .. line.description)
+		if line.ex_desc then
+			chatsend(pname, "# Server:    " .. line.ex_desc)
 		end
 	end
 end

@@ -16,6 +16,6 @@ minetest.register_chatcommand("echo", {
   description = "Send a message to all players as if it came from the server itself.",
   privs = {shout=true, echo=true},
   func = function(name, param)
-    minetest.chat_send_all("# Server: " .. param)
+    minetest.chat_send_all("announce", "# Server: " .. param)
   end,
 })

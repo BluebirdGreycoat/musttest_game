@@ -67,20 +67,15 @@ end
 
 
 -- Use this only to send server messages to all players in a channel.
-function shout.notify_channel(channel, message)
+function shout.notify_channels(channels, message)
 	local players = minetest.get_connected_players()
 
 	-- Send message to all players in the same channel.
 	for _, v in ipairs(players) do
 		local pname = v:get_player_name()
 		local arraylist = shout.get_player_channels(pname)
-		if arraylist then
-			for _, arrayentry in ipairs(arraylist) do
-				if arrayentry == channel then
-					minetest.chat_send_player(pname, message)
-					break
-				end
-			end
+		if arraylist and channels_intersect(arraylist, channels) then
+			minetest.chat_send_player(pname, message)
 		end
 	end
 end
@@ -319,9 +314,9 @@ function shout.x(pname, param)
 	-- Handles chat filters, colorization, distance, etc.
 	chat_core.send_all_ex({
 		from = pname,
-		prename = "<!",
+		prename = "<",
 		actname = rename.gpn(pname),
-		postname = themarkofcain .. "!> ",
+		postname = themarkofcain .. "> ",
 		message = param,
 		alwaysecho = false,
 		allplayers = receiving_players

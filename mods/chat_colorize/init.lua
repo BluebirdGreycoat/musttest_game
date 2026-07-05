@@ -208,7 +208,15 @@ local function get_ragequit()
 	return ragequit[math_random(1, #ragequit)]
 end
 
-chat_colorize.send_all = function(message)
+chat_colorize.send_all = function(channels, message)
+	-- Backward compatibility.
+	if not message then
+		message = channels
+		channels = {"announce"}
+	elseif type(channels) == "string" then
+		channels = {[1]=channels}
+	end
+
   local color = ""
   local is_server_message = false
   if string.sub(minetest.strip_colors(message), 1, 1) == "#" then
@@ -227,7 +235,7 @@ chat_colorize.send_all = function(message)
     chat_logging.log_server_message(message)
   end
 
-  shout.notify_channel("announce", color .. message)
+  shout.notify_channels(channels, color .. message)
   --return chat_colorize.old_chat_send_all(color .. message)
 end
 

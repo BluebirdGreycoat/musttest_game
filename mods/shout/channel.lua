@@ -109,12 +109,13 @@ function shout.channel_command(pname, cmdparams)
 		boolean_joinleave = false
 	end
 
-	shout.channel_do_joinleave(pname, channel_name, boolean_joinleave, true)
+	shout.channel_handle_joinleave(pname, channel_name, boolean_joinleave)
+	shout.show_channel_status(pname)
 end
 
 
 
-function shout.channel_do_joinleave(pname, channel_name, is_join, is_chatcommand, always_report)
+function shout.channel_handle_joinleave(pname, channel_name, is_join)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
 
@@ -152,24 +153,27 @@ function shout.channel_do_joinleave(pname, channel_name, is_join, is_chatcommand
 		channel_array[#channel_array + 1] = k
 	end
 
+	-- Error if too many entries.
+	if #channel_array > 16 then
+		minetest.chat_send_player(pname, "# Server: Cannot join too many channels!")
+		easyvend.sound_error(pname)
+		return
+	end
+
 	-- Persist.
-	if is_chatcommand and is_changed then
+	if is_changed then
 		shout.players[pname] = channel_array
 		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
 	end
 
 	-- Report status.
-	if is_changed or always_report then
-		local join_str = "joined"
-		if not is_join then join_str = "left" end
-
-		shout.notify_channel(channel_name, "# Server: <" .. rename.gpn(pname) ..
-			"> has " .. join_str .. " channel '" .. channel_name .. "'.")
-
-		if is_chatcommand and not is_join then
+	if is_changed then
+		if is_join then
+			minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
+		else
 			minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
 		end
-	elseif not is_changed and is_chatcommand then
+	else
 		-- If we get here, nothing changed.
 		if is_join then
 			minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")

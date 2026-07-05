@@ -41,6 +41,15 @@ local MUD_UKNOWN_COMMAND = {
 	"The system has no idea what that means. Have some cooked steak instead.",
 	"Command failed successfully. Good job breaking it!",
 	"Unknown command. The system is busy respawning you after your last creative idea.",
+	"Unknown command.",
+	"Nonsense.",
+	"That's pure nonsense.",
+	"Horse manure.",
+	"Are you dyslexic?",
+	"Every time you mistype a command, your IQ approaches Africa's.",
+	"I think I'm having a senior moment.",
+	"Excuse me ....",
+	"Big brain much?",
 }
 
 

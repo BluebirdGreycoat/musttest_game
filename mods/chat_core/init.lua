@@ -320,13 +320,17 @@ chat_core.on_chat_message = function(name, message)
 		return -- U ded; and teh ded do not speak.
 	end
 
+	-- The engine never sends us messages starting with a /
+	--[[
 	if message:sub(1, 1) == "/" then
+		minetest.chat_send_all('testing!')
 		minetest.chat_send_player(name, "# Server: Invalid command. See '/help all' for a list of valid commands.")
 		easyvend.sound_error(name)
 		-- It's a special command, and not one that was registered.
 		-- This is actually never called?
 		return
 	end
+	--]]
 
 	-- Note: channel speak does NOT require 'shout' priv.
 	if pref:get_meta():get_int("xinvert") == 1 then
@@ -376,9 +380,11 @@ chat_core.on_chat_message = function(name, message)
 	local coord_string = generate_coord_string(name)
 	local stats = chat_core.player_status(name)
 
-	player_labels.on_chat_message(name, message)
 	chat_core.send_all(name, stats .. "<", rename.gpn(name), coord_string .. "> ", message)
 	chat_logging.log_public_chat(name, stats, message, coord_string)
+
+	-- Notify other stuff.
+	player_labels.on_chat_message(name, message)
 	afk.reset_timeout(name)
 end
 

@@ -34,26 +34,6 @@ end
 
 
 
-function shout.player_in_channels(pname, channelname)
-	local channels = shout.get_player_channels(pname)
-	if not channels then return end
-	if type(channelname) == "string" then
-		for _, v1 in ipairs(channels) do
-			if v1 == channelname then
-				return true
-			end
-		end
-	elseif type(channelname) == "table" then
-		for _, v1 in ipairs(channels) do
-			if channelname[v1] then
-				return true
-			end
-		end
-	end
-end
-
-
-
 function shout.get_channel_info(channelname)
 	for _, v in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
 		if v.name == channelname then

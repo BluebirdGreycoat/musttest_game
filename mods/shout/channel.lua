@@ -220,7 +220,7 @@ function shout.x(pname, param)
 	-- No need to be a Karen over speech since it's not in the public chatlog.
 	--if chat_core.check_language(pname, param, channels) then return end
 
-	local mk = chat_core.generate_coord_string(pname)
+	local themarkofcain = chat_core.generate_coord_string(pname)
 
 	local allplayers = {}
 
@@ -242,7 +242,7 @@ function shout.x(pname, param)
 		from = pname,
 		prename = "<!",
 		actname = rename.gpn(pname),
-		postname = mk .. "!> ",
+		postname = themarkofcain .. "!> ",
 		message = param,
 		alwaysecho = false,
 		allplayers = allplayers

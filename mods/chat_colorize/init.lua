@@ -8,6 +8,16 @@ local S = core.get_translator("chat_colorize")
 -- Localize for performance.
 local math_random = math.random
 
+local MUD_UKNOWN_COMMAND = {
+	"Huh?",
+	"I don't understand that.",
+	"Eh?",
+	"What?",
+	"I don't understand.",
+	"Huh?!?",
+	"I couldn't understand that.",
+}
+
 
 
 -- Support for hot reloading.
@@ -79,7 +89,7 @@ chat_colorize.send_player = function(name, msg)
 		easyvend.sound_error(name)
     color = chat_colorize.COLOR_OLIVE
   elseif msg:find("^-!-") and msg:find("Invalid command:") then
-    msg = "# Server: Invalid command. See '/help' for a list of valid commands."
+    msg = "# Server: " .. MUD_UKNOWN_COMMAND[math.random(1, #MUD_UKNOWN_COMMAND)]
 		easyvend.sound_error(name)
     color = chat_colorize.COLOR_OLIVE
   elseif msg:find("^-!-") and msg:find("Empty command") then
@@ -176,11 +186,11 @@ end
 chat_colorize.send_all = function(message)
   local color = ""
   local is_server_message = false
-  if string.sub(message, 1, 1) == "#" then
+  if string.sub(minetest.strip_colors(message), 1, 1) == "#" then
     color = chat_colorize.COLOR_CYAN
     is_server_message = true
   end
-  
+
   --[[
   -- Make it less verbose.
   if message:find("^# Server: ") then

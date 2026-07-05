@@ -56,7 +56,7 @@ chat_core.rewrite_message = function(chat2)
 	chat = sub(chat, "[%z%c]", "") -- Zero byte & control bytes.
 	chat = sub(chat, " +", " ") -- Excess spaces.
 	--chat = sub(chat, "[qQ]", "k")
-	return chat
+	return string.trim(chat)
 end
 
 
@@ -312,9 +312,6 @@ end
 
 
 chat_core.on_chat_message = function(name, message)
-	-- Trim input.
-	message = string.trim(message)
-
 	local pref = minetest.get_player_by_name(name)
 	if not pref then
 		return

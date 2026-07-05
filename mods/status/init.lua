@@ -83,7 +83,7 @@ function status.chat_players(user, param)
 
 			-- Build status string.
 			local final =
-				STATUS_COLOR .. "# Server: Channel Players (" .. num_clients .. "): " .. clients .. "."
+				STATUS_COLOR .. "# Server: Channel Fellows (" .. num_clients .. "): " .. clients .. "."
 
 			minetest.chat_send_player(user, final)
 		end

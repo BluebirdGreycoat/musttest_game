@@ -302,14 +302,22 @@ end
 
 
 function shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
-	if not is_server_action then
-		if is_changed then
-			if is_join then
+	if is_changed then
+		local act = "joined"
+		if not is_join then act = "left" end
+		shout.announce_channel_actions(pname, shout.strip_readonly_channels({channel_name}), act)
+	end
+
+	if is_changed then
+		if is_join then
+			if not shout.player_in_channel(pname, "channels") then
 				minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
-			else
-				minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
 			end
 		else
+			minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
+		end
+	else
+		if not is_server_action then
 			-- If we get here, nothing changed.
 			if is_join then
 				minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")
@@ -450,12 +458,13 @@ end
 
 
 
+-- Announces ONLY to players that are in intersecting channels.
 function shout.announce_channel_actions(pname, channels, action)
 	for _, cname in ipairs(shout.strip_readonly_channels(channels)) do
 		local players = shout.get_players_in_channels({cname})
 		for _, oname in ipairs(players) do
 			if shout.player_in_channel(oname, "channels") then
-				minetest.chat_send_player(oname, "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
+				minetest.chat_send_player(oname, TEAM_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
 			end
 		end
 	end
@@ -466,12 +475,8 @@ end
 -- Join channel on login.
 function shout.channel_on_joinplayer(player)
 	local pname = player:get_player_name()
-	--if not shout.get_player_channels(pname) then
-	--	minetest.after(0, function()
-	--local pref = minetest.get_player_by_name(pname)
-	--if not pref then return end
-
 	local data = player:get_meta():get_string("active_channel")
+
 	if data and data ~= "" then
 		local arraylist = minetest.deserialize(data)
 		if type(arraylist) == "table" and #arraylist > 0 then
@@ -495,14 +500,12 @@ function shout.channel_on_joinplayer(player)
 
 		if passport.player_has_key(pname) then
 			shout.channel_handle_joinleave(pname, "citizens", true, true)
+			shout.channel_handle_joinleave(pname, "channels", true, true)
 		else
 			shout.channel_handle_joinleave(pname, "newbies", true, true)
 		end
-	end
-	--	end)
-	--end
-
-	if shout.get_player_channels(pname) then
+	elseif shout.get_player_channels(pname) then
+		-- The 'elseif' is needed to prevent the announce from printing twice.
 		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "joined")
 	end
 end

@@ -20,7 +20,7 @@ end
 
 
 -- Get player's current "in-memory" channel names (as an array), or nil.
-function shout.player_channel(pname)
+function shout.get_player_channels(pname)
 	if shout.players[pname] and #shout.players[pname] > 0 then
 		return shout.players[pname]
 	end
@@ -34,7 +34,7 @@ function shout.channel_players(channels)
 	local result = {}
 	for k, v in ipairs(players) do
 		local pname = v:get_player_name()
-		local arraylist = shout.player_channel(pname)
+		local arraylist = shout.get_player_channels(pname)
 		if arraylist then
 			if channels_intersect(arraylist, channels) then
 				result[#result+1] = pname
@@ -54,7 +54,7 @@ function shout.notify_channel(channel, message)
 	-- Send message to all players in the same channel.
 	for _, v in ipairs(players) do
 		local pname = v:get_player_name()
-		local arraylist = shout.player_channel(pname)
+		local arraylist = shout.get_player_channels(pname)
 		if arraylist then
 			for _, arrayentry in ipairs(arraylist) do
 				if arrayentry == channel then
@@ -187,7 +187,7 @@ end
 
 -- let player put a message onto a channel
 function shout.x(pname, param)
-	if not shout.player_channel(pname) then
+	if not shout.get_player_channels(pname) then
 		minetest.chat_send_player(pname, "# Server: No open communication channels.")
 		easyvend.sound_error(pname)
 		return
@@ -211,7 +211,7 @@ function shout.x(pname, param)
 	end
 	--]]
 
-	local channels = shout.player_channel(pname)
+	local channels = shout.get_player_channels(pname)
 	local players = minetest.get_connected_players()
 
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
@@ -226,7 +226,7 @@ function shout.x(pname, param)
 	-- The player who sent the message always receives it.
 	for _, v in ipairs(players) do
 		local to_pname = v:get_player_name()
-		local to_channels = shout.player_channel(to_pname)
+		local to_channels = shout.get_player_channels(to_pname)
 
 		if to_channels then
 			if channels_intersect(to_channels, channels) then
@@ -251,7 +251,7 @@ end
 -- Join channel on login.
 function shout.channel_on_joinplayer(player)
 	local pname = player:get_player_name()
-	--if not shout.player_channel(pname) then
+	--if not shout.get_player_channels(pname) then
 	--	minetest.after(0, function()
 	--local pref = minetest.get_player_by_name(pname)
 	--if not pref then return end
@@ -280,7 +280,7 @@ function shout.channel_on_leaveplayer(player)
 	local pname = player:get_player_name()
 	-- No need to announce.
 	--[[
-	local arraylist = shout.player_channel(pname)
+	local arraylist = shout.get_player_channels(pname)
 	if arraylist then
 		for _, arrayentry in ipairs(arraylist) do
 			shout.channel_do_joinleave(pname, arrayentry, false)
@@ -310,7 +310,7 @@ end
 
 
 function shout.show_channel_status(pname)
-	local channels = shout.player_channel(pname)
+	local channels = shout.get_player_channels(pname)
 	local count = #channels
 	local list = table.concat(channels, ", ")
 	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")

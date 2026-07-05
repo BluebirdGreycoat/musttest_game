@@ -257,9 +257,12 @@ function shout.join_channel(player)
 				local arraylist = minetest.deserialize(data)
 				if type(arraylist) == "table" and #arraylist > 0 then
 					shout.players[pname] = arraylist
+					-- No need to announce.
+					--[[
 					for _, arrayentry in ipairs(arraylist) do
 						shout.channel_do_joinleave(pname, arrayentry, true, false, true)
 					end
+					--]]
 				end
 			end
 		end)
@@ -271,12 +274,15 @@ end
 -- Leave channel on logout.
 function shout.leave_channel(player)
 	local pname = player:get_player_name()
+	-- No need to announce.
+	--[[
 	local arraylist = shout.player_channel(pname)
 	if arraylist then
 		for _, arrayentry in ipairs(arraylist) do
 			shout.channel_do_joinleave(pname, arrayentry, false)
 		end
 	end
+	--]]
 	shout.players[pname] = nil
 end
 

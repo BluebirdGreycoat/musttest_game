@@ -9,6 +9,7 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
 	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
 	{name="citizens", enable_gag=true},
+	{name="announce", public_chatlog=true},
 }
 
 

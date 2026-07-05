@@ -134,7 +134,7 @@ function shout.print_hint()
 		-- Don't speak to an empty room.
 		local players = get_non_admin_players()
 		if #players > 0 then
-			minetest.chat_send_all("# Server: " .. HINTS[math_random(1, #HINTS)])
+			minetest.chat_send_all("hints", "# Server: " .. HINTS[math_random(1, #HINTS)])
 		end
 	end
 

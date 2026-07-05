@@ -10,6 +10,8 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
 	{name="citizens", enable_gag=true},
 	{name="announce", no_player_chat=true},
+	{name="bones", no_player_chat=true},
+	{name="hints", no_player_chat=true},
 }
 
 
@@ -31,6 +33,24 @@ function shout.get_player_channels(pname)
 	if shout.players[pname] and #shout.players[pname] > 0 then
 		return shout.players[pname]
 	end
+end
+
+
+
+function shout.strip_readonly_channels(channels)
+	local t = {}
+	for _, v in ipairs(channels) do
+		local strip = false
+		for _, o in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
+			if o.name == v and o.no_player_chat then
+				strip = true
+			end
+		end
+		if not strip then
+			t[#t + 1] = v
+		end
+	end
+	return t
 end
 
 
@@ -242,7 +262,7 @@ function shout.x(pname, param)
 	local requires_shout_priv = false
 	local need_gag_check = false
 
-	local channels = shout.get_player_channels(pname)
+	local channels = shout.strip_readonly_channels(shout.get_player_channels(pname))
 	local themarkofcain = chat_core.generate_coord_string(pname)
 	local connected_players = minetest.get_connected_players()
 
@@ -364,6 +384,8 @@ function shout.channel_on_joinplayer(player)
 	if not data or data == "" then
 		shout.channel_handle_joinleave(pname, "global", true, true)
 		shout.channel_handle_joinleave(pname, "announce", true, true)
+		shout.channel_handle_joinleave(pname, "bones", true, true)
+		shout.channel_handle_joinleave(pname, "hints", true, true)
 
 		if passport.player_has_key(pname) then
 			shout.channel_handle_joinleave(pname, "citizens", true, true)

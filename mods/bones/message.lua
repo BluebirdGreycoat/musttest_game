@@ -103,10 +103,10 @@ local send_chat_world = function(pos, player)
 
 	if show_everyone then
 		local dname = rename.gpn(player)
-		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. " ..
+		minetest.chat_send_all("bones", "# Server: " .. random_str(msg_str1) .. " detected. " ..
 			"<" .. dname .. "> " .. random_str(msg_str2) .. " at " .. rc.pos_to_namestr_ex(pos) .. ".")
 	else
-		minetest.chat_send_all("# Server: " .. random_str(msg_str1) .. " detected. ID and location unknown.")
+		minetest.chat_send_all("bones", "# Server: " .. random_str(msg_str1) .. " detected. ID and location unknown.")
 	end
 
 	-- Print this on the next server step, to ensure it is printed AFTER any other

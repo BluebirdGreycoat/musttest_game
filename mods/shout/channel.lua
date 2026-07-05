@@ -196,7 +196,7 @@ function shout.x(pname, param)
 	end
 
 	if #param < 1 then
-		minetest.chat_send_player(pname, "# Server: No message.")
+		minetest.chat_send_player(pname, "# Server: Empty message.")
 		easyvend.sound_error(pname)
 		return
 	end
@@ -238,7 +238,15 @@ function shout.x(pname, param)
 	end
 
 	-- Handles chat filters, colorization, distance, etc.
-	chat_core.send_all_ex(pname, "<!", rename.gpn(pname), mk .. "!> ", param, false, allplayers)
+	chat_core.send_all_ex({
+		from = pname,
+		prename = "<!",
+		actname = rename.gpn(pname),
+		postname = mk .. "!> ",
+		message = param,
+		alwaysecho = false,
+		allplayers = allplayers
+	})
 
 	-- Prevent temptation >:D
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)

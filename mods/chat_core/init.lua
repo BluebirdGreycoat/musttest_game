@@ -61,7 +61,16 @@ end
 
 
 
-chat_core.send_all_ex = function(from, prename, actname, postname, message, alwaysecho, allplayers)
+--chat_core.send_all_ex = function(from, prename, actname, postname, message, alwaysecho, allplayers)
+function chat_core.send_all_ex(params)
+	local from = params.from
+	local prename = params.prename or "<"
+	local actname = params.actname
+	local postname = params.postname or "> "
+	local message = params.message
+	local alwaysecho = params.alwaysecho
+	local allplayers = params.allplayers or minetest.get_connected_players()
+
 	-- `alwaysecho` is true in the case of a /me command.
 	-- The client never echoes this command by itself.
 
@@ -179,10 +188,12 @@ end
 
 -- Send regular chat from a player to all other players.
 -- This is called by this mod after validation checks pass.
-chat_core.send_all = function(from, prename, actname, postname, message, alwaysecho)
+--[[
+function chat_core.send_all(from, prename, actname, postname, message, alwaysecho)
 	local allplayers = minetest.get_connected_players()
 	chat_core.send_all_ex(from, prename, actname, postname, message, alwaysecho, allplayers)
 end
+--]]
 
 
 
@@ -381,7 +392,13 @@ chat_core.on_chat_message = function(name, message)
 
 	local mark = generate_coord_string(name)
 
-	chat_core.send_all(name, "<", rename.gpn(name), mark .. "> ", message)
+	chat_core.send_all_ex({
+		from = name,
+		prename = "<",
+		actname = rename.gpn(name),
+		postname = mark .. "> ",
+		message = message
+	})
 	chat_logging.log_public_chat(name, message, mark)
 
 	-- Notify other stuff.
@@ -418,9 +435,17 @@ chat_core.handle_command_me = function(name, param)
 	if chat_core.check_language(name, param) then return end
 	--local coord_string = generate_coord_string(name)
 
-	player_labels.on_chat_message(name, param)
-	chat_core.send_all(name, "# ", rename.gpn(name), " ", param, true)
+	chat_core.send_all_ex({
+		from = name,
+		prename = "# ",
+		actname = rename.gpn(name),
+		postname = " ",
+		message = param,
+		alwaysecho = true
+	})
+
 	--chat_logging.log_public_action(name, param, coord_string)
+	player_labels.on_chat_message(name, param)
 	afk.reset_timeout(name)
 end
 

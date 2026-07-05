@@ -210,15 +210,15 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	end
 
 	-- Report status.
-	if is_changed then
-		if is_join then
-			minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
+	if not is_server_action then
+		if is_changed then
+			if is_join then
+				minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
+			else
+				minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
+			end
 		else
-			minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
-		end
-	else
-		-- If we get here, nothing changed.
-		if not is_server_action then
+			-- If we get here, nothing changed.
 			if is_join then
 				minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")
 			else
@@ -304,7 +304,7 @@ function shout.x(pname, param)
 
 	if need_gag_check then
 		if command_tokens.mute.player_muted(pname) then
-			minetest.chat_send_player(pname, "# Server: You are currently gagged.")
+			minetest.chat_send_player(pname, "# Server: " .. shout.get_gag_message())
 			-- Player is muted.
 			return
 		end

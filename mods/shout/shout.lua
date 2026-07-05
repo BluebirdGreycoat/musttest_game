@@ -11,7 +11,53 @@ local GAG_MESSAGES = {
 	"Shouting is impossible right now.",
 	"Somebody gagged you. Can't shout.",
 	"You can't shout.",
+	"You are currently gagged.","Your voice is muffled by the gag.",
+	"The gag prevents any shouting.",
+	"You try to shout but only muffled sounds come out.",
+	"Duct tape keeps your mouth shut tight.",
+	"No shouting allowed while gagged.",
+	"Your shout is blocked by the gag.",
+	"The gag has silenced you.",
+	"Mmph! You can't shout right now.",
+	"Your mouth is taped closed.",
+	"Shouting is impossible with a gag on.",
+	"The duct tape muffles your voice completely.",
+	"You've been silenced by the gag.",
+	"Your attempt to shout fails due to the gag.",
+	"Gag in effect: no shouting.",
+	"Your voice can't escape the gag.",
+	"The gag absorbs your shout.",
+	"You mumble helplessly instead.",
+	"Somebody taped your mouth shut.",
+	"Shout canceled by gag.",
+	"Your vocal cords are currently gagged.",
+	"The gag says 'quiet!'",
+	"You can't form words through the tape.",
+	"Muffled gag noises are all you manage.",
+	"Voice disabled by duct tape.",
+	"The gag has claimed your ability to shout.",
+	"Your shout is trapped behind the gag.",
+	"Gagged. Shouting not permitted.",
+	"The tape keeps your mouth from opening.",
+	"You attempt a shout but it comes out as a quiet mmph.",
+	"Gag active – your voice is offline.",
+	"Duct tape: the ultimate anti-shout device.",
+	"Your shout was deleted by the gag.",
+	"The server gagged you for a reason. No shouting.",
+	"Mouth sealed. Shout denied.",
+	"The gag is doing its job too well.",
+	"You open your mouth but nothing comes out.",
+	"Shouting requires an ungagged mouth.",
+	"The duct tape has other ideas.",
+	"Your voice is currently on mute.",
+	"Gag detected. Shouting disabled.",
 }
+
+
+
+function shout.get_gag_message()
+	return GAG_MESSAGES[math.random(1, #GAG_MESSAGES)]
+end
 
 
 
@@ -25,7 +71,7 @@ function shout.shout(name, param)
 	end
 
 	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: " .. GAG_MESSAGES[math.random(1, #GAG_MESSAGES)])
+		minetest.chat_send_player(name, "# Server: " .. shout.get_gag_message())
 		easyvend.sound_error(name)
 		return
 	end

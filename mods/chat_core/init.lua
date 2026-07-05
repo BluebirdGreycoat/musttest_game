@@ -315,9 +315,11 @@ end
 chat_core.on_chat_message = function(name, message)
 	local pref = minetest.get_player_by_name(name)
 	if not pref then
+		minetest.chat_send_player(name, "# Server: You failed the existence test.")
 		return
 	end
 	if pref:get_hp() <= 0 then
+		minetest.chat_send_player(name, "# Server: The dead do not speak.")
 		return -- U ded; and teh ded do not speak.
 	end
 

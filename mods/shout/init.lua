@@ -30,7 +30,10 @@ if not shout.run_once then
 	})
 
 	minetest.register_chatcommand("channel", {
-		params = "<join|leave> <channelname>",
+		params = "",
+		show_help = function(...)
+			return shout.show_channel_help(...)
+		end,
 		description = "Join or leave open channels.",
 		privs = {},
 		func = function(name, param)

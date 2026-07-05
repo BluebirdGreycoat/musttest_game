@@ -7,14 +7,43 @@ local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
 
 local BUILTIN_ESSENTIAL_CHANNELS = {
-	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
-	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
-	{name="citizens", enable_gag=true},
-	{name="announce", no_player_chat=true},
-	{name="bones", no_player_chat=true},
-	{name="hints", no_player_chat=true},
-	{name="channels", no_player_chat=true},
+	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true, description="Global channel for general communication."},
+	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true, description="Newbies' help channel."},
+	{name="citizens", enable_gag=true, description="General channel for players with enough experience to possess a Key of Citizenship."},
+	{name="announce", no_player_chat=true, description="General system announcements."},
+	{name="bones", no_player_chat=true, description="Death reports and bonebox locations."},
+	{name="hints", no_player_chat=true, description="Periodic helpful hints from the server."},
+	{name="channels", no_player_chat=true, description="Information about players joining and leaving channels."},
 }
+
+
+
+function shout.show_channel_help(pname)
+	local helplines = {
+		"Chatcommand to join or leave channels, or show information about channels.",
+		"Examples:",
+		"  /channel join My_Channel",
+		"  /channel leave My_Channel",
+		"You can supply multiple channel names separated by commas, like so:",
+		"  /channel join room1,coolRoom,The_Trash",
+		"To see what channels you are currently in, just type '/channel'.",
+		"To see all builtin channels, type '/channel list'.",
+		"This list only shows BUILTIN channels. Other users can create their own.",
+		"The only way to join a channel is to know its name.",
+	}
+	for k, line in ipairs(helplines) do
+		minetest.chat_send_player(pname, "# Server: " .. line)
+	end
+end
+
+
+
+function shout.show_channel_list_help(pname)
+	minetest.chat_send_player(pname, "# Server: There are " .. #BUILTIN_ESSENTIAL_CHANNELS .. " builtin channels.")
+	for k, line in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
+		minetest.chat_send_player(pname, "# Server: " .. k .. ": <" .. line.name .. ">: " .. line.description)
+	end
+end
 
 
 
@@ -119,6 +148,11 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 
 	if #tokens == 0 then
 		shout.show_channel_status(pname)
+		return
+	end
+
+	if #tokens == 1 and tokens[1] == "list" then
+		shout.show_channel_list_help(pname)
 		return
 	end
 

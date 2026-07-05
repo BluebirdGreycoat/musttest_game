@@ -48,6 +48,7 @@ end
 
 -- Use this only to send server messages to all players in a channel.
 -- This bypasses players' chat filters.
+--[[
 function shout.notify_channel(channel, message)
 	local players = minetest.get_connected_players()
 
@@ -65,6 +66,7 @@ function shout.notify_channel(channel, message)
 		end
 	end
 end
+--]]
 
 
 

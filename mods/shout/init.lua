@@ -34,7 +34,7 @@ if not shout.run_once then
 		description = "Join or leave open channels.",
 		privs = {},
 		func = function(name, param)
-			shout.channel_command(name, param)
+			shout.channel_on_chatcommand(name, param)
 			return true
 		end,
 	})

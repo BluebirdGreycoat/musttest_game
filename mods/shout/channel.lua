@@ -71,7 +71,7 @@ end
 
 
 -- let player join, leave channels
-function shout.channel_command(pname, cmdparams)
+function shout.channel_on_chatcommand(pname, cmdparams)
 	cmdparams = string.trim(cmdparams)
 
 	local player = minetest.get_player_by_name(pname)

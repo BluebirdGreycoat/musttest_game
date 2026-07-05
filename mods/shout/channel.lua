@@ -118,7 +118,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 	end
 
 	-- Require channel names to match specific format.
-	if not string.find(channel_name, "^[_%w]+$") then
+	if not string.find(channel_name, "^[,_%w]+$") then
 		minetest.chat_send_player(pname,
 			"# Server: Only alphanumeric characters and underscores may be used in channel names.")
 		easyvend.sound_error(pname)
@@ -130,7 +130,11 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		boolean_joinleave = false
 	end
 
-	shout.channel_handle_joinleave(pname, channel_name, boolean_joinleave)
+	local channelnames = channel_name:split(",")
+	for _, v in ipairs(channelnames) do
+		shout.channel_handle_joinleave(pname, v, boolean_joinleave)
+	end
+
 	shout.show_channel_status(pname)
 end
 

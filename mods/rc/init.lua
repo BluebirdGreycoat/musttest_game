@@ -1018,15 +1018,24 @@ function rc.plane_shift_message(pref, p, n)
 			if d and d.description then
 				local realm_name = d.description
 				local insult = ""
-
+				local join_newbies_channel = false
 				local pname = pref:get_player_name()
+
 				if beds.get_respawn_count(pname) == 0 then
 					if rr ~= "abyss" and rr2 == "abyss" then
 						insult = " Noob!"
 					end
 				end
 
+				if rr2 == "abyss" then
+					join_newbies_channel = true
+				end
+
 				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. "." .. insult)
+
+				if join_newbies_channel then
+					shout.channel_handle_joinleave(pname, "newbies", true, true)
+				end
 			end
 		end
 	end

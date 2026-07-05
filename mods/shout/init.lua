@@ -75,9 +75,9 @@ if not shout.run_once then
 
 	-- Channel leave/join functions.
 	minetest.register_on_joinplayer(function(...)
-		return shout.join_channel(...) end)
+		return shout.channel_on_joinplayer(...) end)
 	minetest.register_on_leaveplayer(function(...)
-		return shout.leave_channel(...) end)
+		return shout.channel_on_leaveplayer(...) end)
 
 	local c = "shout:core"
 	local f = shout.modpath .. "/init.lua"

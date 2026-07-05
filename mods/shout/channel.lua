@@ -245,7 +245,7 @@ end
 
 
 -- Join channel on login.
-function shout.join_channel(player)
+function shout.channel_on_joinplayer(player)
 	local pname = player:get_player_name()
 	if not shout.player_channel(pname) then
 		minetest.after(0, function()
@@ -272,7 +272,7 @@ end
 
 
 -- Leave channel on logout.
-function shout.leave_channel(player)
+function shout.channel_on_leaveplayer(player)
 	local pname = player:get_player_name()
 	-- No need to announce.
 	--[[

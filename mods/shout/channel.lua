@@ -105,6 +105,19 @@ end
 
 
 
+function shout.player_in_channel(pname, channel)
+	if shout.players[pname] and #shout.players[pname] > 0 then
+		local t = shout.players[pname]
+		for _, v in ipairs(t) do
+			if v == channel then
+				return true
+			end
+		end
+	end
+end
+
+
+
 function shout.strip_readonly_channels(channels)
 	local t = {}
 	for _, v in ipairs(channels) do
@@ -437,6 +450,19 @@ end
 
 
 
+function shout.announce_channel_actions(pname, channels, action)
+	for _, cname in ipairs(shout.strip_readonly_channels(channels)) do
+		local players = shout.get_players_in_channels({cname})
+		for _, oname in ipairs(players) do
+			if shout.player_in_channel(oname, "channels") then
+				minetest.chat_send_player(oname, "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
+			end
+		end
+	end
+end
+
+
+
 -- Join channel on login.
 function shout.channel_on_joinplayer(player)
 	local pname = player:get_player_name()
@@ -450,6 +476,7 @@ function shout.channel_on_joinplayer(player)
 		local arraylist = minetest.deserialize(data)
 		if type(arraylist) == "table" and #arraylist > 0 then
 			shout.players[pname] = arraylist
+
 			-- No need to announce.
 			--[[
 			for _, arrayentry in ipairs(arraylist) do
@@ -474,6 +501,10 @@ function shout.channel_on_joinplayer(player)
 	end
 	--	end)
 	--end
+
+	if shout.get_player_channels(pname) then
+		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "joined")
+	end
 end
 
 
@@ -481,6 +512,9 @@ end
 -- Leave channel on logout.
 function shout.channel_on_leaveplayer(player)
 	local pname = player:get_player_name()
+	if shout.get_player_channels(pname) then
+		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "left")
+	end
 	-- No need to announce.
 	--[[
 	local arraylist = shout.get_player_channels(pname)

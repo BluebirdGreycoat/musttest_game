@@ -412,6 +412,10 @@ end
 
 function shout.show_channel_status(pname)
 	local channels = shout.get_player_channels(pname)
+	if not channels or #channels == 0 then
+		minetest.chat_send_player(pname, "# Server: You are not subscribed to any channels.")
+		return
+	end
 	local count = #channels
 	local list = table.concat(channels, ", ")
 	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")

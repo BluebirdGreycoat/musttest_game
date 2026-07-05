@@ -7,21 +7,47 @@ local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
 
 local BUILTIN_ESSENTIAL_CHANNELS = {
-	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true, description="Global channel for general communication."},
-	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true, description="Newbies' help channel."},
-	{name="citizens", enable_gag=true, description="General channel for players with enough experience to possess a Key of Citizenship."},
-	{name="announce", no_player_chat=true, description="General system announcements."},
-	{name="bones", no_player_chat=true, description="Death reports and bonebox locations."},
-	{name="hints", no_player_chat=true, description="Periodic helpful hints from the server."},
-	{name="channels", no_player_chat=true, description="Information about players joining and leaving channels."},
+	{
+		name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
+		description="Global channel for general communication.",
+	},
+	{
+		name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
+		description="Newbies' help channel.",
+	},
+	{
+		name="citizens", enable_gag=true,
+		description="General channel for players with enough experience to possess a Key of Citizenship.",
+	},
+	{
+		name="announce", no_player_chat=true,
+		description="General system announcements.",
+	},
+	{
+		name="bones", no_player_chat=true,
+		description="Death reports and bonebox locations.",
+	},
+	{
+		name="hints", no_player_chat=true,
+		description="Periodic helpful hints from the server.",
+	},
+	{
+		name="channels", no_player_chat=true,
+		description="Information about players joining and leaving channels.",
+	},
 }
 
 
 
 function shout.show_channel_help(pname)
 	local helplines = {
-		"Chatcommand to join or leave channels, or show information about channels.",
-		"Examples:",
+		"This is a chat-command to join or leave channels, or show information about channels.",
+		"Channels are essentially chatrooms that may or may not be private (depending on whether the name is public).",
+		"The only way to join a channel is to know its name.",
+		"Any two users who share at least one channel in common may communicate with each other.",
+		"If two users do NOT share a channel, they'll only be able to communicate via direct private messages with /msg (or email).",
+		"Certain channels (e.g., <announce>) do not allow communication over them. They are system-use only.",
+		"Example command usage:",
 		"  /channel join My_Channel",
 		"  /channel leave My_Channel",
 		"You can supply multiple channel names separated by commas, like so:",
@@ -29,7 +55,7 @@ function shout.show_channel_help(pname)
 		"To see what channels you are currently in, just type '/channel'.",
 		"To see all builtin channels, type '/channel list'.",
 		"This list only shows BUILTIN channels. Other users can create their own.",
-		"The only way to join a channel is to know its name.",
+		"You can be subscribed to a maximum of " .. MAX_CHANNEL_COUNT .. " channels at a time.",
 	}
 	for k, line in ipairs(helplines) do
 		minetest.chat_send_player(pname, "# Server: " .. line)
@@ -39,9 +65,19 @@ end
 
 
 function shout.show_channel_list_help(pname)
-	minetest.chat_send_player(pname, "# Server: There are " .. #BUILTIN_ESSENTIAL_CHANNELS .. " builtin channels.")
+	local chatsend = minetest.chat_send_player
+
+	chatsend(pname, "# Server: There are " .. #BUILTIN_ESSENTIAL_CHANNELS .. " builtin channels.")
+	chatsend(pname, "# Server: This list only shows BUILTIN channels. Other users can create their own.")
+
 	for k, line in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
-		minetest.chat_send_player(pname, "# Server: " .. k .. ": <" .. line.name .. ">: " .. line.description)
+		chatsend(pname, "# Server: " .. k .. ": <" .. line.name .. ">: " .. line.description)
+		if line.public_chatlog then
+			chatsend(pname, "# Server:         Info: Public.")
+		end
+		if line.no_player_chat then
+			chatsend(pname, "# Server:         Info: System use only.")
+		end
 	end
 end
 

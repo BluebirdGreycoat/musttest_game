@@ -9,7 +9,7 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
 	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
 	{name="citizens", enable_gag=true},
-	{name="announce", public_chatlog=true},
+	{name="announce", no_player_chat=true},
 }
 
 
@@ -67,8 +67,6 @@ end
 
 
 -- Use this only to send server messages to all players in a channel.
--- This bypasses players' chat filters.
---[[
 function shout.notify_channel(channel, message)
 	local players = minetest.get_connected_players()
 
@@ -79,14 +77,13 @@ function shout.notify_channel(channel, message)
 		if arraylist then
 			for _, arrayentry in ipairs(arraylist) do
 				if arrayentry == channel then
-					minetest.chat_send_player(pname, TEAM_COLOR .. message)
+					minetest.chat_send_player(pname, message)
 					break
 				end
 			end
 		end
 	end
 end
---]]
 
 
 
@@ -371,6 +368,7 @@ function shout.channel_on_joinplayer(player)
 	-- Set up first-time channels.
 	if not data or data == "" then
 		shout.channel_handle_joinleave(pname, "global", true, true)
+		shout.channel_handle_joinleave(pname, "announce", true, true)
 
 		if passport.player_has_key(pname) then
 			shout.channel_handle_joinleave(pname, "citizens", true, true)

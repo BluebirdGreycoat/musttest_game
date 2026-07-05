@@ -226,7 +226,9 @@ chat_colorize.send_all = function(message)
   if is_server_message then
     chat_logging.log_server_message(message)
   end
-  return chat_colorize.old_chat_send_all(color .. message)
+
+  shout.notify_channel("announce", color .. message)
+  --return chat_colorize.old_chat_send_all(color .. message)
 end
 
 if not chat_colorize.registered then

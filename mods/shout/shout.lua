@@ -101,3 +101,41 @@ function shout.shout(name, param)
 	player_labels.on_chat_message(name, param)
 	chat_logging.log_public_shout(name, param, mk)
 end
+
+
+
+-- Whisper a message.
+-- This is called from chatcommand OR from regular chat by prepending a [$]
+function shout.whisper(name, param)
+	if #param < 1 then
+		minetest.chat_send_player(name, "# Server: Empty whisper.")
+		easyvend.sound_error(name)
+		return
+	end
+
+	local pref = minetest.get_player_by_name(name)
+	if not pref or not pref:is_player() then return end
+	local pos = pref:get_pos()
+
+	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
+	-- No language checks on whispers.
+	--if chat_core.check_language(name, param) then return end
+
+	local mk = chat_core.generate_coord_string(name)
+	local dname = rename.gpn(name)
+	local players = minetest.get_connected_players()
+
+	for _, player in ipairs(players) do
+		local target_name = player:get_player_name() or ""
+		local pos2 = player:get_pos()
+		-- Since whispers are range limited, they always get through even if players are ignored.
+		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
+			--chat_core.alert_player_sound(target_name)
+			minetest.chat_send_player(target_name, "<" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "> " .. chat_core.WHISPER_COLOR .. param)
+		end
+	end
+
+	afk.reset_timeout(name)
+	player_labels.on_chat_message(name, param)
+	chat_logging.log_public_shout(name, param, mk)
+end

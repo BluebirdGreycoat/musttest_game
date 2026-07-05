@@ -29,12 +29,22 @@ if not shout.run_once then
 		end,
 	})
 
+	minetest.register_chatcommand("say", {
+		params = "<message>",
+		description = "Whisper a message to everyone nearby. You can also prepend your chat with '$'.",
+		privs = {}, -- Does NOT require shout.
+		func = function(name, param)
+			shout.whisper(name, chat_core.rewrite_message(param))
+			return true
+		end,
+	})
+
 	minetest.register_chatcommand("channel", {
 		params = "",
 		show_help = function(...)
 			return shout.show_channel_help(...)
 		end,
-		description = "Join or leave open channels.",
+		description = "Join or leave/mute communication channels.",
 		privs = {},
 		func = function(name, param)
 			shout.channel_on_chatcommand(name, param)

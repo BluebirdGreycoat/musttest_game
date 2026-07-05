@@ -42,6 +42,8 @@ local color_nametag = core.get_color_escape_sequence("#ffd870")
 local color_white = core.get_color_escape_sequence("#ffffff")
 --local color_cyan = core.get_color_escape_sequence("#00e0ff")
 chat_core.nametag_color = color_nametag -- make public to other mods
+chat_core.WHISPER_COLOR = color_dark_cyan
+chat_core.WHISPER_DISTANCE = 64
 
 -- Used in PMs.
 local color_magenta = core.get_color_escape_sequence("#ff50ff")
@@ -145,7 +147,7 @@ function chat_core.send_all_ex(params)
 
 			-- Chat from nearby players is highlighted.
 			-- Even ignored players may talk if they are close enough.
-			if vector_distance(ppos, tpos) < 64 then
+			if vector_distance(ppos, tpos) < chat_core.WHISPER_DISTANCE then
 				-- Highlight chat from nearby player only if originating player is not invisible.
 				if not gdac_invis.is_invisible(from) then
 					chosen_color = color_dark_cyan
@@ -360,6 +362,13 @@ chat_core.on_chat_message = function(name, message)
 	if string.find(message, "^!") then
 		-- Handled by the shout mod.
 		shout.shout(name, string.sub(message, 2))
+		return
+	end
+
+	-- Handle whispers.
+	if string.find(message, "^%$") then
+		-- Handled by the shout mod.
+		shout.whisper(name, string.sub(message, 2))
 		return
 	end
 

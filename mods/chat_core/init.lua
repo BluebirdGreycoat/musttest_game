@@ -376,6 +376,7 @@ chat_core.on_chat_message = function(name, message)
 	if pm_pos and pm_pos <= 3 then -- Space for 2 symbols.
 		minetest.chat_send_player(name,
 			"# Server: Did you mean to send a PM? The command format is \"/msg <player> <message>\" (without quotes). Chat not sent.")
+		easyvend.sound_error(name)
 		return
 	end
 

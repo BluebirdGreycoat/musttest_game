@@ -15,7 +15,7 @@ passport.modpath = minetest.get_modpath("passport")
 passport.open_keys = passport.open_keys or {}
 
 -- Localize for performance.
-local F = minetest.formspec_escape   
+local F = minetest.formspec_escape
   local vector_distance = vector.distance
    local vector_round = vector.round
 	  local vector_add = vector.add
@@ -93,7 +93,7 @@ end
 
 passport.compose_formspec = function(pname)
   local buttons = ""
-  
+
   local i = 1
   for k, v in pairs(passport.recalls) do
     local n = F(v.name)
@@ -114,7 +114,7 @@ passport.compose_formspec = function(pname)
 		beacons = teleports.nearest_beacons_to_position(player_pos, 6, 1000)
 	end
 	passport.player_recalls[pname] = passport.beacons_to_recalls(beacons)
-  
+
   local h = 1
   for k, v in ipairs(passport.player_recalls[pname]) do
     local n = F(v.name)
@@ -127,7 +127,7 @@ passport.compose_formspec = function(pname)
   local echo = chat_echo.get_echo(pname)
   if echo == true then boolecho = 'true' end
   if echo == false then boolecho = 'false' end
-  
+
   local boolparticle = 'true'
   local particle = default.particles_enabled_for(pname)
   if particle == true then boolparticle = 'true' end
@@ -150,16 +150,16 @@ passport.compose_formspec = function(pname)
 
 		"tooltip[email;Hold 'E' while using the Key to access directly.]" ..
 		"tooltip[marker;Hold 'sneak' while using the Key to access directly.]" ..
-    
+
     "checkbox[3,5.0;togglechat;Text Echo;" ..
       boolecho .. "]" ..
     "checkbox[1,5.0;toggleparticles;Particles;" ..
       boolparticle .. "]" ..
 
-		"tooltip[togglechat;" .. 
+		"tooltip[togglechat;" ..
 				"Toggle whether the server should echo your chat back to your client.\n" ..
 				"Newer clients should keep this checked.]" ..
-		"tooltip[toggleparticles;" .. 
+		"tooltip[toggleparticles;" ..
 				"Toggle whether the server should send game-enhancing particle effects to your client.\n" ..
 				"Sometimes these are purely for visual effect, sometimes they have gameplay meaning...]"
 
@@ -235,7 +235,7 @@ passport.compose_formspec = function(pname)
 
 	-- Status info.
 	formspec = formspec .. "label[1,6.6;Status: " .. F(table.concat(status_info, " | ")) .. "]"
-  
+
   return formspec
 end
 
@@ -266,6 +266,7 @@ passport.on_use = function(itemstack, user, pointed)
 
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
+				shout.channel_handle_joinleave(pname, "citizens", true, true)
 			end)
 
 			changed = true
@@ -320,14 +321,14 @@ end
 
 passport.on_receive_fields = function(player, formname, fields)
   if formname ~= "passport:passport" then return end
-  
+
   local pname = player:get_player_name()
-  
+
   if fields.mapfix then
     mapfix.command(pname, "")
     return true
   end
-  
+
   if fields.email then
     mailgui.show_formspec(pname)
     return true
@@ -348,7 +349,7 @@ passport.on_receive_fields = function(player, formname, fields)
 		jaunt.show_formspec(pname)
 		return true
 	end
-  
+
 	if fields.cloak and survivalist.player_beat_nether_challenge(pname) then
 		-- Security check to make sure player can use this feature.
 		if not passport.player_has_key(pname) then
@@ -377,7 +378,7 @@ passport.on_receive_fields = function(player, formname, fields)
 		rename.show_formspec(pname)
 		return true
 	end
-  
+
   if fields.togglechat then
     if fields.togglechat == 'true' then
       chat_echo.set_echo(pname, true)
@@ -387,7 +388,7 @@ passport.on_receive_fields = function(player, formname, fields)
     passport.show_formspec(pname) -- Reshow formspec.
     return true
   end
-  
+
   if fields.toggleparticles then
     if fields.toggleparticles == 'true' then
       default.enable_particles_for(pname, true)
@@ -413,7 +414,7 @@ passport.on_receive_fields = function(player, formname, fields)
 			end
 		end
 	end
-  
+
 	for k, v in ipairs(passport.recalls) do
 		local c = v.code
 		if fields[c] then
@@ -454,7 +455,7 @@ passport.attempt_teleport = function(player, data)
 		-- Wrong realm.
 		return
 	end
-  
+
   for k, v in ipairs(recalls) do
     if v.suppress then
       if v.suppress(nn) then
@@ -464,7 +465,7 @@ passport.attempt_teleport = function(player, data)
       end
     end
   end
-  
+
 	-- Is player too close to custom (player-built) recalls?
   for k, v in ipairs(recalls) do
 		local vpp = v.position(player) -- May return nil.
@@ -477,7 +478,7 @@ passport.attempt_teleport = function(player, data)
 			end
 		end
   end
-  
+
 	-- Is player too close to builtin (server) recalls?
   for k, v in ipairs(passport.recalls) do
 		local vpp = v.position(player) -- May return nil.
@@ -498,17 +499,17 @@ passport.attempt_teleport = function(player, data)
 		easyvend.sound_error(nn)
     return -- To far from requested beacon.
   end
-  
+
   if passport.players[nn] then
     if data.on_failure then data.on_failure(nn, "in_progress", data.tname) end
     minetest.chat_send_player(nn, "# Server: Signal triangulation already underway; stand by.")
     return -- Teleport already in progress.
   end
-  
+
   -- Everything satisfied. Let's teleport!
   local dist = vector_distance(pp, tg)
   local time = math.ceil(math.sqrt(dist / 10))
-  
+
   minetest.chat_send_player(nn, "# Server: Recall beacon signal requires " .. time .. " seconds to triangulate; please hold still.")
   passport.players[nn] = true
 	local pos = vector.add(tg, {x=math_random(-1, 1), y=0, z=math_random(-1, 1)})
@@ -682,7 +683,7 @@ end
 if not passport.registered then
   -- Obtain modstorage.
   passport.modstorage = minetest.get_mod_storage()
-  
+
   -- Keep this in inventory to prevent deletion.
   minetest.register_craftitem("passport:passport", {
     description = "Proof of Citizenship\n\n" ..
@@ -713,7 +714,7 @@ if not passport.registered then
       {'default:copper_ingot', 'default:copper_ingot', 'default:copper_ingot'},
     },
   })
-  
+
   minetest.register_craft({
     output = 'passport:passport_adv 1',
     recipe = {
@@ -725,7 +726,7 @@ if not passport.registered then
 
   minetest.register_on_player_receive_fields(function(...) return passport.on_receive_fields(...) end)
   minetest.register_alias("command_tokens:live_preserver", "passport:passport")
-  
+
   -- It's very common for servers to have a /spawn command. This one is limited.
   minetest.register_chatcommand("spawn", {
     params = "",

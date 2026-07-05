@@ -107,6 +107,11 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
+	if not passport.player_has_key(pname) then
+		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires a Key of Citizenship.")
+		return
+	end
+
 	if not (#tokens == 2 and join_or_leave and channel_name and channel_name:len() > 0) then
 		minetest.chat_send_player(pname, "# Server: Invalid command syntax.")
 		return
@@ -132,7 +137,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 
 	local channelnames = channel_name:split(",")
 	for _, v in ipairs(channelnames) do
-		shout.channel_handle_joinleave(pname, v, boolean_joinleave)
+		shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
 	end
 
 	shout.show_channel_status(pname)
@@ -140,7 +145,7 @@ end
 
 
 
-function shout.channel_handle_joinleave(pname, channel_name, is_join)
+function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_action)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
 
@@ -200,10 +205,12 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join)
 		end
 	else
 		-- If we get here, nothing changed.
-		if is_join then
-			minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")
-		else
-			minetest.chat_send_player(pname, "# Server: You were not in channel '" .. channel_name .. "'.")
+		if not is_server_action then
+			if is_join then
+				minetest.chat_send_player(pname, "# Server: You are already in channel '" .. channel_name .. "'.")
+			else
+				minetest.chat_send_player(pname, "# Server: You were not in channel '" .. channel_name .. "'.")
+			end
 		end
 	end
 end
@@ -362,12 +369,12 @@ function shout.channel_on_joinplayer(player)
 
 	-- Set up first-time channels.
 	if not data or data == "" then
-		shout.channel_handle_joinleave(pname, "global", true)
+		shout.channel_handle_joinleave(pname, "global", true, true)
 
 		if passport.player_has_key(pname) then
-			shout.channel_handle_joinleave(pname, "citizens", true)
+			shout.channel_handle_joinleave(pname, "citizens", true, true)
 		else
-			shout.channel_handle_joinleave(pname, "newbies", true)
+			shout.channel_handle_joinleave(pname, "newbies", true, true)
 		end
 	end
 	--	end)

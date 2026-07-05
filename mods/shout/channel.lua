@@ -6,9 +6,9 @@ local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
 
 local BUILTIN_ESSENTIAL_CHANNELS = {
-	{name="global", public_chatlog=true, need_shout_priv=true},
-	{name="newbies", public_chatlog=true, need_shout_priv=true},
-	{name="citizens", public_chatlog=true, need_shout_priv=true},
+	{name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
+	{name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true},
+	{name="citizens", enable_gag=true},
 }
 
 
@@ -207,6 +207,7 @@ end
 
 
 -- let player put a message onto a channel
+-- this is called when player chats, always
 function shout.x(pname, param)
 	if not shout.get_player_channels(pname) then
 		minetest.chat_send_player(pname, "# Server: No open communication channels.")
@@ -232,26 +233,76 @@ function shout.x(pname, param)
 	end
 	--]]
 
+	local log_public_chat = false
+	local do_anticurse_check = false
+	local requires_shout_priv = false
+	local need_gag_check = false
+
 	local channels = shout.get_player_channels(pname)
-	local players = minetest.get_connected_players()
+	local themarkofcain = chat_core.generate_coord_string(pname)
+	local connected_players = minetest.get_connected_players()
+
+	local receiving_players = {}
+
+	-- Check if user is in any channels requiring special privs.
+	for _, cname in ipairs(channels) do
+		local cinfo = shout.get_channel_info(cname)
+
+		-- No need to be a Karen over speech that's not in the public chatlog.
+		if cinfo.anticurse then
+			do_anticurse_check = true
+		end
+
+		-- If any channel is public then player's chat is logged to the website.
+		if cinfo.public_chatlog then
+			log_public_chat = true
+		end
+
+		-- Check if any channel needs the shout priv.
+		if cinfo.need_shout_priv then
+			requires_shout_priv = true
+		end
+
+		-- Check if any channel allows gagging (if yes, player can be gagged).
+		if cinfo.enable_gag then
+			need_gag_check = true
+		end
+	end
+
+	-- Global chat requires 'shout' priv.
+	if requires_shout_priv then
+		if not minetest.check_player_privs(pname, {shout=true}) then
+			minetest.chat_send_player(pname, "# Server: You are in a channel requiring the 'shout' priv.")
+			-- Player doesn't have shout priv.
+			return
+		end
+	end
+
+	if need_gag_check then
+		if command_tokens.mute.player_muted(pname) then
+			minetest.chat_send_player(pname, "# Server: You are currently gagged.")
+			-- Player is muted.
+			return
+		end
+	end
 
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
-	-- No need to be a Karen over speech since it's not in the public chatlog.
+	if do_anticurse_check then
+		-- If this succeeds player was kicked or muted or something.
+		if chat_core.check_language(pname, param) then return end
+	end
+
 	--if chat_core.check_language(pname, param, channels) then return end
-
-	local themarkofcain = chat_core.generate_coord_string(pname)
-
-	local allplayers = {}
 
 	-- Send message to all players in the same channel.
 	-- The player who sent the message always receives it.
-	for _, v in ipairs(players) do
+	for _, v in ipairs(connected_players) do
 		local to_pname = v:get_player_name()
 		local to_channels = shout.get_player_channels(to_pname)
 
 		if to_channels then
 			if channels_intersect(to_channels, channels) then
-				allplayers[#allplayers + 1] = v
+				receiving_players[#receiving_players + 1] = v
 			end
 		end
 	end
@@ -264,8 +315,13 @@ function shout.x(pname, param)
 		postname = themarkofcain .. "!> ",
 		message = param,
 		alwaysecho = false,
-		allplayers = allplayers
+		allplayers = receiving_players
 	})
+
+	-- Log, if player is in a public channel.
+	if log_public_chat then
+		chat_logging.log_public_chat(pname, param, themarkofcain)
+	end
 
 	-- Prevent temptation >:D
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)

@@ -353,25 +353,8 @@ chat_core.on_chat_message = function(name, message)
 	end
 	--]]
 
-	-- Note: channel speak does NOT require 'shout' priv.
-	if pref:get_meta():get_int("xinvert") == 1 then
-		shout.x(name, message)
-		return
-	end
-
-	-- Global chat requires 'shout' priv.
-	if not minetest.check_player_privs(name, {shout=true}) then
-		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
-		-- Player doesn't have shout priv.
-		return
-	end
-
-	local player_muted = false
-	if command_tokens.mute.player_muted(name) then
-		minetest.chat_send_player(name, "# Server: You are currently gagged.")
-		-- Player is muted.
-		return
-	end
+	-- Check for DM typo accidents.
+	if chat_core.accident_check(name, message) then return end
 
 	-- Shouts can be executed by prepending a '!' to your chat.
 	if string.find(message, "^!") then
@@ -380,14 +363,41 @@ chat_core.on_chat_message = function(name, message)
 		return
 	end
 
-	-- Check for accidents.
-	if chat_core.accident_check(name, message) then return end
+	-- Delegate to our slaves.
+	shout.x(name, message)
+
+	--[[
+	-- Note: channel speak does NOT require 'shout' priv.
+	if pref:get_meta():get_int("xinvert") == 1 then
+		shout.x(name, message)
+		return
+	end
+	--]]
+
+	-- Global chat requires 'shout' priv.
+	--[[
+	if not minetest.check_player_privs(name, {shout=true}) then
+		minetest.chat_send_player(name, "# Server: You do not have 'shout' priv.")
+		-- Player doesn't have shout priv.
+		return
+	end
+	--]]
+
+	--local player_muted = false
+	--[[
+	if command_tokens.mute.player_muted(name) then
+		minetest.chat_send_player(name, "# Server: You are currently gagged.")
+		-- Player is muted.
+		return
+	end
+	--]]
 
 	-- If this succeeds player was kicked or muted or something.
-	if chat_core.check_language(name, message) then return end
+	--if chat_core.check_language(name, message) then return end
 
-	local mark = generate_coord_string(name)
+	--local mark = generate_coord_string(name)
 
+	--[[
 	chat_core.send_all_ex({
 		from = name,
 		prename = "<",
@@ -395,11 +405,14 @@ chat_core.on_chat_message = function(name, message)
 		postname = mark .. "> ",
 		message = message
 	})
-	chat_logging.log_public_chat(name, message, mark)
+	--]]
+	--chat_logging.log_public_chat(name, message, mark)
 
+	--[[
 	-- Notify other stuff.
 	player_labels.on_chat_message(name, message)
 	afk.reset_timeout(name)
+	--]]
 end
 
 

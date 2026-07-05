@@ -207,8 +207,6 @@ function shout.x(pname, param)
 	end
 	--]]
 
-	local stats = chat_core.player_status(pname)
-	local dname = rename.gpn(pname)
 	local channels = shout.player_channel(pname)
 	local players = minetest.get_connected_players()
 
@@ -234,7 +232,7 @@ function shout.x(pname, param)
 	end
 
 	-- Handles chat filters, colorization, distance, etc.
-	chat_core.send_all_ex(pname, stats .. "<!", rename.gpn(pname), mk .. "!> ", param, false, allplayers)
+	chat_core.send_all_ex(pname, "<!", rename.gpn(pname), mk .. "!> ", param, false, allplayers)
 
 	-- Prevent temptation >:D
 	--minetest.chat_send_all(SHOUT_COLOR .. "<!" .. dname .. mk .. "!> " .. param)

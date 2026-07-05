@@ -5,6 +5,12 @@ local SHOUT_COLOR = core.get_color_escape_sequence("#ff2a00")
 local TEAM_COLOR = core.get_color_escape_sequence("#a8ff00")
 local WHITE = core.get_color_escape_sequence("#ffffff")
 
+local BUILTIN_ESSENTIAL_CHANNELS = {
+	{name="global", public_chatlog=true, need_shout_priv=true},
+	{name="newbies", public_chatlog=true, need_shout_priv=true},
+	{name="citizens", public_chatlog=true, need_shout_priv=true},
+}
+
 
 
 local function channels_intersect(t1, t2)
@@ -24,6 +30,39 @@ function shout.get_player_channels(pname)
 	if shout.players[pname] and #shout.players[pname] > 0 then
 		return shout.players[pname]
 	end
+end
+
+
+
+function shout.player_in_channels(pname, channelname)
+	local channels = shout.get_player_channels(pname)
+	if not channels then return end
+	if type(channelname) == "string" then
+		for _, v1 in ipairs(channels) do
+			if v1 == channelname then
+				return true
+			end
+		end
+	elseif type(channelname) == "table" then
+		for _, v1 in ipairs(channels) do
+			if channelname[v1] then
+				return true
+			end
+		end
+	end
+end
+
+
+
+function shout.get_channel_info(channelname)
+	for _, v in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
+		if v.name == channelname then
+			return v
+		end
+	end
+
+	-- Otherwise return default information.
+	return {name=channelname}
 end
 
 

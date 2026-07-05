@@ -358,9 +358,13 @@ function shout.channel_on_joinplayer(player)
 
 	-- Set up first-time channels.
 	if not data or data == "" then
-		local initial = minetest.serialize({"global", "newbies"})
-		player:get_meta():set_string("active_channel", initial)
-		shout.players[pname] = {"global", "newbies"}
+		shout.channel_handle_joinleave(pname, "global", true)
+
+		if passport.player_has_key(pname) then
+			shout.channel_handle_joinleave(pname, "citizens", true)
+		else
+			shout.channel_handle_joinleave(pname, "newbies", true)
+		end
 	end
 	--	end)
 	--end

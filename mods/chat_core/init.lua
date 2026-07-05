@@ -61,7 +61,6 @@ end
 
 
 
---chat_core.send_all_ex = function(from, prename, actname, postname, message, alwaysecho, allplayers)
 function chat_core.send_all_ex(params)
 	local from = params.from
 	local prename = params.prename or "<"
@@ -183,17 +182,6 @@ function chat_core.send_all_ex(params)
 		end
 	end
 end
-
-
-
--- Send regular chat from a player to all other players.
--- This is called by this mod after validation checks pass.
---[[
-function chat_core.send_all(from, prename, actname, postname, message, alwaysecho)
-	local allplayers = minetest.get_connected_players()
-	chat_core.send_all_ex(from, prename, actname, postname, message, alwaysecho, allplayers)
-end
---]]
 
 
 

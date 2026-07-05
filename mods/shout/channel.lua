@@ -253,6 +253,7 @@ function shout.x(pname, param)
 	--chat_logging.log_public_shout(pname, param, shout.channelmk)
 	--chat_logging.log_team_chat(pname, stats, param, channels)
 
+	player_labels.on_chat_message(pname, param)
 	afk.reset_timeout(pname)
 end
 

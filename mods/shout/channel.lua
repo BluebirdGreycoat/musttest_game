@@ -247,26 +247,26 @@ end
 -- Join channel on login.
 function shout.channel_on_joinplayer(player)
 	local pname = player:get_player_name()
-	if not shout.player_channel(pname) then
-		minetest.after(0, function()
-			local pref = minetest.get_player_by_name(pname)
-			if not pref then return end
+	--if not shout.player_channel(pname) then
+	--	minetest.after(0, function()
+	--local pref = minetest.get_player_by_name(pname)
+	--if not pref then return end
 
-			local data = pref:get_meta():get_string("active_channel")
-			if data and data ~= "" then
-				local arraylist = minetest.deserialize(data)
-				if type(arraylist) == "table" and #arraylist > 0 then
-					shout.players[pname] = arraylist
-					-- No need to announce.
-					--[[
-					for _, arrayentry in ipairs(arraylist) do
-						shout.channel_do_joinleave(pname, arrayentry, true, false, true)
-					end
-					--]]
-				end
+	local data = player:get_meta():get_string("active_channel")
+	if data and data ~= "" then
+		local arraylist = minetest.deserialize(data)
+		if type(arraylist) == "table" and #arraylist > 0 then
+			shout.players[pname] = arraylist
+			-- No need to announce.
+			--[[
+			for _, arrayentry in ipairs(arraylist) do
+				shout.channel_do_joinleave(pname, arrayentry, true, false, true)
 			end
-		end)
+			--]]
+		end
 	end
+	--	end)
+	--end
 end
 
 

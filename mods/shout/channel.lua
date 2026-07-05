@@ -183,7 +183,6 @@ end
 
 -- let player put a message onto a channel
 function shout.x(pname, param)
-	param = string.trim(param)
 	if not shout.player_channel(pname) then
 		minetest.chat_send_player(pname, "# Server: No open communication channels.")
 		easyvend.sound_error(pname)

@@ -68,7 +68,7 @@ function status.chat_players(user, param)
 		-- Serialize player names to string.
 		local channels = shout.get_player_channels(user)
 		if channels then
-			local players = shout.channel_players(channels)
+			local players = shout.get_players_in_channels(channels)
 			local clients = "{"
 			local num_clients = 0
 			for k, v in ipairs(players) do

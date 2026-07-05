@@ -29,7 +29,7 @@ end
 
 
 -- Get an array list of all players in a list of channels.
-function shout.channel_players(channels)
+function shout.get_players_in_channels(channels)
 	local players = minetest.get_connected_players()
 	local result = {}
 	for k, v in ipairs(players) do

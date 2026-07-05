@@ -393,6 +393,7 @@ end
 
 
 
+--[[
 function shout.xinvert(pname, param)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
@@ -407,6 +408,7 @@ function shout.xinvert(pname, param)
 	end
 	player:get_meta():set_int("xinvert", status)
 end
+--]]
 
 
 

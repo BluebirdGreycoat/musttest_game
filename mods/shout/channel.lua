@@ -355,6 +355,13 @@ function shout.channel_on_joinplayer(player)
 			--]]
 		end
 	end
+
+	-- Set up first-time channels.
+	if not data or data == "" then
+		local initial = minetest.serialize({"global", "newbies"})
+		player:get_meta():set_string("active_channel", initial)
+		shout.players[pname] = {"global", "newbies"}
+	end
 	--	end)
 	--end
 end

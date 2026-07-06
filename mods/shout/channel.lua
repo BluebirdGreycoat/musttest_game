@@ -254,9 +254,11 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 			shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
 		end
 
-		if boolean_joinleave then
-			shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
-		else
+		shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
+
+		-- If leaving channel, show player their channel status.
+		-- (They didn't get the normal "leaving channel" message.)
+		if not boolean_joinleave then
 			shout.show_channel_status(pname)
 		end
 	end

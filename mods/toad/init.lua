@@ -4,7 +4,7 @@ toad.modpath = minetest.get_modpath("toad")
 
 
 
-local TRANSFORMATION_TIME = 60*60
+local TRANSFORMATION_TIME = 60*15
 
 local ANIMALS = {
 	toad = {words={"ribbit", "ibbit", "croak", "ribbit", "croak"}},

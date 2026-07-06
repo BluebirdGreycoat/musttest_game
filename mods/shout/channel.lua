@@ -183,6 +183,14 @@ end
 
 
 
+local COMMAND_VERBS = {
+	add = "join",
+	join = "join",
+	leave = "leave",
+	mute = "leave",
+	part = "leave",
+}
+
 -- let player join, leave channels
 function shout.channel_on_chatcommand(pname, cmdparams)
 	cmdparams = string.trim(cmdparams)
@@ -216,10 +224,11 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
-	if not (join_or_leave == "join" or join_or_leave == "leave") then
+	if not COMMAND_VERBS[join_or_leave] then
 		minetest.chat_send_player(pname, "# Server: Unrecognized verb.")
 		return
 	end
+	join_or_leave = COMMAND_VERBS[join_or_leave]
 
 	-- Require channel names to match specific format.
 	if not string.find(channel_name, "^[,_%w]+$") then

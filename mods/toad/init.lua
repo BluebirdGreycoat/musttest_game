@@ -49,6 +49,8 @@ function toad.is_transformed(pname)
 	local toad_type = victim:get_meta():get_string("toad_type")
 	local toad_time = tonumber(victim:get_meta():get_string("toad_time"))
 
+	if not toad_time then return end
+
 	local time = os.time()
 
 	if (toad_time + TRANSFORMATION_TIME) > time then

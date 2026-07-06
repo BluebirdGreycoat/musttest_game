@@ -33,7 +33,7 @@ function countdown.step(data)
 	-- If our restart time is in the past, we're done.
 	if nt <= ct then
 		local message = "# Server: RESTART IMMINENT - WAITING FOR OS SIGNAL."
-		chat_logging.log_server_message(message)
+		--chat_logging.log_server_message(message)
 		minetest.chat_send_all(color .. message)
 		countdown.quit = true
 		return
@@ -112,7 +112,7 @@ function countdown.step(data)
 
 		-- Don't speak to empty room.
 		if #(get_non_admin_players()) > 0 then
-			chat_logging.log_server_message(message)
+			--chat_logging.log_server_message(message)
 			minetest.chat_send_all(color .. message)
 		end
 	end

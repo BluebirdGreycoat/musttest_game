@@ -105,7 +105,7 @@ local DUEL_SUICIDE_STRINGS = {
 local function announce_begin(pname)
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> has agreed to participate in a duel!"
 	minetest.chat_send_all(SHOUT_COLOR .. msg)
-	chat_logging.log_server_message(msg)
+	--chat_logging.log_server_message(msg)
 end
 
 local function announce_end(pname, reason)
@@ -127,7 +127,7 @@ local function announce_end(pname, reason)
 	local msg = "# Server: <" .. rename.gpn(pname) .. "> has ended " .. sex.his .. " participation in a duel: " .. reasonstr .. "."
 
 	minetest.chat_send_all(SHOUT_COLOR .. msg)
-	chat_logging.log_server_message(msg)
+	--chat_logging.log_server_message(msg)
 end
 
 -- Lets outside code query if this player is currently respawning (implies they're in a duel).

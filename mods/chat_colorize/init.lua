@@ -249,7 +249,7 @@ chat_colorize.send_all = function(channels, message)
   end
 
   if is_server_message and is_public then
-    chat_logging.log_server_message(message)
+    chat_logging.log_server_message(minetest.strip_colors(message))
   end
 
   shout.notify_channels(channels, color .. message)

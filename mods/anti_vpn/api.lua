@@ -303,7 +303,7 @@ local function handle_vpnapi_response(result)
 
         -- Expected keys are 'vpn', 'proxy', 'tor', 'relay'.
         -- We'll reject the IP if any are true.
-        for k, v in pairs(tbl.security) do blocked = blocked or v end
+        for k, v in pairs(tbl.security or {}) do blocked = blocked or v end
 
         local asn = tbl['network'] and tbl.network.autonomous_system_number or ''
         local aso = tbl['network'] and tbl.network.autonomous_system_organization or ''

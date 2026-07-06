@@ -406,6 +406,11 @@ function shout.x(pname, param)
 		end
 	end
 
+	-- Toading only affects the public channels.
+	if requires_shout_priv or log_public_chat then
+		param = toad.modify_chat(pname, param)
+	end
+
 	-- Global chat requires 'shout' priv.
 	if requires_shout_priv then
 		if not minetest.check_player_privs(pname, {shout=true}) then

@@ -500,6 +500,8 @@ chat_core.handle_command_msg = function(name, param)
 		to = string.trim(param:sub(1, p-1))
 	end
 
+	newmsg = toad.modify_chat(name, newmsg)
+
 	if type(to)=="string" and type(newmsg)=="string" and string.len(newmsg) > 0 and string.len(to) > 0 then
 		to = rename.grn(to)
 
@@ -516,9 +518,10 @@ chat_core.handle_command_msg = function(name, param)
 
 		if minetest.get_player_by_name(to) then
 			-- Bad words in PMs.
-			if chat_core.check_language(name, newmsg) then
-				return
-			end
+			-- Don't be a Karen over private chats.
+			--if chat_core.check_language(name, newmsg) then
+			--	return
+			--end
 
 			-- Cannot PM player if being ignored.
 			if chat_controls.player_ignored_pm(to, name) and to ~= name then

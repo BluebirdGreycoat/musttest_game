@@ -82,6 +82,8 @@ function shout.shout(name, param)
 		return
 	end
 
+	param = toad.modify_chat(name, param)
+
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
 	if chat_core.check_language(name, param) then return end
 
@@ -120,6 +122,8 @@ function shout.whisper(name, param)
 	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
 	-- No language checks on whispers.
 	--if chat_core.check_language(name, param) then return end
+
+	param = toad.modify_chat(name, param)
 
 	local mk = chat_core.generate_coord_string(name)
 	local dname = rename.gpn(name)

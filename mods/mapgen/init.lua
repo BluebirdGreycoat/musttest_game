@@ -106,7 +106,7 @@ if not minetest.is_singleplayer() then
 					if not invisible then
 						local pcount = #(minetest.get_connected_players())
 						if pcount and pcount >= 5 then
-							minetest.chat_send_all(
+							minetest.chat_send_all("mapgen",
 								"# Server: Mapgen scrambling. Blame <" .. rename.gpn(blamed) .. "> for lag. Chunks: " ..
 								mapgen.report_chunks .. ".")
 						end

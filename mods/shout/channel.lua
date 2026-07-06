@@ -23,20 +23,24 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 		ex_desc="Chat here will not be published externally.",
 	},
 	{
-		name="announce", no_player_chat=true,
+		name="announce", no_player_chat=true, public_chatlog=true,
 		description="General system announcements.",
 	},
 	{
-		name="bones", no_player_chat=true,
+		name="bones", no_player_chat=true, public_chatlog=true,
 		description="Death reports and bonebox locations.",
 	},
 	{
-		name="hints", no_player_chat=true,
+		name="hints", no_player_chat=true, public_chatlog=true,
 		description="Periodic helpful hints from the server.",
 	},
 	{
 		name="channels", no_player_chat=true,
 		description="Information about players joining and leaving channels.",
+	},
+	{
+		name="mapgen", no_player_chat=true, public_chatlog=true,
+		description="Mapgen activity.",
 	},
 }
 

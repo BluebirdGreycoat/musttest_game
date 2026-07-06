@@ -240,7 +240,15 @@ chat_colorize.send_all = function(channels, message)
   end
   --]]
 
-  if is_server_message then
+  local is_public = false
+  for k, v in ipairs(channels) do
+		local cinfo = shout.get_channel_info(v)
+		if cinfo.public_chatlog then
+			is_public = true
+		end
+  end
+
+  if is_server_message and is_public then
     chat_logging.log_server_message(message)
   end
 

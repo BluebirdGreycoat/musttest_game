@@ -254,9 +254,12 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 			shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
 		end
 
-		shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
+		if boolean_joinleave then
+			shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
+		else
+			shout.show_channel_status(pname)
+		end
 	end
-	--shout.show_channel_status(pname)
 end
 
 

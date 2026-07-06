@@ -533,16 +533,10 @@ end
 -- Leave channel on logout.
 function shout.channel_on_leaveplayer(player)
 	local pname = player:get_player_name()
+	-- No need to announce if player is leaving game entirely (Captn' Hobbs).
+	--[[
 	if shout.get_player_channels(pname) then
 		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "left")
-	end
-	-- No need to announce.
-	--[[
-	local arraylist = shout.get_player_channels(pname)
-	if arraylist then
-		for _, arrayentry in ipairs(arraylist) do
-			shout.channel_do_joinleave(pname, arrayentry, false)
-		end
 	end
 	--]]
 	shout.players[pname] = nil

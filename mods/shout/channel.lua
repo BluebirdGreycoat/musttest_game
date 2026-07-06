@@ -261,7 +261,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 
 		-- If leaving channel, show player their channel status.
 		-- (They didn't get the normal "leaving channel" message.)
-		if not boolean_joinleave then
+		if not boolean_joinleave or #changed_ones == 0 then
 			shout.show_channel_status(pname)
 		end
 	end

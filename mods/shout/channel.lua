@@ -250,11 +250,14 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 
 	local channelnames = channel_name:split(",")
 	if #channelnames > 0 then
+		local changed_ones = {}
+
 		for _, v in ipairs(channelnames) do
-			shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
+			local success = shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
+			if success then table.insert(changed_ones, v) end
 		end
 
-		shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
+		shout.announce_channel_actions(pname, changed_ones, boolean_joinleave)
 
 		-- If leaving channel, show player their channel status.
 		-- (They didn't get the normal "leaving channel" message.)
@@ -268,6 +271,7 @@ end
 
 -- Makes a player join or leave a channel, but does NOT report!
 -- Reporting is handled by a different function.
+-- Will return TRUE if the player's set of active channels has CHANGED in response to this function.
 function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_action)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
@@ -317,6 +321,7 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	if is_changed then
 		shout.players[pname] = channel_array
 		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
+		return true -- Player's channels were changed (join or leave).
 	end
 
 	-- Don't do this, it causes duplicate reports.

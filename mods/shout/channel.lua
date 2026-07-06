@@ -316,9 +316,7 @@ end
 
 function shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 	if is_changed then
-		local act = "joined"
-		if not is_join then act = "left" end
-		shout.announce_channel_actions(pname, shout.strip_readonly_channels({channel_name}), act)
+		shout.announce_channel_actions(pname, shout.strip_readonly_channels({channel_name}), is_join)
 	end
 
 	if is_changed then
@@ -477,7 +475,12 @@ end
 
 
 -- Announces ONLY to players that are in intersecting channels.
-function shout.announce_channel_actions(pname, channels, action)
+function shout.announce_channel_actions(pname, channels, is_join)
+	local action = "joined"
+	if not is_join then
+		action = "left"
+	end
+
 	for _, cname in ipairs(shout.strip_readonly_channels(channels)) do
 		local players = shout.get_players_in_channels({cname})
 		for _, oname in ipairs(players) do
@@ -527,7 +530,7 @@ function shout.channel_on_joinplayer(player)
 		end
 	elseif shout.get_player_channels(pname) then
 		-- The 'elseif' is needed to prevent the announce from printing twice.
-		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "joined")
+		shout.announce_channel_actions(pname, shout.get_player_channels(pname), true)
 	end
 end
 
@@ -539,7 +542,7 @@ function shout.channel_on_leaveplayer(player)
 	-- No need to announce if player is leaving game entirely (Captn' Hobbs).
 	--[[
 	if shout.get_player_channels(pname) then
-		shout.announce_channel_actions(pname, shout.get_player_channels(pname), "left")
+		shout.announce_channel_actions(pname, shout.get_player_channels(pname), false)
 	end
 	--]]
 	shout.players[pname] = nil

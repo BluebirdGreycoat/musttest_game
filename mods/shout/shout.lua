@@ -141,5 +141,5 @@ function shout.whisper(name, param)
 
 	afk.reset_timeout(name)
 	player_labels.on_chat_message(name, param)
-	chat_logging.log_public_shout(name, param, mk)
+	--chat_logging.log_public_shout(name, param, mk)
 end

@@ -19,12 +19,12 @@ local share_bones_time_city = (share_bones_time * 10.0)
 
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
-    
+
 	-- Don't let dead players pick bones.
 	local pref = minetest.get_player_by_name(name)
 	if not pref or not pref:is_player() then return false end
 	if pref:get_hp() <= 0 then return false end
-    
+
 	if owner == "" or owner == name or minetest.check_player_privs(name, "protection_bypass") then
 		return true
 	end
@@ -429,7 +429,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	local minp = vector.add(pos, -16)
 	local maxp = vector.add(pos, 16)
 	utility.ensure_map_loaded(minp, maxp)
-    
+
 	local param2 = minetest.dir_to_facedir(player:get_look_dir())
 	minetest.add_node(pos, {name = "bones:bones", param2 = param2})
 	bone_mark.add_corpse(pos, pname)
@@ -553,7 +553,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	meta:set_int("time", 0)
 	minetest.get_node_timer(pos):start(10)
-  
+
 	hud_clock.update_xp(pname)
 	armor.end_duel(player, "death")
 	pova.remove_modifier(player, "physics", "sprinting")
@@ -769,14 +769,14 @@ bones.do_grab_bones_message = function(pname, pos, meta)
 		end
 
 		if public then
-			minetest.chat_send_all(
+			minetest.chat_send_all("bones",
 				"# Server: Player <" ..
 				rename.gpn(pname) ..
 				"> claimed " .. ownerstring .. " " .. agestring .. " bones at " ..
 				rc.pos_to_namestr_ex(vector_round(pos)) ..
 				" with " .. numstacks .. " " .. stacks .. ".")
 		else
-			minetest.chat_send_all(
+			minetest.chat_send_all("bones",
 				"# Server: Someone claimed " .. agestring .. " bones with " .. numstacks ..
 				" " .. stacks .. ".")
 		end

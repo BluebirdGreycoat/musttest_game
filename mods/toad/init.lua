@@ -85,7 +85,7 @@ function toad.on_chatcommand(pname, param)
 		return
 	end
 
-	local is_transformed, toad_type = toad.is_transformed(pname)
+	local is_transformed, toad_type = toad.is_transformed(target)
 	if is_transformed and animal ~= "human" then
 		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(target) .. "> is currently a " .. toad_type .. ".")
 		minetest.chat_send_player(pname, "# Server: You'll need to wait for the transformation to wear off.")

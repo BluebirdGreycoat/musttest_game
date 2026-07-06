@@ -506,6 +506,9 @@ function shout.channel_on_joinplayer(player)
 				shout.channel_do_joinleave(pname, arrayentry, true, false, true)
 			end
 			--]]
+		else
+			-- If we couldn't parse a table, treat data as empty and do first-time setup.
+			data = ""
 		end
 	end
 

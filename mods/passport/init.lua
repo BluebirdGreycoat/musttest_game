@@ -266,10 +266,13 @@ passport.on_use = function(itemstack, user, pointed)
 
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
+
 				shout.channel_handle_joinleave(pname, "citizens", true, true)
 				shout.channel_handle_joinleave(pname, "channels", true, true)
 				shout.channel_handle_joinleave(pname, "newbies", false, true)
-				shout.show_channel_status(pname)
+
+				shout.announce_channel_actions(pname, {"citizens"}, true)
+				shout.announce_channel_actions(pname, {"newbies"}, false)
 			end)
 
 			changed = true

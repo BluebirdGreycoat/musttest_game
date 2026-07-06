@@ -249,15 +249,20 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 	end
 
 	local channelnames = channel_name:split(",")
-	for _, v in ipairs(channelnames) do
-		shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
-	end
+	if #channelnames > 0 then
+		for _, v in ipairs(channelnames) do
+			shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
+		end
 
-	shout.show_channel_status(pname)
+		shout.announce_channel_actions(pname, channelnames, boolean_joinleave)
+	end
+	--shout.show_channel_status(pname)
 end
 
 
 
+-- Makes a player join or leave a channel, but does NOT report!
+-- Reporting is handled by a different function.
 function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_action)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
@@ -309,7 +314,6 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
 	end
 
-	-- Report status.gr
 	-- Don't do this, it causes duplicate reports.
 	--shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 end

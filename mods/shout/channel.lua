@@ -481,13 +481,25 @@ function shout.announce_channel_actions(pname, channels, is_join)
 		action = "left"
 	end
 
+	local reports = {}
+
 	for _, cname in ipairs(shout.strip_readonly_channels(channels)) do
 		local players = shout.get_players_in_channels({cname})
 		for _, oname in ipairs(players) do
 			if shout.player_in_channel(oname, "channels") then
-				minetest.chat_send_player(oname, TEAM_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
+				reports[oname] = reports[oname] or {pname=pname, array={}}
+				local array = reports[oname].array
+				array[#array + 1] = cname
+				--minetest.chat_send_player(oname, TEAM_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
 			end
 		end
+	end
+
+	for k, v in pairs(reports) do
+		local oname = k
+		local array = v.array
+		local str = table.concat(array, ", ")
+		minetest.chat_send_player(oname, "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channels: {" .. str .. "}.")
 	end
 end
 
@@ -528,8 +540,9 @@ function shout.channel_on_joinplayer(player)
 		else
 			shout.channel_handle_joinleave(pname, "newbies", true, true)
 		end
-	elseif shout.get_player_channels(pname) then
-		-- The 'elseif' is needed to prevent the announce from printing twice.
+	end
+
+	if shout.get_player_channels(pname) then
 		shout.announce_channel_actions(pname, shout.get_player_channels(pname), true)
 	end
 end

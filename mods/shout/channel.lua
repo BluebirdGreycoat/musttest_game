@@ -37,6 +37,7 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 	{
 		name="channels", no_player_chat=true,
 		description="Information about players joining and leaving channels.",
+		-- Is this actually needed?
 	},
 	{
 		name="mapgen", no_player_chat=true, public_chatlog=true,
@@ -308,8 +309,9 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
 	end
 
-	-- Report status.
-	shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
+	-- Report status.gr
+	-- Don't do this, it causes duplicate reports.
+	--shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 end
 
 

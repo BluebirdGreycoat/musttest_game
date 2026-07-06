@@ -76,4 +76,5 @@ shout.BUILTIN_HINTS = {
 	"Nothing responding? That's because I'm AFK!",
 	"In case the server is unreachable, be sure to check http://" .. FORUMADDR .. " for updates.",
 	"Have a gripe or a doubt? Feel free to speak out at http://" .. FORUMADDR .. ". No spam, please.",
+	"New players automatically speak in 'global' or 'newbie' channels. Once you craft a Key, you are eligible to speak in the 'citizens' channel.",
 }

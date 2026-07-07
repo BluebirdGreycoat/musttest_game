@@ -372,7 +372,7 @@ chat_core.on_chat_message = function(name, message)
 		return
 	end
 
-	-- Note: channel speak does NOT require 'shout' priv.
+	-- Note: X speak does NOT require 'shout' priv.
 	if pref:get_meta():get_int("xinvert") == 1 then
 		shout.x_specific(name, message)
 		return

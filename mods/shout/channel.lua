@@ -357,7 +357,8 @@ end
 -- let player put a message onto a channel
 -- this is called when player chats, always
 function shout.x(pname, param)
-	if not shout.get_player_channels(pname) then
+	local player_channels = shout.strip_readonly_channels(shout.get_player_channels(pname) or {})
+	if #player_channels == 0 then
 		minetest.chat_send_player(pname, "# Server: No open communication channels.")
 		easyvend.sound_error(pname)
 		return
@@ -369,6 +370,12 @@ function shout.x(pname, param)
 		return
 	end
 
+	shout.x2(pname, param, player_channels)
+end
+
+
+
+function shout.x2(pname, param, pname_channels)
 	-- Allow player to use channel speak even while gagged.
 	-- Rational: if the gagged player is on a channel with others,
 	-- then probably they're in a group together, or are related.
@@ -386,14 +393,13 @@ function shout.x(pname, param)
 	local requires_shout_priv = false
 	local need_gag_check = false
 
-	local channels = shout.strip_readonly_channels(shout.get_player_channels(pname))
 	local themarkofcain = chat_core.generate_coord_string(pname)
 	local connected_players = minetest.get_connected_players()
 
 	local receiving_players = {}
 
 	-- Check if user is in any channels requiring special privs.
-	for _, cname in ipairs(channels) do
+	for _, cname in ipairs(pname_channels) do
 		local cinfo = shout.get_channel_info(cname)
 
 		-- No need to be a Karen over speech that's not in the public chatlog.
@@ -452,12 +458,10 @@ function shout.x(pname, param)
 	-- The player who sent the message always receives it.
 	for _, v in ipairs(connected_players) do
 		local to_pname = v:get_player_name()
-		local to_channels = shout.get_player_channels(to_pname)
+		local to_channels = shout.strip_readonly_channels(shout.get_player_channels(to_pname) or {})
 
-		if to_channels then
-			if channels_intersect(to_channels, channels) then
-				receiving_players[#receiving_players + 1] = v
-			end
+		if channels_intersect(to_channels, pname_channels) then
+			receiving_players[#receiving_players + 1] = v
 		end
 	end
 

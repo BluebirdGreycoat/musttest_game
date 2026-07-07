@@ -630,8 +630,8 @@ function shout.x_invert(pname, param)
 	if status == 0 then
 		status = 1
 		local rooms = shout.get_x_channels(pname)
-		minetest.chat_send_player(pname, "# Server: Chat restricted to group DM rooms.")
-		minetest.chat_send_player(pname, "# Server: You are currently in rooms (" .. #rooms .. "): {" .. table.concat(rooms, ", ") .. "}.")
+		minetest.chat_send_player(pname, "# Server: Outgoing chat restricted to group DM rooms.")
+		minetest.chat_send_player(pname, "# Server: You are currently speaking in rooms (" .. #rooms .. "): {" .. table.concat(rooms, ", ") .. "}.")
 	else
 		status = 0
 		minetest.chat_send_player(pname, "# Server: Normal chat restored.")

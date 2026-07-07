@@ -54,10 +54,20 @@ if not shout.run_once then
 
 	minetest.register_chatcommand("x", {
 		params = "<message>",
-		description = "Speak on specific channel(s).",
-		privs = {}, -- Specifically does not require 'shout'
+		description = "Send a message only to specific channel(s).",
+		privs = {},
 		func = function(name, param)
 			shout.x_specific(name, chat_core.rewrite_message(param))
+			return true
+		end,
+	})
+
+	minetest.register_chatcommand("xchannel", {
+		params = "<channel>",
+		description = "Choose specific channel(s) for use with /x.",
+		privs = {},
+		func = function(name, param)
+			shout.x_choose(name, param)
 			return true
 		end,
 	})

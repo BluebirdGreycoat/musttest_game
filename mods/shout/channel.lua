@@ -621,3 +621,6 @@ end
 -- Called when player uses chat command to put a message into a specific (previously chosen) channel.
 function shout.x_specific(pname, message)
 end
+
+function shout.x_choose(pname, channels)
+end

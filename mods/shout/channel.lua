@@ -220,8 +220,8 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
-	if not passport.player_has_poc(pname) then
-		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires Proof of Citizenship.")
+	if not (passport.player_has_poc(pname) or passport.player_has_key(pname)) then
+		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires Proof (or Key) of Citizenship.")
 		easyvend.sound_error(pname)
 		return
 	end

@@ -9,6 +9,7 @@ dofile(shout.modpath .. "/hints.lua")
 dofile(shout.modpath .. "/channel.lua")
 dofile(shout.modpath .. "/xchannel.lua")
 dofile(shout.modpath .. "/shout.lua")
+dofile(shout.modpath .. "/create.lua")
 
 
 
@@ -19,6 +20,9 @@ if not shout.run_once then
 			minetest.chat_send_all("# Server: Startup complete.")
 		end)
 	end
+
+	-- Load persistent channels. This is an array list of all persistent channel names.
+	shout.persistent_channels = shout.MODSTORAGE:get_keys()
 
 	minetest.register_chatcommand("shout", {
 		params = "<message>",
@@ -89,6 +93,26 @@ if not shout.run_once then
 		privs = {server=true},
 		func = function(name, param)
 			shout.hint_add(name, param)
+			return true
+		end,
+	})
+
+	minetest.register_chatcommand("create_channel", {
+		params = "<channel> <password>",
+		description = "Create a persistent channel with a password. Only players with the password can join.",
+		privs = {},
+		func = function(name, param)
+			shout.create_channel(name, param)
+			return true
+		end,
+	})
+
+	minetest.register_chatcommand("delete_channel", {
+		params = "<channel>",
+		description = "Delete a persistent channel. Only the channel owner can do this.",
+		privs = {},
+		func = function(name, param)
+			shout.delete_channel(name, param)
 			return true
 		end,
 	})

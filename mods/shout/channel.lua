@@ -11,32 +11,39 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 		name="global", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
 		description="Global channel for general communication.",
 		ex_desc="Chat is published permanently. Shout priv required. Keep it clean.",
+		is_system=true,
 	},
 	{
 		name="newbies", public_chatlog=true, need_shout_priv=true, anticurse=true, enable_gag=true,
 		description="Newbies' help channel.",
 		ex_desc="Chat is published permanently. Shout priv required. Keep it clean.",
+		is_system=true,
 	},
 	{
 		name="citizens", enable_gag=true,
 		description="General channel for players with enough experience to possess a Key of Citizenship.",
 		ex_desc="Chat here will not be published externally.",
+		is_system=true,
 	},
 	{
 		name="announce", no_player_chat=true, public_chatlog=true,
 		description="General system announcements.",
+		is_system=true,
 	},
 	{
 		name="bones", no_player_chat=true, public_chatlog=true,
 		description="Death reports and bonebox locations.",
+		is_system=true,
 	},
 	{
 		name="hints", no_player_chat=true, public_chatlog=true,
 		description="Periodic helpful hints from the server.",
+		is_system=true,
 	},
 	{
 		name="mapgen", no_player_chat=true, public_chatlog=true,
 		description="Mapgen activity.",
+		is_system=true,
 	},
 }
 shout.BUILTIN_ESSENTIAL_CHANNELS = BUILTIN_ESSENTIAL_CHANNELS
@@ -142,6 +149,15 @@ function shout.get_channel_info(channelname)
 	for _, v in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
 		if v.name == channelname then
 			return v
+		end
+	end
+
+	if shout.MODSTORAGE:contains(channelname) then
+		local data = minetest.deserialize(shout.MODSTORAGE:get_string(channelname))
+		if type(data) == "table" then
+			if type(data.name) == "string" then
+				return data
+			end
 		end
 	end
 

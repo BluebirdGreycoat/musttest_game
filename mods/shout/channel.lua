@@ -505,12 +505,9 @@ function shout.announce_channel_actions(pname, channels, is_join)
 	for _, cname in ipairs(shout.strip_readonly_channels(channels)) do
 		local players = shout.get_players_in_channels({cname})
 		for _, oname in ipairs(players) do
-			if shout.player_in_channel(oname, "channels") then
-				reports[oname] = reports[oname] or {pname=pname, array={}}
-				local array = reports[oname].array
-				array[#array + 1] = cname
-				--minetest.chat_send_player(oname, TEAM_COLOR .. "# Server: <" .. rename.gpn(pname) .. "> has " .. action .. " channel '" .. cname .. "'.")
-			end
+			reports[oname] = reports[oname] or {pname=pname, array={}}
+			local array = reports[oname].array
+			array[#array + 1] = cname
 		end
 	end
 

@@ -39,6 +39,7 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 		description="Mapgen activity.",
 	},
 }
+shout.BUILTIN_ESSENTIAL_CHANNELS = BUILTIN_ESSENTIAL_CHANNELS
 
 
 

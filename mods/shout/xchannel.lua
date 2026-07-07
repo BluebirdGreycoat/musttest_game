@@ -68,6 +68,13 @@ function shout.x_choose(pname, param)
 	end
 
 	local tokens = param:split(" ")
+
+	if #tokens == 0 then
+		local channels = minetest.deserialize(pref:get_meta():get_string("active_xchannel")) or {}
+		response(pname, "# Server: You are currently in group DM rooms (" .. #channels .. "): {" .. table.concat(channels, ", ") .. "}.")
+		return
+	end
+
 	if #tokens ~= 2 then
 		response(pname, "# Server: Invalid command invocation.")
 		easyvend.sound_error(pname)
@@ -94,8 +101,8 @@ function shout.x_choose(pname, param)
 		return
 	end
 
-	local channels = channelstring:split(",")
-	for k, v in ipairs(channels) do
+	local namedchannels = channelstring:split(",")
+	for k, v in ipairs(namedchannels) do
 		if not v:find("^[,_%w]+$") then
 			report("# Server: Only alphanumeric characters and underscores may be used in channel names.")
 			easyvend.sound_error(pname)
@@ -107,27 +114,42 @@ function shout.x_choose(pname, param)
 	local curchan = minetest.deserialize(curdata) or {} -- Array table, always.
 	local changed_ones = {}
 
-	for k, v in ipairs(channels) do
+	for _, cname in ipairs(namedchannels) do
 		if command_verbs[addremove] == "remove" then
 			-- Removing channels.
-			local index = table.keyof(curchan, v)
+			local index = table.keyof(curchan, cname)
 			if index then
-				table.insert(changed_ones, v)
+				table.insert(changed_ones, cname)
 				table.remove(curchan, index)
 			end
 		else
+			local is_system = false
+			for k, v in ipairs(shout.BUILTIN_ESSENTIAL_CHANNELS) do
+				if cname == v.name then
+					is_system = true
+					break
+				end
+			end
+
 			-- Adding channels.
-			local index = table.keyof(curchan, v)
+			if is_system then
+				response(pname, "# Server: Cannot use '" .. cname .. "' for group DMs. That is a system channel.")
+				goto next_item
+			end
+
+			local index = table.keyof(curchan, cname)
 			if not index then
-				table.insert(changed_ones, v)
-				table.insert(curchan, v)
+				table.insert(changed_ones, cname)
+				table.insert(curchan, cname)
 			end
 		end
+
+		::next_item::
 	end
 
 	pref:get_meta():set_string("active_xchannel", minetest.serialize(curchan))
 
 	local verb = "added"
 	if command_verbs[addremove] == "remove" then verb = "removed" end
-	response("# Server: You have " .. verb .. " group DM rooms (" .. #changed_ones .. "): {" .. table.concat(changed_ones, ", ") .. "}.")
+	response(pname, "# Server: You have " .. verb .. " group DM rooms (" .. #changed_ones .. "): {" .. table.concat(changed_ones, ", ") .. "}.")
 end

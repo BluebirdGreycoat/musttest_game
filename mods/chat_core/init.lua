@@ -35,6 +35,15 @@ end
 
 
 
+local COLOR_WHITE = 1
+
+local ALL_COLORS = {
+	[COLOR_WHITE] = {
+		core.get_color_escape_sequence("#ffffff"),
+		core.get_color_escape_sequence("#ffffef"),
+	},
+}
+
 local color_green = core.get_color_escape_sequence("#00ff00")
 local color_dark_green = core.get_color_escape_sequence("#00d000")
 local color_dark_cyan = core.get_color_escape_sequence("#88ffff")
@@ -81,7 +90,14 @@ end
 
 
 
+local COLOR_TOGGLE = 1
 function chat_core.send_all_ex(params)
+	if COLOR_TOGGLE == 1 then
+		COLOR_TOGGLE = 2
+	else
+		COLOR_TOGGLE = 1
+	end
+
 	local from = params.from
 	local prename = params.prename or "<"
 	local actname = params.actname
@@ -114,7 +130,7 @@ function chat_core.send_all_ex(params)
 		local tpos = v:get_pos()
 
 		if pname ~= from then
-			local chosen_color = ""
+			local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
 			local should_send = true
 			local should_beep = false
 			local ignored = false

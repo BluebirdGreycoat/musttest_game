@@ -7,6 +7,7 @@ shout.datafile = shout.worldpath .. "/hints.txt"
 dofile(shout.modpath .. "/builtin_tips.lua")
 dofile(shout.modpath .. "/hints.lua")
 dofile(shout.modpath .. "/channel.lua")
+dofile(shout.modpath .. "/xchannel.lua")
 dofile(shout.modpath .. "/shout.lua")
 
 

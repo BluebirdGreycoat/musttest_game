@@ -615,3 +615,9 @@ function shout.show_channel_status(pname)
 	local list = table.concat(channels, ", ")
 	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")
 end
+
+
+
+-- Called when player uses chat command to put a message into a specific (previously chosen) channel.
+function shout.x_specific(pname, message)
+end

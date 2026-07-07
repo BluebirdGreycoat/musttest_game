@@ -52,18 +52,18 @@ if not shout.run_once then
 		end,
 	})
 
-	-- Don't need these since channel communication is the default.
-	--[[
 	minetest.register_chatcommand("x", {
 		params = "<message>",
-		description = "Speak on open channel(s).",
+		description = "Speak on specific channel(s).",
 		privs = {}, -- Specifically does not require 'shout'
 		func = function(name, param)
-			shout.x(name, chat_core.rewrite_message(param))
+			shout.x_specific(name, chat_core.rewrite_message(param))
 			return true
 		end,
 	})
 
+	-- Don't need these since channel communication is the default.
+	--[[
 	minetest.register_chatcommand("xinvert", {
 		params = "",
 		description = "Toggle whether /x is required for channel speak.",

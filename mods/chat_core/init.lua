@@ -372,16 +372,14 @@ chat_core.on_chat_message = function(name, message)
 		return
 	end
 
-	-- Delegate to our slaves.
-	shout.x(name, message)
-
-	--[[
 	-- Note: channel speak does NOT require 'shout' priv.
 	if pref:get_meta():get_int("xinvert") == 1 then
-		shout.x(name, message)
+		shout.x_specific(name, message)
 		return
 	end
-	--]]
+
+	-- Delegate to our slaves.
+	shout.x(name, message)
 
 	-- Global chat requires 'shout' priv.
 	--[[

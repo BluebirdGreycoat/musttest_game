@@ -98,6 +98,7 @@ end
 -- Using cyan color, at request of sorcerykid. This color is easy to see.
 chat_colorize.COLOR_CYAN = core.get_color_escape_sequence("#00e0ff")
 chat_colorize.COLOR_OLIVE = core.get_color_escape_sequence("#9a7122")
+chat_colorize.COLOR_OLIVE2 = core.get_color_escape_sequence("#9a6022")
 chat_colorize.COLOR_YELLOW = core.get_color_escape_sequence("#ffff00")
 chat_colorize.COLOR_ORANGE = core.get_color_escape_sequence("#ffae00")
 chat_colorize.COLOR_GRAY = core.get_color_escape_sequence("#aaaaaaff")
@@ -113,11 +114,19 @@ end
 
 
 
+local COLOR_TOGGLE = 1
+
 -- Must be careful not to trigger on chat sent by players.
 chat_colorize.send_player = function(name, msg)
   local color = ""
   if msg:sub(1, 1) == "#" then
-    color = chat_colorize.COLOR_OLIVE
+		if COLOR_TOGGLE == 1 then
+			color = chat_colorize.COLOR_OLIVE2
+			COLOR_TOGGLE = 0
+		else
+			color = chat_colorize.COLOR_OLIVE
+			COLOR_TOGGLE = 1
+		end
   elseif msg:find("^-!-") and msg:find("Invalid command usage") then
     msg = "# Server: Invalid command usage."
 		easyvend.sound_error(name)
@@ -140,7 +149,7 @@ chat_colorize.send_player = function(name, msg)
     color = chat_colorize.COLOR_OLIVE
   end
 
-  --[[
+  ---[[
   -- Make it less verbose.
   if msg:find("^# Server: ") then
 		msg = "#" .. msg:sub(10)

@@ -319,9 +319,14 @@ end
 
 passport.on_use_simple = function(itemstack, user, pointed)
   if user and user:is_player() then
-		minetest.chat_send_player(user:get_player_name(),
+		local pname = user:get_player_name()
+
+		minetest.chat_send_player(pname,
 			"# Server: This awkward chunk of reflective metal seems to mock you, " ..
 			"yet remains strangely inert. Perhaps it can be upgraded?")
+
+		local was_changed = shout.channel_handle_joinleave(pname, "global", true, true)
+		if was_changed then shout.announce_channel_actions(pname, {"global"}, true) end
   end
   return itemstack
 end

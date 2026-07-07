@@ -326,22 +326,15 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 		return true -- Player's channels were changed (join or leave).
 	end
 
-	-- Don't do this, it causes duplicate reports.
-	--shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
+	shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 end
 
 
 
 function shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 	if is_changed then
-		shout.announce_channel_actions(pname, shout.strip_readonly_channels({channel_name}), is_join)
-	end
-
-	if is_changed then
 		if is_join then
-			if not shout.player_in_channel(pname, "channels") then
-				minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
-			end
+			minetest.chat_send_player(pname, "# Server: You have joined channel '" .. channel_name .. "'.")
 		else
 			minetest.chat_send_player(pname, "# Server: You have left channel '" .. channel_name .. "'.")
 		end

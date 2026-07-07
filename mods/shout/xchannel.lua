@@ -53,7 +53,7 @@ function shout.x_specific(pname, param)
 		return
 	end
 
-	shout.x2(pname, param, player_channels)
+	shout.x2(pname, param, player_channels, true)
 end
 
 
@@ -123,6 +123,7 @@ function shout.x_choose(pname, param)
 				table.remove(curchan, index)
 			end
 		else
+			-- Adding channels.
 			local is_system = false
 			for k, v in ipairs(shout.BUILTIN_ESSENTIAL_CHANNELS) do
 				if cname == v.name then
@@ -131,9 +132,13 @@ function shout.x_choose(pname, param)
 				end
 			end
 
-			-- Adding channels.
 			if is_system then
 				response(pname, "# Server: Cannot use '" .. cname .. "' for group DMs. That is a system channel.")
+				goto next_item
+			end
+
+			if not shout.player_in_channel(pname, cname) then
+				response(pname, "# Server: Cannot use '" .. cname .. "' for group DMs. Create or join the channel first.")
 				goto next_item
 			end
 
@@ -152,4 +157,5 @@ function shout.x_choose(pname, param)
 	local verb = "added"
 	if command_verbs[addremove] == "remove" then verb = "removed" end
 	response(pname, "# Server: You have " .. verb .. " group DM rooms (" .. #changed_ones .. "): {" .. table.concat(changed_ones, ", ") .. "}.")
+	response(pname, "# Server: You are currently in group DM rooms (" .. #curchan .. "): {" .. table.concat(curchan, ", ") .. "}.")
 end

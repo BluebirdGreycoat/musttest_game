@@ -107,7 +107,6 @@ end
 
 
 -- Unused.
---[[
 function shout.player_in_channel(pname, channel)
 	if shout.players[pname] and #shout.players[pname] > 0 then
 		local t = shout.players[pname]
@@ -118,7 +117,6 @@ function shout.player_in_channel(pname, channel)
 		end
 	end
 end
---]]
 
 
 
@@ -287,6 +285,7 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	local pmeta = player:get_meta()
 	local channel_data = pmeta:get_string("active_channel")
 	local channel_array = minetest.deserialize(channel_data)
+	local xchannels = minetest.deserialize(pmeta:get_string("active_xchannel")) or {}
 
 	if not (type(channel_array) == "table" and #channel_array > 0) then
 		channel_array = {}
@@ -310,6 +309,10 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 			channel_dict[channel_name] = nil
 			is_changed = true
 		end
+
+		-- Remove from X-channels, too.
+		local index = table.keyof(xchannels, channel_name)
+		if index then table.remove(xchannels, index) end
 	end
 
 	-- Convert back to array.
@@ -328,7 +331,8 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	-- Persist.
 	if is_changed then
 		shout.players[pname] = channel_array
-		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
+		pmeta:set_string("active_channel", minetest.serialize(channel_array))
+		pmeta:set_string("active_xchannel", minetest.serialize(xchannels))
 	end
 
 	-- Report to user regardless of whether anything changed.
@@ -386,7 +390,7 @@ end
 
 
 
-function shout.x2(pname, param, pname_channels)
+function shout.x2(pname, param, pname_channels, x_speak)
 	-- Allow player to use channel speak even while gagged.
 	-- Rational: if the gagged player is on a channel with others,
 	-- then probably they're in a group together, or are related.
@@ -477,15 +481,27 @@ function shout.x2(pname, param, pname_channels)
 	end
 
 	-- Handles chat filters, colorization, distance, etc.
-	chat_core.send_all_ex({
-		from = pname,
-		prename = "<",
-		actname = rename.gpn(pname),
-		postname = themarkofcain .. "> ",
-		message = param,
-		alwaysecho = false,
-		allplayers = receiving_players
-	})
+	if x_speak then
+		chat_core.send_all_ex({
+			from = pname,
+			prename = "<.",
+			actname = rename.gpn(pname),
+			postname = themarkofcain .. ".> ",
+			message = TEAM_COLOR .. param,
+			alwaysecho = false,
+			allplayers = receiving_players
+		})
+	else
+		chat_core.send_all_ex({
+			from = pname,
+			prename = "<",
+			actname = rename.gpn(pname),
+			postname = themarkofcain .. "> ",
+			message = param,
+			alwaysecho = false,
+			allplayers = receiving_players
+		})
+	end
 
 	-- Log, if player is in a public channel.
 	if log_public_chat then

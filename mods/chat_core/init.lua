@@ -92,11 +92,14 @@ end
 
 local COLOR_TOGGLE = 1
 function chat_core.send_all_ex(params)
+	-- Ok, alternately coloring chat is kinda dumb.
+	--[[
 	if COLOR_TOGGLE == 1 then
 		COLOR_TOGGLE = 2
 	else
 		COLOR_TOGGLE = 1
 	end
+	--]]
 
 	local from = params.from
 	local prename = params.prename or "<"

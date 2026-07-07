@@ -40,7 +40,7 @@ local COLOR_WHITE = 1
 local ALL_COLORS = {
 	[COLOR_WHITE] = {
 		core.get_color_escape_sequence("#ffffff"),
-		core.get_color_escape_sequence("#ffffe9"),
+		core.get_color_escape_sequence("#ffffd3"),
 	},
 }
 

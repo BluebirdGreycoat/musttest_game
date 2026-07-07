@@ -72,18 +72,15 @@ if not shout.run_once then
 		end,
 	})
 
-	-- Don't need these since channel communication is the default.
-	--[[
 	minetest.register_chatcommand("xinvert", {
 		params = "",
-		description = "Toggle whether /x is required for channel speak.",
+		description = "Toggle whether /x is required for specific channel speak.",
 		privs = {},
 		func = function(name, param)
-			shout.xinvert(name, param)
+			shout.x_invert(name, param)
 			return true
 		end,
 	})
-	--]]
 
 	minetest.register_chatcommand("hint_add", {
 		params = "<message>",

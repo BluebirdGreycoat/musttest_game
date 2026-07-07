@@ -7,9 +7,6 @@ local math_random = math.random
 local math_min = math.min
 local math_max = math.max
 
--- Fill a list with data for content IDs, after all nodes are registered
-local cid_data = tnt.cid_data
-
 -- loss probabilities array (one in X will be lost)
 local stack_loss_prob = {}
 stack_loss_prob["default:cobble"] = 4
@@ -75,7 +72,7 @@ local function add_drop(drops, item)
 	end
 end
 
-local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destruct_queue, on_after_destruct_queue, fire_locations, ignore_protection, ignore_on_blast, pname)
+local function destroy(cid_data, drops, npos, cid, c_air, c_fire, on_blast_queue, on_destruct_queue, on_after_destruct_queue, fire_locations, ignore_protection, ignore_on_blast, pname)
 	-- This, right here, is probably what slows TNT code down the most.
   -- Perhaps we can avoid the issue by not allowing TNT to be placed within
   -- a hundred meters of a city block?
@@ -396,6 +393,9 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	local c_tnt_burning = minetest.get_content_id("tnt:tnt_burning")
 	local c_tnt_boom = minetest.get_content_id("tnt:boom")
 	local c_air = minetest.get_content_id("air")
+	local cid_data = tnt.cid_data
+
+	if not cid_data then return end
 
 	for z = pos.z - 3, pos.z + 3 do
 	for y = pos.y - 3, pos.y + 3 do
@@ -468,7 +468,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 			local cid = data[vi]
 			local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
 			if cid ~= c_air then
-				data[vi] = destroy(drops, p, cid, c_air, c_fire,
+				data[vi] = destroy(cid_data, drops, p, cid, c_air, c_fire,
 					on_blast_queue, on_destruct_queue, on_after_destruct_queue,
           fire_locations, ignore_protection, ignore_on_blast, protection_name)
 			end

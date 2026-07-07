@@ -327,8 +327,9 @@ tnt.register_tnt({
 
 
 -- Fill a list with data for content IDs, after all nodes are registered
-local cid_data = {}
 minetest.register_on_mods_loaded(function()
+	local cid_data = {}
+
 	for name, def in pairs(minetest.registered_nodes) do
 		cid_data[minetest.get_content_id(name)] = {
 			name = name,
@@ -344,5 +345,6 @@ minetest.register_on_mods_loaded(function()
       _is_bulk_mapgen_stone = def._is_bulk_mapgen_stone,
 		}
 	end
+
+	tnt.cid_data = cid_data
 end)
-tnt.cid_data = cid_data

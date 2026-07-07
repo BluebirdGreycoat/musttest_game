@@ -76,7 +76,7 @@ function shout.show_channel_list_help(pname)
 
 	for k, line in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
 		chatsend(pname, "# Server: " .. k .. ": <" .. line.name .. ">")
-		chatsend(pname, "# server:    " .. line.description)
+		chatsend(pname, "# Server:    " .. line.description)
 		if line.ex_desc then
 			chatsend(pname, "# Server:    " .. line.ex_desc)
 		end

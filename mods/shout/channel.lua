@@ -35,11 +35,6 @@ local BUILTIN_ESSENTIAL_CHANNELS = {
 		description="Periodic helpful hints from the server.",
 	},
 	{
-		name="channels", no_player_chat=true,
-		description="Information about players joining and leaving channels.",
-		-- Is this actually needed?
-	},
-	{
 		name="mapgen", no_player_chat=true, public_chatlog=true,
 		description="Mapgen activity.",
 	},
@@ -326,7 +321,7 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	end
 
 	-- Report to user regardless of whether anything changed.
-	-- But only if specifically requested by chatcommand.
+	-- But only if specifically requested by chatcommand, otherwise, this spams new players on first login.
 	if not is_server_action then
 		shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 	end

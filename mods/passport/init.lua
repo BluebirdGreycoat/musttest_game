@@ -269,10 +269,13 @@ passport.on_use = function(itemstack, user, pointed)
 
 				shout.channel_handle_joinleave(pname, "citizens", true, true)
 				shout.channel_handle_joinleave(pname, "channels", true, true)
-				shout.channel_handle_joinleave(pname, "newbies", false, true)
+
+				local was_changed = shout.channel_handle_joinleave(pname, "newbies", false, true)
 
 				shout.announce_channel_actions(pname, {"citizens"}, true)
 				shout.announce_channel_actions(pname, {"newbies"}, false)
+
+				shout.report_channel_joinleave(pname, "newbies", false, was_changed, true)
 			end)
 
 			changed = true

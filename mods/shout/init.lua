@@ -54,7 +54,7 @@ if not shout.run_once then
 
 	minetest.register_chatcommand("x", {
 		params = "<message>",
-		description = "Send a message only to specific channel(s).",
+		description = "Send a message only to specific channel(s). Also called group DM rooms.",
 		privs = {},
 		func = function(name, param)
 			shout.x_specific(name, chat_core.rewrite_message(param))
@@ -64,7 +64,7 @@ if not shout.run_once then
 
 	minetest.register_chatcommand("xchannel", {
 		params = "<channel>",
-		description = "Choose specific channel(s) for use with /x.",
+		description = "Choose specific channel(s) for use with /x (group DM rooms).",
 		privs = {},
 		func = function(name, param)
 			shout.x_choose(name, param)
@@ -74,7 +74,7 @@ if not shout.run_once then
 
 	minetest.register_chatcommand("xinvert", {
 		params = "",
-		description = "Toggle whether /x is required for specific channel speak.",
+		description = "Toggle whether /x is required to speak in group DM rooms.",
 		privs = {},
 		func = function(name, param)
 			shout.x_invert(name, param)

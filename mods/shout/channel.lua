@@ -105,6 +105,8 @@ end
 
 
 
+-- Unused.
+--[[
 function shout.player_in_channel(pname, channel)
 	if shout.players[pname] and #shout.players[pname] > 0 then
 		local t = shout.players[pname]
@@ -115,6 +117,7 @@ function shout.player_in_channel(pname, channel)
 		end
 	end
 end
+--]]
 
 
 
@@ -359,7 +362,7 @@ end
 function shout.x(pname, param)
 	local player_channels = shout.strip_readonly_channels(shout.get_player_channels(pname) or {})
 	if #player_channels == 0 then
-		minetest.chat_send_player(pname, "# Server: You have not joined any channels. There's nowhere to speak!")
+		minetest.chat_send_player(pname, "# Server: You have not joined any writable channels. There's nowhere to speak!")
 		easyvend.sound_error(pname)
 		return
 	end
@@ -603,6 +606,22 @@ end
 
 
 
+function shout.get_x_channels(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then return {} end
+
+	local data = pref:get_meta():get_string("active_xchannel")
+	local channels = minetest.deserialize(data)
+
+	if type(channels) == "table" then
+		return channels
+	end
+
+	return {}
+end
+
+
+
 function shout.x_invert(pname, param)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
@@ -610,7 +629,9 @@ function shout.x_invert(pname, param)
 	local status = player:get_meta():get_int("xinvert")
 	if status == 0 then
 		status = 1
-		minetest.chat_send_player(pname, "# Server: Chat restricted to X channels.")
+		local rooms = shout.get_x_channels(pname)
+		minetest.chat_send_player(pname, "# Server: Chat restricted to group DM rooms.")
+		minetest.chat_send_player(pname, "# Server: You are currently in rooms (" .. #rooms .. "): {" .. table.concat(rooms, ", ") .. "}.")
 	else
 		status = 0
 		minetest.chat_send_player(pname, "# Server: Normal chat restored.")
@@ -622,7 +643,21 @@ end
 
 
 -- Called when player uses chat command to put a message into a specific (previously chosen) channel.
-function shout.x_specific(pname, message)
+function shout.x_specific(pname, param)
+	local player_channels = shout.strip_readonly_channels(shout.get_x_channels(pname))
+	if #player_channels == 0 then
+		minetest.chat_send_player(pname, "# Server: You are not part of any group DM rooms. There's nowhere to speak!")
+		easyvend.sound_error(pname)
+		return
+	end
+
+	if #param < 1 then
+		minetest.chat_send_player(pname, "# Server: Empty message.")
+		easyvend.sound_error(pname)
+		return
+	end
+
+	shout.x2(pname, param, player_channels)
 end
 
 function shout.x_choose(pname, channels)

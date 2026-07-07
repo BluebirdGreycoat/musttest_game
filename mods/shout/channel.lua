@@ -580,14 +580,17 @@ function shout.channel_on_joinplayer(player)
 
 	-- Set up first-time channels.
 	if not data or data == "" then
-		shout.channel_handle_joinleave(pname, "global", true, true)
 		shout.channel_handle_joinleave(pname, "announce", true, true)
 		shout.channel_handle_joinleave(pname, "bones", true, true)
 		shout.channel_handle_joinleave(pname, "hints", true, true)
 
 		if passport.player_has_key(pname) then
+			shout.channel_handle_joinleave(pname, "global", true, true)
 			shout.channel_handle_joinleave(pname, "citizens", true, true)
-			shout.channel_handle_joinleave(pname, "channels", true, true)
+			shout.channel_handle_joinleave(pname, "newbies", true, true)
+		elseif passport.player_has_poc(pname) then
+			shout.channel_handle_joinleave(pname, "global", true, true)
+			shout.channel_handle_joinleave(pname, "newbies", true, true)
 		else
 			shout.channel_handle_joinleave(pname, "newbies", true, true)
 		end

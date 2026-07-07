@@ -679,6 +679,8 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 			meta:set_int(key, 1)
 
 			passport.award_cash(pname, player)
+			minetest.chat_send_player(pname, "# Server: You are now eligible to join the 'global' chat channel (and leave 'newbies' if you wish).")
+			minetest.chat_send_player(pname, "# Server: Type '/channel join global' to join the main chat.")
 		end
 
 		-- Clear cache of player registration.
@@ -823,6 +825,18 @@ passport.player_has_key = function(pname, player)
 
 	-- Return false, but don't cache the value -- we could not confirm it!
 	return false
+end
+
+
+
+function passport.player_has_poc(pname)
+	local player = minetest.get_player_by_name(pname)
+	if not player or not player:is_player() then return end
+
+	local inv = player:get_inventory()
+	if inv:contains_item("main", "passport:passport") then
+		return true
+	end
 end
 
 

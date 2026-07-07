@@ -220,8 +220,8 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
-	if not passport.player_has_key(pname) then
-		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires a Key of Citizenship.")
+	if not passport.player_has_poc(pname) then
+		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires Proof of Citizenship.")
 		easyvend.sound_error(pname)
 		return
 	end
@@ -281,6 +281,17 @@ end
 function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_action)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
+
+	local key_required = true
+	for _, cinfo in ipairs(BUILTIN_ESSENTIAL_CHANNELS) do
+		if cinfo.name == channel_name and cinfo.public_chatlog then
+			key_required = false
+		end
+	end
+	if key_required and not passport.player_has_key(pname) then
+		minetest.chat_send_player(pname, "# Server: You need a Key of Citizenship to join channel '" .. channel_name .. "'.")
+		easyvend.sound_error(pname)
+	end
 
 	local pmeta = player:get_meta()
 	local channel_array = minetest.deserialize(pmeta:get_string("active_channel")) or {}

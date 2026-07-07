@@ -213,7 +213,8 @@ function chat_core.send_all_ex(params)
 				end
 			else
 				-- Send chat to self if echo enabled.
-				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. newmsg)
+				local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
+				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
 			end
 		end
 	end

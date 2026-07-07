@@ -359,7 +359,7 @@ end
 function shout.x(pname, param)
 	local player_channels = shout.strip_readonly_channels(shout.get_player_channels(pname) or {})
 	if #player_channels == 0 then
-		minetest.chat_send_player(pname, "# Server: No open communication channels.")
+		minetest.chat_send_player(pname, "# Server: You have not joined any channels. There's nowhere to speak!")
 		easyvend.sound_error(pname)
 		return
 	end

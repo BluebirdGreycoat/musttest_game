@@ -660,5 +660,5 @@ function shout.x_specific(pname, param)
 	shout.x2(pname, param, player_channels)
 end
 
-function shout.x_choose(pname, channels)
+function shout.x_choose(pname, param)
 end

@@ -64,7 +64,7 @@ if not shout.run_once then
 	})
 
 	minetest.register_chatcommand("xchannel", {
-		params = "<channel>",
+		params = "<add|remove> <channel>",
 		description = "Choose specific channel(s) for use with /x (group DM rooms).",
 		privs = {},
 		func = function(name, param)

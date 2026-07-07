@@ -187,11 +187,15 @@ end
 
 
 local COMMAND_VERBS = {
+	enable = "join",
+	enter = "join",
 	add = "join",
 	join = "join",
 	leave = "leave",
 	mute = "leave",
 	part = "leave",
+	remove = "leave",
+	disable = "leave",
 }
 
 -- let player join, leave channels
@@ -219,16 +223,19 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 
 	if not passport.player_has_key(pname) then
 		minetest.chat_send_player(pname, "# Server: Joining or leaving channels requires a Key of Citizenship.")
+		easyvend.sound_error(pname)
 		return
 	end
 
 	if not (#tokens == 2 and join_or_leave and channel_name and channel_name:len() > 0) then
 		minetest.chat_send_player(pname, "# Server: Invalid command syntax.")
+		easyvend.sound_error(pname)
 		return
 	end
 
 	if not COMMAND_VERBS[join_or_leave] then
 		minetest.chat_send_player(pname, "# Server: Unrecognized verb.")
+		easyvend.sound_error(pname)
 		return
 	end
 	join_or_leave = COMMAND_VERBS[join_or_leave]

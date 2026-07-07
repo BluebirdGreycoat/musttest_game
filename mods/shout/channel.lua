@@ -257,6 +257,8 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 			if success then table.insert(changed_ones, v) end
 		end
 
+		-- Notify everyone in the channel about the join/leave.
+		-- If player has left channel(s), this will skip notifying them.
 		shout.announce_channel_actions(pname, changed_ones, boolean_joinleave)
 
 		-- If leaving channel, show player their channel status.
@@ -429,6 +431,7 @@ function shout.x(pname, param)
 	if requires_shout_priv then
 		if not minetest.check_player_privs(pname, {shout=true}) then
 			minetest.chat_send_player(pname, "# Server: You are in a channel requiring the 'shout' priv.")
+			minetest.chat_send_player(pname, "# Server: You have to leave that channel before you can talk.")
 			-- Player doesn't have shout priv.
 			return
 		end

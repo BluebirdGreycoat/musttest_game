@@ -489,7 +489,12 @@ end
 
 
 -- Announces ONLY to players that are in intersecting channels.
+-- This function is for reporting join/leave actions to players subscribed to the named channels.
 function shout.announce_channel_actions(pname, channels, is_join)
+	if minetest.check_player_privs(pname, {statushide=true}) then
+		return
+	end
+
 	local action = "joined"
 	if not is_join then
 		action = "left"

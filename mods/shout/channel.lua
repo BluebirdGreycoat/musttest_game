@@ -283,10 +283,10 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	if not player or not player:is_player() then return end
 
 	local pmeta = player:get_meta()
-	local channel_data = pmeta:get_string("active_channel")
-	local channel_array = minetest.deserialize(channel_data)
+	local channel_array = minetest.deserialize(pmeta:get_string("active_channel")) or {}
 	local xchannels = minetest.deserialize(pmeta:get_string("active_xchannel")) or {}
 
+	-- In case 'active_channel' is using the old string type. Backward compat.
 	if not (type(channel_array) == "table" and #channel_array > 0) then
 		channel_array = {}
 	end

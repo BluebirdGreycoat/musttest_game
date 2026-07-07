@@ -36,7 +36,7 @@ stack_loss_prob["default:ice"] = 4
 local function rand_pos(center, pos, radius)
   pos.x = center.x + math_random(-radius, radius)
   pos.z = center.z + math_random(-radius, radius)
-  
+
   -- Keep picking random positions until a position inside the sphere is chosen.
   -- This gives us a uniform (flattened) spherical distribution.
   while vector_distance(center, pos) >= radius do
@@ -49,7 +49,8 @@ local function eject_drops(drops, pos, radius)
   local drop_pos = vector.new(pos)
 
   for _, item in pairs(drops) do
-		local count = math_min(item:get_count(), item:get_stack_max())
+		--local count = math_min(item:get_count(), item:get_stack_max())
+		local count = item:get_count()
 
 		while count > 0 do
 			local take = math_max(1, math_min(radius * radius, count, item:get_stack_max()))
@@ -76,7 +77,7 @@ local function add_drop(drops, item)
 	-- Make sure it's an item stack.
 	item = ItemStack(item)
 	local name = item:get_name()
-	
+
 	-- Deal with trash.
 	if stack_loss_prob[name] ~= nil and math_random(1, stack_loss_prob[name]) == 1 then
 		return
@@ -108,7 +109,7 @@ local function destroy(drops, npos, cid, c_air, c_fire, on_blast_queue, on_destr
   if not def then
     return c_air
   end
-  
+
   if def.on_destruct then
     -- Queue on_destruct callbacks only if ignoring on_blast.
     if ignore_on_blast or not def.on_blast then
@@ -330,7 +331,7 @@ local function add_effects(pos, radius, drops)
 		maxsize = radius * 5,
 		texture = "tnt_smoke.png",
 	})
-	
+
 	-- we just dropped some items. Look at the items entities and pick
 	-- one of them to use as texture
 	local texture = "tnt_blast.png" --fallback texture
@@ -425,7 +426,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	end
 	end
 	end
-	
+
 	-- The variable 'count' may be 0 if the bomb exploded in a protected area. In
 	-- which case no "tnt boom" flash (node) will have been created. Clamping
 	-- 'count' to a minimum of 1 fixes the problem.
@@ -433,7 +434,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 	if count < 1 then
 		count = 1
 	end
-  
+
   -- Clamp to avoid massive explosions.
   if count > 64 then count = 64 end
 
@@ -467,19 +468,19 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
   local fire_locations = {}
 
 	local c_fire = minetest.get_content_id("fire:basic_flame")
-  
+
 	for z = -radius, radius do
 	for y = -radius, radius do
 	local vi = a:index(pos.x + (-radius), pos.y + y, pos.z + z)
 	for x = -radius, radius do
 		local r = vector.length(vector.new(x, y, z))
     local r2 = radius
-    
+
     -- Roughen the walls a bit.
     if pr:next(0, 6) == 0 then
       r2 = radius - 0.8
     end
-      
+
     if r <= r2 then
 			local cid = data[vi]
 			local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
@@ -489,12 +490,12 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
           fire_locations, ignore_protection, ignore_on_blast, protection_name)
 			end
 		end
-    
+
 		vi = vi + 1
 	end
 	end
 	end
-  
+
   -- Call on_destruct callbacks.
   for k = 1, #on_destruct_queue do
 		local v = on_destruct_queue[k]
@@ -543,7 +544,7 @@ local function tnt_explode(pos, radius, ignore_protection, ignore_on_blast, pnam
 			end
 		end
 	end
-  
+
   -- Initialize flames.
   local fdef = minetest.registered_nodes["fire:basic_flame"]
   if fdef and fdef.on_construct then
@@ -588,7 +589,7 @@ function tnt.boom_impl(pos, def)
 	if def.protection_name and gdac.player_is_admin(def.protection_name) then
 		def.protection_name = nil
 	end
-	
+
 	if not minetest.test_protection(pos, "") then
 		local node = minetest.get_node(pos)
 		-- Never destroy death boxes.
@@ -596,7 +597,7 @@ function tnt.boom_impl(pos, def)
 			minetest.set_node(pos, {name = "tnt:boom"})
 		end
 	end
-	
+
 	local drops, radius = tnt_explode(pos, def.radius, def.ignore_protection,
 		def.ignore_on_blast, (def.name or ""), (def.protection_name or ""))
 
@@ -607,7 +608,7 @@ function tnt.boom_impl(pos, def)
 		eject_drops(drops, pos, radius)
 	end
 	add_effects(pos, radius, drops)
-  
+
   minetest.log("action", "A TNT explosion occurred at " .. minetest.pos_to_string(pos) ..
     " with radius " .. radius)
 end

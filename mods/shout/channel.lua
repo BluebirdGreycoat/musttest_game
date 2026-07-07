@@ -326,7 +326,10 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	end
 
 	-- Report to user regardless of whether anything changed.
-	shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
+	-- But only if specifically requested by chatcommand.
+	if not is_server_action then
+		shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
+	end
 
 	if is_changed then
 		return true -- Player's channels were changed (join or leave).

@@ -288,8 +288,8 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 			key_required = false
 		end
 	end
-	if key_required and not passport.player_has_key(pname) then
-		minetest.chat_send_player(pname, "# Server: You need a Key of Citizenship to join channel '" .. channel_name .. "'.")
+	if key_required and not passport.player_has_key(pname) and is_join then
+		minetest.chat_send_player(pname, "# Server: You need a Key of Citizenship to join or create custom channels: {" .. channel_name .. "}.")
 		easyvend.sound_error(pname)
 		return
 	end

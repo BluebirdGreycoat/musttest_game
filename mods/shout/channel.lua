@@ -323,10 +323,10 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 	if is_changed then
 		shout.players[pname] = channel_array
 		player:get_meta():set_string("active_channel", minetest.serialize(channel_array))
+
+		shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 		return true -- Player's channels were changed (join or leave).
 	end
-
-	shout.report_channel_joinleave(pname, channel_name, is_join, is_changed, is_server_action)
 end
 
 

@@ -597,6 +597,7 @@ function shout.x_invert(pname, param)
 	else
 		status = 0
 		minetest.chat_send_player(pname, "# Server: Normal chat restored.")
+		shout.show_channel_status(pname)
 	end
 	player:get_meta():set_int("xinvert", status)
 end

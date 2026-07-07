@@ -40,7 +40,7 @@ minetest.register_node("tnt:boom", {
 	on_timer = function(pos, elapsed)
 		minetest.remove_node(pos)
 	end,
-  
+
   -- Unaffected by explosions.
   on_blast = function() end,
 })
@@ -54,9 +54,9 @@ minetest.register_node("tnt:gunpowder", {
 	sunlight_propagates = true,
 	walkable = false,
 	tiles = {
-    "tnt_gunpowder_straight.png", 
-    "tnt_gunpowder_curved.png", 
-    "tnt_gunpowder_t_junction.png", 
+    "tnt_gunpowder_straight.png",
+    "tnt_gunpowder_curved.png",
+    "tnt_gunpowder_t_junction.png",
     "tnt_gunpowder_crossing.png",
   },
 	inventory_image = "tnt_gunpowder_inventory.png",
@@ -66,7 +66,7 @@ minetest.register_node("tnt:gunpowder", {
 		fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
 	},
 	groups = utility.dig_groups("bigitem", {
-    attached_node = 1, 
+    attached_node = 1,
     connect_to_raillike = minetest.raillike_group("gunpowder"),
   }),
 	sounds = default.node_sound_leaves_defaults(),
@@ -80,7 +80,7 @@ minetest.register_node("tnt:gunpowder", {
         minetest.pos_to_string(pos))
     end
   end,
-  
+
   on_blast = function(pos)
 		minetest.set_node(pos, {name = "tnt:gunpowder_burning"})
   end,
@@ -151,10 +151,10 @@ minetest.register_node("tnt:gunpowder_burning", {
 		end
 		minetest.remove_node(pos)
 	end,
-  
+
 	-- Unaffected by explosions.
   on_blast = function() end,
-          
+
 	on_construct = function(pos)
 		minetest.sound_play("tnt_gunpowder_burning", {pos = pos, gain = 2}, true)
 		minetest.get_node_timer(pos):start(1)
@@ -224,7 +224,7 @@ function tnt.register_tnt(def)
         is_ground_content = false,
         groups = utility.dig_groups("bigitem", {tnt = 1}),
         sounds = default.node_sound_wood_defaults(),
-        
+
         on_punch = function(pos, node, puncher)
             local wielded = puncher:get_wielded_item():get_name()
             if minetest.get_item_group(wielded, "torch") ~= 0 then
@@ -241,7 +241,7 @@ function tnt.register_tnt(def)
 						minetest.add_node(pos, {name = name .. "_burning"})
 					end
         end,
-        
+
         on_construct = function(pos)
 					local igniter = minetest.find_node_near(pos, 1, "group:igniter")
 					if igniter then
@@ -306,10 +306,10 @@ function tnt.register_tnt(def)
 		on_timer = function(pos, elapsed)
 			tnt.boom(pos, def)
 		end,
-    
+
     -- Unaffected by explosions.
 		on_blast = function() end,
-    
+
 		on_construct = function(pos)
 			minetest.sound_play("tnt_ignite", {pos = pos}, true)
 			minetest.get_node_timer(pos):start(5)
@@ -323,3 +323,26 @@ tnt.register_tnt({
 	description = "Explosive TNT",
 	radius = tnt_radius,
 })
+
+
+
+-- Fill a list with data for content IDs, after all nodes are registered
+local cid_data = {}
+minetest.register_on_mods_loaded(function()
+	for name, def in pairs(minetest.registered_nodes) do
+		cid_data[minetest.get_content_id(name)] = {
+			name = name,
+
+			-- Why is this misspelled? Not used? (drops: no such key)
+			drops = def.drops,
+
+			_tnt_drop = def._tnt_drop,
+			flammable = def.groups.flammable,
+			on_blast = def.on_blast,
+      on_destruct = def.on_destruct,
+      after_destruct = def.after_destruct,
+      _is_bulk_mapgen_stone = def._is_bulk_mapgen_stone,
+		}
+	end
+end)
+tnt.cid_data = cid_data

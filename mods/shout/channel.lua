@@ -586,6 +586,19 @@ end
 
 
 
+function shout.show_channel_status(pname)
+	local channels = shout.get_player_channels(pname)
+	if not channels or #channels == 0 then
+		minetest.chat_send_player(pname, "# Server: You are not subscribed to any channels.")
+		return
+	end
+	local count = #channels
+	local list = table.concat(channels, ", ")
+	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")
+end
+
+
+
 function shout.x_invert(pname, param)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
@@ -600,19 +613,6 @@ function shout.x_invert(pname, param)
 		shout.show_channel_status(pname)
 	end
 	player:get_meta():set_int("xinvert", status)
-end
-
-
-
-function shout.show_channel_status(pname)
-	local channels = shout.get_player_channels(pname)
-	if not channels or #channels == 0 then
-		minetest.chat_send_player(pname, "# Server: You are not subscribed to any channels.")
-		return
-	end
-	local count = #channels
-	local list = table.concat(channels, ", ")
-	minetest.chat_send_player(pname, "# Server: You are in channels (" .. count .. "): {" .. list .. "}.")
 end
 
 

@@ -267,10 +267,10 @@ passport.on_use = function(itemstack, user, pointed)
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
 
-				shout.channel_handle_joinleave(pname, "citizens", true, true)
-				shout.channel_handle_joinleave(pname, "channels", true, true)
+				shout.channel_handle_joinleave(pname, "citizens", "", true, true)
+				shout.channel_handle_joinleave(pname, "global", "", true, true)
 
-				local was_changed = shout.channel_handle_joinleave(pname, "newbies", false, true)
+				local was_changed = shout.channel_handle_joinleave(pname, "newbies", "", false, true)
 
 				shout.announce_channel_actions(pname, {"citizens"}, true)
 				shout.announce_channel_actions(pname, {"newbies"}, false)
@@ -325,7 +325,7 @@ passport.on_use_simple = function(itemstack, user, pointed)
 			"# Server: This awkward chunk of reflective metal seems to mock you, " ..
 			"yet remains strangely inert. Perhaps it can be upgraded?")
 
-		local was_changed = shout.channel_handle_joinleave(pname, "global", true, true)
+		local was_changed = shout.channel_handle_joinleave(pname, "global", "", true, true)
 		if was_changed then shout.announce_channel_actions(pname, {"global"}, true) end
   end
   return itemstack

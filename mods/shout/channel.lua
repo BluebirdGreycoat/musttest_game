@@ -225,6 +225,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 	local tokens = string.split(cmdparams, " ")
 	local join_or_leave = tokens[1]
 	local channel_name = tokens[2]
+	local channel_pass = tokens[3] or ""
 
 	if #tokens == 0 then
 		shout.show_channel_status(pname)
@@ -242,7 +243,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
-	if not (#tokens == 2 and join_or_leave and channel_name and channel_name:len() > 0) then
+	if not (#tokens >= 2 and join_or_leave and channel_name and channel_name:len() > 0) then
 		minetest.chat_send_player(pname, "# Server: Invalid command syntax.")
 		easyvend.sound_error(pname)
 		return
@@ -263,6 +264,15 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		return
 	end
 
+	if channel_pass:len() > 0 then
+		if not string.find(channel_pass, "^[,_%w]+$") then
+			minetest.chat_send_player(pname,
+				"# Server: Only alphanumeric characters and underscores may be used in channel passwords.")
+			easyvend.sound_error(pname)
+			return
+		end
+	end
+
 	local boolean_joinleave = true
 	if join_or_leave == "leave" then
 		boolean_joinleave = false
@@ -273,7 +283,7 @@ function shout.channel_on_chatcommand(pname, cmdparams)
 		local changed_ones = {}
 
 		for _, v in ipairs(channelnames) do
-			local success = shout.channel_handle_joinleave(pname, v, boolean_joinleave, false)
+			local success = shout.channel_handle_joinleave(pname, v, channel_pass, boolean_joinleave, false)
 			if success then table.insert(changed_ones, v) end
 		end
 
@@ -294,7 +304,7 @@ end
 -- Makes a player join or leave a channel, but does NOT report!
 -- Reporting is handled by a different function.
 -- Will return TRUE if the player's set of active channels has CHANGED in response to this function.
-function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_action)
+function shout.channel_handle_joinleave(pname, channel_name, channel_pass, is_join, is_server_action)
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then return end
 
@@ -308,6 +318,15 @@ function shout.channel_handle_joinleave(pname, channel_name, is_join, is_server_
 		minetest.chat_send_player(pname, "# Server: You need a Key of Citizenship to join or create custom channels: {" .. channel_name .. "}.")
 		easyvend.sound_error(pname)
 		return
+	end
+
+	if is_join then
+		local channel_info = shout.get_channel_info(channel_name)
+		if (channel_info.password or "") ~= channel_pass then
+			minetest.chat_send_player(pname, "# Server: Cannot join '" .. channel_name .. "' channel. Wrong password.")
+			easyvend.sound_error(pname)
+			return
+		end
 	end
 
 	local pmeta = player:get_meta()
@@ -608,19 +627,19 @@ function shout.channel_on_joinplayer(player)
 
 	-- Set up first-time channels.
 	if not data or data == "" then
-		shout.channel_handle_joinleave(pname, "announce", true, true)
-		shout.channel_handle_joinleave(pname, "bones", true, true)
-		shout.channel_handle_joinleave(pname, "hints", true, true)
+		shout.channel_handle_joinleave(pname, "announce", "", true, true)
+		shout.channel_handle_joinleave(pname, "bones", "", true, true)
+		shout.channel_handle_joinleave(pname, "hints", "", true, true)
 
 		if passport.player_has_key(pname) then
-			shout.channel_handle_joinleave(pname, "global", true, true)
-			shout.channel_handle_joinleave(pname, "citizens", true, true)
-			shout.channel_handle_joinleave(pname, "newbies", true, true)
+			shout.channel_handle_joinleave(pname, "global", "", true, true)
+			shout.channel_handle_joinleave(pname, "citizens", "", true, true)
+			shout.channel_handle_joinleave(pname, "newbies", "", true, true)
 		elseif passport.player_has_poc(pname) then
-			shout.channel_handle_joinleave(pname, "global", true, true)
-			shout.channel_handle_joinleave(pname, "newbies", true, true)
+			shout.channel_handle_joinleave(pname, "global", "", true, true)
+			shout.channel_handle_joinleave(pname, "newbies", "", true, true)
 		else
-			shout.channel_handle_joinleave(pname, "newbies", true, true)
+			shout.channel_handle_joinleave(pname, "newbies", "", true, true)
 		end
 	end
 

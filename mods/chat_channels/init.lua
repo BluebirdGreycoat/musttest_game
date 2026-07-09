@@ -484,6 +484,38 @@ CC.COMMAND_VERBS = {
 			system_response(pname, "User <" .. rename.gpn(param) .. "> is in channels (" .. count .. "): {" .. list .. "}.")
 		end,
 	},
+
+	create = {
+		params = "<channel> [password]",
+		description = "Create new channel with optional password.",
+		action = function(pname, param)
+			local tokens = param:split(" ")
+			local channel_name = tokens[1]
+			local channel_password = (tokens[2] or ""):trim()
+
+			if not CC.is_channelname_ok(channel_name) then
+				system_error(pname, "Invalid channel identifier.")
+				return
+			end
+
+			if channel_password ~= "" then
+				if not CC.is_password_ok(channel_password) then
+					system_error(pname, "Only alphanumeric characters may be used in passwords.")
+					return
+				end
+			end
+
+			if CC.get_channel_info_load_if_needed(channel_name) then
+				system_error(pname, "Channel aready exists.")
+				return
+			end
+
+			CC.create_user_channel(pname, channel_name, channel_password)
+
+			local cinfo = CC.get_channel_info_load_if_needed(channel_name)
+			system_response(pname, "Created channel {" .. cinfo.name .. "}.")
+		end,
+	},
 }
 CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]
@@ -832,6 +864,26 @@ function CC.create_system_channel(name, params)
 	local key = "channel:" .. name
 	CC.MOD_STORAGE:set_string(key, serialized)
 	CC.SYSTEM_CHANNELS[name] = true
+end
+
+
+
+-- Unconditionally create a USER channel, overwriting anything else.
+function CC.create_user_channel(pname, channel_name, channel_password)
+	local info = {}
+	info.name = channel_name
+	info.is_user = true
+	info.owner = pname
+	info.time = os.time()
+
+	if channel_password and channel_password ~= "" then
+		info.password = channel_password
+	end
+
+	-- Always replace.
+	local serialized = minetest.serialize(info)
+	local key = "channel:" .. channel_name
+	CC.MOD_STORAGE:set_string(key, serialized)
 end
 
 

@@ -23,9 +23,10 @@ local function show_all(pname, param)
 		end
 	end
 
-	minetest.chat_send_player(pname,
-		"# Server: The commands available to you are: " ..
-		table.concat(commands, ", ") .. ".")
+	minetest.chat_send_player(pname, "# Server: The commands available to you are:")
+	for _, name in ipairs(commands) do
+		minetest.chat_send_player(pname, "# Server:     /" .. name)
+	end
 end
 
 
@@ -77,6 +78,21 @@ end
 
 
 
+function help.on_show_help(pname)
+	local helplines = {
+		"Example usages:",
+		"    /help privs",
+		"    /help help",
+		"    /help etc",
+	}
+
+	for _, line in ipairs(helplines) do
+		minetest.chat_send_player(pname, "# Server: " .. line)
+	end
+end
+
+
+
 if not help.registered then
 	help.registered = true
 
@@ -84,8 +100,12 @@ if not help.registered then
 	-- doesn't support modding due to the massive differences, so the help
 	-- formspecs need to be altered.
 	minetest.override_chatcommand("help", {
-		params = "",
+		params = "[command]",
 		description = "Get help on privs and commands.",
+
+		show_help = function(pname)
+			help.on_show_help(pname)
+		end,
 
 		func = function(...)
 			help.do_help(...)

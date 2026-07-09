@@ -6,6 +6,7 @@ chat_channels.modpath = minetest.get_modpath("chat_channels")
 local SANCTUM_VERSION = 1
 
 local MAX_CHANNEL_COUNT = 128
+local XSPEAK_COLOR = core.get_color_escape_sequence("#a8ff00")
 
 -- Shorten.
 local CC = chat_channels
@@ -173,13 +174,19 @@ function CC.player_may_join_sanctum(pname, pref, cinfo, provided_password)
 		end
 	end
 
-	if provided_password and provided_password ~= "" then
-		if (cinfo.password or "") ~= provided_password then
-			return nil, CC.REASON_CODES.WRONG_PASSWORD
-		end
-	else
-		if (cinfo.password or "") ~= (pinfo.sanctum_passwords[cinfo.name] or "") then
-			return nil, CC.REASON_CODES.WRONG_PASSWORD
+	-- Admin does not need password to join channels.
+	if not gdac.player_is_admin(pname) then
+		-- Channel owner can always join without password.
+		if (cinfo.owner or "") ~= pname then
+			if provided_password and provided_password ~= "" then
+				if (cinfo.password or "") ~= provided_password then
+					return nil, CC.REASON_CODES.WRONG_PASSWORD
+				end
+			else
+				if (cinfo.password or "") ~= (pinfo.sanctum_passwords[cinfo.name] or "") then
+					return nil, CC.REASON_CODES.WRONG_PASSWORD
+				end
+			end
 		end
 	end
 
@@ -336,7 +343,8 @@ end
 
 CC.COMMAND_VERBS = {
 	list = {
-		description = "List system channels.",
+		params = "[all]",
+		description = "List registered channels.",
 		action = function(pname, param)
 			system_response(pname, "The following system channels are available to you:")
 
@@ -346,7 +354,7 @@ CC.COMMAND_VERBS = {
 					goto next_item
 				end
 
-				system_response(pname, "{" .. cinfo.name .. "}: " .. cinfo.description)
+				system_response(pname, "  {" .. cinfo.name .. "}: " .. cinfo.description)
 				if cinfo.public_chatlog then
 					system_response(pname, "    Chat here is published publicly.")
 				end
@@ -364,6 +372,33 @@ CC.COMMAND_VERBS = {
 				end
 				if cinfo.password and cinfo.password ~= "" then
 					system_response(pname, "    Channel is password-protected.")
+				end
+
+				::next_item::
+			end
+
+			if param ~= "all" then
+				return
+			end
+
+			system_response(pname, "The following user channels exist:")
+
+			local all_keys = CC.MOD_STORAGE:get_keys()
+			for _, key in ipairs(all_keys) do
+				if key:find("^channel:") then
+					local cname = key:sub(9)
+					if CC.SYSTEM_CHANNELS[cname] then
+						goto next_item
+					end
+
+					local cinfo = CC.get_channel_info_load_if_needed(cname)
+
+					local desc = "No description provided."
+					if cinfo.description then
+						desc = cinfo.description
+					end
+
+					system_response(pname, "  {" .. cinfo.name .. "}: " .. desc)
 				end
 
 				::next_item::
@@ -561,6 +596,9 @@ CC.COMMAND_VERBS = {
 
 			if cinfo.is_system or not cinfo.is_user then
 				system_response(pname, "Channel {" .. cinfo.name .. "}: system channel.")
+				if cinfo.description and cinfo.description ~= "" then
+					system_response(pname, cinfo.description)
+				end
 				return
 			end
 
@@ -570,6 +608,7 @@ CC.COMMAND_VERBS = {
 			end
 
 			system_response(pname, "Channel {" .. cinfo.name .. "} was created by <" .. rename.gpn(cinfo.owner) .. ">" .. timestamp .. ".")
+			system_response(pname, (cinfo.description and cinfo.description ~= "" and cinfo.description or "No description provided."))
 
 			if cinfo.password and cinfo.password ~= "" then
 				system_response(pname, "Channel is password-protected.")
@@ -607,7 +646,60 @@ CC.COMMAND_VERBS = {
 			end
 
 			CC.delete_user_channel(cinfo.name)
-			system_response(pname, "Deleted sanctum {" .. param .. "}.")
+			system_response(pname, "Deleted sanctum {" .. param .. "}. Bye!")
+		end,
+	},
+
+	describe = {
+		params = "<channel> <description ...>",
+		description = "Set sanctum description string.",
+		action = function(pname, param)
+			local tokens = param:split(" ")
+
+			if #tokens < 2 then
+				system_error(pname, "Inappropriate command invocation.")
+				return
+			end
+
+			local channel_name = tokens[1]
+			local channel_desc = chat_core.rewrite_message(param:sub(channel_name:len() + 2):trim())
+
+			if #channel_desc == 0 then
+				system_error(pname, "No description string provided.")
+				return
+			end
+
+			if not CC.is_channelname_ok(channel_name) then
+				system_error(pname, "Invalid channel identity token.")
+				return
+			end
+
+			local cinfo = CC.get_channel_info_load_if_needed(channel_name)
+			if not cinfo then
+				system_error(pname, "Channel not found. Check your keyboard for broken keys.")
+				return
+			end
+
+			if cinfo.is_system or not cinfo.is_user then
+				system_error(pname, "Cannot change description of system channel. Nice try.")
+				return
+			end
+
+			if not gdac.player_is_admin(pname) then
+				if (cinfo.owner or "") ~= pname then
+					system_error(pname, "You are not the owner of channel {" .. cinfo.name .. "}.")
+					return
+				end
+			end
+
+			if not CC.is_language_ok(pname, channel_desc) then
+				system_error(pname, "Um ... no.")
+				return
+			end
+
+			cinfo.description = channel_desc
+			CC.rewrite_user_channel(cinfo.name, cinfo)
+			system_response(pname, "Updated description for {" .. cinfo.name .. "}: \"" .. cinfo.description .. "\".")
 		end,
 	},
 }
@@ -615,6 +707,18 @@ CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["remove"] = CC.COMMAND_VERBS["delete"]
 CC.COMMAND_VERBS["query"] = CC.COMMAND_VERBS["what"]
+
+
+
+function CC.is_language_ok(pname, message)
+	if anticurse.check(pname, message, "foul") then
+		return
+	elseif anticurse.check(pname, message, "curse") then
+		return
+	end
+
+	return true
+end
 
 
 
@@ -687,7 +791,7 @@ end
 -- Called in response to /x OR normalchat when X-speak override is enabled.
 -- NOT called directly in either case.
 function CC.handle_on_xspeak(pname, param, is_chatcommand)
-	-- TODO
+	CC.process_chat_message(pname, param, {is_xspeak=true, is_chatcommand=is_chatcommand})
 end
 
 
@@ -735,10 +839,11 @@ end
 
 
 
--- Called whenever player chats normally (not whisper, not shout, not X-speak).
-function CC.on_chat_message(pname, message)
-	local pref = CC.get_pref_complain_if_inexistent(pname)
-	if not pref then return end
+function CC.process_chat_message(pname, message, params)
+	-- Simplify a little.
+	if not params then
+		params = {}
+	end
 
 	local log_public_chat = false
 	local do_anticurse_check = false
@@ -749,17 +854,20 @@ function CC.on_chat_message(pname, message)
 	local connected_players = minetest.get_connected_players()
 	local player_channels, invalid_channels = CC.get_player_enabled_channels(pname, true)
 
-	if #player_channels == 0 then
-		system_error(pname, "Screaming into the Void, I see.")
-		return
-	end
-
 	-- If player is in any channel invalid for them, block chat.
 	for cname, reason in pairs(invalid_channels) do
 		local channel_says = CC.get_channel_says_from_reason(reason)
 
 		system_error(pname, "You may not speak on {" .. cname .. "}. The sanctum says: " .. channel_says)
 		system_error(pname, "You'll need to leave {" .. cname .. "} before you can speak.")
+		return
+	end
+
+	-- Check this AFTER checking for invalid channels.
+	-- Reason is that all of a player's channels could be invalid, but if we don't do the
+	-- check for invalid channels first, they would not get feedback explaining the problem.
+	if #player_channels == 0 then
+		system_error(pname, "Screaming into the Void, I see.")
 		return
 	end
 
@@ -819,12 +927,22 @@ function CC.on_chat_message(pname, message)
 		end
 	end
 
+	local prename = "<"
+	local postname = ">"
+	local msg_color = ""
+
+	if params.is_xspeak then
+		prename = "«"
+		postname = "»"
+		msg_color = XSPEAK_COLOR
+	end
+
 	chat_core.send_all_ex({
 		from = pname,
-		prename = "<",
+		prename = prename,
 		actname = rename.gpn(pname),
-		postname = the_mark_of_cain .. "> ",
-		message = message,
+		postname = the_mark_of_cain .. postname .. " ",
+		message = msg_color .. message,
 		alwaysecho = false,
 		allplayers = receiving_players
 	})
@@ -836,6 +954,16 @@ function CC.on_chat_message(pname, message)
 
 	player_labels.on_chat_message(pname, message)
 	afk.reset_timeout(pname)
+end
+
+
+
+-- Called whenever player chats normally (not whisper, not shout, not X-speak).
+function CC.on_chat_message(pname, message)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	CC.process_chat_message(pname, message)
 end
 
 
@@ -895,12 +1023,33 @@ end
 
 
 
+function CC.get_x_helplines()
+	local helplines = {
+		"Enabling X-speak allows you to communicate in select channels without having to do /x.",
+		"This does come with the downside that you can't chat (normally) in all joined channels until you turn the setting off.",
+		"Example usages:",
+		"    /xalways on",
+		"    /xalways off",
+		"    /xalways",
+		"    /x You're a dweeb, RandomUser1!",
+		"If X-speak is enabled, all your chat is processed as if you had typed /x at the start of the message.",
+		"If X-speak is NOT enabled, then you must type /x in order to use this feature.",
+		"The X-speak setting is persistent across logins and server restarts.",
+	}
+
+	return helplines
+end
+
+
+
 -- Called when player requests help on /xalways chatcommand.
 function CC.on_show_xalways_help(pname)
 	local pref = CC.get_pref_complain_if_inexistent(pname)
 	if not pref then return end
 
-	-- TODO
+	for _, line in ipairs(CC.get_x_helplines()) do
+		system_response(pname, line)
+	end
 end
 
 
@@ -910,7 +1059,9 @@ function CC.on_show_x_help(pname)
 	local pref = CC.get_pref_complain_if_inexistent(pname)
 	if not pref then return end
 
-	-- TODO
+	for _, line in ipairs(CC.get_x_helplines()) do
+		system_response(pname, line)
+	end
 end
 
 
@@ -947,6 +1098,26 @@ function CC.load_or_reload_channel(name)
 	end
 
 	return true
+end
+
+
+
+-- Called if parameters on a user channel are to be changed.
+-- Rewrites what's in ACTIVE_CHANNELS (if exists) and updates MOD_STORAGE.
+function CC.rewrite_user_channel(cname, cinfo)
+	cinfo.name = cname
+	cinfo.is_system = nil
+	cinfo.is_user = true
+
+	local index = CC.index_of_active_channel(cname)
+	if index then
+		CC.ACTIVE_CHANNELS[index] = cinfo
+	end
+
+	-- Always replace.
+	local serialized = minetest.serialize(cinfo)
+	local key = "channel:" .. cname
+	CC.MOD_STORAGE:set_string(key, serialized)
 end
 
 

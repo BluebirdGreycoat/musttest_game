@@ -11,22 +11,22 @@ reload.impl = reload.impl or {}
 reload.impl.dofile = function(name, path)
 	local PREFIX = reload.chat_prefix
 	local FILEPATH = path
-	
+
 	if type(path) == "string" and type(name) == "string" then
 		if path == "" then
 			reload.chat_send_player(name, PREFIX .. "No filepath provided.")
 			return false
 		end
-		
+
 		-- Log this action.
 		reload.log("action", "[Mod Reload] Player <" .. name .. "> attempts to execute Lua source file '" .. FILEPATH .. "'.")
-		
+
 		-- A bit of security.
 		if string.find(path, "%.%.") then
 			reload.chat_send_player(name, PREFIX .. "Filepath cannot include '..' tokens.")
 			return false
 		end
-		
+
 		-- Attempt to load and execute the Lua file.
 		local func, err = loadfile(FILEPATH)
 		if not func then  -- Syntax error.
@@ -38,8 +38,16 @@ reload.impl.dofile = function(name, path)
 			reload.chat_send_player(name, PREFIX .. "Could not execute file. Received error message: '" .. err .. "'.")
 			return false
 		end
-		
-		reload.chat_send_player(name, PREFIX .. "File '" .. FILEPATH .. "' successfully executed.")
+
+		-- Don't expose the entire filepath.
+		-- Only the last bit is relevant.
+		local report_path = FILEPATH
+		if report_path:find("/mods/") then
+			local pos = report_path:find("/mods/")
+			report_path = report_path:sub(pos + 1)
+		end
+
+		reload.chat_send_player(name, PREFIX .. "File '" .. report_path .. "' successfully executed.")
 		return true
 	else
 		reload.chat_send_player(name, PREFIX .. "Invalid arguments.")
@@ -53,7 +61,7 @@ end
 reload.impl.reload = function(name, param)
 	local PREFIX = reload.chat_prefix
 	local ROOT = reload.root_path .. "/"
-	
+
 	local sparams = string.split(param, " ")
 	local sfind = nil
 	-- total files count
@@ -75,7 +83,7 @@ reload.impl.reload = function(name, param)
 			if found then
 				-- counting search results
 				ifound = ifound + 1
-				
+
 				-- get root relative path
 				local srelpath = string.gsub(v, "^" .. ROOT, "")
 				local sfmt = "%s %-32s '%s'."
@@ -94,12 +102,12 @@ reload.impl.reload = function(name, param)
 			reload.chat_send_player(name, PREFIX .. "No file ID provided.")
 			return false
 		end
-		
+
 		local file = reload.impl.files[param]
 		if file then
 			return reload.impl.dofile(name, file)
 		end
-		
+
 		reload.chat_send_player(name, PREFIX .. "Invalid file ID.")
 		return false
 	end
@@ -153,7 +161,7 @@ if not reload.chat_registered then
 	minetest.register_chatcommand("reload", {
 		params = "<fileid> | list [search]",
 		description = "Reload a registered source file at runtime.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.reload(...) end,
@@ -162,67 +170,67 @@ if not reload.chat_registered then
 	minetest.register_chatcommand("exec", {
 		params = "<filepath>",
 		description = "Load and execute an arbitrary Lua source file.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.execute(...) end,
 	})
-	
+
 	minetest.register_chatcommand("run", {
 		params = "<filepath>",
 		description = "Load and execute an arbitrary Lua source file.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.execute(...) end,
 	})
-	
+
 	minetest.register_chatcommand("dofile", {
 		params = "<filepath>",
 		description = "Load and execute an arbitrary Lua source file.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.execute(...) end,
 	})
-	
+
 	-- Alias name. Some people (like me) keep wanting to spell it out.
 	minetest.register_chatcommand("execute", {
 		params = "<filepath>",
 		description = "Load and execute an arbitrary Lua source file.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.execute(...) end,
 	})
-	
+
 	minetest.register_chatcommand("dostring", {
 		params = "<code>",
 		description = "Execute a statement in Lua.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.dostring(...) end,
 	})
-	
+
 	minetest.register_chatcommand("lua", {
 		params = "<code>",
 		description = "Execute a statement in Lua.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.dostring(...) end,
 	})
-	
+
 	minetest.register_chatcommand("dolua", {
 		params = "<code>",
 		description = "Execute a statement in Lua.",
-		
+
 		-- Player must have server priviliges.
 		privs = {server=true},
 		func = function(...) reload.impl.dostring(...) end,
 	})
-	
+
 	reload.chat_registered = true
 end
 

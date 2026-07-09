@@ -418,18 +418,7 @@ CC.COMMAND_VERBS = {
 
 			local may_join, reason = CC.player_may_join_sanctum(pname, nil, cinfo, provided_password)
 			if not may_join then
-				local channel_says = "lol no."
-
-				if reason == CC.REASON_CODES.NO_SHOUT_PRIV then
-					channel_says = "shout priv required."
-				elseif reason == CC.REASON_CODES.WRONG_PASSWORD then
-					channel_says = "wrong password."
-				elseif reason == CC.REASON_CODES.NEED_MINIMUM_POC then
-					channel_says = "you need at least proof of citizenship."
-				elseif reason == CC.REASON_CODES.NEED_KEY then
-					channel_says = "you are not elite enough."
-				end
-
+				local channel_says = CC.get_channel_says_from_reason(reason)
 				system_error(pname, "You may not join {" .. cinfo.name .. "}. The sanctum says: " .. channel_says)
 				return
 			end
@@ -596,12 +585,127 @@ end
 
 
 
+function CC.get_channel_says_from_reason(reason)
+	local channel_says = "lol no."
+
+	if reason == CC.REASON_CODES.NO_SHOUT_PRIV then
+		channel_says = "shout priv required."
+	elseif reason == CC.REASON_CODES.WRONG_PASSWORD then
+		channel_says = "wrong password."
+	elseif reason == CC.REASON_CODES.NEED_MINIMUM_POC then
+		channel_says = "you need at least proof of citizenship."
+	elseif reason == CC.REASON_CODES.NEED_KEY then
+		channel_says = "you are not elite enough."
+	elseif reason == CC.REASON_CODES.PLAYER_GAGGED then
+		channel_says = "you're gagged, bro."
+	end
+
+	return channel_says
+end
+
+
+
 -- Called whenever player chats normally (not whisper, not shout, not X-speak).
 function CC.on_chat_message(pname, message)
 	local pref = CC.get_pref_complain_if_inexistent(pname)
 	if not pref then return end
 
-	-- TODO
+	local log_public_chat = false
+	local do_anticurse_check = false
+	local requires_shout_priv = false
+	local need_gag_check = false
+
+	local the_mark_of_cain = chat_core.generate_coord_string(pname)
+	local connected_players = minetest.get_connected_players()
+	local player_channels, invalid_channels = CC.get_player_enabled_channels(pname, true)
+
+	if #player_channels == 0 then
+		system_error(pname, "Screaming into the Void, I see.")
+		return
+	end
+
+	-- If player is in any channel invalid for them, block chat.
+	for cname, reason in pairs(invalid_channels) do
+		local channel_says = CC.get_channel_says_from_reason(reason)
+
+		system_error(pname, "You may not speak on {" .. cname .. "}. The sanctum says: " .. channel_says)
+		system_error(pname, "You'll need to leave {" .. cname .. "} before you can speak.")
+		return
+	end
+
+	-- Collect channel settings.
+	for _, cname in ipairs(player_channels) do
+		local cinfo = CC.get_channel_info_load_if_needed(cname)
+
+		-- No need to be a Karen over speech that's not in the public chatlog.
+		if cinfo.anticurse then
+			do_anticurse_check = true
+		end
+
+		-- If any channel is public then player's chat is logged to the website.
+		if cinfo.public_chatlog then
+			log_public_chat = true
+		end
+
+		-- Check if any channel needs the shout priv.
+		if cinfo.need_shout_priv then
+			requires_shout_priv = true
+		end
+
+		-- Check if any channel allows gagging (if yes, player can be gagged).
+		if cinfo.enable_gagging then
+			need_gag_check = true
+		end
+	end
+
+	-- Toading only affects the public channels.
+	if requires_shout_priv or log_public_chat then
+		message = toad.modify_chat(pname, message)
+	end
+
+	if need_gag_check then
+		if command_tokens.mute.player_muted(pname) then
+			system_response(pname, shout.get_gag_message())
+			-- Player is muted.
+			return
+		end
+	end
+
+	-- If this succeeds, the player was either kicked, or muted and a message about that sent to everyone else.
+	if do_anticurse_check then
+		-- If this succeeds player was kicked or muted or something.
+		if chat_core.check_language(pname, message) then return end
+	end
+
+	-- Collect receiving players.
+	-- The player who sent the message always receives it.
+	local receiving_players = {}
+	for _, to_pref in ipairs(connected_players) do
+		local to_pname = to_pref:get_player_name()
+		local to_channels = CC.get_player_enabled_channels(to_pname, true)
+
+		if channels_intersect(to_channels, player_channels) then
+			table.insert(receiving_players, to_pref)
+		end
+	end
+
+	chat_core.send_all_ex({
+		from = pname,
+		prename = "<",
+		actname = rename.gpn(pname),
+		postname = the_mark_of_cain .. "> ",
+		message = message,
+		alwaysecho = false,
+		allplayers = receiving_players
+	})
+
+	-- Log, if player is in a public channel.
+	if log_public_chat then
+		chat_logging.log_public_chat(pname, message, the_mark_of_cain)
+	end
+
+	player_labels.on_chat_message(pname, message)
+	afk.reset_timeout(pname)
 end
 
 
@@ -697,6 +801,9 @@ function CC.load_or_reload_channel(name)
 	end
 
 	-- Make sure we loaded what I thought we did.
+	if not info.name then
+		return
+	end
 	if info.name ~= name then
 		return
 	end
@@ -751,10 +858,12 @@ end
 -- EXCLUDE channels they actually can't join. (They could have stale data in their player meta.)
 -- E.g. this is called from the /status chatcommand.
 -- Never returns nil; returns an empty table if player doesn't exist.
+-- Second return value is SET of invalid player channels with REASON_CODES values.
 function CC.get_player_enabled_channels(pname, only_writable)
 	local pinfo = CC.get_player_info_read_or_default(pname)
 
 	local channels = {}
+	local invalid_channels = {}
 
 	for cname, _ in pairs(pinfo.joined_sanctums) do
 		local cinfo = CC.get_channel_info_load_if_needed(cname)
@@ -764,14 +873,17 @@ function CC.get_player_enabled_channels(pname, only_writable)
 			goto next_item
 		end
 
-		if CC.player_may_join_sanctum(pname, nil, cinfo) then
+		local may_join, reason_code = CC.player_may_join_sanctum(pname, nil, cinfo)
+		if may_join then
 			table.insert(channels, cinfo.name)
+		else
+			invalid_channels[cinfo.name] = reason_code
 		end
 
 		::next_item::
 	end
 
-	return channels
+	return channels, invalid_channels
 end
 
 

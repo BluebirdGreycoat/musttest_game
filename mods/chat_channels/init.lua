@@ -16,6 +16,7 @@ CC.REASON_CODES = {
 	WRONG_PASSWORD = 12,
 	NEED_MINIMUM_POC = 13,
 	NEED_KEY = 14,
+	CHANNEL_NOT_EXIST = 15,
 }
 
 
@@ -324,6 +325,15 @@ end
 
 
 
+-- Shall return TRUE if and only if player is allowed to create/delete/manipulate channels.
+function CC.player_may_create_channels(pname)
+	if passport.player_has_key(pname) or gdac.player_is_admin(pname) then
+		return true
+	end
+end
+
+
+
 CC.COMMAND_VERBS = {
 	list = {
 		description = "List system channels.",
@@ -371,6 +381,10 @@ CC.COMMAND_VERBS = {
 				system_response(pname, "Including non-writable channels:")
 			end
 			CC.print_channel_status(pname, only_writable)
+
+			if CC.xspeak_replaces_normalchat(pname) then
+				system_response(pname, "X-speak is currently enabled.")
+			end
 		end,
 	},
 
@@ -438,12 +452,20 @@ CC.COMMAND_VERBS = {
 			end
 
 			local cinfo = CC.get_channel_info_load_if_needed(param)
+			local pinfo = CC.get_player_info_read_or_default(pname)
+
 			if not cinfo then
 				system_error(pname, "That sanctum, {" .. param .. "}, does not exist.")
+				if pinfo.joined_sanctums[param] then
+					pinfo.joined_sanctums[param] = nil
+					pinfo.sanctum_passwords[param] = nil
+					CC.save_pinfo_to_player_meta(pname, nil, pinfo)
+					CC.PLAYERS[pname] = pinfo
+					system_response(pname, "You weren't supposed to be a member of {" .. param .. "} anyway. Get ye gone!")
+				end
 				return
 			end
 
-			local pinfo = CC.get_player_info_read_or_default(pname)
 			if not pinfo.joined_sanctums[cinfo.name] then
 				system_error(pname, "You aren't a member of {" .. cinfo.name .. "}. Can't leave.")
 				return
@@ -475,6 +497,11 @@ CC.COMMAND_VERBS = {
 
 			if gdac.player_is_admin(param) then
 				system_error(pname, "He hides for \"reasons.\"")
+				return
+			end
+
+			if not CC.player_may_create_channels(pname) then
+				system_error(pname, "That function requires a Key of Citizenship.")
 				return
 			end
 
@@ -510,6 +537,11 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
+			if not CC.player_may_create_channels(pname) then
+				system_error(pname, "This function requires a Key of Citizenship.")
+				return
+			end
+
 			CC.create_user_channel(pname, channel_name, channel_password)
 
 			local cinfo = CC.get_channel_info_load_if_needed(channel_name)
@@ -527,12 +559,18 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
-			if cinfo.is_system then
+			if cinfo.is_system or not cinfo.is_user then
 				system_response(pname, "Channel {" .. cinfo.name .. "}: system channel.")
 				return
 			end
 
-			system_response(pname, "Channel {" .. cinfo.name .. "} was created by <" .. rename.gpn(cinfo.owner) .. ">.")
+			local timestamp = ""
+			if cinfo.time then
+				timestamp = " on " .. os.date("%Y-%m-%d", cinfo.time)
+			end
+
+			system_response(pname, "Channel {" .. cinfo.name .. "} was created by <" .. rename.gpn(cinfo.owner) .. ">" .. timestamp .. ".")
+
 			if cinfo.password and cinfo.password ~= "" then
 				system_response(pname, "Channel is password-protected.")
 			else
@@ -540,9 +578,43 @@ CC.COMMAND_VERBS = {
 			end
 		end,
 	},
+
+	delete = {
+		params = "<channel>",
+		description = "Delete user-created channel.",
+		action = function(pname, param)
+			local cinfo = CC.get_channel_info_load_if_needed(param)
+			if not cinfo then
+				system_error(pname, "Channel {" .. param .. "} doesn't exist. Go delete yourself.")
+				return
+			end
+
+			if cinfo.is_system or not cinfo.is_user then
+				system_error(pname, "Cannot delete system channel {" .. cinfo.name .. "}. Who do you think you are?")
+				return
+			end
+
+			if not gdac.player_is_admin(pname) then
+				if (cinfo.owner or "") ~= pname then
+					system_error(pname, "You're not the owner of {" .. cinfo.name .. "}. Sorry!")
+					return
+				end
+			end
+
+			if not CC.player_may_create_channels(pname) then
+				system_error(pname, "If you can't create channels, you probably shouldn't be allowed to delete them.")
+				return
+			end
+
+			CC.delete_user_channel(cinfo.name)
+			system_response(pname, "Deleted sanctum {" .. param .. "}.")
+		end,
+	},
 }
 CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]
+CC.COMMAND_VERBS["remove"] = CC.COMMAND_VERBS["delete"]
+CC.COMMAND_VERBS["query"] = CC.COMMAND_VERBS["what"]
 
 
 
@@ -654,6 +726,8 @@ function CC.get_channel_says_from_reason(reason)
 		channel_says = "you are not elite enough."
 	elseif reason == CC.REASON_CODES.PLAYER_GAGGED then
 		channel_says = "you're gagged, bro."
+	elseif reason == CC.REASON_CODES.CHANNEL_NOT_EXIST then
+		channel_says = "I don't exist. Honest."
 	end
 
 	return channel_says
@@ -899,6 +973,7 @@ function CC.create_user_channel(pname, channel_name, channel_password)
 	info.is_user = true
 	info.owner = pname
 	info.time = os.time()
+	info.requires_minimum_key = true
 
 	if channel_password and channel_password ~= "" then
 		info.password = channel_password
@@ -908,6 +983,23 @@ function CC.create_user_channel(pname, channel_name, channel_password)
 	local serialized = minetest.serialize(info)
 	local key = "channel:" .. channel_name
 	CC.MOD_STORAGE:set_string(key, serialized)
+end
+
+
+
+-- Unconditionally delete a USER channel.
+function CC.delete_user_channel(channel_name)
+	if CC.SYSTEM_CHANNELS[channel_name] then
+		return
+	end
+
+	local index = CC.index_of_active_channel(channel_name)
+	if index then
+		table.remove(CC.ACTIVE_CHANNELS, index)
+	end
+
+	local key = "channel:" .. channel_name
+	CC.MOD_STORAGE:set_string(key, nil)
 end
 
 
@@ -943,6 +1035,12 @@ function CC.get_player_enabled_channels(pname, only_writable)
 
 	for cname, _ in pairs(pinfo.joined_sanctums) do
 		local cinfo = CC.get_channel_info_load_if_needed(cname)
+
+		-- Channel might have been deleted.
+		if not cinfo then
+			invalid_channels[cname] = CC.REASON_CODES.CHANNEL_NOT_EXIST
+			goto next_item
+		end
 
 		-- If requesting only writable channels, skip the non-writable ones.
 		if cinfo.no_player_chat and only_writable then

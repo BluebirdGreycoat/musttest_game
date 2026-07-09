@@ -1034,7 +1034,7 @@ function rc.plane_shift_message(pref, p, n)
 				minetest.chat_send_all("# Server: <" .. rename.gpn(n) .. "> has plane shifted to " .. realm_name .. "." .. insult)
 
 				if join_newbies_channel then
-					shout.channel_handle_joinleave(pname, "newbies", "", true, true)
+					chat_channels.on_return_to_outback(pname, "newbies")
 				end
 			end
 		end

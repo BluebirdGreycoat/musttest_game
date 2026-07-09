@@ -6,10 +6,10 @@ shout.datafile = shout.worldpath .. "/hints.txt"
 
 dofile(shout.modpath .. "/builtin_tips.lua")
 dofile(shout.modpath .. "/hints.lua")
-dofile(shout.modpath .. "/channel.lua")
-dofile(shout.modpath .. "/xchannel.lua")
+--dofile(shout.modpath .. "/channel.lua")
+--dofile(shout.modpath .. "/xchannel.lua")
 dofile(shout.modpath .. "/shout.lua")
-dofile(shout.modpath .. "/create.lua")
+--dofile(shout.modpath .. "/create.lua")
 
 
 
@@ -22,7 +22,7 @@ if not shout.run_once then
 	end
 
 	-- Load persistent channels. This is an array list of all persistent channel names.
-	shout.persistent_channels = shout.MODSTORAGE:get_keys()
+	--shout.persistent_channels = shout.MODSTORAGE:get_keys()
 
 	minetest.register_chatcommand("shout", {
 		params = "<message>",
@@ -44,6 +44,7 @@ if not shout.run_once then
 		end,
 	})
 
+	--[[
 	minetest.register_chatcommand("channel", {
 		params = "",
 		show_help = function(...)
@@ -86,6 +87,7 @@ if not shout.run_once then
 			return true
 		end,
 	})
+	--]]
 
 	minetest.register_chatcommand("hint_add", {
 		params = "<message>",
@@ -97,6 +99,7 @@ if not shout.run_once then
 		end,
 	})
 
+	--[[
 	minetest.register_chatcommand("create_channel", {
 		params = "<channel> <password>",
 		description = "Create a persistent channel with a password. Only players with the password can join.",
@@ -116,16 +119,19 @@ if not shout.run_once then
 			return true
 		end,
 	})
+	--]]
 
 	-- Start hints. A hint is written into public chat every so often.
 	-- But not too often, or it becomes annoying.
 	shout.start_hints()
 
 	-- Channel leave/join functions.
+	--[[
 	minetest.register_on_joinplayer(function(...)
 		return shout.channel_on_joinplayer(...) end)
 	minetest.register_on_leaveplayer(function(...)
 		return shout.channel_on_leaveplayer(...) end)
+	--]]
 
 	local c = "shout:core"
 	local f = shout.modpath .. "/init.lua"

@@ -1,0 +1,998 @@
+
+if not minetest.global_exists("chat_channels") then chat_channels = {} end
+chat_channels.modpath = minetest.get_modpath("chat_channels")
+
+-- Advance this if making a major breaking change requiring everyone to be re-initialized.
+local SANCTUM_VERSION = 1
+
+local MAX_CHANNEL_COUNT = 128
+
+-- Shorten.
+local CC = chat_channels
+
+CC.REASON_CODES = {
+	NO_SHOUT_PRIV = 10,
+	PLAYER_GAGGED = 11,
+	WRONG_PASSWORD = 12,
+	NEED_MINIMUM_POC = 13,
+	NEED_KEY = 14,
+}
+
+
+
+local function channels_intersect(t1, t2)
+	for _, k1 in ipairs(t1) do
+		for _, k2 in ipairs(t2) do
+			if k1 == k2 then
+				return true
+			end
+		end
+	end
+end
+
+
+
+-- Send server response chat to specific player.
+local function system_response(pname, message)
+	minetest.chat_send_player(pname, "# Server: " .. message)
+end
+
+
+
+-- Send server response to specific player and play error sound.
+local function system_error(pname, errmsg)
+	minetest.chat_send_player(pname, "# Server: " .. errmsg)
+	easyvend.sound_error(pname)
+end
+
+
+
+-- Returns the index of a named channel in ACTIVE_CHANNELS, otherwise nil.
+function CC.index_of_active_channel(name)
+	for k, v in ipairs(CC.ACTIVE_CHANNELS) do
+		if v.name == name then
+			return k
+		end
+	end
+end
+
+
+
+-- Returns player-ref if and only if player exists in the game (pref is accessible).
+-- Otherwise, nil.
+function CC.check_player_existence(pname)
+	return minetest.get_player_by_name(pname)
+end
+
+
+
+-- Returns player-ref if and only if player exists in the game (pref is accessible).
+-- Otherwise, nil.
+-- Called from chatcommand handlers to complain loudly if player doesn't exist.
+function CC.get_pref_complain_if_inexistent(pname)
+	local pref = CC.check_player_existence(pname)
+	if not pref then
+		system_response(pname, "You failed the existence test.")
+	end
+	return pref
+end
+
+
+
+-- Shall return TRUE if and only if player has already received first-time initialization.
+function CC.is_player_initialized(pname, pref)
+	local pmeta = pref:get_meta()
+	if pmeta:get_int("sanctum_init") == SANCTUM_VERSION then
+		return true
+	end
+end
+
+
+
+-- Shall return a table with player info: read from CC.PLAYERS first, player meta second.
+-- Second return value will be TRUE if a default table was returned! (Player info corrupt or missing.)
+function CC.get_player_info_read_or_default(pname, pref)
+	if CC.PLAYERS[pname] then
+		-- Prevent accidental modification.
+		return table.copy(CC.PLAYERS[pname])
+	end
+
+	if not pref then
+		pref = minetest.get_player_by_name(pname)
+	end
+
+	local pmeta = pref:get_meta()
+	local data = pmeta:get_string("sanctum_info")
+	local pinfo = minetest.deserialize(data)
+	local default = CC.get_default_pinfo_table()
+
+	if not pinfo or type(pinfo) ~= "table" then
+		return default, true
+	end
+
+	-- Check that the pinfo table schema matches the default table.
+	for k, v in pairs(default) do
+		if type(pinfo[k]) ~= type(v) then
+			return default, true
+		end
+	end
+
+	return pinfo
+end
+
+
+
+function CC.save_pinfo_to_player_meta(pname, pref, pinfo)
+	if not pref then
+		pref = minetest.get_player_by_name(pname)
+	end
+
+	local pmeta = pref:get_meta()
+	local serialized = minetest.serialize(pinfo)
+	pmeta:set_string("sanctum_info", serialized)
+end
+
+
+
+-- Return TRUE if channel name is ok.
+function CC.is_channelname_ok(channelname)
+	if channelname:find("^[_%w]+$") then
+		return true
+	end
+end
+
+
+
+-- Return TRUE if password is ok.
+function CC.is_password_ok(password)
+	if password:find("^[_%w]+$") then
+		return true
+	end
+end
+
+
+
+-- Parse comma-delimited channel names from param string.
+-- Returns array table.
+function CC.get_channelnames_from_param(param)
+	return param:split(",")
+end
+
+
+
+-- Shall return TRUE if player is allowed to join a channel (does not actually join the player).
+-- Disregards whether the player is already a member or not.
+-- If the player CANNOT join this channel, the second return value will be the reason enum.
+function CC.player_may_join_sanctum(pname, pref, cinfo, provided_password)
+	local pinfo = CC.get_player_info_read_or_default(pname, pref)
+
+	if cinfo.need_shout_priv then
+		if not minetest.check_player_privs(pname, {shout=true}) then
+			return nil, CC.REASON_CODES.NO_SHOUT_PRIV
+		end
+	end
+
+	if provided_password and provided_password ~= "" then
+		if (cinfo.password or "") ~= provided_password then
+			return nil, CC.REASON_CODES.WRONG_PASSWORD
+		end
+	else
+		if (cinfo.password or "") ~= (pinfo.sanctum_passwords[cinfo.name] or "") then
+			return nil, CC.REASON_CODES.WRONG_PASSWORD
+		end
+	end
+
+	if cinfo.requires_minimum_poc then
+		if not (passport.player_has_key(pname) or passport.player_has_poc(pname)) then
+			return nil, CC.REASON_CODES.NEED_MINIMUM_POC
+		end
+	end
+
+	if cinfo.requires_minimum_key then
+		if not passport.player_has_key(pname) then
+			return nil, CC.REASON_CODES.NEED_KEY
+		end
+	end
+
+	return true
+end
+
+
+
+-- Add information about a channel to a (player's) channel info table.
+-- If the pinfo table is saved back to the player, this effectively means they have joined the channel.
+function CC.add_sanctum_to_pinfo_table(cinfo, pinfo)
+	pinfo.joined_sanctums[cinfo.name] = true
+	pinfo.sanctum_passwords[cinfo.name] = nil -- Stale data.
+
+	if cinfo.password and cinfo.password ~= "" then
+		pinfo.sanctum_passwords[cinfo.name] = cinfo.password
+	end
+end
+
+
+
+-- Remove information about a channel from a (player's) channel info table.
+-- If the pinfo table is saved back to the player, this effectively means they have left the channel.
+function CC.remove_sanctum_from_pinfo_table(cinfo, pinfo)
+	pinfo.joined_sanctums[cinfo.name] = nil
+	pinfo.sanctum_passwords[cinfo.name] = nil
+end
+
+
+
+-- This function reads the current list of system channels,
+-- and adds all system channels the player is eligible to join.
+-- Returns: set of channels player allowed to join. Set NOT allowed to join.
+-- The ineligible set will contain REASON_CODES.
+function CC.add_system_channels_to_pinfo_table(pname, pref, pinfo)
+	-- These will be sets of channel names.
+	local successful_joins = {}
+	local ineligible_joins = {}
+
+	local function process_channel_eligibility(channel_info)
+		local may_join, reason_code = CC.player_may_join_sanctum(pname, pref, channel_info)
+		if may_join then
+			CC.add_sanctum_to_pinfo_table(channel_info, pinfo)
+			successful_joins[channel_info.name] = true
+		else
+			ineligible_joins[channel_info.name] = reason_code
+		end
+	end
+
+	-- SYSTEM_CHANNELS is a set of channel names and is always populated.
+	-- It contains no other data.
+	for cname, _ in pairs(CC.SYSTEM_CHANNELS) do
+		local cinfo = CC.get_channel_info_load_if_needed(cname)
+		if cinfo then
+			process_channel_eligibility(cinfo)
+		end
+	end
+
+	return successful_joins, ineligible_joins
+end
+
+
+
+-- Returns a default, empty pinfo table.
+-- This is what gets serialized in player metadata.
+-- Bump SANCTUM_VERSION if this table changes.
+function CC.get_default_pinfo_table()
+	local pinfo = {
+		joined_sanctums = {}, -- Set of channel names as keys.
+		sanctum_passwords = {}, -- Channel names are keys, values are passwords.
+	}
+
+	return pinfo
+end
+
+
+
+-- Called to initialize new players, or re-initialize old players on version upgrade.
+function CC.initialize_firsttime_player(pname, pref)
+	local pmeta = pref:get_meta()
+
+	local pinfo = CC.get_default_pinfo_table()
+	local goodjoins, badjoins = CC.add_system_channels_to_pinfo_table(pname, pref, pinfo)
+
+	local serialized = minetest.serialize(pinfo)
+	pmeta:set_string("sanctum_info", serialized)
+	pmeta:set_int("sanctum_init", SANCTUM_VERSION)
+end
+
+
+
+-- Called when player joins game.
+function CC.on_joinplayer(pref)
+	local pname = pref:get_player_name()
+
+	if not CC.is_player_initialized(pname, pref) then
+		CC.initialize_firsttime_player(pname, pref)
+	end
+
+	local pinfo, is_default = CC.get_player_info_read_or_default(pname, pref)
+
+	if is_default then
+		CC.initialize_firsttime_player(pname, pref)
+		pinfo = CC.get_player_info_read_or_default(pname, pref)
+	end
+
+	CC.PLAYERS[pname] = pinfo or CC.get_default_pinfo_table()
+end
+
+
+
+-- Called when player leaves game (not called for connected players on shutdown).
+function CC.on_leaveplayer(pref)
+	local pname = pref:get_player_name()
+	CC.PLAYERS[pname] = nil
+end
+
+
+
+function CC.print_channel_status(pname, only_writable)
+	local channels = CC.get_player_enabled_channels(pname, only_writable)
+	if #channels == 0 then
+		system_response(pname, "You are not subscribed to any channels.")
+		return
+	end
+
+	local count = #channels
+	local list = table.concat(channels, ", ")
+	system_response(pname, "You are in channels (" .. count .. "): {" .. list .. "}.")
+end
+
+
+
+CC.COMMAND_VERBS = {
+	list = {
+		description = "List system channels.",
+		action = function(pname, param)
+			system_response(pname, "The following system channels are available to you:")
+
+			for cname, _ in pairs(CC.SYSTEM_CHANNELS) do
+				local cinfo = CC.get_channel_info_load_if_needed(cname)
+				if not CC.player_may_join_sanctum(pname, nil, cinfo) then
+					goto next_item
+				end
+
+				system_response(pname, "{" .. cinfo.name .. "}: " .. cinfo.description)
+				if cinfo.public_chatlog then
+					system_response(pname, "    Chat here is published publicly.")
+				end
+				if cinfo.need_shout_priv then
+					system_response(pname, "    The 'shout' priv is required in this channel.")
+				end
+				if cinfo.enable_gagging then
+					system_response(pname, "    You can gag players here (and be gagged yourself).")
+				end
+				if cinfo.anticurse then
+					system_response(pname, "    Curse filtering is enabled.")
+				end
+				if cinfo.no_player_chat then
+					system_response(pname, "    This is a read-only channel. Chat will never be sent here.")
+				end
+				if cinfo.password and cinfo.password ~= "" then
+					system_response(pname, "    Channel is password-protected.")
+				end
+
+				::next_item::
+			end
+		end,
+	},
+
+	status = {
+		params = "[all]",
+		description = "Query your channel status.",
+		action = function(pname, param)
+			local only_writable = true
+			if param:lower() == "all" then
+				only_writable = false
+				system_response(pname, "Including non-writable channels:")
+			end
+			CC.print_channel_status(pname, only_writable)
+		end,
+	},
+
+	join = {
+		params = "<channel> [password]",
+		description = "Join a channel.",
+		action = function(pname, param)
+			local tokens = param:split(" ")
+			if #tokens < 1 or #tokens > 2 then
+				system_error(pname, "Invalid command invocation.")
+				return
+			end
+
+			local channel_name = tokens[1]:trim()
+			local provided_password = (tokens[2] or ""):trim()
+
+			if not CC.is_channelname_ok(channel_name) then
+				system_error(pname, "Invalid sanctum identity token.")
+				return
+			end
+
+			if provided_password ~= "" then
+				if not CC.is_password_ok(provided_password) then
+					system_error(pname, "Only alphanumeric characters may be used in passwords.")
+					return
+				end
+			end
+
+			local cinfo = CC.get_channel_info_load_if_needed(channel_name)
+			if not cinfo then
+				system_error(pname, "That sanctum, {" .. channel_name .. "}, does not exist.")
+				return
+			end
+
+			local current_channels = CC.get_player_enabled_channels(pname)
+			if #current_channels >= MAX_CHANNEL_COUNT then
+				system_error(pname, "You are already in too many channels at once. You need to clear out your trash.")
+				return
+			end
+
+			if table.keyof(current_channels, cinfo.name) then
+				system_error(pname, "You are already an upstanding member of {" .. cinfo.name .. "}. Supposedly.")
+				return
+			end
+
+			local may_join, reason = CC.player_may_join_sanctum(pname, nil, cinfo, provided_password)
+			if not may_join then
+				local channel_says = "lol no."
+
+				if reason == CC.REASON_CODES.NO_SHOUT_PRIV then
+					channel_says = "shout priv required."
+				elseif reason == CC.REASON_CODES.WRONG_PASSWORD then
+					channel_says = "wrong password."
+				elseif reason == CC.REASON_CODES.NEED_MINIMUM_POC then
+					channel_says = "you need at least proof of citizenship."
+				elseif reason == CC.REASON_CODES.NEED_KEY then
+					channel_says = "you are not elite enough."
+				end
+
+				system_error(pname, "You may not join {" .. cinfo.name .. "}. The sanctum says: " .. channel_says)
+				return
+			end
+
+			CC.do_join_channel(pname, cinfo.name)
+			system_response(pname, "You have entered the {" .. cinfo.name .. "} channel.")
+		end,
+	},
+
+	leave = {
+		params = "<channel>",
+		description = "Leave a channel.",
+		action = function(pname, param)
+			if not CC.is_channelname_ok(param) then
+				system_error(pname, "Invalid sanctum identity token.")
+				return
+			end
+
+			local cinfo = CC.get_channel_info_load_if_needed(param)
+			if not cinfo then
+				system_error(pname, "That sanctum, {" .. param .. "}, does not exist.")
+				return
+			end
+
+			local pinfo = CC.get_player_info_read_or_default(pname)
+			if not pinfo.joined_sanctums[cinfo.name] then
+				system_error(pname, "You aren't a member of {" .. cinfo.name .. "}. Can't leave.")
+				return
+			end
+
+			if not CC.player_may_join_sanctum(pname, nil, cinfo) then
+				system_response(pname, "You aren't supposed to be a member of {" .. cinfo.name .. "} anyway. Begon.")
+				-- No return here.
+			end
+
+			CC.do_leave_channel(pname, cinfo.name)
+			system_response(pname, "You have departed the {" .. cinfo.name .. "} channel.")
+		end,
+	},
+
+	who = {
+		params = "<user>",
+		description = "Query which channels another user belongs to.",
+		action = function(pname, param)
+			if #param == 0 then
+				system_error(pname, "No username provided.")
+				return
+			end
+
+			if not minetest.player_exists(param) then
+				system_error(pname, "Boo. That dweeb doesn't exist. Better luck on your spelling, next time.")
+				return
+			end
+
+			if gdac.player_is_admin(param) then
+				system_error(pname, "He hides for \"reasons.\"")
+				return
+			end
+
+			local their_channels = CC.get_player_enabled_channels(param, true)
+			local count = #their_channels
+			local list = table.concat(their_channels, ", ")
+			system_response(pname, "User <" .. rename.gpn(param) .. "> is in channels (" .. count .. "): {" .. list .. "}.")
+		end,
+	},
+}
+CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
+CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]
+
+
+
+-- Called when player types a /sanctum chatcommand.
+function CC.on_sanctum_chatcommand(pname, param)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	local tokens = param:split(" ")
+
+	if param:len() == 0 or #tokens == 0 then
+		system_error(pname, "Missing command verb.")
+		return
+	end
+
+	local verb = tokens[1]:lower()
+	if not CC.COMMAND_VERBS[verb] then
+		system_error(pname, "Unknown command verb.")
+		return
+	end
+
+	-- Execute the subcommand.
+	local command_info = CC.COMMAND_VERBS[verb]
+	if command_info.action then
+		command_info.action(pname, param:sub(verb:len() + 2):trim())
+	end
+end
+
+
+
+-- Called when player requests 'help' on /sanctum chatcommand.
+function CC.on_show_sanctum_help(pname)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	system_response(pname, "The following sub-commands are available:")
+	for verb, def in pairs(CC.COMMAND_VERBS) do
+		local args = def.params and def.params ~= "" and (" " .. def.params .. ": ") or ": "
+		local desc = def.description or "No description provided."
+		system_response(pname, "    /sanctum " .. verb .. args .. desc)
+	end
+end
+
+
+
+-- Returns TRUE if player's X-speak replaces default chat (/x is not being required).
+function CC.xspeak_replaces_normalchat(pname_or_pref)
+	if type(pname_or_pref) == "string" then
+		pname_or_pref = minetest.get_player_by_name(pname_or_pref)
+	end
+
+	local pref = pname_or_pref
+	if not pref or not pref:is_player() then
+		return
+	end
+
+	local pmeta = pref:get_meta()
+	if not pmeta then
+		return
+	end
+
+	-- Any value other than 0 means X-speak override is enabled.
+	if pmeta:get_int("xspeak_override") ~= 0 then
+		return true
+	end
+end
+
+
+
+-- Called in response to /x OR normalchat when X-speak override is enabled.
+-- NOT called directly in either case.
+function CC.handle_on_xspeak(pname, param, is_chatcommand)
+	-- TODO
+end
+
+
+
+-- Called when player uses restricted /x (group DM) communication. (X-speak.)
+-- Called from chatcommand ONLY.
+function CC.on_xspeak_chatcommand(pname, param)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	CC.handle_on_xspeak(pname, param, true)
+end
+
+
+
+-- Called when player uses X-speak WITHOUT using the /x chatcommand specifically.
+function CC.on_xspeak_normalchat(pname, param)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	CC.handle_on_xspeak(pname, param, false)
+end
+
+
+
+-- Called whenever player chats normally (not whisper, not shout, not X-speak).
+function CC.on_chat_message(pname, message)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	-- TODO
+end
+
+
+
+function CC.enable_xalways(pname)
+	local pref = minetest.get_player_by_name(pname)
+	pref:get_meta():set_int("xspeak_override", 1)
+end
+
+
+
+function CC.disable_xalways(pname)
+	local pref = minetest.get_player_by_name(pname)
+	pref:get_meta():set_int("xspeak_override", 0)
+end
+
+
+
+-- Called whenever player uses /xalways chatcommand.
+function CC.on_xalways_chatcommand(pname, param)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	local enabled = CC.xspeak_replaces_normalchat
+
+	if param == "" then
+		if enabled(pname) then
+			CC.disable_xalways(pname)
+			system_response(pname, "X-speak disabled. Standard chat restored.")
+		else
+			CC.enable_xalways(pname)
+			system_response(pname, "Standard outgoing chat restricted to private sanctums.")
+		end
+		return
+	end
+
+	if param == "on" then
+		if enabled(pname) then
+			system_response(pname, "Outgoing chat is already confined to private sanctums. X-speak enabled.")
+		else
+			CC.enable_xalways(pname)
+			system_response(pname, "Standard outgoing chat now restricted to private sanctums.")
+		end
+		return
+	end
+
+	if param == "off" then
+		if enabled(pname) then
+			CC.disable_xalways(pname)
+			system_response(pname, "X-speak disabled. Standard chat restored.")
+		else
+			system_response(pname, "Outgoing chat is already standard. X-speak not enabled.")
+		end
+		return
+	end
+end
+
+
+
+-- Called when player requests help on /xalways chatcommand.
+function CC.on_show_xalways_help(pname)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	-- TODO
+end
+
+
+
+-- Called when player requests help on the /x chatcommand.
+function CC.on_show_x_help(pname)
+	local pref = CC.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	-- TODO
+end
+
+
+
+-- Load channel into ACTIVE_CHANNELS, if exists.
+-- Returns TRUE if and only if the named channel existed and was loaded.
+-- If channel is already loaded, overwrites what's in ACTIVE_CHANNELS.
+function CC.load_or_reload_channel(name)
+	local key = "channel:" .. name
+	if not CC.MOD_STORAGE:contains(key) then
+		return
+	end
+
+	local data = CC.MOD_STORAGE:get_string(key)
+	local info = minetest.deserialize(data)
+	if not info or type(info) ~= "table" then
+		return
+	end
+
+	-- Make sure we loaded what I thought we did.
+	if info.name ~= name then
+		return
+	end
+
+	-- Add or replace.
+	local index = CC.index_of_active_channel(name)
+	if not index then
+		table.insert(CC.ACTIVE_CHANNELS, info)
+	else
+		CC.ACTIVE_CHANNELS[index] = info
+	end
+
+	return true
+end
+
+
+
+-- Unconditionally create a system channel, overwriting anything else.
+function CC.create_system_channel(name, params)
+	local info = table.copy(params)
+	info.name = name
+	info.is_system = true
+
+	-- Always replace.
+	local serialized = minetest.serialize(info)
+	local key = "channel:" .. name
+	CC.MOD_STORAGE:set_string(key, serialized)
+	CC.SYSTEM_CHANNELS[name] = true
+end
+
+
+
+-- Get channel info table, loading it if needed (but NOT creating it).
+-- Returns nil if named channel was never created yet.
+function CC.get_channel_info_load_if_needed(channelname)
+	local index = CC.index_of_active_channel(channelname)
+	if index then
+		return CC.ACTIVE_CHANNELS[index]
+	end
+
+	CC.load_or_reload_channel(channelname)
+
+	index = CC.index_of_active_channel(channelname)
+	if index then
+		return CC.ACTIVE_CHANNELS[index]
+	end
+end
+
+
+
+-- Get an (array) list of all channels the player is currently a member of.
+-- EXCLUDE channels they actually can't join. (They could have stale data in their player meta.)
+-- E.g. this is called from the /status chatcommand.
+-- Never returns nil; returns an empty table if player doesn't exist.
+function CC.get_player_enabled_channels(pname, only_writable)
+	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	local channels = {}
+
+	for cname, _ in pairs(pinfo.joined_sanctums) do
+		local cinfo = CC.get_channel_info_load_if_needed(cname)
+
+		-- If requesting only writable channels, skip the non-writable ones.
+		if cinfo.no_player_chat and only_writable then
+			goto next_item
+		end
+
+		if CC.player_may_join_sanctum(pname, nil, cinfo) then
+			table.insert(channels, cinfo.name)
+		end
+
+		::next_item::
+	end
+
+	return channels
+end
+
+
+
+-- Get an (array) list of all players who are joined to at least one channel in the (array) list of channels given.
+-- E.g. this is called from the /status chatcommand.
+function CC.get_players_in_overlapping_channels(ichan, only_writable)
+	local all_players = minetest.get_connected_players()
+
+	local overlapping_players = {}
+
+	for k, v in ipairs(all_players) do
+		local ochan = CC.get_player_enabled_channels(v:get_player_name(), only_writable)
+		if channels_intersect(ichan, ochan) then
+			table.insert(overlapping_players, v)
+		end
+	end
+
+	return overlapping_players
+end
+
+
+
+-- Use this only to send server messages to all players in a channel.
+-- NOT intended for player-to-player chat.
+function CC.notify_channels_system_message(channels, message)
+	local players = minetest.get_connected_players()
+
+	-- Send message to all players in the same channel.
+	for _, v in ipairs(players) do
+		local pname = v:get_player_name()
+		local arraylist = CC.get_player_enabled_channels(pname)
+		if channels_intersect(arraylist, channels) then
+			minetest.chat_send_player(pname, message)
+		end
+	end
+end
+
+
+
+-- Unconditionally cause the player to join a channel.
+-- E.g., this is called to add a player to a channel when game conditions are met.
+-- Don't call this from outside directly.
+function CC.do_join_channel(pname, channel_name)
+	-- TODO: reporting
+	local cinfo = CC.get_channel_info_load_if_needed(channel_name)
+	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	CC.add_sanctum_to_pinfo_table(cinfo, pinfo)
+	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
+
+	CC.PLAYERS[pname] = pinfo
+end
+
+
+
+-- Unconditionally cause the player to leave a channel.
+-- Don't call this from outside directly.
+function CC.do_leave_channel(pname, channel_name)
+	-- TODO: reporting
+	local cinfo = CC.get_channel_info_load_if_needed(channel_name)
+	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	CC.remove_sanctum_from_pinfo_table(cinfo, pinfo)
+	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
+
+	CC.PLAYERS[pname] = pinfo
+end
+
+
+
+-- Called when player uses their Key for the first time.
+function CC.on_key_firsttime_use(pname)
+	-- TODO: reporting
+	CC.do_join_channel(pname, "citizens")
+	CC.do_join_channel(pname, "global")
+	CC.do_leave_channel(pname, "newbies")
+end
+
+
+
+-- Called when player uses their PoC for the first time.
+function CC.on_poc_firsttime_use(pname)
+	-- TODO: reporting
+	CC.do_join_channel(pname, "global")
+end
+
+
+
+-- Called when player returns to the outback somehow.
+function CC.on_return_to_outback(pname)
+	-- TODO: reporting
+	CC.do_join_channel(pname, "newbies")
+end
+
+
+
+if not CC.run_once then
+	CC.PLAYERS = {} -- Player names as keys. Contains subtables.
+	CC.ACTIVE_CHANNELS = {} -- Array of subtables.
+	CC.SYSTEM_CHANNELS = {} -- Set of channel names.
+	CC.MOD_STORAGE = minetest.get_mod_storage()
+
+
+
+	minetest.register_chatcommand("sanctum", {
+		params = "[variable command options]",
+		description = "Primary command allowing you to manipulate your little bit of the Known Net.",
+
+		-- Privs required are handled at a deeper level.
+		privs = {},
+
+		show_help = function(pname)
+			CC.on_show_sanctum_help(pname)
+		end,
+
+		func = function(pname, param)
+			CC.on_sanctum_chatcommand(pname, param)
+			return true
+		end,
+	})
+
+
+
+	minetest.register_chatcommand("x", {
+		params = "<message>",
+		description = "Send text only to specific (elsewhere defined) sanctums in the Known Net.",
+
+		-- Privs required are handled at a deeper level.
+		privs = {},
+
+		show_help = function(pname)
+			CC.on_show_x_help(pname)
+		end,
+
+		func = function(pname, param)
+			CC.on_xspeak_chatcommand(pname, chat_core.rewrite_message(param))
+			return true
+		end,
+	})
+
+
+
+	minetest.register_chatcommand("xalways", {
+		params = "[on|off]",
+		description = "Choose whether /x is necessary to speak in private sanctums of the Known Net.",
+
+		privs = {},
+
+		show_help = function(pname)
+			CC.on_show_xalways_help(pname)
+		end,
+
+		func = function(pname, param)
+			CC.on_xalways_chatcommand(pname, param)
+			return true
+		end,
+	})
+
+
+
+	-- Channel leave/join functions.
+	minetest.register_on_joinplayer(function(...)
+		return CC.on_joinplayer(...) end)
+	minetest.register_on_leaveplayer(function(...)
+		return CC.on_leaveplayer(...) end)
+
+
+
+	CC.create_system_channel("global", {
+		public_chatlog = true,
+		need_shout_priv = true,
+		anticurse = true,
+		enable_gagging = true,
+		requires_minimum_poc = true,
+		description = "Global channel for general communication.",
+	})
+
+	CC.create_system_channel("newbies", {
+		public_chatlog = true,
+		need_shout_priv = true,
+		anticurse = true,
+		enable_gagging = true,
+		description = "Newbies' help channel.",
+	})
+
+	CC.create_system_channel("citizens", {
+		enable_gagging = true,
+		requires_minimum_key = true,
+		description = "Semiprivate channel for citizens who possess a Key of Citizenship.",
+	})
+
+	CC.create_system_channel("announce", {
+		public_chatlog = true,
+		no_player_chat = true,
+		description = "General (uncategorized) system announcements.",
+	})
+
+	CC.create_system_channel("bones", {
+		public_chatlog = true,
+		no_player_chat = true,
+		description = "Death reports and bonebox locations.",
+	})
+
+	CC.create_system_channel("hints", {
+		public_chatlog = true,
+		no_player_chat = true,
+		description = "Periodic 'helpful' messages from the server. Mostly only useful for newbies.",
+	})
+
+	CC.create_system_channel("mapgen", {
+		public_chatlog = true,
+		no_player_chat = true,
+		description = "Mapgen activity.",
+	})
+
+
+
+	local c = "chat_channels:core"
+	local f = CC.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	CC.run_once = true
+end

@@ -251,7 +251,7 @@ chat_colorize.send_all = function(channels, message)
 
   local is_public = false
   for k, v in ipairs(channels) do
-		local cinfo = shout.get_channel_info(v)
+		local cinfo = chat_channels.get_channel_info_load_if_needed(v)
 		if cinfo.public_chatlog then
 			is_public = true
 		end
@@ -261,7 +261,7 @@ chat_colorize.send_all = function(channels, message)
     chat_logging.log_server_message(minetest.strip_colors(message))
   end
 
-  shout.notify_channels(channels, color .. message)
+  chat_channels.notify_channels_system_message(channels, color .. message)
   --return chat_colorize.old_chat_send_all(color .. message)
 end
 

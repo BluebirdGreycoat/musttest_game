@@ -393,13 +393,13 @@ chat_core.on_chat_message = function(name, message)
 	end
 
 	-- Note: X speak does NOT require 'shout' priv.
-	if pref:get_meta():get_int("xinvert") == 1 then
-		shout.x_specific(name, message)
+	if chat_channels.xspeak_replaces_normalchat(pref) then
+		chat_channels.on_xspeak_normalchat(name, message)
 		return
 	end
 
 	-- Delegate to our slaves.
-	shout.x(name, message)
+	chat_channels.on_chat_message(name, message)
 
 	-- Global chat requires 'shout' priv.
 	--[[

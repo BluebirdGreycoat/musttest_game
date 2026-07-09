@@ -66,9 +66,9 @@ function status.chat_players(user, param)
 
 	do
 		-- Serialize player names to string.
-		local channels = shout.get_player_channels(user)
+		local channels = chat_channels.get_player_enabled_channels(user, true)
 		if channels then
-			local players = shout.get_players_in_channels(channels)
+			local players = chat_channels.get_players_in_overlapping_channels(channels, true)
 			local clients = "{"
 			local num_clients = 0
 			for k, v in ipairs(players) do

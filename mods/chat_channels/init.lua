@@ -516,6 +516,30 @@ CC.COMMAND_VERBS = {
 			system_response(pname, "Created channel {" .. cinfo.name .. "}.")
 		end,
 	},
+
+	what = {
+		params = "<channel>",
+		description = "Query information about a channel.",
+		action = function(pname, param)
+			local cinfo = CC.get_channel_info_load_if_needed(param)
+			if not cinfo then
+				system_response(pname, "Channel {" .. param .. "} doesn't exist.")
+				return
+			end
+
+			if cinfo.is_system then
+				system_response(pname, "Channel {" .. cinfo.name .. "}: system channel.")
+				return
+			end
+
+			system_response(pname, "Channel {" .. cinfo.name .. "} was created by <" .. rename.gpn(cinfo.owner) .. ">.")
+			if cinfo.password and cinfo.password ~= "" then
+				system_response(pname, "Channel is password-protected.")
+			else
+				system_response(pname, "Channel NOT password-protected.")
+			end
+		end,
+	},
 }
 CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]

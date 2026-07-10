@@ -335,11 +335,16 @@ function CC.on_joinplayer(pref)
 
 	CC.PLAYERS[pname] = pinfo or CC.get_default_pinfo_table()
 
-	if not firsttime and not gdac.player_is_admin(pname) then
+	if not firsttime then
 		local channels = CC.get_player_enabled_channels(pname, true)
 		local list = table.concat(channels, ", ")
-		local msg = "# Server: <" .. rename.gpn(pname) .. "> is in channels: {" .. list .. "}."
-		CC.notify_channels_system_message(channels, msg)
+
+		if not gdac.player_is_admin(pname) then
+			local msg = "# Server: <" .. rename.gpn(pname) .. "> is in channels: {" .. list .. "}."
+			CC.notify_channels_system_message(channels, msg)
+		else
+			system_response(pname, "You are in channels: {" .. list .. "}.")
+		end
 	end
 end
 

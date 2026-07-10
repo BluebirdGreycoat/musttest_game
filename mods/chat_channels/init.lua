@@ -1355,6 +1355,8 @@ function CC.delete_user_channel(channel_name)
 
 	local key = "channel:" .. channel_name
 	CC.MOD_STORAGE:set_string(key, nil)
+
+	CC.run_callbacks("on_channel_deleted", {channel=channel_name})
 end
 
 
@@ -1591,6 +1593,27 @@ end
 
 
 
+function CC.on_channel_deleted(params)
+	local players = minetest.get_connected_players()
+	for _, pref in ipairs(players) do
+		local pname = pref:get_player_name()
+		local pinfo = CC.get_player_info_read_or_default(pname, pref)
+
+		if pinfo.joined_sanctums[params.channel] then
+			system_response(pname, "Channel {" .. params.channel .. "} was deleted while you were part of it.")
+			system_response(pname, "You are no longer a member of {" .. params.channel .. "}.")
+
+			pinfo.joined_sanctums[params.channel] = nil
+			pinfo.sanctum_passwords[params.channel] = nil
+			pinfo.xspeak_channels[params.channel] = nil
+			CC.save_pinfo_to_player_meta(pname, pref, pinfo)
+			CC.PLAYERS[pname] = pinfo
+		end
+	end
+end
+
+
+
 if not CC.run_once then
 	CC.PLAYERS = {} -- Player names as keys. Contains subtables.
 	CC.ACTIVE_CHANNELS = {} -- Array of subtables.
@@ -1720,6 +1743,10 @@ if not CC.run_once then
 
 	CC.register_callback("player_leave_channel", function(...)
 		CC.on_player_leave_channel(...)
+	end)
+
+	CC.register_callback("on_channel_deleted", function(...)
+		CC.on_channel_deleted(...)
 	end)
 
 

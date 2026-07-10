@@ -734,9 +734,20 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
+			if not passport.player_has_key(pname) then
+				system_error(pname, "This function requires a Key of Citizenship.")
+				return
+			end
+
+			local pinfo = CC.get_player_info_read_or_default(pname)
 			local cinfo = CC.get_channel_info_load_if_needed(param)
 			if not cinfo then
 				system_error(pname, "That channel does not even exist! Stop trolling.")
+				return
+			end
+
+			if not cinfo.xspeak_allowed then
+				system_error(pname, "The sanctum {" .. cinfo.name .. "} does not permit X-speak.")
 				return
 			end
 
@@ -746,8 +757,19 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
+			if pinfo.xspeak_channels[cinfo.name] then
+				system_response(pname, "X-speak already enabled for {" .. cinfo.name .. "}. Nothing to be done.")
+				return
+			end
+
 			CC.do_enable_player_xspeak(pname, param)
 			system_response(pname, "Enabling X-speak on {" .. cinfo.name .. "}.")
+
+			local remaining_xspeak_channels = CC.get_player_enabled_channels(pname, true, true)
+			if #remaining_xspeak_channels > 0 then
+				local list = table.concat(remaining_xspeak_channels, ", ")
+				system_response(pname, "X-speak is enabled for the following: {" .. list .. "}.")
+			end
 		end,
 	},
 
@@ -760,6 +782,7 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
+			local pinfo = CC.get_player_info_read_or_default(pname)
 			local goodchan, badchan = CC.get_player_enabled_channels(pname, true)
 			if not table.keyof(goodchan, param) then
 				if badchan[param] then
@@ -777,8 +800,12 @@ CC.COMMAND_VERBS = {
 				-- No return.
 			end
 
-			CC.do_disable_player_xspeak(pname, param)
-			system_response(pname, "Disabling X-speak on {" .. param .. "}.")
+			if pinfo.xspeak_channels[param] then
+				CC.do_disable_player_xspeak(pname, param)
+				system_response(pname, "Disabling X-speak on {" .. param .. "}.")
+			else
+				system_response(pname, "X-speak wasn't enabled on {" .. param .. "}. Nothing to be done.")
+			end
 
 			local remaining_xspeak_channels = CC.get_player_enabled_channels(pname, true, true)
 			if #remaining_xspeak_channels == 0 then
@@ -1238,6 +1265,7 @@ function CC.create_user_channel(pname, channel_name, channel_password)
 	info.owner = pname
 	info.time = os.time()
 	info.requires_minimum_key = true
+	info.xspeak_allowed = true
 
 	if channel_password and channel_password ~= "" then
 		info.password = channel_password
@@ -1541,6 +1569,7 @@ if not CC.run_once then
 		enable_gagging = true,
 		requires_minimum_key = true,
 		description = "Semiprivate channel for citizens who possess a Key of Citizenship.",
+		xspeak_allowed = true,
 	})
 
 	CC.create_system_channel("announce", {

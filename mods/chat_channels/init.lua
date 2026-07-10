@@ -780,6 +780,14 @@ CC.COMMAND_VERBS = {
 
 			CC.do_disable_player_xspeak(pname, param)
 			system_response(pname, "Disabling X-speak on {" .. param .. "}.")
+
+			local remaining_xspeak_channels = CC.get_player_enabled_channels(pname, true, true)
+			if #remaining_xspeak_channels == 0 then
+				system_response(pname, "X-speak is no longer in use for any channel.")
+			else
+				local list = table.concat(remaining_xspeak_channels, ", ")
+				system_response(pname, "X-speak is still enabled for the following: {" .. list .. "}.")
+			end
 		end,
 	},
 }
@@ -948,6 +956,12 @@ function CC.process_chat_message(pname, message, params)
 	-- check for invalid channels first, they would not get feedback explaining the problem.
 	if #player_channels == 0 then
 		system_error(pname, "Screaming into the Void, I see.")
+		if params.is_xspeak then
+			system_response(pname, "You seem to be trying to use X-speak. Consider NOT.")
+			system_response(pname, "Alternatively, create an X-speak channel.")
+		else
+			system_response(pname, "You need to be a member of at least one channel in order to talk!")
+		end
 		return
 	end
 

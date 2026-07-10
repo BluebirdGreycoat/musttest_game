@@ -535,6 +535,11 @@ CC.COMMAND_VERBS = {
 
 			CC.do_leave_channel(pname, cinfo.name)
 			system_response(pname, "You have departed the {" .. cinfo.name .. "} channel.")
+
+			local remaining_channels = CC.get_player_enabled_channels(pname, true)
+			if #remaining_channels == 0 then
+				system_response(pname, "Warning: you have left ALL channels. You may have difficulty speaking around your self-imposed gag.")
+			end
 		end,
 	},
 
@@ -753,7 +758,7 @@ CC.COMMAND_VERBS = {
 
 			local goodchan, badchan = CC.get_player_enabled_channels(pname, true)
 			if not table.keyof(goodchan, param) then
-				system_error(pname, "You need to join the channel, first.")
+				system_error(pname, "You need to join the channel, first. It's called bureaucracy.")
 				return
 			end
 
@@ -873,6 +878,28 @@ function CC.on_show_sanctum_help(pname)
 		local args = def.params and def.params ~= "" and (" " .. def.params .. ": ") or ": "
 		local desc = def.description or "No description provided."
 		system_response(pname, "    /sanctum " .. verb .. args .. desc)
+	end
+
+	local helplines = {
+		"",
+		"--->  S.A.N.C.T.U.M.  <---",
+		"* Sanctified Auto-Net Comms with Unfulfilled Messaging *",
+		"",
+		"This system is responsible for taking over the server's aging communication module.",
+		"It's also going to be responsible for the reasons why nobody can hear you anymore.",
+		"To understand SANCTUM, simply understand there is no such thing as global chat.",
+		"All communication passes through one or more channels, which players subscribe to.",
+		"By default, new users are auto-subscribed to the {newbies} channel.",
+		"As the user advances, more channels are unlocked. Eventually you'll make your own.",
+		"On top of these channels (sometimes called sanctums) an X-speak layer is bolted on.",
+		"This layer replaces the group-DM channels you might have stumbled on at one time.",
+		"To make full use of the X-speak system, refer to the /x and /xalways chatcommands.",
+		"I hope this made sense. Learn to embrace the bureaucracy.",
+		"                                                              --- The Archwizard.",
+	}
+
+	for _, line in ipairs(helplines) do
+		system_response(pname, line)
 	end
 end
 

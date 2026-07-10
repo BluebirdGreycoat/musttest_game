@@ -95,7 +95,7 @@ function shout.shout(name, param)
 		local target_name = player:get_player_name() or ""
 		if not chat_controls.player_ignored_shout(target_name, name) or target_name == name then
 			chat_core.alert_player_sound(target_name)
-			minetest.chat_send_player(target_name, "<!" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "!> " .. SHOUT_COLOR .. param)
+			minetest.chat_send_player(target_name, "«" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "» " .. SHOUT_COLOR .. param)
 		end
 	end
 
@@ -135,7 +135,7 @@ function shout.whisper(name, param)
 		-- Since whispers are range limited, they always get through even if players are ignored.
 		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
 			--chat_core.alert_player_sound(target_name)
-			minetest.chat_send_player(target_name, "<" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "> " .. chat_core.WHISPER_COLOR .. param)
+			minetest.chat_send_player(target_name, "«" .. chat_core.nametag_color .. dname .. WHITE .. mk .. "» " .. chat_core.WHISPER_COLOR .. param)
 		end
 	end
 

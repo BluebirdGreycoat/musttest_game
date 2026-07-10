@@ -274,6 +274,7 @@ function CC.get_default_pinfo_table()
 		xspeak_channels = {}, -- Set of channel names as keys.
 	}
 
+	-- Table copy not needed, it's always a new table.
 	return pinfo
 end
 
@@ -285,8 +286,6 @@ function CC.initialize_firsttime_player(pname, pref)
 
 	local pinfo = CC.get_default_pinfo_table()
 	local goodjoins, badjoins = CC.add_system_channels_to_pinfo_table(pname, pref, pinfo)
-
-	-- TODO: cull channels based on citizen status.
 
 	local serialized = minetest.serialize(pinfo)
 	pmeta:set_string("sanctum_info", serialized)

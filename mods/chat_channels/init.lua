@@ -68,6 +68,23 @@ end
 
 
 
+-- Called to notify code whenever something happens internally.
+function CC.run_callbacks(name, params)
+	for _, cb in ipairs(CC.CALLBACKS) do
+		if cb.name == name and cb.action then
+			cb.action(params)
+		end
+	end
+end
+
+
+
+function CC.register_callback(name, func)
+	table.insert(CC.CALLBACKS, {name=name, action=func})
+end
+
+
+
 -- Returns player-ref if and only if player exists in the game (pref is accessible).
 -- Otherwise, nil.
 -- Called from chatcommand handlers to complain loudly if player doesn't exist.
@@ -290,6 +307,10 @@ function CC.initialize_firsttime_player(pname, pref)
 	local serialized = minetest.serialize(pinfo)
 	pmeta:set_string("sanctum_info", serialized)
 	pmeta:set_int("sanctum_init", SANCTUM_VERSION)
+
+	for cname, _ in pairs(goodjoins) do
+		CC.run_callbacks("player_join_channel", {pname=pname, channel=cname})
+	end
 end
 
 
@@ -1426,14 +1447,22 @@ end
 -- E.g., this is called to add a player to a channel when game conditions are met.
 -- Don't call this from outside directly.
 function CC.do_join_channel(pname, channel_name)
-	-- TODO: reporting
 	local cinfo = CC.get_channel_info_load_if_needed(channel_name)
 	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	local already_joined = false
+	if pinfo.joined_sanctums[channel_name] then
+		already_joined = true
+	end
 
 	CC.add_sanctum_to_pinfo_table(cinfo, pinfo)
 	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
 
 	CC.PLAYERS[pname] = pinfo
+
+	if not already_joined then
+		CC.run_callbacks("player_join_channel", {pname=pname, channel=channel_name})
+	end
 end
 
 
@@ -1441,14 +1470,22 @@ end
 -- Unconditionally cause the player to leave a channel.
 -- Don't call this from outside directly.
 function CC.do_leave_channel(pname, channel_name)
-	-- TODO: reporting
 	local cinfo = CC.get_channel_info_load_if_needed(channel_name)
 	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	local already_left = false
+	if not pinfo.joined_sanctums[channel_name] then
+		already_left = true
+	end
 
 	CC.remove_sanctum_from_pinfo_table(cinfo, pinfo)
 	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
 
 	CC.PLAYERS[pname] = pinfo
+
+	if not already_left then
+		CC.run_callbacks("player_leave_channel", {pname=pname, channel=channel_name})
+	end
 end
 
 
@@ -1479,7 +1516,6 @@ end
 
 -- Called when player uses their Key for the first time.
 function CC.on_key_firsttime_use(pname)
-	-- TODO: reporting
 	CC.do_join_channel(pname, "citizens")
 	CC.do_join_channel(pname, "global")
 	CC.do_leave_channel(pname, "newbies")
@@ -1489,7 +1525,6 @@ end
 
 -- Called when player uses their PoC for the first time.
 function CC.on_poc_firsttime_use(pname)
-	-- TODO: reporting
 	CC.do_join_channel(pname, "global")
 end
 
@@ -1497,8 +1532,37 @@ end
 
 -- Called when player returns to the outback somehow.
 function CC.on_return_to_outback(pname)
-	-- TODO: reporting
 	CC.do_join_channel(pname, "newbies")
+end
+
+
+
+-- Callback function. Runs from callback system.
+function CC.on_player_join_channel(params)
+	if gdac.player_is_admin(params.pname) then
+		return
+	end
+
+	local cinfo = CC.get_channel_info_load_if_needed(params.channel)
+	if not cinfo.no_player_chat then -- Don't announce on readonly channels.
+		local msg = "# Server: <" .. rename.gpn(params.pname) .. "> has joined channel: {" .. params.channel .. "}."
+		CC.notify_channels_system_message({[1]=params.channel}, msg)
+	end
+end
+
+
+
+-- Callback function. Runs from callback system.
+function CC.on_player_leave_channel(params)
+	if gdac.player_is_admin(params.pname) then
+		return
+	end
+
+	local cinfo = CC.get_channel_info_load_if_needed(params.channel)
+	if not cinfo.no_player_chat then -- Don't announce on readonly channels.
+		local msg = "# Server: <" .. rename.gpn(params.pname) .. "> has left channel: {" .. params.channel .. "}."
+		CC.notify_channels_system_message({[1]=params.channel}, msg)
+	end
 end
 
 
@@ -1508,6 +1572,7 @@ if not CC.run_once then
 	CC.ACTIVE_CHANNELS = {} -- Array of subtables.
 	CC.SYSTEM_CHANNELS = {} -- Set of channel names.
 	CC.MOD_STORAGE = minetest.get_mod_storage()
+	CC.CALLBACKS = {} -- Callbacks. Indexed array of subtables.
 
 
 
@@ -1622,6 +1687,16 @@ if not CC.run_once then
 		no_player_chat = true,
 		description = "Mapgen activity.",
 	})
+
+
+
+	CC.register_callback("player_join_channel", function(...)
+		CC.on_player_join_channel(...)
+	end)
+
+	CC.register_callback("player_leave_channel", function(...)
+		CC.on_player_leave_channel(...)
+	end)
 
 
 

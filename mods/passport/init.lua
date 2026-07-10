@@ -316,7 +316,7 @@ passport.on_use_simple = function(itemstack, user, pointed)
 			"# Server: This awkward chunk of reflective metal seems to mock you, " ..
 			"yet remains strangely inert. Perhaps it can be upgraded?")
 
-		CC.on_poc_firsttime_use(pname)
+		chat_channels.on_poc_firsttime_use(pname)
   end
   return itemstack
 end

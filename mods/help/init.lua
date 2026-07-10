@@ -23,6 +23,10 @@ local function show_all(pname, param)
 		end
 	end
 
+	table.sort(commands, function(a, b)
+		return a < b
+	end)
+
 	minetest.chat_send_player(pname, "# Server: The commands available to you are:")
 	for _, name in ipairs(commands) do
 		minetest.chat_send_player(pname, "# Server:     /" .. name)

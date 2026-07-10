@@ -768,7 +768,7 @@ CC.COMMAND_VERBS = {
 
 	xon = {
 		params = "<channel>",
-		description = "Turn on X-speak for specific channel.",
+		description = "Turn ON X-speak for specific channel.",
 		action = function(pname, param)
 			if not CC.is_channelname_ok(param) then
 				system_error(pname, "Invalid channel identity token.")
@@ -816,7 +816,7 @@ CC.COMMAND_VERBS = {
 
 	xoff = {
 		params = "<channel>",
-		description = "Turn off X-speak for specific channel.",
+		description = "Turn OFF X-speak for specific channel.",
 		action = function(pname, param)
 			if not CC.is_channelname_ok(param) then
 				system_error(pname, "Invalid channel identity token.")
@@ -919,7 +919,7 @@ function CC.on_show_sanctum_help(pname)
 	local helplines = {
 		"",
 		"--->  S.A.N.C.T.U.M.  <---",
-		"* Sanctified Auto-Net Comms with Unfulfilled Messaging *",
+		"* Sanctified Auto-Net Comms Transmitting Understood Messages *",
 		"",
 		"This system is responsible for taking over the server's aging communication module.",
 		"It's also going to be responsible for the reasons why nobody can hear you anymore.",

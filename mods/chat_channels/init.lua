@@ -766,7 +766,7 @@ CC.COMMAND_VERBS = {
 		end,
 	},
 
-	xadd = {
+	xon = {
 		params = "<channel>",
 		description = "Turn on X-speak for specific channel.",
 		action = function(pname, param)
@@ -814,7 +814,7 @@ CC.COMMAND_VERBS = {
 		end,
 	},
 
-	xdel = {
+	xoff = {
 		params = "<channel>",
 		description = "Turn off X-speak for specific channel.",
 		action = function(pname, param)

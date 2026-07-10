@@ -265,51 +265,112 @@ chat_colorize.send_all = function(channels, message)
   --return chat_colorize.old_chat_send_all(color .. message)
 end
 
+
+
+local JOIN_STRINGS = {
+	"joined the game.",
+	"materialized.",
+	"has entered.",
+	"materializes.",
+	"fades into existence.",
+	"has entered the realm.",
+	"has arrived.",
+	"steps into the game.",
+	"has joined the world.",
+	"has connected.",
+	"materializes from the ether.",
+	"crosses the threshold.",
+	"came out of the woods.",
+	"fades into view.",
+	"appears.",
+	"steps through a rift.",
+	"has logged in.",
+	"has joined.",
+}
+
+local LEAVE_STRINGS = {
+	"left the game.",
+	"ghosted.",
+	"has left the realm.",
+	"has disconnected.",
+	"has quit the game.",
+	"fades from view.",
+	"has departed.",
+	"returns to the void.",
+	"fades away.",
+	"dissolves into the mists.",
+	"has returned to the void.",
+	"withdraws.",
+	"has logged off.",
+}
+
+local function get_random_string(tab)
+	return tab[math.random(1, #tab)]
+end
+
+
+
+function chat_colorize.on_send_join_message(player_name)
+	if core.is_singleplayer() or chat_colorize.should_suppress(player_name) then
+		return
+	end
+
+	local color = chat_colorize.COLOR_GRAY
+	local prefix = "*** "
+	local alias = "<" .. rename.gpn(player_name) .. ">"
+	local message = " " .. get_random_string(JOIN_STRINGS)
+
+	-- Send colored, prefixed, translatable message to chat using player's alias.
+	chat_colorize.old_chat_send_all(color .. prefix .. S("@1" .. message, alias))
+
+	-- Send bare prefix + alias + message to log.
+	chat_logging.report_leavejoin_player(player_name, prefix .. alias .. message)
+end
+
+
+
+function chat_colorize.on_send_leave_message(player_name, timed_out)
+	if core.is_singleplayer() or chat_colorize.should_suppress(player_name) then
+		return
+	end
+
+	local color = chat_colorize.COLOR_GRAY
+	local prefix = "*** "
+	local alias = "<" .. rename.gpn(player_name) .. ">"
+	local message = " " .. get_random_string(LEAVE_STRINGS)
+	local to_spc, timeout_suffix = "", ""
+	local rq_spc, ragequit_suffix = "", ""
+
+	if timed_out then
+		to_spc, timeout_suffix = " ", "(Broken connection.)"
+	end
+
+	if chat_colorize.is_ragequit(player_name) then
+		rq_spc, ragequit_suffix = " ", "(" .. get_ragequit() .. ".)"
+	end
+
+	-- Send colored, prefixed, translatable message [ + translatable timeout_suffix ]
+	-- [ + translatable ragequit_suffix ] to chat using player's alias.
+	chat_colorize.old_chat_send_all(color .. prefix .. S("@1" .. message, alias) ..
+		to_spc .. S(timeout_suffix) .. rq_spc .. S(ragequit_suffix))
+
+	-- Send bare prefix + alias + message [ + timeout suffix ] [ + ragequit suffix ] to log.
+	chat_logging.report_leavejoin_player(player_name, prefix .. alias .. message ..
+		to_spc .. timeout_suffix .. rq_spc .. ragequit_suffix)
+end
+
+
+
 if not chat_colorize.registered then
 	minetest.chat_send_all = function(...) return chat_colorize.send_all(...) end
 	minetest.chat_send_player = function(...) return chat_colorize.send_player(...) end
 
 	function core.send_join_message(player_name)
-		if not core.is_singleplayer() and not chat_colorize.should_suppress(player_name) then
-			local color = chat_colorize.COLOR_GRAY
-			local prefix = "*** "
-			local alias = "<" .. rename.gpn(player_name) .. ">"
-			local message = " joined the game."
-
-			-- Send colored, prefixed, translatable message to chat using player's alias.
-			chat_colorize.old_chat_send_all(color .. prefix .. S("@1" .. message, alias))
-
-			-- Send bare prefix + alias + message to log.
-			chat_logging.report_leavejoin_player(player_name, prefix .. alias .. message)
-		end
+		chat_colorize.on_send_join_message(player_name)
 	end
 
 	function core.send_leave_message(player_name, timed_out)
-		if not core.is_singleplayer() and not chat_colorize.should_suppress(player_name) then
-			local color = chat_colorize.COLOR_GRAY
-			local prefix = "*** "
-			local alias = "<" .. rename.gpn(player_name) .. ">"
-			local message = " left the game."
-			local to_spc, timeout_suffix = "", ""
-			local rq_spc, ragequit_suffix = "", ""
-
-			if timed_out then
-				to_spc, timeout_suffix = " ", "(Broken connection.)"
-			end
-
-			if chat_colorize.is_ragequit(player_name) then
-				rq_spc, ragequit_suffix = " ", "(" .. get_ragequit() .. ".)"
-			end
-
-			-- Send colored, prefixed, translatable message [ + translatable timeout_suffix ]
-			-- [ + translatable ragequit_suffix ] to chat using player's alias.
-			chat_colorize.old_chat_send_all(color .. prefix .. S("@1" .. message, alias) ..
-				to_spc .. S(timeout_suffix) .. rq_spc .. S(ragequit_suffix))
-
-			-- Send bare prefix + alias + message [ + timeout suffix ] [ + ragequit suffix ] to log.
-			chat_logging.report_leavejoin_player(player_name, prefix .. alias .. message ..
-				to_spc .. timeout_suffix .. rq_spc .. ragequit_suffix)
-		end
+		chat_colorize.on_send_leave_message(player_name, timed_out)
 	end
 
 	chat_colorize.registered = true

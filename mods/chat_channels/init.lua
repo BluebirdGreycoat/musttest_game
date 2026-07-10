@@ -318,9 +318,11 @@ end
 -- Called when player joins game.
 function CC.on_joinplayer(pref)
 	local pname = pref:get_player_name()
+	local firsttime = false
 
 	if not CC.is_player_initialized(pname, pref) then
 		CC.initialize_firsttime_player(pname, pref)
+		firsttime = true
 	end
 
 	local pinfo, is_default = CC.get_player_info_read_or_default(pname, pref)
@@ -328,9 +330,17 @@ function CC.on_joinplayer(pref)
 	if is_default then
 		CC.initialize_firsttime_player(pname, pref)
 		pinfo = CC.get_player_info_read_or_default(pname, pref)
+		firsttime = true
 	end
 
 	CC.PLAYERS[pname] = pinfo or CC.get_default_pinfo_table()
+
+	if not firsttime and not gdac.player_is_admin(pname) then
+		local channels = CC.get_player_enabled_channels(pname, true)
+		local list = table.concat(channels, ", ")
+		local msg = "# Server: <" .. rename.gpn(pname) .. "> is in channels: {" .. list .. "}."
+		CC.notify_channels_system_message(channels, msg)
+	end
 end
 
 
@@ -1544,6 +1554,10 @@ function CC.on_player_join_channel(params)
 	end
 
 	local cinfo = CC.get_channel_info_load_if_needed(params.channel)
+	if not cinfo then
+		return
+	end
+
 	if not cinfo.no_player_chat then -- Don't announce on readonly channels.
 		local msg = "# Server: <" .. rename.gpn(params.pname) .. "> has joined channel: {" .. params.channel .. "}."
 		CC.notify_channels_system_message({[1]=params.channel}, msg)
@@ -1559,9 +1573,14 @@ function CC.on_player_leave_channel(params)
 	end
 
 	local cinfo = CC.get_channel_info_load_if_needed(params.channel)
+	if not cinfo then
+		return
+	end
+
 	if not cinfo.no_player_chat then -- Don't announce on readonly channels.
 		local msg = "# Server: <" .. rename.gpn(params.pname) .. "> has left channel: {" .. params.channel .. "}."
 		CC.notify_channels_system_message({[1]=params.channel}, msg)
+		system_response(pname, "You have left channel {" .. params.channel .. "}.")
 	end
 end
 

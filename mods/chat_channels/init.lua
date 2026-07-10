@@ -3,7 +3,7 @@ if not minetest.global_exists("chat_channels") then chat_channels = {} end
 chat_channels.modpath = minetest.get_modpath("chat_channels")
 
 -- Advance this if making a major breaking change requiring everyone to be re-initialized.
-local SANCTUM_VERSION = 1
+local SANCTUM_VERSION = 2
 
 local MAX_CHANNEL_COUNT = 128
 local XSPEAK_COLOR = core.get_color_escape_sequence("#a8ff00")
@@ -212,6 +212,7 @@ end
 function CC.add_sanctum_to_pinfo_table(cinfo, pinfo)
 	pinfo.joined_sanctums[cinfo.name] = true
 	pinfo.sanctum_passwords[cinfo.name] = nil -- Stale data.
+	pinfo.xspeak_channels[cinfo.name] = nil -- Stale
 
 	if cinfo.password and cinfo.password ~= "" then
 		pinfo.sanctum_passwords[cinfo.name] = cinfo.password
@@ -225,6 +226,7 @@ end
 function CC.remove_sanctum_from_pinfo_table(cinfo, pinfo)
 	pinfo.joined_sanctums[cinfo.name] = nil
 	pinfo.sanctum_passwords[cinfo.name] = nil
+	pinfo.xspeak_channels[cinfo.name] = nil
 end
 
 
@@ -269,6 +271,7 @@ function CC.get_default_pinfo_table()
 	local pinfo = {
 		joined_sanctums = {}, -- Set of channel names as keys.
 		sanctum_passwords = {}, -- Channel names are keys, values are passwords.
+		xspeak_channels = {}, -- Set of channel names as keys.
 	}
 
 	return pinfo
@@ -282,6 +285,8 @@ function CC.initialize_firsttime_player(pname, pref)
 
 	local pinfo = CC.get_default_pinfo_table()
 	local goodjoins, badjoins = CC.add_system_channels_to_pinfo_table(pname, pref, pinfo)
+
+	-- TODO: cull channels based on citizen status.
 
 	local serialized = minetest.serialize(pinfo)
 	pmeta:set_string("sanctum_info", serialized)
@@ -319,15 +324,32 @@ end
 
 
 function CC.print_channel_status(pname, only_writable)
-	local channels = CC.get_player_enabled_channels(pname, only_writable)
+	local channels, badchan = CC.get_player_enabled_channels(pname, only_writable)
 	if #channels == 0 then
-		system_response(pname, "You are not subscribed to any channels.")
+		system_response(pname, "You are not subscribed to any usable channels.")
 		return
 	end
 
 	local count = #channels
 	local list = table.concat(channels, ", ")
 	system_response(pname, "You are in channels (" .. count .. "): {" .. list .. "}.")
+
+	local goodxchan = CC.get_player_enabled_channels(pname, only_writable, true)
+	if #goodxchan > 0 then
+		local list = table.concat(goodxchan, ", ")
+		system_response(pname, "You have X-speak enabled for these channels: {" .. list .. "}.")
+	end
+
+	-- Bad channel table is a SET dict!
+	if next(badchan) then
+		local badchan2 = {}
+		for k, v in pairs(badchan) do
+			table.insert(badchan2, k)
+		end
+		local list = table.concat(badchan2, ", ")
+		system_response(pname, "You have stale channel info in your datafile:")
+		system_response(pname, "You no longer have access to the following: {" .. list .. "}.")
+	end
 end
 
 
@@ -494,6 +516,7 @@ CC.COMMAND_VERBS = {
 				if pinfo.joined_sanctums[param] then
 					pinfo.joined_sanctums[param] = nil
 					pinfo.sanctum_passwords[param] = nil
+					pinfo.xspeak_channels[param] = nil
 					CC.save_pinfo_to_player_meta(pname, nil, pinfo)
 					CC.PLAYERS[pname] = pinfo
 					system_response(pname, "You weren't supposed to be a member of {" .. param .. "} anyway. Get ye gone!")
@@ -702,6 +725,63 @@ CC.COMMAND_VERBS = {
 			system_response(pname, "Updated description for {" .. cinfo.name .. "}: \"" .. cinfo.description .. "\".")
 		end,
 	},
+
+	xadd = {
+		params = "<channel>",
+		description = "Turn on X-speak for specific channel.",
+		action = function(pname, param)
+			if not CC.is_channelname_ok(param) then
+				system_error(pname, "Invalid channel identity token.")
+				return
+			end
+
+			local cinfo = CC.get_channel_info_load_if_needed(param)
+			if not cinfo then
+				system_error(pname, "That channel does not even exist! Stop trolling.")
+				return
+			end
+
+			local goodchan, badchan = CC.get_player_enabled_channels(pname, true)
+			if not table.keyof(goodchan, param) then
+				system_error(pname, "You need to join the channel, first.")
+				return
+			end
+
+			CC.do_enable_player_xspeak(pname, param)
+			system_response(pname, "Enabling X-speak on {" .. cinfo.name .. "}.")
+		end,
+	},
+
+	xdel = {
+		params = "<channel>",
+		description = "Turn off X-speak for specific channel.",
+		action = function(pname, param)
+			if not CC.is_channelname_ok(param) then
+				system_error(pname, "Invalid channel identity token.")
+				return
+			end
+
+			local goodchan, badchan = CC.get_player_enabled_channels(pname, true)
+			if not table.keyof(goodchan, param) then
+				if badchan[param] then
+					local reason = CC.get_channel_says_from_reason(badchan[param])
+					system_response(pname, "What? You're not a member of {" .. param .. "}. Sanctum says: " .. reason .. " Bye!")
+				else
+					system_response(pname, "Well, that's awkward. Somebody nuked the data.")
+				end
+				-- No return.
+			end
+
+			local cinfo = CC.get_channel_info_load_if_needed(param)
+			if not cinfo then
+				system_response(pname, "That channel was dead anyway. Get ye gone from it.")
+				-- No return.
+			end
+
+			CC.do_disable_player_xspeak(pname, param)
+			system_response(pname, "Disabling X-speak on {" .. param .. "}.")
+		end,
+	},
 }
 CC.COMMAND_VERBS["part"] = CC.COMMAND_VERBS["leave"]
 CC.COMMAND_VERBS["mute"] = CC.COMMAND_VERBS["leave"]
@@ -852,7 +932,7 @@ function CC.process_chat_message(pname, message, params)
 
 	local the_mark_of_cain = chat_core.generate_coord_string(pname)
 	local connected_players = minetest.get_connected_players()
-	local player_channels, invalid_channels = CC.get_player_enabled_channels(pname, true)
+	local player_channels, invalid_channels = CC.get_player_enabled_channels(pname, true, params.is_xspeak)
 
 	-- If player is in any channel invalid for them, block chat.
 	for cname, reason in pairs(invalid_channels) do
@@ -920,7 +1000,7 @@ function CC.process_chat_message(pname, message, params)
 	local receiving_players = {}
 	for _, to_pref in ipairs(connected_players) do
 		local to_pname = to_pref:get_player_name()
-		local to_channels = CC.get_player_enabled_channels(to_pname, true)
+		local to_channels = CC.get_player_enabled_channels(to_pname, true, params.is_xspeak)
 
 		if channels_intersect(to_channels, player_channels) then
 			table.insert(receiving_players, to_pref)
@@ -1198,7 +1278,7 @@ end
 -- E.g. this is called from the /status chatcommand.
 -- Never returns nil; returns an empty table if player doesn't exist.
 -- Second return value is SET of invalid player channels with REASON_CODES values.
-function CC.get_player_enabled_channels(pname, only_writable)
+function CC.get_player_enabled_channels(pname, only_writable, only_xspeak)
 	local pinfo = CC.get_player_info_read_or_default(pname)
 
 	local channels = {}
@@ -1215,6 +1295,11 @@ function CC.get_player_enabled_channels(pname, only_writable)
 
 		-- If requesting only writable channels, skip the non-writable ones.
 		if cinfo.no_player_chat and only_writable then
+			goto next_item
+		end
+
+		-- If requesting only X-speak channels, skip the non-x-speak ones.
+		if only_xspeak and not pinfo.xspeak_channels[cname] then
 			goto next_item
 		end
 
@@ -1293,6 +1378,30 @@ function CC.do_leave_channel(pname, channel_name)
 	local pinfo = CC.get_player_info_read_or_default(pname)
 
 	CC.remove_sanctum_from_pinfo_table(cinfo, pinfo)
+	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
+
+	CC.PLAYERS[pname] = pinfo
+end
+
+
+
+-- Unconditionally enable player's X-speak for a channel.
+function CC.do_enable_player_xspeak(pname, cname)
+	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	pinfo.xspeak_channels[cname] = true
+	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
+
+	CC.PLAYERS[pname] = pinfo
+end
+
+
+
+-- Unconditionally disable player's X-speak for a channel.
+function CC.do_disable_player_xspeak(pname, cname)
+	local pinfo = CC.get_player_info_read_or_default(pname)
+
+	pinfo.xspeak_channels[cname] = nil
 	CC.save_pinfo_to_player_meta(pname, nil, pinfo)
 
 	CC.PLAYERS[pname] = pinfo

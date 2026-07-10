@@ -1588,7 +1588,7 @@ function CC.on_player_leave_channel(params)
 	if not cinfo.no_player_chat then -- Don't announce on readonly channels.
 		local msg = "# Server: <" .. rename.gpn(params.pname) .. "> has left channel: {" .. params.channel .. "}."
 		CC.notify_channels_system_message({[1]=params.channel}, msg)
-		system_response(pname, "You have left channel {" .. params.channel .. "}.")
+		system_response(params.pname, "You have left channel {" .. params.channel .. "}.")
 	end
 end
 

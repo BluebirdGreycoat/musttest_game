@@ -20,6 +20,7 @@ reload.modpath = minetest.get_modpath("reload")
 dofile(reload.modpath .. "/config.lua")
 dofile(reload.modpath .. "/api.lua")
 dofile(reload.modpath .. "/chatcommands.lua")
+dofile(reload.modpath .. "/callbacks.lua")
 
 
 

@@ -68,20 +68,7 @@ end
 
 
 
--- Called to notify code whenever something happens internally.
-function CC.run_callbacks(name, params)
-	for _, cb in ipairs(CC.CALLBACKS) do
-		if cb.name == name and cb.action then
-			cb.action(params)
-		end
-	end
-end
-
-
-
-function CC.register_callback(name, func)
-	table.insert(CC.CALLBACKS, {name=name, action=func})
-end
+reload.install_simple_signals(CC)
 
 
 
@@ -1620,7 +1607,6 @@ if not CC.run_once then
 	CC.ACTIVE_CHANNELS = {} -- Array of subtables.
 	CC.SYSTEM_CHANNELS = {} -- Set of channel names.
 	CC.MOD_STORAGE = minetest.get_mod_storage()
-	CC.CALLBACKS = {} -- Callbacks. Indexed array of subtables.
 
 
 

@@ -1432,9 +1432,10 @@ function CC.get_players_in_overlapping_channels(ichan, only_writable)
 	local overlapping_players = {}
 
 	for k, v in ipairs(all_players) do
-		local ochan = CC.get_player_enabled_channels(v:get_player_name(), only_writable)
+		local pname = v:get_player_name()
+		local ochan = CC.get_player_enabled_channels(pname, only_writable)
 		if channels_intersect(ichan, ochan) then
-			table.insert(overlapping_players, v)
+			table.insert(overlapping_players, pname)
 		end
 	end
 

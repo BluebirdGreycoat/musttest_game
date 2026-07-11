@@ -4,12 +4,13 @@ local vector_round = vector.round
 local math_floor = math.floor
 local math_min = math.min
 
--- Gains from building.
+-- Gains in buildxp from building. The same amount is lost from digxp.
 local BUILDXP_STAIRS = 0.5
 local BUILDXP_BRICKS = 0.1
 local BUILDXP_DEFAULT = 0.01
 
 -- Loss of buildxp due to digging.
+-- Should be: approx 100 nodes dug == 1 lost buildxp.
 local BUILDXP_LOSS = 0.01
 
 

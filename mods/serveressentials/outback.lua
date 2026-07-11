@@ -155,6 +155,9 @@ local nodes = {
 
 	-- Sign in the "fake gate" in the Oerkki guardroom.
 	{pos={x=-9164, y=4503, z=5782}, node={name="signs:sign_wall_wood", param2=2}},
+
+	-- Lantern to light up the spawn cave.
+	{pos={x=-9224, y=4571, z=5861}, node={name="xdecor:lantern_hanging", param2=0}},
 }
 
 local function rebuild_nodes()

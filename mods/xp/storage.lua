@@ -91,9 +91,9 @@ local function do_particles(pos)
 
 	minetest.add_particlespawner({
 		amount = 1,
-		time = 0.3,
-		minpos = {x = p.x - 0.5, y = p.y + 0.1, z = p.z - 0.5 },
-		maxpos = {x = p.x + 0.5, y = p.y + 0.2, z = p.z + 0.5 },
+		time = 0.1, -- If 0, spawner lifespan is infinite.
+		minpos = {x = p.x - 0.3, y = p.y + 0.1, z = p.z - 0.3 },
+		maxpos = {x = p.x + 0.3, y = p.y + 0.2, z = p.z + 0.3 },
 		minvel = {x = -0.2, y = 2, z = -0.2},
 		maxvel = {x = 0.2, y = 3, z = 0.2},
 		minacc = {x = -0.15, y = -10, z = -0.15},

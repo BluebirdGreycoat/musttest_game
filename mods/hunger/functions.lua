@@ -4,6 +4,14 @@ local vector_round = vector.round
 local math_floor = math.floor
 local math_min = math.min
 
+-- Gains from building.
+local BUILDXP_STAIRS = 0.5
+local BUILDXP_BRICKS = 0.1
+local BUILDXP_DEFAULT = 0.01
+
+-- Loss of buildxp due to digging.
+local BUILDXP_LOSS = 0.01
+
 
 
 function hunger.on_joinplayer(player)
@@ -218,13 +226,12 @@ function hunger.on_dignode(pos, oldnode, player)
 		local new = get_dig_exhaustion(player) * invsta
 		hunger.handle_action_event(player, new)
 	end
+
+	-- Digging causes loss in buildxp.
+	xp.subtract_xp(pname, "buildxp", BUILDXP_LOSS)
 end
 
 
-
-local BUILDXP_STAIRS = 0.5
-local BUILDXP_BRICKS = 0.1
-local BUILDXP_DEFAULT = 0.01
 
 local function get_buildxp_for(nodename)
 	local ndef = minetest.registered_nodes[nodename]
@@ -273,6 +280,8 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 
 		local bxp = get_buildxp_for(newnode.name)
 		xp.add_xp(pname, "buildxp", bxp)
+
+		-- Building causes loss in digxp.
 		xp.subtract_xp(pname, "digxp", bxp)
 	end
 end

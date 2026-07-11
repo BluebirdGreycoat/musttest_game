@@ -5,23 +5,32 @@ nodeinspector.modpath = minetest.get_modpath("hb4")
 COLOR_RED = core.get_color_escape_sequence("#ff0000")
 COLOR_WHITE = core.get_color_escape_sequence("#ffffff")
 
+local function do_admin_report(pname, under, above)
+	local meta = minetest.get_meta(under)
+	local data = meta:to_table()
+	if data then
+		local str = dump(data) or "No data!"
+		local lines = str:split("\n")
+		minetest.chat_send_player(pname, "# Server: Node meta at " .. rc.pos_to_namestr(under) .. ":")
+		minetest.chat_send_player(pname, "# Server: [But actually at " .. minetest.pos_to_string(under) .. ".]")
+		for _, line in ipairs(lines) do
+			minetest.chat_send_player(pname, "# Server: " .. line)
+		end
+	end
+
+	local timer = minetest.get_node_timer(under)
+	local yesno = ""
+	if timer:is_started() then
+		yesno = "YES"
+	else
+		yesno = "NO"
+	end
+	minetest.chat_send_player(pname, "# Server: Nodetimer: " .. yesno .. ", Timeout: " .. timer:get_timeout() .. ", Elapsed: " .. timer:get_elapsed() .. ".")
+end
+
 function nodeinspector.inspect(pname, under, above)
 	if gdac.player_is_admin(pname) then
-		local meta = minetest.get_meta(under)
-		local data = meta:to_table()
-		if data then
-			local str = dump(data) or "No data!"
-			minetest.chat_send_player(pname, "# Server: " .. str)
-		end
-
-		local timer = minetest.get_node_timer(under)
-		local yesno = ""
-		if timer:is_started() then
-			yesno = "YES"
-		else
-			yesno = "NO"
-		end
-		minetest.chat_send_player(pname, "# Server: Nodetimer: " .. yesno .. ", Timeout: " .. timer:get_timeout() .. ", Elapsed: " .. timer:get_elapsed() .. ".")
+		do_admin_report(pname, under, above)
 	end
 
 	local nodeunder = minetest.get_node(under)

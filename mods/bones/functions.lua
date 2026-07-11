@@ -637,14 +637,11 @@ end
 bones.reward_xp = function(meta, pname)
 	-- Give XP stored in bones to player.
 	-- But only if player removed the bones!
-	local digxp = meta:get_float("digxp")
-	local current_xp = xp.get_xp(pname, "digxp")
-	current_xp = current_xp + digxp
-	if current_xp > xp.digxp_max then
-		current_xp = xp.digxp_max
+	for _, xptype in ipairs({"digxp", "buildxp"}) do
+		local stored = meta:get_float(xptype)
+		xp.add_xp(pname, xptype, stored)
+		meta:set_float(xptype, 0)
 	end
-	xp.set_xp(pname, "digxp", current_xp)
-	meta:set_float("digxp", 0)
 end
 
 

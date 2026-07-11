@@ -190,12 +190,12 @@ function chat_core.send_all_ex(params)
 				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			end
 		else -- Message being echoed back to player that sent it.
+			local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
 			if alwaysecho then
 				-- It should be a /me command.
 				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			else
 				-- Send chat to self if echo enabled.
-				local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
 				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			end
 		end

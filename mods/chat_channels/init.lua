@@ -1523,7 +1523,8 @@ end
 function CC.on_key_firsttime_use(pname)
 	CC.do_join_channel(pname, "citizens")
 	CC.do_join_channel(pname, "global")
-	CC.do_leave_channel(pname, "newbies")
+	-- Don't auto-leave newbies channel. Cuts newbies off from more experienced players too easily.
+	--CC.do_leave_channel(pname, "newbies")
 end
 
 minetest.after(0, function()

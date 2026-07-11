@@ -204,6 +204,8 @@ function shout.spoof(pname, param, show_help)
 		return
 	end
 
+	local players_sent_to = {}
+
 	for _, player in ipairs(to_players) do
 		local target_name = player:get_player_name() or ""
 		local pos2 = player:get_pos()
@@ -211,6 +213,13 @@ function shout.spoof(pname, param, show_help)
 		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
 			--chat_core.alert_player_sound(target_name)
 			minetest.chat_send_player(target_name, "# Server: " .. message)
+			if target_name ~= pname then
+				table.insert(players_sent_to, target_name)
+			end
 		end
+	end
+
+	if #players_sent_to > 0 then
+		minetest.chat_send_player(pname, "# Server: Sent to {" .. table.concat(players_sent_to, ", ") .. "}.")
 	end
 end

@@ -306,6 +306,8 @@ local LEAVE_STRINGS = {
 	"left the world.",
 	"left the realm.",
 	"ghosted.",
+	"drifted away.",
+	"drifted out.",
 	"vanishes.",
 	"vanished.",
 	"has left the realm.",

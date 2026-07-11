@@ -222,6 +222,28 @@ end
 
 
 
+local BUILDXP_STAIRS = 0.5
+local BUILDXP_BRICKS = 0.1
+local BUILDXP_DEFAULT = 0.01
+
+local function get_buildxp_for(nodename)
+	local ndef = minetest.registered_nodes[nodename]
+
+	if ndef then
+		if ndef._stairs_parent_material then
+			return BUILDXP_STAIRS
+		end
+
+		if nodename:find("block") or nodename:find("brick") then
+			return BUILDXP_BRICKS
+		end
+	end
+
+	return BUILDXP_DEFAULT
+end
+
+
+
 -- Placenode event.
 function hunger.on_placenode(pos, newnode, player, oldnode)
 	if not player or not player:is_player() then
@@ -249,7 +271,9 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 		local new = HUNGER_EXHAUST_PLACE * invsta
 		hunger.handle_action_event(player, new)
 
-		xp.add_xp(pname, "buildxp", 0.1)
+		local bxp = get_buildxp_for(newnode.name)
+		xp.add_xp(pname, "buildxp", bxp)
+		xp.subtract_xp(pname, "digxp", bxp)
 	end
 end
 

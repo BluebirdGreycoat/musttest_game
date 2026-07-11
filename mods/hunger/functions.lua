@@ -96,18 +96,18 @@ function hunger.update_hunger(player, new_lvl)
 	if not name then
 		return false
 	end
-  
+
 	local lvl = hunger.players[name].lvl
 	if new_lvl then
 		 lvl = new_lvl
 	end
-  
+
   -- Clamp hunger value within range.
   if lvl > HUNGER_MAX then lvl = HUNGER_MAX end
   if lvl < 0 then lvl = 0 end
-  
+
 	hunger.players[name].lvl = lvl
-  
+
 	hud.change_item(player, "hunger", {number = lvl, max = HUNGER_MAX})
 	hunger.save(player)
 end
@@ -248,6 +248,8 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 
 		local new = HUNGER_EXHAUST_PLACE * invsta
 		hunger.handle_action_event(player, new)
+
+		xp.add_xp(pname, "buildxp", 0.1)
 	end
 end
 

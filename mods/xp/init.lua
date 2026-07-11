@@ -50,6 +50,17 @@ end
 
 
 
+function xp.add_xp(pname, kind, count)
+	local points = xp.get_xp(pname, kind)
+	points = points + count
+	if points > xp.digxp_max then
+		points = xp.digxp_max
+	end
+	xp.set_xp(pname, kind, points)
+end
+
+
+
 -- 500 internal hp = 1 player-visible HP.
 --
 -- Note: max hp gain from XP must be no greater than 40000.

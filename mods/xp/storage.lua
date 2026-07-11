@@ -18,6 +18,11 @@ function xp.on_punch_sign(pos, node, pname)
 		return
 	end
 
+	local control = pref:get_player_control()
+	if not control.sneak then
+		return
+	end
+
 	-- Only for rune slabs.
 	if not nn.name:find("stone") then
 		return

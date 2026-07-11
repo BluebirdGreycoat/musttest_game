@@ -182,11 +182,6 @@ function chat_core.send_all_ex(params)
 					should_beep = true
 				end
 
-				-- If /me, use correct color.
-				if alwaysecho then
-					chosen_color = chat_colorize.COLOR_ORANGE
-				end
-
 				-- Finally send the message.
 				if should_beep then
 					chat_core.alert_player_sound(pname)
@@ -197,7 +192,7 @@ function chat_core.send_all_ex(params)
 		else -- Message being echoed back to player that sent it.
 			if alwaysecho then
 				-- It should be a /me command.
-				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. message)
+				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			else
 				-- Send chat to self if echo enabled.
 				local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
@@ -460,7 +455,7 @@ chat_core.handle_command_me = function(name, param)
 		prename = "# ",
 		actname = rename.gpn(name),
 		postname = " ",
-		message = param,
+		message = chat_colorize.COLOR_ORANGE .. param,
 		alwaysecho = true
 	})
 

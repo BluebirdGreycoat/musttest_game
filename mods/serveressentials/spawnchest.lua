@@ -1,6 +1,6 @@
 
-local MINTIME = 10
-local MAXTIME = 10
+local MINTIME = 60*1
+local MAXTIME = 60*15
 local SPAWNCHEST_POS = {x=-9222, y=4569, z=5859}
 
 local ITEMS = {

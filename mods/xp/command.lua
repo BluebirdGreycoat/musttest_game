@@ -40,7 +40,7 @@ function xp.do_chatcommand(pname, param, ex_params)
 					return
 				end
 
-				local target = tokens[1]
+				local target = rename.grn(tokens[1])
 
 				if not minetest.player_exists(target) then
 					system_error("No such player.")
@@ -64,7 +64,7 @@ function xp.do_chatcommand(pname, param, ex_params)
 					return
 				end
 
-				local target = tokens[1]
+				local target = rename.grn(tokens[1])
 				local xptype = tokens[2]
 				local amount = tonumber(tokens[3])
 
@@ -102,7 +102,7 @@ function xp.do_chatcommand(pname, param, ex_params)
 					return
 				end
 
-				local target = tokens[1]
+				local target = rename.grn(tokens[1])
 				local xptype = tokens[2]
 				local amount = tonumber(tokens[3])
 

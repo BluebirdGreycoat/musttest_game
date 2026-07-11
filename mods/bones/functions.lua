@@ -17,6 +17,16 @@ local share_bones_time_city = (share_bones_time * 10.0)
 
 
 
+local function reduce_player_xp(pname)
+	for _, xptype in ipairs({"digxp", "buildxp"}) do
+		local amount = xp.get_xp(pname, xptype)
+		amount = (amount / 3) * 2
+		xp.set_xp(pname, xptype, amount)
+	end
+end
+
+
+
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
 
@@ -348,9 +358,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 			-- Reduce player's mining XP without storing it anywhere.
 			-- Prevents player from being able to use this as an exploit.
 			-- Death should always have a cost!
-			local xp_amount = xp.get_xp(pname, "digxp")
-			xp_amount = (xp_amount / 3) * 2
-			xp.set_xp(pname, "digxp", xp_amount)
+			reduce_player_xp(pname)
 		end
 
 		-- If player died without a bed, they will return to the Outback when they

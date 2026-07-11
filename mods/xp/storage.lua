@@ -124,7 +124,11 @@ local function do_proximity_notify(pos, except_pname)
 		if pname ~= except_pname then
 			local pos2 = pref:get_pos()
 			if vector.distance(pos, pos2) < IMBUE_PROXIMITY_DISTANCE then
-				minetest.chat_send_player(pname, "# Server: You feel electricity in the air as experience points are transferred.")
+				local spamkey = pname .. ":25207"
+				if not spam.test_key(spamkey) then
+					spam.mark_key(spamkey, 30)
+					minetest.chat_send_player(pname, "# Server: You feel electricity in the air as experience points are transferred.")
+				end
 			end
 		end
 	end
@@ -147,5 +151,9 @@ xp.register_callback("on_runeslab_steal", "xp", function(pos, pname, original_ow
 	local pref_owner = minetest.get_player_by_name(original_owner)
 	if not pref_owner then return end
 
-	minetest.chat_send_player(original_owner, "# Server: You feel as though someone is robbing your life essence!")
+	local spamkey = pname .. ":25208"
+	if not spam.test_key(spamkey) then
+		spam.mark_key(spamkey, 30)
+		minetest.chat_send_player(original_owner, "# Server: You feel as though someone is robbing your life essence!")
+	end
 end)

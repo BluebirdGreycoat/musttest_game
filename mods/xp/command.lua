@@ -47,8 +47,8 @@ function xp.do_chatcommand(pname, param, ex_params)
 					return
 				end
 
-				local digxp = xp.get_xp(target, "digxp")
-				local buildxp = xp.get_xp(target, "buildxp")
+				local digxp = string.format("%.1f", xp.get_xp(target, "digxp"))
+				local buildxp = string.format("%.1f", xp.get_xp(target, "buildxp"))
 				system_response("<" .. rename.gpn(target) .. "> has XP: " .. digxp .. " / " .. buildxp .. ".")
 			end,
 		},
@@ -85,8 +85,8 @@ function xp.do_chatcommand(pname, param, ex_params)
 
 				xp.set_xp(target, xptype, amount)
 
-				local digxp = xp.get_xp(target, "digxp")
-				local buildxp = xp.get_xp(target, "buildxp")
+				local digxp = string.format("%.1f", xp.get_xp(target, "digxp"))
+				local buildxp = string.format("%.1f", xp.get_xp(target, "buildxp"))
 				system_response("<" .. rename.gpn(target) .. "> now has XP: " .. digxp .. " / " .. buildxp .. ".")
 			end,
 		},
@@ -124,8 +124,8 @@ function xp.do_chatcommand(pname, param, ex_params)
 				-- Add function handles negatives.
 				xp.add_xp(target, xptype, amount)
 
-				local digxp = xp.get_xp(target, "digxp")
-				local buildxp = xp.get_xp(target, "buildxp")
+				local digxp = string.format("%.1f", xp.get_xp(target, "digxp"))
+				local buildxp = string.format("%.1f", xp.get_xp(target, "buildxp"))
 				system_response("<" .. rename.gpn(target) .. "> now has XP: " .. digxp .. " / " .. buildxp .. ".")
 			end,
 		},

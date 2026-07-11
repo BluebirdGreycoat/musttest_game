@@ -1724,15 +1724,15 @@ if not CC.run_once then
 
 
 
-	CC.register_callback("player_join_channel", function(...)
+	CC.register_callback("player_join_channel", "chat_channels", function(...)
 		CC.on_player_join_channel(...)
 	end)
 
-	CC.register_callback("player_leave_channel", function(...)
+	CC.register_callback("player_leave_channel", "chat_channels", function(...)
 		CC.on_player_leave_channel(...)
 	end)
 
-	CC.register_callback("on_channel_deleted", function(...)
+	CC.register_callback("on_channel_deleted", "chat_channels", function(...)
 		CC.on_channel_deleted(...)
 	end)
 

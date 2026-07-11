@@ -22,13 +22,13 @@ function reload.install_simple_signals(to_namespace)
 
 	-- It's safe to call this function more than once (e.g., mod reload).
 	-- Will not register a named callback more than once per target namespace.
-	function to_namespace.register_callback(name, func)
+	function to_namespace.register_callback(name, frommod, func)
 		for _, cb in ipairs(to_namespace._SIGSLOT_CALLBACKS) do
-			if cb.name == name then
+			if cb.name == name and cb.frommod == frommod then
 				return -- Already registered.
 			end
 		end
 
-		table.insert(to_namespace._SIGSLOT_CALLBACKS, {name=name, action=func})
+		table.insert(to_namespace._SIGSLOT_CALLBACKS, {name=name, id=frommod, action=func})
 	end
 end

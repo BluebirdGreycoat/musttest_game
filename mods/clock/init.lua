@@ -1,16 +1,17 @@
 
--- Localize for performance.
-local math_floor = math.floor
-
 -- Code API.
 if not minetest.global_exists("hud_clock") then hud_clock = {} end
+hud_clock.modpath = minetest.get_modpath("clock")
+hud_clock.player_hud = hud_clock.player_hud or {}
+
 minetest.after(0, function()
-	xp.register_callback("on_xp_change", function(pname)
+	xp.register_callback("on_xp_change", "hud_clock", function(pname)
 		hud_clock.update_xp(pname)
 	end)
 end)
 
-local player_hud = {}
+local math_floor = math.floor
+local player_hud = hud_clock.player_hud
 
 local timer = 0
 local positionx = 1.0
@@ -20,7 +21,6 @@ local positiony = 1.0 --0.02
 --local positiony = 0.90;  --vert
 
 local last_time = os.time()
-
 
 local function floormod ( x, y )
 	return (math_floor(x) % y);
@@ -48,25 +48,6 @@ function hud_clock.get_time()
 	return ("%02d:%02d %s"):format(h, m, a);
 end
 
-minetest.register_globalstep(function ( dtime )
-	timer = timer + dtime;
-	if os.time() >= last_time then
-		last_time = os.time() + 1
-		if (timer >= 1.0) then
-			timer = 0
-			for _,player in ipairs(minetest.get_connected_players()) do
-				local name = player:get_player_name();
-				if player_hud[name] then
-					local h = player_hud[name].clock
-					player:hud_change(h, "text", hud_clock.get_time())
-				end
-			end
-		end
-	end
-end)
-
-
-
 function hud_clock.update_xp(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref and player_hud[pname] then
@@ -74,44 +55,6 @@ function hud_clock.update_xp(pname)
 		pref:hud_change(x, "text", ("Mineral XP: " .. get_digxp(pname)))
 	end
 end
-
-
-
-minetest.register_on_joinplayer(function(pref)
-	local pname = pref:get_player_name()
-	if player_hud[pname] then
-		player_hud[pname] = nil
-	end
-	player_hud[pname] = {}
-	local offy = -130
-	local h = pref:hud_add({
-		type = "text",
-		position = {x=positionx, y=positiony},
-		alignment = {x=-1, y=1},
-		offset = {x=-16, y=offy},
-		text = hud_clock.get_time(),
-		number = 0xFFFFFF,
-	})
-	local c = pref:hud_add({
-		type = "image",
-		position = {x=positionx, y=positiony},
-		alignment = {x=-1, y=1},
-		offset = {x=-108, y=offy},
-		scale = {x=1, y=1},
-		text = "mthudclock.png",
-	})
-	local x = pref:hud_add({
-		type = "text",
-		position = {x=positionx, y=positiony},
-		offset = {x=-16, y=offy + 18},
-		alignment = {x=-1, y=1},
-		text = ("Mineral XP: " .. get_digxp(pname)),
-		number = 0xFFFFFF,
-	})
-	player_hud[pname].clock = h
-	player_hud[pname].icon = c
-	player_hud[pname].digxp = x
-end)
 
 -- Do NOT change formatting, code relies on this!
 function hud_clock.get_datetime(days)
@@ -154,53 +97,122 @@ function hud_clock.get_calendar_infotext(pos)
 		"\nMidfeld Fog: " .. days3 .. " Days"
 end
 
-minetest.register_node("clock:calendar", {
-	description = "Calendar of Enyekala",
-	tiles = {"calendar.png"},
-	wield_image = "calendar.png",
-	inventory_image = "calendar.png",
-	sounds = default.node_sound_leaves_defaults(),
-	groups = utility.dig_groups("bigitem", {flammable = 1}),
-	paramtype = 'light',
-	paramtype2 = "wallmounted",
-	drawtype = "nodebox",
-	sunlight_propagates = true,
-	walkable = false,
-	node_box = {
-		type = "wallmounted",
-		wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
-		wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
-		wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
-	},
-	selection_box = {type = "wallmounted"},
+function hud_clock.on_joinplayer(pref)
+	local pname = pref:get_player_name()
+	if player_hud[pname] then
+		player_hud[pname] = nil
+	end
+	player_hud[pname] = {}
+	local offy = -130
+	local h = pref:hud_add({
+		type = "text",
+		position = {x=positionx, y=positiony},
+		alignment = {x=-1, y=1},
+		offset = {x=-16, y=offy},
+		text = hud_clock.get_time(),
+		number = 0xFFFFFF,
+	})
+	local c = pref:hud_add({
+		type = "image",
+		position = {x=positionx, y=positiony},
+		alignment = {x=-1, y=1},
+		offset = {x=-108, y=offy},
+		scale = {x=1, y=1},
+		text = "mthudclock.png",
+	})
+	local x = pref:hud_add({
+		type = "text",
+		position = {x=positionx, y=positiony},
+		offset = {x=-16, y=offy + 18},
+		alignment = {x=-1, y=1},
+		text = ("Mineral XP: " .. get_digxp(pname)),
+		number = 0xFFFFFF,
+	})
+	player_hud[pname].clock = h
+	player_hud[pname].icon = c
+	player_hud[pname].digxp = x
+end
 
-	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
-		minetest.get_node_timer(pos):start(60*60)
-	end,
-
-	on_timer = function(pos, elapsed)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
-		minetest.get_node_timer(pos):start(60*60)
-	end,
-
-	on_punch = function(pos, node, puncher, pt)
-		if not puncher or not puncher:is_player() then
-			return
+function hud_clock.globalstep(dtime)
+	timer = timer + dtime;
+	if os.time() >= last_time then
+		last_time = os.time() + 1
+		if (timer >= 1.0) then
+			timer = 0
+			for _,player in ipairs(minetest.get_connected_players()) do
+				local name = player:get_player_name();
+				if player_hud[name] then
+					local h = player_hud[name].clock
+					player:hud_change(h, "text", hud_clock.get_time())
+				end
+			end
 		end
-		local meta = minetest.get_meta(pos)
-		meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
-	end,
-})
+	end
+end
 
-minetest.register_craft({
-	output = "clock:calendar",
-	recipe = {
-		{'', 'default:paper', ''},
-		{'', 'group:stick', ''},
-		{'', 'default:paper', ''},
-	},
-})
+if not hud_clock.registered then
+	hud_clock.registered = true
+
+	local c = "clock:core"
+	local f = hud_clock.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	minetest.register_on_joinplayer(function(pref)
+		hud_clock.on_joinplayer(pref)
+	end)
+
+	minetest.register_globalstep(function(dtime)
+		hud_clock.globalstep(dtime)
+	end)
+
+	minetest.register_node("clock:calendar", {
+		description = "Calendar of Enyekala",
+		tiles = {"calendar.png"},
+		wield_image = "calendar.png",
+		inventory_image = "calendar.png",
+		sounds = default.node_sound_leaves_defaults(),
+		groups = utility.dig_groups("bigitem", {flammable = 1}),
+		paramtype = 'light',
+		paramtype2 = "wallmounted",
+		drawtype = "nodebox",
+		sunlight_propagates = true,
+		walkable = false,
+		node_box = {
+			type = "wallmounted",
+			wall_top    = {-0.375, 0.4375, -0.5, 0.375, 0.5, 0.5},
+			wall_bottom = {-0.375, -0.5, -0.5, 0.375, -0.4375, 0.5},
+			wall_side   = {-0.5, -0.5, -0.375, -0.4375, 0.5, 0.375},
+		},
+		selection_box = {type = "wallmounted"},
+
+		on_construct = function(pos)
+			local meta = minetest.get_meta(pos)
+			meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
+			minetest.get_node_timer(pos):start(60*60)
+		end,
+
+		on_timer = function(pos, elapsed)
+			local meta = minetest.get_meta(pos)
+			meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
+			minetest.get_node_timer(pos):start(60*60)
+		end,
+
+		on_punch = function(pos, node, puncher, pt)
+			if not puncher or not puncher:is_player() then
+				return
+			end
+			local meta = minetest.get_meta(pos)
+			meta:set_string("infotext", hud_clock.get_calendar_infotext(pos))
+		end,
+	})
+
+	minetest.register_craft({
+		output = "clock:calendar",
+		recipe = {
+			{'', 'default:paper', ''},
+			{'', 'group:stick', ''},
+			{'', 'default:paper', ''},
+		},
+	})
+end
 

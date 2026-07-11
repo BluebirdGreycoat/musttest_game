@@ -118,14 +118,6 @@ function chat_core.send_all_ex(params)
 	local ppos = player:get_pos()
 	local mlower = string.lower(message)
 
-	local adhoc_me = false
-	local newmsg = message
-	if message:find("^" .. actname .. " ") then
-		alwaysecho = true
-		adhoc_me = true
-		newmsg = message:sub(actname:len() + 2)
-	end
-
 	for k, v in ipairs(allplayers) do
 		local pname = v:get_player_name()
 		local plower = string.lower(rename.gpn(pname))
@@ -196,24 +188,16 @@ function chat_core.send_all_ex(params)
 				end
 
 				-- Finally send the message.
-				if should_beep and not adhoc_me then
+				if should_beep then
 					chat_core.alert_player_sound(pname)
 				end
 
-				if adhoc_me then
-					minetest.chat_send_player(pname, "# " .. color_nametag .. actname .. color_white .. " " .. chat_colorize.COLOR_ORANGE .. newmsg)
-				else
-					minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
-				end
+				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
 			end
 		else -- Message being echoed back to player that sent it.
 			if alwaysecho then
-				if adhoc_me then
-					minetest.chat_send_player(pname, "# " .. color_nametag .. actname .. color_white .. " " .. chat_colorize.COLOR_ORANGE .. newmsg)
-				else
-					-- It should be a /me command.
-					minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. newmsg)
-				end
+				-- It should be a /me command.
+				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. newmsg)
 			else
 				-- Send chat to self if echo enabled.
 				local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]

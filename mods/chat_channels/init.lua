@@ -1009,6 +1009,12 @@ function CC.process_chat_message(pname, message, params)
 		params = {}
 	end
 
+	-- Delegate adhoc /me command.
+	if message:find("^" .. pname .. " ") then
+		chat_core.handle_command_me(pname, message:sub(pname:len() + 2):trim())
+		return
+	end
+
 	local log_public_chat = false
 	local do_anticurse_check = false
 	local requires_shout_priv = false

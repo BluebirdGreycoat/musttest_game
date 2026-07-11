@@ -24,7 +24,7 @@ function reload.install_simple_signals(to_namespace)
 	-- Will not register a named callback more than once per target namespace.
 	function to_namespace.register_callback(name, frommod, func)
 		for _, cb in ipairs(to_namespace._SIGSLOT_CALLBACKS) do
-			if cb.name == name and cb.frommod == frommod then
+			if cb.name == name and cb.id == frommod then
 				cb.action = func
 				return -- Already registered, but we do replace the function.
 			end

@@ -34,6 +34,8 @@ function xp.on_punch_sign(pos, node, pname)
 			info.total = total
 			info.owner = pname
 			system_response("You imbue some of your experience points into the Rune Slab.")
+
+			xp.run_callbacks_after("on_runeslab_imbue", pos, pname)
 			-- Serialize at end of function.
 		else
 			system_response("You need at least 1k experience points in both categories in order to imbue.")
@@ -54,6 +56,8 @@ function xp.on_punch_sign(pos, node, pname)
 
 		system_response("The stored experience points return to your person.")
 		system_response("You gain: " .. get_dig .. " / " .. get_build .. ".")
+
+		xp.run_callbacks_after("on_runeslab_retrieve", pos, pname)
 		-- Serialize at end of function.
 	else
 		-- Steal XP.
@@ -70,6 +74,8 @@ function xp.on_punch_sign(pos, node, pname)
 
 		system_response("The stolen experience points are added to your person.")
 		system_response("You gain: " .. get_dig .. " / " .. get_build .. ".")
+
+		xp.run_callbacks_after("on_runeslab_steal", pos, pname)
 	end
 
 	meta:set_string("xp_storage", minetest.serialize(info))
@@ -78,4 +84,38 @@ end
 
 minetest.after(0, function()
 	signs.register_callback("on_punch_sign", "xp", xp.on_punch_sign)
+end)
+
+local function do_particles(pos)
+	local p = vector.add(pos, {x=0, y=0, z=0})
+
+	minetest.add_particlespawner({
+		amount = 1,
+		time = 0.3,
+		minpos = {x = p.x - 0.5, y = p.y + 0.1, z = p.z - 0.5 },
+		maxpos = {x = p.x + 0.5, y = p.y + 0.2, z = p.z + 0.5 },
+		minvel = {x = -0.2, y = 2, z = -0.2},
+		maxvel = {x = 0.2, y = 3, z = 0.2},
+		minacc = {x = -0.15, y = -10, z = -0.15},
+		maxacc = {x = 0.15, y = -10, z = 0.15},
+		minexptime = 0.5,
+		maxexptime = 0.8,
+		minsize = 1.5,
+		maxsize = 2.0,
+		collisiondetection = true,
+		texture = "default_gold_lump.png",
+		glow = 5,
+	})
+end
+
+xp.register_callback("on_runeslab_imbue", "xp", function(pos, pname)
+	do_particles(pos)
+end)
+
+xp.register_callback("on_runeslab_retrieve", "xp", function(pos, pname)
+	do_particles(pos)
+end)
+
+xp.register_callback("on_runeslab_steal", "xp", function(pos, pname)
+	do_particles(pos)
 end)

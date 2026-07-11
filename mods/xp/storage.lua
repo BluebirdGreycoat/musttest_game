@@ -1,4 +1,6 @@
 
+-- Imbue or take experience points from a Rune Slab.
+-- Explicitly NOT checking protection! So keep your Rune Slabs HIDDEN.
 function xp.on_punch_sign(pos, node, pname)
 	local function system_response(msg)
 		minetest.chat_send_player(pname, "# Server: " .. msg)
@@ -61,6 +63,7 @@ function xp.on_punch_sign(pos, node, pname)
 		-- Serialize at end of function.
 	else
 		-- Steal XP.
+		local original_owner = info.owner
 		local loss_scalar = 0.75
 
 		local get_dig = info.total.dig * loss_scalar
@@ -75,7 +78,7 @@ function xp.on_punch_sign(pos, node, pname)
 		system_response("The stolen experience points are added to your person.")
 		system_response("You gain: " .. get_dig .. " / " .. get_build .. ".")
 
-		xp.run_callbacks_after("on_runeslab_steal", pos, pname)
+		xp.run_callbacks_after("on_runeslab_steal", pos, pname, original_owner)
 	end
 
 	meta:set_string("xp_storage", minetest.serialize(info))
@@ -116,6 +119,11 @@ xp.register_callback("on_runeslab_retrieve", "xp", function(pos, pname)
 	do_particles(pos)
 end)
 
-xp.register_callback("on_runeslab_steal", "xp", function(pos, pname)
+xp.register_callback("on_runeslab_steal", "xp", function(pos, pname, original_owner)
 	do_particles(pos)
+
+	local pref_owner = minetest.get_player_by_name(original_owner)
+	if not pref_owner then return end
+
+	minetest.chat_send_player(original_owner, "# Server: You feel as though someone is robbing your life essence!")
 end)

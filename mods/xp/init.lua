@@ -216,19 +216,22 @@ function xp.do_chatcommand(pname, param)
 		return
 	end
 
-	if tokens[1] == "get" then
-		if not minetest.player_exists(tokens[2]) then
+	local verb = tokens[1]
+	local target = rename.grn(tokens[2])
+
+	if verb == "get" then
+		if not minetest.player_exists(target) then
 			minetest.chat_send_player(pname, "# Server: No such player.")
 			return
 		end
-		local amount = xp.get_xp(tokens[2], "digxp")
-		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> has " .. amount .. " XP.")
-	elseif tokens[1] == "set" then
+		local amount = xp.get_xp(target, "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(target) .. "> has " .. amount .. " XP.")
+	elseif verb == "set" then
 		if #tokens ~= 3 then
 			minetest.chat_send_player(pname, "# Server: Wrong number of arguments.")
 			return
 		end
-		if not minetest.player_exists(tokens[2]) then
+		if not minetest.player_exists(target) then
 			minetest.chat_send_player(pname, "# Server: No such player.")
 			return
 		end
@@ -243,15 +246,15 @@ function xp.do_chatcommand(pname, param)
 		if amount < 0 then
 			amount = 0
 		end
-		xp.set_xp(tokens[2], "digxp", amount)
-		amount = xp.get_xp(tokens[2], "digxp")
-		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
-	elseif tokens[1] == "add" then
+		xp.set_xp(target, "digxp", amount)
+		amount = xp.get_xp(target, "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(target) .. "> now has " .. amount .. " XP.")
+	elseif verb == "add" then
 		if #tokens ~= 3 then
 			minetest.chat_send_player(pname, "# Server: Wrong number of arguments.")
 			return
 		end
-		if not minetest.player_exists(tokens[2]) then
+		if not minetest.player_exists(target) then
 			minetest.chat_send_player(pname, "# Server: No such player.")
 			return
 		end
@@ -260,7 +263,7 @@ function xp.do_chatcommand(pname, param)
 			minetest.chat_send_player(pname, "# Server: Couldn't parse amount.")
 			return
 		end
-		local total = xp.get_xp(tokens[2], "digxp")
+		local total = xp.get_xp(target, "digxp")
 		total = total + amount
 		if total > xp.digxp_max then
 			total = xp.digxp_max
@@ -268,9 +271,9 @@ function xp.do_chatcommand(pname, param)
 		if total < 0 then
 			total = 0
 		end
-		xp.set_xp(tokens[2], "digxp", total)
-		amount = xp.get_xp(tokens[2], "digxp")
-		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
+		xp.set_xp(target, "digxp", total)
+		amount = xp.get_xp(target, "digxp")
+		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(target) .. "> now has " .. amount .. " XP.")
 	else
 		minetest.chat_send_player(pname, "# Server: Invalid operation.")
 		return

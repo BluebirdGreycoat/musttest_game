@@ -591,7 +591,7 @@ end
 if not chat_core.registered then
 	minetest.register_chatcommand("me", {
 		params = "<action>",
-		description = "Send an 'action' message beginning with your name.",
+		description = "Perform an action (emote). Only visible to others who can see you.",
 		privs = {}, -- Expressly does NOT require 'shout', visible only at close range.
 		func = function(name, param)
 			chat_core.handle_command_me(name, chat_core.rewrite_message(param))

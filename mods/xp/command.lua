@@ -148,6 +148,15 @@ function xp.do_chatcommand(pname, param, ex_params)
 			system_response("    /" .. ex_params.command_name .. " " .. verb .. args .. desc)
 		end
 
+		local helplines = {
+			"It is possible to store experience points in Rune Slabs (with a small cost calculated on retrieval).",
+			"Be cautious with doing this, however, as anyone can come and steal your precious XP!",
+		}
+
+		for _, line in ipairs(helplines) do
+			system_response(line)
+		end
+
 		return
 	end
 

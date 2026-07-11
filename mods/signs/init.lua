@@ -2,10 +2,20 @@
 if not minetest.global_exists("signs") then signs = {} end
 signs.modpath = minetest.get_modpath("signs")
 
+reload.install_simple_signals(signs)
+
 local MAX_SIGN_LENGTH = 256
 
 function signs.on_punch(pos, node, puncher, pt)
+	if not puncher or not puncher:is_player() then
+		return
+	end
+
+	-- Remove legacy stuff.
 	minetest.get_meta(pos):set_string("formspec", nil)
+
+	local pname = puncher:get_player_name()
+	signs.run_callbacks_after("on_punch_sign", pos, node, pname)
 end
 
 function signs.on_construct(pos)

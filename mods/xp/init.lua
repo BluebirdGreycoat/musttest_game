@@ -10,6 +10,7 @@ xp.dirty_players = xp.dirty_players or {}
 reload.install_simple_signals(xp)
 
 dofile(xp.modpath .. "/command.lua")
+dofile(xp.modpath .. "/storage.lua")
 
 -- Localize for performance.
 local math_floor = math.floor

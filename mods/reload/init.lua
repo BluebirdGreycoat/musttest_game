@@ -22,6 +22,8 @@ dofile(reload.modpath .. "/api.lua")
 dofile(reload.modpath .. "/chatcommands.lua")
 dofile(reload.modpath .. "/callbacks.lua")
 
+reload.install_simple_signals(reload)
+
 
 
 -- Allow chat messages sent by this mod to be customized.

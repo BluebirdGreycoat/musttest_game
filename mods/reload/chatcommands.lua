@@ -8,7 +8,7 @@ reload.impl = reload.impl or {}
 
 
 -- This function expects only to be called from the chatcommands that this mod registers!
-reload.impl.dofile = function(name, path)
+reload.impl.dofile = function(name, mod_id, path)
 	local PREFIX = reload.chat_prefix
 	local FILEPATH = path
 
@@ -37,6 +37,10 @@ reload.impl.dofile = function(name, path)
 		if not good then  -- Runtime error.
 			reload.chat_send_player(name, PREFIX .. "Could not execute file. Received error message: '" .. err .. "'.")
 			return false
+		end
+
+		if mod_id then
+			reload.run_callbacks_after("on_mod_reload", mod_id)
 		end
 
 		-- Don't expose the entire filepath.
@@ -105,7 +109,7 @@ reload.impl.reload = function(name, param)
 
 		local file = reload.impl.files[param]
 		if file then
-			return reload.impl.dofile(name, file)
+			return reload.impl.dofile(name, param, file)
 		end
 
 		reload.chat_send_player(name, PREFIX .. "Invalid file ID.")
@@ -117,7 +121,7 @@ end
 
 reload.impl.execute = function(name, path)
 	local path2 = reload.root_path .. "/" .. path
-	return reload.impl.dofile(name, path2)
+	return reload.impl.dofile(name, nil, path2)
 end
 
 

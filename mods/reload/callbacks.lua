@@ -25,7 +25,8 @@ function reload.install_simple_signals(to_namespace)
 	function to_namespace.register_callback(name, frommod, func)
 		for _, cb in ipairs(to_namespace._SIGSLOT_CALLBACKS) do
 			if cb.name == name and cb.frommod == frommod then
-				return -- Already registered.
+				cb.action = func
+				return -- Already registered, but we do replace the function.
 			end
 		end
 

@@ -8,6 +8,16 @@ minetest.after(0, function()
 	xp.register_callback("on_xp_change", "hud_clock", function(pname)
 		hud_clock.update_xp(pname)
 	end)
+
+	reload.register_callback("on_mod_reload", "hud_clock", function(modid)
+		if modid == "clock:core" then
+			local players = minetest.get_connected_players()
+			for k, v in ipairs(players) do
+				local pname = v:get_player_name()
+				hud_clock.update_xp(pname)
+			end
+		end
+	end)
 end)
 
 local math_floor = math.floor
@@ -27,7 +37,11 @@ local function floormod ( x, y )
 end
 
 local function get_digxp(pname)
-	return string.format("%.2f", xp.get_xp(pname, "digxp"))
+	return string.format("%.0f", xp.get_xp(pname, "digxp"))
+end
+
+local function get_buildxp(pname)
+	return string.format("%.0f", xp.get_xp(pname, "buildxp"))
 end
 
 function hud_clock.get_time()
@@ -48,11 +62,15 @@ function hud_clock.get_time()
 	return ("%02d:%02d %s"):format(h, m, a);
 end
 
+local function get_xp_string(pname)
+	return "XP: " .. get_digxp(pname) .. " / " .. get_buildxp(pname)
+end
+
 function hud_clock.update_xp(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref and player_hud[pname] then
-		local x = player_hud[pname].digxp
-		pref:hud_change(x, "text", ("Mineral XP: " .. get_digxp(pname)))
+		local x = player_hud[pname].digxp -- HUD element ID.
+		pref:hud_change(x, "text", get_xp_string(pname))
 	end
 end
 
@@ -125,7 +143,7 @@ function hud_clock.on_joinplayer(pref)
 		position = {x=positionx, y=positiony},
 		offset = {x=-16, y=offy + 18},
 		alignment = {x=-1, y=1},
-		text = ("Mineral XP: " .. get_digxp(pname)),
+		text = get_xp_string(pname),
 		number = 0xFFFFFF,
 	})
 	player_hud[pname].clock = h

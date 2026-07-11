@@ -143,3 +143,74 @@ function shout.whisper(name, param)
 	player_labels.on_chat_message(name, param)
 	--chat_logging.log_public_shout(name, param, mk)
 end
+
+
+
+local function check_language(pname, message)
+	if anticurse.check(pname, message, "foul") then
+		return
+	elseif anticurse.check(pname, message, "curse") then
+		return
+	end
+	return true
+end
+
+
+
+-- Spoof a local server message.
+-- You could use this e.g., for flavor-text, scene-setting, etc.
+-- Or use it to abuse someone in an untraceable manner.
+function shout.spoof(pname, param, show_help)
+	if show_help then
+		local helplines = {
+			"Usages:",
+			"    /spoof A cloaked figure slips a note onto the table.",
+			"    /spoof Someplayer You're the only one who'll get this.",
+			"If the first word of your message is the name of an online user, the message will be sent to only that user with the prefix \"Someone tells you:\"",
+			"Only nearby users receive anything. The max distance is " .. chat_core.WHISPER_DISTANCE .. " blocks.",
+		}
+
+		for _, line in ipairs(helplines) do
+			minetest.chat_send_player(pname, "# Server: " .. line)
+		end
+		return
+	end
+
+	if #param < 1 then
+		minetest.chat_send_player(pname, "# Server: Empty spoof command.")
+		easyvend.sound_error(pname)
+		return
+	end
+
+	local pref = minetest.get_player_by_name(pname)
+	if not pref or not pref:is_player() then return end
+	local pos = pref:get_pos()
+
+	local to_players = minetest.get_connected_players()
+	local message = param
+	local tokens = param:split(" ")
+	local target_pname = tokens[1] or ""
+	local target_pref = minetest.get_player_by_name(target_pname)
+
+	if target_pref then
+		message = "Someone tells you: " .. param:sub(target_pname:len() + 2):trim()
+		to_players = {[1]=target_pref}
+	end
+
+	message = toad.modify_chat(pname, message)
+
+	if not check_language(pname, message) then
+		minetest.chat_send_player(pname, "# Server: Watch your tongue.")
+		return
+	end
+
+	for _, player in ipairs(to_players) do
+		local target_name = player:get_player_name() or ""
+		local pos2 = player:get_pos()
+		-- Since whispers are range limited, they always get through even if players are ignored.
+		if vector.distance(pos, pos2) < chat_core.WHISPER_DISTANCE then
+			--chat_core.alert_player_sound(target_name)
+			minetest.chat_send_player(target_name, "# Server: " .. message)
+		end
+	end
+end

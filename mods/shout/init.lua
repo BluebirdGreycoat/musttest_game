@@ -44,6 +44,19 @@ if not shout.run_once then
 		end,
 	})
 
+	minetest.register_chatcommand("spoof", {
+		params = "[target] <message>",
+		description = "Send an anonymous message to everyone nearby.",
+		privs = {}, -- Does NOT require shout.
+		show_help = function(pname)
+			shout.spoof(pname, "", true)
+		end,
+		func = function(pname, param)
+			shout.spoof(pname, chat_core.rewrite_message(param))
+			return true
+		end,
+	})
+
 	--[[
 	minetest.register_chatcommand("channel", {
 		params = "",

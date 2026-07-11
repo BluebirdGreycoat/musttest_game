@@ -24,6 +24,7 @@ dofile(serveressentials.modpath .. "/recall.lua")
 dofile(serveressentials.modpath .. "/suicide.lua")
 dofile(serveressentials.modpath .. "/gag.lua")
 dofile(serveressentials.modpath .. "/ascii.lua")
+dofile(serveressentials.modpath .. "/spawnchest.lua")
 
 
 
@@ -86,6 +87,10 @@ if not serveressentials.registered then
 			return serveressentials.do_rename(...)
 		end
 	})
+
+	minetest.after(10, function()
+		serveressentials.add_loot_to_spawnchest()
+	end)
 
 	local c = "serveressentials:core"
 	local f = serveressentials.modpath .. "/init.lua"

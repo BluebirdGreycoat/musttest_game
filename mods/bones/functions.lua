@@ -27,6 +27,30 @@ end
 
 
 
+local function update_bone_infotext(meta)
+	local old = false
+	local pname = meta:get_string("owner")
+	if pname == "" then
+		old = true
+		pname = meta:get_string("oldowner")
+	end
+
+	local digxp = string.format("%.0f", meta:get_float("digxp"))
+	local buildxp = string.format("%.0f", meta:get_float("buildxp"))
+
+	local bonestr = "Undecayed Bones"
+	if old then
+		bonestr = "Old Bones"
+	end
+
+	meta:set_string("infotext",
+		"Unfortunate <" .. rename.gpn(pname) ..
+		">'s " .. bonestr .. "\nXP: " .. digxp .. " / " .. buildxp .. "\n" ..
+		"Died On " .. meta:get_string("diedate"))
+end
+
+
+
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
 
@@ -452,8 +476,6 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	local location = minetest.pos_to_string(pos)
 	local num_stacks = 0
 
-	minetest.log("action", "Put " .. xp_for_bones .. " XP in bones @ " .. location .. ".")
-
 	-- Set player information.
 	player_meta:set_string("last_bones_pos", minetest.pos_to_string(pos))
 	player_meta:set_string("last_bones_time", tostring(death_time))
@@ -553,10 +575,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		map.clear_inventory_info(pname)
 	end)
 
-	meta:set_string("infotext",
-		"Unfortunate <" .. rename.gpn(pname) ..
-		">'s Undecayed Bones\nMineral XP: " .. string.format("%.2f", xp_for_bones) .. "\n" ..
-		"Died On " .. meta:get_string("diedate"))
+	update_bone_infotext(meta)
 
 	meta:set_int("time", 0)
 	minetest.get_node_timer(pos):start(10)
@@ -655,81 +674,81 @@ end
 
 
 bones.on_punch = function(pos, node, player)
-		-- Fix stopped timers.
-		minetest.get_node_timer(pos):start(10)
+	-- Fix stopped timers.
+	minetest.get_node_timer(pos):start(10)
 
-		local pname = player:get_player_name()
-    if not is_owner(pos, pname) then
+	local pname = player:get_player_name()
+	if not is_owner(pos, pname) then
+		return
+	end
+
+	if sheriff.is_cheater(pname) then
+		if sheriff.punish_probability(pname) then
+			sheriff.punish_player(pname)
 			return
-    end
+		end
+	end
 
-		if sheriff.is_cheater(pname) then
-			if sheriff.punish_probability(pname) then
-				sheriff.punish_player(pname)
-				return
+	-- Prevent picking bones right after respawn, before player is repositioned.
+	if bones.nohack.on_hackdetect(player) then
+		minetest.chat_send_player(pname, "# Server: Wait a bit before picking bones.")
+		return
+	end
+
+	-- Dead players cannot pick bones.
+	if player:get_hp() <= 0 then
+		return
+	end
+
+	local meta = minetest.get_meta(pos)
+
+	-- Bones that are neither fresh nor old aren't 'punchable'.
+	if meta:get_string("infotext") == "" then
+		return
+	end
+
+	local inv = meta:get_inventory()
+	local player_inv = player:get_inventory()
+	local has_space = true
+	local added_map = false
+
+	for i = 1, inv:get_size("main") do
+		local stk = inv:get_stack("main", i)
+		if player_inv:room_for_item("main", stk) then
+			inv:set_stack("main", i, nil)
+			player_inv:add_item("main", stk)
+
+			-- Notify if a mapping kit was added.
+			if map.is_mapping_kit(stk:get_name()) then
+				added_map = true
 			end
+		else
+			has_space = false
+			break
+		end
+	end
+
+	-- Notify if a mapping kit was added.
+	if added_map then
+		map.update_inventory_info(pname)
+	end
+
+	-- remove bones if player emptied them
+	if has_space then
+		-- Give player the bones.
+		if player_inv:room_for_item("main", {name = "bones:bones_type2"}) then
+				player_inv:add_item("main", {name = "bones:bones_type2"})
+		else
+				minetest.add_item(pos,"bones:bones_type2")
 		end
 
-		-- Prevent picking bones right after respawn, before player is repositioned.
-		if bones.nohack.on_hackdetect(player) then
-			minetest.chat_send_player(pname, "# Server: Wait a bit before picking bones.")
-			return
-		end
+		bones.reward_xp(meta, pname)
+		bones.do_grab_bones_message(pname, pos, meta)
 
-		-- Dead players cannot pick bones.
-		if player:get_hp() <= 0 then
-			return
-		end
-
-		local meta = minetest.get_meta(pos)
-
-		-- Bones that are neither fresh nor old aren't 'punchable'.
-    if meta:get_string("infotext") == "" then
-			return
-    end
-
-    local inv = meta:get_inventory()
-    local player_inv = player:get_inventory()
-    local has_space = true
-		local added_map = false
-
-    for i = 1, inv:get_size("main") do
-			local stk = inv:get_stack("main", i)
-			if player_inv:room_for_item("main", stk) then
-				inv:set_stack("main", i, nil)
-				player_inv:add_item("main", stk)
-
-				-- Notify if a mapping kit was added.
-				if map.is_mapping_kit(stk:get_name()) then
-					added_map = true
-				end
-			else
-				has_space = false
-				break
-			end
-    end
-
-		-- Notify if a mapping kit was added.
-		if added_map then
-			map.update_inventory_info(pname)
-		end
-
-    -- remove bones if player emptied them
-    if has_space then
-			-- Give player the bones.
-			if player_inv:room_for_item("main", {name = "bones:bones_type2"}) then
-					player_inv:add_item("main", {name = "bones:bones_type2"})
-			else
-					minetest.add_item(pos,"bones:bones_type2")
-			end
-
-			bones.reward_xp(meta, pname)
-			bones.do_grab_bones_message(pname, pos, meta)
-
-			-- Remove the bones from the world.
-			minetest.log("action", "Bones @ " .. minetest.pos_to_string(pos) .. " punched by " .. pname .. ". Removing bones.")
-			minetest.remove_node(pos)
-    end
+		-- Remove the bones from the world.
+		minetest.log("action", "Bones @ " .. minetest.pos_to_string(pos) .. " punched by " .. pname .. ". Removing bones.")
+		minetest.remove_node(pos)
+	end
 end
 
 
@@ -838,14 +857,10 @@ bones.on_timer = function(pos, elapsed)
 			diedate = "An Unknown Date"
 		end
 
-		local digxp = string.format("%.2f", meta:get_float("digxp"))
-		meta:set_string("infotext",
-			"Unfortunate <" .. rename.gpn(owner) ..
-			">'s Old Bones\nMineral XP: " .. digxp .. "\n" ..
-			"Died On " .. diedate)
-
 		meta:set_string("oldowner", owner)
 		meta:set_string("owner", "")
+
+		update_bone_infotext(meta)
 		return
 	end
 
@@ -874,33 +889,14 @@ bones.on_destruct = function(pos)
 	-- If the inventory is not empty, we must respawn the bones.
 	-- This is a workaround for a bug that just won't go away.
 	local node = minetest.get_node(pos)
-	local list = inv:get_list("main")
-	local infotext = meta:get_string("infotext")
-	local owner = meta:get_string("owner")
-	local oldowner = meta:get_string("oldowner")
-	local numstacks = meta:get_int("numstacks")
-	local time = meta:get_int("time")
-	local digxp = meta:get_float("digxp")
-	local diedate = meta:get_string("diedate")
+	local all_fields = meta:to_table()
 
 	minetest.after(0, function()
 		minetest.log("action", "Bones @ " .. minetest.pos_to_string(pos) .. " were not empty! Attempting to restore bones.")
 		minetest.set_node(pos, {name="bones:bones", param2=node.param2})
 
 		local meta2 = minetest.get_meta(pos)
-		local inv2 = meta2:get_inventory()
-
-		inv2:set_size("main", 200)
-		inv2:set_list("main", list)
-
-		meta2:set_string("infotext", infotext)
-		meta2:set_string("owner", owner)
-		meta2:set_string("oldowner", oldowner)
-		meta2:set_int("numstacks", numstacks)
-		meta2:set_int("time", time)
-		meta2:set_float("digxp", digxp)
-		meta2:set_string("diedate", diedate)
-
+		meta2:from_table(all_fields)
 		minetest.get_node_timer(pos):start(10)
 	end)
 end

@@ -9,6 +9,8 @@ xp.dirty_players = xp.dirty_players or {}
 
 reload.install_simple_signals(xp)
 
+dofile(xp.modpath .. "/command.lua")
+
 -- Localize for performance.
 local math_floor = math.floor
 local math_min = math.min
@@ -19,6 +21,13 @@ local math_max = math.max
 -- This code supports multiple types of XP.
 -- Different types of XP are stored seperately.
 function xp.set_xp(pname, kind, amount)
+	if amount > xp.digxp_max then
+		amount = xp.digxp_max
+	end
+	if amount < 0 then
+		amount = 0
+	end
+
 	local key = pname .. ":" .. kind
 	xp.data[key] = tostring(amount)
 	xp.dirty = true
@@ -42,9 +51,6 @@ end
 function xp.subtract_xp(pname, kind, count)
 	local points = xp.get_xp(pname, kind)
 	points = points - count
-	if points < 0 then
-		points = 0
-	end
 	xp.set_xp(pname, kind, points)
 end
 
@@ -53,9 +59,6 @@ end
 function xp.add_xp(pname, kind, count)
 	local points = xp.get_xp(pname, kind)
 	points = points + count
-	if points > xp.digxp_max then
-		points = xp.digxp_max
-	end
 	xp.set_xp(pname, kind, points)
 end
 
@@ -223,15 +226,21 @@ if not xp.run_once then
 	minetest.register_on_joinplayer(function(...) xp.on_joinplayer(...) end)
 	minetest.register_on_leaveplayer(function(...) xp.on_leaveplayer(...) end)
 
-	minetest.register_chatcommand("digxp", {
-		params = "get|set|add <player> <amount>",
-		description = "Manage players' mining XP.",
-		privs = {server=true},
+	for _, command in ipairs({"xp", "experience"}) do
+		minetest.register_chatcommand(command, {
+			params = "[variable command options]",
+			description = "Manage player XP.",
+			privs = {server=true},
 
-		func = function(...)
-			return xp.do_chatcommand(...)
-		end
-	})
+			show_help = function(pname)
+				return xp.do_chatcommand(pname, "", {command_name=command, show_help=true})
+			end,
+
+			func = function(pname, param)
+				return xp.do_chatcommand(pname, param, {command_name=command})
+			end
+		})
+	end
 
 	local c = "xp:core"
 	local f = xp.modpath .. "/init.lua"

@@ -418,23 +418,25 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		return
 	end
 
-	local xp_for_bones = 0.0
+	local xp_for_bones = {}
 
 	-- Halve player XP!
 	if not preserve_xp then
-		local xp_amount = xp.get_xp(pname, "digxp")
+		for _, xptype in ipairs({"digxp", "buildxp"}) do
+			local amount = xp.get_xp(pname, xptype)
 
-		-- You lose 25% or 10K XP, whichever is less.
-		local xp_to_take = xp_amount / 4
-		if xp_to_take > 10000 then xp_to_take = 10000 end
+			-- You lose 25% or 10K XP, whichever is less.
+			local take_amount = amount / 4
+			if take_amount > 10000 then take_amount = 10000 end
 
-		xp_amount = xp_amount - xp_to_take
-		if xp_amount < 0 then xp_amount = 0 end
+			amount = amount - take_amount
+			if amount < 0 then amount = 0 end
 
-		-- 75% of what you lost is put in the bones.
-		xp_for_bones = xp_to_take * 0.75
+			-- 85% of what you lost is put in the bones.
+			xp_for_bones[xptype] = take_amount * 0.85
 
-		xp.set_xp(pname, "digxp", xp_amount)
+			xp.set_xp(pname, xptype, amount)
+		end
 	end
 
 	-- Note: portal sickness only removed if player would leave bones.
@@ -466,7 +468,10 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	bone_mark.add_corpse(pos, pname)
 
 	local meta = minetest.get_meta(pos)
-	meta:set_float("digxp", xp_for_bones)
+
+	for xptype, amount in pairs(xp_for_bones) do
+		meta:set_float(xptype, amount)
+	end
 
 	meta:set_string("diedate", get_public_time())
 	meta:set_string("death_time", tostring(death_time))

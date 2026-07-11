@@ -10,6 +10,16 @@ serveressentials.outback_gates = {
 	ariba = {pos={x=-9168, y=4501, z=5836}, dir="ns"},
 }
 
+-- Helper function to "create" an inventory list for chest.
+local function make_main_inv(width, height)
+	local num = width * height
+	local main = {}
+	for i = 1, num, 1 do
+		table.insert(main, ItemStack(""))
+	end
+	return main
+end
+
 function serveressentials.get_gate(realm)
 	local data = serveressentials.outback_gates[realm]
 
@@ -158,6 +168,9 @@ local nodes = {
 
 	-- Lantern to light up the spawn cave.
 	{pos={x=-9224, y=4571, z=5861}, node={name="xdecor:lantern_hanging", param2=0}},
+
+	-- Iron chest in the spawn cave.
+	{pos={x=-9222, y=4569, z=5859}, node={name="morechests:ironchest_public_closed", param2=2}},
 }
 
 local function rebuild_nodes()
@@ -407,6 +420,11 @@ local metadata = {
 		author = OWNERNAME,
 		text = "Make your choice, adventurous Stranger,%nStrike a Door and bide the Danger!%nOr else wonder, till it drives you mad,%nWhat would have followed, if you had.%n---- C.S. Lewis (modified)"
 	}}},
+
+	-- Iron chest in the spawn cave.
+	{pos={x=-9222, y=4569, z=5859}, meta={fields={
+		infotext = "Unlocked Chest",
+	}, inventory={main=make_main_inv(4, 8)}}},
 }
 
 

@@ -351,7 +351,6 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 			local xp_amount = xp.get_xp(pname, "digxp")
 			xp_amount = (xp_amount / 3) * 2
 			xp.set_xp(pname, "digxp", xp_amount)
-			hud_clock.update_xp(pname)
 		end
 
 		-- If player died without a bed, they will return to the Outback when they
@@ -554,7 +553,6 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 	meta:set_int("time", 0)
 	minetest.get_node_timer(pos):start(10)
 
-	hud_clock.update_xp(pname)
 	armor.end_duel(player, "death")
 	pova.remove_modifier(player, "physics", "sprinting")
 
@@ -646,7 +644,6 @@ bones.reward_xp = function(meta, pname)
 		current_xp = xp.digxp_max
 	end
 	xp.set_xp(pname, "digxp", current_xp)
-	hud_clock.update_xp(pname)
 	meta:set_float("digxp", 0)
 end
 

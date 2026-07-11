@@ -79,7 +79,6 @@ function serveressentials.emergency_recall(pname, param)
 		xp_amount = xp_amount - percent_xp
 		if xp_amount < 0 then xp_amount = 0 end
 		xp.set_xp(pname, "digxp", xp_amount)
-		hud_clock.update_xp(pname)
 
 		-- Exactly as if player pressed "repawn" button on respawn formspec.
 		-- This will send player back to their bed (which they should have). It also

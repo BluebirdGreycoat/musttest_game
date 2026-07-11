@@ -298,7 +298,7 @@ local drop_node_list = {
 	["stoneworld:basalt_with_coal"] = true,
 	["stoneworld:basalt_with_copper"] = true,
 	["stoneworld:basalt_with_tin"] = true,
-	
+
 	-- Ir'xen gems.
 	["gems:ruby2_ore"] = true,
 	["gems:emerald2_ore"] = true,
@@ -498,7 +498,6 @@ function itempickup.handle_node_drops(pos, drops, digger)
 						digxp = xp.digxp_max
 					end
 					xp.set_xp(pname, "digxp", digxp)
-					hud_clock.update_xp(pname)
 				end
 			end
 		end -- If item in drop_xp list.
@@ -514,7 +513,7 @@ if not itempickup.run_once then
   local name = "itempickup:core"
   local file = itempickup.modpath .. "/init.lua"
   reload.register_file(name, file, false)
-  
+
 	function minetest.handle_node_drops(pos, drops, player)
 		return itempickup.handle_node_drops(pos, drops, player)
 	end

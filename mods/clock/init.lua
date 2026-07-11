@@ -4,6 +4,11 @@ local math_floor = math.floor
 
 -- Code API.
 if not minetest.global_exists("hud_clock") then hud_clock = {} end
+minetest.after(0, function()
+	xp.register_callback("on_xp_change", function(pname)
+		hud_clock.update_xp(pname)
+	end)
+end)
 
 local player_hud = {}
 

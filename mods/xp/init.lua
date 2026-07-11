@@ -7,6 +7,8 @@ xp.data = xp.data or {} -- Data is stored in string form.
 xp.dirty = true
 xp.dirty_players = xp.dirty_players or {}
 
+reload.install_simple_signals(xp)
+
 -- Localize for performance.
 local math_floor = math.floor
 local math_min = math.min
@@ -21,6 +23,8 @@ function xp.set_xp(pname, kind, amount)
 	xp.data[key] = tostring(amount)
 	xp.dirty = true
 	xp.dirty_players[pname] = true
+
+	xp.run_callbacks_after("on_xp_change", pname, kind)
 end
 
 
@@ -42,7 +46,6 @@ function xp.subtract_xp(pname, kind, count)
 		points = 0
 	end
 	xp.set_xp(pname, kind, points)
-	hud_clock.update_xp(pname)
 end
 
 
@@ -230,7 +233,6 @@ function xp.do_chatcommand(pname, param)
 			amount = 0
 		end
 		xp.set_xp(tokens[2], "digxp", amount)
-		hud_clock.update_xp(tokens[2])
 		amount = xp.get_xp(tokens[2], "digxp")
 		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
 	elseif tokens[1] == "add" then
@@ -256,7 +258,6 @@ function xp.do_chatcommand(pname, param)
 			total = 0
 		end
 		xp.set_xp(tokens[2], "digxp", total)
-		hud_clock.update_xp(tokens[2])
 		amount = xp.get_xp(tokens[2], "digxp")
 		minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(tokens[2]) .. "> now has " .. amount .. " XP.")
 	else

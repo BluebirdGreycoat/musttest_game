@@ -1526,6 +1526,10 @@ function CC.on_key_firsttime_use(pname)
 	CC.do_leave_channel(pname, "newbies")
 end
 
+minetest.after(0, function()
+	passport.register_callback("on_passport_first_use", "chat_channels", CC.on_key_firsttime_use)
+end)
+
 
 
 -- Called when player uses their PoC for the first time.

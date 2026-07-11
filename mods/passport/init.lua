@@ -10,6 +10,12 @@ passport.registered_players = passport.registered_players or {} -- Cache of regi
 passport.keyed_players = passport.keyed_players or {}
 passport.modpath = minetest.get_modpath("passport")
 
+reload.install_simple_signals(passport)
+
+passport.register_callback("on_passport_first_use", "passport", function(pname)
+	minetest.chat_send_player(pname, "# Server: Welcome. You have become a full citizen of Enyekala.")
+end)
+
 -- List of players with open keys.
 -- On formspec close, playername should be removed and close-sound played.
 passport.open_keys = passport.open_keys or {}
@@ -266,7 +272,7 @@ passport.on_use = function(itemstack, user, pointed)
 
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
-				chat_channels.on_key_firsttime_use(pname)
+				passport.run_callbacks_after("on_passport_first_use", pname)
 			end)
 
 			changed = true

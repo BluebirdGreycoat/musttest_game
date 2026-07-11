@@ -1,4 +1,6 @@
 
+local IMBUE_PROXIMITY_DISTANCE = 256
+
 -- Imbue or take experience points from a Rune Slab.
 -- Explicitly NOT checking protection! So keep your Rune Slabs HIDDEN.
 function xp.on_punch_sign(pos, node, pname)
@@ -111,16 +113,31 @@ local function do_particles(pos)
 	})
 end
 
+local function do_proximity_notify(pos, except_pname)
+	for _, pref in ipairs(minetest.get_connected_players()) do
+		local pname = pref:get_player_name()
+		if pname ~= except_pname then
+			local pos2 = pref:get_pos()
+			if vector.distance(pos, pos2) < IMBUE_PROXIMITY_DISTANCE then
+				minetest.chat_send_player(pname, "# Server: You feel electricity in the air as experience points are transferred.")
+			end
+		end
+	end
+end
+
 xp.register_callback("on_runeslab_imbue", "xp", function(pos, pname)
 	do_particles(pos)
+	do_proximity_notify(pos, pname)
 end)
 
 xp.register_callback("on_runeslab_retrieve", "xp", function(pos, pname)
 	do_particles(pos)
+	do_proximity_notify(pos, pname)
 end)
 
 xp.register_callback("on_runeslab_steal", "xp", function(pos, pname, original_owner)
 	do_particles(pos)
+	do_proximity_notify(pos, pname)
 
 	local pref_owner = minetest.get_player_by_name(original_owner)
 	if not pref_owner then return end

@@ -490,15 +490,9 @@ function itempickup.handle_node_drops(pos, drops, digger)
 				end
 			end
 
-			-- Increase player's XP if not at max yet.
+			-- Increase player's XP.
 			if drop_node_list[node.name] then
-				if digxp < xp.digxp_max then
-					digxp = digxp + (value * xp_gain_multiplier)
-					if digxp > xp.digxp_max then
-						digxp = xp.digxp_max
-					end
-					xp.set_xp(pname, "digxp", digxp)
-				end
+				xp.add_xp(pname, "digxp", (value * xp_gain_multiplier))
 			end
 		end -- If item in drop_xp list.
 	end

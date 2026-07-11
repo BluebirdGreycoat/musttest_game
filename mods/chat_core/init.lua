@@ -192,16 +192,16 @@ function chat_core.send_all_ex(params)
 					chat_core.alert_player_sound(pname)
 				end
 
-				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
+				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			end
 		else -- Message being echoed back to player that sent it.
 			if alwaysecho then
 				-- It should be a /me command.
-				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. newmsg)
+				minetest.chat_send_player(pname, prename .. color_nametag .. actname .. color_white .. postname .. chat_colorize.COLOR_ORANGE .. message)
 			else
 				-- Send chat to self if echo enabled.
 				local chosen_color = ALL_COLORS[COLOR_WHITE][COLOR_TOGGLE]
-				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. newmsg)
+				chat_echo.echo_chat(pname, prename .. color_nametag .. actname .. color_white .. postname .. chosen_color .. message)
 			end
 		end
 	end

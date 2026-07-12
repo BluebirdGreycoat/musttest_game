@@ -408,7 +408,7 @@ function hunger.on_globalstep(dtime)
 				if tonumber(tab.lvl) < HUNGER_STARVE_LVL then
 					-- but don't kill player
 					if hp > hp_stav then
-						player:set_hp(hp - hp_stav, {reason="hunger"})
+						player:set_hp(hp - hp_stav, {custom_type="hunger"})
 					end
 				end
 			end
@@ -556,7 +556,7 @@ function hunger.item_eat2(hunger_change, replace_with_item, poisen, heal, sound)
 					if newhp > hp_max then newhp = hp_max end
 					if newhp < 0 then newhp = 0 end
 
-					user:set_hp(newhp, {reason="hunger"})
+					user:set_hp(newhp, {custom_type="hunger"})
 				end
 			end)
 		end

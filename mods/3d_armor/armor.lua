@@ -64,12 +64,9 @@ function armor.get_hp_change_reason(engine_reason)
 		local reason = armor.hp_change_reason
 		armor.hp_change_reason = nil
 
-		-- Copy everything from the engine's reason, but don't clobber our special
-		-- 'reason' key.
+		-- Copy everything from the engine's reason.
 		for k, v in pairs(engine_reason) do
-			if k ~= "reason" then
-				reason[k] = v
-			end
+			reason[k] = v
 		end
 
 		return reason
@@ -581,6 +578,9 @@ end
 
 
 function armor.get_damage_type_from_reason(reason)
+	return reason.damage_groups or {}
+	-- More coding warcrimes.
+	--[[
 	local rs = reason.type or ""
 	if rs == "set_hp" or rs == "punch" then
 		-- Use custom reason only if available, otherwise use engine-defined reason,
@@ -597,24 +597,39 @@ function armor.get_damage_type_from_reason(reason)
 		end
 	end
 	return rs
+	--]]
 end
 
 
 
-function armor.damage_type_disables_cloak(rstr)
-	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom"
-			or rstr == "freeze"
-			or rstr == "crush" then
-		return true
+local DAMAGE_TYPES_DISABLING_CLOAK = {
+	fleshy = true,
+	arrow = true,
+	boom = true,
+	crush = true,
+}
+
+function armor.damage_type_disables_cloak(hpchange_reason)
+	local rstr = hpchange_reason.custom_type or hpchange_reason.reason or hpchange_reason.type
+	local dgroups = hpchange_reason.damage_groups or {}
+
+	for group, _ in pairs(dgroups) do
+		if DAMAGE_TYPES_DISABLING_CLOAK[group] then
+			return true
+		end
 	end
+
 	return false
 end
 
-function armor.armor_wear_ignores_damage(rstr)
+function armor.armor_wear_ignores_damage(hpchange_reason)
+	local rstr = hpchange_reason.custom_type or hpchange_reason.reason or hpchange_reason.type
+
 	if rstr == "" or rstr == "xp_update" or rstr == "hp_boost_end"
-			or rstr == "hunger" or rstr == "drown" or rstr == "poison" then
+			or rstr == "hunger" or rstr == "drown" then
 		return true
 	end
+
 	return false
 end
 
@@ -622,7 +637,7 @@ end
 
 -- Calc wear multiplier based on reason and armor piece.
 -- Notes: 'type' will be "set_hp" if from player:set_hp().
--- Must use 'reason' field in that case.
+-- Must use 'custom_type' field in that case.
 --
 -- Reason types are:
 --   fall (fall damage, duh)
@@ -630,7 +645,6 @@ end
 --   drown (drowning, duh)
 --   heat (caused by quite a few sources of heat, including lava)
 --   ground (ground/floor hazard, spikes, etc)
---   sharp (like cactus)
 --   crush (by falling node/object)
 --   portal (arcane damage by teleporting)
 --   poison (mushrooms, rotten meat)
@@ -641,18 +655,24 @@ end
 --
 -- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
-	local rs = armor.get_damage_type_from_reason(reason)
+	local dgroups = armor.get_damage_type_from_reason(reason)
 
 	--minetest.log('Reason: ' .. rs)
 
 	-- If reason not known, just return default wear multiplier.
-	if rs == "" then
+	if #dgroups == 0 then
 		return 1
 	end
 
 	if def._armor_wear_groups then
-		local mult = def._armor_wear_groups[rs] or 1
+		--local mult = def._armor_wear_groups[rs] or 1
 		--minetest.log('wear multiplier: ' .. mult)
+		local mult = 0
+		for group, _ in pairs(dgroups) do
+			if def._armor_wear_groups[group] then
+				mult = mult + def._armor_wear_groups[group]
+			end
+		end
 		return mult
 	end
 
@@ -683,7 +703,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		local huh = armor.get_hp_change_reason(reason)
 		if huh then
 			reason = huh
-			minetest.chat_send_all('replace dump: ' .. dump(reason))
+			--minetest.chat_send_all('replace dump: ' .. dump(reason))
 		end
 	end
 
@@ -696,7 +716,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	--minetest.log('reason: ' .. (reason.type or reason.reason or "N/A"))
-	--minetest.log('dump: ' .. dump(reason))
+	minetest.log('Customized PlayerHPChangeReason: ' .. dump(reason))
 	--minetest.chat_send_all('dump: ' .. dump(reason))
 	--minetest.log('on_player_hp_change: ' .. hp_change)
 
@@ -761,8 +781,8 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		end
 	end
 
-	local damage_type = armor.get_damage_type_from_reason(reason)
-	local ignore_wear = armor.armor_wear_ignores_damage(damage_type)
+	local damage_types = armor.get_damage_type_from_reason(reason)
+	local ignore_wear = armor.armor_wear_ignores_damage(reason)
 
 	-- Disable armor wear if player is dueling.
 	if armor.player_in_duel(pname) then
@@ -770,7 +790,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	-- Test code to check that I know what I'm doing.
-	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_type)
+	--minetest.log('hpchange type: ' .. reason.type .. ', reason: ' .. damage_types)
 	--minetest.log('scaled hp change: ' .. hp_change)
 
 	-- Do not scale damage if the engine type is 'set_hp'.
@@ -834,7 +854,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	-- Check for combat-related reasons.
 	-- (Ignore this if damage was blocked by the heal chance.)
-	if math.abs(hp_change) > 0 and armor.damage_type_disables_cloak(damage_type) then
+	if math.abs(hp_change) > 0 and armor.damage_type_disables_cloak(reason) then
 		cloaking.disable_if_enabled(pname, true)
 	end
 

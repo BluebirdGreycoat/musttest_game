@@ -308,6 +308,10 @@ local formspec_keysubs = {
 	crush = "crushing",
 }
 
+function armor.get_resistance_desc(resistance)
+	return formspec_keysubs[resistance] or "unknown"
+end
+
 function armor.get_armor_formspec(self, name)
 	if not armor.textures[name] then
 		minetest.log("error", "3d_armor: Player texture["..name.."] is nil [get_armor_formspec]")

@@ -287,7 +287,8 @@ function utility.damage_player(player, damage_type, damage, reason)
 
 	-- OMG this code is a warcrime.
 	if rt == "string" or rt == "nil" then
-		armor.notify_punch_reason({damage_groups[reason or damage_type]=damage})
+		local groupname = reason or damage_type
+		armor.notify_punch_reason({damage_groups={[groupname]=damage}})
 	elseif rt == "table" then
 		local nr = {reason = reason.reason or ""}
 		for k, v in pairs(reason) do

@@ -29,6 +29,28 @@ dofile(armor.modpath .. "/armor.lua")
 dofile(armor.modpath .. "/stomp.lua")
 dofile(armor.modpath .. "/duel.lua")
 
+function armor.describe_armor_resistances(data)
+	local resistances = data._armor_resist_groups or {}
+	if not next(resistances) then
+		return
+	end
+
+	local desc = ""
+
+	if data.groups.armor_heal and data.groups.armor_heal > 0 then
+		desc = desc .. "\nBlock: " .. math.floor(data.groups.armor_heal)
+	end
+
+	desc = desc .. "\nResistances:"
+	for resist, amount in pairs(resistances) do
+		local rname = armor.get_resistance_desc(resist)
+		rname = rname:sub(1, 1):upper() .. rname:sub(2)
+		desc = desc .. "\n\t" .. rname .. ": " .. amount
+	end
+
+	data.description = data.description .. desc
+end
+
 if not armor.run_once then
 	armor.run_once = true
 
@@ -36,6 +58,7 @@ if not armor.run_once then
 		data._armor_resist_groups = sysdmg.get_armor_resist_for(name)
 		data._armor_wear_groups = sysdmg.get_armor_wear_for(name)
 		data.groups = sysdmg.get_armor_groups_for(name, data.groups)
+		armor.describe_armor_resistances(data)
 		minetest.register_tool(name, data)
 	end
 

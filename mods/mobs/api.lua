@@ -1419,6 +1419,7 @@ local function punch_target(self, dtime)
 			end
 		end
 
+		-- If 'damage_group' is a table that overrides everything else.
 		local dgroup = self.damage_group or {fleshy=damage}
 		if type(dgroup) == "string" then
 			dgroup = {[dgroup]=damage}

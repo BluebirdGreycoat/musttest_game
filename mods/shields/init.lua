@@ -10,6 +10,7 @@ local function register_shield(name, data)
 		data.groups.armor_shield = 1
 	end
 	data.groups = sysdmg.get_armor_groups_for(name, data.groups)
+	armor.describe_armor_resistances(data)
 	minetest.register_tool(name, data)
 end
 

@@ -1419,15 +1419,20 @@ local function punch_target(self, dtime)
 			end
 		end
 
-		local dgroup = self.damage_group or "fleshy"
+		local dgroup = self.damage_group or {fleshy=damage}
+		if type(dgroup) == "string" then
+			dgroup = {[dgroup]=damage}
+		end
+		local final_dgroups = table.copy(dgroup)
+		final_dgroups.from_mob = 1
 
 		if self.attack:is_player() then
-			armor.notify_punch_reason({reason=dgroup})
+			armor.notify_punch_reason({reason=table.copy(dgroup)})
 		end
 
 		self.attack:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
-			damage_groups = {[dgroup] = damage, from_mob = 1}
+			damage_groups = final_dgroups,
 		}, nil)
 
 		-- Start punch timer; mob cannot punch again until timer reaches 0.

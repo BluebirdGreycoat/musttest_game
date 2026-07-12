@@ -683,7 +683,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 		local huh = armor.get_hp_change_reason(reason)
 		if huh then
 			reason = huh
-			--minetest.chat_send_all('replace dump: ' .. dump(reason))
+			minetest.chat_send_all('replace dump: ' .. dump(reason))
 		end
 	end
 

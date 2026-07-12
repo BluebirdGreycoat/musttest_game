@@ -13,6 +13,7 @@ sprint.stamina_hud = sprint.stamina_hud or {}
 local SPRINT_SPEED = 1.45
 local SPRINT_JUMP = 1.2
 local SPRINT_DEFAULT_STAMINA = 20
+local SPRING_MAXSTA_FROM_BUILDXP = SPRINT_DEFAULT_STAMINA * 10
 local SPRINT_HUD_ICONS = 46
 local SPRINT_USE_RATE = 3
 
@@ -25,7 +26,10 @@ local math_random = math.random
 
 
 function sprint.get_max_stamina(player)
-	return SPRINT_DEFAULT_STAMINA
+	local pname = player:get_player_name()
+	local buildxp = math.min(xp.get_xp(pname, "buildxp"), xp.digxp_hp_max)
+	local multiplier = buildxp / xp.digxp_hp_max
+	return math.max(SPRINT_DEFAULT_STAMINA, (SPRING_MAXSTA_FROM_BUILDXP * multiplier))
 end
 
 

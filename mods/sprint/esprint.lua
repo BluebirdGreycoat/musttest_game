@@ -12,7 +12,7 @@ sprint.stamina_hud = sprint.stamina_hud or {}
 
 local SPRINT_SPEED = 1.45
 local SPRINT_JUMP = 1.2
-local SPRINT_DEFAULT_STAMINA = 60
+local SPRINT_DEFAULT_STAMINA = 20
 local SPRINT_HUD_ICONS = 46
 local SPRINT_USE_RATE = 3
 

@@ -16,7 +16,8 @@ armor.formspec =
 	"button[0,0.5;2,0.5;main;Back]" ..
 	"image[4,0.25;2,4;armor_preview]" ..
 	"label[6,0.1;Health: hp_max]" ..
-	"label[6,0.4;Block: armor_heal]" ..
+	"label[6,0.4;Stamina: stamina_max]" ..
+	"label[6,0.7;Block: armor_heal]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -258,7 +259,7 @@ end
 
 function armor.update_armor(self, player)
 	-- Legacy support: Called when armor levels are changed
-	-- Other mods can hook on to this function, see hud mod for example 
+	-- Other mods can hook on to this function, see hud mod for example
 end
 
 
@@ -283,6 +284,16 @@ local function get_player_max_hp(name)
 		return math_floor(hp_max / scale)
 	end
 	return 20
+end
+
+
+
+local function get_player_max_stamina(name)
+	local pref = minetest.get_player_by_name(name)
+	if pref then
+		return math_floor(sprint.get_max_stamina(pref))
+	end
+	return 0
 end
 
 
@@ -316,11 +327,12 @@ function armor.get_armor_formspec(self, name)
 	formspec = formspec:gsub("armor_preview", armor.textures[name].preview)
 	formspec = formspec:gsub("armor_heal", math_floor(armor.def[name].heal))
 	formspec = formspec:gsub("hp_max", tostring(get_player_max_hp(name)))
+	formspec = formspec:gsub("stamina_max", tostring(get_player_max_stamina(name)))
 
 	--minetest.log('testing: ' .. type(armor.def[name].resistances))
 
 	-- Print out armor stats, whatever they are.
-	local y = 0.7
+	local y = 1.0
 	for k, v in pairs(armor.def[name].resistances) do
 		--minetest.log('k=' .. k .. ', v=' .. v)
 

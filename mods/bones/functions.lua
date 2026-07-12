@@ -11,8 +11,12 @@ local get_public_time = function()
   return os.date("!%Y/%m/%d, %H:%M:%S UTC")
 end
 
+-- How much XP player loses on death.
+local PLAYER_XP_LOSS_SCALAR = 0.25
+local PLAYER_XP_LOSS_MAXIMUM = 15000
+
 -- How much XP is lost when XP is stored in bones.
-local XP_LOSS_SCALAR_FROM_DEATH = 0.85
+local BONES_XP_LOSS_SCALAR = 0.85
 
 local share_bones_time = 1200
 local share_bones_time_early = (share_bones_time * 0.75)
@@ -428,15 +432,15 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 		for _, xptype in ipairs({"digxp", "buildxp"}) do
 			local amount = xp.get_xp(pname, xptype)
 
-			-- You lose 25% or 10K XP, whichever is less.
-			local take_amount = amount / 4
-			if take_amount > 10000 then take_amount = 10000 end
+			-- You lose some % up to a fixed maximum, whichever is less.
+			local take_amount = amount * PLAYER_XP_LOSS_SCALAR
+			take_amount = math.min(take_amount, PLAYER_XP_LOSS_MAXIMUM)
 
 			amount = amount - take_amount
 			if amount < 0 then amount = 0 end
 
 			-- Some % of what you lost is put in the bones.
-			xp_for_bones[xptype] = take_amount * XP_LOSS_SCALAR_FROM_DEATH
+			xp_for_bones[xptype] = take_amount * BONES_XP_LOSS_SCALAR
 
 			xp.set_xp(pname, xptype, amount)
 		end

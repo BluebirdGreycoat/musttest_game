@@ -506,8 +506,9 @@ local function heal_player(pname)
 	end
 
   local hp_max = pova.get_active_modifier(pref, "properties").hp_max
+  local sta_max = sprint.get_max_stamina(pref)
 	pref:set_hp(hp_max, {reason="heal_command"})
-	sprint.set_stamina(pref, SPRINT_STAMINA)
+	sprint.set_stamina(pref, sta_max)
 	bones.nohack.on_respawnplayer(pref)
 end
 

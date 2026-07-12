@@ -368,7 +368,7 @@ function beds.player_finishes_sleep(pname)
 		hunger.increase_hunger(pref, 6)
 
 		-- Refill stamina.
-		sprint.set_stamina(pref, SPRINT_STAMINA)
+		sprint.set_stamina(pref, sprint.get_max_stamina(pref))
 
 		-- Notify portal sickness mod.
 		portal_sickness.on_use_bed(pname)
@@ -384,7 +384,7 @@ end
 
 function beds.skip_night()
 	minetest.set_timeofday(0.23)
-  
+
   -- This assumes that players aren't kicked out of beds until after this function runs.
   -- Thus the need for 'minetest.after'.
   for k, _ in pairs(beds.player) do
@@ -537,7 +537,7 @@ function beds.on_rightclick(pos, player)
 		beds.report_respawn_status(name)
 		return
 	end
-  
+
 	local ppos = player:get_pos()
 	local tod = minetest.get_timeofday()
 

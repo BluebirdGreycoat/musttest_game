@@ -147,7 +147,7 @@ function cloaking.do_scan(pname)
 
 			-- There will always be at least one player (themselves).
 			if player_count > 1 or mob_count > 0 or
-					cursta <= (SPRINT_STAMINA * 0.1) then
+					cursta <= (sprint.get_max_stamina(pref) * 0.1) then
 				pdata.decloak_timer = pdata.decloak_timer + 1
 			else
 				if pdata.decloak_timer > 0 then
@@ -210,7 +210,7 @@ function cloaking.toggle_cloak(pname)
 	end
 
 	if not cloaking.players[pname] then
-		if sprint.get_stamina(player) < (SPRINT_STAMINA / 2) then
+		if sprint.get_stamina(player) < (sprint.get_max_stamina(player) / 2) then
 			minetest.chat_send_player(pname, "# Server: Cloak requires minimum 50% energy to activate.")
 			return
 		end

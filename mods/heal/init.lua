@@ -24,7 +24,7 @@ function heal.heal_health_and_hunger(pname)
   local hp_max = pova.get_active_modifier(player, "properties").hp_max
   player:set_hp(hp_max, {reason="heal_command"})
   hunger.update_hunger(player, 30)
-	sprint.set_stamina(player, SPRINT_STAMINA)
+	sprint.set_stamina(player, sprint.get_max_stamina(player))
 	portal_sickness.reset(pname)
 	bones.nohack.on_respawnplayer(player)
 
@@ -45,14 +45,14 @@ minetest.register_chatcommand("heal", {
       heal.heal_health_and_hunger(name)
       return true
     end
-    
+
     assert(type(param) == "string")
     local player = minetest.get_player_by_name(param)
     if not player then
       minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(param) .. "> not found.")
       return false
     end
-    
+
     minetest.chat_send_player(name, "# Server: Healing player <" .. rename.gpn(param) .. ">.")
     minetest.chat_send_player(param, "# Server: Player <" .. rename.gpn(name) .. "> healed you.")
     heal.heal_health_and_hunger(param)

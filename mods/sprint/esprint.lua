@@ -2,13 +2,19 @@
 Sprint mod for Minetest by GunshipPenguin
 
 To the extent possible under law, the author(s)
-have dedicated all copyright and related and neighboring rights 
+have dedicated all copyright and related and neighboring rights
 to this software to the public domain worldwide. This software is
-distributed without any warranty. 
+distributed without any warranty.
 ]]
 
 sprint.players = sprint.players or {}
 sprint.stamina_hud = sprint.stamina_hud or {}
+
+local SPRINT_SPEED = 1.45
+local SPRINT_JUMP = 1.2
+local SPRINT_DEFAULT_STAMINA = 60
+local SPRINT_HUD_ICONS = 46
+local SPRINT_USE_RATE = 3
 
 -- Localize.
 local players = sprint.players
@@ -18,19 +24,24 @@ local math_random = math.random
 
 
 
+function sprint.get_max_stamina(player)
+	return SPRINT_DEFAULT_STAMINA
+end
+
+
+
 function sprint.on_joinplayer(player)
 	local playerName = player:get_player_name()
 
 	players[playerName] = {
 		sprinting = false,
-		timeOut = 0, 
+		timeOut = 0,
 		stamina = 0,
 		shouldSprint = false,
 		bars = 0,
 	}
 
 	-- Background images.
-	-- Add them first, since draw order is determined by ID.
 	player:hud_add({
 		type = "statbar",
 		position = {x=0.5,y=1},
@@ -39,6 +50,7 @@ function sprint.on_joinplayer(player)
 		number = SPRINT_HUD_ICONS,
 		alignment = {x=0,y=1},
 		offset = {x=-((16*23)/2), y=-87},
+		z_index = 0,
 	})
 
 	-- Main stat icons.
@@ -50,6 +62,7 @@ function sprint.on_joinplayer(player)
 		number = 0,
 		alignment = {x=0,y=1},
 		offset = {x=-((16*23)/2), y=-87},
+		z_index = 1,
 	})
 
 	sprint.set_stamina(player, 0)
@@ -63,36 +76,46 @@ end
 -- Public API function.
 function sprint.set_stamina(player, sta)
 	local pname = player:get_player_name()
-	if players[pname] then
-		if sta > SPRINT_STAMINA then sta = SPRINT_STAMINA end
-		local hp_max = pova.get_active_modifier(player, "properties").hp_max
-		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
-		if sta > maxstamina then
-			sta = maxstamina
-		end
-		players[pname]["stamina"] = sta
-		local numBars = floor((sta/SPRINT_STAMINA)*SPRINT_HUD_ICONS)
-		player:hud_change(players[pname]["hud"], "number", numBars)
+	if not players[pname] then
+		return
 	end
+
+	local max_sta = sprint.get_max_stamina(player)
+	if sta > max_sta then sta = max_sta end
+	local hp_max = pova.get_active_modifier(player, "properties").hp_max
+	local maxstamina = floor((player:get_hp() / hp_max) * max_sta)
+
+	if sta > maxstamina then
+		sta = maxstamina
+	end
+
+	players[pname]["stamina"] = sta
+	local numBars = floor((sta/max_sta)*SPRINT_HUD_ICONS)
+	player:hud_change(players[pname]["hud"], "number", numBars)
 end
 
 -- Public API function.
 function sprint.add_stamina(player, sta)
 	local pname = player:get_player_name()
-	if players[pname] then
-		local stamina = players[pname]["stamina"]
-		stamina = stamina + sta
-		if stamina > SPRINT_STAMINA then stamina = SPRINT_STAMINA end
-		if stamina < 0 then stamina = 0 end
-		local hp_max = pova.get_active_modifier(player, "properties").hp_max
-		local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
-		if stamina > maxstamina then
-			stamina = maxstamina
-		end
-		players[pname]["stamina"] = stamina
-		local numBars = floor((stamina/SPRINT_STAMINA)*SPRINT_HUD_ICONS)
-		player:hud_change(players[pname]["hud"], "number", numBars)
+	if not players[pname] then
+		return
 	end
+
+	local max_sta = sprint.get_max_stamina(player)
+	local stamina = players[pname]["stamina"]
+	stamina = stamina + sta
+	if stamina > max_sta then stamina = max_sta end
+	if stamina < 0 then stamina = 0 end
+	local hp_max = pova.get_active_modifier(player, "properties").hp_max
+	local maxstamina = floor((player:get_hp() / hp_max) * max_sta)
+
+	if stamina > maxstamina then
+		stamina = maxstamina
+	end
+
+	players[pname]["stamina"] = stamina
+	local numBars = floor((stamina/max_sta)*SPRINT_HUD_ICONS)
+	player:hud_change(players[pname]["hud"], "number", numBars)
 end
 
 function sprint.get_stamina(player)
@@ -132,6 +155,7 @@ function sprint.globalstep(dtime)
 	for playerName, playerInfo in pairs(players) do
 		local player = minetest.get_player_by_name(playerName)
 		if player ~= nil then
+			local MAX_STA = sprint.get_max_stamina(player)
 			--Check if the player should be sprinting
 			local control = player:get_player_control()
 			if control["aux1"] and control["up"] then
@@ -139,8 +163,8 @@ function sprint.globalstep(dtime)
 			else
 				players[playerName]["shouldSprint"] = false
 			end
-			
-			--If the player is sprinting, create particles behind him/her 
+
+			--If the player is sprinting, create particles behind him/her
 			if do_particle and playerInfo["sprinting"] == true then
 				if not gdac_invis.is_invisible(playerName) then
 					local numParticles = math_random(1, 2)
@@ -188,17 +212,17 @@ function sprint.globalstep(dtime)
 			elseif players[playerName]["shouldSprint"] == false then
 				sprint.set_sprinting(playerName, false)
 			end
-			
+
 			--Lower the player's stamina by dtime if he/she is sprinting and set his/her state to 0 if stamina is zero
-			if playerInfo["sprinting"] == true then 
+			if playerInfo["sprinting"] == true then
 				playerInfo["stamina"] = playerInfo["stamina"] - (dtime * SPRINT_USE_RATE)
 				if playerInfo["stamina"] <= 0 then
 					playerInfo["stamina"] = 0
 					sprint.set_sprinting(playerName, false)
 				end
-			
+
 			--Increase player's stamina if he/she is not sprinting and his/her stamina is less than SPRINT_STAMINA
-			elseif playerInfo["sprinting"] == false and playerInfo["stamina"] < SPRINT_STAMINA then
+			elseif playerInfo["sprinting"] == false and playerInfo["stamina"] < MAX_STA then
 				if hunger.get_hunger(player) >= 10 then
 					local mult = 0.4
 
@@ -233,18 +257,18 @@ function sprint.globalstep(dtime)
 			end
 
 			-- Cap stamina at SPRINT_STAMINA
-			if playerInfo["stamina"] > SPRINT_STAMINA then
-				playerInfo["stamina"] = SPRINT_STAMINA
+			if playerInfo["stamina"] > MAX_STA then
+				playerInfo["stamina"] = MAX_STA
 			end
 
 			local hp_max = pova.get_active_modifier(player, "properties").hp_max
-			local maxstamina = floor((player:get_hp() / hp_max) * SPRINT_STAMINA)
+			local maxstamina = floor((player:get_hp() / hp_max) * MAX_STA)
 			if playerInfo["stamina"] > maxstamina then
 				playerInfo["stamina"] = maxstamina
 			end
-			
+
 			-- Update the players's hud sprint stamina bar
-			local numBars = floor((playerInfo["stamina"]/SPRINT_STAMINA)*SPRINT_HUD_ICONS)
+			local numBars = floor((playerInfo["stamina"]/MAX_STA)*SPRINT_HUD_ICONS)
 
 			-- Don't send hud update every frame.
 			if numBars ~= playerInfo["bars"] then
@@ -261,7 +285,7 @@ end
 -- Sets the state of a player (0=stopped/moving, 1=sprinting)
 function sprint.set_sprinting(playerName, sprinting)
 	local player = minetest.get_player_by_name(playerName)
-	
+
 	-- Speed multiplier based on player's health relative to max.
 	-- This is as good a place as any to run this computation.
 	local hp = player:get_hp()

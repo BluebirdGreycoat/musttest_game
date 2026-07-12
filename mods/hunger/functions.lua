@@ -217,7 +217,7 @@ function hunger.on_dignode(pos, oldnode, player)
 		end
 
 		-- The amount of exhaustion added is based the percentage of stamina.
-		local maxsta = SPRINT_STAMINA
+		local maxsta = sprint.get_max_stamina(player)
 		local cursta = sprint.get_stamina(player)
 		local pccsta = (cursta / maxsta)
 		local invsta = (1.0 - pccsta)
@@ -269,7 +269,7 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 		pinfo.place_time = os.time()
 
 		-- The amount of exhaustion added is based the percentage of stamina.
-		local maxsta = SPRINT_STAMINA
+		local maxsta = sprint.get_max_stamina(player)
 		local cursta = sprint.get_stamina(player)
 		local pccsta = (cursta / maxsta)
 		local invsta = (1.0 - pccsta)

@@ -75,7 +75,7 @@ sysdmg.damage_groups = {
   ["default:sword_steel"]     = {fleshy= 6.0*SCALE, knockback=1.5*KNB},
   ["default:sword_bronze"]    = {fleshy=10.0*SCALE, knockback=1.5*KNB},
   ["default:sword_bronze2"]   = {fleshy=10.0*SCALE, knockback=1.5*KNB},
-  ["default:sword_mese"]      = {fleshy=0.2*SCALE,  knockback=1.3*KNB},
+  ["default:sword_mese"]      = {fleshy=8.7*SCALE,  knockback=1.3*KNB},
   ["default:sword_diamond"]   = {fleshy= 8.0*SCALE, knockback=1.3*KNB},
   ["moreores:sword_silver"]   = {shock=6.0*SCALE, fleshy=0.2*SCALE, freeze=0.2*SCALE, knockback=1.3*KNB},
   ["moreores:sword_mithril"]  = {fleshy=10.0*SCALE, knockback=1.3*KNB},

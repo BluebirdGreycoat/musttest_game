@@ -1,7 +1,7 @@
 
 -- Globally reduce all weapon damage to provide longer reaction time in PvP.
 -- Normal damage scaling would be 500.
-local SCALE = 250
+local SCALE = 150
 local KNB = 100
 
 -- Damage groups for all weapons.

@@ -4520,7 +4520,7 @@ end
 
 
 -- is Took Ranks mod active?
-local tr = minetest.get_modpath("toolranks")
+local HAVE_TOOLRANKS = minetest.get_modpath("toolranks")
 
 
 
@@ -4574,17 +4574,30 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	do
-		for group, _ in pairs(tool_capabilities.damage_groups or {}) do
+		local tool_level_scaling = toolranks.get_tool_level(weapon)
+
+		for group, group_damage in pairs(tool_capabilities.damage_groups or {}) do
+			if group == "knockback" then
+				goto skip_group
+			end
+
+			local act_damage = group_damage or 0
 			tmp = tflp / (tool_capabilities.full_punch_interval or 1.5)
 
+			-- Clamp time from last punch.
 			if tmp < 0 then
 				tmp = 0.0
 			elseif tmp > 1 then
 				tmp = 1.0
 			end
 
-			damage = damage + (tool_capabilities.damage_groups[group] or 0)
-				* tmp * ((armor[group] or 0) / 100.0)
+			damage = damage + (
+				(act_damage * tool_level_scaling)
+				* tmp -- Time from last punch.
+				* ((armor[group] or 0) / 100.0)
+			)
+
+			::skip_group::
 		end
 	end
 
@@ -4618,10 +4631,9 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		-- toolrank support
 		local wear = floor((punch_interval / 75) * 9000)
 
-		if tr then
-			if weapon:get_definition()
-					and weapon:get_definition().original_description then
-				weapon:add_wear(toolranks.new_afteruse(weapon, hitter, nil, {wear = wear}))
+		if HAVE_TOOLRANKS then
+			if weapon:get_definition() and weapon:get_definition().original_description then
+				weapon = toolranks.new_afteruse(weapon, hitter, nil, {wear = wear})
 			end
 		else
 			weapon:add_wear(wear)

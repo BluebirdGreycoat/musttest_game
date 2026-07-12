@@ -139,56 +139,20 @@ end
 
 function toolranks.new_afteruse(itemstack, user, node, digparams)
 	-- If either is not specified, then behave like builtin.
-	if not user or not node then
-		itemstack:add_wear(digparams.wear)
+	if not user or not user:is_player() then
 		return itemstack
 	end
 
+	local ignore_this_node = false
+	local ndef = node and minetest.registered_nodes[node.name] or nil
 	local pname = user:get_player_name()
 
-	-- Initialize data if not already done.
-	local pdata = players[pname]
-	if not pdata then
-		players[pname] = {}
-		pdata = players[pname]
-
-		-- Default values.
-		pdata.last_node = node.name -- Name of the last node dug, used for caching.
-		pdata.last_ignore = false
-
-		local ndef = minetest.registered_nodes[node.name]
-		if ndef then
-			if ndef._toolranks then
-				if ndef._toolranks.ignore then
-					pdata.last_ignore = true
-				end
-			end
-		else
-			-- Ignore unknown nodes.
-			pdata.last_ignore = true
+	if ndef and ndef._toolranks then
+		if ndef._toolranks.ignore then
+			ignore_this_node = true
 		end
 	end
 
-	-- Get cached player data.
-	if pdata.last_node ~= node.name then
-		pdata.last_node = node.name
-		pdata.last_ignore = false
-
-		-- If this node is different from the last node, update cached information.
-		local ndef = minetest.registered_nodes[node.name]
-		if ndef then
-			if ndef._toolranks then
-				if ndef._toolranks.ignore then
-					pdata.last_ignore = true
-				end
-			end
-		else
-			-- Ignore unknown nodes.
-			pdata.last_ignore = true
-		end
-	end
-
-	local ignore_this_node = pdata.last_ignore
   local itemmeta  = itemstack:get_meta() -- Metadata
   local itemdef   = itemstack:get_definition() -- Item Definition
   local itemdesc  = itemdef.original_description -- Original Description

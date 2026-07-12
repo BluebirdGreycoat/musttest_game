@@ -962,19 +962,90 @@ tooldata["sword_amethyst_rf"] = {
 	range_modifier = 1.5,
 }
 
-function td_api.arrow_toolcaps(name, damage)
-	--minetest.log(name)
-	local tc = {
+
+
+-- Don't set 'fleshy' damage -- that represents melee.
+local TAD_SCALE = 150 -- Throwing arrow damage scale.
+local THROWING_ARROW_TOOLCAPS = {
+	["throwing:arrow_obsidian"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 2,
+		damage_groups = {},
+	},
+	["throwing:arrow_shell"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 1,
+		damage_groups = {boom=5*TAD_SCALE},
+	},
+	["throwing:arrow_tnt"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 1,
+		damage_groups = {}, -- Not actually needed since TNT code is run.
+	},
+	["throwing:arrow_fireworks_blue"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 1,
+		damage_groups = {heat=5*TAD_SCALE},
+	},
+	["throwing:arrow_fireworks_red"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 1,
+		damage_groups = {heat=5*TAD_SCALE},
+	},
+	["throwing:arrow_stone"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 1,
+		damage_groups = {crush=5*TAD_SCALE, knockback=1000},
+	},
+	["throwing:arrow_diamond"] = {
 		full_punch_interval = 1.0,
 		max_drop_level = 3,
-		damage_groups = {
-			arrow = damage,
-			knockback = 400,
-			from_arrow = 0,
-		},
-	}
+		damage_groups = {},
+	},
+	["throwing:arrow_mese"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 2,
+		damage_groups = {shock=5*TAD_SCALE},
+	},
+	["throwing:arrow_steel"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 2,
+		damage_groups = {},
+	},
+	["throwing:arrow_fire"] = {
+		full_punch_interval = 1.0,
+		max_drop_level = 2,
+		damage_groups = {heat=5*TAD_SCALE},
+	},
+}
+
+-- Get toolcaps/damage-groups from arrow name.
+-- This lets us know how to punch the target.
+function td_api.arrow_toolcaps(name, damage)
+	minetest.log(name)
+	local tc = table.copy(THROWING_ARROW_TOOLCAPS[name] or {})
+
+	-- Fallback.
+	if not next(tc) then
+		tc = {
+			full_punch_interval = 1.0,
+			max_drop_level = 3,
+			damage_groups = {},
+		}
+	end
+
+	-- All arrows also do ranged 'arrow' damage.
+	tc.damage_groups.arrow = damage -- Ranged damage is variable.
+	tc.damage_groups.from_arrow = 0 -- Signal cityblock code.
+
+	if not tc.damage_groups.knockback then
+		tc.damage_groups.knockback = 400
+	end
+
 	-- This table gets sent through the engine, so only builtin parameters work.
 	return tc
 end
+
+
 
 dofile(modpath .. "/technic.lua")

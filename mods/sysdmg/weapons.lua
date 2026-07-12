@@ -111,14 +111,29 @@ do
   end
 end
 
+--- Convert a byte string from SecureRandom into an unsigned integer.
+--- @param byte_count integer? Number of bytes (default 4). Max sensible is ~7-8.
+--- @return integer
+local function secure_random_int(byte_count)
+  byte_count = byte_count or 4
+  local sr = SecureRandom()
+  local bytes = sr:next_bytes(byte_count)
+
+  local num = 0
+  for i = 1, #bytes do
+    num = num * 256 + string.byte(bytes, i)
+  end
+  return num
+end
+
 -- Make calculating the "hard meta" rather difficult.
 do
-  local pr = PcgRandom(os.time())
+  local pr = PcgRandom(secure_random_int())
   for weapon, groups in pairs(sysdmg.damage_groups) do
     for damage, amount in pairs(groups) do
       -- Skip special types.
       if damage ~= "knockback" then
-        amount = math.max(1, (amount + pr:next(-50, 50)))
+        amount = math.max(1, (amount + pr:next(-10, 10)))
         groups[damage] = amount
       end
     end

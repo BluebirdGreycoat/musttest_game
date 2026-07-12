@@ -11,6 +11,9 @@ local get_public_time = function()
   return os.date("!%Y/%m/%d, %H:%M:%S UTC")
 end
 
+-- How much XP is lost when XP is stored in bones.
+local XP_LOSS_SCALAR_FROM_DEATH = 0.85
+
 local share_bones_time = 1200
 local share_bones_time_early = (share_bones_time * 0.75)
 local share_bones_time_city = (share_bones_time * 10.0)
@@ -432,8 +435,8 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 			amount = amount - take_amount
 			if amount < 0 then amount = 0 end
 
-			-- 85% of what you lost is put in the bones.
-			xp_for_bones[xptype] = take_amount * 0.85
+			-- Some % of what you lost is put in the bones.
+			xp_for_bones[xptype] = take_amount * XP_LOSS_SCALAR_FROM_DEATH
 
 			xp.set_xp(pname, xptype, amount)
 		end

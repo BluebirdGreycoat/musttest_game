@@ -246,7 +246,7 @@ minetest.register_node(':aradonia:caveflower13', {
 	buildable_to = true,
 
 	damage_per_second = 2*500,
-  _damage_per_second_type = "snappy",
+  _damage_per_second_type = "poison",
 	_death_message = {
 		"The firethorns got <player>.",
 		"<player> was pierced by firethorns.",

@@ -14,7 +14,7 @@ mobs.register_mob("animalworld:suboar", {
 
 	reach = 2,
 	damage = 8*500,
-	damage_group = "snappy",
+	damage_group = "fleshy",
 	hp_min = 5*500,
 	hp_max = 35*500,
 	armor = 70,

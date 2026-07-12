@@ -46,9 +46,6 @@ function utility.builtin_armor_groups(groups)
 		-- Freeze damage.
 		freeze = 100,
 
-		-- Piercing/striking.
-		--snappy = 100,
-
 		-- Cleaving.
 		--choppy = 100,
 

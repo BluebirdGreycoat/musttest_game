@@ -79,7 +79,7 @@ mobs.register_mob("nssm:morde", {
 				-- punch player
 				self.attack:punch(self.object, 1.0,  {
 					full_punch_interval=1.0,
-					damage_groups = {snappy=self.damage}
+					damage_groups = {poison=self.damage}
 				}, nil)
 
 				minetest.add_particlespawner({

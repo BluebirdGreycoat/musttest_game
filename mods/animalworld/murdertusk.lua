@@ -29,7 +29,7 @@ mobs.register_mob("animalworld:murdertusk", {
 
 	reach = 2,
 	damage = 10*500,
-	damage_group = "snappy",
+	damage_group = "fleshy",
 	hp_min = 20*500,
 	hp_max = 40*500,
 	armor = 50,

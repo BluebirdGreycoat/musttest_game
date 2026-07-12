@@ -9,7 +9,7 @@ mobs.register_mob("oerkki:oerkki", {
 	reach = 2,
 	punch_reach = 3,
 	damage = 3*500,
-	damage_group = "snappy",
+	damage_group = "poison",
 	hp_min = 8*500,
 	hp_max = 34*500,
 	armor = 100,
@@ -40,7 +40,7 @@ mobs.register_mob("oerkki:oerkki", {
 	lava_damage = 100*500,
 	light_damage = 1*500,
 	fear_height = 0,
-	
+
 	animation = {
 		stand_start = 1,
 		stand_end = 29,
@@ -53,7 +53,7 @@ mobs.register_mob("oerkki:oerkki", {
 		speed_normal = 15,
 		speed_run = 15,
 	},
-	
+
 	replace_rate = 10,
 	replace_what = {
     "torches:torch_floor",

@@ -999,7 +999,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", (1*500), "ground")
+			utility.damage_player(player, "fleshy", (1*500))
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a moon spike.")
@@ -1036,7 +1036,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", 1*500, "ground")
+			utility.damage_player(player, "fleshy", 1*500)
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a salt spike.")
@@ -1070,7 +1070,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", 1*500, "ground")
+			utility.damage_player(player, "fleshy", 1*500)
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
@@ -1104,7 +1104,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", 1*500, "ground")
+			utility.damage_player(player, "fleshy", 1*500)
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a rock spike.")
@@ -1139,7 +1139,7 @@ for i=1, 4, 1 do
 			minetest.swap_node(pos, node)
 		end,
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", 1*500, "ground")
+			utility.damage_player(player, "fleshy", 1*500)
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a crystal spike.")

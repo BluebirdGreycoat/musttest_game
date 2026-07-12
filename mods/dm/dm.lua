@@ -17,8 +17,8 @@ mobs.register_mob("dm:dm", {
 	description = "Dungeon Master",
 	type = "monster",
 	passive = false,
-	damage = 4*500,
-	damage_group = "crush",
+	--damage = 4*500,
+	damage_group = {crush=3*500, fleshy=1*500},
 	armor_level = 3,
 	attack_type = "dogshoot",
 	specific_allies = {

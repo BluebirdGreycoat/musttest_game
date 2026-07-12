@@ -1135,7 +1135,7 @@ minetest.register_node("default:snowblock", {
 
 	--damage_per_second = 2*500,
 	post_effect_color = {a=255, r=255, g=255, b=255},
-    
+
 	sounds = default.node_sound_snow_defaults(),
 
 	-- Hack to notify self.
@@ -1354,7 +1354,7 @@ minetest.register_node("default:stone_with_mese", {
 	_tnt_drop = "default:mese_crystal 3",
 	silverpick_drop = true,
 	sounds = default.node_sound_stone_defaults(),
-	
+
 	-- Mese in stone reacts badly to lava.
 	on_melt = function(pos, other)
 		minetest.after(0, function()
@@ -1376,7 +1376,7 @@ minetest.register_node("default:mese", {
 	groups = utility.dig_groups("hardstone", {melts = 1}),
 	sounds = default.node_sound_stone_defaults(),
 	light_source = 3,
-	
+
 	-- Mese in stone reacts badly to lava.
 	-- Meseblock makes a much larger blast.
 	on_melt = function(pos, other)
@@ -1575,12 +1575,12 @@ do
 			local stack = puncher:get_wielded_item()
 			local name = stack:get_name() or ""
 			if not string.find(name, "axe") then
-				utility.damage_player(puncher, "fleshy", 1*500, "sharp")
+				utility.damage_player(puncher, "fleshy", 1*500)
 			end
 		end,
 
 		on_player_walk_over = function(pos, player)
-			utility.damage_player(player, "fleshy", 1*500, "ground")
+			utility.damage_player(player, "fleshy", 1*500)
 
 			if player:get_hp() == 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on cactus. Noob!")

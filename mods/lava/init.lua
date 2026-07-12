@@ -90,7 +90,7 @@ if not lava.run_once then
 					local node = minetest.get_node(pos)
 					utility.damage_player(player, "heat", 20*500, {
 						reason = "node_damage",
-						damage_group = "heat",
+						damage_groups = {heat=20*500},
 						source_node = node.name,
 						node_pos = pos,
 					})
@@ -180,7 +180,7 @@ if not lava.run_once then
 					local node = minetest.get_node(pos)
 					utility.damage_player(player, "heat", 20*500, {
 						reason = "node_damage",
-						damage_group = "heat",
+						damage_groups = {heat=20*500},
 						source_node = node.name,
 						node_pos = pos,
 					})

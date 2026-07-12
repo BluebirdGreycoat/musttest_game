@@ -11,34 +11,34 @@ local math_random = math.random
 -- Check if the position `pos` is the center of a portal ring.
 flameportal.check_is_gateway = function(pos)
     local p = vector_round(pos)
-    
+
     local positions = {
         -- North side.
         {x=p.x-1, y=p.y,   z=p.z+2},
         {x=p.x,   y=p.y,   z=p.z+2},
         {x=p.x+1, y=p.y,   z=p.z+2},
-        
+
         -- South side.
         {x=p.x-1, y=p.y,   z=p.z-2},
         {x=p.x,   y=p.y,   z=p.z-2},
         {x=p.x+1, y=p.y,   z=p.z-2},
-        
+
         -- West side.
         {x=p.x-2, y=p.y,   z=p.z+1},
         {x=p.x-2, y=p.y,   z=p.z  },
         {x=p.x-2, y=p.y,   z=p.z-1},
-        
+
         -- East side.
         {x=p.x+2, y=p.y,   z=p.z+1},
         {x=p.x+2, y=p.y,   z=p.z  },
         {x=p.x+2, y=p.y,   z=p.z-1},
     }
-    
+
     for k, v in ipairs(positions) do
         local n1 = minetest.get_node(v).name
         if n1 ~= "default:obsidian" then return false end
     end
-    
+
     local pos_air = {
         {x=p.x,   y=p.y,   z=p.z  },
         {x=p.x,   y=p.y,   z=p.z+1},
@@ -50,12 +50,12 @@ flameportal.check_is_gateway = function(pos)
         {x=p.x-1, y=p.y,   z=p.z+1},
         {x=p.x-1, y=p.y,   z=p.z-1},
     }
-    
+
     for k, v in ipairs(pos_air) do
         local n1 = minetest.get_node(v).name
         if n1 ~= "air" then return false end
     end
-    
+
     return true
 end
 
@@ -73,21 +73,21 @@ flameportal.find_gateway = function(pos)
         {x=p.x,   y=p.y, z=p.z+2},
         {x=p.x+1, y=p.y, z=p.z+2},
         {x=p.x+2, y=p.y, z=p.z+2},
-        
+
         -- South side.
         {x=p.x-2, y=p.y, z=p.z-2},
         {x=p.x-1, y=p.y, z=p.z-2},
         {x=p.x,   y=p.y, z=p.z-2},
         {x=p.x+1, y=p.y, z=p.z-2},
         {x=p.x+2, y=p.y, z=p.z-2},
-        
+
         -- West side.
         {x=p.x-2, y=p.y, z=p.z+2},
         {x=p.x-2, y=p.y, z=p.z+1},
         {x=p.x-2, y=p.y, z=p.z  },
         {x=p.x-2, y=p.y, z=p.z-1},
         {x=p.x-2, y=p.y, z=p.z-2},
-        
+
         -- East side.
         {x=p.x+2, y=p.y, z=p.z+2},
         {x=p.x+2, y=p.y, z=p.z+1},
@@ -95,11 +95,11 @@ flameportal.find_gateway = function(pos)
         {x=p.x+2, y=p.y, z=p.z-1},
         {x=p.x+2, y=p.y, z=p.z-2},
     }
-    
+
     for k, v in ipairs(positions) do
         if flameportal.check_is_gateway(v) then return true, v end
     end
-    
+
     return false, nil
 end
 
@@ -108,32 +108,32 @@ end
 -- Attempt to activate a gateway at the given position.
 flameportal.activate_gateway = function(pos)
     if flameportal.check_is_gateway(pos) == false then return end
-    
+
     local p = vector_round(pos)
     minetest.log("action", "Nether portal activated at (" .. minetest.pos_to_string(p) .. ")")
-    
+
     local flames = {
         -- North side.
         {x=p.x-1, y=p.y+1, z=p.z+2},
         {x=p.x,   y=p.y+1, z=p.z+2},
         {x=p.x+1, y=p.y+1, z=p.z+2},
-        
+
         -- South side.
         {x=p.x-1, y=p.y+1, z=p.z-2},
         {x=p.x,   y=p.y+1, z=p.z-2},
         {x=p.x+1, y=p.y+1, z=p.z-2},
-        
+
         -- West side.
         {x=p.x-2, y=p.y+1, z=p.z+1},
         {x=p.x-2, y=p.y+1, z=p.z  },
         {x=p.x-2, y=p.y+1, z=p.z-1},
-        
+
         -- East side.
         {x=p.x+2, y=p.y+1, z=p.z+1},
         {x=p.x+2, y=p.y+1, z=p.z  },
         {x=p.x+2, y=p.y+1, z=p.z-1},
     }
-    
+
     for k, v in ipairs(flames) do
         if math_random(1, 3) == 1 then
             if minetest.get_node(v).name == "air" then
@@ -141,7 +141,7 @@ flameportal.activate_gateway = function(pos)
             end
         end
     end
-    
+
     local void = {
         {x=p.x,   y=p.y, z=p.z  },
         {x=p.x,   y=p.y, z=p.z+1},
@@ -153,7 +153,7 @@ flameportal.activate_gateway = function(pos)
         {x=p.x-1, y=p.y, z=p.z+1},
         {x=p.x+1, y=p.y, z=p.z+1},
     }
-    
+
     for k, v in ipairs(void) do
         minetest.add_node(v, {name="voidstone:void"})
     end
@@ -174,7 +174,7 @@ flameportal.make_platform = function(param)
         if node.name == "air" or node.name == "rackstone:redrack" then
           if not minetest.test_protection(pos, "") then
             minetest.add_node(pos, {name="rackstone:redrack"})
-            
+
             if vector.equals(pos, param.top) then
               minetest.add_node(pos, {name="flameportal:redrack"})
             end
@@ -221,7 +221,7 @@ flameportal.teleport_player = function(name, voidpos)
 					return
 				end
 			end
-      
+
       local pp = player:get_pos()
       if pp.y > -25000 then
         -- Player is not in nether. Teleport them to the nether.
@@ -245,7 +245,7 @@ flameportal.teleport_player = function(name, voidpos)
 								minetest.after(0.5, function()
 									local pref = minetest.get_player_by_name(pname)
 									if pref and pref:is_player() then
-                    utility.damage_player(pref, "poison", (math_random(2, 15)*500), "portal")
+                    utility.damage_player(pref, "poison", (math_random(2, 15)*500))
 									end
 								end)
 							end
@@ -272,7 +272,7 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
   local target
 
   meta:mark_as_private("target")
-  
+
   if spos == "" then
     -- If metadata target hasn't been initialized yet.
     local pos = vector_round(voidpos)
@@ -292,12 +292,12 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
     target = minetest.string_to_pos(spos)
     if target == nil then return end
   end
-  
+
   -- Create platform beneath player.
   local minp = {x=target.x-1, y=target.y-12,   z=target.z-1}
   local maxp = {x=target.x+1, y=target.y-6,    z=target.z+1}
   local tb = {minp=minp, maxp=maxp, top={x=target.x, y=target.y-6, z=target.z}}
-    
+
   -- Create flame pillar.
   local minp2 = {x=target.x-1, y=target.y-3,   z=target.z-1}
   local maxp2 = {x=target.x+1, y=target.y+10,  z=target.z+1}
@@ -307,7 +307,7 @@ flameportal.teleport_player_to_nether = function(player, voidpos)
     avoid_x = target.x,
     avoid_z = target.z,
   }
-  
+
   target.y = target.y+10
 
 	preload_tp.execute({
@@ -378,7 +378,7 @@ flameportal.after_portal_destruct = function(pos, oldnode)
             {x=pos.x,   y=pos.y+1, z=pos.z  },
             {x=pos.x,   y=pos.y-1, z=pos.z  },
         }
-        
+
         for k, v in pairs(void) do
             local n = minetest.get_node(v).name
             if n == "voidstone:void" then
@@ -390,14 +390,14 @@ flameportal.after_portal_destruct = function(pos, oldnode)
         if minetest.get_node(fp).name == "fire:nether_flame" then
             minetest.remove_node(fp)
         end
-        
+
         local void = {
             {x=pos.x+1, y=pos.y,   z=pos.z  },
             {x=pos.x-1, y=pos.y,   z=pos.z  },
             {x=pos.x,   y=pos.y,   z=pos.z+1},
             {x=pos.x,   y=pos.y,   z=pos.z-1},
         }
-        
+
         for k, v in pairs(void) do
             local n = minetest.get_node(v).name
             if n == "voidstone:void" then
@@ -411,7 +411,7 @@ end
 
 if not flameportal.run_once then
   flameportal.modstorage = minetest.get_mod_storage()
-  
+
   -- Special node which the player can land on safely when dropped into the nether.
   minetest.register_node("flameportal:redrack", {
     description = "Netherack",
@@ -447,15 +447,15 @@ if not flameportal.run_once then
       fireambiance.on_flame_addremove(pos)
 			particles.del_flame_spawner(pos)
     end,
-    
+
     on_blast = function(pos) minetest.remove_node(pos) end,
   })
-  
+
   -- Reloadable.
   local file = flameportal.modpath .. "/init.lua"
   local name = "flameportal:core"
   reload.register_file(name, file, false)
-  
+
   flameportal.run_once = true
 end
 

@@ -582,7 +582,9 @@ end
 
 
 function armor.get_damage_type_from_reason(reason)
-	return reason.damage_groups or {}
+	local dgroups = reason.damage_groups or {}
+	return dgroups
+
 	-- More coding warcrimes.
 	--[[
 	local rs = reason.type or ""
@@ -642,22 +644,6 @@ end
 -- Calc wear multiplier based on reason and armor piece.
 -- Notes: 'type' will be "set_hp" if from player:set_hp().
 -- Must use 'custom_type' field in that case.
---
--- Reason types are:
---   fall (fall damage, duh)
---   punch (punched by something)
---   drown (drowning, duh)
---   heat (caused by quite a few sources of heat, including lava)
---   ground (ground/floor hazard, spikes, etc)
---   crush (by falling node/object)
---   portal (arcane damage by teleporting)
---   poison (mushrooms, rotten meat)
---   hunger (starvation)
---   kill (kill command)
---   arrow (player weapon or mob)
---   boom (explosions)
---
--- Note: the above are also the names of damage groups and armor groups.
 function armor.wear_from_reason(item, def, reason)
 	local dgroups = armor.get_damage_type_from_reason(reason)
 

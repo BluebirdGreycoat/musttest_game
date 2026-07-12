@@ -55,7 +55,7 @@ if not mese_crystals.nodes_registered then
 				fixed = boxes[i],
 			},
 			on_player_walk_over = function(pos, player)
-				utility.damage_player(player, "fleshy", 1*500, "ground")
+				utility.damage_player(player, "fleshy", 1*500)
 
 				if player:get_hp() == 0 then
         	minetest.chat_send_all("# Server: <" .. rename.gpn(player:get_player_name()) .. "> stepped on a zentamine spike.")

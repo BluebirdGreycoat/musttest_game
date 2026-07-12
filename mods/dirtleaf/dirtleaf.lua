@@ -20,10 +20,10 @@ mobs.register_mob("dirtleaf:dirtleaf", {
 
 	reach = 2, -- Mob will try to move this close to target.
 	punch_reach = 3, -- Mob can hit from this far away.
-	damage = 3*500,
-	damage_min = 2*500,
-	damage_max = 5*500,
-	damage_group = "crush",
+	--damage = 3*500,
+	--damage_min = 2*500,
+	--damage_max = 5*500,
+	damage_group = {crush=2*500, fleshy=1*500},
 	hp_min = 12*500,
 	hp_max = 25*500,
 	armor = 80,

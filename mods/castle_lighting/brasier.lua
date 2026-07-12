@@ -35,19 +35,19 @@ local brasier_burn = function(pos)
 	local pos_above = {x=pos.x, y=pos.y+1, z=pos.z}
 	local node_above = minetest.get_node(pos_above)
 	local timer = minetest.get_node_timer(pos)
-	
+
 	if timer:is_started() and node_above.name == "fire:permanent_flame" then return end -- already burning, don't burn a new thing.
-	
+
 	local inv = minetest.get_inventory({type="node", pos=pos})
 	local item = inv:get_stack("fuel", 1)
 	local fuel_burned = minetest.get_craft_result({method="fuel", width=1, items={item:peek_item(1)}}).time
-	
+
 	if fuel_burned > 0 and (node_above.name == "air" or node_above.name == "fire:permanent_flame") then
 		item:set_count(item:get_count() - 1)
 		inv:set_stack("fuel", 1, item)
 
 		timer:start(fuel_burned * 60) -- one minute of flame per second of burn time, for balance.
-		
+
 		if node_above.name == "air" then
 			minetest.add_node(pos_above, {name = "fire:permanent_flame"})
 		end
@@ -61,9 +61,9 @@ end
 local brasier_on_construct = function(pos)
 	local inv = minetest.get_meta(pos):get_inventory()
 	inv:set_size("fuel", 1)
-	
+
 	local meta = minetest.get_meta(pos)
-	meta:set_string("formspec", 
+	meta:set_string("formspec",
 		"size[8,5.3]" ..
 		default.gui_bg ..
 		default.gui_bg_img ..
@@ -121,7 +121,7 @@ minetest.register_node("castle_lighting:brasier_floor", {
 	paramtype = "light",
 	node_box = brasier_nodebox,
 	selection_box = brasier_selection_box,
-	
+
 	-- Unlit brasier should still emit a small amount of light, since it has coals.
 	light_source = 4,
 
@@ -135,7 +135,7 @@ minetest.register_node("castle_lighting:brasier_floor", {
 	on_player_walk_over = function(pos, player)
 		local pname = player:get_player_name()
 		if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
-			utility.damage_player(player, "heat", (1*500), "ground")
+			utility.damage_player(player, "heat", (1*500))
 
 			if player:get_hp() <= 0 then
 				minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> tripped on hot coals!")
@@ -182,14 +182,14 @@ local get_material_properties = function(material)
 		composition_def = minetest.registered_nodes[material.craft_material]
 		burn_time = minetest.get_craft_result({method="fuel", width=1, items={ItemStack(material.craft_material)}}).time
 	end
-	
+
 	local tiles = material.tile
 	if tiles == nil then
 		tiles = composition_def.tile
 	elseif type(tiles) == "string" then
 		tiles = {tiles}
 	end
-	
+
 	-- Apply bed of coals to the texture.
 	if table.getn(tiles) == 1 then
 		tiles = {tiles[1].."^(castle_coal_bed.png^[mask:castle_brasier_bed_mask.png)", tiles[1], tiles[1], tiles[1], tiles[1], tiles[1]}
@@ -201,7 +201,7 @@ local get_material_properties = function(material)
 	if desc == nil then
 		desc = composition_def.description
 	end
-	
+
 	return composition_def, burn_time, tiles, desc
 end
 
@@ -230,9 +230,9 @@ local pillar_brasier_selection_box = {
 castle_lighting.register_pillar_brasier = function(material)
 	local composition_def, burn_time, tile, desc = get_material_properties(material)
 	if burn_time > 0 or composition_def.groups.puts_out_fire then return end -- No wooden brasiers, snow brasiers, or ice brasiers, alas.
-	
+
 	local groups = utility.copy_builtin_groups(composition_def.groups)
-	
+
 	local mod_name = minetest.get_current_modname()
 
 	minetest.register_node(mod_name..":"..material.name.."_pillar_brasier", {
@@ -249,10 +249,10 @@ castle_lighting.register_pillar_brasier = function(material)
 
 		-- Unlit brasier should still emit a small amount of light, since it has coals.
 		light_source = 4,
-		
+
 		node_box = pillar_brasier_nodebox,
 		selection_box = pillar_brasier_selection_box,
-		
+
 		on_construct = brasier_on_construct,
 		on_destruct = brasier_on_destruct,
 		can_dig = brasier_can_dig,
@@ -263,7 +263,7 @@ castle_lighting.register_pillar_brasier = function(material)
 		on_player_walk_over = function(pos, player)
 			local pname = player:get_player_name()
 			if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
-				utility.damage_player(player, "heat", (1*500), "ground")
+				utility.damage_player(player, "heat", (1*500))
 
 				if player:get_hp() <= 0 then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> tripped on hot coals!")

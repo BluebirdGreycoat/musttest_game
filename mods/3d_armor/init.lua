@@ -3,6 +3,7 @@ if not minetest.global_exists("armor") then armor = {} end
 armor.modname = armor.modname or minetest.get_current_modname()
 armor.modpath = minetest.get_modpath(armor.modname)
 armor.worldpath = minetest.get_worldpath()
+armor.log_PlayerHPChangeReason = false
 
 -- Increase this if you get initialization glitches when a player first joins.
 ARMOR_INIT_DELAY = 1

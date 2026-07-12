@@ -706,7 +706,9 @@ function armor.on_player_hp_change(player, hp_change, reason)
 	end
 
 	--minetest.log('reason: ' .. (reason.type or reason.reason or "N/A"))
-	minetest.log('Customized PlayerHPChangeReason: ' .. dump(reason))
+	if armor.log_PlayerHPChangeReason then
+		minetest.log('PlayerHPChangeReason: ' .. dump(reason))
+	end
 	--minetest.chat_send_all('dump: ' .. dump(reason))
 	--minetest.log('on_player_hp_change: ' .. hp_change)
 

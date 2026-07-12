@@ -17,7 +17,7 @@ mobs.register_mob("griefer:griefer", {
 	damage_group = {freeze=2*500, fleshy=2*500},
 	hp_min = 8*500,
 	hp_max = 34*500,
-	armor = {freeze=50, shock=50}, -- Medium resistance to freezing and shock.
+	armor = {freeze=50, shock=50, poison=150}, -- Medium resistance to freezing and shock, weakness to poison.
 	armor_level = 2,
 	-- Slightly smaller collision box makes mob movement easier.
 	collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},

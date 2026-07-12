@@ -69,12 +69,16 @@ function sprint.on_joinplayer(player)
 		z_index = 1,
 	})
 
-	sprint.set_stamina(player, 0)
+	local pmeta = player:get_meta()
+	sprint.set_stamina(player, pmeta:get_int("sprint_stamina"))
 end
 
 function sprint.on_leaveplayer(player, timedout)
-	local playerName = player:get_player_name()
-	players[playerName] = nil
+	local pname = player:get_player_name()
+	local pmeta = player:get_meta()
+
+	pmeta:set_int("sprint_stamina", sprint.get_stamina(player))
+	players[pname] = nil
 end
 
 -- Public API function.

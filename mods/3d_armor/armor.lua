@@ -604,7 +604,7 @@ end
 
 
 function armor.damage_type_disables_cloak(rstr)
-	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom" or
+	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom"
 			or rstr == "cracky" or rstr == "crumbly" or rstr == "snappy" or rstr == "choppy"
 			or rstr == "crush" then
 		return true

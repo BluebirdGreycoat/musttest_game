@@ -40,7 +40,7 @@ end
 -- have a corresponding armor group, because it is treated specially.
 function utility.builtin_armor_groups(groups)
 	local tb = {
-		-- Slashing/cutting.
+		-- Melee damage/armor group.
 		fleshy = 100,
 
 		-- Bashing.
@@ -61,8 +61,8 @@ function utility.builtin_armor_groups(groups)
 		-- Poison.
 		poison = 100,
 
-		-- Magic I guess.
-		electrocute = 100,
+		-- Magic/electricity I guess.
+		shock = 100,
 
 		-- Ranged damage. Opposite of melee.
 		arrow = 100,

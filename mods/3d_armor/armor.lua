@@ -301,7 +301,7 @@ end
 
 -- Pair internal armor group keys to human-readable names.
 local formspec_keysubs = {
-	fleshy = "slash",
+	fleshy = "melee",
 	boom = "explosive",
 	cracky = "bash",
 	crumbly = "wither",
@@ -309,7 +309,7 @@ local formspec_keysubs = {
 	choppy = "cleave",
 	arrow = "ranged",
 	heat = "fire",
-	electrocute = "arcane",
+	shock = "shock",
 }
 
 function armor.get_armor_formspec(self, name)
@@ -637,7 +637,6 @@ end
 --   poison (mushrooms, rotten meat)
 --   hunger (starvation)
 --   kill (kill command)
---   electrocute (solar panels)
 --   arrow (player weapon or mob)
 --   boom (explosions)
 --

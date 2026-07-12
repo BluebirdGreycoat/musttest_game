@@ -31,7 +31,7 @@ end
 
 panel.on_player_walk_over =
 function(pos, player)
-	utility.damage_player(player, "electrocute", 1*500)
+	utility.damage_player(player, "shock", 1*500)
 end
 
 

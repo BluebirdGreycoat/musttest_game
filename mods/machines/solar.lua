@@ -73,7 +73,7 @@ for k, v in ipairs({
 
 	func.on_player_walk_over =
 	function(pos, player)
-		utility.damage_player(player, "electrocute", 1*500)
+		utility.damage_player(player, "shock", 1*500)
 	end
 
 	func.trigger_update =

@@ -13,7 +13,7 @@ function wizard.damage_player(pname, amount)
 	minetest.after(0, function()
 		local pref = minetest.get_player_by_name(pname)
 		if pref and pref:get_hp() > 0 then
-			utility.damage_player(pref, "electrocute", amount * 500)
+			utility.damage_player(pref, "shock", amount * 500)
 		end
 	end)
 end

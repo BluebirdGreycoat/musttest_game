@@ -11,7 +11,7 @@ mobs.register_mob("rat:rat", {
 	passive = true,
 	hp_min = 1*500,
 	hp_max = 4*500,
-	armor = 200,
+	armor = {poison=10, shock=10},
 	collisionbox = {-0.2, -1, -0.2, 0.2, -0.8, 0.2},
 	visual = "mesh",
 	mesh = "rat_rat.b3d",
@@ -33,7 +33,7 @@ mobs.register_mob("rat:rat", {
 	makes_bones_in_lava = false,
 	light_damage = 0,
 	fear_height = 2,
-    
+
 	on_rightclick = function(self, clicker)
 		mobs.capture_mob(self, clicker, 96, 100, 100, true, nil)
 	end,

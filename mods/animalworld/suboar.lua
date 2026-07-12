@@ -17,7 +17,7 @@ mobs.register_mob("animalworld:suboar", {
 	damage_group = "fleshy",
 	hp_min = 5*500,
 	hp_max = 35*500,
-	armor = 70,
+	armor = {poison=20, shock=50, freeze=50}, -- Resists poison, shock, freezing.
 	collisionbox = {-0.5, -0.01, -0.5, 0.5, 0.95, 0.5},
 	visual = "mesh",
 	mesh = "mobs_pumba.b3d",

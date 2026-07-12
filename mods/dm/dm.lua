@@ -38,7 +38,7 @@ mobs.register_mob("dm:dm", {
 	shoot_offset = 1,
 	hp_min = 12*500,
 	hp_max = 32*500,
-	armor = 60,
+	armor = {boom=20}, -- Resistant to explosions.
 	collisionbox = {-0.7, -1, -0.7, 0.7, 1.6, 0.7},
 	visual = "mesh",
 	mesh = "dm_dm.b3d",

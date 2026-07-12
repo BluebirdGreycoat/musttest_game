@@ -48,7 +48,7 @@ mobs.register_mob("sandman:sandman", {
 	damage_group = "fleshy",
 	hp_min = 8*500,
 	hp_max = 30*500,
-	armor = 100,
+	armor = {fleshy=60, heat=50},
 	collisionbox = {-0.4, -1, -0.4, 0.4, 0.8, 0.4},
 	visual = "mesh",
 	mesh = "mobs_sand_monster.b3d",
@@ -135,7 +135,7 @@ mobs.register_mob("sandman:stoneman", {
 	damage_group = "crush",
 	hp_min = 30*500,
 	hp_max = 60*500,
-	armor = 100,
+	armor = {fleshy=30, boom=60, crush=30},
 	-- Require at least steel sword to get any drops.
 	armor_level = 1,
 

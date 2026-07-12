@@ -12,7 +12,7 @@ mobs.register_mob("oerkki:oerkki", {
 	damage_group = "poison",
 	hp_min = 8*500,
 	hp_max = 34*500,
-	armor = 100,
+	armor = {freeze=30, crush=10},
 	armor_level = 2,
 	--collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	collisionbox = {-0.4, -0.4, -0.4, 0.4, 0.4, 0.4},

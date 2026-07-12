@@ -27,7 +27,7 @@ mobs.register_mob("nssm:scrausics", {
 		--{name = "nssm:life_energy", chance = 1, min = 3, max = 4},
 		--{name = "nssm:raw_scrausics_wing", chance = 1, min = 1, max = 2},
 	},
-	armor = 80,
+	armor = {shock=20, poison=20},
 	drawtype = "front",
 	water_damage = 5*500,
 	lava_damage = 5*500,

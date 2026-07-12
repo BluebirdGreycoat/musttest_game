@@ -12,7 +12,7 @@ mobs.register_mob("skeleton:skeleton", {
 	attack_type = "dogfight",
 	hp_min = 62*500,
 	hp_max = 72*500,
-	armor = 100,
+	armor = {fleshy=10, boom=30, arrow=30, crush=50},
 	armor_level = 3,
 	collisionbox = {-0.4, 0, -0.4, 0.4, 2.5, 0.4},
 	visual = "mesh",

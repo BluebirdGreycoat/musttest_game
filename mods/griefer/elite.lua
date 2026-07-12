@@ -25,7 +25,7 @@ mobs.register_mob("griefer:elite_griefer", {
 	damage_group = "heat",
 	hp_min = 160*500,
 	hp_max = 260*500,
-	armor = 100,
+	armor = {arrow=50, shock=30, heat=20}, -- Resists ranged attacks, shock and fire.
 	show_health = false,
 
 	-- Never expires.

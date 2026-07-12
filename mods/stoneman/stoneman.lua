@@ -10,7 +10,7 @@ mobs.register_mob("stoneman:stoneman", {
 	damage_group = "crush",
 	hp_min = 12*500,
 	hp_max = 35*500,
-	armor = 80,
+	armor = {fleshy=20, boom=50, arrow=80}, -- Resists melee, explosions, and ranged attacks.
 	collisionbox = {-0.4, -1, -0.4, 0.4, 0.9, 0.4},
 	visual = "mesh",
 	mesh = "stoneman_stoneman.b3d",

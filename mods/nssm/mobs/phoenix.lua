@@ -30,7 +30,7 @@ mobs.register_mob("nssm:phoenix", {
 		--{name = "nssm:phoenix_tear", chance = 1, min = 5, max = 6},
 		--{name = "nssm:phoenix_nuggets", chance = 6, min = 10, max = 20},
 	},
-	armor = 40,
+	armor = {heat=20, poison=50},
 	drawtype = "front",
 	water_damage = 5*500,
 	lava_damage = 0,

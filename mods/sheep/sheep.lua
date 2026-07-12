@@ -8,7 +8,7 @@ mobs.register_mob("sheep:sheep", {
     passive = true,
     hp_min = 8*500,
     hp_max = 10*500,
-    armor = {freeze=10, poison=50},
+    armor = {freeze=10, poison=50, heat=150}, -- They have too much wool.
     collisionbox = {-0.45, -1, -0.45, 0.45, 0.3, 0.45},
     visual = "mesh",
     mesh = "sheep_sheep.b3d",

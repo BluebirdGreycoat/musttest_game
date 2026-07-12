@@ -27,7 +27,7 @@ mobs.register_mob("nssm:moonheron", {
 		--{name = "nssm:life_energy", chance = 1, min = 2, max = 3},
 		--{name = "nssm:heron_leg", chance = 1, min = 1, max = 1},
 	},
-	armor = {freeze=50, poison=50},
+	armor = {freeze=50, poison=50, shock=150},
 	floats = 1,
 	drawtype = "front",
 	water_damage = 5*500,

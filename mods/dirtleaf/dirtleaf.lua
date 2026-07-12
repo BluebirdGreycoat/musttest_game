@@ -26,7 +26,7 @@ mobs.register_mob("dirtleaf:dirtleaf", {
 	damage_group = {crush=2*500, fleshy=1*500},
 	hp_min = 12*500,
 	hp_max = 25*500,
-	armor = {fleshy=10, poison=20, crush=50}, -- Resists melee, poison, crushing.
+	armor = {fleshy=10, poison=20, crush=50, heat=200}, -- Resists melee, poison, crushing. Vulnerable to fire.
 	collisionbox = {-0.3, -0.8, -0.3, 0.3, 0.5, 0.3},
 	visual = "mesh",
 	mesh = "mobs_tree_monster.b3d",

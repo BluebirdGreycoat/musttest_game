@@ -22,7 +22,7 @@ mobs.register_mob("iceman:iceman", {
 	damage_group = "freeze",
 	hp_min = 12*500,
 	hp_max = 25*500,
-	armor = {freeze=10, shock=10},
+	armor = {freeze=10, shock=10, heat=250}, -- VERY vulnerable to fire.
 	collisionbox = {-0.3, -1, -0.3, 0.3, 0.7, 0.3},
 	visual = "mesh",
 	mesh = "mobs_stone_monster.b3d",

@@ -13,7 +13,7 @@ mobs.register_mob("obsidianmonster:obsidianmonster", {
 	shoot_offset = 2,
 	hp_min = 10*500,
 	hp_max = 25*500,
-	armor = {fleshy=10, shock=30},
+	armor = {fleshy=10, shock=30, poison=10, arrow=10, heat=250}, -- Weak to fire.
 	armor_level = 3,
 	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 	visual = "mesh",

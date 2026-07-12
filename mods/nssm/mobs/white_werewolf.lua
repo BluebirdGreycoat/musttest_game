@@ -29,7 +29,7 @@ mobs.register_mob("nssm:white_werewolf", {
 		{name = "nssm:white_wolf_leg", chance = 2, min = 1, max = 2},
 		{name = "nssm:white_wolf_fur", chance = 2, min = 3, max = 5},
 	},
-	armor = {freeze=10, arrow=50, crush=60},
+	armor = {freeze=10, arrow=50, crush=60, fire=150}, -- Weakness to fire.
 	drawtype = "front",
 	water_damage = 2*500,
 	lava_damage = 5*500,

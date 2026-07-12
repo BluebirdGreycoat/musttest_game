@@ -13,7 +13,7 @@ mobs.register_mob("golem:stone_golem", {
 	attack_type = "dogfight",
 	hp_min = 62*500,
 	hp_max = 72*500,
-	armor = {fleshy=10, poison=10}, -- High resistance to melee and poison.
+	armor = {fleshy=10, poison=10, boom=200}, -- High resistance to melee and poison. Vulnerable to explosions.
 	collisionbox = {-0.6, 0, -0.6, 0.6, 2.5, 0.6},
 	visual = "mesh",
 	mesh = "golem_golem.b3d",

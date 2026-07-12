@@ -12,7 +12,7 @@ mobs.register_mob("skeleton:skeleton", {
 	attack_type = "dogfight",
 	hp_min = 62*500,
 	hp_max = 72*500,
-	armor = {fleshy=10, boom=30, arrow=30, crush=50},
+	armor = {fleshy=10, boom=30, arrow=30, crush=250}, -- Crushing/bashing is best way to kill 'em.
 	armor_level = 3,
 	collisionbox = {-0.4, 0, -0.4, 0.4, 2.5, 0.4},
 	visual = "mesh",

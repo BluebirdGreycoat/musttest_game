@@ -5373,7 +5373,12 @@ if not mobs.registered then
 			fall_damage             = def.fall_damage or 1,
 			fall_speed              = def.fall_speed or -10, -- must be lower than -2 (default: -10)
 			drops                   = def.drops or {},
+
+			-- Should usually be a table of armor groups, not a number!
+			-- 100 is normal value. Values below 100 represent resistances to those damage types;
+			-- values above 100 represent weaknesses.
 			armor                   = def.armor or 100,
+
 			on_rightclick           = def.on_rightclick,
 			arrow                   = def.arrow,
 			shoot_interval          = def.shoot_interval,

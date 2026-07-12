@@ -27,7 +27,7 @@ mobs.register_mob("nssm:morde", {
 		{name = "default:flint", chance = 1, min = 2, max = 4},
 		{name = "default:obsidian_shard", chance = 3, min = 1, max = 1},
 	},
-	armor = {fleshy=60, poison=10, heat=10},
+	armor = {fleshy=60, poison=10, heat=10, shock=200},
 	drawtype = "front",
 	water_damage = 0,
 	fear_height = 4,

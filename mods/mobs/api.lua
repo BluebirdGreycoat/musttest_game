@@ -4574,8 +4574,8 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	do
-		for group,_ in pairs( (tool_capabilities.damage_groups or {}) ) do
-			tmp = tflp / (tool_capabilities.full_punch_interval or 1.4)
+		for group, _ in pairs(tool_capabilities.damage_groups or {}) do
+			tmp = tflp / (tool_capabilities.full_punch_interval or 1.5)
 
 			if tmp < 0 then
 				tmp = 0.0
@@ -5007,9 +5007,20 @@ local function mob_activate(self, staticdata, def, dtime)
 		end
 	end
 
+	local armor_groups = utility.builtin_armor_groups({immortal=1})
+	if type(self.armor) == "number" then
+		-- If the mob definition only gave us a number, treat it as fleshy armor.
+		armor_groups.fleshy = self.armor
+	else
+		-- it better be a table.
+		for group, value in pairs(self.armor) do
+			armor_groups[group] = value
+		end
+	end
+
 	-- mob defaults
 	-- Hmmm ... setting 'immortal' prevents Minetest's default damage calculation.
-	self.object:set_armor_groups(utility.builtin_armor_groups({immortal = 1, fleshy = self.armor}))
+	self.object:set_armor_groups(armor_groups)
 	self.old_y = self.object:get_pos().y
 	self.old_health = self.health
 	self.sounds.distance = self.sounds.distance or 10

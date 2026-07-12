@@ -18,6 +18,7 @@ armor.formspec =
 	"label[6,0.1;Health: hp_max]" ..
 	"label[6,0.4;Stamina: stamina_max]" ..
 	"label[6,0.7;Block: armor_heal]" ..
+	--"label[6,1.0;Resistances:]" ..
 	"list[current_player;main;0,4.25;8,1;]" ..
 	"list[current_player;main;0,5.5;8,3;8]" ..
 	default.get_hotbar_bg(0, 4.25)
@@ -331,8 +332,12 @@ function armor.get_armor_formspec(self, name)
 
 	--minetest.log('testing: ' .. type(armor.def[name].resistances))
 
+	if next(armor.def[name].resistances) then
+		formspec = formspec .. "label[6,1.2;Resistances:]"
+	end
+
 	-- Print out armor stats, whatever they are.
-	local y = 1.0
+	local y = 1.5
 	for k, v in pairs(armor.def[name].resistances) do
 		--minetest.log('k=' .. k .. ', v=' .. v)
 
@@ -341,7 +346,7 @@ function armor.get_armor_formspec(self, name)
 		end
 
 		local s = k:sub(1, 1):upper() .. k:sub(2)
-		formspec = formspec .. "label[6," .. y .. ";" .. s .. ": " .. math_floor(v) .. "]"
+		formspec = formspec .. "label[6.2," .. y .. ";" .. s .. ": " .. math_floor(v) .. "]"
 		y = y + 0.3
 	end
 

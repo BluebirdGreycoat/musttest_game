@@ -84,6 +84,7 @@ function xp.do_chatcommand(pname, param, ex_params)
 				end
 
 				xp.set_xp(target, xptype, amount)
+				xp.run_callbacks_after("on_chatcommand_xp_modify", target)
 
 				local digxp = string.format("%.1f", xp.get_xp(target, "digxp"))
 				local buildxp = string.format("%.1f", xp.get_xp(target, "buildxp"))
@@ -123,6 +124,7 @@ function xp.do_chatcommand(pname, param, ex_params)
 
 				-- Add function handles negatives.
 				xp.add_xp(target, xptype, amount)
+				xp.run_callbacks_after("on_chatcommand_xp_modify", target)
 
 				local digxp = string.format("%.1f", xp.get_xp(target, "digxp"))
 				local buildxp = string.format("%.1f", xp.get_xp(target, "buildxp"))

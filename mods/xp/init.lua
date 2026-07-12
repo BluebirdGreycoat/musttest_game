@@ -150,6 +150,12 @@ end
 
 
 
+minetest.after(0, function()
+	xp.register_callback("on_chatcommand_xp_modify", "xp", xp.update_players_max_hp)
+end)
+
+
+
 function xp.on_joinplayer(player)
 	minetest.after(0, xp.update_players_max_hp, player:get_player_name(), true)
 end

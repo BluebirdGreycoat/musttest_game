@@ -23,7 +23,7 @@ mobs.register_mob("dirtleaf:dirtleaf", {
 	damage = 3*500,
 	damage_min = 2*500,
 	damage_max = 5*500,
-	damage_group = "crumbly",
+	damage_group = "crush",
 	hp_min = 12*500,
 	hp_max = 25*500,
 	armor = 80,

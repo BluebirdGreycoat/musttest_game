@@ -46,8 +46,8 @@ function utility.builtin_armor_groups(groups)
 		-- Bashing.
 		cracky = 100,
 
-		-- Withering.
-		crumbly = 100,
+		-- Freeze damage.
+		freeze = 100,
 
 		-- Piercing/striking.
 		snappy = 100,

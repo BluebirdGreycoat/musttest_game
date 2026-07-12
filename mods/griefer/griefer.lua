@@ -14,7 +14,7 @@ mobs.register_mob("griefer:griefer", {
 	pathing_radius = 16,
 	reach = 2,
 	damage = 4*500,
-	damage_group = "crumbly",
+	damage_group = "freeze",
 	hp_min = 8*500,
 	hp_max = 34*500,
 	armor = 100,

@@ -304,7 +304,7 @@ local formspec_keysubs = {
 	fleshy = "melee",
 	boom = "explosive",
 	cracky = "bash",
-	crumbly = "wither",
+	freeze = "freeze",
 	snappy = "pierce",
 	choppy = "cleave",
 	arrow = "ranged",
@@ -604,7 +604,7 @@ end
 
 function armor.damage_type_disables_cloak(rstr)
 	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom"
-			or rstr == "cracky" or rstr == "crumbly" or rstr == "snappy" or rstr == "choppy"
+			or rstr == "cracky" or rstr == "freeze" or rstr == "snappy" or rstr == "choppy"
 			or rstr == "crush" then
 		return true
 	end

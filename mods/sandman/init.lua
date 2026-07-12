@@ -1,4 +1,4 @@
- 
+
 -- custom particle effects
 local effect = function(pos, amount, texture, min_size, max_size, radius, gravity, glow)
 
@@ -45,7 +45,7 @@ mobs.register_mob("sandman:sandman", {
 	damage = 1*500,
 	damage_min = 0*500,
 	damage_max = 3*500,
-	damage_group = "crumbly",
+	damage_group = "fleshy",
 	hp_min = 8*500,
 	hp_max = 30*500,
 	armor = 100,
@@ -132,7 +132,7 @@ mobs.register_mob("sandman:stoneman", {
 	damage = 2*500,
 	damage_min = 2*500,
 	damage_max = 3*500,
-	damage_group = "crumbly",
+	damage_group = "crush",
 	hp_min = 30*500,
 	hp_max = 60*500,
 	armor = 100,

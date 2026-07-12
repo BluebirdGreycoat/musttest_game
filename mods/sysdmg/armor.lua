@@ -72,24 +72,24 @@ sysdmg.default_groups = {
 
 -- Wear multipliers for when armor gets damaged by something.
 sysdmg.wear_groups = {
-  ["shields:shield_wood"]          = {fall=0.5, crumbly=0.1, heat=2.0, ground=0.0, boom=3.0},
-  ["shields:shield_enhanced_wood"] = {fall=0.5, crumbly=0.1, heat=2.0, ground=0.0, boom=3.0},
-  ["3d_armor:helmet_wood"]         = {fall=0.5, crumbly=0.1, crush=3.0, heat=2.0, ground=0.0},
-  ["3d_armor:chestplate_wood"]     = {fall=0.5, crumbly=0.1, heat=2.0, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_wood"]       = {fall=1.25,crumbly=0.1, heat=2.0},
-  ["3d_armor:boots_wood"]          = {fall=1.5, crumbly=0.1, heat=2.0, ground=2.0},
+  ["shields:shield_wood"]          = {fall=0.5, freeze=0.1, heat=2.0, ground=0.0, boom=3.0},
+  ["shields:shield_enhanced_wood"] = {fall=0.5, freeze=0.1, heat=2.0, ground=0.0, boom=3.0},
+  ["3d_armor:helmet_wood"]         = {fall=0.5, freeze=0.1, crush=3.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_wood"]     = {fall=0.5, freeze=0.1, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_wood"]       = {fall=1.25,freeze=0.1, heat=2.0},
+  ["3d_armor:boots_wood"]          = {fall=1.5, freeze=0.1, heat=2.0, ground=2.0},
 
-  ["shields:shield_steel"]         = {fall=0.5, fleshy=0.5, crumbly=1.25, ground=0.0, boom=3.0},
-  ["3d_armor:helmet_steel"]        = {fall=0.5, fleshy=0.5, crumbly=1.25, crush=3.0, ground=0.0},
-  ["3d_armor:chestplate_steel"]    = {fall=0.5, fleshy=0.5, crumbly=1.5, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_steel"]      = {fall=1.25,fleshy=0.5, crumbly=1.25, },
-  ["3d_armor:boots_steel"]         = {fall=1.5, fleshy=0.5, crumbly=1.25, ground=2.0},
+  ["shields:shield_steel"]         = {fall=0.5, fleshy=0.5, freeze=1.25, ground=0.0, boom=3.0},
+  ["3d_armor:helmet_steel"]        = {fall=0.5, fleshy=0.5, freeze=1.25, crush=3.0, ground=0.0},
+  ["3d_armor:chestplate_steel"]    = {fall=0.5, fleshy=0.5, freeze=1.5, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_steel"]      = {fall=1.25,fleshy=0.5, freeze=1.25, },
+  ["3d_armor:boots_steel"]         = {fall=1.5, fleshy=0.5, freeze=1.25, ground=2.0},
 
-  ["shields:shield_carbon"]        = {fall=0.5, snappy=0.6, fleshy=0.4, crumbly=1.25, ground=0.0, boom=3.0},
-  ["3d_armor:helmet_carbon"]       = {fall=0.5, snappy=0.6, fleshy=0.4, crumbly=1.25, crush=3.0, ground=0.0},
-  ["3d_armor:chestplate_carbon"]   = {fall=0.5, snappy=0.6, fleshy=0.4, crumbly=1.25, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_carbon"]     = {fall=1.25,snappy=0.6, fleshy=0.4, crumbly=1.25, },
-  ["3d_armor:boots_carbon"]        = {fall=1.5, snappy=0.6, fleshy=0.4, crumbly=1.25, ground=2.0},
+  ["shields:shield_carbon"]        = {fall=0.5, snappy=0.6, fleshy=0.4, freeze=1.25, ground=0.0, boom=3.0},
+  ["3d_armor:helmet_carbon"]       = {fall=0.5, snappy=0.6, fleshy=0.4, freeze=1.25, crush=3.0, ground=0.0},
+  ["3d_armor:chestplate_carbon"]   = {fall=0.5, snappy=0.6, fleshy=0.4, freeze=1.25, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_carbon"]     = {fall=1.25,snappy=0.6, fleshy=0.4, freeze=1.25, },
+  ["3d_armor:boots_carbon"]        = {fall=1.5, snappy=0.6, fleshy=0.4, freeze=1.25, ground=2.0},
 
   ["shields:shield_bronze"]        = {fall=0.5, crush=1.25, ground=0.0, boom=0.5},
   ["3d_armor:helmet_bronze"]       = {fall=0.5, crush=3.0, ground=0.0,  boom=0.5},
@@ -115,15 +115,15 @@ sysdmg.wear_groups = {
   ["3d_armor:leggings_mithril"]    = {fall=0.8, fleshy=0.5, snappy=0.1, },
   ["3d_armor:boots_mithril"]       = {fall=0.9, fleshy=0.5, snappy=0.1, ground=2.0},
 
-  ["3d_armor:helmet_cotton"]       = {fall=0.5, crumbly=0.1, crush=1.0, heat=2.0, ground=0.0},
-  ["3d_armor:chestplate_cotton"]   = {fall=0.5, crumbly=0.1, heat=2.0, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_cotton"]     = {fall=0.7, crumbly=0.1, heat=2.0},
-  ["3d_armor:boots_cotton"]        = {fall=1.0, crumbly=0.1, heat=2.0, ground=2.0},
+  ["3d_armor:helmet_cotton"]       = {fall=0.5, freeze=0.1, crush=1.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_cotton"]   = {fall=0.5, freeze=0.1, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_cotton"]     = {fall=0.7, freeze=0.1, heat=2.0},
+  ["3d_armor:boots_cotton"]        = {fall=1.0, freeze=0.1, heat=2.0, ground=2.0},
 
-  ["3d_armor:helmet_leather"]      = {fall=0.5, crumbly=0.1, crush=1.0, heat=2.0, ground=0.0},
-  ["3d_armor:chestplate_leather"]  = {fall=0.5, crumbly=0.1, heat=2.0, ground=0.0, boom=4.0},
-  ["3d_armor:leggings_leather"]    = {fall=0.7, crumbly=0.1, heat=2.0},
-  ["3d_armor:boots_leather"]       = {fall=1.0, crumbly=0.1, heat=2.0, ground=2.0},
+  ["3d_armor:helmet_leather"]      = {fall=0.5, freeze=0.1, crush=1.0, heat=2.0, ground=0.0},
+  ["3d_armor:chestplate_leather"]  = {fall=0.5, freeze=0.1, heat=2.0, ground=0.0, boom=4.0},
+  ["3d_armor:leggings_leather"]    = {fall=0.7, freeze=0.1, heat=2.0},
+  ["3d_armor:boots_leather"]       = {fall=1.0, freeze=0.1, heat=2.0, ground=2.0},
 }
 
 
@@ -132,18 +132,18 @@ sysdmg.wear_groups = {
 -- Higher values give more resistance.
 -- Note that the total resistance for a particular group cannot exceed 90.
 sysdmg.resist_groups = {
-  ["shields:shield_wood"]          = {fleshy=5,  crumbly=10, },
-  ["shields:shield_enhanced_wood"] = {fleshy=8,  crumbly=20, },
-  ["3d_armor:helmet_wood"]         = {fleshy=5,  crumbly=15, },
-  ["3d_armor:chestplate_wood"]     = {fleshy=10, crumbly=25, },
-  ["3d_armor:leggings_wood"]       = {fleshy=5,  crumbly=10, },
-  ["3d_armor:boots_wood"]          = {fleshy=5,  crumbly=15, },
+  ["shields:shield_wood"]          = {fleshy=5,  freeze=10, },
+  ["shields:shield_enhanced_wood"] = {fleshy=8,  freeze=20, },
+  ["3d_armor:helmet_wood"]         = {fleshy=5,  freeze=15, },
+  ["3d_armor:chestplate_wood"]     = {fleshy=10, freeze=25, },
+  ["3d_armor:leggings_wood"]       = {fleshy=5,  freeze=10, },
+  ["3d_armor:boots_wood"]          = {fleshy=5,  freeze=15, },
 
-  ["shields:shield_steel"]         = {fleshy=10, cracky=15, snappy=10, crumbly=5},
-  ["3d_armor:helmet_steel"]        = {fleshy=10, cracky=15, snappy=10, crumbly=5},
-  ["3d_armor:chestplate_steel"]    = {fleshy=15, cracky=10, snappy=15, crumbly=5},
-  ["3d_armor:leggings_steel"]      = {fleshy=15, cracky=10, snappy=15, crumbly=5},
-  ["3d_armor:boots_steel"]         = {fleshy=10, cracky=10, snappy=10, crumbly=5},
+  ["shields:shield_steel"]         = {fleshy=10, cracky=15, snappy=10, freeze=5},
+  ["3d_armor:helmet_steel"]        = {fleshy=10, cracky=15, snappy=10, freeze=5},
+  ["3d_armor:chestplate_steel"]    = {fleshy=15, cracky=10, snappy=15, freeze=5},
+  ["3d_armor:leggings_steel"]      = {fleshy=15, cracky=10, snappy=15, freeze=5},
+  ["3d_armor:boots_steel"]         = {fleshy=10, cracky=10, snappy=10, freeze=5},
 
   ["shields:shield_carbon"]        = {fleshy=12, cracky=20, snappy=10, arrow=18},
   ["3d_armor:helmet_carbon"]       = {fleshy=12, cracky=10, snappy=15, arrow=15},
@@ -152,10 +152,10 @@ sysdmg.resist_groups = {
   ["3d_armor:boots_carbon"]        = {fleshy=12, cracky=10, snappy=10, arrow=12},
 
   ["shields:shield_bronze"]        = {fleshy=10, arrow=50,    boom=20, heat=6},
-  ["3d_armor:helmet_bronze"]       = {fleshy=10, crumbly=12,  boom=12, heat=6},
-  ["3d_armor:chestplate_bronze"]   = {fleshy=15, crumbly=20,  boom=20, heat=16},
-  ["3d_armor:leggings_bronze"]     = {fleshy=15, crumbly=12,  boom=10, heat=6},
-  ["3d_armor:boots_bronze"]        = {fleshy=10, crumbly=8,   boom=10, heat=6},
+  ["3d_armor:helmet_bronze"]       = {fleshy=10, freeze=12,  boom=12, heat=6},
+  ["3d_armor:chestplate_bronze"]   = {fleshy=15, freeze=20,  boom=20, heat=16},
+  ["3d_armor:leggings_bronze"]     = {fleshy=15, freeze=12,  boom=10, heat=6},
+  ["3d_armor:boots_bronze"]        = {fleshy=10, freeze=8,   boom=10, heat=6},
 
   ["shields:shield_diamond"]       = {fleshy=15, choppy=20, crush=15, arrow=15},
   ["3d_armor:helmet_diamond"]      = {fleshy=15, choppy=10, crush=20, arrow=20},
@@ -175,15 +175,15 @@ sysdmg.resist_groups = {
   ["3d_armor:leggings_mithril"]    = {boom=5, cracky=8, fleshy=25},
   ["3d_armor:boots_mithril"]       = {boom=5, cracky=8, fleshy=20},
 
-  ["3d_armor:helmet_cotton"]       = {fleshy=5,  crumbly=17, heat=20},
-  ["3d_armor:chestplate_cotton"]   = {fleshy=5,  crumbly=28, heat=20},
-  ["3d_armor:leggings_cotton"]     = {fleshy=5,  crumbly=15, heat=20},
-  ["3d_armor:boots_cotton"]        = {fleshy=5,  crumbly=20, heat=20},
+  ["3d_armor:helmet_cotton"]       = {fleshy=5,  freeze=17, heat=20},
+  ["3d_armor:chestplate_cotton"]   = {fleshy=5,  freeze=28, heat=20},
+  ["3d_armor:leggings_cotton"]     = {fleshy=5,  freeze=15, heat=20},
+  ["3d_armor:boots_cotton"]        = {fleshy=5,  freeze=20, heat=20},
 
-  ["3d_armor:helmet_leather"]      = {fleshy=7,  crumbly=22, heat=20},
-  ["3d_armor:chestplate_leather"]  = {fleshy=7,  crumbly=30, heat=20},
-  ["3d_armor:leggings_leather"]    = {fleshy=7,  crumbly=18, heat=20},
-  ["3d_armor:boots_leather"]       = {fleshy=7,  crumbly=21, heat=20},
+  ["3d_armor:helmet_leather"]      = {fleshy=7,  freeze=22, heat=20},
+  ["3d_armor:chestplate_leather"]  = {fleshy=7,  freeze=30, heat=20},
+  ["3d_armor:leggings_leather"]    = {fleshy=7,  freeze=18, heat=20},
+  ["3d_armor:boots_leather"]       = {fleshy=7,  freeze=21, heat=20},
 }
 
 -- Make calculating the "hard meta" rather difficult.

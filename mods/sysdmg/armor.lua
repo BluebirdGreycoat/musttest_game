@@ -157,11 +157,11 @@ sysdmg.resist_groups = {
   ["3d_armor:leggings_bronze"]     = {fleshy=15, freeze=12,  boom=10, heat=6},
   ["3d_armor:boots_bronze"]        = {fleshy=10, freeze=8,   boom=10, heat=6},
 
-  ["shields:shield_diamond"]       = {fleshy=15, choppy=20, crush=15, arrow=15},
-  ["3d_armor:helmet_diamond"]      = {fleshy=15, choppy=10, crush=20, arrow=20},
-  ["3d_armor:chestplate_diamond"]  = {fleshy=20, choppy=15, crush=20, arrow=20},
-  ["3d_armor:leggings_diamond"]    = {fleshy=20, choppy=10, crush=15, arrow=6},
-  ["3d_armor:boots_diamond"]       = {fleshy=15, choppy=10, crush=15, arrow=6},
+  ["shields:shield_diamond"]       = {fleshy=15, crush=15, arrow=15},
+  ["3d_armor:helmet_diamond"]      = {fleshy=15, crush=20, arrow=20},
+  ["3d_armor:chestplate_diamond"]  = {fleshy=20, crush=20, arrow=20},
+  ["3d_armor:leggings_diamond"]    = {fleshy=20, crush=15, arrow=6},
+  ["3d_armor:boots_diamond"]       = {fleshy=15, crush=15, arrow=6},
 
   ["shields:shield_gold"]          = {fleshy=10, heat=8},
   ["3d_armor:helmet_gold"]         = {fleshy=10, heat=8},

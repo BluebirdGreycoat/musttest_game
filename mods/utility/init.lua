@@ -46,9 +46,6 @@ function utility.builtin_armor_groups(groups)
 		-- Freeze damage.
 		freeze = 100,
 
-		-- Cleaving.
-		--choppy = 100,
-
 		-- Explosives.
 		boom = 100,
 

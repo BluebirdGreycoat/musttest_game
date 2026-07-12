@@ -147,11 +147,11 @@ sysdmg.resist_groups = {
 
   ["shields:shield_carbon"]        = {fleshy=12, cracky=20, snappy=10, arrow=18},
   ["3d_armor:helmet_carbon"]       = {fleshy=12, cracky=10, snappy=15, arrow=15},
-  ["3d_armor:chestplate_carbon"]   = {fleshy=17, cracky=20, fireball=20, snappy=15, arrow=20},
+  ["3d_armor:chestplate_carbon"]   = {fleshy=17, cracky=20, snappy=15, arrow=20},
   ["3d_armor:leggings_carbon"]     = {fleshy=17, cracky=10, snappy=15, arrow=15},
   ["3d_armor:boots_carbon"]        = {fleshy=12, cracky=10, snappy=10, arrow=12},
 
-  ["shields:shield_bronze"]        = {fleshy=10, fireball=50, boom=20, heat=6},
+  ["shields:shield_bronze"]        = {fleshy=10, arrow=50,    boom=20, heat=6},
   ["3d_armor:helmet_bronze"]       = {fleshy=10, crumbly=12,  boom=12, heat=6},
   ["3d_armor:chestplate_bronze"]   = {fleshy=15, crumbly=20,  boom=20, heat=16},
   ["3d_armor:leggings_bronze"]     = {fleshy=15, crumbly=12,  boom=10, heat=6},
@@ -169,9 +169,9 @@ sysdmg.resist_groups = {
   ["3d_armor:leggings_gold"]       = {fleshy=15, heat=8, lava=15},
   ["3d_armor:boots_gold"]          = {fleshy=10, heat=8, lava=20},
 
-  ["shields:shield_mithril"]       = {boom=10, cracky=15, fleshy=15, fireball=50},
+  ["shields:shield_mithril"]       = {boom=10, cracky=15, fleshy=15, arrow=50},
   ["3d_armor:helmet_mithril"]      = {boom=5, cracky=8, fleshy=20, arrow=60},
-  ["3d_armor:chestplate_mithril"]  = {boom=10, cracky=15, fleshy=25, fireball=25},
+  ["3d_armor:chestplate_mithril"]  = {boom=10, cracky=15, fleshy=25, arrow=25},
   ["3d_armor:leggings_mithril"]    = {boom=5, cracky=8, fleshy=25},
   ["3d_armor:boots_mithril"]       = {boom=5, cracky=8, fleshy=20},
 

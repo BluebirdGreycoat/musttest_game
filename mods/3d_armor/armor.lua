@@ -604,7 +604,7 @@ end
 
 
 function armor.damage_type_disables_cloak(rstr)
-	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom" or rstr == "fireball"
+	if rstr == "fleshy" or rstr == "arrow" or rstr == "boom" or
 			or rstr == "cracky" or rstr == "crumbly" or rstr == "snappy" or rstr == "choppy"
 			or rstr == "crush" then
 		return true
@@ -642,7 +642,6 @@ end
 --   kill (kill command)
 --   radiation (reactors, etc)
 --   electrocute (solar panels)
---   fireball (DM artillery, etc)
 --   arrow (player weapon or mob)
 --   boom (explosions)
 --

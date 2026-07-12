@@ -70,9 +70,6 @@ function utility.builtin_armor_groups(groups)
 		-- Ranged.
 		arrow = 100,
 
-		-- Ranged fire.
-		fireball = 100,
-
 		-- Water, usually.
 		pressure = 100,
 
@@ -395,11 +392,11 @@ end
 utility.sort_positions = function(p1, p2)
   local pos1 = {x=p1.x, y=p1.y, z=p1.z}
   local pos2 = {x=p2.x, y=p2.y, z=p2.z}
-    
+
   if pos1.x > pos2.x then pos2.x, pos1.x = pos1.x, pos2.x end
   if pos1.y > pos2.y then pos2.y, pos1.y = pos1.y, pos2.y end
   if pos1.z > pos2.z then pos2.z, pos1.z = pos1.z, pos2.z end
-    
+
   return pos1, pos2
 end
 

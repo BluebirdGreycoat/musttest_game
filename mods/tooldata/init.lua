@@ -969,8 +969,8 @@ function td_api.arrow_toolcaps(name, damage)
 		max_drop_level = 3,
 		damage_groups = {
 			arrow = damage,
-			from_arrow = 0,
 			knockback = 400,
+			from_arrow = 0,
 		},
 	}
 	-- This table gets sent through the engine, so only builtin parameters work.

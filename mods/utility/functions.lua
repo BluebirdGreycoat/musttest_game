@@ -285,8 +285,9 @@ function utility.damage_player(player, damage_type, damage, reason)
 	-- Note: reason.type will be "punch", per 3D armor code.
 	local rt = type(reason)
 
+	-- OMG this code is a warcrime.
 	if rt == "string" or rt == "nil" then
-		armor.notify_punch_reason({reason = reason or damage_type})
+		armor.notify_punch_reason({damage_groups[reason or damage_type]=damage})
 	elseif rt == "table" then
 		local nr = {reason = reason.reason or ""}
 		for k, v in pairs(reason) do

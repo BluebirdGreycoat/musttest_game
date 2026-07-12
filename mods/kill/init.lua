@@ -35,7 +35,7 @@ minetest.register_chatcommand("kill", {
 			return false
 		end
 
-		player:set_hp(0, {reason="kill"})
+		player:set_hp(0, {custom_type="kill"})
 		return true
 	end
 })

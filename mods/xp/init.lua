@@ -139,7 +139,7 @@ function xp.update_players_max_hp(pname, login)
 	--
 	-- Note: must manually notify the HP change reason, here.
 	pova.set_modifier(pref, "properties", {hp_max = new_max_hp}, "xphp")
-	armor.notify_set_hp_reason({reason="xp_update"})
+	armor.notify_set_hp_reason({custom_type="xp_update"})
 	pref:set_hp(new_hp)
 	pmeta:set_int("hp_max", new_max_hp)
 	pmeta:set_int("hp_cur", new_hp)

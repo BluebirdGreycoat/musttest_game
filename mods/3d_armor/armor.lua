@@ -750,7 +750,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 				if pref then
 					-- PlayerHPChangeReason.type will be 'punch'.
 					utility.damage_player(pref, dtp, dps,
-						{reason="node_damage", damage_group=dtp, source_node=reason.node, node_pos=reason.node_pos})
+						{custom_type="node_damage", damage_groups={[dtp]=dps}, source_node=reason.node, node_pos=reason.node_pos})
 				end
 			end)
 

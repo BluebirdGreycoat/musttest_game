@@ -212,7 +212,7 @@ function bandages.heal_target(itemstack, user, target, level)
 		-- This solves an exploit people have found.
 		local hp = target:get_hp()
 		if hp == 0 then return end
-		armor.notify_set_hp_reason({reason="bandage"})
+		armor.notify_set_hp_reason({custom_type="bandage"})
 		target:set_hp(hp + bandages.hp_from_level(level, hp, hp_max))
 		bandages.player_bandages_target(pname, tname, target:get_hp(), hp_max)
 	end)
@@ -266,7 +266,7 @@ end
 
 bandages.use_bandage = function(itemstack, user, pointed_thing, level)
   if not user or not user:is_player() then return end
-  
+
   if pointed_thing.type == "object" then
     local target = pointed_thing.ref
     if not target or not target:is_player() then
@@ -286,24 +286,24 @@ if not bandages.registered then
   minetest.register_craftitem("bandages:bandage_1", {
     description = "Simple Bandage\n\nBest used for light scrapes and scratches.\nUse on yourself or another.",
     inventory_image = "bandage_1.png",
-    on_use = function(itemstack, user, pointed_thing) 
-      return bandages.use_bandage(itemstack, user, pointed_thing, 1) 
+    on_use = function(itemstack, user, pointed_thing)
+      return bandages.use_bandage(itemstack, user, pointed_thing, 1)
     end,
   })
 
   minetest.register_craftitem("bandages:bandage_2", {
     description = "Basic Medkit\n\nHeals moderate wounds (best around 50% health).\nUse on yourself or another.",
     inventory_image = "bandage_2.png",
-    on_use = function(itemstack, user, pointed_thing) 
-      return bandages.use_bandage(itemstack, user, pointed_thing, 2) 
+    on_use = function(itemstack, user, pointed_thing)
+      return bandages.use_bandage(itemstack, user, pointed_thing, 2)
     end,
   })
 
   minetest.register_craftitem("bandages:bandage_3", {
     description = "Trauma Medkit\n\nAids in recovery from severe, debilitating injuries.\nUse on yourself or another.",
     inventory_image = "bandage_3.png",
-    on_use = function(itemstack, user, pointed_thing) 
-      return bandages.use_bandage(itemstack, user, pointed_thing, 3) 
+    on_use = function(itemstack, user, pointed_thing)
+      return bandages.use_bandage(itemstack, user, pointed_thing, 3)
     end,
   })
 
@@ -329,7 +329,7 @@ if not bandages.registered then
 			{'', 'dye:green', ''},
     }
   })
-    
+
   bandages.registered = true
 end
 

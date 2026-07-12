@@ -1427,7 +1427,7 @@ local function punch_target(self, dtime)
 		final_dgroups.from_mob = 1
 
 		if self.attack:is_player() then
-			armor.notify_punch_reason({reason=table.copy(dgroup)})
+			armor.notify_punch_reason({damage_groups=table.copy(dgroup)})
 		end
 
 		self.attack:punch(self.object, 1.0, {

@@ -211,7 +211,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 						end
 					end
 
-					armor.notify_punch_reason({reason="boom"})
+					armor.notify_punch_reason({damage_groups = dg})
 					obj:punch(hitter, 1.0, {
 						full_punch_interval = 1.0,
 						max_drop_level = 0,

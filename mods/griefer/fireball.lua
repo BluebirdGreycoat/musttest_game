@@ -7,7 +7,7 @@ mobs.register_arrow(":griefer:fireball", {
 
 	-- Direct hit, no fire ... just plenty of pain.
 	hit_player = function(self, player)
-		armor.notify_punch_reason({reason="arrow"})
+		armor.notify_punch_reason({damage_groups = {arrow = 4*500, heat=4*500}})
 		player:punch(self.object, 1.0, {
 			full_punch_interval = 1.0,
 			damage_groups = {arrow = 4*500, heat=4*500},

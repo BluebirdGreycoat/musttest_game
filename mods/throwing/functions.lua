@@ -34,9 +34,9 @@ function throwing.entity_ignores_arrow(entity_name)
 end
 
 
---~ 
+--~
 --~ Shot and reload system
---~ 
+--~
 
 local players = {}
 
@@ -112,14 +112,14 @@ end
 function throwing_shoot_arrow(itemstack, player, stiffness, is_cross)
   if not player or not player:is_player() then return end
   local pname = player:get_player_name()
-  
+
 	local arrow = itemstack:get_metadata()
 	local imeta = itemstack:get_meta()
 	if arrow == "" then
 		arrow = imeta:get_string("arrow")
 	end
   if arrow == "" then return end
-  
+
 	local playerpos = player:get_pos()
 	local spawnpos = get_shoot_position(player)
 	local obj = minetest.add_entity(spawnpos, arrow)
@@ -367,12 +367,12 @@ function throwing_arrow_punch_entity (target, self, damage)
 
   local player = minetest.get_player_by_name(self.player_name or "")
   if player and player:is_player() then
-		armor.notify_punch_reason({reason="arrow"})
+		armor.notify_punch_reason({damage_groups=toolcaps.damage_groups})
 		target:punch(player, 1.0, toolcaps, nil)
   else
 		-- Shooter logged off game after firing arrow. Use basic fallback.
 		toolcaps.damage_groups.from_arrow = nil
-		armor.notify_punch_reason({reason="arrow"})
+		armor.notify_punch_reason({damage_groups=toolcaps.damage_groups})
     target:punch(self.object, 1.0, toolcaps, nil)
   end
 end
@@ -525,7 +525,7 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 			end
 		end,
 	})
-	
+
 	minetest.register_tool(bow_loaded_name, {
 		description = desc,
 		inventory_image = "throwing_" .. name .. "_loaded.png",
@@ -583,7 +583,7 @@ function throwing_register_bow (name, desc, scale, stiffness, reload_time, tough
 		name = bow_unloaded_name,
 		loaded = bow_loaded_name,
 	}
-	
+
 	minetest.register_craft({
 		output = 'throwing:' .. name,
 		recipe = craft
@@ -607,7 +607,7 @@ function throwing_node_should_block_arrow (nn)
   if nn == "air" then return false end
   if snow.is_snow(nn) then return false end
   --if nn == "ignore" then return true end
-  
+
   if string.find(nn, "^throwing:") or
      string.find(nn, "^fire:") or
      string.find(nn, "^default:fence") or
@@ -633,7 +633,7 @@ function throwing_node_should_block_arrow (nn)
       return false
     end
   end
-  
+
   return true
 end
 throwing.node_blocks_arrow = throwing_node_should_block_arrow

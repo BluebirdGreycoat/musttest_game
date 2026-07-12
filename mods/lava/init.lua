@@ -58,7 +58,7 @@ if not lava.run_once then
 		liquid_viscosity = 7,
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
-		_damage_per_second_type = "lava",
+		_damage_per_second_type = "heat",
 		_death_message = default.lava_death_messages(),
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 		groups = -- comment
@@ -88,9 +88,9 @@ if not lava.run_once then
 					end
 
 					local node = minetest.get_node(pos)
-					utility.damage_player(player, "lava", 20*500, {
+					utility.damage_player(player, "heat", 20*500, {
 						reason = "node_damage",
-						damage_group = "lava",
+						damage_group = "heat",
 						source_node = node.name,
 						node_pos = pos,
 					})
@@ -154,7 +154,7 @@ if not lava.run_once then
 		liquid_viscosity = 7,
 		liquid_renewable = false,
 		damage_per_second = 4 * 2 * 500,
-		_damage_per_second_type = "lava",
+		_damage_per_second_type = "heat",
 		_death_message = default.lava_death_messages(),
 		post_effect_color = {a = 191, r = 255, g = 64, b = 0},
 
@@ -178,9 +178,9 @@ if not lava.run_once then
 					end
 
 					local node = minetest.get_node(pos)
-					utility.damage_player(player, "lava", 20*500, {
+					utility.damage_player(player, "heat", 20*500, {
 						reason = "node_damage",
-						damage_group = "lava",
+						damage_group = "heat",
 						source_node = node.name,
 						node_pos = pos,
 					})

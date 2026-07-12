@@ -308,7 +308,6 @@ local formspec_keysubs = {
 	snappy = "pierce",
 	choppy = "cleave",
 	arrow = "ranged",
-	lava = "molten",
 	heat = "fire",
 	electrocute = "arcane",
 }

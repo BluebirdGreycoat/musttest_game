@@ -51,16 +51,16 @@ minetest.register_node("lbrim:lava_source", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
-  _damage_per_second_type = "lava",
+  _damage_per_second_type = "heat",
   _death_message = default.lava_death_messages(),
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
-  
+
   groups = -- comment
 	{
-    lava = 3, 
-    liquid = 2, 
-    igniter = 1, 
-    disable_jump = 1, 
+    lava = 3,
+    liquid = 2,
+    igniter = 1,
+    disable_jump = 1,
     melt_around = 3
   },
 
@@ -84,9 +84,9 @@ minetest.register_node("lbrim:lava_source", {
 				end
 
         local node = minetest.get_node(pos)
-        utility.damage_player(player, "lava", 20*500, {
+        utility.damage_player(player, "heat", 20*500, {
           reason = "node_damage",
-          damage_group = "lava",
+          damage_group = "heat",
           source_node = node.name,
           node_pos = pos,
         })
@@ -146,20 +146,20 @@ minetest.register_node("lbrim:lava_flowing", {
   liquid_viscosity = 7,
   liquid_renewable = true,
   damage_per_second = 16*500,
-  _damage_per_second_type = "lava",
+  _damage_per_second_type = "heat",
   _death_message = default.lava_death_messages(),
   post_effect_color = {a = 191, r = 255, g = 64, b = 0},
-  
+
   groups = -- comment
 	{
-    lava = 3, 
-    liquid = 2, 
+    heat = 3,
+    liquid = 2,
     igniter = 1,
-    not_in_creative_inventory = 1, 
-    disable_jump = 1, 
+    not_in_creative_inventory = 1,
+    disable_jump = 1,
     melt_around = 3
   },
-  
+
   on_blast = function(pos, intensity) end,
 
 	on_player_walk_over = function(pos, player)
@@ -172,9 +172,9 @@ minetest.register_node("lbrim:lava_flowing", {
 				end
 
         local node = minetest.get_node(pos)
-        utility.damage_player(player, "lava", 20*500, {
+        utility.damage_player(player, "heat", 20*500, {
           reason = "node_damage",
-          damage_group = "lava",
+          damage_group = "heat",
           source_node = node.name,
           node_pos = pos,
         })

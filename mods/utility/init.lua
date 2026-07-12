@@ -64,17 +64,14 @@ function utility.builtin_armor_groups(groups)
 		-- Magic I guess.
 		electrocute = 100,
 
-		-- Ranged.
+		-- Ranged damage. Opposite of melee.
 		arrow = 100,
 
-		-- Falling stuff. Or being hugged by a golem.
+		-- Falling stuff. Or being hugged by a golem. Or water pressure.
 		crush = 100,
 
-		-- Heat sources.
+		-- Heat sources. Fire damage, or radiation, lava, etc.
 		heat = 100,
-
-		-- Extreme heat from lava.
-		lava = 100,
 	}
 
 	if groups then

@@ -89,8 +89,8 @@ sysdmg.damage_groups = {
   ["gems:sword_emerald"]      = {fleshy= 7.1*SCALE, snappy=0.3*SCALE, knockback=1.7*KNB},
   ["gems:rf_sword_emerald"]   = {fleshy= 7.0*SCALE, snappy=0.1*SCALE, knockback=1.6*KNB},
 
-  ["stoneworld:oerkki_scepter"] = {heat=4*SCALE, knockback=4, lava=1*SCALE, knockback=1.8*KNB},
-  ["stoneworld:oerkki_soa"]     = {heat=4*SCALE, knockback=4, lava=1*SCALE, knockback=1.8*KNB},
+  ["stoneworld:oerkki_scepter"] = {heat=4*SCALE, knockback=4, knockback=1.8*KNB},
+  ["stoneworld:oerkki_soa"]     = {heat=4*SCALE, knockback=4, knockback=1.8*KNB},
   ["wizard:banish_staff"]       = {knockback=4, knockback=1.8*KNB},
   ["wizard:tracking_staff"]     = {knockback=4, knockback=1.8*KNB},
   ["wizard:gagging_staff"]      = {knockback=4, knockback=1.8*KNB},

@@ -759,8 +759,12 @@ function armor.on_player_hp_change(player, hp_change, reason)
 				local pref = minetest.get_player_by_name(pname)
 				if pref then
 					-- PlayerHPChangeReason.type will be 'punch'.
-					utility.damage_player(pref, dtp, dps,
-						{custom_type="node_damage", damage_groups={[dtp]=dps}, source_node=reason.node, node_pos=reason.node_pos})
+					utility.damage_player(pref, {
+						custom_type = "node_damage",
+						damage_groups = {[dtp]=dps},
+						source_node = reason.node,
+						node_pos = reason.node_pos,
+					})
 				end
 			end)
 

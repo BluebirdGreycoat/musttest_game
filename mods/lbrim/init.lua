@@ -84,7 +84,7 @@ minetest.register_node("lbrim:lava_source", {
 				end
 
         local node = minetest.get_node(pos)
-        utility.damage_player(player, "heat", 20*500, {
+        utility.damage_player(player, {
           reason = "node_damage",
           damage_groups = {heat=20*500},
           source_node = node.name,
@@ -172,7 +172,7 @@ minetest.register_node("lbrim:lava_flowing", {
 				end
 
         local node = minetest.get_node(pos)
-        utility.damage_player(player, "heat", 20*500, {
+        utility.damage_player(player, {
           reason = "node_damage",
           damage_groups = {heat=20*500},
           source_node = node.name,

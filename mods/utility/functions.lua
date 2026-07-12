@@ -278,11 +278,12 @@ end
 
 
 -- Use this to damage a player, instead of player:set_hp(), because this takes
--- player's current armor groups into account.
-function utility.damage_player(player, damage_type, damage, reason)
+-- player's current armor groups into account. USE FOR ENV DAMAGE ONLY.
+function utility.damage_player(player, damage_type, damage)
 	-- Inform 3D armor what the reason for this punch is.
 	-- Cannot pass the PlayerHPChangeReason table through :punch()!
 	-- Note: reason.type will be "punch", per 3D armor code.
+	--[[
 	local rt = type(reason)
 
 	-- OMG this code is a warcrime.
@@ -296,10 +297,26 @@ function utility.damage_player(player, damage_type, damage, reason)
 		end
 		armor.notify_punch_reason(nr)
 	end
+	--]]
+
+	local real_damage_groups = {}
+	real_damage_groups.from_env = 1
+
+	if type(damage_type) == "string" then
+		-- If args are: string, number
+		real_damage_groups[damage_type] = damage
+		armor.notify_punch_reason({
+			damage_groups={[damage_type]=damage},
+		})
+	else
+		-- It'd better be a table.
+		real_damage_groups = damage_type.damage_groups or {}
+		armor.notify_punch_reason(damage_type)
+	end
 
 	player:punch(player, 1.0, {
 		full_punch_interval = 1.0,
-		damage_groups = {[damage_type] = damage, from_env = 1},
+		damage_groups = real_damage_groups,
 	}, nil)
 	-- Note: never set 'damage_groups.from_arrow' here.
 	-- That has special meaning to the cityblock code!

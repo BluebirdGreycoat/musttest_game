@@ -55,9 +55,6 @@ function utility.builtin_armor_groups(groups)
 		-- Cleaving.
 		choppy = 100,
 
-		-- Aura/magic.
-		radiation = 100,
-
 		-- Explosives.
 		boom = 100,
 

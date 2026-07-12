@@ -125,7 +125,7 @@ local function get_breeder_damage(pos)
 	if concrete_layer > 216 then concrete_layer = 216 end
 	return (24 - lava_layer) +
 		(96 - steel_layer) +
-		(216 - concrete_layer) 
+		(216 - concrete_layer)
 end
 
 
@@ -400,7 +400,7 @@ for k, v in ipairs({
 			local entities = minetest.get_objects_inside_radius(pos, 3.5)
 			for k, v in ipairs(entities) do
 				if v:is_player() then
-					utility.damage_player(v, "radiation", 1*500)
+					utility.damage_player(v, "heat", 1*500)
 
 					-- Radiation exhausts player.
 					sprint.set_stamina(v, 0)
@@ -661,7 +661,7 @@ if not breeder.run_once then
 		{name="active", light=14},
 	}) do
 		-- Which function table are we operating on?
-		local func = _G["breeder_" .. v.name] 
+		local func = _G["breeder_" .. v.name]
 
 		minetest.register_node(":breeder:" .. v.name, {
 			description = "Thorium Breeder Reactor Core\n\nConnects to an MV power-network.\nGenerates a large amount of power.\nExplosion danger, requires shielding!",

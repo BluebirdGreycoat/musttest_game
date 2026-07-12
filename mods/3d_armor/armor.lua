@@ -638,7 +638,6 @@ end
 --   poison (mushrooms, rotten meat)
 --   hunger (starvation)
 --   kill (kill command)
---   radiation (reactors, etc)
 --   electrocute (solar panels)
 --   arrow (player weapon or mob)
 --   boom (explosions)

@@ -614,8 +614,7 @@ end
 
 function armor.armor_wear_ignores_damage(rstr)
 	if rstr == "" or rstr == "xp_update" or rstr == "hp_boost_end"
-			or rstr == "hunger" or rstr == "drown" or rstr == "poison"
-			or rstr == "pressure" then
+			or rstr == "hunger" or rstr == "drown" or rstr == "poison" then
 		return true
 	end
 	return false
@@ -632,7 +631,6 @@ end
 --   punch (punched by something)
 --   drown (drowning, duh)
 --   heat (caused by quite a few sources of heat, including lava)
---   pressure (water pressure, usually)
 --   ground (ground/floor hazard, spikes, etc)
 --   sharp (like cactus)
 --   crush (by falling node/object)

@@ -70,9 +70,6 @@ function utility.builtin_armor_groups(groups)
 		-- Ranged.
 		arrow = 100,
 
-		-- Water, usually.
-		pressure = 100,
-
 		-- Falling stuff. Or being hugged by a golem.
 		crush = 100,
 

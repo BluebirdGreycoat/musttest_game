@@ -36,7 +36,7 @@ function armor.describe_armor_resistances(data)
 		return
 	end
 
-	local desc = ""
+	local desc = "\n"
 
 	if data.groups.armor_heal and data.groups.armor_heal > 0 then
 		desc = desc .. "\nBlock: " .. math.floor(data.groups.armor_heal)

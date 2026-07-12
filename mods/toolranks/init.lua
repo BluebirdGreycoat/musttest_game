@@ -2,6 +2,9 @@
 -- Localize for performance.
 local math_floor = math.floor
 
+-- This is used to keep the large (internal) numbers managable for users.
+local TOOLTIP_DAMAGEGROUP_DIVISOR = 100
+
 
 
 if not minetest.global_exists("toolranks") then toolranks = {} end
@@ -72,11 +75,14 @@ function toolranks.apply_description(itemmeta, def)
 	itemmeta:set_string("description", desc1 .. desc2 .. desc3)
 end
 
-function toolranks.create_description(name, uses, level)
-  local description = utility.get_short_desc(name)
-  local tooltype    = toolranks.get_tool_type(description)
+function toolranks.create_description(idef, uses, level)
+  local description = utility.get_short_desc(idef.description)
+  local tooltype = toolranks.get_tool_type(description)
+  tooltype = tooltype:sub(1, 1):upper() .. tooltype:sub(2)
 
-	local strpart = "Nodes dug"
+	local strpart = "Weapon XP"
+
+	--[[
 	if tooltype == "sword" then
 		strpart = "Blows struck"
 	elseif tooltype == "pickaxe" then
@@ -86,10 +92,23 @@ function toolranks.create_description(name, uses, level)
 	elseif tooltype == "shovel" then
 		strpart = "Resources shoveled"
 	end
+	--]]
 
-  local newdesc = toolranks.colors.green .. description .. "\n" ..
-                  toolranks.colors.gold .. "Level " .. (level or 1) .. " " .. tooltype .. "\n" ..
+  local newdesc = toolranks.colors.gold .. "Level " .. (level or 1) .. " " .. tooltype .. "\n" ..
                   toolranks.colors.grey .. strpart .. ": " .. (uses or 0)
+
+	local damage_groups = idef.tool_capabilities and idef.tool_capabilities.damage_groups or {}
+	if next(damage_groups) then
+		newdesc = newdesc .. toolranks.colors.white .. "\n\nAttack Types:"
+
+		for group, value in pairs(damage_groups) do
+			if group ~= "knockback" then
+				local groupdesc = armor.get_resistance_desc(group)
+				groupdesc = groupdesc:sub(1, 1):upper() .. groupdesc:sub(2)
+				newdesc = newdesc .. "\n\t" .. groupdesc .. ": " .. math.round(value / TOOLTIP_DAMAGEGROUP_DIVISOR)
+			end
+		end
+	end
 
   return newdesc
 end
@@ -178,7 +197,7 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
     itemmeta:set_string("tr_lastlevel", level)
   end
 
-  local newdesc = toolranks.create_description(itemdesc, dugnodes, level)
+  local newdesc = toolranks.create_description(itemdef, dugnodes, level)
 
 	itemmeta:set_string("tr_desc", newdesc)
 	toolranks.apply_description(itemmeta, itemdef)
@@ -211,7 +230,7 @@ if not toolranks.registered then
 		itemdef.name = nil
 		itemdef.type = nil
 
-		local tr_desc = toolranks.create_description(itemdef.description, 0, 1)
+		local tr_desc = toolranks.create_description(itemdef, 0, 1)
 
 		itemdef.original_description = itemdef.description
 		itemdef.description = itemdef.description .. "\n\n" .. tr_desc

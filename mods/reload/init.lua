@@ -61,22 +61,26 @@ end
 
 
 
--- I've been wanting to do this for a long time. >:)
-local function file_exists(path)
-   local f = io.open(path, "r")
-   if f ~= nil then
-		io.close(f)
-		return true
-	end
-	return false
-end
+if not reload.dofile_overwritten then
+	reload.dofile_overwritten = true
 
-local df = dofile
-function dofile(path)
-	local t = {df(path)}
-	local np = path .. '.secret'
-	if file_exists(np) then
-		df(np)
+	-- I've been wanting to do this for a long time. >:)
+	local function file_exists(path)
+		local f = io.open(path, "r")
+		if f ~= nil then
+			io.close(f)
+			return true
+		end
+		return false
 	end
-	return unpack(t)
+
+	local df = dofile
+	function dofile(path)
+		local t = {df(path)}
+		local np = path .. '.secret'
+		if file_exists(np) then
+			df(np)
+		end
+		return unpack(t)
+	end
 end

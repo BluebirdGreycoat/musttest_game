@@ -280,6 +280,11 @@ end
 -- Use this to damage a player, instead of player:set_hp(), because this takes
 -- player's current armor groups into account. USE FOR ENV DAMAGE ONLY.
 function utility.damage_player(player, damage_type, damage)
+	-- If player has left game, 'is_player()' should return FALSE. Tested.
+	if not player or not player:is_player() then
+		return
+	end
+
 	-- Inform 3D armor what the reason for this punch is.
 	-- Cannot pass the PlayerHPChangeReason table through :punch()!
 	-- Note: reason.type will be "punch", per 3D armor code.

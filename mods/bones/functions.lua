@@ -34,6 +34,30 @@ end
 
 
 
+local function reduce_player_xp_for_bones(pname)
+	local xp_for_bones = {}
+
+	for _, xptype in ipairs({"digxp", "buildxp"}) do
+		local amount = xp.get_xp(pname, xptype)
+
+		-- You lose some % up to a fixed maximum, whichever is less.
+		local take_amount = amount * PLAYER_XP_LOSS_SCALAR
+		take_amount = math.min(take_amount, PLAYER_XP_LOSS_MAXIMUM)
+
+		amount = amount - take_amount
+		if amount < 0 then amount = 0 end
+
+		-- Some % of what you lost is put in the bones.
+		xp_for_bones[xptype] = take_amount * BONES_XP_LOSS_SCALAR
+
+		xp.set_xp(pname, xptype, amount)
+	end
+
+	return xp_for_bones
+end
+
+
+
 local function update_bone_infotext(meta)
 	local old = false
 	local pname = meta:get_string("owner")
@@ -429,21 +453,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	-- Halve player XP!
 	if not preserve_xp then
-		for _, xptype in ipairs({"digxp", "buildxp"}) do
-			local amount = xp.get_xp(pname, xptype)
-
-			-- You lose some % up to a fixed maximum, whichever is less.
-			local take_amount = amount * PLAYER_XP_LOSS_SCALAR
-			take_amount = math.min(take_amount, PLAYER_XP_LOSS_MAXIMUM)
-
-			amount = amount - take_amount
-			if amount < 0 then amount = 0 end
-
-			-- Some % of what you lost is put in the bones.
-			xp_for_bones[xptype] = take_amount * BONES_XP_LOSS_SCALAR
-
-			xp.set_xp(pname, xptype, amount)
-		end
+		xp_for_bones = reduce_player_xp_for_bones(pname)
 	end
 
 	-- Note: portal sickness only removed if player would leave bones.

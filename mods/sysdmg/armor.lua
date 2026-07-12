@@ -132,12 +132,12 @@ sysdmg.wear_groups = {
 -- Higher values give more resistance.
 -- Note that the total resistance for a particular group cannot exceed 90.
 sysdmg.resist_groups = {
-  ["shields:shield_wood"]          = {fleshy=5,  freeze=10, },
-  ["shields:shield_enhanced_wood"] = {fleshy=8,  freeze=20, },
-  ["3d_armor:helmet_wood"]         = {fleshy=5,  freeze=15, },
-  ["3d_armor:chestplate_wood"]     = {fleshy=10, freeze=25, },
-  ["3d_armor:leggings_wood"]       = {fleshy=5,  freeze=10, },
-  ["3d_armor:boots_wood"]          = {fleshy=5,  freeze=15, },
+  ["shields:shield_wood"]          = {fleshy=5,  freeze=10},
+  ["shields:shield_enhanced_wood"] = {fleshy=8,  freeze=20},
+  ["3d_armor:helmet_wood"]         = {fleshy=5,  freeze=15},
+  ["3d_armor:chestplate_wood"]     = {fleshy=10, freeze=25},
+  ["3d_armor:leggings_wood"]       = {fleshy=5,  freeze=10},
+  ["3d_armor:boots_wood"]          = {fleshy=5,  freeze=15},
 
   ["shields:shield_steel"]         = {fleshy=10, freeze=5},
   ["3d_armor:helmet_steel"]        = {fleshy=10, freeze=5},
@@ -163,11 +163,12 @@ sysdmg.resist_groups = {
   ["3d_armor:leggings_diamond"]    = {fleshy=20, crush=15, arrow=6},
   ["3d_armor:boots_diamond"]       = {fleshy=15, crush=15, arrow=6},
 
-  ["shields:shield_gold"]          = {fleshy=10, heat=8},
-  ["3d_armor:helmet_gold"]         = {fleshy=10, heat=8},
-  ["3d_armor:chestplate_gold"]     = {fleshy=15, heat=8},
-  ["3d_armor:leggings_gold"]       = {fleshy=15, heat=8},
-  ["3d_armor:boots_gold"]          = {fleshy=10, heat=8},
+  -- Gold armor is weak to freezing.
+  ["shields:shield_gold"]          = {fleshy=10, heat=8, freeze=-10},
+  ["3d_armor:helmet_gold"]         = {fleshy=10, heat=8, freeze=-10},
+  ["3d_armor:chestplate_gold"]     = {fleshy=15, heat=8, freeze=-10},
+  ["3d_armor:leggings_gold"]       = {fleshy=15, heat=8, freeze=-10},
+  ["3d_armor:boots_gold"]          = {fleshy=10, heat=8, freeze=-10},
 
   ["shields:shield_mithril"]       = {boom=10, fleshy=15, arrow=50},
   ["3d_armor:helmet_mithril"]      = {boom=5,  fleshy=20, arrow=60},
@@ -186,12 +187,31 @@ sysdmg.resist_groups = {
   ["3d_armor:boots_leather"]       = {fleshy=7,  freeze=21, heat=20},
 }
 
+--- Convert a byte string from SecureRandom into an unsigned integer.
+--- @param byte_count integer? Number of bytes (default 4). Max sensible is ~7-8.
+--- @return integer
+local function secure_random_int(byte_count)
+  byte_count = byte_count or 4
+  local sr = SecureRandom()
+  local bytes = sr:next_bytes(byte_count)
+
+  local num = 0
+  for i = 1, #bytes do
+    num = num * 256 + string.byte(bytes, i)
+  end
+  return num
+end
+
 -- Make calculating the "hard meta" rather difficult.
 do
-  local pr = PcgRandom(os.time())
+  local pr = PcgRandom(secure_random_int())
   for armor, groups in pairs(sysdmg.resist_groups) do
     for damage, amount in pairs(groups) do
-      amount = math.max(1, (amount + pr:next(-1, 1)))
+      if amount > 2 then
+        amount = amount + pr:next(-1, 2)
+      elseif amount < -2 then
+        amount = amount + pr:next(-2, 1)
+      end
       groups[damage] = amount
     end
   end

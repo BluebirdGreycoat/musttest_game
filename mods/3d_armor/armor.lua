@@ -194,10 +194,13 @@ function armor.set_player_armor(self, player)
 		end
 	end
 
-	-- I guess this gives an armor bonus if all armors are the same material?
-	-- MustTest.
+	-- If all armor slots are the SAME type, boost strengths and weaknesses.
+	-- Confirmed, works as expected (at least the values shown in the formspec are correct).
+	-- Elements includes the shields too.
 	if material.type and material.count == #self.elements then
-		loc_arm_grps.fleshy = (loc_arm_grps.fleshy or 0) * 1.1
+		for k, v in pairs(loc_arm_grps) do
+			loc_arm_grps[k] = math.round((v or 0) * 1.1)
+		end
 	end
 
 	armor_heal = armor_heal * ARMOR_HEAL_MULTIPLIER
@@ -208,13 +211,13 @@ function armor.set_player_armor(self, player)
 
 	local armor_groups = {}
 
-	for k, v in pairs(loc_arm_grps) do
-		armor_groups[k] = 100 - (loc_arm_grps[k] * ARMOR_LEVEL_MULTIPLIER)
+	for group, value in pairs(loc_arm_grps) do
+		armor_groups[group] = 100 - (value * ARMOR_LEVEL_MULTIPLIER)
 		--minetest.log('armor: ' .. k .. '=' .. armor_groups[k])
 
 		-- Damage mitigation cannot go above 90%.
-		if armor_groups[k] < 10 then
-			armor_groups[k] = 10
+		if armor_groups[group] < 10 then
+			armor_groups[group] = 10
 		end
 	end
 
@@ -239,7 +242,10 @@ function armor.set_player_armor(self, player)
 		end
 	end
 
-	player:set_armor_groups(utility.builtin_armor_groups(armor_groups))
+	local final_armor = utility.builtin_armor_groups(armor_groups)
+	minetest.log(dump(final_armor))
+
+	player:set_armor_groups(final_armor)
 	pova.set_modifier(player, "physics", physics_o, "3d_armor")
 	self.textures[name].armor = armor_texture
 	self.textures[name].preview = preview_string
@@ -344,8 +350,13 @@ function armor.get_armor_formspec(self, name)
 			k = formspec_keysubs[k]
 		end
 
+		local color = minetest.get_color_escape_sequence("#00ff00")
+		if v < 0 then
+			color = minetest.get_color_escape_sequence("#ff0000") -- Red.
+		end
+
 		local s = k:sub(1, 1):upper() .. k:sub(2)
-		formspec = formspec .. "label[6.2," .. y .. ";" .. s .. ": " .. math_floor(v) .. "]"
+		formspec = formspec .. "label[6.2," .. y .. ";" .. s .. ": " .. color .. math_floor(v) .. "]"
 		y = y + 0.3
 	end
 

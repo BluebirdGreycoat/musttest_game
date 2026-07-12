@@ -43,22 +43,19 @@ function utility.builtin_armor_groups(groups)
 		-- Melee damage/armor group.
 		fleshy = 100,
 
-		-- Bashing.
-		cracky = 100,
-
 		-- Freeze damage.
 		freeze = 100,
 
 		-- Piercing/striking.
-		snappy = 100,
+		--snappy = 100,
 
 		-- Cleaving.
-		choppy = 100,
+		--choppy = 100,
 
 		-- Explosives.
 		boom = 100,
 
-		-- Poison.
+		-- Poison/acid.
 		poison = 100,
 
 		-- Magic/electricity I guess.

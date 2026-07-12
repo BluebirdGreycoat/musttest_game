@@ -37,7 +37,7 @@ commandtools.pick_on_use = function(itemstack, user, pointed_thing)
 			local tool_capabilities = {
 				full_punch_interval = 0.1,
 				max_drop_level = 3,
-				groupcaps= {
+				groupcaps = {
 					unbreakable = {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 					fleshy =      {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},
 					choppy =      {times={[1] = 0, [2] = 0, [3] = 0}, uses = 0, maxlevel = 3},

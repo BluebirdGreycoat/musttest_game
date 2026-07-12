@@ -221,5 +221,7 @@ function shout.spoof(pname, param, show_help)
 
 	if #players_sent_to > 0 then
 		minetest.chat_send_player(pname, "# Server: Sent to {" .. table.concat(players_sent_to, ", ") .. "}.")
+	else
+		minetest.chat_send_player(pname, "# Server: No one received that.")
 	end
 end

@@ -268,7 +268,7 @@ passport.on_use = function(itemstack, user, pointed)
 
 			-- Store owner and data of activation.
 			meta:set_string("owner", owner)
-			meta:set_int("date", os.time())
+			meta:set_string("date", tostring(os.time()))
 
 			minetest.after(3, function()
 				minetest.chat_send_player(pname, "# Server: A newly initialized Key of Citizenship begins to emit a soft blue glow.")
@@ -279,8 +279,8 @@ passport.on_use = function(itemstack, user, pointed)
 		end
 
 		-- Initialize data if not set.
-		if meta:get_int("date") == 0 then
-			meta:set_int("date", os.time())
+		if meta:get_string("date") == "" then
+			meta:set_string("date", tostring(os.time()))
 
 			changed = true
 		end
@@ -656,7 +656,7 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 
 		-- Store owner and data of activation.
 		meta:set_string("owner", pname)
-		meta:set_int("date", os.time())
+		meta:set_string("date", tostring(os.time()))
 
 		minetest.after(3, function()
 			minetest.chat_send_player(pname,

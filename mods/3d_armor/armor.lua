@@ -243,7 +243,7 @@ function armor.set_player_armor(self, player)
 	end
 
 	local final_armor = utility.builtin_armor_groups(armor_groups)
-	minetest.log(dump(final_armor))
+	--minetest.log(dump(final_armor))
 
 	player:set_armor_groups(final_armor)
 	pova.set_modifier(player, "physics", physics_o, "3d_armor")

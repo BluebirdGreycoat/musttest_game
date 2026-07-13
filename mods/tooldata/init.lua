@@ -1022,7 +1022,7 @@ local THROWING_ARROW_TOOLCAPS = {
 -- Get toolcaps/damage-groups from arrow name.
 -- This lets us know how to punch the target.
 function td_api.arrow_toolcaps(name, damage)
-	minetest.log(name)
+	--minetest.log(name)
 	local tc = table.copy(THROWING_ARROW_TOOLCAPS[name] or {})
 
 	-- Fallback.

@@ -4529,6 +4529,8 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- Mob health check.
 	if self.health <= 0 then return end
 
+	--minetest.log('mob punch')
+
 	-- Sanity check.
 	if not tool_capabilities then return end
 
@@ -4575,6 +4577,12 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 
 	do
 		local tool_level_scaling = toolranks.get_tool_level(weapon)
+
+		-- Clamp at 1 for unusual weapons, otherwise we'd do no damage!
+		-- (E.g., arrows.)
+		if tool_level_scaling < 1 then
+			tool_level_scaling = 1
+		end
 
 		for group, group_damage in pairs(tool_capabilities.damage_groups or {}) do
 			if group == "knockback" then

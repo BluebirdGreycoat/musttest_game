@@ -40,12 +40,14 @@ minetest.register_on_player_receive_fields(function(...)
 	return beds.on_player_receive_fields(...)
 end)
 
-minetest.register_chatcommand("check_bed", {
-	params = "",
-	description = "Check bed-respawn status.",
-	privs = {},
-	func = function(pname, param)
-		beds.report_respawn_status(pname)
-		return true
-	end,
-})
+for _, command in ipairs({"bed", "check_bed"}) do
+	minetest.register_chatcommand(command, {
+		params = "",
+		description = "Check bed respawn status.",
+		privs = {},
+		func = function(pname, param)
+			beds.report_respawn_status(pname)
+			return true
+		end,
+	})
+end

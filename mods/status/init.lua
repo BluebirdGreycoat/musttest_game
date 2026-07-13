@@ -208,10 +208,16 @@ end
 
 
 
-function status.chat_admin(name, param)
-	minetest.chat_send_player(name,
-		STATUS_COLOR .. "# Server: The administrator of this server is <" .. utility.get_admin_name() .. ">. " ..
-		"You may send me messages using the email interface found through the Key of Citizenship.")
+function status.chat_admin(pname, param)
+	local helplines = {
+		"Your local (and arrogant) Archwizard is <" .. utility.get_admin_name() .. ">.",
+		"You may send him mail using the interface in the Key of Citizenship.",
+		"Hate-mail is accepted, but comes with the risk of being published.",
+	}
+
+	for _, line in ipairs(helplines) do
+		minetest.chat_send_player(pname, STATUS_COLOR .. "# Server: " .. line)
+	end
 	return true
 end
 
@@ -257,7 +263,7 @@ if not status.registered then
 
 	minetest.override_chatcommand("admin", {
 		params = "",
-		description = "Show the name of the server owner and primary operator.",
+		description = "Identify the server operator.",
 		privs = {},
 		func = function(...) return status.chat_admin(...) end,
 	})

@@ -39,7 +39,7 @@ bluegrass.place_seed = function(itemstack, placer, pointed_thing, plantname)
   end
 
   local under = minetest.get_node(pt.under)
-  
+
   -- Pass through interactions to nodes that define them (like chests).
   do
     local pdef = minetest.reg_ns_nodes[under.name]
@@ -127,7 +127,7 @@ bluegrass.grow_plant = function(pos, elapsed)
 
     return
   end
-  
+
   -- check if below soil
   local above = minetest.get_node({x = pos.x, y = pos.y + 1, z = pos.z})
   if above.name ~= "rackstone:dauthsand_stable" then
@@ -135,12 +135,12 @@ bluegrass.grow_plant = function(pos, elapsed)
     tick_again(pos)
     return
   end
-  
+
   local tick_data = {
     min_time = 300,
     max_time = 400,
   }
-  
+
   local can_grow = false
   do
     if minetest.find_node_near(pos, 4, "group:lava") then
@@ -154,7 +154,7 @@ bluegrass.grow_plant = function(pos, elapsed)
     tick_again(pos)
     return
   end
-  
+
   -- Minerals nearby make bluegrass grow faster.
   local lava_near = minetest.find_node_near(pos, 2, "glowstone:minerals")
   if lava_near then
@@ -168,12 +168,12 @@ bluegrass.grow_plant = function(pos, elapsed)
     placenode.param2 = def.place_param2
   end
   minetest.swap_node(pos, placenode)
-  
+
   -- new timer needed?
   if minetest.reg_ns_nodes[def._farming_next_plant]._farming_next_plant then
     tick(pos, tick_data)
   end
-  
+
   return
 end
 
@@ -260,8 +260,8 @@ local crop_def = {
   on_timer = bluegrass.grow_plant,
 }
 
-  
-  
+
+
 -- Stage 1.
 crop_def._farming_next_plant = "bluegrass:plant_2"
 crop_def._farming_prev_seed = "bluegrass:seed"

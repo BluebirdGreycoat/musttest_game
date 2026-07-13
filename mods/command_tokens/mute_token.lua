@@ -4,6 +4,9 @@ command_tokens.mute = command_tokens.mute or {}
 command_tokens.mute.players = command_tokens.mute.players or {}
 local mute_duration = 60*10 -- Time in seconds.
 
+local GAG_XPTYPE = "buildxp"
+local GAG_NOMUTE_THRESHOLD = 150000
+
 -- Localize for performance.
 local math_random = math.random
 
@@ -88,6 +91,12 @@ local function is_valid_target(target)
 	if minetest.get_player_by_name(target) then
 		if not minetest.check_player_privs(target, {server=true}) and
 				not minetest.check_player_privs(target, {nomute=true}) then
+
+			-- If target is over the threshold then it's as if they have 'nomute' priv.
+			if xp.get_xp(target, GAG_XPTYPE) >= GAG_NOMUTE_THRESHOLD then
+				return
+			end
+
 			return true
 		end
 	end
@@ -114,12 +123,12 @@ command_tokens.mute.execute = function(player, target, chatcommand)
 				local rng = math_random(1, 65000)
 				command_tokens.mute.players[target] = rng
 				minetest.after(mute_duration, unmute_on_timeout, target, rng)
-				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s chat has been duct-taped!")
+				minetest.chat_send_all("# Server: <" .. dname .. ">'s chat has been duct-taped!")
 
 				minetest.log("action", player .. " applies ducktape to " .. target)
 			else
 				command_tokens.mute.players[target] = nil
-				minetest.chat_send_all("# Server: Player <" .. dname .. "> was unmuted.")
+				minetest.chat_send_all("# Server: <" .. dname .. "> was unmuted.")
 
 				minetest.log("action", player .. " unmutes " .. target)
 			end
@@ -131,7 +140,7 @@ command_tokens.mute.execute = function(player, target, chatcommand)
 		end
 	else
 		-- Target not found.
-		minetest.chat_send_player(player, "# Server: Player <" .. dname .. "> cannot be silenced.")
+		minetest.chat_send_player(player, "# Server: <" .. dname .. "> cannot be silenced.")
 	end
 end
 

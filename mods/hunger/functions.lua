@@ -177,6 +177,17 @@ end
 
 
 
+local XPLOSS_DRAWTYPES_IGNORE = {
+	torchlike = true,
+	plantlike = true,
+	firelike = true,
+	signlike = true,
+	raillike = true,
+	mesh = true,
+	nodebox = true,
+	fencelike = true,
+}
+
 -- Dignode event.
 function hunger.on_dignode(pos, oldnode, player)
 	if not player or not player:is_player() then
@@ -185,6 +196,7 @@ function hunger.on_dignode(pos, oldnode, player)
 
 	local pname = player:get_player_name()
 	local pinfo = hunger.players[pname]
+	local ndef = minetest.registered_nodes[oldnode.name]
 
 	-- Enforce rate limit of once per second, as otherwise this would trigger many
 	-- many times for certain actions, like digging papyrus or scaffolding. This
@@ -196,7 +208,6 @@ function hunger.on_dignode(pos, oldnode, player)
 		-- Use drawtype to guess how costly this node should be to dig.
 		-- Just need a quick approximation.
 		local cost = -2
-		local ndef = minetest.registered_nodes[oldnode.name]
 		if ndef then
 			local dt = ndef.drawtype or ""
 			if dt == "normal" then
@@ -228,7 +239,24 @@ function hunger.on_dignode(pos, oldnode, player)
 	end
 
 	-- Digging causes loss in buildxp.
-	xp.subtract_xp(pname, "buildxp", BUILDXP_LOSS)
+	if ndef then
+		local loss = BUILDXP_LOSS
+
+		-- Harvesting crops has no cost in buildxp.
+		-- Capture all standard crops.
+		if ndef._farming_next_plant or ndef._farming_prev_seed or ndef._farming_prev_plant then
+			loss = 0
+		end
+
+		-- Ignore anything with these drawtypes.
+		if XPLOSS_DRAWTYPES_IGNORE[ndef.drawtype or ""] then
+			loss = 0
+		end
+
+		if loss > 0 then
+			xp.subtract_xp(pname, "buildxp", loss)
+		end
+	end
 end
 
 

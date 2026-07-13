@@ -25,6 +25,7 @@ dofile(serveressentials.modpath .. "/suicide.lua")
 dofile(serveressentials.modpath .. "/gag.lua")
 dofile(serveressentials.modpath .. "/ascii.lua")
 dofile(serveressentials.modpath .. "/spawnchest.lua")
+dofile(serveressentials.modpath .. "/sethome.lua")
 
 
 

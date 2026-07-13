@@ -5,13 +5,12 @@ local math_floor = math.floor
 local math_min = math.min
 
 -- Gains in buildxp from building. The same amount is lost from digxp.
-local BUILDXP_STAIRS = 0.5
-local BUILDXP_BRICKS = 0.1
-local BUILDXP_DEFAULT = 0.01
+local BUILDXP_STAIRS = xp.XP_RATES.BUILDXP_PLACE_STAIRS
+local BUILDXP_BRICKS = xp.XP_RATES.BUILDXP_PLACE_BRICKS
+local BUILDXP_DEFAULT = xp.XP_RATES.BUILDXP_PLACE_DEFAULT
 
 -- Loss of buildxp due to digging.
--- Should be: approx 100 nodes dug == 1 lost buildxp.
-local BUILDXP_LOSS = 0.01
+local BUILDXP_LOSS = xp.XP_RATES.BUILDXP_DIG_LOSS
 
 
 

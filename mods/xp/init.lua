@@ -7,6 +7,20 @@ xp.data = xp.data or {} -- Data is stored in string form.
 xp.dirty = true
 xp.dirty_players = xp.dirty_players or {}
 
+-- Configurable constants.
+-- Warning: since users can dig and place the same nodes repeatedly, it would be best
+-- to keep these values SMALL, so as to discourage any advantage from simply standing
+-- in place and "grinding" xp with no actual building effort.
+xp.XP_RATES = {
+	-- Build XP gained from placing nodes.
+	BUILDXP_PLACE_STAIRS = 0.5,
+	BUILDXP_PLACE_BRICKS = 0.1,
+	BUILDXP_PLACE_DEFAULT = 0.01,
+
+	-- Build XP lost whenever player digs nodes.
+	BUILDXP_DIG_LOSS = 0.01,
+}
+
 reload.install_simple_signals(xp)
 
 dofile(xp.modpath .. "/command.lua")

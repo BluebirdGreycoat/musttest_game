@@ -252,6 +252,13 @@ local drop_node_list = {
 	["rackstone:redrack_with_copper"] = true,
 	["rackstone:redrack_with_tin"] = true,
 
+	["rackstone:rackstone_with_coal"] = true,
+	["rackstone:rackstone_with_iron"] = true,
+	["rackstone:rackstone_with_copper"] = true,
+	["rackstone:rackstone_with_gold"] = true,
+	["rackstone:rackstone_with_diamond"] = true,
+	["rackstone:rackstone_with_mese"] = true,
+
 	["akalin:ore"] = true,
 	["alatro:ore"] = true,
 	["arol:ore"] = true,

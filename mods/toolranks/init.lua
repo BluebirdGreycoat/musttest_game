@@ -3,7 +3,7 @@
 local math_floor = math.floor
 
 -- This is used to keep the large (internal) numbers managable for users.
-local TOOLTIP_DAMAGEGROUP_DIVISOR = 100
+local TOOLTIP_DAMAGEGROUP_DIVISOR = 50
 
 
 
@@ -98,15 +98,27 @@ function toolranks.create_description(idef, uses, level)
                   toolranks.colors.grey .. strpart .. ": " .. (uses or 0)
 
 	local damage_groups = idef.tool_capabilities and idef.tool_capabilities.damage_groups or {}
-	if next(damage_groups) then
-		newdesc = newdesc .. toolranks.colors.white .. "\n\nAttack Types:"
+	local report_groups = {}
 
+	if next(damage_groups) then
+		-- Cull damage groups that are too low to be worth showing.
 		for group, value in pairs(damage_groups) do
 			if group ~= "knockback" then
-				local groupdesc = armor.get_resistance_desc(group)
-				groupdesc = groupdesc:sub(1, 1):upper() .. groupdesc:sub(2)
-				newdesc = newdesc .. "\n\t" .. groupdesc .. ": " .. math.round(value / TOOLTIP_DAMAGEGROUP_DIVISOR)
+				local val = math.round(value / TOOLTIP_DAMAGEGROUP_DIVISOR)
+				if val > 0 then
+					report_groups[group] = val
+				end
 			end
+		end
+	end
+
+	if next(report_groups) then
+		newdesc = newdesc .. toolranks.colors.white .. "\n\nAttack Types:"
+
+		for group, value in pairs(report_groups) do
+			local groupdesc = armor.get_resistance_desc(group)
+			groupdesc = groupdesc:sub(1, 1):upper() .. groupdesc:sub(2)
+			newdesc = newdesc .. "\n\t" .. groupdesc .. ": " .. value
 		end
 	end
 

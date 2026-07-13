@@ -35,6 +35,14 @@ function serveressentials.add_loot_to_spawnchest()
 	local inv = meta:get_inventory()
 	if not inv then return end
 
+	-- Never adjust inventory while the chest is open.
+	local node = minetest.get_node_or_nil(SPAWNCHEST_POS)
+	if node then
+		if node.name:find("_open") then
+			return
+		end
+	end
+
 	for _, entry in ipairs(ITEMS) do
 		if math.random(1, 100) <= entry.chance then
 			local stack = ItemStack(entry.item)

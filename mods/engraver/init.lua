@@ -4,6 +4,8 @@ engraver.modpath = minetest.get_modpath("engraver")
 
 local MAX_SIGN_LENGTH = 256
 
+
+
 -- API function to allow caller to check if an item has a custom description.
 function engraver.item_has_custom_description(item)
 	if item:get_count() ~= 1 then
@@ -15,6 +17,8 @@ function engraver.item_has_custom_description(item)
 	local ar_desc = meta:get_string("ar_desc") or ""
 	return en_desc ~= "" or ar_desc ~= ""
 end
+
+
 
 local function player_wields_tools(user)
 	local chisel_index = user:get_wield_index()
@@ -120,38 +124,7 @@ end
 
 
 
--- Must be a tool for the wear bar to work.
-minetest.register_tool("engraver:chisel", {
-	description = "Chisel",
-	groups = {not_repaired_by_anvil = 1},
-	inventory_image = "engraver_chisel.png",
-	wield_image = "engraver_chisel.png",
-
-	on_use = function(itemstack, user, pt)
-		if not user or not user:is_player() then
-			return
-		end
-
-		if pt.type ~= "node" then
-			return
-		end
-
-		if not player_wields_tools(user) then
-			return
-		end
-
-		if not node_can_be_chiseled(pt.under) then
-			return
-		end
-
-		ambiance.sound_play("anvil_clang", pt.under, 1.0, 30)
-		show_chisel_formspec(pt.under, user)
-	end,
-})
-
-
-
-local function handle_engraver_use(player, formname, fields)
+function engraver.handle_engraver_use(player, formname, fields)
 	if not string.find(formname, "^engraver:chisel_") then
 		return
 	end
@@ -233,19 +206,6 @@ end
 
 
 
-minetest.register_on_player_receive_fields(handle_engraver_use)
-
-minetest.register_craft({
-	output = "engraver:chisel",
-	recipe = {
-		{"carbon_steel:ingot"},
-		{"darkage:iron_stick"},
-	},
-})
-
-
-
-
 -- Code by 'octacian'
 
 --
@@ -279,6 +239,8 @@ local function get_workbench_formspec(pos, error)
 		default.get_hotbar_bg(0,2.85)
 end
 
+
+
 local function get_item_desc(stack)
 	if not stack:is_known() then
 		return
@@ -293,11 +255,15 @@ local function get_item_desc(stack)
 	return desc
 end
 
+
+
 local function workbench_update_text(pos, stack)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("text", get_item_desc(stack))
 	meta:set_string("formspec", get_workbench_formspec(pos))
 end
+
+
 
 local function workbench_update_help(pos, type, string)
 	local meta = minetest.get_meta(pos)
@@ -305,229 +271,352 @@ local function workbench_update_help(pos, type, string)
 	meta:set_string("error", type)
 end
 
---
--- Node definition
---
 
-minetest.register_node(":engraver:bench", {
-	description = "Engraving Bench",
-	tiles = {"default_workbench_top.png", "default_wood.png", "default_workbench_sides.png",
-		"default_workbench_sides.png", "default_workbench_sides.png", "default_workbench_sides.png"},
-	groups = utility.dig_groups("furniture", {flammable = 3}),
-	sounds = default.node_sound_wood_defaults(),
 
-	drawtype = "nodebox",
-	paramtype = "light",
-	node_box = {
-		type = "fixed",
-		fixed = {
-			{-0.5, 3/16, -0.5, 0.5, 0.5, 0.5},
-			{-7/16, -0.5, 1/4, -1/4, 0.5, 7/16},
-			{-7/16, -0.5, -7/16, -1/4, 0.5, -1/4},
-			{1/4, -0.5, 1/4, 7/16, 0.5, 7/16},
-			{1/4, -0.5, -7/16, 7/16, 0.5, -1/4},
-		}
-	},
-	stack_max = 1,
+function engraver.on_chisel_use(itemstack, user, pt)
+	if not user or not user:is_player() then
+		return
+	end
 
-	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec", get_workbench_formspec(pos))
-		local inv = meta:get_inventory()
-		inv:set_size("input", 1)
-		inv:set_size("nametag", 1)
-		inv:set_size("output", 1)
-	end,
-	can_dig = function(pos, player)
-		local inv = minetest.get_meta(pos):get_inventory()
+	if pt.type ~= "node" then
+		return
+	end
 
-		if inv:is_empty("input") and inv:is_empty("nametag") and
-				inv:is_empty("output") then
-			return true
+	if not player_wields_tools(user) then
+		return
+	end
+
+	if not node_can_be_chiseled(pt.under) then
+		return
+	end
+
+	ambiance.sound_play("anvil_clang", pt.under, 1.0, 30)
+	show_chisel_formspec(pt.under, user)
+end
+
+
+
+function engraver.on_bench_construct(pos)
+	local meta = minetest.get_meta(pos)
+	meta:set_string("formspec", get_workbench_formspec(pos))
+	local inv = meta:get_inventory()
+	inv:set_size("input", 1)
+	inv:set_size("nametag", 1)
+	inv:set_size("output", 1)
+end
+
+
+
+function engraver.on_bench_can_dig(pos, player)
+	local inv = minetest.get_meta(pos):get_inventory()
+
+	if inv:is_empty("input") and inv:is_empty("nametag") and
+			inv:is_empty("output") then
+		return true
+	else
+		return false
+	end
+end
+
+
+
+function engraver.on_bench_blast(pos)
+	local inv = minetest.get_meta(pos):get_inventory()
+
+	local drops = {
+		inv:get_list("input")[1],
+		inv:get_list("nametag")[1],
+		inv:get_list("output")[1],
+		"engraver:bench",
+	}
+	minetest.remove_node(pos)
+	return drops
+end
+
+
+
+function engraver.allow_metadata_inventory_put(pos, listname, index, stack, player)
+	local pname = player:get_player_name()
+	if minetest.test_protection(pos, pname) then
+		return 0
+	end
+	if not stack:is_known() then
+		return 0
+	end
+
+	if listname == "nametag" then
+		if stack:get_name() ~= "engraver:plate" then
+			return 0
 		else
-			return false
-		end
-	end,
-	on_blast = function(pos)
-		local inv = minetest.get_meta(pos):get_inventory()
-
-		local drops = {
-			inv:get_list("input")[1],
-			inv:get_list("nametag")[1],
-			inv:get_list("output")[1],
-			"engraver:bench",
-		}
-		minetest.remove_node(pos)
-		return drops
-	end,
-
-	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		local pname = player:get_player_name()
-		if minetest.test_protection(pos, pname) then
-			return 0
-		end
-		if not stack:is_known() then
-			return 0
-		end
-
-		if listname == "nametag" then
-			if stack:get_name() ~= "engraver:plate" then
-				return 0
-			else
-				return stack:get_count()
-			end
-		elseif listname == "output" then
-			return 0
-		elseif listname == "input" then
-			if minetest.get_item_group(stack:get_name(), "not_renamable") > 0 then
-				return 0
-			end
-			if stack:get_stack_max() > 1 then
-				return 0
-			end
 			return stack:get_count()
 		end
-
+	elseif listname == "output" then
 		return 0
-	end,
-
-	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
-		return 0
-	end,
-
-	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		local pname = player:get_player_name()
-		if minetest.test_protection(pos, pname) then
+	elseif listname == "input" then
+		if minetest.get_item_group(stack:get_name(), "not_renamable") > 0 then
+			return 0
+		end
+		if stack:get_stack_max() > 1 then
 			return 0
 		end
 		return stack:get_count()
-	end,
+	end
 
-	on_metadata_inventory_put = function(pos, listname, index, stack)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		local error = meta:get_string("error")
+	return 0
+end
 
-		if error == "input" and not inv:is_empty("input") then
-			meta:set_string("formspec", get_workbench_formspec(pos))
-		elseif error == "nametag" and not inv:is_empty("nametag") then
-			meta:set_string("formspec", get_workbench_formspec(pos))
-		end
 
-		if listname == "input" then
-			workbench_update_text(pos, stack)
-		end
-	end,
 
-	on_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index)
-		-- Moving is not allowed.
-	end,
+function engraver.allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
+	return 0
+end
 
-	on_metadata_inventory_take = function(pos, listname)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		local error = meta:get_string("error")
 
-		if error == "output" and inv:is_empty("output") then
-			meta:set_string("formspec", get_workbench_formspec(pos))
-		end
 
-		if listname == "input" then
-			meta:set_string("text", "")
-			meta:set_string("formspec", get_workbench_formspec(pos))
-		end
-	end,
+function engraver.allow_metadata_inventory_take(pos, listname, index, stack, player)
+	local pname = player:get_player_name()
+	if minetest.test_protection(pos, pname) then
+		return 0
+	end
+	return stack:get_count()
+end
 
-	on_receive_fields = function(pos, formname, fields, sender)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		local pname = sender:get_player_name()
 
-		if fields.rename or fields.key_enter_field == "text" then
-			meta:set_string("text", fields.text)
 
-			if inv:is_empty("input") then
-				workbench_update_help(pos, "input", "Missing input item!")
-			elseif inv:is_empty("nametag") then
-				workbench_update_help(pos, "nametag", "Missing nameplate!")
-			elseif not inv:is_empty("output") then
-				workbench_update_help(pos, "output", "No room in output!")
-			else
-				local new_stack  = inv:get_stack("input", 1)
+function engraver.on_metadata_inventory_put(pos, listname, index, stack)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	local error = meta:get_string("error")
 
-				if not new_stack:is_known() then
-					workbench_update_help(pos, nil, "Cannot rename unknown item!")
-					return
-				end
+	if error == "input" and not inv:is_empty("input") then
+		meta:set_string("formspec", get_workbench_formspec(pos))
+	elseif error == "nametag" and not inv:is_empty("nametag") then
+		meta:set_string("formspec", get_workbench_formspec(pos))
+	end
 
-				local item       = minetest.registered_items[new_stack:get_name()]
-				local renameable = item.groups.renameable ~= 0
+	if listname == "input" then
+		workbench_update_text(pos, stack)
+	end
+end
 
-				if not renameable then
-					workbench_update_help(pos, nil, "Item cannot be renamed!")
-					return
-				elseif new_stack:get_stack_max() > 1 then
-					workbench_update_help(pos, nil, "Item cannot be renamed!")
-					return
-				elseif fields.text == "" then
-					workbench_update_help(pos, nil, "Description cannot be blank!")
-					return
-				elseif anticurse.check(pname, fields.text, "foul") then
-					workbench_update_help(pos, nil, "No foul language!")
-					return
-				elseif anticurse.check(pname, fields.text, "curse") then
-					workbench_update_help(pos, nil, "No cursing!")
-					return
-				elseif fields.text:len() > 256 then
-					workbench_update_help(pos, nil, "Description too long (max 256 characters)!")
-					return
-				elseif fields.text == get_item_desc(inv:get_stack("input", 1)) then
-					workbench_update_help(pos, nil, "Description not changed!")
-				end
 
-				local itemmeta = new_stack:get_meta()
-				itemmeta:set_string("en_desc", fields.text)
-				toolranks.apply_description(itemmeta, new_stack:get_definition())
 
-				minetest.log("action", pname .. " renames "
-					..inv:get_stack("input", 1):get_name().." to "..fields.text)
+function engraver.on_metadata_inventory_move(pos, from_list, from_index, to_list, to_index)
+	-- Moving is not allowed.
+end
 
-				inv:remove_item("input", inv:get_stack("input", 1))
-				inv:remove_item("nametag", inv:get_stack("nametag", 1):take_item(1))
-				inv:set_stack("output", 1, new_stack)
 
-				meta:set_string("text", "")
-				workbench_update_help(pos)
+
+function engraver.on_metadata_inventory_take(pos, listname)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	local error = meta:get_string("error")
+
+	if error == "output" and inv:is_empty("output") then
+		meta:set_string("formspec", get_workbench_formspec(pos))
+	end
+
+	if listname == "input" then
+		meta:set_string("text", "")
+		meta:set_string("formspec", get_workbench_formspec(pos))
+	end
+end
+
+
+
+function engraver.on_bench_receive_fields(pos, formname, fields, sender)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	local pname = sender:get_player_name()
+
+	if fields.rename or fields.key_enter_field == "text" then
+		meta:set_string("text", fields.text)
+
+		if inv:is_empty("input") then
+			workbench_update_help(pos, "input", "Missing input item!")
+		elseif inv:is_empty("nametag") then
+			workbench_update_help(pos, "nametag", "Missing nameplate!")
+		elseif not inv:is_empty("output") then
+			workbench_update_help(pos, "output", "No room in output!")
+		else
+			local new_stack  = inv:get_stack("input", 1)
+
+			if not new_stack:is_known() then
+				workbench_update_help(pos, nil, "Cannot rename unknown item!")
+				return
 			end
+
+			local item       = minetest.registered_items[new_stack:get_name()]
+			local renameable = item.groups.renameable ~= 0
+
+			if not renameable then
+				workbench_update_help(pos, nil, "Item cannot be renamed!")
+				return
+			elseif new_stack:get_stack_max() > 1 then
+				workbench_update_help(pos, nil, "Item cannot be renamed!")
+				return
+			elseif fields.text == "" then
+				workbench_update_help(pos, nil, "Description cannot be blank!")
+				return
+			elseif anticurse.check(pname, fields.text, "foul") then
+				workbench_update_help(pos, nil, "No foul language!")
+				return
+			elseif anticurse.check(pname, fields.text, "curse") then
+				workbench_update_help(pos, nil, "No cursing!")
+				return
+			elseif fields.text:len() > 256 then
+				workbench_update_help(pos, nil, "Description too long (max 256 characters)!")
+				return
+			elseif fields.text == get_item_desc(inv:get_stack("input", 1)) then
+				workbench_update_help(pos, nil, "Description not changed!")
+			end
+
+			local itemmeta = new_stack:get_meta()
+			itemmeta:set_string("en_desc", fields.text)
+			toolranks.apply_description(itemmeta, new_stack:get_definition())
+
+			minetest.log("action", pname .. " renames "
+				..inv:get_stack("input", 1):get_name().." to "..fields.text)
+
+			inv:remove_item("input", inv:get_stack("input", 1))
+			inv:remove_item("nametag", inv:get_stack("nametag", 1):take_item(1))
+			inv:set_stack("output", 1, new_stack)
+
+			meta:set_string("text", "")
+			workbench_update_help(pos)
 		end
-	end,
-})
+	end
+end
 
-minetest.register_craft({
-	output = "engraver:bench",
-	recipe = {
-		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
-		{'basictrees:tree_wood', 'default:stone', 'basictrees:tree_wood'},
-		{'basictrees:tree_wood', '', 'basictrees:tree_wood'},
-	}
-})
 
-minetest.register_craftitem(":engraver:plate", {
-	description = "Nameplate",
-	inventory_image = "default_nametag.png",
-	groups = {not_renamable = 1}
-})
 
-minetest.register_craft({
-	type = "compressing",
-	output = "engraver:plate 4",
-	recipe = "default:bronze_ingot",
-	time = 10,
-})
+if not engraver.registered then
+	engraver.registered = true
+	local c = "engraver:core"
+	local f = engraver.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
 
-minetest.register_craft({
-	type = "anvil",
-	output = "engraver:plate",
-	recipe = "default:bronze_ingot",
-})
+	--
+	-- Node definition
+	--
+	minetest.register_node(":engraver:bench", {
+		description = "Engraving Bench",
+		tiles = {
+			"default_workbench_top.png",
+			"default_wood.png",
+			"default_workbench_sides.png",
+			"default_workbench_sides.png",
+			"default_workbench_sides.png",
+			"default_workbench_sides.png",
+		},
+		groups = utility.dig_groups("furniture", {flammable = 3}),
+		sounds = default.node_sound_wood_defaults(),
+
+		drawtype = "nodebox",
+		paramtype = "light",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, 3/16, -0.5, 0.5, 0.5, 0.5},
+				{-7/16, -0.5, 1/4, -1/4, 0.5, 7/16},
+				{-7/16, -0.5, -7/16, -1/4, 0.5, -1/4},
+				{1/4, -0.5, 1/4, 7/16, 0.5, 7/16},
+				{1/4, -0.5, -7/16, 7/16, 0.5, -1/4},
+			}
+		},
+		stack_max = 1,
+
+		on_construct = function(pos)
+			engraver.on_bench_construct(pos)
+		end,
+
+		can_dig = function(pos, player)
+			return engraver.on_bench_can_dig(pos, player)
+		end,
+
+		on_blast = function(pos)
+			return engraver.on_bench_blast(pos)
+		end,
+
+		allow_metadata_inventory_put = function(...)
+			return engraver.allow_metadata_inventory_put(...)
+		end,
+
+		allow_metadata_inventory_move = function(...)
+			return engraver.allow_metadata_inventory_move(...)
+		end,
+
+		allow_metadata_inventory_take = function(...)
+			return engraver.allow_metadata_inventory_take(...)
+		end,
+
+		on_metadata_inventory_put = function(...)
+			engraver.on_metadata_inventory_put(...)
+		end,
+
+		on_metadata_inventory_move = function(...)
+			engraver.on_metadata_inventory_move(...)
+		end,
+
+		on_metadata_inventory_take = function(...)
+			engraver.on_metadata_inventory_take(...)
+		end,
+
+		on_receive_fields = function(...)
+			return engraver.on_bench_receive_fields(...)
+		end,
+	})
+
+	minetest.register_on_player_receive_fields(function(...)
+		return engraver.handle_engraver_use(...)
+	end)
+
+	minetest.register_craft({
+		output = "engraver:chisel",
+		recipe = {
+			{"carbon_steel:ingot"},
+			{"darkage:iron_stick"},
+		},
+	})
+
+	minetest.register_craft({
+		output = "engraver:bench",
+		recipe = {
+			{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
+			{'basictrees:tree_wood', 'default:stone', 'basictrees:tree_wood'},
+			{'basictrees:tree_wood', '', 'basictrees:tree_wood'},
+		}
+	})
+
+	minetest.register_craftitem(":engraver:plate", {
+		description = "Nameplate",
+		inventory_image = "default_nametag.png",
+		groups = {not_renamable = 1}
+	})
+
+	minetest.register_craft({
+		type = "compressing",
+		output = "engraver:plate 4",
+		recipe = "default:bronze_ingot",
+		time = 10,
+	})
+
+	minetest.register_craft({
+		type = "anvil",
+		output = "engraver:plate",
+		recipe = "default:bronze_ingot",
+	})
+
+	-- Must be a tool for the wear bar to work.
+	minetest.register_tool("engraver:chisel", {
+		description = "Chisel",
+		groups = {not_repaired_by_anvil = 1},
+		inventory_image = "engraver_chisel.png",
+		wield_image = "engraver_chisel.png",
+
+		on_use = function(...)
+			return engraver.on_chisel_use(...)
+		end,
+	})
+end
 

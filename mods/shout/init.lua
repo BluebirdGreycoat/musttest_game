@@ -57,46 +57,48 @@ if not shout.run_once then
 		end,
 	})
 
-	--[[
+	local function show_depreciation_help(pname, newcommand)
+		minetest.chat_send_player(pname, "# Server: This command is replaced by /" .. newcommand .. ".")
+		minetest.chat_send_player(pname, "# Server: Please read /help " .. newcommand .. ".")
+	end
+
 	minetest.register_chatcommand("channel", {
 		params = "",
-		show_help = function(...)
-			return shout.show_channel_help(...)
+		show_help = function(pname)
+			show_depreciation_help(pname, "sanctum")
 		end,
-		description = "Join or leave/mute communication channels.",
+		description = "Depreciated command.",
 		privs = {},
-		func = function(name, param)
-			shout.channel_on_chatcommand(name, param)
-			return true
+		func = function(pname, param)
+			show_depreciation_help(pname, "sanctum")
 		end,
 	})
 
+	minetest.register_chatcommand("xchannel", {
+		params = "",
+		description = "Depreciated command.",
+		privs = {},
+		func = function(pname, param)
+			show_depreciation_help(pname, "sanctum")
+		end,
+	})
+
+	minetest.register_chatcommand("xinvert", {
+		params = "",
+		description = "Depreciated command.",
+		privs = {},
+		func = function(pname, param)
+			show_depreciation_help(pname, "xalways")
+		end,
+	})
+
+	--[[
 	minetest.register_chatcommand("x", {
 		params = "<message>",
 		description = "Send a message only to specific channel(s). Also called group DM rooms.",
 		privs = {},
 		func = function(name, param)
 			shout.x_specific(name, chat_core.rewrite_message(param))
-			return true
-		end,
-	})
-
-	minetest.register_chatcommand("xchannel", {
-		params = "<add|remove> <channel>",
-		description = "Choose specific channel(s) for use with /x (group DM rooms).",
-		privs = {},
-		func = function(name, param)
-			shout.x_choose(name, param)
-			return true
-		end,
-	})
-
-	minetest.register_chatcommand("xinvert", {
-		params = "",
-		description = "Toggle whether /x is required to speak in group DM rooms.",
-		privs = {},
-		func = function(name, param)
-			shout.x_invert(name, param)
 			return true
 		end,
 	})

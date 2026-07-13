@@ -681,7 +681,7 @@ function passport.on_craft(itemstack, player, old_craft_grid, craft_inv)
 
 			passport.award_cash(pname, player)
 			minetest.chat_send_player(pname, "# Server: You are now eligible to join the 'global' chat channel (and leave 'newbies' if you wish).")
-			minetest.chat_send_player(pname, "# Server: Type '/channel join global' to join the main chat.")
+			minetest.chat_send_player(pname, "# Server: Type '/sanctum join global' to join the main chat.")
 		end
 
 		-- Clear cache of player registration.

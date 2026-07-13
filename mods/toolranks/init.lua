@@ -75,7 +75,9 @@ function toolranks.apply_description(itemmeta, def)
 	itemmeta:set_string("description", desc1 .. desc2 .. desc3)
 end
 
-function toolranks.create_description(idef, uses, level)
+-- 'itemmeta' will be nil if creating description for the item registration.
+-- (There is no actual itemstack or itemmeta in that case.)
+function toolranks.create_description(itemmeta, idef, uses, level)
   local description = utility.get_short_desc(idef.description)
   local tooltype = toolranks.get_tool_type(description)
   tooltype = tooltype:sub(1, 1):upper() .. tooltype:sub(2)
@@ -119,6 +121,15 @@ function toolranks.create_description(idef, uses, level)
 			local groupdesc = armor.get_resistance_desc(group)
 			groupdesc = groupdesc:sub(1, 1):upper() .. groupdesc:sub(2)
 			newdesc = newdesc .. "\n\t" .. groupdesc .. ": " .. value
+		end
+	end
+
+	if itemmeta then
+		local ct = tonumber(itemmeta:get_string("tr_crafttime"))
+		local co = itemmeta:get_string("tr_craftowner")
+		if ct then
+			newdesc = newdesc .. "\n\nCrafter: " .. rename.gpn(co)
+			newdesc = newdesc .. "\nDate: " .. os.date("%Y-%m-%d", ct)
 		end
 	end
 
@@ -236,7 +247,7 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 			itemmeta:set_string("tr_lastlevel", level)
 		end
 
-		local newdesc = toolranks.create_description(itemdef, dugnodes, level)
+		local newdesc = toolranks.create_description(itemmeta, itemdef, dugnodes, level)
 
 		itemmeta:set_string("tr_desc", newdesc)
 		toolranks.apply_description(itemmeta, itemdef)
@@ -260,7 +271,25 @@ end
 
 
 
+-- Called when player crafts one of our known tools/weapons.
+function toolranks.on_tool_craft(itemstack, player)
+	local meta = itemstack:get_meta()
+	meta:set_string("tr_crafttime", tostring(os.time()))
+	meta:set_string("tr_craftowner", player:get_player_name())
+
+	local itemdef = itemstack:get_definition()
+	local tr_desc = toolranks.create_description(meta, itemdef, 0, 1)
+	meta:set_string("tr_desc", tr_desc)
+	toolranks.apply_description(meta, itemdef)
+end
+
+
+
 if not toolranks.registered then
+	local function on_craft(itemstack, player)
+		toolranks.on_tool_craft(itemstack, player)
+	end
+
 	local function override_item(name)
 		--print(name)
 		toolranks.tools[name] = true
@@ -271,13 +300,14 @@ if not toolranks.registered then
 		itemdef.name = nil
 		itemdef.type = nil
 
-		local tr_desc = toolranks.create_description(itemdef, 0, 1)
+		local tr_desc = toolranks.create_description(nil, itemdef, 0, 1)
 
 		itemdef.original_description = itemdef.description
 		itemdef.description = itemdef.description .. "\n\n" .. tr_desc
 		itemdef.original_tr_description = tr_desc
 		itemdef.after_use = function(...) return toolranks.new_afteruse(...) end
 		itemdef._toolranks = {}
+		itemdef._on_craft = on_craft
 
 		-- Store the general "type" of the tool so we can avoid parsing itemnames in other parts of the code.
 		if name:find("sword") then

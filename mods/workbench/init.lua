@@ -11,8 +11,15 @@ local FORMSPEC_DISTANCE = 6 -- Distance checks on inventory are handled elsewher
 local FORMSPEC_NAME = "xdecor:workbench"
 local player_contexts = workbench.players
 
+local function run_on_craft_callbacks(item, player)
+	local idef = item:get_definition()
+	if idef and idef._on_craft then
+		idef._on_craft(item, player)
+	end
+end
+
 -- This function actually performs the crafting.
-local function do_craft(pos, times)
+local function do_craft(pos, times, player)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	local recipe = inv:get_list("craft")
@@ -83,7 +90,11 @@ local function do_craft(pos, times)
 		end
 
 		-- Add output item to output inventory.
-		inv:add_item("output", output.item)
+		run_on_craft_callbacks(output.item, player)
+		local output_leftover = inv:add_item("output", output.item)
+		if not output_leftover:is_empty() then
+			minetest.add_item(vector.offset(pos, 0, 1, 0), output_leftover)
+		end
 
 		-- Finally, add output replacements back to storage, or the world if no room.
 		for k, stack in ipairs(output.replacements) do
@@ -307,7 +318,7 @@ function workbench.on_receive_fields(player, formname, fields)
 		if fields[v] then
 			local num = tonumber(v:sub(4))
 			if num then
-				do_craft(pos, num)
+				do_craft(pos, num, player)
 			end
 		end
 	end

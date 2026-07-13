@@ -7,6 +7,7 @@ falldamage.modpath = minetest.get_modpath("falldamage")
 dofile(falldamage.modpath .. "/tilesheet.lua")
 dofile(falldamage.modpath .. "/rangecheck.lua")
 dofile(falldamage.modpath .. "/liquidinteraction.lua")
+dofile(falldamage.modpath .. "/crafting.lua")
 
 
 
@@ -227,7 +228,7 @@ local function register_node(name, def2)
 			end
 		end
 	end
-  
+
 	if def.groups.notify_destruct and def.groups.notify_destruct > 0 then
 		if def.on_destruct then
 			local old = def.on_destruct

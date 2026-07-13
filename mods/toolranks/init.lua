@@ -44,9 +44,9 @@ end
 -- Used to apply multiple descriptions into a single description.
 -- Any mod wanting to change a tool's description meta should go through this.
 function toolranks.apply_description(itemmeta, def)
-	local desc1 = itemmeta:get_string("en_desc") or ""
-	local desc2 = itemmeta:get_string("tr_desc") or ""
-	local desc3 = itemmeta:get_string("ar_desc") or ""
+	local desc1 = itemmeta:get_string("en_desc") or "" -- Engraver.
+	local desc2 = itemmeta:get_string("tr_desc") or "" -- Toolranks.
+	local desc3 = itemmeta:get_string("ar_desc") or "" -- Bows.
 
 	if desc1 == "" then
 		-- No custom description set by engraver, etc.?
@@ -168,6 +168,14 @@ function toolranks.get_tool_level(item)
 	return 0
 end
 
+local function check_tool_first_use(meta)
+	local time = tonumber(meta:get_string("tr_firstusetime"))
+	if not time then
+		meta:set_string("tr_firstusetime", tostring(os.time()))
+		-- Can't mark as private, that method doesn't exist for items.
+	end
+end
+
 -- 'node' may be nil; explicitly so when punching a mob.
 -- per docs, the engine only calls this after tool has dug node.
 -- therefore 'node' will only be nil if tool hit mob (see mobs API).
@@ -188,6 +196,8 @@ function toolranks.new_afteruse(itemstack, user, node, digparams)
 	local itemdesc  = itemdef.original_description -- Original Description
 	local dugnodes  = tonumber(itemmeta:get_string("tr_dug")) or 0 -- Number of nodes dug
 	local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1 -- Level the tool had
+
+	check_tool_first_use(itemmeta)
 
 	if ndef and ndef._toolranks then
 		if ndef._toolranks.ignore then

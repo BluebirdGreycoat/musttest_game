@@ -168,65 +168,84 @@ function toolranks.get_tool_level(item)
 	return 0
 end
 
+-- 'node' may be nil; explicitly so when punching a mob.
+-- per docs, the engine only calls this after tool has dug node.
+-- therefore 'node' will only be nil if tool hit mob (see mobs API).
 function toolranks.new_afteruse(itemstack, user, node, digparams)
 	-- If either is not specified, then behave like builtin.
 	if not user or not user:is_player() then
 		return itemstack
 	end
 
-	local ignore_this_node = false
+	local tool_xp_changed = false
+	local give_no_xp_this_use = false
 	local ndef = node and minetest.registered_nodes[node.name] or nil
 	local pname = user:get_player_name()
 
+	local itemmeta  = itemstack:get_meta() -- Metadata
+	local itemdef   = itemstack:get_definition() -- Item Definition
+	local itemTRdef = itemdef._toolranks or {}
+	local itemdesc  = itemdef.original_description -- Original Description
+	local dugnodes  = tonumber(itemmeta:get_string("tr_dug")) or 0 -- Number of nodes dug
+	local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1 -- Level the tool had
+
 	if ndef and ndef._toolranks then
 		if ndef._toolranks.ignore then
-			ignore_this_node = true
+			give_no_xp_this_use = true
 		end
 	end
 
-  local itemmeta  = itemstack:get_meta() -- Metadata
-  local itemdef   = itemstack:get_definition() -- Item Definition
-  local itemdesc  = itemdef.original_description -- Original Description
-  local dugnodes  = tonumber(itemmeta:get_string("tr_dug")) or 0 -- Number of nodes dug
-  local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1 -- Level the tool had
+	-- Swords only get XP from killing mobs.
+	if node and itemTRdef.sword then
+		give_no_xp_this_use = true
+	end
 
-  -- Only count nodes that spend the tool
-	if not ignore_this_node then
+	-- Don't give XP for partial punches.
+	if digparams._full_punch and digparams._full_punch < 1 then
+		give_no_xp_this_use = true
+	end
+
+	-- Only count nodes/mobs that spend the tool
+	if not give_no_xp_this_use then
 		if(digparams.wear > 0) then
-		dugnodes = dugnodes + 1
-		itemmeta:set_string("tr_dug", dugnodes)
+			dugnodes = dugnodes + 1
+			itemmeta:set_string("tr_dug", dugnodes)
+			tool_xp_changed = true
 		end
 	end
 
 	-- pass total number of nodes (of this type) that could be dug assuming no tool repairs, as second param to this function
-  local level = toolranks.get_level(dugnodes, math_floor(65535 / digparams.wear), lastlevel)
+	local level = toolranks.get_level(dugnodes, math_floor(65535 / digparams.wear), lastlevel)
 
-	-- New level should never be less than the old level.
-  if lastlevel < level then
-    local levelup_text = "# Server: Your " .. utility.get_short_desc(itemstack) .. " just leveled up!"
-    ambiance.sound_play("toolranks_levelup", user:get_pos(), 1.0, 20)
-    minetest.chat_send_player(pname, levelup_text)
-    itemmeta:set_string("tr_lastlevel", level)
-  end
+	if tool_xp_changed then
+		-- New level should never be less than the old level.
+		if lastlevel < level then
+			local levelup_text = "# Server: Your " .. utility.get_short_desc(itemstack) .. " just leveled up!"
+			ambiance.sound_play("toolranks_levelup", user:get_pos(), 1.0, 20)
+			minetest.chat_send_player(pname, levelup_text)
+			itemmeta:set_string("tr_lastlevel", level)
+		end
 
-  local newdesc = toolranks.create_description(itemdef, dugnodes, level)
+		local newdesc = toolranks.create_description(itemdef, dugnodes, level)
 
-	itemmeta:set_string("tr_desc", newdesc)
-	toolranks.apply_description(itemmeta, itemdef)
-  local wear = digparams.wear
-  if level > 1 then
-    wear = digparams.wear / (1 + level / 4)
-  end
+		itemmeta:set_string("tr_desc", newdesc)
+		toolranks.apply_description(itemmeta, itemdef)
+	end
 
-  --minetest.chat_send_all("wear="..wear.."Original wear: "..digparams.wear.." 1+level/4="..1+level/4)
-  -- Uncomment for testing ^
+	local wear = digparams.wear
+	if level > 1 then
+		wear = digparams.wear / (1 + level / 4)
+	end
 
-  itemstack = utility.wear_tool_with_feedback({
+	--minetest.chat_send_all("wear="..wear.."Original wear: "..digparams.wear.." 1+level/4="..1+level/4)
+	-- Uncomment for testing ^
+
+	itemstack = utility.wear_tool_with_feedback({
 		item = itemstack,
 		user = user,
 		wear = wear,
 	})
-  return itemstack
+	return itemstack
 end
 
 
@@ -248,6 +267,18 @@ if not toolranks.registered then
 		itemdef.description = itemdef.description .. "\n\n" .. tr_desc
 		itemdef.original_tr_description = tr_desc
 		itemdef.after_use = function(...) return toolranks.new_afteruse(...) end
+		itemdef._toolranks = {}
+
+		-- Store the general "type" of the tool so we can avoid parsing itemnames in other parts of the code.
+		if name:find("sword") then
+			itemdef._toolranks.sword = true
+		elseif name:find("pick") then
+			itemdef._toolranks.pick = true
+		elseif name:find("axe") then
+			itemdef._toolranks.axe = true
+		elseif name:find("shovel") then
+			itemdef._toolranks.shovel = true
+		end
 
 		minetest.override_item(name, itemdef)
 	end

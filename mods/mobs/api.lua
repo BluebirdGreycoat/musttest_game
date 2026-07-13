@@ -4566,7 +4566,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	-- calculate mob damage
 	local damage = 0
 	local armor = self.object:get_armor_groups() or {}
-	local tmp
+	local full_punch_scalar
 
 	-- quick error check incase it ends up 0 (serialize.h check test)
 	if tflp <= 0 then
@@ -4576,6 +4576,7 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 	end
 
 	do
+		-- Returns 0 for tools not registered with toolranks.
 		local tool_level_scaling = toolranks.get_tool_level(weapon)
 
 		-- Clamp at 1 for unusual weapons, otherwise we'd do no damage!
@@ -4590,18 +4591,18 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 			end
 
 			local act_damage = group_damage or 0
-			tmp = tflp / (tool_capabilities.full_punch_interval or 1.5)
+			full_punch_scalar = tflp / (tool_capabilities.full_punch_interval or 1.5)
 
 			-- Clamp time from last punch.
-			if tmp < 0 then
-				tmp = 0.0
-			elseif tmp > 1 then
-				tmp = 1.0
+			if full_punch_scalar < 0 then
+				full_punch_scalar = 0.0
+			elseif full_punch_scalar > 1 then
+				full_punch_scalar = 1.0
 			end
 
 			damage = damage + (
 				(act_damage * tool_level_scaling)
-				* tmp -- Time from last punch.
+				* full_punch_scalar -- Time from last punch.
 				* ((armor[group] or 0) / 100.0)
 			)
 
@@ -4633,15 +4634,14 @@ local function mob_punch(self, hitter, tflp, tool_capabilities, dir)
 		punch_interval = tool_capabilities.full_punch_interval or 1.4
 	end
 
-	if weapon:get_definition()
-			and weapon:get_definition().tool_capabilities then
-
+	if weapon:get_definition() and weapon:get_definition().tool_capabilities then
 		-- toolrank support
 		local wear = floor((punch_interval / 75) * 9000)
 
 		if HAVE_TOOLRANKS then
+			-- Pass in the full punch interval scalar via digparams table.
 			if weapon:get_definition() and weapon:get_definition().original_description then
-				weapon = toolranks.new_afteruse(weapon, hitter, nil, {wear = wear})
+				weapon = toolranks.new_afteruse(weapon, hitter, nil, {wear=wear, _full_punch=full_punch_scalar})
 			end
 		else
 			weapon:add_wear(wear)

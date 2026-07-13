@@ -645,7 +645,19 @@ bones.allow_metadata_inventory_put = function(pos, listname, index, stack, playe
 		return stack:get_count()
 	end
 
-	minetest.chat_send_player(player:get_player_name(), "# Server: Bones are not a place to store items!")
+	-- This callback gets called multiple times when shift-clicking stacks!
+	-- Silly minetest!
+	--
+	-- > sfan5: Nowhere does the documentation guarantee that
+	-- > allow_metadata_inventory_* is only called once. Not a bug I'd say.
+	--
+	-- ^^^ The above is an example of how the devs reason about these things.
+	local pname = player:get_player_name()
+	local key = pname .. ":bonepick"
+	if not spam.test_key(key) then
+		spam.mark_key(key, 10)
+		minetest.chat_send_player(pname, "# Server: Bones are not a place to store items!")
+	end
 	return 0
 end
 
@@ -655,7 +667,11 @@ bones.allow_metadata_inventory_take = function(pos, listname, index, stack, play
 	-- Prevent picking bones right after respawn, before player is repositioned.
 	if bones.nohack.on_hackdetect(player) then
 		local pname = player:get_player_name()
-		minetest.chat_send_player(pname, "# Server: Wait a bit before taking from bones.")
+		local key = pname .. ":bonepoke"
+		if not spam.test_key(key) then
+			spam.mark_key(key, 10)
+			minetest.chat_send_player(pname, "# Server: Wait a bit before taking from bones.")
+		end
 		return 0
 	end
 

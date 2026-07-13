@@ -116,7 +116,7 @@ books.get_formspec = function(pos)
         "listring[context;books]" ..
         "listring[current_player;main]" ..
         default.get_hotbar_bg(0,2.85)
-        
+
     -- Inventory slots overlay
     local bx, by = 0, 0.3
     for i = 1, 16 do
@@ -127,7 +127,7 @@ books.get_formspec = function(pos)
         formspec = formspec .. "image["..bx..","..by..";1,1;books_slot.png]"
         bx = bx + 1
     end
-    
+
     return formspec
 end
 
@@ -208,6 +208,9 @@ end
 
 
 books.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+    -- Warning: shift-clicking stacks causes this function to be called MULTIPLE times.
+    -- Silly Minetest!
+    --minetest.log("testing")
     if minetest.get_item_group(stack:get_name(), "book") == 0 then
         return 0
     end
@@ -359,15 +362,15 @@ end
 if not books.run_once then
     local bookshelf_groups = utility.dig_groups("furniture", {flammable = 3})
     local bookshelf_sounds = default.node_sound_wood_defaults()
-    
+
     minetest.register_node("books:bookshelf", {
         description = "Bookshelf",
         tiles = {
-            "default_wood.png", 
-            "default_wood.png", 
             "default_wood.png",
-            "default_wood.png", 
-            "books_bookshelf.png", 
+            "default_wood.png",
+            "default_wood.png",
+            "default_wood.png",
+            "books_bookshelf.png",
             "books_bookshelf.png"
         },
         paramtype2 = "facedir",
@@ -376,16 +379,16 @@ if not books.run_once then
 
         on_construct = function(...)
             return books.on_construct(...) end,
-            
+
         can_dig = function(...)
             return books.can_dig(...) end,
 
         on_receive_fields = function(...)
             return books.on_receive_fields(...) end,
-            
+
         allow_metadata_inventory_put = function(...)
             return books.allow_metadata_inventory_put(...) end,
-            
+
         allow_metadata_inventory_take = function(...)
             return books.allow_metadata_inventory_take(...) end,
 
@@ -394,13 +397,13 @@ if not books.run_once then
 
         on_metadata_inventory_move = function(...)
             return books.on_metadata_inventory_move(...) end,
-            
+
         on_metadata_inventory_put = function(...)
             return books.on_metadata_inventory_put(...) end,
-            
+
         on_metadata_inventory_take = function(...)
             return books.on_metadata_inventory_take(...) end,
-            
+
         on_blast = function(...)
             return books.on_blast(...) end,
 
@@ -417,11 +420,11 @@ if not books.run_once then
     minetest.register_node("books:bookshelf_empty", {
         description = "Empty Bookshelf",
         tiles = {
-            "default_wood.png", 
-            "default_wood.png", 
             "default_wood.png",
-            "default_wood.png", 
-            "books_bookshelf_empty.png", 
+            "default_wood.png",
+            "default_wood.png",
+            "default_wood.png",
+            "books_bookshelf_empty.png",
             "books_bookshelf_empty.png"
         },
         paramtype2 = "facedir",
@@ -464,7 +467,7 @@ if not books.run_once then
 
 		minetest.register_on_player_receive_fields(function(...) books.on_player_receive_fields(...) end)
 		minetest.register_on_craft(function(...) books.on_craft(...) end)
-    
+
 		minetest.register_craftitem("books:book_blank", {
 			description = "Book (Blank)",
 			inventory_image = "default_book.png",
@@ -499,7 +502,7 @@ if not books.run_once then
     local name = "books:core"
     local file = books.modpath .. "/init.lua"
     reload.register_file(name, file, false)
-    
+
     books.run_once = true
 end
 

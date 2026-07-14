@@ -453,8 +453,10 @@ function engraver.on_bench_receive_fields(pos, formname, fields, sender)
 		return
 	end
 
-	local item       = minetest.registered_items[new_stack:get_name()]
-	local renameable = item.groups.renameable ~= 0
+	local itemdef    = minetest.registered_items[new_stack:get_name()]
+	local itemmeta   = new_stack:get_meta()
+	local renameable = itemdef.groups.renameable ~= 0
+	local craftowner = itemmeta:get_string("tr_craftowner")
 
 	if not renameable then
 		workbench_update_help(pos, nil, "Item cannot be renamed!")
@@ -476,9 +478,26 @@ function engraver.on_bench_receive_fields(pos, formname, fields, sender)
 		return
 	elseif fields.text == get_item_desc(inv:get_stack("input", 1)) then
 		workbench_update_help(pos, nil, "Description not changed!")
+		return
+	elseif not (craftowner == "" or craftowner == pname) then
+		workbench_update_help(pos, nil, "Cannot rename over other's signature.")
+		return
 	end
 
-	local itemmeta = new_stack:get_meta()
+	-- Handle old un-signatured tools lying around.
+	if craftowner == "" then
+		itemmeta:set_string("tr_craftowner", pname)
+
+		-- Leaving this out signals it's an ancient artifact!
+		--itemmeta:set_string("tr_crafttime", tostring(os.time()))
+
+		local dugnodes = tonumber(itemmeta:get_string("tr_dug")) or 0
+		local lastlevel = tonumber(itemmeta:get_string("tr_lastlevel")) or 1
+
+		local tr_desc = toolranks.create_description(itemmeta, itemdef, dugnodes, lastlevel)
+		itemmeta:set_string("tr_desc", tr_desc)
+	end
+
 	itemmeta:set_string("en_desc", fields.text)
 	toolranks.apply_description(itemmeta, new_stack:get_definition())
 

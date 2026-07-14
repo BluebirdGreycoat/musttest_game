@@ -127,10 +127,23 @@ function toolranks.create_description(itemmeta, idef, uses, level)
 	if itemmeta then
 		local ct = tonumber(itemmeta:get_string("tr_crafttime"))
 		local co = itemmeta:get_string("tr_craftowner")
-		if ct then
-			newdesc = newdesc .. "\n\nCrafter: " .. rename.gpn(co)
-			newdesc = newdesc .. "\nDate: " .. os.date("%Y-%m-%d", ct)
+		local str = ""
+
+		if co ~= "" then
+			str = str .. "\nCrafter: " .. rename.gpn(co)
 		end
+
+		if ct then
+			str = str .. "\nDate: " .. os.date("%Y-%m-%d", ct)
+		else
+			str = str .. "\nAn artifact of indeterminate age."
+		end
+
+		-- If we have any description info to add, prepend a newline to it.
+		-- We always add something (per code above).
+		str = "\n" .. str
+
+		newdesc = newdesc .. str
 	end
 
   return newdesc

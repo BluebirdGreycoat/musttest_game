@@ -11,8 +11,29 @@ function itemstring.handle_command(pname, param)
 	if stack:is_empty() then
 		minetest.chat_send_player(pname, "# Server: Wielding nothing.")
 	else
-		local info = stack:to_string()
-		minetest.chat_send_player(pname, "# Server: Wielded: " .. info)
+		local name = stack:get_name()
+		local count = stack:get_count()
+		local wear = stack:get_wear()
+		local mtable = stack:get_meta():to_table()
+		local str = dump(mtable) -- "" disables linebreaks and indents.
+
+		local helplines = {
+			"Wielded: " .. utility.get_short_desc(stack) .. " (" .. name ..")",
+		}
+		if count > 1 or wear > 0 then
+			table.insert(helplines, "Stackcount: " .. count .. ", wear: " .. wear)
+		end
+		if next(mtable.fields or {}) then
+			table.insert(helplines, "Meta:")
+			local tokens = str:split("\n")
+			for _, tok in ipairs(tokens) do
+				table.insert(helplines, tok)
+			end
+		end
+
+		for _, line in ipairs(helplines) do
+			minetest.chat_send_player(pname, "# Server: " .. line)
+		end
 	end
 end
 

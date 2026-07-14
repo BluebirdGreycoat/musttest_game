@@ -17,6 +17,9 @@ function itemstring.handle_command(pname, param)
 		local mtable = stack:get_meta():to_table()
 		local str = dump(mtable) -- "" disables linebreaks and indents.
 
+		-- The reason for all this is because stack:to_string() isn't exactly
+		-- human-readable.
+
 		local helplines = {
 			"Wielded: " .. utility.get_short_desc(stack) .. " (" .. name ..")",
 		}

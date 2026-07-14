@@ -33,7 +33,6 @@ if not chest_api.run_once then
 		-- Now that node metadata is preserved, we don't need this anymore.
 		--def.groups.immovable = 1
 		def.groups.chest_node = 1
-		local protected = def.protected
 
 		if def.protected then
 			def.on_construct = function(...)

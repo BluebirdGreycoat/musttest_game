@@ -18,11 +18,101 @@ local function run_on_craft_callbacks(item, player)
 	end
 end
 
+
+
+-- Map of nodenames to inventory listname.
+-- Only put public access containers in this list, since no ownership check is performed!
+local OPEN_STORAGE_CONTAINERS = {
+	["xdecor:empty_shelf"] = "main",
+}
+
+
+
+local function get_storage_inventories(pos, player)
+	local pname = player:get_player_name()
+
+	local inventories = {
+		-- Include initial self always.
+		{name="input", inv=minetest.get_meta(pos):get_inventory()},
+	}
+
+	-- 4 cardinal neighbors of position.
+	local locations = {
+		{x=pos.x+1, y=pos.y, z=pos.z},
+		{x=pos.x-1, y=pos.y, z=pos.z},
+		{x=pos.x, y=pos.y, z=pos.z+1},
+		{x=pos.x, y=pos.y, z=pos.z-1},
+	}
+
+	for _, neighborpos in ipairs(locations) do
+		local node = minetest.get_node(neighborpos)
+		local ndef = minetest.registered_nodes[node.name]
+
+		if ndef and ndef._chest_basename then
+			local neighbormeta = minetest.get_meta(neighborpos)
+			local owner1 = neighbormeta:get_string("owner")
+			local owner2 = minetest.get_meta(pos):get_string("owner")
+
+			-- If player is owner of both workbench AND nearby chest,
+			-- then we can draw from its inventory.
+			-- This check is not needed if the chest isn't locked.
+			if (owner1 == pname and owner2 == pname) or not ndef.protected then
+				-- Chests from the chest API always use "main".
+				table.insert(inventories, {name="main", inv=neighbormeta:get_inventory()})
+			end
+		elseif OPEN_STORAGE_CONTAINERS[node.name] then
+			local neighbormeta = minetest.get_meta(neighborpos)
+			table.insert(inventories, {
+				name = OPEN_STORAGE_CONTAINERS[node.name],
+				inv = neighbormeta:get_inventory()
+			})
+		end
+	end
+
+	return inventories
+end
+
+
+
+-- Check if ANY storage inventories contain the requested stack.
+-- Early return TRUE if one does.
+local function storage_inventories_contain_item(inventories, stack)
+	for _, info in ipairs(inventories) do
+		if info.inv:contains_item(info.name, stack) then
+			return true
+		end
+	end
+end
+
+
+
+-- Attempt to remove an item from each of the storage inventories,
+-- stopping once item is entirely removed.
+local function remove_item_from_storage_inventories(inventories, stack)
+	local num_to_remove = stack:get_count()
+	--minetest.log("going to remove item: " .. stack:to_string())
+
+	for _, info in ipairs(inventories) do
+		local leftover = info.inv:remove_item(info.name, stack)
+		num_to_remove = num_to_remove - leftover:get_count()
+		--minetest.log("removed item: " .. leftover:to_string())
+
+		if num_to_remove <= 0 then
+			return
+		end
+
+		stack:set_count(num_to_remove)
+	end
+end
+
+
+
 -- This function actually performs the crafting.
 local function do_craft(pos, times, player)
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	local recipe = inv:get_list("craft")
+	local storage_inventories = get_storage_inventories(pos, player)
 
 	local input = {
 		method = "normal",
@@ -60,6 +150,8 @@ local function do_craft(pos, times, player)
 	-- Run the crafting logic the requested number of times.
 	-- We need to iterate instead of doing fancy math because otherwise there'll
 	-- be bugs and duplication glitches.
+	--
+	-- Also, it's way easier to reason about.
 	for num_crafts = 1, times do
 		if not inv:room_for_item("output", output.item) then
 			if num_crafted == 0 then
@@ -73,7 +165,7 @@ local function do_craft(pos, times, player)
 		-- Check if input contains everything needed.
 		for name, count in pairs(needed_items) do
 			local stack = ItemStack(name .. " " .. count)
-			if not inv:contains_item("input", stack) then
+			if not storage_inventories_contain_item(storage_inventories, stack) then
 				if num_crafted == 0 then
 					meta:set_string("errmsg", "Missing material in storage.")
 				else
@@ -86,13 +178,15 @@ local function do_craft(pos, times, player)
 		-- Input contains everything, remove needed materials.
 		for name, count in pairs(needed_items) do
 			local stack = ItemStack(name .. " " .. count)
-			inv:remove_item("input", stack)
+			remove_item_from_storage_inventories(storage_inventories, stack)
 		end
 
 		-- Add output item to output inventory.
 		run_on_craft_callbacks(output.item, player)
 		local output_leftover = inv:add_item("output", output.item)
 		if not output_leftover:is_empty() then
+			-- In theory. But actually shouldn't happen since we're only crafting 1
+			-- item at a time and we always check if there's room at loop start.
 			minetest.add_item(vector.offset(pos, 0, 1, 0), output_leftover)
 		end
 

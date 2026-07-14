@@ -429,63 +429,68 @@ function engraver.on_bench_receive_fields(pos, formname, fields, sender)
 	local inv = meta:get_inventory()
 	local pname = sender:get_player_name()
 
-	if fields.rename or fields.key_enter_field == "text" then
-		meta:set_string("text", fields.text)
-
-		if inv:is_empty("input") then
-			workbench_update_help(pos, "input", "Missing input item!")
-		elseif inv:is_empty("nametag") then
-			workbench_update_help(pos, "nametag", "Missing nameplate!")
-		elseif not inv:is_empty("output") then
-			workbench_update_help(pos, "output", "No room in output!")
-		else
-			local new_stack  = inv:get_stack("input", 1)
-
-			if not new_stack:is_known() then
-				workbench_update_help(pos, nil, "Cannot rename unknown item!")
-				return
-			end
-
-			local item       = minetest.registered_items[new_stack:get_name()]
-			local renameable = item.groups.renameable ~= 0
-
-			if not renameable then
-				workbench_update_help(pos, nil, "Item cannot be renamed!")
-				return
-			elseif new_stack:get_stack_max() > 1 then
-				workbench_update_help(pos, nil, "Item cannot be renamed!")
-				return
-			elseif fields.text == "" then
-				workbench_update_help(pos, nil, "Description cannot be blank!")
-				return
-			elseif anticurse.check(pname, fields.text, "foul") then
-				workbench_update_help(pos, nil, "No foul language!")
-				return
-			elseif anticurse.check(pname, fields.text, "curse") then
-				workbench_update_help(pos, nil, "No cursing!")
-				return
-			elseif fields.text:len() > 256 then
-				workbench_update_help(pos, nil, "Description too long (max 256 characters)!")
-				return
-			elseif fields.text == get_item_desc(inv:get_stack("input", 1)) then
-				workbench_update_help(pos, nil, "Description not changed!")
-			end
-
-			local itemmeta = new_stack:get_meta()
-			itemmeta:set_string("en_desc", fields.text)
-			toolranks.apply_description(itemmeta, new_stack:get_definition())
-
-			minetest.log("action", pname .. " renames "
-				..inv:get_stack("input", 1):get_name().." to "..fields.text)
-
-			inv:remove_item("input", inv:get_stack("input", 1))
-			inv:remove_item("nametag", inv:get_stack("nametag", 1):take_item(1))
-			inv:set_stack("output", 1, new_stack)
-
-			meta:set_string("text", "")
-			workbench_update_help(pos)
-		end
+	if not (fields.rename or fields.key_enter_field == "text") then
+		return
 	end
+
+	meta:set_string("text", fields.text)
+
+	if inv:is_empty("input") then
+		workbench_update_help(pos, "input", "Missing input item!")
+		return
+	elseif inv:is_empty("nametag") then
+		workbench_update_help(pos, "nametag", "Missing nameplate!")
+		return
+	elseif not inv:is_empty("output") then
+		workbench_update_help(pos, "output", "No room in output!")
+		return
+	end
+
+	local new_stack  = inv:get_stack("input", 1)
+
+	if not new_stack:is_known() then
+		workbench_update_help(pos, nil, "Cannot rename unknown item!")
+		return
+	end
+
+	local item       = minetest.registered_items[new_stack:get_name()]
+	local renameable = item.groups.renameable ~= 0
+
+	if not renameable then
+		workbench_update_help(pos, nil, "Item cannot be renamed!")
+		return
+	elseif new_stack:get_stack_max() > 1 then
+		workbench_update_help(pos, nil, "Item cannot be renamed!")
+		return
+	elseif fields.text == "" then
+		workbench_update_help(pos, nil, "Description cannot be blank!")
+		return
+	elseif anticurse.check(pname, fields.text, "foul") then
+		workbench_update_help(pos, nil, "No foul language!")
+		return
+	elseif anticurse.check(pname, fields.text, "curse") then
+		workbench_update_help(pos, nil, "No cursing!")
+		return
+	elseif fields.text:len() > 256 then
+		workbench_update_help(pos, nil, "Description too long (max 256 characters)!")
+		return
+	elseif fields.text == get_item_desc(inv:get_stack("input", 1)) then
+		workbench_update_help(pos, nil, "Description not changed!")
+	end
+
+	local itemmeta = new_stack:get_meta()
+	itemmeta:set_string("en_desc", fields.text)
+	toolranks.apply_description(itemmeta, new_stack:get_definition())
+
+	minetest.log("action", pname .. " renames "
+		..inv:get_stack("input", 1):get_name().." to "..fields.text)
+
+	inv:remove_item("input", inv:get_stack("input", 1))
+	inv:remove_item("nametag", inv:get_stack("nametag", 1):take_item(1))
+	inv:set_stack("output", 1, new_stack)
+
+	meta:set_string("text", "")
+	workbench_update_help(pos)
 end
 
 

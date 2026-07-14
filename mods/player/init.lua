@@ -95,15 +95,19 @@ end
 -- Update appearance when the player joins
 minetest.register_on_joinplayer(function(pref)
 	local pname = pref:get_player_name()
+	local meta = pref:get_meta()
+
 	default.player_attached[pname] = false
 
 	pref:set_local_animation(
-		{x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
+		{x=0, y=79},
+		{x=168, y=187},
+		{x=189, y=198},
+		{x=200, y=219},
+		30)
 
 	-- Big hot-bar is revoked for cheaters.
-  if minetest.check_player_privs(pref, {big_hotbar=true}) and
-			not sheriff.is_cheater(pname) then
-		local meta = pref:get_meta()
+  if minetest.check_player_privs(pref, {big_hotbar=true}) and not sheriff.is_cheater(pname) then
 		if meta:get_int("show_big_hotbar") == 1 then
 			playermod.set_big_hotbar(pref)
 		else
@@ -112,7 +116,7 @@ minetest.register_on_joinplayer(function(pref)
   else
 		playermod.set_small_hotbar(pref)
   end
-  
+
 	pref:hud_set_hotbar_selected_image("hud_hotbar_selected.png")
 
 	-- Update player velocity if available.
@@ -120,18 +124,45 @@ minetest.register_on_joinplayer(function(pref)
 		pref:add_velocity(player_velocity[pname])
 		player_velocity[pname] = nil
 	end
+
+	if meta:get_int("hp_initialized") == 1 then
+		-- Note: 'hp_max' must be manually stored in player meta, because Minetest
+		-- does not store this itself, and reverts to HP_MAX=20 on every login. The
+		-- same logic applies to 'hp_cur', which we must keep track of ourselves.
+		--
+		-- Note: HP max must be set *before* HP update!
+		-- Otherwise set_hp() will be ignored if hp is higher than existing max!
+		--
+		-- Note: must manually notify the HP change reason, here.
+		pova.set_modifier(pref, "properties", {hp_max=meta:get_int("hp_max")}, "xphp")
+
+		armor.notify_set_hp_reason({custom_type="xp_update"})
+		pref:set_hp(meta:get_int("hp_cur"), {custom_type="xp_update"})
+
+		-- Manually update HUD.
+		hud.player_event(pref, "health_changed")
+	else
+		xp.update_players_max_hp(pname)
+		meta:set_int("hp_initialized", 1)
+	end
 end)
 
 
 
 minetest.register_on_leaveplayer(function(pref)
 	local name = pref:get_player_name()
+	local meta = pref:get_meta()
+
 	player_model[name] = nil
 	player_anim[name] = nil
 	player_textures[name] = nil
 
 	-- Save player velocity. If they login again, I will be able to restore it.
 	player_velocity[name] = pref:get_velocity()
+
+	meta:set_int("hp_cur", pref:get_hp())
+	meta:set_int("hp_max", pref:get_properties().hp_max) -- Can't call pova here because pova might have already cleaned up.
+	meta:set_int("hp_initialized", 1)
 end)
 
 

@@ -37,4 +37,5 @@ function hud.player_event(player, event)
 end
 
 -- 'Da ****? This function isn't documented in MT's Lua API?
+assert(type(core.register_playerevent) == "function")
 core.register_playerevent(hud.player_event)

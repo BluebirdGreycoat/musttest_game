@@ -62,7 +62,7 @@ function joinspec.on_joinplayer(player)
 		local haskey = passport.player_has_key(pname)
 		joinspec.show_formspec(pname, result, haskey)
 	else
-		minetest.log("error", "Player " .. pname .. " joined while dead! Not showing welcome formspec.")
+		minetest.chat_send_all("# Server: <" .. rename.gpn(pname) .. "> incarnated dead! Refusing to welcome a corpse.")
 
 		-- Force respawn player in Outback (bypass bed code for simplicity's sake)
 		-- if player joins while dead. This nixes a 'disconnect on death' hack.

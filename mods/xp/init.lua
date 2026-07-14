@@ -104,7 +104,9 @@ end
 
 
 
-function xp.update_players_max_hp(pname, login)
+-- Called periodically when player's XP is dirty, or instantly on /xp chatcommand.
+-- Called ONCE on firsttime players, to initialize their HP and max HP.
+function xp.update_players_max_hp(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
 		return
@@ -116,26 +118,9 @@ function xp.update_players_max_hp(pname, login)
 
 	--minetest.chat_send_all('first: hp_max: ' .. max_hp .. ', hp: ' .. cur_hp)
 
-	if login then
-		-- Get stored values.
-		local str_max_hp = pmeta:get_string("hp_max")
-		local str_cur_hp = pmeta:get_string("hp_cur")
-
-		--minetest.chat_send_all('second: hp_max: ' .. str_max_hp .. ', hp: ' .. str_cur_hp)
-
-		-- Should only happen for new players (and existing that don't have 'hp_max'
-		-- or 'hp_cur' in their meta info yet).
-		if str_max_hp == "" or str_cur_hp == "" then
-			max_hp = minetest.PLAYER_MAX_HP_DEFAULT
-			cur_hp = max_hp
-		else
-			max_hp = tonumber(str_max_hp)
-			cur_hp = tonumber(str_cur_hp)
-		end
-	end
-
 	local percent = (cur_hp / max_hp)
 	if percent > 1 then percent = 1 end
+	if percent < 0 then percent = 0 end
 
 	--minetest.chat_send_all('third: hp_max: ' .. max_hp .. ', hp: ' .. cur_hp .. ', percent: ' .. percent)
 
@@ -144,19 +129,24 @@ function xp.update_players_max_hp(pname, login)
 
 	--minetest.chat_send_all('new hp: ' .. new_hp)
 
-	-- Note: 'hp_max' must be manually stored in player meta, because Minetest
-	-- does not store this itself, and reverts to HP_MAX=20 on every login. The
-	-- same logic applies to 'hp_cur', which we must keep track of ourselves.
-	--
-	-- Note: HP max must be set *before* HP update!
-	-- Otherwise set_hp() will be ignored if hp is higher than existing max!
-	--
-	-- Note: must manually notify the HP change reason, here.
-	pova.set_modifier(pref, "properties", {hp_max = new_max_hp}, "xphp")
-	armor.notify_set_hp_reason({custom_type="xp_update"})
-	pref:set_hp(new_hp)
-	pmeta:set_int("hp_max", new_max_hp)
-	pmeta:set_int("hp_cur", new_hp)
+	-- Do not kill player (however, player might currently be dead).
+	if new_hp > 0 and new_max_hp > 0 then
+		-- Note: 'hp_max' must be manually stored in player meta, because Minetest
+		-- does not store this itself, and reverts to HP_MAX=20 on every login. The
+		-- same logic applies to 'hp_cur', which we must keep track of ourselves.
+		--
+		-- Note: HP max must be set *before* HP update!
+		-- Otherwise set_hp() will be ignored if hp is higher than existing max!
+		--
+		-- Note: must manually notify the HP change reason, here.
+		pova.set_modifier(pref, "properties", {hp_max=new_max_hp}, "xphp")
+
+		armor.notify_set_hp_reason({custom_type="xp_update"})
+		pref:set_hp(new_hp, {custom_type="xp_update"})
+
+		pmeta:set_int("hp_max", new_max_hp)
+		pmeta:set_int("hp_cur", new_hp)
+	end
 
 	-- Manually update HUD.
 	hud.player_event(pref, "health_changed")
@@ -171,13 +161,9 @@ end)
 
 
 function xp.on_joinplayer(player)
-	minetest.after(0, xp.update_players_max_hp, player:get_player_name(), true)
 end
 
 function xp.on_leaveplayer(player)
-	local meta = player:get_meta()
-	meta:set_int("hp_cur", player:get_hp())
-	--print("CURRENT HP ON LOGOUT: " .. meta:get_int("hp_cur"))
 end
 
 

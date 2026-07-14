@@ -463,6 +463,7 @@ end
 function pova.on_leaveplayer(pref)
 	local pname = pref:get_player_name()
 	pova.players[pname] = nil
+	pova.last_properties[pname] = nil
 end
 
 

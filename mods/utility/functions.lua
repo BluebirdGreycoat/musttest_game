@@ -49,13 +49,19 @@ function utility.wear_tool_with_feedback(params)
 		local pos = pref:get_pos()
 		local pname = pref:get_player_name()
 		local desc = utility.get_short_desc(params.item)
-		local spamkey = pname .. ":" .. itemname .. ":breaks"
 
-		if not spam.test_key(spamkey) then
+		local spamkey1 = pname .. ":" .. itemname .. ":breaks1"
+		local spamkey2 = pname .. ":" .. itemname .. ":breaks2"
+
+		if not spam.test_key(spamkey1) then
+			minetest.sound_play(breaksound, {pos=pos, gain=0.5}, true)
+			spam.mark_key(spamkey1, 5)
+		end
+
+		if not spam.test_key(spamkey2) then
 			minetest.chat_send_player(pname,
 				"# Server: Your " .. desc .. " is about to break!")
-			minetest.sound_play(breaksound, {pos=pos, gain=0.5}, true)
-			spam.mark_key(spamkey, 5)
+			spam.mark_key(spamkey2, 30)
 		end
 	end
 

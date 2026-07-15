@@ -16,6 +16,7 @@ xp.XP_RATES = {
 	BUILDXP_PLACE_STAIRS = 0.5,
 	BUILDXP_PLACE_BRICKS = 0.1,
 	BUILDXP_PLACE_DEFAULT = 0.01,
+	BUILDXP_SCREWDRIVER = 0.2,
 
 	-- Build XP lost whenever player digs nodes.
 	BUILDXP_DIG_LOSS = 0.01,

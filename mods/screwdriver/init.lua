@@ -83,30 +83,34 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 	if pointed_thing.type ~= "node" then
 		return
 	end
+	if not user or not user:is_player() then
+		return
+	end
 
+	local pname = user:get_player_name()
 	local pos = pointed_thing.under
 
-	if minetest.is_protected(pos, user:get_player_name()) then
-		minetest.record_protection_violation(pos, user:get_player_name())
+	if minetest.is_protected(pos, pname) then
+		minetest.record_protection_violation(pos, pname)
 		return
 	end
 
 	local node = minetest.get_node(pos)
 	local ndef = minetest.registered_nodes[node.name]
-  if not ndef then
+	if not ndef then
 		return itemstack
 	end
-  
+
 	-- can we rotate this paramtype2?
 	local fn = screwdriver.rotate[ndef.paramtype2]
 	if not fn then
 		return itemstack
 	end
-  
-	local should_rotate = true
-  local new_param2 = fn(pos, node, mode)
 
-  -- Node provides a handler, so let the handler decide instead if the node can be rotated
+	local should_rotate = true
+	local new_param2 = fn(pos, node, mode)
+
+	-- Node provides a handler, so let the handler decide instead if the node can be rotated
 	if ndef.on_rotate then
 		-- Copy pos and node because callback can modify it
 		local result = ndef.on_rotate(vector.new(pos),
@@ -117,8 +121,8 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		elseif result == true then
 			should_rotate = false
 		end
-  elseif ndef.on_rotate == false then
-    return itemstack
+	elseif ndef.on_rotate == false then
+		return itemstack
 	elseif ndef.can_dig and not ndef.can_dig(pos, user) then
 		return itemstack
 	end
@@ -126,7 +130,8 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 	if should_rotate then
 		node.param2 = new_param2
 		minetest.swap_node(pos, node)
-    minetest.check_for_falling(pos)
+		minetest.check_for_falling(pos)
+		xp.add_xp(pname, "buildxp", xp.XP_RATES.BUILDXP_SCREWDRIVER)
 	end
 
 	local sound = "default_place_node_hard"
@@ -164,7 +169,7 @@ minetest.register_tool("screwdriver:screwdriver", {
 	description = "Screwdriver\n\nLeft-click rotates face around current axis of rotation.\nRight-click changes axis of rotation.",
 	inventory_image = "screwdriver.png",
   sound = {breaks = "default_tool_breaks"},
-  
+
 	on_use = function(itemstack, user, pointed_thing)
 		screwdriver.handler(itemstack, user, pointed_thing, screwdriver.ROTATE_FACE, 200)
 		return itemstack

@@ -1,5 +1,6 @@
 
 if not minetest.global_exists("beds") then beds = {} end
+beds.form_counters = beds.form_counters or {}
 
 local SLEEP_TIME_WO_NIGHTSKIP = 5
 
@@ -198,44 +199,79 @@ end
 
 
 
+local function make_formspec(pname, finished, participating, people_in_bed, is_majority, night_skip_enabled)
+	local formtable = {
+		"formspec_version[9]",
+		"size[8,5;true]",
+		"real_coordinates[true]",
+		"no_prepend[]",
+		default.formspec.get_form_colors(),
+
+		"style_type[label;halign=center]",
+		"label[0,0.5;8,1;Sleep Talking]",
+
+		"field[0.5,1;7,0.5;chat_entry;;]",
+		"field_close_on_enter[chat_entry;false]",
+	}
+
+	local label_y = 3.5
+	local button_y = 4
+
+	if finished then
+		table.insert(formtable, "style_type[label;halign=center]")
+		table.insert(formtable, "label[0," .. label_y .. ";8,0.5;Good morning.]")
+		table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;leave;Leave Bed]")
+	else
+		local info = "label[0," .. label_y .. ";8,0.5;" .. tostring(people_in_bed) .. " of " .. tostring(participating) .. " players are in bed.]"
+
+		table.insert(formtable, "style_type[label;halign=center]")
+		table.insert(formtable, info)
+
+		if is_majority then
+			table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;force;Force Night Skip]")
+		else
+			table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;leave;Leave Bed]")
+		end
+	end
+
+	return table.concat(formtable)
+end
+
+
+
 local function update_formspecs(finished)
-	local ges = #get_participating_players()
-	local form_n
-    local ppl_in_bed = count_players_in_bed()
-    local is_majority = (ges / 2) < ppl_in_bed
+	local participating = #get_participating_players()
+	local people_in_bed = count_players_in_bed()
+	local is_majority = (participating / 2) < people_in_bed
+	local night_skip_enabled = is_night_skip_enabled()
 
-    if finished then
-        form_n = beds.formspec .. "label[3.0,11;Good morning.]"
-    else
-        form_n = beds.formspec .. "label[2.4,11;" .. tostring(ppl_in_bed) ..
-            " of " .. tostring(ges) .. " players are in bed.]"
-        if is_majority and is_night_skip_enabled() then
-            form_n = form_n .. "button_exit[2,8;4,0.75;force;Force Night Skip]"
-        end
-    end
+	for pname, _ in pairs(beds.player) do
+		local form_n = make_formspec(pname, finished, participating, people_in_bed, is_majority, night_skip_enabled)
 
-    for name,_ in pairs(beds.player) do
-			local form_s = form_n
+		-- Force client-side update by appending increasing number of spaces.
+		local form_s = form_n .. (" "):rep(beds.form_counters[pname] or 1)
+		beds.form_counters[pname] = (beds.form_counters[pname] or 1) + 1
 
-			if portal_sickness.is_sick_or_queasy(name) then
-				form_s = form_s .. "label[1.2,10;You are ill. Sleep " .. SLEEP_TIME_WO_NIGHTSKIP .. " minutes or skip night to cure.]"
+		-- All this has to be redone. Bad code!
+		if portal_sickness.is_sick_or_queasy(pname) then
+			form_s = form_s .. "label[1.2,4.5;You are ill. Sleep " .. SLEEP_TIME_WO_NIGHTSKIP .. " minutes or skip night to cure.]"
 
-				if finished then
-					--minetest.chat_send_all('test')
-					minetest.after(1, function()
-						--minetest.chat_send_all('after')
-						if not portal_sickness.is_sick_or_queasy(name) then
-							--minetest.chat_send_all('not sick')
-							local form_s = form_n
-							form_s = form_s .. "label[2.3,10;You don't feel ill anymore.]"
-							minetest.show_formspec(name, "beds:detatched_formspec", form_s)
-						end
-					end)
-				end
+			if finished then
+				--minetest.chat_send_all('test')
+				minetest.after(1, function()
+					--minetest.chat_send_all('after')
+					if not portal_sickness.is_sick_or_queasy(pname) then
+						--minetest.chat_send_all('not sick')
+						local form_s = form_n
+						form_s = form_s .. "label[2.3,4.5;You don't feel ill anymore.]"
+						minetest.show_formspec(pname, "beds:detatched_formspec", form_s)
+					end
+				end)
 			end
+		end
 
-			minetest.show_formspec(name, "beds:detatched_formspec", form_s)
-    end
+		minetest.show_formspec(pname, "beds:detatched_formspec", form_s)
+	end
 end
 
 
@@ -816,6 +852,13 @@ function beds.on_player_receive_fields(player, formname, fields)
 		update_formspecs(false)
 
 		portal_sickness.check_sick(player:get_player_name())
+	end
+
+	if type(fields.chat_entry) == "string" then
+		local pname = player:get_player_name()
+		local message = fields.chat_entry
+		chat_core.on_chat_message(pname, chat_core.rewrite_message(message))
+		update_formspecs(false)
 	end
 
 	if fields.force then

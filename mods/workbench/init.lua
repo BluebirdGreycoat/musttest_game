@@ -406,6 +406,7 @@ function workbench.on_receive_fields(player, formname, fields)
 	if fields.clear_craft then
 		meta:set_string("errmsg", "Crafting table ready.")
 		inv:set_list("craft", {})
+		inv:set_list("preview", {})
 	end
 
 	for k, v in ipairs(CRAFT_BUTTONS) do

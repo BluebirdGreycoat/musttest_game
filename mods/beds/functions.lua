@@ -161,17 +161,6 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		hud_flags.wielditem = true
 		default.player_set_animation(player, "stand" , 30)
 
-		--local otime = pmeta:get_int("last_sleep_time")
-		--local ntime = os.time()
-		--local dtime = math.max(ntime - otime, 0)
-
-		--minetest.chat_send_all("stayed in bed for " .. dtime .. " seconds.")
-
-		-- Staying in bed long enough cures portal sickness even if nightskip not successful.
-		--if dtime > (60 * SLEEP_TIME_WO_NIGHTSKIP) then
-		--	beds.player_finishes_sleep(name)
-		--end
-
 	-- lay down
 	else
 		beds.player[name] = 1
@@ -223,6 +212,7 @@ function beds.do_periodic_sickinfo_update(pname)
 	pref:hud_change(pdata.IDs.label1, "text", "You're feeling ill. Sleep for " .. pdata.sick_timeout .. " seconds or skip night.")
 	if pdata.sick_timeout <= 0 then
 		beds.player_finishes_sleep(pname)
+		-- HUD text will update on next iteration of this function.
 	end
 
 	minetest.after(1, function()

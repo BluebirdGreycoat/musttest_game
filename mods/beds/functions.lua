@@ -1,8 +1,9 @@
 
 if not minetest.global_exists("beds") then beds = {} end
-beds.form_counters = beds.form_counters or {}
+beds.formspec_counters = beds.formspec_counters or {}
+beds.player_huds = beds.player_huds or {}
 
-local SLEEP_TIME_WO_NIGHTSKIP = 5
+local SLEEP_TIME_WO_NIGHTSKIP = 5*60
 
 -- Localize for performance.
 local vector_round = vector.round
@@ -160,16 +161,16 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		hud_flags.wielditem = true
 		default.player_set_animation(player, "stand" , 30)
 
-		local otime = pmeta:get_int("last_sleep_time")
-		local ntime = os.time()
-		local dtime = math.max(ntime - otime, 0)
+		--local otime = pmeta:get_int("last_sleep_time")
+		--local ntime = os.time()
+		--local dtime = math.max(ntime - otime, 0)
 
 		--minetest.chat_send_all("stayed in bed for " .. dtime .. " seconds.")
 
 		-- Staying in bed long enough cures portal sickness even if nightskip not successful.
-		if dtime > (60 * SLEEP_TIME_WO_NIGHTSKIP) then
-			beds.player_finishes_sleep(name)
-		end
+		--if dtime > (60 * SLEEP_TIME_WO_NIGHTSKIP) then
+		--	beds.player_finishes_sleep(name)
+		--end
 
 	-- lay down
 	else
@@ -180,7 +181,7 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		pova.set_modifier(player, "eye_offset", {{x = 0, y = -13, z = 0}}, "sleeping")
 		local yaw, param2 = get_look_yaw(bed_pos)
 		player:set_look_horizontal(yaw)
-		pmeta:set_int("last_sleep_time", os.time())
+		--pmeta:set_int("last_sleep_time", os.time())
 		local dir = minetest.facedir_to_dir(param2)
 		local p = {
 			x = bed_pos.x + dir.x / 2,
@@ -199,35 +200,160 @@ end
 
 
 
+function beds.do_periodic_sickinfo_update(pname)
+	if not beds.player_huds[pname] then
+		return
+	end
+
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local pdata = beds.player_huds[pname]
+	if pdata.is_sick then
+		if not portal_sickness.is_sick_or_queasy(pname) then
+			pref:hud_change(pdata.IDs.label1, "text", "You don't feel ill anymore.")
+			return
+		end
+	end
+
+	pdata.sick_timeout = pdata.sick_timeout - 1
+
+	pref:hud_change(pdata.IDs.label1, "text", "You're feeling ill. Sleep for " .. pdata.sick_timeout .. " seconds or skip night.")
+	if pdata.sick_timeout <= 0 then
+		beds.player_finishes_sleep(pname)
+	end
+
+	minetest.after(1, function()
+		beds.do_periodic_sickinfo_update(pname)
+	end)
+end
+
+
+
+local function update_player_hud(pname, closed, participating, people_in_bed)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local function get_count_text()
+		return tostring(people_in_bed) .. " of " .. tostring(participating) .. " players are in bed."
+	end
+
+	local function get_sick_status()
+		local str = ""
+		if portal_sickness.is_sick_or_queasy(pname) then
+			return "You're feeling ill."
+		end
+		return str
+	end
+
+	if not beds.player_huds[pname] and not closed then
+		beds.player_huds[pname] = {
+			IDs = {
+				vignette = pref:hud_add({
+					type = "image",
+					text = "beds_vignette.png",
+					hideable = false,
+					z_index = 999, -- Cover other HUD elements including the hotbar.
+					scale = {x=-100, y=-100},
+					alignment = {x=0, y=0},
+					position = {x=0.5, y=0.5},
+				}),
+
+				-- Information on whether player is sick.
+				label1 = pref:hud_add({
+					type = "text",
+					text = get_sick_status(),
+					number = 0xFFFFFF,
+					hideable = false,
+					z_index = 1000,
+					position = {x=0.5, y=0.5},
+					offset = {x=0, y=-10},
+				}),
+
+				-- Status of players in bed.
+				label2 = pref:hud_add({
+					type = "text",
+					text = get_count_text(),
+					number = 0xFFFFFF,
+					hideable = false,
+					z_index = 1000,
+					position = {x=0.5, y=0.5},
+					offset = {x=0, y=10},
+				}),
+			},
+		}
+
+		if portal_sickness.is_sick_or_queasy(pname) then
+			beds.player_huds[pname].is_sick = true
+			beds.player_huds[pname].sick_timeout = SLEEP_TIME_WO_NIGHTSKIP
+
+			minetest.after(1, function()
+				beds.do_periodic_sickinfo_update(pname)
+			end)
+		end
+
+		pref:hud_set_flags({crosshair = false})
+	end
+
+	local pdata = beds.player_huds[pname]
+	if not pdata then
+		return
+	end
+
+	if not closed then
+		pref:hud_change(pdata.IDs.label1, "text", get_sick_status())
+		pref:hud_change(pdata.IDs.label2, "text", get_count_text())
+
+		if pdata.is_sick then
+			if not portal_sickness.is_sick_or_queasy(pname) then
+				pref:hud_change(pdata.IDs.label1, "text", "You don't feel ill anymore.")
+			end
+		end
+	end
+
+	if closed then
+		for _, id in pairs(pdata.IDs) do
+			pref:hud_remove(id)
+		end
+		beds.player_huds[pname] = nil
+		pref:hud_set_flags({crosshair = true})
+	end
+end
+
+
+
 local function make_formspec(pname, finished, participating, people_in_bed, is_majority, night_skip_enabled)
+	-- Formspec shall only contain static elements.
+	-- Dynamic elements that need to be changed belong in the HUD code.
+	-- This hack is needed because we cannot update formspecs dynamically
+	-- without clobbering the user's input in the text field.
 	local formtable = {
 		"formspec_version[9]",
 		"size[8,5;true]",
 		"real_coordinates[true]",
 		"no_prepend[]",
-		default.formspec.get_form_colors(),
-
-		"style_type[label;halign=center]",
-		"label[0,0.5;8,1;Sleep Talking]",
-
-		"field[0.5,1;7,0.5;chat_entry;;]",
+		"bgcolor[;neither]",
+		"style_type[label;halign=center]", -- Should apply to ALL labels following this.
 		"field_close_on_enter[chat_entry;false]",
 	}
 
 	local label_y = 3.5
 	local button_y = 4
 
+	if not finished then
+		table.insert(formtable, "label[0,0.5;8,1;Sleep Talking]")
+		table.insert(formtable, "field[0.5,1;7,0.5;chat_entry;;]")
+	end
+
 	if finished then
-		table.insert(formtable, "style_type[label;halign=center]")
 		table.insert(formtable, "label[0," .. label_y .. ";8,0.5;Good morning.]")
 		table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;leave;Leave Bed]")
 	else
-		local info = "label[0," .. label_y .. ";8,0.5;" .. tostring(people_in_bed) .. " of " .. tostring(participating) .. " players are in bed.]"
-
-		table.insert(formtable, "style_type[label;halign=center]")
-		table.insert(formtable, info)
-
-		if is_majority then
+		if is_majority and night_skip_enabled then
 			table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;force;Force Night Skip]")
 		else
 			table.insert(formtable, "button_exit[2," .. button_y .. ";4,0.75;leave;Leave Bed]")
@@ -239,38 +365,48 @@ end
 
 
 
-local function update_formspecs(finished)
+-- This hack forces the client to update the formspec (and clears the field entry).
+local function force_formspec_update(pname)
+	local s = (" "):rep(beds.formspec_counters[pname] or 1)
+	beds.formspec_counters[pname] = (beds.formspec_counters[pname] or 1) + 1
+	return s
+end
+
+
+
+local function update_player_formspec(pname, finished)
 	local participating = #get_participating_players()
 	local people_in_bed = count_players_in_bed()
 	local is_majority = (participating / 2) < people_in_bed
 	local night_skip_enabled = is_night_skip_enabled()
 
-	for pname, _ in pairs(beds.player) do
-		local form_n = make_formspec(pname, finished, participating, people_in_bed, is_majority, night_skip_enabled)
+	local formspec = make_formspec(pname, finished, participating, people_in_bed, is_majority, night_skip_enabled)
+	formspec = formspec .. force_formspec_update(pname)
+	minetest.show_formspec(pname, "beds:detatched_formspec", formspec)
+end
 
-		-- Force client-side update by appending increasing number of spaces.
-		local form_s = form_n .. (" "):rep(beds.form_counters[pname] or 1)
-		beds.form_counters[pname] = (beds.form_counters[pname] or 1) + 1
 
-		-- All this has to be redone. Bad code!
-		if portal_sickness.is_sick_or_queasy(pname) then
-			form_s = form_s .. "label[1.2,4.5;You are ill. Sleep " .. SLEEP_TIME_WO_NIGHTSKIP .. " minutes or skip night to cure.]"
 
-			if finished then
-				--minetest.chat_send_all('test')
-				minetest.after(1, function()
-					--minetest.chat_send_all('after')
-					if not portal_sickness.is_sick_or_queasy(pname) then
-						--minetest.chat_send_all('not sick')
-						local form_s = form_n
-						form_s = form_s .. "label[2.3,4.5;You don't feel ill anymore.]"
-						minetest.show_formspec(pname, "beds:detatched_formspec", form_s)
-					end
-				end)
-			end
+local function update_formspecs(finished)
+	for _, pref in ipairs(minetest.get_connected_players()) do
+		local pname = pref:get_player_name()
+		if beds.player[pname] then
+			update_player_formspec(pname, finished)
 		end
+	end
+end
 
-		minetest.show_formspec(pname, "beds:detatched_formspec", form_s)
+
+
+local function update_huds(closed)
+	local participating = #get_participating_players()
+	local people_in_bed = count_players_in_bed()
+
+	for _, pref in ipairs(minetest.get_connected_players()) do
+		local pname = pref:get_player_name()
+		if beds.player[pname] then
+			update_player_hud(pname, closed, participating, people_in_bed)
+		end
 	end
 end
 
@@ -286,15 +422,15 @@ end
 
 
 function beds.kick_one_player(name)
-    local pref = minetest.get_player_by_name(name)
-    if pref and pref:is_player() then
-        if beds.player[name] ~= nil then
-            beds.player[name] = nil
-            lay_down(pref, nil, nil, false)
-            update_formspecs(false)
-            return true
-        end
-    end
+	local pref = minetest.get_player_by_name(name)
+	if pref and pref:is_player() then
+		if beds.player[name] ~= nil then
+			beds.player[name] = nil
+			lay_down(pref, nil, nil, false)
+			update_huds(false)
+			return true
+		end
+	end
 end
 
 
@@ -618,13 +754,29 @@ function beds.on_rightclick(pos, player)
 		lay_down(player, nil, nil, false)
 	end
 
-	update_formspecs(false)
+	update_player_formspec(name, false)
+	update_huds(false)
+
+	beds.check_and_update_bed_players()
+end
+
+
+
+function beds.check_and_update_bed_players()
+	minetest.after(0, function()
+		update_huds(false)
+	end)
 
 	-- skip the night and let all players stand up
 	if check_in_beds() then
 		minetest.after(2, function()
-            update_formspecs(is_night_skip_enabled())
-			if is_night_skip_enabled() then
+			local enabled = is_night_skip_enabled()
+
+			update_huds(enabled)
+
+			if enabled then
+				update_formspecs(true)
+
 				beds.skip_night()
 				beds.kick_players()
 			end
@@ -671,6 +823,7 @@ function beds.on_respawnplayer(player)
 
 	-- Record the last respawn time.
 	pmeta:set_string("last_respawn_time", tostring(os.time()))
+	xp.update_players_max_hp(pname)
 
 	-- If the player died in MIDFELD, behave as if they don't have a bed, and send
 	-- them to the OUTBACK. If they die in the outback after this flag is set, they'll
@@ -789,15 +942,8 @@ end
 function beds.on_joinplayer(player)
 	local name = player:get_player_name()
 	beds.player[name] = nil
-	if check_in_beds() then
-		update_formspecs(is_night_skip_enabled())
-		if is_night_skip_enabled() then
-			beds.skip_night()
-			beds.kick_players()
-		end
-	else
-		update_formspecs(false)
-	end
+
+	beds.check_and_update_bed_players()
 end
 
 
@@ -807,6 +953,9 @@ function beds.on_leaveplayer(player)
 	-- resurrect them. Maybe this avoids issues with ppl logging in dead
 	-- and unable to do anything?
 	local name = player:get_player_name()
+
+	-- Clear HUD info.
+	beds.player_huds[name] = nil
 
 	-- Note: although a player who knows about this code could theoretically
 	-- use it to cheat, the cheat is not game-breaking because they would respawn
@@ -819,18 +968,8 @@ function beds.on_leaveplayer(player)
 
 	lay_down(player, nil, nil, false, true)
 	beds.player[name] = nil
-	-- Wrapping this in minetest.after() is necessary.
-	minetest.after(0, function()
-		if check_in_beds() then
-			update_formspecs(is_night_skip_enabled())
-			if is_night_skip_enabled() then
-				beds.skip_night()
-				beds.kick_players()
-			end
-		else
-			update_formspecs(false)
-		end
-	end)
+
+	beds.check_and_update_bed_players()
 end
 
 
@@ -840,6 +979,8 @@ function beds.on_player_receive_fields(player, formname, fields)
 		return
 	end
 
+	local pname = player:get_player_name()
+
 	-- Because "Force night skip" button is a button_exit, it will set fields.quit
 	-- and lay_down call will change value of player_in_bed, so it must be taken
 	-- earlier.
@@ -847,27 +988,43 @@ function beds.on_player_receive_fields(player, formname, fields)
 	local ges = get_participating_players()
 	local is_majority = ((#ges) / 2) < pib
 
+	local player_quits = false
+	if fields.quit or fields.leave then
+		-- Remove HUD elements for player who leaves bed formspec.
+		update_player_hud(pname, true)
+		player_quits = true
+	end
+
 	if (fields.quit or fields.leave) and not fields.force then
 		lay_down(player, nil, nil, false)
-		update_formspecs(false)
+		update_huds(false)
 
 		portal_sickness.check_sick(player:get_player_name())
 	end
 
-	if type(fields.chat_entry) == "string" then
-		local pname = player:get_player_name()
+	-- Don't send chat field if the player is quitting the form.
+	if type(fields.chat_entry) == "string" and #fields.chat_entry > 0 and not player_quits then
 		local message = fields.chat_entry
-		chat_core.on_chat_message(pname, chat_core.rewrite_message(message))
-		update_formspecs(false)
+		-- Mode 5 means stop on first truthy value.
+		core.run_callbacks(core.registered_on_chat_messages, 5, pname, message)
+		local finished = false
+		if not beds.player[pname] then
+			finished = true -- Player hasn't closed bed formspec yet.
+		end
+		update_player_formspec(pname, finished)
+		update_huds(false)
 	end
 
 	if fields.force then
 		if is_majority and is_night_skip_enabled() then
 			update_formspecs(true)
+			update_huds(true)
+
 			beds.skip_night()
 			beds.kick_players()
 		else
 			update_formspecs(false)
+			update_huds(false)
 		end
 	end
 end

@@ -57,31 +57,33 @@ end
 
 
 local function process_element_spec(in_data, out_lines)
-	if in_data.children then
-		for _, info in ipairs(in_data.children) do
-			local make = info.type and WIDGET_TYPES[info.type] and WIDGET_TYPES[info.type].make
+	if not in_data.children then
+		return
+	end
 
-			if make then
-				-- Create base GUI element from factory function.
-				local s = make(info)
+	for _, info in ipairs(in_data.children) do
+		local make = info.type and WIDGET_TYPES[info.type] and WIDGET_TYPES[info.type].make
 
-				-- Sandwich style tags.
-				s = apply_styles(info, s)
+		if make then
+			-- Create base GUI element from factory function.
+			local s = make(info)
 
-				-- Add tooltip if present. Must be declared *after* the element it's bound to.
-				if info.tooltip and info.name then
-					s = s .. "tooltip[" .. info.name .. ";" .. FS(info.tooltip) .. "]"
-				end
+			-- Sandwich style tags.
+			s = apply_styles(info, s)
 
-				-- Show debug AABB.
-				if info.show_box then
-					local b = "box[" .. info.x .. "," .. info.y .. ";" .. (info.w or 0.1) .. "," .. (info.h or 0.1) .. ";#00ff00ff]"
-					table.insert(out_lines, b)
-				end
-
-				-- Add to (flat) array of GUI elements.
-				table.insert(out_lines, s)
+			-- Add tooltip if present. Must be declared *after* the element it's bound to.
+			if info.tooltip and info.name then
+				s = s .. "tooltip[" .. info.name .. ";" .. FS(info.tooltip) .. "]"
 			end
+
+			-- Show debug AABB.
+			if info.show_box then
+				local b = "box[" .. info.x .. "," .. info.y .. ";" .. (info.w or 0.1) .. "," .. (info.h or 0.1) .. ";#00ff00ff]"
+				table.insert(out_lines, b)
+			end
+
+			-- Add to (flat) array of GUI elements.
+			table.insert(out_lines, s)
 		end
 	end
 end

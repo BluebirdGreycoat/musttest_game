@@ -9,7 +9,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		description = desc .. " Arrow",
 		inventory_image = "throwing_arrow_" .. kind .. ".png",
 	})
-	
+
 	minetest.register_node("throwing:arrow_" .. kind .. "_box", {
 		drawtype = "nodebox",
 		node_box = {
@@ -25,7 +25,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 				{7.5/17, -2.5/17, 2.5/17, 6.5/17, -1.5/17, 1.5/17},
 				{7.5/17, 2.5/17, -2.5/17, 6.5/17, 1.5/17, -1.5/17},
 				{6.5/17, -1.5/17, -1.5/17, 7.5/17, -2.5/17, -2.5/17},
-				
+
 				{7.5/17, 2.5/17, 2.5/17, 8.5/17, 3.5/17, 3.5/17},
 				{8.5/17, -3.5/17, 3.5/17, 7.5/17, -2.5/17, 2.5/17},
 				{8.5/17, 3.5/17, -3.5/17, 7.5/17, 2.5/17, -2.5/17},
@@ -35,7 +35,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		tiles = {"throwing_arrow_" .. kind .. ".png", "throwing_arrow_" .. kind .. ".png", "throwing_arrow_" .. kind .. "_back.png", "throwing_arrow_" .. kind .. "_front.png", "throwing_arrow_" .. kind .. "_2.png", "throwing_arrow_" .. kind .. ".png"},
 		groups = {not_in_creative_inventory=1},
 	})
-	
+
 	local THROWING_ARROW_ENTITY = {
 		_name = "throwing:arrow_" .. kind,
 		physical = false,
@@ -47,7 +47,7 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 		collisionbox = {0,0,0,0,0,0},
 		static_save = false,
 	}
-	
+
 	function THROWING_ARROW_ENTITY.hit_player(self, obj, intersection_point)
 		local vel = self.object:get_velocity()
 		local speed = vector.length(vel) / 2
@@ -68,8 +68,9 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 			end
 		end
 
+		local objpos = obj:get_pos() -- Get obj pos before punching it, in case it self-deletes.
 		throwing_arrow_punch_entity(obj, self, damage*500)
-		ambiance.sound_play("throwing_arrow_hit", obj:get_pos(), 1.0, 32)
+		ambiance.sound_play("throwing_arrow_hit", objpos, 1.0, 32)
 	end
 
 	function THROWING_ARROW_ENTITY.hit_node(self, under, above, intersection_point)
@@ -150,9 +151,9 @@ function throwing_register_arrow_standard (kind, desc, eq, toughness, craft, cra
 	THROWING_ARROW_ENTITY.on_step = function(self, dtime)
 		throwing.do_fly(self, dtime)
 	end
-	
+
 	minetest.register_entity("throwing:arrow_" .. kind .. "_entity", THROWING_ARROW_ENTITY)
-	
+
 	if craftcount == 1 then
 		minetest.register_craft({
 			output = 'throwing:arrow_' .. kind .. ' ' .. craftcount,

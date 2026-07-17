@@ -12,17 +12,17 @@ ambiance.check_underwater = function(pos)
 
 	local n2 = minetest.get_node({x=pos.x, y=pos.y+0.2, z=pos.z}).name
 	local nf = registered[n2]
-	
+
 	if nf and nf.groups and nf.groups.water then
 		local n1 = minetest.get_node({x=pos.x, y=pos.y+1.4, z=pos.z}).name
 		local nh = registered[n1]
-		
+
 		if nh and nh.groups and nh.groups.water then
 			return 2 -- Feet and head submerged.
 		end
 		return 1 -- Feet submerged.
 	end
-	
+
 	return 0 -- Not in water.
 end
 
@@ -67,10 +67,14 @@ local compute_gain = function(distance, max)
   return res
 end
 ambiance.compute_gain = compute_gain
-  
+
 -- This function plays a sound for each player within a given range.
 -- The audio gain is reduced for players far from the position at which the sound should play.
 ambiance.sound_play = function(name, pos, gain, range, exempt_player, ephemeral)
+	if not pos then
+		return -- Abort!
+	end
+
   -- Range check! Stupid engine bug. >:(
   if pos.x > 31000 or pos.x < -31000 or pos.z > 31000 or pos.z < -31000 or pos.y > 31000 or pos.y < -31000 then
     return -- Abort!

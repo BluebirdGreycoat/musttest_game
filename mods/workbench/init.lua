@@ -24,6 +24,12 @@ end
 -- Only put public access containers in this list, since no ownership check is performed!
 local OPEN_STORAGE_CONTAINERS = {
 	["xdecor:empty_shelf"] = "main",
+	["xdecor:cabinet"] = "main",
+	["xdecor:cabinet_half"] = "main",
+	["xdecor:multishelf"] = "main",
+	["xdecor:multishelf2"] = "main",
+	["xdecor:multishelf3"] = "main",
+	["darkage:wood_shelves"] = "main",
 }
 
 

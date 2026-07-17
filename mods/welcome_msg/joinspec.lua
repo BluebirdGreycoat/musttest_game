@@ -5,8 +5,8 @@ joinspec.modpath = minetest.get_modpath("welcome_msg")
 -- Localize for performance.
 local vector_round = vector.round
 local math_floor = math.floor
-local PRIORITY_MESSAGE = "Fight Big Tech Censorship!"
-local PRIORITY_X_OFFSET = 1.4
+local PRIORITY_MESSAGE = "Survive!"
+--local PRIORITY_X_OFFSET = 1.4
 local WEBADDR = minetest.settings:get("server_address")
 local WEBPORT = minetest.settings:get("port")
 local FORUMADDR = minetest.settings:get("forum_topic")
@@ -120,28 +120,10 @@ end
 
 
 function joinspec.generate_formspec(pname, returningplayer, haskey)
+	local formfact = formspec.create_formspec_from_table
 	local formspec = ""
 
 	if returningplayer then
-		-- Returning player.
-		formspec = formspec ..
-			"size[7,4.9]" ..
-			default.gui_bg ..
-			default.gui_bg_img ..
-			default.gui_slots
-
-		formspec = formspec ..
-			"box[0,0;6.8,2;#101010FF]" ..
-			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
-
-		formspec = formspec ..
-			"label[0,2.9;" ..
-			minetest.formspec_escape("Server: " ..
-			minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT) .. "]"
-
-		formspec = formspec ..
-			"label[0,2.1;Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the Enyekala frontier!]"
-
 		local logintime = "Your last login time is unknown!"
 		local pauth = core.get_auth_handler().get_auth(pname)
 		if pauth and pauth.last_login then
@@ -164,81 +146,144 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 				logintime = logintime .. "(" .. days .. " days" .. loginhours .. ")"
 			end
 		end
-		logintime = minetest.formspec_escape(logintime)
 
-		formspec = formspec ..
-			"label[0,2.4;" .. logintime .. "]"
+		-- Returning player.
+		formspec = {
+			size = {x=9.25, y=6.625},
 
-		formspec = formspec ..
-			"label[0,3.2;" ..
-			minetest.formspec_escape("Forum: " ..
-			minetest.colorize("cyan", "http://" .. FORUMADDR)) .. "]"
+			children = {
+				{type="background9", texture="gui_formbg.png", auto_clip=true},
 
-		-- Exit buttons.
-		formspec = formspec ..
-			"style[wrongserver;bgcolor=red]" ..
-			"button[0,3.9;2,1;wrongserver;Not Now]" ..
-			"button[2,3.9;2,1;trading;Trading]" ..
-			"button[5,3.9;2,1;playgame;Proceed!]"
+				{type="box", x=0.5, y=0.5, w=8.25, h=2.3, color="#101010FF"},
+				{type="image", x=1, y=0.6, w=7.3, h=2.1, texture="musttest_game_logo.png"},
+				{type="label", x=1.15, y=1, w=7, h=0.35, text="Enyekala", style={valign="top", halign="left"}, show_box=false},
+				{type="label", x=1.15, y=2, w=7, h=0.35, text="Luanti", style={halign="right", valign="bottom"}, show_box=false},
 
-		formspec = formspec ..
-			"real_coordinates[true]" ..
-			"button_url[7.15,3.84;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
-			"button_url[7.15,4.2;1.7,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
-			"real_coordinates[false]"
+				{
+					type = "label",
+					x = 0.5,
+					y = 3.15,
+					text = "Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the Enyekala frontier!",
+				},
+				{
+					type = "label",
+					x = 0.5,
+					y = 3.5,
+					text = logintime,
+				},
+
+				{
+					type = "label",
+					x = 0.5,
+					y = 7.85 - 3.9,
+					w = 6,
+					h = 0.35,
+					text = "Server: " .. minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT,
+					style = {valign="center"},
+					show_box = false,
+				},
+				{
+					type = "label",
+					x = 0.5,
+					y = 8.2 - 3.9,
+					w = 6,
+					h = 0.35,
+					text = "Forum: " .. minetest.colorize("cyan", "http://" .. FORUMADDR),
+					style = {valign="center"},
+					show_box = false,
+				},
+
+				{type="button_url", x=7.05, y=7.85 - 3.9, w=1.7, h=0.35, name="website_link", label="Website", url="http://" .. WEBADDR},
+				{type="button_url", x=7.05, y=8.2 - 3.9, w=1.7, h=0.35, name="forum_link", label="Forum", url="http://" .. FORUMADDR},
+
+				{type="button", x=0.5, y=9.2 - 4.1, w=2.2, h=0.8, name="wrongserver", label="Not Now", style={bgcolor="red"}},
+				{type="button", x=2.9, y=9.2 - 4.1, w=2.2, h=0.8, name="trading", label="Trading"},
+				{type="button", x=5.55 + 1, y=9.2 - 4.1, w=2.2, h=0.8, name="playgame", label="Proceed!"},
+
+				{
+					type = "label",
+					x = 0.5,
+					y = 10.1 - 4.1,
+					w = 8.25,
+					h = 0.4,
+					text = COLOR_ORANGE .. "Priority: " .. PRIORITY_MESSAGE,
+					style = {
+						halign = "center",
+						valign = "center",
+					},
+
+					-- Used for debugging.
+					show_box = false,
+				},
+			},
+		}
 
 		if haskey then
-			formspec = formspec ..
-				"button[4,3.9;1,1;passport;Key]"
+			table.insert(formspec.children, {type="button", x=5.3, y=9.2 - 4.1, w=1.05, h=0.8, name="passport", label="Key"})
 		end
 
-		formspec = formspec ..
-			"label[" .. PRIORITY_X_OFFSET .. ",4.7;" .. minetest.formspec_escape(COLOR_ORANGE ..
-				"Priority: " .. PRIORITY_MESSAGE) .. "]"
+		-- Convert table to string.
+		formspec = formfact(formspec)
 	else
 		-- New player.
-		formspec = formspec ..
-			"size[7,8.3]" ..
-			default.gui_bg ..
-			default.gui_bg_img ..
-			default.gui_slots
+		formspec = formfact({
+			size = {x=9.25, y=10.875},
 
-		formspec = formspec ..
-			"box[0,0;6.8,2;#101010FF]" ..
-			"image[0.4,0.1;7.3,2.1;musttest_game_logo.png]"
+			children = {
+				{type="background9", texture="gui_formbg.png", auto_clip=true},
 
-		local warning = minetest.formspec_escape(get_text(pname))
-		formspec = formspec ..
-			"textarea[0.3,2.3;7,4.7;warning;;" .. warning .. "]"
+				{type="box", x=0.5, y=0.5, w=8.25, h=2.3, color="#101010FF"},
+				{type="image", x=1, y=0.6, w=7.3, h=2.1, texture="musttest_game_logo.png"},
+				{type="label", x=1.15, y=1, w=7, h=0.35, text="Enyekala", style={valign="top", halign="left"}, show_box=false},
+				{type="label", x=1.15, y=2, w=7, h=0.35, text="Luanti", style={halign="right", valign="bottom"}, show_box=false},
 
-		formspec = formspec ..
-			"label[0,6.4;" ..
-			minetest.formspec_escape("Server: " ..
-			minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT) .. "]"
+				{type="textarea", x=0.5, y=3.1, w=8.25, h=4.4, name="warning", text=get_text(pname)},
 
-		formspec = formspec ..
-			"label[0,6.7;" ..
-			minetest.formspec_escape("Forum: " ..
-			minetest.colorize("cyan", "http://" .. FORUMADDR)) .. "]"
+				{
+					type = "label",
+					x = 0.5,
+					y = 7.85,
+					w = 6,
+					h = 0.35,
+					text = "Server: " .. minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT,
+					style = {valign="center"},
+					show_box = false,
+				},
+				{
+					type = "label",
+					x = 0.5,
+					y = 8.2,
+					w = 6,
+					h = 0.35,
+					text = "Forum: " .. minetest.colorize("cyan", "http://" .. FORUMADDR),
+					style = {valign="center"},
+					show_box = false,
+				},
 
-		formspec = formspec ..
-			"real_coordinates[true]" ..
-			"button_url[7.15,7.85;1.7,0.35;website_link;Website;http://" .. WEBADDR .. "]" ..
-			"button_url[7.15,8.2;1.7,0.35;forum_link;Forum;http://" .. FORUMADDR .. "]" ..
-			"real_coordinates[false]"
+				{type="button_url", x=7.05, y=7.85, w=1.7, h=0.35, name="website_link", label="Website", url="http://" .. WEBADDR},
+				{type="button_url", x=7.05, y=8.2, w=1.7, h=0.35, name="forum_link", label="Forum", url="http://" .. FORUMADDR},
 
-		-- Exit buttons.
-		formspec = formspec ..
-			"style[wrongserver;bgcolor=red]" ..
-			"button[0,7.3;2,1;wrongserver;" .. minetest.formspec_escape("I’m Scared ...") .. "]" ..
-			"button[2,7.3;2,1;trading;Tradernet]" ..
-			"button[4,7.3;3,1;playgame;Accept Challenge!]" ..
-			"tooltip[wrongserver;Cowards will be kicked!]" ..
-			"tooltip[playgame;You are either brave, or stupid.]"
+				{type="button", x=0.5, y=9.2, w=2.25, h=0.8, name="wrongserver", label="I’m Scared ...", style={bgcolor="red"}},
+				{type="button", x=3, y=9.2, w=2.25, h=0.8, name="trading", label="Tradernet"},
+				{type="button", x=5.5, y=9.2, w=3.25, h=0.8, name="playgame", label="Accept Challenge!"},
 
-		formspec = formspec ..
-			"label[" .. PRIORITY_X_OFFSET .. ",8.1;" .. minetest.formspec_escape(COLOR_ORANGE ..
-				"Priority: " .. PRIORITY_MESSAGE) .. "]"
+				{
+					type = "label",
+					x = 0.5,
+					y = 10.1,
+					w = 8.25,
+					h = 0.4,
+					text = COLOR_ORANGE .. "Priority: " .. PRIORITY_MESSAGE,
+					style = {
+						halign = "center",
+						valign = "center",
+					},
+
+					-- Used for debugging.
+					show_box = false,
+				},
+			},
+		})
 	end
 
 	return formspec
@@ -285,7 +330,21 @@ end
 
 
 function joinspec.show_info(pname, param)
-	joinspec.show_formspec(pname, false)
+	local returning = false
+	local haskey = false
+
+	-- For testing.
+	--[[
+	if #param > 0 then
+		returning = true
+	end
+
+	if #param > 1 then
+		haskey = true
+	end
+	--]]
+
+	joinspec.show_formspec(pname, returning, haskey)
 end
 
 

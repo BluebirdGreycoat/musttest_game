@@ -179,7 +179,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 					w = 9,
 					h = 0.35,
 					text = "Server: " .. minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT,
-					style = {valign="center"},
+					style = {valign="center", font_size="*0.9"},
 					show_box = false,
 				},
 				{
@@ -189,7 +189,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 					w = 9,
 					h = 0.35,
 					text = "Forum: " .. minetest.colorize("cyan", "http://" .. FORUMADDR),
-					style = {valign="center"},
+					style = {valign="center", font_size="*0.9"},
 					show_box = false,
 				},
 
@@ -246,7 +246,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 					w = 9,
 					h = 0.35,
 					text = "Server: " .. minetest.colorize("cyan", "http://" .. WEBADDR) .. ":" .. WEBPORT,
-					style = {valign="center"},
+					style = {valign="center", font_size="*0.9"},
 					show_box = false,
 				},
 				{
@@ -256,7 +256,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 					w = 9,
 					h = 0.35,
 					text = "Forum: " .. minetest.colorize("cyan", "http://" .. FORUMADDR),
-					style = {valign="center"},
+					style = {valign="center", font_size="*0.9"},
 					show_box = false,
 				},
 

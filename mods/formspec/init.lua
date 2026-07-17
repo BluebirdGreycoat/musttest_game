@@ -17,6 +17,12 @@ dofile(formspec.modpath .. "/widgets.lua")
 
 
 
+local function FS(text)
+	return minetest.formspec_escape(text)
+end
+
+
+
 local function get_styles(widget, params)
 	local s1, s2 = "", ""
 	if params.style then
@@ -64,7 +70,7 @@ local function process_element_spec(in_data, out_lines)
 
 				-- Add tooltip if present. Must be declared *after* the element it's bound to.
 				if info.tooltip and info.name then
-					s = s .. "tooltip[" .. info.name .. ";" .. info.tooltip .. "]"
+					s = s .. "tooltip[" .. info.name .. ";" .. FS(info.tooltip) .. "]"
 				end
 
 				-- Show debug AABB.

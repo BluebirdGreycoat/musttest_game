@@ -107,8 +107,8 @@ end
 --
 -- BTW the reason I NIH everything is because that leads to learning
 -- how stuff actually works. Pulling libraries off the shelf is like asking AI
--- to solve all my problems. I'm sure it works, and I'm also sure I'll be as
--- stupid afterward as I was before.
+-- to solve all my problems. I'm sure it works (we shall see), and I'm also
+-- sure I'll be as stupid afterward as I was before.
 function formspec.create_formspec_from_table(root)
 	local formlines = {
 		"formspec_version[" .. FORMSPEC_VERSION .. "]",

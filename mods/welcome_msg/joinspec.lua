@@ -196,7 +196,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 				{type="button_url", x=7.05, y=7.85 - 3.9, w=1.7, h=0.35, name="website_link", label="Website", url="http://" .. WEBADDR},
 				{type="button_url", x=7.05, y=8.2 - 3.9, w=1.7, h=0.35, name="forum_link", label="Forum", url="http://" .. FORUMADDR},
 
-				{type="button", x=0.5, y=9.2 - 4.1, w=2.2, h=0.8, name="wrongserver", label="Not Now", style={bgcolor="red"}},
+				{type="button", x=0.5, y=9.2 - 4.1, w=2.2, h=0.8, name="wrongserver", label="Not Now", style={bgcolor="red"}, tooltip="Misclicked in the Minetest Main Menu, did you?"},
 				{type="button", x=2.9, y=9.2 - 4.1, w=2.2, h=0.8, name="trading", label="Trading"},
 				{type="button", x=5.55 + 1, y=9.2 - 4.1, w=2.2, h=0.8, name="playgame", label="Proceed!"},
 
@@ -263,9 +263,9 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 				{type="button_url", x=7.05, y=7.85, w=1.7, h=0.35, name="website_link", label="Website", url="http://" .. WEBADDR},
 				{type="button_url", x=7.05, y=8.2, w=1.7, h=0.35, name="forum_link", label="Forum", url="http://" .. FORUMADDR},
 
-				{type="button", x=0.5, y=9.2, w=2.25, h=0.8, name="wrongserver", label="I’m Scared ...", style={bgcolor="red"}},
+				{type="button", x=0.5, y=9.2, w=2.25, h=0.8, name="wrongserver", label="I’m Scared ...", style={bgcolor="red"}, tooltip="Cowards will be kicked!"},
 				{type="button", x=3, y=9.2, w=2.25, h=0.8, name="trading", label="Tradernet"},
-				{type="button", x=5.5, y=9.2, w=3.25, h=0.8, name="playgame", label="Accept Challenge!"},
+				{type="button", x=5.5, y=9.2, w=3.25, h=0.8, name="playgame", label="Accept Challenge!", tooltip="You are either brave, or stupid."},
 
 				{
 					type = "label",

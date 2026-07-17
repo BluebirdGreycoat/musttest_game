@@ -43,7 +43,7 @@ end
 
 
 local function apply_styles(params, formstring)
-	local widget = formstring:match("^%s*([%w_]+)%s*%[")
+	local widget = params.type
 	local s1, s2 = get_styles(widget, params)
 	return s1 .. formstring .. s2
 end
@@ -56,12 +56,24 @@ local function process_element_spec(in_data, out_lines)
 			local make = info.type and WIDGET_TYPES[info.type] and WIDGET_TYPES[info.type].make
 
 			if make then
+				-- Create base GUI element from factory function.
 				local s = make(info)
+
+				-- Sandwich style tags.
 				s = apply_styles(info, s)
+
+				-- Add tooltip if present. Must be declared *after* the element it's bound to.
+				if info.tooltip and info.name then
+					s = s .. "tooltip[" .. info.name .. ";" .. info.tooltip .. "]"
+				end
+
+				-- Show debug AABB.
 				if info.show_box then
 					local b = "box[" .. info.x .. "," .. info.y .. ";" .. (info.w or 0.1) .. "," .. (info.h or 0.1) .. ";#00ff00ff]"
 					table.insert(out_lines, b)
 				end
+
+				-- Add to (flat) array of GUI elements.
 				table.insert(out_lines, s)
 			end
 		end

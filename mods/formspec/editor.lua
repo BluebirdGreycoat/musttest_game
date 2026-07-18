@@ -1,6 +1,7 @@
 
 -- Contexts for users who have the "formspec editor" panel open.
 formspec.EDITOR_CONTEXTS = formspec.EDITOR_CONTEXTS or {}
+formspec.SAVED_CONTEXTS = formspec.SAVED_CONTEXTS or {}
 
 
 
@@ -232,10 +233,8 @@ end
 
 
 
--- Called from chatcommand.
-function formspec.show_editor(pname, param)
-	-- Reuse existing context if present.
-	formspec.EDITOR_CONTEXTS[pname] = formspec.EDITOR_CONTEXTS[pname] or {
+local function create_new_editor_context(pname, param)
+	return {
 		original_param = param, -- Original chatcommand param.
 		root = {}, -- A copy of the original GUI table, MINUS the edited GUI.
 		editing_root = {}, -- A flat array of all edited/managed GUI table infos.
@@ -324,6 +323,21 @@ function formspec.show_editor(pname, param)
 			end
 		end,
 	}
+end
+
+
+
+-- Called from chatcommand.
+function formspec.show_editor(pname, param)
+	-- Reuse existing context if present.
+	if formspec.SAVED_CONTEXTS[pname] then
+		formspec.EDITOR_CONTEXTS[pname] = formspec.SAVED_CONTEXTS[pname]
+		formspec.SAVED_CONTEXTS[pname] = nil
+	end
+
+	if not formspec.EDITOR_CONTEXTS[pname] then
+		formspec.EDITOR_CONTEXTS[pname] = create_new_editor_context(pname, param)
+	end
 
 	local serialized = formspec.make_editor(pname)
 	minetest.show_formspec(pname, "formspec:editor", serialized)
@@ -381,6 +395,14 @@ local function handle_add_widget(context, fields)
 		params.name = s
 	end
 
+	-- Do NOT allow names beginning with "key_".
+	if params.name then
+		if params.name:find("^key_") then
+			context:set_error("Cannot create widget with engine-reserved name.")
+			return
+		end
+	end
+
 	-- Make sure we're not adding GUI elements with duplicate or reserved names.
 	-- That will break stuff.
 	if params.name then
@@ -434,7 +456,7 @@ local function handle_remove_widget(context, fields)
 	end
 
 	context:set_selected_widget(idx)
-	return context:set_message("Removed " .. removed.type .. " [" .. removed.name .. "] widget.")
+	return context:set_message("Removed " .. removed.type .. " [" .. (removed.name or "") .. "] widget.")
 end
 
 
@@ -776,57 +798,7 @@ end
 
 
 
-function formspec.on_player_receive_fields(player, formname, fields)
-	if formname ~= "formspec:editor" then
-		return
-	end
-
-	local pname = player:get_player_name()
-	local context = formspec.EDITOR_CONTEXTS[pname]
-	if not context then
-		return
-	end
-
-	-- Nil error message by default, shall be populated if some field action errors.
-	context.last_error = ""
-
-	if fields.quit then
-		formspec.EDITOR_CONTEXTS[pname] = nil
-		return
-	end
-
-	handle_param_edit(context, fields)
-	handle_param_select(context, fields)
-	handle_widget_select(context, fields)
-	handle_active_select(context, fields)
-	handle_add_widget(context, fields)
-	handle_remove_widget(context, fields)
-	handle_change_order(context, fields)
-	handle_move_widget(context, fields)
-	handle_size_widget(context, fields)
-
-	if fields.logdump then
-		local root = context:get_editing_root()
-		local final = dump(root)
-
-		-- Clean it up.
-		final = final:gsub("\n", " ")
-		final = final:gsub("%s+", " ")
-		final = final:gsub("%s*=%s*", "=")
-		final = final:gsub("{%s*", "{")
-		final = final:gsub(",%s*}", "}")
-		final = final:gsub("}%s*,%s*{", "},\n{")
-
-		minetest.log(final)
-
-		local lines = final:split("\n")
-		for _, line in ipairs(lines) do
-			minetest.chat_send_player(pname, "# Server: " .. line)
-		end
-
-		context:set_message("Dumped! I hope you have a console open.")
-	end
-
+local function handle_step_selector(context, fields)
 	local function toboolean(str)
 		if type(str) == "boolean" then
 			return str
@@ -870,6 +842,100 @@ function formspec.on_player_receive_fields(player, formname, fields)
 			context:get_control_by_name("stepsizeSelector2").selected = false
 		end
 	end
+end
+
+
+
+local function handle_live_select(context, fields)
+	local names = {}
+	local widgets = context:get_editing_root()
+
+	-- List of GUI elements to ignore because we ALWAYS get them in 'fields'
+	local BLACKLIST = {
+		field = true,
+		textarea = true,
+	}
+
+	for index, info in ipairs(widgets) do
+		if info.name and info.name ~= "" and not BLACKLIST[info.type] then
+			table.insert(names, {name=info.name, index=index})
+		end
+	end
+
+	for _, entry in ipairs(names) do
+		if fields[entry.name] then
+			local idx = entry.index
+			context:set_selected_widget(idx)
+			context:set_editing_parameters(widgets[idx])
+			context:set_message("Selected widget " .. idx .. " (" .. widgets[idx].type .. " [" .. (widgets[idx].name or "") .. "]).")
+			return
+		end
+	end
+end
+
+
+
+local function handle_logdump(context, fields)
+	if not fields.logdump then
+		return
+	end
+
+	local root = context:get_editing_root()
+	local final = dump(root)
+
+	-- Clean it up.
+	final = final:gsub("\n", " ")
+	final = final:gsub("%s+", " ")
+	final = final:gsub("%s*=%s*", "=")
+	final = final:gsub("{%s*", "{")
+	final = final:gsub(",%s*}", "}")
+	final = final:gsub("}%s*,%s*{", "},\n{")
+
+	minetest.log("[formspec:dump] " .. final)
+
+	local lines = final:split("\n")
+	for _, line in ipairs(lines) do
+		minetest.chat_send_player(pname, "# Server: " .. line)
+	end
+
+	context:set_message("Dumped! I hope you had a console open.")
+end
+
+
+
+function formspec.on_player_receive_fields(player, formname, fields)
+	if formname ~= "formspec:editor" then
+		return
+	end
+
+	local pname = player:get_player_name()
+	local context = formspec.EDITOR_CONTEXTS[pname]
+	if not context then
+		return
+	end
+
+	-- Nil error message by default, shall be populated if some field action errors.
+	context.last_error = ""
+
+	if fields.quit then
+		-- Save for later. User might have clicked off the editor and we don't want to throw away their work.
+		formspec.SAVED_CONTEXTS[pname] = formspec.EDITOR_CONTEXTS[pname]
+		formspec.EDITOR_CONTEXTS[pname] = nil
+		return
+	end
+
+	handle_param_edit(context, fields)
+	handle_param_select(context, fields)
+	handle_widget_select(context, fields)
+	handle_active_select(context, fields)
+	handle_add_widget(context, fields)
+	handle_remove_widget(context, fields)
+	handle_change_order(context, fields)
+	handle_move_widget(context, fields)
+	handle_size_widget(context, fields)
+	handle_step_selector(context, fields)
+	handle_live_select(context, fields)
+	handle_logdump(context, fields)
 
 	-- No need to call other field handlers.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

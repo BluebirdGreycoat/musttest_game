@@ -268,17 +268,23 @@ local function create_new_editor_context(pname, param)
 		end,
 
 		set_selected_widget = function(self, idx)
+			-- Negative values select from the end.
+			if idx and idx < 0 then
+				idx = #self.editing_root + idx + 1
+			end
+
 			if idx and idx >= 1 and idx <= #self.editing_root then
 				self.selected_active_widget = idx
 				return
 			end
+
 			self.selected_active_widget = nil
 		end,
 
 		set_selected_param = function(self, idx)
 			-- Negative values select from the end.
 			if idx and idx < 0 then
-				idx = #self.current_widget_params - idx + 1
+				idx = #self.current_widget_params + idx + 1
 			end
 
 			if idx and idx >= 1 and idx <= #self.current_widget_params then
@@ -322,6 +328,17 @@ local function create_new_editor_context(pname, param)
 				end
 			end
 		end,
+
+		get_widget_params = function(self)
+			local params = {}
+
+			-- Convert array of subtables to regular widget description table (dict).
+			for k, v in ipairs(self.current_widget_params or {}) do
+				params[v.param] = v.value
+			end
+
+			return params
+		end,
 	}
 end
 
@@ -337,6 +354,15 @@ function formspec.show_editor(pname, param)
 
 	if not formspec.EDITOR_CONTEXTS[pname] then
 		formspec.EDITOR_CONTEXTS[pname] = create_new_editor_context(pname, param)
+	else
+		-- Update all functions in the existing context.
+		local existing_context = formspec.EDITOR_CONTEXTS[pname]
+		local tmp = create_new_editor_context(pname, param)
+		for k, v in pairs(tmp) do
+			if type(v) == "function" then
+				existing_context[k] = v
+			end
+		end
 	end
 
 	local serialized = formspec.make_editor(pname)
@@ -350,31 +376,27 @@ local function handle_add_widget(context, fields)
 		return
 	end
 
-	local params = {}
-
-	-- Convert array of subtables to regular widget description table (dict).
-	for k, v in ipairs(context.current_widget_params) do
-		params[v.param] = v.value
-	end
+	local widgets = context:get_editing_root()
+	local params = context:get_widget_params()
 
 	if type(params.type) ~= "string" then
-		context.last_error = "Missing mandatory type name."
+		context:set_error("Missing mandatory type name.")
 		return
 	end
 
 	-- Prevent user from messing up the editor GUI.
 	if type(params.FORMSPEC_ID) ~= "nil" then
-		context.last_error = "Do NOT use internal GUI editor names."
+		context:set_error("Do NOT use internal GUI editor names.")
 		return
 	end
 
-	local widget = formspec.WIDGET_TYPES[params.type]
-	if not widget then
-		context.last_error = "Cannot create unknown widget."
+	local widgetfactory = formspec.WIDGET_TYPES[params.type]
+	if not widgetfactory then
+		context:set_error("Cannot create unknown widget.")
 		return
 	end
-	if not widget.make_params then
-		context.last_error = "Widget not constructable."
+	if not widgetfactory.make_params then
+		context:set_error("Widget not constructable.")
 		return
 	end
 
@@ -384,7 +406,7 @@ local function handle_add_widget(context, fields)
 		local c = 1
 
 		-- Count up all widgets of the same type.
-		for _, v in ipairs(context.editing_root) do
+		for _, v in ipairs(widgets) do
 			if v.type == t then
 				c = c + 1
 			end
@@ -406,32 +428,32 @@ local function handle_add_widget(context, fields)
 	-- Make sure we're not adding GUI elements with duplicate or reserved names.
 	-- That will break stuff.
 	if params.name then
-		for k, v in ipairs(context.root.children) do
-			if v.name and v.name == params.name then
-				context.last_error = "Cannot create widget using EDITOR reserved name."
-				return
-			end
+		if context:get_control_by_name(params.name) then
+			context:set_error("Cannot create widget using EDITOR reserved name.")
+			return
 		end
-		for k, v in ipairs(context.editing_root) do
+
+		for k, v in ipairs(widgets) do
 			if v.name and v.name == params.name then
-				context.last_error = "You've already added a widget with that name."
+				context:set_error("You've already added a widget with that name.")
 				return
 			end
 		end
 	end
 
 	-- Make sure minimum parameters are provided matching what the widget wants.
-	local wanted_params = widget.make_params()
+	local wanted_params = widgetfactory.make_params()
 	for k, v in pairs(wanted_params) do
 		if type(params[k]) ~= type(v) then
-			context.last_error = "Missing required parameter, or wrong parameter type."
+			context:set_error("Missing required parameter, or wrong parameter type.")
 			return
 		end
 	end
 
-	table.insert(context.editing_root, params)
-	context.last_error = "Success: added " .. params.type .. " [" .. (params.name or "") .. "]."
-	context.selected_active_widget = #context.editing_root
+	table.insert(widgets, params)
+
+	context:set_message("Success: added " .. params.type .. " [" .. (params.name or "") .. "].")
+	context:set_selected_widget(-1)
 	return true
 end
 

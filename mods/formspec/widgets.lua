@@ -308,6 +308,10 @@ formspec.register_widget("container", {
 	make_params = function()
 		return {type="container", x=0, y=0}
 	end,
+
+	requires_pair = function()
+		return "container_end"
+	end,
 })
 
 

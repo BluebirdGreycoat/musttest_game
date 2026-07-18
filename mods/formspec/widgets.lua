@@ -240,7 +240,7 @@ formspec.register_widget("button", {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
 			params.name,
-			FS(params.label),
+			FS(params.label or ""),
 		}
 		return "button[" .. CAT(E) .. "]"
 	end,
@@ -352,16 +352,47 @@ formspec.register_widget("textlist", {
 			params.name,
 		}
 
+		local E2 = {
+			(params.selected ~= nil and tostring(params.selected) or "")
+		}
+
 		-- Formspec escape all items.
 		local items = params.itemlist or {}
 		for i=1, #items, 1 do
 			items[i] = FS(items[i])
 		end
 
-		return "textlist[" .. CAT(E) .. ";" .. table.concat(items, ",") .. "]"
+		return "textlist[" .. CAT(E) .. ";" .. table.concat(items, ",") .. ";" .. CAT(E2) .. "]"
 	end,
 
 	make_params = function()
 		return {type="textlist", x=0, y=0, w=2, h=2, name=""}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "checkbox",
+		x = <number>,
+		y = <number>,
+	}
+
+--]]
+formspec.register_widget("checkbox", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			params.name,
+			FS(params.label or ""),
+			(params.selected ~= nil and tostring(params.selected) or "")
+		}
+		return "checkbox[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="checkbox", x=0, y=0, name="", label="", selected=false}
 	end,
 })

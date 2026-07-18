@@ -4,10 +4,39 @@ formspec.EDITOR_CONTEXTS = formspec.EDITOR_CONTEXTS or {}
 
 
 
-function formspec.make_editor(pname)
-	local context = formspec.EDITOR_CONTEXTS[pname] or {}
+local function highlight_selected_widget(context)
+	-- Show a bright box around the currently selected widget.
+	local idx = context:get_selected_widget()
+	local selector = context:get_control_by_id("GUIselectorDisplay")
+	local widgets = context:get_editing_root()
 
-	local root = {
+	if selector and idx then
+		local target = widgets[idx]
+
+		if target.type == "checkbox" then
+			-- Checkboxes don't have W, H.
+			selector.visible = true
+			selector.x = target.x - 0.05
+			selector.y = target.y - 0.2
+			selector.w = 0.4
+			selector.h = 0.4
+		else
+			selector.visible = true
+			selector.x = target.x - 0.02
+			selector.y = target.y - 0.02
+			selector.w = (target.w or 1) + 0.06
+			selector.h = (target.h or 1) + 0.06
+		end
+	end
+end
+
+
+
+function formspec.make_editor(pname)
+	local context = formspec.EDITOR_CONTEXTS[pname]
+	if not context then return "" end
+
+	local NEWROOT = {
 		size = {x=20, y=10},
 
 		children = {
@@ -20,14 +49,16 @@ function formspec.make_editor(pname)
 			-- Editor formspec with controls.
 			{type="container", x=11, y=0},
 			{type="background9", x=0, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
-			{type="button", x=0.5, y=8.5, w=1.7, h=0.6, name="add_widget", label="Add Item"},
+			{type="box", x=0.5, y=9.3, w=8, h=0.35, color="#00000055"},
 			{type="label", x=0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
+			{type="button", x=0.5, y=8.5, w=2.0, h=0.5, name="logdump", label="Dump To Log", tooltip="Writes the edited GUI parameters to the logfile."},
 
 			-- List of current/active parameters.
 			{type="container", x=0.5, y=0.4},
-			{type="label", x=0, y=0, w=3, h=0.35, text="Parameter List"},
-			{type="textlist", x=0, y=0.4, w=3, h=3.5, name="paramslist", FORMSPEC_ID="paramslist", tooltip="This shows the list of current widget parameters."},
-			{type="field", x=0, y=4.4, w=3, h=0.4, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
+			{type="label", x=0, y=0, w=4.5, h=0.35, text="Parameter List", FORMSPEC_ID="paramslistLabel"},
+			{type="textlist", x=0, y=0.4, w=4.5, h=3.5, name="paramslist", FORMSPEC_ID="paramslist", tooltip="This shows the list of current widget parameters."},
+			{type="field", x=0, y=4.4, w=4.5, h=0.4, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
+			{type="button", x=0, y=5.0, w=2.5, h=0.5, name="add_widget", label="Add New Widget"},
 			{type="container_end"},
 
 			-- List of registered widget types.
@@ -39,17 +70,52 @@ function formspec.make_editor(pname)
 			-- List of active widgets.
 			{type="container", x=5.5, y=4.1},
 			{type="label", x=0, y=0, w=3, h=0.35, text="Constructed Widgets"},
-			{type="textlist", x=0, y=0.4, w=3, h=4.55, name="activewidgets", FORMSPEC_ID="activewidgets", tooltip="Lists constructed widgets."},
+			{type="textlist", x=0, y=0.4, w=3, h=3.8, name="activewidgets", FORMSPEC_ID="activewidgets", tooltip="Lists constructed widgets."},
+			{type="button", x=0, y=4.4, w=0.5, h=0.5, name="move_order_up", label="▲"},
+			{type="button", x=0.6, y=4.4, w=0.5, h=0.5, name="move_order_dn", label="▼"},
+			{type="button", x=1.2, y=4.4, w=1.8, h=0.5, name="remove_widget", label="Delete"},
+			{type="container_end"},
+
+			-- Widget move controls.
+			{type="container", x=0.5, y=6.42},
+			{type="label", x=0, y=0, w=3, h=0.35, text="Move Widget"},
+			{h=0.5, move_step=0.1, label="▲", name="move_up", type="button", w=0.5, x=0.5, y=0+0.38},
+			{h=0.5, move_step=0.1, label="▼", name="move_down", type="button", w=0.5, x=0.5, y=1+0.38},
+			{h=0.5, move_step=0.1, label="◀", name="move_left", type="button", w=0.5, x=0, y=0.5+0.38},
+			{h=0.5, move_step=0.1, label="▶", name="move_right", type="button", w=0.5, x=1, y=0.5+0.38},
+			{h=0.5, move_step=0.5, label="⇓", name="move_down2", type="button", w=0.5, x=1, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇑", name="move_up2", type="button", w=0.5, x=0, y=0+0.38},
+			{h=0.5, move_step=0.5, label="⇐", name="move_left2", type="button", w=0.5, x=0, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇒", name="move_right2", type="button", w=0.5, x=1, y=0+0.38},
+			{type="container_end"},
+
+			-- Widget size controls.
+			{type="container", x=3.5, y=6.42},
+			{type="label", x=0, y=0, w=3, h=0.35, text="Size Widget"},
+			{h=0.5, move_step=0.1, label="▲", name="size_up", type="button", w=0.5, x=0.5, y=0+0.38},
+			{h=0.5, move_step=0.1, label="▼", name="size_down", type="button", w=0.5, x=0.5, y=1+0.38},
+			{h=0.5, move_step=0.1, label="◀", name="size_left", type="button", w=0.5, x=0, y=0.5+0.38},
+			{h=0.5, move_step=0.1, label="▶", name="size_right", type="button", w=0.5, x=1, y=0.5+0.38},
+			{h=0.5, move_step=0.5, label="⇓", name="size_down2", type="button", w=0.5, x=1, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇑", name="size_up2", type="button", w=0.5, x=0, y=0+0.38},
+			{h=0.5, move_step=0.5, label="⇐", name="size_left2", type="button", w=0.5, x=0, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇒", name="size_right2", type="button", w=0.5, x=1, y=0+0.38},
+			{type="container_end"},
+
+			-- Size checkboxes.
+			{type="container", x=2.3, y=6.95},
+			{type="checkbox", name="stepsizeSelector1", x=0, y=0, label="0.1", selected=false},
+			{type="checkbox", name="stepsizeSelector2", x=0, y=0.35, label="0.01", selected=false},
 			{type="container_end"},
 
 			{type="container_end"},
 		},
 	}
 
-	local original_root = table.copy(root)
+	context.root = NEWROOT
 
 	local function FIND(name)
-		for k, v in ipairs(root.children) do
+		for k, v in ipairs(context.root.children) do
 			if v.FORMSPEC_ID == name then
 				return k
 			end
@@ -58,27 +124,20 @@ function formspec.make_editor(pname)
 	end
 
 	if #context.last_error > 0 then
-		root.children[FIND("errordisplay")].text = context.last_error
+		context.root.children[FIND("errordisplay")].text = context.last_error
 	end
 
 	-- Show a bright box around the currently selected widget.
-	if context.selected_active_widget then
-		local idx = context.selected_active_widget
-		local pos = FIND("GUIselectorDisplay")
-		local widgets = context.editing_root
+	highlight_selected_widget(context)
 
-		if pos and idx >= 1 and idx <= #widgets then
-			local item = root.children[pos]
-			local target = widgets[idx]
-			item.visible = true
-			item.x = target.x - 0.02
-			item.y = target.y - 0.02
-			item.w = (target.w or 1) + 0.06
-			item.h = (target.h or 1) + 0.06
-		end
+	if context.step_size_selector == 1 then
+		context:get_control_by_name("stepsizeSelector1").selected = true
+	elseif context.step_size_selector == 2 then
+		context:get_control_by_name("stepsizeSelector2").selected = true
 	end
 
 	do
+		local pos = FIND("paramslist")
 		local itemlist = {}
 
 		for k, v in ipairs(context.current_widget_params) do
@@ -89,7 +148,12 @@ function formspec.make_editor(pname)
 			table.insert(itemlist, v.param .. " = " .. tostring(value))
 		end
 
-		root.children[FIND("paramslist")].itemlist = itemlist
+		context.root.children[pos].itemlist = itemlist
+		context.root.children[pos].selected = context:get_selected_param()
+
+		if context:get_selected_widget() then
+			context.root.children[FIND("paramslistLabel")].text = "Parameter List of Selected Widget"
+		end
 	end
 
 	do
@@ -101,7 +165,7 @@ function formspec.make_editor(pname)
 		end
 
 		table.sort(itemlist)
-		root.children[pos].itemlist = itemlist
+		context.root.children[pos].itemlist = itemlist
 		context.known_widget_names = itemlist
 	end
 
@@ -113,20 +177,57 @@ function formspec.make_editor(pname)
 			table.insert(itemlist, (v.type .. " [" .. (v.name or "") .. "]"))
 		end
 
-		root.children[pos].itemlist = itemlist
+		context.root.children[pos].itemlist = itemlist
+		context.root.children[pos].selected = context:get_selected_widget()
 	end
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	if context.editing_root then
 		local pos = FIND("testGUIend")
 		for _, info in ipairs(context.editing_root) do
-			table.insert(root.children, pos, info)
+			table.insert(context.root.children, pos, info)
 			pos = pos + 1 -- Insert items in order.
 		end
 	end
 
-	context.root = original_root -- Remember the original GUI table.
-	return formspec.create_formspec_from_table(root)
+	return formspec.create_formspec_from_table(context.root)
+end
+
+
+
+local SPECIAL_PARAMETERS = {
+	["type"] = 1,
+	["name"] = 2,
+	["x"] = 3,
+	["y"] = 4,
+	["w"] = 5,
+	["h"] = 6,
+	["x1"] = 7,
+	["y1"] = 8,
+	["x2"] = 9,
+	["y2"] = 10,
+}
+
+local function priority_sort(pa, pb)
+	local a = pa.param
+	local b = pb.param
+
+	local prioA = SPECIAL_PARAMETERS[a]
+	local prioB = SPECIAL_PARAMETERS[b]
+
+	if prioA and prioB then
+		-- Both special → sort by their defined priority
+		return prioA < prioB
+	elseif prioA then
+		-- a is special, b is not → a comes first
+		return true
+	elseif prioB then
+		-- b is special, a is not → b comes first
+		return false
+	else
+		-- Neither special → normal string sort
+		return a < b
+	end
 end
 
 
@@ -142,6 +243,86 @@ function formspec.show_editor(pname, param)
 		known_widget_names = {}, -- Array of registered widget names.
 		last_error = "",
 		default_edit_parameter = "",
+		step_size_selector = 1,
+
+		set_error = function(self, msg)
+			self.last_error = minetest.get_color_escape_sequence("#ff0000ff") .. msg
+		end,
+
+		set_message = function(self, msg)
+			self.last_error = msg
+		end,
+
+		get_editing_root = function(self)
+			return self.editing_root
+		end,
+
+		get_selected_widget = function(self)
+			local idx = self.selected_active_widget
+			if idx and idx >= 1 and idx <= #self.editing_root then
+				return idx
+			end
+		end,
+
+		get_selected_param = function(self)
+			return self.selected_active_param
+		end,
+
+		set_selected_widget = function(self, idx)
+			if idx and idx >= 1 and idx <= #self.editing_root then
+				self.selected_active_widget = idx
+				return
+			end
+			self.selected_active_widget = nil
+		end,
+
+		set_selected_param = function(self, idx)
+			-- Negative values select from the end.
+			if idx and idx < 0 then
+				idx = #self.current_widget_params - idx + 1
+			end
+
+			if idx and idx >= 1 and idx <= #self.current_widget_params then
+				self.selected_active_param = idx
+				return
+			end
+
+			self.selected_active_param = nil
+		end,
+
+		set_editing_parameters = function(self, params)
+			if not params or not next(params) then
+				self.current_widget_params = {}
+				return
+			end
+
+			local newlist = {}
+
+			for k, v in pairs(params) do
+				table.insert(newlist, {param=k, value=v})
+			end
+
+			-- Sort with priority.
+			table.sort(newlist, priority_sort)
+
+			self.current_widget_params = newlist
+		end,
+
+		get_control_by_name = function(self, name)
+			for _, widget in ipairs(self.root.children) do
+				if widget.name and widget.name == name then
+					return widget
+				end
+			end
+		end,
+
+		get_control_by_id = function(self, name)
+			for _, widget in ipairs(self.root.children) do
+				if widget.FORMSPEC_ID and widget.FORMSPEC_ID == name then
+					return widget
+				end
+			end
+		end,
 	}
 
 	local serialized = formspec.make_editor(pname)
@@ -234,12 +415,36 @@ end
 
 
 
+local function handle_remove_widget(context, fields)
+	if not fields.remove_widget then
+		return
+	end
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not (idx and idx >= 1 and idx <= #widgets) then
+		return context:set_error("No selected widget to remove.")
+	end
+
+	local removed = table.remove(widgets, idx)
+
+	if idx > #widgets then
+		idx = #widgets
+	end
+
+	context:set_selected_widget(idx)
+	return context:set_message("Removed " .. removed.type .. " [" .. removed.name .. "] widget.")
+end
+
+
+
 local function handle_param_edit(context, fields)
 	if fields.key_enter_field ~= "paramfield" then
 		return
 	end
 
-	context.last_error = "What are you doing?"
+	context:set_error("What are you doing?")
 	local tokens = fields.paramfield:split("=")
 
 	for i=1, #tokens, 1 do
@@ -282,24 +487,31 @@ local function handle_param_edit(context, fields)
 	local pos = FIND(tokens[1])
 
 	if pos then
+		context:set_selected_param(pos)
+
 		if not context.selected_active_widget or tokens[1] ~= "type" then
 			if tokens[2] ~= "nil" then
 				context.current_widget_params[pos].value = TOTYPE(tokens[2])
-				context.last_error = "Updated parameter."
+				context:set_message("Updated parameter.")
+				context:set_selected_param(pos)
 			else
 				table.remove(context.current_widget_params, pos)
-				context.last_error = "Parameter removed from table."
+				context:set_message("Parameter removed from table.")
+				context:set_selected_param(nil)
 			end
 		else
-			context.last_error = "Cannot change type of existing created widget."
+			context:set_selected_param(nil)
+			context:set_error("Cannot change type of existing created widget.")
 			return
 		end
 	else
 		if tokens[2] ~= "nil" then
 			table.insert(context.current_widget_params, {param=tokens[1], value=TOTYPE(tokens[2])})
-			context.last_error = "Added new parameter."
+			context:set_selected_param(-1)
+			context:set_message("Added new parameter.")
 		else
-			context.last_error = "Parameter doesn't exist; nothing to be done."
+			context:set_selected_param(nil)
+			context:set_error("Parameter doesn't exist; nothing to be done.")
 			return
 		end
 	end
@@ -341,35 +553,27 @@ local function handle_widget_select(context, fields)
 		return -- Normal.
 	end
 
-	local name = widgets[idx]
-	if not formspec.WIDGET_TYPES[name] then
-		context.current_widget_params = {}
-		context.last_error = "Selected unknown widget type!"
-		return
-	end
+	context:set_selected_param(nil)
+	context.default_edit_parameter = nil
 
-	context.last_error = "Selected: " .. name .. "."
+	local name = widgets[idx]
 	local widget = formspec.WIDGET_TYPES[name]
 
-	if not widget.make_params then
-		context.current_widget_params = {}
-		context.last_error = "Widget type not constructable."
+	if not widget then
+		context:set_editing_parameters(nil)
+		context:set_error("Selected unknown widget type!")
 		return
 	end
 
-	local params = widget.make_params()
-	local new_param_list = {}
-
-	for k, v in pairs(params) do
-		table.insert(new_param_list, {param=k, value=v})
+	if not widget.make_params then
+		context:set_editing_parameters(nil)
+		context:set_error("Widget type not constructable.")
+		return
 	end
 
-	table.sort(new_param_list, function(a, b)
-		return a.param < b.param
-	end)
-
-	context.current_widget_params = new_param_list
-	context.selected_active_widget = nil
+	context:set_editing_parameters(widget.make_params())
+	context:set_selected_widget(nil)
+	context:set_message("Selected: " .. name .. ".")
 end
 
 
@@ -381,25 +585,22 @@ local function handle_active_select(context, fields)
 
 	local tab = minetest.explode_textlist_event(fields.activewidgets)
 	local idx = tab.index
-	local widgets = context.editing_root
+	local widgets = context:get_editing_root()
+
+	-- A single click removes the current selection.
+	if tab.type == "CHG" then
+		context:set_selected_widget(nil)
+		context:set_editing_parameters(nil)
+		return
+	end
 
 	if not (tab.type == "DCL" and idx >= 1 and idx <= #widgets) then
 		return -- Normal.
 	end
 
-	local new_param_list = {}
-
-	for k, v in pairs(widgets[idx]) do
-		table.insert(new_param_list, {param=k, value=v})
-	end
-
-	table.sort(new_param_list, function(a, b)
-		return a.param < b.param
-	end)
-
-	context.current_widget_params = new_param_list
-	context.selected_active_widget = idx
-	context.last_error = "Selected widget " .. idx .. " (" .. widgets[idx].type .. " [" .. (widgets[idx].name or "") .. "])."
+	context:set_editing_parameters(widgets[idx])
+	context:set_selected_widget(idx)
+	context:set_message("Selected widget " .. idx .. " (" .. widgets[idx].type .. " [" .. (widgets[idx].name or "") .. "]).")
 end
 
 
@@ -422,7 +623,155 @@ local function handle_param_select(context, fields)
 	if type(val) == "string" and #val == 0 then
 		val = "\"\""
 	end
+
 	context.default_edit_parameter = entry.param .. "=" .. tostring(val)
+	context:set_selected_param(idx)
+end
+
+
+
+local function handle_change_order(context, fields)
+	if not fields.move_order_dn and not fields.move_order_up then
+		return
+	end
+
+	local widgets = context:get_editing_root()
+	local idx = context:get_selected_widget()
+
+	if not (idx and idx >= 1 and idx <= #widgets) then
+		context:set_error("No selected widget.")
+		return
+	end
+
+	if fields.move_order_dn and idx < #widgets then
+		local tmp = widgets[idx + 1]
+		widgets[idx + 1] = widgets[idx]
+		widgets[idx] = tmp
+		context:set_selected_widget(idx + 1)
+	end
+
+	if fields.move_order_up and idx > 1 then
+		local tmp = widgets[idx - 1]
+		widgets[idx - 1] = widgets[idx]
+		widgets[idx] = tmp
+		context:set_selected_widget(idx - 1)
+	end
+end
+
+
+
+local function handle_move_widget(context, fields)
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not (idx and idx >= 1 and idx <= #widgets) then
+		return
+	end
+
+	local changed = false
+	local target = widgets[idx]
+
+	local buttons = {
+		move_left = {x=-1, y=0, z=0},
+		move_right = {x=1, y=0, z=0},
+		move_up = {x=0, y=-1, z=0},
+		move_down = {x=0, y=1, z=0},
+		move_left2 = {x=-1, y=0, z=0},
+		move_right2 = {x=1, y=0, z=0},
+		move_up2 = {x=0, y=-1, z=0},
+		move_down2 = {x=0, y=1, z=0},
+	}
+
+	for fieldname, info in pairs(buttons) do
+		if fields[fieldname] then
+			local step = context:get_control_by_name(fieldname).move_step
+
+			if context.step_size_selector == 2 and step < 0.5 then
+				step = 0.01
+			end
+
+			local curpos = {x=target.x, y=target.y, z=0}
+			local newpos = vector.add(vector.multiply(info, step), curpos)
+
+			target.x = newpos.x
+			target.y = newpos.y
+
+			-- Round to nearest hundredths.
+			target.x = math.round(target.x * 100) / 100
+			target.y = math.round(target.y * 100) / 100
+
+			changed = true
+			break
+		end
+	end
+
+	if changed then
+		context:set_editing_parameters(target)
+		context:set_selected_param(nil)
+		context.default_edit_parameter = nil
+	end
+end
+
+
+
+local function handle_size_widget(context, fields)
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		return
+	end
+
+	local changed = false
+	local target = widgets[idx]
+
+	-- Widget doesn't support sizing.
+	if not target.w or not target.h then
+		return
+	end
+
+	local buttons = {
+		size_left = {x=-1, y=0, z=0},
+		size_right = {x=1, y=0, z=0},
+		size_up = {x=0, y=-1, z=0},
+		size_down = {x=0, y=1, z=0},
+		size_left2 = {x=-1, y=0, z=0},
+		size_right2 = {x=1, y=0, z=0},
+		size_up2 = {x=0, y=-1, z=0},
+		size_down2 = {x=0, y=1, z=0},
+	}
+
+	for fieldname, info in pairs(buttons) do
+		if fields[fieldname] then
+			local step = context:get_control_by_name(fieldname).move_step
+
+			if context.step_size_selector == 2 and step < 0.5 then
+				step = 0.01
+			end
+
+			local curpos = {x=target.w, y=target.h, z=0}
+			local newpos = vector.add(vector.multiply(info, step), curpos)
+
+			target.w = newpos.x
+			target.h = newpos.y
+
+			if target.w < 0.1 then target.w = 0.1 end
+			if target.h < 0.1 then target.h = 0.1 end
+
+			-- Round to nearest hundredths.
+			target.w = math.round(target.w * 100) / 100
+			target.h = math.round(target.h * 100) / 100
+
+			changed = true
+			break
+		end
+	end
+
+	if changed then
+		context:set_editing_parameters(target)
+		context:set_selected_param(nil)
+		context.default_edit_parameter = nil
+	end
 end
 
 
@@ -451,6 +800,76 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_widget_select(context, fields)
 	handle_active_select(context, fields)
 	handle_add_widget(context, fields)
+	handle_remove_widget(context, fields)
+	handle_change_order(context, fields)
+	handle_move_widget(context, fields)
+	handle_size_widget(context, fields)
+
+	if fields.logdump then
+		local root = context:get_editing_root()
+		local final = dump(root)
+
+		-- Clean it up.
+		final = final:gsub("\n", " ")
+		final = final:gsub("%s+", " ")
+		final = final:gsub("%s*=%s*", "=")
+		final = final:gsub("{%s*", "{")
+		final = final:gsub(",%s*}", "}")
+		final = final:gsub("}%s*,%s*{", "},\n{")
+
+		minetest.log(final)
+
+		local lines = final:split("\n")
+		for _, line in ipairs(lines) do
+			minetest.chat_send_player(pname, "# Server: " .. line)
+		end
+
+		context:set_message("Dumped! I hope you have a console open.")
+	end
+
+	local function toboolean(str)
+		if type(str) == "boolean" then
+			return str
+		end
+
+		if type(str) == "string" then
+			if str == "true" then return true end
+			if str == "false" then return false end
+		end
+
+		if type(str) == "number" then
+			if str == 0 then return false end
+			return true
+		end
+
+		return false
+	end
+
+	if fields.stepsizeSelector1 then
+		local bs = fields.stepsizeSelector1
+		if toboolean(bs) then
+			context.step_size_selector = 1
+			context:get_control_by_name("stepsizeSelector1").selected = true
+			context:get_control_by_name("stepsizeSelector2").selected = false
+		else
+			context.step_size_selector = 2
+			context:get_control_by_name("stepsizeSelector1").selected = false
+			context:get_control_by_name("stepsizeSelector2").selected = true
+		end
+	end
+
+	if fields.stepsizeSelector2 then
+		local bs = fields.stepsizeSelector2
+		if toboolean(bs) then
+			context.step_size_selector = 2
+			context:get_control_by_name("stepsizeSelector1").selected = false
+			context:get_control_by_name("stepsizeSelector2").selected = true
+		else
+			context.step_size_selector = 1
+			context:get_control_by_name("stepsizeSelector1").selected = true
+			context:get_control_by_name("stepsizeSelector2").selected = false
+		end
+	end
 
 	-- No need to call other field handlers.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

@@ -1,19 +1,20 @@
 
 if not minetest.global_exists("formspec") then formspec = {} end
 formspec.modpath = minetest.get_modpath("formspec")
+formspec.WIDGET_TYPES = formspec.WIDGET_TYPES or {}
 
 local FORMSPEC_VERSION = 9
-local WIDGET_TYPES = {}
 
 
 
 function formspec.register_widget(name, info)
-	WIDGET_TYPES[name] = table.copy(info)
+	formspec.WIDGET_TYPES[name] = table.copy(info)
 end
 
 
 
 dofile(formspec.modpath .. "/widgets.lua")
+dofile(formspec.modpath .. "/editor.lua")
 
 
 
@@ -62,9 +63,9 @@ local function process_element_spec(in_data, out_lines)
 	end
 
 	for _, info in ipairs(in_data.children) do
-		local make = info.type and WIDGET_TYPES[info.type] and WIDGET_TYPES[info.type].make
+		local make = info.type and formspec.WIDGET_TYPES[info.type] and formspec.WIDGET_TYPES[info.type].make
 
-		if make then
+		if make and (info.visible == true or info.visible == nil) then
 			-- Create base GUI element from factory function.
 			local s = make(info)
 
@@ -133,6 +134,20 @@ if not formspec.run_once then
 	local c = "formspec:core"
 	local f = formspec.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
+
+	minetest.register_chatcommand("fs", {
+		params = "",
+		description = "Show the formspec editor.",
+		privs = {server=true},
+
+		func = function(...)
+			formspec.show_editor(...)
+		end,
+	})
+
+	minetest.register_on_player_receive_fields(function(...)
+		return formspec.on_player_receive_fields(...)
+	end)
 
 	formspec.run_once = true
 end

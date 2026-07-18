@@ -152,7 +152,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			size = {x=9.25, y=6.625},
 
 			children = {
-				{type="background9", texture="gui_formbg.png", auto_clip=true},
+				{type="background9", x=0, y=0, w=0, h=0, texture="gui_formbg.png", auto_clip=true, x1=50},
 
 				{type="box", x=0.5, y=0.5, w=8.25, h=2.3, color="#101010FF"},
 				{type="image", x=1, y=0.6, w=7.3, h=2.1, texture="musttest_game_logo.png"},
@@ -163,12 +163,16 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 					type = "label",
 					x = 0.5,
 					y = 3.15,
+					w = 9,
+					h = 0.35,
 					text = "Greetings <" .. rename.gpn(pname) .. ">. Welcome back to the Enyekala frontier!",
 				},
 				{
 					type = "label",
 					x = 0.5,
 					y = 3.5,
+					w = 9,
+					h = 0.35,
 					text = logintime,
 				},
 
@@ -230,7 +234,7 @@ function joinspec.generate_formspec(pname, returningplayer, haskey)
 			size = {x=9.25, y=10.875},
 
 			children = {
-				{type="background9", texture="gui_formbg.png", auto_clip=true},
+				{type="background9", x=0, y=0, w=0, h=0, texture="gui_formbg.png", auto_clip=true, x1=50},
 
 				{type="box", x=0.5, y=0.5, w=8.25, h=2.3, color="#101010FF"},
 				{type="image", x=1, y=0.6, w=7.3, h=2.1, texture="musttest_game_logo.png"},

@@ -14,6 +14,11 @@ local function highlight_selected_widget(context)
 	if selector and idx then
 		local target = widgets[idx]
 
+		-- Certain widgets (like end tags) don't exist in space.
+		if not target.x or not target.y then
+			return
+		end
+
 		if target.type == "checkbox" then
 			-- Checkboxes don't have W, H.
 			selector.visible = true
@@ -371,11 +376,7 @@ end
 
 
 
-local function handle_add_widget(context, fields)
-	if not fields.add_widget then
-		return
-	end
-
+local function validate_active_params(context)
 	local widgets = context:get_editing_root()
 	local params = context:get_widget_params()
 
@@ -390,31 +391,18 @@ local function handle_add_widget(context, fields)
 		return
 	end
 
-	local widgetfactory = formspec.WIDGET_TYPES[params.type]
-	if not widgetfactory then
+	local factory = formspec.WIDGET_TYPES[params.type]
+	if not factory then
 		context:set_error("Cannot create unknown widget.")
 		return
 	end
-	if not widgetfactory.make_params then
+	if not factory.make_params then
 		context:set_error("Widget not constructable.")
 		return
 	end
-
-	-- Invent default names for widgets that have name parameters but they're empty.
-	if params.name and #params.name == 0 then
-		local t = params.type
-		local c = 1
-
-		-- Count up all widgets of the same type.
-		for _, v in ipairs(widgets) do
-			if v.type == t then
-				c = c + 1
-			end
-		end
-
-		-- Build name string.
-		local s = t .. c
-		params.name = s
+	if factory.allow_editor_creation ~= nil and not factory.allow_editor_creation then
+		context:set_error("Widget creation disallowed.")
+		return
 	end
 
 	-- Do NOT allow names beginning with "key_".
@@ -442,7 +430,7 @@ local function handle_add_widget(context, fields)
 	end
 
 	-- Make sure minimum parameters are provided matching what the widget wants.
-	local wanted_params = widgetfactory.make_params()
+	local wanted_params = factory.make_params()
 	for k, v in pairs(wanted_params) do
 		if type(params[k]) ~= type(v) then
 			context:set_error("Missing required parameter, or wrong parameter type.")
@@ -450,7 +438,48 @@ local function handle_add_widget(context, fields)
 		end
 	end
 
+	return true
+end
+
+
+
+local function handle_add_widget(context, fields)
+	if not fields.add_widget then
+		return
+	end
+
+	local widgets = context:get_editing_root()
+	local params = context:get_widget_params()
+
+	-- Invent default names for widgets that have name parameters but they're empty.
+	if params.name and #params.name == 0 then
+		local t = params.type
+		local c = 1
+
+		-- Count up all widgets of the same type.
+		for _, v in ipairs(widgets) do
+			if v.type == t then
+				c = c + 1
+			end
+		end
+
+		-- Build name string.
+		local s = t .. c
+		params.name = s
+	end
+
+	if not validate_active_params(context) then
+		return
+	end
+
 	table.insert(widgets, params)
+
+	-- If the widget requires a matching end tag, add that.
+	local factory = formspec.WIDGET_TYPES[params.type]
+	if factory.end_tag then
+		local info = formspec.WIDGET_TYPES[factory.end_tag]
+		table.insert(widgets, info.make_params())
+	end
 
 	context:set_message("Success: added " .. params.type .. " [" .. (params.name or "") .. "].")
 	context:set_selected_widget(-1)
@@ -467,8 +496,27 @@ local function handle_remove_widget(context, fields)
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
 
-	if not (idx and idx >= 1 and idx <= #widgets) then
-		return context:set_error("No selected widget to remove.")
+	if not idx then
+		context:set_error("No selected widget to remove.")
+		return
+	end
+
+	local info = formspec.WIDGET_TYPES[widgets[idx].type]
+	if info.allow_editor_deletion ~= nil and not info.allow_editor_deletion then
+		context:set_error("Cannot delete that widget.")
+		return
+	end
+
+	-- If the widget is paired with an end tag, delete that, too.
+	-- Delete end tag *before* deleting start tag, because array position will change!
+	if info.end_tag then
+		for i = idx + 1, #widgets, 1 do
+			local otype = widgets[i].type
+			if otype == info.end_tag then
+				table.remove(widgets, i)
+				break
+			end
+		end
 	end
 
 	local removed = table.remove(widgets, idx)
@@ -478,7 +526,7 @@ local function handle_remove_widget(context, fields)
 	end
 
 	context:set_selected_widget(idx)
-	return context:set_message("Removed " .. removed.type .. " [" .. (removed.name or "") .. "] widget.")
+	context:set_message("Removed " .. removed.type .. " [" .. (removed.name or "") .. "] widget.")
 end
 
 
@@ -533,7 +581,7 @@ local function handle_param_edit(context, fields)
 	if pos then
 		context:set_selected_param(pos)
 
-		if not context.selected_active_widget or tokens[1] ~= "type" then
+		if not context:get_selected_widget() or tokens[1] ~= "type" then
 			if tokens[2] ~= "nil" then
 				context.current_widget_params[pos].value = TOTYPE(tokens[2])
 				context:set_message("Updated parameter.")
@@ -560,26 +608,19 @@ local function handle_param_edit(context, fields)
 		end
 	end
 
-	-- Edit currently selected active widget.
-	if context.selected_active_widget then
-		local idx = context.selected_active_widget
-		local root = context.editing_root
+	-- Update parameters of the currently selected active widget.
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
 
-		if idx >= 1 and idx <= #root then
-			-- Reuse the logic here to update the widget.
-			-- This always adds a new widget to the end of the widget array.
-			-- We can replace'n'pop.
-			local oldname = root[idx].name
-			root[idx].name = "" -- Otherwise we couldn't add.
-			if handle_add_widget(context, {add_widget=true}) then
-				root[idx] = root[#root]
-				root[#root] = nil
-				context.selected_active_widget = idx
-			else
-				root[idx].name = oldname -- Restore it.
-			end
-		end
+	if not idx then
+		return
 	end
+
+	if not validate_active_params(context) then
+		return
+	end
+
+	widgets[idx] = context:get_widget_params()
 end
 
 
@@ -687,18 +728,48 @@ local function handle_change_order(context, fields)
 		return
 	end
 
+	local function may_move_dn()
+		local this_type = widgets[idx].type
+		local under_type = widgets[idx + 1].type
+		local this_info = formspec.WIDGET_TYPES[this_type]
+		local under_info = formspec.WIDGET_TYPES[under_type]
+
+		if (this_info.begin_tag or this_info.end_tag) and (under_info.begin_tag or under_info.end_tag) then
+			return false
+		end
+
+		return true
+	end
+
+	local function may_move_up()
+		local this_type = widgets[idx].type
+		local above_type = widgets[idx - 1].type
+		local this_info = formspec.WIDGET_TYPES[this_type]
+		local above_info = formspec.WIDGET_TYPES[above_type]
+
+		if (this_info.begin_tag or this_info.end_tag) and (above_info.begin_tag or above_info.end_tag) then
+			return false
+		end
+
+		return true
+	end
+
 	if fields.move_order_dn and idx < #widgets then
-		local tmp = widgets[idx + 1]
-		widgets[idx + 1] = widgets[idx]
-		widgets[idx] = tmp
-		context:set_selected_widget(idx + 1)
+		if may_move_dn() then
+			local tmp = widgets[idx + 1]
+			widgets[idx + 1] = widgets[idx]
+			widgets[idx] = tmp
+			context:set_selected_widget(idx + 1)
+		end
 	end
 
 	if fields.move_order_up and idx > 1 then
-		local tmp = widgets[idx - 1]
-		widgets[idx - 1] = widgets[idx]
-		widgets[idx] = tmp
-		context:set_selected_widget(idx - 1)
+		if may_move_up() then
+			local tmp = widgets[idx - 1]
+			widgets[idx - 1] = widgets[idx]
+			widgets[idx] = tmp
+			context:set_selected_widget(idx - 1)
+		end
 	end
 end
 
@@ -714,6 +785,11 @@ local function handle_move_widget(context, fields)
 
 	local changed = false
 	local target = widgets[idx]
+
+	if not target.x or not target.y then
+		-- Not all widgets exist in space.
+		return
+	end
 
 	local buttons = {
 		move_left = {x=-1, y=0, z=0},

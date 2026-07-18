@@ -309,9 +309,7 @@ formspec.register_widget("container", {
 		return {type="container", x=0, y=0}
 	end,
 
-	requires_pair = function()
-		return "container_end"
-	end,
+	end_tag = "container_end",
 })
 
 
@@ -330,7 +328,14 @@ formspec.register_widget("container_end", {
 		return "container_end[]"
 	end,
 
-	-- No param constructor.
+	make_params = function()
+		return {type="container_end"}
+	end,
+
+	allow_editor_creation = false,
+	allow_editor_deletion = false,
+
+	begin_tag = "container",
 })
 
 

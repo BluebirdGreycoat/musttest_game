@@ -32,7 +32,7 @@ local function highlight_selected_widget(context)
 			selector.h = (target.h or 1) + 0.06
 		end
 
-		local targetpos = idx + 2
+		local targetpos = idx + 1
 		table.insert(context.root.children, targetpos, selector)
 	end
 end
@@ -48,10 +48,9 @@ function formspec.make_editor(pname)
 
 		children = {
 			-- Shows what the currently-edited formspec looks like.
+			{type="container", x=0, y=0},
 			-- DO NOT add any elements between here and TEST GUI container end!
 			-- If you do, you will need to adjust magic numbers elsewhere in the code.
-			{type="container", x=0, y=0},
-			{type="background9", x=0, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
 			{type="container_end", FORMSPEC_ID="testGUIend"},
 
 			-- Editor formspec with controls.
@@ -242,8 +241,14 @@ end
 
 
 
+local function add_default_starting_widgets(root)
+	table.insert(root, {type="background9", x=0, y=0, w=9, h=10, texture="gui_formbg.png", x1=50})
+end
+
+
+
 local function create_new_editor_context(pname, param)
-	return {
+	local root = {
 		original_param = param, -- Original chatcommand param.
 		root = {}, -- A copy of the original GUI table, MINUS the edited GUI.
 		editing_root = {}, -- A flat array of all edited/managed GUI table infos.
@@ -349,6 +354,10 @@ local function create_new_editor_context(pname, param)
 			return params
 		end,
 	}
+
+	add_default_starting_widgets(root.editing_root)
+
+	return root
 end
 
 

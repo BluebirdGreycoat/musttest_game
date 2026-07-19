@@ -54,17 +54,18 @@ function formspec.make_editor(pname)
 			{type="container_end", FORMSPEC_ID="testGUIend"},
 
 			-- Editor formspec with controls.
-			{type="container", x=11, y=0},
-			{type="background9", x=0, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
+			{type="background9", x=11, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
+			{type="container", x=11, y=0, FORMSPEC_ID="EditorFSContainer", visible=true},
+
 			{type="box", x=0.5, y=9.3, w=8, h=0.35, color="#00000055"},
 			{type="label", x=0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 			{type="button", x=0.5, y=8.5, w=2.0, h=0.5, name="logdump", label="Dump To Log", tooltip="Writes the edited GUI parameters to the logfile."},
 
 			-- List of current/active parameters.
-			{type="container", x=0.5, y=0.4},
+			{type="container", x=0.5, y=0.4, visible=true},
 			{type="label", x=0, y=0, w=4.5, h=0.35, text="Parameter List", FORMSPEC_ID="paramslistLabel"},
 			{type="textlist", x=0, y=0.4, w=4.5, h=3.5, name="paramslist", FORMSPEC_ID="paramslist", tooltip="This shows the list of current widget parameters."},
-			{type="field", x=0, y=4.4, w=4.5, h=0.4, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
+			{type="field", x=0, y=4.4, w=4.5, h=0.4, visible=true, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
 			{type="button", x=0, y=5.0, w=2.5, h=0.5, name="add_widget", label="Add New Widget"},
 			{type="container_end"},
 

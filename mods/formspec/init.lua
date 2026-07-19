@@ -62,10 +62,44 @@ local function process_element_spec(in_data, out_lines)
 		return
 	end
 
+	-- Keep track of nesting level as we walk the flat array table.
+	local nesting_level = {}
+
+	local function all_parents_visible()
+		for _, info in ipairs(nesting_level) do
+			if info.visible == false then
+				return false
+			end
+		end
+		return true
+	end
+
 	for _, info in ipairs(in_data.children) do
 		local make = info.type and formspec.WIDGET_TYPES[info.type] and formspec.WIDGET_TYPES[info.type].make
 
-		if make and (info.visible == true or info.visible == nil) then
+		if not make then
+			goto skip_me
+		end
+
+		local was_invisible = false
+		local is_container_tag = false
+
+		if info.type == "container" then
+			table.insert(nesting_level, info)
+			is_container_tag = true
+		elseif info.type == "container_end" then
+			was_invisible = not all_parents_visible()
+			table.remove(nesting_level)
+			is_container_tag = true
+		end
+
+		-- Skip adding end tag if its start tag was invisible.
+		-- This keeps us balanced.
+		if not all_parents_visible() or (was_invisible and is_container_tag) then
+			goto skip_me
+		end
+
+		if info.visible or info.visible == nil then
 			-- Create base GUI element from factory function.
 			local s = make(info)
 
@@ -86,6 +120,8 @@ local function process_element_spec(in_data, out_lines)
 			-- Add to (flat) array of GUI elements.
 			table.insert(out_lines, s)
 		end
+
+		::skip_me::
 	end
 end
 

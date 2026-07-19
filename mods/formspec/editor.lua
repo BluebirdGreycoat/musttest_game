@@ -204,6 +204,21 @@ end
 
 
 
+local function populate_widget_list2(context)
+	local widgets = context:get_editing_root()
+	local widgetlist = context:get_control_by_name("StyleableWidgetList")
+	local itemlist = {}
+
+	for _, v in ipairs(widgets) do
+		table.insert(itemlist, (v.type .. " [" .. (v.name or "") .. "]"))
+	end
+
+	widgetlist.itemlist = itemlist
+	widgetlist.selected = context:get_selected_widget()
+end
+
+
+
 local function highlight_selected_widget(context)
 	-- Show a bright box around the currently selected widget.
 	local idx = context:get_selected_widget()
@@ -259,6 +274,24 @@ local function populate_parameters_list(context)
 	if context:get_selected_widget() then
 		context:get_control_by_id("paramslistLabel").text = "Parameter List of Selected Widget"
 	end
+end
+
+
+
+local function populate_parameters_list2(context)
+	local paramlist = context:get_control_by_name("ActiveStyleParameters")
+	local itemlist = {}
+
+	for k, v in ipairs(context.current_style_params) do
+		local value = v.value
+		if type(v.value) == "string" then
+			value = "\"" .. v.value .. "\""
+		end
+		table.insert(itemlist, v.param .. " = " .. tostring(value))
+	end
+
+	paramlist.itemlist = itemlist
+	paramlist.selected = context:get_selected_style_param()
 end
 
 
@@ -395,6 +428,16 @@ local function make_editor(pname)
 
 			-- Styling.
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer4"},
+			{type="container", x=0.5, y=0.4},
+			{h=0.35, text="Style Parameters", type="label", w=4.5, x=0, y=0},
+			{h=3.5, name="ActiveStyleParameters", type="textlist", w=4.5, x=0, y=0.4},
+			{close_on_enter=false, default="", h=0.4, label="Edit Parameter:", name="EditStyleParameter", type="field", w=4.5, x=0, y=4.4, default=context.default_edit_parameter},
+			{type="container_end"},
+			{type="container", x=5.5, y=0.4},
+			{h=0.35, text="Constructed Widgets", type="label", w=3, x=0, y=0},
+			{h=4.4, name="StyleableWidgetList", type="textlist", w=3, x=0, y=0.4},
+			{type="container_end"},
+			{h=3.28, label="Style Docs", name="textarea1", text="", type="textarea", w=8, x=0.5, y=5.7},
 			{type="container_end"},
 		},
 	}
@@ -414,8 +457,10 @@ local function make_editor(pname)
 	sync_stepsize_selectors(context)
 	chose_tabheader_page(context)
 	populate_parameters_list(context)
+	populate_parameters_list2(context)
 	populate_widget_library(context)
 	populate_widget_list(context)
+	populate_widget_list2(context)
 	build_active_formstring_preview(context)
 	populate_savefile_list(context)
 	populate_saveform_name_field(context)
@@ -482,6 +527,7 @@ local function create_new_editor_context(pname, param)
 		root = {}, -- A copy of the original GUI table, MINUS the edited GUI.
 		editing_root = {}, -- A flat array of all edited/managed GUI table infos.
 		current_widget_params = {}, -- Array of {param="key", value=<val>} subtables.
+		current_style_params = {},
 		known_widget_names = {}, -- Array of registered widget names.
 		last_error = "",
 		default_edit_parameter = "",
@@ -534,6 +580,10 @@ local function create_new_editor_context(pname, param)
 			return self.selected_active_param
 		end,
 
+		get_selected_style_param = function(self)
+			return self.selected_active_style
+		end,
+
 		set_selected_widget = function(self, idx)
 			-- Negative values select from the end.
 			if idx and idx < 0 then
@@ -562,6 +612,20 @@ local function create_new_editor_context(pname, param)
 			self.selected_active_param = nil
 		end,
 
+		set_selected_style_param = function(self, idx)
+			-- Negative values select from the end.
+			if idx and idx < 0 then
+				idx = #self.current_style_params + idx + 1
+			end
+
+			if idx and idx >= 1 and idx <= #self.current_style_params then
+				self.selected_active_style = idx
+				return
+			end
+
+			self.selected_active_style = nil
+		end,
+
 		set_editing_parameters = function(self, params)
 			if not params or not next(params) then
 				self.current_widget_params = {}
@@ -578,6 +642,21 @@ local function create_new_editor_context(pname, param)
 			table.sort(newlist, priority_sort)
 
 			self.current_widget_params = newlist
+		end,
+
+		set_editing_style_parameters = function(self, params)
+			if not params or not next(params) then
+				self.current_style_params = {}
+				return
+			end
+
+			local newlist = {}
+
+			for k, v in pairs(params) do
+				table.insert(newlist, {param=k, value=v})
+			end
+
+			self.current_style_params = newlist
 		end,
 
 		get_control_by_name = function(self, name)
@@ -605,6 +684,17 @@ local function create_new_editor_context(pname, param)
 
 			-- Convert array of subtables to regular widget description table (dict).
 			for k, v in ipairs(self.current_widget_params or {}) do
+				params[v.param] = v.value
+			end
+
+			return params
+		end,
+
+		get_widget_style_params = function(self)
+			local params = {}
+
+			-- Convert array of subtables to regular widget description table (dict).
+			for k, v in ipairs(self.current_style_params or {}) do
 				params[v.param] = v.value
 			end
 
@@ -764,6 +854,8 @@ local function handle_add_widget(context, fields)
 
 	-- Update editing parameters (we may have auto-genned a name) before validating.
 	context:set_editing_parameters(params)
+	context:set_editing_style_parameters(params.style) -- Usually nil.
+
 	if not validate_active_params(context) then
 		return
 	end
@@ -831,10 +923,13 @@ local function handle_param_edit(context, fields)
 	if fields.key_enter_field ~= "paramfield" then
 		return
 	end
+	if type(fields["paramfield"]) ~= "string" then
+		return
+	end
 
 	context:set_error("What are you doing?")
 	context.default_edit_parameter = nil
-	local tokens = fields.paramfield:split("=")
+	local tokens = fields["paramfield"]:split("=")
 
 	for i=1, #tokens, 1 do
 		tokens[i] = tokens[i]:trim()
@@ -923,6 +1018,106 @@ end
 
 
 
+local function handle_style_param_edit(context, fields)
+	if fields.key_enter_field ~= "EditStyleParameter" then
+		return
+	end
+	if type(fields["EditStyleParameter"]) ~= "string" then
+		return
+	end
+
+	context:set_error("What are you doing?")
+	context.default_edit_parameter = nil
+	local tokens = fields["EditStyleParameter"]:split("=")
+
+	for i=1, #tokens, 1 do
+		tokens[i] = tokens[i]:trim()
+	end
+
+	if not (#tokens == 2 and tokens[1]:len() > 0 and tokens[2]:len() > 0) then
+		return
+	end
+
+	local function FIND(key)
+		for k, v in ipairs(context.current_style_params) do
+			if v.param == key then
+				return k
+			end
+		end
+	end
+
+	-- Input 'val' is always a string.
+	local function TOTYPE(val)
+		if tonumber(val) then
+			return tonumber(val)
+		elseif val == "true" then
+			return true
+		elseif val == "false" then
+			return false
+		elseif val == "\"\"" then
+			return ""
+		end
+
+		-- Strip quotes if user supplied them.
+		if val:sub(1, 1) == "\"" and val:sub(#val) == "\"" then
+			return val:sub(2, val:len() - 1)
+		end
+
+		-- Val is a string and should remain a string.
+		return val
+	end
+
+	local pos = FIND(tokens[1])
+
+	if pos then
+		context:set_selected_style_param(pos)
+
+		if not context:get_selected_widget() or tokens[1] ~= "type" then
+			if tokens[2] ~= "nil" then
+				context.current_style_params[pos].value = TOTYPE(tokens[2])
+				context:set_message("Updated parameter.")
+				context:set_selected_style_param(pos)
+			else
+				table.remove(context.current_style_params, pos)
+				context:set_message("Parameter removed from table.")
+				context:set_selected_style_param(nil)
+			end
+		else
+			context:set_selected_style_param(nil)
+			context:set_error("Cannot change type of existing created widget.")
+			return
+		end
+	else
+		if tokens[2] ~= "nil" then
+			table.insert(context.current_style_params, {param=tokens[1], value=TOTYPE(tokens[2])})
+			context:set_selected_style_param(-1)
+			context:set_message("Added new parameter.")
+		else
+			context:set_selected_style_param(nil)
+			context:set_error("Parameter doesn't exist; nothing to be done.")
+			return
+		end
+	end
+
+	-- Update parameters of the currently selected active widget.
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		return
+	end
+
+	local newparams = context:get_widget_style_params()
+	if next(newparams) then
+		widgets[idx].style = newparams
+	else
+		widgets[idx].style = nil
+	end
+end
+
+
+
+-- Selecting a widget from the widget library.
 local function handle_widget_select(context, fields)
 	if not fields.widgetlist then
 		return
@@ -961,12 +1156,13 @@ end
 
 
 
+-- Selecting a widget from the list of already-created widgets.
 local function handle_active_select(context, fields)
-	if not fields.activewidgets then
+	if not fields.activewidgets and not fields.StyleableWidgetList then
 		return
 	end
 
-	local tab = minetest.explode_textlist_event(fields.activewidgets)
+	local tab = minetest.explode_textlist_event(fields.activewidgets or fields.StyleableWidgetList)
 	local idx = tab.index
 	local widgets = context:get_editing_root()
 
@@ -974,6 +1170,7 @@ local function handle_active_select(context, fields)
 	if tab.type == "CHG" then
 		context:set_selected_widget(nil)
 		context:set_editing_parameters(nil)
+		context:set_editing_style_parameters(nil)
 		return
 	end
 
@@ -982,6 +1179,7 @@ local function handle_active_select(context, fields)
 	end
 
 	context:set_editing_parameters(widgets[idx])
+	context:set_editing_style_parameters(widgets[idx].style)
 	context:set_selected_widget(idx)
 	context:set_message("Selected widget " .. idx .. " (" .. widgets[idx].type .. " [" .. (widgets[idx].name or "") .. "]).")
 end
@@ -1464,6 +1662,7 @@ local function handle_live_select(context, fields)
 			local idx = entry.index
 			context:set_selected_widget(idx)
 			context:set_editing_parameters(widgets[idx])
+			context:set_editing_style_parameters(widgets[idx].style)
 			context:set_message("Selected widget " .. idx .. " (" .. widgets[idx].type .. " [" .. (widgets[idx].name or "") .. "]).")
 			return
 		end
@@ -1539,6 +1738,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	end
 
 	handle_param_edit(context, fields)
+	handle_style_param_edit(context, fields)
 	handle_param_select(context, fields)
 	handle_widget_select(context, fields)
 	handle_active_select(context, fields)

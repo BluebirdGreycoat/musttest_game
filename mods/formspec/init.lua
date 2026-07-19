@@ -31,8 +31,11 @@ local function get_styles(widget, params)
 		local props2 = {}
 
 		for k, v in pairs(params.style) do
-			table.insert(props1, k .. "=" .. v)
-			table.insert(props2, k .. "=") -- Resetters.
+			local t = type(v) -- Ignore unsupported types.
+			if t == "string" or t == "boolean" or t == "number" then
+				table.insert(props1, k .. "=" .. tostring(v))
+				table.insert(props2, k .. "=") -- Resetters.
+			end
 		end
 
 		local propstr1 = table.concat(props1, ";")

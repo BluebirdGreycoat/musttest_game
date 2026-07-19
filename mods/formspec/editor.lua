@@ -85,11 +85,11 @@ function formspec.make_editor(pname)
 			-- Editor formspec with controls.
 			{type="background9", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
 			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling"}, current_tab=context.current_form_tab},
+			{type="box", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, color="#00000055"},
+			{type="label", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 
 			-- Widget panel.
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer2"},
-			{type="box", x=0.5, y=9.3, w=8, h=0.35, color="#00000055"},
-			{type="label", x=0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 			{type="button", x=0.5, y=8.5, w=2.0, h=0.5, name="logdump", label="Dump To Log", tooltip="Writes the edited GUI parameters to the logfile."},
 
 			-- List of current/active parameters.
@@ -175,6 +175,17 @@ function formspec.make_editor(pname)
 
 			-- Save/load.
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer3"},
+			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
+			{h=0.33, text="Saved Formspecs", type="label", w=7.96, x=0.5, y=0.4},
+			{h=3, name="SavedFormspecList", type="textlist", w=8, x=0.5, y=0.8},
+			{h=0.5, label="Load Selected", name="LoadSelectedFormspec", type="button", w=2, x=0.5, y=4},
+			{h=0.3, text="Selected: <file>", type="label", w=5.85, x=2.6, y=4.1},
+			{color="#00000055", h=0.1, type="box", w=8, x=0.5, y=4.72},
+			{h=0.33, text="Active Formstring (Preview)", type="label", w=7.96, x=0.5, y=5},
+			{h=2.8, label="", name="ActiveFormstringDisplay", text="", type="textarea", w=8, x=0.5, y=5.5},
+			{h=0.5, label="Save Formspec", name="SaveActiveFormspec", type="button", w=2, x=0.5, y=8.5},
+			{h=0.3, text="Name:", type="label", w=1, x=4.5, y=8.59},
+			{close_on_enter=false, default="", h=0.5, label="", name="SaveNameEntry", type="field", w=3, x=5.5, y=8.5},
 			{type="container_end"},
 
 			-- Styling.
@@ -557,11 +568,6 @@ local function validate_active_params(context, replace_index)
 		end
 	end
 
-	if not params.name or params.name == "" then
-		context:set_error("Name is required.")
-		return
-	end
-
 	-- Make sure we're not adding GUI elements with duplicate or reserved names.
 	-- That will break stuff.
 	if params.name then
@@ -585,6 +591,10 @@ local function validate_active_params(context, replace_index)
 	for k, v in pairs(wanted_params) do
 		if type(params[k]) ~= type(v) then
 			context:set_error("Missing required parameter, or wrong parameter type.")
+			return
+		end
+		if k == "name" and params[k] == "" then
+			context:set_error("Widget requires non-empty, unique name.")
 			return
 		end
 	end
@@ -1209,7 +1219,7 @@ end
 
 
 
-local function handle_logdump(context, fields)
+local function handle_logdump(pname, context, fields)
 	if not fields.logdump then
 		return
 	end
@@ -1286,7 +1296,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_step_selector(context, fields)
 	handle_formsize_step_selector(context, fields)
 	handle_live_select(context, fields)
-	handle_logdump(context, fields)
+	handle_logdump(pname, context, fields)
 	handle_switch_editor_tab(context, fields)
 	handle_size_form(context, fields)
 

@@ -122,6 +122,19 @@ end
 
 
 
+local function populate_saveform_name_field(context)
+	if context.savefile_selection then
+		local idx = context.savefile_selection
+		local list = context.savefile_list or {}
+		if idx and idx >= 1 and idx <= #list then
+			local name = list[idx].name
+			context:get_control_by_name("SaveNameEntry").default = name
+		end
+	end
+end
+
+
+
 local function sync_stepsize_selectors(context)
 	if context.step_size_selector == 1 then
 		context:get_control_by_name("stepsizeSelector1").selected = true
@@ -375,7 +388,8 @@ local function make_editor(pname)
 			{h=0.33, text="Active Formstring (Preview)", type="label", w=7.96, x=0.5, y=5},
 			{h=2.8, label="", name="ActiveFormstringDisplay", text="", type="textarea", w=8, x=0.5, y=5.5},
 			{h=0.5, label="Save Formspec", name="SaveActiveFormspec", type="button", w=2, x=0.5, y=8.5},
-			{h=0.3, text="Name:", type="label", w=1, x=4.5, y=8.59},
+			{type="checkbox", name="AllowOverwrite", x=2.65, y=8.75, label="Overwrite", selected=context.savefile_overwrite_enabled},
+			{h=0.3, text="Name:", type="label", w=1, x=4.7, y=8.59},
 			{close_on_enter=false, default="", h=0.5, label="", name="SaveNameEntry", type="field", w=3, x=5.5, y=8.5},
 			{type="container_end"},
 
@@ -404,6 +418,7 @@ local function make_editor(pname)
 	populate_widget_list(context)
 	build_active_formstring_preview(context)
 	populate_savefile_list(context)
+	populate_saveform_name_field(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	build_test_gui(context)
@@ -1188,9 +1203,11 @@ local function handle_load_formspec(context, fields)
 		if tab.type == "DCL" and index >= 1 and index <= #infos then
 			local name = infos[index].name
 			context.savefile_selection = index
+			context.savefile_overwrite_enabled = nil
 			context:set_message("Selected formspec: " .. name)
 		else
 			context.savefile_selection = nil
+			context.savefile_overwrite_enabled = nil
 		end
 
 		return
@@ -1221,6 +1238,7 @@ local function handle_load_formspec(context, fields)
 	context:set_form_geometry(formtable.size)
 	context.editing_root = formtable.children
 	context:set_message("Loaded formspec: " .. name)
+	context.savefile_overwrite_enabled = nil
 end
 
 
@@ -1244,6 +1262,7 @@ local function handle_delete_formspec(context, fields)
 
 	context:set_message("Permanently deleted formspec: " .. name)
 	context.savefile_selection = nil
+	context.savefile_overwrite_enabled = nil
 end
 
 
@@ -1275,11 +1294,21 @@ local function handle_save_formspec(context, fields)
 		return
 	end
 
+	local key = "GUIspec:" .. name
+
+	if not context.savefile_overwrite_enabled then
+		if formspec.MOD_STORAGE:contains(key) then
+			context:set_error("Refusing to overwrite existing data.")
+			return
+		end
+	end
+
 	-- B64 solves all our storage safety problems.
 	local serialized = minetest.encode_base64(minetest.serialize(formtable))
-	formspec.MOD_STORAGE:set_string("GUIspec:" .. name, serialized)
+	formspec.MOD_STORAGE:set_string(key, serialized)
 
 	context.savefile_selection = nil
+	context.savefile_overwrite_enabled = nil
 	context:set_message("Saved formspec: " .. name)
 end
 
@@ -1527,6 +1556,10 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_save_formspec(context, fields)
 	handle_load_formspec(context, fields)
 	handle_delete_formspec(context, fields)
+
+	if fields.AllowOverwrite then
+		context.savefile_overwrite_enabled = toboolean(fields.AllowOverwrite)
+	end
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

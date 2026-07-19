@@ -164,10 +164,32 @@ local function highlight_selected_widget(context)
 			selector.h = (target.h or 1) + 0.06
 		end
 
-		-- Note: never added the selector widget into the editing root,
+		-- Note: never add the selector widget into the editing root,
 		-- otherwise it will end up in saves and mess other stuff up!
 		local targetpos = idx + begpos
 		table.insert(context.root.children, targetpos, selector)
+	end
+end
+
+
+
+local function populate_parameters_list(context)
+	local paramlist = context:get_control_by_id("paramslist")
+	local itemlist = {}
+
+	for k, v in ipairs(context.current_widget_params) do
+		local value = v.value
+		if type(v.value) == "string" then
+			value = "\"" .. v.value .. "\""
+		end
+		table.insert(itemlist, v.param .. " = " .. tostring(value))
+	end
+
+	paramlist.itemlist = itemlist
+	paramlist.selected = context:get_selected_param()
+
+	if context:get_selected_widget() then
+		context:get_control_by_id("paramslistLabel").text = "Parameter List of Selected Widget"
 	end
 end
 
@@ -309,39 +331,11 @@ local function make_editor(pname)
 
 	context.root = NEWROOT
 
-	local function FIND(name)
-		for k, v in ipairs(context.root.children) do
-			if v.FORMSPEC_ID == name then
-				return k
-			end
-		end
-		return nil
-	end
-
+	update_form_geometry_display(context)
 	update_error_status(context)
 	sync_stepsize_selectors(context)
 	chose_tabheader_page(context)
-
-	do
-		local pos = FIND("paramslist")
-		local itemlist = {}
-
-		for k, v in ipairs(context.current_widget_params) do
-			local value = v.value
-			if type(v.value) == "string" then
-				value = "\"" .. v.value .. "\""
-			end
-			table.insert(itemlist, v.param .. " = " .. tostring(value))
-		end
-
-		context.root.children[pos].itemlist = itemlist
-		context.root.children[pos].selected = context:get_selected_param()
-
-		if context:get_selected_widget() then
-			context.root.children[FIND("paramslistLabel")].text = "Parameter List of Selected Widget"
-		end
-	end
-
+	populate_parameters_list(context)
 	populate_widget_library(context)
 	populate_widget_list(context)
 
@@ -352,9 +346,6 @@ local function make_editor(pname)
 	-- This needs to be done *after* all the test GUI widgets are added to the
 	-- display, because the selection box is injected into the widget list.
 	highlight_selected_widget(context)
-
-	-- Set form geometry labels.
-	update_form_geometry_display(context)
 
 	return formspec.create_formspec_from_table(context.root)
 end

@@ -3,6 +3,9 @@
 formspec.EDITOR_CONTEXTS = formspec.EDITOR_CONTEXTS or {}
 formspec.SAVED_CONTEXTS = formspec.SAVED_CONTEXTS or {}
 
+local MIN_FORM_WIDTH = 3
+local MIN_FORM_HEIGHT = 2
+
 
 
 local function highlight_selected_widget(context)
@@ -10,6 +13,7 @@ local function highlight_selected_widget(context)
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
 	local selector = {type="box", x=0, y=0, w=1, h=1, color="#ff0000ff"}
+	local _, begpos = context:get_control_by_id("testGUIbegin")
 
 	if idx then
 		local target = widgets[idx]
@@ -32,8 +36,27 @@ local function highlight_selected_widget(context)
 			selector.h = (target.h or 1) + 0.06
 		end
 
-		local targetpos = idx + 1
+		local targetpos = idx + begpos
 		table.insert(context.root.children, targetpos, selector)
+	end
+end
+
+
+
+local function show_form_borders(context)
+	local _, idx = context:get_control_by_id("testGUIbegin")
+	local g = context:get_form_geometry()
+	local t = 0.02
+
+	local boxes = {
+		{x=0, y=0, w=g.x, h=t},
+		{x=0, y=0, w=t, h=g.y},
+		{x=g.x-t, y=0, w=t, h=g.y},
+		{x=0, y=g.y-t, w=g.x, h=t},
+	}
+
+	for _, v in ipairs(boxes) do
+		table.insert(context.root.children, idx, {type="box", x=v.x, y=v.y, w=v.w, h=v.h, color="#00ff00ff"})
 	end
 end
 
@@ -43,29 +66,37 @@ function formspec.make_editor(pname)
 	local context = formspec.EDITOR_CONTEXTS[pname]
 	if not context then return "" end
 
+	local TEST_SIZE = table.copy(context.FormGeom)
+	local TEST_PAD = 0.5
+	local INIT_SIZE = table.copy(context.FormGeom)
+	INIT_SIZE.x = INIT_SIZE.x + 9 + TEST_PAD
+	INIT_SIZE.y = math.max(10, INIT_SIZE.y)
+
 	local NEWROOT = {
-		size = {x=20, y=10},
+		size = INIT_SIZE,
 
 		children = {
 			-- Shows what the currently-edited formspec looks like.
-			{type="container", x=0, y=0},
+			{type="container", x=0, y=0, FORMSPEC_ID="testGUIbegin"},
 			-- DO NOT add any elements between here and TEST GUI container end!
 			-- If you do, you will need to adjust magic numbers elsewhere in the code.
 			{type="container_end", FORMSPEC_ID="testGUIend"},
 
 			-- Editor formspec with controls.
-			{type="background9", x=11, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
-			{type="container", x=11, y=0, FORMSPEC_ID="EditorFSContainer", visible=true},
+			{type="background9", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
+			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling"}, current_tab=context.current_form_tab},
 
+			-- Widget panel.
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer2"},
 			{type="box", x=0.5, y=9.3, w=8, h=0.35, color="#00000055"},
 			{type="label", x=0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 			{type="button", x=0.5, y=8.5, w=2.0, h=0.5, name="logdump", label="Dump To Log", tooltip="Writes the edited GUI parameters to the logfile."},
 
 			-- List of current/active parameters.
-			{type="container", x=0.5, y=0.4, visible=true},
+			{type="container", x=0.5, y=0.4},
 			{type="label", x=0, y=0, w=4.5, h=0.35, text="Parameter List", FORMSPEC_ID="paramslistLabel"},
 			{type="textlist", x=0, y=0.4, w=4.5, h=3.5, name="paramslist", FORMSPEC_ID="paramslist", tooltip="This shows the list of current widget parameters."},
-			{type="field", x=0, y=4.4, w=4.5, h=0.4, visible=true, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
+			{type="field", x=0, y=4.4, w=4.5, h=0.4, name="paramfield", label="Edit Parameter:", close_on_enter=false, tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", default=context.default_edit_parameter},
 			{type="button", x=0, y=5.0, w=2.5, h=0.5, name="add_widget", label="Add New Widget"},
 			{type="container_end"},
 
@@ -112,10 +143,42 @@ function formspec.make_editor(pname)
 
 			-- Size checkboxes.
 			{type="container", x=2.3, y=6.95},
-			{type="checkbox", name="stepsizeSelector1", x=0, y=0, label="0.1", selected=false},
-			{type="checkbox", name="stepsizeSelector2", x=0, y=0.35, label="0.01", selected=false},
+			{type="checkbox", name="stepsizeSelector1", x=0, y=0, label="0.1"},
+			{type="checkbox", name="stepsizeSelector2", x=0, y=0.35, label="0.01"},
+			{type="container_end"},
 			{type="container_end"},
 
+			-- Form controls.
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer1"},
+
+			{type="container", x=2.3, y=0.4+0.53},
+			{type="checkbox", name="FormStepSizeSelector1", x=0, y=0, label="0.1"},
+			{type="checkbox", name="FormStepSizeSelector2", x=0, y=0.35, label="0.01"},
+			{type="label", x=0, y=0.6, w=5, h=0.35, text="", FORMSPEC_ID="FormWLabel"},
+			{type="label", x=0, y=0.6+0.35, w=5, h=0.35, text="", FORMSPEC_ID="FormHLabel"},
+			{type="container_end"},
+
+			-- Form size controls.
+			{type="container", x=0.5, y=0.4},
+			{type="label", x=0, y=0, w=3, h=0.35, text="Form Dimensions"},
+			{h=0.5, move_step=0.1, label="▲", name="FORM_size_up", type="button", w=0.5, x=0.5, y=0+0.38},
+			{h=0.5, move_step=0.1, label="▼", name="FORM_size_down", type="button", w=0.5, x=0.5, y=1+0.38},
+			{h=0.5, move_step=0.1, label="◀", name="FORM_size_left", type="button", w=0.5, x=0, y=0.5+0.38},
+			{h=0.5, move_step=0.1, label="▶", name="FORM_size_right", type="button", w=0.5, x=1, y=0.5+0.38},
+			{h=0.5, move_step=0.5, label="⇓", name="FORM_size_down2", type="button", w=0.5, x=1, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇑", name="FORM_size_up2", type="button", w=0.5, x=0, y=0+0.38},
+			{h=0.5, move_step=0.5, label="⇐", name="FORM_size_left2", type="button", w=0.5, x=0, y=1+0.38},
+			{h=0.5, move_step=0.5, label="⇒", name="FORM_size_right2", type="button", w=0.5, x=1, y=0+0.38},
+			{type="container_end"},
+
+			{type="container_end"},
+
+			-- Save/load.
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer3"},
+			{type="container_end"},
+
+			-- Styling.
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer4"},
 			{type="container_end"},
 		},
 	}
@@ -139,6 +202,39 @@ function formspec.make_editor(pname)
 		context:get_control_by_name("stepsizeSelector1").selected = true
 	elseif context.step_size_selector == 2 then
 		context:get_control_by_name("stepsizeSelector2").selected = true
+	end
+
+	if context.formsize_step_size_selector == 1 then
+		context:get_control_by_name("FormStepSizeSelector1").selected = true
+	elseif context.formsize_step_size_selector == 2 then
+		context:get_control_by_name("FormStepSizeSelector2").selected = true
+	end
+
+	if context.current_form_tab == 1 then
+		-- Form controls.
+		context:get_control_by_id("EditorFSContainer1").visible = true
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+		show_form_borders(context)
+	elseif context.current_form_tab == 2 then
+		-- Widget editor.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = true
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+	elseif context.current_form_tab == 3 then
+		-- Save/load.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = true
+		context:get_control_by_id("EditorFSContainer4").visible = false
+	elseif context.current_form_tab == 4 then
+		-- Syling.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = true
 	end
 
 	do
@@ -194,6 +290,10 @@ function formspec.make_editor(pname)
 			pos = pos + 1 -- Insert items in order.
 		end
 	end
+
+	local FormGeom = context:get_form_geometry()
+	context:get_control_by_id("FormWLabel").text = "X: " .. FormGeom.x
+	context:get_control_by_id("FormHLabel").text = "Y: " .. FormGeom.y
 
 	-- Show a bright box around the currently selected widget.
 	-- This needs to be done *after* all the test GUI widgets are added to the
@@ -258,6 +358,19 @@ local function create_new_editor_context(pname, param)
 		last_error = "",
 		default_edit_parameter = "",
 		step_size_selector = 1,
+		formsize_step_size_selector = 1,
+		current_form_tab = 2,
+		FormGeom = {x=9, y=10},
+
+		get_form_geometry = function(self)
+			return {x=self.FormGeom.x, y=self.FormGeom.y}
+		end,
+
+		set_form_geometry = function(self, geom)
+			if geom.x < MIN_FORM_WIDTH then geom.x = MIN_FORM_WIDTH end
+			if geom.y < MIN_FORM_HEIGHT then geom.y = MIN_FORM_HEIGHT end
+			self.FormGeom = geom
+		end,
 
 		set_error = function(self, msg)
 			self.last_error = minetest.get_color_escape_sequence("#ff0000ff") .. msg
@@ -358,6 +471,14 @@ local function create_new_editor_context(pname, param)
 
 			return params
 		end,
+
+		get_widget_by_type = function(self, typename)
+			for index, info in ipairs(self:get_editing_root()) do
+				if info.type == typename then
+					return info, index
+				end
+			end
+		end,
 	}
 
 	add_default_starting_widgets(root.editing_root)
@@ -427,6 +548,11 @@ local function validate_active_params(context, replace_index)
 	if params.name then
 		if params.name:find("^key_") then
 			context:set_error("Cannot create widget with engine-reserved name.")
+			return
+		end
+
+		if not params.name:find("^[_%w]+$") then
+			context:set_error("Invalid name.")
 			return
 		end
 	end
@@ -918,49 +1044,130 @@ end
 
 
 
+local function handle_size_form(context, fields)
+	local buttons = {
+		FORM_size_left = {x=-1, y=0, z=0},
+		FORM_size_right = {x=1, y=0, z=0},
+		FORM_size_up = {x=0, y=-1, z=0},
+		FORM_size_down = {x=0, y=1, z=0},
+		FORM_size_left2 = {x=-1, y=0, z=0},
+		FORM_size_right2 = {x=1, y=0, z=0},
+		FORM_size_up2 = {x=0, y=-1, z=0},
+		FORM_size_down2 = {x=0, y=1, z=0},
+	}
+
+	local MIN_W = MIN_FORM_WIDTH
+	local MIN_H = MIN_FORM_HEIGHT
+
+	local target = context:get_form_geometry()
+
+	for fieldname, info in pairs(buttons) do
+		if fields[fieldname] then
+			local step = context:get_control_by_name(fieldname).move_step
+
+			if context.formsize_step_size_selector == 2 and step < 0.5 then
+				step = 0.01
+			end
+
+			local curpos = {x=target.x, y=target.y, z=0}
+			local newpos = vector.add(vector.multiply(info, step), curpos)
+
+			target.x = newpos.x
+			target.y = newpos.y
+
+			if target.x < MIN_W then target.x = MIN_W end
+			if target.y < MIN_H then target.y = MIN_H end
+
+			-- Round to nearest hundredths.
+			target.x = math.round(target.x * 100) / 100
+			target.y = math.round(target.y * 100) / 100
+
+			context:set_form_geometry(target)
+			local actgeom = context:get_form_geometry()
+
+			-- If a background is available, we can use that for visual feedback.
+			local widget = context:get_widget_by_type("background9")
+			if widget then
+				widget.x = 0
+				widget.y = 0
+				widget.w = actgeom.x
+				widget.h = actgeom.y
+			end
+
+			break
+		end
+	end
+end
+
+
+
+local function toboolean(str)
+	if type(str) == "boolean" then
+		return str
+	end
+
+	if type(str) == "string" then
+		if str == "true" then return true end
+		if str == "false" then return false end
+	end
+
+	if type(str) == "number" then
+		if str == 0 then return false end
+		return true
+	end
+
+	return false
+end
+
+
+
+local function handle_binary_selector_ex(context, fields, name1, name2)
+	if fields[name1] then
+		local bs = fields[name1]
+		if toboolean(bs) then
+			context:get_control_by_name(name1).selected = true
+			context:get_control_by_name(name2).selected = false
+			return 1
+		else
+			context:get_control_by_name(name1).selected = false
+			context:get_control_by_name(name2).selected = true
+			return 2
+		end
+	end
+
+	if fields[name2] then
+		local bs = fields[name2]
+		if toboolean(bs) then
+			context:get_control_by_name(name1).selected = false
+			context:get_control_by_name(name2).selected = true
+			return 2
+		else
+			context:get_control_by_name(name1).selected = true
+			context:get_control_by_name(name2).selected = false
+			return 1
+		end
+	end
+end
+
+
+
 local function handle_step_selector(context, fields)
-	local function toboolean(str)
-		if type(str) == "boolean" then
-			return str
-		end
-
-		if type(str) == "string" then
-			if str == "true" then return true end
-			if str == "false" then return false end
-		end
-
-		if type(str) == "number" then
-			if str == 0 then return false end
-			return true
-		end
-
-		return false
+	local val = handle_binary_selector_ex(context, fields, "stepsizeSelector1", "stepsizeSelector2")
+	if val == 1 then
+		context.step_size_selector = 1
+	elseif val == 2 then
+		context.step_size_selector = 2
 	end
+end
 
-	if fields.stepsizeSelector1 then
-		local bs = fields.stepsizeSelector1
-		if toboolean(bs) then
-			context.step_size_selector = 1
-			context:get_control_by_name("stepsizeSelector1").selected = true
-			context:get_control_by_name("stepsizeSelector2").selected = false
-		else
-			context.step_size_selector = 2
-			context:get_control_by_name("stepsizeSelector1").selected = false
-			context:get_control_by_name("stepsizeSelector2").selected = true
-		end
-	end
 
-	if fields.stepsizeSelector2 then
-		local bs = fields.stepsizeSelector2
-		if toboolean(bs) then
-			context.step_size_selector = 2
-			context:get_control_by_name("stepsizeSelector1").selected = false
-			context:get_control_by_name("stepsizeSelector2").selected = true
-		else
-			context.step_size_selector = 1
-			context:get_control_by_name("stepsizeSelector1").selected = true
-			context:get_control_by_name("stepsizeSelector2").selected = false
-		end
+
+local function handle_formsize_step_selector(context, fields)
+	local val = handle_binary_selector_ex(context, fields, "FormStepSizeSelector1", "FormStepSizeSelector2")
+	if val == 1 then
+		context.formsize_step_size_selector = 1
+	elseif val == 2 then
+		context.formsize_step_size_selector = 2
 	end
 end
 
@@ -1023,6 +1230,22 @@ end
 
 
 
+local function handle_switch_editor_tab(context, fields)
+	if fields.EditorTabs then
+		if fields.EditorTabs == "1" then
+			context.current_form_tab = 1
+		elseif fields.EditorTabs == "2" then
+			context.current_form_tab = 2
+		elseif fields.EditorTabs == "3" then
+			context.current_form_tab = 3
+		elseif fields.EditorTabs == "4" then
+			context.current_form_tab = 4
+		end
+	end
+end
+
+
+
 function formspec.on_player_receive_fields(player, formname, fields)
 	if formname ~= "formspec:editor" then
 		return
@@ -1054,8 +1277,11 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_move_widget(context, fields)
 	handle_size_widget(context, fields)
 	handle_step_selector(context, fields)
+	handle_formsize_step_selector(context, fields)
 	handle_live_select(context, fields)
 	handle_logdump(context, fields)
+	handle_switch_editor_tab(context, fields)
+	handle_size_form(context, fields)
 
 	-- No need to call other field handlers.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

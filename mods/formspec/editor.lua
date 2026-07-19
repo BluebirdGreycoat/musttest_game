@@ -367,9 +367,9 @@ local function make_editor(pname)
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer3"},
 			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
 			{h=0.33, text="Saved Formspecs", type="label", w=7.96, x=0.5, y=0.4},
-			{h=3, name="SavedFormspecList", type="textlist", w=8, x=0.5, y=0.8},
-			{h=0.5, label="Load Selected", name="LoadSelectedFormspec", type="button", w=2, x=0.5, y=4},
-			{h=0.3, text="Selected: <file>", type="label", w=5.85, x=2.6, y=4.1},
+			{h=3, name="SavedFormspecList", type="textlist", w=8, x=0.5, y=0.8, selected=context.savefile_selection},
+			{h=0.5, label="Load Selected", name="LoadSelectedFormspec", type="button", w=2, x=0.5, y=4, tooltip="Load selected formspec into workspace.\nWill overwrite whatever's already there."},
+			{h=0.3, text="", type="label", w=5.85, x=2.6, y=4.1, FORMSPEC_ID="SelectedFileNameLabel"},
 			{color="#00000055", h=0.1, type="box", w=8, x=0.5, y=4.72},
 			{h=0.33, text="Active Formstring (Preview)", type="label", w=7.96, x=0.5, y=5},
 			{h=2.8, label="", name="ActiveFormstringDisplay", text="", type="textarea", w=8, x=0.5, y=5.5},
@@ -385,6 +385,14 @@ local function make_editor(pname)
 	}
 
 	context.root = NEWROOT
+
+	if context.savefile_selection then
+		local idx = context.savefile_selection
+		local list = context.savefile_list or {}
+		if idx >= 1 and idx <= #list then
+			context:get_control_by_id("SelectedFileNameLabel").text = "Selected: " .. list[idx].name
+		end
+	end
 
 	update_form_geometry_display(context)
 	update_error_status(context)
@@ -1170,6 +1178,52 @@ end
 
 
 
+local function handle_load_formspec(context, fields)
+	if fields.SavedFormspecList then
+		local tab = minetest.explode_textlist_event(fields.SavedFormspecList)
+		local index = tab.index
+		local infos = context.savefile_list or {}
+
+		if tab.type == "DCL" and index >= 1 and index <= #infos then
+			local name = infos[index].name
+			context.savefile_selection = index
+			context:set_message("Selected formspec: " .. name)
+		else
+			context.savefile_selection = nil
+		end
+
+		return
+	end
+
+	if not fields.LoadSelectedFormspec then
+		return
+	end
+
+	local infos = context.savefile_list or {}
+	local idx = context.savefile_selection
+
+	if not (idx and idx >= 1 and idx <= #infos) then
+		context:set_error("No file selected.")
+		return
+	end
+
+	local name = infos[idx].name
+	local key = "GUIspec:" .. name
+	local serialized = formspec.MOD_STORAGE:get_string(key)
+	local formtable = minetest.deserialize(minetest.decode_base64(serialized))
+
+	if not formtable or type(formtable) ~= "table" then
+		context:set_error("Could not load formspec.")
+		return
+	end
+
+	context:set_form_geometry(formtable.size)
+	context.editing_root = formtable.children
+	context:set_message("Loaded formspec: " .. name)
+end
+
+
+
 local function handle_save_formspec(context, fields)
 	if not fields.SaveActiveFormspec then
 		return
@@ -1446,6 +1500,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_switch_editor_tab(context, fields)
 	handle_size_form(context, fields)
 	handle_save_formspec(context, fields)
+	handle_load_formspec(context, fields)
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

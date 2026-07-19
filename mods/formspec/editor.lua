@@ -95,6 +95,33 @@ end
 
 
 
+local function populate_savefile_list(context)
+	local keys = formspec.MOD_STORAGE:get_keys()
+	local infolist = {}
+	local strings = {}
+
+	for _, key in ipairs(keys) do
+		if key:find("^GUIspec:") then
+			local name = key:sub(9)
+			table.insert(infolist, {name=name})
+		end
+	end
+
+	table.sort(infolist, function(a, b)
+		return a.name < b.name
+	end)
+
+	-- Widget itemlist must have same order as the infolist.
+	for _, info in ipairs(infolist) do
+		table.insert(strings, info.name)
+	end
+
+	context:get_control_by_name("SavedFormspecList").itemlist = strings
+	context.savefile_list = infolist
+end
+
+
+
 local function sync_stepsize_selectors(context)
 	if context.step_size_selector == 1 then
 		context:get_control_by_name("stepsizeSelector1").selected = true
@@ -367,6 +394,7 @@ local function make_editor(pname)
 	populate_widget_library(context)
 	populate_widget_list(context)
 	build_active_formstring_preview(context)
+	populate_savefile_list(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	build_test_gui(context)
@@ -438,6 +466,7 @@ local function create_new_editor_context(pname, param)
 		current_form_tab = 2,
 		FormGeom = {x=9, y=10},
 		player_name = pname,
+		savefile_list = {}, -- Array of <fileinfo> subtables.
 
 		get_player_name = function(self)
 			return self.player_name
@@ -1141,6 +1170,42 @@ end
 
 
 
+local function handle_save_formspec(context, fields)
+	if not fields.SaveActiveFormspec then
+		return
+	end
+
+	local root = context:get_editing_root()
+	local formtable = {
+		size = context:get_form_geometry(),
+		children = root,
+	}
+
+	local name = fields.SaveNameEntry or ""
+	if not name or name == "" then
+		context:set_error("Can't save with empty name.")
+		return
+	end
+
+	if not name:find("^[_%w]+$") then
+		context:set_error("Invalid formspec name.")
+		return
+	end
+
+	if name:len() > 64 then
+		context:set_error("Name too long.")
+		return
+	end
+
+	-- B64 solves all our storage safety problems.
+	local serialized = minetest.encode_base64(minetest.serialize(formtable))
+	formspec.MOD_STORAGE:set_string("GUIspec:" .. name, serialized)
+
+	context:set_message("Saved formspec: " .. name)
+end
+
+
+
 local function handle_size_form(context, fields)
 	local buttons = {
 		FORM_size_left = {x=-1, y=0, z=0},
@@ -1380,6 +1445,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_logdump(context, fields)
 	handle_switch_editor_tab(context, fields)
 	handle_size_form(context, fields)
+	handle_save_formspec(context, fields)
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

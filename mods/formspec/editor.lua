@@ -297,6 +297,12 @@ end
 
 
 local function populate_style_editor_docs(context)
+	-- The doc parser might take a bit of work,
+	-- so only do this if necessary.
+	if context.current_form_tab ~= 4 then
+		return
+	end
+
 	local docs = context:get_control_by_name("StyleEditorDocs")
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
@@ -312,12 +318,7 @@ local function populate_style_editor_docs(context)
 		return
 	end
 
-	if not factory.get_style_editor_docs then
-		docs.text = "Crickets."
-		return
-	end
-
-	docs.text = factory.get_style_editor_docs()
+	docs.text = formspec.parse_documentation(widgets[idx].type)
 
 	if not docs.text or docs.text == "" then
 		docs.text = "Really crickets."
@@ -467,7 +468,7 @@ local function make_editor(pname)
 			{h=0.35, text="Constructed Widgets", type="label", w=3, x=0, y=0},
 			{h=4.4, name="StyleableWidgetList", type="textlist", w=3, x=0, y=0.4},
 			{type="container_end"},
-			{h=3.28, label="Style Docs", name="StyleEditorDocs", text="", type="textarea", w=8, x=0.5, y=5.7},
+			{h=3.28, label="Style Docs", style={font="mono", font_size="*0.85", textcolor="black"}, name="StyleEditorDocs", text="", type="textarea", w=8, x=0.5, y=5.7},
 			{type="container_end"},
 		},
 	}

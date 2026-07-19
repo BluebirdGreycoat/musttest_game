@@ -249,12 +249,66 @@ formspec.register_widget("button", {
 		return {type="button", x=0, y=0, w=2, h=0.9, name="", label="Button"}
 	end,
 
+	--[[
 	get_style_editor_docs = function()
-		local lines = {
-		}
+		-- Max editor monospace columns is 60!
+		local lines = [=[
+alpha:         boolean, whether to draw alpha in bgimg.
+               Default true.
 
-		return table.concat(lines, "\n")
+bgcolor:       color, sets button tint.
+
+bgimg:         standard background image. Defaults to none.
+
+bgimg_middle:  Makes the bgimg textures render in 9-sliced
+               mode and defines the middle rect.
+               See background9[] documentation for more
+               details. This property also pads the
+               button's content when set.
+
+font:          Sets font type. This is a comma separated
+               list of options. Valid options:
+                 Main font type options.
+                 These cannot be combined with each other:
+                   normal:  Default font
+                   mono:  Monospaced font
+                 Font modification options. If used without
+                 a main font type, normal is used:
+                   bold:  Makes font bold.
+                   italic:  Makes font italic.
+                            Default normal.
+
+font_size:     Sets font size. Default is user-set.
+               Can have multiple values:
+                 <number>:  Sets absolute font size to
+                            number.
+                 +<number>/-<number>:  Offsets default font
+                                       size by number
+                                       points.
+                 *<number>:  Multiplies default font size
+                             by number, similar to CSS em.
+
+border:          boolean, draw border. Set to false to hide
+                 the bevelled button pane. Default true.
+
+content_offset:  2d vector, shifts the position of the
+                 button's content without resizing it.
+
+noclip:          boolean, set to true to allow the element
+                 to exceed formspec bounds.
+
+padding:         rect, adds space between the edges of the
+                 button and the content. This value is
+                 relative to bgimg_middle.
+
+sound:           a sound to be played when triggered.
+
+textcolor:       color, default white.
+]=]
+
+		return lines:trim()
 	end,
+	--]]
 })
 
 

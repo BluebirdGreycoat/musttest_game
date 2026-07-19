@@ -349,7 +349,6 @@ formspec.register_widget("container_end", {
 		w = <number>,
 		h = <number>,
 		name = <string>,
-		label = <string>,
 	}
 
 --]]
@@ -403,5 +402,50 @@ formspec.register_widget("checkbox", {
 
 	make_params = function()
 		return {type="checkbox", x=0, y=0, name="", label="", selected=false}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "tabheader",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		current_tab = <number>,
+		transparent = <boolean>,
+		draw_border = <boolean>,
+	}
+
+--]]
+formspec.register_widget("tabheader", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+		}
+
+		local E2 = {
+			(params.current_tab ~= nil and tostring(params.current_tab) or ""),
+			(params.transparent ~= nil and tostring(params.transparent) or ""),
+			(params.draw_border ~= nil and tostring(params.draw_border) or ""),
+		}
+
+		-- Formspec escape all items.
+		local items = params.itemlist or {}
+		for i=1, #items, 1 do
+			items[i] = FS(items[i])
+		end
+
+		return "tabheader[" .. CAT(E) .. ";" .. table.concat(items, ",") .. ";" .. CAT(E2) .. "]"
+	end,
+
+	make_params = function()
+		return {type="tabheader", x=0, y=0, w=6, h=0.5, name="", itemlist={"Tab1", "Tab2", "Tab3"}}
 	end,
 })

@@ -329,9 +329,13 @@ local function create_new_editor_context(pname, param)
 		end,
 
 		get_control_by_name = function(self, name)
-			for _, widget in ipairs(self.root.children) do
-				if widget.name and widget.name == name then
-					return widget
+			-- We have to make sure we only search widgets *after* the end of the test GUI list.
+			-- Otherwise we'd return widgets that are part of the test GUI.
+			local _, pos = self:get_control_by_id("testGUIend")
+
+			for index, widget in ipairs(self.root.children) do
+				if index > pos and widget.name and widget.name == name then
+					return widget, index
 				end
 			end
 		end,
@@ -390,7 +394,7 @@ end
 
 
 
-local function validate_active_params(context)
+local function validate_active_params(context, replace_index)
 	local widgets = context:get_editing_root()
 	local params = context:get_widget_params()
 
@@ -431,14 +435,16 @@ local function validate_active_params(context)
 	-- That will break stuff.
 	if params.name then
 		if context:get_control_by_name(params.name) then
-			context:set_error("Cannot create widget using EDITOR reserved name.")
+			context:set_error("Cannot create widget using editor reserved name.")
 			return
 		end
 
-		for k, v in ipairs(widgets) do
+		for index, v in ipairs(widgets) do
 			if v.name and v.name == params.name then
-				context:set_error("You've already added a widget with that name.")
-				return
+				if not (replace_index and replace_index == index) then
+					context:set_error("You've already added a widget with that name.")
+					return
+				end
 			end
 		end
 	end
@@ -551,6 +557,7 @@ local function handle_param_edit(context, fields)
 	end
 
 	context:set_error("What are you doing?")
+	context.default_edit_parameter = nil
 	local tokens = fields.paramfield:split("=")
 
 	for i=1, #tokens, 1 do
@@ -630,7 +637,8 @@ local function handle_param_edit(context, fields)
 		return
 	end
 
-	if not validate_active_params(context) then
+	if not validate_active_params(context, idx) then
+		context:set_editing_parameters(widgets[idx])
 		return
 	end
 

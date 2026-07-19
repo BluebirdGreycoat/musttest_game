@@ -67,6 +67,34 @@ end
 
 
 
+local function build_active_formstring_preview(context)
+	local widget = context:get_control_by_name("ActiveFormstringDisplay")
+	local root = context:get_editing_root()
+
+	local formtable = {
+		size = context:get_form_geometry(),
+		children = root,
+	}
+
+	local final = formspec.create_formspec_from_table(formtable)
+
+	-- I asked Grok to tell me what the right function is.
+	-- After thinking about it I sort-of understand how it works.
+	final = final:gsub("(\\*)%]", function(bs)
+		if #bs % 2 == 0 then
+			-- even number of backslashes → the ] is NOT escaped
+			return bs .. "]\n"
+		else
+			-- odd number of backslashes → the ] is escaped, leave it alone
+			return bs .. "]"
+		end
+	end)
+
+	widget.text = final
+end
+
+
+
 local function sync_stepsize_selectors(context)
 	if context.step_size_selector == 1 then
 		context:get_control_by_name("stepsizeSelector1").selected = true
@@ -338,6 +366,7 @@ local function make_editor(pname)
 	populate_parameters_list(context)
 	populate_widget_library(context)
 	populate_widget_list(context)
+	build_active_formstring_preview(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	build_test_gui(context)

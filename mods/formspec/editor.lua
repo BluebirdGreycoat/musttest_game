@@ -372,6 +372,11 @@ local function create_new_editor_context(pname, param)
 		formsize_step_size_selector = 1,
 		current_form_tab = 2,
 		FormGeom = {x=9, y=10},
+		player_name = pname,
+
+		get_player_name = function(self)
+			return self.player_name
+		end
 
 		get_form_geometry = function(self)
 			return {x=self.FormGeom.x, y=self.FormGeom.y}
@@ -384,6 +389,10 @@ local function create_new_editor_context(pname, param)
 		end,
 
 		set_error = function(self, msg)
+			if not msg then
+				self.last_error = ""
+				return
+			end
 			self.last_error = minetest.get_color_escape_sequence("#ff0000ff") .. msg
 		end,
 
@@ -1219,12 +1228,13 @@ end
 
 
 
-local function handle_logdump(pname, context, fields)
+local function handle_logdump(context, fields)
 	if not fields.logdump then
 		return
 	end
 
 	local root = context:get_editing_root()
+	local pname = context:get_player_name()
 	local final = dump(root)
 
 	-- Clean it up.
@@ -1275,7 +1285,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	end
 
 	-- Nil error message by default, shall be populated if some field action errors.
-	context.last_error = ""
+	context:set_error(nil)
 
 	if fields.quit then
 		-- Save for later. User might have clicked off the editor and we don't want to throw away their work.
@@ -1296,11 +1306,13 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_step_selector(context, fields)
 	handle_formsize_step_selector(context, fields)
 	handle_live_select(context, fields)
-	handle_logdump(pname, context, fields)
+	handle_logdump(context, fields)
 	handle_switch_editor_tab(context, fields)
 	handle_size_form(context, fields)
 
-	-- No need to call other field handlers.
+	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)
+
+	-- No need to call other field handlers.
 	return true
 end

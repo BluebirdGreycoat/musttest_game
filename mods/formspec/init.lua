@@ -171,6 +171,8 @@ if not formspec.run_once then
 	local f = formspec.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
 
+	formspec.MOD_STORAGE = minetest.get_mod_storage()
+
 	minetest.register_chatcommand("fs", {
 		params = "",
 		description = "Show the formspec editor.",

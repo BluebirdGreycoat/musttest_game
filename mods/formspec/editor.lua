@@ -8,10 +8,10 @@ formspec.SAVED_CONTEXTS = formspec.SAVED_CONTEXTS or {}
 local function highlight_selected_widget(context)
 	-- Show a bright box around the currently selected widget.
 	local idx = context:get_selected_widget()
-	local selector = context:get_control_by_id("GUIselectorDisplay")
 	local widgets = context:get_editing_root()
+	local selector = {type="box", x=0, y=0, w=1, h=1, color="#ff0000ff"}
 
-	if selector and idx then
+	if idx then
 		local target = widgets[idx]
 
 		-- Certain widgets (like end tags) don't exist in space.
@@ -21,18 +21,19 @@ local function highlight_selected_widget(context)
 
 		if target.type == "checkbox" then
 			-- Checkboxes don't have W, H.
-			selector.visible = true
 			selector.x = target.x - 0.05
 			selector.y = target.y - 0.2
 			selector.w = 0.4
 			selector.h = 0.4
 		else
-			selector.visible = true
 			selector.x = target.x - 0.02
 			selector.y = target.y - 0.02
 			selector.w = (target.w or 1) + 0.06
 			selector.h = (target.h or 1) + 0.06
 		end
+
+		local targetpos = idx + 2
+		table.insert(context.root.children, targetpos, selector)
 	end
 end
 
@@ -47,9 +48,10 @@ function formspec.make_editor(pname)
 
 		children = {
 			-- Shows what the currently-edited formspec looks like.
+			-- DO NOT add any elements between here and TEST GUI container end!
+			-- If you do, you will need to adjust magic numbers elsewhere in the code.
 			{type="container", x=0, y=0},
 			{type="background9", x=0, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
-			{type="box", x=0, y=0, w=1, h=1, color="#ff0000ff", visible=false, FORMSPEC_ID="GUIselectorDisplay"},
 			{type="container_end", FORMSPEC_ID="testGUIend"},
 
 			-- Editor formspec with controls.
@@ -133,9 +135,6 @@ function formspec.make_editor(pname)
 		context.root.children[FIND("errordisplay")].text = context.last_error
 	end
 
-	-- Show a bright box around the currently selected widget.
-	highlight_selected_widget(context)
-
 	if context.step_size_selector == 1 then
 		context:get_control_by_name("stepsizeSelector1").selected = true
 	elseif context.step_size_selector == 2 then
@@ -195,6 +194,11 @@ function formspec.make_editor(pname)
 			pos = pos + 1 -- Insert items in order.
 		end
 	end
+
+	-- Show a bright box around the currently selected widget.
+	-- This needs to be done *after* all the test GUI widgets are added to the
+	-- display, because the selection box is injected into the widget list.
+	highlight_selected_widget(context)
 
 	return formspec.create_formspec_from_table(context.root)
 end
@@ -327,9 +331,9 @@ local function create_new_editor_context(pname, param)
 		end,
 
 		get_control_by_id = function(self, name)
-			for _, widget in ipairs(self.root.children) do
+			for index, widget in ipairs(self.root.children) do
 				if widget.FORMSPEC_ID and widget.FORMSPEC_ID == name then
-					return widget
+					return widget, index
 				end
 			end
 		end,

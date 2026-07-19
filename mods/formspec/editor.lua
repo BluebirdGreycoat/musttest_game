@@ -590,6 +590,11 @@ local function validate_active_params(context, replace_index)
 		return
 	end
 
+	if params.name and type(params.name) ~= "string" then
+		context:set_error("Widget name must be string.")
+		return
+	end
+
 	-- Prevent user from messing up the editor GUI.
 	if type(params.FORMSPEC_ID) ~= "nil" then
 		context:set_error("Do NOT use internal GUI editor names.")

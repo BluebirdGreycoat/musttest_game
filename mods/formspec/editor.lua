@@ -376,7 +376,7 @@ local function create_new_editor_context(pname, param)
 
 		get_player_name = function(self)
 			return self.player_name
-		end
+		end,
 
 		get_form_geometry = function(self)
 			return {x=self.FormGeom.x, y=self.FormGeom.y}
@@ -394,6 +394,7 @@ local function create_new_editor_context(pname, param)
 				return
 			end
 			self.last_error = minetest.get_color_escape_sequence("#ff0000ff") .. msg
+			easyvend.sound_error(self:get_player_name())
 		end,
 
 		set_message = function(self, msg)

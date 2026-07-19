@@ -369,6 +369,7 @@ local function make_editor(pname)
 			{h=0.33, text="Saved Formspecs", type="label", w=7.96, x=0.5, y=0.4},
 			{h=3, name="SavedFormspecList", type="textlist", w=8, x=0.5, y=0.8, selected=context.savefile_selection},
 			{h=0.5, label="Load Selected", name="LoadSelectedFormspec", type="button", w=2, x=0.5, y=4, tooltip="Load selected formspec into workspace.\nWill overwrite whatever's already there."},
+			{h=0.5, label="Delete", name="DeleteSelectedFormspec", type="button", w=1.7, x=6.82, y=4, tooltip="Delete selected formspec. There are no undos.", style={bgcolor="red"}},
 			{h=0.3, text="", type="label", w=5.85, x=2.6, y=4.1, FORMSPEC_ID="SelectedFileNameLabel"},
 			{color="#00000055", h=0.1, type="box", w=8, x=0.5, y=4.72},
 			{h=0.33, text="Active Formstring (Preview)", type="label", w=7.96, x=0.5, y=5},
@@ -1224,6 +1225,29 @@ end
 
 
 
+local function handle_delete_formspec(context, fields)
+	if not fields.DeleteSelectedFormspec then
+		return
+	end
+
+	local infos = context.savefile_list or {}
+	local idx = context.savefile_selection
+
+	if not (idx and idx >= 1 and idx <= #infos) then
+		context:set_error("No file selected. Can't delete.")
+		return
+	end
+
+	local name = infos[idx].name
+	local key = "GUIspec:" .. name
+	formspec.MOD_STORAGE:set_string(key, nil)
+
+	context:set_message("Permanently deleted formspec: " .. name)
+	context.savefile_selection = nil
+end
+
+
+
 local function handle_save_formspec(context, fields)
 	if not fields.SaveActiveFormspec then
 		return
@@ -1255,6 +1279,7 @@ local function handle_save_formspec(context, fields)
 	local serialized = minetest.encode_base64(minetest.serialize(formtable))
 	formspec.MOD_STORAGE:set_string("GUIspec:" .. name, serialized)
 
+	context.savefile_selection = nil
 	context:set_message("Saved formspec: " .. name)
 end
 
@@ -1501,6 +1526,7 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_size_form(context, fields)
 	handle_save_formspec(context, fields)
 	handle_load_formspec(context, fields)
+	handle_delete_formspec(context, fields)
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

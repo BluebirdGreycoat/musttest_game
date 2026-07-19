@@ -334,6 +334,7 @@ formspec.register_widget("container_end", {
 
 	allow_editor_creation = false,
 	allow_editor_deletion = false,
+	show_in_editor = false,
 
 	begin_tag = "container",
 })

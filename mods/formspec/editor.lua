@@ -8,6 +8,134 @@ local MIN_FORM_HEIGHT = 2
 
 
 
+local function show_form_borders(context)
+	local _, idx = context:get_control_by_id("testGUIbegin")
+	local g = context:get_form_geometry()
+	local t = 0.02
+
+	local boxes = {
+		{x=0, y=0, w=g.x, h=t},
+		{x=0, y=0, w=t, h=g.y},
+		{x=g.x-t, y=0, w=t, h=g.y},
+		{x=0, y=g.y-t, w=g.x, h=t},
+	}
+
+	for _, v in ipairs(boxes) do
+		table.insert(context.root.children, idx, {type="box", x=v.x, y=v.y, w=v.w, h=v.h, color="#00ff00ff"})
+	end
+end
+
+
+
+local function update_error_status(context)
+	if context.last_error and #context.last_error > 0 then
+		local widget = context:get_control_by_id("errordisplay")
+		widget.text = context.last_error
+	end
+end
+
+
+
+local function chose_tabheader_page(context)
+	if context.current_form_tab == 1 then
+		-- Form controls.
+		context:get_control_by_id("EditorFSContainer1").visible = true
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+		show_form_borders(context)
+	elseif context.current_form_tab == 2 then
+		-- Widget editor.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = true
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+	elseif context.current_form_tab == 3 then
+		-- Save/load.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = true
+		context:get_control_by_id("EditorFSContainer4").visible = false
+	elseif context.current_form_tab == 4 then
+		-- Syling.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = true
+	end
+end
+
+
+
+local function sync_stepsize_selectors(context)
+	if context.step_size_selector == 1 then
+		context:get_control_by_name("stepsizeSelector1").selected = true
+	elseif context.step_size_selector == 2 then
+		context:get_control_by_name("stepsizeSelector2").selected = true
+	end
+
+	if context.formsize_step_size_selector == 1 then
+		context:get_control_by_name("FormStepSizeSelector1").selected = true
+	elseif context.formsize_step_size_selector == 2 then
+		context:get_control_by_name("FormStepSizeSelector2").selected = true
+	end
+end
+
+
+
+local function build_test_gui(context)
+	local widgets = context:get_editing_root()
+	local _, pos = context:get_control_by_id("testGUIend")
+
+	for _, info in ipairs(widgets) do
+		table.insert(context.root.children, pos, info)
+		pos = pos + 1 -- Insert items in order.
+	end
+end
+
+
+
+local function update_form_geometry_display(context)
+	local FormGeom = context:get_form_geometry()
+	context:get_control_by_id("FormWLabel").text = "X: " .. FormGeom.x
+	context:get_control_by_id("FormHLabel").text = "Y: " .. FormGeom.y
+end
+
+
+
+local function populate_widget_library(context)
+	local widgetlist = context:get_control_by_id("widgetlist")
+	local itemlist = {}
+
+	for name, info in pairs(formspec.WIDGET_TYPES) do
+		if info.show_in_editor == true or info.show_in_editor == nil then
+			table.insert(itemlist, name)
+		end
+	end
+
+	table.sort(itemlist)
+
+	widgetlist.itemlist = itemlist
+	context.known_widget_names = itemlist
+end
+
+
+
+local function populate_widget_list(context)
+	local widgets = context:get_editing_root()
+	local widgetlist = context:get_control_by_id("activewidgets")
+	local itemlist = {}
+
+	for _, v in ipairs(widgets) do
+		table.insert(itemlist, (v.type .. " [" .. (v.name or "") .. "]"))
+	end
+
+	widgetlist.itemlist = itemlist
+	widgetlist.selected = context:get_selected_widget()
+end
+
+
+
 local function highlight_selected_widget(context)
 	-- Show a bright box around the currently selected widget.
 	local idx = context:get_selected_widget()
@@ -36,6 +164,8 @@ local function highlight_selected_widget(context)
 			selector.h = (target.h or 1) + 0.06
 		end
 
+		-- Note: never added the selector widget into the editing root,
+		-- otherwise it will end up in saves and mess other stuff up!
 		local targetpos = idx + begpos
 		table.insert(context.root.children, targetpos, selector)
 	end
@@ -43,29 +173,12 @@ end
 
 
 
-local function show_form_borders(context)
-	local _, idx = context:get_control_by_id("testGUIbegin")
-	local g = context:get_form_geometry()
-	local t = 0.02
-
-	local boxes = {
-		{x=0, y=0, w=g.x, h=t},
-		{x=0, y=0, w=t, h=g.y},
-		{x=g.x-t, y=0, w=t, h=g.y},
-		{x=0, y=g.y-t, w=g.x, h=t},
-	}
-
-	for _, v in ipairs(boxes) do
-		table.insert(context.root.children, idx, {type="box", x=v.x, y=v.y, w=v.w, h=v.h, color="#00ff00ff"})
-	end
-end
-
-
-
-function formspec.make_editor(pname)
+local function make_editor(pname)
 	local context = formspec.EDITOR_CONTEXTS[pname]
 	if not context then return "" end
 
+	-- A bit of hack math I didn't think about very carefully.
+	-- It works, so far.
 	local TEST_SIZE = table.copy(context.FormGeom)
 	local TEST_PAD = 0.5
 	local INIT_SIZE = table.copy(context.FormGeom)
@@ -205,48 +318,9 @@ function formspec.make_editor(pname)
 		return nil
 	end
 
-	if #context.last_error > 0 then
-		context.root.children[FIND("errordisplay")].text = context.last_error
-	end
-
-	if context.step_size_selector == 1 then
-		context:get_control_by_name("stepsizeSelector1").selected = true
-	elseif context.step_size_selector == 2 then
-		context:get_control_by_name("stepsizeSelector2").selected = true
-	end
-
-	if context.formsize_step_size_selector == 1 then
-		context:get_control_by_name("FormStepSizeSelector1").selected = true
-	elseif context.formsize_step_size_selector == 2 then
-		context:get_control_by_name("FormStepSizeSelector2").selected = true
-	end
-
-	if context.current_form_tab == 1 then
-		-- Form controls.
-		context:get_control_by_id("EditorFSContainer1").visible = true
-		context:get_control_by_id("EditorFSContainer2").visible = false
-		context:get_control_by_id("EditorFSContainer3").visible = false
-		context:get_control_by_id("EditorFSContainer4").visible = false
-		show_form_borders(context)
-	elseif context.current_form_tab == 2 then
-		-- Widget editor.
-		context:get_control_by_id("EditorFSContainer1").visible = false
-		context:get_control_by_id("EditorFSContainer2").visible = true
-		context:get_control_by_id("EditorFSContainer3").visible = false
-		context:get_control_by_id("EditorFSContainer4").visible = false
-	elseif context.current_form_tab == 3 then
-		-- Save/load.
-		context:get_control_by_id("EditorFSContainer1").visible = false
-		context:get_control_by_id("EditorFSContainer2").visible = false
-		context:get_control_by_id("EditorFSContainer3").visible = true
-		context:get_control_by_id("EditorFSContainer4").visible = false
-	elseif context.current_form_tab == 4 then
-		-- Syling.
-		context:get_control_by_id("EditorFSContainer1").visible = false
-		context:get_control_by_id("EditorFSContainer2").visible = false
-		context:get_control_by_id("EditorFSContainer3").visible = false
-		context:get_control_by_id("EditorFSContainer4").visible = true
-	end
+	update_error_status(context)
+	sync_stepsize_selectors(context)
+	chose_tabheader_page(context)
 
 	do
 		local pos = FIND("paramslist")
@@ -268,48 +342,19 @@ function formspec.make_editor(pname)
 		end
 	end
 
-	do
-		local pos = FIND("widgetlist")
-		local itemlist = {}
-
-		for name, _ in pairs(formspec.WIDGET_TYPES) do
-			table.insert(itemlist, name)
-		end
-
-		table.sort(itemlist)
-		context.root.children[pos].itemlist = itemlist
-		context.known_widget_names = itemlist
-	end
-
-	do
-		local pos = FIND("activewidgets")
-		local itemlist = {}
-
-		for _, v in ipairs(context.editing_root) do
-			table.insert(itemlist, (v.type .. " [" .. (v.name or "") .. "]"))
-		end
-
-		context.root.children[pos].itemlist = itemlist
-		context.root.children[pos].selected = context:get_selected_widget()
-	end
+	populate_widget_library(context)
+	populate_widget_list(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
-	if context.editing_root then
-		local pos = FIND("testGUIend")
-		for _, info in ipairs(context.editing_root) do
-			table.insert(context.root.children, pos, info)
-			pos = pos + 1 -- Insert items in order.
-		end
-	end
-
-	local FormGeom = context:get_form_geometry()
-	context:get_control_by_id("FormWLabel").text = "X: " .. FormGeom.x
-	context:get_control_by_id("FormHLabel").text = "Y: " .. FormGeom.y
+	build_test_gui(context)
 
 	-- Show a bright box around the currently selected widget.
 	-- This needs to be done *after* all the test GUI widgets are added to the
 	-- display, because the selection box is injected into the widget list.
 	highlight_selected_widget(context)
+
+	-- Set form geometry labels.
+	update_form_geometry_display(context)
 
 	return formspec.create_formspec_from_table(context.root)
 end
@@ -530,7 +575,7 @@ function formspec.show_editor(pname, param)
 		end
 	end
 
-	local serialized = formspec.make_editor(pname)
+	local serialized = make_editor(pname)
 	minetest.show_formspec(pname, "formspec:editor", serialized)
 end
 

@@ -296,6 +296,36 @@ end
 
 
 
+local function populate_style_editor_docs(context)
+	local docs = context:get_control_by_name("StyleEditorDocs")
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		docs.text = "Guru meditating on silence."
+		return
+	end
+
+	local factory = formspec.WIDGET_TYPES[widgets[idx].type]
+	if not factory then
+		docs.text = "What do you think you're doing?"
+		return
+	end
+
+	if not factory.get_style_editor_docs then
+		docs.text = "Crickets."
+		return
+	end
+
+	docs.text = factory.get_style_editor_docs()
+
+	if not docs.text or docs.text == "" then
+		docs.text = "Really crickets."
+	end
+end
+
+
+
 local function make_editor(pname)
 	local context = formspec.EDITOR_CONTEXTS[pname]
 	if not context then return "" end
@@ -437,7 +467,7 @@ local function make_editor(pname)
 			{h=0.35, text="Constructed Widgets", type="label", w=3, x=0, y=0},
 			{h=4.4, name="StyleableWidgetList", type="textlist", w=3, x=0, y=0.4},
 			{type="container_end"},
-			{h=3.28, label="Style Docs", name="textarea1", text="", type="textarea", w=8, x=0.5, y=5.7},
+			{h=3.28, label="Style Docs", name="StyleEditorDocs", text="", type="textarea", w=8, x=0.5, y=5.7},
 			{type="container_end"},
 		},
 	}
@@ -464,6 +494,7 @@ local function make_editor(pname)
 	build_active_formstring_preview(context)
 	populate_savefile_list(context)
 	populate_saveform_name_field(context)
+	populate_style_editor_docs(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	build_test_gui(context)

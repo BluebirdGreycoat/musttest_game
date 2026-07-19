@@ -248,6 +248,13 @@ formspec.register_widget("button", {
 	make_params = function()
 		return {type="button", x=0, y=0, w=2, h=0.9, name="", label="Button"}
 	end,
+
+	get_style_editor_docs = function()
+		local lines = {
+		}
+
+		return table.concat(lines, "\n")
+	end,
 })
 
 

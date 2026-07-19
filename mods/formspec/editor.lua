@@ -545,8 +545,8 @@ local function validate_active_params(context, replace_index)
 	end
 
 	-- Do NOT allow names beginning with "key_".
-	if params.name then
-		if params.name:find("^key_") then
+	if params.name and params.name ~= "" then
+		if params.name:find("^key_") or params.name == "quit" then
 			context:set_error("Cannot create widget with engine-reserved name.")
 			return
 		end
@@ -555,6 +555,11 @@ local function validate_active_params(context, replace_index)
 			context:set_error("Invalid name.")
 			return
 		end
+	end
+
+	if not params.name or params.name == "" then
+		context:set_error("Name is required.")
+		return
 	end
 
 	-- Make sure we're not adding GUI elements with duplicate or reserved names.
@@ -614,6 +619,8 @@ local function handle_add_widget(context, fields)
 		params.name = s
 	end
 
+	-- Update editing parameters (we may have auto-genned a name) before validating.
+	context:set_editing_parameters(params)
 	if not validate_active_params(context) then
 		return
 	end

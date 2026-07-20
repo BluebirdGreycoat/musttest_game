@@ -765,3 +765,47 @@ formspec.register_widget("bgcolor", {
 		return {type="bgcolor", bgcolor="", fullscreen="", fbgcolor=""}
 	end,
 })
+
+
+
+--[[
+
+	{
+		type = "model",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		mesh = <string>,
+		textures = <string>,
+		rx = <number>,
+		ry = <number>,
+		continuous = <boolean>,
+		mouse_control = <boolean>,
+		frame_loop_range = <number,number>,
+		animation_speed = <number>,
+	}
+
+--]]
+formspec.register_widget("model", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			params.mesh,
+			params.textures,
+			NUMPACK(params, {"rx", "ry"}),
+			tostring(params.continuous),
+			tostring(params.mouse_control),
+			tostring(params.frame_loop_range or ""),
+			tostring(params.animation_speed or ""),
+		}
+		return "model[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="model", x=0, y=0, w=3, h=3, rx=0, ry=200, name="", mesh="3d_armor_character.b3d", textures="character_11.png,3d_armor_trans.png,default_tool_steelsword.png"}
+	end,
+})

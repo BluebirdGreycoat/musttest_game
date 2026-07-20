@@ -257,7 +257,7 @@ formspec.register_widget("button_url_exit", {
 		h = <number>,
 		name = <string>,
 		label = <string>,
-		url = <string>,
+		default = <string>,
 	}
 
 --]]
@@ -279,6 +279,41 @@ formspec.register_widget("field", {
 
 	make_params = function()
 		return {type="field", x=0, y=0, w=3, h=0.5, name="", label="", default="", close_on_enter=false}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "pwdfield",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		label = <string>,
+	}
+
+--]]
+formspec.register_widget("pwdfield", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			FS(params.label or ""),
+		}
+		local close_on_enter = ""
+		if params.close_on_enter ~= nil then
+			close_on_enter = "field_close_on_enter[" .. params.name .. ";" .. tostring(params.close_on_enter) .. "]"
+		end
+		return "pwdfield[" .. CAT(E) .. "]" .. close_on_enter
+	end,
+
+	make_params = function()
+		return {type="pwdfield", x=0, y=0, w=3, h=0.5, name="", label="", close_on_enter=false}
 	end,
 })
 

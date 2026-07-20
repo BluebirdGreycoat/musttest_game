@@ -667,3 +667,45 @@ formspec.register_widget("hypertip", {
 		return {type="hypertip", x=0, y=0, w=2, h=2, text="", width=20, name=""}
 	end,
 })
+
+
+
+--[[
+
+	{
+		type = "animated_image",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		texture = <string>,
+		name = <string>,
+		frame_count = <number>,
+		frame_duration = <number>,
+		frame_start = <number>,
+		x1 = <number>,
+		y1 = <number>,
+		x2 = <number>,
+		y2 = <number>,
+	}
+
+--]]
+formspec.register_widget("animated_image", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			(type(params.texture) == "string" and params.texture:len() > 0 and params.texture) or "default_ice.png",
+			params.frame_count,
+			params.frame_duration,
+			(type(params.frame_start) == "number" and params.frame_start >= 1 and tostring(params.frame_start)) or "",
+			NUMPACK(params, {"x1", "y1", "x2", "y2"}),
+		}
+		return "animated_image[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="animated_image", x=0, y=0, w=2, h=2, texture="default_lava_source_animated.png", name="", frame_count=8, frame_duration=100}
+	end,
+})

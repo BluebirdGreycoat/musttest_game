@@ -1687,6 +1687,7 @@ local function handle_live_select(context, fields)
 	local BLACKLIST = {
 		field = true,
 		textarea = true,
+		animated_image = true,
 	}
 
 	for index, info in ipairs(widgets) do

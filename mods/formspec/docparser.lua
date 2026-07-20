@@ -118,7 +118,7 @@ function formspec.parse_documentation(wanted)
 		return ""
 	end
 
-	local tagkey = "%f[%w]" .. wanted .. "%f[%W]"
+	local tagkey = "%f[%w_]" .. wanted .. "%f[^%w_]"
 	local outlines = {}
 	local start
 	local finish

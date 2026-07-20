@@ -64,6 +64,35 @@ formspec.register_widget("label", {
 --[[
 
 	{
+		type = "item_image",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		item_name = <string>,
+	}
+
+--]]
+formspec.register_widget("item_image", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.item_name,
+		}
+		return "item_image[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="item_image", x=0, y=0, w=1, h=1, item_name="default:cobble"}
+	end,
+})
+
+
+
+--[[
+
+	{
 		type = "box",
 		x = <number>,
 		y = <number>,
@@ -622,7 +651,7 @@ formspec.register_widget("tooltip", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.text or "",
+			FS(params.text or ""),
 			params.bgcolor or "",
 			params.fontcolor or "",
 		}
@@ -658,7 +687,7 @@ formspec.register_widget("hypertip", {
 			NUMPACK(params, {"static_x", "static_y"}),
 			tostring(params.width or 20),
 			params.name or "",
-			params.text or "",
+			FS(params.text or ""),
 		}
 		return "hypertip[" .. CAT(E) .. "]"
 	end,

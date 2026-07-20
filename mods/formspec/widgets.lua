@@ -738,3 +738,30 @@ formspec.register_widget("animated_image", {
 		return {type="animated_image", x=0, y=0, w=2, h=2, texture="default_lava_source_animated.png", name="", frame_count=8, frame_duration=100}
 	end,
 })
+
+
+
+--[[
+
+	{
+		type = "bgcolor",
+		bgcolor = <string>,
+		fullscreen = <string>,
+		fbgcolor = <string>,
+	}
+
+--]]
+formspec.register_widget("bgcolor", {
+	make = function(params)
+		local E = {
+			params.bgcolor,
+			params.fullscreen,
+			params.fbgcolor,
+		}
+		return "bgcolor[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="bgcolor", bgcolor="", fullscreen="", fbgcolor=""}
+	end,
+})

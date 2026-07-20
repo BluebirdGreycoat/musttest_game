@@ -78,7 +78,7 @@ formspec.register_widget("item_image", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.item_name,
+			tostring(params.item_name),
 		}
 		return "item_image[" .. CAT(E) .. "]"
 	end,
@@ -208,7 +208,40 @@ formspec.register_widget("button_url", {
 	end,
 
 	make_params = function()
-		return {type="button_url", x=0, y=0, w=2, h=1, name="", label="URL Button", url=""}
+		return {type="button_url", x=0, y=0, w=2, h=0.9, name="", label="URL Button", url=""}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "button_url_exit",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		label = <string>,
+		url = <string>,
+	}
+
+--]]
+formspec.register_widget("button_url_exit", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			FS(params.label),
+			FS(params.url),
+		}
+		return "button_url_exit[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="button_url_exit", x=0, y=0, w=2.5, h=0.9, name="", label="URL Button Exit", url=""}
 	end,
 })
 
@@ -277,6 +310,37 @@ formspec.register_widget("button", {
 
 	make_params = function()
 		return {type="button", x=0, y=0, w=2, h=0.9, name="", label="Button"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "button_exit",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		label = <string>,
+	}
+
+--]]
+formspec.register_widget("button_exit", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			FS(params.label or ""),
+		}
+		return "button_exit[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="button_exit", x=0, y=0, w=2, h=0.9, name="", label="Button Exit"}
 	end,
 })
 

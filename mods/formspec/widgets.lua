@@ -66,6 +66,32 @@ formspec.register_widget("label", {
 --[[
 
 	{
+		type = "vertlabel",
+		x = <number>,
+		y = <number>,
+		text = <string>,
+	}
+
+--]]
+formspec.register_widget("vertlabel", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			FS(type(params.text) == "string" and params.text or ""),
+		}
+		return "vertlabel[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="vertlabel", x=0, y=0, text="Label Text"}
+	end,
+})
+
+
+
+--[[
+
+	{
 		type = "item_image",
 		x = <number>,
 		y = <number>,

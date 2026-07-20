@@ -108,6 +108,7 @@ formspec.register_widget("image", {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
 			params.texture,
+			NUMPACK(params, {"x1", "y1", "x2", "y2"}),
 		}
 		return "image[" .. CAT(E) .. "]"
 	end,
@@ -318,8 +319,6 @@ formspec.register_widget("container", {
 
 	{
 		type = "container_end",
-		x = <number>,
-		y = <number>,
 	}
 
 --]]
@@ -448,5 +447,223 @@ formspec.register_widget("tabheader", {
 
 	make_params = function()
 		return {type="tabheader", x=0, y=0, w=6, h=0.5, name="", itemlist={"Tab1", "Tab2", "Tab3"}}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "scroll_container",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		scrollbar_name = <string>,
+		orientation = <string>,
+		scroll_factor = <number>,
+		content_padding = <number>,
+	}
+
+--]]
+formspec.register_widget("scroll_container", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.scrollbar_name,
+			params.orientation,
+			(type(params.scroll_factor) == "number" and params.scroll_factor > 0.1 and params.scroll_factor) or "",
+			(type(params.content_padding) == "number" and params.content_padding) or "",
+		}
+		return "scroll_container[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="scroll_container", x=0, y=0, w=5, h=5, scrollbar_name="", orientation=""}
+	end,
+
+	end_tag = "scroll_container_end",
+})
+
+
+
+--[[
+
+	{
+		type = "scroll_container_end",
+	}
+
+--]]
+formspec.register_widget("scroll_container_end", {
+	make = function(params)
+		return "scroll_container_end[]"
+	end,
+
+	make_params = function()
+		return {type="scroll_container_end"}
+	end,
+
+	allow_editor_creation = false,
+	allow_editor_deletion = false,
+	show_in_editor = false,
+
+	begin_tag = "scroll_container",
+})
+
+
+
+--[[
+
+	{
+		type = "list",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		inventory_location = <string>,
+		list_name = <string>,
+		start_index = <number>,
+	}
+
+--]]
+formspec.register_widget("list", {
+	make = function(params)
+		local E = {
+			params.inventory_location or "current_player",
+			params.list_name or "main",
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			(type(params.start_index) == "number" and params.start_index >= 0 and params.start_index) or "",
+		}
+		return "list[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="list", x=0, y=0, w=5, h=2, list_name="main", inventory_location="current_player"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "listring",
+		inventory_location = <string>,
+		list_name = <string>,
+	}
+
+--]]
+formspec.register_widget("listring", {
+	make = function(params)
+		local E = {
+			params.inventory_location or "current_player",
+			params.list_name or "main",
+		}
+		return "listring[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="listring", list_name="main", inventory_location="current_player"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "listcolors",
+		slot_bg_normal = <string>,
+		slot_bg_hover = <string>,
+		slot_border = <string>,
+		tooltip_bgcolor = <string>,
+		tooltip_fontcolor = <string>,
+	}
+
+--]]
+formspec.register_widget("listcolors", {
+	make = function(params)
+		local E = {
+			params.slot_bg_normal or "",
+			params.slot_bg_hover or "",
+			params.slot_border or "",
+			params.tooltip_bgcolor or "",
+			params.tooltip_fontcolor or "",
+		}
+		return "listcolors[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="listcolors", slot_bg_normal="#00000069", slot_bg_hover="#5A5A5A", slot_border="#141318", tooltip_bgcolor="#30434C", tooltip_fontcolor="#FFF"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "tooltip",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		text = <string>,
+		bgcolor = <string>,
+		fontcolor = <number>,
+	}
+
+--]]
+formspec.register_widget("tooltip", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.text or "",
+			params.bgcolor or "",
+			params.fontcolor or "",
+		}
+		return "tooltip[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="tooltip", x=0, y=0, w=2, h=2, text="", bgcolor="", fontcolor=""}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "hypertip",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		text = <string>,
+		width = <number>,
+		name = <string>,
+	}
+
+--]]
+formspec.register_widget("hypertip", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			NUMPACK(params, {"static_x", "static_y"}),
+			tostring(params.width or 20),
+			params.name or "",
+			params.text or "",
+		}
+		return "hypertip[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="hypertip", x=0, y=0, w=2, h=2, text="", width=20, name=""}
 	end,
 })

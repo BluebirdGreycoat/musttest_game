@@ -135,6 +135,10 @@ function formspec.create_formspec_from_table(root)
 			end
 		end
 
+		if type(pos) ~= "table" then return end
+		if type(pos.x) ~= "number" then return end
+		if type(pos.y) ~= "number" then return end
+
 		table.insert(formlines, name .. "[" .. pos.x .. "," .. pos.y .. "]")
 	end
 

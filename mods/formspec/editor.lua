@@ -307,6 +307,12 @@ local function populate_style_editor_docs(context)
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
 
+	if formspec.HTTP_REQUEST_SUCCEEDED then
+		docs.label = "Style Docs - Latest From Internet"
+	else
+		docs.label = "HTTP Request Failed - No Docs 4 U"
+	end
+
 	if not idx then
 		docs.text = "Guru meditating on silence."
 		return

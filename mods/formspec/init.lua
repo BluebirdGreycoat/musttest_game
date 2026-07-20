@@ -222,6 +222,7 @@ if not formspec.run_once then
 
 		if start and finish and start < finish then
 			formspec.RAW_MARKDOWN = raw_markdown:sub(start, finish):split("\n")
+			formspec.HTTP_REQUEST_SUCCEEDED = true
 		end
 	end
 

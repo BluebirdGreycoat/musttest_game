@@ -194,7 +194,9 @@ if not formspec.run_once then
 	end)
 
 	------------------------------------------------------------------------------
-	-- GROK CODE B/C I'M LAZY
+	-- HTTP GROK CODE B/C I'M LAZY
+	-- Fetch the widget style documentation from Github.
+	-- This way it's always up-to-date and I never have to worry about it.
 	------------------------------------------------------------------------------
 
 	-- Must be called at the top level of init.lua (not inside a function)

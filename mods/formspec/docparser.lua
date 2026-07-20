@@ -62,11 +62,15 @@ local function split_line(str, max)
 			s = str:sub(1, nmax) -- Take the beginning.
 			str = str:sub(nmax + 1) -- Trim off the beginning.
 		else
-			-- Get max, or less if there's a word boundary.
-			local nmax = find_last_split(str, max) or max
-
 			local imax = max - indent:len() -- Find out how much space we really have (account for indent).
-			if imax < 10 then imax = 10 end -- Minimum chunk size for safety.
+			if imax < 1 then imax = 1 end -- Minimum chunk size for safety.
+
+			-- If there's more remaining in 'str' than will fit on this line,
+			-- then perform a word-split. Otherwise, we're on the last part of the
+			-- input and we should NOT split it again.
+			if str:len() > imax then
+				imax = find_last_split(str, imax) or imax
+			end
 
 			s = str:sub(1, imax) -- Take the beginning.
 			str = str:sub(imax + 1) -- Trim off the beginning.
@@ -74,7 +78,6 @@ local function split_line(str, max)
 		end
 
 		table.insert(newlines, s) -- Add the beginning.
-		--str = "___" .. str
 
 		first = false
 	end

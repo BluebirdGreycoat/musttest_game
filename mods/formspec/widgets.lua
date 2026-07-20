@@ -385,6 +385,37 @@ formspec.register_widget("background9", {
 --[[
 
 	{
+		type = "background",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		texture = <file>,
+		auto_clip = true|false (opt),
+	}
+
+--]]
+formspec.register_widget("background", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.texture,
+			(params.auto_clip ~= nil and tostring(params.auto_clip) or ""),
+		}
+		return "background[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="background", x=0, y=0, w=2, h=2, texture="default_cobble.png"}
+	end,
+})
+
+
+
+--[[
+
+	{
 		type = "container",
 		x = <number>,
 		y = <number>,
@@ -861,8 +892,8 @@ formspec.register_widget("model", {
 			params.mesh,
 			params.textures,
 			NUMPACK(params, {"rx", "ry"}),
-			tostring(params.continuous),
-			tostring(params.mouse_control),
+			(params.continuous ~= nil and tostring(params.continuous) or ""),
+			(params.mouse_control ~= nil and tostring(params.mouse_control) or ""),
 			tostring(params.frame_loop_range or ""),
 			tostring(params.animation_speed or ""),
 		}

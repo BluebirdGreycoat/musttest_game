@@ -40,6 +40,8 @@ end
 		type = "label",
 		x = <number>,
 		y = <number>,
+		w = <number>,
+		h = <number>,
 		text = <string>,
 	}
 
@@ -49,7 +51,7 @@ formspec.register_widget("label", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			FS(params.text),
+			FS(type(params.text) == "string" and params.text or ""),
 		}
 		return "label[" .. CAT(E) .. "]"
 	end,
@@ -158,6 +160,7 @@ formspec.register_widget("image", {
 		w = <number>,
 		h = <number>,
 		name = <string>,
+		label = <string>,
 		text = <string>,
 	}
 
@@ -176,6 +179,37 @@ formspec.register_widget("textarea", {
 
 	make_params = function()
 		return {type="textarea", x=0, y=0, w=2, h=2, name="", label="", text="Lorum Ipsum"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "hypertext",
+		x = <number>,
+		y = <number>,
+		w = <number>,
+		h = <number>,
+		name = <string>,
+		text = <string>,
+	}
+
+--]]
+formspec.register_widget("hypertext", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			params.name,
+			FS(params.text),
+		}
+		return "hypertext[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="hypertext", x=0, y=0, w=2, h=2, name="", text="<b>Testing:</b> Lorem Ipsom"}
 	end,
 })
 

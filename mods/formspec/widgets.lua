@@ -106,18 +106,6 @@ end
 
 
 
---[[
-
-	{
-		type = "label",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		text = <string>,
-	}
-
---]]
 formspec.register_widget("label", {
 	make = function(params)
 		local E = {
@@ -135,16 +123,6 @@ formspec.register_widget("label", {
 
 
 
---[[
-
-	{
-		type = "vertlabel",
-		x = <number>,
-		y = <number>,
-		text = <string>,
-	}
-
---]]
 formspec.register_widget("vertlabel", {
 	make = function(params)
 		local E = {
@@ -161,18 +139,6 @@ formspec.register_widget("vertlabel", {
 
 
 
---[[
-
-	{
-		type = "item_image",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		item_name = <string>,
-	}
-
---]]
 formspec.register_widget("item_image", {
 	make = function(params)
 		local E = {
@@ -190,18 +156,6 @@ formspec.register_widget("item_image", {
 
 
 
---[[
-
-	{
-		type = "box",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		color = <colorstring>,
-	}
-
---]]
 formspec.register_widget("box", {
 	make = function(params)
 		local E = {
@@ -219,18 +173,6 @@ formspec.register_widget("box", {
 
 
 
---[[
-
-	{
-		type = "image",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		texture = <file>,
-	}
-
---]]
 formspec.register_widget("image", {
 	make = function(params)
 		local E = {
@@ -249,20 +191,6 @@ formspec.register_widget("image", {
 
 
 
---[[
-
-	{
-		type = "textarea",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-		text = <string>,
-	}
-
---]]
 formspec.register_widget("textarea", {
 	make = function(params)
 		local E = {
@@ -282,19 +210,6 @@ formspec.register_widget("textarea", {
 
 
 
---[[
-
-	{
-		type = "hypertext",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		text = <string>,
-	}
-
---]]
 formspec.register_widget("hypertext", {
 	make = function(params)
 		local E = {
@@ -313,20 +228,6 @@ formspec.register_widget("hypertext", {
 
 
 
---[[
-
-	{
-		type = "button_url",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-		url = <string>,
-	}
-
---]]
 formspec.register_widget("button_url", {
 	make = function(params)
 		local E = {
@@ -346,20 +247,6 @@ formspec.register_widget("button_url", {
 
 
 
---[[
-
-	{
-		type = "button_url_exit",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-		url = <string>,
-	}
-
---]]
 formspec.register_widget("button_url_exit", {
 	make = function(params)
 		local E = {
@@ -379,20 +266,6 @@ formspec.register_widget("button_url_exit", {
 
 
 
---[[
-
-	{
-		type = "field",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-		default = <string>,
-	}
-
---]]
 formspec.register_widget("field", {
 	make = function(params)
 		local E = {
@@ -418,19 +291,6 @@ formspec.register_widget("field", {
 
 
 
---[[
-
-	{
-		type = "pwdfield",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-	}
-
---]]
 formspec.register_widget("pwdfield", {
 	make = function(params)
 		local E = {
@@ -455,19 +315,6 @@ formspec.register_widget("pwdfield", {
 
 
 
---[[
-
-	{
-		type = "button",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-	}
-
---]]
 formspec.register_widget("button", {
 	make = function(params)
 		local E = {
@@ -486,19 +333,6 @@ formspec.register_widget("button", {
 
 
 
---[[
-
-	{
-		type = "button_exit",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		label = <string>,
-	}
-
---]]
 formspec.register_widget("button_exit", {
 	make = function(params)
 		local E = {
@@ -517,23 +351,6 @@ formspec.register_widget("button_exit", {
 
 
 
---[[
-
-	{
-		type = "background9",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		texture = <file>,
-		auto_clip = true|false (opt),
-		x1 = <number>,
-		y1 = <number> (opt),
-		x2 = <number> (opt),
-		y2 = <number> (opt),
-	}
-
---]]
 formspec.register_widget("background9", {
 	make = function(params)
 		local E = {
@@ -553,19 +370,6 @@ formspec.register_widget("background9", {
 
 
 
---[[
-
-	{
-		type = "background",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		texture = <file>,
-		auto_clip = true|false (opt),
-	}
-
---]]
 formspec.register_widget("background", {
 	make = function(params)
 		local E = {
@@ -584,15 +388,6 @@ formspec.register_widget("background", {
 
 
 
---[[
-
-	{
-		type = "container",
-		x = <number>,
-		y = <number>,
-	}
-
---]]
 formspec.register_widget("container", {
 	make = function(params)
 		local E = {
@@ -610,13 +405,6 @@ formspec.register_widget("container", {
 
 
 
---[[
-
-	{
-		type = "container_end",
-	}
-
---]]
 formspec.register_widget("container_end", {
 	make = function(params)
 		return "container_end[]"
@@ -635,18 +423,6 @@ formspec.register_widget("container_end", {
 
 
 
---[[
-
-	{
-		type = "textlist",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-	}
-
---]]
 formspec.register_widget("textlist", {
 	make = function(params)
 		local E = {
@@ -675,15 +451,6 @@ formspec.register_widget("textlist", {
 
 
 
---[[
-
-	{
-		type = "checkbox",
-		x = <number>,
-		y = <number>,
-	}
-
---]]
 formspec.register_widget("checkbox", {
 	make = function(params)
 		local E = {
@@ -702,21 +469,6 @@ formspec.register_widget("checkbox", {
 
 
 
---[[
-
-	{
-		type = "tabheader",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		current_tab = <number>,
-		transparent = <boolean>,
-		draw_border = <boolean>,
-	}
-
---]]
 formspec.register_widget("tabheader", {
 	make = function(params)
 		local E = {
@@ -747,21 +499,6 @@ formspec.register_widget("tabheader", {
 
 
 
---[[
-
-	{
-		type = "scroll_container",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		scrollbar_name = <string>,
-		orientation = <string>,
-		scroll_factor = <number>,
-		content_padding = <number>,
-	}
-
---]]
 formspec.register_widget("scroll_container", {
 	make = function(params)
 		local E = {
@@ -784,13 +521,6 @@ formspec.register_widget("scroll_container", {
 
 
 
---[[
-
-	{
-		type = "scroll_container_end",
-	}
-
---]]
 formspec.register_widget("scroll_container_end", {
 	make = function(params)
 		return "scroll_container_end[]"
@@ -809,20 +539,6 @@ formspec.register_widget("scroll_container_end", {
 
 
 
---[[
-
-	{
-		type = "list",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		inventory_location = <string>,
-		list_name = <string>,
-		start_index = <number>,
-	}
-
---]]
 formspec.register_widget("list", {
 	make = function(params)
 		local E = {
@@ -844,15 +560,6 @@ formspec.register_widget("list", {
 
 
 
---[[
-
-	{
-		type = "listring",
-		inventory_location = <string>,
-		list_name = <string>,
-	}
-
---]]
 formspec.register_widget("listring", {
 	make = function(params)
 		local E = {
@@ -869,18 +576,6 @@ formspec.register_widget("listring", {
 
 
 
---[[
-
-	{
-		type = "listcolors",
-		slot_bg_normal = <string>,
-		slot_bg_hover = <string>,
-		slot_border = <string>,
-		tooltip_bgcolor = <string>,
-		tooltip_fontcolor = <string>,
-	}
-
---]]
 formspec.register_widget("listcolors", {
 	make = function(params)
 		local E = {
@@ -900,20 +595,6 @@ formspec.register_widget("listcolors", {
 
 
 
---[[
-
-	{
-		type = "tooltip",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		text = <string>,
-		bgcolor = <string>,
-		fontcolor = <number>,
-	}
-
---]]
 formspec.register_widget("tooltip", {
 	make = function(params)
 		local E = {
@@ -933,20 +614,6 @@ formspec.register_widget("tooltip", {
 
 
 
---[[
-
-	{
-		type = "hypertip",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		text = <string>,
-		width = <number>,
-		name = <string>,
-	}
-
---]]
 formspec.register_widget("hypertip", {
 	make = function(params)
 		local E = {
@@ -967,26 +634,6 @@ formspec.register_widget("hypertip", {
 
 
 
---[[
-
-	{
-		type = "animated_image",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		texture = <string>,
-		name = <string>,
-		frame_count = <number>,
-		frame_duration = <number>,
-		frame_start = <number>,
-		x1 = <number>,
-		y1 = <number>,
-		x2 = <number>,
-		y2 = <number>,
-	}
-
---]]
 formspec.register_widget("animated_image", {
 	make = function(params)
 		local E = {
@@ -1009,16 +656,6 @@ formspec.register_widget("animated_image", {
 
 
 
---[[
-
-	{
-		type = "bgcolor",
-		bgcolor = <string>,
-		fullscreen = <string>,
-		fbgcolor = <string>,
-	}
-
---]]
 formspec.register_widget("bgcolor", {
 	make = function(params)
 		local E = {
@@ -1036,26 +673,6 @@ formspec.register_widget("bgcolor", {
 
 
 
---[[
-
-	{
-		type = "model",
-		x = <number>,
-		y = <number>,
-		w = <number>,
-		h = <number>,
-		name = <string>,
-		mesh = <string>,
-		textures = <string>,
-		rx = <number>,
-		ry = <number>,
-		continuous = <boolean>,
-		mouse_control = <boolean>,
-		frame_loop_range = <number,number>,
-		animation_speed = <number>,
-	}
-
---]]
 formspec.register_widget("model", {
 	make = function(params)
 		local E = {
@@ -1080,13 +697,6 @@ formspec.register_widget("model", {
 
 
 
---[[
-
-	{
-		type = "image_button",
-	}
-
---]]
 formspec.register_widget("image_button", {
 	make = function(params)
 		local E = {

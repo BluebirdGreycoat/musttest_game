@@ -37,12 +37,15 @@ end
 
 
 local function chose_tabheader_page(context)
+	context.last_event_table = nil -- Start fresh.
+
 	if context.current_form_tab == 1 then
 		-- Form controls.
 		context:get_control_by_id("EditorFSContainer1").visible = true
 		context:get_control_by_id("EditorFSContainer2").visible = false
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = false
+		context:get_control_by_id("EditorFSContainer5").visible = false
 		show_form_borders(context)
 	elseif context.current_form_tab == 2 then
 		-- Widget editor.
@@ -50,18 +53,28 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer2").visible = true
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = false
+		context:get_control_by_id("EditorFSContainer5").visible = false
 	elseif context.current_form_tab == 3 then
 		-- Save/load.
 		context:get_control_by_id("EditorFSContainer1").visible = false
 		context:get_control_by_id("EditorFSContainer2").visible = false
 		context:get_control_by_id("EditorFSContainer3").visible = true
 		context:get_control_by_id("EditorFSContainer4").visible = false
+		context:get_control_by_id("EditorFSContainer5").visible = false
 	elseif context.current_form_tab == 4 then
 		-- Syling.
 		context:get_control_by_id("EditorFSContainer1").visible = false
 		context:get_control_by_id("EditorFSContainer2").visible = false
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = true
+		context:get_control_by_id("EditorFSContainer5").visible = false
+	elseif context.current_form_tab == 5 then
+		-- Events.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+		context:get_control_by_id("EditorFSContainer5").visible = true
 	end
 end
 
@@ -220,6 +233,11 @@ end
 
 
 local function highlight_selected_widget(context)
+	-- No highlighting or widget selection in the events pannel.
+	if context.current_form_tab == 5 then
+		return
+	end
+
 	-- Show a bright box around the currently selected widget.
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
@@ -357,7 +375,7 @@ local function make_editor(pname)
 
 			-- Editor formspec with controls.
 			{type="background9", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
-			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling"}, current_tab=context.current_form_tab},
+			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling", "Events"}, current_tab=context.current_form_tab},
 			{type="box", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, color="#00000055"},
 			{type="label", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 
@@ -475,6 +493,13 @@ local function make_editor(pname)
 			{h=4.4, name="StyleableWidgetList", type="textlist", w=3, x=0, y=0.4},
 			{type="container_end"},
 			{h=3.28, label="Style Docs", style={font="mono", font_size="*0.85", textcolor="black"}, name="StyleEditorDocs", text="", type="textarea", w=8, x=0.5, y=5.7},
+			{type="container_end"},
+
+			-- Events.
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer5"},
+			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
+			{h=0.7, text="Interact with any widget in the test GUI to see response fields.", type="label", w=3.7, x=0.5, y=0.5},
+			{h=7.5, label="", name="EventResponseDisplay", style={font="mono", font_size="*0.9", textcolor="red"}, text=context.last_event_table or "", type="textarea", w=8, x=0.5, y=1.5},
 			{type="container_end"},
 		},
 	}
@@ -1680,6 +1705,12 @@ end
 
 
 local function handle_live_select(context, fields)
+	-- Can't select live widgets in the events pannel.
+	-- This would interfere with extracting their event responses.
+	if context.current_form_tab == 5 then
+		return
+	end
+
 	local names = {}
 	local widgets = context:get_editing_root()
 
@@ -1744,15 +1775,15 @@ end
 
 local function handle_switch_editor_tab(context, fields)
 	if fields.EditorTabs then
-		if fields.EditorTabs == "1" then
-			context.current_form_tab = 1
-		elseif fields.EditorTabs == "2" then
-			context.current_form_tab = 2
-		elseif fields.EditorTabs == "3" then
-			context.current_form_tab = 3
-		elseif fields.EditorTabs == "4" then
-			context.current_form_tab = 4
+		local widget = context:get_control_by_name("EditorTabs")
+		local list = widget.itemlist
+
+		local idx = tonumber(fields.EditorTabs)
+		if idx and idx >= 1 and idx <= #list then
+			context.current_form_tab = idx
 		end
+
+		context.last_event_table = nil
 	end
 end
 
@@ -1801,6 +1832,17 @@ function formspec.on_player_receive_fields(player, formname, fields)
 
 	if fields.AllowOverwrite then
 		context.savefile_overwrite_enabled = toboolean(fields.AllowOverwrite)
+	end
+
+	if context.current_form_tab == 5 and not fields.EditorTabs then
+		local newfields = table.copy(fields)
+
+		-- Since the textarea[] display is part of the formspec,
+		-- its contents are always bounced back to the server when the user
+		-- interacts. Nil it out to avoid displaying noise.
+		newfields.EventResponseDisplay = nil
+
+		context.last_event_table = dump(newfields)
 	end
 
 	-- Keep user's GUI updated.

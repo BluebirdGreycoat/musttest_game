@@ -735,3 +735,27 @@ formspec.register_widget("item_image_button", {
 		return {type="item_image_button", x=0, y=0, w=1, h=1, item_name="default:sword_steel", name=""}
 	end,
 })
+
+
+
+formspec.register_widget("image_button_exit", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "texture", ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+
+			-- Note: these are undocumented in Lua API.txt
+			BOOLEAN(params, "no_clip", ""),
+			BOOLEAN(params, "draw_border", ""),
+			STRING(params, "pressed_texture", ""),
+		}
+		return "image_button_exit[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="image_button_exit", x=0, y=0, w=0.5, h=0.5, texture="default_cobble.png", name=""}
+	end,
+})

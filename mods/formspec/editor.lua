@@ -254,10 +254,17 @@ local function highlight_selected_widget(context)
 
 		if target.type == "checkbox" then
 			-- Checkboxes don't have W, H.
+			-- They also have wierd positioning.
 			selector.x = target.x - 0.05
 			selector.y = target.y - 0.2
 			selector.w = 0.4
 			selector.h = 0.4
+		elseif target.type == "tabheader" then
+			-- Tab header's anchor is at the bottom left instead of top left.
+			selector.x = target.x - 0.02
+			selector.y = target.y - (target.h or 1) - 0.02
+			selector.w = (target.w or 1) + 0.06
+			selector.h = (target.h or 1) + 0.06
 		else
 			selector.x = target.x - 0.02
 			selector.y = target.y - 0.02
@@ -767,6 +774,14 @@ local function create_new_editor_context(pname, param)
 		get_widget_by_type = function(self, typename)
 			for index, info in ipairs(self:get_editing_root()) do
 				if info.type == typename then
+					return info, index
+				end
+			end
+		end,
+
+		get_widget_by_name = function(self, name)
+			for index, info in ipairs(self:get_editing_root()) do
+				if info.name == name then
 					return info, index
 				end
 			end
@@ -1789,6 +1804,47 @@ end
 
 
 
+-- Keep the test GUI in sync with its events, so it feels responsive.
+-- This is especially important for things like scrollbars and tab headers.
+local function sync_test_gui(context, fields)
+	for name, data in pairs(fields) do
+		local widget = context:get_widget_by_name(name)
+		if not widget then
+			goto skip
+		end
+
+		if widget.type == "tabheader" then
+			widget.current_tab = tonumber(data)
+		elseif widget.type == "dropdown" then
+			-- TODO: but data could be VALUE, not index!
+			widget.selected = tonumber(data)
+		elseif widget.type == "scrollbar" then
+			local tab = minetest.explode_scrollbar_event(data)
+			if tab.type == "CHG" then
+				widget.value = tab.value
+			end
+		elseif widget.type == "textlist" then
+			local tab = minetest.explode_textlist_event(data)
+			if tab.type == "CHG" or tab.type == "DCL" then
+				widget.selected = tab.index
+			end
+		elseif widget.type == "field" then
+			widget.default = tostring(data)
+		elseif widget.type == "textarea" then
+			widget.text = tostring(data)
+		elseif widget.type == "button" then
+			-- Nothing.
+		else
+			-- TODO: unhandled element posted an event.
+			minetest.log('test widget: ' .. widget.type .. ", " .. widget.name)
+		end
+
+		::skip::
+	end
+end
+
+
+
 function formspec.on_player_receive_fields(player, formname, fields)
 	if formname ~= "formspec:editor" then
 		return
@@ -1844,6 +1900,8 @@ function formspec.on_player_receive_fields(player, formname, fields)
 
 		context.last_event_table = dump(newfields)
 	end
+
+	sync_test_gui(context, fields)
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

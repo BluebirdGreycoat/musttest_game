@@ -223,7 +223,7 @@ local function highlight_selected_widget(context)
 	-- Show a bright box around the currently selected widget.
 	local idx = context:get_selected_widget()
 	local widgets = context:get_editing_root()
-	local selector = {type="box", x=0, y=0, w=1, h=1, color="#ff0000ff"}
+	local selector = {type="box", x=0, y=0, w=1, h=1, color="#ff0000ff", style={noclip=true}}
 	local _, begpos = context:get_control_by_id("testGUIbegin")
 
 	if idx then

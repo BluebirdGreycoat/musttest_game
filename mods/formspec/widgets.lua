@@ -14,6 +14,33 @@ end
 
 
 
+local function COL_STRING(params, key, default)
+	if type(params[key]) == "string" then
+		return tostring(params[key])
+	end
+	return tostring(default)
+end
+
+
+
+local function ESC_STRING(params, key, default)
+	if type(params[key]) == "string" then
+		return FS(tostring(params[key]))
+	end
+	return FS(tostring(default))
+end
+
+
+
+local function NUMBER(params, key, default)
+	if type(params[key]) == "number" then
+		return tostring(params[key])
+	end
+	return tostring(default)
+end
+
+
+
 local function BOOLEAN(params, key, default)
 	if type(params[key]) == "boolean" then
 		return tostring(params[key])
@@ -96,7 +123,7 @@ formspec.register_widget("label", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			FS(type(params.text) == "string" and params.text or ""),
+			ESC_STRING(params, "text", ""),
 		}
 		return "label[" .. CAT(E) .. "]"
 	end,
@@ -122,7 +149,7 @@ formspec.register_widget("vertlabel", {
 	make = function(params)
 		local E = {
 			NUMPACK(params, {"x", "y"}),
-			FS(type(params.text) == "string" and params.text or ""),
+			ESC_STRING(params, "text", ""),
 		}
 		return "vertlabel[" .. CAT(E) .. "]"
 	end,
@@ -151,7 +178,7 @@ formspec.register_widget("item_image", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			tostring(params.item_name),
+			STRING(params, "item_name", ""),
 		}
 		return "item_image[" .. CAT(E) .. "]"
 	end,
@@ -180,7 +207,7 @@ formspec.register_widget("box", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.color,
+			COL_STRING(params, "color", ""),
 		}
 		return "box[" .. CAT(E) .. "]"
 	end,
@@ -209,8 +236,8 @@ formspec.register_widget("image", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.texture,
-			NUMPACK(params, {"x1", "y1", "x2", "y2"}),
+			STRING(params, "texture", ""),
+			NUMPACK_VARYING(params, {"x1", "y1", "x2", "y2"}),
 		}
 		return "image[" .. CAT(E) .. "]"
 	end,
@@ -241,9 +268,9 @@ formspec.register_widget("textarea", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label or ""),
-			FS(params.text),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+			ESC_STRING(params, "text", ""),
 		}
 		return "textarea[" .. CAT(E) .. "]"
 	end,
@@ -273,8 +300,8 @@ formspec.register_widget("hypertext", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.text),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "text", ""),
 		}
 		return "hypertext[" .. CAT(E) .. "]"
 	end,
@@ -305,9 +332,9 @@ formspec.register_widget("button_url", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label),
-			FS(params.url),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+			ESC_STRING(params, "url", ""),
 		}
 		return "button_url[" .. CAT(E) .. "]"
 	end,
@@ -338,9 +365,9 @@ formspec.register_widget("button_url_exit", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label),
-			FS(params.url),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+			ESC_STRING(params, "url", ""),
 		}
 		return "button_url_exit[" .. CAT(E) .. "]"
 	end,
@@ -371,14 +398,16 @@ formspec.register_widget("field", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label or ""),
-			FS(params.default or ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+			ESC_STRING(params, "default", ""),
 		}
+
 		local close_on_enter = ""
-		if params.close_on_enter ~= nil then
+		if type(params.close_on_enter) == "boolean" and type(params.name) == "string" and params.name:len() > 0 then
 			close_on_enter = "field_close_on_enter[" .. params.name .. ";" .. tostring(params.close_on_enter) .. "]"
 		end
+
 		return "field[" .. CAT(E) .. "]" .. close_on_enter
 	end,
 
@@ -407,13 +436,15 @@ formspec.register_widget("pwdfield", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label or ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
 		}
+
 		local close_on_enter = ""
-		if params.close_on_enter ~= nil then
+		if type(params.close_on_enter) == "boolean" and type(params.name) == "string" and params.name:len() > 0 then
 			close_on_enter = "field_close_on_enter[" .. params.name .. ";" .. tostring(params.close_on_enter) .. "]"
 		end
+
 		return "pwdfield[" .. CAT(E) .. "]" .. close_on_enter
 	end,
 
@@ -442,8 +473,8 @@ formspec.register_widget("button", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label or ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
 		}
 		return "button[" .. CAT(E) .. "]"
 	end,
@@ -473,8 +504,8 @@ formspec.register_widget("button_exit", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			FS(params.label or ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
 		}
 		return "button_exit[" .. CAT(E) .. "]"
 	end,
@@ -508,9 +539,9 @@ formspec.register_widget("background9", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.texture,
-			(params.auto_clip ~= nil and tostring(params.auto_clip) or ""),
-			NUMPACK(params, {"x1", "y1", "x2", "y2"}),
+			STRING(params, "texture", ""),
+			BOOLEAN(params, "auto_clip", ""),
+			NUMPACK_VARYING(params, {"x1", "y1", "x2", "y2"}),
 		}
 		return "background9[" .. CAT(E) .. "]"
 	end,
@@ -540,8 +571,8 @@ formspec.register_widget("background", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.texture,
-			(params.auto_clip ~= nil and tostring(params.auto_clip) or ""),
+			STRING(params, "texture", ""),
+			BOOLEAN(params, "auto_clip", ""),
 		}
 		return "background[" .. CAT(E) .. "]"
 	end,
@@ -621,11 +652,11 @@ formspec.register_widget("textlist", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
+			STRING(params, "name", ""),
 		}
 
 		local E2 = {
-			(params.selected ~= nil and tostring(params.selected) or "")
+			NUMBER(params, "selected", ""),
 		}
 
 		-- Formspec escape all items.
@@ -657,9 +688,9 @@ formspec.register_widget("checkbox", {
 	make = function(params)
 		local E = {
 			NUMPACK(params, {"x", "y"}),
-			params.name,
-			FS(params.label or ""),
-			(params.selected ~= nil and tostring(params.selected) or "")
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+			BOOLEAN(params, "selected", ""),
 		}
 		return "checkbox[" .. CAT(E) .. "]"
 	end,
@@ -691,13 +722,13 @@ formspec.register_widget("tabheader", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
+			STRING(params, "name", ""),
 		}
 
 		local E2 = {
-			(params.current_tab ~= nil and tostring(params.current_tab) or ""),
-			(params.transparent ~= nil and tostring(params.transparent) or ""),
-			(params.draw_border ~= nil and tostring(params.draw_border) or ""),
+			NUMBER(params, "current_tab", ""),
+			BOOLEAN(params, "transparent", ""),
+			BOOLEAN(params, "draw_border", ""),
 		}
 
 		-- Formspec escape all items.
@@ -736,10 +767,10 @@ formspec.register_widget("scroll_container", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.scrollbar_name,
-			params.orientation,
-			(type(params.scroll_factor) == "number" and params.scroll_factor > 0.1 and params.scroll_factor) or "",
-			(type(params.content_padding) == "number" and params.content_padding) or "",
+			STRING(params, "scrollbar_name", ""),
+			STRING(params, "orientation", ""),
+			NUMBER(params, "scroll_factor", ""),
+			NUMBER(params, "content_padding", ""),
 		}
 		return "scroll_container[" .. CAT(E) .. "]"
 	end,
@@ -795,11 +826,13 @@ formspec.register_widget("scroll_container_end", {
 formspec.register_widget("list", {
 	make = function(params)
 		local E = {
-			params.inventory_location or "current_player",
-			params.list_name or "main",
+			-- Defaulting to the player's inventory because otherwise this widget is invisible.
+			-- That would make it hard to position in the editor GUI.
+			STRING(params, "inventory_location", "current_player"),
+			STRING(params, "list_name", "main"),
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			(type(params.start_index) == "number" and params.start_index >= 0 and params.start_index) or "",
+			NUMBER(params, "start_index", ""),
 		}
 		return "list[" .. CAT(E) .. "]"
 	end,
@@ -823,8 +856,8 @@ formspec.register_widget("list", {
 formspec.register_widget("listring", {
 	make = function(params)
 		local E = {
-			params.inventory_location or "current_player",
-			params.list_name or "main",
+			STRING(params, "inventory_location", ""),
+			STRING(params, "list_name", ""),
 		}
 		return "listring[" .. CAT(E) .. "]"
 	end,
@@ -851,11 +884,11 @@ formspec.register_widget("listring", {
 formspec.register_widget("listcolors", {
 	make = function(params)
 		local E = {
-			params.slot_bg_normal or "",
-			params.slot_bg_hover or "",
-			params.slot_border or "",
-			params.tooltip_bgcolor or "",
-			params.tooltip_fontcolor or "",
+			COL_STRING(params, "slot_bg_normal", ""),
+			COL_STRING(params, "slot_bg_hover", ""),
+			COL_STRING(params, "slot_border", ""),
+			COL_STRING(params, "tooltip_bgcolor", ""),
+			COL_STRING(params, "tooltip_fontcolor", ""),
 		}
 		return "listcolors[" .. CAT(E) .. "]"
 	end,
@@ -886,9 +919,9 @@ formspec.register_widget("tooltip", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			FS(params.text or ""),
-			params.bgcolor or "",
-			params.fontcolor or "",
+			ESC_STRING(params, "text", ""),
+			COL_STRING(params, "bgcolor", ""),
+			COL_STRING(params, "fontcolor", ""),
 		}
 		return "tooltip[" .. CAT(E) .. "]"
 	end,
@@ -919,10 +952,10 @@ formspec.register_widget("hypertip", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			NUMPACK(params, {"static_x", "static_y"}),
-			tostring(params.width or 20),
-			params.name or "",
-			FS(params.text or ""),
+			NUMPACK(params, {"static_x", "static_y"}, ""),
+			NUMBER(params, "width", 20),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "text", ""),
 		}
 		return "hypertip[" .. CAT(E) .. "]"
 	end,
@@ -959,12 +992,12 @@ formspec.register_widget("animated_image", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			(type(params.texture) == "string" and params.texture:len() > 0 and params.texture) or "default_ice.png",
-			params.frame_count,
-			params.frame_duration,
-			(type(params.frame_start) == "number" and params.frame_start >= 1 and tostring(params.frame_start)) or "",
-			NUMPACK(params, {"x1", "y1", "x2", "y2"}),
+			STRING(params, "name", ""),
+			STRING(params, "texture", ""),
+			NUMBER(params, "frame_count", ""),
+			NUMBER(params, "frame_duration", ""),
+			NUMBER(params, "frame_start", ""),
+			NUMPACK_VARYING(params, {"x1", "y1", "x2", "y2"}),
 		}
 		return "animated_image[" .. CAT(E) .. "]"
 	end,
@@ -989,9 +1022,9 @@ formspec.register_widget("animated_image", {
 formspec.register_widget("bgcolor", {
 	make = function(params)
 		local E = {
-			params.bgcolor,
-			params.fullscreen,
-			params.fbgcolor,
+			COL_STRING(params, "bgcolor", ""),
+			STRING(params, "fullscreen", ""),
+			COL_STRING(params, "fbgcolor", ""),
 		}
 		return "bgcolor[" .. CAT(E) .. "]"
 	end,
@@ -1028,14 +1061,14 @@ formspec.register_widget("model", {
 		local E = {
 			NUMPACK(params, {"x", "y"}),
 			NUMPACK(params, {"w", "h"}),
-			params.name,
-			params.mesh,
-			params.textures,
+			STRING(params, "name", ""),
+			STRING(params, "mesh", ""),
+			STRING(params, "textures", ""),
 			NUMPACK(params, {"rx", "ry"}),
-			(params.continuous ~= nil and tostring(params.continuous) or ""),
-			(params.mouse_control ~= nil and tostring(params.mouse_control) or ""),
-			tostring(params.frame_loop_range or ""),
-			tostring(params.animation_speed or ""),
+			BOOLEAN(params, "continuous", ""),
+			BOOLEAN(params, "mouse_control", ""),
+			NUMBER(params, "frame_loop_range", ""),
+			NUMBER(params, "animation_speed", ""),
 		}
 		return "model[" .. CAT(E) .. "]"
 	end,

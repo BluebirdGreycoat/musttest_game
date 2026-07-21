@@ -759,3 +759,32 @@ formspec.register_widget("image_button_exit", {
 		return {type="image_button_exit", x=0, y=0, w=0.5, h=0.5, texture="default_cobble.png", name=""}
 	end,
 })
+
+
+
+formspec.register_widget("dropdown", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "name", ""),
+		}
+
+		local E2 = {
+			NUMBER(params, "selected", ""),
+			BOOLEAN(params, "index_event", ""),
+		}
+
+		-- Formspec escape all items.
+		local items = params.itemlist or {}
+		for i=1, #items, 1 do
+			items[i] = FS(items[i])
+		end
+
+		return "dropdown[" .. CAT(E) .. ";" .. table.concat(items, ",") .. ";" .. CAT(E2) .. "]"
+	end,
+
+	make_params = function()
+		return {type="dropdown", x=0, y=0, w=3, h=6, name="", itemlist={"Item1", "Item2", "Item3"}}
+	end,
+})

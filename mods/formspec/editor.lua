@@ -1688,6 +1688,7 @@ local function handle_live_select(context, fields)
 		field = true,
 		textarea = true,
 		animated_image = true,
+		dropdown = true,
 	}
 
 	for index, info in ipairs(widgets) do

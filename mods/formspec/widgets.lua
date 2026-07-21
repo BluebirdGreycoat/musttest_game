@@ -5,13 +5,58 @@ end
 
 
 
+local function STRING(params, key, default)
+	if type(params[key]) == "string" then
+		return tostring(params[key])
+	end
+	return tostring(default)
+end
+
+
+
+local function BOOLEAN(params, key, default)
+	if type(params[key]) == "boolean" then
+		return tostring(params[key])
+	end
+	return tostring(default)
+end
+
+
+
 -- Turn x=6, y=10, etc. into "6,10,..." (note the commas)
-local function NUMPACK(params, list)
+local function NUMPACK(params, list, default)
 	local s = ""
 	local present = {}
 
 	for _, key in ipairs(list) do
-		if params[key] then
+		if type(params[key]) == "number" then
+			table.insert(present, key)
+		end
+	end
+
+	-- All must be present, else default is returned (or "").
+	if #present ~= #list then
+		return (default ~= nil and tostring(default) or "")
+	end
+
+	for index, key in ipairs(present) do
+		s = s .. tostring(params[key])
+		if index < #present then
+			s = s .. ","
+		end
+	end
+
+	return s -- Is always a string.
+end
+
+
+
+local function NUMPACK_VARYING(params, list)
+	local s = ""
+	local present = {}
+
+	for _, key in ipairs(list) do
+		if type(params[key]) == "number" then
 			table.insert(present, key)
 		end
 	end
@@ -23,7 +68,7 @@ local function NUMPACK(params, list)
 		end
 	end
 
-	return s
+	return s -- Is always a string.
 end
 
 
@@ -997,5 +1042,34 @@ formspec.register_widget("model", {
 
 	make_params = function()
 		return {type="model", x=0, y=0, w=3, h=3, rx=0, ry=200, name="", mesh="3d_armor_character.b3d", textures="character_11.png,3d_armor_trans.png,default_tool_steelsword.png"}
+	end,
+})
+
+
+
+--[[
+
+	{
+		type = "image_button",
+	}
+
+--]]
+formspec.register_widget("image_button", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "texture", ""),
+			STRING(params, "name", ""),
+			STRING(params, "label", ""),
+			BOOLEAN(params, "no_clip", ""),
+			BOOLEAN(params, "draw_border", ""),
+			STRING(params, "pressed_texture", ""),
+		}
+		return "image_button[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="image_button", x=0, y=0, w=0.5, h=0.5, texture="default_cobble.png", name=""}
 	end,
 })

@@ -44,6 +44,19 @@ end
 local function BOOLEAN(params, key, default)
 	if type(params[key]) == "boolean" then
 		return tostring(params[key])
+	elseif type(params[key]) == "string" then
+		-- Certain strings are also recognized.
+		local k = params[key]
+		local t = "true"
+		local f = "false"
+		if k == "true" then return t end
+		if k == "false" then return f end
+		if k == "1" then return t end
+		if k == "0" then return f end
+		if k == "yes" then return t end
+		if k == "no" then return f end
+		if k == "on" then return t end
+		if k == "off" then return f end
 	end
 	return tostring(default)
 end
@@ -785,7 +798,7 @@ formspec.register_widget("dropdown", {
 	end,
 
 	make_params = function()
-		return {type="dropdown", x=0, y=0, w=3, h=0.5, name="", itemlist={"Item1", "Item2", "Item3"}}
+		return {type="dropdown", x=0, y=0, w=3, h=0.5, name="", itemlist={"Item1", "Item2", "Item3", "42"}}
 	end,
 })
 

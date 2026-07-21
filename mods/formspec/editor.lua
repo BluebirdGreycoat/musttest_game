@@ -1816,8 +1816,24 @@ local function sync_test_gui(context, fields)
 		if widget.type == "tabheader" then
 			widget.current_tab = tonumber(data)
 		elseif widget.type == "dropdown" then
-			-- TODO: but data could be VALUE, not index!
-			widget.selected = tonumber(data)
+			-- Data could be VALUE, not index! (depending on 'index_event'.)
+			-- Note: code has a bug. If widget is set to deliver values on index
+			-- event, and the value is interpretable as a number, this will treat it
+			-- as an index instead of a value, which could make 'n' out of bounds.
+			-- This is OK for the GUI editor since we don't actually do anything
+			-- with it.
+			local n = tonumber(data)
+			if not n then
+				-- Get index from value received from fields.
+				for k, v in ipairs(widget.itemlist) do
+					if v == data then
+						widget.selected = k
+						break
+					end
+				end
+			else
+				widget.selected = n
+			end
 		elseif widget.type == "scrollbar" then
 			local tab = minetest.explode_scrollbar_event(data)
 			if tab.type == "CHG" then
@@ -1830,10 +1846,26 @@ local function sync_test_gui(context, fields)
 			end
 		elseif widget.type == "field" then
 			widget.default = tostring(data)
+		elseif widget.type == "pwdfield" then
+			-- Nothing.
 		elseif widget.type == "textarea" then
 			widget.text = tostring(data)
 		elseif widget.type == "button" then
 			-- Nothing.
+		elseif widget.type == "image_button" then
+			-- Nothing.
+		elseif widget.type == "item_image_button" then
+			-- Nothing.
+		elseif widget.type == "animated_image" then
+			widget.frame_start = tonumber(data)
+		elseif widget.type == "checkbox" then
+			widget.selected = data
+		elseif widget.type == "table" then
+			local tab = minetest.explode_table_event(data)
+			if tab.type == "CHG" or tab.type == "DCL" then
+				-- There's also 'tab.column' but only whole rows can be selected in the widget.
+				widget.selected = tab.row
+			end
 		else
 			-- TODO: unhandled element posted an event.
 			minetest.log('test widget: ' .. widget.type .. ", " .. widget.name)
@@ -1898,7 +1930,19 @@ function formspec.on_player_receive_fields(player, formname, fields)
 		-- interacts. Nil it out to avoid displaying noise.
 		newfields.EventResponseDisplay = nil
 
-		context.last_event_table = dump(newfields)
+		local s = dump(newfields)
+
+		-- Note: leading whitespace is intentional.
+		local warning = [=[
+
+
+-- Warning: do not assume that fields will
+-- always be as shown, when processing these
+-- in your code. In particular, a hacked or
+-- broken client can submit invalid or
+-- maliciously crafted fields.
+]=]
+		context.last_event_table = s .. warning
 	end
 
 	sync_test_gui(context, fields)

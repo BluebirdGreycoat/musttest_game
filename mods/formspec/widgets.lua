@@ -818,3 +818,146 @@ formspec.register_widget("scrollbar", {
 		return {type="scrollbar", x=0, y=0, w=3, h=0.5, name=""}
 	end,
 })
+
+
+
+local function build_table_columns(params)
+	if type(params.columns) ~= "table" then
+		return ""
+	end
+
+	-- Columns should look like: { {type="", key="value", ...}, ... }
+	-- Each sub-table defines a column, so if there are 3 sub-tables, there will
+	-- be three columns in the formspec table.
+	local columns = params.columns
+	local string_columns = {}
+
+	-- Supported type must be one of these.
+	local SUPPORTED_TYPES = {
+		text = true,
+		image = true,
+		color = true,
+		indent = true,
+		tree = true,
+	}
+
+	for _, column_opts in ipairs(columns) do
+		local tt = type(column_opts.type)
+		local ty = column_opts.type
+		local va = {} -- Will be an array of strings: {"key=val1", "key2=val2", ...}
+
+		if tt ~= "string" then
+			goto skip
+		end
+
+		if not SUPPORTED_TYPES[ty] then
+			goto skip
+		end
+
+		-- Add the column type.
+		table.insert(va, ty)
+
+		-- Collect the rest of the arbitrary parameters.
+		for k, v in pairs(column_opts) do
+			local vt = type(v)
+			local kt = type(k)
+
+			if kt == "string" and k ~= "type" and (vt == "string" or vt == "number") then
+				table.insert(va, k .. "=" .. v)
+			end
+		end
+
+		-- Concatenate array of string options into a single string, like so:
+		-- "typename,key1=val1,key2=val2,key3=val3"
+		table.insert(string_columns, table.concat(va, ","))
+
+		::skip::
+	end
+
+	-- Finally, return the compiled string.
+	return table.concat(string_columns, ";")
+end
+
+
+
+formspec.register_widget("table", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "name", ""),
+		}
+
+		local E2 = {
+			NUMBER(params, "selected", ""),
+		}
+
+		-- Table options.
+		local E3 = {
+			"color=" .. COL_STRING(params, "color", "#FFFFFF"),
+			"background=" .. COL_STRING(params, "background", "#000000"),
+			"border=" .. BOOLEAN(params, "border", ""),
+			"highlight=" .. COL_STRING(params, "highlight", "#466432"),
+			"highlight_text=" .. COL_STRING(params, "highlight_text", "#FFFFFF"),
+			"opendepth=" .. NUMBER(params, "opendepth", ""),
+		}
+
+		-- Formspec escape all items.
+		local cells = {}
+		local type = type
+		local tostring = tostring
+		local FS = FS
+
+		if type(params.cells) == "table" then
+			local p = params.cells
+			for i=1, #p, 1 do
+				local t = type(p[i])
+				if t == "string" or t == "number" then
+					cells[#cells + 1] = FS(tostring(p[i]))
+				elseif t == "table" then
+					-- Handle subtable.
+					local s = p[i]
+					for j=1, #s, 1 do
+						local y = type(s[j])
+						if y == "string" or y == "number" then
+							cells[#cells + 1] = FS(tostring(s[j]))
+						end
+					end
+				end
+			end
+		end
+
+		local formlines = {
+			("tableoptions[" .. CAT(E3) .. "]"),
+			("tablecolumns[" .. build_table_columns(params) .. "]"),
+			("table[" .. CAT(E) .. ";" .. table.concat(cells, ",") .. ";" .. CAT(E2) .. "]"),
+		}
+
+		return table.concat(formlines)
+	end,
+
+	make_params = function()
+		return {
+			type = "table",
+			x = 0, y = 0, w = 5.5, h=3,
+			name = "",
+			cells = {
+				-- Subtables are allowed but not strictly required. (Everything is flattened anyway.)
+				-- They're allowed because that makes it easier to construct the table rows
+				-- programatically ... sometimes.
+				-- Since everything is flattened, the sub-table width is NOT validated.
+				{"R1 C1", "red", "R1 C2", "R1 C3"},
+				{"R2 C1", "white", "R2 C2", "R2 C3"},
+				{"R3 C1", "blue", "R3 C2", "R3 C3"},
+				"R4 C1", "purple", "R4 C2", "R4 C3",
+				"Test1", "gray", "ABCDE", "Color",
+			},
+			columns = {
+				{type="text", align="left", width=10},
+				{type="color", span=1},
+				{type="text", align="center", width=10},
+				{type="text", align="right", width=10},
+			},
+		}
+	end,
+})

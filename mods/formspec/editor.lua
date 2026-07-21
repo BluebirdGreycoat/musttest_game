@@ -1684,6 +1684,7 @@ local function handle_live_select(context, fields)
 	local widgets = context:get_editing_root()
 
 	-- List of GUI elements to ignore because we ALWAYS get them in 'fields'
+	-- if the widget is present in the formspec.
 	local BLACKLIST = {
 		field = true,
 		textarea = true,

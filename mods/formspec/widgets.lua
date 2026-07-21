@@ -785,6 +785,36 @@ formspec.register_widget("dropdown", {
 	end,
 
 	make_params = function()
-		return {type="dropdown", x=0, y=0, w=3, h=6, name="", itemlist={"Item1", "Item2", "Item3"}}
+		return {type="dropdown", x=0, y=0, w=3, h=0.5, name="", itemlist={"Item1", "Item2", "Item3"}}
+	end,
+})
+
+
+
+formspec.register_widget("scrollbar", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "orientation", ""),
+			STRING(params, "name", ""),
+			NUMBER(params, "value", ""),
+		}
+
+		local E2 = {
+			"min=" .. NUMBER(params, "min", ""),
+			"max=" .. NUMBER(params, "max", ""),
+			"smallstep=" .. NUMBER(params, "smallstep", ""),
+			"largestep=" .. NUMBER(params, "largestep", ""),
+			"thumbsize=" .. NUMBER(params, "thumbsize", ""),
+			"arrows=" .. STRING(params, "arrows", ""),
+		}
+
+		local options = "scrollbaroptions[" .. CAT(E2) .. "]"
+		return options .. "scrollbar[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="scrollbar", x=0, y=0, w=3, h=0.5, name=""}
 	end,
 })

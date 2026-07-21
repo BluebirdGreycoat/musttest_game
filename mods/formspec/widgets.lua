@@ -704,7 +704,7 @@ formspec.register_widget("image_button", {
 			NUMPACK(params, {"w", "h"}),
 			STRING(params, "texture", ""),
 			STRING(params, "name", ""),
-			STRING(params, "label", ""),
+			ESC_STRING(params, "label", ""),
 			BOOLEAN(params, "no_clip", ""),
 			BOOLEAN(params, "draw_border", ""),
 			STRING(params, "pressed_texture", ""),
@@ -714,5 +714,24 @@ formspec.register_widget("image_button", {
 
 	make_params = function()
 		return {type="image_button", x=0, y=0, w=0.5, h=0.5, texture="default_cobble.png", name=""}
+	end,
+})
+
+
+
+formspec.register_widget("item_image_button", {
+	make = function(params)
+		local E = {
+			NUMPACK(params, {"x", "y"}),
+			NUMPACK(params, {"w", "h"}),
+			STRING(params, "item_name", ""),
+			STRING(params, "name", ""),
+			ESC_STRING(params, "label", ""),
+		}
+		return "item_image_button[" .. CAT(E) .. "]"
+	end,
+
+	make_params = function()
+		return {type="item_image_button", x=0, y=0, w=1, h=1, item_name="default:sword_steel", name=""}
 	end,
 })

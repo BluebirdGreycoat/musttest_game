@@ -46,6 +46,7 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = false
 		context:get_control_by_id("EditorFSContainer5").visible = false
+		context:get_control_by_id("EditorFSContainer6").visible = false
 		show_form_borders(context)
 	elseif context.current_form_tab == 2 then
 		-- Widget editor.
@@ -54,6 +55,7 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = false
 		context:get_control_by_id("EditorFSContainer5").visible = false
+		context:get_control_by_id("EditorFSContainer6").visible = false
 	elseif context.current_form_tab == 3 then
 		-- Save/load.
 		context:get_control_by_id("EditorFSContainer1").visible = false
@@ -61,6 +63,7 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer3").visible = true
 		context:get_control_by_id("EditorFSContainer4").visible = false
 		context:get_control_by_id("EditorFSContainer5").visible = false
+		context:get_control_by_id("EditorFSContainer6").visible = false
 	elseif context.current_form_tab == 4 then
 		-- Syling.
 		context:get_control_by_id("EditorFSContainer1").visible = false
@@ -68,6 +71,7 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = true
 		context:get_control_by_id("EditorFSContainer5").visible = false
+		context:get_control_by_id("EditorFSContainer6").visible = false
 	elseif context.current_form_tab == 5 then
 		-- Events.
 		context:get_control_by_id("EditorFSContainer1").visible = false
@@ -75,6 +79,15 @@ local function chose_tabheader_page(context)
 		context:get_control_by_id("EditorFSContainer3").visible = false
 		context:get_control_by_id("EditorFSContainer4").visible = false
 		context:get_control_by_id("EditorFSContainer5").visible = true
+		context:get_control_by_id("EditorFSContainer6").visible = false
+	elseif context.current_form_tab == 6 then
+		-- Table editor.
+		context:get_control_by_id("EditorFSContainer1").visible = false
+		context:get_control_by_id("EditorFSContainer2").visible = false
+		context:get_control_by_id("EditorFSContainer3").visible = false
+		context:get_control_by_id("EditorFSContainer4").visible = false
+		context:get_control_by_id("EditorFSContainer5").visible = false
+		context:get_control_by_id("EditorFSContainer6").visible = true
 	end
 end
 
@@ -358,6 +371,92 @@ end
 
 
 
+local function populate_column_display(context)
+	local column_widget = context:get_control_by_name("EditTableColumnsDisplay")
+	local param_widget = context:get_control_by_name("EditTableColumnParams")
+	local dropdown_widget = context:get_control_by_name("EditTableChooseColumnType")
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		return
+	end
+
+	if widgets[idx].type ~= "table" then
+		return
+	end
+
+	local selected_column = context.EditTable.selected_column
+	local table_widget = widgets[idx]
+	local column_items = {}
+	local param_items = {}
+
+	for k, v in ipairs(table_widget.columns or {}) do
+		table.insert(column_items, "Column " .. k .. ": " .. v.type .. (k == selected_column and " (selected)" or ""))
+
+		if k == selected_column then
+			for n, m in pairs(v) do
+				if n ~= "type" then
+					local value = m
+					if type(m) == "string" then
+						value = "\"" .. m .. "\""
+					end
+					table.insert(param_items, n .. " = " .. tostring(value))
+				end
+			end
+		end
+	end
+
+	if selected_column then
+		local i = selected_column
+		if i >= 1 and i <= #table_widget.columns then
+			local t = (table_widget.columns[i].type or "")
+			for k, v in ipairs(dropdown_widget.itemlist) do
+				if v ~= "" and v:lower() == t then
+					dropdown_widget.selected = k
+				end
+			end
+		end
+	end
+
+	column_widget.itemlist = column_items
+	param_widget.itemlist = param_items
+end
+
+
+
+local function update_row_data_editor(context)
+	if context.current_form_tab ~= 6 then
+		return
+	end
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+	local textarea = context:get_control_by_name("EditTableRowDataText")
+
+	if not idx then
+		return
+	end
+
+	if widgets[idx].type ~= "table" then
+		return
+	end
+
+	local table_widget = widgets[idx]
+	local columns = table_widget.columns or {}
+	local cells = table_widget.cells or {}
+	local column_count = #columns
+
+	-- Signal cells/columns mismatch with a color change.
+	-- If you're seeing red your table doesn't have enough cell data.
+	if #cells % column_count ~= 0 then
+		textarea.style.textcolor = "red"
+	end
+end
+
+
+
 local function make_editor(pname)
 	local context = formspec.EDITOR_CONTEXTS[pname]
 	if not context then return "" end
@@ -374,6 +473,10 @@ local function make_editor(pname)
 		size = INIT_SIZE,
 
 		children = {
+			-- The fake dropdown helps us distinguish between when the dropdown is directly manipulated vs when it isn't.
+			-- It is located far off the formspec bounds where hopefully no one will ever see it.
+			{h=1, itemlist={}, name="FakeDropdown", type="dropdown", w=1, x=100, y=1},
+
 			-- Shows what the currently-edited formspec looks like.
 			{type="container", x=0, y=0, FORMSPEC_ID="testGUIbegin"},
 			-- DO NOT add any elements between here and TEST GUI container end!
@@ -382,7 +485,7 @@ local function make_editor(pname)
 
 			-- Editor formspec with controls.
 			{type="background9", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=10, texture="gui_formbg.png", x1=50},
-			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling", "Events"}, current_tab=context.current_form_tab},
+			{type="tabheader", x=TEST_SIZE.x+TEST_PAD, y=0, w=9, h=0.5, name="EditorTabs", itemlist={"Form", "Widgets", "Save/Load", "Styling", "Events", "Table"}, current_tab=context.current_form_tab},
 			{type="box", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, color="#00000055"},
 			{type="label", x=TEST_SIZE.x+TEST_PAD+0.5, y=9.3, w=8, h=0.35, text="No error.", show_box=false, FORMSPEC_ID="errordisplay"},
 
@@ -506,7 +609,26 @@ local function make_editor(pname)
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer5"},
 			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
 			{h=0.7, text="Interact with any widget in the test GUI to see response fields.", type="label", w=3.7, x=0.5, y=0.5},
-			{h=7.5, label="", name="EventResponseDisplay", style={font="mono", font_size="*0.9", textcolor="red"}, text=context.last_event_table or "", type="textarea", w=8, x=0.5, y=1.5},
+			{h=7.48, label="", name="EventResponseDisplay", style={font="mono", font_size="*0.9", textcolor="red"}, text=context.last_event_table or "", type="textarea", w=8, x=0.5, y=1.5},
+			{type="container_end"},
+
+			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer6"},
+			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
+			{h=0.35, text="Table Column Editor", type="label", w=8, x=0.5, y=0.4},
+			{h=0.5, label="Add", name="EditTableAddColumn", type="button", w=1, x=0.5, y=4.62},
+			{h=0.5, label="Del", name="EditTableRemoveColumn", type="button", w=1, x=1.6, y=4.62},
+			{h=0.5, label="▲", name="EditTableMoveColumnUp", type="button", w=0.5, x=2.9, y=4.62},
+			{h=0.5, label="▼", name="EditTableMoveColumnDown", type="button", w=0.5, x=3.5, y=4.62},
+			{h=0.5, itemlist={"", "Text", "Image", "Color", "Indent", "Tree"}, name="EditTableChooseColumnType", type="dropdown", w=3.5, x=5, y=0.8, index_event=false, selected=context.EditTable.selected_type},
+			{h=0.35, text="Chose Column Type", type="label", w=3.5, x=5, y=0.4},
+			{h=0.35, text="Column Params", type="label", w=3.5, x=5, y=1.5},
+			{h=2.3, name="EditTableColumnParams", type="textlist", w=3.5, x=5, y=1.9},
+			{close_on_enter=false, default="", h=0.4, label="Edit Parameter:", name="EditTableEditColumnParameter", tooltip="Type <key>=<value> to enter a parameter. Type <key>=nil to remove.", type="field", w=3.5, x=5, y=4.7},
+			{h=3.6, name="EditTableColumnsDisplay", type="textlist", w=3.5, x=0.5, y=0.8, selected=context.EditTable.selected_column},
+			{h=0.35, text="Row Data Editor (For Previewing)", type="label", w=8, x=0.5, y=5.55},
+			{h=2.28, label="", style={font="mono", font_size="*0.9"}, name="EditTableRowDataText", text=context.EditTable.serialized_cells, tooltip="Use this box to input test data.\nSeparate cells with commas.\nLine breaks are also accepted.", type="textarea", w=8, x=0.5, y=6},
+			{h=0.5, label="Get Data", name="EditTableGetRows", type="button", w=1.7, x=0.5, y=8.5},
+			{h=0.5, label="Submit Row Data", name="EditTableSubmitRows", tooltip="Set row data on the currently selected table widget.", type="button", w=2.5, x=2.3, y=8.5},
 			{type="container_end"},
 		},
 	}
@@ -534,6 +656,8 @@ local function make_editor(pname)
 	populate_savefile_list(context)
 	populate_saveform_name_field(context)
 	populate_style_editor_docs(context)
+	populate_column_display(context)
+	update_row_data_editor(context)
 
 	-- Construct the workpiece being edited so we can show what it looks like.
 	build_test_gui(context)
@@ -607,6 +731,7 @@ local function create_new_editor_context(pname, param)
 		FormGeom = {x=9, y=10},
 		player_name = pname,
 		savefile_list = {}, -- Array of <fileinfo> subtables.
+		EditTable = {}, -- All data for the table editor page.
 
 		get_player_name = function(self)
 			return self.player_name
@@ -1511,6 +1636,11 @@ local function handle_load_formspec(context, fields)
 		return
 	end
 
+	-- TODO: verify that the loaded formspec tables contain NO malformed data
+	-- (wrong types, missing keys, etc.). Basically we need to go through all the
+	-- widget tables and make sure all the known keys exist and are of the right
+	-- type, as defined in the widget library registrations.
+
 	context:set_form_geometry(formtable.size)
 	context.editing_root = formtable.children
 	context:set_message("Loaded formspec: " .. name)
@@ -1799,6 +1929,7 @@ local function handle_switch_editor_tab(context, fields)
 		end
 
 		context.last_event_table = nil
+		context.default_edit_parameter = nil
 	end
 end
 
@@ -1807,6 +1938,11 @@ end
 -- Keep the test GUI in sync with its events, so it feels responsive.
 -- This is especially important for things like scrollbars and tab headers.
 local function sync_test_gui(context, fields)
+	-- Skip if the edit field is used, otherwise there could be conflicts.
+	if fields.paramfield and fields.paramfield:len() > 0 then
+		return
+	end
+
 	for name, data in pairs(fields) do
 		local widget = context:get_widget_by_name(name)
 		if not widget then
@@ -1877,6 +2013,491 @@ end
 
 
 
+local function update_event_response_display(context, fields)
+	if context.current_form_tab == 5 and not fields.EditorTabs then
+		local newfields = table.copy(fields)
+
+		-- Since the textarea[] display is part of the formspec,
+		-- its contents are always bounced back to the server when the user
+		-- interacts. Nil it out to avoid displaying noise.
+		newfields.EventResponseDisplay = nil
+
+		local s = dump(newfields)
+
+		-- Note: leading whitespace is intentional.
+		local warning = [=[
+
+
+-- Warning: do not assume that fields will
+-- always be as shown, when processing these
+-- in your code. In particular, a hacked or
+-- broken client can submit invalid or
+-- maliciously crafted fields.
+]=]
+		context.last_event_table = s .. warning
+	end
+end
+
+
+
+local function handle_allow_overwrite(context, fields)
+	if fields.AllowOverwrite then
+		context.savefile_overwrite_enabled = toboolean(fields.AllowOverwrite)
+	end
+end
+
+
+
+local function handle_table_column_add(context, fields)
+	if not fields.EditTableAddColumn then
+		return
+	end
+
+	local widgets = context:get_editing_root()
+	local idx = context:get_selected_widget()
+
+	if not idx then
+		context:set_error("No table selected in active GUI.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+
+	table.insert(columns, {type="text"})
+
+	table_widget.columns = columns
+	context.EditTable.selected_column = #columns
+	context:set_message("Added table column.")
+end
+
+
+
+local function handle_table_column_remove(context, fields)
+	if not fields.EditTableRemoveColumn then
+		return
+	end
+
+	local widgets = context:get_editing_root()
+	local idx = context:get_selected_widget()
+
+	if not idx then
+		context:set_error("No table selected in active GUI.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+	local selected = context.EditTable.selected_column
+
+	if not (selected and selected >= 1 and selected <= #columns) then
+		context:set_error("No table column selected.")
+		return
+	end
+
+	if #columns == 1 then
+		context:set_error("Table must have at least one column.")
+		return
+	end
+
+	table.remove(columns, selected)
+
+	table_widget.columns = columns
+	context.EditTable.selected_column = nil
+	context:set_message("Deleted table column.")
+end
+
+
+
+local function handle_table_column_select(context, fields)
+	if not fields.EditTableColumnsDisplay then
+		return
+	end
+
+	local widgets = context:get_editing_root()
+	local idx = context:get_selected_widget()
+
+	if not idx then
+		context:set_error("No table widget selected.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("That's not a table widget you have selected.")
+		return
+	end
+
+	local tab = minetest.explode_textlist_event(fields.EditTableColumnsDisplay)
+	local index = tab.index
+
+	if not (tab.type == "DCL" and index ~= nil and index >= 1 and index <= #table_widget.columns) then
+		context.EditTable.selected_column = nil
+		return
+	end
+
+	context.EditTable.selected_column = index
+end
+
+
+
+local function handle_table_column_move(context, fields)
+	if not fields.EditTableMoveColumnDown and not fields.EditTableMoveColumnUp then
+		return
+	end
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		context:set_error("No selected table widget.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+	local selected = context.EditTable.selected_column
+
+	if not (selected and selected >= 1 and selected <= #columns) then
+		context:set_error("No selected table column.")
+		return
+	end
+
+	if fields.EditTableMoveColumnDown then
+		if selected < #columns then
+			local tmp = columns[selected + 1]
+			columns[selected + 1] = columns[selected]
+			columns[selected] = tmp
+			selected = selected + 1
+		end
+	elseif fields.EditTableMoveColumnUp then
+		if selected > 1 then
+			local tmp = columns[selected - 1]
+			columns[selected - 1] = columns[selected]
+			columns[selected] = tmp
+			selected = selected - 1
+		end
+	end
+
+	context.EditTable.selected_column = selected
+end
+
+
+
+local function handle_table_column_type_select(context, fields)
+	if not fields.EditTableChooseColumnType then
+		return
+	end
+
+	-- Hack: If this is present, it means the dropdown widget wasn't actually
+	-- manipulated by the user, it was submitted along with some other field
+	-- because Minetest thinks that's a good idea.
+	if fields.FakeDropdown then
+		return
+	end
+
+	context.EditTable.selected_type = nil
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		context:set_error("No selected table widget.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+	local selected = context.EditTable.selected_column
+
+	if not (selected and selected >= 1 and selected <= #columns) then
+		context:set_error("No selected table column.")
+		return
+	end
+
+	local thecolumn = table_widget.columns[selected]
+	local chosetype = fields.EditTableChooseColumnType:lower()
+
+	local WHITELIST = {}
+	for k, v in ipairs(context:get_control_by_name("EditTableChooseColumnType").itemlist) do
+		if v ~= "" then -- The dropdown has a "" entry.
+			WHITELIST[v:lower()] = true
+		end
+	end
+
+	if not WHITELIST[chosetype] then
+		-- User fields submitted a type not in the dropdown.
+		context:set_error("Invalid column type. Also, ur hax are weak.")
+		return
+	end
+
+	thecolumn.type = chosetype
+	context:set_message("Set type of column " .. selected .. " to " .. thecolumn.type .. ".")
+end
+
+
+
+local function handle_column_param_edit(context, fields)
+	if fields.key_enter_field ~= "EditTableEditColumnParameter" then
+		return
+	end
+	if type(fields["EditTableEditColumnParameter"]) ~= "string" then
+		return
+	end
+
+	context:set_error("What are you doing?")
+	local tokens = fields["EditTableEditColumnParameter"]:split("=")
+
+	for i=1, #tokens, 1 do
+		tokens[i] = tokens[i]:trim()
+	end
+
+	if not (#tokens == 2 and tokens[1]:len() > 0 and tokens[2]:len() > 0) then
+		return
+	end
+
+	local KEY = tokens[1]
+	local VALUE = tokens[2]
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		context:set_error("No selected table widget.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+	local selected = context.EditTable.selected_column
+
+	if not (selected and selected >= 1 and selected <= #columns) then
+		context:set_error("No selected table column.")
+		return
+	end
+
+	local THECOLUMN = columns[selected]
+
+	-- Input 'val' is always a string.
+	local function TOTYPE(val)
+		if tonumber(val) then
+			return tonumber(val)
+		elseif val == "true" then
+			return true
+		elseif val == "false" then
+			return false
+		elseif val == "\"\"" then
+			return ""
+		end
+
+		-- Strip quotes if user supplied them.
+		if val:sub(1, 1) == "\"" and val:sub(#val) == "\"" then
+			return val:sub(2, val:len() - 1)
+		end
+
+		-- Val is a string and should remain a string.
+		return val
+	end
+
+	if THECOLUMN[KEY] then
+		if KEY ~= "type" then
+			if VALUE ~= "nil" then
+				THECOLUMN[KEY] = TOTYPE(VALUE)
+				context:set_message("Updated parameter.")
+			else
+				THECOLUMN[KEY] = nil
+				context:set_message("Parameter removed from column params.")
+			end
+		else
+			context:set_error("Cannot change column type. Use dropdown instead.")
+		end
+	else
+		if VALUE ~= "nil" then
+			THECOLUMN[KEY] = TOTYPE(VALUE)
+			context:set_message("Added new parameter.")
+		else
+			context:set_error("Parameter doesn't exist; nothing to be done.")
+		end
+	end
+end
+
+
+
+local function handle_row_data_submit(context, fields)
+	if not fields.EditTableSubmitRows then
+		return
+	end
+	if type(fields.EditTableRowDataText) ~= "string" then
+		return
+	end
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		context:set_error("No selected table widget.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local columns = table_widget.columns or {}
+	if #columns == 0 then
+		context:set_error("Table widget requires at least one column.")
+		return
+	end
+
+	local serialized = fields.EditTableRowDataText:gsub("\n", ",")
+	local cells = serialized:split(",")
+
+	if #cells % #columns ~= 0 then
+		context:set_error("Wrong number of cells for number of columns!")
+	else
+		-- Trim all of them.
+		for i=1, #cells, 1 do
+			cells[i] = cells[i]:trim()
+		end
+
+		table_widget.cells = cells
+		context:set_message("Updated table data.")
+	end
+
+	context.EditTable.serialized_cells = fields.EditTableRowDataText
+end
+
+
+
+local function handle_row_data_get(context, fields)
+	if not fields.EditTableGetRows then
+		return
+	end
+	if type(fields.EditTableRowDataText) ~= "string" then
+		return
+	end
+
+	local idx = context:get_selected_widget()
+	local widgets = context:get_editing_root()
+
+	if not idx then
+		context:set_error("No selected table widget.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+
+	if table_widget.type ~= "table" then
+		context:set_error("Selected widget is not a table.")
+		return
+	end
+
+	local table_widget = widgets[idx]
+	local cells = table_widget.cells or {}
+	local column_count = #(table_widget.columns or {})
+	local serialized = ""
+	local flat = {}
+	local type = type
+
+	-- At least one column is required, otherwise the math doesn't math.
+	if column_count < 1 then
+		return
+	end
+
+	for k, v in ipairs(cells) do
+		if type(v) == "string" then
+			flat[#flat + 1] = v
+		elseif type(v) == "table" then
+			for n, m in ipairs(v) do
+				if type(m) == "string" then
+					flat[#flat + 1] = m
+				end
+			end
+		end
+	end
+
+	-- Find the length of the longest cell so we can calculate padding.
+	-- This makes the row data easier to read in a text box.
+	-- Calculate max length independantly for each column.
+	local maxlen = {}
+	for i=1, column_count, 1 do
+		maxlen[#maxlen + 1] = 0 -- Initialize all columns to 0
+	end
+	local whichcol = 1
+	for k, v in ipairs(flat) do
+		if #v > maxlen[whichcol] then
+			maxlen[whichcol] = #v
+		end
+
+		-- Advance column indexer, reset at end.
+		whichcol = whichcol + 1
+		if whichcol > column_count then
+			whichcol = 1
+		end
+	end
+	whichcol = 1
+	for i=1, #flat, 1 do
+		local num = maxlen[whichcol] - flat[i]:len() -- How much indent.
+		flat[i] = (" "):rep(num) .. flat[i] -- Apply the indent.
+
+		-- Advance column indexer, reset at end.
+		whichcol = whichcol + 1
+		if whichcol > column_count then
+			whichcol = 1
+		end
+	end
+
+	-- Concatenate everything into lines NUM COLUMNS long.
+	local rows = {}
+	local line = {}
+	local count = 0
+	for k, v in ipairs(flat) do
+		count = count + 1
+		line[#line + 1] = v
+		if count % column_count == 0 then
+			table.insert(rows, table.concat(line, " , "))
+			line = {}
+		end
+	end
+
+	-- Final step, concatenate lines with linebreaks.
+	serialized = table.concat(rows, "\n")
+	context.EditTable.serialized_cells = serialized
+end
+
+
+
 function formspec.on_player_receive_fields(player, formname, fields)
 	if formname ~= "formspec:editor" then
 		return
@@ -1917,34 +2538,16 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_save_formspec(context, fields)
 	handle_load_formspec(context, fields)
 	handle_delete_formspec(context, fields)
-
-	if fields.AllowOverwrite then
-		context.savefile_overwrite_enabled = toboolean(fields.AllowOverwrite)
-	end
-
-	if context.current_form_tab == 5 and not fields.EditorTabs then
-		local newfields = table.copy(fields)
-
-		-- Since the textarea[] display is part of the formspec,
-		-- its contents are always bounced back to the server when the user
-		-- interacts. Nil it out to avoid displaying noise.
-		newfields.EventResponseDisplay = nil
-
-		local s = dump(newfields)
-
-		-- Note: leading whitespace is intentional.
-		local warning = [=[
-
-
--- Warning: do not assume that fields will
--- always be as shown, when processing these
--- in your code. In particular, a hacked or
--- broken client can submit invalid or
--- maliciously crafted fields.
-]=]
-		context.last_event_table = s .. warning
-	end
-
+	handle_allow_overwrite(context, fields)
+	update_event_response_display(context, fields)
+	handle_table_column_add(context, fields)
+	handle_table_column_select(context, fields)
+	handle_table_column_remove(context, fields)
+	handle_table_column_move(context, fields)
+	handle_table_column_type_select(context, fields)
+	handle_column_param_edit(context, fields)
+	handle_row_data_submit(context, fields)
+	handle_row_data_get(context, fields)
 	sync_test_gui(context, fields)
 
 	-- Keep user's GUI updated.

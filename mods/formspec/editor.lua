@@ -551,6 +551,7 @@ local function make_editor(pname)
 
 			-- Form controls.
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer1"},
+			{type="button", x=0.5, y=8.5, w=2.0, h=0.5, name="FormTabHideEditor", label="Hide Editor", tooltip="Hide the editor GUI so you can view the formspec by itself.\nPress ESC to return to the editor."},
 
 			{type="container", x=2.3, y=0.4+0.53},
 			{type="checkbox", name="FormStepSizeSelector1", x=0, y=0, label="0.1"},
@@ -2499,7 +2500,7 @@ end
 
 
 function formspec.on_player_receive_fields(player, formname, fields)
-	if formname ~= "formspec:editor" then
+	if formname ~= "formspec:editor" and formname ~= "formspec:editor_hidden" then
 		return
 	end
 
@@ -2511,6 +2512,15 @@ function formspec.on_player_receive_fields(player, formname, fields)
 
 	-- Nil error message by default, shall be populated if some field action errors.
 	context:set_error(nil)
+
+	if formname == "formspec:editor_hidden" and fields.quit then
+		formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)
+		return
+	end
+
+	if formname == "formspec:editor_hidden" then
+		return
+	end
 
 	if fields.quit then
 		-- Save for later. User might have clicked off the editor and we don't want to throw away their work.
@@ -2549,6 +2559,17 @@ function formspec.on_player_receive_fields(player, formname, fields)
 	handle_row_data_submit(context, fields)
 	handle_row_data_get(context, fields)
 	sync_test_gui(context, fields)
+
+	if fields.FormTabHideEditor then
+		local root = context:get_editing_root()
+		local formtable = {
+			size = context:get_form_geometry(),
+			children = root,
+		}
+		local serialized = formspec.create_formspec_from_table(formtable)
+		minetest.show_formspec(pname, "formspec:editor_hidden", serialized)
+		return
+	end
 
 	-- Keep user's GUI updated.
 	formspec.show_editor(pname, formspec.EDITOR_CONTEXTS[pname].original_param)

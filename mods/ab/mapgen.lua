@@ -50,6 +50,11 @@ local param2_data = {}
 
 
 ab.generate_realm = function(vm, minp, maxp, seed)
+	-- Localize.
+	local REALM_START = REALM_START
+	local REALM_END = REALM_END
+	local BEDROCK_HEIGHT = BEDROCK_HEIGHT
+
 	seed = mapgen.get_blockseed(minp)
 
 	-- Don't run for out-of-bounds mapchunks.
@@ -245,40 +250,34 @@ ab.generate_realm = function(vm, minp, maxp, seed)
 		return ground_y, canyon_offset, river_offset
 	end
 
-	-- First mapgen pass.
-	for z = z0, z1 do
-		for x = x0, x1 do
-			local bedrock_adjust = pr:next(0, 3)
-
-			for y = y0, y1 do
-				local ground_y = heightfunc(x, y, z)
-
-				if y >= REALM_START and y <= REALM_END then
-					local vp = area:index(x, y, z)
-					local cid = vm_data[vp]
-
-					if cid == c_air or cid == c_ignore then
-						if y <= (BEDROCK_HEIGHT + bedrock_adjust) then
-							vm_data[vp] = c_bedrock
-						elseif y <= ground_y then
-							vm_data[vp] = c_stone
-						else
-							vm_data[vp] = c_air
-						end
-					end
-				end
-			end
-		end
-	end
-
+	-- Calling the heightfunc is expensive. Do everything in one chunk pass.
 	for z = emin.z, emax.z do
 		for x = emin.x, emax.x do
+			local bedrock_adjust = pr:next(0, 3)
+			local bedrock_y = BEDROCK_HEIGHT + bedrock_adjust
+
 			for y = emin.y, emax.y do
 				local ground_y = heightfunc(x, y, z)
 
 				if y >= REALM_START and y <= REALM_END then
 					local vp = area:index(x, y, z)
 
+					-- Set ground shape.
+					if z >= z0 and z <= z1 and x >= x0 and x <= x1 and y >= y0 and y <= y1 then
+						local cid = vm_data[vp]
+
+						if cid == c_air or cid == c_ignore then
+							if y <= bedrock_y then
+								vm_data[vp] = c_bedrock
+							elseif y <= ground_y then
+								vm_data[vp] = c_stone
+							else
+								vm_data[vp] = c_air
+							end
+						end
+					end
+
+					-- Set light.
 					if y <= ground_y then
 						vm_light[vp] = 0
 					else

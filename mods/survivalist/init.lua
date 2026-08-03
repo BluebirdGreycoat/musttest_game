@@ -217,7 +217,7 @@ function survivalist.teleport_and_announce(pname, pos, gamemode, fakehomepos)
   end
 
   -- Inform player the game has begun.
-	if not gdac.player_is_admin(pname) then
+	if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 		local dname = rename.gpn(pname)
 		minetest.chat_send_all("# Server: Player <" .. dname .. "> has begun a test of skill in the " .. gamestring .. " at " .. rc.pos_to_namestr_ex(vector_round(pos)) .. "!")
 	else
@@ -357,7 +357,7 @@ function survivalist.shout_player_stats(pname)
   local wins_bstreak =  pname .. ":wins_bstreak"
   local wins_tokens =   pname .. ":wins_tokens"
 
-	if not gdac.player_is_admin(pname) then
+	if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 		local dname = rename.gpn(pname)
 		minetest.chat_send_all("# Server: Survivalist stats for <" ..
 			dname .. ">: Victories: " .. ms:get_int(wins_total) ..
@@ -612,7 +612,7 @@ function survivalist.attempt_claim(pname)
   end
 
 	local dname = rename.gpn(pname)
-	if not gdac.player_is_admin(pname) then
+	if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 		minetest.chat_send_all("# Server: Player <" .. dname .. "> has claimed victory in the " .. cityname .. "!")
 		minetest.chat_send_all("# Server: Player <" .. dname .. ">'s skill has been tested in a Survival Challenge and proved worthy.")
 		minetest.chat_send_all("# Server: Player <" .. dname .. "> has earned " .. tokencount .. " " .. upperank .. " Skill Mark(s).")
@@ -625,7 +625,7 @@ function survivalist.attempt_claim(pname)
   -- No room in inventory? Drop 'em.
   if leftover:get_count() > 0 then
     minetest.item_drop(leftover, pref, pos)
-		if not gdac.player_is_admin(pname) then
+		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 			minetest.chat_send_all("# Server: Player <" .. dname .. ">'s Skill Mark was dropped on the ground!")
 		end
   end
@@ -714,7 +714,7 @@ function survivalist.on_joinplayer(player)
     local gamemode = survivalist.modstorage:get_string(pname .. ":mode")
     if gamemode == "surface" or gamemode == "cave" or gamemode == "nether" then
 			local dname = rename.gpn(pname)
-			if not gdac.player_is_admin(pname) then
+			if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 				minetest.chat_send_all("# Server: Player <" .. dname .. "> is engaged in a Survival Challenge.")
 			end
       minetest.chat_send_player(pname, "# Server: You are in a Survival Challenge. Avoid death by sleeping!")
@@ -741,7 +741,7 @@ function survivalist.on_dieplayer(player)
   if gamemode == "surface" or gamemode == "cave" or gamemode == "nether" then
     -- Delay the chat messages slightly.
     minetest.after(1, function()
-			if not gdac.player_is_admin(pname) then
+			if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 				local dname = rename.gpn(pname)
 				minetest.chat_send_all("# Server: Player <" .. dname .. ">'s survival skill was tested and found wanting!")
 			end
@@ -829,7 +829,7 @@ function survivalist.abort_game(pname)
       end
 			pmeta:set_string("survivalist_old_bed_pos", "")
 
-			if not gdac.player_is_admin(pname) then
+			if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 				local dname = rename.gpn(pname)
 				minetest.chat_send_all("# Server: Player <" .. dname .. "> canceled a Survival Challenge and went home.")
 			else

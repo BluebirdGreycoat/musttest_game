@@ -345,7 +345,7 @@ function city_block.on_punchplayer(player, hitter, time_from_last_punch, tool_ca
 	end
 
 	-- Admins cannot be punched.
-	if gdac.player_is_admin(player) then
+	if gdac.player_is_admin(player) or camc.player_is_camera(player) then
 		return true
 	end
 

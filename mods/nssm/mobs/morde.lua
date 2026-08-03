@@ -149,7 +149,7 @@ minetest.register_entity("nssm:mortick", {
 				-- Chose target for the first time, once only.
 				local objects = minetest.get_objects_inside_radius(s, 8)
 				for _, obj in ipairs(objects) do
-					if obj:is_player() and not gdac.player_is_admin(obj) then
+					if obj:is_player() and not gdac.player_is_admin(obj) and not camc.player_is_camera(obj) then
 						-- Note: this is player's name! Do not store player reference.
 						self.attack = obj:get_player_name()
 						break

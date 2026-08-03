@@ -34,7 +34,7 @@ teleports.charge_blocks = {
   ["chromium:block"]          = {charge=1.9  },
   ["zinc:block"]              = {charge=2.8  },
   ["lead:block"]              = {charge=1.4  },
-  
+
   ["akalin:block"]            = {charge=1.9  },
   ["alatro:block"]            = {charge=1.7  },
   ["arol:block"]              = {charge=1.5  },
@@ -279,7 +279,7 @@ function teleports.kill_players_at_pos(teleport_pos, pname)
 	local dead_players = minetest.get_objects_inside_radius({x=teleport_pos.x, y=teleport_pos.y+1, z=teleport_pos.z}, 2)
 	for k, v in ipairs(dead_players) do
 			if v and v:is_player() then
-				if not gdac.player_is_admin(v) and v:get_player_name() ~= pname then -- Don't kill admin or self (can happen due to lag).
+				if not gdac.player_is_admin(v) and not camc.player_is_camera(v) and v:get_player_name() ~= pname then -- Don't kill admin or self (can happen due to lag).
 					-- Only if player isn't already dead.
 					if v:get_hp() > 0 then
 						-- If there's a player here already the map must be loaded, so we
@@ -522,7 +522,7 @@ teleports.calculate_charge = function(pos)
         {x=pos.x-1, y=pos.y, z=pos.z+1},
         {x=pos.x+1, y=pos.y, z=pos.z-1},
     }
-    
+
 		local bows = 0
     local charge = 1 -- Ambient charge is at least 1 (the teleport block provides 1 KJ).
     for k, v in ipairs(positions) do
@@ -541,7 +541,7 @@ teleports.calculate_charge = function(pos)
 		if bows == 8 then
 			is_nyanporter = true
 		end
-    
+
     charge = math_floor(charge + 0.5)
 
 		-- Nyan teleports get a fixed charge which should result in 7770 range after
@@ -659,10 +659,10 @@ teleports.calculate_range = function(pos)
 
   -- How much distance each unit of charge is good for.
   local inc = 25
-  
+
   -- Compute extra range.
   local rng = math_floor(inc * chg)
-  
+
   -- Calculate how much to scale extra range by depth.
   local is_nyan = nyan
 
@@ -673,13 +673,13 @@ teleports.calculate_range = function(pos)
 	end
 
   local scalar = cds(pos, is_nyan)
-  
+
   -- Scale extra range by depth.
   rng = rng * scalar
-  
+
   -- Teleport range shall not go below 250 meters.
   rng = math.max(rng, 250)
-  
+
   return math_floor(rng), nyan
 end
 
@@ -717,7 +717,7 @@ end
 
 teleports.update = function(pos)
 	local meta = minetest.get_meta(pos)
-    
+
 	local network = meta:get_string("network") or ""
 	local owner = meta:get_string("owner") or ""
 	local name = meta:get_string("name") or ""
@@ -797,7 +797,7 @@ teleports.update = function(pos)
 			"list[context;price;0,0.75;1,1;]" ..
 			"list[current_player;main;0,6;11,1;]" ..
 			"listring[]"
-    
+
 	meta:set_string("formspec", formspec)
 end
 
@@ -1028,10 +1028,10 @@ end
 
 teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
-  
+
   -- Protection interferes with building public networks.
   --if minetest.test_protection(pos, pname) then return 0 end
-  
+
   if listname == "price" and stack:get_name() == "default:mossycobble" then
     return stack:get_count()
   elseif listname == "price" and stack:get_name() == "flowers:waterlily" then
@@ -1042,7 +1042,7 @@ teleports.allow_metadata_inventory_put = function(pos, listname, index, stack, p
 		if minetest.test_protection(pos, pname) then return 0 end
 		return stack:get_count()
   end
-  
+
   return 0
 end
 
@@ -1245,7 +1245,7 @@ teleports.on_diamond_place = function(itemstack, placer, pointed_thing)
     local stack = ItemStack("default:diamondblock")
     local pos = pointed_thing.above
     local name = "default:diamondblock"
-    
+
     if minetest.get_node({x=pos.x+1,y=pos.y,z=pos.z}).name == name and
         minetest.get_node({x=pos.x+1,y=pos.y,z=pos.z+1}).name == name and
         minetest.get_node({x=pos.x+1,y=pos.y,z=pos.z-1}).name == name and
@@ -1257,7 +1257,7 @@ teleports.on_diamond_place = function(itemstack, placer, pointed_thing)
     then
         stack = ItemStack("teleports:teleport")
     end
-    
+
     local ret = minetest.item_place(stack, placer, pointed_thing)
     if ret == nil then
         return itemstack

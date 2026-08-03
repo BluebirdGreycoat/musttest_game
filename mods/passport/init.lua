@@ -171,7 +171,7 @@ passport.compose_formspec = function(pname)
 
 	-- Special abilities are revoked for cheaters.
 	if not sheriff.is_cheater(pname) then
-		local admin = gdac.player_is_admin(pname)
+		local admin = gdac.player_is_admin(pname) or camc.player_is_camera(pname)
 
 		if survivalist.player_beat_cave_challenge(pname) or admin then
 			formspec = formspec .. "button[1,3.7;2,1;jaunt;Jaunt]"
@@ -215,7 +215,7 @@ passport.compose_formspec = function(pname)
 			local targets = minetest.get_connected_players()
 			for k, v in ipairs(targets) do
 				-- Ignore admin, don't count self.
-				if not gdac.player_is_admin(v) and v ~= pref then
+				if not gdac.player_is_admin(v) and not camc.player_is_camera(v) and v ~= pref then
 					local tpos = v:get_pos()
 					-- Ignore far, ignore dead.
 					if vector_distance(player_pos, tpos) < 100 and v:get_hp() > 0 then

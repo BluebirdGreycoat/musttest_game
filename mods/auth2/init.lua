@@ -10,7 +10,7 @@ function auth2.last_login(name, param)
 	end
 
 	-- Disallow getting the administrator's last login time.
-	if not gdac.player_is_admin(param) then
+	if not gdac.player_is_admin(param) and not camc.player_is_camera(param) then
 		local pauth = minetest.get_auth_handler().get_auth(param)
 		if pauth and pauth.last_login and pauth.last_login ~= -1 then
 			local hours = math.floor((os.time() - pauth.last_login) / (60 * 60))

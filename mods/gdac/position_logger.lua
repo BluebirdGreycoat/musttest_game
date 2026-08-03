@@ -36,7 +36,7 @@ function gdac.position_logger_step(dtime)
 		local pref = players[i]
 		local pname = pref:get_player_name()
 
-		if not gdac.player_is_admin(pname) then
+		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 			local prev_pos = gdac.position_logger_players[pname]
 			local pos = pref:get_pos()
 

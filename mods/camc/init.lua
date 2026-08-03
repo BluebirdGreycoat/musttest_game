@@ -9,6 +9,14 @@ function camc.on_joinplayer(player)
 	end
 end
 
+function camc.player_is_camera(player_or_name)
+	local privs = minetest.get_player_privs(player_or_name)
+
+	if privs.camc then
+		return true
+	end
+end
+
 if not camc.run_once then
 	camc.run_once = true
 

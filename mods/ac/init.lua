@@ -545,6 +545,7 @@ function ac.on_joinplayer(pref)
 
 	-- Do not perform AC checks for admin player.
 	if gdac.player_is_admin(pname) then return end
+	if camc.player_is_camera(pname) then return end
 
 	local delay = math_random(ac.initial_delay_min, ac.initial_delay_max)
 

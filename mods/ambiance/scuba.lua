@@ -84,7 +84,7 @@ ambiance.globalstep_scuba = function(dtime)
         local name = v:get_player_name()
         local entry = ambiance.players[name]
 
-        if entry ~= nil and not gdac.player_is_admin(name) then
+        if entry ~= nil and not gdac.player_is_admin(name) and not camc.player_is_camera(name) then
             local under = ambiance.check_underwater(pos)
             if under == 2 then
                 entry.underwater = true

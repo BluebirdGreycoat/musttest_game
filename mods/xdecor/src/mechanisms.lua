@@ -169,7 +169,7 @@ local function plate_explode(pos, player)
 	local owner = meta:get_string("owner")
 
 	-- Quit blowing up the admin.
-	if owner == pname or gdac.player_is_admin(pname) then
+	if owner == pname or gdac.player_is_admin(pname) or camc.player_is_camera(pname) then
 		return
 	end
 
@@ -223,7 +223,7 @@ local function plate_break(pos, player)
 	local owner = meta:get_string("owner")
 
 	-- The admin is as light as a feather!
-	if owner == pname or gdac.player_is_admin(pname) then
+	if owner == pname or gdac.player_is_admin(pname) or camc.player_is_camera(pname) then
 		return
 	end
 

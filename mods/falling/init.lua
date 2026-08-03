@@ -113,7 +113,7 @@ local entity_physics = function(pos, node, pharm, mharm)
   for i = 1, #objects do
     local r = objects[i]
     if r:is_player() then
-			if not gdac.player_is_admin(r) then
+			if not gdac.player_is_admin(r) and not camc.player_is_camera(r) then
 				local hp = r:get_hp()
 				if hp > 0 then
 					utility.damage_player(r, "crush", pharm)
@@ -179,7 +179,7 @@ local find_slope = function(pos, selfdef)
 	adjacency[2].x=pos.x+1 adjacency[2].y=pos.y adjacency[2].z=pos.z
 	adjacency[3].x=pos.x   adjacency[3].y=pos.y adjacency[3].z=pos.z+1
 	adjacency[4].x=pos.x   adjacency[4].y=pos.y adjacency[4].z=pos.z-1
-  
+
   local targets = {}
 
   for i = 1, 4 do
@@ -197,7 +197,7 @@ local find_slope = function(pos, selfdef)
 			p.y = p.y - 1
     end
   end
-  
+
 	if #targets == 0 then
 		return nil
 	end
@@ -335,7 +335,7 @@ minetest.register_entity(":__builtin:falling_node", {
 			self.object:remove()
 			return
 		end
-    
+
     if bcn and (not bcd or node_walkable(bcp, bcd, selfdef)) then
       if bcd and bcd.leveled and bcn.name == self.node.name then
 				local addlevel = self.node.level
@@ -352,7 +352,7 @@ minetest.register_entity(":__builtin:falling_node", {
 				remove_node(bcp)
 				return
       end
-      
+
       -- We have hit the ground. Check for a possible slope which we can continue to fall down.
       if bcd then
 				local ss = find_slope(bcp, selfdef)
@@ -365,17 +365,17 @@ minetest.register_entity(":__builtin:falling_node", {
 					return
 				end
 			end
-      
+
       local np = {x=bcp.x, y=bcp.y+1, z=bcp.z}
       local protected = nil
-      
+
       -- Check what's here.
       local n2 = get_node(np)
       local nd = all_nodes[n2.name]
 			local nodedef = all_nodes[self.node.name]
 
       if nodedef then
-				-- If not merely replacing air, or the nodetype is `buildable_to', then check protection.	
+				-- If not merely replacing air, or the nodetype is `buildable_to', then check protection.
 				if n2.name ~= "air" or nodedef.buildable_to then
 					protected = minetest.test_protection(np, "")
 				end
@@ -397,7 +397,7 @@ minetest.register_entity(":__builtin:falling_node", {
 						callback(np, n2)
 					end
 				end
-				
+
 				-- Create node and remove entity.
         if not protected or n2.name == "air" or n2.name == "default:snow" or n2.name == "snow:footprints" then
 					if protected and nodedef.buildable_to then
@@ -422,7 +422,7 @@ minetest.register_entity(":__builtin:falling_node", {
 							local meta = get_meta(np)
 							meta:from_table(self.meta)
 						end
-						
+
 						entity_physics(np, self.node, self.pharm, self.mharm)
 						if self.sound then
 							ambiance.sound_play(self.sound, np, 1.3, 20)
@@ -454,12 +454,12 @@ minetest.register_entity(":__builtin:falling_node", {
 					end
         end
       end
-      
+
       self.object:remove()
       after(1, function() core.check_for_falling(np) end)
       return
     end
-    
+
     local vel = self.object:get_velocity()
     if vector_equals(vel, {x = 0, y = 0, z = 0}) then
       local npos = self.object:get_pos()

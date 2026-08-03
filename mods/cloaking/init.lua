@@ -132,7 +132,7 @@ function cloaking.do_scan(pname)
 			local objs = minetest.get_objects_inside_radius(pos, 5)
 			for i = 1, #objs, 1 do
 				if objs[i]:is_player() and objs[i]:get_hp() > 0 then
-					if not gdac.player_is_admin(objs[i]) then
+					if not gdac.player_is_admin(objs[i]) and not camc.player_is_camera(objs[i]) then
 						player_count = player_count + 1
 					end
 				else

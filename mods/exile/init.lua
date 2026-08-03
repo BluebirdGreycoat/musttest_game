@@ -22,7 +22,7 @@ local function nearby_noncheater(pname, pos, range)
 		if pn ~= pname then
 			if vector_distance(pref:get_pos(), pos) < range then
 				if not sheriff.is_suspected_cheater(pn) then
-					if not gdac.player_is_admin(pn) then
+					if not gdac.player_is_admin(pn) and not camc.player_is_camera(pn) then
 						return true
 					end
 				end

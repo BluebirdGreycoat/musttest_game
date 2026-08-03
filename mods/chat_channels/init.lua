@@ -580,7 +580,7 @@ CC.COMMAND_VERBS = {
 				return
 			end
 
-			if gdac.player_is_admin(param) then
+			if gdac.player_is_admin(param) or camc.player_is_camera(param) then
 				system_error(pname, "He hides for \"reasons.\"")
 				return
 			end
@@ -1555,7 +1555,7 @@ end
 
 -- Callback function. Runs from callback system.
 function CC.on_player_join_channel(params)
-	if gdac.player_is_admin(params.pname) then
+	if gdac.player_is_admin(params.pname) or camc.player_is_camera(params.pname) then
 		return
 	end
 
@@ -1574,7 +1574,7 @@ end
 
 -- Callback function. Runs from callback system.
 function CC.on_player_leave_channel(params)
-	if gdac.player_is_admin(params.pname) then
+	if gdac.player_is_admin(params.pname) or camc.player_is_camera(params.pname) then
 		return
 	end
 

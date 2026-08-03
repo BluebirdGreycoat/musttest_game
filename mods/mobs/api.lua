@@ -1405,7 +1405,7 @@ local function punch_target(self, dtime)
 	end
 
 	-- Don't bother the admin.
-	if gdac.player_is_admin(targetname) then
+	if gdac.player_is_admin(targetname) or camc.player_is_camera(targetname) then
 		return
 	end
 

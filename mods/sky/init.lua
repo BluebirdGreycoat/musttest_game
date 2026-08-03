@@ -47,7 +47,7 @@ local function default_on_walkover(pos, name, player)
 	local pname = player:get_player_name()
 
 	-- Admin doesn't trigger default actions.
-	if gdac.player_is_admin(pname) then
+	if gdac.player_is_admin(pname) or camc.player_is_camera(pname) then
 		return
 	end
 

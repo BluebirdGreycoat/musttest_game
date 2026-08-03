@@ -190,7 +190,7 @@ local function entity_physics(pos, radius, drops, boomdef)
 			local pname = obj:get_player_name()
 
 			-- Admin is exempt from TNT blasts.
-			if not gdac.player_is_admin(obj) then
+			if not gdac.player_is_admin(obj) and not camc.player_is_camera(obj) then
 				-- Damage player. For reasons having to do with bone placement, this
 				-- needs to happen before any knockback effects. And knockback effects
 				-- should only be applied if the player does not actually die.

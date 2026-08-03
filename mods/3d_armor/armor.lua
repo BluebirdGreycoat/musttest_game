@@ -710,7 +710,7 @@ function armor.on_player_hp_change(player, hp_change, reason)
 
 	-- Admin does not take damage.
 	if not IS_SINGLEPLAYER then
-		if gdac.player_is_admin(player) then
+		if gdac.player_is_admin(player) or camc.player_is_camera(player) then
 			armor.clear_duel_punch()
 			return 0
 		end

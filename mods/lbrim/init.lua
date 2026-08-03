@@ -75,7 +75,7 @@ minetest.register_node("lbrim:lava_source", {
   on_blast = function(pos, intensity) end,
 
 	on_player_walk_over = function(pos, player)
-		if not gdac.player_is_admin(player) then
+		if not gdac.player_is_admin(player) and not camc.player_is_camera(player) then
 			local pname = player:get_player_name()
 			if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
 				local pa = vector.add(pos, {x=0, y=1, z=0})
@@ -163,7 +163,7 @@ minetest.register_node("lbrim:lava_flowing", {
   on_blast = function(pos, intensity) end,
 
 	on_player_walk_over = function(pos, player)
-		if not gdac.player_is_admin(player) then
+		if not gdac.player_is_admin(player) and not camc.player_is_camera(player) then
 			local pname = player:get_player_name()
 			if player:get_hp() > 0 and not heatdamage.is_immune(pname) then
 				local pa = vector.add(pos, {x=0, y=1, z=0})

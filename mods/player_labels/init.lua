@@ -201,7 +201,7 @@ player_labels.on_tag_timeout = function(name)
   local count = refcount_decrement(name)
   if count <= 0 then
     refcount_set(name, 0)
-    
+
     if not player_labels.cast[name] then
       nametag_hide(name)
     end
@@ -253,7 +253,7 @@ player_labels.on_token_use = function(itemstack, user, pointed_thing)
 
   if pointed_thing.type == "object" then
     local object = pointed_thing.ref
-    if object:is_player() and not gdac.player_is_admin(object) then
+    if object:is_player() and not gdac.player_is_admin(object) and not camc.player_is_camera(object) then
       local uname = user:get_player_name()
       local oname = object:get_player_name()
 
@@ -332,13 +332,13 @@ end
 -- This function gets called from another mod whenever the player sends a chat message.
 player_labels.on_chat_message = function(name, message)
   if gdac_invis.is_invisible(name) then return end
-  
+
   local object = minetest.get_player_by_name(name)
   if object and object:is_player() then
     --object:set_animation({x=189, y=198}, 30, 0, true)
     --object:set_animation({x=221, y=251}, 30, 0, true)
     --minetest.after(player_labels.anim_timeout, player_labels.on_anim_timeout, name)
-    
+
     refcount_increment(name)
     nametag_show(name)
     minetest.after(player_labels.chat_timeout, player_labels.on_tag_timeout, name)
@@ -350,13 +350,13 @@ end
 -- First-time execution only.
 if not player_labels.registered then
   minetest.register_on_joinplayer(function(...) return player_labels.on_joinplayer(...) end)
-  
+
   minetest.register_craftitem("player_labels:show", {
     description = "ID Marker\n\nUse this to see someone's name, if suspicious of impersonation.\nThis can also show or hide your own name.",
     inventory_image = "default_copper_block.png",
     --range = 10, -- Disabled because this allows players to access formspecs from long range.
     on_use = function(...) return player_labels.on_token_use(...) end,
-    
+
     -- Disabled because these attempts to disable right-click functionality do not appear to work.
     --on_rightclick = function(...) end,
     --on_secondary_use = function(...) end,

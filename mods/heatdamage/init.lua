@@ -17,7 +17,7 @@ heatdamage.cache_miss = heatdamage.cache_miss or 0
 heatdamage.cache_clean = 20
 
 heatdamage.is_immune = function(pname)
-  if gdac.player_is_admin(pname) then
+  if gdac.player_is_admin(pname) or camc.player_is_camera(pname) then
     return true
   end
 
@@ -40,7 +40,7 @@ heatdamage.immunize_player = function(pname, add_seconds)
   else
     heatdamage.immune_players[pname] = {timer=add_seconds}
   end
-  
+
   local total = heatdamage.immune_players[pname].timer
   minetest.chat_send_player(pname, "# Server: You are protected from heat for " .. math_floor(total) .. " seconds.")
 end
@@ -83,15 +83,15 @@ heatdamage.environment_scan = function(pos)
 
     local rad = heatdamage.scan_range
     local loc = vector_round(pos)
-    
+
     local ps, counts = minetest.find_nodes_in_area(
         {x=loc.x-rad, y=loc.y-rad, z=loc.z-rad},
         {x=loc.x+rad, y=loc.y+rad, z=loc.z+rad},
         {"group:lava", "group:flame"})
-        
+
     local total = 0
 		local lava = 0
-    
+
 		local get_node = minetest.get_node
     for k, v in ipairs(ps) do
         local n = get_node(v).name
@@ -117,11 +117,11 @@ heatdamage.environment_scan = function(pos)
             end
         end
     end
-    
+
     -- Cache results for next time.
     local idx = #cache + 1
     cache[idx] = {pos=loc, counts=total, lava=lava}
-    
+
     heatdamage.cache_miss = heatdamage.cache_miss + 1
     return total, lava
 end
@@ -139,7 +139,7 @@ heatdamage.globalstep = function(dtime)
     steptimer = steptimer + dtime
     if steptimer < serverstep then return end
     steptimer = 0
-    
+
     cachetimer = cachetimer + serverstep
     if cachetimer >= cacheclean then
         heatdamage.environment_cache = {}
@@ -147,11 +147,11 @@ heatdamage.globalstep = function(dtime)
         heatdamage.cache_miss = 0
         cachetimer = 0
     end
-    
+
     local floor = math_floor
     local scan = heatdamage.environment_scan
     local players = minetest.get_connected_players()
-    
+
     for k, v in ipairs(players) do
         local name = v:get_player_name()
         if not heatdamage.is_immune(name) then
@@ -159,7 +159,7 @@ heatdamage.globalstep = function(dtime)
             -- Scan environment for nearby heat sources capable of causing damage to players.
             local total, lava = scan(v:get_pos())
 						total = floor(total + 0.5)
-            
+
             if total > 0 then
 							sprint.set_stamina(v, 0)
 
@@ -185,7 +185,7 @@ heatdamage.globalstep = function(dtime)
           end
         end
     end
-    
+
     local removenames = {}
     for k, v in pairs(heatdamage.immune_players) do
       if v.timer > 0 then
@@ -196,7 +196,7 @@ heatdamage.globalstep = function(dtime)
         end
       end
     end
-    
+
     for k, v in pairs(removenames) do
       heatdamage.immune_players[k] = nil
     end

@@ -903,7 +903,7 @@ function rc.check_position(player)
 
 	if reset then
 		-- Player is out-of-bounds. Reset to last known good position.
-		if not gdac.player_is_admin(n) and not data.new_arrival then
+		if not gdac.player_is_admin(n) and not camc.player_is_camera(n) and not data.new_arrival then
 			if not spam.test_key(58921) then
 				spam.mark_key(58921, 30)
 
@@ -945,7 +945,7 @@ function rc.check_position(player)
 			-- will not be spawned.
 
 			if player:get_hp() <= 0 then
-				if not gdac.player_is_admin(n) then
+				if not gdac.player_is_admin(n) and not camc.player_is_camera(n) then
 					minetest.chat_send_all("# Server: <" .. rename.gpn(n) ..
 						"> took a flying leap off the Yggdrasill.")
 
@@ -1010,7 +1010,7 @@ function rc.plane_shift_message(pref, p, n)
 	-- Only if new realm is different from old.
 	if rr ~= rr2 then
 		if gdac_invis.is_invisible(n) or cloaking.is_cloaked(n) or player_labels.query_nametag_onoff(n) == false then
-			if not gdac.player_is_admin(n) then
+			if not gdac.player_is_admin(n) and not camc.player_is_camera(n) then
 				minetest.chat_send_all("# Server: Someone has plane shifted.")
 			end
 		else

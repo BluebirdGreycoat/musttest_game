@@ -389,7 +389,7 @@ function armor.get_likely_opponents(player, pos)
 
 	for k = 1, #players do
 		local pref = players[k]
-		if not gdac.player_is_admin(pref) then
+		if not gdac.player_is_admin(pref) and not camc.player_is_camera(pref) then
 			if pname ~= pref:get_player_name() then
 				if vector_distance(pos, pref:get_pos()) < OPPONENT_DISTANCE then
 					-- The player needs to have signaled their intent to duel.

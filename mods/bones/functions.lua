@@ -365,7 +365,7 @@ bones.on_dieplayer = function(player, reason, preserve_xp)
 
 	-- Special case for admin. This helps prevent accidentally leaving
 	-- admin/cheated stuff lying around.
-	if gdac.player_is_admin(pname) then
+	if gdac.player_is_admin(pname) or camc.player_is_camera(pname) then
 		return
 	end
 

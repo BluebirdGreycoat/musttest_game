@@ -85,7 +85,7 @@ function gauges.on_global_step()
 
 	-- Add gauges to players without them.
 	for _, player in ipairs(allplayers) do
-		if not gdac.player_is_admin(player) then
+		if not gdac.player_is_admin(player) and not camc.player_is_camera(player) then
 			local name = player:get_player_name()
 
 			local nametag = player_labels.query_nametag_onoff(name)

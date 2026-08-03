@@ -22,7 +22,7 @@ function pm.seek_player_or_mob_or_item(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			if not gdac.player_is_admin(all[i]) then
+			if not gdac.player_is_admin(all[i]) and not camc.player_is_camera(all[i]) then
 				objects[#objects+1] = all[i]
 			end
 		else
@@ -49,7 +49,7 @@ function pm.seek_player_or_mob(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			if not gdac.player_is_admin(all[i]) then
+			if not gdac.player_is_admin(all[i]) and not camc.player_is_camera(all[i]) then
 				objects[#objects+1] = all[i]
 			end
 		else
@@ -76,7 +76,7 @@ function pm.seek_player_or_mob_not_wisp(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			if not gdac.player_is_admin(all[i]) then
+			if not gdac.player_is_admin(all[i]) and not camc.player_is_camera(all[i]) then
 				objects[#objects+1] = all[i]
 			end
 		else
@@ -105,7 +105,7 @@ function pm.seek_player_or_item(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			if not gdac.player_is_admin(all[i]) then
+			if not gdac.player_is_admin(all[i]) and not camc.player_is_camera(all[i]) then
 				objects[#objects+1] = all[i]
 			end
 		else
@@ -132,7 +132,7 @@ function pm.seek_player(self, pos)
 	local objects = {}
 	for i=1, #all, 1 do
 		if all[i]:is_player() and all[i]:get_hp() > 0 then
-			if not gdac.player_is_admin(all[i]) then
+			if not gdac.player_is_admin(all[i]) and not camc.player_is_camera(all[i]) then
 				objects[#objects+1] = all[i]
 			end
 		end

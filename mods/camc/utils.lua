@@ -49,7 +49,7 @@ local function calc_look_at(player_pos, _player_yaw, _player_pitch)
 	local yaw   = math.atan2(-dir.x, dir.z)
 	local pitch = math.atan2(dir.y, math.sqrt(dir.x * dir.x + dir.z * dir.z))
 
-	return cam_pos, yaw, pitch
+	return cam_pos, yaw, -pitch
 end
 
 function camc.look_at(pname)

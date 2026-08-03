@@ -57,6 +57,11 @@ function joinspec.on_joinplayer(player)
 	local pname = player:get_player_name()
 	local pos = player:get_pos()
 
+	-- Don't show welcome formspec to the camera player.
+	if camc.player_is_camera(player) then
+		return
+	end
+
 	if player:get_hp() > 0 then
 		local result = passport.player_registered(pname)
 		local haskey = passport.player_has_key(pname)

@@ -10,7 +10,7 @@ local CHATCOMMANDS = {
 				target = pref:get_player_name()
 			end
 			if camc.snap_to(target) then
-				camc.system_response(pname, ("Snapped camera to <%s>."):format(rename.gpn(pname)))
+				camc.system_response(pname, ("Snapped camera to <%s>."):format(rename.gpn(target)))
 				return
 			end
 			camc.system_error(pname, "Could not change camera position.")

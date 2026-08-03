@@ -26,6 +26,10 @@ function camc.on_joinplayer(player)
 end
 
 function camc.player_is_camera(player_or_name)
+	if type(player_or_name) ~= "string" then
+		player_or_name = player_or_name:get_player_name()
+	end
+
 	local privs = minetest.get_player_privs(player_or_name)
 
 	if privs.camc then

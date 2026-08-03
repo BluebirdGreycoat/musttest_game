@@ -20,4 +20,6 @@ function camc.snap_to(pname)
 	pcam:set_pos(to_pos)
 	pcam:set_look_horizontal(pref:get_look_horizontal())
 	pcam:set_look_vertical(pref:get_look_vertical())
+
+	return true
 end

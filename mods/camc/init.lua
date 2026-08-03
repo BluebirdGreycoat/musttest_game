@@ -3,41 +3,7 @@ if not minetest.global_exists("camc") then camc = {} end
 camc.modpath = minetest.get_modpath("camc")
 
 dofile(camc.modpath .. "/utils.lua")
-
-local function hide_hud(player)
-	player:hud_set_flags({
-		hotbar = false,
-		healthbar = false,
-		crosshair = false,
-		wielditem = false,
-		breathbar = false,
-		minimap = false,
-		minimap_radar = false,
-		basic_debug = false,
-		chat = false,
-	})
-end
-
-function camc.on_joinplayer(player)
-	if minetest.check_player_privs(player, {camc=true}) then
-		local pname = player:get_player_name()
-		gdac_invis.toggle_invisibility(pname, "")
-
-		hide_hud(player)
-	end
-end
-
-function camc.player_is_camera(player_or_name)
-	if type(player_or_name) ~= "string" then
-		player_or_name = player_or_name:get_player_name()
-	end
-
-	local privs = minetest.get_player_privs(player_or_name)
-
-	if privs.camc then
-		return true
-	end
-end
+dofile(camc.modpath .. "/functions.lua")
 
 if not camc.run_once then
 	camc.run_once = true
@@ -50,6 +16,16 @@ if not camc.run_once then
 		description = "Whateff.",
 		give_to_singleplayer = false,
 		give_to_admin = false,
+	})
+
+	minetest.register_chatcommand("hawkeye", {
+		params = "[variable command options]",
+		description = "Camera control.",
+		privs = {},
+
+		func = function(pname, param)
+			camc.on_chatcommand(pname, param)
+		end,
 	})
 
 	minetest.register_on_joinplayer(function(...)

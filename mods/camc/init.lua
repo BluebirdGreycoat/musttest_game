@@ -4,6 +4,8 @@ camc.modpath = minetest.get_modpath("camc")
 
 function camc.on_joinplayer(player)
 	if minetest.check_player_privs(player, {camc=true}) then
+		local pname = player:get_player_name()
+		gdac_invis.toggle_invisibility(pname, "")
 	end
 end
 

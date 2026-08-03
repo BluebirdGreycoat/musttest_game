@@ -24,6 +24,63 @@ function camc.snap_to(pname)
 	return true
 end
 
+local function calc_look_at(player_pos, _player_yaw, _player_pitch)
+	-- Place the camera some distance away, slightly above the player,
+	-- at a random angle around them, and compute yaw/pitch so it looks
+	-- directly at the player (downward).
+
+	local distance = 9     -- horizontal distance from player
+	local height   = 3.5   -- how far above the player
+
+	local angle = math.random() * math.pi * 2
+
+	local offset = vector.new(
+		math.cos(angle) * distance,
+		height,
+		math.sin(angle) * distance
+	)
+
+	local cam_pos = vector.add(player_pos, offset)
+
+	-- Direction vector from camera toward the player
+	local dir = vector.subtract(player_pos, cam_pos)
+
+	-- Convert direction to Minetest yaw / pitch
+	local yaw   = math.atan2(-dir.x, dir.z)
+	local pitch = math.atan2(dir.y, math.sqrt(dir.x * dir.x + dir.z * dir.z))
+
+	return cam_pos, yaw, pitch
+end
+
+function camc.look_at(pname)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	local pcam = minetest.get_player_by_name("Hawkeye")
+	if not pcam then
+		return
+	end
+	if not camc.player_is_camera(pcam) then
+		return
+	end
+
+	local target_p = pref:get_pos()
+	local yaw = pref:get_look_horizontal()
+	local pitch = pref:get_look_vertical()
+	local cam_pos = vector.copy(target_p)
+
+	cam_pos, hori_rad, pitch = calc_look_at(target_p, yaw, pitch)
+
+	rc.notify_realm_update(pcam, cam_pos)
+	pcam:set_pos(cam_pos)
+	pcam:set_look_horizontal(yaw)
+	pcam:set_look_vertical(pitch)
+
+	return true
+end
+
 -- Send server response to specific player and play error sound.
 function camc.system_error(pname, errmsg)
 	minetest.chat_send_player(pname, "# Server: " .. errmsg)

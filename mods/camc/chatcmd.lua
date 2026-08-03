@@ -16,6 +16,23 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Could not change camera position.")
 		end,
 	},
+
+	lookat = {
+		params = "[target]",
+		description = "Position camera looking at you, or someone else.",
+		action = function(pname, param)
+			local target = pname
+			local pref = minetest.get_player_by_name(param)
+			if pref then
+				target = pref:get_player_name()
+			end
+			if camc.look_at(target) then
+				camc.system_response(pname, ("Camera looking at <%s>."):format(rename.gpn(target)))
+				return
+			end
+			camc.system_error(pname, "Could not change camera position.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)

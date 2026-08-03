@@ -4,7 +4,11 @@ local CHATCOMMANDS = {
 		params = "",
 		description = "Position camera facing your current look direction.",
 		action = function(pname, param)
-			camc.snap_to(pname)
+			if camc.snap_to(pname) then
+				camc.system_response(pname, ("Snapped camera to <%s>."):format(rename.gpn(pname)))
+				return
+			end
+			camc.system_error(pname, "Could not change camera position.")
 		end,
 	},
 }

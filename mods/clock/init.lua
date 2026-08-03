@@ -117,10 +117,15 @@ end
 
 function hud_clock.on_joinplayer(pref)
 	local pname = pref:get_player_name()
+	if camc.player_is_camera(pname) then
+		return
+	end
+
 	if player_hud[pname] then
 		player_hud[pname] = nil
 	end
 	player_hud[pname] = {}
+
 	local offy = -130
 	local h = pref:hud_add({
 		type = "text",

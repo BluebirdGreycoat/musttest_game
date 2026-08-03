@@ -259,7 +259,9 @@ sauth.auth_handler = {
 		-- If admin, grant all privileges
 		elseif name == admin then
 			for priv, def in pairs(core.registered_privileges) do
-				privileges[priv] = true
+				if def.give_to_admin == nil or def.give_to_admin == true then
+					privileges[priv] = true
+				end
 			end
 		end
 		-- Construct record
@@ -376,7 +378,7 @@ minetest.register_on_leaveplayer(function(player)
 end)
 
 minetest.register_on_prejoinplayer(function(name, ip)
-	local r = get_record(name)	
+	local r = get_record(name)
 	if r ~= nil then
 		return
 	end

@@ -118,6 +118,7 @@ end
 function hud_clock.on_joinplayer(pref)
 	local pname = pref:get_player_name()
 	if camc.player_is_camera(pname) then
+		player_hud[pname] = nil
 		return
 	end
 

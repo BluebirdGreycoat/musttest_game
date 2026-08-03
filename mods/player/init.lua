@@ -276,13 +276,15 @@ minetest.register_on_joinplayer(function(pref)
 
 	-- Disable the minimap. Cheaters will of course be able to enable it.
 	-- Can be reenabled via item in-game.
-	pref:hud_set_flags({
-		minimap = false,
-		minimap_radar = false,
+	if not camc.player_is_camera(pref) then
+		pref:hud_set_flags({
+			minimap = false,
+			minimap_radar = false,
 
-		-- At last! The custom coordinate system is now First Class!
-		basic_debug = false,
-	})
+			-- At last! The custom coordinate system is now First Class!
+			basic_debug = false,
+		})
+	end
 
 	-- Finally! Minetest has shadow support!
 	-- check if function is supported by server (old versions 5.5.0)

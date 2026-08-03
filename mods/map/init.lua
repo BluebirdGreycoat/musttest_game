@@ -197,10 +197,12 @@ function map.update_hud_flags(player)
   local radar_enabled = false
 
 	-- Map & radar combined into same device.
-	player:hud_set_flags({
-		minimap = minimap_enabled,
-		minimap_radar = minimap_enabled,
-	})
+	if not camc.player_is_camera(player) then
+		player:hud_set_flags({
+			minimap = minimap_enabled,
+			minimap_radar = minimap_enabled,
+		})
+	end
 
 	if minimap_enabled then
 		return true

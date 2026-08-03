@@ -72,7 +72,7 @@ function hud.register(name, def)
 			end
 		end
 	end
-	
+
 	-- no error so far, return sucess
 	return true
 end
@@ -162,6 +162,10 @@ local function add_hud_item(player, name, def, foreground)
 end
 
 minetest.register_on_joinplayer(function(player)
+	if camc.player_is_camera(player) then
+		return
+	end
+
 	-- First: hide the default statbars.
 	local hud_flags = player:hud_get_flags()
 	hud_flags.healthbar = false

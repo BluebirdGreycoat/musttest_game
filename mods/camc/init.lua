@@ -2,10 +2,26 @@
 if not minetest.global_exists("camc") then camc = {} end
 camc.modpath = minetest.get_modpath("camc")
 
+local function hide_hud(player)
+	player:hud_set_flags({
+		hotbar = false,
+		healthbar = false,
+		crosshair = false,
+		wielditem = false,
+		breathbar = false,
+		minimap = false,
+		minimap_radar = false,
+		basic_debug = false,
+		chat = false,
+	})
+end
+
 function camc.on_joinplayer(player)
 	if minetest.check_player_privs(player, {camc=true}) then
 		local pname = player:get_player_name()
 		gdac_invis.toggle_invisibility(pname, "")
+
+		hide_hud(player)
 	end
 end
 

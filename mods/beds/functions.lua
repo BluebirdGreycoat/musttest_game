@@ -184,7 +184,9 @@ local function lay_down(player, pos, bed_pos, state, skip)
 		default.player_set_animation(player, "lay" , 0)
 	end
 
-	player:hud_set_flags(hud_flags)
+	if not camc.player_is_camera(player) then
+		player:hud_set_flags(hud_flags)
+	end
 end
 
 
@@ -286,7 +288,9 @@ local function update_player_hud(pname, closed, participating, people_in_bed)
 			end)
 		end
 
-		pref:hud_set_flags({crosshair = false})
+		if not camc.player_is_camera(pref) then
+			pref:hud_set_flags({crosshair = false})
+		end
 	end
 
 	local pdata = beds.player_huds[pname]
@@ -310,7 +314,10 @@ local function update_player_hud(pname, closed, participating, people_in_bed)
 			pref:hud_remove(id)
 		end
 		beds.player_huds[pname] = nil
-		pref:hud_set_flags({crosshair = true})
+
+		if not camc.player_is_camera(pref) then
+			pref:hud_set_flags({crosshair = true})
+		end
 	end
 end
 

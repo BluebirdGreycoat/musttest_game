@@ -25,6 +25,10 @@ function gdac.player_is_admin(playerorname)
 
 	--do return false end
 
+	if type(playerorname) ~= "string" then
+		playerorname = playerorname:get_player_name()
+	end
+
 	local privs = minetest.get_player_privs(playerorname)
 
 	if privs.server then

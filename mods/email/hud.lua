@@ -8,7 +8,7 @@ function email.update_hud(player)
 	local name = player:get_player_name()
 
 	-- ICON only shows for players that have a key of citizenship.
-	if passport.player_has_key(name) then
+	if passport.player_has_key(name) and not camc.player_is_camera(name) then
 		local inbox = email.get_inbox(name)
 
 		if inbox and #inbox > 0 then

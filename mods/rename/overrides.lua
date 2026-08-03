@@ -49,8 +49,11 @@ function minetest.set_player_privs(name, privs)
 end
 
 local get_player_privs = minetest.get_player_privs
-function minetest.get_player_privs(name)
-	return get_player_privs(rename.grn(name))
+function minetest.get_player_privs(player_or_name)
+	if type(player_or_name) ~= "string" then
+		player_or_name = player_or_name:get_player_name()
+	end
+	return get_player_privs(rename.grn(player_or_name))
 end
 
 local check_player_privs = minetest.check_player_privs

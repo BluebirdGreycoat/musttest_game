@@ -23,3 +23,25 @@ function camc.snap_to(pname)
 
 	return true
 end
+
+-- Send server response to specific player and play error sound.
+function camc.system_error(pname, errmsg)
+	minetest.chat_send_player(pname, "# Server: " .. errmsg)
+	easyvend.sound_error(pname)
+end
+
+function camc.system_response(pname, message)
+	minetest.chat_send_player(pname, "# Server: " .. message)
+end
+
+function camc.check_player_existence(pname)
+	return minetest.get_player_by_name(pname)
+end
+
+function camc.get_pref_complain_if_inexistent(pname)
+	local pref = camc.check_player_existence(pname)
+	if not pref then
+		camc.system_response(pname, "You failed the existence test.")
+	end
+	return pref
+end

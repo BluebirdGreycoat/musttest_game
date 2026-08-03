@@ -27,13 +27,10 @@ function camc.player_is_camera(player_or_name)
 		player_or_name = player_or_name:get_player_name()
 	end
 
+	-- API call always expects a string playername.
 	local privs = minetest.get_player_privs(player_or_name)
 
 	if privs.camc then
 		return true
 	end
-end
-
-function camc.on_chatcommand(pname, param)
-	camc.snap_to(pname)
 end

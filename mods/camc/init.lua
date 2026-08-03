@@ -4,6 +4,7 @@ camc.modpath = minetest.get_modpath("camc")
 
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")
+dofile(camc.modpath .. "/chatcmd.lua")
 
 if not camc.run_once then
 	camc.run_once = true
@@ -22,6 +23,10 @@ if not camc.run_once then
 		params = "[variable command options]",
 		description = "Camera control.",
 		privs = {},
+
+		show_help = function(pname)
+			camc.on_show_help(pname)
+		end,
 
 		func = function(pname, param)
 			camc.on_chatcommand(pname, param)

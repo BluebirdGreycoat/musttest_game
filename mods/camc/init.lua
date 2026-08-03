@@ -2,6 +2,8 @@
 if not minetest.global_exists("camc") then camc = {} end
 camc.modpath = minetest.get_modpath("camc")
 
+dofile(camc.modpath .. "/utils.lua")
+
 local function hide_hud(player)
 	player:hud_set_flags({
 		hotbar = false,

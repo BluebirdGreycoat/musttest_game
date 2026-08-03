@@ -114,7 +114,7 @@ function email.send_mail_multi(from, multi_target, subject, message)
 	end
 
 	email.db_exec([[ BEGIN TRANSACTION; ]])
-  
+
   -- Assume multi-target is a table of playernames to send mail to.
   for k, v in ipairs(multi_target) do
 		v = rename.grn(v)
@@ -155,23 +155,23 @@ function email.send_mail_ex(from, to, subject, message)
 	to = rename.grn(to)
 
 	-- Cannot send email if recipient does not exist.
-  if not minetest.player_exists(to) then
+  if not minetest.player_exists(to) or camc.player_is_camera(to) then
 		return false, "badplayer"
 	end
 	if string.len(subject) > email.max_subject_length or string.len(message) > email.max_message_length then
 		return false, "toobig"
 	end
-  
+
   local inboxes = email.get_inbox(to)
   if #inboxes >= email.maxsize then return false, "boxfull" end -- Inbox full.
-  
+
   -- Find a unique ID for this new email.
   ::tryagain::
   local rng = math_random(1, 32000) -- 0 is not a valid ID. Important!
   for k, v in ipairs(inboxes) do
     if v.rng == rng then goto tryagain end
   end
-  
+
   local mail = {
     date = os.date("%Y-%m-%d"),
     from = from,

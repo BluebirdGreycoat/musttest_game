@@ -1,10 +1,15 @@
 
 local CHATCOMMANDS = {
 	snap = {
-		params = "",
-		description = "Position camera facing your current look direction.",
+		params = "[target]",
+		description = "Position camera facing your current look direction, or target's.",
 		action = function(pname, param)
-			if camc.snap_to(pname) then
+			local target = pname
+			local pref = minetest.get_player_by_name(param)
+			if pref then
+				target = pref:get_player_name()
+			end
+			if camc.snap_to(target) then
 				camc.system_response(pname, ("Snapped camera to <%s>."):format(rename.gpn(pname)))
 				return
 			end

@@ -9,6 +9,9 @@ function camc.snap_to(pname)
 	if not pcam then
 		return
 	end
+	if not camc.player_is_camera(pcam) then
+		return
+	end
 
 	local to_pos = pref:get_pos()
 

@@ -47,6 +47,7 @@ if not camc.run_once then
 	minetest.register_privilege("camc", {
 		description = "Whateff.",
 		give_to_singleplayer = false,
+		give_to_admin = false,
 	})
 
 	minetest.register_on_joinplayer(function(...)

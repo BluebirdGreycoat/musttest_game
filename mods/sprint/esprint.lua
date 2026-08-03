@@ -35,6 +35,10 @@ end
 
 
 function sprint.on_joinplayer(player)
+	if camc.player_is_camera(player) then
+		return
+	end
+
 	local playerName = player:get_player_name()
 
 	players[playerName] = {

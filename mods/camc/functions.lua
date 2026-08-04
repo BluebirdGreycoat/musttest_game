@@ -62,9 +62,13 @@ function camc.check_camera_activity(params)
 					-- Camera hasn't moved in some time.
 					local rnd = math.random(1, 2)
 					if rnd == 1 then
-						camc.start_haunting()
+						if not camc.start_haunting() then
+							camc.start_exploring()
+						end
 					elseif rnd == 2 then
-						camc.start_exploring()
+						if not camc.start_exploring() then
+							camc.start_haunting()
+						end
 					end
 				end
 			end

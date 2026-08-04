@@ -42,9 +42,8 @@ function camc.periodic_explore_update()
 	local maxp = vector.add(pos, {x=d, y=d, z=d})
 	minetest.load_area(minp, maxp)
 
-	if not camc.look_at(pos) then
-		return
-	end
+	-- Camera will remain where it is if this fails.
+	camc.look_at(pos)
 
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, camc.periodic_explore_update)
 	return true

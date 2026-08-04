@@ -56,12 +56,7 @@ local function calc_look_at(player_pos, randomize)
 	return cam_pos, yaw, pitch
 end
 
-function camc.look_at(pname)
-	local pref = minetest.get_player_by_name(pname)
-	if not pref then
-		return
-	end
-
+function camc.look_at(target)
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		return
@@ -70,7 +65,22 @@ function camc.look_at(pname)
 		return
 	end
 
-	local target_p = pref:get_pos()
+	local target_p
+	if type(target) == "string" then
+		local pref = minetest.get_player_by_name(target)
+		if not pref then
+			return
+		end
+		target_p = pref:get_pos()
+	elseif type(target) == "table" and target.x and target.y and target.z then
+		target_p = target
+	elseif type(target) == "userdata" then
+		target_p = target:get_pos()
+	end
+	if not target_p then
+		return
+	end
+
 	local cam_pos, yaw, pitch = calc_look_at(target_p)
 
 	local function head_pos(cam_pos)

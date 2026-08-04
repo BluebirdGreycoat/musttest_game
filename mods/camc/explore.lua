@@ -52,21 +52,18 @@ function camc.periodic_explore_update()
 	end
 
 	local pos = get_random_spot()
-	if not pos then
-		camc.stop_exploring()
-		return
+	if pos then
+		-- Load map so the look at code can find a good spot for the camera.
+		local d = 16
+		local minp = vector.add(pos, {x=-d, y=-d, z=-d})
+		local maxp = vector.add(pos, {x=d, y=d, z=d})
+		minetest.load_area(minp, maxp)
+
+		send_region_to_player(pcam, minp, maxp)
+
+		-- Camera will remain where it is if this fails.
+		minetest.after(2, function() camc.look_at(pos) end)
 	end
-
-	-- Load map so the look at code can find a good spot for the camera.
-	local d = 16
-	local minp = vector.add(pos, {x=-d, y=-d, z=-d})
-	local maxp = vector.add(pos, {x=d, y=d, z=d})
-	minetest.load_area(minp, maxp)
-
-	send_region_to_player(pcam, minp, maxp)
-
-	-- Camera will remain where it is if this fails.
-	minetest.after(2, function() camc.look_at(pos) end)
 
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function() camc.periodic_explore_update() end)
 	return true

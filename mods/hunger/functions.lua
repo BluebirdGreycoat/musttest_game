@@ -278,9 +278,12 @@ local function get_buildxp_for(nodename)
 end
 
 
+
+local REQUIRE_EXISTS = false
+
 -- That can't be a fun way to play the game, Carl.
 local function what_are_you_even_doing_carl(pos, pname, nname)
-	if minetest.get_node(pos).name ~= nname then
+	if REQUIRE_EXISTS and minetest.get_node(pos).name ~= nname then
 		return
 	end
 

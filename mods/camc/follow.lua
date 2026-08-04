@@ -44,7 +44,7 @@ function camc.periodic_follow_check()
 	local cam_pos = pcam:get_pos()
 
 	-- If player is far away, teleported, etc., just jump camera to them.
-	if vector.distance(player_pos, cam_pos) > 50 then
+	if vector.distance(player_pos, cam_pos) > 20 then
 		return camc.look_at(pname)
 	end
 

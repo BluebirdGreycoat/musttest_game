@@ -36,6 +36,10 @@ function camc.periodic_explore_update()
 		return
 	end
 
+	if not camc.look_at(pos) then
+		return
+	end
+
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, camc.periodic_explore_update)
 	return true
 end

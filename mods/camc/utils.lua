@@ -42,7 +42,7 @@ local function calc_look_at(player_pos, _player_yaw, _player_pitch)
 
 	local cam_pos = vector.add(player_pos, offset)
 
-	-- Direction from camera → player (normalized)
+	-- Direction from camera to player (normalized)
 	local dir = vector.direction(cam_pos, player_pos)
 
 	local yaw   = minetest.dir_to_yaw(dir)

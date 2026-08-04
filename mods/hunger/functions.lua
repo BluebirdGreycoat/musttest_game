@@ -278,6 +278,18 @@ local function get_buildxp_for(nodename)
 end
 
 
+-- That can't be a fun way to play the game, Carl.
+local function what_are_you_even_doing_carl(pos, pname, nname)
+	if minetest.get_node(pos).name ~= nname then
+		return
+	end
+
+	local bxp = get_buildxp_for(nname)
+	xp.add_xp(pname, "buildxp", bxp)
+
+	-- Building causes loss in digxp.
+	xp.subtract_xp(pname, "digxp", bxp)
+end
 
 -- Placenode event.
 function hunger.on_placenode(pos, newnode, player, oldnode)
@@ -306,11 +318,7 @@ function hunger.on_placenode(pos, newnode, player, oldnode)
 		local new = HUNGER_EXHAUST_PLACE * invsta
 		hunger.handle_action_event(player, new)
 
-		local bxp = get_buildxp_for(newnode.name)
-		xp.add_xp(pname, "buildxp", bxp)
-
-		-- Building causes loss in digxp.
-		xp.subtract_xp(pname, "digxp", bxp)
+		minetest.after(0, what_are_you_even_doing_carl, pos, pname, newnode.name)
 	end
 end
 

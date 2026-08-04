@@ -5,6 +5,7 @@ camc.modpath = minetest.get_modpath("camc")
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")
 dofile(camc.modpath .. "/chatcmd.lua")
+dofile(camc.modpath .. "/follow.lua")
 
 if not camc.run_once then
 	camc.run_once = true

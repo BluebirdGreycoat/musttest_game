@@ -33,6 +33,23 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Could not change camera position.")
 		end,
 	},
+
+	follow = {
+		params = "[target]",
+		description = "Have camera follow you, or someone else.",
+		action = function(pname, param)
+			local target = pname
+			local pref = minetest.get_player_by_name(param)
+			if pref then
+				target = pref:get_player_name()
+			end
+			if camc.follow_player(target) then
+				camc.system_response(pname, ("Camera following <%s>."):format(rename.gpn(target)))
+				return
+			end
+			camc.system_error(pname, "Could not make camera follow.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)
@@ -58,6 +75,7 @@ function camc.on_chatcommand(pname, param)
 
 	local command = CHATCOMMANDS[verb]
 	if command.action then
+		camc.set_following(nil)
 		command.action(pname, param:sub(verb:len() + 2):trim())
 	end
 end

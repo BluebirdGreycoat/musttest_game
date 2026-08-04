@@ -18,7 +18,7 @@ if not camc.run_once then
 	reload.register_file(c, f, false)
 
 	minetest.register_privilege("camc", {
-		description = "Whateff.",
+		description = "Identifies this account as a remote camera bot.",
 		give_to_singleplayer = false,
 		give_to_admin = false,
 	})

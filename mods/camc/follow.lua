@@ -1,8 +1,10 @@
 
 camc.FOLLOW_TARGET = camc.FOLLOW_TARGET or ""
+camc.FOLLOW_MODE = camc.FOLLOW_MODE or 0
 
-function camc.set_following(pname)
+function camc.set_following(pname, mode)
 	camc.FOLLOW_TARGET = pname or ""
+	camc.FOLLOW_MODE = mode or 0
 	if camc.FOLLOW_TARGET ~= "" then
 		return camc.periodic_follow_check()
 	end
@@ -44,8 +46,10 @@ function camc.periodic_follow_check()
 	local cam_pos = pcam:get_pos()
 
 	-- If player is far away, teleported, etc., just jump camera to them.
+	-- This also triggers if the followed player changes to someone else.
 	if vector.distance(player_pos, cam_pos) > 20 then
 		if not camc.look_at(pname) then
+			camc.set_following(nil)
 			return
 		end
 	else
@@ -61,4 +65,24 @@ end
 
 function camc.follow_player(pname)
 	return camc.set_following(pname)
+end
+
+local function get_random_haunt_target()
+	local players = minetest.get_connected_players()
+	local valid = {}
+	for _, v in ipairs(players) do
+		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
+			valid[#valid + 1] = v
+		end
+	end
+	if #valid > 0 then
+		return valid[math.random(1, #valid)]
+	end
+end
+
+function camc.start_haunting()
+	local pname = get_random_haunt_target()
+	if pname then
+		return camc.set_following(pname, 1)
+	end
 end

@@ -50,6 +50,18 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Could not make camera follow.")
 		end,
 	},
+
+	haunt = {
+		params = "",
+		description = "Have camera follow random players, changing periodically.",
+		action = function(pname, param)
+			if camc.start_haunting() then
+				camc.system_response(pname, ("Camera is now haunting."))
+				return
+			end
+			camc.system_error(pname, "Could not make camera haunt.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)

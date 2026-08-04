@@ -42,7 +42,11 @@ local function calc_look_at(player_pos, cam_pos)
 	return yaw, pitch
 end
 
-function camc.periodic_follow_check()
+function camc.periodic_follow_check(params)
+	if not params then
+		params = {}
+	end
+
 	local delayafter = 0
 	local pname = camc.FOLLOW_TARGET or ""
 	if pname == "" then
@@ -101,7 +105,7 @@ function camc.periodic_follow_check()
 	end
 
 	--camc.system_response("MustTest", "Success.")
-	minetest.after(delayafter, function() camc.periodic_follow_check() end)
+	minetest.after(delayafter, function() camc.periodic_follow_check(params) end)
 	return true
 end
 

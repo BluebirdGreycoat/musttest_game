@@ -25,7 +25,10 @@ local function get_random_spot()
 	end
 end
 
-function camc.periodic_explore_update()
+function camc.periodic_explore_update(params)
+	if not params then
+		params = {}
+	end
 	if camc.EXPLORE_ACTIVE ~= 1 then
 		return
 	end
@@ -50,7 +53,9 @@ function camc.periodic_explore_update()
 		minetest.after(2, function() camc.look_at(pos) end)
 	end
 
-	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function() camc.periodic_explore_update() end)
+	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function()
+		camc.periodic_explore_update(params)
+	end)
 	return true
 end
 

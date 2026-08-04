@@ -96,11 +96,17 @@ function camc.look_at(target)
 			vector.add(hp, {x=-d, y=0, z=0}),
 			vector.add(hp, {x=0, y=0, z=d}),
 			vector.add(hp, {x=0, y=0, z=-d}),
+			vector.add(hp, {x=0, y=d, z=0}),
+			vector.add(hp, {x=0, y=-d, z=0}),
 		}
 		for i = 1, #t do
 			local p = t[i]
-			if minetest.get_node(p).name ~= "air" then
-				return true
+			local nn = minetest.get_node(p).name
+			if nn ~= "air" then
+				local ndef = minetest.registered_nodes[nn] or {}
+				if ndef.walkable then
+					return true
+				end
 			end
 		end
 	end

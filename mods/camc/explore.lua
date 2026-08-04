@@ -25,21 +25,6 @@ local function get_random_spot()
 	end
 end
 
-local function send_region_to_player(player, minp, maxp)
-	-- Convert node positions to mapblock positions
-	local min_bp = vector.floor(vector.divide(minp, 16))
-	local max_bp = vector.floor(vector.divide(maxp, 16))
-
-	-- Send every mapblock in the region
-	for x = min_bp.x, max_bp.x do
-		for y = min_bp.y, max_bp.y do
-			for z = min_bp.z, max_bp.z do
-				player:send_mapblock(vector.new(x, y, z))
-			end
-		end
-	end
-end
-
 function camc.periodic_explore_update()
 	if camc.EXPLORE_ACTIVE ~= 1 then
 		return
@@ -59,7 +44,7 @@ function camc.periodic_explore_update()
 		local maxp = vector.add(pos, {x=d, y=d, z=d})
 		minetest.load_area(minp, maxp)
 
-		send_region_to_player(pcam, minp, maxp)
+		camc.send_region_to_player(pcam, minp, maxp)
 
 		-- Camera will remain where it is if this fails.
 		minetest.after(2, function() camc.look_at(pos) end)

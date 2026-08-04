@@ -136,3 +136,18 @@ function camc.get_pref_complain_if_inexistent(pname)
 	end
 	return pref
 end
+
+function camc.send_region_to_player(player, minp, maxp)
+	-- Convert node positions to mapblock positions
+	local min_bp = vector.floor(vector.divide(minp, 16))
+	local max_bp = vector.floor(vector.divide(maxp, 16))
+
+	-- Send every mapblock in the region
+	for x = min_bp.x, max_bp.x do
+		for y = min_bp.y, max_bp.y do
+			for z = min_bp.z, max_bp.z do
+				player:send_mapblock(vector.new(x, y, z))
+			end
+		end
+	end
+end

@@ -117,7 +117,7 @@ function hb4.nearest_player(pos)
 
 	for i=1, #players, 1 do
 		local p = players[i]
-		if not is_admin(p) then
+		if not is_admin(p) and not camc.player_is_camera(p) then
 			local d = vector.distance(p:get_pos(), pos)
 			if d < dist then
 				dist = d
@@ -151,7 +151,7 @@ function hb4.nearest_player_not(pos, pnot)
 
 	for i=1, #players, 1 do
 		local p = players[i]
-		if p ~= pnot and not is_admin(p) then
+		if p ~= pnot and not is_admin(p) and not camc.player_is_camera(p) then
 			local d = vector.distance(p:get_pos(), pos)
 			if d < dist then
 				dist = d

@@ -131,9 +131,11 @@ function camc.on_chatcommand(pname, param)
 
 	local command = CHATCOMMANDS[verb]
 	if command.action then
-		-- Establish baseline before executing new command.
-		camc.set_following(nil)
-		camc.stop_exploring()
+		if verb ~= "status" then
+			-- Establish baseline before executing new command.
+			camc.set_following(nil)
+			camc.stop_exploring()
+		end
 
 		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), param))
 		command.action(pname, param:sub(verb:len() + 2):trim())

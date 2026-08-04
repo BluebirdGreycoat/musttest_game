@@ -11,16 +11,16 @@ local CHATCOMMANDS = {
 			end
 
 			if camc.is_exploring() then
-				camc.system_response(pname, "Hawkeye is touring.")
+				camc.system_response(pname, "Hawkeye is touring. Has suitcase, will travel.")
 				return
 			end
 
 			if camc.is_haunting() then
-				camc.system_response(pname, "Hawkeye is haunting somebody.")
+				camc.system_response(pname, "Hawkeye is haunting somebody!")
 				return
 			end
 
-			camc.system_response(pname, "Hawkeye's status is idling.")
+			camc.system_response(pname, "Hawkeye is idling. Lazy bum.")
 		end,
 	},
 

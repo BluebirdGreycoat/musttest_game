@@ -24,13 +24,18 @@ function camc.snap_to(pname)
 	return true
 end
 
-local function calc_look_at(player_pos, _player_yaw, _player_pitch)
+local function calc_look_at(player_pos, randomize)
 	-- Place the camera some distance away, slightly above the player,
 	-- at a random angle around them, and compute yaw/pitch so it looks
 	-- directly at the player (downward).
 
 	local distance = 9     -- horizontal distance from player
 	local height   = 3.5   -- how far above the player
+
+	if randomize then
+		distance = math.random(2, 10)
+		height = math.random(-5, 5)
+	end
 
 	local angle = math.random() * math.pi * 2
 
@@ -70,7 +75,7 @@ function camc.look_at(pname)
 	local pitch = pref:get_look_vertical()
 	local cam_pos = vector.copy(target_p)
 
-	cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
+	cam_pos, yaw, pitch = calc_look_at(target_p)
 
 	local function head_pos(cam_pos)
 		return vector.add(cam_pos, {x=0, y=1, z=0})
@@ -79,7 +84,7 @@ function camc.look_at(pname)
 	-- If camera is buried, try a few times to find a good spot.
 	if minetest.get_node(head_pos(cam_pos)).name ~= "air" then
 		for k = 1, camc.CAMERA_BURIED_NUM_RETRIES do
-			cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
+			cam_pos, yaw, pitch = calc_look_at(target_p, true)
 			if minetest.get_node(head_pos(cam_pos)).name == "air" then
 				break
 			end

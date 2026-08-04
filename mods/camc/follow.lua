@@ -1,6 +1,6 @@
 
 camc.FOLLOW_TARGET = camc.FOLLOW_TARGET or ""
-camc.FOLLOW_MODE = camc.FOLLOW_MODE or 0
+camc.FOLLOW_MODE = camc.FOLLOW_MODE or 0 -- Mode 1, camera is allowed to switch players.
 
 function camc.set_following(pname, mode)
 	camc.FOLLOW_TARGET = pname or ""

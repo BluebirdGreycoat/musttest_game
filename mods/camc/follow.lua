@@ -26,26 +26,32 @@ function camc.periodic_follow_check()
 
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
-		camc.FOLLOW_TARGET = ""
+		camc.set_following(nil)
 		return
 	end
 
 	local pcam = minetest.get_player_by_name("Hawkeye")
 	if not pcam then
-		camc.FOLLOW_TARGET = ""
+		camc.set_following(nil)
 		return
 	end
 	if not camc.player_is_camera(pcam) then
-		camc.FOLLOW_TARGET = ""
+		camc.set_following(nil)
 		return
 	end
 
-	local to_pos = pref:get_pos()
+	local player_pos = pref:get_pos()
+	local cam_pos = pcam:get_pos()
+
+	-- If player is far away, teleported, etc., just jump camera to them.
+	if vector.distance(player_pos, cam_pos) > 50 then
+		return camc.look_at(pname)
+	end
 
 	--rc.notify_realm_update(pcam, to_pos)
 	--pcam:set_pos(to_pos)
 
-	local yaw, pitch = calc_look_at(pref:get_pos(), pcam:get_pos())
+	local yaw, pitch = calc_look_at(player_pos, cam_pos)
 
 	pcam:set_look_horizontal(yaw)
 	pcam:set_look_vertical(pitch)

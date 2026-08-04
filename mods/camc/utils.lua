@@ -88,12 +88,29 @@ function camc.look_at(target)
 		return vector.add(cam_pos, {x=0, y=1.7, z=0})
 	end
 
+	local function viewpoint_buried(pos)
+		local hp = head_pos(pos)
+		local d = 0.2
+		local t = {
+			vector.add(hp, {x=d, y=0, z=0}),
+			vector.add(hp, {x=-d, y=0, z=0}),
+			vector.add(hp, {x=0, y=0, z=d}),
+			vector.add(hp, {x=0, y=0, z=-d}),
+		}
+		for i = 1, #t do
+			local p = t[i]
+			if minetest.get_node(p).name ~= "air" then
+				return true
+			end
+		end
+	end
+
 	-- If camera is buried, try a few times to find a good spot.
-	if minetest.get_node(head_pos(cam_pos)).name ~= "air" then
+	if viewpoint_buried(cam_pos) then
 		local success = false
 		for k = 1, camc.CAMERA_BURIED_NUM_RETRIES do
 			cam_pos, yaw, pitch = calc_look_at(target_p, true)
-			if minetest.get_node(head_pos(cam_pos)).name == "air" then
+			if viewpoint_buried(cam_pos) then
 				success = true
 				break
 			end

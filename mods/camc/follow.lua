@@ -1,5 +1,5 @@
 
-camc.FOLLOW_TARGET = ""
+camc.FOLLOW_TARGET = camc.FOLLOW_TARGET or ""
 
 function camc.set_following(pname)
 	camc.FOLLOW_TARGET = pname or ""

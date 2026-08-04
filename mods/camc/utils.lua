@@ -5,7 +5,7 @@ function camc.snap_to(pname)
 		return
 	end
 
-	local pcam = minetest.get_player_by_name("Hawkeye")
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		return
 	end
@@ -57,7 +57,7 @@ function camc.look_at(pname)
 		return
 	end
 
-	local pcam = minetest.get_player_by_name("Hawkeye")
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		return
 	end

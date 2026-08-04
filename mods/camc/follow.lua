@@ -30,7 +30,7 @@ function camc.periodic_follow_check()
 		return
 	end
 
-	local pcam = minetest.get_player_by_name("Hawkeye")
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		camc.set_following(nil)
 		return

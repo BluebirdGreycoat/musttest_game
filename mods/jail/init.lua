@@ -104,7 +104,7 @@ end
 
 function jail.can_be_jailed(player)
 	if camc.player_is_camera(player) or gdac.player_is_admin(player) then
-		return
+		return false
 	end
 	return true
 end

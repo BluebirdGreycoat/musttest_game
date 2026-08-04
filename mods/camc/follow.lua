@@ -45,7 +45,9 @@ function camc.periodic_follow_check()
 
 	-- If player is far away, teleported, etc., just jump camera to them.
 	if vector.distance(player_pos, cam_pos) > 20 then
-		camc.look_at(pname)
+		if not camc.look_at(pname) then
+			return
+		end
 	else
 		local yaw, pitch = calc_look_at(player_pos, cam_pos)
 

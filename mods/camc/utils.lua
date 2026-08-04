@@ -71,7 +71,7 @@ function camc.look_at(pname)
 	local pitch = pref:get_look_vertical()
 	local cam_pos = vector.copy(target_p)
 
-	cam_pos, hori_rad, pitch = calc_look_at(target_p, yaw, pitch)
+	cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
 
 	rc.notify_realm_update(pcam, cam_pos)
 	pcam:set_pos(cam_pos)

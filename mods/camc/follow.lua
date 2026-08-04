@@ -42,6 +42,7 @@ function camc.periodic_follow_check()
 		return
 	end
 
+	local delayafter = 0
 	local player_pos = pref:get_pos()
 	local cam_pos = pcam:get_pos()
 
@@ -49,8 +50,8 @@ function camc.periodic_follow_check()
 	-- This also triggers if the followed player changes to someone else.
 	if vector.distance(player_pos, cam_pos) > 20 then
 		if not camc.look_at(pname) then
-			camc.set_following(nil)
-			return
+			-- If look at fails, delay a bit so we don't spam failed checks.
+			delayafter = 10
 		end
 	else
 		local yaw, pitch = calc_look_at(player_pos, cam_pos)
@@ -59,7 +60,7 @@ function camc.periodic_follow_check()
 		pcam:set_look_vertical(pitch)
 	end
 
-	minetest.after(0, function() camc.periodic_follow_check() end)
+	minetest.after(delayafter, function() camc.periodic_follow_check() end)
 	return true
 end
 

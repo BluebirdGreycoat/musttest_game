@@ -45,6 +45,21 @@ function camc.player_is_camera(player_or_name)
 	end
 end
 
+-- Get regular, hauntable players.
+local function get_regular_players()
+	local regular = {}
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
+			local pname = v:get_player_name()
+			if player_labels.query_nametag_onoff(pname) == true then
+				regular[#regular + 1] = v
+			end
+		end
+	end
+	return regular
+end
+
 function camc.check_camera_activity(params)
 	if not params then
 		params = {}
@@ -63,12 +78,13 @@ function camc.check_camera_activity(params)
 					camc.set_following(nil)
 					camc.stop_exploring()
 
-					local rnd = math.random(1, 2)
-					if rnd == 1 then
+					rplayers = get_regular_players()
+
+					if #rplayers > 3 then
 						if not camc.start_haunting() then
 							camc.start_exploring()
 						end
-					elseif rnd == 2 then
+					else
 						if not camc.start_exploring() then
 							camc.start_haunting()
 						end

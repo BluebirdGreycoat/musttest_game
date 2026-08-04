@@ -73,7 +73,10 @@ local function get_random_haunt_target()
 	local valid = {}
 	for _, v in ipairs(players) do
 		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
-			valid[#valid + 1] = v
+			-- AFK players are boring to look at.
+			if afk.seconds_since_action(v:get_player_name()) < 60 then
+				valid[#valid + 1] = v
+			end
 		end
 	end
 	if #valid > 0 then

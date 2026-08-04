@@ -78,7 +78,7 @@ afk.update = function()
   for k, player in ipairs(allplayers) do
     local name = player:get_player_name()
 		local target = afk.players[name]
-    
+
 		local pos = vector_round(player:get_pos())
 		local dist = vector_distance(pos, target.pos)
 		local nokick = false
@@ -141,13 +141,13 @@ end
 function afk.on_craft(itemstack, player, old_craft_grid, craft_inv)
 	if not player then return end
 	if not player:is_player() then return end
-	
+
 	-- Ensure this player has an entry in the table.
 	local name = player:get_player_name()
 	if not afk.players[name] then
 			afk.players[name] = {time=0, pos={x=0, y=0, z=0}}
 	end
-	
+
 	afk.players[name].time = 0
 end
 
@@ -232,7 +232,7 @@ if not afk.registered then
 	minetest.register_on_craft(function(...)
 		return afk.on_craft(...)
 	end)
-	
+
 	minetest.register_globalstep(function(...)
 		return afk.globalstep(...)
 	end)

@@ -76,7 +76,7 @@ local function get_random_haunt_target()
 		end
 	end
 	if #valid > 0 then
-		return valid[math.random(1, #valid)]
+		return valid[math.random(1, #valid)]:get_player_name()
 	end
 end
 

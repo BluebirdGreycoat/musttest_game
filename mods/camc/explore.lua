@@ -65,3 +65,7 @@ end
 function camc.stop_exploring()
 	camc.EXPLORE_ACTIVE = 0
 end
+
+function camc.is_exploring()
+	return camc.EXPLORE_ACTIVE == 1
+end

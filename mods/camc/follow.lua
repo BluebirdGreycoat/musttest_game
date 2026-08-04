@@ -127,3 +127,7 @@ function camc.start_haunting()
 		return ok
 	end
 end
+
+function camc.is_haunting()
+	return camc.FOLLOW_TARGET ~= ""
+end

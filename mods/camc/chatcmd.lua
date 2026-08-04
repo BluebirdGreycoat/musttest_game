@@ -1,5 +1,29 @@
 
 local CHATCOMMANDS = {
+	status = {
+		params = "",
+		description = "Get camera status.",
+		action = function(pname, param)
+			local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+			if not pcam or not camc.player_is_camera(pcam) then
+				camc.system_response(pname, "Hawkeye is offline.")
+				return
+			end
+
+			if camc.is_exploring() then
+				camc.system_response(pname, "Hawkeye is touring.")
+				return
+			end
+
+			if camc.is_haunting() then
+				camc.system_response(pname, "Hawkeye is haunting somebody.")
+				return
+			end
+
+			camc.system_response(pname, "Hawkeye's status is unknown.")
+		end,
+	},
+
 	snap = {
 		params = "[target]",
 		description = "Position camera facing your current look direction, or target's.",

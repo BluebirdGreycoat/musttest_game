@@ -78,7 +78,7 @@ function camc.look_at(pname)
 
 	-- If camera is buried, try a few times to find a good spot.
 	if minetest.get_node(head_pos(cam_pos)).name ~= "air" then
-		for k = 1, 10 do
+		for k = 1, 20 do
 			cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
 			if minetest.get_node(head_pos(cam_pos)).name == "air" then
 				break

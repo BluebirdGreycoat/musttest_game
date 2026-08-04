@@ -6,6 +6,8 @@ camc.HAWKCAM_PLAYER = "Hawkeye"
 camc.CAMERA_BURIED_NUM_RETRIES = 20
 camc.RANDOM_HAUNT_TIME_SECONDS = 30
 camc.RANDOM_EXPLORE_TIME_SECONDS = 60
+camc.CAMERA_FOLLOW_DISTANCE = 20
+camc.CAMERA_ACTIVITY_CHECK_SECONDS = 60*5
 
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")
@@ -47,4 +49,6 @@ if not camc.run_once then
 	minetest.register_on_leaveplayer(function(...)
 		return camc.on_leaveplayer(...)
 	end)
+
+	camc.start_camera_checks()
 end

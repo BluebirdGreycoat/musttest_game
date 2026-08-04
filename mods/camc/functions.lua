@@ -44,3 +44,19 @@ function camc.player_is_camera(player_or_name)
 		return true
 	end
 end
+
+function camc.check_camera_activity(params)
+	if not params then
+		params = {}
+	end
+
+	minetest.after(camc.CAMERA_ACTIVITY_CHECK_SECONDS, function()
+		camc.check_camera_activity(params)
+	end)
+end
+
+function camc.start_camera_checks()
+	minetest.after(camc.CAMERA_ACTIVITY_CHECK_SECONDS, function()
+		camc.check_camera_activity()
+	end)
+end

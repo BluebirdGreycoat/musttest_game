@@ -379,7 +379,7 @@ end
 local function has_saw_privilege(meta, player)
   if not meta then return false end
   if not player then return false end
-  
+
   if minetest.check_player_privs(player, "protection_bypass") then
     return true
   end
@@ -388,7 +388,7 @@ local function has_saw_privilege(meta, player)
   if player:get_player_name() == owner then
     return true
   end
-    
+
   return false
 end
 
@@ -406,7 +406,7 @@ end
 function circular_saw.allow_metadata_inventory_put(pos, listname, index, stack, player)
   local meta = minetest.get_meta(pos)
   if not has_saw_privilege(meta, player) then return 0 end
-  
+
   if listname == "fuel" then
     if stack:get_name() == "default:mese_crystal_fragment" then
       return stack:get_count()
@@ -414,7 +414,7 @@ function circular_saw.allow_metadata_inventory_put(pos, listname, index, stack, 
       return 0
     end
   end
-  
+
   -- The player is not allowed to put something in there:
   if listname == "output" or listname == "micro" then
     return 0
@@ -501,7 +501,7 @@ local mese_to_cut_ratio = 32
 function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack, player)
   local meta = minetest.get_meta(pos)
   if not has_saw_privilege(meta, player) then return 0 end
-  
+
   if listname == "output" then
     local inv = meta:get_inventory()
     if inv:is_empty("fuel") then
@@ -544,7 +544,7 @@ function circular_saw.on_metadata_inventory_take(
     circular_saw:reset(pos)
     return
   end
-  
+
   -- If it is one of the offered stairs: find out how many
   -- microblocks have to be substracted:
   if listname == "output" then
@@ -554,7 +554,7 @@ function circular_saw.on_metadata_inventory_take(
     local fuel = math.ceil(cost / mese_to_cut_ratio)
     if fuel < 1 then fuel = 1 end
     inv:remove_item("fuel", ItemStack("default:mese_crystal_fragment " .. fuel))
-    
+
     circular_saw:update_inventory(pos, -cost)
   elseif listname == "micro" then
     -- Each microblock costs 1 microblock:
@@ -587,7 +587,7 @@ function circular_saw.update_formspec(pos)
       "button[1.2,3.7;1,1;Set;" ..S("Set").. "]" ..
 
       "real_coordinates[true]" ..
-      "scroll_container[3.5,0.5;7.8,6.05;output_grid;vertical]" ..
+      "scroll_container[3.5,0.5;7.6,6.05;output_grid;vertical]" ..
       "list[context;output;0.03,0.03;6,23;]" ..
       "scroll_container_end[]" ..
       "scrollbaroptions[max=225;thumbsize=70;largestep=50;smallstep=3]" ..

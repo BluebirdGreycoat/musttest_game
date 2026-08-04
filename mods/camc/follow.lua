@@ -47,6 +47,7 @@ function camc.periodic_follow_check()
 	local pname = camc.FOLLOW_TARGET or ""
 	if pname == "" then
 		camc.set_following(nil)
+		camc.system_response("MustTest", "Target nil'ed.")
 		return
 	end
 
@@ -61,6 +62,7 @@ function camc.periodic_follow_check()
 			delayafter = 10
 		else
 			camc.set_following(nil)
+			camc.system_response("MustTest", "Target logged off.")
 			return
 		end
 	end
@@ -68,10 +70,12 @@ function camc.periodic_follow_check()
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		camc.set_following(nil)
+		camc.system_response("MustTest", "Camera missing.")
 		return
 	end
 	if not camc.player_is_camera(pcam) then
 		camc.set_following(nil)
+		camc.system_response("MustTest", "Camera missing.")
 		return
 	end
 
@@ -85,6 +89,7 @@ function camc.periodic_follow_check()
 		if vector.distance(player_pos, cam_pos) > DIST then
 			if not camc.look_at(pname) then
 				-- If look at fails, delay a bit so we don't spam failed checks.
+				camc.system_response("MustTest", "Lookat failed.")
 				delayafter = 10
 			end
 		else

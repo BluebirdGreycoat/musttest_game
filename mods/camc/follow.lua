@@ -45,19 +45,15 @@ function camc.periodic_follow_check()
 
 	-- If player is far away, teleported, etc., just jump camera to them.
 	if vector.distance(player_pos, cam_pos) > 20 then
-		return camc.look_at(pname)
+		camc.look_at(pname)
+	else
+		local yaw, pitch = calc_look_at(player_pos, cam_pos)
+
+		pcam:set_look_horizontal(yaw)
+		pcam:set_look_vertical(pitch)
 	end
 
-	--rc.notify_realm_update(pcam, to_pos)
-	--pcam:set_pos(to_pos)
-
-	local yaw, pitch = calc_look_at(player_pos, cam_pos)
-
-	pcam:set_look_horizontal(yaw)
-	pcam:set_look_vertical(pitch)
-
 	minetest.after(0, camc.periodic_follow_check)
-
 	return true
 end
 

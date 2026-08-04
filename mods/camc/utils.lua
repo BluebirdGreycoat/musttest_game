@@ -46,7 +46,7 @@ local function calc_look_at(player_pos, _player_yaw, _player_pitch)
 	local dir = vector.direction(cam_pos, player_pos)
 
 	local yaw   = minetest.dir_to_yaw(dir)
-	local pitch = math.asin(dir.y)
+	local pitch = math.asin(-dir.y)
 
 	return cam_pos, yaw, pitch
 end

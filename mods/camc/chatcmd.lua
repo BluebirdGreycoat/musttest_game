@@ -135,6 +135,7 @@ function camc.on_chatcommand(pname, param)
 		camc.set_following(nil)
 		camc.stop_exploring()
 
+		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), verb))
 		command.action(pname, param:sub(verb:len() + 2):trim())
 	end
 end

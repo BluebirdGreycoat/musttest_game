@@ -56,5 +56,5 @@ function camc.periodic_follow_check()
 end
 
 function camc.follow_player(pname)
-	camc.set_following(pname)
+	return camc.set_following(pname)
 end

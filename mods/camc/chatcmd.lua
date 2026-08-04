@@ -4,6 +4,13 @@ local CHATCOMMANDS = {
 		params = "",
 		description = "Get camera status.",
 		action = function(pname, param)
+			if gdac.player_is_admin(pname) then
+				camc.system_response(pname,
+					("Variables: FOLLOW_TARGET=%s, FOLLOW_MODE=%d, EXPLORE_ACTIVE=%d."):format(
+						camc.FOLLOW_TARGET, camc.FOLLOW_MODE, camc.EXPLORE_ACTIVE
+					))
+			end
+
 			local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 			if not pcam or not camc.player_is_camera(pcam) then
 				camc.system_response(pname, "Hawkeye is offline.")

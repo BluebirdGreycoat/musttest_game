@@ -102,9 +102,18 @@ function jail.check_player_in_jail(pname)
 	-- Checks will resume when player (any player) logs in again.
 end
 
+function jail.can_be_jailed(player)
+	if camc.player_is_camera(player) or gdac.player_is_admin(player) then
+		return
+	end
+	return true
+end
 
 function jail.go_to_jail(player, bcb)
 	local pname = player:get_player_name()
+	if not jail.can_be_jailed(pname) then
+		return
+	end
 
 	local fwrap = function(...)
 		local pref = minetest.get_player_by_name(pname)

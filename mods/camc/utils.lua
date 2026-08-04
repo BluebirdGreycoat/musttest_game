@@ -72,6 +72,20 @@ function camc.look_at(pname)
 
 	cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
 
+	local function head_pos(cam_pos)
+		return vector.add(cam_pos, {x=0, y=1, z=0})
+	end
+
+	-- If camera is buried, try a few times to find a good spot.
+	if minetest.get_node(head_pos(cam_pos)).name ~= "air" then
+		for k = 1, 10 do
+			cam_pos, yaw, pitch = calc_look_at(target_p, yaw, pitch)
+			if minetest.get_node(head_pos(cam_pos)).name == "air" then
+				break
+			end
+		end
+	end
+
 	rc.notify_realm_update(pcam, cam_pos)
 	pcam:set_pos(cam_pos)
 	pcam:set_look_horizontal(yaw)

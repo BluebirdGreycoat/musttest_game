@@ -73,6 +73,9 @@ function camc.periodic_explore_update()
 end
 
 function camc.start_exploring()
+	if camc.EXPLORE_ACTIVE == 1 then
+		return true
+	end
 	camc.EXPLORE_ACTIVE = 1
 	return camc.periodic_explore_update()
 end

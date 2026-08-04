@@ -2,6 +2,22 @@
 camc.FOLLOW_TARGET = camc.FOLLOW_TARGET or ""
 camc.FOLLOW_MODE = camc.FOLLOW_MODE or 0 -- Mode 1, camera is allowed to switch players.
 
+local function get_random_haunt_target()
+	local players = minetest.get_connected_players()
+	local valid = {}
+	for _, v in ipairs(players) do
+		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
+			-- AFK players are boring to look at.
+			if afk.seconds_since_action(v:get_player_name()) < 60 then
+				valid[#valid + 1] = v
+			end
+		end
+	end
+	if #valid > 0 then
+		return valid[math.random(1, #valid)]:get_player_name()
+	end
+end
+
 function camc.set_following(pname, mode)
 	camc.FOLLOW_TARGET = pname or ""
 	camc.FOLLOW_MODE = mode or 0
@@ -21,15 +37,26 @@ local function calc_look_at(player_pos, cam_pos)
 end
 
 function camc.periodic_follow_check()
+	local delayafter = 0
 	local pname = camc.FOLLOW_TARGET or ""
 	if pname == "" then
+		camc.set_following(nil)
 		return
 	end
 
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
-		camc.set_following(nil)
-		return
+		-- Haunted player logged off.
+		if camc.FOLLOW_MODE == 1 then
+			local ntarget = get_random_haunt_target()
+			if ntarget then
+				camc.FOLLOW_TARGET = ntarget
+			end
+			delayafter = 10
+		else
+			camc.set_following(nil)
+			return
+		end
 	end
 
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
@@ -42,22 +69,23 @@ function camc.periodic_follow_check()
 		return
 	end
 
-	local delayafter = 0
-	local player_pos = pref:get_pos()
-	local cam_pos = pcam:get_pos()
+	if pref then
+		local player_pos = pref:get_pos()
+		local cam_pos = pcam:get_pos()
 
-	-- If player is far away, teleported, etc., just jump camera to them.
-	-- This also triggers if the followed player changes to someone else.
-	if vector.distance(player_pos, cam_pos) > 20 then
-		if not camc.look_at(pname) then
-			-- If look at fails, delay a bit so we don't spam failed checks.
-			delayafter = 10
+		-- If player is far away, teleported, etc., just jump camera to them.
+		-- This also triggers if the followed player changes to someone else.
+		if vector.distance(player_pos, cam_pos) > 20 then
+			if not camc.look_at(pname) then
+				-- If look at fails, delay a bit so we don't spam failed checks.
+				delayafter = 10
+			end
+		else
+			local yaw, pitch = calc_look_at(player_pos, cam_pos)
+
+			pcam:set_look_horizontal(yaw)
+			pcam:set_look_vertical(pitch)
 		end
-	else
-		local yaw, pitch = calc_look_at(player_pos, cam_pos)
-
-		pcam:set_look_horizontal(yaw)
-		pcam:set_look_vertical(pitch)
 	end
 
 	minetest.after(delayafter, function() camc.periodic_follow_check() end)
@@ -66,22 +94,6 @@ end
 
 function camc.follow_player(pname)
 	return camc.set_following(pname)
-end
-
-local function get_random_haunt_target()
-	local players = minetest.get_connected_players()
-	local valid = {}
-	for _, v in ipairs(players) do
-		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
-			-- AFK players are boring to look at.
-			if afk.seconds_since_action(v:get_player_name()) < 60 then
-				valid[#valid + 1] = v
-			end
-		end
-	end
-	if #valid > 0 then
-		return valid[math.random(1, #valid)]:get_player_name()
-	end
 end
 
 function camc.update_haunt_target()
@@ -98,6 +110,9 @@ function camc.update_haunt_target()
 end
 
 function camc.start_haunting()
+	if camc.FOLLOW_MODE == 1 then
+		return true
+	end
 	local pname = get_random_haunt_target()
 	if pname then
 		local ok = camc.set_following(pname, 1)

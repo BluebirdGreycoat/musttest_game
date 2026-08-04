@@ -50,6 +50,27 @@ function camc.check_camera_activity(params)
 		params = {}
 	end
 
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+	if pcam and camc.player_is_camera(pcam) then
+		local old_pos = params.old_pos
+		local new_pos = pcam:get_pos()
+		params.old_pos = new_pos
+
+		if old_pos then
+			if rc.is_valid_realm_pos(old_pos) and rc.is_valid_realm_pos(new_pos) then
+				if vector.distance(old_pos, new_pos) < 1 then
+					-- Camera hasn't moved in some time.
+					local rnd = math.random(1, 2)
+					if rnd == 1 then
+						camc.start_haunting()
+					elseif rnd == 2 then
+						camc.start_exploring()
+					end
+				end
+			end
+		end
+	end
+
 	minetest.after(camc.CAMERA_ACTIVITY_CHECK_SECONDS, function()
 		camc.check_camera_activity(params)
 	end)

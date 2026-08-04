@@ -86,6 +86,10 @@ function camc.look_at(pname)
 		end
 	end
 
+	if not rc.is_valid_realm_pos(cam_pos) then
+		return
+	end
+
 	rc.notify_realm_update(pcam, cam_pos)
 	pcam:set_pos(cam_pos)
 	pcam:set_look_horizontal(yaw)

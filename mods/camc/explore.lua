@@ -37,8 +37,9 @@ function camc.periodic_explore_update()
 	end
 
 	-- Load map so the look at code can find a good spot for the camera.
-	local minp = vector.add(pos, {x=-8, y=-8, z=-8})
-	local maxp = vector.add(pos, {x=8, y=8, z=8})
+	local d = 16
+	local minp = vector.add(pos, {x=-d, y=-d, z=-d})
+	local maxp = vector.add(pos, {x=d, y=d, z=d})
 	minetest.load_area(minp, maxp)
 
 	if not camc.look_at(pos) then

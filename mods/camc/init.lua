@@ -43,4 +43,8 @@ if not camc.run_once then
 	minetest.register_on_joinplayer(function(...)
 		return camc.on_joinplayer(...)
 	end)
+
+	minetest.register_on_leaveplayer(function(...)
+		return camc.on_leaveplayer(...)
+	end)
 end

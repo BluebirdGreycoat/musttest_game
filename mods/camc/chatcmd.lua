@@ -20,7 +20,7 @@ local CHATCOMMANDS = {
 				return
 			end
 
-			camc.system_response(pname, "Hawkeye's status is unknown.")
+			camc.system_response(pname, "Hawkeye's status is idling.")
 		end,
 	},
 

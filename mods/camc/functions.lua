@@ -60,6 +60,9 @@ function camc.check_camera_activity(params)
 			if rc.is_valid_realm_pos(old_pos) and rc.is_valid_realm_pos(new_pos) then
 				if vector.distance(old_pos, new_pos) < 1 then
 					-- Camera hasn't moved in some time.
+					camc.set_following(nil)
+					camc.stop_exploring()
+
 					local rnd = math.random(1, 2)
 					if rnd == 1 then
 						if not camc.start_haunting() then

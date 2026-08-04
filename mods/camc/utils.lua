@@ -110,7 +110,7 @@ function camc.look_at(target)
 		local success = false
 		for k = 1, camc.CAMERA_BURIED_NUM_RETRIES do
 			cam_pos, yaw, pitch = calc_look_at(target_p, true)
-			if viewpoint_buried(cam_pos) then
+			if not viewpoint_buried(cam_pos) then
 				success = true
 				break
 			end

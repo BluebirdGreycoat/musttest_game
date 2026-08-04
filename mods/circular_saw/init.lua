@@ -587,7 +587,7 @@ function circular_saw.update_formspec(pos)
       "button[1.2,3.7;1,1;Set;" ..S("Set").. "]" ..
 
       "real_coordinates[true]" ..
-      "scroll_container[3.5,0.5;7.6,6.05;output_grid;vertical]" ..
+      "scroll_container[3.5,0.5;7.4,6.05;output_grid;vertical]" ..
       "list[context;output;0.03,0.03;6,23;]" ..
       "scroll_container_end[]" ..
       "scrollbaroptions[max=225;thumbsize=70;largestep=50;smallstep=3]" ..

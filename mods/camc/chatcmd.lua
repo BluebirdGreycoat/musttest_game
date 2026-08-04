@@ -17,6 +17,7 @@ local CHATCOMMANDS = {
 
 			if camc.is_haunting() then
 				camc.system_response(pname, "Hawkeye is haunting somebody!")
+				camc.system_response(pname, ("Follow mode: %d."):format(camc.FOLLOW_MODE))
 				return
 			end
 

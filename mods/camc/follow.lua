@@ -50,7 +50,7 @@ function camc.periodic_follow_check()
 	pcam:set_look_horizontal(yaw)
 	pcam:set_look_vertical(pitch)
 
-	minetest.after(0.1, camc.periodic_follow_check)
+	minetest.after(0, camc.periodic_follow_check)
 
 	return true
 end

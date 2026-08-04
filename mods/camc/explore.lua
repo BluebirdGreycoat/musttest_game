@@ -66,7 +66,7 @@ function camc.periodic_explore_update()
 	send_region_to_player(pcam, minp, maxp)
 
 	-- Camera will remain where it is if this fails.
-	camc.look_at(pos)
+	minetest.after(2, function() camc.look_at(pos) end)
 
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function() camc.periodic_explore_update() end)
 	return true

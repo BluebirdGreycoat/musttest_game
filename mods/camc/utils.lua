@@ -42,14 +42,13 @@ local function calc_look_at(player_pos, _player_yaw, _player_pitch)
 
 	local cam_pos = vector.add(player_pos, offset)
 
-	-- Direction vector from camera toward the player
-	local dir = vector.subtract(player_pos, cam_pos)
+	-- Direction from camera → player (normalized)
+	local dir = vector.direction(cam_pos, player_pos)
 
-	-- Convert direction to Minetest yaw / pitch
-	local yaw   = math.atan2(dir.x, dir.z)
-	local pitch = math.atan2(dir.y, math.sqrt(dir.x * dir.x + dir.z * dir.z))
+	local yaw   = minetest.dir_to_yaw(dir)
+	local pitch = math.asin(dir.y)
 
-	return cam_pos, yaw, -pitch
+	return cam_pos, yaw, pitch
 end
 
 function camc.look_at(pname)

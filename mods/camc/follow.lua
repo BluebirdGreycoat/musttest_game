@@ -59,7 +59,7 @@ function camc.periodic_follow_check()
 		pcam:set_look_vertical(pitch)
 	end
 
-	minetest.after(0, camc.periodic_follow_check)
+	minetest.after(0, function() camc.periodic_follow_check() end)
 	return true
 end
 
@@ -90,14 +90,14 @@ function camc.update_haunt_target()
 		camc.FOLLOW_TARGET = pname
 	end
 
-	minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, camc.update_haunt_target)
+	minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function() camc.update_haunt_target() end)
 end
 
 function camc.start_haunting()
 	local pname = get_random_haunt_target()
 	if pname then
 		local ok = camc.set_following(pname, 1)
-		minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, camc.update_haunt_target)
+		minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function() camc.update_haunt_target() end)
 		return ok
 	end
 end

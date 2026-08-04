@@ -5,14 +5,20 @@ camc.FOLLOW_MODE = camc.FOLLOW_MODE or 0 -- Mode 1, camera is allowed to switch 
 local function get_random_haunt_target()
 	local players = minetest.get_connected_players()
 	local valid = {}
+
 	for _, v in ipairs(players) do
 		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
 			-- AFK players are boring to look at.
-			if afk.seconds_since_action(v:get_player_name()) < 60 then
-				valid[#valid + 1] = v
+			local pname = v:get_player_name()
+			if afk.seconds_since_action(pname) < 60 then
+				-- Ignore players with nametag off.
+				if player_labels.query_nametag_onoff(pname) == true then
+					valid[#valid + 1] = v
+				end
 			end
 		end
 	end
+
 	if #valid > 0 then
 		return valid[math.random(1, #valid)]:get_player_name()
 	end

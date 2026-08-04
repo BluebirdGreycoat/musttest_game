@@ -6,7 +6,7 @@ local CHATCOMMANDS = {
 		action = function(pname, param)
 			if gdac.player_is_admin(pname) then
 				camc.system_response(pname,
-					("Variables: FOLLOW_TARGET=%s, FOLLOW_MODE=%d, EXPLORE_ACTIVE=%d."):format(
+					("Variables: FOLLOW_TARGET=\"%s\", FOLLOW_MODE=%d, EXPLORE_ACTIVE=%d."):format(
 						camc.FOLLOW_TARGET, camc.FOLLOW_MODE, camc.EXPLORE_ACTIVE
 					))
 			end

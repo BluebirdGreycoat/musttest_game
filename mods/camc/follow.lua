@@ -45,7 +45,7 @@ function camc.periodic_follow_check()
 	--rc.notify_realm_update(pcam, to_pos)
 	--pcam:set_pos(to_pos)
 
-	local yaw, pitch - calc_look_at(pref:get_pos(), pcam:get_pos())
+	local yaw, pitch = calc_look_at(pref:get_pos(), pcam:get_pos())
 
 	pcam:set_look_horizontal(yaw)
 	pcam:set_look_vertical(pitch)

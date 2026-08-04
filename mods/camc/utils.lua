@@ -33,8 +33,9 @@ local function calc_look_at(player_pos, randomize)
 	local height   = 3.5   -- how far above the player
 
 	if randomize then
-		distance = math.random(2, 10)
-		height = math.random(-5, 5)
+		-- Random fractions.
+		distance = math.random(200, 1000) / 100
+		height = math.random(-500, 500) / 100
 	end
 
 	local angle = math.random() * math.pi * 2

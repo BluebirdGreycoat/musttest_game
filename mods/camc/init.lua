@@ -3,6 +3,7 @@ if not minetest.global_exists("camc") then camc = {} end
 camc.modpath = minetest.get_modpath("camc")
 
 camc.HAWKCAM_PLAYER = "Hawkeye"
+camc.CAMERA_BURIED_NUM_RETRIES = 20
 
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")

@@ -80,9 +80,24 @@ local function get_random_haunt_target()
 	end
 end
 
+function camc.update_haunt_target()
+	if camc.FOLLOW_TARGET == "" or camc.FOLLOW_MODE ~= 1 then
+		return
+	end
+
+	local pname = get_random_haunt_target()
+	if pname then
+		camc.FOLLOW_TARGET = pname
+	end
+
+	minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, camc.update_haunt_target)
+end
+
 function camc.start_haunting()
 	local pname = get_random_haunt_target()
 	if pname then
-		return camc.set_following(pname, 1)
+		local ok = camc.set_following(pname, 1)
+		minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, camc.update_haunt_target)
+		return ok
 	end
 end

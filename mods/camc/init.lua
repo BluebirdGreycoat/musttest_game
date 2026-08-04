@@ -5,11 +5,13 @@ camc.modpath = minetest.get_modpath("camc")
 camc.HAWKCAM_PLAYER = "Hawkeye"
 camc.CAMERA_BURIED_NUM_RETRIES = 20
 camc.RANDOM_HAUNT_TIME_SECONDS = 30
+camc.RANDOM_EXPLORE_TIME_SECONDS = 30
 
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")
 dofile(camc.modpath .. "/chatcmd.lua")
 dofile(camc.modpath .. "/follow.lua")
+dofile(camc.modpath .. "/explore.lua")
 
 if not camc.run_once then
 	camc.run_once = true

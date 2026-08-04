@@ -62,6 +62,18 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Could not make camera haunt.")
 		end,
 	},
+
+	explore = {
+		params = "",
+		description = "Make the Hawkcam explore developed areas.",
+		action = function(pname, param)
+			if camc.start_exploring() then
+				camc.system_response(pname, ("Camera is now exploring."))
+				return
+			end
+			camc.system_error(pname, "Could not make camera explore.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)
@@ -87,7 +99,10 @@ function camc.on_chatcommand(pname, param)
 
 	local command = CHATCOMMANDS[verb]
 	if command.action then
+		-- Establish baseline before executing new command.
 		camc.set_following(nil)
+		camc.stop_exploring()
+
 		command.action(pname, param:sub(verb:len() + 2):trim())
 	end
 end

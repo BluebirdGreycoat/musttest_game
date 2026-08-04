@@ -71,11 +71,7 @@ function camc.look_at(pname)
 	end
 
 	local target_p = pref:get_pos()
-	local yaw = pref:get_look_horizontal()
-	local pitch = pref:get_look_vertical()
-	local cam_pos = vector.copy(target_p)
-
-	cam_pos, yaw, pitch = calc_look_at(target_p)
+	local cam_pos, yaw, pitch = calc_look_at(target_p)
 
 	local function head_pos(cam_pos)
 		return vector.add(cam_pos, {x=0, y=1, z=0})

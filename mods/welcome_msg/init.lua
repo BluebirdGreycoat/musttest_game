@@ -53,6 +53,10 @@ function welcome.player_near_outback_edge(player)
 	local pname = player:get_player_name()
 	local spamkey = pname .. ":abyss_edge"
 
+	if camc.player_is_camera(pname) then
+		return
+	end
+
 	if not spam.test_key(spamkey) then
 		minetest.chat_send_player(pname, welcome.color ..
 			"# Server: <" .. rename.gpn(pname) ..

@@ -13,9 +13,9 @@ local function get_right_shoulder_pos(pos, yaw)
 	local back_x = math.sin(yaw)
 	local back_z = -math.cos(yaw)
 
-	local backdist = 0.6
+	local backdist = 0.7
 	local rightdist = 0.5
-	local updist = 0.2
+	local updist = 0.3
 
 	return {
 		x = pos.x + rightdist * right_x + backdist * back_x,

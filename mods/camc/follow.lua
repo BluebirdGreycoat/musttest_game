@@ -92,6 +92,7 @@ function camc.periodic_follow_check(params)
 		-- This also triggers if the followed player changes to someone else.
 		if vector.distance(player_pos, cam_pos) > DIST or params.request_reposition then
 			params.request_reposition = nil
+			params.view_blocked = nil
 
 			if not camc.look_at(pname) then
 				-- If look at fails, delay a bit so we don't spam failed checks.

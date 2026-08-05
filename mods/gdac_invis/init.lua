@@ -40,7 +40,7 @@ gdac_invis.toggle_invisibility = function(name, param)
       pova.set_modifier(player, "nametag",
         {color={a=0, r=0, g=0, b=0}, text=""}, "gdac_invis",
         {priority=1000})
-      
+
       pova.set_modifier(player, "properties", {
         visual_size = {x=0, y=0},
         makes_footstep_sound = false,
@@ -56,8 +56,10 @@ gdac_invis.toggle_invisibility = function(name, param)
       }, "gdac_invis", {priority=1000})
 
       player:set_observers({})
-      
-      minetest.chat_send_player(name, "# Server: Administrative cloak enabled.")
+
+      if not camc.player_is_camera(name) then
+        minetest.chat_send_player(name, "# Server: Administrative cloak enabled.")
+      end
     else
       pova.remove_modifier(player, "nametag", "gdac_invis")
       pova.remove_modifier(player, "properties", "gdac_invis")
@@ -93,7 +95,7 @@ if not gdac_invis.run_once then
     description = "Administrative invisibility mode.",
     give_to_singleplayer = false,
   })
-  
+
   minetest.register_chatcommand("invisible", {
     params = "",
     description = "",
@@ -102,17 +104,17 @@ if not gdac_invis.run_once then
       return gdac_invis.toggle_invisibility(...)
     end,
   })
-  
+
   minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     gdac_invis.players[name] = nil
   end)
-  
+
   -- Reloadable.
   local file = gdac_invis.modpath .. "/init.lua"
   local name = "gdac_invis:core"
   reload.register_file(name, file, false)
-  
+
   gdac_invis.run_once = true
 end
 

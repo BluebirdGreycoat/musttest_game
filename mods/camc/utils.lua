@@ -175,3 +175,27 @@ function camc.send_region_to_player(player, minp, maxp)
 		end
 	end
 end
+
+--- Returns true if and only if the line segment from p1 to p2
+--- contains no walkable (solid) nodes.
+--- Uses the engine's Raycast (selection boxes) and explicitly tests the
+--- walkable property.
+function camc.has_clear_line_of_sight(p1, p2)
+	-- objects = false, liquids = false
+	local ray = minetest.raycast(p1, p2, false, false)
+
+	for pointed_thing in ray do
+		if pointed_thing.type == "node" then
+			local node = minetest.get_node(pointed_thing.under)
+			local def  = minetest.registered_nodes[node.name]
+
+			-- Treat unknown / unloaded nodes as non-blocking.
+			-- Change the condition if you prefer the opposite behaviour.
+			if def and def.walkable then
+				return false
+			end
+		end
+	end
+
+	return true
+end

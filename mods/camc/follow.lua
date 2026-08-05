@@ -90,7 +90,9 @@ function camc.periodic_follow_check(params)
 
 		-- If player is far away, teleported, etc., just jump camera to them.
 		-- This also triggers if the followed player changes to someone else.
-		if vector.distance(player_pos, cam_pos) > DIST then
+		if vector.distance(player_pos, cam_pos) > DIST or params.request_reposition then
+			params.request_reposition = nil
+
 			if not camc.look_at(pname) then
 				-- If look at fails, delay a bit so we don't spam failed checks.
 				--camc.system_response("MustTest", "Lookat failed.")
@@ -101,6 +103,20 @@ function camc.periodic_follow_check(params)
 
 			pcam:set_look_horizontal(yaw)
 			pcam:set_look_vertical(pitch)
+		end
+
+		if camc.has_clear_line_of_sight(cam_pos, player_pos) then
+			params.view_blocked = nil
+		else
+			if not params.view_blocked then
+				params.view_blocked = os.time()
+			else
+				local t1 = params.view_blocked
+				local t2 = os.time()
+				if t2 >= t1 + 5 then
+					params.request_reposition = true
+				end
+			end
 		end
 	end
 

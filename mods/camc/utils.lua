@@ -1,4 +1,22 @@
 
+--- Compute a position 0.5 nodes to the player's right and 1.6 nodes up,
+--- preserving the same yaw (look direction).
+-- @param pos table  Player position {x, y, z}
+-- @param yaw number  Horizontal look angle from player:get_look_horizontal()
+-- @return table      New position {x, y, z}
+local function get_right_shoulder_pos(pos, yaw)
+	-- Unit vector pointing to the player's right
+	-- (derived from the standard Minetest forward vector (-sin(yaw), 0, cos(yaw)))
+	local right_x = math.cos(yaw)
+	local right_z = math.sin(yaw)
+
+	return {
+		x = pos.x + 0.5 * right_x,
+		y = pos.y + 1.6,
+		z = pos.z + 0.5 * right_z,
+	}
+end
+
 function camc.snap_to(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if not pref then
@@ -20,11 +38,19 @@ function camc.snap_to(pname)
 
 	local to_pos = pref:get_pos()
 
-	rc.notify_realm_update(pcam, to_pos)
+	local yaw = pref:get_look_horizontal()
+	local pitch = pref:get_look_vertical()
+	local rshoulderpos = get_right_shoulder_pos(to_pos, yaw)
 
-	pcam:set_pos(to_pos)
-	pcam:set_look_horizontal(pref:get_look_horizontal())
-	pcam:set_look_vertical(pref:get_look_vertical())
+	if not rc.is_valid_realm_pos(rshoulderpos) then
+		return
+	end
+
+	rc.notify_realm_update(pcam, rshoulderpos)
+
+	pcam:set_pos(rshoulderpos)
+	pcam:set_look_horizontal(yaw)
+	pcam:set_look_vertical(pitch)
 
 	return true
 end

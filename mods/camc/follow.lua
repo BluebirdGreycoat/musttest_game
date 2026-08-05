@@ -106,7 +106,10 @@ function camc.periodic_follow_check(params)
 			pcam:set_look_vertical(pitch)
 		end
 
-		if camc.has_clear_line_of_sight(cam_pos, player_pos) then
+		local eye1 = vector.add(cam_pos, {x=0, y=pcam:get_properties().eye_height, z=0})
+		local eye2 = vector.add(player_pos, {x=0, y=pref:get_properties().eye_height, z=0})
+
+		if camc.has_clear_line_of_sight(eye1, eye2) then
 			params.view_blocked = nil
 		else
 			if not params.view_blocked then

@@ -53,7 +53,8 @@ function camc.snap_to(pname)
 		return
 	end
 
-	if camc.viewpoint_buried(rshoulderpos) then
+	local eye1 = vector.add(rshoulderpos, {x=0, y=pcam:get_properties().eye_height, z=0})
+	if camc.viewpoint_buried(eye1) then
 		rshoulderpos = to_pos
 	end
 

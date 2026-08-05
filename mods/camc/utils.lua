@@ -199,3 +199,18 @@ function camc.has_clear_line_of_sight(p1, p2)
 
 	return true
 end
+
+-- Get regular, hauntable players.
+function camc.get_regular_players()
+	local regular = {}
+	local players = minetest.get_connected_players()
+	for k, v in ipairs(players) do
+		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
+			local pname = v:get_player_name()
+			if player_labels.query_nametag_onoff(pname) == true then
+				regular[#regular + 1] = v
+			end
+		end
+	end
+	return regular
+end

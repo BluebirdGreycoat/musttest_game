@@ -9,7 +9,7 @@ local function hide_hud(player)
 		minimap = false,
 		minimap_radar = false,
 		basic_debug = false,
-		chat = false,
+		chat = true,
 	})
 end
 
@@ -45,21 +45,6 @@ function camc.player_is_camera(player_or_name)
 	end
 end
 
--- Get regular, hauntable players.
-local function get_regular_players()
-	local regular = {}
-	local players = minetest.get_connected_players()
-	for k, v in ipairs(players) do
-		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
-			local pname = v:get_player_name()
-			if player_labels.query_nametag_onoff(pname) == true then
-				regular[#regular + 1] = v
-			end
-		end
-	end
-	return regular
-end
-
 function camc.check_camera_activity(params)
 	if not params then
 		params = {}
@@ -78,7 +63,7 @@ function camc.check_camera_activity(params)
 					camc.set_following(nil)
 					camc.stop_exploring()
 
-					local rplayers = get_regular_players()
+					local rplayers = camc.get_regular_players()
 
 					-- Haunt players if there's at least 3 of them, otherwise explore.
 					if #rplayers >= 3 then

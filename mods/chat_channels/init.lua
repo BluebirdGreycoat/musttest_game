@@ -326,10 +326,10 @@ function CC.on_joinplayer(pref)
 		local channels = CC.get_player_enabled_channels(pname, true)
 		local list = table.concat(channels, ", ")
 
-		if not gdac.player_is_admin(pname) then
+		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
 			local msg = "# Server: <" .. rename.gpn(pname) .. "> is in channels: {" .. list .. "}."
 			CC.notify_channels_system_message(channels, msg)
-		else
+		elseif not camc.player_is_camera(pname) then
 			system_response(pname, "You are in channels: {" .. list .. "}.")
 		end
 	end

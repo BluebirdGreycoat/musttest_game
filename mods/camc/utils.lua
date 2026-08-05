@@ -15,7 +15,7 @@ local function get_right_shoulder_pos(pos, yaw)
 
 	return {
 		x = pos.x + 0.5 * right_x + 1.0 * back_x,
-		y = pos.y + 1.6,
+		y = pos.y + 1.1,
 		z = pos.z + 0.5 * right_z + 1.0 * back_z,
 	}
 end

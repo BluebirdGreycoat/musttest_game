@@ -6,7 +6,7 @@ function camc.snap_to(pname)
 	end
 
 	-- Not allowed to find cloaked or invisible.
-	if cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname) or player_labels.query_nametag_onoff(pname) == false then
+	if cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname) then
 		return
 	end
 

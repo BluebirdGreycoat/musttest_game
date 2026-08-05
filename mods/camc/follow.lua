@@ -91,6 +91,8 @@ function camc.periodic_follow_check(params)
 	local pref = minetest.get_player_by_name(pname)
 
 	-- Not allowed to find cloaked or invisible.
+	-- Note: not checking nametag on/off status here.
+	-- This is intentional.
 	if cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname) then
 		camc.system_response("MustTest", "Target invisible.")
 		pref = nil

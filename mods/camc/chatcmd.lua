@@ -162,5 +162,13 @@ function camc.on_chatcommand(pname, param)
 end
 
 function camc.on_show_help(pname)
-	camc.system_response(pname, "I'm bored, and bored people do nuts things.")
+	local pref = camc.get_pref_complain_if_inexistent(pname)
+	if not pref then return end
+
+	camc.system_response(pname, "The following sub-commands are available:")
+	for verb, def in pairs(CHATCOMMANDS) do
+		local args = def.params and def.params ~= "" and (" " .. def.params .. ": ") or ": "
+		local desc = def.description or "No description provided."
+		camc.system_response(pname, "    /hawkeye " .. verb .. args .. desc)
+	end
 end

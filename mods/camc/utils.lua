@@ -1,6 +1,6 @@
 
---- Compute a position 0.5 nodes to the player's right and 1.6 nodes up,
---- preserving the same yaw (look direction).
+--- Compute an over-shoulder camera position,
+--- preserving the same look direction.
 -- @param pos table  Player position {x, y, z}
 -- @param yaw number  Horizontal look angle from player:get_look_horizontal()
 -- @return table      New position {x, y, z}

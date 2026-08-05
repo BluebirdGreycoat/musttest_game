@@ -225,6 +225,9 @@ end
 
 function status.on_joinplayer(player, last_login)
 	local pname = player:get_player_name()
+	if camc.player_is_camera(pname) then
+		return
+	end
 	-- Don't show /status info to registered players rejoining the server.
 	-- It's just noise, if they want it they can type /status manually.
 	if not passport.player_registered(pname) then

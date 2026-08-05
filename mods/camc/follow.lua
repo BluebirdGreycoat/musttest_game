@@ -117,7 +117,7 @@ function camc.periodic_follow_check(params)
 	end
 
 	if pref then
-		local player_pos = get_players_barycenter(pref:get_pos())
+		local player_pos = get_players_barycenter(pref:get_pos(), 12)
 		local cam_pos = pcam:get_pos()
 		local DIST = camc.CAMERA_FOLLOW_DISTANCE
 

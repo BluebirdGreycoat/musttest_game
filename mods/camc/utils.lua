@@ -53,6 +53,8 @@ function camc.snap_to(pname)
 		return
 	end
 
+	-- Shoulder pos is actually the position the camera bot should sit at,
+	-- but the eye height is above it.
 	local eye1 = vector.add(rshoulderpos, {x=0, y=pcam:get_properties().eye_height, z=0})
 	if camc.viewpoint_buried(eye1) then
 		rshoulderpos = to_pos

@@ -42,6 +42,39 @@ local function calc_look_at(player_pos, cam_pos)
 	return yaw, pitch
 end
 
+--- Returns the barycenter (average position) of all players
+--- within `radius` nodes of `pos`.
+--- Returns nil if no players are found in range.
+---
+--- @param pos vector   Center position
+--- @param radius number|nil  Search radius (default: 8)
+--- @return vector|nil
+local function get_players_barycenter(pos, radius)
+	radius = radius or 8
+
+	local objects = minetest.get_objects_inside_radius(pos, radius)
+	local sum = vector.zero()
+	local count = 0
+
+	for _, obj in ipairs(objects) do
+		if obj:is_player() then
+			if not gdac_invis.is_invisible(obj) then
+				local pname = obj:get_player_name()
+				if not cloaking.is_cloaked(pname) then
+					sum = vector.add(sum, obj:get_pos())
+					count = count + 1
+				end
+			end
+		end
+	end
+
+	if count == 0 then
+		return pos
+	end
+
+	return vector.divide(sum, count)
+end
+
 function camc.periodic_follow_check(params)
 	if not params then
 		params = {}
@@ -84,7 +117,7 @@ function camc.periodic_follow_check(params)
 	end
 
 	if pref then
-		local player_pos = pref:get_pos()
+		local player_pos = get_players_barycenter(pref:get_pos())
 		local cam_pos = pcam:get_pos()
 		local DIST = camc.CAMERA_FOLLOW_DISTANCE
 

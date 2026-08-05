@@ -89,6 +89,13 @@ function camc.periodic_follow_check(params)
 	end
 
 	local pref = minetest.get_player_by_name(pname)
+
+	-- Not allowed to find cloaked or invisible.
+	if cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname) then
+		--camc.system_response("MustTest", "Target invisible.")
+		pref = nil
+	end
+
 	if not pref then
 		-- Haunted player logged off.
 		if camc.FOLLOW_MODE == 1 then

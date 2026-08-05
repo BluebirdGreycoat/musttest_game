@@ -80,8 +80,8 @@ function camc.check_camera_activity(params)
 
 					rplayers = get_regular_players()
 
-					-- Haunt players if there's at least 4 of them, otherwise explore.
-					if #rplayers > 3 then
+					-- Haunt players if there's at least 3 of them, otherwise explore.
+					if #rplayers >= 3 then
 						if not camc.start_haunting() then
 							camc.start_exploring()
 						end

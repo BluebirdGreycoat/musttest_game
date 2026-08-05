@@ -78,7 +78,7 @@ function camc.check_camera_activity(params)
 					camc.set_following(nil)
 					camc.stop_exploring()
 
-					rplayers = get_regular_players()
+					local rplayers = get_regular_players()
 
 					-- Haunt players if there's at least 3 of them, otherwise explore.
 					if #rplayers >= 3 then

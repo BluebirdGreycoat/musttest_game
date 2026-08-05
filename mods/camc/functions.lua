@@ -23,7 +23,14 @@ function camc.on_joinplayer(player)
 		-- By default, camera client starts in explore mode.
 		-- This lets us do something useful in case the client disconnects
 		-- and has to rejoin.
-		minetest.after(10, function() camc.start_exploring() end)
+		minetest.after(10, function()
+			local rplayers = camc.get_regular_players()
+			if #rplayers >= 3 then
+				camc.start_haunting()
+			else
+				camc.start_exploring()
+			end
+		end)
 	end
 end
 

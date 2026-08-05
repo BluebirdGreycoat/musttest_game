@@ -117,10 +117,18 @@ function camc.look_at(target)
 		if not pref then
 			return
 		end
+		local tname = pref:get_player_name()
+		if cloaking.is_cloaked(tname) or gdac_invis.is_invisible(tname) then
+			return
+		end
 		target_p = pref:get_pos()
 	elseif type(target) == "table" and target.x and target.y and target.z then
 		target_p = target
 	elseif type(target) == "userdata" then
+		local tname = target:get_player_name()
+		if cloaking.is_cloaked(tname) or gdac_invis.is_invisible(tname) then
+			return
+		end
 		target_p = target:get_pos()
 	end
 	if not target_p then

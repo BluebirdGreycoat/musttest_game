@@ -1,4 +1,6 @@
 
+camc.PLAYER_RATE_LIMITS = camc.PLAYER_RATE_LIMITS or {}
+
 local CHATCOMMANDS = {
 	status = {
 		params = "",

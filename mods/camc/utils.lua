@@ -5,15 +5,18 @@
 -- @param yaw number  Horizontal look angle from player:get_look_horizontal()
 -- @return table      New position {x, y, z}
 local function get_right_shoulder_pos(pos, yaw)
-	-- Unit vector pointing to the player's right
-	-- (derived from the standard Minetest forward vector (-sin(yaw), 0, cos(yaw)))
+	-- Right vector
 	local right_x = math.cos(yaw)
 	local right_z = math.sin(yaw)
 
+	-- Backward vector (opposite of forward)
+	local back_x = math.sin(yaw)
+	local back_z = -math.cos(yaw)
+
 	return {
-		x = pos.x + 0.5 * right_x,
+		x = pos.x + 0.5 * right_x + 1.0 * back_x,
 		y = pos.y + 1.6,
-		z = pos.z + 0.5 * right_z,
+		z = pos.z + 0.5 * right_z + 1.0 * back_z,
 	}
 end
 

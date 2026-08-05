@@ -131,11 +131,11 @@ function camc.look_at(target)
 	end
 
 	-- If camera is buried, try a few times to find a good spot.
-	if camc.viewpoint_buried(cam_pos) then
+	if camc.viewpoint_buried(head_pos(cam_pos)) then
 		local success = false
 		for k = 1, camc.CAMERA_BURIED_NUM_RETRIES do
 			cam_pos, yaw, pitch = calc_look_at(target_p, true)
-			if not camc.viewpoint_buried(cam_pos) then
+			if not camc.viewpoint_buried(head_pos(cam_pos)) then
 				success = true
 				break
 			end
@@ -235,7 +235,7 @@ function camc.get_regular_players()
 end
 
 function camc.viewpoint_buried(pos)
-	local hp = head_pos(pos)
+	local hp = pos
 	local d = 0.2
 	local t = {
 		vector.add(hp, {x=d, y=0, z=0}),

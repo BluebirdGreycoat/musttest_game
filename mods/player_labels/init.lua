@@ -141,7 +141,9 @@ player_labels.on_joinplayer = function(player)
   else
     -- After welcome msg, before joinspec and email.
     minetest.after(5, function(pn)
-      minetest.chat_send_player(pn, "# Server: Avatar name broadcast is OFF.")
+      if not camc.player_is_camera(pn) then
+        minetest.chat_send_player(pn, "# Server: Avatar name broadcast is OFF.")
+      end
     end, pname)
     nametag_hide(pname)
   end

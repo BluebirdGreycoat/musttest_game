@@ -53,6 +53,10 @@ function camc.snap_to(pname)
 		return
 	end
 
+	if camc.viewpoint_buried(rshoulderpos) then
+		rshoulderpos = to_pos
+	end
+
 	rc.notify_realm_update(pcam, rshoulderpos)
 
 	pcam:set_pos(rshoulderpos)
@@ -126,35 +130,12 @@ function camc.look_at(target)
 		return vector.add(cam_pos, {x=0, y=1.7, z=0})
 	end
 
-	local function viewpoint_buried(pos)
-		local hp = head_pos(pos)
-		local d = 0.2
-		local t = {
-			vector.add(hp, {x=d, y=0, z=0}),
-			vector.add(hp, {x=-d, y=0, z=0}),
-			vector.add(hp, {x=0, y=0, z=d}),
-			vector.add(hp, {x=0, y=0, z=-d}),
-			vector.add(hp, {x=0, y=d, z=0}),
-			vector.add(hp, {x=0, y=-d, z=0}),
-		}
-		for i = 1, #t do
-			local p = t[i]
-			local nn = minetest.get_node(p).name
-			if nn ~= "air" then
-				local ndef = minetest.registered_nodes[nn] or {}
-				if ndef.walkable then
-					return true
-				end
-			end
-		end
-	end
-
 	-- If camera is buried, try a few times to find a good spot.
-	if viewpoint_buried(cam_pos) then
+	if camc.viewpoint_buried(cam_pos) then
 		local success = false
 		for k = 1, camc.CAMERA_BURIED_NUM_RETRIES do
 			cam_pos, yaw, pitch = calc_look_at(target_p, true)
-			if not viewpoint_buried(cam_pos) then
+			if not camc.viewpoint_buried(cam_pos) then
 				success = true
 				break
 			end
@@ -251,4 +232,27 @@ function camc.get_regular_players()
 		end
 	end
 	return regular
+end
+
+function camc.viewpoint_buried(pos)
+	local hp = head_pos(pos)
+	local d = 0.2
+	local t = {
+		vector.add(hp, {x=d, y=0, z=0}),
+		vector.add(hp, {x=-d, y=0, z=0}),
+		vector.add(hp, {x=0, y=0, z=d}),
+		vector.add(hp, {x=0, y=0, z=-d}),
+		vector.add(hp, {x=0, y=d, z=0}),
+		vector.add(hp, {x=0, y=-d, z=0}),
+	}
+	for i = 1, #t do
+		local p = t[i]
+		local nn = minetest.get_node(p).name
+		if nn ~= "air" then
+			local ndef = minetest.registered_nodes[nn] or {}
+			if ndef.walkable then
+				return true
+			end
+		end
+	end
 end

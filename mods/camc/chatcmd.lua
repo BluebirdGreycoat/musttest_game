@@ -137,6 +137,23 @@ function camc.on_chatcommand(pname, param)
 			-- Establish baseline before executing new command.
 			camc.set_following(nil)
 			camc.stop_exploring()
+
+			local pinfo = camc.PLAYER_RATE_LIMITS[pname] or {}
+			local last_time = pinfo.time
+			local next_time = os.time()
+			local D = 30
+
+			if last_time then
+				local future_time = last_time + D
+				if next_time < future_time then
+					local remaining = future_time - next_time
+					camc.system_error(pname, ("Too many commands: wait %d seconds."):format(remaining))
+					return
+				end
+			end
+
+			pinfo.time = next_time
+			camc.PLAYER_RATE_LIMITS[pname] = pinfo
 		end
 
 		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), param))

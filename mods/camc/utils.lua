@@ -5,6 +5,11 @@ function camc.snap_to(pname)
 		return
 	end
 
+	-- Not allowed to find cloaked or invisible.
+	if cloaking.is_cloaked(pname) or gdac_invis.is_invisible(pname) or player_labels.query_nametag_onoff(pname) == false then
+		return
+	end
+
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		return

@@ -45,9 +45,24 @@ local function get_storage_inventories(pos, player)
 	-- 4 cardinal neighbors of position.
 	local locations = {
 		{x=pos.x+1, y=pos.y, z=pos.z},
+		{x=pos.x+2, y=pos.y, z=pos.z},
+		{x=pos.x+3, y=pos.y, z=pos.z},
+		{x=pos.x+4, y=pos.y, z=pos.z},
+
 		{x=pos.x-1, y=pos.y, z=pos.z},
+		{x=pos.x-2, y=pos.y, z=pos.z},
+		{x=pos.x-3, y=pos.y, z=pos.z},
+		{x=pos.x-4, y=pos.y, z=pos.z},
+
 		{x=pos.x, y=pos.y, z=pos.z+1},
+		{x=pos.x, y=pos.y, z=pos.z+2},
+		{x=pos.x, y=pos.y, z=pos.z+3},
+		{x=pos.x, y=pos.y, z=pos.z+4},
+
 		{x=pos.x, y=pos.y, z=pos.z-1},
+		{x=pos.x, y=pos.y, z=pos.z-2},
+		{x=pos.x, y=pos.y, z=pos.z-3},
+		{x=pos.x, y=pos.y, z=pos.z-4},
 	}
 
 	for _, neighborpos in ipairs(locations) do
@@ -72,6 +87,14 @@ local function get_storage_inventories(pos, player)
 				name = OPEN_STORAGE_CONTAINERS[node.name],
 				inv = neighbormeta:get_inventory()
 			})
+		end
+
+		-- Max 5 inventories allowed (inc. self).
+		-- The purpose of this is to make there be no benefit to arranging
+		-- chests in a + shape around the workbench.
+		-- That workshop design looks as fugly as a land whale.
+		if #inventories >= 5 then
+			break
 		end
 	end
 

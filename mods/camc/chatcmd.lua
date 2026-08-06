@@ -149,24 +149,26 @@ local CHATCOMMANDS = {
 
 			if verb == "add" then
 				local vantage_name = tokens[2] or nil
-				if camc.add_vantage_point(pname, vantage_name) then
-					camc.system_response(pname, "Added vantage point.")
+				local success, message = camc.add_vantage_point(pname, vantage_name)
+				if success then
+					camc.system_response(pname, message)
 				else
-					camc.system_error(pname, "Failed to add vantage point.")
+					camc.system_error(pname, message)
 				end
 				return
 			end
 
 			if verb == "del" then
-				if camc.remove_vantage_point(pname) then
-					camc.system_response(pname, "Removed vantage point.")
+				local success, message = camc.remove_vantage_point(pname)
+				if success then
+					camc.system_response(pname, message)
 				else
-					camc.system_error(pname, "Failed to remove vantage point.")
+					camc.system_error(pname, message)
 				end
 				return
 			end
 
-			camc.system_error(pname, "Invalid command.")
+			camc.system_error(pname, "Wrong invocation.")
 		end,
 	},
 }

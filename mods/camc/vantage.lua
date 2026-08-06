@@ -31,14 +31,18 @@ end
 function camc.add_vantage_point(pname, vantage_name)
 	local pos, yaw, pitch = get_player_pos(pname)
 	if not pos then
-		return
+		return false, "Can't get your position."
 	end
 	if vantage_name and vantage_name ~= "" then
 		if not name_ok(vantage_name) then
-			return
+			return false, "No swearing in vantage names!"
 		end
 	end
 	local block = get_nearest_cityblock(pos)
+	local overwrite = ""
+	if block.vantage then
+		overwrite = " Existing vantage replaced."
+	end
 	block.vantage = {
 		pos = pos,
 		yaw = yaw,
@@ -48,18 +52,19 @@ function camc.add_vantage_point(pname, vantage_name)
 		time = os.time(),
 	}
 	city_block:save()
-	return true
+	return true, "Vantage point added." .. overwrite
 end
 
 function camc.remove_vantage_point(pname)
 	local pos = get_player_pos(pname)
 	if not pos then
-		return
+		return false, "Can't get your position."
 	end
 	local block = get_nearest_cityblock(pos)
 	if block.vantage then
 		block.vantage = nil
 		city_block:save()
-		return true
+		return true, "Vantage point removed."
 	end
+	return false, "No vantage point. Nothing to be done."
 end

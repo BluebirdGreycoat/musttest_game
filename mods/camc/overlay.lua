@@ -98,6 +98,7 @@ function camc.setup_overlay(player)
 		text          = "ENYEKALA",
 		alignment     = {x = 0, y = -1},
 		number        = 0xE0C47C,
+		size          = {x = 2, y = 2},
 	})
 
 	if id1 and id2 then

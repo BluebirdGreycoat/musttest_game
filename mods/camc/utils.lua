@@ -117,6 +117,8 @@ function camc.look_at(target)
 		if not pref then
 			return
 		end
+
+		-- May not look at cloaked or invisible.
 		local tname = pref:get_player_name()
 		if cloaking.is_cloaked(tname) or gdac_invis.is_invisible(tname) then
 			return
@@ -125,10 +127,12 @@ function camc.look_at(target)
 	elseif type(target) == "table" and target.x and target.y and target.z then
 		target_p = target
 	elseif type(target) == "userdata" then
+		-- May not look at cloaked or invisible.
 		local tname = target:get_player_name()
 		if cloaking.is_cloaked(tname) or gdac_invis.is_invisible(tname) then
 			return
 		end
+
 		target_p = target:get_pos()
 	end
 	if not target_p then
@@ -238,7 +242,9 @@ function camc.get_regular_players()
 		if not gdac.player_is_admin(v) and not camc.player_is_camera(v) then
 			local pname = v:get_player_name()
 			if player_labels.query_nametag_onoff(pname) == true then
-				regular[#regular + 1] = v
+				if not cloaking.is_cloaked(tname) and not gdac_invis.is_invisible(tname) then
+					regular[#regular + 1] = v
+				end
 			end
 		end
 	end

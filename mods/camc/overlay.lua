@@ -14,6 +14,7 @@ local function delete_huds(player, tab)
 	end
 end
 
+-- Only static information.
 local function get_infotext_1()
 	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
 		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
@@ -21,6 +22,7 @@ local function get_infotext_1()
 	return infotext
 end
 
+-- Dynamic information that needs updating.
 local function get_infotext_2()
 	local players = minetest.get_connected_players()
 	local num_players = 0
@@ -68,10 +70,8 @@ function camc.setup_overlay(player)
 		number        = 0xFFFFFF,
 	})
 
-	if id1 then
+	if id1 and id2 then
 		table.insert(tab.huds, {id=id1})
-	end
-	if id2 then
 		table.insert(tab.huds, {id=id2})
 	end
 end
@@ -101,6 +101,25 @@ function camc.remove_overlay(player)
 end
 
 function camc.update_overlay(pname)
+	local tab = camc.OVERLAYS[pname]
+	if not tab then
+		return
+	end
+
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
+
+	if tab.huds then
+		local id1 = tab.huds[1]
+		local id2 = tab.huds[2]
+
+		if id1 and id2 then
+			pref:hud_change(id2, "text", get_infotext_2())
+		end
+	end
+
 	minetest.after(1, function()
 		camc.update_overlay(pname)
 	end)

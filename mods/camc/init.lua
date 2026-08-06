@@ -16,6 +16,10 @@ dofile(camc.modpath .. "/follow.lua")
 dofile(camc.modpath .. "/explore.lua")
 dofile(camc.modpath .. "/overlay.lua")
 
+reload.register_callback("on_mod_reload", "camc", function(...)
+	camc.on_mod_reload(...)
+end)
+
 if not camc.run_once then
 	camc.run_once = true
 

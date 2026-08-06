@@ -109,6 +109,8 @@ local CHATCOMMANDS = {
 		end,
 	},
 
+	-- Useful to hide the chat if someone has hoof-in-mouth syndrome.
+	-- Also allows clean screenshots.
 	overlay = {
 		params = "<status|enable|disable>",
 		description = "Enable, disable, or get the camera's overlay status.",

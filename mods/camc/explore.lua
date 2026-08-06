@@ -78,7 +78,12 @@ function camc.periodic_explore_update(params)
 		camc.send_region_to_player(pcam, minp, maxp)
 
 		-- Camera will remain where it is if this fails.
-		minetest.after(2, function() camc.look_at(pos, yaw, pitch) end)
+		minetest.after(2, function()
+			local success = camc.look_at(pos, yaw, pitch)
+			if success then
+				camc.set_overlay_vantage_text(data)
+			end
+		end)
 
 		-- Track how many sites we've visited during this run.
 		params.sites_visited = (params.sites_visited or 0) + 1

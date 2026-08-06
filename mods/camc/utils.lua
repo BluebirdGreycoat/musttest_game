@@ -66,6 +66,8 @@ function camc.snap_to(pname)
 	pcam:set_look_horizontal(yaw)
 	pcam:set_look_vertical(pitch)
 
+	camc.set_overlay_vantage_text(nil)
+
 	return true
 end
 
@@ -176,6 +178,8 @@ function camc.look_at(target, want_yaw, want_pitch)
 	pcam:set_pos(cam_pos)
 	pcam:set_look_horizontal(yaw)
 	pcam:set_look_vertical(pitch)
+
+	camc.set_overlay_vantage_text(nil)
 
 	return true
 end

@@ -2,6 +2,7 @@
 camc.OVERLAYS = camc.OVERLAYS or {}
 camc.UPTIME_START = camc.UPTIME_START or os.time()
 camc.MAX_SEEN_PLAYERS = camc.MAX_SEEN_PLAYERS or 0
+camc.CURRENT_VANTAGE_NAME = camc.CURRENT_VANTAGE_NAME or nil
 
 local WEBADDR = minetest.settings:get("server_address")
 local WEBPORT = minetest.settings:get("port")
@@ -61,6 +62,23 @@ local function get_infotext_2()
 	return infotext
 end
 
+local function get_vantage_text()
+	return camc.CURRENT_VANTAGE_NAME or "ENYEKALA"
+end
+
+function camc.set_overlay_vantage_text(data)
+	camc.CURRENT_VANTAGE_NAME = nil
+	if data and data.name then
+		local t
+		if data.owner then
+			t = ('%s by %s'):format(data.name, rename.gpn(data.owner))
+		else
+			t = ('%s'):format(data.name)
+		end
+		camc.CURRENT_VANTAGE_NAME = t
+	end
+end
+
 function camc.setup_overlay(player)
 	local pname = player:get_player_name()
 	camc.OVERLAYS[pname] = camc.OVERLAYS[pname] or {}
@@ -95,7 +113,7 @@ function camc.setup_overlay(player)
 		type          = "text",
 		position      = {x = 0.5, y = 1},
 		offset        = {x = 0, y = -padding_y},
-		text          = "ENYEKALA",
+		text          = get_vantage_text(),
 		alignment     = {x = 0, y = -1},
 		number        = 0xE0C47C,
 		size          = {x = 1.5, y = 1.5},
@@ -150,9 +168,14 @@ function camc.update_overlay(pname)
 	if tab.huds then
 		local id1 = tab.huds[1].id
 		local id2 = tab.huds[2].id
+		local id3 = tab.huds[3].id
 
 		if id1 and id2 then
 			pref:hud_change(id2, "text", get_infotext_2())
+		end
+
+		if id3 then
+			pref:hud_change(id3, "text", get_vantage_text())
 		end
 	end
 

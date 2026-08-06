@@ -66,5 +66,5 @@ function camc.remove_vantage_point(pname)
 		city_block:save()
 		return true, "Vantage point removed."
 	end
-	return false, "No vantage point. Nothing to be done."
+	return false, "No vantage point here."
 end

@@ -1,22 +1,25 @@
 
 camc.EXPLORE_ACTIVE = camc.EXPLORE_ACTIVE or 0
+camc.EXPLORE_MODE = camc.EXPLORE_MODE or 0
 
 local function get_random_spot()
 	local valid = {}
 	local blocks = city_block.blocks or {}
 	local teleports = teleports.teleports or {}
 
-	for k = 1, #blocks, 1 do
-		local b = blocks[k]
-		if b.hud_beacon and b.pos then
-			valid[#valid + 1] = b.pos
+	if camc.EXPLORE_MODE == 0 then
+		for k = 1, #blocks, 1 do
+			local b = blocks[k]
+			if b.hud_beacon and b.pos then
+				valid[#valid + 1] = {pos=b.pos}
+			end
 		end
-	end
 
-	for k = 1, #teleports, 1 do
-		local b = teleports[k]
-		if b.is_recall and b.pos then
-			valid[#valid + 1] = b.pos
+		for k = 1, #teleports, 1 do
+			local b = teleports[k]
+			if b.is_recall and b.pos then
+				valid[#valid + 1] = {pos=b.pos}
+			end
 		end
 	end
 
@@ -39,8 +42,10 @@ function camc.periodic_explore_update(params)
 		return
 	end
 
-	local pos = get_random_spot()
-	if pos then
+	local data = get_random_spot()
+	if data then
+		local pos, yaw, pitch = data.pos, data.yaw, data.pitch
+
 		-- Load map so the look at code can find a good spot for the camera.
 		local d = 16
 		local minp = vector.add(pos, {x=-d, y=-d, z=-d})
@@ -59,11 +64,12 @@ function camc.periodic_explore_update(params)
 	return true
 end
 
-function camc.start_exploring()
+function camc.start_exploring(mode)
 	if camc.EXPLORE_ACTIVE == 1 then
 		return true
 	end
 	camc.EXPLORE_ACTIVE = 1
+	camc.EXPLORE_MODE = mode or 0
 	return camc.periodic_explore_update()
 end
 

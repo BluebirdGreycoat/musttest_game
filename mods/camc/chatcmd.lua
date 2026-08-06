@@ -155,7 +155,7 @@ local CHATCOMMANDS = {
 			local verb = (tokens[1] or ""):lower()
 
 			if verb == "add" then
-				local vantage_name = tokens[2] or nil
+				local vantage_name = param:sub(verb:len() + 2):trim()
 				local success, message = camc.add_vantage_point(pname, vantage_name)
 				if success then
 					camc.system_response(pname, message)

@@ -63,7 +63,12 @@ local function get_infotext_2()
 end
 
 local function get_vantage_text()
-	return camc.CURRENT_VANTAGE_NAME or "ENYEKALA"
+	local text = camc.CURRENT_VANTAGE_NAME or "ENYEKALA"
+	local align = 0.5
+	if camc.CURRENT_VANTAGE_NAME then
+		align = 0.4
+	end
+	return text, align
 end
 
 function camc.set_overlay_vantage_text(data)
@@ -109,11 +114,12 @@ function camc.setup_overlay(player)
 		number        = 0xFFFFFF,
 	})
 
+	local vtext, valign = get_vantage_text()
 	local id3 = player:hud_add({
 		type          = "text",
-		position      = {x = 0.4, y = 1},
+		position      = {x = valign, y = 1},
 		offset        = {x = 0, y = -padding_y},
-		text          = get_vantage_text(),
+		text          = vtext,
 		alignment     = {x = 0, y = -1},
 		number        = 0xE0C47C,
 		size          = {x = 1.5, y = 1.5},
@@ -175,7 +181,9 @@ function camc.update_overlay(pname)
 		end
 
 		if id3 then
-			pref:hud_change(id3, "text", get_vantage_text())
+			local vtext, valign = get_vantage_text()
+			pref:hud_change(id3, "text", vtext)
+			pref:hud_change(id3, "position", {x = valign, y = 1})
 		end
 	end
 

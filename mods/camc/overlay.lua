@@ -99,7 +99,7 @@ function camc.setup_overlay(player)
 		alignment     = {x = 0, y = -1},
 		number        = 0xE0C47C,
 		size          = {x = 1.5, y = 1.5},
-		style         = 4,
+		style         = 6,
 	})
 
 	if id1 and id2 then

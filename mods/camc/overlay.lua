@@ -12,8 +12,8 @@ function camc.setup_overlay(player)
 		tab.hud1 = nil
 	end
 
-	local padding_x = 0   -- pixels from left edge
-	local padding_y = 0   -- pixels from bottom edge
+	local padding_x = 5   -- pixels from left edge
+	local padding_y = 5   -- pixels from bottom edge
 
 	local hud_id = player:hud_add({
 		type          = "text",
@@ -35,6 +35,11 @@ function camc.hide_overlay(player)
 	if not tab then
 		return
 	end
+
+	if tab.hud1 then
+		player:hud_remove(tab.hud1)
+		tab.hud1 = nil
+	end
 end
 
 function camc.show_overlay(player)
@@ -43,6 +48,7 @@ function camc.show_overlay(player)
 	if not tab then
 		return
 	end
+	camc.setup_overlay(player)
 end
 
 function camc.remove_overlay(player)

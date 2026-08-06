@@ -35,7 +35,7 @@ local function get_infotext_2()
 			end
 		end
 	end
-	local timestamp = camc.UPTIME_START
+	local timestamp = os.time() - camc.UPTIME_START
 	local infotext = ("Players: %s\nUptime: %s"):format(
 		tostring(num_players), tostring(os.date("%H:%M:%S", timestamp))
 	)

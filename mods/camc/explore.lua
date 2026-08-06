@@ -27,6 +27,7 @@ local function get_random_spot()
 			if b.vantage then
 				local v = b.vantage
 				if v.pos and v.yaw and v.pitch then
+					-- Old dict format.
 					valid[#valid + 1] = {
 						pos = v.pos,
 						yaw = v.yaw,
@@ -34,6 +35,17 @@ local function get_random_spot()
 						name = v.name,
 						owner = v.creator,
 					}
+				else
+					-- Handle new array format.
+					for _, n in ipairs(v) do
+						valid[#valid + 1] = {
+							pos = n.pos,
+							yaw = n.yaw,
+							pitch = n.pitch,
+							name = n.name,
+							owner = n.creator,
+						}
+					end
 				end
 			end
 		end

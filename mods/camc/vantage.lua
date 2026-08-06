@@ -45,20 +45,21 @@ function camc.add_vantage_point(pname, vantage_name)
 	if not block then
 		return false, "A nearby city block is required."
 	end
-	local overwrite = ""
-	if block.vantage then
-		overwrite = " Existing vantage replaced."
+	if block.vantage and block.vantage.pos then
+		-- Update data format from dict to array.
+		block.vantage = {[1]=block.vantage}
 	end
-	block.vantage = {
+	block.vantage = block.vantage or {}
+	table.insert(block.vantage, {
 		pos = pos,
 		yaw = yaw,
 		pitch = pitch,
 		name = vantage_name,
 		creator = pname,
 		time = os.time(),
-	}
+	})
 	city_block:save()
-	return true, "Vantage point added." .. overwrite
+	return true, "Vantage point added."
 end
 
 function camc.remove_vantage_point(pname)
@@ -71,9 +72,14 @@ function camc.remove_vantage_point(pname)
 		return false, "No nearby city block."
 	end
 	if block.vantage then
+		local num = #block.vantage
+		if block.vantage.pos then
+			-- Handle old dict format.
+			num = 1
+		end
 		block.vantage = nil
 		city_block:save()
-		return true, "Vantage point removed."
+		return true, ("Vantage points removed (%d)."):format(num)
 	end
 	return false, "No vantage point here."
 end

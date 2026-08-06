@@ -165,7 +165,7 @@ local CHATCOMMANDS = {
 				return
 			end
 
-			if verb == "del" then
+			if verb == "del" and #tokens == 1 then
 				local success, message = camc.remove_vantage_point(pname)
 				if success then
 					camc.system_response(pname, message)

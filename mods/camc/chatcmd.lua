@@ -142,7 +142,7 @@ local CHATCOMMANDS = {
 
 	vantage = {
 		params = "<add [name]|del>",
-		description = "Add or remove a scenic vantage point.",
+		description = "Add or remove scenic vantage points.",
 		action = function(pname, param)
 			local tokens = param:split(" ")
 			local verb = (tokens[1] or ""):lower()

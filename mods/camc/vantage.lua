@@ -2,20 +2,61 @@
 local function get_player_pos(pname)
 	local pref = minetest.get_player_by_name(pname)
 	if pref then
-		return pref:get_pos()
+		local pos = pref:get_pos()
+		local yaw = pref:get_look_horizontal()
+		local pitch = pref:get_look_vertical()
+		return pos, yaw, pitch
 	end
 end
 
+local function get_nearest_cityblock(pos)
+	pos = vector.round(pos)
+	local D = camc.VANTAGE_CITYBLOCK_DIST
+	local blocks = city_block:nearest_blocks_to_position(pos, 1, D)
+	if #blocks == 1 then
+		return blocks[1]
+	end
+end
+
+local function name_ok(pname, title)
+	if anticurse.check(pname, title, "foul") then
+		return
+	elseif anticurse.check(pname, title, "curse") then
+		return
+	end
+	return true
+end
+
 function camc.add_vantage_point(pname, vantage_name)
-	local pos = get_player_pos(pname)
+	local pos, yaw, pitch = get_player_pos(pname)
 	if not pos then
 		return
 	end
+	if not name_ok(vantage_name) then
+		return
+	end
+	local block = get_nearest_cityblock(pos)
+	block.vantage = {
+		pos = pos,
+		yaw = yaw,
+		pitch = pitch,
+		name = vantage_name,
+		creator = pname,
+		time = os.time(),
+	}
+	city_block:save()
+	return true
 end
 
 function camc.remove_vantage_point(pname)
 	local pos = get_player_pos(pname)
 	if not pos then
 		return
+	end
+	local block = get_nearest_cityblock(pos)
+	if block.vantage then
+		block.vantage = nil
+		city_block:save()
+		return true
 	end
 end

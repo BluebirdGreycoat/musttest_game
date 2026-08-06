@@ -8,6 +8,7 @@ camc.RANDOM_HAUNT_TIME_SECONDS = 30
 camc.RANDOM_EXPLORE_TIME_SECONDS = 45
 camc.CAMERA_FOLLOW_DISTANCE = 20
 camc.CAMERA_ACTIVITY_CHECK_SECONDS = 60*2
+camc.VANTAGE_CITYBLOCK_DIST = 10
 
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")

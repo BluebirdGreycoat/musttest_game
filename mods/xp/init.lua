@@ -13,10 +13,10 @@ xp.dirty_players = xp.dirty_players or {}
 -- in place and "grinding" xp with no actual building effort.
 xp.XP_RATES = {
 	-- Build XP gained from placing nodes.
-	BUILDXP_PLACE_STAIRS = 0.5,
-	BUILDXP_PLACE_BRICKS = 0.1,
-	BUILDXP_PLACE_DEFAULT = 0.01,
-	BUILDXP_SCREWDRIVER = 0.2,
+	BUILDXP_PLACE_STAIRS = 5,
+	BUILDXP_PLACE_BRICKS = 1,
+	BUILDXP_PLACE_DEFAULT = 0.1,
+	BUILDXP_SCREWDRIVER = 1.5,
 
 	-- Build XP lost whenever player digs nodes.
 	BUILDXP_DIG_LOSS = 0.01,

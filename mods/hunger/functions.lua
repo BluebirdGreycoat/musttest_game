@@ -261,6 +261,15 @@ end
 
 
 
+local BRICK_NAMES = {
+	"block",
+	"brick",
+	"tile",
+	"stone",
+	"walls",
+	"pillar",
+}
+
 local function get_buildxp_for(nodename)
 	local ndef = minetest.registered_nodes[nodename]
 
@@ -269,8 +278,18 @@ local function get_buildxp_for(nodename)
 			return BUILDXP_STAIRS
 		end
 
-		if nodename:find("block") or nodename:find("brick") then
-			return BUILDXP_BRICKS
+		for k = 1, #BRICK_NAMES do
+			local name = BRICK_NAMES[k]
+			if nodename:find(name) then
+				return BUILDXP_BRICKS
+			end
+		end
+
+		-- Completely ignore all the usual drawtypes.
+		-- Note: this also captures things like stairs, so any special
+		-- cases need to be handled *before* we reach here.
+		if XPLOSS_DRAWTYPES_IGNORE[ndef.drawtype or ""] then
+			return 0
 		end
 	end
 

@@ -45,6 +45,9 @@ function camc.periodic_explore_update(params)
 	if camc.EXPLORE_ACTIVE ~= 1 then
 		return
 	end
+
+	-- Belt and suspenders method of making sure only one minetest.after()
+	-- chain is running at a time.
 	if (params.random_key or 1) ~= camc.RANDOM_KEY then
 		camc.system_response("MustTest", "Invalid explore chain.")
 		return

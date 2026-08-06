@@ -83,6 +83,9 @@ function camc.periodic_follow_check(params)
 	if not params then
 		params = {}
 	end
+
+	-- Belt and suspenders method of making sure only one minetest.after()
+	-- chain is running at a time.
 	if (params.random_key or 1) ~= camc.RANDOM_KEY then
 		camc.system_response("MustTest", "Invalid follow chain.")
 		return
@@ -183,7 +186,18 @@ function camc.follow_player(pname)
 	return camc.set_following(pname)
 end
 
-function camc.update_haunt_target()
+function camc.update_haunt_target(params)
+	if not params then
+		params = {}
+	end
+
+	-- Belt and suspenders method of making sure only one minetest.after()
+	-- chain is running at a time.
+	if (params.random_key or 1) ~= camc.RANDOM_KEY then
+		camc.system_response("MustTest", "Invalid haunt chain.")
+		return
+	end
+
 	if camc.FOLLOW_TARGET == "" or camc.FOLLOW_MODE ~= 1 then
 		return
 	end
@@ -193,7 +207,9 @@ function camc.update_haunt_target()
 		camc.FOLLOW_TARGET = pname
 	end
 
-	minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function() camc.update_haunt_target() end)
+	minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function()
+		camc.update_haunt_target(params)
+	end)
 end
 
 function camc.start_haunting()
@@ -203,7 +219,16 @@ function camc.start_haunting()
 	local pname = get_random_haunt_target()
 	if pname then
 		local ok = camc.set_following(pname, 1)
-		minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function() camc.update_haunt_target() end)
+
+		-- Reuse the random key, since the haunt update chain is paired with
+		-- the new follow chain.
+		if camc.RANDOM_KEY and camc.RANDOM_KEY ~= 0 then
+			local params = {random_key=camc.RANDOM_KEY}
+			minetest.after(camc.RANDOM_HAUNT_TIME_SECONDS, function()
+				camc.update_haunt_target(params)
+			end)
+		end
+
 		return ok
 	end
 end

@@ -22,7 +22,9 @@ function camc.setup_overlay(player)
 
 	delete_huds(player, tab)
 
-	local infotext = ("Test1\nTest2\nTest3")
+	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
+		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
+	)
 
 	local padding_x = 10 -- pixels from left edge
 	local padding_y = 10 -- pixels from bottom edge

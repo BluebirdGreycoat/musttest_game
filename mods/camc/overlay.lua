@@ -1,16 +1,22 @@
 
 camc.OVERLAYS = camc.OVERLAYS or {}
 
+local function delete_huds(player, tab)
+	if tab.huds then
+		for k, v in ipairs(tab.huds) do
+			player:hud_remove(v.id)
+		end
+		tab.huds = nil
+	end
+end
+
 function camc.setup_overlay(player)
 	local pname = player:get_player_name()
 	camc.OVERLAYS[pname] = camc.OVERLAYS[pname] or {}
 
 	local tab = camc.OVERLAYS[pname]
 
-	if tab.hud1 then
-		player:hud_remove(tab.hud1)
-		tab.hud1 = nil
-	end
+	delete_huds(player, tab)
 
 	local padding_x = 10   -- pixels from left edge
 	local padding_y = 10   -- pixels from bottom edge
@@ -25,7 +31,7 @@ function camc.setup_overlay(player)
 	})
 
 	if hud_id then
-		tab.hud1 = hud_id
+		tab.huds = {{id=hud_id}}
 	end
 end
 
@@ -36,10 +42,7 @@ function camc.hide_overlay(player)
 		return
 	end
 
-	if tab.hud1 then
-		player:hud_remove(tab.hud1)
-		tab.hud1 = nil
-	end
+	delete_huds(player, tab)
 end
 
 function camc.show_overlay(player)

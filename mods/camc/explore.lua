@@ -27,7 +27,13 @@ local function get_random_spot()
 			if b.vantage then
 				local v = b.vantage
 				if v.pos and v.yaw and v.pitch then
-					valid[#valid + 1] = {pos=v.pos, yaw=v.yaw, pitch=v.pitch}
+					valid[#valid + 1] = {
+						pos = v.pos,
+						yaw = v.yaw,
+						pitch = v.pitch,
+						name = v.name,
+						owner = v.creator,
+					}
 				end
 			end
 		end

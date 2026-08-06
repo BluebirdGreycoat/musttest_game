@@ -100,7 +100,10 @@ function camc.remove_overlay(player)
 	camc.OVERLAYS[pname] = nil
 end
 
-function camc.update_overlay(player)
+function camc.update_overlay(pname)
+	minetest.after(1, function()
+		camc.update_overlay(pname)
+	end)
 end
 
 function camc.on_mod_reload(modid)
@@ -111,6 +114,5 @@ function camc.on_mod_reload(modid)
 	local pref = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if pref then
 		camc.setup_overlay(pref)
-		camc.update_overlay(pref)
 	end
 end

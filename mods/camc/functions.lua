@@ -62,6 +62,7 @@ function camc.on_joinplayer(player)
 		end)
 
 		camc.setup_overlay(player)
+		camc.update_overlay(pname)
 	end
 end
 

@@ -55,7 +55,7 @@ local function get_infotext_2()
 	local max_players = camc.MAX_SEEN_PLAYERS
 	local uptime_str = format_uptime(camc.UPTIME_START, os.time())
 
-	local infotext = ("Players: %d / %d\nServer Uptime: %s\nMax Lag: %.4f"):format(
+	local infotext = ("Players: %d / %d\nServer Uptime: %s\nMax Lag: %.3f"):format(
 		num_players, max_players, uptime_str, core.get_server_max_lag()
 	)
 	return infotext

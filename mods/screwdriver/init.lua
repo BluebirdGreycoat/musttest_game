@@ -2,6 +2,8 @@
 if not minetest.global_exists("screwdriver") then screwdriver = {} end
 screwdriver.modpath = minetest.get_modpath("screwdriver")
 
+dofile(screwdriver.modpath .. "/xp.lua")
+
 screwdriver.ROTATE_FACE = 1
 screwdriver.ROTATE_AXIS = 2
 
@@ -81,10 +83,6 @@ screwdriver.rotate.wallmounted = function(pos, node, mode)
 end
 
 screwdriver.rotate.colorwallmounted = screwdriver.rotate.wallmounted
-
-function screwdriver.handle_xp(pname, pos)
-	xp.add_xp(pname, "buildxp", xp.XP_RATES.BUILDXP_SCREWDRIVER)
-end
 
 -- Handles rotation
 screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)

@@ -1,6 +1,10 @@
 
 camc.OVERLAYS = camc.OVERLAYS or {}
 
+local WEBADDR = minetest.settings:get("server_address")
+local WEBPORT = minetest.settings:get("port")
+local FORUMADDR = minetest.settings:get("forum_topic")
+
 local function delete_huds(player, tab)
 	if tab.huds then
 		for k, v in ipairs(tab.huds) do
@@ -18,16 +22,18 @@ function camc.setup_overlay(player)
 
 	delete_huds(player, tab)
 
-	local padding_x = 10   -- pixels from left edge
-	local padding_y = 10   -- pixels from bottom edge
+	local infotext = ("Test1\nTest2\nTest3")
+
+	local padding_x = 10 -- pixels from left edge
+	local padding_y = 10 -- pixels from bottom edge
 
 	local hud_id = player:hud_add({
 		type          = "text",
-		position      = {x = 0, y = 1},          -- bottom-left of screen
+		position      = {x = 0, y = 1},
 		offset        = {x = padding_x, y = -padding_y},
-		text          = "Sample text",
-		alignment     = {x = 1, y = -1},         -- bottom-left corner of the text
-		number        = 0xFFFFFF,                -- white
+		text          = infotext,
+		alignment     = {x = 1, y = -1},
+		number        = 0xFFFFFF,
 	})
 
 	if hud_id then

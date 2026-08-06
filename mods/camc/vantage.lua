@@ -50,6 +50,9 @@ function camc.add_vantage_point(pname, vantage_name)
 		block.vantage = {[1]=block.vantage}
 	end
 	block.vantage = block.vantage or {}
+	if #block.vantage > camc.VANTAGE_LIMIT_PER_LOCATION then
+		return false, "Too many vantage points for this location!"
+	end
 	table.insert(block.vantage, {
 		pos = pos,
 		yaw = yaw,

@@ -34,7 +34,7 @@ function camc.add_vantage_point(pname, vantage_name)
 		return false, "Can't get your position."
 	end
 	if vantage_name and vantage_name ~= "" then
-		if not name_ok(vantage_name) then
+		if not name_ok(pname, vantage_name) then
 			return false, "No swearing in vantage names!"
 		end
 	end

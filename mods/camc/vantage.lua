@@ -39,6 +39,9 @@ function camc.add_vantage_point(pname, vantage_name)
 		end
 	end
 	local block = get_nearest_cityblock(pos)
+	if not block then
+		return false, "A nearby city block is required."
+	end
 	local overwrite = ""
 	if block.vantage then
 		overwrite = " Existing vantage replaced."
@@ -61,6 +64,9 @@ function camc.remove_vantage_point(pname)
 		return false, "Can't get your position."
 	end
 	local block = get_nearest_cityblock(pos)
+	if not block then
+		return false, "A nearby city block is required."
+	end
 	if block.vantage then
 		block.vantage = nil
 		city_block:save()

@@ -28,7 +28,11 @@ function camc.set_following(pname, mode)
 	camc.FOLLOW_TARGET = pname or ""
 	camc.FOLLOW_MODE = mode or 0
 	if camc.FOLLOW_TARGET ~= "" then
-		return camc.periodic_follow_check()
+		local params = {random_key=math.random(1, 99999)}
+		camc.RANDOM_KEY = params.random_key
+		return camc.periodic_follow_check(params)
+	else
+		camc.RANDOM_KEY = 0
 	end
 end
 
@@ -78,6 +82,10 @@ end
 function camc.periodic_follow_check(params)
 	if not params then
 		params = {}
+	end
+	if (params.random_key or 1) ~= camc.RANDOM_KEY then
+		camc.system_response("MustTest", "Invalid follow chain.")
+		return
 	end
 
 	local delayafter = 0

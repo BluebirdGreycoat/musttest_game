@@ -10,6 +10,10 @@ camc.CAMERA_FOLLOW_DISTANCE = 20
 camc.CAMERA_ACTIVITY_CHECK_SECONDS = 60*2
 camc.VANTAGE_CITYBLOCK_DIST = 20
 
+-- This prevents multiple minetest.after() chains from running.
+-- This is the Red Green Show method.
+camc.RANDOM_KEY = camc.RANDOM_KEY or 0
+
 dofile(camc.modpath .. "/utils.lua")
 dofile(camc.modpath .. "/functions.lua")
 dofile(camc.modpath .. "/chatcmd.lua")

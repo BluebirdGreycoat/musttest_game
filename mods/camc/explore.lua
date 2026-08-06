@@ -45,6 +45,10 @@ function camc.periodic_explore_update(params)
 	if camc.EXPLORE_ACTIVE ~= 1 then
 		return
 	end
+	if (params.random_key or 1) ~= camc.RANDOM_KEY then
+		camc.system_response("MustTest", "Invalid explore chain.")
+		return
+	end
 
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
@@ -96,7 +100,9 @@ function camc.start_exploring(mode)
 	camc.EXPLORE_ACTIVE = 1
 	camc.EXPLORE_MODE = mode or 0
 	if old_active == 0 then
-		return camc.periodic_explore_update()
+		local params = {random_key=math.random(1, 99999)}
+		camc.RANDOM_KEY = params.random_key
+		return camc.periodic_explore_update(params)
 	end
 	return true
 end
@@ -104,6 +110,7 @@ end
 function camc.stop_exploring()
 	camc.EXPLORE_ACTIVE = 0
 	camc.EXPLORE_MODE = 0
+	camc.RANDOM_KEY = 0
 end
 
 function camc.is_exploring()

@@ -111,7 +111,7 @@ function camc.setup_overlay(player)
 
 	local id3 = player:hud_add({
 		type          = "text",
-		position      = {x = 0.5, y = 1},
+		position      = {x = 0.4, y = 1},
 		offset        = {x = 0, y = -padding_y},
 		text          = get_vantage_text(),
 		alignment     = {x = 0, y = -1},

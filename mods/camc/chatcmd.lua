@@ -108,6 +108,35 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Could not make camera explore.")
 		end,
 	},
+
+	overlay = {
+		params = "<status|enable|disable>",
+		description = "Enable, disable, or get the camera's overlay status.",
+		action = function(pname, param)
+			if param == "status" then
+				if camc.feed_overlay_status() then
+					camc.system_response(pname, "Camera overlay visible.")
+				else
+					camc.system_response(pname, "Camera overlay hidden.")
+				end
+				return
+			end
+
+			if param == "enable" then
+				camc.show_feed_overlay()
+				camc.system_response(pname, "Camera overlay visible.")
+				return
+			end
+
+			if param == "disable" then
+				camc.hide_feed_overlay()
+				camc.system_response(pname, "Camera overlay hidden.")
+				return
+			end
+
+			camc.system_error(pname, "Invalid command.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)

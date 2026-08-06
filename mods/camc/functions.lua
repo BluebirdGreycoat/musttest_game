@@ -1,4 +1,30 @@
 
+function camc.hide_feed_overlay()
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+	if pcam and camc.player_is_camera(pcam) then
+		pcam:hud_set_flags({
+			chat = false,
+		})
+	end
+end
+
+function camc.show_feed_overlay()
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+	if pcam and camc.player_is_camera(pcam) then
+		pcam:hud_set_flags({
+			chat = true,
+		})
+	end
+end
+
+function camc.feed_overlay_status()
+	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+	if pcam and camc.player_is_camera(pcam) then
+		local flags = pcam:hud_get_flags()
+		return flags.chat == true
+	end
+end
+
 local function hide_hud(player)
 	player:hud_set_flags({
 		hotbar = false,

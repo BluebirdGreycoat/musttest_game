@@ -32,7 +32,7 @@ function camc.setup_overlay(player)
 	local padding_x = 10 -- pixels from left edge
 	local padding_y = 10 -- pixels from bottom edge
 
-	local hud_id = player:hud_add({
+	local id1 = player:hud_add({
 		type          = "text",
 		position      = {x = 1, y = 1},
 		offset        = {x = -padding_x, y = -padding_y},
@@ -41,8 +41,20 @@ function camc.setup_overlay(player)
 		number        = 0xFFFFFF,
 	})
 
-	if hud_id then
-		tab.huds = {{id=hud_id}}
+	local id2 = player:hud_add({
+		type          = "text",
+		position      = {x = 0, y = 1},
+		offset        = {x = padding_x, y = -padding_y},
+		text          = get_infotext(),
+		alignment     = {x = 1, y = -1},
+		number        = 0xFFFFFF,
+	})
+
+	if id1 then
+		table.insert(tab.huds, {id=id1})
+	end
+	if id2 then
+		table.insert(tab.huds, {id=id2})
 	end
 end
 

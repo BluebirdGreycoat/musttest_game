@@ -29,8 +29,17 @@ function camc.remove_overlay(player)
 	camc.OVERLAYS[pname] = nil
 end
 
+function camc.update_overlay(player)
+	camc.system_response("MustTest", "Reloaded.")
+end
+
 function camc.on_mod_reload(modid)
 	if modid ~= "camc:core" then
 		return
+	end
+
+	local pref = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
+	if pref then
+		camc.update_overlay(pref)
 	end
 end

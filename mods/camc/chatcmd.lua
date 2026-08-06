@@ -21,6 +21,9 @@ local CHATCOMMANDS = {
 
 			if camc.is_exploring() then
 				camc.system_response(pname, "Hawkeye is touring. Has suitcase, will travel.")
+				if camc.EXPLORE_MODE == 1 then
+					camc.system_response(pname, "Currently touring vantages.")
+				end
 				return
 			end
 

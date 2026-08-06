@@ -66,6 +66,20 @@ function camc.periodic_explore_update(params)
 
 		-- Camera will remain where it is if this fails.
 		minetest.after(2, function() camc.look_at(pos, yaw, pitch) end)
+
+		-- Track how many sites we've visited during this run.
+		params.sites_visited = (params.sites_visited or 0) + 1
+
+		-- Occasionally toggle between explore and vantage touring.
+		if params.sites_visited and params.sites_visited > 0 then
+			if params.sites_visited % 20 == 0 then
+				if camc.EXPLORE_MODE == 0 then
+					camc.EXPLORE_MODE = 1
+				else
+					camc.EXPLORE_MODE = 0
+				end
+			end
+		end
 	end
 
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function()

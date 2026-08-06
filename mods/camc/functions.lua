@@ -106,14 +106,15 @@ function camc.check_camera_activity(params)
 					camc.stop_exploring()
 
 					local rplayers = camc.get_regular_players()
+					local mode = math.random(0, 1)
 
 					-- Haunt players if there's at least 3 of them, otherwise explore.
 					if #rplayers >= 3 then
 						if not camc.start_haunting() then
-							camc.start_exploring()
+							camc.start_exploring(mode)
 						end
 					else
-						if not camc.start_exploring() then
+						if not camc.start_exploring(mode) then
 							camc.start_haunting()
 						end
 					end

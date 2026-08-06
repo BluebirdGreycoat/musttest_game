@@ -78,9 +78,13 @@ function camc.start_exploring(mode)
 	if camc.EXPLORE_ACTIVE == 1 and camc.EXPLORE_MODE == (mode or 0) then
 		return true
 	end
+	local old_active = camc.EXPLORE_ACTIVE
 	camc.EXPLORE_ACTIVE = 1
 	camc.EXPLORE_MODE = mode or 0
-	return camc.periodic_explore_update()
+	if old_active == 0 then
+		return camc.periodic_explore_update()
+	end
+	return true
 end
 
 function camc.stop_exploring()

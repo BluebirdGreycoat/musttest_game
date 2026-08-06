@@ -98,10 +98,14 @@ local CHATCOMMANDS = {
 	},
 
 	explore = {
-		params = "",
+		params = "[vantage]",
 		description = "Make the Hawkcam explore developed areas.",
 		action = function(pname, param)
-			if camc.start_exploring() then
+			local mode = 0
+			if param:lower() == "vantage" then
+				mode = 1
+			end
+			if camc.start_exploring(mode) then
 				camc.system_response(pname, ("Camera is now exploring."))
 				return
 			end

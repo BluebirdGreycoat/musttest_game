@@ -91,9 +91,22 @@ function camc.setup_overlay(player)
 		number        = 0xFFFFFF,
 	})
 
+	local id3 = player:hud_add({
+		type          = "text",
+		position      = {x = 0.5, y = 1},
+		offset        = {x = 0, y = -padding_y},
+		text          = "ENYEKALA",
+		alignment     = {x = 0, y = -1},
+		number        = 0xE0C47C,
+	})
+
 	if id1 and id2 then
 		table.insert(tab.huds, {id=id1})
 		table.insert(tab.huds, {id=id2})
+	end
+
+	if id3 then
+		table.insert(tab.huds, {id=id3})
 	end
 end
 

@@ -14,6 +14,7 @@ dofile(camc.modpath .. "/functions.lua")
 dofile(camc.modpath .. "/chatcmd.lua")
 dofile(camc.modpath .. "/follow.lua")
 dofile(camc.modpath .. "/explore.lua")
+dofile(camc.modpath .. "/overlay.lua")
 
 if not camc.run_once then
 	camc.run_once = true

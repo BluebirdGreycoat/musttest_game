@@ -5,6 +5,7 @@ function camc.hide_feed_overlay()
 		pcam:hud_set_flags({
 			chat = false,
 		})
+		camc.hide_overlay(pcam)
 	end
 end
 
@@ -14,6 +15,7 @@ function camc.show_feed_overlay()
 		pcam:hud_set_flags({
 			chat = true,
 		})
+		camc.show_overlay(pcam)
 	end
 end
 
@@ -25,6 +27,7 @@ function camc.feed_overlay_status()
 	end
 end
 
+-- Hide everything on login (except chat).
 local function hide_hud(player)
 	player:hud_set_flags({
 		hotbar = false,
@@ -57,6 +60,8 @@ function camc.on_joinplayer(player)
 				camc.start_exploring()
 			end
 		end)
+
+		camc.setup_overlay(player)
 	end
 end
 
@@ -64,6 +69,8 @@ function camc.on_leaveplayer(player)
 	-- Bruh. I can't remember why I did this?
 	--camc.set_following(nil)
 	--camc.stop_exploring()
+
+	camc.remove_overlay(player)
 end
 
 function camc.player_is_camera(player_or_name)

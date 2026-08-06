@@ -76,7 +76,7 @@ function camc.set_overlay_vantage_text(data)
 	if data and data.name and data.name ~= "" then
 		local t
 		if data.owner then
-			t = ('%s by %s'):format(data.name, rename.gpn(data.owner))
+			t = ('%s (%s)'):format(data.name, rename.gpn(data.owner))
 		else
 			t = ('%s'):format(data.name)
 		end

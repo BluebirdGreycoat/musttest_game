@@ -1,5 +1,6 @@
 
 camc.OVERLAYS = camc.OVERLAYS or {}
+camc.UPTIME_START = camc.UPTIME_START or os.time()
 
 local WEBADDR = minetest.settings:get("server_address")
 local WEBPORT = minetest.settings:get("port")

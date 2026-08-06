@@ -12,8 +12,8 @@ function camc.setup_overlay(player)
 		tab.hud1 = nil
 	end
 
-	local padding_x = 10   -- pixels from left edge
-	local padding_y = 10   -- pixels from bottom edge
+	local padding_x = 0   -- pixels from left edge
+	local padding_y = 0   -- pixels from bottom edge
 
 	local hud_id = player:hud_add({
 		type          = "text",

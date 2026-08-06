@@ -21,6 +21,16 @@ local function get_random_spot()
 				valid[#valid + 1] = {pos=b.pos}
 			end
 		end
+	elseif camc.EXPLORE_MODE == 1 then
+		for k = 1, #blocks, 1 do
+			local b = blocks[k]
+			if b.vantage then
+				local v = b.vantage
+				if v.pos and v.yaw and v.pitch then
+					valid[#valid + 1] = {pos=v.pos, yaw=v.yaw, pitch=v.pitch}
+				end
+			end
+		end
 	end
 
 	if #valid > 0 then
@@ -55,7 +65,7 @@ function camc.periodic_explore_update(params)
 		camc.send_region_to_player(pcam, minp, maxp)
 
 		-- Camera will remain where it is if this fails.
-		minetest.after(2, function() camc.look_at(pos) end)
+		minetest.after(2, function() camc.look_at(pos, yaw, pitch) end)
 	end
 
 	minetest.after(camc.RANDOM_EXPLORE_TIME_SECONDS, function()
@@ -65,7 +75,7 @@ function camc.periodic_explore_update(params)
 end
 
 function camc.start_exploring(mode)
-	if camc.EXPLORE_ACTIVE == 1 then
+	if camc.EXPLORE_ACTIVE == 1 and camc.EXPLORE_MODE == (mode or 0) then
 		return true
 	end
 	camc.EXPLORE_ACTIVE = 1
@@ -75,6 +85,7 @@ end
 
 function camc.stop_exploring()
 	camc.EXPLORE_ACTIVE = 0
+	camc.EXPLORE_MODE = 0
 end
 
 function camc.is_exploring()

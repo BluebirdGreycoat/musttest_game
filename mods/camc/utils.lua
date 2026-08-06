@@ -102,7 +102,7 @@ local function calc_look_at(player_pos, randomize)
 	return cam_pos, yaw, pitch
 end
 
-function camc.look_at(target)
+function camc.look_at(target, want_yaw, want_pitch)
 	local pcam = minetest.get_player_by_name(camc.HAWKCAM_PLAYER)
 	if not pcam then
 		return
@@ -139,7 +139,14 @@ function camc.look_at(target)
 		return
 	end
 
-	local cam_pos, yaw, pitch = calc_look_at(target_p)
+	local cam_pos, yaw, pitch
+	if type(target) == "table" and want_yaw and want_pitch then
+		cam_pos = target_p
+		yaw = want_yaw
+		pitch = want_pitch
+	else
+		cam_pos, yaw, pitch = calc_look_at(target_p)
+	end
 
 	local function head_pos(cam_pos)
 		return vector.add(cam_pos, {x=0, y=1.7, z=0})

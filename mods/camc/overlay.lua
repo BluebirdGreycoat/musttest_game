@@ -23,6 +23,16 @@ local function get_infotext_1()
 	return infotext
 end
 
+local function format_uptime(start_ts, end_ts)
+	local seconds = math.max(0, math.floor(end_ts - start_ts))
+
+	local h = math.floor(seconds / 3600)
+	local m = math.floor((seconds % 3600) / 60)
+	local s = seconds % 60
+
+	return string.format("%02d:%02d:%02d", h, m, s)
+end
+
 -- Dynamic information that needs updating.
 local function get_infotext_2()
 	local players = minetest.get_connected_players()
@@ -35,9 +45,9 @@ local function get_infotext_2()
 			end
 		end
 	end
-	local timestamp = os.time() - camc.UPTIME_START
+	local timestamp = format_uptime(camc.UPTIME_START, os.time())
 	local infotext = ("Players: %s\nUptime: %s"):format(
-		tostring(num_players), tostring(os.date("%H:%M:%S", timestamp))
+		tostring(num_players), tostring(timestamp)
 	)
 	return infotext
 end

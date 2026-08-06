@@ -35,8 +35,9 @@ function camc.on_joinplayer(player)
 end
 
 function camc.on_leaveplayer(player)
-	camc.set_following(nil)
-	camc.stop_exploring()
+	-- Bruh. I can't remember why I did this?
+	--camc.set_following(nil)
+	--camc.stop_exploring()
 end
 
 function camc.player_is_camera(player_or_name)

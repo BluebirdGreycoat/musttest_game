@@ -15,6 +15,7 @@ dofile(camc.modpath .. "/chatcmd.lua")
 dofile(camc.modpath .. "/follow.lua")
 dofile(camc.modpath .. "/explore.lua")
 dofile(camc.modpath .. "/overlay.lua")
+dofile(camc.modpath .. "/vantage.lua")
 
 reload.register_callback("on_mod_reload", "camc", function(...)
 	camc.on_mod_reload(...)

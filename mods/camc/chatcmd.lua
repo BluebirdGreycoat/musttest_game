@@ -139,6 +139,36 @@ local CHATCOMMANDS = {
 			camc.system_error(pname, "Invalid command.")
 		end,
 	},
+
+	vantage = {
+		params = "<add|del> [name]",
+		description = "Add or remove a scenic vantage point.",
+		action = function(pname, param)
+			local tokens = param:split(" ")
+			local verb = (tokens[1] or ""):lower()
+
+			if verb == "add" then
+				local vantage_name = tokens[2] or nil
+				if camc.add_vantage_point(pname, vantage_name) then
+					camc.system_response(pname, "Added vantage point.")
+				else
+					camc.system_error(pname, "Failed to add vantage point.")
+				end
+				return
+			end
+
+			if verb == "del" then
+				if camc.remove_vantage_point(pname) then
+					camc.system_response(pname, "Removed vantage point.")
+				else
+					camc.system_error(pname, "Failed to remove vantage point.")
+				end
+				return
+			end
+
+			camc.system_error(pname, "Invalid command.")
+		end,
+	},
 }
 
 function camc.on_chatcommand(pname, param)

@@ -9,6 +9,7 @@ camc.RANDOM_EXPLORE_TIME_SECONDS = 45
 camc.CAMERA_FOLLOW_DISTANCE = 20
 camc.CAMERA_ACTIVITY_CHECK_SECONDS = 60*2
 camc.VANTAGE_CITYBLOCK_DIST = 20
+camc.COMMAND_SPAM_TIMEOUT_SECONDS = 15
 
 -- This prevents multiple minetest.after() chains from running.
 -- This is the Red Green Show method.

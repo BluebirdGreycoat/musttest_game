@@ -211,7 +211,7 @@ function camc.on_chatcommand(pname, param)
 			local pinfo = camc.PLAYER_RATE_LIMITS[pname] or {}
 			local last_time = pinfo.time
 			local next_time = os.time()
-			local D = 30
+			local D = camc.COMMAND_SPAM_TIMEOUT_SECONDS
 
 			if last_time then
 				local future_time = last_time + D

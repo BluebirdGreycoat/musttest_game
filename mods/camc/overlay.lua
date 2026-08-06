@@ -1,6 +1,7 @@
 
 camc.OVERLAYS = camc.OVERLAYS or {}
 camc.UPTIME_START = camc.UPTIME_START or os.time()
+camc.MAX_SEEN_PLAYERS = camc.MAX_SEEN_PLAYERS or 0
 
 local WEBADDR = minetest.settings:get("server_address")
 local WEBPORT = minetest.settings:get("port")
@@ -37,6 +38,7 @@ end
 local function get_infotext_2()
 	local players = minetest.get_connected_players()
 	local num_players = 0
+
 	for k, v in ipairs(players) do
 		local pname = v:get_player_name()
 		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
@@ -45,9 +47,16 @@ local function get_infotext_2()
 			end
 		end
 	end
-	local timestamp = format_uptime(camc.UPTIME_START, os.time())
-	local infotext = ("Players: %s\nUptime: %s"):format(
-		tostring(num_players), tostring(timestamp)
+
+	if num_players > camc.MAX_SEEN_PLAYERS then
+		camc.MAX_SEEN_PLAYERS = num_players
+	end
+
+	local max_players = camc.MAX_SEEN_PLAYERS
+	local uptime_str = format_uptime(camc.UPTIME_START, os.time())
+
+	local infotext = ("Players: %d / %d\nUptime: %s"):format(
+		num_players, max_players, uptime_str
 	)
 	return infotext
 end

@@ -82,6 +82,10 @@ end
 
 screwdriver.rotate.colorwallmounted = screwdriver.rotate.wallmounted
 
+function screwdriver.handle_xp(pname, pos)
+	xp.add_xp(pname, "buildxp", xp.XP_RATES.BUILDXP_SCREWDRIVER)
+end
+
 -- Handles rotation
 screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 	if pointed_thing.type ~= "node" then
@@ -135,7 +139,8 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		node.param2 = new_param2
 		minetest.swap_node(pos, node)
 		minetest.check_for_falling(pos)
-		xp.add_xp(pname, "buildxp", xp.XP_RATES.BUILDXP_SCREWDRIVER)
+
+		screwdriver.handle_xp(pname, pos)
 	end
 
 	local sound = "default_place_node_hard"

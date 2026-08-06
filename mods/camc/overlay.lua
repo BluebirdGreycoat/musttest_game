@@ -22,8 +22,18 @@ local function get_infotext_1()
 end
 
 local function get_infotext_2()
-	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
-		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
+	local players = minetest.get_connected_players()
+	local num_players = 0
+	for k, v in ipairs(players) do
+		local pname = v:get_player_name()
+		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
+			if not gdac_invis.is_invisible(pname) then
+				num_players = num_players + 1
+			end
+		end
+	end
+	local infotext = ("Players: %s"):format(
+		tostring(num_players)
 	)
 	return infotext
 end

@@ -112,8 +112,8 @@ function camc.update_overlay(pname)
 	end
 
 	if tab.huds then
-		local id1 = tab.huds[1]
-		local id2 = tab.huds[2]
+		local id1 = tab.huds[1].id
+		local id2 = tab.huds[2].id
 
 		if id1 and id2 then
 			pref:hud_change(id2, "text", get_infotext_2())

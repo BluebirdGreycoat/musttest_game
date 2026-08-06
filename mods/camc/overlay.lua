@@ -68,7 +68,7 @@ end
 
 function camc.set_overlay_vantage_text(data)
 	camc.CURRENT_VANTAGE_NAME = nil
-	if data and data.name then
+	if data and data.name and data.name ~= "" then
 		local t
 		if data.owner then
 			t = ('%s by %s'):format(data.name, rename.gpn(data.owner))

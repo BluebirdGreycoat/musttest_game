@@ -14,6 +14,13 @@ local function delete_huds(player, tab)
 	end
 end
 
+local function get_infotext()
+	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
+		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
+	)
+	return infotext
+end
+
 function camc.setup_overlay(player)
 	local pname = player:get_player_name()
 	camc.OVERLAYS[pname] = camc.OVERLAYS[pname] or {}
@@ -22,19 +29,15 @@ function camc.setup_overlay(player)
 
 	delete_huds(player, tab)
 
-	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
-		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
-	)
-
 	local padding_x = 10 -- pixels from left edge
 	local padding_y = 10 -- pixels from bottom edge
 
 	local hud_id = player:hud_add({
 		type          = "text",
-		position      = {x = 0, y = 1},
+		position      = {x = 1, y = 1},
 		offset        = {x = padding_x, y = -padding_y},
-		text          = infotext,
-		alignment     = {x = 1, y = -1},
+		text          = get_infotext(),
+		alignment     = {x = -1, y = -1},
 		number        = 0xFFFFFF,
 	})
 

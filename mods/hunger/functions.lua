@@ -279,7 +279,7 @@ end
 
 
 
-local REQUIRE_EXISTS = false
+local REQUIRE_EXISTS = true
 
 -- That can't be a fun way to play the game, Carl.
 local function what_are_you_even_doing_carl(pos, pname, nname)

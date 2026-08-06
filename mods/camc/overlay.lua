@@ -28,6 +28,7 @@ function camc.setup_overlay(player)
 	local tab = camc.OVERLAYS[pname]
 
 	delete_huds(player, tab)
+	tab.huds = {}
 
 	local padding_x = 10 -- pixels from left edge
 	local padding_y = 10 -- pixels from bottom edge

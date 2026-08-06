@@ -27,13 +27,16 @@ local function name_ok(pname, title)
 	return true
 end
 
+-- Vantage name may be nil.
 function camc.add_vantage_point(pname, vantage_name)
 	local pos, yaw, pitch = get_player_pos(pname)
 	if not pos then
 		return
 	end
-	if not name_ok(vantage_name) then
-		return
+	if vantage_name and vantage_name ~= "" then
+		if not name_ok(vantage_name) then
+			return
+		end
 	end
 	local block = get_nearest_cityblock(pos)
 	block.vantage = {

@@ -162,7 +162,7 @@ function camc.on_chatcommand(pname, param)
 
 	local command = CHATCOMMANDS[verb]
 	if command.action then
-		if verb ~= "status" then
+		if verb ~= "status" and verb ~= "overlay" then
 			-- Establish baseline before executing new command.
 			camc.set_following(nil)
 			camc.stop_exploring()

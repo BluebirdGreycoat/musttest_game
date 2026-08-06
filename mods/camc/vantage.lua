@@ -65,7 +65,7 @@ function camc.remove_vantage_point(pname)
 	end
 	local block = get_nearest_cityblock(pos)
 	if not block then
-		return false, "A nearby city block is required."
+		return false, "No nearby city block."
 	end
 	if block.vantage then
 		block.vantage = nil

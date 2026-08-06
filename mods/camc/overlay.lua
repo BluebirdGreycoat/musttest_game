@@ -20,7 +20,7 @@ function camc.setup_overlay(player)
 		position      = {x = 0, y = 1},          -- bottom-left of screen
 		offset        = {x = padding_x, y = -padding_y},
 		text          = "Sample text",
-		alignment     = {x = 1, y = 1},         -- bottom-left corner of the text
+		alignment     = {x = 1, y = -1},         -- bottom-left corner of the text
 		number        = 0xFFFFFF,                -- white
 	})
 

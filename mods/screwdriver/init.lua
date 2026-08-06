@@ -1,10 +1,14 @@
-screwdriver = {}
+
+if not minetest.global_exists("screwdriver") then screwdriver = {} end
+screwdriver.modpath = minetest.get_modpath("screwdriver")
 
 screwdriver.ROTATE_FACE = 1
 screwdriver.ROTATE_AXIS = 2
+
 screwdriver.disallow = function(pos, node, user, mode, new_param2)
 	return false
 end
+
 screwdriver.rotate_simple = function(pos, node, user, mode, new_param2)
 	if mode ~= screwdriver.ROTATE_FACE then
 		return false
@@ -164,40 +168,48 @@ end
 
 
 
--- Screwdriver
-minetest.register_tool("screwdriver:screwdriver", {
-	description = "Screwdriver\n\nLeft-click rotates face around current axis of rotation.\nRight-click changes axis of rotation.",
-	inventory_image = "screwdriver.png",
-  sound = {breaks = "default_tool_breaks"},
+if not screwdriver.run_once then
+	screwdriver.run_once = true
 
-	on_use = function(itemstack, user, pointed_thing)
-		screwdriver.handler(itemstack, user, pointed_thing, screwdriver.ROTATE_FACE, 200)
-		return itemstack
-	end,
-	on_place = function(itemstack, user, pointed_thing)
-		screwdriver.handler(itemstack, user, pointed_thing, screwdriver.ROTATE_AXIS, 200)
-		return itemstack
-	end,
-})
+	local c = "screwdriver:core"
+	local f = screwdriver.modpath .. "/init.lua"
+	reload.register_file(c, f, false)
+
+	-- Screwdriver
+	minetest.register_tool("screwdriver:screwdriver", {
+		description = "Screwdriver\n\nLeft-click rotates face around current axis of rotation.\nRight-click changes axis of rotation.",
+		inventory_image = "screwdriver.png",
+		sound = {breaks = "default_tool_breaks"},
+
+		on_use = function(itemstack, user, pointed_thing)
+			screwdriver.handler(itemstack, user, pointed_thing, screwdriver.ROTATE_FACE, 200)
+			return itemstack
+		end,
+		on_place = function(itemstack, user, pointed_thing)
+			screwdriver.handler(itemstack, user, pointed_thing, screwdriver.ROTATE_AXIS, 200)
+			return itemstack
+		end,
+	})
 
 
-minetest.register_craft({
-	output = "screwdriver:screwdriver",
-	recipe = {
-		{"default:steel_ingot"},
-		{"group:stick"}
-	}
-})
+	minetest.register_craft({
+		output = "screwdriver:screwdriver",
+		recipe = {
+			{"default:steel_ingot"},
+			{"group:stick"}
+		}
+	})
 
-minetest.register_craft({
-	output = "screwdriver:screwdriver",
-	recipe = {
-		{"moreores:tin_ingot"},
-		{"group:stick"}
-	}
-})
+	minetest.register_craft({
+		output = "screwdriver:screwdriver",
+		recipe = {
+			{"moreores:tin_ingot"},
+			{"group:stick"}
+		}
+	})
 
-minetest.register_alias("screwdriver:screwdriver1", "screwdriver:screwdriver")
-minetest.register_alias("screwdriver:screwdriver2", "screwdriver:screwdriver")
-minetest.register_alias("screwdriver:screwdriver3", "screwdriver:screwdriver")
-minetest.register_alias("screwdriver:screwdriver4", "screwdriver:screwdriver")
+	minetest.register_alias("screwdriver:screwdriver1", "screwdriver:screwdriver")
+	minetest.register_alias("screwdriver:screwdriver2", "screwdriver:screwdriver")
+	minetest.register_alias("screwdriver:screwdriver3", "screwdriver:screwdriver")
+	minetest.register_alias("screwdriver:screwdriver4", "screwdriver:screwdriver")
+end

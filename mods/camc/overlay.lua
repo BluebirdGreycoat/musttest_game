@@ -35,7 +35,7 @@ function camc.setup_overlay(player)
 	local hud_id = player:hud_add({
 		type          = "text",
 		position      = {x = 1, y = 1},
-		offset        = {x = padding_x, y = -padding_y},
+		offset        = {x = -padding_x, y = -padding_y},
 		text          = get_infotext(),
 		alignment     = {x = -1, y = -1},
 		number        = 0xFFFFFF,

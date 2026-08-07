@@ -244,9 +244,7 @@ function camc.on_chatcommand(pname, param)
 
 		if command.digxp_cost then
 			local amount = xp.get_xp(pname, "digxp")
-			if amount >= command.digxp_cost then
-				xp.subtract_xp(pname, "digxp", command.digxp_cost)
-			else
+			if amount < command.digxp_cost then
 				camc.system_error(pname, "You don't have enough DIG.XP to run this command.")
 				return
 			end
@@ -254,13 +252,14 @@ function camc.on_chatcommand(pname, param)
 
 		if command.buildxp_cost then
 			local amount = xp.get_xp(pname, "buildxp")
-			if amount >= command.buildxp_cost then
-				xp.subtract_xp(pname, "buildxp", command.buildxp_cost)
-			else
+			if amount < command.buildxp_cost then
 				camc.system_error(pname, "You don't have enough BUILD.XP to run this command.")
 				return
 			end
 		end
+
+		xp.subtract_xp(pname, "digxp", command.digxp_cost or 0)
+		xp.subtract_xp(pname, "buildxp", command.buildxp_cost or 0)
 
 		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), param))
 		command.action(pname, param:sub(verb:len() + 2):trim())

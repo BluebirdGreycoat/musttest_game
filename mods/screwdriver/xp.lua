@@ -61,6 +61,7 @@ function screwdriver.reward_xp(pname, pref, npos, xp_reward)
 
 	if pdata.streak > MAX_STREAK then
 		pdata.cooldown = os.time() + XP_COOLDOWN
+		pdata.streak = 0
 		return
 	end
 

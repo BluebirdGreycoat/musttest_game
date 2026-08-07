@@ -15,21 +15,31 @@ function screwdriver.handle_xp(pname, pref, npos, xp_reward)
 		prefpos = {},
 	}
 
+	local v_equals = vector.equals
 	local ppos = vector.round(pref:get_pos())
 	local tnow = os.time()
 
+	local same_node = false
+	local same_pos = false
+
 	for k = 1, #pdata.nodepos do
 		local i = pdata.nodepos[k]
-		if vector.equals(i.pos, npos) and (i.time + TIME_WINDOW) > tnow then
-			return
+		if v_equals(i.pos, npos) and (i.time + TIME_WINDOW) > tnow then
+			same_node = true
+			break
 		end
 	end
 
 	for k = 1, #pdata.prefpos do
 		local i = pdata.prefpos[k]
-		if vector.equals(i.pos, ppos) and (i.time + TIME_WINDOW) > tnow then
-			return
+		if v_equals(i.pos, ppos) and (i.time + TIME_WINDOW) > tnow then
+			same_pos = true
+			break
 		end
+	end
+
+	if same_node and same_pos then
+		return
 	end
 
 	-- Grant XP only if player and node position is different.

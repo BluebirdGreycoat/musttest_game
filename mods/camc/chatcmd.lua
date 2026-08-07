@@ -91,6 +91,18 @@ local CHATCOMMANDS = {
 		end,
 	},
 
+	followme = {
+		params = "",
+		description = "Have camera follow you.",
+		action = function(pname, param)
+			if camc.follow_player(pname) then
+				camc.system_response(pname, ("The camera is now following you."))
+				return
+			end
+			camc.system_error(pname, "Could not make camera follow.")
+		end,
+	},
+
 	haunt = {
 		params = "",
 		description = "Have camera follow random players, changing periodically.",

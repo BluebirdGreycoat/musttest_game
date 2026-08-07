@@ -277,4 +277,11 @@ function camc.on_show_help(pname)
 		local desc = def.description or "No description provided."
 		camc.system_response(pname, "    /hawkeye " .. verb .. args .. desc)
 	end
+
+	local lines = {
+		"Certain commands require XP to use.",
+	}
+	for k, v in ipairs(lines) do
+		camc.system_response(pname, v)
+	end
 end

@@ -40,6 +40,7 @@ local CHATCOMMANDS = {
 	snap = {
 		params = "[target]",
 		description = "Position camera facing your current look direction, or target's.",
+		digxp_cost = 50,
 		action = function(pname, param)
 			local target = pname
 			local pref = minetest.get_player_by_name(param)
@@ -57,6 +58,7 @@ local CHATCOMMANDS = {
 	lookat = {
 		params = "[target]",
 		description = "Position camera looking at you, or someone else.",
+		digxp_cost = 50,
 		action = function(pname, param)
 			local target = pname
 			local pref = minetest.get_player_by_name(param)
@@ -74,6 +76,7 @@ local CHATCOMMANDS = {
 	follow = {
 		params = "[target]",
 		description = "Have camera follow you, or someone else.",
+		digxp_cost = 100,
 		action = function(pname, param)
 			local target = pname
 			local pref = minetest.get_player_by_name(param)
@@ -150,6 +153,7 @@ local CHATCOMMANDS = {
 	vantage = {
 		params = "<add [name]|del>",
 		description = "Add or remove scenic vantage points.",
+		buildxp_cost = 100,
 		action = function(pname, param)
 			local tokens = param:split(" ")
 			local verb = (tokens[1] or ""):lower()
@@ -224,6 +228,26 @@ function camc.on_chatcommand(pname, param)
 
 			pinfo.time = next_time
 			camc.PLAYER_RATE_LIMITS[pname] = pinfo
+		end
+
+		if command.digxp_cost then
+			local amount = xp.get_xp(pname, "digxp")
+			if amount >= command.digxp_cost then
+				xp.subtract_xp(pname, "digxp", command.digxp_cost)
+			else
+				camc.system_error(pname, "You don't have enough DIG.XP to run this command.")
+				return
+			end
+		end
+
+		if command.buildxp_cost then
+			local amount = xp.get_xp(pname, "buildxp")
+			if amount >= command.buildxp_cost then
+				xp.subtract_xp(pname, "buildxp", command.buildxp_cost)
+			else
+				camc.system_error(pname, "You don't have enough BUILD.XP to run this command.")
+				return
+			end
 		end
 
 		camc.system_response("MustTest", ("<%s> executes /hawkeye %s."):format(rename.gpn(pname), param))

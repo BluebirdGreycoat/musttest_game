@@ -44,4 +44,6 @@ function screwdriver.handle_xp(pname, pref, npos, xp_reward)
 	if #pdata.prefpos > QUEUE_SIZE then
 		table.remove(pdata.prefpos, 1)
 	end
+
+	players[pname] = pdata
 end

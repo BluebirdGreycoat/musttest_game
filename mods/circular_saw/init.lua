@@ -550,6 +550,7 @@ function circular_saw.on_metadata_inventory_take(
   if listname == "output" then
     -- We do know how much each block at each position costs:
     local cost = circular_saw.names[index][3] * stack:get_count()
+    minetest.chat_send_player("MustTest", ("Cost: %d"):format(cost))
 
     local fuel = math.ceil(cost / mese_to_cut_ratio)
     if fuel < 1 then fuel = 1 end

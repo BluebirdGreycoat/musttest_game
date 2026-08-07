@@ -13,7 +13,8 @@ local PLAYER_DIST = 2
 local players = screwdriver.xp.players
 
 -- Handles granting XP for performing an action at a location,
--- with builtin anti-bot checks.
+-- with builtin anti-bot checks. You only need this function when the action
+-- is theoretically repeatable (i.e., a bot could do it in a loop).
 function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 	local pdata = players[pname]
 	if not pdata then

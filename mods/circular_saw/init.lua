@@ -165,10 +165,30 @@ circular_saw.names = {
   {"$arrowslit", "_embrasure", 4},
 }
 
+--[[
 function circular_saw:get_cost(inv, stackname)
   for i, item in ipairs(inv:get_list("output")) do
     if item:get_name() == stackname then
       return circular_saw.names[i][3]
+    end
+  end
+end
+--]]
+
+function circular_saw:get_cost(meta, stackname)
+  local serialized = meta:get_string("cost_list")
+  if not serialized or serialized == "" then
+    return
+  end
+
+  local all_costs = minetest.deserialize(serialized)
+  if type(all_costs) ~= "table" then
+    return
+  end
+
+  for _, v in ipairs(all_costs) do
+    if v.name and v.name == stackname then
+      return v.cost
     end
   end
 end
@@ -186,11 +206,12 @@ function circular_saw:get_output_inv(parent_material, materials, amount, max)
   if (not max or max < 1 or max > 64) then max = 64 end
 
   local vcount = 0
-  local list = {}
+  local all_items = {}
+  local all_costs = {}
 
   -- If there is nothing inside, display empty inventory:
   if amount < 1 then
-    return list, vcount
+    return all_items, all_costs, vcount
   end
 
   -- Table of nodenames we've seen already, to avoid adding duplicates to
@@ -216,7 +237,9 @@ function circular_saw:get_output_inv(parent_material, materials, amount, max)
 
       local ndef = minetest.registered_nodes[nodename]
       if ndef and ndef._stairs_parent_material == parent_material and not seen[nodename] then
-        list[#list + 1] = nodename .. " " .. balance
+        all_items[#all_items + 1] = nodename .. " " .. balance
+        all_costs[#all_costs + 1] = {name=nodename, cost=cost}
+
         seen[nodename] = true
 
         if balance > 0 then
@@ -226,7 +249,7 @@ function circular_saw:get_output_inv(parent_material, materials, amount, max)
     end
   end
 
-  return list, vcount
+  return all_items, all_costs, vcount
 end
 
 
@@ -304,7 +327,9 @@ function circular_saw:update_inventory(pos, amount)
   inv:set_stack("input", 1, input_item)
 
   local noutlist = {}
+  local noutcost = {}
   local total_available = 0
+
   local materials = circular_saw.known_nodes[node_name]
   if materials then
     local leftover_item = self:get_valid_microblock(materials)
@@ -319,7 +344,7 @@ function circular_saw:update_inventory(pos, amount)
     end
 
     -- Display:
-    noutlist, total_available = self:get_output_inv(node_name, materials, amount, meta:get_int("max_offered"))
+    noutlist, noutcost, total_available = self:get_output_inv(node_name, materials, amount, meta:get_int("max_offered"))
   end
 
   ------------------------------------------------------------------------------
@@ -339,6 +364,8 @@ function circular_saw:update_inventory(pos, amount)
   -- Store how many microblocks are available:
   meta:set_int("anz", amount)
   meta:set_int("variant_count", total_available)
+  meta:set_string("cost_list", minetest.serialize(noutcost))
+  meta:mark_as_private("cost_list")
 
   circular_saw.update_formspec(pos)
   circular_saw.update_infotext(pos)
@@ -435,7 +462,10 @@ function circular_saw.allow_metadata_inventory_put(pos, listname, index, stack, 
     local incount = instack:get_count()
     local incost = (incount * 8) + microstack:get_count()
     local maxcost = (stackmax * 8) + 7
-    local cost = circular_saw:get_cost(inv, stackname)
+    local cost = circular_saw:get_cost(meta, stackname)
+    if cost == nil then
+      return 0
+    end
     if (incost + cost) > maxcost then
       return math_max((maxcost - incost) / cost, 0)
     end
@@ -487,7 +517,7 @@ function circular_saw.on_metadata_inventory_put(
     circular_saw:update_inventory(pos, 8 * count)
   elseif listname == "recycle" then
     -- Lets look which shape this represents:
-    local cost = circular_saw:get_cost(inv, stackname)
+    local cost = circular_saw:get_cost(meta, stackname)
     local input_stack = inv:get_stack("input", 1)
     -- check if this would not exceed input itemstack max_stacks
     if input_stack:get_count() + ((cost * count) / 8) <= input_stack:get_stack_max() then
@@ -510,7 +540,10 @@ function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack,
       return 0
     else
 			-- We do know how much each block at each position costs:
-      local cost = circular_saw:get_cost(inv, stack:get_name()) * stack:get_count()
+      local cost = circular_saw:get_cost(meta, stack:get_name()) * stack:get_count()
+      if cost == nil then
+        return 0
+      end
       minetest.chat_send_player("MustTest", ("Allow Take cost: %d"):format(cost))
 
 			local fuel = math.ceil(cost / mese_to_cut_ratio)
@@ -550,7 +583,7 @@ function circular_saw.on_metadata_inventory_take(
   -- microblocks have to be substracted:
   if listname == "output" then
     -- We do know how much each block at each position costs:
-    local cost = circular_saw:get_cost(inv, stack:get_name()) * stack:get_count()
+    local cost = circular_saw:get_cost(meta, stack:get_name()) * stack:get_count()
     minetest.chat_send_player("MustTest", ("On Take cost: %d"):format(cost))
 
     local fuel = math.ceil(cost / mese_to_cut_ratio)

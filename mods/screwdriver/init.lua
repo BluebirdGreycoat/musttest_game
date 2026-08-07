@@ -138,7 +138,7 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		minetest.swap_node(pos, node)
 		minetest.check_for_falling(pos)
 
-		screwdriver.reward_xp(pname, user, pos, xp.XP_RATES.BUILDXP_SCREWDRIVER)
+		screwdriver.reward_xp(pname, user, pos, "buildxp", xp.XP_RATES.BUILDXP_SCREWDRIVER)
 	end
 
 	local sound = "default_place_node_hard"

@@ -14,24 +14,20 @@ local players = screwdriver.xp.players
 -- Handles granting XP for performing an action at a location,
 -- with builtin anti-bot checks.
 function screwdriver.reward_xp(pname, pref, npos, xp_reward)
-	local pdata = players[pname] or {
-		nodepos = {},
-		prefpos = {},
-		streak = 0,
-		cooldown = 0,
-	}
-	if not pdata.streak or not pdata.cooldown then
-		pdata.streak = 0
-		pdata.cooldown = 0
+	local pdata = players[pname]
+	if not pdata then
+		pdata = {
+			nodepos = {},
+			prefpos = {},
+			streak = 0,
+			cooldown = 0,
+		}
+		players[pname] = pdata
 	end
 
 	local v_equals = vector.equals
 	local ppos = vector.round(pref:get_pos())
 	local tnow = os.time()
-
-	if pdata.cooldown > tnow then
-		return
-	end
 
 	local same_node = false
 	local same_pos = false
@@ -62,6 +58,9 @@ function screwdriver.reward_xp(pname, pref, npos, xp_reward)
 	if pdata.streak > MAX_STREAK then
 		pdata.cooldown = os.time() + XP_COOLDOWN
 		pdata.streak = 0
+	end
+
+	if pdata.cooldown > tnow then
 		return
 	end
 
@@ -77,6 +76,4 @@ function screwdriver.reward_xp(pname, pref, npos, xp_reward)
 	if #pdata.prefpos > QUEUE_SIZE then
 		table.remove(pdata.prefpos, 1)
 	end
-
-	players[pname] = pdata
 end

@@ -306,11 +306,16 @@ local function what_are_you_even_doing_carl(pos, pname, nname)
 		return
 	end
 
-	local bxp = get_buildxp_for(nname)
-	xp.add_xp(pname, "buildxp", bxp)
+	local pref = minetest.get_player_by_name(pname)
+	if not pref then
+		return
+	end
 
-	-- Building causes loss in digxp.
-	xp.subtract_xp(pname, "digxp", bxp)
+	local bxp = get_buildxp_for(nname)
+	if screwdriver.reward_xp(pname, pref, pos, "buildxp", bxp) then
+		-- Building causes loss in digxp.
+		xp.subtract_xp(pname, "digxp", bxp)
+	end
 end
 
 -- Placenode event.

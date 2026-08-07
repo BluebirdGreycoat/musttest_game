@@ -82,4 +82,7 @@ function screwdriver.reward_xp(pname, pref, npos, xp_type, xp_reward)
 	if #pdata.prefpos > QUEUE_SIZE then
 		table.remove(pdata.prefpos, 1)
 	end
+
+	-- XP awarded.
+	return true
 end

@@ -279,6 +279,7 @@ function camc.on_show_help(pname)
 	end
 
 	local lines = {
+		"Only citizens can control the Hawkcam.",
 		"Certain commands require XP to use.",
 	}
 	for k, v in ipairs(lines) do

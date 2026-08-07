@@ -4,11 +4,6 @@ local vector_round = vector.round
 local math_floor = math.floor
 local math_min = math.min
 
--- Gains in buildxp from building. The same amount is lost from digxp.
-local BUILDXP_STAIRS = xp.XP_RATES.BUILDXP_PLACE_STAIRS
-local BUILDXP_BRICKS = xp.XP_RATES.BUILDXP_PLACE_BRICKS
-local BUILDXP_DEFAULT = xp.XP_RATES.BUILDXP_PLACE_DEFAULT
-
 
 
 function hunger.on_joinplayer(player)
@@ -272,13 +267,13 @@ local function get_buildxp_for(nodename)
 
 	if ndef then
 		if ndef._stairs_parent_material then
-			return BUILDXP_STAIRS
+			return xp.XP_RATES.BUILDXP_PLACE_STAIRS
 		end
 
 		for k = 1, #BRICK_NAMES do
 			local name = BRICK_NAMES[k]
 			if nodename:find(name) then
-				return BUILDXP_BRICKS
+				return xp.XP_RATES.BUILDXP_PLACE_BRICKS
 			end
 		end
 
@@ -290,7 +285,7 @@ local function get_buildxp_for(nodename)
 		end
 	end
 
-	return BUILDXP_DEFAULT
+	return xp.XP_RATES.BUILDXP_PLACE_DEFAULT
 end
 
 

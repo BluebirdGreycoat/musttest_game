@@ -66,7 +66,8 @@ local function get_vantage_text()
 	local text = camc.CURRENT_VANTAGE_NAME or "ENYEKALA"
 	local align = 0.5
 	if camc.CURRENT_VANTAGE_NAME then
-		align = 0.4
+		--align = 0.4
+		align = 0.5
 	end
 	return text, align
 end
@@ -75,11 +76,13 @@ function camc.set_overlay_vantage_text(data)
 	camc.CURRENT_VANTAGE_NAME = nil
 	if data and data.name and data.name ~= "" then
 		local t
-		if data.owner then
-			t = ('%s (%s)'):format(data.name, rename.gpn(data.owner))
-		else
+		-- This makes it look as though the subject of the frame is being attributed
+		-- to the vantage owner, but that's not necessarilly the case.
+		--if data.owner then
+		--	t = ('%s (%s)'):format(data.name, rename.gpn(data.owner))
+		--else
 			t = ('%s'):format(data.name)
-		end
+		--end
 		camc.CURRENT_VANTAGE_NAME = t
 	end
 end

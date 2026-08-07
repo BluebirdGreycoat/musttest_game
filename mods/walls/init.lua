@@ -1,19 +1,58 @@
 
 walls = {}
 
+local register_node = function(name, def)
+	local ndef = table.copy(def)
+	stairs.setup_nodedef_callbacks(name, ndef)
+	minetest.register_node(name, ndef)
+end
 
-
-walls.register = function(
-		wall_name, wall_desc, wall_texture, wall_mat, wall_sounds,
-			additional_params)
+function walls.register_castle(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
 	additional_params = additional_params or {}
+	circular_saw.register_node(wall_mat, wall_name)
 
-	local register_node = function(name, def)
-		local ndef = table.copy(def)
-		stairs.setup_nodedef_callbacks(name, ndef)
-		minetest.register_node(name, ndef)
-	end
+	register_node(":murderhole:" .. wall_name, {
+		drawtype = "nodebox",
+		description = wall_desc .. " Murderhole",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-8/16,-8/16,-8/16,-4/16,8/16,8/16},
+				{4/16,-8/16,-8/16,8/16,8/16,8/16},
+				{-4/16,-8/16,-8/16,4/16,8/16,-4/16},
+				{-4/16,-8/16,8/16,4/16,8/16,4/16},
+			},
+		},
+		_stairs_parent_material = wall_mat,
+	})
 
+	register_node(":machicolation:" .. wall_name, {
+		drawtype = "nodebox",
+		description = wall_desc .. " Machicolation",
+		tiles = { wall_texture },
+		groups = utility.dig_groups("wall"),
+		sounds = wall_sounds,
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, 0, -0.5, 0.5, 0.5, 0},
+				{-0.5, -0.5, 0, -0.25, 0.5, 0.5},
+				{0.25, -0.5, 0, 0.5, 0.5, 0.5},
+			},
+		},
+		_stairs_parent_material = wall_mat,
+	})
+end
+
+function walls.register_walls(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	additional_params = additional_params or {}
 	circular_saw.register_node(wall_mat, wall_name)
 
 	-- inventory node, and pole-type wall start item
@@ -104,8 +143,12 @@ walls.register = function(
 		},
 		_stairs_parent_material = wall_mat,
 	})
+end
 
-	-- pillars
+function walls.register_pillars(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	additional_params = additional_params or {}
+	circular_saw.register_node(wall_mat, wall_name)
+
 	register_node(":pillars:" .. wall_name .. "_bottom", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Pillar Base",
@@ -119,7 +162,7 @@ walls.register = function(
 			fixed = {
 				{-0.5,-0.5,-0.5,0.5,-0.375,0.5},
 				{-0.375,-0.375,-0.375,0.375,-0.125,0.375},
-				{-0.25,-0.125,-0.25,0.25,0.5,0.25}, 
+				{-0.25,-0.125,-0.25,0.25,0.5,0.25},
 			},
 		},
 		_stairs_parent_material = wall_mat,
@@ -143,7 +186,7 @@ walls.register = function(
 		},
 		_stairs_parent_material = wall_mat,
 	})
-	
+
 	register_node(":pillars:" .. wall_name .. "_top", {
 		drawtype = "nodebox",
 		description = wall_desc .. " Pillar Top",
@@ -155,8 +198,8 @@ walls.register = function(
 		node_box = {
 			type = "fixed",
 			fixed = {
-				{-0.5,0.3125,-0.5,0.5,0.5,0.5}, 
-				{-0.375,0.0625,-0.375,0.375,0.3125,0.375}, 
+				{-0.5,0.3125,-0.5,0.5,0.5,0.5},
+				{-0.375,0.0625,-0.375,0.375,0.3125,0.375},
 				{-0.25,-0.5,-0.25,0.25,0.0625,0.25},
 			},
 		},
@@ -257,53 +300,12 @@ walls.register = function(
 		},
 		_stairs_parent_material = wall_mat,
 	})
+end
 
-	--circular_saw.register_node(wall_mat, wall_name)
+function walls.register_arrowslits(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	additional_params = additional_params or {}
+	circular_saw.register_node(wall_mat, wall_name)
 
-	register_node(":murderhole:" .. wall_name, {
-		drawtype = "nodebox",
-		description = wall_desc .. " Murderhole",
-		tiles = { wall_texture },
-		groups = utility.dig_groups("wall"),
-		sounds = wall_sounds,
-		paramtype = "light",
-		paramtype2 = "facedir",
-		node_box = {
-			type = "fixed",
-			fixed = {
-				{-8/16,-8/16,-8/16,-4/16,8/16,8/16},
-				{4/16,-8/16,-8/16,8/16,8/16,8/16},
-				{-4/16,-8/16,-8/16,4/16,8/16,-4/16},
-				{-4/16,-8/16,8/16,4/16,8/16,4/16},
-			},
-		},
-		_stairs_parent_material = wall_mat,
-	})
-	
-	--circular_saw.register_node(wall_mat, wall_name)
-
-	register_node(":machicolation:" .. wall_name, {
-		drawtype = "nodebox",
-		description = wall_desc .. " Machicolation",
-		tiles = { wall_texture },
-		groups = utility.dig_groups("wall"),
-		sounds = wall_sounds,
-		paramtype = "light",
-		paramtype2 = "facedir",
-		node_box = {
-			type = "fixed",
-			fixed = {
-				{-0.5, 0, -0.5, 0.5, 0.5, 0},
-				{-0.5, -0.5, 0, -0.25, 0.5, 0.5},
-				{0.25, -0.5, 0, 0.5, 0.5, 0.5},
-			},
-		},
-		_stairs_parent_material = wall_mat,
-	})
-
-	--circular_saw.register_node(wall_mat, wall_name)
-
-	-- arrow slits
 	register_node(":arrowslit:"..wall_name, {
 		drawtype = "nodebox",
 		description = wall_desc .. " Arrowslit",
@@ -317,8 +319,8 @@ walls.register = function(
 			fixed = {
 				{-0.5, -0.375, 0.5, -0.0625, 0.375, 0.3125},
 				{0.0625, -0.375, 0.5, 0.5, 0.375, 0.3125},
-				{-0.5, 0.375, 0.5, 0.5, 0.5, 0.3125}, 
-				{-0.5, -0.5, 0.5, 0.5, -0.375, 0.3125}, 
+				{-0.5, 0.375, 0.5, 0.5, 0.5, 0.3125},
+				{-0.5, -0.5, 0.5, 0.5, -0.375, 0.3125},
 				{0.25, -0.5, 0.3125, 0.5, 0.5, 0.125},
 				{-0.5, -0.5, 0.3125, -0.25, 0.5, 0.125},
 			},
@@ -397,8 +399,16 @@ walls.register = function(
 		},
 		_stairs_parent_material = wall_mat,
 	})
+end
 
-	--circular_saw.register_node(wall_mat, wall_name)
+walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	additional_params = additional_params or {}
+	circular_saw.register_node(wall_mat, wall_name)
+
+	walls.register_walls(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	walls.register_pillars(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	walls.register_castle(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
+	walls.register_arrowslits(wall_name, wall_desc, wall_texture, wall_mat, wall_sounds, additional_params)
 end
 
 walls.register("cobble", "Cobblestone", "default_cobble.png",
@@ -503,12 +513,17 @@ walls.register("obsidian_brick", "Obsidian Brick", "default_obsidian_brick.png",
 walls.register("rackstone_cobble", "Rackstone Cobble", "rackstone_rackstone_cobble.png",
 		"rackstone:cobble", default.node_sound_stone_defaults())
 
-walls.register("mossystone", "Mossy Stone", "gloopblocks_stone_mossy.png",
+walls.register_walls("mossystone", "Mossy Stone", "gloopblocks_stone_mossy.png",
 	"default:mossystone", default.node_sound_stone_defaults(),
 	{wall_only=true})
 
-walls.register("mossy_stonebrick", "Mossy Stone Brick",
+walls.register_walls("mossy_stonebrick", "Mossy Stone Brick",
 	"gloopblocks_stone_brick_mossy.png",
 	"default:mossy_stonebrick", default.node_sound_stone_defaults(),
 	{wall_only=true})
 
+walls.register_arrowslits("tree_wood", "Wooden Planks", "default_wood.png",
+		"basictrees:tree_wood", default.node_sound_wood_defaults())
+
+walls.register_arrowslits("jungletree_wood", "Jungle Wood Planks", "default_junglewood.png",
+		"basictrees:jungletree_wood", default.node_sound_wood_defaults())

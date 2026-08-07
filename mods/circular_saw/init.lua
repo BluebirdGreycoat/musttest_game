@@ -22,6 +22,14 @@ circular_saw.known_nodes = circular_saw.known_nodes or {}
 function circular_saw.register_node(recipeitem, subname)
   circular_saw.known_nodes[recipeitem] = circular_saw.known_nodes[recipeitem] or {}
   local d = circular_saw.known_nodes[recipeitem]
+
+  -- Ignore duplicate registrations.
+  for k, v in ipairs(d) do
+    if v == subname then
+      return
+    end
+  end
+
   d[#d + 1] = subname
 end
 

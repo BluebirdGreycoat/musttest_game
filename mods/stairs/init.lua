@@ -163,7 +163,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 	groups.not_in_craft_guide = 1
 	groups.stairs_slab = 1
 	groups.stairs_node = 1
-  
+
 	local ndef = minetest.registered_items[recipeitem]
 	assert(ndef)
 
@@ -185,7 +185,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 				}
 			}
 		end
-    
+
     def.drawtype = "nodebox"
     def.paramtype = "light"
     def.paramtype2 = "facedir"
@@ -201,7 +201,7 @@ function stairs.register_extra_slabs(subname, recipeitem, groups, images, descri
 		if num.is_flat then
 			def.movement_speed_depends = recipeitem
 		end
-    
+
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:slab_" .. subname .. alternate, def)
@@ -374,7 +374,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		end
 	end
 	local defs = table.copy(stairs_defs)
-  
+
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
@@ -396,7 +396,7 @@ function stairs.register_extra_stairs(subname, recipeitem, groups, images, descr
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
 		def._stairs_parent_material = recipeitem
-    
+
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:stair_" ..subname..alternate, def)
@@ -562,7 +562,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		end
 	end
 	local defs = table.copy(panels_defs)
-  
+
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
@@ -585,7 +585,7 @@ function stairs.register_panel(subname, recipeitem, groups, images, description,
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
 		def._stairs_parent_material = recipeitem
-    
+
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:panel_" ..subname..alternate, def)
@@ -717,7 +717,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 		end
 	end
 	local defs = table.copy(microblocks_defs)
-	
+
 	-- Do not modify function argument.
 	local groups = table.copy(groups)
 	groups.not_in_craft_guide = 1
@@ -739,7 +739,7 @@ function stairs.register_micro(subname, recipeitem, groups, images, description,
 		def.light_source = math.ceil(ndef.light_source*def.light)
 		def.light = nil
 		def._stairs_parent_material = recipeitem
-		
+
 		stairs.setup_nodedef_callbacks(subname, def)
 
 		minetest.register_node(":stairs:micro_" .. subname .. alternate, def)
@@ -997,7 +997,10 @@ function stairs.register_stair_and_slab(subname, recipeitem, groups, images, des
   stairs.register_stair       (subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_extra_stairs(subname, recipeitem, groups, images, desc, sounds, datatable)
   stairs.register_slab        (subname, recipeitem, groups, images, desc, sounds, datatable)
-  stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds, datatable)
+
+  if not datatable.no_extra_slabs then
+		stairs.register_extra_slabs (subname, recipeitem, groups, images, desc, sounds, datatable)
+	end
 
   if not datatable.no_slopes then
 		stairs.register_slopes(subname, recipeitem, groups, images, desc, sounds, datatable)

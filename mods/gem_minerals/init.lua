@@ -38,8 +38,8 @@ if not gem_minerals.registered then
 			silverpick_drop = true,
 			place_param2 = 10,
 		})
-		
-if v.extra then 
+
+if v.extra then
 
 
 			minetest.register_alias(ore .. "_mined", ore)
@@ -93,6 +93,17 @@ if v.extra then
 			recipe = raw,
 			hardness = v.hardness,
 			})
+
+		stairs.register_stair_and_slab(
+			v.name,
+			block,
+			{cracky = 1, level = 2},
+			{"gem_minerals_" .. v.name .. "_block.png"},
+			v.desc .. " Gem",
+			default.node_sound_stone_defaults(),
+			{no_slopes=true, no_extra_slabs=true}
+		)
+
 	end
 end
 

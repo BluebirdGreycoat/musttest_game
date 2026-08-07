@@ -266,6 +266,16 @@ stairs.register_stair_and_slab(
 )
 
 stairs.register_stair_and_slab(
+	"diamond",
+	"default:diamondblock",
+	{cracky = 1, level = 2},
+	{"default_diamond_block.png"},
+	"Diamond",
+	default.node_sound_stone_defaults(),
+	{no_slopes=true, no_extra_slabs=true}
+)
+
+stairs.register_stair_and_slab(
 	"obsidianbrick",
 	"default:obsidianbrick",
 	{cracky = 1, level = 2},

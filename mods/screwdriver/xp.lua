@@ -4,20 +4,34 @@ screwdriver.xp = screwdriver.xp or {}
 screwdriver.xp.players = screwdriver.xp.players or {}
 
 local QUEUE_SIZE = 50
-local TIME_WINDOW = 5
+local TIME_WINDOW = 10
+local MAX_STREAK = 5
+local XP_COOLDOWN = 60
 
 -- Localize for readability.
 local players = screwdriver.xp.players
 
-function screwdriver.handle_xp(pname, pref, npos, xp_reward)
+-- Handles granting XP for performing an action at a location,
+-- with builtin anti-bot checks.
+function screwdriver.reward_xp(pname, pref, npos, xp_reward)
 	local pdata = players[pname] or {
 		nodepos = {},
 		prefpos = {},
+		streak = 0,
+		cooldown = 0,
 	}
+	if not pdata.streak or not pdata.cooldown then
+		pdata.streak = 0
+		pdata.cooldown = 0
+	end
 
 	local v_equals = vector.equals
 	local ppos = vector.round(pref:get_pos())
 	local tnow = os.time()
+
+	if pdata.cooldown > tnow then
+		return
+	end
 
 	local same_node = false
 	local same_pos = false
@@ -39,6 +53,14 @@ function screwdriver.handle_xp(pname, pref, npos, xp_reward)
 	end
 
 	if same_node and same_pos then
+		pdata.streak = pdata.streak + 1
+	end
+	if not same_node and not same_pos then
+		pdata.streak = 0
+	end
+
+	if pdata.streak > MAX_STREAK then
+		pdata.cooldown = os.time() + XP_COOLDOWN
 		return
 	end
 

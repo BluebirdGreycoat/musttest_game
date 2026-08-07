@@ -166,7 +166,7 @@ circular_saw.names = {
 }
 
 function circular_saw:get_cost(inv, stackname)
-  for i, item in pairs(inv:get_list("output")) do
+  for i, item in ipairs(inv:get_list("output")) do
     if item:get_name() == stackname then
       return circular_saw.names[i][3]
     end

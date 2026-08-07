@@ -9,9 +9,6 @@ local BUILDXP_STAIRS = xp.XP_RATES.BUILDXP_PLACE_STAIRS
 local BUILDXP_BRICKS = xp.XP_RATES.BUILDXP_PLACE_BRICKS
 local BUILDXP_DEFAULT = xp.XP_RATES.BUILDXP_PLACE_DEFAULT
 
--- Loss of buildxp due to digging.
-local BUILDXP_LOSS = xp.XP_RATES.BUILDXP_DIG_LOSS
-
 
 
 function hunger.on_joinplayer(player)
@@ -240,7 +237,7 @@ function hunger.on_dignode(pos, oldnode, player)
 
 	-- Digging causes loss in buildxp.
 	if ndef then
-		local loss = BUILDXP_LOSS
+		local loss = xp.XP_RATES.BUILDXP_DIG_LOSS
 
 		-- Harvesting crops has no cost in buildxp.
 		-- Capture all standard crops.
@@ -314,7 +311,7 @@ local function what_are_you_even_doing_carl(pos, pname, nname)
 	local bxp = get_buildxp_for(nname)
 	if screwdriver.reward_xp(pname, pref, pos, "buildxp", bxp) then
 		-- Building causes loss in digxp.
-		xp.subtract_xp(pname, "digxp", bxp)
+		xp.subtract_xp(pname, "digxp", xp.XP_RATES.DIGXP_BUILD_LOSS)
 	end
 end
 

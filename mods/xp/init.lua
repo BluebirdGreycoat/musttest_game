@@ -18,8 +18,11 @@ xp.XP_RATES = {
 	BUILDXP_PLACE_DEFAULT = 0.1,
 	BUILDXP_SCREWDRIVER = 1.5,
 
-	-- Build XP lost whenever player digs nodes.
-	BUILDXP_DIG_LOSS = 0.01,
+	-- Build XP lost whenever player digs.
+	BUILDXP_DIG_LOSS = 0.001,
+
+	-- Dig XP lost whenever player builds.
+	DIGXP_BUILD_LOSS = 0.01,
 }
 
 reload.install_simple_signals(xp)

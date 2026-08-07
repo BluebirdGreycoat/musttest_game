@@ -540,10 +540,11 @@ function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack,
       return 0
     else
 			-- We do know how much each block at each position costs:
-      local cost = circular_saw:get_cost(meta, stack:get_name()) * stack:get_count()
+      local cost = circular_saw:get_cost(meta, stack:get_name())
       if cost == nil then
         return 0
       end
+      cost = cost * stack:get_count()
       minetest.chat_send_player("MustTest", ("Allow Take cost: %d"):format(cost))
 
 			local fuel = math.ceil(cost / mese_to_cut_ratio)

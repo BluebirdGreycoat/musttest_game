@@ -20,14 +20,14 @@ function screwdriver.handle_xp(pname, pref, npos, xp_reward)
 
 	for k = 1, #pdata.nodepos do
 		local i = pdata.nodepos[k]
-		if vector.equals(i.pos, npos) and (i.time + TIME_WINDOW) <= tnow then
+		if vector.equals(i.pos, npos) and (i.time + TIME_WINDOW) > tnow then
 			return
 		end
 	end
 
 	for k = 1, #pdata.prefpos do
 		local i = pdata.prefpos[k]
-		if vector.equals(i.pos, ppos) and (i.time + TIME_WINDOW) <= tnow then
+		if vector.equals(i.pos, ppos) and (i.time + TIME_WINDOW) > tnow then
 			return
 		end
 	end

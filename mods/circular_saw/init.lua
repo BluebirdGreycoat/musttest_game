@@ -510,7 +510,8 @@ function circular_saw.allow_metadata_inventory_take(pos, listname, index, stack,
       return 0
     else
 			-- We do know how much each block at each position costs:
-			local cost = circular_saw.names[index][3] * stack:get_count()
+      local cost = circular_saw:get_cost(inv, stack:get_name()) * stack:get_count()
+      minetest.chat_send_player("MustTest", ("Allow Take cost: %d"):format(cost))
 
 			local fuel = math.ceil(cost / mese_to_cut_ratio)
       if fuel < 1 then fuel = 1 end
@@ -549,8 +550,8 @@ function circular_saw.on_metadata_inventory_take(
   -- microblocks have to be substracted:
   if listname == "output" then
     -- We do know how much each block at each position costs:
-    local cost = circular_saw.names[index][3] * stack:get_count()
-    minetest.chat_send_player("MustTest", ("Cost: %d"):format(cost))
+    local cost = circular_saw:get_cost(inv, stack:get_name()) * stack:get_count()
+    minetest.chat_send_player("MustTest", ("On Take cost: %d"):format(cost))
 
     local fuel = math.ceil(cost / mese_to_cut_ratio)
     if fuel < 1 then fuel = 1 end

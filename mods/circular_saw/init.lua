@@ -364,6 +364,9 @@ function circular_saw:update_inventory(pos, amount)
   -- Store how many microblocks are available:
   meta:set_int("anz", amount)
   meta:set_int("variant_count", total_available)
+
+  -- We have to store the nodenames associated with their costs,
+  -- otherwise this information is LOST and can't be recovered easily!
   meta:set_string("cost_list", minetest.serialize(noutcost))
   meta:mark_as_private("cost_list")
 

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("safe") then safe = {} end
 safe.modpath = minetest.get_modpath("safe")
+reload.install_simple_signals(safe)
 
 -- Max interaction distance.
 safe.INTERACTION_DISTANCE = 10

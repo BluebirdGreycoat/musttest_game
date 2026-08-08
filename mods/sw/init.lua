@@ -3,6 +3,7 @@ if not minetest.global_exists("sw") then sw = {} end
 sw.modpath = minetest.get_modpath("sw")
 sw.worldpath = minetest.get_worldpath()
 sw.have_noise = false
+reload.install_simple_signals(sw)
 
 dofile(sw.modpath .. "/nodes.lua")
 dofile(sw.modpath .. "/stairs.lua")

@@ -2,6 +2,7 @@
 if not minetest.global_exists("status") then status = {} end
 status.modpath = minetest.get_modpath("status")
 status.motd = minetest.settings:get("motd") or ""
+reload.install_simple_signals(status)
 
 local WEBADDR = minetest.settings:get("server_address")
 

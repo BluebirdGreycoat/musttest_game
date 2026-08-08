@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("toad") then toad = {} end
 toad.modpath = minetest.get_modpath("toad")
+reload.install_simple_signals(toad)
 
 
 

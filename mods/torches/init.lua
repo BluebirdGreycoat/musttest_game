@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("torches") then torches = {} end
 torches.modpath = minetest.get_modpath("torches")
+reload.install_simple_signals(torches)
 
 
 

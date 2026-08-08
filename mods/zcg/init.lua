@@ -4,6 +4,7 @@
 
 if not minetest.global_exists("zcg") then zcg = {} end
 zcg.modpath = minetest.get_modpath("zcg")
+reload.install_simple_signals(zcg)
 
 zcg.users = zcg.users or {}
 zcg.crafts = zcg.crafts or {}

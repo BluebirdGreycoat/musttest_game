@@ -3,6 +3,7 @@ if not minetest.global_exists("shout") then shout = {} end
 shout.modpath = minetest.get_modpath("shout")
 shout.worldpath = minetest.get_worldpath()
 shout.datafile = shout.worldpath .. "/hints.txt"
+reload.install_simple_signals(shout)
 
 dofile(shout.modpath .. "/builtin_tips.lua")
 dofile(shout.modpath .. "/hints.lua")

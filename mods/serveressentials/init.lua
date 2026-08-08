@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("serveressentials") then serveressentials = {} end
 serveressentials.modpath = minetest.get_modpath("serveressentials")
+reload.install_simple_signals(serveressentials)
 
 -- Outback's reset timeout in realtime days.
 serveressentials.reset_timeout = 30

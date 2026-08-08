@@ -1,4 +1,5 @@
 tnt = {}
+reload.install_simple_signals(tnt)
 
 local enable_tnt = true
 local tnt_radius = 3

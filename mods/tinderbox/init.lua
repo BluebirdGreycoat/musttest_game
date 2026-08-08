@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("tinderbox") then tinderbox = {} end
 tinderbox.modpath = minetest.get_modpath("tinderbox")
+reload.install_simple_signals(tinderbox)
 
 local TINDERBOX_USES = 256
 
@@ -60,7 +61,7 @@ if not tinderbox.registered then
 		groups = {flammable = 2, not_repaired_by_anvil = 1, disable_repair = 1},
 		on_use = function(...) return tinderbox.on_use(...) end,
 	})
-	
+
 	-- Tinderbox tool (needed because items cannot be given a wear value).
 	minetest.register_tool("tinderbox:tinderbox_used", {
 		description = DESC,

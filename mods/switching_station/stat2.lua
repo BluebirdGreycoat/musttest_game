@@ -4,6 +4,7 @@ if not minetest.global_exists("stat2_hv") then stat2_hv = {} end
 if not minetest.global_exists("stat2_mv") then stat2_mv = {} end
 if not minetest.global_exists("stat2_lv") then stat2_lv = {} end
 
+reload.install_simple_signals(stat2)
 
 
 -- It shall not be possible for a network to span more than 2000

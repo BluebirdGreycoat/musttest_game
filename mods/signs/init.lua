@@ -1,7 +1,6 @@
 
 if not minetest.global_exists("signs") then signs = {} end
 signs.modpath = minetest.get_modpath("signs")
-
 reload.install_simple_signals(signs)
 
 local MAX_SIGN_LENGTH = 256

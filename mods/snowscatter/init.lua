@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("snowscatter") then snowscatter = {} end
 snowscatter.modpath = minetest.get_modpath("snowscatter")
+reload.install_simple_signals(snowscatter)
 
 -- Localize for performance.
 local vector_round = vector.round
@@ -12,15 +13,15 @@ local find_floor = function(x, ybot, ytop, z)
     for y = ytop, ybot, -1 do
         local p1 = {x=x, y=y, z=z}
         local p2 = {x=x, y=y-1, z=z}
-        
+
         local n1 = minetest.get_node(p1).name
         local n2 = minetest.get_node(p2).name
-        
+
         if n1 == "air" and n2 ~= "air" and n2 ~= "ignore" then
             local node = minetest.reg_ns_nodes[n2]
 						if not node then break end
             if not node.walkable then break end -- Don't dump snow on non-walkable things.
-            
+
             local good = false
             local dt = node.drawtype
             if dt == "normal" then good = true end
@@ -31,7 +32,7 @@ local find_floor = function(x, ybot, ytop, z)
             if dt == "glasslike_framed_optional" then good = true end
             if dt == "airlike" then good = true end
             if good == false then break end
-            
+
             return p1, p2
         elseif n1 == "ignore" or n1 ~= "air" then
             break
@@ -94,14 +95,14 @@ if not snowscatter.registered then
         "Player can scatter snow in area around self.",
         give_to_singleplayer = false,
     })
-    
+
     minetest.register_chatcommand("snowscatter", {
         params = "",
         description = "Scatter snow around self.",
         privs = {snowscatter=true},
         func = function(...) return snowscatter.execute_chatcommand(...) end,
     })
-    
+
     reload.register_file("snowscatter:core", snowscatter.modpath .. "/init.lua", false)
     snowscatter.registered = true
 end

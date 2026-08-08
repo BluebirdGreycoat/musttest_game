@@ -3,6 +3,7 @@ if not minetest.global_exists("survivalist") then survivalist = {} end
 survivalist.modpath = minetest.get_modpath("survivalist")
 survivalist.players = survivalist.players or {}
 survivalist.groups = survivalist.groups or {}
+reload.install_simple_signals(survivalist)
 
 -- How long player must wait to retry a new challege after starting one.
 local CHALLENGE_RETRY_DELAY = 60*60*3

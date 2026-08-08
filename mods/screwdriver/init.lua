@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("screwdriver") then screwdriver = {} end
 screwdriver.modpath = minetest.get_modpath("screwdriver")
+reload.install_simple_signals(screwdriver)
 
 dofile(screwdriver.modpath .. "/xp.lua")
 

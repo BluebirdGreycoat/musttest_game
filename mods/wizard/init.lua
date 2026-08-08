@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("wizard") then wizard = {} end
 wizard.modpath = minetest.get_modpath("wizard")
+reload.install_simple_signals(wizard)
 
 dofile(wizard.modpath .. "/node.lua")
 dofile(wizard.modpath .. "/banish.lua")

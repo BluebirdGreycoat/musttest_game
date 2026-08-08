@@ -11,6 +11,7 @@ if not minetest.global_exists("toolranks") then toolranks = {} end
 toolranks.modpath = minetest.get_modpath("toolranks")
 toolranks.players = toolranks.players or {}
 toolranks.tools = toolranks.tools or {}
+reload.install_simple_signals(toolranks)
 
 local players = toolranks.players
 if not toolranks.mod_storage then

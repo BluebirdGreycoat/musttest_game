@@ -9,6 +9,7 @@ distributed without any warranty.
 
 if not minetest.global_exists("sprint") then sprint = {} end
 sprint.modpath = minetest.get_modpath("sprint")
+reload.install_simple_signals(sprint)
 
 dofile(sprint.modpath .. "/esprint.lua")
 

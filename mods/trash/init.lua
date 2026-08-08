@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("trash") then trash = {} end
 trash.modpath = minetest.get_modpath("trash")
+reload.install_simple_signals(trash)
 
 -- XP loss for trashing stuff is 1 per item, multiplied by this.
 local TRASH_XP_MOD = 0.75

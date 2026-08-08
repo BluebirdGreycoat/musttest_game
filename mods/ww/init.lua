@@ -2,6 +2,7 @@
 if not minetest.global_exists("ww") then ww = {} end
 ww.modpath = minetest.get_modpath("ww")
 ww.worldpath = minetest.get_worldpath()
+reload.install_simple_signals(ww)
 
 
 

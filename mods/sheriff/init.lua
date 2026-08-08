@@ -2,6 +2,7 @@
 if not minetest.global_exists("sheriff") then sheriff = {} end
 sheriff.modpath = minetest.get_modpath("sheriff")
 sheriff.players = sheriff.players or {}
+reload.install_simple_signals(sheriff)
 
 -- Localize for performance.
 local vector_round = vector.round

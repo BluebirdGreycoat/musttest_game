@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("scaffolding") then scaffolding = {} end
 scaffolding.modpath = minetest.get_modpath("scaffolding")
+reload.install_simple_signals(scaffolding)
 
 
 

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("stoneworld") then stoneworld = {} end
 stoneworld.modpath = minetest.get_modpath("stoneworld")
+reload.install_simple_signals(stoneworld)
 
 -- These match values in the realm-control mod.
 -- Note: duplicated in the mapgen script, they MUST match!

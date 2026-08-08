@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("torchmelt") then torchmelt = {} end
 torchmelt.modpath = minetest.get_modpath("torchmelt")
+reload.install_simple_signals(torchmelt)
 
 -- Localize for performance.
 local math_random = math.random

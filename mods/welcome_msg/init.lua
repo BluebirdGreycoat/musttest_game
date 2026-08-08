@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("welcome") then welcome = {} end
 welcome.modpath = minetest.get_modpath("welcome_msg")
+reload.install_simple_signals(welcome)
 
 -- Timeout in seconds.
 welcome.timeout = tonumber(minetest.settings:get("welcome_msg_delay") or 15)

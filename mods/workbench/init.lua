@@ -6,6 +6,7 @@
 if not minetest.global_exists("workbench") then workbench = {} end
 workbench.modpath = minetest.get_modpath("workbench")
 workbench.players = workbench.players or {}
+reload.install_simple_signals(workbench)
 
 local FORMSPEC_DISTANCE = 6 -- Distance checks on inventory are handled elsewhere.
 local FORMSPEC_NAME = "xdecor:workbench"

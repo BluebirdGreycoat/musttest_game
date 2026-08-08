@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("sfn") then sfn = {} end
 sfn.modpath = minetest.get_modpath("sfn")
+reload.install_simple_signals(sfn)
 
 -- Localize for performance.
 local vector_round = vector.round

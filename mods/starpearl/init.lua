@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("starpearl") then starpearl = {} end
 starpearl.modpath = minetest.get_modpath("starpearl")
+reload.install_simple_signals(starpearl)
 
 
 

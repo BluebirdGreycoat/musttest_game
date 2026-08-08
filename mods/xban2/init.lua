@@ -3,6 +3,7 @@ if not minetest.global_exists("xban") then xban = {} end
 xban.db = xban.db or {}
 xban.tempbans = xban.tempbans or {}
 xban.MP = minetest.get_modpath("xban2")
+reload.install_simple_signals(xban)
 
 -- Localize for performance.
 local vector_round = vector.round

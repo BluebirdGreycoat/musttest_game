@@ -1,10 +1,11 @@
 
 if not minetest.global_exists("stack_filter") then stack_filter = {} end
 stack_filter.modpath = minetest.get_modpath("stack_filter")
+reload.install_simple_signals(stack_filter)
 
 
 
-stack_filter.on_punch = 
+stack_filter.on_punch =
 function(pos, node, puncher, pointed_thing)
 end
 
@@ -16,7 +17,7 @@ end
 
 
 
-stack_filter.allow_metadata_inventory_put = 
+stack_filter.allow_metadata_inventory_put =
 function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
   if minetest.test_protection(pos, pname) then
@@ -27,7 +28,7 @@ end
 
 
 
-stack_filter.allow_metadata_inventory_move = 
+stack_filter.allow_metadata_inventory_move =
 function(pos, from_list, from_index, to_list, to_index, count, player)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
@@ -37,7 +38,7 @@ end
 
 
 
-stack_filter.allow_metadata_inventory_take = 
+stack_filter.allow_metadata_inventory_take =
 function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
   if minetest.test_protection(pos, pname) then
@@ -48,31 +49,31 @@ end
 
 
 
-stack_filter.on_timer = 
+stack_filter.on_timer =
 function(pos, elapsed)
 end
 
 
 
-stack_filter.on_construct = 
+stack_filter.on_construct =
 function(pos)
 end
 
 
 
-stack_filter.on_metadata_inventory_move = 
+stack_filter.on_metadata_inventory_move =
 function(pos)
 end
 
 
 
-stack_filter.on_metadata_inventory_put = 
+stack_filter.on_metadata_inventory_put =
 function(pos)
 end
 
 
 
-stack_filter.on_blast = 
+stack_filter.on_blast =
 function(pos)
   local drops = {}
   drops[#drops+1] = "stack_filter:filter"
@@ -93,16 +94,16 @@ if not stack_filter.run_once then
       "pipeworks_mese_filter_side.png",
       "pipeworks_mese_filter_top.png",
     },
-    
+
     groups = utility.dig_groups("machine", {
       immovable = 1,
     }),
-    
+
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,
     is_ground_content = false,
     sounds = default.node_sound_metal_defaults(),
-    
+
     on_punch = function(...)
       return stack_filter.on_punch(...) end,
     can_dig = function(...)
@@ -137,10 +138,10 @@ if not stack_filter.run_once then
       { "default:steel_ingot", "default:steel_ingot", "plastic:plastic_sheeting" }
     },
   })
-  
+
   local c = "stack_filter:core"
   local f = stack_filter.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   stack_filter.run_once = true
 end

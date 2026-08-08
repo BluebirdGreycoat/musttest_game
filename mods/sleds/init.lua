@@ -3,6 +3,7 @@
 if not minetest.global_exists("sleds") then sleds = {} end
 sleds.modpath = minetest.get_modpath("sleds")
 sleds.players = sleds.players or {}
+reload.install_simple_signals(sleds)
 
 local MAX_PLAYER_CONTROLED_VELOCITY = 7
 local PLAYER_CONTROLED_DECEL_RATE = 1

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("schematic_find") then schematic_find = {} end
 schematic_find.modpath = minetest.get_modpath("schematic_find")
+reload.install_simple_signals(schematic_find)
 
 -- Test data.
 local o = "default:obsidian"

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("shears") then shears = {} end
 shears.modpath = minetest.get_modpath("shears")
+reload.install_simple_signals(shears)
 
 
 

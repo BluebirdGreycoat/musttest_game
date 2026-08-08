@@ -1,6 +1,7 @@
 
 teleports = {}
 teleports.modpath = minetest.get_modpath("teleports")
+reload.install_simple_signals(teleports)
 
 
 

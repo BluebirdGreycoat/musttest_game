@@ -2,6 +2,7 @@
 if not minetest.global_exists("sky") then sky = {} end
 sky.modpath = minetest.get_modpath("sky")
 sky.players = sky.players or {}
+reload.install_simple_signals(sky)
 
 -- Disable underground skycolors in singleplayer -- black sky gets in the way of
 -- mapgen development, esp regarding caves.

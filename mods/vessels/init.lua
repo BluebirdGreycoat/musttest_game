@@ -3,6 +3,7 @@
 
 if not minetest.global_exists("vessels") then vessels = {} end
 vessels.modpath = minetest.get_modpath("vessels")
+reload.install_simple_signals(vessels)
 
 
 
@@ -253,8 +254,8 @@ if not vessels.run_once then
 			{"default:glass",   "default:glass",    "default:glass"}
 		}
 	})
-    
-    
+
+
 	minetest.register_node("vessels:vessels_drinking_mug", {
 		description = "Drinking Mug (Empty)",
 		drawtype = "plantlike",

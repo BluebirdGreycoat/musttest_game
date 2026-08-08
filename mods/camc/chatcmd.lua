@@ -167,6 +167,11 @@ local CHATCOMMANDS = {
 		description = "Add or remove scenic vantage points.",
 		buildxp_cost = 100,
 		action = function(pname, param)
+			if not minetest.check_player_privs(pname, {shout=true}) then
+				camc.system_error(pname, "Missing shout priv.")
+				return
+			end
+
 			local tokens = param:split(" ")
 			local verb = (tokens[1] or ""):lower()
 

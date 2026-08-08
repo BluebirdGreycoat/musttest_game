@@ -11,6 +11,7 @@ dirtspread.delay = 1.5
 dirtspread.index = dirtspread.index or 0
 dirtspread.positions = dirtspread.positions or {} -- Indexed cache table.
 dirtspread.blocks = dirtspread.blocks or {}
+reload.install_simple_signals(dirtspread)
 
 -- Groups:
 --

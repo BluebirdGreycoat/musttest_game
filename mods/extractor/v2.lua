@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("extract2") then extract2 = {} end
 extract2.modpath = minetest.get_modpath("extractor")
+reload.install_simple_signals(extract2)
 
 local MACHINE_NAME = "Extractor"
 local MACHINE_DESC = "This extracts substances from things.\nCan burn mese for fuel when off-grid.\nAlternatively, connect to a power-network."

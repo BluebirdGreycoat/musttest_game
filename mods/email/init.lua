@@ -8,6 +8,7 @@ email.database = email.worldpath .. "/email.sqlite"
 email.maxsize = 100
 email.max_subject_length = 128
 email.max_message_length = 1024*2
+reload.install_simple_signals(email)
 
 -- Localize for performance.
 local math_random = math.random

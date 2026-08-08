@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("alloyf2") then alloyf2 = {} end
 alloyf2.modpath = minetest.get_modpath("electric_alloy_furnace")
+reload.install_simple_signals(alloyf2)
 
 local MACHINE_NAME = "Alloy Furnace"
 local MACHINE_DESC = "This alloys two things to make a third thing.\nCan burn mese for fuel when off-grid.\nAlternatively, connect to a power-network."

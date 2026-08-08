@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("distrib2") then distrib2 = {} end
 distrib2.modpath = minetest.get_modpath("distributer")
+reload.install_simple_signals(distrib2)
 
 if not minetest.global_exists("distrib2_lv") then distrib2_lv = {} end
 if not minetest.global_exists("distrib2_mv") then distrib2_mv = {} end

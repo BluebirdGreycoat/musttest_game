@@ -2,6 +2,7 @@
 if not minetest.global_exists("fortress") then fortress = {} end
 fortress.modpath = minetest.get_modpath("fortress")
 fortress.worldpath = minetest.get_worldpath()
+reload.install_simple_signals(fortress)
 
 -- Only affects fortgen V1.
 if fortress.debug_layout == nil then

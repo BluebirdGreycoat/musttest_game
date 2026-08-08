@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("ecfurn2") then ecfurn2 = {} end
 ecfurn2.modpath = minetest.get_modpath("electric_furnace")
+reload.install_simple_signals(ecfurn2)
 
 local MACHINE_NAME = "Smelter"
 local MACHINE_DESC = "This smelts or cooks things.\nCan burn mese for energy when off-grid.\nAlternatively, connect to a power-network."

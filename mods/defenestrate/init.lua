@@ -2,6 +2,7 @@
 if not minetest.global_exists("defenestrate") then defenestrate = {} end
 defenestrate.modpath = minetest.get_modpath("defenestrate")
 defenestrate.timeout = 3
+reload.install_simple_signals(defenestrate)
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

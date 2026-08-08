@@ -12,6 +12,7 @@
 
 if not minetest.global_exists("flowerpot") then flowerpot = {} end
 flowerpot.modpath = minetest.get_modpath("flowerpot")
+reload.install_simple_signals(flowerpot)
 
 -- Localize for performance.
 local math_random = math.random
@@ -368,7 +369,7 @@ if not flowerpot.loaded then
 		"potatoes:potato_2",
 		"potatoes:potato_3",
 		"potatoes:potato_4",
-                
+
 		"aloevera:aloe_plant_01",
 		"aloevera:aloe_plant_02",
 		"aloevera:aloe_plant_03",
@@ -380,16 +381,16 @@ if not flowerpot.loaded then
 		"onions:allium_sprouts_4",
 
 		"default:tvine_display",
-		
+
 		-- DVD flowers. Small ones in flowerpots only.
-		
+
 		"aradonia:caveflower12",
 		"aradonia:caveflower14",
 		"aradonia:caveflower13",
 		"aradonia:caveflower15",
 		"aradonia:caveflower16",
 		"aradonia:caveflower17",
-	
+
 	}) do
 		flowerpot.register_node(node)
 	end

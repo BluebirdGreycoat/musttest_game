@@ -2,6 +2,7 @@
 -- File is reloadable.
 if not minetest.global_exists("fruitscatter") then fruitscatter = {} end
 fruitscatter.modpath = minetest.get_modpath("fruitscatter")
+reload.install_simple_signals(fruitscatter)
 
 
 
@@ -9,10 +10,10 @@ local find_air_under_leaf = function(leaf, x, ybot, ytop, z)
     for y = ybot, ytop, 1 do
         local p1 = {x=x, y=y, z=z}
         local p2 = {x=x, y=y+1, z=z}
-        
+
         local n1 = minetest.get_node(p1).name
         local n2 = minetest.get_node(p2).name
-        
+
         if n1 == "air" and n2 == leaf then
             return p1, p2
         end
@@ -53,7 +54,7 @@ if not fruitscatter.run_once then
     local name = "fruitscatter:core"
     local file = fruitscatter.modpath .. "/init.lua"
     reload.register_file(name, file, false)
-    
+
     fruitscatter.run_once = true
 end
 

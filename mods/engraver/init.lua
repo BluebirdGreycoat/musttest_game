@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("engraver") then engraver = {} end
 engraver.modpath = minetest.get_modpath("engraver")
+reload.install_simple_signals(engraver)
 
 local MAX_SIGN_LENGTH = 256
 

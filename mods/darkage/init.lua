@@ -2,6 +2,7 @@
 -- Mod is to be reloadable.
 if not minetest.global_exists("darkage") then darkage = {} end
 darkage.modpath = minetest.get_modpath("darkage")
+reload.install_simple_signals(darkage)
 
 -- Functions.
 dofile(darkage.modpath .. "/functions.lua")
@@ -294,9 +295,9 @@ if not darkage.run_once then
 		description = "Cobblestone With Plaster",
 		tiles = {
 			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_D.png)",
-			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_B.png)", 
+			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_B.png)",
 			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_C.png)",
-			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_A.png)", 
+			"darkage_chalk.png^(default_cobble.png^[mask:darkage_plaster_mask_A.png)",
 			"default_cobble.png",
 			"darkage_chalk.png",
 		},
@@ -312,8 +313,8 @@ if not darkage.run_once then
 			"darkage_chalk.png^(darkage_chalked_bricks.png^[mask:darkage_plaster_mask_D.png)",
 			"darkage_chalk.png^(darkage_chalked_bricks.png^[mask:darkage_plaster_mask_B.png)",
 			"darkage_chalk.png^(darkage_chalked_bricks.png^[mask:darkage_plaster_mask_C.png)",
-			"darkage_chalk.png^(darkage_chalked_bricks.png^[mask:darkage_plaster_mask_A.png)", 
-			"darkage_chalked_bricks.png", 
+			"darkage_chalk.png^(darkage_chalked_bricks.png^[mask:darkage_plaster_mask_A.png)",
+			"darkage_chalked_bricks.png",
 			"darkage_chalk.png",
 		},
 		paramtype2 = "facedir",

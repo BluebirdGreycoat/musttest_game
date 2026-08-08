@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("flameportal") then flameportal = {} end
 flameportal.modpath = minetest.get_modpath("flameportal")
+reload.install_simple_signals(flameportal)
 
 -- Localize for performance.
 local vector_round = vector.round

@@ -7,6 +7,7 @@
 
 if not minetest.global_exists("flowers") then flowers = {} end
 flowers.modpath = minetest.get_modpath("flowers")
+reload.install_simple_signals(flowers)
 
 -- Localize for performance.
 local math_random = math.random

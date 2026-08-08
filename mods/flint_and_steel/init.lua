@@ -2,6 +2,7 @@
 -- Flint & Steel
 if not minetest.global_exists("flint_and_steel") then flint_and_steel = {} end
 flint_and_steel.modpath = minetest.get_modpath("flint_and_steel")
+reload.install_simple_signals(flint_and_steel)
 
 -- Flint & steel on-use callback.
 function flint_and_steel.on_use(itemstack, user, pointed_thing)
@@ -9,7 +10,7 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
   local pname = user:get_player_name()
   local pt = pointed_thing
   if pt.type ~= "node" then return end
-  
+
   -- What are we pointing at?
   local nn = minetest.get_node(pt.under).name
 
@@ -25,7 +26,7 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 		local is_tnt = (nn == "tnt:tnt")
 		local is_gunpowder = (nn == "tnt:gunpowder")
 		local is_flammable = (minetest.get_item_group(nn, "flammable") ~= 0)
-		
+
 		-- Allow stairs, slabs, dark obsidian, etc. to be struck by firestriker.
 		-- This comes before protection check so that players can use others' portals.
 		if string.find(nn, "obsidian") then
@@ -67,7 +68,7 @@ function flint_and_steel.on_use(itemstack, user, pointed_thing)
 
 	-- Trigger gas explosions sometimes.
 	breath.ignite_nearby_gas(pt.under)
-  
+
   -- Wear tool.
   itemstack = utility.wear_tool_with_feedback({
 		wear = 1000,
@@ -88,7 +89,7 @@ if not flint_and_steel.run_once then
     inventory_image = "fire_flint_steel.png",
     sound = {breaks = "default_tool_breaks"},
     groups = {not_repaired_by_anvil = 1},
-    
+
     on_use = function(...)
       return flint_and_steel.on_use(...)
     end
@@ -106,7 +107,7 @@ if not flint_and_steel.run_once then
   local c = "flint_and_steel:core"
   local f = flint_and_steel.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   flint_and_steel.run_once = true
 end
 

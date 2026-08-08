@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("formspec") then formspec = {} end
 formspec.modpath = minetest.get_modpath("formspec")
+reload.install_simple_signals(formspec)
 
 formspec.WIDGET_TYPES = formspec.WIDGET_TYPES or {}
 formspec.FORMSPEC_VERSION = 9

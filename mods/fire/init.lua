@@ -4,6 +4,7 @@
 
 fire = {}
 fire.modpath = minetest.get_modpath("fire")
+reload.install_simple_signals(fire)
 
 -- Localize for performance.
 local math_random = math.random
@@ -49,7 +50,7 @@ minetest.register_node("fire:basic_flame", {
 		-- fire nodes to fall before they burn their target, which tends to leave
 		-- stuff hanging in air.
 	}),
-    
+
 	on_timer = function(pos)
 		local f = minetest.find_node_near(pos, 1, {"group:flammable"})
 		if f then
@@ -69,7 +70,7 @@ minetest.register_node("fire:basic_flame", {
 		--ambiance.fire_particles(pos, time)
 	end,
 
-    
+
 	on_construct = function(pos)
 		fireambiance.on_flame_addremove(pos)
 		particles.add_flame_spawner(pos)
@@ -78,16 +79,16 @@ minetest.register_node("fire:basic_flame", {
 		--ambiance.fire_particles(pos, time)
 		torchmelt.start_melting(pos)
 	end,
-    
+
 	after_destruct = function(pos)
 		particles.del_flame_spawner(pos)
 		fireambiance.on_flame_addremove(pos)
 	end,
-    
+
 	on_dig = function(pos, node, player)
 		local pname = player and player:get_player_name() or ""
 		if not heatdamage.is_immune(pname) then
-			minetest.after(0, function() 
+			minetest.after(0, function()
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
 					utility.damage_player(player, "heat", 1*500)
@@ -145,7 +146,7 @@ minetest.register_node("fire:permanent_flame", {
 	on_dig = function(pos, node, player)
 		local pname = player and player:get_player_name() or ""
 		if not heatdamage.is_immune(pname) then
-			minetest.after(0, function() 
+			minetest.after(0, function()
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
 					utility.damage_player(player, "heat", 1*500)
@@ -189,20 +190,20 @@ minetest.register_node("fire:nether_flame", {
 	_death_message = "Nether fire burnt <player> to ashes.",
 	groups = utility.dig_groups("bigitem", {igniter = 2, melt_around = 3, flame = 1, fire = 1, flame_sound = 1, notify_construct = 1}),
 	drop = "",
-    
+
 	on_construct = function(pos)
 		fireambiance.on_flame_addremove(pos)
 		particles.add_flame_spawner(pos)
 		torchmelt.start_melting(pos)
 	end,
-    
+
     -- The fireportal takes care of this.
     --after_destruct = function(pos) fireambiance.on_flame_addremove(pos) end,
 
 	on_dig = function(pos, node, player)
 		local pname = player and player:get_player_name() or ""
 		if not heatdamage.is_immune(pname) then
-			minetest.after(0, function() 
+			minetest.after(0, function()
 				local player = minetest.get_player_by_name(pname)
 				if player and player:get_hp() > 0 then
 					utility.damage_player(player, "heat", 1*500)

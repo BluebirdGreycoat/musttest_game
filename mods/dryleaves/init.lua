@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("dryleaves") then dryleaves = {} end
 dryleaves.modpath = minetest.get_modpath("dryleaves")
+reload.install_simple_signals(dryleaves)
 
 dryleaves.list = {
 	"dryleaves:leaves",
@@ -29,7 +30,7 @@ minetest.register_node("dryleaves:leaves", {
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
-  
+
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
   on_timer = enhanced_leafdecay.make_leaf_nodetimer({}),
 })
@@ -50,7 +51,7 @@ minetest.register_node("dryleaves:jungleleaves", {
 	groups = utility.dig_groups("leaves", {leafdecay = 3, flammable = 3, leaves = 1, dry_leaves = 1}),
 	sounds = default.node_sound_leaves_defaults(),
 	movement_speed_multiplier = default.SLOW_SPEED_PLANTS,
-  
+
   on_construct = enhanced_leafdecay.make_leaf_constructor({}),
   on_timer = enhanced_leafdecay.make_leaf_nodetimer({}),
 })

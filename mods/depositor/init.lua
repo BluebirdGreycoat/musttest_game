@@ -6,6 +6,7 @@ depositor.dropfile = minetest.get_worldpath() .. "/drops.txt"
 depositor.shops = depositor.shops or {} -- Shop data. Indexed array format.
 depositor.drops = depositor.drops or {} -- Dropsite data. Indexed by player name.
 depositor.dirty = true
+reload.install_simple_signals(depositor)
 
 -- Localize for performance.
 local vector_round = vector.round

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("itempickup") then itempickup = {} end
 itempickup.modpath = minetest.get_modpath("itempickup")
+reload.install_simple_signals(itempickup)
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

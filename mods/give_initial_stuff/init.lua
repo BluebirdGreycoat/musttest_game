@@ -2,6 +2,7 @@
 if not minetest.global_exists("give_initial_stuff") then give_initial_stuff = {} end
 give_initial_stuff.modpath = minetest.get_modpath("give_initial_stuff")
 give_initial_stuff.items = give_initial_stuff.items or {}
+reload.install_simple_signals(give_initial_stuff)
 
 -- Start items are hardcoded intentionally. The Outback (where new players
 -- start on first join) depends on this.

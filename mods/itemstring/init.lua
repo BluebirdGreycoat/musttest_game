@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("itemstring") then itemstring = {} end
 itemstring.modpath = minetest.get_modpath("itemstring")
+reload.install_simple_signals(itemstring)
 
 function itemstring.handle_command(pname, param)
 	local player = minetest.get_player_by_name(pname)

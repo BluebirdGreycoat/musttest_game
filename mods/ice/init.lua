@@ -1,6 +1,9 @@
 
 if not minetest.global_exists("ice") then ice = {} end
 ice.modpath = minetest.get_modpath("ice")
+reload.install_simple_signals(ice) -- Aka ICE, Aka I.C.E.
+
+-- ICE: deporting orks since 2024.
 
 -- Localize for performance.
 local math_random = math.random

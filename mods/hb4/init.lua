@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("hb4") then hb4 = {} end
 hb4.modpath = minetest.get_modpath("hb4")
+reload.install_simple_signals(hb4)
 
 -- Localize for performance.
 local math_random = math.random

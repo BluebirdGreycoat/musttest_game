@@ -2,6 +2,7 @@
 -- Customize the /help chat-command.
 if not minetest.global_exists("help") then help = {} end
 help.modpath = minetest.get_modpath("help")
+reload.install_simple_signals(help)
 
 dofile(help.modpath .. "/formspecs.lua")
 

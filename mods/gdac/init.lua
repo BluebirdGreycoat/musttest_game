@@ -1,9 +1,12 @@
 
+-- History note: GDAC stands for Golddigger-Anticheat.
+
 -- Anticheat module.
 -- This file is reloadable.
 if not minetest.global_exists("gdac") then gdac = {} end
 gdac.session_violations = gdac.session_violations or {}
 gdac.modpath = minetest.get_modpath("gdac")
+reload.install_simple_signals(gdac)
 
 -- Localize for performance.
 local vector_distance = vector.distance

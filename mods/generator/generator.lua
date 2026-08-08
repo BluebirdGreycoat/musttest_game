@@ -4,6 +4,7 @@ if not minetest.global_exists("gen2") then gen2 = {} end
 if not minetest.global_exists("gen2_lv") then gen2_lv = {} end
 if not minetest.global_exists("gen2_mv") then gen2_mv = {} end
 if not minetest.global_exists("gen2_hv") then gen2_hv = {} end
+reload.install_simple_signals(gen2)
 
 -- Localize for performance.
 local math_floor = math.floor

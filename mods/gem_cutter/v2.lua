@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("gemcut2") then gemcut2 = {} end
 gemcut2.modpath = minetest.get_modpath("gem_cutter")
+reload.install_simple_signals(gemcut2)
 
 local MACHINE_NAME = "Gem Cutter"
 local MACHINE_DESC = "This cuts and shapes gems into a useable form.\nCan burn mese for fuel when off-grid.\nAlternatively, connect to a power-network."

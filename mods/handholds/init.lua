@@ -2,6 +2,7 @@
 if not minetest.global_exists("handholds") then handholds = {} end
 handholds.modpath = minetest.get_modpath("handholds")
 handholds.players = handholds.players or {}
+reload.install_simple_signals(handholds)
 
 -- Localize for performance.
 local math_random = math.random

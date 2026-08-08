@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("instability") then instability = {} end
 instability.modpath = minetest.get_modpath("instability")
+reload.install_simple_signals(instability)
 
 -- Localize for speed.
 local allnodes = minetest.registered_nodes
@@ -25,7 +26,7 @@ local function node_considered_supporting(nn, on)
 
 	-- 'ignore' must be supporting, to avoid accidents and problematic bugs.
   if nn == "ignore" then return true end
-  
+
   if stringf(nn, "^throwing:") or
       stringf(nn, "^fire:") then
       -- Treating fences as non-supporting is apparently rather annoying.
@@ -126,7 +127,7 @@ local function node_considered_supporting(nn, on)
   if (this_groups.falling_node or 0) ~= 0 then
     return false
   end
-  
+
   -- By default, node is considered supporting if we didn't handle it.
   --minetest.chat_send_all('supporting: ' .. nn .. ", supported: " .. on)
   return true
@@ -140,10 +141,10 @@ instability.is_singlenode = function(pos, axis)
 	-- Preserve the name of the node at the center.
 	local cn = nn
   if nn == "air" or nn == "ignore" then return end
-  
+
   -- The code tries to exit as early as possible if I can determine
   -- right away the node being checked is not a singlenode.
-  
+
   if axis == "y" then
     local sides = {
       {x=pos.x-1, y=pos.y  , z=pos.z  },
@@ -217,18 +218,18 @@ instability.find_tower = function(args)
   {
     -- Position of first node to check.
     pos = {x=..., y=..., z=...},
-   
+
     -- Direction along the axis (positive or negative).
     dir = "p|n",
-   
+
     -- Axis to check along (allows checking for horizontal towers).
     axis = "x|y|z",
-   
+
     -- Number of nodes to check.
     len = ...,
   }
   --]]
-  
+
   -- Table of nodes which are part of the tower.
   -- This can be later used in a collapsing algorithm.
   local tower_nodes = {}
@@ -242,7 +243,7 @@ instability.find_tower = function(args)
       pos = vector.add(pos, dir)
     end
   end
-  
+
   if args.axis == "y" then
     if args.dir == "p" then
       seek(args.pos, {x=0, y=1, z=0}, args.axis, args.len)
@@ -262,7 +263,7 @@ instability.find_tower = function(args)
       seek(args.pos, {x=0, y=0, z=-1}, args.axis, args.len)
     end
   end
-  
+
   -- Table of tower nodes. Will be empty if not a tower.
   return tower_nodes
 end
@@ -287,7 +288,7 @@ instability.check_tower_and_collapse = function(pos, axis, dir, pname)
     dir = dir,
     len = 20,
   })
-  
+
   if #tower >= 4 then
     local chance = mrandom(4, 10)
     if #tower >= chance then -- Chance to fall increases with length.
@@ -302,7 +303,7 @@ instability.check_tower_and_collapse = function(pos, axis, dir, pname)
 					end
         end
       end
-      
+
 			-- Write to chat only if something actually fell.
 			if dropped then
 				local dname = rename.gpn(pname)
@@ -323,23 +324,23 @@ instability.check_tower = function(pos, node, pref)
     if stringf(node.name, "ladder") then return end
     if stringf(node.name, "rope") then return end
     if stringf(node.name, "chain") then return end
-    
+
     -- Protector nodes shall be exempt!
     if stringf(node.name, "^protector:") then return end
 		if stringf(node.name, "^city_block:") then return end
-    
+
     -- Doors and beds are multi-node constructs.
     if stringf(node.name, "^doors:") then return end
     if stringf(node.name, "^beds:") then return end
-    
+
     local pname = pref:get_player_name()
-    
+
     instability.check_tower_and_collapse(pos, "x", "p", pname)
     instability.check_tower_and_collapse(pos, "x", "n", pname)
-    
+
     instability.check_tower_and_collapse(pos, "y", "p", pname)
     instability.check_tower_and_collapse(pos, "y", "n", pname)
-    
+
     instability.check_tower_and_collapse(pos, "z", "p", pname)
     instability.check_tower_and_collapse(pos, "z", "n", pname)
   end
@@ -351,12 +352,12 @@ instability.check_single_node = function(pos)
   if mrandom(1, 200) == 1 then
     local overhang = true
     local node = getn(pos)
-    
+
     -- Do not cause exempt nodes to fall.
     if instability.node_exempt(node.name) then
       return
     end
-    
+
     for i = 1, 3 do
       node = getn({x=pos.x, y=pos.y-i, z=pos.z})
       if node.name ~= "air" then
@@ -462,6 +463,6 @@ if not instability.run_once then
   local c = "instability:core"
   local f = instability.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   instability.run_once = true
 end

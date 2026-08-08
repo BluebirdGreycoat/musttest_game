@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("heatdamage") then heatdamage = {} end
 heatdamage.modpath = minetest.get_modpath("heatdamage")
+reload.install_simple_signals(heatdamage)
 
 -- Localize for performance.
 local math_floor = math.floor

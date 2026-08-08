@@ -6,6 +6,7 @@
 
 if not minetest.global_exists("gem_mapgen") then gem_mapgen = {} end
 gem_mapgen.modpath = minetest.get_modpath("gem_mapgen")
+reload.install_simple_signals(gem_mapgen)
 
 if not gem_mapgen.registered then
 	local ores = {

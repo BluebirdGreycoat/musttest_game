@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("grind2") then grind2 = {} end
 grind2.modpath = minetest.get_modpath("grinder")
+reload.install_simple_signals(grind2)
 
 local MACHINE_NAME = "Grinder"
 local MACHINE_DESC = "This grinds things.\nCan burn mese for fuel when off-grid.\nAlternatively, connect to a power-network."

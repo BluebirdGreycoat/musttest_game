@@ -7,6 +7,7 @@
 
 if not minetest.global_exists("gem_minerals") then gem_minerals = {} end
 gem_minerals.modpath = minetest.get_modpath("gem_minerals")
+reload.install_simple_signals(gem_minerals)
 
 local gems = {
 	{name="ruby", desc="Ruby", hardness=20, extra = true, texture = "default_stone.png",},

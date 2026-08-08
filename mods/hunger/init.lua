@@ -3,6 +3,7 @@ if not minetest.global_exists("hunger") then hunger = {} end
 hunger.modpath = minetest.get_modpath("hunger")
 hunger.players = hunger.players or {}
 hunger.food = hunger.food or {}
+reload.install_simple_signals(hunger)
 
 
 

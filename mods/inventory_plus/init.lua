@@ -12,6 +12,7 @@
 -- Expose API.
 if not minetest.global_exists("inventory_plus") then inventory_plus = {} end
 inventory_plus.modpath = minetest.get_modpath("inventory_plus")
+reload.install_simple_signals(inventory_plus)
 
 -- Define buttons.
 inventory_plus.buttons = inventory_plus.buttons or {}
@@ -55,7 +56,7 @@ function inventory_plus.get_formspec()
 		-- Trash icon.
 		.. "list[" .. ltrash .. ";" .. mtrash .. ";7,0.5;1,1;]"
 		.. "image[7,0.5;1,1;" .. itrash .. "]"
-	
+
 	-- Positions for individual buttons.
 	local positions = {
 		armor = {0, 1},
@@ -78,7 +79,7 @@ function inventory_plus.get_formspec()
 				"tooltip[" .. k .. ";" .. v .. "]" -- Give each button a tooltip.
 		end
 	end
-	
+
 	return formspec
 end
 

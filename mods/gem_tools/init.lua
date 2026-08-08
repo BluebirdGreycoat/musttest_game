@@ -7,6 +7,7 @@
 
 if not minetest.global_exists("gem_tools") then gem_tools = {} end
 gem_tools.modpath = minetest.get_modpath("gem_tools")
+reload.install_simple_signals(gem_tools)
 
 -- This code is executed only once.
 if not gem_tools.registered then

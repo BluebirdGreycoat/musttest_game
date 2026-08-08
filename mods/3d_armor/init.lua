@@ -5,6 +5,8 @@ armor.modpath = minetest.get_modpath(armor.modname)
 armor.worldpath = minetest.get_worldpath()
 armor.log_PlayerHPChangeReason = false
 
+reload.install_simple_signals(armor)
+
 -- Increase this if you get initialization glitches when a player first joins.
 ARMOR_INIT_DELAY = 1
 

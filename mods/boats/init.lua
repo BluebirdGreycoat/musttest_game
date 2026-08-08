@@ -2,6 +2,7 @@
 -- Helper functions
 --
 if not minetest.global_exists("boats") then boats = {} end
+reload.install_simple_signals(boats)
 
 -- Localize for performance.
 local math_floor = math.floor

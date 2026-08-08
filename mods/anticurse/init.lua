@@ -1,6 +1,7 @@
 
 anticurse = {}
 anticurse.logpath = minetest.get_worldpath() .. "/cursing.txt"
+reload.install_simple_signals(anticurse)
 
 
 

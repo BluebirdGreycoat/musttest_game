@@ -3,6 +3,7 @@
 if not minetest.global_exists("hud_clock") then hud_clock = {} end
 hud_clock.modpath = minetest.get_modpath("clock")
 hud_clock.player_hud = hud_clock.player_hud or {}
+reload.install_simple_signals(hud_clock)
 
 minetest.after(0, function()
 	xp.register_callback("on_xp_change", "hud_clock", function(pname)

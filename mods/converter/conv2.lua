@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("conv2") then conv2 = {} end
 conv2.modpath = minetest.get_modpath("converter")
+reload.install_simple_signals(conv2)
 
 local BUFFER_SIZE = tech.converter.buffer
 local ENERGY_AMOUNT = tech.converter.power

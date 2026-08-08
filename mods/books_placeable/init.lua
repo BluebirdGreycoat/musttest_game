@@ -5,6 +5,7 @@
 
 if not minetest.global_exists("books_placeable") then books_placeable = {} end
 books_placeable.modpath = minetest.get_modpath("books_placeable")
+reload.install_simple_signals(books_placeable)
 
 local MAX_COPY_DISTANCE = 3	-- Book copy is aborted if players mover further.
 books_placeable.MAX_COPY_DISTANCE = MAX_COPY_DISTANCE
@@ -450,7 +451,7 @@ local function on_use(itemstack, user, pointed_thing)
 			if data then
 				data.copy_pos = nil
 				data.copy_job = nil
-				
+
 				if data.form_pos == nil and data.formname == nil then
 					books_placeable.open_books[pname] = nil
 				end
@@ -484,7 +485,7 @@ local kick_blame_msgs = {
 
 local function kick_reading_players(pos, blamed)
 	local pos_hash = minetest.hash_node_position(pos)
-	
+
 	local spam_key
 	local public_blame_done
 	if blamed and blamed ~= "" then
@@ -494,7 +495,7 @@ local function kick_reading_players(pos, blamed)
 		spam_key = nil
 		public_blame_done = true
 	end
-	
+
 	local to_remove = {}
 
 	for name, data in pairs(books_placeable.open_books) do
@@ -511,7 +512,7 @@ local function kick_reading_players(pos, blamed)
 					msg = msg:gsub("<blamed>", rename.gpn(blamed))
 					msg = msg:gsub("<victim>", rename.gpn(name))
 					minetest.chat_send_all("# Server: " .. msg)
-					
+
 					public_blame_done = true
 					spam.mark_key(spam_key, 30)
 				else
@@ -525,7 +526,7 @@ local function kick_reading_players(pos, blamed)
 			data.copy_job:cancel()
 			data.copy_pos = nil
 			data.copy_job = nil
-			
+
 			if blamed and blamed ~= "" then
 				easyvend.sound_error(name)
 				if name == blamed then
@@ -848,7 +849,7 @@ local function invalidate_player_data(pname)
 			data.copy_job:cancel()
 			data.copy_job = nil
 		end
-		
+
 		books_placeable.open_books[pname] = nil
 
 		if form_pos then

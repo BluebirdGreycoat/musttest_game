@@ -2,6 +2,7 @@
 if not minetest.global_exists("beds") then beds = {} end
 beds.formspec_counters = beds.formspec_counters or {}
 beds.player_huds = beds.player_huds or {}
+reload.install_simple_signals(beds)
 
 local SLEEP_TIME_WO_NIGHTSKIP = 5*60
 

@@ -26,6 +26,7 @@ minetest.register_craft({
 
 bucket = {}
 bucket.liquids = {}
+reload.install_simple_signals(bucket)
 
 
 
@@ -203,7 +204,7 @@ function bucket.register_liquid(source, flowing, itemname, placename, inventory_
 						return itemstack
 					end
 				end
-				
+
 				-- Cityblock check.
 				if city_block:in_disallow_liquid_zone(lpos, user) then
 					minetest.chat_send_player(user:get_player_name(), "# Server: Don't do that in town!")

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("bonemeal") then bonemeal = {} end
 bonemeal.modpath = minetest.get_modpath("bonemeal")
+reload.install_simple_signals(bonemeal)
 
 -- Localize for performance.
 local math_random = math.random
@@ -125,7 +126,7 @@ function bonemeal.on_use(itemstack, user, pt)
 					papyrus.grow(pos, node)
 				end
 				take = true
-			elseif node.name == "default:tvine" or 
+			elseif node.name == "default:tvine" or
 					node.name == "default:tvine_alt" or
 					node.name == "default:tvine_top" or
 					node.name == "default:tvine_top_alt" then

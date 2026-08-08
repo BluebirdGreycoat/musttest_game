@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("auth2") then auth2 = {} end
 auth2.modpath = minetest.get_modpath("auth2")
+reload.install_simple_signals(auth2)
 
 
 

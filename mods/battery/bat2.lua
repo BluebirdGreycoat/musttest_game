@@ -3,6 +3,7 @@ if not minetest.global_exists("bat2") then bat2 = {} end
 if not minetest.global_exists("bat2_lv") then bat2_lv = {} end
 if not minetest.global_exists("bat2_mv") then bat2_mv = {} end
 if not minetest.global_exists("bat2_hv") then bat2_hv = {} end
+reload.install_simple_signals(bat2)
 
 -- Localize for performance.
 local math_floor = math.floor

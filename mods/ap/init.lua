@@ -2,6 +2,7 @@
 if not minetest.global_exists("ap") then ap = {} end
 ap.modpath = ap.modpath or minetest.get_modpath("ap")
 ap.players = ap.players or {}
+reload.install_simple_signals(ap)
 
 -- Number of seconds to keep track of player's reported positions.
 -- This must be at least 1 (though such a small value is NOT useful).

@@ -2,6 +2,7 @@
 
 if not minetest.global_exists("binoculars") then binoculars = {} end
 binoculars.modpath = minetest.get_modpath("binoculars")
+reload.install_simple_signals(binoculars)
 
 -- Update player property
 -- Global to allow overriding

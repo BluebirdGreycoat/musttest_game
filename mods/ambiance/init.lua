@@ -5,6 +5,7 @@ if not minetest.global_exists("ambiance") then ambiance = {} end
 ambiance.players = ambiance.players or {}
 ambiance.environment_cache = ambiance.environment_cache or {}
 ambiance.modpath = minetest.get_modpath("ambiance")
+reload.install_simple_signals(ambiance)
 
 -- Localize for performance.
 local math_random = math.random
@@ -42,7 +43,7 @@ ambiance.globalstep = function(dtime)
 	-- Get current time of day.
 	local curtime = minetest.get_timeofday()
 	local rand = math_random
-    
+
 	-- For all sounds, check if anyone can hear them. If yes, play sound to players that can hear.
 	local allsounds = ambiance.allsounds
 	for k, v in ipairs(allsounds) do
@@ -154,7 +155,7 @@ if not ambiance.registered then
   minetest.register_on_leaveplayer(function(player)
     ambiance.players[player:get_player_name()] = nil
   end)
-  
+
   minetest.register_globalstep(function(...) return ambiance.globalstep(...) end)
   minetest.register_globalstep(function(...) return ambiance.globalstep_scuba(...) end)
   ambiance.registered = true

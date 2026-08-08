@@ -3,6 +3,7 @@ barter.chest = barter.chest or {}
 barter.reset_delay = 60*20 -- Number of seconds to reset after pressing start.
 barter.long_delay = 60*60*3
 barter.enable_logging = false
+reload.install_simple_signals(barter)
 
 -- Localize for performance.
 local math_floor = math.floor

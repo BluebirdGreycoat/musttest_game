@@ -16,6 +16,7 @@ if not minetest.global_exists("ac") then ac = {} end
 ac.modpath = minetest.get_modpath("ac")
 ac.wpath = minetest.get_worldpath()
 ac.players = ac.players or {} -- Per-player data for this session ONLY.
+reload.install_simple_signals(ac)
 
 -- Random delay to first check on player's first join (this session).
 ac.initial_delay_min = 1

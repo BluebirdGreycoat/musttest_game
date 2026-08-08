@@ -4,6 +4,7 @@
 if not minetest.global_exists("cloaking") then cloaking = {} end
 cloaking.modpath = minetest.get_modpath("cloaking")
 cloaking.players = cloaking.players or {}
+reload.install_simple_signals(cloaking)
 
 -- Localize for speed.
 local math_random = math.random

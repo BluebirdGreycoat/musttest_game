@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("cent2") then cent2 = {} end
 cent2.modpath = minetest.get_modpath("centrifuge")
+reload.install_simple_signals(cent2)
 
 -- Localize for performance.
 local math_floor = math.floor

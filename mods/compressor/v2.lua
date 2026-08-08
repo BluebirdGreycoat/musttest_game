@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("comp2") then comp2 = {} end
 comp2.modpath = minetest.get_modpath("compressor")
+reload.install_simple_signals(comp2)
 
 -- Localize for performance.
 local math_floor = math.floor

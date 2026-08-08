@@ -3,6 +3,7 @@ if not minetest.global_exists("admin_tnt") then admin_tnt = {} end
 admin_tnt.modpath = minetest.get_modpath("admin_tnt")
 admin_tnt.explode_time = 60*60*24*3+60*60*3
 admin_tnt.step_time = 30
+reload.install_simple_signals(admin_tnt)
 
 -- Localize for performance.
 local math_floor = math.floor

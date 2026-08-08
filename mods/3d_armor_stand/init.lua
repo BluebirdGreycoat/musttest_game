@@ -1,4 +1,7 @@
 
+armor_stand = {}
+reload.install_simple_signals(armor_stand)
+
 -- Localize for performance.
 local vector_round = vector.round
 

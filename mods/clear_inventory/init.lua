@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("clear_inventory") then clear_inventory = {} end
 clear_inventory.modpath = minetest.get_modpath("clear_inventory")
+reload.install_simple_signals(clear_inventory)
 
 function clear_inventory.clear_primary_inventories(player)
 	local inv = player:get_inventory()
@@ -39,7 +40,7 @@ function clear_inventory.clear(name, param)
 
 	-- Actually clear the player's inventory!
 	clear_inventory.clear_primary_inventories(player)
-	
+
 	-- Report to player.
 	minetest.chat_send_player(name, "# Server: Player <" .. rename.gpn(player:get_player_name()) .. ">'s inventory cleared!")
 end
@@ -63,7 +64,7 @@ if not clear_inventory.registered then
 	local c = "clear_inventory:core"
 	local f = clear_inventory.modpath .. "/init.lua"
 	reload.register_file(c, f, false)
-	
+
 	clear_inventory.registered = true
 end
 

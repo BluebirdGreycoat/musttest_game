@@ -5,6 +5,7 @@
 if not minetest.global_exists("bone_mark") then bone_mark = {} end
 bone_mark.modpath = minetest.get_modpath("bone_mark")
 bone_mark.players = bone_mark.players or {}
+reload.install_simple_signals(bone_mark)
 
 local STEP_TIME = 3.5
 local BONE_NEAR_DIST = 3

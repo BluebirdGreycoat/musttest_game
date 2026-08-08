@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("chest_api") then chest_api = {} end
 chest_api.modpath = minetest.get_modpath("chest_api")
+reload.install_simple_signals(chest_api)
 
 dofile(chest_api.modpath .. "/functions.lua")
 

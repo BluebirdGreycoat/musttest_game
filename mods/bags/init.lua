@@ -12,6 +12,7 @@ Edited by TenPlus1
 
 if not minetest.global_exists("bags") then bags = {} end
 bags.modpath = minetest.get_modpath("bags")
+reload.install_simple_signals(bags)
 
 
 

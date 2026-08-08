@@ -6,6 +6,7 @@ afk.steptime = 5
 afk.timeout = 60 * 10 -- 10 minutes.
 afk.warntime = 60 * 9
 afk.disable_kick = minetest.is_singleplayer()
+reload.install_simple_signals(afk)
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

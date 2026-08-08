@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("configurator") then configurator = {} end
 configurator.modpath = minetest.get_modpath("configurator")
+reload.install_simple_signals(configurator)
 
 local SHORT_DESCRIPTION = "WR Config Device (Unconfigured)\n\nPunch node to set primary target.\nShift-punch node to set secondary target.\nRightclick node to set tertiary target."
 
@@ -86,7 +87,7 @@ if not configurator.run_once then
 		on_secondary_use = function(...) return configurator.on_secondary_use(...) end,
   })
 	minetest.register_alias("configurator:configurator", "cfg:dev")
-  
+
   minetest.register_craft({
     output = "cfg:dev",
     recipe = {
@@ -95,7 +96,7 @@ if not configurator.run_once then
       {'', 'techcrafts:copper_coil', ''},
     },
   })
-  
+
   local c = "configurator:core"
   local f = configurator.modpath .. "/init.lua"
   reload.register_file(c, f, false)

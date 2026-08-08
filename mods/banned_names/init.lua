@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("banned_names") then banned_names = {} end
 banned_names.modpath = minetest.get_modpath("banned_names")
+reload.install_simple_signals(banned_names)
 
 
 
@@ -54,6 +55,6 @@ if not banned_names.run_once then
   local c = "banned_names:core"
   local f = banned_names.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   banned_names.run_once = true
 end

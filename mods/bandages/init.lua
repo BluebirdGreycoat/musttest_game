@@ -2,6 +2,7 @@
 if not minetest.global_exists("bandages") then bandages = {} end
 bandages.modpath = minetest.get_modpath("bandages")
 bandages.players = bandages.players or {}
+reload.install_simple_signals(bandages)
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

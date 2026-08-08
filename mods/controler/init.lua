@@ -1,13 +1,14 @@
 
 if not minetest.global_exists("controler") then controler = {} end
 controler.modpath = minetest.get_modpath("controler")
+reload.install_simple_signals(controler)
 
 
 
 controler.compose_formspec =
 function(pos)
   local meta = minetest.get_meta(pos)
-  
+
   local formspec =
     "size[8,8.5]" ..
     default.formspec.get_form_colors() ..
@@ -15,14 +16,14 @@ function(pos)
     default.formspec.get_slot_colors() ..
     "label[0,0.5;Controler Configuration]" ..
     "list[context;cfg;0,1;8,2;]" ..
-    
+
     "list[current_player;main;0,4.25;8,1;]" ..
     "list[current_player;main;0,5.5;8,3;8]" ..
-    
+
     "listring[context;cfg]" ..
     "listring[current_player;main]" ..
     default.get_hotbar_bg(0, 4.25)
-  
+
   meta:set_string("formspec", formspec)
 end
 
@@ -33,14 +34,14 @@ function(pos)
   meta:set_string("infotext", infotext)
 end
 
-controler.can_dig = 
+controler.can_dig =
 function(pos, player)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
   return inv:is_empty('cfg')
 end
 
-controler.allow_metadata_inventory_put = 
+controler.allow_metadata_inventory_put =
 function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
   if minetest.test_protection(pos, pname) then
@@ -52,7 +53,7 @@ function(pos, listname, index, stack, player)
   return 0
 end
 
-controler.allow_metadata_inventory_move = 
+controler.allow_metadata_inventory_move =
 function(pos, from_list, from_index, to_list, to_index, count, player)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
@@ -60,7 +61,7 @@ function(pos, from_list, from_index, to_list, to_index, count, player)
   return controler.allow_metadata_inventory_put(pos, to_list, to_index, stack, player)
 end
 
-controler.allow_metadata_inventory_take = 
+controler.allow_metadata_inventory_take =
 function(pos, listname, index, stack, player)
   local pname = player:get_player_name()
   if minetest.test_protection(pos, pname) then
@@ -69,20 +70,20 @@ function(pos, listname, index, stack, player)
   return stack:get_count()
 end
 
-controler.on_timer = 
+controler.on_timer =
 function(pos, elapsed)
   machines.log_update(pos, "Machine Controler")
-  
+
   local table_in = {
     purpose = "autostart_trigger",
   }
   local table_out = {}
   local traversal = {}
-         
+
   -- Do not process self.
   local hash = minetest.hash_node_position(pos)
   traversal[hash] = 0
-  
+
   -- Update all machines on adjacent networks of any tier.
   local hubs = machines.get_adjacent_network_hubs(pos)
   if hubs then
@@ -94,12 +95,12 @@ function(pos, elapsed)
       end
     end
   end
-  
+
   controler.compose_formspec(pos)
   controler.compose_infotext(pos)
 end
 
-controler.on_blast = 
+controler.on_blast =
 function(pos)
   local drops = {}
   default.get_inventory_drops(pos, "cfg", drops)
@@ -108,15 +109,15 @@ function(pos)
   return drops
 end
 
-controler.on_construct = 
+controler.on_construct =
 function(pos)
   controler.initialize_typedata(pos)
 
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
-  
+
   inv:set_size('cfg', 16)
-  
+
   controler.compose_formspec(pos)
   controler.compose_infotext(pos)
 end
@@ -133,17 +134,17 @@ function(pos)
   end
 end
 
-controler.on_metadata_inventory_move = 
+controler.on_metadata_inventory_move =
 function(pos)
   controler.trigger_update(pos)
 end
 
-controler.on_metadata_inventory_put = 
+controler.on_metadata_inventory_put =
 function(pos)
   controler.trigger_update(pos)
 end
 
-controler.on_metadata_inventory_take = 
+controler.on_metadata_inventory_take =
 function(pos)
   controler.trigger_update(pos)
 end
@@ -157,7 +158,7 @@ function(pos, table_in, table_out, traversal)
   local hash = minetest.hash_node_position(pos)
   if traversal[hash] then return end
   traversal[hash] = 0
-  
+
   local purpose = table_in.purpose
   if purpose == "controler_update" then
     controler.trigger_update(pos)
@@ -193,12 +194,12 @@ if not controler.run_once then
       "controler_side.png", "controler_side.png",
       "controler_side.png", "controler_front.png"
     },
-    
+
     groups = utility.dig_groups("machine", {
       immovable = 1,
       tier_lv = 1, tier_mv = 1, tier_hv = 1,
     }),
-    
+
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,
     is_ground_content = false,
@@ -230,7 +231,7 @@ if not controler.run_once then
       return controler.allow_metadata_inventory_move(...) end,
     allow_metadata_inventory_take = function(...)
       return controler.allow_metadata_inventory_take(...) end,
-      
+
     on_machine_execute = function(...)
       return controler.on_machine_execute(...) end,
   })
@@ -246,10 +247,10 @@ if not controler.run_once then
     },
   })
 	--]]
-  
+
   local c = "controler:core"
   local f = controler.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   controler.run_once = true
 end

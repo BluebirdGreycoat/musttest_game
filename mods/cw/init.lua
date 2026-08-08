@@ -6,6 +6,7 @@
 if not minetest.global_exists("cw") then cw = {} end
 cw.modpath = minetest.get_modpath("cw")
 cw.worldpath = minetest.get_worldpath()
+reload.install_simple_signals(cw)
 
 -- Tree schems.
 if not cw.jungletree_registered then

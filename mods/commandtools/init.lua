@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("commandtools") then commandtools = {} end
 commandtools.modpath = minetest.get_modpath("commandtools")
+reload.install_simple_signals(commandtools)
 
 -- Localize for performance.
 local vector_round = vector.round

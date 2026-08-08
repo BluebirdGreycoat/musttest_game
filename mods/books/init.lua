@@ -1,6 +1,8 @@
 
 if not minetest.global_exists("books") then books = {} end
 books.modpath = minetest.get_modpath("books")
+reload.install_simple_signals(books)
+
 dofile(books.modpath .. "/book.lua")
 
 

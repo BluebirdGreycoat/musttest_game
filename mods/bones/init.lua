@@ -2,6 +2,7 @@
 -- See README.txt for licensing and other information.
 
 if not minetest.global_exists("bones") then bones = {} end
+reload.install_simple_signals(bones)
 
 
 

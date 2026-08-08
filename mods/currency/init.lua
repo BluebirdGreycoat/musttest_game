@@ -5,6 +5,7 @@ currency.stackmax = 256
 currency.data = currency.data or {}
 currency.dirty = true
 currency.filename = minetest.get_worldpath() .. "/currency.txt"
+reload.install_simple_signals(currency)
 
 -- Localize for performance.
 local math_floor = math.floor

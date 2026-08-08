@@ -5,6 +5,7 @@
 
 if not minetest.global_exists("anvil") then anvil = {} end
 anvil.modpath = minetest.get_modpath("anvil")
+reload.install_simple_signals(anvil)
 
 -- Place entity exactly on anvil surface.
 -- Search for entities inside anvil node ONLY.

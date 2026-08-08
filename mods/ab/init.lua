@@ -2,6 +2,7 @@
 if not minetest.global_exists("ab") then ab = {} end
 ab.modpath = minetest.get_modpath("ab")
 ab.worldpath = minetest.get_worldpath()
+reload.install_simple_signals(ab)
 
 local REALM_START = 21150
 local REALM_END = 23450

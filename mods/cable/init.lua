@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("cable") then cable = {} end
 cable.modpath = minetest.get_modpath("cable")
+reload.install_simple_signals(cable)
 
 if not minetest.global_exists("cable_hv") then cable_hv = {} end
 if not minetest.global_exists("cable_mv") then cable_mv = {} end
@@ -128,27 +129,27 @@ if not cable.run_once then
   }) do
     -- Which function table do we use?
     local functable = _G["cable_" .. v.tier]
-    
+
     minetest.register_node("cable:" .. v.tier, {
       description = v.name .. " [Max length: " .. cable.get_max_length(v.tier) .. " meters.]",
       tiles = {v.tile},
-      
+
       groups = utility.dig_groups("bigitem", {
         immovable = 1,
       }),
 			drop = "cb2:" .. v.tier,
-      
+
       paramtype = "light",
       drawtype = "nodebox",
       node_box = {
         type = "fixed",
         fixed = {-0.5, -1/v.boxd, -1/v.boxd, 0.5, 1/v.boxd, 1/v.boxd},
       },
-      
+
       paramtype2 = "facedir",
       is_ground_content = false,
       sounds = default.node_sound_wood_defaults(),
-      
+
       on_rotate = function(...)
         return functable.on_rotate(...) end,
       after_place_node = function(...)
@@ -157,9 +158,9 @@ if not cable.run_once then
         return functable.on_destruct(...) end,
     })
   end
-  
+
   minetest.register_alias("switching_station:cable", "cable:hv")
-  
+
   minetest.register_craft({
     output = "cb2:hv 3",
     recipe = {
@@ -168,7 +169,7 @@ if not cable.run_once then
       {'plastic:plastic_sheeting', 'plastic:plastic_sheeting', 'plastic:plastic_sheeting'},
     },
   })
-  
+
   minetest.register_craft({
     output = "cb2:mv 3",
     recipe = {
@@ -177,7 +178,7 @@ if not cable.run_once then
       {'rubber:rubber_fiber', 'rubber:rubber_fiber', 'rubber:rubber_fiber'},
     },
   })
-  
+
   minetest.register_craft({
     output = "cb2:lv 3",
     recipe = {
@@ -186,7 +187,7 @@ if not cable.run_once then
       {'default:paper', 'default:paper', 'default:paper'},
     },
   })
-  
+
 	-- New cable types.
   for k, v in ipairs({
     {tier="hv", name="HV Cable", tile="cable_hv.png", w=5},
@@ -249,6 +250,6 @@ if not cable.run_once then
   local c = "cable:core"
   local f = cable.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   cable.run_once = true
 end

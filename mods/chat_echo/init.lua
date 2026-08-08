@@ -2,6 +2,7 @@
 if not minetest.global_exists("chat_echo") then chat_echo = {} end
 chat_echo.modpath = minetest.get_modpath("chat_echo")
 chat_echo.players = chat_echo.players or {}
+reload.install_simple_signals(chat_echo)
 
 -- Player chat is echoed by default, since most players need it now.
 
@@ -59,7 +60,7 @@ end
 
 if not chat_echo.run_once then
   chat_echo.modstorage = minetest.get_mod_storage()
-  
+
   minetest.register_on_joinplayer(function(...)
 		return chat_echo.on_joinplayer(...)
   end)
@@ -67,10 +68,10 @@ if not chat_echo.run_once then
 	minetest.register_on_leaveplayer(function(...)
 		return chat_echo.on_leaveplayer(...)
 	end)
-  
+
   local c = "chat_echo:core"
   local f = chat_echo.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   chat_echo.run_once = true
 end

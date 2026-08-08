@@ -2,6 +2,7 @@
 if not minetest.global_exists("chat_colorize") then chat_colorize = {} end
 chat_colorize.player_just_died = chat_colorize.player_just_died or {}
 chat_colorize.modpath = minetest.get_modpath("chat_colorize")
+reload.install_simple_signals(chat_colorize)
 
 local S = core.get_translator("chat_colorize")
 

@@ -18,6 +18,7 @@ local S = function(str) return str end
 if not minetest.global_exists("circular_saw") then circular_saw = {} end
 circular_saw.modpath = minetest.get_modpath("circular_saw")
 circular_saw.known_nodes = circular_saw.known_nodes or {}
+reload.install_simple_signals(circular_saw)
 
 function circular_saw.register_node(recipeitem, subname)
   circular_saw.known_nodes[recipeitem] = circular_saw.known_nodes[recipeitem] or {}

@@ -1,5 +1,6 @@
 
 if not minetest.global_exists("cans") then cans = {} end
+reload.install_simple_signals(cans)
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -59,7 +60,7 @@ end
 
 function cans.register_can(d)
   local data = table.copy(d)
-  
+
   minetest.register_tool(data.can_name, {
     description = data.can_description,
     inventory_image = data.can_inventory_image,
@@ -68,7 +69,7 @@ function cans.register_can(d)
 		wear_represents = "liquid_amount",
 		groups = {not_repaired_by_anvil = 1, disable_repair = 1},
 		_can_max_liquid_level = data.can_capacity,
-    
+
     on_use = function(itemstack, user, pointed_thing)
       if pointed_thing.type ~= "node" then return end
       local node = minetest.get_node(pointed_thing.under)
@@ -81,7 +82,7 @@ function cans.register_can(d)
         minetest.chat_send_player(user:get_player_name(), "# Server: That is on someone else's land!")
         return
       end
-      
+
       if node.name == "default:lava_source" then
         minetest.add_node(pointed_thing.under, {name="fire:basic_flame"})
         local pos = user:get_pos()
@@ -92,13 +93,13 @@ function cans.register_can(d)
       else
         minetest.remove_node(pointed_thing.under)
       end
-      
+
       charge = charge + 1
       set_can_level(itemstack, charge)
       set_can_wear(itemstack, charge, data.can_capacity)
       return itemstack
     end,
-    
+
     on_place = function(itemstack, user, pointed_thing)
 			if not user or not user:is_player() then
 				return

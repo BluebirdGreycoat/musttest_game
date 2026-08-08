@@ -7,6 +7,7 @@
 if not minetest.global_exists("chat_core") then chat_core = {} end
 chat_core.modpath = minetest.get_modpath("chat_core")
 chat_core.players = chat_core.players or {}
+reload.install_simple_signals(chat_core)
 
 -- Localize for performance.
 local vector_distance = vector.distance

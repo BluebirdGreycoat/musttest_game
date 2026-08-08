@@ -19,9 +19,11 @@ end
 
 -- Only static information.
 local function get_infotext_1()
-	local infotext = ("Address: %s\nPort: %s\nForum: %s\n%s"):format(
-		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR),
-		os.date("!%Y/%m/%d %H:%m:%S", os.time())
+	local infotext = ("Port: %s\nAddress: %s\n%s\nForum: %s"):format(
+		tostring(WEBPORT),
+		tostring(WEBADDR),
+		os.date("!%Y/%m/%d %H:%m:%S", os.time()),
+		tostring(FORUMADDR)
 	)
 	return infotext
 end
@@ -57,8 +59,11 @@ local function get_infotext_2()
 	local max_players = camc.MAX_SEEN_PLAYERS
 	local uptime_str = format_uptime(camc.UPTIME_START, os.time())
 
-	local infotext = ("Players: %d / %d\nServer Uptime: %s\nMax Lag: %.3f"):format(
-		num_players, max_players, uptime_str, core.get_server_max_lag()
+	local infotext = ("Players: %d / %d\nMax Lag: %.3f\nServer Uptime: %s"):format(
+		num_players,
+		max_players,
+		core.get_server_max_lag(),
+		uptime_str
 	)
 	return infotext
 end

@@ -2,6 +2,7 @@
 if not minetest.global_exists("mob_spawn") then mob_spawn = {} end
 mob_spawn.modpath = minetest.get_modpath("mob_spawn")
 mob_spawn.report_mob = ""
+reload.install_simple_signals(mob_spawn)
 
 -- Ensure we don't get 'attempt to compare number with nil' at runtime.
 assert(type(default.LIGHT_MAX) == "number")

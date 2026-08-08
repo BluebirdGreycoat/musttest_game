@@ -6,6 +6,7 @@ marker.gui = marker.gui or {}
 marker.steptime = 1
 marker.max_waypoints = 100
 marker.max_lists = 50
+reload.install_simple_signals(marker)
 
 -- Max distance of players who wish to share marker lists.
 marker.proximity_range = 10

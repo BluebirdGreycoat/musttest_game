@@ -8,6 +8,7 @@
 if not minetest.global_exists("mapfix") then mapfix = {} end
 mapfix.players = mapfix.players or {}
 mapfix.modpath = minetest.get_modpath("mapfix")
+reload.install_simple_signals(mapfix)
 
 -- Localize for performance.
 local vector_round = vector.round

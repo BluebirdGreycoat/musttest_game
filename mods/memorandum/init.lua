@@ -2,6 +2,7 @@
 -- File shall be reloadable.
 if not minetest.global_exists("memorandum") then memorandum = {} end
 memorandum.modpath = minetest.get_modpath("memorandum")
+reload.install_simple_signals(memorandum)
 
 local MAX_LETTER_SIZE = 5000
 local MAX_AUTHOR_SIZE = 128
@@ -69,7 +70,7 @@ memorandum.extract_metainfo = function(text)
 	if string.find(text, ":JSON$") then
 		newformat = true
 	end
-    
+
 	if newformat == true then
 		text = string.gsub(text, ":JSON$", "")
 		local data = minetest.parse_json(text)
@@ -812,7 +813,7 @@ if not memorandum.run_once then
 	minetest.override_item("default:paper", {
 		on_place = function(...) return memorandum.on_paper_initialize(...) end,
 	})
-    
+
 	-- An empty letter is the intermediate state between default paper and a written letter.
 	-- Note that the empty letter can exist only as a node, if dug it reverts to default paper.
 	minetest.register_node("memorandum:letter_empty", {

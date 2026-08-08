@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("key") then key = {} end
 key.modpath = minetest.get_modpath("key")
+reload.install_simple_signals(key)
 
 -- Localize for performance.
 local vector_round = vector.round

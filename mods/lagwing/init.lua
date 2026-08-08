@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("lagwing") then lagwing = {} end
 lagwing.modpath = minetest.get_modpath("lagwing")
+reload.install_simple_signals(lagwing)
 
 lagwing.GRAVITY = -9
 lagwing.MAX_AIRSPEED = 16

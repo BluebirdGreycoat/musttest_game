@@ -2,6 +2,7 @@
 if not minetest.global_exists("jail") then jail = {} end
 jail.modpath = minetest.get_modpath("jail")
 jail.noclip_radius = 15 -- Max distance of player from jail.
+reload.install_simple_signals(jail)
 
 -- Localize vector.distance() for performance.
 local vector_distance = vector.distance

@@ -35,6 +35,7 @@ bench("Secure", "assert(SecureRandom())", "r:next_bytes()")
 if not minetest.global_exists("mapgen") then mapgen = {} end
 mapgen.modpath = minetest.get_modpath("mapgen")
 mapgen.blames = mapgen.blames or {}
+reload.install_simple_signals(mapgen)
 
 local vector_distance = vector.distance
 

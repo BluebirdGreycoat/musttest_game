@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("mailbox") then mailbox = {} end
 mailbox.modpath = minetest.get_modpath("mailbox")
+reload.install_simple_signals(mailbox)
 
 -- Stores mailbox information.
 mailbox.boxes = mailbox.boxes or {}

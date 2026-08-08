@@ -2,6 +2,7 @@
 -- Mod is reloadable.
 if not minetest.global_exists("jumping") then jumping = {} end
 jumping.modpath = minetest.get_modpath("jumping")
+reload.install_simple_signals(jumping)
 
 local next_node = {
 	["jumping:bouncer_1"] = "jumping:bouncer_2",

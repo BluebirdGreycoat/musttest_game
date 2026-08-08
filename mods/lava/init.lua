@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("lava") then lava = {} end
 lava.modpath = minetest.get_modpath("lava")
+reload.install_simple_signals(lava)
 
 
 

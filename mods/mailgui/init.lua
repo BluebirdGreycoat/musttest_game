@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("mailgui") then mailgui = {} end
 mailgui.modpath = minetest.get_modpath("mailgui")
+reload.install_simple_signals(mailgui)
 
 
 
@@ -43,7 +44,7 @@ mailgui.send_mail_single = function(from, subject, message, mailto)
     for k, v in ipairs(tb) do
       minetest.chat_send_player(from, "# Server: Message: " .. v)
     end
-    
+
     mailgui.alert_player(from, mailto) -- GUI alert.
   else
     minetest.chat_send_player(from, "# Server: Failed to send mail to <" .. rename.gpn(mailto) .. ">!")
@@ -59,7 +60,7 @@ mailgui.send_mail_multi = function(from, subject, message, mailto)
     minetest.chat_send_player(from, "# Server: Mail sent to <" .. rename.gpn(v.name) .. ">.")
     mailgui.alert_player(from, v.name) -- GUI alert.
   end
-  
+
   for k, v in ipairs(failure) do
     local reason = "Reason unknown."
     if v.error == "boxfull" then
@@ -74,14 +75,14 @@ mailgui.send_mail_multi = function(from, subject, message, mailto)
     minetest.chat_send_player(from, "# Server: Failed to send mail to <" .. rename.gpn(v.name) .. ">! " .. reason)
 		easyvend.sound_error(from)
   end
-  
+
   -- This is so the player has a log of their message in chat.
   minetest.chat_send_player(from, "# Server: Subject: " .. subject)
   local tb = string.split(message, "\n")
   for k, v in ipairs(tb) do
     minetest.chat_send_player(from, "# Server: Message: " .. v)
   end
-  
+
   return #success, #failure -- Return number of successes and failures.
 end
 
@@ -105,17 +106,17 @@ mailgui.compose_inbox_body = function(pname)
   local pstate = mailgui.players[pname]
   local inboxes = pstate.inboxes or {}
   local idx = pstate.selected
-  
+
   -- Selection can be nil.
   if type(idx) ~= "number" then return "", "" end
-  
+
   if idx >= 1 and idx <= #inboxes then
     local frm = inboxes[idx].from or ""
     local dat = inboxes[idx].date or ""
     local sub = inboxes[idx].sub or ""
     if sub == "" then sub = "No Subject" end
     local msg = inboxes[idx].msg or ""
-    
+
     local body =
       "From: <" .. rename.gpn(frm) .. ">\n" ..
       "To: <" .. rename.gpn(pname) .. ">\n" ..
@@ -123,7 +124,7 @@ mailgui.compose_inbox_body = function(pname)
       "Subject: " .. sub .. "\n" ..
       "------------------------------" ..
       "\n" .. msg
-    
+
     return body, msg -- Display body, original body.
   end
   return "", ""
@@ -131,14 +132,14 @@ end
 
 mailgui.compose_outbox_body = function(pname)
   local pstate = mailgui.players[pname]
-  
+
   local frm = pname
   local to = pstate.mailto or ""
   local dat = os.date("%Y-%m-%d")
   local sub = pstate.subject or ""
   if sub == "" then sub = "No Subject" end
   local msg = pstate.message or ""
-  
+
   local body =
     "From: <" .. rename.gpn(frm) .. ">\n" ..
     "To: <" .. rename.gpn(to) .. ">\n" ..
@@ -146,7 +147,7 @@ mailgui.compose_outbox_body = function(pname)
     "Subject: " .. sub .. "\n" ..
     "------------------------------" ..
     "\n" .. msg
-  
+
   return body
 end
 
@@ -164,7 +165,7 @@ mailgui.compose_formspec = function(pname)
     default.gui_slots ..
 		"item_image[0,0;1,1;passport:passport_adv]" ..
     "label[1,0;==| Send and Receive Mail |==]" ..
-    
+
     -- Inbox panel.
     "label[1,0.5;Inbox (" .. #inboxes .. " / " .. email.maxsize .. ")]" ..
     "checkbox[3.8,0.32;enable_interupt;Enable Live Interrupt;" ..
@@ -183,15 +184,15 @@ mailgui.compose_formspec = function(pname)
   end
   strs = string.gsub(strs, ",$", "") -- Remove trailing comma.
   formspec = formspec .. strs
-  
+
   -- Finalize mail headers.
   local idx = pstate.selected -- May be nil.
   if type(idx) ~= "number" then idx = 1 end -- Must always be valid number.
   formspec = formspec .. ";" .. tostring(idx) .. ";false]"
-  
+
   -- Compose display of currently selected message body.
   formspec = formspec .. "textarea[0.3,3.2;6.5,4;inbox;;"
-  
+
   -- By composing the inbox body near the same code that composes the header
   -- list, using the same index value, I ensure the two GUI elements can never
   -- somehow get out of sync. This is important, because mail deletion is done
@@ -200,14 +201,14 @@ mailgui.compose_formspec = function(pname)
   local body = mailgui.compose_inbox_body(pname)
   formspec = formspec .. minetest.formspec_escape(body)
   formspec = formspec .. "]" -- End textarea element.
-  
+
   -- Compose message panel.
   formspec = formspec .. "label[7,0.5;Compose Message"
-  
+
   if intlive == 'true' then
     formspec = formspec .. "   (Interrupt Enabled)"
   end
-  
+
   formspec = formspec .. "]" ..
     "label[7,1.0;Subject:]" ..
     "field[8.4,1.3;5.9,1;subject;;" ..
@@ -218,20 +219,20 @@ mailgui.compose_formspec = function(pname)
     "label[7,5.84;Send To:]" ..
     "field[8.4,6.14;5.9,1;mailto;;" ..
       minetest.formspec_escape(pstate.mailto or "") .. "]" ..
-    
+
     "button[0,6.8;2,1;delall;Delete All]" ..
     "button[2,6.8;2,1;delone;Delete One]" ..
     "button[4,6.8;2,1;inboxcopy;Get Copy]" ..
     "label[0,7.7;Message: " ..
       minetest.formspec_escape(pstate.infotext or "") .. "]" ..
-    
+
     "button[8,6.8;2,1;getmail;Get Mail]" ..
     "button[10,6.8;2,1;sendmail;Send Mail]" ..
     "button[12,6.8;2,1;outcopy;Get Copy]" ..
-  
+
     -- Close button.
     "button[12,0;2,1;done;Close]"
-  
+
   return formspec
 end
 
@@ -250,7 +251,7 @@ mailgui.show_formspec = function(pname, reshow)
     inboxes = {},     -- Email records (badly named, I know).
     live = 'true',    -- Whether interupting is allowed.
   }
-  
+
   -- Do stuff if opening the GUI (not simply redrawing it).
   if not reshow then
     mailgui.players[pname].infotext = "Mail management opened!"
@@ -267,10 +268,10 @@ end
 -- GUI callback handler.
 mailgui.gui_handler = function(pref, fname, fields)
   if fname ~= "mailgui:mailgui" then return end -- Not valid for this callback.
-      
+
   local pname = pref:get_player_name()
   if not mailgui.players[pname] then return true end -- No state, abort!
-  
+
 	if fields.quit then
 		mailgui.open_inboxes[pname] = nil
 		return true
@@ -282,7 +283,7 @@ mailgui.gui_handler = function(pref, fname, fields)
   if fields.message then pstate.message = fields.message end
   if fields.subject then pstate.subject = fields.subject end
   if fields.mailto then pstate.mailto = fields.mailto end
-  
+
 	if fields.done then
 		mailgui.open_inboxes[pname] = nil
 		passport.show_formspec(pname)
@@ -294,13 +295,13 @@ mailgui.gui_handler = function(pref, fname, fields)
     pstate.inboxes = {}
     pstate.infotext = "Inbox cleared!"
     pstate.selected = nil -- Unselect.
-    
+
     local sz = email.get_inbox_size(pname)
     if sz > 0 then
       pstate.infotext = "Inbox cleared! (There are items remaining, press 'Get Mail'.)"
     end
   end
-  
+
   if fields.delone then
     local idx = pstate.selected -- Can be nil.
     if type(idx) == "number" then
@@ -308,12 +309,12 @@ mailgui.gui_handler = function(pref, fname, fields)
         local frm = pstate.inboxes[idx].from or ""
         local sub = pstate.inboxes[idx].sub or ""
         if sub == "" then sub = "No Subject" end
-        
+
         -- Delete email.
         local tb = {pstate.inboxes[idx]} -- Get table ref.
         email.clear_inbox(pname, tb)
         table.remove(pstate.inboxes, idx)
-        
+
         pstate.infotext = "Message from <" .. rename.gpn(frm)
           .. "> (subject: " .. sub .. ") deleted!"
       else
@@ -324,7 +325,7 @@ mailgui.gui_handler = function(pref, fname, fields)
       pstate.infotext = "No message selected."
     end
   end
-  
+
   if fields.enable_interupt then
     pstate.live = fields.enable_interupt
     if pstate.live == 'true' then
@@ -337,12 +338,12 @@ mailgui.gui_handler = function(pref, fname, fields)
       pstate.infotext = "Invalid value!"
     end
   end
-  
+
   if fields.sendmail then
     local subject = string.trim(pstate.subject or "")
     local message = string.trim(pstate.message or "")
     local mailto = pstate.mailto or ""
-    
+
     -- Allow for no subject.
     if string.len(subject) <= email.max_subject_length then
       if message ~= "" then
@@ -400,7 +401,7 @@ mailgui.gui_handler = function(pref, fname, fields)
             local nums, numf = mailgui.send_mail_multi(pname, subject, message, strtab)
             pstate.infotext = #strtab .. " recipient(s) listed. " ..
               nums .. " message(s) sent. " .. numf .. " failure(s)."
-            
+
             if numf == 0 then
               -- Clear fields on all success.
               pstate.subject = ""
@@ -420,14 +421,14 @@ mailgui.gui_handler = function(pref, fname, fields)
       pstate.infotext = "Subject line is too long! Max is " .. email.max_subject_length .. " bytes."
     end
   end
-  
+
   if fields.getmail then
     pstate.inboxes = mailgui.get_inbox(pname)
     pstate.infotext = "Inbox refreshed!"
     -- Not really useful to reset the selection?
     --pstate.selected = nil -- Unselect.
   end
-  
+
   if fields.headers then
     assert(type(fields.headers) == "string")
     local event = minetest.explode_textlist_event(fields.headers)
@@ -448,7 +449,7 @@ mailgui.gui_handler = function(pref, fname, fields)
         if sub == "" then sub = "No Subject" end
         pstate.subject = "RE: " .. sub
         pstate.mailto = rename.gpn(mail.from or "")
-        
+
         pstate.selected = idx
         pstate.infotext = "Initialized response to mail #" .. tostring(idx)
       else
@@ -457,7 +458,7 @@ mailgui.gui_handler = function(pref, fname, fields)
       end
     end
   end
-  
+
   if fields.inboxcopy then
     local idx = pstate.selected
     if type(idx) == "number" and idx >= 1 and idx <= #pstate.inboxes then
@@ -490,12 +491,12 @@ mailgui.gui_handler = function(pref, fname, fields)
       pstate.infotext = "No mail currently selected!"
     end
   end
-  
+
   if fields.outcopy then
     local subject = pstate.subject or ""
     local message = pstate.message or ""
     local mailto = pstate.mailto or ""
-    
+
     if string.len(subject) <= email.max_subject_length then
       if message ~= "" then
         if mailto ~= "" then
@@ -535,22 +536,22 @@ mailgui.gui_handler = function(pref, fname, fields)
       pstate.infotext = "Subject line is too long! (Max " .. email.max_subject_length .. " bytes.)"
     end
   end
-  
+
   -- Keep displaying formspec until explicitly told to quit.
 	mailgui.show_formspec(pname, true)
   return true
 end
 
-  
-  
+
+
 if not mailgui.run_once then
   minetest.register_on_player_receive_fields(function(...)
     return mailgui.gui_handler(...)
   end)
-  
+
   local c = "mailgui:core"
   local f = mailgui.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   mailgui.run_once = true
 end

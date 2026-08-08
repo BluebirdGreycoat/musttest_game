@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("mtflower") then mtflower = {} end
 mtflower.modpath = minetest.get_modpath("mtflower")
+reload.install_simple_signals(mtflower)
 
 -- Localize for performance.
 local vector_round = vector.round

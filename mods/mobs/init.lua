@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("mobs") then mobs = {} end
 mobs.modpath = minetest.get_modpath("mobs")
+reload.install_simple_signals(mobs)
 
 -- Options.
 mobs.debug_paths = false -- Show paths to administrator?

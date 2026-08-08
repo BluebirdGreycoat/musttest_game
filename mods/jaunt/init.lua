@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("jaunt") then jaunt = {} end
 jaunt.modpath = minetest.get_modpath("jaunt")
+reload.install_simple_signals(jaunt)
 
 -- Localize for performance.
 local vector_distance = vector.distance

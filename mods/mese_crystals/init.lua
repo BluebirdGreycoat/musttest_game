@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("mese_crystals") then mese_crystals = {} end
 mese_crystals.modpath = minetest.get_modpath("mese_crystals")
+reload.install_simple_signals(mese_crystals)
 
 
 

@@ -5,6 +5,7 @@ map.modpath = minetest.get_modpath("map")
 map.players = map.players or {}
 map.time_step = 10
 map.charge_time = 60*60 -- 1 hour of continuous use.
+reload.install_simple_signals(map)
 
 -- Localize for performance.
 local math_floor = math.floor

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("jarkati") then jarkati = {} end
 jarkati.modpath = minetest.get_modpath("jarkati")
+reload.install_simple_signals(jarkati)
 
 function jarkati.on_generated(minp, maxp, blockseed)
 	local mapgen = minetest.get_mapgen_object("gennotify")

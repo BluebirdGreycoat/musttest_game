@@ -5,6 +5,7 @@
 -- generally in similar ways.
 if not minetest.global_exists("machines") then machines = {} end
 machines.modpath = minetest.get_modpath("machines")
+reload.install_simple_signals(machines)
 
 local NEED_LOG = true
 local SINGLEPLAYER = minetest.is_singleplayer()
@@ -44,7 +45,7 @@ function(from, to, wanted_charge)
   local meta = minetest.get_meta(from)
   local node = minetest.get_node(to)
   local def = minetest.reg_ns_nodes[node.name]
-  
+
   -- Make sure energy can actually be extracted from the node.
   if def and def.on_machine_execute then
     local table_in = {
@@ -54,15 +55,15 @@ function(from, to, wanted_charge)
       wanted_eu = wanted_charge,
     }
     local traversal = {}
-    
+
     -- Do not process self.
     local hash = minetest.hash_node_position(from)
     traversal[hash] = 0
-          
+
     def.on_machine_execute(to, table_in, table_out, traversal)
     return (table_out.gotten_eu or 0)
   end
-  
+
   return 0
 end
 
@@ -73,11 +74,11 @@ machines.get_cooktime =
 function(pos, name_cfg, name_ugp, wanted_time, eu_demand)
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
-    
+
   -- By default, machine wants this many EUs per/sec.
   local eups = eu_demand
   local upglist = inv:get_list(name_ugp) -- Name configurable.
-  
+
   -- Old machines might not have the upgrade inventory.
   if upglist then
     for k, v in ipairs(upglist) do
@@ -90,7 +91,7 @@ function(pos, name_cfg, name_ugp, wanted_time, eu_demand)
   local wanted_eu = wanted_time * eups
   local tried_once = false
   ::try_again::
-  
+
   -- If enough energy is buffered we can grab it & run.
   local eu_buffered = meta:get_int("eu_buffered")
   if wanted_eu <= eu_buffered then
@@ -98,27 +99,27 @@ function(pos, name_cfg, name_ugp, wanted_time, eu_demand)
     meta:set_int("eu_buffered", eu_buffered)
     return wanted_time
   end
-  
+
   if tried_once == false then
     -- Otherwise, we have to refill the buffer.
     -- Get location of network access.
     local netpos = machines.get_adjacent_network_hubs(pos, {"mv"})
-    
+
     -- Energy source(s) found.
     for k, v in ipairs(netpos) do
       -- Should be enough for at least 1 of even the longest cooking item.
       -- If not, how could we fix this? Maybe just reduce the cooktime for the
       -- offending item ....
       local charge = machines.get_energy(pos, v, 10000)
-      
+
       eu_buffered = eu_buffered + charge
       meta:set_int("eu_buffered", eu_buffered)
-      
+
       tried_once = true
       goto try_again
     end
   end
-  
+
   -- No energy obtained. (Machine should fallback to fuel, if any.)
   return 0
 end
@@ -130,7 +131,7 @@ machines.allow_metadata_inventory_put =
 function(pos, listname, index, stack, player, fueltype, fuelname, srcname, dstname, cfgname, upgname)
   local pname = player:get_player_name()
   if minetest.test_protection(pos, pname) then return 0 end
-  
+
   if listname == fuelname then
     if type(fueltype) == "string" then
       local cresult = minetest.get_craft_result({
@@ -176,7 +177,7 @@ function(pos, table_in, table_out, traversal)
   local hash = minetest.hash_node_position(pos)
   if traversal[hash] then return end
   traversal[hash] = 0
-  
+
   local purpose = table_in.purpose
   if purpose == "autostart_trigger" then
     local timer = minetest.get_node_timer(pos)
@@ -261,8 +262,8 @@ function(pos, elapsed, data)
 
   -- Check if we have cookable content.
   local cooked, aftercooked = minetest.get_craft_result({
-    method = data.method, 
-    width = 1, 
+    method = data.method,
+    width = 1,
     items = srclist,
   })
   local cookable = true
@@ -302,7 +303,7 @@ function(pos, elapsed, data)
             inv:set_stack("src", 1, aftercooked.items[1])
           end
         end
-        
+
         src_time = 0
       end
     end
@@ -317,8 +318,8 @@ function(pos, elapsed, data)
       else
         -- We need to get new fuel.
         local fuel, afterfuel = minetest.get_craft_result({
-          method = data.fuel, 
-          width = 1, 
+          method = data.fuel,
+          width = 1,
           items = fuellist,
         })
 
@@ -376,7 +377,7 @@ function(pos, elapsed, data)
     if data.active_sound then
       ambiance.spawn_sound_beacon("ambiance:furnace_active", pos)
     end
-    
+
     -- Make sure timer restarts automatically.
     result = true
   else
@@ -384,7 +385,7 @@ function(pos, elapsed, data)
       fuel_state = "0%"
     end
     machines.swap_node(pos, data.swap.inactive)
-    
+
     -- Stop timer on the inactive furnace.
     local timer = minetest.get_node_timer(pos)
     timer:stop()
@@ -413,13 +414,13 @@ function(pos, placer, name, size, form)
   local pname = placer:get_player_name()
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
-  
+
   inv:set_size('src', size)
   inv:set_size('fuel', 1)
   inv:set_size('dst', 4)
   inv:set_size('cfg', 2)
   inv:set_size('upg', 2)
-  
+
   -- Compose infotext.
   local infotext = name .. " (Standby)\n" ..
     "Item: Empty\nFuel Burn: Empty\n" ..
@@ -437,7 +438,7 @@ machines.deliver_charge_to_network =
 function(from, to, charge)
   local node = minetest.get_node(to)
   local def = minetest.reg_ns_nodes[node.name]
-  
+
   if def and def.on_machine_execute then
     local table_in = {
       purpose = "store_eu",
@@ -446,15 +447,15 @@ function(from, to, charge)
       amount_eu = charge,
     }
     local traversal = {}
-    
+
     -- Do not process self.
     local hash = minetest.hash_node_position(from)
     traversal[hash] = 0
-          
+
     def.on_machine_execute(to, table_in, table_out, traversal)
     return (table_out.amount_eu or 0)
   end
-  
+
   -- No network, so all EUs are left over.
   return charge
 end
@@ -477,7 +478,7 @@ if not machines.run_once then
 		-- Engine limit.
 		stack_max = 65535,
 	})
-  
+
 	dofile(machines.modpath .. "/common.lua")
 	dofile(machines.modpath .. "/solar.lua")
 	dofile(machines.modpath .. "/reactor.lua")

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("privs") then privs = {} end
 privs.modpath = minetest.get_modpath("privs")
+reload.install_simple_signals(privs)
 
 
 
@@ -12,13 +13,13 @@ privs.print_privs = function(user, param)
   if name == "" then
     name = user
   end
-  
+
   if not minetest.player_exists(name) then
     minetest.chat_send_player(user, "# Server: Entity <" .. rename.gpn(name) .. "> was never embodied.")
     easyvend.sound_error(user)
     return true
   end
-  
+
   local privs = minetest.get_player_privs(name)
   if privs then
     -- Few details are given, to avoid jealously problems.
@@ -37,7 +38,7 @@ privs.print_privs = function(user, param)
 		end
     return true
   end
-  
+
   minetest.chat_send_player(user, "# Server: Could not obtain capabilities of <" .. rename.gpn(name) .. ">!")
 	easyvend.sound_error(user)
   return true
@@ -52,11 +53,11 @@ if not privs.run_once then
     privs = {},
     func = function(...) return privs.print_privs(...) end,
   })
-  
+
   local c = "privs:core"
   local f = privs.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   privs.run_once = true
 end
 

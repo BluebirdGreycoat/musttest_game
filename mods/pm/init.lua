@@ -1,6 +1,8 @@
 
 if not minetest.global_exists("pm") then pm = {} end
 pm.modpath = minetest.get_modpath("pm")
+reload.install_simple_signals(pm)
+
 pm.sight_range = 30
 pm.nest_range = 15
 

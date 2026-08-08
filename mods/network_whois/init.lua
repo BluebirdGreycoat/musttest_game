@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("network_whois") then network_whois = {} end
 network_whois.modpath = minetest.get_modpath("network_whois")
+reload.install_simple_signals(network_whois)
 
 -- If it's an IPV6-mapped IPV4 address, convert to plain IPV4 to make it easier to read.
 local function sanitize_ipv4(ip)

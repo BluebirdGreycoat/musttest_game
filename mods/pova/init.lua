@@ -7,6 +7,7 @@ if not minetest.global_exists("pova") then pova = {} end
 pova.modpath = minetest.get_modpath("pova")
 pova.players = pova.players or {}
 pova.last_properties = pova.last_properties or {}
+reload.install_simple_signals(pova)
 
 -- Used to force table.sort() to be stable.
 -- This counter increases every time a modifier is added.

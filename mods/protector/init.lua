@@ -6,6 +6,7 @@ protector.modpath = minetest.get_modpath("protector")
 protector.radius = 5
 protector.radius_small = 3 -- Must always be smaller than primary radius.
 protector.max_share_count = 12
+reload.install_simple_signals(protector)
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -291,7 +292,7 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 	if not digger or not pos then
 		return false
 	end
-    
+
 	-- Bedrock is always protected.
 	local node = minetest.get_node(pos)
 	local ndef = minetest.reg_ns_nodes[node.name] or
@@ -328,7 +329,7 @@ protector.can_dig = function(r, mult, nodename, pos, digger, onlyowner, infoleve
 	if #positions > 0 then
 		-- `protection_cancel' only applies if the node is NOT buildable_to.
 		-- This ensures players cannot break protection by dropping `buildable_to' nodes, and then placing into them.
-		
+
 		-- The falling block code is responsible for ensuring that a `buildable_to'
 		-- node can never be dropped into a protected zone.
 		local def = minetest.reg_ns_nodes[node.name] or
@@ -798,7 +799,7 @@ minetest.register_node("protector:protect", {
 	on_destruct = function(pos)
 		-- Notify nearby players.
 		minetest.after(0, protector.update_nearby_players, pos)
-	
+
 		return protector.remove_area_display(pos)
 	end,
 })
@@ -897,7 +898,7 @@ minetest.register_node("protector:protect3", {
 	on_destruct = function(pos)
 		-- Notify nearby players.
 		minetest.after(0, protector.update_nearby_players, pos)
-	
+
 		return protector.remove_area_display(pos)
 	end,
 })
@@ -1012,7 +1013,7 @@ minetest.register_node("protector:protect2", {
 	on_destruct = function(pos)
 		-- Notify nearby players.
 		minetest.after(0, protector.update_nearby_players, pos)
-	
+
 		return protector.remove_area_display(pos)
 	end,
 })
@@ -1116,7 +1117,7 @@ minetest.register_node("protector:protect4", {
 	on_destruct = function(pos)
 		-- Notify nearby players.
 		minetest.after(0, protector.update_nearby_players, pos)
-	
+
 		return protector.remove_area_display(pos)
 	end,
 })

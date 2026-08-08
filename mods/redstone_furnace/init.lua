@@ -3,6 +3,7 @@ if not minetest.global_exists("redstone_furnace") then redstone_furnace = {} end
 redstone_furnace.modpath = minetest.get_modpath("redstone_furnace")
 local FURNACE_SPEED = 1.5
 local MAGMA_DURATION = 10
+reload.install_simple_signals(redstone_furnace)
 
 -- Localize for performance.
 local math_floor = math.floor
@@ -15,12 +16,12 @@ redstone_furnace.get_active_formspec = function(fuel_percent, item_percent)
 	local ltrash, mtrash = trash.get_listname()
 	local itrash = trash.get_iconname()
 
-  local formspec = 
+  local formspec =
     "size[8,8.5]"..
     default.formspec.get_form_colors() ..
     default.formspec.get_form_image() ..
     default.formspec.get_slot_colors() ..
-    
+
     "label[2.75,0;Fuel & Input]" ..
     "list[context;src;2.75,0.5;1,1;]"..
     "list[context;fuel;2.75,2.5;1,1;]"..
@@ -305,12 +306,12 @@ if not redstone_furnace.run_once then
       "redstone_furnace_side.png", "redstone_furnace_side.png",
       "redstone_furnace_side.png", "redstone_furnace_front.png"
     },
-    
+
     groups = utility.dig_groups("cobble", {
       tubedevice = 1, tubedevice_receiver = 1,
       immovable = 1,
     }),
-    
+
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,
     is_ground_content = false,
@@ -358,19 +359,19 @@ if not redstone_furnace.run_once then
     },
     light_source = 8,
     drop = "redstone_furnace:inactive",
-    
+
     groups = utility.dig_groups("cobble", {
-      not_in_creative_inventory=1, 
+      not_in_creative_inventory=1,
       melt_around = 4,
       tubedevice = 1, tubedevice_receiver = 1,
       immovable = 1,
     }),
-    
+
     paramtype2 = "facedir",
     on_rotate = function(...) return screwdriver.rotate_simple(...) end,
     is_ground_content = false,
     sounds = default.node_sound_stone_defaults(),
-    
+
     on_timer = function(...)
       return redstone_furnace.on_timer(...) end,
     can_dig = function(...)
@@ -400,7 +401,7 @@ if not redstone_furnace.run_once then
       {'rackstone:cobble', 'rackstone:cobble', 'rackstone:cobble'},
     }
   })
-  
+
   minetest.register_craft({
     output = 'redstone_furnace:inactive',
     recipe = {
@@ -413,7 +414,7 @@ if not redstone_furnace.run_once then
   local c = "redstone_furnace:core"
   local f = redstone_furnace.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
   redstone_furnace.run_once = true
 end
 

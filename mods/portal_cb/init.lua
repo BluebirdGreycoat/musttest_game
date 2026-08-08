@@ -2,6 +2,7 @@
 
 if not minetest.global_exists("portal_cb") then portal_cb = {} end
 portal_cb.modpath = minetest.get_modpath("portal_cb")
+reload.install_simple_signals(portal_cb)
 
 portal_cb.after_use_callbacks = portal_cb.after_use_callbacks or {}
 portal_cb.before_use_callbacks = portal_cb.before_use_callbacks or {}

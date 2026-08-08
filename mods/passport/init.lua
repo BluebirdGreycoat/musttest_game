@@ -9,7 +9,6 @@ passport.player_recalls = passport.player_recalls or {}
 passport.registered_players = passport.registered_players or {} -- Cache of registered players.
 passport.keyed_players = passport.keyed_players or {}
 passport.modpath = minetest.get_modpath("passport")
-
 reload.install_simple_signals(passport)
 
 passport.register_callback("on_passport_first_use", "passport", function(pname)

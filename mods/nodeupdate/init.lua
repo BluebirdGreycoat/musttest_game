@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("_nodeupdate") then _nodeupdate = {} end
 _nodeupdate.modpath = minetest.get_modpath("nodeupdate")
+reload.install_simple_signals(_nodeupdate)
 
 -- Localize for performance.
 local math_random = math.random

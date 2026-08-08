@@ -2,6 +2,7 @@
 if not minetest.global_exists("ossl") then ossl = {} end
 ossl.modpath = minetest.get_modpath("ossl")
 ossl.CIPHER_NAME = "AES-128-CBC"
+reload.install_simple_signals(ossl)
 
 dofile(ossl.modpath .. "/conf.lua")
 dofile(ossl.modpath .. "/api.lua")

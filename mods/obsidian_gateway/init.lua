@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("obsidian_gateway") then obsidian_gateway = {} end
 obsidian_gateway.modpath = minetest.get_modpath("obsidian_gateway")
+reload.install_simple_signals(obsidian_gateway)
 
 dofile(obsidian_gateway.modpath .. "/gate.lua")
 dofile(obsidian_gateway.modpath .. "/gate_activate.lua")

@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("nethervine") then nethervine = {} end
 nethervine.modpath = minetest.get_modpath("nethervine")
+reload.install_simple_signals(nethervine)
 
 -- Localize for performance.
 local math_random = math.random

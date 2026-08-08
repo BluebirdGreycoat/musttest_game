@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("redshroom") then redshroom = {} end
 redshroom.modpath = minetest.get_modpath("redshroom")
+reload.install_simple_signals(redshroom)
 
 -- Localize for performance.
 local math_random = math.random

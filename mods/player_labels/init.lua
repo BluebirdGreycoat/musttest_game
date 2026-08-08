@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("player_labels") then player_labels = {} end
 player_labels.modpath = minetest.get_modpath("player_labels")
+reload.install_simple_signals(player_labels)
 
 -- Timeout settings.
 player_labels.mark_timeout = 60

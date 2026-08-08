@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("plastic") then plastic = {} end
 plastic.modpath = minetest.get_modpath("plastic")
+reload.install_simple_signals(plastic)
 
 -- Important: the ability to oil door/chest hinges does NOT require protection access.
 -- Can also polish infotext engravings so they become permanent (requires protection check).

@@ -9,6 +9,7 @@
 if not minetest.global_exists("rc") then rc = {} end
 rc.players = rc.players or {}
 rc.modpath = minetest.get_modpath("rc")
+reload.install_simple_signals(rc)
 
 dofile(rc.modpath .. "/gravity.lua")
 

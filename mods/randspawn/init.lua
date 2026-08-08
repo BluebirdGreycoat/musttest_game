@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("randspawn") then randspawn = {} end
 randspawn.modpath = minetest.get_modpath("randspawn")
+reload.install_simple_signals(randspawn)
 
 -- Localize for performance.
 local math_random = math.random

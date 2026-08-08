@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("recall") then recall = {} end
 recall.modpath = minetest.get_modpath("recall")
+reload.install_simple_signals(recall)
 
 -- Recalls are now constructed/managed by players.
 -- See teleports mod and passport mod.

@@ -2,6 +2,7 @@
 if not minetest.global_exists("preload_tp") then preload_tp = {} end
 preload_tp.modpath = minetest.get_modpath("preload_tp")
 preload_tp.teleporting_players = preload_tp.teleporting_players or {}
+reload.install_simple_signals(preload_tp)
 
 -- Localize for performance.
 local vector_distance = vector.distance
@@ -31,7 +32,7 @@ function preload_tp.finalize(parameters)
 
 	-- Regardless of success or failure, the player is no longer in progress.
 	preload_tp.teleporting_players[pname] = nil
-	
+
 	-- Find the player.
 	local player = minetest.get_player_by_name(pname)
 	if not player or not player:is_player() then

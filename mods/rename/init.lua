@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("rename") then rename = {} end
 rename.modpath = minetest.get_modpath("rename")
+reload.install_simple_signals(rename)
 
 -- Localize for performance.
 local math_random = math.random

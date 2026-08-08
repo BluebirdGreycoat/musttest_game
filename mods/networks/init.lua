@@ -2,7 +2,8 @@
 if not minetest.global_exists("networks") then
 	networks = {}
 	networks.modpath = minetest.get_modpath("networks")
-	
+  reload.install_simple_signals(networks)
+
 	-- load insecure environment
 	local secenv = minetest.request_insecure_environment()
 	if secenv then
@@ -29,27 +30,27 @@ local param2_rules = {
   [1] = "z",
   [2] = "x",
   [3] = "z",
-  
+
   [4] = "x",
   [5] = "y",
   [6] = "x",
   [7] = "y",
-  
+
   [8] = "x",
   [9] = "y",
   [10] = "x",
   [11] = "y",
-  
+
   [12] = "y",
   [13] = "z",
   [14] = "y",
   [15] = "z",
-  
+
   [16] = "y",
   [17] = "z",
   [18] = "y",
   [19] = "z",
-  
+
   [20] = "x",
   [21] = "z",
   [22] = "x",
@@ -111,16 +112,16 @@ end
 networks.find_hub =
 function(pos, dir, tier)
   local meta = minetest.get_meta(pos)
-  
+
   local p = vector.new(pos.x, pos.y, pos.z)
   local d = networks.direction_to_vector(dir)
-  
+
   local station_name = "switching_station:" .. tier
   local cable_name = "cable:" .. tier
-  
+
   -- Max cable length. +1 because a switching station takes up 1 meter of length.
   local cable_length = cable.get_max_length(tier)+1
-  
+
   -- Seek a limited number of meters in a direction.
   for i = 1, cable_length, 1 do
     p = vector.add(p, d)
@@ -135,11 +136,11 @@ function(pos, dir, tier)
         local daxis = direction_rules[dir]
         if not daxis or paxis ~= daxis then
           -- Cable has bad axis. Stop scanning.
-          return nil 
+          return nil
         end
       else
         -- Invalid param2. We stop scanning.
-        return nil 
+        return nil
       end
     -- Unless these items can automatically update switching stations when removed, we can't allow this.
     --elseif minetest.get_item_group(node.name, "conductor") > 0 and minetest.get_item_group(node.name, "block") > 0 then
@@ -203,7 +204,7 @@ function(pos, tier)
       }) do
         meta:set_string(j.n, nil)
       end
-      
+
       -- Trigger node update.
       local timer = minetest.get_node_timer(p)
       if not timer:is_started() then
@@ -297,7 +298,7 @@ if not networks.run_once then
   local c = "networks:core"
   local f = networks.modpath .. "/init.lua"
   reload.register_file(c, f, false)
-  
+
 	dofile(networks.modpath .. "/nodestore.lua")
 	dofile(networks.modpath .. "/net2.lua")
   networks.run_once = true

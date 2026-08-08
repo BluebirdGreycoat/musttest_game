@@ -2,6 +2,7 @@
 if not minetest.global_exists("pd") then pd = {} end
 pd.modpath = minetest.get_modpath("pd")
 pd.worldpath = minetest.get_worldpath()
+reload.install_simple_signals(pd)
 
 
 

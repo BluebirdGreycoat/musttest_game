@@ -1,6 +1,7 @@
 
 if not minetest.global_exists("refill") then refill = {} end
 refill.modpath = minetest.get_modpath("refill")
+reload.install_simple_signals(refill)
 
 
 function refill.refill_all(pname)

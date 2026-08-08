@@ -142,7 +142,7 @@ end
 
 -- Return TRUE if channel name is ok.
 function CC.is_channelname_ok(channelname)
-	if channelname:find("^[_%w]+$") then
+	if channelname:find("^[_%w]+$") and channelname:len() <= 32 then
 		return true
 	end
 end
@@ -151,7 +151,7 @@ end
 
 -- Return TRUE if password is ok.
 function CC.is_password_ok(password)
-	if password:find("^[_%w]+$") then
+	if password:find("^[_%w]+$") and password:len() <= 32 then
 		return true
 	end
 end

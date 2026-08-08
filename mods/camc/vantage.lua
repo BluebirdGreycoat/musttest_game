@@ -75,12 +75,25 @@ function camc.remove_vantage_point(pname)
 		return false, "No nearby city block."
 	end
 	if block.vantage then
-		local num = #block.vantage
+		local num -- Number of vantages removed.
 		if block.vantage.pos then
 			-- Handle old dict format.
 			num = 1
+			block.vantage = nil
+		else
+			-- Player may only remove vantages they created.
+			-- (They can remove ALL vantages if they own and remove the cityblock.)
+			local left = {}
+			for _, v in ipairs(block.vantage) do
+				if v.creator == pname or gdac.player_is_admin(pname) then
+					num = num + 1
+				else
+					-- Keep it.
+					table.insert(left, v)
+				end
+			end
+			block.vantage = left
 		end
-		block.vantage = nil
 		city_block:save()
 		return true, ("Vantage points removed (%d)."):format(num)
 	end

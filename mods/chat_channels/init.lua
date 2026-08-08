@@ -324,12 +324,22 @@ function CC.on_joinplayer(pref)
 
 	if not firsttime then
 		local channels = CC.get_player_enabled_channels(pname, true)
-		local list = table.concat(channels, ", ")
 
 		if not gdac.player_is_admin(pname) and not camc.player_is_camera(pname) then
+			local first = {}
+			local ellipsis = ""
+			local max_list = 6
+			for k = 1, math.min(max_list, #channels) do
+				first[#first + 1] = channels[k]
+			end
+			if #channels > max_list then
+				ellipsis = " ..."
+			end
+			local list = table.concat(first, ", ") .. ellipsis
 			local msg = "# Server: <" .. rename.gpn(pname) .. "> is in channels: {" .. list .. "}."
 			CC.notify_channels_system_message(channels, msg)
 		elseif not camc.player_is_camera(pname) then
+			local list = table.concat(channels, ", ")
 			system_response(pname, "You are in channels: {" .. list .. "}.")
 		end
 	end

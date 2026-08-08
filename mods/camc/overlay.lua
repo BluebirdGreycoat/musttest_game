@@ -19,8 +19,9 @@ end
 
 -- Only static information.
 local function get_infotext_1()
-	local infotext = ("Address: %s\nPort: %s\nForum: %s"):format(
-		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR)
+	local infotext = ("Address: %s\nPort: %s\nForum: %s\n%s"):format(
+		tostring(WEBADDR), tostring(WEBPORT), tostring(FORUMADDR),
+		os.date("!%Y/%m/%d %H:%m:%S", os.time())
 	)
 	return infotext
 end
@@ -180,6 +181,7 @@ function camc.update_overlay(pname)
 		local id3 = tab.huds[3].id
 
 		if id1 and id2 then
+			pref:hud_change(id1, "text", get_infotext_1())
 			pref:hud_change(id2, "text", get_infotext_2())
 		end
 

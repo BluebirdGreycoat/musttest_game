@@ -280,8 +280,10 @@ end
 
 mailbox.on_metadata_inventory_put =
 function(pos, listname, index, stack, player)
+  local pname = player:get_player_name()
   local meta = minetest.get_meta(pos)
   local inv = meta:get_inventory()
+
   if listname == "drop" and inv:room_for_item("main", stack) then
     inv:remove_item("drop", stack)
     inv:add_item("main", stack)
@@ -293,6 +295,29 @@ function(pos, listname, index, stack, player)
 		minetest.chat_send_player(player:get_player_name(),
 			string.format("# Server: You put %d '%s' in <%s>'s mailbox.",
 			stack:get_count(), desc, ownername))
+
+    local have_clu = false
+    local cfg = inv:get_list('cfg')
+    if cfg then -- Inventory may not exist for old mailboxes.
+      for k, v in ipairs(cfg) do
+        if v:get_name() == "techcrafts:control_logic_unit" and v:get_count() == 1 then
+          have_clu = true
+          break
+        end
+      end
+    else
+      inv:set_size('cfg', 2)
+    end
+    if have_clu then
+      local from = "SERVER"
+      local to = owner
+      local subject = "Mailbox Delivery"
+      local message = "User <" .. rename.gpn(pname) .. "> put " ..
+        stack:get_count() ..
+        " '" .. desc .. "' in your mailbox @ " ..
+        rc.pos_to_namestr_ex(pos) .. "!"
+      email.send_mail_single(from, to, subject, message)
+    end
 
     -- This assumes the mailbox creation time is NOT updated if it already exists.
     -- Need to add box to list in order to take care of old mailboxes.
@@ -345,29 +370,6 @@ function(pos, listname, index, stack, player)
 
     local inv = meta:get_inventory()
     if inv:room_for_item("main", stack) then
-      local have_clu = false
-      local cfg = inv:get_list('cfg')
-      if cfg then -- Inventory may not exist for old mailboxes.
-        for k, v in ipairs(cfg) do
-          if v:get_name() == "techcrafts:control_logic_unit" and v:get_count() == 1 then
-            have_clu = true
-            break
-          end
-        end
-      else
-        inv:set_size('cfg', 2)
-      end
-      if have_clu then
-        local desc = utility.get_short_desc(stack)
-        local from = "SERVER"
-        local to = owner
-        local subject = "Mailbox Delivery"
-        local message = "Player <" .. rename.gpn(pname) .. "> put " ..
-          stack:get_count() ..
-          " '" .. desc .. "' in your mailbox @ " ..
-          rc.pos_to_namestr_ex(pos) .. "!"
-        email.send_mail_single(from, to, subject, message)
-      end
       return -1
     else
       minetest.chat_send_player(pname, "# Server: <" .. rename.gpn(owner) .. ">'s mailbox is full!")

@@ -1,4 +1,5 @@
-
+-- This was once used to fix someone's survival game that broke due to a bug.
+--[[
 local T1 = 1765947390
 local T2 = T1 + (60*60*24*7)
 
@@ -32,3 +33,4 @@ minetest.register_on_joinplayer(function(pref)
 		end
 	end)
 end)
+--]]

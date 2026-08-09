@@ -162,6 +162,8 @@ local function add_hud_item(player, name, def, foreground)
 end
 
 minetest.register_on_joinplayer(function(player)
+	-- Admins and cameras don't care about most HUD statbars.
+	-- (No damage, no need for armor, etc.)
 	if camc.player_is_camera(player) then
 		return
 	end
@@ -171,6 +173,10 @@ minetest.register_on_joinplayer(function(player)
 	hud_flags.healthbar = false
 	hud_flags.breathbar = false
 	player:hud_set_flags(hud_flags)
+
+	if gdac.player_is_admin(player) then
+		return
+	end
 
 	-- Now add the backgrounds for statbars.
 	for _, item in pairs(sb_bg) do

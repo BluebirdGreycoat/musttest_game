@@ -35,7 +35,8 @@ end
 
 
 function sprint.on_joinplayer(player)
-	if camc.player_is_camera(player) then
+	-- Admins and cameras don't care about sprint.
+	if camc.player_is_camera(player) or gdac.player_is_admin(player) then
 		return
 	end
 

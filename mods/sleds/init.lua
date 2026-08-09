@@ -247,6 +247,19 @@ function sleds.on_place(itemstack, placer, pointed_thing)
 	if not is_snow(pointed_thing.under) then
 		return itemstack
 	end
+
+	-- Per report, placing a sled on snow right next to a door allows the player
+	-- to clip through the door. Probably this is the case for other nodebox/mesh
+	-- nodes as well.
+	local bangroups = {
+		"group:door",
+		"group:trapdoor",
+		"group:pane",
+	}
+	if minetest.find_node_near(pointed_thing.under, 3, bangroups, true) then
+		return itemstack
+	end
+
 	pointed_thing.under.y = pointed_thing.under.y + 1.0
 	local sled = minetest.add_entity(pointed_thing.under, "sleds:sled")
 	if sled then

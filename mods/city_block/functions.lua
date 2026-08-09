@@ -89,10 +89,19 @@ function city_block.after_place_node(pos, placer)
 		meta:set_string("rename", dname)
 		meta:set_string("owner", pname)
 		meta:set_string("infotext", city_block.get_infotext(pos))
+
+		-- Admin-owned cityblocks activate instantly.
+		-- Simply set the creation time into the past.
+		local place_time = os.time()
+		if gdac.player_is_admin(placer) then
+			place_time = place_time - CITYBLOCK_DELAY_TIME
+			place_time = math.max(0, place_time)
+		end
+
 		table.insert(city_block.blocks, {
 			pos = vector_round(pos),
 			owner = pname,
-			time = os.time(),
+			time = place_time,
 		})
 		city_block:save()
 	end

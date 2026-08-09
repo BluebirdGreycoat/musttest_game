@@ -907,15 +907,16 @@ minetest.register_node("protector:protect3", {
 --= Protection Logo
 
 minetest.register_node("protector:protect2", {
-	description = "Advanced Protection Logo\nArea Protected: 11x11x11",
+	description = "Advanced Protection Logo\nArea Protected: 11x11x11\nWarning: nearly invisible!",
 	tiles = {"protector_logo.png"},
-	wield_image = "protector_logo.png",
-	inventory_image = "protector_logo.png",
+	wield_image = "protector_logo_item.png",
+	inventory_image = "protector_logo_item.png",
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("bigitem", {
     immovable = 1, -- No pistons, no nothing.
 		protector = 1,
   }),
+  use_texture_alpha = "blend",
 	paramtype = 'light',
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,

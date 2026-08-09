@@ -172,6 +172,14 @@ function(pos, node, puncher, pointed_thing)
   -- Update infotext to new format.
   local owner = meta:get_string("owner") or ""
   meta:set_string("infotext", "Mailbox (Owned by <" .. owner .. ">!)")
+  meta:mark_as_private({"owner", "rename"})
+
+  -- This assumes the mailbox creation time is NOT updated if it already exists.
+  -- Need to add box to list on punch in order to take care of old mailboxes.
+  -- Anyone can punch a mailbox if you find an old one.
+  if mailbox.add_to_list(pos, owner, os.time()) then
+    mailbox.save()
+  end
 end
 
 
@@ -186,17 +194,29 @@ function(pos, placer, itemstack)
   meta:set_string("owner", owner)
 	meta:set_string("rename", dname)
   meta:set_string("infotext", "Mailbox (Owned by <" .. dname .. ">!)")
+  meta:mark_as_private({"owner", "rename"})
 
   inv:set_size("main", 8)
   inv:set_size("drop", 1)
   inv:set_size("cfg", 2)
+
+  if mailbox.add_to_list(pos, owner, os.time()) then
+    mailbox.save()
+  end
 end
 
 
 
-mailbox.on_destruct =
-function(pos)
-	-- Nothing here ATM.
+function mailbox.on_construct(pos)
+  -- Nothing here atm.
+end
+
+
+
+function mailbox.on_destruct(pos)
+  if mailbox.remove_from_list(pos) then
+    mailbox.save()
+  end
 end
 
 

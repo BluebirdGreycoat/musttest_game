@@ -74,6 +74,10 @@ if not mailbox.run_once then
       return mailbox.after_place_node(...)
     end,
 
+    on_construct = function(...)
+      return mailbox.on_construct(...)
+    end,
+
     on_destruct = function(...)
       return mailbox.on_destruct(...)
     end,

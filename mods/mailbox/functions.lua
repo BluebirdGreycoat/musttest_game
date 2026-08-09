@@ -286,12 +286,19 @@ function(pos, listname, index, stack, player)
     inv:remove_item("drop", stack)
     inv:add_item("main", stack)
 
+    local owner = meta:get_string("owner")
     local desc = utility.get_short_desc(stack)
-		local ownername = rename.gpn(meta:get_string("owner"))
+		local ownername = rename.gpn(owner)
 
 		minetest.chat_send_player(player:get_player_name(),
 			string.format("# Server: You put %d '%s' in <%s>'s mailbox.",
 			stack:get_count(), desc, ownername))
+
+    -- This assumes the mailbox creation time is NOT updated if it already exists.
+    -- Need to add box to list in order to take care of old mailboxes.
+    if mailbox.add_to_list(pos, owner, os.time()) then
+      mailbox.save()
+    end
   end
 end
 

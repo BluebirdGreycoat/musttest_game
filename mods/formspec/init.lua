@@ -18,6 +18,7 @@ dofile(formspec.modpath .. "/widgets.lua")
 dofile(formspec.modpath .. "/editor.lua")
 dofile(formspec.modpath .. "/docparser.lua")
 dofile(formspec.modpath .. "/serialize.lua")
+dofile(formspec.modpath .. "/gui.lua")
 
 
 

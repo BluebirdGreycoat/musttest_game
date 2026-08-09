@@ -71,6 +71,7 @@ minetest.register_craftitem("protector:tool", {
 		-- get members on protector
 		local meta = minetest.get_meta(pos)
 		local members = meta:get_string("members") or ""
+		local area_name = meta:get_string("area_name") or ""
 		local owner = meta:get_string("owner") or ""
 
 		-- require the tool user to be the owner of the initial protector node
@@ -229,6 +230,7 @@ minetest.register_craftitem("protector:tool", {
 		if user:get_player_control().sneak then
 			local meta = minetest.get_meta(pos)
 			meta:set_string("members", members)
+			meta:set_string("area_name", area_name)
 			members_copied = true
 		else
 			local meta = minetest.get_meta(pos)

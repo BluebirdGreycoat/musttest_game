@@ -1,11 +1,12 @@
 
 if not minetest.global_exists("protector") then protector = {} end
-protector.players = protector.players or {}
+protector.players = protector.players or {} -- Security contexts.
+protector.player_guis = protector.player_guis or {} -- GUI contexts (not security).
 protector.mod = "redo"
 protector.modpath = minetest.get_modpath("protector")
 protector.radius = 5
 protector.radius_small = 3 -- Must always be smaller than primary radius.
-protector.max_share_count = 12
+protector.max_share_count = 16 -- If you go this high you are stupid.
 reload.install_simple_signals(protector)
 
 -- Localize for performance.
@@ -18,6 +19,7 @@ protector.display_time = 60*2
 
 dofile(protector.modpath .. "/hud.lua")
 dofile(protector.modpath .. "/tool.lua")
+dofile(protector.modpath .. "/formspec.lua")
 
 -- Temporary pos store.
 local player_pos = protector.players
@@ -161,6 +163,10 @@ protector.add_member = function(meta, name)
 		return
 	end
 
+	if not minetest.is_valid_player_name(name) then
+		return
+	end
+
 	name = rename.grn(name)
 	if protector.is_member(meta, name) then
 		return
@@ -173,72 +179,26 @@ protector.add_member = function(meta, name)
 
 	table.insert(list, name)
 	protector.set_member_list(meta, list)
+	return true -- Member list changed.
 end
 
 protector.del_member = function(meta, name)
 	name = rename.grn(name)
 	local list = protector.get_member_list(meta)
 
+	local changed = false
 	for i, n in pairs(list) do
 		if n == name then
 			table.remove(list, i)
+			changed = true
 			break
 		end
 	end
 
 	protector.set_member_list(meta, list)
-end
-
--- Protector Interface
-
-protector.generate_formspec = function(meta)
-
-	local formspec = "size[8,7]"
-		.. default.formspec.get_form_colors()
-		.. default.formspec.get_form_image()
-		.. default.formspec.get_slot_colors()
-		.. "label[0,0;" .. "11x11x11 Protector Interface" .. "]"
-		.. "label[0,0.5;" .. "PUNCH node to show protected area or USE for area check." .. "]"
-		.. "label[0,2;" .. "Members:" .. "]"
-		.. "button_exit[3,6.2;2,0.5;close_me;" .. "Close" .. "]"
-		.. "field_close_on_enter[protector_add_member;false]"
-
-	local members = protector.get_member_list(meta)
-	local npp = protector.max_share_count -- max users added onto protector list
-	local i = 0
-
-	for n = 1, #members do
-
-		if i < npp then
-
-			-- show username
-			formspec = formspec .. "button[" .. (i % 4 * 2)
-			.. "," .. math_floor(i / 4 + 3)
-			.. ";1.5,.5;protector_member;" .. rename.gpn(members[n]) .. "]"
-
-			-- username remove button
-			.. "button[" .. (i % 4 * 2 + 1.25) .. ","
-			.. math_floor(i / 4 + 3)
-			.. ";.75,.5;protector_del_member_" .. members[n] .. ";X]"
-		end
-
-		i = i + 1
+	if changed then
+		return true -- Member list changed.
 	end
-
-	if i < npp then
-
-		-- user name entry field
-		formspec = formspec .. "field[" .. (i % 4 * 2 + 1 / 3) .. ","
-		.. (math_floor(i / 4 + 3) + 1 / 3)
-		.. ";1.433,.5;protector_add_member;;]"
-
-		-- username add button
-		.."button[" .. (i % 4 * 2 + 1.25) .. ","
-		.. math_floor(i / 4 + 3) .. ";.75,.5;protector_submit;+]"
-
-	end
-
-	return formspec
 end
 
 protector.get_node_owner = function(pos)
@@ -247,7 +207,8 @@ protector.get_node_owner = function(pos)
 	for n = 1, #positions do
 		local meta = minetest.get_meta(positions[n])
 		local owner = meta:get_string("owner")
-		return owner
+		local area_name = meta:get_string("area_name")
+		return owner, area_name
 	end
 end
 
@@ -762,7 +723,7 @@ minetest.register_node("protector:protect", {
 
 		if meta and protector.can_dig(1, 1, "protector:protect", pos, name, true, 1) then
 			player_pos[name] = pos
-			minetest.show_formspec(name, "protector:node", protector.generate_formspec(meta))
+			minetest.show_formspec(name, "protector:node", protector.generate_formspec(name, meta))
 		end
 	end,
 
@@ -973,7 +934,7 @@ minetest.register_node("protector:protect2", {
 
 		if meta and protector.can_dig(1, 1, "protector:protect2", pos, name, true, 1) then
 			player_pos[name] = pos
-			minetest.show_formspec(name, "protector:node", protector.generate_formspec(meta))
+			minetest.show_formspec(name, "protector:node", protector.generate_formspec(name, meta))
 		end
 	end,
 
@@ -1125,71 +1086,8 @@ minetest.register_node("protector:protect4", {
 
 -- If name entered or button press
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-	if formname ~= "protector:node" then
-		return
-	end
-
-	local pname = player:get_player_name() or "" -- Nil check.
-	local pos = player_pos[pname] -- Context should have been created during on_rightclick. CSM protection.
-
-	-- Localize field member.
-	local add_member_input = fields.protector_add_member
-
-	-- Reset formspec until close button pressed.
-	if (fields.close_me or fields.quit)
-	and (not add_member_input or add_member_input == "") then
-		player_pos[pname] = nil
-		return true
-	end
-
-	if not pos then
-		return true
-	end
-
-	local meta = minetest.get_meta(pos)
-	local node = minetest.get_node(pos)
-
-	-- Meta nil check.
-	if not meta then
-		return true
-	end
-
-	-- Are we actually working on a protection node? (CSM protection.)
-	if node.name ~= "protector:protect"
-	and node.name ~= "protector:protect2"
-	and node.name ~= "protector:protect3"
-	and node.name ~= "protector:protect4" then
-		player_pos[pname] = nil
-		return true
-	end
-
-	-- Only advanced protectors support member names.
-	if node.name == "protector:protect3" or node.name == "protector:protect4" then
-		minetest.chat_send_player(pname, "# Server: Sharing feature not supported by basic protectors!")
-		return true
-	end
-
-	-- Do not permit caller to modify a protector they do not own.
-	if not protector.can_dig(1, 1, node.name, pos, pname, true, 1) then
-		return true
-	end
-
-	if add_member_input then
-		for _, i in pairs(add_member_input:split(" ")) do
-			protector.add_member(meta, i)
-		end
-	end
-
-	for field, value in pairs(fields) do
-		if string.sub(field, 0, string.len("protector_del_member_")) == "protector_del_member_" then
-			protector.del_member(meta, string.sub(field,string.len("protector_del_member_") + 1))
-		end
-	end
-
-	-- Clear formspec context.
-	minetest.show_formspec(pname, formname, protector.generate_formspec(meta))
-	return true
+minetest.register_on_player_receive_fields(function(...)
+	return protector.on_receive_fields(...)
 end)
 
 -- Display entity shown when protector node is punched

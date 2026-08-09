@@ -84,6 +84,7 @@ function camc.remove_vantage_point(pname)
 			-- Player may only remove vantages they created.
 			-- (They can remove ALL vantages if they own and remove the cityblock.)
 			local left = {}
+			num = 0
 			for _, v in ipairs(block.vantage) do
 				if v.creator == pname or gdac.player_is_admin(pname) then
 					num = num + 1

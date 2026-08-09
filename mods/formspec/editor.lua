@@ -609,7 +609,7 @@ local function make_editor(pname)
 			-- Events.
 			{type="container", x=TEST_SIZE.x+TEST_PAD, y=0, FORMSPEC_ID="EditorFSContainer5"},
 			{h=10, texture="gui_formbg.png", type="background9", w=9, x=0, x1=50, y=0},
-			{h=0.7, text="Interact with any widget in the test GUI to see response fields.", type="label", w=3.7, x=0.5, y=0.5},
+			{h=0.7, text="Interact with any widget in the test GUI to see response fields.", type="label", w=4.5, x=0.5, y=0.5},
 			{h=7.48, label="", name="EventResponseDisplay", style={font="mono", font_size="*0.9", textcolor="red"}, text=context.last_event_table or "", type="textarea", w=8, x=0.5, y=1.5},
 			{type="container_end"},
 

@@ -199,6 +199,7 @@ function city_block.on_receive_fields(player, formname, fields)
 
 	if fields.quit then
 		city_block.formspecs[pname] = nil
+		city_block.guiobjs[pname] = nil
 		return true
 	end
 

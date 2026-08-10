@@ -10,7 +10,12 @@ local FORMTABLE = {
 
 
 function city_block.create_mayor_formspec(pos, pname, blockdata)
-	local guiobj = formspec.create_gui_object(FORMTABLE)
+	local guiobj = city_block.guiobjs[pname]
+	if not guiobj then
+		guiobj = formspec.create_gui_object(FORMTABLE)
+		city_block.guiobjs[pname] = guiobj
+	end
+
 	return guiobj:to_formspec()
 end
 
@@ -42,6 +47,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.quit then
 		city_block.formspecs[pname] = nil
+		city_block.guiobjs[pname] = nil
 		return true
 	end
 

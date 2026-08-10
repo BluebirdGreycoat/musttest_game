@@ -41,6 +41,7 @@ dofile(city_block.modpath .. "/functions.lua")
 dofile(city_block.modpath .. "/file.lua")
 dofile(city_block.modpath .. "/pvp.lua")
 dofile(city_block.modpath .. "/inv.lua")
+dofile(city_block.modpath .. "/claims.lua")
 
 
 

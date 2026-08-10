@@ -187,7 +187,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 							if meta:get_string("owner") == info.owner then
 								local p = vector.subtract(vpos, pos)
 								local color = get_protector_slave_status_color(vpos, pos)
-								local str = ("%s%s%s"):format(color, "t", minetest.pos_to_string(p))
+								local str = ("%s%s"):format(color, "minetest.pos_to_string(p)")
 								table.insert(list, str)
 							end
 						end

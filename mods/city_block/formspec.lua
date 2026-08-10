@@ -72,7 +72,7 @@ end
 
 
 function city_block.on_receive_fields(player, formname, fields)
-	if formname ~= "city_block:main" then
+	if formname ~= "city_block:main" and formname ~= "city_block:mayor" then
 		return
 	end
 	if not player or not player:is_player() then
@@ -96,7 +96,17 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.manage_claims then
-		minetest.chat_send_player(pname, "# Server: Not yet available.")
+		if gdac.player_is_admin(pname) then
+			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)
+			minetest.show_formspec(pname, "city_block:mayor", formspec)
+		else
+			minetest.chat_send_player(pname, "# Server: Not yet available.")
+		end
+		return true
+	end
+
+	if formname == "city_block:mayor" then
+		city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
@@ -184,6 +194,11 @@ function city_block.on_receive_fields(player, formname, fields)
 			city_block:save()
 		end
 	--]]
+	end
+
+	if fields.quit then
+		city_block.formspecs[pname] = nil
+		return true
 	end
 
 	return true

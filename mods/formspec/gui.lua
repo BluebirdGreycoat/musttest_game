@@ -12,6 +12,10 @@ function formspec.create_gui_object(formtable)
 
 	local tab = table.copy(formtable)
 
+	-- The GUI user should store their data here whenever possible.
+	-- Keeps things organized.
+	tab.user_data = {}
+
 	-- Install methods.
 	function tab:to_formspec()
 		return formspec.create_formspec_from_table(self)
@@ -46,6 +50,10 @@ function formspec.create_gui_object(formtable)
 				return widget, index
 			end
 		end
+	end
+
+	function tab:get_usertable()
+		return self.user_data
 	end
 
 	return tab

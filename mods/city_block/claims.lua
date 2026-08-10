@@ -173,29 +173,28 @@ function city_block.on_mayor_fields(player, formname, fields)
 			guiobj:get_control_by_name("player_list").selected = tab.index
 			guiobj:get_control_by_name("block_list").selected = -1
 
-			do
-				local data = guiobj:get_usertable().datalist or {}
-				local prots = guiobj:get_usertable().protlist or {}
-				local info = data[guiobj:get_control_by_name("player_list").selected]
+			-- Update contents of the block list whenever playername selected.
+			local data = guiobj:get_usertable().datalist or {}
+			local prots = guiobj:get_usertable().protlist or {}
+			local info = data[guiobj:get_control_by_name("player_list").selected]
 
-				local list = {}
-				if info then
-					for _, vpos in ipairs(prots) do
-						local node = minetest.get_node(vpos)
-						local meta = minetest.get_meta(vpos)
-						if is_protector_name(node.name) then
-							if meta:get_string("owner") == info.owner then
-								local p = vector.subtract(vpos, pos)
-								local color = get_protector_slave_status_color(vpos, pos)
-								local str = ("%s%s"):format(color, minetest.pos_to_string(p))
-								table.insert(list, str)
-							end
+			local list = {}
+			if info then
+				for _, vpos in ipairs(prots) do
+					local node = minetest.get_node(vpos)
+					local meta = minetest.get_meta(vpos)
+					if is_protector_name(node.name) then
+						if meta:get_string("owner") == info.owner then
+							local p = vector.subtract(vpos, pos)
+							local color = get_protector_slave_status_color(vpos, pos)
+							local str = ("%s%s"):format(color, minetest.pos_to_string(p))
+							table.insert(list, str)
 						end
 					end
 				end
-				--table.insert(list, "#55FF55Green item")
-				guiobj:get_control_by_name("block_list").itemlist = list
 			end
+			--table.insert(list, "#55FF55Green item")
+			guiobj:get_control_by_name("block_list").itemlist = list
 		end
 	end
 

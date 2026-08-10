@@ -55,8 +55,6 @@ end
 
 
 local function do_protector_scan(pos, pname, guiobj)
-	minetest.chat_send_player(pname, "# Server: Protection scan!")
-
 	local D = 22 -- Covers a 45x45x45 area.
 	local minp = vector.subtract(pos, D)
 	local maxp = vector.add(pos, D)
@@ -95,8 +93,6 @@ local function do_protector_scan(pos, pname, guiobj)
 	guiobj:get_control_by_name("player_list").itemlist = owner_list
 	guiobj:get_usertable().datalist = owner_list_data
 	guiobj:get_usertable().protlist = prots -- All blocks.
-
-	minetest.chat_send_player(pname, "# Server: Found " .. #prots .. " prots!")
 end
 
 

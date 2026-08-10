@@ -1,6 +1,6 @@
 
 local FORMTABLE = {
-	size = {x=0, y=0},
+	size = {x=10.7, y=6.7},
 	children = {
 		{h=6.7, texture="gui_formbg.png", type="background9", w=10.7, x=0, x1=50, y=0},
 		{h=0.6, label="Find Claims", name="protector_scan", type="button", w=2, x=0.5, y=0.5},

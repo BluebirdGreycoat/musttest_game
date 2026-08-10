@@ -9,8 +9,8 @@
 --   5. The owner of the cityblock has 50k xp MORE than the owner of the prot.
 --   6. The owner of the prot is not an admin.
 --   7. The owner of the prot has < 10k build XP.
---   8. ???
---   9. Profit!
+--   8. If the prot has members, all members must pass these conditions.
+--   9. All other cityblocks in the area of control must be owned by the owner.
 -- The intended purpose of these conditions is to allow city mayors to control
 -- (even revoke) protections for low-quality builders/builds within their area
 -- of control, while keeping the potential for administrative abuse as low as

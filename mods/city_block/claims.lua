@@ -48,6 +48,10 @@ local function is_node_of_interest(name)
 	end
 end
 
+local function get_protector_slave_status_color(prot_pos, city_pos)
+	return core.get_color_escape_sequence("#ffffff")
+end
+
 
 
 local function do_protector_scan(pos, pname, guiobj)
@@ -182,7 +186,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 						if is_protector_name(node.name) then
 							if meta:get_string("owner") == info.owner then
 								local p = vector.subtract(vpos, pos)
-								local str = ("%s"):format(minetest.pos_to_string(p))
+								local color = get_protector_slave_status_color(vpos, pos)
+								local str = ("%s%s"):format(color, minetest.pos_to_string(p))
 								table.insert(list, str)
 							end
 						end

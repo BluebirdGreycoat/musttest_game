@@ -1,4 +1,28 @@
 
+local function do_protector_scan(pos, pname, guiobj)
+	minetest.chat_send_player(pname, "# Server: Protection scan!")
+
+	local nodes = {
+		"protector:protect",
+		"protector:protect2",
+		"protector:protect3",
+		"protector:protect4",
+	}
+
+	local D = 22 -- Covers a 45x45x45 area.
+	local minp = vector.subtract(pos, D)
+	local maxp = vector.add(pos, D)
+
+	local prots = minetest.find_nodes_in_area(minp, maxp, nodes)
+	if not prots then
+		prots = {} -- Nil check.
+	end
+
+	minetest.chat_send_player(pname, "# Server: Found " .. #prots .. " prots!")
+end
+
+
+
 local FORMTABLE = {
 	size = {x=10.7, y=6.7},
 	children = {
@@ -53,7 +77,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 	end
 
 	if fields.protector_scan then
-		minetest.chat_send_player(pname, "# Server: Protection scan!")
+		do_protector_scan(pos, pname, guiobj)
 	end
 
 	minetest.show_formspec(pname, "city_block:mayor", guiobj:to_formspec())

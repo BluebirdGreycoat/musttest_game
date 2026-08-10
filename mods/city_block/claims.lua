@@ -212,8 +212,14 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 		city_block.guiobjs[pname] = guiobj
 	end
 
-	guiobj:get_control_by_id("cityblock_age").text =
-		blockdata.time and os.date("!%Y/%m/%d UTC", blockdata.time) or "Unknown age."
+	do
+		local label = guiobj:get_control_by_id("cityblock_age")
+		if blockdata.time then
+			label.text = "City age: " .. os.date("!%Y/%m/%d UTC", blockdata.time)
+		else
+			label.text = "City age: unknown."
+		end
+	end
 
 	return guiobj:to_formspec()
 end

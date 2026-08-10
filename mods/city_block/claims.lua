@@ -112,7 +112,15 @@ local function get_protector_slave_status(prot_pos, city_pos)
 
 	-- Check if the protector is newer than the city block.
 	local cblock = city_block.get_block(city_pos)
-	if cblock and cblock.time then
+	local city_time = cblock.time -- or nil.
+	-- Special: if the cityblock age is unknown and is owned by the admin,
+	-- then it is the oldest thing on the server.
+	if cblock and not city_time then
+		if cblock.owner and gdac.player_is_admin(cblock.owner) then
+			city_time = 0
+		end
+	end
+	if cblock and city_time then
 		local placedate = meta:get_string("placedate")
 		local placetime = tonumber(meta:get_string("placetime")) -- May be nil.
 
@@ -124,7 +132,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		if placetime and placetime ~= 0 then
 			-- Protector must be significantly newer.
 			placetime = placetime + PROTECTOR_PLACETIME_OFFSET
-			if placetime > cblock.time then
+			if placetime > city_time then
 				protector_is_newer = true
 			end
 		end

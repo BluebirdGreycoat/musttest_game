@@ -62,6 +62,11 @@ function city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
+	-- TODO: Not yet available.
+	if not gdac.player_is_admin(pname) then
+		return true
+	end
+
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 

@@ -26,7 +26,31 @@ local function do_protector_scan(pos, pname, guiobj)
 		"protector:protect2",
 		"protector:protect3",
 		"protector:protect4",
+		"city_block:cityblock",
 	}
+
+	local prot_names = {
+		"protector:protect",
+		"protector:protect2",
+		"protector:protect3",
+		"protector:protect4",
+	}
+
+	local function is_node_of_interest(name)
+		for k, v in ipairs(nodes) do
+			if name == v then
+				return true
+			end
+		end
+	end
+
+	local function is_protector_name(name)
+		for k, v in ipairs(prot_names) do
+			if name == v then
+				return true
+			end
+		end
+	end
 
 	local D = 22 -- Covers a 45x45x45 area.
 	local minp = vector.subtract(pos, D)
@@ -36,6 +60,36 @@ local function do_protector_scan(pos, pname, guiobj)
 	if not prots then
 		prots = {} -- Nil check.
 	end
+
+	local owner_set = {}
+	for _, vpos in ipairs(prots) do
+		local node = minetest.get_node(vpos)
+		local meta = minetest.get_meta(vpos)
+
+		if is_node_of_interest(node.name) then
+			if is_protector_name(node.name) then
+				local owner = meta:get_string("owner")
+				if not owner_set[owner] then
+					owner_set[owner] = 1
+				else
+					owner_set[owner] = owner_set[owner] + 1
+				end
+			else
+				-- Is cityblock.
+			end
+		end
+	end
+
+	local owner_list = {}
+	local owner_list_data = {}
+	for owner, count in pairs(owner_set) do
+		table.insert(owner_list, ("%s (%d)"):format(owner, count))
+		table.insert(owner_list_data, {})
+	end
+	-- Must be an array of strings.
+	guiobj:get_control_by_name("player_list").itemlist = owner_list
+	-- Formspec code ignores this, but we can store our own data in the widget.
+	guiobj:get_control_by_name("player_list").datalist = owner_list_data
 
 	minetest.chat_send_player(pname, "# Server: Found " .. #prots .. " prots!")
 end
@@ -47,6 +101,7 @@ local FORMTABLE = {
 	children = {
 		{h=6.7, texture="gui_formbg.png", type="background9", w=10.7, x=0, x1=50, y=0},
 		{h=0.6, label="Find Claims", name="protector_scan", type="button", w=2, x=0.5, y=0.5},
+		{h=5.5, name="player_list", type="textlist", w=3, x=3, y=0.5},
 	},
 }
 
@@ -102,6 +157,13 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.protector_scan then
 		do_protector_scan(pos, pname, guiobj)
+	end
+
+	if fields.player_list then
+		local tab = minetest.explode_textlist_event(fields.player_list)
+		if tab.type == "CHG" and tab.index then
+			guiobj:get_control_by_name("player_list").selected = tab.index
+		end
 	end
 
 	minetest.show_formspec(pname, "city_block:mayor", guiobj:to_formspec())

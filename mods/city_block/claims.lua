@@ -17,6 +17,8 @@
 -- of control, while keeping the potential for administrative abuse as low as
 -- possible.
 
+local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
+
 local PROTECTOR_NAMES = {
 	"protector:protect",
 	"protector:protect2",
@@ -48,8 +50,52 @@ local function is_node_of_interest(name)
 	end
 end
 
+local function get_protector_slave_status(prot_pos, city_pos)
+	local rpos = vector.subtract(prot_pos, city_pos)
+	local D = 22 -- Covers a 45x45x45 area.
+
+	local in_cityblock_area = false
+	local protector_is_newer = false
+	local protowner_is_away = false
+
+	if rpos.x >= -D and rpos.x <= D then
+		if rpos.y >= -D and rpos.y <= D then
+			if rpos.z >= -D and rpos.z <= D then
+				in_cityblock_area = true
+			end
+		end
+	end
+
+	local meta = minetest.get_meta(prot_pos)
+	local owner = meta:get_string("owner")
+	local pauth = minetest.get_auth_handler().get_auth(owner)
+
+	if pauth and pauth.last_login and pauth.last_login ~= -1 then
+		local tnow = os.time()
+		local tlast = pauth.last_login
+		local tdiff = tnow - tlast
+		local delay = LAST_LOGIN_DAYS
+		if tdiff > delay then
+			protowner_is_away = true
+		end
+	end
+
+	local cblock = city_block.get_block(city_pos)
+	if cblock and cblock.time then
+	end
+
+	return 1
+end
+
 local function get_protector_slave_status_color(prot_pos, city_pos)
-	return "#FF5555"
+	local status = get_protector_slave_status(prot_pos, city_pos)
+
+	if status == 0 then
+		return "#FFFFFF" -- White.
+	elseif status == 1 then
+		return "#55FF55" -- Green.
+	end
+	return "#FF5555" -- Red.
 end
 
 

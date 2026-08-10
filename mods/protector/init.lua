@@ -25,6 +25,8 @@ dofile(protector.modpath .. "/formspec.lua")
 local player_pos = protector.players
 
 local get_public_time = function()
+	-- Critical. Never change this time format, we have to be able to parse
+	-- it to get a timestamp in seconds.
   return os.date("!%Y/%m/%d UTC")
 end
 
@@ -700,10 +702,18 @@ minetest.register_node("protector:protect", {
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
 		meta:set_string("placedate", placedate)
+		meta:set_string("placetime", tostring(os.time()))
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
 		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
+		meta:mark_as_private({
+			"placedate",
+			"placetime",
+			"owner",
+			"rename",
+			"members",
+		})
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
@@ -799,10 +809,18 @@ minetest.register_node("protector:protect3", {
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
 		meta:set_string("placedate", placedate)
+		meta:set_string("placetime", tostring(os.time()))
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
 		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
+		meta:mark_as_private({
+			"placedate",
+			"placetime",
+			"owner",
+			"rename",
+			"members",
+		})
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
@@ -911,10 +929,18 @@ minetest.register_node("protector:protect2", {
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
 		meta:set_string("placedate", placedate)
+		meta:set_string("placetime", tostring(os.time()))
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
 		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
+		meta:mark_as_private({
+			"placedate",
+			"placetime",
+			"owner",
+			"rename",
+			"members",
+		})
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)
@@ -1019,10 +1045,18 @@ minetest.register_node("protector:protect4", {
 		local pname = placer:get_player_name() or ""
 		local dname = rename.gpn(pname)
 		meta:set_string("placedate", placedate)
+		meta:set_string("placetime", tostring(os.time()))
 		meta:set_string("owner", pname)
 		meta:set_string("rename", dname)
 		meta:set_string("infotext", protector.get_infotext(meta))
 		meta:set_string("members", "")
+		meta:mark_as_private({
+			"placedate",
+			"placetime",
+			"owner",
+			"rename",
+			"members",
+		})
 
 		-- Notify nearby players.
 		protector.update_nearby_players(pos)

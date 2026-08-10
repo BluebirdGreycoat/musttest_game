@@ -293,6 +293,8 @@ minetest.register_craftitem("protector:tool2", {
 		local members = meta:get_string("members") or ""
 		local owner = meta:get_string("owner") or ""
 		local placedate = meta:get_string("placedate") or ""
+		local placetime = meta:get_string("placetime") or ""
+		local area_name = meta:get_string("area_name") or ""
 		local protname = minetest.get_node(pos).name
 
 		-- require the tool user to be the owner of the initial protector node
@@ -405,6 +407,8 @@ minetest.register_craftitem("protector:tool2", {
 
 		-- Restore original placement date and members list.
 		meta:set_string("placedate", placedate)
+		meta:set_string("placetime", placetime)
+		meta:set_string("area_name", area_name)
 		meta:set_string("members", members)
 
 		ambiance.sound_play(electric_screwdriver.sound, pos, electric_screwdriver.sound_gain, electric_screwdriver.sound_dist)

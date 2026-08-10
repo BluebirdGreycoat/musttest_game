@@ -49,7 +49,7 @@ local function is_node_of_interest(name)
 end
 
 local function get_protector_slave_status_color(prot_pos, city_pos)
-	return "#FFFFFF"
+	return "#FF5555"
 end
 
 
@@ -193,7 +193,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 						end
 					end
 				end
-				table.insert(list, "#55FF55Green item")
+				--table.insert(list, "#55FF55Green item")
 				guiobj:get_control_by_name("block_list").itemlist = list
 			end
 		end

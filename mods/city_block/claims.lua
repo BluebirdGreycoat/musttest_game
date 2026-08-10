@@ -49,7 +49,7 @@ local function is_node_of_interest(name)
 end
 
 local function get_protector_slave_status_color(prot_pos, city_pos)
-	return "#ffffff"
+	return "#FFFFFF"
 end
 
 

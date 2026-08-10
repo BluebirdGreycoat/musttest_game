@@ -18,6 +18,7 @@
 -- possible.
 
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
+local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
 
 local PROTECTOR_NAMES = {
 	"protector:protect",
@@ -50,14 +51,42 @@ local function is_node_of_interest(name)
 	end
 end
 
+-- Grok function.
+local function parse_public_time(timestr)
+  local year, month, day = timestr:match("^(%d+)/(%d+)/(%d+) UTC$")
+  if not year then
+    return nil  -- invalid format
+  end
+
+  local t = {
+    year  = tonumber(year),
+    month = tonumber(month),
+    day   = tonumber(day),
+    hour  = 0,
+    min   = 0,
+    sec   = 0,
+    isdst = false
+  }
+
+  -- Current timezone offset (seconds to add to a UTC time to get local time)
+  local now = os.time()
+  local offset = now - os.time(os.date("!*t", now))
+
+  -- os.time(t) treats the fields as local time, so adjust to produce
+  -- the Unix timestamp for 00:00:00 UTC on the given date
+  return os.time(t) + offset
+end
+
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
 	local D = 22 -- Covers a 45x45x45 area.
 
+	-- All must be true to pass.
 	local in_cityblock_area = false
 	local protector_is_newer = false
 	local protowner_is_away = false
 
+	-- Check if the protector is in the city block's area of control.
 	if rpos.x >= -D and rpos.x <= D then
 		if rpos.y >= -D and rpos.y <= D then
 			if rpos.z >= -D and rpos.z <= D then
@@ -70,6 +99,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local owner = meta:get_string("owner")
 	local pauth = minetest.get_auth_handler().get_auth(owner)
 
+	-- Check if the protector owner is away for extended time.
 	if pauth and pauth.last_login and pauth.last_login ~= -1 then
 		local tnow = os.time()
 		local tlast = pauth.last_login
@@ -80,11 +110,30 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
+	-- Check if the protector is newer than the city block.
 	local cblock = city_block.get_block(city_pos)
 	if cblock and cblock.time then
+		local placedate = meta:get_string("placedate")
+		local placetime = tonumber(meta:get_string("placetime")) -- May be nil.
+
+		-- Convert placetime to placedate if we have to.
+		if placetime == 0 or placetime == nil and placedate ~= "" then
+			placetime = parse_public_time(placedate)
+		end
+
+		if placetime and placetime ~= 0 then
+			-- Protector must be significantly newer.
+			placetime = placetime + PROTECTOR_PLACETIME_OFFSET
+			if placetime > cblock.time then
+				protector_is_newer = true
+			end
+		end
 	end
 
-	return 1
+	if in_cityblock_area and protector_is_newer and protowner_is_away then
+		return 1
+	end
+	return 0
 end
 
 local function get_protector_slave_status_color(prot_pos, city_pos)

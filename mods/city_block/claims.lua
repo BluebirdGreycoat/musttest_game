@@ -31,9 +31,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	local pname = player:get_player_name()
 	local pos = city_block.formspecs[pname]
+	local guiobj = city_block.guiobjs[pname]
 
 	-- Context should have been created in 'on_rightclick'. CSM protection.
-	if not pos then
+	if not pos or not guiobj then
 		return true
 	end
 
@@ -53,8 +54,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.protector_scan then
 		minetest.chat_send_player(pname, "# Server: Protection scan!")
-		return true
 	end
 
+	minetest.show_formspec(pname, "city_block:mayor", guiobj:to_formspec())
 	return true
 end

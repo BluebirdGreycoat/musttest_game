@@ -17,47 +17,47 @@
 -- of control, while keeping the potential for administrative abuse as low as
 -- possible.
 
+local PROTECTOR_NAMES = {
+	"protector:protect",
+	"protector:protect2",
+	"protector:protect3",
+	"protector:protect4",
+}
+
+local function is_protector_name(name)
+	for k, v in ipairs(PROTECTOR_NAMES) do
+		if name == v then
+			return true
+		end
+	end
+end
+
+local NODES_OF_INTEREST = {
+	"protector:protect",
+	"protector:protect2",
+	"protector:protect3",
+	"protector:protect4",
+	"city_block:cityblock",
+}
+
+local function is_node_of_interest(name)
+	for k, v in ipairs(NODES_OF_INTEREST) do
+		if name == v then
+			return true
+		end
+	end
+end
+
 
 
 local function do_protector_scan(pos, pname, guiobj)
 	minetest.chat_send_player(pname, "# Server: Protection scan!")
 
-	local nodes = {
-		"protector:protect",
-		"protector:protect2",
-		"protector:protect3",
-		"protector:protect4",
-		"city_block:cityblock",
-	}
-
-	local prot_names = {
-		"protector:protect",
-		"protector:protect2",
-		"protector:protect3",
-		"protector:protect4",
-	}
-
-	local function is_node_of_interest(name)
-		for k, v in ipairs(nodes) do
-			if name == v then
-				return true
-			end
-		end
-	end
-
-	local function is_protector_name(name)
-		for k, v in ipairs(prot_names) do
-			if name == v then
-				return true
-			end
-		end
-	end
-
 	local D = 22 -- Covers a 45x45x45 area.
 	local minp = vector.subtract(pos, D)
 	local maxp = vector.add(pos, D)
 
-	local prots = minetest.find_nodes_in_area(minp, maxp, nodes)
+	local prots = minetest.find_nodes_in_area(minp, maxp, NODES_OF_INTEREST)
 	if not prots then
 		prots = {} -- Nil check.
 	end

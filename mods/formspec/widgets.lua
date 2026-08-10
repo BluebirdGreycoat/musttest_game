@@ -448,8 +448,8 @@ formspec.register_widget("textlist", {
 			NUMBER(params, "selected", ""),
 		}
 
-		-- Formspec escape all items.
-		local items = params.itemlist or {}
+		-- Formspec escape all items (do not modify original items).
+		local items = table.copy(params.itemlist or {})
 		for i=1, #items, 1 do
 			items[i] = FS(items[i])
 		end
@@ -496,8 +496,8 @@ formspec.register_widget("tabheader", {
 			BOOLEAN(params, "draw_border", ""),
 		}
 
-		-- Formspec escape all items.
-		local items = params.itemlist or {}
+		-- Formspec escape all items (do not modify original items).
+		local items = table.copy(params.itemlist or {})
 		for i=1, #items, 1 do
 			items[i] = FS(items[i])
 		end
@@ -788,8 +788,8 @@ formspec.register_widget("dropdown", {
 			BOOLEAN(params, "index_event", ""),
 		}
 
-		-- Formspec escape all items.
-		local items = params.itemlist or {}
+		-- Formspec escape all items (do not modify original items).
+		local items = table.copy(params.itemlist or {})
 		for i=1, #items, 1 do
 			items[i] = FS(items[i])
 		end

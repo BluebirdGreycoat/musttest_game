@@ -13,7 +13,9 @@ function formspec.create_gui_object(formtable)
 	local tab = table.copy(formtable)
 
 	-- The GUI user should store their data here whenever possible.
-	-- Keeps things organized.
+	-- Keeps things organized. More importantly, it keeps userdata and formspec
+	-- data from potentially colliding. The formspec code will ignore everything
+	-- in this table.
 	tab.user_data = {}
 
 	-- Install methods.

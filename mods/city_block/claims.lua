@@ -89,9 +89,8 @@ local function do_protector_scan(pos, pname, guiobj)
 	end
 	-- Must be an array of strings.
 	guiobj:get_control_by_name("player_list").itemlist = owner_list
-	-- Formspec code ignores this, but we can store our own data in the widget.
-	guiobj:get_control_by_name("player_list").datalist = owner_list_data
-	guiobj:get_control_by_name("player_list").protlist = prots -- All blocks.
+	guiobj:get_usertable().datalist = owner_list_data
+	guiobj:get_usertable().protlist = prots -- All blocks.
 
 	minetest.chat_send_player(pname, "# Server: Found " .. #prots .. " prots!")
 end
@@ -171,8 +170,8 @@ function city_block.on_mayor_fields(player, formname, fields)
 			guiobj:get_control_by_name("block_list").selected = -1
 
 			do
-				local data = guiobj:get_control_by_name("player_list").datalist or {}
-				local prots = guiobj:get_control_by_name("player_list").protlist or {}
+				local data = guiobj:get_usertable().datalist or {}
+				local prots = guiobj:get_usertable().protlist or {}
 				local info = data[guiobj:get_control_by_name("player_list").selected]
 
 				local list = {}

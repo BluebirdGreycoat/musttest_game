@@ -199,6 +199,7 @@ local FORMTABLE = {
 		{h=0.6, label="Find Claims", name="protector_scan", type="button", w=2, x=0.5, y=0.5},
 		{h=5.5, name="player_list", type="textlist", w=3, x=3, y=0.5},
 		{h=5.5, name="block_list", type="textlist", w=3, x=6.5, y=0.5},
+		{FORMID="cityblock_age", h=0.4, text="Label Text", type="label", w=4, x=0.5, y=6},
 	},
 }
 
@@ -210,6 +211,9 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 		guiobj = formspec.create_gui_object(FORMTABLE)
 		city_block.guiobjs[pname] = guiobj
 	end
+
+	guiobj:get_control_by_id("cityblock_age").text =
+		blockdata.time and os.date("!%Y/%m/%d UTC", blockdata.time) or "Unknown age."
 
 	return guiobj:to_formspec()
 end

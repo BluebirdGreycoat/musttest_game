@@ -1,4 +1,23 @@
 
+-- Here's my idea for determining how protections relate to cityblocks.
+-- The goal is to determine if a specific protector is "slaved" to a cityblock.
+-- The following conditions have to be met:
+--   1. The protector is within the cityblock's area of control.
+--   2. The protector is newer than the cityblock.
+--   3. The owner of the protector has not logged in for 180 days.
+--   4. The owner of the cityblock has at least 50k build XP.
+--   5. The owner of the cityblock has 50k xp MORE than the owner of the prot.
+--   6. The owner of the prot is not an admin.
+--   7. The owner of the prot has < 10k build XP.
+--   8. ???
+--   9. Profit!
+-- The intended purpose of these conditions is to allow city mayors to control
+-- (even revoke) protections for low-quality builders/builds within their area
+-- of control, while keeping the potential for administrative abuse as low as
+-- possible.
+
+
+
 local function do_protector_scan(pos, pname, guiobj)
 	minetest.chat_send_player(pname, "# Server: Protection scan!")
 

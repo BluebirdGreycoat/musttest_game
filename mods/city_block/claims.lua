@@ -108,6 +108,9 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		if tdiff > delay then
 			protowner_is_away = true
 		end
+	else
+		-- Account no longer exists OR 'last_login' was never initialized.
+		protowner_is_away = true
 	end
 
 	-- Check if the protector is newer than the city block.

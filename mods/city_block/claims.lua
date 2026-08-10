@@ -11,6 +11,7 @@
 --   7. The owner of the prot has < 10k build XP.
 --   8. If the prot has members, all members must pass these conditions.
 --   9. All other cityblocks in the area of control must be owned by the owner.
+--      OR, all other cityblocks must be newer that this one.
 -- The intended purpose of these conditions is to allow city mayors to control
 -- (even revoke) protections for low-quality builders/builds within their area
 -- of control, while keeping the potential for administrative abuse as low as
@@ -90,6 +91,7 @@ local function do_protector_scan(pos, pname, guiobj)
 	guiobj:get_control_by_name("player_list").itemlist = owner_list
 	-- Formspec code ignores this, but we can store our own data in the widget.
 	guiobj:get_control_by_name("player_list").datalist = owner_list_data
+	guiobj:get_control_by_name("player_list").protlist = prots -- All blocks.
 
 	minetest.chat_send_player(pname, "# Server: Found " .. #prots .. " prots!")
 end
@@ -102,6 +104,7 @@ local FORMTABLE = {
 		{h=6.7, texture="gui_formbg.png", type="background9", w=10.7, x=0, x1=50, y=0},
 		{h=0.6, label="Find Claims", name="protector_scan", type="button", w=2, x=0.5, y=0.5},
 		{h=5.5, name="player_list", type="textlist", w=3, x=3, y=0.5},
+		{h=5.5, name="block_list", type="textlist", w=3, x=6.5, y=0.5},
 	},
 }
 
@@ -157,6 +160,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.protector_scan then
 		do_protector_scan(pos, pname, guiobj)
+		guiobj:get_control_by_name("player_list").selected = nil
 	end
 
 	if fields.player_list then

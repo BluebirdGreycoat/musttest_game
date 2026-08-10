@@ -97,6 +97,7 @@ function city_block.on_receive_fields(player, formname, fields)
 
 	if fields.manage_claims then
 		if gdac.player_is_admin(pname) then
+			local blockdata = city_block.get_block(pos)
 			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)
 			minetest.show_formspec(pname, "city_block:mayor", formspec)
 		else

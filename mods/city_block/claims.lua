@@ -85,7 +85,7 @@ local function do_protector_scan(pos, pname, guiobj)
 	local owner_list_data = {}
 	for owner, count in pairs(owner_set) do
 		table.insert(owner_list, ("%s (%d)"):format(rename.gpn(owner), count))
-		table.insert(owner_list_data, {})
+		table.insert(owner_list_data, {owner=owner, count=count})
 	end
 	-- Must be an array of strings.
 	guiobj:get_control_by_name("player_list").itemlist = owner_list
@@ -160,13 +160,37 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.protector_scan then
 		do_protector_scan(pos, pname, guiobj)
-		guiobj:get_control_by_name("player_list").selected = -1
+		guiobj:get_control_by_name("player_list").selected = -1 -- Apparently nil doesn't work.
+		guiobj:get_control_by_name("block_list").selected = -1
 	end
 
 	if fields.player_list then
 		local tab = minetest.explode_textlist_event(fields.player_list)
 		if tab.type == "CHG" and tab.index then
 			guiobj:get_control_by_name("player_list").selected = tab.index
+			guiobj:get_control_by_name("block_list").selected = -1
+
+			do
+				local data = guiobj:get_control_by_name("player_list").datalist or {}
+				local prots = guiobj:get_control_by_name("player_list").protlist or {}
+				local info = data[guiobj:get_control_by_name("player_list").selected]
+
+				local list = {}
+				if info then
+					for _, vpos in ipairs(prots) do
+						local node = minetest.get_node(vpos)
+						local meta = minetest.get_meta(vpos)
+						if is_protector_name(node.name) then
+							if meta:get_string("owner") == info.owner then
+								local p = vector.subtract(vpos, pos)
+								local str = ("%s"):format(minetest.pos_to_string(p))
+								table.insert(list, str)
+							end
+						end
+					end
+				end
+				guiobj:get_control_by_name("block_list").itemlist = list
+			end
 		end
 	end
 

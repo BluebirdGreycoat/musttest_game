@@ -151,11 +151,11 @@ local function get_protector_slave_status_color(prot_pos, city_pos)
 	local status = get_protector_slave_status(prot_pos, city_pos)
 
 	if status == 0 then
-		return "#FFFFFF" -- White.
+		return "#FFFFFF" -- White. Protector is normal (or independant) claim.
 	elseif status == 1 then
-		return "#55FF55" -- Green.
+		return "#55FF55" -- Green. Protector is slaved to the cityblock.
 	end
-	return "#FF5555" -- Red.
+	return "#FF5555" -- Red. Use this for already-expired protectors.
 end
 
 

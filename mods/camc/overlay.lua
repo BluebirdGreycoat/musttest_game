@@ -20,7 +20,7 @@ end
 -- Only static information.
 local function get_infotext_1()
 	local infotext = ("%s\nAddress: %s:%s\nForum: %s"):format(
-		os.date("!%Y/%m/%d %H:%m:%S", os.time()),
+		os.date("!%Y/%m/%d %H:%M:%S", os.time()),
 		tostring(WEBADDR), tostring(WEBPORT),
 		tostring(FORUMADDR)
 	)

@@ -160,7 +160,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 
 	if fields.protector_scan then
 		do_protector_scan(pos, pname, guiobj)
-		guiobj:get_control_by_name("player_list").selected = nil
+		guiobj:get_control_by_name("player_list").selected = -1
 	end
 
 	if fields.player_list then

@@ -45,5 +45,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
+	if fields.protector_scan then
+		minetest.chat_send_player(pname, "# Server: Protection scan!")
+		return true
+	end
+
 	return true
 end

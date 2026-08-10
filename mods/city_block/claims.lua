@@ -83,7 +83,7 @@ local function do_protector_scan(pos, pname, guiobj)
 	local owner_list = {}
 	local owner_list_data = {}
 	for owner, count in pairs(owner_set) do
-		table.insert(owner_list, ("%s (%d)"):format(owner, count))
+		table.insert(owner_list, ("%s (%d)"):format(rename.gpn(owner), count))
 		table.insert(owner_list_data, {})
 	end
 	-- Must be an array of strings.

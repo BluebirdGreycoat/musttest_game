@@ -664,7 +664,7 @@ minetest.register_node("protector:protect", {
 	tiles = {
 		"moreblocks_circle_stone_bricks.png",
 		"moreblocks_circle_stone_bricks.png",
-		"moreblocks_circle_stone_bricks.png^protector_logo.png"
+		"moreblocks_circle_stone_bricks.png^protector_logo_item.png"
 	},
 	sounds = default.node_sound_stone_defaults(),
 	groups = utility.dig_groups("bigitem", {

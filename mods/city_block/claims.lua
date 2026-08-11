@@ -2,12 +2,12 @@
 -- Here's my idea for determining how protections relate to cityblocks.
 -- The goal is to determine if a specific protector is "slaved" to a cityblock.
 -- The following conditions have to be met:
---   1. The protector is within the cityblock's area of control.
---   2. The protector is newer than the cityblock.
---   3. The owner of the protector has not logged in for 180 days.
+--   1. [X] The protector is within the cityblock's area of control.
+--   2. [X] The protector is newer than the cityblock.
+--   3. [X] The owner of the protector has not logged in for 180 days.
 --   4. The owner of the cityblock has at least 50k build XP.
 --   5. The owner of the cityblock has 50k xp MORE than the owner of the prot.
---   6. The owner of the prot is not an admin.
+--   6. [X] The owner of the prot is not an admin.
 --   7. The owner of the prot has < 10k build XP.
 --   8. If the prot has members, all members must pass these conditions.
 --   9. All other cityblocks in the area of control must be owned by the owner.

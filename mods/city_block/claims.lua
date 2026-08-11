@@ -539,6 +539,42 @@ function city_block.on_mayor_fields(player, formname, fields)
 		end
 	end
 
+	if fields.become_member then
+		local idx = guiobj:get_control_by_name("block_list").selected
+		local list = guiobj:get_usertable().current_block_list or {}
+		local info = list[idx] -- May be nil.
+		if info then
+			local vpos = info.pos
+			local cpos = pos
+			local status = get_protector_slave_status(vpos, cpos)
+			if status == 1 then
+				local vmeta = minetest.get_meta(vpos)
+				local vnode = minetest.get_node(vpos)
+				local vndef = minetest.registered_nodes[vnode.name] or {}
+				if vndef._protector_supports_members then
+					if vmeta:get_string("owner") ~= pname then
+						if not protector.is_member(vmeta, pname) then
+							protector.add_member(vmeta, pname)
+							guiobj:set_message("Member list updated.")
+						else
+							guiobj:set_message("You are already a member of the selected protector.")
+						end
+					else
+						guiobj:set_message("You can't be a member of your own protector.")
+					end
+				else
+					guiobj:set_message("Protector does not support member lists.")
+				end
+			elseif status == -1 then
+				guiobj:set_message("0xDEADBEEF: Map/GUI data mismatch.")
+			else
+				guiobj:set_message("Selected protector cannot be managed.")
+			end
+		else
+			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
+		end
+	end
+
 	minetest.show_formspec(pname, "city_block:mayor", guiobj:to_formspec())
 	return true
 end

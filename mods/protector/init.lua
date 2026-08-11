@@ -690,6 +690,7 @@ minetest.register_node("protector:protect", {
 	on_place = protector.check_overlap,
 
 	_expired_protector_name = "protector:expired1",
+	_protector_supports_members = true,
 
 	on_timer = protector.on_timer,
 
@@ -915,6 +916,7 @@ minetest.register_node("protector:protect2", {
 	selection_box = {type = "wallmounted"},
 
 	_expired_protector_name = "protector:expired2",
+	_protector_supports_members = true,
 
 	on_timer = protector.on_timer,
 

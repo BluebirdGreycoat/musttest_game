@@ -251,6 +251,14 @@ function city_block.create_mayor_formspec(pos, pname, blockdata)
 	if not guiobj then
 		guiobj = formspec.create_gui_object(FORMTABLE)
 		city_block.guiobjs[pname] = guiobj
+
+		-- Add some additional methods.
+		function guiobj:set_message(msg)
+			self:get_control_by_id("info_message").text = (msg or "No info.")
+		end
+
+		-- Initial message.
+		guiobj:set_message("Hello, block captain.")
 	end
 
 	do

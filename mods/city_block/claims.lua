@@ -448,6 +448,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local nmeta = minetest.get_meta(vpos)
 				local members = protector.get_member_list(nmeta)
 				local timestamp = get_protector_timestamp(nmeta) or 0
+				local timestr = timestamp ~= 0 and os.date("!%Y/%m/%d", timestamp) or "N/A"
 				local areaname = nmeta:get_string("area_name")
 				areaname = areaname ~= "" and areaname or "N/A"
 
@@ -456,12 +457,16 @@ function city_block.on_mayor_fields(player, formname, fields)
 					local lines = {
 						("Registered To: %s"):format(rename.gpn(info.owner)),
 						("GPS: %s"):format(minetest.pos_to_string(vector.subtract(vpos, pos))),
-						("Date: %s"):format(os.date("!%Y/%m/%d", timestamp)),
+						("Date: %s"):format(timestr),
 						("Location: %s"):format(areaname),
 						("Members: %d"):format(#members),
 					}
 					if is_expired then
 						table.insert(lines, "*** EXPIRED ***")
+					else
+						for k, v in ipairs(members) do
+							table.insert(lines, ("  %d: %s"):format(k, rename.gpn(v)))
+						end
 					end
 					textarea.text = table.concat(lines, '\n')
 				end

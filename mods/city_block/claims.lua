@@ -535,10 +535,19 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local areaname = nmeta:get_string("area_name")
 				areaname = areaname ~= "" and areaname or "N/A"
 
+				local last_login = "N/A"
+				if not gdac.player_is_admin(info.owner) then -- Admin login time is hidden.
+					local pauth = minetest.get_auth_handler().get_auth(info.owner)
+					if pauth and pauth.last_login and pauth.last_login ~= -1 then
+						last_login = os.date("!%Y/%m/%d", pauth.last_login)
+					end
+				end
+
 				local textarea = guiobj:get_control_by_name("claim_infotext")
 				if textarea then
 					local lines = {
 						("Registered To: %s"):format(rename.gpn(info.owner)),
+						("Last Login: %s"):format(last_login),
 						("GPS: %s"):format(minetest.pos_to_string(vector.subtract(vpos, pos))),
 						("Date: %s"):format(timestr),
 						("Location: %s"):format(areaname),

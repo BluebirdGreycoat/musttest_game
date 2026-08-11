@@ -20,6 +20,7 @@
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
 local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
 city_block.BUILDXP_FOR_MAYOR = 20000
+local MAYOR_MINIMUM_BUILDXP = 50000
 local CITYBLOCK_BOROUGH_RADIUS = 22 -- Covers a 45x45x45 area.
 
 local PROTECTOR_NAMES = {
@@ -146,6 +147,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local protector_is_newer = false
 	local protowner_is_away = false
 	local protowner_not_admin = false
+	local cityowner_has_xp = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -192,6 +194,13 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		protowner_not_admin = true
 	end
 
+	-- Check if cityblock owner has needed minimum XP.
+	if cblock.owner then
+		if xp.get_xp(cblock.owner, "buildxp") >= MAYOR_MINIMUM_BUILDXP then
+			cityowner_has_xp = true
+		end
+	end
+
 	-- Check if the protector owner is away for extended time.
 	local pauth = minetest.get_auth_handler().get_auth(owner)
 	if pauth and pauth.last_login and pauth.last_login ~= -1 then
@@ -226,7 +235,12 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
-	if in_cityblock_area and protector_is_newer and protowner_is_away and protowner_not_admin then
+	if in_cityblock_area
+			and protector_is_newer
+			and protowner_is_away
+			and protowner_not_admin
+			and cityowner_has_xp
+	then
 		return 1
 	end
 	return 0

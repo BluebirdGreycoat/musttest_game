@@ -169,6 +169,11 @@ protector.add_member = function(meta, name)
 		return
 	end
 
+	-- Forbid adding self.
+	if meta:get_string("owner") == name then
+		return
+	end
+
 	name = rename.grn(name)
 	if protector.is_member(meta, name) then
 		return

@@ -134,6 +134,67 @@ local function get_protector_timestamp(meta)
 	end
 end
 
+--- Count unique content IDs in the region [minp, maxp]
+--- @param minp vector
+--- @param maxp vector
+--- @return table  -- { [content_id] = count, ... }
+function count_content_ids(minp, maxp)
+	local vm = minetest.get_voxel_manip()
+	local emin, emax = vm:read_from_map(minp, maxp)
+	local data = vm:get_data()
+	local area = VoxelArea:new{MinEdge = emin, MaxEdge = emax}
+
+	local counts = {}
+
+	-- Iterate only the requested region (read_from_map may emerge a larger mapblock-aligned volume)
+	for z = minp.z, maxp.z do
+		for y = minp.y, maxp.y do
+			for x = minp.x, maxp.x do
+				local vi = area:index(x, y, z)
+				local cid = data[vi]
+				counts[cid] = (counts[cid] or 0) + 1
+			end
+		end
+	end
+
+	return counts
+end
+
+local PROTECTOR_RADIUS = {
+	["protector:protect"] = 5,
+	["protector:protect2"] = 5,
+	["protector:protect3"] = 3,
+	["protector:protect4"] = 3,
+}
+
+local function calc_costinfo_for_protector(prot_pos)
+	local prot_node = minetest.get_node(prot_pos)
+	local prot_meta = minetest.get_meta(prot_pos)
+	if not is_protector_name(prot_node.name) then
+		return 0
+	end
+	if prot_meta:get_string("owner") == "" then
+		return 0
+	end
+	local R = PROTECTOR_RADIUS[prot_node.name]
+	if not R then
+		return 0
+	end
+
+	local minp = vector.subtract(prot_pos, R)
+	local maxp = vector.add(prot_pos, R)
+	local counts = count_content_ids(minp, maxp)
+
+	-- Find num unique content IDs.
+	local count = 0
+	for k, v in pairs(counts) do
+		count = count + 1
+	end
+
+	local cost = count * 100
+	return count, cost
+end
+
 -- Returns 1 if protector can be controled by the cityblock.
 -- Returns 2 if protector is expired.
 -- Returns 0 if protector is independant.
@@ -519,6 +580,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		local count, count_owners = do_protector_scan(pos, pname, guiobj)
 		guiobj:get_control_by_name("player_list").selected = -1 -- Apparently nil doesn't work.
 		guiobj:get_control_by_name("block_list").selected = -1
+		guiobj:get_control_by_name("claim_infotext").text = nil
 		guiobj:set_message(("Scanned claims: %d (unique landowners: %d)"):format(count, count_owners))
 	end
 
@@ -527,6 +589,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		if tab.type == "CHG" and tab.index then
 			guiobj:get_control_by_name("player_list").selected = tab.index
 			guiobj:get_control_by_name("block_list").selected = -1
+			guiobj:get_control_by_name("claim_infotext").text = nil
 
 			-- Update contents of the block list whenever playername selected.
 			local data = guiobj:get_usertable().datalist or {}
@@ -579,6 +642,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 				local timestr = timestamp ~= 0 and os.date("!%Y/%m/%d", timestamp) or "N/A"
 				local areaname = nmeta:get_string("area_name")
 				areaname = areaname ~= "" and areaname or "N/A"
+				local unique_ids, total_cost = calc_costinfo_for_protector(vpos)
 
 				local last_login = "N/A"
 				if not gdac.player_is_admin(info.owner) then -- Admin login time is hidden.
@@ -595,6 +659,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 						("Last Login: %s"):format(last_login),
 						("GPS: %s"):format(minetest.pos_to_string(vector.subtract(vpos, pos))),
 						("Date of Claim: %s"):format(timestr),
+						("Unique Blocks: %d"):format(unique_ids),
 						("Location: %s"):format(areaname),
 						("Members: %d"):format(#members),
 					}
@@ -604,6 +669,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 						for k, v in ipairs(members) do
 							table.insert(lines, ("  %d: %s"):format(k, rename.gpn(v)))
 						end
+						table.insert(lines, ("Reclaim Cost: %d Build XP"):format(total_cost))
 					end
 					textarea.text = table.concat(lines, '\n')
 				end

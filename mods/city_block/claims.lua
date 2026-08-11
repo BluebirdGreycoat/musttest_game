@@ -8,10 +8,9 @@
 --   4. [X] The owner of the cityblock has at least 50k build XP.
 --   5. [X] The owner of the cityblock has 50k xp MORE than the owner of the prot.
 --   6. [X] The owner of the prot is not an admin.
---   7. [X] The owner of the prot has < 50k build XP.
---   8. [X] If the prot has members, all members must pass these conditions.
+--   7. [X] If the prot has members, all members must pass these conditions.
 --      [X] If cityblock owner is a member, skip checks for that member.
---   9. [X] All other cityblocks in the area of control must be owned by the owner.
+--   8. [X] All other cityblocks in the area of control must be owned by the owner.
 --      [X] OR, all other cityblocks must be newer that this one.
 -- The intended purpose of these conditions is to allow city mayors to control
 -- (even revoke) protections for low-quality builders/builds within their area
@@ -152,7 +151,6 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local protowner_not_admin = false
 	local cityowner_has_xp = false
 	local cityowner_has_xp_morethanprot = false
-	local protowner_has_noxp = false
 	local cityblocks_all_allow = false
 	local protmembers_pass = false
 
@@ -212,9 +210,6 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		-- Check if city owner XP is more than twice as much as prot owner XP.
 		if cityXP >= (protXP * 2) then
 			cityowner_has_xp_morethanprot = true
-		end
-		if protXP < (MAYOR_MINIMUM_BUILDXP / 2) then
-			protowner_has_noxp = true
 		end
 	end
 
@@ -321,9 +316,6 @@ local function get_protector_slave_status(prot_pos, city_pos)
 
 				local cityXP = xp.get_xp(cityowner, "buildxp")
 				local memberXP = xp.get_xp(membername, "buildxp")
-				if memberXP >= (MAYOR_MINIMUM_BUILDXP / 2) then
-					good = false
-				end
 				-- Check if city owner XP is more than twice as much as member XP.
 				if cityXP < (memberXP * 2) then
 					good = false
@@ -343,7 +335,6 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	--[[
 	cityowner_has_xp = true
 	cityowner_has_xp_morethanprot = true
-	protowner_has_noxp = true
 	protowner_not_admin = true
 	protowner_is_away = true
 	protector_is_newer = true
@@ -356,7 +347,6 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and protowner_not_admin
 			and cityowner_has_xp
 			and cityowner_has_xp_morethanprot
-			and protowner_has_noxp
 			and cityblocks_all_allow
 			and protmembers_pass
 	then

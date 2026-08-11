@@ -8,10 +8,10 @@
 --   4. [X] The owner of the cityblock has at least 50k build XP.
 --   5. [X] The owner of the cityblock has 50k xp MORE than the owner of the prot.
 --   6. [X] The owner of the prot is not an admin.
---   7. The owner of the prot has < 50k build XP.
+--   7. [X] The owner of the prot has < 50k build XP.
 --   8. If the prot has members, all members must pass these conditions.
---   9. All other cityblocks in the area of control must be owned by the owner.
---      OR, all other cityblocks must be newer that this one.
+--   9. [X] All other cityblocks in the area of control must be owned by the owner.
+--          OR, all other cityblocks must be newer that this one.
 -- The intended purpose of these conditions is to allow city mayors to control
 -- (even revoke) protections for low-quality builders/builds within their area
 -- of control, while keeping the potential for administrative abuse as low as
@@ -150,6 +150,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local cityowner_has_xp = false
 	local cityowner_has_xp_morethanprot = false
 	local protowner_has_noxp = false
+	local cityblocks_all_allow = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -246,6 +247,51 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
+	-- Check all neighboring cityblocks for age and ownership.
+	if cblock.owner and city_time then
+		local allblocks = city_block.blocks
+		local cityowner = cblock.owner or ""
+		local good = true
+
+		for k = 1, #allblocks do
+			local block = allblocks[k]
+			local bowner = block.owner
+			local btime = block.time
+			local vpos = block.pos
+			local cpos = city_pos
+			local r = CITYBLOCK_BOROUGH_RADIUS * 2
+			if bowner and gdac.player_is_admin(bowner) then
+				btime = 0
+			end
+			if bowner and btime and vpos then
+				if vpos.x >= (cpos.x - r) and vpos.x <= (cpos.x + r) and
+					vpos.z >= (cpos.z - r) and vpos.z <= (cpos.z + r) and
+					vpos.y >= (cpos.y - r) and vpos.y <= (cpos.y + r) then
+					-- All other city blocks must be owned by this city owner, or be
+					-- yonger than the current city block.
+					if not (bowner == cityowner or btime < city_time) then
+						good = false
+						break
+					end
+				end
+			end
+		end
+
+		if good then
+			cityblocks_all_allow = true
+		end
+	end
+
+	-- For exclusively testing neighbor city block age/ownership conditions.
+	--[[
+	cityowner_has_xp = true
+	cityowner_has_xp_morethanprot = true
+	protowner_has_noxp = true
+	protowner_not_admin = true
+	protowner_is_away = true
+	protector_is_newer = true
+	--]]
+
 	if in_cityblock_area
 			and protector_is_newer
 			and protowner_is_away
@@ -253,6 +299,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and cityowner_has_xp
 			and cityowner_has_xp_morethanprot
 			and protowner_has_noxp
+			and cityblocks_all_allow
 	then
 		return 1
 	end

@@ -682,6 +682,11 @@ function city_block.on_mayor_fields(player, formname, fields)
 					end
 					textarea.text = table.concat(lines, '\n')
 				end
+
+				local status = get_protector_slave_status(vpos, pos)
+				local rposstr = minetest.pos_to_string(vector.subtract(vpos, pos))
+				local status_mode = ({[-1]="invalid", [0]="independant", [1]="slaved", [2]="expired"})[status] or "unknown"
+				guiobj:set_message(("Viewing claim at %s: %s."):format(rposstr, status_mode))
 			else
 				guiobj:set_message("0xDEADBEEF: Node is not a protector.")
 			end

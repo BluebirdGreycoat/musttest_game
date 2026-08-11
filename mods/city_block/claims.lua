@@ -594,7 +594,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		if info then
 			local vpos = info.pos
 			local cpos = pos
-			local status = get_protector_slave_status(vpos, cpos)
+			local status, errmsg = get_protector_slave_status(vpos, cpos)
 			if status == 1 then
 				local oldnode = minetest.get_node(vpos)
 				local oldndef = minetest.registered_nodes[oldnode.name] or {}
@@ -615,7 +615,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 			elseif status == -1 then
 				guiobj:set_message("0xDEADBEEF: Map/GUI data mismatch.")
 			else
-				guiobj:set_message("Selected protector cannot be managed.")
+				guiobj:set_message("Selected protector cannot be managed: " .. errmsg)
 			end
 		else
 			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")
@@ -629,7 +629,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 		if info then
 			local vpos = info.pos
 			local cpos = pos
-			local status = get_protector_slave_status(vpos, cpos)
+			local status, errmsg = get_protector_slave_status(vpos, cpos)
 			if status == 1 then
 				local vmeta = minetest.get_meta(vpos)
 				local vnode = minetest.get_node(vpos)
@@ -651,7 +651,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 			elseif status == -1 then
 				guiobj:set_message("0xDEADBEEF: Map/GUI data mismatch.")
 			else
-				guiobj:set_message("Selected protector cannot be managed.")
+				guiobj:set_message("Selected protector cannot be managed: " .. errmsg)
 			end
 		else
 			guiobj:set_message("0xDEADBEEF: Bad GUI selection.")

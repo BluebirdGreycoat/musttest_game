@@ -52,7 +52,7 @@ local function is_node_of_interest(name)
 end
 
 -- Grok function.
-local function parse_public_time(timestr)
+local function parse_protector_placedate(timestr)
   local year, month, day = timestr:match("^(%d+)/(%d+)/(%d+) UTC$")
   if not year then
     return nil  -- invalid format
@@ -129,7 +129,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 
 		-- Convert placetime to placedate if we have to.
 		if placetime == 0 or placetime == nil and placedate ~= "" then
-			placetime = parse_public_time(placedate)
+			placetime = parse_protector_placedate(placedate)
 		end
 
 		if placetime and placetime ~= 0 then

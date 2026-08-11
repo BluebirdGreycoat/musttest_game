@@ -269,6 +269,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 					vpos.y >= (cpos.y - r) and vpos.y <= (cpos.y + r) then
 					-- All other city blocks must be owned by this city owner, or be
 					-- yonger than the current city block.
+					-- Note: ownername check is especially needed because self is always
+					-- included in the array of blocks we're looking at.
 					if not (bowner == cityowner or btime < city_time) then
 						good = false
 						break

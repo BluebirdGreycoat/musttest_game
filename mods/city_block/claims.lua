@@ -5,10 +5,10 @@
 --   1. [X] The protector is within the cityblock's area of control.
 --   2. [X] The protector is newer than the cityblock.
 --   3. [X] The owner of the protector has not logged in for 180 days.
---   4. The owner of the cityblock has at least 50k build XP.
---   5. The owner of the cityblock has 50k xp MORE than the owner of the prot.
+--   4. [X] The owner of the cityblock has at least 50k build XP.
+--   5. [X] The owner of the cityblock has 50k xp MORE than the owner of the prot.
 --   6. [X] The owner of the prot is not an admin.
---   7. The owner of the prot has < 10k build XP.
+--   7. The owner of the prot has < 50k build XP.
 --   8. If the prot has members, all members must pass these conditions.
 --   9. All other cityblocks in the area of control must be owned by the owner.
 --      OR, all other cityblocks must be newer that this one.
@@ -148,6 +148,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local protowner_is_away = false
 	local protowner_not_admin = false
 	local cityowner_has_xp = false
+	local cityowner_has_xp_morethanprot = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -196,8 +197,13 @@ local function get_protector_slave_status(prot_pos, city_pos)
 
 	-- Check if cityblock owner has needed minimum XP.
 	if cblock.owner then
-		if xp.get_xp(cblock.owner, "buildxp") >= MAYOR_MINIMUM_BUILDXP then
+		local cityXP = xp.get_xp(cblock.owner, "buildxp")
+		local protXP = xp.get_xp(owner, "buildxp")
+		if cityXP >= MAYOR_MINIMUM_BUILDXP then
 			cityowner_has_xp = true
+		end
+		if cityXP >= (protXP + MAYOR_MINIMUM_BUILDXP) then
+			cityowner_has_xp_morethanprot = true
 		end
 	end
 
@@ -240,6 +246,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and protowner_is_away
 			and protowner_not_admin
 			and cityowner_has_xp
+			and cityowner_has_xp_morethanprot
 	then
 		return 1
 	end

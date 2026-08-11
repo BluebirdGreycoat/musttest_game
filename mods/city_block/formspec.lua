@@ -96,6 +96,8 @@ function city_block.on_receive_fields(player, formname, fields)
 	end
 
 	if fields.manage_claims then
+		-- TODO: replace this condition with an XP check.
+		-- BUILDXP_FOR_MAYOR
 		if gdac.player_is_admin(pname) then
 			local blockdata = city_block.get_block(pos)
 			local formspec = city_block.create_mayor_formspec(pos, pname, blockdata)

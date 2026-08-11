@@ -19,6 +19,7 @@
 
 local LAST_LOGIN_DAYS = 60 * 60 * 24 * 180
 local PROTECTOR_PLACETIME_OFFSET = 60 * 60 * 24 * 3
+local BUILDXP_FOR_MAYOR = 20000
 
 local PROTECTOR_NAMES = {
 	"protector:protect",
@@ -35,12 +36,27 @@ local function is_protector_name(name)
 	end
 end
 
+local EXPIRED_PROTECTOR_NAMES = {
+	"protector:expired1",
+	"protector:expired2",
+}
+
+local function is_expired_protector_name(name)
+	for k, v in ipairs(EXPIRED_PROTECTOR_NAMES) do
+		if name == v then
+			return true
+		end
+	end
+end
+
 local NODES_OF_INTEREST = {
 	"protector:protect",
 	"protector:protect2",
 	"protector:protect3",
 	"protector:protect4",
 	"city_block:cityblock",
+	"protector:expired1",
+	"protector:expired2",
 }
 
 local function is_node_of_interest(name)
@@ -132,6 +148,11 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			placetime = parse_protector_placedate(placedate)
 		end
 
+		-- Protections owned by admin are maximally old.
+		if gdac.player_is_admin(owner) then
+			placetime = nil
+		end
+
 		if placetime and placetime ~= 0 then
 			-- Protector must be significantly newer.
 			placetime = placetime + PROTECTOR_PLACETIME_OFFSET
@@ -176,7 +197,7 @@ local function do_protector_scan(pos, pname, guiobj)
 		local meta = minetest.get_meta(vpos)
 
 		if is_node_of_interest(node.name) then
-			if is_protector_name(node.name) then
+			if is_protector_name(node.name) or is_expired_protector_name(node.name) then
 				local owner = meta:get_string("owner")
 				if not owner_set[owner] then
 					owner_set[owner] = 1
@@ -259,6 +280,10 @@ function city_block.on_mayor_fields(player, formname, fields)
 		return true
 	end
 
+	if xp.get_xp(pname, "buildxp") < BUILDXP_FOR_MAYOR then
+		return true
+	end
+
 	local meta = minetest.get_meta(pos)
 	local owner = meta:get_string("owner")
 
@@ -295,7 +320,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 				for _, vpos in ipairs(prots) do
 					local node = minetest.get_node(vpos)
 					local meta = minetest.get_meta(vpos)
-					if is_protector_name(node.name) then
+					if is_protector_name(node.name) or is_expired_protector_name(node.name) then
 						if meta:get_string("owner") == info.owner then
 							local p = vector.subtract(vpos, pos)
 							local color = get_protector_slave_status_color(vpos, pos)

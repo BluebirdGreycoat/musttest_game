@@ -252,7 +252,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	end
 
 	-- Check all neighboring cityblocks for age and ownership.
-	if cblock.owner and city_time then
+	-- If the city owner is admin, skip this check.
+	if cblock.owner and city_time and not gdac.player_is_admin(cblock.owner) then
 		local allblocks = city_block.blocks
 		local cityowner = cblock.owner or ""
 		local good = true
@@ -275,7 +276,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 					-- yonger than the current city block.
 					-- Note: ownername check is especially needed because self is always
 					-- included in the array of blocks we're looking at.
-					if not (gdac.player_is_admin(cityowner) or bowner == cityowner or btime <= city_time) then
+					if not (bowner == cityowner or btime <= city_time) then
 						good = false
 						break
 					end

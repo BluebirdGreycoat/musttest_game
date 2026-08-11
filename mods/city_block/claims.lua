@@ -9,10 +9,10 @@
 --   5. [X] The owner of the cityblock has 50k xp MORE than the owner of the prot.
 --   6. [X] The owner of the prot is not an admin.
 --   7. [X] The owner of the prot has < 50k build XP.
---   8. If the prot has members, all members must pass these conditions.
---      If cityblock owner is a member, skip checks for that member.
+--   8. [X] If the prot has members, all members must pass these conditions.
+--      [X] If cityblock owner is a member, skip checks for that member.
 --   9. [X] All other cityblocks in the area of control must be owned by the owner.
---          OR, all other cityblocks must be newer that this one.
+--      [X] OR, all other cityblocks must be newer that this one.
 -- The intended purpose of these conditions is to allow city mayors to control
 -- (even revoke) protections for low-quality builders/builds within their area
 -- of control, while keeping the potential for administrative abuse as low as
@@ -140,6 +140,7 @@ end
 -- Returns 0 if protector is independant.
 -- Returns -1 on error (node/meta invalid, etc.).
 -- Second return value: string message with explanation.
+-- This function has final responsibility for all security checks!
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
 	local D = CITYBLOCK_BOROUGH_RADIUS
@@ -153,6 +154,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local cityowner_has_xp_morethanprot = false
 	local protowner_has_noxp = false
 	local cityblocks_all_allow = false
+	local protmembers_pass = false
 
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
@@ -286,6 +288,52 @@ local function get_protector_slave_status(prot_pos, city_pos)
 		end
 	end
 
+	-- Check if protector has members, and if all members pass.
+	local memberlist = protector.get_member_list(meta)
+	if memberlist and #memberlist > 0 and cblock.owner then
+		local cityowner = cblock.owner or ""
+		local good = true
+
+		for _, membername in ipairs(memberlist) do
+			if cityowner ~= membername then	-- Skip checks for the cityblock owner, if a member.
+				-- Check if member logged in recently.
+				local pauth = minetest.get_auth_handler().get_auth(membername)
+				if pauth and pauth.last_login and pauth.last_login ~= -1 then
+					local tnow = os.time()
+					local tlast = pauth.last_login
+					local tdiff = tnow - tlast
+					local delay = LAST_LOGIN_DAYS
+					if tdiff > delay then
+						good = false
+					end
+				else
+					-- Account no longer exists OR 'last_login' was never initialized.
+					good = false
+				end
+
+				if gdac.player_is_admin(membername) then
+					good = false
+				end
+
+				local cityXP = xp.get_xp(cityowner, "buildxp")
+				local memberXP = xp.get_xp(membername, "buildxp")
+				if memberXP >= (MAYOR_MINIMUM_BUILDXP / 2) then
+					good = false
+				end
+				if cityXP < (memberXP + MAYOR_MINIMUM_BUILDXP) then
+					good = false
+				end
+			end
+		end
+
+		if good then
+			protmembers_pass = true
+		end
+	else
+		-- No members.
+		protmembers_pass = true
+	end
+
 	-- For exclusively testing neighbor city block age/ownership conditions.
 	--[[
 	cityowner_has_xp = true
@@ -294,6 +342,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	protowner_not_admin = true
 	protowner_is_away = true
 	protector_is_newer = true
+	protmembers_pass = true
 	--]]
 
 	if in_cityblock_area
@@ -304,8 +353,9 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and cityowner_has_xp_morethanprot
 			and protowner_has_noxp
 			and cityblocks_all_allow
+			and protmembers_pass
 	then
-		return 1, "Protector is enslaved." -- Be extra, extra offensive to "sensitive" people.2
+		return 1, "Protector is enslaved." -- Be extra, extra offensive to "sensitive" people.
 	end
 	return 0, "Protector is independant."
 end

@@ -10,6 +10,7 @@
 --   6. [X] The owner of the prot is not an admin.
 --   7. [X] The owner of the prot has < 50k build XP.
 --   8. If the prot has members, all members must pass these conditions.
+--      If cityblock owner is a member, skip checks for that member.
 --   9. [X] All other cityblocks in the area of control must be owned by the owner.
 --          OR, all other cityblocks must be newer that this one.
 -- The intended purpose of these conditions is to allow city mayors to control
@@ -138,6 +139,7 @@ end
 -- Returns 2 if protector is expired.
 -- Returns 0 if protector is independant.
 -- Returns -1 on error (node/meta invalid, etc.).
+-- Second return value: string message with explanation.
 local function get_protector_slave_status(prot_pos, city_pos)
 	local rpos = vector.subtract(prot_pos, city_pos)
 	local D = CITYBLOCK_BOROUGH_RADIUS
@@ -155,7 +157,7 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	-- Check if the cityblock is valid.
 	local cblock = city_block.get_block(city_pos)
 	if not cblock then
-		return -1
+		return -1, "Invalid city block."
 	end
 
 	-- Check if the protector is in the city block's area of control.
@@ -171,25 +173,25 @@ local function get_protector_slave_status(prot_pos, city_pos)
 	local protnode = minetest.get_node(prot_pos)
 	local citynode = minetest.get_node(city_pos)
 	if not (is_protector_name(protnode.name) or is_expired_protector_name(protnode.name)) then
-		return -1
+		return -1, "Invalid protection node."
 	end
 	if not is_cityblock_name(citynode.name) then
-		return -1
+		return -1, "Invalid city block."
 	end
 	if is_expired_protector_name(protnode.name) then
-		return 2
+		return 2, "Expired protector."
 	end
 
 	local meta = minetest.get_meta(prot_pos)
 	local owner = meta:get_string("owner")
 	if owner == "" then
-		return -1 -- Don't call get_auth() with an empty string.
+		return -1, "Protector node lacks owner." -- Don't call get_auth() with an empty string.
 	end
 
 	-- If cityblock and protector owner are same, allow control.
 	-- Shortcut all remaining checks.
 	if cblock.owner and owner == cblock.owner then
-		return 1
+		return 1, "Protector and city block owners are same."
 	end
 
 	-- Check if protector owner is admin.
@@ -303,9 +305,9 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			and protowner_has_noxp
 			and cityblocks_all_allow
 	then
-		return 1
+		return 1, "Protector is enslaved." -- Be extra, extra offensive to "sensitive" people.2
 	end
-	return 0
+	return 0, "Protector is independant."
 end
 
 local function get_protector_slave_status_color(prot_pos, city_pos)

@@ -287,7 +287,8 @@ local function get_protector_slave_status(prot_pos, city_pos)
 			cityblocks_all_allow = true
 		end
 	end
-	cityblocks_all_allow = true
+	-- For testing.
+	--cityblocks_all_allow = true
 
 	-- Check if protector has members, and if all members pass.
 	local memberlist = protector.get_member_list(meta)
@@ -600,7 +601,7 @@ function city_block.on_mayor_fields(player, formname, fields)
 						("Registered To: %s"):format(rename.gpn(info.owner)),
 						("Last Login: %s"):format(last_login),
 						("GPS: %s"):format(minetest.pos_to_string(vector.subtract(vpos, pos))),
-						("Date: %s"):format(timestr),
+						("Date of Claim: %s"):format(timestr),
 						("Location: %s"):format(areaname),
 						("Members: %d"):format(#members),
 					}
